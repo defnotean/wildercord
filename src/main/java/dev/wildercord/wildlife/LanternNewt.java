@@ -24,7 +24,12 @@ import java.util.*;
 public final class LanternNewt extends PathfinderMob {
 	private static final EntityDataAccessor<Boolean> BROWSING=SynchedEntityData.defineId(LanternNewt.class,EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Long> RESPONSE=SynchedEntityData.defineId(LanternNewt.class,EntityDataSerializers.LONG);
-	private long pearlReady,browseReady,responseReady,frightenedUntil;
+	private static final EntityDataAccessor<Boolean> RESTING=SynchedEntityData.defineId(LanternNewt.class,EntityDataSerializers.BOOLEAN);
+ private long pearlReady,browseReady,responseReady,frightenedUntil,refugeReady;
+ public float rest,restO;
+ @Override public void tick() {super.tick();if(level().isClientSide()) {restO=rest;rest=WildlifeRules.approach(rest,resting()?1:0,.08F);}}
+ public boolean resting() {return entityData.get(RESTING);}
+ public long refugeReady() {return refugeReady;}
 	public LanternNewt(EntityType<? extends LanternNewt> type,Level level) {
 		super(type,level);moveControl=new SmoothSwimmingMoveControl<>(this,85,10,.7F,.65F,true);
 		setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER,0);xpReward=0;
@@ -35,6 +40,8 @@ public final class LanternNewt extends PathfinderMob {
 	/** Swimming control supplies scaled movement input; use aquatic travel rather than land-mob fluid drag. */
 	@Override public void travel(net.minecraft.world.phys.Vec3 input) {
 		if (isEffectiveAi() && isInWater()) {
+   // A settled visitor must ignore residual swimming input as well as velocity.
+   if(resting()) {setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);return;}
 			moveRelative(getSpeed(),input);move(MoverType.SELF,getDeltaMovement());
 			setDeltaMovement(getDeltaMovement().scale(.9));
 			// Counter the swimming controller's idle buoyancy while settled over a plant.
@@ -42,7 +49,7 @@ public final class LanternNewt extends PathfinderMob {
 		} else super.travel(input);
 	}
 
-	@Override protected void defineSynchedData(SynchedEntityData.Builder b) {super.defineSynchedData(b);b.define(BROWSING,false);b.define(RESPONSE,0L);}
+	@Override protected void defineSynchedData(SynchedEntityData.Builder b) {super.defineSynchedData(b);b.define(BROWSING,false);b.define(RESPONSE,0L);b.define(RESTING,false);}
 	public boolean browsing() {return entityData.get(BROWSING);}
 	public int response() {return (int)Math.clamp(entityData.get(RESPONSE)-level().getGameTime(),0,80);}
 	public boolean frightened() {return level().getGameTime()<frightenedUntil;}
@@ -51,6 +58,7 @@ public final class LanternNewt extends PathfinderMob {
 	@Override protected void registerGoals() {
 		goalSelector.addGoal(1,new PanicGoal(this,1.5));
 		goalSelector.addGoal(3,new TemptGoal(this,.8,s -> s.is(Items.SEAGRASS),false));
+		goalSelector.addGoal(4,new Shelter());
 		goalSelector.addGoal(5,new Browse());
 		goalSelector.addGoal(6,new RandomSwimmingGoal(this,.7,80) {@Override public boolean canUse() {return isInWater() && super.canUse();}});
 		goalSelector.addGoal(6,new WaterAvoidingRandomStrollGoal(this,.55) {@Override public boolean canUse() {return !isInWater() && super.canUse();}});
@@ -67,7 +75,7 @@ public final class LanternNewt extends PathfinderMob {
 		if(isInWaterOrRain() && (response()>0 || WetlandRules.night(l.getOverworldClockTime())) && tickCount%20==0)
 			l.sendParticles(net.minecraft.core.particles.ParticleTypes.GLOW,getX(),getY()+.3,getZ(),2,.16,.05,.16,0);
 	}
-	@Override public boolean hurtServer(ServerLevel l,DamageSource source,float amount) {boolean hit=super.hurtServer(l,source,amount);if(hit) {frightenedUntil=l.getGameTime()+200;entityData.set(RESPONSE,0L);}return hit;}
+	@Override public boolean hurtServer(ServerLevel l,DamageSource source,float amount) {boolean hit=super.hurtServer(l,source,amount);if(hit) {frightenedUntil=l.getGameTime()+200;entityData.set(RESPONSE,0L);entityData.set(RESTING,false);}return hit;}
 	@Override protected InteractionResult mobInteract(Player p,InteractionHand hand) {
 		var stack=p.getItemInHand(hand);if(!stack.is(Items.SEAGRASS))return super.mobInteract(p,hand);
 		if(level() instanceof ServerLevel l) {
@@ -84,8 +92,52 @@ public final class LanternNewt extends PathfinderMob {
 	@Override protected SoundEvent getHurtSound(DamageSource s) {return dev.wildercord.content.WildercordSounds.kit("wetland_newt_hurt");}
 	@Override protected SoundEvent getDeathSound() {return dev.wildercord.content.WildercordSounds.kit("wetland_newt_death");}
 	@Override public int getAmbientSoundInterval() {return 240;}
-	@Override protected void addAdditionalSaveData(ValueOutput out) {super.addAdditionalSaveData(out);out.putLong("pearl_ready",pearlReady);out.putLong("browse_ready",browseReady);out.putLong("response_ready",responseReady);out.putLong("frightened_until",frightenedUntil);}
-	@Override protected void readAdditionalSaveData(ValueInput in) {super.readAdditionalSaveData(in);pearlReady=in.getLongOr("pearl_ready",0);browseReady=in.getLongOr("browse_ready",0);responseReady=in.getLongOr("response_ready",0);frightenedUntil=in.getLongOr("frightened_until",0);entityData.set(BROWSING,false);entityData.set(RESPONSE,0L);}
+	@Override protected void addAdditionalSaveData(ValueOutput out) {super.addAdditionalSaveData(out);out.putLong("refuge_ready",refugeReady);out.putLong("pearl_ready",pearlReady);out.putLong("browse_ready",browseReady);out.putLong("response_ready",responseReady);out.putLong("frightened_until",frightenedUntil);}
+	@Override protected void readAdditionalSaveData(ValueInput in) {super.readAdditionalSaveData(in);refugeReady=in.getLongOr("refuge_ready",0);pearlReady=in.getLongOr("pearl_ready",0);browseReady=in.getLongOr("browse_ready",0);responseReady=in.getLongOr("response_ready",0);frightenedUntil=in.getLongOr("frightened_until",0);entityData.set(BROWSING,false);entityData.set(RESPONSE,0L);entityData.set(RESTING,false);}
+ /** Seeks one waterlogged roof, takes a short rest and leaves its gathering clocks alone. */
+ private final class Shelter extends Goal {
+  private HabitatSweep sweep;private BlockPos roof;private net.minecraft.world.level.pathfinder.Path route;
+  private int scanAt,travelLeft,settled,retries;private boolean arrived;
+  Shelter() {setFlags(EnumSet.of(Flag.MOVE,Flag.LOOK));}
+  private boolean weather() {return isInWaterOrRain() && (!WetlandRules.night(level().getOverworldClockTime()) || level().isRaining()) && !frightened() && response()==0;}
+  private boolean available(BlockPos at) {
+   if(!level().hasChunkAt(at))return false;var b=level().getBlockState(at);
+   return b.is(WetlandShelters.REFUGE) && b.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED)
+    && level().getEntitiesOfClass(LanternNewt.class,new net.minecraft.world.phys.AABB(at).inflate(.25),n -> n!=LanternNewt.this && n.resting()).isEmpty();
+  }
+  @Override public boolean canUse() {
+   if(!weather() || level().getGameTime()<refugeReady) {sweep=null;return false;}
+   if(tickCount<scanAt)return false;scanAt=tickCount+20;
+   if(sweep==null) {sweep=new HabitatSweep(6);var here=blockPosition();sweep.anchor(here.getX(),here.getY(),here.getZ());}
+   int paths=0;
+   for(int i=0;i<8;i++) {
+    var o=sweep.next();if(o==null) {sweep=null;scanAt=tickCount+200;return false;}
+    for(int h=0;h<3;h++) {
+     int dy=h==0?0:h==1?1:-1;var at=new BlockPos(sweep.x()+o.x(),sweep.y()+dy,sweep.z()+o.z());
+     if(!available(at))continue;var path=getNavigation().createPath(at,0);paths++;
+     if(path!=null && path.canReach()) {roof=at;route=path;return true;}
+     if(paths==2)return false;
+    }
+   }
+   return false;
+  }
+  @Override public void start() {travelLeft=240;settled=0;retries=0;arrived=false;sweep=null;getNavigation().moveTo(route,.7);}
+  @Override public boolean canContinueToUse() {return roof!=null && travelLeft>0 && settled<WetlandRules.REFUGE_PAUSE && weather() && available(roof);}
+  @Override public void tick() {
+   travelLeft--;
+   boolean near=Math.abs(getX()-(roof.getX()+.5))<.28 && Math.abs(getZ()-(roof.getZ()+.5))<.28 && getY()<roof.getY()+.3 && isInWater();
+   entityData.set(RESTING,near);
+   if(!near && distanceToSqr(roof.getX()+.5,roof.getY()+.12,roof.getZ()+.5)<1)getMoveControl().setWantedPosition(roof.getX()+.5,roof.getY()+.1,roof.getZ()+.5,.7);
+   if(near) {
+    getNavigation().stop();setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);entityData.set(RESTING,true);
+    if(!arrived) {arrived=true;refugeReady=level().getGameTime()+WetlandRules.REFUGE_REST;Feels.sound((ServerLevel)level(),position(),"wetland_refuge_settle",.3F,1);}
+    settled++;
+   } else if(getNavigation().isDone() && tickCount%20==0 && retries++<4) {var path=getNavigation().createPath(roof,0);if(path!=null && path.canReach())getNavigation().moveTo(path,.7);}
+  }
+  @Override public boolean requiresUpdateEveryTick() {return true;}
+  @Override public void stop() {if(arrived && isAlive())Feels.sound((ServerLevel)level(),position(),"wetland_refuge_wake",.3F,1);entityData.set(RESTING,false);getNavigation().stop();roof=null;route=null;sweep=null;scanAt=tickCount+80;}
+ }
+
 	/** Visits live seagrass without consuming the plant, minting resources or spawning offspring. */
 	private final class Browse extends Goal {
 		private HabitatSweep sweep;

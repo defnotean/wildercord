@@ -39,3 +39,5 @@ These are shapeless recipes. Marshlights can be placed above or below water and 
 Natural groups contain one or two newts. Spawning requires a shallow, open-water site and refuses another newt when three already live nearby. The Lantern Newt option and wildlife master switch can disable natural spawning.
 
 [Moonreed Gardens]({{ '/world/moonreed-gardens/' | relative_url }}) extends the bank with moth pollination, perennial flowers and a Dewglass Lens for inspecting gathering conditions. Larger ecological relationships and exploration sites remain in development.
+
+[Reed Refuges]({{ '/world/reed-refuges/' | relative_url }}) gives Lantern Newts an open resting shelter and introduces Tamsin's field notes.

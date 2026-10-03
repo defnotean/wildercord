@@ -813,6 +813,9 @@ def write_lang(runes):
     import moonreed_art
     lang.update(moonreed_art.LANG)
     moonreed_art.write(sys.modules[__name__])
+    import refuge_art
+    lang.update(refuge_art.LANG)
+    refuge_art.write(sys.modules[__name__])
     import aura_world_art
     lang.update(aura_world_art.LANG)
     import way_art

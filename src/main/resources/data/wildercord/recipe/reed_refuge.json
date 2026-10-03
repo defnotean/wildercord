@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bamboo",
+    "minecraft:bamboo",
+    "minecraft:bamboo",
+    "wildercord:moonreed_floss",
+    "minecraft:string",
+    "minecraft:seagrass"
+  ],
+  "result": {
+    "id": "wildercord:reed_refuge"
+  }
+}

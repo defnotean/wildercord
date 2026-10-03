@@ -52,3 +52,5 @@ The lens is a field instrument. Solid terrain blocks its search, and it loads no
 Growth changes existing roots. It does not spread plants or multiply moths. Harvested flowers return to shoots, and immature plants yield no floss when broken. Natural patches make a bounded number of attempts at suitable wet banks.
 
 These gardens connect Moonreed, Glimmerwings, Marshlights, Lantern Newts and the tools made from their peaceful materials. Other wetland creatures, ecological relationships and investigation sites remain in development.
+
+[Reed Refuges]({{ '/world/reed-refuges/' | relative_url }}) gives Lantern Newts an open resting shelter and introduces Tamsin's field notes.

@@ -7,11 +7,11 @@ import net.minecraft.util.Mth;
 
 /** Broad soft head, wet belly, low splayed limbs, frilled gills and articulated paddle tail. UVs: wetland_art.py. */
 public final class LanternNewtModel extends EntityModel<WildlifeRenderState> {
-	private final ModelPart body,head,tail,tip,leftGill,rightGill;
+	private final ModelPart body,head,tail,tip,leftGill,rightGill,leftEye,rightEye;
 	private final ModelPart[] feet=new ModelPart[4];
 	public LanternNewtModel(ModelPart root) {
 		super(root);body=root.getChild("body");head=root.getChild("head");tail=body.getChild("tail");tip=tail.getChild("tip");
-		leftGill=head.getChild("left_gill");rightGill=head.getChild("right_gill");
+		leftGill=head.getChild("left_gill");rightGill=head.getChild("right_gill");leftEye=head.getChild("eye_1");rightEye=head.getChild("eye_-1");
 		for(int i=0;i<4;i++)feet[i]=root.getChild("foot_"+i);
 	}
 	public static LayerDefinition createLayer() {
@@ -30,13 +30,14 @@ public final class LanternNewtModel extends EntityModel<WildlifeRenderState> {
 		return LayerDefinition.create(mesh,128,32);
 	}
 	@Override public void setupAnim(WildlifeRenderState s) {
-		super.setupAnim(s);float t=s.ageInTicks+s.seed,move=Math.min(1,s.walkAnimationSpeed*3),swim=s.air;
-		body.y=21+Mth.sin(t*.08F)*.1F;body.zRot=Mth.sin(s.walkAnimationPos*.8F)*move*.045F;
+		super.setupAnim(s);float t=s.ageInTicks+s.seed,move=Math.min(1,s.walkAnimationSpeed*3)*(1-s.rest),swim=s.air*(1-s.rest);
+		body.y=21+Mth.sin(t*.08F)*.1F+s.rest*.15F;body.zRot=Mth.sin(s.walkAnimationPos*.8F)*move*.045F;
 		head.yRot=Mth.clamp(s.yRot,-35,35)*Mth.DEG_TO_RAD;
-		head.xRot=s.xRot*Mth.DEG_TO_RAD*.4F+s.graze*(.18F+Mth.sin(t*.8F)*.08F);
-		tail.yRot=Mth.sin(t*(swim>.5F?.24F:.08F))*(.12F+move*.24F+swim*.13F);
-		tip.yRot=Mth.sin(t*(swim>.5F?.24F:.08F)-.9F)*(.18F+move*.28F+swim*.18F);
+		head.xRot=s.rest*.14F+s.xRot*Mth.DEG_TO_RAD*.4F*(1-s.rest)+s.graze*(.18F+Mth.sin(t*.8F)*.08F);
+		tail.yRot=s.rest*.55F+Mth.sin(t*(swim>.5F?.24F:.08F))*(.12F+move*.24F+swim*.13F);
+		tip.yRot=s.rest*.4F+Mth.sin(t*(swim>.5F?.24F:.08F)-.9F)*(.18F+move*.28F+swim*.18F);
 		for(int i=0;i<4;i++) {feet[i].yRot=Mth.sin(s.walkAnimationPos*1.2F+(i==0 || i==3?0:Mth.PI))*move*.5F;feet[i].zRot=(i%2==0?1:-1)*swim*.35F;}
-		leftGill.zRot=Mth.sin(t*.16F)*.09F+s.bow*.17F;rightGill.zRot=-leftGill.zRot;
+		leftEye.yScale=rightEye.yScale=1-s.rest*.84F;leftEye.xScale=rightEye.xScale=1+s.rest*.4F;
+		leftGill.zRot=Mth.sin(t*.16F)*(.09F-s.rest*.07F)+s.bow*.17F-s.rest*.18F;rightGill.zRot=-leftGill.zRot;
 	}
 }

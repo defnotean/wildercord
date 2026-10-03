@@ -1809,6 +1809,12 @@
     "wetland_reed_open": {
       "part": "wetland"
     },
+    "wetland_refuge_settle": {
+      "part": "wetland"
+    },
+    "wetland_refuge_wake": {
+      "part": "wetland"
+    },
     "wildlife_cinderfox_death": {
       "part": "wildlife"
     },

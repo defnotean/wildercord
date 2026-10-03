@@ -20,3 +20,9 @@ def reed_harvest(v,rng):
 def lens_focus(v,rng):
  return sa.finish(sa.mix(sa.partials(420,.09,((1,1,1),(3,.12,.7)),.035),(.08,sa.partials(840,.22,((1,1,1),(1.8,.08,.6)),.045))),'effect')
 EVENTS += [event('wetland_'+n,f,role='effect',subtitle='wetland.'+n) for n,f in [('reed_open',reed_open),('reed_harvest',reed_harvest),('lens_focus',lens_focus)]]
+
+def refuge_settle(v,rng):
+ return sa.finish(sa.mix(sa.lowpass(sa.noise(.32,rng),1800)*sa.env(.32,(0,0),(.05,1),(.32,0))*.035,(.12,sa.partials(330,.2,((1,1,1),(2,.08,.6)),.025))),'effect')
+def refuge_wake(v,rng):
+ return sa.finish(sa.mix(sa.partials(470,.12,((1,1,1),),.035),(.08,sa.partials(550,.16,((1,1,1),(2,.05,.7)),.025))),'effect')
+EVENTS += [event('wetland_'+n,f,role='effect',subtitle='wetland.'+n) for n,f in [('refuge_settle',refuge_settle),('refuge_wake',refuge_wake)]]

@@ -2,6 +2,7 @@
   "parent": "minecraft:item/handheld",
   "gui_light": "front",
   "textures": {
+    "particle": "wildercord:item/dewglass_brass",
     "brass": "wildercord:item/dewglass_brass",
     "glass": "wildercord:item/dewglass_glass",
     "grip": "wildercord:item/dewglass_grip",

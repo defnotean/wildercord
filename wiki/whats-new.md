@@ -48,3 +48,7 @@ Lantern Newts bring browsing behavior, answering lanterns and peaceful Dusk Pear
 ## Moonreed gardens
 
 Glimmerwings now visit swamp banks and pollinate Moonreed by approaching its buds. Life prepares growth but cannot replace a moth visit. Harvest floss without destroying the root, then combine it with a Dusk Pearl, Copper and Glass to craft a Dewglass Lens. Read flowers and newt gathering conditions, or follow its short trail to a visible nearby reed. See [Moonreed Gardens]({{ '/world/moonreed-gardens/' | relative_url }}).
+
+## Reed Refuges
+
+Weave a waterlogged canopy from Bamboo, Moonreed Floss, String and Seagrass. Lantern Newts seek it in daylight or rain, curl up briefly, and wake when fed or answering magic. Shelter adds no healing or extra pearl. Craft Tamsin's field notes to learn the habitat rules. See [Reed Refuges]({{ '/world/reed-refuges/' | relative_url }}).

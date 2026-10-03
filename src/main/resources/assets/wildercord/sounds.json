@@ -5377,5 +5377,17 @@
     "sounds": [
       "wildercord:kit/wetland/wetland_reed_open"
     ]
+  },
+  "wetland_refuge_settle": {
+    "subtitle": "subtitles.wildercord.kit.wetland.refuge_settle",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_refuge_settle"
+    ]
+  },
+  "wetland_refuge_wake": {
+    "subtitle": "subtitles.wildercord.kit.wetland.refuge_wake",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_refuge_wake"
+    ]
   }
 }
