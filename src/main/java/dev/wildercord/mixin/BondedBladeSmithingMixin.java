@@ -29,6 +29,20 @@ public abstract class BondedBladeSmithingMixin extends ItemCombinerMenu {
 	@Shadow
 	@Final
 	private DataSlot cost;
+	@Shadow private int repairItemCountCost;
+	@Shadow private boolean onlyRenaming;
+
+	@Inject(method = "createResult", at = @At("HEAD"), cancellable = true)
+	private void wildercord$etch(CallbackInfo ci) {
+		if (!(inputSlots.getItem(1).getItem() instanceof dev.wildercord.content.RuneItem)) return;
+		ItemStack result = dev.wildercord.aura.RuneEtchings.etch(inputSlots.getItem(0), inputSlots.getItem(1), player);
+		resultSlots.setItem(0, result);
+		cost.set(result.isEmpty() ? 0 : dev.wildercord.aura.RuneEtchingRules.LEVELS);
+		repairItemCountCost = result.isEmpty() ? 0 : 1;
+		onlyRenaming = false;
+		broadcastChanges();
+		ci.cancel();
+	}
 
 	private BondedBladeSmithingMixin(MenuType<?> type, int id, Inventory inventory, ContainerLevelAccess access, ItemCombinerMenuSlotDefinition slots) {
 		super(type, id, inventory, access, slots);
@@ -39,7 +53,7 @@ public abstract class BondedBladeSmithingMixin extends ItemCombinerMenu {
 		ItemStack left = inputSlots.getItem(0);
 		ItemStack right = inputSlots.getItem(1);
 		ItemStack result = resultSlots.getItem(0);
-		if (BondedBlades.bonded(right)) {
+		if (BondedBlades.bonded(right) || right.has(dev.wildercord.aura.RuneEtchings.RUNE)) {
 			resultSlots.setItem(0, ItemStack.EMPTY);
 			cost.set(0);
 			return;

@@ -78,7 +78,7 @@ and documented, not a first draft.
 | 9 | The bonded blade | done |
 | 10 | Masters, disciples, sparring and the clash | done; merged and tested |
 | 11 | The world of the sword | scoped features implemented: training, battlefields, tomb, sleeping blade, beasts, tournaments; broader verification open |
-| 12 | Mage and swordsman together | started: resonant damage strikes; rune-etched blades, Unity and integration pending |
+| 12 | Mage and swordsman together | started: resonant damage strikes and rune-etched blades; Unity and integration pending |
 
 ### 1. Sword strings: the input language
 
@@ -1260,3 +1260,7 @@ Dedicated client testing covers actual registration and reward-choice packets, i
 ## Step 12 increment: resonant strikes
 
 Successful elemental health damage and a full coated swing or first answering projected Aura/art hit can meet within 24 ticks, in either order, for one paid response. The swordsman pays four Aura; both foe and swordsman rest eighty ticks. A spell payment can prime a given foe once. Ten material families and ten school incision geometries cover the hundred built-in elemental pairings, with twenty names (ten ordinary, ten complementary variations). This is damage-timing cooperation; pure control/support spells do not prime it. Rune-etched blades and Unity remain pending, as does the final overhaul integration pass. See wiki/progression/resonant-strikes.md for the player rules.
+
+## Step 12 increment: rune-etched blades
+
+An eligible weapon carries one persistent effect ID. A native anvil result consumes one rank I effect rune and five experience levels; replacement loses the old inscription. The first successful hit of a shared ArtKit performance, or a landed finisher hook, wakes it using the basic Touch mana price. Helpful/movement effects use the caster, harmful effects the living foe, and world effects its contact/floor. Native Effects keeps protections and authored impact behavior. A persistent copy-on-death player deadline rests at least one hundred ticks or the compiled cooldown, using the overworld clock. ArtKit captures the starting ItemStack reference so delayed hits cannot borrow a replacement blade. A primary-target paid marker prevents an inscription from buying a second resonant answer. Unknown IDs remain dormant. Ranked rune items are refused; known player ranks work under their ordinary same-cost rules. Stack component serialization and normal repair preserve the inscription, and right-slot repair sacrifice is refused. Rune-etched blades now have a first playable implementation; Unity and final integration remain pending. Full roster runtime, a restart, real two-client play, shaders and sustained performance remain unverified.

@@ -69,6 +69,7 @@
   * [The Highland Beasts](progression/aura-beasts.md)
   * [Village Tournaments](progression/village-tournaments.md)
   * [Resonant Strikes](progression/resonant-strikes.md)
+  * [Rune-Etched Blades](progression/rune-etched-blades.md)
 * [The Fusion Altar](fusion-altar/index.md)
   * [Ranks](fusion-altar/ranks.md)
   * [Combining](fusion-altar/combining.md)

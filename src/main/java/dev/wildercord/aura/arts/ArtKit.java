@@ -303,6 +303,7 @@ public final class ArtKit {
 		private final Map<UUID, Double> pvpStance = new HashMap<>();
 		private final Set<UUID> answered = new HashSet<>();
 		private final Set<UUID> hurt = new HashSet<>();
+		private final net.minecraft.world.item.ItemStack startingBlade;
 		/** The art these strikes belong to (null for strikes outside one), how hard momentum makes them, and how they wear stance. */
 		private final AuraApi.StringArt art;
 		private final double strength;
@@ -311,6 +312,7 @@ public final class ArtKit {
 
 		Hits(ServerPlayer player, AuraFx.Art fx) {
 			this.player = player;
+			this.startingBlade = player.getMainHandItem();
 			this.fx = fx;
 			this.art = SwordStrings.performing();
 			this.strength = Momentum.on(player) ? MomentumRules.strength(Momentum.tier(player)) : 1.0;
@@ -403,6 +405,8 @@ public final class ArtKit {
 					Momentum.artLanded(player, art, hurt.size(), foe);
 					// The bonded blade in hand gathers resonance from an art that lands (and remembers which).
 					dev.wildercord.aura.BondedBlades.artLanded(player, art, hurt.size(), foe);
+					if (hurt.size() == 1 && player.getMainHandItem() == startingBlade)
+						dev.wildercord.aura.RuneEtchings.wake(player, foe, taken);
 				}
 			}
 			return taken;

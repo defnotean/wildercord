@@ -4,6 +4,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Rune-etched blades
+
+- Anvil inscription: an eligible weapon plus one rank I effect rune, consuming one rune and five experience levels. Replacing an inscription deliberately loses the old one; shapes, links, modifiers, innates, duplicate inscriptions and foreign bonded blades are refused.
+- The first successful hit of an art or written technique, or a successful finisher, wakes the effect for the basic Touch spell mana price. Harmful effects touch the foe, helpful/movement effects touch the swordsman, and world effects use the contact and floor. Native effect presentation and defenses remain in charge.
+- Player-persistent rest lasts at least five seconds or the compiled effect cooldown. Missing mana spends nothing; swapping weapons, inscriptions or dimensions cannot reset rest. A delayed art must still hold its starting blade. The primary target cannot earn an extra resonant answer from the inscription itself.
+- Weapon name, wear and custom components survive etching and normal repairs; an etched weapon cannot be silently sacrificed in an anvil's right slot. Unknown inscriptions remain stored and dormant. Tooltips and a player guide explain prices, replacement and activation.
+- Focused runtime covers native anvil result pickup/consumption, actual art damage and effect payment, self healing, shields, refused payment/repetition/swaps, full stack serialization, repair preservation and rendered first-person/anvil screenshots. Full restart, two-client behavior, the complete effect roster's runtime behavior and final Aura integration remain unverified. Unity and the larger living-world expansion are still open.
+
 ### Resonant strikes: blade and spell cooperation
 
 - Elemental spell damage and a full coated swing, slash, art or written technique can meet on a living foe within 1.2 seconds, in either order. One player or allied partners can coordinate. The swordsman pays four Aura, and both foe and swordsman rest four seconds.

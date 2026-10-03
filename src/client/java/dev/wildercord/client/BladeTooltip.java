@@ -42,6 +42,14 @@ public final class BladeTooltip {
 	/** The lines {@code stack} adds under its name for {@code viewer} ({@code story}: the whole story, Shift held). */
 	public static List<Component> lines(ItemStack stack, LocalPlayer viewer, boolean story) {
 		List<Component> out = new ArrayList<>();
+		String etched = stack.get(dev.wildercord.aura.RuneEtchings.RUNE);
+		if (etched != null) {
+			var rune = dev.wildercord.spell.Runes.get(etched).orElse(null);
+			out.add(Component.translatable("tooltip.wildercord.blade_rune", rune == null ? Component.literal(etched)
+				: dev.wildercord.content.RuneItem.runeName(rune)).withColor(GOLD));
+			out.add(Component.translatable("tooltip.wildercord.blade_rune.price", rune == null ? "?"
+				: dev.wildercord.aura.RuneEtchingRules.price(rune)).withColor(DIM));
+		}
 		BladeBond.Former former = stack.get(BondedBlades.FORMER);
 		BladeBond b = BondedBlades.bond(stack);
 		if (b == null) {
