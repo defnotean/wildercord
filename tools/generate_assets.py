@@ -779,6 +779,8 @@ def write_lang(runes):
     lang.update(wildlife_art.LANG)
     import aura_art
     lang.update(aura_art.LANG)
+    import aura_social_art
+    lang.update(aura_social_art.LANG)
     import aura_world_art
     lang.update(aura_world_art.LANG)
     import way_art

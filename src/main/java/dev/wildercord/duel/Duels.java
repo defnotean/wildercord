@@ -209,6 +209,13 @@ public final class Duels {
 			}
 			Player attacker = playerBehind(source);
 			if (attacker == null) {
+				// An outsider's creature or environmental harm also calls a spar off.
+				// Ongoing harm attributed to the partner still follows the duel's restoration rules.
+				if (entity instanceof ServerPlayer victim && BY_PLAYER.get(victim.getUUID()) instanceof Active active
+						&& active.watcher != null && !byOpponent(active, victim, source)) {
+					active.duel.interrupt();
+					finish(active, victim.level().getServer());
+				}
 				return true;
 			}
 			// A duellist harms nobody but their opponent: no other player, and no other player's pet.

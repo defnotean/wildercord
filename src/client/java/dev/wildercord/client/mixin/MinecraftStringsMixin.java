@@ -17,8 +17,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Minecraft.class)
 public abstract class MinecraftStringsMixin {
-	@Inject(method = "startAttack", at = @At("HEAD"))
+	@Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
 	private void wildercord$strokeBegins(CallbackInfoReturnable<Boolean> cir) {
+		if (dev.wildercord.client.AuraSocialClient.press()) {
+			cir.setReturnValue(false);
+			return;
+		}
 		// Aura's trail first: it reads the cue marks the string reader is about to use up.
 		AuraFxClient.attackBegins((Minecraft) (Object) this);
 		SwordStringsClient.attackBegins((Minecraft) (Object) this);

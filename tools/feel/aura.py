@@ -41,6 +41,7 @@ from feel.aura_awakening import AWAKENING_EVENTS
 from feel.aura_ways import WAY_EVENTS
 from feel.aura_techniques import TECHNIQUE_EVENTS
 from feel.aura_bonds import BOND_EVENTS
+from feel.aura_social import SOCIAL_EVENTS
 
 D, E, FS, A, B = sa.D, sa.E, sa.FS, sa.A, sa.B
 
@@ -275,4 +276,4 @@ EVENTS = [
     event("aura_momentum_peak", aura_momentum_peak, role="effect", subtitle="tell", attenuation=24),
     event("aura_stance_break", aura_stance_break, role="impact", subtitle="hit", attenuation=32),
     event("aura_finisher", aura_finisher, role="grand", subtitle="hit", attenuation=40),
-] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS + BOND_EVENTS
+] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS + BOND_EVENTS + SOCIAL_EVENTS

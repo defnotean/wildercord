@@ -428,7 +428,7 @@ public final class Clashes {
 		if (s == null || s.npc != null) {
 			return;
 		}
-		int t = (int) (c.level.getGameTime() - c.start) - ClashRules.lag(player.connection == null ? 0 : player.connection.latency());
+		int t = ClashRules.judgingTime((int) (c.level.getGameTime() - c.start), player.connection == null ? 0 : player.connection.latency());
 		int k = ClashRules.beatFor(t, s.edge);
 		boolean fresh = k >= 0 && s.tally.beat(k) == null;
 		ClashRules.Grade grade = s.tally.press(t, s.edge);
@@ -461,13 +461,13 @@ public final class Clashes {
 	// ------------------------------------------------------------------ each tick
 
 	private static void tick(MinecraftServer server) {
-		if (ACTIVE.isEmpty()) {
-			if (!STRUCK.isEmpty() && server.getTickCount() % 40 == 0) {
-				long now = server.overworld().getGameTime();
-				STRUCK.values().removeIf(s -> now - s.at() > 100);
-			}
-			return;
+		if (server.getTickCount() % 40 == 0) {
+			long now = server.overworld().getGameTime();
+			STRUCK.values().removeIf(s -> now - s.at() > 100);
+			LAST.values().removeIf(at -> now - at > ClashRules.REST);
 		}
+		if (ACTIVE.isEmpty()) return;
+
 		for (Clash c : List.copyOf(ACTIVE.values())) {
 			if (c.done) {
 				continue;
@@ -495,7 +495,9 @@ public final class Clashes {
 						}
 					}
 				}
-				int missed = s.tally.close(t, s.edge);
+				int judgedAt = s.entity instanceof ServerPlayer player
+					? ClashRules.judgingTime(t, player.connection == null ? 0 : player.connection.latency()) : t;
+				int missed = s.tally.close(judgedAt, s.edge);
 				for (int k = 0; k < ClashRules.BEATS; k++) {
 					if ((missed & (1 << k)) != 0) {
 						judged(c, s, k, ClashRules.Grade.MISS, null);
@@ -505,7 +507,7 @@ public final class Clashes {
 			if (t % 2 == 0) {
 				draw(c, t);
 			}
-			if (t >= ClashRules.length()) {
+			if (t >= ClashRules.serverLength()) {
 				resolve(c, null);
 			}
 		}
@@ -649,6 +651,13 @@ public final class Clashes {
 	public static int idOf(Entity entity) {
 		Integer id = entity == null ? null : BY_ENTITY.get(entity.getUUID());
 		return id == null ? -1 : id;
+	}
+
+	/** Elapsed ticks of an entity's active lock, or -1 when none. */
+	public static int ageOf(Entity entity) {
+		Integer id = BY_ENTITY.get(entity.getUUID());
+		Clash clash = id == null ? null : ACTIVE.get(id);
+		return clash == null ? -1 : (int)(clash.level.getGameTime() - clash.start);
 	}
 
 	/** {@code entity}'s score in its clash now, or 0. */

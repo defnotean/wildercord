@@ -516,7 +516,7 @@ public class WildercordWaysTest implements FabricClientGameTest {
 		check(cuts[0] == AuraRules.SLASH_TARGETS, "without the Way the slash cuts six (" + cuts[0] + ")");
 		check(cuts[1] == 8, "a Blade's slash cuts all eight (" + cuts[1] + ")");
 
-		// A clash: a piercing crescent cuts the other apart and flies on, weaker.
+		// A Blade has an edge in the timed clash; successful presses carry its crescent on, weaker.
 		reset(context, world);
 		String clash = on(world, player -> {
 			Rival rival = rival(player);
@@ -533,6 +533,17 @@ public class WildercordWaysTest implements FabricClientGameTest {
 		});
 		check(clash == null, clash);
 		context.waitTicks(6);
+		check(on(world, dev.wildercord.aura.Clashes::clashing), "the two crescents should lock rather than award an automatic win");
+		for (int tick = 0; tick < dev.wildercord.aura.ClashRules.serverLength() + 2; tick++) {
+			on(world, player -> {
+				int age = dev.wildercord.aura.Clashes.ageOf(player);
+				for (int beat = 0; beat < dev.wildercord.aura.ClashRules.BEATS; beat++) {
+					if (age == dev.wildercord.aura.ClashRules.beat(beat)) dev.wildercord.aura.Clashes.pressFor(player);
+				}
+				return null;
+			});
+			context.waitTicks(1);
+		}
 		String won = on(world, player -> {
 			Crescents.Flight mine = CLASH.get(0);
 			Crescents.Flight theirs = CLASH.get(1);
@@ -542,7 +553,7 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			if (mine.done()) {
 				return "the piercing crescent should fly on";
 			}
-			return Math.abs(mine.damage() - 6.0 * WayRules.BLADE_CLASH_CARRY) < 1.0E-6 ? null : "flying on at half its harm (" + mine.damage() + ")";
+			return Math.abs(mine.damage() - 6.0 * dev.wildercord.aura.ClashRules.CARRY) < 1.0E-6 ? null : "flying on with the timed clash carry (" + mine.damage() + ")";
 		});
 		check(won == null, won);
 		dropRival(world);

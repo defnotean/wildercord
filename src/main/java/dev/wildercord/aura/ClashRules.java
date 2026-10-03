@@ -211,6 +211,12 @@ public final class ClashRules {
 		return Math.max(0, Math.min(MAX_LAG, (int) Math.round(Math.max(0, latencyMs) / 100.0)));
 	}
 
+	/** Judge and close a player's windows on the same compensated timeline. */
+	public static int judgingTime(int elapsed, int latencyMs) { return elapsed - lag(latencyMs); }
+
+	/** Keep the lock alive long enough for the last compensated press to arrive. */
+	public static int serverLength() { return length() + MAX_LAG; }
+
 	// ------------------------------------------------------------------ the swordsmen of the world
 
 	/** A press a swordsman of the world doesn't make (it misses the beat). */

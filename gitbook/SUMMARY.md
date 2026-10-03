@@ -51,6 +51,7 @@
   * [Ways](progression/ways.md)
   * [Techniques of Your Own](progression/techniques.md)
   * [The Bonded Blade](progression/bonded-blade.md)
+  * [Sparring and Lineage](progression/lineage.md)
   * [Your Affinities](progression/affinity.md)
   * [Advancements](progression/advancements.md)
   * [Mana](progression/mana.md)

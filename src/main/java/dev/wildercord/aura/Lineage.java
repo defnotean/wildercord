@@ -285,7 +285,7 @@ public final class Lineage {
 		ServerPlayer disciple = find(master, rite.disciple());
 		end(master, rite);
 		Feels.sound(master.level(), master.position().add(0, 1, 0), "aura_bond_fail", 0.6F, 1.1F);
-		Component line = Component.translatable("message.wildercord.aura.lineage.broken").withColor(0xC8A0A0);
+		Component line = Component.translatable(rite.kind() == Rite.LESSON ? "message.wildercord.aura.lineage.lesson_broken" : "message.wildercord.aura.lineage.broken").withColor(0xC8A0A0);
 		master.sendOverlayMessage(line);
 		if (disciple != null) {
 			disciple.sendOverlayMessage(line);
@@ -314,7 +314,8 @@ public final class Lineage {
 	private static void advance(ServerPlayer master, Under rite, long now) {
 		int t = (int) (now - rite.start());
 		ServerPlayer disciple = find(master, rite.disciple());
-		if (disciple == null || !BladeCeremony.kneelsBefore(disciple, master)) {
+		if (!on(master) || disciple == null || !BladeCeremony.kneelsBefore(disciple, master)
+				|| rite.kind() == Rite.LESSON && !isDisciple(master, disciple)) {
 			cancel(master, rite);
 			return;
 		}
@@ -430,7 +431,7 @@ public final class Lineage {
 		}
 	}
 
-	/** The seal: a burst at the disciple's brow, a column of the master's light round them, banners on both screens, and what it means said. */
+	/** The seal: a burst at the disciple's brow, fractured ground and a cloth standard beside them, banners on both screens, and what it means said. */
 	private static void sealed(ServerPlayer master, ServerPlayer disciple, boolean ceremony) {
 		ServerLevel level = master.level();
 		int mc = Spars.colour(master);
@@ -439,8 +440,8 @@ public final class Lineage {
 		Feels.sound(level, brow, "aura_lineage_seal", 1.0F, 1.0F);
 		if (ceremony) {
 			AuraFx.burst(level, disciple, brow, Vec3.ZERO, mc, 1.3F, AuraFx.Burst.FLASH | AuraFx.Burst.STAR | AuraFx.Burst.RING);
-			ArtLight.spectacle(disciple).ray(feet.add(0, 0.1, 0), feet.add(0, 5.5, 0), mc, 0.24, 18).groundRing(feet, AuraVfx.hot(mc, 0.4), 0.6, 4.5, 0.12, 14);
-			ArtLight.world(disciple).ray(feet.add(0, 2.6, 0), feet.add(0, 7.5, 0), mc, 0.18, 16);
+			AuraFx.groundScar(level, feet, 4.5, 30, 0);
+			AuraFx.standard(master, feet.add(1, 0, 0), new Vec3(0, 0, 1), "lineage", mc, 1F, 0.6F, 50);
 			Motes.burst(level, brow, 14, mc, 0.12, 26, 0.1);
 			AuraFx.bodyAuraFlare(master, 40, 0.8F);
 			AuraFx.bodyAuraFlare(disciple, 50, 1.0F);
@@ -642,6 +643,8 @@ public final class Lineage {
 		if (bond.isEmpty()) {
 			return false;
 		}
+		ServerPlayer mentor = find(player, bond.get().master());
+		if (mentor != null) broken(mentor);
 		r.end(bond.get().disciple());
 		ServerPlayer them = find(player, other);
 		Component otherName = them != null ? them.getDisplayName() : Component.literal(bond.get().master().equals(other) ? bond.get().masterName()
@@ -741,6 +744,9 @@ public final class Lineage {
 				ServerPlayer master = server.getPlayerList().getPlayer(e.getKey());
 				if (master == null || !master.isAlive()) {
 					RITES.remove(e.getKey());
+					if (master != null) master.removeAttached(RITE);
+					ServerPlayer disciple = server.getPlayerList().getPlayer(e.getValue().disciple());
+					if (disciple != null) disciple.removeAttached(RITE);
 					continue;
 				}
 				// The stance keeps a rite going; one that went a tick without it ends.

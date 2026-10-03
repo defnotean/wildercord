@@ -50,7 +50,7 @@ import java.util.UUID;
  * (the same gesture), the spar begins. A salute is all a challenge ever is: nobody can be made to spar, and one ignored simply lapses.</p>
  *
  * <p><b>The ring.</b> A circle of light round the point between them, half in each one's colour, posts of light at its four quarters,
- * and a count-in (a ring racing out from the middle each second, the bowl struck higher), then the spar. It's fought on the duel's own rules
+ * and a count-in (standards rising over fractured ground each second, the bowl struck higher), then the spar. It's fought on the duel's own rules
  * ({@link Duels#startBout}), on a spar's terms: blades and aura only (spells, shots and pets don't reach a sparring partner), the two harm
  * only each other, anyone else's blow calls it off, and it ends when one is brought to <b>one heart</b> (held there, never killed), steps out
  * of the ring (always free: nobody is trapped), or after two minutes (even).</p>
@@ -482,33 +482,20 @@ public final class Spars {
 			}
 		}
 
-		/** The ring: half in each one's colour (each half facing where they began), a thin bright line all round, and posts at its quarters. */
+		/** Four cloth standards and broken ground mark the freely walkable bounds. */
 		void draw(boolean flare) {
 			ServerPlayer owner = player(a);
-			if (owner == null) {
-				owner = player(b);
-			}
-			if (owner == null) {
-				return;
-			}
-			ArtLight light = ArtLight.world(owner);
-			Vec3 ground = centre.add(0, 0.07, 0);
-			int life = SparRules.RING_LIFE;
-			double width = flare ? 0.22 : 0.15;
-			// Each one's half: a crescent laid flat on the ground, its middle toward where they began.
-			light.slash(ground, ArtKitUp.UP, toA, colorA, radius, Math.PI * 0.94, width, 0, life);
-			light.slash(ground, ArtKitUp.UP, toA.scale(-1), colorB, radius, Math.PI * 0.94, width, 0, life);
-			light.bare().ring(ground.add(0, 0.01, 0), ArtKitUp.UP, AuraVfx.hot(AuraRules.mix(colorA, colorB, 0.5), 0.55), radius, radius, 0.03, life);
-			// Posts of light at the ring's four quarters, so its bounds read from anywhere (and through one's own eyes as one nears them).
+			if (owner == null) owner = player(b);
+			if (owner == null) return;
 			Vec3 side = new Vec3(-toA.z, 0, toA.x);
+			int index = 0;
 			for (Vec3 dir : new Vec3[] {toA, toA.scale(-1), side, side.scale(-1)}) {
-				Vec3 foot = centre.add(dir.scale(radius)).add(0, 0.05, 0);
-				int c = dir == side || dir.equals(side.scale(-1)) ? AuraRules.mix(colorA, colorB, 0.5) : dir == toA ? colorA : colorB;
-				light.ray(foot, foot.add(0, flare ? 1.6 : 1.05, 0), c, 0.05, life);
+				Vec3 foot = centre.add(dir.scale(radius));
+				int color = index++ % 2 == 0 ? colorA : colorB;
+				AuraFx.standard(owner, foot, dir.scale(-1), "spar", color, flare ? 1F : 0.4F, 0.65F, SparRules.RING_LIFE);
+				AuraFx.groundScar(level, foot, 0.65, SparRules.RING_LIFE, 2);
 			}
-			if (flare) {
-				light.groundRing(centre, AuraVfx.hot(AuraRules.mix(colorA, colorB, 0.5), 0.4), radius * 0.15, radius, 0.12, 12);
-			}
+			if (flare) AuraFx.groundScar(level, centre, radius, 16, 0);
 		}
 
 		@Override
@@ -609,7 +596,7 @@ public final class Spars {
 		return true;
 	}
 
-	/** The end's moment: the winner's aura flaring, a column of their light, the ring falling in on them, banners on both screens. */
+	/** The end's moment: the winner's aura flaring, their standard above fractured ground, banners on both screens. */
 	private static void moment(Ring ring, ServerPlayer winner, ServerPlayer loser, boolean decided, boolean even, DuelRules.Ending ending) {
 		ServerLevel level = ring.level;
 		if (decided) {
@@ -621,9 +608,8 @@ public final class Spars {
 			}
 			AuraFx.bodyAuraFlare(winner, 50, 1.0F);
 			AuraFx.burst(level, winner, BladeCeremony.hand(winner), Vec3.ZERO, color, 1.3F, AuraFx.Burst.FLASH | AuraFx.Burst.STAR | AuraFx.Burst.SPARKS);
-			ArtLight.spectacle(winner).ray(feet.add(0, 0.1, 0), feet.add(0, 6.5, 0), color, 0.28, 18).ray(feet.add(0, 0.1, 0), feet.add(0, 5.0, 0),
-				AuraVfx.hot(color, 0.5), 0.1, 16);
-			ArtLight.world(winner).ray(feet.add(0, 2.8, 0), feet.add(0, 8.0, 0), color, 0.2, 16);
+			AuraFx.groundScar(level, feet, 3, 28, 1);
+			AuraFx.standard(winner, feet.add(1, 0, 0), ring.toA, "spar", color, 1F, 0.6F, 45);
 			// The ring falls in on the winner.
 			ArtLight.world(winner).groundRing(ring.centre, color, ring.radius, 0.6, 0.18, 14).groundRing(feet, AuraVfx.hot(color, 0.4), 0.3, 3.0, 0.1, 12);
 			Motes.burst(level, feet.add(0, 1.0, 0), 16, color, 0.12, 28, 0.1);
@@ -667,7 +653,7 @@ public final class Spars {
 	private static final Map<UUID, Long> ENDING = new HashMap<>();
 
 	private static void tick(MinecraftServer server) {
-		if (!SALUTES.isEmpty() && server.getTickCount() % 20 == 0) {
+		if (server.getTickCount() % 20 == 0 && (!SALUTES.isEmpty() || !LAST.isEmpty())) {
 			long now = server.overworld().getGameTime();
 			SALUTES.values().removeIf(s -> now - s.at() > SparRules.OFFER_TICKS);
 			LAST.values().removeIf(t -> now - t > 200);

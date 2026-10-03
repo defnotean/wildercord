@@ -809,6 +809,6 @@ same cap. Server owners can turn aura off or tune it.
 
 - **A held guard catches a slash** coming at you from in front: it halves it, and nothing behind you is cut.
 - **A perfect guard sends a slash back** at whoever loosed it, as your own.
-- **Two slashes clash** and break, so a slash can always be answered with one of your own.
+- **Two opposing slashes can lock into a timed clash.** Answer three beats with Attack; the winning crescent continues with reduced damage. See [Sparring and Lineage](lineage.md) for clashes, safe practice bouts, and masters and disciples.
 
 By day the slash's crescent has a dark rim under its light, so it's easy to see against a bright sky.

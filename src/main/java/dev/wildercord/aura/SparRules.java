@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Sparring, the pure part: two swordsmen trying their blades on each other in a ring of light, where nobody dies or loses anything. Shared
+ * Sparring, the pure part: two swordsmen trying their blades on each other on grounds marked by cloth standards, where nobody dies or loses anything. Shared
  * by the server ({@code aura.Spars}), the HUD, the Aura page and the unit tests; the server-tunable numbers are also in the config's
  * {@code aura} section.
  *
@@ -13,7 +13,7 @@ import java.util.UUID;
  * <li><b>The challenge</b>: a <b>salute</b>, sneaking and using the blade on another swordsman (a deliberate gesture: nothing an ordinary
  * swing or the Aura key does). They have {@link #OFFER_TICKS} to salute back, and that's the only way a spar ever begins: nobody can be made
  * to spar.</li>
- * <li><b>The ring</b>: a circle of light {@link #RING_RADIUS} blocks round the point between them; a count-in of {@link #COUNT_TICKS}; then
+ * <li><b>The ring</b>: four cloth standards {@link #RING_RADIUS} blocks round the point between them; a count-in of {@link #COUNT_TICKS}; then
  * blades and aura only (spells, shots and pets don't reach a sparring partner). It ends when either is brought to <b>one heart</b>
  * ({@link #KNOCKOUT}: held there, never killed), or steps out of the ring (walking out is always free, so nobody can be trapped in it; the
  * one who left loses), or after {@link #MAX_FIGHT_TICKS} (even).</li>

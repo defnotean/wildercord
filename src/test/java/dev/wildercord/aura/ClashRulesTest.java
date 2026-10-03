@@ -12,6 +12,17 @@ import static org.junit.jupiter.api.Assertions.*;
  * beatable), and what comes of it.
  */
 class ClashRulesTest {
+	@Test
+	void aDelayedLastPressIsNotClosedOnAnUncompensatedClock() {
+		for (int latency : new int[] {0, 100, 300, 600, 1500}) {
+			ClashRules.Tally tally = new ClashRules.Tally();
+			int arrival = ClashRules.beat(2) + ClashRules.GOOD + ClashRules.lag(latency);
+			tally.close(ClashRules.judgingTime(arrival, latency), false);
+			assertNull(tally.beat(2));
+			assertEquals(ClashRules.Grade.GOOD, tally.press(ClashRules.judgingTime(arrival, latency), false));
+			assertTrue(arrival < ClashRules.serverLength());
+		}
+	}
 
 	// ------------------------------------------------------------------ the rhythm
 

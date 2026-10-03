@@ -52,6 +52,9 @@ public class AuraScreen extends Screen {
 	private static boolean writing;
 	/** Whether it shows the bonded blade's page instead (kept while the game runs; wins over all of them). */
 	private static boolean blade;
+	private static boolean lineage;
+	private LineagePage lineagePage;
+	private int lineageLeft, lineageRight;
 	/** Where the tabs were drawn last (the page's own coordinates), for a click: their row, and each one's left and right. */
 	private int tabsY = -1;
 	private int techLeft;
@@ -83,6 +86,7 @@ public class AuraScreen extends Screen {
 		super.init();
 		page = new TechniquePage(minecraft, font);
 		bladePage = new BladePage(minecraft, font);
+		lineagePage = new LineagePage(minecraft, font);
 		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here (and the blade's).
 		minecraft.textInputManager().startTextInput(this);
 	}
@@ -122,13 +126,13 @@ public class AuraScreen extends Screen {
 
 	/** Whether the writing page is showing (it's open, and techniques work for the player). */
 	private boolean writingOpen() {
-		return writing && !bladeOpen() && page != null && minecraft.player != null && Techniques.on(minecraft.player)
+		return writing && !lineage && !bladeOpen() && page != null && minecraft.player != null && Techniques.on(minecraft.player)
 			&& Aura.stage(minecraft.player) > AuraRules.NONE;
 	}
 
 	/** Whether the bonded blade's page is showing (it's open, and bonded blades work for the player). */
 	private boolean bladeOpen() {
-		return blade && bladePage != null && minecraft.player != null && dev.wildercord.aura.BondedBlades.on(minecraft.player)
+		return blade && !lineage && bladePage != null && minecraft.player != null && dev.wildercord.aura.BondedBlades.on(minecraft.player)
 			&& Aura.stage(minecraft.player) > AuraRules.NONE;
 	}
 
@@ -192,16 +196,18 @@ public class AuraScreen extends Screen {
 				boolean toWay = wayRight > wayLeft && mx >= wayLeft && mx < wayRight;
 				boolean toWrite = writeRight > writeLeft && mx >= writeLeft && mx < writeRight;
 				boolean toBlade = bladeRight > bladeLeft && mx >= bladeLeft && mx < bladeRight;
+				boolean toLineage = mx >= lineageLeft && mx < lineageRight;
 				boolean onBlade = bladeOpen();
 				boolean onWrite = writingOpen();
-				boolean onArts = arts && !way && !onWrite && !onBlade;
-				boolean onTech = !arts && !way && !onWrite && !onBlade;
-				boolean onWay = way && !onWrite && !onBlade;
-				if (toArts && !onArts || toTech && !onTech || toWay && !onWay || toWrite && !onWrite || toBlade && !onBlade) {
+				boolean onArts = arts && !way && !onWrite && !onBlade && !lineage;
+				boolean onTech = !arts && !way && !onWrite && !onBlade && !lineage;
+				boolean onWay = way && !onWrite && !onBlade && !lineage;
+				if (toArts && !onArts || toTech && !onTech || toWay && !onWay || toWrite && !onWrite || toBlade && !onBlade || toLineage && !lineage) {
 					arts = toArts;
 					way = toWay;
 					writing = toWrite;
 					blade = toBlade;
+					lineage = toLineage;
 					if (toWrite) {
 						TechniquePage.opened(minecraft.level.getGameTime());
 					}
@@ -213,6 +219,7 @@ public class AuraScreen extends Screen {
 					return true;
 				}
 			}
+			if (lineage && lineagePage.click(mx, my)) return true;
 			// The blade's page and the writing page: everything under the tabs is their own.
 			if (bladeOpen() && bladePage.mouseClicked(minecraft.player, mx, my, event.button())) {
 				return true;
@@ -260,6 +267,7 @@ public class AuraScreen extends Screen {
 
 	/** Opens the page on its Sword strings tab ({@code true}) or its techniques (the game tests put it back as they found it). */
 	public static void listArts(boolean show) {
+		lineage = false;
 		arts = show;
 		way = false;
 		writing = false;
@@ -268,6 +276,7 @@ public class AuraScreen extends Screen {
 
 	/** Opens the page on its Way tab ({@code true}), or back on the techniques, with {@code node} picked (null for the default). */
 	public static void showWay(boolean show, String node) {
+		lineage = false;
 		way = show;
 		arts = false;
 		writing = false;
@@ -277,6 +286,7 @@ public class AuraScreen extends Screen {
 
 	/** Opens the page on its writing page ({@code true}) at slot {@code slot} (0 the first), or back on the techniques. */
 	public static void showWriting(boolean show, int slot) {
+		lineage = false;
 		writing = show;
 		arts = false;
 		way = false;
@@ -288,6 +298,7 @@ public class AuraScreen extends Screen {
 
 	/** Opens the page on its Blade tab ({@code true}), or back on the techniques. */
 	public static void showBlade(boolean show) {
+		lineage = false;
 		blade = show;
 		arts = false;
 		way = false;
@@ -295,6 +306,20 @@ public class AuraScreen extends Screen {
 		if (show) {
 			BladePage.opened();
 		}
+	}
+
+	/** Open the lineage record and its two-click release controls. */
+	public static void showLineage(boolean show) {
+		lineage = show; arts = false; way = false; writing = false; blade = false;
+	}
+	public double[] lineageTabPoint() {
+		if (tabsY < 0 || lineageRight <= lineageLeft) return null;
+		return new double[] {left() + (lineageLeft + lineageRight) / 2.0 * scale(), top() + (tabsY + 4) * scale()};
+	}
+	public double[] lineagePoint(String key) {
+		int[] r = lineagePage == null ? null : lineagePage.targets.get(key);
+		if (r == null) return null;
+		return new double[] {left() + (r[0] + r[2] / 2.0) * scale(), top() + (r[1] + r[3] / 2.0) * scale()};
 	}
 
 	/** Whether the page is on its Blade tab (the game tests ask). */
@@ -440,7 +465,7 @@ public class AuraScreen extends Screen {
 		AuraAttachments.Data data = Aura.data(player);
 		AuraAttachments.State state = Aura.state(player);
 		long now = player.level().getGameTime();
-		if (bladeOpen()) {
+		if (lineage || bladeOpen()) {
 			return bladeView(g, player, method, stage, mx, my, partial, color);
 		}
 		if (writingOpen()) {
@@ -590,18 +615,18 @@ public class AuraScreen extends Screen {
 	 * breathing gold while a swordsman past the crossroads walks none. Returns where the list starts.
 	 */
 	private int tabs(GuiGraphicsExtractor g, int y, int mx, int my, int color) {
-		Component tech = Component.translatable("screen.wildercord.aura.techniques");
-		Component strings = Component.translatable("screen.wildercord.aura.arts");
+		Component tech = Component.translatable("screen.wildercord.aura.skills_tab");
+		Component strings = Component.translatable("screen.wildercord.aura.arts_tab");
 		Component wayTab = Component.translatable("screen.wildercord.aura.way");
 		Component writeTab = Component.translatable("screen.wildercord.aura.writing");
 		Component bladeTab = Component.translatable("screen.wildercord.aura.blade");
 		boolean ways = dev.wildercord.aura.Ways.on(minecraft.player) && !dev.wildercord.api.AuraApi.ways().isEmpty();
 		boolean writes = Techniques.on(minecraft.player);
 		boolean blades = dev.wildercord.aura.BondedBlades.on(minecraft.player);
-		boolean onBlade = blade && blades;
-		boolean onWrite = writing && writes && !onBlade;
-		boolean onWay = way && ways && !onWrite && !onBlade;
-		boolean onArts = arts && !onWay && !onWrite && !onBlade;
+		boolean onBlade = blade && blades && !lineage;
+		boolean onWrite = writing && writes && !onBlade && !lineage;
+		boolean onWay = way && ways && !onWrite && !onBlade && !lineage;
+		boolean onArts = arts && !onWay && !onWrite && !onBlade && !lineage;
 		tabsY = y;
 		techLeft = 14;
 		techRight = techLeft + font.width(tech);
@@ -613,12 +638,16 @@ public class AuraScreen extends Screen {
 		writeRight = writes ? writeLeft + font.width(writeTab) : writeLeft;
 		bladeLeft = (writes ? writeRight : ways ? wayRight : artsRight) + 14;
 		bladeRight = blades ? bladeLeft + font.width(bladeTab) : bladeLeft;
+		Component lineageTab = Component.translatable("screen.wildercord.aura.lineage.tab");
+		lineageLeft = (blades ? bladeRight : writes ? writeRight : ways ? wayRight : artsRight) + 14;
+		lineageRight = lineageLeft + font.width(lineageTab);
+		g.text(font, lineageTab, lineageLeft, y, lineage ? GOLD : DIM, true);
 		boolean overTech = inside(mx, my, techLeft, y - 2, techRight - techLeft, 12);
 		boolean overArts = inside(mx, my, artsLeft, y - 2, artsRight - artsLeft, 12);
 		boolean overWay = ways && inside(mx, my, wayLeft, y - 2, wayRight - wayLeft, 12);
 		boolean overWrite = writes && inside(mx, my, writeLeft, y - 2, writeRight - writeLeft, 12);
 		boolean overBlade = blades && inside(mx, my, bladeLeft, y - 2, bladeRight - bladeLeft, 12);
-		g.text(font, tech, techLeft, y, !onArts && !onWay && !onWrite && !onBlade ? GOLD : overTech ? TEXT : DIM, true);
+		g.text(font, tech, techLeft, y, !onArts && !onWay && !onWrite && !onBlade && !lineage ? GOLD : overTech ? TEXT : DIM, true);
 		g.text(font, strings, artsLeft, y, onArts ? GOLD : overArts ? TEXT : DIM, true);
 		g.fill(techRight + 6, y + 1, techRight + 7, y + 8, FAINT);
 		if (ways) {
@@ -651,8 +680,8 @@ public class AuraScreen extends Screen {
 			g.text(font, bladeTab, bladeLeft, y, bladeColor, true);
 			g.fill(bladeLeft - 8, y + 1, bladeLeft - 7, y + 8, FAINT);
 		}
-		int under = onBlade ? bladeLeft : onWrite ? writeLeft : onWay ? wayLeft : onArts ? artsLeft : techLeft;
-		int underRight = onBlade ? bladeRight : onWrite ? writeRight : onWay ? wayRight : onArts ? artsRight : techRight;
+		int under = lineage ? lineageLeft : onBlade ? bladeLeft : onWrite ? writeLeft : onWay ? wayLeft : onArts ? artsLeft : techLeft;
+		int underRight = lineage ? lineageRight : onBlade ? bladeRight : onWrite ? writeRight : onWay ? wayRight : onArts ? artsRight : techRight;
 		g.fill(under, y + 9, underRight, y + 10, 0xFF000000 | (GOLD & 0xFFFFFF));
 		return y + 13;
 	}
@@ -677,7 +706,7 @@ public class AuraScreen extends Screen {
 		g.text(font, line, 0, 0, color, false);
 		g.pose().popMatrix();
 		tabs(g, 24, mx, my, color);
-		return bladePage.draw(g, player, mx, my, partial, color & 0xFFFFFF, 38);
+		return lineage ? lineagePage.draw(g, player, mx, my, 38) : bladePage.draw(g, player, mx, my, partial, color & 0xFFFFFF, 38);
 	}
 
 	/**
