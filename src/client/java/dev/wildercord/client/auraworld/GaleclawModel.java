@@ -35,6 +35,8 @@ public final class GaleclawModel extends EntityModel<BeastRenderState> {
 		if(s.pose==BeastRules.WARN) { float t=Mth.clamp(s.elapsed/40,0,1);body.y+=t*2;body.xRot=.25F;head.xRot=-.25F;wingR.zRot=.3F+t*.5F;wingL.zRot=-wingR.zRot;legR.xRot=legL.xRot=-t*.5F; }
 		if(s.pose==BeastRules.LEAP) { body.xRot=-.25F;wingR.zRot=1.15F+Mth.sin(s.elapsed*.65F)*.25F;wingL.zRot=-wingR.zRot;legR.xRot=legL.xRot=.75F;tail.xRot=-.3F; }
 		if(s.pose==BeastRules.RECOVER) { body.y+=1.5F*(1-Mth.clamp(s.elapsed/50,0,1));head.xRot=.4F;wingR.zRot=.25F;wingL.zRot=-.25F; }
+		if(s.pose==BeastRules.REST) {body.y+=3;head.xRot=.6F;head.yRot=.45F;wingR.zRot=.04F;wingL.zRot=-.04F;legR.xRot=legL.xRot=.9F;tail.xRot=.25F;}
+		if(s.pose==BeastRules.FORAGE) {head.xRot=.7F+Mth.sin(s.elapsed*.3F)*.12F;body.xRot=.12F;wingR.zRot=.15F;wingL.zRot=-.15F;}
 		if(s.deathTime>0) body.xRot=Math.min(1,s.deathTime/20F)*1.3F;
 	}
 }

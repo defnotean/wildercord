@@ -53,6 +53,8 @@ public class Rimehare extends Animal {
 	protected void registerGoals() {
 		goalSelector.addGoal(1, new FloatGoal(this));
 		goalSelector.addGoal(1, new PanicGoal(this, 2.6));
+		goalSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this,dev.wildercord.aura.world.Galeclaw.class,12,2.0,2.6,
+			who -> boltsFrom(who)));
 		goalSelector.addGoal(2, new BreedGoal(this, 0.9));
 		goalSelector.addGoal(3, new TemptGoal(this, 1.0, this::isFood, true));
 		goalSelector.addGoal(4, new FleeGoal(this, this::boltsFrom, WildlifeRules.HARE_NOTICE, 2.0, 2.6));
@@ -64,6 +66,7 @@ public class Rimehare extends Animal {
 
 	/** Whether it bolts from this creature: any player near who isn't calmly holding out berries. */
 	public boolean boltsFrom(LivingEntity who) {
+		if(who instanceof dev.wildercord.aura.world.Galeclaw predator) return predator.isAlive() && predator.hungry();
 		if (!(who instanceof Player player) || player.isSpectator()) {
 			return false;
 		}

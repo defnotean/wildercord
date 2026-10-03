@@ -33,6 +33,14 @@ Offer raw rabbit or chicken before provoking it to collect a **Galeclaw Plume**,
 
 A whistle cannot stop a prepared leap or an animal retaliating after damage. Use it early, then create distance; it does not tame Galeclaws or make combat harmless.
 
+## Read the highland rhythm
+
+Stonehorns seek nearby dry cover at night, folding their legs beneath their rock shoulders. Galeclaws rest through the bright middle of the day, tucking their wings and bowing their head. Both seek cover during storm weather. A nearby roof with solid footing and room for the body can provide shelter; animals do not dig or destroy terrain to make it. Damage interrupts rest and preserves defensive retaliation.
+
+Rimehares now flee hungry Galeclaws. A runner that consumes one dropped raw rabbit/chicken, accepts a successful feeding, or finishes hunting a Rimehare stays sated for **one minute**. It leaves prey and further scraps alone during that interval. The deadline is saved, so reloading does not make a fed predator hungry or grant another fresh minute.
+
+Satiety is not taming: recent casting can still attract an awake runner, and retaliation or an already committed attack remains dangerous. The existing two-minute material-shedding cooldown remains separate from the one-minute meal.
+
 ## Choose the opening
 
 | Damage source | Stonehorn, normally / recovering | Galeclaw, normally / recovering |

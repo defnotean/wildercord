@@ -39,6 +39,7 @@ public final class StonehornModel extends EntityModel<BeastRenderState> {
 		float walk=Mth.cos(s.walkAnimationPos*.6F)*s.walkAnimationSpeed*.65F;fr.xRot=bl.xRot=walk;fl.xRot=br.xRot=-walk;
 		tail.zRot=Mth.sin(s.ageInTicks*.09F)*.1F;body.y+=Mth.sin(s.ageInTicks*.06F)*.06F;
 		if(s.pose==BeastRules.FORAGE) { head.xRot=.7F+Mth.sin(s.elapsed*.17F)*.08F;head.y+=1; }
+		if(s.pose==BeastRules.REST) {body.y+=3.5F;head.xRot=.35F;head.y+=2;fr.xRot=fl.xRot=-1.15F;br.xRot=bl.xRot=1.1F;tail.zRot=0;}
 		if(s.pose==BeastRules.WARN) { float wind=Mth.clamp(s.elapsed/40,0,1);head.xRot=.15F+wind*.4F;body.xRot=.08F;fr.xRot=-Math.abs(Mth.sin(s.elapsed*.35F))*.8F; }
 		if(s.pose==BeastRules.CHARGE) { head.xRot=.55F;body.xRot=.12F;head.yRot=0;fr.xRot=bl.xRot=Mth.cos(s.elapsed*1.2F)*.8F;fl.xRot=br.xRot=-fr.xRot; }
 		if(s.pose==BeastRules.RECOVER) { head.xRot=-.15F;head.zRot=Mth.sin(s.elapsed*.35F)*.08F;body.y+=.6F; }

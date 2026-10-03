@@ -4,6 +4,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Highland shelter and predator–prey behavior
+
+- Rimehares now use a real predator-avoidance goal for hungry Galeclaws, alongside their existing player fear, panic and breeding behavior.
+- Galeclaws become sated for one minute after successful feeding, consuming one dropped raw rabbit/chicken, or finishing a Rimehare hunt. The saved deadline is not renewed by loading. Sated runners leave prey and further scraps alone; casting attraction and defensive retaliation remain dangerous.
+- Stonehorns seek nearby dry cover at night, while Galeclaws rest through the bright middle of the day. Both seek storm shelter. Searches probe at most sixteen loaded positions per five seconds, never force chunks or alter terrain, and limit travel attempts. Threats interrupt resting. Existing Peaceful/config suppression remains in place.
+- Added distinct folded-leg Stonehorn and tucked-wing Galeclaw resting poses, plus Galeclaw feeding motion, field-guide knowledge and player documentation. This advances the highland ecosystem foundation; it adds no new creature or item count and does not complete the region.
+
 ### Aura cooperation and lifecycle integration
 
 - Fixed Unity resuming an active window after an integrated-server shutdown/reconnect. The old disconnect callback could run after the player had already been saved. Server stopping now closes active windows before saving, and joining closes any loaded active window while retaining exact rest and delivered allowances.

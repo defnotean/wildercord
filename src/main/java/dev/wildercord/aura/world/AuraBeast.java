@@ -33,6 +33,7 @@ public abstract class AuraBeast extends PathfinderMob {
 	protected int left, calm, aggression;
 	private long nextShed;
 	private boolean spellHit;
+	private dev.wildercord.wildlife.HighlandShelterGoal shelter;
 	private final Set<UUID> struck=new HashSet<>();
 	protected AuraBeast(EntityType<? extends AuraBeast> type,Level level) { super(type,level); xpReward=9; }
 	public abstract boolean gale();
@@ -52,6 +53,11 @@ public abstract class AuraBeast extends PathfinderMob {
 	@Override protected void defineSynchedData(SynchedEntityData.Builder b) { super.defineSynchedData(b); b.define(POSE,0); b.define(BEGAN,0L); }
 	@Override protected void registerGoals() {
 		goalSelector.addGoal(0,new FloatGoal(this));
+		shelter=new dev.wildercord.wildlife.HighlandShelterGoal(this,
+			() -> Config.get().auraWorld().auraBeasts() && level().getDifficulty()!=Difficulty.PEACEFUL && getTarget()==null && (pose()==BeastRules.IDLE || pose()==BeastRules.REST),
+			() -> dev.wildercord.wildlife.HighlandRules.wantsCover(gale(),level().getOverworldClockTime(),level().isRaining()),
+			settled -> {if(settled && pose()!=BeastRules.REST)pose(BeastRules.REST,0);else if(!settled && pose()==BeastRules.REST)pose(BeastRules.IDLE,0);});
+		goalSelector.addGoal(2,shelter);
 		goalSelector.addGoal(5,new WaterAvoidingRandomStrollGoal(this,.7) {
 			@Override public boolean canUse() { return pose()==BeastRules.IDLE && getTarget()==null && super.canUse(); }
 			@Override public boolean canContinueToUse() { return pose()==BeastRules.IDLE && getTarget()==null && super.canContinueToUse(); }
@@ -103,6 +109,7 @@ public abstract class AuraBeast extends PathfinderMob {
 		if(level() instanceof ServerLevel server) {
 			if(server.getGameTime()<nextShed) { p.sendOverlayMessage(Component.translatable("message.wildercord.aura_beast.rest")); return InteractionResult.SUCCESS; }
 			if(!p.getAbilities().instabuild) stack.shrink(1);
+			if(this instanceof Galeclaw runner) runner.ate();
 			nextShed=server.getGameTime()+BeastRules.SHED_INTERVAL; calm=200; setTarget(null); pose(BeastRules.FORAGE,60);
 			spawnAtLocation(server,new ItemStack(gale()?AuraBeasts.GALECLAW_PLUME:AuraBeasts.STONEHORN_PLATE)); sound(gale()?"land":"forage");
 		}
@@ -122,6 +129,7 @@ public abstract class AuraBeast extends PathfinderMob {
 			setTarget(null); if(pose()!=BeastRules.IDLE) { setDeltaMovement(Vec3.ZERO); pose(BeastRules.IDLE,0); } return;
 		}
 		if(!valid(getTarget()) || getTarget()!=null && (getTarget().distanceToSqr(Vec3.atBottomCenterOf(home))>32*32 || distanceToSqr(getTarget())>28*28)) setTarget(null);
+		if(getTarget()==null && shelter.running())return;
 		if(getTarget()==null && pose()==BeastRules.IDLE && distanceToSqr(Vec3.atBottomCenterOf(home))>16*16 && tickCount%40==0)
 			getNavigation().moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,.8);
 		act(level);

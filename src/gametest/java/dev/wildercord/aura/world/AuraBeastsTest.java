@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.*;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.*;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -84,16 +85,20 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 			// Control magic remains a cooperative tool; it thaws instead of leaving the resistant beast frozen forever.
 			w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);var stone=(Stonehorn)s.overworld().getEntity(ids[0]);stone.setNoAi(false);stone.setTarget(null);stone.calm=200;Spirits.hold(stone,30);check(stone.isNoAi(),"Support control can hold an Aura-resistant animal");});c.waitTicks(40);
 			w.getServer().runOnServer(s->{var stone=(Stonehorn)s.overworld().getEntity(ids[0]);check(!stone.isNoAi(),"Support hold thaws after its actual deadline");stone.setNoAi(true);});
+			// These independent encounter fixtures need hungry animals; earlier feeding now correctly leaves satiety.
+			w.getServer().runOnServer(server -> freshHunter(server,ids));
 			var scraps=w.getServer().computeOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.pose(BeastRules.IDLE,0);gale.setTarget(null);gale.setNoAi(false);gale.calm=200;var food=new ItemEntity(s.overworld(),gale.getX()+.5,101,gale.getZ(),new ItemStack(Items.CHICKEN));s.overworld().addFreshEntity(food);return food.getUUID();});c.waitTicks(45);
 			check(w.getServer().computeOnServer(s->s.overworld().getEntity(scraps)==null),"Scavenger actually consumes nearby dropped food");
 			w.getServer().runOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.pose(BeastRules.IDLE,0);gale.calm=0;var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),gale.getX()+12,101,gale.getZ(),Set.<Relative>of(),0,0,false);dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(p,0,List.of(),10);});c.waitTicks(25);
 			check(w.getServer().computeOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);return gale.getTarget()==s.getPlayerList().getPlayers().getFirst();}),"Recent casting really draws the ridge runner's attention");
+			w.getServer().runOnServer(server -> freshHunter(server,ids));
 			var prey=w.getServer().computeOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.setTarget(null);gale.pose(BeastRules.IDLE,0);gale.calm=0;var hare=dev.wildercord.wildlife.Wildlife.RIMEHARE.create(s.overworld(),EntitySpawnReason.COMMAND);hare.snapTo(gale.getX()+5,101,gale.getZ(),0,0);hare.setNoAi(true);s.overworld().addFreshEntity(hare);return hare.getUUID();});c.waitTicks(130);
 			check(w.getServer().computeOnServer(s->{var hare=(LivingEntity)s.overworld().getEntity(prey);return hare==null || !hare.isAlive() || hare.getHealth()<hare.getMaxHealth();}),"Ridge predator actually hunts its highland prey");
 			w.getServer().runCommand("difficulty peaceful");c.waitTicks(10);
 			w.getServer().runOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);check(gale.getTarget()==null && gale.pose()==BeastRules.IDLE,"Peaceful cancels aggression and committed attack poses");check(!AuraBeasts.maySpawn(AuraBeasts.GALECLAW,s.overworld(),EntitySpawnReason.NATURAL,new BlockPos(0,101,0)),"Peaceful suppresses new natural beasts");});
 		}
 	}
+	private static void freshHunter(MinecraftServer s,int[] ids) {var old=(Galeclaw)s.overworld().getEntity(ids[1]);var fresh=AuraBeasts.GALECLAW.create(s.overworld(),EntitySpawnReason.COMMAND);fresh.snapTo(old.getX(),old.getY(),old.getZ(),old.getYRot(),0);fresh.tickCount=99;old.discard();s.overworld().addFreshEntity(fresh);ids[1]=fresh.getId();}
 	private static void feed(ClientGameTestContext c,int id) { c.runOnClient(mc->{var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);}); }
 	private static int drops(ServerLevel l,Item item) { int n=l.getEntitiesOfClass(ItemEntity.class,new AABB(-30,99,-30,30,110,30),e->e.getItem().is(item)).stream().mapToInt(e->e.getItem().getCount()).sum();for(var p:l.players())for(int i=0;i<p.getInventory().getContainerSize();i++)if(p.getInventory().getItem(i).is(item))n+=p.getInventory().getItem(i).getCount();return n; }
 	private static void aim(ClientGameTestContext c,int id) { c.runOnClient(mc->{var e=mc.level.getEntity(id);var d=e.getBoundingBox().getCenter().subtract(mc.player.getEyePosition());mc.player.setYRot((float)Math.toDegrees(Math.atan2(-d.x,d.z)));mc.player.setXRot((float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())));}); }
