@@ -258,7 +258,7 @@ A hook of water snags each target and reels it in to your feet in three tugs (a 
 
 *Tier II · cost x1.3 · needs a Copper Cord or better*
 
-Opens a fight: +60% power against targets at full health.
+Opens a fight: +60% power against targets at full health. One per effect.
 
 **How to get it:** Found only, never crafted: Trial vaults; Ominous vaults.
 

@@ -245,7 +245,7 @@ cooldown, so on a Cord with several spells you can cast one while another rechar
 
 - The cooldown comes from the spell's **cost**: about **a second for every 20 mana**, never less than half a
   second and never more than twenty.
-- **Rapid** halves it and **Vow** makes it four times longer; **Celerity** and the 5th Heart Circle's
+- **Rapid** halves it and **Vow** makes it five times longer; **Celerity** and the 5th Heart Circle's
   **Flow** shorten it. It's never under a quarter of a second.
 - [Secret spells](secret-spells.md) you've found take half as long again.
 - The readout, the spell panel and the spell wheel all show your real cooldown.
@@ -538,3 +538,33 @@ flight physics, wings and impacts still follow each delivery.
 The close views use a diagnostic side camera and isolate production flight particles from actual
 paid Survival casts. They show the material body, not the complete cast or its impact. Other
 families, all delivery combinations, dark-location readability and multiplayer remain under review.
+
+
+## Damage stays within one cast's investment
+
+A player's spell can deal at most **96 raw damage per hit**. Against each target, the whole cast
+has a damage allowance of **12 + twice its effective mana price**, capped at **512 raw damage**.
+Armor, resistance and other defenses reduce what actually lands. Discounted casts use their
+price after discounts; refunds do not refill the allowance. Blood Price and free recasts use the
+spell's equivalent mana price. Each target has its own allowance, so area spells still affect crowds.
+
+The opening strike, burns, bleeding, venom, pulses, echoes and linked hits share that allowance.
+Copies and reflections keep the same payment. A fresh paid cast starts a fresh allowance.
+For example, a 100-mana cast admits up to 212 raw damage to one target over its entire sequence;
+a cast priced below 200 mana cannot turn into a 1,000-damage hit or a 5,000-damage spell ticker.
+This rule covers the spell damage path, rather than independent creature bites or terrain hazards.
+
+Some modifiers have a stack limit on the rune they change:
+
+| Modifier | Useful copies per target rune |
+| --- | --- |
+| Vow | One per shape |
+| Execute | One per effect |
+| Trial Key | One per effect |
+| Focus | Two |
+| Extend | Three |
+
+Extra copies display a warning and add no power, duration or cost. This also applies inside Knots.
+Amplify and Overcharge retain their power and matching mana multipliers; the damage allowance
+still governs what the resulting cast can inflict. Use spare sockets for movement, control,
+defense, support or another delivery instead of repeating a capped modifier.

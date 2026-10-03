@@ -952,6 +952,8 @@ public final class Effects {
 		if (target instanceof Player && cast.caster instanceof Player) {
 			damage *= (float) dev.wildercord.config.Config.get().pvpDamageScale();
 		}
+        damage=cast.admitDamage(target,damage);
+        if(damage<=0)return;
 		HeartCircles.hurtBySpell(cast, target);
 		Innates.spellHit(cast, target);
 		// A hit that can't hurt (an immune snow golem under frost) isn't one a contract counts.
@@ -962,7 +964,7 @@ public final class Effects {
 		float dealt = damage;
 		float before = target.getHealth();
 		// A player's defences against spells (armour, Warding, Warded, the spellguard) are met there.
-		Dungeons.spellHit(() -> SpellDefence.hurt(cast.level, target, source, dealt, cast));
+		Dungeons.spellHit(() -> SpellDefence.hurtAdmitted(cast.level, target, source, dealt, cast));
 		// A heavy hit lands with a punch for whoever cast it.
 		if (damage >= 8) {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));
@@ -1243,7 +1245,7 @@ public final class Effects {
 		VENOM.put(t.getUUID(), state);
 		Runnable[] next = new Runnable[1];
 		next[0] = carryContext(() -> {
-			if (!cast.alive() || !t.isAlive() || t.level() != cast.level || cast.level.getGameTime() > state[0]) {
+			if (!cast.alive() || !t.isAlive() || t.level() != cast.level || !cast.damageAvailable(t) || cast.level.getGameTime() > state[0]) {
 				VENOM.remove(t.getUUID(), state);
 				return;
 			}

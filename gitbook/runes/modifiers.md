@@ -24,7 +24,7 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 
 *Tier I · cost x1.4 · needs any Cord*
 
-+100% duration.
++100% duration. At most three per target rune.
 
 **How to get it:** Craft: a Blank Rune, 2x Redstone Dust. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
@@ -120,7 +120,7 @@ A breathing furnace hexagon: 15% more power and 25% shorter effect durations. Co
 
 *Tier II · cost x1.3 · needs a Copper Cord or better*
 
-Double power against targets under half health.
+Double power against targets under half health. One per effect.
 
 **How to get it:** Craft: a Blank Rune, Iron Axe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -133,7 +133,7 @@ Double power against targets under half health.
 
 *Tier II · cost x1.2 · needs a Copper Cord or better*
 
-Half the radius, +50% power.
+Half the radius, +50% power. At most two per target rune.
 
 **How to get it:** Craft: a Blank Rune, Glass Pane and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -399,7 +399,7 @@ Forked storm spokes: 20% more power when wet or exposed to rain on release, othe
 
 *Tier III · cost x1 · needs an Amethyst Cord or better*
 
-A binding vow: the shape's effects hit twice as hard, but the whole spell's cooldown is 5x longer.
+A binding vow: the shape's effects hit twice as hard, but the whole spell's cooldown is 5x longer. One per shape.
 
 **How to get it:** Craft: a Blank Rune, Paper and Block of Gold, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Ancient cities.
 

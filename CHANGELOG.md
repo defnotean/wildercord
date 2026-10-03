@@ -4,6 +4,20 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Spell damage exploits
+
+- Reproduced a paid Touch/nine-Vows/Harm cast dealing all 1,000 dummy health for under 200 mana.
+- Vow, Execute and Trial Key apply once per target rune; Focus twice; Extend three times. Extra copies
+  are ignored with a compiler warning, including inside Knots. Useful copies keep their existing cost.
+- Player-owned spell Casts admit at most 96 raw damage per hit and 12 + twice the effective mana price
+  per target for the entire payment, up to 512. Copies, echoes, pulses, repeats, linked hits and
+  reflections share the same allowance. Separate targets/payments keep separate allowances.
+- Real scheduled Venom stops after its allowance is exhausted. Nonfinite damage is refused and per-cast
+  target bookkeeping is bounded. Armor, resistances and spellguard still apply to admitted hits.
+- Verified the fixed paid Harm cast at 18.2 and paid Bleed at 26 total, plus a production Venom stress
+  case held to 212 total for a 100-mana allowance. Updated modifier tooltips, wiki and GitBook.
+
+
 ### Wind as air: preparations and projectile bodies
 
 - Added twenty-five explicit wind recipes with their own shear, lift, compression, return, snatch, slipstream, vortex and feather motion. A dedicated airflow renderer uses original fine filaments, translucent world-lit curves and traveling crests instead of shared glowing beam primitives.

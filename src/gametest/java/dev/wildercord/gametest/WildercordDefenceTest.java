@@ -226,7 +226,7 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ the bonus cap
 
-	/** Harm with two Executes on a player under half health: four times over, held to the cap of two and a half. */
+	/** Harm with Execute and a 2x performance bonus: four times over, held to two and a half. */
 	private static void bonusCap(ClientGameTestContext context, TestSingleplayerContext world) {
 		double taken = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
@@ -234,12 +234,16 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 			ready(player, BIG_HEALTH);
 			player.setHealth(90);
 			Effects.readyToHurt(player);
-			Runebound.cast(level, husk(level), List.of(Runes.BURST, Runes.HARM, Runes.EXECUTE_MOD, Runes.EXECUTE_MOD), 1.0);
+			var compiled = SpellCompiler.compile(List.of(Runes.BURST, Runes.HARM, Runes.EXECUTE_MOD));
+            // Performance is in raw power; Hard's 1.5 scaling happens in SpellDefence afterward.
+            var cast = new dev.wildercord.cast.Cast(husk(level), 1, new Heart.Bonuses(2,1,1,1),false,null,
+                new dev.wildercord.cast.Cast.Info(compiled.root(),3,"")).performance(2);
+            CastEngine.cast(cast,compiled.root());
 			return 90.0 - player.getHealth();
 		});
 		// Harm's 7, times 2.5 (not 4), and half again for Hard.
 		double capped = 7 * 2.5 * 1.5;
-		Wildercord.LOGGER.info("[defence] Harm with two Executes under half health: {} (uncapped it would be {})",
+		Wildercord.LOGGER.info("[defence] Harm with Execute and performance under half health: {} (uncapped it would be {})",
 			String.format(Locale.ROOT, "%.2f", taken), String.format(Locale.ROOT, "%.2f", 7 * 4 * 1.5));
 		check(Math.abs(taken - capped) < 0.5, "a hit's bonuses should be held to 2.5 against a player (took " + taken + ", capped is " + capped + ")");
 		context.waitTicks(2);

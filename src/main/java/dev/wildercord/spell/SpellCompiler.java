@@ -217,7 +217,10 @@ public final class SpellCompiler {
 							if (entry.scope() == 0) {
 								mark(entry.outer(), UNATTACHED);
 							}
-						} else if (CircleDisciplines.isCircle(rune) && target.mods().stream().anyMatch(CircleDisciplines::isCircle)) {
+						} else if (SpellPlan.count(target.mods(), rune) >= ModifierLimits.maximum(rune)) {
+                            warn(rune.name() + " accepts at most " + ModifierLimits.maximum(rune) + " per target rune; extra copies are ignored.");
+                            if(entry.scope()==0) mark(entry.outer(), UNATTACHED);
+                        } else if (CircleDisciplines.isCircle(rune) && target.mods().stream().anyMatch(CircleDisciplines::isCircle)) {
 							warn("Only one circle discipline can shape a group; " + rune.name() + " is ignored.");
 							if(entry.scope()==0) mark(entry.outer(), UNATTACHED);
 						} else {

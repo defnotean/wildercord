@@ -243,3 +243,32 @@ full goal remains active and the user's requirement for custom element effects r
 Final wind evidence: frost variants 40s, storm variants 34s; full build 17s, 950 tests with zero
 failures/errors/skips; CRC clean, 4864 resources/1630 classes byte-match. SHA-256:
 8d691e90316019f8dd0feb96578ec2dc70dc7d8ac6c65b85fa0438b716c72c27.
+
+
+## Single-payment spell damage balance — 2026-10-03
+
+User reported >1,000 damage below 200 mana and >5,000 over time. A real paid Survival
+Touch/nine-Vows/Harm cast depleted all 1,000 dummy health; nine-mana list price, 4,659.2 base
+attempted damage. The same stack on Bleed requests 6,656 from its cut and eight ticks, before
+bonuses (code calculation). Finite cooldown/radius penalties did not bound growing power.
+
+Compiler and numeric rules now limit Vow/Execute/Trial Key to one per target rune, Focus to two
+and Extend to three, including Knot expansion; extra copies warn and add no cost. One Paid object
+owns a per-target raw allowance min(512,12+2*effective mana price), max 96 per admitted hit.
+Children, pulses, repeats, copies, circle views, linked hits and reflections share it. Separate
+payments/targets remain separate. Production Venom stops after exhaustion; nonfinite damage is
+rejected and the per-cast UUID map is capped without eviction. Existing armor/warding/spellguard,
+healing/control and monster-only difficulty rules remain. This reduces extreme damage builds.
+
+Native fix suite passed 39s: actual Harm 18.2, actual Bleed 26 total, production Venom stress 212
+at a 100-mana price and no later refill, all copy/continuation types sharing that total, new-payment
+recovery. Parry/wild magic passed 53s; defenses passed 43s. Defense's old two-Execute fixture was
+updated to one Execute plus performance, still proving the same 2.5 bonus cap (26.25 actual).
+Full build 15s: 963 tests, zero failures/errors/skips. 114 guide pages validate/export.
+Review: artifacts/review/spell-damage-balance, four original inspected screenshots, native logs
+and combined wind/balance JAR. CRC clean, 4864 resources/1632 classes byte-match;
+SHA-256: a6155f8b12c975637ac2641e9248adf6e785a4efc11f7823bf906155794e9096.
+
+Audit: docs/audit/spell-damage-balance.md. Direct add-on vanilla damage, independent companion
+bites, environmental hazards and Stasis pooling of multiple paid casts are separate paths.
+Natural multiplayer and boss pacing still need review. No new content target count; goal active.

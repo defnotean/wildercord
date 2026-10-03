@@ -37,6 +37,8 @@ public final class Cast {
 	private static final class Paid {
 		int siphon = dev.wildercord.player.Mana.SIPHON_CAP_PER_CAST;
 		int siphonLevel = -1;
+        SpellDamageAllowance damage;
+        boolean playerSpell;
 		/** Whose Cord {@link #siphonLevel} was read from: a parried spell changes hands but keeps its payment. */
 		LivingEntity siphoner;
 		final java.util.Set<String> once = new java.util.HashSet<>();
@@ -146,6 +148,7 @@ public final class Cast {
 			Info info) {
 		this(caster, (ServerLevel) caster.level(), 0, new Budget(new Shared()), castNumber, bonuses.power(), bonuses.duration(), passive, wanted, info,
 			new java.util.HashSet<>());
+        budget.shared.paid.playerSpell = caster instanceof ServerPlayer;
 	}
 
 	private Cast(LivingEntity caster, ServerLevel level, int depth, Budget budget, int castNumber, double power, double duration, boolean passive,
@@ -356,11 +359,34 @@ public final class Cast {
 		return budget.shared;
 	}
 
+	/** Effective mana price before refunds; health/free casts retain their equivalent spell price. */
+    public Cast damagePrice(double mana) {
+        Paid paid=budget.shared.paid;
+        paid.playerSpell |= caster instanceof ServerPlayer;
+        if(paid.damage==null)paid.damage=new SpellDamageAllowance(mana);else paid.damage.price(mana);
+        return this;
+    }
+
+    /** Shared per-target allowance; pulses/copies/reflections never replenish it. */
+    public boolean damageAvailable(LivingEntity target) {
+        Paid paid=budget.shared.paid;
+        if(!paid.playerSpell && !(caster instanceof ServerPlayer))return true;
+        if(paid.damage==null)damagePrice(weight());
+        return paid.damage.available(target.getUUID());
+    }
+    public float admitDamage(LivingEntity target,float amount) {
+        Paid paid=budget.shared.paid;
+        if(!Float.isFinite(amount)||amount<=0)return 0;
+        if(!paid.playerSpell && !(caster instanceof ServerPlayer))return amount;
+        if(paid.damage==null)damagePrice(weight());
+        return paid.damage.take(target.getUUID(),amount);
+    }
+
 	/**
 	 * The same for every copy of a spell paid for once (see {@link #again}): for a cap on what one payment may
 	 * win back, which a storm's echo or Twin Star mustn't get a second time.
 	 */
-	public Object payment() {
+    public Object payment() {
 		return budget.shared.paid;
 	}
 

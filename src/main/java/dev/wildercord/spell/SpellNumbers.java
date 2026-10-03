@@ -29,13 +29,13 @@ public final class SpellNumbers {
 
 	public static double power(SpellPlan.EffectNode e) {
 		return Math.pow(1.5, e.count(Runes.AMPLIFY)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD))
-			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.3, e.count(Runes.KINDLED))
+			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, ModifierLimits.count(e.mods, Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.3, e.count(Runes.KINDLED))
 			* belatedPower(e);
 	}
 
 	/** Focus and Vow on a shape, times the shape's own strength per hit (Barrage hits often, so softer). */
 	public static double groupPower(SpellPlan.Group g) {
-		return Math.pow(1.5, g.count(Runes.FOCUS_MOD)) * Math.pow(2.0, g.count(Runes.VOW_MOD)) * shapeStrength(g.shape) * CircleDisciplines.profile(g).power();
+		return Math.pow(1.5, ModifierLimits.count(g.shapeMods, Runes.FOCUS_MOD)) * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.VOW_MOD)) * shapeStrength(g.shape) * CircleDisciplines.profile(g).power();
 	}
 
 	/** Power per hit for shapes that hit many times (Barrage, Stream), and for the cheap Spark. */
@@ -54,14 +54,14 @@ public final class SpellNumbers {
 
 	/** Execute on an effect: power multiplier against targets under half health. */
 	public static double executeBonus(SpellPlan.EffectNode e) {
-		return Math.pow(2.0, e.count(Runes.EXECUTE_MOD));
+		return Math.pow(2.0, ModifierLimits.count(e.mods, Runes.EXECUTE_MOD));
 	}
 
 	// ---- runes of the world
 
 	/** Trial Key on an effect: power multiplier against targets at full health (1 = none). */
 	public static double trialKeyBonus(SpellPlan.EffectNode e) {
-		return Math.pow(1.6, e.count(Runes.TRIAL_KEY));
+		return Math.pow(1.6, ModifierLimits.count(e.mods, Runes.TRIAL_KEY));
 	}
 
 	/** Kindled on an effect: seconds it sets what it hits alight (0 = none). */
@@ -93,7 +93,7 @@ public final class SpellNumbers {
 	}
 
 	public static int vortexSeconds(SpellPlan.Group g) {
-		return (int) Math.round(3 * Math.pow(2.0, g.count(Runes.EXTEND)));
+		return (int) Math.round(3 * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.EXTEND)));
 	}
 
 	/** Ticks between a Vortex's strikes. */
@@ -133,7 +133,7 @@ public final class SpellNumbers {
 	}
 
 	public static int domainSeconds(SpellPlan.Group g) {
-		return (int) Math.round(6 * Math.pow(2.0, g.count(Runes.EXTEND)));
+		return (int) Math.round(6 * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.EXTEND)));
 	}
 
 	/** Ticks between a Domain's strikes: 20, halved by each Quicken. */
@@ -264,11 +264,11 @@ public final class SpellNumbers {
 
 	/** Radius factor on a shape from Widen and Focus (and add-on radius modifiers). */
 	public static double shapeRadius(SpellPlan.Group g) {
-		return Math.pow(1.5, g.count(Runes.WIDEN)) * Math.pow(0.5, g.count(Runes.FOCUS_MOD)) * RuneNumbers.radius(g.shapeMods) * CircleDisciplines.profile(g).radius();
+		return Math.pow(1.5, g.count(Runes.WIDEN)) * Math.pow(0.5, ModifierLimits.count(g.shapeMods, Runes.FOCUS_MOD)) * RuneNumbers.radius(g.shapeMods) * CircleDisciplines.profile(g).radius();
 	}
 
 	public static double duration(SpellPlan.EffectNode e) {
-		return Math.pow(2.0, e.count(Runes.EXTEND)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD)) * RuneNumbers.duration(e.mods);
+		return Math.pow(2.0, ModifierLimits.count(e.mods, Runes.EXTEND)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD)) * RuneNumbers.duration(e.mods);
 	}
 
 	/** Extra times a lingering effect lands, one second apart. */
@@ -290,7 +290,7 @@ public final class SpellNumbers {
 	}
 
 	public static int wallSeconds(SpellPlan.Group g) {
-		return (int) Math.round(5 * Math.pow(2.0, g.count(Runes.EXTEND)));
+		return (int) Math.round(5 * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.EXTEND)));
 	}
 
 	/** Ticks between a Wall's hits: 20 (once a second, as a Wall has always struck), halved by each Quicken. */
@@ -308,11 +308,11 @@ public final class SpellNumbers {
 	}
 
 	public static int orbitSeconds(SpellPlan.Group g) {
-		return (int) Math.round(8 * Math.pow(2.0, g.count(Runes.EXTEND)));
+		return (int) Math.round(8 * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.EXTEND)));
 	}
 
 	public static int trailSeconds(SpellPlan.Group g) {
-		return (int) Math.round(5 * Math.pow(2.0, g.count(Runes.EXTEND)));
+		return (int) Math.round(5 * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.EXTEND)));
 	}
 
 	/** Arc speed in blocks per tick. */
@@ -339,7 +339,7 @@ public final class SpellNumbers {
 	public static final double MAX_WIDEN = 8.0;
 
 	public static double effectRadius(SpellPlan.EffectNode e) {
-		return Math.min(MAX_WIDEN, Math.pow(1.5, e.count(Runes.WIDEN))) * Math.pow(0.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.radius(e.mods);
+		return Math.min(MAX_WIDEN, Math.pow(1.5, e.count(Runes.WIDEN))) * Math.pow(0.5, ModifierLimits.count(e.mods, Runes.FOCUS_MOD)) * RuneNumbers.radius(e.mods);
 	}
 
 	public static int copies(SpellPlan.Group g) {
@@ -355,7 +355,7 @@ public final class SpellNumbers {
 	}
 
 	public static int zoneSeconds(SpellPlan.Group g) {
-		return (int) Math.round(6 * Math.pow(2.0, g.count(Runes.EXTEND)));
+		return (int) Math.round(6 * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.EXTEND)));
 	}
 
 	/** Ticks between a Zone's pulses: 20, halved by each Quicken. */
@@ -403,7 +403,7 @@ public final class SpellNumbers {
 	}
 
 	public static int totemSeconds(SpellPlan.Group g) {
-		return (int) Math.round(10 * Math.pow(2.0, g.count(Runes.EXTEND)));
+		return (int) Math.round(10 * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.EXTEND)));
 	}
 
 	/** Ticks between a Totem's pulses: 40, halved by each Quicken. */
@@ -438,7 +438,7 @@ public final class SpellNumbers {
 	}
 
 	public static int delayTicks(SpellPlan.Link link) {
-		return Math.max(2, (int) Math.round(20 * Math.pow(2.0, link.count(Runes.EXTEND)) / Math.pow(2.0, link.count(Runes.QUICKEN))));
+		return Math.max(2, (int) Math.round(20 * Math.pow(2.0, ModifierLimits.count(link.mods, Runes.EXTEND)) / Math.pow(2.0, link.count(Runes.QUICKEN))));
 	}
 
 	public static double explodeRadius(SpellPlan.EffectNode e) {
@@ -506,7 +506,7 @@ public final class SpellNumbers {
 
 	/** A Latch's strikes: 4, doubled by each Extend (longer), 16 at most. Quicken makes them come faster, not more. */
 	public static int latchStrikes(SpellPlan.Group g) {
-		return (int) Math.min(16, 4 * Math.pow(2.0, g.count(Runes.EXTEND)));
+		return (int) Math.min(16, 4 * Math.pow(2.0, ModifierLimits.count(g.shapeMods, Runes.EXTEND)));
 	}
 
 	/** Kindred: the share of the effect's power that you and the ally it missed get, and how far it looks for that ally. */

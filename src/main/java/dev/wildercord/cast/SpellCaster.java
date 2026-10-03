@@ -234,7 +234,8 @@ public final class SpellCaster {
 		// Against a Shield a secret always weighs its full price, found or not.
 		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear)
 			.withAffinity();
-		cast.charge(charge);
+		cast.damagePrice(Heart.manaCost(player, compiled, secretPower * traitCost));
+        cast.charge(charge);
 		cast.performance(performance.power());
 		// What this spell learns from the cast, and the traits it has grown (see Mastery).
 		Mastery.onCast(player, spell, runes, cast, spent);

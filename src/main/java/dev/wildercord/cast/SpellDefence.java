@@ -40,7 +40,7 @@ import java.util.function.BooleanSupplier;
 
 /**
  * How a player stands up to spells, and the one way spell damage reaches anyone. Every spell hit (a player's, a
- * Runebound's, a boss's, a wisp's, a reflection) lands through {@link #hurt}: on a creature it lands as it is; on a player
+ * Runebound's, a boss's, a wisp's, a reflection) lands through {@link #hurt}: player-owned Cast damage first meets its shared payment allowance; on a player
  * it first meets their defences, which multiply:
  * <ul>
  *   <li><b>Armour</b>: against spells that armour doesn't stop at all (magic, frost), armour and toughness count for
@@ -111,8 +111,7 @@ public final class SpellDefence {
 	// ------------------------------------------------------------------ landing
 
 	/**
-	 * Deals a spell's damage: to a player, what their defences leave of it, under the spellguard; to anything else, all of
-	 * it. Every spell's damage comes through here.
+	 * Deals a spell's damage: to a player, what their defences leave of it, under the spellguard; to anything else, what the cast allowance admits. Every spell's damage comes through here.
 	 *
 	 * @return whether it hurt
 	 */
@@ -122,8 +121,14 @@ public final class SpellDefence {
 
 	/** A hit from a known cast: children and repeated landings carry its identity through the guard. */
 	public static boolean hurt(ServerLevel level, LivingEntity target, DamageSource source, float amount, Cast cast) {
-		return hurt(level, target, source, amount, cast.identity());
+		float admitted=cast.admitDamage(target,amount);
+        return admitted>0 && hurt(level, target, source, admitted, cast.identity());
 	}
+
+	/** Only Effects uses this after reserving the shared allowance before its hit callbacks. */
+    static boolean hurtAdmitted(ServerLevel level,LivingEntity target,DamageSource source,float amount,Cast cast) {
+        return amount>0 && hurt(level,target,source,amount,cast.identity());
+    }
 
 	/** A paid blade/spell resonance: normal shield, armour, boss resistance and cast guard, with no recursive rune triggers. */
 	public static void resonantHurt(Cast cast, LivingEntity target, float amount) {
