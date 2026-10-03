@@ -65,3 +65,13 @@ Eighth originals are preserved in `eighth/`. Their grounded supports are visible
 - Both clear original frames were inspected and copied unedited into `wiki/assets/images/glowcap-grounded-nursery.png` and `glowcap-natural-bank.png`, with accurate chapter captions.
 
 Focused native work for this milestone is complete. Final combined regeneration/build, parent review and delivery remain parent-owned. The full fungal ecosystem still needs its threat, ruin, relic/equipment breadth and further population balance work.
+
+## Subsequent Linux full-suite regression gate (2026-10-03)
+
+GitHub run37157807760 at commit c30ae028 initialized Mesa/OpenGL and reached actual FungalNurseryTest gameplay, then failed the combined assertion "Gathering the same visitor preserves its real forage rest". Retained full log: artifacts/review/life-fieldcraft-milestone/ci-c30ae028-failed.log. The prior focused Windows acceptance does not make this Linux full-suite gate green.
+
+Source inspection establishes that mobInteract does not modify forageReady. The second gather used an arbitrary diagonal player offset near the now-real grounded canopy corner posts and Grow vegetation, while server admission checks actual line of sight, range, visible/open pose, crouching and the existing reserve/rest. Geometry or admission is a plausible explanation; the old combined failure did not retain those state values, so its exact cause is not proven.
+
+The patched fixture selects at most eight actual supported, collision-free approach positions, preferring cardinal open sides, while real native crouch input is held. At most four real entity-interaction packets follow normal moving-visitor admission; no canopy/vegetation, clocks, reserve or entity pose is changed to pass. Admission diagnostics include real player/snail coordinates, visibility, crouching, pose, reserve and independent deadlines. Reserve spending and exact forage-rest preservation are separate assertions. The player also waits for the actual emitted dew pickup and verifies a Survival inventory increase before leaving, retaining real ingredient provenance. Focused native execution and a clean subsequent Linux full-suite run remain acceptance gates.
+
+Patched focused Windows native verification: native-ci-gather-first.log, session 87618, exit 0 / BUILD SUCCESSFUL in 2 m 28 s. Both actual crouch admissions and real emitted-dew inventory pickups passed, as did the same visitor's exact forage-rest preservation, second real rested browse/harvest, native paid-ingredient crafts, connected one-time reward and full restart. Four original screenshots preserved in ci-gather-first. Linux full-suite rerun is still required before closing that CI gate.

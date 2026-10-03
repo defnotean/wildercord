@@ -53,7 +53,7 @@ public final class StormFlightTest implements FabricClientGameTest {
  }
  private static void recipes(){
   check(FlightBodies.covers("wildercord:shock,wildercord:plasma"),"Complete authored mixed group");
-  for(String ids:List.of("","wildercord:shock,!","wildercord:shock,wildercord:umbra","other:shock","wildercord:shock,"))
+  for(String ids:List.of("","wildercord:shock,!","wildercord:shock,wildercord:harm","other:shock","wildercord:shock,"))
    check(!FlightBodies.covers(ids),"Incomplete or foreign identity retains fallback: "+ids);
   check(!StormFlights.supports("other:shock") && !StormFlights.supports("wildercord:fire"),"Exact storm dispatch");
   var prints=new HashSet<String>();

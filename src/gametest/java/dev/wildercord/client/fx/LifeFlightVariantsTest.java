@@ -53,7 +53,8 @@ public final class LifeFlightVariantsTest implements FabricClientGameTest {
                 new Case("pierce_venom", List.of("bolt","venom","pierce"), "wildercord:venom", RuneBolt.STYLE_PIERCE, false, true),
                 new Case("frugal_remedy", List.of("bolt","remedy","frugal"), "wildercord:remedy", RuneBolt.STYLE_FRUGAL, false, true),
                 new Case("mixed_heal_shock", List.of("bolt","heal","shock"), "wildercord:heal,wildercord:shock", 0, false, true),
-                new Case("mixed_heal_umbra", List.of("bolt","heal","umbra"), "wildercord:heal,wildercord:umbra", 0, false, false))) {
+                new Case("mixed_heal_umbra", List.of("bolt","heal","umbra"), "wildercord:heal,wildercord:umbra", 0, false, true),
+                new Case("mixed_heal_harm", List.of("bolt","heal","harm"), "wildercord:heal,wildercord:harm", 0, false, false))) {
                 server.runOnServer(s -> {
                     var p = s.getPlayerList().getPlayers().getFirst();
                     p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);

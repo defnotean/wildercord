@@ -141,10 +141,13 @@ public final class SpellFormations {
    boolean lifeOnly=event.runes().stream().anyMatch(LifeForms::supports)
     && event.runes().stream().noneMatch(id -> dev.wildercord.spell.Runes.get(id)
       .filter(rune -> rune.family()==dev.wildercord.spell.RuneFamily.EFFECT && !LifeForms.supports(id)).isPresent());
+   boolean voidOnly=event.runes().stream().anyMatch(VoidForms::supports)
+    && event.runes().stream().noneMatch(id -> dev.wildercord.spell.Runes.get(id)
+      .filter(rune -> rune.family()==dev.wildercord.spell.RuneFamily.EFFECT && !VoidForms.supports(id)).isPresent());
    boolean fieldOnly=event.runes().stream().anyMatch(FieldFusionForms::supports)
     && event.runes().stream().noneMatch(id -> dev.wildercord.spell.Runes.get(id)
       .filter(rune -> rune.family()==dev.wildercord.spell.RuneFamily.EFFECT && !FieldFusionForms.supports(id)).isPresent());
-   boolean materialProjectile=(fireOnly || frostOnly || stormOnly || windOnly || earthOnly || lifeOnly || fieldOnly) && switch(ShapeFormation.of(event.shape())) {
+   boolean materialProjectile=(fireOnly || frostOnly || stormOnly || windOnly || earthOnly || lifeOnly || voidOnly || fieldOnly) && switch(ShapeFormation.of(event.shape())) {
     case BOLT,ARC,ORB,SPARK,COMET,RICOCHET,CLUSTER,WISP -> true;
     default -> false;
    };
@@ -200,13 +203,14 @@ public final class SpellFormations {
    boolean authoredWind=WindForms.formation(this,beat);
    boolean authoredEarth=EarthFormations.draw(this,beat);
    boolean authoredLife=LifeFormations.draw(this,beat);
-   materials(beat,authoredFire,authoredFrost,authoredStorm,authoredWind,windOnly,authoredEarth,earthOnly,authoredLife,lifeOnly,fieldOnly);
+   boolean authoredVoid=VoidFormations.draw(this,beat);
+   materials(beat,authoredFire,authoredFrost,authoredStorm,authoredWind,windOnly,authoredEarth,earthOnly,authoredLife,lifeOnly,authoredVoid,voidOnly,fieldOnly);
   }
   Vec3 assembly() {
    if(event.placement()==FormationPayload.CASTER || event.placement()==FormationPayload.AIMED || event.placement()==FormationPayload.FIXED)return focus;
    return switch(ShapeFormation.of(event.shape())) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
   }
-  void materials(int beat,boolean authoredFire,boolean authoredFrost,boolean authoredStorm,boolean authoredWind,boolean windOnly,boolean authoredEarth,boolean earthOnly,boolean authoredLife,boolean lifeOnly,boolean fieldOnly) {
+  void materials(int beat,boolean authoredFire,boolean authoredFrost,boolean authoredStorm,boolean authoredWind,boolean windOnly,boolean authoredEarth,boolean earthOnly,boolean authoredLife,boolean lifeOnly,boolean authoredVoid,boolean voidOnly,boolean fieldOnly) {
    // Materials change the geometry as well as the colour. Each fused ingredient gets its own layer.
    for(int i=0;i<event.elements().size();i++) {
     String element=event.elements().get(i); double a=i*2.39996+beat*.9;
@@ -216,6 +220,7 @@ public final class SpellFormations {
     if(authoredWind && (element.equals("wind") || windOnly && WindForms.ingredients(event.runes()).contains(element))) continue;
     if(authoredEarth && (element.equals("earth") || earthOnly && EarthForms.ingredients(event.runes()).contains(element))) continue;
     if(authoredLife && (element.equals("life") || lifeOnly && LifeForms.ingredients(event.runes()).contains(element))) continue;
+    if(authoredVoid && (element.equals("void") || voidOnly && VoidForms.ingredients(event.runes()).contains(element))) continue;
     if(fieldOnly && FieldFusionForms.ingredients(event.runes()).contains(element)) continue;
     // Caster-centered deliveries must not leave their elemental assembly at the front focus.
     Vec3 anchor=assembly();

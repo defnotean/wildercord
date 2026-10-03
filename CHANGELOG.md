@@ -4,6 +4,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Corrected the nursery harvest regression fixture to approach through actual supported, collision-free footing and line of sight, use native crouch interactions, and verify real emitted dew reaches Survival inventory. The complete focused earned-resource and restart chain passes; the full Linux CI rerun remains a separate gate.
+- Added individually authored preparations and velocity-oriented moving bodies for all thirty-six Void effect runes. Eleven original material styles include torn folds, shells, jaws, pressure and running hounds for Shades; mixed Fire, Wind, Time, Blood and Arcane ingredients remain visible in Full and Minimal quality. Rear casting circles and actual delivery remain authoritative.
+- Verified paid Void Self wards, safe Blink/Warp movement, Warp Step's return/crouch choice and Zipper's protected-wall refusal in focused native tests. Full impact, sound, beam, rain and summon presentation remains tracked separately.
+- Added an illustrated Shadow Materials guide chapter and stage-specific Void acceptance audit. Canonical moving-body coverage now includes 206 distinct identities across seven families; this count does not imply complete spell lifecycles.
+
 - Added six authored signature fusions with specific ingredient pairs, carved rune icons, distinct material preparations/projectile bodies, successful-action effects and twelve original cue/impact sounds:
   - **Springbed** (Basinfill + Grow): fills one safe shallow basin, then feeds at most eight existing adjacent plants without creating new plants or resources.
   - **Cinder Sieve** (Ember + Collect): spends one carried coal or charcoal to process up to sixteen eligible dropped furnace inputs. Output capacity is simulated before fuel or inputs change; ownership, pickup delay, reach and editable ground are respected.

@@ -50,3 +50,15 @@ take up to 39 ticks. The test previously waited only 25. Its development
 correction checks that the lantern is configured and charged, then allows the
 full 40-tick cooldown/update window. Production timing and utility are unchanged.
 Focused native acceptance and a subsequent full Linux run are separate gates.
+
+## Current combined milestone CI
+
+At commit `c30ae0283aa10032546760bc796a6920de4abf18`, ordinary Build run
+37157807760 and Player Guide run 37157807720 passed. The full Linux native
+job initialized Mesa OpenGL successfully, then failed at `FungalNurseryTest`:
+`Gathering the same visitor preserves its real forage rest`. The retained log
+is `artifacts/review/life-fieldcraft-milestone/ci-c30ae028-failed.log`.
+The corrected focused nursery fixture passed on Windows in 2 min 28 s, including
+real crouch admissions, Survival dew pickup, exact forage-rest preservation and
+full earned acquisition/restart. A subsequent full Linux run remains the open
+gate; focused Windows passes do not establish full Linux acceptance.

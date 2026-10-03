@@ -38,7 +38,8 @@ public final class FrostFlightVariantsTest implements FabricClientGameTest {
                 new Case("pierce_frost", List.of("bolt","frost","pierce"), "wildercord:frost", RuneBolt.STYLE_PIERCE, false, true),
                 new Case("frugal_tidehook", List.of("bolt","tidehook","frugal"), "wildercord:tidehook", RuneBolt.STYLE_FRUGAL, false, true),
                 new Case("mixed_ember_frost", List.of("bolt","ember","frost"), "wildercord:ember,wildercord:frost", 0, false, true),
-                new Case("mixed_frost_umbra", List.of("bolt","frost","umbra"), "wildercord:frost,wildercord:umbra", 0, false, false))) {
+                new Case("mixed_frost_umbra", List.of("bolt","frost","umbra"), "wildercord:frost,wildercord:umbra", 0, false, true),
+                new Case("mixed_frost_harm", List.of("bolt","frost","harm"), "wildercord:frost,wildercord:harm", 0, false, false))) {
                 server.runOnServer(s -> {
                     var p = s.getPlayerList().getPlayers().getFirst();
                     p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);

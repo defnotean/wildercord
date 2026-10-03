@@ -54,7 +54,7 @@ public final class EarthFlightTest implements FabricClientGameTest {
  }
  private static void recipes(){
   check(FlightBodies.covers("wildercord:pelt,wildercord:tremor"),"Complete authored mixed group");
-  for(String ids:List.of("","wildercord:pelt,!","wildercord:pelt,wildercord:umbra","other:pelt","wildercord:pelt,"))
+  for(String ids:List.of("","wildercord:pelt,!","wildercord:pelt,wildercord:harm","other:pelt","wildercord:pelt,"))
    check(!FlightBodies.covers(ids),"Incomplete or foreign identity retains fallback: "+ids);
   check(!EarthForms.supports("other:pelt") && !EarthForms.supports("wildercord:fire"),"Exact earth dispatch");
   var prints=new HashSet<String>();

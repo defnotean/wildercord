@@ -38,7 +38,8 @@ public final class StormFlightVariantsTest implements FabricClientGameTest {
                 new Case("pierce_lightning", List.of("bolt","lightning","pierce"), "wildercord:lightning", RuneBolt.STYLE_PIERCE, false, true),
                 new Case("frugal_magnetize", List.of("bolt","magnetize","frugal"), "wildercord:magnetize", RuneBolt.STYLE_FRUGAL, false, true),
                 new Case("mixed_frost_shock", List.of("bolt","frost","shock"), "wildercord:frost,wildercord:shock", 0, false, true),
-                new Case("mixed_shock_umbra", List.of("bolt","shock","umbra"), "wildercord:shock,wildercord:umbra", 0, false, false))) {
+                new Case("mixed_shock_umbra", List.of("bolt","shock","umbra"), "wildercord:shock,wildercord:umbra", 0, false, true),
+                new Case("mixed_shock_harm", List.of("bolt","shock","harm"), "wildercord:shock,wildercord:harm", 0, false, false))) {
                 server.runOnServer(s -> {
                     var p = s.getPlayerList().getPlayers().getFirst();
                     p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);

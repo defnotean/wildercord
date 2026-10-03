@@ -820,6 +820,8 @@ def write_lang(runes):
     earth_art.main()
     import life_art
     life_art.main()
+    import void_art
+    void_art.main()
     import fieldfusion_art
     fieldfusion_art.write(sys.modules[__name__])
     import fungal_art

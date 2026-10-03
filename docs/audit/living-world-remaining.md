@@ -14,7 +14,7 @@ Existing features, recolours, source references and controlled screenshots do no
 | Battlefields and sleeping blade | Both implemented with native evidence | Natural rarity/distribution, remote participation, return-visit design and remaining lifecycle coverage |
 | At least 36 functional items | 21 accepted functional additions, including the four Nursery items | Seven relics, seven equipment and two tools remain to meet category minimums, yielding 37. See the category ledger; do not relabel materials to force 36. |
 | 12 abilities | Unity and verified Basinfill: 2 credited | 10 still uncredited; audit any newly taught technique against the baseline before counting it |
-| 18 new signature fusions | Six new field signatures have passed final native altar, paid-cast, refusal, persistence and Full/Minimal preparation checks; combined review delivery pending | 12 more signatures still needed; existing22 signatures,55 elemental fusions and dynamic weaves do not satisfy this target |
+| 18 new signature fusions | Six new field signatures have passed final native altar, paid-cast, refusal, persistence and Full/Minimal preparation checks; delivered in development commit c30ae028 with a verified review JAR | 12 more signatures still needed; existing22 signatures,55 elemental fusions and dynamic weaves do not satisfy this target |
 | 24 discoverable lore texts | 12 credited: previous nine and three Nursery texts | 12 plus illustrated journal/discovery integration; bestiary pages should be reconciled before further credit |
 | 4 connected optional investigations | Glowcap Nursery earned-resource chain passed with saved-state and once-only reward checks | 3 further complete chains, clues, persistent state and rewards |
 
@@ -108,3 +108,13 @@ Basinfill, Reed Rattle and Sporeback Snails are implemented and have scoped nati
 Life 29, the six field signatures and the Glowcap Nursery earned-resource investigation have accepted focused native evidence; combined build and pushed delivery are pending. The current parallel work includes removal of generic front projectile overlays and drafts of the next twelve signatures. Fungal tests now pass finite late-search and blocked-path traversal, natural generation on the retained failed seed, and the grounded canopy acquisition/restart chain. A Grow-only obstruction cause was not established; actual Grow-first acceptance passes. Clearer native presentation captures are being prepared. Continue the remaining elemental
 roster and other creatures, ecosystems, locations and progression. No requirement
 above is considered complete merely because this audit exists.
+
+## Current development increment
+
+Void 36 preparation and moving bodies now pass six focused Windows native suites;
+selected paid Self and movement outcomes also pass. Canonical moving-body coverage
+is 206 identities across seven families; it does not establish206 full lifecycles.
+See `full-spell-roster/void-choreography.md`. New signature, Life outcome and
+Rootmolt work remains isolated and contributes no runtime content credit yet.
+The prior combined milestone full Linux gameplay gate failed at the nursery
+gather fixture; its correction and renewed full-descriptor gate remain open.

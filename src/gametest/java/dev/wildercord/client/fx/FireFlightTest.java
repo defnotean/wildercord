@@ -52,7 +52,7 @@ public final class FireFlightTest implements FabricClientGameTest {
  }
  private static void recipes(){
   check(FlightBodies.covers("wildercord:fire,wildercord:steam"),"Complete authored mixed group");
-  for(String ids:List.of("","wildercord:fire,!","wildercord:fire,wildercord:umbra","other:fire","wildercord:fire,"))
+  for(String ids:List.of("","wildercord:fire,!","wildercord:fire,wildercord:harm","other:fire","wildercord:fire,"))
    check(!FlightBodies.covers(ids),"Incomplete or foreign identity retains fallback: "+ids);
   var prints=new HashSet<String>();
   for(String rune:FireFlights.RUNES)for(boolean minimal:new boolean[]{false,true}) {

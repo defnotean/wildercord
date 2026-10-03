@@ -38,7 +38,8 @@ public final class WindFlightVariantsTest implements FabricClientGameTest {
                 new Case("pierce_windcut", List.of("bolt","windcut","pierce"), "wildercord:windcut", RuneBolt.STYLE_PIERCE, false, true),
                 new Case("frugal_swift", List.of("bolt","swift","frugal"), "wildercord:swift", RuneBolt.STYLE_FRUGAL, false, true),
                 new Case("mixed_windcut_shock", List.of("bolt","windcut","shock"), "wildercord:windcut,wildercord:shock", 0, false, true),
-                new Case("mixed_windcut_umbra", List.of("bolt","windcut","umbra"), "wildercord:windcut,wildercord:umbra", 0, false, false))) {
+                new Case("mixed_windcut_umbra", List.of("bolt","windcut","umbra"), "wildercord:windcut,wildercord:umbra", 0, false, true),
+                new Case("mixed_windcut_harm", List.of("bolt","windcut","harm"), "wildercord:windcut,wildercord:harm", 0, false, false))) {
                 server.runOnServer(s -> {
                     var p = s.getPlayerList().getPlayers().getFirst();
                     p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);

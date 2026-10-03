@@ -433,7 +433,7 @@ new Life/signature/Nursery public release.
 
 Three agents continue in parallel: physical fungal fieldcraft/generation, independent cave
 generation analysis plus isolated Life outcome/voice drafts, and the remaining twelve signature
-drafts. Void36, Life29 outcomes/58 voices, Rootmolt and twelve signatures remain outside the
+drafts. Void 36, Life29 outcomes/58 voices, Rootmolt and twelve signatures remain outside the
 build until promoted and verified. Draft files and offline audio checks are not gameplay credits.
 
 ### Combined milestone delivery
@@ -448,3 +448,14 @@ See `docs/audit/life-fieldcraft-milestone.md` for the checksum and scoped accept
 The full Linux native descriptor and broader goal remain open. Next parallel
 work addresses Life owner outcome edges, the next twelve signatures' exploit
 paths, and Rootmolt creature/tether behavior in isolated drafts.
+
+## Void development increment (2026-10-03)
+
+Seven-family moving-body contract now covers 206 distinct identities including
+Void 36. Six Void focused native suites passed, alongside five affected older
+family alternate-flight regression suites. Selected real Self and movement
+outcomes pass; lifecycle impact/field/summon/beam/rain/sound and real multiplayer
+acceptance remain open. The nursery CI regression fixture passed its complete
+focused earned-resource/restart chain; the full Linux descriptor still requires
+a renewed run. Draft Rootmolt, twelve further signatures and Life outcome work
+remain outside the playable source and receive no content credit.

@@ -17,6 +17,7 @@
   * [Circle Disciplines](spellcraft/circle-disciplines.md)
   * [Physical Magic](spellcraft/physical-magic.md)
   * [Living Materials](spellcraft/living-materials.md)
+  * [Shadow Materials](spellcraft/shadow-materials.md)
   * [Shields and Parrying](spellcraft/shields.md)
   * [Element Reactions](spellcraft/reactions.md)
   * [Creature Affinities and Climate](spellcraft/affinities.md)

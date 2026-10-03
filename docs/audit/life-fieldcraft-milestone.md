@@ -60,8 +60,10 @@ acquisition in the individual audits.
 ## Remaining work
 
 The full Linux native descriptor is not green: the graphics correction is
-verified, its last run failed the old Runic Hearth timing assertion, and the
-new full run must establish the subsequent outcome. Local focused passes are
+verified, the subsequent c30ae028 run passed ordinary Build and Player Guide checks but
+failed the nursery gathering assertion. The corrected nursery fixture passed
+focused Windows acquisition/restart testing; a renewed full Linux run remains
+required. Local focused passes are
 not remote multiplayer or complete Linux descriptor evidence.
 
 This milestone credits six new signatures, four functional items, three lore
@@ -69,6 +71,8 @@ texts and one connected investigation. Goal totals are 21 functional items,
 12 lore texts and one investigation; no extra creature or completed ecosystem
 is counted. The wider goal remains active.
 
-Void 36, Life outcome/voice integration, the next twelve signatures and the
+Void36 preparation and moving bodies subsequently passed focused native
+acceptance; see `full-spell-roster/void-choreography.md` for exact stages and
+limits. Life outcome/voice integration, the next twelve signatures and the
 Rootmolt threat/ruin work remain isolated drafts. Compilation, native acceptance
-and actual lifecycle coverage are required before they enter these counts.
+and actual lifecycle coverage are required before they enter content counts.

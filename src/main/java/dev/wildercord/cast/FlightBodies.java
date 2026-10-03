@@ -14,7 +14,7 @@ public final class FlightBodies {
         "conflagration", "seethe", "skyburst", "cinder_bulwark", "boiling_surge", "cinder_sieve");
 
     public static boolean supports(String id) {
-        return supportsFire(id) || supportsFrost(id) || supportsStorm(id) || supportsWind(id) || supportsEarth(id) || supportsLife(id);
+        return supportsFire(id) || supportsFrost(id) || supportsStorm(id) || supportsWind(id) || supportsEarth(id) || supportsLife(id) || supportsVoid(id);
     }
 
     public static final List<String> FROST = List.of(
@@ -71,5 +71,16 @@ public final class FlightBodies {
 
     public static boolean covers(String identities) {
         return !identities.isEmpty() && Arrays.stream(identities.split(",", -1)).allMatch(FlightBodies::supports);
+    }
+
+    public static final List<String> VOID = List.of(
+        "pull", "blink", "sonic_boom", "wither", "dragon_breath", "veil", "gravity_well", "blind",
+        "grapple", "collect", "blackspark", "blackflame", "hollow", "infinity", "zipper", "shadowstep",
+        "shades", "anchor", "hex", "banish", "phantom", "warp", "entropy", "devour", "singularity",
+        "malison", "echolocate", "resonant_shriek", "shulkershell", "portalfall", "hush", "warp_step",
+        "eclipse", "starmaw", "riftcall", "umbra");
+
+    public static boolean supportsVoid(String id) {
+        return id.startsWith("wildercord:") && VOID.contains(id.substring(11));
     }
 }

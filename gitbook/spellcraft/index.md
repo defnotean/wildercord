@@ -63,3 +63,5 @@ wrist to the magic circle behind your shoulders.
 - [Circle Disciplines](circle-disciplines.md)
 - [Physical Magic](physical-magic.md)
 - [Living Materials](living-materials.md) — Read Life spells through their seeds, leaves, tissue, sap and thorns.
+
+- [Shadow Materials](shadow-materials.md) — Read Void folds, pressure, shells and running shades.

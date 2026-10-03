@@ -2,8 +2,8 @@
 
 ## Current development contract
 
-`FlightBodies` explicitly admits 170 distinct effect identities across six families:
-Fire 29, Frost 32, Storm 20, Wind 27, Earth 33 and Life 29. These counts include
+`FlightBodies` explicitly admits 206 distinct effect identities across seven families:
+Fire 29, Frost 32, Storm 20, Wind 27, Earth 33, Life 29 and Void 36. These counts include
 the six field signatures in this development batch. They describe preparation
 and travelling projectile coverage, not completed ability lifecycles.
 
@@ -13,9 +13,11 @@ is replaced. A mixed group with an uncovered identity retains its fallback.
 
 Bloodboil has a Fire preparation recipe and a travelling recipe case, but it is
 not admitted by the canonical Fire moving-body contract. Its Blood-family
-delivery and ingredients still need review; it is not counted as a 171st fully
-covered identity. Likewise, isolated Void and Life outcome drafts are outside
-the build and contribute no accepted coverage.
+delivery and ingredients still need review; it is not counted as an additional
+canonically covered identity. Life outcome drafts remain outside the build and contribute no accepted
+outcome coverage.
+Void preparation and moving bodies now have focused native acceptance; see
+`void-choreography.md` for the exact scope and remaining stages.
 
 ## Acceptance is separate for each stage
 
@@ -37,3 +39,13 @@ Neither establishes complete coverage for all 265 effect lifecycles.
 The sustained mixed-material benchmark is a separate local measurement, not
 proof of every effect's performance, multiplayer correctness or ecosystem cost.
 See `../living-world-performance.md` for its workload and limits.
+
+## Void development acceptance
+
+All seven focused native suites passed on Windows: exact recipe roster, actual
+preparation, paid projectile flights and variants, Self wards, movement
+delivery and network bounds. This establishes preparation and moving-body coverage for 36 Void
+identities, plus selected real Self and teleport outcomes. It does not establish
+all Void impacts, sounds, fields, summons, beams or rain, or full multiplayer
+acceptance. Cross-family preparations can still retain the generic preparation
+layer even when both travelling identities are covered.

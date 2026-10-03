@@ -56,7 +56,7 @@ public final class CleanProjectileFormationTest implements FabricClientGameTest 
        if(particle instanceof LightParticle && LifeFlightTest.at(particle).distanceTo(mc.player.getEyePosition().add(0,-.65,3.2))<1.65){lightTrace.add(LifeFlightTest.at(particle)+" kind="+LifeFlightTest.field(particle,LightParticle.class,"kind")+" life="+LifeFlightTest.field(particle,net.minecraft.client.particle.Particle.class,"lifetime"));lights++;int kind=((Number)LifeFlightTest.field(particle,LightParticle.class,"kind")).intValue();if(kind==LightOption.ORB)orbs++;if(kind==LightOption.RAY)rays++;if(kind==LightOption.ARC)arcs++;}
       }
       check(material>0 && circles>0,"Authored material and rear glyph retained: "+effect+" / "+quality);
-      if(effect.equals("mixed"))check(orbs>0 && rays>0,"Uncovered Ember + Umbra retains generic Bolt fallback");
+      if(effect.equals("mixed"))check(orbs>0 && rays>0,"Cross-family Ember + Umbra retains generic preparation fallback");
       else {
        check(orbs==0 && rays==0,"Pure authored Bolt has no generic orb or ray: "+effect+" "+lightTrace);
        if(effect.equals("jolt"))check(arcs>0,"Jolt retains its independently authored conducting arc");

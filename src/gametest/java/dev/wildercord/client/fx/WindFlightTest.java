@@ -54,7 +54,7 @@ public final class WindFlightTest implements FabricClientGameTest {
  }
  private static void recipes(){
   check(FlightBodies.covers("wildercord:windcut,wildercord:cyclone"),"Complete authored mixed group");
-  for(String ids:List.of("","wildercord:windcut,!","wildercord:windcut,wildercord:umbra","other:windcut","wildercord:windcut,"))
+  for(String ids:List.of("","wildercord:windcut,!","wildercord:windcut,wildercord:harm","other:windcut","wildercord:windcut,"))
    check(!FlightBodies.covers(ids),"Incomplete or foreign identity retains fallback: "+ids);
   check(!WindForms.supports("other:windcut") && !WindForms.supports("wildercord:fire"),"Exact wind dispatch");
   var prints=new HashSet<String>();

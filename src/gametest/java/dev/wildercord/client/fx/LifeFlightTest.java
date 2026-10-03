@@ -54,7 +54,7 @@ public final class LifeFlightTest implements FabricClientGameTest {
  }
  private static void recipes(){
   check(FlightBodies.covers("wildercord:heal,wildercord:venom"),"Complete authored mixed group");
-  for(String ids:List.of("","wildercord:heal,!","wildercord:heal,wildercord:umbra","other:heal","wildercord:heal,"))
+  for(String ids:List.of("","wildercord:heal,!","wildercord:heal,wildercord:harm","other:heal","wildercord:heal,"))
    check(!FlightBodies.covers(ids),"Incomplete or foreign identity retains fallback: "+ids);
   check(!LifeForms.supports("other:heal") && !LifeForms.supports("wildercord:fire"),"Exact life dispatch");
   var prints=new HashSet<String>();

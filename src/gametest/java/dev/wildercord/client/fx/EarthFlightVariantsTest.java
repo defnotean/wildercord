@@ -53,7 +53,8 @@ public final class EarthFlightVariantsTest implements FabricClientGameTest {
                 new Case("pierce_chisel", List.of("bolt","chisel","pierce"), "wildercord:chisel", RuneBolt.STYLE_PIERCE, false, true),
                 new Case("frugal_prospect", List.of("bolt","prospect","frugal"), "wildercord:prospect", RuneBolt.STYLE_FRUGAL, false, true),
                 new Case("mixed_chisel_shock", List.of("bolt","chisel","shock"), "wildercord:chisel,wildercord:shock", 0, false, true),
-                new Case("mixed_chisel_umbra", List.of("bolt","chisel","umbra"), "wildercord:chisel,wildercord:umbra", 0, false, false))) {
+                new Case("mixed_chisel_umbra", List.of("bolt","chisel","umbra"), "wildercord:chisel,wildercord:umbra", 0, false, true),
+                new Case("mixed_chisel_harm", List.of("bolt","chisel","harm"), "wildercord:chisel,wildercord:harm", 0, false, false))) {
                 server.runOnServer(s -> {
                     var p = s.getPlayerList().getPlayers().getFirst();
                     p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);
