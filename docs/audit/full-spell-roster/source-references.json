@@ -722,6 +722,12 @@
         ]
       },
       {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          36
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
         "lines": [
           59
@@ -1330,6 +1336,12 @@
         ]
       },
       {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          36
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
         "lines": [
           62
@@ -1701,8 +1713,8 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          165,
-          173
+          181,
+          189
         ]
       },
       {
@@ -1939,7 +1951,7 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          175
+          191
         ]
       },
       {
@@ -3139,6 +3151,12 @@
         ]
       },
       {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          37
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
         "lines": [
           66
@@ -3281,6 +3299,12 @@
         ]
       },
       {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          36
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
         "lines": [
           59
@@ -3386,6 +3410,12 @@
         "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
         "lines": [
           43
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          36
         ]
       },
       {
@@ -3521,6 +3551,12 @@
         "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
         "lines": [
           35
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          37
         ]
       },
       {
@@ -3747,9 +3783,21 @@
     "constant": "RAIN",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
+        "lines": [
+          71
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
         "lines": [
           41
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          37
         ]
       },
       {
@@ -4161,6 +4209,12 @@
         "lines": [
           34
         ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          36
+        ]
       }
     ],
     "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
@@ -4352,8 +4406,11 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          17,
-          19
+          26,
+          30,
+          36,
+          46,
+          48
         ]
       },
       {
@@ -5505,6 +5562,12 @@
         ]
       },
       {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          37
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
         "lines": [
           62
@@ -5540,6 +5603,12 @@
         "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
         "lines": [
           39
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          36
         ]
       },
       {
@@ -5842,6 +5911,12 @@
         ]
       },
       {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          37
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
         "lines": [
           60
@@ -5862,6 +5937,12 @@
     "candidates": [
       {
         "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          37
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
           37
         ]
@@ -5940,6 +6021,12 @@
         "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
         "lines": [
           32
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          36
         ]
       }
     ],
@@ -6078,6 +6165,12 @@
     "candidates": [
       {
         "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          37
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
           37
         ]

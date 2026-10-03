@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Group-aware initial formations
+
+- Ordinary Cord and scroll preparations now follow compiled initial groups, with isolated effects/materials, one complete rear glyph and mastery-adjusted aim range. Delayed/conditional groups no longer appear in the initial assembly; empty initial segments show only the rear glyph.
+- Caster-centered Burst, Nova, Ring and Wave join Self/Domain/Orbit/Trail staging. Aimed Zone, Rain, Wall, Pillar, Mine, Totem and Vortex follow the terrain aim resolver; Rain prepares twelve blocks overhead and marks its ground area. Gameplay release timing, payments and damage are unchanged.
+- Added decoded production-packet tests against server delivery aim, delayed-effect exclusion, rear-glyph count and an actual paid mixed Bolt/Self cast. Linked continuation, secret-specific and remaining delivery staging remain open.
+
 ### Authored fire preparations
 
 - Added distinct formation recipes for all 28 built-in fire effects, plus Bloodboil's heat preparation: cinders, tongues, fuse, grate, shield, falling fragments, ash curtains, solar rays, feathered wings and more. Firestorm, Steam, Seethe, Cinder Bulwark and Boiling Surge visibly combine their material ingredients.

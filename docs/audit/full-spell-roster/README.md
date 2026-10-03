@@ -34,3 +34,7 @@ The full living-world objective remains active. This increment adds no creature,
 ## Fire family follow-up
 
 [Authored fire preparation matrix](fire-formations.md) records 28 fire recipes plus Bloodboil. Native Full/Minimal packets, actual rendered-pixel checks and one paid Survival Ember cast verify the formation increment. Complete per-effect presentation review remains pending; no runtime row is upgraded to fully verified by this narrow phase coverage.
+
+## Group and target-aware initial staging
+
+Ordinary Cord/scroll casts now emit group-isolated initial preparations. Burst/Nova/Ring/Wave are caster-centered; Zone/Rain/Wall/Pillar/Mine/Totem/Vortex follow aimed terrain with mastery range. Rain includes cloud-height assembly and a ground marker. Delayed branches no longer leak into initial assembly. GroupFormationTest checks decoded events, ten placements against native server delivery aim and a paid mixed-group cast. Four native captures document the controlled fixture. Linked continuation preparation, secret staging and the rest of the delivery/identity/settings audit remain open. This replaces the earlier front-focus limitation for these ordinary initial groups, without marking complete per-effect review.

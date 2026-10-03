@@ -23,6 +23,18 @@ Mixed fire effects also show their ingredients: Firestorm braids wind around fla
 
 These pictures show the short preparation in a controlled stage. The selected shape still determines delivery: the decoration does not change a Bolt into wings, summon a creature, or grant a shield by itself. The rear casting circle stays behind you. Minimal formation quality keeps each authored outline with less midpoint detail.
 
+## Where the preparation happens
+
+Each initial group prepares its own shape and effects. In `Bolt · Ember · Self · Fireward`, Ember gathers ahead for the bolt while Fireward prepares on you. Both groups share one rear casting glyph.
+
+Burst, Nova and Ring prepare around your body. Zone, Wall, Pillar, Mine, Totem and Vortex prepare at the ground point you aim at. Rain gathers overhead above that point and marks the ground beneath it. Turning your aim during the brief preparation moves an aimed preview with it.
+
+![A Zone preparation at the aimed ground point](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/group-formations/group_formation_zone.png)
+
+![A caster-centered Burst preparation with its glyph behind the player](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/group-formations/group_formation_burst.png)
+
+Effects after a Delay or another link are not part of the initial assembly. The rear glyph can still show the complete written spell.
+
 ## Pressing the cast key
 
 **`R`** casts your **selected** spell. Every key can be changed in the game's Controls options, under

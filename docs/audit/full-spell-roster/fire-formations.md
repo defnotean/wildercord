@@ -44,3 +44,7 @@ Fire recipes dispatch only for exact built-in namespace IDs. Multiple authored e
 The new preparations use the existing caster anchor for Self/Domain/Orbit/Trail and front focus for other shapes. Rain/ground/summon target-aware staging and Burst/Nova caster-versus-linked origin need further review; the compact formation packet currently has no target point. Those delivery requirements remain open.
 
 FireFormationTest exercises 28 fire recipes through encoded native packets in Full and Minimal modes, compares finite nonduplicate recipe emissions for all 29 authored IDs and checks evolving beats, and performs a Survival Ember Cord cast with mana payment. Native packet screenshots show the formation fixture, not every full effect/delivery combination. Per-effect launch, travel, impact, sound, first/third-person and shader/multiplayer review remains incomplete.
+
+## Later initial-group staging correction
+
+Ordinary initial groups now choose caster or aimed-terrain placement separately. Burst/Nova/Ring/Wave join caster modes; Zone/Rain/Wall/Pillar/Mine/Totem/Vortex use current aim. Rain has a cloud-height anchor and ground marker. Fire recipes follow each group's anchor and its isolated effect list. The earlier anchor limitation above is historical for these ordinary initial groups. Linked continuation, secret-specific and remaining shape staging still require work.

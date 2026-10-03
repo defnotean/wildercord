@@ -52,8 +52,8 @@ public final class SpellFormations {
    Canvas c = new Canvas(mc.level, caster, a.event, quality);
    // A packet handled before the next game tick can first be drawn at age one.
    // Emit the rear circle once on its first render tick rather than requiring age zero.
-   if (!a.circleDrawn) { c.circle(); a.circleDrawn=true; }
-   if (age > 0) c.draw((int) age);
+   if (!a.circleDrawn) { if(a.event.circle())c.circle(); a.circleDrawn=true; }
+   if (age > 0 && a.event.placement()!=FormationPayload.CIRCLE_ONLY) c.draw((int) age);
    return false;
   });
  }
@@ -67,9 +67,19 @@ public final class SpellFormations {
    right = cross.lengthSqr() < 0.0001 ? new Vec3(1, 0, 0) : cross.normalize();
    up = right.cross(forward).normalize();
    // Formation stays below the reticle and beyond the near plane. Track aim until the release tick.
-   focus = caster.getEyePosition().add(forward.scale(3.2)).subtract(up.scale(0.65));
+   focus = event.placement()==FormationPayload.CASTER ? caster.position().add(0,.7,0)
+    : event.placement()==FormationPayload.AIMED ? aimed().add(0,event.shape().equals("rain")?12:.12,0)
+    : caster.getEyePosition().add(forward.scale(3.2)).subtract(up.scale(0.65));
    yaw = (float) Math.toDegrees(Math.atan2(-forward.x, forward.z));
    pitch = (float) -Math.toDegrees(Math.asin(forward.y));
+  }
+  Vec3 aimed() {
+   Vec3 from=caster.getEyePosition(),to=from.add(forward.scale(event.aimRange()));
+   var hit=world.clip(new net.minecraft.world.level.ClipContext(from,to,net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,caster));
+   Vec3 point=hit.getType()==net.minecraft.world.phys.HitResult.Type.MISS?to:hit.getLocation();
+   if(!world.hasChunkAt(net.minecraft.core.BlockPos.containing(point)))return point;
+   var ground=world.clip(new net.minecraft.world.level.ClipContext(point.add(0,.5,0),point.add(0,-16,0),net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,caster));
+   return ground.getType()==net.minecraft.world.phys.HitResult.Type.MISS?point:ground.getLocation();
   }
   boolean spend() {
    int cap = quality == MagicQuality.Level.FULL ? 512 : quality == MagicQuality.Level.BALANCED ? 256 : 96;
@@ -84,7 +94,7 @@ public final class SpellFormations {
   void circle() {
    Vec3 behind = caster.getEyePosition().subtract(forward.scale(1.8)).add(0, -0.3, 0);
    if (spend()) Minecraft.getInstance().particleEngine.add(new CasterCircle(world,caster,behind,
-    new SpellCircleOption(event.runes(), event.color(), event.scale() * 0.75F, yaw, pitch, 25)));
+    new SpellCircleOption(event.glyphs(), event.color(), event.scale() * 0.75F, yaw, pitch, 25)));
   }
   Vec3 point(double x, double y, double z) { return focus.add(right.scale(x)).add(up.scale(y)).add(forward.scale(z)); }
   void ring(Vec3 at, double radius, boolean floor) {
@@ -117,14 +127,19 @@ public final class SpellFormations {
     case BOLT -> { orb(point(0, 0, -.35+.35*t), .15*t); line(point(0, 0, -.8), focus, false); }
     case BEAM -> { for (int s : new int[]{-1,1}) line(point(s*q, -.1, -.8), focus, false); ring(focus, .35-.15*t, false); }
     case BURST -> { for(int i=0;i<6;i++) { double a=i*Math.PI/3; line(focus, point(Math.cos(a)*q,Math.sin(a)*q,0),false); } }
-    case ZONE -> { ring(feet.add(forward.scale(3)), q*1.6, true); polygon(4, q*.7, Math.PI/4); }
-    case RAIN -> { for(int i=-1;i<=1;i++) line(point(i*.35,1.4,-.3), point(i*.35,.5*t,0),false); ring(point(0,1.5,0),q,false); }
+    case ZONE -> { ring(event.placement()==FormationPayload.AIMED?focus:feet.add(forward.scale(3)), q*1.6, true); polygon(4, q*.7, Math.PI/4); }
+    case RAIN -> {
+     if(event.placement()==FormationPayload.AIMED) {
+      for(int i=-1;i<=1;i++)line(point(i*.35,0,-.3),point(i*.35,-.9*t,0),false);
+      ring(focus,q,true);ring(focus.add(0,-12,0),q*.8,true);
+     } else {for(int i=-1;i<=1;i++)line(point(i*.35,1.4,-.3),point(i*.35,.5*t,0),false);ring(point(0,1.5,0),q,false);}
+    }
     case ARC -> { line(point(-q,-.15,0),point(0,q,0),true); line(point(0,q,0),point(q,-.15,0),true); }
     case CONE -> { for(int i=-1;i<=1;i++) line(point(0,0,-.8),point(i*q,t*.25,.3),false); slash(focus,q,Math.PI,Math.PI); }
     case TRAIL -> { for(int i=0;i<3;i++) ring(feet.subtract(forward.scale(.4*i)),.15+.12*i,true); }
     case WALL -> { polygon(4,q,Math.PI/4); line(point(-q*.7,0,0),point(q*.7,0,0),false); }
     case ORBIT -> { for(int i=0;i<3;i++){ double a=i*Math.PI*2/3+t; orb(caster.position().add(Math.cos(a)*q,.7,Math.sin(a)*q),.09); } }
-    case RING -> { ring(focus,q,false); ring(focus,q*.6,false); }
+    case RING -> { boolean floor=event.placement()==FormationPayload.CASTER;ring(focus,q,floor);ring(focus,q*.6,floor); }
     case PILLAR -> { line(point(-.2,-q,0),point(-.2,q,0),false); line(point(.2,-q,0),point(.2,q,0),false); ring(point(0,-q,0),.3,true); }
     case WAVE -> { for(int i=-2;i<=2;i++) slash(point(i*.3,Math.sin(i+t)*.15,0),.22,Math.PI,Math.PI/2); }
     case MINE -> { polygon(3,q,Math.PI/2); orb(focus,.08); }
@@ -156,6 +171,7 @@ public final class SpellFormations {
    materials(beat,authoredFire);
   }
   Vec3 assembly() {
+   if(event.placement()==FormationPayload.CASTER || event.placement()==FormationPayload.AIMED)return focus;
    return switch(ShapeFormation.of(event.shape())) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
   }
   void materials(int beat,boolean authoredFire) {

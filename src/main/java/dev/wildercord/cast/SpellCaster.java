@@ -219,7 +219,6 @@ public final class SpellCaster {
 			// The spell's feel (its scale sizes the circle), worked out as the cast will.
 			theme = theme.with(dev.wildercord.cast.feel.Signatures.adjust(dev.wildercord.cast.feel.Feel.of(compiled.root().groups.getFirst(), compiled.cost(), charge)));
 		}
-		Vfx.castCircle(player, theme, runes);
 		dev.wildercord.player.RuneResearch.cast(player,runes);
 		SpellTrials.cast(player,runes,cost);
 		// Casting gear, read from the hands now: a staff's flourish on a charged cast, and its power on every part of the spell.
@@ -239,6 +238,8 @@ public final class SpellCaster {
 		cast.performance(performance.power());
 		// What this spell learns from the cast, and the traits it has grown (see Mastery).
 		Mastery.onCast(player, spell, runes, cast, spent);
+		if(secret.isPresent())Vfx.castCircle(player,theme,runes);
+		else FormationVfx.send(cast,runes);
 		if (overcast) {
 			// Magic paid for with a cracked circle marks the world where it lands (see Residues).
 			cast.markOvercast();
