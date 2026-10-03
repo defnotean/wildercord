@@ -132,7 +132,7 @@ public final class Runes {
 	public static final RuneDef HARVEST = effect("harvest", "Harvest", 1, 3, "life", EffectKind.WORLD, "Harvests grown crops around the block hit, and replants them.", RADIUS);
 	public static final RuneDef BASINFILL = effect("basinfill", "Basinfill", 1, 6, "frost", EffectKind.WORLD, "Fills an enclosed, one-block-deep hole with permanent source water: at most 16 connected cells, within three blocks of the impact. Aim at its floor with Touch or Bolt. Refuses open edges, deep pits, protected ground and the Nether. One basin per paid cast.");
 	public static final RuneDef ICEPATH = effect("icepath", "Icepath", 1, 3, "frost", EffectKind.WORLD, "Freezes water within 3 blocks into ice you can walk on. On Self it lays a strip of ice ten blocks long the way you look.", RADIUS);
-	public static final RuneDef COLLECT = effect("collect", "Collect", 1, 3, "void", EffectKind.WORLD, "Pulls up to 48 items and experience within 8 blocks to you.", RADIUS);
+	public static final RuneDef COLLECT = effect("collect", "Collect", 1, 3, "void", EffectKind.WORLD, "Pulls up to 48 items and experience within 8 blocks from ground you can edit. Other owners' drops and pickup reservations stay put.", RADIUS);
 	public static final RuneDef EXCAVATE = effect("excavate", "Excavate", 2, 10, "earth", EffectKind.WORLD, "Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).", POWER);
 	public static final RuneDef CLEAVE = effect("cleave", "Cleave", 3, 18, "blood", EffectKind.HARMFUL, "Cuts in proportion to the target: 6 damage plus 10% of its max health (up to 20 more); enemies beside it take half (three at most).", POWER, LINGER);
 	public static final RuneDef DISMANTLE = effect("dismantle", "Dismantle", 2, 10, "blood", EffectKind.HARMFUL, "Three unseen slashes a tenth of a second apart: 3 damage each, straight through armour; the last is twice as deep against something that isn't facing you.", POWER, LINGER);
@@ -328,6 +328,13 @@ public final class Runes {
 	public static final RuneDef RIME_CAUSEWAY = effect("rime_causeway", "Rime Causeway", 3, 16, "frost", EffectKind.WORLD, "Condenses wind into an ascending three-wide ice causeway. Lasts eight seconds, leaves no farmable ice and cushions allies when it fades.", DURATION);
 	public static final RuneDef THUNDER_WALK = effect("thunder_walk", "Thunder Walk", 3, 16, "storm", EffectKind.WORLD, "Builds five copper-lit wind stepping stones. Each enemy touching a stone takes 2 magic damage once per cast; allies receive slow falling before expiry.", DURATION);
 
+	public static final RuneDef SPRINGBED = effect("springbed", "Springbed", 3, 14, "frost", EffectKind.WORLD, "Pours one safe Basinfill vessel, then grows up to eight existing bank crops or moist Moonreed buds by one stage. The new water must hydrate their soil. Never creates plants or opens mature Moonreed without pollinators. Once per paid cast.");
+	public static final RuneDef CINDER_SIEVE = effect("cinder_sieve", "Cinder Sieve", 3, 12, "fire", EffectKind.WORLD, "Consumes one carried coal or charcoal to furnace-process up to sixteen visible loose inputs within four blocks. Only commits when complete outputs fit your inventory. Preserves owned, delayed and protected drops; grants no XP. Once per paid cast.");
+	public static final RuneDef ASHEN_MERCY = effect("ashen_mercy", "Ashen Mercy", 3, 16, "life", EffectKind.HELPFUL, "Extinguishes an ally and removes harmful conditions, converting only actual conditions removed into at most four restored health. Gives five seconds of heat protection. At most eight allies, once per target and paid cast; clean targets receive no healing.");
+	public static final RuneDef CLOCKROOT = effect("clockroot", "Clockroot", 3, 16, "earth", EffectKind.HARMFUL, "Roots remember safe ground for four seconds. A foe fleeing more than two blocks is returned once if its original floor and route are still safe, loaded and permitted. Refuses bosses, anchored or mounted targets and warded arenas. At most eight foes per paid cast; eight-second target rest.");
+	public static final RuneDef SKYLATCH = effect("skylatch", "Skylatch", 3, 14, "wind", EffectKind.HELPFUL, "Lifts an ally about one block and holds vertical height for four seconds while lateral movement remains free. Crouch to release into two seconds of gentle descent. Refuses ceilings, flight abilities, anchors and warded arenas. At most eight allies per paid cast; eight-second target rest.");
+	public static final RuneDef THRESHERWIND = effect("thresherwind", "Thresherwind", 3, 12, "wind", EffectKind.WORLD, "Three travelling shear lanes harvest up to nine mature crops ahead of the impact. Replants only by consuming a real seed from each crop's drops. Collects this harvest, preserves full-inventory leftovers, respects loaded land and claims. Once per paid cast.");
+
 	// ---- Signature fusions: each made only from two particular effects at the Fusion Altar (see Fusions.SIGNATURES),
 	// before their elements' own fusion. Never crafted or found. Fused runes take no designs from the others' circles,
 	// so where these sit changes no older rune's.
@@ -351,7 +358,7 @@ public final class Runes {
 
 	/** Signature fused effects: made only from their own two runes at the Fusion Altar. */
 	public static final java.util.List<RuneDef> SIGNATURE = java.util.List.of(FROSTWIRE, SEETHE, BLOOMSTEP, SKYBURST, STITCHTIME, PARASITE, RAZORGALE,
-		DOOMCLOCK, THUNDERSTEP, HALO, THUNDERQUAKE, COMETFALL, RIPOSTE, DUST_DEVIL, MALISON, AVALANCHE, CINDER_BULWARK, ROOT_BULWARK, BOILING_SURGE, THUNDER_TIDE, RIME_CAUSEWAY, THUNDER_WALK);
+		DOOMCLOCK, THUNDERSTEP, HALO, THUNDERQUAKE, COMETFALL, RIPOSTE, DUST_DEVIL, MALISON, AVALANCHE, CINDER_BULWARK, ROOT_BULWARK, BOILING_SURGE, THUNDER_TIDE, RIME_CAUSEWAY, THUNDER_WALK, SPRINGBED, CINDER_SIEVE, ASHEN_MERCY, CLOCKROOT, SKYLATCH, THRESHERWIND);
 	// ---- Runes of the world: never crafted, only found in particular places (see RuneSources and
 	// Attunements). Defined after everything else, so their magic circles never change an older rune's.
 	// Vanilla structures.

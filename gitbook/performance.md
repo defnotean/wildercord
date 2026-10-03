@@ -28,3 +28,20 @@ Operators can use `/wildercord visualstats` and `/wildercord visualstats reset`.
 Server counters are not GPU frame times. Prior measurements on a Ryzen 7800X3D / RTX 5080 at 1600×900 and a 120 FPS cap recorded roughly 8.33 ms median frame time and 8.9–9.1 ms p95 during a 24-target Firestorm beam scenario. That cap dominates the result: it does **not** establish an uncapped speedup or a promise for other hardware. The twelve new circle disciplines have focused functional and shader tests, rather than a new full hardware benchmark.
 
 For a reproducible report include hardware, render distance, shaders, visual preset, spell, target count and whether the frame rate is capped.
+
+## Mixed material review
+
+The living-world development build also has a sustained test with twenty-four moving targets and
+sixty-four paid Bolts alternating Pelt, Venom, Ember and Windcut. Each preset was measured in a
+fresh world for about thirty seconds at 1280 × 720, with VSync disabled and a 120 FPS cap.
+
+| Preset | Median frame | p95 frame | p99 frame | p95 server tick |
+|---|---:|---:|---:|---:|
+| Performance | 8.32 ms | 10.07 ms | 11.02 ms | 1.76 ms |
+| Balanced | 8.33 ms | 9.76 ms | 10.32 ms | 1.32 ms |
+| Cinematic | 8.33 ms | 9.65 ms | 10.15 ms | 1.13 ms |
+
+Every scheduled cast was admitted in all three runs. The frame cap dominates the median, so this
+comparison does not establish that one preset is faster. It also does not measure remote
+multiplayer, a populated natural ecosystem or an uncapped GPU workload. Use it as a repeatable
+development workload when reporting a regression, alongside the hardware and settings above.

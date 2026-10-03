@@ -142,7 +142,7 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
 | Blood | **Sanguine Rite** | You pay 3 of your own health (never your last; more with Amplify, Overcharge and a crowd) for 12 damage that ignores armour. |
 
-### Signature fusions (22)
+### Signature fusions (28)
 
 Each of these pairs of particular runes makes its own rune, in place of the element fusion in the grid above (which any other effects of those two elements still make).
 
@@ -170,6 +170,12 @@ Each of these pairs of particular runes makes its own rune, in place of the elem
 | Tidal Lift + Shock | **Thunder Tide** | Storm | III | 19 | Suspends real borrowed water inside electrical rings and drives it forward. Each enemy takes 5 damage once, is soaked and slowed for one second. Water returns safely. | Hail |
 | Wind Steps + Frost | **Rime Causeway** | Frost | III | 16 | Condenses wind into an ascending three-wide ice causeway. Lasts eight seconds, leaves no farmable ice and cushions allies when it fades. | Blizzard |
 | Wind Steps + Shock | **Thunder Walk** | Storm | III | 16 | Builds five copper-lit wind stepping stones. Each enemy touching a stone takes 2 magic damage once per cast; allies receive slow falling before expiry. | Tempest |
+| Basinfill + Grow | **Springbed** | Frost | III | 14 | Pours one safe Basinfill vessel, then grows up to eight existing bank crops or moist Moonreed buds by one stage. The new water must hydrate their soil. Never creates plants or opens mature Moonreed without pollinators. Once per paid cast. | Frostbloom |
+| Ember + Collect | **Cinder Sieve** | Fire | III | 12 | Consumes one carried coal or charcoal to furnace-process up to sixteen visible loose inputs within four blocks. Only commits when complete outputs fit your inventory. Preserves owned, delayed and protected drops; grants no XP. Once per paid cast. | Hellmouth |
+| Fireward + Cleanse | **Ashen Mercy** | Life | III | 16 | Extinguishes an ally and removes harmful conditions, converting only actual conditions removed into at most four restored health. Gives five seconds of heat protection. At most eight allies, once per target and paid cast; clean targets receive no healing. | Phoenix Pyre |
+| Root + Foresight | **Clockroot** | Earth | III | 16 | Roots remember safe ground for four seconds. A foe fleeing more than two blocks is returned once if its original floor and route are still safe, loaded and permitted. Refuses bosses, anchored or mounted targets and warded arenas. At most eight foes per paid cast; eight-second target rest. | Fossilize |
+| Levitate + Anchor | **Skylatch** | Wind | III | 14 | Lifts an ally about one block and holds vertical height for four seconds while lateral movement remains free. Crouch to release into two seconds of gentle descent. Refuses ceilings, flight abilities, anchors and warded arenas. At most eight allies per paid cast; eight-second target rest. | Warp |
+| Harvest + Windcut | **Thresherwind** | Wind | III | 12 | Three travelling shear lanes harvest up to nine mature crops ahead of the impact. Replants only by consuming a real seed from each crop's drops. Collects this harvest, preserves full-inventory leftovers, respects loaded land and claims. Once per paid cast. | Zephyr |
 
 <!-- fusions:end -->
 

@@ -32,3 +32,21 @@ Replaying the actual cancelled-job log returned the expected diagnostic failure2
 the accepted clean-projectile native log returned0 for absence of a dual-backend failure.
 These are log-detector checks, not gameplay passes. The full Linux gate and EGL initialization
 remain unverified until the updated workflow runs successfully on GitHub.
+
+## Subsequent Linux run
+
+Build run 37155328593 at commit 65256266 successfully initialized OpenGL with
+Mesa 25.2.8 on the GitHub runner and entered real client gameplay testing.
+The ordinary build job passed. The full native job failed after 22 minutes
+at `HomeProjectsTest`, with `reading lantern grants its utility`.
+The graphics startup correction is therefore verified; the full gameplay
+descriptor is not green.
+
+The retained log is
+`artifacts/review/field-signature-fusions/ci-65256266-failed.log`.
+The lantern's actual server code applies a 20-tick charge cooldown and updates
+at `gameTime % 20 == 0`. Depending on the starting tick, a successful update can
+take up to 39 ticks. The test previously waited only 25. Its development
+correction checks that the lantern is configured and charged, then allows the
+full 40-tick cooldown/update window. Production timing and utility are unchanged.
+Focused native acceptance and a subsequent full Linux run are separate gates.

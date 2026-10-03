@@ -308,3 +308,9 @@ rime_causeway|WING|SHARD|STEP
 thunder_walk|STEP|GEAR|FORK
 
 basinfill|DROPLET|TIDE|FOAM
+springbed|DROPLET|ROOTS|PETAL
+cinder_sieve|FLAME|SHELL|GATE
+ashen_mercy|FLAME|MIST|PETAL
+clockroot|ROOTS|CLOCK|STEP
+skylatch|WING|TETHER|CLOUD
+thresherwind|CRESCENT|ROOTS|SWARM

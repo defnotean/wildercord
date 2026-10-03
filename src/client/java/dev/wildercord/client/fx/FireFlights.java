@@ -17,6 +17,7 @@ final class FireFlights {
  }
  static void draw(String id,int age,double scale,double length,Vec3 head,Vec3 velocity,boolean minimal,BiConsumer<ParticleOptions,Vec3> emit) {
   if(!supports(id) || !Double.isFinite(velocity.lengthSqr()))return;
+  if(FieldFusionForms.flight(id,age,scale,length,head,velocity,minimal,emit))return;
   var forward=velocity.lengthSqr()<.0001?new Vec3(0,0,1):velocity.normalize();
   var right=forward.cross(new Vec3(0,1,0));if(right.lengthSqr()<.0001)right=new Vec3(1,0,0);else right=right.normalize();
   var p=new Pen(head,right,right.cross(forward).normalize(),forward.scale(Math.clamp(length,1,2)),Math.clamp(scale,.4,2),emit);

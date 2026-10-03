@@ -13,7 +13,7 @@ final class FrostFormations {
  static final List<String> RUNES=List.of("basinfill","absolute_zero","avalanche","black_ice","blizzard","bubble","chill",
   "coldsnap","cryostasis","current","drowning_word","flash_freeze","freeze","frost","frostbite","frostbloom",
   "frostward","glacier","hail","hoarfrost","icepath","icicle","mirrorfrost","rime_causeway","rime_seal",
-  "tidal_lift","tidebreath","tidecall","tidehook","tidewrit","undertow");
+  "tidal_lift","tidebreath","tidecall","tidehook","tidewrit","undertow","springbed");
  static boolean supports(String id){return id.startsWith("wildercord:") && RUNES.contains(id.substring(11));}
  static boolean draw(SpellFormations.Canvas c,int beat) {
   boolean authored=false;
@@ -25,6 +25,7 @@ final class FrostFormations {
  }
  static void draw(String rune,int beat,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,
                   boolean minimal,BiConsumer<ParticleOptions,Vec3> emit) {
+  if(FieldFusionForms.prepare("wildercord:"+rune,beat,scale,anchor,right,up,forward,minimal,emit))return;
   double t=beat/2.0;
   var p=new Pen(anchor,right,up,forward,scale,minimal,emit);
   switch(rune) {

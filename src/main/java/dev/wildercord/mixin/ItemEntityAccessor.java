@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 /** Who dropped an item, even when they aren't about: a Void familiar leaves anyone's drops alone. */
 @Mixin(ItemEntity.class)
 public interface ItemEntityAccessor {
+	@Accessor("target") java.util.UUID wildercord$target();
 	@Accessor("thrower")
 	EntityReference<Entity> wildercord$thrower();
 }

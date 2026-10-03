@@ -25,7 +25,7 @@ public final class WindFlightTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);var camera=net.minecraft.world.entity.EntityTypes.TEXT_DISPLAY.create(s.overworld(),net.minecraft.world.entity.EntitySpawnReason.COMMAND);camera.snapTo(3,102,10,90,0);camera.setNoGravity(true);camera.setInvisible(true);s.overworld().addFreshEntity(camera);cameraId=camera.getId();});c.waitTicks(15);
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"wind_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
-   check(WindForms.RUNES.size()==25,"Explicit complete wind roster");
+   check(WindForms.RUNES.size()==27,"Explicit complete wind roster");
    check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("wind")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(WindForms.RUNES)),"Authored runtime wind roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:WindForms.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
@@ -71,7 +71,8 @@ public final class WindFlightTest implements FabricClientGameTest {
    case "dust_devil","downdraft" -> Set.of(WIND,STONE);
    case "recoil" -> Set.of(WIND,TIME);
    case "razorgale" -> Set.of(WIND,BLOOD);
-   case "prune","zephyr" -> Set.of(WIND,PETAL);
+   case "prune","zephyr","thresherwind" -> Set.of(WIND,PETAL);
+   case "skylatch" -> Set.of(WIND,VOID);
    case "skyglyph" -> Set.of(WIND,ARCANE);
    case "summit_wind" -> Set.of(WIND,VAPOUR);
    default -> Set.of(WIND);

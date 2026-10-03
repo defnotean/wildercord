@@ -167,7 +167,7 @@ class FusionTest {
 
 	@Test
 	void everySignatureIsAFusedRuneOfItsOwnFromTwoRunesACasterCanFind() {
-		assertEquals(22, Fusions.SIGNATURES.size());
+		assertEquals(28, Fusions.SIGNATURES.size());
 		assertEquals(Runes.SIGNATURE.size(), Fusions.SIGNATURES.size());
 		java.util.Set<java.util.Set<String>> pairs = new java.util.HashSet<>();
 		java.util.Map<String, Integer> uses = new java.util.HashMap<>();

@@ -1,6 +1,7 @@
 package dev.wildercord.cast;
 
 import dev.wildercord.Wildercord;
+import dev.wildercord.mixin.ItemEntityAccessor;
 import dev.wildercord.spell.EffectKind;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
@@ -250,6 +251,7 @@ public final class Effects {
 		List<LivingEntity> targetsHit = harmed;
 		RunicAnimations.land(cast, rune, hit);
 		if (PhysicalMagic.apply(cast,rune,hit,power,duration)) return;
+		if (FieldFusions.apply(cast,node,hit,helped,harmed)) return;
 
 		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
 		switch (builtIn(rune) ? rune.path() : "") {
@@ -1451,6 +1453,7 @@ public final class Effects {
 		int moved = 0;
 		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(reach),
 				e -> (e instanceof net.minecraft.world.entity.item.ItemEntity || e instanceof net.minecraft.world.entity.ExperienceOrb)
+						&& (!(e instanceof net.minecraft.world.entity.item.ItemEntity item) || collectableItem(caster, item))
 					&& e.distanceToSqr(point) <= reach * reach && onOpenGround(cast, BlockPos.containing(e.position()).below()))) {
 			if (moved >= MAX_COLLECT_ITEMS) {
 				break;
@@ -1465,6 +1468,14 @@ public final class Effects {
 		// A ring drawing in on the point, then the sound of everything arriving; a quiet fizzle when there was nothing to fetch.
 		ElementFx.groundRing(cast.level, CastEngine.ground(cast.level, point.add(0, 0.5, 0)), ElementFx.VOID.primary(), reach, 0.4, 0.05, 10);
 		dev.wildercord.cast.feel.Feels.sound(cast.level, caster.position(), moved > 0 ? "void_collect_suck" : "fizzle", 0.9F, 1.0F);
+	}
+
+	/** Remote collection leaves another owner's drops and active pickup reservations in place. */
+	private static boolean collectableItem(LivingEntity caster, net.minecraft.world.entity.item.ItemEntity item) {
+		if (!item.isAlive() || item.hasPickUpDelay()) return false;
+		var ownership = (ItemEntityAccessor) item;
+		return (ownership.wildercord$target() == null || ownership.wildercord$target().equals(caster.getUUID()))
+			&& (ownership.wildercord$thrower() == null || ownership.wildercord$thrower().getUUID().equals(caster.getUUID()));
 	}
 
 	/** Excavate: mines a 3x3 face of blocks around the block hit. */

@@ -12,28 +12,24 @@ Existing features, recolours, source references and controlled screenshots do no
 | 4 connected ecosystems | Highland, wetland and first fungal foundations | Finish their connected relationships; build ember woodlands; none yet meets the full ecosystem acceptance criteria |
 | 6 new dungeon/encounter locations | Sword tomb is the conservative confirmed new dungeon; hosted village tournament is an additional encounter candidate | 5 further fixed locations under the conservative architectural count, or 4 if the tournament counts; finalize this scope explicitly |
 | Battlefields and sleeping blade | Both implemented with native evidence | Natural rarity/distribution, remote participation, return-visit design and remaining lifecycle coverage |
-| 36 functional items | 17 clearly functional: previous fourteen, Reed Rattle, Mycelial Dew and Fungal Poultice | 19 plus verify the required category distribution; a rune item is counted as an ability, not also as functional equipment |
+| At least 36 functional items | 21 accepted functional additions, including the four Nursery items | Seven relics, seven equipment and two tools remain to meet category minimums, yielding 37. See the category ledger; do not relabel materials to force 36. |
 | 12 abilities | Unity and verified Basinfill: 2 credited | 10 still uncredited; audit any newly taught technique against the baseline before counting it |
-| 18 new signature fusions | Existing 22 named signature recipes predate this goal's additions | 18 additions still needed; existing 55 elemental fusions and dynamic weaves do not satisfy this target |
-| 24 discoverable lore texts | 9 explicitly credited: previous eight and The Patient Spiral | 15 plus illustrated journal/discovery integration; bestiary pages should be reconciled before further credit |
-| 4 connected optional investigations | No completed chain credited | 4 complete chains, clues, persistent state and rewards |
+| 18 new signature fusions | Six new field signatures have passed final native altar, paid-cast, refusal, persistence and Full/Minimal preparation checks; combined review delivery pending | 12 more signatures still needed; existing22 signatures,55 elemental fusions and dynamic weaves do not satisfy this target |
+| 24 discoverable lore texts | 12 credited: previous nine and three Nursery texts | 12 plus illustrated journal/discovery integration; bestiary pages should be reconciled before further credit |
+| 4 connected optional investigations | Glowcap Nursery earned-resource chain passed with saved-state and once-only reward checks | 3 further complete chains, clues, persistent state and rewards |
 
-The prior increment ledger credited fifteen items by including Tideward notes. This audit separates that lore book from functional equipment/materials. The Reed Rattle and the two fungal fieldcraft items now bring functional additions to seventeen. Spawn eggs and The Patient Spiral are not equipment credits. Existing signature fusions and battlefield/tomb technique rewards were confirmed unchanged against baseline commit `14efc61e`; teaching them does not count as new abilities. Life presentations, six signature fusions and a Glowcap nursery investigation are being drafted outside the build and receive no completion credit.
+The prior increment ledger credited fifteen items by including Tideward notes. This audit separates that lore book from functional equipment/materials. The four accepted Nursery additions now bring functional additions to twenty-one. Spawn eggs and lore texts are not equipment credits. Existing signature fusions and battlefield/tomb technique rewards were confirmed unchanged against baseline commit `14efc61e`; teaching them does not count as new abilities. Life presentations, six signature fusions and the Glowcap Nursery investigation have focused native acceptance. Combined review JAR and pushed milestone delivery remain pending.
 
 ## 1. Visual identity
 
 Finish the asset-by-asset audit of equipment, accessories, blocks, creatures, structure details,
 menus and HUD. Establish consistent regional/faction materials and silhouettes. Review the
 illustrated field journal in game across chapter types, discovery states and GUI scales.
-Existing guide improvements and 117 validated pages are a foundation, not full visual approval.
+Existing guide improvements and120 validated/exported pages, including the illustrated Life materials chapter, are a foundation, not full visual approval.
 
 ## 2. Every spell and Aura technique
 
-The baseline runtime inventory has 350 runes (258 effects); Basinfill expands it to 351 (259).
-Fire (28), frost/water (30 before Basinfill), storm (20) and wind (25) have individually authored
-preparation/projectile-body work. Earth adds 32 authored identities, with its native suites tracked
-in `docs/audit/full-spell-roster/earth-choreography.md`. These 135 baseline identities plus
-Basinfill are not 136 fully finished spells. Finish life, void, time, arcane, blood and
+The development runtime now has 357 runes (265 effects). Its canonical preparation/moving-body contract covers 170 distinct effect identities: Fire 29, Frost 32, Storm 20, Wind 27, Earth 33 and Life 29. These are not 170 completed spell lifecycles; see `full-spell-roster/coverage-stages.md`. Life 29 has accepted preparation and paid moving-body coverage in Full/Minimal; six additional signatures have accepted focused gameplay/presentation. Finish void, time, arcane, blood and
 cross-family exceptions. Finish actual release,
 impact, aftermath and sound identity for every effect. Audit beam, rain, self, summon, trap,
 ward, field and construct deliveries separately. Verify ranks/modifiers, links, reflection,
@@ -59,7 +55,7 @@ They are not counted as newly created species for this expansion.
 
 ## 4. Equipment, crafting and combat
 
-Add 19 further functional items and reconcile all 36 against the eight relic/eight equipment/six
+Add 16 further functional items and reconcile the minimum total against the eight relic/eight equipment/six
 tool/six placeable/eight consumable categories. Design acquisition and alternatives; complete
 upgrades, research, cooperative support, wards/apparatus and useful home infrastructure.
 Check inventories, backpack, accessory slots and all new recipes in the real UI.
@@ -75,7 +71,7 @@ Build four to five further distinct locations, depending on tournament encounter
 Storm Spire is an improved existing dungeon, not another added location. Check generation
 frequency and spacing across seeds, biome placement, old saved layouts and return routes.
 
-Add sixteen further credited lore texts and four connected investigations. Develop memorable
+Add twelve further credited lore texts and three connected investigations. Develop memorable
 characters and faction motives, gameplay clues, consequences and optional story progression.
 Complete bestiary/journal collections, artifact restoration, mentorship, home projects and
 cooperative expeditions. Run early/middle/late-game journeys with multiple builds and verify
@@ -96,15 +92,19 @@ Complete real remote multiplayer tests; integrated single-client servers are dif
 Profile sustained mixed combat and natural ecosystems. Search limits/cache caps are constraints,
 not measured speedups. Finish concurrent effect/sound readability, non-colour communication,
 accessibility and upgrade safety. Resolve full CI outcomes before calling all gates green.
+The previous full native CI job was cancelled after graphics initialization failed before tests;
+the ordinary build passed. CI-only correction 65256266 is pushed. Its subsequent Linux run initialized Mesa OpenGL and reached gameplay, then failed a timing assumption in HomeProjectsTest. The corrected focused local test passes; a subsequent full Linux descriptor remains required.
+See `ci-graphics-startup.md` for the distinct graphics and gameplay results.
 
 Continue delivering native screenshots, validated code/assets/recipes/docs, checked review JARs,
 clear limits and pushed commits per milestone. Public releases need explicit user authorization.
-The 0.9.1-alpha.1 asset mismatch is corrected. VPS activation is separately queued for an empty
-server and must be rechecked; staging is not proof of deployment.
+The 0.9.1-alpha.1 asset mismatch is corrected. VPS activation of the published 0.9.1-alpha.1 release was verified on 2026-10-03
+with an offline backup, installed checksum, loader startup and responsive RCON.
+See `server-update-0911.md`. Later goal content is not included in that release.
 
 ## Next concrete work
 
-Basinfill is this request's small utility addition. Reed Rattle remains a planned, unimplemented
-physical wetland instrument. Then complete another coherent creature/item/ecosystem increment,
-continue the remaining elemental roster and integrate investigations/progression. No requirement
+Basinfill, Reed Rattle and Sporeback Snails are implemented and have scoped native evidence.
+Life 29, the six field signatures and the Glowcap Nursery earned-resource investigation have accepted focused native evidence; combined build and pushed delivery are pending. The current parallel work includes removal of generic front projectile overlays and drafts of the next twelve signatures. Fungal tests now pass finite late-search and blocked-path traversal, natural generation on the retained failed seed, and the grounded canopy acquisition/restart chain. A Grow-only obstruction cause was not established; actual Grow-first acceptance passes. Clearer native presentation captures are being prepared. Continue the remaining elemental
+roster and other creatures, ecosystems, locations and progression. No requirement
 above is considered complete merely because this audit exists.

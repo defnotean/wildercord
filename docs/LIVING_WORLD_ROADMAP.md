@@ -15,7 +15,7 @@ These targets are additions to the baseline, subject to documented design adjust
 - 12 new creatures: four peaceful/magical wildlife, three hostile/territorial creatures, two Aura-resistant beasts, two bosses, one useful companion. Each needs custom identity, habitat, behavior, model/animation, sound, rewards, bestiary and tests.
 - Four connected ecosystems: luminous wetlands, wind-carved highlands, ember woodlands, subterranean fungal ruins. Each needs resources, shelter/foraging behavior, ecological relationships, bounded spawning, and meaningful magic interactions.
 - Six distinct new dungeon/encounter locations, plus old battlefields and the sleeping blade. Include the sword tomb, its intent gates and guardian. Deliberate biome distribution, rarity, alternate routes and useful return visits.
-- 36 new functional items: eight relics, eight equipment/accessories, six exploration/support tools, six placeable utilities/decorations, eight consumables/material uses. Distinct tradeoffs, acquisition and recipes; no filler recolours.
+- 36 new functional items: eight relics, eight equipment/accessories, six exploration/support tools, six placeable utilities/decorations, eight consumables/material uses. Distinct tradeoffs, acquisition and recipes; no filler recolours. The total is a minimum: if a complete ecosystem adds another useful material, retain all category minimums and exceed36 rather than relabeling materials as equipment. The current17-item ledger and pending nursery additions imply37 items to fulfill every category; see `docs/audit/functional-item-categories.md`.
 - At least 12 new magic/Aura abilities and 18 authored signature fusions. Audit all existing abilities and supported pairings, including formation, launch, impact, sound, mechanics and counters. Every supported pairing must resolve intentionally.
 - 24 discoverable lore texts/entries, four optional connected investigation/quest chains, illustrated bestiary/journal integration and consistent regional/faction histories.
 - Finish all remaining Aura step 11/12 requirements: terrain training, battlefields, sword tomb, sleeping blade, Aura beasts, village tournaments, resonant strikes, rune-etched blades and Unity.
@@ -387,3 +387,64 @@ Review: artifacts/review/parallel-living-world/wildercord-earth-fieldcraft-revie
 The new reusable tools/verify_review_jar.py checks an explicitly named JAR against build
 outputs and unit reports, rejects extra/missing mod classes and duplicate/corrupt entries.
 This is development content after the public alpha.1 release; no new public upload is claimed.
+
+
+## Active integration and server activation — 2026-10-03
+
+The published 0.9.1-alpha.1 release is now installed on the VPS after verified empty-server checks, a clean save/stop and an offline backup. Its installed SHA256 matches the GitHub release. Loader startup, RCON and a connected player were confirmed. See `docs/audit/server-update-0911.md`; this deployment does not include later goal content.
+
+Life preparation and moving-body recipes, six new field signatures and the Glowcap Nursery investigation have moved from isolated drafts into development sources. Initial six-signature gameplay and Full/Minimal presentation native passes exist; expanded refusals, final visual captures, Life29 and complete fungal chain/natural-generation acceptance are still being checked. No conditional creature/item/lore/investigation targets are promoted by this status entry.
+
+The sustained mixed-material benchmark passed: 24 moving dummies and64 admitted Pelt/Venom/Ember/Windcut Bolts per profile, with about30seconds of frame samples. Complete visual/FPS/VSync/HUD preferences are restored after benchmarking. See `docs/audit/living-world-performance.md` for exact metrics and limits. The120FPS cap prevents claiming a relative profile speedup; natural ecosystem and remote multiplayer profiling remain open.
+
+Generated-assets reproducibility passed across5039paths after integration and correcting the six carved rune images to their actual item-model texture paths. New content is still undergoing focused gameplay/visual acceptance before a combined review JAR and pushed milestone.
+
+## Life, signatures and fungal acceptance progress — 2026-10-03
+
+Life29 recipe, preparation and paid Full/Minimal moving-body suites passed19s,64s and112s.
+Six field signatures passed the final gameplay/altar/unit run51s and final presentation52s;
+the existing real client Fuse packets and exact paid outcomes remain covered. Collect ownership
+passed its focused29s native run. Clean elemental preparation passed41s, retaining rear glyph
+strokes and Jolt's authored arc while excluding generic orb/ray from the front body. The mixed
+Ember/Umbra fallback remains verified. See the individual audit documents for exact scope.
+
+The illustrated Living Materials chapter uses original Life frames;120 player-guide pages
+validate and export. A review caught and corrected the chapter's ingredient description:
+Second Wind is Life+Time, not Life+Wind. Family recipe counts can overlap and are not a global
+count of completed spell lifecycles. Complete impacts, voices and other deliveries remain open.
+
+The final grounded Nursery earned-resource chain passed in 2m28s with the same visitor's two
+real harvest cycles, actual Grow-first preparation, native recipes/placement, claimed
+investigation, finite filter use and saved-world restart. Natural terrain passed in 42s on the
+retained failed seed: six caps and both authentic clue kinds in the same 81 chunks, with actual
+moisture, cover and cave-biome predicates unchanged. Distinct current-chunk column sampling
+corrected sparse decoration. Late-search, occupancy and blocked-path checks passed in 1m10s.
+This credits four functional items, three lore texts and one investigation, bringing counts
+to 21 functional items, 12 lore texts and one investigation. Complete fungal ecosystem and
+clearer player-review presentation remain separate acceptance work.
+
+The earlier full GitHub native job ended at90minutes after both graphics backends failed before
+tests began. CI-only commit65256266 is pushed to main: documented SDL EGL selection plus a
+streaming guard for dual-backend startup failure. Its Linux job 37155328593 initialized Mesa
+OpenGL and reached gameplay, then failed the Runic Hearth lantern test's short timing window.
+The corrected focused native test passed in 1m08s; the full Linux descriptor still needs a
+subsequent run. See docs/audit/ci-graphics-startup.md. This push contains no
+new Life/signature/Nursery public release.
+
+Three agents continue in parallel: physical fungal fieldcraft/generation, independent cave
+generation analysis plus isolated Life outcome/voice drafts, and the remaining twelve signature
+drafts. Void36, Life29 outcomes/58 voices, Rootmolt and twelve signatures remain outside the
+build until promoted and verified. Draft files and offline audio checks are not gameplay credits.
+
+### Combined milestone delivery
+
+The accepted Life/field-signature/Nursery batch now has a checked review JAR:
+`artifacts/review/life-fieldcraft-milestone/wildercord-life-fieldcraft-review+mc26.3.jar`.
+Final build passed with 968 unit tests, zero failures/errors/skips; 5,039 generated
+paths are reproducible and the 120-page guide validates/exports. All 5,038 processed
+resources and 1,674 main/client classes match the package. Clear fungal native
+captures and complete affected Fire/Frost/Storm preparation reruns are retained.
+See `docs/audit/life-fieldcraft-milestone.md` for the checksum and scoped acceptance.
+The full Linux native descriptor and broader goal remain open. Next parallel
+work addresses Life owner outcome edges, the next twelve signatures' exploit
+paths, and Rootmolt creature/tether behavior in isolated drafts.

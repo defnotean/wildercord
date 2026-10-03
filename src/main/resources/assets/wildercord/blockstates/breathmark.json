@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "kind=0": {
+      "model": "wildercord:block/breathmark_0"
+    },
+    "kind=1": {
+      "model": "wildercord:block/breathmark_1"
+    }
+  }
+}

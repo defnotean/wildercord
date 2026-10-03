@@ -8,7 +8,7 @@ nav_order: 6
 
 # Fused runes
 
-55 runes made only at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (22 more).
+55 runes made only at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (28 more).
 
 | | Fire | Frost | Storm | Wind | Earth | Life | Void | Arcane | Time | Blood |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -632,7 +632,7 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 
 ## Signature fusions
 
-22 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
+28 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
 
 | | Put in | Makes | Counts as | In place of |
 |---|---|---|---|---|
@@ -642,6 +642,12 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 | <img src="{{ '/assets/runes/thunder_tide.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidal Lift]({{ '/runes/effects/frost/' | relative_url }}#tidal_lift) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | [Thunder Tide](#thunder_tide) | Storm | Hail |
 | <img src="{{ '/assets/runes/rime_causeway.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Wind Steps]({{ '/runes/effects/wind/' | relative_url }}#wind_steps) + [Frost]({{ '/runes/effects/frost/' | relative_url }}#frost) | [Rime Causeway](#rime_causeway) | Frost | Blizzard |
 | <img src="{{ '/assets/runes/thunder_walk.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Wind Steps]({{ '/runes/effects/wind/' | relative_url }}#wind_steps) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | [Thunder Walk](#thunder_walk) | Storm | Tempest |
+| <img src="{{ '/assets/runes/springbed.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Basinfill]({{ '/runes/effects/frost/' | relative_url }}#basinfill) + [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) | [Springbed](#springbed) | Frost | Frostbloom |
+| <img src="{{ '/assets/runes/cinder_sieve.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Ember]({{ '/runes/effects/fire/' | relative_url }}#ember) + [Collect]({{ '/runes/effects/void/' | relative_url }}#collect) | [Cinder Sieve](#cinder_sieve) | Fire | Hellmouth |
+| <img src="{{ '/assets/runes/ashen_mercy.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Fireward]({{ '/runes/effects/fire/' | relative_url }}#fireward) + [Cleanse]({{ '/runes/effects/life/' | relative_url }}#cleanse) | [Ashen Mercy](#ashen_mercy) | Life | Phoenix Pyre |
+| <img src="{{ '/assets/runes/clockroot.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Root]({{ '/runes/effects/earth/' | relative_url }}#root) + [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) | [Clockroot](#clockroot) | Earth | Fossilize |
+| <img src="{{ '/assets/runes/skylatch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Levitate]({{ '/runes/effects/wind/' | relative_url }}#levitate) + [Anchor]({{ '/runes/effects/void/' | relative_url }}#anchor) | [Skylatch](#skylatch) | Wind | Warp |
+| <img src="{{ '/assets/runes/thresherwind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Harvest]({{ '/runes/effects/life/' | relative_url }}#harvest) + [Windcut]({{ '/runes/effects/wind/' | relative_url }}#windcut) | [Thresherwind](#thresherwind) | Wind | Zephyr |
 | <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | [Frostwire](#frostwire) | Storm | Hail |
 | <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) + [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) | [Seethe](#seethe) | Fire | Steam |
 | <img src="{{ '/assets/runes/bloomstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) + [Blink]({{ '/runes/effects/void/' | relative_url }}#blink) | [Bloomstep](#bloomstep) | Life | Lifesteal |
@@ -658,6 +664,17 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 | <img src="{{ '/assets/runes/dust_devil.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Summit Wind]({{ '/runes/world/' | relative_url }}#summit_wind) + [Sandstorm]({{ '/runes/world/' | relative_url }}#sandstorm) | [Dust Devil](#dust_devil) | Wind | Downdraft |
 | <img src="{{ '/assets/runes/malison.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Hex]({{ '/runes/effects/void/' | relative_url }}#hex) + [Resonance]({{ '/runes/effects/arcane/' | relative_url }}#resonance) | [Malison](#malison) | Void | Nullify |
 | <img src="{{ '/assets/runes/avalanche.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Coldsnap]({{ '/runes/effects/frost/' | relative_url }}#coldsnap) + [Stalactite]({{ '/runes/world/' | relative_url }}#stalactite) | [Avalanche](#avalanche) | Frost | Glacier |
+
+### <img src="{{ '/assets/runes/ashen_mercy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ashen Mercy
+{: #ashen_mercy}
+
+*Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+Extinguishes an ally and removes harmful conditions, converting only actual conditions removed into at most four restored health. Gives five seconds of heat protection. At most eight allies, once per target and paid cast; clean targets receive no healing.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Fireward]({{ '/runes/effects/fire/' | relative_url }}#fireward) and [Cleanse]({{ '/runes/effects/life/' | relative_url }}#cleanse) themselves, with an amethyst shard (3 XP levels). Any other Fire and Life effects make Phoenix Pyre instead.
+
+**Modifiers that work on it:** Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/avalanche.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Avalanche
 {: #avalanche}
@@ -702,6 +719,28 @@ Raises a cracked, glowing wall. Enemies brushing against it take 2 magic damage 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Strata Rise]({{ '/runes/effects/earth/' | relative_url }}#strata_rise) and [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) themselves, with an amethyst shard (3 XP levels). Any other Earth and Fire effects make Magma instead.
 
 **Modifiers that work on it:** Extend, Frugal
+
+### <img src="{{ '/assets/runes/cinder_sieve.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cinder Sieve
+{: #cinder_sieve}
+
+*Tier III · Fire · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Consumes one carried coal or charcoal to furnace-process up to sixteen visible loose inputs within four blocks. Only commits when complete outputs fit your inventory. Preserves owned, delayed and protected drops; grants no XP. Once per paid cast.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Ember]({{ '/runes/effects/fire/' | relative_url }}#ember) and [Collect]({{ '/runes/effects/void/' | relative_url }}#collect) themselves, with an amethyst shard (3 XP levels). Any other Fire and Void effects make Hellmouth instead.
+
+**Modifiers that work on it:** Frugal
+
+### <img src="{{ '/assets/runes/clockroot.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Clockroot
+{: #clockroot}
+
+*Tier III · Earth · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+
+Roots remember safe ground for four seconds. A foe fleeing more than two blocks is returned once if its original floor and route are still safe, loaded and permitted. Refuses bosses, anchored or mounted targets and warded arenas. At most eight foes per paid cast; eight-second target rest.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Root]({{ '/runes/effects/earth/' | relative_url }}#root) and [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) themselves, with an amethyst shard (3 XP levels). Any other Earth and Time effects make Fossilize instead.
+
+**Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostwire
 {: #frostwire}
@@ -813,6 +852,28 @@ Flings each target high into the air (3 at most); at the top of its flight it ex
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
+### <img src="{{ '/assets/runes/skylatch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Skylatch
+{: #skylatch}
+
+*Tier III · Wind · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+Lifts an ally about one block and holds vertical height for four seconds while lateral movement remains free. Crouch to release into two seconds of gentle descent. Refuses ceilings, flight abilities, anchors and warded arenas. At most eight allies per paid cast; eight-second target rest.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Levitate]({{ '/runes/effects/wind/' | relative_url }}#levitate) and [Anchor]({{ '/runes/effects/void/' | relative_url }}#anchor) themselves, with an amethyst shard (3 XP levels). Any other Wind and Void effects make Warp instead.
+
+**Modifiers that work on it:** Frugal, Kindred
+
+### <img src="{{ '/assets/runes/springbed.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Springbed
+{: #springbed}
+
+*Tier III · Frost · Works on the world · 14 mana · needs an Amethyst Cord or better*
+
+Pours one safe Basinfill vessel, then grows up to eight existing bank crops or moist Moonreed buds by one stage. The new water must hydrate their soil. Never creates plants or opens mature Moonreed without pollinators. Once per paid cast.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Basinfill]({{ '/runes/effects/frost/' | relative_url }}#basinfill) and [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) themselves, with an amethyst shard (3 XP levels). Any other Frost and Life effects make Frostbloom instead.
+
+**Modifiers that work on it:** Frugal
+
 ### <img src="{{ '/assets/runes/stitchtime.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stitchtime
 {: #stitchtime}
 
@@ -823,6 +884,17 @@ Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhil
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Heal]({{ '/runes/effects/life/' | relative_url }}#heal) and [Countdown]({{ '/runes/effects/time/' | relative_url }}#countdown) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### <img src="{{ '/assets/runes/thresherwind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thresherwind
+{: #thresherwind}
+
+*Tier III · Wind · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Three travelling shear lanes harvest up to nine mature crops ahead of the impact. Replants only by consuming a real seed from each crop's drops. Collects this harvest, preserves full-inventory leftovers, respects loaded land and claims. Once per paid cast.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Harvest]({{ '/runes/effects/life/' | relative_url }}#harvest) and [Windcut]({{ '/runes/effects/wind/' | relative_url }}#windcut) themselves, with an amethyst shard (3 XP levels). Any other Life and Wind effects make Zephyr instead.
+
+**Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/thunder_tide.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunder Tide
 {: #thunder_tide}

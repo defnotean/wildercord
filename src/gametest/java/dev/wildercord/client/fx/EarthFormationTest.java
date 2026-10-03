@@ -39,7 +39,7 @@ public final class EarthFormationTest implements FabricClientGameTest {
    });
    var baseline=c.computeOnClient(mc -> snapshot(mc,"earth_formation_background"));c.waitFor(mc -> baseline.isDone());baseline.join();
    var earth=Runes.all().stream().filter(r -> r.family()==RuneFamily.EFFECT && r.element().equals("earth")).map(r -> r.id()).sorted().toList();
-   check(earth.size()==32,"Reviewed earth roster changes require explicit expansion of this suite");
+   check(earth.size()==33,"Reviewed earth roster changes require explicit expansion of this suite");
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL)) {
     c.runOnClient(mc -> MagicQuality.own=quality);
     for(var id:earth) {

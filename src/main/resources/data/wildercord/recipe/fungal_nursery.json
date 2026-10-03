@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:stick",
+    "minecraft:stick",
+    "minecraft:paper",
+    "wildercord:dried_glowcap_gills"
+  ],
+  "result": {
+    "id": "wildercord:fungal_nursery"
+  }
+}

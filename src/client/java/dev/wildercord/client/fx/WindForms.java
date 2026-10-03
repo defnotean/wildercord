@@ -19,7 +19,8 @@ final class WindForms {
             result.add("wind");
             switch(id.substring(11)){
                 case "dust_devil","downdraft" -> result.add("earth");
-                case "zephyr" -> result.add("life");
+                case "zephyr","thresherwind" -> result.add("life");
+                case "skylatch" -> result.add("void");
                 case "razorgale" -> result.add("blood");
                 case "skyglyph" -> result.add("arcane");
                 case "recoil" -> result.add("time");
@@ -39,6 +40,7 @@ final class WindForms {
     static void flight(String id,int age,double scale,double length,Vec3 head,Vec3 velocity,
                        boolean minimal,BiConsumer<ParticleOptions,Vec3> emit){
         if(!supports(id)||!Double.isFinite(velocity.lengthSqr()))return;
+        if(FieldFusionForms.flight(id,age,scale,length,head,velocity,minimal,emit))return;
         var f=velocity.lengthSqr()<.0001?new Vec3(0,0,1):velocity.normalize();
         var r=f.cross(new Vec3(0,1,0));r=r.lengthSqr()<.0001?new Vec3(1,0,0):r.normalize();
         draw(id,age,true,Math.clamp(scale,.4,2)*.55,head,r,r.cross(f).normalize(),f.scale(Math.clamp(length,1,2)),minimal,emit);
@@ -46,6 +48,7 @@ final class WindForms {
     static void draw(String id,int age,boolean flight,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,
                      boolean minimal,BiConsumer<ParticleOptions,Vec3> emit){
         if(!supports(id))return;
+        if(FieldFusionForms.prepare(id,age,scale,anchor,right,up,forward,minimal,emit))return;
         double t=flight?age*.23:age*.5;
         double gather=flight?1:t;
         var p=new Pen(anchor,right,up,forward,scale,flight?5:8,minimal,emit);

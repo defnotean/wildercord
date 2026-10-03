@@ -1029,6 +1029,42 @@
     "field_pulse": {
       "part": "neutral"
     },
+    "fieldfusion_ashen_mercy_cue": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_ashen_mercy_impact": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_cinder_sieve_cue": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_cinder_sieve_impact": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_clockroot_cue": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_clockroot_impact": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_skylatch_cue": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_skylatch_impact": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_springbed_cue": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_springbed_impact": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_thresherwind_cue": {
+      "part": "fieldfusion"
+    },
+    "fieldfusion_thresherwind_impact": {
+      "part": "fieldfusion"
+    },
     "fire_ash": {
       "part": "fire"
     },
@@ -1193,6 +1229,21 @@
     },
     "frost_zero": {
       "part": "frost"
+    },
+    "fungal_cap_harvest": {
+      "part": "fungal"
+    },
+    "fungal_cap_open": {
+      "part": "fungal"
+    },
+    "fungal_filter": {
+      "part": "fungal"
+    },
+    "fungal_mark_read": {
+      "part": "fungal"
+    },
+    "fungal_nursery_settle": {
+      "part": "fungal"
     },
     "gate_fail": {
       "part": "neutral"

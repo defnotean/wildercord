@@ -173,3 +173,8 @@ Three events happen on their own in the Overworld, near players. They're covered
 [Reed Refuges]({{ '/world/reed-refuges/' | relative_url }}) gives Lantern Newts an open resting shelter and introduces Tamsin's field notes.
 
 [Reedback Crabs]({{ '/world/reedback-crabs/' | relative_url }}) guard shallow banks with readable claw sweeps and respond to Tidebreath and wind.
+
+
+## Belowkeeper gardens
+
+[Glowcap Nurseries]({{ '/world/glowcap-nurseries/' | relative_url }}) follows the relationship between damp cave caps and patient Sporeback visitors. Tend a living nursery, make a limited-use cave filter, and follow Mara's two Breathmarks into an optional field investigation.

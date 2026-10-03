@@ -153,8 +153,8 @@ public final class Fusions {
 
 	/**
 	 * Every signature fusion, in the order the Grimoire lists them: each a pair of particular effects (never
-	 * innate, never fused, always ones a caster can come by) and the rune only they make. No two share a pair
-	 * of elements, so each one's circle braids a pairing of its own.
+	 * innate, never fused, always ones a caster can come by) and the rune only they make. Exact rune pairs
+	 * remain distinct even when another signature uses the same two elements.
 	 */
 	public static final List<Signature> SIGNATURES = List.of(
 		new Signature(Runes.CHILL, Runes.SHOCK, Runes.FROSTWIRE),
@@ -178,7 +178,13 @@ public final class Fusions {
 		new Signature(Runes.TIDAL_LIFT, Runes.FIRE, Runes.BOILING_SURGE),
 		new Signature(Runes.TIDAL_LIFT, Runes.SHOCK, Runes.THUNDER_TIDE),
 		new Signature(Runes.WIND_STEPS, Runes.FROST, Runes.RIME_CAUSEWAY),
-		new Signature(Runes.WIND_STEPS, Runes.SHOCK, Runes.THUNDER_WALK));
+		new Signature(Runes.WIND_STEPS, Runes.SHOCK, Runes.THUNDER_WALK),
+		new Signature(Runes.BASINFILL, Runes.GROW, Runes.SPRINGBED),
+		new Signature(Runes.EMBER, Runes.COLLECT, Runes.CINDER_SIEVE),
+		new Signature(Runes.FIREWARD, Runes.CLEANSE, Runes.ASHEN_MERCY),
+		new Signature(Runes.ROOT, Runes.FORESIGHT, Runes.CLOCKROOT),
+		new Signature(Runes.LEVITATE, Runes.ANCHOR, Runes.SKYLATCH),
+		new Signature(Runes.HARVEST, Runes.WINDCUT, Runes.THRESHERWIND));
 
 	/** Whether a rune can go into a fusion: an effect with an element, and not an innate rune. */
 	public static boolean fusible(RuneDef rune) {

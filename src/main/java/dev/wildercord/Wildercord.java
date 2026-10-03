@@ -109,6 +109,7 @@ public final class Wildercord implements ModInitializer {
   dev.wildercord.wildlife.ReedbackContent.init();
   dev.wildercord.wildlife.ReedRattle.init();
   dev.wildercord.wildlife.SporebackContent.init();
+  dev.wildercord.wildlife.FungalGarden.init();
 		dev.wildercord.cast.Dungeons.init();
 		dev.wildercord.world.dungeons.DungeonWards.init();
 		SpellCaster.init();
@@ -125,6 +126,7 @@ public final class Wildercord implements ModInitializer {
 		// Last: add-ons (the "wildercord" entrypoint) extend everything above.
 		dev.wildercord.api.WildercordApi.loadAddons();
 		dev.wildercord.cast.feel.Feels.init();
+        dev.wildercord.cast.FieldFusions.init();
 		LOGGER.info("Wildercord initialized");
 	}
 }

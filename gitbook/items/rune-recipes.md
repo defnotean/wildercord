@@ -6,7 +6,7 @@ Craftable runes up to Tier III use a **Blank Rune** plus a few items that suit t
 
 **Blank Rune:** 4 Cobblestone around 1 Lapis Lazuli, makes 4.
 
-## Tier I (52 runes)
+## Tier I (53 runes)
 
 Each needs a Blank Rune and its own items, plus **nothing else**.
 
@@ -18,6 +18,10 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figure>
 ![Crafting Barrier: a Blank Rune and Glass and Amethyst Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barrier.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/barrier.png) <a href="../runes/effects/arcane.md#barrier">Barrier</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Basinfill: a Blank Rune and Clay Ball and Water Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_basinfill.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/basinfill.png) <a href="../runes/effects/frost.md#basinfill">Basinfill</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
 ![Crafting Blind: a Blank Rune and Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_blind.png)

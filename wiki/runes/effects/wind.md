@@ -211,12 +211,6 @@ Forms five real wind platforms ahead, ascending one block every two steps. Lasts
 ### <img src="{{ '/assets/runes/soar.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Soar
 {: #soar}
 
-Soar grows a pair of pale feathered wings from your shoulder blades. Layered shoulder feathers and long flight feathers fold
-against your back on the ground, fan out in flight and beat faster as you move. As the wind runs out they fold and fade away.
-Other players can see them, and you can view your own wings in third person; your first-person aiming view stays clear.
-
-![Soar's layered feathered wings spread in flight]({{ '/assets/images/soar-wings.jpg' | relative_url }})
-
 *Tier III · Wind · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
 Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump and sneak to rise and sink. It can't be renewed mid-flight, and when the wind fades it sets you down gently, then your wings need 30 seconds' rest. A pull or a grounding wind tears it away, and it won't lift anyone in a warded arena.

@@ -109,6 +109,7 @@ class FeelTest {
 		ArcaneFeels.register();
 		TimeFeels.register();
 		BloodFeels.register();
+		dev.wildercord.cast.FieldFusionFeels.register();
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		for (RuneDef rune : Runes.all()) {
 			if (rune.id().startsWith("wildercord:") && rune.family() == RuneFamily.EFFECT) {
@@ -146,7 +147,12 @@ class FeelTest {
 			assertTrue(kit.contains(ShapeFeels.gestureSound(m)), ShapeFeels.gestureSound(m));
 		}
 		// Stop at the call's statement: a dynamic sound must not borrow a later switch case's string.
-		java.util.regex.Pattern named = java.util.regex.Pattern.compile("Feels\\.sound\\([^\";]*\"([a-z0-9_]+)\"");
+		java.util.regex.Pattern named = java.util.regex.Pattern.compile("Feels\\.sound\\([^\";]*\"([a-z0-9_]+)\"(?!\\s*\\+)");
+		// Dynamic field-fusion names are checked exhaustively rather than mistaking their prefix for an event.
+		for (String id : dev.wildercord.cast.FieldFusionFeels.EFFECTS) {
+			assertTrue(kit.contains("fieldfusion_" + id + "_cue"), id + " cue missing");
+			assertTrue(kit.contains("fieldfusion_" + id + "_impact"), id + " impact missing");
+		}
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		try (java.util.stream.Stream<java.nio.file.Path> files = java.nio.file.Files.walk(java.nio.file.Path.of("src/main/java"))) {
 			for (java.nio.file.Path f : files.filter(p -> p.toString().endsWith(".java")).toList()) {

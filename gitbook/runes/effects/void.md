@@ -37,7 +37,7 @@ Blindness and darkness for 5 seconds (3 on players). A blinded monster lashes ou
 
 *Tier I · Void · Works on the world · 3 mana · needs any Cord*
 
-Pulls up to 48 items and experience within 8 blocks to you.
+Pulls up to 48 items and experience within 8 blocks from ground you can edit. Other owners' drops and pickup reservations stay put.
 
 **How to get it:** Craft: a Blank Rune, Hopper. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 

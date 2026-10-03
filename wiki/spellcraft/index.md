@@ -70,3 +70,4 @@ wrist to the magic circle behind your shoulders.
 - [Builds to Try]({{ '/spellcraft/build-examples/' | relative_url }})
 - [Circle Disciplines]({{ '/spellcraft/circle-disciplines/' | relative_url }})
 - [Physical Magic]({{ '/spellcraft/physical-magic/' | relative_url }})
+- [Living Materials]({{ '/spellcraft/living-materials/' | relative_url }}) — Read Life spells through their seeds, leaves, tissue, sap and thorns.

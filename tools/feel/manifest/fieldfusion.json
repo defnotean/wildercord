@@ -1,0 +1,89 @@
+{
+  "events": {
+    "fieldfusion_ashen_mercy_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_ashen_mercy_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "fieldfusion_ashen_mercy_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_ashen_mercy_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "fieldfusion_cinder_sieve_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_cinder_sieve_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "fieldfusion_cinder_sieve_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_cinder_sieve_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "fieldfusion_clockroot_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_clockroot_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "fieldfusion_clockroot_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_clockroot_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "fieldfusion_skylatch_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_skylatch_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "fieldfusion_skylatch_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_skylatch_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "fieldfusion_springbed_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_springbed_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "fieldfusion_springbed_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_springbed_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "fieldfusion_thresherwind_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_thresherwind_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "fieldfusion_thresherwind_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/fieldfusion/fieldfusion_thresherwind_impact"
+      ],
+      "subtitle": "hit"
+    }
+  },
+  "part": "fieldfusion"
+}

@@ -31,12 +31,12 @@ public final class FireFormationTest implements FabricClientGameTest {
    c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.options.setCameraType(CameraType.FIRST_PERSON);if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();verifyRecipes();});
    var baseline=c.computeOnClient(mc -> snapshot(mc,"fire_formation_background"));c.waitFor(mc -> baseline.isDone());baseline.join();
    var fire=Runes.all().stream().filter(r -> r.family()==RuneFamily.EFFECT && r.element().equals("fire")).map(r -> r.id()).sorted().toList();
-   check(fire.size()==28,"Reviewed fire roster changes require explicit expansion of this suite");
+   check(fire.size()==29,"Reviewed fire roster changes require explicit expansion of this suite");
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL)) {
     c.runOnClient(mc -> MagicQuality.own=quality);
     for(var id:fire) {
      c.waitTicks(9);c.runOnClient(mc -> mc.particleEngine.clearParticles());
-     w.getServer().runOnServer(s -> {var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new FormationPayload(p.getId(),"bolt",List.of(Runes.BOLT.id(),id),List.of("fire"),0xFF7930,1));});c.waitTicks(4);
+     w.getServer().runOnServer(s -> {var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new FormationPayload(p.getId(),"bolt",List.of(Runes.BOLT.id(),id),dev.wildercord.spell.VisualElements.of(List.of(Runes.BOLT,Runes.get(id).orElseThrow())),0xFF7930,1));});c.waitTicks(4);
      var captured=c.computeOnClient(mc -> {int materials=0,circles=0;for(var particle:particles(mc.particleEngine)) {if(!particle.isAlive())continue;
       if(particle instanceof SpellCircleParticle){circles++;check(at(particle).subtract(mc.player.getEyePosition()).dot(mc.player.getLookAngle())<0,"Rear circle for "+id);}
       if(particle instanceof MaterialParticle){materials++;check(at(particle).distanceTo(mc.player.getEyePosition().add(0,-.65,3.2))<1.65,"Bounded front preparation for "+id);}

@@ -5479,5 +5479,107 @@
     "sounds": [
       "wildercord:kit/sporeback/sporeback_hide"
     ]
+  },
+  "fieldfusion_ashen_mercy_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_ashen_mercy_cue"
+    ]
+  },
+  "fieldfusion_ashen_mercy_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_ashen_mercy_impact"
+    ]
+  },
+  "fieldfusion_cinder_sieve_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_cinder_sieve_cue"
+    ]
+  },
+  "fieldfusion_cinder_sieve_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_cinder_sieve_impact"
+    ]
+  },
+  "fieldfusion_clockroot_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_clockroot_cue"
+    ]
+  },
+  "fieldfusion_clockroot_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_clockroot_impact"
+    ]
+  },
+  "fieldfusion_skylatch_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_skylatch_cue"
+    ]
+  },
+  "fieldfusion_skylatch_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_skylatch_impact"
+    ]
+  },
+  "fieldfusion_springbed_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_springbed_cue"
+    ]
+  },
+  "fieldfusion_springbed_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_springbed_impact"
+    ]
+  },
+  "fieldfusion_thresherwind_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_thresherwind_cue"
+    ]
+  },
+  "fieldfusion_thresherwind_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/fieldfusion/fieldfusion_thresherwind_impact"
+    ]
+  },
+  "fungal_cap_harvest": {
+    "subtitle": "subtitles.wildercord.kit.fungal.cap_harvest",
+    "sounds": [
+      "wildercord:kit/fungal/fungal_cap_harvest"
+    ]
+  },
+  "fungal_cap_open": {
+    "subtitle": "subtitles.wildercord.kit.fungal.cap_open",
+    "sounds": [
+      "wildercord:kit/fungal/fungal_cap_open"
+    ]
+  },
+  "fungal_filter": {
+    "subtitle": "subtitles.wildercord.kit.fungal.filter",
+    "sounds": [
+      "wildercord:kit/fungal/fungal_filter"
+    ]
+  },
+  "fungal_mark_read": {
+    "subtitle": "subtitles.wildercord.kit.fungal.mark_read",
+    "sounds": [
+      "wildercord:kit/fungal/fungal_mark_read"
+    ]
+  },
+  "fungal_nursery_settle": {
+    "subtitle": "subtitles.wildercord.kit.fungal.nursery_settle",
+    "sounds": [
+      "wildercord:kit/fungal/fungal_nursery_settle"
+    ]
   }
 }

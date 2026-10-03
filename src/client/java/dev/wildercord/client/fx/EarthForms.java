@@ -14,7 +14,7 @@ final class EarthForms {
  static final List<String> RUNES=List.of("shield","break","stoneskin","root","tremor","excavate","aftershock","weigh",
   "shackle","rampart","brace","chisel","tunnel","vein","fell","pelt","stoneform","magma","sinkhole","geode",
   "fossilize","bonespur","monolith","strata_rise","thunderquake","infest","sandstorm","tusk_charge","mire",
-  "stalactite","basalt_surge","prospect");
+  "stalactite","basalt_surge","prospect","clockroot");
  static boolean supports(String id){return id.startsWith("wildercord:") && RUNES.contains(id.substring(11));}
  static Set<String> ingredients(List<String> ids){
   var out=new HashSet<String>();
@@ -24,7 +24,7 @@ final class EarthForms {
     case "magma" -> out.add("fire");
     case "sinkhole" -> out.add("void");
     case "geode","prospect" -> out.add("arcane");
-    case "fossilize" -> out.add("time");
+    case "fossilize","clockroot" -> out.add("time");
     case "bonespur" -> out.add("blood");
     case "thunderquake" -> out.add("storm");
     case "root","fell" -> out.add("life");
@@ -36,6 +36,7 @@ final class EarthForms {
  }
  static void prepare(String id,int beat,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,boolean minimal,BiConsumer<ParticleOptions,Vec3> emit){
   if(!supports(id))return;
+  if(FieldFusionForms.prepare(id,beat,scale,anchor,right,up,forward,minimal,emit))return;
   double t=beat*.5;
   var p=new Pen(anchor,right,up,forward,Math.clamp(scale,.4,2),8,minimal,emit);
   switch(id.substring(11)){
@@ -189,6 +190,7 @@ final class EarthForms {
 
  static void fly(String id,int age,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,boolean minimal,BiConsumer<ParticleOptions,Vec3> emit){
   if(!supports(id))return;
+  if(FieldFusionForms.travel(id,age,scale,anchor,right,up,forward,minimal,emit))return;
   double t=age*.22,sway=Math.sin(t),pulse=Math.cos(t*.7);
   var p=new Pen(anchor,right,up,forward,scale,5,minimal,emit);
   switch(id.substring(11)){

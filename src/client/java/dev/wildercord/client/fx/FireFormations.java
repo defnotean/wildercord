@@ -12,7 +12,7 @@ final class FireFormations {
  private FireFormations() {}
  static final List<String> RUNES=List.of("ember","fire","flashfire","explode","meteor","inferno","primer","kindling",
   "firestorm","steam","sunscorch","soulfire","blazecall","cinderbrand","ashen_veil","cinderheart","searing_edge","fireward",
-  "smelt","hellmouth","starfire","everburn","conflagration","phoenix_pyre","bloodboil","seethe","skyburst","cinder_bulwark","boiling_surge");
+  "smelt","hellmouth","starfire","everburn","conflagration","phoenix_pyre","bloodboil","seethe","skyburst","cinder_bulwark","boiling_surge","cinder_sieve");
  // Bloodboil belongs to blood in the runtime roster; its heat preparation is also authored here.
  static boolean supports(String id) { return id.startsWith("wildercord:") && RUNES.contains(id.substring(11)); }
  static boolean draw(SpellFormations.Canvas c,int beat) {
@@ -27,6 +27,7 @@ final class FireFormations {
  /** Emit local geometry through the existing bounded canvas. No effects or sounds execute here. */
  static void draw(String rune,int beat,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,
                   boolean minimal,BiConsumer<ParticleOptions,Vec3> emit) {
+  if(FieldFusionForms.prepare("wildercord:"+rune,beat,scale,anchor,right,up,forward,minimal,emit))return;
   double t=beat/2.0;
   var p=new Pen(anchor,right,up,forward,scale*(1.16-.16*t),minimal,emit);
   switch(rune) {

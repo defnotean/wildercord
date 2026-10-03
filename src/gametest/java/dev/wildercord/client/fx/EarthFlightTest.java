@@ -25,7 +25,7 @@ public final class EarthFlightTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);var camera=net.minecraft.world.entity.EntityTypes.TEXT_DISPLAY.create(s.overworld(),net.minecraft.world.entity.EntitySpawnReason.COMMAND);camera.snapTo(3,102,10,90,0);camera.setNoGravity(true);camera.setInvisible(true);s.overworld().addFreshEntity(camera);cameraId=camera.getId();});c.waitTicks(15);
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"earth_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
-   check(EarthForms.RUNES.size()==32,"Explicit complete earth roster");
+   check(EarthForms.RUNES.size()==33,"Explicit complete earth roster");
    check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("earth")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(EarthForms.RUNES)),"Authored runtime earth roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:EarthForms.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
@@ -71,7 +71,7 @@ public final class EarthFlightTest implements FabricClientGameTest {
    case "magma" -> Set.of(EMBER);
    case "sinkhole" -> Set.of(VOID);
    case "geode","prospect" -> Set.of(ARCANE);
-   case "fossilize" -> Set.of(TIME);
+   case "fossilize","clockroot" -> Set.of(TIME);
    case "bonespur" -> Set.of(BLOOD);
    case "thunderquake" -> Set.of(STORM);
    case "mire" -> Set.of(WATER);

@@ -11,7 +11,20 @@ nav_order: 2
 
 Cold, ice and water. Frost slows, freezes and shatters, and freezes water you can walk on.
 
-11 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
+12 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
+
+### <img src="{{ '/assets/runes/basinfill.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Basinfill
+{: #basinfill}
+
+*Tier I · Frost · Works on the world · 6 mana · needs any Cord*
+
+Fills an enclosed, one-block-deep hole with permanent source water: at most 16 connected cells, within three blocks of the impact. Aim at its floor with Touch or Bolt. Refuses open edges, deep pits, protected ground and the Nether. One basin per paid cast.
+
+**How to get it:** Craft: a Blank Rune, Clay Ball and Water Bucket. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_basinfill.png' | relative_url }}" alt="Crafting Basinfill: a Blank Rune and Clay Ball and Water Bucket" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/chill.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chill
 {: #chill}

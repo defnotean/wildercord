@@ -2,7 +2,7 @@
 
 # Fused runes
 
-55 runes made only at the [Fusion Altar](../fusion-altar/index.md): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (22 more).
+55 runes made only at the [Fusion Altar](../fusion-altar/index.md): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (28 more).
 
 | | Fire | Frost | Storm | Wind | Earth | Life | Void | Arcane | Time | Blood |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -626,7 +626,7 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 
 ## Signature fusions
 
-22 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining](../fusion-altar/combining.md#signature-fusions).
+28 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining](../fusion-altar/combining.md#signature-fusions).
 
 | | Put in | Makes | Counts as | In place of |
 |---|---|---|---|---|
@@ -636,6 +636,12 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunder_tide.png) | [Tidal Lift](effects/frost.md#tidal_lift) + [Shock](effects/storm.md#shock) | [Thunder Tide](#thunder_tide) | Storm | Hail |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rime_causeway.png) | [Wind Steps](effects/wind.md#wind_steps) + [Frost](effects/frost.md#frost) | [Rime Causeway](#rime_causeway) | Frost | Blizzard |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunder_walk.png) | [Wind Steps](effects/wind.md#wind_steps) + [Shock](effects/storm.md#shock) | [Thunder Walk](#thunder_walk) | Storm | Tempest |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/springbed.png) | [Basinfill](effects/frost.md#basinfill) + [Grow](effects/life.md#grow) | [Springbed](#springbed) | Frost | Frostbloom |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cinder_sieve.png) | [Ember](effects/fire.md#ember) + [Collect](effects/void.md#collect) | [Cinder Sieve](#cinder_sieve) | Fire | Hellmouth |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ashen_mercy.png) | [Fireward](effects/fire.md#fireward) + [Cleanse](effects/life.md#cleanse) | [Ashen Mercy](#ashen_mercy) | Life | Phoenix Pyre |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/clockroot.png) | [Root](effects/earth.md#root) + [Foresight](effects/time.md#foresight) | [Clockroot](#clockroot) | Earth | Fossilize |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skylatch.png) | [Levitate](effects/wind.md#levitate) + [Anchor](effects/void.md#anchor) | [Skylatch](#skylatch) | Wind | Warp |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thresherwind.png) | [Harvest](effects/life.md#harvest) + [Windcut](effects/wind.md#windcut) | [Thresherwind](#thresherwind) | Wind | Zephyr |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frostwire.png) | [Chill](effects/frost.md#chill) + [Shock](effects/storm.md#shock) | [Frostwire](#frostwire) | Storm | Hail |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/seethe.png) | [Bubble](effects/frost.md#bubble) + [Fire](effects/fire.md#fire) | [Seethe](#seethe) | Fire | Steam |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bloomstep.png) | [Grow](effects/life.md#grow) + [Blink](effects/void.md#blink) | [Bloomstep](#bloomstep) | Life | Lifesteal |
@@ -652,6 +658,17 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dust_devil.png) | [Summit Wind](world.md#summit_wind) + [Sandstorm](world.md#sandstorm) | [Dust Devil](#dust_devil) | Wind | Downdraft |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/malison.png) | [Hex](effects/void.md#hex) + [Resonance](effects/arcane.md#resonance) | [Malison](#malison) | Void | Nullify |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/avalanche.png) | [Coldsnap](effects/frost.md#coldsnap) + [Stalactite](world.md#stalactite) | [Avalanche](#avalanche) | Frost | Glacier |
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ashen_mercy.png) Ashen Mercy
+
+
+*Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+Extinguishes an ally and removes harmful conditions, converting only actual conditions removed into at most four restored health. Gives five seconds of heat protection. At most eight allies, once per target and paid cast; clean targets receive no healing.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Fireward](effects/fire.md#fireward) and [Cleanse](effects/life.md#cleanse) themselves, with an amethyst shard (3 XP levels). Any other Fire and Life effects make Phoenix Pyre instead.
+
+**Modifiers that work on it:** Frugal, Kindred
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/avalanche.png) Avalanche
 
@@ -696,6 +713,28 @@ Raises a cracked, glowing wall. Enemies brushing against it take 2 magic damage 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Strata Rise](effects/earth.md#strata_rise) and [Fire](effects/fire.md#fire) themselves, with an amethyst shard (3 XP levels). Any other Earth and Fire effects make Magma instead.
 
 **Modifiers that work on it:** Extend, Frugal
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cinder_sieve.png) Cinder Sieve
+
+
+*Tier III · Fire · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Consumes one carried coal or charcoal to furnace-process up to sixteen visible loose inputs within four blocks. Only commits when complete outputs fit your inventory. Preserves owned, delayed and protected drops; grants no XP. Once per paid cast.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Ember](effects/fire.md#ember) and [Collect](effects/void.md#collect) themselves, with an amethyst shard (3 XP levels). Any other Fire and Void effects make Hellmouth instead.
+
+**Modifiers that work on it:** Frugal
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/clockroot.png) Clockroot
+
+
+*Tier III · Earth · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+
+Roots remember safe ground for four seconds. A foe fleeing more than two blocks is returned once if its original floor and route are still safe, loaded and permitted. Refuses bosses, anchored or mounted targets and warded arenas. At most eight foes per paid cast; eight-second target rest.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Root](effects/earth.md#root) and [Foresight](effects/time.md#foresight) themselves, with an amethyst shard (3 XP levels). Any other Earth and Time effects make Fossilize instead.
+
+**Modifiers that work on it:** Frugal
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frostwire.png) Frostwire
 
@@ -807,6 +846,28 @@ Flings each target high into the air (3 at most); at the top of its flight it ex
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skylatch.png) Skylatch
+
+
+*Tier III · Wind · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+Lifts an ally about one block and holds vertical height for four seconds while lateral movement remains free. Crouch to release into two seconds of gentle descent. Refuses ceilings, flight abilities, anchors and warded arenas. At most eight allies per paid cast; eight-second target rest.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Levitate](effects/wind.md#levitate) and [Anchor](effects/void.md#anchor) themselves, with an amethyst shard (3 XP levels). Any other Wind and Void effects make Warp instead.
+
+**Modifiers that work on it:** Frugal, Kindred
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/springbed.png) Springbed
+
+
+*Tier III · Frost · Works on the world · 14 mana · needs an Amethyst Cord or better*
+
+Pours one safe Basinfill vessel, then grows up to eight existing bank crops or moist Moonreed buds by one stage. The new water must hydrate their soil. Never creates plants or opens mature Moonreed without pollinators. Once per paid cast.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Basinfill](effects/frost.md#basinfill) and [Grow](effects/life.md#grow) themselves, with an amethyst shard (3 XP levels). Any other Frost and Life effects make Frostbloom instead.
+
+**Modifiers that work on it:** Frugal
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stitchtime.png) Stitchtime
 
 
@@ -817,6 +878,17 @@ Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhil
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Heal](effects/life.md#heal) and [Countdown](effects/time.md#countdown) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thresherwind.png) Thresherwind
+
+
+*Tier III · Wind · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Three travelling shear lanes harvest up to nine mature crops ahead of the impact. Replants only by consuming a real seed from each crop's drops. Collects this harvest, preserves full-inventory leftovers, respects loaded land and claims. Once per paid cast.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Harvest](effects/life.md#harvest) and [Windcut](effects/wind.md#windcut) themselves, with an amethyst shard (3 XP levels). Any other Life and Wind effects make Zephyr instead.
+
+**Modifiers that work on it:** Frugal
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunder_tide.png) Thunder Tide
 

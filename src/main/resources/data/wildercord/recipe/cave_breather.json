@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:mycelial_dew",
+    "wildercord:dried_glowcap_gills",
+    "minecraft:leather",
+    "minecraft:copper_ingot"
+  ],
+  "result": {
+    "id": "wildercord:cave_breather"
+  }
+}

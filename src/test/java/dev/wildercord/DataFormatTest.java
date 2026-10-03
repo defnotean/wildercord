@@ -265,8 +265,8 @@ class DataFormatTest {
                     allowed(feature,file,"type","to_place","schedule_tick");required(feature,file,"to_place");
                     var state=feature.getAsJsonObject("to_place");allowed(state,file+" state","id","properties");required(state,file,"id");
                 }
-                // MoonreedFeature uses MapCodec.unit; native tests load its registry and execute placement.
-                case "wildercord:moonreed_patch" -> allowed(feature,file,"type");
+                // These features use MapCodec.unit; native tests load their registries and execute placement.
+                case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site" -> allowed(feature,file,"type");
                 default -> fail(file+": unsupported vegetation feature "+feature);
             }
 		}
@@ -278,6 +278,15 @@ class DataFormatTest {
 					case "minecraft:rarity_filter" -> {allowed(modifier,file,"type","chance");required(modifier,file,"chance");assertTrue(modifier.get("chance").getAsInt()>0);}
 					case "minecraft:in_square","minecraft:biome" -> allowed(modifier,file,"type");
 					case "minecraft:heightmap" -> {allowed(modifier,file,"type","heightmap");required(modifier,file,"heightmap");}
+					case "minecraft:height_range" -> {
+						allowed(modifier,file,"type","height");required(modifier,file,"height");
+						var height=modifier.getAsJsonObject("height");
+						allowed(height,file,"type","min_inclusive","max_inclusive");required(height,file,"type","min_inclusive","max_inclusive");
+						assertEquals("minecraft:uniform",height.get("type").getAsString(),file+" height provider");
+						var low=height.getAsJsonObject("min_inclusive");var high=height.getAsJsonObject("max_inclusive");
+						allowed(low,file,"absolute");required(low,file,"absolute");allowed(high,file,"absolute");required(high,file,"absolute");
+						assertTrue(low.get("absolute").getAsInt()<=high.get("absolute").getAsInt(),file+" inverted height bounds");
+					}
 					case "minecraft:count" -> {allowed(modifier,file,"type","count");required(modifier,file,"count");assertTrue(modifier.get("count").getAsInt()>0);}
 					case "minecraft:offset" -> {
 						allowed(modifier,file,"type","x","y","z");required(modifier,file,"x","y","z");

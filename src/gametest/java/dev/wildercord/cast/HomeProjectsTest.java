@@ -22,7 +22,11 @@ public final class HomeProjectsTest implements FabricClientGameTest {
   world.getServer().runOnServer(server->{var p=server.getPlayerList().getPlayers().getFirst();var h=(RunicHearthEntity)p.level().getBlockEntity(at);
    check(((CropBlock)Blocks.WHEAT).getAge(p.level().getBlockState(at.offset(1,0,0)))>=1&&h.charge()==0,"garden spends charge to advance crop");
    h.use(p,new ItemStack(Items.AMETHYST_SHARD));charge(p,at,Runes.FIRE);
-  });context.waitTicks(25);
+   check(h.project().equals("lantern")&&h.charge()==1,"configure and charge reading lantern");
+  });
+  // Charging sets a 20-tick cooldown; lantern updates run only at gameTime % 20 == 0.
+  // Allow the full cooldown plus one update interval regardless of the starting tick.
+  context.waitTicks(40);
   world.getServer().runOnServer(server->{var p=server.getPlayerList().getPlayers().getFirst();check(p.hasEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION),"reading lantern grants its utility");
    var h=(RunicHearthEntity)p.level().getBlockEntity(at);h.use(p,new ItemStack(Items.FEATHER));charge(p,at,Runes.SWIFT);
   });context.waitTicks(25);

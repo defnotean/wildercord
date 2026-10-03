@@ -1846,6 +1846,48 @@
         }
       },
       {
+        "when": "wildercord:springbed",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/springbed"
+        }
+      },
+      {
+        "when": "wildercord:cinder_sieve",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cinder_sieve"
+        }
+      },
+      {
+        "when": "wildercord:ashen_mercy",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ashen_mercy"
+        }
+      },
+      {
+        "when": "wildercord:clockroot",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/clockroot"
+        }
+      },
+      {
+        "when": "wildercord:skylatch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/skylatch"
+        }
+      },
+      {
+        "when": "wildercord:thresherwind",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/thresherwind"
+        }
+      },
+      {
         "when": "wildercord:frostwire",
         "model": {
           "type": "minecraft:model",

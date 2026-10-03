@@ -12,7 +12,7 @@ Craftable runes up to Tier III use a **Blank Rune** plus a few items that suit t
 
 **Blank Rune:** 4 Cobblestone around 1 Lapis Lazuli, makes 4.
 
-## Tier I (52 runes)
+## Tier I (53 runes)
 
 Each needs a Blank Rune and its own items, plus **nothing else**.
 
@@ -24,6 +24,10 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_barrier.png' | relative_url }}" alt="Crafting Barrier: a Blank Rune and Glass and Amethyst Shard" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/barrier.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#barrier">Barrier</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_basinfill.png' | relative_url }}" alt="Crafting Basinfill: a Blank Rune and Clay Ball and Water Bucket" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/basinfill.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#basinfill">Basinfill</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_blind.png' | relative_url }}" alt="Crafting Blind: a Blank Rune and Ink Sac" class="recipe-grid" loading="lazy">

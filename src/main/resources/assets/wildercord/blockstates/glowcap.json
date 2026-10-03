@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "wildercord:block/glowcap_0"
+    },
+    "age=1": {
+      "model": "wildercord:block/glowcap_1"
+    },
+    "age=2": {
+      "model": "wildercord:block/glowcap_2"
+    }
+  }
+}

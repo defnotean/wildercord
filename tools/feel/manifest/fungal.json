@@ -1,0 +1,40 @@
+{
+  "events": {
+    "fungal_cap_harvest": {
+      "attenuation": 0,
+      "files": [
+        "kit/fungal/fungal_cap_harvest"
+      ],
+      "subtitle": "fungal.cap_harvest"
+    },
+    "fungal_cap_open": {
+      "attenuation": 0,
+      "files": [
+        "kit/fungal/fungal_cap_open"
+      ],
+      "subtitle": "fungal.cap_open"
+    },
+    "fungal_filter": {
+      "attenuation": 0,
+      "files": [
+        "kit/fungal/fungal_filter"
+      ],
+      "subtitle": "fungal.filter"
+    },
+    "fungal_mark_read": {
+      "attenuation": 0,
+      "files": [
+        "kit/fungal/fungal_mark_read"
+      ],
+      "subtitle": "fungal.mark_read"
+    },
+    "fungal_nursery_settle": {
+      "attenuation": 0,
+      "files": [
+        "kit/fungal/fungal_nursery_settle"
+      ],
+      "subtitle": "fungal.nursery_settle"
+    }
+  },
+  "part": "fungal"
+}

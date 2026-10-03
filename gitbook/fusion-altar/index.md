@@ -76,3 +76,8 @@ Sneak-use a Blank Rune on the altar to imprint your awakened innate for three XP
 - [Knots](knots.md)
 - [Physical magic and extended weaving](../spellcraft/physical-magic.md)
 - [Altar troubleshooting](../troubleshooting.md)
+
+
+## Field signatures
+
+[Field Signatures](../magic/field-signatures.md) explains six exact pairings for growing watered banks, recovering expedition supplies, helping allies and controlling a short positioning window. Each recipe has its own carved rune, material casting sequence and practical limits.
