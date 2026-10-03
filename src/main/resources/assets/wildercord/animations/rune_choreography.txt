@@ -306,3 +306,5 @@ boiling_surge|FOAM|FLAME|TIDE
 thunder_tide|DROPLET|FORK|TIDE
 rime_causeway|WING|SHARD|STEP
 thunder_walk|STEP|GEAR|FORK
+
+basinfill|DROPLET|TIDE|FOAM

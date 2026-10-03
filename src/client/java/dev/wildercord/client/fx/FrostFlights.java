@@ -24,6 +24,11 @@ final class FrostFlights {
             Math.clamp(scale, .4, 2), emit);
         double t = age * .26;
         switch (id.substring(11)) {
+            case "basinfill" -> { // A cupped parcel carries descending droplets, with no ice facets.
+                for(int i=0;i<(minimal?3:5);i++){double a=i*1.256+t*.4;
+                    p.dot(MaterialOption.WATER,0x61C6E8,Math.cos(a)*.16,-.06+Math.sin(a)*.07,-.15,.09);
+                    p.dot(MaterialOption.WATER,0xC1F3FF,Math.cos(a)*.1,-.12-(age%4)*.035,-.3-i*.05,.045);}
+            }
             case "chill" -> { // A breath crescent carries a fine frozen lower edge.
                 for (int i = 0; i < (minimal ? 2 : 3); i++)
                     p.dot(MaterialOption.VAPOUR, 0xBFDCE6, i * .14 - .14, .04 + .04 * Math.sin(t + i), -i * .12, .1);

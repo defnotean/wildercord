@@ -48,6 +48,10 @@ public final class AuraExperience {
 		if (practice) {
 			gained = AuraRules.practice(practised, xp);
 			practised += gained;
+			if (data.practice() < AuraRules.PRACTICE_CAP && practised >= AuraRules.PRACTICE_CAP) {
+				player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.aura.practice_complete")
+					.withColor(0xE8D8B0));
+			}
 		}
 		int cap = AuraStages.cap(data.stage());
 		boolean waiting = AuraRules.ready(data.xp(), cap);

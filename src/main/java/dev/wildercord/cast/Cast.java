@@ -470,6 +470,13 @@ public final class Cast {
 		dev.wildercord.player.Mana.restore(player, amount);
 	}
 
+	/** Reserve an entire bounded structure without partially consuming the block budget. */
+	public boolean takeBlocks(int count) {
+		if (count < 0 || budget.blocks < count) return false;
+		budget.blocks -= count;
+		return true;
+	}
+
 	public boolean takeBlock() {
 		if (budget.blocks <= 0) {
 			return false;

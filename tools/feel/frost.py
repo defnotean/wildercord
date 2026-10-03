@@ -182,6 +182,28 @@ def frost_drag(v, rng):
     return sa.finish(sa.reverb(x, 0.4, 0.1, damp=1500), "tell")
 
 
+def frost_basin_pour(v, rng):
+    """Basinfill: four narrow pouring threads gather, followed by three settling drops.
+
+    A close, soft water sound with no ice ping or inflation sweep. Each thread
+    arrives a little later and lower as the small vessel fills beneath the hand.
+    """
+    layers = []
+    for i in range(4):
+        dur = 0.28
+        stream = sa.norm(sa.bandpass(sa.noise(dur, rng), 700 - i * 90, 3500 - i * 300))
+        stream *= sa.env(dur, (0, 0), (0.025, 0.75), (0.13, 1), (dur, 0))
+        # Uneven pressure gives the trickle a liquid flutter, rather than a hiss.
+        flutter = 0.72 + 0.28 * sa.sine(17 + i * 4, dur)
+        layers.append((i * 0.055, stream * flutter * 0.32))
+    cup = sa.bubbles(0.30, 18, rng, 180, 420)
+    layers.append((0.16, 0.22 * cup * sa.env(0.30, (0, 0), (0.05, 1), (0.30, 0))))
+    for i, at in enumerate((0.43, 0.51, 0.60)):
+        drop = sa.bead(rng, 1350 - i * 210)
+        layers.append((at, drop * (0.40 - i * 0.08)))
+    return sa.finish(sa.lowpass(sa.mix(*layers), 4800), "cast", fade_out=0.07)
+
+
 def frost_bubble_in(v, rng):
     """Inflate: a sine glide with FM shimmer."""
     dur = 0.35
@@ -236,6 +258,7 @@ EVENTS = [
     event("frost_tick", frost_tick, variants=2, role="tick", subtitle="tell"),
     event("frost_surge", frost_surge, variants=3, role="impact", subtitle="hit"),
     event("frost_drag", frost_drag, variants=3, role="tell", subtitle="tell"),
+    event("frost_basin_pour", frost_basin_pour, role="cast", attenuation=10, subtitle="cast"),
     event("frost_bubble_in", frost_bubble_in, variants=2, role="cast", subtitle="cast"),
     event("frost_bubble_pop", frost_bubble_pop, variants=3, role="impact", subtitle="hit"),
     event("frost_hook", frost_hook, variants=3, role="impact", subtitle="hit"),

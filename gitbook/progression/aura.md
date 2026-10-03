@@ -685,6 +685,27 @@ The fourth and fifth stages are still to come. When they open, winning a duel ag
 
 ## Breakthroughs
 
+### If your rank seems stuck
+
+Open the Cord screen with **K**, then choose **Aura**. The experience fraction under your stage is the road to the next rank; hover it for the rules. Your aura pool is the energy you spend on techniques, and filling that pool does not by itself increase your rank.
+
+| Next rank | Total experience needed | Then complete one trial |
+| --- | ---: | --- |
+| Flow | 150 | 30 seconds of stillness at a ley crossing or a qualifying waterfall/summit; or defeat a stronger foe by blade and aura within 60 seconds |
+| Edge | 600 | The same early trials |
+| Form | 1,800 | Open-sky thunderstorm stillness at a ley crossing for 45 seconds; defeat a boss by blade and aura within 180 seconds; or win a wandering duelist's duel without magic |
+| Sovereign | 4,500 | Thunderstorm stillness for 60 seconds; the boss trial; or a wandering duelist's duel without magic |
+
+These are **running totals**. First reach the threshold, then complete the trial. A full experience bar deliberately waits for a breakthrough; additional fighting cannot substitute for the trial.
+
+If you are formally another player's disciple, knocking out **your own master** in a spar is an additional trial for a next stage **below** the master's current stage. Merely winning by leaving the ring does not count, and the trial cannot advance you to your master's own stage. Becoming a disciple is optional; the world trials work without a master.
+
+If your experience stops at about **40**, finish training on real hostile foes. Training Dummies, the practice arena and waterfall/summit breathing share a **40 XP lifetime practice limit**. Changing methods and ranking up do not reset that limit. Fully recovered swings with your own aura weapon against real enemies continue to teach you after practice is exhausted. Use Survival, give your attack time to recover, and avoid another player's bonded blade. Ordinary breathing restores aura without earning combat experience. Fighting animals or pets teaches no combat experience.
+
+For stillness, crouch without moving on solid, dry ground with an aura weapon in your main hand. After the breathing stance settles, keep holding it until the trial completes. Movement, losing the valid training terrain or getting struck interrupts the trial. A qualifying waterfall is a falling column at least six blocks tall within three blocks of your dry footing; a summit requires mountain biome, open sky and surrounding terrain that drops away. Ordinary high platforms and source pools do not count. Training grounds require the server's training-ground feature to be enabled.
+
+The new progression hint and practice-limit notice are included in the development review build.
+
 You grow by fighting well: landing full swings on real foes, more when you're in danger (low on health, against a crowd,
 near a boss, in a dungeon), against bosses and against foes stronger than you. Nothing comes from spam, and a Training
 Dummy only teaches a little. Fighting steadily, **Flow** takes about half an hour of play, **Edge** about two hours,
@@ -693,8 +714,8 @@ Dummy only teaches a little. Fighting steadily, **Flow** takes about half an hou
 When you reach a stage's limit your aura presses against it, the next diamond on the aura bar pulses gold, and a
 **breakthrough** waits. For **Flow** and **Edge**, make it with either trial:
 
-- **Stillness**: hold the breathing stance unbroken for **half a minute where ley lines cross** (see
-  [Ley Lines](ley-lines.md)).
+- **Stillness**: hold the breathing stance unbroken for **half a minute where ley lines cross**, or at a qualifying waterfall or exposed mountain summit (see
+  [Ley Lines](ley-lines.md) and the training-ground conditions above).
 - **A stronger foe**: fell a boss, a Runebound or a creature with **twice your health or more** with your blade alone
   (swings and the slash), within a minute of your first blow on it. A spell of yours touching it spoils the trial.
 

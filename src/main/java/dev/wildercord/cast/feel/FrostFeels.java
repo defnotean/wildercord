@@ -26,6 +26,7 @@ final class FrostFeels {
 	}
 
 	static void register() {
+		frost("basinfill",.85,WATER,"frost_basin_pour",.35F,1F).register();
 		frost("tidal_lift",1,0x67D5EB,"frost_surge",.4F,.84F).register();
 		frost("rime_causeway",1.1,0xE1FAFF,"frost_crust",.35F,1.12F).register();
 		// Rime: creeping, rising, slow.

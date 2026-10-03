@@ -27,8 +27,8 @@ These targets are additions to the baseline, subject to documented design adjust
 | A | Audit/player journey; finish Aura world and cooperation | Started: terrain training; Marchkeeper battlefields; sword tomb and keeper; sleeping blade; two Aura-resistant beasts; village tournaments; resonant damage strikes; rune-etched blades; Unity | Runtime terrain checks/trials; all step 11/12 encounters/items; solo/cooperative balance; pictures/JAR |
 | B | Visual identity and full ability roster audit | Started: runtime roster/source-reference index; caster-centered formation anchors | Per-ability matrix; first/third-person captures; reduced effects/shaders; fusion behavior |
 | C | Four ecosystems and twelve creatures | Started: highland beasts, forage/shelter and Windreed; Lantern Newts, Moonreed pollination, Reed Refuges and Reedback Crabs; full ecosystems pending | Habitat/AI/spawning/persistence tests; custom art and animation; observation gameplay |
-| D | Locations, items, acquisition and counterplay | Pending | Generation/loot/recipe tests; combat matchups; equipment/inventory verification |
-| E | Lore, quests, field journal and guide design | Pending | Rendered book review; discoverability; useful clues; text/nav checks |
+| D | Locations, items, acquisition and counterplay | Started: tomb, finite equipment/resource tools, damage allowance and counterplay fixes; larger roster pending | Generation/loot/recipe tests; combat matchups; equipment/inventory verification |
+| E | Lore, quests, field journal and guide design | Started: eight credited lore texts and illustrated guide increments; connected investigations pending | Rendered book review; discoverability; useful clues; text/nav checks |
 | F | Early/mid/late progression and integration polish | Pending | Playable journey; multiple builds; existing-world upgrade; multiplayer/performance checks |
 
 Each milestone must integrate code, generated art, sounds, recipes and documentation, capture actual gameplay, produce a tested JAR, record limits and commit/push completed work. Public releases/CurseForge uploads require an explicit user request.
@@ -307,3 +307,35 @@ activation is not complete. CI asset/unit Build job passes; separate full native
 The full goal stays active.
 
 Final CurseForge inspection: file 9050277 is Approved. Saved description survives reload with corrected alpha.1 links; screenshot in artifacts/review/release-0.9.1/curseforge-files.png. Server remains queued for four players; activation still outstanding.
+
+
+## Basinfill and Aura progression guidance - 2026-10-03
+
+Basinfill adds one rank-I utility ability with a craftable rune, authored pouring/vessel
+preparation, cupped projectile, original liquid cue and permanent bounded shallow source-water
+placement. A complete vessel is validated before edits; protection, evaporation, size/depth,
+occupied cells and shared-payment limits apply. Native paid Touch/crafting/bucket/protection/
+Nether/full restart suite passed35seconds. Audit: docs/audit/basinfill.md.
+
+Aura's reported apparent soft lock was not reproduced as a universal code lock. A concrete
+progression-guidance gap and missing master-trial label were fixed. Contextual XP hints,
+practice-cap notice, a detailed XP tooltip and verified rank/trial instructions accompany it.
+Native progression passed83seconds, final64seconds: real recovered Survival attack after
+practice40cap, actual30second waterfallFlow, threshold/wrong-trial refusal, full restart,
+later-stage API gates and all trial labels. Later boss/duelist wins were not simulated.
+Audit: docs/audit/aura-progression.md.
+
+Combined build16seconds,963passingunit tests;4874reproduciblepaths;115guidepages.
+ReviewJAR CRCclean,4872resources/1633classes byte-match; SHA256
+f6450e2abffc4c7b11e6959cc50d22b9c54bfca1174afea321a319679eee015d.
+Review: artifacts/review/basinfill and artifacts/review/aura-progression.
+
+Remaining-work audit: docs/audit/living-world-remaining.md. Conservative counts:5/12creatures,
+14/36functionalitems (Tideward lore book separated),2/12abilities (Unity/Basinfill),0/18added
+signatures,8/24loretexts,0/4investigations; highland/wetland foundations remain incomplete.
+Sword tomb counts1/6locations, or2/6if the hosted tournament is credited as an encounter.
+Baseline signatures/technique definitions were verified unchanged, so teaching them is not
+credited as new ability content. Native tests are controlled single-client evidence, not
+remote multiplayer, natural populations, full presentation acceptance or performance proof.
+Full living-world goal stays active. Public alpha.1 remains the prior release; this JAR is a
+local development review build. Queued VPS activation still awaits an empty server.

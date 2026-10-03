@@ -130,6 +130,7 @@ public final class Runes {
 	public static final RuneDef LEAP = effect("leap", "Leap", 1, 4, "wind", EffectKind.HELPFUL, "Jump Boost III for 15 seconds.", DURATION, POWER);
 	public static final RuneDef GRAPPLE = effect("grapple", "Grapple", 2, 8, "void", EffectKind.MOVEMENT, "Pulls you to where the spell hit, and stops you there.", POWER);
 	public static final RuneDef HARVEST = effect("harvest", "Harvest", 1, 3, "life", EffectKind.WORLD, "Harvests grown crops around the block hit, and replants them.", RADIUS);
+	public static final RuneDef BASINFILL = effect("basinfill", "Basinfill", 1, 6, "frost", EffectKind.WORLD, "Fills an enclosed, one-block-deep hole with permanent source water: at most 16 connected cells, within three blocks of the impact. Aim at its floor with Touch or Bolt. Refuses open edges, deep pits, protected ground and the Nether. One basin per paid cast.");
 	public static final RuneDef ICEPATH = effect("icepath", "Icepath", 1, 3, "frost", EffectKind.WORLD, "Freezes water within 3 blocks into ice you can walk on. On Self it lays a strip of ice ten blocks long the way you look.", RADIUS);
 	public static final RuneDef COLLECT = effect("collect", "Collect", 1, 3, "void", EffectKind.WORLD, "Pulls up to 48 items and experience within 8 blocks to you.", RADIUS);
 	public static final RuneDef EXCAVATE = effect("excavate", "Excavate", 2, 10, "earth", EffectKind.WORLD, "Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).", POWER);

@@ -746,6 +746,15 @@
       "wildercord:kit/fire/fire_whump_2"
     ]
   },
+  "frost_basin_pour": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/frost/frost_basin_pour",
+        "attenuation_distance": 10
+      }
+    ]
+  },
   "frost_break": {
     "subtitle": "subtitles.wildercord.kit.hit",
     "sounds": [

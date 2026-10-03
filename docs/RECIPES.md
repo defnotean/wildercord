@@ -10,12 +10,13 @@ a **Blank Rune** plus the items below, plus a cost that grows with the tier:
 Recipes appear in the crafting recipe book once you hold a Blank Rune
 (Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.
 
-## Tier I (52 runes, + nothing extra)
+## Tier I (53 runes, + nothing extra)
 
 | Rune | Family | Items |
 |---|---|---|
 | Anchor | Effect | Iron Chain, Cobblestone |
 | Barrier | Effect | Glass, Amethyst Shard |
+| Basinfill | Effect | Clay Ball, Water Bucket |
 | Blind | Effect | Ink Sac |
 | Brace | Effect | Cobblestone, Iron Ingot |
 | Bramble | Effect | Sweet Berries, Cactus |

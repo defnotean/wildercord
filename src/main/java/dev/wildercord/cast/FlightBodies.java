@@ -18,7 +18,7 @@ public final class FlightBodies {
     }
 
     public static final List<String> FROST = List.of(
-        "absolute_zero", "avalanche", "black_ice", "blizzard", "bubble", "chill", "coldsnap",
+        "basinfill", "absolute_zero", "avalanche", "black_ice", "blizzard", "bubble", "chill", "coldsnap",
         "cryostasis", "current", "drowning_word", "flash_freeze", "freeze", "frost", "frostbite",
         "frostbloom", "frostward", "glacier", "hail", "hoarfrost", "icepath", "icicle", "mirrorfrost",
         "rime_causeway", "rime_seal", "tidal_lift", "tidebreath", "tidecall", "tidehook", "tidewrit", "undertow");

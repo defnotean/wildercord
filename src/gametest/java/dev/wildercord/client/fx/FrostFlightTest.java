@@ -24,7 +24,7 @@ public final class FrostFlightTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);});c.waitTicks(15);
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"frost_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
-   check(FrostFlights.RUNES.size()==30,"Explicit complete frost roster");
+   check(FrostFlights.RUNES.size()==31,"Explicit complete frost roster");
    check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("frost")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(FrostFlights.RUNES)),"Authored runtime frost roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:FrostFlights.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);

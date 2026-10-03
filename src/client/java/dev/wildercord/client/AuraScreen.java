@@ -551,8 +551,21 @@ public class AuraScreen extends Screen {
 			g.text(font, xp, W - 14 - font.width(xp), y, DIM, true);
 			double from = AuraStages.threshold(stage);
 			bar(g, 14, y + 11, W - 28, AuraRules.progress(data.xp(), from, cap), 0xFFB8A8FF);
+			if (inside(mx, my, 14, y, W - 28, 20)) {
+				tooltip = List.of(Component.translatable("screen.wildercord.aura.progress_help").withColor(GOLD),
+					Component.translatable("screen.wildercord.aura.xp_help").withStyle(ChatFormatting.GRAY),
+					Component.translatable("screen.wildercord.aura.practice_help", trim(data.practice()), trim(AuraRules.PRACTICE_CAP))
+						.withStyle(ChatFormatting.GRAY),
+					Component.translatable("screen.wildercord.aura.threshold_help").withStyle(ChatFormatting.GRAY));
+			}
 		}
 		y += 22;
+		if (cap >= 0 && !AuraBreakthroughs.ready(player)) {
+			String hint = !Aura.enabled(player) ? "disabled" : !Aura.holdsWeapon(player) ? "weapon"
+				: data.practice() >= AuraRules.PRACTICE_CAP ? "practice_full" : "fight";
+			g.text(font, Component.translatable("screen.wildercord.aura.progress_" + hint), 14, y, DIM, false);
+			y += 12;
+		}
 		if (AuraBreakthroughs.ready(player)) {
 			double pulse = 0.5 + 0.5 * Math.sin((now + partial) * 0.25);
 			g.text(font, Component.translatable("screen.wildercord.aura.ready"), 14, y, 0xFF000000 | AuraHud.mix(0xC8A050, 0xFFF0B0, pulse), true);

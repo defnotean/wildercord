@@ -31,7 +31,7 @@ public final class FrostFormationTest implements FabricClientGameTest {
    c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.options.setCameraType(CameraType.FIRST_PERSON);if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();verifyRecipes();});
    var baseline=c.computeOnClient(mc -> snapshot(mc,"frost_formation_background"));c.waitFor(mc -> baseline.isDone());baseline.join();
    var frost=Runes.all().stream().filter(r -> r.family()==RuneFamily.EFFECT && r.element().equals("frost")).map(r -> r.id()).sorted().toList();
-   check(frost.size()==30,"Reviewed frost roster changes require explicit expansion of this suite");
+   check(frost.size()==31,"Reviewed frost roster changes require explicit expansion of this suite");
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL)) {
     c.runOnClient(mc -> MagicQuality.own=quality);
     for(var id:frost) {

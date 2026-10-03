@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 /** Ice grows edges; water flows. Every built-in frost effect has its own authored preparation. */
 final class FrostFormations {
  private FrostFormations() {}
- static final List<String> RUNES=List.of("absolute_zero","avalanche","black_ice","blizzard","bubble","chill",
+ static final List<String> RUNES=List.of("basinfill","absolute_zero","avalanche","black_ice","blizzard","bubble","chill",
   "coldsnap","cryostasis","current","drowning_word","flash_freeze","freeze","frost","frostbite","frostbloom",
   "frostward","glacier","hail","hoarfrost","icepath","icicle","mirrorfrost","rime_causeway","rime_seal",
   "tidal_lift","tidebreath","tidecall","tidehook","tidewrit","undertow");
@@ -28,6 +28,10 @@ final class FrostFormations {
   double t=beat/2.0;
   var p=new Pen(anchor,right,up,forward,scale,minimal,emit);
   switch(rune) {
+   case "basinfill" -> { // Four pouring threads descend into a little horizontal vessel.
+    for(int i=0;i<4;i++){double x=(i-1.5)*.18;p.path(MaterialOption.WATER,0x55BDDD,new double[][]{{x,.35,0},{x+.06*Math.sin(i+t),.08-.12*t,.08},{x,-.3,.16}});}
+    p.path(MaterialOption.WATER,0xB9F3F4,new double[][]{{-.38,-.3,-.12},{.38,-.3,-.12},{.38,-.3,.28},{-.38,-.3,.28},{-.38,-.3,-.12}});
+   }
    case "chill" -> { // A breath curls low; a second fine crust gathers along its lower edge.
     p.path(MaterialOption.VAPOUR,0xD8F3FF,new double[][]{{-.48,-.15,0},{-.22,.02,.06*t},{.1,.02,.15*t},{.42,-.08,.2*t}});
     for(int i=0;i<3;i++)p.dot(MaterialOption.FROST,0xB1DFFF,i*.2-.2,-.19-.04*t,0,.055);

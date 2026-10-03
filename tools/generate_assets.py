@@ -421,6 +421,7 @@ def main():
 
 # Magic that changes the world (cast/WorldMagic, spell/WorldRules): each interaction's line in a rune's tooltip.
 WORLD_MAGIC_LANG = {
+    "spell.wildercord.basinfill.refusal": "Basinfill needs a small enclosed shallow hole, build permission, and a dimension where water survives.",
     "tooltip.wildercord.world.ignite": "Where it lands: sets grass and leaves alight, lights candles and campfires, melts snow and ice, boils water into blinding steam. It lights TNT too: stand clear",
     "tooltip.wildercord.world.freeze": "Where it lands: freezes water into ice you can walk on, cools lava into a crust that melts back after 25 seconds, puts out fires, campfires and candles",
     "tooltip.wildercord.world.conduct": "Where it lands: in water, shocks every foe in the same water; scrapes a stage of oxidation off copper and powers lightning rods. It may charge a creeper: careful",
@@ -1170,6 +1171,7 @@ RUNE_RECIPES = {
     "grapple": ["minecraft:lead"],
     "harvest": ["minecraft:wheat", "minecraft:wheat"],
     "icepath": ["minecraft:packed_ice"],
+    "basinfill": ["minecraft:clay_ball", "minecraft:water_bucket"],
     "collect": ["minecraft:hopper"],
     "excavate": ["minecraft:iron_shovel"],
     "focus": ["minecraft:glass_pane", "minecraft:gold_nugget"],

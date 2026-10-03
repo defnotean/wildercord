@@ -8,8 +8,10 @@
 		"fabric-client-gametest": [
 			"dev.wildercord.gametest.WildercordMeditationTest",
 			"dev.wildercord.cast.SpellDamageBalanceTest",
+			"dev.wildercord.cast.BasinfillTest",
 			"dev.wildercord.aura.AuraSocialTest",
 			"dev.wildercord.aura.TrainingGroundsTest",
+			"dev.wildercord.aura.AuraProgressionTest",
 			"dev.wildercord.world.dungeons.BattlefieldsTest",
 			"dev.wildercord.world.dungeons.SwordTombTest",
 			"dev.wildercord.world.dungeons.SleepingBladeTest",

@@ -4,6 +4,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Added **Basinfill**, a craftable rank-I utility rune that fills an enclosed shallow hole with up to sixteen permanent source-water blocks. Complete-vessel validation, protection checks, finite per-payment use and atomic block-budget reservation prevent partial flooding. Includes original pouring formation, cupped projectile, rune artwork and a dedicated synthesized liquid cue.
+- Added player guidance for Aura progression: real-combat XP, the shared forty-point practice limit, and breakthrough trials. Stillness instructions now mention valid waterfall banks and mountain summits alongside ley crossings.
+- Added a conservative remaining-work audit for the living-world goal, correcting lore-book item credit and separating baseline signatures from new fusion additions.
+
 ## [0.9.1-alpha.1] — 2026-10-03
 
 - Regenerated five stale modifier descriptions so in-game tooltips show their stacking limits and the asset reproducibility gate passes. Supersedes the initial 0.9.1-alpha upload.

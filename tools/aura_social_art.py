@@ -48,7 +48,8 @@ LANG.update({
     "message.wildercord.aura.training_summit": "Summit breathing — faster recovery and bounded practice",
 })
 
-LANG["message.wildercord.aura.waiting_how"] = "Hold the breathing stance at a ley crossing, a waterfall bank or an exposed summit; or defeat a stronger foe by blade and Aura alone."
+LANG["message.wildercord.aura.waiting_how"] = "Break through: crouch still with your blade for 30 seconds at a ley crossing, a qualifying waterfall or an exposed mountain summit; or defeat a stronger foe with blade and aura alone within 60 seconds."
 
 LANG["message.wildercord.aura.stillness_begins"] = "Settle into the landscape: hold still"
-LANG["screen.wildercord.aura.trial.stillness"] = "Stillness: breathe for 30 seconds at a ley crossing, waterfall bank or exposed summit"
+LANG["screen.wildercord.aura.trial.stillness"] = "Stillness: crouch still with a blade for 30 seconds at a ley crossing, a waterfall or a mountain summit"
+LANG["screen.wildercord.aura.trial.master"] = "A master's trial: defeat your own master by knockout in a spar; the next stage must be below their own"

@@ -1116,6 +1116,9 @@
     "fizzle": {
       "part": "neutral"
     },
+    "frost_basin_pour": {
+      "part": "frost"
+    },
     "frost_break": {
       "part": "frost"
     },

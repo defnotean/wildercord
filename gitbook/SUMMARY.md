@@ -25,6 +25,7 @@
   * [Harmonies and Reading Runes](spellcraft/harmonies.md)
   * [Loadouts](spellcraft/loadouts.md)
   * [Spell Mastery](spellcraft/mastery.md)
+  * [Basinfill](spellcraft/basinfill.md)
 * [Runes](runes/index.md)
   * [Shapes](runes/shapes.md)
   * [Effects](runes/effects/index.md)

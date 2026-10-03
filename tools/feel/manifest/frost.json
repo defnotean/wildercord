@@ -1,5 +1,12 @@
 {
   "events": {
+    "frost_basin_pour": {
+      "attenuation": 10,
+      "files": [
+        "kit/frost/frost_basin_pour"
+      ],
+      "subtitle": "cast"
+    },
     "frost_break": {
       "attenuation": 0,
       "files": [

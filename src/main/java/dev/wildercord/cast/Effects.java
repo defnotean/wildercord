@@ -611,6 +611,7 @@ public final class Effects {
 			});
 			case "grapple" -> grapple(cast, hit, power);
 			case "harvest" -> harvest(cast, hit, SpellNumbers.effectRadius(node));
+			case "basinfill" -> Basinfill.fill(cast, hit);
 			case "icepath" -> {
 				if (hit.self()) {
 					icepathStrip(cast, 1.5 * SpellNumbers.effectRadius(node));

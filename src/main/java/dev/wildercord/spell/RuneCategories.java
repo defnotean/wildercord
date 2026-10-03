@@ -74,7 +74,7 @@ public final class RuneCategories {
 					"remedy", "warcry", "treasure_sense", "shulkershell", "ashen_veil", "cinderheart", "manatide" -> "support";
 				case "dash", "blink", "grapple", "swap", "zipper", "shadowstep", "tusk_charge", "warp_step", "current" -> "movement";
 				case "stasis", "rewind", "accelerate", "time_skip" -> "time";
-				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart", "chisel", "glimmer", "prune", "tunnel",
+				case "light", "grow", "break", "harvest", "icepath", "basinfill", "collect", "excavate", "rampart", "chisel", "glimmer", "prune", "tunnel",
 					"vein", "smelt", "fell", "span", "ancient_seed", "glowvine" -> "world";
 				case "summon", "shades", "thunderbird" -> "summon";
 				case "glacier", "nullify", "blizzard", "black_ice", "rime_seal", "absolute_zero", "magnetize", "heartstopper", "updraft", "recoil",

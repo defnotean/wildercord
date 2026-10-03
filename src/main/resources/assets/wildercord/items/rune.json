@@ -670,6 +670,13 @@
         }
       },
       {
+        "when": "wildercord:basinfill",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/basinfill"
+        }
+      },
+      {
         "when": "wildercord:icepath",
         "model": {
           "type": "minecraft:model",
