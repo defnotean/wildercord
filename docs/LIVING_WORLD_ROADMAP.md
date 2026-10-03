@@ -272,3 +272,21 @@ SHA-256: a6155f8b12c975637ac2641e9248adf6e785a4efc11f7823bf906155794e9096.
 Audit: docs/audit/spell-damage-balance.md. Direct add-on vanilla damage, independent companion
 bites, environmental hazards and Stasis pooling of multiple paid casts are separate paths.
 Natural multiplayer and boss pacing still need review. No new content target count; goal active.
+
+
+## 0.9.1 release preparation and administrator fusions — 2026-10-03
+
+The operator learnall command already taught registered fused rune results, but their recipe
+keys remained hidden in the Grimoire. It now adds all 55 elemental and 22 signature recipe keys
+in one synced attachment update without discovery rewards or changing innate ownership. Native
+command/repeat/client-sync/full-saved-world restart coverage passed in 47 seconds. Saved spells,
+names, missing-addon knowledge and unrelated discoveries are retained. Exact two-to-eight-effect
+weaves remain dynamic altar creations rather than an enumerated named roster.
+
+Version 0.9.1-alpha includes all completed changes since 0.9.0. Full build passed in 18 seconds:
+963 tests, zero failures/errors/skips; 114 validated/exported guide pages. Release JAR CRC clean,
+4864 packaged resources/1632 classes byte-match tested outputs. SHA-256:
+f61ae8d811557680e619c654eacb7827f26624b806ba2d134da343a65eca78fe.
+Three pinned launcher profiles accompany the mod/sources. Review: artifacts/review/release-0.9.1.
+Public upload is explicitly authorized this turn; publishing/deployment outcomes are recorded
+separately after verification. The full living-world goal remains active; no new content count.

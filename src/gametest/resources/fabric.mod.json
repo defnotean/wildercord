@@ -119,7 +119,8 @@
 			"dev.wildercord.client.fx.WindFlightTest",
 			"dev.wildercord.client.fx.WindFlightVariantsTest",
 			"dev.wildercord.client.fx.FrostFlightVariantsTest",
-			"dev.wildercord.client.fx.GroupFormationTest"
+			"dev.wildercord.client.fx.GroupFormationTest",
+			"dev.wildercord.command.LearnAllFusionTest"
 		]
 	},
 	"depends": {

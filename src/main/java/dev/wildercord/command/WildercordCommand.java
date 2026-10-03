@@ -58,7 +58,14 @@ public final class WildercordCommand {
 						book = book.learn(rune.id());
 					}
 					Spellbooks.set(player, book);
-					ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.learnall", Runes.all().size()), false);
+					// Learning the result alone leaves its recipe hidden in the Grimoire. Admin discovery
+					// reveals every named recipe in one sync, without minting exploration rewards/toasts.
+					var found = new java.util.LinkedHashSet<>(dev.wildercord.player.Heart.grimoire(player));
+					dev.wildercord.spell.Fusions.RECIPES.forEach(recipe -> found.add(recipe.key()));
+					dev.wildercord.spell.Fusions.SIGNATURES.forEach(recipe -> found.add(recipe.key()));
+					player.setAttached(dev.wildercord.player.WildercordAttachments.GRIMOIRE, List.copyOf(found));
+					int fusions = dev.wildercord.spell.Fusions.RECIPES.size() + dev.wildercord.spell.Fusions.SIGNATURES.size();
+					ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.learnall", Runes.all().size(), fusions), false);
 					return Runes.all().size();
 				}))
 				.then(Commands.literal("learn").then(Commands.argument("rune", StringArgumentType.greedyString())

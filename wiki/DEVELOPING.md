@@ -5,7 +5,7 @@ nav_order: 15
 
 # About this guide
 
-The player guide describes **0.9.0-alpha**, for **Minecraft Java 26.3 / Fabric / Java 25**. The searchable website is hosted on [GitHub Pages](https://defnotean.github.io/wildercord/). An ordinary Markdown export in the repository's `gitbook/` folder supports GitBook imports and Git Sync using the root `.gitbook.yaml`.
+The player guide describes **0.9.1-alpha**, for **Minecraft Java 26.3 / Fabric / Java 25**. The searchable website is hosted on [GitHub Pages](https://defnotean.github.io/wildercord/). An ordinary Markdown export in the repository's `gitbook/` folder supports GitBook imports and Git Sync using the root `.gitbook.yaml`.
 
 ## Keeping it accurate
 

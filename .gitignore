@@ -43,5 +43,6 @@ wiki/vendor/
 artifacts/review/
 artifacts/profiling/
 artifacts/profiles/
+artifacts/releases/
 # Patched test jars built for one-off checks
 artifacts/patches/

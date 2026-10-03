@@ -4,6 +4,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.9.1-alpha] — 2026-10-03
+
+### Administrator fusion discovery
+
+- `/wildercord learnall` reveals all 55 elemental and 22 signature fusion recipes as well as learning their rune results. One attachment sync preserves existing discoveries and saves, without discovery rewards or innate ownership changes. Actual command, repeat, client sync and saved-world restart tests pass.
+- Published a matching 0.9.1 client/server build, updated installation/version information, the player guide and CurseForge description.
+
+
 ### Spell damage exploits
 
 - Reproduced a paid Touch/nine-Vows/Harm cast dealing all 1,000 dummy health for under 200 mana.

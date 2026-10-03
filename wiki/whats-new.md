@@ -3,43 +3,32 @@ title: What's New
 nav_order: 1.1
 ---
 
-# What's new in 0.9.0-alpha
+# What's new in 0.9.1-alpha
 
-The wilds come alive and the sword finds its path. Twelve new creatures roam the world, and **Aura** opens a swordsman's
-path beside the Cord. Players and servers update together: a 0.9.0 server needs 0.9.0 players. Back up your worlds first.
+This release brings the expanded Aura path, living highland and wetland interactions, authored fire/frost/storm/wind preparations and projectile bodies, and fixes for extreme spell damage. **Update the server and every client together.** Spell packets and particle registration have changed since 0.9.0.
 
-## Monsters of the wilds
+## Fairer spell damage
 
-Six magical monsters, each with a tell before its big attack and a way to beat it: the **Bramblewalker** that roots you
-with its vines, the **Gloomstalker** you only see when light finds it, the **Thunderwing Harpy** that calls lightning in a
-storm, the **Geode Crawler** that curls up and rolls, the **Bog Witch-Frog** that lobs poison and swallows small creatures,
-and the **Mana Ooze** that drinks your spells. See [Monsters]({{ '/world/monsters/' | relative_url }}).
+Vow, Execute and Trial Key now apply once per target rune; Focus twice; Extend three times. Extra copies warn and add neither cost nor power, including inside Knots. Each paid player cast shares one damage allowance per target across its repeats, linked hits and damage over time: `min(512, 12 + 2 × effective mana price)`, with a maximum 96 raw damage per hit. Armor still applies. See [casting rules]({{ '/spellcraft/casting/' | relative_url }}).
 
-## Magical wildlife
+## Authored elemental motion
 
-Six enchanted animals: **Glimmerwings** drawn to light and to spellcasters, the **Lumen Stag** that sheds a crystal antler
-for a patient, sneaking visitor, the **Mossback Tortoise** with a garden on its shell, the tameable **Cinderfox**, the
-**Skyray** gliding high above the mountains and the **Rimehare** leaving frost prints in the snow. Every creature you meet
-up close goes into the **field guide** in your Grimoire. See [Creatures]({{ '/world/creatures/' | relative_url }}).
+Preparations and moving projectile bodies now cover 28 fire, 30 frost/water, 20 storm and 25 wind effects. Ingredients retain their material and motion. Wind carries translucent airflow, traveling crests, shear and pressure using its own renderer. Initial and linked formations follow their actual delivery; one complete glyph stays behind the caster. Complete release/impact work for every element and delivery is still in progress.
 
-## Aura: the swordsman's path
+![Windcut gathering fine currents ahead of its rear casting glyph]({{ '/assets/images/wind-formation-windcut.png' | relative_url }})
 
-- **Learn a breathing method** (ten, one per element) from a manual found in old vaults and libraries, or from a duelist
-  you beat. Your aura takes its colour and element.
-- **Gather aura** from real blows and a still, steady breath, and **climb five stages**, each earned by a breakthrough:
-  Glow, Flow, Edge, Form and Sovereign. Your blade hazes, flows, then becomes solid crystal; you guard and counter, loose
-  slashes of aura, step through the air, press weaker foes with your intent, and at the top raise a **Dominion** of your own.
-- **Blade and Cord together**: cast a spell while sneaking with your blade and it rides your next slash, and elemental
-  strikes leave marks a mage's spells set off.
-- **The world of aura**: wandering **duelists** to challenge, **fallen knights** in strongholds and ancient cities,
-  **aura-forged weapons**, the **Breath Sash**, and slashes that clash in mid-air.
+## The blade and its world
 
-One key does it all (Z by default): tap to slash, sneak to guard, double-tap to step, hold for Dominion. See
-[Aura]({{ '/progression/aura/' | relative_url }}).
+Learn sword strings, breathing-method arts, momentum, openings, awakenings, Ways and authored techniques. Bond a blade, teach a disciple, spar by consent and meet another strike in a timed clash. Physical Aura standards, ground fractures and Soar's feathered wings accompany the path.
 
-Everything from 0.8 is still here: harmonies, spell mastery, overchannelling and residues. See the
-[0.8.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha) and the full
-[changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md).
+Explore [Marchkeeper battlefields]({{ '/progression/aura/' | relative_url }}), sword tombs and the sleeping blade; meet highland beasts and enter village tournaments. Resonant strikes, rune-etched blades and Unity connect the swordsman and mage. See [Aura]({{ '/progression/aura/' | relative_url }}) and the [full release notes](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha).
+
+## Useful fixes
+
+- Summit Wind now recognizes actual mountain peaks; Storm Spire is rebuilt as a copper observatory.
+- The Cord creation screen shows the owner's saved spell count.
+- `/wildercord learnall` learns named fused runes and reveals all 77 elemental/signature recipes. It preserves saved spells and innate ownership. Exact dynamic weaves are still made at the altar.
+- Cinnamon has her polished custom appearance, bell, bow, tongue, temperament and owner-defense behavior.
 
 ## Wetland lights and fox friendship
 
@@ -56,3 +45,7 @@ Weave a waterlogged canopy from Bamboo, Moonreed Floss, String and Seagrass. Lan
 ## Reedback Crabs
 
 A new territorial creature inhabits shallow swamp banks. Its six legs, hinged claws and reed crown have a custom model and animation. Sneak past, sidestep a warned sweep, use Tidebreath to calm it or wind to interrupt it. See [Reedback Crabs]({{ '/world/reedback-crabs/' | relative_url }}).
+
+## Earlier releases
+
+The twelve monsters/wildlife and original Aura foundation arrived in [0.9.0](https://github.com/defnotean/wildercord/releases/tag/v0.9.0-alpha). Harmonies, mastery and residues arrived in [0.8.0](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha). The living-world expansion continues; this release does not complete the roadmap.

@@ -513,7 +513,7 @@ def write_lang(runes):
         "message.wildercord.selected": "Spell %s",
         "message.wildercord.first_cord": "Your Cord hums. You learned Self, Bolt and Push, and spell 1 is ready: R casts, V switches spell, K opens your Cord.",
         "message.wildercord.blink_far": "Too far to blink (max 32 blocks)",
-        "command.wildercord.learnall": "Learned all %s runes",
+        "command.wildercord.learnall": "Learned all %s runes and revealed %s named fusion recipes",
         "command.wildercord.learned": "Learned %s",
         "command.wildercord.unknown": "Unknown rune: %s",
         "command.wildercord.spell_set": "Spell %s set (%s runes)",

@@ -134,7 +134,7 @@ with cheats on. They're meant for testing, events and fixing things up.
 
 | Command | Does |
 |---|---|
-| `/wildercord learnall` | Learn every rune. |
+| `/wildercord learnall` | Learn every registered rune, including all named fusion results, and reveal every elemental/signature fusion recipe in the Grimoire. Existing spells and innate ownership stay intact. Exact two-to-eight-effect weaves are created at the altar; their combinations are not a finite named roster. |
 | `/wildercord learn <rune>` | Learn one rune, by its name in lower case with underscores: `stasis`, `on_hit`, `feather_fall`. |
 | `/wildercord spell <1-5> <runes...>` | Thread a whole spell at once, replacing what's there: `/wildercord spell 1 bolt fire split`. Runes named here are learned too. Your Cord's sockets and tier still apply. Spell 5 is the tome's. |
 | `/wildercord mana` | Fill your mana. |

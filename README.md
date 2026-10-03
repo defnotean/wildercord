@@ -12,7 +12,7 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.9.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.9.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
+**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.9.1-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha)** · [GitBook export](gitbook/SUMMARY.md)
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
