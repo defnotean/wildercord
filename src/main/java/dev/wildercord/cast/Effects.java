@@ -1700,14 +1700,19 @@ public final class Effects {
 		int times = (int) Math.round(2 * power);
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
 			BlockPos p = pos.immutable();
-			// Only what bone meal would grow is asked about (claims hear it as a break, and so do glyphs).
-			if (!(cast.level.getBlockState(p).getBlock() instanceof net.minecraft.world.level.block.BonemealableBlock)
-					|| !Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p)) {
-				continue;
-			}
-			// Each block it grows comes out of the cast's block budget, as every other change to the world does.
-			if (!cast.takeBlock()) {
-				break;
+			var source = cast.level.getBlockState(p);
+			if (!(source.getBlock() instanceof net.minecraft.world.level.block.BonemealableBlock)) continue;
+			// Known adjacent mutations reserve every destination before vanilla writes the first cell.
+			if (GrowDoublePlantPreflight.handles(source)) {
+				if (!GrowDoublePlantPreflight.reserve(cast,p,source)) continue;
+			} else if (GrowSeagrassPreflight.handles(source)) {
+				if (!GrowSeagrassPreflight.reserve(cast,p,source)) continue;
+			} else if (GrowMossCarpetPreflight.handles(source)) {
+				if (!GrowMossCarpetPreflight.reserve(cast,p,source)) continue;
+			} else {
+				// Other bonemeal features retain their original source admission and native behavior.
+				if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster,cast.level,p)) continue;
+				if (!cast.takeBlock()) break;
 			}
 			boolean grew = false;
 			for (int i = 0; i < times; i++) {

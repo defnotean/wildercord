@@ -2,7 +2,7 @@
 
 ## Observed failure
 
-GitHub Build run37149262042 for commit00cd3475 completed its ordinary build, generated-assets
+GitHub Build run 37149262042 for commit00cd3475 completed its ordinary build, generated-assets
 check, unit tests and launcher packaging successfully. Its separate full-client job was cancelled
 after the90-minute limit. The retained job log establishes that no gameplay test started:
 Minecraft26.3 failed its OpenGL hidden-window creation with `Couldn't find matching GLX visual`,
@@ -62,3 +62,20 @@ The corrected focused nursery fixture passed on Windows in 2 min 28 s, including
 real crouch admissions, Survival dew pickup, exact forage-rest preservation and
 full earned acquisition/restart. A subsequent full Linux run remains the open
 gate; focused Windows passes do not establish full Linux acceptance.
+
+## Void milestone Linux run
+
+Build run 37160112771 at commit f4d778837e60412468bb60dfe9a1c9d7e77f9590
+passed its ordinary build, unit/assets checks and packaging; Guide 37160112802
+passed. The full gameplay job failed after 3 min 11 s at the first nursery
+gather's new earned-inventory assertion. Real crouch/LOS admission succeeded.
+The drop is a genuine ItemEntity with randomized horizontal velocity, so waiting
+in place beside the moving visitor cannot establish pickup.
+
+The corrected fixture tracks the newly emitted UUID and uses bounded actual
+client movement to reach it, preserving pickup delay, ownership and real
+Survival inventory provenance. Its first focused Windows pass took 2 min 23 s.
+Parent review also corrected callback races by checking inventory and tracked
+entity existence together; the final focused pass took 2 min 20 s; a renewed Linux descriptor
+remains the open gate. Retained Linux log: artifacts/review/void-material-milestone/
+ci-f4d77883-failed.log.

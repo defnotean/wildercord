@@ -4,6 +4,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Fixed Grow's direct adjacent placement checks for vanilla short grass, fern, seagrass and pale moss carpet. Both plant halves or the actual topper destination now pass loaded-world, border, eligibility and edit checks before native placement; shared block budgets reserve exactly two or one cells atomically. General registry-feature tree/flower adjacency remains under review.
+- Fixed the nursery's earned-drop test to track the actual newly emitted dew and walk to its randomized landing using native client input. Inventory and item lookups now use an atomic success check so legitimate pickup between callbacks cannot fail the fixture. No item insertion, relocation, ownership changes or shortened rests are used.
+
 - Corrected the nursery harvest regression fixture to approach through actual supported, collision-free footing and line of sight, use native crouch interactions, and verify real emitted dew reaches Survival inventory. The complete focused earned-resource and restart chain passes; the full Linux CI rerun remains a separate gate.
 - Added individually authored preparations and velocity-oriented moving bodies for all thirty-six Void effect runes. Eleven original material styles include torn folds, shells, jaws, pressure and running hounds for Shades; mixed Fire, Wind, Time, Blood and Arcane ingredients remain visible in Full and Minimal quality. Rear casting circles and actual delivery remain authoritative.
 - Verified paid Void Self wards, safe Blink/Warp movement, Warp Step's return/crouch choice and Zipper's protected-wall refusal in focused native tests. Full impact, sound, beam, rain and summon presentation remains tracked separately.

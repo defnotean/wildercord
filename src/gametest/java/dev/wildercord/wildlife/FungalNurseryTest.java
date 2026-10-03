@@ -75,6 +75,7 @@ public final class FungalNurseryTest implements FabricClientGameTest {
  private static void gatherVisitor(ClientGameTestContext c,TestSingleplayerContext w) {
   boolean shift=c.computeOnClient(mc -> mc.options.keyShift.isDown());
   int dewBefore=w.getServer().computeOnServer(s -> p(s).getInventory().countItem(SporebackContent.DEW));
+  Set<UUID> existingDrops=w.getServer().computeOnServer(s -> s.overworld().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,snail.getBoundingBox().inflate(4),e -> e.getItem().is(SporebackContent.DEW)).stream().map(Entity::getUUID).collect(java.util.stream.Collectors.toSet()));
   try {
    w.getServer().runOnServer(s -> hand(p(s),ItemStack.EMPTY));c.waitTicks(5);c.runOnClient(mc -> mc.options.keyShift.setDown(true));c.waitTicks(5);
    for(int attempt=0;attempt<4;attempt++) {
@@ -90,10 +91,47 @@ public final class FungalNurseryTest implements FabricClientGameTest {
      dev.wildercord.Wildercord.LOGGER.info("FUNGAL_GATHER admission player="+player.position()+" snail="+snail.position()+" shift="+player.isShiftKeyDown()+" visible="+player.hasLineOfSight(snail)+" pose="+snail.pose()+" dew="+snail.dew()+" gather="+snail.gatherReady()+" forage="+snail.forageReady()+" now="+l.getGameTime());
     });
     c.waitTicks(5);interact(c,w);
-    if(w.getServer().computeOnServer(s -> !snail.dew())) {c.waitTicks(20);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(SporebackContent.DEW)>dewBefore),"The real gathered dew drop reaches Survival inventory before leaving the visitor");return;}
+    if(w.getServer().computeOnServer(s -> !snail.dew())) {collectEarnedDew(c,w,dewBefore,existingDrops);return;}
    }
    throw new AssertionError("Four real native crouch interactions did not spend the visitor reserve; inspect FUNGAL_GATHER admissions");
   }finally {c.runOnClient(mc -> mc.options.keyShift.setDown(shift));}
+ }
+ // Follow the actual emitted item using client movement. A random drop may land beyond a stationary pickup box.
+ private static void collectEarnedDew(ClientGameTestContext c,TestSingleplayerContext w,int before,Set<UUID> oldDrops) {
+  boolean up=c.computeOnClient(mc -> mc.options.keyUp.isDown()),left=c.computeOnClient(mc -> mc.options.keyLeft.isDown()),right=c.computeOnClient(mc -> mc.options.keyRight.isDown());
+  try {
+   if(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(SporebackContent.DEW)>before))return;
+   UUID drop=w.getServer().computeOnServer(s -> {
+    if(p(s).getInventory().countItem(SporebackContent.DEW)>before)return null;
+    var found=s.overworld().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,snail.getBoundingBox().inflate(4),e -> e.getItem().is(SporebackContent.DEW) && !oldDrops.contains(e.getUUID()));
+    check(found.size()==1,"One actual newly emitted dew drop remains to be physically gathered");return found.getFirst().getUUID();
+   });
+   if(drop==null)return; // Earned auto-pickup was observed atomically with lookup.
+   Vec3 previous=w.getServer().computeOnServer(s -> p(s).position());int sideways=0,detours=0;
+   for(int tick=0;tick<90;tick++) {
+    if(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(SporebackContent.DEW)>before))return;
+    Vec3 target=w.getServer().computeOnServer(s -> {
+     if(p(s).getInventory().countItem(SporebackContent.DEW)>before)return null;
+     var e=s.overworld().getEntity(drop);check(e instanceof net.minecraft.world.entity.item.ItemEntity,"Tracked earned drop remains until real inventory pickup");return e.position();
+    });
+    if(target==null)return; // Position and earned inventory are one authoritative observation.
+    if(tick%15==0) {
+     Vec3 current=w.getServer().computeOnServer(s -> p(s).position());
+     if(tick>0 && current.distanceToSqr(previous)<.0036 && current.distanceToSqr(target)>1 && detours<3){sideways=6;detours++;}
+     previous=current;
+     boolean pickedUp=w.getServer().computeOnServer(s -> {
+      if(p(s).getInventory().countItem(SporebackContent.DEW)>before)return true;
+      var found=s.overworld().getEntity(drop);check(found instanceof net.minecraft.world.entity.item.ItemEntity,"Tracked drop remains while earned inventory has not increased");
+      var item=(net.minecraft.world.entity.item.ItemEntity)found;var access=(dev.wildercord.mixin.ItemEntityAccessor)item;
+      dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PICKUP player="+p(s).position()+" item="+item.position()+" velocity="+item.getDeltaMovement()+" age="+item.getAge()+" delay="+item.hasPickUpDelay()+" target="+access.wildercord$target()+" thrower="+(access.wildercord$thrower()==null?"none":access.wildercord$thrower().getUUID())+" collisionFree="+s.overworld().noCollision(p(s),p(s).getBoundingBox())+" inventory="+p(s).getInventory().countItem(SporebackContent.DEW));return false;
+     });
+     if(pickedUp)return;
+    }
+    boolean side=sideways-->0,toLeft=(detours%2)==1;
+    c.runOnClient(mc -> {var d=target.subtract(mc.player.position());mc.player.setYRot((float)Math.toDegrees(Math.atan2(-d.x,d.z)));mc.player.setXRot(35);mc.options.keyUp.setDown(true);mc.options.keyLeft.setDown(side && toLeft);mc.options.keyRight.setDown(side && !toLeft);});c.waitTicks(2);
+   }
+   check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(SporebackContent.DEW)>before),"Native movement must physically acquire the tracked earned dew; inspect FUNGAL_PICKUP geometry and ownership");
+  } finally {c.runOnClient(mc -> {mc.options.keyUp.setDown(up);mc.options.keyLeft.setDown(left);mc.options.keyRight.setDown(right);});}
  }
  private static void interact(ClientGameTestContext c,TestSingleplayerContext w) {int id=w.getServer().computeOnServer(s -> snail.getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);});c.waitTicks(5);}
  private static void await(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.BooleanSupplier yes,String why) {for(int i=0;i<150;i++) {c.waitTicks(5);if(w.getServer().computeOnServer(s -> yes.getAsBoolean()))return;}w.getServer().runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("FUNGAL_AWAIT "+why+" snail="+snail.position()+" pose="+snail.pose()+" dew="+snail.dew()+" forage="+snail.forageReady()+" now="+s.overworld().getGameTime()+" cap="+s.overworld().getBlockState(plant)+" foot="+s.overworld().getBlockState(snail.blockPosition().below())+" path="+(snail.getNavigation().getPath()==null?"none":snail.getNavigation().getPath().getEndNode())+" clip="+s.overworld().clip(new net.minecraft.world.level.ClipContext(snail.getEyePosition(),Vec3.atCenterOf(plant),net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,snail))));throw new AssertionError(why);}

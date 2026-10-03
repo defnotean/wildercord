@@ -148,7 +148,10 @@
 			"dev.wildercord.client.fx.WindFlightVariantsTest",
 			"dev.wildercord.client.fx.FrostFlightVariantsTest",
 			"dev.wildercord.client.fx.GroupFormationTest",
-			"dev.wildercord.command.LearnAllFusionTest"
+			"dev.wildercord.command.LearnAllFusionTest",
+			"dev.wildercord.cast.GrowDoublePlantPermissionTest",
+			"dev.wildercord.cast.GrowSeagrassPermissionTest",
+			"dev.wildercord.cast.GrowMossCarpetPermissionTest"
 		]
 	},
 	"depends": {
