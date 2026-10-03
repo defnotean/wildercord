@@ -18,6 +18,20 @@ leaning), switching between spells, and reading the spell panel beside your hotb
 
 ---
 
+## Reading a fire preparation
+
+The brief preparation tells you which fire effect is being assembled. Ember closes a hooked spark onto a cinder; Primer burns a pink fuse; Meteor gathers stone beside a falling fire tail. Smelt forms a heated grate, Fireward closes a shield silhouette, and Ashen Veil keeps an open lane between two ash curtains.
+
+Mixed fire effects also show their ingredients: Firestorm braids wind around flame, Steam vents vapor from wet lobes, and Boiling Surge carries hot vapor along a curling wet crest. Phoenix Pyre raises feathered flame wings around a green renewal stem.
+
+![Firestorm's braided wind and flame]({{ '/assets/fire-formations/fire_formation_firestorm.png' | relative_url }})
+
+![Primer's charge and pink fuse]({{ '/assets/fire-formations/fire_formation_primer.png' | relative_url }})
+
+![Phoenix Pyre's feathered preparation]({{ '/assets/fire-formations/fire_formation_phoenix_pyre.png' | relative_url }})
+
+These pictures show the short preparation in a controlled stage. The selected shape still determines delivery: the decoration does not change a Bolt into wings, summon a creature, or grant a shield by itself. The rear casting circle stays behind you. Minimal formation quality keeps each authored outline with less midpoint detail.
+
 ## Pressing the cast key
 
 **`R`** casts your **selected** spell. Every key can be changed in the game's Controls options, under

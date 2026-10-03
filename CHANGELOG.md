@@ -4,6 +4,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Authored fire preparations
+
+- Added distinct formation recipes for all 28 built-in fire effects, plus Bloodboil's heat preparation: cinders, tongues, fuse, grate, shield, falling fragments, ash curtains, solar rays, feathered wings and more. Firestorm, Steam, Seethe, Cinder Bulwark and Boiling Surge visibly combine their material ingredients.
+- Preserved server deliveries, costs, mechanics and existing impact voices. Preparations use the existing bounded client canvas; Minimal quality retains authored outlines with fewer midpoint particles.
+- Added native packet coverage for all 28 fire effects in Full/Minimal modes, finite nonduplicate/evolving recipe checks, exact-namespace dispatch checks, rendered-pixel evidence and a Survival Ember cast with mana payment. Full delivery/launch/travel/fusion/Aura/shader/multiplayer review remains open.
+- Added illustrated casting-guide coverage, a formation matrix and actual-game review captures. This improves existing abilities; it adds no new ability or fusion count.
+
 ### Highland travel and interruption fixes
 
 - Replaced random food/cover probing with finite nearest-first local sweeps. Eight columns are considered each second, with three footing heights, at most two search path attempts and loaded-cell checks. Ordinary wandering retains the sweep cursor so distant nearby resources are not repeatedly missed.

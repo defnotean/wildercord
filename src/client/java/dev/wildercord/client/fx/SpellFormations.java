@@ -57,7 +57,7 @@ public final class SpellFormations {
    return false;
   });
  }
- private static final class Canvas {
+ static final class Canvas {
   final ClientLevel world; final LivingEntity caster; final FormationPayload event;
   final MagicQuality.Level quality; final Vec3 forward, right, up, focus; final float yaw, pitch;
   Canvas(ClientLevel world, LivingEntity caster, FormationPayload event, MagicQuality.Level quality) {
@@ -152,15 +152,19 @@ public final class SpellFormations {
     case IMPRINT -> { polygon(6,q,0); polygon(3,q*.55,Math.PI/2); }
     case LATCH -> { slash(point(-.2,0,0),q*.6,Math.PI*1.4,0); slash(point(.2,0,0),q*.6,Math.PI*1.4,Math.PI); line(point(-.2,0,0),point(.2,0,0),false); }
    }
-   materials(beat);
+   boolean authoredFire=FireFormations.draw(this,beat);
+   materials(beat,authoredFire);
   }
-  void materials(int beat) {
+  Vec3 assembly() {
+   return switch(ShapeFormation.of(event.shape())) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
+  }
+  void materials(int beat,boolean authoredFire) {
    // Materials change the geometry as well as the colour. Each fused ingredient gets its own layer.
    for(int i=0;i<event.elements().size();i++) {
     String element=event.elements().get(i); double a=i*2.39996+beat*.9;
+    if(authoredFire && element.equals("fire")) continue;
     // Caster-centered deliveries must not leave their elemental assembly at the front focus.
-    ShapeFormation delivery=ShapeFormation.of(event.shape());
-    Vec3 anchor=switch(delivery) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
+    Vec3 anchor=assembly();
     Vec3 at=anchor.add(right.scale(Math.cos(a)*.4)).add(up.scale(Math.sin(a)*.4));
     var theme=Vfx.theme(element);
     emit(theme.mote(),at);

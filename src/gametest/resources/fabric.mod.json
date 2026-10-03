@@ -106,7 +106,8 @@
 			"dev.wildercord.wildlife.WetlandTerrainTest",
 			"dev.wildercord.wildlife.ReedRefugeTest",
 			"dev.wildercord.wildlife.ReedbackCrabTest",
-			"dev.wildercord.cast.FormationAnchorTest"
+			"dev.wildercord.cast.FormationAnchorTest",
+			"dev.wildercord.client.fx.FireFormationTest"
 		]
 	},
 	"depends": {

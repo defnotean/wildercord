@@ -30,3 +30,7 @@ The suite does not prove complete mana-paid casts, unique effect choreography, a
 6. Verify reduced effects, shaders, multiplayer readability and measured performance.
 
 The full living-world objective remains active. This increment adds no creature, item, ability, fusion or lore count.
+
+## Fire family follow-up
+
+[Authored fire preparation matrix](fire-formations.md) records 28 fire recipes plus Bloodboil. Native Full/Minimal packets, actual rendered-pixel checks and one paid Survival Ember cast verify the formation increment. Complete per-effect presentation review remains pending; no runtime row is upgraded to fully verified by this narrow phase coverage.
