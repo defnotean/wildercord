@@ -62,12 +62,13 @@ public final class SpellFormations {
   final MagicQuality.Level quality; final Vec3 forward, right, up, focus; final float yaw, pitch;
   Canvas(ClientLevel world, LivingEntity caster, FormationPayload event, MagicQuality.Level quality) {
    this.world = world; this.caster = caster; this.event = event; this.quality = quality;
-   forward = caster.getLookAngle().normalize();
+   forward = (event.placement()==FormationPayload.FIXED?event.direction():caster.getLookAngle()).normalize();
    Vec3 cross = forward.cross(UP);
    right = cross.lengthSqr() < 0.0001 ? new Vec3(1, 0, 0) : cross.normalize();
    up = right.cross(forward).normalize();
    // Formation stays below the reticle and beyond the near plane. Track aim until the release tick.
-   focus = event.placement()==FormationPayload.CASTER ? caster.position().add(0,.7,0)
+   focus = event.placement()==FormationPayload.FIXED ? event.anchor()
+    : event.placement()==FormationPayload.CASTER ? caster.position().add(0,.7,0)
     : event.placement()==FormationPayload.AIMED ? aimed().add(0,event.shape().equals("rain")?12:.12,0)
     : caster.getEyePosition().add(forward.scale(3.2)).subtract(up.scale(0.65));
    yaw = (float) Math.toDegrees(Math.atan2(-forward.x, forward.z));
@@ -120,16 +121,16 @@ public final class SpellFormations {
   }
   void draw(int beat) {
    double t = beat / 2.0, r = event.scale() * .55, q = r * (1.35 - .35*t);
-   Vec3 feet = caster.position().add(0, .12, 0);
+   Vec3 feet = event.placement()==FormationPayload.FIXED?focus:caster.position().add(0, .12, 0);
    switch (ShapeFormation.of(event.shape())) {
     case SELF -> { ring(feet.add(0, t*.7, 0), .7-.25*t, true); ring(feet.add(0, 1.3-t*.4, 0), .35, true); }
     case TOUCH -> { slash(point(-q*.3, 0, 0), q*.5, Math.PI*.8, 0); line(point(q*.3, -.3, 0), point(q*.3, .3, 0), false); }
     case BOLT -> { orb(point(0, 0, -.35+.35*t), .15*t); line(point(0, 0, -.8), focus, false); }
     case BEAM -> { for (int s : new int[]{-1,1}) line(point(s*q, -.1, -.8), focus, false); ring(focus, .35-.15*t, false); }
     case BURST -> { for(int i=0;i<6;i++) { double a=i*Math.PI/3; line(focus, point(Math.cos(a)*q,Math.sin(a)*q,0),false); } }
-    case ZONE -> { ring(event.placement()==FormationPayload.AIMED?focus:feet.add(forward.scale(3)), q*1.6, true); polygon(4, q*.7, Math.PI/4); }
+    case ZONE -> { ring(event.placement()==FormationPayload.AIMED || event.placement()==FormationPayload.FIXED?focus:feet.add(forward.scale(3)), q*1.6, true); polygon(4, q*.7, Math.PI/4); }
     case RAIN -> {
-     if(event.placement()==FormationPayload.AIMED) {
+     if(event.placement()==FormationPayload.AIMED || event.placement()==FormationPayload.FIXED) {
       for(int i=-1;i<=1;i++)line(point(i*.35,0,-.3),point(i*.35,-.9*t,0),false);
       ring(focus,q,true);ring(focus.add(0,-12,0),q*.8,true);
      } else {for(int i=-1;i<=1;i++)line(point(i*.35,1.4,-.3),point(i*.35,.5*t,0),false);ring(point(0,1.5,0),q,false);}
@@ -139,7 +140,7 @@ public final class SpellFormations {
     case TRAIL -> { for(int i=0;i<3;i++) ring(feet.subtract(forward.scale(.4*i)),.15+.12*i,true); }
     case WALL -> { polygon(4,q,Math.PI/4); line(point(-q*.7,0,0),point(q*.7,0,0),false); }
     case ORBIT -> { for(int i=0;i<3;i++){ double a=i*Math.PI*2/3+t; orb(caster.position().add(Math.cos(a)*q,.7,Math.sin(a)*q),.09); } }
-    case RING -> { boolean floor=event.placement()==FormationPayload.CASTER;ring(focus,q,floor);ring(focus,q*.6,floor); }
+    case RING -> { boolean floor=event.placement()==FormationPayload.CASTER || event.placement()==FormationPayload.FIXED;ring(focus,q,floor);ring(focus,q*.6,floor); }
     case PILLAR -> { line(point(-.2,-q,0),point(-.2,q,0),false); line(point(.2,-q,0),point(.2,q,0),false); ring(point(0,-q,0),.3,true); }
     case WAVE -> { for(int i=-2;i<=2;i++) slash(point(i*.3,Math.sin(i+t)*.15,0),.22,Math.PI,Math.PI/2); }
     case MINE -> { polygon(3,q,Math.PI/2); orb(focus,.08); }
@@ -171,7 +172,7 @@ public final class SpellFormations {
    materials(beat,authoredFire);
   }
   Vec3 assembly() {
-   if(event.placement()==FormationPayload.CASTER || event.placement()==FormationPayload.AIMED)return focus;
+   if(event.placement()==FormationPayload.CASTER || event.placement()==FormationPayload.AIMED || event.placement()==FormationPayload.FIXED)return focus;
    return switch(ShapeFormation.of(event.shape())) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
   }
   void materials(int beat,boolean authoredFire) {

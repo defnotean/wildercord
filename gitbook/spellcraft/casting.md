@@ -370,6 +370,24 @@ Every spell reads from how it's built:
 
 ## What other players see
 
+### When a linked stage begins
+
+A Delay's next group prepares when its timer finishes. A conditional group prepares only if its
+condition succeeds. These stages keep their own elements and reuse the spell's original rear glyph
+instead of opening another one.
+
+An impact-triggered Burst or projectile forms at that impact and keeps its direction. Ground fields
+settle beneath the trigger; Rain gathers twelve blocks above that ground. Self, Orbit and Trail
+continue to act on the caster. These preparations accompany the existing release timing and add
+no extra mana payment.
+
+![Delayed Fireward forms around its caster](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/linked-formations/linked_delayed_fireward.png)
+
+![A paid Ember Bolt triggers a Fire Burst at the creature it hits](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/linked-formations/linked_paid_impact_burst.png)
+
+These game captures use a controlled demonstration platform. The first shows the delayed ward;
+the second shows the existing impact display together with the linked group's preparation.
+
 Casting is meant to be read by everyone around you:
 
 - the Cord on your wrist, with a bead for each rune of your ready spell,

@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Linked formation origins
+
+- Linked stages now emit their own isolated formation when the casting engine admits the segment. Delays and successful conditions form at execution; rejected conditions and cancelled casts emit nothing. Continuations do not open another rear glyph.
+- Impact-centered preparations preserve the trigger position and direction. Ground fields use the native ground resolver, Rain prepares twelve blocks above it, and Self/Orbit/Trail remain on the caster as their gameplay requires. No gameplay delay, damage or extra payment is introduced.
+- Added native paid-Delay coverage, successful/refused condition coverage and decoded origin fixtures for nine linked deliveries. Full linked launch/travel choreography, all link variants, secret-specific staging, shaders and real multiplayer remain open.
+
 ### Group-aware initial formations
 
 - Ordinary Cord and scroll preparations now follow compiled initial groups, with isolated effects/materials, one complete rear glyph and mastery-adjusted aim range. Delayed/conditional groups no longer appear in the initial assembly; empty initial segments show only the rear glyph.

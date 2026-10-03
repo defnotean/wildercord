@@ -724,7 +724,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          36
+          38
         ]
       },
       {
@@ -1338,7 +1338,8 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          36
+          38,
+          57
         ]
       },
       {
@@ -1713,8 +1714,8 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          181,
-          189
+          182,
+          190
         ]
       },
       {
@@ -1951,7 +1952,7 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          191
+          192
         ]
       },
       {
@@ -3153,7 +3154,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          37
+          39
         ]
       },
       {
@@ -3301,7 +3302,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          36
+          38
         ]
       },
       {
@@ -3415,7 +3416,8 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          36
+          38,
+          54
         ]
       },
       {
@@ -3556,7 +3558,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          37
+          39
         ]
       },
       {
@@ -3785,7 +3787,7 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          71
+          72
         ]
       },
       {
@@ -3797,7 +3799,8 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          37
+          39,
+          58
         ]
       },
       {
@@ -4213,7 +4216,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          36
+          38
         ]
       }
     ],
@@ -4406,11 +4409,13 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          26,
-          30,
-          36,
-          46,
-          48
+          28,
+          32,
+          38,
+          54,
+          62,
+          73,
+          75
         ]
       },
       {
@@ -5564,7 +5569,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          37
+          39
         ]
       },
       {
@@ -5608,7 +5613,8 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          36
+          38,
+          54
         ]
       },
       {
@@ -5913,7 +5919,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          37
+          39
         ]
       },
       {
@@ -5944,7 +5950,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          37
+          39
         ]
       },
       {
@@ -6026,7 +6032,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          36
+          38
         ]
       }
     ],
@@ -6172,7 +6178,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
         "lines": [
-          37
+          39
         ]
       },
       {

@@ -53,6 +53,7 @@ public final class CastEngine {
 		if (seg == null || !cast.alive() || !cast.takeSegment()) {
 			return;
 		}
+		if(seg != cast.info.root() || cast.depth>0)FormationVfx.continuation(cast,seg,at);
 		for (SpellPlan.Group group : seg.groups) {
 			SpellPlan.Link anchored = seg.link != null && seg.link.anchor == group ? seg.link : null;
 			deliver(cast, group, at, anchored);
