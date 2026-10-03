@@ -111,6 +111,8 @@
 			"dev.wildercord.client.fx.FrostFormationTest",
 			"dev.wildercord.client.fx.StormFormationTest",
 			"dev.wildercord.client.fx.FireFlightTest",
+			"dev.wildercord.client.fx.FrostFlightTest",
+			"dev.wildercord.client.fx.FrostFlightVariantsTest",
 			"dev.wildercord.client.fx.GroupFormationTest"
 		]
 	},

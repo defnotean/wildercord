@@ -477,3 +477,26 @@ The remaining fire bodies have their own forms too: a heat shutter for Flashfire
 ![Cinder Bulwark carries stone with ember mortar]({{ '/assets/images/fire-flight-cinder-bulwark.png' | relative_url }})
 
 These are distant travel frames from real Survival casts on a review platform. The forms are compact, and some cast preparations remain visible near the player.
+
+## Ice and water in flight
+
+All thirty frost-family effects now carry their own moving bodies. Icicle leads with a long needle;
+Frost branches along a contact spine; Freeze carries opposed plates; Coldsnap travels as biting
+jaws. Frostward has a pointed rim, Mirrorfrost a tilted pane and Hoarfrost a slender rime fern.
+
+Water keeps its own motion. Bubble travels as a wet membrane around air; Current converges three
+flow lanes; Tidehook carries a barb and tether; Tidewrit retains a folded wave lip. Tidebreath
+carries water lungs and vapor. Flash Freeze changes water into ice between closing blades.
+
+Fused ingredients travel together: Hail retains charge, Glacier carries stone under ice,
+Frostbloom keeps a living seed, Cryostasis carries life and time, and Undertow carries sediment.
+Minimal quality keeps those ingredients with fewer detail particles.
+
+![Frostward carries a curved ice rim]({{ '/assets/images/frost-flight-frostward.png' | relative_url }})
+
+![Mirrorfrost carries a pane with an arcane glint]({{ '/assets/images/frost-flight-mirrorfrost.png' | relative_url }})
+
+![Tidewrit carries three courses and a vapor lip]({{ '/assets/images/frost-flight-tidewrit.png' | relative_url }})
+
+These are actual distant flight frames from paid Survival casts. Existing impacts and gameplay
+still follow the spell's delivery; other families and full release/impact sequences are being reviewed.

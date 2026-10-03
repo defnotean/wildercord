@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 final class FireFlights {
  private FireFlights() {}
  static final List<String> RUNES=dev.wildercord.cast.FlightBodies.FIRE;
- static boolean supports(String id){return dev.wildercord.cast.FlightBodies.supports(id);}
+ static boolean supports(String id){return dev.wildercord.cast.FlightBodies.supportsFire(id);}
  static void draw(String id,int age,double scale,Vec3 head,Vec3 velocity,boolean minimal,BiConsumer<ParticleOptions,Vec3> emit) {
   draw(id,age,scale,1,head,velocity,minimal,emit);
  }

@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Authored frost and water projectile bodies
+
+- Added thirty individually authored moving bodies: needles, forks, plates, biting jaws, panes, cold fronts, snow/stone, living ice petals, water membranes, channels, hooks, wave crests and sediment bores. Water effects retain water; fused ingredients remain in Full and Minimal quality.
+- Extended the shared client/server coverage contract to frost. Covered groups replace duplicate travel particles and the generic comet while preserving travel voices; unsupported mixed groups retain fallback. Fire dispatch remains restricted to fire IDs.
+- Added paid Full/Minimal roster coverage, particle-clear recovery, actual screenshots and focused Arc, Pierce, Frugal and covered/uncovered mixed-group checks. Existing costs, collision, speed, reflection and impact mechanics remain unchanged. Complete release/impact, every delivery/modifier combination, shaders and multiplayer remain open.
+
 ### Complete fire projectile body roster
 
 - Added twenty further individually authored flight bodies, covering all twenty-eight runtime fire effects. New forms include heat shutters, pressure ribs, crowns, fuses, wood splinters, solar lenses, brands, ash curtains, hearts, bevels, shields, grates, jaws, time forks, heated water and stone mortar.
