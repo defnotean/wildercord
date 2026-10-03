@@ -90,6 +90,7 @@ public final class DuelistDuels {
 		/** Whether any magic of the challenger's touched the duelist (the duel still teaches, but isn't a trial). */
 		boolean magic;
 		int shown = -1;
+		BoutListener listener;
 
 		Active(DuelRules.Duel duel, ServerLevel level, Vec3 centre, ServerPlayer player, Duelist duelist, int stage) {
 			this.duel = duel;
@@ -108,6 +109,8 @@ public final class DuelistDuels {
 	private static final Map<UUID, Offer> OFFERS = new HashMap<>();
 	private static final Map<UUID, Active> BY_PLAYER = new HashMap<>();
 	private static final Map<UUID, Active> BY_DUELIST = new HashMap<>();
+	/** Hosted bouts retain the ordinary duel's protection and restoration, with their own outcome handler. */
+	@FunctionalInterface public interface BoutListener { void ended(ServerPlayer player, boolean won, boolean magic, DuelRules.Ending ending); }
 
 	public static void init() {
 		AuraApi.allowTrial(AuraRules.FORM, TRIAL);
@@ -280,6 +283,21 @@ public final class DuelistDuels {
 		player.sendSystemMessage(Component.translatable("message.wildercord.duelist.begins", name).withStyle(ChatFormatting.GOLD));
 	}
 
+	public static boolean startHosted(ServerPlayer player, Duelist duelist, Vec3 centre, BoutListener listener) {
+		if (player.level()!=duelist.level() || !player.isAlive() || player.isCreative() || player.isSpectator()
+				|| inDuel(player) || Duels.inDuel(player) || dev.wildercord.aura.Spars.sparring(player) || duelist.inDuel()
+				|| !Aura.enabled(player) || !Aura.holdsWeapon(player)) return false;
+		int stage=AuraWorldRules.duelStage(Aura.stage(player),AuraStages.highest());
+		var terms=new DuelRules.Terms(8,60,2400,0,1,false);
+		Active active=new Active(new DuelRules.Duel(player.getUUID(),duelist.getUUID(),player.level().getGameTime(),terms),player.level(),centre,player,duelist,stage);
+		active.listener=listener; BY_PLAYER.put(active.player,active); BY_DUELIST.put(active.duelist,active); duelist.begin(player,stage); return true;
+	}
+
+	public static void cancelHosted(ServerPlayer player) {
+		Active active=BY_PLAYER.get(player.getUUID());
+		if(active!=null && active.listener!=null){active.duel.interrupt();finish(active,active.level.getServer());}
+	}
+
 	// ------------------------------------------------------------------ the fight
 
 	private static void tick(MinecraftServer server) {
@@ -305,7 +323,8 @@ public final class DuelistDuels {
 			}
 			long now = active.level.getGameTime();
 			if (server.getTickCount() % 10 == 0 && (player.level() != active.level
-					|| DuelRules.outside(active.centre.x, active.centre.z, player.getX(), player.getZ()))) {
+					|| active.duel.terms.outside(active.centre.x, active.centre.z, player.getX(), player.getZ())
+					|| active.listener!=null && Math.abs(player.getY()-active.centre.y)>6)) {
 				active.duel.forfeit(active.player, DuelRules.Ending.LEFT_AREA);
 				finish(active, server);
 				continue;
@@ -386,6 +405,10 @@ public final class DuelistDuels {
 		}
 		if (duelist != null) {
 			duelist.end(won);
+		}
+		if(active.listener!=null) {
+			active.listener.ended(player,won,active.magic,active.duel.ending());
+			return;
 		}
 		if (player == null || player == leaving) {
 			return;

@@ -31,6 +31,7 @@ Techniques of one's own (the writing page, a part learned, a rank reached, each 
 tools/feel/aura_techniques.py. The bonded blade's (its ceremony, a tier reached, a name, a trait, going home, released, passed on:
 aura_bond_*) are in tools/feel/aura_bonds.py.
 """
+from feel.tournaments import TOURNAMENT_EVENTS
 import numpy as np
 
 from feel.core import sa, event
@@ -280,4 +281,4 @@ EVENTS = [
     event("aura_momentum_peak", aura_momentum_peak, role="effect", subtitle="tell", attenuation=24),
     event("aura_stance_break", aura_stance_break, role="impact", subtitle="hit", attenuation=32),
     event("aura_finisher", aura_finisher, role="grand", subtitle="hit", attenuation=40),
-] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS + BOND_EVENTS + SOCIAL_EVENTS + BATTLEFIELD_EVENTS + TOMB_EVENTS + SLEEPING_BLADE_EVENTS + BEAST_EVENTS
+] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS + BOND_EVENTS + SOCIAL_EVENTS + BATTLEFIELD_EVENTS + TOMB_EVENTS + SLEEPING_BLADE_EVENTS + BEAST_EVENTS + TOURNAMENT_EVENTS

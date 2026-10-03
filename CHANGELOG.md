@@ -4,6 +4,15 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Village tournaments and the Three Bows
+
+- Added inhabited-village gatherings with three stewards from different breathing methods. A bounded daytime visitor search finds flat, dry, open ground near a village bell with at least three residents. It places a timber registration stand and four embroidered cloth standards into empty space, preserving the underlying terrain and respecting mob spawning/mob griefing settings.
+- Three consecutive knockout wins complete an Aura circuit. Hosted bouts use existing nonlethal duel protection and opponent-only health/effect restoration, scale to the challenger's Aura stage, have an eight-block radius, three-second countdown and two-minute limit, and interrupt on third-party hits. Return to the stand between bouts within one minute. A spell touching a steward disqualifies the run; losses, draws, missing opponents and interrupted runs award nothing.
+- A saved prize ledger grants a chosen scroll, three Aura Shards and the three-page Three Bows history once per player per gathering. Sneak-use cycles the selected scroll; normal use claims it. Outstanding prizes persist across saves and later gatherings. The bracket itself does not resume after reload. Creative/Spectator and overlapping duel/spar entries are refused.
+- Added distinct stand/standard/book art, four authored sound cues and subtitles, short entry messages, tournament discovery and a complete player-guide chapter. Stewards wait away from the registration stand. Hosted rosters do not consume the wandering-duelist spawn allowance.
+- Added `aura_world.tournaments` with backward-compatible settings constructors. The server bounds terrain searches, cached venues and reward ledgers, and never forces terrain chunks to load. An ordinary grass block is accepted explicitly because Minecraft 26.3's dirt tag excludes it.
+- Added dedicated integrated-game checks for actual registration/choice/claim packets, resident and terrain requirements, nonlethal restoration, stage scaling, three distinct opponents, finite saved prizes, boundary forfeits, spell disqualification, third-party interruption, lore reading and ordinary-duel behavior. Natural village frequency, real two-client play, a complete server restart, shaders and sustained performance remain separate verification work.
+
 ### Highland beasts and useful field tools
 
 - Added Stonehorn, a custom rock-armoured grazer with layered shoulders, moss, cloven feet and curved horns. Quiet approaches and wheat avoid its territorial warning. A two-second stamp precedes a straight charge, followed by a vulnerable recovery; wall impacts leave a longer opening.

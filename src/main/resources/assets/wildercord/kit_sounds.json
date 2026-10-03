@@ -765,6 +765,18 @@
     "aura_tomb_thrust_ready": {
       "part": "aura"
     },
+    "aura_tournament_open": {
+      "part": "aura"
+    },
+    "aura_tournament_prize": {
+      "part": "aura"
+    },
+    "aura_tournament_round": {
+      "part": "aura"
+    },
+    "aura_tournament_victory": {
+      "part": "aura"
+    },
     "aura_verdant_art": {
       "part": "aura"
     },

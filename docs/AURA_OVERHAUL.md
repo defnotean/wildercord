@@ -77,7 +77,7 @@ and documented, not a first draft.
 | 8 | Your own techniques | done |
 | 9 | The bonded blade | done |
 | 10 | Masters, disciples, sparring and the clash | done; merged and tested |
-| 11 | The world of the sword | in progress: terrain training; other features pending |
+| 11 | The world of the sword | scoped features implemented: training, battlefields, tomb, sleeping blade, beasts, tournaments; broader verification open |
 | 12 | Mage and swordsman together | planned |
 
 ### 1. Sword strings: the input language
@@ -1245,3 +1245,14 @@ The shared spell damage path calls the beast's explicit spell landing method, in
 Stonehorn tolerates a quiet approach or wheat. Galeclaw tracks recent casting, consumes nearby dropped raw rabbit/chicken and hunts Rimehares, with natural habitat overlap in snowy slopes and groves. Natural spawns use the creature pool, one-animal groups, open/dry/high ground and a two-per-species cap within 96 blocks. Queries are local and staggered; animals never reproduce automatically or destroy terrain. Home-bound target selection limits pursuit. Saved shed deadlines stop repeated material collection after reload; loading resumes safely in recovery. Peaceful/config-disabled aggression leaves animals alive and permits idle roaming.
 
 Peaceful feeding grants a plate/plume once per two minutes. Recipes turn them into a Resistance/Slowness poultice and a reusable distraction whistle. The whistle cannot cancel prepared attacks or retaliation. The runtime suite covers damage types and openings, attack harm/evasion, real client feeding/tool packets, saved cooldowns, crafting, biome entries, population rules, control thaw, scavenging, cast attraction, prey harm and Peaceful behavior. Real multiplayer cooperation, full restart, natural populations across seeds and sustained performance remain unverified. Village tournaments and all remaining step 12 work are still open.
+
+
+### Step 11 progress: village tournaments
+
+VillageTournaments creates the Three Bows beside an inhabited village bell, on a verified seventeen-block dry, flat square. Creation is periodic, considers at most one sampled player and twenty-four candidates per minute, edits only empty blocks, preserves terrain and respects mob spawning/mob griefing and aura_world.tournaments. Four stitched cloth standards and a timber stand mark the venue. A nearby venue prevents duplicates; loaded venue caching and reward ledgers are bounded. Three stewards wait at separate positions and do not consume the wandering-duelist allowance.
+
+TournamentBoardEntity hosts one challenger and three differently schooled bouts. DuelistDuels.startHosted supplies the existing knockout/interruption/restoration mechanics with hosted radius/time terms and an outcome callback; ordinary wandering duels keep their lesson/farewell. The circuit scales to the player's Aura stage, rejects overlapping duel/spar entries and Creative/Spectator, requires a knockout in every bout, disqualifies a spell touching a steward, and asks the winner to return within a minute. Draws, forfeits, interference, missing opponents and reload do not advance a bracket.
+
+A per-gathering winner ledger and saved outstanding claims provide one selected scroll, three Shards and a three-page lore record. Sneak-use cycles scrollable parts; normal use claims once. Unclaimed choices survive saves and later events. A clean final win grants experience, the duel trial and a discovery. Four authored ceremonial sounds, physical ground cuts and short entry messages communicate progression without magic circles.
+
+Dedicated client testing covers actual registration and reward-choice packets, inhabited-bell/clear-ground requirements, nonlethal harm and restoration, scaling, three schools, saved provenance/finite claims, a boundary forfeit, spell disqualification, third-party interruption, native lore reading and an ordinary-duel lesson regression. Screenshots use a controlled grass platform and real AI for the photographed opening bout; deterministic knockout checks pause opponent AI. Save/load evidence is serialization, not a complete restart. Real two-client play, multi-seed natural event frequency, shaders and sustained performance remain unverified. This completes the scoped tournament implementation; Aura step 12 and the wider roadmap remain open.

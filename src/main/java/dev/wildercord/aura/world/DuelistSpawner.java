@@ -68,11 +68,11 @@ public final class DuelistSpawner {
 		spawnNear(level, players.get(random.nextInt(players.size())), settings.duelistCamps(), random);
 	}
 
-	/** How many duelists are loaded across the server. */
+	/** How many wandering duelists are loaded across the server; hosted rosters have their own three-per-venue limit. */
 	public static int loaded(MinecraftServer server) {
 		int n = 0;
 		for (ServerLevel level : server.getAllLevels()) {
-			n += level.getEntities(AuraWorld.DUELIST, d -> d.isAlive()).size();
+			n += level.getEntities(AuraWorld.DUELIST, d -> d.isAlive() && d.tournament==null).size();
 		}
 		return n;
 	}

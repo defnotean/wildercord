@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "wildercord:block/tournament_board"
+    }
+  }
+}

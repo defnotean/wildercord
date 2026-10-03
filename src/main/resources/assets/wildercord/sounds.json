@@ -5000,6 +5000,30 @@
       "wildercord:kit/aura/aura_tomb_thrust_ready"
     ]
   },
+  "aura_tournament_open": {
+    "subtitle": "subtitles.wildercord.kit.tournament.open",
+    "sounds": [
+      "wildercord:kit/aura/aura_tournament_open"
+    ]
+  },
+  "aura_tournament_prize": {
+    "subtitle": "subtitles.wildercord.kit.tournament.prize",
+    "sounds": [
+      "wildercord:kit/aura/aura_tournament_prize"
+    ]
+  },
+  "aura_tournament_round": {
+    "subtitle": "subtitles.wildercord.kit.tournament.round",
+    "sounds": [
+      "wildercord:kit/aura/aura_tournament_round"
+    ]
+  },
+  "aura_tournament_victory": {
+    "subtitle": "subtitles.wildercord.kit.tournament.victory",
+    "sounds": [
+      "wildercord:kit/aura/aura_tournament_victory"
+    ]
+  },
   "aura_verdant_art": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [

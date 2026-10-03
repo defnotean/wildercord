@@ -116,7 +116,7 @@ public class Duelist extends AuraFighter {
 		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.5) {
 			@Override
 			public boolean canUse() {
-				return opponent == null && leaveAt < 0 && !state(SIT) && super.canUse();
+				return tournament==null && opponent == null && leaveAt < 0 && !state(SIT) && super.canUse();
 			}
 		});
 		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -142,6 +142,10 @@ public class Duelist extends AuraFighter {
 		return opponent != null;
 	}
 
+	BlockPos tournament;
+	int tournamentSlot;
+	void gather(BlockPos board,int slot,long until){tournament=board.immutable();tournamentSlot=slot;stayUntil=until;leaveAt=-1;restUntil=0;}
+
 	/** Whether it's on its way out (beaten, bowing, about to go). */
 	public boolean leaving() {
 		return leaveAt >= 0;
@@ -164,7 +168,9 @@ public class Duelist extends AuraFighter {
 			return InteractionResult.PASS;
 		}
 		if (player instanceof ServerPlayer server) {
-			DuelistDuels.use(server, this);
+			if(tournament!=null) {
+				if(server.level().hasChunkAt(tournament) && server.level().getBlockEntity(tournament) instanceof TournamentBoardEntity board)board.describe(server);
+			} else DuelistDuels.use(server, this);
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -346,6 +352,12 @@ public class Duelist extends AuraFighter {
 			return;
 		}
 		if (opponent == null) {
+			if(tournament!=null && now%40==0){
+				if(!level.hasChunkAt(tournament))return;
+				if(!(level.getBlockEntity(tournament) instanceof TournamentBoardEntity board) || !board.hosts(getUUID())){vanish(level);return;}
+				BlockPos home=board.waiting(tournamentSlot);
+				if(blockPosition().distSqr(home)>4)getNavigation().moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,.6);
+			}
 			idle(level, now);
 			return;
 		}
@@ -514,6 +526,7 @@ public class Duelist extends AuraFighter {
 		super.addAdditionalSaveData(output);
 		output.putLong("stay_until", stayUntil);
 		output.putLong("rest_until", restUntil);
+		if(tournament!=null){output.putLong("tournament",tournament.asLong());output.putInt("tournament_slot",tournamentSlot);}
 		if (camp != null) {
 			output.putLong("camp", camp.asLong());
 		}
@@ -524,6 +537,7 @@ public class Duelist extends AuraFighter {
 		super.readAdditionalSaveData(input);
 		stayUntil = input.getLongOr("stay_until", 0L);
 		restUntil = input.getLongOr("rest_until", 0L);
+		long hosted=input.getLongOr("tournament",Long.MIN_VALUE);tournament=hosted==Long.MIN_VALUE?null:BlockPos.of(hosted);tournamentSlot=Math.clamp(input.getIntOr("tournament_slot",0),0,2);
 		long campAt = input.getLongOr("camp", Long.MIN_VALUE);
 		camp = campAt == Long.MIN_VALUE ? null : BlockPos.of(campAt);
 		// A duel never survives a reload: whatever it was doing, it's done.

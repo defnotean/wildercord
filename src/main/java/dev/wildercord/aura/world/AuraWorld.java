@@ -109,6 +109,7 @@ public final class AuraWorld {
 		SwordTombs.init();
 		SleepingBlades.init();
 		AuraBeasts.init();
+		VillageTournaments.init();
 		FabricDefaultAttributeRegistry.register(DUELIST, Duelist.createAttributes());
 		FabricDefaultAttributeRegistry.register(FALLEN_KNIGHT, FallenKnight.createAttributes());
 		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Wildercord.id("manual_pages"), ManualPagesRecipe.SERIALIZER);
@@ -126,6 +127,7 @@ public final class AuraWorld {
 			output.accept(SwordTombs.history());
 			output.accept(SleepingBlades.BLADE);
 			output.accept(SleepingBlades.history());
+			output.accept(VillageTournaments.history());
 			for (AuraWorldRules.Forged forged : AuraWorldRules.Forged.values()) {
 				output.accept(forged(forged, false));
 				output.accept(forged(forged, true));

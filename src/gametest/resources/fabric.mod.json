@@ -13,6 +13,7 @@
 			"dev.wildercord.world.dungeons.SwordTombTest",
 			"dev.wildercord.world.dungeons.SleepingBladeTest",
 			"dev.wildercord.aura.world.AuraBeastsTest",
+            "dev.wildercord.aura.world.VillageTournamentTest",
 			"dev.wildercord.cast.ControlMatchupsTest",
 			"dev.wildercord.cast.PerformanceProfilesTest",
 			"dev.wildercord.familiar.ContentSystemsTest",

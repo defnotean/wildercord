@@ -1484,6 +1484,34 @@
       ],
       "subtitle": "gravekeeper.thrust_ready"
     },
+    "aura_tournament_open": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tournament_open"
+      ],
+      "subtitle": "tournament.open"
+    },
+    "aura_tournament_prize": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tournament_prize"
+      ],
+      "subtitle": "tournament.prize"
+    },
+    "aura_tournament_round": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tournament_round"
+      ],
+      "subtitle": "tournament.round"
+    },
+    "aura_tournament_victory": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tournament_victory"
+      ],
+      "subtitle": "tournament.victory"
+    },
     "aura_verdant_art": {
       "attenuation": 24,
       "files": [
