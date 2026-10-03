@@ -297,3 +297,11 @@ and the exact reproducibility check now pass across 4867 paths. The corrected di
 is 0.9.1-alpha.1; full build 15s, 963 passing tests; resources/classes still byte-match.
 SHA-256: cdd7741d6a48f4a12cd2d1f04e9b61e7b202ed68f024b42fb297020d1283fd1a.
 The first upload remains historical; server staging will use only the corrected checksum.
+
+
+Publication audit: docs/audit/release-0.9.1-alpha.1.md. Corrected GitHub release has mod, sources
+and three pinned profiles; CurseForge accepted file 9050277 (processing when inspected).
+Updated wiki/GitBook deployment and live page version checks pass. VPS checksum matches;
+WildercordUpdate091 is queued and confirmed waiting for four online players to leave. Server
+activation is not complete. CI asset/unit Build job passes; separate full native CI still running.
+The full goal stays active.
