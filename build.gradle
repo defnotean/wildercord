@@ -166,3 +166,11 @@ publishing {
 		}
 	}
 }
+
+// Runtime registry inventory for the full presentation audit; never a substitute for native review.
+tasks.register('spellPresentationAudit', JavaExec) {
+ dependsOn tasks.named('testClasses')
+ classpath = sourceSets.test.runtimeClasspath
+ mainClass = 'dev.wildercord.cast.feel.SpellPresentationAudit'
+ args layout.buildDirectory.dir('reports/spell-presentation').get().asFile.absolutePath
+}

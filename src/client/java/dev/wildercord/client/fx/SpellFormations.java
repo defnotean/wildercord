@@ -123,7 +123,7 @@ public final class SpellFormations {
     case CONE -> { for(int i=-1;i<=1;i++) line(point(0,0,-.8),point(i*q,t*.25,.3),false); slash(focus,q,Math.PI,Math.PI); }
     case TRAIL -> { for(int i=0;i<3;i++) ring(feet.subtract(forward.scale(.4*i)),.15+.12*i,true); }
     case WALL -> { polygon(4,q,Math.PI/4); line(point(-q*.7,0,0),point(q*.7,0,0),false); }
-    case ORBIT -> { for(int i=0;i<3;i++){ double a=i*Math.PI*2/3+t; orb(point(Math.cos(a)*q,Math.sin(a)*q,0),.09); } }
+    case ORBIT -> { for(int i=0;i<3;i++){ double a=i*Math.PI*2/3+t; orb(caster.position().add(Math.cos(a)*q,.7,Math.sin(a)*q),.09); } }
     case RING -> { ring(focus,q,false); ring(focus,q*.6,false); }
     case PILLAR -> { line(point(-.2,-q,0),point(-.2,q,0),false); line(point(.2,-q,0),point(.2,q,0),false); ring(point(0,-q,0),.3,true); }
     case WAVE -> { for(int i=-2;i<=2;i++) slash(point(i*.3,Math.sin(i+t)*.15,0),.22,Math.PI,Math.PI/2); }
@@ -158,7 +158,10 @@ public final class SpellFormations {
    // Materials change the geometry as well as the colour. Each fused ingredient gets its own layer.
    for(int i=0;i<event.elements().size();i++) {
     String element=event.elements().get(i); double a=i*2.39996+beat*.9;
-    Vec3 at=point(Math.cos(a)*.4,Math.sin(a)*.4,0);
+    // Caster-centered deliveries must not leave their elemental assembly at the front focus.
+    ShapeFormation delivery=ShapeFormation.of(event.shape());
+    Vec3 anchor=switch(delivery) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
+    Vec3 at=anchor.add(right.scale(Math.cos(a)*.4)).add(up.scale(Math.sin(a)*.4));
     var theme=Vfx.theme(element);
     emit(theme.mote(),at);
     if(quality==MagicQuality.Level.MINIMAL) continue;
@@ -169,8 +172,8 @@ public final class SpellFormations {
      case "storm" -> { Vec3 d=up.scale(.3); emit(new LightOption(LightOption.ARC,theme.primary(),(float)d.x,(float)d.y,(float)d.z,.018F,1,0,0,4),at); }
      case "earth" -> { emit(theme.spark(),at.add(0,-.2,0)); emit(theme.spark(),at.add(right.scale(.12))); }
      case "life" -> { emit(theme.mote(),at.add(0,.2,0)); emit(theme.spark(),at); }
-     case "void" -> { emit(theme.spark(),at); emit(theme.mote(),focus.subtract(at.subtract(focus))); }
-     case "time" -> { emit(theme.spark(),point(Math.cos(a)*.6,Math.sin(a)*.6,0)); }
+     case "void" -> { emit(theme.spark(),at); emit(theme.mote(),anchor.subtract(at.subtract(anchor))); }
+     case "time" -> { emit(theme.spark(),anchor.add(right.scale(Math.cos(a)*.6)).add(up.scale(Math.sin(a)*.6))); }
      case "blood" -> { emit(theme.spark(),at.add(0,-.1,0)); emit(theme.mote(),at.add(0,-.25,0)); }
      default -> emit(theme.spark(),at);
     }

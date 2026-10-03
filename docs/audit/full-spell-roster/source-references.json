@@ -1,0 +1,5890 @@
+[
+  {
+    "id": "wildercord:absolute_zero",
+    "constant": "ABSOLUTE_ZERO",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          43
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:accelerate",
+    "constant": "ACCELERATE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          662
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:aftershock",
+    "constant": "AFTERSHOCK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          635
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          35
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:amplify",
+    "constant": "AMPLIFY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          241
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:anchor",
+    "constant": "ANCHOR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          673,
+          1851,
+          1862
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:anchor_circle",
+    "constant": "ANCHOR_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          20
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:ancient_seed",
+    "constant": "ANCIENT_SEED",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          93
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:arc",
+    "constant": "ARC",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          24
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          68
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:ashen_veil",
+    "constant": "ASHEN_VEIL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          112
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          42
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:avalanche",
+    "constant": "AVALANCHE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          42
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:banish",
+    "constant": "BANISH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          764
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          33
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:barrage",
+    "constant": "BARRAGE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          32
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          68
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:barrier",
+    "constant": "BARRIER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          668
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:basalt_surge",
+    "constant": "BASALT_SURGE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          108
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          40
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:beam",
+    "constant": "BEAM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          28
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          63
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:belated",
+    "constant": "BELATED",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:black_ice",
+    "constant": "BLACK_ICE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          48
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blackflame",
+    "constant": "BLACKFLAME",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          644
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          43
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blackspark",
+    "constant": "BLACKSPARK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          634
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          44
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blazecall",
+    "constant": "BLAZECALL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          90
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          40
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bleed",
+    "constant": "BLEED",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          761
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blind",
+    "constant": "BLIND",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          557
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blink",
+    "constant": "BLINK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          623
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          45
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blitz",
+    "constant": "BLITZ",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          32
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          60
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blizzard",
+    "constant": "BLIZZARD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          52
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blood_moss",
+    "constant": "BLOOD_MOSS",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          107,
+          1358
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          32
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FireBloodVfx.java",
+        "lines": [
+          655
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blood_price",
+    "constant": "BLOOD_PRICE_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:blood_thread",
+    "constant": "BLOOD_THREAD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          45
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bloodboil",
+    "constant": "BLOODBOIL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          55
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bloom",
+    "constant": "BLOOM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          207
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bloom_circle",
+    "constant": "BLOOM_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          18
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bloomstep",
+    "constant": "BLOOMSTEP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:boiling_surge",
+    "constant": "BOILING_SURGE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          24
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bolt",
+    "constant": "BOLT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          24
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          58
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bonespur",
+    "constant": "BONESPUR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          39
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:borrowed_time",
+    "constant": "BORROWED_TIME",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          21
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bounce",
+    "constant": "BOUNCE_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:brace",
+    "constant": "BRACE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          672
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          24
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bramble",
+    "constant": "BRAMBLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          674,
+          1884
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          25
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:break",
+    "constant": "BREAK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          626
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          15
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:bubble",
+    "constant": "BUBBLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          650
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          55
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:burst",
+    "constant": "BURST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          34
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          59
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:chain",
+    "constant": "CHAIN_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:chill",
+    "constant": "CHILL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          568
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          32
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:chisel",
+    "constant": "CHISEL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          681
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          14
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:chronoshift",
+    "constant": "CHRONOSHIFT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          24
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cinder_bulwark",
+    "constant": "CINDER_BULWARK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cinderbrand",
+    "constant": "CINDERBRAND",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          111,
+          1467
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          41
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cinderheart",
+    "constant": "CINDERHEART",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          113
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          43
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cleanse",
+    "constant": "CLEANSE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          434
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cleave",
+    "constant": "CLEAVE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          627
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cluster",
+    "constant": "CLUSTER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          25
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          64
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:coldsnap",
+    "constant": "COLDSNAP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          762
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          40
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:collect",
+    "constant": "COLLECT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          621
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:combo",
+    "constant": "COMBO",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:comet",
+    "constant": "COMET",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          25
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          65
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cometfall",
+    "constant": "COMETFALL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cone",
+    "constant": "CONE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          31
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:conflagration",
+    "constant": "CONFLAGRATION",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          53
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:confluence_circle",
+    "constant": "CONFLUENCE_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          23,
+          36
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:constellation",
+    "constant": "CONSTELLATION",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerShapes.java",
+        "lines": [
+          32
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          41
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          64
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:countdown",
+    "constant": "COUNTDOWN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          749
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          22
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:crescent",
+    "constant": "CRESCENT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          31
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          67
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:crimson_mist",
+    "constant": "CRIMSON_MIST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          43
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:crucible_circle",
+    "constant": "CRUCIBLE_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          22
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cryostasis",
+    "constant": "CRYOSTASIS",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          50
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:current",
+    "constant": "CURRENT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          124,
+          1847,
+          1889
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          61
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cushion",
+    "constant": "CUSHION",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          676,
+          2115,
+          2122,
+          2162
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          42
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:cyclone",
+    "constant": "CYCLONE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          765
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          47
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:dash",
+    "constant": "DASH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          330
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          54
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:decree",
+    "constant": "DECREE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          647
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:deflect",
+    "constant": "DEFLECT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          677,
+          2174
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          56
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:delay",
+    "constant": "DELAY",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:devour",
+    "constant": "DEVOUR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          46
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:disarm",
+    "constant": "DISARM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          32
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:dismantle",
+    "constant": "DISMANTLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          633
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          25
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:domain",
+    "constant": "DOMAIN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          38
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          62
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:doomclock",
+    "constant": "DOOMCLOCK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          31
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:downdraft",
+    "constant": "DOWNDRAFT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          39
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:dragon_breath",
+    "constant": "DRAGON_BREATH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          393,
+          395
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          59
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:drowning_word",
+    "constant": "DROWNING_WORD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          116,
+          1615
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          60
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:drowse",
+    "constant": "DROWSE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:dust_devil",
+    "constant": "DUST_DEVIL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          48
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:echo",
+    "constant": "ECHO",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:echolocate",
+    "constant": "ECHOLOCATE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          78
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          34
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:eclipse",
+    "constant": "ECLIPSE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          114,
+          1571
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          47
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:eclipse_circle",
+    "constant": "ECLIPSE_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          28,
+          40
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:ember",
+    "constant": "EMBER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          690
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:empower",
+    "constant": "EMPOWER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          477
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:entropy",
+    "constant": "ENTROPY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          48
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:everburn",
+    "constant": "EVERBURN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          52
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:excavate",
+    "constant": "EXCAVATE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          622
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          16
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:execute",
+    "constant": "EXECUTE_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:explode",
+    "constant": "EXPLODE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          367
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:extend",
+    "constant": "EXTEND",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:fangs",
+    "constant": "FANGS",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          86
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          21
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:feather_fall",
+    "constant": "FEATHER_FALL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          256
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          43
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:fell",
+    "constant": "FELL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          687
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          19
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:fire",
+    "constant": "FIRE",
+    "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
+        "lines": [
+          169
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/aura/ResonantVfx.java",
+        "lines": [
+          43
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          341
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/ElementFx.java",
+        "lines": [
+          83,
+          97,
+          688
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          178
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/Feels.java",
+        "lines": [
+          205
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          27
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/ReactionVfx.java",
+        "lines": [
+          64
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/Vfx.java",
+        "lines": [
+          87,
+          101
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:firestorm",
+    "constant": "FIRESTORM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          36
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          102
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:fireward",
+    "constant": "FIREWARD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          583
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          45
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:flash_freeze",
+    "constant": "FLASH_FREEZE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          51
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:flashfire",
+    "constant": "FLASHFIRE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          763
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:focus",
+    "constant": "FOCUS_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:foresight",
+    "constant": "FORESIGHT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          655
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          25
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:fortune",
+    "constant": "FORTUNE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:fossilize",
+    "constant": "FOSSILIZE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          48
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:freeze",
+    "constant": "FREEZE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          505
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          46
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:frost",
+    "constant": "FROST",
+    "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
+        "lines": [
+          171
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/aura/ResonantVfx.java",
+        "lines": [
+          25,
+          48
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          347,
+          2111
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/ElementFx.java",
+        "lines": [
+          84,
+          97,
+          689
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/Feels.java",
+        "lines": [
+          206
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          33
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/Vfx.java",
+        "lines": [
+          88,
+          102
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:frostbite",
+    "constant": "FROSTBITE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          35
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:frostbloom",
+    "constant": "FROSTBLOOM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          66
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:frostward",
+    "constant": "FROSTWARD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          675,
+          2097
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          65
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:frostwire",
+    "constant": "FROSTWIRE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          51
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:frugal",
+    "constant": "FRUGAL_MOD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          59,
+          60
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:gale_mantle",
+    "constant": "GALE_MANTLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          55
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:galvanize",
+    "constant": "GALVANIZE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          34
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:gash",
+    "constant": "GASH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          24
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:geode",
+    "constant": "GEODE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:glacier",
+    "constant": "GLACIER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          47
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          192,
+          387
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:glaive",
+    "constant": "GLAIVE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/CraftedShapes.java",
+        "lines": [
+          36,
+          44
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          31
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          67
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:glimmer",
+    "constant": "GLIMMER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          682
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:glowvine",
+    "constant": "GLOWVINE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          101
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:grapple",
+    "constant": "GRAPPLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          612
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          35
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:gravity_well",
+    "constant": "GRAVITY_WELL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          523,
+          524
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          49
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:grow",
+    "constant": "GROW",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          625
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:gyre_circle",
+    "constant": "GYRE_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          19
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:hail",
+    "constant": "HAIL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          41
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          172,
+          177
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:halo",
+    "constant": "HALO",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:harm",
+    "constant": "HARM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          292
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          21
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:harvest",
+    "constant": "HARVEST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          613
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:haste",
+    "constant": "HASTE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          400
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:haven",
+    "constant": "HAVEN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          678
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          25
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:heal",
+    "constant": "HEAL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          274
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:heartstopper",
+    "constant": "HEARTSTOPPER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          38
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:hellmouth",
+    "constant": "HELLMOUTH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          50
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:hemomancy",
+    "constant": "HEMOMANCY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          39
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:hex",
+    "constant": "HEX",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          741
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:hoarfrost",
+    "constant": "HOARFROST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          96
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          34
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:hollow",
+    "constant": "HOLLOW",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          645
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          60
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:homing",
+    "constant": "HOMING_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:hush",
+    "constant": "HUSH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          97,
+          1007
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          36
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:icepath",
+    "constant": "ICEPATH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          614
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          36
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:icicle",
+    "constant": "ICICLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          697
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          39
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:if_airborne",
+    "constant": "IF_AIRBORNE",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:if_outnumbered",
+    "constant": "IF_OUTNUMBERED",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerShapes.java",
+        "lines": [
+          179,
+          190
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:if_sneaking",
+    "constant": "IF_SNEAKING",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:if_wet",
+    "constant": "IF_WET",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerShapes.java",
+        "lines": [
+          179,
+          187
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerVfx.java",
+        "lines": [
+          73
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:if_wounded",
+    "constant": "IF_WOUNDED",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerShapes.java",
+        "lines": [
+          179,
+          184
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerVfx.java",
+        "lines": [
+          73
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:imbue",
+    "constant": "IMBUE",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:imprint",
+    "constant": "IMPRINT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/CraftedShapes.java",
+        "lines": [
+          36,
+          52
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          38
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          61
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:inferno",
+    "constant": "INFERNO",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          554
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          31
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:infest",
+    "constant": "INFEST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          81,
+          457
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          47
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:infinity",
+    "constant": "INFINITY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          651
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          61
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:jolt",
+    "constant": "JOLT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          750
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          24
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:kindled",
+    "constant": "KINDLED",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:kindling",
+    "constant": "KINDLING",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          33
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:kindred",
+    "constant": "KINDRED",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          785
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:lance",
+    "constant": "LANCE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          28
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          58
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:latch",
+    "constant": "LATCH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/CraftedShapes.java",
+        "lines": [
+          36,
+          58
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          29
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          61
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:launch",
+    "constant": "LAUNCH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          313
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          36
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:leap",
+    "constant": "LEAP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          608
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          53
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:leech",
+    "constant": "LEECH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          722
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:levitate",
+    "constant": "LEVITATE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          491
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          37
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:lifebloom",
+    "constant": "LIFEBLOOM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:lifesteal",
+    "constant": "LIFESTEAL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          31
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          193
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:light",
+    "constant": "LIGHT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          624
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:lightning",
+    "constant": "LIGHTNING",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          354,
+          998
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:linger",
+    "constant": "LINGER_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:magma",
+    "constant": "MAGMA",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          44
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          141,
+          423
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:magnetize",
+    "constant": "MAGNETIZE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          45
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:malison",
+    "constant": "MALISON",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          50
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:manaburn",
+    "constant": "MANABURN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          120
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          21
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:manatide",
+    "constant": "MANATIDE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          121
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:mercy_circle",
+    "constant": "MERCY_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          26,
+          46
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:meteor",
+    "constant": "METEOR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          510
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:mine",
+    "constant": "MINE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          39
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          66
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:mire",
+    "constant": "MIRE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          100,
+          1089,
+          1101
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          32
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:mirrorfrost",
+    "constant": "MIRRORFROST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          67
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:monolith",
+    "constant": "MONOLITH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          38
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:moonpetal",
+    "constant": "MOONPETAL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          95
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:needle_circle",
+    "constant": "NEEDLE_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          17
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:night_eye",
+    "constant": "NIGHT_EYE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          270
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:nourish",
+    "constant": "NOURISH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          588
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:nova",
+    "constant": "NOVA",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          34
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          59
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:nullify",
+    "constant": "NULLIFY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          26
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          237
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:on_hit",
+    "constant": "ON_HIT",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:on_hurt",
+    "constant": "ON_HURT",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:on_kill",
+    "constant": "ON_KILL",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:on_land",
+    "constant": "ON_LAND",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:on_low_health",
+    "constant": "ON_LOW_HEALTH",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:on_reaction",
+    "constant": "ON_REACTION",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/CraftedShapes.java",
+        "lines": [
+          247,
+          260
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:on_weakness",
+    "constant": "ON_WEAKNESS",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/CraftedShapes.java",
+        "lines": [
+          248
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:orb",
+    "constant": "ORB",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:orbit",
+    "constant": "ORBIT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          43
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          60
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:overcharge",
+    "constant": "OVERCHARGE_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:overdrive",
+    "constant": "OVERDRIVE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          654
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          36
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:parasite",
+    "constant": "PARASITE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          33
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:pelt",
+    "constant": "PELT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          705
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          34
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:phantom",
+    "constant": "PHANTOM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:phoenix_pyre",
+    "constant": "PHOENIX_PYRE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          54
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:pierce",
+    "constant": "PIERCE_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:pilgrim_circle",
+    "constant": "PILGRIM_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          24,
+          37
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:pillar",
+    "constant": "PILLAR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          35
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          63
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:plasma",
+    "constant": "PLASMA",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          38
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          162
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:portalfall",
+    "constant": "PORTALFALL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          92
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          37
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:primer",
+    "constant": "PRIMER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          638
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          32
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:prism",
+    "constant": "PRISM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          28
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          64
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:prismatic_burst",
+    "constant": "PRISMATIC_BURST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:prolong",
+    "constant": "PROLONG",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:prospect",
+    "constant": "PROSPECT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          20
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:prune",
+    "constant": "PRUNE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          683
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          58
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:pull",
+    "constant": "PULL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          304
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          38
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:pulse",
+    "constant": "PULSE",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:push",
+    "constant": "PUSH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          297
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:quicken",
+    "constant": "QUICKEN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          59
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:rain",
+    "constant": "RAIN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          41
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          68
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:rampart",
+    "constant": "RAMPART",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          664
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          21
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:rapid",
+    "constant": "RAPID_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:ray",
+    "constant": "RAY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          22
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          58
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:razorgale",
+    "constant": "RAZORGALE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          49
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:reckoning",
+    "constant": "RECKONING",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:recoil",
+    "constant": "RECOIL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          33
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:reflect",
+    "constant": "REFLECT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/aura/WayEffects.java",
+        "lines": [
+          165
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          653
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:regrowth",
+    "constant": "REGROWTH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          410
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:remedy",
+    "constant": "REMEDY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          84
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:rend",
+    "constant": "REND",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          748,
+          2790,
+          2806
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:repel",
+    "constant": "REPEL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          646
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          31
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:reservoir_circle",
+    "constant": "RESERVOIR_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          21
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:resonance",
+    "constant": "RESONANCE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          636
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:resonant_shriek",
+    "constant": "RESONANT_SHRIEK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          79
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          51
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:restore",
+    "constant": "RESTORE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          656
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:reveal",
+    "constant": "REVEAL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          404
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:reversal",
+    "constant": "REVERSAL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          652
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          25
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:rewind",
+    "constant": "REWIND",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          661
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          32
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:ricochet",
+    "constant": "RICOCHET",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          25
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          60
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:riftbolt",
+    "constant": "RIFTBOLT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          46
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:riftcall",
+    "constant": "RIFTCALL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          119,
+          1690
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          52
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:rime_causeway",
+    "constant": "RIME_CAUSEWAY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:rime_seal",
+    "constant": "RIME_SEAL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          49
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:ring",
+    "constant": "RING",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          34
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:riposte",
+    "constant": "RIPOSTE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:ripple",
+    "constant": "RIPPLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          637
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:root",
+    "constant": "ROOT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          459
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:root_bulwark",
+    "constant": "ROOT_BULWARK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          21
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:rootsnare",
+    "constant": "ROOTSNARE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          102
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:sandstorm",
+    "constant": "SANDSTORM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          82
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          45
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:sanguine_rite",
+    "constant": "SANGUINE_RITE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          42
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:searing_edge",
+    "constant": "SEARING_EDGE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          44
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:second_wind",
+    "constant": "SECOND_WIND",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          25
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:seethe",
+    "constant": "SEETHE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          58
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:self",
+    "constant": "SELF",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          43
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FormationVfx.java",
+        "lines": [
+          17,
+          19
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          50,
+          62
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:shackle",
+    "constant": "SHACKLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          649
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          31
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:shades",
+    "constant": "SHADES",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          665
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          53
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:shadowstep",
+    "constant": "SHADOWSTEP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          659
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          54
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:shield",
+    "constant": "SHIELD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          288
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:shock",
+    "constant": "SHOCK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          399
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          22
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:shulkershell",
+    "constant": "SHULKERSHELL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          91,
+          765,
+          815
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          55
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:silence",
+    "constant": "SILENCE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          574
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:singularity",
+    "constant": "SINGULARITY",
+    "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/SpellCircleParticle.java",
+        "lines": [
+          526
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          56
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:sinkhole",
+    "constant": "SINKHOLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          46
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:skyburst",
+    "constant": "SKYBURST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          59
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:skyglyph",
+    "constant": "SKYGLYPH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          41
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:smelt",
+    "constant": "SMELT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          686
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          47
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:smite",
+    "constant": "SMITE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          540
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:snare",
+    "constant": "SNARE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerShapes.java",
+        "lines": [
+          30
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          39
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          61
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:soar",
+    "constant": "SOAR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          264
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          44
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:sonic_boom",
+    "constant": "SONIC_BOOM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          380
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          62
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:soulbond",
+    "constant": "SOULBOND",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          25
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:soulfire",
+    "constant": "SOULFIRE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          105,
+          1284
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          39
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:span",
+    "constant": "SPAN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          688
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:spark",
+    "constant": "SPARK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          22
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          58
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:spellbrand",
+    "constant": "SPELLBRAND",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:split",
+    "constant": "SPLIT_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:sporebloom",
+    "constant": "SPOREBLOOM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          98
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stalactite",
+    "constant": "STALACTITE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          103
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          41
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:starfall",
+    "constant": "STARFALL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          556
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:starfire",
+    "constant": "STARFIRE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          51
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:starlight_tether",
+    "constant": "STARLIGHT_TETHER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          109
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:starmaw",
+    "constant": "STARMAW",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          115
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          63
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:starshard",
+    "constant": "STARSHARD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          118
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          21
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stasis",
+    "constant": "STASIS",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          660
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          33
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:steam",
+    "constant": "STEAM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          37
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          125
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stitchtime",
+    "constant": "STITCHTIME",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stoneform",
+    "constant": "STONEFORM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          25
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stoneskin",
+    "constant": "STONESKIN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          450
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          23
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stormclock",
+    "constant": "STORMCLOCK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          48
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stormheart",
+    "constant": "STORMHEART",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          32
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stormweave",
+    "constant": "STORMWEAVE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          47
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:strata_rise",
+    "constant": "STRATA_RISE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          12
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:stream",
+    "constant": "STREAM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          29
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          63
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:summit_wind",
+    "constant": "SUMMIT_WIND",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          104
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          40
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:summon",
+    "constant": "SUMMON",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          528
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:sunscorch",
+    "constant": "SUNSCORCH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          99
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FireFeels.java",
+        "lines": [
+          38
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:surge",
+    "constant": "SURGE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          44
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          228
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:swap",
+    "constant": "SWAP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          657
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:sweep",
+    "constant": "SWEEP",
+    "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/AuraFxClient.java",
+        "lines": [
+          604
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          29
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          67
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:swift",
+    "constant": "SWIFT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          265
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          52
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tempest",
+    "constant": "TEMPEST",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          36
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          152,
+          451
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tempest_circle",
+    "constant": "TEMPEST_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          27,
+          39
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:thirst",
+    "constant": "THIRST",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:thunder_tide",
+    "constant": "THUNDER_TIDE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          19
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:thunder_walk",
+    "constant": "THUNDER_WALK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          20
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:thunderbird",
+    "constant": "THUNDERBIRD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          666
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          31
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:thunderclap",
+    "constant": "THUNDERCLAP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          555
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          26
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:thunderhead",
+    "constant": "THUNDERHEAD",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          49
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:thunderquake",
+    "constant": "THUNDERQUAKE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          37
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:thunderstep",
+    "constant": "THUNDERSTEP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
+        "lines": [
+          55
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tidal_lift",
+    "constant": "TIDAL_LIFT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tidebreath",
+    "constant": "TIDEBREATH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          601
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          62
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tidecall",
+    "constant": "TIDECALL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          80
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          57
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tidehook",
+    "constant": "TIDEHOOK",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          123
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          59
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tidewrit",
+    "constant": "TIDEWRIT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          117
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          58
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:time_skip",
+    "constant": "TIME_SKIP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          663
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:timesteal",
+    "constant": "TIMESTEAL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/TimeFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:totem",
+    "constant": "TOTEM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          37
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          62
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:touch",
+    "constant": "TOUCH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          22
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          66
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:trail",
+    "constant": "TRAIL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          39
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          65
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:transfusion",
+    "constant": "TRANSFUSION",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          44
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:treasure_sense",
+    "constant": "TREASURE_SENSE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          88
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          28
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tremor",
+    "constant": "TREMOR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          522
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          36
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:trial_key",
+    "constant": "TRIAL_KEY",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tunnel",
+    "constant": "TUNNEL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          684
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          17
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:tusk_charge",
+    "constant": "TUSK_CHARGE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          89
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          42
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:twin_star",
+    "constant": "TWIN_STAR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          769
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ArcaneFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:umbra",
+    "constant": "UMBRA",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          767
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          31
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:undertow",
+    "constant": "UNDERTOW",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          87
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
+        "lines": [
+          56
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:unstable",
+    "constant": "UNSTABLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          133
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:updraft",
+    "constant": "UPDRAFT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          38
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:veil",
+    "constant": "VEIL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          465
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          39
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:vein",
+    "constant": "VEIN",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          685
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          18
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:venom",
+    "constant": "VENOM",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          529
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:vigil_circle",
+    "constant": "VIGIL_CIRCLE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          25,
+          38
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:vinelash",
+    "constant": "VINELASH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          83
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/LifeFeels.java",
+        "lines": [
+          29
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:volley",
+    "constant": "VOLLEY_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:vortex",
+    "constant": "VORTEX",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerShapes.java",
+        "lines": [
+          28
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          38
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          60
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:vow",
+    "constant": "VOW_MOD",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:wall",
+    "constant": "WALL",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          37
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          61
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:warcry",
+    "constant": "WARCRY",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          85
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/BloodFeels.java",
+        "lines": [
+          37
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:warp",
+    "constant": "WARP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          57
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/FusedEffects.java",
+        "lines": [
+          206
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:warp_step",
+    "constant": "WARP_STEP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
+        "lines": [
+          106
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          40
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:wave",
+    "constant": "WAVE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          32
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:weigh",
+    "constant": "WEIGH",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          648
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/EarthFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:widen",
+    "constant": "WIDEN",
+    "candidates": [],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:wind_steps",
+    "constant": "WIND_STEPS",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          27
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:windcut",
+    "constant": "WINDCUT",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          711
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          30
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:wisp",
+    "constant": "WISP",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          24
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          65
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:wither",
+    "constant": "WITHER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          385
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          64
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:zephyr",
+    "constant": "ZEPHYR",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
+        "lines": [
+          57
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:zipper",
+    "constant": "ZIPPER",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/Effects.java",
+        "lines": [
+          658
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/VoidFeels.java",
+        "lines": [
+          41
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  },
+  {
+    "id": "wildercord:zone",
+    "constant": "ZONE",
+    "candidates": [
+      {
+        "file": "src/main/java/dev/wildercord/cast/feel/ShapeFeels.java",
+        "lines": [
+          37
+        ]
+      },
+      {
+        "file": "src/main/java/dev/wildercord/spell/CircleDisciplines.java",
+        "lines": [
+          59
+        ]
+      }
+    ],
+    "status": "Textual references only; inspect dispatch and actual presentation before assigning an owner or verification."
+  }
+]
