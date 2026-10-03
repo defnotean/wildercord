@@ -339,3 +339,51 @@ credited as new ability content. Native tests are controlled single-client evide
 remote multiplayer, natural populations, full presentation acceptance or performance proof.
 Full living-world goal stays active. Public alpha.1 remains the prior release; this JAR is a
 local development review build. Queued VPS activation still awaits an empty server.
+
+## Physical wetland fieldcraft, fungal wildlife and Earth materials — 2026-10-03
+
+Parallel implementation produced three integrated increments: Reed Rattle, Sporeback Snail
+and the complete 32-effect Earth preparation/projectile-body roster. These are scoped
+additions; the full ability lifecycle and connected ecosystems remain open.
+
+The rattle answers warning claws with six seconds of physical calm, forty-eight uses,
+saved player rest and the crab's existing shared response rest. Committed sweeps remain
+dangerous. Final native suite passed58seconds, including actual interaction, recipe,
+refusals, wear, saved-world restart and final-use break. Visual review corrected the test
+pond, messages, beveled chamber and held scale. Audit: docs/audit/reed-rattle.md.
+
+Sporeback Snails browse actual mushrooms nondestructively, prepare one saved dew reserve,
+respond to Life/Fire and seek genuinely dark covered footing. Bounded searches, local
+population limits and saved independent gathering/foraging/response rests prevent resource
+renewal by repeated magic. Mycelial Dew, Fungal Poultice and The Patient Spiral accompany
+the original model, textures, animation and five physical sound cues. Initial corrected
+native suite passed74seconds; final admission/camera checks are recorded in
+docs/audit/sporeback-snails.md. This begins the fungal foundation, not a finished ecosystem.
+
+Earth's original world-lit materials distinguish stone, slabs, sediment, dust, faults,
+roots, bone and geodes, with rune-specific gathering and travel. Supporting fused elements
+are retained in Full/Minimal. Native formation77seconds, paid flight115seconds and
+variants31seconds passed, with182 original images retained and representative frames
+inspected. Arc, Pierce, Frugal, covered/uncovered mixed groups, innate ownership, world
+light, reduced flash and vertical/stationary directions are covered. Self Stoneskin keeps
+its caster placement. Audit: docs/audit/full-spell-roster/earth-choreography.md. These are
+preparation/body checks; full impacts, sounds, delivery roster, shaders, real remote
+multiplayer and sustained frame-time evidence remain separate.
+
+Conservative expansion counts now:6/12creatures,17/36functionalitems,2/12abilities,
+0/18additional signatures,9/24loretexts,0/4investigations. The snail adds one wildlife,
+dew/poultice add two functional items, rattle adds one tool, and the three-page journal
+adds one lore text. Spawn eggs are not credits. Three ecosystem foundations remain
+incomplete. Next Life28, six new signatures and the Glowcap nursery investigation are
+isolated drafts outside the build; no completion credit is claimed for them.
+
+Final Sporeback native passed64seconds with clearer whole-creature captures and authoritative
+spectator/distant gather refusals. Final combined full build passed22seconds:964unit tests, zero
+failures/errors/skips;4922reproducible generated paths;117validated/exported guide pages,
+including original native rattle/snail illustrations. Review JAR CRC clean,4921processed
+resources and1648compiled main/client classes byte-match. SHA256:
+de75e599f33cf9251cdae10f402d4d4cf648c151e513d49ae3cd3fec84eee09c.
+Review: artifacts/review/parallel-living-world/wildercord-earth-fieldcraft-review+mc26.3.jar.
+The new reusable tools/verify_review_jar.py checks an explicitly named JAR against build
+outputs and unit reports, rejects extra/missing mod classes and duplicate/corrupt entries.
+This is development content after the public alpha.1 release; no new public upload is claimed.

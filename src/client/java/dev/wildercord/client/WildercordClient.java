@@ -80,6 +80,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.LIGHT, new dev.wildercord.client.fx.LightParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SHIELD, new dev.wildercord.client.fx.ShieldCircles.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.MOTE, new dev.wildercord.client.fx.MoteParticle.Provider());
+		ParticleProviderRegistry.getInstance().register(WildercordParticles.EARTH, new dev.wildercord.client.fx.EarthParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.AIRFLOW, new dev.wildercord.client.fx.AirflowParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.MATERIAL, new dev.wildercord.client.fx.MaterialParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());

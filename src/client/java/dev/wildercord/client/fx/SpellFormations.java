@@ -122,15 +122,18 @@ public final class SpellFormations {
   void draw(int beat) {
    double t = beat / 2.0, r = event.scale() * .55, q = r * (1.35 - .35*t);
    Vec3 feet = event.placement()==FormationPayload.FIXED?focus:caster.position().add(0, .12, 0);
-   // A fully wind-authored projectile gathers air itself; a luminous orb/arc would obscure it.
+   // Covered wind and earth projectiles gather their own material body before launch.
    boolean windOnly=event.runes().stream().anyMatch(WindForms::supports)
     && event.runes().stream().noneMatch(id -> dev.wildercord.spell.Runes.get(id)
       .filter(rune -> rune.family()==dev.wildercord.spell.RuneFamily.EFFECT && !WindForms.supports(id)).isPresent());
-   boolean windProjectile=windOnly && switch(ShapeFormation.of(event.shape())) {
+   boolean earthOnly=event.runes().stream().anyMatch(EarthForms::supports)
+    && event.runes().stream().noneMatch(id -> dev.wildercord.spell.Runes.get(id)
+      .filter(rune -> rune.family()==dev.wildercord.spell.RuneFamily.EFFECT && !EarthForms.supports(id)).isPresent());
+   boolean materialProjectile=(windOnly || earthOnly) && switch(ShapeFormation.of(event.shape())) {
     case BOLT,ARC,ORB,SPARK,COMET,RICOCHET,CLUSTER,WISP -> true;
     default -> false;
    };
-   if(!windProjectile) switch (ShapeFormation.of(event.shape())) {
+   if(!materialProjectile) switch (ShapeFormation.of(event.shape())) {
     case SELF -> { ring(feet.add(0, t*.7, 0), .7-.25*t, true); ring(feet.add(0, 1.3-t*.4, 0), .35, true); }
     case TOUCH -> { slash(point(-q*.3, 0, 0), q*.5, Math.PI*.8, 0); line(point(q*.3, -.3, 0), point(q*.3, .3, 0), false); }
     case BOLT -> { orb(point(0, 0, -.35+.35*t), .15*t); line(point(0, 0, -.8), focus, false); }
@@ -180,13 +183,14 @@ public final class SpellFormations {
    boolean authoredFrost=FrostFormations.draw(this,beat);
    boolean authoredStorm=StormFormations.draw(this,beat);
    boolean authoredWind=WindForms.formation(this,beat);
-   materials(beat,authoredFire,authoredFrost,authoredStorm,authoredWind,windOnly);
+   boolean authoredEarth=EarthFormations.draw(this,beat);
+   materials(beat,authoredFire,authoredFrost,authoredStorm,authoredWind,windOnly,authoredEarth,earthOnly);
   }
   Vec3 assembly() {
    if(event.placement()==FormationPayload.CASTER || event.placement()==FormationPayload.AIMED || event.placement()==FormationPayload.FIXED)return focus;
    return switch(ShapeFormation.of(event.shape())) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
   }
-  void materials(int beat,boolean authoredFire,boolean authoredFrost,boolean authoredStorm,boolean authoredWind,boolean windOnly) {
+  void materials(int beat,boolean authoredFire,boolean authoredFrost,boolean authoredStorm,boolean authoredWind,boolean windOnly,boolean authoredEarth,boolean earthOnly) {
    // Materials change the geometry as well as the colour. Each fused ingredient gets its own layer.
    for(int i=0;i<event.elements().size();i++) {
     String element=event.elements().get(i); double a=i*2.39996+beat*.9;
@@ -194,6 +198,7 @@ public final class SpellFormations {
     if(authoredFrost && element.equals("frost")) continue;
     if(authoredStorm && element.equals("storm")) continue;
     if(authoredWind && (element.equals("wind") || windOnly && WindForms.ingredients(event.runes()).contains(element))) continue;
+    if(authoredEarth && (element.equals("earth") || earthOnly && EarthForms.ingredients(event.runes()).contains(element))) continue;
     // Caster-centered deliveries must not leave their elemental assembly at the front focus.
     Vec3 anchor=assembly();
     Vec3 at=anchor.add(right.scale(Math.cos(a)*.4)).add(up.scale(Math.sin(a)*.4));

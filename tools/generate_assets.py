@@ -816,6 +816,14 @@ def write_lang(runes):
     import moonreed_art
     lang.update(moonreed_art.LANG)
     moonreed_art.write(sys.modules[__name__])
+    import earth_art
+    earth_art.main()
+    import reed_rattle_art
+    lang.update(reed_rattle_art.LANG)
+    reed_rattle_art.write(sys.modules[__name__])
+    import sporeback_art
+    lang.update(sporeback_art.LANG)
+    sporeback_art.write(sys.modules[__name__])
     import reedback_art
     lang.update(reedback_art.LANG)
     reedback_art.write(sys.modules[__name__])

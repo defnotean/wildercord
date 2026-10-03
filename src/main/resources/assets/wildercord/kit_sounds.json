@@ -1494,6 +1494,21 @@
     "ready_ping": {
       "part": "neutral"
     },
+    "sporeback_answer": {
+      "part": "sporeback"
+    },
+    "sporeback_browse": {
+      "part": "sporeback"
+    },
+    "sporeback_call": {
+      "part": "sporeback"
+    },
+    "sporeback_gather": {
+      "part": "sporeback"
+    },
+    "sporeback_hide": {
+      "part": "sporeback"
+    },
     "storm_boom": {
       "part": "storm"
     },
@@ -1831,6 +1846,9 @@
       "part": "wetland"
     },
     "wetland_reed_open": {
+      "part": "wetland"
+    },
+    "wetland_reed_rattle": {
       "part": "wetland"
     },
     "wetland_refuge_settle": {

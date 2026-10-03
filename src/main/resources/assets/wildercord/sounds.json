@@ -5429,6 +5429,15 @@
       "wildercord:kit/wetland/wetland_reed_open"
     ]
   },
+  "wetland_reed_rattle": {
+    "subtitle": "subtitles.wildercord.kit.wetland.reed_rattle",
+    "sounds": [
+      {
+        "name": "wildercord:kit/wetland/wetland_reed_rattle",
+        "attenuation_distance": 10
+      }
+    ]
+  },
   "wetland_refuge_settle": {
     "subtitle": "subtitles.wildercord.kit.wetland.refuge_settle",
     "sounds": [
@@ -5439,6 +5448,36 @@
     "subtitle": "subtitles.wildercord.kit.wetland.refuge_wake",
     "sounds": [
       "wildercord:kit/wetland/wetland_refuge_wake"
+    ]
+  },
+  "sporeback_answer": {
+    "subtitle": "subtitles.wildercord.kit.sporeback.answer",
+    "sounds": [
+      "wildercord:kit/sporeback/sporeback_answer"
+    ]
+  },
+  "sporeback_browse": {
+    "subtitle": "subtitles.wildercord.kit.sporeback.browse",
+    "sounds": [
+      "wildercord:kit/sporeback/sporeback_browse"
+    ]
+  },
+  "sporeback_call": {
+    "subtitle": "subtitles.wildercord.kit.sporeback.call",
+    "sounds": [
+      "wildercord:kit/sporeback/sporeback_call"
+    ]
+  },
+  "sporeback_gather": {
+    "subtitle": "subtitles.wildercord.kit.sporeback.gather",
+    "sounds": [
+      "wildercord:kit/sporeback/sporeback_gather"
+    ]
+  },
+  "sporeback_hide": {
+    "subtitle": "subtitles.wildercord.kit.sporeback.hide",
+    "sounds": [
+      "wildercord:kit/sporeback/sporeback_hide"
     ]
   }
 }

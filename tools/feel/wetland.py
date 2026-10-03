@@ -43,3 +43,15 @@ def crab_hurt(v,rng):
 def crab_death(v,rng):
  return sa.finish(sa.mix(sa.partials(320,.4,((1,1,1),(1.6,.2,.7)),.12),(.2,sa.lowpass(sa.noise(.25,rng),1200)*sa.env(.25,(0,0),(.04,1),(.25,0))*.1)),'effect')
 EVENTS += [event('wetland_crab_'+n,f,role='effect',subtitle='wetland.crab_'+n) for n,f in [('call',crab_call),('warn',crab_warn),('sweep',crab_sweep),('calm',crab_calm),('stagger',crab_stagger),('hurt',crab_hurt),('death',crab_death)]]
+
+def reed_rattle(v,rng):
+ """Three hand shakes: dry pebbles knock a clay vessel beneath soft fibre friction."""
+ layers=[]
+ for at,strength in [(0,.8),(.18,1),(.39,.65)]:
+  friction=sa.bandpass(sa.noise(.16,rng),1400,4300)*sa.env(.16,(0,0),(.035,1),(.16,0))*.075
+  layers.append((at,friction*strength))
+  for delay in [.012,.043,.083]:
+   knock=sa.partials(rng.uniform(570,830),.065,((1,1,1),(2.43,.32,.55),(3.7,.14,.3)),.012,.001)
+   layers.append((at+delay,knock*.18*strength))
+ return sa.finish(sa.lowpass(sa.mix(*layers),5000),'effect',fade_out=.045)
+EVENTS += [event('wetland_reed_rattle',reed_rattle,role='effect',attenuation=10,subtitle='wetland.reed_rattle')]

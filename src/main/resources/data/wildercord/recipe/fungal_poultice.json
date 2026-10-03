@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:mycelial_dew",
+    "minecraft:paper",
+    "minecraft:brown_mushroom"
+  ],
+  "result": {
+    "id": "wildercord:fungal_poultice",
+    "count": 1
+  }
+}

@@ -63,6 +63,9 @@ public final class BoltComets {
                         WindForms.flight(id, bolt.tickCount, width, (style & RuneBolt.STYLE_PIERCE) != 0 ? 1.8 : 1,
                             bolt.position(), bolt.getDeltaMovement(), quality == MagicQuality.Level.MINIMAL,
                             (option, pos) -> level.addParticle(option, pos.x, pos.y, pos.z, 0, 0, 0));
+                        EarthFlights.draw(id, bolt.tickCount, width, (style & RuneBolt.STYLE_PIERCE) != 0 ? 1.8 : 1,
+                            bolt.position(), bolt.getDeltaMovement(), quality == MagicQuality.Level.MINIMAL,
+                            (option, pos) -> level.addParticle(option, pos.x, pos.y, pos.z, 0, 0, 0));
 						StormFlights.draw(id, bolt.tickCount, width, (style & RuneBolt.STYLE_PIERCE) != 0 ? 1.8 : 1,
 							bolt.position(), bolt.getDeltaMovement(), quality == MagicQuality.Level.MINIMAL,
 							(option, pos) -> level.addParticle(option, pos.x, pos.y, pos.z, 0, 0, 0));

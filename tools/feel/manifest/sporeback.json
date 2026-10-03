@@ -1,0 +1,40 @@
+{
+  "events": {
+    "sporeback_answer": {
+      "attenuation": 0,
+      "files": [
+        "kit/sporeback/sporeback_answer"
+      ],
+      "subtitle": "sporeback.answer"
+    },
+    "sporeback_browse": {
+      "attenuation": 0,
+      "files": [
+        "kit/sporeback/sporeback_browse"
+      ],
+      "subtitle": "sporeback.browse"
+    },
+    "sporeback_call": {
+      "attenuation": 0,
+      "files": [
+        "kit/sporeback/sporeback_call"
+      ],
+      "subtitle": "sporeback.call"
+    },
+    "sporeback_gather": {
+      "attenuation": 0,
+      "files": [
+        "kit/sporeback/sporeback_gather"
+      ],
+      "subtitle": "sporeback.gather"
+    },
+    "sporeback_hide": {
+      "attenuation": 0,
+      "files": [
+        "kit/sporeback/sporeback_hide"
+      ],
+      "subtitle": "sporeback.hide"
+    }
+  },
+  "part": "sporeback"
+}

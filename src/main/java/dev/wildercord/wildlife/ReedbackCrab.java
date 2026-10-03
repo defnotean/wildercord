@@ -45,6 +45,12 @@ public final class ReedbackCrab extends PathfinderMob {
   else {pose(RECOVERY,60);sound("stagger");}
   return true;
  }
+ /** A handmade instrument answers only raised warning claws. It cannot interrupt a committed sweep. */
+ public boolean answerRattle() {
+  if(!(level() instanceof ServerLevel l) || !isAlive() || pose()!=WARNING || l.getGameTime()<responseReady)return false;
+  responseReady=l.getGameTime()+200;calmUntil=l.getGameTime()+ReedRattle.CALM_TICKS;
+  getNavigation().stop();setTarget(null);pose(CALM,0);sound("calm");return true;
+ }
  @Override protected void customServerAiStep(ServerLevel l) {
   super.customServerAiStep(l);if(home==null)home=blockPosition();
   if(l.getDifficulty()==Difficulty.PEACEFUL || !dev.wildercord.config.Config.get().wildlife().enabled()) {setTarget(null);pose(IDLE,0);return;}

@@ -10,6 +10,24 @@ class WildercordConfigTest {
 	private static final WildercordConfig D = WildercordConfig.DEFAULTS;
 
 	@Test
+	void sporebackSpawnSwitchSurvivesUpgradeAndRoundTrip() {
+		var parsed = WildercordConfig.parse("{\"creatures\": {\"sporeback_snail\": false, \"reedback_crab\": true}}");
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertFalse(parsed.config().wildlife().spawns("sporeback_snail"));
+		assertTrue(parsed.config().wildlife().spawns("reedback_crab"));
+		var roundTrip = WildercordConfig.parse(parsed.config().toJson());
+		assertTrue(roundTrip.warnings().isEmpty(), roundTrip.warnings().toString());
+		assertFalse(roundTrip.config().wildlife().sporebackSnail());
+		String upgraded = WildercordConfig.addMissing("{\"creatures\": {\"wildlife\": false, \"reedback_crab\": false}}").orElseThrow();
+		var older = WildercordConfig.parse(upgraded);
+		assertTrue(older.warnings().isEmpty(), older.warnings().toString());
+		assertTrue(older.config().wildlife().sporebackSnail());
+		assertFalse(older.config().wildlife().spawns("sporeback_snail"));
+		assertFalse(older.config().wildlife().reedbackCrab());
+		assertTrue(WildercordConfig.addMissing(upgraded).isEmpty());
+	}
+
+	@Test
 	void defaultsAreTheNumbersFromBeforeTheConfig() {
 		assertEquals(64, D.maxCreatures());
 		assertEquals(32, D.maxBlocks());

@@ -105,6 +105,13 @@
       ],
       "subtitle": "wetland.reed_open"
     },
+    "wetland_reed_rattle": {
+      "attenuation": 10,
+      "files": [
+        "kit/wetland/wetland_reed_rattle"
+      ],
+      "subtitle": "wetland.reed_rattle"
+    },
     "wetland_refuge_settle": {
       "attenuation": 0,
       "files": [

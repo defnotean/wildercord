@@ -95,6 +95,8 @@
   * [Lights Along the Bank](world/luminous-wetlands.md)
   * [Moonreed Gardens](world/moonreed-gardens.md)
   * [Reedback Crabs](world/reedback-crabs.md)
+  * [Reed Rattle](world/reed-rattle.md)
+  * [Sporeback Snails](world/sporeback-snails.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

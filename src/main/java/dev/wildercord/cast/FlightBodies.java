@@ -14,7 +14,7 @@ public final class FlightBodies {
         "conflagration", "seethe", "skyburst", "cinder_bulwark", "boiling_surge");
 
     public static boolean supports(String id) {
-        return supportsFire(id) || supportsFrost(id) || supportsStorm(id) || supportsWind(id);
+        return supportsFire(id) || supportsFrost(id) || supportsStorm(id) || supportsWind(id) || supportsEarth(id);
     }
 
     public static final List<String> FROST = List.of(
@@ -47,6 +47,16 @@ public final class FlightBodies {
 
     public static boolean supportsWind(String id) {
         return id.startsWith("wildercord:") && WIND.contains(id.substring(11));
+    }
+
+    public static final List<String> EARTH = List.of(
+        "shield", "break", "stoneskin", "root", "tremor", "excavate", "aftershock", "weigh", "shackle",
+        "rampart", "brace", "chisel", "tunnel", "vein", "fell", "pelt", "stoneform", "magma", "sinkhole",
+        "geode", "fossilize", "bonespur", "monolith", "strata_rise", "thunderquake", "infest", "sandstorm",
+        "tusk_charge", "mire", "stalactite", "basalt_surge", "prospect");
+
+    public static boolean supportsEarth(String id) {
+        return id.startsWith("wildercord:") && EARTH.contains(id.substring(11));
     }
 
     public static boolean covers(String identities) {

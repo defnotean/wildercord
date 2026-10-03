@@ -35,6 +35,9 @@ public final class WildercordParticles {
 		FabricParticleTypes.complex(true, RitualOption.CODEC, RitualOption.STREAM_CODEC));
 
 	/** Curved wind streams carry pressure and drift without luminous beam primitives. */
+	public static final ParticleType<EarthOption> EARTH = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("earth"),
+		FabricParticleTypes.complex(false, EarthOption.CODEC, EarthOption.STREAM_CODEC));
+
 	public static final ParticleType<AirflowOption> AIRFLOW = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("airflow"),
 		FabricParticleTypes.complex(true, AirflowOption.CODEC, AirflowOption.STREAM_CODEC));
 

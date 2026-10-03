@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " FC",
+    "SBC",
+    " B "
+  ],
+  "key": {
+    "F": "wildercord:moonreed_floss",
+    "C": "minecraft:clay_ball",
+    "S": "minecraft:string",
+    "B": "minecraft:bamboo"
+  },
+  "result": {
+    "id": "wildercord:reed_rattle"
+  }
+}

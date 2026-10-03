@@ -8,31 +8,33 @@ Existing features, recolours, source references and controlled screenshots do no
 
 | Target | Evidenced additions | Remaining |
 |---|---|---|
-| 12 creatures | 5: Buried Keeper, Stonehorn, Galeclaw, Lantern Newt, Reedback Crab | 7; peaceful/magical wildlife, hostile/territorial creatures, another boss and a useful companion remain |
-| 4 connected ecosystems | Highland and wetland foundations | Finish both; build ember woodlands and subterranean fungal ruins; none yet meets the full ecosystem acceptance criteria |
+| 12 creatures | 6: Buried Keeper, Stonehorn, Galeclaw, Lantern Newt, Reedback Crab, Sporeback Snail | 6: two peaceful/magical wildlife, two hostile/territorial creatures, another boss and a useful companion |
+| 4 connected ecosystems | Highland, wetland and first fungal foundations | Finish their connected relationships; build ember woodlands; none yet meets the full ecosystem acceptance criteria |
 | 6 new dungeon/encounter locations | Sword tomb is the conservative confirmed new dungeon; hosted village tournament is an additional encounter candidate | 5 further fixed locations under the conservative architectural count, or 4 if the tournament counts; finalize this scope explicitly |
 | Battlefields and sleeping blade | Both implemented with native evidence | Natural rarity/distribution, remote participation, return-visit design and remaining lifecycle coverage |
-| 36 functional items | 14 clearly functional: Oathkeeper; four beast materials/tools; three highland resource/tools; two newt items; three Moonreed items; Reed Refuge | 22 plus verify the required category distribution; a rune item is counted as an ability, not also as functional equipment |
+| 36 functional items | 17 clearly functional: previous fourteen, Reed Rattle, Mycelial Dew and Fungal Poultice | 19 plus verify the required category distribution; a rune item is counted as an ability, not also as functional equipment |
 | 12 abilities | Unity and verified Basinfill: 2 credited | 10 still uncredited; audit any newly taught technique against the baseline before counting it |
 | 18 new signature fusions | Existing 22 named signature recipes predate this goal's additions | 18 additions still needed; existing 55 elemental fusions and dynamic weaves do not satisfy this target |
-| 24 discoverable lore texts | 8 explicitly credited: three battlefield texts, tomb, sleeping blade, tournament, Tideward notes, refuge | 16 plus illustrated journal/discovery integration; bestiary pages should be reconciled before further credit |
+| 24 discoverable lore texts | 9 explicitly credited: previous eight and The Patient Spiral | 15 plus illustrated journal/discovery integration; bestiary pages should be reconciled before further credit |
 | 4 connected optional investigations | No completed chain credited | 4 complete chains, clues, persistent state and rewards |
 
-The prior increment ledger credited fifteen items by including Tideward notes. This audit separates that lore book from functional equipment/materials: fourteen clearly qualifying items and twenty-two remaining. Existing signature fusions and battlefield/tomb technique rewards were confirmed unchanged against baseline commit `14efc61e`; teaching them does not count as new abilities.
+The prior increment ledger credited fifteen items by including Tideward notes. This audit separates that lore book from functional equipment/materials. The Reed Rattle and the two fungal fieldcraft items now bring functional additions to seventeen. Spawn eggs and The Patient Spiral are not equipment credits. Existing signature fusions and battlefield/tomb technique rewards were confirmed unchanged against baseline commit `14efc61e`; teaching them does not count as new abilities. Life presentations, six signature fusions and a Glowcap nursery investigation are being drafted outside the build and receive no completion credit.
 
 ## 1. Visual identity
 
 Finish the asset-by-asset audit of equipment, accessories, blocks, creatures, structure details,
 menus and HUD. Establish consistent regional/faction materials and silhouettes. Review the
 illustrated field journal in game across chapter types, discovery states and GUI scales.
-Existing guide improvements and 114 validated pages are a foundation, not full visual approval.
+Existing guide improvements and 117 validated pages are a foundation, not full visual approval.
 
 ## 2. Every spell and Aura technique
 
 The baseline runtime inventory has 350 runes (258 effects); Basinfill expands it to 351 (259).
 Fire (28), frost/water (30 before Basinfill), storm (20) and wind (25) have individually authored
-preparation/projectile-body work. This is 103 existing effect identities, not 103 fully finished spells.
-Finish earth, life, void, time, arcane, blood and cross-family exceptions. Finish actual release,
+preparation/projectile-body work. Earth adds 32 authored identities, with its native suites tracked
+in `docs/audit/full-spell-roster/earth-choreography.md`. These 135 baseline identities plus
+Basinfill are not 136 fully finished spells. Finish life, void, time, arcane, blood and
+cross-family exceptions. Finish actual release,
 impact, aftermath and sound identity for every effect. Audit beam, rain, self, summon, trap,
 ward, field and construct deliveries separately. Verify ranks/modifiers, links, reflection,
 homing, mixed fallback groups, dynamic Knots/weaves and addons. Review first-person aim,
@@ -45,17 +47,19 @@ motion, not only its colour. Inventory/reference indices are not presentation pr
 
 ## 3. Creatures and ecosystems
 
-Seven further creatures need original models, animation, voices, habitat, behavior, counterplay,
+Six further creatures need original models, animation, voices, habitat, behavior, counterplay,
 acquisition/rewards and bestiary evidence. Highlands and wetlands need broader ecological
 relationships and natural observation playthroughs. Ember forests and fungal ruins need their
 connected habitat loops. Validate food/shelter/predation/pollination under mixed populations,
-multiple seeds, unloaded chunks and existing worlds. Measure population/simulation costs.
+multiple seeds, unloaded chunks and existing worlds. Sporeback Snails now establish actual
+fungus browsing, finite gathering and shade checks; fungal ruins still need their wider connected
+habitat. Measure population/simulation costs.
 Cinnamon and fish-tamed foxes already exist; preserve their ownership, sit/follow and persistence.
 They are not counted as newly created species for this expansion.
 
 ## 4. Equipment, crafting and combat
 
-Add 22 further functional items and reconcile all 36 against the eight relic/eight equipment/six
+Add 19 further functional items and reconcile all 36 against the eight relic/eight equipment/six
 tool/six placeable/eight consumable categories. Design acquisition and alternatives; complete
 upgrades, research, cooperative support, wards/apparatus and useful home infrastructure.
 Check inventories, backpack, accessory slots and all new recipes in the real UI.
