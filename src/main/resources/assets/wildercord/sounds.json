@@ -5329,5 +5329,35 @@
     "sounds": [
       "wildercord:kit/highland/highland_reed_harvest"
     ]
+  },
+  "wetland_newt_answer": {
+    "subtitle": "subtitles.wildercord.kit.wetland.answer",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_newt_answer"
+    ]
+  },
+  "wetland_newt_call": {
+    "subtitle": "subtitles.wildercord.kit.wetland.call",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_newt_call"
+    ]
+  },
+  "wetland_newt_death": {
+    "subtitle": "subtitles.wildercord.kit.wetland.death",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_newt_death"
+    ]
+  },
+  "wetland_newt_hurt": {
+    "subtitle": "subtitles.wildercord.kit.wetland.hurt",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_newt_hurt"
+    ]
+  },
+  "wetland_newt_pearl": {
+    "subtitle": "subtitles.wildercord.kit.wetland.pearl",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_newt_pearl"
+    ]
   }
 }

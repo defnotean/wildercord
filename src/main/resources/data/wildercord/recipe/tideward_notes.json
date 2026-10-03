@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:dusk_pearl",
+    "minecraft:book"
+  ],
+  "result": {
+    "id": "wildercord:tideward_notes"
+  }
+}

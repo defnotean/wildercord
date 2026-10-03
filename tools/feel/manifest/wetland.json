@@ -1,0 +1,40 @@
+{
+  "events": {
+    "wetland_newt_answer": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_newt_answer"
+      ],
+      "subtitle": "wetland.answer"
+    },
+    "wetland_newt_call": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_newt_call"
+      ],
+      "subtitle": "wetland.call"
+    },
+    "wetland_newt_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_newt_death"
+      ],
+      "subtitle": "wetland.death"
+    },
+    "wetland_newt_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_newt_hurt"
+      ],
+      "subtitle": "wetland.hurt"
+    },
+    "wetland_newt_pearl": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_newt_pearl"
+      ],
+      "subtitle": "wetland.pearl"
+    }
+  },
+  "part": "wetland"
+}

@@ -163,3 +163,7 @@ Three events happen on their own in the Overworld, near players. They're covered
 
 - [Root Guardian and Storm Conductor]({{ '/world/root-and-storm-bosses/' | relative_url }})
 - [Expeditions and Relics]({{ '/world/expeditions/' | relative_url }})
+
+## Along the wetland banks
+
+[Lights Along the Bank]({{ '/world/luminous-wetlands/' | relative_url }}) covers Lantern Newts, peaceful pearl gathering, Marshlights and Tideward field notes.

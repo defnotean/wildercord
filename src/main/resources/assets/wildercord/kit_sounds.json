@@ -1785,6 +1785,21 @@
     "void_zeno_beat": {
       "part": "void"
     },
+    "wetland_newt_answer": {
+      "part": "wetland"
+    },
+    "wetland_newt_call": {
+      "part": "wetland"
+    },
+    "wetland_newt_death": {
+      "part": "wetland"
+    },
+    "wetland_newt_hurt": {
+      "part": "wetland"
+    },
+    "wetland_newt_pearl": {
+      "part": "wetland"
+    },
     "wildlife_cinderfox_death": {
       "part": "wildlife"
     },

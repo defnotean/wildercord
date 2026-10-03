@@ -43,7 +43,9 @@
 		"BondedBladeMendingMixin",
 		"BondedBladeRepairMixin",
 		"BondedBladeIngredientMixin",
-		"BondedBladeSmeltingMixin"
+		"BondedBladeSmeltingMixin",
+		"FoxAccessor",
+		"FoxCompanionGoalsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

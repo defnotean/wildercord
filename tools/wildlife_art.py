@@ -1203,7 +1203,7 @@ LANG = {
     "guide.wildercord.lumen_stag.hint": "Old woods, a moonlit glint, and patience",
     "guide.wildercord.mossback_tortoise": "A huge, slow tortoise of swamps, mangroves and jungles with a garden on its shell. Hides when struck; loves melon; now and then leaves a Mossback Scute",
     "guide.wildercord.mossback_tortoise.hint": "A garden that walks, where the ground is wet",
-    "guide.wildercord.cinderfox": "A desert fox whose tail ends in a living ember. Tame it with rabbit; its bite sets fire-weak foes alight. Brush it for an Ember Tuft",
+    "guide.wildercord.cinderfox": "A desert fox whose tail ends in a living ember. Tame it with rabbit or fish; its bite sets fire-weak foes alight. Brush it for an Ember Tuft",
     "guide.wildercord.cinderfox.hint": "Sparks on the sand after dark",
     "guide.wildercord.skyray": "A manta of the open sky, gliding in slow loops high over mountains and meadows. Its back is full of stars at night. Now and then a membrane falls from it",
     "guide.wildercord.skyray.hint": "Look up, above the peaks",

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:dusk_pearl",
+    "minecraft:glass",
+    "minecraft:string",
+    "minecraft:seagrass"
+  ],
+  "result": {
+    "id": "wildercord:marshlight"
+  }
+}

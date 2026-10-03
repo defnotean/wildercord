@@ -101,10 +101,10 @@ anvil, as a turtle's own scute does.
 A slight, big-eared fox of deserts and badlands whose tail ends in a living ember. It glows by day and burns bright at
 night, throwing off sparks.
 
-- **Wild ones keep their distance**, unless you sneak or hold out a rabbit. They hunt rabbits and chickens.
-- **Taming.** Feed one a rabbit, raw or cooked. One try in three it's yours: hearts appear and it sits.
+- **Wild ones keep their distance**, unless you sneak or hold out rabbit or fish. They hunt rabbits and chickens.
+- **Taming.** Feed one rabbit or safe fish, raw or cooked. One try in three it's yours: hearts appear and it sits.
 - **A tame cinderfox** follows you, sits or stands when you use it with an empty hand, and fights whatever hurts you or
-  whatever you attack. Heal it with rabbit or chicken; two tame ones fed rabbit or chicken raise a kit.
+  whatever you attack. Heal it with rabbit, chicken or fish; two tame ones fed those foods raise a kit.
 - **Its bite carries embers.** Against anything weak to fire (strays, polar bears, snow golems and more) it sets the
   creature alight and hurts it half again as much.
 - **It can't burn.** Fire and lava don't harm a cinderfox.
@@ -184,3 +184,7 @@ from an egg behaves just like a wild one.
 Each creature spawns on its own in its lands, alongside the vanilla animals and bats, so the usual limits on how many
 creatures can be around at once still hold, and the rare ones keep their distance from each other. A server's owner can
 switch the creatures off, make them rarer or more common, or switch any one of them off on its own.
+
+## Lantern Newt
+
+Open shallows in swamps and mangrove swamps shelter the Lantern Newt. It visits seagrass without destroying plants, answers Tidebreath and Life magic, and offers one Dusk Pearl when fed while wet and undisturbed, with a saved two-minute rest. See [Lights Along the Bank](luminous-wetlands.md) for its recipes and behavior.

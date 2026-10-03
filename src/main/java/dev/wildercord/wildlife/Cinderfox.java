@@ -104,9 +104,9 @@ public class Cinderfox extends TamableAnimal {
 		targetSelector.addGoal(5, new NonTameRandomTargetGoal<>(this, Chicken.class, false, null));
 	}
 
-	/** What wins a wild one over: rabbit, raw or cooked. */
+	/** What wins a wild one over: rabbit or safe fish, raw or cooked. */
 	public boolean tames(ItemStack stack) {
-		return stack.is(Items.RABBIT) || stack.is(Items.COOKED_RABBIT);
+		return stack.is(Items.RABBIT) || stack.is(Items.COOKED_RABBIT) || FoxCompanions.fish(stack);
 	}
 
 	@Override

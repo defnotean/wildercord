@@ -32,6 +32,15 @@ public final class WildlifeRenderers {
 	public static final ModelLayerLocation CINDERFOX = layer("cinderfox");
 	public static final ModelLayerLocation SKYRAY = layer("skyray");
 	public static final ModelLayerLocation RIMEHARE = layer("rimehare");
+	public static final ModelLayerLocation LANTERN_NEWT = layer("lantern_newt");
+	public static final class LanternNewtRenderer extends WildlifeRenderer<dev.wildercord.wildlife.LanternNewt,LanternNewtModel> {
+		public LanternNewtRenderer(EntityRendererProvider.Context c) {super(c,new LanternNewtModel(c.bakeLayer(LANTERN_NEWT)),.25F,texture("lantern_newt"));var light=texture("lantern_newt_glow");glow(s -> light);}
+		@Override public void extractRenderState(dev.wildercord.wildlife.LanternNewt e,WildlifeRenderState s,float partial) {
+			super.extractRenderState(e,s,partial);s.air=e.isInWater()?1:0;s.graze=e.browsing()?1:0;s.bow=e.response()>0?1:0;
+			s.glow=dev.wildercord.wildlife.WetlandRules.glow(dev.wildercord.wildlife.WetlandRules.night(e.level().getOverworldClockTime()),e.isInWaterOrRain(),e.response()>0);
+			if(e.response()>0)s.glow*=.8F+.2F*Mth.sin(s.ageInTicks*.25F);
+		}
+	}
 
 	private static ModelLayerLocation layer(String name) {
 		return new ModelLayerLocation(Wildercord.id(name), "main");

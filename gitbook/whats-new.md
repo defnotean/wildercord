@@ -35,3 +35,7 @@ One key does it all (Z by default): tap to slash, sneak to guard, double-tap to 
 Everything from 0.8 is still here: harmonies, spell mastery, overchannelling and residues. See the
 [0.8.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha) and the full
 [changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md).
+
+## Wetland lights and fox friendship
+
+Lantern Newts bring browsing behavior, answering lanterns and peaceful Dusk Pearl gathering to swamp shallows. Pearls craft waterloggable Marshlights and three-page Tideward field notes. Fish now tames both ordinary foxes and Cinderfoxes; ordinary foxes gain saved ownership, following and an empty-hand sit toggle. See [wetland field notes](world/luminous-wetlands.md) and [companions](companions/index.md).
