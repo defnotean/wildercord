@@ -101,7 +101,9 @@
 			"dev.wildercord.gametest.WildercordWaysTest",
 			"dev.wildercord.gametest.WildercordTechniquesTest",
 			"dev.wildercord.gametest.WildercordBondedBladeTest",
-			"dev.wildercord.wildlife.FoxFishTest"
+			"dev.wildercord.wildlife.FoxFishTest",
+			"dev.wildercord.wildlife.WetlandGardenTest",
+			"dev.wildercord.wildlife.WetlandTerrainTest"
 		]
 	},
 	"depends": {

@@ -1785,6 +1785,9 @@
     "void_zeno_beat": {
       "part": "void"
     },
+    "wetland_lens_focus": {
+      "part": "wetland"
+    },
     "wetland_newt_answer": {
       "part": "wetland"
     },
@@ -1798,6 +1801,12 @@
       "part": "wetland"
     },
     "wetland_newt_pearl": {
+      "part": "wetland"
+    },
+    "wetland_reed_harvest": {
+      "part": "wetland"
+    },
+    "wetland_reed_open": {
       "part": "wetland"
     },
     "wildlife_cinderfox_death": {

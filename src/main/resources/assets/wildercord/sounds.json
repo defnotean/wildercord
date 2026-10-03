@@ -5330,6 +5330,12 @@
       "wildercord:kit/highland/highland_reed_harvest"
     ]
   },
+  "wetland_lens_focus": {
+    "subtitle": "subtitles.wildercord.kit.wetland.lens_focus",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_lens_focus"
+    ]
+  },
   "wetland_newt_answer": {
     "subtitle": "subtitles.wildercord.kit.wetland.answer",
     "sounds": [
@@ -5358,6 +5364,18 @@
     "subtitle": "subtitles.wildercord.kit.wetland.pearl",
     "sounds": [
       "wildercord:kit/wetland/wetland_newt_pearl"
+    ]
+  },
+  "wetland_reed_harvest": {
+    "subtitle": "subtitles.wildercord.kit.wetland.reed_harvest",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_reed_harvest"
+    ]
+  },
+  "wetland_reed_open": {
+    "subtitle": "subtitles.wildercord.kit.wetland.reed_open",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_reed_open"
     ]
   }
 }

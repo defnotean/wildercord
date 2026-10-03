@@ -160,3 +160,5 @@ Three events happen on their own in the Overworld, near players. They're covered
 ## Along the wetland banks
 
 [Lights Along the Bank](luminous-wetlands.md) covers Lantern Newts, peaceful pearl gathering, Marshlights and Tideward field notes.
+
+[Moonreed Gardens](moonreed-gardens.md) explains wetland pollination and the Dewglass Lens.

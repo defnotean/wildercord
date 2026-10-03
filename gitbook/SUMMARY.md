@@ -91,6 +91,7 @@
   * [Creatures](world/creatures.md)
   * [Runes of the World and Attunement](world/runes-of-the-world.md)
   * [Lights Along the Bank](world/luminous-wetlands.md)
+  * [Moonreed Gardens](world/moonreed-gardens.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

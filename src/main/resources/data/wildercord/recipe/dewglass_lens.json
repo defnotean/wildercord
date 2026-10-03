@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:moonreed_floss",
+    "wildercord:dusk_pearl",
+    "minecraft:copper_ingot",
+    "minecraft:glass"
+  ],
+  "result": {
+    "id": "wildercord:dewglass_lens"
+  }
+}

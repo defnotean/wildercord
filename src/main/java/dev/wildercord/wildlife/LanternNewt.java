@@ -45,6 +45,7 @@ public final class LanternNewt extends PathfinderMob {
 	@Override protected void defineSynchedData(SynchedEntityData.Builder b) {super.defineSynchedData(b);b.define(BROWSING,false);b.define(RESPONSE,0L);}
 	public boolean browsing() {return entityData.get(BROWSING);}
 	public int response() {return (int)Math.clamp(entityData.get(RESPONSE)-level().getGameTime(),0,80);}
+	public boolean frightened() {return level().getGameTime()<frightenedUntil;}
 	public long pearlReady() {return pearlReady;}
 	public long responseReady() {return responseReady;}
 	@Override protected void registerGoals() {

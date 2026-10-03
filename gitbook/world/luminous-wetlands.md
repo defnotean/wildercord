@@ -31,4 +31,4 @@ These are shapeless recipes. Marshlights can be placed above or below water and 
 
 Natural groups contain one or two newts. Spawning requires a shallow, open-water site and refuses another newt when three already live nearby. The Lantern Newt option and wildlife master switch can disable natural spawning.
 
-This is the first wetland content milestone. Larger ecological relationships and exploration sites remain in development.
+[Moonreed Gardens](moonreed-gardens.md) extends the bank with moth pollination, perennial flowers and a Dewglass Lens for inspecting gathering conditions. Larger ecological relationships and exploration sites remain in development.

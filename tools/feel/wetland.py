@@ -12,3 +12,11 @@ def answer(v,rng):
 def pearl(v,rng):
  return sa.finish(sa.mix(sa.partials(580,.23,((1,1,1),(2.7,.12,.6)),.09),(.09,sa.partials(910,.2,((1,1,1),),.05))),'effect')
 EVENTS=[event('wetland_newt_'+n,f,role='effect',subtitle='wetland.'+n) for n,f in [('call',call),('hurt',hurt),('death',death),('answer',answer),('pearl',pearl)]]
+
+def reed_open(v,rng):
+ return sa.finish(sa.mix(sa.highpass(sa.noise(.24,rng),1600)*sa.env(.24,(0,0),(.05,1),(.24,0))*.025,(.08,sa.partials(710,.3,((1,1,1),(2.4,.07,.7)),.045))),'effect')
+def reed_harvest(v,rng):
+ return sa.finish(sa.lowpass(sa.highpass(sa.noise(.35,rng),1900),5500)*sa.env(.35,(0,0),(.04,1),(.15,.25),(.22,.65),(.35,0))*.065,'effect')
+def lens_focus(v,rng):
+ return sa.finish(sa.mix(sa.partials(420,.09,((1,1,1),(3,.12,.7)),.035),(.08,sa.partials(840,.22,((1,1,1),(1.8,.08,.6)),.045))),'effect')
+EVENTS += [event('wetland_'+n,f,role='effect',subtitle='wetland.'+n) for n,f in [('reed_open',reed_open),('reed_harvest',reed_harvest),('lens_focus',lens_focus)]]

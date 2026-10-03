@@ -1,5 +1,12 @@
 {
   "events": {
+    "wetland_lens_focus": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_lens_focus"
+      ],
+      "subtitle": "wetland.lens_focus"
+    },
     "wetland_newt_answer": {
       "attenuation": 0,
       "files": [
@@ -34,6 +41,20 @@
         "kit/wetland/wetland_newt_pearl"
       ],
       "subtitle": "wetland.pearl"
+    },
+    "wetland_reed_harvest": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_reed_harvest"
+      ],
+      "subtitle": "wetland.reed_harvest"
+    },
+    "wetland_reed_open": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_reed_open"
+      ],
+      "subtitle": "wetland.reed_open"
     }
   },
   "part": "wetland"

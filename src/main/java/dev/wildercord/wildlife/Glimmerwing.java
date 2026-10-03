@@ -55,6 +55,7 @@ public class Glimmerwing extends AmbientCreature {
 	/** A light or a caster it's circling, until it loses interest. */
 	private @Nullable Vec3 lure;
 	private int lureLeft;
+	private @Nullable BlockPos flower;
 	private int retarget;
 	/** Client: the wings' phase and how hard they beat (this tick's and last tick's phase), and a glide's ticks left. */
 	public float flapPhase, flapPhaseO, flapStrength = 1;
@@ -145,6 +146,7 @@ public class Glimmerwing extends AmbientCreature {
 		if (home == null) {
 			home = position();
 		}
+		if(flower!=null && tickCount%10==0 && MoonreedBlock.pollinate(level,flower,position())) {flower=null;lure=null;lureLeft=0;target=null;}
 		if ((tickCount + getId()) % 40 == 0) {
 			seekLure(level);
 		}
@@ -187,11 +189,22 @@ public class Glimmerwing extends AmbientCreature {
 			}
 		}
 		if (caster != null) {
+			flower=null;
 			lure = caster.getEyePosition().add(0, 0.6, 0);
 			lureLeft = 80;
 			return;
 		}
-		// A few looks around for light, keeping the brightest: over a few tries the swarm finds the lamp.
+		// A damp moonlit flower takes one bounded 147-cell look every two seconds.
+        flower=null;
+        if(WetlandRules.night(level.getOverworldClockTime())) {
+            for(var at:BlockPos.betweenClosed(blockPosition().offset(-3,-1,-3),blockPosition().offset(3,1,3))) {
+                if(!level.hasChunkAt(at))continue;var state=level.getBlockState(at);
+                if(state.is(WetlandGarden.REED) && state.getValue(MoonreedBlock.AGE)==1 && MoonreedBlock.canBloom(level,at,level.getOverworldClockTime())) {
+                    flower=at.immutable();lure=Vec3.atCenterOf(at).add(0,.4,0);lureLeft=100;target=null;return;
+                }
+            }
+        }
+        // A few looks around for light, keeping the brightest: over a few tries the swarm finds the lamp.
 		BlockPos here = blockPosition();
 		int brightest = lure == null ? WildlifeRules.LIGHT_LURE - 1 : level.getBrightness(LightLayer.BLOCK, BlockPos.containing(lure));
 		Vec3 found = null;
@@ -210,6 +223,7 @@ public class Glimmerwing extends AmbientCreature {
 	}
 
 	private Vec3 pickTarget(ServerLevel level) {
+		if(flower!=null)return Vec3.atCenterOf(flower).add((random.nextDouble()-.5)*.3,.4,(random.nextDouble()-.5)*.3);
 		if (lure != null) {
 			// Round and round the light, never quite touching it.
 			double angle = random.nextDouble() * Mth.TWO_PI;

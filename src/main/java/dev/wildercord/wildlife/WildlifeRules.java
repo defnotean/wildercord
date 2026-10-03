@@ -32,7 +32,7 @@ public final class WildlifeRules {
 
 	public static final Kind GLIMMERWING = new Kind("glimmerwing", Pool.AMBIENT, 8, 3, 5, 1 / 4.0, 9, 40, List.of(
 		"minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:dark_forest",
-		"minecraft:meadow", "minecraft:sunflower_plains", "minecraft:cherry_grove"));
+		"minecraft:meadow", "minecraft:sunflower_plains", "minecraft:cherry_grove", "minecraft:swamp", "minecraft:mangrove_swamp"));
 	public static final Kind LUMEN_STAG = new Kind("lumen_stag", Pool.CREATURE, 2, 1, 1, 1 / 3.0, 0, 80, List.of(
 		"minecraft:old_growth_birch_forest", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:taiga",
 		"minecraft:cherry_grove"));

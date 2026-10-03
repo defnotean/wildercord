@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "wildercord:block/moonreed_1"
+  },
+  "render_type": "minecraft:cutout"
+}

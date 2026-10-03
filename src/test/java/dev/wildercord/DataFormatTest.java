@@ -259,9 +259,16 @@ class DataFormatTest {
 	void vegetationFeatureFormats() throws IOException {
 		// Compared with 26.3's feature/berry_bush.json and placed_feature/patch_berry_common.json.
 		for(Path file:files("wildercord/worldgen/feature")) {
-			var feature=read(file);allowed(feature,file,"type","to_place","schedule_tick");required(feature,file,"type","to_place");
-			assertEquals("minecraft:simple_block",feature.get("type").getAsString());
-			var state=feature.getAsJsonObject("to_place");allowed(state,file+" state","id","properties");required(state,file,"id");
+			var feature=read(file);required(feature,file,"type");
+            switch(feature.get("type").getAsString()) {
+                case "minecraft:simple_block" -> {
+                    allowed(feature,file,"type","to_place","schedule_tick");required(feature,file,"to_place");
+                    var state=feature.getAsJsonObject("to_place");allowed(state,file+" state","id","properties");required(state,file,"id");
+                }
+                // MoonreedFeature uses MapCodec.unit; native tests load its registry and execute placement.
+                case "wildercord:moonreed_patch" -> allowed(feature,file,"type");
+                default -> fail(file+": unsupported vegetation feature "+feature);
+            }
 		}
 		for(Path file:files("wildercord/worldgen/placed_feature")) {
 			var feature=read(file);allowed(feature,file,"feature","placement");required(feature,file,"feature","placement");

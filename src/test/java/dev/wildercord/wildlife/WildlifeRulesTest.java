@@ -14,6 +14,13 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class WildlifeRulesTest {
+ @Test void wetlandPollinatorsKeepTheirSharedAmbientAndCrowdingRules() {
+  assertTrue(WildlifeRules.GLIMMERWING.biomes().containsAll(List.of("minecraft:swamp","minecraft:mangrove_swamp")));
+  assertEquals(WildlifeRules.Pool.AMBIENT,WildlifeRules.GLIMMERWING.pool());
+  assertTrue(WildlifeRules.roomFor(WildlifeRules.GLIMMERWING,WildlifeRules.GLIMMERWING.crowd()));
+  assertFalse(WildlifeRules.roomFor(WildlifeRules.GLIMMERWING,WildlifeRules.GLIMMERWING.crowd()+1));
+ }
+
 	@Test
 	void everyKindHasSaneSpawns() {
 		Set<String> ids = new HashSet<>();

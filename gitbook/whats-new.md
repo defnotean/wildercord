@@ -39,3 +39,7 @@ Everything from 0.8 is still here: harmonies, spell mastery, overchannelling and
 ## Wetland lights and fox friendship
 
 Lantern Newts bring browsing behavior, answering lanterns and peaceful Dusk Pearl gathering to swamp shallows. Pearls craft waterloggable Marshlights and three-page Tideward field notes. Fish now tames both ordinary foxes and Cinderfoxes; ordinary foxes gain saved ownership, following and an empty-hand sit toggle. See [wetland field notes](world/luminous-wetlands.md) and [companions](companions/index.md).
+
+## Moonreed gardens
+
+Glimmerwings now visit swamp banks and pollinate Moonreed by approaching its buds. Life prepares growth but cannot replace a moth visit. Harvest floss without destroying the root, then combine it with a Dusk Pearl, Copper and Glass to craft a Dewglass Lens. Read flowers and newt gathering conditions, or follow its short trail to a visible nearby reed. See [Moonreed Gardens](world/moonreed-gardens.md).

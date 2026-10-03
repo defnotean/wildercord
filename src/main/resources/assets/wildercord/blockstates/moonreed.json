@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "wildercord:block/moonreed_0"
+    },
+    "age=1": {
+      "model": "wildercord:block/moonreed_1"
+    },
+    "age=2": {
+      "model": "wildercord:block/moonreed_2"
+    }
+  }
+}
