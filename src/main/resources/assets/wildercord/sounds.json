@@ -5330,6 +5330,48 @@
       "wildercord:kit/highland/highland_reed_harvest"
     ]
   },
+  "wetland_crab_call": {
+    "subtitle": "subtitles.wildercord.kit.wetland.crab_call",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_crab_call"
+    ]
+  },
+  "wetland_crab_calm": {
+    "subtitle": "subtitles.wildercord.kit.wetland.crab_calm",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_crab_calm"
+    ]
+  },
+  "wetland_crab_death": {
+    "subtitle": "subtitles.wildercord.kit.wetland.crab_death",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_crab_death"
+    ]
+  },
+  "wetland_crab_hurt": {
+    "subtitle": "subtitles.wildercord.kit.wetland.crab_hurt",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_crab_hurt"
+    ]
+  },
+  "wetland_crab_stagger": {
+    "subtitle": "subtitles.wildercord.kit.wetland.crab_stagger",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_crab_stagger"
+    ]
+  },
+  "wetland_crab_sweep": {
+    "subtitle": "subtitles.wildercord.kit.wetland.crab_sweep",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_crab_sweep"
+    ]
+  },
+  "wetland_crab_warn": {
+    "subtitle": "subtitles.wildercord.kit.wetland.crab_warn",
+    "sounds": [
+      "wildercord:kit/wetland/wetland_crab_warn"
+    ]
+  },
   "wetland_lens_focus": {
     "subtitle": "subtitles.wildercord.kit.wetland.lens_focus",
     "sounds": [

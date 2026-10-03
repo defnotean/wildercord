@@ -32,7 +32,12 @@ public final class WildlifeRenderers {
 	public static final ModelLayerLocation CINDERFOX = layer("cinderfox");
 	public static final ModelLayerLocation SKYRAY = layer("skyray");
 	public static final ModelLayerLocation RIMEHARE = layer("rimehare");
-	public static final ModelLayerLocation LANTERN_NEWT = layer("lantern_newt");
+	public static final ModelLayerLocation REEDBACK_CRAB=layer("reedback_crab");
+ public static final class ReedbackCrabRenderer extends WildlifeRenderer<dev.wildercord.wildlife.ReedbackCrab,ReedbackCrabModel> {
+  public ReedbackCrabRenderer(EntityRendererProvider.Context c) {super(c,new ReedbackCrabModel(c.bakeLayer(REEDBACK_CRAB)),.55F,texture("reedback_crab"));}
+  @Override public void extractRenderState(dev.wildercord.wildlife.ReedbackCrab e,WildlifeRenderState s,float partial) {super.extractRenderState(e,s,partial);s.claws=Mth.lerp(partial,e.clawsO,e.claws);s.strike=Mth.lerp(partial,e.strikeO,e.strike);s.settle=Mth.lerp(partial,e.settleO,e.settle);}
+ }
+ public static final ModelLayerLocation LANTERN_NEWT = layer("lantern_newt");
 	public static final class LanternNewtRenderer extends WildlifeRenderer<dev.wildercord.wildlife.LanternNewt,LanternNewtModel> {
 		public LanternNewtRenderer(EntityRendererProvider.Context c) {super(c,new LanternNewtModel(c.bakeLayer(LANTERN_NEWT)),.25F,texture("lantern_newt"));var light=texture("lantern_newt_glow");glow(s -> light);}
 		@Override public void extractRenderState(dev.wildercord.wildlife.LanternNewt e,WildlifeRenderState s,float partial) {

@@ -268,7 +268,8 @@ public record WildercordConfig(
 	 * @param rimehare         whether rimehares spawn (snowy biomes)
 	 */
 	public record WildlifeSettings(boolean enabled, double spawnMultiplier, boolean glimmerwing, boolean lumenStag, boolean mossbackTortoise,
-			boolean cinderfox, boolean skyray, boolean rimehare, boolean lanternNewt) {
+			boolean cinderfox, boolean skyray, boolean rimehare, boolean lanternNewt, boolean reedbackCrab) {
+  public WildlifeSettings(boolean enabled,double multiplier,boolean glimmerwing,boolean stag,boolean tortoise,boolean fox,boolean ray,boolean hare,boolean newt) {this(enabled,multiplier,glimmerwing,stag,tortoise,fox,ray,hare,newt,true);}
 		public WildlifeSettings(boolean enabled,double multiplier,boolean glimmerwing,boolean stag,boolean tortoise,boolean fox,boolean ray,boolean hare) {this(enabled,multiplier,glimmerwing,stag,tortoise,fox,ray,hare,true);}
 		public static final WildlifeSettings DEFAULTS = new WildlifeSettings(true, 1.0, true, true, true, true, true, true, true);
 
@@ -288,6 +289,7 @@ public record WildercordConfig(
 				case "skyray" -> skyray;
 				case "rimehare" -> rimehare;
 				case "lantern_newt" -> lanternNewt;
+    case "reedback_crab" -> reedbackCrab;
 				default -> false;
 			};
 		}
@@ -800,7 +802,8 @@ public record WildercordConfig(
 				r.bool("creatures", "cinderfox", d.wildlife.cinderfox()),
 				r.bool("creatures", "skyray", d.wildlife.skyray()),
 				r.bool("creatures", "rimehare", d.wildlife.rimehare()),
-				r.bool("creatures", "lantern_newt", d.wildlife.lanternNewt())),
+				r.bool("creatures", "lantern_newt", d.wildlife.lanternNewt()),
+    r.bool("creatures", "reedback_crab", d.wildlife.reedbackCrab())),
 			new AuraSettings(
 				r.bool("aura", "enabled", d.aura.enabled()),
 				r.number("aura", "xp_multiplier", d.aura.xpMultiplier(), 0, 100),
@@ -926,7 +929,7 @@ public record WildercordConfig(
 		KEYS.put("monsters", Set.of("enabled", "spawn_rate", "bramblewalker", "gloomstalker", "thunderwing_harpy", "geode_crawler", "bog_witch_frog",
 			"mana_ooze"));
 		KEYS.put("creatures", Set.of("wildlife", "wildlife_spawn_multiplier", "glimmerwing", "lumen_stag", "mossback_tortoise", "cinderfox", "skyray",
-			"rimehare", "lantern_newt"));
+			"rimehare", "lantern_newt", "reedback_crab"));
 		KEYS.put("aura", Set.of("enabled", "xp_multiplier", "gain_multiplier", "coat_bonus", "damage_scale", "slash_damage", "slash_cost",
 			"slash_cooldown_seconds", "pvp_scale", "backlash_seconds", "guard_share",
 			// The top stages, the spellblade and aura marks.
@@ -1248,6 +1251,7 @@ public record WildercordConfig(
 		creaturesSection.addProperty("skyray", wildlife.skyray());
 		creaturesSection.addProperty("rimehare", wildlife.rimehare());
 		creaturesSection.addProperty("lantern_newt", wildlife.lanternNewt());
+  creaturesSection.addProperty("reedback_crab", wildlife.reedbackCrab());
 		root.add("creatures", creaturesSection);
 		JsonObject auraSection = new JsonObject();
 		auraSection.addProperty("_about", "Aura, the swordsman's path: a breathing method draws mana into the body and out along a blade (swords, axes, spears, "

@@ -171,3 +171,5 @@ Three events happen on their own in the Overworld, near players. They're covered
 [Moonreed Gardens]({{ '/world/moonreed-gardens/' | relative_url }}) explains wetland pollination and the Dewglass Lens.
 
 [Reed Refuges]({{ '/world/reed-refuges/' | relative_url }}) gives Lantern Newts an open resting shelter and introduces Tamsin's field notes.
+
+[Reedback Crabs]({{ '/world/reedback-crabs/' | relative_url }}) guard shallow banks with readable claw sweeps and respond to Tidebreath and wind.

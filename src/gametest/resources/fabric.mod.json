@@ -104,7 +104,8 @@
 			"dev.wildercord.wildlife.FoxFishTest",
 			"dev.wildercord.wildlife.WetlandGardenTest",
 			"dev.wildercord.wildlife.WetlandTerrainTest",
-			"dev.wildercord.wildlife.ReedRefugeTest"
+			"dev.wildercord.wildlife.ReedRefugeTest",
+			"dev.wildercord.wildlife.ReedbackCrabTest"
 		]
 	},
 	"depends": {

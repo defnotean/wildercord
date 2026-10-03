@@ -1785,6 +1785,27 @@
     "void_zeno_beat": {
       "part": "void"
     },
+    "wetland_crab_call": {
+      "part": "wetland"
+    },
+    "wetland_crab_calm": {
+      "part": "wetland"
+    },
+    "wetland_crab_death": {
+      "part": "wetland"
+    },
+    "wetland_crab_hurt": {
+      "part": "wetland"
+    },
+    "wetland_crab_stagger": {
+      "part": "wetland"
+    },
+    "wetland_crab_sweep": {
+      "part": "wetland"
+    },
+    "wetland_crab_warn": {
+      "part": "wetland"
+    },
     "wetland_lens_focus": {
       "part": "wetland"
     },

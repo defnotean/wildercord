@@ -1,5 +1,54 @@
 {
   "events": {
+    "wetland_crab_call": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_crab_call"
+      ],
+      "subtitle": "wetland.crab_call"
+    },
+    "wetland_crab_calm": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_crab_calm"
+      ],
+      "subtitle": "wetland.crab_calm"
+    },
+    "wetland_crab_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_crab_death"
+      ],
+      "subtitle": "wetland.crab_death"
+    },
+    "wetland_crab_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_crab_hurt"
+      ],
+      "subtitle": "wetland.crab_hurt"
+    },
+    "wetland_crab_stagger": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_crab_stagger"
+      ],
+      "subtitle": "wetland.crab_stagger"
+    },
+    "wetland_crab_sweep": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_crab_sweep"
+      ],
+      "subtitle": "wetland.crab_sweep"
+    },
+    "wetland_crab_warn": {
+      "attenuation": 0,
+      "files": [
+        "kit/wetland/wetland_crab_warn"
+      ],
+      "subtitle": "wetland.crab_warn"
+    },
     "wetland_lens_focus": {
       "attenuation": 0,
       "files": [

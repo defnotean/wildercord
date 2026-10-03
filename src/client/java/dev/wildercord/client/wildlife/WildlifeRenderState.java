@@ -34,6 +34,7 @@ public class WildlifeRenderState extends LivingEntityRenderState {
 	public float sit;
 	/** A newt settled beneath a reed roof. */
 	public float rest;
+ public float claws,strike,settle;
 	/** A rimehare in the air (0 on the ground, 1 at the top of a bound), whether it's rising, and sitting up on alert. */
 	public float air;
 	public float rise;

@@ -52,3 +52,7 @@ Glimmerwings now visit swamp banks and pollinate Moonreed by approaching its bud
 ## Reed Refuges
 
 Weave a waterlogged canopy from Bamboo, Moonreed Floss, String and Seagrass. Lantern Newts seek it in daylight or rain, curl up briefly, and wake when fed or answering magic. Shelter adds no healing or extra pearl. Craft Tamsin's field notes to learn the habitat rules. See [Reed Refuges]({{ '/world/reed-refuges/' | relative_url }}).
+
+## Reedback Crabs
+
+A new territorial creature inhabits shallow swamp banks. Its six legs, hinged claws and reed crown have a custom model and animation. Sneak past, sidestep a warned sweep, use Tidebreath to calm it or wind to interrupt it. See [Reedback Crabs]({{ '/world/reedback-crabs/' | relative_url }}).

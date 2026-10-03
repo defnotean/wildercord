@@ -93,6 +93,7 @@
   * [Reed Refuges](world/reed-refuges.md)
   * [Lights Along the Bank](world/luminous-wetlands.md)
   * [Moonreed Gardens](world/moonreed-gardens.md)
+  * [Reedback Crabs](world/reedback-crabs.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

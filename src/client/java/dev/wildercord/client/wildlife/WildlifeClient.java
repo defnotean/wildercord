@@ -9,6 +9,8 @@ public final class WildlifeClient {
 	private WildlifeClient() {}
 
 	public static void init() {
+  ModelLayerRegistry.registerModelLayer(WildlifeRenderers.REEDBACK_CRAB,ReedbackCrabModel::createLayer);
+  EntityRendererRegistry.register(dev.wildercord.wildlife.ReedbackContent.CRAB,WildlifeRenderers.ReedbackCrabRenderer::new);
 		ModelLayerRegistry.registerModelLayer(WildlifeRenderers.LANTERN_NEWT,LanternNewtModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.wildlife.WetlandContent.NEWT,WildlifeRenderers.LanternNewtRenderer::new);
 		ModelLayerRegistry.registerModelLayer(WildlifeRenderers.GLIMMERWING, GlimmerwingModel::createLayer);
