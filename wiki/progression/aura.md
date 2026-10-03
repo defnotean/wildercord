@@ -841,3 +841,7 @@ The [Sword Tombs]({{ '/progression/sword-tombs/' | relative_url }}) preserve the
 The [Sleeping Blade]({{ '/progression/sleeping-blade/' | relative_url }}) waits in rare highland resting places. From Form, kneel with an empty main hand to draw Oathkeeper and bond it. It favours perfect guards over ordinary hits.
 
 The [Highland Beasts]({{ '/progression/aura-beasts/' | relative_url }}) resist damaging spells, but their warnings and recovery leave deliberate openings. Learn their habits, collect materials peacefully, or combine mage support with a swordsman's approach.
+
+## Blade and spell together
+
+Land elemental spell damage and a full coated swing, slash or art on one foe within 1.2 seconds for a [Resonant Strike]({{ '/progression/resonant-strikes/' | relative_url }}). Either order works, alone or with an ally. The swordsman pays four Aura; each target and swordsman rests four seconds. Each elemental family has its own short material response and a limited utility effect.

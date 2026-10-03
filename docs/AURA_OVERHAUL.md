@@ -78,7 +78,7 @@ and documented, not a first draft.
 | 9 | The bonded blade | done |
 | 10 | Masters, disciples, sparring and the clash | done; merged and tested |
 | 11 | The world of the sword | scoped features implemented: training, battlefields, tomb, sleeping blade, beasts, tournaments; broader verification open |
-| 12 | Mage and swordsman together | planned |
+| 12 | Mage and swordsman together | started: resonant damage strikes; rune-etched blades, Unity and integration pending |
 
 ### 1. Sword strings: the input language
 
@@ -1256,3 +1256,7 @@ TournamentBoardEntity hosts one challenger and three differently schooled bouts.
 A per-gathering winner ledger and saved outstanding claims provide one selected scroll, three Shards and a three-page lore record. Sneak-use cycles scrollable parts; normal use claims once. Unclaimed choices survive saves and later events. A clean final win grants experience, the duel trial and a discovery. Four authored ceremonial sounds, physical ground cuts and short entry messages communicate progression without magic circles.
 
 Dedicated client testing covers actual registration and reward-choice packets, inhabited-bell/clear-ground requirements, nonlethal harm and restoration, scaling, three schools, saved provenance/finite claims, a boundary forfeit, spell disqualification, third-party interruption, native lore reading and an ordinary-duel lesson regression. Screenshots use a controlled grass platform and real AI for the photographed opening bout; deterministic knockout checks pause opponent AI. Save/load evidence is serialization, not a complete restart. Real two-client play, multi-seed natural event frequency, shaders and sustained performance remain unverified. This completes the scoped tournament implementation; Aura step 12 and the wider roadmap remain open.
+
+## Step 12 increment: resonant strikes
+
+Successful elemental health damage and a full coated swing or first answering projected Aura/art hit can meet within 24 ticks, in either order, for one paid response. The swordsman pays four Aura; both foe and swordsman rest eighty ticks. A spell payment can prime a given foe once. Ten material families and ten school incision geometries cover the hundred built-in elemental pairings, with twenty names (ten ordinary, ten complementary variations). This is damage-timing cooperation; pure control/support spells do not prime it. Rune-etched blades and Unity remain pending, as does the final overhaul integration pass. See wiki/progression/resonant-strikes.md for the player rules.

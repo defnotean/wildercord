@@ -547,6 +547,7 @@ public final class Aura {
 		Spars.init();
 		Lineage.init();
 		AuraCombat.init();
+		ResonantStrikes.init();
 		AuraBreakthroughs.init();
 		AuraLoot.init();
 		ServerTickEvents.END_SERVER_TICK.register(Aura::tick);

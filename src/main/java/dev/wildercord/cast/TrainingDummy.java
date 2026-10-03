@@ -41,6 +41,9 @@ public class TrainingDummy extends LivingEntity {
 
 	private final Deque<Hit> hits = new ArrayDeque<>();
 	private float total;
+	private float lastDamage;
+	/** Actual health damage of the last hurt call, before this dummy restores itself. Zero for a rejected hit. */
+	public float lastDamage() { return lastDamage; }
 	private long lastHit;
 	private long firstHit;
 	private boolean practiceMoving;
@@ -57,6 +60,7 @@ public class TrainingDummy extends LivingEntity {
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+		lastDamage = 0;
 		// A sneaking punch picks it up; a sneaking caster's spell still hits it (for If Sneaking).
 		if (source.getDirectEntity() instanceof ServerPlayer player && source.getEntity() == player && player.isShiftKeyDown()
 				&& source.is(DamageTypes.PLAYER_ATTACK)) {
@@ -69,6 +73,7 @@ public class TrainingDummy extends LivingEntity {
 		float before = getHealth();
 		boolean hurt = super.hurtServer(level, source, damage);
 		float dealt = Math.max(0, before - getHealth());
+		lastDamage = dealt;
 		setHealth(getMaxHealth());
 		if (dealt > 0.01F) {
 			record(level, dealt, source);

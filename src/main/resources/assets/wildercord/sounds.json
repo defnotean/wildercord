@@ -4552,6 +4552,66 @@
       "wildercord:kit/aura/aura_recovered"
     ]
   },
+  "aura_resonant_arcane": {
+    "subtitle": "subtitles.wildercord.kit.resonant.arcane",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_arcane"
+    ]
+  },
+  "aura_resonant_blood": {
+    "subtitle": "subtitles.wildercord.kit.resonant.blood",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_blood"
+    ]
+  },
+  "aura_resonant_earth": {
+    "subtitle": "subtitles.wildercord.kit.resonant.earth",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_earth"
+    ]
+  },
+  "aura_resonant_fire": {
+    "subtitle": "subtitles.wildercord.kit.resonant.fire",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_fire"
+    ]
+  },
+  "aura_resonant_frost": {
+    "subtitle": "subtitles.wildercord.kit.resonant.frost",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_frost"
+    ]
+  },
+  "aura_resonant_life": {
+    "subtitle": "subtitles.wildercord.kit.resonant.life",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_life"
+    ]
+  },
+  "aura_resonant_storm": {
+    "subtitle": "subtitles.wildercord.kit.resonant.storm",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_storm"
+    ]
+  },
+  "aura_resonant_time": {
+    "subtitle": "subtitles.wildercord.kit.resonant.time",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_time"
+    ]
+  },
+  "aura_resonant_void": {
+    "subtitle": "subtitles.wildercord.kit.resonant.void",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_void"
+    ]
+  },
+  "aura_resonant_wind": {
+    "subtitle": "subtitles.wildercord.kit.resonant.wind",
+    "sounds": [
+      "wildercord:kit/aura/aura_resonant_wind"
+    ]
+  },
   "aura_rime_art": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [

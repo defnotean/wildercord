@@ -4,6 +4,15 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Resonant strikes: blade and spell cooperation
+
+- Elemental spell damage and a full coated swing, slash, art or written technique can meet on a living foe within 1.2 seconds, in either order. One player or allied partners can coordinate. The swordsman pays four Aura, and both foe and swordsman rest four seconds.
+- Ten authored material responses, ten school incision geometries, twenty ordinary/complementary names and ten distinct sound voices. Target-local three-beat sequences use physical cuts, grit, splinters, flame, leaves, facets and displaced echoes without magic circles.
+- Bonus damage uses the weaker actual hit, capped at three health against creatures and 0.75 against players before normal shield/armor/ward/boss/guard defenses. Utilities have player limits; pure support/control spells, dead targets, immune/blocked hits, protected pets, allies and spar partners cannot prime it.
+- Shared-payment per-target tracking stops repeated beams, echoes and pulses from farming reactions. Bounded UUID ledgers, periodic expiry, cross-dimension striker rest, disconnect cleanup and a proc reentrancy guard accompany the feature.
+- Training dummies retain actual hurt damage before restoring health, allowing resonance practice and correctly measuring projected hits. Dummy/Practice Room hits cannot provide Spell Thirst or Life-reaction healing.
+- Player guide, developer design/architecture and a dedicated real-game suite added. Rune-etched blades, Unity, full ability presentation audit and the broader living-world expansion remain in progress.
+
 ### Village tournaments and the Three Bows
 
 - Added inhabited-village gatherings with three stewards from different breathing methods. A bounded daytime visitor search finds flat, dry, open ground near a village bell with at least three residents. It places a timber registration stand and four embroidered cloth standards into empty space, preserving the underlying terrain and respecting mob spawning/mob griefing settings.

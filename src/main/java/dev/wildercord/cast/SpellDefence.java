@@ -125,6 +125,15 @@ public final class SpellDefence {
 		return hurt(level, target, source, amount, cast.identity());
 	}
 
+	/** A paid blade/spell resonance: normal shield, armour, boss resistance and cast guard, with no recursive rune triggers. */
+	public static void resonantHurt(Cast cast, LivingEntity target, float amount) {
+		if (!cast.alive() || !target.isAlive() || !Float.isFinite(amount) || amount <= 0
+				|| Shields.stops(cast, target, cast.caster.getEyePosition())) return;
+		Effects.readyToHurt(target);
+		Dungeons.spellHit(() -> hurt(cast.level, target,
+			cast.level.damageSources().source(net.minecraft.world.damagesource.DamageTypes.MAGIC,cast.caster,cast.caster), amount, cast));
+	}
+
 	private static boolean hurt(ServerLevel level, LivingEntity target, DamageSource source, float amount, Object castIdentity) {
 		DamageSource spell = spellSource(level, source);
 		if (target instanceof dev.wildercord.aura.world.AuraBeast beast) {

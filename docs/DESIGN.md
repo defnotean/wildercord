@@ -2643,3 +2643,7 @@ practice:
 - **More boss runes:** Elder Guardian, Breeze boss variants.
 - **Optional Attuned integration:** a Focus that cuts rune costs.
 
+
+## Blade and spell resonance
+
+A damaging spell and Aura strike on a living foe within 1.2 seconds can produce a short material reaction. Either order, one player or two allies. It costs the swordsman four Aura and gives both swordsman and foe a four-second rest. One payment primes a particular target once, so continuous beams cannot farm reactions. The lesser actual hit contributes 25%, with independent ceilings of three health on creatures and 0.75 on players; normal spell defenses remain effective. The ten spell materials provide capped stance pressure, short mobility/defense buffs, marks or modest creature-only healing/weakening. A full coated ordinary swing or the first answering projected/art hit counts; chain sparks and glancing swings do not. See the guide for the exact durations, permissions and family table. The physical blade incision and three-beat material unfold remain at the target, with no circles or global screen flash.

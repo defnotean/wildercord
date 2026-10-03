@@ -152,6 +152,9 @@ public final class AuraCombat {
 			}
 		}
 		Momentum.hit(player, living, swing, critical, first, hurtIt, !living.isAlive() || living.isDeadOrDying());
+		if (hurtIt && first && coated && swing >= AuraRules.FULL_SWING) {
+			ResonantStrikes.blade(player, living, living instanceof TrainingDummy dummy ? dummy.lastDamage() : Math.max(0, before - Math.max(0, living.getHealth())));
+		}
 		return hurtIt;
 	}
 
@@ -276,13 +279,16 @@ public final class AuraCombat {
 		dev.wildercord.cast.Effects.readyToHurt(target);
 		float dealt = (float) amount;
 		boolean hurt = target instanceof Player ? SpellDefence.hurt(level, target, source, dealt) : target.hurtServer(level, source, dealt);
-		float taken = Math.max(0, before - Math.max(0, target.getHealth()));
+		float taken = target instanceof TrainingDummy dummy ? dummy.lastDamage() : Math.max(0, before - Math.max(0, target.getHealth()));
 		if (hurt && answer) {
 			landed(player, target, taken, 1.0F, true, true);
 		}
 		if (hurt && !artStrike) {
 			// Aura off the blade that isn't an art (a slash, a spark) wears a foe's stance a little.
 			Stance.slash(player, target, amount);
+		}
+		if (hurt && answer) {
+			ResonantStrikes.blade(player, target, taken);
 		}
 		return taken;
 	}

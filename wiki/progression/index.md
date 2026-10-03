@@ -70,3 +70,5 @@ A spell's strength is its runes' own numbers multiplied by everything below. The
 - [Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }})
 - [Practice and Trials]({{ '/progression/practice/' | relative_url }})
 - [Research Notebook]({{ '/progression/research/' | relative_url }})
+
+Coordinate your blade and spell through [Resonant Strikes]({{ '/progression/resonant-strikes/' | relative_url }}), or practise pure Aura at [Village Tournaments]({{ '/progression/village-tournaments/' | relative_url }}).

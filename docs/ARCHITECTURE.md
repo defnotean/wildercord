@@ -2050,3 +2050,13 @@ rendering described earlier in this document. Combat mechanics and actual terrai
 `arts.AuraPhysicalFx` supplies distinct sword-impact cuts and floor damage for elemental methods. Aura callers use these helpers
 instead of the shared `ElementFx` impact, frost-creep, clock and ring helpers, which can draw spell seals internally. Actual rune
 spells continue to use `ElementFx`. Floor block and lighting samples refresh every five ticks, outside the render loop.
+
+## Resonant strikes
+
+`aura.ResonantRules` owns the pure timing/permission ledger: three capped maps of UUIDs and primitive hit data, 24-tick openings, 80-tick target/striker rests, periodic expiry and strict eviction. No world/entity references are retained. A server-global overworld clock keeps dimension changes from resetting the swordsman cooldown. Disconnect drops pending contributions but keeps their short remaining cooldown. Stop clears the ledger.
+
+`ResonantStrikes` is notified after actual spell health damage (`Effects.hurt`, including carried scheduled element contexts), after a full coated ordinary blow, and after an answering projected hit. Shared-payment `Cast.once` prevents periodic casts/echoes re-priming one foe. Pair validation uses `Targets.canHarm` for both players, `WayBanner.ally` between distinct contributors, and Aura eligibility/spent/resource checks. The bonus uses `SpellDefence.resonantHurt`, retaining shield/cast guard/boss spell classification with no recursive Effects callbacks. A reentrancy guard prevents reaction utility from re-priming. The primary damage tally stays separate from this extra hit.
+
+`ResonantVfx` authors ten blade incisions and ten three-beat spell-material responses. Physical ground scars do not mutate terrain; the response never sends a circle/sigil. At most two short cosmetic scheduled callbacks are added per paid reaction, with fixed geometry snapshots and ordinary effect detail controls. Ten DSP voices live in tools/feel/resonant.py; localized names/subtitles live in tools/resonant_art.py.
+
+TrainingDummy retains a transient lastDamage sample, zeroed at the beginning of every hurt call. Spell/projected-strike tallies read that actual damage before the dummy restores health. This makes resonance practice possible. Spell Thirst and the new Life resonance explicitly refuse dummy/Practice Room healing.

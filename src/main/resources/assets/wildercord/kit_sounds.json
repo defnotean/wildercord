@@ -588,6 +588,36 @@
     "aura_recovered": {
       "part": "aura"
     },
+    "aura_resonant_arcane": {
+      "part": "aura"
+    },
+    "aura_resonant_blood": {
+      "part": "aura"
+    },
+    "aura_resonant_earth": {
+      "part": "aura"
+    },
+    "aura_resonant_fire": {
+      "part": "aura"
+    },
+    "aura_resonant_frost": {
+      "part": "aura"
+    },
+    "aura_resonant_life": {
+      "part": "aura"
+    },
+    "aura_resonant_storm": {
+      "part": "aura"
+    },
+    "aura_resonant_time": {
+      "part": "aura"
+    },
+    "aura_resonant_void": {
+      "part": "aura"
+    },
+    "aura_resonant_wind": {
+      "part": "aura"
+    },
     "aura_rime_art": {
       "part": "aura"
     },

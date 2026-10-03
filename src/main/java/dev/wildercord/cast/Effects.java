@@ -968,8 +968,9 @@ public final class Effects {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));
 		}
 		// Thirst: its caster drinks a share of what the hit really took.
-		float taken = before - Math.max(0.0F, target.getHealth());
-		if (thirst > 0 && taken > 0 && cast.caster.isAlive() && cast.caster != target) {
+		float taken = target instanceof TrainingDummy dummy ? dummy.lastDamage() : before - Math.max(0.0F, target.getHealth());
+		if (thirst > 0 && taken > 0 && cast.caster.isAlive() && cast.caster != target
+				&& !(target instanceof TrainingDummy) && target.level().dimension() != PracticeRoom.DIMENSION) {
 			cast.caster.heal((float) (taken * thirst));
 			CraftedVfx.thirst(cast.level, target, cast.caster);
 		}
@@ -977,6 +978,7 @@ public final class Effects {
 		CraftedRunes.afterSpellHit(cast, target);
 		// What the spell learns from the blow, and the traits that answer one (see Mastery).
 		Mastery.afterDamage(cast, target, dealt, taken);
+		dev.wildercord.aura.ResonantStrikes.spell(cast, target, currentElement, taken);
 	}
 
 	/** One strike of Lightning at {@code at}; whatever it hits is added to {@code struck}, to be set alight after the last strike. */

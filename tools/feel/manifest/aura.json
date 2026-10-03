@@ -1043,6 +1043,76 @@
       ],
       "subtitle": "tell"
     },
+    "aura_resonant_arcane": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_arcane"
+      ],
+      "subtitle": "resonant.arcane"
+    },
+    "aura_resonant_blood": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_blood"
+      ],
+      "subtitle": "resonant.blood"
+    },
+    "aura_resonant_earth": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_earth"
+      ],
+      "subtitle": "resonant.earth"
+    },
+    "aura_resonant_fire": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_fire"
+      ],
+      "subtitle": "resonant.fire"
+    },
+    "aura_resonant_frost": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_frost"
+      ],
+      "subtitle": "resonant.frost"
+    },
+    "aura_resonant_life": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_life"
+      ],
+      "subtitle": "resonant.life"
+    },
+    "aura_resonant_storm": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_storm"
+      ],
+      "subtitle": "resonant.storm"
+    },
+    "aura_resonant_time": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_time"
+      ],
+      "subtitle": "resonant.time"
+    },
+    "aura_resonant_void": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_void"
+      ],
+      "subtitle": "resonant.void"
+    },
+    "aura_resonant_wind": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_resonant_wind"
+      ],
+      "subtitle": "resonant.wind"
+    },
     "aura_rime_art": {
       "attenuation": 24,
       "files": [

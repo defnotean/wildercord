@@ -63,3 +63,5 @@ A spell's strength is its runes' own numbers multiplied by everything below. The
 - [Defensive Foci](defensive-foci.md)
 - [Practice and Trials](practice.md)
 - [Research Notebook](research.md)
+
+Coordinate your blade and spell through [Resonant Strikes](resonant-strikes.md), or practise pure Aura at [Village Tournaments](village-tournaments.md).

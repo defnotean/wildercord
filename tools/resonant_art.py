@@ -1,0 +1,6 @@
+"""The reaction names and ten material-specific sound captions."""
+NAMES={'ember_shear':'Ember Shear','bellows_cut':'Bellows Cut','rime_splinter':'Rime Splinter','thermal_cleave':'Thermal Cleave','forked_edge':'Forked Edge','grounding_stroke':'Grounding Stroke','crosswind':'Crosswind','borrowed_step':'Borrowed Step','faultline':'Faultline','gravel_rime':'Gravel Rime','greenwake':'Greenwake','grafted_edge':'Grafted Edge','hollow_seam':'Hollow Seam','veiled_prism':'Veiled Prism','prism_cut':'Prism Cut','second_hand':'Second Hand','echo_beat':'Echo Beat','slipstream_echo':'Slipstream Echo','red_thread':'Red Thread','hollow_pulse':'Hollow Pulse'}
+LANG={'reaction.wildercord.resonant':'Resonant strike: %s','toast.wildercord.aura.resonant_strike':'Blade and spell resonate'}
+LANG.update({'reaction.wildercord.resonant.'+k:v for k,v in NAMES.items()})
+for e,t in [('fire','Embers peel from a cut'),('frost','Brittle splinters separate'),('storm','A blade strike conducts'),('wind','Crossing gusts rush past'),('earth','A fault cracks beneath a strike'),('life','Leaves unfold along an edge'),('void','A hollow seam closes'),('arcane','Prism facets unfold'),('time','A strike echoes in three beats'),('blood','Red threads snap taut')]:
+ LANG['subtitles.wildercord.kit.resonant.'+e]=t

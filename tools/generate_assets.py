@@ -793,6 +793,8 @@ def write_lang(runes):
     import tournament_art
     lang.update(tournament_art.LANG)
     tournament_art.write(sys.modules[__name__])
+    import resonant_art
+    lang.update(resonant_art.LANG)
     import aura_beasts_art
     lang.update(aura_beasts_art.LANG)
     aura_beasts_art.write(sys.modules[__name__])

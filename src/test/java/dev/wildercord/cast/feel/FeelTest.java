@@ -145,7 +145,8 @@ class FeelTest {
 		for (Motion m : Motion.values()) {
 			assertTrue(kit.contains(ShapeFeels.gestureSound(m)), ShapeFeels.gestureSound(m));
 		}
-		java.util.regex.Pattern named = java.util.regex.Pattern.compile("Feels\\.sound\\([^\"]*\"([a-z0-9_]+)\"");
+		// Stop at the call's statement: a dynamic sound must not borrow a later switch case's string.
+		java.util.regex.Pattern named = java.util.regex.Pattern.compile("Feels\\.sound\\([^\";]*\"([a-z0-9_]+)\"");
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		try (java.util.stream.Stream<java.nio.file.Path> files = java.nio.file.Files.walk(java.nio.file.Path.of("src/main/java"))) {
 			for (java.nio.file.Path f : files.filter(p -> p.toString().endsWith(".java")).toList()) {
