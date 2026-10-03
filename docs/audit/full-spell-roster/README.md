@@ -8,6 +8,8 @@ the native fixture/paid-cast scope. This is a formation-phase follow-up, not ful
 Latest follow-up: [linked formation origins](linked-formations.md) covers admitted continuation
 stages, trigger placement, a paid Delay and paid projectile-impact cast. Full choreography remains open.
 
+[Storm preparations](storm-formations.md) records twenty authored recipes, mixed materials and native coverage. Full launch/travel/impact choreography remains open.
+
 ## Runtime inventory
 
 The built-in runtime registry contains 350 runes: 258 effects, 39 shapes, 36 modifiers and 17 links. All 258 effects have registered signatures. The signature registry contains 17 phase hooks and 182 cue sound entries. Visuals and sounds also dispatch through other source files; absent registry hooks do not establish missing presentation.

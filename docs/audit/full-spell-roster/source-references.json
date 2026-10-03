@@ -1784,8 +1784,8 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          183,
-          192
+          184,
+          194
         ]
       },
       {
@@ -2043,8 +2043,8 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          184,
-          194
+          185,
+          196
         ]
       },
       {
@@ -2163,6 +2163,13 @@
     "constant": "FROSTWIRE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          13,
+          106
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
           51
@@ -2208,6 +2215,13 @@
     "id": "wildercord:galvanize",
     "constant": "GALVANIZE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          13,
+          62
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -2908,6 +2922,13 @@
     "constant": "JOLT",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          13,
+          34
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           750
@@ -3144,6 +3165,13 @@
     "constant": "LIGHTNING",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          13,
+          39
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           354,
@@ -3189,6 +3217,13 @@
     "id": "wildercord:magnetize",
     "constant": "MAGNETIZE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          13,
+          81
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
@@ -3729,6 +3764,13 @@
     "id": "wildercord:plasma",
     "constant": "PLASMA",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          13,
+          71
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
@@ -4304,6 +4346,13 @@
     "constant": "RIFTBOLT",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          13,
+          86
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
           46
@@ -4408,6 +4457,13 @@
     "id": "wildercord:ripple",
     "constant": "RIPPLE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          48
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -4677,6 +4733,13 @@
     "id": "wildercord:shock",
     "constant": "SHOCK",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          30
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -5243,6 +5306,13 @@
     "constant": "STORMCLOCK",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          96
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
           48
@@ -5255,6 +5325,13 @@
     "id": "wildercord:stormheart",
     "constant": "STORMHEART",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          58
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -5274,6 +5351,13 @@
     "id": "wildercord:stormweave",
     "constant": "STORMWEAVE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          91
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
@@ -5384,6 +5468,13 @@
     "constant": "SURGE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          76
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
           44
@@ -5466,6 +5557,13 @@
     "constant": "TEMPEST",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          67
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
           36
@@ -5506,6 +5604,13 @@
     "constant": "THUNDER_TIDE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          116
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
           19
@@ -5519,6 +5624,13 @@
     "constant": "THUNDER_WALK",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          14,
+          120
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
           20
@@ -5531,6 +5643,13 @@
     "id": "wildercord:thunderbird",
     "constant": "THUNDERBIRD",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          15,
+          53
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -5551,6 +5670,13 @@
     "constant": "THUNDERCLAP",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          15,
+          44
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           555
@@ -5569,6 +5695,13 @@
     "id": "wildercord:thunderhead",
     "constant": "THUNDERHEAD",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          15,
+          101
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [
@@ -5595,6 +5728,13 @@
     "id": "wildercord:thunderstep",
     "constant": "THUNDERSTEP",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
+        "lines": [
+          15,
+          111
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/StormFeels.java",
         "lines": [

@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Authored storm preparations
+
+- Added twenty individually authored preparations: conductor forks, interruption clamps, meeting leaders, magnetic filings, charged birds, sunlight fans, copper terminals, living stems, rifts, threaded nodes and timed charge.
+- Fused preparations retain fire, wind, life, stone, void, arcane, time, frost and water motion/materials. Ripple uses warm sunlight rather than electrical particles.
+- Added native Full/Minimal packet fixtures, recipe and ingredient checks, rendered evidence and paid Bolt/Shock plus Self/Surge casts. This changes preparation only; complete launch/travel/impact, shaders and real multiplayer review remain open.
+
 ### Authored frost and water preparations
 
 - Added thirty individually authored preparation recipes: branching rime, latching plates, forward needles, mirrors, cages, ice petals, teeth, cold fronts, water membranes, lung lobes, hooks, flow lanes and moving water courses. Frost's water effects use water motion rather than generic ice recolors.

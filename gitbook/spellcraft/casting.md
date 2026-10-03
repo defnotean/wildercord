@@ -434,3 +434,15 @@ Anyone who knows the runes can read what you're about to cast from your circle, 
 Big impacts (explosions, bursts, pillars, Domains, meteors) shake the camera of everyone nearby, a charged
 release kicks your own view, and one of your spells landing a heavy hit gives a small punch. Inside a Domain
 the edges of your screen are tinted. All of these follow the game's own Screen Effect Scale setting.
+
+## Reading storm preparations
+
+Watch the form as well as the colour. Shock branches toward conductors; Jolt closes a clamp; Magnetize gathers filings; Stormclock advances between appointment marks. Thunderbird spreads a charged feather silhouette, while Ripple opens a warm sunlight fan. Fused forms show their supporting material: flame in Plasma, living growth in Surge, a void tear in Riftbolt, water suspended by Thunder Tide.
+
+These forms prepare according to the delivery: Self stays on you, aimed ground effects resolve toward terrain, and admitted linked effects form at their trigger. Your casting glyph remains behind you. Existing discharge and impact behavior still follows each spell.
+
+![Magnetize gathers filings between charged field loops](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/storm-formation-magnetize.png)
+
+![Stormclock advances between timed marks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/storm-formation-stormclock.png)
+
+![Thunderbird spreads its branching feather preparation](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/storm-formation-thunderbird.png)
