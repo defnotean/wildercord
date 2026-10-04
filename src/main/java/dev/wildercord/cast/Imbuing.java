@@ -603,7 +603,8 @@ public final class Imbuing {
 
 	/** Someone else breaking a glyph's block sets it off at them first (if it's for them). */
 	private static boolean beforeBreak(Level level, Player player, BlockPos pos, BlockState state, net.minecraft.world.level.block.entity.BlockEntity be) {
-		if (level instanceof ServerLevel server) {
+		// A probe only asks whether the block may be changed; the glyph waits for a real break.
+		if (level instanceof ServerLevel server && !Casters.probing()) {
 			Glyphs glyphs = server.getDataStorage().get(Glyphs.TYPE);
 			Glyph glyph = glyphs == null ? null : glyphs.at(pos).orElse(null);
 			if (glyph != null && !glyph.owner().equals(player.getUUID())) {

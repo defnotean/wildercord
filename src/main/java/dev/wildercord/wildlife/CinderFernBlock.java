@@ -30,7 +30,7 @@ public final class CinderFernBlock extends Block {
   return l instanceof ServerLevel server?harvest(s,server,p,who,EmberPlantAdmission.WORLD):InteractionResult.SUCCESS;
  }
  private static boolean admitted(ServerLevel l,BlockPos p,Player who){return who.isAlive()&&!who.isRemoved()&&who.level()==l&&!who.isSpectator()&&l.hasChunkAt(p)&&l.getWorldBorder().isWithinBounds(p)&&who.getEyePosition().distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(p))<=36&&visible(l,p,who)&&who.mayBuild()&&l.mayInteract(who,p)&&!dev.wildercord.cast.Effects.isTemporary(l,p)&&l.getBlockEntity(p)==null;}
- private static boolean claim(ServerLevel l,BlockPos p,Player who){return net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(l,who,p,l.getBlockState(p),l.getBlockEntity(p));}
+ private static boolean claim(ServerLevel l,BlockPos p,Player who){return dev.wildercord.cast.Casters.probeBreak(l,who,p,l.getBlockState(p),l.getBlockEntity(p));}
  // AGE0 is shorter than the cell center: aim inside the actual outline at every growth stage.
  private static boolean visible(ServerLevel l,BlockPos p,Player who){var eye=who.getEyePosition();var center=new net.minecraft.world.phys.Vec3(p.getX()+.5,p.getY()+.15,p.getZ()+.5);var hit=l.clip(new ClipContext(eye,center,ClipContext.Block.OUTLINE,ClipContext.Fluid.NONE,who));return hit.getType()==net.minecraft.world.phys.HitResult.Type.BLOCK&&hit.getBlockPos().equals(p);}
  /** Actual-world writer seam: false/stale outcomes never mint a frond, and nested same-cell harvest refuses. */

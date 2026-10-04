@@ -78,6 +78,10 @@ public final class DungeonWards extends SavedData {
 			if (!(world instanceof ServerLevel level) || player.isCreative() || state.canBeReplaced() || !warded(level, pos)) {
 				return true;
 			}
+			if (dev.wildercord.cast.Casters.probing()) {
+				// Only a question (a survey, an in-place harvest): nothing is broken, so remember the block and stay quiet.
+				return TemporaryBlocks.recorded(level, pos) || placedHere(level, pos);
+			}
 			if (TemporaryBlocks.recorded(level, pos) || forgetPlaced(level, pos)) {
 				return true;
 			}

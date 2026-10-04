@@ -1,6 +1,5 @@
 package dev.wildercord.cast;
 import dev.wildercord.world.dungeons.DungeonWards;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.*;
 import net.minecraft.world.level.ClipContext;
@@ -34,5 +33,5 @@ final class CampConcordAdmission {
   var h=l.clip(new ClipContext(from,to,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,p));return h.getType()==HitResult.Type.MISS||last!=null&&h.getBlockPos().equals(last);
  }
  static boolean cell(ServerPlayer p,ServerLevel l,BlockPos at){return actor(p,l)&&loaded(l,at)&&l.mayInteract(p,at)&&!DungeonWards.warded(l,at)&&!Effects.isTemporary(l,at)&&l.getBlockEntity(at)==null;}
- static boolean claim(ServerPlayer p,ServerLevel l,BlockPos at){return cell(p,l,at)&&PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(l,p,at,l.getBlockState(at),null);}
+ static boolean claim(ServerPlayer p,ServerLevel l,BlockPos at){return cell(p,l,at)&&Casters.probeBreak(l,p,at,l.getBlockState(at),null);}
 }

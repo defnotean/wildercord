@@ -1,7 +1,6 @@
 package dev.wildercord.wildlife;
 
 import dev.wildercord.cast.Effects;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.*;
 import net.minecraft.world.level.ClipContext;
@@ -32,7 +31,7 @@ public final class TidewardReadAdmission {
   if(!visible(p,l,pos))return false;
   // Wildercord's existing claim compatibility is break-based. No break is performed.
   // A claim mod may still decline reading because it has no distinct read permission.
-  if(!PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(l,p,pos,before,null))return false;
+  if(!dev.wildercord.cast.Casters.probeBreak(l,p,pos,before,null))return false;
   return actor(p) && p.level()==l && l.hasChunkAt(pos) && l.getWorldBorder().isWithinBounds(pos) && l.mayInteract(p,pos)
    && l.getBlockState(pos)==before && !Effects.isTemporary(l,pos) && visible(p,l,pos);
  }

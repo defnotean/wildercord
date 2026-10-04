@@ -56,6 +56,35 @@ public final class Casters {
 		return PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
 	}
 
+	/** How deeply the current thread is inside {@link #probeBreak}; unset outside it. */
+	private static final ThreadLocal<Integer> PROBING = new ThreadLocal<>();
+
+	/**
+	 * Asks the break callbacks about a block that is only read, or changed in place, and not broken: a
+	 * survey of footing, a harvest that leaves the root. Claim mods answer as they would for a break, while
+	 * Wildercord's own break handlers (dungeon wards forgetting a placed block, a glyph going off at the
+	 * breaker) see {@link #probing()} and only answer, since nothing is actually being taken down.
+	 */
+	public static boolean probeBreak(ServerLevel level, net.minecraft.world.entity.player.Player player, BlockPos pos, BlockState state,
+		net.minecraft.world.level.block.entity.BlockEntity blockEntity) {
+		Integer outer = PROBING.get();
+		PROBING.set(outer == null ? 1 : outer + 1);
+		try {
+			return PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, blockEntity);
+		} finally {
+			if (outer == null) {
+				PROBING.remove();
+			} else {
+				PROBING.set(outer);
+			}
+		}
+	}
+
+	/** Whether the break callbacks are being asked by {@link #probeBreak}, not run for a real break. */
+	public static boolean probing() {
+		return PROBING.get() != null;
+	}
+
 	public static boolean creative(LivingEntity caster) {
 		return caster instanceof ServerPlayer player && player.isCreative();
 	}

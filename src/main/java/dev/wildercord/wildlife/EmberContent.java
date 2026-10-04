@@ -44,7 +44,7 @@ public final class EmberContent {
  /** Called only by admitted effect owners, not generic appearance events. Shares once/payment+block budgets. */
  public static boolean affectFern(Cast cast,BlockPos p,String element){return affectFern(cast,p,element,EmberPlantAdmission.WORLD);}
  private static boolean plantCaster(Cast cast,BlockPos p){return cast.alive()&&!cast.passive&&cast.caster instanceof net.minecraft.server.level.ServerPlayer player&&!player.isCreative()&&!player.isSpectator()&&cast.level.hasChunkAt(p)&&cast.level.getWorldBorder().isWithinBounds(p)&&Casters.mayBuild(player)&&cast.level.mayInteract(player,p)&&!dev.wildercord.cast.Effects.isTemporary(cast.level,p)&&cast.level.getBlockEntity(p)==null;}
- private static boolean plantClaim(Cast cast,BlockPos p){var player=(net.minecraft.server.level.ServerPlayer)cast.caster;return net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(cast.level,player,p,cast.level.getBlockState(p),cast.level.getBlockEntity(p));}
+ private static boolean plantClaim(Cast cast,BlockPos p){var player=(net.minecraft.server.level.ServerPlayer)cast.caster;return Casters.probeBreak(cast.level,player,p,cast.level.getBlockState(p),cast.level.getBlockEntity(p));}
  /** A successful boolean writer alone is insufficient: actual retained state and caster authority own success. */
  static boolean affectFern(Cast cast,BlockPos p,String element,EmberPlantAdmission.Writer writer){
   if(!Set.of("fire","water","life").contains(element)||!plantCaster(cast,p))return false;var old=cast.level.getBlockState(p);if(!old.is(FERN)||!old.canSurvive(cast.level,p))return false;var next=old;

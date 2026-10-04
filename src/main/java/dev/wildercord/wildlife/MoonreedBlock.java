@@ -80,7 +80,7 @@ public final class MoonreedBlock extends Block {
   return hit.getType()==HitResult.Type.BLOCK && hit.getBlockPos().equals(p);
  }
  private static boolean harvestClaim(ServerLevel l,BlockPos p,Player who) {
-  return net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(l,(net.minecraft.server.level.ServerPlayer)who,p,l.getBlockState(p),l.getBlockEntity(p));
+  return dev.wildercord.cast.Casters.probeBreak(l,who,p,l.getBlockState(p),l.getBlockEntity(p));
  }
  /** Manual harvesting asks existing build-claim callbacks without depending on magic block-edit configuration. */
  InteractionResult harvest(BlockState old,ServerLevel l,BlockPos p,Player who,MoonreedAdmission.Writer writer) {

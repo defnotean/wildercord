@@ -37,7 +37,8 @@ public final class CounterSignatures {
  }
  private static void screen(Cast c,LivingEntity t,boolean quiet){
   String id=quiet?"quietus":"nullcatch";
-  if(SCREENS.size()>=NextSignatureRules.ACTIVE || !valid(c,t,quiet) || Statuses.claimed(t,id,NextSignatureRules.REST))return;
+  // One screen per target: a second Nullcatch/Quietus must not replace another payment's active screen.
+  if(SCREENS.size()>=NextSignatureRules.ACTIVE || SCREENS.containsKey(t.getUUID()) || !valid(c,t,quiet) || Statuses.claimed(t,id,NextSignatureRules.REST))return;
   var initial=nearby(c,t);
   // Overcrowding visibly refuses before target allowance or rest is consumed.
   if(initial.saturated()){CounterSignatureFx.release(c.level,t,quiet);return;}

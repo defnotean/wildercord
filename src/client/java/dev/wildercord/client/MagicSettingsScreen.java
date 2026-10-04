@@ -82,7 +82,7 @@ public final class MagicSettingsScreen extends Screen {
    CastingOptions.incantations = CastingOptions.incantations.next(); CastingOptions.save(); b.setMessage(CastingOptions.incantationsLabel());
   }).bounds(cx, cy + pitch * 7, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.casting.incantations.tip"))).build());
   int footerWidth=Math.min(220,width-24),by=y+pitch*rightRows+footerGap,bx=(width-footerWidth)/2;
-  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.profile.benchmark"),b->{dev.wildercord.client.fx.FrameBenchmark.start();onClose();}).bounds(bx,by,footerWidth,20).build());
+  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.profile.benchmark"),b->{dev.wildercord.client.fx.FrameBenchmark.start();minecraft.gui.setScreen(null);}).bounds(bx,by,footerWidth,20).build());
   addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose()).bounds(bx, by + pitch, footerWidth, 20).build());
  }
  /** One of aura's choices: "Blade trails: full". */
