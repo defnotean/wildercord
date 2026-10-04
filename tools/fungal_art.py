@@ -332,7 +332,8 @@ def dried_gills_icon():
             cv.put(x, y, c)
     for x, y in ((2, 13), (3, 13), (3, 12), (4, 12), (2, 14), (3, 14)):
         cv.put(x, y, LEATHER[3] if (x + y) % 2 else LEATHER[2])
-    outline(cv, 0.62)
+    # The pale mint rim needs a deeper ring than the house default to keep a solid dark edge all the way round.
+    outline(cv, 0.8)
     return cv.image()
 
 
