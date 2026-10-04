@@ -115,7 +115,24 @@ tasks.named('processGametestResources') {
 	inputs.property('signatureSuite', project.hasProperty('signatureSuite'))
 	inputs.property('tailSuite', project.hasProperty('tailSuite'))
 	inputs.property('tailFrom', project.findProperty('tailFrom') ?: '')
+	inputs.property('ciShard', project.findProperty('ciShard') ?: '')
+	inputs.property('ciShards', project.findProperty('ciShards') ?: '')
 	doLast {
+		// CI runs the full descriptor as contiguous shards (`-PciShard=2 -PciShards=4`), keeping the
+		// declared order inside each shard, because the whole roster does not fit one job's time limit.
+		if (project.hasProperty('ciShard') || project.hasProperty('ciShards')) {
+			if (!project.hasProperty('ciShard') || !project.hasProperty('ciShards')) throw new GradleException('ciShard and ciShards must be given together')
+			if (project.hasProperty('twoClientSuite') || project.hasProperty('focusedSuite') || project.hasProperty('tailSuite')) throw new GradleException('ciShard selects from the full descriptor; do not combine it with another suite selector')
+			def shard = project.property('ciShard').toString().toInteger()
+			def shards = project.property('ciShards').toString().toInteger()
+			if (shards < 1 || shard < 1 || shard > shards) throw new GradleException('ciShard must be between 1 and ciShards')
+			def descriptor = file("${destinationDir}/fabric.mod.json")
+			def data = new groovy.json.JsonSlurper().parse(descriptor)
+			def all = data.entrypoints['fabric-client-gametest']
+			data.entrypoints['fabric-client-gametest'] = all.subList((int) (all.size() * (shard - 1) / shards), (int) (all.size() * shard / shards))
+			descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
+			return
+		}
 		// Requires the explicit two-process supervisor; never enters the ordinary CI roster.
 		if (project.hasProperty('twoClientSuite')) {
 			def descriptor=file("${destinationDir}/fabric.mod.json")

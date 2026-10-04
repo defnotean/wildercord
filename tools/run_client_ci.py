@@ -34,6 +34,8 @@ def stop_owned_group(process):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--log", type=Path, default=Path("client-game-tests.log"))
+    parser.add_argument("--shard", metavar="I/N",
+                        help="Run only the I-th of N contiguous parts of the full descriptor (1-based)")
     parser.add_argument("--check-log", type=Path,
                         help="Diagnose an existing log; does not establish test success")
     args = parser.parse_args()
@@ -45,10 +47,15 @@ def main():
         return 2 if fatal else 0
     if not sys.platform.startswith("linux"):
         parser.error("This CI launcher requires Linux; use Gradle directly for local tests")
+    gradle = ["./gradlew", "runClientGameTest", "--no-daemon", "--stacktrace", "--console=plain"]
+    if args.shard:
+        shard, _, shards = args.shard.partition("/")
+        if not (shard.isdigit() and shards.isdigit() and 1 <= int(shard) <= int(shards)):
+            parser.error("--shard must look like 2/4")
+        gradle += [f"-PciShard={int(shard)}", f"-PciShards={int(shards)}"]
     args.log.parent.mkdir(parents=True, exist_ok=True)
     process = subprocess.Popen(
-        ["xvfb-run", "-a", "-s", "-screen 0 1280x720x24 +extension GLX +render -noreset",
-         "./gradlew", "runClientGameTest", "--no-daemon", "--stacktrace", "--console=plain"],
+        ["xvfb-run", "-a", "-s", "-screen 0 1280x720x24 +extension GLX +render -noreset", *gradle],
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
         encoding="utf-8", errors="replace", start_new_session=True)
     try:
