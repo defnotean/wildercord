@@ -103,7 +103,7 @@ public final class LanternNewt extends PathfinderMob {
   private boolean available(BlockPos at) {
    if(!level().hasChunkAt(at))return false;var b=level().getBlockState(at);
    return b.is(WetlandShelters.REFUGE) && b.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED)
-    && level().getEntitiesOfClass(LanternNewt.class,new net.minecraft.world.phys.AABB(at).inflate(.25),n -> n!=LanternNewt.this && n.resting()).isEmpty();
+    && WetlandQueries.refugeFree((ServerLevel)level(),new net.minecraft.world.phys.AABB(at).inflate(.25),LanternNewt.this);
   }
   @Override public boolean canUse() {
    if(!weather() || level().getGameTime()<refugeReady) {sweep=null;return false;}

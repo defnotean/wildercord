@@ -28,7 +28,7 @@ public final class ReedbackContent {
    var config=Config.get().wildlife();if(!config.spawns("reedback_crab") || l.getDifficulty()==net.minecraft.world.Difficulty.PEACEFUL || r.nextDouble()>=Math.min(1,.2*config.spawnMultiplier()))return false;
    if(!l.canSeeSky(p.above()) || !l.getBlockState(p.below()).isSolidRender() || !l.getBlockState(p).getCollisionShape(l,p).isEmpty() || !l.getBlockState(p.above()).isAir())return false;
    boolean wet=l.getFluidState(p).is(FluidTags.WATER);for(var d:Direction.Plane.HORIZONTAL)wet|=l.getFluidState(p.relative(d)).is(FluidTags.WATER);
-   return wet && l.getEntities(t,new AABB(p).inflate(32),e -> e.isAlive()).size()<2;
+   return wet && WetlandQueries.populationRoom(l.getLevel(),ReedbackCrab.class,new AABB(p).inflate(32),2);
   });
   BiomeModifications.create(Wildercord.id("reedback_banks")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP)),c -> {if(Config.get().wildlife().spawns("reedback_crab"))c.getMobSpawnSettings().addSpawn(MobCategory.CREATURE,new MobSpawnSettings.SpawnerData(CRAB,net.minecraft.util.valueproviders.UniformInt.of(1,1)),Math.max(1,(int)(3*Math.max(1,Config.get().wildlife().spawnMultiplier()))));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:reedback_crab",FieldGuide.Group.WILDLIFE,0x87906A));

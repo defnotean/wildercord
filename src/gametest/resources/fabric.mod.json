@@ -161,6 +161,8 @@
       "dev.wildercord.wildlife.WetlandTerrainTest",
       "dev.wildercord.wildlife.ReedRefugeTest",
       "dev.wildercord.wildlife.ReedbackCrabTest",
+      "dev.wildercord.wildlife.WetlandQueryBoundsTest",
+      "dev.wildercord.wildlife.ReedbackSweepSafetyTest",
       "dev.wildercord.wildlife.ReedRattleTest",
       "dev.wildercord.wildlife.SporebackSnailTest",
       "dev.wildercord.cast.FormationAnchorTest",
