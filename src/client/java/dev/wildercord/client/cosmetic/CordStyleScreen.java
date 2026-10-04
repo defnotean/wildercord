@@ -105,7 +105,11 @@ public class CordStyleScreen extends Screen {
 			return 1.0F;
 		}
 		int guiScale = Math.max(1, minecraft.getWindow().getGuiScale());
-		int physical = Math.max(1, (int) Math.floor(guiScale * fit));
+		int physical = (int) Math.floor(guiScale * fit);
+		if (physical < 1) {
+			// Too small for whole pixels (the smallest window, at GUI scale 1): it fits anyway, a little soft.
+			return (float) fit;
+		}
 		return physical / (float) guiScale;
 	}
 
