@@ -31,8 +31,14 @@ public final class BladeTooltip {
 	private static final int DIM = 0xFF8A84A0;
 
 	public static void init() {
+		// Creative search also asks for tooltips from a background thread. Capture the client during
+		// initialization, and check its owning thread before reading player data or keyboard state.
+		Minecraft client = Minecraft.getInstance();
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
-			List<Component> extra = lines(stack, Minecraft.getInstance().player, Minecraft.getInstance().hasShiftDown());
+			if (!client.isSameThread()) {
+				return;
+			}
+			List<Component> extra = lines(stack, client.player, client.hasShiftDown());
 			if (!extra.isEmpty()) {
 				lines.addAll(Math.min(1, lines.size()), extra);
 			}
