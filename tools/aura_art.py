@@ -510,7 +510,7 @@ LANG = {
     "message.wildercord.aura.switched": "You turn to %s.",
     "message.wildercord.aura.learned_subtitle": "Breathing method learned",
     "message.wildercord.aura.switched_subtitle": "Breathing method changed",
-    "message.wildercord.aura.learned_how": "Land full swings with a blade to gather aura, or sneak and stand still with it in hand to breathe it in. Open the Cord screen (or press K) and choose Aura to see your path.",
+    "message.wildercord.aura.learned_how": "Land full swings with a blade to gather aura, or sneak and stand still with it in hand to breathe it in. Open the Cord screen (press %s) and choose Aura to see your path.",
     "message.wildercord.aura.waiting": "Your aura presses against its limit: %s waits.",
     "message.wildercord.aura.waiting_how": "Break through: crouch still with your blade for 30 seconds at a ley crossing, a qualifying waterfall or an exposed mountain summit; or defeat a stronger foe with blade and aura alone within 60 seconds.",
     "message.wildercord.aura.practice_complete": "Practice has taught its 40 XP. Fight real hostile foes with fully recovered sword swings to keep progressing. Your Aura page shows the next breakthrough trial.",

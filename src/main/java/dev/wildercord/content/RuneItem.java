@@ -226,8 +226,8 @@ public class RuneItem extends Item {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0F, rank > 1 ? 1.6F : 1.3F);
 			Component name = runeName(def).withColor(RuneColors.of(def));
 			serverPlayer.sendOverlayMessage(rank > 1
-				? Component.translatable(known ? "message.wildercord.ranked_up" : "message.wildercord.learned_ranked", name, roman(rank))
-				: Component.translatable("message.wildercord.learned", name));
+				? Component.translatable(known ? "message.wildercord.ranked_up" : "message.wildercord.learned_ranked", name, roman(rank), Component.keybind("key.wildercord.open_cord"))
+				: Component.translatable("message.wildercord.learned", name, Component.keybind("key.wildercord.open_cord")));
 		}
 		return InteractionResult.SUCCESS;
 	}

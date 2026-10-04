@@ -130,7 +130,7 @@ public final class SpellCaster {
 		}
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		if (runes.isEmpty() || compiled.isEmpty()) {
-			fail(player, Component.translatable("message.wildercord.spell_empty", spell + 1));
+			fail(player, Component.translatable("message.wildercord.spell_empty", spell + 1, Component.keybind("key.wildercord.open_cord")));
 			return;
 		}
 		Optional<Secrets.Secret> secret = Secrets.match(runes);

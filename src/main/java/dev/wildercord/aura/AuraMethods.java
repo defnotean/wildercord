@@ -87,7 +87,7 @@ public final class AuraMethods {
 			.withColor(0xE8D8B0));
 		player.sendSystemMessage(Component.translatable(method.nameKey() + ".flavour").withColor(0xB8A8D8));
 		if (!switching) {
-			player.sendSystemMessage(Component.translatable("message.wildercord.aura.learned_how").withColor(0x9A8CD8));
+			player.sendSystemMessage(Component.translatable("message.wildercord.aura.learned_how", Component.keybind("key.wildercord.open_cord")).withColor(0x9A8CD8));
 		}
 		dev.wildercord.cast.Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.8F, 0.9F);
 		Aura.sound(player, "aura_breath", 0.9F, 1.0F);

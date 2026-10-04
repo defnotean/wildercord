@@ -64,7 +64,7 @@ public class SpellScrollItem extends Item {
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		if (runes.isEmpty() || compiled.isEmpty()) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.spell_empty", spell + 1).withStyle(ChatFormatting.RED));
+			player.sendOverlayMessage(Component.translatable("message.wildercord.spell_empty", spell + 1, Component.keybind("key.wildercord.open_cord")).withStyle(ChatFormatting.RED));
 			return;
 		}
 		// Twice what casting it would cost this player now, as the Cord screen shows it (the server's cost multiplier,
