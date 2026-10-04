@@ -50,7 +50,7 @@
   ],
   "jar": {
     "jar": "wildercord-rainshield-review+mc26.3.jar",
-    "sha256": "7e94ddcf72b31218fa7ee6e314f06cf0f831ac2908ae087df06c91d9b190bf1a",
+    "sha256": "19e58d3274be3d8075d0669f61475716f7910a6049201fd6f1a5235c45bb783c",
     "resources": 5469,
     "classes": 1871,
     "source_version": "0.9.1-alpha.1+mc26.3",
@@ -74,5 +74,6 @@
     "generated_paths": 5470,
     "guide_pages": 132,
     "audio_registration": "passed"
-  }
+  },
+  "particle_reference_followup": "Model particle alias uses original cloth texture; geometry and viewed faces unchanged; full build18s and packaged verification pass."
 }

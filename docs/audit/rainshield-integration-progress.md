@@ -37,6 +37,8 @@ Final Full/Minimal native presentation passed48s after correcting explicit conti
 
 The first-person capture now shows the HUD because hiding it also hides the held item in this client. The prepared first-person image is captured during actual item use after the real preparation interval, before a real arrow collision. Camera changes do not create a protection lease or grant resources.
 
-Checked review JAR: wildercord-rainshield-review+mc26.3.jar, embedded version0.9.1-alpha.1+mc26.3. Exact5469 processed resources and1871 compiled classes; CRC and duplicate checks pass; no native test classes packaged. SHA256: 7e94ddcf72b31218fa7ee6e314f06cf0f831ac2908ae087df06c91d9b190bf1a.
+Checked review JAR: wildercord-rainshield-review+mc26.3.jar, embedded version0.9.1-alpha.1+mc26.3. Exact5469 processed resources and1871 compiled classes; CRC and duplicate checks pass; no native test classes packaged. SHA256: 19e58d3274be3d8075d0669f61475716f7910a6049201fd6f1a5235c45bb783c.
 
 Receipt: docs/evidence/rainshield-20261004.json. Full build passed21s. This is a review build, not a new CurseForge/VPS deployment. Bound source loops establish work ceilings, not measured TPS gains. Actual local TCP behavior is established; remote human latency distributions remain untested.
+
+Native startup exposed a missing held-model particle reference. The generator now explicitly uses the original linen tile for model particles; viewed faces, geometry and display transforms are unchanged. Regeneration5470paths, full build18s/1008units and exact checked replacement JAR pass. Native test fixtures remain excluded from the production artifact.

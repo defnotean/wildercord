@@ -124,7 +124,7 @@ def held():
  box([5.37,1.1,7.44],[6.1,2.23,7.79],'feather')
  box([5.57,2.18,7.44],[6.02,2.95,7.79],'feather')
  box([5.82,.05,7.36],[5.99,2.74,7.49],'reed')
- return {'textures':{k:'wildercord:item/rainshield_'+k for k in ('reed','pivot','cloth','feather')},'elements':elements,'display':{'firstperson_righthand':{'rotation':[0,-20,12],'translation':[.5,1,-1.5],'scale':[.65,.65,.65]},'thirdperson_righthand':{'rotation':[90,0,0],'translation':[0,2,0],'scale':[.7,.7,.7]},'firstperson_lefthand':{'rotation':[0,20,-12],'translation':[-.5,1,-1.5],'scale':[.65,.65,.65]},'thirdperson_lefthand':{'rotation':[90,0,0],'translation':[0,2,0],'scale':[.7,.7,.7]}}}
+ return {'textures':{'particle':'wildercord:item/rainshield_cloth',**{k:'wildercord:item/rainshield_'+k for k in ('reed','pivot','cloth','feather')}},'elements':elements,'display':{'firstperson_righthand':{'rotation':[0,-20,12],'translation':[.5,1,-1.5],'scale':[.65,.65,.65]},'thirdperson_righthand':{'rotation':[90,0,0],'translation':[0,2,0],'scale':[.7,.7,.7]},'firstperson_lefthand':{'rotation':[0,20,-12],'translation':[-.5,1,-1.5],'scale':[.65,.65,.65]},'thirdperson_lefthand':{'rotation':[90,0,0],'translation':[0,2,0],'scale':[.7,.7,.7]}}}
 
 def write(g):
  g.save(icon(),g.ASSETS/'textures/item/rooks_rainshield.png');g.item_model('rooks_rainshield','rooks_rainshield')

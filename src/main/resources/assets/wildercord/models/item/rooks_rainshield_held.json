@@ -1,5 +1,6 @@
 {
   "textures": {
+    "particle": "wildercord:item/rainshield_cloth",
     "reed": "wildercord:item/rainshield_reed",
     "pivot": "wildercord:item/rainshield_pivot",
     "cloth": "wildercord:item/rainshield_cloth",
