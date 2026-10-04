@@ -17,6 +17,16 @@ Install the same build on the server and every client. New blocks, items, entiti
 - Repaired garbled dashes and multiplication signs in the Life outcomes, Mossveil and Fusion Altar guide pages, and missing spaces before numbers in the changelog and guide.
 - Split the native client test job into four ordered shards with a longer limit. The full roster takes several hours and never completed within one 90-minute CI job.
 
+### Polish from a full audit
+
+- Closed mana and emerald loops: a wild surge's Free Recast or an overcast no longer refunds mana it never paid (condition branches, Soar); overcasting with a condition link no longer returns more than it cost; the Runesmith's paper trades can no longer be cycled for emeralds; and a running Orbit or other passive stops when its Cord comes off instead of striking with no upkeep.
+- Fixed exploits and unfair edges: the practice arena can't be entered for five seconds after a mob hurts you (it was an instant escape from a fight); Spell Scrolls now always take their one-second rest; a thrown Living Bramble follows the friendly-fire rules; only Survival hits open the Buried Keeper's encounter; the stillness breakthrough can't be spread across a logout; and practice spends the 40-point allowance only for experience actually learned.
+- Fixed spells: Jolt now really costs a caught caster their charge; Glacial Lance's lightning and Starfall's stars stop when their caster is gone; Borrowed Time counts hurts correctly on old worlds; a loaded loadout's cooldowns include mastery traits; and saved builds with a trailing space or a long name can be loaded and deleted again.
+- Fixed world details: the Archive's two vault chests no longer roll identical loot, befriended foxes stop following an owner into another dimension, one shift-click puts one reagent on the Fusion Altar, Aura Step no longer moves a player who just disconnected, and `/wildercord aura method` accepts add-on method ids.
+- Fixed client screens and keys: the Cord, Aura and Cord style screens fit the smallest window; cast-spell and visuals keys no longer act over open screens; and a spell's "ready" cue, the Aura key's double tap and the Erase/Release/trait-change confirmations no longer carry over from a previous world.
+- Text: added missing messages (Hush, Zipper claims, Rewind, Wayline, Night Seam, mastery changes) that showed raw keys; translated hard-coded English messages; learning and empty-spell messages name your bound Cord key; corrected Blink's range, the Mana Crystal limit message, the Rootbound Relic, Silence, Chronoshift and Manatide descriptions; and fixed typos and stale numbers across the guide, README and design notes.
+- Freed memory held by departed players and finished effects in about twenty server and client tables (wolf packs, rune readings, glides, siphons, charges, verdicts, ward notices and others).
+
 ### Art
 
 - Redrew all art added since 0.9.1 in the established Wildercord style: 16×16 item icons with a dark outline and top-left light (previously 32×32), crisp vanilla-resolution block textures, and repainted Cinder Bailiff, Rootmolt Strider, Siltcrest Bittern, Mossveil Dormouse and Sporeback Snail skins on their unchanged models. Spawn eggs share the standard egg silhouette.
