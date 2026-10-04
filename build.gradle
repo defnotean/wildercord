@@ -98,6 +98,7 @@ processResources {
 // Focused in-world screenshot suites keep iteration fast while the full descriptor remains available.
 tasks.named('processGametestResources') {
 	inputs.property('focusedSuite', project.findProperty('focusedSuite') ?: '')
+	inputs.property('twoClientSuite', project.hasProperty('twoClientSuite'))
 	inputs.property('encounterSuite', project.hasProperty('encounterSuite'))
 	inputs.property('cinnamonSuite', project.hasProperty('cinnamonSuite'))
 	inputs.property('defensiveSuite', project.hasProperty('defensiveSuite'))
@@ -112,6 +113,14 @@ tasks.named('processGametestResources') {
 	inputs.property('tailSuite', project.hasProperty('tailSuite'))
 	inputs.property('tailFrom', project.findProperty('tailFrom') ?: '')
 	doLast {
+		// Requires the explicit two-process supervisor; never enters the ordinary CI roster.
+		if (project.hasProperty('twoClientSuite')) {
+			def descriptor=file("${destinationDir}/fabric.mod.json")
+			def data=new groovy.json.JsonSlurper().parse(descriptor)
+			data.entrypoints['fabric-client-gametest']=['dev.wildercord.gametest.WildercordTwoClientsTest']
+			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
+			return
+		}
 		if(project.hasProperty('focusedSuite')) {
 			def descriptor=file("${destinationDir}/fabric.mod.json")
 			def data=new groovy.json.JsonSlurper().parse(descriptor)

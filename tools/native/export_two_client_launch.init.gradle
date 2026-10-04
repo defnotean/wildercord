@@ -1,0 +1,30 @@
+import groovy.json.JsonOutput
+
+// Proposal: root invokes serialized AFTER promotion/compilation, never executes the game task.
+gradle.projectsEvaluated {
+ def p=gradle.rootProject
+ if (!p.hasProperty('twoClientSuite')) throw new GradleException('Export requires -PtwoClientSuite to select the supervised two-process fixture')
+ p.tasks.register('exportTwoClientLaunch') {
+  dependsOn p.tasks.named('gametestClasses'),p.tasks.named('configureLaunch')
+  doLast {
+   def run=p.tasks.named('runClientGameTest').get()
+   if(run.microsoftAuthenticationEnabled.get())throw new GradleException('Use offline development profiles for isolated local fixture')
+   def base=Class.forName('net.fabricmc.loom.task.AbstractRunTask',true,run.class.classLoader)
+   def useArgs=base.getDeclaredMethod('getUseArgFile');useArgs.accessible=true;useArgs.invoke(run).set(false)
+   def jvm=new ArrayList(run.jvmArgs ?: [])
+   run.systemProperties.each {k,v->jvm.add('-D'+k+'='+v)}
+   // Preserve custom JavaExec JVM providers; Loom's provider supplies getGameJvmArgs.
+   run.jvmArgumentProviders.each {provider->jvm.addAll(provider.asArguments())}
+   def args=new ArrayList(run.args ?: [])
+   run.argumentProviders.each {provider->args.addAll(provider.asArguments())}
+   def output=p.file(p.findProperty('twoClientLaunch') ?: 'artifacts/drafts/aura-closure/two-clients/launch.json')
+   output.parentFile.mkdirs()
+   output.setText(JsonOutput.prettyPrint(JsonOutput.toJson([
+    java:run.javaLauncher.get().executablePath.asFile.absolutePath,
+    main:run.mainClass.get(),classpath:run.classpath.files.collect{it.absolutePath},
+    jvm:jvm,args:args,environment:[ALSOFT_DRIVERS:run.environment['ALSOFT_DRIVERS']],
+    project:p.projectDir.absolutePath,loomVersion:'1.18.2'
+   ])),'UTF-8')
+  }
+ }
+}
