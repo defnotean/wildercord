@@ -255,7 +255,8 @@
       "dev.wildercord.wildlife.RainshieldCombatGapsTest",
       "dev.wildercord.wildlife.RainshieldAckTest",
       "dev.wildercord.cast.WardPaymentLifecycleTest",
-      "dev.wildercord.cast.WardPaymentRetirementTest"
+      "dev.wildercord.cast.WardPaymentRetirementTest",
+      "dev.wildercord.cast.WardReflectReceiptTest"
     ]
   },
   "mixins": [

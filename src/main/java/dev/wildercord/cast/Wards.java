@@ -403,7 +403,7 @@ public final class Wards {
 	}
 
 	private static void reflect(LivingEntity entity, DamageSource source, float damage) {
-		if (reflecting || REFLECT.isEmpty() || damage <= 0) {
+		if (reflecting || REFLECT.isEmpty() || !Float.isFinite(damage) || damage <= 0 || entity.getLastDamageSource() != source) {
 			return;
 		}
 		Reflect ward = REFLECT.get(entity.getUUID());
@@ -414,7 +414,8 @@ public final class Wards {
 			REFLECT.remove(entity.getUUID());
 			return;
 		}
-		if (!(source.getEntity() instanceof LivingEntity attacker) || attacker == entity || !attacker.isAlive()) {
+		if (!(source.getEntity() instanceof LivingEntity attacker) || attacker == entity || !attacker.isAlive()
+				|| attacker.isRemoved() || attacker.level() != level || entity.isRemoved()) {
 			return;
 		}
 		reflecting = true;
