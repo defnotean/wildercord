@@ -44,6 +44,7 @@ public final class RuneReadings {
 				landed(player);
 			}
 		});
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> RECENT.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> RECENT.clear());
 	}
 
