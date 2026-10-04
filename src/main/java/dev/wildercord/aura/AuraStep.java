@@ -179,7 +179,7 @@ public final class AuraStep {
 			Vec3 prev = path.get(Math.min(path.size() - 1, (int) Math.round((path.size() - 1) * (i - 1) / (double) ticks)));
 			boolean last = i == ticks;
 			Scheduler.later(i - 1, () -> {
-				if (!player.isAlive() || player.level() != level || player.isPassenger()) {
+				if (!player.isAlive() || player.hasDisconnected() || player.level() != level || player.isPassenger()) {
 					return;
 				}
 				// The view stays where the player has it: only the body moves.
