@@ -21,7 +21,7 @@ public final class AuraCommand {
 
 	public static LiteralArgumentBuilder<CommandSourceStack> node() {
 		return Commands.literal("aura")
-			.then(Commands.literal("method").then(Commands.argument("method", StringArgumentType.word())
+			.then(Commands.literal("method").then(Commands.argument("method", StringArgumentType.greedyString())
 				.suggests((ctx, builder) -> SharedSuggestionProvider.suggest(BreathingMethods.all().stream().map(BreathingMethod::id), builder))
 				.executes(ctx -> {
 					ServerPlayer player = ctx.getSource().getPlayerOrException();
