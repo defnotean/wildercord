@@ -2275,7 +2275,7 @@ public final class Effects {
 	}
 
 	/**
-	 * Haven: a dome over the point for a while. Allies inside are kept under Resistance, and
+	 * Haven: a dome over the point for a while. Enemies inside are shoved out once a second, and
 	 * projectiles fired from outside by anyone but an ally glance off its shell.
 	 */
 	/** How hard Haven's dome pushes the hostile out, once a second. */

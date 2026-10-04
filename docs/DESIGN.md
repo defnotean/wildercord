@@ -233,7 +233,7 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 | Shock | I | storm | 4 damage that arcs to one more enemy (a wet or metal-armoured one first) |
 | Haste | I | arcane | Haste II for 30 s |
 | Reveal | I | arcane | Targets glow through walls for 15 s |
-| Regrowth | II | life | Regeneration II for 8 s |
+| Regrowth | II | life | Regeneration that takes hold: I for 3 s, II for 3, III for 2 |
 | Cleanse | II | life | Removes harmful effects, fire and freezing |
 | Stoneskin | II | earth | Resistance II for 10 s, and Slowness I |
 | Root | II | earth | Vines hold targets in place for 3 s |
@@ -263,14 +263,14 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 | Wave | Shape · Projectile | II | A 3-wide wave rolls 14 blocks forward along the ground |
 | Mine | Shape · Lingering | II | A hidden rune that fires when an enemy steps near (30 s) |
 | Totem | Shape · Lingering | III | A floating totem that pulses every 2 s for 10 s |
-| Venom | Effect · Damage | II | Poison II for 6 s and 2 damage |
-| Smite | Effect · Damage | III | 10 holy damage, doubled against undead |
+| Venom | Effect · Damage | II | 2 damage, then 0.75 a second for 4 s with Poison I; it passes once to up to 3 enemies within 2.5 blocks |
+| Smite | Effect · Damage | III | A ring closes at the target's feet; 0.7 s later 13 holy damage (doubled against undead) that strips Absorption |
 | Inferno | Effect · Damage | III | Everything within 4 blocks burns: 3 damage/s for 4 s |
 | Thunderclap | Effect · Damage | II | A flash, then a crack: 5 damage within 3 blocks, half a second's stun and a forgotten target |
 | Starfall | Effect · Damage | IV | Eight falling stars, 6 damage each (Elder Guardian drop) |
 | Blind | Effect · Control | I | Blindness and darkness for 5 s (3 on players); a blinded monster lashes out at the creature beside it |
 | Chill | Effect · Control | I | Slowness II for 6 s and 1 freeze damage |
-| Silence | Effect · Control | II | Monsters forget their target and are weakened for 6 s |
+| Silence | Effect · Control | II | Casters can't cast for 4 s (2 on players) and a cast in hand is cut short; monsters forget their target and are weakened for 6 s |
 | Fireward | Effect · Support | II | Fire resistance for 30 s |
 | Nourish | Effect · Support | I | Restores 6 hunger |
 | Tidebreath | Effect · Support | I | Water breathing and faster swimming for 30 s |
@@ -368,8 +368,8 @@ and craftable.
 | Bramble | Effect · Support | I | 10 s: whatever hurts you from within 4 blocks takes 3 damage and is shoved away |
 | Frostward | Effect · Support | I | 60 s: you can't freeze, not even in powder snow, a frost hold on you lasts a second at most, and frost can't leave you brittle for Shatter |
 | Cushion | Effect · Support | I | 30 s: no fall damage, and a hard landing throws a gust at the enemies around you |
-| Deflect | Effect · Support | II | 8 s: projectiles coming at the target are turned aside |
-| Haven | Effect · Support | II | A 4-block dome for 8 s: allies inside take 20% less damage, projectiles from outside glance off it |
+| Deflect | Effect · Support | II | 8 s: projectiles coming at the target are sent back at whoever shot them (turned aside if they've been sent back once) |
+| Haven | Effect · Support | II | A 4-block dome for 8 s: enemies inside are shoved out once a second, projectiles from outside glance off it |
 | Chisel | Effect · World | I | Mines one block at stone-pickaxe strength (Amplify: iron) |
 | Glimmer | Effect · World | I | Glow lichen over the block hit and up to 4 around it: light that stays |
 | Prune | Effect · World | I | Clears leaves (never ones placed by hand), grass, flowers, vines and cobwebs within 3 blocks |
@@ -388,7 +388,7 @@ and craftable.
 | Countdown | Effect · Damage | I | 1.5 s later: 6 damage (if the mark dies first, on the nearest enemy) |
 | Jolt | Effect · Control | II | 4 lightning damage and a 1 s stun (bosses and players are slowed instead) |
 | Bleed | Effect · Damage | II | 2 damage, then 1 every half second for 4 s (half as much again while it moves) |
-| Coldsnap | Effect · Damage | II | 3 freeze damage and Slowness II for 4 s to every enemy within 3 blocks; they're left brittle for Shatter |
+| Coldsnap | Effect · Damage | II | 4 freeze damage and Slowness II for 4 s to every enemy within 3 blocks; they're left brittle for Shatter |
 | Flashfire | Effect · Damage | II | 5 fire damage to every enemy within 3 blocks, alight for 4 s; allies in it are thawed and dried |
 | Banish | Effect · Control | II | The target reappears up to 8 blocks further from you, dazed, somewhere it fits and can see back to (never a boss) |
 | Cyclone | Effect · Control | II | Enemies within 3 blocks whirl around the point for 2 s, then are flung out for 3 damage (bosses are struck, never moved) |
