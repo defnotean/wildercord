@@ -194,6 +194,9 @@ public final class SecretSpells {
 		}
 		// The spark wakes the ice: lightning jumps from target to target along the lance.
 		Scheduler.later(flight + 6, () -> {
+			if (!cast.alive()) {
+				return;
+			}
 			// Lightning runs the whole length of the frozen lance, and it shatters.
 			if (length > LANCE_START + 0.5) {
 				ElementFx.bolt(level, from.add(dir.scale(LANCE_START)), end, 0.06, 2, 3);
