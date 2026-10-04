@@ -282,6 +282,9 @@ public final class WildercordKeys {
 			auraHeld = -1;
 			auraSecond = false;
 			auraCharge = 0;
+			// A tap's time belongs to the world it was made in: another world's clock would make the next tap a double tap.
+			auraTapAt = Long.MIN_VALUE / 2;
+			auraTapWaiting = false;
 			while (cast.consumeClick()) {
 				// Discarded.
 			}
