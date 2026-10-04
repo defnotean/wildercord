@@ -1585,7 +1585,7 @@ MASTERY_LANG = {
     "tooltip.wildercord.inscription.study": "Sneak and use to study it: learn the spell, Kindled, with these traits borrowed",
     # The toast
     "toast.wildercord.mastery": "Your spell grows: %s",
-    "toast.wildercord.mastery.choose": "%s: choose a trait (K)",
+    "toast.wildercord.mastery.choose": "%s: choose a trait (%s)",
     # The magic settings
     "screen.wildercord.spell_titles.on": "Spell titles: shown",
     "screen.wildercord.spell_titles.off": "Spell titles: hidden",

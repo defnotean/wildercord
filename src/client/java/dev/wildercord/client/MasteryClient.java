@@ -109,7 +109,7 @@ public final class MasteryClient {
 			GuiSpellCircle.ring(g, 16, 16, 9, 1, color);
 			GuiSpellCircle.sigil(g, 16, 16, 7, rise.seed(), 0xFF000000 | MasteryPanel.rankColor(rise.rank()), 1.1F);
 			Component title = Component.translatable(rise.choice() ? "toast.wildercord.mastery.choose" : "toast.wildercord.mastery",
-				MasteryPanel.rankName(rise.rank()));
+				MasteryPanel.rankName(rise.rank()), WildercordKeys.openKey());
 			String shownTitle = font.plainSubstrByWidth(title.getString(), width() - 36);
 			g.text(font, shownTitle, 30, 7, 0xFFB8A8FF, false);
 			String shown = font.plainSubstrByWidth(rise.name(), width() - 36);
