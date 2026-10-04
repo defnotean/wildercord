@@ -165,7 +165,7 @@ With a Twine Cord you have three sockets. Here are some spells that fit, with th
 | Spell | What it does | Mana | Cooldown |
 |---|---|---|---|
 | `Bolt · Ember` | A burning bolt | 10 | 0.5 s |
-| `Bolt · Ember · Amplify` | The same, 50% harder | 14 | 0.7 s |
+| `Bolt · Ember · Amplify` | The same, 50% harder | 13 | 0.65 s |
 | `Heal` | Heals you (a spell that starts with an effect is cast on you) | 12 | 0.6 s |
 | `Self · Swift · Extend` | Speed III for 20 seconds | 9 | 0.5 s |
 | `Nova · Push` | Throws back everything within 2.5 blocks of you | 9 | 0.5 s |

@@ -57,14 +57,14 @@ never make your spells lighter against someone else's.
 | `Self · Shield · Frugal` | 6 | 1 | 18 s |
 | `Self · Shield` | 12 | 2 | 30 s |
 | `Self · Shield · Extend` | 16.8 | 3 | 60 s |
+| `Self · Shield · Amplify` | 18 | 3 | 30 s |
 | `Nova · Shield` | 18.6 | 3 | 30 s |
-| `Self · Shield · Amplify` | 19.2 | 3 | 30 s |
 | `Burst · Shield` | 24 | 3 | 30 s |
-| `Self · Shield · Amplify · Amplify` | 30.72 | 4 | 30 s |
-| `Self · Shield · Overcharge` | 36 | 5 | 30 s |
+| `Self · Shield · Amplify · Amplify` | 27 | 4 | 30 s |
+| `Self · Shield · Overcharge` | 31.2 | 4 | 30 s |
 
 Some spells for comparison: `Bolt · Harm` and `Bolt · Fire` weigh 11.8, so a plain `Self · Shield`
-stops them. `Bolt · Fire · Amplify` weighs about 17.1, and breaks it.
+stops them. `Bolt · Fire · Amplify` weighs 16.2, and breaks it.
 
 **Secret spells** weigh more than their runes: their full secret price, even on the cast that finds one (see
 [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }})). The Archivist's great secret spell

@@ -158,9 +158,9 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 | Self | I | you | 0 | ×1.0 |
 | Touch | I | what you're looking at, within reach | 1 | ×1.0 |
 | Bolt | I | a flying projectile, up to 48 blocks | 3 | ×1.1 |
-| Beam | II | an instant line, first thing within 24 blocks | 4 | ×1.2 |
+| Beam | II | an instant line, first thing within 24 blocks | 3 | ×1.2 |
 | Burst | II | everything within 4 blocks of the current point | 6 | ×1.5 |
-| Zone | III | a field (radius 3) at the point you look at; re-applies every 1 s for 6 s | 8 | ×2.0 |
+| Zone | III | a field (radius 3) at the point you look at; re-applies every 1 s for 6 s | 8 | ×2.75 |
 | Rain | III | 5 strikes from the sky over 2 s around the point you look at (radius 4) | 10 | ×2.5 |
 
 ### Effects (22)
