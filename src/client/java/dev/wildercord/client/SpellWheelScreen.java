@@ -260,11 +260,11 @@ public class SpellWheelScreen extends Screen {
 				SpellCompiler.Compiled compiled = SpellHud.read(runes);
 				// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
 				double secretCost = Heart.secretCost(minecraft.player, runes) * dev.wildercord.cast.Mastery.costFactor(minecraft.player, runes);
-				String cost = compiled.paysInHealth()
-					? Heart.healthCost(minecraft.player, compiled, secretCost) + "❤"
-					: Heart.manaCost(minecraft.player, compiled, secretCost) + " mana";
+				Component cost = compiled.paysInHealth()
+					? Component.literal(Heart.healthCost(minecraft.player, compiled, secretCost) + "❤")
+					: Component.translatable("screen.wildercord.rune_cost", Heart.manaCost(minecraft.player, compiled, secretCost));
 				String cooldown = String.format(Locale.ROOT, "%.1fs", Heart.cooldownTicks(minecraft.player, compiled, Heart.secretCooldown(minecraft.player, runes) * dev.wildercord.cast.Mastery.cooldownFactor(minecraft.player, runes)) / 20.0);
-				g.centeredText(font, Component.literal(cost), cx, cy - 8, 0xFFB8A8FF);
+				g.centeredText(font, cost, cx, cy - 8, 0xFFB8A8FF);
 				g.centeredText(font, Component.literal(cooldown), cx, cy + 2, DIM);
 			}
 		}

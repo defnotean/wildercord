@@ -323,7 +323,7 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 			} else if (plan.recipe() instanceof Fusions.Signature signature) {
 				what = Component.translatable("screen.wildercord.altar.signature_line", RuneItem.runeName(signature.a()), RuneItem.runeName(signature.b()));
 			} else if (plan.recipe() == null) {
-				what = Component.literal("Both effects in one socket; costs the mana of both.");
+				what = Component.translatable("screen.wildercord.altar.weave_line");
 			} else {
 				what = Component.translatable("screen.wildercord.altar.combine_line",
 					Component.translatable("element.wildercord." + plan.recipe().first()), Component.translatable("element.wildercord." + plan.recipe().second()));

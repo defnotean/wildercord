@@ -1800,6 +1800,7 @@ NEW_LANG = {
     "screen.wildercord.altar.how.3": "A Blank Rune and string: tie a spell into a Knot",
     "screen.wildercord.altar.upgrade_line": "+%s%% power at the same mana, in every spell it's threaded in",
     "screen.wildercord.altar.combine_line": "A new effect, born of %s and %s",
+    "screen.wildercord.altar.weave_line": "Both effects in one socket; costs the mana of both.",
     "screen.wildercord.altar.cost": "Costs %s XP levels",
     "screen.wildercord.altar.need_xp": "Needs %s XP levels",
     "screen.wildercord.altar.take_result": "Take the last result out first",
