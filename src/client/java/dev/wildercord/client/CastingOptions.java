@@ -54,22 +54,37 @@ public final class CastingOptions {
 
 	public static void load() {
 		loaded = true;
+		JsonObject json;
 		try {
 			if (!Files.exists(FILE)) {
 				return;
 			}
-			JsonObject json = JsonParser.parseString(Files.readString(FILE)).getAsJsonObject();
+			json = JsonParser.parseString(Files.readString(FILE)).getAsJsonObject();
+		} catch (Exception e) {
+			dev.wildercord.Wildercord.LOGGER.warn("Invalid casting preferences, using the defaults: {}", e.toString());
+			return;
+		}
+		// Each preference is read on its own, so one bad value keeps its default without losing the others.
+		try {
 			if (json.has("sigil_tracing")) {
 				tracing = json.get("sigil_tracing").getAsBoolean();
 			}
+		} catch (Exception e) {
+			dev.wildercord.Wildercord.LOGGER.warn("Ignoring casting preference sigil_tracing: {}", e.toString());
+		}
+		try {
 			if (json.has("trace_assist")) {
 				assist = TraceGlyph.Assist.valueOf(json.get("trace_assist").getAsString().toUpperCase(Locale.ROOT));
 			}
+		} catch (Exception e) {
+			dev.wildercord.Wildercord.LOGGER.warn("Ignoring casting preference trace_assist: {}", e.toString());
+		}
+		try {
 			if (json.has("incantations")) {
 				incantations = Incantations.valueOf(json.get("incantations").getAsString().toUpperCase(Locale.ROOT));
 			}
 		} catch (Exception e) {
-			dev.wildercord.Wildercord.LOGGER.warn("Invalid casting preferences, using the defaults: {}", e.toString());
+			dev.wildercord.Wildercord.LOGGER.warn("Ignoring casting preference incantations: {}", e.toString());
 		}
 	}
 

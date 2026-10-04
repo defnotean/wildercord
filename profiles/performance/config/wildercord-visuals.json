@@ -1,1 +1,10 @@
-{"own":"BALANCED","others":"MINIMAL","reduced_flash":true,"camera_shake":false}
+{
+  "own": "BALANCED",
+  "others": "MINIMAL",
+  "reduced_flash": true,
+  "camera_shake": false,
+  "blade_trails": "subtle",
+  "body_aura": "calm",
+  "impact": "soft",
+  "banners": "own"
+}

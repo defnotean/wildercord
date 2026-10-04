@@ -7,6 +7,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILES = ("performance", "balanced", "cinematic")
+PRESET_KEYS = {"own", "others", "reduced_flash", "camera_shake", "blade_trails", "body_aura", "impact", "banners"}
 
 
 def build(profile: str, jar: Path, destination: Path) -> Path:
@@ -14,7 +15,7 @@ def build(profile: str, jar: Path, destination: Path) -> Path:
     with zipfile.ZipFile(jar) as release:
         mod = json.loads(release.read("fabric.mod.json"))
     if mod["id"] != "wildercord" or "sources" in jar.stem:
-        raise ValueError("Supply the built WilderCord release jar")
+        raise ValueError("Supply the built Wildercord release jar")
     selected = {"fabric-api", "sodium"}
     if profile == "cinematic":
         selected.add("iris")
@@ -32,12 +33,16 @@ def build(profile: str, jar: Path, destination: Path) -> Path:
                       "env": {"client": "required", "server": "required" if entry["project"] == "fabric-api" else "unsupported"},
                       "downloads": [entry["url"]], "fileSize": entry["size"]})
     manifest = {"formatVersion": 1, "game": "minecraft", "versionId": mod["version"] + "-" + profile,
-                "name": "WilderCord " + profile.title(), "summary": "WilderCord with pinned Fabric dependencies and " + profile + " visuals",
+                "name": "Wildercord " + profile.title(), "summary": "Wildercord with pinned Fabric dependencies and " + profile + " visuals",
                 "files": files, "dependencies": {"minecraft": lock["minecraft"], "fabric-loader": lock["fabric_loader"]}}
     destination.mkdir(parents=True, exist_ok=True)
     output = destination / ("wildercord-" + profile + "-" + mod["version"] + ".mrpack")
     config = ROOT / "profiles" / profile / "config/wildercord-visuals.json"
-    json.loads(config.read_text(encoding="utf-8"))
+    settings = json.loads(config.read_text(encoding="utf-8"))
+    # A profile sets everything the in-game profile buttons set (MagicQuality.PRESETS); a missing key would keep the default.
+    missing = PRESET_KEYS - settings.keys()
+    if missing:
+        raise ValueError(f"{config} lacks preset settings: {', '.join(sorted(missing))}")
     # Stable timestamps and entry order make identical inputs reproducible.
     entries = {"modrinth.index.json": json.dumps(manifest, indent=2).encode(),
                "overrides/mods/" + jar.name: jar.read_bytes(),

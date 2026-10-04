@@ -1,15 +1,17 @@
-# WilderCord visual profiles
+# Wildercord visual profiles
 
 Copy the selected profile's `config/wildercord-visuals.json` into your Minecraft instance's `config` directory while the game is closed. These settings can also be applied from **Magic visuals** using its assignable key in Controls. Changing them affects decoration, flashing and camera motion; gameplay timing and hostile warnings are preserved.
 
-* **Performance:** balanced personal formations, minimal other formations, reduced flashing and no camera shake.
-* **Balanced:** balanced formations for both groups, ordinary flashing and camera shake.
-* **Cinematic:** full formations for both groups, ordinary flashing and camera shake.
+Each file sets exactly what the matching profile button on the **Magic visuals** screen sets, and the button for the profile in use is shown pressed in:
+
+* **Performance:** balanced personal formations, minimal other formations, reduced flashing, no camera shake, subtle blade trails, a calm body aura, soft impacts and only your own technique banners.
+* **Balanced:** balanced formations for both groups, ordinary flashing and camera shake, and full aura effects.
+* **Cinematic:** full formations for both groups, ordinary flashing and camera shake, and full aura effects.
 
 The folders can be used as configuration presets or packaged into importable Modrinth launcher packs. After `gradlew build`, run:
 
 ```text
-python tools/build_profiles.py --jar build/libs/wildercord-0.6.1-alpha+mc26.3.jar
+python tools/build_profiles.py --jar build/libs/wildercord-<version>+mc26.3.jar
 ```
 
 The three `.mrpack` files appear in `artifacts/profiles`. Import one into a fresh instance using a launcher that supports the Modrinth pack format, and select Java 25. Each includes the local release jar, Fabric Loader 0.19.5, Fabric API 0.161.0+26.3 and Sodium 0.9.2. Cinematic additionally includes Iris 1.11.6. External mods are downloaded by the launcher from the pinned official Modrinth URLs with SHA-1/SHA-512 verification; their jars are not redistributed in the archive. `dependencies.lock.json` records the exact published files and required dependency versions.

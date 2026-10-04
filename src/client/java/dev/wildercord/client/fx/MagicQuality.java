@@ -39,31 +39,61 @@ public final class MagicQuality {
 	public static Banners banners = Banners.ALL;
 
 	private MagicQuality() {}
+	/** The settings a profile sets, together: how much each group's magic draws, flashing, camera motion and aura's feel. */
+	private record Preset(Level own, Level others, boolean reducedFlash, boolean cameraShake, Trails bladeTrails, BodyAura bodyAura, Impact impact,
+		Banners banners) {
+		boolean active() {
+			return MagicQuality.own == own && MagicQuality.others == others && MagicQuality.reducedFlash == reducedFlash
+				&& MagicQuality.cameraShake == cameraShake && MagicQuality.bladeTrails == bladeTrails && MagicQuality.bodyAura == bodyAura
+				&& MagicQuality.impact == impact && MagicQuality.banners == banners;
+		}
+	}
+	/** The three profiles, in the order the settings screen lists them; profiles/&lt;name&gt;/config/wildercord-visuals.json matches each. */
+	private static final java.util.Map<String, Preset> PRESETS = java.util.Map.of(
+		"performance", new Preset(Level.BALANCED, Level.MINIMAL, true, false, Trails.SUBTLE, BodyAura.CALM, Impact.SOFT, Banners.OWN),
+		"balanced", new Preset(Level.BALANCED, Level.BALANCED, false, true, Trails.FULL, BodyAura.FULL, Impact.FULL, Banners.ALL),
+		"cinematic", new Preset(Level.FULL, Level.FULL, false, true, Trails.FULL, BodyAura.FULL, Impact.FULL, Banners.ALL));
+
+	/** Applies a profile by name ("performance", "balanced" or "cinematic"; anything else is balanced) and saves it. */
 	public static void preset(String name) {
-		switch(name) {
-			case "performance" -> {own=Level.BALANCED;others=Level.MINIMAL;reducedFlash=true;cameraShake=false;
-				bladeTrails=Trails.SUBTLE;bodyAura=BodyAura.CALM;impact=Impact.SOFT;banners=Banners.OWN;}
-			case "cinematic" -> {own=Level.FULL;others=Level.FULL;reducedFlash=false;cameraShake=true;
-				bladeTrails=Trails.FULL;bodyAura=BodyAura.FULL;impact=Impact.FULL;banners=Banners.ALL;}
-			default -> {own=Level.BALANCED;others=Level.BALANCED;reducedFlash=false;cameraShake=true;
-				bladeTrails=Trails.FULL;bodyAura=BodyAura.FULL;impact=Impact.FULL;banners=Banners.ALL;}
-		}save();
+		Preset p = PRESETS.getOrDefault(name, PRESETS.get("balanced"));
+		own = p.own; others = p.others; reducedFlash = p.reducedFlash; cameraShake = p.cameraShake;
+		bladeTrails = p.bladeTrails; bodyAura = p.bodyAura; impact = p.impact; banners = p.banners;
+		save();
+	}
+
+	/** Whether the current settings are exactly that profile's, so the screen can show which one is in use. */
+	public static boolean isPreset(String name) {
+		Preset p = PRESETS.get(name);
+		return p != null && p.active();
 	}
 	public static void load() {
+		com.google.gson.JsonObject json;
 		try {
 			if (!Files.exists(FILE)) { save(); return; }
-			var json = JsonParser.parseString(Files.readString(FILE)).getAsJsonObject();
-			if (json.has("own")) own = Level.valueOf(json.get("own").getAsString());
-			if (json.has("others")) others = Level.valueOf(json.get("others").getAsString());
-			if (json.has("reduced_flash")) reducedFlash = json.get("reduced_flash").getAsBoolean();
-			if (json.has("camera_shake")) cameraShake = json.get("camera_shake").getAsBoolean();
-			if (json.has("spell_titles")) spellTitles = json.get("spell_titles").getAsBoolean();
-			if (json.has("string_indicator")) stringIndicator = StringIndicator.valueOf(upper(json.get("string_indicator").getAsString()));
-			if (json.has("blade_trails")) bladeTrails = Trails.valueOf(upper(json.get("blade_trails").getAsString()));
-			if (json.has("body_aura")) bodyAura = BodyAura.valueOf(upper(json.get("body_aura").getAsString()));
-			if (json.has("impact")) impact = Impact.valueOf(upper(json.get("impact").getAsString()));
-			if (json.has("banners")) banners = Banners.valueOf(upper(json.get("banners").getAsString()));
-		} catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Invalid local magic preferences: {}", e.toString()); }
+			json = JsonParser.parseString(Files.readString(FILE)).getAsJsonObject();
+		} catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Invalid local magic preferences: {}", e.toString()); return; }
+		// Each setting is read on its own, so one hand-edited or outdated value keeps its default without losing the rest.
+		own = read(json, "own", Level.class, own);
+		others = read(json, "others", Level.class, others);
+		reducedFlash = read(json, "reduced_flash", reducedFlash);
+		cameraShake = read(json, "camera_shake", cameraShake);
+		spellTitles = read(json, "spell_titles", spellTitles);
+		stringIndicator = read(json, "string_indicator", StringIndicator.class, stringIndicator);
+		bladeTrails = read(json, "blade_trails", Trails.class, bladeTrails);
+		bodyAura = read(json, "body_aura", BodyAura.class, bodyAura);
+		impact = read(json, "impact", Impact.class, impact);
+		banners = read(json, "banners", Banners.class, banners);
+	}
+	private static <E extends Enum<E>> E read(com.google.gson.JsonObject json, String key, Class<E> type, E fallback) {
+		if (!json.has(key)) return fallback;
+		try { return Enum.valueOf(type, upper(json.get(key).getAsString())); }
+		catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Ignoring local magic preference {}: {}", key, e.toString()); return fallback; }
+	}
+	private static boolean read(com.google.gson.JsonObject json, String key, boolean fallback) {
+		if (!json.has(key)) return fallback;
+		try { return json.get(key).getAsBoolean(); }
+		catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Ignoring local magic preference {}: {}", key, e.toString()); return fallback; }
 	}
 	private static String upper(String s) { return s.toUpperCase(java.util.Locale.ROOT); }
 	private static String lower(Enum<?> e) { return e.name().toLowerCase(java.util.Locale.ROOT); }

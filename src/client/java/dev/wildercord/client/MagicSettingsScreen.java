@@ -18,14 +18,14 @@ import java.util.Locale;
 public final class MagicSettingsScreen extends Screen {
  private final Screen returnTo;
  public MagicSettingsScreen(){this(null);}
- public MagicSettingsScreen(Screen returnTo){super(Component.literal("Magic visuals"));this.returnTo=returnTo;}
+ public MagicSettingsScreen(Screen returnTo){super(Component.translatable("screen.wildercord.magic_visuals"));this.returnTo=returnTo;}
  @Override public void onClose(){if(returnTo!=null)minecraft.gui.setScreen(returnTo);else super.onClose();}
 
  /** The top of the buttons, where the title sits above them. */
  private int top;
 
  @Override protected void init() {
-  // Minecraft's minimum GUI is320x240. Stacking fourteen rows cannot fit that height.
+  // Minecraft's minimum GUI is 320x240. Stacking fourteen rows cannot fit that height.
   // Keep both columns, narrow their buttons, and use the actual vanilla button text scrolling.
   int columnWidth=Math.min(220,(width-34)/2), columnGap=10;
   int leftRows=6,rightRows=8,rows=Math.max(leftRows,rightRows)+2;
@@ -37,35 +37,39 @@ public final class MagicSettingsScreen extends Screen {
   for(int i=0;i<3;i++){String preset=java.util.List.of("performance","balanced","cinematic").get(i);
    int presetLeft=i*(columnWidth+2)/3,presetRight=(i+1)*(columnWidth+2)/3-2;
    var label=Component.translatable("screen.wildercord.profile."+preset);
-   addRenderableWidget(Button.builder(label,b->{MagicQuality.preset(preset);rebuildWidgets();}).bounds(x+presetLeft,y,presetRight-presetLeft,20).tooltip(Tooltip.create(label)).build());}
-  addRenderableWidget(Button.builder(Component.literal("Your spells: " + MagicQuality.own), b -> {
-   MagicQuality.own = MagicQuality.own.next(); MagicQuality.save(); b.setMessage(Component.literal("Your spells: " + MagicQuality.own));
-  }).bounds(x, y + pitch, columnWidth, 20).build());
-  addRenderableWidget(Button.builder(Component.literal("Other spells: " + MagicQuality.others), b -> {
-   MagicQuality.others = MagicQuality.others.next(); MagicQuality.save(); b.setMessage(Component.literal("Other spells: " + MagicQuality.others));
-  }).bounds(x, y + pitch * 2, columnWidth, 20).build());
-  addRenderableWidget(Button.builder(Component.literal("Reduced flash: " + MagicQuality.reducedFlash), b -> {
-   MagicQuality.reducedFlash = !MagicQuality.reducedFlash; MagicQuality.save(); b.setMessage(Component.literal("Reduced flash: " + MagicQuality.reducedFlash));
-  }).bounds(x, y + pitch * 3, columnWidth, 20).build());
-  addRenderableWidget(Button.builder(Component.literal("Camera motion: " + MagicQuality.cameraShake), b -> {
-   MagicQuality.cameraShake = !MagicQuality.cameraShake; MagicQuality.save(); b.setMessage(Component.literal("Camera motion: " + MagicQuality.cameraShake));
-  }).bounds(x, y + pitch * 4, columnWidth, 20).build());
+   // The profile in use is shown pressed in, as vanilla shows a chosen option; its tooltip says what each profile sets.
+   var button=addRenderableWidget(Button.builder(label,b->{MagicQuality.preset(preset);rebuildWidgets();}).bounds(x+presetLeft,y,presetRight-presetLeft,20)
+    .tooltip(Tooltip.create(Component.translatable("screen.wildercord.profile."+preset+".tip"))).build());
+   button.active=!MagicQuality.isPreset(preset);}
+  // Every change below re-lays the screen so the profile buttons always show whether the settings still match one.
+  addRenderableWidget(Button.builder(choice("own_spells", MagicQuality.own), b -> {
+   MagicQuality.own = MagicQuality.own.next(); MagicQuality.save(); rebuildWidgets();
+  }).bounds(x, y + pitch, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.own_spells.tip"))).build());
+  addRenderableWidget(Button.builder(choice("other_spells", MagicQuality.others), b -> {
+   MagicQuality.others = MagicQuality.others.next(); MagicQuality.save(); rebuildWidgets();
+  }).bounds(x, y + pitch * 2, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.other_spells.tip"))).build());
+  addRenderableWidget(Button.builder(toggle("reduced_flash", MagicQuality.reducedFlash), b -> {
+   MagicQuality.reducedFlash = !MagicQuality.reducedFlash; MagicQuality.save(); rebuildWidgets();
+  }).bounds(x, y + pitch * 3, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.reduced_flash.tip"))).build());
+  addRenderableWidget(Button.builder(toggle("camera_motion", MagicQuality.cameraShake), b -> {
+   MagicQuality.cameraShake = !MagicQuality.cameraShake; MagicQuality.save(); rebuildWidgets();
+  }).bounds(x, y + pitch * 4, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.camera_motion.tip"))).build());
   addRenderableWidget(Button.builder(titles(), b -> {
    MagicQuality.spellTitles = !MagicQuality.spellTitles; MagicQuality.save(); b.setMessage(titles());
   }).bounds(x, y + pitch * 5, columnWidth, 20).build());
   // Aura and casting share the second column at every supported GUI size.
   int cx=x+columnWidth+columnGap,cy=y;
   addRenderableWidget(Button.builder(choice("blade_trails", MagicQuality.bladeTrails), b -> {
-   MagicQuality.bladeTrails = MagicQuality.bladeTrails.next(); MagicQuality.save(); b.setMessage(choice("blade_trails", MagicQuality.bladeTrails));
+   MagicQuality.bladeTrails = MagicQuality.bladeTrails.next(); MagicQuality.save(); rebuildWidgets();
   }).bounds(cx, cy, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.blade_trails.tip"))).build());
   addRenderableWidget(Button.builder(choice("body_aura", MagicQuality.bodyAura), b -> {
-   MagicQuality.bodyAura = MagicQuality.bodyAura.next(); MagicQuality.save(); b.setMessage(choice("body_aura", MagicQuality.bodyAura));
+   MagicQuality.bodyAura = MagicQuality.bodyAura.next(); MagicQuality.save(); rebuildWidgets();
   }).bounds(cx, cy + pitch, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.body_aura.tip"))).build());
   addRenderableWidget(Button.builder(choice("impact", MagicQuality.impact), b -> {
-   MagicQuality.impact = MagicQuality.impact.next(); MagicQuality.save(); b.setMessage(choice("impact", MagicQuality.impact));
+   MagicQuality.impact = MagicQuality.impact.next(); MagicQuality.save(); rebuildWidgets();
   }).bounds(cx, cy + pitch * 2, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.impact.tip"))).build());
   addRenderableWidget(Button.builder(choice("banners", MagicQuality.banners), b -> {
-   MagicQuality.banners = MagicQuality.banners.next(); MagicQuality.save(); b.setMessage(choice("banners", MagicQuality.banners));
+   MagicQuality.banners = MagicQuality.banners.next(); MagicQuality.save(); rebuildWidgets();
   }).bounds(cx, cy + pitch * 3, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.banners.tip"))).build());
   // Where the sword string indicator shows (by the crosshair, by the hotbar, or hidden).
   addRenderableWidget(Button.builder(stringIndicator(), b -> {
@@ -85,7 +89,11 @@ public final class MagicSettingsScreen extends Screen {
   addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.profile.benchmark"),b->{dev.wildercord.client.fx.FrameBenchmark.start();minecraft.gui.setScreen(null);}).bounds(bx,by,footerWidth,20).build());
   addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose()).bounds(bx, by + pitch, footerWidth, 20).build());
  }
- /** One of aura's choices: "Blade trails: full". */
+ /** An on/off choice: "Reduced flash: on". */
+ private static Component toggle(String key, boolean on) {
+  return Component.translatable("screen.wildercord." + key, Component.translatable("screen.wildercord.toggle." + (on ? "on" : "off")));
+ }
+ /** One of the cycling choices: "Blade trails: full". */
  private static Component choice(String key, Enum<?> value) {
   return Component.translatable("screen.wildercord." + key, Component.translatable("screen.wildercord." + key + "." + value.name().toLowerCase(Locale.ROOT)));
  }

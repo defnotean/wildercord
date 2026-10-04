@@ -17,6 +17,9 @@ Assign a key to **Magic visual settings** under Minecraft Controls → Wildercor
 | Other casters' formations | Balanced, or Minimal in busy fights | Decorative density from other players |
 | Reduced flash | Enable if bright releases are uncomfortable | Dims Wildercord shaped light |
 | Camera motion | Reduce if you prefer steady aiming | Wildercord shake and field-of-view punches |
+| Blade trails, body aura, impact, banners | Subtle, Calm, Soft and Own in busy fights | Aura's ribbons, glow, hit-stop and technique banners |
+
+The **Performance**, **Balanced** and **Cinematic** buttons at the top set all of these at once; hover one to see what it sets. The button for the profile in use is shown pressed in, and changing any single setting afterwards releases it.
 
 The settings are local in `config/wildercord-visuals.json`. The launcher profiles set defaults; you can change them later. Cinematic includes Iris but requires a separately installed and selected shader pack to enable shaders.
 
