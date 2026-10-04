@@ -7,16 +7,16 @@ permalink: /world/mossveil-dormice/
 ---
 # A home for a quiet nose
 
-> Development field chapter. The companion and cowl have passed focused native
+> **New in 0.10.0-alpha.** The companion and cowl have passed focused native
 > gameplay checks. The artwork below is an illustrated field plate; the separate
-> game captures are labelled below. Public release availability is separate.
+> game captures are labelled below.
 
 Mossveil Dormice are little rounded cave companions with folded ear cups,
 cream cheeks, twitching whiskers and a curling tail. Their sounds are tiny
 sniffs, uneven bites, soft chirps and paws brushing moss. They never cast
 magic, breed or produce bonus crafting materials.
 
-![Illustrated Mossveil Dormouse and stitched cowl field plate â€” authored illustration, not native game evidence]({{ '/assets/mossveil/illustrated-field-plate.png' | relative_url }})
+![Illustrated Mossveil Dormouse and stitched cowl field plate — authored illustration, not native game evidence]({{ '/assets/mossveil/illustrated-field-plate.png' | relative_url }})
 
 ## Find a living fungal corner
 
@@ -94,7 +94,7 @@ saved; after reopening, begin the stationary breath again when ready.
 
 ## Protect the preparation
 
-Movementâ€”including small steps that accumulate past the planted boundâ€”
+Movement—including small steps that accumulate past the planted bound—
 uncrouching, lost poison, changed equipment, an unsupported or changed
 home, a foreign companion, death or departure cancels preparation.
 Dense companion queries refuse rather than choosing a hidden eligible

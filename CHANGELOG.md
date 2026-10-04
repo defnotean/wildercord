@@ -4,18 +4,46 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.10.0-alpha] — 2026-10-04
+
+Install the same build on the server and every client. New blocks, items, entities, particles and packets mean 0.9.x clients must update before joining.
+
+### Release fixes
+
+- Fixed read-only and in-place checks running Wildercord's own block-break handlers. The Bank Surveyor's Line, Mossveil Cowl home check, Watchweft and Manabraid floor checks, Cinder Fern and Moonreed harvests and fern spell interactions now ask claim mods as before, but no longer erase a dungeon room's "player placed" record (which made a player's own block unbreakable afterwards) or set off another player's glyph trap.
+- Fixed a Nullcatch or Quietus cast on a target that already had the other screen silently replacing that paid screen; the later cast is now refused before its target allowance or rest is spent.
+- Fixed the frame benchmark started from the Grimoire's visual-settings link reopening the Grimoire over the scene; it now always measures the plain game view.
+- Repaired garbled dashes and multiplication signs in the Life outcomes, Mossveil and Fusion Altar guide pages, and missing spaces before numbers in the changelog and guide.
+- Split the native client test job into four ordered shards with a longer limit. The full roster takes several hours and never completed within one 90-minute CI job.
+
+### Living-world additions
+
+- Added **Mara's Drainhouses**: three-room underground waterkeeping stations generated in newly explored lush and dripstone caves, with an optional investigation (snail dew, a witnessed Rootmolt meal and a counter), three ledger lore books, a once-per-player **Mara's Empty Bell** that interrupts one Rootmolt's warning or hold, and **Rootbound Greaves** that let a still, crouched wearer deny one restraint at a wear and rest cost.
+- Added **Cinder Bailiffs** and **Cinder Ferns**: a broad woodland creature that tends cooled ferns and answers threats with a warned three-vent heat fan (no terrain fire), and a three-stage fern that can be crafted, planted, harvested without losing its root, and cooled, warmed or grown by real paid spells.
+- Added **Root Carry**, a rank-II Life rune that moves a young Cinder Fern, with its growth and cooling state, onto nearby empty soil over two separately paid casts.
+- Added the **Tideward crossing kit**: **Reedwater Waders** for shallow supported banks, **Dewglass Spectacles** that read a nearby Reedback Crab's raised claws, and the **Bank Surveyor's Line**, which shows a short physical route over actual footing. Each has wear, saved rests and its own sounds.
+- Added the **Siltcrest Bittern**, a wetland bird with its own rig and voices that coils and strikes at wild cod and salmon from dry banks at night, rests under cover by day, protects named/bucket/persistent fish, and can be offered a fish by a crouching player.
+- Added **Mossveil Dormice**, small cave companions tamed with three Glowcap Gill feedings, and the craftable **Mossveil Cowl**, a one-armour head filter: crouch still for two seconds beside your curled dormouse and a Fungal Nursery to shorten current Poison by up to three seconds, at the cost of wear, brief Slowness and a saved rest.
+- Added **Camp Concord**: **Watchweft**, a 45-second private camp watch that warns once when a hostile targeting you crosses in, and **Manabraid**, a consenting, lossy mana gift to an allied caster (at most 24 taken, 16 given).
+- Added **Rook's Rainshield**, a crafted reed-fan relic that catches one incoming arrow for yourself or for a teammate who accepts your offer by crouching; no mana, saved rest.
+- Fixed repeated paid wards (Zone, Pulse or Echo of the same payment) refilling spent Reflect and Foresight charges, and Reflect returning a hit whose damage was not actually received.
+- Live wildlife spawn and population queries now run only on the owning server thread and refuse during chunk generation; Aura beast and wetland queries are bounded, and a Reedback Crab's follow-up sweep keeps its original owner.
+- Guarded the blade tooltip's client state during the Codex background search.
+
+### Magic, fungal fieldcraft and earlier development changes
+
 - Added Rootmolt Striders: original articulated cave creatures that compete for mature Glowcaps, defend their garden with a readable single physical rake, and apply a short source-owned restraint with practical melee, cleanse and sidestep counters. Added finite saved resource/threat clocks, Sporeback warning reactions, bounded population/alarm queries, compatible configuration, five authored voices and illustrated guide coverage.
 - Fixed the Rootmolt texture path, natural-spawn dimension admission and stale equipment contacts after callback movement/target replacement. Verified once-only consumption, counterplay, restart, habitat and dense-query behavior in focused native tests.
-- Ground Sporebloom's actual fruit on the recipient's real block/slab support; use separate hanging spores for airborne recipients. Keep finite Full/Minimal materials above the floor and resolve support after event admission. Updated all30-rune surface regressions and preserved genuine gameplay/screenshots.
+- Ground Sporebloom's actual fruit on the recipient's real block/slab support; use separate hanging spores for airborne recipients. Keep finite Full/Minimal materials above the floor and resolve support after event admission. Updated all 30-rune surface regressions and preserved genuine gameplay/screenshots.
 - Tightened synchronous counter-test damage provenance and retained strict actual health-loss, cancellation and no-resurrection gates. Focused tests pass; full Linux CI remains independently tracked.
 
 - Corrected 34 proven malformed translation literals in the generator and regenerated language data: Codex mana/cooldown separators and multiplication signs, Cord/tooltips, passive/readout and research/loadout text now use their intended punctuation.
 
-- Fixed visual settings overflowing short/narrow windows: adaptive columns and spacing keep every control reachable at Minecraft's minimum320x240 GUI, with full preset-label tooltips. Native tests verify18 non-overlapping controls, journal state preservation and learned-only guidance.
+- Fixed visual settings overflowing short/narrow windows: adaptive columns and spacing keep every control reachable at Minecraft's minimum 320x240 GUI, with full preset-label tooltips. Native tests verify 18 non-overlapping controls, journal state preservation and learned-only guidance.
 
-- Added individually authored actual-outcome material responses for30 existing Life identities: tissue, sap, seed coats, thorns, leaf shutters, roots, hanging berries, spores and equipment stitches follow the body, slot or changed cell that really acted. Refused/no-change actions remain silent; admitted wards, real triggers and endings stay distinct.
+- Added individually authored actual-outcome material responses for 30 existing Life identities: tissue, sap, seed coats, thorns, leaf shutters, roots, hanging berries, spores and equipment stitches follow the body, slot or changed cell that really acted. Refused/no-change actions remain silent; admitted wards, real triggers and endings stay distinct.
 - Added actual-caster source-aware Life visual delivery and smaller authored Minimal recipes, finite queue/decoration budgets, loaded-world/range/freshness checks and camera/eye clearance. Orient material to real body/cell surfaces and retain ingredients in mixed fusions.
-- Removed duplicate generic SELF/impact and old Venom/Fortune success overlays only where authored outcome coverage owns the response. Added56 distinct Life cue/outcome sound identities with112 generated variants; Ashen Mercy and Pulse Ferry keep their original sole voices.
+- Removed duplicate generic SELF/impact and old Venom/Fortune success overlays only where authored outcome coverage owns the response. Added 56 distinct Life cue/outcome sound identities with 112 generated variants; Ashen Mercy and Pulse Ferry keep their original sole voices.
 - Fixed spectator interception in projectile/line/Touch/Chorus/imbued aim; fixed Fortune success feedback occurring before final damage admission and replaced its old kill flourish with actual experience-reward provenance. Preserve real damage/payment rules and finite renewal/expiry cleanup.
 - Added a Life field chapter to wiki/GitBook, a labelled illustrated plate, learned-only native Grimoire material notes, and direct Magic visuals navigation returning to the journal. Updated Haven's description to its actual leaf-shutter defense.
 - Added focused actual gameplay/source/quality/surface/lifecycle/Fortune/spectator regression coverage and native screenshot galleries. Corrected the strict Void alternate-flight camera without relaxing pixel assertions. Full Linux/dedicated multiplayer and all maintained visual lifecycles remain open.
@@ -49,8 +77,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Fixed **Collect** moving drops reserved for other players or still awaiting pickup. Foreign target/thrower UUIDs and pickup delays now preserve those items in place, alongside existing ground protection and radius limits; ready own/unowned items and experience remain supported.
 - Fixed generic formation effects overlapping fully covered field-fusion projectile preparations. Mixed groups containing an uncovered effect retain their fallback presentation. Corrected the six carved rune texture paths so actual inventory models use the authored artwork.
 - Extended the generic front-orb/line suppression to fully authored Fire, Frost and Storm projectile preparations. Rear glyph strokes and Jolt's own conducting arc remain; actual mixed Ember/Umbra retains its fallback. Focused native Full/Minimal paid-cast checks passed.
-- Added an illustrated **Living Materials** guide chapter using original Life preparation and travel captures, plus documented mixed-material benchmark measurements and their practical limits. The player guide now validates and exports120 pages.
-- Added a sustained mixed-material native benchmark and complete restoration of visual, frame-limit, VSync and HUD settings. Retained scene measurements document their local scope and120FPS-cap limitations rather than claiming a profile speedup.
+- Added an illustrated **Living Materials** guide chapter using original Life preparation and travel captures, plus documented mixed-material benchmark measurements and their practical limits. The player guide now validates and exports 120 pages.
+- Added a sustained mixed-material native benchmark and complete restoration of visual, frame-limit, VSync and HUD settings. Retained scene measurements document their local scope and 120 FPS-cap limitations rather than claiming a profile speedup.
 - Corrected the Runic Hearth lantern test to allow its actual charge cooldown and scheduled update interval. The focused native planter, lantern, falling chime and cooperative ritual sequence passes; the full Linux gameplay gate remains separately tracked.
 - Added the **Reed Rattle**, a crafted physical instrument that answers a Reedback Crab's warning claws. Crouching within three visible blocks gives six seconds to pass; committed sweeps remain dangerous. Forty-eight uses, a saved twenty-second player rest and the crab's shared response rest prevent replacement instruments and repeated interactions from bypassing the tradeoff. Original clay/reed/floss model and pebble-shake sound accompany it.
 - Added the **Sporeback Snail**, custom animated cave wildlife that approaches and browses actual mushrooms without destroying them. A finite saved dew reserve rewards quiet gathering; Life elicits a brief spore response without producing resources, while Fire and injury cause temporary retraction. Cave habitat, local population limits and bounded food/shelter searches keep its behavior sustainable.

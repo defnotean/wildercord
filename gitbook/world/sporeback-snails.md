@@ -1,6 +1,6 @@
 # Sporeback Snails
 
-*Development review content; introduced after the 0.9.1-alpha.1 public release.*
+*New in 0.10.0-alpha.*
 
 Pale layered spirals browse damp underground moss and clay. Their lilac feet, long antennae,
 offset shell whorls and little dew crown make them recognizable without a light show.

@@ -13,8 +13,7 @@ a leaf canopy, a medicinal blossom or a thorn with a poison sac. Watch the mater
 front of you while the casting circle stays behind your shoulders. The outgoing shape still
 determines where the spell acts.
 
-These illustrations show the development review build. They are original frames from Minecraft;
-the newer presentation is not included in the published 0.9.1-alpha.1 release.
+These illustrations are original frames from Minecraft. This presentation is new in 0.10.0-alpha.
 
 ## A seed has a beginning
 

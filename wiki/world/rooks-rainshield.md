@@ -9,7 +9,7 @@ permalink: /world/rooks-rainshield/
 
 **A mended reed fan for a single dangerous arrow.** Plant your feet, draw the cloth taut, and cover yourself or a teammate who has accepted your offer. The copper hinge and stitched panels are physical equipment; this relic uses no magic circles and spends no mana.
 
-> **Development review build:** native crafting, combat, saved rest and two connected clients have passed focused tests. These pictures are actual game captures from supplied test scenes. Public release availability is separate from this development milestone.
+> **New in 0.10.0-alpha.** Native crafting, combat, saved rest and two connected clients have passed focused tests. These pictures are actual game captures from supplied test scenes.
 
 ## From a bank to a copper hinge
 

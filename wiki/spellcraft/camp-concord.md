@@ -50,4 +50,4 @@ With an **amethyst shard**, Watchweft and Ember make Starfire; Watchweft and Tre
 
 With an **amethyst block**, weave the exact effects instead. Manabraid + Heal can heal an ally and offer a consenting mana gift in one paid cast. Echo and duplicate Watchweft nodes share the original cast's one-offer or one-watch budget; they do not create extra transfers or renew the saved rest.
 
-Development gameplay checks cover real crafting, paid casts, altar result pickup and learning, plus two genuinely connected clients for ordinary and altar-earned woven gifting. Full/Minimal native casting captures are retained. Public release availability is separate. Complete server process restart, remote latency, every fusion delivery and sound listening remain broader checks.
+Development gameplay checks cover real crafting, paid casts, altar result pickup and learning, plus two genuinely connected clients for ordinary and altar-earned woven gifting. Full/Minimal native casting captures are retained. Complete server process restart, remote latency, every fusion delivery and sound listening remain broader checks.

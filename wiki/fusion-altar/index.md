@@ -41,8 +41,8 @@ rank.
 | Inputs | Catalyst | Result | XP levels |
 |---|---|---|---|
 | Three identical effects at the same rank | None | Next rank | 2 for II; 5 for III |
-| Two elemental effects | Amethyst Shard | One of 55 elemental fusions, or a matching one of 22 signature fusions | 3 |
-| Two effects or existing exact weaves, at most eight leaves total | Block of Amethyst | An exact weave preserving every ingredient | 3 Ã— (total leaves âˆ’ 1) |
+| Two elemental effects | Amethyst Shard | One of 55 elemental fusions, or a matching one of 40 signature fusions | 3 |
+| Two effects or existing exact weaves, at most eight leaves total | Block of Amethyst | An exact weave preserving every ingredient | 3 × (total leaves − 1) |
 | One Blank Rune and a selected active spell | String | A Knot storing the sequence in one socket | One per rune, minimum 2 |
 
 Two-leaf weaves need at least their highest component tier. Three or four need Tier III; five to eight need Tier IV. Their base mana is the sum of the leaves. Shapes, modifiers and links belong in Knots, rather than elemental weaves.

@@ -6,7 +6,7 @@ permalink: /spellcraft/basinfill/
 ---
 # Water for a little hollow
 
-**Development review build:** Basinfill was added after the public 0.9.1-alpha.1 release.
+**New in 0.10.0-alpha.**
 
 Basinfill is a rank-I frost/water utility rune. It creates permanent ordinary source water in
 an enclosed shallow hole. Craft its rune from a **Blank Rune, Clay Ball and Water Bucket**.

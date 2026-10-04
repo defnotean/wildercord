@@ -1,4 +1,4 @@
-# Void material choreography â€” development acceptance
+# Void material choreography — development acceptance
 
 ## Implemented scope
 

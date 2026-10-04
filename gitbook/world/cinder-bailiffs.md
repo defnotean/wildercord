@@ -1,9 +1,8 @@
 # Cinder Bailiffs and Ferns
 
-> Development chapter. This page describes the implemented creature and plant.
+> **New in 0.10.0-alpha.**
 > Focused crafting, paid spell interactions, ecology, combat and visual checks
 > have passed. Multiplayer and sustained population testing remain open.
-> This addition has not been uploaded as a public release.
 
 A Cinder Bailiff is a broad, four-footed woodland animal with a fired-clay
 breastplate, a brush tail and three opening back vents. It tends a cooled fern,

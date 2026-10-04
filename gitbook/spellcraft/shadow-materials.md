@@ -4,8 +4,7 @@ Void gathers torn folds, closing shells and hungry silhouettes. Watch what forms
 in front of your hands; the casting circle remains behind your shoulders. Your
 chosen shape determines where the spell acts.
 
-These are original Minecraft frames from the development review build. This
-presentation is not included in the published 0.9.1-alpha.1 release.
+These are original Minecraft frames. This presentation is new in 0.10.0-alpha.
 
 ## A hook has a direction
 

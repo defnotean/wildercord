@@ -1,6 +1,6 @@
 # Mara's Drainhouses
 
-> Development chapter. Focused native checks cover natural generation, ordinary entrance traversal, placement safeguards, earned gathering and acquisition, equipment interactions, saved-world restart and custom models. It has not been uploaded as a new public release.
+> **New in 0.10.0-alpha.** Focused native checks cover natural generation, ordinary entrance traversal, placement safeguards, earned gathering and acquisition, equipment interactions, saved-world restart and custom models.
 
 A Drainhouse is a small underground waterkeeping station with three distinct rooms: an engraved entrance, a damp living garden, and a raised copper return desk. Moss banks beside a contained gutter shelter two young Glowcaps. Cracked stone ribs, copper grates and timber braces tell a practical story about tending caves rather than conquering them.
 
@@ -10,7 +10,7 @@ Drainhouses belong to covered Overworld lush and dripstone caves. World generati
 
 ![A naturally generated Drainhouse with timber braces, a ribbed vault and a raised copper alcove](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/belowkeeper/drainhouse_natural_716843.png)
 
-This house was generated in seed716843 and entered with ordinary Survival walking and jumping. The fixed three-seed check observed243 chunks and verified one neighboring generated house's exact footprint. That small sample verifies discoverability and saved provenance; it does not establish a representative frequency across all worlds.
+This house was generated in seed 716843 and entered with ordinary Survival walking and jumping. The fixed three-seed check observed 243 chunks and verified one neighboring generated house's exact footprint. That small sample verifies discoverability and saved provenance; it does not establish a representative frequency across all worlds.
 
 ## Follow the borrowed breath
 

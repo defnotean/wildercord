@@ -8,17 +8,23 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 **[Read the player guide](https://defnotean.github.io/wildercord/) · [Browse the changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md) · [Report an issue](https://github.com/defnotean/wildercord/issues)**
 
-## New in 0.9.1: blades, living banks and authored magic
+## New in 0.10.0: cave gardens, wetland fieldcraft and new signatures
 
-- **A deeper Aura path:** sword strings, fifty breathing-method arts, momentum and openings, awakenings, Ways, authored techniques, bonded blades, masters and disciples, consent-based sparring and timed clashes. Physical standards and fractured ground express the swordsman's force; Soar opens articulated feathered wings.
-- **Explore the swordsman's world:** Marchkeeper battlefield memories, sword tombs and the Buried Keeper, the sleeping blade and Oathkeeper, village tournaments, Stonehorns and Galeclaws. Resonant strikes, rune-etched blades and Unity connect sword and spell.
-- **Living banks and highlands:** Lantern Newts, Moonreed visited by Glimmerwings, Reed Refuges and territorial Reedback Crabs. Craft Marshlights, a Dewglass Lens, a fuelled Draft Kite and Windreed Braids. Fish tames ordinary foxes as well as Cinderfoxes.
-- **103 authored elemental preparations and projectile bodies:** fire, frost/water, storm and wind carry their own motion and supporting materials. Wind has a dedicated airflow renderer. Initial and linked formations follow their actual delivery, with the complete casting glyph behind the caster.
-- **Damage exploit fixes:** extreme modifier stacking is bounded, and each paid player cast shares a damage allowance across repeats and damage over time. `/wildercord learnall` also reveals all 77 named fusion recipes. Saved spell counts, mountain attunement and Storm Spire are improved.
+- **A living cave garden:** Glowcaps that only a real Sporeback Snail visit can mature, Fungal Nurseries, Mycelial Dew, the Cave Breather and Mara's Three Breathmarks investigation. Rootmolt Striders compete for mature caps and defend them with a warned rake.
+- **Places and companions underground:** Mara's Drainhouses generate in new lush and dripstone caves, with ledger lore, a restorable Empty Bell and Rootbound Greaves. Tame a Mossveil Dormouse with Glowcap Gills and stitch a Mossveil Cowl.
+- **Banks, birds and woodland ferns:** the Siltcrest Bittern, the Tideward crossing kit (waders, spectacles and a route-reading survey line), the Reed Rattle, Rook's Rainshield, and Cinder Bailiffs with plantable Cinder Ferns.
+- **New magic:** Basinfill, Root Carry, Watchweft and Manabraid; eighteen new signature fusions (40 in total); authored Earth, Life and Void materials, and Life outcomes that mark the actual body, plant or tool each spell changed.
+- **Fixes:** repeated ward pulses can't refill spent charges, Reflect only answers damage that landed, Collect respects other players' drops, spectators no longer block spells, and the visual settings fit the smallest window.
 
-![A Reedback Crab warns before its committed sweep](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/reedback-warning.png)
+![A Siltcrest Bittern coiling at the bank](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/siltcrest/coil.png)
 
-[Read the full 0.9.1 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha.1). The broader living-world expansion and complete all-element release/impact choreography are still in progress.
+[Read the full 0.10.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.10.0-alpha). The broader living-world expansion and complete all-element release/impact choreography are still in progress.
+
+## Earlier in 0.9.1: blades, living banks and authored magic
+
+- **A deeper Aura path:** sword strings, breathing-method arts, awakenings, Ways, bonded blades, masters and disciples, sparring and timed clashes, with battlefields, sword tombs, the sleeping blade and village tournaments to explore.
+- **Living banks and highlands:** Lantern Newts, Moonreed visited by Glimmerwings, Reed Refuges and territorial Reedback Crabs. Fish tames ordinary foxes as well as Cinderfoxes.
+- **Authored fire, frost/water, storm and wind** preparations and projectile bodies, and per-cast damage allowances that stop extreme modifier stacking.
 
 ## The 0.9 foundation: the wilds and the sword
 
@@ -51,14 +57,14 @@ The Cord editor describes your spell while you build it, shows where modifiers a
 
 ![Build and preview a spell in the Cord editor](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/circle-editor.jpg)
 
-- **350 named runes:** 39 shapes, 258 effects, 36 modifiers and 17 links. Craft 199 runes, find 53 world runes, and discover 77 named fusion recipes.
+- **372 named runes:** 39 shapes, 280 effects, 36 modifiers and 17 links. Craft 203 runes, find 53 world runes, and discover 95 named fusion recipes.
 - **Ten elements:** Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, with their own reactions, creature affinities and visual materials.
 - **Your spell has its own presentation:** 297 authored shape/effect casting sequences, readable rune circles, custom sounds and mixed-element effects.
 - **Twelve circle disciplines:** change coverage, speed, duration, support and power, with meaningful tradeoffs. Movement, crouching, rain and night can affect your spell.
 
 ## Fuse, weave and build
 
-The Fusion Altar combines every pair of elements, including an element with itself, into 55 elemental fusions. Another 22 signature recipes reward particular effect combinations.
+The Fusion Altar combines every pair of elements, including an element with itself, into 55 elemental fusions. Another 40 signature recipes reward particular effect combinations.
 
 Exact weaves preserve two through eight effect ingredients, including duplicates. Tie shapes, modifiers and links into Knots; explore owner-bound innate imprinting and Tier IV soul weaves as you progress.
 
@@ -82,11 +88,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.9.1-alpha.1
+## Install 0.10.0-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client: a 0.9.1 server needs 0.9.1 players. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.10.0 server needs 0.10.0 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 

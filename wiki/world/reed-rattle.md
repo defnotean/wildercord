@@ -6,7 +6,7 @@ permalink: /world/reed-rattle/
 ---
 # A quiet answer for raised claws
 
-**Development review build:** this field instrument was added after the public 0.9.1-alpha.1 release.
+**New in 0.10.0-alpha.**
 
 A Reed Rattle is a handmade clay chamber of pebbles on a bamboo handle, tied with Moonreed Floss.
 It gives explorers without magic a way past a territorial **Reedback Crab**.

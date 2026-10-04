@@ -1,6 +1,6 @@
 # The living field journal
 
-> **Development chapter.** This chapter describes the current development source. Its actual-outcome gameplay and visual-detail routing have focused native acceptance; maintained and timed visual sequences remain under review. The chapter has not yet been included in a public released guide. The plate below is an illustration, with native game captures to be added separately after review.
+> **New in 0.10.0-alpha.** Actual-outcome gameplay and visual-detail routing have focused native acceptance; maintained and timed visual sequences remain under review. The plate below is an illustration, with native game captures to be added separately after review.
 
 *A closed wound, a spent seed coat, a thorn that answers a blow. Life leaves a different mark for each kind of work.*
 
@@ -95,7 +95,7 @@ Use ordinary defense, positioning and retreat alongside them. Enemies can wait o
 
 ## Two cooperative signatures keep their own voices
 
-### Ashen Mercy â€” scorched leaves become a living seam
+### Ashen Mercy — scorched leaves become a living seam
 
 Remove an ally's actual harmful conditions or fire to feed the existing capped conversion. Scorched leaf flakes show the removals; a tissue seam follows positive healing, with a small ember retaining its Fire ingredient. A clean target supplies no invented removal or converted healing.
 
@@ -103,7 +103,7 @@ Its original Ashen Mercy casting identity and **single authored landing voice re
 
 **Field use:** keep it ready for an ally whose burning or harmful conditions give the conversion something real to remove. Compare the conditions and health afterward. See [Field Signatures](../magic/field-signatures.md) for the exact Fusion Altar pairing and limits.
 
-### Pulse Ferry â€” a parcel needs two wounded recipients
+### Pulse Ferry — a parcel needs two wounded recipients
 
 The parcel visits **two different** wounded eligible allies, on separate beats, within its four-block field. At most three health is offered to either recipient and six across the payment. Crouching refuses a visit; full health gives no unused recovery. Later eligibility, sight and living-owner checks still apply, so an intended second visit can fail.
 

@@ -1,4 +1,4 @@
-**Development review build:** Root Carry was added after the public 0.9.1-alpha.1 release.
+**New in 0.10.0-alpha.**
 
 # Root Carry
 
@@ -8,7 +8,7 @@ A young Cinder Fern can become the beginning of a garden. Root Carry moves an ex
 
 ## Craft and learn
 
-At a crafting table, combine one Blank Rune, Rooted Dirt, Bone Meal, String, two Lapis Lazuli and one Gold Ingot. Use the resulting rune to learn Root Carry. Add it to a direct spell such as Touch. Root Carry is a rank-II Life world effect with base mana cost8; the chosen shape, cord, mastery and admitted modifiers determine each complete spell's actual price.
+At a crafting table, combine one Blank Rune, Rooted Dirt, Bone Meal, String, two Lapis Lazuli and one Gold Ingot. Use the resulting rune to learn Root Carry. Add it to a direct spell such as Touch. Root Carry is a rank-II Life world effect with base mana cost 8; the chosen shape, cord, mastery and admitted modifiers determine each complete spell's actual price.
 
 ## Two casts, one root
 

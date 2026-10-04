@@ -124,4 +124,4 @@ and leave inventory room before using Cinder Sieve on expedition supplies. Keep 
 for burning or poisoned allies. Clockroot buys a short positioning opportunity against ordinary
 foes, while Skylatch can give an ally a brief elevated view without taking away its choice to move.
 
-*These six signatures are development content introduced after the 0.9.1-alpha.1 public release.*
+*These six signatures are new in 0.10.0-alpha.*

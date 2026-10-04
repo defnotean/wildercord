@@ -3,49 +3,43 @@ title: What's New
 nav_order: 1.1
 ---
 
-# What's new in 0.9.1-alpha.1
+# What's new in 0.10.0-alpha
 
-This release brings the expanded Aura path, living highland and wetland interactions, authored fire/frost/storm/wind preparations and projectile bodies, and fixes for extreme spell damage. **Update the server and every client together.** Spell packets and particle registration have changed since 0.9.0.
+This release grows the living world underground and along the wetland banks: fungal gardens and the creatures that visit them, new field equipment, eighteen new signature fusions, four new craftable runes and authored materials for Earth, Life and Void magic. **Update the server and every client together.** New blocks, items, creatures, particles and packets mean 0.9.x clients must update before joining.
 
-## Fairer spell damage
+## A living cave garden
 
-Vow, Execute and Trial Key now apply once per target rune; Focus twice; Extend three times. Extra copies warn and add neither cost nor power, including inside Knots. Each paid player cast shares one damage allowance per target across its repeats, linked hits and damage over time: `min(512, 12 + 2 × effective mana price)`, with a maximum 96 raw damage per hit. Armor still applies. See [casting rules]({{ '/spellcraft/casting/' | relative_url }}).
+Glowcaps grow in damp, covered caves, but only an actual rested [Sporeback Snail]({{ '/world/sporeback-snails/' | relative_url }}) browse matures them. Build a Fungal Nursery, gather Mycelial Dew, craft a Fungal Poultice or the offhand Cave Breather, and follow Mara's Three Breathmarks investigation. See [Glowcap Nurseries]({{ '/world/glowcap-nurseries/' | relative_url }}).
 
-## Authored elemental motion
+[Rootmolt Striders]({{ '/world/rootmolt-striders/' | relative_url }}) compete for mature caps and defend the patch with a warned physical rake. [Mara's Drainhouses]({{ '/world/belowkeeper-drainhouses/' | relative_url }}) appear in newly generated lush and dripstone caves; restore Mara's Empty Bell to interrupt a Rootmolt, and craft Rootbound Greaves to deny one restraint. [Mossveil Dormice]({{ '/world/mossveil-dormice/' | relative_url }}) can be tamed with Glowcap Gills and help a Mossveil Cowl filter poison at home.
 
-Preparations and moving projectile bodies now cover 28 fire, 30 frost/water, 20 storm and 25 wind effects. Ingredients retain their material and motion. Wind carries translucent airflow, traveling crests, shear and pressure using its own renderer. Initial and linked formations follow their actual delivery; one complete glyph stays behind the caster. Complete release/impact work for every element and delivery is still in progress.
+![A Mossveil Cowl worn in game]({{ '/assets/mossveil/native-worn-cowl.png' | relative_url }})
 
-![Windcut gathering fine currents ahead of its rear casting glyph]({{ '/assets/images/wind-formation-windcut.png' | relative_url }})
+## Banks, birds and woodland ferns
 
-## The blade and its world
+- The [Siltcrest Bittern]({{ '/world/siltcrest-bittern/' | relative_url }}) stalks wild cod and salmon from dry banks at night and shelters by day. Crouch to watch or offer it a fish.
+- The [Tideward crossing kit]({{ '/world/tideward-crossing-kit/' | relative_url }}) adds Reedwater Waders, Dewglass Spectacles that read a crab's raised claws, and a Bank Surveyor's Line that shows a short route over real footing.
+- The [Reed Rattle]({{ '/world/reed-rattle/' | relative_url }}) answers a Reedback Crab's warning, and [Rook's Rainshield]({{ '/world/rooks-rainshield/' | relative_url }}) catches one arrow for you or a teammate who accepts your cover.
+- [Cinder Bailiffs and Ferns]({{ '/world/cinder-bailiffs/' | relative_url }}) bring a woodland creature with a warned heat fan and a fern you can plant, harvest, cool or grow with real spells.
 
-Learn sword strings, breathing-method arts, momentum, openings, awakenings, Ways and authored techniques. Bond a blade, teach a disciple, spar by consent and meet another strike in a timed clash. Physical Aura standards, ground fractures and Soar's feathered wings accompany the path.
+![A Siltcrest Bittern coiling at the bank]({{ '/assets/images/siltcrest/coil.png' | relative_url }})
 
-Explore [Marchkeeper battlefields]({{ '/progression/aura/' | relative_url }}), sword tombs and the sleeping blade; meet highland beasts and enter village tournaments. Resonant strikes, rune-etched blades and Unity connect the swordsman and mage. See [Aura]({{ '/progression/aura/' | relative_url }}) and the [full release notes](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha.1).
+## New spells and signatures
+
+- Four new craftable runes: [Basinfill]({{ '/spellcraft/basinfill/' | relative_url }}) fills a small enclosed basin with water, [Root Carry]({{ '/spellcraft/root-carry/' | relative_url }}) moves a young fern, and [Watchweft and Manabraid]({{ '/spellcraft/camp-concord/' | relative_url }}) keep a camp watch and give willing mana gifts.
+- Eighteen new signature fusions: six [field signatures]({{ '/fusion-altar/field-signatures/' | relative_url }}) such as Springbed, Cinder Sieve and Thresherwind, and twelve [expedition signatures]({{ '/fusion-altar/expedition-signatures/' | relative_url }}) such as Red Ledger, Pulse Ferry and Wayline. The altar now knows 55 elemental and 40 signature fusions.
+- Earth, Life and Void effects have their own preparations and moving bodies; Life's outcomes leave a different material mark for each kind of work. See [Living Materials]({{ '/spellcraft/living-materials/' | relative_url }}), [Life Outcomes]({{ '/spellcraft/life-outcomes/' | relative_url }}) and [Shadow Materials]({{ '/spellcraft/shadow-materials/' | relative_url }}).
+
+![Root Carry lifting a young fern between two soil patches]({{ '/assets/screenshots/root-carry/lift.png' | relative_url }})
 
 ## Useful fixes
 
-- Summit Wind now recognizes actual mountain peaks; Storm Spire is rebuilt as a copper observatory.
-- The Cord creation screen shows the owner's saved spell count.
-- `/wildercord learnall` learns named fused runes and reveals all 77 elemental/signature recipes. It preserves saved spells and innate ownership. Exact dynamic weaves are still made at the altar.
-- Cinnamon has her polished custom appearance, bell, bow, tongue, temperament and owner-defense behavior.
-
-## Wetland lights and fox friendship
-
-Lantern Newts bring browsing behavior, answering lanterns and peaceful Dusk Pearl gathering to swamp shallows. Pearls craft waterloggable Marshlights and three-page Tideward field notes. Fish now tames both ordinary foxes and Cinderfoxes; ordinary foxes gain saved ownership, following and an empty-hand sit toggle. See [wetland field notes]({{ '/world/luminous-wetlands/' | relative_url }}) and [companions]({{ '/companions/' | relative_url }}).
-
-## Moonreed gardens
-
-Glimmerwings now visit swamp banks and pollinate Moonreed by approaching its buds. Life prepares growth but cannot replace a moth visit. Harvest floss without destroying the root, then combine it with a Dusk Pearl, Copper and Glass to craft a Dewglass Lens. Read flowers and newt gathering conditions, or follow its short trail to a visible nearby reed. See [Moonreed Gardens]({{ '/world/moonreed-gardens/' | relative_url }}).
-
-## Reed Refuges
-
-Weave a waterlogged canopy from Bamboo, Moonreed Floss, String and Seagrass. Lantern Newts seek it in daylight or rain, curl up briefly, and wake when fed or answering magic. Shelter adds no healing or extra pearl. Craft Tamsin's field notes to learn the habitat rules. See [Reed Refuges]({{ '/world/reed-refuges/' | relative_url }}).
-
-## Reedback Crabs
-
-A new territorial creature inhabits shallow swamp banks. Its six legs, hinged claws and reed crown have a custom model and animation. Sneak past, sidestep a warned sweep, use Tidebreath to calm it or wind to interrupt it. See [Reedback Crabs]({{ '/world/reedback-crabs/' | relative_url }}).
+- Repeated parts of one paid ward no longer refill spent Reflect or Foresight charges, and Reflect only answers damage that actually landed.
+- Collect leaves items reserved for other players in place; Grow checks both halves of tall plants before placing them.
+- Spectators no longer intercept projectiles, beams, Touch or Chorus aim.
+- The magic visuals screen fits Minecraft's smallest window, and Aura progression now explains real-combat XP, the practice limit and breakthrough trials.
+- Surveying, harvesting and camp checks no longer trip dungeon wards or another player's glyph trap.
 
 ## Earlier releases
 
-The twelve monsters/wildlife and original Aura foundation arrived in [0.9.0](https://github.com/defnotean/wildercord/releases/tag/v0.9.0-alpha). Harmonies, mastery and residues arrived in [0.8.0](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha). The living-world expansion continues; this release does not complete the roadmap.
+The expanded Aura path, wetland creatures and fire/frost/storm/wind materials arrived in [0.9.1](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha.1). The twelve monsters/wildlife and original Aura foundation arrived in [0.9.0](https://github.com/defnotean/wildercord/releases/tag/v0.9.0-alpha). Harmonies, mastery and residues arrived in [0.8.0](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha). The living-world expansion continues; this release does not complete the roadmap.

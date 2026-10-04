@@ -704,7 +704,7 @@ If your experience stops at about **40**, finish training on real hostile foes. 
 
 For stillness, crouch without moving on solid, dry ground with an aura weapon in your main hand. After the breathing stance settles, keep holding it until the trial completes. Movement, losing the valid training terrain or getting struck interrupts the trial. A qualifying waterfall is a falling column at least six blocks tall within three blocks of your dry footing; a summit requires mountain biome, open sky and surrounding terrain that drops away. Ordinary high platforms and source pools do not count. Training grounds require the server's training-ground feature to be enabled.
 
-The new progression hint and practice-limit notice are included in the development review build.
+The progression hint and practice-limit notice are new in 0.10.0-alpha.
 
 You grow by fighting well: landing full swings on real foes, more when you're in danger (low on health, against a crowd,
 near a boss, in a dungeon), against bosses and against foes stronger than you. Nothing comes from spam, and a Training

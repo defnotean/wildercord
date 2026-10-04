@@ -1,6 +1,6 @@
 # Make magic your own
 
-**Wildercord 0.9.1-alpha.1 · Minecraft Java 26.3 · Fabric · Java 25**
+**Wildercord 0.10.0-alpha · Minecraft Java 26.3 · Fabric · Java 25**
 
 Wear a Cord, thread runes from left to right, and cast the sequence with one key. Build a cheap knockback bolt, a mixed-element beam, a healing circle, a temporary bridge or a linked spell that changes when it lands.
 
@@ -29,9 +29,9 @@ Wear a Cord, thread runes from left to right, and cast the sequence with one key
 
 | System | Current content |
 |---|---|
-| Rune language | **350 named runes:** 39 shapes, 258 effects, 36 modifiers and 17 links |
-| Obtaining runes | **199 craftable**, **53 world runes**, rare loot, innate awakening and fusion |
-| Named fusions | **55 elemental combinations + 22 signature recipes** |
+| Rune language | **372 named runes:** 39 shapes, 280 effects, 36 modifiers and 17 links |
+| Obtaining runes | **203 craftable**, **53 world runes**, rare loot, innate awakening and fusion |
+| Named fusions | **55 elemental combinations + 40 signature recipes** |
 | Exact weaving | Two to eight effect leaves in one socket; duplicates and exact ingredients survive |
 | Circles | Twelve authored mechanisms and twelve craftable disciplines with explicit tradeoffs |
 | Animation | 297 authored shape/effect sequences; mixed spells use their ingredients' materials and motion |

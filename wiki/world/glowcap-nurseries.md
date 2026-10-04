@@ -8,7 +8,7 @@ permalink: /world/glowcap-nurseries/
 
 # Belowkeeper Glowcap Nurseries
 
-*Development review content; introduced after the 0.9.1-alpha.1 public release.*
+*New in 0.10.0-alpha.*
 
 Deep under damp moss banks, the Belowkeepers left two kinds of Breathmarks: branching roots and an open breath. Mara's field notes describe tending a living cave, rather than harvesting its residents.
 
@@ -48,7 +48,7 @@ Use a Breathmark or Nursery to see a hint for your next unfinished step. Investi
 
 ## Release verification
 
-Focused native client suites passed actual harvested-resource pickup and crafting, grounded canopy passage/rest, full investigation and world restart, finite equipment wear and visitor clocks. Normal cave generation passed the original previously failing seed: six caps and both authentic marker kinds in an 81-chunk sample. Separate distant-path and blocked-path tests confirm finite approach deadlines and occupied-canopy admission refusal. This remains development content pending final build/release integration; broader multi-seed population balance and a complete fungal threat/ruin ecosystem remain open.
+Focused native client suites passed actual harvested-resource pickup and crafting, grounded canopy passage/rest, full investigation and world restart, finite equipment wear and visitor clocks. Normal cave generation passed the original previously failing seed: six caps and both authentic marker kinds in an 81-chunk sample. Separate distant-path and blocked-path tests confirm finite approach deadlines and occupied-canopy admission refusal. Broader multi-seed population balance and a complete fungal threat/ruin ecosystem remain open.
 
 ## A rival at the mature cap
 

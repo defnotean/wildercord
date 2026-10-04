@@ -547,3 +547,18 @@ Siltcrest Bittern adds an original layered reed-bird rig, finite saved appetite,
 Creature additions become9; items27/abilities3/signatures18/lore15/investigations2/locations2/complete ecosystems0 remain. Separate local workload measurement and fixture diagnostics do not award ecosystem or new item credit. Public release/server activation remains separate; the broad goal stays active.
 
 Final Siltcrest build15s passes1000 units;5400 paths reproduce and129 guide pages export. Checked JAR/native originals are in artifacts/review/siltcrest-bittern. Two400-tick mixed-wetland profiles against corrected physical Mud footing have actual stable8/40 creatures, sparse catch and reed opening, with raw execution samples retained in docs/audit/evidence/mixed-wetland-20261004.json. Scoped local mean/p95/p99 are observations, not universal capacity or before/after improvement. Natural distribution and full ecosystems remain open.
+
+## 0.10.0 release preparation — 2026-10-04
+
+Version 0.10.0-alpha gathers every completed living-world milestone since 0.9.1-alpha.1: fungal
+gardens and Rootmolts, Drainhouses, Cinder Bailiffs and ferns, Root Carry, the Tideward kit,
+Siltcrest Bittern, Mossveil, Camp Concord, Rook's Rainshield, eighteen signatures and the Earth,
+Life and Void materials. The runtime roster is 372 runes (55 elemental and 40 signature fusions).
+
+Release review fixed break-callback probes with side effects (dungeon ward placed-block records,
+glyph traps) for read-only and in-place checks, a Nullcatch/Quietus screen replacement on one
+target, and the Grimoire-opened frame benchmark. The CHANGELOG now lists the later milestones.
+The native client gate never completed within a single 90-minute CI job; it now runs as four
+ordered shards. A hosted run of all four shards on the release commit is required before tagging.
+Public upload and server deployment still require an explicit request. The broad living-world goal
+remains active; no new content count is claimed.
