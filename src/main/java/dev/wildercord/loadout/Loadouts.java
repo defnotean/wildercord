@@ -244,7 +244,8 @@ public final class Loadouts {
 			return 0;
 		}
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
-		return compiled.isEmpty() ? 0 : Heart.cooldownTicks(player, compiled, Heart.secretCooldown(player, runes));
+		return compiled.isEmpty() ? 0
+			: Heart.cooldownTicks(player, compiled, Heart.secretCooldown(player, runes) * dev.wildercord.cast.Mastery.cooldownFactor(player, runes));
 	}
 
 	/** Runes threaded in {@code book} that won't fire on this Cord: spells first, then passives. */
