@@ -353,7 +353,11 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 				return ItemStack.EMPTY;
 			}
 		} else if (dev.wildercord.content.Reagents.is(stack)) {
-			// One reagent, into the first empty rune socket: a fusion takes one at a time.
+			// One reagent, into the first empty rune socket: a fusion takes one at a time. The click repeats a shift-click
+			// while it moves something, so with a reagent already lying there, nothing more goes.
+			if (reagentSlot() >= 0) {
+				return ItemStack.EMPTY;
+			}
 			boolean moved = false;
 			for (int i = 0; i < RUNE_SLOTS && !moved; i++) {
 				if (inputs.getItem(i).isEmpty()) {
