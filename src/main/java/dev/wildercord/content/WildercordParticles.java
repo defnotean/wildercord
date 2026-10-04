@@ -47,6 +47,9 @@ public final class WildercordParticles {
 	public static final ParticleType<AirflowOption> AIRFLOW = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("airflow"),
 		FabricParticleTypes.complex(true, AirflowOption.CODEC, AirflowOption.STREAM_CODEC));
 
+	public static final ParticleType<CampOption> CAMP = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("camp"),
+		FabricParticleTypes.complex(false, CampOption.CODEC, CampOption.STREAM_CODEC));
+
 	public static void init() {}
 	public static final ParticleType<MaterialOption> MATERIAL = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("material"),
 		FabricParticleTypes.complex(false, MaterialOption.CODEC, MaterialOption.STREAM_CODEC));

@@ -327,3 +327,5 @@ wayline|TETHER|MIRROR|STEP
 night_seam|NEEDLE|EYE|GATE
 shard_compass|DIAMOND|GEAR|NEEDLE
 root_carry|ROOTS|SHELL|VINE
+watchweft|EYE|GEAR|FAN
+manabraid|NEEDLE|TETHER|HEART

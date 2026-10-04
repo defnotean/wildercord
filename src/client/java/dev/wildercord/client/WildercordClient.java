@@ -34,6 +34,7 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.fx.LifeOutcomeClient.init();
 		dev.wildercord.client.fx.TidewardClient.init();
 		dev.wildercord.client.fx.RootCarryClient.init();
+		dev.wildercord.client.fx.CampConcordClient.init();
 		// Bolts are drawn entirely with particles sent from the server.
 		EntityRendererRegistry.register(WildercordEntities.RUNE_BOLT, NoopRenderer::new);
 		ModelLayerRegistry.registerModelLayer(ArchivistRenderer.LAYER, ArchivistModel::createLayer);
@@ -84,6 +85,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SHIELD, new dev.wildercord.client.fx.ShieldCircles.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.MOTE, new dev.wildercord.client.fx.MoteParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.EARTH, new dev.wildercord.client.fx.EarthParticle.Provider());
+		ParticleProviderRegistry.getInstance().register(WildercordParticles.CAMP, new dev.wildercord.client.fx.CampParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.LIFE, new dev.wildercord.client.fx.LifeParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.VOID_MATERIAL, new dev.wildercord.client.fx.VoidParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.AIRFLOW, new dev.wildercord.client.fx.AirflowParticle.Provider());

@@ -1,0 +1,54 @@
+{
+  "events": {
+    "camp_braid_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/camp/camp_braid_cue"
+      ],
+      "subtitle": "camp.braid_cue"
+    },
+    "camp_braid_decline": {
+      "attenuation": 0,
+      "files": [
+        "kit/camp/camp_braid_decline"
+      ],
+      "subtitle": "camp.braid_decline"
+    },
+    "camp_braid_offer": {
+      "attenuation": 0,
+      "files": [
+        "kit/camp/camp_braid_offer"
+      ],
+      "subtitle": "camp.braid_offer"
+    },
+    "camp_braid_transfer": {
+      "attenuation": 0,
+      "files": [
+        "kit/camp/camp_braid_transfer"
+      ],
+      "subtitle": "camp.braid_transfer"
+    },
+    "camp_watch_arm": {
+      "attenuation": 0,
+      "files": [
+        "kit/camp/camp_watch_arm"
+      ],
+      "subtitle": "camp.watch_arm"
+    },
+    "camp_watch_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/camp/camp_watch_cue"
+      ],
+      "subtitle": "camp.watch_cue"
+    },
+    "camp_watch_warn": {
+      "attenuation": 0,
+      "files": [
+        "kit/camp/camp_watch_warn"
+      ],
+      "subtitle": "camp.watch_warn"
+    }
+  },
+  "part": "camp"
+}

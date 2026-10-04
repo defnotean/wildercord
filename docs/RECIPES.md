@@ -68,7 +68,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Spark | Shape | Flint, Glowstone Dust |
 | Touch | Shape | Leather |
 
-## Tier II (103 runes, + 2 Lapis Lazuli and a Gold Ingot)
+## Tier II (105 runes, + 2 Lapis Lazuli and a Gold Ingot)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -99,6 +99,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Jolt | Effect | Lightning Rod, Iron Ingot |
 | Launch | Effect | Wind Charge |
 | Levitate | Effect | Phantom Membrane |
+| Manabraid | Effect | Lapis Lazuli, Amethyst Shard, String |
 | Overdrive | Effect | Blaze Powder, Redstone |
 | Pull | Effect | Fishing Rod |
 | Rampart | Effect | 2x Packed Mud |
@@ -123,6 +124,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Veil | Effect | Golden Carrot, Fermented Spider Eye |
 | Vein | Effect | Iron Pickaxe, Raw Iron |
 | Venom | Effect | Poisonous Potato |
+| Watchweft | Effect | Feather, String, Copper Ingot |
 | Weigh | Effect | Iron Block |
 | Wind Steps | Effect | Feather, Breeze Rod, String |
 | Zipper | Effect | 2x Iron Nugget, String |

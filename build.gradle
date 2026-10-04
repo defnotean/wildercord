@@ -100,6 +100,7 @@ tasks.named('processGametestResources') {
 	inputs.property('focusedSuite', project.findProperty('focusedSuite') ?: '')
 	inputs.property('twoClientSuite', project.hasProperty('twoClientSuite'))
 	inputs.property('twoClientUnitySuite', project.hasProperty('twoClientUnitySuite'))
+	inputs.property('twoClientCampSuite', project.hasProperty('twoClientCampSuite'))
 	inputs.property('encounterSuite', project.hasProperty('encounterSuite'))
 	inputs.property('cinnamonSuite', project.hasProperty('cinnamonSuite'))
 	inputs.property('defensiveSuite', project.hasProperty('defensiveSuite'))
@@ -118,7 +119,7 @@ tasks.named('processGametestResources') {
 		if (project.hasProperty('twoClientSuite')) {
 			def descriptor=file("${destinationDir}/fabric.mod.json")
 			def data=new groovy.json.JsonSlurper().parse(descriptor)
-			data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
+			data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientCampSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsCampTest' : project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
 			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
 		}

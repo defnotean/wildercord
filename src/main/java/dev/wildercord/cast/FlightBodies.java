@@ -13,8 +13,12 @@ public final class FlightBodies {
         "ashen_veil", "cinderheart", "searing_edge", "fireward", "smelt", "hellmouth", "everburn",
         "conflagration", "seethe", "skyburst", "cinder_bulwark", "boiling_surge", "cinder_sieve");
 
+    public static boolean supportsCamp(String id) {
+        return "wildercord:watchweft".equals(id) || "wildercord:manabraid".equals(id);
+    }
+
     public static boolean supports(String id) {
-        return supportsFire(id) || supportsFrost(id) || supportsStorm(id) || supportsWind(id) || supportsEarth(id) || supportsLife(id) || supportsVoid(id) || supportsNextSignature(id);
+        return supportsCamp(id) || supportsFire(id) || supportsFrost(id) || supportsStorm(id) || supportsWind(id) || supportsEarth(id) || supportsLife(id) || supportsVoid(id) || supportsNextSignature(id);
     }
 
     public static final List<String> FROST = List.of(

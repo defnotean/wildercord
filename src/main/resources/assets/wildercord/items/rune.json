@@ -663,6 +663,20 @@
         }
       },
       {
+        "when": "wildercord:watchweft",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/watchweft"
+        }
+      },
+      {
+        "when": "wildercord:manabraid",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/manabraid"
+        }
+      },
+      {
         "when": "wildercord:root_carry",
         "model": {
           "type": "minecraft:model",

@@ -28,6 +28,7 @@
   * [Harmonies and Reading Runes](spellcraft/harmonies.md)
   * [Loadouts](spellcraft/loadouts.md)
   * [Spell Mastery](spellcraft/mastery.md)
+  * [Camp Concord](spellcraft/camp-concord.md)
   * [Basinfill](spellcraft/basinfill.md)
   * [Root Carry](spellcraft/root-carry.md)
 * [Runes](runes/index.md)

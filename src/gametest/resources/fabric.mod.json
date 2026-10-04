@@ -6,6 +6,13 @@
   "environment": "*",
   "entrypoints": {
     "fabric-client-gametest": [
+      "dev.wildercord.cast.CampConcordCraftTest",
+      "dev.wildercord.cast.WatchweftAdmissionTest",
+      "dev.wildercord.cast.WatchweftHistoryTest",
+      "dev.wildercord.cast.WatchweftPaidTest",
+      "dev.wildercord.cast.CampConcordPresentationTest",
+      "dev.wildercord.client.fx.CampConcordRecipeTest",
+      "dev.wildercord.cast.CampConcordAltarTest",
       "dev.wildercord.gametest.WildercordMeditationTest",
       "dev.wildercord.cast.SpellDamageBalanceTest",
       "dev.wildercord.cast.BasinfillTest",
@@ -239,7 +246,9 @@
       "dev.wildercord.wildlife.MossveilJointHomeTest"
     ]
   },
-  "mixins": ["wildercord.mossveil-gametest.mixins.json"],
+  "mixins": [
+    "wildercord.mossveil-gametest.mixins.json"
+  ],
   "depends": {
     "wildercord": "*"
   }

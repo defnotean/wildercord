@@ -123,6 +123,9 @@ public final class SpellFormations {
    double t = beat / 2.0, r = event.scale() * .55, q = r * (1.35 - .35*t);
    Vec3 feet = event.placement()==FormationPayload.FIXED?focus:caster.position().add(0, .12, 0);
    // Fully authored elemental projectiles gather their own body before launch.
+   boolean campOnly=event.runes().stream().anyMatch(CampConcordForms::supports)
+    && event.runes().stream().noneMatch(id -> dev.wildercord.spell.Runes.get(id)
+      .map(rune -> rune.family()==dev.wildercord.spell.RuneFamily.EFFECT && !CampConcordForms.supports(id)).orElse(true));
    boolean fireOnly=event.runes().stream().anyMatch(FireFormations::supports)
     && event.runes().stream().noneMatch(id -> dev.wildercord.spell.Runes.get(id)
       .filter(rune -> rune.family()==dev.wildercord.spell.RuneFamily.EFFECT && !FireFormations.supports(id)).isPresent());
@@ -150,14 +153,14 @@ public final class SpellFormations {
    boolean nextOnly=event.runes().stream().anyMatch(NextSignatureForms::supports)
     && event.runes().stream().noneMatch(id -> dev.wildercord.spell.Runes.get(id)
       .filter(rune -> rune.family()==dev.wildercord.spell.RuneFamily.EFFECT && !NextSignatureForms.supports(id)).isPresent());
-   boolean materialProjectile=(fireOnly || frostOnly || stormOnly || windOnly || earthOnly || lifeOnly || voidOnly || fieldOnly || nextOnly) && switch(ShapeFormation.of(event.shape())) {
+   boolean materialProjectile=(campOnly || fireOnly || frostOnly || stormOnly || windOnly || earthOnly || lifeOnly || voidOnly || fieldOnly || nextOnly) && switch(ShapeFormation.of(event.shape())) {
     case BOLT,ARC,ORB,SPARK,COMET,RICOCHET,CLUSTER,WISP -> true;
     default -> false;
    };
    // Life Self prepares its tissue, seed or ward material directly on the caster.
    // Uncovered mixed groups retain the ordinary shape scaffold.
    boolean materialSelf=lifeOnly && ShapeFormation.of(event.shape())==ShapeFormation.SELF;
-   if(!materialProjectile && !materialSelf) switch (ShapeFormation.of(event.shape())) {
+   if(!materialProjectile && !materialSelf && !campOnly) switch (ShapeFormation.of(event.shape())) {
     case SELF -> { ring(feet.add(0, t*.7, 0), .7-.25*t, true); ring(feet.add(0, 1.3-t*.4, 0), .35, true); }
     case TOUCH -> { slash(point(-q*.3, 0, 0), q*.5, Math.PI*.8, 0); line(point(q*.3, -.3, 0), point(q*.3, .3, 0), false); }
     case BOLT -> { orb(point(0, 0, -.35+.35*t), .15*t); line(point(0, 0, -.8), focus, false); }
@@ -205,6 +208,7 @@ public final class SpellFormations {
    }
    for(String id:event.runes())if(NextSignatureForms.supports(id) && !FrostFormations.supports(id) && !VoidForms.supports(id) && !LifeForms.supports(id))
     NextSignatureForms.prepare(id,beat,event.scale(),assembly(),right,up,forward,quality==MagicQuality.Level.MINIMAL,this::emit);
+   CampConcordFormations.draw(this,beat);
    boolean authoredFire=FireFormations.draw(this,beat);
    boolean authoredFrost=FrostFormations.draw(this,beat);
    boolean authoredStorm=StormFormations.draw(this,beat);
@@ -212,16 +216,17 @@ public final class SpellFormations {
    boolean authoredEarth=EarthFormations.draw(this,beat);
    boolean authoredLife=LifeFormations.draw(this,beat);
    boolean authoredVoid=VoidFormations.draw(this,beat);
-   materials(beat,authoredFire,authoredFrost,frostOnly,authoredStorm,authoredWind,windOnly,authoredEarth,earthOnly,authoredLife,lifeOnly,authoredVoid,voidOnly,fieldOnly,nextOnly);
+   materials(beat,authoredFire,authoredFrost,frostOnly,authoredStorm,authoredWind,windOnly,authoredEarth,earthOnly,authoredLife,lifeOnly,authoredVoid,voidOnly,fieldOnly,nextOnly,campOnly);
   }
   Vec3 assembly() {
    if(event.placement()==FormationPayload.CASTER || event.placement()==FormationPayload.AIMED || event.placement()==FormationPayload.FIXED)return focus;
    return switch(ShapeFormation.of(event.shape())) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
   }
-  void materials(int beat,boolean authoredFire,boolean authoredFrost,boolean frostOnly,boolean authoredStorm,boolean authoredWind,boolean windOnly,boolean authoredEarth,boolean earthOnly,boolean authoredLife,boolean lifeOnly,boolean authoredVoid,boolean voidOnly,boolean fieldOnly,boolean nextOnly) {
+  void materials(int beat,boolean authoredFire,boolean authoredFrost,boolean frostOnly,boolean authoredStorm,boolean authoredWind,boolean windOnly,boolean authoredEarth,boolean earthOnly,boolean authoredLife,boolean lifeOnly,boolean authoredVoid,boolean voidOnly,boolean fieldOnly,boolean nextOnly,boolean campOnly) {
    // Materials change the geometry as well as the colour. Each fused ingredient gets its own layer.
    for(int i=0;i<event.elements().size();i++) {
     String element=event.elements().get(i); double a=i*2.39996+beat*.9;
+    if(campOnly && element.equals("arcane")) continue;
     if(authoredFire && element.equals("fire")) continue;
     if(authoredFrost && (element.equals("frost") || frostOnly && event.runes().stream().anyMatch(id->NextSignatureForms.ingredients(id).contains(element)))) continue;
     if(authoredStorm && element.equals("storm")) continue;

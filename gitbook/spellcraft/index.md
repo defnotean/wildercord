@@ -17,6 +17,7 @@ wrist to the magic circle behind your shoulders.
 | [Casting](casting.md) | Tapping and charging, the reticle, cooldowns, mana, rhythm, leaning, switching spells and the HUD. |
 | [Magic Circles](magic-circles.md) | How to read any spell from its circle, fused runes' two-coloured rings, and monsters' telegraphs. |
 | [Reading Life Magic](life-outcomes.md) | An illustrated field journal of thirty Life outcomes: real wound mending, changed gardens, repairs, living wards and counterplay. |
+| [Camp Concord](camp-concord.md) | A sampled private camp warning and a consensual, lossy mana gift. |
 | [Passive Spells](passives.md) | Up to two always-on spells that cost mana every second instead of having a cooldown. |
 | [Shields and parrying](shields.md) | Shield's stacked magic circles, what breaks them, and turning a spell back with a parry. |
 | [Reactions](reactions.md) | Shatter, Overload, Blight and eight more: the right element on the right mark. |

@@ -47,6 +47,28 @@
           "weight": 3,
           "modifier": {
             "components": {
+              "wildercord:rune": "wildercord:watchweft"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:manabraid"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
               "wildercord:rune": "wildercord:resonance"
             },
             "type": "minecraft:set_components"

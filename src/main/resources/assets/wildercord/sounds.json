@@ -6303,5 +6303,47 @@
     "sounds": [
       "wildercord:kit/mossveil/mossveil_trust"
     ]
+  },
+  "camp_braid_cue": {
+    "subtitle": "subtitles.wildercord.kit.camp.braid_cue",
+    "sounds": [
+      "wildercord:kit/camp/camp_braid_cue"
+    ]
+  },
+  "camp_braid_decline": {
+    "subtitle": "subtitles.wildercord.kit.camp.braid_decline",
+    "sounds": [
+      "wildercord:kit/camp/camp_braid_decline"
+    ]
+  },
+  "camp_braid_offer": {
+    "subtitle": "subtitles.wildercord.kit.camp.braid_offer",
+    "sounds": [
+      "wildercord:kit/camp/camp_braid_offer"
+    ]
+  },
+  "camp_braid_transfer": {
+    "subtitle": "subtitles.wildercord.kit.camp.braid_transfer",
+    "sounds": [
+      "wildercord:kit/camp/camp_braid_transfer"
+    ]
+  },
+  "camp_watch_arm": {
+    "subtitle": "subtitles.wildercord.kit.camp.watch_arm",
+    "sounds": [
+      "wildercord:kit/camp/camp_watch_arm"
+    ]
+  },
+  "camp_watch_cue": {
+    "subtitle": "subtitles.wildercord.kit.camp.watch_cue",
+    "sounds": [
+      "wildercord:kit/camp/camp_watch_cue"
+    ]
+  },
+  "camp_watch_warn": {
+    "subtitle": "subtitles.wildercord.kit.camp.watch_warn",
+    "sounds": [
+      "wildercord:kit/camp/camp_watch_warn"
+    ]
   }
 }

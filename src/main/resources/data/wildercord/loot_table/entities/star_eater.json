@@ -135,6 +135,28 @@
           "weight": 1,
           "modifier": {
             "components": {
+              "wildercord:rune": "wildercord:watchweft"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:manabraid"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
               "wildercord:rune": "wildercord:blackspark"
             },
             "type": "minecraft:set_components"

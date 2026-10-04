@@ -954,6 +954,27 @@
     "blood_twang": {
       "part": "blood"
     },
+    "camp_braid_cue": {
+      "part": "camp"
+    },
+    "camp_braid_decline": {
+      "part": "camp"
+    },
+    "camp_braid_offer": {
+      "part": "camp"
+    },
+    "camp_braid_transfer": {
+      "part": "camp"
+    },
+    "camp_watch_arm": {
+      "part": "camp"
+    },
+    "camp_watch_cue": {
+      "part": "camp"
+    },
+    "camp_watch_warn": {
+      "part": "camp"
+    },
     "duelist_bow": {
       "part": "duelist"
     },

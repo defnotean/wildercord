@@ -17,7 +17,7 @@ def replace_flag(args,name,value):
     return result+[name,str(value)]
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('launch',type=Path);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--timeout',type=int,default=360);ap.add_argument('--accepted-eula',type=Path);ap.add_argument('--require-unity',action='store_true');ns=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('launch',type=Path);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--timeout',type=int,default=360);ap.add_argument('--accepted-eula',type=Path);ap.add_argument('--require-unity',action='store_true');ap.add_argument('--require-camp',action='store_true');ns=ap.parse_args()
     launch=json.loads(ns.launch.read_text(encoding='utf-8-sig'));base=ns.output.resolve();base.mkdir(parents=True,exist_ok=False)
     nonce=str(uuid.uuid4());ipc=base/'ipc';ipc.mkdir();jobs=[];logs=[];started=time.monotonic()
     if ns.accepted_eula:
@@ -45,6 +45,7 @@ def main():
             time.sleep(.25)
         if any(p.returncode!=0 for _,p in jobs):raise RuntimeError('A client did not exit successfully')
         if not (ipc/'host-passed.properties').is_file() or not (ipc/'peer-saw-host.properties').is_file():raise RuntimeError('Missing native bidirectional TCP acceptance witnesses')
+        if ns.require_camp and not (ipc/'host-camp-passed.properties').is_file():raise RuntimeError('Missing actual Camp Concord multiplayer acceptance witness')
         if ns.require_unity and not (ipc/'host-unity-passed.properties').is_file():raise RuntimeError('Missing actual Unity multiplayer acceptance witness')
         (base/'result.json').write_text(json.dumps({'nonce':nonce,'status':'passed','processes':{r:{'pid':p.pid,'exit':p.returncode} for r,p in jobs},'seconds':round(time.monotonic()-started,2)},indent=2))
     finally:

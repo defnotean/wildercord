@@ -117,6 +117,7 @@ public final class Wildercord implements ModInitializer {
   dev.wildercord.wildlife.SiltcrestContent.init();
   dev.wildercord.wildlife.MossveilContent.init();
   dev.wildercord.wildlife.RootCarry.init();
+  dev.wildercord.cast.CampConcordMagic.init();
   dev.wildercord.wildlife.DrainhouseContent.init();
 		dev.wildercord.cast.Dungeons.init();
 		dev.wildercord.world.dungeons.DungeonWards.init();

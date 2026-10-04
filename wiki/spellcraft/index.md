@@ -25,6 +25,7 @@ wrist to the magic circle behind your shoulders.
 | [Casting]({{ '/spellcraft/casting/' | relative_url }}) | Tapping and charging, the reticle, cooldowns, mana, rhythm, leaning, switching spells and the HUD. |
 | [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}) | How to read any spell from its circle, fused runes' two-coloured rings, and monsters' telegraphs. |
 | [Reading Life Magic]({{ '/spellcraft/life-outcomes/' | relative_url }}) | An illustrated field journal of thirty Life outcomes: real wound mending, changed gardens, repairs, living wards and counterplay. |
+| [Camp Concord]({{ "/spellcraft/camp-concord/" | relative_url }}) | A sampled private camp warning and a consensual, lossy mana gift. |
 | [Passive Spells]({{ '/spellcraft/passives/' | relative_url }}) | Up to two always-on spells that cost mana every second instead of having a cooldown. |
 | [Shields and parrying]({{ '/spellcraft/shields/' | relative_url }}) | Shield's stacked magic circles, what breaks them, and turning a spell back with a parry. |
 | [Reactions]({{ '/spellcraft/reactions/' | relative_url }}) | Shatter, Overload, Blight and eight more: the right element on the right mark. |

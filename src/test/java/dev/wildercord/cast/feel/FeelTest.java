@@ -112,6 +112,7 @@ class FeelTest {
 		dev.wildercord.cast.FieldFusionFeels.register();
 		dev.wildercord.cast.NextSignatureFeels.register();
 		dev.wildercord.wildlife.RootCarryFeels.init();
+		dev.wildercord.cast.CampConcordFeels.init();
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		for (RuneDef rune : Runes.all()) {
 			if (rune.id().startsWith("wildercord:") && rune.family() == RuneFamily.EFFECT) {

@@ -58,6 +58,9 @@ public final class BoltComets {
                             NextSignatureForms.flight(id,bolt.tickCount,width,(style & RuneBolt.STYLE_PIERCE)!=0?1.8:1,
                                 bolt.position(),bolt.getDeltaMovement(),quality==MagicQuality.Level.MINIMAL,
                                 (option,pos)->level.addParticle(option,pos.x,pos.y,pos.z,0,0,0));
+                        CampConcordForms.flight(id,bolt.tickCount,width,(style & RuneBolt.STYLE_PIERCE)!=0?1.8:1,
+                            bolt.position(),bolt.getDeltaMovement(),quality==MagicQuality.Level.MINIMAL,
+                            (option,pos)->level.addParticle(option,pos.x,pos.y,pos.z,0,0,0));
 						FireFlights.draw(id, bolt.tickCount, width, (style & RuneBolt.STYLE_PIERCE) != 0 ? 1.8 : 1,
 							bolt.position(), bolt.getDeltaMovement(), quality == MagicQuality.Level.MINIMAL,
 							(option, pos) -> level.addParticle(option, pos.x, pos.y, pos.z, 0, 0, 0));
@@ -109,7 +112,17 @@ public final class BoltComets {
 			this.lifetime = 20 * 60;
 			this.gravity = 0;
 			this.hasPhysics = false;
+			refreshAppearance();
 			trail.addFirst(bolt.position());
+		}
+
+		/** Read tracked appearance before the very first extract, then refresh metadata every tick. */
+		private void refreshAppearance() {
+			color = bolt.getEntityData().get(RuneBolt.DATA_COLOR);
+			secondary = bolt.getEntityData().get(RuneBolt.DATA_SECONDARY);
+			style = bolt.getEntityData().get(RuneBolt.DATA_STYLE);
+			effects = bolt.getEntityData().get(RuneBolt.DATA_EFFECTS);
+			authored = dev.wildercord.cast.FlightBodies.covers(effects);
 		}
 
 		@Override
@@ -118,14 +131,7 @@ public final class BoltComets {
 			yo = y;
 			zo = z;
 			age++;
-			color = bolt.getEntityData().get(RuneBolt.DATA_COLOR);
-			secondary = bolt.getEntityData().get(RuneBolt.DATA_SECONDARY);
-			style = bolt.getEntityData().get(RuneBolt.DATA_STYLE);
-			String current = bolt.getEntityData().get(RuneBolt.DATA_EFFECTS);
-			if (!current.equals(effects)) {
-				effects = current;
-				authored = dev.wildercord.cast.FlightBodies.covers(current);
-			}
+			refreshAppearance();
 			if (bolt.isRemoved()) {
 				// The trail catches up with where the bolt ended, then the comet goes.
 				if (gone < 0) {

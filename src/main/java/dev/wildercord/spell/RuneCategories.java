@@ -68,14 +68,14 @@ public final class RuneCategories {
 				case "push", "pull", "launch", "root", "freeze", "levitate", "gravity_well", "blind", "chill", "silence", "reveal",
 					"decree", "weigh", "shackle", "bubble", "hex", "rend", "jolt", "banish", "cyclone",
 					"echolocate", "undertow", "portalfall", "hush", "mire", "rootsnare", "starlight_tether", "sporebloom", "tidehook" -> "control";
-				case "heal", "shield", "regrowth", "cleanse", "stoneskin", "empower", "haste", "swift", "night_eye", "feather_fall", "veil",
+				case "manabraid", "heal", "shield", "regrowth", "cleanse", "stoneskin", "empower", "haste", "swift", "night_eye", "feather_fall", "veil",
 					"fireward", "nourish", "tidebreath", "leap", "infinity", "reversal", "reflect", "overdrive", "foresight", "restore",
 					"barrier", "brace", "anchor", "bramble", "frostward", "cushion", "deflect", "haven",
 					"remedy", "warcry", "treasure_sense", "shulkershell", "ashen_veil", "cinderheart", "manatide" -> "support";
 				case "dash", "blink", "grapple", "swap", "zipper", "shadowstep", "tusk_charge", "warp_step", "current" -> "movement";
 				case "stasis", "rewind", "accelerate", "time_skip" -> "time";
 				case "light", "grow", "break", "harvest", "icepath", "basinfill", "collect", "excavate", "rampart", "chisel", "glimmer", "prune", "tunnel",
-					"vein", "smelt", "fell", "span", "ancient_seed", "glowvine", "root_carry" -> "world";
+					"vein", "smelt", "fell", "span", "ancient_seed", "glowvine", "root_carry", "watchweft" -> "world";
 				case "summon", "shades", "thunderbird" -> "summon";
 				case "glacier", "nullify", "blizzard", "black_ice", "rime_seal", "absolute_zero", "magnetize", "heartstopper", "updraft", "recoil",
 					"sinkhole", "fossilize", "timesteal" -> "control";

@@ -1,0 +1,65 @@
+{
+  "jar": {
+    "jar": "wildercord-camp-concord-review+mc26.3.jar",
+    "sha256": "29283d49bb1e7ac39d9fe148b1418ba591f5ed77c5e6285ef070944f327c4ffc",
+    "resources": 5453,
+    "classes": 1860,
+    "source_version": "0.9.1-alpha.1+mc26.3",
+    "unit_tests": {
+      "tests": 1008,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "ordinary_two_client": {
+    "nonce": "3ab5bebe-585f-424d-ba3f-543ee9d67a65",
+    "status": "passed",
+    "processes": {
+      "host": {
+        "pid": 31756,
+        "exit": 0
+      },
+      "peer": {
+        "pid": 31132,
+        "exit": 0
+      }
+    },
+    "seconds": 102.7
+  },
+  "woven_two_client": {
+    "nonce": "89a16113-d04d-4f8e-b528-a30ba4e16ae0",
+    "status": "passed",
+    "processes": {
+      "host": {
+        "pid": 40028,
+        "exit": 0
+      },
+      "peer": {
+        "pid": 37852,
+        "exit": 0
+      }
+    },
+    "seconds": 102.7
+  },
+  "screenshots": {
+    "camp_altar_manabraid_heal_element.png": "d56547dd6e2184fca75899fa0901c5efd5b02f8a20aa55db2af9b520f6546f46",
+    "camp_altar_manabraid_heal_weave.png": "90a9b54efebcaf1751880557f8133137047219b836b1a6b3b6102fb5340c2f7e",
+    "camp_altar_manabraid_jolt_element.png": "33aaf3fa87d2cae175adce73f8633147d1800b29e485402237cd8ef0bf41541f",
+    "camp_altar_watchweft_ember_element.png": "ab0cd177112b793f2b20af5dcd23ecf94074f16a8fde6266d6b95e32fd9b07e6",
+    "camp_altar_watchweft_tremor_element.png": "69d73a4a98dce69476cafbc68391534b5ed4509698185b96650e1101ed2d2eef",
+    "camp_altar_watchweft_watchweft_weave.png": "fc20002d4a50b5085d0db02f5e2ef4fe84eb8600c86bb002efc064a3a7d77c0d",
+    "camp_manabraid_full_paid_bolt.png": "5b26e35e7cb7f2b436232513941449ac64c0d5454a9e572cfaa7c7216ef97650",
+    "camp_manabraid_full_paid_prepare.png": "26d047a34cc7f8667b46f758b7ece95dfa0557313f100b7ce186a90ea742d19c",
+    "camp_manabraid_minimal_paid_bolt.png": "5b26e35e7cb7f2b436232513941449ac64c0d5454a9e572cfaa7c7216ef97650",
+    "camp_manabraid_minimal_paid_prepare.png": "26d047a34cc7f8667b46f758b7ece95dfa0557313f100b7ce186a90ea742d19c",
+    "camp_watchweft_full_paid_bolt.png": "4e99bcd1a8c3754d1a2f2588a87722a66968e74747c897e3bc2b23019b1c43be",
+    "camp_watchweft_full_paid_prepare.png": "cb33f5f02ad315c098846f968f156ac7fb588f2e4175cadff076fb0bb79965e3",
+    "camp_watchweft_minimal_paid_bolt.png": "4e99bcd1a8c3754d1a2f2588a87722a66968e74747c897e3bc2b23019b1c43be",
+    "camp_watchweft_minimal_paid_prepare.png": "cb33f5f02ad315c098846f968f156ac7fb588f2e4175cadff076fb0bb79965e3",
+    "woven-host-0000_manabraid_two_clients_actual_altar_weave.png": "c9b3643d31d4dc4bde015be28c22ca368c7f889c965c4238ef526e7f0d1aa52e",
+    "woven-host-0001_manabraid_two_clients_full_host.png": "34556ce11173404060a786ee56b55ea0065be2548c4eb3c60a611ed108ddcc36",
+    "woven-peer-0000_manabraid_two_clients_minimal_peer.png": "5492ad278cfe8ff7721311a0e11c62025b1a8f3b0b1514e7b22185a5da6b04b0"
+  },
+  "scope": "Supplied progression/terrain; actual paid native casting, fusion/craft/use, local two TCP clients. Saved player-profile reopen; full dedicated process restart and remote latency unproven."
+}

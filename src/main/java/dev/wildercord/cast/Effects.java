@@ -254,6 +254,7 @@ public final class Effects {
 		if (FieldFusions.apply(cast,node,hit,helped,harmed)) return;
 		if (CounterSignatures.apply(cast,node,helped,harmed)) return;
 		if (SupportSignatures.apply(cast,node,hit,helped)) return;
+		if (CampConcordMagic.apply(cast,node,hit,helped)) return;
 		if (TrailSignatures.apply(cast,node,hit)) return;
 
 		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
