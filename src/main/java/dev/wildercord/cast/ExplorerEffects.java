@@ -559,11 +559,16 @@ public final class ExplorerEffects {
 		Set<LivingEntity> rallied = new HashSet<>(helped);
 		rallied.addAll(alliesAround(cast, centre, radius));
 		FireBloodVfx.warcry(cast.level, centre, radius);
+		long now = cast.level.getGameTime();
 		for (LivingEntity t : rallied) {
 			t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, 0, false, true));
 			t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 0, false, true));
-			BLOODLUST.put(t.getUUID(), cast.level.getGameTime() + ticks);
+			BLOODLUST.put(t.getUUID(), now + ticks);
 			ExplorerVfx.rallied(cast.level, t);
+		}
+		// One that never killed again would stay for good: past a few hundred, the ones run out are forgotten.
+		if (BLOODLUST.size() > 256) {
+			BLOODLUST.values().removeIf(until -> until < now);
 		}
 	}
 
@@ -1542,6 +1547,9 @@ public final class ExplorerEffects {
 			return;
 		}
 		HEARTS.put(t.getUUID(), now + ticks + HEART_COOL);
+		if (HEARTS.size() > 256) {
+			HEARTS.values().removeIf(until -> until <= now);
+		}
 		t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, 1, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, ticks, 0, false, true));
 		t.clearFire();

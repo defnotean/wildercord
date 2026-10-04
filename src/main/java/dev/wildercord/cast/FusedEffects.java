@@ -199,7 +199,11 @@ public final class FusedEffects {
 				}
 				// The siphon mark: for a while, what anyone does to it feeds the caster too.
 				if (t.isAlive()) {
-					SIPHONED.put(t.getUUID(), new Siphon(caster, level.getGameTime() + Effects.ticks(SIPHON_SECONDS, duration)));
+					long now = level.getGameTime();
+					SIPHONED.put(t.getUUID(), new Siphon(caster, now + Effects.ticks(SIPHON_SECONDS, duration)));
+					if (SIPHONED.size() > 256) {
+						SIPHONED.values().removeIf(s -> s.until() < now);
+					}
 				}
 				FusionVfx.lifesteal(level, t, caster, taken);
 			});

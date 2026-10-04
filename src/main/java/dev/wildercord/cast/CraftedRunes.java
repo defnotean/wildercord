@@ -356,6 +356,9 @@ public final class CraftedRunes {
 		if (old != null) {
 			old.forEach(net.minecraft.world.entity.Display::discard);
 		}
+		// Every glow has gone out by now: forget them (unless a newer Prospect took over), so no caster's old glows are kept for good.
+		UUID owner = cast.caster.getUUID();
+		Scheduler.later(Math.max(ticks, 16) + 1, () -> PROSPECTED.computeIfPresent(owner, (id, kept) -> kept == glows ? null : kept));
 	}
 
 	/** Prospect from a pinch of Geode Grit rather than a spell: the same glow through the rock, round where {@code who} stands. */
