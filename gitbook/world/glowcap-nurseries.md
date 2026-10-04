@@ -41,3 +41,7 @@ Use a Breathmark or Nursery to see a hint for your next unfinished step. Investi
 ## Release verification
 
 Focused native client suites passed actual harvested-resource pickup and crafting, grounded canopy passage/rest, full investigation and world restart, finite equipment wear and visitor clocks. Normal cave generation passed the original previously failing seed: six caps and both authentic marker kinds in an 81-chunk sample. Separate distant-path and blocked-path tests confirm finite approach deadlines and occupied-canopy admission refusal. This remains development content pending final build/release integration; broader multi-seed population balance and a complete fungal threat/ruin ecosystem remain open.
+
+## A rival at the mature cap
+
+[Rootmolt Striders](rootmolt-striders.md) can compete for mature caps in eligible Overworld cave gardens. A successful meal resets the plant to a bud without producing player materials, then the creature defends that patch. Watch its physical warning and keep the snail's visitor route accessible. Nursery shelter does not guarantee that a particular opening excludes this wider creature.

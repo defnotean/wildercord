@@ -103,6 +103,7 @@
   * [Reed Rattle](world/reed-rattle.md)
   * [Sporeback Snails](world/sporeback-snails.md)
   * [Glowcap Nurseries](world/glowcap-nurseries.md)
+  * [Rootmolt Striders](world/rootmolt-striders.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

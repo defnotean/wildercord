@@ -166,6 +166,11 @@ final class LifeOwnerEvents {
     ||other!=null&&!Double.isFinite(other.lengthSqr())||!l.isLoaded(BlockPos.containing(at)))return;
   long tick=l.getGameTime();if(!Objects.equals(TICK.get(l),tick)){TICK.put(l,tick);COUNT.put(l,0);}
   int n=COUNT.getOrDefault(l,0);if(n>=128)return;COUNT.put(l,n+1);
+  // Resolve only an already-admitted real recipient. REFUSED never gets a success body.
+  if(rune.equals("sporebloom")&&m!=Moment.REFUSED&&who!=null&&l.getEntity(who) instanceof LivingEntity body){
+   var resolved=SporeOutcomeFrame.resolve(body,frame);at=resolved.anchor();frame=resolved.frame();
+  }
+  if(!Double.isFinite(at.lengthSqr())||!l.isLoaded(BlockPos.containing(at)))return;
   if(who!=null){var key=new MarkKey(l,rune,who);var mark=MARKS.get(key);if(m==Moment.END||m==Moment.TRIGGER&&mark!=null&&mark.consumedByTrigger())MARKS.remove(key);}
   var event=new Event(l,rune,m,who,at,other,units,delta,tick,detail,frame.normal(),frame.standoff(),source);
   observer.accept(event);LifeOutcomeDelivery.render(event);

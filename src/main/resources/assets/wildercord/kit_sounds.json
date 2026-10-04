@@ -1785,6 +1785,21 @@
     "ready_ping": {
       "part": "neutral"
     },
+    "rootmolt_call": {
+      "part": "rootmolt"
+    },
+    "rootmolt_meal": {
+      "part": "rootmolt"
+    },
+    "rootmolt_rake": {
+      "part": "rootmolt"
+    },
+    "rootmolt_release": {
+      "part": "rootmolt"
+    },
+    "rootmolt_warn": {
+      "part": "rootmolt"
+    },
     "sporeback_answer": {
       "part": "sporeback"
     },

@@ -23,12 +23,34 @@ public final class NextCounterTest implements FabricClientGameTest {
  private static Mob cancelledDuringDamage;
  private static int cancellationMode;
  private static boolean cancellationObserved,resurrectionObserved;
+ private static ServerPlayer cancellationOwner;
+ private static float cancellationAmount,cancellationBefore,cancellationAfter;
+ private static boolean cancellationAfterDamage;
  public void runTest(ClientGameTestContext c){
   net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((target,source,amount)->{
    if(target!=cancelledDuringDamage || cancellationMode==0)return true;
+   // This fixture cancels the paid movement strike, not an unrelated admission event.
+   if(!Dungeons.spellLanding() || source.getEntity()!=cancellationOwner
+      || !source.is(net.minecraft.world.damagesource.DamageTypes.INDIRECT_MAGIC)
+      || !Float.isFinite(amount) || amount<=0){
+    System.out.println("Ledger cancellation ignored admission: source="+source.getMsgId()+" amount="+amount+" spell="+Dungeons.spellLanding()+" owner="+source.getEntity()+" health="+target.getHealth()+" absorption="+target.getAbsorptionAmount()+" cooldown="+target.damageCooldownTime);return true;
+   }
    int mode=cancellationMode;cancellationMode=0;cancellationObserved=true;
-   if(mode==1){target.teleportTo((net.minecraft.server.level.ServerLevel)target.level(),target.getX()+.2,target.getY(),target.getZ(),Set.<Relative>of(),target.getYRot(),target.getXRot(),false);return true;}
+   cancellationAmount=amount;cancellationBefore=target.getHealth();
+   System.out.println("Ledger cancellation admitted: mode="+mode+" amount="+amount+" health="+target.getHealth()+" absorption="+target.getAbsorptionAmount()+" cooldown="+target.damageCooldownTime+" position="+target.position());
+   if(mode==1){
+    var before=target.position();
+    boolean moved=target.teleportTo((net.minecraft.server.level.ServerLevel)target.level(),before.x+.2,before.y,before.z,Set.<Relative>of(),target.getYRot(),target.getXRot(),false);
+    check(moved && Math.abs(target.getX()-before.x-.2)<.0001,"Actual cancellation callback completes its small same-world teleport");
+    System.out.println("Ledger cancellation after teleport: health="+target.getHealth()+" absorption="+target.getAbsorptionAmount()+" cooldown="+target.damageCooldownTime+" active="+CounterSignatures.active());return true;
+   }
    target.discard();return false;
+  });
+  net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((target,source,base,taken,blocked)->{
+   if(target!=cancelledDuringDamage || !cancellationObserved || source.getEntity()!=cancellationOwner
+      || !source.is(net.minecraft.world.damagesource.DamageTypes.INDIRECT_MAGIC))return;
+   cancellationAfterDamage=true;cancellationAfter=target.getHealth();
+   System.out.println("Ledger cancellation actual return: base="+base+" taken="+taken+" blocked="+blocked+" health="+target.getHealth()+" absorption="+target.getAbsorptionAmount()+" cooldown="+target.damageCooldownTime+" active="+CounterSignatures.active());
   });
   net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(server->{
    if(cancellationObserved && cancelledDuringDamage!=null && CounterSignatures.active()!=0)resurrectionObserved=true;
@@ -125,12 +147,14 @@ public final class NextCounterTest implements FabricClientGameTest {
  private static void synchronousLedgerCancellation(ClientGameTestContext c,net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server){
   try{
    for(int mode:List.of(1,2)){
-    server.runOnServer(s->{var p=player(s);pose(p,.5,.5,0);cancelledDuringDamage=foe(p,.5,4.5);cancellationObserved=false;resurrectionObserved=false;cancellationMode=mode;cast(p,Runes.BEAM,Runes.RED_LEDGER);});c.waitTicks(12);
-    server.runOnServer(s->{check(CounterSignatures.active()==1,"Paid ledger is active before synchronous cancellation fixture");cancelledDuringDamage.move(MoverType.SELF,new Vec3(1.1,0,0));});c.waitTicks(4);
-    float after=server.computeOnServer(s->{check(cancellationObserved,"Actual ledger damage invokes native cancellation callback");check(!resurrectionObserved,"No cancelled record is transiently resurrected at the actual damage tick boundary");check(CounterSignatures.active()==0,"Synchronous "+(mode==1?"teleport":"removal")+" cannot be overwritten by stale post-damage ledger continuation");if(mode==1){check(cancelledDuringDamage.getHealth()<20,"Actual damage is allowed despite synchronous small teleport");cancelledDuringDamage.move(MoverType.SELF,new Vec3(1.1,0,0));}else check(cancelledDuringDamage.isRemoved(),"Actual damage callback removed its target");return cancelledDuringDamage.getHealth();});c.waitTicks(12);
+    server.runOnServer(s->{var p=player(s);pose(p,.5,.5,0);cancelledDuringDamage=foe(p,.5,4.5);cancellationObserved=false;resurrectionObserved=false;cancellationMode=0;cancellationOwner=p;cancellationAfterDamage=false;cancellationAmount=0;cancellationBefore=0;cancellationAfter=0;cast(p,Runes.BEAM,Runes.RED_LEDGER);});c.waitTicks(12);
+    server.runOnServer(s->{check(CounterSignatures.active()==1,"Paid ledger is active before synchronous cancellation fixture");
+     check(cancelledDuringDamage.getHealth()==20 && cancelledDuringDamage.getAbsorptionAmount()==0,"Cancellation target reaches its movement gate at full health without absorption");
+     cancellationMode=mode;cancelledDuringDamage.move(MoverType.SELF,new Vec3(1.1,0,0));});c.waitTicks(4);
+    float after=server.computeOnServer(s->{check(cancellationObserved,"Actual ledger damage invokes native cancellation callback");check(!resurrectionObserved,"No cancelled record is transiently resurrected at the actual damage tick boundary");check(CounterSignatures.active()==0,"Synchronous "+(mode==1?"teleport":"removal")+" cannot be overwritten by stale post-damage ledger continuation");if(mode==1){System.out.println("Ledger cancellation final: admitted="+cancellationAmount+" before="+cancellationBefore+" afterEvent="+cancellationAfter+" event="+cancellationAfterDamage+" health="+cancelledDuringDamage.getHealth()+" absorption="+cancelledDuringDamage.getAbsorptionAmount()+" cooldown="+cancelledDuringDamage.damageCooldownTime);check(cancelledDuringDamage.getHealth()<20,"Actual damage is allowed despite synchronous small teleport");cancelledDuringDamage.move(MoverType.SELF,new Vec3(1.1,0,0));}else check(cancelledDuringDamage.isRemoved(),"Actual damage callback removed its target");return cancelledDuringDamage.getHealth();});c.waitTicks(12);
     server.runOnServer(s->{check(CounterSignatures.active()==0 && cancelledDuringDamage.getHealth()==after,"Cancelled ledger has no resumed movement damage or retained record");cancelledDuringDamage.discard();});
    }
-  }finally{cancellationMode=0;cancellationObserved=false;resurrectionObserved=false;cancelledDuringDamage=null;}
+  }finally{cancellationMode=0;cancellationObserved=false;resurrectionObserved=false;cancelledDuringDamage=null;cancellationOwner=null;cancellationAfterDamage=false;cancellationAmount=0;cancellationBefore=0;cancellationAfter=0;}
  }
  private static void reflectedAfterQuarryDeath(ClientGameTestContext c,net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server){
   // Actual paid enemy bolt meets an actual paid Shield and uses RuneBolt's ordinary parry path.

@@ -15,15 +15,26 @@ public final class LifeOutcomeSurfaceTest implements FabricClientGameTest {
    var original=draw(new LifeOutcomes.Observation(rune,moment,anchor,null,6,2,0),minimal);
    for(Vec3 normal:List.of(new Vec3(0,0,1),new Vec3(1,0,0),new Vec3(0,0,-1),new Vec3(-1,0,0),new Vec3(0,1,0))){
     var framed=draw(new LifeOutcomes.Observation(rune,moment,anchor,null,6,2,0,normal,.58),minimal);
-    check(original.size()==framed.size(),"Surface frame preserves piece count: "+rune);
+    boolean supportedSpore=rune.equals("sporebloom")&&normal.equals(new Vec3(0,1,0));
+    var reference=supportedSpore?draw(new LifeOutcomes.Observation(rune,moment,anchor,null,6,2,0,normal,0),minimal):original;
+    check(reference.size()==framed.size(),"Same authored surface variant preserves piece count: "+rune);
+    if(rune.equals("sporebloom")){
+     long bodySeeds=original.stream().filter(p->p.option() instanceof LifeOption life&&life.style()==LifeOption.SEED).count();
+     check(bodySeeds==0,"Horizontal airborne spores never borrow grounded seed coat");
+     if(supportedSpore){
+      long seeds=reference.stream().filter(p->p.option() instanceof LifeOption life&&life.style()==LifeOption.SEED).count();
+      long tissue=reference.stream().filter(p->p.option() instanceof LifeOption life&&life.style()==LifeOption.TISSUE).count();
+      check(seeds==1&&tissue==(minimal?6:10)&&reference.size()==(minimal?10:14),"Supported UP fruit keeps exact seed coat, tissue lobes and authored quality counts");
+     }
+    }
     Vec3 right=new Vec3(0,1,0).cross(normal);if(right.lengthSqr()<1e-6)right=new Vec3(1,0,0);else right=right.normalize();Vec3 up=normal.cross(right);
-    for(int i=0;i<original.size();i++){
-     var old=original.get(i);var changed=framed.get(i);Vec3 local=old.at().subtract(anchor);
-     Vec3 expected=anchor.add(normal.scale(.58)).add(right.scale(local.x)).add(up.scale(local.y)).add(normal.scale(local.z));
+    for(int i=0;i<reference.size();i++){
+     var old=reference.get(i);var changed=framed.get(i);Vec3 local=old.at().subtract(anchor);
+     Vec3 expected=supportedSpore?old.at().add(normal.scale(.58)):anchor.add(normal.scale(.58)).add(right.scale(local.x)).add(up.scale(local.y)).add(normal.scale(local.z));
      check(expected.distanceToSqr(changed.at())<1e-16,"Exact outward local transform "+rune);
      if(old.option() instanceof LifeOption a){var b=(LifeOption)changed.option();
       check(a.style()==b.style()&&a.color()==b.color()&&a.size()==b.size()&&a.lifetime()==b.lifetime()&&a.spin()==b.spin(),"No material inflation or replacement "+rune);
-      Vec3 drift=right.scale(a.drift().x).add(up.scale(a.drift().y)).add(normal.scale(a.drift().z));check(drift.distanceToSqr(b.drift())<1e-16,"Drift uses same frame "+rune);
+      Vec3 drift=supportedSpore?a.drift():right.scale(a.drift().x).add(up.scale(a.drift().y)).add(normal.scale(a.drift().z));check(drift.distanceToSqr(b.drift())<1e-16,"Drift uses same frame "+rune);
      }else check(old.option().equals(changed.option())&&old.option() instanceof MaterialOption,"Supporting option unchanged "+rune);
      if(rune.equals("root_bulwark"))check(changed.at().subtract(anchor).dot(normal)>.5,"ROOT pieces lie outside actual full cube for every outward face");
     }

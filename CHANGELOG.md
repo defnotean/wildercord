@@ -4,6 +4,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Added Rootmolt Striders: original articulated cave creatures that compete for mature Glowcaps, defend their garden with a readable single physical rake, and apply a short source-owned restraint with practical melee, cleanse and sidestep counters. Added finite saved resource/threat clocks, Sporeback warning reactions, bounded population/alarm queries, compatible configuration, five authored voices and illustrated guide coverage.
+- Fixed the Rootmolt texture path, natural-spawn dimension admission and stale equipment contacts after callback movement/target replacement. Verified once-only consumption, counterplay, restart, habitat and dense-query behavior in focused native tests.
+- Ground Sporebloom's actual fruit on the recipient's real block/slab support; use separate hanging spores for airborne recipients. Keep finite Full/Minimal materials above the floor and resolve support after event admission. Updated all30-rune surface regressions and preserved genuine gameplay/screenshots.
+- Tightened synchronous counter-test damage provenance and retained strict actual health-loss, cancellation and no-resurrection gates. Focused tests pass; full Linux CI remains independently tracked.
+
 - Corrected 34 proven malformed translation literals in the generator and regenerated language data: Codex mana/cooldown separators and multiplication signs, Cord/tooltips, passive/readout and research/loadout text now use their intended punctuation.
 
 - Fixed visual settings overflowing short/narrow windows: adaptive columns and spacing keep every control reachable at Minecraft's minimum320x240 GUI, with full preset-label tooltips. Native tests verify18 non-overlapping controls, journal state preservation and learned-only guidance.

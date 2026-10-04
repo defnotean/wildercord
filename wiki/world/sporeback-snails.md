@@ -38,3 +38,7 @@ prevents consumption and refresh. Carry ordinary light for the journey after it 
 
 This is the first fungal habitat relationship, not a complete subterranean ecosystem. Natural
 multi-seed populations, wider ecological relationships and remote multiplayer remain review work.
+
+## A warning near the garden
+
+A nearby awake Sporeback may retract when a [Rootmolt Strider]({{ "/world/rootmolt-striders/" | relative_url }}) raises its shovel arms. This territorial mature-cap competitor uses a physical rake. Give the visitor a clear route and watch the warning before entering a defended patch; killing the rival produces no unique resource reward.

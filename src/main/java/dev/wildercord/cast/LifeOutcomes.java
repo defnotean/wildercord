@@ -17,6 +17,9 @@ public final class LifeOutcomes {
  /** units: actual changed cells/removed conditions/ward charges, bounded for display only.
   * delta: actual health or durability change, never requested power. Secondary: source, partner,
   * old position or projectile strike as documented in the integration map. It is optional.
+  * Sporebloom uses the existing actual surface normal as an explicit variant: UP is real supported
+  * fruit anchored .03 above collision surface; horizontal is airborne recipient body spores.
+  * No variant is encoded in units, delta, recipient or source, and no payload fields are added.
   */
  public record Observation(String rune,Moment moment,Vec3 anchor,Vec3 secondary,int units,double delta,int age,Vec3 normal,double standoff) {
   public Observation(String rune,Moment moment,Vec3 anchor,Vec3 secondary,int units,double delta,int age){this(rune,moment,anchor,secondary,units,delta,age,new Vec3(0,0,1),0);}
@@ -138,9 +141,18 @@ public final class LifeOutcomes {
     p.chain(LifeOption.PETAL,0xBFC5D6,new double[][]{{-.38,-.2,0},{-.18,.16,.02},{.12,.27,.04}},new Vec3(.028,end?-.013:.01,0));
     p.dot(o.delta()>0?LifeOption.TISSUE:LifeOption.THORN,o.delta()>0?0xD6CEB4:0x9394B6,.15,-.02,.07,.12,new Vec3(.012,.008,0));
    }
-   case "sporebloom" -> { // Ground fruit cracks upward; only actual afflicted/fed recipients get satellite grains.
-    p.chain(LifeOption.TISSUE,0xB69A75,new double[][]{{-.22,-.34,0},{0,-.12,.05},{.23,-.35,0}},new Vec3(end?.012:0,end?-.02:.006,0));
-    for(int i=0;i<3;i++)p.dot(LifeOption.SPORE,0xC8C095,i*.16-.15,.04+i*.1,.05,.045,new Vec3((i-1)*.012,.018,0));
+   case "sporebloom" -> { // Real support UP frame: local Z is height; horizontal body frame: airborne grains.
+    if(o.normal().y>.999){
+     // Two torn fruit lobes and an upward split coat rest above the real collision surface.
+     p.chain(LifeOption.TISSUE,0xB69A75,new double[][]{{-.24,-.12,.045},{-.13,-.04,.13},{-.04,.02,.19}},new Vec3(end?-.012:-.005,0,end?0:.003));
+     p.chain(LifeOption.TISSUE,0xC0A582,new double[][]{{.22,-.10,.04},{.12,-.01,.11},{.04,.06,.18}},new Vec3(end?.012:.005,0,end?0:.003));
+     p.dot(LifeOption.SEED,0x7E7054,0,.01,.10,.10,new Vec3(.003,.002,.018));
+     for(int i=0;i<3;i++)p.dot(LifeOption.SPORE,0xC8C095,i*.13-.12,.03+i*.04,.18+i*.055,.045,new Vec3((i-1)*.007,.002,.018));
+    }else{
+     // No near support: hanging spore sacs part at the actual body instead of pretending to be floor fruit.
+     for(int i=0;i<3;i++)p.dot(LifeOption.SPORE,0xC8C095,(i-1)*.13,.16-i*.11,.10,.055,new Vec3((i-1)*.007,-.012,.004));
+     p.chain(LifeOption.VINE,0x8B9365,new double[][]{{-.15,.22,.03},{-.04,.10,.05},{.12,-.02,.04}},new Vec3(.003,-.01,0));
+    }
    }
    case "glowvine" -> { // One berry weight forms at each real placed head/refreshed berry; leaves drape downward.
     if(n==0)return;p.chain(LifeOption.VINE,0x788B55,new double[][]{{0,.35,0},{-.04,.05,.02},{.03,-.22,.04}},new Vec3(0,-.018,0));

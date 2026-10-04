@@ -21,17 +21,23 @@ public final class SporebackSnail extends PathfinderMob {
  private static final EntityDataAccessor<Integer> POSE=SynchedEntityData.defineId(SporebackSnail.class,EntityDataSerializers.INT);
  private static final EntityDataAccessor<Boolean> DEW=SynchedEntityData.defineId(SporebackSnail.class,EntityDataSerializers.BOOLEAN);
  private boolean shelterRest;
- private long gatherReady,forageReady,responseReady,hiddenUntil,answerUntil,nurseryReady;
+ private long gatherReady,forageReady,responseReady,hiddenUntil,answerUntil,nurseryReady,threatReady;
  public float hide,hideO;
  public SporebackSnail(EntityType<? extends SporebackSnail> type,Level l) {super(type,l);xpReward=0;}
  public static AttributeSupplier.Builder attributes() {return createMobAttributes().add(Attributes.MAX_HEALTH,12).add(Attributes.MOVEMENT_SPEED,.13).add(Attributes.FOLLOW_RANGE,8).add(Attributes.STEP_HEIGHT,.6);}
  @Override protected void defineSynchedData(SynchedEntityData.Builder b) {super.defineSynchedData(b);b.define(POSE,0);b.define(DEW,false);}
  public int pose() {return entityData.get(POSE);} public boolean dew() {return entityData.get(DEW);}
  public long nurseryReady() {return nurseryReady;} public long forageReady() {return forageReady;}
- public long gatherReady() {return gatherReady;} public long responseReady() {return responseReady;} public long hiddenUntil() {return hiddenUntil;}
+ public long threatReady() {return threatReady;} public long gatherReady() {return gatherReady;} public long responseReady() {return responseReady;} public long hiddenUntil() {return hiddenUntil;}
  @Override public void tick() {super.tick();if(level().isClientSide()) {hideO=hide;hide=WildlifeRules.approach(hide,pose()==2?1:0,.08F);}}
  @Override protected void registerGoals() {goalSelector.addGoal(1,new Visit());goalSelector.addGoal(6,new WaterAvoidingRandomStrollGoal(this,.5,120));goalSelector.addGoal(8,new RandomLookAroundGoal(this));}
  public static boolean fungus(Level l,BlockPos p) {return l.hasChunkAt(p) && (l.getBlockState(p).is(Blocks.BROWN_MUSHROOM) || l.getBlockState(p).is(Blocks.RED_MUSHROOM) || (l.getBlockState(p).is(FungalGarden.GLOWCAP) && l.getBlockState(p).getValue(GlowcapBlock.AGE)==1 && GlowcapBlock.conditions(l,p)));}
+ /** Physical danger owns a separate finite rest and never changes forage or dew admission. */
+ public boolean answerThreat() {
+  if(!(level() instanceof ServerLevel l) || !isAlive() || isRemoved() || pose()==2 || l.getGameTime()<hiddenUntil || l.getGameTime()<threatReady)return false;
+  threatReady=l.getGameTime()+200;hiddenUntil=Math.max(hiddenUntil,l.getGameTime()+SporebackRules.HIDE_TICKS);answerUntil=0;
+  entityData.set(POSE,2);getNavigation().stop();Feels.sound(l,position(),"sporeback_hide",.45F,1);return true;
+ }
  public boolean answerMagic(boolean fire) {
   if(!(level() instanceof ServerLevel l) || !isAlive() || l.getGameTime()<responseReady)return false;
   responseReady=l.getGameTime()+SporebackRules.RESPONSE_REST;
@@ -56,8 +62,8 @@ public final class SporebackSnail extends PathfinderMob {
  @Override protected SoundEvent getAmbientSound() {return dev.wildercord.content.WildercordSounds.kit("sporeback_call");}
  @Override protected SoundEvent getHurtSound(DamageSource s) {return dev.wildercord.content.WildercordSounds.kit("sporeback_hide");}
  @Override public int getAmbientSoundInterval() {return 320;}
- @Override protected void addAdditionalSaveData(ValueOutput o) {super.addAdditionalSaveData(o);o.putLong("gather_ready",gatherReady);o.putLong("forage_ready",forageReady);o.putLong("response_ready",responseReady);o.putLong("hidden_until",hiddenUntil);o.putBoolean("dew",dew());o.putLong("nursery_ready",nurseryReady);}
- @Override protected void readAdditionalSaveData(ValueInput i) {super.readAdditionalSaveData(i);nurseryReady=i.getLongOr("nursery_ready",0);gatherReady=i.getLongOr("gather_ready",0);forageReady=i.getLongOr("forage_ready",0);responseReady=i.getLongOr("response_ready",0);hiddenUntil=i.getLongOr("hidden_until",0);entityData.set(DEW,i.getBooleanOr("dew",false));entityData.set(POSE,0);answerUntil=0;}
+ @Override protected void addAdditionalSaveData(ValueOutput o) {super.addAdditionalSaveData(o);o.putLong("gather_ready",gatherReady);o.putLong("forage_ready",forageReady);o.putLong("response_ready",responseReady);o.putLong("threat_ready",threatReady);o.putLong("hidden_until",hiddenUntil);o.putBoolean("dew",dew());o.putLong("nursery_ready",nurseryReady);}
+ @Override protected void readAdditionalSaveData(ValueInput i) {super.readAdditionalSaveData(i);nurseryReady=i.getLongOr("nursery_ready",0);gatherReady=i.getLongOr("gather_ready",0);forageReady=i.getLongOr("forage_ready",0);responseReady=i.getLongOr("response_ready",0);threatReady=i.getLongOr("threat_ready",0);hiddenUntil=i.getLongOr("hidden_until",0);entityData.set(DEW,i.getBooleanOr("dew",false));entityData.set(POSE,0);answerUntil=0;}
  private final class Visit extends Goal {
   private HabitatSweep sweep;private BlockPos destination;private int scanAt,left,chew,searchAt,retries;private boolean shelter,nursery;
   Visit() {setFlags(EnumSet.of(Flag.MOVE,Flag.LOOK));}

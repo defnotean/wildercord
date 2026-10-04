@@ -178,3 +178,5 @@ Three events happen on their own in the Overworld, near players. They're covered
 ## Belowkeeper gardens
 
 [Glowcap Nurseries]({{ '/world/glowcap-nurseries/' | relative_url }}) follows the relationship between damp cave caps and patient Sporeback visitors. Tend a living nursery, make a limited-use cave filter, and follow Mara's two Breathmarks into an optional field investigation.
+
+[Rootmolt Striders]({{ "/world/rootmolt-striders/" | relative_url }}) compete for mature caps in covered Overworld cave gardens. Their raised shovel arms announce a committed physical rake; step sideways or break the source's short restraint.

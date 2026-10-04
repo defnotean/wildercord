@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="380" viewBox="0 0 960 380" role="img" aria-labelledby="title desc">
+<title id="title">Illustrated Rootmolt warning and sideways escape</title><desc id="desc">A schematic top view of six feet, broad bark plates and shovel arms facing a committed dirt line. A player silhouette steps sideways. This is an illustration, not a screenshot.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#8ebf9a"/></marker></defs>
+<rect width="960" height="380" rx="18" fill="#172723"/><path d="M25 315H935" stroke="#32463a" stroke-width="2"/>
+<text x="32" y="40" font-family="sans-serif" font-size="20" fill="#e3d4b4">ROOTMOLT FIELD NOTES</text><text x="32" y="67" font-family="sans-serif" font-size="13" fill="#a4b7a6">Drawn warning diagram Ã‚Â· top view Ã‚Â· not a native screenshot</text>
+<g transform="rotate(90 195 210)"><g stroke="#a68c68" stroke-width="10" fill="none" stroke-linejoin="round"><path d="M160 170L119 140L94 160M155 207L104 210L84 237M163 246L126 276L105 267M228 170L267 140L292 160M236 207L282 210L303 237M229 246L267 276L289 267"/></g>
+<path d="M154 150Q195 126 238 150L250 244Q195 272 142 244Z" fill="#685d47" stroke="#c0a37a" stroke-width="3"/><path d="M157 171Q195 155 233 171M151 200Q195 185 241 200M147 231Q195 213 245 231" fill="none" stroke="#9a865f" stroke-width="5"/>
+<path d="M175 153L169 115L139 103L127 126L156 140M216 153L222 115L252 103L264 126L235 140" fill="#8f7a55" stroke="#c0a37a" stroke-width="5"/>
+</g>
+<path d="M280 208H674" stroke="#b79a6b" stroke-width="3" stroke-dasharray="11 10"/><g fill="#806d50"><path d="M340 200l8 -4 5 10 -11 6Z"/><path d="M422 215l7 -8 8 6 -4 10Z"/><path d="M507 201l10 -3 7 11 -15 3Z"/><path d="M586 211l8 -4 6 8 -11 5Z"/></g>
+<rect x="688" y="187" width="34" height="42" rx="7" fill="#af9e77"/><circle cx="705" cy="175" r="13" fill="#d0bea0"/><path d="M705 142V93" stroke="#8ebf9a" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="352" y="266" font-family="sans-serif" font-size="18" fill="#d8c29b">Committed line stays straight</text><text x="746" y="112" font-family="sans-serif" font-size="17" fill="#b4d4bd">Step sideways</text><text x="72" y="329" font-family="sans-serif" font-size="15" fill="#c4b596">Raised arms warn before one physical rake</text><text x="72" y="354" font-family="sans-serif" font-size="13" fill="#95ac9a">If restrained: hit the source, cleanse, or leave its sight/range.</text>
+</svg>

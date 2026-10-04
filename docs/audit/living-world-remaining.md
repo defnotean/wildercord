@@ -8,7 +8,7 @@ Existing features, recolours, source references and controlled screenshots do no
 
 | Target | Evidenced additions | Remaining |
 |---|---|---|
-| 12 creatures | 6: Buried Keeper, Stonehorn, Galeclaw, Lantern Newt, Reedback Crab, Sporeback Snail | 6: two peaceful/magical wildlife, two hostile/territorial creatures, another boss and a useful companion |
+| 12 creatures | 7: Buried Keeper, Stonehorn, Galeclaw, Lantern Newt, Reedback Crab, Sporeback Snail, Rootmolt Strider | 5: two peaceful/magical wildlife, one hostile/territorial creature, another boss and a useful companion |
 | 4 connected ecosystems | Highland, wetland and first fungal foundations | Finish their connected relationships; build ember woodlands; none yet meets the full ecosystem acceptance criteria |
 | 6 new dungeon/encounter locations | Sword tomb is the conservative confirmed new dungeon; hosted village tournament is an additional encounter candidate | 5 further fixed locations under the conservative architectural count, or 4 if the tournament counts; finalize this scope explicitly |
 | Battlefields and sleeping blade | Both implemented with native evidence | Natural rarity/distribution, remote participation, return-visit design and remaining lifecycle coverage |
@@ -129,3 +129,9 @@ acceptance stays open after a successful scoped development milestone.
 The former isolated Life owner integration is now live:30 existing identities have authored material outcomes tied to actual admitted gameplay, source-aware Full/Minimal client delivery, bounded loaded-world rendering, corrected surface orientation, finite lifecycle cleanup and56 new sound identities for28 original effects. Generic overlap is removed only for wholly covered groups; mixed/uncovered fallback and requested rear glyphs remain. Actual spectator interception and Fortune pre-admission success feedback are fixed.
 
 Current Core48s, Stateful2m47s, Edges2m11s, Pulse49s, source26s, quality26s, geometry26s, spectator25s and Fortune37s focused suites pass. Combined build passes985 units;5270 generated paths reproduce;123 web/GitBook pages validate. Native guide44s final clear-capture and connected-player Bloomstep35s passes are now recorded; compact settings keep all18 buttons in bounds. Final build13s,985 units and checked review JAR are delivered with the exact checksum in the milestone audit. See docs/audit/life-outcomes-milestone.md for actual scope and remaining visual/CI/multiplayer limits. No new goal content count is awarded for polishing existing Life effects. Rootmolt/Drainhouse remains an unaccepted isolated candidate.
+
+## Rootmolt and grounded Sporebloom development increment (2026-10-03)
+
+Rootmolt is now live and has scoped ecology/control/counter/restart/presentation/sidestep/placement/query/alarm native acceptance. Conservative creature credit rises to7 of12. Sporebloom actual support, finite particle motion and revised all30 surface checks pass. Combined15s build passes988 units;5280 generated paths reproduce;124 guide/GitBook pages validate; nine directly reviewed native originals and checked review JAR are delivered. See docs/audit/rootmolt-spore-milestone.md for exact checksum, source gates and evidence limits.
+
+The preceding e0405713 ordinary CI build and Player Guide passed; its full Linux gameplay descriptor failed the synchronous counter health-loss assertion. The tightened provenance fixture passes locally50s, but full Linux acceptance is still pending. Rootmolt natural scheduler distribution, sound listening, sustained population performance and remote multiple-client play remain open. No new ecosystem/location/item/ability/lore/investigation credit is added by this increment. Drainhouse remains an isolated next candidate. The goal stays active.

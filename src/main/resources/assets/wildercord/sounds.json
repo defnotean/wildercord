@@ -6117,5 +6117,35 @@
     "sounds": [
       "wildercord:kit/nextsignature/nextsignature_wayline_impact"
     ]
+  },
+  "rootmolt_call": {
+    "subtitle": "subtitles.wildercord.kit.rootmolt.call",
+    "sounds": [
+      "wildercord:kit/rootmolt/rootmolt_call"
+    ]
+  },
+  "rootmolt_meal": {
+    "subtitle": "subtitles.wildercord.kit.rootmolt.meal",
+    "sounds": [
+      "wildercord:kit/rootmolt/rootmolt_meal"
+    ]
+  },
+  "rootmolt_rake": {
+    "subtitle": "subtitles.wildercord.kit.rootmolt.rake",
+    "sounds": [
+      "wildercord:kit/rootmolt/rootmolt_rake"
+    ]
+  },
+  "rootmolt_release": {
+    "subtitle": "subtitles.wildercord.kit.rootmolt.release",
+    "sounds": [
+      "wildercord:kit/rootmolt/rootmolt_release"
+    ]
+  },
+  "rootmolt_warn": {
+    "subtitle": "subtitles.wildercord.kit.rootmolt.warn",
+    "sounds": [
+      "wildercord:kit/rootmolt/rootmolt_warn"
+    ]
   }
 }

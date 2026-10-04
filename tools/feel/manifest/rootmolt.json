@@ -1,0 +1,40 @@
+{
+  "events": {
+    "rootmolt_call": {
+      "attenuation": 0,
+      "files": [
+        "kit/rootmolt/rootmolt_call"
+      ],
+      "subtitle": "rootmolt.call"
+    },
+    "rootmolt_meal": {
+      "attenuation": 0,
+      "files": [
+        "kit/rootmolt/rootmolt_meal"
+      ],
+      "subtitle": "rootmolt.meal"
+    },
+    "rootmolt_rake": {
+      "attenuation": 0,
+      "files": [
+        "kit/rootmolt/rootmolt_rake"
+      ],
+      "subtitle": "rootmolt.rake"
+    },
+    "rootmolt_release": {
+      "attenuation": 0,
+      "files": [
+        "kit/rootmolt/rootmolt_release"
+      ],
+      "subtitle": "rootmolt.release"
+    },
+    "rootmolt_warn": {
+      "attenuation": 0,
+      "files": [
+        "kit/rootmolt/rootmolt_warn"
+      ],
+      "subtitle": "rootmolt.warn"
+    }
+  },
+  "part": "rootmolt"
+}
