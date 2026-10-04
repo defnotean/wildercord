@@ -117,8 +117,8 @@ as a passive it costs 0.72 mana a second (shown as 0.7/s).
 | `Self · Feather Fall` | 6 | 0.72 |
 | `Self · Regrowth` | 10 | 1.2 |
 | `Stoneskin · Empower` | 24 | 2.88 |
-| `Orbit · Shock` | 23 | 2.76 |
-| `Orbit · Dismantle` | 29 | 3.48 |
+| `Orbit · Shock` | 31 | 3.64 |
+| `Orbit · Dismantle` | 40 | 4.74 |
 | `Self · Anchor` | 4 | 0.48 |
 
 - **Thrift** on your Cord and the **Archmage** perk lower the upkeep, like they lower a spell's cost (and

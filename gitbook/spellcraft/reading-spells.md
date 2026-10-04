@@ -98,7 +98,7 @@ Some more rules:
   (three copies, a wider area, a faster bolt), and multiplies the cost of the whole group. Rapid, Vow and
   Blood Price sit on a shape too, but they change the **whole spell**, so they multiply the whole spell's
   cost, whichever shape they sit on.
-- **Modifiers stack.** `Fire · Amplify · Amplify` is +125% power (1.5 × 1.5), at 1.6 × 1.6 = 2.56 times the
+- **Modifiers stack.** `Fire · Amplify · Amplify` is +125% power (1.5 × 1.5), at 1.5 × 1.5 = 2.25 times the
   cost. Most stacks multiply like that; the [limits](#the-limits-on-a-spell) below say where they stop.
 - **A modifier never reaches back past a link.** In `Bolt · Fire · On Hit · Amplify`, Amplify can't reach
   the Fire. It *can* change the link itself: `Delay · Extend` waits two seconds instead of one, and
@@ -132,7 +132,7 @@ Every rune's page lists exactly which modifiers work on it: see [Shapes](../rune
 
 | Modifier | Does | Cost × |
 |---|---|---|
-| Amplify | +50% power | 1.6 |
+| Amplify | +50% power | 1.5 |
 | Extend | Twice as long | 1.4 |
 | Widen | +50% radius | 1.5 |
 | Focus | Half the radius, +50% power | 1.2 |
@@ -145,14 +145,14 @@ Every rune's page lists exactly which modifiers work on it: see [Shapes](../rune
 | Homing | Steers toward the nearest enemy within 12 blocks | 1.4 |
 | Linger | The effect lands twice more, a second apart | 1.8 |
 | Frugal | Half the mana; 40% weaker and shorter | 0.5 |
-| Overcharge | +150% power | 3.0 |
+| Overcharge | +150% power | 2.6 |
 | Execute | Double power against targets under half health | 1.3 |
 | Kindred | A helpful effect also lands on you and on the nearest ally it missed within 8 blocks, at half power | 1.4 |
 | Thirst | You heal for a quarter of the damage the effect deals (two: half, three or more: three quarters) | 1.4 |
 | Belated | The effect (and any Linger after it) lands 1.5 seconds late, 25% stronger (three count at most: 4.5 seconds, 1.95x) | 1.25 |
 | Rapid | Halves the whole spell's cooldown | 1.4, on the whole spell |
-| Vow | That shape's effects hit twice as hard; the whole spell's cooldown is four times longer | 1.0 |
-| Blood Price | The whole spell is paid for in health, 1 per 5 mana | 1.0 |
+| Vow | That shape's effects hit twice as hard; the whole spell's cooldown is five times longer | 1.0 |
+| Blood Price | The whole spell is paid for in health, 1 per 4 mana | 1.0 |
 
 ## Links and segments
 
@@ -272,7 +272,7 @@ Copper Cord** (Fire is Tier II).
 
 > A bolt: Fire (+50% power)
 
-Amplify looks left, finds Fire, and makes it 50% stronger. **18 mana, 0.85 s.** Swap the last two runes
+Amplify looks left, finds Fire, and makes it 50% stronger. **17 mana, 0.8 s.** Swap the last two runes
 (`Bolt · Amplify · Fire`) and Amplify only has Bolt to its left, which has no power: it does nothing, costs
 nothing, and the readout warns you.
 
@@ -302,8 +302,8 @@ blocks. On a shape, Widen multiplies the whole group, so it costs a little more.
 
 | Spell | Readout | Mana |
 |---|---|---|
-| `Zone · Fire · Extend` | A field (3 blocks, 6s, every 1s): Fire (2x duration) | 31 |
-| `Zone · Extend · Fire` | A field (3 blocks, 12s, every 1s): Fire | 34 |
+| `Zone · Fire · Extend` | A field (3 blocks, 6s, every 1s): Fire (2x duration) | 39 |
+| `Zone · Extend · Fire` | A field (3 blocks, 12s, every 1s): Fire | 42 |
 
 The first makes what the field sets alight burn twice as long. The second makes the field itself last twice
 as long, striking 12 times instead of 6.
@@ -440,7 +440,7 @@ the cost again, to 164. The readout shows the copies, so it's easy to spot.
 
 The Frost freezes what the beam hits and the Fire shatters it: that Shatter is a reaction, so an explosion goes
 off around the creature. Swap the Frost for a Harm and nothing reacts, so nothing explodes (the mana is spent
-all the same). **59 mana, about 2.9 s. Amethyst Cord** (On Reaction and Explode are Tier III).
+all the same). **58 mana, about 2.85 s. Amethyst Cord** (On Reaction and Explode are Tier III).
 
 ### 20. Sharing it out: `Self · Heal · Kindred`
 
@@ -468,26 +468,26 @@ Every rune has a base cost, and the spell's cost is worked out from them in one 
 
 | Shape | Cost | Effects cost × | | Shape | Cost | Effects cost × |
 |---|---|---|---|---|---|---|
-| Self | 0 | 1.0 | | Ring | 6 | 1.5 |
+| Self | 0 | 1.0 | | Ring | 6 | 1.7 |
 | Touch | 1 | 1.0 | | Pillar | 5 | 1.4 |
 | Spark | 1 | 1.0 | | Wave | 6 | 1.5 |
-| Ray | 2 | 1.0 | | Mine | 5 | 1.3 |
+| Ray | 2 | 1.15 | | Mine | 5 | 1.3 |
 | Bolt | 3 | 1.1 | | Snare | 4 | 1.4 |
-| Arc | 3 | 1.1 | | Cone | 5 | 1.4 |
-| Nova | 3 | 1.3 | | Trail | 7 | 1.8 |
-| Beam | 4 | 1.2 | | Zone | 8 | 2.0 |
+| Arc | 3 | 1.25 | | Cone | 5 | 1.4 |
+| Nova | 3 | 1.3 | | Trail | 7 | 2.85 |
+| Beam | 3 | 1.2 | | Zone | 8 | 2.75 |
 | Wisp | 4 | 1.3 | | Constellation | 8 | 2.4 |
-| Crescent | 5 | 1.4 | | Orbit | 9 | 2.0 |
-| Lance | 5 | 1.5 | | Orb | 9 | 2.2 |
-| Prism | 5 | 1.5 | | Vortex | 9 | 2.2 |
+| Crescent | 5 | 1.4 | | Orbit | 9 | 3.05 |
+| Lance | 5 | 1.5 | | Orb | 9 | 2.0 |
+| Prism | 5 | 1.5 | | Vortex | 9 | 2.8 |
 | Ricochet | 5 | 1.5 | | Rain | 10 | 2.5 |
-| Barrage | 5 | 1.6 | | Wall | 10 | 2.2 |
-| Comet | 5 | 1.6 | | Totem | 10 | 2.4 |
-| Sweep | 5 | 1.6 | | Domain | 20 | 3.0 |
-| Cluster | 6 | 1.7 | | Stream | 5 | 1.8 |
+| Barrage | 5 | 1.85 | | Wall | 10 | 2.95 |
+| Comet | 5 | 1.6 | | Totem | 10 | 3.15 |
+| Sweep | 5 | 1.8 | | Domain | 20 | 3.9 |
+| Cluster | 6 | 1.5 | | Stream | 5 | 1.95 |
 | Burst | 6 | 1.5 | | Blitz | 6 | 1.5 |
 | Imprint | 3 | 1.3 | | Glaive | 5 | 1.8 |
-| Latch | 6 | 1.9 | | | | |
+| Latch | 6 | 2.15 | | | | |
 
 The implicit Self (a spell or segment with no shape) costs nothing and multiplies by 1. Every effect's cost
 is on its rune page, and the modifiers' multipliers are in the table [above](#what-the-common-modifiers-do).
@@ -505,7 +505,7 @@ Links cost 2, except If Sneaking, If Airborne, If Wounded, If Outnumbered and If
 | Burst and its Explode | 6 + (18 × 1.5) | 33 |
 | **Total** | 28.32 + 2 + 33 = 63.32, rounded up | **64** |
 
-And `Bolt · Fire · Amplify` is 3 + (8 × 1.6 × 1.1) = 17.08, so **18** mana.
+And `Bolt · Fire · Amplify` is 3 + (8 × 1.5 × 1.1) = 16.2, so **17** mana.
 
 ### What you actually pay
 
@@ -525,7 +525,7 @@ the same cost.
 ### Blood Price
 
 With **Blood Price** on any shape, the **whole spell** is paid for in **health** instead of mana: 1 health for
-every 5 mana of your price, rounded up, at least 1. It never kills you: if you don't have more health than it
+every 4 mana of your price, rounded up, at least 1. It never kills you: if you don't have more health than it
 costs, the cast is refused ("Blood Price needs more than 3 health"). `Bolt · Fire · Blood Price` costs 3
 health. The readout shows the price in health ("3 health (Blood Price)") and the spell panel as a number
 with a small heart, and the health you spend still counts toward
@@ -537,7 +537,7 @@ A spell's cooldown comes from its **cost**:
 
 - **one second for every 20 mana** of the spell's plain cost (before your discounts),
 - never less than **half a second** and never more than **20 seconds**,
-- then **halved for every Rapid** anywhere in the spell, and **four times longer for every Vow** (up to a minute),
+- then **halved for every Rapid** anywhere in the spell, and **five times longer for every Vow** (up to a minute),
 - then shortened by **Celerity** (8% per level) and the **Flow** perk of the 5th Heart Circle (15%),
 - and never under a **quarter of a second** in the end.
 
@@ -555,7 +555,7 @@ there to set off an On Hit) it's a longer cooldown for nothing, and the readout 
 | `Bolt · Fire · Split` | 28.3 | 1.4 s |
 | `Bolt · Fire · Split · On Hit · Burst · Explode` | 63.3 | about 3.2 s |
 | `Bolt · Fire · Rapid` | 16.5 | 0.45 s |
-| `Bolt · Vow · Fire` | 11.8 | 2.4 s (and its fire hits twice as hard) |
+| `Bolt · Vow · Fire` | 11.8 | 3 s (and its fire hits twice as hard) |
 
 Every spell has its **own** cooldown, so while one recharges you can cast another. Cooldowns are kept when
 you log out or die. See [Casting](casting.md#cooldowns).
