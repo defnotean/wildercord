@@ -16,8 +16,8 @@ public final class Galeclaw extends AuraBeast {
 	public long fedUntil() {return fedUntil;}
 	public void ate() {fedUntil=dev.wildercord.wildlife.HighlandRules.meal(level().getGameTime());}
 	@Override protected void hit(ServerLevel level,LivingEntity target,float damage,double knock) {
-		super.hit(level,target,damage,knock);
-		if(target instanceof Rimehare && !target.isAlive()) {ate();setTarget(null);}
+		boolean livingBefore=target.isAlive();int epoch=attackEpoch(),phase=pose();var owned=hitOwned(level,target,damage,knock);
+		if(owned!=null && target.getLastDamageSource()==owned && livingBefore && attackActive(level,epoch,phase) && target.level()==level && target instanceof Rimehare && !target.isAlive() && target.getHealth()<=0) {ate();setTarget(null);}
 	}
 	@Override protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput out) {super.addAdditionalSaveData(out);out.putLong("fed_until",fedUntil);}
 	@Override protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput in) {super.readAdditionalSaveData(in);fedUntil=in.getLongOr("fed_until",0);}
@@ -33,21 +33,25 @@ public final class Galeclaw extends AuraBeast {
 				if(pose()==BeastRules.WARN) {
 					beginAttack(); pose(BeastRules.LEAP,16); setDeltaMovement(landing.subtract(position()).multiply(1,0,1).scale(1/16.0).add(0,.42,0)); sound("leap");
 				} else if(pose()==BeastRules.LEAP) {
-					for(var p:level.getEntitiesOfClass(LivingEntity.class,getBoundingBox().inflate(3),e->e!=this && valid(e) && !(e instanceof Galeclaw)))
+					int action=attackEpoch();
+					for(var p:AuraBeastQueries.complete(level,LivingEntity.class,getBoundingBox().inflate(3),this,e->valid(e) && !(e instanceof Galeclaw))) {
+						if(!attackActive(level,action,BeastRules.LEAP))return;
 						if(BeastRules.leapHit(p.position().subtract(position()).multiply(1,0,1).lengthSqr(),p.getY()-getY()) && hasLineOfSight(p)) hit(level,p,5,.35);
+					}
+					if(!attackActive(level,action,BeastRules.LEAP))return;
 					dust(position(),14); setDeltaMovement(Vec3.ZERO); pose(BeastRules.RECOVER,BeastRules.RECOVERY); sound("land");
 				} else pose(BeastRules.IDLE,0);
 			}
 			return;
 		}
 		if(getTarget()==null && calm==0 && tickCount%20==0) {
-			var caster=level.getEntitiesOfClass(ServerPlayer.class,getBoundingBox().inflate(18),p->valid(p) && !dev.wildercord.wildlife.HighlandContent.quiet(p) && p.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && distanceToSqr(p)<18*18 && hasLineOfSight(p) && Wildlife.castRecently(p,160)).stream().min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+			var caster=AuraBeastQueries.complete(level,ServerPlayer.class,getBoundingBox().inflate(18),p->valid(p) && !dev.wildercord.wildlife.HighlandContent.quiet(p) && p.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && distanceToSqr(p)<18*18 && Wildlife.castRecently(p,160)).stream().filter(this::hasLineOfSight).min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
 			if(caster!=null) setTarget(caster);
-			else if(hungry() && tickCount%100==0) { var prey=level.getEntitiesOfClass(Rimehare.class,getBoundingBox().inflate(10),p->p.isAlive() && p.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && hasLineOfSight(p)); if(!prey.isEmpty()) setTarget(prey.getFirst()); }
+			else if(hungry() && tickCount%100==0) { var prey=AuraBeastQueries.complete(level,Rimehare.class,getBoundingBox().inflate(10),p->p.isAlive() && p.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32).stream().filter(this::hasLineOfSight).toList(); if(!prey.isEmpty()) setTarget(prey.getFirst()); }
 		}
 		var target=getTarget(); if(target==null) {
 			if(hungry() && tickCount%40==0) {
-				var scraps=level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,getBoundingBox().inflate(6),e->e.isAlive() && (e.getItem().is(net.minecraft.world.item.Items.RABBIT) || e.getItem().is(net.minecraft.world.item.Items.CHICKEN)));
+				var scraps=AuraBeastQueries.complete(level,net.minecraft.world.entity.item.ItemEntity.class,getBoundingBox().inflate(6),e->e.isAlive() && (e.getItem().is(net.minecraft.world.item.Items.RABBIT) || e.getItem().is(net.minecraft.world.item.Items.CHICKEN)));
 				if(!scraps.isEmpty()) {
 					var food=scraps.getFirst(); getNavigation().moveTo(food,1);
 					if(distanceToSqr(food)<2) { food.getItem().shrink(1); if(food.getItem().isEmpty()) food.discard(); ate();heal(1);pose(BeastRules.FORAGE,40); }

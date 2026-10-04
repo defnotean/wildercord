@@ -53,7 +53,7 @@ public final class AuraBeasts {
 						p.getCooldowns().addCooldown(stack,600); if(!p.getAbilities().instabuild) stack.shrink(1);
 						Feels.sound(server,p.position(),"aura_stonehorn_forage",.6F,.8F);
 					} else {
-						for(var beast:server.getEntitiesOfClass(Galeclaw.class,p.getBoundingBox().inflate(16),b->b.isAlive() && p.hasLineOfSight(b))) beast.distract(p.position());
+						for(var beast:AuraBeastQueries.complete(server,Galeclaw.class,p.getBoundingBox().inflate(16),b->b.isAlive()).stream().filter(p::hasLineOfSight).toList()) beast.distract(p.position());
 						p.getCooldowns().addCooldown(stack,200); Feels.sound(server,p.position(),"aura_galeclaw_whistle",.8F,1);
 					}
 				}
@@ -62,9 +62,11 @@ public final class AuraBeasts {
 		});
 	}
 	public static boolean maySpawn(EntityType<?> type,ServerLevelAccessor level,EntitySpawnReason reason,BlockPos at) {
-		if(reason!=EntitySpawnReason.NATURAL && reason!=EntitySpawnReason.CHUNK_GENERATION) return true;
+		if(reason==EntitySpawnReason.CHUNK_GENERATION)return false;
+		if(reason!=EntitySpawnReason.NATURAL)return true;
+		if(!(level instanceof ServerLevel actual)||!actual.getServer().isSameThread())return false;
 		var ground=TagKey.create(Registries.BLOCK,Wildercord.id("aura_beast_ground"));
-		int near=level.getEntities(type,new AABB(at).inflate(96),e->e.isAlive()).size();
+		var nearby=new ArrayList<Entity>(2);actual.getEntities(type,new AABB(at).inflate(96),e->e.isAlive(),nearby,2);int near=nearby.size();
 		return BeastRules.habitat(Config.get().auraWorld().auraBeasts(),level.getDifficulty()==Difficulty.PEACEFUL,
 			level.getBlockState(at.below()).is(ground),level.canSeeSky(at),at.getY(),level.getSeaLevel(),near)
 			&& level.getFluidState(at).isEmpty() && level.getBlockState(at).isAir() && level.getBlockState(at.above()).isAir();

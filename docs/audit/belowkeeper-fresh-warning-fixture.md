@@ -13,3 +13,11 @@ Focused BelowkeeperEquipmentTest passes57s. Its original screenshot and log are 
 The earlier01889ba6 Linux Build37186920756 failed RootmoltCounterTest's actual physical rake/tether assertion. No precise contact geometry or damage-admission diagnostic was retained for that failure. A diagnostic-only change reports actual source/victim body, motion, health, world, ground, target, line of sight, committed line, held ownership and deadlines on timeout. It preserves every original wait and strict contact/counter assertion.
 
 An initial compile attempt used the private mapped Entity.invulnerableTime field in that diagnostic. It was corrected to the existing public getInvulnerableTime() API. Focused RootmoltCounterTest passes42s afterward. This proves the current local contact/counter gate, not the exact historical Linux cause or whole-descriptor acceptance. No production combat change was made on the basis of an unproven diagnosis.
+
+## Subsequent Linux rearm boundary, 2026-10-04
+
+Actual run37192934769 at16d87eaa fails the earlier second-warning assertion at BelowkeeperEquipmentTest46. Its rearm receipt records player(3.975608383,30,.5), source(0,30,.5), attackReady529 and now411. The source retains118 ticks of real rest while the supplied player begins immediately inside strict four-block range. Final timeout body/target geometry was not recorded, so later range drift is not proved retrospectively.
+
+The fixture now returns only its supplied player to the existing two-block position after real IDLE recovery, preserving the same source, phase and exact earned deadline. Three ordinary physics ticks settle the scene; real grounded range and line of sight are asserted before normal retargeting. Original warning window and production range/timers remain. The next real warning must occur at or after the captured deadline. Rich terminal diagnostics preserve actual body/velocity/target/LOS/health/input/clocks on a future failure.
+
+Focused native BelowkeeperEquipmentTest passes57s. Full Linux acceptance remains open; this local pass does not establish the prior timeout's unrecorded final geometry.

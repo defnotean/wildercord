@@ -4,7 +4,7 @@ package dev.wildercord.aura.world;
 public final class BeastRules {
 	private BeastRules() {}
 	public static final int IDLE=0, WARN=1, CHARGE=2, LEAP=3, RECOVER=4, FORAGE=5, REST=6;
-	public static final int WARNING=40, RECOVERY=50, SHED_INTERVAL=2400;
+	public static final int WARNING=40, RECOVERY=50, SHED_INTERVAL=2400, VICTIMS=12, CANDIDATES=13;
 	public static boolean room(int nearby) { return nearby < 2; }
 	public static boolean habitat(boolean enabled, boolean peaceful, boolean ground, boolean sky, int y, int sea, int nearby) {
 		return enabled && !peaceful && ground && sky && y>=sea+12 && room(nearby);

@@ -33,6 +33,7 @@ public abstract class AuraBeast extends PathfinderMob {
 	protected int left, calm, aggression;
 	private long nextShed;
 	private boolean spellHit;
+	private int attackEpoch;
 	private dev.wildercord.wildlife.HighlandShelterGoal shelter;
 	private dev.wildercord.wildlife.WindreedForageGoal reedForage;
 	private final Set<UUID> struck=new HashSet<>();
@@ -72,10 +73,10 @@ public abstract class AuraBeast extends PathfinderMob {
 		goalSelector.addGoal(6,new LookAtPlayerGoal(this,Player.class,8));
 		goalSelector.addGoal(7,new RandomLookAroundGoal(this));
 	}
-	protected void pose(int id,int ticks) { entityData.set(POSE,id); entityData.set(BEGAN,level().getGameTime()); left=ticks; getNavigation().stop(); }
+	protected void pose(int id,int ticks) { attackEpoch++; entityData.set(POSE,id); entityData.set(BEGAN,level().getGameTime()); left=ticks; getNavigation().stop(); }
 	protected void face(Vec3 delta) { direction=delta.multiply(1,0,1).normalize(); if(direction.lengthSqr()<.5) direction=new Vec3(0,0,1); lockFacing(); }
 	protected void lockFacing() { setYRot((float)(Math.atan2(-direction.x,direction.z)*180/Math.PI)); yBodyRot=getYRot(); yHeadRot=getYRot(); }
-	protected boolean valid(LivingEntity p) { return p!=null && p.isAlive() && (!(p instanceof Player pl) || !pl.isCreative() && !pl.isSpectator()); }
+	protected boolean valid(LivingEntity p) { return p!=null && p.isAlive() && !p.isRemoved() && p.level()==level() && (!(p instanceof Player pl) || !pl.isCreative() && !pl.isSpectator()); }
 	protected void sound(String action) {
 		var level=(ServerLevel)level();
 		if(gale()) switch(action) {
@@ -104,15 +105,16 @@ public abstract class AuraBeast extends PathfinderMob {
 	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float amount) {
 		boolean magic=spellHit || source.is(DamageTypes.MAGIC) || source.is(DamageTypes.INDIRECT_MAGIC);
 		if(magic) amount*=(float)BeastRules.spell(gale(),pose()==BeastRules.RECOVER);
-		boolean hit=super.hurtServer(level,source,amount);
-		if(hit && source.getEntity() instanceof LivingEntity attacker && valid(attacker)) { aggression=200; calm=0; setTarget(attacker); }
-		if(hit && magic && tickCount%5==0) { dust(getBoundingBox().getCenter(),5); }
+		float before=getHealth();boolean hit=super.hurtServer(level,source,amount);
+		if(hit && before>getHealth() && isAlive() && !isRemoved() && level()==level && source.getEntity() instanceof LivingEntity attacker && valid(attacker)) { aggression=200; calm=0; setTarget(attacker); }
+		if(hit && isAlive() && !isRemoved() && level()==level && magic && tickCount%5==0) { dust(getBoundingBox().getCenter(),5); }
 		return hit;
 	}
 	@Override protected InteractionResult mobInteract(Player p,InteractionHand hand) {
+		if(!p.isAlive() || p.isRemoved() || p.isSpectator() || p.level()!=level())return InteractionResult.PASS;
 		var stack=p.getItemInHand(hand);
 		if(gale() ? !stack.is(Items.RABBIT) && !stack.is(Items.CHICKEN) : !stack.is(Items.WHEAT)) return super.mobInteract(p,hand);
-		if(!isAlive() || pose()==BeastRules.WARN || pose()==BeastRules.CHARGE || pose()==BeastRules.LEAP || aggression>0) return InteractionResult.PASS;
+		if(!isAlive() || isRemoved() || pose()==BeastRules.WARN || pose()==BeastRules.CHARGE || pose()==BeastRules.LEAP || aggression>0) return InteractionResult.PASS;
 		if(level() instanceof ServerLevel server) {
 			if(server.getGameTime()<nextShed) { p.sendOverlayMessage(Component.translatable("message.wildercord.aura_beast.rest")); return InteractionResult.SUCCESS; }
 			if(!p.getAbilities().instabuild) stack.shrink(1);
@@ -122,12 +124,25 @@ public abstract class AuraBeast extends PathfinderMob {
 		}
 		return InteractionResult.SUCCESS;
 	}
-	protected void hit(ServerLevel level,LivingEntity target,float damage,double knock) {
-		if(!struck.add(target.getUUID())) return;
-		var source=level.damageSources().mobAttack(this);
-		if(target.hurtServer(level,source,damage)) { target.knockback(knock,-direction.x,-direction.z,source,0); AuraFx.groundScar(level,target.position(),1.5,35,2); }
+	protected int attackEpoch() {return attackEpoch;}
+	protected boolean attackActive(ServerLevel level,int epoch,int phase) {
+		return isAlive() && !isRemoved() && level()==level && attackEpoch==epoch && pose()==phase
+			&& (phase==BeastRules.CHARGE || phase==BeastRules.LEAP) && Config.get().auraWorld().auraBeasts()
+			&& level.getDifficulty()!=Difficulty.PEACEFUL;
 	}
-	protected void beginAttack() { struck.clear(); }
+	protected void hit(ServerLevel level,LivingEntity target,float damage,double knock) {hitOwned(level,target,damage,knock);}
+	/** Return the exact admitted damage identity; no shared receipt or callback-mutable cached source. */
+	protected DamageSource hitOwned(ServerLevel level,LivingEntity target,float damage,double knock) {
+		int epoch=attackEpoch,phase=pose();
+		if(!attackActive(level,epoch,phase) || !valid(target) || struck.size()>=BeastRules.VICTIMS || !struck.add(target.getUUID()))return null;
+		var source=level.damageSources().mobAttack(this);float health=target.getHealth();boolean admitted=target.hurtServer(level,source,damage);
+		if(admitted && target.getLastDamageSource()==source && attackActive(level,epoch,phase) && valid(target)) {
+			target.knockback(knock,-direction.x,-direction.z,source,0);
+			if(target.getLastDamageSource()==source && attackActive(level,epoch,phase) && valid(target))AuraFx.groundScar(level,target.position(),1.5,35,2);
+		}
+		return admitted && attackActive(level,epoch,phase) && target.level()==level && !target.isRemoved() && target.getHealth()<health ? source : null;
+	}
+	protected void beginAttack() { struck.clear();attackEpoch++; }
 	@Override protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
 		if(home==null) home=blockPosition();

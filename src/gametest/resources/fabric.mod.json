@@ -221,7 +221,13 @@
       "dev.wildercord.wildlife.MoonreedSourceTest",
       "dev.wildercord.wildlife.TidewardPendingReceiverTest",
       "dev.wildercord.wildlife.MixedWetlandPerformanceTest",
-      "dev.wildercord.wildlife.WildlifeSpawnThreadTest"
+      "dev.wildercord.wildlife.WildlifeSpawnThreadTest",
+      "dev.wildercord.aura.world.AuraBeastCallbackTest",
+      "dev.wildercord.aura.world.AuraBeastAdmissionTest",
+      "dev.wildercord.aura.world.AuraBeastDenseAttackTest",
+      "dev.wildercord.aura.world.GaleclawMealCallbackTest",
+      "dev.wildercord.aura.world.AuraRawTypedQueryTest",
+      "dev.wildercord.aura.world.AuraBeastProvenanceTest"
     ]
   },
   "depends": {

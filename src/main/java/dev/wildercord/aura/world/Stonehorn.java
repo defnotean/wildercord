@@ -19,9 +19,12 @@ public final class Stonehorn extends AuraBeast {
 				if(horizontalCollision) { dust(position(),16); pose(BeastRules.RECOVER,BeastRules.RECOVERY+20); sound("impact"); return; }
 				setDeltaMovement(direction.scale(.55).add(0,getDeltaMovement().y,0));
 				var side=new Vec3(-direction.z,0,direction.x);
-				for(var p:level.getEntitiesOfClass(LivingEntity.class,getBoundingBox().inflate(2.4),e->e!=this && valid(e) && !(e instanceof Stonehorn))) {
+				int action=attackEpoch();
+				for(var p:AuraBeastQueries.complete(level,LivingEntity.class,getBoundingBox().inflate(2.4),this,e->valid(e) && !(e instanceof Stonehorn))) {
+					if(!attackActive(level,action,BeastRules.CHARGE))return;
 					var d=p.position().subtract(position()); if(BeastRules.chargeHit(d.dot(direction),d.dot(side),d.y) && hasLineOfSight(p)) hit(level,p,7,.7);
 				}
+				if(!attackActive(level,action,BeastRules.CHARGE))return;
 				if(left%4==0) dust(position(),3);
 			}
 			if(--left==0) {
@@ -43,8 +46,8 @@ public final class Stonehorn extends AuraBeast {
 	/** Crop navigation still notices an unsafe approach; resting and deliberately fed calm retain their rules. */
 	void noticeThreat(ServerLevel level) {
 		if(getTarget()==null && calm==0 && home!=null && tickCount%10==0) {
-			var p=level.getEntitiesOfClass(net.minecraft.server.level.ServerPlayer.class,getBoundingBox().inflate(8),e->valid(e) && !dev.wildercord.wildlife.HighlandContent.quiet(e) && e.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && hasLineOfSight(e)
-				&& BeastRules.wary(distanceTo(e),e.isShiftKeyDown(),e.getMainHandItem().is(Items.WHEAT) || e.getOffhandItem().is(Items.WHEAT))).stream().min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+			var p=AuraBeastQueries.complete(level,net.minecraft.server.level.ServerPlayer.class,getBoundingBox().inflate(8),e->valid(e) && !dev.wildercord.wildlife.HighlandContent.quiet(e) && e.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32
+				&& BeastRules.wary(distanceTo(e),e.isShiftKeyDown(),e.getMainHandItem().is(Items.WHEAT) || e.getOffhandItem().is(Items.WHEAT))).stream().filter(this::hasLineOfSight).min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
 			if(p!=null) setTarget(p);
 		}
 	}
