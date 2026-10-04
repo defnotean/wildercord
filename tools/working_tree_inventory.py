@@ -22,7 +22,7 @@ while index < len(records):
     rows.append((status, path))
 groups = Counter(path.split("/")[0] for _, path in rows)
 text = ["# Uncommitted working-tree file inventory", "",
-        "Snapshot of the WilderCord checkout on September 30, 2026, after implementation. This includes changes already present before this implementation; it does not attribute every path to one work session. No commit or push was performed.", "",
+        "Snapshot of the Wildercord checkout on September 30, 2026, after implementation. This includes changes already present before this implementation; it does not attribute every path to one work session. No commit or push was performed.", "",
         f"**{len(rows)} paths:** {sum(status == '??' for status, _ in rows)} untracked, {sum(status != '??' for status, _ in rows)} tracked changes. Generated captures, logs, profiles and build outputs are ignored and listed separately in the implementation report.", "",
         "## Directory totals", "", "| Directory | Paths |", "|---|---:|"]
 text.extend(f"| {name} | {count} |" for name, count in sorted(groups.items()))
