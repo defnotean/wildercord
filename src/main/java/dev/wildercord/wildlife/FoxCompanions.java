@@ -64,7 +64,7 @@ public final class FoxCompanions {
   private final Fox f;private Player owner;private int repath;
   Follow(Fox f) {this.f=f;setFlags(EnumSet.of(Flag.MOVE,Flag.LOOK));}
   public boolean canUse() {var b=f.getAttached(BOND);owner=b==null || b.sitting()?null:f.level().getPlayerByUUID(b.owner());return owner!=null && owner.isAlive() && !owner.isSpectator() && f.distanceToSqr(owner)>64;}
-  public boolean canContinueToUse() {var b=f.getAttached(BOND);return b!=null && !b.sitting() && owner!=null && owner.isAlive() && !owner.isSpectator() && f.distanceToSqr(owner)>9;}
+  public boolean canContinueToUse() {var b=f.getAttached(BOND);return b!=null && !b.sitting() && owner!=null && owner.isAlive() && !owner.isSpectator() && owner.level()==f.level() && f.distanceToSqr(owner)>9;}
   public void start() {wake(f);f.setSitting(false);repath=0;}
   public void tick() {f.getLookControl().setLookAt(owner,30,30);if(--repath<=0) {repath=10;f.getNavigation().moveTo(owner,1.2);}}
   public void stop() {owner=null;f.getNavigation().stop();}
