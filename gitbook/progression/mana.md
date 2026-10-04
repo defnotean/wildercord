@@ -28,7 +28,7 @@ Everything adds up:
 | Each [Mana Crystal](#mana-crystals) absorbed (up to 10) | +10 (up to +100) |
 | [Reservoir](enchantments.md) on your Cord | +25 per level (up to +75) |
 | Each working [Heart Circle](heart-circles.md) | +15 (up to +120) |
-| A **Focus of the Deep Well** in your off-hand | +50 while you hold it (see [Casting Gear](../gear.md)) |
+| A **Focus of the Deep Well** in your focus slot (or off-hand) | +50 while it's there (see [Casting Gear](../gear.md)) |
 
 The most you can have is **645**: an Echo Cord, 10 crystals, Reservoir III, eight circles and a Focus of
 the Deep Well. If your maximum drops (you put the focus away, or a circle cracks), any mana above the
