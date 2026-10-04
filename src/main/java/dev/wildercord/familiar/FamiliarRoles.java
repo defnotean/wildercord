@@ -16,7 +16,7 @@ public final class FamiliarRoles {
  public static final AttachmentType<String> ROLE=AttachmentRegistry.create(Wildercord.id("familiar_role"),b->b.initializer(()->"companion").persistent(Codec.STRING).copyOnDeath());
  public static Role get(ServerPlayer p){try{return Role.valueOf(p.getAttachedOrElse(ROLE,"companion").toUpperCase(java.util.Locale.ROOT));}catch(IllegalArgumentException e){return Role.COMPANION;}}
  public static int choose(ServerPlayer p,String role){Role r;try{r=Role.valueOf(role.toUpperCase(java.util.Locale.ROOT));}catch(IllegalArgumentException e){return 0;}
-  p.setAttached(ROLE,r.name().toLowerCase(java.util.Locale.ROOT));p.sendSystemMessage(Component.translatable("message.wildercord.familiar_role",Component.translatable("role.wildercord."+role)));return 1;}
+  String chosen=r.name().toLowerCase(java.util.Locale.ROOT);p.setAttached(ROLE,chosen);p.sendSystemMessage(Component.translatable("message.wildercord.familiar_role",Component.translatable("role.wildercord."+chosen)));return 1;}
  /** Called at the normal assistance interval; bounded searches only visit loaded blocks. */
  static boolean help(ServerPlayer p,Wisp wisp) {
   switch(get(p)) {
