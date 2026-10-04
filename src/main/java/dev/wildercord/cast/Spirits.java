@@ -48,6 +48,8 @@ public final class Spirits {
 				}
 			}
 		});
+		// The packs go with the server: their wolves are saved with the world, and nothing may hold the old one's.
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> PACKS.clear());
 	}
 
 	// ------------------------------------------------------------------ Summon
