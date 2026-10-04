@@ -15,7 +15,7 @@ These targets are additions to the baseline, subject to documented design adjust
 - 12 new creatures: four peaceful/magical wildlife, three hostile/territorial creatures, two Aura-resistant beasts, two bosses, one useful companion. Each needs custom identity, habitat, behavior, model/animation, sound, rewards, bestiary and tests.
 - Four connected ecosystems: luminous wetlands, wind-carved highlands, ember woodlands, subterranean fungal ruins. Each needs resources, shelter/foraging behavior, ecological relationships, bounded spawning, and meaningful magic interactions.
 - Six distinct new dungeon/encounter locations, plus old battlefields and the sleeping blade. Include the sword tomb, its intent gates and guardian. Deliberate biome distribution, rarity, alternate routes and useful return visits.
-- 36 new functional items: eight relics, eight equipment/accessories, six exploration/support tools, six placeable utilities/decorations, eight consumables/material uses. Distinct tradeoffs, acquisition and recipes; no filler recolours. The total is a minimum: if a complete ecosystem adds another useful material, retain all category minimums and exceed36 rather than relabeling materials as equipment. The current17-item ledger and pending nursery additions imply37 items to fulfill every category; see `docs/audit/functional-item-categories.md`.
+- 36 new functional items: eight relics, eight equipment/accessories, six exploration/support tools, six placeable utilities/decorations, eight consumables/material uses. Distinct tradeoffs, acquisition and recipes; no filler recolours. The total is a minimum: if a complete ecosystem adds another useful material, retain all category minimums and exceed 36 rather than relabeling materials as equipment. The current 17-item ledger and pending nursery additions imply 37 items to fulfill every category; see `docs/audit/functional-item-categories.md`.
 - At least 12 new magic/Aura abilities and 18 authored signature fusions. Audit all existing abilities and supported pairings, including formation, launch, impact, sound, mechanics and counters. Every supported pairing must resolve intentionally.
 - 24 discoverable lore texts/entries, four optional connected investigation/quest chains, illustrated bestiary/journal integration and consistent regional/faction histories.
 - Finish all remaining Aura step 11/12 requirements: terrain training, battlefields, sword tomb, sleeping blade, Aura beasts, village tournaments, resonant strikes, rune-etched blades and Unity.
@@ -315,25 +315,25 @@ Basinfill adds one rank-I utility ability with a craftable rune, authored pourin
 preparation, cupped projectile, original liquid cue and permanent bounded shallow source-water
 placement. A complete vessel is validated before edits; protection, evaporation, size/depth,
 occupied cells and shared-payment limits apply. Native paid Touch/crafting/bucket/protection/
-Nether/full restart suite passed35seconds. Audit: docs/audit/basinfill.md.
+Nether/full restart suite passed 35 seconds. Audit: docs/audit/basinfill.md.
 
 Aura's reported apparent soft lock was not reproduced as a universal code lock. A concrete
 progression-guidance gap and missing master-trial label were fixed. Contextual XP hints,
 practice-cap notice, a detailed XP tooltip and verified rank/trial instructions accompany it.
-Native progression passed83seconds, final64seconds: real recovered Survival attack after
-practice40cap, actual30second waterfallFlow, threshold/wrong-trial refusal, full restart,
+Native progression passed 83 seconds, final 64 seconds: real recovered Survival attack after
+practice 40 cap, actual 30 second waterfallFlow, threshold/wrong-trial refusal, full restart,
 later-stage API gates and all trial labels. Later boss/duelist wins were not simulated.
 Audit: docs/audit/aura-progression.md.
 
-Combined build16seconds,963passingunit tests;4874reproduciblepaths;115guidepages.
-ReviewJAR CRCclean,4872resources/1633classes byte-match; SHA256
+Combined build 16 seconds, 963 passing unit tests; 4874 reproducible paths; 115 guide pages.
+Review JAR CRC clean, 4872 resources/1633 classes byte-match; SHA256
 f6450e2abffc4c7b11e6959cc50d22b9c54bfca1174afea321a319679eee015d.
 Review: artifacts/review/basinfill and artifacts/review/aura-progression.
 
-Remaining-work audit: docs/audit/living-world-remaining.md. Conservative counts:5/12creatures,
-14/36functionalitems (Tideward lore book separated),2/12abilities (Unity/Basinfill),0/18added
-signatures,8/24loretexts,0/4investigations; highland/wetland foundations remain incomplete.
-Sword tomb counts1/6locations, or2/6if the hosted tournament is credited as an encounter.
+Remaining-work audit: docs/audit/living-world-remaining.md. Conservative counts: 5/12 creatures,
+14/36 functional items (Tideward lore book separated), 2/12 abilities (Unity/Basinfill), 0/18 added
+signatures, 8/24 lore texts, 0/4 investigations; highland/wetland foundations remain incomplete.
+Sword tomb counts 1/6 locations, or 2/6 if the hosted tournament is credited as an encounter.
 Baseline signatures/technique definitions were verified unchanged, so teaching them is not
 credited as new ability content. Native tests are controlled single-client evidence, not
 remote multiplayer, natural populations, full presentation acceptance or performance proof.
@@ -348,7 +348,7 @@ additions; the full ability lifecycle and connected ecosystems remain open.
 
 The rattle answers warning claws with six seconds of physical calm, forty-eight uses,
 saved player rest and the crab's existing shared response rest. Committed sweeps remain
-dangerous. Final native suite passed58seconds, including actual interaction, recipe,
+dangerous. Final native suite passed 58 seconds, including actual interaction, recipe,
 refusals, wear, saved-world restart and final-use break. Visual review corrected the test
 pond, messages, beveled chamber and held scale. Audit: docs/audit/reed-rattle.md.
 
@@ -357,31 +357,31 @@ respond to Life/Fire and seek genuinely dark covered footing. Bounded searches, 
 population limits and saved independent gathering/foraging/response rests prevent resource
 renewal by repeated magic. Mycelial Dew, Fungal Poultice and The Patient Spiral accompany
 the original model, textures, animation and five physical sound cues. Initial corrected
-native suite passed74seconds; final admission/camera checks are recorded in
+native suite passed 74 seconds; final admission/camera checks are recorded in
 docs/audit/sporeback-snails.md. This begins the fungal foundation, not a finished ecosystem.
 
 Earth's original world-lit materials distinguish stone, slabs, sediment, dust, faults,
 roots, bone and geodes, with rune-specific gathering and travel. Supporting fused elements
-are retained in Full/Minimal. Native formation77seconds, paid flight115seconds and
-variants31seconds passed, with182 original images retained and representative frames
+are retained in Full/Minimal. Native formation 77 seconds, paid flight 115 seconds and
+variants 31 seconds passed, with 182 original images retained and representative frames
 inspected. Arc, Pierce, Frugal, covered/uncovered mixed groups, innate ownership, world
 light, reduced flash and vertical/stationary directions are covered. Self Stoneskin keeps
 its caster placement. Audit: docs/audit/full-spell-roster/earth-choreography.md. These are
 preparation/body checks; full impacts, sounds, delivery roster, shaders, real remote
 multiplayer and sustained frame-time evidence remain separate.
 
-Conservative expansion counts now:6/12creatures,17/36functionalitems,2/12abilities,
-0/18additional signatures,9/24loretexts,0/4investigations. The snail adds one wildlife,
+Conservative expansion counts now: 6/12 creatures, 17/36 functional items, 2/12 abilities,
+0/18 additional signatures, 9/24 lore texts, 0/4 investigations. The snail adds one wildlife,
 dew/poultice add two functional items, rattle adds one tool, and the three-page journal
 adds one lore text. Spawn eggs are not credits. Three ecosystem foundations remain
-incomplete. Next Life28, six new signatures and the Glowcap nursery investigation are
+incomplete. Next Life 28, six new signatures and the Glowcap nursery investigation are
 isolated drafts outside the build; no completion credit is claimed for them.
 
-Final Sporeback native passed64seconds with clearer whole-creature captures and authoritative
-spectator/distant gather refusals. Final combined full build passed22seconds:964unit tests, zero
-failures/errors/skips;4922reproducible generated paths;117validated/exported guide pages,
-including original native rattle/snail illustrations. Review JAR CRC clean,4921processed
-resources and1648compiled main/client classes byte-match. SHA256:
+Final Sporeback native passed 64 seconds with clearer whole-creature captures and authoritative
+spectator/distant gather refusals. Final combined full build passed 22 seconds: 964 unit tests, zero
+failures/errors/skips; 4922 reproducible generated paths; 117 validated/exported guide pages,
+including original native rattle/snail illustrations. Review JAR CRC clean, 4921 processed
+resources and 1648 compiled main/client classes byte-match. SHA256:
 de75e599f33cf9251cdae10f402d4d4cf648c151e513d49ae3cd3fec84eee09c.
 Review: artifacts/review/parallel-living-world/wildercord-earth-fieldcraft-review+mc26.3.jar.
 The new reusable tools/verify_review_jar.py checks an explicitly named JAR against build
@@ -393,22 +393,22 @@ This is development content after the public alpha.1 release; no new public uplo
 
 The published 0.9.1-alpha.1 release is now installed on the VPS after verified empty-server checks, a clean save/stop and an offline backup. Its installed SHA256 matches the GitHub release. Loader startup, RCON and a connected player were confirmed. See `docs/audit/server-update-0911.md`; this deployment does not include later goal content.
 
-Life preparation and moving-body recipes, six new field signatures and the Glowcap Nursery investigation have moved from isolated drafts into development sources. Initial six-signature gameplay and Full/Minimal presentation native passes exist; expanded refusals, final visual captures, Life29 and complete fungal chain/natural-generation acceptance are still being checked. No conditional creature/item/lore/investigation targets are promoted by this status entry.
+Life preparation and moving-body recipes, six new field signatures and the Glowcap Nursery investigation have moved from isolated drafts into development sources. Initial six-signature gameplay and Full/Minimal presentation native passes exist; expanded refusals, final visual captures, Life 29 and complete fungal chain/natural-generation acceptance are still being checked. No conditional creature/item/lore/investigation targets are promoted by this status entry.
 
-The sustained mixed-material benchmark passed: 24 moving dummies and64 admitted Pelt/Venom/Ember/Windcut Bolts per profile, with about30seconds of frame samples. Complete visual/FPS/VSync/HUD preferences are restored after benchmarking. See `docs/audit/living-world-performance.md` for exact metrics and limits. The120FPS cap prevents claiming a relative profile speedup; natural ecosystem and remote multiplayer profiling remain open.
+The sustained mixed-material benchmark passed: 24 moving dummies and 64 admitted Pelt/Venom/Ember/Windcut Bolts per profile, with about 30 seconds of frame samples. Complete visual/FPS/VSync/HUD preferences are restored after benchmarking. See `docs/audit/living-world-performance.md` for exact metrics and limits. The 120FPS cap prevents claiming a relative profile speedup; natural ecosystem and remote multiplayer profiling remain open.
 
-Generated-assets reproducibility passed across5039paths after integration and correcting the six carved rune images to their actual item-model texture paths. New content is still undergoing focused gameplay/visual acceptance before a combined review JAR and pushed milestone.
+Generated-assets reproducibility passed across 5039 paths after integration and correcting the six carved rune images to their actual item-model texture paths. New content is still undergoing focused gameplay/visual acceptance before a combined review JAR and pushed milestone.
 
 ## Life, signatures and fungal acceptance progress — 2026-10-03
 
-Life29 recipe, preparation and paid Full/Minimal moving-body suites passed19s,64s and112s.
-Six field signatures passed the final gameplay/altar/unit run51s and final presentation52s;
+Life 29 recipe, preparation and paid Full/Minimal moving-body suites passed 19s, 64s and 112s.
+Six field signatures passed the final gameplay/altar/unit run 51s and final presentation 52s;
 the existing real client Fuse packets and exact paid outcomes remain covered. Collect ownership
-passed its focused29s native run. Clean elemental preparation passed41s, retaining rear glyph
+passed its focused 29s native run. Clean elemental preparation passed 41s, retaining rear glyph
 strokes and Jolt's authored arc while excluding generic orb/ray from the front body. The mixed
 Ember/Umbra fallback remains verified. See the individual audit documents for exact scope.
 
-The illustrated Living Materials chapter uses original Life frames;120 player-guide pages
+The illustrated Living Materials chapter uses original Life frames; 120 player-guide pages
 validate and export. A review caught and corrected the chapter's ingredient description:
 Second Wind is Life+Time, not Life+Wind. Family recipe counts can overlap and are not a global
 count of completed spell lifecycles. Complete impacts, voices and other deliveries remain open.
@@ -423,8 +423,8 @@ This credits four functional items, three lore texts and one investigation, brin
 to 21 functional items, 12 lore texts and one investigation. Complete fungal ecosystem and
 clearer player-review presentation remain separate acceptance work.
 
-The earlier full GitHub native job ended at90minutes after both graphics backends failed before
-tests began. CI-only commit65256266 is pushed to main: documented SDL EGL selection plus a
+The earlier full GitHub native job ended at 90 minutes after both graphics backends failed before
+tests began. CI-only commit 65256266 is pushed to main: documented SDL EGL selection plus a
 streaming guard for dual-backend startup failure. Its Linux job 37155328593 initialized Mesa
 OpenGL and reached gameplay, then failed the Runic Hearth lantern test's short timing window.
 The corrected focused native test passed in 1m08s; the full Linux descriptor still needs a
@@ -433,7 +433,7 @@ new Life/signature/Nursery public release.
 
 Three agents continue in parallel: physical fungal fieldcraft/generation, independent cave
 generation analysis plus isolated Life outcome/voice drafts, and the remaining twelve signature
-drafts. Void 36, Life29 outcomes/58 voices, Rootmolt and twelve signatures remain outside the
+drafts. Void 36, Life 29 outcomes/58 voices, Rootmolt and twelve signatures remain outside the
 build until promoted and verified. Draft files and offline audio checks are not gameplay credits.
 
 ### Combined milestone delivery
@@ -463,23 +463,23 @@ remain outside the playable source and receive no content credit.
 ## Expedition signatures development increment (2026-10-03)
 
 Twelve expedition/counter/support recipes extend the previous six accepted field signatures,
-bringing the goal to18 newly authored signatures,40 total signatures,95 named fused recipes
-and369 runtime runes. The numeric signature target is met; it does not complete supported
+bringing the goal to 18 newly authored signatures, 40 total signatures, 95 named fused recipes
+and 369 runtime runes. The numeric signature target is met; it does not complete supported
 pairing/delivery lifecycle, real multiplayer or the separate twelve-new-ability target.
-No creature/item/lore/investigation addition is credited by this increment:6 creatures,21
-functional items,2 abilities,12 lore texts and1 investigation remain the accepted totals.
-Life105 and Rootmolt/Drainhouse content remains isolated and uncredited.
+No creature/item/lore/investigation addition is credited by this increment: 6 creatures, 21
+functional items, 2 abilities, 12 lore texts and 1 investigation remain the accepted totals.
+Life 105 and Rootmolt/Drainhouse content remains isolated and uncredited.
 
-Focused Counter42s, Support42s, Trail36s and Presentation62s pass. All12 actual client
-Fuse packets and paid Full/Minimal preparation/flight checks are exercised;38 original
-native presentation PNGs are preserved. Generator5158paths reproduces and978 unit tests
-pass. Final bounded Counter45s, zero-actual-heal43s and Void38 Full/Minimal2m13s
-also pass;153 affected Void originals are retained. Frost34 paid Full/Minimal1m59s
-and Life30 paid Full/Minimal1m48s pass;69 Frost originals are retained. Finite budgets are
-not frame-time performance measurements. Life30 retains121 originals, giving381
-actual native PNGs across four groups. Final build22s passes978 units without
-failure/error/skip;5158 generated paths reproduce;122 guide pages and sounds validate.
-Review JAR has5157 matching resources/1711 compiled classes and verified ZIP integrity.
+Focused Counter 42s, Support 42s, Trail 36s and Presentation 62s pass. All 12 actual client
+Fuse packets and paid Full/Minimal preparation/flight checks are exercised; 38 original
+native presentation PNGs are preserved. Generator 5158 paths reproduces and 978 unit tests
+pass. Final bounded Counter 45s, zero-actual-heal 43s and Void 38 Full/Minimal 2m13s
+also pass; 153 affected Void originals are retained. Frost 34 paid Full/Minimal 1m59s
+and Life 30 paid Full/Minimal 1m48s pass; 69 Frost originals are retained. Finite budgets are
+not frame-time performance measurements. Life 30 retains 121 originals, giving 381
+actual native PNGs across four groups. Final build 22s passes 978 units without
+failure/error/skip; 5158 generated paths reproduce; 122 guide pages and sounds validate.
+Review JAR has 5157 matching resources/1711 compiled classes and verified ZIP integrity.
 SHA256:1b4709a3f1a625d9f8fc3432b1927d7cd1abc75517490f3362e72d3b26d6632c.
 See docs/audit/expedition-signatures-milestone.md for the exact development artifact.
 
@@ -490,63 +490,63 @@ whole living-world goal. Public alpha.1/server deployment remains separate.
 
 ## Life actual-outcome development increment (2026-10-03)
 
-The former isolated Life owner integration is now live:30 existing identities have authored material outcomes tied to actual admitted gameplay, source-aware Full/Minimal client delivery, bounded loaded-world rendering, corrected surface orientation, finite lifecycle cleanup and56 new sound identities for28 original effects. Generic overlap is removed only for wholly covered groups; mixed/uncovered fallback and requested rear glyphs remain. Actual spectator interception and Fortune pre-admission success feedback are fixed.
+The former isolated Life owner integration is now live: 30 existing identities have authored material outcomes tied to actual admitted gameplay, source-aware Full/Minimal client delivery, bounded loaded-world rendering, corrected surface orientation, finite lifecycle cleanup and 56 new sound identities for 28 original effects. Generic overlap is removed only for wholly covered groups; mixed/uncovered fallback and requested rear glyphs remain. Actual spectator interception and Fortune pre-admission success feedback are fixed.
 
-Current Core48s, Stateful2m47s, Edges2m11s, Pulse49s, source26s, quality26s, geometry26s, spectator25s and Fortune37s focused suites pass. Combined build passes985 units;5270 generated paths reproduce;123 web/GitBook pages validate. Native guide44s final clear-capture and connected-player Bloomstep35s passes are now recorded; compact settings keep all18 buttons in bounds. Final build13s,985 units and checked review JAR are delivered with the exact checksum in the milestone audit. See docs/audit/life-outcomes-milestone.md for actual scope and remaining visual/CI/multiplayer limits. No new goal content count is awarded for polishing existing Life effects. Rootmolt/Drainhouse remains an unaccepted isolated candidate.
+Current Core 48s, Stateful 2m47s, Edges 2m11s, Pulse 49s, source 26s, quality 26s, geometry 26s, spectator 25s and Fortune 37s focused suites pass. Combined build passes 985 units; 5270 generated paths reproduce; 123 web/GitBook pages validate. Native guide 44s final clear-capture and connected-player Bloomstep 35s passes are now recorded; compact settings keep all 18 buttons in bounds. Final build 13s, 985 units and checked review JAR are delivered with the exact checksum in the milestone audit. See docs/audit/life-outcomes-milestone.md for actual scope and remaining visual/CI/multiplayer limits. No new goal content count is awarded for polishing existing Life effects. Rootmolt/Drainhouse remains an unaccepted isolated candidate.
 
 ## Rootmolt and grounded Sporebloom development increment (2026-10-03)
 
-Rootmolt is now live and has scoped ecology/control/counter/restart/presentation/sidestep/placement/query/alarm native acceptance. Conservative creature credit rises to7 of12. Sporebloom actual support, finite particle motion and revised all30 surface checks pass. Combined15s build passes988 units;5280 generated paths reproduce;124 guide/GitBook pages validate; nine directly reviewed native originals and checked review JAR are delivered. See docs/audit/rootmolt-spore-milestone.md for exact checksum, source gates and evidence limits.
+Rootmolt is now live and has scoped ecology/control/counter/restart/presentation/sidestep/placement/query/alarm native acceptance. Conservative creature credit rises to 7 of 12. Sporebloom actual support, finite particle motion and revised all 30 surface checks pass. Combined 15s build passes 988 units; 5280 generated paths reproduce; 124 guide/GitBook pages validate; nine directly reviewed native originals and checked review JAR are delivered. See docs/audit/rootmolt-spore-milestone.md for exact checksum, source gates and evidence limits.
 
-The preceding e0405713 ordinary CI build and Player Guide passed; its full Linux gameplay descriptor failed the synchronous counter health-loss assertion. The tightened provenance fixture passes locally50s, but full Linux acceptance is still pending. Rootmolt natural scheduler distribution, sound listening, sustained population performance and remote multiple-client play remain open. No new ecosystem/location/item/ability/lore/investigation credit is added by this increment. Drainhouse remains an isolated next candidate. The goal stays active.
+The preceding e0405713 ordinary CI build and Player Guide passed; its full Linux gameplay descriptor failed the synchronous counter health-loss assertion. The tightened provenance fixture passes locally 50s, but full Linux acceptance is still pending. Rootmolt natural scheduler distribution, sound listening, sustained population performance and remote multiple-client play remain open. No new ecosystem/location/item/ability/lore/investigation credit is added by this increment. Drainhouse remains an isolated next candidate. The goal stays active.
 
 ## Belowkeeper Drainhouse development increment (2026-10-04)
 
-The three-room Drainhouse now has focused natural-generation, ordinary Survival entry, authentic ledger/bud/reopen, earned investigation, equipment, transaction and presentation acceptance. Its rigid vault reduces required AIR carving from291 to226 under the unchanged256 ceiling; actual ore preservation, dry entrances and gutter containment are verified. Three original three-page books connect living snail gathering, Rootmolt meal/counter observation, restoration and equipment.
+The three-room Drainhouse now has focused natural-generation, ordinary Survival entry, authentic ledger/bud/reopen, earned investigation, equipment, transaction and presentation acceptance. Its rigid vault reduces required AIR carving from 291 to 226 under the unchanged 256 ceiling; actual ore preservation, dry entrances and gutter containment are verified. Three original three-page books connect living snail gathering, Rootmolt meal/counter observation, restoration and equipment.
 
-Mara's Empty Bell and actual feet-slot Rootbound Greaves add one relic and one equipment item. Conservative totals become23 functional items (relic2/equipment2/tools4/placeables6/materials9),15 lore texts,2 investigations and2 locations. Creatures7, new abilities2, new signatures18 and complete ecosystems0 remain unchanged. At least14 additional functional items are still needed to meet the category minimums. Draft Ember and Tideward content is uncredited.
+Mara's Empty Bell and actual feet-slot Rootbound Greaves add one relic and one equipment item. Conservative totals become 23 functional items (relic 2/equipment 2/tools 4/placeables 6/materials 9), 15 lore texts, 2 investigations and 2 locations. Creatures 7, new abilities 2, new signatures 18 and complete ecosystems 0 remain unchanged. At least 14 additional functional items are still needed to meet the category minimums. Draft Ember and Tideward content is uncredited.
 
-Final natural gate57s passes across243 scanned chunks/three seed worlds with one actual naturally generated dependency site and246 total explicit sample/known-footprint requests. Final vaulted earned chain164s and terrain fit37s pass. Build13s passes988 units;5321 generated paths reproduce,125 guide/GitBook pages export, and the review JAR exactly matches5320 resources/1764 classes. Fourteen native originals and all nine final book pages were inspected. See docs/audit/belowkeeper-drainhouse-milestone.md for checksum, detailed gates and limitations.
+Final natural gate 57s passes across 243 scanned chunks/three seed worlds with one actual naturally generated dependency site and 246 total explicit sample/known-footprint requests. Final vaulted earned chain 164s and terrain fit 37s pass. Build 13s passes 988 units; 5321 generated paths reproduce, 125 guide/GitBook pages export, and the review JAR exactly matches 5320 resources/1764 classes. Fourteen native originals and all nine final book pages were inspected. See docs/audit/belowkeeper-drainhouse-milestone.md for checksum, detailed gates and limitations.
 
-Background blade-tooltip threading and nursery observation timing corrections are committed separately (3eb33c2a and58904bbc). The latter unchanged/revised focused nursery suites pass145s/140s; the full Linux descriptor remains separate and its latest run was in progress. Remote multiplayer, representative natural frequency, sustained mixed populations, complete spell/Aura lifecycle and the broad living-world goal remain open. No new CurseForge/server deployment is included.
+Background blade-tooltip threading and nursery observation timing corrections are committed separately (3eb33c2a and 58904bbc). The latter unchanged/revised focused nursery suites pass 145s/140s; the full Linux descriptor remains separate and its latest run was in progress. Remote multiplayer, representative natural frequency, sustained mixed populations, complete spell/Aura lifecycle and the broad living-world goal remain open. No new CurseForge/server deployment is included.
 
 
 ## Cinder Bailiff and cooled fern development increment (2026-10-04)
 
 The original ceramic three-vent Bailiff and six-state Cinder Fern now have focused real crafting, paid tending, manual harvest, competing feeding/full reopen, physical warning/fan, callback/dense-group and native visual acceptance. Acceptance fixed unreachable idle targets suppressing meals, already-reached roots rejected by path admission, ordinary harvest tied to the spell-edit setting, and claim callback reentry/authority gaps. Actual resource and once-per-payment budgets remain authoritative.
 
-Final15s build passes990 units;5352 generated paths reproduce;126 illustrated guide/GitBook pages validate. Checked review JAR, exact checksum and ten directly inspected actual native captures are in artifacts/review/ember-woodlands. See docs/audit/ember-woodlands-milestone.md for gate provenance and limits, including an unestablished historical fixture health failure.
+Final 15s build passes 990 units; 5352 generated paths reproduce; 126 illustrated guide/GitBook pages validate. Checked review JAR, exact checksum and ten directly inspected actual native captures are in artifacts/review/ember-woodlands. See docs/audit/ember-woodlands-milestone.md for gate provenance and limits, including an unestablished historical fixture health failure.
 
-Conservative credit becomes8 creatures and24 functional items (relic2/equipment2/tools4/placeables7/materials9). At least14 further items remain to meet category minimums; an additional placeable does not replace missing relic/equipment/tool credits. Abilities2, signatures18, lore15, investigations2, locations2 and complete ecosystems0 remain unchanged. Natural patch/animal distribution, connected human multiplayer, sustained population performance and a whole ember ecosystem remain open. Root Carry, Tideward, Moonreed and Aura guard candidates are unaccepted. The goal remains active.
+Conservative credit becomes 8 creatures and 24 functional items (relic 2/equipment 2/tools 4/placeables 7/materials 9). At least 14 further items remain to meet category minimums; an additional placeable does not replace missing relic/equipment/tool credits. Abilities 2, signatures 18, lore 15, investigations 2, locations 2 and complete ecosystems 0 remain unchanged. Natural patch/animal distribution, connected human multiplayer, sustained population performance and a whole ember ecosystem remain open. Root Carry, Tideward, Moonreed and Aura guard candidates are unaccepted. The goal remains active.
 
 
 ## Root Carry and genuine local connection increment (2026-10-04)
 
 Root Carry is a rank II Life ability: two separately paid Survival casts select then relocate an exact young Cinder Fern, retaining growth/cooling and enforcing claims, loaded terrain, two-cell budgets, callback guards and saved twenty-second rest. Its soil/frond projectile and three actual owner transfer beats have Full/Minimal native presentation and finite playback gates. Moonreed harvest now resets before reward and validates write success, claims and actual post-state. Actual pollinator entity departure is a separate pending correction.
 
-Final build19s passes995 units,5361 generated paths reproduce,127 illustrated guide pages validate/export. Review artifact and original native galleries are in artifacts/review/root-carry; exact gates/checksum and limits are recorded in docs/audit/root-carry-milestone.md. The generator no longer consumes legacy Life tile assignments for bespoke Root Carry art, retaining prior artwork.
+Final build 19s passes 995 units, 5361 generated paths reproduce, 127 illustrated guide pages validate/export. Review artifact and original native galleries are in artifacts/review/root-carry; exact gates/checksum and limits are recorded in docs/audit/root-carry-milestone.md. The generator no longer consumes legacy Life tile assignments for bespoke Root Carry art, retaining prior artwork.
 
-Abilities become3 (Unity, Basinfill, Root Carry), runtime370 runes/Life31. Creatures8, functional items24, signatures18, lore15, investigations2, locations2 and complete ecosystems0 remain unchanged. The separately committed local two-JVM gate proves real TCP movement/rendering/disconnect; actual cooperative Aura gameplay remains pending. The goal stays active; this is development content, with no new public release or VPS activation.
+Abilities become 3 (Unity, Basinfill, Root Carry), runtime 370 runes/Life 31. Creatures 8, functional items 24, signatures 18, lore 15, investigations 2, locations 2 and complete ecosystems 0 remain unchanged. The separately committed local two-JVM gate proves real TCP movement/rendering/disconnect; actual cooperative Aura gameplay remains pending. The goal stays active; this is development content, with no new public release or VPS activation.
 
 ## Tideward and paid local Unity increment (2026-10-04)
 
 Reedwater Waders, Dewglass Spectacles and Bank Surveyor's Line now have actual craft/use/equipment/wear/rest/reopen and paid Full/Minimal visual acceptance. The forked spool reads whole supported crossings without terrain edits; waders aid actual shallow walking; spectacles read a living crab warning. Original worn/held/material art, finite local physical cues and three sound voices accompany the mechanics. Native tests corrected visible top-face admission and a real cosmetic packet arriving before vanilla block replication, retaining bounded waiting, exact expiry and cancellation.
 
-Nine focused native gates pass. Build15s passes1000 units;5392 generated paths reproduce;128 illustrated guide pages validate/export. Checked development JAR and fourteen original presentation captures are in artifacts/review/tideward-crossing. Ten drawn frames were directly viewed; four paired backgrounds support strict pixel checks. See docs/audit/tideward-milestone.md for checksum, gate provenance, historical failures and scope limits.
+Nine focused native gates pass. Build 15s passes 1000 units; 5392 generated paths reproduce; 128 illustrated guide pages validate/export. Checked development JAR and fourteen original presentation captures are in artifacts/review/tideward-crossing. Ten drawn frames were directly viewed; four paired backgrounds support strict pixel checks. See docs/audit/tideward-milestone.md for checksum, gate provenance, historical failures and scope limits.
 
-Items become27 (relic2/equipment4/tools5/placeables7/materials9), leaving at least11 further items to meet category minima and38 total. Creatures8/abilities3/signatures18/lore15/investigations2/locations2/complete ecosystems0 remain unchanged. Moonreed now separately checks actual pollinator liveness/body/world across callbacks. The genuine two-JVM Unity test independently pays both players, proves actual allied healing and owner-only cancellation/disconnect across distinct TCP sockets; supplied progression and local latency limits are explicit in two-client-unity.md. These scoped gates do not complete full Aura, ecosystem, shaders or multiplayer performance acceptance. Siltcrest, wetland/Aura guards and Shutterworks remain isolated candidates. Public release/server activation remains separate; the living-world goal stays active.
+Items become 27 (relic 2/equipment 4/tools 5/placeables 7/materials 9), leaving at least 11 further items to meet category minima and 38 total. Creatures 8/abilities 3/signatures 18/lore 15/investigations 2/locations 2/complete ecosystems 0 remain unchanged. Moonreed now separately checks actual pollinator liveness/body/world across callbacks. The genuine two-JVM Unity test independently pays both players, proves actual allied healing and owner-only cancellation/disconnect across distinct TCP sockets; supplied progression and local latency limits are explicit in two-client-unity.md. These scoped gates do not complete full Aura, ecosystem, shaders or multiplayer performance acceptance. Siltcrest, wetland/Aura guards and Shutterworks remain isolated candidates. Public release/server activation remains separate; the living-world goal stays active.
 
 ## Wetland complete-query increment (2026-10-04)
 
-Newt refuge/population and crab acquisition/population/sweep collect complete raw typed pools of at most12; saturation13 refuses partial selection. Actual crab hurt callbacks revalidate source/action/quarry/body/world and recipient before follow-up while preserving five damage and original warning/recovery clocks. Actual bounds35s and nine-mode sweep97s pass, with Newt51s/Garden43s/Crab49s/Rattle47s regressions. Build13s passes1000 units,5392 paths reproduce,128 guide pages validate; checked development JAR is in artifacts/review/wetland-guards with checksum and exact evidence in docs/audit/wetland-query-guards.md. No new content count or sustained performance claim is awarded. Full Linux gameplay and whole ecosystems remain open.
+Newt refuge/population and crab acquisition/population/sweep collect complete raw typed pools of at most 12; saturation 13 refuses partial selection. Actual crab hurt callbacks revalidate source/action/quarry/body/world and recipient before follow-up while preserving five damage and original warning/recovery clocks. Actual bounds 35s and nine-mode sweep 97s pass, with Newt 51s/Garden 43s/Crab 49s/Rattle 47s regressions. Build 13s passes 1000 units, 5392 paths reproduce, 128 guide pages validate; checked development JAR is in artifacts/review/wetland-guards with checksum and exact evidence in docs/audit/wetland-query-guards.md. No new content count or sustained performance claim is awarded. Full Linux gameplay and whole ecosystems remain open.
 
 ## Siltcrest wetland increment (2026-10-04)
 
 Siltcrest Bittern adds an original layered reed-bird rig, finite saved appetite, dry-bank ordinary night hunting, protected wild-fish rules, real offered food, daytime/rain canopy rest and fresh allied Tidebreath response. Ten focused native gates pass; eight original Full/Minimal model frames were directly viewed with strict paired native pixel controls. See docs/audit/siltcrest-milestone.md for failed fixture geometry, actual floating hunt correction, post-hurt source authority, readback scheduling and remaining natural/listening/shader limits. The guide gains an illustrated practical chapter.
 
-Creature additions become9; items27/abilities3/signatures18/lore15/investigations2/locations2/complete ecosystems0 remain. Separate local workload measurement and fixture diagnostics do not award ecosystem or new item credit. Public release/server activation remains separate; the broad goal stays active.
+Creature additions become 9; items 27/abilities 3/signatures 18/lore 15/investigations 2/locations 2/complete ecosystems 0 remain. Separate local workload measurement and fixture diagnostics do not award ecosystem or new item credit. Public release/server activation remains separate; the broad goal stays active.
 
-Final Siltcrest build15s passes1000 units;5400 paths reproduce and129 guide pages export. Checked JAR/native originals are in artifacts/review/siltcrest-bittern. Two400-tick mixed-wetland profiles against corrected physical Mud footing have actual stable8/40 creatures, sparse catch and reed opening, with raw execution samples retained in docs/audit/evidence/mixed-wetland-20261004.json. Scoped local mean/p95/p99 are observations, not universal capacity or before/after improvement. Natural distribution and full ecosystems remain open.
+Final Siltcrest build 15s passes 1000 units; 5400 paths reproduce and 129 guide pages export. Checked JAR/native originals are in artifacts/review/siltcrest-bittern. Two 400-tick mixed-wetland profiles against corrected physical Mud footing have actual stable 8/40 creatures, sparse catch and reed opening, with raw execution samples retained in docs/audit/evidence/mixed-wetland-20261004.json. Scoped local mean/p95/p99 are observations, not universal capacity or before/after improvement. Natural distribution and full ecosystems remain open.
 
 ## 0.10.0 release preparation — 2026-10-04
 
