@@ -264,11 +264,13 @@ public record WildercordConfig(
 	 * @param lumenStag        whether lumen stags spawn (old forests, taigas and cherry groves; rare)
 	 * @param mossbackTortoise whether mossback tortoises spawn (swamps, mangroves and jungles)
 	 * @param cinderfox        whether cinderfoxes spawn (deserts and badlands)
+	 * @param cinderBailiff    whether territorial Cinder Bailiffs spawn beside woodland ferns
 	 * @param skyray           whether skyrays spawn (mountains, windswept hills and meadows; rare)
 	 * @param rimehare         whether rimehares spawn (snowy biomes)
 	 */
 	public record WildlifeSettings(boolean enabled, double spawnMultiplier, boolean glimmerwing, boolean lumenStag, boolean mossbackTortoise,
-			boolean cinderfox, boolean skyray, boolean rimehare, boolean lanternNewt, boolean reedbackCrab, boolean sporebackSnail, boolean rootmoltStrider) {
+			boolean cinderfox, boolean skyray, boolean rimehare, boolean lanternNewt, boolean reedbackCrab, boolean sporebackSnail, boolean rootmoltStrider, boolean cinderBailiff) {
+  public WildlifeSettings(boolean enabled,double multiplier,boolean glimmerwing,boolean stag,boolean tortoise,boolean fox,boolean ray,boolean hare,boolean newt,boolean crab,boolean snail,boolean rootmolt) {this(enabled,multiplier,glimmerwing,stag,tortoise,fox,ray,hare,newt,crab,snail,rootmolt,true);}
   public WildlifeSettings(boolean enabled,double multiplier,boolean glimmerwing,boolean stag,boolean tortoise,boolean fox,boolean ray,boolean hare,boolean newt,boolean crab,boolean snail) {this(enabled,multiplier,glimmerwing,stag,tortoise,fox,ray,hare,newt,crab,snail,true);}
   public WildlifeSettings(boolean enabled,double multiplier,boolean glimmerwing,boolean stag,boolean tortoise,boolean fox,boolean ray,boolean hare,boolean newt,boolean crab) {this(enabled,multiplier,glimmerwing,stag,tortoise,fox,ray,hare,newt,crab,true);}
   public WildlifeSettings(boolean enabled,double multiplier,boolean glimmerwing,boolean stag,boolean tortoise,boolean fox,boolean ray,boolean hare,boolean newt) {this(enabled,multiplier,glimmerwing,stag,tortoise,fox,ray,hare,newt,true);}
@@ -294,6 +296,7 @@ public record WildercordConfig(
     case "reedback_crab" -> reedbackCrab;
     case "sporeback_snail" -> sporebackSnail;
     case "rootmolt_strider" -> rootmoltStrider;
+    case "cinder_bailiff" -> cinderBailiff;
 				default -> false;
 			};
 		}
@@ -809,7 +812,8 @@ public record WildercordConfig(
 				r.bool("creatures", "lantern_newt", d.wildlife.lanternNewt()),
     r.bool("creatures", "reedback_crab", d.wildlife.reedbackCrab()),
     r.bool("creatures", "sporeback_snail", d.wildlife.sporebackSnail()),
-    r.bool("creatures", "rootmolt_strider", d.wildlife.rootmoltStrider())),
+    r.bool("creatures", "rootmolt_strider", d.wildlife.rootmoltStrider()),
+    r.bool("creatures", "cinder_bailiff", d.wildlife.cinderBailiff())),
 			new AuraSettings(
 				r.bool("aura", "enabled", d.aura.enabled()),
 				r.number("aura", "xp_multiplier", d.aura.xpMultiplier(), 0, 100),
@@ -935,7 +939,7 @@ public record WildercordConfig(
 		KEYS.put("monsters", Set.of("enabled", "spawn_rate", "bramblewalker", "gloomstalker", "thunderwing_harpy", "geode_crawler", "bog_witch_frog",
 			"mana_ooze"));
 		KEYS.put("creatures", Set.of("wildlife", "wildlife_spawn_multiplier", "glimmerwing", "lumen_stag", "mossback_tortoise", "cinderfox", "skyray",
-			"rimehare", "lantern_newt", "reedback_crab", "sporeback_snail", "rootmolt_strider"));
+			"rimehare", "lantern_newt", "reedback_crab", "sporeback_snail", "rootmolt_strider", "cinder_bailiff"));
 		KEYS.put("aura", Set.of("enabled", "xp_multiplier", "gain_multiplier", "coat_bonus", "damage_scale", "slash_damage", "slash_cost",
 			"slash_cooldown_seconds", "pvp_scale", "backlash_seconds", "guard_share",
 			// The top stages, the spellblade and aura marks.
@@ -1245,7 +1249,7 @@ public record WildercordConfig(
 		root.add("monsters", monsterSection);
 		JsonObject creaturesSection = new JsonObject();
 		creaturesSection.addProperty("_about", "Creatures of the world. wildlife switches the magical wildlife's natural spawns on or off (glimmerwings, lumen "
-			+ "stags, mossback tortoises, cinderfoxes, skyrays and rimehares; spawn eggs and /summon still work). wildlife_spawn_multiplier scales how "
+			+ "stags, mossback tortoises, cinderfoxes, skyrays and rimehares; spawn eggs and /summon still work). cinder_bailiff controls territorial woodland fern wardens. wildlife_spawn_multiplier scales how "
 			+ "often they spawn: below 1 it lets fewer through at once, above 1 it also raises their spawn weights from the next world load, and the "
 			+ "rare ones stay rare and kept apart either way. Each creature has its own switch too.");
 		creaturesSection.addProperty("wildlife", wildlife.enabled());
@@ -1260,6 +1264,7 @@ public record WildercordConfig(
   creaturesSection.addProperty("reedback_crab", wildlife.reedbackCrab());
   creaturesSection.addProperty("sporeback_snail", wildlife.sporebackSnail());
   creaturesSection.addProperty("rootmolt_strider", wildlife.rootmoltStrider());
+  creaturesSection.addProperty("cinder_bailiff", wildlife.cinderBailiff());
 		root.add("creatures", creaturesSection);
 		JsonObject auraSection = new JsonObject();
 		auraSection.addProperty("_about", "Aura, the swordsman's path: a breathing method draws mana into the body and out along a blade (swords, axes, spears, "

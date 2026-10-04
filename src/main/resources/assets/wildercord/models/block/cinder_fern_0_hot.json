@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "wildercord:block/cinder_fern_0_hot"
+  }
+}

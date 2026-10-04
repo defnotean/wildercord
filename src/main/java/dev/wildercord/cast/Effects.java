@@ -344,19 +344,27 @@ public final class Effects {
 				}
 				Vfx.dash(level, t, dir);
 			});
-			case "fire" -> harmed.forEach(t -> {
+			case "fire" -> {
+    dev.wildercord.wildlife.EmberContent.affectFern(cast,targetBlock(hit),"fire");
+    harmed.forEach(t -> {
 				double react = Reactions.fire(cast, t);
 				t.igniteForSeconds((float) (6 * duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 5 * power * react);
 				FireBloodVfx.fire(level, t);
 			});
-			case "frost" -> harmed.forEach(t -> {
+   }
+			case "frost" -> {
+    dev.wildercord.wildlife.EmberContent.affectFern(cast,targetBlock(hit),"water");
+    harmed.forEach(t -> {
+    int priorFrost=t.getTicksFrozen();
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 5 * power);
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(4, duration), 2, false, true));
+				boolean freshSlow=t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(4, duration), 2, false, true));
 				t.setTicksFrozen(Math.max(t.getTicksFrozen(), t.getTicksRequiredToFreeze() + ticks(4, duration)));
 				Reactions.mark(t, Reactions.Mark.FROZEN);
+				if(freshSlow || t.getTicksFrozen()>priorFrost)dev.wildercord.wildlife.EmberContent.cool(cast,t);
 				Vfx.frost(level, t);
 			});
+   }
 			case "lightning" -> {
 				List<Vec3> strikes = new ArrayList<>();
 				harmed.forEach(t -> strikes.add(t.position()));
@@ -508,11 +516,16 @@ public final class Effects {
 				}
 				Vfx.levitate(level, t);
 			});
-			case "freeze" -> harmed.forEach(t -> {
+			case "freeze" -> {
+    dev.wildercord.wildlife.EmberContent.affectFern(cast,targetBlock(hit),"water");
+    harmed.forEach(t -> {
+    int priorFreeze=t.getTicksFrozen();
 				Spirits.freeze(t, ticks(2.5, duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 3 * power);
+				if(t.getTicksFrozen()>priorFreeze)dev.wildercord.wildlife.EmberContent.cool(cast,t);
 				Vfx.freeze(level, t);
 			});
+   }
 			case "meteor" -> {
 				List<Vec3> targets = new ArrayList<>();
 				harmed.forEach(t -> targets.add(t.position()));
@@ -605,13 +618,18 @@ public final class Effects {
 				}
 				LifeOwnerEvents.changed(cast,"nourish",t,observedNourish,null,LifeOwnerEvents.Moment.APPLY);
 			});
-			case "tidebreath" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, ticks(30, duration), 0, false, true));
-				t.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, ticks(30, duration), 0, false, true));
+			case "tidebreath" -> {
+    dev.wildercord.wildlife.EmberContent.affectFern(cast,targetBlock(hit),"water");
+    helped.forEach(t -> {
+    boolean priorBurn=t.isOnFire();
+				boolean freshBreath=t.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, ticks(30, duration), 0, false, true));
+				boolean freshGrace=t.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, ticks(30, duration), 0, false, true));
 				// It douses: the fire on them goes out (and fire hits are dulled while they drip).
 				t.clearFire();
+				if(freshBreath || freshGrace || priorBurn && !t.isOnFire())dev.wildercord.wildlife.EmberContent.cool(cast,t);
 				Vfx.tidebreath(level, t);
 			});
+   }
 			case "leap" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks(15, duration), Math.min(4, 2 + amplify), false, true));
 				Vfx.leap(level, t);
@@ -1721,6 +1739,7 @@ public final class Effects {
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
 			BlockPos p = pos.immutable();
 			var source = cast.level.getBlockState(p);
+   if(source.is(dev.wildercord.wildlife.EmberContent.FERN)){if(dev.wildercord.wildlife.EmberContent.affectFern(cast,p,"life"))LifeOwnerEvents.cell(cast,"grow",p,source,cast.level.getBlockState(p),LifeOwnerEvents.Moment.APPLY);continue;}
 			if (!(source.getBlock() instanceof net.minecraft.world.level.block.BonemealableBlock)) continue;
 			// Known adjacent mutations reserve every destination before vanilla writes the first cell.
 			if (GrowDoublePlantPreflight.handles(source)) {

@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "age=0,cooled=false": {
+      "model": "wildercord:block/cinder_fern_0_hot"
+    },
+    "age=0,cooled=true": {
+      "model": "wildercord:block/cinder_fern_0_cool"
+    },
+    "age=1,cooled=false": {
+      "model": "wildercord:block/cinder_fern_1_hot"
+    },
+    "age=1,cooled=true": {
+      "model": "wildercord:block/cinder_fern_1_cool"
+    },
+    "age=2,cooled=false": {
+      "model": "wildercord:block/cinder_fern_2_hot"
+    },
+    "age=2,cooled=true": {
+      "model": "wildercord:block/cinder_fern_2_cool"
+    }
+  }
+}

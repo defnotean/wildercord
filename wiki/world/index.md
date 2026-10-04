@@ -182,3 +182,7 @@ Three events happen on their own in the Overworld, near players. They're covered
 [Rootmolt Striders]({{ "/world/rootmolt-striders/" | relative_url }}) compete for mature caps in covered Overworld cave gardens. Their raised shovel arms announce a committed physical rake; step sideways or break the source's short restraint.
 
 [Mara's Drainhouses]({{ "/world/belowkeeper-drainhouses/" | relative_url }}) connect actual Sporeback care and Rootmolt observations to three illustrated ledgers, a paid Empty Bell restoration, and crafted Rootbound Greaves.
+
+## Beside the cooled fronds
+
+[Cinder Bailiffs and Ferns]({{ '/world/cinder-bailiffs/' | relative_url }}) explains a dry woodland plant you can craft in an older world, a territorial three-vent animal, retained-root harvesting, and actual Fire, Water, Life and Frost interactions.

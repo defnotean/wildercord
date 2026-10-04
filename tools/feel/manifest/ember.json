@@ -1,0 +1,47 @@
+{
+  "events": {
+    "ember_bailiff_browse": {
+      "attenuation": 0,
+      "files": [
+        "kit/ember/ember_bailiff_browse"
+      ],
+      "subtitle": "ember_bailiff.browse"
+    },
+    "ember_bailiff_cool": {
+      "attenuation": 0,
+      "files": [
+        "kit/ember/ember_bailiff_cool"
+      ],
+      "subtitle": "ember_bailiff.cool"
+    },
+    "ember_bailiff_fan": {
+      "attenuation": 0,
+      "files": [
+        "kit/ember/ember_bailiff_fan"
+      ],
+      "subtitle": "ember_bailiff.fan"
+    },
+    "ember_bailiff_recover": {
+      "attenuation": 0,
+      "files": [
+        "kit/ember/ember_bailiff_recover"
+      ],
+      "subtitle": "ember_bailiff.recover"
+    },
+    "ember_bailiff_warn": {
+      "attenuation": 0,
+      "files": [
+        "kit/ember/ember_bailiff_warn"
+      ],
+      "subtitle": "ember_bailiff.warn"
+    },
+    "ember_fern_pick": {
+      "attenuation": 0,
+      "files": [
+        "kit/ember/ember_fern_pick"
+      ],
+      "subtitle": "ember_fern.pick"
+    }
+  },
+  "part": "ember"
+}

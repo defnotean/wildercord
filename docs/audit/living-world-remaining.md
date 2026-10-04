@@ -1,137 +1,58 @@
-# Living-world goal: outstanding work (2026-10-03)
+# Living-world goal: outstanding work (2026-10-04)
 
-This is a completion audit against the active goal and `docs/LIVING_WORLD_ROADMAP.md`.
-Counts are additions since the goal baseline, not all content already in Wildercord.
-Existing features, recolours, source references and controlled screenshots do not prove a complete milestone.
+Current completion audit against the active goal and docs/LIVING_WORLD_ROADMAP.md. Counts are additions since baseline14efc61e. Existing content, appearance variants and supplied test scenes receive no automatic content or ecosystem credit.
 
-## Content targets
+## Accepted content ledger
 
-| Target | Evidenced additions | Remaining |
+| Target | Accepted additions | Remaining |
 |---|---|---|
-| 12 creatures | 7: Buried Keeper, Stonehorn, Galeclaw, Lantern Newt, Reedback Crab, Sporeback Snail, Rootmolt Strider | 5: two peaceful/magical wildlife, one hostile/territorial creature, another boss and a useful companion |
-| 4 connected ecosystems | Highland, wetland and first fungal foundations | Finish their connected relationships; build ember woodlands; none yet meets the full ecosystem acceptance criteria |
-| 6 new dungeon/encounter locations | Sword tomb is the conservative confirmed new dungeon; hosted village tournament is an additional encounter candidate | 5 further fixed locations under the conservative architectural count, or 4 if the tournament counts; finalize this scope explicitly |
-| Battlefields and sleeping blade | Both implemented with native evidence | Natural rarity/distribution, remote participation, return-visit design and remaining lifecycle coverage |
-| At least 36 functional items | 21 accepted functional additions, including the four Nursery items | Seven relics, seven equipment and two tools remain to meet category minimums, yielding 37. See the category ledger; do not relabel materials to force 36. |
-| 12 abilities | Unity and verified Basinfill: 2 credited | 10 still uncredited; audit any newly taught technique against the baseline before counting it |
-| 18 new signature fusions |18 newly authored: six accepted field signatures plus twelve expedition/counter/support signatures with real client altar and paid Full/Minimal focused checks | Numeric target met; complete supported-pairing/delivery lifecycle and remote multiplayer acceptance remain. Runtime totals40 signatures/95 fused recipes/369 runes; baseline22 signatures are not credited as additions. |
-| 24 discoverable lore texts | 12 credited: previous nine and three Nursery texts | 12 plus illustrated journal/discovery integration; bestiary pages should be reconciled before further credit |
-| 4 connected optional investigations | Glowcap Nursery earned-resource chain passed with saved-state and once-only reward checks | 3 further complete chains, clues, persistent state and rewards |
+|12 creatures|8: Buried Keeper, Stonehorn, Galeclaw, Lantern Newt, Reedback Crab, Sporeback Snail, Rootmolt Strider, Cinder Bailiff|4 purposeful species; strengthen peaceful/rare wildlife, another boss and a useful companion mix|
+|4 complete ecosystems|Highland, wetland, fungal and ember foundations;0 fully accepted|Finish connected habitat/food/shelter/weather/magic relationships, natural observation and population/performance gates in all four|
+|6 new locations|2 conservative architectural credits: Sword Tomb and Mara's Drainhouse|4 further distinct locations; hosted tournament remains separate encounter evidence|
+|At least36 functional items|24: relic2/equipment2/tools4/placeables7/materials9|Category minima require6 relics+6 equipment+2 tools, at least14 further items and38 total; extra placeables do not replace missing categories|
+|12 abilities|2: Unity and Basinfill|10; Root Carry is an unaccepted candidate|
+|18 signature fusions|18 new authored signatures:6 field+12 expedition|Numeric target met; all supported pairing/delivery/lifecycle and real multiplayer acceptance still open|
+|24 discoverable lore texts|15, including3 Nursery and3 Drainhouse texts|9 plus broader discovery/journal integration|
+|4 connected investigations|2: Glowcap Nursery and Mara's Drainhouse|2 further earned clues/state/resource/reward chains|
 
-The prior increment ledger credited fifteen items by including Tideward notes. This audit separates that lore book from functional equipment/materials. The four accepted Nursery additions now bring functional additions to twenty-one. Spawn eggs and lore texts are not equipment credits. Existing signature fusions and battlefield/tomb technique rewards were confirmed unchanged against baseline commit `14efc61e`; teaching them does not count as new abilities. Life presentations, six signature fusions and the Glowcap Nursery investigation have focused native acceptance. Combined review JAR and pushed milestone delivery remain pending.
+Current runtime remains369 runes/40 signatures/95 named fused recipes. Root Carry and other isolated candidates are excluded. Spawn eggs and additional growth/appearance states are not separate functional-item credits. Cinnamon and fish-tamed vanilla foxes/Cinderfoxes predate this expansion; preserve them.
 
-## 1. Visual identity
+## Visual identity and every ability
 
-Finish the asset-by-asset audit of equipment, accessories, blocks, creatures, structure details,
-menus and HUD. Establish consistent regional/faction materials and silhouettes. Review the
-illustrated field journal in game across chapter types, discovery states and GUI scales.
-Existing guide improvements and120 validated/exported pages, including the illustrated Life materials chapter, are a foundation, not full visual approval.
+Finish an asset-by-asset comparison with the strongest existing materials, silhouettes, shading and motion. The126-page illustrated guide/GitBook validates, but validation does not prove every chapter/interface readable in game across discovery states and GUI scales. Native milestone galleries retain supplied versus earned versus natural scene provenance.
 
-## 2. Every spell and Aura technique
+Every effect needs a complete authored preparation, release/travel, impact, aftermath and sound lifecycle. Prior206-identity/seven-family moving-body contracts and18 new signature gates are scoped stage evidence. Life30 existing actual-outcome identities have focused owner/settings/quality/geometry checks; this does not complete all369 runes, all modifiers, ranks, links or deliveries. Continue void/time/arcane/blood/cross-family exceptions, self/summon/beam/rain/trap/ward/construct behavior, reflection/homing, mixed uncovered fallback, rear-circle camera coverage, reduced settings, shaders and concurrent clients. Existing Aura standards/fractures/Soar wings need whole-roster lifecycle/readability acceptance.
 
-The development runtime now has369 runes (277 effect declarations). Twelve new signatures have dedicated paid Full/Minimal preparation/flight acceptance, in addition to the prior206-identity seven-family moving-body contract. These are scoped stage checks, not completed spell lifecycles; see `full-spell-roster/coverage-stages.md`. Life29 and all18 new signatures have accepted focused preparation/paid moving-body evidence. Finish all remaining void, time, arcane, blood and
-cross-family exceptions. Finish actual release,
-impact, aftermath and sound identity for every effect. Audit beam, rain, self, summon, trap,
-ward, field and construct deliveries separately. Verify ranks/modifiers, links, reflection,
-homing, mixed fallback groups, dynamic Knots/weaves and addons. Review first-person aim,
-third-person readability, Minimal/reduced flash, shaders and concurrent players.
+## Creatures and ecosystems
 
-Rear-circle/group/linked/caster-origin fixes exist; complete delivery and camera coverage remains.
-Aura's physical standards, fractures and articulated Soar wings exist, but a full technique roster
-review and lifecycle/multiplayer proof remain. Every fusion must retain ingredient behavior and
-motion, not only its colour. Inventory/reference indices are not presentation proof.
+Cinder adds a real original rig, finite physical three-vent counterplay and retained-root fern loop. Its actual paid crafting/tending/harvest, competing meals/full reopen, authority callbacks, saturated receiver safety and native visual gates pass. Natural fern/animal distribution across seeds, sustained populations, listening and a complete ember region remain separate work.
 
-## 3. Creatures and ecosystems
+Wetlands have source-backed pending Moonreed write/reward/claim corrections and unbounded newt/crab query gaps. Frozen Tideward equipment/tool and a design-only Siltcrest Bittern are unaccepted. Validate actual natural animals, prey/resource balance, shelters, weather responses, unloaded/reloaded chunks and older-world access. Fungal natural site and earned Drainhouse resource/lore/restoration chain pass; complete wider snail/Strider/plant relationships and representative distribution remain open. Search/query caps establish ceilings, not measured TPS gains.
 
-Six further creatures need original models, animation, voices, habitat, behavior, counterplay,
-acquisition/rewards and bestiary evidence. Highlands and wetlands need broader ecological
-relationships and natural observation playthroughs. Ember forests and fungal ruins need their
-connected habitat loops. Validate food/shelter/predation/pollination under mixed populations,
-multiple seeds, unloaded chunks and existing worlds. Sporeback Snails now establish actual
-fungus browsing, finite gathering and shade checks; fungal ruins still need their wider connected
-habitat. Measure population/simulation costs.
-Cinnamon and fish-tamed foxes already exist; preserve their ownership, sit/follow and persistence.
-They are not counted as newly created species for this expansion.
+## Items, crafting and combat
 
-## 4. Equipment, crafting and combat
+Add the missing relic/equipment/tool categories with distinctive choices, acquisition and costs. Complete crafting/upgrades/research, cooperative support, home habitats/wards/apparatus and useful consumable paths. Exercise real inventory/backpack/equipment slots, use/craft packets and persistent wear/rest. Candidate source or planned recipes do not establish working gameplay.
 
-Add 16 further functional items and reconcile the minimum total against the eight relic/eight equipment/six
-tool/six placeable/eight consumable categories. Design acquisition and alternatives; complete
-upgrades, research, cooperative support, wards/apparatus and useful home infrastructure.
-Check inventories, backpack, accessory slots and all new recipes in the real UI.
+Extreme Vow/DoT and shared-payment continuation budgets have scoped fixes. Continue boss/PvP first-hit counterplay, healing/control/resistance tradeoffs, companion/addon/hazard paths and separate-payment Stasis pooling. Complete intentional fusion behavior and clear unsupported feedback across all pairings. Verify actual outcomes and resources rather than colours alone.
 
-Extreme Vow/DoT damage and shared-payment continuation budgets are fixed and tested. Review
-natural PvP and boss pacing, healing/control/resistance tradeoffs and remaining separate damage
-paths (addon vanilla damage, companions, hazards, Stasis pooling separate payments). Complete
-all supported fusion pairing checks and deliberate unsupported-combination feedback.
+## Exploration, lore and return visits
 
-## 5. Exploration, lore and retention
+Build4 further original architectural locations with inhabitants, puzzles, discoverable lore, finite rewards and revisit purposes. Improved existing Storm Spire is not another new-location credit. Finish9 lore texts and2 investigations, bestiary/journal collections, artifact restoration, mentorship/home/co-op journeys. Measure world rarity/spacing across seeds and validate natural early/middle/late-game routes with different builds rather than hand-placed encounters alone.
 
-Build four to five further distinct locations, depending on tournament encounter credit with architecture, inhabitants, puzzles, lore and rewards;
-Storm Spire is an improved existing dungeon, not another added location. Check generation
-frequency and spacing across seeds, biome placement, old saved layouts and return routes.
+## Aura steps11/12
 
-Add twelve further credited lore texts and three connected investigations. Develop memorable
-characters and faction motives, gameplay clues, consequences and optional story progression.
-Complete bestiary/journal collections, artifact restoration, mentorship, home projects and
-cooperative expeditions. Run early/middle/late-game journeys with multiple builds and verify
-that research and exploration reward new choices without repetitive grind or mandatory chores.
+All nine scoped pieces exist: terrain training, Marchkeeper battlefields, Sword Tomb/Keeper, sleeping blade, Stonehorn/Galeclaw, village tournaments, resonant strikes, rune-etched blades and Unity. The retained40-second integration gate already verifies selected combined mechanics, client death/respawn and a complete saved-world server shutdown/reopen. A narrow stale 'integration pending' note is not proof those features are missing.
 
-## 6. Aura world/cooperation acceptance
+Whole-overhaul acceptance still requires natural discovery/acquisition, full encounter restart and once-only prizes, supported inscription outcome classes, a representative earned progression journey, two genuinely connected clients/balance/synchronization, authored full-roster settings/shader readability, and measured mixed encounter performance. Concrete isolated fixes are pending for tournament resident threshold queries and beast receiver/whistle/population bounds, hurt callback departure and feeding authority. They have no runtime acceptance yet. A requirement for universal non-damage resonance is not present in the original step12 specification; do not invent that as missing feature scope.
 
-Terrain training, Marchkeeper battlefields, sword tomb/Keeper, sleeping blade, Stonehorn/Galeclaw,
-village tournaments, resonant strikes, rune-etched blades and Unity all have playable increments.
-Remaining acceptance includes natural distribution, dedicated-server/real multiple-client play,
-complete crash/restart/dimension/death cases, all inscription effects and non-damage cooperation,
-broader matchup balance and a complete combined Aura progression playthrough. The existence
-of these systems does not close milestone A.
+## Reliability and delivery
 
-## 7. Reliability, performance and delivery
+Finish real dedicated/multiclient testing, owner/source lifecycle/dimension/death/reconnect/whole-world restart, sustained mixed ecology/combat profiles, accessibility/non-colour communication and upgrade safety. Local peer entities and one connected viewer prove authoritative branches/selected reception, not two clients or remote human play.
 
-Complete real remote multiplayer tests; integrated single-client servers are different evidence.
-Profile sustained mixed combat and natural ecosystems. Search limits/cache caps are constraints,
-not measured speedups. Finish concurrent effect/sound readability, non-colour communication,
-accessibility and upgrade safety. Resolve full CI outcomes before calling all gates green.
-The previous full native CI job was cancelled after graphics initialization failed before tests;
-the ordinary build passed. CI-only correction 65256266 is pushed. Its subsequent Linux run initialized Mesa OpenGL and reached gameplay, then failed a timing assumption in HomeProjectsTest. The corrected focused local test passes; a subsequent full Linux descriptor remains required.
-See `ci-graphics-startup.md` for the distinct graphics and gameplay results.
+Final Ember build15s passes990 units,5352 generated paths reproduce,126 guide pages validate/export, and the checked review JAR/ten directly viewed native captures are in artifacts/review/ember-woodlands. Accepted Drainhouse and Rootmolt/Life milestones have their own exact audits/artifacts. Full Linux gameplay is still pending: run37178478750 at58904bbc was in progress at the latest check, with ordinary build passed. Do not call all CI gates green. Earlier graphics, HomeProjects, counter and nursery fixture corrections retain separate provenance in their audits.
 
-Continue delivering native screenshots, validated code/assets/recipes/docs, checked review JARs,
-clear limits and pushed commits per milestone. Public releases need explicit user authorization.
-The 0.9.1-alpha.1 asset mismatch is corrected. VPS activation of the published 0.9.1-alpha.1 release was verified on 2026-10-03
-with an offline backup, installed checksum, loader startup and responsive RCON.
-See `server-update-0911.md`. Later goal content is not included in that release.
+Published0.9.1-alpha.1 was activated on the VPS on2026-10-03 with offline backup/checksum/startup/RCON proof (server-update-0911.md). Later goal content is development-only and is not part of that public release. Continue coherent screenshots/docs/checked JAR/commit/push milestones; public release/server activation remain separate authorized tasks.
 
-## Next concrete work
+## Next work in progress
 
-Basinfill, Reed Rattle and Sporeback Snails are implemented and have scoped native evidence.
-Life 29, the six field signatures and the Glowcap Nursery earned-resource investigation have accepted focused native evidence; combined build and pushed delivery are pending. The current parallel work includes removal of generic front projectile overlays and drafts of the next twelve signatures. Fungal tests now pass finite late-search and blocked-path traversal, natural generation on the retained failed seed, and the grounded canopy acquisition/restart chain. A Grow-only obstruction cause was not established; actual Grow-first acceptance passes. Clearer native presentation captures are being prepared. Continue the remaining elemental
-roster and other creatures, ecosystems, locations and progression. No requirement
-above is considered complete merely because this audit exists.
-
-## Current development increment
-
-The twelve expedition signatures bring the numeric new-signature target to18. Their
-Counter42s, Support42s, Trail36s and Presentation62s focused tests pass; all12 real client
-Fuse packets, paid Full/Minimal preparation/flight assertions, resource/permission/counter
-checks and scoped reopen behavior are evidenced. Runtime totals are369 runes,40 signatures
-and95 named fused recipes. See expedition-signatures-milestone.md for final delivery gates.
-
-Prior Void36 stage acceptance covered206 canonical identities across seven families;
-new signatures do not turn that contract into a complete lifecycle count. Life105 and
-Rootmolt/Drainhouse remain isolated drafts, with no creature/item/lore/investigation credits.
-The preceding fb2c07cb ordinary build passed; full Linux gameplay failed later at
-gravity-flight visual pixels. Broader CI, multiplayer, all-delivery and ecosystem
-acceptance stays open after a successful scoped development milestone.
-
-## Life actual-outcome development increment (2026-10-03)
-
-The former isolated Life owner integration is now live:30 existing identities have authored material outcomes tied to actual admitted gameplay, source-aware Full/Minimal client delivery, bounded loaded-world rendering, corrected surface orientation, finite lifecycle cleanup and56 new sound identities for28 original effects. Generic overlap is removed only for wholly covered groups; mixed/uncovered fallback and requested rear glyphs remain. Actual spectator interception and Fortune pre-admission success feedback are fixed.
-
-Current Core48s, Stateful2m47s, Edges2m11s, Pulse49s, source26s, quality26s, geometry26s, spectator25s and Fortune37s focused suites pass. Combined build passes985 units;5270 generated paths reproduce;123 web/GitBook pages validate. Native guide44s final clear-capture and connected-player Bloomstep35s passes are now recorded; compact settings keep all18 buttons in bounds. Final build13s,985 units and checked review JAR are delivered with the exact checksum in the milestone audit. See docs/audit/life-outcomes-milestone.md for actual scope and remaining visual/CI/multiplayer limits. No new goal content count is awarded for polishing existing Life effects. Rootmolt/Drainhouse remains an unaccepted isolated candidate.
-
-## Rootmolt and grounded Sporebloom development increment (2026-10-03)
-
-Rootmolt is now live and has scoped ecology/control/counter/restart/presentation/sidestep/placement/query/alarm native acceptance. Conservative creature credit rises to7 of12. Sporebloom actual support, finite particle motion and revised all30 surface checks pass. Combined15s build passes988 units;5280 generated paths reproduce;124 guide/GitBook pages validate; nine directly reviewed native originals and checked review JAR are delivered. See docs/audit/rootmolt-spore-milestone.md for exact checksum, source gates and evidence limits.
-
-The preceding e0405713 ordinary CI build and Player Guide passed; its full Linux gameplay descriptor failed the synchronous counter health-loss assertion. The tightened provenance fixture passes locally50s, but full Linux acceptance is still pending. Rootmolt natural scheduler distribution, sound listening, sustained population performance and remote multiple-client play remain open. No new ecosystem/location/item/ability/lore/investigation credit is added by this increment. Drainhouse remains an isolated next candidate. The goal stays active.
+Root Carry, Tideward crossing kit, Moonreed correctness, Aura query/guard fixtures and the next wetland creature are isolated parallel work. Independent review found draft compile, whole-route snapshot, claim reentry and stalled-client-clock issues; corrected candidates must be compiled and exercised before credit. Root serializes integration/build/native runs. No requirement is completed merely because a design, audit or source reference exists. The goal remains active.

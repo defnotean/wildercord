@@ -6171,5 +6171,41 @@
     "sounds": [
       "wildercord:kit/belowkeeper/belowkeeper_restore"
     ]
+  },
+  "ember_bailiff_browse": {
+    "subtitle": "subtitles.wildercord.kit.ember_bailiff.browse",
+    "sounds": [
+      "wildercord:kit/ember/ember_bailiff_browse"
+    ]
+  },
+  "ember_bailiff_cool": {
+    "subtitle": "subtitles.wildercord.kit.ember_bailiff.cool",
+    "sounds": [
+      "wildercord:kit/ember/ember_bailiff_cool"
+    ]
+  },
+  "ember_bailiff_fan": {
+    "subtitle": "subtitles.wildercord.kit.ember_bailiff.fan",
+    "sounds": [
+      "wildercord:kit/ember/ember_bailiff_fan"
+    ]
+  },
+  "ember_bailiff_recover": {
+    "subtitle": "subtitles.wildercord.kit.ember_bailiff.recover",
+    "sounds": [
+      "wildercord:kit/ember/ember_bailiff_recover"
+    ]
+  },
+  "ember_bailiff_warn": {
+    "subtitle": "subtitles.wildercord.kit.ember_bailiff.warn",
+    "sounds": [
+      "wildercord:kit/ember/ember_bailiff_warn"
+    ]
+  },
+  "ember_fern_pick": {
+    "subtitle": "subtitles.wildercord.kit.ember_fern.pick",
+    "sounds": [
+      "wildercord:kit/ember/ember_fern_pick"
+    ]
   }
 }

@@ -831,6 +831,9 @@ def write_lang(runes):
     import fungal_art
     lang.update(fungal_art.LANG)
     fungal_art.write(sys.modules[__name__])
+    import ember_art
+    lang.update(ember_art.LANG)
+    ember_art.write(sys.modules[__name__])
     import rootmolt_art
     lang.update(rootmolt_art.LANG)
     rootmolt_art.write(sys.modules[__name__])

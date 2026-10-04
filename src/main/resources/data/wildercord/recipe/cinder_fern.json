@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:fern",
+    "minecraft:clay_ball",
+    "minecraft:charcoal"
+  ],
+  "result": {
+    "id": "wildercord:cinder_fern",
+    "count": 1
+  }
+}

@@ -1038,6 +1038,24 @@
     "earth_tick": {
       "part": "earth"
     },
+    "ember_bailiff_browse": {
+      "part": "ember"
+    },
+    "ember_bailiff_cool": {
+      "part": "ember"
+    },
+    "ember_bailiff_fan": {
+      "part": "ember"
+    },
+    "ember_bailiff_recover": {
+      "part": "ember"
+    },
+    "ember_bailiff_warn": {
+      "part": "ember"
+    },
+    "ember_fern_pick": {
+      "part": "ember"
+    },
     "field_pulse": {
       "part": "neutral"
     },

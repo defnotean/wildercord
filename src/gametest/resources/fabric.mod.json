@@ -184,7 +184,14 @@
 			"dev.wildercord.cast.GrowSeagrassPermissionTest",
 			"dev.wildercord.cast.GrowMossCarpetPermissionTest",
 			"dev.wildercord.wildlife.DrainhouseTerrainFitTest",
-			"dev.wildercord.wildlife.BelowkeeperPresentationTest"
+			"dev.wildercord.wildlife.BelowkeeperPresentationTest",
+			"dev.wildercord.wildlife.CinderBailiffEcologyTest",
+			"dev.wildercord.wildlife.CinderBailiffFanTest",
+			"dev.wildercord.wildlife.EmberPostWriteTest",
+			"dev.wildercord.wildlife.EmberPaidPacketsTest",
+			"dev.wildercord.wildlife.EmberPresentationTest",
+			"dev.wildercord.wildlife.CinderBailiffTerritoryTest",
+			"dev.wildercord.wildlife.CinderBailiffFanSafetyTest"
 		]
 	},
 	"depends": {
