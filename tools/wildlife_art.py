@@ -1197,7 +1197,7 @@ LANG = {
     "screen.wildercord.grimoire.field_guide_wildlife": "Wildlife",
     "screen.wildercord.grimoire.field_guide_monsters": "Monsters",
     "toast.wildercord.creature": "Met: %s",
-    "guide.wildercord.glimmerwing": "Soft-glowing moths that flutter in small swarms at night in forests and flower fields, circling lamps and anyone fresh from a spell. Drops Glimmer Dust",
+    "guide.wildercord.glimmerwing": "Soft-glowing moths that flutter in small swarms at night in forests, flower fields and swamps, circling lamps and anyone fresh from a spell. Drops Glimmer Dust",
     "guide.wildercord.glimmerwing.hint": "Something glows among the trees on a dark night",
     "guide.wildercord.lumen_stag": "A rare, shy deer of old forests whose crystal antlers burn brighter as the moon fills. Approach it sneaking and still and it sheds an antler for you, once a day. Never harm one",
     "guide.wildercord.lumen_stag.hint": "Old woods, a moonlit glint, and patience",

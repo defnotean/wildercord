@@ -23,7 +23,7 @@ met yet are listed too, as a hint of where to look.
 
 | Creature | Where | When | How common | Leaves | Good for |
 |---|---|---|---|---|---|
-| [Glimmerwing](#glimmerwing) | Forests, flower forests, birch and dark forests, meadows, sunflower plains, cherry groves | Night | Small swarms | Glimmer Dust | Night Vision potions, glow ink sacs |
+| [Glimmerwing](#glimmerwing) | Forests, flower forests, birch and dark forests, meadows, sunflower plains, cherry groves, swamps and mangrove swamps | Night | Small swarms | Glimmer Dust | Night Vision potions, glow ink sacs |
 | [Lumen Stag](#lumen-stag) | Old-growth birch, pine and spruce forests, taigas, cherry groves | Any time | Rare, always alone | Lumen Antler (shed for you, never dropped) | Mana Crystals |
 | [Mossback Tortoise](#mossback-tortoise) | Swamps, mangrove swamps, jungles | Any time | One or two | Mossback Scute | Potions of the Turtle Master, mending turtle shells |
 | [Cinderfox](#cinderfox) | Deserts and badlands | Any time | One to three | Ember Tuft | Fire Resistance potions, furnace fuel |
@@ -36,7 +36,7 @@ met yet are listed too, as a hint of where to look.
 <img src="{{ '/assets/images/creature-glimmerwing-night.jpg' | relative_url }}" alt="Glimmerwings, pale blue, pink and amber, fluttering round a lantern on a fence post at night" class="shot">
 <span class="caption">Glimmerwings circling a lantern at night.</span>
 
-Soft-glowing moths the size of your hand. They come out at night in forests and flower fields, in little swarms of three
+Soft-glowing moths the size of your hand. They come out at night in forests, flower fields and swamps, in little swarms of three
 to five that keep together, and fade away one by one when the sun comes up.
 
 - **They go to light.** A lantern, torch or campfire draws a swarm to circle it. So does magic: cast a spell near them
