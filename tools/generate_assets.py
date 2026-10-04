@@ -570,7 +570,7 @@ def write_lang(runes):
         "tooltip.wildercord.mana_crystal": "+%s max mana, forever (up to %s crystals)",
         "tooltip.wildercord.mana_crystal.use": "Right-click to absorb it",
         "message.wildercord.crystal_used": "Max mana +%s (%s/%s crystals)",
-        "message.wildercord.crystals_full": "Your mana can't grow further with crystals (%s/%s)",
+        "message.wildercord.crystals_full": "Your mana can't grow further with crystals (%1$s/%1$s)",
         "effect.wildercord.clarity": "Clarity",
         "effect.wildercord.mana": "Mana",
         "item.minecraft.potion.effect.wildercord_clarity": "Potion of Clarity",
