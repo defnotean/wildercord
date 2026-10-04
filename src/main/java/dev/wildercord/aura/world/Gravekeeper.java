@@ -105,7 +105,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		}
 		float through=(float)(damage*SwordTombRules.multiplier(move(),front,axe));
 		boolean hurt=super.hurtServer(level,source,through);
-		if(hurt && source.getEntity() instanceof ServerPlayer p){fought=true;var t=tomb(level);if(t!=null)t.participant(p);}
+		if(hurt && source.getEntity() instanceof ServerPlayer p && !p.isCreative() && !p.isSpectator()){fought=true;var t=tomb(level);if(t!=null)t.participant(p);}
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
