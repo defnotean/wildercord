@@ -38,15 +38,15 @@ From top to bottom:
 | **This world's harmonies** | Each of your world's harmonies you've found, by name and in its colour (hover it for its runes, what its twist does, its riddle and who found it first); the riddles you've read from Torn Pages, in italics; the ones other players have found, by name and finder; and how many nobody has found yet. See [Harmonies and Reading Runes]({{ '/spellcraft/harmonies/' | relative_url }}). |
 | **This world's quirks** | The small ways your world bends a few runes, each as you first meet it: *"Here, Shock cracks harder in the rain."* |
 | **Runes you're still reading** | Once you've learned a rune you don't understand yet: how many, and (hover it) each one and how far you've read it. |
-| **Sword arts** (of 25) | Once you've played a breathing method's own art, or learned a method that has them: each art you've played, by method, as *"Backdraft · Third Art"* (hover it for what it does), and your own method's still to play as **???** with the art they are. See [Sword Arts]({{ '/progression/sword-arts/' | relative_url }}). |
+| **Sword arts** (of 50) | Once you've played a breathing method's own art, or learned a method that has them: each art you've played, by method, as *"Backdraft · Third Art"* (hover it for what it does), and your own method's still to play as **???** with the art they are. See [Sword Arts]({{ '/progression/sword-arts/' | relative_url }}). |
 | **Duels** | Your duels won and lost, once you've fought one. See [Duels]({{ '/social/duels/' | relative_url }}). |
 | **Fusions** (of 55) | Each fusion you've made at the Fusion Altar, as *"Firestorm (Fire + Wind)"*. The rest show as **??? + ???** with one of their elements as a hint. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}). |
-| **Signature fusions** (of 16) | Each signature fusion you've made, as *"Frostwire (Chill + Shock)"*. The rest show as **??? + ???** with the elements of their two runes as a hint. See [Signature fusions]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions). |
+| **Signature fusions** (of 40) | Each signature fusion you've made, as *"Frostwire (Chill + Shock)"*. The rest show as **??? + ???** with the elements of their two runes as a hint. See [Signature fusions]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions). |
 | **Attunements** (of 15) | Each rune of the land you've attuned, with its land, and whether the land is resting or ready to give it again. The rest show as riddles pointing to where they wait. See [Runes of the World]({{ '/world/runes-of-the-world/' | relative_url }}). |
-| **Runes of the world** (of 51) | Every place with runes found only there, and which of its runes you know. Unknown ones show as **???** with their tier and family. |
+| **Runes of the world** (of 53) | Every place with runes found only there, and which of its runes you know. Unknown ones show as **???** with their tier and family. |
 | **Where you stand** | What the [elemental climate]({{ '/spellcraft/affinities/' | relative_url }}#elemental-climate) is doing where you are right now: *"The Nether: Fire +20%, Frost -25%"*, or that nothing here favours or hinders an element. |
 | **Bestiary** | Every kind of creature your spells have struck that has an affinity, as *"Blaze · weak: Frost · resists: Fire (immune), ?"*: the weaknesses and resistances you've found, and a **?** for each still to find. Hover a creature for what each one does. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}). |
-| **Feats** (of 35) | Every feat, ✔ once earned. Hover one for how it's earned. |
+| **Feats** (of 40) | Every feat, ✔ once earned. Hover one for how it's earned. |
 
 While the Grimoire page is open, the magic circles of the secret spells you've found turn beside the
 screen, one after another, like plates in a book.

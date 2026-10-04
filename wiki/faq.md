@@ -90,7 +90,7 @@ Blank Rune and a few items, in any layout. Every rune's tooltip also says how to
 The full list is on [Rune Recipes]({{ '/items/rune-recipes/' | relative_url }}).
 
 ### Which runes can't be crafted?
-Tier IV runes (from bosses, dungeon vaults and rare structures), the 51
+Tier IV runes (from bosses, dungeon vaults and rare structures), the 53
 [runes of the world]({{ '/runes/world/' | relative_url }}) (each found only in its own places), the 55
 [fused runes]({{ '/runes/fused/' | relative_url }}) (made at the Fusion Altar) and the ten
 [innate runes]({{ '/runes/innate/' | relative_url }}) (one wakes in your heart).
