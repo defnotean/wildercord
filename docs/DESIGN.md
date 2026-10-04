@@ -739,7 +739,7 @@ the Codex's Innate category, so any Cord can hold it.
 | Gale Mantle | Wind | 12 s: jump in midair to dash forward (3 dashes) |
 | Stoneform | Earth | 8 s: no knockback, Resistance, and each hit you take sends out an aftershock |
 | Mirrorfrost | Frost | Casts back the last spell that hit you in the past 30 s, as your own |
-| Fortune | Life | 10 s: each hit you deal (spells and melee) has a 1 in 4 chance to strike for triple |
+| Fortune | Life | 10 s: each hit you deal (spells and melee) has a 1 in 4 chance to strike for double |
 | Phantom | Void | An afterimage of you (your skin) draws every monster within 16 blocks for 4 s, then bursts for 8 (1 more for every 6 its decoy soaked) |
 | Stormheart | Storm | 10 s: whatever hits you is struck by lightning (once a second) |
 
