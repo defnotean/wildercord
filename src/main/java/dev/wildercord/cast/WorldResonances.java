@@ -447,6 +447,7 @@ public final class WorldResonances {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			prepared = null;
 			WorldQuirks.forget();
+			TwistMagic.clear();
 		});
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> refresh(handler.player));
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> refresh(newPlayer));

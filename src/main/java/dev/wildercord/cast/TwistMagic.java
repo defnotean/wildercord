@@ -100,6 +100,14 @@ public final class TwistMagic {
 		return RIDES.containsKey(cast.identity());
 	}
 
+	/**
+	 * Forgets every ride (the server stopped). A ride holds its cast, and so the cast's identity it's kept by: the
+	 * weak keys alone never let one go, and a stopped world's casts (and their levels) mustn't outlive it.
+	 */
+	static void clear() {
+		RIDES.clear();
+	}
+
 	/** Every hit of every spell: a twist riding it may add to what the hit does. */
 	public static void onHit(Cast cast, SpellPlan.Group group, Cast.Hit hit) {
 		if (RIDES.isEmpty()) {
