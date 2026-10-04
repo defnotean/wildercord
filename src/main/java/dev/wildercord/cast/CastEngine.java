@@ -199,7 +199,8 @@ public final class CastEngine {
 	 * Only for a spell cast from a Cord and paid in mana, once per link per payment.
 	 */
 	private static void refund(Cast cast, SpellPlan.Link link) {
-		if (!(cast.caster instanceof ServerPlayer player) || cast.passive || cast.origin() != null || player.isCreative() || link.next == null
+		// An overcast was paid with a cracked circle and whatever mana was left, never the full price this would hand back a share of.
+		if (!(cast.caster instanceof ServerPlayer player) || cast.passive || cast.origin() != null || cast.overcast() || player.isCreative() || link.next == null
 				|| cast.info.root() == null || cast.info.spell().isEmpty()) {
 			return;
 		}
