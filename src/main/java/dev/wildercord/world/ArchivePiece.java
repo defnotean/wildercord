@@ -384,9 +384,13 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 				set(level, bb, WildercordBlocks.RUNE_SEAL.defaultBlockState().setValue(RuneSealBlock.ELEMENT, element), 33, y, z);
 			}
 		}
-		RandomSource random = RandomSource.create(boundingBox.minX() * 17L + boundingBox.minZ() * 5L);
-		createChest(level, bb, random, 38, 3, 74, WildercordWorldgen.VAULT_LOOT, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.WEST));
-		createChest(level, bb, random, 38, 3, 80, WildercordWorldgen.VAULT_LOOT, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.WEST));
+		// A seed of its own for each vault chest: the two always lie in different chunks, and one random made afresh in each
+		// chunk would hand both the same first roll (the same loot).
+		long seed = boundingBox.minX() * 17L + boundingBox.minZ() * 5L;
+		createChest(level, bb, RandomSource.create(seed), 38, 3, 74, WildercordWorldgen.VAULT_LOOT,
+			Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.WEST));
+		createChest(level, bb, RandomSource.create(seed + 1), 38, 3, 80, WildercordWorldgen.VAULT_LOOT,
+			Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.WEST));
 		set(level, bb, WildercordBlocks.WELLSTONE.defaultBlockState(), 38, 3, 77);
 		for (int z = 74; z <= 80; z += 3) {
 			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 36, 8, z);
