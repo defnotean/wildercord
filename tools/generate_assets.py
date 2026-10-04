@@ -1773,7 +1773,7 @@ NEW_LANG = {
     "category.wildercord.effect.fusion": "Woven fusions",
     "item.wildercord.rootbound_relic": "Rootbound Relic",
     "item.wildercord.stormglass_relic": "Stormglass Relic",
-    "item.wildercord.rootbound_relic.desc": "Heal and root nearby monsters. Recharges in 30 seconds.",
+    "item.wildercord.rootbound_relic.desc": "Heals you and slows nearby monsters. Recharges in 30 seconds.",
     "item.wildercord.stormglass_relic.desc": "A burst of wind repels monsters and grants speed and slow falling. Recharges in 30 seconds.",
     "item.wildercord.knot.named": "Knot: %s",
     "item.wildercord.rune.ranked": "%s Rune %s",
