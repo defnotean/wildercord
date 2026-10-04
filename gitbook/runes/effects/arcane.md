@@ -115,7 +115,7 @@ Strength II for 10 seconds, then Weakness I for 4 (a passive carries only Streng
 
 *Tier II · Arcane · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-Casters can't cast: a cast in hand is cut short and none can follow for 4 seconds (3 on players). Monsters are weakened for 6 seconds.
+Casters can't cast: a cast in hand is cut short and none can follow for 4 seconds (2 on players). Monsters are weakened for 6 seconds.
 
 **How to get it:** Craft: a Blank Rune, any wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Clockwork Crypt; Astral Observatory.
 

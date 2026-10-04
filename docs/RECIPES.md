@@ -305,7 +305,7 @@ Any effect of an element counts.
 | Reckoning | Time + Blood | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12), and half of what comes due heals you (at most 6). |
 | Singularity | Void + Void | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks and swallowing arrows and bolts, then bursts: 6 damage (1 more for each thing swallowed, up to 5), and they're flung outward. |
 | Prismatic Burst | Arcane + Arcane | 5 damage, and 4 more for every mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding or exposed), up to 5, each used up and passed on to up to 3 enemies within 4 blocks: up to 25. |
-| Chronoshift | Time + Time | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
+| Chronoshift | Time + Time | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, 30% of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
 
 ## Signature fusions (40, made only at the Fusion Altar)
 

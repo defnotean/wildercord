@@ -96,7 +96,7 @@ Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 dam
 
 *Tier III · Time · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
-Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds.
+Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, 30% of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Time effects and an amethyst shard (3 XP levels).
 

@@ -108,7 +108,7 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Life | **Lifebloom** | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
 | Void | **Singularity** | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks and swallowing arrows and bolts, then bursts: 6 damage (1 more for each thing swallowed, up to 5), and they're flung outward. |
 | Arcane | **Prismatic Burst** | 5 damage, and 4 more for every mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding or exposed), up to 5, each used up and passed on to up to 3 enemies within 4 blocks: up to 25. |
-| Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
+| Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, 30% of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
 | Blood | **Sanguine Rite** | You pay 3 of your own health (never your last; more with Amplify, Overcharge and a crowd) for 12 damage that ignores armour. |
 
 ### Signature fusions (22)
