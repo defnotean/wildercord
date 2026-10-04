@@ -214,6 +214,42 @@ GLYPHS: dict[str, str] = {
         .##..##..
         #..##..#.
     """,
+    # Root Carry: a young sprout lifted clear of the ground, its clod of soil and roots hanging below.
+    "root_carry": """
+        ......##.
+        .##..#++#
+        #++#.#+#.
+        #+#-##...
+        .##.#....
+        ...###...
+        ..##-##..
+        ...#.#...
+        ..#...#..
+    """,
+    # Watchweft: a web of threads woven round an open eye, keeping watch.
+    "watchweft": """
+        #...#...#
+        .#..#..#.
+        ..#+++#..
+        .#+.k.+#.
+        ###k*k###
+        .#+.k.+#.
+        ..#+++#..
+        .#..#..#.
+        #...#...#
+    """,
+    # Manabraid: two strands of mana braided into one, crossing and crossing again.
+    "manabraid": """
+        #+.....+#
+        .#+...+#.
+        ..#+.+#..
+        ...#*#...
+        ..+#.#+..
+        .+#...#+.
+        ..+#.#+..
+        ...#*#...
+        ..#+.+#..
+    """,
     # ---------------------------------------------------------------- flight
     # Soar: a pair of wings of wind raised from a bright heart, the air streaming off below.
     "soar": """

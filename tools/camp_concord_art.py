@@ -1,4 +1,5 @@
-"""Original folded camp-ledger and three-comb mana fibre assets; explicit LF/UTF-8 writes."""
+"""Watchweft and Manabraid lang, camp particles and spell-circle bands; explicit LF/UTF-8 writes.
+Their rune icons are drawn by item_art (new_rune_art.GLYPHS)."""
 from PIL import Image,ImageDraw
 import json,math
 LANG={
@@ -186,24 +187,12 @@ CAMP_SPRITES=[(CAMP_PAPER,CAMP_PAPER_CREASED),(CAMP_STAPLE,CAMP_STAPLE_BENT),(CA
 def sprite(style,frame):
  return px.render(CAMP_SPRITES[style][frame])
 
-def icon(which):
- im=Image.new('RGBA',(32,32));d=ImageDraw.Draw(im)
- d.polygon([(8,2),(25,3),(30,10),(28,25),(21,30),(7,28),(2,21),(3,8)],fill=(67,60,80),outline=(185,167,183));d.line([(9,3),(24,4),(28,10)],fill=(231,213,206));d.line([(28,13),(26,25),(21,28),(9,27)],fill=(35,31,44))
- if which=='watchweft':
-  page=sprite(0,0).resize((20,20));im.alpha_composite(page,(6,6));d.line([(9,6),(9,20)],fill=(209,151,99),width=2);d.line([(9,6),(13,6)],fill=(252,210,143));d.polygon([(21,19),(26,21),(23,25),(20,23)],fill=(196,124,91),outline=(241,184,123))
- else:
-  d.line([(10,8),(10,22)],fill=(227,199,151),width=3);d.line([(22,10),(22,25)],fill=(169,140,192),width=3)
-  for i in range(3):d.line([(10,10+i*4),(15,9+i*4),(19,17+i*2),(22,12+i*4)],fill=[(219,197,227),(151,125,181),(238,215,226)][i],width=2)
-  d.polygon([(15,15),(18,13),(20,17),(17,20),(14,18)],fill=(237,212,223),outline=(95,73,113))
- return im
-
 def write(g):
  names=[]
  for style in range(6):
   for frame in range(2):
    name=f'camp_{style}_{frame}';g.save(sprite(style,frame),g.ASSETS/'textures/particle'/f'{name}.png');names.append('wildercord:'+name)
  p=g.ASSETS/'particles/camp.json';p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps({'textures':names},indent=2)+'\n',encoding='utf-8',newline='\n')
- for name in ['watchweft','manabraid']:g.save(icon(name),g.ASSETS/'textures/item/rune'/f'{name}.png')
 
 def circles(bands,marks):
  # Written in the same grammar as every rune's ring and emblem (see circle_art): an Effect's solid line

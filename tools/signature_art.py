@@ -227,4 +227,211 @@ GLYPHS: dict[str, str] = {
         ####eeeee
         #########
     """,
+    # Springbed (frost; life): a basin brimming with water, a sprout drinking from it.
+    "springbed": """
+        .LL...LL.
+        ..Ll.lL..
+        ....l....
+        #...l...#
+        #++*+*++#
+        #+++++++#
+        .#+++++#.
+        ..#####..
+    """,
+    # Cinder Sieve (fire; void): a lump of coal burning on a sieve, sparks falling through its mesh.
+    "cinder_sieve": """
+        ....*....
+        ...+#+...
+        ..k+*+k..
+        .kkk#kkk.
+        .........
+        uuUuUuUuu
+        .u.u.u.u.
+        ..+...*..
+        ...*.+...
+    """,
+    # Ashen Mercy (life; fire): a heart closed round a guttering flame, its last smoke rising.
+    "ashen_mercy": """
+        ...o.....
+        ....o....
+        ...o.....
+        .##.o.##.
+        #..#.#..#
+        #..fFf..#
+        .#.fff.#.
+        ..#...#..
+        ...#.#...
+    """,
+    # Clockroot (earth; time): a clock face held fast over the ground by spreading roots.
+    "clockroot": """
+        ..TTTTT..
+        .T..t..T.
+        T...t...T
+        T...ttt.T
+        .T.....T.
+        #.TTTTT.#
+        .#..#..#.
+        ..#.#.#..
+        .#.#.#.#.
+    """,
+    # Skylatch (wind; void): a figure hanging in the air from a latch of darkness, the gust below it.
+    "skylatch": """
+        ..uuUuu..
+        ..u...u..
+        ....u....
+        ...###...
+        .#######.
+        ...###...
+        ...#.#...
+        .+..+..+.
+        .-..-..-.
+    """,
+    # Thresherwind (wind; life): a gust sweeping through ripe wheat, the cut ears thrown up ahead of it.
+    "thresherwind": """
+        .L.......
+        LlL.##...
+        .l.#++##.
+        .l#....+#
+        .L..L....
+        LlLLlL.L.
+        .l..l.LlL
+        .l..l..l.
+        .l..l..l.
+    """,
+    # Nullcatch (void; arcane): a hollow of darkness rimmed with arcane light, an arrow falling into it.
+    "nullcatch": """
+        +.+......
+        .#.......
+        +.#......
+        ...*.....
+        M...*...M
+        m.#kkk#.m
+        m#kkkkk#m
+        .m#kkk#m.
+        ..mmmmm..
+    """,
+    # Second Bell (time; storm): two bells side by side, a spark leaping between them as they ring.
+    "second_bell": """
+        ..#...#..
+        .#+#.#+#.
+        .#+-.#+-.
+        #+--z+--#
+        #+--Z+--#
+        #########
+        ..*...*..
+    """,
+    # Red Ledger (blood; arcane): a ruled ledger page, a drop of blood blotted across its entries.
+    "red_ledger": """
+        mmmmmmm..
+        m.....m..
+        mMMMM.m..
+        m.....m#.
+        mMMM.m#+#
+        m....#+*+
+        mMM..#***
+        m.....###
+        mmmmmmm..
+    """,
+    # Quietus (arcane; time): an hourglass stopped, a spark of spell caught fast in its upper bulb.
+    "quietus": """
+        ttttttttt
+        .t+*+*+t.
+        ..t***t..
+        ...t*t...
+        ....t....
+        ...t.t...
+        ..t...t..
+        .t.....t.
+        ttttttttt
+    """,
+    # Blood Escrow (blood; arcane): a drop of blood held safe inside a shield of arcane light.
+    "blood_escrow": """
+        .mmmmmmm.
+        m...#...m
+        m..#+#..m
+        m.#+*+#.m
+        m.#+++#.m
+        .m.###.m.
+        ..m...m..
+        ...mMm...
+    """,
+    # Frost Molt (frost; life): a plate of ice peeling off a green leaf, the leaf beneath it clean.
+    "frost_molt": """
+        ....###..
+        ...#+*+#.
+        ..#+**+#.
+        .l.#+++#.
+        lLl.###..
+        lLLl.....
+        lLLLl....
+        .lLl.....
+        ..l......
+    """,
+    # Pulse Ferry (life; time): a heart carried across in a little golden ferry.
+    "pulse_ferry": """
+        ..##.##..
+        .#++#++#.
+        .#+***+#.
+        ..#+*+#..
+        ...#+#...
+        t...#...t
+        ttttttttt
+        .ttTtTtt.
+    """,
+    # Last Lantern (arcane; time): a lantern holding its light, a hand of time turning it back.
+    "last_lantern": """
+        ...###...
+        ...#.#...
+        ..#####..
+        T.#+*+#..
+        t.#***#..
+        t.#+*+#..
+        .t#####..
+        ..ttt....
+    """,
+    # Pocket Current (frost; void): a curl of water carrying a stray item down into a pouch of darkness.
+    "pocket_current": """
+        .++++....
+        +....+...
+        +.ww..+..
+        .+.....+.
+        .......+.
+        .uuuuuuu.
+        .u.....u.
+        .uU...Uu.
+        ..uuuuu..
+    """,
+    # Wayline (arcane; void): waypoints strung along a line out to a grapple hooked on the far ground.
+    "wayline": """
+        ......u.u
+        .......u.
+        ....+..U.
+        ...+*+.u.
+        ....+.-..
+        .+..-....
+        +*+-.....
+        .+.......
+    """,
+    # Night Seam (void; arcane): a seam opened through dark stone, arcane light glinting out of it.
+    "night_seam": """
+        ####.####
+        #+++m#++#
+        #+##.M#-#
+        ###.m.###
+        #+#M.#++#
+        #-#.m.#-#
+        ###.M.###
+    """,
+    # Shard Compass (arcane; earth): a compass whose needle points out to a shard of ore.
+    "shard_compass": """
+        ......e..
+        .....eEe.
+        ..###.e..
+        .#...+...
+        #...*..#.
+        #..*...#.
+        #.-....#.
+        .#....#..
+        ..####...
+    """,
 }

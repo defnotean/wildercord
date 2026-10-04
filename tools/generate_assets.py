@@ -824,10 +824,6 @@ def write_lang(runes):
     lang.update(life_journal_text.LANG)
     import void_art
     void_art.main()
-    import fieldfusion_art
-    fieldfusion_art.write(sys.modules[__name__])
-    import next_signature_art
-    next_signature_art.write(sys.modules[__name__])
     import fungal_art
     lang.update(fungal_art.LANG)
     fungal_art.write(sys.modules[__name__])
@@ -836,7 +832,6 @@ def write_lang(runes):
     camp_concord_art.write(sys.modules[__name__])
     import root_carry_art
     lang.update(root_carry_art.LANG)
-    root_carry_art.write(sys.modules[__name__])
     import rainshield_art
     lang.update(rainshield_art.LANG)
     rainshield_art.write(sys.modules[__name__])
