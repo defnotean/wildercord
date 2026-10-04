@@ -1,0 +1,59 @@
+{
+  "jar": {
+    "jar": "wildercord-ward-payment-review+mc26.3.jar",
+    "sha256": "aa78618960f03179c866fdb74c6c352214ea36c534353f43a0641d2e28928006",
+    "resources": 5469,
+    "classes": 1871,
+    "source_version": "0.9.1-alpha.1+mc26.3",
+    "unit_tests": {
+      "tests": 1008,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "native": {
+    "lifecycle": {
+      "status": "passed",
+      "seconds": 39
+    },
+    "retirement": {
+      "status": "passed",
+      "seconds": 63,
+      "foresight_deadline": 355,
+      "foresight_cleanup_observed": 400,
+      "reflect_deadline": 612,
+      "reflect_cleanup_observed": 800
+    },
+    "void_time": {
+      "status": "passed",
+      "seconds": 80
+    },
+    "parry": {
+      "status": "passed",
+      "seconds": 50
+    },
+    "shared_damage": {
+      "status": "passed",
+      "seconds": 33
+    }
+  },
+  "baseline": {
+    "status": "failed",
+    "seconds": 28,
+    "assertion": "Real Echo/delayed Pulse cannot refill exhausted original payment",
+    "actual_route": "Pulse / Self / Foresight",
+    "actual_cost": 44,
+    "spent": 44,
+    "mana_before_payment": 300,
+    "mana_after_payment": 256,
+    "mana_at_delayed_ward": 258
+  },
+  "limits": [
+    "Supplied scenes and physical-pressure calls",
+    "Paid-copy replay is a labelled trusted seam, not TCP parry",
+    "No actual TCP opponents/departure/respawn coverage",
+    "Stasis attribution/destination safety/callback authority remain open",
+    "Presentation unchanged; no new visual acceptance claimed"
+  ]
+}

@@ -253,12 +253,15 @@
       "dev.wildercord.wildlife.RainshieldFaultTest",
       "dev.wildercord.wildlife.RainshieldPresentationTest",
       "dev.wildercord.wildlife.RainshieldCombatGapsTest",
-      "dev.wildercord.wildlife.RainshieldAckTest"
+      "dev.wildercord.wildlife.RainshieldAckTest",
+      "dev.wildercord.cast.WardPaymentLifecycleTest",
+      "dev.wildercord.cast.WardPaymentRetirementTest"
     ]
   },
   "mixins": [
     "wildercord.mossveil-gametest.mixins.json",
-    "rainshield-gametest.mixins.json"
+    "rainshield-gametest.mixins.json",
+    "ward-payment-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

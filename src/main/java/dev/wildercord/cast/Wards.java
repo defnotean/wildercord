@@ -68,11 +68,13 @@ public final class Wards {
 	private static final class Reflect {
 		long until;
 		final double fraction;
+		final Object payment;
 		int left = REFLECTIONS;
 
-		Reflect(long until, double fraction) {
+		Reflect(long until, double fraction, Object payment) {
 			this.until = until;
 			this.fraction = fraction;
+			this.payment = payment;
 		}
 
 		long until() {
@@ -91,7 +93,7 @@ public final class Wards {
 		long until;
 		int charges;
 		/** The press that put it up: a Zone, Pulse or Echo of the same cast only lengthens it, never refills it. */
-		int cast;
+		Object payment;
 	}
 
 	private static final class Infinity {
@@ -252,21 +254,32 @@ public final class Wards {
 	}
 
 	static void reflect(Cast cast, LivingEntity t, int ticks, double fraction) {
-		REFLECT.put(t.getUUID(), new Reflect(cast.level.getGameTime() + ticks, fraction));
+		Reflect existing = REFLECT.get(t.getUUID());
+		long until = cast.level.getGameTime() + ticks;
+		if (existing != null && existing.payment == cast.payment()) {
+			// A pulse may prolong its remaining mirror, never restore a broken facet.
+			existing.until = Math.max(existing.until, until);
+			return;
+		}
+		// Lives on the finite payment object, not a global ledger or a Shared/hash identity.
+		// Once exhausted/expired or replaced by a separately paid ward, this payment cannot rearm it.
+		if (!cast.once("ward-reflect:" + t.getUUID())) return;
+		REFLECT.put(t.getUUID(), new Reflect(until, fraction, cast.payment()));
 		TechniqueVfx.reflectMark(cast.level, t);
 	}
 
 	static void foresight(Cast cast, LivingEntity t, int ticks, int charges) {
 		Sight old = FORESIGHT.get(t.getUUID());
 		long until = cast.level.getGameTime() + ticks;
-		if (old != null && old.cast == cast.id() && old.until >= cast.level.getGameTime() - 1) {
+		if (old != null && old.payment == cast.payment() && old.until >= cast.level.getGameTime() - 1) {
 			old.until = Math.max(old.until, until);
 			return;
 		}
+		if (!cast.once("ward-foresight:" + t.getUUID())) return;
 		Sight sight = new Sight();
 		sight.until = until;
 		sight.charges = charges;
-		sight.cast = cast.id();
+		sight.payment = cast.payment();
 		FORESIGHT.put(t.getUUID(), sight);
 		TechniqueVfx.foresightMark(cast.level, t, charges);
 		// The sight running out: a ring closes on the head and a tick.
@@ -353,10 +366,9 @@ public final class Wards {
 				return true;
 			}
 			dodge(level, entity, source);
-			if (--sight.charges <= 0) {
-				// Spent, it stays (resting) until its time is up so the same cast cannot put it up again.
-				sight.until = Math.min(sight.until, level.getGameTime() + 5);
-			}
+			--sight.charges;
+			// Keep the actual ward deadline. The payment's once gate also prevents rearming
+			// after cleanup; a genuinely separate paid cast may still buy a fresh ward.
 			// A step aside stops a blow of up to 12; a bigger one only loses that much.
 			if (amount > FORESIGHT_CAP && !softening) {
 				softening = true;
