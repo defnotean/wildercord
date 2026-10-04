@@ -1,0 +1,15 @@
+# Actual two-client Unity gate — 2026-10-04
+
+Final native supervisor run-empty-slot passes32.70s: host PID45880 and peer PID43980, both exit0. Two independent real Minecraft JVMs/offline UUIDs connect through distinct actual loopback TCP sockets to the same dedicated server. The accepted connection/input/movement/renderer/disconnect backbone remains intact. Optional -PtwoClientSuite -PtwoClientUnitySuite selects only this class; it stays outside ordinary native CI.
+
+Both actual clients send Activate packets and pay exactly12 mana plus12 Aura independently. Peer sends one actual CastSpell Touch/Heal packet at the injured allied host. The server verifies native healing, exact compiled price and cooldown, exact quarter-Aura refund only to the payer, and unchanged recipient mana/Aura/Unity allowances. Actual peer reception verifies owner attachment sync and absence of the host's private Unity state on its remote renderer entity.
+
+Normal host hotbar input selects a verified empty ninth slot. Actual server item packets stop only the host's Unity state, retaining exact allowances/rest; peer remains active. Actual peer disconnect then stops the peer's own exact state with retained allowances/rest. The supervisor additionally requires host-unity-passed.properties, not successful Java exit alone.
+
+The initial test failure came from asymmetric supplied starter flags: ordinary first-Cord onboarding refilled the host's mana. Both supplied books now mark onboarding complete before seeding pools. The second run and diagnostic found an already successful hotbar cancellation, but slot1 contained eight ordinary onboarding Blank Runes, violating an erroneous empty-slot assumption. The corrected fixture uses an actually empty slot through the same input. Exact payment/privacy/cancellation and strict240-tick production window remain unchanged; no renewal, injected Unity state or forced clocks.
+
+Native originals and manifest are in artifacts/review/two-client-unity. Three actual healing/cancellation images were directly viewed; HUD, chat and onboarding toasts make them diagnostics rather than clean aesthetic evidence. Progression/equipment/allies/injured health/platform are supplied fixtures. Config temporarily disables passive regeneration/gain and restores the exact original in finally. Unity converts personal resources; shared support is the actual paid Heal, not a pooled team resource.
+
+This proves local automated multiplayer behavior on one machine. It does not prove remote VPS latency/human play, persisted-world restart, every Aura ability, shaders or sustained performance. No new content credit or public/server deployment. Full Linux gameplay remains separate.
+
+Invocation after exact launch export: python tools/native/launch_two_clients.py artifacts/two-client-unity-launch.json --output artifacts/two-client-unity-run --accepted-eula C:/path/to/existing/accepted/eula.txt --require-unity. Export with both optional properties using tools/native/export_two_client_launch.init.gradle.
