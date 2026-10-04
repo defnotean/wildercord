@@ -245,6 +245,10 @@ public final class SpellCaster {
 			// Magic paid for with a cracked circle marks the world where it lands (see Residues).
 			cast.markOvercast();
 		}
+		if (free) {
+			// A Free Recast paid nothing: a branch that doesn't fire, or a Soar that lifts no one, refunds nothing.
+			cast.markFree();
+		}
 		if (!cast.info.root().groups.isEmpty()) {
 			var first = cast.info.root().groups.getFirst();
 			dev.wildercord.cast.feel.Feels.cue(cast, cast.feel(first), cast.theme(first));

@@ -69,6 +69,8 @@ public final class Cast {
 		double performance = 1.0;
 		/** Whether it was paid for by cracking a Heart Circle (an overcast always leaves a residue). */
 		boolean overcast;
+		/** Whether it cost nothing (a wild surge's Free Recast), so nothing of it may be refunded. */
+		boolean free;
 
 		Shared() {
 			this(new Paid());
@@ -332,6 +334,17 @@ public final class Cast {
 	/** Whether it was overcast (see {@link #markOvercast}): an overcast always leaves a residue. */
 	public boolean overcast() {
 		return budget.shared.overcast;
+	}
+
+	/** Marks this as cast for free (a wild surge's Free Recast); copies of the cast keep it. */
+	public Cast markFree() {
+		budget.shared.free = true;
+		return this;
+	}
+
+	/** Whether it was cast for free (see {@link #markFree}): no mana was paid, so none comes back. */
+	public boolean free() {
+		return budget.shared.free;
 	}
 
 	/**

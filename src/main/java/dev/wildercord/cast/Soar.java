@@ -182,8 +182,9 @@ public final class Soar {
 	 * back its branch's (see {@code CastEngine.refund}): only for a spell cast from a Cord and paid in mana, once.
 	 */
 	private static void refund(Cast cast, SpellPlan.EffectNode node) {
-		if (!(cast.caster instanceof ServerPlayer player) || cast.passive || cast.origin() != null || player.isCreative()
-				|| cast.info.root() == null || cast.info.spell().isEmpty()) {
+		// Like a condition's refund (CastEngine.refund): never for an overcast or a Free Recast, which didn't pay the full price.
+		if (!(cast.caster instanceof ServerPlayer player) || cast.passive || cast.origin() != null || cast.overcast() || cast.free()
+				|| player.isCreative() || cast.info.root() == null || cast.info.spell().isEmpty()) {
 			return;
 		}
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(cast.info.spell());
