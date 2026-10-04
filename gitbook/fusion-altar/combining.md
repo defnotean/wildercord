@@ -13,7 +13,7 @@ its emblem is split down the middle between the two elements' glyphs.
 
 ### Signature fusions
 
-Twenty-two pairs of **particular** effects fuse into a rune of their own instead of their elements'
+Forty pairs of **particular** effects fuse into a rune of their own instead of their elements'
 fusion: the altar asks for a signature (`Fusions.SIGNATURES`) before the element grid. Chill with
 Shock makes **Frostwire**, while Chill with Jolt, or Icicle with Shock, still makes Hail. Everything
 else is a Combine's: an amethyst shard, 3 XP levels, the lower of the two ranks put in, and the rune
@@ -25,13 +25,13 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
   through every cold enemy, Seethe is a boiling Bubble that bursts into steam, Doomclock is a Primer
   that holds its blows like Stasis, and so on.
 - **Their ingredients are runes a caster can come by**, never innate or fused ones: mostly crafted,
-  and four pairs use runes of the world or Tier IV runes (Stasis, Starfall, Summit Wind, Sandstorm,
-  Stalactite). Three of those make Tier IV runes (Doomclock, Cometfall, Dust Devil); the rest are Tier III.
+  and seven pairs use runes of the world or Tier IV runes (Stasis, Starfall, Summit Wind, Sandstorm,
+  Stalactite, Manaburn, Rewind, Treasure Sense). Three of those make Tier IV runes (Doomclock, Cometfall, Dust Devil); the rest are Tier III.
 - **Each has its own exact pair of ingredient runes**, and every element is in at least two pairs. Multiple signatures may share an element pairing while keeping distinct mechanics and emblems. Their circles
   braid their two runes' elements like any fused rune, with a star added: a four-pointed star in each
   half of the ring and the points of one behind the emblem, so a signature is told from its elements'
   fusion at a glance.
-- **The Grimoire lists them apart**, as *Signature fusions (n of 22)* under the fusions, each still
+- **The Grimoire lists them apart**, as *Signature fusions (n of 40)* under the fusions, each still
   hidden as `??? + ???` with its two runes' elements (*a rune of Frost, and one of Storm*); found, it
   names both runes and the element fusion it replaces. A signature is recorded as `fusion:<rune>` like
   any fusion and condenses the same 150 mana, but the element count (*Fusions (n of 55)*) leaves it out.
