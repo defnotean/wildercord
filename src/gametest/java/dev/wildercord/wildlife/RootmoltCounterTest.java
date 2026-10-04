@@ -25,12 +25,30 @@ public final class RootmoltCounterTest implements FabricClientGameTest {
     player.teleportTo(s.overworld(),root.getX()+2,30,root.getZ(),Set.<Relative>of(),90,30,false);check(dev.wildercord.cast.SpellCaster.edit(player,0,java.util.List.of(dev.wildercord.spell.Runes.TOUCH.id(),dev.wildercord.spell.Runes.HARM.id()))==null,"Actual editor admits Touch Harm");dev.wildercord.player.Spellbooks.setReadyAt(player,0,0);dev.wildercord.player.Spellbooks.setMana(player,100);float mana=dev.wildercord.player.Spellbooks.mana(player);spellHealth[0]=root.getHealth();dev.wildercord.cast.SpellCaster.cast(player,0);check(dev.wildercord.player.Spellbooks.mana(player)<mana,"Actual Survival spell pays before its ordinary delayed release");});
    c.waitTicks(6);w.getServer().runOnServer(s -> {check(root.getHealth()<spellHealth[0],"Actual delayed paid Touch release genuinely wounds the warning source");check(root.pose()==RootmoltStrider.RECOVERING,"Magic still interrupts the creature after actual release");check(!FungalInvestigation.knows(p(s),"field:rootmolt_counter"),"Paid magic interruption does not claim the physical melee fact");});
    await(c,w,s -> root.pose()==RootmoltStrider.WARNING,"Next ordinary warning follows the actual post-spell attack rest");
-   float before=w.getServer().computeOnServer(s -> p(s).getHealth());long first=w.getServer().computeOnServer(s -> s.overworld().getGameTime());
+   long first=w.getServer().computeOnServer(s -> s.overworld().getGameTime());
+   // A readable warning begins within four blocks; physical rake reaches only its narrower committed strip.
+   // The source can naturally stroll during its full post-spell rest. Approach through genuine client input,
+   // keeping the original AI, warning clock, health and native physical counter unchanged.
+   approachCommittedReach(c,w);
+   float before=w.getServer().computeOnServer(s -> p(s).getHealth());
    await(c,w,s -> p(s).hasEffect(RootmoltContent.TETHER),"One actual physical rake applies a short owned tether");
    w.getServer().runOnServer(s -> {check(before-p(s).getHealth()==4,"One contact deals four physical damage, not per-tick damage");check(root.holding(p(s)) && p(s).getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(root.getUUID()),"Actual source/victim ownership agrees");check(s.overworld().getGameTime()-first>=RootmoltRules.WINDUP-5,"A readable warning window precedes restraint");});
    int id=w.getServer().computeOnServer(s -> root.getId());c.runOnClient(mc -> mc.gameMode.attack(mc.player,mc.level.getEntity(id)));c.waitTicks(5);
    w.getServer().runOnServer(s -> {check(!p(s).hasEffect(RootmoltContent.TETHER) && p(s).getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(RootmoltContent.NO_OWNER),"Actual native physical counter releases only its owned restraint");check(p(s).hasEffect(MobEffects.SLOWNESS),"Unrelated debuff remains");check(root.pose()==RootmoltStrider.RECOVERING && root.attackReady()>s.overworld().getGameTime(),"Interrupted creature has finite recovery and attack rest");check(FungalInvestigation.knows(p(s),"field:rootmolt_counter"),"Actual native direct melee earns the physical counter observation");});
   }
+ }
+ private void approachCommittedReach(ClientGameTestContext c,TestSingleplayerContext w){
+  boolean forward=c.computeOnClient(mc->mc.options.keyUp.isDown());float[] look=c.computeOnClient(mc->new float[]{mc.player.getYRot(),mc.player.getXRot()});int id=w.getServer().computeOnServer(s->root.getId());
+  try{
+   if(w.getServer().computeOnServer(s->root.onLine(p(s).position())&&root.distanceToSqr(p(s))<=9&&p(s).onGround()))return;
+   c.runOnClient(mc->{var entity=mc.level.getEntity(id);check(entity instanceof RootmoltStrider,"Actual committed source is client tracked");var d=entity.position().subtract(mc.player.position());mc.player.setYRot((float)Math.toDegrees(Math.atan2(-d.x,d.z)));mc.player.setXRot(0);mc.options.keyUp.setDown(true);});
+   for(int n=0;n<20;n++){
+    c.waitTicks(1);
+    if(w.getServer().computeOnServer(s->root.onLine(p(s).position())&&root.distanceToSqr(p(s))<=9&&p(s).onGround()))break;
+   }
+   c.runOnClient(mc->mc.options.keyUp.setDown(false));
+   w.getServer().runOnServer(s->{System.out.println("ROOTMOLT_COUNTER_APPROACH source="+root.position()+" victim="+p(s).position()+" pose="+root.pose()+" line="+root.onLine(p(s).position())+" distanceSquared="+root.distanceToSqr(p(s))+" health="+p(s).getHealth()+" now="+s.overworld().getGameTime());check(root.pose()==RootmoltStrider.WARNING&&root.onLine(p(s).position())&&root.distanceToSqr(p(s))<=9&&p(s).onGround(),"Real client walk reaches the physical committed strip before the original warning ends");});
+  }finally{c.runOnClient(mc->{mc.options.keyUp.setDown(forward);mc.player.setYRot(look[0]);mc.player.setXRot(look[1]);});}
  }
  private void await(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Predicate<MinecraftServer> yes,String why) {for(int i=0;i<150;i++) {c.waitTicks(3);if(w.getServer().computeOnServer(s -> yes.test(s)))return;}throw new AssertionError(w.getServer().computeOnServer(s -> why+" sourceBody="+root.position()+" sourceDelta="+root.getDeltaMovement()+" sourceAlive="+root.isAlive()+" sourceRemoved="+root.isRemoved()+" pose="+root.pose()+" sourceGround="+root.onGround()+" target="+(root.getTarget()==null?null:root.getTarget().getUUID())+" victimBody="+p(s).position()+" victimDelta="+p(s).getDeltaMovement()+" victimAlive="+p(s).isAlive()+" victimHealth="+p(s).getHealth()+" victimCooldown="+p(s).getInvulnerableTime()+" victimGround="+p(s).onGround()+" sourceWorld="+root.level().dimension()+" victimWorld="+p(s).level().dimension()+" distanceSquared="+root.distanceToSqr(p(s))+" sight="+root.hasLineOfSight(p(s))+" onCommittedLine="+root.onLine(p(s).position())+" holding="+root.holding(p(s))+" owner="+p(s).getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER)+" tether="+p(s).getEffect(RootmoltContent.TETHER)+" attackReady="+root.attackReady()+" mealReady="+root.mealReady()+" now="+s.overworld().getGameTime()));}
  private static ServerPlayer p(MinecraftServer s) {return s.getPlayerList().getPlayers().getFirst();}
