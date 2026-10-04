@@ -197,8 +197,9 @@ top of the effect steps above (it's never crafted or found, so no recipe and no 
    add it to `Runes.SIGNATURE`.
 2. Add one line to `Fusions.SIGNATURES`: `new Signature(Runes.FIRST, Runes.SECOND, Runes.RESULT)`. The
    tools read these lines, so keep each on one line. Its two runes must be effects a caster can come by
-   (never innate or fused), and their pair of elements must be one no other signature has: that's what
-   keeps every signature's circle its own (`circle_art.py` asserts it).
+   (never innate or fused), and that exact pair of runes must be one no other signature uses. Several
+   signatures may share a pair of elements; each still needs its own ring and emblem in `circle_art.py`,
+   which asserts that no two runes share either.
 3. Its behaviour goes in `cast/SignatureFusions.java` (and `SignatureWards` for anything that answers
    what happens to a creature), its numbers in `SignatureRules`, its look in `SignatureVfx`.
 4. Its icon goes in `tools/signature_art.py`, which can draw with its partner element's colours.
