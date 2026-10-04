@@ -45,6 +45,8 @@ All nine scoped pieces exist: terrain training, Marchkeeper battlefields, Sword 
 
 Whole-overhaul acceptance still requires natural discovery/acquisition, full encounter restart and once-only prizes, supported inscription outcome classes, a representative earned progression journey, two genuinely connected clients/balance/synchronization, authored full-roster settings/shader readability, and measured mixed encounter performance. Concrete isolated fixes are pending for tournament resident threshold queries and beast receiver/whistle/population bounds, hurt callback departure and feeding authority. They have no runtime acceptance yet. A requirement for universal non-damage resonance is not present in the original step12 specification; do not invent that as missing feature scope.
 
+The separate runtime-only spawn authority correction passes five native gates for Newt, Crab, Rootmolt and Bailiff, retaining eligible runtime positives and refusing generation/off-thread live queries. See [wildlife-spawn-thread-authority.md](wildlife-spawn-thread-authority.md). No new content or natural-frequency credit.
+
 ## Reliability and delivery
 
 The genuine local two-client bootstrap and paid Unity cooperation now pass: two JVMs, distinct TCP sockets, actual input/server/renderer movement, independent resource payments, allied healing, owner-only cancellation and genuine disconnect (see two-client-bootstrap.md and two-client-unity.md). Complete multiplayer roster, owner/source dimension/death/reconnect/whole-world restart, sustained mixed ecology/combat profiles, accessibility/non-colour communication and upgrade safety remain. These are actual local TCP clients with supplied progression; remote human/VPS latency remains unmeasured.

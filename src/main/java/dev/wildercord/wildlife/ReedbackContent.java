@@ -24,7 +24,7 @@ public final class ReedbackContent {
  public static void init() {
   FabricDefaultAttributeRegistry.register(CRAB,ReedbackCrab.attributes());
   SpawnPlacements.register(CRAB,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(t,l,reason,p,r) -> {
-   if(reason!=EntitySpawnReason.NATURAL && reason!=EntitySpawnReason.CHUNK_GENERATION)return true;
+   if(reason==EntitySpawnReason.CHUNK_GENERATION)return false;if(reason!=EntitySpawnReason.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;
    var config=Config.get().wildlife();if(!config.spawns("reedback_crab") || l.getDifficulty()==net.minecraft.world.Difficulty.PEACEFUL || r.nextDouble()>=Math.min(1,.2*config.spawnMultiplier()))return false;
    if(!l.canSeeSky(p.above()) || !l.getBlockState(p.below()).isSolidRender() || !l.getBlockState(p).getCollisionShape(l,p).isEmpty() || !l.getBlockState(p.above()).isAir())return false;
    boolean wet=l.getFluidState(p).is(FluidTags.WATER);for(var d:Direction.Plane.HORIZONTAL)wet|=l.getFluidState(p.relative(d)).is(FluidTags.WATER);

@@ -72,7 +72,7 @@ public final class RootmoltContent {
  public static void init() {
   FabricDefaultAttributeRegistry.register(STRIDER,RootmoltStrider.attributes());
   SpawnPlacements.register(STRIDER,SpawnPlacementTypes.ON_GROUND,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(type,l,reason,p,r) -> {
-   if(reason!=EntitySpawnReason.NATURAL && reason!=EntitySpawnReason.CHUNK_GENERATION)return true;
+   if(reason==EntitySpawnReason.CHUNK_GENERATION)return false;if(reason!=EntitySpawnReason.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;
    if(!l.getLevel().dimension().equals(net.minecraft.world.level.Level.OVERWORLD))return false;
    var settings=Config.get().wildlife();if(l.getDifficulty()==Difficulty.PEACEFUL || !settings.spawns("rootmolt_strider") || r.nextDouble()>=Math.min(1,.18*settings.spawnMultiplier()) || p.getY()>=48 || l.canSeeSky(p) || l.getMaxLocalRawBrightness(p)>8 || !l.getFluidState(p).isEmpty())return false;
    var floor=l.getBlockState(p.below());if(!(floor.is(Blocks.MOSS_BLOCK) || floor.is(Blocks.CLAY)) || !localRoom(l.getLevel(),type,p))return false;

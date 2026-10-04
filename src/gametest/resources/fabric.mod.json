@@ -220,7 +220,8 @@
       "dev.wildercord.cast.RootCarryOutcomeOwnershipTest",
       "dev.wildercord.wildlife.MoonreedSourceTest",
       "dev.wildercord.wildlife.TidewardPendingReceiverTest",
-      "dev.wildercord.wildlife.MixedWetlandPerformanceTest"
+      "dev.wildercord.wildlife.MixedWetlandPerformanceTest",
+      "dev.wildercord.wildlife.WildlifeSpawnThreadTest"
     ]
   },
   "depends": {

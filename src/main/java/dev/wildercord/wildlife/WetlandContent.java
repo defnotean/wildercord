@@ -38,7 +38,7 @@ public final class WetlandContent {
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(NEWT,LanternNewt.attributes());
 		SpawnPlacements.register(NEWT,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(type,l,reason,p,r) -> {
-			if(reason!=EntitySpawnReason.NATURAL && reason!=EntitySpawnReason.CHUNK_GENERATION)return true;
+			if(reason==EntitySpawnReason.CHUNK_GENERATION)return false;if(reason!=EntitySpawnReason.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;
 			var settings=Config.get().wildlife();if(!settings.spawns("lantern_newt") || r.nextDouble()>=Math.min(1,.35*settings.spawnMultiplier()))return false;
 			// Shallow water over solid footing, with air above, not an ocean-depth or cave spawn.
 			return l.getFluidState(p).is(FluidTags.WATER) && l.getFluidState(p.above()).isEmpty() && l.getBlockState(p.below()).isSolidRender()
