@@ -10,7 +10,7 @@ nav_order: 3
 <img src="{{ '/assets/images/b-advancements.jpg' | relative_url }}" alt="The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows" class="shot">
 
 Wildercord has its own advancement tab, set on dark indigo stone with faint rune script. It leads you
-from your first Blank Rune to the 8th Heart Circle and the bosses of the four dungeons: **74
+from your first Blank Rune to the 8th Heart Circle and the dungeon bosses: **80
 advancements** below the root, most of them rewarding experience, some Blank Runes and Mana Crystals.
 
 1. TOC
@@ -166,6 +166,8 @@ See [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}) and
 | **Tempered** | challenge | The Last Page | Defeat the Cinder Warden in its Ember Sanctum | 300 XP |
 | **Starbreaker** | challenge | The Last Page | Defeat the Star-Eater in its Astral Observatory | 300 XP |
 | **Low Tide** | challenge | The Last Page | Defeat the Tide Scribe in its Drowned Scriptorium | 300 XP |
+| **Heartwood** | challenge | The Last Page | Prune the Root Guardian and defeat it in the Rootbound Maze | 300 XP |
+| **Grounded** | challenge | The Last Page | Ground the Storm Conductor and defeat it in the Storm Spire | 300 XP |
 | **Icebridge** | task | Shatter | Walk across water you froze with a spell | 15 XP |
 | **Conductor** | task | Conduct | Shock five creatures at once through the water they stand in | 25 XP |
 | **Runebreaker** | task | Wildercord | Slay a Runebound, a monster that casts spells | 15 XP |
