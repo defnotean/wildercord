@@ -23,7 +23,7 @@ from world_art import noise  # noqa: E402
 LANG={
  'block.wildercord.glowcap':'Glowcap','block.wildercord.fungal_nursery':'Fungal Nursery','block.wildercord.breathmark':'Belowkeeper Breathmark',
  'item.wildercord.dried_glowcap_gills':'Dried Glowcap Gills','item.wildercord.dried_glowcap_gills.lore':'Paper-thin lamellae hold the memory of a damp bank.','item.wildercord.dried_glowcap_gills.use':'Craft a Fungal Nursery or a Cave Breather.',
- 'item.wildercord.cave_breather':'Cave Breather','item.wildercord.cave_breather.lore':'A Belowkeeper filter, built to trade quick feet for one clear breath.','item.wildercord.cave_breather.use':'Hold in your offhand and use to clear current Poison. 32 filter uses; 10 second rest; 3 seconds of Slowness. Ongoing attacks can poison you again.',
+ 'item.wildercord.cave_breather':'Cave Breather','item.wildercord.cave_breather.lore':'A Belowkeeper filter, built to trade quick feet for one clear breath.','item.wildercord.cave_breather.use':'Hold in your offhand and use to clear current Poison. 32 filter uses; 10-second rest; 3 seconds of Slowness. Ongoing attacks can poison you again.',
  'item.wildercord.breathmark_roots':'Where the Roots Drink','item.wildercord.breathmark_air':'The Second Breath','item.wildercord.nursery_journal':'Three Breathmarks',
  'message.wildercord.fungal.replica':'This is an ordinary carved stone. Its field memory is quiet.',
  'message.wildercord.fungal.filter_rest':'Hold the filter in your offhand. It needs current Poison and a rested filter.',

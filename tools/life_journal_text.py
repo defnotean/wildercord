@@ -47,7 +47,7 @@ LANG = {'screen.wildercord.grimoire.life': 'Reading Life magic (%s known)',
                                                  'were removed. A clean target has no spent conditions to '
                                                  'shed. Use it to interrupt a reaction setup as well as '
                                                  'remove visible potion ailments.',
- 'screen.wildercord.grimoire.life.nourish.material': 'Two seed halves cup a food-colored sap drop.',
+ 'screen.wildercord.grimoire.life.nourish.material': 'Two seed halves cup a food-coloured sap drop.',
  'screen.wildercord.grimoire.life.nourish.read': "A player's food/condition change or an eligible animal's "
                                                  'healing or breeding admission actually occurred. Ordinary '
                                                  'unsupported creatures are not fed by this spell. Food, '
