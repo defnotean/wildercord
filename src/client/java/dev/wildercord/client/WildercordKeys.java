@@ -273,7 +273,7 @@ public final class WildercordKeys {
 	}
 
 	private static void tick(Minecraft client) {
-		while (magicSettings.consumeClick()) if (client.player != null) client.gui.setScreen(new MagicSettingsScreen());
+		while (magicSettings.consumeClick()) if (client.player != null && client.gui.screen() == null) client.gui.setScreen(new MagicSettingsScreen());
 		if (client.player == null || !client.player.isAlive()) {
 			// Dead or out of the world: whatever was held is dropped, and nothing is cast.
 			castHeld = -1;
@@ -360,7 +360,7 @@ public final class WildercordKeys {
 		}
 		for (int i = 0; i < CAST_N.length; i++) {
 			while (CAST_N[i].consumeClick()) {
-				if (client.player != null) {
+				if (playing) {
 					ClientPlayNetworking.send(new WildercordNetworking.CastSpell(i));
 				}
 			}
