@@ -43,6 +43,7 @@ public final class FungalNurseryTest implements FabricClientGameTest {
    // Pick up and spend actual harvested gills; only ordinary vanilla supplies are fixture-provided.
    w.getServer().runOnServer(s -> {move(s,plant.getX()+.5,plant.getZ()+.5);hand(p(s),ItemStack.EMPTY);});c.waitTicks(20);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(FungalGarden.GILLS)==1),"Real harvested gill drop reaches Survival inventory");
    craft(c,w,w.getServer().computeOnServer(s -> List.of(new ItemStack(Items.STICK),new ItemStack(Items.STICK),new ItemStack(Items.PAPER),ingredient(p(s),FungalGarden.GILLS))),FungalGarden.NURSERY_ITEM);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(FungalGarden.GILLS)==0),"First native craft spends the earned gill");
+   pruneNurseryApproach(c,w); // Actual Survival garden work; keep the same visitor and real rests.
    w.getServer().runOnServer(s -> s.overworld().setBlock(roof.below(),Blocks.STONE.defaultBlockState(),2));clickEarned(c,w,roof.below(),FungalGarden.NURSERY_ITEM);w.getServer().runOnServer(s -> {check(s.overworld().getBlockState(roof).is(FungalGarden.NURSERY),"Native canopy placement above temporary support");check(s.overworld().getBlockState(roof).getCollisionShape(s.overworld(),roof).bounds().minY==-1,"Real canopy corner collision reaches walking floor");s.overworld().setBlock(roof.below(),Blocks.AIR.defaultBlockState(),2);});check(w.getServer().computeOnServer(s -> FungalInvestigation.knows(p(s),FungalInvestigation.ROOF)),"Own real nursery placement advances chain");
    // Clear the same visitor's reserve, prepare the perennial again and wait its real saved rest.
    await(c,w,()->snail.pose()==2 && snail.nurseryReady()>0 && snail.blockPosition().equals(roof.below()),"Visitor physically enters grounded Nursery before its first finite rest");
@@ -60,6 +61,31 @@ public final class FungalNurseryTest implements FabricClientGameTest {
    c.waitTicks(210);w.getServer().runOnServer(s -> {var tool=take(p(s),FungalGarden.BREATHER);tool.setDamageValue(31);hand(p(s),ItemStack.EMPTY);p(s).setItemInHand(InteractionHand.OFF_HAND,tool);p(s).addEffect(new MobEffectInstance(MobEffects.POISON,400));});c.waitTicks(5);c.runOnClient(mc -> mc.gameMode.useItem(mc.player,InteractionHand.OFF_HAND));c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).getOffhandItem().isEmpty() && !p(s).hasEffect(MobEffects.POISON) && p(s).getAttachedOrElse(FungalGarden.BREATHER_READY,0L)>s.overworld().getGameTime()),"Final native filter use breaks finite equipment yet preserves shared rest");
   }
   } finally {c.runOnClient(mc -> mc.options.keyShift.setDown(priorShift));}
+ }
+ /** Grow may place colliding azalea beside the garden; physically prune that supplied approach before erecting the canopy. */
+ private static void pruneNurseryApproach(ClientGameTestContext c,TestSingleplayerContext w){
+  UUID visitor=w.getServer().computeOnServer(s -> snail.getUUID());
+  Map<Integer,ItemStack> earnedNursery=w.getServer().computeOnServer(s -> {
+   var held=new HashMap<Integer,ItemStack>();for(int slot=0;slot<36;slot++){var stack=p(s).getInventory().getItem(slot);if(stack.is(FungalGarden.NURSERY_ITEM))held.put(slot,stack);}
+   check(held.size()==1 && held.values().iterator().next().getCount()==1,"Pruning begins with the one actual crafted Nursery stack");return Map.copyOf(held);
+  });
+  long rest=w.getServer().computeOnServer(s -> snail.forageReady()),nursery=w.getServer().computeOnServer(s -> snail.nurseryReady());
+  List<BlockPos> shrubs=w.getServer().computeOnServer(s -> {
+   var l=s.overworld();var result=new ArrayList<BlockPos>();
+   for(var at:BlockPos.betweenClosed(plant.offset(-1,0,-1),plant.offset(1,0,1))) {
+    var state=l.getBlockState(at);
+    if((state.is(Blocks.AZALEA)||state.is(Blocks.FLOWERING_AZALEA))&&!state.getCollisionShape(l,at).isEmpty())result.add(at.immutable());
+   }
+   dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PRUNE_BEFORE body={} box={} ground={} nurseryFoot={} footCollision={} nurseryAirCollisionFree={} shrubs={} forageReady={} nurseryReady={}",snail.position(),snail.getBoundingBox(),snail.onGround(),l.getBlockState(roof.below()),l.getBlockState(roof.below()).getCollisionShape(l,roof.below()).toAabbs(),l.noCollision(snail,new AABB(roof.below()).deflate(.15)),result,snail.forageReady(),snail.nurseryReady());return List.copyOf(result);
+  });
+  for(BlockPos at:shrubs){
+   w.getServer().runOnServer(s -> {check(p(s).gameMode.getGameModeForPlayer()==GameType.SURVIVAL,"Garden pruning uses the actual Survival player");move(s,at.getX()+.5,at.getZ()-1.5);});c.waitTicks(3);
+   c.runOnClient(mc -> {mc.gui.setScreen(null);mc.gameMode.startDestroyBlock(at,Direction.NORTH);});
+   for(int tick=0;tick<20 && !w.getServer().computeOnServer(s -> s.overworld().getBlockState(at).isAir());tick++){c.runOnClient(mc -> mc.gameMode.continueDestroyBlock(at,Direction.NORTH));c.waitTicks(1);}
+   c.runOnClient(mc -> mc.gameMode.stopDestroyBlock());
+   check(w.getServer().computeOnServer(s -> s.overworld().getBlockState(at).isAir()),"Actual native Survival mining removes only a Grow-produced colliding azalea");
+  }
+  w.getServer().runOnServer(s -> {for(var entry:earnedNursery.entrySet()){check(p(s).getInventory().getItem(entry.getKey())==entry.getValue()&&entry.getValue().getCount()==1,"Native pruning preserves the exact actual crafted Nursery in its original inventory slot");}check(snail.getUUID().equals(visitor)&&snail.isAlive()&&snail.forageReady()==rest&&snail.nurseryReady()==nursery&&snail.dew(),"Real garden pruning preserves the exact living visitor, reserve and independent deadlines");check(s.overworld().getBlockState(plant).is(FungalGarden.GLOWCAP)&&s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==0,"Pruning preserves the actually harvested perennial");dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PRUNE_AFTER body={} ground={} forageReady={} nurseryReady={} removedShrubs={}",snail.position(),snail.onGround(),snail.forageReady(),snail.nurseryReady(),shrubs.size());});
  }
  private static void craft(ClientGameTestContext c,TestSingleplayerContext w,List<ItemStack> ingredients,Item expected) {
   w.getServer().runOnServer(s -> {for(int i=0;i<4;i++)p(s).inventoryMenu.getSlot(i+1).set(ingredients.get(i));p(s).inventoryMenu.broadcastChanges();});c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).inventoryMenu.getSlot(0).getItem().is(expected)),"Native crafting result is "+expected);c.runOnClient(mc -> mc.gameMode.handleContainerInput(mc.player.inventoryMenu.containerId,0,0,ContainerInput.QUICK_MOVE,mc.player));c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(expected)>0 && p(s).inventoryMenu.getSlot(1).getItem().isEmpty()),"Actual result pickup consumes inputs");
