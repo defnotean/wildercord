@@ -194,7 +194,7 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 
 | Rune | Tier | Attaches to | Does | Cost × |
 |---|---|---|---|---|
-| Amplify | I | effect | +50% power (damage, healing, force, blast) | 1.6 |
+| Amplify | I | effect | +50% power (damage, healing, force, blast) | 1.5 |
 | Extend | I | effect, Zone, Delay | +100% duration | 1.4 |
 | Widen | II | Burst, Zone, Rain, Explode | +50% radius (an effect grows at most 8 times, five Widens) | 1.5 |
 | Quicken | II | Bolt, Delay, Zone | Projectiles twice as fast, delays halved | 1.2 |
@@ -204,7 +204,7 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 | Homing | III | Bolt | Steers toward the nearest enemy within 12 blocks | 1.4 |
 | Chain | III | Bolt, Beam, Touch | After a hit, jumps to up to 3 more enemies within 6 blocks | 1.8 |
 
-Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
+Modifiers stack: `Amplify · Amplify` = +125% power at ×2.25 cost.
 
 ### Links (5)
 

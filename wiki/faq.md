@@ -151,7 +151,7 @@ costs more, and recharges more slowly, for whoever has found it.
 
 ### How long is a cooldown?
 About a second for every 20 mana of the spell's plain cost, never less than half a second and never more than
-20 seconds. Rapid halves it, Vow makes it four times longer, and every spell has its own cooldown. See
+20 seconds. Rapid halves it, Vow makes it five times longer, and every spell has its own cooldown. See
 [Cooldown]({{ '/spellcraft/reading-spells/' | relative_url }}#cooldown).
 
 ### My spell says it "can't be cast".
