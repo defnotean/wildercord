@@ -1621,6 +1621,7 @@ MASTERY_LANG = {
     "screen.wildercord.mastery.card_hint": "Click to choose it",
     "screen.wildercord.mastery.reroll": "Re-roll (%s levels)",
     "screen.wildercord.mastery.reroll.hint": "Draw three other traits instead. Costs %s experience levels, and uses this rank's one change",
+    "screen.wildercord.mastery.changed": "This rank has already used its one change",
     "screen.wildercord.mastery.usage": "How you have used it",
     "screen.wildercord.mastery.usage.none": "Nothing counted yet. Where and how you cast it (in the rain, at night, underground, against the undead...) shapes the traits it is offered",
     "screen.wildercord.mastery.usage.line": "%s: %s%%",
