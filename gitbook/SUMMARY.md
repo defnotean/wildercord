@@ -109,6 +109,7 @@
   * [Cinder Bailiffs and Ferns](world/cinder-bailiffs.md)
   * [Tideward Crossing Kit](world/tideward-crossing-kit.md)
   * [Siltcrest Bittern](world/siltcrest-bittern.md)
+  * [Mossveil Dormice](world/mossveil-dormice.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

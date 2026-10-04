@@ -227,9 +227,19 @@
       "dev.wildercord.aura.world.AuraBeastDenseAttackTest",
       "dev.wildercord.aura.world.GaleclawMealCallbackTest",
       "dev.wildercord.aura.world.AuraRawTypedQueryTest",
-      "dev.wildercord.aura.world.AuraBeastProvenanceTest"
+      "dev.wildercord.aura.world.AuraBeastProvenanceTest",
+      "dev.wildercord.wildlife.MossveilCompanionTest",
+      "dev.wildercord.wildlife.MossveilCowlTest",
+      "dev.wildercord.wildlife.MossveilCallbackTest",
+      "dev.wildercord.wildlife.MossveilLifecycleTest",
+      "dev.wildercord.wildlife.MossveilHabitatTest",
+      "dev.wildercord.wildlife.MossveilPresentationTest",
+      "dev.wildercord.wildlife.MossveilClaimExpiryTest",
+      "dev.wildercord.wildlife.MossveilRepairBreakTest",
+      "dev.wildercord.wildlife.MossveilJointHomeTest"
     ]
   },
+  "mixins": ["wildercord.mossveil-gametest.mixins.json"],
   "depends": {
     "wildercord": "*"
   }

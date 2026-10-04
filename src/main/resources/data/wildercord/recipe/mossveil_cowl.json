@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:moonreed_floss",
+    "wildercord:dried_glowcap_gills",
+    "wildercord:mycelial_dew"
+  ],
+  "result": {
+    "id": "wildercord:mossveil_cowl",
+    "count": 1
+  }
+}

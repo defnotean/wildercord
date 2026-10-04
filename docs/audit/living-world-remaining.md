@@ -6,10 +6,10 @@ Current completion audit against the active goal and docs/LIVING_WORLD_ROADMAP.m
 
 | Target | Accepted additions | Remaining |
 |---|---|---|
-|12 creatures|9: Buried Keeper, Stonehorn, Galeclaw, Lantern Newt, Reedback Crab, Sporeback Snail, Rootmolt Strider, Cinder Bailiff, Siltcrest Bittern|3 purposeful species; strengthen peaceful/rare wildlife, another boss and a useful companion mix|
+|12 creatures|10: Buried Keeper, Stonehorn, Galeclaw, Lantern Newt, Reedback Crab, Sporeback Snail, Rootmolt Strider, Cinder Bailiff, Siltcrest Bittern, Mossveil Dormouse|2 purposeful species; strengthen peaceful/rare wildlife, another boss and a useful companion mix|
 |4 complete ecosystems|Highland, wetland, fungal and ember foundations;0 fully accepted|Finish connected habitat/food/shelter/weather/magic relationships, natural observation and population/performance gates in all four|
 |6 new locations|2 conservative architectural credits: Sword Tomb and Mara's Drainhouse|4 further distinct locations; hosted tournament remains separate encounter evidence|
-|At least36 functional items|27: relic2/equipment4/tools5/placeables7/materials9|Category minima require6 relics+4 equipment+1 tool, at least11 further items and38 total; extra placeables do not replace missing categories|
+|At least36 functional items|28: relic2/equipment5/tools5/placeables7/materials9|Category minima require6 relics+3 equipment+1 tool, at least10 further items and38 total; extra placeables do not replace missing categories|
 |12 abilities|3: Unity, Basinfill and Root Carry|9|
 |18 signature fusions|18 new authored signatures:6 field+12 expedition|Numeric target met; all supported pairing/delivery/lifecycle and real multiplayer acceptance still open|
 |24 discoverable lore texts|15, including3 Nursery and3 Drainhouse texts|9 plus broader discovery/journal integration|
@@ -19,7 +19,7 @@ Current runtime contains370 runes/40 signatures/95 named fused recipes. Other is
 
 ## Visual identity and every ability
 
-Finish an asset-by-asset comparison with the strongest existing materials, silhouettes, shading and motion. The129-page illustrated guide/GitBook validates, but validation does not prove every chapter/interface readable in game across discovery states and GUI scales. Native milestone galleries retain supplied versus earned versus natural scene provenance.
+Finish an asset-by-asset comparison with the strongest existing materials, silhouettes, shading and motion. The130-page illustrated guide/GitBook validates, but validation does not prove every chapter/interface readable in game across discovery states and GUI scales. Native milestone galleries retain supplied versus earned versus natural scene provenance.
 
 Every effect needs a complete authored preparation, release/travel, impact, aftermath and sound lifecycle. Prior206-identity/seven-family moving-body contracts and18 new signature gates are scoped stage evidence. Life31 identities (30 existing actual outcomes plus dedicated Root Carry ownership) have focused owner/settings/quality/geometry checks; this does not complete all370 runes, all modifiers, ranks, links or deliveries. Continue void/time/arcane/blood/cross-family exceptions, self/summon/beam/rain/trap/ward/construct behavior, reflection/homing, mixed uncovered fallback, rear-circle camera coverage, reduced settings, shaders and concurrent clients. Existing Aura standards/fractures/Soar wings need whole-roster lifecycle/readability acceptance.
 
@@ -68,3 +68,5 @@ Latest wetland source fixes: build13s,1000 units,5392 reproducible paths/128 gui
 Siltcrest milestone: one ninth creature accepted through actual hunt/damage/food/collision/control/habitat/reopen and eight directly viewed native Full/Minimal model captures. See siltcrest-milestone.md for historical failures, corrected dry footing and source/visual limits. The actual latest Linux Build37187624738 at968aece4 failed BelowkeeperEquipmentTest fresh warning; its scoped fixture correction passes57s with unchanged saved-rest proof. Earlier01889 Build37186920756 failed RootmoltCounterTest contact without detailed contact geometry. Full Linux gameplay remains open.
 
 Latest Siltcrest package: build15s/1000 units,5400 reproducible generated paths,129 guide pages and checked development JAR in artifacts/review/siltcrest-bittern. Mixed wetland measurement passes1m16s against corrected Mud footing with two400-tick raw windows, actual sparse catch/reed opening, stable8/40 creature populations and535 saturated bird refusal observations. See mixed-wetland-measurement.md; this local supplied workload does not close natural distribution, sustained populations or complete ecosystems.
+
+Mossveil companion/cowl now passes nine focused native suites, including real6000-tick claim expiry, two-home usability, repairs/breakage, saved ownership/rest, callback guards and finite Full/Minimal presentation. See [mossveil-milestone.md](mossveil-milestone.md). Final build1003units, checked development JAR and130guidepages; broader fungal natural distribution/ecosystem acceptance remains open. The full Linux physical-contact fixture failure has a42s actual-client approach correction; see [rootmolt-native-contact.md](rootmolt-native-contact.md). Await the next full CI result before claiming cross-platform acceptance.

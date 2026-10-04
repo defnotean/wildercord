@@ -13,6 +13,8 @@ public final class WildlifeClient {
   RootmoltRenderer.init();
   CinderBailiffRenderer.init();
   SiltcrestRenderer.init();
+  MossveilDormouseRenderer.init();
+  dev.wildercord.client.fx.MossveilFilterClient.init();
   ModelLayerRegistry.registerModelLayer(WildlifeRenderers.REEDBACK_CRAB,ReedbackCrabModel::createLayer);
   EntityRendererRegistry.register(dev.wildercord.wildlife.ReedbackContent.CRAB,WildlifeRenderers.ReedbackCrabRenderer::new);
 		ModelLayerRegistry.registerModelLayer(WildlifeRenderers.LANTERN_NEWT,LanternNewtModel::createLayer);

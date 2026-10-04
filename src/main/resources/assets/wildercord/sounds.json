@@ -6261,5 +6261,47 @@
     "sounds": [
       "wildercord:kit/bittern/bittern_rustle"
     ]
+  },
+  "mossveil_curl": {
+    "subtitle": "subtitles.wildercord.kit.mossveil.curl",
+    "sounds": [
+      "wildercord:kit/mossveil/mossveil_curl"
+    ]
+  },
+  "mossveil_filter": {
+    "subtitle": "subtitles.wildercord.kit.mossveil.filter",
+    "sounds": [
+      "wildercord:kit/mossveil/mossveil_filter"
+    ]
+  },
+  "mossveil_idle": {
+    "subtitle": "subtitles.wildercord.kit.mossveil.idle",
+    "sounds": [
+      "wildercord:kit/mossveil/mossveil_idle"
+    ]
+  },
+  "mossveil_nibble": {
+    "subtitle": "subtitles.wildercord.kit.mossveil.nibble",
+    "sounds": [
+      "wildercord:kit/mossveil/mossveil_nibble"
+    ]
+  },
+  "mossveil_sniff": {
+    "subtitle": "subtitles.wildercord.kit.mossveil.sniff",
+    "sounds": [
+      "wildercord:kit/mossveil/mossveil_sniff"
+    ]
+  },
+  "mossveil_step": {
+    "subtitle": "subtitles.wildercord.kit.mossveil.step",
+    "sounds": [
+      "wildercord:kit/mossveil/mossveil_step"
+    ]
+  },
+  "mossveil_trust": {
+    "subtitle": "subtitles.wildercord.kit.mossveil.trust",
+    "sounds": [
+      "wildercord:kit/mossveil/mossveil_trust"
+    ]
   }
 }

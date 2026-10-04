@@ -179,3 +179,7 @@ Three events happen on their own in the Overworld, near players. They're covered
 ## Beside the cooled fronds
 
 [Cinder Bailiffs and Ferns](cinder-bailiffs.md) explains a dry woodland plant you can craft in an older world, a territorial three-vent animal, retained-root harvesting, and actual Fire, Water, Life and Frost interactions.
+
+## A quiet fungal companion
+
+[Mossveil Dormice](mossveil-dormice.md) explains three paid Gills, one saved owner, ordinary curl/follow controls, and a finite helmet-slot poison filter beside an actual supported Nursery.

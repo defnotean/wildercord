@@ -1731,6 +1731,27 @@
     "monster_ooze_split": {
       "part": "monster"
     },
+    "mossveil_curl": {
+      "part": "mossveil"
+    },
+    "mossveil_filter": {
+      "part": "mossveil"
+    },
+    "mossveil_idle": {
+      "part": "mossveil"
+    },
+    "mossveil_nibble": {
+      "part": "mossveil"
+    },
+    "mossveil_sniff": {
+      "part": "mossveil"
+    },
+    "mossveil_step": {
+      "part": "mossveil"
+    },
+    "mossveil_trust": {
+      "part": "mossveil"
+    },
     "nextsignature_blood_escrow_cue": {
       "part": "nextsignature"
     },

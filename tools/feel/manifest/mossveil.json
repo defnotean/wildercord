@@ -1,0 +1,54 @@
+{
+  "events": {
+    "mossveil_curl": {
+      "attenuation": 0,
+      "files": [
+        "kit/mossveil/mossveil_curl"
+      ],
+      "subtitle": "mossveil.curl"
+    },
+    "mossveil_filter": {
+      "attenuation": 0,
+      "files": [
+        "kit/mossveil/mossveil_filter"
+      ],
+      "subtitle": "mossveil.filter"
+    },
+    "mossveil_idle": {
+      "attenuation": 0,
+      "files": [
+        "kit/mossveil/mossveil_idle"
+      ],
+      "subtitle": "mossveil.idle"
+    },
+    "mossveil_nibble": {
+      "attenuation": 0,
+      "files": [
+        "kit/mossveil/mossveil_nibble"
+      ],
+      "subtitle": "mossveil.nibble"
+    },
+    "mossveil_sniff": {
+      "attenuation": 0,
+      "files": [
+        "kit/mossveil/mossveil_sniff"
+      ],
+      "subtitle": "mossveil.sniff"
+    },
+    "mossveil_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/mossveil/mossveil_step"
+      ],
+      "subtitle": "mossveil.step"
+    },
+    "mossveil_trust": {
+      "attenuation": 0,
+      "files": [
+        "kit/mossveil/mossveil_trust"
+      ],
+      "subtitle": "mossveil.trust"
+    }
+  },
+  "part": "mossveil"
+}

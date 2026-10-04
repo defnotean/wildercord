@@ -840,6 +840,9 @@ def write_lang(runes):
     import siltcrest_art
     lang.update(siltcrest_art.LANG)
     siltcrest_art.write(ASSETS.parent.parent)
+    import mossveil_art
+    lang.update(mossveil_art.LANG)
+    mossveil_art.write(sys.modules[__name__])
     import rootmolt_art
     lang.update(rootmolt_art.LANG)
     rootmolt_art.write(sys.modules[__name__])
