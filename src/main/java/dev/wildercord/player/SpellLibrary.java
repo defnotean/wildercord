@@ -36,7 +36,9 @@ public final class SpellLibrary {
  }
  public static int load(ServerPlayer p,String name,int slot) {
   if(slot<0||slot>=dev.wildercord.gear.SpellSlots.ALL)return fail(p,"message.wildercord.library_locked");
-  var build=list(p).stream().filter(b->b.name.equalsIgnoreCase(name)).findFirst();if(build.isEmpty())return fail(p,"message.wildercord.library_missing");
+  // Matched as save stored it: cleaned, so a stray space or an over-long name finds the build it saved.
+  String key=SpellNames.clean(name);
+  var build=list(p).stream().filter(b->b.name.equalsIgnoreCase(key)).findFirst();if(build.isEmpty())return fail(p,"message.wildercord.library_missing");
   var tier=Spellbooks.tier(p);if(tier==null||!Gear.spellOpen(p,tier,slot))return fail(p,"message.wildercord.library_locked");
   if(build.get().runes.size()>tier.sockets)return fail(p,"message.wildercord.library_fit");
   // Validate every rune before modifying either the sequence or its name. Missing add-on runes remain saved.
@@ -48,8 +50,9 @@ public final class SpellLibrary {
   p.sendSystemMessage(Component.translatable("message.wildercord.library_loaded",build.get().name,slot+1));return 1;
  }
  public static int delete(ServerPlayer p,String name) {
-  var next=new ArrayList<>(list(p));if(!next.removeIf(b->b.name.equalsIgnoreCase(name)))return fail(p,"message.wildercord.library_missing");
-  p.setAttached(BUILDS,List.copyOf(next));p.sendSystemMessage(Component.translatable("message.wildercord.library_deleted",name));return 1;
+  String key=SpellNames.clean(name);
+  var next=new ArrayList<>(list(p));if(!next.removeIf(b->b.name.equalsIgnoreCase(key)))return fail(p,"message.wildercord.library_missing");
+  p.setAttached(BUILDS,List.copyOf(next));p.sendSystemMessage(Component.translatable("message.wildercord.library_deleted",key));return 1;
  }
  public static int show(ServerPlayer p) {p.sendSystemMessage(Component.translatable("message.wildercord.library_list",list(p).size()));
   for(var build:list(p))p.sendSystemMessage(Component.translatable("message.wildercord.library_row",build.name,build.runes.size()));return 1;
