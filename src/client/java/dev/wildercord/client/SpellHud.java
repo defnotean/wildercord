@@ -156,6 +156,10 @@ public final class SpellHud {
 	/** On leaving a world: the next one's mana bar starts from its own mana, not glides from this one's. */
 	static void forget() {
 		shownMana = -1;
+		// A cooldown left running in the last world mustn't ping as "ready" on joining the next.
+		cueSpell = -1;
+		longestWait = 0;
+		readyAt = Long.MIN_VALUE;
 		AuraHud.forget();
 	}
 
