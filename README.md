@@ -252,7 +252,7 @@ learn it.
 | `R` | Cast the selected spell. **Hold** to charge it, then let go |
 | `V` | Select the next spell. **Hold** for the spell wheel: point and let go, or let go first and it stays open (click a spell, press its number, or Esc) |
 | `K` | Open the Cord screen |
-| *(unbound)* | "Cast spell 1-4": bind these to cast a spell directly |
+| *(unbound)* | "Cast spell 1-5": bind these to cast a spell directly (spell 5 is the Tome of the Fifth Page's) |
 | Sneak + stand still | Meditate: double mana regeneration, and form a Heart Circle when ready |
 
 In the Cord screen: click or drag runes from the Codex onto a spell, drag runes to reorder them,
@@ -269,7 +269,7 @@ Commands (operators, permission level 2):
 |---|---|
 | `/wildercord learnall` | Learn every rune |
 | `/wildercord learn <rune>` | Learn one rune, e.g. `stasis` or `wildercord:stasis` (an add-on's runes by their full id) |
-| `/wildercord spell <1-4> <runes...>` | Thread a spell directly |
+| `/wildercord spell <1-5> <runes...>` | Thread a spell directly |
 | `/wildercord mana` | Refill your mana |
 | `/wildercord circles <0-8>` | Set your Heart Circles |
 | `/wildercord condense <mana>` | Add condensed mana toward the next circle |
