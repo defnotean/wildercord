@@ -47,15 +47,18 @@ public final class AuraExperience {
 		double gained = xp;
 		if (practice) {
 			gained = AuraRules.practice(practised, xp);
-			practised += gained;
+		}
+		int cap = AuraStages.cap(data.stage());
+		boolean waiting = AuraRules.ready(data.xp(), cap);
+		double next = AuraRules.fill(data.xp(), gained, cap);
+		if (practice) {
+			// Only what was really learned uses the allowance: practice while experience waits at a threshold spends none of it.
+			practised += Math.max(0, next - data.xp());
 			if (data.practice() < AuraRules.PRACTICE_CAP && practised >= AuraRules.PRACTICE_CAP) {
 				player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.aura.practice_complete")
 					.withColor(0xE8D8B0));
 			}
 		}
-		int cap = AuraStages.cap(data.stage());
-		boolean waiting = AuraRules.ready(data.xp(), cap);
-		double next = AuraRules.fill(data.xp(), gained, cap);
 		if (next == data.xp() && practised == data.practice()) {
 			return 0;
 		}
