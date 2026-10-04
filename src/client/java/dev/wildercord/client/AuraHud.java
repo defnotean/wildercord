@@ -355,5 +355,6 @@ public final class AuraHud {
 		shown = -1;
 		shownMomentum = 0;
 		lastTier = 0;
+		roseAt = Long.MIN_VALUE / 4;
 	}
 }

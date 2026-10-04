@@ -531,7 +531,7 @@ final class BladePage {
 			int cx = 14 + i * (cw + 4);
 			boolean chosen = id.equals(trait);
 			boolean hover = inside(mx, my, cx, cy, cw, ch);
-			boolean armed = id.equals(traitArmed) && now - traitArmedAt < 60;
+			boolean armed = id.equals(traitArmed) && now >= traitArmedAt && now - traitArmedAt < 60;
 			g.fill(cx, cy, cx + cw, cy + ch, chosen ? 0xFF2E2840 : hover ? 0xFF262036 : 0xFF1A1624);
 			int edge = chosen ? GOLD : armed ? AMBER : hover ? 0xFF000000 | AuraHud.mix(bc, 0x3A3450, 0.4) : 0xFF3A3450;
 			g.fill(cx, cy, cx + cw, cy + 1, edge);
@@ -704,7 +704,7 @@ final class BladePage {
 						return true;
 					}
 					boolean free = b.growth().trait().isEmpty() || b.growth().rechoose();
-					if (!free && !(id.equals(traitArmed) && now - traitArmedAt < 60)) {
+					if (!free && !(id.equals(traitArmed) && now >= traitArmedAt && now - traitArmedAt < 60)) {
 						// Changing one already chosen costs levels: the first click asks, the second pays.
 						traitArmed = id;
 						traitArmedAt = now;
