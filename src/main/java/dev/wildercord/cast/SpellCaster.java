@@ -126,7 +126,7 @@ public final class SpellCaster {
 		}
 		List<RuneDef> runes = activeRunes(book, spell, tier);
 		if(!SoulWeaving.owns(player,runes)){
-			fail(player,Component.literal("This soul weave contains an innate rune that does not belong to your heart."));return;
+			fail(player,Component.translatable("message.wildercord.soul_weave_foreign"));return;
 		}
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		if (runes.isEmpty() || compiled.isEmpty()) {
