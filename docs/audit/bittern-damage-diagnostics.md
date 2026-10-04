@@ -1,0 +1,7 @@
+# Bittern committed-damage diagnostics (2026-10-04)
+
+Linux Build37197174952 at9133844d failed `SiltcrestDamageAdmissionTest` before an instrumented fish received damage. Terminal bird body(5.520057,101,2.033976) was grounded on a bank, idle, with complete pool3, huntReady271 and finished navigation. A nonzero failed-attempt rest establishes that a strike was attempted, not which pre-damage guard refused it. Moving fish can legitimately leave the committed strip during the16-tick coil. This receipt does not justify relaxing that readable counterplay.
+
+The native fixture retains its exact500-tick deadline and all five actual callback mutation modes. It now preserves at most48 phase-transition/periodic observations of actual bird/fish positions, health, water, range, sight, quarry identity and committed position on failure. Reads do not write source AI, poses, prey positions, damage, clocks or resources. The bounded diagnostic history provides stronger future failure evidence without forcing a successful hunt.
+
+The focused diagnostic suite passes53s locally against this change. That is not a reproduction or explanation of the historical Linux miss. Full Linux Build37199727031 at69c6cffa got beyond the earlier Nursery, Bittern and Rootmolt contact entries, then failed `RootmoltControlLifecycleTest` at the original-wound assertion. Full CI acceptance remains open; its later failure is a separate investigation. Logs remain under `artifacts/drafts/ci-913-bittern`.
