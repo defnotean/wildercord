@@ -713,8 +713,6 @@ If your experience stops at about **40**, finish training on real hostile foes. 
 
 For stillness, crouch without moving on solid, dry ground with an aura weapon in your main hand. After the breathing stance settles, keep holding it until the trial completes. Movement, losing the valid training terrain or getting struck interrupts the trial. A qualifying waterfall is a falling column at least six blocks tall within three blocks of your dry footing; a summit requires mountain biome, open sky and surrounding terrain that drops away. Ordinary high platforms and source pools do not count. Training grounds require the server's training-ground feature to be enabled.
 
-The progression hint and practice-limit notice are new in 0.10.0-alpha.
-
 You grow by fighting well: landing full swings on real foes, more when you're in danger (low on health, against a crowd,
 near a boss, in a dungeon), against bosses and against foes stronger than you. Nothing comes from spam, and a Training
 Dummy only teaches a little. Fighting steadily, **Flow** takes about half an hour of play, **Edge** about two hours,
@@ -843,9 +841,8 @@ any spell does. Players have a stance too, so pressure and guarding pay off, and
 The top stages stay fair between players: Intent presses on another player only if their stage is lower (or, without aura,
 their health is), as a shadow at the edge of their sight and a slight slow; a player inside a foe's Dominion hits only a
 little weaker and is slowed less than a creature; and a Dominion's chain onto a player is aura off the blade, which meets
-their spell defences. Server owners can turn aura off or tune it, Intent against players included.
-[Defending Against Magic]({{ '/progression/defence/' | relative_url }})). A forged glaive's stronger slash is held to the
-same cap. Server owners can turn aura off or tune it.
+their spell defences. A forged glaive's stronger slash is held to the same cap. Server owners can turn aura off or tune it,
+Intent against players included.
 
 - **A held guard catches a slash** coming at you from in front: it halves it, and nothing behind you is cut.
 - **A perfect guard sends a slash back** at whoever loosed it, as your own.
