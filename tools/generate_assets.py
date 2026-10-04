@@ -1867,6 +1867,7 @@ NEW_LANG = {
     "message.wildercord.reborn": "Reborn in flame!",
     "message.wildercord.innate": "Your innate rune awakens: %s. It's in your Codex, and it grows with every circle.",
     "message.wildercord.innate_item": "An innate rune can't be learned from an item",
+    "message.wildercord.innate_other_heart": "This innate magic belongs to a different heart",
     "message.wildercord.debt_forgiven": "Borrowed time repaid in full",
     "message.wildercord.nothing_borrowed": "No hurt to borrow back",
     "message.wildercord.borrowed": "Borrowed %s health. Slay something, or it comes back",
