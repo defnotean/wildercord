@@ -577,6 +577,7 @@ public final class Aura {
 			FIGHTING.remove(id);
 			KEYS.forget(id);
 			AuraCombat.forget(id);
+			AuraBreakthroughs.forget(id);
 			AuraMethods.forget(id);
 			AuraStep.forget(id);
 			AuraIntent.forget(id);

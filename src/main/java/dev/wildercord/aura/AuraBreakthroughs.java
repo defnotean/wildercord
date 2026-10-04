@@ -61,6 +61,12 @@ public final class AuraBreakthroughs {
 
 	static void init() {}
 
+	/** A player left: stillness starts over and their trials' foes are let go (an unbroken stance can't span a logout). */
+	static void forget(UUID id) {
+		FOES.remove(id);
+		STILL.remove(id);
+	}
+
 	static void clear() {
 		FOES.clear();
 		STILL.clear();
