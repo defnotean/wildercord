@@ -16,6 +16,14 @@ Install the same build on the server and every client. New blocks, items, entiti
 - Repaired garbled dashes and multiplication signs in the Life outcomes, Mossveil and Fusion Altar guide pages, and missing spaces before numbers in the changelog and guide.
 - Split the native client test job into four ordered shards with a longer limit. The full roster takes several hours and never completed within one 90-minute CI job.
 
+### Art
+
+- Redrew all art added since 0.9.1 in the established Wildercord style: 16×16 item icons with a dark outline and top-left light (previously 32×32), crisp vanilla-resolution block textures, and repainted Cinder Bailiff, Rootmolt Strider, Siltcrest Bittern, Mossveil Dormouse and Sporeback Snail skins on their unchanged models. Spawn eggs share the standard egg silhouette.
+- The 21 new runes (18 signatures, Root Carry, Watchweft and Manabraid) now use the standard element-coloured rune stones with their own pictograms; the signatures animate like the established ones.
+- The Reed Rattle, Cave Breather and Mara's Empty Bell are flat inventory icons like every other item; Rook's Rainshield and the Bank Surveyor's Line keep their 3D held models with repainted materials. Cinder Ferns are 16×16 crossed plants.
+- Earth, Life, Void and Camp Concord material particles are greyscale so each spell's colour tints them cleanly; Watchweft, Manabraid and Root Carry circle tiles follow the standard rune-circle pattern.
+- Updated the guide's rune icons and recipe pictures for the new art, and fixed the Cinder Fern recipe picture, which showed a missing-texture square.
+
 ### Living-world additions
 
 - Added **Mara's Drainhouses**: three-room underground waterkeeping stations generated in newly explored lush and dripstone caves, with an optional investigation (snail dew, a witnessed Rootmolt meal and a counter), three ledger lore books, a once-per-player **Mara's Empty Bell** that interrupts one Rootmolt's warning or hold, and **Rootbound Greaves** that let a still, crouched wearer deny one restraint at a wear and rest cost.

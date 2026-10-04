@@ -275,6 +275,12 @@ def icon(item, rune=None, potion=None, kind="potion"):
         img = _dyed_layers(name)
     else:
         sprite = _vanilla(f"item/{name}") if ns == "minecraft" else _mod(f"item/{name}")
+        if sprite is None and ns == "wildercord":
+            # A flat item whose sprite is a block texture (a Cinder Fern's frond) names it in its item model.
+            model = MOD_TEXTURES.parent / f"models/item/{name}.json"
+            layer = json.loads(model.read_text(encoding="utf-8")).get("textures", {}).get("layer0") if model.exists() else None
+            if layer and layer.startswith("wildercord:"):
+                sprite = _mod(layer.split(":", 1)[1])
         if sprite is not None:
             img = _flat(sprite)
         else:

@@ -138,7 +138,7 @@ separate 29-effect Life acceptance run, and the parent owns final generation/bui
 - Presentation: `FieldFusionForms`, Fire/Frost/Earth/Wind family delegates and FlightBodies coverage.
   The Life agent authored Ashen Mercy in LifeForms and the Life flight roster. The parent integrated
   Canvas field-body selection and generic-layer cleanup.
-- Assets: `tools/fieldfusion_art.py`, `tools/feel/fieldfusion.py`, its manifest, six rune textures,
+- Assets: `tools/signature_art.py` (rune pictograms since 0.10.0; `tools/fieldfusion_art.py` was retired), `tools/feel/fieldfusion.py`, its manifest, six rune textures,
   twelve generated OGG cues, and six unique choreography entries.
 - Tests: FieldFusionRulesTest, FieldFusionTest, FieldFusionPresentationTest and expanded existing
   fusion/choreography/family roster expectations.

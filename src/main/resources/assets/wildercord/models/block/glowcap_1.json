@@ -20,58 +20,22 @@
       ],
       "faces": {
         "up": {
-          "texture": "#stem",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#stem"
         },
         "down": {
-          "texture": "#stem",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#stem"
         },
         "north": {
-          "texture": "#stem",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#stem"
         },
         "south": {
-          "texture": "#stem",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#stem"
         },
         "east": {
-          "texture": "#stem",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#stem"
         },
         "west": {
-          "texture": "#stem",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#stem"
         }
       }
     },
@@ -88,58 +52,22 @@
       ],
       "faces": {
         "up": {
-          "texture": "#gills",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#gills"
         },
         "down": {
-          "texture": "#gills",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#gills"
         },
         "north": {
-          "texture": "#gills",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#gills"
         },
         "south": {
-          "texture": "#gills",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#gills"
         },
         "east": {
-          "texture": "#gills",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#gills"
         },
         "west": {
-          "texture": "#gills",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#gills"
         }
       }
     },
@@ -156,58 +84,22 @@
       ],
       "faces": {
         "up": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "down": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "north": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "south": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "east": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "west": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         }
       }
     },
@@ -224,58 +116,22 @@
       ],
       "faces": {
         "up": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "down": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "north": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "south": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "east": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         },
         "west": {
-          "texture": "#cap",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+          "texture": "#cap"
         }
       }
     }
