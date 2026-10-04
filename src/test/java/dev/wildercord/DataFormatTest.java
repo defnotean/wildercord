@@ -266,7 +266,7 @@ class DataFormatTest {
                     var state=feature.getAsJsonObject("to_place");allowed(state,file+" state","id","properties");required(state,file,"id");
                 }
                 // These features use MapCodec.unit; native tests load their registries and execute placement.
-                case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site" -> allowed(feature,file,"type");
+                case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site", "wildercord:belowkeeper_drainhouse" -> allowed(feature,file,"type");
                 default -> fail(file+": unsupported vegetation feature "+feature);
             }
 		}

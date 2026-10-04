@@ -6147,5 +6147,29 @@
     "sounds": [
       "wildercord:kit/rootmolt/rootmolt_warn"
     ]
+  },
+  "belowkeeper_anchor": {
+    "subtitle": "subtitles.wildercord.kit.drainhouse.anchor",
+    "sounds": [
+      "wildercord:kit/belowkeeper/belowkeeper_anchor"
+    ]
+  },
+  "belowkeeper_bell": {
+    "subtitle": "subtitles.wildercord.kit.drainhouse.bell",
+    "sounds": [
+      "wildercord:kit/belowkeeper/belowkeeper_bell"
+    ]
+  },
+  "belowkeeper_read": {
+    "subtitle": "subtitles.wildercord.kit.drainhouse.read",
+    "sounds": [
+      "wildercord:kit/belowkeeper/belowkeeper_read"
+    ]
+  },
+  "belowkeeper_restore": {
+    "subtitle": "subtitles.wildercord.kit.drainhouse.restore",
+    "sounds": [
+      "wildercord:kit/belowkeeper/belowkeeper_restore"
+    ]
   }
 }

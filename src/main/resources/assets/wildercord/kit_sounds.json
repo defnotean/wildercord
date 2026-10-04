@@ -867,6 +867,18 @@
     "beat_release": {
       "part": "neutral"
     },
+    "belowkeeper_anchor": {
+      "part": "belowkeeper"
+    },
+    "belowkeeper_bell": {
+      "part": "belowkeeper"
+    },
+    "belowkeeper_read": {
+      "part": "belowkeeper"
+    },
+    "belowkeeper_restore": {
+      "part": "belowkeeper"
+    },
     "blood_blade_fall": {
       "part": "blood"
     },

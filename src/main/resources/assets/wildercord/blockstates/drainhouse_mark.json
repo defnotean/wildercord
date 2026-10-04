@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "kind=0,restored=false": {
+      "model": "wildercord:block/drainhouse_mark_0_0"
+    },
+    "kind=0,restored=true": {
+      "model": "wildercord:block/drainhouse_mark_0_1"
+    },
+    "kind=1,restored=false": {
+      "model": "wildercord:block/drainhouse_mark_1_0"
+    },
+    "kind=1,restored=true": {
+      "model": "wildercord:block/drainhouse_mark_1_1"
+    },
+    "kind=2,restored=false": {
+      "model": "wildercord:block/drainhouse_mark_2_0"
+    },
+    "kind=2,restored=true": {
+      "model": "wildercord:block/drainhouse_mark_2_1"
+    }
+  }
+}

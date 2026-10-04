@@ -27,6 +27,33 @@ def skin():
  s.box(82,48,1,1,1,lambda f,x,y,z,tx,ty:(197,150,75) if f=='front' else (45,37,30))
  return s.image()
 
+def spawn_egg():
+ """Rootmolt egg: overlapping pale plates, bark seams, gill slits and six root-foot marks."""
+ from PIL import Image
+ im=Image.new('RGBA',(16,16),(0,0,0,0));px=im.load()
+ rows={2:(7,8),3:(6,9),4:(5,10),5:(4,11),6:(4,11),7:(3,12),8:(3,12),9:(3,12),10:(3,12),11:(3,12),12:(4,11),13:(4,11),14:(6,9)}
+ inside={(x,y) for y,(left,right) in rows.items() for x in range(left,right+1)}
+ for x,y in inside:
+  edge=any((x+dx,y+dy) not in inside for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)))
+  if edge:c=(49,42,34)
+  else:
+   plate=(y-3)//3;c=(165,172,137) if plate%2==0 else (126,141,111)
+   if y in (6,9,12):c=(93,73,52)
+   if x in (5,9) and y not in (6,9,12):c=(201,181,125)
+   c=shade(c,.78+(12-x)*.035+(9-y)*.016)
+  px[x,y]=(*c,255)
+ # Offset plate rims remain readable at the real16px inventory size.
+ for x,y in [(5,6),(6,6),(7,5),(8,5),(9,6),(10,6),(4,9),(5,9),(6,8),(7,8),(8,9),(9,9),(4,12),(5,12),(6,11),(7,11),(8,12),(9,12)]:
+  if (x,y) in inside:px[x,y]=(70,61,43,255)
+ for x,y in [(5,7),(6,7),(7,6),(8,6),(5,10),(6,9),(7,9),(6,12),(7,12)]:
+  if (x,y) in inside:px[x,y]=(214,206,148,255)
+ # Exposed gills beside the copper-edged shoulder: asymmetric organism detail.
+ for x,y,c in [(9,4,(216,183,112)),(10,5,(168,121,70)),(10,7,(205,181,143)),(11,7,(95,75,66)),(10,8,(193,165,129)),(11,8,(91,75,66)),(5,5,(230,219,166)),(6,4,(206,207,157))]:
+  if (x,y) in inside:px[x,y]=(*c,255)
+ for x,y in [(5,10),(7,11),(9,10),(5,12),(7,13),(9,12)]:
+  px[x,y]=(198,175,116,255)
+ return im
+
 LANG={
  'entity.wildercord.rootmolt_strider':'Rootmolt Strider',
  'item.wildercord.rootmolt_strider_spawn_egg':'Rootmolt Strider Spawn Egg',
@@ -47,6 +74,7 @@ def write(g):
   d.line(path,fill='#40352B',width=3);d.line(path,fill='#AC9368',width=1)
  for x,y in [(4,7),(12,8),(8,12)]:d.line((x,y,x+3,y-2),fill='#DBC492')
  g.save(im,g.ASSETS/'textures/mob_effect/root_tether.png')
- g.write_json(g.ASSETS/'models/item/rootmolt_strider_spawn_egg.json',{'parent':'minecraft:item/template_spawn_egg'})
+ g.save(spawn_egg(),g.ASSETS/'textures/item/rootmolt_strider_spawn_egg.png')
+ g.write_json(g.ASSETS/'models/item/rootmolt_strider_spawn_egg.json',{'parent':'minecraft:item/generated','textures':{'layer0':'wildercord:item/rootmolt_strider_spawn_egg'}})
  g.write_json(g.ASSETS/'items/rootmolt_strider_spawn_egg.json',{'model':{'type':'minecraft:model','model':'wildercord:item/rootmolt_strider_spawn_egg'}})
  g.write_json(g.DATA/'loot_table/entities/rootmolt_strider.json',{'type':'minecraft:entity','pools':[]})

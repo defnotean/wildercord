@@ -1,0 +1,33 @@
+{
+  "events": {
+    "belowkeeper_anchor": {
+      "attenuation": 0,
+      "files": [
+        "kit/belowkeeper/belowkeeper_anchor"
+      ],
+      "subtitle": "drainhouse.anchor"
+    },
+    "belowkeeper_bell": {
+      "attenuation": 0,
+      "files": [
+        "kit/belowkeeper/belowkeeper_bell"
+      ],
+      "subtitle": "drainhouse.bell"
+    },
+    "belowkeeper_read": {
+      "attenuation": 0,
+      "files": [
+        "kit/belowkeeper/belowkeeper_read"
+      ],
+      "subtitle": "drainhouse.read"
+    },
+    "belowkeeper_restore": {
+      "attenuation": 0,
+      "files": [
+        "kit/belowkeeper/belowkeeper_restore"
+      ],
+      "subtitle": "drainhouse.restore"
+    }
+  },
+  "part": "belowkeeper"
+}

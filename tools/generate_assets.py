@@ -834,6 +834,9 @@ def write_lang(runes):
     import rootmolt_art
     lang.update(rootmolt_art.LANG)
     rootmolt_art.write(sys.modules[__name__])
+    import belowkeeper_art
+    lang.update(belowkeeper_art.LANG)
+    belowkeeper_art.write(sys.modules[__name__])
     import reed_rattle_art
     lang.update(reed_rattle_art.LANG)
     reed_rattle_art.write(sys.modules[__name__])

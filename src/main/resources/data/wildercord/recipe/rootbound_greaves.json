@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_boots",
+    "minecraft:copper_ingot",
+    "wildercord:dried_glowcap_gills",
+    "wildercord:mycelial_dew"
+  ],
+  "result": {
+    "id": "wildercord:rootbound_greaves",
+    "count": 1
+  }
+}

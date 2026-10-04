@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "wildercord:item/rootmolt_strider_spawn_egg"
+    "layer0": "wildercord:item/drainhouse_threshold"
   }
 }

@@ -13,6 +13,10 @@
             "dev.wildercord.client.fx.FieldFusionPresentationTest",
             "dev.wildercord.wildlife.FungalNurseryTest",
             "dev.wildercord.wildlife.RootmoltEcologyTest",
+            "dev.wildercord.wildlife.DrainhouseAcquisitionTest",
+            "dev.wildercord.wildlife.BelowkeeperEquipmentTest",
+            "dev.wildercord.wildlife.DrainhouseTerrainTest",
+            "dev.wildercord.wildlife.DrainhousePlacementTest",
             "dev.wildercord.wildlife.RootmoltCounterTest",
             "dev.wildercord.wildlife.RootmoltControlLifecycleTest",
             "dev.wildercord.wildlife.RootmoltSidestepTest",
@@ -178,7 +182,9 @@
 			"dev.wildercord.command.LearnAllFusionTest",
 			"dev.wildercord.cast.GrowDoublePlantPermissionTest",
 			"dev.wildercord.cast.GrowSeagrassPermissionTest",
-			"dev.wildercord.cast.GrowMossCarpetPermissionTest"
+			"dev.wildercord.cast.GrowMossCarpetPermissionTest",
+			"dev.wildercord.wildlife.DrainhouseTerrainFitTest",
+			"dev.wildercord.wildlife.BelowkeeperPresentationTest"
 		]
 	},
 	"depends": {
