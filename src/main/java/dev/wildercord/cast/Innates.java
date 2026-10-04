@@ -711,6 +711,9 @@ public final class Innates {
 					it.remove();
 					if (!body.isRemoved()) {
 						burst(level, image);
+					} else {
+						// Gone without bursting (its chunk unloaded, a command): what it soaked goes with it.
+						SOAKED.remove(body.getUUID());
 					}
 					continue;
 				}
