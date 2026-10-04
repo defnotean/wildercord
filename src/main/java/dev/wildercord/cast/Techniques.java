@@ -512,7 +512,12 @@ final class Techniques {
 				Fx.sound(cast.level, caster.position(), SoundEvents.PLAYER_HURT, 0.6F, 0.8F);
 			}
 		}
-		long until = cast.level.getGameTime() + DECREE_CONDEMNED_TICKS;
+		long now = cast.level.getGameTime();
+		long until = now + DECREE_CONDEMNED_TICKS;
+		// A condemned creature that's never struck again is only dropped here: so the table can't grow for ever.
+		if (CONDEMNED.size() > 512) {
+			CONDEMNED.values().removeIf(old -> old.until < now);
+		}
 		for (LivingEntity t : harmed) {
 			CONDEMNED.put(t.getUUID(), new Condemned(caster.getUUID(), until, DECREE_HITS));
 			Spirits.hold(t, ticks);

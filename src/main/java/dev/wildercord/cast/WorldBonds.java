@@ -61,6 +61,11 @@ public final class WorldBonds {
 		SpellMasteryApi.addOfferSource((caster, key, spell, rank) -> quirked(caster.level().getServer(), spell)
 			? List.of(new MasteryTraits.Weighted(WORLD_TUNED.id(), WORLD_TUNED_WEIGHT)) : List.of());
 		WorldResonances.addWakeCondition("wildercord:ley_crossing", WorldBonds::wakesHere);
+		// Each caster's rests go with the server, as the other per-player tables do.
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			MARKED.clear();
+			HINTED.clear();
+		});
 	}
 
 	/** Lingering Mark: a small residue of the spell's element where it lands, or a glimmer when none can be left. */

@@ -39,7 +39,12 @@ final class SurgeArcs {
 		Charge c = new Charge();
 		c.cast = cast;
 		c.power = power;
-		c.until = cast.level.getGameTime() + ticks;
+		long now = cast.level.getGameTime();
+		c.until = now + ticks;
+		// A charged creature that never strikes is only dropped here: so the table can't grow for ever.
+		if (CHARGED.size() > 256) {
+			CHARGED.values().removeIf(old -> old.until < now);
+		}
 		CHARGED.put(t.getUUID(), c);
 	}
 
