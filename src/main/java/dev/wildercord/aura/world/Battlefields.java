@@ -114,7 +114,7 @@ public final class Battlefields {
 				var book=book(rite.kind());if (!p.getInventory().add(book)) p.drop(book,false,net.minecraft.util.Prediction.SERVER_ONLY);
 				AuraFx.groundScar(rite.level(),Vec3.atCenterOf(rite.at()).add(0,-0.5,0),2.8,100,2);
 				Feels.sound(rite.level(),Vec3.atCenterOf(rite.at()),switch (rite.kind()) {case 0 -> "aura_memory_broken_line"; case 1 -> "aura_memory_last_shelter"; default -> "aura_memory_returned_step";},0.7F,1);
-				p.sendSystemMessage(Component.translatable("message.wildercord.battlefield.remembered",Component.literal(memory.title())));
+				p.sendSystemMessage(Component.translatable("message.wildercord.battlefield.remembered",Component.translatable("toast.wildercord.aura.battlefield_"+memory.id())));
 			}
 		});
 	}
