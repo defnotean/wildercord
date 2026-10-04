@@ -1345,6 +1345,9 @@ public final class Effects {
 				}
 				Vfx.star(cast.level, target);
 				Scheduler.later(6, () -> {
+					if (!cast.alive()) {
+						return;
+					}
 					for (Entity e : cast.level.getEntities((Entity) null, new AABB(target, target).inflate(1.6, 2.0, 1.6), e -> Targets.canHarm(cast.caster, e))) {
 						hurt(cast, (LivingEntity) e, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), 6 * power);
 					}
