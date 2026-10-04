@@ -20,6 +20,17 @@ import java.util.*;
 /** Actual client investigation, native crafting result pickups, physical fertilization and full restart. */
 public final class FungalNurseryTest implements FabricClientGameTest {
  private static SporebackSnail snail;private static BlockPos rootMark,airMark,plant=new BlockPos(4,30,0),roof=new BlockPos(4,31,2);private static UUID saved;private static long filterRest,nurseryRest,forageRest;
+ private static volatile boolean traceGather;
+ private static boolean traceInstalled;
+ public static boolean tracingGather(){return traceGather;}
+ private static void installGatherTrace() {
+  if(traceInstalled)return;traceInstalled=true;
+  net.fabricmc.fabric.api.event.player.UseEntityCallback.EVENT.register((player,level,hand,entity,hit) -> {
+   if(traceGather && entity==snail && level instanceof ServerLevel l)
+    dev.wildercord.Wildercord.LOGGER.info("FUNGAL_GATHER_RECEIVED now={} player={} shift={} hand={} held={} alive={} spectator={} worldSame={} distance={} visible={} snailAlive={} snailRemoved={} pose={} dew={} hidden={} gather={} selected={}",l.getGameTime(),player.position(),player.isShiftKeyDown(),hand,player.getItemInHand(hand),player.isAlive(),player.isSpectator(),player.level()==snail.level(),player.distanceToSqr(snail),player.hasLineOfSight(snail),snail.isAlive(),snail.isRemoved(),snail.pose(),snail.dew(),snail.hiddenUntil(),snail.gatherReady(),player.getInventory().getSelectedSlot());
+   return InteractionResult.PASS;
+  });
+ }
  @Override public void runTest(ClientGameTestContext c) {
   boolean priorShift=c.computeOnClient(mc -> mc.options.keyShift.isDown());
   try {
@@ -99,10 +110,12 @@ public final class FungalNurseryTest implements FabricClientGameTest {
  private static void impact(MinecraftServer s,BlockPos at,RuneDef effect) {var plan=SpellCompiler.compile(List.of(Runes.TOUCH,effect));CastEngine.onHit(new Cast(p(s)),plan.root().groups.getFirst(),new Cast.Hit(List.of(),Vec3.atCenterOf(at),new Vec3(0,0,1),p(s).position(),at,Direction.UP,false),null);}
  // Approach an actual open side of the grounded canopy; diagonal offsets can intersect a support.
  private static void gatherVisitor(ClientGameTestContext c,TestSingleplayerContext w) {
+  installGatherTrace();
   boolean shift=c.computeOnClient(mc -> mc.options.keyShift.isDown());
   int dewBefore=w.getServer().computeOnServer(s -> p(s).getInventory().countItem(SporebackContent.DEW));
   Set<UUID> existingDrops=w.getServer().computeOnServer(s -> s.overworld().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,snail.getBoundingBox().inflate(4),e -> e.getItem().is(SporebackContent.DEW)).stream().map(Entity::getUUID).collect(java.util.stream.Collectors.toSet()));
   try {
+   traceGather=true;
    w.getServer().runOnServer(s -> hand(p(s),ItemStack.EMPTY));c.waitTicks(5);c.runOnClient(mc -> mc.options.keyShift.setDown(true));c.waitTicks(5);
    for(int attempt=0;attempt<4;attempt++) {
     w.getServer().runOnServer(s -> {
@@ -120,7 +133,7 @@ public final class FungalNurseryTest implements FabricClientGameTest {
     if(w.getServer().computeOnServer(s -> !snail.dew())) {collectEarnedDew(c,w,dewBefore,existingDrops);return;}
    }
    throw new AssertionError("Four real native crouch interactions did not spend the visitor reserve; inspect FUNGAL_GATHER admissions");
-  }finally {c.runOnClient(mc -> mc.options.keyShift.setDown(shift));}
+  }finally {traceGather=false;c.runOnClient(mc -> mc.options.keyShift.setDown(shift));}
  }
  // Follow the actual emitted item using client movement. A random drop may land beyond a stationary pickup box.
  private static void collectEarnedDew(ClientGameTestContext c,TestSingleplayerContext w,int before,Set<UUID> oldDrops) {
@@ -159,7 +172,7 @@ public final class FungalNurseryTest implements FabricClientGameTest {
    check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(SporebackContent.DEW)>before),"Native movement must physically acquire the tracked earned dew; inspect FUNGAL_PICKUP geometry and ownership");
   } finally {c.runOnClient(mc -> {mc.options.keyUp.setDown(up);mc.options.keyLeft.setDown(left);mc.options.keyRight.setDown(right);});}
  }
- private static void interact(ClientGameTestContext c,TestSingleplayerContext w) {int id=w.getServer().computeOnServer(s -> snail.getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);});c.waitTicks(5);}
+ private static void interact(ClientGameTestContext c,TestSingleplayerContext w) {int id=w.getServer().computeOnServer(s -> snail.getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);check(e!=null && e.getUUID().equals(snail.getUUID()),"Native gather targets the actual tracked visitor");dev.wildercord.Wildercord.LOGGER.info("FUNGAL_GATHER_SEND player={} visitor={} shift={} keyShift={} held={} selected={} clientMode={}",mc.player.position(),e.position(),mc.player.isShiftKeyDown(),mc.options.keyShift.isDown(),mc.player.getMainHandItem(),mc.player.getInventory().getSelectedSlot(),mc.gameMode.getPlayerMode());var result=mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);dev.wildercord.Wildercord.LOGGER.info("FUNGAL_GATHER_CLIENT_RESULT {}",result);});c.waitTicks(5);w.getServer().runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("FUNGAL_GATHER_AFTER now={} player={} shift={} held={} pose={} dew={} hidden={} gather={}",s.overworld().getGameTime(),p(s).position(),p(s).isShiftKeyDown(),p(s).getMainHandItem(),snail.pose(),snail.dew(),snail.hiddenUntil(),snail.gatherReady()));}
  /** Observe the saved real deadline rather than blindly skipping a short later nursery visit. */
  private static void waitSavedForage(ClientGameTestContext c,TestSingleplayerContext w){
   w.getServer().runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("FUNGAL_REPEAT_WAIT_START now={} forageReady={} nurseryReady={} dew={} pose={}",s.overworld().getGameTime(),forageRest,snail.nurseryReady(),snail.dew(),snail.pose()));

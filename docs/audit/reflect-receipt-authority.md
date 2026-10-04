@@ -2,7 +2,7 @@
 
 ## Actual reproduction and correction
 
-The unchanged payment-corrected production failed a31-line native assertion after an earlier AFTER_DAMAGE phase admitted a real foreign injury. Baseline execution failed29seconds. An ordinary five-point physical strike took the recipient20→15 and returned three to the actual Husk (100→97), spending one facet. The alternate branch admitted genericKill6 during normal vanilla damage cooldown: exactly one extra health damage, recipient15→14, and an actual new final source. Reflect nevertheless returned damage to the earlier attacker. Logs preserve the first failure; this is an actual local callback reproduction, not remote opponent gameplay.
+The unchanged payment-corrected production failed the native assertion after an earlier AFTER_DAMAGE phase admitted a real foreign injury. Baseline execution failed29seconds. An ordinary five-point physical strike took the recipient20→15 and returned three to the actual Husk (100→97), spending one facet. The alternate branch admitted genericKill6 during normal vanilla damage cooldown: exactly one extra health damage, recipient15→14, and an actual new final source. Reflect nevertheless returned damage to the earlier attacker. Logs preserve the first failure; this is an actual local callback reproduction, not remote opponent gameplay.
 
 Reflect now checks finite positive damage and exact entity.getLastDamageSource()==source before initiating the return. The attacker must be current, alive, nonremoved and in the recipient's world; the recipient must not be removed. No recipient-isAlive condition was added, preserving the existing mortal-wound path. This fixture does not separately prove mortal wounds or cross-dimension callbacks.
 

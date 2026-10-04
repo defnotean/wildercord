@@ -262,7 +262,8 @@
   "mixins": [
     "wildercord.mossveil-gametest.mixins.json",
     "rainshield-gametest.mixins.json",
-    "ward-payment-gametest.mixins.json"
+    "ward-payment-gametest.mixins.json",
+    "nursery-gather-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"
