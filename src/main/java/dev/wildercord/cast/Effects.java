@@ -1824,6 +1824,7 @@ public final class Effects {
 	static void clearWards() {
 		WARDS.clear();
 		VENOM.clear();
+		GLIDES.clear();
 	}
 
 	/**
@@ -2062,6 +2063,8 @@ public final class Effects {
 				glide(t);
 			});
 		}
+		// The glide's window is over: forget it (unless a newer Feather Fall took over), so the map never grows with every creature.
+		Scheduler.later(ticks, () -> GLIDES.remove(key, token));
 	}
 
 	/**
