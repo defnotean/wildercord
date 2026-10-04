@@ -296,21 +296,22 @@ final class SignatureFusions {
 		Vec3 from = caster.position();
 		Vec3 arrive = from;
 		if (!hit.self()) {
-			if (hit.point().distanceTo(from) > SignatureRules.BLOOMSTEP_RANGE) {
+			if(hit.point().distanceTo(from)>SignatureRules.BLOOMSTEP_RANGE){LifeOwnerEvents.refused(cast,"bloomstep",caster);
 				Casters.tell(caster, Component.translatableWithFallback("message.wildercord.bloomstep_far", "Too far to step (32 blocks at most)").withColor(0x6EDC64));
 				return;
 			}
 			Vec3 spot = landing(cast, hit.point(), hit.dir());
-			if (spot == null) {
+			if(spot==null){
+				LifeOwnerEvents.refused(cast,"bloomstep",caster);
 				Casters.tell(caster, Component.translatableWithFallback("message.wildercord.step_nowhere", "Nowhere safe to set foot there").withColor(0x6EDC64));
 				return;
 			}
-			caster.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), caster.getYRot(), caster.getXRot(), false);
-			caster.resetFallDistance();
-			arrive = spot;
-			SignatureVfx.bloomstep(level, from, spot);
-		} else {
-			SignatureVfx.bloomstepHere(level, from);
+			boolean stepped=caster.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), caster.getYRot(), caster.getXRot(), false);
+			if(!stepped || !cast.alive() || caster.position().distanceToSqr(spot)>.0001){
+				LifeOwnerEvents.refused(cast,"bloomstep",caster);return;
+			}
+			caster.resetFallDistance();arrive=caster.position();
+			if(arrive.distanceToSqr(from)>.0001)LifeOwnerEvents.admitted(cast,"bloomstep",caster,LifeOwnerEvents.Moment.APPLY,1,from);
 		}
 		blossom(cast, from);
 		if (arrive != from) {
@@ -326,8 +327,7 @@ final class SignatureFusions {
 			}
 			eased++;
 			LivingEntity ally = (LivingEntity) e;
-			ally.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks, 0, false, true));
-			SignatureVfx.bloomstepMend(level, ally);
+			if(ally.addEffect(new MobEffectInstance(MobEffects.REGENERATION,ticks,0,false,true)))LifeOwnerEvents.admitted(cast,"bloomstep",ally,LifeOwnerEvents.Moment.RENEW,1,from);
 		}
 	}
 
@@ -349,8 +349,8 @@ final class SignatureFusions {
 			if (!(level.getBlockState(p).getBlock() instanceof BonemealableBlock) || !mayEdit(cast, p)) {
 				continue;
 			}
-			if (BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level, p)) {
-				level.levelEvent(null, 1505, p, 15);
+			try(var observed=LifeGrowthWrites.open(cast,"bloomstep")){
+				BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL),level,p);
 			}
 		}
 	}

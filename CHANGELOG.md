@@ -4,6 +4,17 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Corrected 34 proven malformed translation literals in the generator and regenerated language data: Codex mana/cooldown separators and multiplication signs, Cord/tooltips, passive/readout and research/loadout text now use their intended punctuation.
+
+- Fixed visual settings overflowing short/narrow windows: adaptive columns and spacing keep every control reachable at Minecraft's minimum320x240 GUI, with full preset-label tooltips. Native tests verify18 non-overlapping controls, journal state preservation and learned-only guidance.
+
+- Added individually authored actual-outcome material responses for30 existing Life identities: tissue, sap, seed coats, thorns, leaf shutters, roots, hanging berries, spores and equipment stitches follow the body, slot or changed cell that really acted. Refused/no-change actions remain silent; admitted wards, real triggers and endings stay distinct.
+- Added actual-caster source-aware Life visual delivery and smaller authored Minimal recipes, finite queue/decoration budgets, loaded-world/range/freshness checks and camera/eye clearance. Orient material to real body/cell surfaces and retain ingredients in mixed fusions.
+- Removed duplicate generic SELF/impact and old Venom/Fortune success overlays only where authored outcome coverage owns the response. Added56 distinct Life cue/outcome sound identities with112 generated variants; Ashen Mercy and Pulse Ferry keep their original sole voices.
+- Fixed spectator interception in projectile/line/Touch/Chorus/imbued aim; fixed Fortune success feedback occurring before final damage admission and replaced its old kill flourish with actual experience-reward provenance. Preserve real damage/payment rules and finite renewal/expiry cleanup.
+- Added a Life field chapter to wiki/GitBook, a labelled illustrated plate, learned-only native Grimoire material notes, and direct Magic visuals navigation returning to the journal. Updated Haven's description to its actual leaf-shutter defense.
+- Added focused actual gameplay/source/quality/surface/lifecycle/Fortune/spectator regression coverage and native screenshot galleries. Corrected the strict Void alternate-flight camera without relaxing pixel assertions. Full Linux/dedicated multiplayer and all maintained visual lifecycles remain open.
+
 - Added twelve expedition signatures: Nullcatch, Second Bell, Red Ledger, Quietus, Blood Escrow, Frost Molt, Pulse Ferry, Last Lantern, Pocket Current, Wayline, Night Seam and Shard Compass. Each has an exact Fusion Altar pairing, carved icon, original circle motif, material preparation, moving body, successful-action presentation and original cue/impact voices. The runtime now contains 40 signatures, 95 named fused recipes and 369 runes; eighteen signatures are additions under the living-world goal.
 - Added finite shared-payment counter and support resources, post-bonus damage caps, permanent reflected-projectile provenance, voluntary return/tow controls, persistent chest-local ownership and atomic intake, permission-rechecked wall inspection and sample-paid mineral clues. Refused actions preserve their extra resources while ordinary casting mana is still paid.
 - Fixed Red Ledger cancellation during actual synchronous damage callbacks and silenced Pulse Ferry success presentation when real healing is prevented. Minimal Pocket Current retains its authored folding motion.

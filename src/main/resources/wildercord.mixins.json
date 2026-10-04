@@ -47,7 +47,8 @@
 		"FoxAccessor",
 		"FoxCompanionGoalsMixin",
         "NextChestPlacementMixin",
-        "NextTeleportObserverMixin"
+        "NextTeleportObserverMixin",
+        "LifeGrowthWritesMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

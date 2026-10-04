@@ -89,6 +89,20 @@ public final class VoidFlightVariantsTest implements FabricClientGameTest {
  private static CompletableFuture<Void> captureMaterial(Minecraft mc,String name){
   check(mc.level.getEntity(cameraId)!=null,"Settled side review camera remains synchronized");
   var actual=VoidFlightTest.particles(mc.particleEngine).stream().filter(p->p.isAlive() && lifetime(p)==5 && (p instanceof VoidParticle || p instanceof MaterialParticle)).toList();check(actual.stream().anyMatch(p->p instanceof VoidParticle),"Capture retains actual production Void pieces");
+  // Frame the exact retained production objects at this capture step, not the Arc's earlier moving entity position.
+  var camera=mc.level.getEntity(cameraId);
+  double minX=Double.POSITIVE_INFINITY,minY=minX,minZ=minX,maxX=Double.NEGATIVE_INFINITY,maxY=maxX,maxZ=maxX;
+  for(var particle:actual){var pos=VoidFlightTest.at(particle);minX=Math.min(minX,pos.x);minY=Math.min(minY,pos.y);minZ=Math.min(minZ,pos.z);maxX=Math.max(maxX,pos.x);maxY=Math.max(maxY,pos.y);maxZ=Math.max(maxZ,pos.z);}
+  var centre=new Vec3((minX+maxX)/2,(minY+maxY)/2,(minZ+maxZ)/2);
+  check(Double.isFinite(centre.x) && Double.isFinite(centre.y) && Double.isFinite(centre.z),"Actual retained body bounds are finite");
+  var eye=centre.add(2.7,.6,2);var aim=centre.subtract(eye);
+  float yaw=(float)Math.toDegrees(Math.atan2(-aim.x,aim.z));
+  float pitch=(float)-Math.toDegrees(Math.atan2(aim.y,Math.hypot(aim.x,aim.z)));
+  camera.snapTo(eye.x,eye.y-camera.getEyeHeight(),eye.z,yaw,pitch);mc.setCameraEntity(camera);
+  var view=camera.getLookAngle().normalize();
+  long inView=actual.stream().filter(p->p instanceof VoidParticle).filter(p->{var ray=VoidFlightTest.at(p).subtract(camera.getEyePosition());return ray.lengthSqr()>.01 && ray.normalize().dot(view)>Math.cos(Math.toRadians(20));}).count();
+  System.out.println("Void variant diagnostic "+name+" bolt="+clientBolt(mc).position()+" retainedBounds=["+minX+","+minY+","+minZ+" -> "+maxX+","+maxY+","+maxZ+"] eye="+camera.getEyePosition()+" view="+view+" nativeVoidInside20deg="+inView);
+  check(inView>0,"Retained production Void lies inside diagnostic camera's conservative view cone: "+name);
   mc.particleEngine.clearParticles();var empty=VoidFlightTest.capturePixels(mc,name+"_background");for(var particle:actual)mc.particleEngine.add(particle);mc.particleEngine.tick();var drawn=VoidFlightTest.capturePixels(mc,name);mc.setCameraEntity(mc.player);
   return empty.thenCombine(drawn,(a,b)->{check(a.length==b.length,"Matched native captures");int changed=0;for(int i=0;i<a.length;i++){int x=a[i],y=b[i];if(Math.abs((x>>16&255)-(y>>16&255))+Math.abs((x>>8&255)-(y>>8&255))+Math.abs((x&255)-(y&255))>20)changed++;}check(changed>10,"Production physical body changes visible pixels: "+name+" changed="+changed);return (Void)null;});
  }

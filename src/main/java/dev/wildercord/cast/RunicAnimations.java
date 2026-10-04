@@ -82,6 +82,9 @@ public final class RunicAnimations {
 
 	/** The first place this effect lands in a cast. Later pulses retain their normal, lighter effect VFX. */
 	public static void land(Cast cast, RuneDef rune, Cast.Hit hit) {
+		// Authored outcomes follow actual owner changes; a collision must not invent a successful landing.
+		var signature = dev.wildercord.cast.feel.Signatures.get(rune.id());
+		if (signature != null && signature.ownsOutcomeBody()) return;
 		if (cast.passive || Fx.muted() || !cast.once("rune-animation:" + rune.id())) {
 			return;
 		}

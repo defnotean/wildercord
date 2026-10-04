@@ -172,7 +172,7 @@ public final class Runes {
 	public static final RuneDef FROSTWARD = effect("frostward", "Frostward", 1, 3, "frost", EffectKind.HELPFUL, "For 60 seconds you can't freeze, not even in powder snow, and a frost hold on you lasts a second at most.", DURATION);
 	public static final RuneDef CUSHION = effect("cushion", "Cushion", 1, 5, "wind", EffectKind.HELPFUL, "For 30 seconds falls can't hurt you, and a hard landing throws out a gust that knocks enemies back and hurts them: three quarters of a point for every block you fell past four (6 at most).", DURATION);
 	public static final RuneDef DEFLECT = effect("deflect", "Deflect", 2, 9, "wind", EffectKind.HELPFUL, "For 8 seconds a whirl of wind sends arrows and other projectiles coming at the target back at whoever shot them.", DURATION);
-	public static final RuneDef HAVEN = effect("haven", "Haven", 2, 14, "life", EffectKind.HELPFUL, "Raises a 4-block dome of light for 8 seconds: enemies inside are shoved out once a second, and enemy projectiles glance off it.", DURATION, RADIUS);
+	public static final RuneDef HAVEN = effect("haven", "Haven", 2, 14, "life", EffectKind.HELPFUL, "Raises living leaf shutters across a 4-block haven for 8 seconds: enemies inside are shoved out once a second, and enemy projectiles glance off its boundary.", DURATION, RADIUS);
 	// Batch 6: mining and building.
 	public static final RuneDef CHISEL = effect("chisel", "Chisel", 1, 2, "earth", EffectKind.WORLD, "Mines the block that was hit (up to stone-pickaxe hardness; Amplify for iron).", POWER);
 	public static final RuneDef GLIMMER = effect("glimmer", "Glimmer", 1, 2, "life", EffectKind.WORLD, "Grows glowing lichen over the block that was hit and up to 4 around it: a light that stays.", RADIUS);

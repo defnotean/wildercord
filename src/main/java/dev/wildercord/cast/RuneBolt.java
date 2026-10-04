@@ -427,7 +427,7 @@ public class RuneBolt extends Projectile {
 
 	@Override
 	protected boolean canHitEntity(Entity entity) {
-		return entity instanceof LivingEntity && entity.isAlive() && cast != null && entity != cast.caster && !alreadyHit.contains(entity);
+		return entity instanceof LivingEntity && !entity.isSpectator() && !entity.isRemoved() && entity.isAlive() && cast != null && entity != cast.caster && !alreadyHit.contains(entity);
 	}
 
 	@Override

@@ -721,7 +721,7 @@ public final class Imbuing {
 		BlockHitResult block = player.level().clip(new ClipContext(eye, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 		double reach = block.getType() == HitResult.Type.MISS ? CastEngine.AIM_RANGE : block.getLocation().distanceTo(eye);
 		EntityHitResult creature = ProjectileUtil.getEntityHitResult(player, eye, eye.add(look.scale(reach)),
-			player.getBoundingBox().expandTowards(look.scale(reach)).inflate(1.0), e -> e instanceof LivingEntity && e.isAlive() && e != player, reach * reach);
+			player.getBoundingBox().expandTowards(look.scale(reach)).inflate(1.0), e -> e instanceof LivingEntity && e.isAlive() && !e.isSpectator() && !e.isRemoved() && e != player, reach * reach);
 		if (creature != null) {
 			return new Cast.Trigger(creature.getEntity().getBoundingBox().getCenter(), look, creature.getEntity(), null, null);
 		}

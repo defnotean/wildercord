@@ -6,6 +6,8 @@ Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 
 13 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
 
+Read [Reading Life Magic](../../spellcraft/life-outcomes.md) for the illustrated journal of actual healing, repair, gardens and living ward responses.
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bramble.png) Bramble
 
 
@@ -102,7 +104,7 @@ Washes away harmful effects, fire and every elemental mark.
 
 *Tier II · Life · Helps you and your allies · 14 mana · needs a Copper Cord or better*
 
-Raises a 4-block dome of light for 8 seconds: enemies inside are shoved out once a second, and enemy projectiles glance off it.
+Raises living leaf shutters across a 4-block haven for 8 seconds: enemies inside are shoved out once a second, and enemy projectiles glance off its boundary.
 
 **How to get it:** Craft: a Blank Rune, Shield and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
 

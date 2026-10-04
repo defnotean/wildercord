@@ -201,7 +201,7 @@ public final class Innates {
 				Long until = FORTUNE.get(winner.getUUID());
 				if (until != null && there.getGameTime() <= until && there.getRandom().nextFloat() < 0.25F) {
 					net.minecraft.world.entity.ExperienceOrb.award(there, entity.position(), LUCKY_XP);
-					lucky(there, entity);
+					LifeOwnerEvents.fortunateKill(new Cast(winner),entity);
 				}
 			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
@@ -284,13 +284,11 @@ public final class Innates {
 				}
 			}
 			case "fortune" -> helped.forEach(t -> {
-				FORTUNE.put(t.getUUID(), cast.level.getGameTime() + Effects.ticks(10, duration));
-				ElementFx.bloom(cast.level, t.getBoundingBox().getCenter(), t.position(), 1.3);
-				ElementFx.groundRing(cast.level, t.position(), 0xF5D86A, 0.2, 1.1, 0.05, 14);
+				FORTUNE.put(t.getUUID(),cast.level.getGameTime()+Effects.ticks(10,duration));
+				LifeOwnerEvents.admitted(cast,"fortune",t,LifeOwnerEvents.Moment.APPLY,1,null);
+				LifeOwnerEvents.track(cast,"fortune",t,()->FORTUNE.get(t.getUUID()),false);
 				// A gold coin spinning over the head for as long as the luck lasts.
 				ElementFx.orbit(cast.level, t.position().add(0, t.getBbHeight() + 0.5, 0), 0.25, 1, Effects.ticks(10, duration), 0xF5D86A, 0xFFF4B0);
-				Vfx.emit(cast.level, ParticleTypes.HAPPY_VILLAGER, t.getBoundingBox().getCenter(), 6, 0.4, 0.0);
-				dev.wildercord.cast.feel.Feels.sound(cast.level, t.position(), "life_coin", 0.9F, 1.0F);
 			});
 			case "phantom" -> {
 				if (onSelf && caster instanceof ServerPlayer player) {
@@ -540,7 +538,6 @@ public final class Innates {
 		if (until == null || cast.level.getGameTime() > until || cast.level.getRandom().nextFloat() >= 0.25F) {
 			return 1.0;
 		}
-		lucky(cast.level, target);
 		return LUCKY_MULTIPLIER;
 	}
 
@@ -558,27 +555,17 @@ public final class Innates {
 		if (until == null || level.getGameTime() > until || level.getRandom().nextFloat() >= 0.25F || !entity.isAlive()) {
 			return;
 		}
-		lucky(level, entity);
 		echoing = true;
 		try {
 			Effects.readyToHurt(entity);
-			entity.hurtServer(level, level.damageSources().playerAttack(player), (float) (damage * (LUCKY_MULTIPLIER - 1)));
+			float observedBefore=entity.getHealth();
+			entity.hurtServer(level,level.damageSources().playerAttack(player),(float)(damage*(LUCKY_MULTIPLIER-1)));
+			if(entity.getHealth()<observedBefore)LifeOwnerEvents.transition(level,"fortune",entity,LifeOwnerEvents.Moment.TRIGGER,1,entity.getHealth()-observedBefore,player.getBoundingBox().getCenter(),player.getUUID());
 		} finally {
 			echoing = false;
 		}
 	}
 
-	private static void lucky(ServerLevel level, LivingEntity target) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		Sigils.flash(level, c, 0xFF9CFF7A, 2.0F);
-		ElementFx.ring(level, c, UP, LUCK, 0.2, 1.6, 0.05, 8);
-		ElementFx.orbit(level, c, 0.7, 2, 4, LUCK, 0xFFF4B0);
-		Vfx.radial(level, ParticleTypes.HAPPY_VILLAGER, c, 8, 0.25);
-		Vfx.radial(level, ParticleTypes.CRIT, c, 8, 0.4);
-		dev.wildercord.cast.feel.Feels.sound(level, c, "life_coin_proc", 1.0F, 1.0F);
-	}
-
-	private static final int LUCK = 0x9CFF7A;
 
 	// ------------------------------------------------------------------ Phantom
 

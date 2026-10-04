@@ -136,11 +136,12 @@ public final class FieldFusions {
     }
     private static void mercy(Cast c,LivingEntity t) {
         if(!c.alive() || !t.isAlive() || t.level()!=c.level || !Targets.canHelp(c.caster,t) || !paid(c).target("ashen_mercy",t.getUUID()))return;
-        int removed=0;boolean fire=t.isOnFire();
+        var observedMercy=LifeOwnerEvents.before(t);int removed=0;boolean fire=t.isOnFire();
         for(var effect:new ArrayList<>(t.getActiveEffects()))if(effect.getEffect().value().getCategory()==MobEffectCategory.HARMFUL && t.removeEffect(effect.getEffect()))removed++;
         t.clearFire();for(var mark:Reactions.Mark.values())Reactions.clear(t,mark);
         t.heal(FieldFusionRules.mercyHealing(removed,fire,t.getMaxHealth()-t.getHealth()));
         t.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE,100,0,false,true));
+        LifeOwnerEvents.changed(c,"ashen_mercy",t,observedMercy,null,LifeOwnerEvents.Moment.APPLY);
         FieldFusionFx.mercy(c.level,t);
     }
     private static boolean mobile(Cast c,LivingEntity t,boolean hostile) {

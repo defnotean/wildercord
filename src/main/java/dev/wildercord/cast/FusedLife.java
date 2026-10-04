@@ -379,7 +379,7 @@ final class FusedLife {
 	private static void soulbond(Cast cast, Cast.Hit hit, List<LivingEntity> helped, int ticks) {
 		ServerLevel level = cast.level;
 		LivingEntity caster = cast.caster;
-		if (!canShare(caster)) {
+		if(!canShare(caster)){LifeOwnerEvents.refused(cast,"soulbond",caster);
 			// Bound to someone who can't be hurt, the other would only ever take half of every wound.
 			FusedLifeVfx.soulbondAlone(level, caster);
 			Casters.tell(caster, Component.translatableWithFallback("message.wildercord.soulbond_unhurt",
@@ -409,13 +409,14 @@ final class FusedLife {
 				.min(Comparator.comparingDouble(e -> e.distanceToSqr(caster)))
 				.orElse(null);
 		}
-		if (partner == null) {
+		if(partner==null){
+			LifeOwnerEvents.refused(cast,"soulbond",caster);
 			FusedLifeVfx.soulbondAlone(level, caster);
 			Casters.tell(caster, Component.translatableWithFallback("message.wildercord.soulbond_alone",
 				"Soulbond needs an ally to bind you to").withColor(0xE678DC));
 			return;
 		}
-		if (partner.distanceToSqr(caster) > BOND_RANGE * BOND_RANGE) {
+		if(partner.distanceToSqr(caster)>BOND_RANGE*BOND_RANGE){LifeOwnerEvents.refused(cast,"soulbond",caster);
 			FusedLifeVfx.soulbondAlone(level, caster);
 			Casters.tell(caster, Component.translatableWithFallback("message.wildercord.soulbond_far",
 				"Too far away to bind").withColor(0xE678DC));
@@ -423,8 +424,8 @@ final class FusedLife {
 		}
 		long now = level.getGameTime();
 		if (current != null && current.side(caster) >= 0 && current.other(current.side(caster)) == partner && current.holds(now)) {
-			current.until = Math.max(current.until, now + ticks);
-			FusedLifeVfx.soulbondBind(level, caster, partner);
+			current.until=Math.max(current.until,now+ticks);
+			LifeOwnerEvents.admitted(cast,"soulbond",caster,LifeOwnerEvents.Moment.RENEW,1,partner.getBoundingBox().getCenter());
 			return;
 		}
 		// One bond each: a new one takes the place of any other either of them was in.
@@ -432,8 +433,9 @@ final class FusedLife {
 		unbind(partner, true);
 		Bond bond = new Bond(cast, caster, partner, now + ticks);
 		BONDS.put(caster.getUUID(), bond);
-		BONDS.put(partner.getUUID(), bond);
-		FusedLifeVfx.soulbondBind(level, caster, partner);
+		BONDS.put(partner.getUUID(),bond);
+		LifeOwnerEvents.admitted(cast,"soulbond",caster,LifeOwnerEvents.Moment.APPLY,1,partner.getBoundingBox().getCenter());
+		LifeOwnerEvents.admitted(cast,"soulbond",partner,LifeOwnerEvents.Moment.APPLY,1,caster.getBoundingBox().getCenter());
 		int[] age = {0};
 		Runnable[] next = new Runnable[1];
 		next[0] = () -> {
@@ -476,12 +478,9 @@ final class FusedLife {
 		}
 		bond.over = true;
 		BONDS.remove(bond.a.getUUID(), bond);
-		BONDS.remove(bond.b.getUUID(), bond);
-		if (how == 1) {
-			FusedLifeVfx.soulbondSnap(bond.level, bond.a, bond.b);
-		} else if (how == 2) {
-			FusedLifeVfx.soulbondFade(bond.level, bond.a, bond.b);
-		}
+		BONDS.remove(bond.b.getUUID(),bond);
+		LifeOwnerEvents.transition(bond.level,"soulbond",bond.a,LifeOwnerEvents.Moment.END,1,0,null,bond.cast.caster.getUUID());
+		LifeOwnerEvents.transition(bond.level,"soulbond",bond.b,LifeOwnerEvents.Moment.END,1,0,null,bond.cast.caster.getUUID());
 	}
 
 	/** Ends whatever bond {@code e} is in. */
@@ -627,7 +626,8 @@ final class FusedLife {
 	 */
 	private static void pass(Bond bond, LivingEntity from, LivingEntity to, float share, boolean saved) {
 		ServerLevel level = bond.level;
-		splitting = true;
+		var observedBefore=LifeOwnerEvents.before(to);
+		splitting=true;
 		try {
 			float pool = to.getHealth() + to.getAbsorptionAmount();
 			if (share < pool - 0.01F) {
@@ -645,10 +645,10 @@ final class FusedLife {
 		} finally {
 			splitting = false;
 		}
-		long now = level.getGameTime();
+		LifeOwnerEvents.changed(bond.cast,"soulbond",to,observedBefore,from.getBoundingBox().getCenter(),LifeOwnerEvents.Moment.TRIGGER);
+		long now=level.getGameTime();
 		if (saved || now - bond.shownAt >= 5) {
 			bond.shownAt = now;
-			FusedLifeVfx.soulbondShare(level, from, to, saved);
 		}
 	}
 
@@ -693,7 +693,7 @@ final class FusedLife {
 		long now = level.getGameTime();
 		Long saved = SPENT.get(t.getUUID());
 		if (saved != null && FusedLifeRules.lockedOut(saved, now)) {
-			FusedLifeVfx.secondWindSpent(level, t);
+			LifeOwnerEvents.refused(cast,"second_wind",t);
 			if (cast.once("second_wind_spent")) {
 				Casters.tell(cast.caster, Component.translatableWithFallback("message.wildercord.second_wind_spent",
 					"Second Wind has saved them already: again in %s s", FusedLifeRules.lockoutSecondsLeft(saved, now)).withColor(0xF2D98A));
@@ -704,13 +704,13 @@ final class FusedLife {
 		if (old != null && old.who == t && !old.over) {
 			old.until = Math.max(old.until, now + ticks);
 			old.power = Math.max(old.power, power);
-			old.duration = Math.max(old.duration, duration);
-			FusedLifeVfx.secondWind(level, t);
+			old.duration=Math.max(old.duration,duration);
+			LifeOwnerEvents.admitted(cast,"second_wind",t,LifeOwnerEvents.Moment.RENEW,1,null);
 			return;
 		}
 		Wind wind = new Wind(t, cast, now + ticks, power, duration);
-		WINDS.put(t.getUUID(), wind);
-		FusedLifeVfx.secondWind(level, t);
+		WINDS.put(t.getUUID(),wind);
+		LifeOwnerEvents.admitted(cast,"second_wind",t,LifeOwnerEvents.Moment.APPLY,1,null);
 		int[] age = {0};
 		Runnable[] next = new Runnable[1];
 		next[0] = () -> {
@@ -722,7 +722,7 @@ final class FusedLife {
 				wind.over = true;
 				WINDS.remove(t.getUUID(), wind);
 				if (time > wind.until && t.isAlive() && !t.isRemoved()) {
-					FusedLifeVfx.secondWindFade(level, t);
+					LifeOwnerEvents.transition(level,"second_wind",t,LifeOwnerEvents.Moment.END,1,0,null,wind.cast.caster.getUUID());
 				}
 				return;
 			}
@@ -756,6 +756,7 @@ final class FusedLife {
 			SPENT.values().removeIf(saved -> !FusedLifeRules.lockedOut(saved, now));
 		}
 		SPENT.put(e.getUUID(), now);
+		float windBefore=e.getHealth();
 		e.setHealth(FusedLifeRules.secondWindHealth(wind.power, e.getMaxHealth()));
 		e.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(4, wind.duration), 1, false, true));
 		// The way out: a burst of speed and a gust that clears the enemies round them (a creature gets out, it doesn't stand and fight: that is Reversal).
@@ -765,7 +766,7 @@ final class FusedLife {
 				Effects.push((LivingEntity) near, Effects.horizontal(near.position().subtract(e.position()), e.getLookAngle()).scale(1.6).add(0, 0.35, 0));
 			}
 		}
-		FusedLifeVfx.secondWindSaved(level, e);
+		LifeOwnerEvents.transition(level,"second_wind",e,LifeOwnerEvents.Moment.TRIGGER,1,e.getHealth()-windBefore,null,wind.cast.caster.getUUID());
 		if (e instanceof ServerPlayer player) {
 			player.sendOverlayMessage(Component.translatableWithFallback("message.wildercord.second_wind", "Second Wind!").withColor(0x6EDC64));
 		}
@@ -860,11 +861,10 @@ final class FusedLife {
 	 */
 	private static void lifebloom(Cast cast, LivingEntity t, double power, int ticks, double radius, boolean blooms) {
 		ServerLevel level = cast.level;
-		t.heal((float) (4 * power));
+		LifeOwnerEvents.mutation(cast,"lifebloom",t,LifeOwnerEvents.Moment.APPLY,null,()->t.heal((float)(4*power)));
 		if (!blooms) {
 			return;
 		}
-		FusedLifeVfx.lifebloomOpen(level, t);
 		// Counted in whole seconds, so it's always exactly that many heals, however the ticks fall.
 		int beats = Math.max(1, (int) Math.round(ticks / 20.0));
 		Bloom old = BLOOMS.get(t.getUUID());
@@ -872,11 +872,13 @@ final class FusedLife {
 			old.beats = beats;
 			old.power = power;
 			old.radius = radius;
-			old.cast = cast;
+			old.cast=cast;
+			LifeOwnerEvents.admitted(cast,"lifebloom",t,LifeOwnerEvents.Moment.RENEW,beats,null);
 			return;
 		}
 		Bloom bloom = new Bloom(t, cast, beats, power, radius);
-		BLOOMS.put(t.getUUID(), bloom);
+		BLOOMS.put(t.getUUID(),bloom);
+		LifeOwnerEvents.admitted(cast,"lifebloom",t,LifeOwnerEvents.Moment.APPLY,beats,null);
 		int[] beat = {0};
 		Runnable[] next = new Runnable[1];
 		next[0] = Effects.carryContext(() -> {
@@ -888,8 +890,8 @@ final class FusedLife {
 				BLOOMS.remove(t.getUUID(), bloom);
 				return;
 			}
-			t.heal((float) (1 * bloom.power));
-			FusedLifeVfx.lifebloomPulse(level, t, beat[0]++);
+			LifeOwnerEvents.mutation(bloom.cast,"lifebloom",t,LifeOwnerEvents.Moment.PULSE,null,()->t.heal((float)bloom.power));
+			beat[0]++; // Keep the existing pulse counter; actual heal observation owns its display.
 			if (--bloom.beats <= 0) {
 				bloom.over = true;
 				BLOOMS.remove(t.getUUID(), bloom);
@@ -906,10 +908,8 @@ final class FusedLife {
 		Cast cast = bloom.cast;
 		ServerLevel level = cast.level;
 		Vec3 at = bloom.who.getBoundingBox().getCenter();
-		FusedLifeVfx.lifebloomBurst(level, bloom.who, bloom.radius);
 		for (LivingEntity ally : alliesAround(cast, at, bloom.radius)) {
-			ally.heal((float) (3 * bloom.power));
-			FusedLifeVfx.lifebloomMended(level, ally);
+			LifeOwnerEvents.mutation(cast,"lifebloom",ally,LifeOwnerEvents.Moment.TRIGGER,bloom.who.getBoundingBox().getCenter(),()->ally.heal((float)(3*bloom.power)));
 		}
 	}
 

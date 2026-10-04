@@ -22,9 +22,16 @@ import java.util.Map;
  * @param effectId the first effect's id, or "" (this is what {@link Signatures} looks up)
  */
 public record Feel(Motion motion, String element, String accent, Role role, Band band, double scale, Map<String, Integer> mods, String shapeId,
-		String effectId) {
+		String effectId, java.util.List<String> effectIds) {
 	public Feel {
 		mods = Map.copyOf(mods);
+		effectIds = java.util.List.copyOf(effectIds);
+	}
+
+	/** Existing callers without the complete group keep conservative generic collision fallback. */
+	public Feel(Motion motion, String element, String accent, Role role, Band band, double scale,
+		Map<String,Integer> mods, String shapeId, String effectId) {
+		this(motion,element,accent,role,band,scale,mods,shapeId,effectId,java.util.List.of());
 	}
 
 	/** How many of the modifier (by path, e.g. {@code "widen"}) this group carries. */
@@ -93,7 +100,7 @@ public record Feel(Motion motion, String element, String accent, Role role, Band
 		}
 		double scale = scaleOf(cost, charge, tier);
 		return new Feel(Motion.of(g.shape.id()), element, accent, Role.of(first), Band.of(scale), scale, mods, g.shape.id(),
-			first == null ? "" : first.id());
+			first == null ? "" : first.id(), g.effects.stream().map(e -> e.effect.id()).distinct().toList());
 	}
 
 	/** A feel for a bare shape with no plan (a mob's cast, a test): band M. */

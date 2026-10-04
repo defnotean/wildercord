@@ -279,8 +279,9 @@ public final class Effects {
 			case "heal" -> helped.forEach(t -> {
 				// Repeats inside one cast (a Zone's pulses, Linger, Echo) heal 100%, then 60%, then 40% of it: a heal over time is its own runes' job.
 				double share = cast.once("heal0:" + t.getUUID()) ? 1.0 : cast.once("heal1:" + t.getUUID()) ? 0.6 : 0.4;
-				float before = t.getHealth();
-				t.heal((float) (8 * power * share));
+				var observedHeal=LifeOwnerEvents.before(t);
+				float before=t.getHealth();
+				t.heal((float)(8*power*share));
 				// Whatever the heal could not use becomes a shield of up to 2 hearts that fades in 10 s (never stacking past that).
 				float over = (float) (8 * power * share) - (t.getHealth() - before);
 				if (over >= 0.5F && t.getAbsorptionAmount() < HEAL_SHIELD_MAX) {
@@ -288,7 +289,7 @@ public final class Effects {
 					t.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 200, 0, false, true));
 					t.setAbsorptionAmount(keep);
 				}
-				Vfx.heal(level, t);
+				LifeOwnerEvents.changed(cast,"heal",t,observedHeal,null,LifeOwnerEvents.Moment.APPLY);
 			});
 			case "shield" -> {
 				int ticks = (int) Math.round(SpellNumbers.shieldTicks(node) * cast.duration);
@@ -414,7 +415,7 @@ public final class Effects {
 			});
 			case "regrowth" -> helped.forEach(t -> {
 				if (passiveEffect) {
-					t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks(8, duration), Math.min(3, 1 + amplify), false, true));
+					if(t.addEffect(new MobEffectInstance(MobEffects.REGENERATION,ticks(8,duration),Math.min(3,1+amplify),false,true)))LifeOwnerEvents.admitted(cast,"regrowth",t,LifeOwnerEvents.Moment.RENEW,Math.min(3,1+amplify)+1,null);
 				} else {
 					// The vines take hold: Regeneration I for 3 s, II for 3, III for 2 (about 7 health in all).
 					int[] length = {ticks(3, duration), ticks(3, duration), ticks(2, duration)};
@@ -422,21 +423,21 @@ public final class Effects {
 					for (int stage = 0; stage < 3; stage++) {
 						int level2 = Math.min(3, stage + amplify);
 						int span = length[stage];
-						if (stage == 0) {
-							t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, span, level2, false, true));
+						if(stage==0){
+							if(t.addEffect(new MobEffectInstance(MobEffects.REGENERATION,span,level2,false,true)))LifeOwnerEvents.admitted(cast,"regrowth",t,LifeOwnerEvents.Moment.PULSE,level2+1,null);
 						} else {
 							Scheduler.later(at, () -> {
 								if (t.isAlive() && t.level() == level) {
-									t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, span, level2, false, true));
+									if(t.addEffect(new MobEffectInstance(MobEffects.REGENERATION,span,level2,false,true)))LifeOwnerEvents.admitted(cast,"regrowth",t,LifeOwnerEvents.Moment.PULSE,level2+1,null);
 								}
 							});
 						}
 						at += span;
 					}
 				}
-				Vfx.regrowth(level, t);
 			});
 			case "cleanse" -> helped.forEach(t -> {
+				var observedCleanse=LifeOwnerEvents.before(t);
 				List<net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect>> bad = new ArrayList<>();
 				for (MobEffectInstance effect : t.getActiveEffects()) {
 					if (effect.getEffect().value().getCategory() == net.minecraft.world.effect.MobEffectCategory.HARMFUL) {
@@ -450,7 +451,7 @@ public final class Effects {
 				for (Reactions.Mark mark : Reactions.Mark.values()) {
 					Reactions.clear(t, mark);
 				}
-				Vfx.cleanse(level, t);
+				LifeOwnerEvents.changed(cast,"cleanse",t,observedCleanse,null,LifeOwnerEvents.Moment.APPLY);
 			});
 			case "stoneskin" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks(10, duration), Math.min(3, 1 + amplify), false, true));
@@ -535,12 +536,11 @@ public final class Effects {
 				// Poison I stays as the marker (cures, Blight, Elapse); the damage is the venom's own, so undead and spiders feel it and it can kill.
 				int seconds = (int) Math.max(1, Math.round(VENOM_SECONDS * duration));
 				t.addEffect(new MobEffectInstance(MobEffects.POISON, seconds * 20, Math.min(3, amplify), false, true), caster);
-				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 2 * power);
+				LifeOwnerEvents.mutation(cast,"venom",t,LifeOwnerEvents.Moment.APPLY,null,()->hurt(cast,t,level.damageSources().indirectMagic(caster,caster),2*power));
 				venomDot(cast, t, power, seconds);
 				if (cast.once("venom-spread:" + t.getUUID())) {
 					venomSpread(cast, t, power, seconds);
 				}
-				Vfx.venom(level, t);
 			});
 			case "smite" -> harmed.forEach(t -> {
 				// A verdict, not a flick: a ring closes at its feet for 0.7 s (it can step out), then the column falls on where it stands.
@@ -591,6 +591,7 @@ public final class Effects {
 				FireBloodVfx.ward(level, t);
 			});
 			case "nourish" -> helped.forEach(t -> {
+				var observedNourish=LifeOwnerEvents.before(t);
 				if (t instanceof Player player) {
 					player.getFoodData().eat((int) Math.round(6 * power), 0.6F);
 					player.removeEffect(MobEffects.HUNGER);
@@ -598,10 +599,11 @@ public final class Effects {
 					// A pet is fed too: it heals, and a grown one is ready to breed.
 					animal.heal((float) (6 * power));
 					if (animal.getAge() == 0 && caster instanceof ServerPlayer feeder) {
-						animal.setInLove(feeder);
+						boolean alreadyInLove=animal.isInLove();animal.setInLove(feeder);
+						if(!alreadyInLove&&animal.isInLove())LifeOwnerEvents.admitted(cast,"nourish",animal,LifeOwnerEvents.Moment.APPLY,1,null);
 					}
 				}
-				Vfx.nourish(level, t);
+				LifeOwnerEvents.changed(cast,"nourish",t,observedNourish,null,LifeOwnerEvents.Moment.APPLY);
 			});
 			case "tidebreath" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, ticks(30, duration), 0, false, true));
@@ -932,7 +934,8 @@ public final class Effects {
 			Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, target.getBoundingBox().getCenter(), 4, 0.3, 0.1);
 			dev.wildercord.cast.feel.Feels.sound(cast.level, target.getBoundingBox().getCenter(), "tell_crack", 0.5F, 1.0F);
 		}
-		bonus *= Innates.fortune(cast, target);
+		double fortune = Innates.fortune(cast, target);
+		bonus *= fortune;
 		bonus *= Unison.onHit(cast, target, currentElement);
 		bonus *= hexBonus(cast, target);
 		// Veil's ambush and Shadowstep's backstab: the first blow from the dark lands half again as hard.
@@ -987,6 +990,7 @@ public final class Effects {
 		}
 		// Thirst: its caster drinks a share of what the hit really took.
 		float taken = target instanceof TrainingDummy dummy ? dummy.lastDamage() : before - Math.max(0.0F, target.getHealth());
+		if (fortune > 1 && taken > 0) LifeOwnerEvents.transition(cast.level,"fortune",target,LifeOwnerEvents.Moment.TRIGGER,1,-taken,cast.caster.getBoundingBox().getCenter(),cast.caster.getUUID());
 		if (thirst > 0 && taken > 0 && cast.caster.isAlive() && cast.caster != target
 				&& !(target instanceof TrainingDummy) && target.level().dimension() != PracticeRoom.DIMENSION) {
 			cast.caster.heal((float) (taken * thirst));
@@ -1250,22 +1254,26 @@ public final class Effects {
 	/** Until when (game time) each creature's venom runs: a second dose only extends it, so repeaters never stack tickers. */
 	private static final Map<UUID, long[]> VENOM = new HashMap<>();
 
-	static void venomDot(Cast cast, LivingEntity t, double power, int seconds) {
+	static void venomDot(Cast cast,LivingEntity t,double power,int seconds){venomDot(cast,t,power,seconds,"venom");}
+	static void venomDot(Cast cast,LivingEntity t,double power,int seconds,String outcomeRune){
 		long now = cast.level.getGameTime();
 		long[] running = VENOM.get(t.getUUID());
 		if (running != null && running[0] > now) {
-			running[0] = Math.max(running[0], now + seconds * 20L);
+			running[0]=Math.max(running[0],now+seconds*20L);
+			LifeOwnerEvents.renewDot(running,t);
 			return;
 		}
 		long[] state = {now + seconds * 20L};
-		VENOM.put(t.getUUID(), state);
+		VENOM.put(t.getUUID(),state);
+		LifeOwnerEvents.ownDot(cast,outcomeRune,t,state);
+		LifeOwnerEvents.admitted(cast,outcomeRune,t,LifeOwnerEvents.Moment.APPLY,1,null);
 		Runnable[] next = new Runnable[1];
 		next[0] = carryContext(() -> {
 			if (!cast.alive() || !t.isAlive() || t.level() != cast.level || !cast.damageAvailable(t) || cast.level.getGameTime() > state[0]) {
-				VENOM.remove(t.getUUID(), state);
+				VENOM.remove(t.getUUID(),state);LifeOwnerEvents.forgetDot(state);
 				return;
 			}
-			lingering(() -> hurt(cast, t, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), VENOM_PER_SECOND * power));
+			lingering(()->LifeOwnerEvents.mutation(cast,outcomeRune,t,LifeOwnerEvents.Moment.PULSE,null,()->hurt(cast,t,cast.level.damageSources().indirectMagic(cast.caster,cast.caster),VENOM_PER_SECOND*power)));
 			Scheduler.later(20, next[0]);
 		});
 		Scheduler.later(20, next[0]);
@@ -1280,8 +1288,8 @@ public final class Effects {
 			}
 			if (e instanceof LivingEntity other && other.distanceTo(from) <= VENOM_SPREAD_REACH && cast.once("venom-spread:" + other.getUUID())) {
 				other.addEffect(new MobEffectInstance(MobEffects.POISON, seconds * 20, 0, false, true), cast.caster);
-				venomDot(cast, other, power * 0.5, seconds);
-				LifeArcaneFx.venomHop(cast.level, from, other);
+				venomDot(cast,other,power*.5,seconds);
+				LifeOwnerEvents.admitted(cast,"venom",other,LifeOwnerEvents.Moment.PULSE,1,from.getBoundingBox().getCenter());
 				passed++;
 			}
 		}
@@ -1397,10 +1405,8 @@ public final class Effects {
 			if (replant) {
 				cast.level.setBlockAndUpdate(p, crop.getStateForAge(0));
 			}
+			LifeOwnerEvents.cell(cast,"harvest",p,state,cast.level.getBlockState(p),LifeOwnerEvents.Moment.APPLY);
 			harvested++;
-		}
-		if (harvested > 0) {
-			LifeArcaneFx.reap(cast.level, Vec3.atCenterOf(center));
 		}
 	}
 
@@ -1671,6 +1677,7 @@ public final class Effects {
 	/** Hooks the effects need from the start (Span's rules). */
 	public static void init() {
 		SpanRules.ready();
+		LifeOwnerEvents.init();
 	}
 
 	private static void light(Cast cast, Cast.Hit hit, double duration) {
@@ -1727,19 +1734,20 @@ public final class Effects {
 				if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster,cast.level,p)) continue;
 				if (!cast.takeBlock()) break;
 			}
-			boolean grew = false;
-			for (int i = 0; i < times; i++) {
-				grew |= BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), cast.level, p);
+			boolean grew=false;
+			try(var observedWrites=LifeGrowthWrites.open(cast,"grow")){
+				for(int i=0;i<times;i++)grew|=BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL),cast.level,p);
 			}
 			if (grew) {
-				cast.level.levelEvent(null, 1505, p, 15);
+				cast.level.levelEvent(null,1505,p,15);
 			}
 		}
 		// Whatever is young there grows up.
 		for (net.minecraft.world.entity.AgeableMob baby : cast.level.getEntitiesOfClass(net.minecraft.world.entity.AgeableMob.class, new AABB(center).inflate(1.5), m -> m.getAge() < 0)) {
 			baby.setAge(0);
+			LifeOwnerEvents.admitted(cast,"grow",baby,LifeOwnerEvents.Moment.APPLY,1,null);
 		}
-		LifeArcaneFx.growRipple(cast.level, Vec3.atCenterOf(center).add(0, 0.6, 0));
+		// Retained block writes and actual age changes own Life outcome presentation.
 	}
 
 	private static void breakBlock(Cast cast, Cast.Hit hit, boolean amplified) {
@@ -1930,8 +1938,7 @@ public final class Effects {
 				return;
 			}
 			w.charges--;
-			ExpansionVfx.brambleStrike(w.cast.level, t, attacker);
-			hurt(w.cast, attacker, w.cast.level.damageSources().thorns(t), 3 * w.power);
+			LifeOwnerEvents.mutation(w.cast,"bramble",attacker,LifeOwnerEvents.Moment.TRIGGER,t.getBoundingBox().getCenter(),()->hurt(w.cast,attacker,w.cast.level.damageSources().thorns(t),3*w.power));
 			Vec3 away = horizontal(attacker.position().subtract(t.position()), t.getLookAngle());
 			push(attacker, away.scale(0.9).add(0, 0.3, 0));
 		}, () -> { });
@@ -1940,7 +1947,7 @@ public final class Effects {
 			// Only hits from now on count.
 			fresh.memory = t.getLastHurtByMobTimestamp();
 		}
-		ExpansionVfx.bramble(cast.level, t);
+		LifeOwnerEvents.admitted(cast,"bramble",t,fresh!=null?LifeOwnerEvents.Moment.APPLY:LifeOwnerEvents.Moment.RENEW,fresh!=null?fresh.charges:0,null);
 	}
 
 	// ------------------------------------------------------------------ frost and wind mechanics
@@ -2249,8 +2256,9 @@ public final class Effects {
 	private static void haven(Cast cast, Vec3 centre, double radius, int ticks) {
 		ServerLevel level = cast.level;
 		Vfx.Theme theme = Vfx.theme("life");
-		ExpansionVfx.havenOpen(level, centre, radius, theme, ticks);
-		ShapeRunners.each(cast, ticks, tick -> {
+		// The first live shelter runner tick owns opening presentation.
+		ShapeRunners.each(cast,ticks,tick->{
+			if(tick==0)LifeOwnerEvents.point(cast,"haven",LifeOwnerEvents.Moment.APPLY,centre,null,1,0);
 			for (Projectile p : level.getEntitiesOfClass(Projectile.class, new AABB(centre, centre).inflate(radius + 1.5))) {
 				Entity owner = p.getOwner();
 				if (p.position().distanceTo(centre) > radius + 1.0
@@ -2264,7 +2272,7 @@ public final class Effects {
 				}
 				p.setDeltaMovement(v.subtract(normal.scale(2 * v.dot(normal))).scale(0.6));
 				p.needsSync = true;
-				ExpansionVfx.havenGlance(level, p.position(), normal, theme);
+				LifeOwnerEvents.point(cast,"haven",LifeOwnerEvents.Moment.TRIGGER,p.position(),centre,1,0);
 			}
 			if (tick % 10 == 0) {
 				for (Entity e : level.getEntities((Entity) null, new AABB(centre, centre).inflate(radius),
@@ -2276,16 +2284,17 @@ public final class Effects {
 				for (Entity e : level.getEntities((Entity) null, new AABB(centre, centre).inflate(radius), e -> Targets.canHarm(cast.caster, e) && e instanceof LivingEntity)) {
 					LivingEntity foe = (LivingEntity) e;
 					if (foe.position().distanceTo(centre) <= radius && !Spirits.isBoss(foe)) {
+						var havenBefore=foe.getDeltaMovement();
 						push(foe, horizontal(foe.position().subtract(centre), foe.getLookAngle()).scale(HAVEN_SHOVE));
-						ExpansionVfx.havenGlance(level, foe.position().add(0, 1, 0), horizontal(foe.position().subtract(centre), foe.getLookAngle()), theme);
+						if(!foe.getDeltaMovement().equals(havenBefore))LifeOwnerEvents.point(cast,"haven",LifeOwnerEvents.Moment.TRIGGER,foe.position().add(0,1,0),centre,1,foe.getDeltaMovement().subtract(havenBefore).length());
 					}
 				}
 			}
 			if (tick % 20 == 0) {
-				ExpansionVfx.havenShell(level, centre, radius, theme, tick);
+				if(tick>0)LifeOwnerEvents.point(cast,"haven",LifeOwnerEvents.Moment.PULSE,centre,null,1,0);
 			}
 			if (tick == ticks - 1) {
-				ExpansionVfx.havenClose(level, centre, radius, theme);
+				LifeOwnerEvents.point(cast,"haven",LifeOwnerEvents.Moment.END,centre,null,1,0);
 			}
 			return true;
 		});
@@ -2577,10 +2586,11 @@ public final class Effects {
 			if (!cast.takeBlock()) {
 				break;
 			}
-			level.setBlockAndUpdate(cell, (lichen ? there : Blocks.GLOW_LICHEN.defaultBlockState()).setValue(side, true));
+			var observedLichen=(lichen?there:Blocks.GLOW_LICHEN.defaultBlockState()).setValue(side,true);
+			level.setBlockAndUpdate(cell,observedLichen);
+			if(level.getBlockState(cell).equals(observedLichen))LifeOwnerEvents.point(cast,"glimmer",LifeOwnerEvents.Moment.APPLY,Vec3.atCenterOf(cell),Vec3.atCenterOf(cell).add(face.getStepX(),face.getStepY(),face.getStepZ()),1,0);
 			grown.add(cell);
 		}
-		ExpansionVfx.glimmer(level, grown, face);
 	}
 
 	private static boolean prunable(BlockState state) {

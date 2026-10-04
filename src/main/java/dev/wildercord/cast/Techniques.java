@@ -698,8 +698,9 @@ final class Techniques {
 
 	/** Restore: heals, puts out fire and mends worn and held gear a little. */
 	static void restore(Cast cast, LivingEntity t, double power) {
-		t.heal((float) (RESTORE_HEAL * power));
-		t.clearFire();
+		var restoredBody=LifeOwnerEvents.before(t);
+		t.heal((float)(RESTORE_HEAL*power));t.clearFire();
+		LifeOwnerEvents.changed(cast,"restore",t,restoredBody,null,LifeOwnerEvents.Moment.APPLY);
 		boolean mended = false;
 		long now = cast.level.getGameTime();
 		if (RESTORED.size() > 512) {
@@ -716,11 +717,11 @@ final class Techniques {
 			if (!stack.isEmpty() && stack.isDamageableItem() && stack.getDamageValue() > 0) {
 				RESTORED.put(key, now);
 				int fix = (int) Math.ceil(stack.getMaxDamage() * RESTORE_MEND * power);
-				stack.setDamageValue(Math.max(0, stack.getDamageValue() - fix));
+				int priorDamage=stack.getDamageValue();stack.setDamageValue(Math.max(0,priorDamage-fix));
+				LifeOwnerEvents.repair(cast,t,slot,stack,priorDamage);
 				mended = true;
 			}
 		}
-		TechniqueVfx.restore(cast.level, t, mended);
 	}
 
 	/** Accelerate: time runs faster for the target. */

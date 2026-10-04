@@ -123,3 +123,9 @@ Rootmolt/Drainhouse remain isolated drafts, with no creature/item/lore/investiga
 The preceding fb2c07cb ordinary build passed; full Linux gameplay failed later at
 gravity-flight visual pixels. Broader CI, multiplayer, all-delivery and ecosystem
 acceptance stays open after a successful scoped development milestone.
+
+## Life actual-outcome development increment (2026-10-03)
+
+The former isolated Life owner integration is now live:30 existing identities have authored material outcomes tied to actual admitted gameplay, source-aware Full/Minimal client delivery, bounded loaded-world rendering, corrected surface orientation, finite lifecycle cleanup and56 new sound identities for28 original effects. Generic overlap is removed only for wholly covered groups; mixed/uncovered fallback and requested rear glyphs remain. Actual spectator interception and Fortune pre-admission success feedback are fixed.
+
+Current Core48s, Stateful2m47s, Edges2m11s, Pulse49s, source26s, quality26s, geometry26s, spectator25s and Fortune37s focused suites pass. Combined build passes985 units;5270 generated paths reproduce;123 web/GitBook pages validate. Native guide44s final clear-capture and connected-player Bloomstep35s passes are now recorded; compact settings keep all18 buttons in bounds. Final build13s,985 units and checked review JAR are delivered with the exact checksum in the milestone audit. See docs/audit/life-outcomes-milestone.md for actual scope and remaining visual/CI/multiplayer limits. No new goal content count is awarded for polishing existing Life effects. Rootmolt/Drainhouse remains an unaccepted isolated candidate.

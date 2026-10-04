@@ -6,7 +6,10 @@ public final class FieldFusionFeels {
  private FieldFusionFeels(){}
  public static final java.util.List<String> EFFECTS=java.util.List.of("springbed","cinder_sieve","ashen_mercy","clockroot","skylatch","thresherwind");
  public static void register(){
-  for(String id:EFFECTS)
-   Signature.of(id).sound(Phase.CUE,"fieldfusion_"+id+"_cue",.38F,1).replace(Phase.IMPACT,Phase.HIT).register();
+  for(String id:EFFECTS){
+   var signature=Signature.of(id).sound(Phase.CUE,"fieldfusion_"+id+"_cue",.38F,1).replace(Phase.IMPACT,Phase.HIT);
+   if(id.equals("ashen_mercy"))signature.authoredOutcome();
+   signature.register();
+  }
  }
 }

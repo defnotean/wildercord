@@ -224,13 +224,15 @@ public final class Wards {
 	static void reversal(Cast cast, LivingEntity t, int ticks) {
 		int resting = DeathsDoor.resting(t);
 		if (resting > 0) {
+			LifeOwnerEvents.refused(cast,"reversal",t);
 			// Death was cheated a moment ago: it won't be again yet (see DeathsDoor).
 			Casters.tell(cast.caster, Component.translatableWithFallback("message.wildercord.deaths_door",
 				"Death was cheated too recently: nothing turns it back again for %s s", resting).withColor(0x6EDC64));
 			return;
 		}
 		REVERSAL.merge(t.getUUID(), cast.level.getGameTime() + ticks, Math::max);
-		TechniqueVfx.reversalMark(cast.level, t);
+		LifeOwnerEvents.admitted(cast,"reversal",t,LifeOwnerEvents.Moment.APPLY,1,null);
+		LifeOwnerEvents.track(cast,"reversal",t,()->REVERSAL.get(t.getUUID()),true);
 	}
 
 	/** Starmaw eats the wards on {@code t} (Foresight, Reflect, Reversal, Infinity, Riposte, Anchor); how many it took. */
@@ -426,6 +428,7 @@ public final class Wards {
 			return true;
 		}
 		DeathsDoor.saved(entity, false);
+		float reversalBefore=entity.getHealth();
 		entity.setHealth(entity.getMaxHealth() * 0.5F);
 		List<net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect>> bad = new ArrayList<>();
 		for (MobEffectInstance effect : entity.getActiveEffects()) {
@@ -437,7 +440,7 @@ public final class Wards {
 		entity.clearFire();
 		entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1, false, true));
 		entity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 60, 1, false, true));
-		TechniqueVfx.reversal(level, entity);
+		LifeOwnerEvents.transition(level,"reversal",entity,LifeOwnerEvents.Moment.TRIGGER,1,entity.getHealth()-reversalBefore,null);
 		if (entity instanceof ServerPlayer player) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.reversal").withColor(0x6EDC64));
 		}

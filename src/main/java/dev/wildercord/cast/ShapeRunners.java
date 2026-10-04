@@ -641,7 +641,7 @@ final class ShapeRunners {
 	static List<Entity> along(Cast cast, Vec3 from, Vec3 to, double width, Set<UUID> skip) {
 		List<Entity> hits = new ArrayList<>();
 		for (Entity e : cast.level.getEntities(cast.caster, new AABB(from, to).inflate(width + 1.0),
-				e -> e instanceof LivingEntity && e.isAlive() && !skip.contains(e.getUUID()))) {
+				e -> e instanceof LivingEntity && e.isAlive() && !e.isSpectator() && !e.isRemoved() && !skip.contains(e.getUUID()))) {
 			AABB box = e.getBoundingBox().inflate(width);
 			if (box.contains(from) || box.clip(from, to).isPresent()) {
 				hits.add(e);

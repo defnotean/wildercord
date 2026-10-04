@@ -501,8 +501,7 @@ public final class ExplorerEffects {
 
 	/** Vinelash: a thorned vine lashes the target and hauls it toward the caster. */
 	private static void vinelash(Cast cast, LivingEntity t, double power) {
-		ExplorerVfx.vinelash(cast.level, cast.caster, t);
-		Effects.hurt(cast, t, magic(cast), 5 * power);
+		LifeOwnerEvents.mutation(cast,"vinelash",t,LifeOwnerEvents.Moment.TRIGGER,cast.caster.getBoundingBox().getCenter(),()->Effects.hurt(cast,t,magic(cast),5*power));
 		// Hauled in, so a blast now makes Implode; and tripped where it lands.
 		Reactions.mark(t, Reactions.Mark.PULLED);
 		effect(t, MobEffects.SLOWNESS, 40, 1, cast);
@@ -512,6 +511,7 @@ public final class ExplorerEffects {
 			if (distance > 1.5) {
 				Vec3 flat = new Vec3(toward.x, 0, toward.z).normalize();
 				Effects.push(t, flat.scale(Math.min(1.2, 0.35 + Math.min(4.0, distance - 1.5) * 0.22)).add(0, 0.35, 0));
+				LifeOwnerEvents.admitted(cast,"vinelash",t,LifeOwnerEvents.Moment.PULSE,1,cast.caster.getBoundingBox().getCenter());
 			}
 		}
 	}
@@ -525,7 +525,8 @@ public final class ExplorerEffects {
 
 	private static void remedy(Cast cast, Cast.Hit hit, List<LivingEntity> helped, double power, double duration) {
 		for (LivingEntity t : helped) {
-			List<Holder<MobEffect>> bad = new ArrayList<>();
+			var observedRemedy=LifeOwnerEvents.before(t);
+			List<Holder<MobEffect>> bad=new ArrayList<>();
 			List<MobEffectInstance> boons = new ArrayList<>();
 			for (MobEffectInstance effect : t.getActiveEffects()) {
 				if (effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
@@ -542,7 +543,7 @@ public final class ExplorerEffects {
 			boons.forEach(t::addEffect);
 			t.heal((float) (4 * power));
 			t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(6, duration), 0, false, true));
-			ExplorerVfx.remedy(cast.level, t);
+			LifeOwnerEvents.changed(cast,"remedy",t,observedRemedy,null,LifeOwnerEvents.Moment.APPLY);
 		}
 		for (Entity e : hit.entities()) {
 			if (e instanceof ZombieVillager zombie && zombie.isAlive() && !zombie.isConverting()) {
@@ -897,8 +898,8 @@ public final class ExplorerEffects {
 		ServerLevel level = cast.level;
 		BlockPos ground = hit.block() != null ? hit.block() : BlockPos.containing(CastEngine.ground(level, hit.point().add(0, 0.5, 0)).subtract(0, 0.5, 0));
 		BlockPos above = ground.above();
-		ExplorerVfx.ancientSeed(level, Vec3.atBottomCenterOf(above));
 		if (level.getBlockState(above).isAir()) {
+			var seedBefore=level.getBlockState(above);
 			boolean pitcher = level.getRandom().nextFloat() < 0.35F;
 			BlockState flower = pitcher ? Blocks.PITCHER_PLANT.defaultBlockState() : Blocks.TORCHFLOWER.defaultBlockState();
 			if (flower.canSurvive(level, above) && (!pitcher || level.getBlockState(above.above()).isAir()) && mayEdit(cast, above)) {
@@ -907,6 +908,7 @@ public final class ExplorerEffects {
 				} else {
 					level.setBlock(above, flower, 3);
 				}
+				LifeOwnerEvents.cell(cast,"ancient_seed",above,seedBefore,level.getBlockState(above),LifeOwnerEvents.Moment.APPLY);
 			}
 		}
 		int reach = (int) Math.round(4 * radiusScale);
@@ -927,13 +929,13 @@ public final class ExplorerEffects {
 	/** Every unripe crop within {@code reach} of {@code ground} grows a stage (32 at most). */
 	private static void growField(Cast cast, BlockPos ground, int reach) {
 		ServerLevel level = cast.level;
-		LifeArcaneFx.seedPulse(level, ground, reach);
 		int grown = 0;
 		for (BlockPos pos : BlockPos.betweenClosed(ground.offset(-reach, -1, -reach), ground.offset(reach, 2, reach))) {
 			BlockState state = level.getBlockState(pos);
 			if (state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state) && grown < 32 && mayEdit(cast, pos)) {
-				level.setBlock(pos, crop.getStateForAge(crop.getAge(state) + 1), 2);
-				ExplorerVfx.sprout(level, pos.immutable());
+				var grownState=crop.getStateForAge(crop.getAge(state)+1);
+				level.setBlock(pos,grownState,2);
+				LifeOwnerEvents.cell(cast,"ancient_seed",pos,state,grownState,LifeOwnerEvents.Moment.PULSE);
 				grown++;
 			}
 		}
@@ -943,14 +945,14 @@ public final class ExplorerEffects {
 
 	/** Moonpetal: moonlit petals cut enemies and mend allies alike. */
 	private static void moonpetal(Cast cast, Vec3 point, double radius, double power) {
-		ExplorerVfx.moonpetal(cast.level, point, radius);
 		power *= ExplorerNumbers.moonFactor(cast.level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.MOON_PHASE, BlockPos.containing(point)).index(), !cast.level.isBrightOutside() && cast.level.canSeeSky(BlockPos.containing(point)));
 		for (LivingEntity t : enemiesAround(cast, point, radius)) {
-			Effects.hurt(cast, t, magic(cast), 5 * power);
+			final double observedPower=power;
+			LifeOwnerEvents.mutation(cast,"moonpetal",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast,t,magic(cast),5*observedPower));
 		}
 		for (LivingEntity t : alliesAround(cast, point, radius)) {
-			t.heal((float) (4 * power));
-			ExplorerVfx.petalMend(cast.level, t);
+			final double observedPower=power;
+			LifeOwnerEvents.mutation(cast,"moonpetal",t,LifeOwnerEvents.Moment.APPLY,null,()->t.heal((float)(4*observedPower)));
 		}
 	}
 
@@ -1027,11 +1029,10 @@ public final class ExplorerEffects {
 	/** Sporebloom: spores that sicken enemies and feed allies. */
 	private static void sporebloom(Cast cast, Vec3 point, double radius, double duration) {
 		Vec3 centre = CastEngine.ground(cast.level, point.add(0, 0.5, 0));
-		ExplorerVfx.sporebloom(cast.level, centre, radius);
 		for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
 			effect(t, MobEffects.POISON, Effects.ticks(6, duration), 0, cast);
 			// Poison is only the marker; the spores' own damage reaches undead and spiders too.
-			Effects.venomDot(cast, t, 0.67, (int) Math.max(1, Math.round(4 * duration)));
+			Effects.venomDot(cast,t,.67,(int)Math.max(1,Math.round(4*duration)),"sporebloom");
 			if (t instanceof Mob mob && !Spirits.isBoss(mob)) {
 				confuse(cast, mob, Effects.ticks(5, duration));
 			} else {
@@ -1040,7 +1041,7 @@ public final class ExplorerEffects {
 		}
 		for (LivingEntity t : alliesAround(cast, centre.add(0, 1, 0), radius)) {
 			if (t instanceof Player player) {
-				player.getFoodData().eat(4, 0.4F);
+				LifeOwnerEvents.mutation(cast,"sporebloom",player,LifeOwnerEvents.Moment.APPLY,null,()->player.getFoodData().eat(4,.4F));
 			}
 		}
 	}
@@ -1125,7 +1126,8 @@ public final class ExplorerEffects {
 		for (BlockPos vine : BlockPos.betweenClosed(BlockPos.containing(point).offset(-spread - 2, -3, -spread - 2), BlockPos.containing(point).offset(spread + 2, 8, spread + 2))) {
 			BlockState old = level.getBlockState(vine);
 			if ((old.is(Blocks.CAVE_VINES) || old.is(Blocks.CAVE_VINES_PLANT)) && !old.getValue(CaveVines.BERRIES) && mayEdit(cast, vine)) {
-				level.setBlock(vine, old.setValue(CaveVines.BERRIES, true), 3);
+				var berried=old.setValue(CaveVines.BERRIES,true);level.setBlock(vine,berried,3);
+				LifeOwnerEvents.cell(cast,"glowvine",vine,old,berried,LifeOwnerEvents.Moment.RENEW);
 			}
 		}
 		List<BlockPos> columns = new ArrayList<>();
@@ -1163,7 +1165,8 @@ public final class ExplorerEffects {
 				if (!mayEdit(cast, at)) {
 					break;
 				}
-				level.setBlock(at, vine, 3);
+				var prior=level.getBlockState(at);level.setBlock(at,vine,3);
+				LifeOwnerEvents.cell(cast,"glowvine",at,prior,vine,LifeOwnerEvents.Moment.APPLY);
 				if (!last && !level.getBlockState(at.below()).isAir()) {
 					break;
 				}
@@ -1176,7 +1179,6 @@ public final class ExplorerEffects {
 					level.setBlock(at, Blocks.CAVE_VINES.defaultBlockState().setValue(CaveVines.BERRIES, true), 3);
 				}
 			}
-			ExplorerVfx.glowvine(level, Vec3.atCenterOf(top));
 			placed++;
 		}
 		if (placed == 0) {
@@ -1187,12 +1189,11 @@ public final class ExplorerEffects {
 	/** Rootsnare: mangrove roots burst up and hold everything around the point. */
 	private static void rootsnare(Cast cast, Vec3 point, double radius, double power, int ticks) {
 		Vec3 centre = CastEngine.ground(cast.level, point.add(0, 0.5, 0));
-		ExplorerVfx.rootsnare(cast.level, centre, radius);
 		for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
-			Spirits.hold(t, ticks);
+			Spirits.hold(t,ticks);
+			LifeOwnerEvents.admitted(cast,"rootsnare",t,LifeOwnerEvents.Moment.APPLY,1,null);
 			t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-			Effects.hurt(cast, t, magic(cast), 3 * power);
-			ExplorerVfx.rooted(cast.level, t);
+			LifeOwnerEvents.mutation(cast,"rootsnare",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast,t,magic(cast),3*power));
 			thornTax(cast, t, ticks, power);
 		}
 	}
@@ -1217,7 +1218,7 @@ public final class ExplorerEffects {
 				while (moved[0] >= 1.5 && hurt[0] < 5) {
 					moved[0] -= 1.5;
 					hurt[0]++;
-					Effects.hurt(cast, t, magic(cast), 1 * power);
+					LifeOwnerEvents.mutation(cast,"rootsnare",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast,t,magic(cast),power));
 				}
 			}, () -> { });
 		}));

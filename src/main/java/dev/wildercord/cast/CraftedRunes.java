@@ -487,15 +487,17 @@ public final class CraftedRunes {
 	private static final Map<UUID, Long> ASLEEP = new ConcurrentHashMap<>();
 
 	private static void drowse(Cast cast, LivingEntity t, int ticks) {
-		CraftedVfx.drowse(cast.level, t);
 		if (Spirits.isBoss(t)) {
 			// A boss's fight must never stop: it only grows drowsy.
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, DROWSY_AMPLIFIER, false, true), cast.caster);
+			if(t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,ticks,DROWSY_AMPLIFIER,false,true),cast.caster))LifeOwnerEvents.admitted(cast,"drowse",t,LifeOwnerEvents.Moment.APPLY,1,null);
 			return;
 		}
 		long now = cast.level.getGameTime();
 		Spirits.hold(t, ticks);
-		ASLEEP.merge(t.getUUID(), now + ticks, Math::max);
+		boolean renewed=ASLEEP.containsKey(t.getUUID());
+		ASLEEP.merge(t.getUUID(),now+ticks,Math::max);
+		LifeOwnerEvents.admitted(cast,"drowse",t,renewed?LifeOwnerEvents.Moment.RENEW:LifeOwnerEvents.Moment.APPLY,1,null);
+		LifeOwnerEvents.track(cast,"drowse",t,()->ASLEEP.get(t.getUUID()),false);
 		if (t instanceof Mob mob) {
 			mob.setTarget(null);
 		}
@@ -543,7 +545,7 @@ public final class CraftedRunes {
 		if (weak != null && weak.getAmplifier() == 4 && weak.getDuration() <= left + 2) {
 			t.removeEffect(MobEffects.WEAKNESS);
 		}
-		CraftedVfx.wake(level, t);
+		LifeOwnerEvents.transition(level,"drowse",t,LifeOwnerEvents.Moment.END,1,0,null);
 	}
 
 	/** The damage multiplier for a blow on a sleeper: 1.75 (Drowse's backstab). */

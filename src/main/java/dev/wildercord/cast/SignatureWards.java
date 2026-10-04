@@ -137,17 +137,17 @@ final class SignatureWards {
 	 */
 	static void stitch(Cast cast, LivingEntity ally, double power, int ticks) {
 		long now = cast.level.getGameTime();
-		ally.heal((float) (SignatureRules.STITCH_HEAL * power));
+		LifeOwnerEvents.mutation(cast,"stitchtime",ally,LifeOwnerEvents.Moment.APPLY,null,()->ally.heal((float)(SignatureRules.STITCH_HEAL*power)));
 		double cap = SignatureRules.STITCH_CAP * power;
 		Stitch old = STITCHES.get(ally.getUUID());
 		if (old != null && old.ally == ally && now < old.until) {
 			old.until = SignatureRules.stitchUntil(old.began, old.until, now, ticks);
 			old.cap = Math.max(old.cap, cap);
-			SignatureVfx.stitchRenew(cast.level, ally);
+			LifeOwnerEvents.admitted(cast,"stitchtime",ally,LifeOwnerEvents.Moment.RENEW,1,null);
 			return;
 		}
 		STITCHES.put(ally.getUUID(), new Stitch(ally, cast, now, now + ticks, cap));
-		SignatureVfx.stitch(cast.level, ally);
+		LifeOwnerEvents.admitted(cast,"stitchtime",ally,LifeOwnerEvents.Moment.APPLY,1,null);
 	}
 
 	/**
@@ -255,7 +255,7 @@ final class SignatureWards {
 		Stitch stitch = STITCHES.get(entity.getUUID());
 		if (stitch != null && stitch.ally == entity && now < stitch.until) {
 			stitch.counted += damage;
-			SignatureVfx.stitchCount(level, entity);
+			LifeOwnerEvents.counted(stitch.cast,entity,damage);
 		}
 		Clock clock = CLOCKS.get(entity.getUUID());
 		if (clock != null && clock.target == entity && now < clock.until && !bursting) {
@@ -367,9 +367,8 @@ final class SignatureWards {
 			it.remove();
 			double back = SignatureRules.stitchBack(stitch.counted, stitch.cap);
 			if (back > 0) {
-				ally.heal((float) back);
+				LifeOwnerEvents.mutation(stitch.cast,"stitchtime",ally,LifeOwnerEvents.Moment.END,null,()->ally.heal((float)back));
 			}
-			SignatureVfx.stitchClose(level, ally, back);
 		}
 	}
 

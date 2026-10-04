@@ -1495,6 +1495,398 @@
       "wildercord:kit/earth/earth_tick_3"
     ]
   },
+  "life_auth_ancient_seed_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_ancient_seed_cue_1",
+      "wildercord:kit/life/life_auth_ancient_seed_cue_2"
+    ]
+  },
+  "life_auth_ancient_seed_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_ancient_seed_outcome_1",
+      "wildercord:kit/life/life_auth_ancient_seed_outcome_2"
+    ]
+  },
+  "life_auth_bloom_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_bloom_cue_1",
+      "wildercord:kit/life/life_auth_bloom_cue_2"
+    ]
+  },
+  "life_auth_bloom_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_bloom_outcome_1",
+      "wildercord:kit/life/life_auth_bloom_outcome_2"
+    ]
+  },
+  "life_auth_bloomstep_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_bloomstep_cue_1",
+      "wildercord:kit/life/life_auth_bloomstep_cue_2"
+    ]
+  },
+  "life_auth_bloomstep_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_bloomstep_outcome_1",
+      "wildercord:kit/life/life_auth_bloomstep_outcome_2"
+    ]
+  },
+  "life_auth_bramble_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_bramble_cue_1",
+      "wildercord:kit/life/life_auth_bramble_cue_2"
+    ]
+  },
+  "life_auth_bramble_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_bramble_outcome_1",
+      "wildercord:kit/life/life_auth_bramble_outcome_2"
+    ]
+  },
+  "life_auth_cleanse_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_cleanse_cue_1",
+      "wildercord:kit/life/life_auth_cleanse_cue_2"
+    ]
+  },
+  "life_auth_cleanse_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_cleanse_outcome_1",
+      "wildercord:kit/life/life_auth_cleanse_outcome_2"
+    ]
+  },
+  "life_auth_drowse_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_drowse_cue_1",
+      "wildercord:kit/life/life_auth_drowse_cue_2"
+    ]
+  },
+  "life_auth_drowse_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_drowse_outcome_1",
+      "wildercord:kit/life/life_auth_drowse_outcome_2"
+    ]
+  },
+  "life_auth_fortune_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_fortune_cue_1",
+      "wildercord:kit/life/life_auth_fortune_cue_2"
+    ]
+  },
+  "life_auth_fortune_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_fortune_outcome_1",
+      "wildercord:kit/life/life_auth_fortune_outcome_2"
+    ]
+  },
+  "life_auth_glimmer_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_glimmer_cue_1",
+      "wildercord:kit/life/life_auth_glimmer_cue_2"
+    ]
+  },
+  "life_auth_glimmer_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_glimmer_outcome_1",
+      "wildercord:kit/life/life_auth_glimmer_outcome_2"
+    ]
+  },
+  "life_auth_glowvine_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_glowvine_cue_1",
+      "wildercord:kit/life/life_auth_glowvine_cue_2"
+    ]
+  },
+  "life_auth_glowvine_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_glowvine_outcome_1",
+      "wildercord:kit/life/life_auth_glowvine_outcome_2"
+    ]
+  },
+  "life_auth_grow_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_grow_cue_1",
+      "wildercord:kit/life/life_auth_grow_cue_2"
+    ]
+  },
+  "life_auth_grow_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_grow_outcome_1",
+      "wildercord:kit/life/life_auth_grow_outcome_2"
+    ]
+  },
+  "life_auth_harvest_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_harvest_cue_1",
+      "wildercord:kit/life/life_auth_harvest_cue_2"
+    ]
+  },
+  "life_auth_harvest_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_harvest_outcome_1",
+      "wildercord:kit/life/life_auth_harvest_outcome_2"
+    ]
+  },
+  "life_auth_haven_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_haven_cue_1",
+      "wildercord:kit/life/life_auth_haven_cue_2"
+    ]
+  },
+  "life_auth_haven_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_haven_outcome_1",
+      "wildercord:kit/life/life_auth_haven_outcome_2"
+    ]
+  },
+  "life_auth_heal_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_heal_cue_1",
+      "wildercord:kit/life/life_auth_heal_cue_2"
+    ]
+  },
+  "life_auth_heal_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_heal_outcome_1",
+      "wildercord:kit/life/life_auth_heal_outcome_2"
+    ]
+  },
+  "life_auth_lifebloom_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_lifebloom_cue_1",
+      "wildercord:kit/life/life_auth_lifebloom_cue_2"
+    ]
+  },
+  "life_auth_lifebloom_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_lifebloom_outcome_1",
+      "wildercord:kit/life/life_auth_lifebloom_outcome_2"
+    ]
+  },
+  "life_auth_moonpetal_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_moonpetal_cue_1",
+      "wildercord:kit/life/life_auth_moonpetal_cue_2"
+    ]
+  },
+  "life_auth_moonpetal_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_moonpetal_outcome_1",
+      "wildercord:kit/life/life_auth_moonpetal_outcome_2"
+    ]
+  },
+  "life_auth_nourish_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_nourish_cue_1",
+      "wildercord:kit/life/life_auth_nourish_cue_2"
+    ]
+  },
+  "life_auth_nourish_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_nourish_outcome_1",
+      "wildercord:kit/life/life_auth_nourish_outcome_2"
+    ]
+  },
+  "life_auth_regrowth_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_regrowth_cue_1",
+      "wildercord:kit/life/life_auth_regrowth_cue_2"
+    ]
+  },
+  "life_auth_regrowth_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_regrowth_outcome_1",
+      "wildercord:kit/life/life_auth_regrowth_outcome_2"
+    ]
+  },
+  "life_auth_remedy_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_remedy_cue_1",
+      "wildercord:kit/life/life_auth_remedy_cue_2"
+    ]
+  },
+  "life_auth_remedy_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_remedy_outcome_1",
+      "wildercord:kit/life/life_auth_remedy_outcome_2"
+    ]
+  },
+  "life_auth_restore_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_restore_cue_1",
+      "wildercord:kit/life/life_auth_restore_cue_2"
+    ]
+  },
+  "life_auth_restore_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_restore_outcome_1",
+      "wildercord:kit/life/life_auth_restore_outcome_2"
+    ]
+  },
+  "life_auth_reversal_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_reversal_cue_1",
+      "wildercord:kit/life/life_auth_reversal_cue_2"
+    ]
+  },
+  "life_auth_reversal_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_reversal_outcome_1",
+      "wildercord:kit/life/life_auth_reversal_outcome_2"
+    ]
+  },
+  "life_auth_root_bulwark_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_root_bulwark_cue_1",
+      "wildercord:kit/life/life_auth_root_bulwark_cue_2"
+    ]
+  },
+  "life_auth_root_bulwark_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_root_bulwark_outcome_1",
+      "wildercord:kit/life/life_auth_root_bulwark_outcome_2"
+    ]
+  },
+  "life_auth_rootsnare_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_rootsnare_cue_1",
+      "wildercord:kit/life/life_auth_rootsnare_cue_2"
+    ]
+  },
+  "life_auth_rootsnare_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_rootsnare_outcome_1",
+      "wildercord:kit/life/life_auth_rootsnare_outcome_2"
+    ]
+  },
+  "life_auth_second_wind_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_second_wind_cue_1",
+      "wildercord:kit/life/life_auth_second_wind_cue_2"
+    ]
+  },
+  "life_auth_second_wind_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_second_wind_outcome_1",
+      "wildercord:kit/life/life_auth_second_wind_outcome_2"
+    ]
+  },
+  "life_auth_soulbond_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_soulbond_cue_1",
+      "wildercord:kit/life/life_auth_soulbond_cue_2"
+    ]
+  },
+  "life_auth_soulbond_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_soulbond_outcome_1",
+      "wildercord:kit/life/life_auth_soulbond_outcome_2"
+    ]
+  },
+  "life_auth_sporebloom_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_sporebloom_cue_1",
+      "wildercord:kit/life/life_auth_sporebloom_cue_2"
+    ]
+  },
+  "life_auth_sporebloom_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_sporebloom_outcome_1",
+      "wildercord:kit/life/life_auth_sporebloom_outcome_2"
+    ]
+  },
+  "life_auth_stitchtime_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_stitchtime_cue_1",
+      "wildercord:kit/life/life_auth_stitchtime_cue_2"
+    ]
+  },
+  "life_auth_stitchtime_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_stitchtime_outcome_1",
+      "wildercord:kit/life/life_auth_stitchtime_outcome_2"
+    ]
+  },
+  "life_auth_venom_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_venom_cue_1",
+      "wildercord:kit/life/life_auth_venom_cue_2"
+    ]
+  },
+  "life_auth_venom_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_venom_outcome_1",
+      "wildercord:kit/life/life_auth_venom_outcome_2"
+    ]
+  },
+  "life_auth_vinelash_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_auth_vinelash_cue_1",
+      "wildercord:kit/life/life_auth_vinelash_cue_2"
+    ]
+  },
+  "life_auth_vinelash_outcome": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_auth_vinelash_outcome_1",
+      "wildercord:kit/life/life_auth_vinelash_outcome_2"
+    ]
+  },
   "life_bloom": {
     "subtitle": "subtitles.wildercord.kit.field",
     "sounds": [

@@ -34,6 +34,7 @@ public final class Signature {
 	Motion motion;
 	Integer accent;
 	double scale = 1.0;
+	private boolean authoredOutcome;
 
 	private Signature(String id) {
 		this.id = id;
@@ -65,6 +66,11 @@ public final class Signature {
 		replaced.addAll(java.util.List.of(phases));
 		return this;
 	}
+
+	/** Opt in only after actual owner observations replace this rune's collision/aftermath body.
+	 * This is independent of replace(IMPACT): existing signatures retain their old semantics. */
+	public Signature authoredOutcome() { authoredOutcome = true; return this; }
+	public boolean ownsOutcomeBody() { return authoredOutcome; }
 
 	/** Treat this rune's spells as another motion (pose, cue): a Meteor is a CALL, not a HURL. */
 	public Signature motion(Motion motion) {

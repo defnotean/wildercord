@@ -94,6 +94,7 @@ public final class SupportSignatures {
     if(amount<=0 || !NextSignaturePayments.of(c).target("pulse_ferry_targets",t.getUUID(),2))return;
     visited.add(t.getUUID());float before=t.getHealth();t.heal(amount);left[0]-=amount;
     // Admission spends the intended bounded gift even if a concurrent heal prevention consumes it.
+    LifeOwnerEvents.ferry(c,t,before,from[0],phase);
     SupportSignatureFx.ferry(c.level,from[0],t,Math.max(0,t.getHealth()-before),phase);from[0]=t.getEyePosition();
    }));
   }

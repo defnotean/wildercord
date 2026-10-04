@@ -35,12 +35,7 @@ final class FieldFusionFx {
  }
  static void mercy(ServerLevel l,LivingEntity t){
   var at=t.position().add(0,.45,0);
-  // Separate scorched tissue flakes and living leaves; heat never turns into an explosion.
-  for(int i=0;i<6;i++){double a=i*2.39996;var p=at.add(Math.cos(a)*.35,i*.07,Math.sin(a)*.35);
-   dot(l,earth(EarthOption.DUST,0x63564A,.055F,new Vec3(0,.014,0)),p);
-   dot(l,new MaterialOption(MaterialOption.PETAL,0x92B77E,.075F,18),p.add(0,.13,0));
-   if(i%2==0)dot(l,new MaterialOption(MaterialOption.EMBER,0xD7864C,.028F,6),p.add(0,.04,0));
-  }
+  // Actual Life owner observation owns material; preserve Mercy's sole authored landing voice.
   cue(l,at,"ashen_mercy");
  }
  static void imprint(ServerLevel l,Vec3 at){

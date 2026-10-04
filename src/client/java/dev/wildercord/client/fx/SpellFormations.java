@@ -154,7 +154,10 @@ public final class SpellFormations {
     case BOLT,ARC,ORB,SPARK,COMET,RICOCHET,CLUSTER,WISP -> true;
     default -> false;
    };
-   if(!materialProjectile) switch (ShapeFormation.of(event.shape())) {
+   // Life Self prepares its tissue, seed or ward material directly on the caster.
+   // Uncovered mixed groups retain the ordinary shape scaffold.
+   boolean materialSelf=lifeOnly && ShapeFormation.of(event.shape())==ShapeFormation.SELF;
+   if(!materialProjectile && !materialSelf) switch (ShapeFormation.of(event.shape())) {
     case SELF -> { ring(feet.add(0, t*.7, 0), .7-.25*t, true); ring(feet.add(0, 1.3-t*.4, 0), .35, true); }
     case TOUCH -> { slash(point(-q*.3, 0, 0), q*.5, Math.PI*.8, 0); line(point(q*.3, -.3, 0), point(q*.3, .3, 0), false); }
     case BOLT -> { orb(point(0, 0, -.35+.35*t), .15*t); line(point(0, 0, -.8), focus, false); }

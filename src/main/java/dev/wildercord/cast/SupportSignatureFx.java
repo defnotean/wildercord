@@ -29,11 +29,12 @@ final class SupportSignatureFx {
  static void ferry(ServerLevel l,Vec3 from,LivingEntity to,float taken,int phase){
   if(!(taken>0)||!Float.isFinite(taken)||to.isRemoved()||!to.isAlive()||to.level()!=l)return;
   var destination=to.position().add(0,.8,0);var delta=destination.subtract(from);
-  for(int i=0;i<7;i++){double f=i/6.;var at=from.add(delta.scale(f)).add(0,.2*Math.sin(f*Math.PI),0);
+  // The previous visit endpoint is a historical snapshot; never trace an unloaded source chunk.
+  if(l.isLoaded(net.minecraft.core.BlockPos.containing(from)))for(int i=0;i<7;i++){double f=i/6.;var at=from.add(delta.scale(f)).add(0,.2*Math.sin(f*Math.PI),0);
    dot(l,new LifeOption(LifeOption.SAP,0xA6BE78,.08F,12,delta.normalize().scale(.025),.01F),at);
    if(i==0 || i==6)dot(l,m(MaterialOption.TIME,0xC6B786,.04F),at.add(0,.1,0));
   }
-  if(taken>0)dot(l,new LifeOption(LifeOption.TISSUE,0xAAC68D,.14F,12,new Vec3(0,.006,0),.02F),destination);
+  // Actual positive-heal landing belongs to LifeOwnerEvents/LifeOutcomes; keep this parcel path and sole voice.
   voice(l,destination,"pulse_ferry");
  }
  static void lantern(ServerLevel l,Vec3 at,boolean returning){

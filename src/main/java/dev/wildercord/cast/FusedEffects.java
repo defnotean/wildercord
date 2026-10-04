@@ -207,8 +207,7 @@ public final class FusedEffects {
 			case "bloom" -> {
 				int level2 = 1 + boost(power, amplify);
 				for (LivingEntity t : helped) {
-					t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(6, duration), Math.min(3, level2), false, true));
-					FusionVfx.bloom(level, t);
+					LifeOwnerEvents.status(cast,"bloom",t,LifeOwnerEvents.Moment.APPLY,null,()->t.addEffect(new MobEffectInstance(MobEffects.REGENERATION,Effects.ticks(6,duration),Math.min(3,level2),false,true)));
 				}
 				first(helped, 3).forEach(t -> blossom(cast, t.blockPosition()));
 				// Pollen: every ally within 4 blocks of a touched one that it missed gets Regeneration I (one hop, six at most).
@@ -221,8 +220,7 @@ public final class FusedEffects {
 					}
 				}
 				for (LivingEntity a : pollen) {
-					a.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(5, duration), 0, false, true));
-					FusionVfx.bloom(level, a);
+					LifeOwnerEvents.status(cast,"bloom",a,LifeOwnerEvents.Moment.PULSE,null,()->a.addEffect(new MobEffectInstance(MobEffects.REGENERATION,Effects.ticks(5,duration),0,false,true)));
 				}
 			}
 			case "surge" -> helped.forEach(t -> {

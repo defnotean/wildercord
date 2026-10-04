@@ -147,6 +147,17 @@ class FeelTest {
 		for (Motion m : Motion.values()) {
 			assertTrue(kit.contains(ShapeFeels.gestureSound(m)), ShapeFeels.gestureSound(m));
 		}
+		// Check dynamically assembled Life names and keep signature voices single.
+		for (RuneDef rune : Runes.all()) {
+			if (rune.family() != RuneFamily.EFFECT || !rune.element().equals("life")) continue;
+			if (java.util.Set.of("ashen_mercy", "pulse_ferry").contains(rune.path())) {
+				assertFalse(kit.contains("life_auth_" + rune.path() + "_cue"), "Signature cue duplicated: " + rune.path());
+				assertFalse(kit.contains("life_auth_" + rune.path() + "_outcome"), "Signature landing duplicated: " + rune.path());
+			} else {
+				assertTrue(kit.contains("life_auth_" + rune.path() + "_cue"), rune.path() + " cue missing");
+				assertTrue(kit.contains("life_auth_" + rune.path() + "_outcome"), rune.path() + " outcome missing");
+			}
+		}
 		// Stop at the call's statement: a dynamic sound must not borrow a later switch case's string.
 		java.util.regex.Pattern named = java.util.regex.Pattern.compile("Feels\\.sound\\([^\";]*\"([a-z0-9_]+)\"(?!\\s*\\+)");
 		// Dynamic field-fusion names are checked exhaustively rather than mistaking their prefix for an event.

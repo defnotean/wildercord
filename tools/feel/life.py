@@ -368,3 +368,7 @@ def life_bloom(v, rng):
 
 
 EVENTS += [event("life_bloom", life_bloom, variants=2, role="tell", subtitle="field")]
+
+# Original Life outcomes; Mercy and Pulse Ferry retain their signature voices.
+from feel.life_outcomes_audio import ACTIVE_EVENTS as AUTHORED_OUTCOME_EVENTS
+EVENTS += list(AUTHORED_OUTCOME_EVENTS)

@@ -27,5 +27,7 @@ final class LifeFeels {
 		cue("life_stinger_world", 0x7CFFE0, "grow", "harvest", "glimmer", "glowvine", "ancient_seed", "bloomstep", "fortune");
 		// The thorn: a dry twig snap; venom, vines, roots, spores and sleep.
 		cue("life_stinger_thorn", 0x86D23A, "venom", "vinelash", "rootsnare", "sporebloom", "drowse", "moonpetal");
+		// Actual effect owners provide the authored outcomes and voices.
+		LifeOutcomeSignatures.register();
 	}
 }

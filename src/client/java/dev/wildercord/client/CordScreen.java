@@ -140,6 +140,13 @@ public class CordScreen extends Screen {
 	/** Where the field guide's heading falls among the Grimoire's lines, and whether to scroll there on the next draw. */
 	private int fieldGuideAt;
 	private boolean toFieldGuide;
+ private boolean toLifeJournal;
+ private int lifeJournalAt;
+ private List<String> lifeJournalRuneIds=List.of();
+ private final java.util.Map<Integer,String> lifeJournalLinks=new java.util.HashMap<>();
+ private final java.util.List<LifeJournalLink> visibleLifeJournalLinks=new java.util.ArrayList<>();
+ private record LifeJournalLink(int y,String target){}
+
 	private int editingPassive;
 	/** Renaming the selected spell: the name as typed so far. */
 	private boolean renaming;
@@ -2153,6 +2160,11 @@ public class CordScreen extends Screen {
 			return true;
 		}
 		if (grimoirePage) {
+   if(event.button()==InputConstants.MOUSE_BUTTON_LEFT)for(var link:visibleLifeJournalLinks)if(inside(mx,my,TEXT_X+8,link.y()-1,W-32-TEXT_X,LINE)){
+    click();if(link.target().equals("settings"))minecraft.gui.setScreen(new MagicSettingsScreen(this));
+    else Runes.get(link.target()).filter(r -> book().knows(r.id())).ifPresent(r -> {showPage(0);query=RuneItem.runeName(r).getString();filter=null;category=null;codexScroll=0;searchFocused=true;});
+    return true;
+   }
 			return true;
 		}
 		if (!passivePage && clickSpellTools(mx, my)) {
@@ -2671,6 +2683,29 @@ public class CordScreen extends Screen {
 		}
 	}
 
+ public void showLifeJournal(){showPage(2);toLifeJournal=true;}
+ /** Read-only native acceptance probes: the exact list and link rows produced by rendering. */
+ public List<String> lifeJournalKnown(){return lifeJournalRuneIds;}
+ public int lifeJournalScroll(){return grimoireScroll;}
+ public double[] lifeJournalPoint(String target){
+  if(!grimoirePage)return null;
+  for(var link:visibleLifeJournalLinks)if(link.target().equals(target))return onScreen(TEXT_X+12,link.y()+4);
+  return null;
+ }
+
+ /** General guidance is public; material identities remain gated by actual rune knowledge. */
+ private void addLifeJournal(List<GrimoireLine> lines){
+  lifeJournalAt=lines.size();var entries=LifeJournal.RUNES.stream().map(path -> Runes.get("wildercord:"+path)).flatMap(java.util.Optional::stream).filter(r -> book().knows(r.id())).toList();
+  lifeJournalRuneIds=entries.stream().map(r -> r.id()).toList();
+  lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.life",entries.size()),0,GOLD,List.of(Component.translatable("screen.wildercord.grimoire.life.about").withStyle(ChatFormatting.GRAY))));
+  for(String key:List.of("result","empty","ward","settings","quality")){
+   if(key.equals("settings"))lifeJournalLinks.put(lines.size(),"settings");
+   lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.life."+key),8,key.equals("settings")?CYAN:TEXT,List.of(Component.translatable("screen.wildercord.grimoire.life."+key+".tip").withStyle(ChatFormatting.GRAY))));
+  }
+  if(entries.isEmpty())lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.life.unknown"),8,DIM,null));
+  for(var rune:entries){lifeJournalLinks.put(lines.size(),rune.id());lines.add(new GrimoireLine(RuneItem.runeName(rune).withColor(RuneColors.of(rune)),8,TEXT,List.of(RuneItem.runeName(rune).withColor(RuneColors.of(rune)),Component.translatable("screen.wildercord.grimoire.life."+rune.path()+".material").withStyle(ChatFormatting.GREEN),Component.translatable("screen.wildercord.grimoire.life."+rune.path()+".read").withStyle(ChatFormatting.GRAY))));}
+ }
+
 	/** How long an affinity's bar is on the Grimoire page. */
 	private static final int AFFINITY_BAR = 64;
 
@@ -2734,6 +2769,8 @@ public class CordScreen extends Screen {
 		int top = SPELL_TOP - 4;
 		int bottom = H - 12;
 		sprite(g, SPR_INSET, 10, top - 3, W - 20, bottom + 3 - (top - 3));
+  lifeJournalLinks.clear();visibleLifeJournalLinks.clear();
+  addLifeJournal(lines);
 		// Innate rune and leaning.
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.heart"), 0, GOLD, null));
 		String innate = Heart.innate(player);
@@ -2834,6 +2871,7 @@ public class CordScreen extends Screen {
 					Component.literal(feat.description()).withStyle(ChatFormatting.GRAY))));
 		}
 		int visible = (bottom - top) / LINE;
+  if(toLifeJournal){grimoireScroll=lifeJournalAt*LINE;toLifeJournal=false;}
 		if (toFieldGuide) {
 			grimoireScroll = fieldGuideAt * LINE;
 			toFieldGuide = false;
@@ -2845,6 +2883,7 @@ public class CordScreen extends Screen {
 		for (int i = 0; i < visible + 1 && first + i < lines.size(); i++) {
 			GrimoireLine line = lines.get(first + i);
 			int y = top + i * LINE;
+   String lifeLink=lifeJournalLinks.get(first+i);if(lifeLink!=null && y>=top && y+LINE<=bottom)visibleLifeJournalLinks.add(new LifeJournalLink(y,lifeLink));
 			int x = TEXT_X + line.x();
 			if (line.x() == 0) {
 				g.fill(TEXT_X - 2, y + 9, W - 20, y + 10, 0x40E8C46A);

@@ -1287,6 +1287,174 @@
     "incant_whisper": {
       "part": "neutral"
     },
+    "life_auth_ancient_seed_cue": {
+      "part": "life"
+    },
+    "life_auth_ancient_seed_outcome": {
+      "part": "life"
+    },
+    "life_auth_bloom_cue": {
+      "part": "life"
+    },
+    "life_auth_bloom_outcome": {
+      "part": "life"
+    },
+    "life_auth_bloomstep_cue": {
+      "part": "life"
+    },
+    "life_auth_bloomstep_outcome": {
+      "part": "life"
+    },
+    "life_auth_bramble_cue": {
+      "part": "life"
+    },
+    "life_auth_bramble_outcome": {
+      "part": "life"
+    },
+    "life_auth_cleanse_cue": {
+      "part": "life"
+    },
+    "life_auth_cleanse_outcome": {
+      "part": "life"
+    },
+    "life_auth_drowse_cue": {
+      "part": "life"
+    },
+    "life_auth_drowse_outcome": {
+      "part": "life"
+    },
+    "life_auth_fortune_cue": {
+      "part": "life"
+    },
+    "life_auth_fortune_outcome": {
+      "part": "life"
+    },
+    "life_auth_glimmer_cue": {
+      "part": "life"
+    },
+    "life_auth_glimmer_outcome": {
+      "part": "life"
+    },
+    "life_auth_glowvine_cue": {
+      "part": "life"
+    },
+    "life_auth_glowvine_outcome": {
+      "part": "life"
+    },
+    "life_auth_grow_cue": {
+      "part": "life"
+    },
+    "life_auth_grow_outcome": {
+      "part": "life"
+    },
+    "life_auth_harvest_cue": {
+      "part": "life"
+    },
+    "life_auth_harvest_outcome": {
+      "part": "life"
+    },
+    "life_auth_haven_cue": {
+      "part": "life"
+    },
+    "life_auth_haven_outcome": {
+      "part": "life"
+    },
+    "life_auth_heal_cue": {
+      "part": "life"
+    },
+    "life_auth_heal_outcome": {
+      "part": "life"
+    },
+    "life_auth_lifebloom_cue": {
+      "part": "life"
+    },
+    "life_auth_lifebloom_outcome": {
+      "part": "life"
+    },
+    "life_auth_moonpetal_cue": {
+      "part": "life"
+    },
+    "life_auth_moonpetal_outcome": {
+      "part": "life"
+    },
+    "life_auth_nourish_cue": {
+      "part": "life"
+    },
+    "life_auth_nourish_outcome": {
+      "part": "life"
+    },
+    "life_auth_regrowth_cue": {
+      "part": "life"
+    },
+    "life_auth_regrowth_outcome": {
+      "part": "life"
+    },
+    "life_auth_remedy_cue": {
+      "part": "life"
+    },
+    "life_auth_remedy_outcome": {
+      "part": "life"
+    },
+    "life_auth_restore_cue": {
+      "part": "life"
+    },
+    "life_auth_restore_outcome": {
+      "part": "life"
+    },
+    "life_auth_reversal_cue": {
+      "part": "life"
+    },
+    "life_auth_reversal_outcome": {
+      "part": "life"
+    },
+    "life_auth_root_bulwark_cue": {
+      "part": "life"
+    },
+    "life_auth_root_bulwark_outcome": {
+      "part": "life"
+    },
+    "life_auth_rootsnare_cue": {
+      "part": "life"
+    },
+    "life_auth_rootsnare_outcome": {
+      "part": "life"
+    },
+    "life_auth_second_wind_cue": {
+      "part": "life"
+    },
+    "life_auth_second_wind_outcome": {
+      "part": "life"
+    },
+    "life_auth_soulbond_cue": {
+      "part": "life"
+    },
+    "life_auth_soulbond_outcome": {
+      "part": "life"
+    },
+    "life_auth_sporebloom_cue": {
+      "part": "life"
+    },
+    "life_auth_sporebloom_outcome": {
+      "part": "life"
+    },
+    "life_auth_stitchtime_cue": {
+      "part": "life"
+    },
+    "life_auth_stitchtime_outcome": {
+      "part": "life"
+    },
+    "life_auth_venom_cue": {
+      "part": "life"
+    },
+    "life_auth_venom_outcome": {
+      "part": "life"
+    },
+    "life_auth_vinelash_cue": {
+      "part": "life"
+    },
+    "life_auth_vinelash_outcome": {
+      "part": "life"
+    },
     "life_bloom": {
       "part": "life"
     },

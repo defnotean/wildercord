@@ -298,7 +298,8 @@ def main():
              {"title": element.title(), "parent": "Effects", "grand_parent": "Runes", "nav_order": i + 1},
              [f"# {element.title()} effects", "", ELEMENT_BLURB[element], "",
               f"{len(rs)} {element} effects you can craft or find in the usual way. {element.title()} also has runes of the world, "
-              "fused runes and innate runes: see their own pages."],
+              "fused runes and innate runes: see their own pages."] +
+             (["", "Read [Reading Life Magic]({{ '/spellcraft/life-outcomes/' | relative_url }}) for the illustrated journal of actual healing, repair, gardens and living ward responses."] if element == "life" else []),
              body_of(rs))
 
     # Runes of the world.

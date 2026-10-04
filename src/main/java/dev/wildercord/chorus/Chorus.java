@@ -108,7 +108,7 @@ public final class Chorus {
 			BlockHitResult block = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));
 			Vec3 end = block.getType() == HitResult.Type.MISS ? to : block.getLocation();
 			EntityHitResult entity = ProjectileUtil.getEntityHitResult(caster, from, end, new AABB(from, end).inflate(1.0),
-				e -> e != caster && e instanceof LivingEntity && e.isAlive(), from.distanceToSqr(end));
+				e -> e != caster && e instanceof LivingEntity && e.isAlive() && !e.isSpectator() && !e.isRemoved(), from.distanceToSqr(end));
 			target = entity == null ? null : entity.getEntity();
 			aim = entity == null ? end : entity.getLocation();
 		}

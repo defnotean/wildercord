@@ -24,6 +24,16 @@ public final class Signatures {
 		return s != null ? s : get(feel.shapeId());
 	}
 
+	/** Exact whole-group ownership. A leading rune or matching element is never sufficient. */
+	public static boolean authoredOutcomes(Feel feel) {
+		if (feel == null || feel.effectIds().isEmpty()) return false;
+		for (String id : feel.effectIds()) {
+			Signature signature = get(id);
+			if (signature == null || !signature.ownsOutcomeBody()) return false;
+		}
+		return true;
+	}
+
 	/** The feel with its motion and scale adjusted by the leading signature, if it has any. */
 	public static Feel adjust(Feel feel) {
 		Signature s = of(feel);
@@ -32,7 +42,7 @@ public final class Signatures {
 		}
 		double scale = Math.max(0.6, Math.min(2.2, feel.scale() * s.scale));
 		return new Feel(s.motion != null ? s.motion : feel.motion(), feel.element(), feel.accent(), feel.role(), Band.of(scale), scale, feel.mods(),
-			feel.shapeId(), feel.effectId());
+			feel.shapeId(), feel.effectId(), feel.effectIds());
 	}
 
 	static void clear() {

@@ -185,18 +185,20 @@ public final class Feels {
 	public static void impact(ServerLevel level, Vec3 at, Vfx.Theme theme, double size) {
 		Feel feel = theme.feel();
 		boolean standard = true;
-		boolean aftermath = true;
+		boolean authored = Signatures.authoredOutcomes(feel);
 		if (feel != null) {
 			standard = run(Phase.IMPACT, feel, theme, level, at, null, null, null, 0);
 		}
-		if (standard) {
+		if (authored) {
+			// Actual owners supply outcome material/voice; a collision alone cannot invent success.
+		} else if (standard) {
 			Vfx.impactDefault(level, at, theme, size, true);
 		} else {
 			// The signature took over the sound and hooks; the flare and rings are still the shape's.
 			Vfx.impactDefault(level, at, theme, size, false);
 		}
 		if (feel != null && feel.band() != Band.S && size >= 0.8) {
-			if (run(Phase.AFTERMATH, feel, theme, level, at, null, null, null, 0)) {
+			if (run(Phase.AFTERMATH, feel, theme, level, at, null, null, null, 0) && !authored) {
 				aftermath(level, at, feel);
 			}
 		}

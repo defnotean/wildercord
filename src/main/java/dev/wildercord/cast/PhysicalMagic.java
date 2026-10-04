@@ -69,13 +69,14 @@ public final class PhysicalMagic {
 		if(!level.setBlockAndUpdate(pos,placed))return false;
 		TemporaryBlocks.put(level,pos,placed,old,due);
 		CELLS.put(GlobalPos.of(level.dimension(),pos.immutable()),new Cell(cast,placed,old,due));
+		if(block==PhysicalBlocks.ROOT)LifeOwnerEvents.cell(cast,"root_bulwark",pos,old,placed,LifeOwnerEvents.Moment.APPLY);
 		return true;
 	}
 	private static void restore(ServerLevel level,BlockPos pos,Cell cell){
 		if(CELLS.get(GlobalPos.of(level.dimension(),pos))!=cell)return;
 		CELLS.remove(GlobalPos.of(level.dimension(),pos));
 		if(!level.isLoaded(pos))return; // Saved fallback restores when loaded.
-		if(level.getBlockState(pos).equals(cell.placed))level.setBlockAndUpdate(pos,cell.replaced);
+		if(level.getBlockState(pos).equals(cell.placed)){level.setBlockAndUpdate(pos,cell.replaced);if(cell.placed.is(PhysicalBlocks.ROOT))LifeOwnerEvents.cell(cell.cast,"root_bulwark",pos,cell.placed,cell.replaced,LifeOwnerEvents.Moment.END);}
 		TemporaryBlocks.remove(level,pos);
 	}
 	static int active(){return CELLS.size();}

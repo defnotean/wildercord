@@ -31,6 +31,7 @@ public final class WildercordClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		dev.wildercord.client.fx.SpellFormations.init();
+		dev.wildercord.client.fx.LifeOutcomeClient.init();
 		// Bolts are drawn entirely with particles sent from the server.
 		EntityRendererRegistry.register(WildercordEntities.RUNE_BOLT, NoopRenderer::new);
 		ModelLayerRegistry.registerModelLayer(ArchivistRenderer.LAYER, ArchivistModel::createLayer);

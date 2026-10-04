@@ -225,7 +225,8 @@ public final class CastEngine {
 		RunicAnimations.release(cast, g, at);
 
 		if (shape.equals(Runes.SELF.id())) {
-			Vfx.self(caster, theme);
+			// Actual authored owners display the Self result only after admission.
+			if (!dev.wildercord.cast.feel.Signatures.authoredOutcomes(theme.feel())) Vfx.self(caster, theme);
 			onHit(cast, g, new Cast.Hit(List.of(caster), caster.position(), caster.getLookAngle(), caster.position(), null, null, true), anchored);
 		} else if (shape.equals(Runes.TRIGGER.id())) {
 			Entity entity = at.entity() != null && at.entity().isAlive() ? at.entity() : null;
@@ -423,7 +424,7 @@ public final class CastEngine {
 			entityTo = block.getLocation();
 		}
 		EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(caster, from, entityTo,
-			new AABB(from, entityTo).inflate(1.0), e -> e != caster && e instanceof LivingEntity && e.isAlive(), reach * reach);
+			new AABB(from, entityTo).inflate(1.0), e -> e != caster && e instanceof LivingEntity && e.isAlive() && !e.isSpectator() && !e.isRemoved(), reach * reach);
 		if (entityHit != null) {
 			Entity target = entityHit.getEntity();
 			Vfx.contact(cast.level, from.add(at.dir().scale(0.5)), entityHit.getLocation(), theme);
