@@ -2524,6 +2524,7 @@ LOADOUT_LANG = {
     "key.wildercord.next_loadout": "Next loadout",
     "key.wildercord.magic_settings": "Magic visual settings",
     "message.wildercord.practice.restart": "The practice dimension is not loaded. Restart the world after installing this version.",
+    "message.wildercord.practice.in_combat": "You can't step into the practice arena for a few seconds after being hurt",
     "message.wildercord.practice.enter": "Practice arena: use your spells on the dummies, and /runelab practice leave to go back. Operators can also use /wildercord practice moving, stress <1-24> or benchmark.",
     "message.wildercord.practice.benchmark": "Cast for 10 seconds. The result reports server particle deliveries, decorations limited, and plan cache work.",
     # The server's answers (above the hotbar, or in chat for /loadout)

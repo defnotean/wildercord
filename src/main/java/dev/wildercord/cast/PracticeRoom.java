@@ -22,6 +22,8 @@ import java.util.Set;
 public final class PracticeRoom {
  private PracticeRoom() {}
  public static final ResourceKey<Level> DIMENSION = ResourceKey.create(Registries.DIMENSION,Wildercord.id("practice"));
+ /** How long after a mob last hurt them a player waits to step into the arena (5 seconds). */
+ private static final int COMBAT_TICKS = 100;
  private static final AttachmentType<GlobalPos> RETURN = AttachmentRegistry.create(Wildercord.id("practice_return"),
   b -> b.persistent(GlobalPos.CODEC).copyOnDeath());
  public static void init() {
@@ -33,6 +35,10 @@ public final class PracticeRoom {
  public static int enter(ServerPlayer player) {
   ServerLevel world=player.level().getServer().getLevel(DIMENSION);
   if(world==null) { player.sendSystemMessage(Component.translatable("message.wildercord.practice.restart")); return 0; }
+  // The arena is an instant step away: not a way out of a fight. Leaving it puts you back where you were.
+  if(!player.level().dimension().equals(DIMENSION) && !player.isCreative() && player.getLastHurtByMob()!=null && player.tickCount-player.getLastHurtByMobTimestamp()<COMBAT_TICKS) {
+   player.sendSystemMessage(Component.translatable("message.wildercord.practice.in_combat")); return 0;
+  }
   if(!player.level().dimension().equals(DIMENSION)) player.setAttached(RETURN,GlobalPos.of(player.level().dimension(),player.blockPosition()));
   build(world);
   player.teleportTo(world,.5,81,.5,Set.<Relative>of(),0,0,false);
