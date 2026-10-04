@@ -15,15 +15,11 @@ def icon():
 def write(g):
  g.save(icon(),g.ASSETS/'textures/item/rune/root_carry.png')
 def circles(bands,marks):
- """Original carried clod nested in root fibres; checked by the unchanged uniqueness gate."""
- # A short central soil stitch, two lifting roots and two folded fronds.
- band={(x,11) for x in range(16)}|{(x,12) for x in (2,3,6,7,10,11,14,15)}
- band|={(2,9),(3,8),(4,7),(5,6),(6,7),(7,8),(8,9),(9,8),(10,7),(11,6),(12,7),(13,8),(14,9)}
- band|={(4,4),(5,3),(6,4),(10,4),(11,3),(12,4),(7,10),(8,10),(9,10),(6,13),(5,14),(10,13),(11,14)}
- mark={(7,3),(8,3),(7,4),(8,4),(7,5),(8,5),(6,5),(5,4),(4,4),(9,5),(10,4),(11,4)}
- mark|={(5,8),(6,7),(7,7),(8,7),(9,7),(10,8),(10,9),(9,10),(8,10),(7,10),(6,10),(5,9)}
- mark|={(4,8),(3,9),(3,10),(4,11),(5,12),(6,12),(7,11),(11,8),(12,9),(12,10),(11,11),(10,12),(9,12),(8,11),(7,13),(8,13)}
- bands['root_carry']=band;marks['root_carry']=mark
+ """Root Carry's ring and emblem, in the same grammar as every rune's (see circle_art): an Effect's solid
+ line and round frame, a sprout above the line with its roots forking below, and a carried clod as glyph."""
+ import circle_art as ca
+ bands['root_carry']=ca.band_tile('effect','sprout','out','none')|{(8,9),(8,10),(7,11),(9,11),(6,12),(10,12)}
+ marks['root_carry']=ca.mark_tile('effect',['.#.#.#.','..###..','...#...','.#####.','#######','.#.#.#.','#..#..#'],'plain','none',False)
 # Registration also adds RUNE_RECIPES['root_carry'] to the central themed table:
 # ['minecraft:rooted_dirt','minecraft:bone_meal','minecraft:string'].
 # Normal rank-II catalysts (two lapis +gold) are preserved by rune_ingredients.

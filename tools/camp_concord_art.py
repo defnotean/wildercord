@@ -12,26 +12,179 @@ LANG={
 for name,text in [('watch_cue','Paper folds around copper staples'),('watch_arm','Camp ledger tensions'),('watch_warn','Ledger tears a warning'),('braid_cue','Mana fibres pass through combs'),('braid_offer','Empty spool opens'),('braid_transfer','Mana braid tightens and clasps'),('braid_decline','Empty spool falls open')]:
  LANG['subtitles.wildercord.kit.camp.'+name]=text
 
+# Camp particles: paper, staple, tear, fibre, comb and knot. Tinted in game by the colour each cue sends
+# (CampParticle), so drawn in greys like every material particle; see particle_pixels. The second frame of
+# each is the same piece later in its life (creased, bent, curled, twisted, caught, drawn tight).
+import math
+import particle_pixels as px
+
+# A ledger page: written lines, its top right corner folded down over itself.
+CAMP_PAPER=px.shade([
+ "................",
+ "..########......",
+ "..#########.....",
+ "..##sssss#ll#...",
+ "..#######lllk#..",
+ "..###########k..",
+ "..##sssssss###..",
+ "..############..",
+ "..##ssssssss##..",
+ "..############..",
+ "..##sssss#####..",
+ "..############..",
+ "..##sssssss###..",
+ "..############..",
+ "................",
+ "................",
+])
+# Later: folded across, a crease down the page.
+CAMP_PAPER_CREASED=px.edit(CAMP_PAPER,"7,2,s 7,3,k 7,4,k 7,5,s 7,6,k 7,7,s 7,8,k 7,9,s 7,10,s 7,11,s 7,12,k 6,2,h 6,4,h 6,5,h 6,7,h 6,9,h 6,11,h")
+
+# A copper staple: a square-shouldered bar on two pointed legs.
+CAMP_STAPLE=px.shade([
+ "................",
+ "................",
+ ".##############.",
+ ".##############.",
+ ".##############.",
+ ".####......####.",
+ ".####......####.",
+ ".####......####.",
+ ".####......####.",
+ ".####......####.",
+ ".####......####.",
+ ".####......####.",
+ "..###.......###.",
+ "..##........##..",
+ "................",
+ "................",
+])
+# Later: driven home, one leg bent out under the strain.
+CAMP_STAPLE_BENT=px.shade([
+ "................",
+ "................",
+ ".##############.",
+ ".##############.",
+ ".##############.",
+ ".####......####.",
+ ".####......####.",
+ ".####......####.",
+ ".####.......####",
+ ".####.......####",
+ ".####........###",
+ ".####.........##",
+ "..###...........",
+ "..##............",
+ "................",
+ "................",
+])
+
+# A torn strip of paper, ragged at both ends, a line of writing across it.
+CAMP_TEAR=px.shade([
+ "................",
+ "...##.##........",
+ "..#########.....",
+ "..##########....",
+ "...##sssss###...",
+ "....##########..",
+ ".....#ssssss###.",
+ "......#########.",
+ ".....#########..",
+ "....###sss###...",
+ "...#########....",
+ "..#########.....",
+ "..##.##.##......",
+ "................",
+ "................",
+ "................",
+])
+# Later: its lower end has curled back on itself.
+CAMP_TEAR_CURLED=px.shade([
+ "................",
+ "...##.##........",
+ "..#########.....",
+ "..##########....",
+ "...##sssss###...",
+ "....##########..",
+ ".....#ssssss###.",
+ "......#########.",
+ ".....#########..",
+ "....###sss###...",
+ "...########.....",
+ "...##kkkk##.....",
+ "....######......",
+ "................",
+ "................",
+ "................",
+])
+
+# The back strand of a braid sits in shade.
+_BACK={"edge_lit":"o","edge":"o","hi":"l","hi2":"m","body":"s","lo":"s"}
+
+def _braid(phase):
+ """Two mana fibres twisting round each other down the tile, crossing over and under in turn."""
+ masks=[[["."]*16 for _ in range(16)] for _ in range(2)]
+ front={}
+ for y in range(16):
+  for k in range(2):
+   a=y*.45+k*math.pi+phase
+   cx=7.5+2.6*math.sin(a)
+   for x in range(16):
+    if abs(x-cx)<2.4:
+     masks[k][y][x]="#"
+     if math.cos(a)>0:front[(x,y)]=k
+ lit=[px.shade(masks[0]),px.shade(masks[1],_BACK)]
+ out=px.blank()
+ for y in range(16):
+  for x in range(16):
+   on=[k for k in range(2) if lit[k][y][x]!="."]
+   if on:
+    k=front.get((x,y),on[0])
+    out[y][x]=lit[k if k in on else on[0]][y][x]
+ return out
+
+CAMP_FIBER=_braid(0)
+CAMP_FIBER_TWISTED=_braid(1.6)
+
+# A three-toothed comb that the mana fibres pass through.
+CAMP_COMB=px.shade([
+ "................",
+ "................",
+ ".##############.",
+ ".##############.",
+ ".##############.",
+ ".##############.",
+ ".####.####.####.",
+ ".####.####.####.",
+ ".####.####.####.",
+ ".####.####.####.",
+ ".####.####.####.",
+ "..##..####..##..",
+ "......####......",
+ ".......##.......",
+ "................",
+ "................",
+])
+# Later: a fibre is caught across its teeth.
+CAMP_COMB_CAUGHT=px.edit(CAMP_COMB,"0,9,h 1,9,h 2,9,h 3,9,h 4,9,h 5,8,h 6,8,h 7,8,h 8,8,h 9,8,h 10,9,h 11,9,h 12,9,h 13,9,h 14,9,h 15,10,h "
+                                   "0,10,o 1,10,o 5,9,o 6,9,o 10,10,o 11,10,o")
+
+def _clasp(outer,inner):
+ """A ring of braided fibre with a band bound across it."""
+ ring=[["#" if inner<math.hypot(x-7.5,y-7.5)<outer else "." for x in range(16)] for y in range(16)]
+ band=[["#" if 6<=x<=9 and abs(y-7.5)<outer+.5 else "." for x in range(16)] for y in range(16)]
+ lit_ring,lit_band=px.shade(ring),px.shade(band)
+ return [[lit_band[y][x] if lit_band[y][x]!="." else lit_ring[y][x] for x in range(16)] for y in range(16)]
+
+CAMP_KNOT=_clasp(7.3,3.4)
+# Later: drawn tight, the ring pulled smaller round the band.
+CAMP_KNOT_TIGHT=_clasp(6.6,3.0)
+
+CAMP_SPRITES=[(CAMP_PAPER,CAMP_PAPER_CREASED),(CAMP_STAPLE,CAMP_STAPLE_BENT),(CAMP_TEAR,CAMP_TEAR_CURLED),
+ (CAMP_FIBER,CAMP_FIBER_TWISTED),(CAMP_COMB,CAMP_COMB_CAUGHT),(CAMP_KNOT,CAMP_KNOT_TIGHT)]
+
 def sprite(style,frame):
- im=Image.new('RGBA',(32,32));d=ImageDraw.Draw(im)
- if style==0:
-  d.polygon([(6,4),(22,2),(28,10),(26,28),(8,26),(4,18)],fill=(221,206,169),outline=(86,67,53));d.polygon([(22,2),(28,10),(20,9)],fill=(247,231,190),outline=(118,96,66));d.line([(7,5),(10,24),(25,27)],fill=(255,239,198));
-  for y,end in [(12,23),(16,19),(20,24)]:d.line([(11,y),(end,y+1)],fill=(145,118,87))
-  for x,y in [(7,12),(14,8),(24,21),(13,24)]:d.point((x,y),fill=(180,153,116))
- elif style==1:
-  d.line([(7,25),(8,7),(21,5),(24,23)],fill=(65,43,33),width=5);d.line([(8,25),(9,8),(21,6),(23,23)],fill=(192,139,93),width=3);d.line([(10,24),(10,9),(20,7)],fill=(247,200,137));d.line([(23,8),(24,23)],fill=(123,78,53))
- elif style==2:
-  d.polygon([(4,4),(13,2),(18,9),(14,13),(21,20),(18,29),(11,22),(7,14),(10,10)],fill=(201,179,144),outline=(105,78,57));d.line([(7,5),(12,10),(11,14),(17,22)],fill=(252,226,182));d.line([(13,3),(16,9),(12,13),(20,20)],fill=(129,99,72))
- elif style==3:
-  for offset,color in [(-3,(109,85,138,190)),(0,(197,180,219,230)),(3,(231,214,235,210))]:
-   points=[(16+offset+round(math.sin(y*.3+offset)*3),y) for y in range(3,30)];d.line(points,fill=color,width=2 if offset==0 else 1)
-  d.point((17,10),fill=(252,235,252));d.point((12,23),fill=(239,218,241))
- elif style==4:
-  d.polygon([(4,5),(27,5),(27,10),(24,10),(24,25),(21,25),(21,11),(17,11),(17,28),(14,28),(14,11),(10,11),(10,23),(7,23),(7,10),(4,10)],fill=(215,189,141),outline=(103,78,64));d.line([(5,6),(26,6)],fill=(251,222,178));d.line([(8,12),(8,22)],fill=(249,220,175));d.line([(15,12),(15,27)],fill=(242,211,166))
- elif style==5:
-  d.polygon([(10,5),(19,6),(26,14),(23,23),(14,27),(5,20),(7,11)],fill=(131,104,150),outline=(220,192,227));d.line([(8,12),(21,21),(23,15),(12,8),(9,19),(18,24)],fill=(238,212,241),width=2);d.line([(9,14),(21,23)],fill=(69,54,85),width=2)
- if frame:d.line([(11,13),(17,16),(20,12)],fill=(246,217,184,210))
- return im
+ return px.render(CAMP_SPRITES[style][frame])
 
 def icon(which):
  im=Image.new('RGBA',(32,32));d=ImageDraw.Draw(im)
@@ -53,8 +206,12 @@ def write(g):
  for name in ['watchweft','manabraid']:g.save(icon(name),g.ASSETS/'textures/item/rune'/f'{name}.png')
 
 def circles(bands,marks):
- # Independent asymmetrical stitched folio corners and perforations; no borrowed ring mask.
- bands['watchweft']={(x,3) for x in range(2,9)}|{(2,y) for y in range(3,12)}|{(x,12) for x in range(5,14)}|{(13,y) for y in range(7,13)}|{(4,5),(4,7),(4,9),(6,5),(8,6),(10,8),(11,10),(7,14),(8,14),(11,2),(12,3),(13,4)}
- marks['watchweft']={(x,5) for x in range(4,11)}|{(4,y) for y in range(5,12)}|{(11,y) for y in range(6,12)}|{(x,11) for x in range(4,12)}|{(6,7),(8,7),(10,8),(6,9),(8,9),(12,4),(12,5),(3,12),(5,13)}
- bands['manabraid']={(x,2) for x in range(1,7)}|{(x,13) for x in range(9,15)}|{(x,y) for x,y in [(2,3),(2,4),(4,3),(4,5),(6,3),(6,6),(9,10),(9,12),(11,9),(11,12),(13,8),(13,12),(4,8),(5,9),(6,10),(7,8),(8,7),(9,5),(10,6),(11,7),(8,14)]}
- marks['manabraid']={(3,y) for y in range(3,11)}|{(12,y) for y in range(5,14)}|{(x,y) for x,y in [(4,4),(5,4),(4,7),(5,7),(4,10),(5,10),(10,6),(11,6),(10,9),(11,9),(10,12),(11,12),(6,5),(7,6),(8,7),(9,8),(6,8),(7,9),(8,10),(9,11),(7,12),(8,13)]}
+ # Written in the same grammar as every rune's ring and emblem (see circle_art): an Effect's solid line
+ # and round frame, Arcane's motifs on the line, and an authored glyph for each mechanism in the frame.
+ import circle_art as ca
+ # Watchweft: a star watching over the line, weft stitches under it; an open eye over a woven rule.
+ bands['watchweft']=ca.band_tile('effect','star','out','none')|{(4,9),(4,10),(12,9),(12,10)}
+ marks['watchweft']=ca.mark_tile('effect',['..###..','.#.#.#.','#..#..#','.#...#.','..###..','.......','#.#.#.#'],'plain','ticks2',False)
+ # Manabraid: trines handed back and forth across the line; two strands braided round one crossing.
+ bands['manabraid']=ca.band_tile('effect','trine','alt','none')|{(8,6),(8,9)}
+ marks['manabraid']=ca.mark_tile('effect',['.#...#.','#.#.#.#','...#...','..#.#..','...#...','#.#.#.#','.#...#.'],'dots','none',False)
