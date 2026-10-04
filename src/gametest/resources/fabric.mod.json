@@ -245,11 +245,20 @@
       "dev.wildercord.wildlife.MossveilPresentationTest",
       "dev.wildercord.wildlife.MossveilClaimExpiryTest",
       "dev.wildercord.wildlife.MossveilRepairBreakTest",
-      "dev.wildercord.wildlife.MossveilJointHomeTest"
+      "dev.wildercord.wildlife.MossveilJointHomeTest",
+      "dev.wildercord.wildlife.RainshieldCraftTest",
+      "dev.wildercord.wildlife.RainshieldCollisionTest",
+      "dev.wildercord.wildlife.RainshieldAngleTest",
+      "dev.wildercord.wildlife.RainshieldCancellationTest",
+      "dev.wildercord.wildlife.RainshieldFaultTest",
+      "dev.wildercord.wildlife.RainshieldPresentationTest",
+      "dev.wildercord.wildlife.RainshieldCombatGapsTest",
+      "dev.wildercord.wildlife.RainshieldAckTest"
     ]
   },
   "mixins": [
-    "wildercord.mossveil-gametest.mixins.json"
+    "wildercord.mossveil-gametest.mixins.json",
+    "rainshield-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

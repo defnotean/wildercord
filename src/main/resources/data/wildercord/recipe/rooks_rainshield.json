@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:windreed_braid",
+    "wildercord:moonreed_floss",
+    "minecraft:copper_ingot",
+    "minecraft:leather"
+  ],
+  "result": {
+    "id": "wildercord:rooks_rainshield",
+    "count": 1
+  }
+}

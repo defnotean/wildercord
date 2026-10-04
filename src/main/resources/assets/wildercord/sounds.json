@@ -6345,5 +6345,23 @@
     "sounds": [
       "wildercord:kit/camp/camp_watch_warn"
     ]
+  },
+  "rainshield_catch": {
+    "subtitle": "subtitles.wildercord.kit.rainshield.catch",
+    "sounds": [
+      "wildercord:kit/rainshield/rainshield_catch"
+    ]
+  },
+  "rainshield_open": {
+    "subtitle": "subtitles.wildercord.kit.rainshield.open",
+    "sounds": [
+      "wildercord:kit/rainshield/rainshield_open"
+    ]
+  },
+  "rainshield_pivot": {
+    "subtitle": "subtitles.wildercord.kit.rainshield.pivot",
+    "sounds": [
+      "wildercord:kit/rainshield/rainshield_pivot"
+    ]
   }
 }

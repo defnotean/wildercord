@@ -1,0 +1,30 @@
+package dev.wildercord.wildlife;
+import net.fabricmc.fabric.api.client.gametest.v1.*;
+import net.fabricmc.fabric.api.client.gametest.v1.context.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
+import java.util.Set;
+/** Native paid-arrow collision, with declared test-only synchronous foreign mutations during actual wear. */
+public final class RainshieldFaultTest implements FabricClientGameTest {
+ private static final ThreadLocal<java.util.function.Consumer<ServerPlayer>> CALLBACK=new ThreadLocal<>();private static final ThreadLocal<ItemStack> EXPECTED=new ThreadLocal<>();
+ private boolean observed;private ItemStack paid;private long deadline;private net.minecraft.world.entity.projectile.arrow.Arrow shot;private Entity transferred;private java.util.UUID shotIdentity;
+ public static void observeWear(ItemStack stack,int amount,LivingEntity actor,EquipmentSlot slot){var callback=CALLBACK.get();if(callback!=null&&stack==EXPECTED.get()&&amount==RooksRainshield.WEAR&&actor instanceof ServerPlayer p&&slot==EquipmentSlot.MAINHAND){CALLBACK.remove();EXPECTED.remove();callback.accept(p);}}
+ private static void check(boolean x,String why){if(!x)throw new AssertionError(why);}
+ public void runTest(ClientGameTestContext c){boolean use=c.computeOnClient(mc->mc.options.keyUse.isDown());try(var settings=new TidewardNative(c)){for(int kind=0;kind<8;kind++){final int mode=kind;try(var w=c.worldBuilder().create()){c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("difficulty normal");try{
+  w.getServer().runOnServer(s->{var l=s.overworld();for(int x=-7;x<=7;x++)for(int z=-4;z<=4;z++){l.setBlock(new BlockPos(x,100,z),Blocks.STONE.defaultBlockState(),2);for(int y=101;y<=105;y++)l.setBlock(new BlockPos(x,y,z),Blocks.AIR.defaultBlockState(),2);}var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(l,.5,101,.5,Set.of(),90,0,false);p.getInventory().clearContent();paid=new ItemStack(RooksRainshield.ITEM);p.setItemInHand(InteractionHand.MAIN_HAND,paid);p.setHealth(20);observed=false;});c.waitTicks(6);
+  c.runOnClient(mc->{mc.gui.setScreen(null);mc.options.keyUse.setDown(true);mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND);});c.waitTicks(16);
+  w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(RooksRainshield.active(p)&&p.getTicksUsingItem()>=12,"Fault control begins from actual prepared native fan");EXPECTED.set(paid);CALLBACK.set(actor->{observed=true;deadline=actor.getAttachedOrElse(RooksRainshield.READY,0L);check(deadline>s.overworld().getGameTime()&&!RooksRainshield.active(actor),"Actual collision reserves and consumes lease before paid-wear callback");if(mode==0)actor.teleportTo(actor.level(),2.5,101,.5,Set.of(),90,0,false);else if(mode==1)actor.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.STICK));else if(mode==2)actor.setDeltaMovement(new Vec3(0,.31,0));else if(mode==3)actor.hurtServer(actor.level(),actor.damageSources().generic(),1);else if(mode==4)actor.teleportTo(actor.level(),actor.getX()+.02,actor.getY(),actor.getZ(),Set.of(),90,0,false);
+    else if(mode==5){shot.setOwner(actor);check(shot.getOwner()==actor,"Actual native wear callback replaces retained projectile owner");}
+    else if(mode==6){shot.discard();check(shot.isRemoved(),"Actual native wear callback removes retained projectile");}
+    else{var destination=s.getLevel(net.minecraft.world.level.Level.NETHER);transferred=shot.teleport(new net.minecraft.world.level.portal.TeleportTransition(destination,new Vec3(.5,110,.5),Vec3.ZERO,0,0,Set.<Relative>of(),net.minecraft.world.level.portal.TeleportTransition.PLACE_PORTAL_TICKET));check(transferred instanceof net.minecraft.world.entity.projectile.arrow.Arrow&&transferred!=shot&&transferred.getUUID().equals(shotIdentity)&&transferred.level()==destination&&transferred.isAlive()&&!transferred.isRemoved(),"Actual mapped teleport returns same-UUID live arrow clone in other dimension");check(shot.isRemoved()||shot.level()!=actor.level(),"Original actual projectile departs before catch re-admission");}});var a=EntityTypes.ARROW.create(s.overworld(),EntitySpawnReason.COMMAND);check(a!=null,"Actual vanilla arrow factory");shot=a;shotIdentity=a.getUUID();transferred=null;a.snapTo(-3.5,102.1,.5,0,0);a.setDeltaMovement(new Vec3(.65,0,0));a.setBaseDamage(2);s.overworld().addFreshEntity(a);});c.waitTicks(12);
+  w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(observed,"Actual paid wear invokes declared synchronous probe");check(paid.getDamageValue()==4&&!RooksRainshield.active(p),"Foreign callback invalidates catch with one retained paid wear");check(p.getAttachedOrElse(RooksRainshield.READY,0L)==deadline,"Invalidation cannot refund or renew actual reserved deadline");check(!p.hasEffect(net.minecraft.world.effect.MobEffects.MINING_FATIGUE),"Refused callback-invalidated impact cannot grant catch outcome");if(mode==2)check(p.getHealth()<20,"Foreign upward impulse refuses catch and preserves normal actual arrow damage");});
+ if(mode==7){c.waitTicks(45);w.getServer().runOnServer(s->{var destination=s.getLevel(net.minecraft.world.level.Level.NETHER);check(transferred!=null&&destination.getEntity(shotIdentity)==transferred&&transferred.isAlive(),"Ordinary destination tracking settles the real transferred projectile after ticket/native ticks");check(!shot.isAlive()||shot.isRemoved()||shot.level()!=s.overworld(),"Departed original cannot be relabelled a paid catch");transferred.discard();});}
+ }finally{w.getServer().runOnServer(s->{CALLBACK.remove();EXPECTED.remove();});c.runOnClient(mc->mc.options.keyUse.setDown(false));}}}}
+ finally{c.runOnClient(mc->mc.options.keyUse.setDown(use));}}
+}

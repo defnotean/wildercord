@@ -12,9 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** An arrow fired from an imbued bow lets its spell go wherever it strikes, creature or block; and shooting a glyph's block sets it off. */
 @Mixin(Projectile.class)
 public abstract class ProjectileMixin {
-	@Inject(method = "onHit", at = @At("HEAD"))
+	@Inject(method = "onHit", at = @At("HEAD"), cancellable = true)
 	private void wildercord$releaseImbued(HitResult result, CallbackInfo ci) {
 		Projectile self = (Projectile) (Object) this;
+		// One physical vanilla arrow catch precedes imbued release; magic shots refuse the relic.
+		if (self instanceof net.minecraft.world.entity.projectile.arrow.AbstractArrow arrow
+				&& result instanceof net.minecraft.world.phys.EntityHitResult hit
+				&& dev.wildercord.wildlife.RooksRainshield.intercept(arrow, hit)) { ci.cancel(); return; }
 		if (!self.level().isClientSide() && self.hasAttached(WildercordAttachments.IMBUED_SHOT)) {
 			Imbuing.onShotHit(self, result);
 		}

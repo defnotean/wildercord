@@ -1863,6 +1863,15 @@
     "overchannel_crack": {
       "part": "neutral"
     },
+    "rainshield_catch": {
+      "part": "rainshield"
+    },
+    "rainshield_open": {
+      "part": "rainshield"
+    },
+    "rainshield_pivot": {
+      "part": "rainshield"
+    },
     "ready_ping": {
       "part": "neutral"
     },

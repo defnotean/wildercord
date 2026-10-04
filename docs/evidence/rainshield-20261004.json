@@ -1,0 +1,78 @@
+{
+  "presentation": {
+    "status": "passed",
+    "seconds": 48,
+    "suite": "RainshieldPresentationTest",
+    "scope": "Full/Minimal actual draw, catch and first-person views; supplied scene; no full animation or shader acceptance"
+  },
+  "two_client": {
+    "nonce": "a4604b6b-1fc3-400d-a831-31099a857d06",
+    "status": "passed",
+    "processes": {
+      "host": {
+        "pid": 40488,
+        "exit": 0
+      },
+      "peer": {
+        "pid": 45660,
+        "exit": 0
+      }
+    },
+    "seconds": 72.16
+  },
+  "screenshots": {
+    "0000_two_clients_rainshield_cooperative_host.png": "7b68e5129211e3fac8e3594e6fe15c5d667276d219099b1cf5f771c3b9be3ee3",
+    "0000_two_clients_rainshield_cooperative_peer.png": "8fdad286d5c0c288ed74eca9176629afa1698b2c4a47b5267dee263c5e989953",
+    "rainshield_full_actual_arrow_catch.png": "9feb94c4008d08e97892d00f081bed2f09a1d896b469541e3d8cd174f0c0e5ef",
+    "rainshield_full_actual_arrow_catch_background.png": "c7640af432a90e4a046c35e117540cd409c993efa37fe361c692a00e6085b530",
+    "rainshield_full_actual_pivot_prep.png": "126e5c3ca31f1094af682358df02b46762eff0ee2c6805249f92ae533b774a9d",
+    "rainshield_full_actual_pivot_prep_background.png": "f14b1b3761b5783fb25d7c863b23a741559b49173b21906d3e0e8d75dc431acb",
+    "rainshield_full_actual_prepared_firstperson.png": "5f3505f47ddb086f14467ae28b83b15254f8ded873d83a8486366bd7d2aec19e",
+    "rainshield_full_actual_supplied_held_fan.png": "c1d2e84cb92fd60e950b3a9c061f1030914bab50aac793e9f57307a4116b3cf4",
+    "rainshield_full_actual_supplied_held_firstperson.png": "f88974e8ca95eb0c58f9442136a985f0c2002d213b4f176df514e1fb67148ed2",
+    "rainshield_full_actual_unfolded_cloth.png": "48b9996dbe8b2e8d9dcd68b1663d62c74bd2b2a192d159b7420c4ebcc383582f",
+    "rainshield_full_actual_unfolded_cloth_background.png": "db7603792a99bf20b358f1b411a8257614f63efa338413502ea3dfe9fc894963",
+    "rainshield_minimal_actual_arrow_catch.png": "9feb94c4008d08e97892d00f081bed2f09a1d896b469541e3d8cd174f0c0e5ef",
+    "rainshield_minimal_actual_arrow_catch_background.png": "c7640af432a90e4a046c35e117540cd409c993efa37fe361c692a00e6085b530",
+    "rainshield_minimal_actual_pivot_prep.png": "853a1e59f27f7be3d720481b0895cd04bb06e06981b5853ff1895a14ec09458a",
+    "rainshield_minimal_actual_pivot_prep_background.png": "f14b1b3761b5783fb25d7c863b23a741559b49173b21906d3e0e8d75dc431acb",
+    "rainshield_minimal_actual_prepared_firstperson.png": "4f0014be934f31671c5452826415a2e3ced863ccb2341ed0069d6eb66484b49b",
+    "rainshield_minimal_actual_supplied_held_fan.png": "a7efe0a676305bed6d60f1954971e341ff0f371f6bc3f85966a96b0e88487f74",
+    "rainshield_minimal_actual_supplied_held_firstperson.png": "fef05c463543d3c4de44b8e19784075fb6581ea0c3f15c132eaeacc019986c4d",
+    "rainshield_minimal_actual_unfolded_cloth.png": "d9879a898bbf40d8e71327f7d156678cbd565f701ba00950bebd0b0b14b5b410",
+    "rainshield_minimal_actual_unfolded_cloth_background.png": "db7603792a99bf20b358f1b411a8257614f63efa338413502ea3dfe9fc894963"
+  },
+  "limits": [
+    "No natural acquisition journey",
+    "No remote human latency distribution",
+    "No complete shader/camera coverage",
+    "Subjective sound listening remains open"
+  ],
+  "jar": {
+    "jar": "wildercord-rainshield-review+mc26.3.jar",
+    "sha256": "7e94ddcf72b31218fa7ee6e314f06cf0f831ac2908ae087df06c91d9b190bf1a",
+    "resources": 5469,
+    "classes": 1871,
+    "source_version": "0.9.1-alpha.1+mc26.3",
+    "unit_tests": {
+      "tests": 1008,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "native_gameplay": {
+    "collision_final": 42,
+    "craft": 33,
+    "angle": 34,
+    "cancellation": 55,
+    "callback_fault": 66,
+    "combat_gaps": 65,
+    "acknowledgement": 28
+  },
+  "reproducibility": {
+    "generated_paths": 5470,
+    "guide_pages": 132,
+    "audio_registration": "passed"
+  }
+}

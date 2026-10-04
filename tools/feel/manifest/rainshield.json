@@ -1,0 +1,26 @@
+{
+  "events": {
+    "rainshield_catch": {
+      "attenuation": 0,
+      "files": [
+        "kit/rainshield/rainshield_catch"
+      ],
+      "subtitle": "rainshield.catch"
+    },
+    "rainshield_open": {
+      "attenuation": 0,
+      "files": [
+        "kit/rainshield/rainshield_open"
+      ],
+      "subtitle": "rainshield.open"
+    },
+    "rainshield_pivot": {
+      "attenuation": 0,
+      "files": [
+        "kit/rainshield/rainshield_pivot"
+      ],
+      "subtitle": "rainshield.pivot"
+    }
+  },
+  "part": "rainshield"
+}

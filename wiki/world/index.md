@@ -190,3 +190,7 @@ Three events happen on their own in the Overworld, near players. They're covered
 ## A quiet fungal companion
 
 [Mossveil Dormice]({{ "/world/mossveil-dormice/" | relative_url }}) explains three paid Gills, one saved owner, ordinary curl/follow controls, and a finite helmet-slot poison filter beside an actual supported Nursery.
+
+## One covered crossing
+
+[Rook's Rainshield]({{ "/world/rooks-rainshield/" | relative_url }}) connects Windreed Braid and Moonreed Floss to one short, physical arrow defense. Offer it to a same-team player, wait for a fresh crouch, then hold Use on that teammate. Four wear and a shared fifteen-second rest make the catch a deliberate choice.

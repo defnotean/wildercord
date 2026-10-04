@@ -837,6 +837,9 @@ def write_lang(runes):
     import root_carry_art
     lang.update(root_carry_art.LANG)
     root_carry_art.write(sys.modules[__name__])
+    import rainshield_art
+    lang.update(rainshield_art.LANG)
+    rainshield_art.write(sys.modules[__name__])
     import ember_art
     lang.update(ember_art.LANG)
     ember_art.write(sys.modules[__name__])
