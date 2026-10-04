@@ -107,6 +107,7 @@ public final class DungeonWards extends SavedData {
 			TOLD.clear();
 			BUILT.clear();
 		});
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> TOLD.remove(handler.player.getUUID()));
 	}
 
 	/** Whether {@code pos} is inside a dungeon's warded room (its boss arena or vault). */
