@@ -1,0 +1,7 @@
+# Moonreed live pollinator guard — 2026-10-04
+
+Production Glimmerwing pollination now passes the actual registered creature. The admission guard checks exact UUID/object tracking, liveness, world identity, loaded position and unchanged body before and after the synchronous bloom writer. A removed/dead/moved/transferred source cannot report successful pollination or continue old-world AI. The explicit Vec3 compatibility/fault seam remains separate from actual source authority.
+
+MoonreedSourceTest passes42s in the real native client. It exercises actual discard, lethal damage, a small body displacement still inside the former contact range, and actual Nether teleport during the writer. It verifies the returned same-UUID destination clone after45 ordinary ticks with a real portal ticket, rejects an untracked factory entity without writes, confirms lease cleanup/valid pollination, and observes ordinary unpaused Glimmerwing AI reach a bud. The supplied root column is genuinely open to WORLD_SURFACE height; no forced arrival pose or production timing change.
+
+A source invalidated after the real write can leave the bloom at age2; the method reports no admitted success. This guard does not claim mature-state rollback or a universal atomic terrain transaction. No new content credit or public/server deployment. Earlier manual reward/write/claim gates remain recorded in root-carry-milestone.md.

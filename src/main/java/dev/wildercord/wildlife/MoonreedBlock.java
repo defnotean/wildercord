@@ -40,13 +40,26 @@ public final class MoonreedBlock extends Block {
   return l.hasChunkAt(p) && l.getWorldBorder().isWithinBounds(p) && s.is(WetlandGarden.REED) && s.getValue(AGE)==age
    && s.canSurvive(l,p) && canBloom(l,p,l.getOverworldClockTime()) && moth.distanceToSqr(Vec3.atCenterOf(p).add(0,.4,0))<=1;
  }
- /** Synchronous writer faults verify actual retained bloom; natural pollination has no player claim authority. */
+ /** Production source is the actual registered moth, observed across the synchronous writer. */
+ public static boolean pollinate(ServerLevel l,BlockPos p,Glimmerwing moth){return pollinate(l,p,moth,MoonreedAdmission.WORLD);}
+ private static boolean livingSource(ServerLevel l,Glimmerwing moth,Vec3 body){
+  return moth!=null&&moth.isAlive()&&!moth.isRemoved()&&moth.level()==l&&l.hasChunkAt(moth.blockPosition())
+   &&l.getEntity(moth.getUUID())==moth&&moth.position().equals(body);
+ }
+ static boolean pollinate(ServerLevel l,BlockPos p,Glimmerwing moth,MoonreedAdmission.Writer writer){
+  if(moth==null)return false;var body=moth.position();
+  return pollinateObserved(l,p,body,writer,()->livingSource(l,moth,body));
+ }
+ /** Position-only compatibility/fault seam: does not claim actual moth identity or source-liveness authority. */
  static boolean pollinate(ServerLevel l,BlockPos p,Vec3 moth,MoonreedAdmission.Writer writer) {
-  if(!l.hasChunkAt(p))return false;var old=l.getBlockState(p);
+  return pollinateObserved(l,p,moth,writer,()->true);
+ }
+ private static boolean pollinateObserved(ServerLevel l,BlockPos p,Vec3 moth,MoonreedAdmission.Writer writer,java.util.function.BooleanSupplier source) {
+  if(moth==null||!Double.isFinite(moth.lengthSqr())||!source.getAsBoolean()||!l.hasChunkAt(p))return false;var old=l.getBlockState(p);
   if(!bloomContact(l,p,moth,old,1))return false;
   try(var lease=MoonreedAdmission.open(l,p)) {
-   if(lease==null)return false;var next=old.setValue(AGE,2);
-   if(!writer.set(l,p,next) || !l.getBlockState(p).equals(next) || !bloomContact(l,p,moth,next,2))return false;
+   if(lease==null||!source.getAsBoolean()||!l.getBlockState(p).equals(old))return false;var next=old.setValue(AGE,2);
+   if(!writer.set(l,p,next) || !source.getAsBoolean() || !l.getBlockState(p).equals(next) || !bloomContact(l,p,moth,next,2) || !source.getAsBoolean())return false;
    l.sendParticles(ParticleTypes.GLOW,p.getX()+.5,p.getY()+.9,p.getZ()+.5,5,.15,.12,.15,0);
    Feels.sound(l,Vec3.atCenterOf(p),"wetland_reed_open",.35F,1);return true;
   }

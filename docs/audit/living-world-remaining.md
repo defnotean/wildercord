@@ -27,7 +27,7 @@ Every effect needs a complete authored preparation, release/travel, impact, afte
 
 Cinder adds a real original rig, finite physical three-vent counterplay and retained-root fern loop. Its actual paid crafting/tending/harvest, competing meals/full reopen, authority callbacks, saturated receiver safety and native visual gates pass. Natural fern/animal distribution across seeds, sustained populations, listening and a complete ember region remain separate work.
 
-Wetlands have focused native Moonreed write/reward/claim corrections; actual pollinator entity departure and and unbounded newt/crab query gaps. Frozen Tideward equipment/tool and a design-only Siltcrest Bittern are unaccepted. Validate actual natural animals, prey/resource balance, shelters, weather responses, unloaded/reloaded chunks and older-world access. Fungal natural site and earned Drainhouse resource/lore/restoration chain pass; complete wider snail/Strider/plant relationships and representative distribution remain open. Search/query caps establish ceilings, not measured TPS gains.
+Wetlands have focused native Moonreed write/reward/claim and actual pollinator liveness corrections; unbounded newt/crab query gaps remain. Frozen Tideward equipment/tool and a design-only Siltcrest Bittern are unaccepted. Validate actual natural animals, prey/resource balance, shelters, weather responses, unloaded/reloaded chunks and older-world access. Fungal natural site and earned Drainhouse resource/lore/restoration chain pass; complete wider snail/Strider/plant relationships and representative distribution remain open. Search/query caps establish ceilings, not measured TPS gains.
 
 ## Items, crafting and combat
 
@@ -55,6 +55,6 @@ Published0.9.1-alpha.1 was activated on the VPS on2026-10-03 with offline backup
 
 ## Next work in progress
 
-Root Carry is accepted with its scoped paid/visual/owner gates. Tideward crossing kit, Moonreed actual pollinator-source liveness, Aura query/guard fixtures and the next wetland creature remain isolated parallel work. Independent review found draft compile, whole-route snapshot, claim reentry and stalled-client-clock issues; corrected candidates must be compiled and exercised before credit. Root serializes integration/build/native runs. No requirement is completed merely because a design, audit or source reference exists. The goal remains active.
+Root Carry is accepted with its scoped paid/visual/owner gates. Tideward crossing kit, Aura query/guard fixtures and the next wetland creature remain isolated parallel work. Independent review found draft compile, whole-route snapshot, claim reentry and stalled-client-clock issues; corrected candidates must be compiled and exercised before credit. Root serializes integration/build/native runs. No requirement is completed merely because a design, audit or source reference exists. The goal remains active.
 
 Root Carry milestone: final build19s,995 units,5361 reproducible generated paths,127 validated guide pages; focused paid/fault/quality/ownership and all31 Life regressions pass. See root-carry-milestone.md for exact native evidence, preserved originals and limitations.
