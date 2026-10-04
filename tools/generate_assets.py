@@ -831,6 +831,9 @@ def write_lang(runes):
     import fungal_art
     lang.update(fungal_art.LANG)
     fungal_art.write(sys.modules[__name__])
+    import root_carry_art
+    lang.update(root_carry_art.LANG)
+    root_carry_art.write(sys.modules[__name__])
     import ember_art
     lang.update(ember_art.LANG)
     ember_art.write(sys.modules[__name__])
@@ -1339,6 +1342,7 @@ NEW_RUNES_2_RECIPES = {
 }
 RUNE_RECIPES.update(NEW_RUNES_2_RECIPES)
 # Flight (Runes.java, after batch 2): wings of wind from a phantom's membrane, a feather and a breeze's rod.
+RUNE_RECIPES["root_carry"] = ["minecraft:rooted_dirt", "minecraft:bone_meal", "minecraft:string"]
 RUNE_RECIPES["soar"] = ["minecraft:phantom_membrane", "minecraft:feather", "minecraft:breeze_rod"]
 RUNE_RECIPES["strata_rise"] = ["minecraft:stone", "minecraft:packed_mud", "minecraft:flint"]
 RUNE_RECIPES["tidal_lift"] = ["minecraft:prismarine_shard", "minecraft:kelp", "minecraft:clay_ball"]

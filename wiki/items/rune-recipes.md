@@ -231,7 +231,7 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 </figure>
 </div>
 
-## Tier II (102 runes)
+## Tier II (103 runes)
 
 Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingot**.
 
@@ -371,6 +371,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_root.png' | relative_url }}" alt="Crafting Root: a Blank Rune and 2x Vines" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/root.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#root">Root</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_root_carry.png' | relative_url }}" alt="Crafting Root Carry: a Blank Rune and Rooted Dirt, Bone Meal and String" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/root_carry.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#root_carry">Root Carry</a><br><span class="recipe-family">Effect, Life</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_searing_edge.png' | relative_url }}" alt="Crafting Searing Edge: a Blank Rune and Iron Sword and Blaze Powder" class="recipe-grid" loading="lazy">

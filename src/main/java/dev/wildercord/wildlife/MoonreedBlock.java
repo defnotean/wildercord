@@ -35,16 +35,50 @@ public final class MoonreedBlock extends Block {
  @Override protected BlockState updateShape(BlockState s,LevelReader l,ScheduledTickAccess t,BlockPos p,Direction d,BlockPos np,BlockState ns,RandomSource r) {return canSurvive(s,l,p)?super.updateShape(s,l,t,p,d,np,ns,r):Blocks.AIR.defaultBlockState();}
  @Override protected boolean isRandomlyTicking(BlockState s) {return s.getValue(AGE)==0;}
  @Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r) {if(s.getValue(AGE)==0 && canBloom(l,p,l.getOverworldClockTime()) && r.nextInt(8)==0)l.setBlock(p,s.setValue(AGE,1),Block.UPDATE_CLIENTS);}
- public static boolean pollinate(ServerLevel l,BlockPos p,Vec3 moth) {
-  if(!l.hasChunkAt(p))return false;var s=l.getBlockState(p);
-  if(!s.is(WetlandGarden.REED) || s.getValue(AGE)!=1 || !canBloom(l,p,l.getOverworldClockTime()) || moth.distanceToSqr(Vec3.atCenterOf(p).add(0,.4,0))>1)return false;
-  l.setBlock(p,s.setValue(AGE,2),Block.UPDATE_CLIENTS);l.sendParticles(ParticleTypes.GLOW,p.getX()+.5,p.getY()+.9,p.getZ()+.5,5,.15,.12,.15,0);Feels.sound(l,Vec3.atCenterOf(p),"wetland_reed_open",.35F,1);return true;
+ public static boolean pollinate(ServerLevel l,BlockPos p,Vec3 moth) {return pollinate(l,p,moth,MoonreedAdmission.WORLD);}
+ private static boolean bloomContact(ServerLevel l,BlockPos p,Vec3 moth,BlockState s,int age) {
+  return l.hasChunkAt(p) && l.getWorldBorder().isWithinBounds(p) && s.is(WetlandGarden.REED) && s.getValue(AGE)==age
+   && s.canSurvive(l,p) && canBloom(l,p,l.getOverworldClockTime()) && moth.distanceToSqr(Vec3.atCenterOf(p).add(0,.4,0))<=1;
+ }
+ /** Synchronous writer faults verify actual retained bloom; natural pollination has no player claim authority. */
+ static boolean pollinate(ServerLevel l,BlockPos p,Vec3 moth,MoonreedAdmission.Writer writer) {
+  if(!l.hasChunkAt(p))return false;var old=l.getBlockState(p);
+  if(!bloomContact(l,p,moth,old,1))return false;
+  try(var lease=MoonreedAdmission.open(l,p)) {
+   if(lease==null)return false;var next=old.setValue(AGE,2);
+   if(!writer.set(l,p,next) || !l.getBlockState(p).equals(next) || !bloomContact(l,p,moth,next,2))return false;
+   l.sendParticles(ParticleTypes.GLOW,p.getX()+.5,p.getY()+.9,p.getZ()+.5,5,.15,.12,.15,0);
+   Feels.sound(l,Vec3.atCenterOf(p),"wetland_reed_open",.35F,1);return true;
+  }
  }
  @Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult h) {return harvest(s,l,p,who);}
  @Override protected InteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {return stack.is(WetlandGarden.LENS)?InteractionResult.PASS:s.getValue(AGE)==2?harvest(s,l,p,who):super.useItemOn(stack,s,l,p,who,hand,h);}
  private InteractionResult harvest(BlockState s,Level l,BlockPos p,Player who) {
-  if(s.getValue(AGE)!=2 || !who.mayBuild() || !l.mayInteract(who,p))return InteractionResult.PASS;
-  if(l instanceof ServerLevel server) {popResource(l,p,new ItemStack(WetlandGarden.FLOSS));l.setBlock(p,s.setValue(AGE,0),Block.UPDATE_CLIENTS);Feels.sound(server,Vec3.atCenterOf(p),"wetland_reed_harvest",.55F,1);}
-  return InteractionResult.SUCCESS;
+  if(!s.is(this) || s.getValue(AGE)!=2)return InteractionResult.PASS;
+  return l instanceof ServerLevel server?harvest(s,server,p,who,MoonreedAdmission.WORLD):InteractionResult.SUCCESS;
+ }
+ private static boolean harvestBody(ServerLevel l,BlockPos p,Player who) {
+  if(!(who instanceof net.minecraft.server.level.ServerPlayer) || !who.isAlive() || who.isRemoved() || who.level()!=l
+   || who.isSpectator() || !who.mayBuild() || !l.hasChunkAt(p) || !l.getWorldBorder().isWithinBounds(p)
+   || !l.mayInteract(who,p) || l.getBlockEntity(p)!=null || dev.wildercord.cast.Effects.isTemporary(l,p)
+   || who.getEyePosition().distanceToSqr(Vec3.atCenterOf(p))>who.blockInteractionRange()*who.blockInteractionRange())return false;
+  var aim=new Vec3(p.getX()+.5,p.getY()+.15,p.getZ()+.5);
+  var hit=l.clip(new ClipContext(who.getEyePosition(),aim,ClipContext.Block.OUTLINE,ClipContext.Fluid.NONE,who));
+  return hit.getType()==HitResult.Type.BLOCK && hit.getBlockPos().equals(p);
+ }
+ private static boolean harvestClaim(ServerLevel l,BlockPos p,Player who) {
+  return net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(l,(net.minecraft.server.level.ServerPlayer)who,p,l.getBlockState(p),l.getBlockEntity(p));
+ }
+ /** Manual harvesting asks existing build-claim callbacks without depending on magic block-edit configuration. */
+ InteractionResult harvest(BlockState old,ServerLevel l,BlockPos p,Player who,MoonreedAdmission.Writer writer) {
+  if(!old.is(this) || old.getValue(AGE)!=2 || !harvestBody(l,p,who) || !l.getBlockState(p).equals(old) || !old.canSurvive(l,p))return InteractionResult.PASS;
+  try(var lease=MoonreedAdmission.open(l,p)) {
+   if(lease==null || !harvestClaim(l,p,who) || !harvestBody(l,p,who) || !l.getBlockState(p).equals(old) || !old.canSurvive(l,p))return InteractionResult.PASS;
+   var next=old.setValue(AGE,0);
+   if(!writer.set(l,p,next) || !harvestBody(l,p,who) || !l.getBlockState(p).equals(next) || !next.canSurvive(l,p))return InteractionResult.PASS;
+   if(!harvestClaim(l,p,who) || !harvestBody(l,p,who) || !l.getBlockState(p).equals(next) || !next.canSurvive(l,p))return InteractionResult.PASS;
+   popResource(l,p,new ItemStack(WetlandGarden.FLOSS));Feels.sound(l,Vec3.atCenterOf(p),"wetland_reed_harvest",.55F,1);
+   return InteractionResult.SUCCESS;
+  }
  }
 }

@@ -1,0 +1,26 @@
+{
+  "events": {
+    "root_carry_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/root_carry/root_carry_cue"
+      ],
+      "subtitle": "root_carry.cue"
+    },
+    "root_carry_select": {
+      "attenuation": 0,
+      "files": [
+        "kit/root_carry/root_carry_select"
+      ],
+      "subtitle": "root_carry.select"
+    },
+    "root_carry_settle": {
+      "attenuation": 0,
+      "files": [
+        "kit/root_carry/root_carry_settle"
+      ],
+      "subtitle": "root_carry.settle"
+    }
+  },
+  "part": "root_carry"
+}

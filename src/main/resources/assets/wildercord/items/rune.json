@@ -663,6 +663,13 @@
         }
       },
       {
+        "when": "wildercord:root_carry",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/root_carry"
+        }
+      },
+      {
         "when": "wildercord:harvest",
         "model": {
           "type": "minecraft:model",

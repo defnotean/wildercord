@@ -518,3 +518,12 @@ The original ceramic three-vent Bailiff and six-state Cinder Fern now have focus
 Final15s build passes990 units;5352 generated paths reproduce;126 illustrated guide/GitBook pages validate. Checked review JAR, exact checksum and ten directly inspected actual native captures are in artifacts/review/ember-woodlands. See docs/audit/ember-woodlands-milestone.md for gate provenance and limits, including an unestablished historical fixture health failure.
 
 Conservative credit becomes8 creatures and24 functional items (relic2/equipment2/tools4/placeables7/materials9). At least14 further items remain to meet category minimums; an additional placeable does not replace missing relic/equipment/tool credits. Abilities2, signatures18, lore15, investigations2, locations2 and complete ecosystems0 remain unchanged. Natural patch/animal distribution, connected human multiplayer, sustained population performance and a whole ember ecosystem remain open. Root Carry, Tideward, Moonreed and Aura guard candidates are unaccepted. The goal remains active.
+
+
+## Root Carry and genuine local connection increment (2026-10-04)
+
+Root Carry is a rank II Life ability: two separately paid Survival casts select then relocate an exact young Cinder Fern, retaining growth/cooling and enforcing claims, loaded terrain, two-cell budgets, callback guards and saved twenty-second rest. Its soil/frond projectile and three actual owner transfer beats have Full/Minimal native presentation and finite playback gates. Moonreed harvest now resets before reward and validates write success, claims and actual post-state. Actual pollinator entity departure is a separate pending correction.
+
+Final build19s passes995 units,5361 generated paths reproduce,127 illustrated guide pages validate/export. Review artifact and original native galleries are in artifacts/review/root-carry; exact gates/checksum and limits are recorded in docs/audit/root-carry-milestone.md. The generator no longer consumes legacy Life tile assignments for bespoke Root Carry art, retaining prior artwork.
+
+Abilities become3 (Unity, Basinfill, Root Carry), runtime370 runes/Life31. Creatures8, functional items24, signatures18, lore15, investigations2, locations2 and complete ecosystems0 remain unchanged. The separately committed local two-JVM gate proves real TCP movement/rendering/disconnect; actual cooperative Aura gameplay remains pending. The goal stays active; this is development content, with no new public release or VPS activation.

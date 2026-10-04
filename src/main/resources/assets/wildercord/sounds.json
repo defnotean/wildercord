@@ -6207,5 +6207,23 @@
     "sounds": [
       "wildercord:kit/ember/ember_fern_pick"
     ]
+  },
+  "root_carry_cue": {
+    "subtitle": "subtitles.wildercord.kit.root_carry.cue",
+    "sounds": [
+      "wildercord:kit/root_carry/root_carry_cue"
+    ]
+  },
+  "root_carry_select": {
+    "subtitle": "subtitles.wildercord.kit.root_carry.select",
+    "sounds": [
+      "wildercord:kit/root_carry/root_carry_select"
+    ]
+  },
+  "root_carry_settle": {
+    "subtitle": "subtitles.wildercord.kit.root_carry.settle",
+    "sounds": [
+      "wildercord:kit/root_carry/root_carry_settle"
+    ]
   }
 }

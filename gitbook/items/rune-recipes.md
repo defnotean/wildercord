@@ -225,7 +225,7 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 </figure>
 </div>
 
-## Tier II (102 runes)
+## Tier II (103 runes)
 
 Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingot**.
 
@@ -365,6 +365,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure>
 ![Crafting Root: a Blank Rune and 2x Vines](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_root.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/root.png) <a href="../runes/effects/earth.md#root">Root</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Root Carry: a Blank Rune and Rooted Dirt, Bone Meal and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_root_carry.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/root_carry.png) <a href="../runes/effects/life.md#root_carry">Root Carry</a><br><span>Effect, Life</span></figcaption>
 </figure>
 <figure>
 ![Crafting Searing Edge: a Blank Rune and Iron Sword and Blaze Powder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_searing_edge.png)

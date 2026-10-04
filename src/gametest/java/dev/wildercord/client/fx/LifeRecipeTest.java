@@ -14,6 +14,7 @@ import static dev.wildercord.content.MaterialOption.*;
 public final class LifeRecipeTest implements FabricClientGameTest {
  @Override public void runTest(ClientGameTestContext c) {
   check(new HashSet<>(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("life")).map(r->r.id().substring(11)).toList()).equals(new HashSet<>(LifeForms.RUNES)),"Exact runtime Life roster");
+  check(LifeForms.RUNES.size()==31,"Explicit reviewed Life31 preparation/travel roster");
   var uniquePrep=new HashSet<String>();var uniqueFlight=new HashSet<String>();
   for(String rune:LifeForms.RUNES)for(boolean minimal:new boolean[]{false,true}) {
    var prep=new ArrayList<String>();var flight=new ArrayList<String>();
@@ -39,6 +40,6 @@ public final class LifeRecipeTest implements FabricClientGameTest {
   check(!LifeForms.supports("other:heal") && !LifeForms.supports("wildercord:fire"),"Exact namespace and family");
   for(Vec3 v:List.of(Vec3.ZERO,new Vec3(0,1,0),new Vec3(0,-1,0)))LifeFlights.draw("wildercord:venom",8,2,2,Vec3.ZERO,v,true,(o,p)->check(Double.isFinite(p.lengthSqr()) && p.length()<2,"Vertical/stationary bounded"));
  }
- private static Set<Integer> support(String rune){return switch(rune){case "ashen_mercy"->Set.of(EMBER);case "bloom","root_bulwark"->Set.of(STONE);case "soulbond"->Set.of(ARCANE);case "second_wind","stitchtime","pulse_ferry"->Set.of(TIME);case "bloomstep"->Set.of(VOID);default->Set.of();};}
+ private static Set<Integer> support(String rune){return switch(rune){case "ashen_mercy"->Set.of(EMBER);case "bloom","root_bulwark","root_carry"->Set.of(STONE);case "soulbond"->Set.of(ARCANE);case "second_wind","stitchtime","pulse_ferry"->Set.of(TIME);case "bloomstep"->Set.of(VOID);default->Set.of();};}
  private static void check(boolean yes,String why){if(!yes)throw new AssertionError(why);}
 }

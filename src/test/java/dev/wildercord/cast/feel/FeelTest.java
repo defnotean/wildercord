@@ -111,6 +111,7 @@ class FeelTest {
 		BloodFeels.register();
 		dev.wildercord.cast.FieldFusionFeels.register();
 		dev.wildercord.cast.NextSignatureFeels.register();
+		dev.wildercord.wildlife.RootCarryFeels.init();
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		for (RuneDef rune : Runes.all()) {
 			if (rune.id().startsWith("wildercord:") && rune.family() == RuneFamily.EFFECT) {
@@ -150,7 +151,11 @@ class FeelTest {
 		// Check dynamically assembled Life names and keep signature voices single.
 		for (RuneDef rune : Runes.all()) {
 			if (rune.family() != RuneFamily.EFFECT || !rune.element().equals("life")) continue;
-			if (java.util.Set.of("ashen_mercy", "pulse_ferry").contains(rune.path())) {
+			if (rune.path().equals("root_carry")) {
+				for (String voice : java.util.List.of("cue", "select", "settle")) assertTrue(kit.contains("root_carry_" + voice), "Dedicated root owner voice missing: " + voice);
+				assertFalse(kit.contains("life_auth_root_carry_cue"), "Dedicated owner must not duplicate a Life cue");
+				assertFalse(kit.contains("life_auth_root_carry_outcome"), "Dedicated owner must not invent a Life delta voice");
+			} else if (java.util.Set.of("ashen_mercy", "pulse_ferry").contains(rune.path())) {
 				assertFalse(kit.contains("life_auth_" + rune.path() + "_cue"), "Signature cue duplicated: " + rune.path());
 				assertFalse(kit.contains("life_auth_" + rune.path() + "_outcome"), "Signature landing duplicated: " + rune.path());
 			} else {

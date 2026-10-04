@@ -9,11 +9,11 @@ import static dev.wildercord.content.LifeOption.*;
 /** Independently authored living preparations and moving bodies; no light geometry. */
 final class LifeForms {
  private LifeForms() {}
- static final List<String> RUNES=List.of("heal","grow","regrowth","cleanse","venom","nourish","harvest","reversal","restore","bramble","haven","glimmer","fortune","bloom","soulbond","second_wind","lifebloom","root_bulwark","bloomstep","stitchtime","vinelash","remedy","ancient_seed","moonpetal","sporebloom","glowvine","rootsnare","drowse","ashen_mercy","pulse_ferry");
+ static final List<String> RUNES=List.of("heal","grow","regrowth","cleanse","venom","nourish","harvest","reversal","restore","bramble","haven","glimmer","fortune","bloom","soulbond","second_wind","lifebloom","root_bulwark","bloomstep","stitchtime","vinelash","remedy","ancient_seed","moonpetal","sporebloom","glowvine","rootsnare","drowse","ashen_mercy","pulse_ferry","root_carry");
  static boolean supports(String id){return id.startsWith("wildercord:")&&RUNES.contains(id.substring(11));}
- static Set<String> ingredients(List<String> ids){var out=new HashSet<String>();for(String id:ids)if(supports(id)){out.add("life");switch(id.substring(11)){case "bloom","root_bulwark"->out.add("earth");case "soulbond"->out.add("arcane");case "second_wind","stitchtime"->out.add("time");case "bloomstep"->out.add("void");case "ashen_mercy"->out.add("fire");case "pulse_ferry"->out.add("time");default->{}}}return out;}
+ static Set<String> ingredients(List<String> ids){var out=new HashSet<String>();for(String id:ids)if(supports(id)){out.add("life");switch(id.substring(11)){case "bloom","root_bulwark","root_carry"->out.add("earth");case "soulbond"->out.add("arcane");case "second_wind","stitchtime"->out.add("time");case "bloomstep"->out.add("void");case "ashen_mercy"->out.add("fire");case "pulse_ferry"->out.add("time");default->{}}}return out;}
  static void prepare(String id,int beat,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,boolean minimal,BiConsumer<ParticleOptions,Vec3> emit){
- if(!supports(id))return;if(NextSignatureForms.prepare(id,beat,scale,anchor,right,up,forward,minimal,emit))return;double t=beat*.5;var p=new Pen(anchor,right,up,forward,Math.clamp(scale,.4,2),8,minimal,emit);
+ if(!supports(id))return;if(dev.wildercord.wildlife.RootCarryPictures.prepare(id,beat,scale,anchor,right,up,forward,minimal,emit))return;if(NextSignatureForms.prepare(id,beat,scale,anchor,right,up,forward,minimal,emit))return;double t=beat*.5;var p=new Pen(anchor,right,up,forward,Math.clamp(scale,.4,2),8,minimal,emit);
  switch(id.substring(11)){
  case "heal" -> { for(int s:new int[]{-1,1})p.part(TISSUE,0xD5DEC3,s*(.3-.2*t),0,.02,.21,-s*.014,0,0,s*.03);p.part(SAP,0xB9D28B,0,.14*t,.04,.09,0,.005,0,0); }
  case "grow" -> { p.part(SEED,0xC4B07C,0,-.25,0,.16,0,0,0,.02);for(int s:new int[]{-1,1})p.part(LEAF,0xA8CF78,s*.2*t,.05*t,.04,.2,s*.005,.009,0,s*.08);p.part(VINE,0x7DAB63,0,-.1+.2*t,0,.17,0,.007,0,0); }
@@ -53,7 +53,7 @@ final class LifeForms {
  }
  }
  static void fly(String id,int age,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,boolean minimal,BiConsumer<ParticleOptions,Vec3> emit){
- if(!supports(id))return;if(NextSignatureForms.travel(id,age,scale,anchor,right,up,forward,minimal,emit))return;double t=age*.55,w=Math.sin(t);var p=new Pen(anchor,right,up,forward,scale,5,minimal,emit);
+ if(!supports(id))return;if(dev.wildercord.wildlife.RootCarryPictures.fly(id,age,scale,anchor,right,up,forward,minimal,emit))return;if(NextSignatureForms.travel(id,age,scale,anchor,right,up,forward,minimal,emit))return;double t=age*.55,w=Math.sin(t);var p=new Pen(anchor,right,up,forward,scale,5,minimal,emit);
  switch(id.substring(11)){
  case "heal" -> { for(int s:new int[]{-1,1})p.part(TISSUE,0xD5DEC3,s*(.1+.018*w),0,.09,.17,-s*.002,0,0,s*.02);p.part(SAP,0xB9D28B,0,.07,-.2,.07,0,-.003,-.006,0); }
  case "grow" -> { p.part(SEED,0xC4B07C,0,-.09,.12,.15,0,-.003,0,.04);p.part(VINE,0x7DAB63,0,.025*w,-.1,.15,0,.004,0,0);for(int s:new int[]{-1,1})p.part(LEAF,0xA8CF78,s*.17,.1+.02*w,-.21,.14,s*.004,.003,-.005,s*.08); }

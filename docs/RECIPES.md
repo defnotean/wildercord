@@ -68,7 +68,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Spark | Shape | Flint, Glowstone Dust |
 | Touch | Shape | Leather |
 
-## Tier II (102 runes, + 2 Lapis Lazuli and a Gold Ingot)
+## Tier II (103 runes, + 2 Lapis Lazuli and a Gold Ingot)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -106,6 +106,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Repel | Effect | 2x Wind Charge |
 | Ripple | Effect | Sunflower, Glowstone Dust |
 | Root | Effect | 2x Vine |
+| Root Carry | Effect | Rooted Dirt, Bone Meal, String |
 | Searing Edge | Effect | Iron Sword, Blaze Powder |
 | Shackle | Effect | 2x Iron Chain |
 | Shield | Effect | Shield |

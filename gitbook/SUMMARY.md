@@ -29,6 +29,7 @@
   * [Loadouts](spellcraft/loadouts.md)
   * [Spell Mastery](spellcraft/mastery.md)
   * [Basinfill](spellcraft/basinfill.md)
+  * [Root Carry](spellcraft/root-carry.md)
 * [Runes](runes/index.md)
   * [Shapes](runes/shapes.md)
   * [Effects](runes/effects/index.md)

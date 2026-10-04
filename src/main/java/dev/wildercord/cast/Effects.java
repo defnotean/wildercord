@@ -635,6 +635,7 @@ public final class Effects {
 				Vfx.leap(level, t);
 			});
 			case "grapple" -> grapple(cast, hit, power);
+			case "root_carry" -> dev.wildercord.wildlife.RootCarry.apply(cast, hit);
 			case "harvest" -> harvest(cast, hit, SpellNumbers.effectRadius(node));
 			case "basinfill" -> Basinfill.fill(cast, hit);
 			case "icepath" -> {

@@ -1815,6 +1815,15 @@
     "ready_ping": {
       "part": "neutral"
     },
+    "root_carry_cue": {
+      "part": "root_carry"
+    },
+    "root_carry_select": {
+      "part": "root_carry"
+    },
+    "root_carry_settle": {
+      "part": "root_carry"
+    },
     "rootmolt_call": {
       "part": "rootmolt"
     },

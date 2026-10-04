@@ -191,7 +191,13 @@
 			"dev.wildercord.wildlife.EmberPaidPacketsTest",
 			"dev.wildercord.wildlife.EmberPresentationTest",
 			"dev.wildercord.wildlife.CinderBailiffTerritoryTest",
-			"dev.wildercord.wildlife.CinderBailiffFanSafetyTest"
+			"dev.wildercord.wildlife.CinderBailiffFanSafetyTest",
+			"dev.wildercord.wildlife.MoonreedPostWriteTest",
+			"dev.wildercord.wildlife.RootCarryFaultTest",
+			"dev.wildercord.wildlife.RootCarryPaidTest",
+			"dev.wildercord.client.fx.RootCarryQualityTest",
+			"dev.wildercord.client.fx.RootCarryPresentationTest",
+			"dev.wildercord.cast.RootCarryOutcomeOwnershipTest"
 		]
 	},
 	"depends": {

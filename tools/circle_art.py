@@ -581,7 +581,8 @@ def main(preview=False):
     signatures = {path: (element[a], element[b]) for path, (a, b) in read_signatures().items()}
     fusions = {**read_fusions(), **signatures}
     fused = [r for r in runes if r["path"] in fusions]
-    bands, marks = designs(runes, skip=frozenset(r["path"] for r in fused if r["path"] not in LEGACY_FUSED))
+    # Root Carry has its own authored tiles and must not consume an existing Life tile assignment.
+    bands, marks = designs(runes, skip=frozenset(r["path"] for r in fused if r["path"] not in LEGACY_FUSED) | {"root_carry"})
     # Fused runes wear their two elements instead (the legacy twelve's old designs stay held, unused).
     second = {}
     for r in fused:
@@ -598,6 +599,8 @@ def main(preview=False):
     physical_art.circles(bands, marks, second)
     import circle_discipline_art
     circle_discipline_art.circles(bands, marks)
+    import root_carry_art
+    root_carry_art.circles(bands, marks)
     # Every rune's ring and emblem must be its own (a fused rune's counted with both halves).
     def whole(table, path, index):
         return frozenset(table[path]) | (frozenset(second[path][index]) if path in second else frozenset())

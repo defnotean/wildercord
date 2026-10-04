@@ -11,7 +11,7 @@ nav_order: 6
 
 Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 
-13 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
+14 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
 
 Read [Reading Life Magic]({{ '/spellcraft/life-outcomes/' | relative_url }}) for the illustrated journal of actual healing, repair, gardens and living ward responses.
 
@@ -131,6 +131,19 @@ Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 heal
 <img src="{{ '/assets/recipes/rune_regrowth.png' | relative_url }}" alt="Crafting Regrowth: a Blank Rune and Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### <img src="{{ '/assets/runes/root_carry.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Root Carry
+{: #root_carry}
+
+*Tier II · Life · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Two separate casts select and move one unchanged young Cinder Fern onto nearby visible soil. Selection lasts fifteen seconds; successful relocation starts a twenty-second rest. Refuses grown, changed, hidden, protected or unloaded roots.
+
+**How to get it:** Craft: a Blank Rune, Rooted Dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_root_carry.png' | relative_url }}" alt="Crafting Root Carry: a Blank Rune and Rooted Dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/venom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Venom
 {: #venom}

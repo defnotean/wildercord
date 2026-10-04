@@ -4,7 +4,7 @@
 
 Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 
-13 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
+14 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
 
 Read [Reading Life Magic](../../spellcraft/life-outcomes.md) for the illustrated journal of actual healing, repair, gardens and living ward responses.
 
@@ -124,6 +124,19 @@ Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 heal
 ![Crafting Regrowth: a Blank Rune and Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_regrowth.png)
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/root_carry.png) Root Carry
+
+
+*Tier II · Life · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Two separate casts select and move one unchanged young Cinder Fern onto nearby visible soil. Selection lasts fifteen seconds; successful relocation starts a twenty-second rest. Refuses grown, changed, hidden, protected or unloaded roots.
+
+**How to get it:** Craft: a Blank Rune, Rooted Dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+![Crafting Root Carry: a Blank Rune and Rooted Dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_root_carry.png)
+
+**Modifiers that work on it:** Frugal
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/venom.png) Venom
 

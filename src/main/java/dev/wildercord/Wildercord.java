@@ -112,6 +112,7 @@ public final class Wildercord implements ModInitializer {
   dev.wildercord.wildlife.FungalGarden.init();
   dev.wildercord.wildlife.RootmoltContent.init();
   dev.wildercord.wildlife.EmberContent.init();
+  dev.wildercord.wildlife.RootCarry.init();
   dev.wildercord.wildlife.DrainhouseContent.init();
 		dev.wildercord.cast.Dungeons.init();
 		dev.wildercord.world.dungeons.DungeonWards.init();
@@ -129,6 +130,7 @@ public final class Wildercord implements ModInitializer {
 		// Last: add-ons (the "wildercord" entrypoint) extend everything above.
 		dev.wildercord.api.WildercordApi.loadAddons();
 		dev.wildercord.cast.feel.Feels.init();
+        dev.wildercord.wildlife.RootCarryFeels.init();
         dev.wildercord.cast.FieldFusions.init();
         dev.wildercord.cast.CounterSignatures.init();
         dev.wildercord.cast.SupportSignatures.init();

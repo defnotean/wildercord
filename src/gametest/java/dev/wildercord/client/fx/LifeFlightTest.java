@@ -25,7 +25,7 @@ public final class LifeFlightTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);var camera=net.minecraft.world.entity.EntityTypes.TEXT_DISPLAY.create(s.overworld(),net.minecraft.world.entity.EntitySpawnReason.COMMAND);camera.snapTo(3,102,10,90,0);camera.setNoGravity(true);camera.setInvisible(true);s.overworld().addFreshEntity(camera);cameraId=camera.getId();});c.waitTicks(15);
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"life_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
-   check(LifeForms.RUNES.size()==30,"Explicit complete life roster");
+   check(LifeForms.RUNES.size()==31,"Explicit complete life roster");
    check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("life")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(LifeForms.RUNES)),"Authored runtime life roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:LifeForms.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
@@ -69,7 +69,7 @@ public final class LifeFlightTest implements FabricClientGameTest {
  private static Set<Integer> ingredients(String rune){
   return switch(rune){
    case "ashen_mercy" -> Set.of(EMBER);
-   case "bloom","root_bulwark" -> Set.of(STONE);
+   case "bloom","root_bulwark","root_carry" -> Set.of(STONE);
    case "soulbond" -> Set.of(ARCANE);
    case "second_wind","stitchtime","pulse_ferry" -> Set.of(TIME);
    case "bloomstep" -> Set.of(VOID);
