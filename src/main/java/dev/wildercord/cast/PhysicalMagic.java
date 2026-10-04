@@ -184,6 +184,6 @@ public final class PhysicalMagic {
 			}));}
 			Scheduler.later(36+offset,()->{if(previous[0]!=null)restore(cast.level,previous[0],previousCell[0]);restore(cast.level,source,reservedCell);});
 		}
-		if(count==0)Casters.tell(cast.caster,net.minecraft.network.chat.Component.literal("Tidal magic needs a water source within four blocks."));
+		if(count==0)Casters.tell(cast.caster,net.minecraft.network.chat.Component.translatableWithFallback("message.wildercord.tidal_no_water","Tidal magic needs a water source within four blocks."));
 	}
 }

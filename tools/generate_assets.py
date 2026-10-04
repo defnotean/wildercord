@@ -1828,6 +1828,7 @@ NEW_LANG = {
     "message.wildercord.transfusion_weak": "Too little blood left to give",
     "message.wildercord.transfusion_whole": "They're already whole",
     "message.wildercord.sanguine_rite_weak": "The rite needs more blood than you can spare",
+    "message.wildercord.tidal_no_water": "Tidal magic needs a water source within four blocks.",
     "subtitles.wildercord.altar_open": "Fusion Altar hums",
     "subtitles.wildercord.altar_fuse": "Runes fuse",
     "subtitles.wildercord.altar_knot": "Knot is tied",
