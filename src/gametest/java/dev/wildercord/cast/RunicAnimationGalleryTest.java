@@ -70,12 +70,12 @@ public class RunicAnimationGalleryTest implements FabricClientGameTest {
 				}
 			}
 			StringBuilder gallery = new StringBuilder("""
-			<!doctype html><html lang="en"><meta charset="utf-8"><title>WilderCord · Rune animation gallery</title>
+			<!doctype html><html lang="en"><meta charset="utf-8"><title>Wildercord · Rune animation gallery</title>
 			<style>body{background:#12121b;color:#f4eee2;font:16px system-ui;margin:2rem auto;max-width:1300px;padding:0 1rem}
 			a{color:#93e6df}details{border:1px solid #474056;border-radius:12px;margin:1rem 0;padding:1rem;background:#20202c}
 			summary{cursor:pointer;font-weight:700} .frames{display:flex;gap:.5rem;margin-top:1rem}.frames a{width:33%}.frames img{width:100%;border-radius:7px}
 			ol{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem 1rem;padding-left:1.5rem}li{padding:.25rem}
-			</style><h1>WilderCord rune animations</h1><p>These are screenshots from the running Minecraft client.
+			</style><h1>Wildercord rune animations</h1><p>These are screenshots from the running Minecraft client.
 			Each set shows the same nine runes three, six and ten ticks after release or impact.
 			The numbered key follows the three by three grid from top left to bottom right. Click a frame for full resolution.</p>
 			""");
