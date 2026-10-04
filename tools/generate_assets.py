@@ -2069,7 +2069,7 @@ NEW_LANG = {
     "message.wildercord.contract_done": "Contract complete: %s. Hand it in at a Scribing Desk",
     "message.wildercord.contract_reward": "Reward: %s",
     "message.wildercord.contract_reward_rune": "a Tier %s rune",
-    "message.wildercord.contract_rune": "Your contract pays a %s rune",
+    "message.wildercord.contract_rune": "Your contract pays a rune: %s",
     "message.wildercord.contract_refresh": "New contracts every dawn. Finished ones are handed in here",
     # Duels.
     "message.wildercord.duel_disabled": "Duels are turned off here",
