@@ -1944,6 +1944,15 @@
     "tell_zap": {
       "part": "neutral"
     },
+    "tideward_glass_warning": {
+      "part": "tideward"
+    },
+    "tideward_spool_commit": {
+      "part": "tideward"
+    },
+    "tideward_weave_rest": {
+      "part": "tideward"
+    },
     "time_cue": {
       "part": "time"
     },

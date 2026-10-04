@@ -28,7 +28,7 @@ import sound_art as sa  # noqa: E402  (the DSP primitives, ROOT_HZ, note(), the 
 ELEMENTS = sa.ELEMENTS
 # The elements, the neutral sounds, the monsters (tools/feel/monster.py) and the creatures of the wild (tools/feel/wildlife.py),
 # which speak in voices of their own, aura's sounds (tools/feel/aura.py), and the duelists' and fallen knights' (tools/feel/duelist.py).
-PARTS = ELEMENTS + ("neutral", "monster", "wildlife", "aura", "duelist", "highland", "wetland", "sporeback", "fieldfusion", "fungal", "nextsignature", "rootmolt", "belowkeeper", "ember", "root_carry")
+PARTS = ELEMENTS + ("neutral", "monster", "wildlife", "aura", "duelist", "highland", "wetland", "sporeback", "fieldfusion", "fungal", "nextsignature", "rootmolt", "belowkeeper", "ember", "root_carry", "tideward")
 NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 
 # The four subtitle texts every magic event picks from (generate_assets.py NEW_LANG): a sound never needs its own line.

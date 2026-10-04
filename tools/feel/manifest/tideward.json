@@ -1,0 +1,26 @@
+{
+  "events": {
+    "tideward_glass_warning": {
+      "attenuation": 0,
+      "files": [
+        "kit/tideward/tideward_glass_warning"
+      ],
+      "subtitle": "tideward.glass_warning"
+    },
+    "tideward_spool_commit": {
+      "attenuation": 0,
+      "files": [
+        "kit/tideward/tideward_spool_commit"
+      ],
+      "subtitle": "tideward.spool_commit"
+    },
+    "tideward_weave_rest": {
+      "attenuation": 0,
+      "files": [
+        "kit/tideward/tideward_weave_rest"
+      ],
+      "subtitle": "tideward.weave_rest"
+    }
+  },
+  "part": "tideward"
+}

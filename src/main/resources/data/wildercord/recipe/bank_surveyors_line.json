@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:stick",
+    "minecraft:copper_ingot",
+    "wildercord:windreed_braid",
+    "wildercord:moonreed_floss"
+  ],
+  "result": {
+    "id": "wildercord:bank_surveyors_line",
+    "count": 1
+  }
+}

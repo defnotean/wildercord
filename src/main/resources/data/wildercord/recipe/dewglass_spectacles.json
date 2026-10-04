@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:glass_pane",
+    "minecraft:copper_ingot",
+    "wildercord:moonreed_floss"
+  ],
+  "result": {
+    "id": "wildercord:dewglass_spectacles",
+    "count": 1
+  }
+}

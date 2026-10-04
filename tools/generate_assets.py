@@ -843,6 +843,9 @@ def write_lang(runes):
     import belowkeeper_art
     lang.update(belowkeeper_art.LANG)
     belowkeeper_art.write(sys.modules[__name__])
+    import tideward_art
+    lang.update(tideward_art.LANG)
+    tideward_art.write(sys.modules[__name__])
     import reed_rattle_art
     lang.update(reed_rattle_art.LANG)
     reed_rattle_art.write(sys.modules[__name__])

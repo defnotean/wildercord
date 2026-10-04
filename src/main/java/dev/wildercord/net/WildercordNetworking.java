@@ -230,6 +230,7 @@ public final class WildercordNetworking {
 		PayloadTypeRegistry.clientboundPlay().register(ScreenFx.TYPE, ScreenFx.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(FormationPayload.TYPE, FormationPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(LifeOutcomePayload.TYPE, LifeOutcomePayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(TidewardCue.TYPE, TidewardCue.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(NotebookPayload.TYPE, NotebookPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EditPassive.TYPE, EditPassive.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(TogglePassive.TYPE, TogglePassive.CODEC);

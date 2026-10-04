@@ -6225,5 +6225,23 @@
     "sounds": [
       "wildercord:kit/root_carry/root_carry_settle"
     ]
+  },
+  "tideward_glass_warning": {
+    "subtitle": "subtitles.wildercord.kit.tideward.glass_warning",
+    "sounds": [
+      "wildercord:kit/tideward/tideward_glass_warning"
+    ]
+  },
+  "tideward_spool_commit": {
+    "subtitle": "subtitles.wildercord.kit.tideward.spool_commit",
+    "sounds": [
+      "wildercord:kit/tideward/tideward_spool_commit"
+    ]
+  },
+  "tideward_weave_rest": {
+    "subtitle": "subtitles.wildercord.kit.tideward.weave_rest",
+    "sounds": [
+      "wildercord:kit/tideward/tideward_weave_rest"
+    ]
   }
 }

@@ -15,6 +15,14 @@
       "dev.wildercord.wildlife.RootmoltEcologyTest",
       "dev.wildercord.wildlife.DrainhouseAcquisitionTest",
       "dev.wildercord.wildlife.BelowkeeperEquipmentTest",
+      "dev.wildercord.wildlife.ReedwaterWadersTest",
+      "dev.wildercord.wildlife.ReedwaterBoundaryTest",
+      "dev.wildercord.wildlife.DewglassSpectaclesTest",
+      "dev.wildercord.wildlife.TidewardWarningBoundsTest",
+      "dev.wildercord.wildlife.BankSurveyLineTest",
+      "dev.wildercord.wildlife.TidewardReadAdmissionTest",
+      "dev.wildercord.wildlife.TidewardStalledClockTest",
+      "dev.wildercord.wildlife.TidewardPresentationTest",
       "dev.wildercord.wildlife.DrainhouseTerrainTest",
       "dev.wildercord.wildlife.DrainhousePlacementTest",
       "dev.wildercord.wildlife.RootmoltCounterTest",
@@ -198,7 +206,8 @@
       "dev.wildercord.client.fx.RootCarryQualityTest",
       "dev.wildercord.client.fx.RootCarryPresentationTest",
       "dev.wildercord.cast.RootCarryOutcomeOwnershipTest",
-      "dev.wildercord.wildlife.MoonreedSourceTest"
+      "dev.wildercord.wildlife.MoonreedSourceTest",
+      "dev.wildercord.wildlife.TidewardPendingReceiverTest"
     ]
   },
   "depends": {

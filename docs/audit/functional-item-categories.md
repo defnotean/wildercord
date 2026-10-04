@@ -1,5 +1,9 @@
 # Functional item category audit and proposed follow-ups
 
+## Current accepted ledger — 2026-10-04
+
+The historical proposals below retain their original scope. Current accepted additions are 27: relics2 (Sleeping Blade, Mara's Empty Bell), equipment4 (Cave Breather, Rootbound Greaves, Reedwater Waders, Dewglass Spectacles), tools5 (Ridge Whistle, Draft Kite, Dewglass Lens, Reed Rattle, Bank Surveyor's Line), placeables7 (the six historical entries plus Cinder Fern), and materials9. At least six relics, four equipment and one tool remain to meet category minima, yielding 38 total. The accepted Tideward mechanics are shallow supported walking, crouched actual warning reading and private sampled crossing guidance; proposed wet-slow immunity, peripheral-view reduction, companion route commands and Tide Needle are not accepted features. See tideward-milestone.md and living-world-remaining.md for current native evidence and scope.
+
 Classification against baseline `14efc61e`. The Glowcap additions passed their eighth full acquisition/crafting/restart run, seventh natural-terrain run and sixth navigation-bounds run. Existing baseline equipment and spawn eggs are excluded; lore books have their own target. The earlier 17 evidenced additions match root's classification:
 
 | Category | Accepted goal additions | Count / target |

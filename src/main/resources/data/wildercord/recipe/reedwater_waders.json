@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_boots",
+    "wildercord:moonreed_floss",
+    "wildercord:windreed_braid",
+    "minecraft:copper_ingot"
+  ],
+  "result": {
+    "id": "wildercord:reedwater_waders",
+    "count": 1
+  }
+}

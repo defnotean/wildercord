@@ -111,6 +111,8 @@ public final class Wildercord implements ModInitializer {
   dev.wildercord.wildlife.SporebackContent.init();
   dev.wildercord.wildlife.FungalGarden.init();
   dev.wildercord.wildlife.RootmoltContent.init();
+  dev.wildercord.wildlife.TidewardEquipment.init();
+  dev.wildercord.wildlife.TidewardSurvey.init();
   dev.wildercord.wildlife.EmberContent.init();
   dev.wildercord.wildlife.RootCarry.init();
   dev.wildercord.wildlife.DrainhouseContent.init();
