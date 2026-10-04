@@ -16,7 +16,8 @@ public final class NextCounterTest implements FabricClientGameTest {
  private static Mob shooter,stationary,moving,walking;
  private static ServerPlayer rival,rearAlly;
  private static Arrow first,second;
- private static float firstHealth,enemyAfterPayment;
+ private static float firstHealth,enemyAfterPayment,walkingStartHealth;
+ private static Vec3 walkingOrigin;
  private static Cast continued;
  private static RuneBolt turned;
  private static ServerPlayer parrier,reflectionReceiver;
@@ -61,21 +62,22 @@ public final class NextCounterTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=player(s);floor(p);p.setHealth(20);
     var boss=EntityTypes.WITHER.create(p.level(),EntitySpawnReason.COMMAND);check(boss!=null,"Counter safety boss created");boss.setNoAi(true);boss.snapTo(6,101,6,0,0);p.level().addFreshEntity(boss);
     apply(new Cast(p),Runes.QUIETUS,List.of(boss),boss.position());apply(new Cast(p),Runes.RED_LEDGER,List.of(boss),boss.position());check(CounterSignatures.active()==0,"Boss cannot enter projectile escrow or movement ledger");boss.discard();
-    var immune=foe(p,6,6);immune.setPermanentlyInvulnerable(true);apply(new Cast(p),Runes.QUIETUS,List.of(immune),immune.position());apply(new Cast(p),Runes.RED_LEDGER,List.of(immune),immune.position());check(CounterSignatures.active()==0,"Permanent immunity refuses hostile escrow and movement ledger");immune.discard();
-    shooter=foe(p,5,5);cast(p,Runes.SELF,Runes.NULLCATCH);});c.waitTicks(12);
+    var immune=counterFoe(p,6,6);immune.setPermanentlyInvulnerable(true);apply(new Cast(p),Runes.QUIETUS,List.of(immune),immune.position());apply(new Cast(p),Runes.RED_LEDGER,List.of(immune),immune.position());check(CounterSignatures.active()==0,"Permanent immunity refuses hostile escrow and movement ledger");immune.discard();
+    shooter=counterFoe(p,5,5);cast(p,Runes.SELF,Runes.NULLCATCH);});c.waitTicks(12);
    w.getServer().runOnServer(s->{var p=player(s);firstHealth=p.getHealth();first=arrow(p,shooter,true);});c.waitTicks(4);
    w.getServer().runOnServer(s->{var p=player(s);check(!first.isAlive() && p.getHealth()==firstHealth,"Actual paid front capture removes one hostile arrow without a hit");second=arrow(p,shooter,true);});c.waitTicks(6);
    w.getServer().runOnServer(s->{var p=player(s);check(p.getHealth()<firstHealth,"Second hostile arrow crosses spent capture screen");p.setHealth(20);pose(p,.5,.5,0);
     // Prove the setup really increases ordinary damage before asserting the signature's final cap.
-    var bonusProbe=foe(p,7,7);var setup=new Cast(p).damagePrice(100);Effects.hex(setup,bonusProbe,200,3,false);
+    var bonusProbe=counterFoe(p,7,7);var setup=new Cast(p).damagePrice(100);Effects.hex(setup,bonusProbe,200,3,false);
     Effects.hurt(setup,bonusProbe,p.level().damageSources().indirectMagic(p,p),2);
     check(20-bonusProbe.getHealth()>2.5,"Actual hex multiplier increases uncapped ordinary magic damage");bonusProbe.discard();
-    stationary=foe(p,.5,4.5);Effects.hex(new Cast(p),stationary,200,3,false);cast(p,Runes.BEAM,Runes.SECOND_BELL);});c.waitTicks(50);
+    stationary=counterFoe(p,.5,4.5);Effects.hex(new Cast(p),stationary,200,3,false);cast(p,Runes.BEAM,Runes.SECOND_BELL);});c.waitTicks(50);
    w.getServer().runOnServer(s->{check(stationary.getHealth()<20 && 20-stationary.getHealth()<=4.01,"Two paid stationary bell beats have target cap four after bonuses");stationary.discard();
-    var p=player(s);pose(p,.5,.5,0);moving=foe(p,.5,4.5);cast(p,Runes.BEAM,Runes.SECOND_BELL);});c.waitTicks(28);
+    var p=player(s);pose(p,.5,.5,0);moving=counterFoe(p,.5,4.5);cast(p,Runes.BEAM,Runes.SECOND_BELL);});c.waitTicks(28);
    w.getServer().runOnServer(s->{firstHealth=moving.getHealth();check(firstHealth<20,"Actual first bell landed");moving.move(MoverType.SELF,new Vec3(2,0,0));});c.waitTicks(24);
-   w.getServer().runOnServer(s->{check(moving.getHealth()==firstHealth,"Ordinary movement counters second bell");moving.discard();var p=player(s);pose(p,.5,.5,0);walking=foe(p,.5,4.5);Effects.hex(new Cast(p),walking,200,3,false);cast(p,Runes.BEAM,Runes.RED_LEDGER);});c.waitTicks(12);
-   w.getServer().runOnServer(s->check(walking.getHealth()==20,"Standing still avoids paid movement ledger"));
+   w.getServer().runOnServer(s->{check(moving.getHealth()==firstHealth,"Ordinary movement counters second bell");moving.discard();var p=player(s);pose(p,.5,.5,0);walking=counterFoe(p,.5,4.5);walkingOrigin=walking.position();walkingStartHealth=walking.getHealth();Effects.hex(new Cast(p),walking,200,3,false);cast(p,Runes.BEAM,Runes.RED_LEDGER);});c.waitTicks(12);
+   String inputs=c.computeOnClient(mc->"up="+mc.options.keyUp.isDown()+" down="+mc.options.keyDown.isDown()+" left="+mc.options.keyLeft.isDown()+" right="+mc.options.keyRight.isDown()+" jump="+mc.options.keyJump.isDown()+" sneak="+mc.options.keyShift.isDown()+" attack="+mc.options.keyAttack.isDown()+" use="+mc.options.keyUse.isDown());
+   w.getServer().runOnServer(s->{var p=player(s);var displacement=walking.position().subtract(walkingOrigin);var details=" beforeHealth="+walkingStartHealth+" health="+walking.getHealth()+" max="+walking.getMaxHealth()+" absorption="+walking.getAbsorptionAmount()+" beforeBody="+walkingOrigin+" endBody="+walking.position()+" horizontalDisplacement="+displacement.multiply(1,0,1).length()+" velocity="+walking.getDeltaMovement()+" noAI="+walking.isNoAi()+" onGround="+walking.onGround()+" registered="+(p.level().getEntity(walking.getUUID())==walking)+" runebound="+Runebound.spellOf(walking)+" active="+CounterSignatures.active()+" casterBody="+p.position()+" casterVelocity="+p.getDeltaMovement()+" clientInputs="+inputs;System.out.println("LEDGER_STILLNESS"+details);check(walking.getHealth()==20,"Standing still avoids paid movement ledger"+details);});
    for(int gate=0;gate<3;gate++){w.getServer().runOnServer(s->walking.move(MoverType.SELF,new Vec3(1.1,0,0)));c.waitTicks(10);}
    w.getServer().runOnServer(s->{check(20-walking.getHealth()>0 && 20-walking.getHealth()<=6.01,"Three ordinary movement gates remain within six post-bonus damage");walking.discard();
     var p=player(s);pose(p,.5,.5,0);rival=guest(p,"QuietusRival",false);cast(p,Runes.BEAM,Runes.QUIETUS);});c.waitTicks(12);
@@ -83,14 +85,14 @@ public final class NextCounterTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{check(Spellbooks.mana(rival)<=enemyAfterPayment-7.9 && Spellbooks.mana(rival)>=enemyAfterPayment-8.1,"Actual newly paid enemy magic projectile has bounded eight-mana tax");
     var p=player(s);p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(30)).forEach(Entity::discard);rival.discard();
     // Same real damage seam with absorption and linked copies: spent shield contributions are not refunded.
-    var a=foe(p,3,4);var b=foe(p,5,4);a.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION,200,0));a.setAbsorptionAmount(4);continued=new Cast(p).damagePrice(100);Effects.hex(continued,a,200,3,false);Effects.hex(continued,b,200,3,false);
+    var a=counterFoe(p,3,4);var b=counterFoe(p,5,4);a.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION,200,0));a.setAbsorptionAmount(4);continued=new Cast(p).damagePrice(100);Effects.hex(continued,a,200,3,false);Effects.hex(continued,b,200,3,false);
     apply(continued,Runes.SECOND_BELL,List.of(a,b),a.position());apply(continued.pulse(),Runes.SECOND_BELL,List.of(a,b),a.position());
     stationary=a;moving=b;});c.waitTicks(48);
    w.getServer().runOnServer(s->{System.out.println("Bell overlap: health="+stationary.getHealth()+" absorption="+stationary.getAbsorptionAmount()+" other="+moving.getHealth()+" budget="+NextSignaturePayments.of(continued).left("second_bell_damage",8));
     check(stationary.getHealth()==20 && stationary.getAbsorptionAmount()==0,"Actual absorption consumes four while linked contributions spend their shared allowance without health loss");
     check(20-moving.getHealth()<=4.01,"Linked copies cannot refill target damage");
     check(NextSignaturePayments.of(continued).left("second_bell_damage",8)==0,"Both defended and landed contributions spend shared global eight");
-    stationary.discard();moving.discard();var p=player(s);walking=foe(p,3,4);continued=new Cast(p).damagePrice(100);
+    stationary.discard();moving.discard();var p=player(s);walking=counterFoe(p,3,4);continued=new Cast(p).damagePrice(100);
     apply(continued,Runes.RED_LEDGER,List.of(walking),walking.position());walking.teleportTo(p.level(),4,101,4,Set.<Relative>of(),0,0,false);});c.waitTicks(10);
    w.getServer().runOnServer(s->{check(walking.getHealth()==20,"Actual small same-world teleport releases ledger before movement cuts");walking.move(MoverType.SELF,new Vec3(1.2,0,0));});c.waitTicks(10);
    w.getServer().runOnServer(s->{check(walking.getHealth()==20,"Released teleport ledger cannot resume after walking");walking.discard();});
@@ -102,6 +104,16 @@ public final class NextCounterTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{check(rearAlly.getHealth()<firstHealth && CounterSignatures.active()==1,"Rear hostile arrow is not intercepted by front-only active capture window");});save=w.getWorldSave();
   }
   try(var reopened=save.open()){c.waitTicks(20);reopened.getServer().runOnServer(s->check(CounterSignatures.active()==0,"Counter maps clear across full native reopen"));}
+ }
+ /** Named BEFORE actual entity admission: controlled health fixtures must not randomly become Runebound. */
+ private static Mob counterFoe(ServerPlayer p,double x,double z){
+  var entity=EntityTypes.HUSK.create(p.level(),EntitySpawnReason.COMMAND);
+  check(entity instanceof Mob,"Counter native Husk factory");var mob=(Mob)entity;
+  mob.setNoAi(true);mob.setCustomName(net.minecraft.network.chat.Component.literal("Counter practice target"));
+  mob.snapTo(x,101,z,0,0);check(p.level().addFreshEntity(mob),"Actual counter fixture admitted");
+  check(mob.getHealth()==20&&mob.getMaxHealth()==20&&mob.getAbsorptionAmount()==0,
+   "Counter target retains genuine twenty-health baseline after entity-load callbacks: health="+mob.getHealth()+" max="+mob.getMaxHealth()+" absorption="+mob.getAbsorptionAmount()+" runebound="+Runebound.spellOf(mob)+" body="+mob.position());
+  return mob;
  }
  private static void boundedProjectilePools(ClientGameTestContext c,net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server){
   var arrows=new ArrayList<Arrow>();var oldBolts=new ArrayList<RuneBolt>();
@@ -147,7 +159,7 @@ public final class NextCounterTest implements FabricClientGameTest {
  private static void synchronousLedgerCancellation(ClientGameTestContext c,net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server){
   try{
    for(int mode:List.of(1,2)){
-    server.runOnServer(s->{var p=player(s);pose(p,.5,.5,0);cancelledDuringDamage=foe(p,.5,4.5);cancellationObserved=false;resurrectionObserved=false;cancellationMode=0;cancellationOwner=p;cancellationAfterDamage=false;cancellationAmount=0;cancellationBefore=0;cancellationAfter=0;cast(p,Runes.BEAM,Runes.RED_LEDGER);});c.waitTicks(12);
+    server.runOnServer(s->{var p=player(s);pose(p,.5,.5,0);cancelledDuringDamage=counterFoe(p,.5,4.5);cancellationObserved=false;resurrectionObserved=false;cancellationMode=0;cancellationOwner=p;cancellationAfterDamage=false;cancellationAmount=0;cancellationBefore=0;cancellationAfter=0;cast(p,Runes.BEAM,Runes.RED_LEDGER);});c.waitTicks(12);
     server.runOnServer(s->{check(CounterSignatures.active()==1,"Paid ledger is active before synchronous cancellation fixture");
      check(cancelledDuringDamage.getHealth()==20 && cancelledDuringDamage.getAbsorptionAmount()==0,"Cancellation target reaches its movement gate at full health without absorption");
      cancellationMode=mode;cancelledDuringDamage.move(MoverType.SELF,new Vec3(1.1,0,0));});c.waitTicks(4);

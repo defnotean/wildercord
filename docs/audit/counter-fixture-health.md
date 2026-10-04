@@ -1,0 +1,9 @@
+# Counter target admission fixture — 2026-10-04
+
+GitHub Build37185210122 at bfe6b4d failed NextCounterTest's unchanged `Standing still avoids paid movement ledger` assertion. The historical log records no actual health/body values, so the exact historical cause is not established.
+
+Independent review found a concrete fixture defect: the shared foe helper supplies unnamed Husks while this test assumes twenty health. The real Runebound entity-load listener accepts an unnamed Husk even with NoAI and may increase maximum health/refill it to32 or44. Such a target can violate equality with20 without taking ledger damage. Earlier supplied targets roll independently.
+
+The correction is local to NextCounterTest. Its own factory creates the same genuine Husk, retains NoAI/attributes/body placement and assigns a supplied practice name before actual entity admission, following the existing production exclusion. It asserts actual twenty health, twenty maximum health and zero absorption after entity-load callbacks. No health reset, artificial grounding, forced clock, shared helper or production threshold is changed. Ten fixture call sites use the local helper. Strict damage/absorption/shared-payment/cancellation/reflection and standing-still assertions remain. Stillness failure diagnostics now include actual beginning/end health/body, horizontal movement, velocity, registration, Runebound state and caster/client input.
+
+Focused native NextCounterTest passes48s with these stricter baseline witnesses and ordinary real casts/impacts. This proves the corrected controlled fixture locally; it does not retrospectively identify the old Linux target or prove the full Linux descriptor green. Final build accompanies the separate wetland source milestone. No new content or public deployment credit.

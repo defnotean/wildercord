@@ -27,7 +27,7 @@ Every effect needs a complete authored preparation, release/travel, impact, afte
 
 Cinder adds a real original rig, finite physical three-vent counterplay and retained-root fern loop. Its actual paid crafting/tending/harvest, competing meals/full reopen, authority callbacks, saturated receiver safety and native visual gates pass. Natural fern/animal distribution across seeds, sustained populations, listening and a complete ember region remain separate work.
 
-Wetlands have focused native Moonreed write/reward/claim and actual pollinator liveness corrections; unbounded newt/crab query gaps remain. Tideward equipment/tool now has nine focused native gates and three functional-item credits; the isolated Siltcrest Bittern source remains uncompiled/unaccepted. Validate actual natural animals, prey/resource balance, shelters, weather responses, unloaded/reloaded chunks and older-world access. Fungal natural site and earned Drainhouse resource/lore/restoration chain pass; complete wider snail/Strider/plant relationships and representative distribution remain open. Search/query caps establish ceilings, not measured TPS gains.
+Wetlands have focused native Moonreed write/reward/claim and actual pollinator liveness corrections, plus complete bounded newt/crab queries and sweep callback ownership. Two guard suites and four existing native regressions pass. Tideward equipment/tool has nine focused native gates and three functional-item credits; the isolated Siltcrest Bittern source remains uncompiled/unaccepted. Validate actual natural animals, prey/resource balance, shelters, weather responses, unloaded/reloaded chunks and older-world access. Fungal natural site and earned Drainhouse resource/lore/restoration chain pass; complete wider snail/Strider/plant relationships and representative distribution remain open. Search/query caps establish ceilings, not measured TPS gains.
 
 ## Items, crafting and combat
 
@@ -55,8 +55,10 @@ Published0.9.1-alpha.1 was activated on the VPS on2026-10-03 with offline backup
 
 ## Next work in progress
 
-Root Carry and the Tideward crossing kit are accepted with scoped paid/visual/owner gates. Aura/wetland query guards, Siltcrest Bittern and Ember Shutterworks remain isolated parallel candidates requiring integration, compilation and native exercise before credit. Root serializes integration/build/native runs. No requirement is completed merely because a design, audit or source reference exists. The goal remains active.
+Root Carry, Tideward and the wetland query guards are accepted with scoped native gates. Aura beast query guards, Siltcrest Bittern, Ember Shutterworks and measured mixed-population setup remain isolated parallel candidates requiring integration, compilation and native exercise before credit. Root serializes integration/build/native runs. No requirement is completed merely because a design, audit or source reference exists. The goal remains active.
 
 Root Carry milestone: final build19s,995 units,5361 reproducible generated paths,127 validated guide pages; focused paid/fault/quality/ownership and all31 Life regressions pass. See root-carry-milestone.md for exact native evidence, preserved originals and limitations.
 
 Latest Tideward milestone: final build15s,1000 units,5392 reproducible generated paths,128 validated guide pages, three new functional items and nine focused native gates. Checked review JAR and fourteen unchanged presentation originals are in artifacts/review/tideward-crossing; detailed evidence and fixed failures are recorded in tideward-milestone.md. Full Linux gameplay remains a separate gate.
+
+Latest wetland source fixes: build13s,1000 units,5392 reproducible paths/128 guide pages; two new guard gates and four existing regressions pass, with a checked JAR in artifacts/review/wetland-guards. See wetland-query-guards.md. Counter-only named-before-admission fixture correction separately passes48s; old Linux Build37185210122 failed stillness without health/body diagnostics, so its precise historical cause and whole descriptor acceptance remain unestablished. See counter-fixture-health.md.
