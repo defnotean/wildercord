@@ -128,11 +128,13 @@ public final class PassiveCaster {
 	/**
 	 * Whether this cast of a passive is still the one running in its slot: its Orbit ends the moment it isn't. Only the
 	 * latest cast counts, so switching a passive off and on again (or changing it and back) starts a fresh ring of orbs
-	 * instead of bringing the old one back beside it, which stacked a ring for every switch.
+	 * instead of bringing the old one back beside it, which stacked a ring for every switch. Only while a Cord is worn: the
+	 * upkeep is only charged then (see {@link #tick}), so taking it off stops the passive rather than letting it run free.
 	 */
 	public static boolean running(ServerPlayer player, int slot, String key, int cast) {
 		State[] states = STATES.get(player.getUUID());
-		return states != null && key.equals(states[slot].key) && !states[slot].faltering && states[slot].casts == cast;
+		return states != null && key.equals(states[slot].key) && !states[slot].faltering && states[slot].casts == cast
+			&& Spellbooks.tier(player) != null;
 	}
 
 	public static void forget(UUID player) {
