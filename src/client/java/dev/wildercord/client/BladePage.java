@@ -616,7 +616,7 @@ final class BladePage {
 		int bw = 92;
 		int bx = W - 14 - bw;
 		int by = H - 30;
-		boolean armed = now - releaseArmedAt < 60;
+		boolean armed = now >= releaseArmedAt && now - releaseArmedAt < 60;
 		boolean hover = inside(mx, my, bx, by, bw, 14);
 		button(g, bx, by, bw, Component.translatable(armed ? "screen.wildercord.aura.blade.release_sure" : "screen.wildercord.aura.blade.release"), true, hover,
 			armed ? RED : DIM);
@@ -687,7 +687,7 @@ final class BladePage {
 				if (bond.isEmpty()) {
 					return true;
 				}
-				if (now - releaseArmedAt < 60) {
+				if (now >= releaseArmedAt && now - releaseArmedAt < 60) {
 					ClientPlayNetworking.send(new BondedBlades.Release(bond));
 					releaseArmedAt = -1000;
 					click(0.6F);

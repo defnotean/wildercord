@@ -453,7 +453,7 @@ public final class TechniquePage {
 		int cy = SEALS_Y + SEAL / 2;
 		// The cord the three are threaded on, as the Cord threads its runes.
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_THREAD, sealX(0) + SEAL / 2, cy - 2, sealX(2) - sealX(0), 4);
-		double ink = Math.max(0, 1 - (now + partial - inkAt) / 24.0);
+		double ink = now < inkAt ? 0 : Math.max(0, 1 - (now + partial - inkAt) / 24.0);
 		for (int i = 0; i < 3; i++) {
 			TechniqueRules.Family family = families[i];
 			String part = d.of(family);
@@ -983,7 +983,7 @@ public final class TechniquePage {
 		Techniques.Written w = Techniques.book(player).slot(slot);
 		int ex = wx + ww + 4;
 		int ew = W - 18 - ex;
-		boolean armed = now - eraseArmedAt < 60;
+		boolean armed = now >= eraseArmedAt && now - eraseArmedAt < 60;
 		boolean hoverErase = inside(mx, my, ex, y - 3, ew, 14);
 		button(g, ex, y - 3, ew, Component.translatable(armed ? "screen.wildercord.aura.writing.erase_sure" : "screen.wildercord.aura.writing.erase"),
 			!w.empty(), hoverErase, armed ? RED : !w.empty() ? DIM : FAINT);
@@ -1231,7 +1231,7 @@ public final class TechniquePage {
 			if (w.empty()) {
 				return true;
 			}
-			if (now - eraseArmedAt < 60) {
+			if (now >= eraseArmedAt && now - eraseArmedAt < 60) {
 				ClientPlayNetworking.send(new Techniques.Erase(slot));
 				eraseArmedAt = -1000;
 				draftFor = -1;
