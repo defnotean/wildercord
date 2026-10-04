@@ -445,7 +445,9 @@ RUNESMITH_TRADES = {
     1: {
         "emerald_blank_runes": trade(emeralds(1), item("wildercord:blank_rune", 4), 12, 2),
         "lapis_emerald": trade(item("minecraft:lapis_lazuli", 12), emeralds(1), 16, 2),
-        "paper_emerald": trade(item("minecraft:paper", 24), emeralds(1), 16, 2),
+        # No reputation discount: level 2 sells paper back (12 for an emerald), and a cured villager's discount on this
+        # price would turn that pair into an endless emerald loop.
+        "paper_emerald": {**trade(item("minecraft:paper", 24), emeralds(1), 16, 2), "reputation_discount": 0.0},
         "emerald_tier_one_rune": rune_trade(emeralds(4), 1, 1, 4, 3),
     },
     2: {
