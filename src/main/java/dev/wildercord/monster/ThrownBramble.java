@@ -1,5 +1,6 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.cast.Targets;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -49,7 +50,9 @@ public class ThrownBramble extends ThrowableItemProjectile {
 	protected void onHitEntity(EntityHitResult result) {
 		super.onHitEntity(result);
 		Entity entity = result.getEntity();
-		if (level() instanceof ServerLevel level && entity instanceof LivingEntity living) {
+		// Thrown by a player, it holds only what their spells may harm: never their pets, nor another player with pvp off.
+		if (level() instanceof ServerLevel level && entity instanceof LivingEntity living
+				&& !(getOwner() instanceof LivingEntity thrower && !Targets.canHarm(thrower, living))) {
 			living.hurtServer(level, damageSources().thrown(this, getOwner()), 1.0F);
 			MonsterMagic.root(level, living, ROOT_TICKS);
 		}
