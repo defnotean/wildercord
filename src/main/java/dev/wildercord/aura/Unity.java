@@ -49,8 +49,10 @@ public final class Unity {
 	public static String refusal(Player p) {
 		if (!p.isAlive() || p.isSpectator() || p.isCreative()) return "survival";
 		if (!Aura.enabled(p) || Aura.stage(p)<UnityRules.STAGE || Heart.active(p)<UnityRules.CIRCLES || Spellbooks.tier(p)==null) return "paths";
-		if (Awakening.spent(p) || dev.wildercord.aura.arts.ArtWards.silenced(p)) return "spent";
-		if (Spars.sparring(p) || dev.wildercord.aura.world.DuelistDuels.inDuel(p)) return "spar";
+		// Silence and duelist duels live in the server's own maps: the page's client copy leaves them to the server's answer.
+		boolean server=!p.level().isClientSide();
+		if (Awakening.spent(p) || server && dev.wildercord.aura.arts.ArtWards.silenced(p)) return "spent";
+		if (Spars.sparring(p) || server && dev.wildercord.aura.world.DuelistDuels.inDuel(p)) return "spar";
 		if (!Aura.holdsWeapon(p)) return "weapon";
 		long now=now(p);
 		if (active(p)) return "active";
