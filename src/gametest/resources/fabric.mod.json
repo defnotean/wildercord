@@ -30,6 +30,8 @@
       "dev.wildercord.wildlife.TidewardReadAdmissionTest",
       "dev.wildercord.wildlife.TidewardStalledClockTest",
       "dev.wildercord.wildlife.SiltcrestDamageAdmissionTest",
+      "dev.wildercord.wildlife.SiltcrestBankReturnTest",
+      "dev.wildercord.wildlife.SiltcrestDodgePreservationTest",
       "dev.wildercord.wildlife.SiltcrestEcologyTest",
       "dev.wildercord.wildlife.SiltcrestOfferedMealTest",
       "dev.wildercord.wildlife.SiltcrestPreyBoundsTest",
