@@ -152,8 +152,9 @@ public class SpellScrollItem extends Item {
 				else CastEngine.cast(cast, compiled.root());
 			});
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.4F);
-			stack.consume(1, player);
+			// The rest goes on before the scroll is spent: once the last one is gone the stack is empty and would rest nothing.
 			player.getCooldowns().addCooldown(stack, 20);
+			stack.consume(1, player);
 		}
 		return InteractionResult.SUCCESS;
 	}
