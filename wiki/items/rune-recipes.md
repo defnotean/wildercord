@@ -231,7 +231,7 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 </figure>
 </div>
 
-## Tier II (103 runes)
+## Tier II (105 runes)
 
 Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingot**.
 
@@ -345,6 +345,9 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/levitate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#levitate">Levitate</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<figcaption><img src="{{ '/assets/runes/manabraid.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#manabraid">Manabraid</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_overdrive.png' | relative_url }}" alt="Crafting Overdrive: a Blank Rune and Blaze Powder and Redstone Dust" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/overdrive.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#overdrive">Overdrive</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
 </figure>
@@ -439,6 +442,9 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_venom.png' | relative_url }}" alt="Crafting Venom: a Blank Rune and Poisonous Potato" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/venom.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#venom">Venom</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<figcaption><img src="{{ '/assets/runes/watchweft.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#watchweft">Watchweft</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_weigh.png' | relative_url }}" alt="Crafting Weigh: a Blank Rune and Block of Iron" class="recipe-grid" loading="lazy">

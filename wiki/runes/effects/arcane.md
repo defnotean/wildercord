@@ -11,7 +11,7 @@ nav_order: 8
 
 Pure magic. Arcane strikes, reveals, silences, summons and bends the rules.
 
-17 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
+19 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/barrier.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Barrier
 {: #barrier}
@@ -117,6 +117,17 @@ Strength II for 10 seconds, then Weakness I for 4 (a passive carries only Streng
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
+### <img src="{{ '/assets/runes/manabraid.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Manabraid
+{: #manabraid}
+
+*Tier II · Arcane · Helps you and your allies · 4 mana · needs a Copper Cord or better*
+
+Offers an allied connected caster a three-second mana gift. They must release and freshly crouch to accept. After the spell price, spends at most twenty-four extra mana to restore at most sixteen, keeping two. Donor rests thirty seconds; receiver ten.
+
+**How to get it:** Craft: a Blank Rune, Lapis Lazuli, Amethyst Shard and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+**Modifiers that work on it:** Frugal, Kindred
+
 ### <img src="{{ '/assets/runes/silence.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Silence
 {: #silence}
 
@@ -166,6 +177,17 @@ You and the first creature hit trade places, instantly.
 **How to get it:** Craft: a Blank Rune, 2x Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts; Clockwork Crypt; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_swap.png' | relative_url }}" alt="Crafting Swap: a Blank Rune and 2x Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal
+
+### <img src="{{ '/assets/runes/watchweft.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Watchweft
+{: #watchweft}
+
+*Tier II · Arcane · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Watches a visible dry floor for forty-five seconds. Gives its owner one private warning only after a visible monster targeting them crosses into three blocks in consecutive complete samples. Remain within sixteen blocks; ninety-second rest.
+
+**How to get it:** Craft: a Blank Rune, Feather, String and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
 
 **Modifiers that work on it:** Frugal
 

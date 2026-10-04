@@ -225,7 +225,7 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 </figure>
 </div>
 
-## Tier II (103 runes)
+## Tier II (105 runes)
 
 Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingot**.
 
@@ -339,6 +339,9 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/levitate.png) <a href="../runes/effects/wind.md#levitate">Levitate</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/manabraid.png) <a href="../runes/effects/arcane.md#manabraid">Manabraid</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Overdrive: a Blank Rune and Blaze Powder and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_overdrive.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/overdrive.png) <a href="../runes/effects/blood.md#overdrive">Overdrive</a><br><span>Effect, Blood</span></figcaption>
 </figure>
@@ -433,6 +436,9 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure>
 ![Crafting Venom: a Blank Rune and Poisonous Potato](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_venom.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/venom.png) <a href="../runes/effects/life.md#venom">Venom</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/watchweft.png) <a href="../runes/effects/arcane.md#watchweft">Watchweft</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Weigh: a Blank Rune and Block of Iron](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_weigh.png)
