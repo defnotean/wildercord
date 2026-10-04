@@ -127,6 +127,10 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.api.WildercordApi.loadAddons();
 		dev.wildercord.cast.feel.Feels.init();
         dev.wildercord.cast.FieldFusions.init();
+        dev.wildercord.cast.CounterSignatures.init();
+        dev.wildercord.cast.SupportSignatures.init();
+        dev.wildercord.cast.TrailSignatures.init();
+        dev.wildercord.cast.NextSignatureFeels.register();
 		LOGGER.info("Wildercord initialized");
 	}
 }

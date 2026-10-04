@@ -45,7 +45,9 @@
 		"BondedBladeIngredientMixin",
 		"BondedBladeSmeltingMixin",
 		"FoxAccessor",
-		"FoxCompanionGoalsMixin"
+		"FoxCompanionGoalsMixin",
+        "NextChestPlacementMixin",
+        "NextTeleportObserverMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

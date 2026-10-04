@@ -88,3 +88,7 @@ Sneak-use a Blank Rune on the altar to imprint your awakened innate for three XP
 ## Field signatures
 
 [Field Signatures]({{ '/fusion-altar/field-signatures/' | relative_url }}) explains six exact pairings for growing watered banks, recovering expedition supplies, helping allies and controlling a short positioning window. Each recipe has its own carved rune, material casting sequence and practical limits.
+
+## Expedition signatures
+
+[Expedition Signatures]({{ '/fusion-altar/expedition-signatures/' | relative_url }}) opens an illustrated field journal for twelve exact pairings: readable projectile counters, willing allied support, tracked chest intake, short voluntary traversal and bounded mineral or passage inspection. It lists altar ingredients, mana, resource limits and the conditions that produce no effect. The chapter identifies its development-build scope and links the remaining acceptance work.

@@ -26,7 +26,8 @@ its own texture so the game can tint it in its own element's colour:
 A signature fusion (made from two particular runes rather than any two of their elements) wears its two
 runes' elements the same way, and a star besides: a four-pointed star in the empty space of each half of
 its ring, and the points of a star behind its emblem's heavy ring, so a signature is told from the element
-fusion of the same two elements at a glance. No two signatures share a pair of elements.
+fusion of the same two elements at a glance. Exact signatures may share elements; their authored
+recipe glyph and outer/inner band phrases distinguish their actual mechanical interaction.
 
 Also writes circle/_<family>_band.png and _mark.png, used for add-on runes.
 Run from the project root:  python tools/circle_art.py [--preview]
@@ -403,6 +404,49 @@ def signature_mark(own_half, partner_half):
     return own, partner
 
 
+# Eight-pixel studies of the twelve expedition mechanisms, authored individually. These replace
+# only the new signatures' central emblems and two small motif windows, never legacy rune art.
+# Reading order: empty pocket, unequal chimes, three gates, stamps, health chamber, peeling plate,
+# two beat cradles, sand lantern, envelope/hinge, linked rope, three wall stitches, mineral needle.
+EXPEDITION_GLYPHS = {
+    "nullcatch": [".##...#.", "#..#..#.", "#.....#.", "#..##...", "#....#..", ".#...#..", "..###...", ".....##."],
+    "second_bell": ["..#.....", ".#.#....", "#...#.#.", "#####.#.", "..#..#.#", "...#####", "....#.#.", ".....#.."],
+    "red_ledger": ["......#.", "##...#..", "..#.#...", "##.#....", "..#.....", "##.#....", "..#.....", ".#......"],
+    "quietus": ["#.#..#..", "###..#..", "...#.#..", "..###...", ".....#.#", ".....###", "#......#", "########"],
+    "blood_escrow": ["....###.", "##..#.#.", "..#.#.#.", "##.####.", "..#.#.#.", "##.####.", "..#.#.#.", "....###."],
+    "frost_molt": [".....#..", "#...#.#.", ".#..###.", "..#.....", "...#.##.", "..#.#...", ".#...#..", "#......."],
+    "pulse_ferry": ["...##...", "..####..", "...##...", "#......#", ".#....#.", ".#....#.", "..#..#..", "...##..."],
+    "last_lantern": ["..###...", ".#...#..", ".#####..", ".#.#.#..", ".#..##..", ".#.#.#..", "..#.#...", "..###..."],
+    "pocket_current": ["..#.....", ".#.#....", "#...#...", ".#.#.###", "..#..#.#", ".....###", ".....#.#", ".....###"],
+    "wayline": ["........", ".#.#.#..", "#.#.#.#.", "########", "#.#.#.#.", ".#.#.#..", "......#.", "........"],
+    "night_seam": ["##.##.##", "#..#..#.", "##.##.##", ".#..#..#", "##.##.##", "#..#..#.", "##.##.##", ".....#.."],
+    "shard_compass": ["......#.", ".....##.", ".#..#...", "###.#.#.", ".#.#.###", "..#...#.", ".#......", "#.#....."],
+}
+
+
+def expedition_signature(path, band, band2, mark, mark2):
+    """Keep the two colored braid strands/star frame; add the exact recipe's readable mechanism."""
+    glyph = EXPEDITION_GLYPHS.get(path)
+    if glyph is None:
+        return band, band2, mark, mark2
+    assert len(glyph) == 8 and all(len(row) == 8 and set(row) <= {".", "#"} for row in glyph), path
+    own, partner = set(band), set(band2)
+    # The upper phrase reads outward, lower phrase inward. The braid and corner stars stay intact.
+    own.difference_update((x, y) for x in range(8) for y in range(4))
+    partner.difference_update((x, y) for x in range(8, 16) for y in range(12, 16))
+    for y, row in enumerate(glyph):
+        for x, ch in enumerate(row):
+            if ch == "#":
+                (own if y < 4 else partner).add((x if y < 4 else x + 8, y if y < 4 else y + 8))
+    left = {(x, y) for x, y in mark if not (4 <= x <= 11 and 4 <= y <= 11)}
+    right = {(x, y) for x, y in mark2 if not (4 <= x <= 11 and 4 <= y <= 11)}
+    for y, row in enumerate(glyph):
+        for x, ch in enumerate(row):
+            if ch == "#":
+                (left if x < 4 else right).add((x + 4, y + 4))
+    return own, partner, left, right
+
+
 # ---------------------------------------------------------------- handing out designs
 
 def stable(key):
@@ -547,6 +591,7 @@ def main(preview=False):
         if r["path"] in signatures:
             band, band2 = signature_band(band, band2)
             mark, mark2 = signature_mark(mark, mark2)
+            band, band2, mark, mark2 = expedition_signature(r["path"], band, band2, mark, mark2)
         bands[r["path"]], marks[r["path"]] = band, mark
         second[r["path"]] = (band2, mark2, second_color(own, partner))
     import physical_art

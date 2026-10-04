@@ -14,14 +14,14 @@ public final class FlightBodies {
         "conflagration", "seethe", "skyburst", "cinder_bulwark", "boiling_surge", "cinder_sieve");
 
     public static boolean supports(String id) {
-        return supportsFire(id) || supportsFrost(id) || supportsStorm(id) || supportsWind(id) || supportsEarth(id) || supportsLife(id) || supportsVoid(id);
+        return supportsFire(id) || supportsFrost(id) || supportsStorm(id) || supportsWind(id) || supportsEarth(id) || supportsLife(id) || supportsVoid(id) || supportsNextSignature(id);
     }
 
     public static final List<String> FROST = List.of(
         "basinfill", "absolute_zero", "avalanche", "black_ice", "blizzard", "bubble", "chill", "coldsnap",
         "cryostasis", "current", "drowning_word", "flash_freeze", "freeze", "frost", "frostbite",
         "frostbloom", "frostward", "glacier", "hail", "hoarfrost", "icepath", "icicle", "mirrorfrost",
-        "rime_causeway", "rime_seal", "tidal_lift", "tidebreath", "tidecall", "tidehook", "tidewrit", "undertow", "springbed");
+        "rime_causeway", "rime_seal", "tidal_lift", "tidebreath", "tidecall", "tidehook", "tidewrit", "undertow", "springbed", "frost_molt", "pocket_current");
 
     public static boolean supportsFire(String id) {
         return id.startsWith("wildercord:") && FIRE.contains(id.substring(11));
@@ -63,10 +63,15 @@ public final class FlightBodies {
         "heal", "grow", "regrowth", "cleanse", "venom", "nourish", "harvest", "reversal", "restore",
         "bramble", "haven", "glimmer", "fortune", "bloom", "soulbond", "second_wind", "lifebloom",
         "root_bulwark", "bloomstep", "stitchtime", "vinelash", "remedy", "ancient_seed", "moonpetal",
-        "sporebloom", "glowvine", "rootsnare", "drowse", "ashen_mercy");
+        "sporebloom", "glowvine", "rootsnare", "drowse", "ashen_mercy", "pulse_ferry");
 
     public static boolean supportsLife(String id) {
         return id.startsWith("wildercord:") && LIFE.contains(id.substring(11));
+    }
+
+    public static final List<String> NEXT_SIGNATURES = List.of("nullcatch", "second_bell", "red_ledger", "quietus", "blood_escrow", "frost_molt", "pulse_ferry", "last_lantern", "pocket_current", "wayline", "night_seam", "shard_compass");
+    public static boolean supportsNextSignature(String id) {
+        return id.startsWith("wildercord:") && NEXT_SIGNATURES.contains(id.substring(11));
     }
 
     public static boolean covers(String identities) {
@@ -78,7 +83,7 @@ public final class FlightBodies {
         "grapple", "collect", "blackspark", "blackflame", "hollow", "infinity", "zipper", "shadowstep",
         "shades", "anchor", "hex", "banish", "phantom", "warp", "entropy", "devour", "singularity",
         "malison", "echolocate", "resonant_shriek", "shulkershell", "portalfall", "hush", "warp_step",
-        "eclipse", "starmaw", "riftcall", "umbra");
+        "eclipse", "starmaw", "riftcall", "umbra", "nullcatch", "night_seam");
 
     public static boolean supportsVoid(String id) {
         return id.startsWith("wildercord:") && VOID.contains(id.substring(11));

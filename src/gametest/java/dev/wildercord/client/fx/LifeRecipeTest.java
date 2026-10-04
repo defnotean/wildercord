@@ -39,6 +39,6 @@ public final class LifeRecipeTest implements FabricClientGameTest {
   check(!LifeForms.supports("other:heal") && !LifeForms.supports("wildercord:fire"),"Exact namespace and family");
   for(Vec3 v:List.of(Vec3.ZERO,new Vec3(0,1,0),new Vec3(0,-1,0)))LifeFlights.draw("wildercord:venom",8,2,2,Vec3.ZERO,v,true,(o,p)->check(Double.isFinite(p.lengthSqr()) && p.length()<2,"Vertical/stationary bounded"));
  }
- private static Set<Integer> support(String rune){return switch(rune){case "ashen_mercy"->Set.of(EMBER);case "bloom","root_bulwark"->Set.of(STONE);case "soulbond"->Set.of(ARCANE);case "second_wind","stitchtime"->Set.of(TIME);case "bloomstep"->Set.of(VOID);default->Set.of();};}
+ private static Set<Integer> support(String rune){return switch(rune){case "ashen_mercy"->Set.of(EMBER);case "bloom","root_bulwark"->Set.of(STONE);case "soulbond"->Set.of(ARCANE);case "second_wind","stitchtime","pulse_ferry"->Set.of(TIME);case "bloomstep"->Set.of(VOID);default->Set.of();};}
  private static void check(boolean yes,String why){if(!yes)throw new AssertionError(why);}
 }

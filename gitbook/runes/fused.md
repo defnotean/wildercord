@@ -2,7 +2,7 @@
 
 # Fused runes
 
-55 runes made only at the [Fusion Altar](../fusion-altar/index.md): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (28 more).
+55 runes made only at the [Fusion Altar](../fusion-altar/index.md): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (40 more).
 
 | | Fire | Frost | Storm | Wind | Earth | Life | Void | Arcane | Time | Blood |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -626,7 +626,7 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 
 ## Signature fusions
 
-28 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining](../fusion-altar/combining.md#signature-fusions).
+40 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining](../fusion-altar/combining.md#signature-fusions).
 
 | | Put in | Makes | Counts as | In place of |
 |---|---|---|---|---|
@@ -642,6 +642,18 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/clockroot.png) | [Root](effects/earth.md#root) + [Foresight](effects/time.md#foresight) | [Clockroot](#clockroot) | Earth | Fossilize |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skylatch.png) | [Levitate](effects/wind.md#levitate) + [Anchor](effects/void.md#anchor) | [Skylatch](#skylatch) | Wind | Warp |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thresherwind.png) | [Harvest](effects/life.md#harvest) + [Windcut](effects/wind.md#windcut) | [Thresherwind](#thresherwind) | Wind | Zephyr |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nullcatch.png) | [Reflect](effects/arcane.md#reflect) + [Collect](effects/void.md#collect) | [Nullcatch](#nullcatch) | Void | Nullify |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/second_bell.png) | [Shock](effects/storm.md#shock) + [Countdown](effects/time.md#countdown) | [Second Bell](#second_bell) | Time | Stormclock |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/red_ledger.png) | [Bleed](effects/blood.md#bleed) + [Reveal](effects/arcane.md#reveal) | [Red Ledger](#red_ledger) | Blood | Hemomancy |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/quietus.png) | [Manaburn](world.md#manaburn) + [Stasis](effects/time.md#stasis) | [Quietus](#quietus) | Arcane | Timesteal |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blood_escrow.png) | [Leech](effects/blood.md#leech) + [Barrier](effects/arcane.md#barrier) | [Blood Escrow](#blood_escrow) | Blood | Hemomancy |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frost_molt.png) | [Frostward](effects/frost.md#frostward) + [Cleanse](effects/life.md#cleanse) | [Frost Molt](#frost_molt) | Frost | Frostbloom |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pulse_ferry.png) | [Regrowth](effects/life.md#regrowth) + [Time Skip](effects/time.md#time_skip) | [Pulse Ferry](#pulse_ferry) | Life | Second Wind |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/last_lantern.png) | [Light](effects/arcane.md#light) + [Rewind](effects/time.md#rewind) | [Last Lantern](#last_lantern) | Arcane | Timesteal |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pocket_current.png) | [Bubble](effects/frost.md#bubble) + [Collect](effects/void.md#collect) | [Pocket Current](#pocket_current) | Frost | Black Ice |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wayline.png) | [Span](effects/arcane.md#span) + [Grapple](effects/void.md#grapple) | [Wayline](#wayline) | Arcane | Nullify |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/night_seam.png) | [Light](effects/arcane.md#light) + [Zipper](effects/void.md#zipper) | [Night Seam](#night_seam) | Void | Nullify |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shard_compass.png) | [Prospect](effects/earth.md#prospect) + [Treasure Sense](world.md#treasure_sense) | [Shard Compass](#shard_compass) | Arcane | Geode |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frostwire.png) | [Chill](effects/frost.md#chill) + [Shock](effects/storm.md#shock) | [Frostwire](#frostwire) | Storm | Hail |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/seethe.png) | [Bubble](effects/frost.md#bubble) + [Fire](effects/fire.md#fire) | [Seethe](#seethe) | Fire | Steam |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bloomstep.png) | [Grow](effects/life.md#grow) + [Blink](effects/void.md#blink) | [Bloomstep](#bloomstep) | Life | Lifesteal |
@@ -680,6 +692,17 @@ Snow and ice crash down round where it lands: 6 damage to every enemy within 3 b
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Coldsnap](effects/frost.md#coldsnap) and [Stalactite](world.md#stalactite) themselves, with an amethyst shard (3 XP levels). Any other Frost and Earth effects make Glacier instead.
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blood_escrow.png) Blood Escrow
+
+
+*Tier III · Blood · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+Spend up to three actual health, never below four, to buy one ally a six-second absorption chamber. Crouching or an existing ward refuses. One gift per payment; no refund or renewal.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Leech](effects/blood.md#leech) and [Barrier](effects/arcane.md#barrier) themselves, with an amethyst shard (3 XP levels). Any other Blood and Arcane effects make Hemomancy instead.
+
+**Modifiers that work on it:** Frugal, Kindred
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bloomstep.png) Bloomstep
 
@@ -736,6 +759,17 @@ Roots remember safe ground for four seconds. A foe fleeing more than two blocks 
 
 **Modifiers that work on it:** Frugal
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frost_molt.png) Frost Molt
+
+
+*Tier III · Frost · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+Peel an actual frozen condition into one three-second ice plate. It stops one ordinary projectile of six damage or less; larger, bypass and other attacks pass. Clean allies cannot mint a plate; crouching sheds it.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Frostward](effects/frost.md#frostward) and [Cleanse](effects/life.md#cleanse) themselves, with an amethyst shard (3 XP levels). Any other Frost and Life effects make Frostbloom instead.
+
+**Modifiers that work on it:** Frugal, Kindred
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frostwire.png) Frostwire
 
 
@@ -758,6 +792,17 @@ A halo crowns the ally for 8 seconds: every 1.5 seconds it smites an enemy withi
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/last_lantern.png) Last Lantern
+
+
+*Tier III · Arcane · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
+
+Record one allied player's safe ground for six seconds. Their next fresh crouch requests one safe return within eight blocks. Invalid floor, route, dimension or permission refuses. No health rewind or forced return.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Light](effects/arcane.md#light) and [Rewind](effects/time.md#rewind) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
+
+**Modifiers that work on it:** Frugal, Kindred
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/malison.png) Malison
 
 
@@ -768,6 +813,28 @@ A halo crowns the ally for 8 seconds: every 1.5 seconds it smites an enemy withi
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Hex](effects/void.md#hex) and [Resonance](effects/arcane.md#resonance) themselves, with an amethyst shard (3 XP levels). Any other Void and Arcane effects make Nullify instead.
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/night_seam.png) Night Seam
+
+
+*Tier III · Void · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Inspect beyond at most three owned ordinary stone cells for one open-ground and nearby-threat clue. No blocks change, no one moves, and protected, special, block-entity, warded or unloaded walls refuse.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Light](effects/arcane.md#light) and [Zipper](effects/void.md#zipper) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
+
+**Modifiers that work on it:** Frugal
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nullcatch.png) Nullcatch
+
+
+*Tier III · Void · Helps you and your allies · 20 mana · needs an Amethyst Cord or better*
+
+An open mirror pocket catches one hostile front projectile over three seconds. One payment buys one capture; rear, allied, reflected and ownerless attacks pass. No stored attack or refund.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Reflect](effects/arcane.md#reflect) and [Collect](effects/void.md#collect) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
+
+**Modifiers that work on it:** Frugal, Kindred
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/parasite.png) Parasite
 
@@ -780,6 +847,39 @@ Plants a parasite in each target for 6 seconds: Poison I, and every second it dr
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pocket_current.png) Pocket Current
+
+
+*Tier III · Frost · Works on the world · 16 mana · needs an Amethyst Cord or better*
+
+Water envelopes carry up to sixteen ready, permitted loose items into your own tracked chest. Both halves need ownership and permission; full slots, foreign drops, locks and loot tables refuse without item loss.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Bubble](effects/frost.md#bubble) and [Collect](effects/void.md#collect) themselves, with an amethyst shard (3 XP levels). Any other Frost and Void effects make Black Ice instead.
+
+**Modifiers that work on it:** Frugal
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pulse_ferry.png) Pulse Ferry
+
+
+*Tier III · Life · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
+
+One sap parcel visits two different wounded eligible allies within four blocks on separate beats. Each receives at most three actual healing, six total. Crouching refuses a visit. No overheal or repeated recovery.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Regrowth](effects/life.md#regrowth) and [Time Skip](effects/time.md#time_skip) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
+
+**Modifiers that work on it:** Frugal, Kindred
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/quietus.png) Quietus
+
+
+*Tier III · Arcane · Harms enemies · 20 mana · needs an Amethyst Cord or better*
+
+A visible short escrow waits for one newly cast hostile magic projectile, closes on it and taxes up to eight of its player's current mana. No hit, free ammunition or mana reward; old and reflected spells pass.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Manaburn](world.md#manaburn) and [Stasis](effects/time.md#stasis) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
+
+**Modifiers that work on it:** Frugal
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/razorgale.png) Razorgale
 
 
@@ -790,6 +890,17 @@ A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Windcut](effects/wind.md#windcut) and [Bleed](effects/blood.md#bleed) themselves, with an amethyst shard (3 XP levels). Any other Wind and Blood effects make Crimson Mist instead.
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/red_ledger.png) Red Ledger
+
+
+*Tier III · Blood · Harms enemies · 18 mana · needs an Amethyst Cord or better*
+
+Three visible blood gates measure ordinary movement over three seconds. Moving one block spends a gate for a small cut. Standing still avoids all cuts; teleports do not count. Six total damage per payment after bonuses.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Bleed](effects/blood.md#bleed) and [Reveal](effects/arcane.md#reveal) themselves, with an amethyst shard (3 XP levels). Any other Blood and Arcane effects make Hemomancy instead.
+
+**Modifiers that work on it:** Frugal
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rime_causeway.png) Rime Causeway
 
@@ -824,6 +935,17 @@ Raises a living root wall that gives nearby allies brief Regeneration I. Lasts e
 
 **Modifiers that work on it:** Extend, Frugal
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/second_bell.png) Second Bell
+
+
+*Tier III · Time · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+
+Two visible electrodes ring after one and two seconds. Leaving the marked spot evades the second discharge. Two targets at most, eight total damage per payment after bonuses; no movement hold.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Shock](effects/storm.md#shock) and [Countdown](effects/time.md#countdown) themselves, with an amethyst shard (3 XP levels). Any other Storm and Time effects make Stormclock instead.
+
+**Modifiers that work on it:** Frugal
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/seethe.png) Seethe
 
 
@@ -834,6 +956,17 @@ Traps each target in a bubble of boiling water for 2 seconds (1 fire damage ever
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Bubble](effects/frost.md#bubble) and [Fire](effects/fire.md#fire) themselves, with an amethyst shard (3 XP levels). Any other Frost and Fire effects make Steam instead.
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shard_compass.png) Shard Compass
+
+
+*Tier III · Arcane · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Offer one carried raw iron, copper or gold sample to locate a nearby matching loaded permitted deposit with an accessible side. A successful find spends the sample and points a short graded pebble route; refusal preserves it. Never mines or creates rewards.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Prospect](effects/earth.md#prospect) and [Treasure Sense](world.md#treasure_sense) themselves, with an amethyst shard (3 XP levels). Any other Earth and Arcane effects make Geode instead.
+
+**Modifiers that work on it:** Frugal
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skyburst.png) Skyburst
 
@@ -933,6 +1066,17 @@ You come down as a bolt of lightning where the spell landed (up to 24 blocks), r
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Shadowstep](effects/void.md#shadowstep) and [Lightning](effects/storm.md#lightning) themselves, with an amethyst shard (3 XP levels). Any other Void and Storm effects make Riftbolt instead.
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wayline.png) Wayline
+
+
+*Tier III · Arcane · Moves you · 18 mana · needs an Amethyst Cord or better*
+
+Latch a short line to owned safe ground within six blocks. Hold forward for a bounded two-second tow; crouch to release. Normal collision remains, no one else is moved, and no flight ability is granted.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Span](effects/arcane.md#span) and [Grapple](effects/void.md#grapple) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
+
+**Modifiers that work on it:** Frugal
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cometfall.png) Cometfall
 

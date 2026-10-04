@@ -9,11 +9,11 @@ import static dev.wildercord.content.VoidOption.*;
 /** Individually authored dark material assemblies and velocity-oriented travelling bodies. */
 final class VoidForms {
  private VoidForms() {}
- static final List<String> RUNES=List.of("pull","blink","sonic_boom","wither","dragon_breath","veil","gravity_well","blind","grapple","collect","blackspark","blackflame","hollow","infinity","zipper","shadowstep","shades","anchor","hex","banish","phantom","warp","entropy","devour","singularity","malison","echolocate","resonant_shriek","shulkershell","portalfall","hush","warp_step","eclipse","starmaw","riftcall","umbra");
+ static final List<String> RUNES=List.of("pull","blink","sonic_boom","wither","dragon_breath","veil","gravity_well","blind","grapple","collect","blackspark","blackflame","hollow","infinity","zipper","shadowstep","shades","anchor","hex","banish","phantom","warp","entropy","devour","singularity","malison","echolocate","resonant_shriek","shulkershell","portalfall","hush","warp_step","eclipse","starmaw","riftcall","umbra","nullcatch","night_seam");
  static boolean supports(String id){return id.startsWith("wildercord:")&&RUNES.contains(id.substring(11));}
- static Set<String> ingredients(List<String> ids){var out=new HashSet<String>();for(String id:ids)if(supports(id)){out.add("void");switch(id.substring(11)){case "warp"->out.add("wind");case "entropy"->out.add("time");case "devour"->out.add("blood");case "malison"->out.add("arcane");case "blackflame"->out.add("fire");default->{}}}return out;}
+ static Set<String> ingredients(List<String> ids){var out=new HashSet<String>();for(String id:ids)if(supports(id)){out.add("void");switch(id.substring(11)){case "warp"->out.add("wind");case "entropy"->out.add("time");case "devour"->out.add("blood");case "malison"->out.add("arcane");case "blackflame"->out.add("fire");case "nullcatch","night_seam"->out.add("arcane");default->{}}}return out;}
  static void prepare(String id,int beat,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,boolean minimal,BiConsumer<ParticleOptions,Vec3> emit){
- if(!supports(id))return;double t=beat*.5;var p=new Pen(anchor,right,up,forward,Math.clamp(scale,.4,2),8,minimal,emit);
+ if(!supports(id))return;if(NextSignatureForms.prepare(id,beat,scale,anchor,right,up,forward,minimal,emit))return;double t=beat*.5;var p=new Pen(anchor,right,up,forward,Math.clamp(scale,.4,2),8,minimal,emit);
  switch(id.substring(11)){
  case "pull" -> { for(int s:new int[]{-1,1})p.f(CLOTH,s*(.38-.16*t),.12*s,.03,.21,-s*.012,-s*.002,0,s*.07);p.f(FOLD,0,-.12,.05,.18,0,.002,0,0); }
  case "blink" -> { p.f(FOLD,-.27+.09*t,.11,.06,.24,.006,0,0,-.025);p.f(FOLD,.28-.06*t,-.1,-.04,.21,-.004,0,0,.02);p.f(REMNANT,.02,.18*t,.03,.12,0,.006,0,.04); }
@@ -54,7 +54,7 @@ final class VoidForms {
  }
  }
  static void fly(String id,int age,double scale,Vec3 anchor,Vec3 right,Vec3 up,Vec3 forward,boolean minimal,BiConsumer<ParticleOptions,Vec3> emit){
- if(!supports(id))return;double t=age*.55,w=Math.sin(t);var p=new Pen(anchor,right,up,forward,scale,5,minimal,emit);
+ if(!supports(id))return;if(NextSignatureForms.travel(id,age,scale,anchor,right,up,forward,minimal,emit))return;double t=age*.55,w=Math.sin(t);var p=new Pen(anchor,right,up,forward,scale,5,minimal,emit);
  switch(id.substring(11)){
  case "pull" -> { for(int s:new int[]{-1,1})p.f(CLOTH,s*(.15+.018*w),s*.07,-.16,.15,-s*.004,-s*.001,-.004,s*.05);p.f(FOLD,0,-.06,.14,.16,0,.001,0,0); }
  case "blink" -> { p.f(FOLD,-.15,.05+.017*w,.12,.18,.003,0,0,-.02);p.f(FOLD,.16,-.05,-.14,.16,-.003,0,0,.015);p.f(REMNANT,.02,.12,-.28,.09,0,.003,0,.03); }

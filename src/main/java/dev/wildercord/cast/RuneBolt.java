@@ -71,6 +71,9 @@ public class RuneBolt extends Projectile {
 	private final List<Entity> alreadyHit = new ArrayList<>();
 	/** A parried bolt flies back at the one who cast it, and steers after them. */
 	private LivingEntity quarry;
+	/** Provenance survives the original quarry dying or unloading. */
+	private boolean reflected;
+	public boolean isReflected() { return reflected; }
 
 	public RuneBolt(EntityType<? extends RuneBolt> type, Level level) {
 		super(type, level);
@@ -170,6 +173,7 @@ public class RuneBolt extends Projectile {
 	}
 
 	private void turnBack(LivingEntity back) {
+		reflected=true;
 		quarry = back;
 		alreadyHit.clear();
 		alreadyHit.add(cast.caster);

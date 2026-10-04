@@ -14,7 +14,7 @@ Existing features, recolours, source references and controlled screenshots do no
 | Battlefields and sleeping blade | Both implemented with native evidence | Natural rarity/distribution, remote participation, return-visit design and remaining lifecycle coverage |
 | At least 36 functional items | 21 accepted functional additions, including the four Nursery items | Seven relics, seven equipment and two tools remain to meet category minimums, yielding 37. See the category ledger; do not relabel materials to force 36. |
 | 12 abilities | Unity and verified Basinfill: 2 credited | 10 still uncredited; audit any newly taught technique against the baseline before counting it |
-| 18 new signature fusions | Six new field signatures have passed final native altar, paid-cast, refusal, persistence and Full/Minimal preparation checks; delivered in development commit c30ae028 with a verified review JAR | 12 more signatures still needed; existing22 signatures,55 elemental fusions and dynamic weaves do not satisfy this target |
+| 18 new signature fusions |18 newly authored: six accepted field signatures plus twelve expedition/counter/support signatures with real client altar and paid Full/Minimal focused checks | Numeric target met; complete supported-pairing/delivery lifecycle and remote multiplayer acceptance remain. Runtime totals40 signatures/95 fused recipes/369 runes; baseline22 signatures are not credited as additions. |
 | 24 discoverable lore texts | 12 credited: previous nine and three Nursery texts | 12 plus illustrated journal/discovery integration; bestiary pages should be reconciled before further credit |
 | 4 connected optional investigations | Glowcap Nursery earned-resource chain passed with saved-state and once-only reward checks | 3 further complete chains, clues, persistent state and rewards |
 
@@ -29,7 +29,7 @@ Existing guide improvements and120 validated/exported pages, including the illus
 
 ## 2. Every spell and Aura technique
 
-The development runtime now has 357 runes (265 effects). Its canonical preparation/moving-body contract covers 170 distinct effect identities: Fire 29, Frost 32, Storm 20, Wind 27, Earth 33 and Life 29. These are not 170 completed spell lifecycles; see `full-spell-roster/coverage-stages.md`. Life 29 has accepted preparation and paid moving-body coverage in Full/Minimal; six additional signatures have accepted focused gameplay/presentation. Finish void, time, arcane, blood and
+The development runtime now has369 runes (277 effect declarations). Twelve new signatures have dedicated paid Full/Minimal preparation/flight acceptance, in addition to the prior206-identity seven-family moving-body contract. These are scoped stage checks, not completed spell lifecycles; see `full-spell-roster/coverage-stages.md`. Life29 and all18 new signatures have accepted focused preparation/paid moving-body evidence. Finish all remaining void, time, arcane, blood and
 cross-family exceptions. Finish actual release,
 impact, aftermath and sound identity for every effect. Audit beam, rain, self, summon, trap,
 ward, field and construct deliveries separately. Verify ranks/modifiers, links, reflection,
@@ -111,10 +111,15 @@ above is considered complete merely because this audit exists.
 
 ## Current development increment
 
-Void 36 preparation and moving bodies now pass six focused Windows native suites;
-selected paid Self and movement outcomes also pass. Canonical moving-body coverage
-is 206 identities across seven families; it does not establish206 full lifecycles.
-See `full-spell-roster/void-choreography.md`. New signature, Life outcome and
-Rootmolt work remains isolated and contributes no runtime content credit yet.
-The prior combined milestone full Linux gameplay gate failed at the nursery
-gather fixture; its correction and renewed full-descriptor gate remain open.
+The twelve expedition signatures bring the numeric new-signature target to18. Their
+Counter42s, Support42s, Trail36s and Presentation62s focused tests pass; all12 real client
+Fuse packets, paid Full/Minimal preparation/flight assertions, resource/permission/counter
+checks and scoped reopen behavior are evidenced. Runtime totals are369 runes,40 signatures
+and95 named fused recipes. See expedition-signatures-milestone.md for final delivery gates.
+
+Prior Void36 stage acceptance covered206 canonical identities across seven families;
+new signatures do not turn that contract into a complete lifecycle count. Life105 and
+Rootmolt/Drainhouse remain isolated drafts, with no creature/item/lore/investigation credits.
+The preceding fb2c07cb ordinary build passed; full Linux gameplay failed later at
+gravity-flight visual pixels. Broader CI, multiplayer, all-delivery and ecosystem
+acceptance stays open after a successful scoped development milestone.

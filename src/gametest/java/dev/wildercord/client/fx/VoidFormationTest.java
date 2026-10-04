@@ -101,7 +101,7 @@ public final class VoidFormationTest implements FabricClientGameTest {
    check(!beats.get(0).equals(beats.get(2)),"Two formation beats evolve: "+rune);
    check(fingerprints.add(beats.get(0)),"No duplicate authored recipe: "+rune);
   }
-  var ingredients=Map.of("blackflame",dev.wildercord.content.MaterialOption.EMBER,"warp",dev.wildercord.content.MaterialOption.WIND,
+  var ingredients=Map.of("nullcatch",dev.wildercord.content.MaterialOption.ARCANE,"night_seam",dev.wildercord.content.MaterialOption.ARCANE,"blackflame",dev.wildercord.content.MaterialOption.EMBER,"warp",dev.wildercord.content.MaterialOption.WIND,
    "entropy",dev.wildercord.content.MaterialOption.TIME,"devour",dev.wildercord.content.MaterialOption.BLOOD,
    "malison",dev.wildercord.content.MaterialOption.ARCANE);
   for(var entry:ingredients.entrySet()){var styles=new HashSet<Integer>();VoidForms.prepare("wildercord:"+entry.getKey(),2,1,Vec3.ZERO,new Vec3(1,0,0),new Vec3(0,1,0),new Vec3(0,0,1),true,(option,at)->{if(option instanceof dev.wildercord.content.MaterialOption m)styles.add(m.style());});check(styles.contains(entry.getValue()),"Supporting materials remain in Minimal: "+entry.getKey());}

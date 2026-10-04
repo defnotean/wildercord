@@ -61,3 +61,5 @@ Reduced Flash are also adjustable in [visual settings](../performance.md).
 
 The current review covers the preparation and moving projectile bodies of all twenty-nine Life
 effects. The broader work on individually authored impacts, aftermath and voices is continuing.
+
+[The expedition field journal](../magic/expedition-signatures.md) explains the mirror pocket, unequal chimes, blood gates, frost stitches, sap cradles and other material interactions, alongside each spell's practical tradeoffs. Its labeled illustrated plate is separate from native gameplay evidence; the chapter identifies focused acceptance and development-build scope, with the broader lifecycle work still open.

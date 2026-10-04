@@ -304,7 +304,7 @@ Any effect of an element counts.
 | Prismatic Burst | Arcane + Arcane | 5 damage, and 4 more for every mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding or exposed), up to 5, each used up and passed on to up to 3 enemies within 4 blocks: up to 25. |
 | Chronoshift | Time + Time | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
 
-## Signature fusions (28, made only at the Fusion Altar)
+## Signature fusions (40, made only at the Fusion Altar)
 
 Two particular effects, an amethyst shard and 3 XP levels. The pair makes its signature rune instead of its elements' fusion; any other effects of those elements still make that.
 
@@ -338,6 +338,18 @@ Two particular effects, an amethyst shard and 3 XP levels. The pair makes its si
 | Root + Foresight | **Clockroot** | Earth | III | 16 | Roots remember safe ground for four seconds. A foe fleeing more than two blocks is returned once if its original floor and route are still safe, loaded and permitted. Refuses bosses, anchored or mounted targets and warded arenas. At most eight foes per paid cast; eight-second target rest. | Fossilize |
 | Levitate + Anchor | **Skylatch** | Wind | III | 14 | Lifts an ally about one block and holds vertical height for four seconds while lateral movement remains free. Crouch to release into two seconds of gentle descent. Refuses ceilings, flight abilities, anchors and warded arenas. At most eight allies per paid cast; eight-second target rest. | Warp |
 | Harvest + Windcut | **Thresherwind** | Wind | III | 12 | Three travelling shear lanes harvest up to nine mature crops ahead of the impact. Replants only by consuming a real seed from each crop's drops. Collects this harvest, preserves full-inventory leftovers, respects loaded land and claims. Once per paid cast. | Zephyr |
+| Reflect + Collect | **Nullcatch** | Void | III | 20 | An open mirror pocket catches one hostile front projectile over three seconds. One payment buys one capture; rear, allied, reflected and ownerless attacks pass. No stored attack or refund. | Nullify |
+| Shock + Countdown | **Second Bell** | Time | III | 16 | Two visible electrodes ring after one and two seconds. Leaving the marked spot evades the second discharge. Two targets at most, eight total damage per payment after bonuses; no movement hold. | Stormclock |
+| Bleed + Reveal | **Red Ledger** | Blood | III | 18 | Three visible blood gates measure ordinary movement over three seconds. Moving one block spends a gate for a small cut. Standing still avoids all cuts; teleports do not count. Six total damage per payment after bonuses. | Hemomancy |
+| Manaburn + Stasis | **Quietus** | Arcane | III | 20 | A visible short escrow waits for one newly cast hostile magic projectile, closes on it and taxes up to eight of its player's current mana. No hit, free ammunition or mana reward; old and reflected spells pass. | Timesteal |
+| Leech + Barrier | **Blood Escrow** | Blood | III | 14 | Spend up to three actual health, never below four, to buy one ally a six-second absorption chamber. Crouching or an existing ward refuses. One gift per payment; no refund or renewal. | Hemomancy |
+| Frostward + Cleanse | **Frost Molt** | Frost | III | 14 | Peel an actual frozen condition into one three-second ice plate. It stops one ordinary projectile of six damage or less; larger, bypass and other attacks pass. Clean allies cannot mint a plate; crouching sheds it. | Frostbloom |
+| Regrowth + Time Skip | **Pulse Ferry** | Life | III | 18 | One sap parcel visits two different wounded eligible allies within four blocks on separate beats. Each receives at most three actual healing, six total. Crouching refuses a visit. No overheal or repeated recovery. | Second Wind |
+| Light + Rewind | **Last Lantern** | Arcane | III | 18 | Record one allied player's safe ground for six seconds. Their next fresh crouch requests one safe return within eight blocks. Invalid floor, route, dimension or permission refuses. No health rewind or forced return. | Timesteal |
+| Bubble + Collect | **Pocket Current** | Frost | III | 16 | Water envelopes carry up to sixteen ready, permitted loose items into your own tracked chest. Both halves need ownership and permission; full slots, foreign drops, locks and loot tables refuse without item loss. | Black Ice |
+| Span + Grapple | **Wayline** | Arcane | III | 18 | Latch a short line to owned safe ground within six blocks. Hold forward for a bounded two-second tow; crouch to release. Normal collision remains, no one else is moved, and no flight ability is granted. | Nullify |
+| Light + Zipper | **Night Seam** | Void | III | 12 | Inspect beyond at most three owned ordinary stone cells for one open-ground and nearby-threat clue. No blocks change, no one moves, and protected, special, block-entity, warded or unloaded walls refuse. | Nullify |
+| Prospect + Treasure Sense | **Shard Compass** | Arcane | III | 12 | Offer one carried raw iron, copper or gold sample to locate a nearby matching loaded permitted deposit with an accessible side. A successful find spends the sample and points a short graded pebble route; refusal preserves it. Never mines or creates rewards. | Geode |
 
 The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
 

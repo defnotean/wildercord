@@ -39,7 +39,7 @@ public final class VoidRecipeTest implements FabricClientGameTest {
   check(!VoidForms.supports("other:heal") && !VoidForms.supports("wildercord:fire"),"Exact namespace and family");
   for(Vec3 v:List.of(Vec3.ZERO,new Vec3(0,1,0),new Vec3(0,-1,0))){final int[] emitted={0};VoidFlights.draw("wildercord:pull",8,2,2,Vec3.ZERO,v,true,(o,p)->{emitted[0]++;check(Double.isFinite(p.lengthSqr()) && p.length()<2,"Vertical/stationary bounded");});check(emitted[0]>0,"Vertical/stationary check must render a supported rune");}
  }
- private static Set<Integer> support(String rune){return switch(rune){case "blackflame"->Set.of(EMBER);case "warp"->Set.of(WIND);case "entropy"->Set.of(TIME);case "devour"->Set.of(BLOOD);case "malison"->Set.of(ARCANE);default->Set.of();};}
+ private static Set<Integer> support(String rune){return switch(rune){case "blackflame"->Set.of(EMBER);case "warp"->Set.of(WIND);case "entropy"->Set.of(TIME);case "devour"->Set.of(BLOOD);case "malison","nullcatch","night_seam"->Set.of(ARCANE);default->Set.of();};}
 
  private static void check(boolean yes,String why){if(!yes)throw new AssertionError(why);}
 }

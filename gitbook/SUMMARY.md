@@ -79,6 +79,7 @@
   * [Combining](fusion-altar/combining.md)
   * [Knots](fusion-altar/knots.md)
   * [Field Signatures](magic/field-signatures.md)
+  * [Expedition Signatures](magic/expedition-signatures.md)
 * [The World](world/index.md)
   * [Runebound](world/runebound.md)
   * [Monsters of the Wilds](world/monsters.md)

@@ -252,6 +252,9 @@ public final class Effects {
 		RunicAnimations.land(cast, rune, hit);
 		if (PhysicalMagic.apply(cast,rune,hit,power,duration)) return;
 		if (FieldFusions.apply(cast,node,hit,helped,harmed)) return;
+		if (CounterSignatures.apply(cast,node,helped,harmed)) return;
+		if (SupportSignatures.apply(cast,node,hit,helped)) return;
+		if (TrailSignatures.apply(cast,node,hit)) return;
 
 		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
 		switch (builtIn(rune) ? rune.path() : "") {
@@ -912,6 +915,12 @@ public final class Effects {
 	 * Execute on the current effect doubles it against targets under half health.
 	 */
 	static void hurt(Cast cast, LivingEntity target, DamageSource source, double amount) {
+		hurtCapped(cast,target,source,amount,java.util.function.DoubleUnaryOperator.identity());
+	}
+
+	/** Finite effect admission runs after bonuses and before shared payment and defence. */
+	static void hurtCapped(Cast cast, LivingEntity target, DamageSource source, double amount,
+			java.util.function.DoubleUnaryOperator finalAdmission) {
 		// Damage that didn't come through a shape's hit (a meteor landing, a secret spell's blast) meets a Shield here.
 		if (Shields.stops(cast, target, cast.caster.getEyePosition())) {
 			return;
@@ -955,6 +964,10 @@ public final class Effects {
 		if (target instanceof Player && cast.caster instanceof Player) {
 			damage *= (float) dev.wildercord.config.Config.get().pvpDamageScale();
 		}
+		if (!Float.isFinite(damage) || damage<=0) return;
+		double allowed=finalAdmission.applyAsDouble(damage);
+		if (!Double.isFinite(allowed) || allowed<=0) return;
+		damage=(float)Math.min(damage,allowed);
         damage=cast.admitDamage(target,damage);
         if(damage<=0)return;
 		HeartCircles.hurtBySpell(cast, target);

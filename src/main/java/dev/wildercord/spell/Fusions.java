@@ -184,7 +184,19 @@ public final class Fusions {
 		new Signature(Runes.FIREWARD, Runes.CLEANSE, Runes.ASHEN_MERCY),
 		new Signature(Runes.ROOT, Runes.FORESIGHT, Runes.CLOCKROOT),
 		new Signature(Runes.LEVITATE, Runes.ANCHOR, Runes.SKYLATCH),
-		new Signature(Runes.HARVEST, Runes.WINDCUT, Runes.THRESHERWIND));
+		new Signature(Runes.HARVEST, Runes.WINDCUT, Runes.THRESHERWIND),
+		new Signature(Runes.REFLECT, Runes.COLLECT, Runes.NULLCATCH),
+		new Signature(Runes.SHOCK, Runes.COUNTDOWN, Runes.SECOND_BELL),
+		new Signature(Runes.BLEED, Runes.REVEAL, Runes.RED_LEDGER),
+		new Signature(Runes.MANABURN, Runes.STASIS, Runes.QUIETUS),
+		new Signature(Runes.LEECH, Runes.BARRIER, Runes.BLOOD_ESCROW),
+		new Signature(Runes.FROSTWARD, Runes.CLEANSE, Runes.FROST_MOLT),
+		new Signature(Runes.REGROWTH, Runes.TIME_SKIP, Runes.PULSE_FERRY),
+		new Signature(Runes.LIGHT, Runes.REWIND, Runes.LAST_LANTERN),
+		new Signature(Runes.BUBBLE, Runes.COLLECT, Runes.POCKET_CURRENT),
+		new Signature(Runes.SPAN, Runes.GRAPPLE, Runes.WAYLINE),
+		new Signature(Runes.LIGHT, Runes.ZIPPER, Runes.NIGHT_SEAM),
+		new Signature(Runes.PROSPECT, Runes.TREASURE_SENSE, Runes.SHARD_COMPASS));
 
 	/** Whether a rune can go into a fusion: an effect with an element, and not an innate rune. */
 	public static boolean fusible(RuneDef rune) {

@@ -25,7 +25,7 @@ public final class VoidFlightTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);var camera=net.minecraft.world.entity.EntityTypes.TEXT_DISPLAY.create(s.overworld(),net.minecraft.world.entity.EntitySpawnReason.COMMAND);camera.snapTo(3,102,10,90,0);camera.setNoGravity(true);camera.setInvisible(true);s.overworld().addFreshEntity(camera);cameraId=camera.getId();});c.waitTicks(15);
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"void_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
-   check(VoidForms.RUNES.size()==36,"Explicit complete void roster");
+   check(VoidForms.RUNES.size()==38,"Explicit complete void roster");
    check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("void")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(VoidForms.RUNES)),"Authored runtime void roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:VoidForms.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
@@ -67,7 +67,7 @@ public final class VoidFlightTest implements FabricClientGameTest {
   }
  }
  private static Set<Integer> ingredients(String rune){
-  return switch(rune){case "blackflame"->Set.of(EMBER);case "warp"->Set.of(WIND);case "entropy"->Set.of(TIME);case "devour"->Set.of(BLOOD);case "malison"->Set.of(ARCANE);default->Set.of();};
+  return switch(rune){case "blackflame"->Set.of(EMBER);case "warp"->Set.of(WIND);case "entropy"->Set.of(TIME);case "devour"->Set.of(BLOOD);case "malison","nullcatch","night_seam"->Set.of(ARCANE);default->Set.of();};
  }
  static void sideCamera(net.minecraft.client.Minecraft mc){
   RuneBolt bolt=null;for(var e:mc.level.entitiesForRendering())if(e instanceof RuneBolt b)bolt=b;
@@ -85,6 +85,18 @@ public final class VoidFlightTest implements FabricClientGameTest {
   var live=particles(mc.particleEngine).stream().filter(p->p.isAlive() && (p instanceof VoidParticle || p instanceof MaterialParticle)
     && ((Number)field(p,Particle.class,"lifetime")).intValue()==5).toList();
   check(live.stream().anyMatch(p->p instanceof VoidParticle),"Actual production void retained for close view");
+  // Diagnostic framing follows these retained production objects, sampled now rather than a stale moving bolt.
+  double minX=Double.POSITIVE_INFINITY,minY=minX,minZ=minX,maxX=Double.NEGATIVE_INFINITY,maxY=maxX,maxZ=maxX;
+  for(var particle:live){var pos=at(particle);minX=Math.min(minX,pos.x);minY=Math.min(minY,pos.y);minZ=Math.min(minZ,pos.z);maxX=Math.max(maxX,pos.x);maxY=Math.max(maxY,pos.y);maxZ=Math.max(maxZ,pos.z);}
+  var centre=new Vec3((minX+maxX)/2,(minY+maxY)/2,(minZ+maxZ)/2);
+  var eye=centre.add(2.7,.6,2);var aim=centre.subtract(eye);
+  float yaw=(float)Math.toDegrees(Math.atan2(-aim.x,aim.z));
+  float pitch=(float)-Math.toDegrees(Math.atan2(aim.y,Math.hypot(aim.x,aim.z)));
+  camera.snapTo(eye.x,eye.y-camera.getEyeHeight(),eye.z,yaw,pitch);mc.setCameraEntity(camera);
+  var view=camera.getLookAngle().normalize();
+  long inView=live.stream().filter(p->p instanceof VoidParticle).filter(p->{var ray=at(p).subtract(camera.getEyePosition());return ray.lengthSqr()>.01 && ray.normalize().dot(view)>Math.cos(Math.toRadians(20));}).count();
+  System.out.println("Void diagnostic "+name+" bolt="+bolt.position()+" retainedBounds=["+minX+","+minY+","+minZ+" -> "+maxX+","+maxY+","+maxZ+"] eye="+camera.getEyePosition()+" view="+view+" nativeVoidInside20deg="+inView);
+  check(inView>0,"Retained production Void lies inside diagnostic camera's conservative view cone: "+name);
   mc.particleEngine.clearParticles();var empty=capturePixels(mc,name+"_background");
   for(var particle:live)mc.particleEngine.add(particle);
   mc.particleEngine.tick();

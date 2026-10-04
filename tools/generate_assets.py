@@ -824,6 +824,8 @@ def write_lang(runes):
     void_art.main()
     import fieldfusion_art
     fieldfusion_art.write(sys.modules[__name__])
+    import next_signature_art
+    next_signature_art.write(sys.modules[__name__])
     import fungal_art
     lang.update(fungal_art.LANG)
     fungal_art.write(sys.modules[__name__])

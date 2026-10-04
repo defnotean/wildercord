@@ -5581,5 +5581,149 @@
     "sounds": [
       "wildercord:kit/fungal/fungal_nursery_settle"
     ]
+  },
+  "nextsignature_blood_escrow_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_blood_escrow_cue"
+    ]
+  },
+  "nextsignature_blood_escrow_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_blood_escrow_impact"
+    ]
+  },
+  "nextsignature_frost_molt_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_frost_molt_cue"
+    ]
+  },
+  "nextsignature_frost_molt_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_frost_molt_impact"
+    ]
+  },
+  "nextsignature_last_lantern_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_last_lantern_cue"
+    ]
+  },
+  "nextsignature_last_lantern_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_last_lantern_impact"
+    ]
+  },
+  "nextsignature_night_seam_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_night_seam_cue"
+    ]
+  },
+  "nextsignature_night_seam_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_night_seam_impact"
+    ]
+  },
+  "nextsignature_nullcatch_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_nullcatch_cue"
+    ]
+  },
+  "nextsignature_nullcatch_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_nullcatch_impact"
+    ]
+  },
+  "nextsignature_pocket_current_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_pocket_current_cue"
+    ]
+  },
+  "nextsignature_pocket_current_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_pocket_current_impact"
+    ]
+  },
+  "nextsignature_pulse_ferry_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_pulse_ferry_cue"
+    ]
+  },
+  "nextsignature_pulse_ferry_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_pulse_ferry_impact"
+    ]
+  },
+  "nextsignature_quietus_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_quietus_cue"
+    ]
+  },
+  "nextsignature_quietus_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_quietus_impact"
+    ]
+  },
+  "nextsignature_red_ledger_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_red_ledger_cue"
+    ]
+  },
+  "nextsignature_red_ledger_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_red_ledger_impact"
+    ]
+  },
+  "nextsignature_second_bell_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_second_bell_cue"
+    ]
+  },
+  "nextsignature_second_bell_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_second_bell_impact"
+    ]
+  },
+  "nextsignature_shard_compass_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_shard_compass_cue"
+    ]
+  },
+  "nextsignature_shard_compass_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_shard_compass_impact"
+    ]
+  },
+  "nextsignature_wayline_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_wayline_cue"
+    ]
+  },
+  "nextsignature_wayline_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/nextsignature/nextsignature_wayline_impact"
+    ]
   }
 }

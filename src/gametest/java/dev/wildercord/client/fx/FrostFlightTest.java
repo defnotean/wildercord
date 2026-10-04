@@ -24,7 +24,7 @@ public final class FrostFlightTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);});c.waitTicks(15);
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"frost_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
-   check(FrostFlights.RUNES.size()==32,"Explicit complete frost roster");
+   check(FrostFlights.RUNES.size()==34,"Explicit complete frost roster");
    check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("frost")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(FrostFlights.RUNES)),"Authored runtime frost roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:FrostFlights.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
@@ -58,9 +58,11 @@ public final class FrostFlightTest implements FabricClientGameTest {
   check(!FrostFlights.supports("other:frost") && !FrostFlights.supports("wildercord:fire"),"Exact frost dispatch");
   var prints=new HashSet<String>();
   for(String rune:FrostFlights.RUNES)for(boolean minimal:new boolean[]{false,true}) {
-   var traces=new ArrayList<String>();var materials=new HashSet<Integer>();
-   for(int age:new int[]{4,8}){var trace=new ArrayList<String>();FrostFlights.draw("wildercord:"+rune,age,1,1,Vec3.ZERO,new Vec3(0,0,1),minimal,(o,p)->{check(Double.isFinite(p.lengthSqr()) && p.length()<1,"Bounded flight "+rune);if(o instanceof dev.wildercord.content.MaterialOption m)materials.add(m.style());trace.add(o.toString()+"@"+p);});check(!trace.isEmpty()&&trace.size()<16,"Bounded emissions "+rune);traces.add(String.join(";",trace));}
+   var traces=new ArrayList<String>();var materials=new HashSet<Integer>();var types=new HashSet<String>();
+   for(int age:new int[]{4,8}){var trace=new ArrayList<String>();FrostFlights.draw("wildercord:"+rune,age,1,1,Vec3.ZERO,new Vec3(0,0,1),minimal,(o,p)->{check(Double.isFinite(p.lengthSqr()) && p.length()<1,"Bounded flight "+rune);types.add(o.getClass().getSimpleName());if(o instanceof dev.wildercord.content.MaterialOption m)materials.add(m.style());trace.add(o.toString()+"@"+p);});check(!trace.isEmpty()&&trace.size()<16,"Bounded emissions "+rune);traces.add(String.join(";",trace));}
    if(!minimal)check(prints.add(traces.getFirst()),"Distinct flight "+rune);
+   if(rune.equals("frost_molt"))check(types.contains("LifeOption"),"Actual living stitch survives frost flight: "+minimal);
+   if(rune.equals("pocket_current"))check(types.contains("VoidOption"),"Actual dark intake survives water flight: "+minimal);
    check(materials.containsAll(ingredients(rune)),"Supporting materials remain in "+rune+" minimal="+minimal);
   }
  }
@@ -82,6 +84,8 @@ public final class FrostFlightTest implements FabricClientGameTest {
    case "flash_freeze" -> Set.of(WATER,FROST);
    case "basinfill","bubble","current","drowning_word","tidal_lift","tidehook" -> Set.of(WATER);
    case "springbed" -> Set.of(WATER,PETAL);
+   case "frost_molt" -> Set.of(FROST);
+   case "pocket_current" -> Set.of(WATER);
    default -> Set.of(FROST);
   };
  }

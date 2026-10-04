@@ -110,6 +110,7 @@ class FeelTest {
 		TimeFeels.register();
 		BloodFeels.register();
 		dev.wildercord.cast.FieldFusionFeels.register();
+		dev.wildercord.cast.NextSignatureFeels.register();
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		for (RuneDef rune : Runes.all()) {
 			if (rune.id().startsWith("wildercord:") && rune.family() == RuneFamily.EFFECT) {
@@ -152,6 +153,10 @@ class FeelTest {
 		for (String id : dev.wildercord.cast.FieldFusionFeels.EFFECTS) {
 			assertTrue(kit.contains("fieldfusion_" + id + "_cue"), id + " cue missing");
 			assertTrue(kit.contains("fieldfusion_" + id + "_impact"), id + " impact missing");
+		}
+		for (String id : dev.wildercord.cast.NextSignatureFeels.EFFECTS) {
+			assertTrue(kit.contains("nextsignature_" + id + "_cue"), id + " cue missing");
+			assertTrue(kit.contains("nextsignature_" + id + "_impact"), id + " impact missing");
 		}
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		try (java.util.stream.Stream<java.nio.file.Path> files = java.nio.file.Files.walk(java.nio.file.Path.of("src/main/java"))) {

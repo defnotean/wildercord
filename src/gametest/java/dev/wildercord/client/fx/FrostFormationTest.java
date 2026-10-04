@@ -31,7 +31,7 @@ public final class FrostFormationTest implements FabricClientGameTest {
    c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.options.setCameraType(CameraType.FIRST_PERSON);if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();verifyRecipes();});
    var baseline=c.computeOnClient(mc -> snapshot(mc,"frost_formation_background"));c.waitFor(mc -> baseline.isDone());baseline.join();
    var frost=Runes.all().stream().filter(r -> r.family()==RuneFamily.EFFECT && r.element().equals("frost")).map(r -> r.id()).sorted().toList();
-   check(frost.size()==32,"Reviewed frost roster changes require explicit expansion of this suite");
+   check(frost.size()==34,"Reviewed frost roster changes require explicit expansion of this suite");
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL)) {
     c.runOnClient(mc -> MagicQuality.own=quality);
     for(var id:frost) {
@@ -80,26 +80,31 @@ public final class FrostFormationTest implements FabricClientGameTest {
   var fingerprints=new HashSet<String>();
   for(String rune:FrostFormations.RUNES) {
    check(FrostFormations.supports("wildercord:"+rune),"Authored rune dispatch "+rune);
-   var beats=new ArrayList<String>();
+   var beats=new ArrayList<String>();var types=new HashSet<String>();
    for(int beat=1;beat<=2;beat++)for(boolean minimal:new boolean[]{false,true}) {
     var trace=new ArrayList<String>();
     FrostFormations.draw(rune,beat,1,Vec3.ZERO,new Vec3(1,0,0),new Vec3(0,1,0),new Vec3(0,0,1),minimal,(option,at)-> {
      check(Double.isFinite(at.lengthSqr()) && at.length()<1.8,"Finite bounded geometry: "+rune);
-     trace.add(option.toString()+"@"+at);
+     types.add(option.getClass().getSimpleName());trace.add(option.toString()+"@"+at);
     });check(!trace.isEmpty() && trace.size()<96,"Recipe retains identity within minimal canvas budget: "+rune);beats.add(String.join(";",trace));
    }
+   if(rune.equals("frost_molt"))check(types.contains("LifeOption"),"Actual living stitch survives frost preparation");
+   if(rune.equals("pocket_current"))check(types.contains("VoidOption"),"Actual dark intake survives water preparation");
    check(!beats.get(0).equals(beats.get(2)),"Two formation beats evolve: "+rune);
    check(fingerprints.add(beats.get(0)),"No duplicate authored recipe: "+rune);
   }
-  var ingredients=Map.of("hail",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.STORM),
-   "glacier",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.STONE),
-   "blizzard",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.WIND),
-   "frostbloom",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.PETAL),
-   "black_ice",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.VOID),
-   "rime_seal",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.ARCANE),
-   "cryostasis",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.TIME),
-   "frostbite",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.BLOOD),
-   "rime_causeway",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.WIND));
+  var ingredients=Map.ofEntries(
+   Map.entry("frost_molt",List.of(dev.wildercord.content.MaterialOption.FROST)),
+   Map.entry("pocket_current",List.of(dev.wildercord.content.MaterialOption.WATER)),
+   Map.entry("hail",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.STORM)),
+   Map.entry("glacier",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.STONE)),
+   Map.entry("blizzard",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.WIND)),
+   Map.entry("frostbloom",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.PETAL)),
+   Map.entry("black_ice",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.VOID)),
+   Map.entry("rime_seal",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.ARCANE)),
+   Map.entry("cryostasis",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.TIME)),
+   Map.entry("frostbite",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.BLOOD)),
+   Map.entry("rime_causeway",List.of(dev.wildercord.content.MaterialOption.FROST,dev.wildercord.content.MaterialOption.WIND)));
   for(var entry:ingredients.entrySet()){var styles=new HashSet<Integer>();FrostFormations.draw(entry.getKey(),2,1,Vec3.ZERO,new Vec3(1,0,0),new Vec3(0,1,0),new Vec3(0,0,1),true,(option,at)->{if(option instanceof dev.wildercord.content.MaterialOption m)styles.add(m.style());});check(styles.containsAll(entry.getValue()),"Authored ingredients remain in Minimal: "+entry.getKey());}
  }
  private static Object field(Object value,Class<?> owner,String name){try{var f=owner.getDeclaredField(name);f.setAccessible(true);return f.get(value);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}

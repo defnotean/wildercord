@@ -8,7 +8,7 @@ nav_order: 6
 
 # Fused runes
 
-55 runes made only at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (28 more).
+55 runes made only at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (40 more).
 
 | | Fire | Frost | Storm | Wind | Earth | Life | Void | Arcane | Time | Blood |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -632,7 +632,7 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 
 ## Signature fusions
 
-28 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
+40 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
 
 | | Put in | Makes | Counts as | In place of |
 |---|---|---|---|---|
@@ -648,6 +648,18 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 | <img src="{{ '/assets/runes/clockroot.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Root]({{ '/runes/effects/earth/' | relative_url }}#root) + [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) | [Clockroot](#clockroot) | Earth | Fossilize |
 | <img src="{{ '/assets/runes/skylatch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Levitate]({{ '/runes/effects/wind/' | relative_url }}#levitate) + [Anchor]({{ '/runes/effects/void/' | relative_url }}#anchor) | [Skylatch](#skylatch) | Wind | Warp |
 | <img src="{{ '/assets/runes/thresherwind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Harvest]({{ '/runes/effects/life/' | relative_url }}#harvest) + [Windcut]({{ '/runes/effects/wind/' | relative_url }}#windcut) | [Thresherwind](#thresherwind) | Wind | Zephyr |
+| <img src="{{ '/assets/runes/nullcatch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Reflect]({{ '/runes/effects/arcane/' | relative_url }}#reflect) + [Collect]({{ '/runes/effects/void/' | relative_url }}#collect) | [Nullcatch](#nullcatch) | Void | Nullify |
+| <img src="{{ '/assets/runes/second_bell.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) + [Countdown]({{ '/runes/effects/time/' | relative_url }}#countdown) | [Second Bell](#second_bell) | Time | Stormclock |
+| <img src="{{ '/assets/runes/red_ledger.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Bleed]({{ '/runes/effects/blood/' | relative_url }}#bleed) + [Reveal]({{ '/runes/effects/arcane/' | relative_url }}#reveal) | [Red Ledger](#red_ledger) | Blood | Hemomancy |
+| <img src="{{ '/assets/runes/quietus.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manaburn]({{ '/runes/world/' | relative_url }}#manaburn) + [Stasis]({{ '/runes/effects/time/' | relative_url }}#stasis) | [Quietus](#quietus) | Arcane | Timesteal |
+| <img src="{{ '/assets/runes/blood_escrow.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Leech]({{ '/runes/effects/blood/' | relative_url }}#leech) + [Barrier]({{ '/runes/effects/arcane/' | relative_url }}#barrier) | [Blood Escrow](#blood_escrow) | Blood | Hemomancy |
+| <img src="{{ '/assets/runes/frost_molt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Frostward]({{ '/runes/effects/frost/' | relative_url }}#frostward) + [Cleanse]({{ '/runes/effects/life/' | relative_url }}#cleanse) | [Frost Molt](#frost_molt) | Frost | Frostbloom |
+| <img src="{{ '/assets/runes/pulse_ferry.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Regrowth]({{ '/runes/effects/life/' | relative_url }}#regrowth) + [Time Skip]({{ '/runes/effects/time/' | relative_url }}#time_skip) | [Pulse Ferry](#pulse_ferry) | Life | Second Wind |
+| <img src="{{ '/assets/runes/last_lantern.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Light]({{ '/runes/effects/arcane/' | relative_url }}#light) + [Rewind]({{ '/runes/effects/time/' | relative_url }}#rewind) | [Last Lantern](#last_lantern) | Arcane | Timesteal |
+| <img src="{{ '/assets/runes/pocket_current.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) + [Collect]({{ '/runes/effects/void/' | relative_url }}#collect) | [Pocket Current](#pocket_current) | Frost | Black Ice |
+| <img src="{{ '/assets/runes/wayline.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Span]({{ '/runes/effects/arcane/' | relative_url }}#span) + [Grapple]({{ '/runes/effects/void/' | relative_url }}#grapple) | [Wayline](#wayline) | Arcane | Nullify |
+| <img src="{{ '/assets/runes/night_seam.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Light]({{ '/runes/effects/arcane/' | relative_url }}#light) + [Zipper]({{ '/runes/effects/void/' | relative_url }}#zipper) | [Night Seam](#night_seam) | Void | Nullify |
+| <img src="{{ '/assets/runes/shard_compass.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Prospect]({{ '/runes/effects/earth/' | relative_url }}#prospect) + [Treasure Sense]({{ '/runes/world/' | relative_url }}#treasure_sense) | [Shard Compass](#shard_compass) | Arcane | Geode |
 | <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | [Frostwire](#frostwire) | Storm | Hail |
 | <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) + [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) | [Seethe](#seethe) | Fire | Steam |
 | <img src="{{ '/assets/runes/bloomstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) + [Blink]({{ '/runes/effects/void/' | relative_url }}#blink) | [Bloomstep](#bloomstep) | Life | Lifesteal |
@@ -686,6 +698,17 @@ Snow and ice crash down round where it lands: 6 damage to every enemy within 3 b
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Coldsnap]({{ '/runes/effects/frost/' | relative_url }}#coldsnap) and [Stalactite]({{ '/runes/world/' | relative_url }}#stalactite) themselves, with an amethyst shard (3 XP levels). Any other Frost and Earth effects make Glacier instead.
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/blood_escrow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blood Escrow
+{: #blood_escrow}
+
+*Tier III · Blood · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+Spend up to three actual health, never below four, to buy one ally a six-second absorption chamber. Crouching or an existing ward refuses. One gift per payment; no refund or renewal.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Leech]({{ '/runes/effects/blood/' | relative_url }}#leech) and [Barrier]({{ '/runes/effects/arcane/' | relative_url }}#barrier) themselves, with an amethyst shard (3 XP levels). Any other Blood and Arcane effects make Hemomancy instead.
+
+**Modifiers that work on it:** Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/bloomstep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloomstep
 {: #bloomstep}
@@ -742,6 +765,17 @@ Roots remember safe ground for four seconds. A foe fleeing more than two blocks 
 
 **Modifiers that work on it:** Frugal
 
+### <img src="{{ '/assets/runes/frost_molt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frost Molt
+{: #frost_molt}
+
+*Tier III · Frost · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+Peel an actual frozen condition into one three-second ice plate. It stops one ordinary projectile of six damage or less; larger, bypass and other attacks pass. Clean allies cannot mint a plate; crouching sheds it.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Frostward]({{ '/runes/effects/frost/' | relative_url }}#frostward) and [Cleanse]({{ '/runes/effects/life/' | relative_url }}#cleanse) themselves, with an amethyst shard (3 XP levels). Any other Frost and Life effects make Frostbloom instead.
+
+**Modifiers that work on it:** Frugal, Kindred
+
 ### <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostwire
 {: #frostwire}
 
@@ -764,6 +798,17 @@ A halo crowns the ally for 8 seconds: every 1.5 seconds it smites an enemy withi
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
+### <img src="{{ '/assets/runes/last_lantern.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Last Lantern
+{: #last_lantern}
+
+*Tier III · Arcane · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
+
+Record one allied player's safe ground for six seconds. Their next fresh crouch requests one safe return within eight blocks. Invalid floor, route, dimension or permission refuses. No health rewind or forced return.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Light]({{ '/runes/effects/arcane/' | relative_url }}#light) and [Rewind]({{ '/runes/effects/time/' | relative_url }}#rewind) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
+
+**Modifiers that work on it:** Frugal, Kindred
+
 ### <img src="{{ '/assets/runes/malison.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Malison
 {: #malison}
 
@@ -774,6 +819,28 @@ A halo crowns the ally for 8 seconds: every 1.5 seconds it smites an enemy withi
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Hex]({{ '/runes/effects/void/' | relative_url }}#hex) and [Resonance]({{ '/runes/effects/arcane/' | relative_url }}#resonance) themselves, with an amethyst shard (3 XP levels). Any other Void and Arcane effects make Nullify instead.
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/night_seam.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Night Seam
+{: #night_seam}
+
+*Tier III · Void · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Inspect beyond at most three owned ordinary stone cells for one open-ground and nearby-threat clue. No blocks change, no one moves, and protected, special, block-entity, warded or unloaded walls refuse.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Light]({{ '/runes/effects/arcane/' | relative_url }}#light) and [Zipper]({{ '/runes/effects/void/' | relative_url }}#zipper) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
+
+**Modifiers that work on it:** Frugal
+
+### <img src="{{ '/assets/runes/nullcatch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nullcatch
+{: #nullcatch}
+
+*Tier III · Void · Helps you and your allies · 20 mana · needs an Amethyst Cord or better*
+
+An open mirror pocket catches one hostile front projectile over three seconds. One payment buys one capture; rear, allied, reflected and ownerless attacks pass. No stored attack or refund.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Reflect]({{ '/runes/effects/arcane/' | relative_url }}#reflect) and [Collect]({{ '/runes/effects/void/' | relative_url }}#collect) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
+
+**Modifiers that work on it:** Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/parasite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Parasite
 {: #parasite}
@@ -786,6 +853,39 @@ Plants a parasite in each target for 6 seconds: Poison I, and every second it dr
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
+### <img src="{{ '/assets/runes/pocket_current.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pocket Current
+{: #pocket_current}
+
+*Tier III · Frost · Works on the world · 16 mana · needs an Amethyst Cord or better*
+
+Water envelopes carry up to sixteen ready, permitted loose items into your own tracked chest. Both halves need ownership and permission; full slots, foreign drops, locks and loot tables refuse without item loss.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) and [Collect]({{ '/runes/effects/void/' | relative_url }}#collect) themselves, with an amethyst shard (3 XP levels). Any other Frost and Void effects make Black Ice instead.
+
+**Modifiers that work on it:** Frugal
+
+### <img src="{{ '/assets/runes/pulse_ferry.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pulse Ferry
+{: #pulse_ferry}
+
+*Tier III · Life · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
+
+One sap parcel visits two different wounded eligible allies within four blocks on separate beats. Each receives at most three actual healing, six total. Crouching refuses a visit. No overheal or repeated recovery.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Regrowth]({{ '/runes/effects/life/' | relative_url }}#regrowth) and [Time Skip]({{ '/runes/effects/time/' | relative_url }}#time_skip) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
+
+**Modifiers that work on it:** Frugal, Kindred
+
+### <img src="{{ '/assets/runes/quietus.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Quietus
+{: #quietus}
+
+*Tier III · Arcane · Harms enemies · 20 mana · needs an Amethyst Cord or better*
+
+A visible short escrow waits for one newly cast hostile magic projectile, closes on it and taxes up to eight of its player's current mana. No hit, free ammunition or mana reward; old and reflected spells pass.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Manaburn]({{ '/runes/world/' | relative_url }}#manaburn) and [Stasis]({{ '/runes/effects/time/' | relative_url }}#stasis) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
+
+**Modifiers that work on it:** Frugal
+
 ### <img src="{{ '/assets/runes/razorgale.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Razorgale
 {: #razorgale}
 
@@ -796,6 +896,17 @@ A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Windcut]({{ '/runes/effects/wind/' | relative_url }}#windcut) and [Bleed]({{ '/runes/effects/blood/' | relative_url }}#bleed) themselves, with an amethyst shard (3 XP levels). Any other Wind and Blood effects make Crimson Mist instead.
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/red_ledger.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Red Ledger
+{: #red_ledger}
+
+*Tier III · Blood · Harms enemies · 18 mana · needs an Amethyst Cord or better*
+
+Three visible blood gates measure ordinary movement over three seconds. Moving one block spends a gate for a small cut. Standing still avoids all cuts; teleports do not count. Six total damage per payment after bonuses.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Bleed]({{ '/runes/effects/blood/' | relative_url }}#bleed) and [Reveal]({{ '/runes/effects/arcane/' | relative_url }}#reveal) themselves, with an amethyst shard (3 XP levels). Any other Blood and Arcane effects make Hemomancy instead.
+
+**Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/rime_causeway.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rime Causeway
 {: #rime_causeway}
@@ -830,6 +941,17 @@ Raises a living root wall that gives nearby allies brief Regeneration I. Lasts e
 
 **Modifiers that work on it:** Extend, Frugal
 
+### <img src="{{ '/assets/runes/second_bell.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Second Bell
+{: #second_bell}
+
+*Tier III · Time · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+
+Two visible electrodes ring after one and two seconds. Leaving the marked spot evades the second discharge. Two targets at most, eight total damage per payment after bonuses; no movement hold.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) and [Countdown]({{ '/runes/effects/time/' | relative_url }}#countdown) themselves, with an amethyst shard (3 XP levels). Any other Storm and Time effects make Stormclock instead.
+
+**Modifiers that work on it:** Frugal
+
 ### <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Seethe
 {: #seethe}
 
@@ -840,6 +962,17 @@ Traps each target in a bubble of boiling water for 2 seconds (1 fire damage ever
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) and [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) themselves, with an amethyst shard (3 XP levels). Any other Frost and Fire effects make Steam instead.
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/shard_compass.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shard Compass
+{: #shard_compass}
+
+*Tier III · Arcane · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Offer one carried raw iron, copper or gold sample to locate a nearby matching loaded permitted deposit with an accessible side. A successful find spends the sample and points a short graded pebble route; refusal preserves it. Never mines or creates rewards.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Prospect]({{ '/runes/effects/earth/' | relative_url }}#prospect) and [Treasure Sense]({{ '/runes/world/' | relative_url }}#treasure_sense) themselves, with an amethyst shard (3 XP levels). Any other Earth and Arcane effects make Geode instead.
+
+**Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/skyburst.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Skyburst
 {: #skyburst}
@@ -939,6 +1072,17 @@ You come down as a bolt of lightning where the spell landed (up to 24 blocks), r
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Shadowstep]({{ '/runes/effects/void/' | relative_url }}#shadowstep) and [Lightning]({{ '/runes/effects/storm/' | relative_url }}#lightning) themselves, with an amethyst shard (3 XP levels). Any other Void and Storm effects make Riftbolt instead.
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/wayline.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wayline
+{: #wayline}
+
+*Tier III · Arcane · Moves you · 18 mana · needs an Amethyst Cord or better*
+
+Latch a short line to owned safe ground within six blocks. Hold forward for a bounded two-second tow; crouch to release. Normal collision remains, no one else is moved, and no flight ability is granted.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Span]({{ '/runes/effects/arcane/' | relative_url }}#span) and [Grapple]({{ '/runes/effects/void/' | relative_url }}#grapple) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
+
+**Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/cometfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cometfall
 {: #cometfall}

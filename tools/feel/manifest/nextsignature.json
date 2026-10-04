@@ -1,0 +1,173 @@
+{
+  "events": {
+    "nextsignature_blood_escrow_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_blood_escrow_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_blood_escrow_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_blood_escrow_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_frost_molt_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_frost_molt_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_frost_molt_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_frost_molt_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_last_lantern_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_last_lantern_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_last_lantern_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_last_lantern_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_night_seam_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_night_seam_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_night_seam_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_night_seam_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_nullcatch_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_nullcatch_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_nullcatch_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_nullcatch_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_pocket_current_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_pocket_current_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_pocket_current_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_pocket_current_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_pulse_ferry_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_pulse_ferry_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_pulse_ferry_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_pulse_ferry_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_quietus_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_quietus_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_quietus_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_quietus_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_red_ledger_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_red_ledger_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_red_ledger_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_red_ledger_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_second_bell_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_second_bell_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_second_bell_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_second_bell_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_shard_compass_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_shard_compass_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_shard_compass_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_shard_compass_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "nextsignature_wayline_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_wayline_cue"
+      ],
+      "subtitle": "cast"
+    },
+    "nextsignature_wayline_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/nextsignature/nextsignature_wayline_impact"
+      ],
+      "subtitle": "hit"
+    }
+  },
+  "part": "nextsignature"
+}

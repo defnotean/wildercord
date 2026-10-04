@@ -101,7 +101,7 @@ public final class LifeFormationTest implements FabricClientGameTest {
    check(!beats.get(0).equals(beats.get(2)),"Two formation beats evolve: "+rune);
    check(fingerprints.add(beats.get(0)),"No duplicate authored recipe: "+rune);
   }
-  var ingredients=Map.of("ashen_mercy",dev.wildercord.content.MaterialOption.EMBER,"bloom",dev.wildercord.content.MaterialOption.STONE,"root_bulwark",dev.wildercord.content.MaterialOption.STONE,
+  var ingredients=Map.of("pulse_ferry",dev.wildercord.content.MaterialOption.TIME,"ashen_mercy",dev.wildercord.content.MaterialOption.EMBER,"bloom",dev.wildercord.content.MaterialOption.STONE,"root_bulwark",dev.wildercord.content.MaterialOption.STONE,
    "soulbond",dev.wildercord.content.MaterialOption.ARCANE,"second_wind",dev.wildercord.content.MaterialOption.TIME,
    "stitchtime",dev.wildercord.content.MaterialOption.TIME,"bloomstep",dev.wildercord.content.MaterialOption.VOID);
   for(var entry:ingredients.entrySet()){var styles=new HashSet<Integer>();LifeForms.prepare("wildercord:"+entry.getKey(),2,1,Vec3.ZERO,new Vec3(1,0,0),new Vec3(0,1,0),new Vec3(0,0,1),true,(option,at)->{if(option instanceof dev.wildercord.content.MaterialOption m)styles.add(m.style());});check(styles.contains(entry.getValue()),"Supporting materials remain in Minimal: "+entry.getKey());}

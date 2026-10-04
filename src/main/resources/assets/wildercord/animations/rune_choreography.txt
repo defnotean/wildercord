@@ -314,3 +314,15 @@ ashen_mercy|FLAME|MIST|PETAL
 clockroot|ROOTS|CLOCK|STEP
 skylatch|WING|TETHER|CLOUD
 thresherwind|CRESCENT|ROOTS|SWARM
+nullcatch|CLAW|GATE|SHELL
+second_bell|FORK|CLOCK|CROSS
+red_ledger|HEART|STEP|NEEDLE
+quietus|MIRROR|CLOCK|SEAL
+blood_escrow|HEART|TETHER|DIAMOND
+frost_molt|SHARD|PETAL|SHELL
+pulse_ferry|VINE|CLOCK|HEART
+last_lantern|FLARE|STEP|MIRROR
+pocket_current|FOAM|GATE|CHAIN
+wayline|TETHER|MIRROR|STEP
+night_seam|NEEDLE|EYE|GATE
+shard_compass|DIAMOND|GEAR|NEEDLE

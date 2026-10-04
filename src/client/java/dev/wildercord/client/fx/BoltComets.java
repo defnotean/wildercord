@@ -54,6 +54,10 @@ public final class BoltComets {
 					if ((style & RuneBolt.STYLE_FRUGAL) != 0) width *= .7F;
 					if ((style & RuneBolt.STYLE_PIERCE) != 0) width *= .65F;
 					for (String id : bolt.getEntityData().get(RuneBolt.DATA_EFFECTS).split(",")) {
+                        if(!FrostFlights.supports(id) && !VoidForms.supports(id) && !LifeForms.supports(id))
+                            NextSignatureForms.flight(id,bolt.tickCount,width,(style & RuneBolt.STYLE_PIERCE)!=0?1.8:1,
+                                bolt.position(),bolt.getDeltaMovement(),quality==MagicQuality.Level.MINIMAL,
+                                (option,pos)->level.addParticle(option,pos.x,pos.y,pos.z,0,0,0));
 						FireFlights.draw(id, bolt.tickCount, width, (style & RuneBolt.STYLE_PIERCE) != 0 ? 1.8 : 1,
 							bolt.position(), bolt.getDeltaMovement(), quality == MagicQuality.Level.MINIMAL,
 							(option, pos) -> level.addParticle(option, pos.x, pos.y, pos.z, 0, 0, 0));

@@ -54,6 +54,15 @@ fabricApi {
 	}
 }
 
+// A real OpenAL mixer without a physical device keeps sound-listener assertions valid in Linux CI.
+// This applies only to client game tests; an explicitly supplied backend remains authoritative.
+tasks.named('runClientGameTest') {
+ if (System.getProperty('os.name').toLowerCase(java.util.Locale.ROOT).contains('linux')
+   && System.getenv('ALSOFT_DRIVERS') == null) {
+  environment 'ALSOFT_DRIVERS', 'null'
+ }
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

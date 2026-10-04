@@ -25,7 +25,7 @@ These targets are additions to the baseline, subject to documented design adjust
 | Milestone | Scope | State | Required evidence |
 | --- | --- | --- | --- |
 | A | Audit/player journey; finish Aura world and cooperation | Started: terrain training; Marchkeeper battlefields; sword tomb and keeper; sleeping blade; two Aura-resistant beasts; village tournaments; resonant damage strikes; rune-etched blades; Unity | Runtime terrain checks/trials; all step 11/12 encounters/items; solo/cooperative balance; pictures/JAR |
-| B | Visual identity and full ability roster audit | Started: runtime roster/source-reference index; caster-centered formation anchors | Per-ability matrix; first/third-person captures; reduced effects/shaders; fusion behavior |
+| B | Visual identity and full ability roster audit | Started: caster-centered anchors;18 newly authored signatures have scoped acceptance; full lifecycle matrix remains open | Per-ability matrix; first/third-person captures; reduced effects/shaders; fusion behavior |
 | C | Four ecosystems and twelve creatures | Started: highland beasts, forage/shelter and Windreed; Lantern Newts, Moonreed pollination, Reed Refuges and Reedback Crabs; full ecosystems pending | Habitat/AI/spawning/persistence tests; custom art and animation; observation gameplay |
 | D | Locations, items, acquisition and counterplay | Started: tomb, finite equipment/resource tools, damage allowance and counterplay fixes; larger roster pending | Generation/loot/recipe tests; combat matchups; equipment/inventory verification |
 | E | Lore, quests, field journal and guide design | Started: eight credited lore texts and illustrated guide increments; connected investigations pending | Rendered book review; discoverability; useful clues; text/nav checks |
@@ -459,3 +459,31 @@ acceptance remain open. The nursery CI regression fixture passed its complete
 focused earned-resource/restart chain; the full Linux descriptor still requires
 a renewed run. Draft Rootmolt, twelve further signatures and Life outcome work
 remain outside the playable source and receive no content credit.
+
+## Expedition signatures development increment (2026-10-03)
+
+Twelve expedition/counter/support recipes extend the previous six accepted field signatures,
+bringing the goal to18 newly authored signatures,40 total signatures,95 named fused recipes
+and369 runtime runes. The numeric signature target is met; it does not complete supported
+pairing/delivery lifecycle, real multiplayer or the separate twelve-new-ability target.
+No creature/item/lore/investigation addition is credited by this increment:6 creatures,21
+functional items,2 abilities,12 lore texts and1 investigation remain the accepted totals.
+Life105 and Rootmolt/Drainhouse content remains isolated and uncredited.
+
+Focused Counter42s, Support42s, Trail36s and Presentation62s pass. All12 actual client
+Fuse packets and paid Full/Minimal preparation/flight checks are exercised;38 original
+native presentation PNGs are preserved. Generator5158paths reproduces and978 unit tests
+pass. Final bounded Counter45s, zero-actual-heal43s and Void38 Full/Minimal2m13s
+also pass;153 affected Void originals are retained. Frost34 paid Full/Minimal1m59s
+and Life30 paid Full/Minimal1m48s pass;69 Frost originals are retained. Finite budgets are
+not frame-time performance measurements. Life30 retains121 originals, giving381
+actual native PNGs across four groups. Final build22s passes978 units without
+failure/error/skip;5158 generated paths reproduce;122 guide pages and sounds validate.
+Review JAR has5157 matching resources/1711 compiled classes and verified ZIP integrity.
+SHA256:1b4709a3f1a625d9f8fc3432b1927d7cd1abc75517490f3362e72d3b26d6632c.
+See docs/audit/expedition-signatures-milestone.md for the exact development artifact.
+
+The preceding fb2c07cb ordinary CI build passed, but its full Linux native descriptor
+failed later at gravity-flight visual pixels. Focused acceptance and package delivery do
+not establish a green full Linux descriptor, real remote multiplayer, all effects or the
+whole living-world goal. Public alpha.1/server deployment remains separate.

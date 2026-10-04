@@ -1524,6 +1524,78 @@
     "monster_ooze_split": {
       "part": "monster"
     },
+    "nextsignature_blood_escrow_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_blood_escrow_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_frost_molt_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_frost_molt_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_last_lantern_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_last_lantern_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_night_seam_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_night_seam_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_nullcatch_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_nullcatch_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_pocket_current_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_pocket_current_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_pulse_ferry_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_pulse_ferry_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_quietus_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_quietus_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_red_ledger_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_red_ledger_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_second_bell_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_second_bell_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_shard_compass_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_shard_compass_impact": {
+      "part": "nextsignature"
+    },
+    "nextsignature_wayline_cue": {
+      "part": "nextsignature"
+    },
+    "nextsignature_wayline_impact": {
+      "part": "nextsignature"
+    },
     "note_effect": {
       "part": "neutral"
     },

@@ -1888,6 +1888,90 @@
         }
       },
       {
+        "when": "wildercord:nullcatch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/nullcatch"
+        }
+      },
+      {
+        "when": "wildercord:second_bell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/second_bell"
+        }
+      },
+      {
+        "when": "wildercord:red_ledger",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/red_ledger"
+        }
+      },
+      {
+        "when": "wildercord:quietus",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/quietus"
+        }
+      },
+      {
+        "when": "wildercord:blood_escrow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/blood_escrow"
+        }
+      },
+      {
+        "when": "wildercord:frost_molt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/frost_molt"
+        }
+      },
+      {
+        "when": "wildercord:pulse_ferry",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pulse_ferry"
+        }
+      },
+      {
+        "when": "wildercord:last_lantern",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/last_lantern"
+        }
+      },
+      {
+        "when": "wildercord:pocket_current",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pocket_current"
+        }
+      },
+      {
+        "when": "wildercord:wayline",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/wayline"
+        }
+      },
+      {
+        "when": "wildercord:night_seam",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/night_seam"
+        }
+      },
+      {
+        "when": "wildercord:shard_compass",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shard_compass"
+        }
+      },
+      {
         "when": "wildercord:frostwire",
         "model": {
           "type": "minecraft:model",
