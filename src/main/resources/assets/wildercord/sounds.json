@@ -6243,5 +6243,23 @@
     "sounds": [
       "wildercord:kit/tideward/tideward_weave_rest"
     ]
+  },
+  "bittern_boom": {
+    "subtitle": "subtitles.wildercord.kit.bittern.boom",
+    "sounds": [
+      "wildercord:kit/bittern/bittern_boom"
+    ]
+  },
+  "bittern_catch": {
+    "subtitle": "subtitles.wildercord.kit.bittern.catch",
+    "sounds": [
+      "wildercord:kit/bittern/bittern_catch"
+    ]
+  },
+  "bittern_rustle": {
+    "subtitle": "subtitles.wildercord.kit.bittern.rustle",
+    "sounds": [
+      "wildercord:kit/bittern/bittern_rustle"
+    ]
   }
 }

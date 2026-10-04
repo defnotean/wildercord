@@ -879,6 +879,15 @@
     "belowkeeper_restore": {
       "part": "belowkeeper"
     },
+    "bittern_boom": {
+      "part": "bittern"
+    },
+    "bittern_catch": {
+      "part": "bittern"
+    },
+    "bittern_rustle": {
+      "part": "bittern"
+    },
     "blood_blade_fall": {
       "part": "blood"
     },

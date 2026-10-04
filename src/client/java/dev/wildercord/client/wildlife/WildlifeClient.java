@@ -12,6 +12,7 @@ public final class WildlifeClient {
   SporebackRenderer.init();
   RootmoltRenderer.init();
   CinderBailiffRenderer.init();
+  SiltcrestRenderer.init();
   ModelLayerRegistry.registerModelLayer(WildlifeRenderers.REEDBACK_CRAB,ReedbackCrabModel::createLayer);
   EntityRendererRegistry.register(dev.wildercord.wildlife.ReedbackContent.CRAB,WildlifeRenderers.ReedbackCrabRenderer::new);
 		ModelLayerRegistry.registerModelLayer(WildlifeRenderers.LANTERN_NEWT,LanternNewtModel::createLayer);

@@ -627,6 +627,7 @@ public final class Effects {
 				// It douses: the fire on them goes out (and fire hits are dulled while they drip).
 				t.clearFire();
 				if(freshBreath || freshGrace || priorBurn && !t.isOnFire())dev.wildercord.wildlife.EmberContent.cool(cast,t);
+    if((freshBreath || freshGrace || priorBurn && !t.isOnFire()) && t instanceof dev.wildercord.wildlife.SiltcrestBittern bird)bird.answerWater(cast);
 				Vfx.tidebreath(level, t);
 			});
    }

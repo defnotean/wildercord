@@ -1,0 +1,26 @@
+{
+  "events": {
+    "bittern_boom": {
+      "attenuation": 0,
+      "files": [
+        "kit/bittern/bittern_boom"
+      ],
+      "subtitle": "bittern.boom"
+    },
+    "bittern_catch": {
+      "attenuation": 0,
+      "files": [
+        "kit/bittern/bittern_catch"
+      ],
+      "subtitle": "bittern.catch"
+    },
+    "bittern_rustle": {
+      "attenuation": 0,
+      "files": [
+        "kit/bittern/bittern_rustle"
+      ],
+      "subtitle": "bittern.rustle"
+    }
+  },
+  "part": "bittern"
+}

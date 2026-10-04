@@ -837,6 +837,9 @@ def write_lang(runes):
     import ember_art
     lang.update(ember_art.LANG)
     ember_art.write(sys.modules[__name__])
+    import siltcrest_art
+    lang.update(siltcrest_art.LANG)
+    siltcrest_art.write(ASSETS.parent.parent)
     import rootmolt_art
     lang.update(rootmolt_art.LANG)
     rootmolt_art.write(sys.modules[__name__])

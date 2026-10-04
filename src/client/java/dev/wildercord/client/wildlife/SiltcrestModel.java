@@ -1,0 +1,20 @@
+package dev.wildercord.client.wildlife;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.*;
+import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.util.Mth;
+/** Authored squat reed bird: folded wing layers, two neck joints, articulated knees and a six-pixel bill. */
+public final class SiltcrestModel extends EntityModel<SiltcrestState> {
+ private final ModelPart body,neck,upper,head,bill,lowerBill,tail;private final ModelPart[] legs=new ModelPart[2],ankles=new ModelPart[2],wings=new ModelPart[2];
+ public SiltcrestModel(ModelPart root){super(root);body=root.getChild("body");neck=body.getChild("neck");upper=neck.getChild("upper");head=upper.getChild("head");bill=head.getChild("bill");lowerBill=head.getChild("lower_bill");tail=body.getChild("tail");for(int i=0;i<2;i++){legs[i]=body.getChild("leg_"+i);ankles[i]=legs[i].getChild("ankle");wings[i]=body.getChild("wing_"+i);}}
+ public static LayerDefinition createLayer(){var mesh=new MeshDefinition();var body=mesh.getRoot().addOrReplaceChild("body",CubeListBuilder.create().texOffs(0,0).addBox(-4,-4,-5,8,7,10),PartPose.offset(0,14,0));body.addOrReplaceChild("breast",CubeListBuilder.create().texOffs(40,0).addBox(-3,-3,-1,6,6,2),PartPose.offset(0,0,-5));
+  var neck=body.addOrReplaceChild("neck",CubeListBuilder.create().texOffs(60,0).addBox(-1,-6,-1.5F,2,6,3),PartPose.offsetAndRotation(0,-2,-3,.3F,0,0));var upper=neck.addOrReplaceChild("upper",CubeListBuilder.create().texOffs(76,0).addBox(-1,-5,-1,2,5,2),PartPose.offsetAndRotation(0,-5,0,-.45F,0,0));upper.addOrReplaceChild("throat",CubeListBuilder.create().texOffs(68,48).addBox(-1,-3,-.5F,2,3,1),PartPose.offset(0,-1,-1));
+  var head=upper.addOrReplaceChild("head",CubeListBuilder.create().texOffs(90,0).addBox(-2,-3,-3,4,4,5),PartPose.offset(0,-5,0));head.addOrReplaceChild("bill",CubeListBuilder.create().texOffs(114,0).addBox(-.5F,-.5F,-6,1,1,6),PartPose.offset(0,-1,-3));head.addOrReplaceChild("lower_bill",CubeListBuilder.create().texOffs(132,0).addBox(-.5F,0,-4,1,1,4),PartPose.offset(0,-.8F,-3));head.addOrReplaceChild("crest",CubeListBuilder.create().texOffs(148,0).addBox(-.5F,-2,-1,1,2,3),PartPose.offsetAndRotation(0,-2,0,.25F,0,0));for(int i=0;i<2;i++)head.addOrReplaceChild("eye_"+i,CubeListBuilder.create().texOffs(160+i*8,0).addBox(-.5F,-.5F,-.5F,1,1,1),PartPose.offset(i==0?-2:2,-1.5F,-1.5F));
+  for(int i=0;i<2;i++){int side=i==0?-1:1;var wing=body.addOrReplaceChild("wing_"+i,CubeListBuilder.create().texOffs(i*24,24).addBox(-1,-3,-4,2,7,8),PartPose.offset(side*3.8F,-.5F,0));for(int k=0;k<3;k++)wing.addOrReplaceChild("feather_"+k,CubeListBuilder.create().texOffs(48+i*42+k*14,24).addBox(-.5F,-2,-2,1,5,4),PartPose.offsetAndRotation(side*.9F,1+k*.5F,-1+k*1.8F,.12F*k,0,side*.12F));
+   var leg=body.addOrReplaceChild("leg_"+i,CubeListBuilder.create().texOffs(i*8,48).addBox(-.5F,0,-.5F,1,4,1),PartPose.offset(side*1.8F,2,1));var ankle=leg.addOrReplaceChild("ankle",CubeListBuilder.create().texOffs(16+i*8,48).addBox(-.5F,0,-.5F,1,4,1),PartPose.offset(0,4,0));ankle.addOrReplaceChild("toes",CubeListBuilder.create().texOffs(32+i*16,48).addBox(-1.5F,0,-3,3,1,4),PartPose.offset(0,3,0));}
+  var tail=body.addOrReplaceChild("tail",CubeListBuilder.create().texOffs(138,24).addBox(-2,-.5F,0,4,1,5),PartPose.offsetAndRotation(0,0,4,-.2F,0,0));tail.addOrReplaceChild("tip",CubeListBuilder.create().texOffs(158,24).addBox(-1.5F,-.5F,0,3,1,4),PartPose.offset(0,0,3));return LayerDefinition.create(mesh,256,128);
+ }
+ public void setupAnim(SiltcrestState s){super.setupAnim(s);float t=s.ageInTicks;body.y=14+s.rest*2;body.xRot=s.coil*.15F-s.strike*.08F;neck.xRot=.3F+s.coil*.65F-s.strike*.85F;upper.xRot=-.45F-s.coil*.7F+s.strike*1.1F;head.xRot=s.rest*.35F+s.preen*.6F;head.yRot=Mth.sin(t*.25F)*s.preen*.8F;lowerBill.xRot=s.strike*.3F+Mth.sin(t*.2F)*.025F;tail.xRot=-.2F+Mth.sin(t*.06F)*.035F;
+  for(int i=0;i<2;i++){float step=Mth.sin(s.walkAnimationPos*.5F+i*Mth.PI)*s.walkAnimationSpeed;legs[i].xRot=step*.65F+s.rest*.5F;ankles[i].xRot=-Math.max(0,step)*.75F-s.rest*.8F;wings[i].zRot=(i==0?-1:1)*(s.preen*(.2F+.15F*Mth.sin(t*.38F))+s.rest*.08F);}
+ }
+}

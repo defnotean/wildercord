@@ -539,3 +539,11 @@ Items become27 (relic2/equipment4/tools5/placeables7/materials9), leaving at lea
 ## Wetland complete-query increment (2026-10-04)
 
 Newt refuge/population and crab acquisition/population/sweep collect complete raw typed pools of at most12; saturation13 refuses partial selection. Actual crab hurt callbacks revalidate source/action/quarry/body/world and recipient before follow-up while preserving five damage and original warning/recovery clocks. Actual bounds35s and nine-mode sweep97s pass, with Newt51s/Garden43s/Crab49s/Rattle47s regressions. Build13s passes1000 units,5392 paths reproduce,128 guide pages validate; checked development JAR is in artifacts/review/wetland-guards with checksum and exact evidence in docs/audit/wetland-query-guards.md. No new content count or sustained performance claim is awarded. Full Linux gameplay and whole ecosystems remain open.
+
+## Siltcrest wetland increment (2026-10-04)
+
+Siltcrest Bittern adds an original layered reed-bird rig, finite saved appetite, dry-bank ordinary night hunting, protected wild-fish rules, real offered food, daytime/rain canopy rest and fresh allied Tidebreath response. Ten focused native gates pass; eight original Full/Minimal model frames were directly viewed with strict paired native pixel controls. See docs/audit/siltcrest-milestone.md for failed fixture geometry, actual floating hunt correction, post-hurt source authority, readback scheduling and remaining natural/listening/shader limits. The guide gains an illustrated practical chapter.
+
+Creature additions become9; items27/abilities3/signatures18/lore15/investigations2/locations2/complete ecosystems0 remain. Separate local workload measurement and fixture diagnostics do not award ecosystem or new item credit. Public release/server activation remains separate; the broad goal stays active.
+
+Final Siltcrest build15s passes1000 units;5400 paths reproduce and129 guide pages export. Checked JAR/native originals are in artifacts/review/siltcrest-bittern. Two400-tick mixed-wetland profiles against corrected physical Mud footing have actual stable8/40 creatures, sparse catch and reed opening, with raw execution samples retained in docs/audit/evidence/mixed-wetland-20261004.json. Scoped local mean/p95/p99 are observations, not universal capacity or before/after improvement. Natural distribution and full ecosystems remain open.
