@@ -146,7 +146,7 @@ public final class Innates {
 	private static final Map<UUID, Kindle> KINDLING = new HashMap<>();
 	private static final Map<UUID, Long> TWIN = new HashMap<>();
 	private static final Map<UUID, Long> TWIN_ARMED = new HashMap<>();
-	private static final Map<UUID, Deque<float[]>> HURT_HISTORY = new HashMap<>();
+	private static final Map<UUID, Deque<double[]>> HURT_HISTORY = new HashMap<>();
 	private static final Map<UUID, Debt> DEBTS = new HashMap<>();
 	private static final Map<UUID, Gale> GALES = new HashMap<>();
 	private static final Map<UUID, Long> STONEFORM = new HashMap<>();
@@ -174,8 +174,8 @@ public final class Innates {
 			}
 			long now = level.getGameTime();
 			if (!repaying && entity instanceof ServerPlayer player && player.getAttachedOrElse(WildercordAttachments.INNATE, "").equals(Runes.BORROWED_TIME.id())) {
-				Deque<float[]> history = HURT_HISTORY.computeIfAbsent(player.getUUID(), k -> new ArrayDeque<>());
-				history.addLast(new float[] {now, damage});
+				Deque<double[]> history = HURT_HISTORY.computeIfAbsent(player.getUUID(), k -> new ArrayDeque<>());
+				history.addLast(new double[] {now, damage});
 				while (history.size() > 40 || !history.isEmpty() && now - history.peekFirst()[0] > 100) {
 					history.removeFirst();
 				}
@@ -463,9 +463,9 @@ public final class Innates {
 	private static void borrowTime(ServerPlayer player) {
 		long now = player.level().getGameTime();
 		float owed = 0;
-		Deque<float[]> history = HURT_HISTORY.get(player.getUUID());
+		Deque<double[]> history = HURT_HISTORY.get(player.getUUID());
 		if (history != null) {
-			for (float[] hurt : history) {
+			for (double[] hurt : history) {
 				if (now - hurt[0] <= 100) {
 					owed += hurt[1];
 				}
