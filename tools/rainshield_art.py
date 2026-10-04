@@ -1,6 +1,7 @@
 """Original mended lacquer fan: icon, physical held ribs and material-only particle sprites."""
 from PIL import Image, ImageDraw
 import math
+from item_art import Canvas, hexc
 LANG={
  'item.wildercord.rooks_rainshield':"Rook's Rainshield",
  'message.wildercord.rainshield.offer':'%s offers arrow cover. Release sneak, then crouch within two seconds to accept.',
@@ -11,22 +12,49 @@ LANG={
 
 def grain(x,y,seed):return ((x*13+y*31+seed*17)^((x+y)*7))%9-4
 
+# ============================================================== icon (16x16): the fan opened, as it is used
+
+FAN_PIVOT=(3.5,12.5)
+FAN_RADIUS=11.6
+FAN_RIBS=5                       # four cloth panels between five reed ribs
+FAN={'outline':'#2A160C','cloth':('#B8A274','#D4C092','#ECDCB0'),'hem':('#7A2A1C','#A8402A','#CC5E3C'),
+     'rib':('#4A2C14','#7E5430'),'patch':('#5E6A3E','#7E8A56'),'stitch':'#F2E6C0',
+     'pivot':('#8A4A26','#D07E48','#F4B07C'),'feather':('#141620','#262A3A','#4A5470'),'cord':'#C8A870'}
+
+
 def icon():
- im=Image.new('RGBA',(32,32));d=ImageDraw.Draw(im)
- d.polygon([(7,27),(10,13),(17,3),(24,4),(26,10),(21,20),(14,29)],fill='#28282A')
- # Unequal folded cloth panels and dark pleats define a small mended artifact silhouette.
- for i,poly in enumerate([[(10,25),(11,14),(18,4),(21,5),(17,18)],[(12,26),(17,14),(22,5),(24,7),(20,20)],[(14,27),(19,19),(25,8),(24,13),(20,24)]]):
-  d.polygon(poly,fill=['#C5B993','#998A65','#D6C9A0'][i]);d.line(poly+[poly[0]],fill='#4A4234',width=1)
-  for y in range(6,26):
-   for x in range(10,25):
-    if im.getpixel((x,y))[:3] in ((197,185,147),(153,138,101),(214,201,160)) and (x+y+i)%4==0:d.point((x,y),fill='#B1A278')
- for start,end in [((10,27),(18,4)),((11,28),(22,5)),((13,28),(25,8))]:
-  d.line((start,end),fill='#3E3326',width=2);d.line((start[0],start[1]-1,end[0]-1,end[1]),fill='#C28E4D')
- d.polygon([(16,15),(21,14),(22,18),(17,20)],fill='#7D856A');d.line([(16,15),(21,14),(22,18),(17,20),(16,15)],fill='#DCD4AE')
- for x,y in [(17,16),(19,15),(21,16),(20,18),(18,19)]:d.point((x,y),fill='#444132')
- d.ellipse((8,25,15,31),fill='#3E3225',outline='#D6A164');d.ellipse((10,27,13,29),fill='#84603C');d.point((10,26),fill='#F1D2A2')
- d.line([(9,29),(5,27),(3,20)],fill='#BCAC75');d.polygon([(3,20),(1,17),(2,11),(5,15),(5,20)],fill='#272B35');d.line((2,13,4,19),fill='#737880');d.point((3,16),fill='#B8B29B')
- return im
+ """The opened fan from its copper pivot: cream oiled-linen pleats on dark reed ribs, a lacquer-red hem, one panel
+ mended with an olive patch, and the black rook feather hanging from the pivot."""
+ cv=Canvas();px,py=FAN_PIVOT;step=90/(FAN_RIBS-1);C={k:([hexc(c) for c in v] if isinstance(v,tuple) else hexc(v)) for k,v in FAN.items()}
+ for y in range(16):
+  for x in range(16):
+   dx,dy=x+.5-px,py-(y+.5);r=math.hypot(dx,dy);a=math.degrees(math.atan2(dy,dx))
+   if r>FAN_RADIUS or a<-6 or a>96:continue
+   k=min(FAN_RIBS-2,max(0,int(a//step)));inside=(a-k*step)/step
+   if r<3.6:c=C['rib'][1]                                  # the gathered sticks round the pivot
+   elif r>FAN_RADIUS-1.6:c=C['hem'][2 if k%2 else 1]
+   elif k==2 and 5<r<8.4 and .15<inside<.85:c=C['patch'][1 if r<6.8 else 0]
+   else:c=C['cloth'][2 if k%2 else 1]
+   cv.put(x,y,c)
+ # Inner ribs, one pixel wide, from the sticks out to the hem.
+ for j in range(1,FAN_RIBS-1):
+  t=math.radians(j*step);cx,cy=math.cos(t),-math.sin(t);n=max(abs(cx),abs(cy))
+  for i in range(3,12):
+   x,y=math.floor(px+cx/n*i*.999),math.floor(py+cy/n*i*.999)
+   if math.hypot(x+.5-px,py-(y+.5))>FAN_RADIUS-1.6:break
+   cv.put(x,y,C['rib'][0])
+ # A few stitches round the mend.
+ for x,y in [(8,7),(9,8),(7,5)]:
+  if cv.get(x,y) in C['patch']:cv.put(x,y,C['stitch'])
+ # Copper pivot.
+ for (x,y),t in {(3,12):2,(4,12):1,(3,13):1,(4,13):0,(2,12):1,(3,11):1}.items():cv.put(x,y,C['pivot'][t])
+ out=C['outline'];filled={(x,y) for y in range(16) for x in range(16) if cv.get(x,y) is not None}
+ for y in range(16):
+  for x in range(16):
+   if (x,y) not in filled and any((x+dx,y+dy) in filled for dx,dy in ((1,0),(-1,0),(0,1),(0,-1))):cv.put(x,y,out)
+ # The rook feather on its cord, hanging below the pivot.
+ for (x,y),c in {(2,14):C['cord'],(1,14):out,(1,15):C['feather'][1],(0,15):C['feather'][0],(2,15):C['feather'][2],(3,15):out}.items():cv.put(x,y,c)
+ return cv.image()
 
 def sprite(kind):
  im=Image.new('RGBA',(32,32));d=ImageDraw.Draw(im)
@@ -60,24 +88,51 @@ def sprite(kind):
   d.line([(5,25),(11,18),(13,9)],fill='#D2B487',width=3);d.line((7,25,14,11),fill='#584431');d.polygon([(13,8),(11,4),(14,1),(16,5)],fill='#7B7F7D');d.line([(20,12),(25,8),(27,10)],fill='#B7A27A',width=2);d.point((26,8),fill='#EEE0BB')
  return im
 
+# ============================================================== held-model materials (16x16, vanilla-like)
+
+MAT={'reed':('#3A2412','#5A3A1E','#7A522C','#9A6C3C'),'pivot':('#7A3E20','#A85C32','#D07E48','#F4B07C'),
+     'cloth':('#B8A274','#D4C092','#ECDCB0','#F8EED0'),'feather':('#141620','#1E2230','#2C3244','#4A5470','#8A92A8'),
+     'hem':('#7A2A1C','#A8402A','#CC5E3C'),'patch':('#5E6A3E','#7E8A56')}
+
+
 def material(kind):
- im=Image.new('RGBA',(16,16));d=ImageDraw.Draw(im)
- base={'reed':(95,66,42),'pivot':(153,106,61),'cloth':(191,179,137),'feather':(43,47,57)}[kind]
+ """Clean 16x16 materials for the held fan: lacquered reed with nodes, a bevelled copper plate, linen with a red
+ hem along its top (the ties use that strip) and a stitched olive mend, and a rook's black feather."""
+ im=Image.new('RGBA',(16,16));px=im.load();T=[hexc(c) for c in MAT[kind]]
  for y in range(16):
   for x in range(16):
-   light=grain(x,y,71)+(8 if x==2 else -9 if x>12 else 0)
-   if kind=='reed':light+=(9 if x%5==1 else -7 if x%5==0 else 0)
-   elif kind=='pivot':light+=int((7-abs(x-6))*3)-y
-   else:light+=4 if (x+y)%3==0 else -2
-   d.point((x,y),fill=tuple(max(0,min(255,v+light)) for v in base)+(255,))
- if kind=='cloth':
-  d.rectangle((7,4,12,10),fill='#7B856A');d.rectangle((6,3,13,11),outline='#E9DBAE')
-  for y in (4,7,10):d.line((6,y,7,y+1),fill='#514D3D');d.line((12,y,13,y+1),fill='#514D3D')
- elif kind=='pivot':d.ellipse((3,4,11,12),outline='#E0B47A');d.ellipse((5,6,9,10),fill='#725032');d.point((4,5),fill='#F2D8A9')
- elif kind=='feather':
-  d.line((7,0,8,15),fill='#B5AD90',width=1)
-  for y in range(2,15,3):d.line((2,y-2,7,y),fill='#69717D');d.line((8,y,13,y-2),fill='#5B646F')
-  d.point((6,4),fill='#9297A1');d.point((10,9),fill='#858B95')
+   if kind=='reed':
+    t=[2,3,2,1,1,2,2,1,0,1,2,3,2,1,1,0][x]
+    if y in (5,12):t=0
+    elif y in (4,11):t=min(3,t+1)
+    c=T[t]
+   elif kind=='pivot':
+    t=1
+    if x==0 or y==0:t=3
+    elif x==15 or y==15:t=0
+    elif 5<=x<=10 and 5<=y<=10:t=0 if (x in (5,10) or y in (5,10)) else 2
+    elif x+y in (7,8):t=2
+    if (x,y) in ((6,6),(7,6),(6,7)):t=3
+    c=T[t]
+   elif kind=='cloth':
+    t=2 if (x//4)%2==0 else 1
+    if x%4==0:t=1 if t==2 else 0
+    c=T[t]
+    if y<2:c=hexc(MAT['hem'][2 if y==0 else 1])
+    elif y==2:c=hexc(MAT['hem'][0])
+    elif 6<=x<=11 and 6<=y<=11:
+     c=hexc(MAT['patch'][1 if (x<11 and y<11) else 0])
+     if (x in (6,11) or y in (6,11)) and (x+y)%2==0:c=T[3]
+   else:
+    # A feather down the middle: pale shaft, barbs angled back from it, a blue sheen on the lit side.
+    d=abs(x-7.5)
+    t=2 if x<8 else 1
+    if (y+int(d))%3==0:t-=1
+    if x<8 and (y+int(d))%3==2 and d<5:t=3
+    if x in (0,15):t=0
+    c=T[max(0,t)]
+    if x in (7,8):c=T[4] if x==7 else T[3]
+   px[x,y]=(*c,255)
  return im
 
 def held():
