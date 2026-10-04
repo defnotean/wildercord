@@ -783,7 +783,7 @@ public final class Effects {
 				Spirits.hold(t, ticks(1, duration));
 				// The counter-spell: a caster caught mid-charge loses the spell.
 				if (t instanceof ServerPlayer charging && charging.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE)) {
-					Charging.forget(charging);
+					Charging.interrupt(charging);
 					Casters.tell(charging, Component.translatable("message.wildercord.interrupted"));
 				}
 			});
