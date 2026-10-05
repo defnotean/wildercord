@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -199,6 +200,197 @@ class CuratorTests(CuratorFixture):
 class ArticulatedCuratorTests(CuratorFixture):
     suite = "articulated"
 
+    def full_matrix(self, size=100):
+        for filename, indices, has_idle in curator.articulated_capture_matrix():
+            info = curator.describe(filename, suite=self.suite)
+            prefix = filename.removesuffix(info["frameLabel"] + ".png")
+            labels = [("sample_" if has_idle else "frame_") + str(index) for index in indices]
+            if has_idle:
+                labels += ["idle_before", "idle_after"]
+            for label in labels:
+                self.shot(prefix + label + ".png", size=size)
+
+    def test_armor_and_hud_exact_fixture_labels_and_equipment_are_not_conflated(self):
+        for equipment, expected in (("full", "netherite_full"), ("partial", "netherite_chestplate_and_leggings")):
+            for hand in ("left", "right"):
+                for view, owner_camera in curator.ARTICULATED_ARMOR_VIEWS.items():
+                    for index in (2, 5):
+                        name = f"articulated_armor_live_{equipment}_{hand}_{view}_frame_{index}.png"
+                        info = curator.describe(name, suite=self.suite)
+                        self.assertEqual((info["sourceSuite"], info["equipment"], info["hand"], info["view"]),
+                                         (curator.ARTICULATED_ARMOR_SUITE, expected, hand, owner_camera))
+                        self.assertEqual((info["armorEnchantment"], info["armorTrim"]), ("protection_iv", "gold_sentry"))
+                        self.assertEqual((info["phase"], info["sampleIndex"], info["phaseBasis"]),
+                                         ("sample", index, "filename_loop_index_only"))
+                        self.assertIsNone(info["viewport"])
+                        self.assertIsNone(info["uiScale"])
+                        self.assertIsNone(curator.describe(name))
+        for width, height, scale in ((854, 480, 2), (1280, 720, 3), (1280, 960, 4), (1920, 810, 3)):
+            for equipment in ("skin", "netherite"):
+                for hand in ("left", "right"):
+                    for label in ("idle_before", "sample_0", "sample_9", "idle_after"):
+                        name = f"articulated_hud_{width}x{height}_gui{scale}_{equipment}_{hand}_{label}.png"
+                        info = curator.describe(name, suite=self.suite)
+                        self.assertEqual(info["sourceSuite"], curator.ARTICULATED_HUD_SUITE)
+                        self.assertEqual(info["equipment"], "skin" if equipment == "skin" else "netherite_chestplate")
+                        self.assertEqual(info["armorEnchantment"], None if equipment == "skin" else "protection_iv")
+                        self.assertIsNone(info["armorTrim"])
+                        self.assertEqual(info["view"], "owner_first_person")
+                        self.assertEqual(info["viewport"], {"width": width, "height": height})
+                        self.assertEqual(info["uiScale"], scale)
+                        self.assertTrue(info["hudVisible"])
+                        self.assertEqual(info["phase"], "sample" if label.startswith("sample_") else label)
+                        self.assertIsNone(curator.describe(name))
+
+    def test_hud_viewport_whitelist_matches_native_fixture(self):
+        fixture = curator.ROOT / "src/gametest/java/dev/wildercord/client/combat/ArticulatedFirstPersonCompositionTest.java"
+        configured = re.findall(r"new Viewport\((\d+), (\d+), (\d+)\)", fixture.read_text())
+        self.assertEqual(tuple(tuple(map(int, config)) for config in configured), curator.ARTICULATED_VIEWPORTS)
+
+    def test_unknown_armor_frames_viewports_scales_and_phases_stay_excluded(self):
+        for name in (
+            "articulated_armor_live_full_left_third_frame_2.png",
+            "articulated_armor_live_full_left_observer_frame_2.png",
+            "articulated_armor_live_partial_right_first_frame_0.png",
+            "articulated_armor_live_full_left_third_front_frame_8.png",
+            "articulated_armor_live_full_left_third_back_frame_02.png",
+            "articulated_armor_live_full_left_first_active.png",
+            "articulated_armor_live_chest_left_first_frame_2.png",
+            "articulated_hud_1280x720_gui2_skin_left_sample_0.png",
+            "articulated_hud_1280x960_gui3_skin_left_sample_0.png",
+            "articulated_hud_1920x1080_gui3_skin_left_sample_0.png",
+            "articulated_hud_854x480_gui2_skin_left_sample_10.png",
+            "articulated_hud_854x480_gui2_skin_left_sample_00.png",
+            "articulated_hud_854x480_gui2_skin_left_active.png",
+            "articulated_hud_854x480_gui2_full_left_idle_before.png",
+            "articulated_hud_854x480_gui2_netherite_left_third_sample_0.png",
+        ):
+            with self.subTest(name=name):
+                self.assertIsNone(curator.describe(name, suite=self.suite))
+                self.shot(name)
+        result = self.curate()
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(result["freshness"]["ignoredOutOfScopePngs"], 15)
+
+    def test_full_small_matrix_is_deterministic_fits_manifest_and_preserves_all_bytes(self):
+        self.full_matrix()
+        before = {path: path.read_bytes() for path in (self.root / self.source).rglob("*.png")}
+        result = self.curate()
+        second = curator.curate(self.root, self.source, self.marker, "review/repeated", self.identity, suite=self.suite)
+        self.assertEqual(result, second)
+        self.assertEqual(result["selectedFrameCount"], 116)
+        self.assertEqual(result["sourceSuites"], list(curator.ARTICULATED_SOURCE_SUITES))
+        self.assertEqual({frame["sourceSuite"] for frame in result["frames"]}, set(curator.ARTICULATED_SOURCE_SUITES))
+        self.assertEqual(result["provenance"], self.identity)
+        manifest_path = self.root / self.output / "manifest.json"
+        self.assertLessEqual(manifest_path.stat().st_size, result["limits"]["manifestReserveBytes"])
+        self.assertEqual(json.loads(manifest_path.read_text()), result)
+        for frame in result["frames"]:
+            original = before[self.root / frame["sourcePath"]]
+            self.assertEqual((self.root / self.output / frame["artifactPath"]).read_bytes(), original)
+            self.assertEqual(frame["sha256"], hashlib.sha256(original).hexdigest())
+        self.assertEqual({path: path.read_bytes() for path in before}, before)
+        self.assertTrue(all(not row["omittedForBudgetSamplePositions"] for row in result["coverage"]))
+
+    def test_budget_prefers_body_full_front_back_and_hud_comparison_before_breadth(self):
+        self.full_matrix(size=1_000_000)
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + 6_000_000)
+        self.assertEqual({Path(frame["sourcePath"]).name for frame in result["frames"]}, {
+            "articulated_live_left_first_frame_0.png", "articulated_live_left_third_frame_0.png",
+            "articulated_armor_live_full_left_third_front_frame_2.png",
+            "articulated_armor_live_full_left_third_back_frame_2.png",
+            "articulated_hud_1280x720_gui3_skin_left_sample_5.png",
+            "articulated_hud_1280x720_gui3_netherite_left_sample_5.png",
+        })
+        self.assertEqual(result["selectedPngBytes"], 6_000_000)
+        self.assertLessEqual(sum(path.stat().st_size for path in (self.root / self.output).rglob("*") if path.is_file()),
+                             result["limits"]["totalBytesLimit"])
+        self.assertTrue(all(not row["missingSamplePositions"] for row in result["coverage"]))
+
+    def test_default_budget_bounds_all_suites_and_preserves_core_comparisons(self):
+        self.full_matrix(size=700_000)
+        result = self.curate()
+        files = [path for path in (self.root / self.output).rglob("*") if path.is_file()]
+        self.assertLessEqual(sum(path.stat().st_size for path in files), 14_000_000)
+        self.assertEqual(result["selectedFrameCount"], 19)
+        for hand in ("left", "right"):
+            selected = [frame for frame in result["frames"] if frame["hand"] == hand]
+            self.assertEqual({frame["sourceSuite"] for frame in selected}, set(curator.ARTICULATED_SOURCE_SUITES))
+            self.assertTrue(any(frame["equipment"] == "netherite_full" and frame["view"].endswith("third_person_back")
+                                for frame in selected))
+            hud = [frame for frame in selected if frame["sourceSuite"] == curator.ARTICULATED_HUD_SUITE]
+            self.assertEqual({frame["equipment"] for frame in hud}, {"skin", "netherite_chestplate"})
+
+    def test_missing_counterparts_and_idle_frames_are_explicit_without_invented_samples(self):
+        self.shot("articulated_armor_live_full_left_third_back_frame_5.png")
+        self.shot("articulated_hud_1280x720_gui3_skin_left_sample_7.png")
+        self.shot("articulated_hud_854x480_gui2_netherite_right_idle_after.png")
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 3)
+        armor = next(row for row in result["coverage"] if row["scene"] == "articulated_armor_live_full_left"
+                     and row["view"].endswith("third_person_back"))
+        self.assertEqual(armor["uncapturedLoopIndices"], [2])
+        self.assertEqual(armor["selectedFrameLabels"], ["frame_5"])
+        hud = next(row for row in result["coverage"] if row["scene"] == "articulated_hud_854x480_gui2_netherite_right")
+        self.assertEqual(hud["missingSamplePositions"], list(curator.SAMPLE_POSITIONS))
+        self.assertEqual(hud["missingIdleLabels"], ["idle_before"])
+        self.assertEqual(hud["capturedIdleLabels"], ["idle_after"])
+        self.assertEqual(hud["selectedFrameLabels"], ["idle_after"])
+
+    def test_hud_comparison_is_not_split_when_the_pair_exceeds_remaining_budget(self):
+        for equipment in ("skin", "netherite"):
+            self.shot(f"articulated_hud_1280x720_gui3_{equipment}_left_sample_2.png", size=100)
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + 100)
+        self.assertEqual(result["frames"], [])
+        rows = [row for row in result["coverage"] if row["capturedSampleIndices"]]
+        self.assertEqual(len(rows), 2)
+        self.assertTrue(all(row["omittedForBudgetSamplePositions"] == list(curator.SAMPLE_POSITIONS) for row in rows))
+        self.assertTrue(all(not row["missingSamplePositions"] for row in rows))
+
+    def test_temporal_extras_do_not_split_a_skipped_body_armor_or_hud_pair(self):
+        pairs = (
+            ("articulated_live_left_first_frame_", "articulated_live_left_third_frame_", (0, 4)),
+            ("articulated_armor_live_full_left_third_front_frame_",
+             "articulated_armor_live_full_left_third_back_frame_", (2, 5)),
+            ("articulated_hud_1280x720_gui3_skin_left_sample_",
+             "articulated_hud_1280x720_gui3_netherite_left_sample_", (0, 2)),
+        )
+        for first, second, indices in pairs:
+            for prefix in (first, second):
+                for index in indices:
+                    self.shot(f"{prefix}{index}.png")
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + 100)
+        self.assertEqual(result["frames"], [])
+        rows = [row for row in result["coverage"] if row["capturedSampleIndices"]]
+        self.assertEqual(len(rows), 6)
+        self.assertTrue(all(row["omittedForBudgetSamplePositions"] == list(curator.SAMPLE_POSITIONS) for row in rows))
+
+    def test_absent_reference_viewport_uses_available_hud_pair_before_armor_breadth(self):
+        self.full_matrix(size=100)
+        for path in (self.root / self.source).glob("articulated_hud_1280x720_*.png"):
+            path.unlink()
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + 600)
+        hud = [frame for frame in result["frames"] if frame["sourceSuite"] == curator.ARTICULATED_HUD_SUITE]
+        self.assertEqual(len(hud), 2)
+        self.assertEqual({frame["equipment"] for frame in hud}, {"skin", "netherite_chestplate"})
+        self.assertTrue(all(frame["viewport"] == {"width": 854, "height": 480} and frame["hand"] == "left"
+                            for frame in hud))
+        missing = [row for row in result["coverage"] if "1280x720_gui3" in row["scene"]]
+        self.assertTrue(all(row["missingSamplePositions"] == list(curator.SAMPLE_POSITIONS) for row in missing))
+
+    def test_armor_and_hud_stale_paths_and_older_timestamps_are_rejected(self):
+        prior = self.shot("articulated_armor_live_full_left_third_front_frame_2.png")
+        marker = "review/later-run.json"
+        curator.prepare(self.root, self.source, marker, self.identity, suite=self.suite)
+        os.utime(prior, None)
+        old = self.shot("articulated_hud_1280x720_gui3_netherite_left_sample_4.png")
+        os.utime(old, ns=(1, 1))
+        self.started = json.loads((self.root / marker).read_text())["startedNs"]
+        fresh = self.shot("articulated_hud_1280x720_gui3_skin_left_idle_after.png")
+        result = curator.curate(self.root, self.source, marker, self.output, self.identity, suite=self.suite)
+        self.assertEqual(result["freshness"]["excludedStalePngs"], 2)
+        self.assertEqual([Path(frame["sourcePath"]).name for frame in result["frames"]], [fresh.name])
+
     def test_only_real_supported_hand_view_and_loop_names_are_eligible(self):
         for hand in curator.ARTICULATED_HANDS:
             for view in curator.ARTICULATED_VIEWS:
@@ -229,10 +421,11 @@ class ArticulatedCuratorTests(CuratorFixture):
         self.assertEqual(result["suite"], curator.ARTICULATED_SUITE)
         self.assertEqual(result["provenance"], self.identity)
         self.assertEqual(result["selectedFrameCount"], 12)
-        self.assertEqual(len(result["coverage"]), 4)
-        self.assertEqual({(row["hand"], row["view"]) for row in result["coverage"]},
+        self.assertEqual(len(result["coverage"]), 32)
+        self.assertEqual({(row["hand"], row["view"]) for row in result["coverage"]
+                          if row["sourceSuite"] == curator.ARTICULATED_SUITE},
                          {(hand, view) for hand in curator.ARTICULATED_HANDS for view in curator.ARTICULATED_VIEWS.values()})
-        for row in result["coverage"]:
+        for row in result["coverage"][:4]:
             self.assertEqual(row["capturedSampleIndices"], [1, 3, 6, 8])
             self.assertEqual(row["uncapturedLoopIndices"], [0, 2, 4, 5, 7])
             self.assertEqual(row["selectedFrameLabels"], ["frame_1", "frame_6", "frame_8"])
@@ -252,14 +445,18 @@ class ArticulatedCuratorTests(CuratorFixture):
                                 suite=self.suite)
         self.assertEqual(result, second)
 
-    def test_missing_captures_report_all_four_hand_view_combinations(self):
+    def test_missing_captures_report_all_three_suites_and_exact_configurations(self):
         result = self.curate()
         self.assertEqual(result["status"], "unavailable")
         self.assertEqual(result["frames"], [])
-        self.assertEqual(len(result["coverage"]), 4)
+        self.assertEqual(len(result["coverage"]), 32)
         for row in result["coverage"]:
             self.assertEqual(row["capturedSampleIndices"], [])
-            self.assertEqual(row["uncapturedLoopIndices"], list(range(9)))
+            expected = (list(range(9)) if row["sourceSuite"] == curator.ARTICULATED_SUITE else
+                        [2, 5] if row["sourceSuite"] == curator.ARTICULATED_ARMOR_SUITE else list(range(10)))
+            self.assertEqual(row["uncapturedLoopIndices"], expected)
+            self.assertEqual(row["missingIdleLabels"],
+                             ["idle_before", "idle_after"] if row["sourceSuite"] == curator.ARTICULATED_HUD_SUITE else [])
             self.assertEqual(row["missingSamplePositions"], list(curator.SAMPLE_POSITIONS))
         self.assertTrue((self.root / self.output / "manifest.json").is_file())
 
@@ -300,7 +497,7 @@ class ArticulatedCuratorTests(CuratorFixture):
 
     def test_captured_but_unaffordable_sample_is_not_reported_as_missing(self):
         self.shot("articulated_live_left_first_frame_2.png")
-        result = self.curate(budget=curator.MANIFEST_RESERVE)
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE)
         row = result["coverage"][0]
         self.assertEqual(result["status"], "unavailable")
         self.assertEqual(row["capturedSampleIndices"], [2])
@@ -320,7 +517,7 @@ class ArticulatedCuratorTests(CuratorFixture):
         with self.assertRaises(FileExistsError):
             curator.prepare(self.root, self.source, self.marker, self.identity)
         # A marker without explicit suite identity must not silently mean Masters.
-        for field in ("suiteGroup", "suite"):
+        for field in ("suiteGroup", "suite", "sourceSuites"):
             altered = {key: value for key, value in stamp.items() if key != field}
             (self.root / self.marker).write_text(json.dumps(altered))
             with self.assertRaisesRegex(curator.EvidenceError, "does not match"):

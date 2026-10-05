@@ -22,13 +22,25 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = 14_000_000
 MANIFEST_RESERVE = 128_000
+ARTICULATED_MANIFEST_RESERVE = 256_000
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 SUITE = "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
 ARTICULATED_SUITE = "dev.wildercord.client.combat.ArticulatedCombatPresentationTest"
+ARTICULATED_ARMOR_SUITE = "dev.wildercord.client.combat.ArticulatedArmorPresentationTest"
+ARTICULATED_HUD_SUITE = "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest"
+ARTICULATED_SOURCE_SUITES = (ARTICULATED_SUITE, ARTICULATED_ARMOR_SUITE, ARTICULATED_HUD_SUITE)
 SUITES = {"masters": SUITE, "articulated": ARTICULATED_SUITE}
 ARTICULATED_HANDS = ("left", "right")
 SAMPLE_POSITIONS = ("first_available", "middle_available", "last_available")
 ARTICULATED_PATTERN = re.compile(r"articulated_live_(left|right)_(first|third)_frame_([0-8])\.png\Z")
+ARTICULATED_ARMOR_PATTERN = re.compile(
+    r"articulated_armor_live_(full|partial)_(left|right)_(first|third_front|third_back)_frame_([25])\.png\Z")
+# Exact configurations in ArticulatedFirstPersonCompositionTest, not arbitrary resolutions/scales.
+ARTICULATED_VIEWPORTS = ((854, 480, 2), (1280, 720, 3), (1280, 960, 4), (1920, 810, 3))
+HUD_REFERENCE_VIEWPORT = (1280, 720, 3)
+ARTICULATED_HUD_PATTERN = re.compile(
+    r"articulated_hud_(" + "|".join(f"{w}x{h}_gui{s}" for w, h, s in ARTICULATED_VIEWPORTS)
+    + r")_(netherite|skin)_(left|right)_(idle_before|sample_([0-9])|idle_after)\.png\Z")
 FIRST_FORMS = (
     "kindling_draw", "frostbite", "crackle", "cutting_breeze", "rockbreaker",
     "thorn_lash", "void_cut", "star_needle", "echo_cut", "bloodletting",
@@ -41,6 +53,8 @@ SCENES = ("masters_art_0", "masters_style_kindling_draw",
           *("masters_style_" + art for art in FIRST_FORMS[1:]))
 VIEWS = {"first": "owner_first_person", "third_back": "local_owner_third_person_back"}
 ARTICULATED_VIEWS = {"first": "owner_first_person", "third": "local_owner_third_person_front"}
+ARTICULATED_ARMOR_VIEWS = {"first": "owner_first_person", "third_front": "local_owner_third_person_front",
+                          "third_back": "local_owner_third_person_back"}
 PHASES = ("windup", "active", "recovery", "settled")
 PATTERN = re.compile(r"(masters_art_[012]|masters_style_(?:"
                      + "|".join(FIRST_FORMS + SECOND_FORMS)
@@ -143,21 +157,56 @@ def prepare(root, screenshots, marker, identity, *, suite="masters"):
     with marker_path.open("xb") as handle:
         handle.write(encode({"schemaVersion": 1, "provenance": identity,
                              "suiteGroup": suite, "suite": entrypoint,
+                             **({"sourceSuites": list(ARTICULATED_SOURCE_SUITES)} if suite == "articulated" else {}),
                              "screenshots": Path(screenshots).as_posix(),
                              "startedNs": time.time_ns(), "preexistingPngs": prior}))
+
+
+def describe_articulated(filename):
+    common = {"mainHandItem": "diamond_sword", "offHandItem": "empty", "viewport": None,
+              "uiScale": None, "hudVisible": None, "viewportBasis": "not_encoded_in_filename",
+              "armorEnchantment": None, "armorTrim": None}
+    match = ARTICULATED_PATTERN.fullmatch(filename)
+    if match:
+        hand, view, frame = match.groups()
+        return {**common, "sourceSuite": ARTICULATED_SUITE, "equipment": "skin",
+                "scene": "articulated_live_" + hand, "hand": hand, "view": ARTICULATED_VIEWS[view],
+                "captureKind": "native_local_owner_accepted_input_combat",
+                "frameLabel": "frame_" + frame, "phase": "sample", "sampleIndex": int(frame),
+                "phaseBasis": "filename_loop_index_only"}
+    match = ARTICULATED_ARMOR_PATTERN.fullmatch(filename)
+    if match:
+        equipment, hand, view, frame = match.groups()
+        return {**common, "sourceSuite": ARTICULATED_ARMOR_SUITE,
+                "equipment": "netherite_full" if equipment == "full" else "netherite_chestplate_and_leggings",
+                "armorEnchantment": "protection_iv", "armorTrim": "gold_sentry",
+                "scene": f"articulated_armor_live_{equipment}_{hand}", "hand": hand,
+                "view": ARTICULATED_ARMOR_VIEWS[view],
+                "captureKind": "native_local_owner_accepted_input_combat",
+                "frameLabel": "frame_" + frame, "phase": "sample", "sampleIndex": int(frame),
+                "phaseBasis": "filename_loop_index_only"}
+    match = ARTICULATED_HUD_PATTERN.fullmatch(filename)
+    if match:
+        viewport, equipment, hand, label, sample = match.groups()
+        width, height, scale = next(config for config in ARTICULATED_VIEWPORTS
+                                    if f"{config[0]}x{config[1]}_gui{config[2]}" == viewport)
+        return {**common, "sourceSuite": ARTICULATED_HUD_SUITE,
+                "equipment": "netherite_chestplate" if equipment == "netherite" else "skin",
+                "armorEnchantment": "protection_iv" if equipment == "netherite" else None,
+                "scene": f"articulated_hud_{viewport}_{equipment}_{hand}", "hand": hand,
+                "view": "owner_first_person", "viewport": {"width": width, "height": height},
+                "uiScale": scale, "hudVisible": True, "viewportBasis": "native_fixture_assertion",
+                "captureKind": "native_local_owner_accepted_input_combat" if sample is not None else "native_local_owner_idle",
+                "frameLabel": label, "phase": "sample" if sample is not None else label,
+                "sampleIndex": int(sample) if sample is not None else None,
+                "phaseBasis": "filename_loop_index_only" if sample is not None else "explicit_filename_label"}
+    return None
 
 
 def describe(filename, *, suite="masters"):
     suite_name(suite)
     if suite == "articulated":
-        match = ARTICULATED_PATTERN.fullmatch(filename)
-        if not match:
-            return None
-        hand, view, frame = match.groups()
-        return {"scene": "articulated_live_" + hand, "hand": hand, "view": ARTICULATED_VIEWS[view],
-                "captureKind": "native_local_owner_accepted_input_combat",
-                "frameLabel": "frame_" + frame, "phase": "sample", "sampleIndex": int(frame),
-                "phaseBasis": "filename_loop_index_only"}
+        return describe_articulated(filename)
     match = PATTERN.fullmatch(filename)
     if not match:
         return None
@@ -225,47 +274,143 @@ def select_masters(groups, budget):
     return selected, coverage
 
 
-def select_articulated(groups, budget):
-    selected = []
-    coverage = []
-    remaining = budget - MANIFEST_RESERVE
+def articulated_capture_matrix():
+    """Name only configurations that the three existing native suites can capture."""
     for hand in ARTICULATED_HANDS:
-        scene = "articulated_live_" + hand
-        for view in ARTICULATED_VIEWS.values():
-            options = sorted(groups.get((scene, view, "sample"), []),
-                             key=lambda item: (item["sampleIndex"], item["sourcePath"]))
-            chosen = []
-            omitted = []
-            positions = {}
-            # One or two actual captures may serve multiple sample positions.
-            # Copy and charge each original PNG only once; do not invent frames.
-            candidates = {}
-            if options:
-                for position, candidate in zip(SAMPLE_POSITIONS,
-                                               (options[0], options[len(options) // 2], options[-1])):
-                    positions[position] = candidate["frameLabel"]
-                    candidates.setdefault(candidate["frameLabel"], (candidate, []))[1].append(position)
-            for candidate, sample_positions in candidates.values():
-                if candidate["bytes"] > remaining:
-                    omitted.extend(sample_positions)
-                    continue
-                selected.append({**candidate, "samplePositions": sample_positions})
-                chosen.append(candidate["frameLabel"])
-                remaining -= candidate["bytes"]
-            indices = [item["sampleIndex"] for item in options]
-            coverage.append({"scene": scene, "hand": hand, "view": view,
-                             "capturedSampleIndices": indices,
-                             "uncapturedLoopIndices": [index for index in range(9) if index not in indices],
-                             "availableSamplePositions": positions, "selectedFrameLabels": chosen,
-                             "missingSamplePositions": [] if options else list(SAMPLE_POSITIONS),
-                             "omittedForBudgetSamplePositions": omitted})
-    return selected, coverage
+        for view in ARTICULATED_VIEWS:
+            yield f"articulated_live_{hand}_{view}_frame_0.png", range(9), False
+    for equipment in ("full", "partial"):
+        for hand in ARTICULATED_HANDS:
+            for view in ARTICULATED_ARMOR_VIEWS:
+                yield f"articulated_armor_live_{equipment}_{hand}_{view}_frame_2.png", (2, 5), False
+    for width, height, scale in ARTICULATED_VIEWPORTS:
+        for equipment in ("skin", "netherite"):
+            for hand in ARTICULATED_HANDS:
+                yield f"articulated_hud_{width}x{height}_gui{scale}_{equipment}_{hand}_sample_0.png", range(10), True
+
+
+def select_articulated(groups, budget):
+    remaining = budget - ARTICULATED_MANIFEST_RESERVE
+    rows = []
+    for filename, expected_indices, has_idle in articulated_capture_matrix():
+        info = describe_articulated(filename)
+        scene, view = info["scene"], info["view"]
+        options = sorted(groups.get((scene, view, "sample"), []),
+                         key=lambda item: (item["sampleIndex"], item["sourcePath"]))
+        positions = {}
+        candidates = {}
+        # Several available-sample positions can describe the same authentic PNG.
+        if options:
+            for position, candidate in zip(SAMPLE_POSITIONS,
+                                           (options[0], options[len(options) // 2], options[-1])):
+                positions[position] = candidate["frameLabel"]
+                candidates.setdefault(candidate["frameLabel"], {**candidate, "samplePositions": []})["samplePositions"].append(position)
+        idle_labels = ("idle_before", "idle_after") if has_idle else ()
+        idle = {label: groups.get((scene, view, label), []) for label in idle_labels}
+        for label, frames in idle.items():
+            if frames:
+                candidates[label] = {**frames[0], "samplePositions": []}
+        indices = [item["sampleIndex"] for item in options]
+        coverage = {key: info[key] for key in ("scene", "hand", "view", "sourceSuite", "equipment",
+                                              "armorEnchantment", "armorTrim", "viewport", "uiScale",
+                                              "hudVisible", "viewportBasis")}
+        coverage.update(capturedSampleIndices=indices,
+                        uncapturedLoopIndices=[index for index in expected_indices if index not in indices],
+                        availableSamplePositions=positions, selectedFrameLabels=[],
+                        missingSamplePositions=[] if options else list(SAMPLE_POSITIONS),
+                        omittedForBudgetSamplePositions=[],
+                        capturedIdleLabels=[label for label in idle_labels if idle[label]],
+                        missingIdleLabels=[label for label in idle_labels if not idle[label]],
+                        omittedForBudgetIdleLabels=[])
+        representative = positions.get("middle_available" if has_idle else "first_available")
+        rows.append({"info": info, "coverage": coverage, "candidates": candidates,
+                     "representative": candidates.get(representative)})
+
+    selected_paths = set()
+
+    def choose(candidates):
+        nonlocal remaining
+        available = {frame["sourcePath"]: frame for frame in candidates
+                     if frame is not None and frame["sourcePath"] not in selected_paths}
+        cost = sum(frame["bytes"] for frame in available.values())
+        if cost <= remaining:
+            selected_paths.update(available)
+            remaining -= cost
+
+    def matches_viewport(row, viewport):
+        width, height, scale = viewport
+        return (row["info"]["sourceSuite"] == ARTICULATED_HUD_SUITE
+                and row["info"]["viewport"] == {"width": width, "height": height}
+                and row["info"]["uiScale"] == scale)
+
+    # Prefer a complete skin/chestplate combat comparison at the reference size.
+    # If captures are absent there, use an available exact fixture configuration
+    # before spending the budget on armor breadth. Never invent its counterpart.
+    viewport_order = (HUD_REFERENCE_VIEWPORT, *(viewport for viewport in ARTICULATED_VIEWPORTS
+                                               if viewport != HUD_REFERENCE_VIEWPORT))
+    primary_hud = []
+    for hand in ARTICULATED_HANDS:
+        pairs = [[row for row in rows if row["info"]["hand"] == hand and matches_viewport(row, viewport)]
+                 for viewport in viewport_order]
+        primary_hud.extend(max(pairs, key=lambda pair: (
+            sum(row["representative"] is not None for row in pair),
+            sum(bool(row["candidates"]) for row in pair))))
+
+    # Establish original body/hand, full-armor front/back, and skin/armor HUD
+    # comparisons before extra temporal samples, partial sets or other viewports.
+    # A present comparison pair is charged together so budget cannot split it.
+    core = []
+    core_pairs = []
+    for hand in ARTICULATED_HANDS:
+        for source_suite in ARTICULATED_SOURCE_SUITES:
+            pair = [row for row in rows if row["info"]["hand"] == hand
+                    and row["info"]["sourceSuite"] == source_suite
+                    and (source_suite == ARTICULATED_SUITE
+                         or source_suite == ARTICULATED_ARMOR_SUITE
+                         and row["info"]["equipment"] == "netherite_full"
+                         and row["info"]["view"] != "owner_first_person"
+                         or row in primary_hud)]
+            core.extend(pair)
+            core_pairs.append(pair)
+            choose(row["representative"] for row in pair)
+    # Add the chosen viewport's idle-before/after skin/armor comparisons first.
+    for hand in ARTICULATED_HANDS:
+        for label in ("idle_before", "idle_after"):
+            choose(row["candidates"].get(label) for row in core
+                   if row in primary_hud and row["info"]["hand"] == hand)
+    # Broaden time samples and then configurations in stable matrix order. Do not
+    # retry a skipped representative alone and silently split a budget-limited pair.
+    for pair in core_pairs:
+        if any(row["representative"] is not None
+               and row["representative"]["sourcePath"] not in selected_paths for row in pair):
+            continue
+        for row in pair:
+            for candidate in row["candidates"].values():
+                if candidate is not row["representative"] and candidate["phase"] == "sample":
+                    choose([candidate])
+    for row in rows:
+        if row not in core:
+            for candidate in row["candidates"].values():
+                choose([candidate])
+
+    selected = []
+    for row in rows:
+        for frame in row["candidates"].values():
+            if frame["sourcePath"] in selected_paths:
+                selected.append(frame)
+                row["coverage"]["selectedFrameLabels"].append(frame["frameLabel"])
+            elif frame["phase"] == "sample":
+                row["coverage"]["omittedForBudgetSamplePositions"].extend(frame["samplePositions"])
+            else:
+                row["coverage"]["omittedForBudgetIdleLabels"].append(frame["frameLabel"])
+    return selected, [row["coverage"] for row in rows]
 
 
 def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite="masters"):
     entrypoint = suite_name(suite)
-    if not MANIFEST_RESERVE <= budget <= BUDGET:
-        raise EvidenceError(f"Budget must be between {MANIFEST_RESERVE} and {BUDGET} bytes")
+    manifest_reserve = ARTICULATED_MANIFEST_RESERVE if suite == "articulated" else MANIFEST_RESERVE
+    if not manifest_reserve <= budget <= BUDGET:
+        raise EvidenceError(f"Budget must be between {manifest_reserve} and {BUDGET} bytes")
     destination = safe_path(root, output)
     source = safe_path(root, screenshots)
     if destination.exists():
@@ -275,6 +420,7 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
     stamp = json.loads(safe_path(root, marker).read_text(encoding="utf-8"))
     if (stamp.get("schemaVersion") != 1 or stamp.get("provenance") != identity
             or stamp.get("suiteGroup") != suite or stamp.get("suite") != entrypoint
+            or (suite == "articulated" and stamp.get("sourceSuites") != list(ARTICULATED_SOURCE_SUITES))
             or stamp.get("screenshots") != Path(screenshots).as_posix()
             or type(stamp.get("startedNs")) is not int
             or not isinstance(stamp.get("preexistingPngs"), list)
@@ -307,7 +453,7 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
         "suiteGroup": suite, "suite": entrypoint, "sourceRoot": Path(screenshots).as_posix(),
         "freshness": {"method": "pre_run_marker; reject all preexisting paths and older mtimes",
                       "excludedStalePngs": stale, "ignoredOutOfScopePngs": ignored},
-        "limits": {"totalBytesLimit": budget, "manifestReserveBytes": MANIFEST_RESERVE,
+        "limits": {"totalBytesLimit": budget, "manifestReserveBytes": manifest_reserve,
                    "archiveHeadroomBelow15MB": 15_000_000 - budget},
         "basis": "Byte-identical source PNGs from local-owner singleplayer captures. "
                  "First-person and back third-person are the same owning client, never an observer. "
@@ -332,12 +478,16 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
     }
     if suite == "articulated":
         manifest.update({
-            "basis": "Byte-identical source PNGs from real Spellcut input and its server-accepted timeline. "
-                     "Left/right denote the local owner's configured main hand; first-person and front "
-                     "third-person share that owning singleplayer client, never an observer. Screenshots "
-                     "exist only when the articulated body backend owns the sampled state. Loop indices "
-                     "and first/middle/last available samples prove neither exact impact nor recovery "
-                     "boundaries. Presence is not a gameplay pass.",
+            "sourceSuites": list(ARTICULATED_SOURCE_SUITES),
+            "basis": "Byte-identical native PNGs from the three existing articulated suites. Combat samples "
+                     "follow real Spellcut input and its server-accepted timeline; HUD idle-before/after "
+                     "captures are explicitly idle. Left/right denote the local owner's configured main hand; "
+                     "all first-person and front/back third-person views share that owning singleplayer client, "
+                     "never an observer. Equipment and HUD viewport labels describe native fixture assertions, "
+                     "not image analysis; unencoded viewport/UI settings remain unknown. Loop indices and "
+                     "first/middle/last available samples prove neither exact impact nor recovery boundaries; "
+                     "skin/armor samples are not guaranteed to depict the same animation age. "
+                     "Presence is not a gameplay or native pixel-review pass.",
             "unavailableRequestedCoverage": [
                 {"coverage": "observer_client", "reason": "This suite has no observer-client screenshot capture."},
                 {"coverage": "live_npc_combat", "reason": "The Master renderer bridge is probed synthetically; "
@@ -347,12 +497,17 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                 {"coverage": "exact_impact_phase", "reason": "Capture loop indices do not prove exact impact timing."},
                 {"coverage": "exact_recovery_phase", "reason": "Last available capture is not a verified recovery boundary."},
             ],
-            "selectionPolicy": "Left then right main hand; owner first-person then local-owner front third-person; "
-                               "first, middle (upper median), and last available frame index from 0..8. "
-                               "Copy each original only once even if it serves multiple sample positions; "
-                               "skip candidates exceeding remaining budget. Uncaptured loop indices are "
-                               "reported without implying every index must be captured. Other screenshots "
-                               "remain in the full artifact.",
+            "selectionPolicy": "Left then right: original body/hand first-available pair, full enchanted armor "
+                               "front/back first-available pair, 1280x720/gui3 HUD skin/chestplate upper-median pair. "
+                               "Prefer the HUD viewport with the most available counterparts, breaking ties "
+                               "by reference size then fixture order; missing reference captures use this fallback. "
+                               "Each core/idle comparison pair is budgeted together; missing counterparts remain missing. "
+                               "Then chosen HUD idle-before/after pairs, core temporal samples, full-armor "
+                               "first-person, partial armor, and other exact fixture viewports in matrix order. "
+                               "Only first/upper-median/last available combat samples and explicit HUD idle "
+                               "captures are copied, each once. Armor capture indices are only 2 and 5; "
+                               "original samples are 0..8 and HUD samples 0..9. Uncaptured indices are not "
+                               "required captures. The full evidence artifact and native verdicts are unchanged.",
         })
     if not selected:
         manifest["unavailableReason"] = "No fresh eligible native PNG fits the budget; inspect coverage and full evidence."
@@ -374,7 +529,7 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                 raise EvidenceError("Source changed while being copied")
             frame["sha256"] = checksum
         data = encode(manifest)
-        if len(data) > MANIFEST_RESERVE or sum(item["bytes"] for item in selected) + len(data) > budget:
+        if len(data) > manifest_reserve or sum(item["bytes"] for item in selected) + len(data) > budget:
             raise EvidenceError("Final artifact exceeds its byte budget")
         (staging / "manifest.json").write_bytes(data)
         # Explicit second check prevents accidental merging with an existing output.

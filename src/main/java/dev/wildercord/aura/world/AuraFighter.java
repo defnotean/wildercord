@@ -483,6 +483,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 			return 0;
 		}
 		DamageSource source = level.damageSources().source(Aura.DAMAGE, this, this);
+		MasterHitReceipt.source(this, target, source);
 		double bonus = AuraElements.bonus(this, target, source, element());
 		double amount = target instanceof Player ? damage * SpellDefenceRules.capBonus(bonus, Config.get().defence().maxBonus()) : damage * bonus;
 		float before = target.getHealth();

@@ -4,7 +4,7 @@ package dev.wildercord.aura.world;
 public final class MasterPursuitRules {
 	private MasterPursuitRules() {}
 
-	public static final int WINDUP = 12, DASH_TICKS = 8, STRIKE_TELL = 12;
+	public static final int WINDUP = 8, DASH_TICKS = 6, STRIKE_TELL = 8;
 	public static final int TELL = WINDUP + DASH_TICKS + STRIKE_TELL, RECOVERY = 30, WARNING_REFRESH = 3, MIN_CHARGE_AGE = 6, MAX_CHARGE_AGE = 200;
 	public static final double DAMAGE = 28, MIN_DISTANCE = 4.25, STOP_SHORT = 2.0;
 	public static final double REACH = 3.25, HALF_WIDTH = .8, HEIGHT = 1.8, PATH_SAMPLE = .2;
@@ -47,6 +47,12 @@ public final class MasterPursuitRules {
 	public static double travel(int discipline, double distance, double speedRatio) {
 		if (!Double.isFinite(distance) || distance < MIN_DISTANCE || !Double.isFinite(speedRatio) || speedRatio <= 0) return 0;
 		return Math.min(school(discipline).travel(), distance - STOP_SHORT) * Math.min(1, speedRatio);
+	}
+
+	/** A real wound or consumed absorption counts before post-hit restoration. Total prevention does not. */
+	public static boolean resolvedDamage(float healthLost, float absorptionLost) {
+		return Float.isFinite(healthLost) && Float.isFinite(absorptionLost) && healthLost >= 0 && absorptionLost >= 0
+			&& (healthLost > 0 || absorptionLost > 0);
 	}
 
 	public static boolean hits(double forward, double side, double height) {

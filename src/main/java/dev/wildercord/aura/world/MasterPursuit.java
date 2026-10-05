@@ -119,8 +119,8 @@ final class MasterPursuit {
 			if (MasterPursuitRules.hits(delta.dot(aim), delta.dot(side), delta.y) && delta.dot(aim) <= warnedReach
 				&& master.hasLineOfSight(target) && EmberAfterburn.clear(level, master, strikeOrigin.add(0, .9, 0), target.getBoundingBox().getCenter())) {
 				Effects.withSource(master, () -> {
-					float dealt = master.projected(target, damage);
-					if (dealt > 0 && sameCharge(target, now)) Statuses.interrupt(target);
+					MasterHitReceipt.Result hit = MasterHitReceipt.measure(master, target, () -> master.projected(target, damage));
+					if (hit.damaging() && sameCharge(target, now)) Statuses.interrupt(target);
 				});
 			}
 			return false;

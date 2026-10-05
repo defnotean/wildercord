@@ -6,6 +6,7 @@
 		"MossveilEffectAccess",
 		"MossveilEffectNotice",
 		"InventoryMenuMixin",
+		"PlayerMasterHitReceiptMixin",
 		"PlayerGearMixin",
 		"ServerGamePacketListenerImplMixin",
 		"LightningRodBlockMixin",

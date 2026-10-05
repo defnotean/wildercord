@@ -12,22 +12,33 @@ class MasterPursuitRulesTest {
 		assertEquals(6, MasterAnimationRules.PURSUIT_BREAK);
 		assertEquals(18, MastersRules.Move.SWEEP.tell);
 		assertEquals(20, MastersRules.Move.BREAK_CAST.tell);
-		assertEquals(32, MastersRules.Move.PURSUIT_BREAK.tell);
+		assertEquals(22, MastersRules.Move.PURSUIT_BREAK.tell);
 		assertEquals(30, MastersRules.Move.PURSUIT_BREAK.recovery);
 	}
 
 	@Test
 	void allThreeBeatsRemainHarmlessUntilOneExactStrike() {
-		for (long t = -1; t <= 34; t++) {
+		for (long t = -1; t <= 24; t++) {
 			var beat = MasterPursuitRules.beat(t);
-			if (t < 0 || t > 32) assertEquals(MasterPursuitRules.Beat.EXPIRED, beat);
-			else if (t < 12) assertEquals(MasterPursuitRules.Beat.WARNING, beat);
-			else if (t < 20) assertEquals(MasterPursuitRules.Beat.DASH, beat);
-			else if (t < 32) assertEquals(MasterPursuitRules.Beat.STRIKE_WARNING, beat);
+			if (t < 0 || t > 22) assertEquals(MasterPursuitRules.Beat.EXPIRED, beat);
+			else if (t < 8) assertEquals(MasterPursuitRules.Beat.WARNING, beat);
+			else if (t < 14) assertEquals(MasterPursuitRules.Beat.DASH, beat);
+			else if (t < 22) assertEquals(MasterPursuitRules.Beat.STRIKE_WARNING, beat);
 			else assertEquals(MasterPursuitRules.Beat.STRIKE, beat);
 		}
-		assertTrue(MasterPursuitRules.STRIKE_TELL >= 12);
+		assertTrue(MasterPursuitRules.STRIKE_TELL >= 8);
 		assertTrue(MasterPursuitRules.RECOVERY >= 30);
+	}
+
+	@Test
+	void earlyFreeOpeningCanBeatANormalFullChargeWithoutRemovingEitherWarning() {
+		assertEquals(8, MasterPursuitRules.WINDUP);
+		assertEquals(6, MasterPursuitRules.DASH_TICKS);
+		assertEquals(8, MasterPursuitRules.STRIKE_TELL);
+		assertTrue(MasterPursuitRules.MIN_CHARGE_AGE + MasterPursuitRules.TELL + 1 < 30,
+			"Even next-tick admission of an observed six-tick charge lands before its normal thirty-tick release");
+		assertTrue(MasterPursuitRules.MIN_CHARGE_AGE + MasterPursuitRules.TELL > 20,
+			"Faster and instant casts can legitimately finish first");
 	}
 
 	@Test
@@ -41,7 +52,7 @@ class MasterPursuitRulesTest {
 			var tuning = MasterPursuitRules.school(school);
 			assertTrue(tuning.cost() >= 26 && tuning.cost() <= 30);
 			assertTrue(tuning.cooldown() >= MasterPursuitRules.TELL + MasterPursuitRules.RECOVERY);
-			assertTrue(tuning.travel() / MasterPursuitRules.DASH_TICKS <= .8);
+			assertTrue(tuning.travel() / MasterPursuitRules.DASH_TICKS <= 1.067);
 			assertTrue(tuning.range() - tuning.travel() < MasterPursuitRules.REACH);
 			assertFalse(MasterPursuitRules.eligible(school, 6, 0, tuning.cost() - .01, 100, 100));
 			assertTrue(MasterPursuitRules.eligible(school, 6, 0, tuning.cost(), 100, 100));
@@ -73,12 +84,12 @@ class MasterPursuitRulesTest {
 	}
 
 	@Test
-	void eightBoundedSegmentsReachOnlyTheCapturedEndpoint() {
-		assertEquals(0, MasterPursuitRules.travelFraction(11));
+	void sixBoundedSegmentsReachOnlyTheCapturedEndpoint() {
+		assertEquals(0, MasterPursuitRules.travelFraction(7));
 		double previous = 0;
-		for (int tick = 12; tick < 20; tick++) {
+		for (int tick = 8; tick < 14; tick++) {
 			double next = MasterPursuitRules.travelFraction(tick);
-			assertEquals(1.0 / 8, next - previous, 1e-12);
+			assertEquals(1.0 / 6, next - previous, 1e-12);
 			previous = next;
 		}
 		assertEquals(1, previous);
@@ -106,23 +117,35 @@ class MasterPursuitRulesTest {
 
 	@Test
 	void originalFallbackFlowsFromStepToPlantedStrikeToExposedRecovery() {
-		var step = pose(12); var strike = pose(32);
+		var step = pose(8); var strike = pose(22);
 		assertEquals(1, step.weight());
 		assertEquals(1, strike.weight());
 		assertTrue(step.body().x() > strike.body().x());
 		assertTrue(strike.bladeTilt() < -90);
 		assertNotEquals(step, strike);
-		assertTrue(pose(16).stance() < 0 && pose(12).stance() > 0, "Feet alternate during real server travel and plant before the strike");
-		for (float frame : new float[] {0, 6, 12, 20, 20.8F, 32, 36, 62}) {
+		assertTrue(pose(11).stance() < 0 && pose(8).stance() > 0, "Feet alternate during real server travel and plant before the strike");
+		for (float frame : new float[] {0, 4, 8, 14, 14.3F, 22, 26, 52}) {
 			var a = pose(frame - .0001F); var b = pose(frame + .0001F);
 			assertEquals(a.body().x() * a.weight(), b.body().x() * b.weight(), .001F);
 			assertEquals(a.sword().x() * a.weight(), b.sword().x() * b.weight(), .001F);
 			assertEquals(a.bladeTilt() * a.weight(), b.bladeTilt() * b.weight(), .02F);
 		}
-		assertSame(MasterAnimationRules.NONE, pose(62));
+		assertSame(MasterAnimationRules.NONE, pose(52));
+	}
+
+	@Test
+	void resolvedDamageCountsAbsorptionButNeverConfusesPreventionWithDamage() {
+		assertTrue(MasterPursuitRules.resolvedDamage(4, 0));
+		assertTrue(MasterPursuitRules.resolvedDamage(0, 28));
+		assertTrue(MasterPursuitRules.resolvedDamage(4, 24));
+		assertFalse(MasterPursuitRules.resolvedDamage(0, 0));
+		assertFalse(MasterPursuitRules.resolvedDamage(-1, 4));
+		assertFalse(MasterPursuitRules.resolvedDamage(4, -1));
+		assertFalse(MasterPursuitRules.resolvedDamage(Float.NaN, 4));
+		assertFalse(MasterPursuitRules.resolvedDamage(4, Float.POSITIVE_INFINITY));
 	}
 
 	private static MasterAnimationRules.Pose pose(float age) {
-		return MasterAnimationRules.sample(6, age, 32, 1, 29);
+		return MasterAnimationRules.sample(6, age, 22, 1, 29);
 	}
 }

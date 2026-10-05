@@ -6,6 +6,7 @@ import dev.wildercord.aura.AuraRules;
 import dev.wildercord.cast.Charging;
 import dev.wildercord.cast.Effects;
 import dev.wildercord.cast.SpellCaster;
+import dev.wildercord.cast.RuneBolt;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.cast.Statuses;
 import dev.wildercord.content.WildercordItems;
@@ -41,17 +42,22 @@ final class MasterPursuitChecks {
 		Challenger(ServerLevel level, String name) { super(level, new GameProfile(UUID.randomUUID(), name)); }
 		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return false; }
 	}
-	private enum Answer { HOLD, APPROACH, SIDESTEP, PARRY, COVER, WALL, RELEASE, INTERRUPT, IMPULSE, NO_AI, LEAVE, DEATH, TARGET_DEATH }
+	private enum Answer { HOLD, APPROACH, ABSORBED_HOLD, SIDESTEP, PARRY, COVER, WALL, RELEASE, INTERRUPT, IMPULSE, NO_AI, LEAVE, DEATH, TARGET_DEATH }
 	private SwordMaster master;
 	private ServerPlayer caster;
 	private final List<Challenger> guests = new ArrayList<>();
 	private Challenger bystander;
 	private Vec3 origin, stopped;
-	private long began;
+	private long began, committedChargeStart;
+	private int committedChargeFull;
 	private float before;
 	private int school;
 	private double targetDistance = 6;
 	private boolean previouslyInterrupted;
+	private Set<UUID> deferredBolts = Set.of();
+	private float castProbeYaw, castProbePitch, castProbeMasterHealth;
+	private long deferredDeliveryAfter;
+	private double absorptionCapacityBefore;
 
 	void run(ClientGameTestContext context) {
 		try (var world = context.worldBuilder().create()) {
@@ -75,7 +81,7 @@ final class MasterPursuitChecks {
 
 	private void scenario(ClientGameTestContext context, TestSingleplayerContext world, Answer answer, int count) {
 		// A new Master does not reset the shared target UUID's anti-lockout window.
-		if (previouslyInterrupted && (answer == Answer.HOLD || answer == Answer.APPROACH)) context.waitTicks(Statuses.INTERRUPT_GAP);
+		if (previouslyInterrupted && interrupts(answer)) context.waitTicks(Statuses.INTERRUPT_GAP);
 		targetDistance = answer == Answer.HOLD ? school == MastersRules.GALE ? 9 : school == MastersRules.EMBER ? 7 : 6 : 6;
 		world.getServer().runOnServer(server -> setup(server.getPlayerList().getPlayers().getFirst(), count, answer == Answer.TARGET_DEATH, true));
 		if (answer == Answer.APPROACH) {
@@ -85,19 +91,25 @@ final class MasterPursuitChecks {
 				master.setNoAi(true); // Pause only after actual grounding, before the opening becomes free.
 			});
 			context.waitTicks(23);
+			world.getServer().runOnServer(server -> charge(caster));
+			world.getServer().waitFor(server -> {
+				var held = caster.getAttached(WildercordAttachments.CHARGE);
+				return held != null && caster.level().getGameTime() - held.start() >= MasterPursuitRules.MIN_CHARGE_AGE;
+			}, 20);
 			world.getServer().runOnServer(server -> {
 				check(master.getNavigation().moveTo(caster, 1.3), "A real approach path is queued before pursuit admission");
 				master.setNoAi(false);
 			});
 		}
 		awaitBegin(world);
-		at(world, 11, player -> {
+		at(world, MasterPursuitRules.WINDUP - 1, player -> {
 			check(master.position().distanceToSqr(origin) < .001 && caster.getHealth() == before, "Pursuit warning precedes movement and harm");
 		});
-		at(world, 13, player -> {
-			check(master.getZ() > origin.z + .3 && master.getZ() < origin.z + 2, "The real body advances through bounded native movement");
+		at(world, MasterPursuitRules.WINDUP + 1, player -> {
+			double advance = MasterPursuitRules.travel(school, targetDistance, 1) * 2 / MasterPursuitRules.DASH_TICKS;
+			check(Math.abs(master.getZ() - origin.z - advance) < .05, "The real body advances through exactly two bounded native movement steps");
 			switch (answer) {
-				case WALL -> wall(player.level(), 2, true);
+				case WALL -> wall(player.level(), 3, true);
 				case RELEASE -> Charging.interrupt(caster);
 				case INTERRUPT -> Effects.withSource(caster, () -> check(master.interruptWindup(), "An admitted early interruption stops the advancing Master"));
 				case IMPULSE -> master.setDeltaMovement(.4, master.getDeltaMovement().y, 0);
@@ -109,12 +121,12 @@ final class MasterPursuitChecks {
 			}
 			stopped = master.position();
 		});
-		at(world, 20, player -> {
+		at(world, MasterPursuitRules.WINDUP + MasterPursuitRules.DASH_TICKS, player -> {
 			if (cancelled(answer)) {
 				check(!master.pursuitPending() && master.attackAnimation() == 0, "Interrupted pursuit cancels its warning, motion and later hit: " + answer);
 				check(master.getDeltaMovement().horizontalDistanceSqr() < .00001, "Cancellation brakes horizontal velocity: " + answer);
 				if (answer != Answer.WALL && answer != Answer.IMPULSE) check(master.position().distanceToSqr(stopped) < .02, "Cancelled movement does not drift: " + answer);
-				if (answer == Answer.WALL) check(master.getZ() < origin.z + 1.5, "A new wall stops the dash before contact");
+				if (answer == Answer.WALL) check(master.getZ() < origin.z + 2.5, "A new wall stops the dash before contact");
 				return;
 			}
 			check(master.pursuitPending() && caster.getHealth() == before, "Landing starts a second harmless warning");
@@ -127,8 +139,13 @@ final class MasterPursuitChecks {
 			}
 		});
 		if (answer == Answer.PARRY) context.getInput().holdKey(options -> options.keyShift);
-		at(world, 31, player -> {
-			if (!cancelled(answer)) check(caster.getHealth() == before, "No strike arrives before all twelve final warning ticks");
+		at(world, MasterPursuitRules.TELL - 1, player -> {
+			if (!cancelled(answer)) check(caster.getHealth() == before, "No strike arrives before all eight final warning ticks");
+			if (answer == Answer.ABSORBED_HOLD) {
+				caster.getAttribute(Attributes.MAX_ABSORPTION).setBaseValue(64);
+				caster.setAbsorptionAmount(64);
+				check(caster.getAbsorptionAmount() == 64, "The actual absorption capacity is active before the hit");
+			}
 			if (answer == Answer.PARRY) {
 				check(caster.isShiftKeyDown(), "Native client sneak input holds the parry through the strike");
 				caster.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
@@ -137,9 +154,17 @@ final class MasterPursuitChecks {
 				caster.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE.guard(now, now + 40));
 			}
 		});
-		at(world, 32, player -> {
-			if (answer == Answer.HOLD || answer == Answer.APPROACH) {
-				check(caster.getHealth() < before && !caster.hasAttached(WildercordAttachments.CHARGE), "An actual damaging strike breaks the held spell");
+		at(world, MasterPursuitRules.TELL, player -> {
+			if (interrupts(answer)) {
+				if (answer == Answer.APPROACH) {
+					check(committedChargeFull == Charging.FULL && committedChargeFull == 30,
+						"The early-opening probe uses a real ordinary thirty-tick full charge");
+					check(caster.level().getGameTime() < committedChargeStart + committedChargeFull,
+						"Natural server AI lands the pursuit before the ordinary full-charge release deadline");
+				}
+				check(answer == Answer.ABSORBED_HOLD ? caster.getHealth() == before && caster.getAbsorptionAmount() < 64 : caster.getHealth() < before,
+						"The accepted strike resolves health or absorption damage before any restoration");
+					check(!caster.hasAttached(WildercordAttachments.CHARGE), "An actually damaging strike, including absorption, breaks the held spell");
 				check(caster.getLastDamageSource() != null && caster.getLastDamageSource().getEntity() == master, "Pursuit damage keeps the trial's real source");
 				previouslyInterrupted = true;
 				charge(caster);
@@ -163,10 +188,10 @@ final class MasterPursuitChecks {
 		if (answer == Answer.PARRY) context.getInput().releaseKey(options -> options.keyShift);
 		if (answer == Answer.NO_AI) {
 			world.getServer().runOnServer(server -> master.setNoAi(false));
-			at(world, 42, player -> check(!master.pursuitPending() && master.attackAnimation() == 0 && !master.guarding(),
+			at(world, MasterPursuitRules.WINDUP + MasterPursuitRules.RECOVERY, player -> check(!master.pursuitPending() && master.attackAnimation() == 0 && !master.guarding(),
 				"Resuming AI cannot resurrect a cancelled dash or erase its exposed recovery"));
 		}
-		if (!cancelled(answer)) at(world, 61, player -> {
+		if (!cancelled(answer)) at(world, MasterPursuitRules.TELL + MasterPursuitRules.RECOVERY - 1, player -> {
 			check(!master.state(AuraFighter.WINDUP) && !master.guarding(), "A full thirty-tick exposed recovery follows the strike");
 			check(master.auraRemaining() == MastersRules.AURA_MAX - MasterPursuitRules.school(school).cost(), "Recovery cannot be cancelled into another paid dash");
 		});
@@ -182,19 +207,41 @@ final class MasterPursuitChecks {
 			master.setNoAi(true);
 		});
 		context.waitTicks(21);
+		world.getServer().runOnServer(server -> instantCastRefusal());
+		world.getServer().waitFor(server -> caster.level().getGameTime() >= deferredDeliveryAfter, 20);
+		world.getServer().runOnServer(server -> finishDeferredCastProbe());
 		for (int i = 0; i < 4; i++) {
+			boolean earlyRelease = i == 0;
 			world.getServer().runOnServer(server -> charge(caster));
 			context.waitTicks(1);
 			world.getServer().runOnServer(server -> {
 				check(MasterPursuit.prepare(master, caster, school, master.auraRemaining(), caster.level().getGameTime(), 0) == null,
 					"One-tick tap/cancel cannot qualify for the pursuit opportunity");
-				Charging.interrupt(caster);
-				check(master.auraRemaining() == 100 && !master.pursuitPending(), "Rejected feints cost the Master no Aura or exposed reset");
+				if (earlyRelease) {
+					beginDeferredCastProbe();
+					float mana = Spellbooks.mana(caster);
+					long now = caster.level().getGameTime();
+					Charging.request(caster, 0, false);
+					check(!caster.hasAttached(WildercordAttachments.CHARGE) && Spellbooks.mana(caster) < mana && Spellbooks.readyAt(caster, 0) > now,
+						"A real one-tick release completes and pays for its spell before the observation gate");
+					check(MasterPursuit.prepare(master, caster, school, master.auraRemaining(), now, 0) == null,
+						"A completed fast release has no live charge for a pursuit to follow");
+				} else Charging.interrupt(caster);
+				check(master.auraRemaining() == 100 && !master.pursuitPending(), "Rejected feints and fast casts cost the Master no Aura or exposed reset");
 			});
+			if (earlyRelease) {
+				world.getServer().waitFor(server -> caster.level().getGameTime() >= deferredDeliveryAfter, 20);
+				world.getServer().runOnServer(server -> finishDeferredCastProbe());
+			}
 			context.waitTicks(6);
 		}
 		for (int i = 0; i < 3; i++) {
-			world.getServer().runOnServer(server -> { master.snapTo(origin.x, origin.y, origin.z, 0, 0); master.setDeltaMovement(Vec3.ZERO); place(caster, 0, 6); charge(caster); });
+			world.getServer().runOnServer(server -> {
+				master.snapTo(origin.x, origin.y, origin.z, 0, 0);
+				// Preserve the grounded body's native downward velocity. A zero-Y resumed move clears onGround for one tick.
+				master.setDeltaMovement(0, master.getDeltaMovement().y, 0);
+				place(caster, 0, 6); charge(caster);
+			});
 			context.waitTicks(6);
 			world.getServer().runOnServer(server -> {
 				check(MasterPursuit.prepare(master, caster, school, master.auraRemaining(), caster.level().getGameTime(), 0) != null,
@@ -202,12 +249,12 @@ final class MasterPursuitChecks {
 				master.setNoAi(false);
 			});
 			awaitBegin(world);
-			at(world, 13, player -> Charging.interrupt(caster));
-			at(world, 14, player -> {
+			at(world, MasterPursuitRules.WINDUP + 1, player -> Charging.interrupt(caster));
+			at(world, MasterPursuitRules.WINDUP + 2, player -> {
 				check(!master.pursuitPending() && master.attackAnimation() == 0, "Releasing a held cast safely baits one paid cancellation");
 				charge(caster);
 			});
-			at(world, 43, player -> {
+			at(world, MasterPursuitRules.WINDUP + MasterPursuitRules.RECOVERY + 1, player -> {
 				check(!master.pursuitPending() && !master.state(AuraFighter.WINDUP) && !master.guarding(),
 					"A new charge cannot erase the baited attempt's thirty-tick punish window");
 				master.setNoAi(true);
@@ -228,7 +275,47 @@ final class MasterPursuitChecks {
 		});
 	}
 
+	/** Real instant spell acceptance, then the actual pursuit admission function; no synthetic CHARGE marker. */
+	private void instantCastRefusal() {
+		check(!caster.hasAttached(WildercordAttachments.CHARGE), "The instant-cast probe starts without a held charge");
+		Spellbooks.setCord(caster, new ItemStack(WildercordItems.TWINE_CORD));
+		List<String> runes = List.of(Runes.BOLT.id(), Runes.HARM.id());
+		Spellbooks.set(caster, new Spellbook(runes, List.of(runes), 0, true));
+		Spellbooks.setReadyAt(caster, 0, 0); Spellbooks.setMana(caster, 100);
+		beginDeferredCastProbe();
+		long now = caster.level().getGameTime();
+		SpellCaster.cast(caster, 0);
+		check(Spellbooks.mana(caster) < 100 && Spellbooks.readyAt(caster, 0) > now && !caster.hasAttached(WildercordAttachments.CHARGE),
+			"The native instant cast consumes mana and starts cooldown without creating a held charge");
+		check(MasterPursuit.prepare(master, caster, school, master.auraRemaining(), now, 0) == null
+			&& master.auraRemaining() == 100 && !master.pursuitPending(), "A free Master cannot pursue an already completed instant cast");
+	}
+
+	private void beginDeferredCastProbe() {
+		deferredBolts = ownedBolts(caster).stream().map(RuneBolt::getUUID).collect(java.util.stream.Collectors.toSet());
+		castProbeYaw = caster.getYRot(); castProbePitch = caster.getXRot(); castProbeMasterHealth = master.getHealth();
+		deferredDeliveryAfter = caster.level().getGameTime() + 5; // Three-tick delivery plus native projectile ticks.
+		// Keep the real three-tick delayed spell aimed above the arena until its delivery has actually happened.
+		caster.teleportTo(caster.level(), caster.getX(), caster.getY(), caster.getZ(), Set.of(), castProbeYaw, -85, false);
+	}
+
+	private void finishDeferredCastProbe() {
+		var delivered = ownedBolts(caster).stream().filter(bolt -> !deferredBolts.contains(bolt.getUUID())).toList();
+		check(!delivered.isEmpty(), "The paid spell's delayed native Bolt delivery occurs before cleanup");
+		check(master.getHealth() == castProbeMasterHealth && master.auraRemaining() == 100 && !master.pursuitPending(),
+			"A harmless upward delivery cannot contaminate the paused Master's later resource probes");
+		for (RuneBolt bolt : delivered) bolt.discard();
+		caster.teleportTo(caster.level(), caster.getX(), caster.getY(), caster.getZ(), Set.of(), castProbeYaw, castProbePitch, false);
+		deferredBolts = Set.of();
+	}
+
+	private static List<RuneBolt> ownedBolts(ServerPlayer owner) {
+		return owner.level().getEntitiesOfClass(RuneBolt.class, owner.getBoundingBox().inflate(32)).stream()
+			.filter(bolt -> bolt.getOwner() == owner).toList();
+	}
+
 	private void setup(ServerPlayer player, int count, boolean fakeCaster, boolean heldCharge) {
+		absorptionCapacityBefore = player.getAttribute(Attributes.MAX_ABSORPTION).getBaseValue();
 		player.setGameMode(GameType.SURVIVAL); player.removeAllEffects(); player.setAbsorptionAmount(0);
 		player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200); player.setHealth(200);
 		player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
@@ -257,9 +344,15 @@ final class MasterPursuitChecks {
 			if (!master.pursuitPending()) return false;
 			long now = caster.level().getGameTime();
 			began = now - (long) master.attackElapsed(0); before = caster.getHealth();
+			var held = caster.getAttached(WildercordAttachments.CHARGE);
+			check(held != null, "The naturally accepted pursuit still owns its observed live charge");
+			committedChargeStart = held.start(); committedChargeFull = held.full();
 			check(master.attackAnimation() == MasterAnimationRules.PURSUIT_BREAK && master.attackElapsed(0) <= 1,
 				"Observe the naturally accepted pursuit at its start: school=" + school + ", onGround=" + master.onGround());
-			check(master.onGround() && master.challengerCount() == guests.size() + 1, "A naturally grounded Master retains its locked roster");
+			String receipt = " [age=" + master.attackElapsed(0) + ", onGround=" + master.onGround() + ", velocity=" + master.getDeltaMovement()
+				+ ", roster=" + master.challengerCount() + ", expectedRoster=" + (guests.size() + 1) + ", position=" + master.position() + "]";
+			check(master.challengerCount() == guests.size() + 1, "The naturally accepted Master retains its locked roster" + receipt);
+			check(master.onGround(), "The naturally accepted Master remains physically grounded" + receipt);
 			check(!master.getMoveControl().hasWanted(), "Pursuit clears queued approach movement before MoveControl and travel run");
 			return true;
 		}, 45);
@@ -302,9 +395,11 @@ final class MasterPursuitChecks {
 
 	private void cleanup(ServerPlayer player) {
 		master.discard(); for (var guest : guests) { Charging.forget(guest); guest.discard(); } guests.clear(); Charging.forget(bystander); bystander.discard();
-		Charging.forget(player); player.removeAllEffects(); player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);
+		Charging.forget(player); player.removeAllEffects(); player.setAbsorptionAmount(0);
+		player.getAttribute(Attributes.MAX_ABSORPTION).setBaseValue(absorptionCapacityBefore);
+		player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);
 		player.setAttached(AuraAttachments.AURA, AuraAttachments.Data.NONE); player.setHealth(200);
-		wall(player.level(), 2, false); wall(player.level(), 5, false);
+		wall(player.level(), 2, false); wall(player.level(), 3, false); wall(player.level(), 5, false);
 	}
 	private void enroll(ServerPlayer player) { master.mobInteract(player, InteractionHand.MAIN_HAND); master.mobInteract(player, InteractionHand.MAIN_HAND); }
 	private Challenger add(ServerLevel level, String name, double x, double z) {
@@ -319,6 +414,7 @@ final class MasterPursuitChecks {
 		for (int x = -1; x <= 1; x++) for (int y = 0; y <= 2; y++)
 			level.setBlockAndUpdate(BlockPos.containing(origin).offset(x, y, z), (present ? Blocks.STONE : Blocks.AIR).defaultBlockState());
 	}
+	private static boolean interrupts(Answer answer) { return answer == Answer.HOLD || answer == Answer.APPROACH || answer == Answer.ABSORBED_HOLD; }
 	private static boolean cancelled(Answer answer) { return answer.ordinal() >= Answer.WALL.ordinal(); }
 	private void at(TestSingleplayerContext world, int age, Consumer<ServerPlayer> action) {
 		long expected = began + age;
