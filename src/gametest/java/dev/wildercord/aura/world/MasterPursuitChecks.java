@@ -5,6 +5,8 @@ import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.cast.Charging;
 import dev.wildercord.cast.Effects;
+import dev.wildercord.cast.SpellCaster;
+import dev.wildercord.spell.Runes;
 import dev.wildercord.cast.Statuses;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Spellbook;
@@ -266,10 +268,19 @@ final class MasterPursuitChecks {
 	private void charge(ServerPlayer player) {
 		Charging.interrupt(player);
 		Spellbooks.setCord(player, new ItemStack(WildercordItems.TWINE_CORD));
-		Spellbooks.set(player, new Spellbook(List.of("bolt", "harm"), List.of(List.of("bolt", "harm")), 0, true));
+		List<String> runes = List.of(Runes.BOLT.id(), Runes.HARM.id());
+		Spellbooks.set(player, new Spellbook(runes, List.of(runes), 0, true));
 		Spellbooks.setReadyAt(player, 0, 0); Spellbooks.setMana(player, 100);
+		var tier = Spellbooks.tier(player);
+		var active = SpellCaster.activeRunes(Spellbooks.get(player), 0, tier).stream().map(rune -> rune.id()).toList();
+		String receipt = " [player=" + player.getUUID() + ", cord=" + Spellbooks.cord(player) + ", tier=" + tier
+			+ ", activeRunes=" + active + ", mana=" + Spellbooks.mana(player) + ", school=" + school + ", time=" + player.level().getGameTime() + ", readyAt=" + Spellbooks.readyAt(player, 0)
+			+ ", priorCharge=" + player.hasAttached(WildercordAttachments.CHARGE) + ", alive=" + player.isAlive()
+			+ ", spectator=" + player.isSpectator() + ", castLocked=" + dev.wildercord.cast.CastLock.locked(player)
+			+ ", artCommitted=" + dev.wildercord.aura.MastersArts.committed(player) + "]";
+		check(active.equals(runes), "The equipped fixture exposes both canonical registered runes" + receipt);
 		Charging.request(player, 0, true);
-		check(player.hasAttached(WildercordAttachments.CHARGE), "The native Charging entrypoint accepted this held spell");
+		check(player.hasAttached(WildercordAttachments.CHARGE), "The native Charging entrypoint accepted this held spell" + receipt);
 	}
 
 	private void probePath(ServerLevel level) {
