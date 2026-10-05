@@ -55,7 +55,8 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 	private Challenger ally, spectator;
 	private float before;
 	private BlockPos stage;
-	private long chargeStarted, attackStarted;
+	private long chargeStarted, attackStarted, abandonmentStarted;
+	private int abandonmentMasterTick;
 
 	private static void check(boolean result, String message) {
 		if (!result) throw new AssertionError(message);
@@ -212,7 +213,9 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 				charge(player);
 				check(!Statuses.interrupt(player) && player.hasAttached(WildercordAttachments.CHARGE), "Shared interrupt immunity preserves the caster's next opportunity");
 				player.removeAttached(WildercordAttachments.CHARGE);
-				ally.teleportTo(ally.level(), stage.getX() + 40, 181, stage.getZ() + 0.5, Set.of(), 0, 0, false);
+				// Outside the 24-block arena, but still on the fixture's solid platform.
+				ally.teleportTo(ally.level(), stage.getX() + 27.5, 181, stage.getZ() + 0.5, Set.of(), 0, 0, false);
+				assertSafeDeparture(ally);
 			});
 			context.waitTicks(10);
 			world.getServer().runOnServer(server -> {
@@ -221,14 +224,53 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 				check(master.challengerCount() == 2 && Math.abs(master.getMaxHealth() - MastersRules.health(2)) < .01,
 					"Leaving never lowers the locked difficulty");
 				check(!master.canHarmParticipant(ally), "An out-of-arena player is no longer a legal target");
-				player.teleportTo(player.level(), stage.getX() + 40, 181, stage.getZ() + .5, Set.of(), 0, 0, false);
+				assertSafeDeparture(ally);
+				player.teleportTo(player.level(), stage.getX() + 27.5, 181, stage.getZ() + .5, Set.of(), 0, 0, false);
+				assertSafeDeparture(player);
 				ally.discard();
 				spectator.discard();
 				master.setNoAi(false);
+				abandonmentStarted = player.level().getGameTime();
+				abandonmentMasterTick = master.tickCount;
+				check(master.isAlive() && !master.isRemoved() && !master.isNoAi()
+					&& player.level().isPositionEntityTicking(master.blockPosition())
+					&& player.level().areEntitiesActuallyLoadedAndTicking(master.chunkPosition()),
+					"The abandonment probe starts with a living, AI-enabled master in an entity-ticking chunk" + abandonmentState(player));
 			});
-			context.waitTicks(MastersRules.ABANDON_TICKS + 20);
-			world.getServer().runOnServer(server -> check(master.isRemoved(), "An abandoned challenge cleans up instead of hunting bystanders"));
+			long abandonmentDeadline = abandonmentStarted + MastersRules.ABANDON_TICKS + 20;
+			world.getServer().waitFor(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				long now = player.level().getGameTime();
+				if (now < abandonmentDeadline) return false;
+				String receipt = abandonmentState(player);
+				Wildercord.LOGGER.info("[masters-abandonment] {}", receipt);
+				check(now == abandonmentDeadline, "The abandonment check observes its unchanged server-clock deadline" + receipt);
+				assertSafeDeparture(player);
+				check(master.isRemoved(), "An abandoned challenge cleans up instead of hunting bystanders" + receipt);
+				return true;
+			}, MastersRules.ABANDON_TICKS + 20);
 		}
+	}
+
+	private void assertSafeDeparture(ServerPlayer player) {
+		check(player.isAlive() && player.level().getBlockState(player.blockPosition().below()).isSolidRender()
+			&& player.distanceToSqr(Vec3.atCenterOf(stage.above())) > MastersRules.ARENA_RADIUS * MastersRules.ARENA_RADIUS
+			&& !master.canHarmParticipant(player),
+			"The departed challenger remains alive on solid ground outside the arena" + abandonmentState(player));
+	}
+
+	private String abandonmentState(ServerPlayer player) {
+		ServerLevel level = player.level();
+		return " [time=" + level.getGameTime() + ", abandonmentStarted=" + abandonmentStarted
+			+ ", serverTicks=" + (level.getGameTime() - abandonmentStarted) + ", masterTicks=" + (master.tickCount - abandonmentMasterTick)
+			+ ", masterAlive=" + master.isAlive() + ", masterHealth=" + master.getHealth() + ", masterRemoved=" + master.isRemoved()
+			+ ", masterNoAi=" + master.isNoAi() + ", masterPosition=" + master.position() + ", masterVelocity=" + master.getDeltaMovement()
+			+ ", entityTicking=" + level.isPositionEntityTicking(master.blockPosition())
+			+ ", entitiesLoadedAndTicking=" + level.areEntitiesActuallyLoadedAndTicking(master.chunkPosition())
+			+ ", participants=" + master.challengers() + ", target=" + (master.getTarget() == null ? null : master.getTarget().getUUID())
+			+ ", player=" + player.getUUID() + ", playerAlive=" + player.isAlive() + ", playerHealth=" + player.getHealth()
+			+ ", playerPosition=" + player.position() + ", playerVelocity=" + player.getDeltaMovement()
+			+ ", playerArenaDistanceSqr=" + player.distanceToSqr(Vec3.atCenterOf(stage.above())) + "]";
 	}
 
 	private void assertReturnedBoltsStayInsideTrial(ServerPlayer player) {

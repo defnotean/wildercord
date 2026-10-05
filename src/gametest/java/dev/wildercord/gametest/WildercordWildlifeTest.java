@@ -12,6 +12,7 @@ import dev.wildercord.wildlife.Cinderfox;
 import dev.wildercord.wildlife.Glimmerwing;
 import dev.wildercord.wildlife.LumenStag;
 import dev.wildercord.wildlife.MossbackTortoise;
+import dev.wildercord.wildlife.Rimehare;
 import dev.wildercord.wildlife.Skyray;
 import dev.wildercord.wildlife.Wildlife;
 import dev.wildercord.wildlife.WildlifeRules;
@@ -440,17 +441,27 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ the rimehare
 
 	private void rimehare(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<HareFlightSample> flight = new ArrayList<>();
 		int bolter = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			put(player, HARE.add(0, 0, 5), 180);
-			return spawn(Wildlife.RIMEHARE, player.level(), HARE, 0, false).getId();
+			Rimehare hare = spawn(Wildlife.RIMEHARE, player.level(), HARE, 0, false);
+			flight.add(hareFlightSample(player, hare.getId()));
+			return hare.getId();
 		});
-		context.waitTicks(50);
+		// Observe the same 50 native ticks without steering the hare or stopping at an earlier escape.
+		for (int i = 0; i < 25; i++) {
+			context.waitTicks(2);
+			flight.add(world.getServer().computeOnServer(server -> hareFlightSample(player(server), bolter)));
+		}
 		int tempted = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			Entity hare = player.level().getEntity(bolter);
+			HareFlightSample last = hareFlightSample(player, bolter);
+			double maxDistance = flight.stream().mapToDouble(HareFlightSample::distance).filter(Double::isFinite).max().orElse(Double.NaN);
 			check(hare != null && hare.distanceTo(player) > 8, "a rimehare should bolt from a player who comes near (distance "
-				+ (hare == null ? "?" : String.format("%.1f", hare.distanceTo(player))) + ")");
+				+ (hare == null ? "?" : String.format("%.1f", hare.distanceTo(player))) + ", max sampled distance " + maxDistance
+				+ ", final state " + last.state() + ", samples every 2 ticks " + flight + ")");
 			if (hare != null) {
 				hare.discard();
 			}
@@ -479,6 +490,31 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 			clear(player.level(), HARE, 16);
 		});
+	}
+
+	private record HareFlightSample(double distance, String state) {}
+
+	/** Public, read-only snapshots: never start goals, request a path, or change the actor while diagnosing its flight. */
+	private static HareFlightSample hareFlightSample(ServerPlayer player, int id) {
+		Entity entity = player.level().getEntity(id);
+		if (!(entity instanceof Rimehare hare)) {
+			return new HareFlightSample(Double.NaN, "worldTick=" + player.level().getGameTime() + ", hare=" + entity);
+		}
+		var navigation = hare.getNavigation();
+		var path = navigation.getPath();
+		String route = path == null ? "none" : "target=" + path.getTarget() + ", end=" + path.getEndNode()
+			+ ", node=" + path.getNextNodeIndex() + "/" + path.getNodeCount() + ", reaches=" + path.canReach() + ", done=" + path.isDone();
+		String state = "worldTick=" + player.level().getGameTime() + ", hareTick=" + hare.tickCount
+			+ ", position=" + hare.position() + ", velocity=" + hare.getDeltaMovement()
+			+ ", alive=" + hare.isAlive() + ", noAi=" + hare.isNoAi() + ", grounded=" + hare.onGround() + ", inWater=" + hare.isInWater()
+			+ ", cell=" + hare.level().getBlockState(hare.blockPosition()) + ", footing=" + hare.level().getBlockState(hare.blockPosition().below())
+			+ ", playerPosition=" + player.position() + ", spectator=" + player.isSpectator() + ", creative=" + player.isCreative()
+			+ ", sprinting=" + player.isSprinting() + ", berries=" + (hare.isFood(player.getMainHandItem()) || hare.isFood(player.getOffhandItem()))
+			+ ", playerEffects=" + player.getActiveEffects() + ", fearsPlayer=" + hare.boltsFrom(player) + ", seesPlayer=" + hare.hasLineOfSight(player)
+			+ ", activeGoals=" + hare.getGoalSelector().getAvailableGoals().stream().filter(g -> g.isRunning())
+				.map(g -> g.getGoal().getClass().getSimpleName()).toList()
+			+ ", navigationDone=" + navigation.isDone() + ", path={" + route + "}";
+		return new HareFlightSample(hare.distanceTo(player), state);
 	}
 
 	// ------------------------------------------------------------------ the skyray

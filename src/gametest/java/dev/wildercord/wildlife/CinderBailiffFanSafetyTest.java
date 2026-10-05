@@ -116,14 +116,19 @@ public final class CinderBailiffFanSafetyTest implements FabricClientGameTest {
     for(int n=0;n<12;n++){double angle=(n+.5)*Math.PI/6;victims.add(zombie(l,source.getX()+2*Math.cos(angle),source.getZ()+2*Math.sin(angle)));}
     var pool=new ArrayList<LivingEntity>(13);l.getEntities(EntityTypeTest.<Entity,LivingEntity>forClass(LivingEntity.class),source.getBoundingBox().inflate(4),e->e!=source,pool,13);
     check(pool.size()==13&&pool.stream().allMatch(e->victims.contains(e)),"Actual bounded native query is saturated by thirteen known living peers");
+    for(var target:pool)check(target.getHealth()==20&&target.getMaxHealth()==20&&!target.isOnFire(),"Each dense receiver starts with exactly twenty health and no fire: "+receiverState(target));
    });
    boolean warning=false;for(int n=0;n<20;n++){c.waitTicks(2);if(w.getServer().computeOnServer(s->source.pose()==CinderBailiff.WARNING)){warning=true;break;}}check(warning,"Dense source still authors its real readable warning");
    boolean recovered=false;for(int n=0;n<40;n++){c.waitTicks(2);if(w.getServer().computeOnServer(s->source.pose()==CinderBailiff.RECOVERING)){recovered=true;break;}}check(recovered,"Actual saturated fan completes all finite vents and recovery");
-   w.getServer().runOnServer(s->{for(var target:victims)check(target.getHealth()==20,"Thirteen-peer refusal harms no arbitrary hidden prefix");check(source.attackReady()>s.overworld().getGameTime(),"Dense refusal still pays original finite attack rest");});
+   w.getServer().runOnServer(s->{for(var target:victims)check(target.getHealth()==20,"Thirteen-peer refusal harms no arbitrary hidden prefix: "+receiverState(target));check(source.attackReady()>s.overworld().getGameTime(),"Dense refusal still pays original finite attack rest");});
   }finally{armed=0;expectedVictims.clear();source=null;victims.clear();}
  }
 
- private Zombie zombie(ServerLevel l,double x,double z){var e=EntityTypes.ZOMBIE.create(l,EntitySpawnReason.COMMAND);check(e!=null,"Actual native peer factory");e.setNoAi(true);e.setPersistenceRequired();e.getAttribute(Attributes.ARMOR).setBaseValue(0);e.getAttribute(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);e.snapTo(x,30,z,0,0);l.addFreshEntity(e);return e;}
+ private Zombie zombie(ServerLevel l,double x,double z){var e=EntityTypes.ZOMBIE.create(l,EntitySpawnReason.COMMAND);check(e!=null,"Actual native peer factory");e.setNoAi(true);e.setPersistenceRequired();e.getAttribute(Attributes.ARMOR).setBaseValue(0);e.getAttribute(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
+  // Supplied health witnesses must not receive the unrelated random Runebound load-time health bonus.
+  e.setCustomName(net.minecraft.network.chat.Component.literal("Cinder Bailiff fan witness"));
+  e.snapTo(x,30,z,0,0);l.addFreshEntity(e);check(e.getHealth()==20&&e.getMaxHealth()==20,"Actual admitted fan witness has exactly twenty health: "+receiverState(e));return e;}
+ private static String receiverState(LivingEntity e){return "uuid="+e.getUUID()+", health="+e.getHealth()+", max="+e.getMaxHealth()+", fire="+e.isOnFire()+", alive="+e.isAlive()+", removed="+e.isRemoved()+", position="+e.position()+", sourceDistance="+(source==null?"none":source.distanceTo(e));}
  private void spawn(MinecraftServer s){source=EmberContent.BAILIFF.create(s.overworld(),EntitySpawnReason.COMMAND);check(source!=null,"Actual registered source factory");source.snapTo(.5,30,.5,0,0);s.overworld().addFreshEntity(source);var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),7,30,7,Set.<Relative>of(),0,0,false);}
  private void arena(ServerLevel l){check(l!=null,"Native test level exists");for(int x=-8;x<=8;x++)for(int z=-8;z<=8;z++){l.setBlock(new BlockPos(x,29,z),Blocks.GRASS_BLOCK.defaultBlockState(),2);for(int y=30;y<=34;y++)l.setBlock(new BlockPos(x,y,z),Blocks.AIR.defaultBlockState(),2);}}
  private void configure(TestServerContext s){s.runCommand("difficulty normal");s.runCommand("gamerule spawn_mobs false");s.runCommand("gamerule natural_health_regeneration false");s.runCommand("time set 18000");}
