@@ -212,9 +212,15 @@ final class CastHitReceiptConsistencyChecks {
 				target.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
 				target.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("gale", AuraRules.FORM, 0, 80, 0));
 				float aura = (float) Aura.aura(target);
-				if (probe == Case.GUARD) check(AuraGuard.faces(target, attacker.position()) && AuraGuard.raise(target) && AuraGuard.perfectNow(target),
-					"The public Aura Guard entrypoint opens a real frontal perfect window");
-				else check(AuraStep.step(target), "The public Aura Step entrypoint admits its genuine swept path");
+				if (probe == Case.GUARD) {
+					String eligibility = route + " now=" + target.level().getGameTime() + ", yaw=" + target.getYRot()
+						+ ", head=" + target.getYHeadRot() + ", view=" + target.getViewVector(1) + ", weapon=" + Aura.holdsWeapon(target)
+						+ ", aura=" + aura + ", state=" + Aura.state(target) + ", sneak=" + target.isShiftKeyDown()
+						+ ", charging=" + target.hasAttached(WildercordAttachments.CHARGE);
+					check(AuraGuard.faces(target, attacker.position()), "The native guard view faces the attacker: " + eligibility);
+					check(AuraGuard.raise(target), "The public Aura Guard entrypoint accepts the rested, equipped target: " + eligibility);
+					check(AuraGuard.perfectNow(target), "The paid native guard opens its real perfect window: " + eligibility + ", after=" + Aura.state(target));
+				} else check(AuraStep.step(target), "The public Aura Step entrypoint admits its genuine swept path");
 				check(Aura.aura(target) < aura, "The actual defensive action pays its native Aura cost");
 			}
 			case WARD -> {
@@ -399,7 +405,10 @@ final class CastHitReceiptConsistencyChecks {
 	}
 	private Challenger add(ServerLevel level) {
 		Challenger player = new Challenger(level); prepare(player);
-		player.snapTo(origin.x, origin.y, origin.z + 3, 180, 0); level.addNewPlayer(player); return player;
+		player.snapTo(origin.x, origin.y, origin.z + 3, 180, 0);
+		// snapTo sets yaw/pitch; FakePlayer.tick never aligns the head used by getViewVector/guard facing.
+		player.setYHeadRot(180); player.setYBodyRot(180);
+		level.addNewPlayer(player); return player;
 	}
 	private void prepareActor(ServerPlayer player) {
 		player.removeAllEffects(); player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);

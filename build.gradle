@@ -246,6 +246,11 @@ java {
 	targetCompatibility = JavaVersion.toVersion(targetJavaVersion)
 }
 
+// Carry the project's redistribution notice in the runtime and sources JARs.
+tasks.withType(Jar).configureEach {
+	from('LICENSE')
+}
+
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {

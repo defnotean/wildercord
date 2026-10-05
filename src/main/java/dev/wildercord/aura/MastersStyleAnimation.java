@@ -42,7 +42,7 @@ public final class MastersStyleAnimation {
 	// Gale turns through an open stance and long, level draw; its free arm counterbalances the blade.
 	private static final Motion BREEZE = new Motion(
 		pose(j(.05F, .75F, -.18F), j(0, -.35F, .05F), j(-1.40F, 1.10F, -.05F), j(-.30F, -.45F, -.80F),
-			j(-.45F, -.25F, -.12F), j(.35F, .20F, .12F), .3F, .10F, h(.25F, .12F, .10F, 10, 45, -30)),
+			j(-.45F, -.25F, -.12F), j(.35F, .20F, .12F), .3F, .10F, h(.10F, .12F, -.25F, 10, 45, -30)),
 		pose(j(.08F, -.85F, .18F), j(-.02F, .35F, -.06F), j(-1.24F, -1.30F, -.05F), j(-.25F, .35F, -1.05F),
 			j(-.50F, .25F, -.14F), j(.38F, -.20F, .12F), .25F, -.6F, h(-.48F, -.10F, -.24F, 18, -60, 40)),
 		pose(j(.03F, -.95F, .12F), j(0, .40F, -.03F), j(-1.24F, -1.40F, -.05F), j(.10F, .25F, -.85F),
@@ -60,20 +60,20 @@ public final class MastersStyleAnimation {
 	// Verdant rolls its shoulders through a long lashing cut, then recoils along the same blade path.
 	private static final Motion THORN = new Motion(
 		pose(j(.05F, .55F, -.25F), j(-.02F, -.20F, .12F), j(-.70F, .95F, -.85F), j(-.45F, -.15F, -.90F),
-			j(-.45F, -.14F, -.12F), j(.28F, .15F, .10F), .45F, .20F, h(.28F, -.12F, .18F, 12, 40, -55)),
+			j(-.45F, -.14F, -.12F), j(.28F, .15F, .10F), .45F, .20F, h(.10F, -.08F, -.35F, 12, 40, -55)),
 		pose(j(.26F, -.55F, .30F), j(-.12F, .20F, -.12F), j(-1.20F, -.85F, -.65F), j(.20F, .15F, -1.20F),
 			j(-.65F, .15F, -.15F), j(.40F, -.12F, .12F), .55F, -1.0F, h(-.38F, -.08F, -.42F, 18, -38, 55)),
 		pose(j(.10F, -.25F, .18F), j(-.05F, .12F, -.05F), j(-.65F, -.50F, .12F), j(-.25F, -.10F, -.80F),
-			j(-.40F, .12F, -.10F), j(.25F, -.10F, .08F), .3F, -.30F, h(-.20F, -.20F, .02F, 25, -20, 35)));
+			j(-.40F, .12F, -.10F), j(.25F, -.10F, .08F), .3F, -.30F, h(-.20F, -.05F, .02F, 25, -20, 35)));
 
 	// Hollow closes around the hilt, slices a narrow seam, then draws the weapon inward again.
 	private static final Motion VOID_CUT = new Motion(
 		pose(j(.32F, .22F, .06F), j(-.18F, -.08F, 0), j(-1.15F, .45F, -.18F), j(-1.35F, -.45F, .20F),
-			j(-.55F, -.08F, -.08F), j(.45F, .08F, .08F), .85F, .20F, h(.08F, -.15F, .25F, -5, 18, -10)),
+			j(-.55F, -.08F, -.08F), j(.45F, .08F, .08F), .85F, .20F, h(.08F, -.05F, -.20F, -5, 18, -10)),
 		pose(j(.20F, -.35F, -.06F), j(-.10F, .10F, .02F), j(-1.48F, -.60F, -.15F), j(-1.20F, -.30F, .18F),
 			j(-.60F, .08F, -.08F), j(.40F, -.06F, .08F), .70F, -.40F, h(-.20F, -.08F, -.35F, -18, -25, 14)),
 		pose(j(.28F, -.10F, 0), j(-.15F, .05F, 0), j(-1.15F, -.10F, -.25F), j(-1.35F, -.35F, .25F),
-			j(-.45F, .04F, -.08F), j(.35F, -.03F, .08F), .80F, .10F, h(-.02F, -.16F, .26F, -2, -3, 8)));
+			j(-.45F, .04F, -.08F), j(.35F, -.03F, .08F), .80F, .10F, h(-.02F, -.16F, -.10F, -2, -3, 8)));
 
 	// Starlit aligns the point at eye height, makes a small precise lunge, then returns to that line.
 	private static final Motion NEEDLE = new Motion(
@@ -87,7 +87,7 @@ public final class MastersStyleAnimation {
 	// Hourglass cuts once, holds the escaped motion still, then answers its afterimage on the return beat.
 	private static final Motion ECHO = new Motion(
 		pose(j(.06F, .42F, -.04F), j(-.02F, -.18F, 0), j(-1.10F, .75F, -.25F), j(-1.0F, -.20F, -.30F),
-			j(-.32F, -.10F, -.06F), j(.24F, .10F, .06F), .25F, .10F, h(.14F, -.02F, .13F, -8, 28, -18)),
+			j(-.32F, -.10F, -.06F), j(.24F, .10F, .06F), .25F, .10F, h(.14F, -.02F, -.20F, -8, 28, -18)),
 		pose(j(.12F, -.42F, .05F), j(-.05F, .16F, 0), j(-1.28F, -.82F, -.25F), j(-.75F, -.10F, -.40F),
 			j(-.45F, .10F, -.06F), j(.28F, -.08F, .06F), .25F, -.50F, h(-.26F, -.06F, -.28F, 10, -32, 26)),
 		pose(j(.08F, -.55F, .04F), j(-.03F, .20F, 0), j(-.80F, -.90F, -.20F), j(-.65F, -.12F, -.40F),
@@ -98,7 +98,7 @@ public final class MastersStyleAnimation {
 	// Crimson sinks into an aggressive cross-body slice, extending the off hand as the blade rakes low.
 	private static final Motion BLOODLETTING = new Motion(
 		pose(j(.35F, .45F, -.20F), j(-.20F, -.15F, .06F), j(-1.60F, .90F, -.90F), j(-.70F, -.20F, -.65F),
-			j(-.75F, -.15F, -.14F), j(.50F, .12F, .12F), 1.1F, .10F, h(.25F, .06F, .10F, -38, 35, -58)),
+			j(-.75F, -.15F, -.14F), j(.50F, .12F, .12F), 1.1F, .10F, h(.10F, .06F, -.10F, -38, 35, -58)),
 		pose(j(.45F, -.58F, .25F), j(-.22F, .20F, -.08F), j(-.60F, -1.0F, -.55F), j(-.15F, -.10F, -1.0F),
 			j(-.95F, .15F, -.15F), j(.55F, -.12F, .12F), 1.25F, -1.1F, h(-.36F, .10F, -.35F, 60, -42, 58)),
 		pose(j(.25F, -.70F, .18F), j(-.12F, .25F, -.04F), j(-.25F, -1.10F, .10F), j(.05F, -.10F, -.80F),

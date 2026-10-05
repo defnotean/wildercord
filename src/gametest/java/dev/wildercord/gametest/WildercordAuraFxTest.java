@@ -292,7 +292,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		int stops = context.computeOnClient(mc -> HitStop.stops());
 		swing(context);
 		context.waitTicks(1);
-		shot(context, "aurafx_swing_cut_fp");
+		// Screenshot readback can advance an unbounded number of game ticks. Film after the charge-sensitive pair.
 		context.waitTicks(3);
 		int[] after = context.computeOnClient(mc -> AuraFxClient.counts());
 		String stroke = context.computeOnClient(mc -> AuraFxClient.lastOwnStroke());
@@ -301,12 +301,32 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		check(after[2] > before[2], "the coated blow should land as an impact on this client");
 		int stopped = context.computeOnClient(mc -> HitStop.stops());
 		check(stopped > stops, "a full coated blow should hold the moment (a hit-stop)");
+		float fullStrength = on(world, WildercordAuraFxTest::lastSwingStrength);
+		check(fullStrength >= AuraRules.FULL_SWING, "the first blow really was full on the server (" + fullStrength + ")");
 		// A half swing: light, no hit-stop (and a fresh string so nothing plays).
+		// Use an unharmed foe: the first one's vanilla hurt immunity would otherwise hide a light blow.
+		freshSwingTarget(world);
 		context.waitTicks(4);
 		swing(context);
 		context.waitTicks(4);
+		float halfStrength = on(world, WildercordAuraFxTest::lastSwingStrength);
+		check(halfStrength < AuraRules.FULL_SWING - 1.0E-4, "the second blow really was light on the server (" + halfStrength + ")");
+		check(on(world, player -> tagged(player, "wildercord.aurafx_target").getHealth()) < 400,
+			"the half swing must actually hurt its fresh target");
+		check(context.computeOnClient(mc -> AuraFxClient.counts()[2]) > after[2], "the half swing must arrive as a new client impact");
 		int light = context.computeOnClient(mc -> HitStop.stops());
 		check(light == stopped, "a half swing lands light, without a hit-stop");
+		freshSwingTarget(world);
+		context.waitTicks(FULL + 20);
+		// A separate fully recovered real swing keeps the first-person capture without timing the half swing by GPU readback.
+		int filmedImpacts = context.computeOnClient(mc -> AuraFxClient.counts()[2]);
+		swing(context);
+		context.waitTicks(1);
+		shot(context, "aurafx_swing_cut_fp");
+		context.waitTicks(3);
+		check(on(world, WildercordAuraFxTest::lastSwingStrength) >= AuraRules.FULL_SWING
+			&& context.computeOnClient(mc -> AuraFxClient.counts()[2]) > filmedImpacts,
+			"the first-person capture must show a fresh full blow landing");
 		context.waitTicks(FULL + 20);
 		// A low swing cuts low across the legs; filmed from behind.
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
@@ -742,6 +762,27 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		context.getInput().holdKey(o -> o.keyShift);
 		context.waitTicks(2);
 		swing(context);
+	}
+
+	/** Read-only receipt of the actual pre-reset server charge used by AuraCombat.blow, not a later recovered sample. */
+	private static float lastSwingStrength(ServerPlayer player) {
+		try {
+			var field = dev.wildercord.aura.AuraCombat.class.getDeclaredField("SWINGS");
+			field.setAccessible(true);
+			Object strength = ((java.util.Map<?, ?>) field.get(null)).get(player);
+			check(strength instanceof Float, "the server must have recorded this player's real attack");
+			return (Float) strength;
+		} catch (ReflectiveOperationException e) {
+			throw new AssertionError("couldn't read the server's swing receipt", e);
+		}
+	}
+
+	private static void freshSwingTarget(TestSingleplayerContext world) {
+		on(world, player -> {
+			kill(player, "wildercord.aurafx_target");
+			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
+			return null;
+		});
 	}
 
 	// ------------------------------------------------------------------ the stage

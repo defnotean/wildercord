@@ -7,6 +7,7 @@
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
       "dev.wildercord.gametest.WildercordMastersArtsTest",
       "dev.wildercord.aura.world.SwordMasterTrialTest",
+      "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
       "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",
       "dev.wildercord.party.PartyOfflineProjectileTest",
       "dev.wildercord.aura.MastersStyleTimelineTest",
@@ -18,8 +19,7 @@
       "dev.wildercord.client.auraworld.MasterModelPresentationTest",
       "dev.wildercord.aura.SwordStringAuthorityTest",
       "dev.wildercord.aura.CrescentCoverTest",
-      "dev.wildercord.aura.CrescentAudienceTest",
-      "dev.wildercord.world.upgrade.UpgradeRecoveryTest"
+      "dev.wildercord.aura.CrescentAudienceTest"
     ]
   },
   "articulated": {

@@ -47,6 +47,9 @@ jobs:
       - name: Build and run unit tests
         run: ./gradlew build --stacktrace
 
+      - name: Check bounded packaging audit
+        run: python -m unittest discover -s tools -p 'test_audit_packages.py' -v
+
       - name: Package pinned launcher profiles
         run: |
           task_release_jar=$(find build/libs -maxdepth 1 -name 'wildercord-*.jar' ! -name '*-sources.jar' -print -quit)
@@ -63,6 +66,25 @@ jobs:
         with:
           name: wildercord-profiles
           path: artifacts/profiles/*.mrpack
+
+      - name: Audit mod and launcher packaging (not gameplay readiness)
+        id: packaging
+        run: python tools/audit_packages.py --output artifacts/review/packaging-report.json --distributable-directory artifacts/releases/distributable
+
+      - name: Preserve packaging report
+        if: always() && steps.packaging.outcome != 'skipped'
+        uses: actions/upload-artifact@v7
+        with:
+          name: wildercord-packaging-report
+          path: artifacts/review/packaging-report.json
+          if-no-files-found: error
+
+      - name: Upload distributable mod jar only
+        uses: actions/upload-artifact@v7
+        with:
+          name: wildercord-distributable
+          path: artifacts/releases/distributable/*.jar
+          if-no-files-found: error
 
   # The full client descriptor takes several hours in one job, so it runs as four contiguous shards.
   # Each shard keeps the declared test order; together they cover every entrypoint exactly once.

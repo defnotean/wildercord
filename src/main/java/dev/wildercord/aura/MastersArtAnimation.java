@@ -144,7 +144,7 @@ public final class MastersArtAnimation {
 	/** A low chamber, a rising cut past the face, then a high guard with the shoulders opened. */
 	private static final Motion RISING_BREAK = new Motion(
 		pose(j(.40F, .30F, .10F), j(-.20F, -.15F, 0), j(.25F, .35F, .40F), j(-.85F, -.25F, -.40F),
-			j(-.85F, -.15F, -.16F), j(.65F, .15F, .16F), 1.3F, .1F, h(.05F, -.30F, .10F, 55, 15, -20)),
+			j(-.85F, -.15F, -.16F), j(.65F, .15F, .16F), 1.3F, .1F, h(.05F, .05F, -.45F, 55, 15, -20)),
 		pose(j(-.25F, -.25F, -.10F), j(.10F, .10F, 0), j(-2.75F, -.25F, -.25F), j(-1.50F, -.10F, -.60F),
 			j(-.20F, .10F, -.06F), j(.15F, -.05F, .05F), -.45F, -.65F, h(-.10F, .35F, -.30F, -95, -15, 12)),
 		pose(j(-.10F, -.40F, -.08F), j(.05F, .15F, 0), j(-2.95F, -.45F, -.50F), j(-1.00F, -.15F, -.70F),
