@@ -82,6 +82,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private MastersRules.Move attack;
 	private Vec3 lockedAim, lockedOrigin;
 	private EmberAfterburn afterburn;
+	private MasterPursuit pursuit;
+	private long pursuitReadyAt;
 
 	public SwordMaster(EntityType<? extends SwordMaster> type, Level level) {
 		super(type, level);
@@ -355,6 +357,15 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	public double auraRemaining() { return aura; }
 
 	boolean afterburnPending() { return afterburn != null; }
+	boolean pursuitPending() { return pursuit != null; }
+
+	boolean canMaintainPursuit() { return canMaintainAfterburn() && attack == MastersRules.Move.PURSUIT_BREAK; }
+
+	boolean pursuitInsideArena(net.minecraft.world.phys.AABB body) {
+		return home != null && MasterPursuitRules.insideArena(body.minX, body.maxX, body.minZ, body.maxZ,
+			home.getX() + .5, home.getZ() + .5, MastersRules.ARENA_RADIUS)
+			&& Math.abs(body.minY - home.getY()) <= 1;
+	}
 
 	/** A wake may never outlive its master, arena or last eligible challenger, even when ticked independently. */
 	boolean canMaintainAfterburn() {
@@ -420,7 +431,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			bar.setProgress(getHealth() / getMaxHealth());
 			Component activity = !started
 				? Component.translatable("boss.wildercord.master.prepare", participants.size(), MastersRules.MAX_PARTICIPANTS, Math.max(0, (begins - now + 19) / 20))
-				: Component.translatable("boss.wildercord.master." + (attack != null ? attack.name().toLowerCase(java.util.Locale.ROOT) : afterburn != null ? "afterburn"
+				: Component.translatable("boss.wildercord.master." + (attack != null ? pursuit != null && pursuit.strikeWarned() ? "pursuit_strike" : attack.name().toLowerCase(java.util.Locale.ROOT) : afterburn != null ? "afterburn"
 					: staggered() || Stance.opened(this) ? "broken" : now < breathingUntil ? "breathing" : now < recoverUntil ? "recover" : guarding() ? "guard" : "ready"));
 			bar.setName(Component.translatable("boss.wildercord.master.status", method().id(), activity));
 		}
@@ -441,6 +452,10 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			setHealth(getMaxHealth());
 			if (discipline == MastersRules.EMBER) for (ServerPlayer player : level.players()) {
 				if (participant(player)) player.sendSystemMessage(Component.translatable("message.wildercord.master.ember_lesson"));
+			}
+			for (ServerPlayer player : level.players()) if (participant(player)) {
+				player.sendSystemMessage(Component.translatable("message.wildercord.master.pursuit_lesson")
+					.append(" ").append(Component.translatable("message.wildercord.master.pursuit_" + method().id())));
 			}
 			recoverUntil = now + 20;
 		}
@@ -497,6 +512,20 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			cutBolt(level, now);
 			return;
 		}
+		// Look for an admitted casting opening only while entirely free. Never retarget an accepted dash.
+		for (ServerPlayer caster : level.players().stream().filter(this::participant)
+			.sorted(Comparator.comparingDouble((ServerPlayer player) -> distanceToSqr(player)).thenComparing(Entity::getUUID)).toList()) {
+			MasterPursuit opening = MasterPursuit.prepare(this, caster, discipline, aura, now, pursuitReadyAt);
+			if (opening != null) {
+				guardNext = false;
+				setTarget(caster);
+				beginAttack(level, caster, MastersRules.Move.PURSUIT_BREAK, now);
+				pursuit = opening;
+				pursuitReadyAt = now + MasterPursuitRules.school(discipline).cooldown();
+				pursuit.tick(now);
+				return;
+			}
+		}
 		if (guardNext) {
 			guardNext = false;
 			faceTarget(target);
@@ -529,7 +558,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		entityData.set(DATA_ATTACK_BEGIN, now);
 		approachStarted = 0;
 		setDeltaMovement(0, getDeltaMovement().y, 0);
-		aura -= move == MastersRules.Move.CINDER_WAKE ? EmberWakeRules.COST : MastersRules.ATTACK_COST;
+		aura -= move == MastersRules.Move.CINDER_WAKE ? EmberWakeRules.COST
+			: move == MastersRules.Move.PURSUIT_BREAK ? MasterPursuitRules.school(discipline).cost() : MastersRules.ATTACK_COST;
 		attackAt = now + move.tell;
 		lockedAim = null;
 		lockedOrigin = null;
@@ -550,6 +580,24 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	private void tickAttack(ServerLevel level, long now, LivingEntity target) {
 		getNavigation().stop();
+		if (attack == MastersRules.Move.PURSUIT_BREAK) {
+			MasterPursuit running = pursuit;
+			if (running != null && running.tick(now)) return;
+			if (attack != MastersRules.Move.PURSUIT_BREAK) return; // A damage callback may already cancel it.
+			boolean released = running != null && running.released();
+			if (!released) cancelAttack();
+			else {
+				pursuit = null;
+				attack = null;
+				setState(WINDUP, false);
+				guardNext = MastersRules.guardAfter(discipline, ++sequence);
+				retargetBetweenAttacks(level);
+			}
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+			recoverUntil = now + MasterPursuitRules.RECOVERY;
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+			return;
+		}
 		if (attack == MastersRules.Move.CINDER_WAKE && now < attackAt && (attackAt - now) % EmberWakeRules.WARNING_REFRESH == 0) {
 			EmberAfterburn.warnCut(this, lockedOrigin, lockedAim, (int) (attackAt - now));
 		}
@@ -625,7 +673,11 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		recoverUntil = now + released.recovery;
 		guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 		guardNext = MastersRules.guardAfter(discipline, ++sequence);
-		// Retarget only between committed attacks, giving every enrolled player readable pressure.
+		retargetBetweenAttacks(level);
+	}
+
+	/** Retarget only between committed attacks, giving every enrolled player readable pressure. */
+	private void retargetBetweenAttacks(ServerLevel level) {
 		if (partySize > 1) {
 			var available = level.players().stream().filter(this::participant).sorted(Comparator.comparing(Entity::getUUID)).toList();
 			if (!available.isEmpty()) setTarget(available.get(Math.floorMod(sequence, available.size())));
@@ -712,6 +764,12 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	private void cancelAttack() {
+		if (pursuit != null) {
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+			recoverUntil = Math.max(recoverUntil, level().getGameTime() + MasterPursuitRules.RECOVERY);
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+		}
+		pursuit = null;
 		entityData.set(DATA_ATTACK, 0);
 		entityData.set(DATA_ATTACK_AIM_PITCH, 0F);
 		if (state(DASH)) stopDodge(level().getGameTime());

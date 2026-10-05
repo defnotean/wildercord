@@ -6,6 +6,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
+- Added a school-tuned, server-owned cast-punish dash for all three Masters: visibly committed native movement, a separate short strike warning, actual-damage-only interruption, finite Aura/cooldowns and a guaranteed exposed recovery. One-tick feints, bystanders, cover, unsafe terrain and interruption cannot create free or homing dash chains; native counterplay fixtures accompany the new fallback body motion.
+
 - Added a default-off original segmented Spellcut/Master SWEEP renderer proof, with visible elbow/knee/wrist joints, skin-sliced limbs, independently composed first-person arms and stable-camera preview. Existing rig remains the whole-body fallback for armor and unsupported states; native validation and enchanted-netherite support are still required.
 
 - Raised the permanent Mana Crystal absorption cap from 10 to 100. Each crystal still adds 10 mana; existing absorbed crystals are preserved.

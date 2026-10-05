@@ -8,6 +8,7 @@ Development build: `0.11.0-masters-dev`. Install the same development build on e
 - Heart Circles through twenty, with twelve additional progression gates
 - Consent-based parties with friendly spell and Aura protection
 - Three opt-in Sword Master trial disciplines: Ember, Gale and Stone
+- Shared school-tuned cast-punish dashes with committed movement, a separate strike warning and an exposed recovery
 - Ember's Cinder Wake, with a broad cut and a separately warned delayed afterburn
 - Three new rebindable Aura combat actions and their original animations
 - Authoritative windups and original motion for all ten existing first forms, plus Rising Cinders and Blossom Fall
@@ -34,6 +35,16 @@ The roster and its difficulty scaling lock at the start. Leaving the 24-block ar
 Watch the master's blade and the boss-bar action label. Attacks have a windup, commit their aim, and leave a recovery window. Frontal guards can cut hostile bolts, but flanking and forcing the master to spend Aura create openings. A tired master must stop to breathe. Simple hostile bolts may be redirected once; arbitrary linked spells are not reflected.
 
 A legitimate first clear permanently records that school and teaches one existing technique part: Ember grants Echo, Gale grants Afterimage, and Stone grants Sunder. If you already know it, only the clear is recorded. Living, present opt-in teammates share the clear; bypass/admin kills and disabled-AI fixtures do not count. There is no repeatable item or XP payout. Use `/master victories` to view your record. The travelling Duelists who teach breathing methods remain separate.
+
+### Answering a cast-punish dash
+
+A free Master may pursue an enrolled player who has visibly held a real charge for at least 0.3 seconds. One-tick tap/cancel feints do not trigger it. The Master cannot cancel its own attack, guard, dash or recovery to answer your spell. Two runway lines warn for 0.6 seconds, then its actual body moves along that locked path for 0.4 seconds. On landing, a short outlined strike lane gives another full 0.6-second warning. It never turns the accepted dash or strike toward your later input.
+
+Gale dashes up to 6.4 blocks for 26 Aura, at most once every 5 seconds; Ember up to 4.8 blocks for 28 Aura, every 7 seconds; Stone up to 3.6 blocks for 30 Aura, every 8 seconds. Slowness can shorten their travel. No dash crosses walls, fluid, dangerous ground, gaps, the arena edge or the world border. If the route becomes blocked, it stops rather than teleporting through.
+
+Sidestep outside the 1.6-block-wide final lane, backstep beyond its 3.25-block reach, use solid cover or parry the strike. One damaging hit can break the original held spell; full damage prevention cannot. Base damage is 28 for Ember/Gale and 30.8 for Stone before ordinary defenses, regardless of party size. Only the selected enrolled caster can be hit by this move.
+
+Releasing the spell baits a paid cancellation, with no Aura or cooldown refund. The Master brakes and remains open for 1.5 seconds, just as it does after the strike. Restarting the spell cannot erase that opening or cause an immediate second dash. Sustained baiting, eight-player pressure and the new movement still need native playtest balance; this does not claim a measured difficulty multiplier. Its new body motion uses the original fallback rig, including when the optional articulated renderer is enabled.
 
 ### Reading Ember's Cinder Wake
 

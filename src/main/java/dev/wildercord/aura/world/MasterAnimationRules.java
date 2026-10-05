@@ -8,7 +8,7 @@ package dev.wildercord.aura.world;
 public final class MasterAnimationRules {
 	private MasterAnimationRules() {}
 
-	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5;
+	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6;
 	public record Joint(float x, float y, float z) {
 		Joint toward(Joint other, float t) {
 			return new Joint(lerp(x, other.x, t), lerp(y, other.y, t), lerp(z, other.z, t));
@@ -68,6 +68,14 @@ public final class MasterAnimationRules {
 		p(j(.28F, -.12F, .02F), j(-.12F, 0, 0), j(-.88F, -.12F, -.06F), j(-.64F, -.20F, -.34F), .20F, -108),
 		p(j(.16F, -.18F, .01F), j(-.06F, 0, 0), j(-.65F, -.15F, -.10F), j(-.44F, -.14F, -.28F), .20F, -98));
 
+	// A low runner's chamber rises into one planted point strike. The body follows server movement.
+	private static final Motion PURSUIT_MOTION = new Motion(
+		p(j(.18F, .30F, -.04F), j(-.08F, 0, 0), j(-1.68F, .38F, -.16F), j(-.85F, -.25F, -.35F), .28F, -65),
+		p(j(.36F, -.16F, .02F), j(-.16F, 0, 0), j(-1.34F, -.08F, -.04F), j(.16F, .12F, -.28F), .28F, -96),
+		p(j(.18F, -.28F, .02F), j(-.08F, 0, 0), j(-1.05F, -.16F, -.10F), j(-.28F, .12F, -.30F), .28F, -85));
+	private static final Pose PURSUIT_STEP = p(j(.48F, .22F, -.05F), j(-.22F, 0, 0),
+		j(-.70F, .35F, -.32F), j(.24F, -.18F, -.36F), .28F, -45);
+
 	private static final Pose GUARD = p(j(.10F, .10F, 0), j(-.04F, 0, 0), j(-1.42F, -.55F, -.25F), j(-1.05F, .40F, -.25F), .14F, 0);
 	private static final Pose DODGE = p(j(.34F, -.18F, -.08F), j(-.18F, 0, .04F), j(-1.05F, .20F, -.35F), j(-.68F, -.18F, -.38F), .28F, 0);
 	private static final Pose STAGGER = p(j(-.15F, .06F, .03F), j(.12F, 0, 0), j(-.45F, .16F, .30F), j(-.35F, -.12F, -.40F), .12F, 0);
@@ -83,10 +91,12 @@ public final class MasterAnimationRules {
 			case CRESCENT -> CRESCENT_MOTION;
 			case BREAK_CAST -> BREAK_MOTION;
 			case CINDER_WAKE -> CINDER_MOTION;
+			case PURSUIT_BREAK -> PURSUIT_MOTION;
 			default -> null;
 		};
 		if (motion == null || !Float.isFinite(age) || age < 0 || tell < 1 || tell > 80 || active < 1 || active > 10
 			|| recovery < 1 || recovery > 120 || age >= tell + active + recovery) return NONE;
+		if (attack == PURSUIT_BREAK) return pursuit(age, tell, active, recovery);
 		if (attack == CINDER_WAKE && age >= tell + 6) return emberWake(age, tell, active, recovery);
 		float chamberAt = tell * .65F;
 		float followAt = tell + active + Math.min(3, recovery * .20F);
@@ -98,6 +108,25 @@ public final class MasterAnimationRules {
 		float enter = smooth(age / Math.max(1, chamberAt));
 		float leave = 1 - smooth((age - followAt) / (tell + active + recovery - followAt));
 		return pose.weight(enter * leave);
+	}
+
+	private static Pose pursuit(float age, int tell, int active, int recovery) {
+		float step = tell * MasterPursuitRules.WINDUP / MasterPursuitRules.TELL;
+		float plant = tell * (MasterPursuitRules.WINDUP + MasterPursuitRules.DASH_TICKS) / MasterPursuitRules.TELL;
+		float chamber = tell * .65F, follow = tell + active + Math.min(3, recovery * .20F);
+		Pose pose;
+		if (age < step) pose = PURSUIT_MOTION.chamber.toward(PURSUIT_STEP, smooth(age / step));
+		else if (age < plant) pose = PURSUIT_STEP.toward(PURSUIT_MOTION.chamber, smooth((age - step) / (plant - step)));
+		else if (age < chamber) pose = PURSUIT_MOTION.chamber;
+		else if (age < tell) pose = PURSUIT_MOTION.chamber.toward(PURSUIT_MOTION.impact, smooth((age - chamber) / (tell - chamber)));
+		else if (age < follow) pose = PURSUIT_MOTION.impact.toward(PURSUIT_MOTION.follow, smooth((age - tell) / (follow - tell)));
+		else pose = PURSUIT_MOTION.follow;
+		if (age >= step && age < plant) {
+			float stride = .28F * (float) Math.cos(2 * Math.PI * (age - step) / (plant - step));
+			pose = new Pose(pose.weight(), pose.body(), pose.head(), pose.sword(), pose.offhand(), stride, pose.bladeTilt());
+		}
+		return pose.weight(smooth(age / Math.max(1, step * .5F))
+			* (1 - smooth((age - follow) / (tell + active + recovery - follow))));
 	}
 
 	private static Pose emberWake(float age, int tell, int active, int recovery) {
