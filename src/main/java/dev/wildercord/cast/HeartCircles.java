@@ -3,6 +3,8 @@ package dev.wildercord.cast;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Mana;
+import dev.wildercord.player.ManaSkinRules;
+import dev.wildercord.player.ManaSkinDamage;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.Circles;
@@ -51,7 +53,8 @@ public final class HeartCircles {
 	public static void init() {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (entity instanceof ServerPlayer player && damage > 0 && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-				manaSkin(player, damage);
+				ManaSkinDamage.Wound wound = ManaSkinDamage.take(player, source);
+				if (wound != null) manaSkin(player, wound);
 				// Forming a circle takes unbroken concentration.
 				if (FORMING.remove(player.getUUID()) != null) {
 					player.sendOverlayMessage(Component.translatable("message.wildercord.circle_broken").withStyle(ChatFormatting.RED));
@@ -237,18 +240,27 @@ public final class HeartCircles {
 
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
-	/** 3rd Circle: Mana Skin. A fifth of the damage you take is paid from mana instead. */
-	private static void manaSkin(ServerPlayer player, float damage) {
-		if (Heart.active(player) < Circles.MANA_SKIN || player.isCreative() || !player.isAlive() || Spellbooks.tier(player) == null) {
+	/**
+	 * Consumes this hit's native wound once, at the original AFTER_DAMAGE callback position.
+	 * A fifth of this nonlethal health wound is restored, after armour, resistance and absorption.
+	 * A lethal wound receives no rebate: Reversal and totems own their later death-save recovery.
+	 */
+	private static void manaSkin(ServerPlayer player, ManaSkinDamage.Wound wound) {
+		if (Heart.active(player) < Circles.MANA_SKIN || player.isCreative() || !player.isAlive()
+				|| Spellbooks.tier(player) == null) {
 			return;
 		}
 		float mana = Spellbooks.mana(player);
-		float share = (float) Math.min(damage * Circles.MANA_SKIN_SHARE, mana / Circles.MANA_SKIN_COST);
-		if (share < 0.25F) {
+		float healthAfter = player.getHealth();
+		float share = ManaSkinRules.recovery(wound.healthBefore(), wound.healthAfter(), healthAfter, mana);
+		if (share <= 0) {
 			return;
 		}
-		player.heal(share);
-		Spellbooks.setMana(player, mana - share * Circles.MANA_SKIN_COST);
+		// This is the defender's passive, not healing performed by the incoming spell's caster.
+		Effects.withSource(player, () -> player.heal(share));
+		float cost = ManaSkinRules.payment(player.getHealth() - healthAfter, mana);
+		if (cost <= 0) return;
+		Spellbooks.setMana(player, mana - cost);
 		Vfx.emit(player.level(), new DustParticleOptions(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 4, 0.35, 0.0);
 		ElementFx.ring(player.level(), player.getBoundingBox().getCenter(), UP, 0x7FB0FF, 0.9, 0.45, 0.03, 7);
 	}

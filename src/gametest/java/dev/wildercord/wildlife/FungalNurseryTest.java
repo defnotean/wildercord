@@ -116,7 +116,7 @@ public final class FungalNurseryTest implements FabricClientGameTest {
   Set<UUID> existingDrops=w.getServer().computeOnServer(s -> s.overworld().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,snail.getBoundingBox().inflate(4),e -> e.getItem().is(SporebackContent.DEW)).stream().map(Entity::getUUID).collect(java.util.stream.Collectors.toSet()));
   try {
    traceGather=true;
-   w.getServer().runOnServer(s -> hand(p(s),ItemStack.EMPTY));c.waitTicks(5);c.runOnClient(mc -> mc.options.keyShift.setDown(true));c.waitTicks(5);
+   c.runOnClient(mc -> mc.options.keyShift.setDown(true));c.waitTicks(5);
    for(int attempt=0;attempt<4;attempt++) {
     w.getServer().runOnServer(s -> {
      var player=p(s);var l=s.overworld();boolean clear=false;
@@ -129,11 +129,22 @@ public final class FungalNurseryTest implements FabricClientGameTest {
      check(clear,"A real collision-free covered-garden approach has line of sight to the visitor");
      dev.wildercord.Wildercord.LOGGER.info("FUNGAL_GATHER admission player="+player.position()+" snail="+snail.position()+" shift="+player.isShiftKeyDown()+" visible="+player.hasLineOfSight(snail)+" pose="+snail.pose()+" dew="+snail.dew()+" gather="+snail.gatherReady()+" forage="+snail.forageReady()+" now="+l.getGameTime());
     });
-    c.waitTicks(5);interact(c,w);
+    c.waitTicks(5);selectEmptyGatherHand(c,w);interact(c,w);
     if(w.getServer().computeOnServer(s -> !snail.dew())) {collectEarnedDew(c,w,dewBefore,existingDrops);return;}
    }
    throw new AssertionError("Four real native crouch interactions did not spend the visitor reserve; inspect FUNGAL_GATHER admissions");
   }finally {traceGather=false;c.runOnClient(mc -> mc.options.keyShift.setDown(shift));}
+ }
+ /** Leave earlier pickup space for pruned shrubs; vanilla fills the first empty slot, even when it is selected. */
+ private static void selectEmptyGatherHand(ClientGameTestContext c,TestSingleplayerContext w) {
+  int slot=w.getServer().computeOnServer(s -> {
+   var inventory=p(s).getInventory();int firstEmpty=inventory.getFreeSlot();
+   for(int candidate=8;candidate>firstEmpty && firstEmpty>=0;candidate--)if(inventory.getItem(candidate).isEmpty())return candidate;
+   throw new AssertionError("Gathering needs an actually empty hotbar slot after earlier free pickup space");
+  });
+  c.getInput().pressKey(o -> o.keyHotbarSlots[slot]);c.waitTicks(3);
+  check(c.computeOnClient(mc -> mc.player.getInventory().getSelectedSlot()==slot && mc.player.getMainHandItem().isEmpty()),"Native hotbar selection leaves the client gather hand empty");
+  check(w.getServer().computeOnServer(s -> p(s).getInventory().getSelectedSlot()==slot && p(s).getMainHandItem().isEmpty()),"Native hotbar selection reaches the server with an empty gather hand");
  }
  // Follow the actual emitted item using client movement. A random drop may land beyond a stationary pickup box.
  private static void collectEarnedDew(ClientGameTestContext c,TestSingleplayerContext w,int before,Set<UUID> oldDrops) {

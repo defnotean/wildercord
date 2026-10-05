@@ -26,6 +26,8 @@ An explicitly agreed duel keeps its existing exception. Party membership lasts a
 
 ## Challenge a master
 
+Mana Skin restores up to a fifth of nonlethal health damage after armour and absorption, spending two mana per health actually restored. It needs at least a quarter-health rebate to activate. Absorbed hits cost no mana, and a lethal hit gets no extra healing from Mana Skin after a totem or Reversal. High-circle mana regeneration can sustain this partial protection, but cannot turn it into full damage cancellation.
+
 In Survival, reach Aura Form or Heart Circle VIII, then sneak-talk to a travelling Duelist twice to request an introduction. The teacher remains an ordinary teacher; a temporary Master waits nearby for one minute. This invitation does not enroll you. Talk to the Master to read the warning, then speak again within ten seconds to accept. The trial is lethal and voluntary. Other players must individually accept; being in the party does not enroll them.
 
 The first challenger has thirty seconds to gather up to eight willing challengers, or may use `/master ready` to begin sooner. The prototype can also be reached through `/master challenge ember`, `/master challenge gale` or `/master challenge stone`; `/master join` explicitly joins an open nearby trial. Spawn eggs are available for controlled creative testing.

@@ -464,7 +464,7 @@ Casters build rings of condensed mana around their heart, from the 1st Circle to
 |---|---|---|---|
 | 1st | 600 | | Passive slot 1, your **innate rune** |
 | 2nd | 2,000 | Know 10 runes | |
-| 3rd | 5,000 | Wear a Copper Cord, set off a reaction | **Mana Skin**: a fifth of damage taken is paid with mana (2 mana per health) |
+| 3rd | 5,000 | Wear a Copper Cord, set off a reaction | **Mana Skin**: restores up to a fifth of nonlethal health damage after defences (2 mana per health actually restored; minimum 0.25 health) |
 | 4th | 10,000 | Defeat 40 monsters with spells, set off 3 different reactions | |
 | 5th | 18,000 | Know 35 runes, wear an Amethyst Cord, *Long Incantation* (slay a monster with a spell of 6+ runes) | Passive slot 2, **Flow**: cooldowns 15% shorter |
 | 6th | 30,000 | Defeat 150 monsters with spells, slay 8 Runebound, set off 5 different reactions (any five of the eleven) | |

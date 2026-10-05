@@ -148,11 +148,12 @@ final class MasterHitReceiptChecks {
 				if (lifesave) check(close(receipt.healthLost(), healthBefore), "The pre-death-save receipt retains the complete real wound: " + note);
 				else if (defence != Defence.PROTECTION_AND_SKIN)
 					check(close(receipt.healthLost(), Math.max(0, HIT - absorption)), "The receipt records native pre-heal health damage: " + note);
-				else check(receipt.healthLost() > 0 && receipt.healthLost() < HIT * .2F, "Armour leaves a genuine wound smaller than Mana Skin's heal: " + note);
-				float expectedNet = defence == Defence.PROTECTION_AND_SKIN || lifesave ? 0 : Math.max(0, HIT - absorption - (skin ? HIT * .2F : 0));
+				else check(receipt.healthLost() > 0 && receipt.healthLost() < HIT * .2F, "Armour leaves a genuine resolved health wound: " + note);
+				float recovery = skin ? dev.wildercord.player.ManaSkinRules.recovery(healthBefore, healthBefore - receipt.healthLost(), healthBefore - receipt.healthLost(), manaBefore) : 0;
+				float expectedNet = lifesave ? 0 : receipt.healthLost() - recovery;
 				check(close(receipt.netHealthLost(), expectedNet) && close(Math.max(0, healthBefore - measured.getHealth()), expectedNet),
 					"The original projected return remains its unchanged post-heal health delta: " + note);
-				check(close(Spellbooks.mana(measured), manaBefore - (skin ? HIT * .4F : 0)), "Only real Mana Skin pays mana at the existing rate: " + note);
+				check(close(Spellbooks.mana(measured), manaBefore - recovery * 2), "Mana Skin pays only for its resolved-health rebate at the existing rate: " + note);
 				if (defence == Defence.REVERSAL) check(measured.isAlive() && close(measured.getHealth(), HEALTH * .5F),
 					"The real self-cast Reversal restores half health after a lethal wound: " + note);
 				if (defence == Defence.TOTEM) check(measured.isAlive() && measured.getOffhandItem().isEmpty() && close(measured.getHealth(), 1)

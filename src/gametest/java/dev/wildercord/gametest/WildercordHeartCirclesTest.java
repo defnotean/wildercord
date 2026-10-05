@@ -29,6 +29,7 @@ import java.util.List;
 public final class WildercordHeartCirclesTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		dev.wildercord.cast.ManaSkinChecks.run(context);
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(40);
 			world.getServer().runCommand("gamerule spawn_mobs false");

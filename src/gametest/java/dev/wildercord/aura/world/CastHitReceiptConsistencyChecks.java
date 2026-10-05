@@ -79,7 +79,7 @@ final class CastHitReceiptConsistencyChecks {
 	private Case probe;
 	private WildercordAttachments.Charge beforeCharge, callbackCharge;
 	private DamageSource beforeSource, acceptedSource;
-	private float beforeHealth, beforeAbsorption, beforeMana;
+	private float beforeHealth, beforeAbsorption, beforeMana, nativeHealthAfter;
 	private int callbacks;
 	private long begun, drivingReady, impactAt;
 	private boolean releaseFinished;
@@ -123,6 +123,14 @@ final class CastHitReceiptConsistencyChecks {
 	private static void registerCallbacks() {
 		if (registered) return;
 		registered = true;
+		var nativePhase = Wildercord.id("cast_hit_consistency_native_wound");
+		ServerLivingEntityEvents.AFTER_DAMAGE.addPhaseOrdering(nativePhase, net.fabricmc.fabric.api.event.Event.DEFAULT_PHASE);
+		ServerLivingEntityEvents.AFTER_DAMAGE.register(nativePhase, (entity, source, base, taken, blocked) -> {
+			CastHitReceiptConsistencyChecks fixture = active;
+			if (fixture != null && entity == fixture.target && source.getEntity() == fixture.attacker
+					&& source.getDirectEntity() == fixture.attacker && source.is(Aura.DAMAGE))
+				fixture.nativeHealthAfter = fixture.target.getHealth();
+		});
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
 			CastHitReceiptConsistencyChecks fixture = active;
 			if (fixture == null || entity != fixture.target || source.getEntity() != fixture.attacker
@@ -237,6 +245,7 @@ final class CastHitReceiptConsistencyChecks {
 		beforeCharge = target.getAttached(WildercordAttachments.CHARGE);
 		if (probe != Case.NEW_CHARGE && probe != Case.IDLE) check(beforeCharge != null, "A real held charge survives until the pre-impact snapshot");
 		beforeHealth = target.getHealth(); beforeAbsorption = target.getAbsorptionAmount(); beforeMana = Spellbooks.mana(target);
+		nativeHealthAfter = Float.NaN;
 		beforeSource = target.getLastDamageSource(); positionBefore = target.position();
 		callbackCharge = null; acceptedSource = null; callbacks = 0; active = this;
 	}
@@ -263,8 +272,15 @@ final class CastHitReceiptConsistencyChecks {
 			"The accepted native hit retains both owner and direct-source identity: " + note);
 		if (probe == Case.FULL_ABSORPTION) check(close(target.getHealth(), beforeHealth) && target.getAbsorptionAmount() < beforeAbsorption,
 			"A zero-health-loss release genuinely consumes absorption: " + note);
-		else if (probe == Case.MANA_SKIN) check(close(target.getHealth(), beforeHealth) && Spellbooks.mana(target) < beforeMana,
-			"Native armour plus Mana Skin fully conceals the real wound in the final health: " + note);
+		else if (probe == Case.MANA_SKIN) {
+			float netWound = beforeHealth - target.getHealth(), paidRecovery = (beforeMana - Spellbooks.mana(target)) / 2;
+			float nativeWound = beforeHealth - nativeHealthAfter;
+			float expectedRecovery = nativeWound * .2F >= .25F ? nativeWound * .2F : 0;
+			check(Float.isFinite(nativeHealthAfter) && nativeWound > 0 && netWound > 0
+				&& close(paidRecovery, expectedRecovery) && close(netWound, nativeWound - expectedRecovery),
+				"Mana Skin repays twenty percent of the native wound only above its existing recovery threshold: " + note
+					+ ", nativeWound=" + nativeWound + ", expectedRecovery=" + expectedRecovery);
+		}
 		else if (probe == Case.REVERSAL) check(target.isAlive() && close(target.getHealth(), HEALTH * .5F), "Real Reversal restores half health after lethal native damage: " + note);
 		else if (probe == Case.TOTEM) check(target.isAlive() && close(target.getHealth(), 1) && target.getOffhandItem().isEmpty()
 			&& target.hasEffect(MobEffects.ABSORPTION), "An actual consumed totem conceals a lethal native wound: " + note);
