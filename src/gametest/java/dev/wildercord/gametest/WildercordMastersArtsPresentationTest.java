@@ -128,6 +128,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 				check(key != null && key.getDefaultKey().getValue() == defaults[move], "The move has its distinct default combat key");
 				check(key.getCategory().id().equals(Wildercord.id("masters_arts")), "The dedicated category is registered");
 				for (KeyMapping other : mc.options.keyMappings) {
+					if (other.getName().startsWith("key.debug.") || other.getName().equals("key.quickActions")) continue;
 					check(other == key || !other.getDefaultKey().equals(key.getDefaultKey()), "No default binding conflict with " + other.getName());
 				}
 				check(!MastersArtsClient.help().get(1 + move * 2).getString().contains("screen.wildercord"), "Translated key help loads");

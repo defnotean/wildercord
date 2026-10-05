@@ -949,7 +949,13 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				lowSwing(context);
 			}
 		}
-		context.waitTicks(scene.fpDelay + styleWindup(scene.id));
+		int windup = styleWindup(scene.id);
+		if (windup > 0) {
+			regroup(context, world, scene);
+			context.waitTicks(scene.fpDelay + Math.max(0, windup - 2));
+		} else {
+			context.waitTicks(scene.fpDelay);
+		}
 		shot(context, "art_" + scene.id + "_fp");
 		int settle = Math.max(4, settleTicks(scene) - scene.fpDelay);
 		context.waitTicks(settle);
