@@ -114,6 +114,47 @@ class ResidueLedgerTest {
 	}
 
 	@Test
+	void returningChunkDrainsOnlyItsSweepBudget() {
+		ResidueLedger<String> ledger = new ResidueLedger<>();
+		for (int x = 0; x < 5; x++) {
+			ledger.add(at(x, 64, 0, 100, "alice"));
+		}
+		ledger.takeDue(150, 10).forEach(ledger::park);
+		long chunk = ResidueLedger.chunkOf(0, 0);
+		assertTrue(ledger.unpark(chunk, 0).isEmpty());
+		assertTrue(ledger.hasParked(chunk));
+		for (int expected : new int[] {2, 2, 1}) {
+			List<Entry<String>> batch = ledger.unpark(chunk, 2);
+			assertEquals(expected, batch.size());
+			assertTrue(ledger.takeDue(10_000, 10).isEmpty(), "remaining parked entries stay off the due schedule");
+			batch.forEach(e -> ledger.remove(e.pos()));
+			assertEquals(!ledger.isEmpty(), ledger.hasParked(chunk));
+			assertEquals(ledger.size(), ledger.owned("alice"));
+		}
+		assertTrue(ledger.isEmpty());
+		assertTrue(ledger.unpark(chunk, 2).isEmpty());
+	}
+
+	@Test
+	void removedOrReplacedParkedEntriesNeverReturn() {
+		ResidueLedger<String> ledger = new ResidueLedger<>();
+		Entry<String> removed = at(0, 64, 0, 100, "alice");
+		Entry<String> replaced = at(1, 64, 0, 100, "alice");
+		Entry<String> waiting = at(2, 64, 0, 100, "alice");
+		List.of(removed, replaced, waiting).forEach(ledger::add);
+		ledger.takeDue(150, 10).forEach(ledger::park);
+		ledger.remove(removed.pos());
+		Entry<String> replacement = at(1, 64, 0, 1000, "bob");
+		ledger.add(replacement);
+		ledger.park(replaced); // A stale caller cannot park the replacement.
+		assertEquals(List.of(waiting), ledger.unpark(waiting.chunk(), 1));
+		assertFalse(ledger.hasParked(waiting.chunk()));
+		assertTrue(ledger.unpark(waiting.chunk(), 1).isEmpty());
+		assertTrue(ledger.takeDue(999, 10).isEmpty());
+		assertEquals(List.of(replacement), ledger.takeDue(1000, 10));
+	}
+
+	@Test
 	void timeCanBeMovedOnForEveryResidue() {
 		ResidueLedger<String> ledger = new ResidueLedger<>();
 		ledger.add(new Entry<>(0, 64, 0, "void_scar", 1000, 7000, 0, "", "d"));

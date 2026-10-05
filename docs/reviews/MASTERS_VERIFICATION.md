@@ -4,6 +4,21 @@ Base: `ebb2887f7d7becccf339918c00a9741721606fb1` (main).
 
 Development version: `0.11.0-masters-dev`.
 
+## CI follow-up: 2026-10-05
+
+[Draft PR #1](https://github.com/defnotean/wildercord/pull/1) now runs the normal repository workflow. On published commit `eba91238eee564eebf5addfb72a6b2f3929eb9a5`, the [Build job](https://github.com/defnotean/wildercord/actions/runs/37292944774/job/111707410625) **passed**: generated assets, Gradle build/unit tests, pinned launcher profiles and artifact uploads. This supersedes the earlier normal-build blocker for GitHub CI; it does not change what the earlier local environments could run.
+
+The actual client also starts and produces gameplay screenshots. Its first full run exposed native assertions in Siltcrest fish-escape observation, Cinder Bailiff withdrawal, and residue expiration after chunk return. Shard 2 remained in progress when this follow-up was prepared. A native startup or a successful build is not a complete gameplay pass.
+
+The bounded corrective changes are:
+
+- Isolate the Cinder supplied zombie from unrelated random Runebound conversion, assert initial current/max health of 20, and preserve the final no-damage assertion.
+- Observe Siltcrest's actual committed quarry before the bird's synchronous final-tick resolution, retain the exact cancellation/refusal requirements, and log each unforced trial. Eight trials and the strict displacement threshold remain.
+- Wake parked residues when resident chunks become accessible again, using Fabric's full-status-change event and deferred non-loading chunk checks. Retain inaccessible records, bound fades to 64 per dimension per sweep, and verify actual readiness before the native test reads blocks. Accessibility checks are separately bounded across queued wake-ups and scheduled entries.
+- Add a separate 15-suite Masters native job, preserving all four complete shards and their gallery settings. One catalog controls selection; launcher and processed-descriptor evidence must agree. Focused results explicitly cannot establish a full-client-gate pass.
+
+Independent review found no blocking issue in these patches. A freshly reconstructed Java 25 verifier passed all four source sets and **1,116/1,116 JUnit tests** at 10:28:36 UTC, with optional Iris absent from the test runtime and all 3,324 selected source/config fingerprints unchanged. **22 Python CI-tooling regression tests** also pass. The corrective native behavior and focused job still require their next GitHub run; no native pass is claimed from these local checks.
+
 ## Baseline
 
 - Minecraft 26.3, Fabric Loader 0.19.5, Fabric API 0.161.0+26.3
@@ -71,7 +86,7 @@ The authorized Windows desktop baseline also failed before source compilation: L
 
 ## Not yet established
 
-- A normal Gradle/Loom build and release-ready mod artifact
+- A release-ready artifact with all native gameplay and presentation gates passed (the normal GitHub Gradle build now passes)
 - Native client startup/mixin application and real multiplayer behavior
 - Post-Protection-IV encounter difficulty and performance under several simultaneous casters
 - Complete animation/asset coverage for all fifty existing style arts
@@ -91,11 +106,11 @@ Artifact: `wildercord-0.11.0-masters-dev+mc26.3-EXPERIMENTAL.jar` (20,324,718 by
 
 SHA-256: `aaa0b7eae7f6e6b73ed4bfe6b67b693072cc4d6d86f52ff8ee1fd951e09183fc`.
 
-This is **manually assembled**, with no successful normal Loom build, Mixin annotation-processing pass or runtime launch. Use only for a backed-up disposable test world. It is not approved for production or important worlds. Nothing was installed into a user's game or published. Source is the authoritative deliverable.
+This particular artifact is **manually assembled**, not produced by the later successful normal CI build, and has no Mixin annotation-processing or runtime-launch verification. Use only for a backed-up disposable test world. It is not approved for production or important worlds. Nothing was installed into a user's game or published. Source is the authoritative deliverable.
 
 ## Next acceptance gates
 
-1. Run the normal Gradle build, unit suite and focused native suites on a working supported Java 25/Fabric environment.
+1. Repeat the normal Gradle build/unit checks for each corrective commit, then pass the focused native suites and all four complete gameplay shards.
 2. Verify client/server startup and every added mixin, then real two-client party, reflected-projectile, roster and delayed-effect scenarios.
 3. Tune full Protection-IV/netherite combat, coordinated spell pressure, networking jitter and eight-player performance with real play sessions.
 4. Review the actual client at multiple UI scales, both hands, armor/skin layers, Iris/shaders and owner/observer viewpoints. Inspect all windup/impact/cancel/recovery frames.

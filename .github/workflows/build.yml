@@ -102,3 +102,38 @@ jobs:
             build/run/clientGameTest/screenshots/
             client-game-tests.log
             artifacts/review/test-manifest.json
+
+  # Additional focused evidence for the Masters foundation; never replaces the four full shards.
+  masters-native:
+    name: masters-native (15 focused suites)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Check native CI selection and evidence tooling
+        run: python -m unittest discover -s tools -p 'test_client_ci.py' -v
+      - name: Install virtual display
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+      - name: Run the 15 Masters native suites
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          SDL_VIDEO_FORCE_EGL: "1"
+        run: python tools/run_client_ci.py --suite masters --log masters-native.log
+      - name: Record focused Masters outcomes
+        if: always()
+        run: python tools/test_manifest.py --suite masters --log masters-native.log --output artifacts/review/masters-native-manifest.json
+      - name: Preserve focused Masters evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: masters-native-evidence
+          path: |
+            build/run/clientGameTest/logs/
+            build/run/clientGameTest/screenshots/
+            masters-native.log
+            artifacts/review/masters-native-manifest.json

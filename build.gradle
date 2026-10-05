@@ -97,6 +97,10 @@ processResources {
 
 // Focused in-world screenshot suites keep iteration fast while the full descriptor remains available.
 tasks.named('processGametestResources') {
+	inputs.file('tools/client_suite_catalog.json')
+	// Presence matters too: an empty -PciSuite is invalid, not the absent/full selector.
+	inputs.property('selectorPresence', ['ciSuite', 'focusedSuite', 'tailFrom', 'ciShard', 'ciShards'].findAll { project.hasProperty(it) })
+	inputs.property('ciSuite', project.findProperty('ciSuite') ?: '')
 	inputs.property('focusedSuite', project.findProperty('focusedSuite') ?: '')
 	inputs.property('twoClientSuite', project.hasProperty('twoClientSuite'))
 	inputs.property('twoClientUnitySuite', project.hasProperty('twoClientUnitySuite'))
@@ -118,11 +122,18 @@ tasks.named('processGametestResources') {
 	inputs.property('ciShard', project.findProperty('ciShard') ?: '')
 	inputs.property('ciShards', project.findProperty('ciShards') ?: '')
 	doLast {
+		def selectors = ['ciSuite', 'ciShard', 'focusedSuite', 'twoClientSuite', 'encounterSuite',
+			'cinnamonSuite', 'defensiveSuite', 'practiceSuite', 'magicSuite', 'fusionSuite',
+			'runeSuite', 'mechanicsSuite', 'tourSuite', 'parrySuite', 'signatureSuite', 'tailSuite']
+		def active = selectors.findAll { project.hasProperty(it) }
+		if (active.size() > 1) throw new GradleException("Do not combine client suite selectors: ${active.join(', ')}")
+		def multiplayer = ['twoClientUnitySuite', 'twoClientRainshieldSuite', 'twoClientCampSuite'].findAll { project.hasProperty(it) }
+		if (multiplayer.size() > 1 || (!multiplayer.isEmpty() && !project.hasProperty('twoClientSuite'))) throw new GradleException('Select one supervised multiplayer suite together with twoClientSuite')
+		if (project.hasProperty('tailFrom') && !project.hasProperty('tailSuite')) throw new GradleException('tailFrom requires tailSuite')
 		// CI runs the full descriptor as contiguous shards (`-PciShard=2 -PciShards=4`), keeping the
 		// declared order inside each shard, because the whole roster does not fit one job's time limit.
 		if (project.hasProperty('ciShard') || project.hasProperty('ciShards')) {
 			if (!project.hasProperty('ciShard') || !project.hasProperty('ciShards')) throw new GradleException('ciShard and ciShards must be given together')
-			if (project.hasProperty('twoClientSuite') || project.hasProperty('focusedSuite') || project.hasProperty('tailSuite')) throw new GradleException('ciShard selects from the full descriptor; do not combine it with another suite selector')
 			def shard = project.property('ciShard').toString().toInteger()
 			def shards = project.property('ciShards').toString().toInteger()
 			if (shards < 1 || shard < 1 || shard > shards) throw new GradleException('ciShard must be between 1 and ciShards')
@@ -133,11 +144,31 @@ tasks.named('processGametestResources') {
 			descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
 		}
+		// The catalog is also consumed by the launcher and evidence manifest. Keep this roster
+		// explicit: appending more tests to the full descriptor must not expand the focused gate.
+		if (project.hasProperty('ciSuite')) {
+			def name = project.property('ciSuite').toString()
+			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))
+			if (!catalog.containsKey(name)) throw new GradleException("Unknown ciSuite '${name}'; choose from ${catalog.keySet().join(', ')}")
+			def group = catalog[name]
+			def selected = group.entries
+			if (!(selected instanceof List) || selected.isEmpty() || !selected.every { it instanceof String && !it.trim().isEmpty() }) throw new GradleException("ciSuite '${name}' must contain a nonempty list of entrypoint names")
+			if (selected.toSet().size() != selected.size()) throw new GradleException("ciSuite '${name}' contains duplicate entrypoints")
+			if (!(group.expectedCount instanceof Integer) || group.expectedCount < 1 || selected.size() != group.expectedCount) throw new GradleException("ciSuite '${name}' must contain exactly ${group.expectedCount} entrypoints")
+			def descriptor = file("${destinationDir}/fabric.mod.json")
+			def data = new groovy.json.JsonSlurper().parse(descriptor)
+			def all = data.entrypoints['fabric-client-gametest']
+			if (all.toSet().size() != all.size()) throw new GradleException('Full client descriptor contains duplicate entrypoints')
+			def missing = selected.findAll { !all.contains(it) }
+			if (!missing.isEmpty()) throw new GradleException("ciSuite '${name}' has unregistered entrypoints: ${missing.join(', ')}")
+			data.entrypoints['fabric-client-gametest'] = selected
+			descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
+			return
+		}
 		// Requires the explicit two-process supervisor; never enters the ordinary CI roster.
 		if (project.hasProperty('twoClientSuite')) {
 			def descriptor=file("${destinationDir}/fabric.mod.json")
 			def data=new groovy.json.JsonSlurper().parse(descriptor)
-			if(project.hasProperty('twoClientRainshieldSuite') && (project.hasProperty('twoClientUnitySuite') || project.hasProperty('twoClientCampSuite'))) throw new GradleException('Select one supervised multiplayer suite')
 			data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientRainshieldSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsRainshieldTest' : project.hasProperty('twoClientCampSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsCampTest' : project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
 			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
@@ -178,6 +209,23 @@ tasks.named('processGametestResources') {
 			? 'dev.wildercord.gametest.WildercordMagicReleaseTest'
 			: 'dev.wildercord.gametest.WildercordCinnamonTest']
 		descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
+	}
+}
+
+// Check the processed descriptor immediately before a focused client starts, including when
+// resource processing is UP-TO-DATE. The manifest checks this evidence against the launcher.
+tasks.named('runClientGameTest') {
+	doFirst {
+		if (project.hasProperty('ciSuite')) {
+			def name = project.property('ciSuite').toString()
+			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))
+			def resources = tasks.named('processGametestResources').get()
+			def descriptor = new groovy.json.JsonSlurper().parse(file("${resources.destinationDir}/fabric.mod.json"))
+			def entries = descriptor.entrypoints['fabric-client-gametest']
+			if (!catalog.containsKey(name) || entries != catalog[name].entries) throw new GradleException('Processed client descriptor does not match ciSuite catalog selection')
+			logger.lifecycle('WILDERCORD_CLIENT_DESCRIPTOR ' + groovy.json.JsonOutput.toJson(
+				[kind: 'suite', name: name, count: entries.size(), entries: entries]))
+		}
 	}
 }
 
