@@ -20,6 +20,7 @@ public final class WetlandTerrainTest implements FabricClientGameTest {
    c.waitTicks(35);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 6000");
    BlockPos habitat=w.getServer().computeOnServer(s -> {
     check(s.overworld().getSeed()==Long.parseLong(REPRODUCTION_SEED),"Failed native CI seed is preserved");
+    dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.WetlandTerrainTest\",\"seed\":\""+s.overworld().getSeed()+"\"}");
     var source=s.overworld().getChunkSource();var b=source.getGenerator().getBiomeSource().findBiomeHorizontal(0,64,0,6400,32,v -> v.is(Biomes.SWAMP),RandomSource.create(912),true,source.randomState());
     check(b!=null,"Normal terrain contains swamp");dev.wildercord.Wildercord.LOGGER.info("WETLAND_TERRAIN seed="+s.overworld().getSeed()+", habitat="+b.getFirst());check(b.getFirst().equals(REPRODUCTION_HABITAT),"Failed native CI habitat and search region are preserved");return b.getFirst();
    });

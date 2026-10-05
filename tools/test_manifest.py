@@ -51,12 +51,15 @@ def main(argv=None):
         for key in ("tests", "failures", "errors", "skipped"):
             units[key] += int(root.get(key, "0"))
     focused = selection["kind"] == "suite"
-    manifest = {"fullClientGate": "passed" if successful and not focused else "unverified", "log": str(args.log.resolve()),
+    diagnostic = selection["kind"] == "diagnostic"
+    manifest = {"fullClientGate": "passed" if successful and not (focused or diagnostic) else "unverified", "log": str(args.log.resolve()),
                 **({"shard": selection["shard"]} if selection["kind"] == "shard" else {}),
                 **({"focusedClientGate": "passed" if successful else "unverified"} if focused else {}),
+                **({"focusedClientGate": "unverified", "diagnosticOutcome": "passed" if successful else "unverified"} if diagnostic else {}),
                 "selection": selection,
                 "verificationIssues": issues,
-                "basis": ("Named focused selection only, verified against the launcher's selection/exit and Gradle's processed descriptor evidence. "
+                "basis": ("Diagnostic selection only. Neither full nor focused release acceptance is established by this run."
+                          if diagnostic else "Named focused selection only, verified against the launcher's selection/exit and Gradle's processed descriptor evidence. "
                           "The full client gate and animation gallery are not established by this run. "
                           "Suite counts are not individual assertion counts." if focused else
                           "Full-descriptor Gradle outcome plus declared optional flags; suite counts are not individual assertion counts. "
@@ -71,7 +74,7 @@ def main(argv=None):
                       "client": manifest["counts"], "unit": units}))
     # The focused job must not turn green if execution or scope evidence is missing.
     # Keep the existing full/shard report-only exit behavior unchanged.
-    return 1 if focused and not successful else 0
+    return 1 if (focused or diagnostic) and not successful else 0
 
 
 if __name__ == "__main__":

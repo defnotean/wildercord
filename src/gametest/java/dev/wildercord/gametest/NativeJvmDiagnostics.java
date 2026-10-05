@@ -35,7 +35,7 @@ public final class NativeJvmDiagnostics {
 	static Mode mode(String ci, String job) {
 		if (!"true".equals(ci) || job == null) return Mode.DISABLED;
 		return switch (job) {
-			case "masters-native", "articulated-native" -> Mode.FOCUSED;
+			case "masters-native", "articulated-native", "native-diagnostic" -> Mode.FOCUSED;
 			case "game-tests" -> Mode.FULL;
 			default -> Mode.DISABLED;
 		};

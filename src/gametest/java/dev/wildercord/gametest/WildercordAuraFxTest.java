@@ -93,6 +93,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			MagicQuality.stringIndicator = MagicQuality.StringIndicator.CROSSHAIR;
 		});
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
+			world.getServer().runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.gametest.WildercordAuraFxTest\",\"seed\":\"" + s.overworld().getSeed() + "\"}"));
 			context.waitTicks(40);
 			world.getServer().runCommand("gamerule spawn_mobs false");
 			world.getServer().runCommand("gamerule advance_time false");

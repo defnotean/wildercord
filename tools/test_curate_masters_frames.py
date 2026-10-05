@@ -649,7 +649,7 @@ class ArticulatedCuratorTests(CuratorFixture):
         self.assertEqual(result, second)
         self.assertEqual(result["selectedFrameCount"], 116)
         self.assertEqual(result["sourceSuites"], list(curator.ARTICULATED_SOURCE_SUITES))
-        self.assertEqual({frame["sourceSuite"] for frame in result["frames"]}, set(curator.ARTICULATED_SOURCE_SUITES))
+        self.assertEqual({frame["sourceSuite"] for frame in result["frames"]}, set(curator.ARTICULATED_OWNER_SOURCE_SUITES))
         self.assertEqual(result["provenance"], self.identity)
         manifest_path = self.root / self.output / "manifest.json"
         self.assertLessEqual(manifest_path.stat().st_size, result["limits"]["manifestReserveBytes"])
@@ -681,10 +681,10 @@ class ArticulatedCuratorTests(CuratorFixture):
         result = self.curate()
         files = [path for path in (self.root / self.output).rglob("*") if path.is_file()]
         self.assertLessEqual(sum(path.stat().st_size for path in files), 14_000_000)
-        self.assertEqual(result["selectedFrameCount"], 19)
+        self.assertEqual(result["selectedFrameCount"], 18)
         for hand in ("left", "right"):
             selected = [frame for frame in result["frames"] if frame["hand"] == hand]
-            self.assertEqual({frame["sourceSuite"] for frame in selected}, set(curator.ARTICULATED_SOURCE_SUITES))
+            self.assertEqual({frame["sourceSuite"] for frame in selected}, set(curator.ARTICULATED_OWNER_SOURCE_SUITES))
             self.assertTrue(any(frame["equipment"] == "netherite_full" and frame["view"].endswith("third_person_back")
                                 for frame in selected))
             hud = [frame for frame in selected if frame["sourceSuite"] == curator.ARTICULATED_HUD_SUITE]
@@ -1147,6 +1147,248 @@ class SharedPlayerCuratorTests(CuratorFixture):
         self.assertLess(archive.stat().st_size, 15_000_000)
 
 
+class FundedShellCuratorTests(CuratorFixture):
+    suite = "articulated"
+
+    def funded_shot(self, *, art="spellcut", camera="first_person", hand="right", gear="netherite", size=100):
+        stage = 4 if hand == "right" else 5
+        return self.shot(f"articulated_funded_shell_{art}_{camera}_{hand}_stage{stage}_{gear}.png", size=size)
+
+    def full_funded_matrix(self, size=100):
+        for art in ("spellcut", "rising_break", "driving_cut"):
+            for camera in ("third_person_front", "third_person_back", "first_person"):
+                for hand in ("right", "left"):
+                    for gear in ("skin", "netherite"):
+                        self.funded_shot(art=art, camera=camera, hand=hand, gear=gear, size=size)
+
+    def test_all_36_exact_names_keep_fixture_facts_separate_from_unknown_observations(self):
+        self.full_funded_matrix()
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 36)
+        self.assertEqual(result["selectedMetadataCount"], 0)
+        self.assertEqual(len(result["fundedShellCoverage"]), 36)
+        self.assertEqual(len({row["expectedFilename"] for row in result["fundedShellCoverage"]}), 36)
+        self.assertEqual(set(result["sourceSuites"]), {*curator.ARTICULATED_OWNER_SOURCE_SUITES,
+                                                     curator.ARTICULATED_FUNDED_SHELL_SUITE})
+        for row in result["fundedShellCoverage"]:
+            self.assertTrue(row["captured"] and row["selected"])
+            self.assertFalse(row["missingCapture"] or row["omittedForBudget"])
+            self.assertEqual(row["renderedPhase"], "unknown")
+            self.assertEqual(row["verifiedRenderedPhases"], [])
+        for frame in result["frames"]:
+            filename = Path(frame["sourcePath"]).name
+            self.assertEqual(frame["sourceSuite"], curator.ARTICULATED_FUNDED_SHELL_SUITE)
+            self.assertEqual(frame["form"], "funded_aura_shell")
+            self.assertEqual((frame["stage"], frame["school"]), (4, "stone") if frame["hand"] == "right" else (5, "gale"))
+            self.assertEqual(frame["initialAura"], 100)
+            self.assertEqual(frame["initialAuraBasis"], "native_fixture_contract")
+            self.assertEqual(frame["schoolBasis"], "native_fixture_contract")
+            self.assertEqual(frame["stageBasis"], "filename_and_native_fixture_contract")
+            armored = filename.endswith("_netherite.png")
+            self.assertEqual(frame["equipment"], "netherite_full" if armored else "skin")
+            self.assertEqual(frame["armorEnchantment"], "protection_iv" if armored else None)
+            self.assertEqual(frame["armorTrim"], "gold_sentry" if armored else None)
+            self.assertEqual((frame["mainHandItem"], frame["offHandItem"]), ("diamond_sword", "empty"))
+            self.assertEqual(frame["heldItemBasis"], "native_fixture_contract")
+            self.assertEqual(frame["hudBasis"], "native_fixture_contract")
+            self.assertTrue(frame["hudVisible"])
+            self.assertIsNone(frame["viewport"])
+            self.assertIsNone(frame["uiScale"])
+            self.assertEqual(frame["viewportBasis"], "not_encoded_in_filename")
+            self.assertEqual((frame["phase"], frame["renderedPhase"]), ("unknown", "unknown"))
+            self.assertEqual(frame["phaseBasis"], "rendered_phase_unverified")
+            self.assertIsNone(frame["sampleIndex"])
+            self.assertNotIn("requestedPhase", frame)
+            self.assertNotIn("metadata", frame)
+            self.assertTrue(frame["nativePixelReviewRequired"])
+            self.assertEqual(frame["exactImpactPixelCoverage"], "unverified")
+            receipt = frame["preCaptureReceipt"]
+            self.assertEqual(receipt["status"], "not_ingested")
+            self.assertEqual(receipt["sourceArtifact"], "articulated-native-evidence")
+            self.assertEqual(receipt["logRecord"], "ARTICULATED_FUNDED_SHELL name=" + filename[:-4])
+            self.assertEqual(receipt["preCapturePhase"], "unknown")
+            for key in ("activation", "shellARGB", "actualSkin", "preCaptureAge"):
+                self.assertIsNone(receipt[key])
+            self.assertIsNone(curator.describe(filename))
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_impostor_stage_hand_move_equipment_and_camera_names_are_not_admitted(self):
+        base = "articulated_funded_shell_spellcut_first_person_right_stage4_netherite.png"
+        invalid = [base.replace(before, after) for before, after in (
+            ("stage4", "stage5"), ("right", "left"), ("stage4", "stage04"), ("stage4", "stage6"),
+            ("right", "RIGHT"), ("spellcut", "Spellcut"), ("spellcut", "kindling_draw"),
+            ("first_person", "hud"), ("first_person", "first"), ("first_person", "third_front"),
+            ("netherite", "full"), ("netherite", "skin_slim"), ("netherite", "netherite_requested_active"),
+            ("funded_shell", "synthetic_shell"), (".png", "_frame_1.png"), (".png", ".png.extra"))]
+        invalid += [base.replace("right_stage4", "left_stage4"), base.replace("right_stage4", "right_stage5")]
+        for filename in invalid:
+            with self.subTest(filename=filename):
+                self.assertIsNone(curator.describe(filename, suite=self.suite))
+            self.shot(filename)
+        result = self.curate()
+        self.assertEqual(result["frames"], [])
+        self.assertTrue(all(row["missingCapture"] and not row["omittedForBudget"] for row in result["fundedShellCoverage"]))
+
+    def test_missing_and_budget_omissions_are_distinct_for_every_slot(self):
+        present = self.funded_shot()
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE)
+        captured = [row for row in result["fundedShellCoverage"] if row["captured"]]
+        self.assertEqual(len(captured), 1)
+        self.assertEqual(captured[0]["expectedFilename"], present.name)
+        self.assertTrue(captured[0]["omittedForBudget"])
+        self.assertFalse(captured[0]["missingCapture"] or captured[0]["selected"])
+        self.assertEqual(sum(row["missingCapture"] for row in result["fundedShellCoverage"]), 35)
+
+    def test_native_logs_and_unbound_json_do_not_create_observed_receipts_or_phase_claims(self):
+        image = self.funded_shot()
+        image.with_suffix(".json").write_text(json.dumps({"actualSkin": "SLIM", "renderedPhase": "ACTIVE",
+            "activation": 123, "shellARGB": "c0ff2040", "captureStatus": "passed"}))
+        log = image.parent / "latest.log"
+        log.write_text("ARTICULATED_FUNDED_SHELL name=" + image.stem
+                       + " activation=123 shellGlow=c0ff2040 actualSkin=SLIM preCapturePhase=ACTIVE preCaptureAge=6.5")
+        result = self.curate()
+        receipt = result["frames"][0]["preCaptureReceipt"]
+        self.assertIsNone(receipt["activation"])
+        self.assertIsNone(receipt["actualSkin"])
+        self.assertIsNone(receipt["shellARGB"])
+        self.assertEqual(result["frames"][0]["renderedPhase"], "unknown")
+        self.assertEqual(result["selectedMetadataCount"], 0)
+        self.assertEqual(len(list((self.root / self.output / "frames").iterdir())), 1)
+
+    def test_twelve_representatives_cover_requested_art_camera_gear_and_both_hands(self):
+        self.full_funded_matrix(size=1_000_000)
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + 12_000_000)
+        expected = {(art, "first_person", "netherite_full", hand)
+                    for art in ("spellcut", "rising_break", "driving_cut") for hand in ("right", "left")}
+        expected.update((art, "third_person_front", "skin", hand)
+                        for art in ("spellcut", "driving_cut") for hand in ("right", "left"))
+        expected.update(("rising_break", "third_person_back", "netherite_full", hand) for hand in ("right", "left"))
+        self.assertEqual({(frame["art"], frame["camera"], frame["equipment"], frame["hand"])
+                          for frame in result["frames"]}, expected)
+        self.assertEqual(sum(row["omittedForBudget"] for row in result["fundedShellCoverage"]), 24)
+
+    def test_funded_priority_pair_cannot_be_split_by_later_retry_but_missing_mate_is_not_invented(self):
+        right = self.funded_shot()
+        left = self.funded_shot(hand="left")
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + 100)
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(sum(row["omittedForBudget"] for row in result["fundedShellCoverage"]), 2)
+        right.unlink()
+        result = curator.curate(self.root, self.source, self.marker, "review/missing-mate", self.identity,
+                                suite=self.suite, budget=curator.ARTICULATED_MANIFEST_RESERVE + 100)
+        self.assertEqual([Path(frame["sourcePath"]).name for frame in result["frames"]], [left.name])
+        self.assertEqual(sum(row["missingCapture"] for row in result["fundedShellCoverage"]), 35)
+
+    def test_budget_rounds_share_representatives_without_starving_old_comparison_pair(self):
+        self.full_funded_matrix(size=1_000_000)
+        SharedPlayerCuratorTests.full_shared_matrix(self, size=1_000_000)
+        ArticulatedCuratorTests.full_matrix(self, size=1_000_000)
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + 6_000_000)
+        funded = [frame for frame in result["frames"] if frame.get("form") == "funded_aura_shell"]
+        shared = [frame for frame in result["frames"] if frame.get("form") == "shared_player_art"]
+        old = [frame for frame in result["frames"] if frame not in funded + shared]
+        self.assertEqual([(frame["art"], frame["camera"]) for frame in shared],
+                         [("rising_break", "third"), ("driving_cut", "third")])
+        self.assertEqual({(frame["art"], frame["camera"], frame["equipment"], frame["hand"]) for frame in funded},
+                         {("spellcut", "first_person", "netherite_full", hand) for hand in ("right", "left")})
+        self.assertEqual({Path(frame["sourcePath"]).name for frame in old},
+                         {"articulated_live_left_first_frame_0.png", "articulated_live_left_third_frame_0.png"})
+        self.assertEqual(sum(row["omittedForBudget"] for row in result["fundedShellCoverage"]), 34)
+        self.assertFalse(any(row["missingCapture"] for row in result["fundedShellCoverage"]))
+
+    def test_all_287_selected_records_fit_reserve_and_preserve_hashes_source_bytes_and_old_groups(self):
+        self.full_funded_matrix()
+        SharedPlayerCuratorTests.full_shared_matrix(self)
+        ArticulatedCuratorTests.full_matrix(self)
+        npc = ArticulatedNpcCuratorTests()
+        npc.root, npc.source, npc.started = self.root, self.source, self.started
+        npc.full_npc_matrix()
+        before = {path: path.read_bytes() for path in (self.root / self.source).rglob("*") if path.is_file()}
+        result = self.curate()
+        self.assertEqual((result["selectedFrameCount"], result["selectedMetadataCount"]), (287, 15))
+        self.assertEqual((len(result["coverage"]), len(result["npcCoverage"]), len(result["sharedPlayerCoverage"])), (32, 2, 40))
+        self.assertEqual([frame["phase"] for frame in result["frames"][:6]],
+                         ["reply_warning", "reply_warning", "release", "release", "recovery", "recovery"])
+        self.assertTrue(all(frame["captureStatus"] == "passed" for frame in result["frames"][:6]))
+        repeat = curator.curate(self.root, self.source, self.marker, "review/repeated", self.identity, suite=self.suite)
+        self.assertEqual(result, repeat)
+        manifest_size = (self.root / self.output / "manifest.json").stat().st_size
+        self.assertGreater(manifest_size, 640_000)
+        self.assertLess(manifest_size, curator.ARTICULATED_MANIFEST_RESERVE)
+        self.assertEqual(result["limits"]["totalBytesLimit"], 14_000_000)
+        self.assertEqual(len({frame["sourcePath"] for frame in result["frames"]}), 287)
+        for frame in result["frames"]:
+            for entry in ([frame, frame["metadata"]] if "metadata" in frame else [frame]):
+                original = before[self.root / entry["sourcePath"]]
+                self.assertEqual((self.root / self.output / entry["artifactPath"]).read_bytes(), original)
+                self.assertEqual(entry["sha256"], hashlib.sha256(original).hexdigest())
+        self.assertEqual({path: path.read_bytes() for path in before}, before)
+
+    def test_large_combined_matrix_keeps_finalized_npc_priority_and_atomic_comparisons_below_cap(self):
+        self.full_funded_matrix(size=500_000)
+        SharedPlayerCuratorTests.full_shared_matrix(self, size=500_000)
+        ArticulatedCuratorTests.full_matrix(self, size=500_000)
+        npc = ArticulatedNpcCuratorTests()
+        npc.root, npc.source, npc.started = self.root, self.source, self.started
+        npc.full_npc_matrix(size=100_000)
+        result = self.curate()
+        self.assertEqual([frame["phase"] for frame in result["frames"][:6]],
+                         ["reply_warning", "reply_warning", "release", "release", "recovery", "recovery"])
+        self.assertTrue(all(frame["captureStatus"] == "passed" and "metadata" in frame for frame in result["frames"][:6]))
+        old = [frame for frame in result["frames"] if frame["view"] != curator.NPC_VIEW and "form" not in frame]
+        self.assertEqual({frame["sourceSuite"] for frame in old}, set(curator.ARTICULATED_OWNER_SOURCE_SUITES))
+        for hand in ("left", "right"):
+            for source in curator.ARTICULATED_OWNER_SOURCE_SUITES:
+                self.assertIn(sum(frame["hand"] == hand and frame["sourceSuite"] == source for frame in old), (0, 2))
+        funded = [frame for frame in result["frames"] if frame.get("form") == "funded_aura_shell"]
+        self.assertGreaterEqual(len(funded), 2)
+        for art, camera, equipment in curator.FUNDED_SHELL_PRIORITY:
+            pair = [frame for frame in funded if frame["art"] == art and frame["camera"] == camera
+                    and frame["equipment"] == ("netherite_full" if equipment == "netherite" else "skin")]
+            self.assertIn(len(pair), (0, 2))
+        self.assertTrue(any(row["omittedForBudget"] for row in result["fundedShellCoverage"]))
+        self.assertTrue(any(row["omittedForBudgetRequestedPhases"] for row in result["sharedPlayerCoverage"]))
+        files = [path for path in (self.root / self.output).rglob("*") if path.is_file()]
+        self.assertLessEqual(sum(path.stat().st_size for path in files), 14_000_000)
+        with zipfile.ZipFile(self.root / "curated.zip", "w", compression=zipfile.ZIP_STORED) as zipped:
+            for path in files:
+                zipped.write(path, path.relative_to(self.root / self.output))
+        self.assertLess((self.root / "curated.zip").stat().st_size, 15_000_000)
+
+    def test_funded_names_obey_existing_freshness_duplicate_signature_and_path_guards(self):
+        prior = self.funded_shot()
+        marker = "review/second-run.json"
+        curator.prepare(self.root, self.source, marker, self.identity, suite=self.suite)
+        self.started = json.loads((self.root / marker).read_text())["startedNs"]
+        os.utime(prior, None)
+        old = self.funded_shot(hand="left")
+        os.utime(old, ns=(1, 1))
+        fresh = self.funded_shot(art="driving_cut")
+        result = curator.curate(self.root, self.source, marker, "review/fresh", self.identity, suite=self.suite)
+        self.assertEqual(result["freshness"]["excludedStalePngs"], 2)
+        self.assertEqual([Path(frame["sourcePath"]).name for frame in result["frames"]], [fresh.name])
+        duplicate = self.shot(fresh.name, prefix="nested")
+        with self.assertRaisesRegex(curator.EvidenceError, "Ambiguous duplicate"):
+            self.curate()
+        duplicate.unlink()
+        duplicate.symlink_to(fresh)
+        with self.assertRaisesRegex(curator.EvidenceError, "Symlink"):
+            self.curate()
+        duplicate.unlink()
+        fresh.write_bytes(b"not a png")
+        with self.assertRaisesRegex(curator.EvidenceError, "PNG signature"):
+            self.curate()
+        self.assertFalse((self.root / self.output).exists())
+
+    def test_three_suite_marker_cannot_claim_funded_suite_provenance(self):
+        self.funded_shot()
+        stamp = json.loads((self.root / self.marker).read_text())
+        stamp["sourceSuites"] = list(curator.ARTICULATED_OWNER_SOURCE_SUITES)
+        (self.root / self.marker).write_text(json.dumps(stamp))
+        with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
+            self.curate()
+
+
 class ArticulatedNpcCuratorTests(CuratorFixture):
     suite = "articulated"
     write_metadata = NpcCuratorTests.write_metadata
@@ -1246,7 +1488,7 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         self.assertEqual(result["selectedMetadataCount"], 6)
         for hand in curator.ARTICULATED_HANDS:
             owner = [frame for frame in result["frames"] if frame.get("hand") == hand]
-            self.assertEqual({frame["sourceSuite"] for frame in owner}, set(curator.ARTICULATED_SOURCE_SUITES))
+            self.assertEqual({frame["sourceSuite"] for frame in owner}, set(curator.ARTICULATED_OWNER_SOURCE_SUITES))
             self.assertEqual({frame["equipment"] for frame in owner if frame["sourceSuite"] == curator.ARTICULATED_HUD_SUITE},
                              {"skin", "netherite_chestplate"})
         files = [path for path in (self.root / self.output).rglob("*") if path.is_file()]

@@ -9,6 +9,7 @@ DESCRIPTOR = ROOT / "src/gametest/resources/fabric.mod.json"
 SELECTION_PREFIX = "WILDERCORD_CLIENT_SELECTION "
 DESCRIPTOR_PREFIX = "WILDERCORD_CLIENT_DESCRIPTOR "
 EXIT_PREFIX = "WILDERCORD_CLIENT_EXIT_CODE "
+REQUEST_PREFIX = "WILDERCORD_NATIVE_REQUEST "
 
 
 def parse_shard(value):
@@ -46,7 +47,11 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         missing = [entry for entry in selected if entry not in entries]
         if missing:
             raise ValueError(f"Suite {suite} has unregistered entrypoints: {', '.join(missing)}")
-        return {"kind": "suite", "name": suite, "count": len(selected), "entries": selected}
+        purpose = group.get("purpose", "release")
+        if purpose not in ("release", "diagnostic"):
+            raise ValueError(f"Suite {suite} has an unknown purpose")
+        return {"kind": "diagnostic" if purpose == "diagnostic" else "suite",
+                "name": suite, "count": len(selected), "entries": selected}
     if shard is not None:
         index, total = parse_shard(shard)
         # Same contiguous split as build.gradle's ciShard selector.
@@ -73,9 +78,9 @@ def selection_issues(log, selection):
                 matches = False
             if not matches:
                 issues.append(f"{label} evidence does not match the requested selection")
-        elif selection["kind"] == "suite":
+        elif selection["kind"] in ("suite", "diagnostic"):
             issues.append(f"Focused run is missing {label.lower()} evidence")
-    if selection["kind"] == "suite":
+    if selection["kind"] in ("suite", "diagnostic"):
         exits = [line[len(EXIT_PREFIX):] for line in log.splitlines() if line.startswith(EXIT_PREFIX)]
         if exits != ["0"]:
             issues.append("Focused run has no single successful launcher exit")

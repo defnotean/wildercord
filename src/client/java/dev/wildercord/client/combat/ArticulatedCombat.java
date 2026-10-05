@@ -129,7 +129,7 @@ public final class ArticulatedCombat {
 				|| avatar.parrotOnLeftShoulder != null || avatar.parrotOnRightShoulder != null
 				|| avatar.showCape && avatar.skin.cape() != null || !avatar.heldOnHead.isEmpty()
 				|| state.getData(GearLook.PACK) != null || state.getData(GearLook.PIECES) != null
-				|| state.getData(AuraShellLayer.SHELL_GLOW) != null || state.getData(AuraShellLayer.IMAGES) != null) return null;
+				|| !ArticulatedAuraShellRenderer.compatible(avatar) || state.getData(AuraShellLayer.IMAGES) != null) return null;
 		} else if (!(state instanceof AuraFighterRenderState fighter) || !frame.master() || fighter.sit > 0 || fighter.yield > 0 || fighter.stagger > 0) return null;
 		return frame;
 	}

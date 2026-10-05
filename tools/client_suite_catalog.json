@@ -24,12 +24,31 @@
     ]
   },
   "articulated": {
-    "description": "Opt-in segmented body, first-person hand sockets and HUD composition, plus gated netherite armor acceptance.",
-    "expectedCount": 3,
+    "description": "Opt-in segmented body, first-person hand sockets and HUD composition, gated netherite armor, and normally funded Aura Armour shell acceptance.",
+    "expectedCount": 4,
     "entries": [
       "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
       "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
-      "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest"
+      "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
+      "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest"
+    ]
+  },
+  "diagnostic-wetland": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: real Garden prerequisite followed by original native Terrain reproduction. Never release acceptance.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.wildlife.WetlandGenerationScopeTest",
+      "dev.wildercord.wildlife.WetlandGardenTest",
+      "dev.wildercord.wildlife.WetlandTerrainTest"
+    ]
+  },
+  "diagnostic-aura-fx": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original AuraFx class, including Glow, with no filtered subcases. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.gametest.WildercordAuraFxTest"
     ]
   }
 }

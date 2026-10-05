@@ -32,5 +32,8 @@ public abstract class LivingEntityRendererMixin implements dev.wildercord.client
 			model instanceof dev.wildercord.client.combat.ArticulatedModelAccess access && access.wildercord$bodyOwned() && access.wildercord$armor() != null && access.wildercord$armor().supportsAssets()
 				&& layers.stream().filter(layer -> layer.getClass() == dev.wildercord.client.combat.ArticulatedArmorLayer.class).count() == 1
 				&& layers.stream().noneMatch(layer -> layer instanceof net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer<?, ?, ?>));
+		var shellLayers = layers.stream().filter(layer -> layer.getClass() == dev.wildercord.client.render.AuraShellLayer.class).toList();
+		var shell = shellLayers.size() == 1 ? ((dev.wildercord.client.render.AuraShellLayer) shellLayers.getFirst()).articulated() : null;
+		state.setData(dev.wildercord.client.combat.ArticulatedAuraShellRenderer.READY, shell != null && shell.owner() == model ? shell : null);
 	}
 }

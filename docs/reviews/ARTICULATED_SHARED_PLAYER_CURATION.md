@@ -2,8 +2,10 @@
 
 `tools/curate_masters_frames.py --suite articulated` includes the additive
 `ArticulatedSharedPlayerChecks` captures in the existing curated artifact. The
-three native suites, complete native evidence, authoritative test manifest and
-workflow are unchanged. This packager copies source PNG bytes without decoding,
+shared capture paths, complete native evidence and authoritative test manifest
+remain intact. The later [funded Aura-shell extension](ARTICULATED_FUNDED_SHELL_CURATION.md)
+adds a fourth source suite and interleaves its representative budget opportunities
+when those captures are present. This packager copies source PNG bytes without decoding,
 rendering, resizing or retouching them. A screenshot's presence is not a native
 test verdict or visual-acceptance verdict.
 
@@ -40,7 +42,7 @@ Frame records distinguish filename facts and fixture assumptions:
   pre-capture phase receipt cannot establish the framebuffer phase during
   screenshot readback.
 
-Selection retains the six finalized NPC priority beats first. It then gives
+Selection retains the six finalized NPC priority beats first. Without funded captures, it then gives
 each shared art/camera one representative opportunity before the old owner
 matrix: third person then HUD, Rising Break then Driving Cut. It prefers a
 requested-active capture, then windup/recovery, the reference viewport, skin
@@ -52,9 +54,10 @@ then alternates the two arts before the remaining old temporal/breadth samples.
 All original coverage groups and finalized NPC receipt rules remain intact.
 
 The total cap remains 14,000,000 bytes, including copied NPC sidecars and the
-manifest. The articulated manifest reserve is 640,000 bytes, because all 251
-selectable PNG records, their provenance and the 40 shared configuration rows
-exceed the former 256,000-byte reserve in the complete small-file fixture.
+manifest. The articulated manifest reserve is now 768,000 bytes, accommodating
+all 287 selectable PNG records and the funded coverage rows. The original 251
+records and 40 shared configuration rows previously required 640,000 bytes,
+exceeding the former 256,000-byte reserve in the complete small-file fixture.
 Budget omissions remain explicit. Existing run-marker freshness, exact run/head
 provenance, safe paths, duplicate-name rejection, byte hashes and atomic output
 publication apply to the new captures unchanged.

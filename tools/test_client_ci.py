@@ -31,13 +31,14 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(len(set(selected["entries"])), 18)
         self.assertTrue(set(selected["entries"]).issubset(full["entries"]))
 
-    def test_articulated_is_three_registered_acceptance_slices(self):
+    def test_articulated_is_four_registered_acceptance_slices(self):
         selected = client_suites.select_entries(suite="articulated")
-        self.assertEqual(selected["count"], 3)
+        self.assertEqual(selected["count"], 4)
         self.assertEqual(selected["entries"], [
             "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
             "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
             "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
+            "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
         ])
         self.assertTrue(set(selected["entries"]).issubset(client_suites.select_entries()["entries"]))
 

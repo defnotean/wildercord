@@ -72,7 +72,7 @@ public final class ArticulatedArmorGeometry extends Model<ArticulatedArmorGeomet
 				return matrix.m30(matrix.m30() * 16).m31(matrix.m31() * 16).m32(matrix.m32() * 16);
 			});
 		}
-		private Vec3 transform(Joint joint, Vec3 point) {
+		Vec3 transform(Joint joint, Vec3 point) {
 			Vector3f transformed = skin[joint.ordinal()].transformPosition(point.x(), point.y(), point.z(), new Vector3f());
 			return new Vec3(transformed.x, transformed.y, transformed.z);
 		}

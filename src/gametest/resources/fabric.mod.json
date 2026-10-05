@@ -278,7 +278,8 @@
       "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
       "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
       "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
-      "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest"
+      "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
+      "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest"
     ]
   },
   "mixins": [

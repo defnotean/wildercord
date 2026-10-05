@@ -72,8 +72,10 @@ public final class ArticulatedArmorMesh {
 	public static final class Mesh {
 		private final List<ControlPoint> controlPoints;
 		private final List<Face> faces;
+		private final boolean shellArmCaps;
 		private final Map<Region, Section> sections = new EnumMap<>(Region.class);
-		private Mesh(List<ControlPoint> controlPoints, List<Face> faces) {
+		private Mesh(List<ControlPoint> controlPoints, List<Face> faces, boolean shellArmCaps) {
+			this.shellArmCaps = shellArmCaps;
 			this.controlPoints = List.copyOf(controlPoints); this.faces = List.copyOf(faces);
 			for (Region region : Region.values()) {
 				float minX = Float.POSITIVE_INFINITY, maxX = Float.NEGATIVE_INFINITY, minZ = minX, maxZ = maxX;
@@ -92,7 +94,7 @@ public final class ArticulatedArmorMesh {
 			for (ControlPoint point : controlPoints) {
 				Vec3 a = palette.transform(point.first(), point.bindPosition());
 				Vec3 p = point.first() == point.second() ? a
-					: collar(point, a, palette.transform(point.second(), point.bindPosition()), palette, sections.get(point.region()));
+					: collar(point, a, palette.transform(point.second(), point.bindPosition()), palette, sections.get(point.region()), shellArmCaps);
 				if (!finite(p)) throw new IllegalArgumentException("Non-finite resolved armor palette");
 				positions.add(p);
 			}
@@ -113,11 +115,24 @@ public final class ArticulatedArmorMesh {
 	private record Section(float x, float z, float radiusX, float radiusZ) {}
 
 	/** A support envelope of the two adjacent cross-sections, confined to existing collar rings. */
-	private static Vec3 collar(ControlPoint point, Vec3 a, Vec3 b, SkinTransform palette, Section section) {
+	private static Vec3 collar(ControlPoint point, Vec3 a, Vec3 b, SkinTransform palette, Section section, boolean shellArmCaps) {
 		float t = point.secondWeight();
 		// The thick, stock four-pixel arm shell already encloses both skin/sleeve sizes.
 		// Adding a support envelope here would introduce an inner-elbow fold.
-		if (point.region().arm()) return a.toward(b, t);
+		if (point.region().arm()) {
+			if (!shellArmCaps) return a.toward(b, t);
+			// Aura's thinner .55px shell needs room for the skin sleeves' .25px closed
+			// caps at a bent elbow/wrist. sin(half-angle) is the cap's radial projection.
+			// Confine this guard to the collar; it vanishes at bind and both rigid ends.
+			Vec3 center = new Vec3(section.x(), point.bindPosition().y(), section.z());
+			Vec3 ca = palette.transform(point.first(), center), cb = palette.transform(point.second(), center);
+			Vec3 p = a.toward(b, t), c = ca.toward(cb, t);
+			Vec3 ay = palette.transform(point.first(), center.plus(new Vec3(0, 1, 0))).minus(ca);
+			Vec3 by = palette.transform(point.second(), center.plus(new Vec3(0, 1, 0))).minus(cb);
+			float bend = Math.min(1, ay.minus(by).length() / 2);
+			float pad = .25F * bend * 4 * t * (1 - t);
+			return p.plus(p.minus(c).times(pad / Math.max(EPS, Math.min(section.radiusX(), section.radiusZ()))));
+		}
 		Vec3 center = new Vec3(section.x(), point.bindPosition().y(), section.z());
 		Vec3 ca = palette.transform(point.first(), center), cb = palette.transform(point.second(), center);
 		Vec3 c = ca.toward(cb, t), p = a.toward(b, t);
@@ -154,7 +169,12 @@ public final class ArticulatedArmorMesh {
 		return p.plus(x.times((targetX - local.dot(x)) * envelope)).plus(z.times((targetZ - local.dot(z)) * envelope));
 	}
 
-	public static Mesh bake(List<SourceFace> source) {
+	public static Mesh bake(List<SourceFace> source) { return bake(source, false); }
+
+	/** The authored aura shell keeps bind dimensions but clears the existing rigid sleeve caps. */
+	public static Mesh bakeAuraShell(List<SourceFace> source) { return bake(source, true); }
+
+	private static Mesh bake(List<SourceFace> source, boolean shellArmCaps) {
 		List<ControlPoint> points = new ArrayList<>();
 		List<Face> faces = new ArrayList<>();
 		Map<PointKey, Integer> welded = new LinkedHashMap<>();
@@ -194,7 +214,7 @@ public final class ArticulatedArmorMesh {
 				addFace(face.region(), corners, faceIndex, points, faces, welded);
 			}
 		}
-		return new Mesh(points, faces);
+		return new Mesh(points, faces, shellArmCaps);
 	}
 
 	private record PointKey(Region region, Vec3 position) {}

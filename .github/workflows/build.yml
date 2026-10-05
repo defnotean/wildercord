@@ -214,7 +214,7 @@ jobs:
 
   # Opt-in renderer acceptance only; all existing Masters and full-descriptor gates remain.
   articulated-native:
-    name: articulated-native (3 focused suites)
+    name: articulated-native (4 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -233,7 +233,7 @@ jobs:
       - name: Mark fresh articulated screenshot inputs
         continue-on-error: true
         run: python tools/curate_masters_frames.py --suite articulated --prepare --marker artifacts/review/articulated-frames-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the three articulated native suites
+      - name: Run the four articulated native suites
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
           SDL_VIDEO_FORCE_EGL: "1"
@@ -264,3 +264,57 @@ jobs:
             build/run/clientGameTest/screenshots/
             articulated-native.log
             artifacts/review/articulated-native-manifest.json
+
+  # One explicit request commit atop sourceSha; later commits make it inactive.
+  # This evidence never replaces any aggregate or focused release gate above.
+  native-diagnostic:
+    name: native-diagnostic (not release acceptance)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    concurrency:
+      group: native-diagnostic-${{ github.repository }}-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    env:
+      NATIVE_DIAGNOSTIC_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      NATIVE_DIAGNOSTIC_PR: ${{ github.event.pull_request.number }}
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      SDL_VIDEO_FORCE_EGL: "1"
+      ALSOFT_DRIVERS: "null"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Validate explicit diagnostic request and exact source revision
+        id: request
+        run: python tools/run_native_diagnostic_ci.py --prepare
+      - uses: actions/setup-java@v6
+        if: steps.request.outputs.enabled == 'true'
+        with:
+          distribution: temurin
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v6
+        if: steps.request.outputs.enabled == 'true'
+      - name: Check diagnostic request, scope and provenance tooling
+        if: steps.request.outputs.enabled == 'true'
+        run: python -m unittest discover -s tools -p 'test_*ci*.py' -v
+      - name: Install virtual display for requested diagnostic
+        if: steps.request.outputs.enabled == 'true'
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+      - name: Run one allowlisted native diagnostic, without retries
+        if: steps.request.outputs.enabled == 'true'
+        timeout-minutes: 50
+        run: python tools/run_native_diagnostic_ci.py --run
+      - name: Record bounded diagnostic evidence, never release acceptance
+        if: always() && steps.request.outputs.enabled == 'true'
+        run: python tools/run_native_diagnostic_ci.py --collect
+      - name: Preserve diagnostic request and native evidence
+        if: always() && steps.request.outcome == 'success'
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-diagnostic-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/review/native-diagnostic/
+          if-no-files-found: error
+          retention-days: 7

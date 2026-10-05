@@ -151,6 +151,7 @@ tasks.named('processGametestResources') {
 			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))
 			if (!catalog.containsKey(name)) throw new GradleException("Unknown ciSuite '${name}'; choose from ${catalog.keySet().join(', ')}")
 			def group = catalog[name]
+			if (!(group.get('purpose', 'release') in ['release', 'diagnostic'])) throw new GradleException("ciSuite '${name}' has an unknown purpose")
 			def selected = group.entries
 			if (!(selected instanceof List) || selected.isEmpty() || !selected.every { it instanceof String && !it.trim().isEmpty() }) throw new GradleException("ciSuite '${name}' must contain a nonempty list of entrypoint names")
 			if (selected.toSet().size() != selected.size()) throw new GradleException("ciSuite '${name}' contains duplicate entrypoints")
@@ -224,7 +225,7 @@ tasks.named('runClientGameTest') {
 			def entries = descriptor.entrypoints['fabric-client-gametest']
 			if (!catalog.containsKey(name) || entries != catalog[name].entries) throw new GradleException('Processed client descriptor does not match ciSuite catalog selection')
 			logger.lifecycle('WILDERCORD_CLIENT_DESCRIPTOR ' + groovy.json.JsonOutput.toJson(
-				[kind: 'suite', name: name, count: entries.size(), entries: entries]))
+				[kind: catalog[name].purpose == 'diagnostic' ? 'diagnostic' : 'suite', name: name, count: entries.size(), entries: entries]))
 		}
 	}
 }

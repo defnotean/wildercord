@@ -23,8 +23,8 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = 14_000_000
 MANIFEST_RESERVE = 128_000
-# Includes all legacy/NPC and 120 shared-player capture records and omissions.
-ARTICULATED_MANIFEST_RESERVE = 640_000
+# Includes legacy/NPC, 120 shared-player and 36 funded-shell records/omissions.
+ARTICULATED_MANIFEST_RESERVE = 768_000
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 SUITE = "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
 NPC_SUITE = "dev.wildercord.client.auraworld.MasterModelPresentationTest"
@@ -40,7 +40,9 @@ NPC_PRIORITY = ("reply_warning", "release", "recovery")
 ARTICULATED_SUITE = "dev.wildercord.client.combat.ArticulatedCombatPresentationTest"
 ARTICULATED_ARMOR_SUITE = "dev.wildercord.client.combat.ArticulatedArmorPresentationTest"
 ARTICULATED_HUD_SUITE = "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest"
-ARTICULATED_SOURCE_SUITES = (ARTICULATED_SUITE, ARTICULATED_ARMOR_SUITE, ARTICULATED_HUD_SUITE)
+ARTICULATED_FUNDED_SHELL_SUITE = "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest"
+ARTICULATED_OWNER_SOURCE_SUITES = (ARTICULATED_SUITE, ARTICULATED_ARMOR_SUITE, ARTICULATED_HUD_SUITE)
+ARTICULATED_SOURCE_SUITES = (*ARTICULATED_OWNER_SOURCE_SUITES, ARTICULATED_FUNDED_SHELL_SUITE)
 ARTICULATED_NPC_BEATS = {
     "articulated_npc_gale_crosswind": {"gather": 4, "step": 9, "step_last": 11, "landed": 12,
         "settle_13": 13, "settle_14": 14, "settle_15": 15, "reply_warning": 16, "release": 22, "recovery": 38},
@@ -73,6 +75,20 @@ SHARED_PLAYER_PATTERN = re.compile(
     r"articulated_shared_(rising_break|driving_cut)_(third|hud)_("
     + "|".join(f"{w}x{h}_gui{s}" for w, h, s in ARTICULATED_VIEWPORTS)
     + r")_(skin|netherite)_(left|right)_requested_(windup|active|recovery)\.png\Z")
+FUNDED_SHELL_ARTS = ("spellcut", "rising_break", "driving_cut")
+FUNDED_SHELL_VIEWS = {"third_person_front": "local_owner_third_person_front",
+                      "third_person_back": "local_owner_third_person_back", "first_person": "owner_first_person"}
+# Stage and school are coupled to the configured hand in the native fixture.
+FUNDED_SHELL_HANDS = {"right": (4, "stone"), "left": (5, "gale")}
+FUNDED_SHELL_PATTERN = re.compile(
+    r"articulated_funded_shell_(spellcut|rising_break|driving_cut)_"
+    r"(third_person_front|third_person_back|first_person)_(right|left)_stage([45])_(skin|netherite)\.png\Z")
+# Twelve representatives, each configuration treated as a both-hand pair.
+FUNDED_SHELL_PRIORITY = (
+    *((art, "first_person", "netherite") for art in FUNDED_SHELL_ARTS),
+    ("spellcut", "third_person_front", "skin"), ("driving_cut", "third_person_front", "skin"),
+    ("rising_break", "third_person_back", "netherite"),
+)
 FIRST_FORMS = (
     "kindling_draw", "frostbite", "crackle", "cutting_breeze", "rockbreaker",
     "thorn_lash", "void_cut", "star_needle", "echo_cut", "bloodletting",
@@ -216,6 +232,31 @@ def describe_articulated(filename):
     common = {"mainHandItem": "diamond_sword", "offHandItem": "empty", "viewport": None,
               "uiScale": None, "hudVisible": None, "viewportBasis": "not_encoded_in_filename",
               "armorEnchantment": None, "armorTrim": None}
+    match = FUNDED_SHELL_PATTERN.fullmatch(filename)
+    if match:
+        art, camera, hand, stage, equipment = match.groups()
+        expected_stage, school = FUNDED_SHELL_HANDS[hand]
+        if int(stage) != expected_stage:
+            return None
+        return {**common, "sourceSuite": ARTICULATED_FUNDED_SHELL_SUITE, "form": "funded_aura_shell",
+                "scene": filename.removesuffix(".png"), "art": art, "camera": camera,
+                "hand": hand, "view": FUNDED_SHELL_VIEWS[camera], "stage": expected_stage,
+                "stageBasis": "filename_and_native_fixture_contract", "school": school,
+                "schoolBasis": "native_fixture_contract", "initialAura": 100,
+                "initialAuraBasis": "native_fixture_contract",
+                "equipment": "skin" if equipment == "skin" else "netherite_full",
+                "equipmentBasis": "filename_and_native_fixture_contract",
+                "armorEnchantment": "protection_iv" if equipment == "netherite" else None,
+                "armorTrim": "gold_sentry" if equipment == "netherite" else None,
+                "heldItemBasis": "native_fixture_contract", "hudVisible": True, "hudBasis": "native_fixture_contract",
+                "captureKind": "native_local_owner_accepted_input_funded_aura_shell",
+                "frameLabel": "funded_shell", "sampleIndex": None,
+                "phase": "unknown", "renderedPhase": "unknown", "phaseBasis": "rendered_phase_unverified",
+                "nativePixelReviewRequired": True, "exactImpactPixelCoverage": "unverified",
+                "preCaptureReceipt": {"status": "not_ingested", "activation": None, "shellARGB": None,
+                    "actualSkin": None, "preCaptureAge": None, "preCapturePhase": "unknown",
+                    "sourceArtifact": "articulated-native-evidence",
+                    "logRecord": "ARTICULATED_FUNDED_SHELL name=" + filename.removesuffix(".png")}}
     match = SHARED_PLAYER_PATTERN.fullmatch(filename)
     if match:
         art, camera, viewport, equipment, hand, requested_phase = match.groups()
@@ -759,6 +800,42 @@ def shared_player_coverage(groups, selected):
     return coverage
 
 
+def funded_shell_capture_matrix():
+    """Only the 36 real-input configurations emitted by the funded native suite."""
+    for art in FUNDED_SHELL_ARTS:
+        for camera in FUNDED_SHELL_VIEWS:
+            for hand, (stage, _) in FUNDED_SHELL_HANDS.items():
+                for equipment in ("skin", "netherite"):
+                    yield f"articulated_funded_shell_{art}_{camera}_{hand}_stage{stage}_{equipment}.png"
+
+
+def funded_shell_rows(groups):
+    rows = []
+    for filename in funded_shell_capture_matrix():
+        info = describe_articulated(filename)
+        candidates = groups.get((info["scene"], info["view"], "unknown"), [])
+        rows.append({"filename": filename, "info": info, "candidate": candidates[0] if candidates else None})
+    return rows
+
+
+def funded_shell_coverage(groups, selected):
+    paths = {frame["sourcePath"] for frame in selected}
+    coverage = []
+    for row in funded_shell_rows(groups):
+        info, candidate = row["info"], row["candidate"]
+        captured = candidate is not None
+        chosen = captured and candidate["sourcePath"] in paths
+        coverage.append({**{key: info[key] for key in (
+            "scene", "art", "camera", "hand", "view", "sourceSuite", "stage", "stageBasis", "school", "schoolBasis",
+            "initialAura", "initialAuraBasis", "equipment", "equipmentBasis", "armorEnchantment", "armorTrim",
+            "viewport", "uiScale", "viewportBasis", "hudVisible", "hudBasis")},
+            "expectedFilename": row["filename"], "captured": captured, "selected": chosen,
+            "missingCapture": not captured, "omittedForBudget": captured and not chosen,
+            "renderedPhase": "unknown", "verifiedRenderedPhases": [], "nativePixelReviewRequired": True,
+            "preCaptureReceiptStatus": "not_ingested"})
+    return coverage
+
+
 def select_articulated(groups, budget):
     remaining = budget - ARTICULATED_MANIFEST_RESERVE
     rows = []
@@ -813,11 +890,10 @@ def select_articulated(groups, budget):
     for candidate in npc_priority:
         choose([candidate])
 
-    # Give each new art/camera one opportunity before the old owner matrix can
-    # consume the budget. Prefer requested active, reference viewport, skin, left
-    # hand, but use another authentic candidate when an earlier one cannot fit.
+    # Prefer requested active, reference viewport, skin and left hand; another
+    # authentic candidate may represent this art/camera if the first cannot fit.
     shared_rows = shared_player_rows(groups)
-    shared_priority = []
+    shared_opportunities = []
     for camera in ("third", "hud"):
         for art in SHARED_PLAYER_ARTS:
             candidates = [frame for row in shared_rows
@@ -827,11 +903,7 @@ def select_articulated(groups, budget):
                 SHARED_PHASE_PRIORITY.index(frame["requestedPhase"]),
                 (frame["viewport"]["width"], frame["viewport"]["height"], frame["uiScale"]) != HUD_REFERENCE_VIEWPORT,
                 frame["equipment"] != "skin", ARTICULATED_HANDS.index(frame["hand"]), frame["sourcePath"]))
-            for candidate in candidates:
-                choose([candidate])
-                if candidate["sourcePath"] in selected_paths:
-                    shared_priority.append(candidate)
-                    break
+            shared_opportunities.append(candidates)
 
     def matches_viewport(row, viewport):
         width, height, scale = viewport
@@ -858,7 +930,7 @@ def select_articulated(groups, budget):
     core = []
     core_pairs = []
     for hand in ARTICULATED_HANDS:
-        for source_suite in ARTICULATED_SOURCE_SUITES:
+        for source_suite in ARTICULATED_OWNER_SOURCE_SUITES:
             pair = [row for row in rows if row["info"]["hand"] == hand
                     and row["info"]["sourceSuite"] == source_suite
                     and (source_suite == ARTICULATED_SUITE
@@ -868,7 +940,40 @@ def select_articulated(groups, budget):
                          or row in primary_hud)]
             core.extend(pair)
             core_pairs.append(pair)
+
+    shared_priority = []
+
+    def choose_shared(candidates):
+        for candidate in candidates:
+            choose([candidate])
+            if candidate["sourcePath"] in selected_paths:
+                shared_priority.append(candidate)
+                break
+
+    funded_rows = funded_shell_rows(groups)
+    funded_priority_pairs = [[row["candidate"] for row in funded_rows
+                              if (row["info"]["art"], row["info"]["camera"], row["info"]["equipment"])
+                              == (art, camera, "netherite_full" if equipment == "netherite" else "skin")]
+                             for art, camera, equipment in FUNDED_SHELL_PRIORITY]
+    if any(row["candidate"] is not None for row in funded_rows):
+        # Share priority opportunities across all three player groups. Each old
+        # comparison precedes its funded pair, so funded breadth cannot consume
+        # every opportunity for the old body/armor/HUD comparisons. Both-hand
+        # funded pairs are atomic when both are present; never invent a mate.
+        for index in range(max(len(shared_opportunities), len(core_pairs), len(funded_priority_pairs))):
+            if index < len(shared_opportunities):
+                choose_shared(shared_opportunities[index])
+            if index < len(core_pairs):
+                choose(row["representative"] for row in core_pairs[index])
+            if index < len(funded_priority_pairs):
+                choose(funded_priority_pairs[index])
+    else:
+        # No funded captures: preserve the old shared/owner allocation exactly.
+        for candidates in shared_opportunities:
+            choose_shared(candidates)
+        for pair in core_pairs:
             choose(row["representative"] for row in pair)
+    funded_priority = [candidate for pair in funded_priority_pairs for candidate in pair if candidate is not None]
     # Broaden shared-art requests evenly across both arts before spending on old
     # temporal extras. This is request coverage, never a rendered phase verdict.
     shared_extras = []
@@ -903,6 +1008,15 @@ def select_articulated(groups, budget):
             for candidate in row["candidates"].values():
                 choose([candidate])
 
+    # Remaining funded configurations come after the old comparisons and their
+    # temporal/breadth samples. Do not split an unaffordable priority hand pair
+    # by retrying its individual members here.
+    funded_priority_paths = {frame["sourcePath"] for frame in funded_priority}
+    funded_extras = [row["candidate"] for row in funded_rows if row["candidate"] is not None
+                     and row["candidate"]["sourcePath"] not in funded_priority_paths]
+    for candidate in funded_extras:
+        choose([candidate])
+
     # Boundary and early-school beats come after the existing owner/armor/HUD
     # selection. Their exact labels and ages remain in sidecars and coverage.
     extra_phases = dict.fromkeys(phase for beats in ARTICULATED_NPC_BEATS.values()
@@ -912,6 +1026,7 @@ def select_articulated(groups, budget):
         choose([candidate])
     selected = [frame for frame in npc_priority if frame["sourcePath"] in selected_paths]
     selected.extend(shared_priority)
+    selected.extend(frame for frame in funded_priority if frame["sourcePath"] in selected_paths)
     for row in rows:
         for frame in row["candidates"].values():
             if frame["sourcePath"] in selected_paths:
@@ -922,6 +1037,7 @@ def select_articulated(groups, budget):
             else:
                 row["coverage"]["omittedForBudgetIdleLabels"].append(frame["frameLabel"])
     selected.extend(frame for frame in shared_extras if frame["sourcePath"] in selected_paths)
+    selected.extend(frame for frame in funded_extras if frame["sourcePath"] in selected_paths)
     selected.extend(frame for frame in npc_extras if frame["sourcePath"] in selected_paths)
     return selected, [row["coverage"] for row in rows]
 
@@ -1028,7 +1144,8 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
             "sourceSuites": list(ARTICULATED_SOURCE_SUITES),
             "npcCoverage": articulated_npc_coverage(groups, selected),
             "sharedPlayerCoverage": shared_player_coverage(groups, selected),
-            "basis": "Byte-identical native PNGs from the three existing articulated suites. Original combat samples "
+            "fundedShellCoverage": funded_shell_coverage(groups, selected),
+            "basis": "Byte-identical native PNGs from the four articulated suites. Original combat samples "
                      "follow real Spellcut input and its server-accepted timeline; HUD idle-before/after "
                      "captures are explicitly idle. Left/right denote the local owner's configured main hand; "
                      "all first-person and front/back third-person views share that owning singleplayer client, "
@@ -1053,6 +1170,12 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                      "Their camera/viewport/hand facts come from filenames and equipment/HUD details from the fixture contract. "
                      "ARTICULATED_SHARED_SAMPLE log receipts remain in full evidence and are not ingested here; "
                      "accepted activation, actual skin and pre-capture phase/age are unknown in this artifact. "
+                     "Funded Aura-shell filenames identify only Spellcut/Rising Break/Driving Cut, the configured camera/hand, "
+                     "equipment and stage. Right/stage4/Stone and left/stage5/Gale start with 100 Aura and use ordinary "
+                     "accepted input/upkeep under the native fixture contract. Skin denotes equipment, not observed skin geometry. "
+                     "Their ARTICULATED_FUNDED_SHELL pre-capture logs remain in full evidence, not PNG-bound sidecars; "
+                     "activation, shell ARGB, actual skin and pre-capture phase/age are not ingested. "
+                     "Funded rendered phases and unencoded viewport/UI settings remain unknown. "
                      "Even a matching pre-capture log receipt would not establish the framebuffer phase. "
                      "Presence is not a gameplay or native pixel-review pass.",
             "unavailableRequestedCoverage": [
@@ -1067,7 +1190,12 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                                "Missing or explicitly failed native NPC frames are never accepted or substituted. "
                                "Then one available shared-player representative per camera and art, third then HUD, Rising then Driving; "
                                "prefer requested active then windup/recovery, reference viewport, skin and left hand, skipping over-budget candidates. "
-                               "Then left then right: original body/hand first-available pair, full enchanted armor "
+                               "When funded captures exist, allocate rounds of one shared representative, one old core comparison, "
+                               "then one funded both-hand pair. The twelve funded priority slots are armored first-person for all three arts, "
+                               "skin front for Spellcut/Driving Cut, then armored back for Rising Break, right then left per pair. "
+                               "Present funded priority pairs are budgeted together; missing members remain missing. "
+                               "Without funded captures, all four shared opportunities precede old core comparisons as before. "
+                               "Old core order is left then right: original body/hand first-available pair, full enchanted armor "
                                "front/back first-available pair, 1280x720/gui3 HUD skin/chestplate upper-median pair. "
                                "Prefer the HUD viewport with the most available counterparts, breaking ties "
                                "by reference size then fixture order; missing reference captures use this fallback. "
@@ -1080,7 +1208,10 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                                "For the original matrices, only first/upper-median/last available combat samples and explicit HUD idle "
                                "captures are copied, each once. Armor capture indices are only 2 and 5; "
                                "original samples are 0..8 and HUD samples 0..9. Uncaptured indices are not "
-                               "required captures. Finally exact early-school and Gale age11..15 boundary captures when present. "
+                               "required captures. Remaining funded configurations follow old temporal/breadth samples; "
+                               "an unaffordable funded priority pair is not retried as separate images. "
+                               "All 36 funded slots report missing captures and budget omissions separately. "
+                               "Finally exact early-school and Gale age11..15 boundary captures when present. "
                                "NPC receipt files share the existing total byte cap and are copied unchanged. "
                                "The full evidence artifact and native verdicts are unchanged.",
         })

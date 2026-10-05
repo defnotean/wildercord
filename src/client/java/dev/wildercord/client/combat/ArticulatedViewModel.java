@@ -59,6 +59,8 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 			// The same immutable palette sets the hand at submission and deferred model rendering.
 			model.setupAnim(frame);
 			if (access.wildercord$armor() != null) access.wildercord$armor().submitView(model.rig, avatar, stack, collector, light);
+			var shell = avatar.getData(ArticulatedAuraShellRenderer.READY);
+			if (shell != null) shell.submitView(model.rig, avatar, stack, collector);
 			model.rig.socket(avatar.mainArm, stack);
 			ArticulatedCombat.orientItemAtSocket(stack);
 			avatar.getMainHandItemState().submit(stack, collector, light, OverlayTexture.NO_OVERLAY, 0);

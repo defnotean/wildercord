@@ -23,7 +23,7 @@ ATTACH_SECONDS = 10
 
 def snapshot_thresholds(selection):
     # Leave headroom for setup and the existing 60/180 minute workflow limits.
-    return (30 * 60, 45 * 60) if selection["kind"] == "suite" else (90 * 60, 150 * 60)
+    return (30 * 60, 45 * 60) if selection["kind"] in ("suite", "diagnostic") else (90 * 60, 150 * 60)
 
 
 @dataclass(frozen=True)

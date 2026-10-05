@@ -32,7 +32,7 @@ public final class NativeJvmDiagnosticsTest {
 	}
 
 	private static void activation() {
-		for (String job : new String[] {"masters-native", "articulated-native"}) {
+		for (String job : new String[] {"masters-native", "articulated-native", "native-diagnostic"}) {
 			check(NativeJvmDiagnostics.mode("true", job) == NativeJvmDiagnostics.Mode.FOCUSED, "focused job");
 			for (String ci : new String[] {null, "", "false", "TRUE", "1"}) {
 				check(NativeJvmDiagnostics.mode(ci, job) == NativeJvmDiagnostics.Mode.DISABLED, "fail closed without exact CI");

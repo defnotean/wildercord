@@ -14,7 +14,7 @@ import threading
 
 from native_ci_diagnostics import DIAGNOSTIC_PREFIX, NativeDiagnostics
 
-from client_suites import EXIT_PREFIX, SELECTION_PREFIX, select_entries
+from client_suites import EXIT_PREFIX, REQUEST_PREFIX, SELECTION_PREFIX, select_entries
 
 
 class BackendFailures:
@@ -42,13 +42,13 @@ def launch_command(selection):
     if selection["kind"] == "shard":
         shard, shards = selection["shard"].split("/")
         gradle += [f"-PciShard={shard}", f"-PciShards={shards}"]
-    elif selection["kind"] == "suite":
+    elif selection["kind"] in ("suite", "diagnostic"):
         gradle += [f"-PciSuite={selection['name']}"]
     return ["xvfb-run", "-a", "-s",
             "-screen 0 1280x720x24 +extension GLX +render -noreset", *gradle]
 
 
-def main(argv=None):
+def main(argv=None, *, diagnostic_provenance=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--log", type=Path, default=Path("client-game-tests.log"))
     selectors = parser.add_mutually_exclusive_group()
@@ -81,6 +81,10 @@ def main(argv=None):
                 log.flush()
 
         record(SELECTION_PREFIX + json.dumps(selection, sort_keys=True))
+        if diagnostic_provenance is not None:
+            if selection["kind"] != "diagnostic":
+                parser.error("Request provenance is only supported for diagnostic selections")
+            record(REQUEST_PREFIX + json.dumps(diagnostic_provenance, sort_keys=True))
         process = subprocess.Popen(
             launch_command(selection), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
             encoding="utf-8", errors="replace", start_new_session=True)

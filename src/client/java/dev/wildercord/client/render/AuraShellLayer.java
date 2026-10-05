@@ -7,6 +7,8 @@ import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.AuraPresence;
 import dev.wildercord.client.AuraClient;
+import dev.wildercord.client.combat.ArticulatedAuraShellRenderer;
+import dev.wildercord.client.combat.ArticulatedModelAccess;
 import dev.wildercord.client.compat.ShaderCompat;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -61,12 +63,27 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 
 	private final ShellModel shell;
 	private final ShellModel slimShell;
+	private final ArticulatedAuraShellRenderer articulated;
 
 	public AuraShellLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
 		super(parent);
 		this.shell = new ShellModel(context.bakeLayer(SHELL), false);
 		this.slimShell = new ShellModel(context.bakeLayer(SLIM_SHELL), true);
+		PlayerModel body = getParentModel();
+		ArticulatedAuraShellRenderer adapter = null;
+		if (getClass() == AuraShellLayer.class && body.getClass() == PlayerModel.class
+			&& body instanceof ArticulatedModelAccess owner && owner.wildercord$bodyOwned()) {
+			boolean slim = owner.wildercord$rig().slim();
+			try {
+				adapter = new ArticulatedAuraShellRenderer(body, context.bakeLayer(slim ? SLIM_SHELL : SHELL), slim, slim ? SLIM_SHELL_TYPE : SHELL_TYPE);
+			} catch (IllegalArgumentException unsupportedGeometry) {
+				// Unknown geometry retains the original shell and complete body fallback.
+			}
+		}
+		articulated = adapter;
 	}
+
+	public ArticulatedAuraShellRenderer articulated() { return articulated; }
 
 	public static LayerDefinition createShell() {
 		return LayerDefinition.create(PlayerModel.createMesh(new CubeDeformation(STAND_OFF), false), 64, 64);
@@ -100,7 +117,7 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 			return;
 		}
 		Integer glow = state.getData(SHELL_GLOW);
-		if (glow != null) {
+		if (glow != null && (articulated == null || !articulated.submitWorld(state, pose, nodes))) {
 			boolean slim = state.skin != null && state.skin.model() == PlayerModelType.SLIM;
 			nodes.order(1).submitModel(slim ? slimShell : shell, state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightCoordsUtil.FULL_BRIGHT,
 				OverlayTexture.NO_OVERLAY, glow, null, 0);
