@@ -3,7 +3,6 @@ package dev.wildercord.client.combat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.wildercord.aura.ArticulatedCombatPose;
-import dev.wildercord.aura.world.MasterAnimationRules;
 import dev.wildercord.aura.world.SwordMaster;
 import dev.wildercord.client.MastersArtsClient;
 import dev.wildercord.client.auraworld.AuraFighterRenderState;
@@ -32,7 +31,15 @@ public final class ArticulatedCombat {
 
 	/** The activation identity makes a cosmetic hit-stop incapable of reviving a cancelled/new clip. */
 	public record Frame(ArticulatedCombatPose.Pose pose, long activation, int move, boolean master,
-			boolean leftHanded, float yawDelta, float pitchDelta) {
+			boolean leftHanded, float yawDelta, float pitchDelta, boolean scriptedFootwork, double horizontalVelocitySquared) {
+		public Frame(ArticulatedCombatPose.Pose pose, long activation, int move, boolean master,
+				boolean leftHanded, float yawDelta, float pitchDelta, boolean scriptedFootwork) {
+			this(pose, activation, move, master, leftHanded, yawDelta, pitchDelta, scriptedFootwork, Double.NaN);
+		}
+		public Frame(ArticulatedCombatPose.Pose pose, long activation, int move, boolean master,
+				boolean leftHanded, float yawDelta, float pitchDelta) {
+			this(pose, activation, move, master, leftHanded, yawDelta, pitchDelta, false);
+		}
 		public boolean sameActivation(Frame other) {
 			return other != null && activation == other.activation && move == other.move && leftHanded == other.leftHanded && master == other.master;
 		}
@@ -88,7 +95,7 @@ public final class ArticulatedCombat {
 
 	public static void extractMaster(SwordMaster master, AuraFighterRenderState state, float partial) {
 		state.setData(FRAME, null);
-		if (!enabled() || master.attackAnimation() != MasterAnimationRules.SWEEP
+		if (!enabled() || !ArticulatedCombatPose.supportsMaster(master.attackAnimation())
 			|| master.state(dev.wildercord.aura.world.AuraFighter.STAGGER)) return;
 		float elapsed = master.attackElapsed(partial);
 		boolean left = master.getMainArm() == HumanoidArm.LEFT;
@@ -96,7 +103,8 @@ public final class ArticulatedCombat {
 			master.attackActiveTicks(), master.attackRecoveryTicks(), left);
 		if (pose.weight() <= 0) return;
 		long activation = master.level().getGameTime() - (long) Math.floor(elapsed);
-		state.setData(FRAME, new Frame(pose, activation, master.attackAnimation(), true, left, 0, 0));
+		state.setData(FRAME, new Frame(pose, activation, master.attackAnimation(), true, left, 0, 0,
+			ArticulatedCombatPose.masterFootwork(master.attackAnimation(), elapsed, master.attackTellTicks()), master.getDeltaMovement().horizontalDistanceSqr()));
 	}
 
 	public static Frame frame(ArmedEntityRenderState state) { return compatible(state, false); }
@@ -106,9 +114,11 @@ public final class ArticulatedCombat {
 
 	private static Frame compatible(ArmedEntityRenderState state, boolean view) {
 		if (!enabled() || !(state instanceof HumanoidRenderState humanoid) || !upright(humanoid) || !plainSword(state.getMainHandItemStack())
-			|| !Boolean.TRUE.equals(state.getData(KNOWN_LAYERS)) || !view && state.walkAnimationSpeed > .2F) return null;
+			|| !Boolean.TRUE.equals(state.getData(KNOWN_LAYERS))) return null;
 		Frame frame = state.getData(FRAME);
-		if (frame == null || !ArticulatedArmorRenderer.compatible(humanoid) || !view && frame.pose().weight() <= 0
+		if (frame == null || !view && state.walkAnimationSpeed > .2F
+				&& !schoolFootworkCompatible(frame)
+			|| !ArticulatedArmorRenderer.compatible(humanoid) || !view && frame.pose().weight() <= 0
 			|| view && frame.move() != -1 && frame.move() != 0
 			|| view && frame.move() == -1 && state.swingAnimation > 0) return null;
 		ItemStack off = state.mainArm == HumanoidArm.RIGHT ? state.leftHandItemStack : state.rightHandItemStack;
@@ -122,6 +132,16 @@ public final class ArticulatedCombat {
 				|| state.getData(AuraShellLayer.SHELL_GLOW) != null || state.getData(AuraShellLayer.IMAGES) != null) return null;
 		} else if (!(state instanceof AuraFighterRenderState fighter) || !frame.master() || fighter.sit > 0 || fighter.yield > 0 || fighter.stagger > 0) return null;
 		return frame;
+	}
+
+	private static boolean schoolFootworkCompatible(Frame frame) {
+		if (!frame.master() || frame.move() != ArticulatedCombatPose.MASTER_CROSSWIND_REPRISE) return false;
+		// Vanilla's eased walk speed remains high for several frames after the accepted step.
+		// Synced velocity is distinct from the client's remaining position interpolation. Gale's
+		// accepted script zeroes horizontal velocity; walking/knockback does not earn this path.
+		// Unknown/synthetic velocity stays conservative, and the exact step window is unchanged.
+		return frame.scriptedFootwork() || Double.isFinite(frame.horizontalVelocitySquared())
+			&& frame.horizontalVelocitySquared() >= 0 && frame.horizontalVelocitySquared() <= 1.0e-8;
 	}
 
 	private static boolean upright(HumanoidRenderState state) {

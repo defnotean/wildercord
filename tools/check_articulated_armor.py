@@ -70,7 +70,7 @@ def run(out: Path, verify: Path) -> None:
     classes = out / 'classes'
     classes.mkdir()
     cp = os.pathsep.join(map(str, dependencies))
-    commands = [[str(java / 'javac'), '--release', '25', '-proc:none', '-cp', cp, '-d', str(classes),
+    commands = [[str(java / 'javac'), '--release', '25', '-sourcepath', str(ROOT / 'src/main/java'), '-proc:none', '-cp', cp, '-d', str(classes),
                  *[str(ROOT / name) for name in SOURCES if name.endswith('.java')]]]
     report = {'kind': 'offline source geometry', 'native': 'not run', 'mixinRuntime': 'not run',
               'source_before': before, 'dependency_sha256': hashes, 'passed': False}

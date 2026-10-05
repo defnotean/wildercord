@@ -12,6 +12,7 @@ import dev.wildercord.cast.RuneBolt;
 import dev.wildercord.cast.Statuses;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.player.WildercordAttachments;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -134,7 +135,17 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	public static void init() {
 		MasterVictories.init();
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { ACTIVE.clear(); INTRODUCTIONS.clear(); });
+		// Vanilla only unloads saved entities through setRemoved; temporary trials need this chunk hook too.
+		// CHUNK_UNLOAD runs outside the entity manager's tracking-change iteration, so discarding is safe here.
+		ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
+			for (SwordMaster master : new ArrayList<>(ACTIVE)) {
+				if (master.level() == level && master.chunkPosition().equals(chunk.getPos())) master.discard();
+			}
+		});
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			for (SwordMaster master : new ArrayList<>(ACTIVE)) master.closeEncounter();
+			INTRODUCTIONS.clear();
+		});
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -966,15 +977,31 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			}
 		}
 		super.die(source);
-		bar.removeAllPlayers();
-		ACTIVE.remove(this);
+		closeEncounter();
 	}
 
 	@Override
-	public void remove(RemovalReason reason) {
+	public void onRemoval(RemovalReason reason) {
+		// setRemoved is final and bypasses remove on native unload paths.
+		closeEncounter();
+		super.onRemoval(reason);
+	}
+
+	/** Terminal, idempotent cleanup; death awards must read the accepted roster before this runs. */
+	private void closeEncounter() {
 		cancelAttack();
+		dropGuard();
+		getNavigation().stop();
+		setTarget(null);
+		slashTarget = null;
+		slashAim = null;
+		participants.clear();
+		invitations.clear();
+		challenger = null;
+		waitingFor = null;
+		waitingUntil = 0;
+		home = null;
 		bar.removeAllPlayers();
 		ACTIVE.remove(this);
-		super.remove(reason);
 	}
 }

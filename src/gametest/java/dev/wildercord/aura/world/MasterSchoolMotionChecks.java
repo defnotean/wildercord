@@ -40,6 +40,16 @@ public final class MasterSchoolMotionChecks {
 	private long began;
 
 	public void run(ClientGameTestContext context) {
+		run(context, false);
+	}
+
+	/** Reuses ordinary server AI and spectator readback with the client preview explicitly enabled. */
+	public void runArticulated(ClientGameTestContext context) {
+		check(dev.wildercord.client.combat.ArticulatedCombat.enabled(), "The articulated school check requires explicit opt-in");
+		run(context, true);
+	}
+
+	private void run(ClientGameTestContext context, boolean articulated) {
 		var saved = context.computeOnClient(MastersNpcCaptureProbe.Options::save);
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(30);
@@ -68,10 +78,20 @@ public final class MasterSchoolMotionChecks {
 						new Beat("release", GaleRepriseRules.TELL, 0), new Beat("recovery", 38, 0))
 					: List.of(new Beat("plant", 4, 1), new Beat("brace", 12, 1), new Beat("reply_warning", 25, 3),
 						new Beat("release", StoneFractureRules.TELL, 0), new Beat("recovery", 52, 0));
-				var poses = new ArrayList<float[]>();
+				if (gale && articulated) {
+					beats = new ArrayList<>(beats);
+					beats.addAll(2, List.of(new Beat("step_last", 11, 2), new Beat("landed", 12, 3),
+						new Beat("settle_13", 13, 3), new Beat("settle_14", 14, 3), new Beat("settle_15", 15, 3)));
+				}
+				var poses = new java.util.HashMap<String, float[]>();
 				for (Beat beat : beats) {
 					// A fresh natural trial for every readback prevents GPU latency from consuming later beats.
 					try {
+						if (articulated) {
+							boolean lane = beat.name.equals("reply_warning");
+							context.runOnClient(mc -> mc.options.fov().set(lane ? 60 : 50));
+							frameObserver(world, gale, lane);
+						}
 						beginNaturally(world, school);
 						int id = master.getId(), attack = gale ? 7 : 8;
 						CompletableFuture<MastersNpcCaptureProbe.Evidence> shot = null;
@@ -84,8 +104,10 @@ public final class MasterSchoolMotionChecks {
 								if (age < beat.age) return null;
 								check(age < beat.age + 1, "Never substitute a neighboring phase for " + beat.name + ": " + age);
 								check(mc.level.getGameTime() - (long) live.attackElapsed(0) == began, "Rendered attack must retain the naturally accepted server start");
-								String name = "masters_npc_" + (gale ? "gale_crosswind" : "stone_fracture") + "_" + beat.name;
-								return MastersNpcCaptureProbe.capture(mc, live, name, beat.name, beat.age, beat.requiredWarningSegments, origin, serverFrame);
+								String name = (articulated ? "articulated_npc_" : "masters_npc_")
+									+ (gale ? "gale_crosswind" : "stone_fracture") + "_" + beat.name;
+								return MastersNpcCaptureProbe.capture(mc, live, name, beat.name, beat.age, beat.requiredWarningSegments,
+									origin, serverFrame, articulated);
 							});
 							if (shot != null) break;
 							context.waitTick();
@@ -100,16 +122,31 @@ public final class MasterSchoolMotionChecks {
 						}, 80);
 						var pending = shot;
 						context.waitFor(mc -> pending.isDone(), 40);
-						poses.add(shot.join().modelPose());
+						poses.put(beat.name, shot.join().modelPose());
 					} finally { world.getServer().runOnServer(server -> cleanup()); }
 					context.waitTicks(5);
 				}
-				check(different(poses.get(0), poses.get(3)) && different(poses.get(3), poses.get(4)),
-					"Actual native model transforms must distinguish warning, release and recovery");
+				check(different(poses.get(gale ? "gather" : "plant"), poses.get("release"))
+					&& different(poses.get("release"), poses.get("recovery")),
+					"Actual native " + (articulated ? "segmented" : "rigid") + " model transforms must distinguish warning, release and recovery");
 			}
 		} finally {
 			context.runOnClient(mc -> { MastersNpcCaptureProbe.end(); saved.restore(mc); });
 		}
+	}
+
+	/** Articulated-only framing selected before admission; the observer never follows a running form. */
+	private void frameObserver(TestSingleplayerContext world, boolean gale, boolean lane) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer observer = server.getPlayerList().getPlayers().getFirst();
+			Vec3 camera = lane ? origin.add(7, 3, 7) : origin.add(2.2, .20, 3.6);
+			Vec3 focus = lane ? origin.add(-.6, .8, 1.8) : origin.add(gale ? -.9 : 0, 1.25, 0);
+			Vec3 look = focus.subtract(camera.add(0, observer.getEyeHeight(), 0));
+			float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
+			float pitch = (float) -Math.toDegrees(Math.atan2(look.y, look.horizontalDistance()));
+			observer.teleportTo(level, camera.x, camera.y, camera.z, Set.of(), yaw, pitch, false);
+			observer.setDeltaMovement(Vec3.ZERO);
+		});
 	}
 
 	private void beginNaturally(TestSingleplayerContext world, int school) {

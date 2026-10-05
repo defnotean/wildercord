@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MastersBodyRenderProbeMixin {
 	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/UvMapping;I)V"))
 	private void wildercord$submittedBody(LivingEntityRenderState state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera, CallbackInfo ci) {
-		dev.wildercord.gametest.MastersNpcCaptureProbe.body(state);
+		dev.wildercord.gametest.MastersNpcCaptureProbe.body(state, pose);
 		if (state instanceof AvatarRenderState avatar && !avatar.isInvisible && !avatar.isInvisibleToPlayer && !avatar.isSpectator)
 			MastersCaptureProbe.body(avatar.id);
 	}

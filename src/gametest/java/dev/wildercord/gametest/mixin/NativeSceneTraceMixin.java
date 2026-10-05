@@ -1,6 +1,7 @@
 package dev.wildercord.gametest.mixin;
 
 import com.google.gson.JsonObject;
+import dev.wildercord.gametest.NativeJvmDiagnostics;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
@@ -18,6 +19,21 @@ public abstract class NativeSceneTraceMixin {
 	@Shadow public static EntrypointContainer<FabricClientGameTest> currentlyRunningGameTest;
 	@Unique private static long wildercord$traceStarted;
 	@Unique private static long wildercord$sceneStarted;
+
+	@Inject(method = "start()V", at = @At("HEAD"), require = 1, allow = 1)
+	private static void wildercord$watchStart(CallbackInfo ci) {
+		try { NativeJvmDiagnostics.start(); } catch (Throwable ignored) { }
+	}
+
+	@Inject(method = "lambda$start$0(Ljava/util/List;)V", at = @At("HEAD"), require = 1, allow = 1)
+	private static void wildercord$watchTestThread(CallbackInfo ci) {
+		try { NativeJvmDiagnostics.testThread(); } catch (Throwable ignored) { }
+	}
+
+	@Inject(method = "lambda$start$0(Ljava/util/List;)V", at = @At("RETURN"), require = 1, allow = 1)
+	private static void wildercord$watchReturned(CallbackInfo ci) {
+		wildercord$watchStop();
+	}
 
 	// Fabric client gametest 6.0.7: assign entry, setup, runTest, cleanup, clear;
 	// the catch-all also clears the entry before rethrowing the original throwable.
@@ -54,6 +70,12 @@ public abstract class NativeSceneTraceMixin {
 			opcode = Opcodes.PUTSTATIC, ordinal = 2), require = 1, allow = 1)
 	private static void wildercord$sceneThrew(CallbackInfo ci) {
 		wildercord$trace("end", "threw");
+		wildercord$watchStop();
+	}
+
+	@Unique
+	private static void wildercord$watchStop() {
+		try { NativeJvmDiagnostics.stop(); } catch (Throwable ignored) { }
 	}
 
 	@Unique
@@ -62,6 +84,7 @@ public abstract class NativeSceneTraceMixin {
 		// A returned entry can have been an intentional optional skip; it is not a pass.
 		try {
 			long now = System.nanoTime();
+			NativeJvmDiagnostics.scene(currentlyRunningGameTest.getDefinition(), phase);
 			JsonObject marker = new JsonObject();
 			marker.addProperty("event", event);
 			marker.addProperty("phase", phase);
@@ -69,7 +92,7 @@ public abstract class NativeSceneTraceMixin {
 			marker.addProperty("elapsedSeconds", (now - wildercord$traceStarted) / 1_000_000_000.0);
 			marker.addProperty("sceneElapsedSeconds", (now - wildercord$sceneStarted) / 1_000_000_000.0);
 			System.out.println("WILDERCORD_NATIVE_SCENE " + marker);
-		} catch (RuntimeException ignored) {
+		} catch (Throwable ignored) {
 			// Logging cannot replace the original test exception or result.
 		}
 	}

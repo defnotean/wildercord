@@ -153,6 +153,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 					run(failures, scene.id, () -> play(context, world, scene));
 				} finally {
 					traceBoltStep = false;
+					BoltStepArrivalProbe.clear();
 				}
 			}
 			reset(context, world);
@@ -404,10 +405,9 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				if (struck < 3) {
 					return "the swordsman should blink to and cut all three husks (" + struck + ")";
 				}
-				Mob last = foes(p).get(2);
-				double distance = p.position().distanceTo(last.position());
-				return distance < 3 ? null : "and end beside the last (tick=" + p.level().getGameTime() + ", distance=" + distance
-					+ ", player=" + boltState(p) + ", final target=" + boltState(last) + ")";
+				// The spark can lift the last husk before its blink, and later knockback separates the pair.
+				// Verify the actual final cut's arrival, independently of passive aura damage and screenshot timing.
+				return BoltStepArrivalProbe.problem(p.getUUID());
 			}));
 		out.add(new Scene(dev.wildercord.aura.arts.ThunderArts.HEAVENS_SPEAR, "thunder", AuraApi.ArtSlot.FINAL,
 			List.of(foe(0, 2.2), foe(0.2, 7.0), foe(-0.3, 12.0), foe(0.1, 17.0)), 16, 16, (p, b) -> {
@@ -903,6 +903,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		Before before = on(world, player -> snapshot(player));
 		if (traceBoltStep) {
 			on(world, player -> {
+				BoltStepArrivalProbe.begin(player.getUUID(), foes(player).stream().map(Mob::getUUID).toList());
 				dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_BOLT_STEP_START tick={} player={} targets={}",
 					player.level().getGameTime(), boltState(player), foes(player).stream().map(WildercordArtsTest::boltState).toList());
 				return null;

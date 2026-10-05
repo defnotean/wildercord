@@ -60,6 +60,11 @@ public final class PartyRules {
 		return group == null ? null : group.snapshot();
 	}
 
+	/** Invitation senders are already members; recipients also need names until the invite ends. */
+	boolean references(UUID player) {
+		return byMember.containsKey(player) || invitations.containsKey(player);
+	}
+
 	public boolean sameParty(UUID first, UUID second) {
 		Group group = byMember.get(first);
 		return group != null && group == byMember.get(second);

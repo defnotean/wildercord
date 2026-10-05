@@ -17,7 +17,6 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -35,35 +34,29 @@ import java.util.UUID;
 public final class Parties {
 	private Parties() {}
 
-	static final class Session {
-		final PartyRules rules = new PartyRules();
-		final Map<UUID, String> names = new HashMap<>();
-
-		void remember(ServerPlayer player) {
-			names.put(player.getUUID(), player.getGameProfile().name());
-		}
-	}
-
-	private static final Map<MinecraftServer, Session> SESSIONS = new IdentityHashMap<>();
+	private static final Map<MinecraftServer, PartySession> SESSIONS = new IdentityHashMap<>();
 
 	/** Register before other damage listeners, so a rejected friendly hit has no combat side effects. */
 	public static void init() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> PartyCommands.register(dispatcher));
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((target, source, amount) -> !blocksDamage(target, source));
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> session(server).remember(handler.player));
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
+			session(server).remember(handler.player.getUUID(), handler.player.getGameProfile().name()));
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-			Session state = SESSIONS.get(server);
-			if (state != null) state.rules.disconnect(handler.player.getUUID());
+			PartySession state = SESSIONS.get(server);
+			if (state != null) state.disconnect(handler.player.getUUID());
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			Session state = SESSIONS.get(server);
-			if (state != null && server.getTickCount() % 20 == 0) state.rules.prune(now(server));
+			PartySession state = SESSIONS.get(server);
+			if (state != null && server.getTickCount() % 20 == 0) {
+				state.prune(now(server), player -> server.getPlayerList().getPlayer(player) != null);
+			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SESSIONS.remove(server));
 	}
 
-	static Session session(MinecraftServer server) {
-		return SESSIONS.computeIfAbsent(server, ignored -> new Session());
+	static PartySession session(MinecraftServer server) {
+		return SESSIONS.computeIfAbsent(server, ignored -> new PartySession());
 	}
 
 	static long now(MinecraftServer server) {
@@ -72,13 +65,13 @@ public final class Parties {
 
 	/** Immutable UUID membership for encounter opt-in; membership alone must not enroll a boss participant. */
 	public static Set<UUID> members(ServerPlayer player) {
-		Session state = SESSIONS.get(player.level().getServer());
+		PartySession state = SESSIONS.get(player.level().getServer());
 		PartyRules.Party party = state == null ? null : state.rules.party(player.getUUID());
 		return party == null ? Set.of() : Set.copyOf(party.members());
 	}
 
 	public static UUID leader(ServerPlayer player) {
-		Session state = SESSIONS.get(player.level().getServer());
+		PartySession state = SESSIONS.get(player.level().getServer());
 		PartyRules.Party party = state == null ? null : state.rules.party(player.getUUID());
 		return party == null ? null : party.leader();
 	}
@@ -87,7 +80,7 @@ public final class Parties {
 	public static boolean sameParty(Entity first, Entity second) {
 		if (first == null || second == null || !(first.level() instanceof ServerLevel a)
 				|| !(second.level() instanceof ServerLevel b) || a.getServer() != b.getServer()) return false;
-		Session state = SESSIONS.get(a.getServer());
+		PartySession state = SESSIONS.get(a.getServer());
 		UUID owner = ownerId(first), other = ownerId(second);
 		return state != null && owner != null && other != null && state.rules.sameParty(owner, other);
 	}

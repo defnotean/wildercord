@@ -104,9 +104,25 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
  }
  private static void swimmingShore(ServerLevel l){
   floor(l);
-  // Test-local, supplied six-by-three still-water habitat. Long shore-parallel
-  // native runs fit without deepening the quarry below the hunter's reach.
-  for(int x=1;x<=6;x++)for(int z=0;z<=3;z++)l.setBlock(new BlockPos(x,100,z),(z<3?Blocks.WATER:Blocks.CLAY).defaultBlockState(),2);
+  // Test-local six-by-one source-water channel: each swimming cell has a dry
+  // cardinal bank while six blocks still permit a genuine longitudinal escape.
+  // Replace every extra row from floor's original pond with physical clay.
+  for(int x=1;x<=6;x++)for(int z=0;z<=3;z++)l.setBlock(new BlockPos(x,100,z),(z==0?Blocks.WATER:Blocks.CLAY).defaultBlockState(),2);
+  int sources=0,closedCells=0;var banks=new ArrayList<BlockPos>();
+  for(int x=0;x<=7;x++)for(int z=-1;z<=3;z++){
+   var at=new BlockPos(x,100,z);var state=l.getBlockState(at);var fluid=l.getFluidState(at);
+   if(x>=1&&x<=6&&z==0){
+    check(state.is(Blocks.WATER)&&fluid.is(FluidTags.WATER)&&fluid.isSource()&&state.getCollisionShape(l,at).isEmpty(),"Supplied swimming channel retains six collision-free source-water cells: "+at);
+    check(l.getBlockState(at.below()).is(Blocks.CLAY)&&l.getBlockState(at.above()).isAir(),"Supplied swimming channel has actual clay below and clear space above: "+at);
+    var bank=firstDryBank(l,at);check(at.offset(0,1,1).equals(bank),"Native bank order selects the adjacent dry shore for every supplied water cell: "+at+" bank="+bank);
+    sources++;banks.add(bank);
+   }else{
+    check(state.is(Blocks.CLAY)&&fluid.isEmpty()&&state.isCollisionShapeFullBlock(l,at),"Physical clay closes the channel ends, both sides and every former extra water row: "+at);
+    closedCells++;
+   }
+  }
+  check(sources==6&&closedCells==34,"Supplied channel footprint has exactly six source cells and thirty-four checked clay cells");
+  System.out.println("SILTCREST_DODGE_HABITAT sources="+sources+" checkedClay="+closedCells+" waterFrom="+new BlockPos(1,100,0)+" waterTo="+new BlockPos(6,100,0)+" firstDryBanks="+banks);
  }
  private static Vec3 horizontal(Vec3 v){return new Vec3(v.x,0,v.z);}
  private static BlockPos firstDryBank(ServerLevel l,BlockPos origin){

@@ -548,6 +548,23 @@ class NpcCuratorTests(CuratorFixture):
         with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
             self.curate()
 
+    def test_new_fallback_framing_fields_cannot_opt_into_partial_warning_validation(self):
+        _, sidecar = self.npc()
+        value = json.loads(sidecar.read_text())
+        value.update(framing="legacy_wide", fov=60, warningCoverage="full_lane")
+        self.write_metadata(sidecar, value)
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 1)
+        for changes in ({"framing": "body_close", "fov": 50, "warningCoverage": "visible_portion"},
+                        {"warningCoverage": "visible_portion"}, {"fov": 50}):
+            self.write_metadata(sidecar, {**value, **changes})
+            with self.assertRaises(curator.EvidenceError):
+                curator.curate(self.root, self.source, self.marker, "review/invalid", self.identity)
+        value["warnings"][0].update(sampledBins=0, coloredBins=0, **{"from": None})
+        self.write_metadata(sidecar, value)
+        with self.assertRaises(curator.EvidenceError):
+            curator.curate(self.root, self.source, self.marker, "review/invalid", self.identity)
+
 
 class ArticulatedCuratorTests(CuratorFixture):
     suite = "articulated"
@@ -791,8 +808,8 @@ class ArticulatedCuratorTests(CuratorFixture):
         self.assertEqual(result["testVerdict"]["authoritativeManifest"], "articulated-native-manifest.json")
         self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
         self.assertEqual({row["coverage"] for row in result["unavailableRequestedCoverage"]},
-                         {"observer_client", "live_npc_combat", "synthetic_geometry_and_hitstop_screenshots",
-                          "exact_impact_phase", "exact_recovery_phase"})
+                         {"observer_client_of_player_combat", "human_multiplayer_duel", "synthetic_geometry_and_hitstop_screenshots",
+                          "exact_player_impact_phase", "exact_player_recovery_phase"})
         second = curator.curate(self.root, self.source, self.marker, "review/another", self.identity,
                                 suite=self.suite)
         self.assertEqual(result, second)
@@ -933,6 +950,376 @@ class ArticulatedCuratorTests(CuratorFixture):
         manifest = json.loads((self.root / output / "manifest.json").read_text())
         self.assertEqual(manifest["suite"], curator.ARTICULATED_SUITE)
         self.assertEqual(manifest["selectedFrameCount"], 1)
+
+
+class ArticulatedNpcCuratorTests(CuratorFixture):
+    suite = "articulated"
+    write_metadata = NpcCuratorTests.write_metadata
+
+    def metadata(self, scene, phase):
+        # Structural Python test inputs only. These manufactured receipts are
+        # never native screenshots or a game/render/socket pass claim.
+        original = scene.replace("articulated_npc_", "masters_npc_", 1)
+        base_phase = phase if phase in curator.NPC_BEATS[original] else "reply_warning"
+        value = NpcCuratorTests.metadata(self, original, base_phase)
+        age = curator.ARTICULATED_NPC_BEATS[scene][phase]
+        value.update(name=f"{scene}_{phase}", phase=phase, requestedTick=age, expectedBackend="segmented")
+        value["renderedTimeline"].update(clientGameTick=100 + age, age=age + .5, fallbackRig=False)
+        value["serverObservation"].update(gameTick=100 + age, age=age)
+        if phase == "step_last":
+            value["warnings"] = value["warnings"][:2]
+        value["modelPose"] = [.1] * 120
+        step = original.endswith("gale_crosswind") and 8 <= age < 12
+        value["articulatedFrame"] = {
+            "activation": 100, "move": value["renderedTimeline"]["attackId"],
+            "phase": "ACTIVE" if phase == "release" else "RECOVERY" if phase == "recovery" else "WINDUP",
+            "weight": .9, "leftHanded": False, "scriptedFootwork": step,
+            "horizontalVelocitySquared": .2025 if step else 0,
+            "interpolatedTravelSquared": .06, "walkAnimationSpeed": .7 if original.endswith("gale_crosswind") else 0,
+        }
+        value["modelReceipts"] = [{"backend": "segmented", "segmentedRootVisible": True,
+            "rigidPartsVisible": [False] * 6, "transformNames": list(curator.NPC_SEGMENTED_JOINTS),
+            "transforms": list(value["modelPose"])}]
+        matrix = [1.0 if i % 5 == 0 else 0.0 for i in range(16)]
+        value["handReceipts"] = [{"hand": "RIGHT", "entryMatrix": matrix, "nativeHandMatrix": matrix,
+            "resolvedItemMatrix": matrix, "expectedSocketItemMatrix": matrix,
+            "hiltDistance": 0.0, "maximumMatrixError": 0.0}]
+        close = phase != "reply_warning"
+        value.update(framing="body_close" if close else "warning_lane", fov=50 if close else 60,
+                     warningCoverage="visible_portion" if close else "full_lane",
+                     bodyBounds={"minX": .2, "minY": .2, "maxX": .65, "maxY": .6 if close else .4,
+                                 "vertexCount": 800, "allInFront": True, "wholeVisible": True},
+                     bladeBounds={"minX": .35, "minY": .25, "maxX": .6, "maxY": .55,
+                                  "vertexCount": 24, "allInFront": True, "wholeVisible": True},
+                     bodyBoundsSource=curator.NPC_BODY_BOUNDS_SOURCE,
+                     bladeBoundsSource=curator.NPC_BLADE_BOUNDS_SOURCE,
+                     bodySubmitMatrix=matrix, viewRotationProjectionMatrix=matrix)
+        return value
+
+    def npc(self, scene="articulated_npc_gale_crosswind", phase="reply_warning", size=100):
+        return NpcCuratorTests.npc(self, scene, phase, size)
+
+    def full_npc_matrix(self, size=100):
+        for scene, beats in curator.ARTICULATED_NPC_BEATS.items():
+            for phase in beats:
+                self.npc(scene, phase, size)
+
+    def test_exact_articulated_namespace_and_boundary_beats_are_separate_from_fallback(self):
+        for scene, beats in curator.ARTICULATED_NPC_BEATS.items():
+            for phase in beats:
+                name = f"{scene}_{phase}.png"
+                self.assertIsNone(curator.describe(name))
+                info = curator.describe(name, suite=self.suite)
+                self.assertEqual((info["sourceSuite"], info["view"], info["phase"]),
+                                 (curator.ARTICULATED_SUITE, curator.NPC_VIEW, phase))
+        for name in ("articulated_npc_gale_crosswind_settle_12.png", "articulated_npc_gale_crosswind_settle_16.png",
+                     "articulated_npc_stone_fracture_landed.png", "articulated_npc_gale_crosswind_frame_11.png",
+                     "articulated_npc_ember_release.png", "masters_npc_gale_crosswind_release.png"):
+            self.assertIsNone(curator.describe(name, suite=self.suite))
+        absent = self.curate()
+        self.assertEqual(absent["frames"], [])
+        self.assertEqual([row["missingCapturePhases"] for row in absent["npcCoverage"]],
+                         [list(beats) for beats in curator.ARTICULATED_NPC_BEATS.values()])
+
+    def test_all_existing_and_npc_frames_fit_the_unchanged_reserve_and_preserve_both_file_types(self):
+        ArticulatedCuratorTests.full_matrix(self)
+        self.full_npc_matrix()
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 131)
+        self.assertEqual(result["selectedMetadataCount"], 15)
+        self.assertEqual(len(result["coverage"]), 32)
+        self.assertEqual(result["limits"]["manifestReserveBytes"], 256_000)
+        self.assertEqual(result["limits"]["totalBytesLimit"], 14_000_000)
+        second = curator.curate(self.root, self.source, self.marker, "review/repeated", self.identity, suite=self.suite)
+        self.assertEqual(result, second)
+        for frame in result["frames"]:
+            for entry in ([frame, frame["metadata"]] if "metadata" in frame else [frame]):
+                original = (self.root / entry["sourcePath"]).read_bytes()
+                self.assertEqual((self.root / self.output / entry["artifactPath"]).read_bytes(), original)
+                self.assertEqual(entry["sha256"], hashlib.sha256(original).hexdigest())
+        self.assertTrue(all(not row["missingCapturePhases"] and not row["omittedForBudgetPhases"] for row in result["npcCoverage"]))
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+        self.assertIn("matrices are observed", result["basis"])
+
+    def test_bounded_npc_priority_keeps_owner_armor_and_hud_pair_rules(self):
+        ArticulatedCuratorTests.full_matrix(self, size=700_000)
+        self.full_npc_matrix(size=700_000)
+        result = self.curate()
+        expected = [(scene, phase) for phase in curator.NPC_PRIORITY for scene in curator.ARTICULATED_NPC_BEATS]
+        self.assertEqual([(f["scene"], f["phase"]) for f in result["frames"][:6]], expected)
+        self.assertEqual(result["selectedMetadataCount"], 6)
+        for hand in curator.ARTICULATED_HANDS:
+            owner = [frame for frame in result["frames"] if frame.get("hand") == hand]
+            self.assertEqual({frame["sourceSuite"] for frame in owner}, set(curator.ARTICULATED_SOURCE_SUITES))
+            self.assertEqual({frame["equipment"] for frame in owner if frame["sourceSuite"] == curator.ARTICULATED_HUD_SUITE},
+                             {"skin", "netherite_chestplate"})
+        files = [path for path in (self.root / self.output).rglob("*") if path.is_file()]
+        self.assertLess(sum(path.stat().st_size for path in files), 14_000_000)
+        archive = self.root / "curated.zip"
+        with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as zipped:
+            for path in files:
+                zipped.write(path, path.relative_to(self.root / self.output))
+        self.assertLess(archive.stat().st_size, 15_000_000)
+
+    def test_boundary_ages_keep_scripted_step_velocity_interpolation_and_eased_walk_distinct(self):
+        for phase in ("step_last", "landed", "settle_13", "settle_14", "settle_15"):
+            self.npc(phase=phase)
+        result = self.curate()
+        self.assertEqual([f["renderedTimeline"]["age"] for f in result["frames"]], [11.5, 12.5, 13.5, 14.5, 15.5])
+        self.assertEqual([f["articulatedFrame"]["scriptedFootwork"] for f in result["frames"]], [True, False, False, False, False])
+        for frame in result["frames"]:
+            self.assertEqual(frame["articulatedFrame"]["interpolatedTravelSquared"], .06)
+            self.assertEqual(frame["articulatedFrame"]["walkAnimationSpeed"], .7)
+            self.assertEqual(frame["modelTransformCount"], 120)
+            self.assertEqual(frame["modelReceiptCount"], 1)
+            self.assertEqual(frame["handReceiptCount"], 1)
+        self.assertEqual(result["frames"][1]["articulatedFrame"]["horizontalVelocitySquared"], 0)
+        self.assertEqual(result["npcCoverage"][0]["capturedPhases"], ["step_last", "landed", "settle_13", "settle_14", "settle_15"])
+
+    def test_png_and_receipt_bytes_are_one_indivisible_budget_unit(self):
+        image, sidecar = self.npc()
+        cost = image.stat().st_size + sidecar.stat().st_size
+        rejected = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + cost - 1)
+        self.assertEqual(rejected["frames"], [])
+        self.assertEqual(rejected["npcCoverage"][0]["omittedForBudgetPhases"], ["reply_warning"])
+        accepted = curator.curate(self.root, self.source, self.marker, "review/exact", self.identity,
+                                 suite=self.suite, budget=curator.ARTICULATED_MANIFEST_RESERVE + cost)
+        self.assertEqual(accepted["selectedFrameCount"], 1)
+        self.assertEqual(accepted["selectedPngBytes"] + accepted["selectedMetadataBytes"], cost)
+
+    def test_failed_rigid_backend_receipts_are_excluded_without_losing_owner_evidence(self):
+        _, sidecar = self.npc(phase="landed")
+        value = json.loads(sidecar.read_text())
+        value["renderFailure"] = "java.lang.AssertionError: The requested backend must own the native school frame"
+        value["renderedTimeline"]["fallbackRig"] = True
+        value["modelPose"] = [.2] * 36
+        value["modelReceipts"] = [{"backend": "rigid", "segmentedRootVisible": False, "rigidPartsVisible": [True] * 6,
+                                   "transformNames": list(curator.NPC_RIGID_PARTS), "transforms": value["modelPose"]}]
+        value["handReceipts"] = []
+        self.write_metadata(sidecar, value)
+        owner = self.shot("articulated_live_left_first_frame_0.png")
+        result = self.curate()
+        self.assertEqual([Path(f["sourcePath"]).name for f in result["frames"]], [owner.name])
+        self.assertEqual(result["selectedMetadataCount"], 0)
+        self.assertEqual(result["npcCoverage"][0]["capturedPhases"], [])
+        self.assertEqual(result["excludedNpcCaptures"][0]["phase"], "landed")
+        self.assertEqual(result["excludedNpcCaptures"][0]["reasonCode"], "native_render_failure")
+
+    def test_inconsistent_backend_phase_joint_and_socket_receipts_cannot_be_accepted(self):
+        _, sidecar = self.npc()
+        mutations = (("expectedBackend", "rigid"), ("renderedTimeline.fallbackRig", True),
+                     ("modelPose", [.1] * 36), ("modelReceipts", []), ("handReceipts", []),
+                     ("articulatedFrame", None), ("articulatedFrame.activation", 99), ("articulatedFrame.move", 8),
+                     ("articulatedFrame.phase", "ACTIVE"), ("articulatedFrame.scriptedFootwork", True),
+                     ("articulatedFrame.horizontalVelocitySquared", -1), ("articulatedFrame.interpolatedTravelSquared", -1),
+                     ("articulatedFrame.walkAnimationSpeed", "0.2"),
+                     ("modelReceipts.0.transformNames", list(reversed(curator.NPC_SEGMENTED_JOINTS))),
+                     ("modelReceipts.0.transforms", [.2] * 120), ("modelReceipts.0.rigidPartsVisible", [True] * 6),
+                     ("modelReceipts.0.segmentedRootVisible", False),
+                     ("handReceipts.0.hand", "LEFT"), ("handReceipts.0.entryMatrix", [1.0] * 15),
+                     ("handReceipts.0.hiltDistance", .00001), ("handReceipts.0.maximumMatrixError", .00001),
+                     ("handReceipts.0.resolvedItemMatrix", [0.0] * 16))
+        for field, new in mutations:
+            with self.subTest(field=field):
+                value = self.metadata("articulated_npc_gale_crosswind", "reply_warning")
+                node = value
+                keys = field.split(".")
+                for key in keys[:-1]:
+                    node = node[int(key)] if isinstance(node, list) else node[key]
+                node[keys[-1]] = new
+                self.write_metadata(sidecar, value)
+                with self.assertRaises(curator.EvidenceError):
+                    self.curate()
+                self.assertFalse((self.root / self.output).exists())
+
+    def test_early_articulated_failure_allows_omitted_extraction_but_requires_receipt_schema(self):
+        _, sidecar = self.npc()
+        value = json.loads(sidecar.read_text())
+        for key in ("renderedTimeline", "modelPose", "renderedPosition", "articulatedFrame"):
+            del value[key]
+        for key in ("bodySubmitMatrix", "viewRotationProjectionMatrix"):
+            del value[key]
+        for key in ("bodyBounds", "bladeBounds"):
+            value[key] = {"minX": 0, "minY": 0, "maxX": 0, "maxY": 0, "vertexCount": 0,
+                          "allInFront": False, "wholeVisible": False}
+        value.update(renderFailure="java.lang.AssertionError: Native NPC body submission and animated model passes must both occur",
+                     modelPasses=0, bodySubmits=0, bodyPoints=[], warnings=[], modelReceipts=[], handReceipts=[],
+                     bodyPixels={"nonBlackPixels": 0, "chromaticPixels": 0, "distinctColors": 0, "luminanceRange": 0})
+        self.write_metadata(sidecar, value)
+        result = self.curate()
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(len(result["excludedNpcCaptures"]), 1)
+        self.assertEqual(result["selectedMetadataCount"], 0)
+        for field, malformed in (("modelReceipts", None), ("handReceipts", {}), ("expectedBackend", "rigid"),
+                                 ("articulatedFrame", []), ("bodySubmitMatrix", [0.0] * 15), ("extra", float("inf"))):
+            with self.subTest(field=field):
+                invalid = {**value, field: malformed}
+                self.write_metadata(sidecar, invalid)
+                with self.assertRaises(curator.EvidenceError):
+                    curator.curate(self.root, self.source, self.marker, "review/invalid", self.identity, suite=self.suite)
+
+    def test_every_native_model_and_hand_pass_is_checked_and_retained_in_the_sidecar(self):
+        _, sidecar = self.npc()
+        value = json.loads(sidecar.read_text())
+        value["modelPasses"] = 2
+        value["modelReceipts"] *= 2
+        value["handReceipts"] *= 2
+        self.write_metadata(sidecar, value)
+        result = self.curate()
+        self.assertEqual(result["frames"][0]["modelReceiptCount"], 2)
+        self.assertEqual(result["frames"][0]["handReceiptCount"], 2)
+        for field in ("modelReceipts", "handReceipts"):
+            invalid = json.loads(json.dumps(value))
+            if field == "modelReceipts":
+                invalid[field][1]["rigidPartsVisible"][0] = True
+            else:
+                invalid[field][1]["hiltDistance"] = .1
+            self.write_metadata(sidecar, invalid)
+            with self.assertRaises(curator.EvidenceError):
+                curator.curate(self.root, self.source, self.marker, "review/invalid", self.identity, suite=self.suite)
+
+    def test_close_framing_preserves_partial_warning_receipts_and_nullable_unclamped_endpoints(self):
+        _, sidecar = self.npc(phase="landed")
+        value = json.loads(sidecar.read_text())
+        value["warnings"][0].update(sampledBins=3, coloredBins=1, to={"x": 1.4, "y": -.2})
+        del value["warnings"][0]["from"]
+        value["warnings"][1].update(sampledBins=0, coloredBins=0, **{"from": None, "to": None})
+        # Captured rays may include old segments that are not part of the native
+        # expected-ray color assertion. The curator cannot invent that identity.
+        value["warnings"][2].update(sampledBins=2, coloredBins=0)
+        self.write_metadata(sidecar, value)
+        result = self.curate()
+        frame = result["frames"][0]
+        self.assertEqual((frame["framing"], frame["fov"], frame["warningCoverage"]), ("body_close", 50, "visible_portion"))
+        self.assertEqual(frame["bodyBounds"], value["bodyBounds"])
+        self.assertEqual(frame["bladeBounds"], value["bladeBounds"])
+        copied = self.root / self.output / frame["metadata"]["artifactPath"]
+        self.assertEqual(copied.read_bytes(), sidecar.read_bytes())
+        self.assertIn("not pixel segmentation", result["basis"])
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_close_frames_do_not_require_invented_offscreen_warning_segments(self):
+        _, sidecar = self.npc(phase="step_last")
+        value = json.loads(sidecar.read_text())
+        value["warnings"] = []
+        self.write_metadata(sidecar, value)
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 1)
+        self.assertEqual(result["frames"][0]["warningCoverage"], "visible_portion")
+
+    def test_framing_modes_bounds_provenance_and_projection_matrices_are_validated(self):
+        _, sidecar = self.npc(phase="release")
+        mutations = (("framing", "warning_lane"), ("fov", 60), ("fov", 50.0), ("warningCoverage", "full_lane"),
+                     ("bodyBoundsSource", "authored_envelope"), ("bladeBoundsSource", "estimated_sword"),
+                     ("bodyBounds", None), ("bladeBounds", {}), ("bodyBounds.vertexCount", 0),
+                     ("bodyBounds.vertexCount", True), ("bodyBounds.allInFront", False),
+                     ("bodyBounds.wholeVisible", False), ("bladeBounds.wholeVisible", False),
+                     ("bodyBounds.minX", .03), ("bladeBounds.maxY", .97),
+                     ("bodyBounds.minY", .5), ("bodyBounds.maxY", .4),
+                     ("bodySubmitMatrix", [0.0] * 15), ("viewRotationProjectionMatrix", None))
+        for field, replacement in mutations:
+            with self.subTest(field=field, replacement=replacement):
+                value = self.metadata("articulated_npc_gale_crosswind", "release")
+                node = value
+                keys = field.split(".")
+                for key in keys[:-1]:
+                    node = node[key]
+                node[keys[-1]] = replacement
+                self.write_metadata(sidecar, value)
+                with self.assertRaises(curator.EvidenceError):
+                    self.curate()
+
+    def test_close_body_height_accepts_exact_180_pixels_but_rejects_smaller(self):
+        _, sidecar = self.npc(phase="release")
+        value = json.loads(sidecar.read_text())
+        value["bodyBounds"].update(minY=.25, maxY=.5)
+        self.write_metadata(sidecar, value)
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 1)
+        value["bodyBounds"]["maxY"] = .499
+        self.write_metadata(sidecar, value)
+        with self.assertRaises(curator.EvidenceError):
+            curator.curate(self.root, self.source, self.marker, "review/smaller", self.identity, suite=self.suite)
+
+    def test_wide_warning_lane_keeps_full_endpoint_sample_and_color_contract(self):
+        _, sidecar = self.npc()
+        for field, replacement in (("from", None), ("to", {"x": 1.4, "y": .5}),
+                                   ("sampledBins", 3), ("coloredBins", 0)):
+            with self.subTest(field=field):
+                value = self.metadata("articulated_npc_gale_crosswind", "reply_warning")
+                value["warnings"][0][field] = replacement
+                self.write_metadata(sidecar, value)
+                with self.assertRaises(curator.EvidenceError):
+                    self.curate()
+
+    def test_partial_warning_counts_and_endpoint_schema_still_fail_closed(self):
+        _, sidecar = self.npc(phase="landed")
+        for updates in ({"sampledBins": 17}, {"sampledBins": -1}, {"sampledBins": True},
+                        {"sampledBins": 3, "coloredBins": 4}, {"coloredBins": -1},
+                        {"from": {"x": "offscreen", "y": .5}}, {"to": {}},
+                        {"from": {"x": float("inf"), "y": .5}}):
+            with self.subTest(updates=updates):
+                value = self.metadata("articulated_npc_gale_crosswind", "landed")
+                value["warnings"][0].update(updates)
+                self.write_metadata(sidecar, value)
+                with self.assertRaises(curator.EvidenceError):
+                    self.curate()
+
+    def test_failed_framing_bounds_are_excluded_but_malformed_bounds_are_not_excused(self):
+        _, sidecar = self.npc(phase="landed")
+        value = json.loads(sidecar.read_text())
+        value["renderFailure"] = "java.lang.AssertionError: Native body geometry leaves the viewport"
+        value["bodyBounds"].update(minX=-.1, wholeVisible=False)
+        value["warnings"][0].update(sampledBins=0, coloredBins=0, **{"from": None, "to": None})
+        self.write_metadata(sidecar, value)
+        owner = self.shot("articulated_live_left_first_frame_0.png")
+        result = self.curate()
+        self.assertEqual([Path(f["sourcePath"]).name for f in result["frames"]], [owner.name])
+        self.assertEqual(len(result["excludedNpcCaptures"]), 1)
+        self.assertEqual(result["npcCoverage"][0]["capturedPhases"], [])
+        value["bodyBounds"]["vertexCount"] = "unknown"
+        self.write_metadata(sidecar, value)
+        with self.assertRaises(curator.EvidenceError):
+            curator.curate(self.root, self.source, self.marker, "review/malformed", self.identity, suite=self.suite)
+
+    def test_old_metadata_and_old_marker_never_qualify_fresh_articulated_npc_images(self):
+        image, sidecar = self.npc()
+        image.unlink()
+        marker = "review/later.json"
+        curator.prepare(self.root, self.source, marker, self.identity, suite=self.suite)
+        self.started = json.loads((self.root / marker).read_text())["startedNs"]
+        self.npc()
+        result = curator.curate(self.root, self.source, marker, self.output, self.identity, suite=self.suite)
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(result["freshness"]["excludedStaleNpcMetadata"], 1)
+        stamp = json.loads((self.root / marker).read_text())
+        del stamp["preexistingNpcMetadata"]
+        (self.root / marker).write_text(json.dumps(stamp))
+        with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
+            curator.curate(self.root, self.source, marker, "review/wrong", self.identity, suite=self.suite)
+
+    def test_receipt_changes_after_validation_and_unsafe_sidecars_still_fail_closed(self):
+        image, sidecar = self.npc()
+        saved = sidecar.read_bytes()
+        sidecar.unlink()
+        sidecar.symlink_to(self.root / "outside")
+        with self.assertRaisesRegex(curator.EvidenceError, "Symlink"):
+            self.curate()
+        sidecar.unlink()
+        sidecar.write_bytes(saved)
+        selector = curator.select_articulated
+
+        def mutate(groups, budget):
+            result = selector(groups, budget)
+            before = sidecar.stat()
+            sidecar.write_bytes(sidecar.read_bytes().replace(b'"nonBlackPixels": 100', b'"nonBlackPixels": 101'))
+            os.utime(sidecar, ns=(before.st_atime_ns, before.st_mtime_ns))
+            return result
+
+        with patch.object(curator, "select_articulated", side_effect=mutate):
+            with self.assertRaisesRegex(curator.EvidenceError, "changed after validation"):
+                self.curate()
+        self.assertFalse((self.root / self.output).exists())
 
 
 class ProvenanceTests(unittest.TestCase):

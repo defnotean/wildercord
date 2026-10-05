@@ -37,7 +37,7 @@ def export(out,verify):
                 deps.append(p);seen.add(p.name)
     cp=':'.join(map(str,deps)); classes=out/'classes';classes.mkdir(exist_ok=True)
     sources=['src/main/java/dev/wildercord/aura/ArticulatedCombatPose.java','src/client/java/dev/wildercord/client/mixin/ModelPartChildrenAccessor.java','src/client/java/dev/wildercord/client/combat/ArticulatedRig.java','tools/ExportArticulatedGeometry.java','tools/ExportArticulatedPose.java']
-    commands=[[str(java/'javac'),'-proc:none','--release','25','-cp',cp,'-d',str(classes),*[str(ROOT/s) for s in sources]]]
+    commands=[[str(java/'javac'),'-proc:none','--release','25','-sourcepath',str(ROOT/'src/main/java'),'-cp',cp,'-d',str(classes),*[str(ROOT/s) for s in sources]]]
     with (out/'export.log').open('w') as log:
         subprocess.run(commands[-1],stdout=log,stderr=log,check=True)
         for cls,name in [('ExportArticulatedGeometry','geometry.json'),('ExportArticulatedPose','poses.json')]:

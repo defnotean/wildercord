@@ -36,7 +36,7 @@ final class PartyCommands {
 			.then(literal("kick").then(argument("member", StringArgumentType.word()).suggests((ctx, builder) -> {
 				ServerPlayer player = ctx.getSource().getPlayer();
 				if (player == null) return builder.buildFuture();
-				Parties.Session state = state(player);
+				PartySession state = state(player);
 				PartyRules.Party party = state.rules.party(player.getUUID());
 				return SharedSuggestionProvider.suggest(party == null ? List.of() : party.members().stream()
 					.filter(id -> !id.equals(player.getUUID())).map(id -> name(state, id)).toList(), builder);
@@ -44,8 +44,8 @@ final class PartyCommands {
 	}
 
 	private static int invite(ServerPlayer from, ServerPlayer to) {
-		Parties.Session state = state(from);
-		state.remember(to);
+		PartySession state = state(from);
+		state.remember(to.getUUID(), to.getGameProfile().name());
 		PartyRules.Result result = state.rules.invite(from.getUUID(), to.getUUID(), Parties.now(from.level().getServer()));
 		if (!check(from, result)) return 0;
 		String sender = from.getGameProfile().name();
@@ -60,7 +60,7 @@ final class PartyCommands {
 	}
 
 	private static int answer(ServerPlayer player, ServerPlayer inviter, boolean accept) {
-		Parties.Session state = state(player);
+		PartySession state = state(player);
 		long now = Parties.now(player.level().getServer());
 		PartyRules.Result result = accept ? state.rules.accept(player.getUUID(), inviter.getUUID(), now)
 			: state.rules.decline(player.getUUID(), inviter.getUUID(), now);
@@ -76,7 +76,7 @@ final class PartyCommands {
 	}
 
 	private static int leave(ServerPlayer player) {
-		Parties.Session state = state(player);
+		PartySession state = state(player);
 		PartyRules.Party before = state.rules.party(player.getUUID());
 		if (!check(player, state.rules.leave(player.getUUID()))) return 0;
 		announce(player, before.members(), text("left", "%s left the party.", player.getDisplayName()));
@@ -89,7 +89,7 @@ final class PartyCommands {
 	}
 
 	private static int disband(ServerPlayer player) {
-		Parties.Session state = state(player);
+		PartySession state = state(player);
 		PartyRules.Party before = state.rules.party(player.getUUID());
 		if (!check(player, state.rules.disband(player.getUUID()))) return 0;
 		announce(player, before.members(), text("disbanded", "%s disbanded the party.", player.getDisplayName()));
@@ -98,7 +98,7 @@ final class PartyCommands {
 
 	/** Offline kicks resolve only an already enrolled UUID's server-observed name, never a made-up UUID. */
 	private static int kick(ServerPlayer player, String requested) {
-		Parties.Session state = state(player);
+		PartySession state = state(player);
 		PartyRules.Party before = state.rules.party(player.getUUID());
 		if (before == null) return check(player, PartyRules.Result.NO_PARTY) ? 1 : 0;
 		List<UUID> matches = before.members().stream().filter(id -> name(state, id).equalsIgnoreCase(requested)).toList();
@@ -113,7 +113,7 @@ final class PartyCommands {
 	}
 
 	private static int list(ServerPlayer player) {
-		Parties.Session state = state(player);
+		PartySession state = state(player);
 		PartyRules.Party party = state.rules.party(player.getUUID());
 		if (party == null) {
 			player.sendSystemMessage(text("none", "You are not in a party. Use /party invite <player>; they must accept."));
@@ -147,14 +147,14 @@ final class PartyCommands {
 		return false;
 	}
 
-	private static Parties.Session state(ServerPlayer player) {
-		Parties.Session state = Parties.session(player.level().getServer());
-		state.remember(player);
+	private static PartySession state(ServerPlayer player) {
+		PartySession state = Parties.session(player.level().getServer());
+		state.remember(player.getUUID(), player.getGameProfile().name());
 		return state;
 	}
 
-	private static String name(Parties.Session state, UUID member) {
-		return state.names.getOrDefault(member, member.toString());
+	private static String name(PartySession state, UUID member) {
+		return state.name(member);
 	}
 
 	private static void announce(ServerPlayer actor, List<UUID> members, Component message) {

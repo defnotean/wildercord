@@ -1,7 +1,10 @@
 package dev.wildercord.aura;
 
+import dev.wildercord.aura.world.GaleRepriseRules;
+import dev.wildercord.aura.world.StoneFractureRules;
+
 /**
- * Original, Minecraft-independent articulated Spellcut and sword-master sweep choreography.
+ * Original, Minecraft-independent articulated Spellcut and selected sword-master choreography.
  * Model units are pixels, +Y is down, and -Z is forward. All transforms are local to the named
  * parent, include their bind translation, and are already blended. This class cannot move an
  * entity, choose a target, alter a camera, or make a damage/reach decision.
@@ -9,7 +12,7 @@ package dev.wildercord.aura;
 public final class ArticulatedCombatPose {
 	private ArticulatedCombatPose() {}
 
-	public static final int SPELLCUT = 0, MASTER_SWEEP = 1;
+	public static final int SPELLCUT = 0, MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
 	public record Vec3(float x, float y, float z) {
@@ -208,6 +211,46 @@ public final class ArticulatedCombatPose {
 			arm(r(0, .08F, .03F), r(-.44F, -.34F, -.23F), -.80F, r(.08F, -.10F, .10F)), VIEW_FOLLOW),
 		v(-2.5F, 22, 1.8F), v(2.5F, 22, -2.0F));
 
+	// Gale's root still moves only on the server. These compact hip/ankle offsets depict one
+	// lateral shuffle, then a planted point reply; they do not add to its accepted travel distance.
+	private static final Key REPRISE_GATHER = new Key(v(-.2F, 1.2F, .10F), r(.025F, -.12F, .045F), r(.015F, -.06F, .02F), r(-.03F, -.12F, .035F), r(0, .22F, -.04F),
+		arm(r(.02F, .10F, -.08F), r(-1.40F, .25F, -.45F), -.95F, r(1.36F, -.32F, -.36F)),
+		arm(r(0, -.08F, .04F), r(-.65F, -.20F, -.20F), -.85F, r(.10F, -.12F, .08F)), VIEW_BIND);
+	private static final Key REPRISE_STEP = new Key(v(-.65F, 1.75F, .10F), r(.035F, -.19F, .12F), r(.015F, .04F, -.025F), r(-.04F, -.13F, -.085F), r(-.02F, .25F, -.03F),
+		arm(r(.02F, .12F, -.10F), r(-1.45F, .38F, -.50F), -.90F, r(1.31F, -.48F, -.53F)),
+		arm(r(0, -.08F, .06F), r(-.45F, -.25F, -.30F), -.72F, r(.08F, -.15F, .10F)), VIEW_BIND);
+	private static final Motion REPRISE_MOTION = new Motion(
+		new Key(v(-.28F, 1.35F, .18F), r(-.025F, .22F, .025F), r(-.025F, .10F, .015F), r(-.04F, .12F, .015F), r(.05F, -.36F, -.02F),
+			arm(r(.02F, .08F, -.04F), r(-1.15F, .26F, -.28F), -.92F, r(1.74F, -.65F, -1.05F)),
+			arm(r(0, -.06F, .04F), r(-.72F, -.24F, -.19F), -.95F, r(.10F, -.12F, .08F)), VIEW_BIND),
+		new Key(v(.18F, 1.45F, -.80F), r(.11F, -.10F, -.015F), r(.07F, -.06F, -.01F), r(.075F, -.12F, -.01F), r(-.14F, .22F, .01F),
+			arm(r(.02F, -.05F, -.03F), r(-1.40F, -.05F, -.10F), -.28F, r(1.18F, .29F, .28F)),
+			arm(r(0, .07F, .03F), r(.12F, -.20F, -.27F), -.76F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(.12F, 1.30F, -.35F), r(.055F, -.19F, -.01F), r(.04F, -.08F, -.01F), r(.04F, -.14F, -.01F), r(-.07F, .28F, .01F),
+			arm(r(.02F, -.07F, -.03F), r(-.95F, -.12F, -.17F), -.68F, r(1.11F, .37F, .33F)),
+			arm(r(0, .06F, .03F), r(-.30F, -.20F, -.24F), -.78F, r(.08F, -.10F, .10F)), VIEW_BIND),
+		v(-2.55F, 22, 1.7F), v(2.55F, 22, -1.8F));
+
+	// Stone holds both ankles through its brace, then visibly lifts an overhead warning.
+	// The spine and elbows close into the narrow ground reply while the feet keep their plant.
+	private static final Key FRACTURE_PLANT = new Key(v(0, 1.45F, .1F), r(.04F, .06F, 0), r(.025F, .04F, 0), r(.025F, .08F, -.015F), r(-.06F, -.12F, 0),
+		arm(r(.015F, -.07F, -.04F), r(-.65F, -.36F, -.25F), -.82F, r(.90F, -.22F, -.22F)),
+		arm(r(0, .06F, .04F), r(-.70F, .20F, -.18F), -.86F, r(.08F, -.10F, .10F)), VIEW_BIND);
+	private static final Key FRACTURE_BRACE = new Key(v(0, 2.25F, .25F), r(.075F, .055F, 0), r(.055F, .04F, -.01F), r(.07F, .065F, -.015F), r(-.12F, -.13F, .015F),
+		arm(r(.015F, -.08F, -.05F), r(-1.10F, -.45F, -.30F), -1.05F, r(1.24F, -.26F, -.27F)),
+		arm(r(0, .07F, .04F), r(-.88F, .32F, -.18F), -1.05F, r(.10F, -.12F, .10F)), VIEW_BIND);
+	private static final Motion FRACTURE_MOTION = new Motion(
+		new Key(v(0, 1.55F, .30F), r(-.055F, .04F, 0), r(-.045F, .035F, 0), r(-.07F, .045F, -.015F), r(.08F, -.08F, .01F),
+			arm(r(.02F, .05F, -.035F), r(-2.15F, .10F, -.28F), -.68F, r(1.105F, -.29F, -.26F)),
+			arm(r(0, .04F, .035F), r(-1.26F, .22F, -.22F), -.95F, r(.08F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 2.00F, -.68F), r(.17F, -.025F, .01F), r(.11F, -.015F, .005F), r(.15F, -.025F, .01F), r(-.21F, .04F, -.01F),
+			arm(r(.035F, -.025F, -.035F), r(-.74F, -.06F, -.12F), -.38F, r(1.26F, .14F, .15F)),
+			arm(r(0, .05F, .03F), r(-.62F, .13F, -.22F), -.82F, r(.08F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 1.90F, -.30F), r(.12F, -.04F, .01F), r(.075F, -.025F, .005F), r(.10F, -.045F, .01F), r(-.15F, .06F, -.01F),
+			arm(r(.025F, -.04F, -.03F), r(-.46F, -.08F, -.14F), -.62F, r(1.22F, .09F, .09F)),
+			arm(r(0, .04F, .03F), r(-.36F, .12F, -.20F), -.85F, r(.08F, -.10F, .10F)), VIEW_BIND),
+		v(-2.75F, 22, 1.8F), v(2.75F, 22, -1.8F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -216,9 +259,23 @@ public final class ArticulatedCombatPose {
 		return sample(SPELLCUT_MOTION, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
 	}
 
-	/** Master attack 1 is the existing SWEEP. Its authoritative tell/active/recovery windows are preserved. */
+	/** Only these original NPC clips own the segmented backend; every other ID keeps its fallback. */
+	public static boolean supportsMaster(int attack) {
+		return attack == MASTER_SWEEP || attack == MASTER_CROSSWIND_REPRISE || attack == MASTER_STONE_FRACTURE;
+	}
+
+	/** The sole locomotion exception: Gale's four accepted step ticks, never ordinary walking. */
+	public static boolean masterFootwork(int attack, float age, int tell) {
+		return attack == MASTER_CROSSWIND_REPRISE && Float.isFinite(age) && tell > 0 && tell <= 80
+			&& age >= tell * GaleRepriseRules.GATHER / (float) GaleRepriseRules.TELL
+			&& age < tell * (GaleRepriseRules.GATHER + GaleRepriseRules.STEP_TICKS) / (float) GaleRepriseRules.TELL;
+	}
+
+	/** Accepted tell/active/recovery windows are shared with the server, including school-form beats. */
 	public static Pose sampleMaster(int attack, float age, int tell, int active, int recovery, boolean leftHanded) {
-		if (attack != MASTER_SWEEP || !valid(age, tell, 80, recovery) || active < 1 || active > 10 || age >= tell + active + recovery) return NONE;
+		if (!supportsMaster(attack) || !valid(age, tell, 80, recovery) || active < 1 || active > 10 || age >= tell + active + recovery) return NONE;
+		if (attack == MASTER_CROSSWIND_REPRISE) return reprise(age, tell, active, recovery, leftHanded);
+		if (attack == MASTER_STONE_FRACTURE) return fracture(age, tell, active, recovery, leftHanded);
 		return sample(SWEEP_MOTION, age, tell, active, tell + active + Math.min(3, recovery * .20F), tell + active + recovery, leftHanded);
 	}
 
@@ -249,14 +306,56 @@ public final class ArticulatedCombatPose {
 			? motion.chamber.toward(motion.impact, smooth((age - chamberAt) / (impact - chamberAt)))
 			: age < followAt ? motion.impact.toward(motion.follow, smooth((age - impact) / (followAt - impact))) : motion.follow;
 		float weight = smooth(age / Math.max(1, chamberAt)) * (1 - smooth((age - followAt) / (end - followAt)));
+		return assemble(key, weight, age, impact, active, motion.rightPlant, motion.leftPlant, leftHanded);
+	}
+
+	private static Pose reprise(float age, int tell, int active, int recovery, boolean leftHanded) {
+		float step = tell * GaleRepriseRules.GATHER / (float) GaleRepriseRules.TELL;
+		float planted = tell * (GaleRepriseRules.GATHER + GaleRepriseRules.STEP_TICKS) / (float) GaleRepriseRules.TELL;
+		float chamber = planted + (tell - planted) * .25F;
+		float follow = tell + active + Math.min(3, recovery * .20F), end = tell + active + recovery;
+		Key key = age < step ? REPRISE_GATHER.toward(REPRISE_STEP, smooth(age / step))
+			: age < planted ? REPRISE_STEP.toward(REPRISE_MOTION.chamber, smooth((age - step) / (planted - step)))
+			: age < chamber ? REPRISE_MOTION.chamber
+			: age < tell ? REPRISE_MOTION.chamber.toward(REPRISE_MOTION.impact, smooth((age - chamber) / (tell - chamber)))
+			: age < follow ? REPRISE_MOTION.impact.toward(REPRISE_MOTION.follow, smooth((age - tell) / (follow - tell))) : REPRISE_MOTION.follow;
+		float weight = smooth(age / Math.max(1, step * .5F)) * (1 - smooth((age - follow) / (end - follow)));
+		Vec3 right = REPRISE_MOTION.rightPlant, left = REPRISE_MOTION.leftPlant;
+		if (age >= step && age < planted) {
+			float t = (age - step) / (planted - step);
+			// The leading foot opens, then the trailing foot clears. Flat soles settle exactly at
+			// the reply warning. Ankles are body-local; accepted entity travel remains untouched.
+			float lead = (float) Math.pow(Math.sin(Math.PI * clamp(t * 2)), 2);
+			float trail = (float) Math.pow(Math.sin(Math.PI * clamp((t - .5F) * 2)), 2);
+			right = right.plus(v(-1.0F * lead, -1.25F * lead, .20F * lead));
+			left = left.plus(v(-.90F * trail, -1.30F * trail, .20F * trail));
+		}
+		return assemble(key, weight, age, tell, active, right, left, leftHanded);
+	}
+
+	private static Pose fracture(float age, int tell, int active, int recovery, boolean leftHanded) {
+		float plant = tell * StoneFractureRules.PLANT / (float) StoneFractureRules.TELL;
+		float warning = tell * (StoneFractureRules.PLANT + StoneFractureRules.BRACE) / (float) StoneFractureRules.TELL;
+		float chamber = warning + (tell - warning) / 3;
+		float follow = tell + active + Math.min(3, recovery * .20F), end = tell + active + recovery;
+		Key key = age < plant ? FRACTURE_PLANT.toward(FRACTURE_BRACE, smooth(age / plant))
+			: age < warning ? FRACTURE_BRACE
+			: age < chamber ? FRACTURE_BRACE.toward(FRACTURE_MOTION.chamber, smooth((age - warning) / (chamber - warning)))
+			: age < tell ? FRACTURE_MOTION.chamber.toward(FRACTURE_MOTION.impact, smooth((age - chamber) / (tell - chamber)))
+			: age < follow ? FRACTURE_MOTION.impact.toward(FRACTURE_MOTION.follow, smooth((age - tell) / (follow - tell))) : FRACTURE_MOTION.follow;
+		float weight = smooth(age / Math.max(1, plant)) * (1 - smooth((age - follow) / (end - follow)));
+		return assemble(key, weight, age, tell, active, FRACTURE_MOTION.rightPlant, FRACTURE_MOTION.leftPlant, leftHanded);
+	}
+
+	private static Pose assemble(Key key, float weight, float age, int impact, int active, Vec3 rightPlant, Vec3 leftPlant, boolean leftHanded) {
 		Transform[] local = bind(), target = bind();
 		set(target, Joint.PELVIS, v(key.shift.x, 12 + key.shift.y, key.shift.z), key.pelvis);
 		rotate(target, Joint.SPINE, key.spine); rotate(target, Joint.CHEST, key.chest); rotate(target, Joint.HEAD, key.head);
 		putArm(target, false, key.sword); putArm(target, true, key.guard);
 		for (Joint joint : Joint.values()) local[joint.ordinal()] = local[joint.ordinal()].toward(target[joint.ordinal()], weight);
 		if (weight > 0) {
-			plant(local, false, v(-1.9F, 22, 0).toward(motion.rightPlant, weight));
-			plant(local, true, v(1.9F, 22, 0).toward(motion.leftPlant, weight));
+			plant(local, false, v(-1.9F, 22, 0).toward(rightPlant, weight));
+			plant(local, true, v(1.9F, 22, 0).toward(leftPlant, weight));
 		}
 		Phase phase = age < impact ? Phase.WINDUP : age < impact + active ? Phase.ACTIVE : Phase.RECOVERY;
 		return new Pose(weight, phase, leftHanded ? reflect(local) : local, key.view);
@@ -329,7 +428,8 @@ public final class ArticulatedCombatPose {
 	private static Arm arm(Rotation shoulder, Rotation upper, float elbow, Rotation authoredGrip) {
 		// A cuboid hand has limited flexion clearance at its forearm. Keep its actual wrist subtle,
 		// and place the remaining independent blade attitude on the child socket, not the hand mesh.
-		Rotation wrist = r(authoredGrip.x * .25F, authoredGrip.y * .25F, authoredGrip.z * .25F);
+		Rotation wrist = r(Math.max(-.18F, Math.min(.18F, authoredGrip.x * .25F)),
+			Math.max(-.15F, Math.min(.15F, authoredGrip.y * .25F)), Math.max(-.18F, Math.min(.18F, authoredGrip.z * .25F)));
 		Matrix wristInverse = new Transform(0, 0, 0, wrist).matrix().inverseRigid();
 		Rotation socket = wristInverse.multiply(new Transform(0, 0, 0, authoredGrip).matrix()).rotation();
 		return new Arm(shoulder, upper, elbow, wrist, socket);

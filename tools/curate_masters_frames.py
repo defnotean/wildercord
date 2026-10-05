@@ -40,6 +40,19 @@ ARTICULATED_SUITE = "dev.wildercord.client.combat.ArticulatedCombatPresentationT
 ARTICULATED_ARMOR_SUITE = "dev.wildercord.client.combat.ArticulatedArmorPresentationTest"
 ARTICULATED_HUD_SUITE = "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest"
 ARTICULATED_SOURCE_SUITES = (ARTICULATED_SUITE, ARTICULATED_ARMOR_SUITE, ARTICULATED_HUD_SUITE)
+ARTICULATED_NPC_BEATS = {
+    "articulated_npc_gale_crosswind": {"gather": 4, "step": 9, "step_last": 11, "landed": 12,
+        "settle_13": 13, "settle_14": 14, "settle_15": 15, "reply_warning": 16, "release": 22, "recovery": 38},
+    "articulated_npc_stone_fracture": dict(NPC_BEATS["masters_npc_stone_fracture"]),
+}
+NPC_SEGMENTED_JOINTS = (
+    "PELVIS", "SPINE", "CHEST", "HEAD", "RIGHT_SHOULDER", "RIGHT_UPPER_ARM", "RIGHT_FOREARM", "RIGHT_HAND", "RIGHT_SOCKET",
+    "LEFT_SHOULDER", "LEFT_UPPER_ARM", "LEFT_FOREARM", "LEFT_HAND", "LEFT_SOCKET",
+    "RIGHT_THIGH", "RIGHT_SHIN", "RIGHT_FOOT", "LEFT_THIGH", "LEFT_SHIN", "LEFT_FOOT",
+)
+NPC_RIGID_PARTS = ("body", "head", "right_arm", "left_arm", "right_leg", "left_leg")
+NPC_BODY_BOUNDS_SOURCE = "visible_native_model_cube_vertices_with_body_submit_matrix"
+NPC_BLADE_BOUNDS_SOURCE = "resolved_native_item_extents_with_hand_receipt_and_vanilla_adult_offsets"
 SUITES = {"masters": SUITE, "articulated": ARTICULATED_SUITE}
 ARTICULATED_HANDS = ("left", "right")
 SAMPLE_POSITIONS = ("first_available", "middle_available", "last_available")
@@ -173,11 +186,25 @@ def prepare(root, screenshots, marker, identity, *, suite="masters"):
                              "startedNs": time.time_ns(),
                              "preexistingPngs": [path.relative_to(root).as_posix() for path in prior
                                                  if path.suffix.lower() == ".png"],
-                             **({"preexistingNpcMetadata": [path.relative_to(root).as_posix() for path in prior
-                                  if path.suffix.lower() == ".json"]} if suite == "masters" else {})}))
+                             "preexistingNpcMetadata": [path.relative_to(root).as_posix() for path in prior
+                                                        if path.suffix.lower() == ".json"]}))
+
+
+def describe_npc(filename, beats, source_suite):
+    for scene, phases in beats.items():
+        for phase in phases:
+            if filename == f"{scene}_{phase}.png":
+                return {"scene": scene, "form": "npc_school_form", "sourceSuite": source_suite,
+                        "view": NPC_VIEW, "captureKind": "native_unpaused_server_ai",
+                        "frameLabel": phase, "phase": phase, "sampleIndex": None,
+                        "phaseBasis": "native_render_and_server_metadata_assertion"}
+    return None
 
 
 def describe_articulated(filename):
+    npc = describe_npc(filename, ARTICULATED_NPC_BEATS, ARTICULATED_SUITE)
+    if npc is not None:
+        return npc
     common = {"mainHandItem": "diamond_sword", "offHandItem": "empty", "viewport": None,
               "uiScale": None, "hudVisible": None, "viewportBasis": "not_encoded_in_filename",
               "armorEnchantment": None, "armorTrim": None}
@@ -222,13 +249,9 @@ def describe(filename, *, suite="masters"):
     suite_name(suite)
     if suite == "articulated":
         return describe_articulated(filename)
-    for scene, beats in NPC_BEATS.items():
-        for phase in beats:
-            if filename == f"{scene}_{phase}.png":
-                return {"scene": scene, "form": "npc_school_form", "sourceSuite": NPC_SUITE,
-                        "view": NPC_VIEW, "captureKind": "native_unpaused_server_ai",
-                        "frameLabel": phase, "phase": phase, "sampleIndex": None,
-                        "phaseBasis": "native_render_and_server_metadata_assertion"}
+    npc = describe_npc(filename, NPC_BEATS, NPC_SUITE)
+    if npc is not None:
+        return npc
     match = PATTERN.fullmatch(filename)
     if not match:
         return None
@@ -316,6 +339,102 @@ def read_npc_metadata(root, path, info, stamp):
                 and all(vector(pose.get(joint)) for joint in ("body", "head", "sword", "offhand"))
                 and all(finite(pose.get(key)) for key in ("weight", "stance", "bladeTilt")))
 
+    def numbers(value, size):
+        return isinstance(value, list) and len(value) == size and all(finite(item) for item in value)
+
+    def framing_metadata(value, failed):
+        if not articulated:
+            # Old fallback captures predate these additive fields. New fallback
+            # records still cannot opt into close/partial warning semantics.
+            if any(key in value for key in ("framing", "fov", "warningCoverage")):
+                require(value.get("framing") == "legacy_wide" and type(value.get("fov")) is int
+                        and value["fov"] == 60 and value.get("warningCoverage") == "full_lane")
+            return
+        require(value.get("framing") == ("body_close" if close_body else "warning_lane")
+                and type(value.get("fov")) is int and value["fov"] == (50 if close_body else 60)
+                and value.get("warningCoverage") == ("visible_portion" if close_body else "full_lane")
+                and value.get("bodyBoundsSource") == NPC_BODY_BOUNDS_SOURCE
+                and value.get("bladeBoundsSource") == NPC_BLADE_BOUNDS_SOURCE)
+        for key in ("bodyBounds", "bladeBounds"):
+            bounds = value.get(key)
+            require(isinstance(bounds, dict) and all(finite(bounds.get(field)) for field in ("minX", "minY", "maxX", "maxY"))
+                    and bounds["minX"] <= bounds["maxX"] and bounds["minY"] <= bounds["maxY"]
+                    and type(bounds.get("vertexCount")) is int and bounds["vertexCount"] >= 0
+                    and type(bounds.get("allInFront")) is bool and type(bounds.get("wholeVisible")) is bool)
+            enclosed = (bounds["vertexCount"] > 0 and bounds["allInFront"]
+                        and bounds["minX"] > .03 and bounds["minY"] > .03
+                        and bounds["maxX"] < .97 and bounds["maxY"] < .97)
+            require(not bounds["wholeVisible"] or enclosed)
+            if not failed:
+                require(enclosed and bounds["wholeVisible"])
+        for key in ("bodySubmitMatrix", "viewRotationProjectionMatrix"):
+            require(failed and value.get(key) is None or numbers(value.get(key), 16))
+        if not failed and close_body:
+            require((value["bodyBounds"]["maxY"] - value["bodyBounds"]["minY"]) * value["height"] >= 180)
+
+    def warning_schema(warning):
+        def endpoint(value):
+            if close_body:
+                # These projections are intentionally unclamped; Gson omits null
+                # endpoints behind the camera or outside the native depth range.
+                return value is None or isinstance(value, dict) and all(finite(value.get(axis)) for axis in ("x", "y"))
+            return point(value)
+
+        require(isinstance(warning, dict) and endpoint(warning.get("from")) and endpoint(warning.get("to"))
+                and type(warning.get("coloredBins")) is int and type(warning.get("sampledBins")) is int
+                and 0 <= warning["coloredBins"] <= warning["sampledBins"] <= 16
+                and (close_body or warning["sampledBins"] == 16))
+        ray = warning.get("ray")
+        require(isinstance(ray, dict) and all(vector(ray.get(key)) for key in ("from", "to", "renderedEnd"))
+                and all(finite(ray.get(key)) for key in ("width", "partial"))
+                and all(type(ray.get(key)) is int for key in ("particleAge", "lifetime")))
+
+    def articulated_receipts(value, failed):
+        require(value.get("expectedBackend") == "segmented")
+        candidate = value.get("articulatedFrame")
+        if candidate is not None:
+            require(isinstance(candidate, dict)
+                    and all(type(candidate.get(key)) is int for key in ("activation", "move"))
+                    and candidate.get("phase") in ("NONE", "WINDUP", "ACTIVE", "RECOVERY")
+                    and all(type(candidate.get(key)) is bool for key in ("leftHanded", "scriptedFootwork"))
+                    and all(finite(candidate.get(key)) for key in
+                            ("weight", "horizontalVelocitySquared", "interpolatedTravelSquared", "walkAnimationSpeed")))
+        receipts, hands = value.get("modelReceipts"), value.get("handReceipts")
+        require(isinstance(receipts, list) and isinstance(hands, list))
+        for receipt in receipts:
+            require(isinstance(receipt, dict) and receipt.get("backend") in ("segmented", "rigid")
+                    and type(receipt.get("segmentedRootVisible")) is bool
+                    and isinstance(receipt.get("rigidPartsVisible"), list) and len(receipt["rigidPartsVisible"]) == 6
+                    and all(type(visible) is bool for visible in receipt["rigidPartsVisible"]))
+            names = NPC_SEGMENTED_JOINTS if receipt["backend"] == "segmented" else NPC_RIGID_PARTS
+            require(receipt.get("transformNames") == list(names) and numbers(receipt.get("transforms"), len(names) * 6))
+        for hand in hands:
+            require(isinstance(hand, dict) and hand.get("hand") in ("LEFT", "RIGHT")
+                    and all(numbers(hand.get(key), 16) for key in
+                            ("entryMatrix", "nativeHandMatrix", "resolvedItemMatrix", "expectedSocketItemMatrix"))
+                    and all(finite(hand.get(key)) and hand[key] >= 0 for key in ("hiltDistance", "maximumMatrixError")))
+        if failed:
+            # A failed receipt may describe rigid ownership or a rejected candidate.
+            # Keep these as diagnostics; never promote them to accepted footage.
+            return
+        require(candidate is not None and receipts and hands and len(receipts) == value["modelPasses"])
+        timeline = value["renderedTimeline"]
+        expected_phase = "ACTIVE" if phase == "release" else "RECOVERY" if phase == "recovery" else "WINDUP"
+        require(candidate["activation"] == timeline["acceptedTick"] and candidate["move"] == attack
+                and candidate["leftHanded"] == timeline["frame"]["leftHanded"]
+                and candidate["phase"] == expected_phase and 0 < candidate["weight"] <= 1
+                and candidate["scriptedFootwork"] is (gale and 8 <= timeline["age"] < 12)
+                and candidate["horizontalVelocitySquared"] >= 0 and candidate["interpolatedTravelSquared"] >= 0
+                and candidate["walkAnimationSpeed"] >= 0)
+        require(all(receipt["backend"] == "segmented" and receipt["segmentedRootVisible"] is True
+                    and not any(receipt["rigidPartsVisible"]) for receipt in receipts)
+                and value["modelPose"] == receipts[-1]["transforms"])
+        for hand in hands:
+            require(hand["hand"] == ("LEFT" if candidate["leftHanded"] else "RIGHT")
+                    and hand["hiltDistance"] < .00001 and hand["maximumMatrixError"] < .00001
+                    and max(abs(actual - expected) for actual, expected in
+                            zip(hand["resolvedItemMatrix"], hand["expectedSocketItemMatrix"])) < .00001)
+
     def failed_render_schema(value):
         # Gson omits null extraction fields after an early render assertion.
         # Validate their producer schema when present, without requiring the
@@ -324,7 +443,7 @@ def read_npc_metadata(root, path, info, stamp):
         require(vector(value.get("camera")))
         require(value.get("renderedPosition") is None or vector(value["renderedPosition"]))
         model = value.get("modelPose")
-        require(model is None or isinstance(model, list) and len(model) == 36 and all(finite(item) for item in model))
+        require(model is None or any(numbers(model, size) for size in ((36, 120) if articulated else (36,))))
         timeline = value.get("renderedTimeline")
         if timeline is not None:
             require(isinstance(timeline, dict)
@@ -342,19 +461,15 @@ def read_npc_metadata(root, path, info, stamp):
                 ("nonBlackPixels", "chromaticPixels", "distinctColors", "luminanceRange")))
         require(isinstance(warnings, list))
         for warning in warnings:
-            require(isinstance(warning, dict) and point(warning.get("from")) and point(warning.get("to"))
-                    and type(warning.get("coloredBins")) is int and 0 <= warning["coloredBins"] <= 16
-                    and type(warning.get("sampledBins")) is int and warning["sampledBins"] == 16)
-            ray = warning.get("ray")
-            require(isinstance(ray, dict) and all(vector(ray.get(key)) for key in ("from", "to", "renderedEnd"))
-                    and all(finite(ray.get(key)) for key in ("width", "partial"))
-                    and all(type(ray.get(key)) is int for key in ("particleAge", "lifetime")))
+            warning_schema(warning)
 
     evidence = json.loads(raw, object_pairs_hook=unique_object, parse_constant=invalid_constant)
     require(isinstance(evidence, dict) and finite_tree(evidence))
     scene, phase = info["scene"], info["phase"]
-    requested = NPC_BEATS[scene][phase]
-    gale = scene == "masters_npc_gale_crosswind"
+    articulated = scene in ARTICULATED_NPC_BEATS
+    close_body = articulated and phase != "reply_warning"
+    requested = (ARTICULATED_NPC_BEATS if articulated else NPC_BEATS)[scene][phase]
+    gale = scene.endswith("gale_crosswind")
     attack, tell, recovery = (7, 22, 31) if gale else (8, 32, 39)
     require(evidence.get("name") == path.stem and evidence.get("phase") == phase
             and evidence.get("captureKind") == "native_unpaused_server_ai"
@@ -378,8 +493,11 @@ def read_npc_metadata(root, path, info, stamp):
             and finite(server.get("aura")) and abs(server["aura"] - (60 if gale else 56)) < .01
             and finite(server.get("targetHealth"))
             and abs(server["targetHealth"] - (200 if server["age"] < tell else 174 if gale else 169.2)) < .02)
+    framing_metadata(evidence, failed=failure is not None)
     if failure is not None:
         failed_render_schema(evidence)
+        if articulated:
+            articulated_receipts(evidence, failed=True)
         return {"excludedNpcCapture": {
             "sourcePath": path.relative_to(root).as_posix(), "metadataSourcePath": relative,
             "metadataSha256": hashlib.sha256(raw).hexdigest(), "scene": scene, "phase": phase,
@@ -394,7 +512,7 @@ def read_npc_metadata(root, path, info, stamp):
     require(timeline["attackId"] == server["attackId"] == attack
             and timeline["acceptedTick"] == server["acceptedTick"] >= 0
             and (timeline["tell"], timeline["active"], timeline["recovery"]) == (tell, 1, recovery)
-            and timeline.get("fallbackRig") is True
+            and timeline.get("fallbackRig") is (not articulated)
             and finite(timeline.get("partial")) and timeline["partial"] == .5
             and finite(timeline.get("age")) and requested <= timeline["age"] < requested + 1
             and timeline["age"] == timeline["clientGameTick"] - timeline["acceptedTick"] + timeline["partial"]
@@ -408,8 +526,7 @@ def read_npc_metadata(root, path, info, stamp):
     require(all(vector(pose.get(joint)) for joint in ("body", "head", "sword", "offhand"))
             and all(finite(pose.get(key)) for key in ("weight", "stance", "bladeTilt"))
             and 0 < pose["weight"] <= 1)
-    require(isinstance(evidence.get("modelPose"), list) and len(evidence["modelPose"]) == 36
-            and all(finite(value) for value in evidence["modelPose"])
+    require(numbers(evidence.get("modelPose"), 120 if articulated else 36)
             and all(vector(evidence.get(key)) for key in ("camera", "renderedPosition"))
             and all(vector(server.get(key)) for key in ("masterPosition", "targetPosition")))
     pixels = evidence.get("bodyPixels")
@@ -419,13 +536,22 @@ def read_npc_metadata(root, path, info, stamp):
     points = evidence.get("bodyPoints")
     require(isinstance(points, list) and len(points) == 9 and all(point(value) for value in points))
     warnings = evidence.get("warnings")
-    required_warnings = 3 if phase == "reply_warning" else 0 if phase in ("release", "recovery") else 2 if gale else 1
-    require(isinstance(warnings, list) and all(isinstance(warning, dict) and point(warning.get("from"))
-            and point(warning.get("to")) and isinstance(warning.get("ray"), dict)
-            and all(vector(warning["ray"].get(key)) for key in ("from", "to", "renderedEnd")) for warning in warnings))
-    require(sum(type(warning.get("coloredBins")) is int and type(warning.get("sampledBins")) is int
-                and warning["sampledBins"] == 16 and 4 <= warning["coloredBins"] <= 16
-                for warning in warnings) >= required_warnings)
+    required_warnings = 0 if requested >= tell else 3 if requested >= (12 if gale else 20) else 2 if gale else 1
+    require(isinstance(warnings, list))
+    for warning in warnings:
+        warning_schema(warning)
+    if not close_body:
+        require(sum(warning["coloredBins"] >= 4 for warning in warnings) >= required_warnings)
+    # Close views retain all extracted rays, including old/non-expected segments.
+    # Their expected-segment identity and color assertion belong to the native
+    # gate; partial receipts alone cannot establish full warning-lane coverage.
+    if articulated:
+        articulated_receipts(evidence, failed=False)
+        info.update(expectedBackend="segmented", articulatedFrame=evidence["articulatedFrame"],
+                    modelReceiptCount=len(evidence["modelReceipts"]), handReceiptCount=len(evidence["handReceipts"]),
+                    modelTransformCount=120,
+                    **{key: evidence[key] for key in ("framing", "fov", "warningCoverage", "bodyBounds", "bladeBounds",
+                                                     "bodyBoundsSource", "bladeBoundsSource")})
     info.update(participantKind=evidence["participantKind"], observerKind=evidence["observerKind"],
                 independentTrialPerFrame=True, requestedTick=requested,
                 renderedTimeline=timeline, serverObservation=server,
@@ -519,6 +645,26 @@ def articulated_capture_matrix():
                 yield f"articulated_hud_{width}x{height}_gui{scale}_{equipment}_{hand}_sample_0.png", range(10), True
 
 
+def articulated_npc_candidates(groups, phases):
+    for phase in phases:
+        for scene, beats in ARTICULATED_NPC_BEATS.items():
+            if phase in beats:
+                yield from groups.get((scene, NPC_VIEW, phase), [])
+
+
+def articulated_npc_coverage(groups, selected):
+    paths = {frame["sourcePath"] for frame in selected}
+    result = []
+    for scene, beats in ARTICULATED_NPC_BEATS.items():
+        captured = [phase for phase in beats if groups.get((scene, NPC_VIEW, phase))]
+        chosen = [phase for phase in captured if groups[(scene, NPC_VIEW, phase)][0]["sourcePath"] in paths]
+        result.append({"scene": scene, "view": NPC_VIEW, "sourceSuite": ARTICULATED_SUITE,
+                       "expectedBackend": "segmented", "capturedPhases": captured, "selectedFrameLabels": chosen,
+                       "missingCapturePhases": [phase for phase in beats if phase not in captured],
+                       "omittedForBudgetPhases": [phase for phase in captured if phase not in chosen]})
+    return result
+
+
 def select_articulated(groups, budget):
     remaining = budget - ARTICULATED_MANIFEST_RESERVE
     rows = []
@@ -562,10 +708,16 @@ def select_articulated(groups, budget):
         nonlocal remaining
         available = {frame["sourcePath"]: frame for frame in candidates
                      if frame is not None and frame["sourcePath"] not in selected_paths}
-        cost = sum(frame["bytes"] for frame in available.values())
+        cost = sum(frame_bytes(frame) for frame in available.values())
         if cost <= remaining:
             selected_paths.update(available)
             remaining -= cost
+
+    # Six actual NPC representatives precede owner breadth, each with its sidecar.
+    # Owner comparison pairs retain their existing ordering and atomic budgeting.
+    npc_priority = list(articulated_npc_candidates(groups, NPC_PRIORITY))
+    for candidate in npc_priority:
+        choose([candidate])
 
     def matches_viewport(row, viewport):
         width, height, scale = viewport
@@ -623,7 +775,14 @@ def select_articulated(groups, budget):
             for candidate in row["candidates"].values():
                 choose([candidate])
 
-    selected = []
+    # Boundary and early-school beats come after the existing owner/armor/HUD
+    # selection. Their exact labels and ages remain in sidecars and coverage.
+    extra_phases = dict.fromkeys(phase for beats in ARTICULATED_NPC_BEATS.values()
+                                for phase in beats if phase not in NPC_PRIORITY)
+    npc_extras = list(articulated_npc_candidates(groups, extra_phases))
+    for candidate in npc_extras:
+        choose([candidate])
+    selected = [frame for frame in npc_priority if frame["sourcePath"] in selected_paths]
     for row in rows:
         for frame in row["candidates"].values():
             if frame["sourcePath"] in selected_paths:
@@ -633,6 +792,7 @@ def select_articulated(groups, budget):
                 row["coverage"]["omittedForBudgetSamplePositions"].extend(frame["samplePositions"])
             else:
                 row["coverage"]["omittedForBudgetIdleLabels"].append(frame["frameLabel"])
+    selected.extend(frame for frame in npc_extras if frame["sourcePath"] in selected_paths)
     return selected, [row["coverage"] for row in rows]
 
 
@@ -655,8 +815,8 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
             or type(stamp.get("startedNs")) is not int
             or not isinstance(stamp.get("preexistingPngs"), list)
             or any(not isinstance(item, str) for item in stamp["preexistingPngs"])
-            or (suite == "masters" and (not isinstance(stamp.get("preexistingNpcMetadata"), list)
-                or any(not isinstance(item, str) for item in stamp["preexistingNpcMetadata"])))):
+            or not isinstance(stamp.get("preexistingNpcMetadata"), list)
+            or any(not isinstance(item, str) for item in stamp["preexistingNpcMetadata"])):
         raise EvidenceError("Freshness marker does not match this run, suite and screenshot root")
     old_paths = set(stamp["preexistingPngs"])
     groups = {}
@@ -694,7 +854,7 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
         "suiteGroup": suite, "suite": entrypoint, "sourceRoot": Path(screenshots).as_posix(),
         "freshness": {"method": "pre_run_marker; reject all preexisting paths and older mtimes",
                       "excludedStalePngs": stale, "ignoredOutOfScopePngs": ignored,
-                      **({"excludedStaleNpcMetadata": stale_metadata} if suite == "masters" else {})},
+                      "excludedStaleNpcMetadata": stale_metadata},
         "limits": {"totalBytesLimit": budget, "manifestReserveBytes": manifest_reserve,
                    "archiveHeadroomBelow15MB": 15_000_000 - budget},
         "basis": "Byte-identical source PNGs. Player first-person and back third-person captures share the "
@@ -726,35 +886,47 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                            "Only exact implemented owner and NPC fixture names are eligible. "
                            "Left-turn, cancelled, help, synthetic model and other screenshots remain in the full artifact.",
         "selectedPngBytes": sum(frame["bytes"] for frame in selected),
+        "excludedNpcCaptures": excluded_npc,
+        "selectedMetadataBytes": sum(frame.get("metadata", {}).get("bytes", 0) for frame in selected),
+        "selectedMetadataCount": sum("metadata" in frame for frame in selected),
         "selectedFrameCount": len(selected), "coverage": coverage, "frames": selected,
     }
     if suite == "masters":
-        manifest.update(sourceSuites=[SUITE, NPC_SUITE],
-                        excludedNpcCaptures=excluded_npc,
-                        selectedMetadataBytes=sum(frame.get("metadata", {}).get("bytes", 0) for frame in selected),
-                        selectedMetadataCount=sum("metadata" in frame for frame in selected))
+        manifest.update(sourceSuites=[SUITE, NPC_SUITE])
     if suite == "articulated":
         manifest.update({
             "sourceSuites": list(ARTICULATED_SOURCE_SUITES),
+            "npcCoverage": articulated_npc_coverage(groups, selected),
             "basis": "Byte-identical native PNGs from the three existing articulated suites. Combat samples "
                      "follow real Spellcut input and its server-accepted timeline; HUD idle-before/after "
                      "captures are explicitly idle. Left/right denote the local owner's configured main hand; "
                      "all first-person and front/back third-person views share that owning singleplayer client, "
-                     "never an observer. Equipment and HUD viewport labels describe native fixture assertions, "
+                     "never an observer of player combat. Separate opt-in Gale/Stone NPC captures use a real client spectator "
+                     "and a consenting Fabric FakePlayer, not a human duel. Each NPC image is an independent natural trial. "
+                     "Its copied JSON records the actual extraction age, 20-joint model passes and native held-item calls. "
+                     "Entry/hand matrices are observed; resolved/expected item matrices apply fixed vanilla item offsets. "
+                     "Synced horizontal velocity, position interpolation and eased walk speed remain separate measurements. "
+                     "NPC reply warnings retain a wide full-lane view; other beats use close body framing and report "
+                     "only visible warning portions, with unclamped or absent projected endpoints. Expected warning "
+                     "segment/color verdicts remain with the native suite. Body/blade bounds are geometric enclosure "
+                     "receipts, not pixel segmentation or proof against self-occlusion. "
+                     "Synthetic model/socket checks are distinct from these native NPC captures. "
+                     "Equipment and HUD viewport labels describe native fixture assertions, "
                      "not image analysis; unencoded viewport/UI settings remain unknown. Loop indices and "
                      "first/middle/last available samples prove neither exact impact nor recovery boundaries; "
                      "skin/armor samples are not guaranteed to depict the same animation age. "
                      "Presence is not a gameplay or native pixel-review pass.",
             "unavailableRequestedCoverage": [
-                {"coverage": "observer_client", "reason": "This suite has no observer-client screenshot capture."},
-                {"coverage": "live_npc_combat", "reason": "The Master renderer bridge is probed synthetically; "
-                 "there is no live NPC attack screenshot capture."},
+                {"coverage": "observer_client_of_player_combat", "reason": "Player images use the owner; the separate spectator fixture observes NPC Gale/Stone combat."},
+                {"coverage": "human_multiplayer_duel", "reason": "The NPC challenger is a consenting Fabric FakePlayer with a real client spectator."},
                 {"coverage": "synthetic_geometry_and_hitstop_screenshots", "reason": "Synthetic geometry, "
                  "socket and hit-stop checks do not take screenshots; inspect the independent native verdict."},
-                {"coverage": "exact_impact_phase", "reason": "Capture loop indices do not prove exact impact timing."},
-                {"coverage": "exact_recovery_phase", "reason": "Last available capture is not a verified recovery boundary."},
+                {"coverage": "exact_player_impact_phase", "reason": "Player capture loop indices do not prove exact impact timing; NPC render age is recorded separately."},
+                {"coverage": "exact_player_recovery_phase", "reason": "Last available player capture is not a verified recovery boundary."},
             ],
-            "selectionPolicy": "Left then right: original body/hand first-available pair, full enchanted armor "
+            "selectionPolicy": "First up to six validated NPC PNG/JSON pairs: reply_warning, release, recovery, Gale then Stone per beat. "
+                               "Missing or explicitly failed native NPC frames are never accepted or substituted. "
+                               "Then left then right: original body/hand first-available pair, full enchanted armor "
                                "front/back first-available pair, 1280x720/gui3 HUD skin/chestplate upper-median pair. "
                                "Prefer the HUD viewport with the most available counterparts, breaking ties "
                                "by reference size then fixture order; missing reference captures use this fallback. "
@@ -764,7 +936,9 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                                "Only first/upper-median/last available combat samples and explicit HUD idle "
                                "captures are copied, each once. Armor capture indices are only 2 and 5; "
                                "original samples are 0..8 and HUD samples 0..9. Uncaptured indices are not "
-                               "required captures. The full evidence artifact and native verdicts are unchanged.",
+                               "required captures. Finally exact early-school and Gale age11..15 boundary captures when present. "
+                               "NPC receipt files share the existing total byte cap and are copied unchanged. "
+                               "The full evidence artifact and native verdicts are unchanged.",
         })
     if not selected:
         manifest["unavailableReason"] = "No fresh eligible native PNG fits the budget; inspect coverage and full evidence."

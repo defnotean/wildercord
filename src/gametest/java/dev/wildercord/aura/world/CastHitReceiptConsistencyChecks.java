@@ -392,21 +392,61 @@ final class CastHitReceiptConsistencyChecks {
 
 	private void nonplayer(ClientGameTestContext context, TestSingleplayerContext world) {
 		LivingEntity[] mob = new LivingEntity[1];
+		String[] snapshots = new String[3];
+		long[] releasedAt = {-1};
+		ItemStack[] blade = new ItemStack[1];
+		Vec3[] aim = new Vec3[1];
 		world.getServer().waitFor(server -> server.overworld().getGameTime() >= drivingReady, MastersArtRules.DRIVING_CUT.rest() + 5);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst(); prepareActor(player); releaseFinished = false;
 			var husk = EntityTypes.HUSK.create(player.level(), EntitySpawnReason.COMMAND);
 			check(husk != null, "The ordinary non-player target is constructible");
 			husk.setNoAi(true); husk.getAttribute(Attributes.MAX_HEALTH).setBaseValue(HEALTH); husk.setHealth(HEALTH);
+			// An ordinary fixture must not roll Runebound on entity load and refill above the authored health baseline.
+			husk.addTag("wildercord.rolled");
 			husk.snapTo(origin.x, origin.y, origin.z + 3, 180, 0); player.level().addFreshEntity(husk); mob[0] = husk;
+			blade[0] = player.getMainHandItem(); aim[0] = ArtKit.flat(player);
+			snapshots[0] = nonplayerSnapshot(player, husk, blade[0], aim[0]);
+			Wildercord.LOGGER.info("[cast-hit-consistency] nonplayer admission {}", snapshots[0]);
+			check(husk.getHealth() == HEALTH && husk.getMaxHealth() == HEALTH && !husk.hasAttached(WildercordAttachments.RUNEBOUND),
+				"Entity admission preserves the exact ordinary target baseline: " + snapshots[0]);
+			Scheduler.later(MastersArtRules.DRIVING_CUT.windup(), () -> {
+				snapshots[1] = nonplayerSnapshot(player, husk, blade[0], aim[0]);
+				Wildercord.LOGGER.info("[cast-hit-consistency] nonplayer before release {}", snapshots[1]);
+			});
 			check(MastersArts.activate(player, 2), "Actual Driving Cut accepts an ordinary non-player target");
-			Scheduler.later(MastersArtRules.DRIVING_CUT.windup(), () -> releaseFinished = true);
+			Scheduler.later(MastersArtRules.DRIVING_CUT.windup(), () -> {
+				releasedAt[0] = player.level().getGameTime();
+				snapshots[2] = nonplayerSnapshot(player, husk, blade[0], aim[0]);
+				Wildercord.LOGGER.info("[cast-hit-consistency] nonplayer after release {}", snapshots[2]);
+				releaseFinished = true;
+			});
 		});
 		world.getServer().waitFor(server -> releaseFinished, MastersArtRules.DRIVING_CUT.windup() + 5);
 		world.getServer().runOnServer(server -> {
-			check(mob[0].getHealth() < HEALTH && CastLock.locked(mob[0]), "Ordinary non-player Driving Cut retains damage and its original cast lock");
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			String observed = nonplayerSnapshot(player, mob[0], blade[0], aim[0]);
+			String note = "admission={" + snapshots[0] + "}, before={" + snapshots[1] + "}, release={" + snapshots[2]
+				+ "}, observed={" + observed + "}, observationGap=" + (player.level().getGameTime() - releasedAt[0]);
+			Wildercord.LOGGER.info("[cast-hit-consistency] nonplayer observation {}", note);
+			check(mob[0].getHealth() < HEALTH, "Ordinary non-player Driving Cut retains actual damage: " + note);
+			check(CastLock.locked(mob[0]), "Ordinary non-player Driving Cut retains its original cast lock: " + note);
 			mob[0].discard();
 		});
+	}
+
+	private static String nonplayerSnapshot(ServerPlayer player, LivingEntity mob, ItemStack blade, Vec3 aim) {
+		var move = MastersArtRules.DRIVING_CUT;
+		return "tick=" + player.level().getGameTime() + ", actorPos=" + player.position() + ", view=" + player.getViewVector(1)
+			+ ", aim=" + aim + ", sameBlade=" + (player.getMainHandItem() == blade) + ", weapon=" + Aura.holdsWeapon(player)
+			+ ", stage=" + Aura.stage(player) + ", aura=" + Aura.aura(player) + ", actorAlive=" + player.isAlive()
+			+ ", actorGuard=" + AuraGuard.guarding(player) + ", actorLock=" + CastLock.locked(player)
+			+ ", harmable=" + ArtKit.harmable(player, mob) + ", los=" + player.hasLineOfSight(mob)
+			+ ", selected=" + ArtKit.line(player, player.position(), aim, move.reach(), .8, 2.4, move.targets()).contains(mob)
+			+ ", targetPos=" + mob.position() + ", health=" + mob.getHealth() + ", maxHealth=" + mob.getMaxHealth()
+			+ ", locked=" + CastLock.locked(mob) + ", alive=" + mob.isAlive() + ", removed=" + mob.isRemoved()
+			+ ", source=" + mob.getLastDamageSource() + ", runebound=" + mob.hasAttached(WildercordAttachments.RUNEBOUND)
+			+ ", tags=" + mob.entityTags();
 	}
 
 	private void startMaster() {

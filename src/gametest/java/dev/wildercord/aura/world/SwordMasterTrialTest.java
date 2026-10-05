@@ -250,6 +250,7 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 				return true;
 			}, MastersRules.ABANDON_TICKS + 20);
 		}
+		new MasterLifecycleChecks().run(context);
 		new EmberAfterburnChecks().run(context);
 		new MasterPursuitChecks().run(context);
 		new GaleRepriseChecks().run(context);

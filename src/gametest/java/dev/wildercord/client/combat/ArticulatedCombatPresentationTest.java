@@ -6,13 +6,22 @@ import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.ArticulatedCombatPose.Joint;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.MastersArts;
+import dev.wildercord.aura.world.GaleRepriseRules;
+import dev.wildercord.aura.world.MasterAnimationRules;
+import dev.wildercord.aura.world.MasterSchoolMotionChecks;
+import dev.wildercord.aura.world.StoneFractureRules;
+import dev.wildercord.aura.world.SwordMaster;
 import dev.wildercord.client.MastersArtsClient;
+import dev.wildercord.client.auraworld.AuraFighterRenderState;
+import dev.wildercord.client.auraworld.MasterModel;
+import dev.wildercord.client.auraworld.MasterRenderer;
 import dev.wildercord.client.fx.HitStop;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
@@ -25,11 +34,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import org.joml.Vector3f;
 
+import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
- * Opt-in native renderer checks plus screenshots driven by the real Spellcut input and accepted
- * server timeline. Synthetic bridge/hold checks are explicitly separate from those live captures.
+ * Opt-in native renderer checks plus real Spellcut input and naturally admitted school-form
+ * captures. Synthetic bridge/hold checks are explicitly separate from those live captures.
  */
 public final class ArticulatedCombatPresentationTest implements FabricClientGameTest {
 	@Override
@@ -154,6 +165,7 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 				masterState.setData(ArticulatedCombat.FRAME, null);
 				masterModel.setupAnim(masterState);
 				check(!masterRig.root.visible && masterModel.body.visible, "Master cancellation restores its rigid travelling model");
+				masterSchools(masterRenderer, master);
 
 				// Synthetic state probes cover cosmetic freeze ownership, not gameplay damage.
 				state.mainArm = HumanoidArm.RIGHT;
@@ -210,6 +222,188 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 				MastersArtsClient.mapping(0).setDown(false);
 			});
 		}
+		// The preceding fixtures inject frames. These captures use fresh, unpaused trials and
+		// the registered renderer's real extraction/submission/item calls for both school forms.
+		String restored = System.getProperty(ArticulatedCombat.ENABLE_PROPERTY);
+		try {
+			System.setProperty(ArticulatedCombat.ENABLE_PROPERTY, "true");
+			new MasterSchoolMotionChecks().runArticulated(context);
+		} finally {
+			if (restored == null) System.clearProperty(ArticulatedCombat.ENABLE_PROPERTY);
+			else System.setProperty(ArticulatedCombat.ENABLE_PROPERTY, restored);
+		}
+	}
+
+	/** Synthetic regression matrix only; none of these mutations are reported as live NPC footage. */
+	private static void masterSchools(MasterRenderer renderer, SwordMaster master) {
+		MasterModel model = renderer.getModel();
+		for (boolean left : new boolean[] {false, true}) for (int move : new int[] {7, 8}) {
+			int tell = move == 7 ? GaleRepriseRules.TELL : StoneFractureRules.TELL;
+			int recovery = (move == 7 ? GaleRepriseRules.RECOVERY : StoneFractureRules.RECOVERY) - 1;
+			for (float age : new float[] {4, move == 7 ? 9 : 12, tell - 6, tell, tell + recovery / 2F}) {
+				AuraFighterRenderState state = masterState(renderer, master, move, age, tell, recovery, left);
+				model.setupAnim(state);
+				wholeBackend(model, true, "Synthetic school pose " + move + " at " + age);
+				masterSocket(model, state);
+				float[] once = segmentedSnapshot(model.articulatedRig());
+				model.setupAnim(state);
+				equal(once, segmentedSnapshot(model.articulatedRig()), "Repeated school model passes cannot accumulate transforms");
+				masterSocket(model, state);
+				check(model.articulatedRig().part(Joint.HEAD).getChild("hood") == model.hat
+					&& model.articulatedRig().part(Joint.CHEST).getChild("travelling_clothes").getChild("cloak") == model.body.getChild("cloak")
+					&& model.articulatedRig().part(Joint.PELVIS).getChild("scabbard_socket").getChild("scabbard") == model.body.getChild("scabbard"),
+					"Each school retains the original hood, cloak and scabbard on the segmented body");
+				if (move == 7 && age == 9) {
+					state.walkAnimationSpeed = 1;
+					model.setupAnim(state);
+					wholeBackend(model, true, "Gale's accepted lateral step retains segmented ownership while moving");
+					masterSocket(model, state);
+				}
+			}
+			List<Consumer<AuraFighterRenderState>> incompatible = List.of(
+				state -> state.setData(ArticulatedCombat.KNOWN_LAYERS, false),
+				state -> state.chestEquipment = new ItemStack(Items.NETHERITE_CHESTPLATE),
+				state -> { if (left) state.rightHandItemStack = new ItemStack(Items.SHIELD); else state.leftHandItemStack = new ItemStack(Items.SHIELD); },
+				state -> { if (left) state.leftHandItemStack = new ItemStack(Items.STICK); else state.rightHandItemStack = new ItemStack(Items.STICK); },
+				state -> state.walkAnimationSpeed = 1,
+				state -> state.isCrouching = true,
+				state -> state.isUsingItem = true,
+				state -> state.isPassenger = true,
+				state -> state.deathTime = 2,
+				state -> state.isUpsideDown = true,
+				state -> state.sit = 1,
+				state -> state.yield = 1,
+				state -> state.stagger = 1,
+				state -> state.setData(ArticulatedCombat.FRAME, null));
+			for (int i = 0; i < incompatible.size(); i++) {
+				AuraFighterRenderState state = masterState(renderer, master, move, tell, tell, recovery, left);
+				model.setupAnim(state);
+				incompatible.get(i).accept(state);
+				masterFallback(model, state, "School " + move + " fallback " + i + ", left=" + left);
+				model.setupAnim(masterState(renderer, master, move, tell, tell, recovery, left));
+				wholeBackend(model, true, "Supported model reuse recovers from every whole-body fallback");
+			}
+			AuraFighterRenderState state = masterState(renderer, master, move, tell, tell, recovery, left);
+			model.setupAnim(state);
+			System.setProperty(ArticulatedCombat.ENABLE_PROPERTY, "false");
+			try { masterFallback(model, state, "Disabled opt-in restores the complete original school presentation"); }
+			finally { System.setProperty(ArticulatedCombat.ENABLE_PROPERTY, "true"); }
+			model.setupAnim(masterState(renderer, master, move, tell, tell, recovery, left));
+			masterFallback(model, masterState(renderer, master, move, tell + 1 + recovery, tell, recovery, left),
+				"Expired accepted school timeline cannot leave the segmented body visible");
+			model.setupAnim(masterState(renderer, master, move, tell, tell, recovery, left));
+			masterFallback(model, masterState(renderer, master, 9, tell, tell, recovery, left),
+				"An unsupported future Master form keeps the complete original renderer");
+			if (move == 7) galeLanding(renderer, master, left);
+		}
+	}
+
+	private static void galeLanding(MasterRenderer renderer, SwordMaster master, boolean left) {
+		var model = renderer.getModel();
+		for (float age : new float[] {8, 11, 11.999F, 12, 13, 14, 15}) {
+			boolean step = age < 12;
+			for (double velocity : new double[] {0, 1.0e-8, 1.01e-8, .01, -1, Double.NaN, Double.POSITIVE_INFINITY}) {
+				var state = masterState(renderer, master, 7, age, GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY - 1, left);
+				var frame = state.getData(ArticulatedCombat.FRAME);
+				check(frame.scriptedFootwork() == step, "The synthetic step window ends exactly at age12");
+				state.setData(ArticulatedCombat.FRAME, new ArticulatedCombat.Frame(frame.pose(), frame.activation(), frame.move(),
+					frame.master(), frame.leftHanded(), frame.yawDelta(), frame.pitchDelta(), frame.scriptedFootwork(), velocity));
+				state.walkAnimationSpeed = .8F;
+				String reason = "Gale landing at " + age + " with synced horizontal velocity squared=" + velocity + ", left=" + left;
+				if (step || Double.isFinite(velocity) && velocity >= 0 && velocity <= 1.0e-8) {
+					model.setupAnim(state);
+					wholeBackend(model, true, reason + " retains its accepted segmented pose");
+					masterSocket(model, state);
+				} else {
+					// Prime the shared model before each rejection so this also tests whole-body restoration.
+					model.setupAnim(masterState(renderer, master, 7, 9, GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY - 1, left));
+					masterFallback(model, state, reason + " cannot claim the stationary exception");
+				}
+			}
+		}
+		for (int move : new int[] {1, 8}) {
+			var state = masterState(renderer, master, move, 12, move == 1 ? 18 : StoneFractureRules.TELL,
+				move == 1 ? 19 : StoneFractureRules.RECOVERY - 1, left);
+			var frame = state.getData(ArticulatedCombat.FRAME);
+			state.setData(ArticulatedCombat.FRAME, new ArticulatedCombat.Frame(frame.pose(), frame.activation(), frame.move(),
+				frame.master(), frame.leftHanded(), frame.yawDelta(), frame.pitchDelta(), false, 0));
+			state.walkAnimationSpeed = .8F;
+			masterFallback(model, state, "Measured stillness cannot broaden ordinary locomotion ownership for Master form " + move);
+		}
+	}
+
+	private static AuraFighterRenderState masterState(MasterRenderer renderer, SwordMaster master, int move,
+		float age, int tell, int recovery, boolean left) {
+		var state = renderer.createRenderState(master, .5F);
+		state.mainArm = left ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
+		state.rightHandItemStack = left ? ItemStack.EMPTY : new ItemStack(Items.DIAMOND_SWORD);
+		state.leftHandItemStack = left ? new ItemStack(Items.DIAMOND_SWORD) : ItemStack.EMPTY;
+		state.drawn = 1;
+		state.walkAnimationSpeed = state.walkAnimationPos = state.xRot = state.yRot = 0;
+		state.setData(MasterModel.FRAME, new MasterModel.Frame(MasterAnimationRules.sample(move, age, tell, 1, recovery), left, 999, move));
+		state.setData(ArticulatedCombat.FRAME, new ArticulatedCombat.Frame(ArticulatedCombatPose.sampleMaster(move, age, tell, 1, recovery, left),
+			999, move, true, left, 0, 0, ArticulatedCombatPose.masterFootwork(move, age, tell)));
+		return state;
+	}
+
+	private static void wholeBackend(MasterModel model, boolean segmented, String reason) {
+		check(model.articulatedRig().root.visible == segmented, reason + ": segmented root visibility");
+		for (ModelPart part : new ModelPart[] {model.body, model.head, model.rightArm, model.leftArm, model.rightLeg, model.leftLeg})
+			check(part.visible != segmented, reason + ": all six original body parts switch together");
+	}
+
+	private static void masterFallback(MasterModel model, AuraFighterRenderState state, String reason) {
+		check(ArticulatedCombat.frame(state) == null, reason + ": articulated eligibility rejected");
+		model.setupAnim(state);
+		wholeBackend(model, false, reason);
+		float[] rejected = rigidSnapshot(model);
+		PoseStack hand = new PoseStack(); model.translateToHand(state, state.mainArm, hand);
+		float[] rejectedHand = hand.last().pose().get(new float[16]);
+		state.setData(ArticulatedCombat.FRAME, null);
+		model.setupAnim(state);
+		equal(rejected, rigidSnapshot(model), reason + ": whole original model and clothes retain their transforms");
+		PoseStack originalHand = new PoseStack(); model.translateToHand(state, state.mainArm, originalHand);
+		equal(rejectedHand, originalHand.last().pose().get(new float[16]), reason + ": held item retains the original attachment");
+	}
+
+	private static void masterSocket(MasterModel model, AuraFighterRenderState state) {
+		PoseStack actual = new PoseStack();
+		model.translateToHand(state, state.mainArm, actual);
+		actual.rotateDegrees(Axis.XP, -90); actual.rotateDegrees(Axis.YP, 180);
+		actual.translate((state.mainArm == HumanoidArm.LEFT ? -1 : 1) / 16F, 2F / 16, -10F / 16);
+		PoseStack expected = new PoseStack(); model.root().translateAndRotate(expected);
+		model.articulatedRig().socket(state.mainArm, expected);
+		Vector3f hilt = actual.last().pose().transformPosition(new Vector3f(0, -1.327F / 16, 1.439F / 16));
+		Vector3f socket = expected.last().pose().transformPosition(new Vector3f());
+		check(hilt.distance(socket) < .00001F, "Synthetic school hilt must stay at its articulated wrist");
+		ArticulatedCombat.orientItemAtSocket(expected);
+		equal(expected.last().pose().get(new float[16]), actual.last().pose().get(new float[16]),
+			"Synthetic school hand attachment must preserve all position and orientation components");
+	}
+
+	private static float[] segmentedSnapshot(ArticulatedRig rig) {
+		return transforms(java.util.Arrays.stream(Joint.values()).map(rig::part).toList());
+	}
+	private static float[] rigidSnapshot(MasterModel model) {
+		var parts = new java.util.ArrayList<ModelPart>();
+		for (ModelPart part : new ModelPart[] {model.body, model.head, model.rightArm, model.leftArm, model.rightLeg, model.leftLeg})
+			parts.addAll(part.getAllParts());
+		return transforms(parts);
+	}
+	private static float[] transforms(List<ModelPart> parts) {
+		float[] values = new float[parts.size() * 10];
+		for (int i = 0; i < parts.size(); i++) {
+			ModelPart p = parts.get(i); int at = i * 10;
+			values[at] = p.x; values[at + 1] = p.y; values[at + 2] = p.z;
+			values[at + 3] = p.xRot; values[at + 4] = p.yRot; values[at + 5] = p.zRot;
+			values[at + 6] = p.xScale; values[at + 7] = p.yScale; values[at + 8] = p.zScale; values[at + 9] = p.visible ? 1 : 0;
+		}
+		return values;
+	}
+	private static void equal(float[] expected, float[] actual, String message) {
+		check(expected.length == actual.length, message + ": transform count");
+		for (int i = 0; i < expected.length; i++) check(Float.isFinite(actual[i]) && Math.abs(expected[i] - actual[i]) < .00001F,
+			message + ": component " + i + " expected=" + expected[i] + " actual=" + actual[i]);
 	}
 
 	private static void socket(PlayerModel model, ArticulatedRig rig, AvatarRenderState state) {
