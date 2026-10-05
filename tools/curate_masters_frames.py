@@ -324,6 +324,12 @@ def read_npc_metadata(root, path, info, stamp):
         if not ok:
             raise EvidenceError(f"NPC metadata does not match the native fixture: {sidecar.name}")
 
+    def exclude(reason_code, reason):
+        return {"excludedNpcCapture": {
+            "sourcePath": path.relative_to(root).as_posix(), "metadataSourcePath": relative,
+            "metadataSha256": hashlib.sha256(raw).hexdigest(), "scene": scene, "phase": phase,
+            "reasonCode": reason_code, "reason": " ".join(reason.split())[:NPC_FAILURE_REASON_LIMIT]}}
+
     def invalid_constant(value):
         raise EvidenceError(f"Non-finite NPC metadata value: {value}")
 
@@ -349,12 +355,18 @@ def read_npc_metadata(root, path, info, stamp):
             if any(key in value for key in ("framing", "fov", "warningCoverage")):
                 require(value.get("framing") == "legacy_wide" and type(value.get("fov")) is int
                         and value["fov"] == 60 and value.get("warningCoverage") == "full_lane")
+            if "warningValidation" in value:
+                require(value["warningValidation"] == "full_lane_required")
             return
         require(value.get("framing") == ("body_close" if close_body else "warning_lane")
                 and type(value.get("fov")) is int and value["fov"] == (50 if close_body else 60)
                 and value.get("warningCoverage") == ("visible_portion" if close_body else "full_lane")
                 and value.get("bodyBoundsSource") == NPC_BODY_BOUNDS_SOURCE
                 and value.get("bladeBoundsSource") == NPC_BLADE_BOUNDS_SOURCE)
+        # Unfinalized legacy records may predate this field, but can never be
+        # accepted. A finalized receipt must state its warning contract exactly.
+        if "captureStatus" in value or "warningValidation" in value:
+            require(value.get("warningValidation") == ("diagnostic_only" if close_body else "full_lane_required"))
         for key in ("bodyBounds", "bladeBounds"):
             bounds = value.get(key)
             require(isinstance(bounds, dict) and all(finite(bounds.get(field)) for field in ("minX", "minY", "maxX", "maxY"))
@@ -479,6 +491,9 @@ def read_npc_metadata(root, path, info, stamp):
             and type(evidence.get("requestedTick")) is int and evidence["requestedTick"] == requested)
     failure = evidence.get("renderFailure")
     require(failure is None or isinstance(failure, str) and bool(failure.strip()))
+    if articulated and "captureStatus" in evidence:
+        require(evidence["captureStatus"] in ("passed", "failed")
+                and (evidence["captureStatus"] == "failed") == (failure is not None))
     require(all(type(evidence.get(key)) is int and evidence[key] > 0 for key in ("width", "height")))
     server = evidence.get("serverObservation")
     require(isinstance(server, dict) and all(type(server.get(key)) is int for key in
@@ -498,11 +513,7 @@ def read_npc_metadata(root, path, info, stamp):
         failed_render_schema(evidence)
         if articulated:
             articulated_receipts(evidence, failed=True)
-        return {"excludedNpcCapture": {
-            "sourcePath": path.relative_to(root).as_posix(), "metadataSourcePath": relative,
-            "metadataSha256": hashlib.sha256(raw).hexdigest(), "scene": scene, "phase": phase,
-            "reasonCode": "native_render_failure",
-            "reason": " ".join(failure.split())[:NPC_FAILURE_REASON_LIMIT]}}
+        return exclude("native_render_failure", failure)
     require(all(type(evidence.get(key)) is int and evidence[key] > 0
                 for key in ("width", "height", "bodySubmits", "modelPasses")))
     timeline, server = evidence.get("renderedTimeline"), evidence.get("serverObservation")
@@ -530,9 +541,11 @@ def read_npc_metadata(root, path, info, stamp):
             and all(vector(evidence.get(key)) for key in ("camera", "renderedPosition"))
             and all(vector(server.get(key)) for key in ("masterPosition", "targetPosition")))
     pixels = evidence.get("bodyPixels")
-    require(isinstance(pixels, dict) and all(type(pixels.get(key)) is int for key in
+    require(isinstance(pixels, dict) and all(type(pixels.get(key)) is int and pixels[key] >= 0 for key in
             ("nonBlackPixels", "chromaticPixels", "distinctColors", "luminanceRange")))
-    require(pixels["nonBlackPixels"] >= 48 and pixels["distinctColors"] >= 8 and pixels["luminanceRange"] >= 24)
+    unfinalized = articulated and "captureStatus" not in evidence
+    if not unfinalized:
+        require(pixels["nonBlackPixels"] >= 48 and pixels["distinctColors"] >= 8 and pixels["luminanceRange"] >= 24)
     points = evidence.get("bodyPoints")
     require(isinstance(points, list) and len(points) == 9 and all(point(value) for value in points))
     warnings = evidence.get("warnings")
@@ -540,17 +553,23 @@ def read_npc_metadata(root, path, info, stamp):
     require(isinstance(warnings, list))
     for warning in warnings:
         warning_schema(warning)
-    if not close_body:
+    if not close_body and not unfinalized:
         require(sum(warning["coloredBins"] >= 4 for warning in warnings) >= required_warnings)
-    # Close views retain all extracted rays, including old/non-expected segments.
-    # Their expected-segment identity and color assertion belong to the native
-    # gate; partial receipts alone cannot establish full warning-lane coverage.
+    # Close views retain warning rays as diagnostics only. Bodies can occlude
+    # geometrically on-screen segments, so this evidence cannot establish lane
+    # acceptance; that remains the separate wide reply-warning capture's job.
     if articulated:
         articulated_receipts(evidence, failed=False)
-        info.update(expectedBackend="segmented", articulatedFrame=evidence["articulatedFrame"],
+        # Older producers wrote JSON before pixel assertions. A missing failure
+        # field therefore cannot establish that this individual capture passed.
+        # Validate legacy structure first, then keep it out of accepted coverage.
+        if unfinalized:
+            return exclude("native_capture_verdict_unavailable",
+                           "Legacy NPC receipt lacks a finalized native capture verdict; pixel checks may have failed after the JSON write.")
+        info.update(captureStatus=evidence["captureStatus"], expectedBackend="segmented", articulatedFrame=evidence["articulatedFrame"],
                     modelReceiptCount=len(evidence["modelReceipts"]), handReceiptCount=len(evidence["handReceipts"]),
                     modelTransformCount=120,
-                    **{key: evidence[key] for key in ("framing", "fov", "warningCoverage", "bodyBounds", "bladeBounds",
+                    **{key: evidence[key] for key in ("framing", "fov", "warningCoverage", "warningValidation", "bodyBounds", "bladeBounds",
                                                      "bodyBoundsSource", "bladeBoundsSource")})
     info.update(participantKind=evidence["participantKind"], observerKind=evidence["observerKind"],
                 independentTrialPerFrame=True, requestedTick=requested,
@@ -907,9 +926,12 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                      "Entry/hand matrices are observed; resolved/expected item matrices apply fixed vanilla item offsets. "
                      "Synced horizontal velocity, position interpolation and eased walk speed remain separate measurements. "
                      "NPC reply warnings retain a wide full-lane view; other beats use close body framing and report "
-                     "only visible warning portions, with unclamped or absent projected endpoints. Expected warning "
-                     "segment/color verdicts remain with the native suite. Body/blade bounds are geometric enclosure "
+                     "only visible warning portions, with unclamped or absent projected endpoints. Close warning samples "
+                     "are diagnostic-only and do not establish warning-lane acceptance; only wide warning-lane captures "
+                     "enforce expected segment/color coverage. Body/blade bounds are geometric enclosure "
                      "receipts, not pixel segmentation or proof against self-occlusion. "
+                     "Selected NPC sidecars require a per-capture passed status finalized after native render and pixel checks; "
+                     "legacy receipts without that verdict are excluded as unfinalized, not declared failed. "
                      "Synthetic model/socket checks are distinct from these native NPC captures. "
                      "Equipment and HUD viewport labels describe native fixture assertions, "
                      "not image analysis; unencoded viewport/UI settings remain unknown. Loop indices and "

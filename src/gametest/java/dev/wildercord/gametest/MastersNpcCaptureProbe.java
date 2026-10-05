@@ -78,7 +78,7 @@ public final class MastersNpcCaptureProbe {
 		List<Point> bodyPoints, BodyPixels bodyPixels, List<WarningPixels> warnings, String renderFailure,
 		String expectedBackend, ArticulatedFrame articulatedFrame, List<ModelReceipt> modelReceipts, List<HandReceipt> handReceipts,
 		String framing, int fov, String warningCoverage, ProjectedBounds bodyBounds, ProjectedBounds bladeBounds,
-		String bodyBoundsSource, String bladeBoundsSource, float[] bodySubmitMatrix, float[] viewRotationProjectionMatrix) {}
+		String bodyBoundsSource, String bladeBoundsSource, float[] bodySubmitMatrix, float[] viewRotationProjectionMatrix, String warningValidation, String captureStatus) {}
 	private static SwordMaster subject;
 	private static Vec3 origin;
 	private static AuraFighterRenderState renderedState;
@@ -294,26 +294,30 @@ public final class MastersNpcCaptureProbe {
 					int[] pixels = image.getPixels();
 					BodyPixels bodyPixels = measureBody(bodyPoints, pixels, image.getWidth(), image.getHeight());
 					for (int i = 0; i < capturedRays.size(); i++) warnings.add(measure(capturedRays.get(i), projectedRays.get(i), pixels, image.getWidth(), image.getHeight(), serverFrame.attackId(), fullWarningCoverage));
+					String validationFailure = renderFailure;
+					try {
+						check(bodyPixels.nonBlackPixels >= 48 && bodyPixels.distinctColors >= 8 && bodyPixels.luminanceRange >= 24,
+							"The submitted NPC framebuffer region must contain nonblank body detail: " + name);
+						// A close body's visible geometry can occlude projected floor samples. Those counts
+						// remain diagnostics; only the separate wide view establishes warning acceptance.
+						if (fullWarningCoverage) for (Vec3[] expected : expectedRays(requestedTick, serverFrame.attackId(), acceptedOrigin))
+							check(warnings.stream().anyMatch(warning -> sameRay(warning.ray, expected) && warning.coloredBins >= 4),
+								"Each warning segment must have visible school-colored framebuffer pixels across at least four of sixteen bins: " + name);
+					} catch (Throwable problem) {
+						if (validationFailure == null) validationFailure = problem.toString();
+					}
 					var evidence = new Evidence(name, "native_unpaused_server_ai", "consenting_fabric_fake_player", "real_client_spectator",
 						true, phase, requestedTick, image.getWidth(), image.getHeight(), capturedTimeline, serverFrame, capturedBodies, capturedModels,
-						capturedPose, eye, capturedPosition, List.copyOf(bodyPoints), bodyPixels, warnings, renderFailure,
+						capturedPose, eye, capturedPosition, List.copyOf(bodyPoints), bodyPixels, warnings, validationFailure,
 						articulated ? "segmented" : "rigid", capturedFrame, capturedModelsReceipts, capturedHands,
 						articulated ? closeBody ? "body_close" : "warning_lane" : "legacy_wide", capturedFov,
 						fullWarningCoverage ? "full_lane" : "visible_portion", capturedBodyBounds, capturedBladeBounds,
 						articulated ? "visible_native_model_cube_vertices_with_body_submit_matrix" : null,
 						articulated ? "resolved_native_item_extents_with_hand_receipt_and_vanilla_adult_offsets" : null,
-						capturedBodyMatrix, capturedProjection);
+						capturedBodyMatrix, capturedProjection, fullWarningCoverage ? "full_lane_required" : "diagnostic_only",
+						validationFailure == null ? "passed" : "failed");
 					Files.writeString(path.resolveSibling(name + ".json"), new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(evidence));
-					check(renderFailure == null, "Native NPC render rejected: " + renderFailure);
-					check(bodyPixels.nonBlackPixels >= 48 && bodyPixels.distinctColors >= 8 && bodyPixels.luminanceRange >= 24,
-						"The submitted NPC framebuffer region must contain nonblank body detail: " + name);
-					for (Vec3[] expected : expectedRays(requestedTick, serverFrame.attackId(), acceptedOrigin)) {
-						if (fullWarningCoverage) check(warnings.stream().anyMatch(warning -> sameRay(warning.ray, expected) && warning.coloredBins >= 4),
-							"Each warning segment must have visible school-colored framebuffer pixels across at least four of sixteen bins: " + name);
-						else if (warnings.stream().anyMatch(warning -> sameRay(warning.ray, expected) && warning.sampledBins > 0))
-							check(warnings.stream().anyMatch(warning -> sameRay(warning.ray, expected) && warning.coloredBins > 0),
-								"An on-screen portion of an extracted warning must contain school-colored framebuffer pixels: " + name);
-					}
+					check(validationFailure == null, "Native NPC capture rejected: " + validationFailure);
 					Wildercord.LOGGER.info("MASTERS_NPC_CAPTURE name={} backend={} attack={} accepted={} age={} bodies={} models={} hands={} warnings={}",
 						name, articulated ? "segmented" : "rigid", capturedTimeline.attackId, capturedTimeline.acceptedTick,
 						capturedTimeline.age, capturedBodies, capturedModels, capturedHands.size(), warnings.size());

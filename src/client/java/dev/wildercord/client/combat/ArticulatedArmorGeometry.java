@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EquipmentSlot;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ import java.util.function.Function;
 public final class ArticulatedArmorGeometry extends Model<ArticulatedArmorGeometry.Palette> {
 	/** Immutable final joint-world snapshot. A deferred draw never reads a live player or rig. */
 	public static final class Palette {
+		// Bind transforms are pose-, player- and reload-independent. Only read these matrices;
+		// every captured world and skin matrix below still belongs to its own palette.
+		private static final Matrix4fc[] INVERSE_BIND = inverseBind();
 		private final Matrix4f[] world, skin;
 		private final boolean hat;
 		private Palette(Function<Joint, Matrix4f> matrices) {
@@ -44,9 +48,14 @@ public final class ArticulatedArmorGeometry extends Model<ArticulatedArmorGeomet
 				Matrix4f matrix = new Matrix4f(Objects.requireNonNull(matrices.apply(joint), joint.name()));
 				if (!matrix.isFinite()) throw new IllegalArgumentException("Non-finite armor palette: " + joint);
 				world[joint.ordinal()] = matrix;
-				Matrix4f inverseBind = new Matrix4f().set(ArticulatedCombatPose.NONE.world(joint).values()).invert();
-				skin[joint.ordinal()] = new Matrix4f(matrix).mul(inverseBind);
+				skin[joint.ordinal()] = new Matrix4f(matrix).mul(INVERSE_BIND[joint.ordinal()]);
 			}
+		}
+		private static Matrix4fc[] inverseBind() {
+			Matrix4fc[] matrices = new Matrix4fc[Joint.values().length];
+			for (Joint joint : Joint.values())
+				matrices[joint.ordinal()] = new Matrix4f().set(ArticulatedCombatPose.NONE.world(joint).values()).invert();
+			return matrices;
 		}
 		private Palette(Palette source, boolean hat) { world = source.world; skin = source.skin; this.hat = hat; }
 		public Palette withHat(boolean visible) { return hat == visible ? this : new Palette(this, visible); }

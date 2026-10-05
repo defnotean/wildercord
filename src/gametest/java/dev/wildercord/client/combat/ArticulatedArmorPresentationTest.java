@@ -188,6 +188,7 @@ public final class ArticulatedArmorPresentationTest implements FabricClientGameT
 			bodyAccess.wildercord$ownBody(slim);
 			var armor = new ArticulatedArmorRenderer(mc.getEntityModels(), slim, owner.wildercord$armor().equipmentRenderer(), owner.wildercord$armor().equipmentAssets());
 			bodyAccess.wildercord$setArmor(armor);
+			emptyEquipment(mc, body, state, armor, slim);
 			var vanilla = ArmorModelSet.bake(slim ? ModelLayers.PLAYER_SLIM_ARMOR : ModelLayers.PLAYER_ARMOR,
 				mc.getEntityModels(), root -> new PlayerModel(root, slim));
 			for (EquipmentSlot slot : ARMOR_ORDER) {
@@ -262,7 +263,77 @@ public final class ArticulatedArmorPresentationTest implements FabricClientGameT
 			ReceiptCollector rejected = new ReceiptCollector();
 			check(!unsupported.submitWorld(renderer.getModel(), extracted, new PoseStack(), rejected.collector(), LIGHT)
 				&& rejected.models.isEmpty(), "Unsupported resolved asset cannot partially submit armor");
+			for (EquipmentSlot slot : ARMOR_ORDER) setEquipment(extracted, slot, ItemStack.EMPTY);
+			extracted.setData(ArticulatedArmorRenderer.READY, true);
+			check(!unsupported.submitWorld(renderer.getModel(), extracted, new PoseStack(), rejected.collector(), LIGHT)
+				&& rejected.models.isEmpty(), "Empty equipment cannot bypass unsupported resolved assets even with stale readiness");
 		} finally { owner.wildercord$setArmor(original); }
+	}
+
+	/** Empty submission remains successful only after the ordinary guards and body pose update. */
+	private static void emptyEquipment(Minecraft mc, PlayerModel body, AvatarRenderState state, ArticulatedArmorRenderer armor, boolean slim) {
+		ItemStack[] saved = Arrays.stream(ARMOR_ORDER).map(slot -> equipment(state, slot)).toArray(ItemStack[]::new);
+		var frame = state.getData(ArticulatedCombat.FRAME);
+		var owner = access(body);
+		try {
+			for (int mask = 0; mask < 16; mask++) {
+				for (int i = 0; i < ARMOR_ORDER.length; i++) setEquipment(state, ARMOR_ORDER[i], (mask & 1 << i) == 0 ? ItemStack.EMPTY : null);
+				owner.wildercord$rig().part(Joint.PELVIS).x = 123;
+				owner.wildercord$rig().root.visible = false;
+				body.body.visible = true;
+				PoseStack stack = new PoseStack();
+				stack.translate(.25, .5, .75);
+				Matrix4f pose = new Matrix4f(stack.last().pose());
+				ReceiptCollector empty = new ReceiptCollector();
+				check(armor.submitWorld(body, state, stack, empty.collector(), LIGHT) && empty.calls.isEmpty(),
+					"Every null/empty slot combination succeeds without material submissions");
+				check(owner.wildercord$rig().part(Joint.PELVIS).x == frame.pose().local(Joint.PELVIS).x()
+					&& owner.wildercord$rig().root.visible && !body.body.visible, "Empty armor still applies the accepted body pose before returning");
+				check(pose.equals(stack.last().pose()) && stack.isEmpty(), "Empty armor leaves the caller's pose stack intact");
+			}
+			for (EquipmentSlot slot : ARMOR_ORDER) setEquipment(state, slot, ItemStack.EMPTY);
+			for (Boolean ready : new Boolean[] {null, false}) {
+				state.setData(ArticulatedArmorRenderer.READY, ready);
+				checkEmptyRejected(body, state, armor, "Missing/false readiness");
+			}
+			state.setData(ArticulatedArmorRenderer.READY, true);
+			for (String property : new String[] {ArticulatedCombat.ENABLE_PROPERTY, ArticulatedArmorRenderer.ENABLE_PROPERTY}) {
+				System.setProperty(property, "false");
+				try { checkEmptyRejected(body, state, armor, "Disabled " + property); }
+				finally { System.setProperty(property, "true"); }
+			}
+			state.setData(ArticulatedCombat.FRAME, null);
+			checkEmptyRejected(body, state, armor, "Missing accepted pose");
+			state.setData(ArticulatedCombat.FRAME, frame);
+			state.setData(ArticulatedCombat.KNOWN_LAYERS, false);
+			checkEmptyRejected(body, state, armor, "Unknown feature layers");
+			state.setData(ArticulatedCombat.KNOWN_LAYERS, true);
+			owner.wildercord$setArmor(null);
+			try { checkEmptyRejected(body, state, armor, "Different armor owner"); }
+			finally { owner.wildercord$setArmor(armor); }
+			PlayerModel unowned = new PlayerModel(mc.getEntityModels().bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), slim);
+			checkEmptyRejected(unowned, state, armor, "Unowned player model");
+			for (int i = 0; i < ARMOR_ORDER.length; i++) {
+				setEquipment(state, ARMOR_ORDER[i], saved[i]);
+				ReceiptCollector one = new ReceiptCollector();
+				check(armor.submitWorld(body, state, new PoseStack(), one.collector(), LIGHT) && one.models.size() == 3,
+					"One occupied slot is never skipped: " + ARMOR_ORDER[i]);
+				for (Receipt receipt : one.models) check(receipt.model == armor.model(ARMOR_ORDER[i]), "Only the occupied slot submits");
+				setEquipment(state, ARMOR_ORDER[i], ItemStack.EMPTY);
+			}
+		} finally {
+			for (int i = 0; i < ARMOR_ORDER.length; i++) setEquipment(state, ARMOR_ORDER[i], saved[i]);
+			state.setData(ArticulatedCombat.FRAME, frame);
+			state.setData(ArticulatedCombat.KNOWN_LAYERS, true);
+			state.setData(ArticulatedArmorRenderer.READY, true);
+			owner.wildercord$setArmor(armor);
+		}
+	}
+
+	private static void checkEmptyRejected(PlayerModel body, AvatarRenderState state, ArticulatedArmorRenderer armor, String reason) {
+		ReceiptCollector rejected = new ReceiptCollector();
+		check(!armor.submitWorld(body, state, new PoseStack(), rejected.collector(), LIGHT) && rejected.calls.isEmpty(),
+			reason + " still rejects empty armor before the fast return");
 	}
 
 	private static void materialParity(ReceiptCollector actual, ReceiptCollector expected, int pieces, boolean view) {

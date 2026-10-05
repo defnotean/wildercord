@@ -75,6 +75,7 @@ public final class ArticulatedArmorRenderer {
 		if (!enabled() || !supportsAssets() || !supports(state) || !Boolean.TRUE.equals(state.getData(READY))
 			|| !(body instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned() || access.wildercord$armor() != this
 			|| !ArticulatedCombat.applyPlayer(body, state)) return false;
+		if (empty(state.headEquipment) && empty(state.chestEquipment) && empty(state.legsEquipment) && empty(state.feetEquipment)) return true;
 		// applyPlayer includes vanilla held-item/breathing and bounded head look. Capture AFTER it.
 		var palette = capture(access.wildercord$rig()).withHat(state.showHat);
 		stack.pushPose();

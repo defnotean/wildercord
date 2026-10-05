@@ -963,7 +963,7 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         base_phase = phase if phase in curator.NPC_BEATS[original] else "reply_warning"
         value = NpcCuratorTests.metadata(self, original, base_phase)
         age = curator.ARTICULATED_NPC_BEATS[scene][phase]
-        value.update(name=f"{scene}_{phase}", phase=phase, requestedTick=age, expectedBackend="segmented")
+        value.update(name=f"{scene}_{phase}", phase=phase, requestedTick=age, expectedBackend="segmented", captureStatus="passed")
         value["renderedTimeline"].update(clientGameTick=100 + age, age=age + .5, fallbackRig=False)
         value["serverObservation"].update(gameTick=100 + age, age=age)
         if phase == "step_last":
@@ -987,6 +987,7 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         close = phase != "reply_warning"
         value.update(framing="body_close" if close else "warning_lane", fov=50 if close else 60,
                      warningCoverage="visible_portion" if close else "full_lane",
+                     warningValidation="diagnostic_only" if close else "full_lane_required",
                      bodyBounds={"minX": .2, "minY": .2, "maxX": .65, "maxY": .6 if close else .4,
                                  "vertexCount": 800, "allInFront": True, "wholeVisible": True},
                      bladeBounds={"minX": .35, "minY": .25, "maxX": .6, "maxY": .55,
@@ -1091,6 +1092,7 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         _, sidecar = self.npc(phase="landed")
         value = json.loads(sidecar.read_text())
         value["renderFailure"] = "java.lang.AssertionError: The requested backend must own the native school frame"
+        value["captureStatus"] = "failed"
         value["renderedTimeline"]["fallbackRig"] = True
         value["modelPose"] = [.2] * 36
         value["modelReceipts"] = [{"backend": "rigid", "segmentedRootVisible": False, "rigidPartsVisible": [True] * 6,
@@ -1142,7 +1144,7 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         for key in ("bodyBounds", "bladeBounds"):
             value[key] = {"minX": 0, "minY": 0, "maxX": 0, "maxY": 0, "vertexCount": 0,
                           "allInFront": False, "wholeVisible": False}
-        value.update(renderFailure="java.lang.AssertionError: Native NPC body submission and animated model passes must both occur",
+        value.update(captureStatus="failed", renderFailure="java.lang.AssertionError: Native NPC body submission and animated model passes must both occur",
                      modelPasses=0, bodySubmits=0, bodyPoints=[], warnings=[], modelReceipts=[], handReceipts=[],
                      bodyPixels={"nonBlackPixels": 0, "chromaticPixels": 0, "distinctColors": 0, "luminanceRange": 0})
         self.write_metadata(sidecar, value)
@@ -1184,13 +1186,14 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         value["warnings"][0].update(sampledBins=3, coloredBins=1, to={"x": 1.4, "y": -.2})
         del value["warnings"][0]["from"]
         value["warnings"][1].update(sampledBins=0, coloredBins=0, **{"from": None, "to": None})
-        # Captured rays may include old segments that are not part of the native
-        # expected-ray color assertion. The curator cannot invent that identity.
+        # The close view's warning samples are explicitly diagnostic-only; an
+        # actor can occlude a geometrically on-screen segment without a body failure.
         value["warnings"][2].update(sampledBins=2, coloredBins=0)
         self.write_metadata(sidecar, value)
         result = self.curate()
         frame = result["frames"][0]
         self.assertEqual((frame["framing"], frame["fov"], frame["warningCoverage"]), ("body_close", 50, "visible_portion"))
+        self.assertEqual(frame["warningValidation"], "diagnostic_only")
         self.assertEqual(frame["bodyBounds"], value["bodyBounds"])
         self.assertEqual(frame["bladeBounds"], value["bladeBounds"])
         copied = self.root / self.output / frame["metadata"]["artifactPath"]
@@ -1269,6 +1272,7 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         _, sidecar = self.npc(phase="landed")
         value = json.loads(sidecar.read_text())
         value["renderFailure"] = "java.lang.AssertionError: Native body geometry leaves the viewport"
+        value["captureStatus"] = "failed"
         value["bodyBounds"].update(minX=-.1, wholeVisible=False)
         value["warnings"][0].update(sampledBins=0, coloredBins=0, **{"from": None, "to": None})
         self.write_metadata(sidecar, value)
@@ -1297,6 +1301,134 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         (self.root / marker).write_text(json.dumps(stamp))
         with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
             curator.curate(self.root, self.source, marker, "review/wrong", self.identity, suite=self.suite)
+
+    def test_post_pixel_failure_is_excluded_while_valid_owner_and_npc_frames_survive(self):
+        failed, sidecar = self.npc(phase="step")
+        value = json.loads(sidecar.read_text())
+        # Structural regression for public25bdaf76: the expected far Gale step
+        # ray had 16 sampled bins and zero colored bins behind the actor's legs.
+        # This is not a replacement or fabricated passing native capture.
+        value["warnings"][1].update(sampledBins=16, coloredBins=0)
+        value.update(captureStatus="failed", renderFailure=
+                     "java.lang.AssertionError: An on-screen portion of an extracted warning must contain school-colored framebuffer pixels: "
+                     "articulated_npc_gale_crosswind_step")
+        self.write_metadata(sidecar, value)
+        owner = self.shot("articulated_live_left_first_frame_0.png")
+        valid, _ = self.npc("articulated_npc_stone_fracture", "release")
+        result = self.curate()
+        self.assertEqual({Path(frame["sourcePath"]).name for frame in result["frames"]}, {owner.name, valid.name})
+        self.assertEqual(result["selectedMetadataCount"], 1)
+        self.assertEqual(result["npcCoverage"][0]["capturedPhases"], [])
+        self.assertEqual(result["excludedNpcCaptures"][0]["reasonCode"], "native_render_failure")
+        self.assertIn("school-colored", result["excludedNpcCaptures"][0]["reason"])
+        self.assertFalse((self.root / self.output / "frames" / failed.name).exists())
+        self.assertFalse((self.root / self.output / "frames" / sidecar.name).exists())
+
+    def test_legacy_null_failure_is_unfinalized_and_never_counted_as_passed_or_failed(self):
+        _, sidecar = self.npc(phase="step")
+        value = json.loads(sidecar.read_text())
+        del value["captureStatus"]
+        del value["warningValidation"]
+        value["renderFailure"] = None
+        value["warnings"][1].update(sampledBins=16, coloredBins=0)
+        self.write_metadata(sidecar, value)
+        owner = self.shot("articulated_live_left_first_frame_0.png")
+        result = self.curate()
+        self.assertEqual([Path(frame["sourcePath"]).name for frame in result["frames"]], [owner.name])
+        self.assertEqual(result["selectedMetadataCount"], 0)
+        self.assertEqual(result["npcCoverage"][0]["capturedPhases"], [])
+        self.assertEqual(result["excludedNpcCaptures"][0]["reasonCode"], "native_capture_verdict_unavailable")
+        self.assertIn("lacks a finalized", result["excludedNpcCaptures"][0]["reason"])
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+        # Missing status does not excuse malformed legacy evidence.
+        value["handReceipts"][0]["entryMatrix"] = []
+        self.write_metadata(sidecar, value)
+        with self.assertRaises(curator.EvidenceError):
+            curator.curate(self.root, self.source, self.marker, "review/malformed", self.identity, suite=self.suite)
+
+    def test_capture_verdict_rejects_invalid_or_contradictory_status(self):
+        _, sidecar = self.npc(phase="step")
+        for status, failure in ((None, None), (True, None), ("pending", None), ("failed", None),
+                                ("failed", ""), ("passed", "Native pixel assertion failed")):
+            with self.subTest(status=status, failure=failure):
+                value = self.metadata("articulated_npc_gale_crosswind", "step")
+                value.update(captureStatus=status, renderFailure=failure)
+                self.write_metadata(sidecar, value)
+                with self.assertRaises(curator.EvidenceError):
+                    self.curate()
+                self.assertFalse((self.root / self.output).exists())
+
+    def test_unfinalized_legacy_pixel_failure_is_excluded_without_discarding_owner_evidence(self):
+        _, sidecar = self.npc(phase="reply_warning")
+        value = json.loads(sidecar.read_text())
+        del value["captureStatus"]
+        del value["warningValidation"]
+        value["bodyPixels"].update(nonBlackPixels=0, distinctColors=0, luminanceRange=0)
+        for warning in value["warnings"]:
+            warning["coloredBins"] = 0
+        self.write_metadata(sidecar, value)
+        owner = self.shot("articulated_live_left_first_frame_0.png")
+        result = self.curate()
+        self.assertEqual([Path(frame["sourcePath"]).name for frame in result["frames"]], [owner.name])
+        self.assertEqual(result["excludedNpcCaptures"][0]["reasonCode"], "native_capture_verdict_unavailable")
+        for key in ("nonBlackPixels", "chromaticPixels", "distinctColors", "luminanceRange"):
+            with self.subTest(negative_count=key):
+                original = value["bodyPixels"][key]
+                value["bodyPixels"][key] = -1
+                self.write_metadata(sidecar, value)
+                with self.assertRaises(curator.EvidenceError):
+                    curator.curate(self.root, self.source, self.marker, "review/malformed", self.identity, suite=self.suite)
+                value["bodyPixels"][key] = original
+
+    def test_legacy_explicit_failure_still_excludes_without_inventing_a_finalized_pass(self):
+        _, sidecar = self.npc(phase="step")
+        value = json.loads(sidecar.read_text())
+        del value["captureStatus"]
+        value["renderFailure"] = "java.lang.AssertionError: Native body submission failed"
+        self.write_metadata(sidecar, value)
+        result = self.curate()
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(result["excludedNpcCaptures"][0]["reasonCode"], "native_render_failure")
+
+    def test_selected_articulated_npc_manifest_retains_final_per_capture_verdict(self):
+        self.npc()
+        result = self.curate()
+        self.assertEqual(result["frames"][0]["captureStatus"], "passed")
+        self.assertIn("finalized after native render and pixel checks", result["basis"])
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_close_body_pass_does_not_claim_warning_lane_acceptance(self):
+        _, sidecar = self.npc(phase="step")
+        value = json.loads(sidecar.read_text())
+        for warning in value["warnings"]:
+            warning.update(sampledBins=16, coloredBins=0)
+        self.write_metadata(sidecar, value)
+        self.npc(phase="reply_warning")
+        result = self.curate()
+        frames = {frame["phase"]: frame for frame in result["frames"]}
+        self.assertEqual(frames["step"]["captureStatus"], "passed")
+        self.assertEqual(frames["step"]["warningValidation"], "diagnostic_only")
+        self.assertEqual(frames["reply_warning"]["warningValidation"], "full_lane_required")
+        self.assertIn("do not establish warning-lane acceptance", result["basis"])
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_warning_validation_contract_is_required_and_cannot_be_swapped(self):
+        for phase, invalid in (("step", "full_lane_required"), ("reply_warning", "diagnostic_only")):
+            _, sidecar = self.npc(phase=phase)
+            for replacement in (invalid, None, "unknown", False):
+                with self.subTest(phase=phase, replacement=replacement):
+                    value = self.metadata("articulated_npc_gale_crosswind", phase)
+                    value["warningValidation"] = replacement
+                    self.write_metadata(sidecar, value)
+                    with self.assertRaises(curator.EvidenceError):
+                        self.curate()
+            value = self.metadata("articulated_npc_gale_crosswind", phase)
+            del value["warningValidation"]
+            self.write_metadata(sidecar, value)
+            with self.assertRaises(curator.EvidenceError):
+                self.curate()
+            sidecar.unlink()
+            sidecar.with_suffix(".png").unlink()
 
     def test_receipt_changes_after_validation_and_unsafe_sidecars_still_fail_closed(self):
         image, sidecar = self.npc()

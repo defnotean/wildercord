@@ -25,6 +25,7 @@ SOURCES = [
     'src/gametest/java/dev/wildercord/client/combat/ArticulatedArmorInputChecks.java',
     'tools/CheckArticulatedArmorGeometry.java',
     'tools/CheckArticulatedArmorView.java',
+    'tools/CheckArticulatedArmorPalette.java',
     'tools/check_articulated_armor.py',
 ]
 INSPECTED = [
@@ -78,7 +79,8 @@ def run(out: Path, verify: Path) -> None:
         with (out / 'compile.log').open('w') as log:
             subprocess.run(commands[0], cwd=ROOT, stdout=log, stderr=log, check=True)
         for main, filename in [('dev.wildercord.client.combat.ArticulatedArmorInputChecks', 'inputs.json'),
-                               ('CheckArticulatedArmorGeometry', 'geometry.json'), ('CheckArticulatedArmorView', 'view.json')]:
+                               ('CheckArticulatedArmorGeometry', 'geometry.json'), ('CheckArticulatedArmorView', 'view.json'),
+                               ('CheckArticulatedArmorPalette', 'palette.json')]:
             command = [str(java / 'java'), '-Xmx2G', '-cp', str(classes) + os.pathsep + cp, main]
             commands.append(command)
             with (out / filename).open('w') as result, (out / (main + '.log')).open('w') as log:
