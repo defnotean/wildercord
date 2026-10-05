@@ -4,6 +4,7 @@ import dev.wildercord.aura.AuraFx;
 import dev.wildercord.aura.AuraFxRules;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.BreathingMethods;
+import dev.wildercord.aura.CastHitRules;
 import dev.wildercord.aura.Stance;
 import dev.wildercord.aura.Crescents;
 import dev.wildercord.cast.Light;
@@ -650,10 +651,14 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				Vec3 delta = player.position().subtract(origin);
 				if (MastersRules.hits(released, delta.dot(aim), delta.dot(side), delta.y)
 					&& (released == MastersRules.Move.CINDER_WAKE ? EmberAfterburn.clear(level, this, origin.add(0, .9, 0), player.getBoundingBox().getCenter()) : hasLineOfSight(player))) {
-					float dealt = projected(player, MastersRules.damage(partySize, discipline, released));
-					if (dealt > 0 && released == MastersRules.Move.BREAK_CAST && player.hasAttached(WildercordAttachments.CHARGE)) {
-						Statuses.interrupt(player); // Shared immunity prevents repeated masters from locking out a caster.
-					}
+					if (released == MastersRules.Move.BREAK_CAST) {
+						var charge = player.getAttached(WildercordAttachments.CHARGE);
+						MasterHitReceipt.Result hit = MasterHitReceipt.measure(this, player,
+							() -> projected(player, MastersRules.damage(partySize, discipline, released)));
+						if (CastHitRules.response(hit.damaging(), charge,
+							player.getAttached(WildercordAttachments.CHARGE)) == CastHitRules.Response.INTERRUPT)
+							Statuses.interrupt(player); // Shared immunity prevents repeated masters from locking out a caster.
+					} else projected(player, MastersRules.damage(partySize, discipline, released));
 				}
 			}
 		}

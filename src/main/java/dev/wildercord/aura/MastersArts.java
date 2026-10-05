@@ -5,11 +5,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.arts.ArtKit;
+import dev.wildercord.aura.world.MasterHitReceipt;
 import dev.wildercord.cast.CastLock;
 import dev.wildercord.cast.Effects;
 import dev.wildercord.cast.RuneBolt;
 import dev.wildercord.cast.Scheduler;
+import dev.wildercord.cast.Statuses;
 import dev.wildercord.net.PacketThrottle;
+import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -287,9 +290,20 @@ public final class MastersArts {
 			: ArtKit.arcFrom(player, player.position(), forward, move.reach(), ordinal == 0 ? 110 : 75, move.targets());
 		for (LivingEntity foe : foes) {
 			if (!player.hasLineOfSight(foe)) continue;
-			float taken = hits.strike(foe, move.damage());
-			if (taken > 0 && ordinal == 2 && ArtKit.harmable(player, foe)) CastLock.lock(foe, MastersArtRules.INTERRUPT_TICKS);
-			if (taken > 0 && ordinal == 1 && ArtKit.harmable(player, foe)) ArtKit.lift(foe, 0.32, 8);
+			if (ordinal == 2 && foe instanceof ServerPlayer caster) {
+				// Snapshot before the entire hit: reactions and art callbacks may replace a held spell.
+				var charge = caster.getAttached(WildercordAttachments.CHARGE);
+				MasterHitReceipt.Result hit = MasterHitReceipt.measure(player, caster, () -> hits.strike(caster, move.damage()));
+				if (ArtKit.harmable(player, caster) && CastLock.canLock(caster)) {
+					var response = CastHitRules.response(hit.damaging(), charge, caster.getAttached(WildercordAttachments.CHARGE));
+					if (response == CastHitRules.Response.SEAL_IDLE || response == CastHitRules.Response.INTERRUPT && Statuses.interrupt(caster))
+						CastLock.lock(caster, MastersArtRules.INTERRUPT_TICKS);
+				}
+			} else {
+				float taken = hits.strike(foe, move.damage());
+				if (taken > 0 && ordinal == 2 && ArtKit.harmable(player, foe)) CastLock.lock(foe, MastersArtRules.INTERRUPT_TICKS);
+				if (taken > 0 && ordinal == 1 && ArtKit.harmable(player, foe)) ArtKit.lift(foe, 0.32, 8);
+			}
 		}
 		AuraFx.sound(player, AuraFx.Sound.SWING, 0.8F, ordinal == 1 ? 0.85F : 1.15F);
 		player.sendOverlayMessage(Component.translatable("aura.wildercord.art." + move.id()).withColor(Aura.color(player)));

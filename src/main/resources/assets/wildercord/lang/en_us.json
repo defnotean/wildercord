@@ -4286,7 +4286,7 @@
   "aura.wildercord.art.rising_break": "Rising Break",
   "aura.wildercord.art.rising_break.desc": "Form: a rising blade strike wears extra stance and lifts ordinary foes. 20 aura; 5 second rest.",
   "aura.wildercord.art.driving_cut": "Driving Cut",
-  "aura.wildercord.art.driving_cut.desc": "Form: a committed thrust reaches 5 blocks and interrupts a struck caster for 1 second. 18 aura; 4 second rest.",
+  "aura.wildercord.art.driving_cut.desc": "Form: a committed 5-block thrust breaks a damaged held spell, including absorption, then seals casting for 1 second. Held spells share 8-second interrupt protection. 18 aura; 4 second rest.",
   "message.wildercord.masters_art.stage": "This art opens at %s.",
   "message.wildercord.masters_art.rest": "Recovering: %s seconds remaining.",
   "message.wildercord.masters_art.aura": "This art needs %s aura.",

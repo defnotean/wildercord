@@ -5,28 +5,28 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.function.Supplier;
 
-/** Internal pursuit-only observation. Existing damage, guards, wards and post-hit restoration remain authoritative. */
+/** Scoped observation for Master spellbreaks and Driving Cut. Damage and every defence remain authoritative. */
 public final class MasterHitReceipt {
 	private MasterHitReceipt() {}
 	private static final ThreadLocal<Pending> CURRENT = new ThreadLocal<>();
 
-	record Result(float netHealthLost, float healthLost, float absorptionLost, boolean observed) {
-		boolean damaging() { return observed && MasterPursuitRules.resolvedDamage(healthLost, absorptionLost); }
+	public record Result(float netHealthLost, float healthLost, float absorptionLost, boolean observed) {
+		public boolean damaging() { return observed && MasterPursuitRules.resolvedDamage(healthLost, absorptionLost); }
 	}
 
 	private static final class Pending {
-		final SwordMaster master;
+		final LivingEntity attacker;
 		final LivingEntity target;
 		DamageSource source;
 		float healthLost, absorptionLost;
 		boolean observed, observing;
-		Pending(SwordMaster master, LivingEntity target) { this.master = master; this.target = target; }
+		Pending(LivingEntity attacker, LivingEntity target) { this.attacker = attacker; this.target = target; }
 	}
 
 	/** Bind the exact projected source before element reactions can trigger other nested damage. */
-	static void source(AuraFighter master, LivingEntity target, DamageSource source) {
+	public static void source(LivingEntity attacker, LivingEntity target, DamageSource source) {
 		Pending pending = CURRENT.get();
-		if (pending != null && pending.master == master && pending.target == target && pending.source == null) pending.source = source;
+		if (pending != null && pending.attacker == attacker && pending.target == target && pending.source == null) pending.source = source;
 	}
 
 	/** An opaque token used only by the native Player.actuallyHurt observation hook. */
@@ -58,8 +58,8 @@ public final class MasterHitReceipt {
 	}
 
 	/** Nested measurements have their own scope; rejected hits cannot inherit another receipt, even after exceptions. */
-	static Result measure(SwordMaster master, LivingEntity target, Supplier<Float> damage) {
-		Pending previous = CURRENT.get(), pending = new Pending(master, target);
+	public static Result measure(LivingEntity attacker, LivingEntity target, Supplier<Float> damage) {
+		Pending previous = CURRENT.get(), pending = new Pending(attacker, target);
 		CURRENT.set(pending);
 		try {
 			float net = damage.get();

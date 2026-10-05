@@ -23,13 +23,18 @@ public final class CastLock {
 	/** Players get a two-second maximum cast lock followed by two seconds to respond. */
 	public static final int PLAYER_LOCK_CAP = 40, PLAYER_RECOVERY = 40;
 
+	/** Read-only admission, including the response window after a seal. Does not spend or clear it. */
+	public static boolean canLock(ServerPlayer player) {
+		var previous = PLAYER_WINDOWS.get(player);
+		return previous == null || player.level().getGameTime() >= previous.readyAt;
+	}
+
 	/** Locks {@code who} out of casting for {@code ticks}, and cuts whatever they were casting short. */
 	public static void lock(LivingEntity who, int ticks) {
 		if (who instanceof dev.wildercord.aura.world.SwordMaster master && !master.acceptsInfluence(Effects.applying())) return;
 		if (who instanceof ServerPlayer player) {
+			if (!canLock(player)) return;
 			long now = who.level().getGameTime();
-			var previous = PLAYER_WINDOWS.get(player);
-			if (previous != null && now < previous.readyAt) return;
 			int duration = Math.clamp(ticks, 1, PLAYER_LOCK_CAP);
 			PLAYER_WINDOWS.put(player, new PlayerWindow(now + duration, now + duration + PLAYER_RECOVERY));
 			interrupt(who, duration);

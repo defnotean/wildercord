@@ -253,6 +253,7 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 		new EmberAfterburnChecks().run(context);
 		new MasterPursuitChecks().run(context);
 		new MasterHitReceiptChecks().run(context);
+		new CastHitReceiptConsistencyChecks().run(context);
 	}
 
 	private void assertSafeDeparture(ServerPlayer player) {

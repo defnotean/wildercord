@@ -266,6 +266,7 @@ public final class AuraCombat {
 		}
 		ServerLevel level = player.level();
 		DamageSource source = level.damageSources().source(Aura.DAMAGE, player, player);
+		dev.wildercord.aura.world.MasterHitReceipt.source(player, target, source);
 		double bonus = AuraElements.bonus(player, target, source, Aura.element(player)) * Math.max(0, extra);
 		double amount = damage;
 		if (target instanceof Player) {
