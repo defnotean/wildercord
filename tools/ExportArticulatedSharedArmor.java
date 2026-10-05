@@ -2,6 +2,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.ArticulatedCombatPose.Joint;
 import dev.wildercord.aura.MastersArtRules;
+import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.client.combat.ArticulatedArmorGeometry;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -23,7 +24,8 @@ public final class ExportArticulatedSharedArmor {
 	private ExportArticulatedSharedArmor() {}
 
 	public static void main(String[] args) {
-		if (args.length != 0) throw new IllegalArgumentException("This exporter has a fixed, bounded shared-player keyframe domain");
+		boolean openingStyles = args.length == 1 && args[0].equals("--opening-styles");
+		if (args.length != 0 && !openingStyles) throw new IllegalArgumentException("Use the default shared-player domain or --opening-styles");
 		var roots = EntityModelSet.vanilla();
 		StringBuilder json = new StringBuilder(4_000_000);
 		json.append("{\"schema\":1,\"label\":\"OFFLINE SOURCE-DRIVEN PREVIEW, NOT GAME FOOTAGE\",\"units\":\"model_pixels\",\"frames\":[");
@@ -35,17 +37,23 @@ public final class ExportArticulatedSharedArmor {
 			var viewModel = new ArticulatedArmorGeometry(roots.bakeLayer(layers.chest()), EquipmentSlot.CHEST, true);
 			if (viewModel.mesh().controlPoints().stream().anyMatch(point -> !point.region().arm()))
 				throw new AssertionError("First-person armor contains a non-arm region");
-			for (boolean left : new boolean[] {false, true}) for (int move : new int[] {1, 2}) {
-				var rule = MastersArtRules.move(move);
-				float[] ages = move == 1 ? new float[] {5.25F, 8, 12, 21} : new float[] {4, 6, 9.5F, 16};
+			for (boolean left : new boolean[] {false, true}) for (int move : openingStyles ? new int[] {3, 4} : new int[] {1, 2}) {
+				var style = openingStyles ? MastersStyleRules.animation(move) : null;
+				if (openingStyles && (style == null || style.windup() != 6 || style.recovery() != 12))
+					throw new AssertionError("Opening-style preview requires the accepted 6/12 animation window");
+				var rule = openingStyles ? null : MastersArtRules.move(move);
+				int windup = openingStyles ? style.windup() : rule.windup();
+				int recovery = openingStyles ? style.recovery() : rule.recovery();
+				String clip = openingStyles ? style.art() : rule.id();
+				float[] ages = !openingStyles && move == 1 ? new float[] {5.25F, 8, 12, 21} : new float[] {4, 6, 9.5F, 16};
 				for (float age : ages) {
-					var pose = ArticulatedCombatPose.samplePlayer(move, age, rule.windup(), rule.recovery(), left);
+					var pose = ArticulatedCombatPose.samplePlayer(move, age, windup, recovery, left);
 					var view = ArticulatedCombatPose.view(pose, left);
 					var palette = ArticulatedArmorGeometry.Palette.from(joint -> new Matrix4f().set(pose.world(joint).values()));
 					var viewPalette = ArticulatedArmorGeometry.Palette.from(joint -> new Matrix4f().set(view.world(joint).values()));
 					if (comma) json.append(','); comma = true;
 					json.append("{\"variant\":\"").append(slim ? "slim" : "wide").append("\",\"left\":").append(left)
-						.append(",\"move\":").append(move).append(",\"clip\":\"").append(rule.id()).append("\",\"age\":").append(age)
+						.append(",\"move\":").append(move).append(",\"clip\":\"").append(clip).append("\",\"age\":").append(age)
 						.append(",\"weight\":").append(pose.weight()).append(",\"phase\":\"").append(pose.phase()).append("\",\"bodyWorld\":[");
 					for (Joint joint : Joint.values()) { if (joint.ordinal() > 0) json.append(','); matrix(json, palette.matrix(joint)); }
 					json.append("],\"viewWorld\":[");

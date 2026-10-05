@@ -46,6 +46,7 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		ArticulatedSharedPlayerChecks.body(context);
+		ArticulatedOpeningStyleChecks.body(context);
 		String previous = System.getProperty(ArticulatedCombat.ENABLE_PROPERTY);
 		CameraType camera = context.computeOnClient(mc -> mc.options.getCameraType());
 		HumanoidArm hand = context.computeOnClient(mc -> mc.options.mainHand().get());

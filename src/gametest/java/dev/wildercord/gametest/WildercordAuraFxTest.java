@@ -227,9 +227,12 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			shot(context, "aurafx_body_" + stages[s - 1] + "_" + method + "_rest");
 			int motes = context.computeOnClient(mc -> AuraFxClient.counts()[5]);
 			fight(world, 400);
-			context.waitTicks(30);
+			if (s == AuraRules.GLOW) AuraBodyMoteProbe.observeFight(context);
+			else context.waitTicks(30);
 			float fighting = context.computeOnClient(mc -> AuraFxClient.bodyIntensity(mc.player, mc.level.getGameTime()));
 			check(Math.abs(fighting - AuraFxRules.FIGHTING) < 0.01F, stages[s - 1] + ": in a fight it should flare (" + fighting + ")");
+			// Glow is sparse: observe the real RNG, then prove reject/admit through the original native emitter.
+			if (s == AuraRules.GLOW) AuraBodyMoteProbe.proveBranches(context);
 			shot(context, "aurafx_body_" + stages[s - 1] + "_" + method + "_fight");
 			int after = context.computeOnClient(mc -> AuraFxClient.counts()[5]);
 			check(after > motes, stages[s - 1] + ": in third person the body should let off motes and wisps (" + (after - motes) + ")");

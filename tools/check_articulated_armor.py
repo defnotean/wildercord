@@ -18,6 +18,7 @@ DEFAULT_VERIFY = Path('/workspace/shared/wildercord_compile_verification')
 SOURCES = [
     'src/main/java/dev/wildercord/aura/ArticulatedCombatPose.java',
     'src/main/java/dev/wildercord/aura/MastersArtRules.java',
+    'src/main/java/dev/wildercord/aura/MastersStyleRules.java',
     'src/main/java/dev/wildercord/aura/ArticulatedArmorMesh.java',
     'src/client/java/dev/wildercord/client/mixin/ModelPartChildrenAccessor.java',
     'src/client/java/dev/wildercord/client/combat/ArticulatedRig.java',
@@ -43,7 +44,9 @@ def sources() -> dict[str, str]:
     return {name: sha(ROOT / name) for name in SOURCES + INSPECTED}
 
 
-def run(out: Path, verify: Path, shared_player: bool = False) -> None:
+def run(out: Path, verify: Path, shared_player: bool = False, opening_styles: bool = False) -> None:
+    if shared_player and opening_styles:
+        raise ValueError('Select one bounded geometry domain')
     out.mkdir(parents=True, exist_ok=True)
     if any(out.iterdir()):
         raise ValueError('Use a fresh empty output directory to preserve prior evidence')
@@ -76,7 +79,7 @@ def run(out: Path, verify: Path, shared_player: bool = False) -> None:
                  *[str(ROOT / name) for name in SOURCES if name.endswith('.java')]]]
     report = {'kind': 'offline source geometry', 'native': 'not run', 'mixinRuntime': 'not run',
               'source_before': before, 'dependency_sha256': hashes, 'passed': False,
-              'geometry_domain': ['rising_break', 'driving_cut'] if shared_player else ['spellcut'],
+              'geometry_domain': ['kindling_draw', 'frostbite'] if opening_styles else ['rising_break', 'driving_cut'] if shared_player else ['spellcut'],
               'palette_input_domain': 'existing immutable-palette and equipment-input regressions'}
     try:
         with (out / 'compile.log').open('w') as log:
@@ -85,8 +88,8 @@ def run(out: Path, verify: Path, shared_player: bool = False) -> None:
                                ('CheckArticulatedArmorGeometry', 'geometry.json'), ('CheckArticulatedArmorView', 'view.json'),
                                ('CheckArticulatedArmorPalette', 'palette.json')]:
             command = [str(java / 'java'), '-Xmx2G', '-cp', str(classes) + os.pathsep + cp, main]
-            if shared_player and main in ['CheckArticulatedArmorGeometry', 'CheckArticulatedArmorView']:
-                command.append('--shared-player')
+            if (shared_player or opening_styles) and main in ['CheckArticulatedArmorGeometry', 'CheckArticulatedArmorView']:
+                command.append('--opening-styles' if opening_styles else '--shared-player')
             commands.append(command)
             with (out / filename).open('w') as result, (out / (main + '.log')).open('w') as log:
                 subprocess.run(command, cwd=ROOT, stdout=result, stderr=log, check=True)
@@ -110,9 +113,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--verification', type=Path, default=DEFAULT_VERIFY)
-    parser.add_argument('--shared-player', action='store_true', help='Audit Rising Break and Driving Cut geometry instead of the default Spellcut domain')
+    domain = parser.add_mutually_exclusive_group()
+    domain.add_argument('--shared-player', action='store_true', help='Audit Rising Break and Driving Cut geometry instead of the default Spellcut domain')
+    domain.add_argument('--opening-styles', action='store_true', help='Audit only Kindling Draw and Frostbite (presentation IDs 3 and 4) in their accepted 6/12 windows')
     args = parser.parse_args()
-    run(args.out.resolve(), args.verification.resolve(), args.shared_player)
+    run(args.out.resolve(), args.verification.resolve(), args.shared_player, args.opening_styles)
 
 
 if __name__ == '__main__':

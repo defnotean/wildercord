@@ -1,8 +1,10 @@
 package dev.wildercord.gametest;
 
+import dev.wildercord.Wildercord;
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.MastersArts;
+import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,6 +23,26 @@ public final class WildercordMastersArtsTest implements FabricClientGameTest {
 
 	private static void check(boolean ok, String message) {
 		if (!ok) throw new AssertionError(message);
+	}
+
+	private String snapshot(ServerPlayer player) {
+		return "tick=" + player.level().getGameTime() + " serverTick=" + player.level().getServer().getTickCount()
+			+ " aura=" + Aura.aura(player) + " health=" + target.getHealth() + " maxHealth=" + target.getMaxHealth()
+			+ " runebound=" + target.hasAttached(WildercordAttachments.RUNEBOUND)
+			+ " rolled=" + target.entityTags().contains("wildercord.rolled");
+	}
+
+	private void startRisingBreak(ServerPlayer player, String acceptedMessage) {
+		float beforeHealth = target.getHealth();
+		String before = snapshot(player);
+		Wildercord.LOGGER.info("[masters-arts] Rising Break before activation {}", before);
+		boolean accepted = MastersArts.activate(player, 1);
+		String after = snapshot(player);
+		Wildercord.LOGGER.info("[masters-arts] Rising Break after activation accepted={} {}", accepted, after);
+		String note = ": before={" + before + "}, after={" + after + "}";
+		check(accepted, acceptedMessage + note);
+		check(Aura.aura(player) == 80, "Accepted move pays its exact price before any hit" + note);
+		check(target.getHealth() == beforeHealth && target.getHealth() == 100, "Windup deals no immediate damage" + note);
 	}
 
 	@Override
@@ -43,14 +65,18 @@ public final class WildercordMastersArtsTest implements FabricClientGameTest {
 				mob.setNoAi(true);
 				mob.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100);
 				mob.setHealth(100);
+				// This ordinary target must not randomly become Runebound and refill above its authored health on load.
+				mob.addTag("wildercord.rolled");
 				mob.snapTo(0.5, 100, 2.8, 180, 0);
-				player.level().addFreshEntity(mob);
+				check(player.level().addFreshEntity(mob), "Combat target enters the level");
 				target = mob;
+				String admitted = snapshot(player);
+				Wildercord.LOGGER.info("[masters-arts] ordinary target admission {}", admitted);
+				check(target.getHealth() == 100 && target.getMaxHealth() == 100 && !target.hasAttached(WildercordAttachments.RUNEBOUND),
+					"Entity admission preserves the exact ordinary target baseline: " + admitted);
 				check(!MastersArts.activate(player, -1) && !MastersArts.activate(player, 999), "Invalid packet ordinals refuse");
 				check(Aura.aura(player) == 100, "Invalid packets charge nothing");
-				check(MastersArts.activate(player, 1), "Form unlocks Rising Break");
-				check(Aura.aura(player) == 80, "Accepted move pays its exact price before any hit");
-				check(target.getHealth() == 100, "Windup deals no immediate damage");
+				startRisingBreak(player, "Form unlocks Rising Break");
 				check(!MastersArts.activate(player, 1) && !MastersArts.activate(player, 2), "Rest cannot be bypassed by resending or switching moves");
 			});
 			context.waitTicks(12);
@@ -60,7 +86,7 @@ public final class WildercordMastersArtsTest implements FabricClientGameTest {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				target.setHealth(100);
 				player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("ember", 4, 1800, 100, 0));
-				check(MastersArts.activate(player, 1), "Rest ends and a second move can start");
+				startRisingBreak(player, "Rest ends and a second move can start");
 				player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
 			});
 			context.waitTicks(12);

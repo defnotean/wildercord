@@ -3,6 +3,7 @@ import dev.wildercord.aura.ArticulatedArmorMesh;
 import dev.wildercord.aura.ArticulatedArmorMesh.Region;
 import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.MastersArtRules;
+import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.aura.ArticulatedCombatPose.Joint;
 import dev.wildercord.client.combat.ArticulatedArmorGeometry;
 import dev.wildercord.client.combat.ArticulatedRig;
@@ -62,6 +63,7 @@ public final class CheckArticulatedArmorGeometry {
 
 	public static void main(String[] args) {
 		boolean shared = args.length == 1 && args[0].equals("--shared-player");
+		boolean openingStyles = args.length == 1 && args[0].equals("--opening-styles");
 		var roots = EntityModelSet.vanilla();
 		Metrics total = new Metrics();
 		StringBuilder variants = new StringBuilder();
@@ -76,13 +78,19 @@ public final class CheckArticulatedArmorGeometry {
 			}
 			var viewModel = new ArticulatedArmorGeometry(roots.bakeLayer(layers.chest()), EquipmentSlot.CHEST, true);
 			if (viewModel.mesh().controlPoints().stream().anyMatch(point -> !point.region().arm())) throw new AssertionError("Non-arm first-person armor");
-			for (boolean left : new boolean[] {false, true}) for (int move : shared ? new int[] {1, 2} : new int[] {0}) {
+			for (boolean left : new boolean[] {false, true}) for (int move : openingStyles ? new int[] {3, 4} : shared ? new int[] {1, 2} : new int[] {0}) {
 				Metrics metrics = new Metrics();
 				var rig = new ArticulatedRig(slim, false);
-				var rule = MastersArtRules.move(move);
-				for (int tick = 0; tick <= (rule.windup() + rule.recovery()) * 8; tick++) {
+				var style = openingStyles ? MastersStyleRules.animation(move) : null;
+				if (openingStyles && (style == null || style.windup() != 6 || style.recovery() != 12))
+					throw new AssertionError("Opening-style audit requires the accepted 6/12 animation window");
+				var rule = openingStyles ? null : MastersArtRules.move(move);
+				int windup = openingStyles ? style.windup() : rule.windup();
+				int recovery = openingStyles ? style.recovery() : rule.recovery();
+				String clip = openingStyles ? style.art() : rule.id();
+				for (int tick = 0; tick <= (windup + recovery) * 8; tick++) {
 					metrics.move = move; metrics.age = tick / 8F; metrics.firstPerson = false;
-					var pose = ArticulatedCombatPose.samplePlayer(move, tick / 8F, rule.windup(), rule.recovery(), left);
+					var pose = ArticulatedCombatPose.samplePlayer(move, tick / 8F, windup, recovery, left);
 					var palette = ArticulatedArmorGeometry.Palette.from(joint -> new Matrix4f().set(pose.world(joint).values()));
 					rig.apply(pose::local);
 					Map<EquipmentSlot, List<Face>> snapshots = new EnumMap<>(EquipmentSlot.class);
@@ -103,7 +111,9 @@ public final class CheckArticulatedArmorGeometry {
 				}
 				if (!variants.isEmpty()) variants.append(',');
 				variants.append("{");
-				if (shared) variants.append("\"move\":").append(move).append(",\"clip\":\"").append(rule.id()).append("\",");
+				if (shared || openingStyles) variants.append("\"move\":").append(move).append(",\"clip\":\"").append(clip).append("\",");
+				if (openingStyles) variants.append("\"windup\":").append(windup).append(",\"recovery\":").append(recovery)
+					.append(",\"sampledFrames\":").append((windup + recovery) * 8 + 1).append(',');
 				variants.append("\"slim\":").append(slim).append(",\"left\":").append(left).append(",\"metrics\":").append(metrics.json()).append('}');
 				total.add(metrics);
 			}

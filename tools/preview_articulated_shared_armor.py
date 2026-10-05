@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 JAVA_SOURCES = [
     'src/main/java/dev/wildercord/aura/ArticulatedCombatPose.java',
     'src/main/java/dev/wildercord/aura/MastersArtRules.java',
+    'src/main/java/dev/wildercord/aura/MastersStyleRules.java',
     'src/main/java/dev/wildercord/aura/ArticulatedArmorMesh.java',
     'src/client/java/dev/wildercord/client/mixin/ModelPartChildrenAccessor.java',
     'src/client/java/dev/wildercord/client/combat/ArticulatedRig.java',
@@ -58,7 +59,7 @@ def sources():
     return {name: base.sha(ROOT / name) for name in SOURCE_PATHS}
 
 
-def export(out, verify, report):
+def export(out, verify, report, opening_styles=False):
     toolchain = json.loads((verify / 'toolchain_manifest.json').read_text())
     java = Path(toolchain['java']['directory']) / 'bin'
     if not toolchain['java']['checksum_verified'] or not toolchain['java']['version'].startswith('25.'):
@@ -93,8 +94,8 @@ def export(out, verify, report):
     with (out / 'export.log').open('w') as log:
         subprocess.run(commands[0], cwd=ROOT, stdout=log, stderr=log, check=True)
         for main, filename, args in [('ExportArticulatedGeometry', 'geometry.json', []),
-                                     ('ExportArticulatedPose', 'poses.json', ['--shared-player']),
-                                     ('ExportArticulatedSharedArmor', 'armor.json', [])]:
+                                     ('ExportArticulatedPose', 'poses.json', ['--opening-styles' if opening_styles else '--shared-player']),
+                                     ('ExportArticulatedSharedArmor', 'armor.json', ['--opening-styles'] if opening_styles else [])]:
             command = [str(java / 'java'), '-Xmx2G', '-cp', str(classes) + os.pathsep + cp, main, *args]
             commands.append(command)
             with (out / filename).open('w') as stream:
@@ -159,7 +160,7 @@ def combined(preview, record, textures, first, placement=0):
     return meshes
 
 
-def render(out, verify, report):
+def render(out, verify, report, opening_styles=False):
     preview = base.Preview(out, verify)
     exported = json.loads((out / 'armor.json').read_text())
     records = {(r['clip'], r['variant'], r['left'], r['age']): r for r in exported['frames']}
@@ -170,7 +171,20 @@ def render(out, verify, report):
     report['skinAndSwordAssets'] = {key: value for key, value in preview.asset_sources.items() if key != 'master'}
     report['geometryParity'] = preview.geom['verification']
     report['smokeChecks'], report['sheets'] = [], []
-    for clip, ages in [('rising_break', [5.25, 8, 12, 21]), ('driving_cut', [4, 6, 9.5, 16])]:
+    clips = [('kindling_draw', [4, 6, 9.5, 16]), ('frostbite', [4, 6, 9.5, 16])] if opening_styles else [
+        ('rising_break', [5.25, 8, 12, 21]), ('driving_cut', [4, 6, 9.5, 16])]
+    if opening_styles:
+        expected = {(clip, variant, left, age) for clip, ages in clips for variant in ['wide', 'slim']
+                    for left in [False, True] for age in ages}
+        if set(records) != expected or any(r['move'] != {'kindling_draw': 3, 'frostbite': 4}[r['clip']]
+                                           for r in exported['frames']):
+            raise ValueError('Opening-style armor export does not match the bounded presentation IDs 3/4 domain')
+        for clip in preview.poses['clips']:
+            if clip['tell'] != 6 or clip['recovery'] != 12:
+                raise ValueError('Opening-style pose export changed the accepted 6/12 window')
+        report['presentationDomain'] = [{'animation': 3, 'art': 'kindling_draw', 'windup': 6, 'recovery': 12},
+                                        {'animation': 4, 'art': 'frostbite', 'windup': 6, 'recovery': 12}]
+    for clip, ages in clips:
         for first, stress in [(False, False), (True, False), (True, True)]:
             cells = []
             for variant in ['wide', 'slim']:
@@ -224,6 +238,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--verification', type=Path, default=base.DEFAULT_VERIFY)
+    parser.add_argument('--opening-styles', action='store_true', help='Preview only Kindling Draw and Frostbite (presentation IDs 3 and 4) in their accepted 6/12 windows')
     args = parser.parse_args()
     out, verify = args.out.resolve(), args.verification.resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -232,8 +247,8 @@ def main():
     before = sources()
     report = {'label': LABEL, 'sourceSha256': before, 'limits': LIMITS, 'passed': False}
     try:
-        export(out, verify, report)
-        render(out, verify, report)
+        export(out, verify, report, args.opening_styles)
+        render(out, verify, report, args.opening_styles)
         report['passed'] = True
     finally:
         report['sourceAfterSha256'] = sources()

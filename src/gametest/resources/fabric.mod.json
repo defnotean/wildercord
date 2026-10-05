@@ -295,7 +295,8 @@
     "bolt-step-gametest.mixins.json",
     "moonreed-source-gametest.mixins.json",
     "wetland-generation-gametest.mixins.json",
-    "articulated-shared-receipt-gametest.mixins.json"
+    "articulated-shared-receipt-gametest.mixins.json",
+    "aura-body-motes-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

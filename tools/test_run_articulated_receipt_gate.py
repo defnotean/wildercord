@@ -29,7 +29,7 @@ class NativeReceiptGateTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
-    def generate(self, environment, *, nonce=None, phase_miss=False, count=120):
+    def generate(self, environment, *, nonce=None, phase_miss=False, active_miss=False, paused=False, frozen=False, count=120):
         run_id = str(uuid.uuid4())
         directory = self.receipt_root / run_id
         directory.mkdir(parents=True)
@@ -41,6 +41,8 @@ class NativeReceiptGateTests(unittest.TestCase):
         for sequence, trial in enumerate(sorted(gate.planned_trials())[:count], start=1):
             requested = trial.rsplit("_requested_", 1)[1].upper()
             phase = "ACTIVE" if phase_miss else requested
+            if active_miss and requested == "ACTIVE":
+                phase = "RECOVERY"
             first = "_hud_" in trial
             model_id = sequence + 1000
             state_id = sequence + 2000
@@ -62,14 +64,14 @@ class NativeReceiptGateTests(unittest.TestCase):
             identity = {"runId": run_id, "captureSequence": sequence, "trial": trial, "requestedPhase": requested}
             record = {"schemaVersion": 1, "origin": "fabric_test_screenshot", "identity": identity,
                       "nativeLaunchNonce": launch_nonce, "verified": True, "failures": [], "stages": STAGES,
-                      "renderedPhase": phase, "requestedPhaseObserved": requested == phase, "unpausedPhaseCoverage": requested == phase,
+                      "renderedPhase": phase, "requestedPhaseObserved": requested == phase, "unpausedPhaseCoverage": requested == phase and not paused and not frozen,
                       "nativePixelReviewRequired": True, "exactImpactPixelCoverage": "unverified", "callbackPixels": pixels,
                       "image": {"returnedPath": str(image), "relativeImagePath": str(image.relative_to(self.game)),
                                 "pngBytes": len(image_bytes), "pngSha256": hashlib.sha256(image_bytes).hexdigest(), "decodedPixels": pixels},
                       "copy": {"identity": identity, "extractionSequence": 10000 + 3 * sequence,
                                "renderSequence": 10001 + 3 * sequence, "copySequence": 10002 + 3 * sequence,
                                "target": {"targetGeneration": 1, "textureGeneration": 2, "width": 2, "height": 2, "mipLevel": 0},
-                               "observation": {"nativeLaunchNonce": launch_nonce, "firstPerson": str(first).lower(), "paused": "false", "frozen": "false",
+                               "observation": {"nativeLaunchNonce": launch_nonce, "firstPerson": str(first).lower(), "paused": str(paused).lower(), "frozen": str(frozen).lower(),
                                                "ownerId": "7", "acceptedStartTick": "42", "acceptedMove": str(move), "renderTargetGeneration": "1", "renderTextureGeneration": "2"},
                                "passes": passes}}
             (directory / f"{sequence:06d}-receipt-1.json").write_text(json.dumps(record))
@@ -105,6 +107,8 @@ class NativeReceiptGateTests(unittest.TestCase):
         self.assertEqual(self.run_case(), 0)
         report = self.report()
         self.assertTrue(report["gatePassed"])
+        self.assertTrue(report["phaseCoverageVerified"])
+        self.assertEqual(report["phaseCoverageMisses"], [])
         self.assertTrue(report["provenance"]["waitedForExit"])
         self.assertEqual(report["verifiedImages"], 120)
         self.assertEqual(report["package"]["recordCount"], 120)
@@ -117,10 +121,44 @@ class NativeReceiptGateTests(unittest.TestCase):
         self.assertEqual(len(list((self.game / "screenshots").glob("*.png"))), 120)
 
     def test_phase_misses_remain_explicit(self):
-        self.assertEqual(self.run_case(lambda env: self.generate(env, phase_miss=True)), 0)
-        observations = self.report()["observations"]
+        self.assertEqual(self.run_case(lambda env: self.generate(env, phase_miss=True)), 1)
+        report = self.report()
+        self.assertFalse(report["gatePassed"])
+        self.assertFalse(report["phaseCoverageVerified"])
+        self.assertTrue(report["associationVerified"])
+        self.assertTrue(report["nativeSucceeded"])
+        self.assertEqual(report["verifiedImages"], 120)
+        self.assertEqual(report["package"]["recordCount"], 120)
+        self.assertEqual(len(report["phaseCoverageMisses"]), 80)
+        self.assertEqual(sum("phase coverage miss" in error for error in report["errors"]), 80)
+        observations = report["observations"]
         self.assertEqual(sum(not entry["requestedPhaseObserved"] for entry in observations), 80)
         self.assertEqual({entry["renderedPhase"] for entry in observations}, {"ACTIVE"})
+
+    def test_measured_active_to_recovery_miss_fails_without_losing_valid_associations(self):
+        self.assertEqual(self.run_case(lambda env: self.generate(env, active_miss=True)), 1)
+        report = self.report()
+        self.assertTrue(report["associationVerified"])
+        self.assertTrue(report["nativeSucceeded"])
+        self.assertTrue(report["package"]["complete"])
+        self.assertEqual(report["verifiedImages"], 120)
+        self.assertEqual(len(report["phaseCoverageMisses"]), 40)
+        self.assertEqual({(entry["requestedPhase"], entry["renderedPhase"]) for entry in report["phaseCoverageMisses"]}, {("ACTIVE", "RECOVERY")})
+        self.assertFalse(report["gatePassed"])
+        self.assertFalse(report["phaseCoverageVerified"])
+
+    def test_paused_phase_matches_do_not_satisfy_final_gate(self):
+        self.assertEqual(self.run_case(lambda env: self.generate(env, paused=True)), 1)
+        self.assertTrue(self.report()["associationVerified"])
+        self.assertEqual(len(self.report()["phaseCoverageMisses"]), 120)
+        self.assertTrue(all(entry["requestedPhaseObserved"] for entry in self.report()["phaseCoverageMisses"]))
+        self.assertTrue(all("paused or frozen" in error for error in self.report()["errors"]))
+
+    def test_frozen_phase_matches_do_not_satisfy_final_gate(self):
+        self.assertEqual(self.run_case(lambda env: self.generate(env, frozen=True)), 1)
+        self.assertTrue(self.report()["associationVerified"])
+        self.assertEqual(len(self.report()["phaseCoverageMisses"]), 120)
+        self.assertFalse(self.report()["phaseCoverageVerified"])
 
     def test_native_failure_remains_nonzero_with_complete_receipts(self):
         self.assertEqual(self.run_case(exit_code=9), 1)
@@ -289,6 +327,7 @@ class NativeReceiptGateTests(unittest.TestCase):
         self.assertEqual(self.run_case(oversized), 1)
         report = self.report()
         self.assertFalse(report["gatePassed"])
+        self.assertFalse(report["phaseCoverageVerified"])
         self.assertTrue(report["package"]["complete"])
         self.assertTrue(report["errorDetailsBounded"])
         self.assertLessEqual((self.output / "association-report.json").stat().st_size, gate.MAX_REPORT_BYTES)

@@ -154,8 +154,9 @@ logs remain where the existing full evidence upload expects them. PNGs are never
 copied into, resized for, or rewritten by this metadata artifact.
 
 Association or native failure exits nonzero. The report distinguishes image
-association from `gatePassed`, which additionally requires native success. Phase
-misses remain reported misses and do not fabricate missing phase or skin
+association from `gatePassed`, which additionally requires native success and
+`phaseCoverageVerified` for all 120 planned unpaused, unfrozen phases. Phase
+misses fail this stricter gate, remain reported misses and do not fabricate missing phase or skin
 coverage. Visual review and exact impact-pixel proof remain separate requirements.
 
 ### Ordinary unwrapped runs
@@ -173,3 +174,22 @@ passes, original PNG association, repeated frames, delayed callbacks, pause and
 resume, replacement/cancellation, and original screenshot failures. The pure
 checks and descriptor/compile review do not establish GPU behavior. No production
 renderer or shared-player screenshot fixture changes are needed for registration.
+
+### Native observation and capture correction
+
+In ae9d57d8's PR run 37384979391, all four native suites and all 120 image
+associations passed. The actual checkout was PR merge `31ba23fbb0feb337c287336a76e99373805805ee`;
+its tree `f22ae8470ba51701511706cdc1428f8fbe605a13` exactly equals the feature head's tree.
+All 40 requested ACTIVE Rising Break/Driving Cut images actually rendered RECOVERY;
+the other 80 windup/recovery requests matched. Only slim live skins were observed.
+The complete receipt artifact is 11379853489, SHA-256
+`0a9f7ebf0b19644f2304bd51f3dc9bed28f29e5508563b5cc6b577965492256e`.
+
+Receipts and the pinned Fabric API establish why: default screenshot delta ticks
+are 1.0, while the fixture admitted its state at 0.5. At the accepted impact tick,
+1.0 projects into recovery. The fixture now explicitly uses the supported
+`withDeltaTicks(0.5F)` option, sharing that constant with its state extraction and
+logged age. The observer, game time, accepted timeline, pose and original 120-trial
+matrix are unchanged. API/projection regressions reproduce the former miss and
+check the correction; the runner now separately requires actual phase coverage.
+A fresh native run is still required before claiming the corrected ACTIVE images.

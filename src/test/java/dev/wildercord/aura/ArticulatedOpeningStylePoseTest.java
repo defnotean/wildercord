@@ -1,38 +1,41 @@
 package dev.wildercord.aura;
 
 import org.junit.jupiter.api.Test;
+import java.security.MessageDigest;
+import java.util.HexFormat;
+import java.nio.ByteBuffer;
 
 import static dev.wildercord.aura.ArticulatedCombatPose.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /** Geometry/clock contracts only. Native body, armor and HUD pixels require their own captures. */
-class ArticulatedSharedPlayerPoseTest {
+class ArticulatedOpeningStylePoseTest {
 	private static final float EPS = .0008F;
-	private static final int[] MOVES = {RISING_BREAK, DRIVING_CUT};
+	private static final int[] MOVES = {KINDLING_DRAW, FROSTBITE};
 
 	@Test
-	void playerAndNpcOrdinalsStaySeparateAndSpellcutRemainsBitIdentical() {
-		for (int move : new int[] {-1, 5, 7, 8, Integer.MAX_VALUE}) {
+	void onlyTwoExistingFirstFormsJoinThePlayerBackend() {
+		for (int move : new int[] {KINDLING_DRAW, FROSTBITE}) {
+			assertTrue(supportsPlayer(move));
+			var rule = MastersStyleRules.animation(move);
+			assertEquals(move == KINDLING_DRAW ? "kindling_draw" : "frostbite", rule.art());
+			assertEquals(MastersStyleRules.TargetPolicy.ACTIVE_CONE, rule.targets());
+			assertNull(MastersArtRules.move(move), "Style input remains the existing sword string, never a new shared key");
+		}
+		for (int move : new int[] {-1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, Integer.MAX_VALUE}) {
 			assertFalse(supportsPlayer(move));
-			assertSame(NONE, samplePlayer(move, 5, 8, 18, false));
+			assertSame(NONE, samplePlayer(move, 5, 6, 12, false));
 		}
-		assertTrue(supportsMaster(MASTER_SWEEP));
-		assertFalse(supportsMaster(DRIVING_CUT));
-		assertSame(NONE, sampleSpellcut(RISING_BREAK, 5, 8, 18, false));
-		assertNotEquals(samplePlayer(RISING_BREAK, 8, 8, 18, false).local(Joint.RIGHT_UPPER_ARM),
-			sampleMaster(MASTER_SWEEP, 8, 8, 1, 18, false).local(Joint.RIGHT_UPPER_ARM));
-		for (boolean left : new boolean[] {false, true}) for (float age = -1; age <= 17; age += .125F) {
-			Pose expected = sampleSpellcut(SPELLCUT, age, 4, 12, left), actual = samplePlayer(SPELLCUT, age, 4, 12, left);
-			for (Joint joint : Joint.values()) assertArrayEquals(expected.world(joint).values(), actual.world(joint).values());
-		}
+		assertFalse(supportsMaster(KINDLING_DRAW));
+		assertFalse(supportsMaster(FROSTBITE));
 	}
 
 	@Test
 	void acceptedWindowsReleaseExactlyOnceAndNeverExtendExpiry() {
 		for (int move : MOVES) {
-			var rule = MastersArtRules.move(move);
-			assertEquals(move == RISING_BREAK ? 8 : 6, rule.windup());
-			assertEquals(move == RISING_BREAK ? 18 : 14, rule.recovery());
+			var rule = MastersStyleRules.animation(move);
+			assertEquals(6, rule.windup());
+			assertEquals(12, rule.recovery());
 			assertEquals(Phase.WINDUP, sample(move, rule.windup() - .001F, false).phase());
 			assertEquals(Phase.ACTIVE, sample(move, rule.windup(), false).phase());
 			assertEquals(Phase.ACTIVE, sample(move, rule.windup() + .999F, false).phase());
@@ -48,23 +51,25 @@ class ArticulatedSharedPlayerPoseTest {
 	}
 
 	@Test
-	void risingUncoilsUpwardWhileDrivingExtendsForwardThenRecoils() {
-		Pose low = sample(RISING_BREAK, 5.2F, false), high = sample(RISING_BREAK, 8, false);
-		assertTrue(low.local(Joint.PELVIS).y() > high.local(Joint.PELVIS).y() + .8F);
-		assertTrue(low.socket(false).transform(0, 0, 0).y() > high.socket(false).transform(0, 0, 0).y() + 12);
-		assertTrue(low.local(Joint.RIGHT_SHIN).rotation().x() > high.local(Joint.RIGHT_SHIN).rotation().x());
-		assertTrue(high.local(Joint.RIGHT_UPPER_ARM).rotation().x() < -2);
-		Pose chamber = sample(DRIVING_CUT, 3.9F, false), point = sample(DRIVING_CUT, 6, false), recoil = sample(DRIVING_CUT, 9.5F, false);
-		assertTrue(chamber.socket(false).transform(0, 0, 0).z() > point.socket(false).transform(0, 0, 0).z() + 8);
-		assertTrue(recoil.socket(false).transform(0, 0, 0).z() > point.socket(false).transform(0, 0, 0).z() + 2);
-		assertTrue(chamber.local(Joint.RIGHT_FOREARM).rotation().x() < point.local(Joint.RIGHT_FOREARM).rotation().x() - .7F);
-		assertTrue(recoil.local(Joint.RIGHT_FOREARM).rotation().x() < point.local(Joint.RIGHT_FOREARM).rotation().x() - .4F);
+	void lowDrawOpensAcrossTheBodyWhileFrostbiteClosesItsCompactGuard() {
+		Pose emberChamber = sample(KINDLING_DRAW, 3.9F, false), emberCut = sample(KINDLING_DRAW, 6, false);
+		Pose frostChamber = sample(FROSTBITE, 3.9F, false), frostCut = sample(FROSTBITE, 6, false), frostGuard = sample(FROSTBITE, 9, false);
+		assertTrue(emberChamber.socket(false).transform(0, 0, 0).x() < -6);
+		assertTrue(emberCut.socket(false).transform(0, 0, 0).x() > 3);
+		assertTrue(emberChamber.socket(false).transform(0, 0, 0).z() > 1, "Low hilt chambers beside the rear hip");
+		assertTrue(emberCut.socket(false).transform(0, 0, 0).y() > frostCut.socket(false).transform(0, 0, 0).y() + 3,
+			"Ember draws lower than the compact Rime cut");
+		assertTrue(Math.abs(emberCut.local(Joint.CHEST).rotation().y()) > Math.abs(frostCut.local(Joint.CHEST).rotation().y()) + .09F);
+		assertTrue(frostChamber.socket(false).transform(0, 0, 0).x() < frostCut.socket(false).transform(0, 0, 0).x() - 10);
+		assertTrue(frostGuard.local(Joint.RIGHT_FOREARM).rotation().x() < frostCut.local(Joint.RIGHT_FOREARM).rotation().x() - .5F,
+			"Rime folds the elbow to return to closed guard after its single cut");
+		assertNotEquals(view(emberCut, false).local(Joint.RIGHT_SOCKET), view(frostCut, false).local(Joint.RIGHT_SOCKET));
 	}
 
 	@Test
 	void everySampleKeepsFlatFeetRigidLinksContinuousWristsAndImmutableMatrices() {
 		for (int move : MOVES) for (boolean left : new boolean[] {false, true}) {
-			var rule = MastersArtRules.move(move);
+			var rule = MastersStyleRules.animation(move);
 			for (float age = 0; age <= rule.windup() + rule.recovery(); age += .0625F) {
 				Pose pose = sample(move, age, left);
 				for (Joint foot : new Joint[] {Joint.RIGHT_FOOT, Joint.LEFT_FOOT})
@@ -91,7 +96,7 @@ class ArticulatedSharedPlayerPoseTest {
 	@Test
 	void plantsStayFixedThroughoutFullWeightCommitment() {
 		for (int move : MOVES) {
-			var rule = MastersArtRules.move(move);
+			var rule = MastersStyleRules.animation(move);
 			Pose impact = sample(move, rule.windup(), false);
 			for (float age = rule.windup() * .65F; age <= rule.windup() + Math.min(4, rule.recovery() * .25F); age += .0625F) {
 				Pose pose = sample(move, age, false);
@@ -119,7 +124,7 @@ class ArticulatedSharedPlayerPoseTest {
 	@Test
 	void bodyAndViewJoinContinuouslyAtPhaseAndIdleEdgesEvenWithShortAcceptedWindows() {
 		for (int move : MOVES) for (boolean left : new boolean[] {false, true})
-			for (int tell : new int[] {1, MastersArtRules.move(move).windup(), 60}) for (int recovery : new int[] {1, 18, 120}) {
+			for (int tell : new int[] {1, MastersStyleRules.animation(move).windup(), 60}) for (int recovery : new int[] {1, 18, 120}) {
 				float follow = tell + Math.min(4, recovery * .25F);
 				for (float edge : new float[] {0, tell * .65F, tell, tell + 1, follow, tell + recovery}) {
 					Pose before = samplePlayer(move, edge - .0001F, tell, recovery, left), after = samplePlayer(move, edge + .0001F, tell, recovery, left);
@@ -150,8 +155,43 @@ class ArticulatedSharedPlayerPoseTest {
 		}
 	}
 
-	private static Pose sample(int move, float age, boolean left) {
+	@Test
+	void existingSharedBodyAndViewPalettesKeepTheirImmutableSourceFingerprints() throws Exception {
+		// Captured independently from ae9d57d8f3f631aeaf67ad11b2dc643da764d379 on Java 25.
+		// Includes every local/world transform, both sockets, phases, weight, origin and both
+		// hands at 0.125-tick intervals, including the complete windup and recovery edges.
+		String[] expected = {
+			"f8ccb270e9ff749e83e303bed335715ac7447188b750748f549b5b024b05487b",
+			"6a529359ce9e6608241c4e1fad9577ed85c84e4976b05f4f4096403f16d6f95e",
+			"219738e5e42a8d4bd2870e240ada26e44b48d23c468d03662d8ff4fe3b2ba5f2"
+		};
+		for (int move = SPELLCUT; move <= DRIVING_CUT; move++) assertEquals(expected[move], fingerprint(move));
+	}
+
+	private static String fingerprint(int move) throws Exception {
+		MessageDigest digest = MessageDigest.getInstance("SHA-256");
 		var rule = MastersArtRules.move(move);
+		for (boolean left : new boolean[] {false, true}) for (int step = 0; step <= (rule.windup() + rule.recovery()) * 8; step++) {
+			var pose = samplePlayer(move, step / 8F, rule.windup(), rule.recovery(), left);
+			var view = view(pose, left);
+			add(digest, pose.weight()); add(digest, pose.phase().ordinal());
+			add(digest, view.origin().x()); add(digest, view.origin().y()); add(digest, view.origin().z());
+			for (var joint : Joint.values()) {
+				var a = pose.local(joint); var b = view.local(joint);
+				for (float v : new float[] {a.x(), a.y(), a.z(), a.rotation().x(), a.rotation().y(), a.rotation().z(),
+					b.x(), b.y(), b.z(), b.rotation().x(), b.rotation().y(), b.rotation().z()}) add(digest, v);
+				for (float v : pose.world(joint).values()) add(digest, v);
+				for (float v : view.world(joint).values()) add(digest, v);
+			}
+		}
+		return HexFormat.of().formatHex(digest.digest());
+	}
+	private static void add(MessageDigest digest, float value) {
+		digest.update(ByteBuffer.allocate(4).putFloat(value).array());
+	}
+
+	private static Pose sample(int move, float age, boolean left) {
+		var rule = MastersStyleRules.animation(move);
 		return samplePlayer(move, age, rule.windup(), rule.recovery(), left);
 	}
 	private static void point(Vec3 a, Vec3 b, float tolerance) {

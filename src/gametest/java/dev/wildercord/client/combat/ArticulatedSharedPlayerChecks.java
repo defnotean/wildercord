@@ -42,12 +42,14 @@ final class ArticulatedSharedPlayerChecks {
 		new Viewport(1280, 960, 4), new Viewport(1920, 810, 3)
 	};
 	private static final int[] MOVES = {ArticulatedCombatPose.RISING_BREAK, ArticulatedCombatPose.DRIVING_CUT};
+	static final float CAPTURE_DELTA_TICKS = .5F;
 
 	static void body(ClientGameTestContext context) { capture(context, false); }
 	static void hud(ClientGameTestContext context) { capture(context, true); }
 
 	/** Every phase uses its own fresh real key input; screenshot latency cannot skip the next phase. */
 	private static void capture(ClientGameTestContext context, boolean hudMatrix) {
+		ArticulatedSharedCaptureTimingChecks.verify();
 		String[] properties = {ArticulatedCombat.ENABLE_PROPERTY, ArticulatedCombat.STABLE_CAMERA_PROPERTY,
 			ArticulatedArmorRenderer.ENABLE_PROPERTY, ArticulatedArmorRenderer.VIEW_PROPERTY};
 		String[] previous = Arrays.stream(properties).map(System::getProperty).toArray(String[]::new);
@@ -184,10 +186,10 @@ final class ArticulatedSharedPlayerChecks {
 								check(mc.getWindow().getWidth() == viewport.width() && mc.getWindow().getHeight() == viewport.height(), "Actual viewport matches the capture name");
 								System.out.println("ARTICULATED_SHARED_SAMPLE name=" + name + " acceptedMove=" + timeline.move()
 									+ " activation=" + timeline.startTick() + " windup=" + timeline.windup() + " recovery=" + timeline.recovery()
-									+ " actualSkin=" + state.skin.model() + " preCaptureAge=" + (mc.level.getGameTime() - timeline.startTick() + .5F)
+									+ " actualSkin=" + state.skin.model() + " preCaptureAge=" + (mc.level.getGameTime() - timeline.startTick() + CAPTURE_DELTA_TICKS)
 									+ " preCapturePhase=" + frame.pose().phase() + " requestedPhase=" + phase + " auraShell=down supportedPresentation=shell_down_only renderedPhase=unknown nativePixelReviewRequired=true exactImpactPixelCoverage=unverified");
 							});
-							context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
+							context.takeScreenshot(screenshotOptions(name));
 							context.waitTicks(rule.windup() + rule.recovery() + 2);
 							check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null && ArticulatedCombat.viewFrame(state(mc)) != null), "Accepted expiry returns to the stable view idle");
 						}
@@ -275,8 +277,14 @@ final class ArticulatedSharedPlayerChecks {
 		}
 	}
 
+	static TestScreenshotOptions screenshotOptions(String name) {
+		// Fabric defaults to 1.0: at the accepted impact tick this projects into RECOVERY.
+		// Use the same supported interpolation as admission; real receipt phases remain authoritative.
+		return TestScreenshotOptions.of(name).disableCounterPrefix().withDeltaTicks(CAPTURE_DELTA_TICKS);
+	}
+
 	private static AvatarRenderState state(Minecraft mc) {
-		return (AvatarRenderState) mc.getEntityRenderDispatcher().getRenderer(mc.player).createRenderState(mc.player, .5F);
+		return (AvatarRenderState) mc.getEntityRenderDispatcher().getRenderer(mc.player).createRenderState(mc.player, CAPTURE_DELTA_TICKS);
 	}
 	private static void prepare(ServerPlayer player, boolean armor, boolean fullArmor, int move) {
 		for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.OFFHAND})

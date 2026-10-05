@@ -200,7 +200,8 @@ def run_gate(repo: Path, game_dir: Path, output: Path, log: Path, *, runner=laun
     output.mkdir(parents=True)
     environment = dict(os.environ if environment is None else environment)
     nonce = str(uuid.uuid4())
-    report = {"schemaVersion": 1, "associationVerified": False, "nativeSucceeded": False,
+    report = {"schemaVersion": 1, "associationVerified": False, "phaseCoverageVerified": False,
+              "phaseCoverageMisses": [], "nativeSucceeded": False,
               "expectedTrials": 120, "plannedTrials": sorted(planned_trials()), "nativePixelReviewRequired": True, "exactImpactPixelCoverage": "unverified",
               "provenance": {"launchNonce": nonce, "checkout": str(repo), "gameDirectory": str(game_dir)},
               "package": {"complete": False, "recordCount": 0, "recordBytes": 0}, "errors": []}
@@ -230,9 +231,20 @@ def run_gate(repo: Path, game_dir: Path, output: Path, log: Path, *, runner=laun
         association, package = package_run(receipt_root, game_dir, output, nonce, started_ns, finished_ns)
         report.update(association)
         report["package"] = package
+        # Association remains truthful even when the unchanged PNG captured the wrong phase.
+        # The final gate additionally requires every planned phase, unpaused and unfrozen.
+        observations = report.get("observations", [])
+        misses = [entry for entry in observations if not entry["unpausedPhaseCoverage"]]
+        report["phaseCoverageMisses"] = [{key: entry[key] for key in
+                                        ("trial", "requestedPhase", "renderedPhase", "requestedPhaseObserved", "unpausedPhaseCoverage")}
+                                       for entry in misses]
+        report["phaseCoverageVerified"] = report["associationVerified"] and len(observations) == 120 and not misses
+        for entry in misses:
+            reason = "requested phase differs from rendered phase" if not entry["requestedPhaseObserved"] else "capture was paused or frozen"
+            report["errors"].append(f"{entry['trial']}: phase coverage miss: requested={entry['requestedPhase']} rendered={entry['renderedPhase']}; {reason}")
         if native.returncode:
             report["errors"].append(f"original native launcher failed with exit code {native.returncode}")
-        returncode = 0 if report["associationVerified"] and report["nativeSucceeded"] else 1
+        returncode = 0 if report["associationVerified"] and report["phaseCoverageVerified"] and report["nativeSucceeded"] else 1
     except Exception as failure:
         report["errors"].append(f"{type(failure).__name__}: {failure}")
     report["gatePassed"] = returncode == 0
@@ -241,7 +253,7 @@ def run_gate(repo: Path, game_dir: Path, output: Path, log: Path, *, runner=laun
         # Keep a useful failure report and complete raw records rather than leaving an ambiguous bundle.
         report.pop("observations", None)
         report["omittedReportFields"] = ["observations"]
-        report["associationVerified"] = report["gatePassed"] = False
+        report["associationVerified"] = report["phaseCoverageVerified"] = report["gatePassed"] = False
         report["errorCountBeforeBounding"] = len(report["errors"])
         report["errorDetailsBounded"] = True
         report["errors"] = [str(error)[:2048] for error in report["errors"][:32]]
@@ -253,7 +265,7 @@ def run_gate(repo: Path, game_dir: Path, output: Path, log: Path, *, runner=laun
         data = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode()
         if len(data) > MAX_REPORT_BYTES:
             # Defensive last resort: failure remains explicit even for pathological external strings.
-            report = {"schemaVersion": 1, "gatePassed": False, "associationVerified": False,
+            report = {"schemaVersion": 1, "gatePassed": False, "associationVerified": False, "phaseCoverageVerified": False,
                       "nativeSucceeded": report["nativeSucceeded"], "nativePixelReviewRequired": True,
                       "exactImpactPixelCoverage": "unverified", "launchNonce": nonce,
                       "package": {key: report["package"].get(key) for key in ("complete", "recordCount", "recordBytes")},

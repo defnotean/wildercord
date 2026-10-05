@@ -1,6 +1,7 @@
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.MastersArtRules;
+import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.client.combat.ArticulatedArmorGeometry;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -28,6 +29,7 @@ public final class CheckArticulatedArmorView {
 
 	public static void main(String[] args) throws Exception {
 		boolean shared = args.length == 1 && args[0].equals("--shared-player");
+		boolean openingStyles = args.length == 1 && args[0].equals("--opening-styles");
 		var roots = EntityModelSet.vanilla();
 		BufferedImage texture;
 		try (var stream = CheckArticulatedArmorView.class.getResourceAsStream(TEXTURE)) {
@@ -39,14 +41,20 @@ public final class CheckArticulatedArmorView {
 		boolean comma = false;
 		boolean pass = true;
 		for (boolean slim : new boolean[] {false, true}) for (boolean left : new boolean[] {false, true})
-			for (int move : shared ? new int[] {1, 2} : new int[] {0}) {
+			for (int move : openingStyles ? new int[] {3, 4} : shared ? new int[] {1, 2} : new int[] {0}) {
 			var model = new ArticulatedArmorGeometry(roots.bakeLayer((slim ? ModelLayers.PLAYER_SLIM_ARMOR : ModelLayers.PLAYER_ARMOR).chest()), EquipmentSlot.CHEST, true);
 			double nearest = -Double.MAX_VALUE, worstAge = 0, worstYaw = 0, worstPitch = 0, maxCenterCoverage = 0;
 			int placements = 0, crosshairOccluded = 0;
-			var rule = MastersArtRules.move(move);
-			for (int step = 0; step <= (rule.windup() + rule.recovery()) * 8; step++) {
+			var style = openingStyles ? MastersStyleRules.animation(move) : null;
+			if (openingStyles && (style == null || style.windup() != 6 || style.recovery() != 12))
+				throw new AssertionError("Opening-style audit requires the accepted 6/12 animation window");
+			var rule = openingStyles ? null : MastersArtRules.move(move);
+			int windup = openingStyles ? style.windup() : rule.windup();
+			int recovery = openingStyles ? style.recovery() : rule.recovery();
+			String clip = openingStyles ? style.art() : rule.id();
+			for (int step = 0; step <= (windup + recovery) * 8; step++) {
 				float age = step / 8F;
-				var combat = ArticulatedCombatPose.samplePlayer(move, age, rule.windup(), rule.recovery(), left);
+				var combat = ArticulatedCombatPose.samplePlayer(move, age, windup, recovery, left);
 				var view = ArticulatedCombatPose.view(combat, left);
 				model.setupAnim(ArticulatedArmorGeometry.Palette.from(joint -> new Matrix4f().set(view.world(joint).values())));
 				List<Face> faces = new ArrayList<>();
@@ -78,7 +86,9 @@ public final class CheckArticulatedArmorView {
 			pass &= safe;
 			if (comma) out.append(','); comma = true;
 			out.append("{");
-			if (shared) out.append("\"move\":").append(move).append(",\"clip\":\"").append(rule.id()).append("\",");
+			if (shared || openingStyles) out.append("\"move\":").append(move).append(",\"clip\":\"").append(clip).append("\",");
+			if (openingStyles) out.append("\"windup\":").append(windup).append(",\"recovery\":").append(recovery)
+				.append(",\"sampledFrames\":").append((windup + recovery) * 8 + 1).append(',');
 			out.append("\"slim\":").append(slim).append(",\"left\":").append(left).append(",\"placements\":").append(placements)
 				.append(",\"nearestZ\":").append(nearest).append(",\"clearanceBlocks\":").append(NEAR - nearest)
 				.append(",\"worstAge\":").append(worstAge).append(",\"worstYaw\":").append(worstYaw).append(",\"worstPitch\":").append(worstPitch)

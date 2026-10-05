@@ -95,3 +95,11 @@ and receipt-retention checks added.
 
 Read-only post-generation moisture observations still skip missing neighboring
 chunks. They never generate extra chunks and are not used as attempt receipts.
+
+## Native confirmation on 2026-10-05
+
+The fixed five-suite diagnostic passed on source `eb13ea3fb461aa0ca787328978a6fcba130963d1`, request commit `ae9d57d8f3f631aeaf67ad11b2dc643da764d379`, [run 37384979391, job 112015916909](https://github.com/defnotean/wildercord/actions/runs/37384979391/job/112015916909). All five original entrypoints returned successfully in order. Native execution confirms the former positive candidate, without adding regions or changing production placement.
+
+The retained negative produced the same 120 complete attempts: 108 moisture rejections, 12 occupied candidates and no writes across the original 81 chunks. The fixed positive source remained chunk `(-109,-50)`, origin X/Z `(-1737,-786)`. Across the nine requested chunks and their naturally required halo, native placement produced two successful writes; the independent full-height census detected two reeds. The selected surviving natural bud was `(-1740,63,-786)`, with its write receipt and required age, support, moisture and open-sky assertions passing. Both generation probes ended with zero omitted lines or sink failures.
+
+The diagnostic archive is GitHub artifact `11377790846`, 31,425 bytes, SHA-256 `97392b3008a890b15e2c5b460e60551c23ec03cf88eb37debfd49db5a02842d7`. Its complete native log has SHA-256 `e1075dfbb88d1265b8ec99028367edb7a8ced5812c9e7741cdfe2b709d52472e`; all recorded source/config hashes match the exact published commit. Archive CRC/path validation passed. This is deterministic registration, rarity and natural-placement contract evidence, not population-balance sampling or a full aggregate release pass.

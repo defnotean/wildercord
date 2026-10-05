@@ -14,6 +14,7 @@ public final class ArticulatedCombatPose {
 
 	// Player activation ordinals and NPC attack ordinals are separate namespaces.
 	public static final int SPELLCUT = 0, RISING_BREAK = 1, DRIVING_CUT = 2;
+	public static final int KINDLING_DRAW = 3, FROSTBITE = 4;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -295,6 +296,48 @@ public final class ArticulatedCombatPose {
 			arm(r(0, .04F, .03F), r(-.36F, .12F, -.20F), -.85F, r(.08F, -.10F, .10F)), VIEW_BIND),
 		v(-2.75F, 22, 1.8F), v(2.75F, 22, -1.8F));
 
+	// Kindling gathers the hilt beside the rear hip, opens the elbow into a low draw-cut,
+	// then lets the blade and free arm travel outward. The separate ground fire line is
+	// the existing performer's effect; neither this planted motion nor its view moves the player.
+	private static final Motion KINDLING_MOTION = new Motion(
+		new Key(v(-.32F, 1.05F, .28F), r(.09F, .30F, -.035F), r(.065F, .20F, -.025F), r(.05F, .29F, -.04F), r(-.12F, -.47F, .03F),
+			arm(r(.02F, .12F, -.06F), r(-.22F, .64F, -.32F), -.80F, r(1.10F, -.36F, -.70F)),
+			arm(r(0, -.08F, .04F), r(-.58F, -.30F, -.20F), -.95F, r(.10F, -.12F, .10F)),
+			new ViewKey(v(-7.6F, -5.5F, 3.6F), arm(r(.02F, .09F, -.04F), r(-1.00F, .20F, -.28F), -.95F, r(1.273F, -.645F, .416F)),
+				v(7.0F, -6.1F, 3.6F), arm(r(0, -.04F, .03F), r(-.98F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.36F, 1.10F, -.55F), r(.11F, -.27F, .035F), r(.08F, -.18F, .025F), r(.065F, -.27F, .04F), r(-.13F, .43F, -.03F),
+			arm(r(.03F, -.09F, -.04F), r(-.52F, -.74F, -.27F), -.32F, r(1.10F, .27F, .38F)),
+			arm(r(0, .08F, .04F), r(-.28F, -.32F, -.45F), -.72F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-8.3F, -5.4F, 2.4F), arm(r(.02F, -.08F, -.04F), r(-1.10F, -.60F, -.36F), -.35F, r(1.370F, -.350F, -.446F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .06F, .03F), r(-.90F, .08F, .32F), -.86F, r(.10F, -.10F, .10F)))),
+		new Key(v(.25F, 1.00F, -.30F), r(.065F, -.34F, .025F), r(.04F, -.19F, .025F), r(.045F, -.31F, .04F), r(-.09F, .51F, -.025F),
+			arm(r(.03F, -.12F, -.03F), r(-.30F, -1.12F, .09F), -.52F, r(1.20F, .24F, .58F)),
+			arm(r(0, .07F, .04F), r(-.20F, -.22F, -.55F), -.70F, r(.08F, -.10F, .10F)),
+			new ViewKey(v(-10.9F, -5.1F, 2.9F), arm(r(.02F, -.12F, -.03F), r(-1.05F, -.85F, -.18F), -.65F, r(.999F, -.067F, 1.740F)),
+				v(7.7F, -6.1F, 3.8F), arm(r(0, .06F, .03F), r(-.86F, .02F, .26F), -.84F, r(.10F, -.10F, .10F)))),
+		v(-2.5F, 22, 1.6F), v(2.5F, 22, -1.7F));
+
+	// Frostbite presents a compact low point, makes one measured tilted cut, then closes
+	// its guard. The point is a chamber, never an extra thrust or hit: the server releases
+	// the existing crusting arc once at windup. Its torso stays quieter than Ember's draw.
+	private static final Motion FROSTBITE_MOTION = new Motion(
+		new Key(v(-.08F, .88F, .12F), r(.025F, .12F, -.015F), r(.025F, .09F, -.015F), r(.03F, .15F, -.02F), r(-.05F, -.28F, .015F),
+			arm(r(.015F, .06F, -.04F), r(-.74F, .26F, -.20F), -.88F, r(1.27F, -.32F, -.44F)),
+			arm(r(0, -.05F, .03F), r(-.95F, -.26F, -.16F), -.92F, r(.10F, -.12F, .08F)),
+			new ViewKey(v(-7.5F, -5.1F, 3.6F), arm(r(.015F, .04F, -.03F), r(-1.10F, .12F, -.24F), -.90F, r(1.18F, -.20F, -.24F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .25F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.12F, .91F, -.35F), r(.035F, -.14F, .02F), r(.025F, -.09F, .015F), r(.04F, -.17F, .025F), r(-.06F, .29F, -.02F),
+			arm(r(.025F, -.05F, -.035F), r(-.93F, -.52F, -.18F), -.42F, r(.97F, .19F, .38F)),
+			arm(r(0, .05F, .03F), r(-.90F, -.20F, -.20F), -.90F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.7F, -5.1F, 2.3F), arm(r(.02F, -.04F, -.035F), r(-1.17F, -.38F, -.28F), -.42F, r(.91F, .05F, .35F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, .03F, .03F), r(-.96F, .10F, .27F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.04F, .87F, -.10F), r(.02F, -.08F, .01F), r(.02F, -.05F, .01F), r(.025F, -.09F, .015F), r(-.04F, .16F, -.01F),
+			arm(r(.02F, -.03F, -.03F), r(-.80F, -.21F, -.18F), -.95F, r(1.14F, .02F, .18F)),
+			arm(r(0, .03F, .03F), r(-1.04F, -.24F, -.17F), -.94F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.9F, -5.0F, 3.5F), arm(r(.015F, -.025F, -.03F), r(-1.06F, -.16F, -.22F), -.93F, r(1.08F, -.06F, .14F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.02F, .08F, .25F), -.92F, r(.10F, -.10F, .10F)))),
+		v(-2.25F, 22, 1.2F), v(2.25F, 22, -1.4F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -305,14 +348,20 @@ public final class ArticulatedCombatPose {
 
 	/** Only shared player activation IDs are admitted here; NPC IDs use supportsMaster. */
 	public static boolean supportsPlayer(int move) {
-		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT;
+		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
 	public static Pose samplePlayer(int move, float age, int windup, int recovery, boolean leftHanded) {
 		if (move == SPELLCUT) return sampleSpellcut(move, age, windup, recovery, leftHanded);
 		if (!supportsPlayer(move) || !valid(age, windup, 60, recovery) || age >= windup + recovery) return NONE;
-		Motion motion = move == RISING_BREAK ? RISING_MOTION : DRIVING_MOTION;
+		Motion motion = switch (move) {
+			case RISING_BREAK -> RISING_MOTION;
+			case DRIVING_CUT -> DRIVING_MOTION;
+			case KINDLING_DRAW -> KINDLING_MOTION;
+			case FROSTBITE -> FROSTBITE_MOTION;
+			default -> throw new AssertionError("Unsupported player motion passed admission");
+		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
 	}
 

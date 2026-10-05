@@ -1,6 +1,7 @@
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.MastersArtRules;
+import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.client.combat.ArticulatedArmorGeometry.Palette;
 import dev.wildercord.client.combat.ArticulatedAuraShellGeometry;
 import dev.wildercord.client.combat.ArticulatedRig;
@@ -20,6 +21,7 @@ import java.util.Set;
 public final class CheckArticulatedAuraShell {
 	private static final Set<String> PARTS = Set.of("/head", "/body", "/right_arm", "/left_arm", "/right_leg", "/left_leg");
 	public static void main(String[] args) {
+		boolean openingStyles = args.length == 1 && args[0].equals("--opening-styles");
 		int snapshots = 0, negatives = 0;
 		for (boolean slim : new boolean[] {false, true}) {
 			var source = source(slim);
@@ -31,10 +33,15 @@ public final class CheckArticulatedAuraShell {
 			check(world.mesh().faces().size() > 36, "World shell actually has joint subdivisions");
 			validateSource(source, world);
 			var rig = new ArticulatedRig(slim, false);
-			for (boolean left : new boolean[] {false, true}) for (int move : new int[] {0, 1, 2}) {
-				var rule = MastersArtRules.move(move);
-				for (float age = 0; age <= rule.windup() + rule.recovery(); age += .125F) {
-					var pose = ArticulatedCombatPose.samplePlayer(move, age, rule.windup(), rule.recovery(), left);
+			for (boolean left : new boolean[] {false, true}) for (int move : openingStyles ? new int[] {3, 4} : new int[] {0, 1, 2}) {
+				var style = openingStyles ? MastersStyleRules.animation(move) : null;
+				if (openingStyles && (style == null || style.windup() != 6 || style.recovery() != 12))
+					throw new AssertionError("Opening-style shell audit requires the accepted 6/12 animation window");
+				var rule = openingStyles ? null : MastersArtRules.move(move);
+				int windup = openingStyles ? style.windup() : rule.windup();
+				int recovery = openingStyles ? style.recovery() : rule.recovery();
+				for (float age = 0; age <= windup + recovery; age += .125F) {
+					var pose = ArticulatedCombatPose.samplePlayer(move, age, windup, recovery, left);
 					rig.apply(pose::local);
 					// Final free-look and baseline corrections must survive snapshot and later rig edits.
 					rig.part(ArticulatedCombatPose.Joint.HEAD).yRot += .31F;
@@ -45,7 +52,7 @@ public final class CheckArticulatedAuraShell {
 					var copied = Palette.from(j -> external[j.ordinal()]);
 					for (var matrix : external) matrix.zero();
 					world.setupAnim(captured); int[] a = snapshot(world);
-					rig.apply(ArticulatedCombatPose.samplePlayer(move, age < rule.windup() ? rule.windup() : 0, rule.windup(), rule.recovery(), !left)::local);
+					rig.apply(ArticulatedCombatPose.samplePlayer(move, age < windup ? windup : 0, windup, recovery, !left)::local);
 					var b = Palette.capture(rig);
 					world.setupAnim(b); world.setupAnim(captured);
 					check(Arrays.equals(a, snapshot(world)), "World A/B/A positions, UVs and normals changed");
@@ -82,7 +89,9 @@ public final class CheckArticulatedAuraShell {
 				reject(() -> new ArticulatedAuraShellGeometry(uv, slim, armsOnly), "Altered UV"); negatives++;
 			}
 		}
-		System.out.println("{\"kind\":\"offline original-runtime shell geometry and deferred palettes\",\"snapshots\":" + snapshots + ",\"negativeCases\":" + negatives + ",\"passes\":true,\"native\":\"not run\"}");
+		String scope = openingStyles ? ",\"clips\":[\"" + MastersStyleRules.animation(3).art() + "\",\"" + MastersStyleRules.animation(4).art()
+			+ "\"],\"timeStepTicks\":0.125,\"windup\":6,\"recovery\":12,\"variants\":8" : "";
+		System.out.println("{\"kind\":\"offline original-runtime shell geometry and deferred palettes\",\"snapshots\":" + snapshots + ",\"negativeCases\":" + negatives + scope + ",\"passes\":true,\"native\":\"not run\"}");
 	}
 	private static ModelPart source(boolean slim) { return (slim ? AuraShellLayer.createSlimShell() : AuraShellLayer.createShell()).bakeRoot(); }
 	private static void validateSource(ModelPart source, ArticulatedAuraShellGeometry model) {
