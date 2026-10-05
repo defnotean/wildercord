@@ -10,6 +10,8 @@ import dev.wildercord.aura.AuraPresence;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.AuraSlash;
 import dev.wildercord.aura.AuraStep;
+import dev.wildercord.aura.ResonantRules;
+import dev.wildercord.aura.ResonantStrikes;
 import dev.wildercord.aura.Spellblade;
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.LeyWalker;
@@ -106,7 +108,7 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 			world.getServer().runCommand("gamerule spawn_mobs false");
 			world.getServer().runCommand("gamerule advance_time false");
 			world.getServer().runCommand("gamerule advance_weather false");
-			world.getServer().runCommand("gamerule natural_regeneration false");
+			world.getServer().runCommand("gamerule natural_health_regeneration false");
 			world.getServer().runCommand("difficulty normal");
 			world.getServer().runCommand("time set 3000");
 			world.getServer().runCommand("weather clear");
@@ -623,6 +625,8 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ the spellblade
 
+	private record SpellbladeReceipt(float aura, int reactions) {}
+
 	private static void spellblade(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
 			setAura(player, "rime", AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE), AuraRules.threshold(AuraRules.EDGE));
@@ -667,6 +671,10 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 			return null;
 		});
 		context.waitTicks(3);
+		// Read Aura and the reaction count on the server immediately before the real key releases the slash.
+		SpellbladeReceipt beforeSlash = on(world, player -> new SpellbladeReceipt(Aura.data(player).aura(), ResonantStrikes.reactions()));
+		check(Math.abs(beforeSlash.aura() - AuraRules.capacity(AuraRules.EDGE)) <= 0.05,
+			"the spellblade should start with full Edge aura (" + beforeSlash + ")");
 		context.getInput().pressKey(WildercordKeys.auraMapping());
 		context.waitTicks(2);
 		context.runOnClient(mc -> {
@@ -695,9 +703,18 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 					return "every husk in the line should be cut";
 				}
 			}
-			float aura = Aura.data(player).aura();
-			if (Math.abs(aura - (AuraRules.capacity(AuraRules.EDGE) - AuraRules.SLASH_COST)) > 0.05) {
-				return "the slash's own price should be paid too (aura " + aura + ")";
+			SpellbladeReceipt afterSlash = new SpellbladeReceipt(Aura.data(player).aura(), ResonantStrikes.reactions());
+			int reactions = afterSlash.reactions() - beforeSlash.reactions();
+			// The Rime slash primes the carried Fire spell. The blade-wide rest allows just one paid reaction across the line.
+			if (reactions != 1) {
+				return "the carried fire and slash should resonate exactly once across three husks (before " + beforeSlash + ", after " + afterSlash + ")";
+			}
+			double paid = beforeSlash.aura() - afterSlash.aura();
+			double expected = AuraRules.SLASH_COST + ResonantRules.COST;
+			if (Math.abs(paid - expected) > 0.05
+					|| Math.abs(afterSlash.aura() - (AuraRules.capacity(AuraRules.EDGE) - expected)) > 0.05) {
+				return "the slash and its one resonant strike should pay their exact aura prices (paid " + paid + " of " + expected
+					+ ", before " + beforeSlash + ", after " + afterSlash + ")";
 			}
 			if (Spellblade.holding(player)) {
 				return "the slash should take the spell off the blade";

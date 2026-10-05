@@ -366,8 +366,18 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.waitTicks(15);
 		if (second) {
 			context.runOnClient(mc -> mc.player.setXRot(25));
-			context.getInput().pressKey(o -> o.keyJump);
-			context.waitFor(mc -> !mc.player.onGround(), 10);
+			String beforeJump = jumpState(context);
+			// Fabric pressKey releases before its waitTick; jump needs a held key during input polling.
+			context.getInput().holdKey(o -> o.keyJump);
+			try {
+				context.waitTicks(1); // Preserve the tick previously spent inside pressKey.
+				context.waitFor(mc -> !mc.player.onGround(), 10);
+			} catch (AssertionError failure) {
+				throw new AssertionError("Actual " + style.art() + " leap did not leave the stage (view=" + view
+					+ ", leftHanded=" + leftHanded + "): before={" + beforeJump + "}, after={" + jumpState(context) + "}", failure);
+			} finally {
+				context.getInput().releaseKey(o -> o.keyJump);
+			}
 			context.waitTicks(1);
 		}
 		for (int swing = 0; swing < (second ? 1 : 2); swing++) {
@@ -415,6 +425,13 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Style returns to vanilla after its real recovery");
 		shot(context, prefix + "_settled");
 		world.getServer().runOnServer(server -> target[0].discard());
+	}
+
+	private static String jumpState(ClientGameTestContext context) {
+		return context.computeOnClient(mc -> "onGround=" + mc.player.onGround() + ", position=" + mc.player.position()
+			+ ", velocity=" + mc.player.getDeltaMovement() + ", jumpDown=" + mc.options.keyJump.isDown()
+			+ ", jumpInput=" + mc.player.input.keyPresses.jump() + ", flying=" + mc.player.getAbilities().flying
+			+ ", screen=" + mc.gui.screen());
 	}
 
 	private static void prepare(ServerPlayer player) {
