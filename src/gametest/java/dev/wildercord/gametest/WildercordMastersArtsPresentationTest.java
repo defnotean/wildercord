@@ -1,0 +1,356 @@
+package dev.wildercord.gametest;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import dev.wildercord.Wildercord;
+import dev.wildercord.aura.AuraAttachments;
+import dev.wildercord.aura.ArtRules;
+import dev.wildercord.aura.MastersArts;
+import dev.wildercord.aura.MastersStyleRules;
+import dev.wildercord.client.AuraScreen;
+import dev.wildercord.client.MastersArtsClient;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.Set;
+
+/**
+ * Real combat keys, accepted network timelines and the registered player rig, with native first-
+ * and third-person screenshots. No direct pose packet or animation-clock injection is used.
+ */
+public final class WildercordMastersArtsPresentationTest implements FabricClientGameTest {
+	@Override
+	public void runTest(ClientGameTestContext context) {
+		CameraType camera = context.computeOnClient(mc -> mc.options.getCameraType());
+		int scale = context.computeOnClient(mc -> mc.options.guiScale().get());
+		int[] size = context.computeOnClient(mc -> new int[] {mc.getWindow().getWidth(), mc.getWindow().getHeight()});
+		boolean hidden = context.computeOnClient(mc -> mc.gui.hud.isHidden());
+		try (TestSingleplayerContext world = context.worldBuilder().create()) {
+			context.waitTicks(40);
+			world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runCommand("gamerule advance_time false");
+			world.getServer().runCommand("time set 3000");
+			world.getServer().runCommand("weather clear");
+			world.getServer().runCommand("fill -10 99 -10 10 99 10 minecraft:stone_bricks");
+			world.getServer().runCommand("fill -10 100 -10 10 108 10 minecraft:air");
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				player.setGameMode(GameType.SURVIVAL);
+				player.teleportTo(server.overworld(), .5, 100, .5, Set.<Relative>of(), 20, 0, false);
+				prepare(player);
+			});
+			context.runOnClient(mc -> {
+				mc.getWindow().setWindowed(1280, 720);
+				mc.options.guiScale().set(2);
+				mc.resizeGui();
+				mc.gui.setScreen(null);
+				mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+			});
+			context.waitTicks(10);
+			world.getConnection().waitForChunksRender();
+			controls(context);
+			menusDiscardQueuedInput(context, world);
+			holdDoesNotRepeat(context, world);
+			for (int move = 0; move < 3; move++) {
+				capture(context, world, move, CameraType.THIRD_PERSON_FRONT, "third");
+				capture(context, world, move, CameraType.FIRST_PERSON, "first");
+			}
+			cancelledWindup(context, world);
+			for (float turn : new float[] {-90, 90, 180}) turnDuringWindup(context, world, turn);
+			nearVerticalCommit(context, world);
+			for (var style : MastersStyleRules.STYLES) {
+				captureStyle(context, world, style, CameraType.THIRD_PERSON_FRONT, "third");
+				captureStyle(context, world, style, CameraType.FIRST_PERSON, "first");
+			}
+			for (int gui = 1; gui <= 4; gui++) {
+				final int guiScale = gui;
+				context.runOnClient(mc -> {
+					mc.options.guiScale().set(guiScale);
+					mc.resizeGui();
+					mc.gui.setScreen(new AuraScreen(null));
+				});
+				context.waitTicks(2);
+				double[] point = context.computeOnClient(mc -> ((AuraScreen) mc.gui.screen()).mastersHelpPoint());
+				int physicalScale = context.computeOnClient(mc -> mc.getWindow().getGuiScale());
+				context.getInput().setCursorPos(point[0] * physicalScale, point[1] * physicalScale);
+				shot(context, "masters_arts_help_scale_" + gui);
+			}
+		} finally {
+			context.runOnClient(mc -> {
+				mc.gui.setScreen(null);
+				mc.options.setCameraType(camera);
+				mc.options.guiScale().set(scale);
+				mc.getWindow().setWindowed(size[0], size[1]);
+				mc.resizeGui();
+				if (mc.gui.hud.isHidden() != hidden) mc.gui.hud.toggle();
+				for (int move = 0; move < 3; move++) MastersArtsClient.mapping(move).setDown(false);
+			});
+			context.getInput().releaseKey(o -> o.keyShift);
+		}
+	}
+
+	private static void controls(ClientGameTestContext context) {
+		context.runOnClient(mc -> {
+			int[] defaults = {InputConstants.KEY_G, InputConstants.KEY_H, InputConstants.KEY_J};
+			for (int move = 0; move < 3; move++) {
+				KeyMapping key = MastersArtsClient.mapping(move);
+				check(key != null && key.getDefaultKey().getValue() == defaults[move], "The move has its distinct default combat key");
+				check(key.getCategory().id().equals(Wildercord.id("masters_arts")), "The dedicated category is registered");
+				for (KeyMapping other : mc.options.keyMappings) {
+					check(other == key || !other.getDefaultKey().equals(key.getDefaultKey()), "No default binding conflict with " + other.getName());
+				}
+				check(!MastersArtsClient.help().get(1 + move * 2).getString().contains("screen.wildercord"), "Translated key help loads");
+			}
+			KeyMapping key = MastersArtsClient.mapping(0);
+			var before = net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(key);
+			try {
+				key.setKey(InputConstants.Type.KEYBOARD.getOrCreate(InputConstants.KEY_U));
+				KeyMapping.resetMapping();
+				check(MastersArtsClient.help().get(1).getString().contains(key.getTranslatedKeyMessage().getString()), "Help follows an actual rebind");
+			} finally {
+				key.setKey(before);
+				KeyMapping.resetMapping();
+			}
+		});
+	}
+
+	private static void menusDiscardQueuedInput(ClientGameTestContext context, TestSingleplayerContext world) {
+		context.runOnClient(mc -> {
+			mc.gui.setScreen(new AuraScreen(null));
+			KeyMapping.click(MastersArtsClient.mapping(0).getDefaultKey());
+		});
+		context.waitTicks(3);
+		context.runOnClient(mc -> mc.gui.setScreen(null));
+		context.waitTicks(3);
+		world.getServer().runOnServer(server -> check(!MastersArts.committed(server.getPlayerList().getPlayers().getFirst()),
+			"A queued menu press is discarded instead of attacking after the menu closes"));
+	}
+
+	private static void capture(ClientGameTestContext context, TestSingleplayerContext world, int move, CameraType camera, String view) {
+		context.waitTicks(105);
+		world.getServer().runOnServer(server -> prepare(server.getPlayerList().getPlayers().getFirst()));
+		context.runOnClient(mc -> {
+			mc.options.setCameraType(camera);
+			mc.gui.toastManager().clear();
+			mc.gui.hud.getChat().clearMessages(false);
+		});
+		context.waitTicks(3);
+		context.getInput().pressKey(MastersArtsClient.mapping(move));
+		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null, 30);
+		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player).move() == move), "The real input reaches its requested server timeline");
+		String prefix = "masters_art_" + move + "_" + view;
+		shot(context, prefix + "_windup");
+		boolean[] observed = {false};
+		for (int frame = 0; frame < 7; frame++) {
+			context.waitTicks(1);
+			boolean active = inspect(context);
+			observed[0] |= active;
+			if (active) shot(context, prefix + "_frame_" + frame);
+		}
+		check(observed[0], "The registered player model follows the accepted art during its live timeline");
+		context.waitTicks(30);
+		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null && MastersArtsClient.pose(mc.player, .5F).weight() == 0),
+			"The native animation returns to vanilla after recovery");
+		shot(context, prefix + "_settled");
+	}
+
+	private static void holdDoesNotRepeat(ClientGameTestContext context, TestSingleplayerContext world) {
+		context.getInput().holdKey(MastersArtsClient.mapping(0));
+		try {
+			context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null, 30);
+			context.waitTicks(70);
+			world.getServer().runOnServer(server -> check(!MastersArts.committed(server.getPlayerList().getPlayers().getFirst()),
+				"Holding the combat key does not auto-spend aura again when its 60-tick cooldown expires"));
+		} finally {
+			context.getInput().releaseKey(MastersArtsClient.mapping(0));
+		}
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private static boolean inspect(ClientGameTestContext context) {
+		return context.computeOnClient(mc -> {
+			var timeline = MastersArtsClient.timeline(mc.player);
+			var expected = MastersArtsClient.pose(mc.player, .5F);
+			if (timeline == null || expected.weight() < .15F) return false;
+			AvatarRenderer renderer = (AvatarRenderer) mc.getEntityRenderDispatcher().getRenderer(mc.player);
+			AvatarRenderState state = (AvatarRenderState) renderer.createRenderState(mc.player, .5F);
+			PlayerModel model = (PlayerModel) renderer.getModel();
+			model.setupAnim(state);
+			boolean left = mc.player.getMainArm() == HumanoidArm.LEFT;
+			var sword = left ? model.leftArm : model.rightArm;
+			check(Math.abs(sword.xRot) + Math.abs(sword.yRot) + Math.abs(sword.zRot) > .03F, "The real player sword arm moves");
+			check(Math.abs(model.body.yRot) > .005F || Math.abs(model.body.xRot) > .005F, "The real torso participates");
+			check(Math.abs(model.leftLeg.xRot) > .005F || Math.abs(model.rightLeg.xRot) > .005F, "The real footwork participates");
+			check(model.body.getChild("jacket") == model.jacket && Math.abs(model.jacket.yRot - model.jacket.getInitialPose().yRot()) < .0001F,
+				"The outer skin inherits its parent torso without double rotation");
+			check(model.rightArm.getChild("right_sleeve") == model.rightSleeve && Math.abs(model.rightSleeve.xRot - model.rightSleeve.getInitialPose().xRot()) < .0001F,
+				"The outer sleeve inherits its parent arm without double rotation");
+			Wildercord.LOGGER.info("MASTERS_ART_FRAME move={} age={} weight={} body=({},{},{}) sword=({},{},{}) legs=({},{}) camera={}",
+				timeline.move(), mc.level.getGameTime() - timeline.startTick(), expected.weight(), model.body.xRot, model.body.yRot, model.body.zRot,
+				sword.xRot, sword.yRot, sword.zRot, model.leftLeg.xRot, model.rightLeg.xRot, mc.options.getCameraType());
+			return true;
+		});
+	}
+
+	private static void cancelledWindup(ClientGameTestContext context, TestSingleplayerContext world) {
+		context.waitTicks(105);
+		world.getServer().runOnServer(server -> prepare(server.getPlayerList().getPlayers().getFirst()));
+		context.getInput().pressKey(MastersArtsClient.mapping(1));
+		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null, 30);
+		world.getServer().runOnServer(server -> MastersArts.cancel(server.getPlayerList().getPlayers().getFirst()));
+		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) == null, 20);
+		check(context.computeOnClient(mc -> MastersArtsClient.pose(mc.player, .5F).weight() == 0), "Authoritative cancellation removes the body and hand pose");
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private static void turnDuringWindup(ClientGameTestContext context, TestSingleplayerContext world, float turn) {
+		context.waitTicks(105);
+		world.getServer().runCommand("fill 0 99 1 0 99 6 minecraft:gold_block");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			prepare(player);
+			player.teleportTo(player.level(), .5, 100, .5, Set.<Relative>of(), 0, 0, false);
+		});
+		context.waitTicks(4);
+		context.getInput().pressKey(MastersArtsClient.mapping(1));
+		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null, 30);
+		context.runOnClient(mc -> {
+			mc.player.setYRot(turn);
+			mc.player.setYHeadRot(turn);
+			mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+		});
+		context.waitFor(mc -> MastersArtsClient.pose(mc.player, .5F).weight() > .999F, 10);
+		context.runOnClient(mc -> {
+			var timeline = MastersArtsClient.timeline(mc.player);
+			check(timeline != null, "Turn regression observes a live accepted move");
+			AvatarRenderer renderer = (AvatarRenderer) mc.getEntityRenderDispatcher().getRenderer(mc.player);
+			AvatarRenderState state = (AvatarRenderState) renderer.createRenderState(mc.player, .5F);
+			check(Math.abs(net.minecraft.util.Mth.wrapDegrees(state.bodyRot - timeline.yaw())) < 1,
+				"Body remains aligned to the accepted strike after the free-look turn");
+			check(Math.abs(net.minecraft.util.Mth.wrapDegrees(mc.player.getYRot() - turn)) < 1, "The art never steers the camera back");
+			check(Math.abs(state.yRot) > 45 && Math.abs(state.yRot) <= 75, "The head turns naturally without following the camera through an impossible twist");
+			PlayerModel model = (PlayerModel) renderer.getModel();
+			model.setupAnim(state);
+			check(Math.abs(model.head.yRot - model.body.yRot) <= Math.toRadians(75) + .001,
+				"The final neck angle remains bounded relative to the authored torso");
+		});
+		shot(context, "masters_committed_turn_" + (int) turn + "_third_body_and_trail");
+		context.runOnClient(mc -> {
+			mc.options.setCameraType(CameraType.FIRST_PERSON);
+			if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+		});
+		shot(context, "masters_committed_turn_" + (int) turn + "_first_weapon_and_hint");
+		context.runOnClient(mc -> { if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle(); });
+		context.waitTicks(30);
+	}
+
+	private static void nearVerticalCommit(ClientGameTestContext context, TestSingleplayerContext world) {
+		context.waitTicks(105);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			prepare(player);
+			player.teleportTo(player.level(), .5, 100, .5, Set.<Relative>of(), 90, 90, false);
+		});
+		context.waitTicks(4);
+		context.getInput().pressKey(MastersArtsClient.mapping(0));
+		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null, 30);
+		context.runOnClient(mc -> {
+			var timeline = MastersArtsClient.timeline(mc.player);
+			check(Math.abs(net.minecraft.util.Mth.wrapDegrees(timeline.yaw() - 90)) < 1,
+				"A vertical look retains the accepted yaw rather than a fixed world-axis fallback");
+			check(timeline.pitch() == 0, "A shared melee art advertises its actual level hit plane");
+		});
+		shot(context, "masters_vertical_look_level_commit");
+		context.waitTicks(30);
+	}
+
+	/** Each method is earned by the same actual swing/swing/low string the player uses in combat. */
+	private static void captureStyle(ClientGameTestContext context, TestSingleplayerContext world, MastersStyleRules.Style style,
+			CameraType camera, String view) {
+		context.getInput().releaseKey(o -> o.keyShift);
+		context.waitTicks(105);
+		Mob[] target = new Mob[1];
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			prepare(player);
+			player.teleportTo(server.overworld(), .5, 100, .5, Set.<Relative>of(), 0, 3, false);
+			player.setDeltaMovement(Vec3.ZERO);
+			player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data(ArtRules.art(style.art()).method(), 4, 1800, 100, 0));
+			Mob foe = EntityTypes.HUSK.create(player.level(), EntitySpawnReason.COMMAND);
+			check(foe != null, "Actual style target exists");
+			foe.setNoAi(true);
+			foe.setNoGravity(true);
+			foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);
+			foe.setHealth(200);
+			foe.snapTo(.5, 100, 3.1, 180, 0);
+			player.level().addFreshEntity(foe);
+			target[0] = foe;
+		});
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
+		context.waitTicks(15);
+		for (int swing = 0; swing < 2; swing++) {
+			context.getInput().pressKey(o -> o.keyAttack);
+			context.waitTicks(2);
+			world.getServer().runOnServer(server -> {
+				target[0].snapTo(.5, 100, 3.1, 180, 0);
+				target[0].setDeltaMovement(Vec3.ZERO);
+			});
+			context.waitTicks(12);
+		}
+		context.getInput().holdKey(o -> o.keyShift);
+		context.waitTicks(2);
+		context.getInput().pressKey(o -> o.keyAttack);
+		context.getInput().releaseKey(o -> o.keyShift);
+		context.runOnClient(mc -> mc.options.setCameraType(camera));
+		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null
+			&& MastersArtsClient.timeline(mc.player).move() == style.animation(), 30);
+		String prefix = "masters_style_" + style.art() + "_" + view;
+		shot(context, prefix + "_windup");
+		boolean observed = false;
+		for (int frame = 0; frame < 10; frame++) {
+			context.waitTicks(1);
+			if (inspect(context)) {
+				observed = true;
+				shot(context, prefix + "_frame_" + frame);
+			}
+		}
+		check(observed, "Actual " + style.art() + " string drives the registered native body and weapon timeline");
+		context.waitTicks(30);
+		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Style returns to vanilla after its real recovery");
+		shot(context, prefix + "_settled");
+		world.getServer().runOnServer(server -> target[0].discard());
+	}
+
+	private static void prepare(ServerPlayer player) {
+		player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
+		player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("stone", 4, 1800, 100, 0));
+		player.inventoryMenu.broadcastChanges();
+	}
+
+	private static void shot(ClientGameTestContext context, String name) {
+		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
+	}
+
+	private static void check(boolean ok, String message) {
+		if (!ok) throw new AssertionError(message);
+	}
+}

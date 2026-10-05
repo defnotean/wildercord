@@ -81,14 +81,14 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **The Runesmith, duels and chorus** | A villager who sells runes, buys your duplicates or swaps them for runes you don't know, and posts daily contracts; formal duels that put everything back afterwards; and allies casting together in a chorus. See [docs/features/runesmith-duels-chorus.md](docs/features/runesmith-duels-chorus.md). |
 | **Travel commands** | For servers: homes, public warps, personal waypoints with an arrow on screen and a beam only you can see, teleport requests with clickable answers, `/back`, `/spawn` and `/rtp`. Every teleport is a short warmup in a forming magic circle, with a cooldown and a safe landing. See [docs/features/travel.md](docs/features/travel.md). |
 | **Casting gear** | Elemental and greater staffs, the Tome of the Fifth Page (a fifth spell) and seven foci, each worn in its own inventory slot (staff, focus, tome) and shown on your character, or held as before while its slot is empty. See [docs/features/gear-config-api.md](docs/features/gear-config-api.md). |
-| **Advancements** | A Wildercord tab from your first Blank Rune to the 8th Heart Circle. See [docs/features/advancements.md](docs/features/advancements.md). |
+| **Advancements** | A Wildercord tab from your first Blank Rune to the 20th Heart Circle. See [docs/features/advancements.md](docs/features/advancements.md). |
 | **Ley lines** | Veins of world mana, visible to Cord-wearers as flowing ribbons of violet light: mana flows twice as fast on them. A Wellstone set on one becomes a well for everyone nearby. |
 | **Play together** | Paste a spell code (`wc:bolt.frost.split`) in chat and it becomes a readable spell card; inscribe spells onto scrolls anyone can cast; hit the foe another player just hit, with a different element, for **Unison**; win **domain clashes**; shoot enemy bolts out of the air. |
 | **Four Cords** | Twine → Copper → Amethyst → Echo: more sockets, more spells, higher rune tiers, more mana. |
 | **Ten elements** | Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, each with its own look and sound. |
 | **Element reactions** | Eleven of them, from Shatter and Conduct to Overload, Fracture, Blight, Unweave, Rupture and Elapse: the right element on the right mark sets off a bonus, and every element takes part. |
 | **Creature affinities and climate** | Blazes fear frost, the undead burn under life magic, golems conduct storm: creatures are weak to some elements and resist others (a datapack can change which), and your Grimoire's Bestiary records what you find. Where you fight matters too: fire burns hotter in the Nether, storm in a thunderstorm, frost in the snow. See [docs/features/affinities.md](docs/features/affinities.md). |
-| **Heart Circles** | Condense mana by casting, earn breakthroughs (mostly feats: set off five different reactions, find secret spells, defeat the Archivist), and meditate to form rings of mana around your heart, from the 1st Circle to the 8th (Archmage). In a pinch, **overcast**: crack a circle to cast beyond your mana. |
+| **Heart Circles** | Condense mana by casting, earn breakthroughs (mostly feats: set off five different reactions, find secret spells, defeat the Archivist), and meditate to form rings of mana around your heart, from the 1st Circle to the 20th (Master Heart), with Archmage at the 8th. In a pinch, **overcast**: crack a circle to cast beyond your mana. |
 | **Rhythm** | Cast again right as your last spell comes off cooldown and the chain builds power. |
 | **Your affinities** | An affinity with each of the ten elements that grows with what you do: casting it, its reactions, and everyday things that fit it (smelting for fire, fishing for frost, mining for earth, farming for life...), each with a daily allowance so nothing can be farmed. Levels I to V: +3% power a level with that element, a resistance to it from III, cheaper spells at V. Your magic leans toward your deepest one: your Heart Circles are tinted toward its colour, and a spell with no effect of its own charges in it. See [docs/features/player-affinity.md](docs/features/player-affinity.md). |
 | **Passive spells** | Up to two always-on spells (a buff, or an Orbit aura) that drain mana every second instead of having a cooldown. |
@@ -271,7 +271,7 @@ Commands (operators, permission level 2):
 | `/wildercord learn <rune>` | Learn one rune, e.g. `stasis` or `wildercord:stasis` (an add-on's runes by their full id) |
 | `/wildercord spell <1-4> <runes...>` | Thread a spell directly |
 | `/wildercord mana` | Refill your mana |
-| `/wildercord circles <0-8>` | Set your Heart Circles |
+| `/wildercord circles <0-20>` | Set your Heart Circles |
 | `/wildercord condense <mana>` | Add condensed mana toward the next circle |
 | `/wildercord innate <rune>` | Choose your innate rune |
 | `/wildercord runebound` | Bind the nearest monster to a Cord |

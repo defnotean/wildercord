@@ -19,6 +19,7 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -37,6 +38,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -50,12 +52,12 @@ import java.util.List;
  * lashes its tongue out to drag them in; a raised shield turns it.</p>
  */
 public class BogWitchFrog extends WildMonster {
-	static final int SWELL = 18;
-	static final int MOUTH = 10;
-	static final int GULP = 20;
-	static final double TONGUE_RANGE = 6.0;
-	static final double BUBBLE_MIN = 4.0;
-	static final double BUBBLE_MAX = 16.0;
+	static final int SWELL = MonsterPressureRules.FROG_SWELL;
+	static final int MOUTH = MonsterPressureRules.FROG_MOUTH;
+	static final int GULP = MonsterPressureRules.FROG_GULP;
+	static final double TONGUE_RANGE = MonsterPressureRules.FROG_TONGUE_RANGE;
+	static final double BUBBLE_MIN = MonsterPressureRules.FROG_BUBBLE_MIN;
+	static final double BUBBLE_MAX = MonsterPressureRules.FROG_BUBBLE_MAX;
 	static final float TONGUE_DAMAGE = 2.0F;
 	private static final int BOG = 0x8CD84A;
 	private static final int TONGUE = 0xD86A8A;
@@ -90,6 +92,7 @@ public class BogWitchFrog extends WildMonster {
 	@Override
 	protected void registerGoals() {
 		goalSelector.addGoal(0, new FloatGoal(this));
+		goalSelector.addGoal(2, new ApproachGoal());
 		goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0, false) {
 			@Override
 			public boolean canUse() {
@@ -141,7 +144,7 @@ public class BogWitchFrog extends WildMonster {
 				}
 				if (now >= phaseUntil) {
 					enter(Phase.IDLE, now, 0);
-					if (hunting) {
+					if (hunting && MonsterPressureRules.frogCanBubble(distanceTo(target), hasLineOfSight(target))) {
 						spit(level, target);
 					}
 				}
@@ -166,6 +169,12 @@ public class BogWitchFrog extends WildMonster {
 				}
 			}
 			default -> {
+				if (hunting && MonsterPressureRules.frogTongueFirst(difficulty(), distanceTo(target),
+					hasLineOfSight(target), now >= nextTongue)) {
+					prey = null;
+					openMouth(level, now);
+					break;
+				}
 				if (hunting && now >= nextBubble && hasLineOfSight(target)) {
 					double d = distanceTo(target);
 					if (d >= BUBBLE_MIN && d <= BUBBLE_MAX) {
@@ -175,7 +184,7 @@ public class BogWitchFrog extends WildMonster {
 				}
 				if (hunting && now >= nextTongue && hasLineOfSight(target)) {
 					double d = distanceTo(target);
-					if (d >= 2.8 && d <= TONGUE_RANGE) {
+					if (d >= MonsterPressureRules.FROG_TONGUE_MIN && d <= TONGUE_RANGE) {
 						prey = null;
 						openMouth(level, now);
 						break;
@@ -210,7 +219,8 @@ public class BogWitchFrog extends WildMonster {
 	/** The tell for a bubble: its throat sac swells, glowing, and gurgles. */
 	public void swell(ServerLevel level, long now) {
 		enter(Phase.SWELL, now, SWELL);
-		nextBubble = now + 80 + getRandom().nextInt(50);
+		MonsterPressureRules.Delay interval = MonsterPressureRules.frogBubble(difficulty());
+		nextBubble = now + interval.sample(getRandom().nextInt(interval.spread()));
 		getNavigation().stop();
 		MonsterMagic.sound(level, position(), "monster_frog_swell", 1.0F, 1.0F);
 	}
@@ -244,7 +254,8 @@ public class BogWitchFrog extends WildMonster {
 
 	private void tongue(ServerLevel level, Entity at, long now) {
 		Vec3 mouth = position().add(0, getBbHeight() * 0.55, 0).add(Vec3.directionFromRotation(0, yBodyRot).scale(getBbWidth() * 0.5));
-		if (at == null || !at.isAlive() || at.distanceTo(this) > TONGUE_RANGE + 1 || !hasLineOfSight(at)) {
+		if (at == null || !at.isAlive() || at.distanceTo(this) > TONGUE_RANGE + 1 || !hasLineOfSight(at)
+			|| at != prey && !Targets.canHarm(this, at)) {
 			enter(Phase.IDLE, now, 0);
 			prey = null;
 			return;
@@ -305,6 +316,50 @@ public class BogWitchFrog extends WildMonster {
 		enter(Phase.GULP, now, GULP);
 		level.sendParticles(ParticleTypes.ITEM_SLIME, at.x, at.y, at.z, 6, 0.2, 0.2, 0.2, 0.05);
 		MonsterMagic.sound(level, position(), "monster_frog_gulp", 1.0F, 1.0F);
+	}
+
+	/** Ground navigation around cover or back into bubble range, with bounded retries for unreachable targets. */
+	private final class ApproachGoal extends Goal {
+		private long nextRepath;
+
+		ApproachGoal() {
+			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		}
+
+		@Override
+		public boolean canUse() {
+			LivingEntity target = getTarget();
+			return phase == Phase.IDLE && target != null && target.isAlive() && Targets.canHarm(BogWitchFrog.this, target)
+				&& MonsterPressureRules.frogApproach(difficulty(), distanceTo(target), hasLineOfSight(target));
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return canUse();
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+
+		@Override
+		public void stop() {
+			getNavigation().stop();
+		}
+
+		@Override
+		public void tick() {
+			LivingEntity target = getTarget();
+			if (target == null) return;
+			getLookControl().setLookAt(target, 30, 30);
+			long now = level().getGameTime();
+			if (now >= nextRepath) {
+				boolean routed = getNavigation().moveTo(target, MonsterPressureRules.frogChaseSpeed(difficulty()));
+				nextRepath = now + MonsterPressureRules.repathDelay(
+					routed && getNavigation().getPath() != null && getNavigation().getPath().canReach());
+			}
+		}
 	}
 
 	// ------------------------------------------------------------------ sounds

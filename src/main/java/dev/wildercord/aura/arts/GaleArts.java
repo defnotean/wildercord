@@ -71,7 +71,7 @@ public final class GaleArts {
 	static boolean cuttingBreeze(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
-		Vec3 look = player.getViewVector(1.0F);
+		Vec3 look = ArtKit.view(player);
 		Vec3 aim = new Vec3(look.x, look.y * 0.4, look.z).normalize();
 		Vec3 cross = aim.cross(ArtKit.UP);
 		Vec3 side = cross.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : cross.normalize();

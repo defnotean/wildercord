@@ -169,6 +169,7 @@ public final class WildercordClient implements ClientModInitializer {
 		net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents.COLLECT_SUBMITS.register(dev.wildercord.client.fx.Incantations::submit);
 		CastingOptions.load();
 		WildercordKeys.init();
+		MastersArtsClient.init();
 		SpellHud.init();
 		// Aura: what aura sense outlines (the bar is SpellHud's, the blade's glow AuraBlade's).
 		AuraClient.init();

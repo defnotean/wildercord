@@ -108,7 +108,7 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
-	/** Heart Circles formed (0 to 8). Kept through death. */
+	/** Heart Circles formed (0 to 20; the original integer save format is unchanged). Kept through death. */
 	public static final AttachmentType<Integer> CIRCLES = AttachmentRegistry.create(
 		Wildercord.id("circles"),
 		builder -> builder
@@ -128,7 +128,7 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
-	/** Monsters defeated with spells, in total (a breakthrough for the 4th, 6th, 7th and 8th Circles). Kept through death. */
+	/** Monsters defeated with spells, in total (a breakthrough for several Heart Circles). Kept through death. */
 	public static final AttachmentType<Integer> SPELL_KILLS = AttachmentRegistry.create(
 		Wildercord.id("spell_kills"),
 		builder -> builder

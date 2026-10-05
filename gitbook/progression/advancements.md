@@ -4,8 +4,8 @@
 ![The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/b-advancements.jpg)
 
 Wildercord has its own advancement tab, set on dark indigo stone with faint rune script. It leads you
-from your first Blank Rune to the 8th Heart Circle and the bosses of the four dungeons: **74
-advancements** below the root, most of them rewarding experience, some Blank Runes and Mana Crystals.
+from your first Blank Rune to the 20th Heart Circle and the dungeon bosses. Most milestones
+reward experience; some also give Blank Runes and Mana Crystals.
 
 
 ## Reading this page
@@ -84,6 +84,18 @@ See [Shields and Parrying](../spellcraft/shields.md) and
 | **Brighter Still** | goal | Flow | Form your 6th Heart Circle | 100 XP, 8 Blank Runes |
 | **Overflow** | goal | Brighter Still | Form your 7th Heart Circle | 150 XP, a Mana Crystal |
 | **Archmage** | challenge | Overflow | Form your 8th Heart Circle and become an Archmage | 500 XP, 3 Mana Crystals |
+| **Widening Horizon** | goal | Archmage | Form your 9th Heart Circle | 100 XP |
+| **Forged Heart** | goal | Widening Horizon | Form your 10th Heart Circle | 125 XP |
+| **Woven Wisdom** | goal | Forged Heart | Form your 11th Heart Circle | 150 XP |
+| **Ocean Within** | goal | Woven Wisdom | Form your 12th Heart Circle | 175 XP |
+| **Boundless Study** | goal | Ocean Within | Form your 13th Heart Circle | 200 XP |
+| **Starheart** | goal | Boundless Study | Form your 14th Heart Circle | 225 XP |
+| **Living Grimoire** | goal | Starheart | Form your 15th Heart Circle | 250 XP |
+| **Rooted Heart** | goal | Living Grimoire | Form your 16th Heart Circle | 275 XP |
+| **Prismatic Heart** | goal | Rooted Heart | Form your 17th Heart Circle | 300 XP |
+| **Stormheart** | goal | Prismatic Heart | Form your 18th Heart Circle | 325 XP |
+| **Convergence** | goal | Stormheart | Form your 19th Heart Circle | 350 XP |
+| **Master Heart** | challenge | Convergence | Form your 20th Heart Circle: the Master Heart | 1,000 XP, 3 Mana Crystals |
 | **Awakening** | task | Heartbeat | Awaken your innate rune at the 1st Circle | 25 XP |
 | **Mirrorfrost** | task, hidden | Awakening | Turn an enemy's own spell back on them | 50 XP |
 

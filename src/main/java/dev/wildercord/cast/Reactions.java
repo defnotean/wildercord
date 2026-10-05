@@ -87,6 +87,16 @@ public final class Reactions {
 	}
 
 	public static void mark(Entity target, Mark mark, int ticks) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
+		markAllowed(target, mark, ticks);
+	}
+
+	/** Tidebreath deliberately wets its recipients: only an explicitly helpful relation may bypass the hostile-mark veto. */
+	static void wetAlly(LivingEntity caster, Entity target, int ticks) {
+		if (Targets.canHelp(caster, target)) markAllowed(target, Mark.WET, ticks);
+	}
+
+	private static void markAllowed(Entity target, Mark mark, int ticks) {
 		boolean fresh = !has(target, mark);
 		long until = target.level().getGameTime() + ticks;
 		MARKS.computeIfAbsent(target.getUUID(), k -> new EnumMap<>(Mark.class)).merge(mark, until, Math::max);

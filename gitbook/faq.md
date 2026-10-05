@@ -199,7 +199,7 @@ Tap `V` for the next spell, or hold it for the spell wheel. Or bind the "Cast sp
 in the Controls options to cast any spell directly. See [Switching spells](spellcraft/casting.md#switching-spells).
 
 ### How do I get more mana?
-Better Cords, Heart Circles, Mana Crystals (+10 max mana each, up to 10), the Reservoir and Wellspring
+Better Cords, Heart Circles, Mana Crystals (+10 max mana each, up to 100), the Reservoir and Wellspring
 enchantments, Clarity and Mana potions, meditating (sneak and stand still), ley lines and Wellstones. Hover
 the mana badge in the Cord screen for exactly where yours comes from. See [Mana](progression/mana.md).
 

@@ -26,8 +26,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Player.class)
 public abstract class PlayerAuraMixin {
-	@Inject(method = "attack", at = @At("HEAD"))
+	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraSwing(Entity target, CallbackInfo ci) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && dev.wildercord.aura.MastersArts.committed(player)) { ci.cancel(); return; }
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.SwordStrings.attackBegins(player);
 		AuraCombat.swing((Player) (Object) this);
 	}
 
@@ -37,9 +39,10 @@ public abstract class PlayerAuraMixin {
 		return AuraCombat.blow((Player) (Object) this, target, source, damage, true, amount -> original.call(target, source, amount));
 	}
 
-	@Inject(method = "stabAttack", at = @At("HEAD"))
+	@Inject(method = "stabAttack", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraThrustBegins(EquipmentSlot slot, Entity target, float baseDamage, boolean dealsDamage, boolean dealsKnockback,
 			boolean dismounts, CallbackInfoReturnable<Boolean> cir) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && dev.wildercord.aura.MastersArts.committed(player)) { cir.setReturnValue(false); return; }
 		AuraCombat.swing((Player) (Object) this);
 	}
 

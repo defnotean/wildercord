@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:heart/circle_11",
+  "criteria": {
+    "circle_12": {
+      "trigger": "wildercord:heart_circle",
+      "conditions": {
+        "level": 12
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:frost"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.heart.circle_12.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.heart.circle_12.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "circle_12"
+    ]
+  ],
+  "rewards": {
+    "experience": 175
+  }
+}

@@ -249,7 +249,7 @@ the [Cosmetics]({{ '/companions/cosmetics/' | relative_url }}) page, trade with 
 share spells with friends ([Playing Together]({{ '/social/playing-together/' | relative_url }})). The
 [Grimoire]({{ '/progression/grimoire/' | relative_url }}) page of the Cord screen keeps track of everything you
 discover, and the [advancements]({{ '/progression/advancements/' | relative_url }}) tab lights the way from your
-first Blank Rune to the 8th Heart Circle.
+first Blank Rune to the 20th Heart Circle.
 
 {: .note }
 All keys can be changed in the game's Controls options, under **Wildercord**. See [Controls]({{ '/controls/' | relative_url }}).

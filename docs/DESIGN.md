@@ -64,7 +64,7 @@ Every source stacks. The Cord screen's mana badge shows exactly where your numbe
 
 | Way | What it does | How to get it |
 |---|---|---|
-| **Mana Crystal** | +10 max mana, forever (up to 10 crystals, +100) | Craft: diamond + 4 amethyst shards + 4 lapis. Found in ancient cities, end cities, stronghold libraries, trial vaults, bastions, mansions and buried treasure |
+| **Mana Crystal** | +10 max mana, forever (up to 100 crystals, +1,000) | Craft: diamond + 4 amethyst shards + 4 lapis. Found in ancient cities, end cities, stronghold libraries, trial vaults, bastions, mansions and buried treasure |
 | **Reservoir** I–III | +25 max mana per level | Cord enchantment: enchanting table, anvil, books, librarians |
 | **Wellspring** I–III | +25% mana regeneration per level | Cord enchantment |
 | **Siphon** I–II | +2 mana per creature your spells hit, per level (up to 16 per cast) | Cord enchantment (rarer) |
@@ -2651,3 +2651,52 @@ A damaging spell and Aura strike on a living foe within 1.2 seconds can produce 
 ## Fire preparation identity
 
 Each built-in fire effect has an explicit client preparation recipe in FireFormations. Material sprites and narrow light encode its verb (fuse, grate, shield, jaw, wings, wet crest) rather than sharing one fire-colored scatter. Preparation tightens through two beats; existing server shape delivery and per-effect impact/voice remain authoritative. Exact namespace dispatch, existing event/particle bounds and reduced-detail outlines apply. This is formation-phase coverage; target-aware/linked origins and per-delivery launch/travel remain in the full presentation audit.
+
+
+## Masters of Tomorrow: development foundation
+
+The update's difficulty target is skilled, readable combat against a well-equipped player. A numeric claim such as “twenty times harder than a Warden” is not a verified metric. Trials use commitment, positioning, finite defensive resources and punishable recovery instead of infinite guarding or automatic one-hit kills. The existing travelling Duelist remains a progression teacher.
+
+### Permanent growth
+
+A player may absorb 100 Mana Crystals, each still worth +10 maximum mana. Counts already saved remain intact. Heart Circles continue from eight to twenty, retaining +15 maximum mana, +0.5 regeneration and +3% spell power per working circle. Existing milestone perks are not repeated at each new circle.
+
+| Circle | Lifetime mana condensed | Additional breakthrough | Title |
+|---|---:|---|---|
+| 9th | 120,000 | Know 60 runes; set off 6 different reactions | Widening Horizon |
+| 10th | 170,000 | Defeat 250 monsters with spells; **Tempered** (defeat the Cinder Warden) | Forged Heart |
+| 11th | 230,000 | Find 5 secret spells; **Fusion** (fuse two effects at the Fusion Altar) | Woven Wisdom |
+| 12th | 300,000 | Slay 20 Runebound; **Low Tide** (defeat the Tide Scribe) | Ocean Within |
+| 13th | 380,000 | Know 90 runes; set off 8 different reactions | Boundless Study |
+| 14th | 470,000 | Defeat 400 monsters with spells; **Starbreaker** (defeat the Star-Eater) | Starheart |
+| 15th | 570,000 | Find 7 secret spells; **Knotted** (tie a spell into a Knot) | Living Grimoire |
+| 16th | 680,000 | Slay 40 Runebound; **Heartwood** (defeat the Root Guardian) | Rooted Heart |
+| 17th | 800,000 | Know 120 runes; set off 10 different reactions | Prismatic Heart |
+| 18th | 930,000 | Defeat 650 monsters with spells; **Grounded** (defeat the Storm Conductor) | Stormheart |
+| 19th | 1,070,000 | Find 9 secret spells; set off all 11 different reactions | Convergence |
+| 20th | 1,220,000 | Defeat 1,000 monsters with spells; slay 100 Runebound; find all 10 secret spells | Master Heart |
+
+
+### Trial contract
+
+A master offers a lethal, voluntary trial. Talking twice confirms the individual player's entry; an invitation or party membership alone never enrolls them. Up to eight players may opt in during the thirty-second preparation. The original challenger can start early with `/master ready`. At the start, roster size locks health, stance and attack coverage. Death, disconnection or leaving the arena forfeits that participant without making the remaining fight weaker. Bystanders are excluded from targeting, damage, status changes and clash interception. Survival players at Aura Form or Heart Circle VIII can sneak-talk to an ordinary teacher twice to request a temporary introduction; talking to the invited Master is a separate consent step. Trials are temporary. A legitimate first clear permanently records the school and teaches its existing part: Ember Echo, Gale Afterimage or Stone Sunder. Already-known lessons grant only the record; there is no repeatable item or experience payout.
+
+Master attacks have readable windups, fixed aim before impact and guaranteed recovery. Their Aura pays for attacks, guards, evasions and projectile responses; exhausting it opens a breathing window. A frontal cut consumes a local hostile bolt only, leaving its siblings and unrelated zones alive. Only simple harmful bolts can be redirected, and only once. Solid cover, facing, incoming direction and current ownership are checked at the action. Returned bolts and crescents retain their originating trial audience through later parries and clashes; uninvolved bodies cannot consume their hit budget. Swept collider checks and target visibility prevent fast crescents tunneling through cover.
+
+### New combat input
+
+The three initial rebindable moves send only an action number. The server supplies stage, weapon, resources, cooldown, position, aim and targets. Accepted moves pay before the windup; damage occurs on the active frame. Taking damage, interruption, changing worlds or weapons, leaving the server or becoming ineligible cancels the pending hit without refunding its committed recovery. Ordinary attacks, other Aura moves and casting wait until that recovery ends.
+
+- Spellcut (Edge, G): cut nearby incoming hostile bolts and sweep in front; 14 Aura, 3-second individual rest.
+- Rising Break (Form, H): a rising close strike with extra stance pressure and ordinary-mob lift; 20 Aura, 5-second rest.
+- Driving Cut (Form, J): a narrow five-block thrust that interrupts a caster it actually hurts; 18 Aura, 4-second rest.
+
+These actions and the first form of each of the ten breathing styles now share authoritative windup, active-frame and recovery scheduling, with distinct original rigid-limb body/weapon motion. Their existing string inputs, prices and cooldowns remain. Server-observed strokes replace client-claimed swing marks, and each accepted proof is consumed once. The other forty style arts retain their existing effects and still need full-body choreography. Ordinary held-slot/selected-stack changes latch cancellation immediately, including a same-tick switch away and back; persistent direct equipment changes also receive tick and impact checks.
+
+### Cooperation
+
+Parties use explicit invitations and acceptance, with eight slots and leader-controlled invitations, removal and disbanding. They survive death, dimensions and reconnects for the current server session; restarting the server clears parties. Harm is checked when it lands, including source-preserving delayed callbacks and player-owned summons. Joining is not a cleanse of pre-existing status effects. Beneficial support and self-costs remain valid, as does the existing explicit duel exception.
+
+### Remaining balance work
+
+Normal and Hard now give Gloomstalkers and Bog Witch-Frogs more active pursuit and shorter idle gaps while preserving their health, damage, tells and Easy cadence. The expanded resource ceiling still demands a wider review of ordinary mobs, dungeon bosses and gear. The initial trial deliberately does not silently turn early-game teachers or every creature into an endgame enemy. Elite encounter profiles, more authored move sequences and a full post-Protection-IV gameplay matrix remain pending native verification and tuning.

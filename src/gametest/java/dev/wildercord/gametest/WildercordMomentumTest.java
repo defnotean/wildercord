@@ -265,13 +265,14 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 				return null;
 			});
 			context.waitTicks(5);
-			taken[i] = on(world, player -> {
-				Mob husk = foes(player).getFirst();
-				float hp = husk.getHealth();
+			float hp = on(world, player -> {
+				float before = foes(player).getFirst().getHealth();
 				AuraApi.StringArt art = AuraApi.string(EmberArts.KINDLING_DRAW).orElseThrow();
-				SwordStrings.perform(player, art, marks(art));
-				return hp - husk.getHealth();
+				check(SwordStrings.perform(player, art, marks(art)), "Kindling Draw enters its windup");
+				return before;
 			});
+			context.waitTicks(dev.wildercord.aura.MastersStyleRules.of(EmberArts.KINDLING_DRAW).windup());
+			taken[i] = hp - on(world, player -> foes(player).getFirst().getHealth());
 		}
 		double ratio = taken[1] / Math.max(0.01, taken[0]);
 		check(ratio > 1.14 && ratio < 1.26, "an art at the peak should strike a fifth harder (" + taken[0] + " then " + taken[1] + ")");
@@ -465,13 +466,17 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			return null;
 		});
 		context.waitTicks(10);
+		float hp = on(world, player -> {
+			float before = foes(player).getFirst().getHealth();
+			AuraApi.StringArt kindling = AuraApi.string(EmberArts.KINDLING_DRAW).orElseThrow();
+			check(SwordStrings.perform(player, kindling, marks(kindling)), "Kindling Draw enters its stance-wearing windup");
+			return before;
+		});
+		context.waitTicks(dev.wildercord.aura.MastersStyleRules.of(EmberArts.KINDLING_DRAW).windup());
 		double[] art = on(world, player -> {
 			Mob husk = foes(player).getFirst();
-			float hp = husk.getHealth();
-			AuraApi.StringArt kindling = AuraApi.string(EmberArts.KINDLING_DRAW).orElseThrow();
-			SwordStrings.perform(player, kindling, marks(kindling));
-			Stance.State s = Stance.state(husk);
-			return new double[] {s == null ? 0 : s.wornAt(player.level().getGameTime()), hp - husk.getHealth()};
+			Stance.State state = Stance.state(husk);
+			return new double[] {state == null ? 0 : state.wornAt(player.level().getGameTime()), hp - husk.getHealth()};
 		});
 		// For what it deals, an art wears twice what a blow does (a blow wears what it deals).
 		check(art[1] > 0 && art[0] / art[1] > 1.6, "an art should wear more than a blow for what it deals (" + art[0] + " worn by " + art[1] + " dealt)");

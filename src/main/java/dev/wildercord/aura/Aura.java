@@ -461,6 +461,7 @@ public final class Aura {
 
 	/** Sets off the technique a trigger gives the player's stage; says why not when there's none. */
 	public static boolean press(ServerPlayer player, AuraApi.Trigger trigger) {
+		if (MastersArts.committed(player)) return false;
 		if (!player.isAlive() || player.isSpectator()) {
 			return false;
 		}
@@ -492,7 +493,7 @@ public final class Aura {
 			return false;
 		}
 		try {
-			return technique.get().performer().perform(player);
+			return dev.wildercord.cast.Effects.withSource(player, () -> technique.get().performer().perform(player));
 		} catch (RuntimeException e) {
 			Wildercord.LOGGER.warn("Aura technique {} threw", technique.get().id(), e);
 			return false;
@@ -527,6 +528,7 @@ public final class Aura {
 		SwordStrings.init();
 		// Aura's feel: trails, impacts, banners, bursts and the body's aura, drawn by each client as it sees them.
 		AuraFx.init();
+		MastersArts.init();
 		// Momentum (a clean fight fills it; the Final Art waits on its peak) and stance (worn by blade and aura, broken into an opening
 		// and a finisher).
 		Momentum.init();

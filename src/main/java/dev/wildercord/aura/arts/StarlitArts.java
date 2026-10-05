@@ -107,7 +107,7 @@ public final class StarlitArts {
 	static boolean starNeedle(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
-		Vec3 look = player.getViewVector(1.0F);
+		Vec3 look = ArtKit.view(player);
 		Vec3 aim = new Vec3(look.x, look.y * 0.35, look.z).normalize();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.THRUST, false, 1.4F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);

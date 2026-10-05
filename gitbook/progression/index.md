@@ -6,13 +6,13 @@ your Grimoire, what you do grows your affinity with each element, and the world 
 things that feed your magic.
 
 ![The Cord screen's Passives page, with the heart badge's tooltip open: Heart 8th Circle, +120 max mana, +4.0 mana/s, +24% spell power, and the four perks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/heart.png)
-<span>A complete heart: all eight circles and their perks.</span>
+<span>The original Archmage milestone: eight circles and all four perks. Progress now continues to twenty.</span>
 
 ## At a glance
 
 | Way to grow | What it gives | Page |
 |---|---|---|
-| **Heart Circles** | Eight rings of condensed mana: more mana, faster regeneration, more power, passive slots, your innate rune, and four perks. | [Heart Circles](heart-circles.md) |
+| **Heart Circles** | Twenty rings of condensed mana: more mana, faster regeneration, more power, passive slots, your innate rune, and four perks. | [Heart Circles](heart-circles.md) |
 | **The Grimoire and feats** | A record of everything you've discovered. Every first discovery condenses mana toward your next circle. | [The Grimoire and Feats](grimoire.md) |
 | **Aura** | The swordsman's path: a breathing method, aura gathered from real blows and a steady breath, and five stages (Glow, Flow, Edge, Form, Sovereign) reached by breakthroughs, with a blade that can carry your spells. No Cord needed. | [Aura](aura.md) |
 | **Ways** | At the Edge breakthrough a swordsman chooses the Blade, the Bulwark, the Shadowstep or the Banner, which changes how they fight at Edge, Form and Sovereign. | [Ways](ways.md) |

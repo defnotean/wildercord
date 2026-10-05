@@ -834,6 +834,11 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			// Jump to seven circles and form the eighth, for the ring screenshot.
 			player.setAttached(dev.wildercord.player.WildercordAttachments.CIRCLES, 7);
 			player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, 99999);
+			Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));
+			var discoveries = new java.util.ArrayList<>(dev.wildercord.player.Heart.grimoire(player));
+			discoveries.add("feat:" + dev.wildercord.spell.Feats.ARCHIVIST);
+			dev.wildercord.spell.Secrets.ALL.stream().limit(4).map(dev.wildercord.spell.Secrets.Secret::key).forEach(discoveries::add);
+			player.setAttached(dev.wildercord.player.WildercordAttachments.GRIMOIRE, discoveries.stream().distinct().toList());
 			dev.wildercord.cast.HeartCircles.form(player);
 		});
 		context.runOnClient(mc -> {

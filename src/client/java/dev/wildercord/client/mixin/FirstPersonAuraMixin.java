@@ -19,6 +19,8 @@ public abstract class FirstPersonAuraMixin {
 	@Inject(method = "submitArmWithItem", at = @At("HEAD"))
 	private void wildercord$auraBegin(PlayerRenderState player, FirstPersonHandsAndItemsRenderState state, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector, int light, CallbackInfo ci) {
+		pose.pushPose();
+		dev.wildercord.client.MastersArtPose.firstPerson(pose, hand, player.avatarRenderState, inverseArmHeight);
 		AuraBlade.beginFirstPerson(hand == InteractionHand.MAIN_HAND, stack);
 	}
 
@@ -26,5 +28,6 @@ public abstract class FirstPersonAuraMixin {
 	private void wildercord$auraEnd(PlayerRenderState player, FirstPersonHandsAndItemsRenderState state, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector, int light, CallbackInfo ci) {
 		AuraBlade.end();
+		pose.popPose();
 	}
 }

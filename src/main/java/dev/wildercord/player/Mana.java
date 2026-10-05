@@ -21,7 +21,7 @@ import java.util.Optional;
  *
  * <ul>
  *   <li><b>Cord</b>: the base max mana and regeneration (see {@link CordTier}).</li>
- *   <li><b>Mana Crystals</b>: +10 max mana each, permanently, up to 10.</li>
+ *   <li><b>Mana Crystals</b>: +10 max mana each, permanently, up to 100.</li>
  *   <li><b>Reservoir</b> (Cord enchantment): +25 max mana per level.</li>
  *   <li><b>Wellspring</b> (Cord enchantment): +25% regeneration per level.</li>
  *   <li><b>Clarity</b> (potion effect): +50% regeneration per level.</li>
@@ -34,8 +34,8 @@ import java.util.Optional;
 public final class Mana {
 	private Mana() {}
 
-	public static final int CRYSTAL_MANA = 10;
-	public static final int MAX_CRYSTALS = 10;
+	public static final int CRYSTAL_MANA = ManaCrystalRules.MANA_PER_CRYSTAL;
+	public static final int MAX_CRYSTALS = ManaCrystalRules.MAX_CRYSTALS;
 	public static final int RESERVOIR_MANA = 25;
 	public static final float WELLSPRING_BONUS = 0.25F;
 	public static final float CLARITY_BONUS = 0.5F;
@@ -92,7 +92,7 @@ public final class Mana {
 	}
 
 	public static int crystals(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CRYSTALS, 0);
+		return ManaCrystalRules.count(player.getAttachedOrElse(WildercordAttachments.CRYSTALS, 0));
 	}
 
 	/** Adds mana, capped at the player's max. */

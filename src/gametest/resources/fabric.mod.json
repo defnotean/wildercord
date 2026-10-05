@@ -256,7 +256,22 @@
       "dev.wildercord.wildlife.RainshieldAckTest",
       "dev.wildercord.cast.WardPaymentLifecycleTest",
       "dev.wildercord.cast.WardPaymentRetirementTest",
-      "dev.wildercord.cast.WardReflectReceiptTest"
+      "dev.wildercord.cast.WardReflectReceiptTest",
+      "dev.wildercord.party.PartyMutationSafetyTest",
+      "dev.wildercord.gametest.WildercordHeartCirclesTest",
+      "dev.wildercord.gametest.WildercordMastersArtsTest",
+      "dev.wildercord.aura.world.SwordMasterTrialTest",
+      "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",
+      "dev.wildercord.party.PartyOfflineProjectileTest",
+      "dev.wildercord.aura.MastersStyleTimelineTest",
+      "dev.wildercord.aura.world.DuelistMasterAccessTest",
+      "dev.wildercord.monster.WildMonsterPressureTest",
+      "dev.wildercord.aura.world.MasterVictoriesTest",
+      "dev.wildercord.aura.world.MasterAntiAirTest",
+      "dev.wildercord.client.auraworld.MasterModelPresentationTest",
+      "dev.wildercord.aura.SwordStringAuthorityTest",
+      "dev.wildercord.aura.CrescentCoverTest",
+      "dev.wildercord.aura.CrescentAudienceTest"
     ]
   },
   "mixins": [

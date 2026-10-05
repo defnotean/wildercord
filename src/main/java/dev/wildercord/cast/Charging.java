@@ -126,6 +126,7 @@ public final class Charging {
 	}
 
 	public static void request(ServerPlayer player, int requested, boolean start) {
+		if (dev.wildercord.aura.MastersArts.committed(player)) return;
 		if (start) {
 			begin(player, requested);
 			return;
@@ -242,11 +243,12 @@ public final class Charging {
 
 	/**
 	 * Breaks a player's charge (a Windcut, a silence, Manaburn): the circle closes and the release that follows does nothing.
-	 * Returns whether there was a charge.
+	 * Returns whether there was a charge or an interruptible Aura performance.
 	 */
 	public static boolean interrupt(ServerPlayer player) {
+		boolean artInterrupted = dev.wildercord.aura.MastersArts.cancel(player);
 		if (!player.hasAttached(WildercordAttachments.CHARGE)) {
-			return false;
+			return artInterrupted;
 		}
 		stop(player);
 		FIZZLED.add(player.getUUID());

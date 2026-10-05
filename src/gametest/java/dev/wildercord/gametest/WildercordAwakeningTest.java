@@ -376,6 +376,8 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 			return went && Math.abs(left - 30) < 1.0E-3 ? null : "an art played awakened should spend nothing (" + went + ", " + left + " left of 30)";
 		});
 		check(paid == null, paid);
+		var firstTiming = dev.wildercord.aura.MastersStyleRules.of(EmberArts.KINDLING_DRAW);
+		context.waitTicks(firstTiming.windup() + firstTiming.recovery());
 		// Momentum holds at its peak, even through a hit taken.
 		String held = on(world, player -> {
 			double before = Momentum.value(player);

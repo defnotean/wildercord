@@ -119,6 +119,7 @@ public class SpellScrollItem extends Item {
 
 	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		if (player instanceof ServerPlayer server && dev.wildercord.aura.MastersArts.committed(server)) return InteractionResult.FAIL;
 		ItemStack stack = player.getItemInHand(hand);
 		ScrollSpell scroll = stack.get(WildercordComponents.SCROLL);
 		if (scroll == null) {

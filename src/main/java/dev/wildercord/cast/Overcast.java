@@ -90,7 +90,7 @@ public final class Overcast {
 		ServerLevel level = player.level();
 		Vec3 heart = player.position().add(0, 1.2, 0);
 		// The ring bursts: it snaps outward in red light and breaks into shards, and the circle breaks on the ground.
-		double r = 0.3 + 0.09 * (active - 1);
+		double r = Circles.ringRadius(active);
 		Vec3 up = new Vec3(0, 1, 0);
 		ElementFx.ring(level, heart, up, CRACK, r, r + 1.6, 0.05, 7);
 		ElementFx.ring(level, heart, up, 0xFFE0C0, r, r + 1.1, 0.03, 9);

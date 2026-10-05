@@ -121,6 +121,27 @@ public final class Effects {
 		return applyingCast;
 	}
 
+	/**
+	 * Attribute non-spell actions (a sword art or a projectile's impact) without borrowing an
+	 * unrelated spell's cast. Nested calls and failures always restore their caller's context.
+	 */
+	public static <T> T withSource(LivingEntity source, java.util.function.Supplier<T> action) {
+		LivingEntity outerApplying = applying;
+		Cast outerCast = applyingCast;
+		applying = source;
+		applyingCast = null;
+		try {
+			return action.get();
+		} finally {
+			applying = outerApplying;
+			applyingCast = outerCast;
+		}
+	}
+
+	public static void withSource(LivingEntity source, Runnable action) {
+		withSource(source, () -> { action.run(); return null; });
+	}
+
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
 		if(Runes.innate(node.effect) && cast.caster instanceof ServerPlayer owner && !owner.isCreative()
@@ -172,22 +193,29 @@ public final class Effects {
 	 * Unison.
 	 */
 	static Runnable carryContext(Runnable task) {
-		if (executeBonus == 1.0 && openingBonus == 1.0 && currentElement.isEmpty() && thirst == 0) {
+		if (executeBonus == 1.0 && openingBonus == 1.0 && currentElement.isEmpty() && thirst == 0
+				&& applying == null && applyingCast == null) {
 			return task;
 		}
 		double bonus = executeBonus;
 		double opening = openingBonus;
 		String element = currentElement;
 		double drinks = thirst;
+		LivingEntity source = applying;
+		Cast sourceCast = applyingCast;
 		return () -> {
 			double outerBonus = executeBonus;
 			double outerOpening = openingBonus;
 			String outerElement = currentElement;
 			double outerThirst = thirst;
+			LivingEntity outerApplying = applying;
+			Cast outerCast = applyingCast;
 			executeBonus = bonus;
 			openingBonus = opening;
 			currentElement = element;
 			thirst = drinks;
+			applying = source;
+			applyingCast = sourceCast;
 			try {
 				task.run();
 			} finally {
@@ -195,6 +223,8 @@ public final class Effects {
 				openingBonus = outerOpening;
 				currentElement = outerElement;
 				thirst = outerThirst;
+				applying = outerApplying;
+				applyingCast = outerCast;
 			}
 		};
 	}
@@ -854,6 +884,7 @@ public final class Effects {
 	}
 
 	static void push(LivingEntity target, Vec3 impulse) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		// Anchor: nothing a spell does moves it.
 		if (VoidTime.anchored(target)) {
 			if (impulse.lengthSqr() > 0.09 && target.level() instanceof ServerLevel level) {
@@ -944,6 +975,8 @@ public final class Effects {
 	/** Finite effect admission runs after bonuses and before shared payment and defence. */
 	static void hurtCapped(Cast cast, LivingEntity target, DamageSource source, double amount,
 			java.util.function.DoubleUnaryOperator finalAdmission) {
+		// A delayed hit rechecks relationships before shields, reactions or shared budgets are paid.
+		if (!Targets.canHarm(cast.caster, target)) return;
 		// Damage that didn't come through a shape's hit (a meteor landing, a secret spell's blast) meets a Shield here.
 		if (Shields.stops(cast, target, cast.caster.getEyePosition())) {
 			return;
@@ -2971,7 +3004,7 @@ public final class Effects {
 			// The ring travels: the nearest are struck at once, the farthest six ticks later.
 			int delay = (int) Math.round(6 * Math.min(1.0, t.getBoundingBox().getCenter().distanceTo(point) / Math.max(0.5, radius)));
 			Runnable strike = () -> {
-				if (!t.isAlive() || t.level() != cast.level) {
+				if (!cast.alive() || !t.isAlive() || t.level() != cast.level || !Targets.canHarm(cast.caster, t)) {
 					return;
 				}
 				hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), 4 * power);

@@ -301,19 +301,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (ArtWards.crusts(a) != 1) {
 				return "it should carry one crust (" + ArtWards.crusts(a) + ")";
 			}
-			// Two more, and it freezes solid.
-			AuraApi.StringArt art = AuraApi.string(RimeArts.FROSTBITE).orElseThrow();
-			StringBuilder seen = new StringBuilder();
-			for (int i = 0; i < 2; i++) {
-				p.removeAttached(SwordStrings.COOLDOWNS);
-				// It comes back in (the blows threw it back), and takes the next.
-				Vec3 back = at(0, 2.2);
-				a.teleportTo(back.x, back.y, back.z);
-				boolean went = SwordStrings.perform(p, art, marks(art));
-				seen.append(String.format(java.util.Locale.ROOT, " %s, %d crusts at %.1f;", went, ArtWards.crusts(a), a.distanceTo(p)));
-			}
-			return RimeArts.frozen(a) && a.isNoAi() ? null : "the third crust should freeze it solid (" + seen + " frozen " + RimeArts.frozen(a)
-				+ ", held " + a.isNoAi() + ")";
+			return null; // The two additional paid windups are tested outside this synchronous assertion below.
 		}));
 		out.add(new Scene(RimeArts.HAILFALL, "rime", AuraApi.ArtSlot.SECOND, List.of(foe(0, 2.2), foe(0.8, 3.6), foe(-1.0, 3.9)), 10, 12, (p, b) -> {
 			int struck = 0;
@@ -961,7 +949,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				lowSwing(context);
 			}
 		}
-		context.waitTicks(scene.fpDelay);
+		context.waitTicks(scene.fpDelay + styleWindup(scene.id));
 		shot(context, "art_" + scene.id + "_fp");
 		int settle = Math.max(4, settleTicks(scene) - scene.fpDelay);
 		context.waitTicks(settle);
@@ -987,6 +975,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			return Heart.grimoire(player).contains(ArtRules.grimoireKey(scene.id)) ? null : "it should go into the Grimoire";
 		});
 		check(paid == null, scene.id + ": " + paid);
+		if (scene.id.equals(RimeArts.FROSTBITE)) thirdCrust(context, world);
 		// ---- played again, from behind and above.
 		boolean finalArt = scene.slot == AuraApi.ArtSlot.FINAL;
 		for (int view = 0; view < (finalArt ? 2 : 1); view++) {
@@ -1037,7 +1026,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				});
 				context.waitTicks(Math.max(1, scene.tpDelay - ArtRules.SPEAR_CHARGE - 1));
 			} else {
-				context.waitTicks(scene.tpDelay);
+				context.waitTicks(scene.tpDelay + styleWindup(scene.id));
 			}
 			shot(context, "art_" + scene.id + (night ? "_night" : "_tp"));
 			if (!night && scene.id.equals(GaleArts.HUNDRED_WINDS) || scene.id.equals(dev.wildercord.aura.arts.ThunderArts.HEAVENS_SPEAR)) {
@@ -1058,6 +1047,36 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				mc.gui.hud.toggle();
 			}
 		});
+	}
+
+	private static int styleWindup(String id) {
+		var style = dev.wildercord.aura.MastersStyleRules.of(id);
+		return style == null ? 0 : style.windup();
+	}
+
+	/** Three actual Frostbite performances, respecting each committed windup/recovery, must still freeze on the third crust. */
+	private static void thirdCrust(ClientGameTestContext context, TestSingleplayerContext world) {
+		var timing = dev.wildercord.aura.MastersStyleRules.of(RimeArts.FROSTBITE);
+		for (int i = 0; i < 2; i++) {
+			context.waitTicks(timing.recovery() + 1);
+			String result = on(world, player -> {
+				player.removeAttached(SwordStrings.COOLDOWNS);
+				Mob foe = foes(player).getFirst();
+				Vec3 back = at(0, 2.2);
+				foe.teleportTo(back.x, back.y, back.z);
+				foe.setDeltaMovement(Vec3.ZERO);
+				AuraApi.StringArt art = AuraApi.string(RimeArts.FROSTBITE).orElseThrow();
+				return SwordStrings.perform(player, art, marks(art)) ? null : "the next Frostbite windup was refused";
+			});
+			check(result == null, result);
+			context.waitTicks(timing.windup() + 2);
+		}
+		String frozen = on(world, player -> {
+			Mob foe = foes(player).getFirst();
+			return RimeArts.frozen(foe) && foe.isNoAi() ? null : "the third crust should freeze it solid (crusts="
+				+ ArtWards.crusts(foe) + ", frozen=" + RimeArts.frozen(foe) + ", held=" + foe.isNoAi() + ")";
+		});
+		check(frozen == null, frozen);
 	}
 
 	/**

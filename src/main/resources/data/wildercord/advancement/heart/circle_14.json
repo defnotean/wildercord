@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:heart/circle_13",
+  "criteria": {
+    "circle_14": {
+      "trigger": "wildercord:heart_circle",
+      "conditions": {
+        "level": 14
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:starfall"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.heart.circle_14.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.heart.circle_14.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "circle_14"
+    ]
+  ],
+  "rewards": {
+    "experience": 225
+  }
+}

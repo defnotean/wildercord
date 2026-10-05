@@ -25,7 +25,7 @@ public final class Heart {
 	public static final ResourceKey<Enchantment> PERSISTENCE = ResourceKey.create(Registries.ENCHANTMENT, Wildercord.id("persistence"));
 
 	public static int circles(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CIRCLES, 0);
+		return Circles.count(player.getAttachedOrElse(WildercordAttachments.CIRCLES, 0));
 	}
 
 	/**
@@ -37,7 +37,7 @@ public final class Heart {
 	}
 
 	public static int cracked(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE).active(player.level().getGameTime());
+		return Math.clamp(player.getAttachedOrElse(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE).active(player.level().getGameTime()), 0, circles(player));
 	}
 
 	public static List<String> grimoire(Player player) {
@@ -77,7 +77,7 @@ public final class Heart {
 	}
 
 	public static int condensed(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CONDENSED, 0);
+		return Math.max(0, player.getAttachedOrElse(WildercordAttachments.CONDENSED, 0));
 	}
 
 	public static boolean bossSlain(Player player) {
@@ -111,6 +111,7 @@ public final class Heart {
 
 	/** Whether every breakthrough for circle {@code n} has been earned. */
 	public static boolean breakthroughMet(Player player, int n) {
+		if (n < 1 || n > Circles.MAX) return false;
 		for (Circles.Requirement requirement : Circles.requirements(n)) {
 			if (!met(player, requirement)) {
 				return false;
@@ -122,7 +123,7 @@ public final class Heart {
 	/** Ready to form the next circle: a Cord is worn, enough mana has condensed, and the breakthrough is earned. */
 	public static boolean ready(Player player) {
 		int next = circles(player) + 1;
-		return next <= Circles.MAX && Spellbooks.tier(player) != null
+		return player.isAlive() && !player.isSpectator() && next <= Circles.MAX && Spellbooks.tier(player) != null
 			&& condensed(player) >= Circles.condenseNeeded(next) && breakthroughMet(player, next);
 	}
 

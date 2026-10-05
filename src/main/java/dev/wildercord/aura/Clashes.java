@@ -9,6 +9,8 @@ import dev.wildercord.cast.ScreenFx;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.config.Config;
 import dev.wildercord.content.WildercordSounds;
+import dev.wildercord.duel.Duels;
+import dev.wildercord.party.Parties;
 import dev.wildercord.net.PacketThrottle;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -253,9 +255,42 @@ public final class Clashes {
 		return ClashRules.rested(last == null ? Long.MIN_VALUE : last, now);
 	}
 
-	/** Whether two owners are allies, whose strikes pass through each other: two players on the same side (the Way of the Banner's rule). */
+	/** An agreed, active duel overrides party protection; ordinary party and Banner allies pass through each other. */
 	static boolean allies(LivingEntity x, LivingEntity y) {
-		return x instanceof ServerPlayer p && y instanceof Player q && WayBanner.ally(p, q);
+		if (Boolean.TRUE.equals(Duels.canHarm(x, y)) || Boolean.TRUE.equals(Duels.canHarm(y, x))) return false;
+		return Parties.sameParty(x, y) || x instanceof ServerPlayer p && y instanceof Player q && WayBanner.ally(p, q);
+	}
+
+	/** A clash is an interaction, so it uses the same party, explicit-duel and opt-in-trial boundaries as harm. */
+	private static boolean opposed(LivingEntity x, LivingEntity y) {
+		return x != y && x.level() == y.level() && !allies(x, y)
+			&& permits(x, y) && permits(y, x);
+	}
+
+	private static boolean permits(LivingEntity owner, Entity target) {
+		Boolean duel = Duels.canHarm(owner, target);
+		return duel != null ? duel : !Parties.blocksHarm(owner, target);
+	}
+
+	static boolean mayMeet(Crescents.Flight x, Crescents.Flight y) {
+		return opposed(x.caster, y.caster) && x.trialTarget(y.caster) && y.trialTarget(x.caster);
+	}
+
+	/** Both strikes must admit a bystander before the burst may move them. The owners may still push each other. */
+	static boolean mayPush(LivingEntity a, Crescents.Flight fa, LivingEntity b, Crescents.Flight fb, LivingEntity target) {
+		return pushAudience(a, fa, target) && pushAudience(b, fb, target);
+	}
+
+	private static boolean pushAudience(LivingEntity owner, Crescents.Flight flight, LivingEntity target) {
+		if (flight != null && flight.trialMaster != null && (!flight.trialActive()
+				|| target != flight.trialMaster && !flight.trialMaster.canHarmParticipant(target))) return false;
+		return target == owner || !allies(owner, target) && permits(owner, target);
+	}
+
+	/** Recheck at resolution too: joining a party or leaving a trial during the lock cannot authorize a stale strike. */
+	private static boolean admitted(Clash c) {
+		return opposed(c.a.entity, c.b.entity) && (c.a.flight == null || c.a.flight.trialTarget(c.b.entity))
+			&& (c.b.flight == null || c.b.flight.trialTarget(c.a.entity));
 	}
 
 	// ------------------------------------------------------------------ meeting
@@ -266,7 +301,7 @@ public final class Clashes {
 		LOCKED,
 		/** They break each other in a burst (clashes off, one owner already clashing, or these two clashed a moment ago). */
 		BREAK,
-		/** They pass through each other (allies). */
+		/** They pass through each other (allies, protected duellists, or outside the other strike's trial). */
 		PASS
 	}
 
@@ -274,7 +309,7 @@ public final class Clashes {
 	static Meeting meet(Crescents.Flight x, Crescents.Flight y) {
 		LivingEntity cx = x.caster;
 		LivingEntity cy = y.caster;
-		if (allies(cx, cy)) {
+		if (!mayMeet(x, y)) {
 			return Meeting.PASS;
 		}
 		long now = x.level.getGameTime();
@@ -318,7 +353,8 @@ public final class Clashes {
 		Crescents.Flight best = null;
 		double nearest = ClashRules.MEET_REACH * ClashRules.MEET_REACH;
 		for (Crescents.Flight f : Crescents.inFlight()) {
-			if (f.done || f.held || f.caster == player || f.level != player.level() || allies(player, f.caster) || clashing(f.caster)) {
+			if (f.done || f.held || f.caster == player || f.level != player.level()
+					|| !opposed(player, f.caster) || !f.trialTarget(player) || clashing(f.caster)) {
 				continue;
 			}
 			Vec3 to = f.front.subtract(eye);
@@ -350,7 +386,7 @@ public final class Clashes {
 		}
 		Player foe = player.level().getPlayerByUUID(struck.by());
 		if (!(foe instanceof ServerPlayer first) || !first.isAlive() || first.distanceTo(player) > ClashRules.ANSWER_REACH || clashing(first)
-				|| !rested(player, first, now)) {
+				|| !opposed(player, first) || !rested(player, first, now)) {
 			return false;
 		}
 		Vec3 toFoe = flat(first.position().subtract(player.position()));
@@ -474,6 +510,10 @@ public final class Clashes {
 			}
 			long now = c.level.getGameTime();
 			int t = (int) (now - c.start);
+			if (!admitted(c)) {
+				resolve(c, ClashRules.Outcome.EVEN);
+				continue;
+			}
 			// A side gone (dead, away, its crescent's owner fallen) loses; both gone, it's even.
 			boolean aGone = gone(c, c.a);
 			boolean bGone = gone(c, c.b);
@@ -538,6 +578,8 @@ public final class Clashes {
 		if (c.done) {
 			return;
 		}
+		boolean admitted = admitted(c);
+		if (!admitted) forced = ClashRules.Outcome.EVEN;
 		c.done = true;
 		ACTIVE.remove(c.id);
 		if (BY_ENTITY.get(c.a.entity.getUUID()) == c.id) {
@@ -604,7 +646,9 @@ public final class Clashes {
 			ScreenFx.shake(c.level, point, 0.2F, 10);
 			for (Entity e : c.level.getEntities((Entity) null, new AABB(point, point).inflate(AuraWorldRules.CLASH_RADIUS),
 					e -> e instanceof LivingEntity && e.isAlive() && !e.isSpectator())) {
-				dev.wildercord.monster.MonsterMagic.knock((LivingEntity) e, point, AuraWorldRules.CLASH_PUSH);
+				if (admitted && mayPush(c.a.entity, c.a.flight, c.b.entity, c.b.flight, (LivingEntity) e)) {
+					dev.wildercord.monster.MonsterMagic.knock((LivingEntity) e, point, AuraWorldRules.CLASH_PUSH);
+				}
 			}
 		}
 		for (AuraApi.ClashHook hook : AuraApi.clashHooks()) {

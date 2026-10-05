@@ -47,6 +47,10 @@ public final class AuraWorld {
 	public static final EntityType<FallenKnight> FALLEN_KNIGHT = register("fallen_knight",
 		EntityType.Builder.of(FallenKnight::new, MobCategory.MONSTER).sized(0.7F, 2.05F).eyeHeight(1.72F).clientTrackingRange(8).notInPeaceful());
 
+	/** An opt-in endgame encounter; never part of natural spawning. */
+	public static final EntityType<SwordMaster> SWORD_MASTER = register("sword_master",
+		EntityType.Builder.of(SwordMaster::new, MobCategory.CREATURE).sized(0.6F, 1.95F).eyeHeight(1.62F).clientTrackingRange(12));
+
 	/** A page of a breathing manual (its method a component, as a manual's is). */
 	public static final Item MANUAL_PAGE = item("manual_page", p -> new ManualPageItem(p.stacksTo(16).rarity(Rarity.UNCOMMON)));
 	/** A sliver of a fallen knight's aura, set hard: the smithing template for aura-forged weapons, and the sash's heart. */
@@ -55,6 +59,7 @@ public final class AuraWorld {
 	public static final List<Item> SPAWN_EGGS = new ArrayList<>();
 	public static final Item DUELIST_SPAWN_EGG = egg("duelist", DUELIST);
 	public static final Item FALLEN_KNIGHT_SPAWN_EGG = egg("fallen_knight", FALLEN_KNIGHT);
+	public static final Item SWORD_MASTER_SPAWN_EGG = egg("sword_master", SWORD_MASTER);
 
 	private static <T extends net.minecraft.world.entity.Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
 		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id(id));
@@ -112,6 +117,9 @@ public final class AuraWorld {
 		VillageTournaments.init();
 		FabricDefaultAttributeRegistry.register(DUELIST, Duelist.createAttributes());
 		FabricDefaultAttributeRegistry.register(FALLEN_KNIGHT, FallenKnight.createAttributes());
+		FabricDefaultAttributeRegistry.register(SWORD_MASTER, SwordMaster.createAttributes());
+		SwordMaster.init();
+		MastersCommand.init();
 		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Wildercord.id("manual_pages"), ManualPagesRecipe.SERIALIZER);
 		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("knight_method"), KnightLoot.MAP_CODEC);
 		// Into the field guide: the duelist among the wanderers, the knight among the monsters.

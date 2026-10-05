@@ -81,6 +81,12 @@ public class AuraScreen extends Screen {
 		this.parent = parent;
 	}
 
+	/** The control-help label's centre, for native accessibility and presentation tests. */
+	public double[] mastersHelpPoint() {
+		int labelWidth = font.width(Component.translatable("screen.wildercord.aura.masters_help"));
+		return new double[] {left() + (W - 14 - labelWidth / 2.0) * scale(), top() + 14 * scale()};
+	}
+
 	@Override
 	protected void init() {
 		super.init();
@@ -174,6 +180,14 @@ public class AuraScreen extends Screen {
 		g.pose().translate(left(), top());
 		g.pose().scale(s, s);
 		List<Component> tooltip = draw(g, mx, my, partial);
+		// A fixed, rebinding-aware help label remains visible on every Aura tab, without squeezing
+		// three more rows into the stage-dependent technique list.
+		Component masters = Component.translatable("screen.wildercord.aura.masters_help");
+		int mastersWidth = font.width(masters);
+		int mastersX = W - 14 - mastersWidth;
+		boolean mastersHover = inside(mx, my, mastersX - 2, 8, mastersWidth + 4, 12);
+		g.text(font, masters, mastersX, 10, mastersHover ? GOLD : DIM, true);
+		if (mastersHover) tooltip = MastersArtsClient.help();
 		g.pose().popMatrix();
 		if (tooltip != null) {
 			g.setTooltipForNextFrame(font, Tooltips.fit(font, tooltip, width, height), mouseX, mouseY);

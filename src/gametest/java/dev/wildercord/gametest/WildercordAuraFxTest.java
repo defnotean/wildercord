@@ -588,7 +588,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 				return SwordStrings.perform(player, art, marks) ? null : id + " didn't go off";
 			});
 			check(done == null, done);
-			context.waitTicks(3);
+			context.waitTicks(3 + styleWindup(id));
 			shot(context, "aurafx_art_" + (i + 1) + (night ? "_night" : "_day"));
 			int[] after = context.computeOnClient(mc -> AuraFxClient.counts());
 			String stroke = context.computeOnClient(mc -> AuraFxClient.lastOwnStroke());
@@ -613,7 +613,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 					SwordStrings.perform(player, art, art.string().tokens().stream().map(t -> SwordString.Token.marks(t)).toList());
 					return null;
 				});
-				context.waitTicks(3);
+				context.waitTicks(3 + styleWindup(id));
 				shot(context, "aurafx_art_" + (i + 1) + "_fp");
 			}
 		}
@@ -845,4 +845,9 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 	private static ServerPlayer player(MinecraftServer server) {
 		return server.getPlayerList().getPlayers().getFirst();
 	}
+	private static int styleWindup(String id) {
+		var style = dev.wildercord.aura.MastersStyleRules.of(id);
+		return style == null ? 0 : style.windup();
+	}
+
 }

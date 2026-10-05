@@ -1180,6 +1180,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			player.setAttached(WildercordAttachments.INNATE, "");
 			player.setAttached(WildercordAttachments.CIRCLES, 0);
+			player.setAttached(WildercordAttachments.CONDENSED, 600);
+			Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));
 			dev.wildercord.cast.HeartCircles.form(player);
 		});
 		context.waitTicks(70);

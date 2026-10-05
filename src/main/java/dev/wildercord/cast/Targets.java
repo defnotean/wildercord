@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 
 /**
  * Friendly fire is off by design: who counts as an ally, and who may be harmed. For a player
- * that's themselves, their pets and their team (and their team's pets). Another player may be
+ * that's themselves, their pets, their party and their team (including their allies' pets). Another player may be
  * harmed only when the pvp game rule allows, or the two are duelling; another player's pets are as
  * safe as their owner, harmed only when the pvp game rule allows (and never by a duellist, who
  * harms nobody but their opponent). For a Runebound it's every other monster: its spells hit
@@ -25,6 +25,9 @@ public final class Targets {
 
 	public static boolean isAlly(LivingEntity caster, Entity entity) {
 		if (entity == caster) {
+			return true;
+		}
+		if (dev.wildercord.party.Parties.sameParty(caster, entity)) {
 			return true;
 		}
 		if (!(caster instanceof Player)) {
@@ -59,6 +62,14 @@ public final class Targets {
 	/** Harmful effects: living, not you, not an ally, and respecting the pvp game rule. */
 	public static boolean canHarm(LivingEntity caster, Entity entity) {
 		if (!(entity instanceof LivingEntity living) || !living.isAlive() || entity instanceof ArmorStand) {
+			return false;
+		}
+		// A master's redirected spell belongs to its opt-in encounter, including every linked hit.
+		if (caster instanceof dev.wildercord.aura.world.SwordMaster master && !master.canHarmParticipant(entity)) {
+			return false;
+		}
+		// Bystanders cannot add uncounted damage or posture/control pressure to an opted-in fight.
+		if (entity instanceof dev.wildercord.aura.world.SwordMaster master && !master.acceptsHarmFrom(caster)) {
 			return false;
 		}
 		// A duel overrides the rest: the two duellists may hurt each other, and neither may hurt another player.

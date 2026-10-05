@@ -679,6 +679,8 @@ public final class Imbuing {
 
 	/** Using an imbued item that has no other way to let go: at what you're looking at. */
 	private static InteractionResult onUse(Player player, Level level, InteractionHand hand) {
+		if (player instanceof ServerPlayer acting && dev.wildercord.aura.MastersArts.committed(acting)
+			&& player.getItemInHand(hand).has(WildercordComponents.IMBUED)) return InteractionResult.FAIL;
 		ItemStack stack = player.getItemInHand(hand);
 		Imbued imbued = stack.get(WildercordComponents.IMBUED);
 		if (imbued == null || Imbued.release(stack) != Imbued.Release.USE) {

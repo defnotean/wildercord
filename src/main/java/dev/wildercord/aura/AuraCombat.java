@@ -259,6 +259,11 @@ public final class AuraCombat {
 	 * armour and spell defences): an art's share of what it may deal one player ({@code aura.ArtRules#PVP_ART_CAP}).
 	 */
 	public static float projected(ServerPlayer player, LivingEntity target, double damage, double extra, boolean answer, double playerCap) {
+		// Delayed slashes must not use the friendship decision made when the art began.
+		if (!Targets.canHarm(player, target)) {
+			lastAmount = 0;
+			return 0;
+		}
 		ServerLevel level = player.level();
 		DamageSource source = level.damageSources().source(Aura.DAMAGE, player, player);
 		double bonus = AuraElements.bonus(player, target, source, Aura.element(player)) * Math.max(0, extra);

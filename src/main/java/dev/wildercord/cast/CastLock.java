@@ -25,6 +25,7 @@ public final class CastLock {
 
 	/** Locks {@code who} out of casting for {@code ticks}, and cuts whatever they were casting short. */
 	public static void lock(LivingEntity who, int ticks) {
+		if (who instanceof dev.wildercord.aura.world.SwordMaster master && !master.acceptsInfluence(Effects.applying())) return;
 		if (who instanceof ServerPlayer player) {
 			long now = who.level().getGameTime();
 			var previous = PLAYER_WINDOWS.get(player);
@@ -82,6 +83,8 @@ public final class CastLock {
 	public static void interrupt(LivingEntity who, int delay) {
 		if (who instanceof ServerPlayer player) {
 			Charging.interrupt(player);
+		} else if (who instanceof dev.wildercord.aura.world.SwordMaster) {
+			Statuses.interrupt(who);
 		} else if (who instanceof Mob mob) {
 			Runebound.interrupt(mob, delay);
 		}

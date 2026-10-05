@@ -1826,13 +1826,14 @@ public class CordScreen extends Screen {
 	private List<Component> heartTooltip() {
 		Player player = minecraft.player;
 		int circles = Heart.circles(player);
+		int active = Heart.active(player);
 		List<Component> lines = new ArrayList<>();
 		lines.add(circles == 0
 			? Component.translatable("screen.wildercord.heart.none").withColor(0xFFF5C46A)
 			: Component.translatable("screen.wildercord.heart.title", Circles.ordinal(circles)).withColor(0xFFF5C46A));
 		if (circles > 0) {
-			lines.add(Component.translatable("screen.wildercord.heart.bonus", circles * Circles.MANA_PER_CIRCLE,
-				String.format(Locale.ROOT, "%.1f", circles * Circles.REGEN_PER_CIRCLE), Math.round(circles * Circles.POWER_PER_CIRCLE * 100)).withStyle(ChatFormatting.GRAY));
+			lines.add(Component.translatable("screen.wildercord.heart.bonus", active * Circles.MANA_PER_CIRCLE,
+				String.format(Locale.ROOT, "%.1f", active * Circles.REGEN_PER_CIRCLE), Math.round(active * Circles.POWER_PER_CIRCLE * 100)).withStyle(ChatFormatting.GRAY));
 		}
 		lines.add(Component.translatable("screen.wildercord.heart.passives", Passives.slots(Heart.active(player)), Passives.MAX).withStyle(ChatFormatting.GRAY));
 		int cracked = Heart.cracked(player);
@@ -1844,7 +1845,7 @@ public class CordScreen extends Screen {
 		}
 		Optional<RuneDef> innate = Runes.get(Heart.innate(player));
 		innate.ifPresent(def -> lines.add(Component.translatable("screen.wildercord.heart.innate", RuneItem.runeName(def).withColor(RuneColors.of(def)),
-			Math.round(dev.wildercord.cast.Innates.POWER_PER_CIRCLE * 100 * circles)).withStyle(ChatFormatting.GRAY)));
+			Math.round(dev.wildercord.cast.Innates.POWER_PER_CIRCLE * 100 * active)).withStyle(ChatFormatting.GRAY)));
 		String leaning = Heart.leaning(player);
 		if (!leaning.isEmpty()) {
 			lines.add(Component.translatable("screen.wildercord.heart.leaning", Component.translatable("element.wildercord." + leaning).withColor(RuneColors.element(leaning)),
@@ -1852,11 +1853,11 @@ public class CordScreen extends Screen {
 		}
 		for (int perk : new int[] {Circles.MANA_SKIN, Circles.FLOW, Circles.OVERFLOW, Circles.ARCHMAGE}) {
 			Component text = Component.translatable("screen.wildercord.heart.perk." + perk, Circles.ordinal(perk));
-			lines.add(circles >= perk ? text.copy().withStyle(ChatFormatting.AQUA) : text.copy().withStyle(ChatFormatting.DARK_GRAY));
+			lines.add(active >= perk ? text.copy().withStyle(ChatFormatting.AQUA) : text.copy().withStyle(ChatFormatting.DARK_GRAY));
 		}
 		lines.add(Component.empty());
 		if (circles >= Circles.MAX) {
-			lines.add(Component.translatable("screen.wildercord.heart.complete").withStyle(ChatFormatting.GOLD));
+			lines.add(Component.translatable("screen.wildercord.heart.complete", Circles.MAX).withStyle(ChatFormatting.GOLD));
 			return lines;
 		}
 		int next = circles + 1;

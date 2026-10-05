@@ -430,7 +430,7 @@ public final class Duels {
 		}
 		Active mine = BY_PLAYER.get(player.getUUID());
 		if (mine != null) {
-			if (mine.watcher != null && !mine.watcher.spells() && dev.wildercord.cast.Effects.applying() != null) {
+			if (mine.watcher != null && !mine.watcher.spells() && dev.wildercord.cast.Effects.applyingCast() != null) {
 				// On terms that keep spells out (a spar): a spell harms nobody, the opponent included.
 				return false;
 			}

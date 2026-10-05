@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:heart/circle_15",
+  "criteria": {
+    "circle_16": {
+      "trigger": "wildercord:heart_circle",
+      "conditions": {
+        "level": 16
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:stoneskin"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.heart.circle_16.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.heart.circle_16.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "circle_16"
+    ]
+  ],
+  "rewards": {
+    "experience": 275
+  }
+}

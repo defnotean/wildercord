@@ -36,7 +36,7 @@ A key press counts as a **hold** once it's been down for a quarter of a second. 
 | Use (right-click) a backpack | Open it. While it's open it stays in its slot: it can't be picked up, thrown or swapped out |
 | Use (right-click) a rune | Learn it for good |
 | Use a Knot | Learn it (anyone can, even without the runes inside) |
-| Use a Mana Crystal | Absorb it: +10 max mana, up to 10 crystals |
+| Use a Mana Crystal | Absorb it: +10 max mana, up to 100 crystals |
 | Use a Spell Scroll | Cast the spell on it, once |
 | Use a Torn Page | Read the riddle of a secret spell |
 | Use a Breathing Manual | Learn its breathing method (read another method's manual twice to switch). See [Aura](progression/aura.md) |
@@ -138,7 +138,7 @@ with cheats on. They're meant for testing, events and fixing things up.
 | `/wildercord learn <rune>` | Learn one rune, by its name in lower case with underscores: `stasis`, `on_hit`, `feather_fall`. |
 | `/wildercord spell <1-5> <runes...>` | Thread a whole spell at once, replacing what's there: `/wildercord spell 1 bolt fire split`. Runes named here are learned too. Your Cord's sockets and tier still apply. Spell 5 is the tome's. |
 | `/wildercord mana` | Fill your mana. |
-| `/wildercord circles <0-8>` | Set how many Heart Circles you have. |
+| `/wildercord circles <0-20>` | Set how many Heart Circles you have. |
 | `/wildercord condense <mana>` | Add condensed mana toward your next Heart Circle. |
 | `/wildercord innate <rune>` | Choose your innate rune (and learn it): `phantom`, `twin_star`... |
 | `/wildercord runebound` | Bind the nearest monster (within 16 blocks) to a Cord, making it a Runebound. |

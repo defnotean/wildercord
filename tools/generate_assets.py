@@ -631,7 +631,7 @@ def write_lang(runes):
         "screen.wildercord.heart.perk.5": "%s Circle · Flow: cooldowns 15%% shorter",
         "screen.wildercord.heart.perk.7": "%s Circle · Overflow: spells cast at full mana hit 30%% harder",
         "screen.wildercord.heart.perk.8": "%s Circle · Archmage: spells cost 15%% less mana",
-        "screen.wildercord.heart.complete": "Your heart is complete: an Archmage's eight circles.",
+        "screen.wildercord.heart.complete": "Your heart is complete: %s circles. Master Heart.",
         "screen.wildercord.heart.next": "Next: the %s Circle",
         "screen.wildercord.heart.condense": "Mana condensed from casting: %s / %s",
         "screen.wildercord.heart.ready": "Ready! Meditate (sneak and stand still) for 10 seconds without getting hurt to form it.",
@@ -664,6 +664,18 @@ def write_lang(runes):
         "title.wildercord.circle.6": "Your heart burns brighter",
         "title.wildercord.circle.7": "Overflow: mana spills from you",
         "title.wildercord.circle.8": "Archmage",
+        "title.wildercord.circle.9": "Widening Horizon",
+        "title.wildercord.circle.10": "Forged Heart",
+        "title.wildercord.circle.11": "Woven Wisdom",
+        "title.wildercord.circle.12": "Ocean Within",
+        "title.wildercord.circle.13": "Boundless Study",
+        "title.wildercord.circle.14": "Starheart",
+        "title.wildercord.circle.15": "Living Grimoire",
+        "title.wildercord.circle.16": "Rooted Heart",
+        "title.wildercord.circle.17": "Prismatic Heart",
+        "title.wildercord.circle.18": "Stormheart",
+        "title.wildercord.circle.19": "Convergence",
+        "title.wildercord.circle.20": "Master Heart",
         "command.wildercord.circles": "Heart Circles set to %s",
         "command.wildercord.condensed": "Condensed %s mana",
         "screen.wildercord.mana.title": "Mana",
@@ -867,6 +879,9 @@ def write_lang(runes):
     refuge_art.write(sys.modules[__name__])
     import aura_world_art
     lang.update(aura_world_art.LANG)
+    import masters_art
+    lang.update(masters_art.LANG)
+    masters_art.write(sys.modules[__name__])
     import way_art
     lang.update(way_art.LANG)
     import technique_art
@@ -2974,7 +2989,7 @@ feat_adv("leaning", "casting/first_cast", rune("ember"), description="Grow one a
 feat_adv("scroll", "casting/first_cast", item("spell_scroll"), description="Inscribe a spell onto a scroll from the Cord screen", xp=15)
 
 # ---- Heart Circles
-CIRCLE_ORDINALS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"]
+CIRCLE_ORDINALS = ["1st", "2nd", "3rd"] + [f"{n}th" for n in range(4, 21)]
 CIRCLE_ADVANCEMENTS = [  # title, icon, frame, experience, reward
     ("Heartbeat", rune("spark"), "task", 20, ()),
     ("Deeper Wells", rune("focus"), "task", 30, ()),
@@ -2984,12 +2999,26 @@ CIRCLE_ADVANCEMENTS = [  # title, icon, frame, experience, reward
     ("Brighter Still", rune("prism"), "goal", 100, ["blank_runes"]),
     ("Overflow", rune("amplify"), "goal", 150, ["mana_crystal"]),
     ("Archmage", item("mana_crystal"), "challenge", 500, ["mana_crystals"]),
+    ("Widening Horizon", rune("reveal"), "goal", 100, ()),
+    ("Forged Heart", rune("fire"), "goal", 125, ()),
+    ("Woven Wisdom", rune("prism"), "goal", 150, ()),
+    ("Ocean Within", rune("frost"), "goal", 175, ()),
+    ("Boundless Study", rune("foresight"), "goal", 200, ()),
+    ("Starheart", rune("starfall"), "goal", 225, ()),
+    ("Living Grimoire", rune("focus"), "goal", 250, ()),
+    ("Rooted Heart", rune("stoneskin"), "goal", 275, ()),
+    ("Prismatic Heart", rune("prismatic_burst"), "goal", 300, ()),
+    ("Stormheart", rune("lightning"), "goal", 325, ()),
+    ("Convergence", rune("amplify"), "goal", 350, ()),
+    ("Master Heart", item("mana_crystal"), "challenge", 1000, ["mana_crystals"]),
 ]
 for n, (title, icon, frame, xp, loot) in enumerate(CIRCLE_ADVANCEMENTS, start=1):
     parent = "casting/first_cast" if n == 1 else f"heart/circle_{n - 1}"
     description = f"Form your {CIRCLE_ORDINALS[n - 1]} Heart Circle" + (": meditate once your heart is ready" if n == 1 else "")
     if n == 8:
         description = "Form your 8th Heart Circle and become an Archmage"
+    if n == 20:
+        description = "Form your 20th Heart Circle: the Master Heart"
     adv(f"heart/circle_{n}", parent, icon, title, description, circle(n), frame=frame, xp=xp, loot=loot)
 feat_adv("innate", "heart/circle_1", rune("twin_star"), description="Awaken your innate rune at the 1st Circle", xp=25)
 feat_adv("mirror", "heart/innate", rune("mirrorfrost"), description="Turn an enemy's own spell back on them", hidden=True, xp=50)

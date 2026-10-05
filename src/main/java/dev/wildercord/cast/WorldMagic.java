@@ -169,7 +169,7 @@ public final class WorldMagic {
 		if (WorldRules.wets(rune)) {
 			for (Entity e : hit.entities()) {
 				if (Targets.canHelp(caster, e)) {
-					Reactions.mark(e, Reactions.Mark.WET, WorldRules.WET_TICKS);
+					Reactions.wetAlly(caster, e, WorldRules.WET_TICKS);
 				}
 			}
 		}

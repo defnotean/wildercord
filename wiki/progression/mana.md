@@ -33,12 +33,12 @@ Everything adds up:
 | Copper Cord | 150 |
 | Amethyst Cord | 225 |
 | Echo Cord | 300 |
-| Each [Mana Crystal](#mana-crystals) absorbed (up to 10) | +10 (up to +100) |
+| Each [Mana Crystal](#mana-crystals) absorbed (up to 100) | +10 (up to +1,000) |
 | [Reservoir]({{ '/progression/enchantments/' | relative_url }}) on your Cord | +25 per level (up to +75) |
-| Each working [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}) | +15 (up to +120) |
+| Each working [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}) | +15 (up to +300) |
 | A **Focus of the Deep Well** in your off-hand | +50 while you hold it (see [Casting Gear]({{ '/gear/' | relative_url }})) |
 
-The most you can have is **645**: an Echo Cord, 10 crystals, Reservoir III, eight circles and a Focus of
+The most you can have is **1,725**: an Echo Cord, 100 crystals, Reservoir III, twenty circles and a Focus of
 the Deep Well. If your maximum drops (you put the focus away, or a circle cracks), any mana above the
 new maximum is lost.
 
@@ -81,7 +81,7 @@ Wellstone, cyan otherwise.
 ## Mana Crystals
 
 A **Mana Crystal** raises your max mana by **10, forever**. Hold it and use it (right-click) to absorb
-it: *"Max mana +10 (3/10 crystals)"*. Up to **10** crystals count (+100). After that the crystal won't
+it: *"Max mana +10 (3/100 crystals)"*. Up to **100** crystals count (+1,000). After that the crystal won't
 absorb (*"Your mana can't grow further with crystals"*) and stays in your hand.
 
 Crystals belong to you, not your Cord.

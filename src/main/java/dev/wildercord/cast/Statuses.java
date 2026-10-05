@@ -43,6 +43,7 @@ public final class Statuses {
 	 * (which Silence and Manaburn use too): this adds what wind's silence looks like.
 	 */
 	public static void silence(LivingEntity target, int ticks) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		boolean fresh = !CastLock.locked(target);
 		CastLock.lock(target, Math.max(1, ticks));
 		if (fresh && CastLock.locked(target) && target.level() instanceof ServerLevel level) {
@@ -67,6 +68,7 @@ public final class Statuses {
 
 	/** Marks {@code target} airborne for up to {@code ticks} (see {@link #AIRBORNE_BONUS}). */
 	public static void airborne(Entity target, int ticks) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		boolean fresh = !Reactions.has(target, Reactions.Mark.AIRBORNE);
 		Reactions.mark(target, Reactions.Mark.AIRBORNE, ticks);
 		if (fresh && target.level() instanceof ServerLevel level) {
@@ -128,6 +130,7 @@ public final class Statuses {
 
 	/** A flinch: {@code target} can't act for {@code ticks} (a player is only slowed). Bosses are never staggered. */
 	public static void stagger(LivingEntity target, int ticks) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		if (!Spirits.isBoss(target)) {
 			Spirits.hold(target, ticks);
 		}
@@ -140,6 +143,7 @@ public final class Statuses {
 	 * interrupted in the last {@link #INTERRUPT_GAP} ticks is left alone, so it can't be locked out).
 	 */
 	public static boolean interrupt(LivingEntity target) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return false;
 		long now = target.level().getGameTime();
 		Long last = INTERRUPTED.get(target.getUUID());
 		if (last != null && last <= now && now - last < INTERRUPT_GAP) {
@@ -148,6 +152,8 @@ public final class Statuses {
 		boolean broke = false;
 		if (target instanceof ServerPlayer player) {
 			broke = Charging.interrupt(player);
+		} else if (target instanceof dev.wildercord.aura.world.SwordMaster master) {
+			broke = master.interruptWindup();
 		} else if (target instanceof Mob mob) {
 			broke = Runebound.interrupt(mob);
 			if (target instanceof Creeper creeper && creeper.getSwelling(1.0F) > 0) {

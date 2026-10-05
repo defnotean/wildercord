@@ -22,6 +22,7 @@ public abstract class AvatarRendererMixin {
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V",
 		at = @At("TAIL"))
 	private void wildercord$castingPose(Avatar avatar, AvatarRenderState state, float partial, CallbackInfo ci) {
+		dev.wildercord.client.MastersArtPose.extract(avatar, state, partial);
 		CastingPose pose = (CastingPose) state;
 		WildercordAttachments.CordLook cord = avatar.getAttachedOrElse(WildercordAttachments.CORD_LOOK, WildercordAttachments.CordLook.NONE);
 		pose.wildercord$setCord(cord);

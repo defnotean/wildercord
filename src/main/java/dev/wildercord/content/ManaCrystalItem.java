@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.function.Consumer;
 
-/** Use it to raise your max mana by 10, forever. Up to 10 crystals count. */
+/** Use it to raise your max mana by 10, forever. Up to 100 crystals count. */
 public class ManaCrystalItem extends Item {
 	public ManaCrystalItem(Properties properties) {
 		super(properties);

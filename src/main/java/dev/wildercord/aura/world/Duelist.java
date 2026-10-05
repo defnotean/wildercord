@@ -170,7 +170,14 @@ public class Duelist extends AuraFighter {
 		if (player instanceof ServerPlayer server) {
 			if(tournament!=null) {
 				if(server.level().hasChunkAt(tournament) && server.level().getBlockEntity(tournament) instanceof TournamentBoardEntity board)board.describe(server);
-			} else DuelistDuels.use(server, this);
+			} else if (server.isShiftKeyDown()) {
+				SwordMaster.introduce(server, this);
+			} else {
+				DuelistDuels.use(server, this);
+				if (!inDuel() && !leaving() && SwordMaster.readyForTrial(server)) {
+					server.sendSystemMessage(Component.translatable("message.wildercord.master.teacher_hint"));
+				}
+			}
 		}
 		return InteractionResult.SUCCESS;
 	}

@@ -137,6 +137,12 @@ public final class Stance {
 		return StanceRules.Kind.CREATURE;
 	}
 
+	/** An opt-in master's locked roster scales posture alongside health, without changing ordinary bosses. */
+	private static double pool(LivingEntity target, StanceRules.Kind kind, int breaks) {
+		double multiplier = target instanceof dev.wildercord.aura.world.SwordMaster master ? master.postureMultiplier() : 1;
+		return StanceRules.pool(kind, target.getMaxHealth(), breaks) * multiplier;
+	}
+
 	// ------------------------------------------------------------------ who may wear whose
 
 	/** Whether stance works on this server for {@code target}: on, and for another player only with {@code pvp_stance}. */
@@ -169,7 +175,7 @@ public final class Stance {
 
 	private static State fresh(LivingEntity target) {
 		StanceRules.Kind kind = kind(target);
-		return new State(0, target.level().getGameTime(), (float) StanceRules.pool(kind, target.getMaxHealth(), 0), kind.ordinal(), -1, -1, 0);
+		return new State(0, target.level().getGameTime(), (float) pool(target, kind, 0), kind.ordinal(), -1, -1, 0);
 	}
 
 	/**
@@ -254,7 +260,7 @@ public final class Stance {
 			return;
 		}
 		State s = state(attacker);
-		double pool = s == null ? StanceRules.pool(kind(attacker), attacker.getMaxHealth(), 0) : s.pool();
+		double pool = s == null ? pool(attacker, kind(attacker), 0) : s.pool();
 		wear(guard, attacker, StanceRules.guardBreak(kind(attacker), pool, Config.get().aura().momentum().stanceDamage()), StanceRules.Source.GUARD);
 	}
 
@@ -278,7 +284,7 @@ public final class Stance {
 		long openUntil = now + ticks;
 		int breaks = s.breaks() + 1;
 		// What it stands as once the opening passes: steady a while, its stance whole again (a boss's a little greater).
-		float pool = (float) StanceRules.pool(kind, target.getMaxHealth(), breaks);
+		float pool = (float) pool(target, kind, breaks);
 		target.setAttached(STANCE, new State(0, openUntil, pool, s.kind(), openUntil, openUntil + StanceRules.steadyTicks(kind), breaks));
 		TRACKED.put(target.getUUID(), target);
 		stagger(target, kind, ticks);

@@ -76,7 +76,8 @@ public final class Shields {
 	private static final Map<UUID, Long> RAISED = new HashMap<>();
 
 	/** A flying spell's step, remembered for a couple of ticks: a Shield raised now looks for spells already on their way. */
-	private record Flight(Object cast, LivingEntity caster, ServerLevel level, Vec3 from, Vec3 to, long tick) {}
+	private record Flight(Object cast, LivingEntity caster, ServerLevel level, Vec3 from, Vec3 to, long tick,
+		java.util.function.Predicate<LivingEntity> eligible) {}
 
 	private static final List<Flight> FLIGHTS = new ArrayList<>();
 
@@ -221,6 +222,11 @@ public final class Shields {
 	 * in, on course, makes the circle appear in front of it. A spell that would miss passes by.
 	 */
 	public static Interception intercept(Cast cast, Vec3 from, Vec3 to) {
+		return intercept(cast, from, to, target -> true);
+	}
+
+	/** An encounter-bound projectile must not show, prime or consume an uninvolved creature's Shield. */
+	public static Interception intercept(Cast cast, Vec3 from, Vec3 to, java.util.function.Predicate<LivingEntity> eligible) {
 		Vec3 motion = to.subtract(from);
 		double length = motion.length();
 		if (length < 1.0E-4) {
@@ -230,7 +236,7 @@ public final class Shields {
 		long now = cast.level.getGameTime();
 		// Remembered briefly, so a Shield raised in the next moment knows this spell is on its way.
 		if (FLIGHTS.size() < 1024) {
-			FLIGHTS.add(new Flight(cast.identity(), cast.caster, cast.level, from, to, now));
+			FLIGHTS.add(new Flight(cast.identity(), cast.caster, cast.level, from, to, now, eligible));
 		}
 		if (WEARING.isEmpty()) {
 			return null;
@@ -238,7 +244,7 @@ public final class Shields {
 		Interception found = null;
 		double nearest = Double.MAX_VALUE;
 		for (LivingEntity t : WEARING) {
-			if (t.level() != cast.level || t == cast.caster || !t.isAlive() || !Targets.canHarm(cast.caster, t)) {
+			if (t.level() != cast.level || t == cast.caster || !t.isAlive() || !eligible.test(t) || !Targets.canHarm(cast.caster, t)) {
 				continue;
 			}
 			SpellShield shield = t.getAttached(WildercordAttachments.SPELL_SHIELD);
@@ -291,7 +297,7 @@ public final class Shields {
 		double reach = APPROACH + front(t, strength(t));
 		Vec3 c = t.getBoundingBox().getCenter();
 		for (Flight f : FLIGHTS) {
-			if (f.level() != level || f.tick() < now - 2 || f.caster() == t || !Targets.canHarm(f.caster(), t)) {
+			if (f.level() != level || f.tick() < now - 2 || f.caster() == t || !f.eligible().test(t) || !Targets.canHarm(f.caster(), t)) {
 				continue;
 			}
 			Vec3 motion = f.to().subtract(f.from());

@@ -39,8 +39,9 @@ import java.util.UUID;
  *     the string can take, the last of them just now, and the perfect guard or Aura Step a counter or a step cut needs;</li>
  * <li>and a small allowance of requests a second ({@link StringRules#REQUEST_BURST}).</li>
  * </ul>
- * What the server can't see exactly (how full a swing was, whether it crouched, leapt or ran at that instant) it takes from
- * the client: the network can blur those by a tick, and a client that lied about them would gain an art a moment sooner.
+ * Movement and charge marks come from the server before vanilla changes them. Client marks only describe the request;
+ * the performed context uses a matching, one-use suffix of observed strokes. At most one stroke is admitted per server
+ * tick, so a lag-bunched string may be refused rather than treating duplicate packets as new sword work.
  *
  * <p>Performed, an art's price is spent, its rest begins ({@link #COOLDOWNS}, saved and synced to its owner for the reader),
  * the {@link AuraApi#onString} hooks hear of it, and the first one goes into the Grimoire. A perfect guard and an Aura Step are
@@ -166,97 +167,82 @@ public final class SwordStrings {
 
 	// ------------------------------------------------------------------ what the server saw
 
-	/** A player's swings as the server saw them (game times, the latest last), and their last perfect guard and Aura Step. */
-	private static final class Seen {
-		final long[] swings = new long[SwordString.MAX_LENGTH + 2];
-		int count;
-		long guardAt = Long.MIN_VALUE / 4;
-		long stepAt = Long.MIN_VALUE / 4;
-
-		void swing(long now) {
-			System.arraycopy(swings, 1, swings, 0, swings.length - 1);
-			swings[swings.length - 1] = now;
-			count = Math.min(swings.length, count + 1);
-		}
-
-		/** How many swings came at or after {@code since}. */
-		int since(long since) {
-			int n = 0;
-			for (int i = swings.length - 1; i >= swings.length - count; i--) {
-				if (swings[i] >= since) {
-					n++;
-				}
-			}
-			return n;
-		}
-
-		long last() {
-			return count == 0 ? Long.MIN_VALUE / 4 : swings[swings.length - 1];
-		}
-	}
-
-	private static final Map<UUID, Seen> SEEN = new HashMap<>();
+	private static final Map<UUID, SwordStringLedger> SEEN = new HashMap<>();
 	private static final PacketThrottle REQUESTS = new PacketThrottle(StringRules.REQUEST_BURST, StringRules.REQUEST_TICKS);
 
-	/** A swing the server saw: the punch every swing sends, or a spear's thrust (see {@code mixin.SwordStringsSeenMixin}). */
-	public static void swung(ServerPlayer player) {
-		if (Aura.stage(player) <= AuraRules.NONE) {
-			return;
-		}
-		SEEN.computeIfAbsent(player.getUUID(), k -> new Seen()).swing(player.level().getGameTime());
+	private static long observedTick(ServerPlayer player) {
+		return player.level().getServer().getTickCount();
 	}
 
-	/** A perfect guard or an Aura Step: remembered, and told to the player's client so its reader marks the next swing. */
-	public static void cue(ServerPlayer player, StringReader.Cue cue) {
-		Seen seen = SEEN.computeIfAbsent(player.getUUID(), k -> new Seen());
-		long now = player.level().getGameTime();
-		if (cue == StringReader.Cue.GUARD) {
-			seen.guardAt = now;
-		} else {
-			seen.stepAt = now;
-		}
-		if (ServerPlayNetworking.canSend(player, Cue.TYPE)) {
-			ServerPlayNetworking.send(player, new Cue(cue.ordinal()));
-		}
+	private static SwordStringLedger.Context observationContext(ServerPlayer player) {
+		return new SwordStringLedger.Context(player, player.level(), player.getMainHandItem());
 	}
 
-	/**
-	 * The counter and step-cut marks a swing now carries, as far as the server knows: a perfect guard or an Aura Step within its
-	 * moment (for how the swing's trail is cut, see {@link AuraFx#swung}; the reader on the client is what plays strings).
-	 */
-	static int cues(ServerPlayer player) {
-		Seen seen = SEEN.get(player.getUUID());
-		if (seen == null) {
-			return 0;
-		}
-		long now = player.level().getGameTime();
-		int marks = 0;
-		if (now - seen.guardAt <= StringRules.COUNTER_TICKS) {
-			marks |= SwordString.Token.COUNTER.bit();
-		}
-		if (now - seen.stepAt <= StringRules.STEP_CUT_TICKS) {
-			marks |= SwordString.Token.STEP.bit();
-		}
+	private static boolean observing(ServerPlayer player) {
+		return player.isAlive() && !player.isRemoved() && !player.isSpectator() && Aura.enabled(player)
+			&& Config.get().aura().strings().enabled() && Aura.stage(player) >= AuraRules.GLOW && Aura.holdsWeapon(player)
+			&& !player.isUsingItem() && !player.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE)
+			&& !MastersArts.committed(player);
+	}
+
+	/** The same movement predicates as the client reader, sampled only from the server's current state. */
+	static int observedMarks(ServerPlayer player) {
+		int marks = SwordString.Token.SWING.bit();
+		if (player.getAttackStrengthScale(0.5F) >= AuraRules.FULL_SWING - 1.0E-4) marks |= SwordString.Token.FULL.bit();
+		if (player.isShiftKeyDown()) marks |= SwordString.Token.LOW.bit();
+		if (!player.onGround() && !player.isInWater() && !player.isInLava() && !player.onClimbable() && !player.isPassenger()
+			&& !player.getAbilities().flying && !player.isFallFlying() && !player.isSwimming()) marks |= SwordString.Token.LEAP.bit();
+		if (player.isSprinting()) marks |= SwordString.Token.RUN.bit();
 		return marks;
 	}
 
-	/** Whether the server saw what {@code art}'s string needs, just now: enough swings in its time, the last just now, its guard or step. */
+	/** Player.attack runs before its trailing Punch, and resets both charge and (on knockback) sprinting. */
+	public static void attackBegins(ServerPlayer player) {
+		if (!observing(player)) return;
+		SEEN.computeIfAbsent(player.getUUID(), key -> new SwordStringLedger()).attack(observedTick(player), observedMarks(player),
+			StringRules.recover(player.getCurrentItemAttackStrengthDelay()), observationContext(player));
+	}
+
+	/** A punch, before vanilla resets its attack ticker. Kept as the public ordinary-swing entrypoint. */
+	public static void swung(ServerPlayer player) {
+		if (!observing(player)) return;
+		SEEN.computeIfAbsent(player.getUUID(), key -> new SwordStringLedger()).punch(observedTick(player), observedMarks(player),
+			StringRules.recover(player.getCurrentItemAttackStrengthDelay()), observationContext(player));
+	}
+
+	/** A piercing component makes one stroke regardless of how many entities its thrust hits; it sends no Punch. */
+	public static void thrust(ServerPlayer player) {
+		if (!observing(player)) return;
+		SEEN.computeIfAbsent(player.getUUID(), key -> new SwordStringLedger()).thrust(observedTick(player), observedMarks(player),
+			StringRules.recover(player.getCurrentItemAttackStrengthDelay()), observationContext(player));
+	}
+
+	/** A server-earned cue belongs to its first observed swing, and is also sent to the client reader. */
+	public static void cue(ServerPlayer player, StringReader.Cue cue) {
+		SEEN.computeIfAbsent(player.getUUID(), key -> new SwordStringLedger()).cue(observedTick(player), cue == StringReader.Cue.GUARD,
+			observationContext(player));
+		if (ServerPlayNetworking.canSend(player, Cue.TYPE)) ServerPlayNetworking.send(player, new Cue(cue.ordinal()));
+	}
+
+	/** Cosmetic trail marks include the stroke just recorded; they do not make its consumed cue reusable as evidence. */
+	static int cues(ServerPlayer player) {
+		SwordStringLedger seen = SEEN.get(player.getUUID());
+		if (seen == null) return 0;
+		long now = observedTick(player);
+		int marks = seen.cues(now, observationContext(player));
+		SwordStringLedger.Stroke last = seen.last();
+		if (last != null && last.tick() == now) marks |= last.marks() & (SwordString.Token.COUNTER.bit() | SwordString.Token.STEP.bit());
+		return marks;
+	}
+
+	/** A read-only proof is checked again and reserved at the actual request boundary. */
+	private static Optional<SwordStringLedger.Proof> proof(ServerPlayer player, AuraApi.StringArt art) {
+		SwordStringLedger seen = SEEN.get(player.getUUID());
+		return seen == null ? Optional.empty() : seen.proof(art.string(), observedTick(player), window(), observationContext(player));
+	}
+
 	static boolean saw(ServerPlayer player, AuraApi.StringArt art) {
-		Seen seen = SEEN.get(player.getUUID());
-		if (seen == null) {
-			return false;
-		}
-		long now = player.level().getGameTime();
-		SwordString string = art.string();
-		int recover = StringRules.recover(player.getCurrentItemAttackStrengthDelay());
-		long span = StringRules.span(string.length(), window(), recover) + StringRules.SEEN_SLACK;
-		if (seen.since(now - span) < string.length() || now - seen.last() > StringRules.LAST_SWING_SLACK) {
-			return false;
-		}
-		if (string.has(SwordString.Token.COUNTER) && seen.guardAt < now - span - StringRules.COUNTER_TICKS) {
-			return false;
-		}
-		return !string.has(SwordString.Token.STEP) || seen.stepAt >= now - span - StringRules.STEP_CUT_TICKS;
+		return proof(player, art).isPresent();
 	}
 
 	/** The window the server's setting gives (ticks). */
@@ -271,6 +257,7 @@ public final class SwordStrings {
 	 * own knowledge first (all but the swings the server saw), so a refusal here is rare: a race, a slow connection, or a cheat.
 	 */
 	public static Optional<Refusal> check(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
+		if (MastersArts.committed(player)) return Optional.of(Refusal.NOT_READY);
 		if (!player.isAlive() || player.isSpectator() || !Aura.enabled(player) || !Config.get().aura().strings().enabled()) {
 			return Optional.of(Refusal.CLOSED);
 		}
@@ -311,49 +298,73 @@ public final class SwordStrings {
 			refuse(player, payload.art(), art.get(), why.get());
 			return;
 		}
-		perform(player, art.get(), payload.marks());
+		Optional<SwordStringLedger.Proof> observed = proof(player, art.get());
+		SwordStringLedger seen = SEEN.get(player.getUUID());
+		if (observed.isEmpty() || seen == null || !seen.consume(observed.get())) {
+			refuse(player, payload.art(), art.get(), Refusal.UNSEEN);
+			return;
+		}
+		// Reserve before the performer/clash: neither re-entrant hooks nor another request may reuse this suffix.
+		perform(player, art.get(), observed.get().marks());
 	}
 
 	/** Whether an art held in a clash is being let go now (it goes as it was loosed, and meets nothing more). */
 	private static boolean releasing;
 
 	/**
-	 * Performs {@code art} (already checked): the art itself, then its price, its rest, the hooks and the Grimoire. An art that meets an oncoming
+	 * Performs {@code art} (already checked). The first style forms commit price/rest before their windup and run on their active frame;
+	 * other arts keep their existing instant entry. Success hooks and the Grimoire follow actual performance. An art that meets an oncoming
 	 * crescent, or answers a foe's art that just struck, locks into a clash first ({@link Clashes#meets}) and waits for it: it goes if the clash
 	 * is won ({@link #release}) and is lost, still paid for, if not ({@link #forfeit}).
 	 */
 	public static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
-		if (!releasing && Clashes.meets(player, art, marks)) {
+		if (MastersArts.committed(player)) return false;
+		if (!releasing && Clashes.meets(player, art, marks)) return true;
+		long now = player.level().getGameTime();
+		AuraApi.StringContext context = new AuraApi.StringContext(art, marks, MastersStyleRules.of(art.id()) == null ? struck(player) : null, now);
+		// Price is fixed before either the windup or the art can change momentum.
+		double cost = price(player, art);
+		if (MastersStyleRules.of(art.id()) != null) {
+			if (!MastersArts.beginStyle(player, art, () -> {
+				if (runPerformer(player, art, context)) completed(player, art, context);
+			})) return false;
+			// The accepted tell commits payment once. Interrupted or whiffed forms keep this price and rest.
+			payAndRest(player, art, cost, now);
 			return true;
 		}
-		long now = player.level().getGameTime();
-		AuraApi.StringContext context = new AuraApi.StringContext(art, marks, struck(player), now);
-		// Its price as it goes, before what it does builds momentum (a tier reached by the art itself makes the next one cheaper).
-		double cost = price(player, art);
+		if (!runPerformer(player, art, context)) return false;
+		payAndRest(player, art, cost, now);
+		completed(player, art, context);
+		return true;
+	}
+
+	/** Runs under the original art identity, so delayed active frames retain marks, caps and elemental ownership. */
+	private static boolean runPerformer(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context) {
 		boolean done;
 		AuraApi.StringArt outer = performing;
 		performing = art;
 		try {
-			done = art.performer().perform(player, context);
+			done = dev.wildercord.cast.Effects.withSource(player, () -> art.performer().perform(player, context));
 		} catch (RuntimeException e) {
 			Wildercord.LOGGER.warn("Art {} threw", art.id(), e);
 			done = false;
 		} finally {
 			performing = outer;
 		}
-		if (!done) {
-			refuse(player, art.id(), art, Refusal.CLOSED);
-			return false;
-		}
-		// Checked to be there, so this never spends past empty (an art that spent some itself takes what's left).
+		if (!done) refuse(player, art.id(), art, Refusal.CLOSED);
+		return done;
+	}
+
+	private static void payAndRest(ServerPlayer player, AuraApi.StringArt art, double cost, long now) {
 		double price = Math.min(cost, Aura.aura(player));
-		if (price > 0) {
-			Aura.spend(player, price, "art:" + art.id());
-		}
+		if (price > 0) Aura.spend(player, price, "art:" + art.id());
 		if (art.cooldownTicks() > 0) {
 			Cooldowns rests = player.getAttachedOrElse(COOLDOWNS, Cooldowns.NONE);
 			player.setAttached(COOLDOWNS, rests.rest(art.id(), now + rest(player, art), now));
 		}
+	}
+
+	private static void completed(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context) {
 		for (AuraApi.StringHook hook : AuraApi.stringHooks()) {
 			try {
 				hook.performed(player, art, context);
@@ -362,11 +373,7 @@ public final class SwordStrings {
 			}
 		}
 		Grimoire.unlock(player, "aura:sword_string");
-		// A method's own art goes into the Grimoire the first time it's played.
-		if (!AuraApi.artMethod(art.id()).isEmpty()) {
-			Grimoire.unlock(player, grimoireKey(art.id()));
-		}
-		return true;
+		if (!AuraApi.artMethod(art.id()).isEmpty()) Grimoire.unlock(player, grimoireKey(art.id()));
 	}
 
 	/**
@@ -492,6 +499,11 @@ public final class SwordStrings {
 		PlaceholderArts.register();
 		// Each method's own arts, on the same strings (the common ones step aside for them).
 		dev.wildercord.aura.arts.MethodArts.init();
+	}
+
+	/** Changing held equipment invalidates partial stroke evidence even when the original stack is selected again. */
+	public static void weaponChanged(ServerPlayer player) {
+		SEEN.remove(player.getUUID());
 	}
 
 	static void forget(UUID id) {

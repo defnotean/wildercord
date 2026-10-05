@@ -50,7 +50,7 @@ public final class Grimoire {
 			return true;
 		}
 		if (!key.startsWith("hint:")) {
-			player.setAttached(WildercordAttachments.CONDENSED, Heart.condensed(player) + Feats.reward(key));
+			player.setAttached(WildercordAttachments.CONDENSED, dev.wildercord.spell.Circles.addCondensed(Heart.condensed(player), Feats.reward(key)));
 			if (announce) {
 				Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 1.1F);
 				Fx.sound(player.level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 0.9F, 1.0F);

@@ -82,6 +82,7 @@ public final class SpellCaster {
 	 * inside the bonus cap against players), and its surge chance is rolled as the spell leaves.
 	 */
 	public static void cast(ServerPlayer player, int requested, double charge, Charging.Performance performance) {
+		if (dev.wildercord.aura.MastersArts.committed(player)) return;
 		if (!player.isAlive() || player.isSpectator()) {
 			return;
 		}

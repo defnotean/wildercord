@@ -68,6 +68,8 @@ public final class ThunderArts {
 
 	static boolean crackle(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
+		var continuation = dev.wildercord.aura.MastersArts.continuation(player);
+		Vec3 committedFacing = ArtKit.flat(player);
 		int color = ArtKit.color(player);
 		LivingEntity foe = ArtKit.primary(player, context, ArtRules.CRACKLE_REACH, 120);
 		AuraFx.Art fx = AuraFx.art(player);
@@ -77,12 +79,12 @@ public final class ThunderArts {
 		for (int i = 0; i < ArtRules.CRACKLE_CUTS; i++) {
 			int cut = i;
 			Runnable go = () -> {
-				if (!player.isAlive() || player.level() != level) {
+				if (!continuation.getAsBoolean() || !player.isAlive() || player.level() != level) {
 					return;
 				}
 				fx.trail(strokes[cut], cut == 1, 1.15F + 0.1F * cut);
 				Vec3 at = foe != null && foe.isAlive() ? foe.getBoundingBox().getCenter()
-					: player.getEyePosition().add(ArtKit.flat(player).scale(2.2)).subtract(0, 0.5, 0);
+					: player.getEyePosition().add(committedFacing.scale(2.2)).subtract(0, 0.5, 0);
 				// A cut of white lightning across it, on its own tilt each time.
 				RandomSource r = level.getRandom();
 				Vec3 normal = new Vec3(r.nextDouble() - 0.5, 0.6 + r.nextDouble() * 0.4, r.nextDouble() - 0.5).normalize();
@@ -91,7 +93,8 @@ public final class ThunderArts {
 				world.slash(at, normal, ElementFx.perp(normal), color, 0.8, 2.3, 0.18, 1, 5);
 				world.flash(at, WHITE, 0.9F);
 				ElementFx.sparks(level, at, 5, 0.25);
-				if (foe == null || !foe.isAlive()) {
+				if (foe == null || !foe.isAlive() || !ArtKit.harmable(player, foe) || !player.hasLineOfSight(foe)
+					|| foe.distanceToSqr(player) > Math.pow(ArtRules.CRACKLE_REACH + foe.getBbWidth() / 2, 2)) {
 					return;
 				}
 				hits.strike(foe, ArtRules.CRACKLE_FACTOR, cut == 2 ? AuraFxRules.Weight.HEAVY : AuraFxRules.Weight.FULL);

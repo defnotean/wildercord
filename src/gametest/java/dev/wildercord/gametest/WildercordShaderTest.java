@@ -157,7 +157,7 @@ public class WildercordShaderTest implements FabricClientGameTest {
 			dev.wildercord.api.AuraApi.StringArt art = dev.wildercord.api.AuraApi.string(dev.wildercord.aura.arts.EmberArts.KINDLING_DRAW).orElseThrow();
 			dev.wildercord.aura.SwordStrings.perform(player, art, art.string().tokens().stream().map(t -> dev.wildercord.aura.SwordString.Token.marks(t)).toList());
 		});
-		context.waitTicks(3);
+		context.waitTicks(3 + dev.wildercord.aura.MastersStyleRules.of(dev.wildercord.aura.arts.EmberArts.KINDLING_DRAW).windup());
 		shot(context, prefix + "_aura_art");
 		// Its line of fire burning on ahead: light over the ground, under the pack too.
 		context.waitTicks(8);

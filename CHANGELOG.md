@@ -4,6 +4,20 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Masters of Tomorrow, development foundation
+
+- Raised the permanent Mana Crystal absorption cap from 10 to 100. Each crystal still adds 10 mana; existing absorbed crystals are preserved.
+- Extended Heart Circles from 8 to 20 with twelve additional, solo-achievable breakthrough gates, titles, advancements, bounded visuals and saved-progress validation. The original eight milestones and their perks retain their meaning.
+- Added voluntary parties of up to eight players, invitations and leader controls. Shared spell and Aura targeting, direct impacts, owned summons, delayed harmful effects, and status/fire/movement mutations now check current membership. Explicit agreed duels retain their existing exception.
+- Added opt-in Sword Master trials in the Ember, Gale and Stone disciplines, separate from progression-teaching duelists. A staged roster locks health, stance and attack coverage; telegraphed attacks, counter windows, finite Aura, directional spell cutting, simple-bolt redirection and pressure responses provide counterplay.
+- Added Spellcut, Rising Break and Driving Cut on rebindable G/H/J controls, with server-owned payment, windup/active/recovery timelines, interruption, bounded target queries, and original first- and third-person animations.
+- Gave all ten existing first-form style arts committed windups and original body/weapon motion, preserving prices and inputs; physical multi-cuts are interruptible while launched afterimages and fields retain their own lifetimes.
+- Added Survival introductions through travelling Duelists and permanent first-clear technique lessons (Echo, Afterimage and Sunder) without repeatable item/XP farming.
+- Improved Normal/Hard Gloomstalker and Bog Witch-Frog pursuit and attack cadence while preserving Easy, damage, health, tells and guaranteed miss recovery.
+- Fixed delayed effect source attribution and impact-time alliance checks, preserving helpful and self effects. Added regression suites for party mutations, projected attacks, twenty-circle progression and native combat presentation.
+
+This is a development build, not a measured balance release. The larger style roster, ordinary-encounter retuning, and complete animation review remain in progress. See [Masters of Tomorrow](docs/features/masters-of-tomorrow.md).
+
 ## [0.10.0-alpha] — 2026-10-04
 
 Install the same build on the server and every client. New blocks, items, entities, particles and packets mean 0.9.x clients must update before joining.

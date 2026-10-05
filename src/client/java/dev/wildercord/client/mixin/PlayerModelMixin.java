@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerModelMixin {
 	@Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)V", at = @At("TAIL"))
 	private void wildercord$pose(AvatarRenderState state, CallbackInfo ci) {
+		if (dev.wildercord.client.MastersArtPose.apply((PlayerModel) (Object) this, state)) return;
 		CastingPose pose = (CastingPose) state;
 		PlayerModel model = (PlayerModel) (Object) this;
 		ModelPart right = model.rightArm;

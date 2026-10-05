@@ -241,7 +241,7 @@ the [Cosmetics](companions/cosmetics.md) page, trade with the
 share spells with friends ([Playing Together](social/playing-together.md)). The
 [Grimoire](progression/grimoire.md) page of the Cord screen keeps track of everything you
 discover, and the [advancements](progression/advancements.md) tab lights the way from your
-first Blank Rune to the 8th Heart Circle.
+first Blank Rune to the 20th Heart Circle.
 
 
 All keys can be changed in the game's Controls options, under **Wildercord**. See [Controls](controls.md).

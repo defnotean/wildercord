@@ -7,8 +7,8 @@ nav_order: 1
 # Heart Circles
 {: .no_toc }
 
-Casters build rings of condensed mana around their heart, from the **1st Circle** to the **8th**, the
-Archmage. Each circle deepens your mana and sharpens your spells, and some bring a perk. There's
+Casters build rings of condensed mana around their heart, from the **1st Circle** to the **20th**, the
+Master Heart. **Archmage** remains the 8th Circle milestone. Each circle deepens your mana and sharpens your spells, and some bring a perk. There's
 nothing to craft and nothing to farm: circles come from casting, from discovering, and from the things
 you do with magic.
 
@@ -72,7 +72,7 @@ When it forms: the circle's title fills your screen, light breaks out of your he
 the ground, and your **mana refills completely**. Chat tells you what you gained: *"3rd Circle formed:
 +15 max mana, +0.5 mana/s and +3% spell power."*, plus any perk or passive slot.
 
-## The eight circles
+## The twenty circles
 
 | Circle | Mana condensed (total) | Breakthrough | Title | Gift |
 |---|---|---|---|---|
@@ -84,6 +84,22 @@ the ground, and your **mana refills completely**. Chat tells you what you gained
 | **6th** | 30,000 | Defeat 150 monsters with spells; slay 8 Runebound; set off 5 different reactions | *Your heart burns brighter* | |
 | **7th** | 50,000 | Help slay a boss; find 2 secret spells; the **In Rhythm** feat | *Overflow: mana spills from you* | **Overflow** |
 | **8th** | 80,000 | Wear an Echo Cord; find 4 secret spells; **The Last Page** (defeat the Archivist) | *Archmage* | **Archmage** |
+| **9th** | 120,000 | Know 60 runes; set off 6 different reactions | *Widening Horizon* | |
+| **10th** | 170,000 | Defeat 250 monsters with spells; **Tempered** (defeat the Cinder Warden) | *Forged Heart* | |
+| **11th** | 230,000 | Find 5 secret spells; **Fusion** (fuse two effects at the Fusion Altar) | *Woven Wisdom* | |
+| **12th** | 300,000 | Slay 20 Runebound; **Low Tide** (defeat the Tide Scribe) | *Ocean Within* | |
+| **13th** | 380,000 | Know 90 runes; set off 8 different reactions | *Boundless Study* | |
+| **14th** | 470,000 | Defeat 400 monsters with spells; **Starbreaker** (defeat the Star-Eater) | *Starheart* | |
+| **15th** | 570,000 | Find 7 secret spells; **Knotted** (tie a spell into a Knot) | *Living Grimoire* | |
+| **16th** | 680,000 | Slay 40 Runebound; **Heartwood** (defeat the Root Guardian) | *Rooted Heart* | |
+| **17th** | 800,000 | Know 120 runes; set off 10 different reactions | *Prismatic Heart* | |
+| **18th** | 930,000 | Defeat 650 monsters with spells; **Grounded** (defeat the Storm Conductor) | *Stormheart* | |
+| **19th** | 1,070,000 | Find 9 secret spells; set off all 11 different reactions | *Convergence* | |
+| **20th** | 1,220,000 | Defeat 1,000 monsters with spells; slay 100 Runebound; find all 10 secret spells | *Master Heart* | |
+
+The first eight circles keep their original thresholds and perks. Circles 9–20 keep the same per-circle
+bonuses and add new breakthroughs; they do not open extra passive slots or stack another Archmage discount.
+Existing progress, discoveries and formed circles carry over without a reset. All new feats can be earned solo.
 
 ### What every circle gives
 
@@ -103,6 +119,9 @@ Each working circle adds:
 | 6 | +90 | +3.0/s | +18% |
 | 7 | +105 | +3.5/s | +21% |
 | 8 | +120 | +4.0/s | +24% |
+| 12 | +180 | +6.0/s | +36% |
+| 16 | +240 | +8.0/s | +48% |
+| 20 | +300 | +10.0/s | +60% |
 
 ### The perks
 
@@ -112,6 +131,9 @@ Each working circle adds:
 | **Flow** | 5th | Your cooldowns are **15% shorter**. |
 | **Overflow** | 7th | A spell cast while your mana is **full** hits **30% harder**. |
 | **Archmage** | 8th | Your spells and passives cost **15% less** mana. |
+
+At 20 working circles, your innate rune receives +120% power from circles, and the circle factor in
+Domain clashes is ×3. Overcasting still removes the outermost working circle, one at a time.
 
 Flow and Archmage stack with the Celerity and Thrift [Cord enchantments]({{ '/progression/enchantments/' | relative_url }}).
 
@@ -140,16 +162,17 @@ Flow and Archmage stack with the Celerity and Thrift [Cord enchantments]({{ '/pr
 | **The Last Page** | Be within 64 blocks when the Archivist falls. See [The Archive]({{ '/world/archive/' | relative_url }}). |
 
 Milestones you reached before you needed them still count: a Runebound slain on day one counts toward
-the 6th Circle.
+the 6th Circle or later ones.
 
 ## The rings
 
 Your circles show as rings of light around your heart, one per circle, each on its own tilt and
 turning its own way like a gyroscope. The inner rings are deep blue, burning out to white gold at the
-8th, and once your magic leans toward an element (your deepest
+8th, then passing through opal colours to white gold at the 20th. The later rings nest more closely
+so the whole heart stays compact. Once your magic leans toward an element (your deepest
 [affinity]({{ '/progression/affinity/' | relative_url }})) they're tinted halfway toward its colour.
 
-- While you **meditate**, everyone can see them turning, you included.
+- While you **meditate**, other players see them turning; your own view stays clear, with light at your feet.
 - Whenever you **cast**, they spin up round you for a moment, for everyone around you to see. You
   don't see it yourself: it happens on every cast, and it would fill the bottom of your view.
 
@@ -173,6 +196,18 @@ itself or your condensed mana. The HUD shows **✦** and how many are cracked. E
 | Brighter Still (goal) | 6th | 100 experience and 8 Blank Runes |
 | Overflow (goal) | 7th | 150 experience and a Mana Crystal |
 | **Archmage** (challenge) | 8th | 500 experience and 3 Mana Crystals |
+| Widening Horizon (goal) | 9th | 100 experience |
+| Forged Heart (goal) | 10th | 125 experience |
+| Woven Wisdom (goal) | 11th | 150 experience |
+| Ocean Within (goal) | 12th | 175 experience |
+| Boundless Study (goal) | 13th | 200 experience |
+| Starheart (goal) | 14th | 225 experience |
+| Living Grimoire (goal) | 15th | 250 experience |
+| Rooted Heart (goal) | 16th | 275 experience |
+| Prismatic Heart (goal) | 17th | 300 experience |
+| Stormheart (goal) | 18th | 325 experience |
+| Convergence (goal) | 19th | 350 experience |
+| Master Heart (challenge) | 20th | 1,000 experience and 3 Mana Crystals |
 | Awakening | your innate rune | 25 experience |
 
 ## Tips
