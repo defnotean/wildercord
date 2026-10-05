@@ -39,11 +39,12 @@ SCENES = ("masters_art_0", "masters_style_kindling_draw",
           "masters_style_rising_cinders", "masters_style_blossom_fall",
           "masters_art_1", "masters_art_2",
           *("masters_style_" + art for art in FIRST_FORMS[1:]))
-VIEWS = {"first": "owner_first_person", "third": "local_owner_third_person_front"}
-PHASES = ("windup", "sample", "settled")
+VIEWS = {"first": "owner_first_person", "third_back": "local_owner_third_person_back"}
+ARTICULATED_VIEWS = {"first": "owner_first_person", "third": "local_owner_third_person_front"}
+PHASES = ("windup", "active", "recovery", "settled")
 PATTERN = re.compile(r"(masters_art_[012]|masters_style_(?:"
                      + "|".join(FIRST_FORMS + SECOND_FORMS)
-                     + r"))_(first|third)_(windup|settled|frame_([0-9]+))\.png\Z")
+                     + r"))_(first|third_back|third)_(windup|active|recovery|settled|frame_([0-9]+))\.png\Z")
 
 
 class EvidenceError(ValueError):
@@ -153,7 +154,7 @@ def describe(filename, *, suite="masters"):
         if not match:
             return None
         hand, view, frame = match.groups()
-        return {"scene": "articulated_live_" + hand, "hand": hand, "view": VIEWS[view],
+        return {"scene": "articulated_live_" + hand, "hand": hand, "view": ARTICULATED_VIEWS[view],
                 "captureKind": "native_local_owner_accepted_input_combat",
                 "frameLabel": "frame_" + frame, "phase": "sample", "sampleIndex": int(frame),
                 "phaseBasis": "filename_loop_index_only"}
@@ -167,11 +168,12 @@ def describe(filename, *, suite="masters"):
     form = ("shared_art" if scene.startswith("masters_art_") else
             "second_form" if scene.removeprefix("masters_style_") in SECOND_FORMS else "first_form")
     # Loop counters do not prove an impact, release, or recovery phase.
-    return {"scene": scene, "form": form, "view": VIEWS[view],
+    return {"scene": scene, "form": form, "view": ({**ARTICULATED_VIEWS, **VIEWS})[view],
             "captureKind": "native_local_owner_combat", "frameLabel": label,
             "phase": "sample" if frame is not None else label,
             "sampleIndex": int(frame) if frame is not None else None,
-            "phaseBasis": "filename_loop_index_only" if frame is not None else "explicit_filename_label"}
+            "phaseBasis": "filename_loop_index_only" if frame is not None else
+                "accepted_timeline_window_assertion" if label in ("active", "recovery") else "explicit_filename_label"}
 
 
 def digest(path):
@@ -195,7 +197,7 @@ def select_masters(groups, budget):
     selected = []
     coverage = []
     remaining = budget - MANIFEST_RESERVE
-    # Complete per-view triptychs first, in stable scene/view order. If a triptych
+    # Complete per-view phase sets first, in stable scene/view order. If a set
     # cannot fit, keep whichever of its authentic frames still fit the budget.
     for scene in SCENES:
         for view in VIEWS.values():
@@ -210,7 +212,7 @@ def select_masters(groups, budget):
                     continue
                 captured.append(phase)
                 options.sort(key=lambda item: (item["sampleIndex"] or 0, item["sourcePath"]))
-                candidate = options[len(options) // 2] if phase == "sample" else options[0]
+                candidate = options[0]
                 if candidate["bytes"] > remaining:
                     omitted.append(phase)
                     continue
@@ -229,7 +231,7 @@ def select_articulated(groups, budget):
     remaining = budget - MANIFEST_RESERVE
     for hand in ARTICULATED_HANDS:
         scene = "articulated_live_" + hand
-        for view in VIEWS.values():
+        for view in ARTICULATED_VIEWS.values():
             options = sorted(groups.get((scene, view, "sample"), []),
                              key=lambda item: (item["sampleIndex"], item["sourcePath"]))
             chosen = []
@@ -308,9 +310,9 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
         "limits": {"totalBytesLimit": budget, "manifestReserveBytes": MANIFEST_RESERVE,
                    "archiveHeadroomBelow15MB": 15_000_000 - budget},
         "basis": "Byte-identical source PNGs from local-owner singleplayer captures. "
-                 "First-person and front third-person are the same owning client, never an observer. "
-                 "windup/settled are source filename labels; frame_N is only a timeline sample, "
-                 "not an exact impact or phase boundary. Presence is not a gameplay pass.",
+                 "First-person and back third-person are the same owning client, never an observer. "
+                 "Windup, active and recovery filenames are checked against the accepted timeline by the native suite; "
+                 "active is its release window, not proof of the exact rendered server impact. Presence is not a gameplay pass.",
         "testVerdict": {"establishedByThisArtifact": False,
                         "authoritativeArtifact": f"{suite}-native-evidence",
                         "authoritativeManifest": f"{suite}-native-manifest.json",
@@ -319,10 +321,10 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
             {"coverage": "observer_client", "reason": "This suite has no observer-client screenshot capture."},
             {"coverage": "live_master_ember_combat", "reason": "EmberAfterburnChecks has no screenshot calls. "
              "MasterModelPresentationTest is synthetic model inspection, not live Master Ember combat."},
-            {"coverage": "exact_impact_phase", "reason": "Capture loop indices do not prove exact impact timing."},
+            {"coverage": "exact_impact_phase", "reason": "The accepted timeline release window does not prove the exact rendered server impact."},
         ],
-        "selectionPolicy": "Stable scene order; owner first-person then local-owner front third-person; "
-                           "windup, median available frame index, settled; skip frames exceeding remaining budget. "
+        "selectionPolicy": "Stable scene order; owner first-person then local-owner back third-person; "
+                           "windup, active release window, recovery, settled; skip frames exceeding remaining budget. "
                            "Only implemented first/second-form names and shared arts are eligible. "
                            "Left-turn, cancelled, help, synthetic model and other screenshots remain in the full artifact.",
         "selectedPngBytes": sum(frame["bytes"] for frame in selected),

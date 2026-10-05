@@ -1,7 +1,7 @@
 {
   "masters": {
-    "description": "The Masters of Tomorrow foundation suites plus the fixed-release second-form lifecycle suite.",
-    "expectedCount": 16,
+    "description": "Masters update combat, progression, presentation and bounded existing-world upgrade safety.",
+    "expectedCount": 17,
     "entries": [
       "dev.wildercord.party.PartyMutationSafetyTest",
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
@@ -18,14 +18,17 @@
       "dev.wildercord.client.auraworld.MasterModelPresentationTest",
       "dev.wildercord.aura.SwordStringAuthorityTest",
       "dev.wildercord.aura.CrescentCoverTest",
-      "dev.wildercord.aura.CrescentAudienceTest"
+      "dev.wildercord.aura.CrescentAudienceTest",
+      "dev.wildercord.world.upgrade.UpgradeRecoveryTest"
     ]
   },
   "articulated": {
-    "description": "Opt-in segmented body, hand-socket and first-person native acceptance slice.",
-    "expectedCount": 1,
+    "description": "Opt-in segmented body, first-person hand sockets and HUD composition, plus gated netherite armor acceptance.",
+    "expectedCount": 3,
     "entries": [
-      "dev.wildercord.client.combat.ArticulatedCombatPresentationTest"
+      "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
+      "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
+      "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest"
     ]
   }
 }

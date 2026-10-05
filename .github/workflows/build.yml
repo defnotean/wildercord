@@ -105,7 +105,7 @@ jobs:
 
   # Additional focused evidence for the Masters foundation; never replaces the four full shards.
   masters-native:
-    name: masters-native (16 focused suites)
+    name: Masters update (17 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -124,7 +124,7 @@ jobs:
       - name: Mark fresh Masters screenshot inputs
         continue-on-error: true
         run: python tools/curate_masters_frames.py --prepare --marker artifacts/review/masters-frames-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the 16 Masters native suites
+      - name: Run the 17 focused update suites
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
           SDL_VIDEO_FORCE_EGL: "1"
@@ -158,7 +158,7 @@ jobs:
 
   # Opt-in renderer acceptance only; all existing Masters and full-descriptor gates remain.
   articulated-native:
-    name: articulated-native (1 focused suite)
+    name: articulated-native (3 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -177,7 +177,7 @@ jobs:
       - name: Mark fresh articulated screenshot inputs
         continue-on-error: true
         run: python tools/curate_masters_frames.py --suite articulated --prepare --marker artifacts/review/articulated-frames-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the articulated native suite
+      - name: Run the three articulated native suites
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
           SDL_VIDEO_FORCE_EGL: "1"

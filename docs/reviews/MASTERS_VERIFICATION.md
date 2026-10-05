@@ -4,6 +4,18 @@ Base: `ebb2887f7d7becccf339918c00a9741721606fb1` (main).
 
 Development version: `0.11.0-masters-dev`.
 
+## Native acceptance checkpoint: 2026-10-05 13:39 UTC
+
+Published commit [`6ac294e21dd67598b34235298ca0d85909f43103`](https://github.com/defnotean/wildercord/commit/6ac294e21dd67598b34235298ca0d85909f43103), [run 37316763054](https://github.com/defnotean/wildercord/actions/runs/37316763054), has passed the normal **Build**, the complete **16-suite Masters-focused native job**, and the **one-suite articulated native job**. The latter retains the strict 0.001-block hand-grip convergence assertion with a genuinely positive-weight recovery sample after correcting the slim-arm pivot. The four aggregate gameplay shards were still running at this checkpoint; a full-repository native pass is **not** established.
+
+The native focused pass includes the original combat/progression/party safety, Ember Cinder Wake and two second-form lifecycle assertions. It does not cover the later locally reviewed cast-pursuit, netherite armor or existing-world pavilion additions. Those additions compile together with **1,172/1,172 JUnit tests** and **3,369 unchanged source/config fingerprints**, but need their own published native run. The focused selections are expanded to **17 update combat/safety suites** and **3 articulated suites**, retaining every aggregate entry and all four shards. The armor renderer and permanent world-upgrade adapter remain default-off and have separate acceptance requirements.
+
+Actual accepted-input articulated Spellcut screenshots now show the unobscured third-person actor and first-person sword. They are work-in-progress composition evidence, not proof of completed animation quality: the published first-person wrist sits low near the HUD. A separately reviewed local VIEW-key-only correction lifts the grip and clears the reticle; its real HUD-on after-captures remain pending. Earlier Masters gallery captures hid first-person hands because the fixture hid the HUD, and a front camera intersected its target. A reviewed test-only capture correction keeps the HUD, observes native submissions and viewport/occlusion, records accepted windup/release/recovery, and rejects unusable native buffers without editing pixels. Its new assertions still require a native run.
+
+The combined local snapshot including that composition correction and the reviewed Stone/Magic fixture readiness fixes passed all four source sets and **1,174/1,174 JUnit tests** at 14:01:48 UTC with **3,375 unchanged fingerprints**. This does not transfer the earlier published native pass to new or altered code.
+
+Historical checkpoints below retain their original dates and results. Their pending statements describe those older snapshots rather than superseding this exact-commit update.
+
 ## Opt-in articulated integration: 2026-10-05 12:25 UTC
 
 An original segmented player/Master rig and separate first-person viewmodel are now included as a **default-off development proof**, preserving the existing combat authority and full unsupported-equipment fallback. The combined independent gate passes all four source sets and **1,140/1,140 JUnit tests**, with **3,340 unchanged source/config fingerprints**; **49 Python CI-tooling tests** also pass. A separate one-suite native job and bounded real-frame evidence are included. Native rendering, armor, fallback transitions and compatibility remain acceptance gates. See [the articulated scope and exact limits](ARTICULATED_COMBAT_SLICE.md).
@@ -76,7 +88,7 @@ PNG compression-only changes were removed after comparing decoded pixels; unrela
 
 ## Native suites authored and compiled
 
-The original fifteen added suites are registered and compile. GitHub now executes native clients and has reached their Master combat probes, but the focused suite as a whole has **not passed**. Later suites cannot be treated as executed merely because they are listed here:
+The original fifteen added suites are registered and compile. Their complete focused run, including the sixteenth second-form suite, passed at the exact 13:39 checkpoint above. Later additions still require their own native result; a listed or compiled fixture alone is not proof of execution:
 
 - PartyMutationSafetyTest and PartyOfflineProjectileTest: direct/delayed damage, harmful/helpful statuses, source restoration, summons, fire/frost/movement, live and retained projectile ownership
 - WildercordHeartCirclesTest: circles 9–20, denied/interrupted formation, old-save compatibility, bounds, synchronization and tooltip captures

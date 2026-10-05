@@ -7,6 +7,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ### Masters of Tomorrow, development foundation
 
 - Added a school-tuned, server-owned cast-punish dash for all three Masters: visibly committed native movement, a separate short strike warning, actual-damage-only interruption, finite Aura/cooldowns and a guaranteed exposed recovery. One-tick feints, bystanders, cover, unsafe terrain and interruption cannot create free or homing dash chains; native counterplay fixtures accompany the new fallback body motion.
+- Authored a separately default-off articulated netherite armor preview: primary-body-only ownership, runtime vanilla slot geometry with welded joint bands, stock enchantment/trim materials and optional chestplate arms in first person. This remains an isolated, native-unaccepted slice; unsupported equipment uses the complete fallback.
+- Added a default-off, operator-reviewed existing-world pavilion adapter with exact-region previews, fail-closed claim-provider checks, durable recovery manifests and conflict-aware rollback. The first template is limited to 123 inert blocks in one already loaded, uninhabited chunk; it does not retrofit dungeons or spawn bosses. Native recovery validation remains a release gate. See [Safe world upgrades](docs/SAFE_WORLD_UPGRADES.md).
 
 - Added a default-off original segmented Spellcut/Master SWEEP renderer proof, with visible elbow/knee/wrist joints, skin-sliced limbs, independently composed first-person arms and stable-camera preview. Existing rig remains the whole-body fallback for armor and unsupported states; native validation and enchanted-netherite support are still required.
 

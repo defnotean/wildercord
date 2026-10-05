@@ -55,14 +55,14 @@ class CuratorTests(CuratorFixture):
     def test_exact_budget_includes_manifest_and_keeps_original_bytes_and_hash(self):
         for scene in curator.SCENES:
             for view in curator.VIEWS:
-                for phase in ("windup", "frame_2", "settled"):
+                for phase in curator.PHASES:
                     self.shot(f"{scene}_{view}_{phase}.png", size=300_000)
         result = self.curate()
         files = list((self.root / self.output).rglob("*"))
         size = sum(path.stat().st_size for path in files if path.is_file())
         self.assertLessEqual(size, 14_000_000)
         self.assertGreater(len(result["frames"]), 0)
-        self.assertLess(len(result["frames"]), 90)
+        self.assertLess(len(result["frames"]), 120)
         self.assertTrue(any(row["omittedForBudgetPhases"] for row in result["coverage"]))
         self.assertEqual(result["selectedPngBytes"], sum(frame["bytes"] for frame in result["frames"]))
         # Even an uncompressed ZIP retains comfortable headroom below 15 MB.
@@ -87,27 +87,28 @@ class CuratorTests(CuratorFixture):
         self.assertEqual(row["capturedPhases"], ["windup"])
         self.assertEqual(row["omittedForBudgetPhases"], ["windup"])
 
-    def test_selection_is_deterministic_and_uses_median_captured_sample_index(self):
-        for index in (6, 0, 2, 4):
-            self.shot(f"masters_art_0_first_frame_{index}.png")
-        self.shot("masters_style_rising_cinders_third_windup.png")
+    def test_current_phase_selection_is_deterministic_and_does_not_relabel_old_samples(self):
+        for phase in curator.PHASES:
+            self.shot(f"masters_art_0_first_{phase}.png")
+        self.shot("masters_art_0_first_frame_4.png")
         first = self.curate()
         second = curator.curate(self.root, self.source, self.marker, "review/another", self.identity)
         self.assertEqual(first, second)
-        frame = first["frames"][0]
-        self.assertEqual(frame["frameLabel"], "frame_4")
-        self.assertEqual(frame["phase"], "sample")
-        self.assertEqual(frame["phaseBasis"], "filename_loop_index_only")
-        self.assertEqual(frame["sampleIndex"], 4)
-        self.assertEqual((self.root / self.output / "manifest.json").read_bytes(),
-                         (self.root / "review/another/manifest.json").read_bytes())
+        self.assertEqual([f["frameLabel"] for f in first["frames"]], list(curator.PHASES))
+        active = first["frames"][1]
+        self.assertEqual(active["phaseBasis"], "accepted_timeline_window_assertion")
+        self.assertEqual(curator.describe("masters_art_0_first_frame_4.png")["phase"], "sample")
+        self.assertEqual(curator.describe("masters_art_0_third_windup.png")["view"],
+                         "local_owner_third_person_front")
+        self.assertEqual(curator.describe("masters_art_0_third_back_windup.png")["view"],
+                         "local_owner_third_person_back")
 
     def test_exact_scope_labels_and_absent_forms_are_not_invented(self):
         fixtures = {
             "masters_art_1_first_windup.png": ("shared_art", "owner_first_person", "windup"),
-            "masters_style_kindling_draw_third_settled.png":
-                ("first_form", "local_owner_third_person_front", "settled"),
-            "masters_style_blossom_fall_first_frame_7.png": ("second_form", "owner_first_person", "sample"),
+            "masters_style_kindling_draw_third_back_settled.png":
+                ("first_form", "local_owner_third_person_back", "settled"),
+            "masters_style_blossom_fall_first_recovery.png": ("second_form", "owner_first_person", "recovery"),
         }
         for name in fixtures:
             self.shot(name)
@@ -187,7 +188,7 @@ class CuratorTests(CuratorFixture):
             with self.subTest(budget=budget), self.assertRaises(curator.EvidenceError):
                 self.curate(budget=budget)
 
-    def test_only_capture_loop_indices_present_in_the_source_are_eligible(self):
+    def test_legacy_capture_indices_keep_their_original_bounded_sample_labels(self):
         for name in ("masters_art_0_first_frame_7.png", "masters_art_0_first_frame_00.png",
                      "masters_style_blossom_fall_first_frame_10.png"):
             self.assertIsNone(curator.describe(name))
@@ -200,12 +201,12 @@ class ArticulatedCuratorTests(CuratorFixture):
 
     def test_only_real_supported_hand_view_and_loop_names_are_eligible(self):
         for hand in curator.ARTICULATED_HANDS:
-            for view in curator.VIEWS:
+            for view in curator.ARTICULATED_VIEWS:
                 for index in range(9):
                     name = f"articulated_live_{hand}_{view}_frame_{index}.png"
                     info = curator.describe(name, suite=self.suite)
                     self.assertEqual((info["hand"], info["view"], info["sampleIndex"]),
-                                     (hand, curator.VIEWS[view], index))
+                                     (hand, curator.ARTICULATED_VIEWS[view], index))
                     self.assertEqual(info["phase"], "sample")
                     self.assertEqual(info["phaseBasis"], "filename_loop_index_only")
                     self.assertIsNone(curator.describe(name))
@@ -220,7 +221,7 @@ class ArticulatedCuratorTests(CuratorFixture):
 
     def test_four_combinations_use_first_upper_median_and_last_available_samples(self):
         for hand in curator.ARTICULATED_HANDS:
-            for view in curator.VIEWS:
+            for view in curator.ARTICULATED_VIEWS:
                 for index in (8, 1, 3, 6):
                     self.shot(f"articulated_live_{hand}_{view}_frame_{index}.png")
         result = self.curate()
@@ -230,7 +231,7 @@ class ArticulatedCuratorTests(CuratorFixture):
         self.assertEqual(result["selectedFrameCount"], 12)
         self.assertEqual(len(result["coverage"]), 4)
         self.assertEqual({(row["hand"], row["view"]) for row in result["coverage"]},
-                         {(hand, view) for hand in curator.ARTICULATED_HANDS for view in curator.VIEWS.values()})
+                         {(hand, view) for hand in curator.ARTICULATED_HANDS for view in curator.ARTICULATED_VIEWS.values()})
         for row in result["coverage"]:
             self.assertEqual(row["capturedSampleIndices"], [1, 3, 6, 8])
             self.assertEqual(row["uncapturedLoopIndices"], [0, 2, 4, 5, 7])
@@ -276,7 +277,7 @@ class ArticulatedCuratorTests(CuratorFixture):
 
     def test_articulated_budget_includes_manifest_and_preserves_bytes_and_hashes(self):
         for hand in curator.ARTICULATED_HANDS:
-            for view in curator.VIEWS:
+            for view in curator.ARTICULATED_VIEWS:
                 for index in (0, 4, 8):
                     self.shot(f"articulated_live_{hand}_{view}_frame_{index}.png", size=1_200_000)
         result = self.curate()
@@ -327,7 +328,7 @@ class ArticulatedCuratorTests(CuratorFixture):
 
     def test_mixed_source_directory_never_admits_other_suite_or_synthetic_frames(self):
         articulated = "articulated_live_left_first_frame_1.png"
-        masters = "masters_art_0_first_frame_1.png"
+        masters = "masters_art_0_first_active.png"
         curator.prepare(self.root, self.source, "review/masters-run.json", self.identity)
         self.started = json.loads((self.root / "review/masters-run.json").read_text())["startedNs"]
         for name in (articulated, masters, "articulated_model_pose.png", "articulated_hitstop_frame_1.png"):

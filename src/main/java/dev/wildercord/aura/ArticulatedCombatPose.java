@@ -169,14 +169,18 @@ public final class ArticulatedCombatPose {
 	}
 	private record Motion(Key chamber, Key impact, Key follow, Vec3 rightPlant, Vec3 leftPlant) {}
 
-	private static final ViewKey VIEW_BIND = new ViewKey(v(-8.3F, -3.8F, 5.1F), arm(r(0, 0, 0), r(-1.12F, 0, 0), -.5F, r(.06F, 0, 0)),
-		v(8.3F, -3.1F, 5.1F), arm(r(0, 0, 0), r(-1.05F, 0, 0), -.65F, r(0, 0, 0)));
-	private static final ViewKey VIEW_CHAMBER = new ViewKey(v(-6.5F, -3.8F, 3), arm(r(.02F, .10F, -.04F), r(-1.58F, .22F, -.34F), -.92F, r(.13F, .20F, -.26F)),
-		v(6.7F, -1.8F, 3.5F), arm(r(0, -.04F, .03F), r(-1.02F, .08F, .30F), -.93F, r(.12F, -.14F, .08F)));
-	private static final ViewKey VIEW_IMPACT = new ViewKey(v(-6, -2.8F, 2.2F), arm(r(.02F, -.08F, -.06F), r(-1.34F, -.58F, -.40F), -.36F, r(.12F, -.24F, .48F)),
-		v(6.5F, -1.8F, 3.5F), arm(r(0, .06F, .02F), r(-.92F, .18F, .34F), -.84F, r(.10F, -.08F, .12F)));
-	private static final ViewKey VIEW_FOLLOW = new ViewKey(v(-9.0F, .4F, 2.8F), arm(r(.02F, -.12F, -.03F), r(-1.10F, -.89F, -.18F), -.65F, r(.15F, -.36F, .65F)),
-		v(7.5F, -1.4F, 3.8F), arm(r(0, .08F, .02F), r(-.85F, -.08F, .24F), -.82F, r(.10F, -.08F, .10F)));
+	// These are camera-space arm placements, not world motion or camera/FOV changes.
+	// Keep the actual grip and guard wrist above the survival HUD at the native 70-degree
+	// hand projection. Recovery stays peripheral rather than dropping behind the hotbar.
+	// The small impact/follow grip twist exposes the blade face without extending its reach.
+	private static final ViewKey VIEW_BIND = new ViewKey(v(-8.3F, -5.8F, 5.1F), arm(r(0, 0, 0), r(-1.12F, 0, 0), -.5F, r(.06F, 0, 0)),
+		v(8.3F, -6.5F, 5.1F), arm(r(0, 0, 0), r(-1.05F, 0, 0), -.65F, r(0, 0, 0)));
+	private static final ViewKey VIEW_CHAMBER = new ViewKey(v(-6.5F, -4.3F, 3), arm(r(.02F, .10F, -.04F), r(-1.58F, .22F, -.34F), -.92F, r(.13F, .20F, -.26F)),
+		v(6.7F, -6.1F, 3.5F), arm(r(0, -.04F, .03F), r(-1.02F, .08F, .30F), -.93F, r(.12F, -.14F, .08F)));
+	private static final ViewKey VIEW_IMPACT = new ViewKey(v(-7.5F, -4.4F, 2.2F), arm(r(.02F, -.08F, -.06F), r(-1.34F, -.58F, -.40F), -.36F, r(.12F, -.06F, .48F)),
+		v(6.5F, -6.1F, 3.5F), arm(r(0, .06F, .02F), r(-.92F, .18F, .34F), -.84F, r(.10F, -.08F, .12F)));
+	private static final ViewKey VIEW_FOLLOW = new ViewKey(v(-11.0F, -4.6F, 2.8F), arm(r(.02F, -.12F, -.03F), r(-1.10F, -.89F, -.18F), -.65F, r(.15F, -.18F, .65F)),
+		v(7.5F, -6.1F, 3.8F), arm(r(0, .08F, .02F), r(-.85F, -.08F, .24F), -.82F, r(.10F, -.08F, .10F)));
 
 	// Hips initiate, the chest counter-turns, and an independently flexed elbow opens through the cut.
 	// Both ankles keep the same authored targets for all three keys.

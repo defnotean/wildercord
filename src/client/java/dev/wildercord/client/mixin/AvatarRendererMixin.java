@@ -19,6 +19,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(AvatarRenderer.class)
 public abstract class AvatarRendererMixin {
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void wildercord$ownArticulatedBody(net.minecraft.client.renderer.entity.EntityRendererProvider.Context context,
+			boolean slim, CallbackInfo ci) {
+		dev.wildercord.client.combat.ArticulatedArmorLayer.install((AvatarRenderer<?>) (Object) this, context, slim);
+	}
+
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V",
 		at = @At("TAIL"))
 	private void wildercord$castingPose(Avatar avatar, AvatarRenderState state, float partial, CallbackInfo ci) {

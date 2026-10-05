@@ -40,6 +40,28 @@ public final class ArticulatedCombat {
 	public static final RenderStateDataKey<Frame> FRAME = RenderStateDataKey.create(() -> "wildercord:articulated_frame");
 	public static final RenderStateDataKey<Boolean> KNOWN_LAYERS = RenderStateDataKey.create(() -> "wildercord:articulated_known_layers");
 
+	/** Exact known layer classes; a subclass or newly injected layer must earn its own adapter. */
+	public static boolean knownLayer(net.minecraft.client.renderer.entity.layers.RenderLayer<?, ?> layer) {
+		return switch (layer.getClass().getName()) {
+			case "net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer",
+				"net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer",
+				"net.minecraft.client.renderer.entity.layers.ItemInHandLayer",
+				"net.minecraft.client.renderer.entity.layers.ArrowLayer",
+				"net.minecraft.client.renderer.entity.layers.Deadmau5EarsLayer",
+				"net.minecraft.client.renderer.entity.layers.CapeLayer",
+				"net.minecraft.client.renderer.entity.layers.CustomHeadLayer",
+				"net.minecraft.client.renderer.entity.layers.WingsLayer",
+				"net.minecraft.client.renderer.entity.layers.ParrotOnShoulderLayer",
+				"net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer",
+				"net.minecraft.client.renderer.entity.layers.BeeStingerLayer",
+				"dev.wildercord.client.render.CordLayer", "dev.wildercord.client.render.GearLayer",
+				"dev.wildercord.client.render.AuraShellLayer", "dev.wildercord.client.render.AuraBodyLayer",
+				"dev.wildercord.client.render.RuneMarksLayer", "dev.wildercord.client.auraworld.AuraFighterRenderer$Glow",
+				"dev.wildercord.client.combat.ArticulatedArmorLayer" -> true;
+			default -> false;
+		};
+	}
+
 	/** Developer/client JVM switch until the native acceptance matrix has actually passed. */
 	public static boolean enabled() { return Boolean.getBoolean(ENABLE_PROPERTY); }
 	public static boolean stableCamera() {
@@ -86,7 +108,7 @@ public final class ArticulatedCombat {
 		if (!enabled() || !(state instanceof HumanoidRenderState humanoid) || !upright(humanoid) || !plainSword(state.getMainHandItemStack())
 			|| !Boolean.TRUE.equals(state.getData(KNOWN_LAYERS)) || !view && state.walkAnimationSpeed > .2F) return null;
 		Frame frame = state.getData(FRAME);
-		if (frame == null || !armorEmpty(humanoid) || !view && frame.pose().weight() <= 0
+		if (frame == null || !ArticulatedArmorRenderer.compatible(humanoid) || !view && frame.pose().weight() <= 0
 			|| view && frame.move() != -1 && frame.move() != 0
 			|| view && frame.move() == -1 && state.swingAnimation > 0) return null;
 		ItemStack off = state.mainArm == HumanoidArm.RIGHT ? state.leftHandItemStack : state.rightHandItemStack;
@@ -107,17 +129,13 @@ public final class ArticulatedCombat {
 			&& !state.isFallFlying && !state.isCrouching && !state.isPassenger && !state.isUsingItem
 			&& !state.hasPose(Pose.SWIMMING) && !state.hasPose(Pose.SLEEPING);
 	}
-	private static boolean armorEmpty(HumanoidRenderState state) {
-		return empty(state.headEquipment) && empty(state.chestEquipment) && empty(state.legsEquipment) && empty(state.feetEquipment);
-	}
-	private static boolean empty(ItemStack stack) { return stack == null || stack.isEmpty(); }
 	private static boolean plainSword(ItemStack stack) {
 		return stack != null && (stack.is(Items.WOODEN_SWORD) || stack.is(Items.STONE_SWORD) || stack.is(Items.IRON_SWORD)
 			|| stack.is(Items.GOLDEN_SWORD) || stack.is(Items.DIAMOND_SWORD) || stack.is(Items.NETHERITE_SWORD));
 	}
 
 	public static boolean applyPlayer(PlayerModel model, AvatarRenderState state) {
-		if (model.getClass() != PlayerModel.class || !(model instanceof ArticulatedModelAccess access)) return false;
+		if (model.getClass() != PlayerModel.class || !(model instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
 		return apply(access.wildercord$rig(), model, state);
 	}
 
@@ -187,7 +205,7 @@ public final class ArticulatedCombat {
 
 	public static boolean legacyArm(PlayerModel model, AvatarRenderState state, HumanoidArm arm, PoseStack stack) {
 		Frame frame = frame(state);
-		if (frame == null || !(model instanceof ArticulatedModelAccess access)) return false;
+		if (frame == null || !(model instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
 		ArticulatedRig rig = access.wildercord$rig();
 		applyPlayer(model, state);
 		rig.transformTo(arm == HumanoidArm.LEFT ? ArticulatedCombatPose.Joint.LEFT_HAND : ArticulatedCombatPose.Joint.RIGHT_HAND, stack);
@@ -196,7 +214,7 @@ public final class ArticulatedCombat {
 	}
 
 	public static boolean head(PlayerModel model, AvatarRenderState state, PoseStack stack) {
-		if (frame(state) == null || !(model instanceof ArticulatedModelAccess access)) return false;
+		if (frame(state) == null || !(model instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
 		applyPlayer(model, state);
 		access.wildercord$rig().transformTo(ArticulatedCombatPose.Joint.HEAD, stack);
 		return true;

@@ -37,7 +37,7 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 		if (combat == null || net.minecraft.util.Mth.lerp(partial, hands.oldMainHandHeight, hands.mainHandHeight) < .999F
 			|| !net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem, avatar.getMainHandItemStack())) return false;
 		PlayerModel playerModel = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar).getModel();
-		if (playerModel.getClass() != PlayerModel.class || !(playerModel instanceof ArticulatedModelAccess access)) return false;
+		if (playerModel.getClass() != PlayerModel.class || !(playerModel instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
 		if (hand != InteractionHand.MAIN_HAND) return true;
 		var view = ArticulatedCombatPose.view(combat.pose(), combat.leftHanded());
 		Frame frame = new Frame(view, avatar.showLeftSleeve, avatar.showRightSleeve);
@@ -58,6 +58,7 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 				OverlayTexture.NO_OVERLAY, -1, null, 0);
 			// The same immutable palette sets the hand at submission and deferred model rendering.
 			model.setupAnim(frame);
+			if (access.wildercord$armor() != null) access.wildercord$armor().submitView(model.rig, avatar, stack, collector, light);
 			model.rig.socket(avatar.mainArm, stack);
 			ArticulatedCombat.orientItemAtSocket(stack);
 			avatar.getMainHandItemState().submit(stack, collector, light, OverlayTexture.NO_OVERLAY, 0);

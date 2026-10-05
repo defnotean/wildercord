@@ -162,6 +162,34 @@ class ArticulatedCombatPoseTest {
 	}
 
 	@Test
+	void firstPersonGripAndGuardStayReadableAboveTheSurvivalHud() {
+		// Canonical aim, native 70-degree hand projection, conservative 42-GUI-pixel HUD band.
+		// The rendered mesh/armor and free-look grid are checked separately with actual polygons.
+		for (boolean left : new boolean[] {false, true}) for (int step = 0; step <= 640; step++) {
+			ViewPose camera = view(sampleSpellcut(0, step / 40F, 4, 12, left), left);
+			for (Joint joint : new Joint[] {left ? Joint.LEFT_SOCKET : Joint.RIGHT_SOCKET,
+				left ? Joint.RIGHT_HAND : Joint.LEFT_HAND}) {
+				Vec3 p = camera.cameraPoint(joint, 0, 0, 0);
+				double fractionY = .5 - p.y() / -p.z() / (2 * Math.tan(Math.toRadians(35)));
+				assertTrue(fractionY > .6 && fractionY < .81, "Grip/guard remain below aim and above HUD: " + joint + " " + fractionY);
+				for (int[] viewport : new int[][] {{854, 480, 2}, {1280, 720, 3}, {1280, 960, 4}, {1920, 810, 3}})
+					assertTrue(fractionY * viewport[1] < viewport[1] - 42 * viewport[2], "HUD-safe wrist anchor");
+			}
+		}
+	}
+
+	@Test
+	void firstPersonPaletteIsContinuousAtEveryClipAndIdleBoundary() {
+		for (boolean left : new boolean[] {false, true})
+			for (float boundary : new float[] {0, 2.6F, 4, 7, 16}) {
+				ViewPose before = view(sampleSpellcut(0, boundary - .001F, 4, 12, left), left);
+				ViewPose after = view(sampleSpellcut(0, boundary + .001F, 4, 12, left), left);
+				assertEquals(before.origin(), after.origin());
+				for (Joint joint : Joint.values()) matrix(before.world(joint), after.world(joint), .025F);
+			}
+	}
+
+	@Test
 	void phaseBoundariesAndBindEntryExitAreContinuousAndFinite() {
 		for (float boundary : new float[] {0, 2.6F, 4, 7, 16}) {
 			Pose before = sampleSpellcut(0, boundary - .001F, 4, 12, false);
@@ -233,7 +261,7 @@ class ArticulatedCombatPoseTest {
 		ViewPose camera = view(body, false);
 		hand = new Transform(0, 0, 0, camera.local(Joint.RIGHT_HAND).rotation()).matrix();
 		socket = new Transform(0, 0, 0, camera.local(Joint.RIGHT_SOCKET).rotation()).matrix();
-		matrix(new Transform(0, 0, 0, new Rotation(.12F, -.24F, .48F)).matrix(), hand.multiply(socket), EPS);
+		matrix(new Transform(0, 0, 0, new Rotation(.12F, -.06F, .48F)).matrix(), hand.multiply(socket), EPS);
 		assertEquals(new Vec3(0, 1, 0), body.local(Joint.RIGHT_SOCKET).translation());
 		assertEquals(new Vec3(0, 1, 0), camera.local(Joint.RIGHT_SOCKET).translation());
 	}

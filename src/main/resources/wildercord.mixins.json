@@ -55,7 +55,9 @@
 		"FoxCompanionGoalsMixin",
         "NextChestPlacementMixin",
         "NextTeleportObserverMixin",
-        "LifeGrowthWritesMixin"
+        "LifeGrowthWritesMixin",
+        "UpgradeChunkWriteMixin",
+        "UpgradePlayerEditMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

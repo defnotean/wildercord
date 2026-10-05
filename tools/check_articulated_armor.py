@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Reproduce source-only articulated armor geometry evidence, without launching Minecraft.
+
+Uses already-verified official dependency cache; no downloads, installers, shader/GPU setup,
+Mixin runtime, client fixture or native acceptance are performed or implied.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_VERIFY = Path('/workspace/shared/wildercord_compile_verification')
+SOURCES = [
+    'src/main/java/dev/wildercord/aura/ArticulatedCombatPose.java',
+    'src/main/java/dev/wildercord/aura/ArticulatedArmorMesh.java',
+    'src/client/java/dev/wildercord/client/mixin/ModelPartChildrenAccessor.java',
+    'src/client/java/dev/wildercord/client/combat/ArticulatedRig.java',
+    'src/client/java/dev/wildercord/client/combat/ArticulatedArmorGeometry.java',
+    'src/client/java/dev/wildercord/client/combat/ArticulatedArmorAssets.java',
+    'src/gametest/java/dev/wildercord/client/combat/ArticulatedArmorInputChecks.java',
+    'tools/CheckArticulatedArmorGeometry.java',
+    'tools/CheckArticulatedArmorView.java',
+    'tools/check_articulated_armor.py',
+]
+INSPECTED = [
+    'src/client/java/dev/wildercord/client/combat/ArticulatedViewModel.java',
+    'src/client/java/dev/wildercord/client/combat/ArticulatedArmorRenderer.java',
+]
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def sources() -> dict[str, str]:
+    return {name: sha(ROOT / name) for name in SOURCES + INSPECTED}
+
+
+def run(out: Path, verify: Path) -> None:
+    out.mkdir(parents=True, exist_ok=True)
+    if any(out.iterdir()):
+        raise ValueError('Use a fresh empty output directory to preserve prior evidence')
+    before = sources()
+    java = Path(json.loads((verify / 'toolchain_manifest.json').read_text())['java']['directory']) / 'bin'
+    dependencies = []
+    seen = set()
+    hashes = {}
+    for manifest in ['dependency_manifest.json', 'embedded_manifest.json']:
+        for entry in json.loads((verify / manifest).read_text()):
+            path = verify / entry['path']
+            if path.suffix != '.jar' or 'iris' in str(path) or path.name in seen:
+                continue
+            digest = sha(path)
+            if digest != entry['sha256']:
+                raise ValueError(f'Dependency checksum mismatch: {path}')
+            seen.add(path.name)
+            dependencies.append(path)
+            hashes[str(path)] = digest
+    # Only original official runtime jars. Compile-only rewritten copies never enter this audit.
+    required = [verify / 'originals/minecraft-client.jar', verify / 'originals/minecraft-server-inner.jar']
+    for path in required:
+        if path not in dependencies:
+            raise ValueError(f'Official runtime jar missing from verified dependency manifest: {path}')
+    dependencies = required + [path for path in dependencies if path not in required]
+    classes = out / 'classes'
+    classes.mkdir()
+    cp = os.pathsep.join(map(str, dependencies))
+    commands = [[str(java / 'javac'), '--release', '25', '-proc:none', '-cp', cp, '-d', str(classes),
+                 *[str(ROOT / name) for name in SOURCES if name.endswith('.java')]]]
+    report = {'kind': 'offline source geometry', 'native': 'not run', 'mixinRuntime': 'not run',
+              'source_before': before, 'dependency_sha256': hashes, 'passed': False}
+    try:
+        with (out / 'compile.log').open('w') as log:
+            subprocess.run(commands[0], cwd=ROOT, stdout=log, stderr=log, check=True)
+        for main, filename in [('dev.wildercord.client.combat.ArticulatedArmorInputChecks', 'inputs.json'),
+                               ('CheckArticulatedArmorGeometry', 'geometry.json'), ('CheckArticulatedArmorView', 'view.json')]:
+            command = [str(java / 'java'), '-Xmx2G', '-cp', str(classes) + os.pathsep + cp, main]
+            commands.append(command)
+            with (out / filename).open('w') as result, (out / (main + '.log')).open('w') as log:
+                subprocess.run(command, cwd=ROOT, stdout=result, stderr=log, check=True)
+            result = json.loads((out / filename).read_text())
+            if result.get('passes') is not True:
+                raise ValueError(f'{main} did not affirm its scoped geometry checks')
+        report['passed'] = True
+    finally:
+        after = sources()
+        report['source_after'] = after
+        report['source_unchanged'] = before == after
+        report['passed'] &= before == after
+        (out / 'commands.json').write_text(json.dumps(commands, indent=2) + '\n')
+        (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
+    if before != after:
+        raise RuntimeError('Sources changed during the audit; this result is invalid')
+    print(f'Offline geometry checks passed. Evidence: {out / "report.json"}. Native rendering remains unrun.')
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--verification', type=Path, default=DEFAULT_VERIFY)
+    args = parser.parse_args()
+    run(args.out.resolve(), args.verification.resolve())
+
+
+if __name__ == '__main__':
+    main()

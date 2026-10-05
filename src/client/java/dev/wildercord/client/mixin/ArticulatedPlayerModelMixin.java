@@ -2,10 +2,10 @@ package dev.wildercord.client.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.client.combat.ArticulatedCombat;
+import dev.wildercord.client.combat.ArticulatedArmorRenderer;
 import dev.wildercord.client.combat.ArticulatedModelAccess;
 import dev.wildercord.client.combat.ArticulatedRig;
 import dev.wildercord.client.combat.ArticulatedViewModel;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.HumanoidArm;
@@ -21,10 +21,12 @@ public abstract class ArticulatedPlayerModelMixin implements ArticulatedModelAcc
 	@Unique private ArticulatedRig wildercord$rig;
 	@Unique private ArticulatedViewModel wildercord$view;
 
-	@Inject(method = "<init>", at = @At("RETURN"))
-	private void wildercord$createRig(ModelPart root, boolean slim, CallbackInfo ci) {
+	@Unique private ArticulatedArmorRenderer wildercord$armor;
+
+	@Override public void wildercord$ownBody(boolean slim) {
+		if (((Object) this).getClass() != PlayerModel.class || wildercord$rig != null) return;
 		wildercord$rig = new ArticulatedRig(slim, false);
-		wildercord$rig.attach(root);
+		wildercord$rig.attach(((PlayerModel) (Object) this).root());
 		wildercord$view = new ArticulatedViewModel(slim);
 	}
 
@@ -37,11 +39,17 @@ public abstract class ArticulatedPlayerModelMixin implements ArticulatedModelAcc
 		at = @At("HEAD"), cancellable = true)
 	private void wildercord$hand(AvatarRenderState state, HumanoidArm arm, PoseStack stack, CallbackInfo ci) {
 		var frame = ArticulatedCombat.frame(state);
-		if (frame == null || ((Object) this).getClass() != PlayerModel.class) return;
+		if (frame == null || !wildercord$bodyOwned()) return;
 		ArticulatedCombat.translateHeld(wildercord$rig, (PlayerModel) (Object) this, state, arm, stack);
 		ci.cancel();
 	}
 
+	@Override public boolean wildercord$bodyOwned() { return wildercord$rig != null; }
+	@Override public ArticulatedArmorRenderer wildercord$armor() { return wildercord$armor; }
+	@Override public void wildercord$setArmor(ArticulatedArmorRenderer armor) {
+		if (!wildercord$bodyOwned()) throw new IllegalStateException("Armor requires the primary body owner");
+		wildercord$armor = armor;
+	}
 	@Override public ArticulatedRig wildercord$rig() { return wildercord$rig; }
 	@Override public ArticulatedViewModel wildercord$viewModel() { return wildercord$view; }
 }

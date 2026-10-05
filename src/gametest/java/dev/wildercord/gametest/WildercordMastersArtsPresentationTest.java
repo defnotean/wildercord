@@ -34,6 +34,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Real combat keys, accepted network timelines and the registered player rig, with native first-
@@ -66,8 +67,8 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 				mc.options.guiScale().set(2);
 				mc.resizeGui();
 				mc.gui.setScreen(null);
-				mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
-				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+				if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
 			});
 			context.waitTicks(10);
 			world.getConnection().waitForChunksRender();
@@ -75,17 +76,17 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			menusDiscardQueuedInput(context, world);
 			holdDoesNotRepeat(context, world);
 			for (int move = 0; move < 3; move++) {
-				capture(context, world, move, CameraType.THIRD_PERSON_FRONT, "third");
+				capture(context, world, move, CameraType.THIRD_PERSON_BACK, "third_back");
 				capture(context, world, move, CameraType.FIRST_PERSON, "first");
 			}
 			cancelledWindup(context, world);
 			for (float turn : new float[] {-90, 90, 180}) turnDuringWindup(context, world, turn);
 			nearVerticalCommit(context, world);
 			for (var style : MastersStyleRules.STYLES) {
-				captureStyle(context, world, style, CameraType.THIRD_PERSON_FRONT, "third");
+				captureStyle(context, world, style, CameraType.THIRD_PERSON_BACK, "third_back");
 				captureStyle(context, world, style, CameraType.FIRST_PERSON, "first");
 				if (ArtRules.art(style.art()).slot() == 1) {
-					captureStyle(context, world, style, CameraType.THIRD_PERSON_FRONT, "left_turn_third", true, false);
+					captureStyle(context, world, style, CameraType.THIRD_PERSON_BACK, "left_turn_third_back", true, false);
 					captureStyle(context, world, style, CameraType.FIRST_PERSON, "left_turn_first", true, false);
 					captureStyle(context, world, style, CameraType.FIRST_PERSON, "cancelled", false, true);
 				}
@@ -173,15 +174,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null, 30);
 		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player).move() == move), "The real input reaches its requested server timeline");
 		String prefix = "masters_art_" + move + "_" + view;
-		shot(context, prefix + "_windup");
-		boolean[] observed = {false};
-		for (int frame = 0; frame < 7; frame++) {
-			context.waitTicks(1);
-			boolean active = inspect(context);
-			observed[0] |= active;
-			if (active) shot(context, prefix + "_frame_" + frame);
-		}
-		check(observed[0], "The registered player model follows the accepted art during its live timeline");
+		captureBeats(context, prefix);
 		context.waitTicks(30);
 		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null && MastersArtsClient.pose(mc.player, .5F).weight() == 0),
 			"The native animation returns to vanilla after recovery");
@@ -283,7 +276,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.runOnClient(mc -> {
 			mc.player.setYRot(turn);
 			mc.player.setYHeadRot(turn);
-			mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+			mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
 		});
 		context.waitFor(mc -> MastersArtsClient.pose(mc.player, .5F).weight() > .999F, 10);
 		context.runOnClient(mc -> {
@@ -300,13 +293,12 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			check(Math.abs(model.head.yRot - model.body.yRot) <= Math.toRadians(75) + .001,
 				"The final neck angle remains bounded relative to the authored torso");
 		});
-		shot(context, "masters_committed_turn_" + (int) turn + "_third_body_and_trail");
+		shot(context, "masters_committed_turn_" + (int) turn + "_third_back_body_and_trail");
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
 			if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
 		});
 		shot(context, "masters_committed_turn_" + (int) turn + "_first_weapon_and_hint");
-		context.runOnClient(mc -> { if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle(); });
 		context.waitTicks(30);
 	}
 
@@ -409,19 +401,11 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.runOnClient(mc -> {
 			check(mc.player.getMainArm() == (leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT), "The real player's selected hand is in effect");
 			if (leftHanded) {
-				mc.player.setYRot(90); mc.player.setYHeadRot(90); mc.player.setXRot(75);
+				mc.player.setYRot(90); mc.player.setYHeadRot(90);
+				mc.player.setXRot(camera.isFirstPerson() ? 75 : 12);
 			}
 		});
-		shot(context, prefix + "_windup");
-		boolean observed = false;
-		for (int frame = 0; frame < 10; frame++) {
-			context.waitTicks(1);
-			if (inspect(context)) {
-				observed = true;
-				shot(context, prefix + "_frame_" + frame);
-			}
-		}
-		check(observed, "Actual " + style.art() + " string drives the registered native body and weapon timeline");
+		captureBeats(context, prefix);
 		context.waitTicks(30);
 		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Style returns to vanilla after its real recovery");
 		shot(context, prefix + "_settled");
@@ -441,8 +425,60 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		player.inventoryMenu.broadcastChanges();
 	}
 
+	/** Samples real accepted time, never a loop index presented as an active/recovery beat. */
+	private static void captureBeats(ClientGameTestContext context, String prefix) {
+		context.runOnClient(mc -> {
+			if (!mc.options.getCameraType().isFirstPerson()) mc.player.setXRot(12);
+		});
+		context.waitFor(mc -> {
+			var move = MastersArtsClient.timeline(mc.player);
+			return move != null && mc.level.getGameTime() - move.startTick() >= Math.max(1, move.windup() / 2);
+		}, 30);
+		var windup = phaseShot(context, prefix, "windup");
+		context.waitFor(mc -> {
+			var move = MastersArtsClient.timeline(mc.player);
+			return move != null && mc.level.getGameTime() - move.startTick() >= move.windup();
+		}, 30);
+		var active = phaseShot(context, prefix, "active");
+		context.waitFor(mc -> {
+			var move = MastersArtsClient.timeline(mc.player);
+			return move != null && mc.level.getGameTime() - move.startTick() >= move.windup() + move.recovery() / 2;
+		}, 30);
+		var recovery = phaseShot(context, prefix, "recovery");
+		// GPU readback may advance ticks; finish all phase renders before waiting for file writes.
+		awaitShots(context, CompletableFuture.allOf(windup, active, recovery));
+	}
+
+	private static CompletableFuture<Void> phaseShot(ClientGameTestContext context, String prefix, String phase) {
+		context.runOnClient(mc -> {
+			var move = MastersArtsClient.timeline(mc.player);
+			check(move != null, "A live accepted timeline owns " + prefix + "_" + phase);
+			float age = mc.level.getGameTime() - move.startTick() + MastersCaptureProbe.PARTIAL;
+			boolean correct = switch (phase) {
+				case "windup" -> age >= 0 && age < move.windup();
+				case "active" -> age >= move.windup() && age < move.windup() + 2;
+				case "recovery" -> age >= move.windup() + move.recovery() / 2 && age < move.windup() + move.recovery();
+				default -> false;
+			};
+			check(correct, "The filename matches accepted combat time: " + prefix + "_" + phase + " age=" + age);
+			Wildercord.LOGGER.info("MASTERS_CAPTURE_PHASE name={} phase={} age={} windup={} recovery={}",
+				prefix, phase, age, move.windup(), move.recovery());
+		});
+		check(inspect(context), "The registered live rig participates during " + phase);
+		return context.computeOnClient(mc -> MastersCaptureProbe.capture(mc, prefix + "_" + phase));
+	}
+
 	private static void shot(ClientGameTestContext context, String name) {
-		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
+		if (context.computeOnClient(mc -> mc.gui.screen() != null)) {
+			context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
+		} else {
+			awaitShots(context, context.computeOnClient(mc -> MastersCaptureProbe.capture(mc, name)));
+		}
+	}
+
+	private static void awaitShots(ClientGameTestContext context, CompletableFuture<Void> captured) {
+		context.waitFor(mc -> captured.isDone());
+		captured.join();
 	}
 
 	private static void check(boolean ok, String message) {

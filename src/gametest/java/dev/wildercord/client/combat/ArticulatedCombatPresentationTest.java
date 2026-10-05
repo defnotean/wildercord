@@ -71,7 +71,8 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 				state.showCape = false;
 				for (boolean slim : new boolean[] {false, true}) for (boolean left : new boolean[] {false, true}) {
 					PlayerModel model = new PlayerModel(mc.getEntityModels().bakeLayer(slim ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), slim);
-					check(model instanceof ArticulatedModelAccess, "Player model mixin owns a segmented rig");
+					check(model instanceof ArticulatedModelAccess, "Player model mixin exposes explicit primary-body ownership");
+					((ArticulatedModelAccess) model).wildercord$ownBody(slim);
 					ArticulatedRig rig = ((ArticulatedModelAccess) model).wildercord$rig();
 					state.mainArm = left ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
 					state.rightHandItemStack = left ? ItemStack.EMPTY : new ItemStack(Items.DIAMOND_SWORD);

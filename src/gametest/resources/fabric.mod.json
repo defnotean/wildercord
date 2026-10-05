@@ -273,14 +273,18 @@
       "dev.wildercord.aura.SwordStringAuthorityTest",
       "dev.wildercord.aura.CrescentCoverTest",
       "dev.wildercord.aura.CrescentAudienceTest",
-      "dev.wildercord.client.combat.ArticulatedCombatPresentationTest"
+      "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
+      "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
+      "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
+      "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest"
     ]
   },
   "mixins": [
     "wildercord.mossveil-gametest.mixins.json",
     "rainshield-gametest.mixins.json",
     "ward-payment-gametest.mixins.json",
-    "nursery-gather-gametest.mixins.json"
+    "nursery-gather-gametest.mixins.json",
+    "masters-capture-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

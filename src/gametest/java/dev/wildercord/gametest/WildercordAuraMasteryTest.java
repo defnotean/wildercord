@@ -16,6 +16,7 @@ import dev.wildercord.aura.Spellblade;
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.LeyWalker;
 import dev.wildercord.cast.Reactions;
+import dev.wildercord.cast.RuneBolt;
 import dev.wildercord.cast.SpellCaster;
 import dev.wildercord.cast.WildercordEntities;
 import dev.wildercord.client.AuraClient;
@@ -896,14 +897,27 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 				kill(player, TAG);
 				setAura(player, "stone", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN), AuraRules.threshold(AuraRules.SOVEREIGN));
 				Mob husk = spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200);
+				husk.addTag("wildercord.mastery_stone");
 				player.resetAttackStrengthTicker();
 				return husk.getId() > 0 ? null : "the husk should be there";
 			});
 			check(earth == null, earth);
 			context.waitTicks(25);
 			String none = on(world, player -> {
-				Mob husk = player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(8), m -> m.entityTags().contains(TAG)).getFirst();
+				Mob husk = tagged(player, "wildercord.mastery_stone");
+				if (Spellblade.holding(player) || !fixtureBolts(player).isEmpty()) {
+					return "the Stone mark case should have no held spell or earlier fixture bolt";
+				}
+				if (!Reactions.marks(husk).isEmpty() || husk.isOnFire() || husk.getTicksFrozen() > 0
+						|| !husk.getActiveEffects().isEmpty() || husk.getHealth() != husk.getMaxHealth()) {
+					return "the Stone target should be pristine before its first strike (marks " + Reactions.marks(husk)
+						+ ", health " + husk.getHealth() + ", frozen " + husk.getTicksFrozen() + ", effects " + husk.getActiveEffects() + ")";
+				}
+				float before = husk.getHealth();
 				player.attack(husk);
+				if (husk.getHealth() >= before) {
+					return "the Stone blade should land real damage before checking its absent mark";
+				}
 				return Reactions.marks(husk).isEmpty() && !husk.isOnFire() ? null : "a Stone blade should leave no mark (" + Reactions.marks(husk) + ")";
 			});
 			check(none == null, none);
@@ -1247,13 +1261,26 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 
 	private static void reset(ClientGameTestContext context, TestSingleplayerContext world) {
 		context.getInput().releaseKey(o -> o.keyShift);
+		// The gallery may leave Frost riding a blade. Put it away so the normal spellblade tick releases it before the next case.
+		ItemStack weapon = on(world, player -> {
+			ItemStack held = player.getMainHandItem();
+			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+			return held;
+		});
 		world.getServer().runCommand("kill @e[tag=" + TAG + "]");
 		world.getServer().runCommand("kill @e[type=item]");
 		world.getServer().runCommand("kill @e[type=experience_orb]");
 		world.getServer().runCommand("kill @e[type=wildercord:rune_bolt]");
 		context.waitTicks(10);
+		boolean drained = on(world, player -> {
+			// A held spell has no bolt at the first cleanup. Remove only this fixture player's newly released bolts now.
+			fixtureBolts(player).forEach(net.minecraft.world.entity.Entity::discard);
+			return !Spellblade.holding(player) && fixtureBolts(player).isEmpty();
+		});
+		check(drained, "reset should drain the held spell and its released bolts before the next case");
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
+			player.setItemInHand(InteractionHand.MAIN_HAND, weapon);
 			stand(player);
 			player.removeAttached(AuraAttachments.STATE);
 			// A Dominion left standing from the last part would feed this one's aura.
@@ -1263,6 +1290,10 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 		});
 		firstPerson(context, world);
 		context.waitTicks(5);
+	}
+
+	private static List<RuneBolt> fixtureBolts(ServerPlayer player) {
+		return player.level().getEntitiesOfClass(RuneBolt.class, player.getBoundingBox().inflate(64), bolt -> bolt.getOwner() == player);
 	}
 
 	private static void firstPerson(ClientGameTestContext context, TestSingleplayerContext world) {
