@@ -104,16 +104,20 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 					baselineGrip.rotateDegrees(Axis.YP, 180);
 					baselineGrip.translate((left ? -1 : 1) / 16F, 2F / 16, -10F / 16);
 					Vector3f baselinePoint = baselineGrip.last().pose().transformPosition(new Vector3f(0, -1.327F / 16, 1.439F / 16));
-					for (float edge : new float[] {.0001F, 15.9999F}) {
+					for (float edge : new float[] {.0001F, 15.999F}) {
 						state.setData(ArticulatedCombat.FRAME, new ArticulatedCombat.Frame(
 							ArticulatedCombatPose.sampleSpellcut(0, edge, 4, 12, left), 321, 0, false, left, 180, 90));
 						model.setupAnim(state);
+						check(ArticulatedCombat.frame(state) != null && rig.root.visible,
+							"Both seam probes must observe the active articulated backend: edge=" + edge);
 						check(Math.abs(rig.part(Joint.HEAD).xRot - basePitch) < .001F, "Extreme head look has no backend-edge clamp snap");
 						PoseStack edgeGrip = new PoseStack();
 						rig.socket(state.mainArm, edgeGrip);
-						Vector3f actualPoint = edgeGrip.last().pose().transformPosition(new Vector3f());
-						float dist = actualPoint.distance(baselinePoint);
-						check(dist < .0025F, "Articulated grip converges to the actual vanilla held-sword position");
+						Vector3f edgePoint = edgeGrip.last().pose().transformPosition(new Vector3f());
+						check(edgePoint.distance(baselinePoint) < .001F,
+							"Articulated grip converges to the actual vanilla held-sword position: slim=" + slim + ", left=" + left
+								+ ", edge=" + edge + ", weight=" + state.getData(ArticulatedCombat.FRAME).pose().weight()
+								+ ", actual=" + edgePoint + ", expected=" + baselinePoint + ", distance=" + edgePoint.distance(baselinePoint));
 					}
 					state.xRot = 0;
 					var idle = new ArticulatedCombat.Frame(ArticulatedCombatPose.NONE, Long.MIN_VALUE, -1, false, left, 0, 0);

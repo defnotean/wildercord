@@ -112,9 +112,23 @@ public final class MastersSecondFormTimelineTest implements FabricClientGameTest
 			player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("rime", AuraRules.SOVEREIGN, 4500, before, 0));
 			check(!SwordStrings.perform(player, art, MARKS), "A different method cannot begin the registered art");
 			prepare(player, id);
-			setEntityPitch(player, Float.NaN);
-			check(!SwordStrings.perform(player, art, MARKS), "Non-finite server aim cannot begin a second form");
-			player.setXRot(0);
+			// Entity.setXRot rejects NaN before storing it in 26.3. Inject the malformed
+			// backing state explicitly so this checks our guard, not an unchanged valid aim.
+			float pitch = player.getXRot();
+			try {
+				var field = net.minecraft.world.entity.Entity.class.getDeclaredField("xRot");
+				field.setAccessible(true);
+				try {
+					field.setFloat(player, Float.NaN);
+					check(!Float.isFinite(player.getXRot()), "The refusal probe really contains malformed server pitch");
+					check(!SwordStrings.perform(player, art, MARKS), "Non-finite server aim cannot begin a second form");
+				} finally {
+					field.setFloat(player, pitch);
+				}
+			} catch (ReflectiveOperationException failure) {
+				throw new AssertionError("Pinned Minecraft pitch fault-injection field is unavailable", failure);
+			}
+			check(player.getXRot() == pitch, "The malformed-state probe restores the real pitch");
 			check(Aura.aura(player) == before && !MastersArts.committed(player), "Refusals never pay or advertise a commitment");
 		});
 	}
@@ -335,16 +349,6 @@ public final class MastersSecondFormTimelineTest implements FabricClientGameTest
 		foe.snapTo(x, 100, z, 180, 0);
 		level.addFreshEntity(foe);
 		return foe;
-	}
-
-	private static void setEntityPitch(net.minecraft.world.entity.Entity entity, float pitch) {
-		try {
-			var field = net.minecraft.world.entity.Entity.class.getDeclaredField("xRot");
-			field.setAccessible(true);
-			field.setFloat(entity, pitch);
-		} catch (ReflectiveOperationException e) {
-			throw new AssertionError(e);
-		}
 	}
 
 	private static void check(boolean value, String message) { if (!value) throw new AssertionError(message); }

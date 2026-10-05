@@ -139,8 +139,9 @@ public final class ArticulatedCombat {
 	}
 
 	/** The new body converges to the actual held-item/breathing pose at both backend edges. */
-	private static void baselineArm(ArticulatedRig rig, net.minecraft.client.model.geom.ModelPart baseline, boolean left, float weight) {
+	static void baselineArm(ArticulatedRig rig, net.minecraft.client.model.geom.ModelPart baseline, boolean left, float weight) {
 		float remaining = 1 - weight;
+		if (remaining <= 0) return;
 		var shoulder = rig.part(left ? ArticulatedCombatPose.Joint.LEFT_SHOULDER : ArticulatedCombatPose.Joint.RIGHT_SHOULDER);
 		var initial = baseline.getInitialPose();
 		shoulder.x += (baseline.x - initial.x()) * remaining;
@@ -153,6 +154,18 @@ public final class ArticulatedCombat {
 		var socket = rig.part(left ? ArticulatedCombatPose.Joint.LEFT_SOCKET : ArticulatedCombatPose.Joint.RIGHT_SOCKET);
 		socket.y -= .439F * remaining;
 		socket.z -= .673F * remaining;
+		if (rig.slim()) {
+			// PlayerModel.translateToHand shifts a slim arm's pivot in its parent's X axis
+			// BEFORE rotating it. Narrowing the hand centre AFTER that rotation is not the
+			// same transform. Convert the disappearing half-pixel difference into local
+			// socket space; moving the shoulder itself would also displace the skin mesh.
+			float pivot = left ? -.5F : .5F;
+			var correction = new org.joml.Quaternionf().rotationZYX(rotation.z(), rotation.y(), rotation.x()).conjugate()
+				.transform(new org.joml.Vector3f(pivot, 0, 0));
+			socket.x += (correction.x - pivot) * remaining;
+			socket.y += correction.y * remaining;
+			socket.z += correction.z * remaining;
+		}
 	}
 
 	/** Matches vanilla's later item transform exactly, so its hilt lands on our hand centre. */
