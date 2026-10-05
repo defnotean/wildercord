@@ -952,6 +952,201 @@ class ArticulatedCuratorTests(CuratorFixture):
         self.assertEqual(manifest["selectedFrameCount"], 1)
 
 
+class SharedPlayerCuratorTests(CuratorFixture):
+    suite = "articulated"
+
+    def full_shared_matrix(self, size=100):
+        for art in ("rising_break", "driving_cut"):
+            for camera in ("third", "hud"):
+                viewports = ((1280, 720, 3),) if camera == "third" else (
+                    (854, 480, 2), (1280, 720, 3), (1280, 960, 4), (1920, 810, 3))
+                for width, height, scale in viewports:
+                    for gear in ("skin", "netherite"):
+                        for hand in ("left", "right"):
+                            for phase in ("windup", "active", "recovery"):
+                                self.shot(f"articulated_shared_{art}_{camera}_{width}x{height}_gui{scale}_"
+                                          f"{gear}_{hand}_requested_{phase}.png", size=size)
+
+    def shared_shot(self, *, art="rising_break", camera="third", gear="skin", hand="left", phase="active", size=100):
+        return self.shot(f"articulated_shared_{art}_{camera}_1280x720_gui3_{gear}_{hand}_requested_{phase}.png", size=size)
+
+    def test_all_120_exact_names_remain_requested_phases_with_unknown_receipts(self):
+        self.full_shared_matrix()
+        result = self.curate()
+        self.assertEqual(len(result["frames"]), 120)
+        self.assertEqual(len(result["sharedPlayerCoverage"]), 40)
+        for row in result["sharedPlayerCoverage"]:
+            self.assertEqual(row["capturedRequestedPhases"], ["windup", "active", "recovery"])
+            self.assertEqual(row["selectedFrameLabels"], ["requested_windup", "requested_active", "requested_recovery"])
+            self.assertEqual(row["missingRequestedPhases"], [])
+            self.assertEqual(row["omittedForBudgetRequestedPhases"], [])
+            self.assertEqual(row["verifiedRenderedPhases"], [])
+            self.assertEqual(row["renderedPhase"], "unknown")
+        for frame in result["frames"]:
+            filename = Path(frame["sourcePath"]).name
+            self.assertEqual(frame["frameLabel"], "requested_" + frame["requestedPhase"])
+            self.assertTrue(filename.endswith(frame["frameLabel"] + ".png"))
+            self.assertEqual(frame["requestedPhaseBasis"], "filename_only")
+            self.assertEqual(frame["phase"], "unknown")
+            self.assertEqual(frame["renderedPhase"], "unknown")
+            self.assertEqual(frame["phaseBasis"], "rendered_phase_unverified")
+            self.assertEqual(frame["viewportBasis"], "filename_only")
+            self.assertEqual(frame["exactImpactPixelCoverage"], "unverified")
+            self.assertTrue(frame["nativePixelReviewRequired"])
+            receipt = frame["preCaptureReceipt"]
+            self.assertEqual(receipt["status"], "not_ingested")
+            self.assertEqual(receipt["preCapturePhase"], "unknown")
+            self.assertEqual(receipt["sourceArtifact"], "articulated-native-evidence")
+            self.assertEqual(receipt["logRecord"], "ARTICULATED_SHARED_SAMPLE name=" + filename[:-4])
+            for key in ("acceptedMove", "activation", "windup", "recovery", "actualSkin", "preCaptureAge"):
+                self.assertIsNone(receipt[key])
+            self.assertIsNone(curator.describe(filename))
+        self.assertEqual(result["selectedMetadataCount"], 0)
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_camera_gear_and_fixture_details_have_separate_explicit_bases(self):
+        for camera in ("third", "hud"):
+            for gear in ("skin", "netherite"):
+                path = self.shared_shot(camera=camera, gear=gear)
+                info = curator.describe(path.name, suite=self.suite)
+                self.assertEqual(info["equipment"], "skin" if gear == "skin" else
+                                 "netherite_full" if camera == "third" else "netherite_chestplate")
+                self.assertEqual(info["equipmentBasis"], "filename_and_native_fixture_contract")
+                self.assertEqual(info["sourceSuite"], curator.ARTICULATED_SUITE if camera == "third" else curator.ARTICULATED_HUD_SUITE)
+                self.assertEqual(info["view"], "local_owner_third_person_front" if camera == "third" else "owner_first_person")
+                self.assertEqual(info["armorEnchantment"], None if gear == "skin" else "protection_iv")
+                self.assertIsNone(info["armorTrim"])
+                self.assertEqual(info["hudBasis"], "native_fixture_contract")
+                self.assertEqual(info["heldItemBasis"], "native_fixture_contract")
+
+    def test_unknown_names_unrequested_labels_and_third_viewports_are_out_of_scope(self):
+        base = "articulated_shared_rising_break_third_1280x720_gui3_skin_left_requested_active.png"
+        invalid = [base.replace(before, after) for before, after in (
+            ("rising_break", "spellcut"), ("third", "third_back"), ("third", "first"),
+            ("1280x720_gui3", "854x480_gui2"), ("gui3", "gui2"), ("skin", "full"),
+            ("left", "LEFT"), ("requested_active", "active"), ("requested_active", "requested_idle"),
+            ("requested_active", "frame_2"), ("requested_active", "pre_capture_active"),
+            (".png", ".png.extra"))]
+        invalid += [base.replace("third_1280x720_gui3", "hud_1920x1080_gui3")]
+        for filename in invalid:
+            with self.subTest(filename=filename):
+                self.assertIsNone(curator.describe(filename, suite=self.suite))
+        for filename in invalid[:-2]:
+            self.shot(filename)
+        self.assertEqual(self.curate()["frames"], [])
+
+    def test_missing_requested_captures_remain_explicit_without_phase_substitution(self):
+        self.shared_shot(phase="recovery")
+        result = self.curate()
+        captured = [row for row in result["sharedPlayerCoverage"] if row["capturedRequestedPhases"]]
+        self.assertEqual(len(captured), 1)
+        self.assertEqual(captured[0]["capturedRequestedPhases"], ["recovery"])
+        self.assertEqual(captured[0]["missingRequestedPhases"], ["windup", "active"])
+        self.assertEqual(captured[0]["verifiedRenderedPhases"], [])
+        self.assertTrue(all(row["missingRequestedPhases"] == ["windup", "active", "recovery"]
+                            for row in result["sharedPlayerCoverage"] if not row["capturedRequestedPhases"]))
+        self.assertEqual(result["frames"][0]["phase"], "unknown")
+
+    def test_four_art_camera_representatives_precede_old_owner_rows_under_budget(self):
+        ArticulatedCuratorTests.full_matrix(self, size=1_000_000)
+        self.full_shared_matrix(size=1_000_000)
+        result = self.curate(budget=curator.ARTICULATED_MANIFEST_RESERVE + 6_000_000)
+        shared = [frame for frame in result["frames"] if frame.get("form") == "shared_player_art"]
+        self.assertEqual([(frame["art"], frame["camera"]) for frame in shared], [
+            ("rising_break", "third"), ("driving_cut", "third"), ("rising_break", "hud"), ("driving_cut", "hud")])
+        self.assertTrue(all(frame["requestedPhase"] == "active" and frame["hand"] == "left"
+                            and frame["equipment"] == "skin" and frame["viewport"] == {"width": 1280, "height": 720}
+                            for frame in shared))
+        old = [frame for frame in result["frames"] if frame not in shared]
+        self.assertEqual({Path(frame["sourcePath"]).name for frame in old}, {
+            "articulated_live_left_first_frame_0.png", "articulated_live_left_third_frame_0.png"})
+        self.assertEqual(sum(len(row["omittedForBudgetRequestedPhases"]) for row in result["sharedPlayerCoverage"]), 116)
+        self.assertTrue(all(not row["missingRequestedPhases"] for row in result["sharedPlayerCoverage"]))
+
+    def test_unavailable_or_oversized_priority_uses_real_fallback_and_keeps_omission(self):
+        oversized = self.shared_shot(size=curator.BUDGET + 1)
+        fallback = self.shared_shot(camera="hud", art="driving_cut", hand="right", gear="netherite", phase="recovery")
+        self.shared_shot(phase="windup")
+        result = self.curate()
+        self.assertEqual([frame["frameLabel"] for frame in result["frames"]], ["requested_windup", "requested_recovery"])
+        self.assertIn(fallback.name, [Path(frame["sourcePath"]).name for frame in result["frames"]])
+        row = next(row for row in result["sharedPlayerCoverage"] if row["scene"] == oversized.name.removesuffix("_requested_active.png"))
+        self.assertEqual(row["capturedRequestedPhases"], ["windup", "active"])
+        self.assertEqual(row["omittedForBudgetRequestedPhases"], ["active"])
+        self.assertEqual(row["missingRequestedPhases"], ["recovery"])
+
+    def test_freshness_duplicate_names_symlinks_and_signatures_apply_to_shared_captures(self):
+        prior = self.shared_shot()
+        marker = "review/second-run.json"
+        curator.prepare(self.root, self.source, marker, self.identity, suite=self.suite)
+        os.utime(prior, None)
+        self.started = json.loads((self.root / marker).read_text())["startedNs"]
+        old = self.shared_shot(phase="windup")
+        os.utime(old, ns=(1, 1))
+        fresh = self.shared_shot(phase="recovery")
+        result = curator.curate(self.root, self.source, marker, "review/fresh", self.identity, suite=self.suite)
+        self.assertEqual(result["freshness"]["excludedStalePngs"], 2)
+        self.assertEqual([Path(frame["sourcePath"]).name for frame in result["frames"]], [fresh.name])
+        duplicate = self.shot(fresh.name, prefix="duplicate")
+        with self.assertRaisesRegex(curator.EvidenceError, "Ambiguous duplicate"):
+            self.curate()
+        duplicate.unlink()
+        duplicate.symlink_to(fresh)
+        with self.assertRaisesRegex(curator.EvidenceError, "Symlink"):
+            self.curate()
+        duplicate.unlink()
+        fresh.write_bytes(b"not a png")
+        with self.assertRaisesRegex(curator.EvidenceError, "PNG signature"):
+            self.curate()
+        self.assertFalse((self.root / self.output).exists())
+
+    def test_combined_full_matrix_is_deterministic_under_reserve_and_byte_identical(self):
+        ArticulatedCuratorTests.full_matrix(self)
+        self.full_shared_matrix()
+        npc = ArticulatedNpcCuratorTests()
+        npc.root, npc.source, npc.started = self.root, self.source, self.started
+        npc.full_npc_matrix()
+        before = {path: path.read_bytes() for path in (self.root / self.source).rglob("*") if path.is_file()}
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 251)
+        self.assertEqual(result["selectedMetadataCount"], 15)
+        self.assertEqual(len(result["coverage"]), 32)
+        self.assertEqual(len(result["npcCoverage"]), 2)
+        self.assertEqual(len(result["sharedPlayerCoverage"]), 40)
+        repeat = curator.curate(self.root, self.source, self.marker, "review/repeated", self.identity, suite=self.suite)
+        self.assertEqual(result, repeat)
+        self.assertLess((self.root / self.output / "manifest.json").stat().st_size, curator.ARTICULATED_MANIFEST_RESERVE)
+        self.assertLess(sum(path.stat().st_size for path in (self.root / self.output).rglob("*") if path.is_file()), 14_000_000)
+        self.assertEqual(len({frame["sourcePath"] for frame in result["frames"]}), 251)
+        for frame in result["frames"]:
+            for entry in ([frame, frame["metadata"]] if "metadata" in frame else [frame]):
+                original = before[self.root / entry["sourcePath"]]
+                self.assertEqual((self.root / self.output / entry["artifactPath"]).read_bytes(), original)
+                self.assertEqual(entry["sha256"], hashlib.sha256(original).hexdigest())
+        self.assertEqual({path: path.read_bytes() for path in before}, before)
+
+    def test_combined_large_matrix_preserves_budget_and_finalized_npc_priority(self):
+        ArticulatedCuratorTests.full_matrix(self, size=500_000)
+        self.full_shared_matrix(size=500_000)
+        npc = ArticulatedNpcCuratorTests()
+        npc.root, npc.source, npc.started = self.root, self.source, self.started
+        npc.full_npc_matrix(size=100_000)
+        result = self.curate()
+        self.assertEqual([frame["phase"] for frame in result["frames"][:6]], [
+            "reply_warning", "reply_warning", "release", "release", "recovery", "recovery"])
+        self.assertTrue(all(frame["captureStatus"] == "passed" for frame in result["frames"][:6]))
+        self.assertEqual({(frame["art"], frame["camera"]) for frame in result["frames"] if "art" in frame}, {
+            (art, camera) for art in ("rising_break", "driving_cut") for camera in ("third", "hud")})
+        self.assertTrue(any(row["omittedForBudgetRequestedPhases"] for row in result["sharedPlayerCoverage"]))
+        self.assertLess(sum(path.stat().st_size for path in (self.root / self.output).rglob("*") if path.is_file()), 14_000_000)
+        archive = self.root / "curated.zip"
+        with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as zipped:
+            for path in (self.root / self.output).rglob("*"):
+                if path.is_file():
+                    zipped.write(path, path.relative_to(self.root / self.output))
+        self.assertLess(archive.stat().st_size, 15_000_000)
+
+
 class ArticulatedNpcCuratorTests(CuratorFixture):
     suite = "articulated"
     write_metadata = NpcCuratorTests.write_metadata
@@ -1022,14 +1217,14 @@ class ArticulatedNpcCuratorTests(CuratorFixture):
         self.assertEqual([row["missingCapturePhases"] for row in absent["npcCoverage"]],
                          [list(beats) for beats in curator.ARTICULATED_NPC_BEATS.values()])
 
-    def test_all_existing_and_npc_frames_fit_the_unchanged_reserve_and_preserve_both_file_types(self):
+    def test_all_existing_and_npc_frames_fit_the_reserve_and_preserve_both_file_types(self):
         ArticulatedCuratorTests.full_matrix(self)
         self.full_npc_matrix()
         result = self.curate()
         self.assertEqual(result["selectedFrameCount"], 131)
         self.assertEqual(result["selectedMetadataCount"], 15)
         self.assertEqual(len(result["coverage"]), 32)
-        self.assertEqual(result["limits"]["manifestReserveBytes"], 256_000)
+        self.assertEqual(result["limits"]["manifestReserveBytes"], curator.ARTICULATED_MANIFEST_RESERVE)
         self.assertEqual(result["limits"]["totalBytesLimit"], 14_000_000)
         second = curator.curate(self.root, self.source, self.marker, "review/repeated", self.identity, suite=self.suite)
         self.assertEqual(result, second)

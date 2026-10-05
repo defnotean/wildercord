@@ -2,6 +2,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.aura.ArticulatedArmorMesh;
 import dev.wildercord.aura.ArticulatedArmorMesh.Region;
 import dev.wildercord.aura.ArticulatedCombatPose;
+import dev.wildercord.aura.MastersArtRules;
 import dev.wildercord.aura.ArticulatedCombatPose.Joint;
 import dev.wildercord.client.combat.ArticulatedArmorGeometry;
 import dev.wildercord.client.combat.ArticulatedRig;
@@ -30,24 +31,37 @@ public final class CheckArticulatedArmorGeometry {
 	private static final class Metrics {
 		long skinSamples, outsideSkin, overlapSamples, outsideOuterShell, triangles, reversed;
 		double minimumOrientation = 1, maximumExpansion, minimumSlotSeparation = Double.POSITIVE_INFINITY;
+		int move; float age; boolean firstPerson;
+		String worstOrientationAt = "none";
+		final Map<String, Long> reversedByRegion = new java.util.TreeMap<>();
 		void add(Metrics other) {
 			skinSamples += other.skinSamples; outsideSkin += other.outsideSkin;
 			overlapSamples += other.overlapSamples; outsideOuterShell += other.outsideOuterShell;
 			triangles += other.triangles; reversed += other.reversed;
+			if (other.minimumOrientation < minimumOrientation) worstOrientationAt = other.worstOrientationAt;
 			minimumOrientation = Math.min(minimumOrientation, other.minimumOrientation);
+			other.reversedByRegion.forEach((key, value) -> reversedByRegion.merge(key, value, Long::sum));
 			maximumExpansion = Math.max(maximumExpansion, other.maximumExpansion);
 			minimumSlotSeparation = Math.min(minimumSlotSeparation, other.minimumSlotSeparation);
 		}
 		String json() {
+			StringBuilder regions = new StringBuilder("{");
+			for (var entry : reversedByRegion.entrySet()) {
+				if (regions.length() > 1) regions.append(',');
+				regions.append('"').append(entry.getKey()).append("\":").append(entry.getValue());
+			}
+			regions.append('}');
 			return "{\"skinSamples\":" + skinSamples + ",\"outsideSkin\":" + outsideSkin
 				+ ",\"overlapSamples\":" + overlapSamples + ",\"outsideOuterShell\":" + outsideOuterShell
 				+ ",\"triangles\":" + triangles + ",\"reversedTriangles\":" + reversed
+				+ ",\"reversedByRegion\":" + regions + ",\"worstOrientationAt\":\"" + worstOrientationAt + "\""
 				+ ",\"minimumOrientationCosine\":" + minimumOrientation + ",\"maximumExpansionPixels\":" + maximumExpansion
 				+ ",\"minimumSampledSlotSeparationPixels\":" + (Double.isFinite(minimumSlotSeparation) ? minimumSlotSeparation : "null") + "}";
 		}
 	}
 
 	public static void main(String[] args) {
+		boolean shared = args.length == 1 && args[0].equals("--shared-player");
 		var roots = EntityModelSet.vanilla();
 		Metrics total = new Metrics();
 		StringBuilder variants = new StringBuilder();
@@ -62,11 +76,13 @@ public final class CheckArticulatedArmorGeometry {
 			}
 			var viewModel = new ArticulatedArmorGeometry(roots.bakeLayer(layers.chest()), EquipmentSlot.CHEST, true);
 			if (viewModel.mesh().controlPoints().stream().anyMatch(point -> !point.region().arm())) throw new AssertionError("Non-arm first-person armor");
-			for (boolean left : new boolean[] {false, true}) {
+			for (boolean left : new boolean[] {false, true}) for (int move : shared ? new int[] {1, 2} : new int[] {0}) {
 				Metrics metrics = new Metrics();
 				var rig = new ArticulatedRig(slim, false);
-				for (int tick = 0; tick <= 128; tick++) {
-					var pose = ArticulatedCombatPose.sampleSpellcut(0, tick / 8F, 4, 12, left);
+				var rule = MastersArtRules.move(move);
+				for (int tick = 0; tick <= (rule.windup() + rule.recovery()) * 8; tick++) {
+					metrics.move = move; metrics.age = tick / 8F; metrics.firstPerson = false;
+					var pose = ArticulatedCombatPose.samplePlayer(move, tick / 8F, rule.windup(), rule.recovery(), left);
 					var palette = ArticulatedArmorGeometry.Palette.from(joint -> new Matrix4f().set(pose.world(joint).values()));
 					rig.apply(pose::local);
 					Map<EquipmentSlot, List<Face>> snapshots = new EnumMap<>(EquipmentSlot.class);
@@ -81,12 +97,14 @@ public final class CheckArticulatedArmorGeometry {
 					verifySlots(snapshots.get(EquipmentSlot.LEGS), snapshots.get(EquipmentSlot.FEET), Region.LEFT_LEG, metrics);
 					var view = ArticulatedCombatPose.view(pose, left);
 					var viewPalette = ArticulatedArmorGeometry.Palette.from(joint -> new Matrix4f().set(view.world(joint).values()));
-					viewModel.setupAnim(viewPalette); rig.apply(view::local);
+					viewModel.setupAnim(viewPalette); rig.apply(view::local); metrics.firstPerson = true;
 					List<Face> arms = snapshot(viewModel);
 					verifyPose(viewModel, viewPalette, arms, metrics); verifySkin(rig, arms, metrics);
 				}
 				if (!variants.isEmpty()) variants.append(',');
-				variants.append("{\"slim\":").append(slim).append(",\"left\":").append(left).append(",\"metrics\":").append(metrics.json()).append('}');
+				variants.append("{");
+				if (shared) variants.append("\"move\":").append(move).append(",\"clip\":\"").append(rule.id()).append("\",");
+				variants.append("\"slim\":").append(slim).append(",\"left\":").append(left).append(",\"metrics\":").append(metrics.json()).append('}');
 				total.add(metrics);
 			}
 		}
@@ -177,8 +195,14 @@ public final class CheckArticulatedArmorGeometry {
 			for (int t = 1; t <= 2; t++) {
 				Vector3d cross = vec(vertices[t]).sub(origin).cross(vec(vertices[t + 1]).sub(origin));
 				double cosine = cross.lengthSquared() < 1.0e-12 ? -1 : cross.normalize().dot(expected.x, expected.y, expected.z);
-				metrics.triangles++; metrics.minimumOrientation = Math.min(metrics.minimumOrientation, cosine);
-				if (!Double.isFinite(cosine) || cosine <= 0) metrics.reversed++;
+				metrics.triangles++;
+				if (cosine < metrics.minimumOrientation) metrics.worstOrientationAt = "move=" + metrics.move + ";age=" + metrics.age
+					+ ";view=" + metrics.firstPerson + ";region=" + faces.get(f).region() + ";face=" + f + ";triangle=" + t;
+				metrics.minimumOrientation = Math.min(metrics.minimumOrientation, cosine);
+				if (!Double.isFinite(cosine) || cosine <= 0) {
+					metrics.reversed++;
+					metrics.reversedByRegion.merge((metrics.firstPerson ? "view_" : "body_") + faces.get(f).region(), 1L, Long::sum);
+				}
 			}
 		}
 	}

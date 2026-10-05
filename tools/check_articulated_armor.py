@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_VERIFY = Path('/workspace/shared/wildercord_compile_verification')
 SOURCES = [
     'src/main/java/dev/wildercord/aura/ArticulatedCombatPose.java',
+    'src/main/java/dev/wildercord/aura/MastersArtRules.java',
     'src/main/java/dev/wildercord/aura/ArticulatedArmorMesh.java',
     'src/client/java/dev/wildercord/client/mixin/ModelPartChildrenAccessor.java',
     'src/client/java/dev/wildercord/client/combat/ArticulatedRig.java',
@@ -42,7 +43,7 @@ def sources() -> dict[str, str]:
     return {name: sha(ROOT / name) for name in SOURCES + INSPECTED}
 
 
-def run(out: Path, verify: Path) -> None:
+def run(out: Path, verify: Path, shared_player: bool = False) -> None:
     out.mkdir(parents=True, exist_ok=True)
     if any(out.iterdir()):
         raise ValueError('Use a fresh empty output directory to preserve prior evidence')
@@ -74,7 +75,9 @@ def run(out: Path, verify: Path) -> None:
     commands = [[str(java / 'javac'), '--release', '25', '-sourcepath', str(ROOT / 'src/main/java'), '-proc:none', '-cp', cp, '-d', str(classes),
                  *[str(ROOT / name) for name in SOURCES if name.endswith('.java')]]]
     report = {'kind': 'offline source geometry', 'native': 'not run', 'mixinRuntime': 'not run',
-              'source_before': before, 'dependency_sha256': hashes, 'passed': False}
+              'source_before': before, 'dependency_sha256': hashes, 'passed': False,
+              'geometry_domain': ['rising_break', 'driving_cut'] if shared_player else ['spellcut'],
+              'palette_input_domain': 'existing immutable-palette and equipment-input regressions'}
     try:
         with (out / 'compile.log').open('w') as log:
             subprocess.run(commands[0], cwd=ROOT, stdout=log, stderr=log, check=True)
@@ -82,6 +85,8 @@ def run(out: Path, verify: Path) -> None:
                                ('CheckArticulatedArmorGeometry', 'geometry.json'), ('CheckArticulatedArmorView', 'view.json'),
                                ('CheckArticulatedArmorPalette', 'palette.json')]:
             command = [str(java / 'java'), '-Xmx2G', '-cp', str(classes) + os.pathsep + cp, main]
+            if shared_player and main in ['CheckArticulatedArmorGeometry', 'CheckArticulatedArmorView']:
+                command.append('--shared-player')
             commands.append(command)
             with (out / filename).open('w') as result, (out / (main + '.log')).open('w') as log:
                 subprocess.run(command, cwd=ROOT, stdout=result, stderr=log, check=True)
@@ -105,8 +110,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--verification', type=Path, default=DEFAULT_VERIFY)
+    parser.add_argument('--shared-player', action='store_true', help='Audit Rising Break and Driving Cut geometry instead of the default Spellcut domain')
     args = parser.parse_args()
-    run(args.out.resolve(), args.verification.resolve())
+    run(args.out.resolve(), args.verification.resolve(), args.shared_player)
 
 
 if __name__ == '__main__':

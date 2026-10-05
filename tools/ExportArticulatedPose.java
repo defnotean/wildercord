@@ -28,12 +28,13 @@ public final class ExportArticulatedPose {
 		json.append("],\"clips\":[");
 		boolean first = true;
 		boolean schools = args.length == 1 && args[0].equals("--schools");
-		for (int move : schools ? new int[] {7, 8} : new int[] {0, 1}) for (boolean left : new boolean[] {false, true}) {
-			boolean master = move != 0;
+		boolean shared = args.length == 1 && args[0].equals("--shared-player");
+		for (int move : shared ? new int[] {1, 2} : schools ? new int[] {7, 8} : new int[] {0, 1}) for (boolean left : new boolean[] {false, true}) {
+			boolean master = !shared && move != 0;
 			if (!first) json.append(','); first = false;
-			int tell = switch (move) { case 7 -> dev.wildercord.aura.world.GaleRepriseRules.TELL; case 8 -> dev.wildercord.aura.world.StoneFractureRules.TELL; case 1 -> 18; default -> 4; };
-			int active = 1, recovery = switch (move) { case 7 -> dev.wildercord.aura.world.GaleRepriseRules.RECOVERY - 1; case 8 -> dev.wildercord.aura.world.StoneFractureRules.RECOVERY - 1; case 1 -> 19; default -> 12; };
-			String id = switch (move) { case 7 -> "gale_crosswind"; case 8 -> "stone_fracture"; case 1 -> "master_sweep"; default -> "spellcut"; };
+			int tell = shared ? dev.wildercord.aura.MastersArtRules.move(move).windup() : switch (move) { case 7 -> dev.wildercord.aura.world.GaleRepriseRules.TELL; case 8 -> dev.wildercord.aura.world.StoneFractureRules.TELL; case 1 -> 18; default -> 4; };
+			int active = 1, recovery = shared ? dev.wildercord.aura.MastersArtRules.move(move).recovery() : switch (move) { case 7 -> dev.wildercord.aura.world.GaleRepriseRules.RECOVERY - 1; case 8 -> dev.wildercord.aura.world.StoneFractureRules.RECOVERY - 1; case 1 -> 19; default -> 12; };
+			String id = shared ? dev.wildercord.aura.MastersArtRules.move(move).id() : switch (move) { case 7 -> "gale_crosswind"; case 8 -> "stone_fracture"; case 1 -> "master_sweep"; default -> "spellcut"; };
 			int end = tell + recovery + (master ? active : 0);
 			json.append("{\"id\":\"").append(id).append("\",\"leftHanded\":").append(left)
 				.append(",\"tell\":").append(tell).append(",\"active\":").append(active).append(",\"recovery\":").append(recovery).append(",\"frames\":[");
@@ -41,7 +42,7 @@ public final class ExportArticulatedPose {
 				if (sample > 0) json.append(',');
 				float age = sample / 8F;
 				Pose pose = master ? ArticulatedCombatPose.sampleMaster(move, age, tell, active, recovery, left)
-					: ArticulatedCombatPose.sampleSpellcut(0, age, tell, recovery, left);
+					: ArticulatedCombatPose.samplePlayer(move, age, tell, recovery, left);
 				ViewPose view = ArticulatedCombatPose.view(pose, left);
 				json.append("{\"age\":").append(age).append(",\"weight\":").append(pose.weight()).append(",\"phase\":\"")
 					.append(pose.phase()).append("\",\"local\":[");

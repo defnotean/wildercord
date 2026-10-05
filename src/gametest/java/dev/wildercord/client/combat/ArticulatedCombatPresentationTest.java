@@ -45,6 +45,7 @@ import java.util.function.Consumer;
 public final class ArticulatedCombatPresentationTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		ArticulatedSharedPlayerChecks.body(context);
 		String previous = System.getProperty(ArticulatedCombat.ENABLE_PROPERTY);
 		CameraType camera = context.computeOnClient(mc -> mc.options.getCameraType());
 		HumanoidArm hand = context.computeOnClient(mc -> mc.options.mainHand().get());

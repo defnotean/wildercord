@@ -85,9 +85,9 @@ public final class ArticulatedCombat {
 			state.setData(FRAME, new Frame(ArticulatedCombatPose.NONE, Long.MIN_VALUE, -1, false, left, 0, 0));
 			return;
 		}
-		if (timeline.move() != 0) return;
+		if (!ArticulatedCombatPose.supportsPlayer(timeline.move())) return;
 		float age = avatar.level().getGameTime() - timeline.startTick() + partial;
-		var pose = ArticulatedCombatPose.sampleSpellcut(timeline.move(), age, timeline.windup(), timeline.recovery(), left);
+		var pose = ArticulatedCombatPose.samplePlayer(timeline.move(), age, timeline.windup(), timeline.recovery(), left);
 		float viewYaw = avatar.getViewYRot(partial), viewPitch = avatar.getViewXRot(partial);
 		float yawDelta = net.minecraft.util.Mth.wrapDegrees(timeline.yaw() - viewYaw);
 		state.setData(FRAME, new Frame(pose, timeline.startTick(), timeline.move(), false, left, yawDelta, timeline.pitch() - viewPitch));
@@ -119,7 +119,7 @@ public final class ArticulatedCombat {
 		if (frame == null || !view && state.walkAnimationSpeed > .2F
 				&& !schoolFootworkCompatible(frame)
 			|| !ArticulatedArmorRenderer.compatible(humanoid) || !view && frame.pose().weight() <= 0
-			|| view && frame.move() != -1 && frame.move() != 0
+			|| view && frame.move() != -1 && !ArticulatedCombatPose.supportsPlayer(frame.move())
 			|| view && frame.move() == -1 && state.swingAnimation > 0) return null;
 		ItemStack off = state.mainArm == HumanoidArm.RIGHT ? state.leftHandItemStack : state.rightHandItemStack;
 		if (off != null && !off.isEmpty()) return null;

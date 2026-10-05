@@ -6,6 +6,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
+- Extended the default-off original articulated player preview to Rising Break and Driving Cut, with separate low-to-high and point/recoil body forms and HUD-safe hand compositions. Existing gameplay windows, inputs and full unsupported-state fallback remain; accepted-input native visual review is pending.
+
 - Added Stone Fracture: a fixed-facing paid brace with rear/axe/stance counters, a separate narrow reply warning, original body/weapon motion and a guaranteed two-second recovery. This isolated slice still requires its native gameplay and visual gate.
 
 - Retuned cast pursuit to 8 warning ticks, 6 native movement steps and 8 final-warning ticks, allowing an early free opening to reach a normal 30-tick charge. Both visible tells, committed aim, all Aura/cooldowns and the 30-tick exposed recovery remain; fast casts and early release can still win.
@@ -25,6 +27,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Added opt-in Sword Master trials in the Ember, Gale and Stone disciplines, separate from progression-teaching duelists. A staged roster locks health, stance and attack coverage; telegraphed attacks, counter windows, finite Aura, directional spell cutting, simple-bolt redirection and pressure responses provide counterplay.
 - Gave the Ember Master a distinctive Cinder Wake: a fully committed broad cut, a separately warned delayed narrow afterburn, original two-beat body motion, school-specific guidance, finite Aura cost and a guaranteed counter window. Group lanes add coverage without repeated hits or bystander damage.
 - Added Spellcut, Rising Break and Driving Cut on rebindable U/Y/J controls, with server-owned payment, windup/active/recovery timelines, interruption, bounded target queries, and original first- and third-person animations.
+- Extended the bounded native screenshot artifact to include requested Rising Break/Driving Cut captures with explicit omissions and unknown rendered phases; full evidence and native verdicts remain separate.
 - Added paid, server-timed body and first-person releases to the existing Rising Cinders and Blossom Fall second forms, preserving their independently released rain and field effects.
 - Gave all ten existing first-form style arts committed windups and original body/weapon motion, preserving prices and inputs; physical multi-cuts are interruptible while launched afterimages and fields retain their own lifetimes.
 - Added Survival introductions through travelling Duelists and permanent first-clear technique lessons (Echo, Afterimage and Sunder) without repeatable item/XP farming.

@@ -1,5 +1,6 @@
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.aura.ArticulatedCombatPose;
+import dev.wildercord.aura.MastersArtRules;
 import dev.wildercord.client.combat.ArticulatedArmorGeometry;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -26,6 +27,7 @@ public final class CheckArticulatedArmorView {
 	private record Face(ModelPart.Vertex[] vertices) {}
 
 	public static void main(String[] args) throws Exception {
+		boolean shared = args.length == 1 && args[0].equals("--shared-player");
 		var roots = EntityModelSet.vanilla();
 		BufferedImage texture;
 		try (var stream = CheckArticulatedArmorView.class.getResourceAsStream(TEXTURE)) {
@@ -36,13 +38,15 @@ public final class CheckArticulatedArmorView {
 			.append(TEXTURE).append("\",\"variants\":[");
 		boolean comma = false;
 		boolean pass = true;
-		for (boolean slim : new boolean[] {false, true}) for (boolean left : new boolean[] {false, true}) {
+		for (boolean slim : new boolean[] {false, true}) for (boolean left : new boolean[] {false, true})
+			for (int move : shared ? new int[] {1, 2} : new int[] {0}) {
 			var model = new ArticulatedArmorGeometry(roots.bakeLayer((slim ? ModelLayers.PLAYER_SLIM_ARMOR : ModelLayers.PLAYER_ARMOR).chest()), EquipmentSlot.CHEST, true);
 			double nearest = -Double.MAX_VALUE, worstAge = 0, worstYaw = 0, worstPitch = 0, maxCenterCoverage = 0;
 			int placements = 0, crosshairOccluded = 0;
-			for (int step = 0; step <= 128; step++) {
+			var rule = MastersArtRules.move(move);
+			for (int step = 0; step <= (rule.windup() + rule.recovery()) * 8; step++) {
 				float age = step / 8F;
-				var combat = ArticulatedCombatPose.sampleSpellcut(0, age, 4, 12, left);
+				var combat = ArticulatedCombatPose.samplePlayer(move, age, rule.windup(), rule.recovery(), left);
 				var view = ArticulatedCombatPose.view(combat, left);
 				model.setupAnim(ArticulatedArmorGeometry.Palette.from(joint -> new Matrix4f().set(view.world(joint).values())));
 				List<Face> faces = new ArrayList<>();
@@ -73,7 +77,9 @@ public final class CheckArticulatedArmorView {
 			boolean safe = nearest < NEAR && crosshairOccluded == 0;
 			pass &= safe;
 			if (comma) out.append(','); comma = true;
-			out.append("{\"slim\":").append(slim).append(",\"left\":").append(left).append(",\"placements\":").append(placements)
+			out.append("{");
+			if (shared) out.append("\"move\":").append(move).append(",\"clip\":\"").append(rule.id()).append("\",");
+			out.append("\"slim\":").append(slim).append(",\"left\":").append(left).append(",\"placements\":").append(placements)
 				.append(",\"nearestZ\":").append(nearest).append(",\"clearanceBlocks\":").append(NEAR - nearest)
 				.append(",\"worstAge\":").append(worstAge).append(",\"worstYaw\":").append(worstYaw).append(",\"worstPitch\":").append(worstPitch)
 				.append(",\"crosshairOccludedFrames\":").append(crosshairOccluded).append(",\"maxCentralCoverage\":").append(maxCenterCoverage)

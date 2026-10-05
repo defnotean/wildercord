@@ -51,6 +51,7 @@ public final class ArticulatedFirstPersonCompositionTest implements FabricClient
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		ArticulatedSharedPlayerChecks.hud(context);
 		String[] properties = {ArticulatedCombat.ENABLE_PROPERTY, ArticulatedCombat.STABLE_CAMERA_PROPERTY,
 			ArticulatedArmorRenderer.ENABLE_PROPERTY, ArticulatedArmorRenderer.VIEW_PROPERTY};
 		String[] previous = Arrays.stream(properties).map(System::getProperty).toArray(String[]::new);

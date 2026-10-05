@@ -37,7 +37,10 @@ final class MasterLifecycleChecks {
 		ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
 			MasterLifecycleChecks probe = running;
 			if (probe != null && probe.unloaded != null && probe.unloaded.level() == level
-				&& chunk.getPos().equals(probe.remoteChunk)) probe.chunkUnloadAt = level.getGameTime();
+				&& chunk.getPos().equals(probe.remoteChunk)) {
+				probe.chunkUnloadAt = level.getGameTime();
+				MasterChunkMaintenanceBudget.close(probe.maintenance);
+			}
 		});
 	}
 	private static final class Challenger extends FakePlayer {
@@ -59,8 +62,10 @@ final class MasterLifecycleChecks {
 	private int unloadReceipt;
 	private int remoteRewards, remoteExperience, remoteLessons;
 	private MasterVictoryRules.Progress remoteProgress;
+	private MasterChunkMaintenanceBudget.Scope maintenance;
 
 	void run(ClientGameTestContext context) {
+		MasterChunkMaintenanceBudgetChecks.run();
 		running = this;
 		try { runWorld(context); }
 		finally { running = null; } // The permanent event listener must not retain a completed test world.
@@ -121,7 +126,8 @@ final class MasterLifecycleChecks {
 				invited.discard();
 				return true;
 			}, 40);
-			realChunkUnload(world);
+			try { realChunkUnload(world); }
+			finally { MasterChunkMaintenanceBudget.close(maintenance); } // Revoke before world teardown, including failures.
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				stopped = lobby(player, stage);
@@ -172,6 +178,9 @@ final class MasterLifecycleChecks {
 			check(unloaded.isNoAi(), "The no-AI fixture excludes ordinary abandonment as the source of cleanup");
 			releasedAt = level.getGameTime();
 			level.setChunkForced(remoteChunk.x(), remoteChunk.z(), false);
+			// The synchronized client-test barrier can exhaust vanilla's wall-clock maintenance budget indefinitely.
+			// Supplement only ordinary maintenance admission; never invoke another tick or synthesize the unload.
+			maintenance = MasterChunkMaintenanceBudget.open(level, () -> running == this && chunkUnloadAt < releasedAt);
 			unloadReceipt(level, "released");
 			return true;
 		}, 20);
@@ -185,10 +194,15 @@ final class MasterLifecycleChecks {
 			}
 			// getChunkNow is observational; it never reloads the chunk whose absence this test proves.
 			if (chunkUnloadAt < releasedAt || level.getChunkSource().getChunkNow(remoteChunk.x(), remoteChunk.z()) != null) return false;
+			java.util.function.BooleanSupplier nativeBudget = () -> false;
+			check(MasterChunkMaintenanceBudget.supplement(level, nativeBudget) == nativeBudget,
+				"The real chunk-unload event revokes supplementation before reload");
 			check(unloaded.isRemoved(), "A real chunk unload removes the otherwise unsaved, unticked encounter");
 			cleaned(unloaded);
 			check(level.getEntity(unloaded.getUUID()) == null, "The unloaded master is absent from the native entity lookup");
 			noUnloadReward();
+			Wildercord.LOGGER.info("[masters-maintenance-budget] calls={} nativeDenials={} supplementalGrants={} sliceNanos={}",
+				maintenance.maintenanceCalls, maintenance.nativeDenials, maintenance.supplementalGrants, MasterChunkMaintenanceBudget.SLICE_NANOS);
 			Wildercord.LOGGER.info("[masters-unload] chunk={} elapsed={} unloadEventAt={} reason={} active={} roster={} viewers={}",
 				remoteChunk, level.getGameTime() - releasedAt, chunkUnloadAt, unloaded.getRemovalReason(), active().size(),
 				unloaded.challengers().size(), bar(unloaded).getPlayers().size());

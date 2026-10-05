@@ -23,7 +23,8 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = 14_000_000
 MANIFEST_RESERVE = 128_000
-ARTICULATED_MANIFEST_RESERVE = 256_000
+# Includes all legacy/NPC and 120 shared-player capture records and omissions.
+ARTICULATED_MANIFEST_RESERVE = 640_000
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 SUITE = "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
 NPC_SUITE = "dev.wildercord.client.auraworld.MasterModelPresentationTest"
@@ -65,6 +66,13 @@ HUD_REFERENCE_VIEWPORT = (1280, 720, 3)
 ARTICULATED_HUD_PATTERN = re.compile(
     r"articulated_hud_(" + "|".join(f"{w}x{h}_gui{s}" for w, h, s in ARTICULATED_VIEWPORTS)
     + r")_(netherite|skin)_(left|right)_(idle_before|sample_([0-9])|idle_after)\.png\Z")
+SHARED_PLAYER_ARTS = ("rising_break", "driving_cut")
+SHARED_REQUESTED_PHASES = ("windup", "active", "recovery")
+SHARED_PHASE_PRIORITY = ("active", "windup", "recovery")
+SHARED_PLAYER_PATTERN = re.compile(
+    r"articulated_shared_(rising_break|driving_cut)_(third|hud)_("
+    + "|".join(f"{w}x{h}_gui{s}" for w, h, s in ARTICULATED_VIEWPORTS)
+    + r")_(skin|netherite)_(left|right)_requested_(windup|active|recovery)\.png\Z")
 FIRST_FORMS = (
     "kindling_draw", "frostbite", "crackle", "cutting_breeze", "rockbreaker",
     "thorn_lash", "void_cut", "star_needle", "echo_cut", "bloodletting",
@@ -208,6 +216,33 @@ def describe_articulated(filename):
     common = {"mainHandItem": "diamond_sword", "offHandItem": "empty", "viewport": None,
               "uiScale": None, "hudVisible": None, "viewportBasis": "not_encoded_in_filename",
               "armorEnchantment": None, "armorTrim": None}
+    match = SHARED_PLAYER_PATTERN.fullmatch(filename)
+    if match:
+        art, camera, viewport, equipment, hand, requested_phase = match.groups()
+        width, height, scale = next(config for config in ARTICULATED_VIEWPORTS
+                                    if f"{config[0]}x{config[1]}_gui{config[2]}" == viewport)
+        if camera == "third" and (width, height, scale) != HUD_REFERENCE_VIEWPORT:
+            return None
+        return {**common, "sourceSuite": ARTICULATED_SUITE if camera == "third" else ARTICULATED_HUD_SUITE,
+                "form": "shared_player_art", "art": art, "camera": camera,
+                "scene": f"articulated_shared_{art}_{camera}_{viewport}_{equipment}_{hand}",
+                "hand": hand, "view": "local_owner_third_person_front" if camera == "third" else "owner_first_person",
+                "equipment": "skin" if equipment == "skin" else
+                    "netherite_full" if camera == "third" else "netherite_chestplate",
+                "armorEnchantment": "protection_iv" if equipment == "netherite" else None,
+                "equipmentBasis": "filename_and_native_fixture_contract",
+                "heldItemBasis": "native_fixture_contract",
+                "viewport": {"width": width, "height": height}, "uiScale": scale,
+                "viewportBasis": "filename_only", "hudVisible": True, "hudBasis": "native_fixture_contract",
+                "captureKind": "native_local_owner_accepted_input_combat",
+                "frameLabel": "requested_" + requested_phase, "requestedPhase": requested_phase,
+                "requestedPhaseBasis": "filename_only", "sampleIndex": None,
+                "phase": "unknown", "renderedPhase": "unknown", "phaseBasis": "rendered_phase_unverified",
+                "nativePixelReviewRequired": True, "exactImpactPixelCoverage": "unverified",
+                "preCaptureReceipt": {"status": "not_ingested", "acceptedMove": None, "activation": None,
+                    "windup": None, "recovery": None, "actualSkin": None, "preCaptureAge": None,
+                    "preCapturePhase": "unknown", "sourceArtifact": "articulated-native-evidence",
+                    "logRecord": "ARTICULATED_SHARED_SAMPLE name=" + filename.removesuffix(".png")}}
     match = ARTICULATED_PATTERN.fullmatch(filename)
     if match:
         hand, view, frame = match.groups()
@@ -684,6 +719,46 @@ def articulated_npc_coverage(groups, selected):
     return result
 
 
+def shared_player_capture_matrix():
+    """The 40 filename configurations each request three independent captures."""
+    for art in SHARED_PLAYER_ARTS:
+        for camera in ("third", "hud"):
+            for width, height, scale in ((HUD_REFERENCE_VIEWPORT,) if camera == "third" else ARTICULATED_VIEWPORTS):
+                for equipment in ("skin", "netherite"):
+                    for hand in ARTICULATED_HANDS:
+                        yield (f"articulated_shared_{art}_{camera}_{width}x{height}_gui{scale}_"
+                               f"{equipment}_{hand}_requested_windup.png")
+
+
+def shared_player_rows(groups):
+    rows = []
+    for filename in shared_player_capture_matrix():
+        info = describe_articulated(filename)
+        candidates = {frame["requestedPhase"]: frame
+                      for frame in groups.get((info["scene"], info["view"], "unknown"), [])}
+        rows.append({"info": info, "candidates": candidates})
+    return rows
+
+
+def shared_player_coverage(groups, selected):
+    selected_paths = {frame["sourcePath"] for frame in selected}
+    coverage = []
+    for row in shared_player_rows(groups):
+        info, candidates = row["info"], row["candidates"]
+        captured = [phase for phase in SHARED_REQUESTED_PHASES if phase in candidates]
+        chosen = [phase for phase in captured if candidates[phase]["sourcePath"] in selected_paths]
+        coverage.append({**{key: info[key] for key in (
+            "scene", "art", "camera", "hand", "view", "sourceSuite", "equipment", "equipmentBasis",
+            "armorEnchantment", "armorTrim", "viewport", "uiScale", "viewportBasis", "hudVisible", "hudBasis")},
+            "expectedRequestedPhases": list(SHARED_REQUESTED_PHASES), "capturedRequestedPhases": captured,
+            "selectedFrameLabels": ["requested_" + phase for phase in chosen],
+            "missingRequestedPhases": [phase for phase in SHARED_REQUESTED_PHASES if phase not in candidates],
+            "omittedForBudgetRequestedPhases": [phase for phase in captured if phase not in chosen],
+            "renderedPhase": "unknown", "verifiedRenderedPhases": [], "nativePixelReviewRequired": True,
+            "preCaptureReceiptStatus": "not_ingested"})
+    return coverage
+
+
 def select_articulated(groups, budget):
     remaining = budget - ARTICULATED_MANIFEST_RESERVE
     rows = []
@@ -738,6 +813,26 @@ def select_articulated(groups, budget):
     for candidate in npc_priority:
         choose([candidate])
 
+    # Give each new art/camera one opportunity before the old owner matrix can
+    # consume the budget. Prefer requested active, reference viewport, skin, left
+    # hand, but use another authentic candidate when an earlier one cannot fit.
+    shared_rows = shared_player_rows(groups)
+    shared_priority = []
+    for camera in ("third", "hud"):
+        for art in SHARED_PLAYER_ARTS:
+            candidates = [frame for row in shared_rows
+                          if row["info"]["art"] == art and row["info"]["camera"] == camera
+                          for frame in row["candidates"].values()]
+            candidates.sort(key=lambda frame: (
+                SHARED_PHASE_PRIORITY.index(frame["requestedPhase"]),
+                (frame["viewport"]["width"], frame["viewport"]["height"], frame["uiScale"]) != HUD_REFERENCE_VIEWPORT,
+                frame["equipment"] != "skin", ARTICULATED_HANDS.index(frame["hand"]), frame["sourcePath"]))
+            for candidate in candidates:
+                choose([candidate])
+                if candidate["sourcePath"] in selected_paths:
+                    shared_priority.append(candidate)
+                    break
+
     def matches_viewport(row, viewport):
         width, height, scale = viewport
         return (row["info"]["sourceSuite"] == ARTICULATED_HUD_SUITE
@@ -774,6 +869,20 @@ def select_articulated(groups, budget):
             core.extend(pair)
             core_pairs.append(pair)
             choose(row["representative"] for row in pair)
+    # Broaden shared-art requests evenly across both arts before spending on old
+    # temporal extras. This is request coverage, never a rendered phase verdict.
+    shared_extras = []
+    for phase in SHARED_PHASE_PRIORITY:
+        per_art = [[row["candidates"][phase] for row in shared_rows
+                    if row["info"]["art"] == art and phase in row["candidates"]]
+                   for art in SHARED_PLAYER_ARTS]
+        for index in range(max(map(len, per_art), default=0)):
+            for candidates in per_art:
+                if index < len(candidates):
+                    candidate = candidates[index]
+                    if candidate not in shared_priority:
+                        shared_extras.append(candidate)
+                        choose([candidate])
     # Add the chosen viewport's idle-before/after skin/armor comparisons first.
     for hand in ARTICULATED_HANDS:
         for label in ("idle_before", "idle_after"):
@@ -802,6 +911,7 @@ def select_articulated(groups, budget):
     for candidate in npc_extras:
         choose([candidate])
     selected = [frame for frame in npc_priority if frame["sourcePath"] in selected_paths]
+    selected.extend(shared_priority)
     for row in rows:
         for frame in row["candidates"].values():
             if frame["sourcePath"] in selected_paths:
@@ -811,6 +921,7 @@ def select_articulated(groups, budget):
                 row["coverage"]["omittedForBudgetSamplePositions"].extend(frame["samplePositions"])
             else:
                 row["coverage"]["omittedForBudgetIdleLabels"].append(frame["frameLabel"])
+    selected.extend(frame for frame in shared_extras if frame["sourcePath"] in selected_paths)
     selected.extend(frame for frame in npc_extras if frame["sourcePath"] in selected_paths)
     return selected, [row["coverage"] for row in rows]
 
@@ -916,7 +1027,8 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
         manifest.update({
             "sourceSuites": list(ARTICULATED_SOURCE_SUITES),
             "npcCoverage": articulated_npc_coverage(groups, selected),
-            "basis": "Byte-identical native PNGs from the three existing articulated suites. Combat samples "
+            "sharedPlayerCoverage": shared_player_coverage(groups, selected),
+            "basis": "Byte-identical native PNGs from the three existing articulated suites. Original combat samples "
                      "follow real Spellcut input and its server-accepted timeline; HUD idle-before/after "
                      "captures are explicitly idle. Left/right denote the local owner's configured main hand; "
                      "all first-person and front/back third-person views share that owning singleplayer client, "
@@ -937,25 +1049,35 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                      "not image analysis; unencoded viewport/UI settings remain unknown. Loop indices and "
                      "first/middle/last available samples prove neither exact impact nor recovery boundaries; "
                      "skin/armor samples are not guaranteed to depict the same animation age. "
+                     "New Rising Break/Driving Cut filenames record requested phases only; their rendered phase remains unknown. "
+                     "Their camera/viewport/hand facts come from filenames and equipment/HUD details from the fixture contract. "
+                     "ARTICULATED_SHARED_SAMPLE log receipts remain in full evidence and are not ingested here; "
+                     "accepted activation, actual skin and pre-capture phase/age are unknown in this artifact. "
+                     "Even a matching pre-capture log receipt would not establish the framebuffer phase. "
                      "Presence is not a gameplay or native pixel-review pass.",
             "unavailableRequestedCoverage": [
                 {"coverage": "observer_client_of_player_combat", "reason": "Player images use the owner; the separate spectator fixture observes NPC Gale/Stone combat."},
                 {"coverage": "human_multiplayer_duel", "reason": "The NPC challenger is a consenting Fabric FakePlayer with a real client spectator."},
                 {"coverage": "synthetic_geometry_and_hitstop_screenshots", "reason": "Synthetic geometry, "
                  "socket and hit-stop checks do not take screenshots; inspect the independent native verdict."},
-                {"coverage": "exact_player_impact_phase", "reason": "Player capture loop indices do not prove exact impact timing; NPC render age is recorded separately."},
-                {"coverage": "exact_player_recovery_phase", "reason": "Last available player capture is not a verified recovery boundary."},
+                {"coverage": "exact_player_impact_phase", "reason": "Player capture loop indices and shared-art requested/pre-capture phases do not prove exact framebuffer impact timing; NPC render age is recorded separately."},
+                {"coverage": "exact_player_recovery_phase", "reason": "Last available or requested-recovery player captures are not verified rendered recovery boundaries."},
             ],
             "selectionPolicy": "First up to six validated NPC PNG/JSON pairs: reply_warning, release, recovery, Gale then Stone per beat. "
                                "Missing or explicitly failed native NPC frames are never accepted or substituted. "
+                               "Then one available shared-player representative per camera and art, third then HUD, Rising then Driving; "
+                               "prefer requested active then windup/recovery, reference viewport, skin and left hand, skipping over-budget candidates. "
                                "Then left then right: original body/hand first-available pair, full enchanted armor "
                                "front/back first-available pair, 1280x720/gui3 HUD skin/chestplate upper-median pair. "
                                "Prefer the HUD viewport with the most available counterparts, breaking ties "
                                "by reference size then fixture order; missing reference captures use this fallback. "
                                "Each core/idle comparison pair is budgeted together; missing counterparts remain missing. "
+                               "After the old core comparisons, broaden the shared-player requests, active then windup/recovery, "
+                               "alternating arts within each phase in stable configuration order. All 120 requested trial slots "
+                               "have explicit capture/omission coverage, separate from rendered phases. "
                                "Then chosen HUD idle-before/after pairs, core temporal samples, full-armor "
                                "first-person, partial armor, and other exact fixture viewports in matrix order. "
-                               "Only first/upper-median/last available combat samples and explicit HUD idle "
+                               "For the original matrices, only first/upper-median/last available combat samples and explicit HUD idle "
                                "captures are copied, each once. Armor capture indices are only 2 and 5; "
                                "original samples are 0..8 and HUD samples 0..9. Uncaptured indices are not "
                                "required captures. Finally exact early-school and Gale age11..15 boundary captures when present. "

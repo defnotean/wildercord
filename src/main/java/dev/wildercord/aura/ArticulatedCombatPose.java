@@ -4,7 +4,7 @@ import dev.wildercord.aura.world.GaleRepriseRules;
 import dev.wildercord.aura.world.StoneFractureRules;
 
 /**
- * Original, Minecraft-independent articulated Spellcut and selected sword-master choreography.
+ * Original, Minecraft-independent articulated shared-player arts and selected sword-master choreography.
  * Model units are pixels, +Y is down, and -Z is forward. All transforms are local to the named
  * parent, include their bind translation, and are already blended. This class cannot move an
  * entity, choose a target, alter a camera, or make a damage/reach decision.
@@ -12,7 +12,9 @@ import dev.wildercord.aura.world.StoneFractureRules;
 public final class ArticulatedCombatPose {
 	private ArticulatedCombatPose() {}
 
-	public static final int SPELLCUT = 0, MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8;
+	// Player activation ordinals and NPC attack ordinals are separate namespaces.
+	public static final int SPELLCUT = 0, RISING_BREAK = 1, DRIVING_CUT = 2;
+	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
 	public record Vec3(float x, float y, float z) {
@@ -199,6 +201,48 @@ public final class ArticulatedCombatPose {
 			arm(r(0, .07F, .03F), r(-.48F, -.30F, -.20F), -.74F, r(.06F, -.10F, .10F)), VIEW_FOLLOW),
 		v(-2.4F, 22, 1.5F), v(2.4F, 22, -1.7F));
 
+	// Rising Break coils low, opens the knees/hips and lifts its independent elbow into a high
+	// diagonal finish. Its bounded hip drop keeps the stock armor knee collars unfolded.
+	// The two ankle targets never leave the ground; no jump is implied.
+	private static final Motion RISING_MOTION = new Motion(
+		new Key(v(-.25F, 1.10F, .25F), r(.12F, .23F, -.035F), r(.08F, .12F, -.025F), r(.06F, .16F, -.045F), r(-.15F, -.29F, .035F),
+			arm(r(.03F, .06F, -.08F), r(-.35F, .20F, -.25F), -.85F, r(.85F, -.12F, -.36F)),
+			arm(r(0, -.08F, .06F), r(-.80F, -.28F, -.23F), -1.00F, r(.10F, -.12F, .10F)),
+			new ViewKey(v(-7.8F, -5.6F, 3.3F), arm(r(.02F, .04F, -.04F), r(-.95F, .10F, -.20F), -.92F, r(.50F, -.12F, -.25F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, -.03F, .03F), r(-1.00F, .10F, .25F), -.88F, r(.10F, -.10F, .10F)))),
+		new Key(v(.20F, .29F, -.05F), r(-.055F, -.16F, .025F), r(-.04F, -.10F, .025F), r(-.07F, -.19F, .035F), r(.06F, .28F, -.025F),
+			arm(r(.02F, -.06F, -.04F), r(-2.05F, -.20F, -.36F), -.48F, r(.75F, .08F, .35F)),
+			arm(r(0, .05F, .04F), r(-.48F, -.23F, -.28F), -.82F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-8.4F, -4.1F, 2.8F), arm(r(.02F, -.05F, -.04F), r(-1.65F, -.20F, -.27F), -.40F, r(.42F, .08F, .30F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.90F, .12F, .29F), -.86F, r(.10F, -.10F, .10F)))),
+		new Key(v(.16F, 1.10F, -.18F), r(-.02F, -.23F, .02F), r(-.02F, -.12F, .025F), r(-.04F, -.20F, .03F), r(.04F, .34F, -.025F),
+			arm(r(.02F, -.08F, -.03F), r(-2.24F, -.35F, -.46F), -.76F, r(.55F, .16F, .50F)),
+			arm(r(0, .05F, .04F), r(-.38F, -.25F, -.25F), -.78F, r(.08F, -.10F, .08F)),
+			new ViewKey(v(-9.2F, -4.6F, 3.0F), arm(r(.02F, -.07F, -.03F), r(-1.52F, -.35F, -.18F), -.64F, r(.38F, .12F, .40F)),
+				v(7.6F, -6.1F, 3.8F), arm(r(0, .04F, .03F), r(-.88F, .06F, .26F), -.86F, r(.10F, -.10F, .10F)))),
+		v(-2.50F, 22, 1.6F), v(2.50F, 22, -1.7F));
+
+	// Driving Cut retracts the point beside the ribs, commits the pelvis/chest toward the
+	// planted lead leg, then recoils through its elbow. The shallow hip drop retains the
+	// existing netherite knee envelope. These shifts are model-local only.
+	private static final Motion DRIVING_MOTION = new Motion(
+		new Key(v(-.18F, 1.30F, .38F), r(-.045F, .24F, .025F), r(-.035F, .10F, .015F), r(-.035F, .13F, .02F), r(.05F, -.36F, -.015F),
+			arm(r(.02F, .08F, -.05F), r(-.95F, .27F, -.24F), -1.10F, r(1.90F, -.64F, -.97F)),
+			arm(r(0, -.06F, .05F), r(-.74F, -.27F, -.22F), -.96F, r(.10F, -.12F, .08F)),
+			new ViewKey(v(-7.5F, -4.9F, 4.3F), arm(r(.02F, .06F, -.04F), r(-1.05F, .16F, -.26F), -.97F, r(1.555F, -.339F, -.458F)),
+				v(7.2F, -6.1F, 3.6F), arm(r(0, -.04F, .03F), r(-.98F, .12F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.20F, 1.25F, -1.00F), r(.14F, -.12F, -.015F), r(.08F, -.08F, -.01F), r(.09F, -.13F, -.015F), r(-.18F, .25F, .01F),
+			arm(r(.025F, -.06F, -.035F), r(-1.36F, -.04F, -.09F), -.25F, r(1.11F, .34F, .30F)),
+			arm(r(0, .07F, .04F), r(.08F, -.22F, -.30F), -.78F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.2F, -5.5F, 1.5F), arm(r(.02F, -.04F, -.04F), r(-1.28F, -.14F, -.15F), -.30F, r(1.040F, .074F, .015F)),
+				v(7.6F, -6.1F, 3.8F), arm(r(0, .04F, .03F), r(-.87F, .12F, .28F), -.88F, r(.10F, -.10F, .10F)))),
+		new Key(v(.10F, 1.45F, -.35F), r(.06F, -.18F, -.01F), r(.04F, -.09F, -.01F), r(.035F, -.14F, -.01F), r(-.08F, .28F, .01F),
+			arm(r(.02F, -.07F, -.03F), r(-.92F, -.11F, -.18F), -.78F, r(1.15F, .31F, .32F)),
+			arm(r(0, .06F, .04F), r(-.34F, -.23F, -.25F), -.84F, r(.08F, -.10F, .10F)),
+			new ViewKey(v(-8.1F, -5.2F, 3.2F), arm(r(.02F, -.06F, -.03F), r(-1.11F, -.18F, -.22F), -.78F, r(1.464F, .134F, .077F)),
+				v(7.5F, -6.1F, 3.7F), arm(r(0, .04F, .03F), r(-.90F, .08F, .26F), -.88F, r(.10F, -.10F, .10F)))),
+		v(-2.55F, 22, 2.0F), v(2.55F, 22, -2.2F));
+
 	private static final Motion SWEEP_MOTION = new Motion(
 		new Key(v(-.40F, 1.35F, .22F), r(.04F, .27F, -.035F), r(.055F, .20F, -.02F), r(.03F, .24F, -.045F), r(-.05F, -.44F, .03F),
 			arm(r(.02F, .10F, -.08F), r(-1.30F, .50F, -.58F), -1.15F, r(.15F, .20F, -.28F)),
@@ -257,6 +301,19 @@ public final class ArticulatedCombatPose {
 	public static Pose sampleSpellcut(int move, float age, int windup, int recovery, boolean leftHanded) {
 		if (move != SPELLCUT || !valid(age, windup, 60, recovery) || age >= windup + recovery) return NONE;
 		return sample(SPELLCUT_MOTION, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
+	}
+
+	/** Only shared player activation IDs are admitted here; NPC IDs use supportsMaster. */
+	public static boolean supportsPlayer(int move) {
+		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT;
+	}
+
+	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
+	public static Pose samplePlayer(int move, float age, int windup, int recovery, boolean leftHanded) {
+		if (move == SPELLCUT) return sampleSpellcut(move, age, windup, recovery, leftHanded);
+		if (!supportsPlayer(move) || !valid(age, windup, 60, recovery) || age >= windup + recovery) return NONE;
+		Motion motion = move == RISING_BREAK ? RISING_MOTION : DRIVING_MOTION;
+		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
 	}
 
 	/** Only these original NPC clips own the segmented backend; every other ID keeps its fallback. */
