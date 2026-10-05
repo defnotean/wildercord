@@ -32,7 +32,9 @@ FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_D
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
-    "wetland": {"dev.wildercord.wildlife.WetlandGardenTest": None,
+    "wetland": {"dev.wildercord.wildlife.WetlandPlacementContractTest": None,
+                "dev.wildercord.wildlife.WetlandGardenTest": None,
+                "dev.wildercord.wildlife.WetlandTerrainAbsenceTest": "-7620530482425397421",
                 "dev.wildercord.wildlife.WetlandTerrainTest": "-7620530482425397421"},
     "aura-fx": {"dev.wildercord.gametest.WildercordAuraFxTest": None},
 }

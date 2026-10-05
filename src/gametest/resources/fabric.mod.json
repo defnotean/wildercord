@@ -178,6 +178,8 @@
       "dev.wildercord.wildlife.FoxFishTest",
       "dev.wildercord.wildlife.WetlandGardenTest",
       "dev.wildercord.wildlife.WetlandGenerationScopeTest",
+      "dev.wildercord.wildlife.WetlandPlacementContractTest",
+      "dev.wildercord.wildlife.WetlandTerrainAbsenceTest",
       "dev.wildercord.wildlife.WetlandTerrainTest",
       "dev.wildercord.wildlife.ReedRefugeTest",
       "dev.wildercord.wildlife.ReedbackCrabTest",
@@ -292,7 +294,8 @@
     "native-diagnostics-gametest.mixins.json",
     "bolt-step-gametest.mixins.json",
     "moonreed-source-gametest.mixins.json",
-    "wetland-generation-gametest.mixins.json"
+    "wetland-generation-gametest.mixins.json",
+    "articulated-shared-receipt-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

@@ -35,11 +35,13 @@
   },
   "diagnostic-wetland": {
     "purpose": "diagnostic",
-    "description": "Diagnostic only: real Garden prerequisite followed by original native Terrain reproduction. Never release acceptance.",
-    "expectedCount": 3,
+    "description": "Diagnostic only: registration/rarity, real Garden prerequisite, original absence receipts, and fixed natural-bank candidate. Never release acceptance.",
+    "expectedCount": 5,
     "entries": [
       "dev.wildercord.wildlife.WetlandGenerationScopeTest",
+      "dev.wildercord.wildlife.WetlandPlacementContractTest",
       "dev.wildercord.wildlife.WetlandGardenTest",
+      "dev.wildercord.wildlife.WetlandTerrainAbsenceTest",
       "dev.wildercord.wildlife.WetlandTerrainTest"
     ]
   },

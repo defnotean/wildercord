@@ -1,5 +1,14 @@
 # Passive native wetland receipts
 
+Historical implementation note for the diagnostic through `b3ec979`. Native run
+`37380606913` subsequently established the exact legitimate absence: 120 terminal
+rejections, no writes, no lost receipts. The reviewed replacement contract and
+current probe ownership/scopes are documented in
+[Natural Moonreed fixture contracts](../audit/wetland-terrain-contract.md).
+The original observation-phase constraints below are retained as history; the
+current tests explicitly separate the original absence case from the fixed
+representative positive candidate.
+
 This GameTest-only probe observes the existing `WetlandTerrainTest`. Its seed
 `-7620530482425397421`, habitat `(-1536,64,-768)`, radius-four search, original
 height-window detector, screenshot path, and natural-presence assertion are

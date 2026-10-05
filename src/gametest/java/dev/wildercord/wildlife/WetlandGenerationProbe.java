@@ -14,36 +14,47 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.function.Consumer;
 
-/** Passive receipts for one exact fixture. Retains coordinates/counters, never worlds or RNGs. */
+/** Passive receipts for one bounded fixture. Retains coordinates/counters, never worlds or RNGs. */
 public final class WetlandGenerationProbe {
  static final long SEED=-7620530482425397421L;
  static final String FEATURE="wildercord:moonreed_patch";
+ static final Scope ABSENCE=new Scope("absence",SEED,-100,-92,-52,-44);
  private static final int MAX_LINES=4096;
  private static volatile Session active;
  private static final ThreadLocal<Source> PLACEMENT=new ThreadLocal<>();
  private static final ThreadLocal<Invocation> INVOCATION=new ThreadLocal<>();
  private WetlandGenerationProbe() {}
 
- public static Session beginFixture() {return begin(line -> Wildercord.LOGGER.info(line));}
- static synchronized Session begin(Consumer<String> sink) {
+ public static Session beginFixture() {return begin(ABSENCE);}
+ static Session begin(Scope scope) {return begin(scope,line -> Wildercord.LOGGER.info(line));}
+ static Session begin(Consumer<String> sink) {return begin(ABSENCE,sink);}
+ static synchronized Session begin(Scope scope,Consumer<String> sink) {
   if(active!=null)throw new IllegalStateException("Wetland diagnostic fixture already active");
-  var session=new Session(sink);active=session;
-  session.emit("BEGIN seed="+SEED+", habitat=-1536/64/-768, examined=-100..-92/-52..-44, sourceHalo=-101..-91/-53..-43");
+  var session=new Session(scope,sink);active=session;
+  session.emit("BEGIN fixture="+scope.name+", seed="+scope.seed+", examined="+scope.minX+".."+scope.maxX+"/"+scope.minZ+".."+scope.maxZ);
   return session;
  }
 
  static boolean inScope(Session session,boolean region,boolean overworld,long seed,int x,int z) {
-  return session!=null && active==session && !session.closed && region && overworld && seed==SEED
-    && x>=-101 && x<=-91 && z>=-53 && z<=-43;
+  return session!=null && active==session && !session.closed && region && overworld && seed==session.scope.seed
+    && session.scope.inHalo(x,z);
  }
  private static boolean inScope(Session session,WorldGenLevel level) {
   if(session==null || session.closed || active!=session || !(level instanceof WorldGenRegion region))return false;
   var source=region.getCenter();
   return inScope(session,true,region.getLevel().dimension()==Level.OVERWORLD,region.getSeed(),source.x(),source.z());
  }
- private static boolean inside(int x,int z) {return x>=-100 && x<=-92 && z>=-52 && z<=-44;}
+ record Scope(String name,long seed,int minX,int maxX,int minZ,int maxZ) {
+  Scope {if(minX>maxX || minZ>maxZ || maxX-minX>8 || maxZ-minZ>8)throw new IllegalArgumentException("At most a 9 by 9 chunk fixture");}
+  boolean inside(int x,int z) {return x>=minX && x<=maxX && z>=minZ && z<=maxZ;}
+  boolean inHalo(int x,int z) {return x>=minX-1 && x<=maxX+1 && z>=minZ-1 && z<=maxZ+1;}
+  int chunks() {return (maxX-minX+1)*(maxZ-minZ+1);}
+ }
 
  public static Source beginPlacement(WorldGenLevel level,ChunkGenerator generator,PlacedFeature feature,boolean biomeCheck) {
   var session=active;
@@ -57,9 +68,10 @@ public final class WetlandGenerationProbe {
   var data=steps.get(stage);int index=data.indexMapping().applyAsInt(feature);
   var source=session.claim(center.x(),center.z());
   if(source==null)return null;
+  session.index(index,data.features().size());
   PLACEMENT.set(source);
   String featureKey=feature.feature().unwrapKey().map(key -> key.identifier().toString()).orElse("unregistered");
-  session.emit("SCHEDULE "+source.label()+", seed="+SEED+", stage="+stage+", index="+index
+  session.emit("SCHEDULE "+source.label()+", seed="+session.scope.seed+", stage="+stage+", index="+index
     +", stepFeatures="+data.features().size()+", placedKey="+placedKey+", featureKey="+featureKey);
   return source;
  }
@@ -132,8 +144,10 @@ public final class WetlandGenerationProbe {
  private static void terminal(Invocation invocation,String outcome,String counter) {
   if(invocation.terminal) {invocation.source.session.count("duplicateTerminals");return;}
   invocation.terminal=true;invocation.source.session.count("terminals");invocation.source.session.count(counter);
-  invocation.source.session.emit("ATTEMPT "+invocation.source.label()+", origin="+position(invocation.origin)
-    +", ordinal="+invocation.ordinal+", at="+position(invocation.at)+", gates="+invocation.gates+", "+outcome);
+  String receipt="source="+invocation.source.x+"/"+invocation.source.z+", origin="+position(invocation.origin)
+    +", ordinal="+invocation.ordinal+", at="+position(invocation.at)+", gates="+invocation.gates+", "+outcome;
+  invocation.source.session.attempt(receipt,counter.equals("writesTrue") ? invocation.at : null);
+  invocation.source.session.emit("ATTEMPT "+receipt);
  }
  public static void endFeature(Invocation invocation,Boolean result) {
   if(invocation==null)return;
@@ -146,24 +160,37 @@ public final class WetlandGenerationProbe {
   } finally {INVOCATION.remove();}
  }
  public static void afterRequestedChunk(ChunkPos chunk) {
-  var session=active;if(session!=null && inside(chunk.x(),chunk.z()))session.checkpoint(chunk);
+  var session=active;if(session!=null && session.scope.inside(chunk.x(),chunk.z()))session.checkpoint(chunk);
  }
  private static String position(BlockPos pos) {return pos.getX()+"/"+pos.getY()+"/"+pos.getZ();}
 
  public static final class Session implements AutoCloseable {
+  private final Scope scope;
   private final Consumer<String> sink;
   private final Map<Long,Source> sources=new LinkedHashMap<>();
   private final Map<String,Integer> counters=new LinkedHashMap<>();
+  private final List<String> attempts=new ArrayList<>();
+  private final List<BlockPos> writes=new ArrayList<>();
+  private final Set<Integer> indexes=new LinkedHashSet<>(),stepSizes=new LinkedHashSet<>();
   private volatile boolean closed;
   private int lines,omitted,checkpoints,sinkFailures;
-  private Session(Consumer<String> sink) {this.sink=sink;}
+  private Session(Scope scope,Consumer<String> sink) {this.scope=scope;this.sink=sink;}
   synchronized Source claim(int x,int z) {
-   if(!inScope(this,true,true,SEED,x,z))return null;
+   if(!inScope(this,true,true,scope.seed,x,z))return null;
    long key=((long)x<<32)^(z&0xffffffffL);
    if(sources.containsKey(key)) {count("duplicateSources");return null;}
    var source=new Source(this,x,z);sources.put(key,source);return source;
   }
   synchronized void count(String name) {if(!closed)counters.merge(name,1,Integer::sum);}
+  synchronized void index(int index,int size) {if(!closed) {indexes.add(index);stepSizes.add(size);}}
+  synchronized void attempt(String receipt,BlockPos written) {
+   if(closed)return;
+   if(attempts.size()>=121*24) {count("omittedAttempts");return;}
+   attempts.add(receipt);if(written!=null)writes.add(written.immutable());
+  }
+  synchronized Receipt receipt() {
+   return new Receipt(Map.copyOf(counters),List.copyOf(attempts),List.copyOf(writes),Set.copyOf(indexes),Set.copyOf(stepSizes),checkpoints,omitted,sinkFailures);
+  }
   synchronized void emit(String line) {
    if(closed)return;
    if(lines>=MAX_LINES) {
@@ -177,11 +204,11 @@ public final class WetlandGenerationProbe {
    try {sink.accept(line);}catch(RuntimeException ignored) {sinkFailures++;}
   }
   synchronized void checkpoint(ChunkPos chunk) {
-   if(closed || checkpoints>=81)return;
+   if(closed || checkpoints>=scope.chunks())return;
    checkpoints++;emit("CHECKPOINT requestedChunk="+chunk+", afterRequestedChunkReturn=true, "+summary());
   }
   synchronized String summary() {
-   long inner=sources.values().stream().filter(source -> inside(source.x,source.z)).count();
+   long inner=sources.values().stream().filter(source -> scope.inside(source.x,source.z)).count();
    return "scheduledInside="+inner+", scheduledHalo="+(sources.size()-inner)+", counters="+counters
      +", checkpoints="+checkpoints+", omittedLines="+omitted+", sinkFailures="+sinkFailures;
   }
@@ -191,7 +218,7 @@ public final class WetlandGenerationProbe {
     synchronized(this) {
      if(closed)return;
      try {send("WETLAND_GENERATION END "+summary());}
-     finally {closed=true;sources.clear();counters.clear();}
+     finally {closed=true;sources.clear();counters.clear();attempts.clear();writes.clear();indexes.clear();stepSizes.clear();}
     }
    } finally {
     synchronized(WetlandGenerationProbe.class) {if(active==this)active=null;}
@@ -199,12 +226,15 @@ public final class WetlandGenerationProbe {
    }
   }
  }
+ record Receipt(Map<String,Integer> counters,List<String> attempts,List<BlockPos> writes,Set<Integer> indexes,Set<Integer> stepSizes,int checkpoints,int omittedLines,int sinkFailures) {
+  int count(String key) {return counters.getOrDefault(key,0);}
+ }
  public static final class Source {
   private final Session session;
   private final int x,z;
   private int featureCalls;
   private Source(Session session,int x,int z) {this.session=session;this.x=x;this.z=z;}
-  private String label() {return "source="+x+"/"+z+", scope="+(inside(x,z) ? "inside81" : "halo");}
+  private String label() {return "source="+x+"/"+z+", scope="+(session.scope.inside(x,z) ? "inside" : "halo");}
  }
  public static final class Invocation {
   private final Source source;

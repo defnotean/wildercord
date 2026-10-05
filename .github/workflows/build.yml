@@ -223,7 +223,14 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install existing image-verification dependency
+        run: pip install pillow
       - uses: gradle/actions/setup-gradle@v6
+      - name: Check passive shared-render receipt tooling
+        run: python tools/check_articulated_render_receipts.py
       - name: Check native CI selection and evidence tooling
         run: python -m unittest discover -s tools -p 'test_*ci*.py' -v
       - name: Check bounded native screenshot packaging
@@ -237,7 +244,14 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
           SDL_VIDEO_FORCE_EGL: "1"
-        run: python tools/run_client_ci.py --suite articulated --log articulated-native.log
+        run: python tools/run_articulated_receipt_gate.py --log articulated-native.log --output artifacts/review/articulated-native-receipts-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Preserve complete bounded render-receipt metadata
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: articulated-render-receipts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/review/articulated-native-receipts-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: warn
       - name: Record focused articulated outcomes
         if: always()
         run: python tools/test_manifest.py --suite articulated --log articulated-native.log --output artifacts/review/articulated-native-manifest.json

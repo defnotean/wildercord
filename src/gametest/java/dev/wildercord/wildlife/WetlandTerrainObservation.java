@@ -76,8 +76,9 @@ final class WetlandTerrainObservation {
  String summary() {
   return "stage=post_generation, counts="+totals+", firstReed="+firstReed+", firstMissedReed="+firstMissedReed
     +", predicateStages=surfaceEmptySupported -> surfaceMoist -> surfaceOpenSky -> wetlandEligible"
-    +", moistureUnknown=skipped_missing_resident_neighbor, generationAttempts=not_observed";
+    +", moistureUnknown=skipped_missing_resident_neighbor, generationAttempts=separate_passive_receipt";
  }
+ int reeds() {return totals.getOrDefault("reeds",0);}
 
  private static boolean moistureNeighborsLoaded(ServerLevel level,BlockPos at) {
   for(var direction:Direction.Plane.HORIZONTAL) {

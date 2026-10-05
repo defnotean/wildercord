@@ -185,7 +185,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(run_client_ci.launch_command(selection)[-1], "-PciSuite=" + group)
             self.assertEqual(native_ci_diagnostics.snapshot_thresholds(selection), (1800, 2700))
         self.assertEqual(suites.select_entries(suite="diagnostic-aura-fx")["entries"], ["dev.wildercord.gametest.WildercordAuraFxTest"])
-        self.assertEqual(suites.select_entries(suite="diagnostic-wetland")["entries"][-2:], ["dev.wildercord.wildlife.WetlandGardenTest", "dev.wildercord.wildlife.WetlandTerrainTest"])
+        self.assertEqual(suites.select_entries(suite="diagnostic-wetland")["entries"][-3:], ["dev.wildercord.wildlife.WetlandGardenTest", "dev.wildercord.wildlife.WetlandTerrainAbsenceTest", "dev.wildercord.wildlife.WetlandTerrainTest"])
 
     def test_general_manifest_cannot_relabel_diagnostic_as_focused_or_full(self):
         data = self.fixture()

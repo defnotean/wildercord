@@ -48,6 +48,8 @@ public final class WetlandGenerationScopeTest implements FabricClientGameTest {
    } finally {WetlandGenerationProbe.endFeature(invocation,true);}
    check(rows.stream().filter(line -> line.contains(" ATTEMPT ")).count()==24,"24 attempts have exactly 24 terminals");
    check(rows.stream().anyMatch(line -> line.contains("writeReturn=false")),"failed write remains separate from production result");
+   var receipt=session.receipt();
+   check(receipt.attempts().size()==24 && receipt.count("terminals")==24 && receipt.writes().isEmpty(),"immutable receipt preserves exact attempts and distinguishes failed writes");
    int completedRows=rows.size();WetlandGenerationProbe.candidate(0,64,0);WetlandGenerationProbe.gate("empty",false);
    check(rows.size()==completedRows,"feature return clears ThreadLocal state");
    var interrupted=WetlandGenerationProbe.beginFeature(session.claim(-95,-48),new BlockPos(0,64,0));
@@ -60,6 +62,7 @@ public final class WetlandGenerationScopeTest implements FabricClientGameTest {
    check(session.retainedSources()==121,"source retention bounded to exact halo");
   }
   check(session.retainedSources()==0,"successful teardown clears sources");
+  check(session.receipt().attempts().isEmpty() && session.receipt().counters().isEmpty(),"teardown clears retained attempt receipts and counters");
   check(!WetlandGenerationProbe.inScope(session,true,true,WetlandGenerationProbe.SEED,-96,-48),"closed fixture refused");
   int closedRows=rows.size();session.emit("late");check(rows.size()==closedRows,"closed session emits nothing");
   var failed=WetlandGenerationProbe.begin(rows::add);
@@ -78,6 +81,17 @@ public final class WetlandGenerationScopeTest implements FabricClientGameTest {
   check(brokenSink.retainedSources()==0,"sink failure cannot strand retained sources");
   check(!WetlandGenerationProbe.inScope(brokenSink,true,true,WetlandGenerationProbe.SEED,-96,-48),"sink failure cannot leave fixture active");
   try(var afterBrokenSink=WetlandGenerationProbe.begin(rows::add)) {check(afterBrokenSink.retainedSources()==0,"fixture restarts after sink failure");}
+  var positiveScope=new WetlandGenerationProbe.Scope("representative_bank",WetlandGenerationProbe.SEED,-110,-108,-51,-49);
+  try(var positive=WetlandGenerationProbe.begin(positiveScope,rows::add)) {
+   check(WetlandGenerationProbe.inScope(positive,true,true,WetlandGenerationProbe.SEED,-109,-50),"representative source admitted");
+   check(!WetlandGenerationProbe.inScope(positive,true,true,WetlandGenerationProbe.SEED,-96,-48),"old absence window is not observed during positive fixture");
+   check(!WetlandGenerationProbe.inScope(positive,true,true,WetlandGenerationProbe.SEED+1,-109,-50),"positive scope still rejects other seeds");
+   for(int x=-112;x<=-106;x++)for(int z=-53;z<=-47;z++)positive.claim(x,z);
+   check(positive.retainedSources()==25,"3 by 3 fixture retains only its 5 by 5 source halo");
+  }
+  check(positiveScope.chunks()==9,"positive chunk budget is exact");
+  try {new WetlandGenerationProbe.Scope("unbounded",0,0,9,0,8);throw new AssertionError("unbounded scope accepted");}
+  catch(IllegalArgumentException expected) {check(expected.getMessage().contains("9 by 9"),"scope expansion is explicitly refused");}
  }
  private static void check(boolean condition,String reason) {if(!condition)throw new AssertionError(reason);}
 }
