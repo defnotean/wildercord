@@ -101,6 +101,7 @@ public class WildercordWaysTest implements FabricClientGameTest {
 	private static final List<String> CHOSEN = Collections.synchronizedList(new ArrayList<>());
 	private static final List<String> UNBOUND = Collections.synchronizedList(new ArrayList<>());
 	private static final List<Double> EXTRAS = Collections.synchronizedList(new ArrayList<>());
+	private static final List<String> SLASH_DAMAGE = Collections.synchronizedList(new ArrayList<>());
 	private static boolean hooked;
 	/** A sword's full swing comes back in 11 ticks. */
 	private static final int FULL = 13;
@@ -112,6 +113,14 @@ public class WildercordWaysTest implements FabricClientGameTest {
 		}
 		if (!hooked) {
 			hooked = true;
+			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
+				if (entity == rival || entity.entityTags().contains(TAG)) {
+					synchronized (SLASH_DAMAGE) {
+						if (SLASH_DAMAGE.size() == 8) SLASH_DAMAGE.removeFirst();
+						SLASH_DAMAGE.add(entity.getId() + ":" + source.getMsgId() + "=" + taken + "@" + entity.level().getGameTime());
+					}
+				}
+			});
 			AuraApi.onWay(new AuraApi.WayHook() {
 				@Override
 				public void chosen(ServerPlayer player, AuraApi.Way way, boolean first) {
@@ -463,32 +472,53 @@ public class WildercordWaysTest implements FabricClientGameTest {
 		thirdPerson(context, world, 0, 12, 6.5, false);
 		float[] behind = on(world, player -> {
 			Mob husk = foes(player).getFirst();
+			checkSlashGuard(player, husk);
+			SLASH_DAMAGE.clear();
 			float hp = husk.getHealth();
+			float guardAura = Aura.aura(rival);
 			check(AuraSlash.loose(player), "the slash should go");
 			// Its flight is set as it's loosed: the camera can rise over the swordsman's shoulder to watch it.
 			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(7.5);
 			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), -18, 30, false);
-			return new float[] {hp};
+			return new float[] {hp, guardAura};
 		});
 		context.waitTicks(3);
 		shot(context, "ways_blade_pierce_tp");
 		context.waitTicks(8);
-		String pierced = on(world, player -> foes(player).getFirst().getHealth() < behind[0] ? null
-			: "a Blade's slash should cut through the rival's held guard to the husk behind it");
+		String pierced = on(world, player -> {
+			Mob husk = foes(player).getFirst();
+			return husk.getHealth() < behind[0] && Aura.aura(rival) < behind[1] ? null
+				: "a Blade's slash should meet the rival's held guard and cut through to the husk behind it (" + slashState(player, husk) + ")";
+		});
 		check(pierced == null, pierced);
 		// Without the Way, the guard stops it there.
-		on(world, player -> {
+		float guardAura = on(world, player -> {
 			Ways.set(player, "");
 			player.removeAttached(AuraAttachments.STATE);
 			player.setAttached(AuraAttachments.AURA, Aura.data(player).withAura(Aura.capacity(player)));
+			// The filming turn must not aim the control slash into the platform.
+			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0, 12, false);
 			Mob husk = foes(player).getFirst();
+			// Edge Ember always ignites what it hits; healing alone leaves the first slash's fire ticking.
+			husk.clearFire();
+			Vec3 p = at(0, 6.0);
+			husk.snapTo(p.x, p.y, p.z, 180, 0);
+			husk.setDeltaMovement(Vec3.ZERO);
 			husk.setHealth(husk.getMaxHealth());
+			checkSlashGuard(player, husk);
+			check(husk.getRemainingFireTicks() <= 0 && husk.getHealth() == husk.getMaxHealth(),
+				"the control target starts whole and extinguished (" + slashState(player, husk) + ")");
+			SLASH_DAMAGE.clear();
+			float before = Aura.aura(rival);
 			check(AuraSlash.loose(player), "the slash should go again");
-			return null;
+			return before;
 		});
 		context.waitTicks(11);
-		String stopped = on(world, player -> foes(player).getFirst().getHealth() >= foes(player).getFirst().getMaxHealth() ? null
-			: "without the Way a held guard stops the slash");
+		String stopped = on(world, player -> {
+			Mob husk = foes(player).getFirst();
+			return husk.getHealth() >= husk.getMaxHealth() && Aura.aura(rival) < guardAura ? null
+				: "without the Way a held guard takes the slash and stops all damage to the husk behind it (" + slashState(player, husk) + ")";
+		});
 		check(stopped == null, stopped);
 		dropRival(world);
 
@@ -662,6 +692,20 @@ public class WildercordWaysTest implements FabricClientGameTest {
 	}
 
 	private static final List<Crescents.Flight> CLASH = Collections.synchronizedList(new ArrayList<>());
+
+	private static void checkSlashGuard(ServerPlayer player, Mob husk) {
+		check(rival != null && rival.isAlive() && AuraGuard.guarding(rival) && !AuraGuard.perfectNow(rival)
+				&& AuraGuard.facing(rival, player.position()) && Aura.holdsWeapon(rival),
+			"the slash must meet a living rival's held, facing guard (" + slashState(player, husk) + ")");
+	}
+
+	/** Bounded native damage history distinguishes the current slash from a prior Ember burn. */
+	private static String slashState(ServerPlayer player, Mob husk) {
+		return "attacker=" + player.position() + ", yaw=" + player.getYRot() + ", pitch=" + player.getXRot()
+			+ ", rival=" + (rival == null ? "missing" : rival.position() + ", guard=" + Aura.state(rival) + ", aura=" + Aura.aura(rival))
+			+ ", husk=" + husk.position() + ", hp=" + husk.getHealth() + "/" + husk.getMaxHealth()
+			+ ", fire=" + husk.getRemainingFireTicks() + ", damage=" + SLASH_DAMAGE;
+	}
 
 	// ------------------------------------------------------------------ the Bulwark
 
