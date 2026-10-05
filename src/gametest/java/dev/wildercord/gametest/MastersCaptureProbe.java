@@ -16,6 +16,9 @@ import net.minecraft.world.phys.Vec3;
 
 import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.resources.Identifier;
 
 /** Test-only observations of the screenshot's native submit paths and unmodified framebuffer. */
 public final class MastersCaptureProbe {
@@ -27,7 +30,15 @@ public final class MastersCaptureProbe {
 	};
 	private static boolean armed;
 	private static BladeBounds blade;
+	private static float[] handProjection;
+	private static HudLayout hud;
+	private static final List<HudSprite> hudSprites = new ArrayList<>();
 	public record BladeBounds(double minX, double minY, double maxX, double maxY) {}
+	public record HudLayout(int guiWidth, int guiHeight, int top) {}
+	public record PixelStats(int cyan, double largestSpanGui, double fireFraction, int hudTopPixel) {}
+	private record HudSprite(String sprite, int x, int y, int width, int height) {}
+	private record CaptureEvidence(String name, int width, int height, boolean first, int swordSubmits, int bodySubmits,
+		BladeBounds bladeBounds, HudLayout hud, List<HudSprite> hudSprites, float[] handProjection, PixelStats pixels) {}
 
 	private static int owner, hands, bodies;
 	private MastersCaptureProbe() {}
@@ -37,7 +48,22 @@ public final class MastersCaptureProbe {
 		owner = mc.player.getId();
 		hands = bodies = 0;
 		blade = null;
+		handProjection = null;
+		hud = null;
+		hudSprites.clear();
 		armed = true;
+	}
+
+	/** Observe the native player-HUD sprites, including the actual heart/armor rows and hotbar. */
+	public static void hudSprite(Identifier sprite, int x, int y, int width, int height, int guiWidth, int guiHeight) {
+		if (!armed || !sprite.getNamespace().equals("minecraft")) return;
+		String path = sprite.getPath();
+		if (!(path.startsWith("hud/hotbar") || path.startsWith("hud/heart/") || path.startsWith("hud/armor_")
+			|| path.startsWith("hud/food_") || path.startsWith("hud/air") || path.startsWith("hud/experience_bar"))) return;
+		check(guiWidth > 0 && guiHeight > 0 && y >= 0, "Native HUD coordinates must be valid");
+		check(hud == null || hud.guiWidth == guiWidth && hud.guiHeight == guiHeight, "HUD dimensions must stay stable during capture");
+		hud = new HudLayout(guiWidth, guiHeight, hud == null ? y : Math.min(hud.top, y));
+		hudSprites.add(new HudSprite(sprite.toString(), x, y, width, height));
 	}
 
 	public static void hand(int id, ItemStackRenderState item, PoseStack pose) {
@@ -49,6 +75,7 @@ public final class MastersCaptureProbe {
 		var projection = new Projection();
 		projection.setupPerspective(.05F, camera.depthFar, camera.hudFov, mc.getWindow().getWidth(), mc.getWindow().getHeight());
 		var matrix = projection.getMatrix(new org.joml.Matrix4f()).mul(RenderSystem.getModelViewStack()).mul(pose.last().pose());
+		handProjection = matrix.get(new float[16]);
 		double[] bounds = {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY};
 		item.visitExtents(point -> {
 			var projected = matrix.transform(new org.joml.Vector4f(point.x(), point.y(), point.z(), 1));
@@ -57,9 +84,11 @@ public final class MastersCaptureProbe {
 			bounds[0] = Math.min(bounds[0], x); bounds[1] = Math.min(bounds[1], y);
 			bounds[2] = Math.max(bounds[2], x); bounds[3] = Math.max(bounds[3], y);
 		});
-		check(bounds[0] < 1 && bounds[1] < .75 && bounds[2] > 0 && bounds[3] > 0,
+		check(hud != null, "The capture must observe native HUD geometry before projecting the hand");
+		check(bounds[0] < 1 && bounds[1] < (double) hud.top / hud.guiHeight && bounds[2] > 0 && bounds[3] > 0,
 			"The submitted main-hand blade must intersect the visible viewport above the HUD");
-		blade = new BladeBounds(Math.max(0, bounds[0]), Math.max(0, bounds[1]), Math.min(1, bounds[2]), Math.min(.75, bounds[3]));
+		// Keep the complete bounds in the evidence; only the pixel scan is clipped to the viewport/HUD.
+		blade = new BladeBounds(bounds[0], bounds[1], bounds[2], bounds[3]);
 	}
 	public static void body(int id) { if (armed && id == owner) bodies++; }
 	public static void end() { armed = false; }
@@ -104,12 +133,22 @@ public final class MastersCaptureProbe {
 			verifyRender(mc, name);
 			boolean first = mc.options.getCameraType().isFirstPerson();
 			BladeBounds capturedBlade = blade;
+			HudLayout capturedHud = hud;
+			var capturedHudSprites = List.copyOf(hudSprites);
+			float[] capturedProjection = handProjection;
+			int capturedHands = hands, capturedBodies = bodies;
 			net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image -> {
 				try (image) {
 					var path = FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name + ".png");
 					Files.createDirectories(path.getParent());
 					image.writeToFile(path); // Persist the exact native buffer, including rejected evidence.
-					assertPixels(image.getWidth(), image.getHeight(), image.getPixels(), first, name, capturedBlade);
+					PixelStats pixels = measurePixels(image.getWidth(), image.getHeight(), image.getPixels(), capturedBlade, capturedHud);
+					var evidence = new CaptureEvidence(name, image.getWidth(), image.getHeight(), first, capturedHands, capturedBodies,
+						capturedBlade, capturedHud, capturedHudSprites, capturedProjection, pixels);
+					Files.writeString(path.resolveSibling(name + ".json"), new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(evidence));
+					Wildercord.LOGGER.info("MASTERS_NATIVE_PIXELS name={} hud={} bounds={} cyan={} spanGui={} fireFraction={}",
+						name, capturedHud, capturedBlade, pixels.cyan, pixels.largestSpanGui, pixels.fireFraction);
+					assertPixels(first, name, capturedBlade, pixels);
 					result.complete(null);
 				} catch (Throwable failure) { result.completeExceptionally(failure); }
 			});
@@ -118,25 +157,60 @@ public final class MastersCaptureProbe {
 	}
 
 	/** Pure pixel policy, also exercised by the standalone regression harness. Never changes an image. */
-	public static void assertPixels(int width, int height, int[] argb, boolean first, String name) {
-		assertPixels(width, height, argb, first, name, new BladeBounds(0, 0, 1, .75));
+	public static void assertPixels(int width, int height, int[] argb, boolean first, String name, BladeBounds bounds, HudLayout hud) {
+		assertPixels(first, name, bounds, measurePixels(width, height, argb, bounds, hud));
 	}
 
-	public static void assertPixels(int width, int height, int[] argb, boolean first, String name, BladeBounds bounds) {
+	private static void assertPixels(boolean first, String name, BladeBounds bounds, PixelStats pixels) {
 		check(!first || bounds != null, "The captured native main-hand blade has no projected bounds");
+		check(!first || pixels.cyan >= 8, "Native first-person frame must contain visible diamond-blade pixels above the observed HUD: " + name + " pixels=" + pixels.cyan);
+		// An isolated crossguard fleck cannot prove a readable cutting edge. Require one contiguous
+		// component at least as long as a native 16-GUI-pixel inventory icon, at the current GUI scale.
+		check(!first || pixels.largestSpanGui >= 16, "Native first-person blade must have a readable span above the observed HUD: "
+			+ name + " spanGui=" + pixels.largestSpanGui);
+		check(pixels.fireFraction < .3, "Native camera is engulfed by target fire: " + name + " fraction=" + pixels.fireFraction);
+	}
+
+	public static PixelStats measurePixels(int width, int height, int[] argb, BladeBounds bounds, HudLayout hud) {
 		check(width > 0 && height > 0 && argb.length == width * height, "Native frame dimensions must match");
-		int cyan = 0, fire = 0, pixels = 0;
-		// Exclude the bottom HUD strip so the inventory sword icon cannot satisfy a missing viewmodel.
-		for (int y = 0; y < height * 3 / 4; y++) for (int x = 0; x < width; x++) {
+		check(hud != null && hud.guiWidth > 0 && hud.guiHeight > 0 && hud.top > 0 && hud.top <= hud.guiHeight,
+			"Native capture must include observed player-HUD dimensions");
+		int hudTop = (int) Math.floor((double) hud.top * height / hud.guiHeight);
+		boolean[] mask = new boolean[width * hudTop];
+		int cyan = 0, fire = 0, firePixels = 0;
+		for (int y = 0; y < Math.max(hudTop, height * 3 / 4); y++) for (int x = 0; x < width; x++) {
 			int rgb = argb[y * width + x], r = rgb >> 16 & 255, g = rgb >> 8 & 255, b = rgb & 255;
-			if (bounds != null && x >= bounds.minX * width && x <= bounds.maxX * width && y >= bounds.minY * height && y <= bounds.maxY * height
-				&& g > 75 && r < g * .7 && b > g * .65 && b < g * 1.3) cyan++;
-			// Include the pale hot core, not only orange borders of the target's native fire sprite.
-			if (r > 170 && g > 65 && g < r * 1.02 && b < g * .98) fire++;
-			pixels++;
+			if (y < hudTop && bounds != null && x >= bounds.minX * width && x <= bounds.maxX * width
+				&& y >= bounds.minY * height && y <= bounds.maxY * height
+				&& g > 75 && r < g * .7 && b > g * .65 && b < g * 1.3) {
+				mask[y * width + x] = true;
+				cyan++;
+			}
+			// Preserve the existing central-view fire policy; its sampling region is unrelated to HUD size.
+			if (y < height * 3 / 4) {
+				if (r > 170 && g > 65 && g < r * 1.02 && b < g * .98) fire++;
+				firePixels++;
+			}
 		}
-		check(!first || cyan >= 8, "Native first-person frame must contain visible diamond-blade pixels above the HUD: " + name + " pixels=" + cyan);
-		check(fire < pixels * .3, "Native camera is engulfed by target fire: " + name + " fraction=" + (double) fire / pixels);
+		int[] queue = new int[cyan];
+		double largestSpan = 0;
+		for (int start = 0; start < mask.length; start++) {
+			if (!mask[start]) continue;
+			mask[start] = false;
+			int head = 0, tail = 1, minX = start % width, maxX = minX, minY = start / width, maxY = minY;
+			queue[0] = start;
+			while (head < tail) {
+				int at = queue[head++], x = at % width, y = at / width;
+				minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+				if (x > 0 && mask[at - 1]) { mask[at - 1] = false; queue[tail++] = at - 1; }
+				if (x + 1 < width && mask[at + 1]) { mask[at + 1] = false; queue[tail++] = at + 1; }
+				if (y > 0 && mask[at - width]) { mask[at - width] = false; queue[tail++] = at - width; }
+				if (y + 1 < hudTop && mask[at + width]) { mask[at + width] = false; queue[tail++] = at + width; }
+			}
+			if (tail >= 8) largestSpan = Math.max(largestSpan, Math.max((double) (maxX - minX + 1) * hud.guiWidth / width,
+				(double) (maxY - minY + 1) * hud.guiHeight / height));
+		}
+		return new PixelStats(cyan, largestSpan, firePixels == 0 ? 0 : (double) fire / firePixels, hudTop);
 	}
 
 	private static void check(boolean ok, String message) { if (!ok) throw new AssertionError(message); }

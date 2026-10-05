@@ -69,6 +69,26 @@ class MastersArtAnimationTest {
 	}
 
 	@Test
+	void spellcutCuttingEdgeStaysAboveTheSurvivalHudThroughFollowThrough() {
+		// Canonical 70-degree hand camera, equipped right hand, and the vanilla handheld display.
+		// The native capture additionally observes the actual submit matrix, HUD rows, and pixels.
+		for (float age = 6; age <= 11; age += .25F) {
+			var view = MastersArtAnimation.view(MastersArtAnimation.sample(0, age, 4, 12), false, 0, 0, 0);
+			var h = view.transform(); var grip = view.grip();
+			var matrix = new org.joml.Matrix4f().translate(h.x(), h.y(), h.z()).translate(grip.x(), grip.y(), grip.z())
+				.rotateY((float) Math.toRadians(h.yaw())).rotateX((float) Math.toRadians(h.pitch())).rotateZ((float) Math.toRadians(h.roll()))
+				.translate(1.13F / 16, 3.2F / 16, 1.13F / 16).rotateY((float) -Math.PI / 2)
+				.rotateZ((float) Math.toRadians(25)).scale(.68F).translate(-.5F, -.5F, -.5F);
+			for (float along : new float[] {10.5F / 16, 14F / 16}) {
+				var point = matrix.transformPosition(new org.joml.Vector3f(along, along, .5F));
+				double screenY = (1 - point.y / (-point.z * Math.tan(Math.toRadians(35)))) / 2;
+				assertTrue(point.z < -.05F && screenY > 0 && screenY < 642.0 / 720,
+					"The cutting edge must remain in front of the camera and above the 720p scale-2 survival HUD at age " + age);
+			}
+		}
+	}
+
+	@Test
 	void alternateServerTimingsStillPlaceImpactOnTheAuthoritativeTick() {
 		for (int move = 0; move < 3; move++) {
 			var normal = MastersArtAnimation.sample(move, WINDUP[move], WINDUP[move], RECOVERY[move]);

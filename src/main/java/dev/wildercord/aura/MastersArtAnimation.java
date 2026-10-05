@@ -131,14 +131,15 @@ public final class MastersArtAnimation {
 
 	record Motion(Pose chamber, Pose impact, Pose follow) {}
 
-	/** Across the body from a high guard: the hips unwind before the blade settles to the far side. */
+	/** Across the body from a high guard: the hips unwind before the blade settles to the far side.
+	 * The first-person follow keeps the cutting edge above the survival HUD as the wrist rolls over. */
 	private static final Motion SPELLCUT = new Motion(
 		pose(j(.10F, .55F, -.08F), j(0, -.25F, 0), j(-1.95F, .95F, -.65F), j(-.90F, -.30F, -.20F),
 			j(-.40F, -.15F, -.08F), j(.35F, .10F, .10F), .45F, 0, h(.15F, .12F, .12F, -40, 35, -38)),
 		pose(j(.18F, -.42F, .10F), j(-.06F, .20F, -.05F), j(-1.35F, -1.05F, -.45F), j(-.50F, .15F, -.55F),
 			j(-.65F, .10F, -.08F), j(.40F, -.10F, .10F), .30F, -.8F, h(-.35F, -.12F, -.30F, 30, -42, 50)),
 		pose(j(.10F, -.65F, .12F), j(0, .30F, 0), j(-.55F, -1.25F, .10F), j(-.30F, .15F, -.45F),
-			j(-.35F, .15F, -.05F), j(.25F, -.10F, .06F), .15F, -.4F, h(-.48F, -.23F, -.14F, 50, -48, 66)));
+			j(-.35F, .15F, -.05F), j(.25F, -.10F, .06F), .15F, -.4F, h(-.48F, .25F, -.14F, 50, -48, 66)));
 
 	/** A low chamber, a rising cut past the face, then a high guard with the shoulders opened. */
 	private static final Motion RISING_BREAK = new Motion(
