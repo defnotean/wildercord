@@ -16,6 +16,7 @@ final class WetlandTerrainObservation {
  private BlockPos firstReed,firstMissedReed;
 
  void observe(ServerLevel level,LevelChunk chunk,BlockPos originalMatch) {
+  WetlandGenerationProbe.afterRequestedChunk(chunk.getPos());
   var counts=new LinkedHashMap<String,Integer>();
   for(String key:new String[]{"columns","at64Swamp","surfaceSwamp","surfaceMangrove",
     "surfaceEmpty","surfaceSupported","surfaceEmptySupported","moistureUnknown",

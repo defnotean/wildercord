@@ -105,6 +105,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Install virtual display
         run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+      - name: Mark fresh Void Cut diagnostic inputs
+        id: void-cut-start
+        continue-on-error: true
+        run: python tools/collect_void_cut_diagnostics.py --prepare --job-group game-tests-${{ matrix.shard }}-of-4 --marker artifacts/review/void-cut-game-tests-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}.json
       - name: Run gameplay and complete rune animation gallery
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
@@ -114,6 +118,19 @@ jobs:
       - name: Record full descriptor and optional suite outcomes
         if: always()
         run: python tools/test_manifest.py --shard ${{ matrix.shard }}/4 --log client-game-tests.log --gallery
+      - name: Collect bounded Void Cut diagnostics (may include rejected frames)
+        id: void-cut-diagnostics
+        if: always() && steps.void-cut-start.outcome == 'success'
+        continue-on-error: true
+        run: python tools/collect_void_cut_diagnostics.py --job-group game-tests-${{ matrix.shard }}-of-4 --marker artifacts/review/void-cut-game-tests-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}.json --output artifacts/review/void-cut-diagnostics-game-tests-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Preserve bounded Void Cut diagnostics
+        if: always() && steps.void-cut-diagnostics.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: void-cut-diagnostics-game-tests-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/review/void-cut-diagnostics-game-tests-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: error
       - name: Preserve gameplay evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -146,6 +163,10 @@ jobs:
       - name: Mark fresh Masters screenshot inputs
         continue-on-error: true
         run: python tools/curate_masters_frames.py --prepare --marker artifacts/review/masters-frames-${{ github.run_id }}-${{ github.run_attempt }}.json
+      - name: Mark fresh Void Cut diagnostic inputs
+        id: void-cut-start
+        continue-on-error: true
+        run: python tools/collect_void_cut_diagnostics.py --prepare --job-group masters-native --marker artifacts/review/void-cut-masters-${{ github.run_id }}-${{ github.run_attempt }}.json
       - name: Run the 18 focused update suites
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
@@ -154,6 +175,19 @@ jobs:
       - name: Record focused Masters outcomes
         if: always()
         run: python tools/test_manifest.py --suite masters --log masters-native.log --output artifacts/review/masters-native-manifest.json
+      - name: Collect bounded Void Cut diagnostics (may include rejected frames)
+        id: void-cut-diagnostics
+        if: always() && steps.void-cut-start.outcome == 'success'
+        continue-on-error: true
+        run: python tools/collect_void_cut_diagnostics.py --job-group masters-native --marker artifacts/review/void-cut-masters-${{ github.run_id }}-${{ github.run_attempt }}.json --output artifacts/review/void-cut-diagnostics-masters-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Preserve bounded Void Cut diagnostics
+        if: always() && steps.void-cut-diagnostics.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: void-cut-diagnostics-masters-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/review/void-cut-diagnostics-masters-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: error
       - name: Curate bounded native Masters frames
         id: curated-masters
         if: always()

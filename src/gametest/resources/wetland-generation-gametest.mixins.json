@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": ["WetlandFeatureIndexAccessor", "WetlandPlacementProbeMixin", "WetlandMoonreedProbeMixin"],
+  "client": ["WetlandFixtureProbeMixin"],
+  "injectors": {"defaultRequire": 1}
+}
