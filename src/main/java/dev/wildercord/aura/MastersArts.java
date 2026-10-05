@@ -196,7 +196,7 @@ public final class MastersArts {
 			&& !Clashes.holding(player) && !dev.wildercord.aura.arts.ArtWards.silenced(player) && !CastLock.locked(player) && !Stance.opened(player);
 	}
 
-	/** One shared cancellation and recovery contract for both the new keys and the first style forms. */
+	/** One shared cancellation and recovery contract for both the new keys and the authored fixed-release style forms. */
 	private static void schedule(ServerPlayer player, int animation, int windup, int recovery,
 			java.util.function.BooleanSupplier stillEligible, Runnable impact) {
 		var level = player.level();

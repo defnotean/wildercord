@@ -3,7 +3,7 @@ package dev.wildercord.aura;
 import static dev.wildercord.aura.MastersArtAnimation.*;
 
 /**
- * Ten original first-form choreographies, one for each existing breathing method. These change
+ * Original first-form choreographies and selected second-form releases. These change
  * stance, blade path, rhythm and recovery, rather than recolouring a shared swing. Their IDs are
  * presentation-only and match {@link MastersStyleRules}; no new input or damage rule lives here.
  */
@@ -104,6 +104,27 @@ public final class MastersStyleAnimation {
 		pose(j(.25F, -.70F, .18F), j(-.12F, .25F, -.04F), j(-.25F, -1.10F, .10F), j(.05F, -.10F, -.80F),
 			j(-.60F, .12F, -.12F), j(.38F, -.10F, .10F), .80F, -.55F, h(-.42F, .12F, -.12F, 70, -50, 65)));
 
+
+	// Cinders scoops from the outside hip across the body, unfurls upward and leaves the blade high.
+	// This is a grounded rising cut: the existing art lifts its victims, never the swordsman.
+	private static final Motion CINDERS = new Motion(
+		pose(j(.26F, .48F, .16F), j(-.12F, -.18F, -.06F), j(.15F, .62F, .55F), j(-.65F, -.18F, -.72F),
+			j(-.62F, -.14F, -.12F), j(.38F, .12F, .10F), .72F, .10F, h(.05F, .05F, -.30F, 58, 28, -42)),
+		pose(j(-.12F, -.46F, -.16F), j(.04F, .18F, .06F), j(-2.22F, -.72F, -.48F), j(-.35F, .10F, -1.10F),
+			j(-.28F, .16F, -.09F), j(.18F, -.10F, .08F), .08F, -.58F, h(-.22F, .26F, -.34F, -72, -26, 25)),
+		pose(j(-.08F, -.62F, -.12F), j(.02F, .22F, .04F), j(-2.64F, -.55F, -.65F), j(.08F, .12F, -.82F),
+			j(-.25F, .13F, -.08F), j(.16F, -.08F, .07F), .12F, -.26F, h(-.32F, .34F, -.18F, -92, -35, 38)));
+
+	// Blossom gathers over the shoulder, falls diagonally into a planted stance, then lifts the hilt
+	// slightly out of the ground-facing finish while the already-released petal field unfolds alone.
+	private static final Motion BLOSSOM = new Motion(
+		pose(j(-.10F, .32F, -.12F), j(.04F, -.12F, .04F), j(-2.48F, .32F, -.48F), j(-1.25F, -.18F, -.58F),
+			j(-.30F, -.12F, -.10F), j(.26F, .10F, .09F), .22F, .18F, h(-.08F, .65F, -.12F, -96, 18, -24)),
+		pose(j(.38F, -.30F, .14F), j(-.18F, .12F, -.04F), j(-.62F, -.24F, -.20F), j(-.20F, .10F, -.88F),
+			j(-.78F, .12F, -.12F), j(.42F, -.10F, .10F), .92F, -.86F, h(-.16F, .20F, -.46F, 64, -12, 20)),
+		pose(j(.25F, -.26F, .10F), j(-.12F, .10F, -.02F), j(-.45F, -.20F, -.18F), j(-.32F, -.08F, -.62F),
+			j(-.56F, .10F, -.10F), j(.30F, -.08F, .08F), .60F, -.44F, h(-.12F, .28F, -.40F, 48, -30, 16)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -116,6 +137,8 @@ public final class MastersStyleAnimation {
 			case 10 -> NEEDLE;
 			case 11 -> ECHO;
 			case 12 -> BLOODLETTING;
+			case 13 -> CINDERS;
+			case 14 -> BLOSSOM;
 			default -> null;
 		};
 	}

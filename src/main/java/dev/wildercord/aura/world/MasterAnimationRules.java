@@ -8,7 +8,7 @@ package dev.wildercord.aura.world;
 public final class MasterAnimationRules {
 	private MasterAnimationRules() {}
 
-	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4;
+	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5;
 	public record Joint(float x, float y, float z) {
 		Joint toward(Joint other, float t) {
 			return new Joint(lerp(x, other.x, t), lerp(y, other.y, t), lerp(z, other.z, t));
@@ -57,6 +57,17 @@ public final class MasterAnimationRules {
 		p(j(.25F, -.08F, .01F), j(-.12F, 0, 0), j(-1.30F, -.04F, -.06F), j(-.60F, -.15F, -.35F), .24F, -92),
 		p(j(.16F, -.18F, .02F), j(-.07F, 0, 0), j(-1.12F, -.08F, -.08F), j(-.45F, -.12F, -.30F), .24F, -85));
 
+	// Ember lays a low, broad cut, then visibly gathers its point above the already marked wake.
+	// The second point-drop is a timed ignition gesture, never a new target-tracking sword attack.
+	private static final Motion CINDER_MOTION = new Motion(
+		p(j(.20F, .48F, -.04F), j(-.07F, 0, 0), j(-.95F, .72F, -.55F), j(-1.12F, -.18F, -.32F), .20F, -12),
+		p(j(.24F, -.54F, .04F), j(-.10F, 0, 0), j(-.78F, -1.04F, -.40F), j(-.78F, .30F, -.46F), .20F, -18),
+		p(j(.16F, -.62F, .03F), j(-.05F, 0, 0), j(-.44F, -.86F, -.25F), j(-.56F, .18F, -.38F), .20F, -12));
+	private static final Motion IGNITION_MOTION = new Motion(
+		p(j(-.08F, -.12F, 0), j(.03F, 0, 0), j(-1.94F, .10F, -.20F), j(-1.12F, -.10F, .20F), .20F, -45),
+		p(j(.28F, -.12F, .02F), j(-.12F, 0, 0), j(-.88F, -.12F, -.06F), j(-.64F, -.20F, -.34F), .20F, -108),
+		p(j(.16F, -.18F, .01F), j(-.06F, 0, 0), j(-.65F, -.15F, -.10F), j(-.44F, -.14F, -.28F), .20F, -98));
+
 	private static final Pose GUARD = p(j(.10F, .10F, 0), j(-.04F, 0, 0), j(-1.42F, -.55F, -.25F), j(-1.05F, .40F, -.25F), .14F, 0);
 	private static final Pose DODGE = p(j(.34F, -.18F, -.08F), j(-.18F, 0, .04F), j(-1.05F, .20F, -.35F), j(-.68F, -.18F, -.38F), .28F, 0);
 	private static final Pose STAGGER = p(j(-.15F, .06F, .03F), j(.12F, 0, 0), j(-.45F, .16F, .30F), j(-.35F, -.12F, -.40F), .12F, 0);
@@ -71,10 +82,12 @@ public final class MasterAnimationRules {
 			case THRUST -> THRUST_MOTION;
 			case CRESCENT -> CRESCENT_MOTION;
 			case BREAK_CAST -> BREAK_MOTION;
+			case CINDER_WAKE -> CINDER_MOTION;
 			default -> null;
 		};
 		if (motion == null || !Float.isFinite(age) || age < 0 || tell < 1 || tell > 80 || active < 1 || active > 10
 			|| recovery < 1 || recovery > 120 || age >= tell + active + recovery) return NONE;
+		if (attack == CINDER_WAKE && age >= tell + 6) return emberWake(age, tell, active, recovery);
 		float chamberAt = tell * .65F;
 		float followAt = tell + active + Math.min(3, recovery * .20F);
 		Pose pose;
@@ -85,6 +98,22 @@ public final class MasterAnimationRules {
 		float enter = smooth(age / Math.max(1, chamberAt));
 		float leave = 1 - smooth((age - followAt) / (tell + active + recovery - followAt));
 		return pose.weight(enter * leave);
+	}
+
+	private static Pose emberWake(float age, int tell, int active, int recovery) {
+		float gather = tell + 6, ignite = tell + EmberWakeRules.AFTERBURN_TELL;
+		float chamber = ignite - 8, follow = ignite + 4, end = tell + active + recovery;
+		Pose pose;
+		if (age < chamber) pose = CINDER_MOTION.follow.toward(IGNITION_MOTION.chamber, smooth((age - gather) / (chamber - gather)));
+		else if (age < ignite) pose = IGNITION_MOTION.chamber.toward(IGNITION_MOTION.impact, smooth((age - chamber) / (ignite - chamber)));
+		else if (age < follow) pose = IGNITION_MOTION.impact.toward(IGNITION_MOTION.follow, smooth((age - ignite) / (follow - ignite)));
+		else pose = IGNITION_MOTION.follow;
+		// Match the ordinary first follow-through exactly at the handoff before gathering again.
+		float initialWeight = 1 - smooth((gather - (tell + active + Math.min(3, recovery * .20F)))
+			/ (end - (tell + active + Math.min(3, recovery * .20F))));
+		float weight = age < chamber ? lerp(initialWeight, 1, smooth((age - gather) / (chamber - gather)))
+			: 1 - smooth((age - follow) / Math.max(1, end - follow));
+		return pose.weight(weight);
 	}
 
 	/** Defensive flags are already eased by AuraFighter. They never extend a cancelled attack. */

@@ -80,7 +80,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private int discipline, sequence, partySize = 1, quiet;
 	private boolean started, guardNext;
 	private MastersRules.Move attack;
-	private Vec3 lockedAim;
+	private Vec3 lockedAim, lockedOrigin;
+	private EmberAfterburn afterburn;
 
 	public SwordMaster(EntityType<? extends SwordMaster> type, Level level) {
 		super(type, level);
@@ -101,7 +102,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		builder.define(DATA_ATTACK_AIM_PITCH, 0F);
 	}
 
-	/** 0 is idle; otherwise the move's ordinal plus one: sweep, thrust, crescent, spellbreaker. Server-authored. */
+	/** 0 is idle; otherwise the move's ordinal plus one. IDs 1–4 remain the original four attacks. Server-authored. */
 	public int attackAnimation() { return entityData.get(DATA_ATTACK); }
 
 	/** Accepted crescent elevation in degrees (positive down), held through its entire recovery. */
@@ -353,6 +354,17 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	public Set<UUID> challengers() { return Set.copyOf(participants); }
 	public double auraRemaining() { return aura; }
 
+	boolean afterburnPending() { return afterburn != null; }
+
+	/** A wake may never outlive its master, arena or last eligible challenger, even when ticked independently. */
+	boolean canMaintainAfterburn() {
+		return started && isAlive() && !isRemoved() && home != null && level() instanceof ServerLevel level
+			&& level.getGameTime() < expires && level.getDifficulty() != Difficulty.PEACEFUL && !staggered() && !Stance.opened(this)
+			&& distanceToSqr(Vec3.atCenterOf(home)) <= MastersRules.ARENA_RADIUS * MastersRules.ARENA_RADIUS
+			&& Math.abs(getY() - home.getY()) <= 8
+			&& participants.stream().anyMatch(id -> level.getPlayerByUUID(id) instanceof LivingEntity living && participant(living));
+	}
+
 	private boolean lobbyOpen() {
 		return home != null && !started && level().getGameTime() < begins;
 	}
@@ -361,6 +373,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		return entity instanceof ServerPlayer player && participants.contains(player.getUUID()) && mayEnter(player)
 			&& player.level() == level() && home != null
 			&& player.distanceToSqr(Vec3.atCenterOf(home)) <= MastersRules.ARENA_RADIUS * MastersRules.ARENA_RADIUS;
+	}
+
+	/** Pausing AI cancels its current warning instead of allowing an unwarned release on the resume tick. */
+	@Override
+	public void setNoAi(boolean noAi) {
+		if (noAi && !isNoAi()) cancelAttack();
+		super.setNoAi(noAi);
 	}
 
 	@Override
@@ -401,7 +420,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			bar.setProgress(getHealth() / getMaxHealth());
 			Component activity = !started
 				? Component.translatable("boss.wildercord.master.prepare", participants.size(), MastersRules.MAX_PARTICIPANTS, Math.max(0, (begins - now + 19) / 20))
-				: Component.translatable("boss.wildercord.master." + (attack != null ? attack.name().toLowerCase(java.util.Locale.ROOT)
+				: Component.translatable("boss.wildercord.master." + (attack != null ? attack.name().toLowerCase(java.util.Locale.ROOT) : afterburn != null ? "afterburn"
 					: staggered() || Stance.opened(this) ? "broken" : now < breathingUntil ? "breathing" : now < recoverUntil ? "recover" : guarding() ? "guard" : "ready"));
 			bar.setName(Component.translatable("boss.wildercord.master.status", method().id(), activity));
 		}
@@ -420,6 +439,9 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			partySize = MastersRules.participants(participants.size());
 			getAttribute(Attributes.MAX_HEALTH).setBaseValue(MastersRules.health(partySize));
 			setHealth(getMaxHealth());
+			if (discipline == MastersRules.EMBER) for (ServerPlayer player : level.players()) {
+				if (participant(player)) player.sendSystemMessage(Component.translatable("message.wildercord.master.ember_lesson"));
+			}
 			recoverUntil = now + 20;
 		}
 		tickGuard(now);
@@ -431,6 +453,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			recoverUntil = Math.max(recoverUntil, now + 10);
 			return;
 		}
+		if (afterburn != null && !afterburn.tick(now)) afterburn = null;
 		LivingEntity target = getTarget();
 		if (target == null || !participant(target)) {
 			target = level.players().stream().filter(this::participant).min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
@@ -494,6 +517,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		}
 		MastersRules.Move next = MastersRules.needsCrescent(distanceTo(target), targetHeight) ? MastersRules.Move.CRESCENT
 			: target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4 ? MastersRules.Move.BREAK_CAST
+			: EmberWakeRules.next(discipline, sequence, MastersRules.phase(getHealth(), getMaxHealth()), distanceTo(target)) ? MastersRules.Move.CINDER_WAKE
 			: MastersRules.move(discipline, sequence, MastersRules.phase(getHealth(), getMaxHealth()), distanceTo(target));
 		beginAttack(level, target, next, now);
 	}
@@ -505,10 +529,17 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		entityData.set(DATA_ATTACK_BEGIN, now);
 		approachStarted = 0;
 		setDeltaMovement(0, getDeltaMovement().y, 0);
-		aura -= MastersRules.ATTACK_COST;
+		aura -= move == MastersRules.Move.CINDER_WAKE ? EmberWakeRules.COST : MastersRules.ATTACK_COST;
 		attackAt = now + move.tell;
 		lockedAim = null;
+		lockedOrigin = null;
 		faceTarget(target);
+		if (move == MastersRules.Move.CINDER_WAKE) {
+			// The whole two-beat shape is committed before its first warning, not re-aimed at the second beat.
+			lockedAim = flatLook();
+			lockedOrigin = position();
+			EmberAfterburn.warnCut(this, lockedOrigin, lockedAim, move.tell);
+		}
 		syncAnimationPitch(move == MastersRules.Move.CRESCENT ? target.getBoundingBox().getCenter().subtract(slashOrigin()) : Vec3.ZERO);
 		setState(WINDUP, true);
 		getNavigation().stop();
@@ -519,6 +550,9 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	private void tickAttack(ServerLevel level, long now, LivingEntity target) {
 		getNavigation().stop();
+		if (attack == MastersRules.Move.CINDER_WAKE && now < attackAt && (attackAt - now) % EmberWakeRules.WARNING_REFRESH == 0) {
+			EmberAfterburn.warnCut(this, lockedOrigin, lockedAim, (int) (attackAt - now));
+		}
 		if (lockedAim == null && now < attackAt - MastersRules.AIM_LOCK) {
 			faceTarget(target);
 			if (attack == MastersRules.Move.CRESCENT) syncAnimationPitch(target.getBoundingBox().getCenter().subtract(slashOrigin()));
@@ -527,18 +561,25 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			Vec3 toward = target.getBoundingBox().getCenter().subtract(slashOrigin());
 			lockedAim = attack == MastersRules.Move.CRESCENT && toward.lengthSqr() > 1.0E-6 ? toward.normalize() : flatLook();
 			syncAnimationPitch(lockedAim);
+			lockedOrigin = position();
 			Vec3 feet = position().add(0, 0.1, 0);
 			if (attack == MastersRules.Move.CRESCENT) {
 				for (double angle : MastersRules.volleyAngles(partySize)) {
 					Light.ray(level, slashOrigin(), slashOrigin().add(rotate(lockedAim, angle).scale(Math.min(MastersRules.PROJECTILE_RANGE, toward.length()))), auraColor(), 0.08, MastersRules.AIM_LOCK + 2);
 				}
 			} else {
-				Light.ray(level, feet, feet.add(lockedAim.scale(attack == MastersRules.Move.SWEEP ? 4 : 6)), auraColor(), 0.08, MastersRules.AIM_LOCK + 2);
+				Light.ray(level, feet, feet.add(lockedAim.scale((attack == MastersRules.Move.SWEEP || attack == MastersRules.Move.CINDER_WAKE) ? 4 : 6)), auraColor(), 0.08, MastersRules.AIM_LOCK + 2);
 			}
 		}
 		if (now < attackAt) return;
+		if (attack == MastersRules.Move.CINDER_WAKE && now != attackAt) {
+			cancelAttack();
+			recoverUntil = now + EmberWakeRules.RECOVERY;
+			return;
+		}
 		MastersRules.Move released = attack;
 		Vec3 aim = lockedAim == null ? flatLook() : lockedAim;
+		Vec3 origin = released == MastersRules.Move.CINDER_WAKE && lockedOrigin != null ? lockedOrigin : position();
 		setState(WINDUP, false);
 		swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 		if (released == MastersRules.Move.CRESCENT) {
@@ -554,12 +595,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			}
 		} else {
 			Vec3 side = new Vec3(-aim.z, 0, aim.x);
-			AuraFx.trail(this, released == MastersRules.Move.SWEEP ? AuraFxRules.Stroke.SWEEP : AuraFxRules.Stroke.THRUST, false, auraColor(), stage(), 1.2F);
+			AuraFx.trail(this, (released == MastersRules.Move.SWEEP || released == MastersRules.Move.CINDER_WAKE) ? AuraFxRules.Stroke.SWEEP : AuraFxRules.Stroke.THRUST, false, auraColor(), stage(), 1.2F);
 			Feels.sound(level, position(), "aura_slash", 1, 0.9F);
 			for (ServerPlayer player : level.players()) {
 				if (!participant(player)) continue;
-				Vec3 delta = player.position().subtract(position());
-				if (MastersRules.hits(released, delta.dot(aim), delta.dot(side), delta.y) && hasLineOfSight(player)) {
+				Vec3 delta = player.position().subtract(origin);
+				if (MastersRules.hits(released, delta.dot(aim), delta.dot(side), delta.y)
+					&& (released == MastersRules.Move.CINDER_WAKE ? EmberAfterburn.clear(level, this, origin.add(0, .9, 0), player.getBoundingBox().getCenter()) : hasLineOfSight(player))) {
 					float dealt = projected(player, MastersRules.damage(partySize, discipline, released));
 					if (dealt > 0 && released == MastersRules.Move.BREAK_CAST && player.hasAttached(WildercordAttachments.CHARGE)) {
 						Statuses.interrupt(player); // Shared immunity prevents repeated masters from locking out a caster.
@@ -567,8 +609,19 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				}
 			}
 		}
+		if (released == MastersRules.Move.CINDER_WAKE && canMaintainAfterburn()) {
+			afterburn = new EmberAfterburn(this, origin, aim, partySize, now);
+			afterburn.tick(now);
+			Feels.sound(level, origin, "duelist_knight_windup", 1, 1.35F);
+			AuraFx.banner(this, Component.translatable("boss.wildercord.master.afterburn"),
+				Component.translatable("message.wildercord.master.afterburn_hint"), auraColor(), AuraFxRules.BannerKind.ART);
+			for (ServerPlayer player : level.players()) if (participant(player)) {
+				player.sendOverlayMessage(Component.translatable("message.wildercord.master.afterburn_hint"));
+			}
+		}
 		attack = null;
 		lockedAim = null;
+		lockedOrigin = null;
 		recoverUntil = now + released.recovery;
 		guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 		guardNext = MastersRules.guardAfter(discipline, ++sequence);
@@ -664,6 +717,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		if (state(DASH)) stopDodge(level().getGameTime());
 		attack = null;
 		lockedAim = null;
+		lockedOrigin = null;
+		afterburn = null;
 		setState(WINDUP, false);
 	}
 
@@ -747,6 +802,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	@Override
 	public void remove(RemovalReason reason) {
+		cancelAttack();
 		bar.removeAllPlayers();
 		ACTIVE.remove(this);
 		super.remove(reason);

@@ -24,11 +24,11 @@ def launcher_log(selection, *, result=0, build="BUILD SUCCESSFUL"):
 
 
 class SelectionTests(unittest.TestCase):
-    def test_masters_is_exactly_fifteen_registered_unique_entries(self):
+    def test_masters_is_exactly_sixteen_registered_unique_entries(self):
         selected = client_suites.select_entries(suite="masters")
         full = client_suites.select_entries()
-        self.assertEqual(selected["count"], 15)
-        self.assertEqual(len(set(selected["entries"])), 15)
+        self.assertEqual(selected["count"], 16)
+        self.assertEqual(len(set(selected["entries"])), 16)
         self.assertTrue(set(selected["entries"]).issubset(full["entries"]))
 
     def test_four_shards_preserve_full_order_without_gaps_or_duplicates(self):
@@ -66,7 +66,7 @@ class SelectionTests(unittest.TestCase):
             -1, group["entries"][0]), "duplicate")
 
     def test_missing_catalog_entry_is_rejected(self):
-        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 15")
+        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 16")
 
     def test_unregistered_catalog_entry_is_rejected(self):
         self.assert_bad_catalog(lambda group: group["entries"].__setitem__(
@@ -78,7 +78,7 @@ class SelectionTests(unittest.TestCase):
                 self.assert_bad_catalog(lambda group: group.update(entries=entries), "nonempty")
 
     def test_invalid_expected_count_is_rejected(self):
-        for count in (14, 16, 15.0, True, "15"):
+        for count in (15, 17, 16.0, True, "16"):
             with self.subTest(count=count):
                 self.assert_bad_catalog(lambda group: group.update(expectedCount=count), "exactly")
 
@@ -169,14 +169,14 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(status, 1 if manifest.get("focusedClientGate") == "unverified" else 0)
             return manifest
 
-    def test_focused_success_is_exactly_fifteen_and_never_a_full_pass(self):
+    def test_focused_success_is_exactly_sixteen_and_never_a_full_pass(self):
         selection = client_suites.select_entries(suite="masters")
         manifest = self.manifest(launcher_log(selection), "--suite", "masters")
         self.assertEqual(manifest["selection"], selection)
         self.assertEqual([s["suite"] for s in manifest["clientSuites"]], selection["entries"])
         self.assertEqual(manifest["focusedClientGate"], "passed")
         self.assertEqual(manifest["fullClientGate"], "unverified")
-        self.assertEqual(manifest["counts"], {"passed": 15, "skipped": 0, "unverified": 0})
+        self.assertEqual(manifest["counts"], {"passed": 16, "skipped": 0, "unverified": 0})
         self.assertEqual(manifest["verificationIssues"], [])
         self.assertIn("full client gate and animation gallery are not established", manifest["basis"])
 
@@ -192,7 +192,7 @@ class ManifestTests(unittest.TestCase):
                 manifest = self.manifest(log, "--suite", "masters")
                 self.assertEqual(manifest["fullClientGate"], "unverified")
                 self.assertEqual(manifest["focusedClientGate"], "unverified")
-                self.assertEqual(manifest["counts"]["unverified"], 15)
+                self.assertEqual(manifest["counts"]["unverified"], 16)
 
     def test_mismatched_stale_duplicate_or_invalid_selection_cannot_pass(self):
         selection = client_suites.select_entries(suite="masters")

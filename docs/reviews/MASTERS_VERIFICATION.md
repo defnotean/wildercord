@@ -4,11 +4,27 @@ Base: `ebb2887f7d7becccf339918c00a9741721606fb1` (main).
 
 Development version: `0.11.0-masters-dev`.
 
-## CI follow-up: 2026-10-05
+## Current CI checkpoint: 2026-10-05 11:34 UTC
+
+[Run 126](https://github.com/defnotean/wildercord/actions/runs/37302625183), for published checkpoint `b72ebc2aa00650f202655dab89bf4590a500d9be`, passed its normal Build job including generated assets, Gradle compilation/unit tests and packaging. Native gameplay remains incomplete. Its focused job completed the Master trial and advanced to the presentation fixture, then failed the strict default-key conflict assertion: Minecraft 26.3 uses G for Quick Actions. This content checkpoint changes fresh defaults to U/Y/J and preserves that strict native assertion; existing saved bindings are not overwritten. The correction still needs its next native run.
+
+The preceding `8f7b69b0` focused run reached the end of the Master trial fixture, including an observed **8.104321-health thrust against a 20-health player in full Protection IV netherite** and its guard/casting probes. It then failed abandonment cleanup. The fixture had moved the player beyond its supplied floor and the log records a fall death; that hazard is corrected without claiming it proves the whole failure cause. Departures now stay outside the arena on solid ground, and the same 220-server-tick deadline reports player, roster, entity and chunk-ticking state.
+
+Full shards independently exposed a stochastic Siltcrest scenario, Rimehare flight distance, and supplied Cinder receiver health assumptions. The new fixture checkpoint admits sustained native fish movement without steering it, keeps the original strict escape/refusal assertions, isolates supplied Cinder witnesses from unrelated random Runebound health bonuses, and adds read-only Rimehare path/threat diagnostics while retaining its final-distance assertion. These four changed suites passed focused Java compilation and independent review; the next native results remain decisive. The current full-shard Resonant Strikes failure is being investigated separately.
+
+## Reviewed content checkpoint: Ember and second forms
+
+This checkpoint adds the Ember Master's two-beat Cinder Wake and authoritative releases/original fallback-rig motion for Rising Cinders and Blossom Fall. The focused native catalog now has **16 suites**; the new afterburn probes are included in the existing Master trial suite. Existing C2S shared-art IDs remain 0–2, and the two presentation IDs append as 13/14. Thirty-eight existing method arts still lack full body choreography.
+
+Each slice received an independent source review. The Ember review found and fixed a paused-AI warning lifecycle defect before publication, and later checked the chamber-only head-clearance correction. The second-form review checked payment, target policy, cancellation, delayed ownership, preserved original effects and new-ID-only presentation changes. Offline source-sampled previews were inspected; they do not establish native rendering quality. The new articulated-rig direction is a separate next architecture step; these original rigid-limb motions remain a fallback and timing reference.
+
+The combined frozen Java 25 gate `content-integrated-20261005-1138` passed at **11:39:14 UTC**: **755 main**, **236 client**, **125 unit-test** and **291 native-test** source files compile, and **1,127/1,127 JUnit tests pass** with zero skipped, aborted or failed tests. All **3,329 source/config fingerprints** remained unchanged. The combined generated-assets check covers **5,500 paths**, guide-source/export validation covers **132 pages**, and **22 Python CI-tooling tests** pass. This is independent source/unit verification; native content and the corrected defaults still require the next focused run.
+
+## Earlier CI follow-up: 2026-10-05
 
 [Draft PR #1](https://github.com/defnotean/wildercord/pull/1) now runs the normal repository workflow. On published commit `eba91238eee564eebf5addfb72a6b2f3929eb9a5`, the [Build job](https://github.com/defnotean/wildercord/actions/runs/37292944774/job/111707410625) **passed**: generated assets, Gradle build/unit tests, pinned launcher profiles and artifact uploads. This supersedes the earlier normal-build blocker for GitHub CI; it does not change what the earlier local environments could run.
 
-The actual client also starts and produces gameplay screenshots. Its first full run exposed native assertions in Siltcrest fish-escape observation, Cinder Bailiff withdrawal, and residue expiration after chunk return. Shard 2 remained in progress when this follow-up was prepared. A native startup or a successful build is not a complete gameplay pass.
+The actual client also starts and produces gameplay screenshots. Its first full run exposed native assertions in Siltcrest fish-escape observation, Cinder Bailiff withdrawal, and residue expiration after chunk return. Shard 2 later failed advancement ordering; the supplied higher-tier Cord had already granted the lower-tier advancement before its test. Commit `8f7b69b0` restores the intended assertion order without changing advancement rules. A native startup or a successful build is not a complete gameplay pass.
 
 The bounded corrective changes are:
 
@@ -29,7 +45,7 @@ Independent review found no blocking issue in these patches. A freshly reconstru
 
 The independent compile classpath applies Fabric API's declared class-tweaker metadata. Runtime tests use the pristine official jars. This is useful compile and unit-test evidence, but it is not equivalent to a successful Loom build, a remapped release artifact or native gameplay verification.
 
-## Final integrated source gate
+## Original integrated source gate (historical checkpoint)
 
 At **2026-10-05 04:09:23 UTC**, verification tag `final-20261005-0409` passed a fresh compile of all **753 main**, **236 client**, **124 unit-test** and **289 native-test** Java source files. All **1,114 of 1,114 JUnit tests passed**, with zero skipped, aborted or failed tests. All **3,276 Java/JSON source fingerprints stayed unchanged** throughout the gate.
 
@@ -56,7 +72,7 @@ PNG compression-only changes were removed after comparing decoded pixels; unrela
 
 ## Native suites authored and compiled
 
-Fifteen new suites are registered and compile. Their assertions have **not been executed in a native client**:
+The original fifteen added suites are registered and compile. GitHub now executes native clients and has reached their Master combat probes, but the focused suite as a whole has **not passed**. Later suites cannot be treated as executed merely because they are listed here:
 
 - PartyMutationSafetyTest and PartyOfflineProjectileTest: direct/delayed damage, harmful/helpful statuses, source restoration, summons, fire/frost/movement, live and retained projectile ownership
 - WildercordHeartCirclesTest: circles 9–20, denied/interrupted formation, old-save compatibility, bounds, synchronization and tooltip captures
@@ -68,7 +84,7 @@ Fifteen new suites are registered and compile. Their assertions have **not been 
 - WildercordMastersArtsPresentationTest: actual keys and ten style strings, body/first-person frames, bindings/help, scales, cancellation and turned/vertical aim
 - MasterModelPresentationTest: baked NPC model channels, handedness, anchors, soles, hilt/offhand separation and cancellation reset; synthetic model frames are identified explicitly
 
-The authorized Windows desktop baseline also failed before source compilation: Loom reported `RmStartSession` Windows error 29 and an access-denied cache transformation. No client launched and no screenshots were produced. Native startup/mixin application, gameplay, latency behavior and screenshots remain release gates. An authored or compiled assertion is not a successful runtime test.
+The authorized Windows desktop baseline also failed before source compilation: Loom reported `RmStartSession` Windows error 29 and an access-denied cache transformation. No client launched and no screenshots were produced. GitHub has since verified native startup and produced gameplay captures; complete feature/mixin coverage, gameplay, latency behavior and presentation remain release gates. An authored or compiled assertion is not a successful runtime test.
 
 ## Review findings addressed in the verified source
 
@@ -87,26 +103,26 @@ The authorized Windows desktop baseline also failed before source compilation: L
 ## Not yet established
 
 - A release-ready artifact with all native gameplay and presentation gates passed (the normal GitHub Gradle build now passes)
-- Native client startup/mixin application and real multiplayer behavior
+- Complete added-mixin coverage and real multiplayer behavior (native startup itself now works in GitHub CI)
 - Post-Protection-IV encounter difficulty and performance under several simultaneous casters
 - Complete animation/asset coverage for all fifty existing style arts
 - Broad rebalance of ordinary creatures and dungeon bosses against the expanded endgame resource ceiling
 
-The final independent source/unit gate includes Survival teacher introductions, permanent first-clear lessons, dedicated Master move poses and elevated aim, bounded anti-air attacks and spell-interrupt immunity, two-species Normal/Hard pressure, server-observed stroke evidence, and latched held-slot changes. Their integration compiles and the full unit suite passes; native behavior has not been playtested.
+The final independent source/unit gate includes Survival teacher introductions, permanent first-clear lessons, dedicated Master move poses and elevated aim, bounded anti-air attacks and spell-interrupt immunity, two-species Normal/Hard pressure, server-observed stroke evidence, and latched held-slot changes. Their integration compiles and the full unit suite passes; partial automated native combat probes have run, while complete gameplay acceptance and human playtesting remain pending.
 
 ## Offline animation review
 
-Source-driven rig/held-item projections and pure sampler checks cover the three new actions, ten first forms and Master poses. This is offline geometry evidence, not game screenshots. The frozen review records one minor remaining Thorn setup arm/torso intersection (about 29 cubic model-pixels in a brief blended pose), plus deliberate brief windup/recoil viewport exits. Camera near-plane checks passed the documented handedness and aim samples. The delivered motion archive keeps its original source snapshots and hashes. All final animation samplers and render sources match them; the final MastersRules/SwordMaster files differ only by the later encounter-cap fix, without changes to sampled motion or timing. Native shader, equipment-layer and multiplayer presentation still need a real-client pass.
+Source-driven rig/held-item projections and pure sampler checks cover the three new actions, ten first forms and Master poses. This is offline geometry evidence, not game screenshots. The frozen review records one minor remaining Thorn setup arm/torso intersection (about 29 cubic model-pixels in a brief blended pose), plus deliberate brief windup/recoil viewport exits. Camera near-plane checks passed the documented handedness and aim samples. That original local motion archive and its media were lost when the cloud workspace reset; the persisted source report records its historical findings, but no currently available media artifact is implied. New animation changes require fresh source-matched previews and native capture. Native shader, equipment-layer and multiplayer presentation still need a real-client pass.
 
 ## Experimental development JAR
 
-An optional JAR was manually assembled from the final independently compiled production main/client classes and repository resources. It contains 1,933 Wildercord classes and 7,437 archive entries. Static packaging checks verify expanded version metadata, both production entrypoints, registered main/client mixin classes and the declared Minecraft/Fabric/Java dependencies. No Minecraft or third-party runtime classes, nested dependency JARs, unit tests or native-test classes are bundled.
+At the original checkpoint, an optional JAR was manually assembled from the independently compiled production main/client classes and repository resources. That local artifact was lost in the workspace reset; the following is its historical packaging record, not a current downloadable release. Normal GitHub builds now produce their own artifacts. It contains 1,933 Wildercord classes and 7,437 archive entries. Static packaging checks verify expanded version metadata, both production entrypoints, registered main/client mixin classes and the declared Minecraft/Fabric/Java dependencies. No Minecraft or third-party runtime classes, nested dependency JARs, unit tests or native-test classes are bundled.
 
 Artifact: `wildercord-0.11.0-masters-dev+mc26.3-EXPERIMENTAL.jar` (20,324,718 bytes).
 
 SHA-256: `aaa0b7eae7f6e6b73ed4bfe6b67b693072cc4d6d86f52ff8ee1fd951e09183fc`.
 
-This particular artifact is **manually assembled**, not produced by the later successful normal CI build, and has no Mixin annotation-processing or runtime-launch verification. Use only for a backed-up disposable test world. It is not approved for production or important worlds. Nothing was installed into a user's game or published. Source is the authoritative deliverable.
+This particular artifact is **manually assembled**, not produced by the later successful normal CI build, and has no Mixin annotation-processing or runtime-launch verification. Use only for a backed-up disposable test world. It is not approved for production or important worlds. Nothing was installed into a user's game. The feature source is now published through draft PR #1; main remains unchanged. Source is authoritative.
 
 ## Next acceptance gates
 
@@ -114,4 +130,4 @@ This particular artifact is **manually assembled**, not produced by the later su
 2. Verify client/server startup and every added mixin, then real two-client party, reflected-projectile, roster and delayed-effect scenarios.
 3. Tune full Protection-IV/netherite combat, coordinated spell pressure, networking jitter and eight-player performance with real play sessions.
 4. Review the actual client at multiple UI scales, both hands, armor/skin layers, Iris/shaders and owner/observer viewpoints. Inspect all windup/impact/cancel/recovery frames.
-5. Continue the remaining forty style body timelines and broader creature/dungeon balance only after this foundation clears native checks.
+5. Continue bounded, independently reviewed style and Master content in parallel with native repairs; each published slice needs explicit compile, unit, source and native acceptance status. Complete the remaining style body timelines and broader creature/dungeon balance before claiming a finished overhaul.

@@ -1,7 +1,7 @@
 {
   "masters": {
-    "description": "The 15 native client suites added from ebb2887f to eba91238 (Masters of Tomorrow foundation).",
-    "expectedCount": 15,
+    "description": "The Masters of Tomorrow foundation suites plus the fixed-release second-form lifecycle suite.",
+    "expectedCount": 16,
     "entries": [
       "dev.wildercord.party.PartyMutationSafetyTest",
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
@@ -10,6 +10,7 @@
       "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",
       "dev.wildercord.party.PartyOfflineProjectileTest",
       "dev.wildercord.aura.MastersStyleTimelineTest",
+      "dev.wildercord.party.MastersSecondFormTimelineTest",
       "dev.wildercord.aura.world.DuelistMasterAccessTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.aura.world.MasterVictoriesTest",

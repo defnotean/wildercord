@@ -2,22 +2,39 @@ package dev.wildercord.aura;
 
 import java.util.List;
 
-/** The first authored style forms that now have a paid server windup before their existing effect choreography. */
+/** Authored fixed-release style forms with a paid server windup before their existing effect choreography. */
 public final class MastersStyleRules {
 	private MastersStyleRules() {}
 
-	public record Style(int animation, String art, int windup, int recovery) {}
+	/** How this art chooses its first victim when its fixed active frame arrives. Every new profile must decide explicitly. */
+	public enum TargetPolicy {
+		/** Re-query the committed cone at impact; an old last-swing victim cannot bypass its direction or reach. */
+		ACTIVE_CONE,
+		/** Keep the server-observed last-swing victim for a target/counter performer to validate itself. */
+		STRING_TARGET
+	}
+
+	/**
+	 * These profiles release once at {@code windup}; later physical cuts and independently released effects keep
+	 * their performer's own scheduling. Landing-driven, travelling and held/channelled arts need their actual
+	 * phase callbacks and must not be added here merely to give them a cosmetic pose.
+	 */
+	public record Style(int animation, String art, int windup, int recovery, TargetPolicy targets) {
+		public Style { java.util.Objects.requireNonNull(targets, "An art must declare its target policy"); }
+	}
 	public static final List<Style> STYLES = List.of(
-		new Style(3, "kindling_draw", 6, 12),
-		new Style(4, "frostbite", 6, 12),
-		new Style(5, "crackle", 4, 12),
-		new Style(6, "cutting_breeze", 4, 10),
-		new Style(7, "rockbreaker", 10, 18),
-		new Style(8, "thorn_lash", 6, 12),
-		new Style(9, "void_cut", 6, 12),
-		new Style(10, "star_needle", 4, 10),
-		new Style(11, "echo_cut", 6, 20),
-		new Style(12, "bloodletting", 6, 12)
+		new Style(3, "kindling_draw", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(4, "frostbite", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(5, "crackle", 4, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(6, "cutting_breeze", 4, 10, TargetPolicy.ACTIVE_CONE),
+		new Style(7, "rockbreaker", 10, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(8, "thorn_lash", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(9, "void_cut", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(10, "star_needle", 4, 10, TargetPolicy.ACTIVE_CONE),
+		new Style(11, "echo_cut", 6, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(12, "bloodletting", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(13, "rising_cinders", 8, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(14, "blossom_fall", 8, 18, TargetPolicy.ACTIVE_CONE)
 	);
 
 	public static Style of(String art) {

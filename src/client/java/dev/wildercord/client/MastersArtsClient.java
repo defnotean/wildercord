@@ -31,7 +31,7 @@ public final class MastersArtsClient {
 
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Wildercord.id("masters_arts"));
 	private static final String[] IDS = {"spellcut", "rising_break", "driving_cut"};
-	private static final int[] DEFAULTS = {InputConstants.KEY_G, InputConstants.KEY_H, InputConstants.KEY_J};
+	private static final int[] DEFAULTS = {InputConstants.KEY_U, InputConstants.KEY_Y, InputConstants.KEY_J};
 	private static final KeyMapping[] KEYS = new KeyMapping[IDS.length];
 	private static final boolean[] HELD = new boolean[IDS.length];
 	private static final Map<Integer, MastersArts.Performed> PLAYING = new HashMap<>();

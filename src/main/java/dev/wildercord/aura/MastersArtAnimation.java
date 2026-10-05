@@ -73,6 +73,9 @@ public final class MastersArtAnimation {
 
 	/** A sword's grip-local pitch: points thrust forward, and low draws keep the blade near the cut's height. */
 	public static float bladeTilt(int move, float age, int windup, float weight) {
+		// Blossom's falling cut finishes with its point toward the ground. Turn at the actual hilt,
+		// entering during the cut and easing out with the same recovery weight as the rigid arm.
+		if (move == 14) return -100 * smooth((age - windup * .65F) / (windup * .35F)) * Math.max(0, Math.min(1, weight));
 		float thrust = move == 2 || move == 3 || move == 6 || move == 10 || move == 12 ? 1
 			: move == 5 ? smooth((age - windup - ArtRules.CRACKLE_GAP) / ArtRules.CRACKLE_GAP) : 0;
 		return -80 * thrust * Math.max(0, Math.min(1, weight));

@@ -8,8 +8,9 @@ Development build: `0.11.0-masters-dev`. Install the same development build on e
 - Heart Circles through twenty, with twelve additional progression gates
 - Consent-based parties with friendly spell and Aura protection
 - Three opt-in Sword Master trial disciplines: Ember, Gale and Stone
+- Ember's Cinder Wake, with a broad cut and a separately warned delayed afterburn
 - Three new rebindable Aura combat actions and their original animations
-- Authoritative windups and original motion for all ten existing first-form style arts
+- Authoritative windups and original motion for all ten existing first forms, plus Rising Cinders and Blossom Fall
 - More active Normal/Hard pressure from Gloomstalkers and Bog Witch-Frogs
 
 The complete combat overhaul is still being developed. This page describes the first integrated foundation. It does not claim a measured “20×” difficulty increase, a finished style roster, or a complete balance pass across ordinary creatures.
@@ -34,14 +35,20 @@ Watch the master's blade and the boss-bar action label. Attacks have a windup, c
 
 A legitimate first clear permanently records that school and teaches one existing technique part: Ember grants Echo, Gale grants Afterimage, and Stone grants Sunder. If you already know it, only the clear is recorded. Living, present opt-in teammates share the clear; bypass/admin kills and disabled-AI fixtures do not count. There is no repeatable item or XP payout. Use `/master victories` to view your record. The travelling Duelists who teach breathing methods remain separate.
 
+### Reading Ember's Cinder Wake
+
+Ember commits its direction when the first outline appears. After 1.2 seconds it makes a broad, four-block cut. Backstep beyond that cut, then watch the new narrow, crossbar-marked lanes: they ignite once after another 1.3 seconds. Step sideways out of a lane, move beside or behind the blade, or take solid cover. The second strike cannot turn to follow you. Each beat deals 26 base damage before your ordinary defenses.
+
+One or two challengers see one afterburn lane; three to five see two separated lanes; six to eight see three. Every lane stays 1.4 blocks wide and ends seven blocks from the original blade position. More players never multiply one player's hit count or damage. The master spends 24 Aura and remains open for 1.5 seconds after the ignition. Lower health makes this pattern more frequent without speeding up either warning. Interrupted or ended trials leave no harmful fire behind.
+
 ## New Aura controls
 
-Rebind these under Options → Controls → Key Binds → Wildercord: Master's Arts. The Aura page shows your current bindings.
+Rebind these under Options → Controls → Key Binds → Wildercord: Master's Arts. The Aura page shows your current bindings. Fresh defaults avoid Minecraft 26.3's Quick Actions and debug bindings; existing saved bindings are preserved, so check Controls if upgrading from the earlier G/H/J development defaults.
 
 | Default | Move | Unlock | Cost | Rest |
 |---|---|---|---:|---:|
-| G | Spellcut | Edge | 14 Aura | 3 s |
-| H | Rising Break | Form | 20 Aura | 5 s |
+| U | Spellcut | Edge | 14 Aura | 3 s |
+| Y | Rising Break | Form | 20 Aura | 5 s |
 | J | Driving Cut | Form | 18 Aura | 4 s |
 
 Spellcut severs up to three incoming hostile bolts in front and sweeps nearby enemies. Rising Break attacks upward, wearing extra stance and lifting ordinary enemies. Driving Cut is a narrow thrust with five-block reach; a successful hit interrupts a caster for one second, respecting existing player recovery protection.
@@ -67,7 +74,13 @@ All ten first forms retain their original input strings, prices and cooldowns. T
 
 Aim is fixed at acceptance, while the camera can look around freely. Crackle's later physical cuts stop on interruption, lost reach or cover. Echo's already-released afterimage keeps its original position and facing and can still strike after the live swordsman's motion stops. Existing wounds and fields likewise keep their intended post-release lifetime; they still recheck ownership and party admission when they affect a creature.
 
-The other forty method arts have their existing custom effects but are not yet covered by this new complete body/weapon timeline.
+## Two second-form releases
+
+Rising Cinders and Blossom Fall keep their existing leap → low input, Flow unlock, 8-Aura base cost and four-second cooldown. Rising Cinders now has an 8-tick windup and 16-tick recovery; Blossom Fall has an 8-tick windup and 18-tick recovery. Their cut, payment, interruption and committed-aim rules follow the first forms above.
+
+Cinders scoops its blade upward from the outside hip and opens into a high diagonal finish. Its existing enemy lift releases with the cut; the cinder rain follows twelve ticks later. Blossom gathers over the shoulder and cuts down into a planted stance, releasing its existing four-second petal field. Neither art adds a jump, lunge or forced camera movement. Cancelling after release stops the body motion while the released rain or field keeps its own lifetime and checks who it can currently harm or help.
+
+The other thirty-eight method arts have their existing custom effects but are not yet covered by this new complete body/weapon timeline.
 
 ## Ordinary encounters
 
@@ -83,4 +96,4 @@ At twenty working circles, circle bonuses total +300 maximum mana, +10 mana rege
 
 Pure rules and asset consistency checks are part of this change. Native client test suites cover the intended payment, timeline, party mutation, roster and visual behavior. Consult the development verification report for which suites actually ran; authored tests alone are not evidence that runtime behavior passed.
 
-Still to do: native multiplayer tuning against endgame armor, broader ordinary-mob and dungeon-boss difficulty, the remaining forty full-body style timelines, and richer Master encounters and rewards.
+Still to do: native multiplayer tuning against endgame armor, broader ordinary-mob and dungeon-boss difficulty, the remaining thirty-eight full-body style timelines, and richer Master encounters and rewards.

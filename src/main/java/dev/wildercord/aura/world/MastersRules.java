@@ -39,7 +39,8 @@ public final class MastersRules {
 
 	/** A complete windup always precedes harm, and every attack has a guaranteed recovery. */
 	public enum Move {
-		SWEEP(18, 20, 30), THRUST(22, 24, 42), CRESCENT(20, 24, 36), BREAK_CAST(20, 24, 28);
+		SWEEP(18, 20, 30), THRUST(22, 24, 42), CRESCENT(20, 24, 36), BREAK_CAST(20, 24, 28),
+		CINDER_WAKE(EmberWakeRules.TELL, EmberWakeRules.RECOVERY, EmberWakeRules.CUT_DAMAGE);
 
 		public final int tell, recovery;
 		public final double damage;
@@ -133,7 +134,7 @@ public final class MastersRules {
 			return false;
 		}
 		return switch (move) {
-			case SWEEP -> forward >= 0 && forward <= 4 && Math.abs(side) <= Math.min(3.0, 0.8 + forward * 0.8);
+			case SWEEP, CINDER_WAKE -> forward >= 0 && forward <= 4 && Math.abs(side) <= Math.min(3.0, 0.8 + forward * 0.8);
 			case THRUST -> forward >= 0 && forward <= 6 && Math.abs(side) <= 0.8;
 			case BREAK_CAST -> forward >= 0 && forward <= 4 && Math.abs(side) <= 0.8;
 			case CRESCENT -> false; // The shared Crescents flight owns collision.

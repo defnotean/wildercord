@@ -2683,12 +2683,20 @@ A master offers a lethal, voluntary trial. Talking twice confirms the individual
 
 Master attacks have readable windups, fixed aim before impact and guaranteed recovery. Their Aura pays for attacks, guards, evasions and projectile responses; exhausting it opens a breathing window. A frontal cut consumes a local hostile bolt only, leaving its siblings and unrelated zones alive. Only simple harmful bolts can be redirected, and only once. Solid cover, facing, incoming direction and current ownership are checked at the action. Returned bolts and crescents retain their originating trial audience through later parries and clashes; uninvolved bodies cannot consume their hit budget. Swept collider checks and target visibility prevent fast crescents tunneling through cover.
 
+### Ember: Cinder Wake
+
+Ember adds a two-beat, fully committed move without changing the original sweep, thrust, crescent or spellbreaker. Cinder Wake costs 24 Aura. A 24-tick warning outlines a broad four-block cut (26 base damage). Its origin and facing lock when that first warning starts. The cut then paints one to three narrow, parallel afterburn lanes: each is 1.4 blocks wide, starts one block from the committed origin and ends seven blocks out. A new banner, sound and crossbar outline warn for another 26 ticks before one ignition (26 base damage). No fire blocks or lingering damage field remain.
+
+Backstepping beyond the broad cut answers the first beat; stepping sideways out of a narrow lane, moving beside/behind the blade, or taking real solid cover answers the second. The second warning remains long enough to leave even after being hit by the first. Party sizes 1–2 get one lane, 3–5 get two separated lanes, and 6–8 get three; lane widths, damage and both tells stay fixed. Every challenger can be hit at most once by each beat. Health phases change the move's scheduled frequency (every fourth, third, then second accepted pattern step), never the warning duration. A 56-tick recovery after the cut leaves 30 ticks to counter after ignition.
+
+The wake is owned and ticked by the Master, never a player-only art field or a detached scheduled callback. It retains the immutable initial geometry, checks current trial participation and collider cover at ignition, never expands beyond the initially visible lane when cover is removed, and carries the Master as the damage/effect source. Early interruption, stance break, arena loss, leaving/dying/disconnecting, trial removal and expired timing suppress delayed harm; a missed ignition cannot fire invisibly later. Two original synchronized rigid-rig gestures show the low sweep and the later ignition point-drop. These are authored starting values, still subject to native playtesting and equipment balance review.
+
 ### New combat input
 
 The three initial rebindable moves send only an action number. The server supplies stage, weapon, resources, cooldown, position, aim and targets. Accepted moves pay before the windup; damage occurs on the active frame. Taking damage, interruption, changing worlds or weapons, leaving the server or becoming ineligible cancels the pending hit without refunding its committed recovery. Ordinary attacks, other Aura moves and casting wait until that recovery ends.
 
-- Spellcut (Edge, G): cut nearby incoming hostile bolts and sweep in front; 14 Aura, 3-second individual rest.
-- Rising Break (Form, H): a rising close strike with extra stance pressure and ordinary-mob lift; 20 Aura, 5-second rest.
+- Spellcut (Edge, U): cut nearby incoming hostile bolts and sweep in front; 14 Aura, 3-second individual rest.
+- Rising Break (Form, Y): a rising close strike with extra stance pressure and ordinary-mob lift; 20 Aura, 5-second rest.
 - Driving Cut (Form, J): a narrow five-block thrust that interrupts a caster it actually hurts; 18 Aura, 4-second rest.
 
 These actions and the first form of each of the ten breathing styles now share authoritative windup, active-frame and recovery scheduling, with distinct original rigid-limb body/weapon motion. Their existing string inputs, prices and cooldowns remain. Server-observed strokes replace client-claimed swing marks, and each accepted proof is consumed once. The other forty style arts retain their existing effects and still need full-body choreography. Ordinary held-slot/selected-stack changes latch cancellation immediately, including a same-tick switch away and back; persistent direct equipment changes also receive tick and impact checks.

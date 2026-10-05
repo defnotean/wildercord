@@ -10,7 +10,7 @@ class MastersArtAnimationTest {
 
 	@Test
 	void invalidExpiredAndNonFiniteTimelinesNeverAnimate() {
-		for (int move : new int[] {-1, 13, Integer.MAX_VALUE}) {
+		for (int move : new int[] {-1, 15, Integer.MAX_VALUE}) {
 			assertSame(MastersArtAnimation.NONE, MastersArtAnimation.sample(move, 2, 4, 12));
 		}
 		for (float age : new float[] {-1, Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 16, 200}) {

@@ -312,7 +312,7 @@ public final class SwordStrings {
 	private static boolean releasing;
 
 	/**
-	 * Performs {@code art} (already checked). The first style forms commit price/rest before their windup and run on their active frame;
+	 * Performs {@code art} (already checked). The authored fixed-release style forms commit price/rest before their windup and run on their active frame;
 	 * other arts keep their existing instant entry. Success hooks and the Grimoire follow actual performance. An art that meets an oncoming
 	 * crescent, or answers a foe's art that just struck, locks into a clash first ({@link Clashes#meets}) and waits for it: it goes if the clash
 	 * is won ({@link #release}) and is lost, still paid for, if not ({@link #forfeit}).
@@ -321,10 +321,14 @@ public final class SwordStrings {
 		if (MastersArts.committed(player)) return false;
 		if (!releasing && Clashes.meets(player, art, marks)) return true;
 		long now = player.level().getGameTime();
-		AuraApi.StringContext context = new AuraApi.StringContext(art, marks, MastersStyleRules.of(art.id()) == null ? struck(player) : null, now);
+		MastersStyleRules.Style style = MastersStyleRules.of(art.id());
+		// Target/counter forms must opt into their own validation rather than losing the observed victim
+		// just because they acquire a timeline. Cone releases deliberately re-query on the active frame.
+		AuraApi.StringContext context = new AuraApi.StringContext(art, marks,
+			style == null || style.targets() == MastersStyleRules.TargetPolicy.STRING_TARGET ? struck(player) : null, now);
 		// Price is fixed before either the windup or the art can change momentum.
 		double cost = price(player, art);
-		if (MastersStyleRules.of(art.id()) != null) {
+		if (style != null) {
 			if (!MastersArts.beginStyle(player, art, () -> {
 				if (runPerformer(player, art, context)) completed(player, art, context);
 			})) return false;

@@ -1,6 +1,7 @@
 package dev.wildercord.gametest;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.ArtRules;
@@ -8,6 +9,7 @@ import dev.wildercord.aura.MastersArts;
 import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.client.AuraScreen;
 import dev.wildercord.client.MastersArtsClient;
+import dev.wildercord.client.MastersArtPose;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -18,6 +20,7 @@ import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
@@ -40,6 +43,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		CameraType camera = context.computeOnClient(mc -> mc.options.getCameraType());
+		HumanoidArm mainHand = context.computeOnClient(mc -> mc.options.mainHand().get());
 		int scale = context.computeOnClient(mc -> mc.options.guiScale().get());
 		int[] size = context.computeOnClient(mc -> new int[] {mc.getWindow().getWidth(), mc.getWindow().getHeight()});
 		boolean hidden = context.computeOnClient(mc -> mc.gui.hud.isHidden());
@@ -80,6 +84,11 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			for (var style : MastersStyleRules.STYLES) {
 				captureStyle(context, world, style, CameraType.THIRD_PERSON_FRONT, "third");
 				captureStyle(context, world, style, CameraType.FIRST_PERSON, "first");
+				if (ArtRules.art(style.art()).slot() == 1) {
+					captureStyle(context, world, style, CameraType.THIRD_PERSON_FRONT, "left_turn_third", true, false);
+					captureStyle(context, world, style, CameraType.FIRST_PERSON, "left_turn_first", true, false);
+					captureStyle(context, world, style, CameraType.FIRST_PERSON, "cancelled", false, true);
+				}
 			}
 			for (int gui = 1; gui <= 4; gui++) {
 				final int guiScale = gui;
@@ -98,6 +107,8 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			context.runOnClient(mc -> {
 				mc.gui.setScreen(null);
 				mc.options.setCameraType(camera);
+				mc.options.mainHand().set(mainHand);
+				mc.options.broadcastOptions();
 				mc.options.guiScale().set(scale);
 				mc.getWindow().setWindowed(size[0], size[1]);
 				mc.resizeGui();
@@ -105,12 +116,13 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 				for (int move = 0; move < 3; move++) MastersArtsClient.mapping(move).setDown(false);
 			});
 			context.getInput().releaseKey(o -> o.keyShift);
+			context.getInput().releaseKey(o -> o.keyJump);
 		}
 	}
 
 	private static void controls(ClientGameTestContext context) {
 		context.runOnClient(mc -> {
-			int[] defaults = {InputConstants.KEY_G, InputConstants.KEY_H, InputConstants.KEY_J};
+			int[] defaults = {InputConstants.KEY_U, InputConstants.KEY_Y, InputConstants.KEY_J};
 			for (int move = 0; move < 3; move++) {
 				KeyMapping key = MastersArtsClient.mapping(move);
 				check(key != null && key.getDefaultKey().getValue() == defaults[move], "The move has its distinct default combat key");
@@ -123,7 +135,9 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			KeyMapping key = MastersArtsClient.mapping(0);
 			var before = net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(key);
 			try {
-				key.setKey(InputConstants.Type.KEYBOARD.getOrCreate(InputConstants.KEY_U));
+				int probe = before.getValue() == InputConstants.KEY_N ? InputConstants.KEY_M : InputConstants.KEY_N;
+				key.setKey(InputConstants.Type.KEYBOARD.getOrCreate(probe));
+				check(!net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(key).equals(before), "The help probe actually changes the combat binding");
 				KeyMapping.resetMapping();
 				check(MastersArtsClient.help().get(1).getString().contains(key.getTranslatedKeyMessage().getString()), "Help follows an actual rebind");
 			} finally {
@@ -200,10 +214,42 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			check(Math.abs(sword.xRot) + Math.abs(sword.yRot) + Math.abs(sword.zRot) > .03F, "The real player sword arm moves");
 			check(Math.abs(model.body.yRot) > .005F || Math.abs(model.body.xRot) > .005F, "The real torso participates");
 			check(Math.abs(model.leftLeg.xRot) > .005F || Math.abs(model.rightLeg.xRot) > .005F, "The real footwork participates");
+			float yaw = mc.player.getYRot(), pitch = mc.player.getXRot();
+			PoseStack main = new PoseStack(), off = new PoseStack();
+			MastersArtPose.firstPerson(main, InteractionHand.MAIN_HAND, state, 0);
+			MastersArtPose.firstPerson(off, InteractionHand.OFF_HAND, state, 0);
+			check(main.last().pose().isFinite() && !main.last().pose().equals(off.last().pose()), "The real first-person main hand receives a finite authored transform");
+			check(off.last().pose().equals(new org.joml.Matrix4f()), "The offhand stays independent of the main-hand art");
+			check(mc.player.getYRot() == yaw && mc.player.getXRot() == pitch, "Rendering the body and hand never steers the camera");
+			if (timeline.move() == 14) {
+				PoseStack held = new PoseStack();
+				var grip = new org.joml.Vector3f(0, -1.327F / 16, 1.439F / 16);
+				MastersArtPose.heldSword(state, state.mainArm, new ItemStack(Items.DIAMOND_SWORD), held);
+				var moved = held.last().pose().transformPosition(new org.joml.Vector3f(grip));
+				check(moved.distance(grip) < .0001F, "Blossom's ground-facing finish rotates about its actual held-sword hilt");
+			}
 			check(model.body.getChild("jacket") == model.jacket && Math.abs(model.jacket.yRot - model.jacket.getInitialPose().yRot()) < .0001F,
 				"The outer skin inherits its parent torso without double rotation");
 			check(model.rightArm.getChild("right_sleeve") == model.rightSleeve && Math.abs(model.rightSleeve.xRot - model.rightSleeve.getInitialPose().xRot()) < .0001F,
 				"The outer sleeve inherits its parent arm without double rotation");
+
+			if (timeline.move() == 13 || timeline.move() == 14) {
+				for (boolean slim : new boolean[] {false, true}) {
+					PlayerModel variant = new PlayerModel(mc.getEntityModels().bakeLayer(slim
+						? net.minecraft.client.model.geom.ModelLayers.PLAYER_SLIM : net.minecraft.client.model.geom.ModelLayers.PLAYER), slim);
+					variant.setupAnim(state);
+					var hand = left ? variant.leftArm : variant.rightArm;
+					float x = hand.x, y = hand.y, z = hand.z, rx = hand.xRot, ry = hand.yRot, rz = hand.zRot;
+					variant.setupAnim(state);
+					check(Math.abs(hand.x - x) + Math.abs(hand.y - y) + Math.abs(hand.z - z)
+						+ Math.abs(hand.xRot - rx) + Math.abs(hand.yRot - ry) + Math.abs(hand.zRot - rz) < .0001F,
+						"Repeated second-form render passes never accumulate transforms on either skin rig");
+					check(variant.leftArm.getChild("left_sleeve") == variant.leftSleeve
+						&& Math.abs(variant.leftSleeve.xRot - variant.leftSleeve.getInitialPose().xRot()) < .0001F,
+						"Both skin rigs inherit the mirrored limb's outer layer without double application");
+				}
+			}
+
 			Wildercord.LOGGER.info("MASTERS_ART_FRAME move={} age={} weight={} body=({},{},{}) sword=({},{},{}) legs=({},{}) camera={}",
 				timeline.move(), mc.level.getGameTime() - timeline.startTick(), expected.weight(), model.body.xRot, model.body.yRot, model.body.zRot,
 				sword.xRot, sword.yRot, sword.zRot, model.leftLeg.xRot, model.rightLeg.xRot, mc.options.getCameraType());
@@ -283,9 +329,15 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.waitTicks(30);
 	}
 
-	/** Each method is earned by the same actual swing/swing/low string the player uses in combat. */
+	/** Uses actual first-form swing/swing/low or second-form leap/low controls, never a synthetic pose receipt. */
 	private static void captureStyle(ClientGameTestContext context, TestSingleplayerContext world, MastersStyleRules.Style style,
 			CameraType camera, String view) {
+		captureStyle(context, world, style, camera, view, false, false);
+	}
+
+	private static void captureStyle(ClientGameTestContext context, TestSingleplayerContext world, MastersStyleRules.Style style,
+			CameraType camera, String view, boolean leftHanded, boolean cancel) {
+		boolean second = ArtRules.art(style.art()).slot() == 1;
 		context.getInput().releaseKey(o -> o.keyShift);
 		context.waitTicks(105);
 		Mob[] target = new Mob[1];
@@ -297,6 +349,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data(ArtRules.art(style.art()).method(), 4, 1800, 100, 0));
 			Mob foe = EntityTypes.HUSK.create(player.level(), EntitySpawnReason.COMMAND);
 			check(foe != null, "Actual style target exists");
+			foe.addTag("wildercord.rolled");
 			foe.setNoAi(true);
 			foe.setNoGravity(true);
 			foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);
@@ -305,9 +358,19 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			player.level().addFreshEntity(foe);
 			target[0] = foe;
 		});
-		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
+		context.runOnClient(mc -> {
+			mc.options.setCameraType(CameraType.FIRST_PERSON);
+			mc.options.mainHand().set(leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT);
+			mc.options.broadcastOptions();
+		});
 		context.waitTicks(15);
-		for (int swing = 0; swing < 2; swing++) {
+		if (second) {
+			context.runOnClient(mc -> mc.player.setXRot(25));
+			context.getInput().pressKey(o -> o.keyJump);
+			context.waitFor(mc -> !mc.player.onGround(), 10);
+			context.waitTicks(1);
+		}
+		for (int swing = 0; swing < (second ? 1 : 2); swing++) {
 			context.getInput().pressKey(o -> o.keyAttack);
 			context.waitTicks(2);
 			world.getServer().runOnServer(server -> {
@@ -324,6 +387,20 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null
 			&& MastersArtsClient.timeline(mc.player).move() == style.animation(), 30);
 		String prefix = "masters_style_" + style.art() + "_" + view;
+		if (cancel) {
+			world.getServer().runOnServer(server -> MastersArts.cancel(server.getPlayerList().getPlayers().getFirst()));
+			context.waitFor(mc -> MastersArtsClient.timeline(mc.player) == null, 20);
+			check(context.computeOnClient(mc -> MastersArtsClient.pose(mc.player, .5F).weight() == 0), "Cancelled second-form body and hand poses clear together");
+			shot(context, prefix + "_neutral");
+			world.getServer().runOnServer(server -> target[0].discard());
+			return;
+		}
+		context.runOnClient(mc -> {
+			check(mc.player.getMainArm() == (leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT), "The real player's selected hand is in effect");
+			if (leftHanded) {
+				mc.player.setYRot(90); mc.player.setYHeadRot(90); mc.player.setXRot(75);
+			}
+		});
 		shot(context, prefix + "_windup");
 		boolean observed = false;
 		for (int frame = 0; frame < 10; frame++) {

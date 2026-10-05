@@ -5,7 +5,7 @@ Date: 2026-10-05. This is a source audit, not a claim of native rendering verifi
 ## Current boundary
 
 - The three new shared Master's Arts have original body and first-person keyframes, driven by the accepted server timeline. Their native presentation suite is authored but has not run yet.
-- The 50 existing breathing-method arts already have custom trails/world effects. Their input strings use ordinary vanilla swings, with counter/step prerequisites where applicable. The ten first-slot arts now have original player-body and first-person weapon keyframes in the client catalog; the accepted server timeline is integrated in source, with final independent compilation and unit checks passing; native visual verification is still pending. The other forty style arts have no authored player-body/weapon choreography.
+- The 50 existing breathing-method arts already have custom trails/world effects. Their input strings use ordinary vanilla swings, with counter/step prerequisites where applicable. The ten first-slot arts now have original player-body and first-person weapon keyframes in the client catalog; the accepted server timeline is integrated in source, with final independent compilation and unit checks passing; native visual verification is still pending. Rising Cinders and Blossom Fall now add two authored fixed-release second forms (IDs 13–14); their native gameplay and presentation checks are authored, not yet run. The other thirty-eight style arts have no authored player-body/weapon choreography.
 - The existing casting-pose mixin handles spell shapes, not these sword arts. Colour, particles, slash ribbons, afterimages, knockback and teleports are not equivalent to an authored joint animation.
 - PlayerModel is Minecraft's rigid-limb rig. The implementation can turn/lean the torso, rotate both arms/legs, adjust pivots, mirror handedness and transform the held weapon. It cannot bend elbows/knees or reproduce Epic Fight's skeletal rig without a separate original rig and renderer.
 
@@ -13,18 +13,18 @@ Date: 2026-10-05. This is a source audit, not a claim of native rendering verifi
 
 | Art | Input | Existing/new VFX | Authored body + weapon | Timeline authority | Native status |
 | --- | --- | --- | --- | --- | --- |
-| Spellcut | G, rebindable | Cross trail + impact feedback | High chamber, diagonal cut, hip turn and follow-through | 4-tick windup, 12-tick recovery; server impact | Pending native run |
-| Rising Break | H, rebindable | Rising trail + lift feedback | Low stance, rising blade, opened shoulders and high recovery | 8-tick windup, 18-tick recovery; server impact | Pending native run |
+| Spellcut | U, rebindable | Cross trail + impact feedback | High chamber, diagonal cut, hip turn and follow-through | 4-tick windup, 12-tick recovery; server impact | Pending native run |
+| Rising Break | Y, rebindable | Rising trail + lift feedback | Low stance, rising blade, opened shoulders and high recovery | 8-tick windup, 18-tick recovery; server impact | Pending native run |
 | Driving Cut | J, rebindable | Thrust trail + cast-break feedback | Drawn-back point, committed forward stance, recoil | 6-tick windup, 14-tick recovery; server impact | Pending native run |
 
 ## Existing style coverage
 
-“Vanilla” below means the ordinary swings that feed the unchanged sword-string reader. The ten first-slot catalogs now contain authored poses, but their server timelines are integrated in source and they are not considered complete until native presentation passes. The final column describes phase ownership to verify. First-slot moves use the new shared commitment pipeline; remaining slots still need explicit choreography hooks.
+“Vanilla” below means the ordinary swings that feed the unchanged sword-string reader. The ten first-slot catalogs now contain authored poses, but their server timelines are integrated in source and they are not considered complete until native presentation passes. The final column describes phase ownership to verify. First-slot moves and the two selected fixed-release second forms use the shared commitment pipeline; the other slots still need their real choreography hooks.
 
 | Style / art | Current swing input | Existing custom VFX strokes | Authored body / weapon | Phase hooks / required verification |
 | --- | --- | --- | --- | --- |
 | Ember: Kindling Draw | Vanilla string I | DRAW | Authored; runtime pending | Accepted draw/impact; keep advancing fire-line ticks separate |
-| Ember: Rising Cinders | Vanilla string II | RISING | None | Accepted rising cut; secondary cinder-rain release |
+| Ember: Rising Cinders | Vanilla string II | RISING | Authored; runtime pending | 8-tick committed rising cut, 16-tick recovery; rain retains its independent 12-tick release delay |
 | Ember: Backdraft | Vanilla string III, counter | THRUST | None | Counter brace → thrust; returned flame release |
 | Ember: Wildfire Rush | Vanilla string IV, step | THRUST | None | Actual rush start/travel/stop, then settle |
 | Ember: Sunfall | Vanilla string V | FALLING, RISING | None | Actual rise → airborne hold → landing slam (landing callback) |
@@ -49,7 +49,7 @@ Date: 2026-10-05. This is a source audit, not a claim of native rendering verifi
 | Stone: Landslide | Vanilla string IV, step | THRUST | None | Actual charge start/travel/stop; keep braced torso |
 | Stone: Mountain Splitter | Vanilla string V | FALLING | None | Accepted overhead split; advancing ground-strike ticks separate |
 | Verdant: Thorn Lash | Vanilla string I | DRAW | Authored; runtime pending | Accepted draw; delayed lashes extend on their own hit ticks |
-| Verdant: Blossom Fall | Vanilla string II | FALLING | None | Accepted falling cut; petal field release separate |
+| Verdant: Blossom Fall | Vanilla string II | FALLING | Authored; runtime pending | 8-tick committed falling/planting cut, 18-tick recovery; field retains its independent 80-tick lifetime |
 | Verdant: Rooted Parry | Vanilla string III, counter | RISING | None | Counter brace → rising reply; rooted duration separate |
 | Verdant: Wild Growth | Vanilla string IV, step | LOW | None | Actual movement path start/stop; low crossing cut |
 | Verdant: Grove's Heart | Vanilla string V | FALLING | None | Accepted planting strike; grove pulse lifecycle separate |
@@ -78,9 +78,9 @@ Date: 2026-10-05. This is a source audit, not a claim of native rendering verifi
 
 1. Keep the three shared art IDs stable. Do not report the 50 style arts as animated merely because these shared actions work.
 2. The bounded first-form implementation reuses the server-authored Performed channel (animation ID, start tick, windup, recovery, accepted yaw and actual attack pitch). It begins after validation. Cancellation, death, world change and stale-packet behavior still require native regression checks. No target, hit or movement claim comes from the client.
-3. The ten first-slot attacks now commit payment/recovery before their delayed performer and revalidate before impact. Other style slots retain their existing scheduling. A late post-performer event is not described as a real windup.
+3. The ten first-slot attacks now commit payment/recovery before their delayed performer and revalidate before impact. The two fixed-release second forms now do the same; other style slots retain their existing scheduling. A late post-performer event is not described as a real windup.
 4. The authored ten-first-slot catalog covers: Kindling Draw, Frostbite, Crackle, Cutting Breeze, Rockbreaker, Thorn Lash, Void Cut, Star Needle, Echo Cut and Bloodletting. These have distinct posture, travel, rhythm and recoil, with original keyframes rather than palette substitutions. Their source integration compiles; native rendering and gameplay still await the gates below.
-5. Extend through second-slot launchers/slams and third-slot counter replies. Movement, teleport, landing-driven and sustained final arts need their real phase callbacks before high-fidelity animation can be synchronized.
+5. Rising Cinders and Blossom Fall now have distinct grounded rising and falling/planting releases, keeping their original damage, price, rest and independently scheduled rain/field lifetime. The catalog requires an explicit target policy for each art: cone releases re-query at impact, while a future target/counter profile must deliberately retain and validate its string victim. Extend the remaining second-slot launchers/slams and third-slot counter replies. Movement, teleport, landing-driven and sustained final arts need their real phase callbacks before high-fidelity animation can be synchronized.
 6. Reuse original motion families where honest: low draw, lateral cut, thrust, rising cut, overhead slam, brace/riposte, travelling stance, turning/channelled release. Style-specific timing and pose accents distinguish each art; multiple-hit arts must use actual hit beats.
 7. Native acceptance gates: owner and observer see the same accepted art; no playback for refusal; cancellation stops the pose; left/right hands mirror correctly; slim/standard skins and outer layers agree; first-person blade stays readable; pause/menu/world changes leave no stale animation; inspect screenshots/clips at windup, impact, follow-through and settled recovery.
 

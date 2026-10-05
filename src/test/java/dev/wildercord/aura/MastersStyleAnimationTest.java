@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MastersStyleAnimationTest {
 	@Test
-	void everyFirstFormHasItsOwnBodyAndWeaponPoseWithoutOpeningANewInputOrdinal() {
+	void everyAuthoredFormHasItsOwnBodyAndWeaponPoseWithoutOpeningANewInputOrdinal() {
 		var bodies = new HashSet<MastersArtAnimation.Pose>();
 		var hands = new HashSet<MastersArtAnimation.Hand>();
-		assertEquals(10, MastersStyleRules.STYLES.size());
+		assertEquals(12, MastersStyleRules.STYLES.size());
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(MastersArtAnimation.supports(style.animation()));
 			assertNull(MastersArtRules.move(style.animation()), "Style poses are not trusted client action IDs");
@@ -22,7 +22,7 @@ class MastersStyleAnimationTest {
 			assertTrue(bodies.add(pose), "Distinct body choreography for " + style.art());
 			assertTrue(hands.add(pose.hand()), "Distinct weapon choreography for " + style.art());
 		}
-		for (int id : new int[] {-1, 13, Integer.MAX_VALUE}) assertFalse(MastersArtAnimation.supports(id));
+		for (int id : new int[] {-1, 15, Integer.MAX_VALUE}) assertFalse(MastersArtAnimation.supports(id));
 	}
 
 	@Test
@@ -185,6 +185,52 @@ class MastersStyleAnimationTest {
 		assertEquals(-80, MastersArtAnimation.bladeTilt(5, 4 + 2 * ArtRules.CRACKLE_GAP, 4, 1));
 		assertEquals(-40, MastersArtAnimation.bladeTilt(2, 18, 6, .5F));
 		assertEquals(0, MastersArtAnimation.bladeTilt(7, 10, 10, 1), .0001F);
+	}
+
+
+	@Test
+	void secondFormsTraceOppositeBladePathsAndHaveTheirOwnGroundedFootwork() {
+		var cinders = MastersStyleRules.of("rising_cinders");
+		var blossom = MastersStyleRules.of("blossom_fall");
+		var low = sample(cinders, cinders.windup() * .65F);
+		var rise = sample(cinders, cinders.windup());
+		var high = sample(blossom, blossom.windup() * .65F);
+		var plant = sample(blossom, blossom.windup());
+		assertTrue(low.sword().x() > 0 && rise.sword().x() < -2, "Cinders scoops from the hip into a high diagonal release");
+		assertTrue(rise.hand().y() - low.hand().y() > .20F && rise.hand().pitch() < -60, "First-person cinders rises with the body");
+		assertTrue(high.sword().x() < -2.4F && plant.sword().x() > -.7F, "Blossom drops from the shoulder into a grounded cut");
+		assertTrue(plant.hand().y() < high.hand().y() - .4F && plant.hand().pitch() > 60, "First-person blossom falls with the body");
+		assertTrue(plant.lower() > high.lower() && plant.frontLeg().x() < -.7F, "Blossom absorbs its stop in a planted stance");
+		assertNotEquals(rise, MastersArtAnimation.sample(1, 8, 8, 18), "Cinders does not reuse Rising Break's pose");
+		assertNotEquals(plant, sample(MastersStyleRules.of("rockbreaker"), 10), "Blossom does not reuse Rockbreaker's pose");
+		assertEquals(0, MastersArtAnimation.bladeTilt(13, 8, 8, 1), .0001F);
+		assertEquals(-100, MastersArtAnimation.bladeTilt(14, 8, 8, 1), .0001F);
+		assertEquals(0, MastersArtAnimation.bladeTilt(14, 8 * .65F, 8, 1), .0001F);
+		assertEquals(-50, MastersArtAnimation.bladeTilt(14, 20, 8, .5F), .0001F);
+		assertEquals(0, MastersArtAnimation.bladeTilt(14, 26, 8, 0), .0001F);
+	}
+
+	@Test
+	void secondFormGripMirroringAndFreeLookRemainBoundedAcrossTheWholeTimeline() {
+		for (String art : new String[] {"rising_cinders", "blossom_fall"}) {
+			var style = MastersStyleRules.of(art);
+			for (float age = 0; age <= style.windup() + style.recovery(); age += .125F) {
+				var pose = sample(style, age);
+				for (float yaw : new float[] {-180, -90, 0, 90, 180}) {
+					for (float pitch : new float[] {-90, 0, 90}) {
+						var right = MastersArtAnimation.view(pose, false, .5F, yaw, pitch);
+						var left = MastersArtAnimation.view(pose, true, .5F, -yaw, pitch);
+						assertEquals(-right.grip().x(), left.grip().x(), .00001F);
+						assertEquals(-right.transform().x(), left.transform().x(), .00001F);
+						assertEquals(-right.transform().yaw(), left.transform().yaw(), .00001F);
+						assertEquals(-right.transform().roll(), left.transform().roll(), .00001F);
+						assertEquals(right.transform().pitch(), left.transform().pitch(), .00001F);
+						assertTrue(right.grip().z() + right.transform().z() < -.59F, "The blade rotates around a hilt safely in front of the camera");
+						assertTrue(Float.isFinite(left.transform().pitch()));
+					}
+				}
+			}
+		}
 	}
 
 	private static MastersArtAnimation.Pose sample(MastersStyleRules.Style style, float age) {

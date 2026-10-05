@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MasterAnimationRulesTest {
 	@Test
 	void onlyLiveBoundedServerTimelinesAnimate() {
-		for (int id : new int[] {-1, 0, 5, Integer.MAX_VALUE}) {
+		for (int id : new int[] {-1, 0, 6, Integer.MAX_VALUE}) {
 			assertSame(MasterAnimationRules.NONE, MasterAnimationRules.sample(id, 2, 18, 1, 19));
 		}
 		for (float age : new float[] {-1, Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 38, 200}) {

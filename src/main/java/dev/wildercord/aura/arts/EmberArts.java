@@ -199,13 +199,15 @@ public final class EmberArts {
 				});
 			}
 		}
-		// The cinders: a moment later, raining off each one thrown onto whoever stands near it.
+		// The rain is already released: an interrupted pose or changed weapon does not retract it.
+		// It still belongs to this live, connected body in this world, rather than a stale logout/respawn owner.
 		dev.wildercord.cast.Scheduler.later(ArtRules.CINDERS_RAIN_DELAY, () -> {
-			if (!player.isAlive() || player.level() != level) {
+			if (!player.isAlive() || player.isRemoved() || player.level() != level
+				|| level.getServer().getPlayerList().getPlayer(player.getUUID()) != player) {
 				return;
 			}
 			for (LivingEntity foe : lifted) {
-				cinders(player, hits, foe, color);
+				if (!foe.isRemoved() && foe.level() == level) cinders(player, hits, foe, color);
 			}
 		});
 		return true;

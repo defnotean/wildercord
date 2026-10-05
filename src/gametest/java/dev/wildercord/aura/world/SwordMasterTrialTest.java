@@ -250,6 +250,7 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 				return true;
 			}, MastersRules.ABANDON_TICKS + 20);
 		}
+		new EmberAfterburnChecks().run(context);
 	}
 
 	private void assertSafeDeparture(ServerPlayer player) {
