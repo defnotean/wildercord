@@ -2,20 +2,23 @@
 
 This is a release gate, not a declaration of readiness. Keep the pull request in draft until the open checks below have evidence against the final release candidate. A source review, unit pass, or earlier commit's native pass cannot substitute for that candidate's results.
 
-## Verified checkpoints
+## Verified checkpoints (2026-10-05, 17:58 UTC)
 
-- Published `6ac294e2`: normal build, all 16 then-current focused update suites, and the original articulated native suite passed in run 37316763054.
-- Published `5737fca5`: normal build and all three articulated suites passed in run 37323834315. These include native armor/material, reload, hand-socket and HUD-composition assertions. Genuine owner-camera Spellcut samples show the revised wrist placement; not every captured view has been manually inspected.
-- The 17-suite update job on `5737fca5` stopped at the pursuit fixture's combined grounding/roster assertion. The later native suites cannot be counted as passed. Full aggregate CI is not green.
-- Independent Java 25 gates compile main, client, unit and native-test sources. The latest local combat contract/timing gate passes 1,176 unit tests. This is additional evidence, not native execution.
+- Published `6ac294e2`: normal build, all 16 then-current focused update suites, and the original articulated native suite passed in run 37316763054. Later expanded selections need their own results.
+- Published `5737fca5` and subsequent checkpoints through `2d13121a`: normal builds and all three articulated suites passed. Those suites exercise native armor/material, reload, hand-socket and HUD-composition contracts. Genuine captures have been inspected for representative views; this does not establish every supported animation phase or ordinary-equipment transition.
+- Published `19aef04e`: the reordered focused job completed actual upgrade save/reopen recovery and the preceding combat checks, then failed Kindling Draw's first-person active visibility. Its normal-build JAR also passed the bounded package audit. Neither result makes the complete selection green.
+- Published `b5bd9d2d` adds Gale Crosswind Reprise and the observation-only Circle20/Protection IV sustain benchmark. At this observation its focused job remains running; no before/after endgame outcome is claimed.
+- Published `2d13121a` fixes Mana Skin to restore only 20% of genuine resolved nonlethal red-health loss, charging only actual restoration. Basic native wound, absorption, limited-mana, threshold and healing-suppression cases passed before a Protection IV fixture used an armor-bypassing vanilla damage type. Later cases remain unaccepted until the corrected fixture runs.
+- Published `e0dfa298` corrects that fixture's physical damage source and separates authored first-person motion from residual ordinary-attack motion while preserving real equipment transitions. Fresh native run 37351823046 is pending. Its independent Java25 gate compiled all four source sets and passed 1,211 unit tests with 3,401 unchanged source/config fingerprints. That is separate from native execution.
+- Full aggregate CI remains red. Current investigations include a contained-garden visitor escaping its intended search area, an idle territorial mob wandering out of a bell fixture's warning reach, and the unchanged Bolt Step's late endpoint assertion. Fixture repairs preserve original gameplay assertions; unknown causes remain explicitly unknown.
 
 ## Scope and playable behavior
 
 - [ ] All requested content intended for this release is implemented and accessible through ordinary play, with complete descriptions and controls.
-- [ ] All three Master schools have sufficiently distinct decisions, attacks and readable counterplay. The shared foundation and Ember follow-up are not the entire requested combat expansion.
+- [ ] All three Master schools have sufficiently distinct decisions, attacks and readable counterplay. Ember has its delayed Cinder Wake and Gale its committed Crosswind Reprise; Stone’s distinctive brace/reply and all-school gameplay acceptance remain tracked separately.
 - [ ] Normal full charges can be punished from a valid early opening. Fast/instant casts, early release, cover, sidestep and full guard remain real counters.
-- [ ] Interruption consistently distinguishes an accepted damaging hit from a blocked/rejected hit. Verify absorption, Mana Skin, lifesaves, exact charge identity and the shared immunity window. The separately reviewed consistency implementation extends the same receipt to close-range BREAK_CAST and player Driving Cut; the exact candidate still needs native acceptance of those callers. Driving Cut preserves its idle-player seal and CastLock recovery, while a held spell additionally requires unchanged charge identity and shared interrupt-immunity admission.
-- [ ] Crystal absorption at 100, Circle 20 progression, rewards, existing saves and beginner progression work together without unbounded power or resource exploits.
+- [ ] Interruption consistently distinguishes an accepted damaging hit from a blocked/rejected hit. Verify absorption, Mana Skin, lifesaves, exact charge identity and the shared immunity window. The separately reviewed consistency implementation extends the same receipt to close-range BREAK_CAST and player Driving Cut. Their expanded native cases passed at earlier checkpoints; the final candidate must retain those results. Driving Cut preserves its idle-player seal and CastLock recovery, while a held spell additionally requires unchanged charge identity and shared interrupt-immunity admission.
+- [ ] Crystal absorption at 100, Circle 20 progression, rewards, existing saves and beginner progression work together without unbounded power or resource exploits. The Mana Skin correction needs complete candidate-native and before/after sustain evidence, including the explicit exclusion of lethal-to-zero wounds and separate lifesaves.
 - [ ] Ordinary creatures and dungeon bosses are balanced against the new endgame ceiling. Two species' pressure changes are only part of that review.
 
 ## Automated release evidence

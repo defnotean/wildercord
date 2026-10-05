@@ -94,6 +94,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	private static final List<String> PERFORMED = Collections.synchronizedList(new ArrayList<>());
 	/** How many times aura off a blade (an art's strike or bleed) landed on each husk, by its id. */
 	private static final Map<java.util.UUID, Integer> ART_HITS = new java.util.concurrent.ConcurrentHashMap<>();
+	/** Observation only: retain actual damage/arrival receipts for the native Bolt Step endpoint check. */
+	private static volatile boolean traceBoltStep;
 	private static boolean hooked;
 	/** A sword's full swing comes back in 11 ticks: a swing as soon as it's full again. */
 	private static final int FULL = 13;
@@ -110,6 +112,12 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
 				if (source.is(Aura.DAMAGE) && taken > 0 && entity.entityTags().contains(TAG)) {
 					ART_HITS.merge(entity.getUUID(), 1, Integer::sum);
+				}
+				if (traceBoltStep && taken > 0 && source.getEntity() instanceof LivingEntity attacker
+					&& (source.is(Aura.DAMAGE) && entity.entityTags().contains(TAG) && attacker instanceof ServerPlayer
+						|| entity instanceof ServerPlayer && attacker.entityTags().contains(TAG))) {
+					dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_BOLT_STEP_DAMAGE tick={} aura={} damage={} source={} victim={}",
+						entity.level().getGameTime(), source.is(Aura.DAMAGE), taken, boltState(attacker), boltState(entity));
 				}
 			});
 		}
@@ -140,7 +148,12 @@ public class WildercordArtsTest implements FabricClientGameTest {
 					continue;
 				}
 				reset(context, world);
-				run(failures, scene.id, () -> play(context, world, scene));
+				traceBoltStep = scene.id.equals(dev.wildercord.aura.arts.ThunderArts.BOLT_STEP);
+				try {
+					run(failures, scene.id, () -> play(context, world, scene));
+				} finally {
+					traceBoltStep = false;
+				}
 			}
 			reset(context, world);
 			run(failures, "the Aura page", () -> page(context, world));
@@ -391,7 +404,10 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				if (struck < 3) {
 					return "the swordsman should blink to and cut all three husks (" + struck + ")";
 				}
-				return p.position().distanceTo(foes(p).get(2).position()) < 3 ? null : "and end beside the last";
+				Mob last = foes(p).get(2);
+				double distance = p.position().distanceTo(last.position());
+				return distance < 3 ? null : "and end beside the last (tick=" + p.level().getGameTime() + ", distance=" + distance
+					+ ", player=" + boltState(p) + ", final target=" + boltState(last) + ")";
 			}));
 		out.add(new Scene(dev.wildercord.aura.arts.ThunderArts.HEAVENS_SPEAR, "thunder", AuraApi.ArtSlot.FINAL,
 			List.of(foe(0, 2.2), foe(0.2, 7.0), foe(-0.3, 12.0), foe(0.1, 17.0)), 16, 16, (p, b) -> {
@@ -858,6 +874,14 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		return ART_HITS.getOrDefault(foe.getUUID(), 0);
 	}
 
+	/** Live server state at contact distinguishes blink arrivals, passive sparks and subsequent knockback. */
+	private static String boltState(LivingEntity entity) {
+		return "{id=" + entity.getId() + ", pos=" + entity.position() + ", motion=" + entity.getDeltaMovement()
+			+ ", health=" + entity.getHealth() + ", ground=" + entity.onGround() + ", removed=" + entity.isRemoved()
+			+ ", noAi=" + (entity instanceof Mob mob && mob.isNoAi())
+			+ ", heldUntil=" + entity.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.FROZEN_UNTIL, 0L) + "}";
+	}
+
 	private static double horizontal(Vec3 a, Vec3 b) {
 		return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
 	}
@@ -877,6 +901,13 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		PERFORMED.clear();
 		ART_HITS.clear();
 		Before before = on(world, player -> snapshot(player));
+		if (traceBoltStep) {
+			on(world, player -> {
+				dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_BOLT_STEP_START tick={} player={} targets={}",
+					player.level().getGameTime(), boltState(player), foes(player).stream().map(WildercordArtsTest::boltState).toList());
+				return null;
+			});
+		}
 		// ---- played with the keys, in first person.
 		boolean step = scene.slot == AuraApi.ArtSlot.FOURTH;
 		switch (scene.slot) {
@@ -938,6 +969,13 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				context.waitTicks(2);
 				context.getInput().pressKey(WildercordKeys.auraMapping());
 				context.waitTicks(5);
+				if (traceBoltStep) {
+					on(world, player -> {
+						dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_BOLT_STEP_SWING tick={} player={} targets={}",
+							player.level().getGameTime(), boltState(player), foes(player).stream().map(WildercordArtsTest::boltState).toList());
+						return null;
+					});
+				}
 				swing(context);
 			}
 			case FINAL -> {

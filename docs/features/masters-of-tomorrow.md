@@ -10,6 +10,7 @@ Development build: `0.11.0-masters-dev`. Install the same development build on e
 - Three opt-in Sword Master trial disciplines: Ember, Gale and Stone
 - Shared school-tuned cast-punish dashes with committed movement, a separate strike warning and an exposed recovery
 - Ember's Cinder Wake, with a broad cut and a separately warned delayed afterburn
+- Stone's fixed frontal brace and separately warned Fracture reply, with rear, axe and stance-break counters
 - Three new rebindable Aura combat actions and their original animations
 - Authoritative windups and original motion for all ten existing first forms, plus Rising Cinders and Blossom Fall
 - More active Normal/Hard pressure from Gloomstalkers and Bog Witch-Frogs
@@ -57,6 +58,16 @@ The reply aims toward the target's original position from the planned landing, l
 The Master cannot escape its own committed attack, guard or recovery to start this step. Walls, hazards, gaps, fluid and arena/world-border edges reject or stop the native movement without teleporting. A hit, miss or cancelled attempt leaves 1.6 seconds of exposed recovery, with no Aura or cooldown refund. Cover clips the marked reply at the warning; removing that cover cannot extend it into an unmarked hit. An early interrupt, external knockback, paused AI or the selected target leaving cancels the pending reply.
 
 Its original high-blade lateral lean, planted chamber, point reply and recovery use the existing synchronized Master timeline and rigid body/weapon rig. The optional articulated backend currently covers only the Master Sweep; Crosswind intentionally uses the authored rigid fallback in either setting. Native render and multiplayer balance remain playtest requirements, not claims established by the pure animation tests.
+
+### Breaking Stone's Fracture brace
+
+After its first completed attack and then once per four completed attacks, Stone may replace its scheduled guard with Stone Fracture against its current enrolled target 1.5–5.5 blocks away. It pays 28 Aura for the whole form, with at least nine seconds between attempts. The Master plants for 0.4 seconds, braces its front for 0.6 seconds, then drops its guard and marks a narrow reply for another full 0.6 seconds. Its body, blade and facing commit to the original position; it never turns this sequence toward a later sidestep.
+
+The brace halves ordinary frontal blows without adding an automatic perfect-guard retaliation. A hit that actually removes health or absorption from its rear during the brace cancels the reply. An axe breaks its guard, and ordinary stance breaks still stop the move. An early spell interrupt also works; the final six reply ticks keep the existing committed-attack rule. Bystanders cannot trigger these counters or damage the Master.
+
+Once the reply is marked, leave its 1.4-block-wide, six-block-long lane, take solid cover, dodge or face the blade and parry. Only the originally selected enrolled player can take its one 30.8-base-damage Stone hit, the same budget as Stone's cast-punish strike, regardless of party size. The move neither breaks blocks nor leaves a lingering damage field. Cover clips the marked length; removing it cannot expose an unmarked extension.
+
+A hit, miss or cancelled attempt leaves a full two seconds of exposed recovery, with no Aura or cooldown refund. Stone cannot escape that recovery into a guard, bolt response, dodge or another move. Losing its target, external displacement, stance break, death or paused AI cancels the pending strike. The low cross-body brace, overhead gather and downward point release are original keys on the existing rigid body/weapon rig. The optional articulated renderer still covers only Master Sweep, so Fracture explicitly uses this authored fallback. Native visual and endgame multiplayer balance require playtesting.
 
 ### Reading Ember's Cinder Wake
 

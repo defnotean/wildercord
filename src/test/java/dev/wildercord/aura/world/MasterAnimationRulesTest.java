@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MasterAnimationRulesTest {
 	@Test
 	void onlyLiveBoundedServerTimelinesAnimate() {
-		for (int id : new int[] {-1, 0, 8, Integer.MAX_VALUE}) {
+		for (int id : new int[] {-1, 0, 9, Integer.MAX_VALUE}) {
 			assertSame(MasterAnimationRules.NONE, MasterAnimationRules.sample(id, 2, 18, 1, 19));
 		}
 		for (float age : new float[] {-1, Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 38, 200}) {
@@ -129,6 +129,26 @@ class MasterAnimationRulesTest {
 			var before = values(sample(move, at - .0001F));
 			var after = values(sample(move, at + .0001F));
 			for (int n = 0; n < before.length; n++) assertEquals(before[n], after[n], .003F, "Crosswind handoff channel " + n);
+		}
+	}
+
+	@Test
+	void stonePlantsBracesAndGathersForASeparateDownwardReply() {
+		var move = MastersRules.Move.STONE_FRACTURE;
+		assertEquals(8, move.ordinal() + 1);
+		assertEquals(MasterAnimationRules.STONE_FRACTURE, move.ordinal() + 1);
+		var brace = sample(move, StoneFractureRules.PLANT);
+		assertEquals(brace, sample(move, StoneFractureRules.PLANT + StoneFractureRules.BRACE - 1), "A fixed brace does not pretend to track later input");
+		var chamber = sample(move, 24);
+		var reply = sample(move, move.tell);
+		assertTrue(brace.body().x() > .2F && brace.sword().y() < -.5F, "Low crossed blade and planted torso announce the brace");
+		assertTrue(chamber.sword().x() < -2.3F && chamber.body().x() < 0, "A distinct overhead gather accompanies the separate warning");
+		assertTrue(reply.body().x() > .4F && reply.bladeTilt() < -110, "The fracture drops its point into the warned narrow lane");
+		for (var other : MastersRules.Move.values()) if (other != move) assertNotEquals(reply, sample(other, other.tell));
+		for (float at : new float[] {8, 20, 24}) {
+			var before = values(sample(move, at - .0001F));
+			var after = values(sample(move, at + .0001F));
+			for (int n = 0; n < before.length; n++) assertEquals(before[n], after[n], .003F, "Stone handoff channel " + n);
 		}
 	}
 

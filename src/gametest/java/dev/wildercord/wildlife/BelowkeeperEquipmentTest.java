@@ -7,13 +7,14 @@ import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 /** Combat items are explicitly supplied here; the separate acquisition suite proves their earned path. */
 public final class BelowkeeperEquipmentTest implements FabricClientGameTest {
  private RootmoltStrider source;
- public void runTest(ClientGameTestContext c){boolean shift=c.computeOnClient(mc -> mc.options.keyShift.isDown()),use=c.computeOnClient(mc -> mc.options.keyUse.isDown()),jump=c.computeOnClient(mc -> mc.options.keyJump.isDown()),right=c.computeOnClient(mc -> mc.options.keyRight.isDown());long bellRest,bootsRest;TestWorldSave save;
+ public void runTest(ClientGameTestContext c){boolean shift=c.computeOnClient(mc -> mc.options.keyShift.isDown()),use=c.computeOnClient(mc -> mc.options.keyUse.isDown()),jump=c.computeOnClient(mc -> mc.options.keyJump.isDown()),right=c.computeOnClient(mc -> mc.options.keyRight.isDown()),forward=c.computeOnClient(mc -> mc.options.keyUp.isDown());long bellRest,bootsRest;TestWorldSave save;
   try{
    try(var w=c.worldBuilder().create()){
     c.waitTicks(25);w.getServer().runCommand("difficulty normal");w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 18000");
@@ -47,7 +48,7 @@ public final class BelowkeeperEquipmentTest implements FabricClientGameTest {
     long rearmReady=w.getServer().computeOnServer(s -> {long ready=source.attackReady();check(source.pose()==RootmoltStrider.IDLE,"Rearm scene begins after real recovery");move(p(s),2,30,.5);check(source.attackReady()==ready&&source.pose()==RootmoltStrider.IDLE,"Ordinary scene reposition changes neither source rest nor phase");return ready;});
     c.waitTicks(3);
     w.getServer().runOnServer(s -> {check(p(s).onGround()&&source.onGround()&&source.distanceToSqr(p(s))<9&&source.hasLineOfSight(p(s)),"Rearm scene supplies grounded reachable actors inside original warning reach");check(source.attackReady()==rearmReady,"Actual attack deadline remains unchanged while the scene settles");dev.wildercord.Wildercord.LOGGER.info("BELOWKEEPER_REARM player={} velocity={} source={} health={} attackReady={} now={}",p(s).position(),p(s).getDeltaMovement(),source.position(),p(s).getHealth(),source.attackReady(),s.overworld().getGameTime());source.setTarget(p(s));});
-    try{await(c,w,s -> source.pose()==RootmoltStrider.WARNING,"Unobstructed source earns a subsequent ordinary warning after its actual rest");}catch(AssertionError failure){throw new AssertionError(w.getServer().computeOnServer(s -> "Rearm actual warning timeout: player="+p(s).position()+" velocity="+p(s).getDeltaMovement()+" playerAlive="+p(s).isAlive()+" playerGround="+p(s).onGround()+" source="+source.position()+" sourceAlive="+source.isAlive()+" sourceRemoved="+source.isRemoved()+" sourceGround="+source.onGround()+" pose="+source.pose()+" target="+(source.getTarget()==null?null:source.getTarget().getUUID())+" distanceSquared="+source.distanceToSqr(p(s))+" sight="+source.hasLineOfSight(p(s))+" attackReady="+source.attackReady()+" previousReady="+rearmReady+" now="+s.overworld().getGameTime()+" health="+p(s).getHealth()+" crouched="+p(s).isShiftKeyDown()+" usingItem="+p(s).isUsingItem()),failure);}
+    try{awaitRearmedWarning(c,w,rearmReady);}catch(AssertionError failure){throw new AssertionError(w.getServer().computeOnServer(s -> "Rearm actual warning timeout: player="+p(s).position()+" velocity="+p(s).getDeltaMovement()+" playerAlive="+p(s).isAlive()+" playerGround="+p(s).onGround()+" source="+source.position()+" sourceAlive="+source.isAlive()+" sourceRemoved="+source.isRemoved()+" sourceGround="+source.onGround()+" pose="+source.pose()+" target="+(source.getTarget()==null?null:source.getTarget().getUUID())+" distanceSquared="+source.distanceToSqr(p(s))+" sight="+source.hasLineOfSight(p(s))+" attackReady="+source.attackReady()+" previousReady="+rearmReady+" now="+s.overworld().getGameTime()+" health="+p(s).getHealth()+" crouched="+p(s).isShiftKeyDown()+" usingItem="+p(s).isUsingItem()),failure);}
     w.getServer().runOnServer(s -> check(s.overworld().getGameTime()>=rearmReady,"Subsequent ordinary warning never bypasses the same source's earned attack rest"));
     c.runOnClient(mc -> {mc.options.keyUse.setDown(true);mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND);});c.waitTicks(24);c.runOnClient(mc -> mc.options.keyUse.setDown(use));
     w.getServer().runOnServer(s -> {check(source.pose()==RootmoltStrider.RECOVERING && p(s).getMainHandItem().getDamageValue()==1,"Full native bell commitment interrupts exactly one warning with one wear");check(p(s).hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS) && p(s).hasEffect(net.minecraft.world.effect.MobEffects.MINING_FATIGUE),"The committed bell leaves actual heavy steps/hands");check(!p(s).hasEffect(RootmoltContent.TETHER),"The interrupted warning never applies root control");});
@@ -60,7 +61,33 @@ public final class BelowkeeperEquipmentTest implements FabricClientGameTest {
     c.takeScreenshot(TestScreenshotOptions.of("belowkeeper_real_anchor_bell_and_copy_rest").disableCounterPrefix());save=w.getWorldSave();
    }
    try(var w=save.open()){c.waitTicks(8);w.getServer().runOnServer(s -> {check(p(s).getAttachedOrElse(BelowkeeperEquipment.BELL_READY,0L)==bellRest && p(s).getAttachedOrElse(BelowkeeperEquipment.GREAVES_READY,0L)==bootsRest,"Full world restart preserves exact independent equipment rests");check(p(s).getCooldowns().isOnCooldown(new ItemStack(BelowkeeperEquipment.BELL)),"Join restores visible cooldown for the fresh bell copy");check(BelowkeeperEquipment.prepared(p(s))<BelowkeeperEquipment.PREP_TICKS,"Rejoining restarts actual preparation instead of restoring a ready stance");});}
-  }finally{c.runOnClient(mc -> {mc.options.keyShift.setDown(shift);mc.options.keyUse.setDown(use);mc.options.keyJump.setDown(jump);mc.options.keyRight.setDown(right);});}
+  }finally{c.runOnClient(mc -> {mc.options.keyShift.setDown(shift);mc.options.keyUse.setDown(use);mc.options.keyJump.setDown(jump);mc.options.keyRight.setDown(right);mc.options.keyUp.setDown(forward);});}
+ }
+ // An idle territorial source may stroll during its remaining rest; it does not pursue its target.
+ // Keep the real actor in warning reach through native input, then let its motion settle before ringing.
+ private void awaitRearmedWarning(ClientGameTestContext c,TestSingleplayerContext w,long ready){
+  int id=w.getServer().computeOnServer(s -> source.getId());
+  try{
+   for(int i=0;i<540;i++){
+    boolean warning=w.getServer().computeOnServer(s -> {
+     check(source.isAlive()&&!source.isRemoved()&&p(s).isAlive(),"The same living actors survive the ordinary rearm");
+     if(source.pose()==RootmoltStrider.WARNING){check(s.overworld().getGameTime()>=ready,"Real native approach cannot bypass the original attack rest");return true;}
+     check(source.pose()==RootmoltStrider.IDLE&&source.attackReady()==ready,"Native approach preserves the source's exact earned rest and idle phase");
+     return false;
+    });
+    if(warning){
+     c.runOnClient(mc -> mc.options.keyUp.setDown(false));c.waitTicks(4);
+     // Native stone-floor drag is .6 * .91 = .546. With speed < .01, all remaining
+     // coast is < .01 / (1 - .546) = .0221 blocks, inside the bell's .03 total drift.
+     c.runOnClient(mc -> {var player=mc.player;var motion=player.getDeltaMovement();check(player.onGround()&&mc.level.getBlockState(player.blockPosition().below()).is(Blocks.STONE)&&!player.shouldDiscardFriction()&&player.getAttributeValue(Attributes.FRICTION_MODIFIER)==1&&player.getAttributeValue(Attributes.AIR_DRAG_MODIFIER)==1,"Native rearm approach retains ordinary grounded stone-floor friction");check(motion.x*motion.x+motion.z*motion.z<.0001,"Actual client coast stays inside the bell's total commitment drift");});
+     w.getServer().runOnServer(s -> {var motion=p(s).getDeltaMovement();check(source.pose()==RootmoltStrider.WARNING&&p(s).onGround()&&source.onGround()&&source.distanceToSqr(p(s))<16&&source.hasLineOfSight(p(s)),"The real warning remains reachable after ordinary native approach settles");check(motion.x*motion.x+motion.z*motion.z<.0001,"Native approach comes to rest before the original bell commitment");dev.wildercord.Wildercord.LOGGER.info("BELOWKEEPER_REARM_WARNING player={} source={} previousReady={} now={} velocity={}",p(s).position(),source.position(),ready,s.overworld().getGameTime(),motion);});
+     return;
+    }
+    c.runOnClient(mc -> {var entity=mc.level.getEntity(id);check(entity instanceof RootmoltStrider,"The same rearming source remains client tracked");var d=entity.position().subtract(mc.player.position());mc.player.setYRot((float)Math.toDegrees(Math.atan2(-d.x,d.z)));mc.options.keyUp.setDown(d.x*d.x+d.z*d.z>4);});
+    c.waitTicks(1);
+   }
+   throw new AssertionError("Unobstructed source earns a subsequent ordinary warning after its actual rest");
+  }finally{c.runOnClient(mc -> mc.options.keyUp.setDown(false));}
  }
  private void spawn(net.minecraft.server.MinecraftServer s){source=RootmoltContent.STRIDER.create(s.overworld(),EntitySpawnReason.COMMAND);source.snapTo(0,30,.5,0,0);s.overworld().addFreshEntity(source);source.setTarget(p(s));}
 }

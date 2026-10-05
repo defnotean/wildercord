@@ -6,6 +6,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
+- Added Stone Fracture: a fixed-facing paid brace with rear/axe/stance counters, a separate narrow reply warning, original body/weapon motion and a guaranteed two-second recovery. This isolated slice still requires its native gameplay and visual gate.
+
 - Retuned cast pursuit to 8 warning ticks, 6 native movement steps and 8 final-warning ticks, allowing an early free opening to reach a normal 30-tick charge. Both visible tells, committed aim, all Aura/cooldowns and the 30-tick exposed recovery remain; fast casts and early release can still win.
 
 - Defined pursuit spell interruption by resolved health or absorption damage before Mana Skin restoration; full guards, dodges and rejected hits preserve the cast. Damage amounts and the shared eight-second interruption protection remain unchanged.

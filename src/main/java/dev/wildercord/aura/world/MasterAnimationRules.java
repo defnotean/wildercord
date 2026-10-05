@@ -8,7 +8,7 @@ package dev.wildercord.aura.world;
 public final class MasterAnimationRules {
 	private MasterAnimationRules() {}
 
-	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7;
+	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7, STONE_FRACTURE = 8;
 	public record Joint(float x, float y, float z) {
 		Joint toward(Joint other, float t) {
 			return new Joint(lerp(x, other.x, t), lerp(y, other.y, t), lerp(z, other.z, t));
@@ -87,6 +87,17 @@ public final class MasterAnimationRules {
 		p(j(.23F, -.32F, -.04F), j(-.10F, 0, .02F), j(-1.52F, -.05F, -.10F), j(.15F, .22F, -.32F), .22F, -87),
 		p(j(.20F, -.50F, -.03F), j(-.08F, 0, .01F), j(-.95F, -.24F, -.13F), j(-.30F, .18F, -.25F), .22F, -80));
 
+	// Stone sinks into a low cross-body brace, lifts its point for a separate warning, then
+	// drops it along the fixed narrow lane. These keys deliberately retain the rigid fallback.
+	private static final Pose FRACTURE_PLANT = p(j(.08F, .18F, 0), j(-.04F, 0, 0),
+		j(-.64F, -.48F, -.30F), j(-.74F, .28F, -.16F), .28F, -20);
+	private static final Pose FRACTURE_BRACE = p(j(.24F, .16F, -.02F), j(-.10F, 0, .01F),
+		j(-1.38F, -.56F, -.38F), j(-1.20F, .44F, -.12F), .28F, -30);
+	private static final Motion FRACTURE_MOTION = new Motion(
+		p(j(-.13F, .12F, -.02F), j(.05F, 0, 0), j(-2.42F, .10F, -.12F), j(-1.56F, .18F, -.18F), .28F, -52),
+		p(j(.42F, -.06F, .02F), j(-.20F, 0, 0), j(-.86F, -.08F, -.10F), j(-.74F, .12F, -.20F), .28F, -112),
+		p(j(.30F, -.12F, .02F), j(-.12F, 0, 0), j(-.52F, -.12F, -.12F), j(-.42F, .14F, -.24F), .28F, -102));
+
 	private static final Pose GUARD = p(j(.10F, .10F, 0), j(-.04F, 0, 0), j(-1.42F, -.55F, -.25F), j(-1.05F, .40F, -.25F), .14F, 0);
 	private static final Pose DODGE = p(j(.34F, -.18F, -.08F), j(-.18F, 0, .04F), j(-1.05F, .20F, -.35F), j(-.68F, -.18F, -.38F), .28F, 0);
 	private static final Pose STAGGER = p(j(-.15F, .06F, .03F), j(.12F, 0, 0), j(-.45F, .16F, .30F), j(-.35F, -.12F, -.40F), .12F, 0);
@@ -104,11 +115,13 @@ public final class MasterAnimationRules {
 			case CINDER_WAKE -> CINDER_MOTION;
 			case PURSUIT_BREAK -> PURSUIT_MOTION;
 			case CROSSWIND_REPRISE -> REPRISE_MOTION;
+			case STONE_FRACTURE -> FRACTURE_MOTION;
 			default -> null;
 		};
 		if (motion == null || !Float.isFinite(age) || age < 0 || tell < 1 || tell > 80 || active < 1 || active > 10
 			|| recovery < 1 || recovery > 120 || age >= tell + active + recovery) return NONE;
 		if (attack == CROSSWIND_REPRISE) return reprise(age, tell, active, recovery);
+		if (attack == STONE_FRACTURE) return fracture(age, tell, active, recovery);
 		if (attack == PURSUIT_BREAK) return pursuit(age, tell, active, recovery);
 		if (attack == CINDER_WAKE && age >= tell + 6) return emberWake(age, tell, active, recovery);
 		float chamberAt = tell * .65F;
@@ -121,6 +134,21 @@ public final class MasterAnimationRules {
 		float enter = smooth(age / Math.max(1, chamberAt));
 		float leave = 1 - smooth((age - followAt) / (tell + active + recovery - followAt));
 		return pose.weight(enter * leave);
+	}
+
+	private static Pose fracture(float age, int tell, int active, int recovery) {
+		float plant = tell * StoneFractureRules.PLANT / (float) StoneFractureRules.TELL;
+		float warning = tell * (StoneFractureRules.PLANT + StoneFractureRules.BRACE) / (float) StoneFractureRules.TELL;
+		float chamber = warning + (tell - warning) / 3, follow = tell + active + Math.min(3, recovery * .20F);
+		Pose pose;
+		if (age < plant) pose = FRACTURE_PLANT.toward(FRACTURE_BRACE, smooth(age / plant));
+		else if (age < warning) pose = FRACTURE_BRACE;
+		else if (age < chamber) pose = FRACTURE_BRACE.toward(FRACTURE_MOTION.chamber, smooth((age - warning) / (chamber - warning)));
+		else if (age < tell) pose = FRACTURE_MOTION.chamber.toward(FRACTURE_MOTION.impact, smooth((age - chamber) / (tell - chamber)));
+		else if (age < follow) pose = FRACTURE_MOTION.impact.toward(FRACTURE_MOTION.follow, smooth((age - tell) / (follow - tell)));
+		else pose = FRACTURE_MOTION.follow;
+		return pose.weight(smooth(age / Math.max(1, plant))
+			* (1 - smooth((age - follow) / (tell + active + recovery - follow))));
 	}
 
 	private static Pose reprise(float age, int tell, int active, int recovery) {

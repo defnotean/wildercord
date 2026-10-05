@@ -42,7 +42,8 @@ public final class MastersRules {
 		SWEEP(18, 20, 30), THRUST(22, 24, 42), CRESCENT(20, 24, 36), BREAK_CAST(20, 24, 28),
 		CINDER_WAKE(EmberWakeRules.TELL, EmberWakeRules.RECOVERY, EmberWakeRules.CUT_DAMAGE),
 		PURSUIT_BREAK(MasterPursuitRules.TELL, MasterPursuitRules.RECOVERY, MasterPursuitRules.DAMAGE),
-		CROSSWIND_REPRISE(GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY, GaleRepriseRules.DAMAGE);
+		CROSSWIND_REPRISE(GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY, GaleRepriseRules.DAMAGE),
+		STONE_FRACTURE(StoneFractureRules.TELL, StoneFractureRules.RECOVERY, StoneFractureRules.DAMAGE);
 
 		public final int tell, recovery;
 		public final double damage;
@@ -141,6 +142,7 @@ public final class MastersRules {
 			case BREAK_CAST -> forward >= 0 && forward <= 4 && Math.abs(side) <= 0.8;
 			case PURSUIT_BREAK -> MasterPursuitRules.hits(forward, side, height);
 			case CROSSWIND_REPRISE -> GaleRepriseRules.hits(forward, side, height);
+			case STONE_FRACTURE -> StoneFractureRules.hits(forward, side, height);
 			case CRESCENT -> false; // The shared Crescents flight owns collision.
 		};
 	}
