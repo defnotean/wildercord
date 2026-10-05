@@ -10,6 +10,7 @@ import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.client.AuraScreen;
 import dev.wildercord.client.MastersArtsClient;
 import dev.wildercord.client.MastersArtPose;
+import dev.wildercord.client.MastersHandMotionState;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -19,6 +20,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -396,6 +398,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			world.getServer().runOnServer(server -> MastersArts.cancel(server.getPlayerList().getPlayers().getFirst()));
 			context.waitFor(mc -> MastersArtsClient.timeline(mc.player) == null, 20);
 			check(context.computeOnClient(mc -> MastersArtsClient.pose(mc.player, .5F).weight() == 0), "Cancelled second-form body and hand poses clear together");
+			waitForCancelledNeutral(context, prefix);
 			shot(context, prefix + "_neutral");
 			world.getServer().runOnServer(server -> target[0].discard());
 			return;
@@ -412,6 +415,30 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Style returns to vanilla after its real recovery");
 		shot(context, prefix + "_settled");
 		world.getServer().runOnServer(server -> target[0].discard());
+	}
+
+	/** Cancellation clears only the art; let the triggering vanilla swing and item dip finish naturally. */
+	private static void waitForCancelledNeutral(ClientGameTestContext context, String prefix) {
+		var hands = new FirstPersonHandsAndItemsRenderState();
+		String[] observed = {"not sampled"};
+		try {
+			context.waitFor(mc -> {
+				check(MastersArtsClient.timeline(mc.player) == null && MastersArtsClient.pose(mc.player, MastersCaptureProbe.PARTIAL).weight() == 0,
+					"Cancelled second-form timeline and pose remain clear while ordinary hand motion settles");
+				mc.player.firstPersonHandsAndItems().extractRenderState(mc.player, MastersCaptureProbe.PARTIAL, hands);
+				boolean swinging = mc.player.isSwinging();
+				float attack = mc.player.getSwingAnimation(MastersCaptureProbe.PARTIAL);
+				boolean equipping = ((MastersHandMotionState) hands).wildercord$mainHandEquipping();
+				observed[0] = "swinging=" + swinging + ", attack=" + attack + ", previousHeight=" + hands.oldMainHandHeight
+					+ ", currentHeight=" + hands.mainHandHeight + ", swapScale=" + hands.mainHandSwapScale + ", genuineEquip=" + equipping;
+				// Both native height samples must be full: the screenshot interpolates between them.
+				return !swinging && attack == 0 && hands.oldMainHandHeight == 1 && hands.mainHandHeight == 1
+					&& hands.mainHandSwapScale == 1 && !equipping;
+			}, 30);
+		} catch (AssertionError failure) {
+			throw new AssertionError("Cancelled art did not reach native neutral hand state: " + prefix + " {" + observed[0] + "}", failure);
+		}
+		Wildercord.LOGGER.info("MASTERS_CANCELLED_NEUTRAL_READY name={} state={}", prefix + "_neutral", observed[0]);
 	}
 
 	private static String jumpState(ClientGameTestContext context) {

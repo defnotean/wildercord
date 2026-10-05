@@ -47,9 +47,11 @@ class CuratorTests(CuratorFixture):
         result = self.curate()
         self.assertEqual(result["status"], "unavailable")
         self.assertEqual(result["frames"], [])
-        self.assertEqual(len(result["coverage"]), 30)
+        self.assertEqual(len(result["coverage"]), 32)
         self.assertTrue(all(row["missingCapturePhases"] == list(curator.PHASES)
-                            for row in result["coverage"]))
+                            for row in result["coverage"][:30]))
+        self.assertEqual([row["missingCapturePhases"] for row in result["coverage"][30:]],
+                         [list(beats) for beats in curator.NPC_BEATS.values()])
         self.assertTrue((self.root / self.output / "manifest.json").is_file())
         self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
 
@@ -125,7 +127,8 @@ class CuratorTests(CuratorFixture):
                              fixtures[Path(frame["sourcePath"]).name])
             self.assertEqual(frame["captureKind"], "native_local_owner_combat")
         self.assertEqual({row["coverage"] for row in result["unavailableRequestedCoverage"]},
-                         {"observer_client", "live_master_ember_combat", "exact_impact_phase"})
+                         {"observer_client_of_player_combat", "live_master_ember_combat",
+                          "exact_player_impact_phase", "human_multiplayer_duel"})
         rising = [row for row in result["coverage"] if "rising_cinders" in row["scene"]]
         self.assertTrue(all(row["missingCapturePhases"] == list(curator.PHASES) for row in rising))
         self.assertEqual(result["freshness"]["ignoredOutOfScopePngs"], 7)
@@ -195,6 +198,355 @@ class CuratorTests(CuratorFixture):
             self.assertIsNone(curator.describe(name))
         self.assertEqual(curator.describe("masters_art_0_first_frame_6.png")["phase"], "sample")
         self.assertEqual(curator.describe("masters_style_blossom_fall_first_frame_9.png")["phase"], "sample")
+
+
+class NpcCuratorTests(CuratorFixture):
+    def metadata(self, scene, phase):
+        # Shape and values follow MastersNpcCaptureProbe.Evidence. These are
+        # Python input-validation fixtures, never presented as native captures.
+        gale = scene == "masters_npc_gale_crosswind"
+        requested = curator.NPC_BEATS[scene][phase]
+        attack, tell, recovery = (7, 22, 31) if gale else (8, 32, 39)
+        position = {"x": 0, "y": 181, "z": 0}
+        joint = {"x": .1, "y": .2, "z": .3}
+        point = {"x": .4, "y": .5}
+        warning = {"ray": {"from": position, "to": position, "renderedEnd": position,
+                           "width": .1, "particleAge": 1, "lifetime": 5, "partial": .5},
+                   "from": point, "to": point, "coloredBins": 8, "sampledBins": 16}
+        count = 3 if phase == "reply_warning" else 0 if phase in ("release", "recovery") else 2 if gale else 1
+        return {"name": f"{scene}_{phase}", "captureKind": "native_unpaused_server_ai",
+                "participantKind": "consenting_fabric_fake_player", "observerKind": "real_client_spectator",
+                "independentTrialPerFrame": True, "phase": phase, "requestedTick": requested,
+                "width": 1280, "height": 720, "bodySubmits": 1, "modelPasses": 1,
+                "renderedTimeline": {"clientGameTick": 100 + requested, "acceptedTick": 100, "attackId": attack,
+                    "partial": .5, "age": requested + .5, "tell": tell, "active": 1, "recovery": recovery,
+                    "fallbackRig": True, "frame": {"pose": {"weight": .9, "body": joint, "head": joint,
+                        "sword": joint, "offhand": joint, "stance": .2, "bladeTilt": -30},
+                        "leftHanded": False, "activation": 100, "move": attack}},
+                "serverObservation": {"gameTick": 100 + requested, "acceptedTick": 100, "attackId": attack,
+                    "age": requested, "noAi": False, "pending": requested < tell, "windup": requested < tell,
+                    "guarding": not gale and 8 <= requested < 20, "participants": 1, "aura": 60 if gale else 56,
+                    "targetHealth": 200 if requested < tell else 174 if gale else 169.2,
+                    "masterPosition": position, "targetPosition": position},
+                "modelPose": [.1] * 36, "camera": position, "renderedPosition": position,
+                "bodyPoints": [point] * 9,
+                "bodyPixels": {"nonBlackPixels": 100, "chromaticPixels": 50, "distinctColors": 12, "luminanceRange": 40},
+                "warnings": [warning] * count}
+
+    def npc(self, scene="masters_npc_gale_crosswind", phase="reply_warning", size=100):
+        image = self.shot(f"{scene}_{phase}.png", size=size)
+        sidecar = image.with_suffix(".json")
+        self.write_metadata(sidecar, self.metadata(scene, phase))
+        return image, sidecar
+
+    def write_metadata(self, path, value):
+        path.write_text(json.dumps(value, indent=2))
+        os.utime(path, ns=(self.started + 1_000_000, self.started + 1_000_000))
+
+    def test_exact_school_beats_are_whitelisted_and_other_npc_names_are_ignored(self):
+        for scene, beats in curator.NPC_BEATS.items():
+            for phase in beats:
+                name = f"{scene}_{phase}.png"
+                description = curator.describe(name)
+                self.assertEqual((description["view"], description["captureKind"], description["phase"]),
+                                 (curator.NPC_VIEW, "native_unpaused_server_ai", phase))
+                self.assertEqual(description["sourceSuite"], curator.NPC_SUITE)
+                self.assertEqual(description["phaseBasis"], "native_render_and_server_metadata_assertion")
+                self.assertIsNone(curator.describe(name, suite="articulated"))
+        for name in ("masters_npc_ember_release.png", "masters_npc_gale_crosswind_active.png",
+                     "masters_npc_gale_crosswind_plant.png", "masters_npc_stone_fracture_step.png",
+                     "masters_npc_gale_crosswind_frame_0.png", "masters_npc_stone_fracture_observer_release.png",
+                     "master_model_pose.png"):
+            self.assertIsNone(curator.describe(name))
+            self.shot(name)
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 0)
+        self.assertEqual(result["freshness"]["ignoredOutOfScopePngs"], 7)
+
+    def test_priority_preserves_six_npc_beats_before_owner_breadth_and_counts_sidecars(self):
+        for scene, beats in curator.NPC_BEATS.items():
+            for phase in beats:
+                self.npc(scene, phase, size=700_000)
+        for scene in curator.SCENES:
+            for view in curator.VIEWS:
+                for phase in curator.PHASES:
+                    self.shot(f"{scene}_{view}_{phase}.png", size=700_000)
+        result = self.curate()
+        expected = [(scene, phase) for phase in curator.NPC_PRIORITY for scene in curator.NPC_BEATS]
+        self.assertEqual([(f["scene"], f["phase"]) for f in result["frames"][:6]], expected)
+        self.assertEqual(result["selectedMetadataCount"], 6)
+        self.assertTrue(any(frame["captureKind"] == "native_local_owner_combat" for frame in result["frames"]))
+        self.assertEqual(result["selectedMetadataBytes"], sum(frame["metadata"]["bytes"] for frame in result["frames"] if "metadata" in frame))
+        self.assertTrue(all(row["omittedForBudgetPhases"] == list(curator.NPC_BEATS[row["scene"]])[:2]
+                            for row in result["coverage"][-2:]))
+        files = [path for path in (self.root / self.output).rglob("*") if path.is_file()]
+        self.assertLess(sum(path.stat().st_size for path in files), curator.BUDGET)
+        archive = self.root / "curated.zip"
+        with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as zipped:
+            for path in files:
+                zipped.write(path, path.relative_to(self.root / self.output))
+        self.assertLess(archive.stat().st_size, 15_000_000)
+
+    def test_small_matrix_is_deterministic_and_preserves_png_and_metadata_bytes(self):
+        for scene, beats in curator.NPC_BEATS.items():
+            for phase in beats:
+                self.npc(scene, phase)
+        self.shot("masters_art_0_first_active.png")
+        result = self.curate()
+        second = curator.curate(self.root, self.source, self.marker, "review/repeated", self.identity)
+        self.assertEqual(result, second)
+        self.assertEqual(result["selectedFrameCount"], 11)
+        self.assertEqual(result["selectedMetadataCount"], 10)
+        self.assertEqual(result["sourceSuites"], [curator.SUITE, curator.NPC_SUITE])
+        for frame in result["frames"]:
+            for entry in ([frame, frame["metadata"]] if "metadata" in frame else [frame]):
+                original = (self.root / entry["sourcePath"]).read_bytes()
+                self.assertEqual((self.root / self.output / entry["artifactPath"]).read_bytes(), original)
+                self.assertEqual(entry["sha256"], hashlib.sha256(original).hexdigest())
+                self.assertEqual(entry["bytes"], len(original))
+            if "metadata" in frame:
+                self.assertEqual(frame["renderedTimeline"]["age"], frame["requestedTick"] + .5)
+                self.assertEqual(frame["participantKind"], "consenting_fabric_fake_player")
+                self.assertTrue(frame["independentTrialPerFrame"])
+            else:
+                self.assertEqual(frame["phaseBasis"], "accepted_timeline_window_assertion")
+        self.assertIn("not a human duel", result["basis"])
+        self.assertIn("Synthetic model-injection", result["basis"])
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_budget_never_splits_an_npc_image_and_metadata_pair(self):
+        image, sidecar = self.npc()
+        cost = image.stat().st_size + sidecar.stat().st_size
+        omitted = self.curate(budget=curator.MANIFEST_RESERVE + cost - 1)
+        self.assertEqual(omitted["frames"], [])
+        self.assertEqual(omitted["selectedMetadataBytes"], 0)
+        row = omitted["coverage"][-2]
+        self.assertEqual(row["capturedPhases"], ["reply_warning"])
+        self.assertEqual(row["omittedForBudgetPhases"], ["reply_warning"])
+        result = curator.curate(self.root, self.source, self.marker, "review/exact", self.identity,
+                                budget=curator.MANIFEST_RESERVE + cost)
+        self.assertEqual(result["selectedFrameCount"], 1)
+        self.assertEqual(result["selectedPngBytes"] + result["selectedMetadataBytes"], cost)
+
+    def test_full_owner_and_npc_matrix_fits_the_unchanged_manifest_reserve(self):
+        for scene, beats in curator.NPC_BEATS.items():
+            for phase in beats:
+                self.npc(scene, phase)
+        for scene in curator.SCENES:
+            for view in curator.VIEWS:
+                for phase in curator.PHASES:
+                    self.shot(f"{scene}_{view}_{phase}.png")
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 130)
+        self.assertEqual(result["limits"]["manifestReserveBytes"], 128_000)
+        self.assertLessEqual((self.root / self.output / "manifest.json").stat().st_size, 128_000)
+        self.assertTrue(all(not row["omittedForBudgetPhases"] for row in result["coverage"]))
+
+    def test_partial_npc_coverage_never_substitutes_or_invents_missing_beats(self):
+        self.npc(phase="gather")
+        self.npc("masters_npc_stone_fracture", "release")
+        self.shot("masters_art_0_first_active.png")
+        result = self.curate()
+        self.assertEqual([(f["scene"], f["phase"]) for f in result["frames"]], [
+            ("masters_npc_stone_fracture", "release"), ("masters_art_0", "active"),
+            ("masters_npc_gale_crosswind", "gather")])
+        self.assertEqual(result["coverage"][-2]["missingCapturePhases"], ["step", "reply_warning", "release", "recovery"])
+        self.assertEqual(result["coverage"][-1]["missingCapturePhases"], ["plant", "brace", "reply_warning", "recovery"])
+
+    def test_preexisting_or_older_metadata_cannot_qualify_a_fresh_image(self):
+        image, sidecar = self.npc()
+        image.unlink()
+        later = "review/later.json"
+        curator.prepare(self.root, self.source, later, self.identity)
+        self.started = json.loads((self.root / later).read_text())["startedNs"]
+        self.shot(image.name)
+        os.utime(sidecar, None)
+        _, older = self.npc("masters_npc_stone_fracture", "release")
+        os.utime(older, ns=(1, 1))
+        result = curator.curate(self.root, self.source, later, self.output, self.identity)
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(result["freshness"]["excludedStaleNpcMetadata"], 2)
+
+    def test_preexisting_or_older_npc_images_stay_excluded_with_fresh_metadata(self):
+        image, _ = self.npc()
+        later = "review/later.json"
+        curator.prepare(self.root, self.source, later, self.identity)
+        self.started = json.loads((self.root / later).read_text())["startedNs"]
+        self.npc()
+        older, _ = self.npc("masters_npc_stone_fracture", "release")
+        os.utime(older, ns=(1, 1))
+        result = curator.curate(self.root, self.source, later, self.output, self.identity)
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(result["freshness"]["excludedStalePngs"], 2)
+
+    def test_missing_metadata_malformed_json_and_oversized_sidecars_fail_closed(self):
+        _, sidecar = self.npc()
+        for contents in (None, b"{invalid", b"[]", b" " * (curator.NPC_METADATA_LIMIT + 1), b'{"name":0,"name":1}'):
+            with self.subTest(contents=None if contents is None else len(contents)):
+                if contents is None:
+                    sidecar.unlink()
+                else:
+                    sidecar.write_bytes(contents)
+                with self.assertRaises((curator.EvidenceError, ValueError)):
+                    self.curate()
+                self.assertFalse((self.root / self.output).exists())
+
+    def test_metadata_rejects_wrong_identity_phase_ai_and_render_evidence(self):
+        scene, phase = "masters_npc_gale_crosswind", "reply_warning"
+        _, sidecar = self.npc(scene, phase)
+        mutations = (("name", "wrong"), ("phase", "release"), ("requestedTick", 17),
+                     ("captureKind", "synthetic_model"), ("participantKind", "human"),
+                     ("observerKind", "owner"), ("independentTrialPerFrame", False),
+                     ("renderFailure", ""), ("renderFailure", True), ("bodySubmits", 0), ("modelPasses", 0),
+                     ("modelPose", [.1] * 35), ("bodyPoints", []), ("warnings", []),
+                     ("renderedTimeline.age", 17.5), ("renderedTimeline.partial", float("nan")),
+                     ("renderedTimeline.attackId", 8), ("renderedTimeline.acceptedTick", 99),
+                     ("renderedTimeline.clientGameTick", 120), ("renderedTimeline.fallbackRig", False),
+                     ("renderedTimeline.frame.move", 8), ("renderedTimeline.frame.activation", 99),
+                     ("renderedTimeline.frame.pose.weight", 0), ("serverObservation.noAi", True),
+                     ("serverObservation.participants", 2), ("serverObservation.attackId", 8),
+                     ("serverObservation.gameTick", 120), ("serverObservation.pending", False),
+                     ("serverObservation.windup", False), ("serverObservation.guarding", True),
+                     ("serverObservation.aura", 84), ("serverObservation.targetHealth", 174),
+                     ("bodyPixels.nonBlackPixels", 0))
+        for field, value in mutations:
+            with self.subTest(field=field):
+                evidence = self.metadata(scene, phase)
+                parent = evidence
+                keys = field.split(".")
+                for key in keys[:-1]:
+                    parent = parent[key]
+                parent[keys[-1]] = value
+                self.write_metadata(sidecar, evidence)
+                with self.assertRaises(curator.EvidenceError):
+                    self.curate()
+                self.assertFalse((self.root / self.output).exists())
+
+    def test_explicit_render_failure_preserves_valid_frames_and_records_a_bounded_exclusion(self):
+        failed, sidecar = self.npc()
+        evidence = json.loads(sidecar.read_text())
+        evidence["renderFailure"] = "java.lang.AssertionError: Stage and other bodies must not occlude the master\n" * 50
+        self.write_metadata(sidecar, evidence)
+        valid, _ = self.npc("masters_npc_stone_fracture", "release")
+        owner = self.shot("masters_art_0_first_active.png")
+        result = self.curate()
+        self.assertEqual({Path(frame["sourcePath"]).name for frame in result["frames"]}, {valid.name, owner.name})
+        self.assertEqual(result["selectedMetadataCount"], 1)
+        self.assertEqual(result["coverage"][-2]["capturedPhases"], [])
+        self.assertIn("reply_warning", result["coverage"][-2]["missingCapturePhases"])
+        self.assertEqual(len(result["excludedNpcCaptures"]), 1)
+        exclusion = result["excludedNpcCaptures"][0]
+        self.assertEqual(exclusion["reasonCode"], "native_render_failure")
+        self.assertEqual(exclusion["sourcePath"], failed.relative_to(self.root).as_posix())
+        self.assertEqual(exclusion["metadataSourcePath"], sidecar.relative_to(self.root).as_posix())
+        self.assertEqual(exclusion["metadataSha256"], hashlib.sha256(sidecar.read_bytes()).hexdigest())
+        self.assertEqual(len(exclusion["reason"]), curator.NPC_FAILURE_REASON_LIMIT)
+        self.assertNotIn("\n", exclusion["reason"])
+        self.assertFalse((self.root / self.output / "frames" / failed.name).exists())
+        self.assertFalse((self.root / self.output / "frames" / sidecar.name).exists())
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_early_failed_native_render_may_omit_null_extraction_fields_without_becoming_accepted(self):
+        _, sidecar = self.npc()
+        evidence = json.loads(sidecar.read_text())
+        for key in ("renderedTimeline", "modelPose", "renderedPosition"):
+            del evidence[key]
+        evidence.update(renderFailure="java.lang.AssertionError: Native NPC body submission and animated model passes must both occur",
+                        bodySubmits=0, modelPasses=0, bodyPoints=[], warnings=[],
+                        bodyPixels={"nonBlackPixels": 0, "chromaticPixels": 0, "distinctColors": 0, "luminanceRange": 0})
+        self.write_metadata(sidecar, evidence)
+        result = self.curate()
+        self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(result["selectedMetadataBytes"], 0)
+        self.assertEqual(len(result["excludedNpcCaptures"]), 1)
+        self.assertTrue(all(not row["capturedPhases"] for row in result["coverage"]))
+
+    def test_failure_marker_does_not_excuse_malformed_identity_schema_or_non_finite_data(self):
+        _, sidecar = self.npc()
+        mutations = (("name", "../outside"), ("phase", "release"), ("requestedTick", 17),
+                     ("renderFailure", " "), ("captureKind", "synthetic"), ("bodySubmits", "0"),
+                     ("camera", None), ("modelPose", "missing"), ("bodyPoints", None),
+                     ("warnings", {}), ("bodyPixels", []), ("renderedTimeline", []),
+                     ("renderedTimeline.age", "16.5"), ("renderedTimeline.frame", []),
+                     ("renderedTimeline.frame.pose.weight", "0.5"),
+                     ("serverObservation", None), ("serverObservation.attackId", 8),
+                     ("serverObservation.noAi", True), ("serverObservation.targetPosition", {}),
+                     ("extra", float("inf")))
+        for field, value in mutations:
+            with self.subTest(field=field):
+                evidence = self.metadata("masters_npc_gale_crosswind", "reply_warning")
+                evidence["renderFailure"] = "java.lang.AssertionError: Failed native render"
+                parent = evidence
+                keys = field.split(".")
+                for key in keys[:-1]:
+                    parent = parent[key]
+                parent[keys[-1]] = value
+                self.write_metadata(sidecar, evidence)
+                with self.assertRaises(curator.EvidenceError):
+                    self.curate()
+                self.assertFalse((self.root / self.output).exists())
+        valid = self.metadata("masters_npc_gale_crosswind", "reply_warning")
+        valid["renderFailure"] = "Failed native render"
+        sidecar.write_text(json.dumps(valid).replace('"name":', '"name": "duplicate", "name":', 1))
+        with self.assertRaisesRegex(curator.EvidenceError, "Duplicate"):
+            self.curate()
+        valid["extra"] = 1.0
+        sidecar.write_text(json.dumps(valid).replace('"extra": 1.0', '"extra": 1e999'))
+        with self.assertRaises(curator.EvidenceError):
+            self.curate()
+
+    def test_release_render_can_have_contemporaneous_pre_release_server_observation(self):
+        # The server observation and actual render extraction are distinct. A
+        # one-tick earlier observation must not be rewritten as release damage.
+        _, sidecar = self.npc(phase="release")
+        value = json.loads(sidecar.read_text())
+        value["serverObservation"].update(gameTick=121, age=21, pending=True, windup=True, targetHealth=200)
+        self.write_metadata(sidecar, value)
+        result = self.curate()
+        self.assertEqual(result["frames"][0]["renderedTimeline"]["age"], 22.5)
+        self.assertEqual(result["frames"][0]["serverObservation"]["age"], 21)
+        self.assertEqual(result["frames"][0]["serverObservation"]["targetHealth"], 200)
+
+    def test_metadata_mutation_after_validation_is_rejected_even_with_same_size_and_mtime(self):
+        _, sidecar = self.npc()
+        select = curator.select_masters
+
+        def mutate(groups, budget):
+            selected = select(groups, budget)
+            before = sidecar.stat()
+            sidecar.write_bytes(sidecar.read_bytes().replace(b'"nonBlackPixels": 100', b'"nonBlackPixels": 101'))
+            os.utime(sidecar, ns=(before.st_atime_ns, before.st_mtime_ns))
+            return selected
+
+        with patch.object(curator, "select_masters", side_effect=mutate):
+            with self.assertRaisesRegex(curator.EvidenceError, "changed after validation"):
+                self.curate()
+        self.assertFalse((self.root / self.output).exists())
+
+    def test_npc_sidecar_symlinks_and_duplicate_image_names_are_rejected(self):
+        image, sidecar = self.npc()
+        backup = self.root / "metadata.json"
+        sidecar.rename(backup)
+        sidecar.symlink_to(backup)
+        with self.assertRaisesRegex(curator.EvidenceError, "Symlink"):
+            self.curate()
+        sidecar.unlink()
+        backup.rename(sidecar)
+        self.shot(image.name, prefix="duplicate")
+        # Put a complete sidecar beside the duplicate as well.
+        duplicate = self.root / self.source / "duplicate" / sidecar.name
+        self.write_metadata(duplicate, json.loads(sidecar.read_text()))
+        with self.assertRaisesRegex(curator.EvidenceError, "Ambiguous duplicate"):
+            self.curate()
+
+    def test_old_marker_without_sidecar_inventory_cannot_authorize_npc_evidence(self):
+        self.npc()
+        stamp = json.loads((self.root / self.marker).read_text())
+        del stamp["preexistingNpcMetadata"]
+        (self.root / self.marker).write_text(json.dumps(stamp))
+        with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
+            self.curate()
 
 
 class ArticulatedCuratorTests(CuratorFixture):

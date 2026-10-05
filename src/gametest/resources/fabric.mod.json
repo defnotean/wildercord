@@ -285,7 +285,8 @@
     "rainshield-gametest.mixins.json",
     "ward-payment-gametest.mixins.json",
     "nursery-gather-gametest.mixins.json",
-    "masters-capture-gametest.mixins.json"
+    "masters-capture-gametest.mixins.json",
+    "native-diagnostics-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

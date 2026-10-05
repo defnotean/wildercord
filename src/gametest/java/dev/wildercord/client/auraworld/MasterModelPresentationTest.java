@@ -17,7 +17,7 @@ import org.joml.Vector3f;
 /**
  * Native model bridge contracts on the registered renderer and baked travelling rig. Synthetic
  * frame injection below tests the sampler/model boundary, not server combat or rendered footage.
- * SwordMasterTrialTest separately exercises accepted server timelines and real hit frames.
+ * A separate live-AI fixture below captures native NPC motion; these synthetic contracts stay separate.
  */
 public final class MasterModelPresentationTest implements FabricClientGameTest {
 	@Override
@@ -102,6 +102,7 @@ public final class MasterModelPresentationTest implements FabricClientGameTest {
 				check(deadItem.last().pose().equals(new org.joml.Matrix4f()), "Death also clears the sword's grip adjustment");
 			});
 		}
+		new dev.wildercord.aura.world.MasterSchoolMotionChecks().run(context);
 	}
 
 	private static void grip(AuraFighterRenderState state, boolean left) {

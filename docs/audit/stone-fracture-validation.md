@@ -26,3 +26,9 @@ After both fixture repairs, the independent reviewer reported no remaining findi
 The default 0.65 knockback resistance is preserved. An ordinary frontal melee hit can physically displace Stone and cancel Fracture on the following tick, while rear brace damage cancels immediately even without knockback. The fixture tests this distinction instead of suppressing real motion. Native gameplay and balance must establish whether that tradeoff produces the intended pressure.
 
 No local Loom build, native client run, visual capture or multiplayer balance acceptance is claimed. Native execution remains a separate GitHub gate. Compilation and authored scenarios are not evidence that those scenarios passed in a running client.
+
+## Subsequent native functional result
+
+On 2026-10-05, public commit `d9a831e962fa5a55b81c5aae5a4760d4e4ab804a` executed the complete `StoneFractureChecks` helper through the actual ordered `SwordMasterTrialTest` entrypoint in [run 37353975204, focused job 111911570017](https://github.com/defnotean/wildercord/actions/runs/37353975204/job/111911570017). All 30 defense/lifecycle scenarios, declined admissions and resource checks returned before the subsequent hit-receipt and presentation suites. The native AI selected and progressed the form; tests did not inject its private attack state.
+
+The overall focused job remains failed: a later Rising Cinders cancellation screenshot was captured while ordinary vanilla hand motion was still active. That unrelated failure does not erase the completed functional assertions, and their completion does not make the full job green. Actual Stone/Gale spectator phase captures are a separate pending visual gate; human and multiplayer balance acceptance remain open.

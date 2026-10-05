@@ -1,5 +1,6 @@
 package dev.wildercord.gametest;
 
+import dev.wildercord.Wildercord;
 import dev.wildercord.cast.CinderWarden;
 import dev.wildercord.cast.Reactions;
 import dev.wildercord.cast.Shields;
@@ -17,15 +18,19 @@ import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
+import dev.wildercord.world.dungeons.AstralObservatoryPiece;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
@@ -35,11 +40,15 @@ import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -62,12 +71,16 @@ import java.util.Set;
  * <p>Runs in the full suite; skipped when {@code WILDERCORD_TOUR_ONLY} or {@code WILDERCORD_CORDS_ONLY} is set.</p>
  */
 public class WildercordDungeonsTest implements FabricClientGameTest {
+	private static final long WORLD_SEED = 811L;
+	private static final int ASTRAL_SEARCH_RADIUS = 8;
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		if (System.getenv("WILDERCORD_TOUR_ONLY") != null || System.getenv("WILDERCORD_CORDS_ONLY") != null || System.getenv("WILDERCORD_SHOWCASE") != null) {
 			return;
 		}
-		try (TestSingleplayerContext world = context.worldBuilder().setUseConsistentSettings(false).create()) {
+		try (TestSingleplayerContext world = context.worldBuilder().setUseConsistentSettings(false)
+				.adjustSettings(settings -> settings.setSeed(Long.toString(WORLD_SEED))).create()) {
 			context.waitTicks(60);
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");
@@ -417,9 +430,94 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ the Astral Observatory and the Star-Eater
 
+	private record AstralSite(BlockPos command, BoundingBox bounds, BlockPos altar, int domeSurface) {}
+
+	/** Probe normal outer-End terrain without loading candidates or bypassing the registered structure's rules. */
+	private static AstralSite findAstralSite(ServerLevel level) {
+		var source = level.getChunkSource();
+		var generator = source.getGenerator();
+		var randomState = source.randomState();
+		var astral = level.registryAccess().lookupOrThrow(Registries.STRUCTURE)
+			.getOrThrow(ResourceKey.create(Registries.STRUCTURE, Identifier.parse("wildercord:astral_observatory")));
+		var habitat = generator.getBiomeSource().findBiomeHorizontal(2048, 64, 2048, 1024, 32,
+			astral.value().biomes()::contains, RandomSource.create(WORLD_SEED), true, randomState);
+		check(habitat != null, "No allowed Astral habitat within 1024 blocks of (2048, 64, 2048), seed=" + level.getSeed());
+		var origin = ChunkPos.containing(habitat.getFirst());
+		var sampler = randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED);
+		int probes = 0;
+		String lastRejected = "none";
+		Wildercord.LOGGER.info("ASTRAL_FIXTURE search seed={} habitat={} radiusChunks={} maxProbes={}",
+			level.getSeed(), habitat.getFirst(), ASTRAL_SEARCH_RADIUS, (2 * ASTRAL_SEARCH_RADIUS + 1) * (2 * ASTRAL_SEARCH_RADIUS + 1));
+		for (int radius = 0; radius <= ASTRAL_SEARCH_RADIUS; radius++) {
+			for (int dx = -radius; dx <= radius; dx++) {
+				for (int dz = -radius; dz <= radius; dz++) {
+					if (Math.max(Math.abs(dx), Math.abs(dz)) != radius) continue;
+					var chunk = new ChunkPos(origin.x() + dx, origin.z() + dz);
+					probes++;
+					var start = astral.value().generate(astral, level.dimension(), level.registryAccess(), generator,
+						generator.getBiomeSource(), sampler, randomState, level.getStructureTemplateManager(), level.getSeed(),
+						chunk, 0, level, astral.value().biomes()::contains);
+					if (!start.isValid()) {
+						// The rejected start has no piece: label this diagnostic height as the chunk center, not the dome.
+						if (probes <= 4 || probes % 32 == 0 || probes == (2 * ASTRAL_SEARCH_RADIUS + 1) * (2 * ASTRAL_SEARCH_RADIUS + 1)) {
+							int centerSurface = generator.getFirstOccupiedHeight(chunk.getMiddleBlockX(), chunk.getMiddleBlockZ(),
+								Heightmap.Types.WORLD_SURFACE_WG, level, randomState);
+							lastRejected = "chunk=" + chunk + " centerSurface=" + centerSurface;
+							Wildercord.LOGGER.info("ASTRAL_FIXTURE rejected seed={} probe={} {}", level.getSeed(), probes, lastRejected);
+						}
+						continue;
+					}
+					check(start.getPieces().size() == 1 && start.getPieces().getFirst() instanceof AstralObservatoryPiece,
+						"Registered Astral start should contain its authored piece, seed=" + level.getSeed() + " chunk=" + chunk);
+					var piece = (AstralObservatoryPiece) start.getPieces().getFirst();
+					BlockPos altar = piece.localPosition(20, AstralObservatoryPiece.F + 1, 60);
+					int domeSurface = generator.getFirstOccupiedHeight(altar.getX(), altar.getZ(), Heightmap.Types.WORLD_SURFACE_WG, level, randomState);
+					var site = new AstralSite(new BlockPos(chunk.getMinBlockX(), 64, chunk.getMinBlockZ()), start.getBoundingBox(), altar, domeSurface);
+					Wildercord.LOGGER.info("ASTRAL_FIXTURE selected seed={} probe={} chunk={} command={} altar={} domeSurface={} minY={} bounds={}",
+						level.getSeed(), probes, chunk, site.command(), altar, domeSurface, level.getMinY(), site.bounds());
+					return site;
+				}
+			}
+		}
+		throw new AssertionError("No valid registered Astral start after " + probes + " probes, seed=" + level.getSeed()
+			+ " habitat=" + habitat.getFirst() + " radiusChunks=" + ASTRAL_SEARCH_RADIUS + " lastRejected=" + lastRejected);
+	}
+
+	private static BlockPos buildAstral(ClientGameTestContext context, TestSingleplayerContext world) {
+		AstralSite site = world.getServer().computeOnServer(server -> findAstralSite(server.getLevel(Level.END)));
+		travel(world, Level.END, Vec3.atCenterOf(site.command()).add(0, 20, 0));
+		world.getServer().runOnServer(server -> {
+			ServerLevel level = server.getLevel(Level.END);
+			BoundingBox bounds = site.bounds();
+			for (int cx = bounds.minX() >> 4; cx <= bounds.maxX() >> 4; cx++) {
+				for (int cz = bounds.minZ() >> 4; cz <= bounds.maxZ() >> 4; cz++) {
+					level.setChunkForced(cx, cz, true);
+					level.getChunk(cx, cz);
+				}
+			}
+			boolean[] succeeded = {false};
+			int[] result = {0};
+			server.getCommands().performPrefixedCommand(server.createCommandSourceStack()
+				.withCallback((ok, value) -> { succeeded[0] = ok; result[0] = value; }),
+				"execute in minecraft:the_end run place structure wildercord:astral_observatory "
+					+ site.command().getX() + " " + site.command().getY() + " " + site.command().getZ());
+			String evidence = "seed=" + level.getSeed() + " command=" + site.command() + " altar=" + site.altar()
+				+ " domeSurface=" + site.domeSurface() + " bounds=" + bounds;
+			Wildercord.LOGGER.info("ASTRAL_FIXTURE placed success={} result={} {}", succeeded[0], result[0], evidence);
+			check(succeeded[0] && result[0] == 1, "Registered Astral placement command should succeed: " + evidence);
+			check(level.getBlockEntity(site.altar()) instanceof DungeonAltarBlockEntity altar
+				&& altar.getBlockState().getValue(DungeonAltarBlock.KIND) == DungeonAltarBlock.Kind.ASTRAL,
+				"Registered Astral placement should build its predicted altar: " + evidence);
+			// Suppress automatic waking before a tick can run; the unchanged encounter test wakes its boss by hand.
+			level.setBlock(site.altar(), level.getBlockState(site.altar()).setValue(DungeonAltarBlock.AWAKE, true), Block.UPDATE_ALL);
+		});
+		context.waitTicks(40);
+		return site.altar();
+	}
+
 	private static void astralObservatory(ClientGameTestContext context, TestSingleplayerContext world) {
 		ResourceKey<Level> end = Level.END;
-		BlockPos altar = build(context, world, end, "astral_observatory", new BlockPos(8, 64, 8), DungeonAltarBlock.Kind.ASTRAL);
+		BlockPos altar = buildAstral(context, world);
 		wards(world, end, altar, "the Astral Observatory");
 		world.getServer().runCommand("execute in minecraft:the_end run kill @e[type=minecraft:ender_dragon]");
 		world.getServer().runOnServer(server -> {

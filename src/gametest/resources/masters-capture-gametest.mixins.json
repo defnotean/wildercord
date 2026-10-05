@@ -2,6 +2,7 @@
   "required": true,
   "package": "dev.wildercord.gametest.mixin",
   "compatibilityLevel": "JAVA_25",
-  "client": ["MastersHandRenderProbeMixin", "MastersBodyRenderProbeMixin", "MastersHudRenderProbeMixin"],
+  "client": ["MastersHandRenderProbeMixin", "MastersBodyRenderProbeMixin", "MastersHudRenderProbeMixin",
+    "MastersNpcRenderProbeMixin", "MastersNpcModelProbeMixin", "MastersNpcWarningProbeMixin"],
   "injectors": {"defaultRequire": 1}
 }
