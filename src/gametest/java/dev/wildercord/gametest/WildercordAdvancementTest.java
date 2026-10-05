@@ -128,10 +128,16 @@ public class WildercordAdvancementTest implements FabricClientGameTest {
 		expect(server, player, "discovery/secret", true, "after finding Sunfall");
 		expect(server, player, "discovery/all_secrets", false, "after finding one secret");
 
+		// Wearing a Cord: a better one counts for the ones before it.
+		Spellbooks.setCord(player, new ItemStack(WildercordItems.COPPER_CORD));
+		expect(server, player, "cords/twine", true, "after wearing a Copper Cord");
+		expect(server, player, "cords/copper", true, "after wearing a Copper Cord");
+		expect(server, player, "cords/amethyst", false, "after wearing a Copper Cord");
+		expect(server, player, "root", true, "after wearing a Cord");
+
 		// Forming a Heart Circle.
 		player.setAttached(WildercordAttachments.CIRCLES, 0);
 		player.setAttached(WildercordAttachments.CONDENSED, 600);
-		Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));
 		HeartCircles.form(player);
 		expect(server, player, "heart/circle_1", true, "after forming the 1st Circle");
 		expect(server, player, "heart/circle_2", false, "after forming the 1st Circle");
@@ -151,13 +157,6 @@ public class WildercordAdvancementTest implements FabricClientGameTest {
 		Spellbooks.set(player, book);
 		expect(server, player, "discovery/runes_100", true, "after learning every rune");
 		expect(server, player, "discovery/runes_all", true, "after learning every rune");
-
-		// Wearing a Cord: a better one counts for the ones before it.
-		Spellbooks.setCord(player, new ItemStack(WildercordItems.COPPER_CORD));
-		expect(server, player, "cords/twine", true, "after wearing a Copper Cord");
-		expect(server, player, "cords/copper", true, "after wearing a Copper Cord");
-		expect(server, player, "cords/amethyst", false, "after wearing a Copper Cord");
-		expect(server, player, "root", true, "after wearing a Cord");
 
 		// Casting: any spell, then a long one.
 		Advancements.cast(player, 3);

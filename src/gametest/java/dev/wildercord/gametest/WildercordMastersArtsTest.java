@@ -28,7 +28,7 @@ public final class WildercordMastersArtsTest implements FabricClientGameTest {
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(40);
 			world.getServer().runCommand("gamerule minecraft:spawn_mobs false");
-			world.getServer().runCommand("gamerule minecraft:natural_regeneration false");
+			world.getServer().runCommand("gamerule minecraft:natural_health_regeneration false");
 			world.getServer().runCommand("fill -8 99 -8 8 99 8 minecraft:stone");
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();

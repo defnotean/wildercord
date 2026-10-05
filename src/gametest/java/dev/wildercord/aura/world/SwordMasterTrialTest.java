@@ -13,9 +13,12 @@ import dev.wildercord.spell.SpellCompiler;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.cast.Statuses;
 import dev.wildercord.cast.Targets;
+import dev.wildercord.content.WildercordItems;
+import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -39,6 +42,7 @@ import net.minecraft.world.level.block.Blocks;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /** Real entity/damage-path checks. A benchmark fixture, not proof of a subjective difficulty multiple. */
 public final class SwordMasterTrialTest implements FabricClientGameTest {
@@ -51,6 +55,7 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 	private Challenger ally, spectator;
 	private float before;
 	private BlockPos stage;
+	private long chargeStarted, attackStarted;
 
 	private static void check(boolean result, String message) {
 		if (!result) throw new AssertionError(message);
@@ -144,6 +149,14 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 				master.removeAllEffects();
 				master.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 1200, 3), player);
 				check(master.hasEffect(MobEffects.SLOWNESS) && !master.staggered(), "An enrolled slow hinders movement without creating permanent stagger");
+				// The completed damage probes can leave real knockback; start this separate aim scenario on its marked positions.
+				player.teleportTo(level, stage.getX() + .5, 181, stage.getZ() + .5, Set.of(), 0, 0, false);
+				player.setDeltaMovement(Vec3.ZERO);
+				master.snapTo(stage.getX() + .5, 181, stage.getZ() + 3.5, 180, 0);
+				master.setDeltaMovement(Vec3.ZERO);
+				check(Math.abs(master.distanceTo(player) - 3) < .001, "The charged-caster scenario starts three blocks away" + combatState(player));
+				// Normal charge upkeep fizzles a caster without an equipped Cord, even when AI is advanced manually.
+				Spellbooks.setCord(player, new ItemStack(WildercordItems.TWINE_CORD));
 				master.setTarget(player);
 				charge(player);
 				before = player.getHealth();
@@ -151,45 +164,51 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 			context.waitTicks(21);
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				assertChargedTarget(player);
 				master.customServerAiStep(player.level());
-				check(master.state(AuraFighter.WINDUP), "The close charged caster triggers a visible windup");
-				check(master.attackAnimation() == MastersRules.Move.BREAK_CAST.ordinal() + 1 && master.attackElapsed(0) == 0
-					&& master.attackTellTicks() == MastersRules.Move.BREAK_CAST.tell, "The synced body animation starts with the server's exact move and tell");
-				check(player.getHealth() == before, "Beginning the tell deals no immediate harm");
+				check(master.state(AuraFighter.WINDUP), "The close charged caster triggers a visible windup" + combatState(player));
+				assertAttackStart(player);
+				check(player.getHealth() == before, "Beginning the tell deals no immediate harm" + combatState(player));
 				Effects.withSource(player, () -> check(Statuses.interrupt(master) && master.attackAnimation() == 0 && master.attackAimPitch() == 0,
-					"A correctly timed enrolled interrupt cancels attack and body animation together"));
+					"A correctly timed enrolled interrupt cancels attack and body animation together" + combatState(player)));
 			});
 			context.waitTicks(21);
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				assertChargedTarget(player);
 				master.customServerAiStep(player.level());
+				assertAttackStart(player);
 				Effects.withSource(player, () -> check(master.state(AuraFighter.WINDUP) && !Statuses.interrupt(master),
-					"A fresh tell survives repeated interruption during the shared 160-tick immunity"));
+					"A fresh tell survives repeated interruption during the shared 160-tick immunity" + combatState(player)));
 			});
-			context.waitTicks(MastersRules.Move.BREAK_CAST.tell - MastersRules.AIM_LOCK);
-			world.getServer().runOnServer(server -> {
-				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			atAttackTick(world, MastersRules.Move.BREAK_CAST.tell - MastersRules.AIM_LOCK, player -> {
 				master.customServerAiStep(player.level()); // Fix the aim while the player is still in front.
 				player.teleportTo(player.level(), stage.getX() + 3.5, 181, stage.getZ() + 0.5, Set.of(), 0, 0, false);
 			});
-			context.waitTicks(MastersRules.AIM_LOCK);
-			world.getServer().runOnServer(server -> {
-				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			atAttackTick(world, MastersRules.Move.BREAK_CAST.tell, player -> {
+				assertLiveCharge(player);
 				master.customServerAiStep(player.level());
-				check(player.getHealth() == before, "Sidestepping after aim lock evades the thrust");
-				check(master.attackAnimation() != 0 && master.attackElapsed(0) == master.attackTellTicks(),
-					"The active animation frame is the exact server strike frame, and recovery remains visible");
-				check(player.hasAttached(WildercordAttachments.CHARGE), "A missed interrupt cannot cancel a cast");
+				check(player.getHealth() == before, "Sidestepping after aim lock evades the thrust" + combatState(player));
+				check(master.attackAnimation() == MastersRules.Move.BREAK_CAST.ordinal() + 1 && master.attackElapsed(0) == master.attackTellTicks(),
+					"The active animation frame is the exact server strike frame, and recovery remains visible" + combatState(player));
+				check(player.hasAttached(WildercordAttachments.CHARGE), "A missed interrupt cannot cancel a cast" + combatState(player));
+				assertLiveCharge(player);
 				player.teleportTo(player.level(), stage.getX() + .5, 181, stage.getZ() + .5, Set.of(), 0, 0, false);
 				master.setTarget(player);
 			});
-			context.waitTicks(MastersRules.Move.BREAK_CAST.recovery + 1);
-			world.getServer().runOnServer(server -> master.customServerAiStep((ServerLevel) master.level()));
-			context.waitTicks(MastersRules.Move.BREAK_CAST.tell);
-			world.getServer().runOnServer(server -> {
-				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			atAttackTick(world, MastersRules.Move.BREAK_CAST.tell + MastersRules.Move.BREAK_CAST.recovery + 1, player -> {
+				assertChargedTarget(player);
 				master.customServerAiStep(player.level());
-				check(!player.hasAttached(WildercordAttachments.CHARGE), "An actual landed spellbreaker thrust cancels a live charge");
+				assertAttackStart(player);
+			});
+			atAttackTick(world, MastersRules.Move.BREAK_CAST.tell, player -> {
+				assertChargedTarget(player);
+				float healthBeforeStrike = player.getHealth();
+				master.customServerAiStep(player.level());
+				check(master.attackAnimation() == MastersRules.Move.BREAK_CAST.ordinal() + 1 && master.attackElapsed(0) == master.attackTellTicks(),
+					"The landed spellbreaker releases on its exact server strike frame" + combatState(player));
+				check(player.getHealth() < healthBeforeStrike, "The real spellbreaker thrust damages its charged target" + combatState(player));
+				check(!player.hasAttached(WildercordAttachments.CHARGE), "An actual landed spellbreaker thrust cancels a live charge" + combatState(player));
 				charge(player);
 				check(!Statuses.interrupt(player) && player.hasAttached(WildercordAttachments.CHARGE), "Shared interrupt immunity preserves the caster's next opportunity");
 				player.removeAttached(WildercordAttachments.CHARGE);
@@ -265,9 +284,54 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 		return player;
 	}
 
-	private static void charge(ServerPlayer player) {
+	private void charge(ServerPlayer player) {
 		long now = player.level().getGameTime();
+		chargeStarted = now;
 		player.setAttached(WildercordAttachments.CHARGE, new WildercordAttachments.Charge(0, now, List.of("bolt", "harm"), 30, 0, 0, now + 30, false));
+	}
+
+	private void assertLiveCharge(ServerPlayer player) {
+		var charge = player.getAttached(WildercordAttachments.CHARGE);
+		check(Spellbooks.tier(player) != null && charge != null && charge.start() == chargeStarted,
+			"The original charge remains live on a properly equipped caster" + combatState(player));
+	}
+
+	private void assertChargedTarget(ServerPlayer player) {
+		assertLiveCharge(player);
+		check(master.getTarget() == player && master.canHarmParticipant(player) && master.distanceTo(player) <= 4
+			&& !MastersRules.needsCrescent(master.distanceTo(player), player.getBoundingBox().getCenter().y - master.slashOrigin().y),
+			"The live charged challenger is the master's close, grounded target" + combatState(player));
+	}
+
+	private void assertAttackStart(ServerPlayer player) {
+		attackStarted = player.level().getGameTime();
+		check(master.attackAnimation() == MastersRules.Move.BREAK_CAST.ordinal() + 1 && master.attackElapsed(0) == 0
+			&& master.attackTellTicks() == MastersRules.Move.BREAK_CAST.tell,
+			"The synced body animation starts with the server's exact move and tell" + combatState(player));
+	}
+
+	/** Observe and advance the real AI in the same server callback at its accepted begin tick plus the requested offset. */
+	private void atAttackTick(TestSingleplayerContext world, int elapsed, Consumer<ServerPlayer> action) {
+		long expected = attackStarted + elapsed;
+		world.getServer().waitFor(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			long now = player.level().getGameTime();
+			if (now < expected) return false;
+			check(now == expected, "The server-clock observation must not skip the requested attack frame: expected=" + expected + combatState(player));
+			action.accept(player);
+			return true;
+		}, elapsed + 20);
+	}
+
+	private String combatState(ServerPlayer player) {
+		long now = player.level().getGameTime();
+		var charge = player.getAttached(WildercordAttachments.CHARGE);
+		return " [time=" + now + ", attackStarted=" + attackStarted + ", move=" + master.attackAnimation()
+			+ ", elapsed=" + master.attackElapsed(0) + ", tell=" + master.attackTellTicks() + ", windup=" + master.state(AuraFighter.WINDUP)
+			+ ", tier=" + Spellbooks.tier(player) + ", charge=" + charge + ", chargeAge=" + (charge == null ? -1 : now - charge.start())
+			+ ", target=" + (master.getTarget() == null ? null : master.getTarget().getUUID()) + ", distance=" + master.distanceTo(player)
+			+ ", masterPosition=" + master.position() + ", masterVelocity=" + master.getDeltaMovement()
+			+ ", playerPosition=" + player.position() + ", playerVelocity=" + player.getDeltaMovement() + "]";
 	}
 
 	private static void dress(ServerPlayer player) {

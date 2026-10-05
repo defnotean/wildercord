@@ -62,7 +62,7 @@ public final class PartyMutationSafetyTest implements FabricClientGameTest {
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(40);
 			world.getServer().runCommand("gamerule minecraft:spawn_mobs false");
-			world.getServer().runCommand("gamerule minecraft:natural_regeneration false");
+			world.getServer().runCommand("gamerule minecraft:natural_health_regeneration false");
 			world.getServer().runCommand("fill -4 99 -4 4 99 4 minecraft:stone");
 			world.getServer().runCommand("fill -4 100 -4 4 106 9 minecraft:air");
 			world.getServer().runOnServer(server -> {
