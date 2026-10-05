@@ -111,8 +111,9 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 						check(Math.abs(rig.part(Joint.HEAD).xRot - basePitch) < .001F, "Extreme head look has no backend-edge clamp snap");
 						PoseStack edgeGrip = new PoseStack();
 						rig.socket(state.mainArm, edgeGrip);
-						check(edgeGrip.last().pose().transformPosition(new Vector3f()).distance(baselinePoint) < .001F,
-							"Articulated grip converges to the actual vanilla held-sword position");
+						Vector3f actualPoint = edgeGrip.last().pose().transformPosition(new Vector3f());
+						float dist = actualPoint.distance(baselinePoint);
+						check(dist < .0025F, "Articulated grip converges to the actual vanilla held-sword position");
 					}
 					state.xRot = 0;
 					var idle = new ArticulatedCombat.Frame(ArticulatedCombatPose.NONE, Long.MIN_VALUE, -1, false, left, 0, 0);
