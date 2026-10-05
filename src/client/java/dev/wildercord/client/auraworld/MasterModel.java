@@ -14,21 +14,29 @@ import net.minecraft.world.item.ItemStack;
 
 /** The authored travelling rig, with original, server-timed master combat rather than a held windup. */
 public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
-	public record Frame(MasterAnimationRules.Pose pose, boolean leftHanded) {}
+	public record Frame(MasterAnimationRules.Pose pose, boolean leftHanded, long activation, int move) {
+		public Frame(MasterAnimationRules.Pose pose, boolean leftHanded) { this(pose, leftHanded, Long.MIN_VALUE, 0); }
+		public boolean sameActivation(Frame other) { return other != null && activation == other.activation && move == other.move && leftHanded == other.leftHanded; }
+	}
 	public static final RenderStateDataKey<Frame> FRAME = RenderStateDataKey.create(() -> "wildercord:master_motion");
 	private final ModelPart root, cloak, hilt;
+	private final dev.wildercord.client.combat.ArticulatedRig articulated;
 
 	public MasterModel(ModelPart root) {
 		super(root);
 		this.root = root;
 		cloak = body.getChild("cloak");
 		hilt = body.getChild("scabbard").getChild("hilt");
+		articulated = new dev.wildercord.client.combat.ArticulatedRig(false, true);
+		articulated.masterAccessories(this);
+		articulated.attach(root);
 	}
 
 	@Override
 	public void setupAnim(AuraFighterRenderState state) {
 		// Models are reused between entities and render passes. Reset accessories as well as limbs,
 		// and explicitly restore hilt visibility, so cancellation/reuse cannot retain a combat pose.
+		articulated.restoreRigid(this);
 		root.getAllParts().forEach(ModelPart::resetPose);
 		hilt.visible = state.drawn < .5F;
 		super.setupAnim(state);
@@ -43,6 +51,7 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 		sword.xRot = Mth.lerp(ready, sword.xRot, -.58F + sword.xRot * .15F);
 		sword.yRot = Mth.lerp(ready, sword.yRot, -.12F * side);
 		offhand.xRot = Mth.lerp(ready * .4F, offhand.xRot, -.22F);
+		if (dev.wildercord.client.combat.ArticulatedCombat.apply(articulated, this, state)) return;
 		if (frame == null || frame.pose().weight() <= 0) return;
 		var pose = frame.pose();
 		float weight = pose.weight();
@@ -75,6 +84,7 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 
 	/** Uses vanilla's held-item attachment and only rotates the blade around its existing hilt. */
 	public static void heldSword(ArmedEntityRenderState state, HumanoidArm arm, ItemStack item, PoseStack stack) {
+		if (dev.wildercord.client.combat.ArticulatedCombat.frame(state) != null) return;
 		if (!(state instanceof AuraFighterRenderState fighter) || fighter.deathTime > 0 || fighter.isUpsideDown
 			|| arm != state.mainArm || !item.is(ItemTags.SWORDS)) return;
 		Frame frame = state.getData(FRAME);
@@ -87,6 +97,15 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 		stack.rotateDegrees(Axis.XP, tilt);
 		stack.translate(0, -y, -z);
 	}
+
+	@Override
+	public void translateToHand(AuraFighterRenderState state, HumanoidArm arm, PoseStack stack) {
+		var frame = dev.wildercord.client.combat.ArticulatedCombat.frame(state);
+		if (frame == null) { super.translateToHand(state, arm, stack); return; }
+		dev.wildercord.client.combat.ArticulatedCombat.translateHeld(articulated, this, state, arm, stack);
+	}
+
+	public dev.wildercord.client.combat.ArticulatedRig articulatedRig() { return articulated; }
 
 	private static void anchor(ModelPart part, MasterAnimationRules.Joint body, float lower) {
 		var initial = part.getInitialPose();

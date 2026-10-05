@@ -13,6 +13,8 @@
 		"CameraMixin",
 		"AvatarRenderStateMixin",
 		"PlayerModelMixin",
+		"ModelPartChildrenAccessor",
+		"ArticulatedPlayerModelMixin",
 		"LivingEntityRendererMixin",
 		"ClientLevelMixin",
 		"AvatarRendererStyleMixin",

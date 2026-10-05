@@ -1,7 +1,8 @@
-"""Copy a bounded, byte-identical subset of this run's native Masters screenshots.
+"""Copy a bounded, byte-identical subset of this run's native suite screenshots.
 
 Run --prepare before the native suites and run again afterwards with the same
---marker. This report is visual evidence only: test_manifest.py owns gate status.
+--marker and --suite (Masters by default). This report is visual evidence only:
+test_manifest.py owns gate status.
 No images are rendered, resized, decoded, or re-encoded here.
 """
 import argparse
@@ -23,6 +24,11 @@ BUDGET = 14_000_000
 MANIFEST_RESERVE = 128_000
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 SUITE = "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
+ARTICULATED_SUITE = "dev.wildercord.client.combat.ArticulatedCombatPresentationTest"
+SUITES = {"masters": SUITE, "articulated": ARTICULATED_SUITE}
+ARTICULATED_HANDS = ("left", "right")
+SAMPLE_POSITIONS = ("first_available", "middle_available", "last_available")
+ARTICULATED_PATTERN = re.compile(r"articulated_live_(left|right)_(first|third)_frame_([0-8])\.png\Z")
 FIRST_FORMS = (
     "kindling_draw", "frostbite", "crackle", "cutting_breeze", "rockbreaker",
     "thorn_lash", "void_cut", "star_needle", "echo_cut", "bloodletting",
@@ -121,18 +127,36 @@ def encode(value):
     return (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
 
-def prepare(root, screenshots, marker, identity):
+def suite_name(suite):
+    if suite not in SUITES:
+        raise EvidenceError(f"Unsupported screenshot suite: {suite}")
+    return SUITES[suite]
+
+
+def prepare(root, screenshots, marker, identity, *, suite="masters"):
+    entrypoint = suite_name(suite)
     marker_path = safe_path(root, marker)
     prior = [path.relative_to(root).as_posix() for path in source_files(root, screenshots)]
     marker_path.parent.mkdir(parents=True, exist_ok=True)
     # Never overwrite a marker from a prior attempt.
     with marker_path.open("xb") as handle:
         handle.write(encode({"schemaVersion": 1, "provenance": identity,
+                             "suiteGroup": suite, "suite": entrypoint,
                              "screenshots": Path(screenshots).as_posix(),
                              "startedNs": time.time_ns(), "preexistingPngs": prior}))
 
 
-def describe(filename):
+def describe(filename, *, suite="masters"):
+    suite_name(suite)
+    if suite == "articulated":
+        match = ARTICULATED_PATTERN.fullmatch(filename)
+        if not match:
+            return None
+        hand, view, frame = match.groups()
+        return {"scene": "articulated_live_" + hand, "hand": hand, "view": VIEWS[view],
+                "captureKind": "native_local_owner_accepted_input_combat",
+                "frameLabel": "frame_" + frame, "phase": "sample", "sampleIndex": int(frame),
+                "phaseBasis": "filename_loop_index_only"}
     match = PATTERN.fullmatch(filename)
     if not match:
         return None
@@ -167,41 +191,7 @@ def unchanged(before, after):
                for name in ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns"))
 
 
-def curate(root, screenshots, marker, output, identity, budget=BUDGET):
-    if not MANIFEST_RESERVE <= budget <= BUDGET:
-        raise EvidenceError(f"Budget must be between {MANIFEST_RESERVE} and {BUDGET} bytes")
-    destination = safe_path(root, output)
-    source = safe_path(root, screenshots)
-    if destination.exists():
-        raise EvidenceError("Output already exists; refusing stale or mixed-run artifacts")
-    if destination.is_relative_to(source) or source.is_relative_to(destination):
-        raise EvidenceError("Source and output directories must be separate")
-    stamp = json.loads(safe_path(root, marker).read_text(encoding="utf-8"))
-    if (stamp.get("schemaVersion") != 1 or stamp.get("provenance") != identity
-            or stamp.get("screenshots") != Path(screenshots).as_posix()
-            or type(stamp.get("startedNs")) is not int
-            or not isinstance(stamp.get("preexistingPngs"), list)
-            or any(not isinstance(item, str) for item in stamp["preexistingPngs"])):
-        raise EvidenceError("Freshness marker does not match this run and screenshot root")
-    old_paths = set(stamp["preexistingPngs"])
-    groups = {}
-    stale = ignored = 0
-    names = set()
-    for path in source_files(root, screenshots):
-        info = describe(path.name)
-        if info is None:
-            ignored += 1
-            continue
-        relative = path.relative_to(root).as_posix()
-        if relative in old_paths or path.stat().st_mtime_ns < stamp["startedNs"]:
-            stale += 1
-            continue
-        if path.name in names:
-            raise EvidenceError(f"Ambiguous duplicate screenshot name: {path.name}")
-        names.add(path.name)
-        # Oversized candidates remain visible as captured but cannot be selected.
-        info.update(sourcePath=relative, artifactPath="frames/" + path.name, bytes=path.stat().st_size)
-        groups.setdefault((info["scene"], info["view"], info["phase"]), []).append(info)
+def select_masters(groups, budget):
     selected = []
     coverage = []
     remaining = budget - MANIFEST_RESERVE
@@ -230,10 +220,89 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET):
             coverage.append({"scene": scene, "view": view, "capturedPhases": captured,
                              "selectedFrameLabels": chosen, "missingCapturePhases": missing,
                              "omittedForBudgetPhases": omitted})
+    return selected, coverage
+
+
+def select_articulated(groups, budget):
+    selected = []
+    coverage = []
+    remaining = budget - MANIFEST_RESERVE
+    for hand in ARTICULATED_HANDS:
+        scene = "articulated_live_" + hand
+        for view in VIEWS.values():
+            options = sorted(groups.get((scene, view, "sample"), []),
+                             key=lambda item: (item["sampleIndex"], item["sourcePath"]))
+            chosen = []
+            omitted = []
+            positions = {}
+            # One or two actual captures may serve multiple sample positions.
+            # Copy and charge each original PNG only once; do not invent frames.
+            candidates = {}
+            if options:
+                for position, candidate in zip(SAMPLE_POSITIONS,
+                                               (options[0], options[len(options) // 2], options[-1])):
+                    positions[position] = candidate["frameLabel"]
+                    candidates.setdefault(candidate["frameLabel"], (candidate, []))[1].append(position)
+            for candidate, sample_positions in candidates.values():
+                if candidate["bytes"] > remaining:
+                    omitted.extend(sample_positions)
+                    continue
+                selected.append({**candidate, "samplePositions": sample_positions})
+                chosen.append(candidate["frameLabel"])
+                remaining -= candidate["bytes"]
+            indices = [item["sampleIndex"] for item in options]
+            coverage.append({"scene": scene, "hand": hand, "view": view,
+                             "capturedSampleIndices": indices,
+                             "uncapturedLoopIndices": [index for index in range(9) if index not in indices],
+                             "availableSamplePositions": positions, "selectedFrameLabels": chosen,
+                             "missingSamplePositions": [] if options else list(SAMPLE_POSITIONS),
+                             "omittedForBudgetSamplePositions": omitted})
+    return selected, coverage
+
+
+def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite="masters"):
+    entrypoint = suite_name(suite)
+    if not MANIFEST_RESERVE <= budget <= BUDGET:
+        raise EvidenceError(f"Budget must be between {MANIFEST_RESERVE} and {BUDGET} bytes")
+    destination = safe_path(root, output)
+    source = safe_path(root, screenshots)
+    if destination.exists():
+        raise EvidenceError("Output already exists; refusing stale or mixed-run artifacts")
+    if destination.is_relative_to(source) or source.is_relative_to(destination):
+        raise EvidenceError("Source and output directories must be separate")
+    stamp = json.loads(safe_path(root, marker).read_text(encoding="utf-8"))
+    if (stamp.get("schemaVersion") != 1 or stamp.get("provenance") != identity
+            or stamp.get("suiteGroup") != suite or stamp.get("suite") != entrypoint
+            or stamp.get("screenshots") != Path(screenshots).as_posix()
+            or type(stamp.get("startedNs")) is not int
+            or not isinstance(stamp.get("preexistingPngs"), list)
+            or any(not isinstance(item, str) for item in stamp["preexistingPngs"])):
+        raise EvidenceError("Freshness marker does not match this run, suite and screenshot root")
+    old_paths = set(stamp["preexistingPngs"])
+    groups = {}
+    stale = ignored = 0
+    names = set()
+    for path in source_files(root, screenshots):
+        info = describe(path.name, suite=suite)
+        if info is None:
+            ignored += 1
+            continue
+        relative = path.relative_to(root).as_posix()
+        if relative in old_paths or path.stat().st_mtime_ns < stamp["startedNs"]:
+            stale += 1
+            continue
+        if path.name in names:
+            raise EvidenceError(f"Ambiguous duplicate screenshot name: {path.name}")
+        names.add(path.name)
+        # Oversized candidates remain visible as captured but cannot be selected.
+        info.update(sourcePath=relative, artifactPath="frames/" + path.name, bytes=path.stat().st_size)
+        groups.setdefault((info["scene"], info["view"], info["phase"]), []).append(info)
+    selector = select_articulated if suite == "articulated" else select_masters
+    selected, coverage = selector(groups, budget)
     manifest = {
         "schemaVersion": 1, "artifactKind": "curated_native_visual_evidence_only",
         "status": "available" if selected else "unavailable", "provenance": identity,
-        "suite": SUITE, "sourceRoot": Path(screenshots).as_posix(),
+        "suiteGroup": suite, "suite": entrypoint, "sourceRoot": Path(screenshots).as_posix(),
         "freshness": {"method": "pre_run_marker; reject all preexisting paths and older mtimes",
                       "excludedStalePngs": stale, "ignoredOutOfScopePngs": ignored},
         "limits": {"totalBytesLimit": budget, "manifestReserveBytes": MANIFEST_RESERVE,
@@ -243,8 +312,8 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET):
                  "windup/settled are source filename labels; frame_N is only a timeline sample, "
                  "not an exact impact or phase boundary. Presence is not a gameplay pass.",
         "testVerdict": {"establishedByThisArtifact": False,
-                        "authoritativeArtifact": "masters-native-evidence",
-                        "authoritativeManifest": "masters-native-manifest.json",
+                        "authoritativeArtifact": f"{suite}-native-evidence",
+                        "authoritativeManifest": f"{suite}-native-manifest.json",
                         "note": "Existing native test manifest and all suite/shard gates are unchanged."},
         "unavailableRequestedCoverage": [
             {"coverage": "observer_client", "reason": "This suite has no observer-client screenshot capture."},
@@ -259,11 +328,35 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET):
         "selectedPngBytes": sum(frame["bytes"] for frame in selected),
         "selectedFrameCount": len(selected), "coverage": coverage, "frames": selected,
     }
+    if suite == "articulated":
+        manifest.update({
+            "basis": "Byte-identical source PNGs from real Spellcut input and its server-accepted timeline. "
+                     "Left/right denote the local owner's configured main hand; first-person and front "
+                     "third-person share that owning singleplayer client, never an observer. Screenshots "
+                     "exist only when the articulated body backend owns the sampled state. Loop indices "
+                     "and first/middle/last available samples prove neither exact impact nor recovery "
+                     "boundaries. Presence is not a gameplay pass.",
+            "unavailableRequestedCoverage": [
+                {"coverage": "observer_client", "reason": "This suite has no observer-client screenshot capture."},
+                {"coverage": "live_npc_combat", "reason": "The Master renderer bridge is probed synthetically; "
+                 "there is no live NPC attack screenshot capture."},
+                {"coverage": "synthetic_geometry_and_hitstop_screenshots", "reason": "Synthetic geometry, "
+                 "socket and hit-stop checks do not take screenshots; inspect the independent native verdict."},
+                {"coverage": "exact_impact_phase", "reason": "Capture loop indices do not prove exact impact timing."},
+                {"coverage": "exact_recovery_phase", "reason": "Last available capture is not a verified recovery boundary."},
+            ],
+            "selectionPolicy": "Left then right main hand; owner first-person then local-owner front third-person; "
+                               "first, middle (upper median), and last available frame index from 0..8. "
+                               "Copy each original only once even if it serves multiple sample positions; "
+                               "skip candidates exceeding remaining budget. Uncaptured loop indices are "
+                               "reported without implying every index must be captured. Other screenshots "
+                               "remain in the full artifact.",
+        })
     if not selected:
         manifest["unavailableReason"] = "No fresh eligible native PNG fits the budget; inspect coverage and full evidence."
     destination.parent.mkdir(parents=True, exist_ok=True)
     # Publish only a complete, verified directory. Never reuse old output files.
-    with tempfile.TemporaryDirectory(prefix=".masters-curation-", dir=destination.parent) as temp:
+    with tempfile.TemporaryDirectory(prefix=f".{suite}-curation-", dir=destination.parent) as temp:
         staging = Path(temp) / "artifact"
         (staging / "frames").mkdir(parents=True)
         for frame in selected:
@@ -292,6 +385,7 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--prepare", action="store_true")
+    parser.add_argument("--suite", choices=tuple(SUITES), default="masters")
     parser.add_argument("--screenshots", default="build/run/clientGameTest/screenshots")
     parser.add_argument("--marker", required=True, help="Unique repository-relative pre-run marker path")
     parser.add_argument("--output", help="New repository-relative curated artifact directory")
@@ -302,9 +396,9 @@ def main(argv=None):
     try:
         identity = provenance(ROOT, os.environ)
         if args.prepare:
-            prepare(ROOT, args.screenshots, args.marker, identity)
+            prepare(ROOT, args.screenshots, args.marker, identity, suite=args.suite)
         else:
-            result = curate(ROOT, args.screenshots, args.marker, args.output, identity, args.budget)
+            result = curate(ROOT, args.screenshots, args.marker, args.output, identity, args.budget, suite=args.suite)
             print(json.dumps({"output": args.output, "status": result["status"], "frames": len(result["frames"])}))
     except (EvidenceError, OSError, ValueError, subprocess.SubprocessError) as exc:
         print(f"Visual evidence unavailable: {exc}", file=sys.stderr)

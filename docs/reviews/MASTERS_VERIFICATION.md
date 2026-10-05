@@ -4,7 +4,11 @@ Base: `ebb2887f7d7becccf339918c00a9741721606fb1` (main).
 
 Development version: `0.11.0-masters-dev`.
 
-## Current CI checkpoint: 2026-10-05 11:34 UTC
+## Opt-in articulated integration: 2026-10-05 12:25 UTC
+
+An original segmented player/Master rig and separate first-person viewmodel are now included as a **default-off development proof**, preserving the existing combat authority and full unsupported-equipment fallback. The combined independent gate passes all four source sets and **1,140/1,140 JUnit tests**, with **3,340 unchanged source/config fingerprints**; **49 Python CI-tooling tests** also pass. A separate one-suite native job and bounded real-frame evidence are included. Native rendering, armor, fallback transitions and compatibility remain acceptance gates. See [the articulated scope and exact limits](ARTICULATED_COMBAT_SLICE.md).
+
+## Native CI checkpoint: 2026-10-05 11:34 UTC
 
 [Run 126](https://github.com/defnotean/wildercord/actions/runs/37302625183), for published checkpoint `b72ebc2aa00650f202655dab89bf4590a500d9be`, passed its normal Build job including generated assets, Gradle compilation/unit tests and packaging. Native gameplay remains incomplete. Its focused job completed the Master trial and advanced to the presentation fixture, then failed the strict default-key conflict assertion: Minecraft 26.3 uses G for Quick Actions. This content checkpoint changes fresh defaults to U/Y/J and preserves that strict native assertion; existing saved bindings are not overwritten. The correction still needs its next native run.
 

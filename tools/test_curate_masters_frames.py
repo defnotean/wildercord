@@ -11,7 +11,9 @@ import zipfile
 import curate_masters_frames as curator
 
 
-class CuratorTests(unittest.TestCase):
+class CuratorFixture(unittest.TestCase):
+    suite = "masters"
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
@@ -21,7 +23,7 @@ class CuratorTests(unittest.TestCase):
         self.output = "review/curated"
         self.identity = {"headSha": "a" * 40, "workflowSha": "b" * 40,
                          "runId": "120", "runAttempt": "2"}
-        curator.prepare(self.root, self.source, self.marker, self.identity)
+        curator.prepare(self.root, self.source, self.marker, self.identity, suite=self.suite)
         self.started = json.loads((self.root / self.marker).read_text())["startedNs"]
 
     def shot(self, name, size=100, *, prefix=""):
@@ -34,7 +36,11 @@ class CuratorTests(unittest.TestCase):
         return path
 
     def curate(self, **kwargs):
-        return curator.curate(self.root, self.source, self.marker, self.output, self.identity, **kwargs)
+        return curator.curate(self.root, self.source, self.marker, self.output, self.identity,
+                              suite=self.suite, **kwargs)
+
+
+class CuratorTests(CuratorFixture):
 
     def test_missing_screenshots_produce_unavailable_manifest_without_failure(self):
         result = self.curate()
@@ -187,6 +193,196 @@ class CuratorTests(unittest.TestCase):
             self.assertIsNone(curator.describe(name))
         self.assertEqual(curator.describe("masters_art_0_first_frame_6.png")["phase"], "sample")
         self.assertEqual(curator.describe("masters_style_blossom_fall_first_frame_9.png")["phase"], "sample")
+
+
+class ArticulatedCuratorTests(CuratorFixture):
+    suite = "articulated"
+
+    def test_only_real_supported_hand_view_and_loop_names_are_eligible(self):
+        for hand in curator.ARTICULATED_HANDS:
+            for view in curator.VIEWS:
+                for index in range(9):
+                    name = f"articulated_live_{hand}_{view}_frame_{index}.png"
+                    info = curator.describe(name, suite=self.suite)
+                    self.assertEqual((info["hand"], info["view"], info["sampleIndex"]),
+                                     (hand, curator.VIEWS[view], index))
+                    self.assertEqual(info["phase"], "sample")
+                    self.assertEqual(info["phaseBasis"], "filename_loop_index_only")
+                    self.assertIsNone(curator.describe(name))
+        for name in ("articulated_live_left_first_frame_9.png", "articulated_live_right_third_frame_00.png",
+                     "articulated_live_left_observer_frame_1.png", "articulated_live_left_first_windup.png",
+                     "articulated_live_right_third_recovery.png", "articulated_left_first_frame_1.png",
+                     "articulated_live_master_first_frame_1.png", "articulated_model_pose.png",
+                     "articulated_hitstop_frame_1.png", "articulated_live_LEFT_first_frame_1.png",
+                     "masters_art_0_first_frame_1.png"):
+            with self.subTest(name=name):
+                self.assertIsNone(curator.describe(name, suite=self.suite))
+
+    def test_four_combinations_use_first_upper_median_and_last_available_samples(self):
+        for hand in curator.ARTICULATED_HANDS:
+            for view in curator.VIEWS:
+                for index in (8, 1, 3, 6):
+                    self.shot(f"articulated_live_{hand}_{view}_frame_{index}.png")
+        result = self.curate()
+        self.assertEqual(result["suiteGroup"], "articulated")
+        self.assertEqual(result["suite"], curator.ARTICULATED_SUITE)
+        self.assertEqual(result["provenance"], self.identity)
+        self.assertEqual(result["selectedFrameCount"], 12)
+        self.assertEqual(len(result["coverage"]), 4)
+        self.assertEqual({(row["hand"], row["view"]) for row in result["coverage"]},
+                         {(hand, view) for hand in curator.ARTICULATED_HANDS for view in curator.VIEWS.values()})
+        for row in result["coverage"]:
+            self.assertEqual(row["capturedSampleIndices"], [1, 3, 6, 8])
+            self.assertEqual(row["uncapturedLoopIndices"], [0, 2, 4, 5, 7])
+            self.assertEqual(row["selectedFrameLabels"], ["frame_1", "frame_6", "frame_8"])
+            self.assertEqual(row["availableSamplePositions"],
+                             dict(zip(curator.SAMPLE_POSITIONS, ("frame_1", "frame_6", "frame_8"))))
+            self.assertEqual(row["missingSamplePositions"], [])
+            self.assertEqual(row["omittedForBudgetSamplePositions"], [])
+        self.assertTrue(all(frame["captureKind"] == "native_local_owner_accepted_input_combat"
+                            and frame["phase"] == "sample" for frame in result["frames"]))
+        self.assertEqual(result["testVerdict"]["authoritativeArtifact"], "articulated-native-evidence")
+        self.assertEqual(result["testVerdict"]["authoritativeManifest"], "articulated-native-manifest.json")
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+        self.assertEqual({row["coverage"] for row in result["unavailableRequestedCoverage"]},
+                         {"observer_client", "live_npc_combat", "synthetic_geometry_and_hitstop_screenshots",
+                          "exact_impact_phase", "exact_recovery_phase"})
+        second = curator.curate(self.root, self.source, self.marker, "review/another", self.identity,
+                                suite=self.suite)
+        self.assertEqual(result, second)
+
+    def test_missing_captures_report_all_four_hand_view_combinations(self):
+        result = self.curate()
+        self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(len(result["coverage"]), 4)
+        for row in result["coverage"]:
+            self.assertEqual(row["capturedSampleIndices"], [])
+            self.assertEqual(row["uncapturedLoopIndices"], list(range(9)))
+            self.assertEqual(row["missingSamplePositions"], list(curator.SAMPLE_POSITIONS))
+        self.assertTrue((self.root / self.output / "manifest.json").is_file())
+
+    def test_single_and_two_samples_are_not_duplicated_to_invent_a_triptych(self):
+        self.shot("articulated_live_left_first_frame_2.png")
+        self.shot("articulated_live_right_third_frame_1.png")
+        self.shot("articulated_live_right_third_frame_7.png")
+        result = self.curate()
+        self.assertEqual(result["selectedFrameCount"], 3)
+        self.assertEqual(result["selectedPngBytes"], 300)
+        self.assertEqual(result["frames"][0]["samplePositions"], list(curator.SAMPLE_POSITIONS))
+        self.assertEqual(result["frames"][1]["samplePositions"], ["first_available"])
+        self.assertEqual(result["frames"][2]["samplePositions"], ["middle_available", "last_available"])
+        self.assertEqual(len(list((self.root / self.output / "frames").glob("*.png"))), 3)
+
+    def test_articulated_budget_includes_manifest_and_preserves_bytes_and_hashes(self):
+        for hand in curator.ARTICULATED_HANDS:
+            for view in curator.VIEWS:
+                for index in (0, 4, 8):
+                    self.shot(f"articulated_live_{hand}_{view}_frame_{index}.png", size=1_200_000)
+        result = self.curate()
+        files = [path for path in (self.root / self.output).rglob("*") if path.is_file()]
+        self.assertLessEqual(sum(path.stat().st_size for path in files), 14_000_000)
+        self.assertEqual(result["selectedFrameCount"], 11)
+        self.assertEqual(result["selectedPngBytes"], 13_200_000)
+        self.assertTrue(any(row["omittedForBudgetSamplePositions"] for row in result["coverage"]))
+        archive = self.root / "curated.zip"
+        with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as zipped:
+            for path in files:
+                zipped.write(path, path.relative_to(self.root / self.output))
+        self.assertLess(archive.stat().st_size, 15_000_000)
+        for frame in result["frames"]:
+            original = (self.root / frame["sourcePath"]).read_bytes()
+            copied = (self.root / self.output / frame["artifactPath"]).read_bytes()
+            self.assertEqual(original, copied)
+            self.assertEqual(frame["sha256"], hashlib.sha256(original).hexdigest())
+            self.assertEqual(frame["bytes"], len(original))
+
+    def test_captured_but_unaffordable_sample_is_not_reported_as_missing(self):
+        self.shot("articulated_live_left_first_frame_2.png")
+        result = self.curate(budget=curator.MANIFEST_RESERVE)
+        row = result["coverage"][0]
+        self.assertEqual(result["status"], "unavailable")
+        self.assertEqual(row["capturedSampleIndices"], [2])
+        self.assertEqual(row["missingSamplePositions"], [])
+        self.assertEqual(row["omittedForBudgetSamplePositions"], list(curator.SAMPLE_POSITIONS))
+
+    def test_marker_is_bound_to_suite_and_cannot_mix_masters_with_articulated(self):
+        stamp = json.loads((self.root / self.marker).read_text())
+        self.assertEqual(stamp["suiteGroup"], self.suite)
+        self.assertEqual(stamp["suite"], curator.ARTICULATED_SUITE)
+        with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
+            curator.curate(self.root, self.source, self.marker, self.output, self.identity)
+        other_marker = "review/masters-run.json"
+        curator.prepare(self.root, self.source, other_marker, self.identity)
+        with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
+            curator.curate(self.root, self.source, other_marker, self.output, self.identity, suite=self.suite)
+        with self.assertRaises(FileExistsError):
+            curator.prepare(self.root, self.source, self.marker, self.identity)
+        # A marker without explicit suite identity must not silently mean Masters.
+        for field in ("suiteGroup", "suite"):
+            altered = {key: value for key, value in stamp.items() if key != field}
+            (self.root / self.marker).write_text(json.dumps(altered))
+            with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
+                self.curate()
+
+    def test_mixed_source_directory_never_admits_other_suite_or_synthetic_frames(self):
+        articulated = "articulated_live_left_first_frame_1.png"
+        masters = "masters_art_0_first_frame_1.png"
+        curator.prepare(self.root, self.source, "review/masters-run.json", self.identity)
+        self.started = json.loads((self.root / "review/masters-run.json").read_text())["startedNs"]
+        for name in (articulated, masters, "articulated_model_pose.png", "articulated_hitstop_frame_1.png"):
+            self.shot(name)
+        result = self.curate()
+        self.assertEqual([Path(frame["sourcePath"]).name for frame in result["frames"]], [articulated])
+        self.assertEqual(result["freshness"]["ignoredOutOfScopePngs"], 3)
+        result = curator.curate(self.root, self.source, "review/masters-run.json", "review/masters",
+                                self.identity)
+        self.assertEqual([Path(frame["sourcePath"]).name for frame in result["frames"]], [masters])
+        self.assertEqual(result["freshness"]["ignoredOutOfScopePngs"], 3)
+
+    def test_articulated_rejects_prior_paths_old_mtimes_and_other_run_identity(self):
+        prior = self.shot("articulated_live_left_first_frame_1.png")
+        curator.prepare(self.root, self.source, "review/later-run.json", self.identity, suite=self.suite)
+        old = self.shot("articulated_live_right_third_frame_1.png")
+        os.utime(prior, None)
+        os.utime(old, ns=(1, 1))
+        result = curator.curate(self.root, self.source, "review/later-run.json", self.output,
+                                self.identity, suite=self.suite)
+        self.assertEqual(result["frames"], [])
+        self.assertEqual(result["freshness"]["excludedStalePngs"], 2)
+        with self.assertRaisesRegex(curator.EvidenceError, "does not match"):
+            curator.curate(self.root, self.source, self.marker, "review/wrong-run",
+                           {**self.identity, "runAttempt": "3"}, suite=self.suite)
+        with self.assertRaisesRegex(curator.EvidenceError, "Output already exists"):
+            self.curate()
+
+    def test_articulated_rejects_symlinks_duplicates_and_invalid_pngs(self):
+        original = self.shot("articulated_live_left_first_frame_1.png")
+        duplicate = self.shot(original.name, prefix="nested")
+        with self.assertRaisesRegex(curator.EvidenceError, "Ambiguous duplicate"):
+            self.curate()
+        duplicate.unlink()
+        duplicate.symlink_to(original)
+        with self.assertRaisesRegex(curator.EvidenceError, "Symlink"):
+            self.curate()
+        duplicate.unlink()
+        original.write_bytes(b"invalid PNG bytes")
+        with self.assertRaisesRegex(curator.EvidenceError, "PNG signature"):
+            self.curate()
+        self.assertFalse((self.root / self.output).exists())
+
+    def test_cli_prepare_and_curate_use_the_requested_suite(self):
+        marker = "review/cli-run.json"
+        output = "review/cli-output"
+        with patch.object(curator, "ROOT", self.root), patch.object(curator, "provenance", return_value=self.identity):
+            self.assertEqual(curator.main(["--suite", self.suite, "--prepare", "--marker", marker]), 0)
+            self.started = json.loads((self.root / marker).read_text())["startedNs"]
+            self.shot("articulated_live_right_first_frame_3.png")
+            with patch("builtins.print"):
+                self.assertEqual(curator.main(["--suite", self.suite, "--marker", marker, "--output", output]), 0)
+        manifest = json.loads((self.root / output / "manifest.json").read_text())
+        self.assertEqual(manifest["suite"], curator.ARTICULATED_SUITE)
+        self.assertEqual(manifest["selectedFrameCount"], 1)
 
 
 class ProvenanceTests(unittest.TestCase):

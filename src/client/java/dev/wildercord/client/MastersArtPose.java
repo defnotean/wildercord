@@ -17,8 +17,10 @@ import net.minecraft.world.entity.Pose;
 public final class MastersArtPose {
 	private MastersArtPose() {}
 
-	private record Frame(MastersArtAnimation.Pose pose, boolean leftHanded, float yawDelta, float pitchDelta, float bladeTilt) {}
-	private static final RenderStateDataKey<Frame> FRAME = RenderStateDataKey.create(() -> "wildercord:masters_art_pose");
+	public record Frame(MastersArtAnimation.Pose pose, boolean leftHanded, float yawDelta, float pitchDelta, float bladeTilt, long activation, int move) {
+		public boolean sameActivation(Frame other) { return other != null && activation == other.activation && move == other.move && leftHanded == other.leftHanded; }
+	}
+	public static final RenderStateDataKey<Frame> FRAME = RenderStateDataKey.create(() -> "wildercord:masters_art_pose");
 
 	/** Captures an immutable frame before drawing; models never look back into the live entity. */
 	public static void extract(Avatar avatar, AvatarRenderState state, float partial) {
@@ -31,7 +33,7 @@ public final class MastersArtPose {
 		state.yRot = facing.headYaw();
 		float age = avatar.level().getGameTime() - timeline.startTick() + partial;
 		state.setData(FRAME, new Frame(pose, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), facing.pitchDelta(),
-			MastersArtAnimation.bladeTilt(timeline.move(), age, timeline.windup(), pose.weight())));
+			MastersArtAnimation.bladeTilt(timeline.move(), age, timeline.windup(), pose.weight()), timeline.startTick(), timeline.move()));
 	}
 
 	/** Returns true when this art owns the pose, ahead of an older spell-casting gesture. */
@@ -100,7 +102,7 @@ public final class MastersArtPose {
 			net.minecraft.world.item.ItemStack item, PoseStack stack) {
 		if (!(state instanceof AvatarRenderState avatar) || arm != state.mainArm || !item.is(net.minecraft.tags.ItemTags.SWORDS)) return;
 		Frame frame = frame(avatar);
-		if (frame == null || frame.bladeTilt() == 0) return;
+		if (dev.wildercord.client.combat.ArticulatedCombat.frame(avatar) != null || frame == null || frame.bladeTilt() == 0) return;
 		// Vanilla handheld display's hilt centre, in the pre-item-submit coordinate frame.
 		float y = -1.327F / 16, z = 1.439F / 16;
 		stack.translate(0, y, z);

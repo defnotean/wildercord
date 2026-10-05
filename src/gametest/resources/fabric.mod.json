@@ -272,7 +272,8 @@
       "dev.wildercord.client.auraworld.MasterModelPresentationTest",
       "dev.wildercord.aura.SwordStringAuthorityTest",
       "dev.wildercord.aura.CrescentCoverTest",
-      "dev.wildercord.aura.CrescentAudienceTest"
+      "dev.wildercord.aura.CrescentAudienceTest",
+      "dev.wildercord.client.combat.ArticulatedCombatPresentationTest"
     ]
   },
   "mixins": [

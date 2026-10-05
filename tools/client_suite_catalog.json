@@ -20,5 +20,12 @@
       "dev.wildercord.aura.CrescentCoverTest",
       "dev.wildercord.aura.CrescentAudienceTest"
     ]
+  },
+  "articulated": {
+    "description": "Opt-in segmented body, hand-socket and first-person native acceptance slice.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.client.combat.ArticulatedCombatPresentationTest"
+    ]
   }
 }

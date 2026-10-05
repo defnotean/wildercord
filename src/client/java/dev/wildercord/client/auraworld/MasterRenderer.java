@@ -20,6 +20,7 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 	public void extractRenderState(SwordMaster master, AuraFighterRenderState state, float partial) {
 		super.extractRenderState(master, state, partial);
 		state.setData(MasterModel.FRAME, null);
+		dev.wildercord.client.combat.ArticulatedCombat.extractMaster(master, state, partial);
 		// This rig owns the entire swipe, including cancellation. A vanilla swing may not survive
 		// the server clearing an attack during its active tick.
 		state.swingAnimation = 0;
@@ -34,7 +35,8 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		}
 		if (pose.weight() <= 0) pose = MasterAnimationRules.defence(state.guard, state.dash, state.stagger);
 		if (pose.weight() > 0) {
-			state.setData(MasterModel.FRAME, new MasterModel.Frame(pose, master.getMainArm() == HumanoidArm.LEFT));
+			state.setData(MasterModel.FRAME, new MasterModel.Frame(pose, master.getMainArm() == HumanoidArm.LEFT,
+				master.level().getGameTime() - (long) Math.floor(master.attackElapsed(partial)), master.attackAnimation()));
 		}
 	}
 }

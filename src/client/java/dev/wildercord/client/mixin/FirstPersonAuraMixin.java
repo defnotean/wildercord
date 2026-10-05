@@ -16,9 +16,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** First person: while the main hand's item is drawn, the blade's aura (see {@link AuraBlade}) goes with it. */
 @Mixin(FirstPersonHandsAndItemsRenderer.class)
 public abstract class FirstPersonAuraMixin {
-	@Inject(method = "submitArmWithItem", at = @At("HEAD"))
+	@Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraBegin(PlayerRenderState player, FirstPersonHandsAndItemsRenderState state, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector, int light, CallbackInfo ci) {
+		if (dev.wildercord.client.combat.ArticulatedCombat.viewFrame(player.avatarRenderState) != null) {
+			AuraBlade.beginFirstPerson(hand == InteractionHand.MAIN_HAND, stack);
+			boolean rendered;
+			try {
+				rendered = dev.wildercord.client.combat.ArticulatedViewModel.submit(player.avatarRenderState, state, partial, hand, pose, collector, light);
+			} finally {
+				AuraBlade.end();
+			}
+			if (rendered) { ci.cancel(); return; }
+		}
 		pose.pushPose();
 		dev.wildercord.client.MastersArtPose.firstPerson(pose, hand, player.avatarRenderState, inverseArmHeight);
 		AuraBlade.beginFirstPerson(hand == InteractionHand.MAIN_HAND, stack);

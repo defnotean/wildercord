@@ -15,9 +15,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(LivingEntityRenderer.class)
 public abstract class LivingEntityRendererMixin {
+	@org.spongepowered.asm.mixin.Shadow @org.spongepowered.asm.mixin.Final
+	protected java.util.List<net.minecraft.client.renderer.entity.layers.RenderLayer<?, ?>> layers;
+	@org.spongepowered.asm.mixin.Shadow
+	protected net.minecraft.client.model.EntityModel<?> model;
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
 		at = @At("TAIL"))
 	private void wildercord$runeMarks(LivingEntity entity, LivingEntityRenderState state, float partial, CallbackInfo ci) {
 		RuneMarksLayer.extract(entity, state, partial);
+		boolean known = (!(state instanceof net.minecraft.client.renderer.entity.state.AvatarRenderState)
+			|| model.getClass() == net.minecraft.client.model.player.PlayerModel.class) && layers.stream().allMatch(layer -> {
+			String name = layer.getClass().getName();
+			return name.startsWith("net.minecraft.client.renderer.entity.layers.") || name.startsWith("dev.wildercord.client.render.")
+				|| name.equals("dev.wildercord.client.auraworld.AuraFighterRenderer$Glow");
+		});
+		state.setData(dev.wildercord.client.combat.ArticulatedCombat.KNOWN_LAYERS, known);
 	}
 }

@@ -6,6 +6,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
+- Added a default-off original segmented Spellcut/Master SWEEP renderer proof, with visible elbow/knee/wrist joints, skin-sliced limbs, independently composed first-person arms and stable-camera preview. Existing rig remains the whole-body fallback for armor and unsupported states; native validation and enchanted-netherite support are still required.
+
 - Raised the permanent Mana Crystal absorption cap from 10 to 100. Each crystal still adds 10 mana; existing absorbed crystals are preserved.
 - Extended Heart Circles from 8 to 20 with twelve additional, solo-achievable breakthrough gates, titles, advancements, bounded visuals and saved-progress validation. The original eight milestones and their perks retain their meaning.
 - Added voluntary parties of up to eight players, invitations and leader controls. Shared spell and Aura targeting, direct impacts, owned summons, delayed harmful effects, and status/fire/movement mutations now check current membership. Explicit agreed duels retain their existing exception.
