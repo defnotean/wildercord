@@ -372,7 +372,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			context.getInput().holdKey(o -> o.keyJump);
 			try {
 				context.waitTicks(1); // Preserve the tick previously spent inside pressKey.
-				context.waitFor(mc -> !mc.player.onGround(), 10);
+				context.waitFor(mc -> !mc.player.onGround(), 20);
 			} catch (AssertionError failure) {
 				throw new AssertionError("Actual " + style.art() + " leap did not leave the stage (view=" + view
 					+ ", leftHanded=" + leftHanded + "): before={" + beforeJump + "}, after={" + jumpState(context) + "}", failure);

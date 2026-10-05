@@ -112,7 +112,7 @@ public final class MastersSecondFormTimelineTest implements FabricClientGameTest
 			player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("rime", AuraRules.SOVEREIGN, 4500, before, 0));
 			check(!SwordStrings.perform(player, art, MARKS), "A different method cannot begin the registered art");
 			prepare(player, id);
-			player.setXRot(Float.NaN);
+			setEntityPitch(player, Float.NaN);
 			check(!SwordStrings.perform(player, art, MARKS), "Non-finite server aim cannot begin a second form");
 			player.setXRot(0);
 			check(Aura.aura(player) == before && !MastersArts.committed(player), "Refusals never pay or advertise a commitment");
@@ -310,6 +310,9 @@ public final class MastersSecondFormTimelineTest implements FabricClientGameTest
 	}
 
 	private static void prepare(ServerPlayer player, String id) {
+		for (var entity : player.level().getEntities(net.minecraft.world.level.entity.EntityTypeTest.forClass(Mob.class), new net.minecraft.world.phys.AABB(-8, 98, -8, 8, 110, 8), e -> true)) {
+			entity.discard();
+		}
 		player.setGameMode(GameType.SURVIVAL);
 		player.teleportTo(.5, 100, .5);
 		player.setDeltaMovement(Vec3.ZERO);
@@ -326,10 +329,22 @@ public final class MastersSecondFormTimelineTest implements FabricClientGameTest
 		foe.addTag("wildercord.rolled");
 		foe.setNoAi(true); foe.setNoGravity(true);
 		foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(100);
+		var reinforcements = foe.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
+		if (reinforcements != null) reinforcements.setBaseValue(0.0);
 		foe.setHealth(100);
 		foe.snapTo(x, 100, z, 180, 0);
 		level.addFreshEntity(foe);
 		return foe;
+	}
+
+	private static void setEntityPitch(net.minecraft.world.entity.Entity entity, float pitch) {
+		try {
+			var field = net.minecraft.world.entity.Entity.class.getDeclaredField("xRot");
+			field.setAccessible(true);
+			field.setFloat(entity, pitch);
+		} catch (ReflectiveOperationException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	private static void check(boolean value, String message) { if (!value) throw new AssertionError(message); }
