@@ -7,8 +7,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.fish.Cod;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 /** Actual unforced fish evasion; finite independent habitat trials never move fish or force a strike. */
@@ -24,6 +26,9 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
  private record Rejection(Gate gate,long tick,Vec3 body,double progressSqr,RouteReceipt route){}
  private record Admission(Cod quarry,BlockPos bank,long tick,Vec3 from,Vec3 to,RouteReceipt route){}
  private record Sample(long tick,int phase,int left,double distanceSqr){}
+ private record NeighborReceipt(UUID id,long lastSampleTick,Vec3 body,double distanceSqr,boolean overlaps,boolean alive,boolean follower,boolean hasFollowers){}
+ private record PathReceipt(int sequence,RouteReceipt route,List<BlockPos> nodes,boolean truncated,Vec3 nextWaypoint){}
+ private record MotionReceipt(long tick,Vec3 before,Vec3 body,Vec3 velocityBefore,Vec3 velocityAfter,float speed,double movementAttribute,float yaw,boolean onGround,boolean horizontalCollision,boolean verticalCollision,boolean follower,boolean hasFollowers,int noActionTicks,boolean wantsMove,Vec3 wanted,double controllerSpeed,List<String> goals,PathReceipt path,List<NeighborReceipt> nearby){}
  private static final class Observation {
   final Cod quarry;final Vec3 committed;final int epoch;Sample first,last,max,escape;
   Observation(Cod quarry,Vec3 committed,int epoch){this.quarry=quarry;this.committed=committed;this.epoch=epoch;}
@@ -38,16 +43,25 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
   private final Map<Gate,Integer> rejected=new EnumMap<>(Gate.class);
   private double maxSwimProgressSqr;private int navigatingTicks,rawNavigatingTicks,partialWaterTicks;
   private Rejection lastRejected,deepestRejected;private RouteReceipt previousRoute;
+  // Read-only histories are capped independently and reset with each world's fish.
+  private final ArrayDeque<MotionReceipt> recentMotion=new ArrayDeque<>(),routeOrRoleChanges=new ArrayDeque<>(),coilMotion=new ArrayDeque<>();
+  private List<MotionReceipt> bestSwimMotion=List.of(),admissionMotion=List.of();private double bestTraceProgressSqr=-1;
+  private Path diagnosticPath;private boolean diagnosticDone=true,diagnosticFollower,diagnosticHasFollowers;private int pathSequence,routeOrRoleChangeCount;
   WitnessCod(ServerLevel l){super(EntityTypes.COD,l);}
   @Override public void tick(){
+   // Freeze the exact pre-admission window before the next native tick replaces its oldest sample.
+   if(bird!=null&&admission!=null&&admission.quarry()==this&&admissionMotion.isEmpty())admissionMotion=List.copyOf(recentMotion);
+   var before=position();var velocityBefore=getDeltaMovement();
    super.tick();
    if(!(level() instanceof ServerLevel l))return;
    var route=routeReceipt();var priorRoute=previousRoute;previousRoute=route;
+   captureMotion(l,route,before,velocityBefore);
    if(bird==null){
     if(!route.navigationDone())rawNavigatingTicks++;
     boolean navigating=route.activeWater();if(navigating){navigatingTicks++;if(!route.canReach())partialWaterTicks++;}
     if(swimming.size()==9)swimming.removeFirst();swimming.addLast(new SwimSample(l.getGameTime(),getBoundingBox().getCenter(),navigating));
     if(swimming.size()==9)maxSwimProgressSqr=Math.max(maxSwimProgressSqr,horizontal(swimming.getLast().center().subtract(swimming.getFirst().center())).lengthSqr());
+    if(swimming.size()==9&&progressSqr()>bestTraceProgressSqr){bestTraceProgressSqr=progressSqr();bestSwimMotion=List.copyOf(recentMotion);}
     return;
    }
    // Native fish movement precedes the bird's synchronous final coil/strike/cancel step.
@@ -60,7 +74,27 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
     // the following fish tick; report that boundary honestly, not an invented exact tick.
     System.out.println("SILTCREST_DODGE_COMMIT firstObservedCoilTick="+l.getGameTime()+" admissionToFirstCoilSampleTicks="+(l.getGameTime()-admission.tick())+" quarry="+getUUID()+" committed="+committed+" phase="+bird.phase()+" left="+field(bird,"left")+" admissionRoute="+admission.route()+" precedingFishTickRoute="+priorRoute+" firstCoilSampleRoute="+route);
    }
-   if(observed.active(bird))observed.sample(l,bird);
+   if(observed.active(bird)){observed.sample(l,bird);retain(coilMotion,recentMotion.getLast(),24);}
+  }
+  private void captureMotion(ServerLevel l,RouteReceipt route,Vec3 before,Vec3 velocityBefore){
+   var path=getNavigation().getPath();boolean changed=path!=diagnosticPath;
+   if(changed)pathSequence++;
+   var nodes=new ArrayList<BlockPos>();
+   if(path!=null)for(int i=0;i<Math.min(path.getNodeCount(),16);i++)nodes.add(path.getNodePos(i).immutable());
+   var waypoint=path!=null&&route.next()>=0&&route.next()<route.nodes()?path.getNextEntityPos(this):null;
+   var nearby=fish.stream().filter(f->f!=this&&f.level()==l).limit(2).map(f->new NeighborReceipt(f.getUUID(),f.previousRoute==null?-1:f.previousRoute.tick(),f.position(),distanceToSqr(f),getBoundingBox().intersects(f.getBoundingBox()),f.isAlive(),f.isFollower(),f.hasFollowers())).toList();
+   var control=getMoveControl();boolean follower=isFollower(),hasFollowers=hasFollowers();
+   var goals=getGoalSelector().getAvailableGoals().stream().filter(g->g.isRunning()).limit(8).map(g->g.getGoal().getClass().getSimpleName()).toList();
+   var sample=new MotionReceipt(l.getGameTime(),before,position(),velocityBefore,getDeltaMovement(),getSpeed(),getAttributeValue(Attributes.MOVEMENT_SPEED),getYRot(),onGround(),horizontalCollision,verticalCollision,follower,hasFollowers,getNoActionTime(),control.hasWanted(),new Vec3(control.getWantedX(),control.getWantedY(),control.getWantedZ()),control.getSpeedModifier(),goals,new PathReceipt(pathSequence,route,List.copyOf(nodes),route.nodes()>16,waypoint),nearby);
+   retain(recentMotion,sample,9);
+   if(changed||route.navigationDone()!=diagnosticDone||follower!=diagnosticFollower||hasFollowers!=diagnosticHasFollowers){routeOrRoleChangeCount++;retain(routeOrRoleChanges,sample,16);}
+   diagnosticPath=path;diagnosticDone=route.navigationDone();diagnosticFollower=follower;diagnosticHasFollowers=hasFollowers;
+  }
+  private void diagnoseMotion(int trial){
+   var rows=new TreeMap<Long,MotionReceipt>();
+   for(var group:List.of(recentMotion,bestSwimMotion,admissionMotion,routeOrRoleChanges,coilMotion))for(var sample:group)rows.put(sample.tick(),sample);
+   System.out.println("SILTCREST_DODGE_MOTION_HISTORY trial="+trial+" fish="+getUUID()+" maxEightTickProgressSqr="+bestTraceProgressSqr+" recent="+recentMotion.stream().map(MotionReceipt::tick).toList()+" peakWindow="+bestSwimMotion.stream().map(MotionReceipt::tick).toList()+" admissionWindow="+admissionMotion.stream().map(MotionReceipt::tick).toList()+" routeOrRoleChangeCount="+routeOrRoleChangeCount+" retainedChanges="+routeOrRoleChanges.stream().map(MotionReceipt::tick).toList()+" coil="+coilMotion.stream().map(MotionReceipt::tick).toList()+" rows="+rows.size());
+   for(var sample:rows.values())System.out.println("SILTCREST_DODGE_MOTION trial="+trial+" fish="+getUUID()+" sample="+sample);
   }
   private RouteReceipt routeReceipt(){
    var l=(ServerLevel)level();var navigation=getNavigation();var path=navigation.getPath();
@@ -102,6 +136,7 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
   private String swimDiagnostic(){return "id="+getUUID()+" body="+position()+" health="+getHealth()+" wild="+SiltcrestBittern.wildFish(this,(ServerLevel)level())+" noAI="+isNoAi()+" follower="+isFollower()+" hasFollowers="+hasFollowers()+" rawNavigatingTicks="+rawNavigatingTicks+" waterNavigatingTicks="+navigatingTicks+" partialWaterTicks="+partialWaterTicks+" maxEightTickProgressSqr="+maxSwimProgressSqr+" first="+swimming.peekFirst()+" last="+swimming.peekLast()+" route="+routeReceipt()+" rejected="+rejected+" deepestRejected="+deepestRejected+" lastRejected="+lastRejected;}
   @Override public boolean hurtServer(ServerLevel l,DamageSource d,float amount){if(d.getEntity() instanceof SiltcrestBittern)calls++;return super.hurtServer(l,d,amount);}
  }
+ private static void retain(ArrayDeque<MotionReceipt> history,MotionReceipt sample,int limit){if(history.size()==limit)history.removeFirst();history.addLast(sample);}
  private static void swimmingShore(ServerLevel l){
   floor(l);
   // Test-local six-by-one source-water channel: each swimming cell has a dry
@@ -173,6 +208,7 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
   return observed!=null&&admission!=null&&observed.quarry==admission.quarry()&&observed.last!=null&&observed.last.distanceSqr()>.36&&sameCancellation()&&calls==0&&observed.quarry.isAlive()&&observed.quarry.getHealth()==3&&bird.isAlive()&&bird.pose()==SiltcrestBittern.IDLE&&bird.huntReady()<=l.getGameTime()+200;
  }
  private void diagnose(ServerLevel l,int trial){
+  for(var witness:fish)witness.diagnoseMotion(trial);
   if(bird==null){System.out.println("SILTCREST_DODGE trial="+trial+" outcome=admission_timeout now="+l.getGameTime()+" calls="+calls+" rejected="+rejections+" fish="+fish.stream().map(WitnessCod::swimDiagnostic).toList());return;}
   String outcome=refusedEscape(l)?"refused_escape":observed!=null&&observed.escape!=null&&observed.last.distanceSqr()<=.36?"escaped_returned":calls>0?"catch":observed==null||observed.escape==null?"no_escape":"escape_without_refusal";
   System.out.println("SILTCREST_DODGE trial="+trial+" outcome="+outcome+" quarry="+(observed==null?"none":observed.quarry.getUUID())+" committed="+(observed==null?"none":observed.committed)+" epoch="+(observed==null?"none":observed.epoch)+" actualEpoch="+field(bird,"epoch")+" sameCancellation="+sameCancellation()+" first="+(observed==null?"none":observed.first)+" firstEscape="+(observed==null?"none":observed.escape)+" max="+(observed==null?"none":observed.max)+" final="+(observed==null?"none":observed.last)+" now="+l.getGameTime()+" pose="+bird.pose()+" phase="+bird.phase()+" calls="+calls+" alive="+(observed!=null&&observed.quarry.isAlive())+" health="+(observed==null?"none":observed.quarry.getHealth())+" rest="+(bird.huntReady()-l.getGameTime()));

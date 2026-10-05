@@ -287,7 +287,8 @@
     "nursery-gather-gametest.mixins.json",
     "masters-capture-gametest.mixins.json",
     "native-diagnostics-gametest.mixins.json",
-    "bolt-step-gametest.mixins.json"
+    "bolt-step-gametest.mixins.json",
+    "moonreed-source-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

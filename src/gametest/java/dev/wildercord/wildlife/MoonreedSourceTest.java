@@ -16,6 +16,7 @@ public final class MoonreedSourceTest implements FabricClientGameTest {
  private Entity transferred;
  public void runTest(ClientGameTestContext c){
   try(var w=c.worldBuilder().create()){
+   try {
    c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("gamerule random_tick_speed 0");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
    w.getServer().runOnServer(s->{var l=s.overworld();var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(l,6.5,30,6.5,Set.<Relative>of(),0,0,false);
     for(int x=-7;x<=7;x++)for(int z=-7;z<=7;z++){l.setBlock(new BlockPos(x,29,z),Blocks.DIRT.defaultBlockState(),2);for(int y=30;y<=34;y++)l.setBlock(new BlockPos(x,y,z),Blocks.AIR.defaultBlockState(),2);}l.setBlock(ROOT.east().below(2),Blocks.DIRT.defaultBlockState(),2);l.setBlock(ROOT.east().below(),Blocks.WATER.defaultBlockState(),2);
@@ -40,11 +41,13 @@ public final class MoonreedSourceTest implements FabricClientGameTest {
     bud(l);var unregistered=Wildlife.GLIMMERWING.create(l,EntitySpawnReason.COMMAND);check(unregistered!=null,"Actual mapped unregistered factory fixture");unregistered.snapTo(.5,30.9,.5,0,0);int[] writes={0};check(!MoonreedBlock.pollinate(l,ROOT,unregistered,(world,at,next)->{writes[0]++;return world.setBlock(at,next,2);})&&writes[0]==0,"An untracked factory object is not accepted as a live registered pollinator");unregistered.discard();
     bud(l);var valid=moth(l,new Vec3(.5,30.9,.5));check(MoonreedBlock.pollinate(l,ROOT,valid)&&l.getBlockState(ROOT).getValue(MoonreedBlock.AGE)==2,"Unchanged registered source blooms normally after all source faults and lease cleanup");valid.discard();
     bud(l);check(MoonreedBlock.pollinate(l,ROOT,Vec3.atCenterOf(ROOT).add(0,.4,0)),"Original Vec3 compatibility/fault seam remains available and explicitly separate from live source authority");
-    bud(l);moth(l,new Vec3(2.5,31,.5));
+    bud(l);var flying=moth(l,new Vec3(2.5,31,.5));MoonreedSourceProbe.begin(l,ROOT,flying);
    });
    c.waitTicks(45);w.getServer().runOnServer(s->{check(transferred!=null&&s.getLevel(Level.NETHER).getEntity(transferred.getUUID())==transferred&&transferred.isAlive()&&!transferred.isRemoved(),"Actual portal ticket admits the exact transferred source into destination UUID lookup after ordinary ticks");transferred.discard();transferred=null;});
-   boolean arrived=false;for(int n=0;n<80;n++){c.waitTicks(5);if(w.getServer().computeOnServer(s->s.overworld().getBlockState(ROOT).is(WetlandGarden.REED)&&s.overworld().getBlockState(ROOT).getValue(MoonreedBlock.AGE)==2)){arrived=true;break;}}
+   boolean arrived=false;for(int n=0;n<80;n++){boolean lastAttempt=n==79;c.waitTicks(5);if(w.getServer().computeOnServer(s->MoonreedSourceProbe.waited(s.overworld().getBlockState(ROOT).is(WetlandGarden.REED)&&s.overworld().getBlockState(ROOT).getValue(MoonreedBlock.AGE)==2,lastAttempt))){arrived=true;break;}}
+   MoonreedSourceProbe.finish(arrived);
    check(arrived,"Actual unpaused Glimmerwing finds and reaches the bud through production entity-source overload; no injected arrival pose");
+   }finally{MoonreedSourceProbe.clear();}
   }
  }
  private static Glimmerwing moth(ServerLevel l,Vec3 at){var moth=Wildlife.GLIMMERWING.create(l,EntitySpawnReason.COMMAND);check(moth!=null,"Actual registered moth factory");moth.snapTo(at.x,at.y,at.z,0,0);moth.setPersistenceRequired();check(l.addFreshEntity(moth),"Actual moth is added to source world");check(l.getEntity(moth.getUUID())==moth,"Real tracked source identity");return moth;}

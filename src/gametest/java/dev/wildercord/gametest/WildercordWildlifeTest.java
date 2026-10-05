@@ -449,9 +449,10 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			flight.add(hareFlightSample(player, hare.getId()));
 			return hare.getId();
 		});
-		// Observe the same 50 native ticks without steering the hare or stopping at an earlier escape.
-		for (int i = 0; i < 25; i++) {
-			context.waitTicks(2);
+		// Keep at most 51 snapshots, including spawn: every tick of the same 50-tick native flight.
+		// One-tick sampling includes takeoff and landing, without steering or stopping at an earlier escape.
+		for (int i = 0; i < 50; i++) {
+			context.waitTicks(1);
 			flight.add(world.getServer().computeOnServer(server -> hareFlightSample(player(server), bolter)));
 		}
 		int tempted = world.getServer().computeOnServer(server -> {
@@ -461,7 +462,7 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			double maxDistance = flight.stream().mapToDouble(HareFlightSample::distance).filter(Double::isFinite).max().orElse(Double.NaN);
 			check(hare != null && hare.distanceTo(player) > 8, "a rimehare should bolt from a player who comes near (distance "
 				+ (hare == null ? "?" : String.format("%.1f", hare.distanceTo(player))) + ", max sampled distance " + maxDistance
-				+ ", final state " + last.state() + ", samples every 2 ticks " + flight + ")");
+				+ ", final state " + last.state() + ", samples every tick " + flight + ")");
 			if (hare != null) {
 				hare.discard();
 			}
@@ -502,11 +503,22 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 		}
 		var navigation = hare.getNavigation();
 		var path = navigation.getPath();
+		var moveControl = hare.getMoveControl();
 		String route = path == null ? "none" : "target=" + path.getTarget() + ", end=" + path.getEndNode()
 			+ ", node=" + path.getNextNodeIndex() + "/" + path.getNodeCount() + ", reaches=" + path.canReach() + ", done=" + path.isDone();
+		if (path != null && !path.isDone()) {
+			route += ", next=" + path.getNextNode() + ", type=" + path.getNextNode().type
+				+ ", waypoint=" + path.getNextEntityPos(hare)
+				+ ", afterNext=" + (path.getNextNodeIndex() + 1 < path.getNodeCount() ? path.getNode(path.getNextNodeIndex() + 1) : "none");
+		}
 		String state = "worldTick=" + player.level().getGameTime() + ", hareTick=" + hare.tickCount
 			+ ", position=" + hare.position() + ", velocity=" + hare.getDeltaMovement()
 			+ ", alive=" + hare.isAlive() + ", noAi=" + hare.isNoAi() + ", grounded=" + hare.onGround() + ", inWater=" + hare.isInWater()
+			+ ", horizontalCollision=" + hare.horizontalCollision + ", verticalCollision=" + hare.verticalCollision
+			+ ", yaw=" + hare.getYRot() + ", bodyYaw=" + hare.yBodyRot + ", headYaw=" + hare.getYHeadRot()
+			+ ", moveControl={hasWanted=" + moveControl.hasWanted() + ", wanted=(" + moveControl.getWantedX() + ", "
+				+ moveControl.getWantedY() + ", " + moveControl.getWantedZ() + "), speed=" + moveControl.getSpeedModifier() + "}"
+			+ ", health=" + hare.getHealth() + ", hurtTime=" + hare.hurtTime + ", hareEffects=" + hare.getActiveEffects()
 			+ ", cell=" + hare.level().getBlockState(hare.blockPosition()) + ", footing=" + hare.level().getBlockState(hare.blockPosition().below())
 			+ ", playerPosition=" + player.position() + ", spectator=" + player.isSpectator() + ", creative=" + player.isCreative()
 			+ ", sprinting=" + player.isSprinting() + ", berries=" + (hare.isFood(player.getMainHandItem()) || hare.isFood(player.getOffhandItem()))

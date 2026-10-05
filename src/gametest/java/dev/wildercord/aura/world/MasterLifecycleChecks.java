@@ -12,16 +12,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.DistanceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.TicketStorage;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.entity.EntityInLevelCallback;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 
@@ -51,6 +56,7 @@ final class MasterLifecycleChecks {
 	private ChunkPos remoteChunk;
 	private long startedAt, releasedAt;
 	private long chunkUnloadAt = -1;
+	private int unloadReceipt;
 	private int remoteRewards, remoteExperience, remoteLessons;
 	private MasterVictoryRules.Progress remoteProgress;
 
@@ -166,10 +172,17 @@ final class MasterLifecycleChecks {
 			check(unloaded.isNoAi(), "The no-AI fixture excludes ordinary abandonment as the source of cleanup");
 			releasedAt = level.getGameTime();
 			level.setChunkForced(remoteChunk.x(), remoteChunk.z(), false);
+			unloadReceipt(level, "released");
 			return true;
 		}, 20);
 		world.getServer().waitFor(server -> {
 			ServerLevel level = server.overworld();
+			long elapsed = level.getGameTime() - releasedAt;
+			int[] observations = {20, 100, 400, 800};
+			if (unloadReceipt < observations.length && elapsed >= observations[unloadReceipt]) {
+				unloadReceipt(level, "waiting");
+				unloadReceipt++;
+			}
 			// getChunkNow is observational; it never reloads the chunk whose absence this test proves.
 			if (chunkUnloadAt < releasedAt || level.getChunkSource().getChunkNow(remoteChunk.x(), remoteChunk.z()) != null) return false;
 			check(unloaded.isRemoved(), "A real chunk unload removes the otherwise unsaved, unticked encounter");
@@ -193,6 +206,39 @@ final class MasterLifecycleChecks {
 			noUnloadReward();
 			level.setChunkForced(remoteChunk.x(), remoteChunk.z(), false);
 		});
+	}
+
+	/** Read-only receipts distinguish live tickets, incomplete saving and an undrained native unload queue. */
+	private void unloadReceipt(ServerLevel level, String phase) {
+		var cache = level.getChunkSource();
+		ChunkMap chunks = cache.chunkMap;
+		long key = remoteChunk.pack();
+		var tickets = level.getDataStorage().get(TicketStorage.TYPE);
+		var pending = (Map<?, ?>) readField(chunks, ChunkMap.class, "pendingUnloads");
+		ChunkHolder holder = chunks.getUpdatingChunkIfPresent(key);
+		if (holder == null) holder = (ChunkHolder) pending.get(key);
+		var playerChunks = (Map<?, ?>) readField(chunks.getDistanceManager(), DistanceManager.class, "playersPerChunk");
+		var nearbyTickets = new java.util.ArrayList<String>();
+		int nearbyTicketChunks = 0;
+		// A neighboring ticket can hold this chunk too; record all sources within the player's maximum radius.
+		if (tickets != null) for (int x = -33; x <= 33; x++) for (int z = -33; z <= 33; z++) {
+			long nearby = ChunkPos.pack(remoteChunk.x() + x, remoteChunk.z() + z);
+			var found = tickets.getTickets(nearby);
+			if (found != null && !found.isEmpty()) {
+				nearbyTicketChunks++;
+				if (nearbyTickets.size() < 16) nearbyTickets.add(x + "," + z + "=" + found);
+			}
+		}
+		Wildercord.LOGGER.info("[masters-unload-wait] phase={} elapsed={} eventAt={} forced={} chunkPresent={} entityTicking={} noSave={} masterRemoved={} masterReason={} remoteRemoved={} remotePlayers={} nativePlayerChunk={} holderLevel={} saveReady={} saveFutureDone={} pendingUnload={} toDrop={} unloadQueue={} ownTickets={} nearbyTicketChunks={} nearbyTickets={}",
+			phase, level.getGameTime() - releasedAt, chunkUnloadAt, level.getForceLoadedChunks().contains(key),
+			cache.getChunkNow(remoteChunk.x(), remoteChunk.z()) != null, level.areEntitiesActuallyLoadedAndTicking(remoteChunk),
+			level.noSave(), unloaded.isRemoved(), unloaded.getRemovalReason(), remote.isRemoved(),
+			level.players().stream().filter(player -> player.chunkPosition().equals(remoteChunk)).map(Entity::getUUID).toList(),
+			playerChunks.get(key), holder == null ? null : holder.getTicketLevel(), holder == null ? null : holder.isReadyForSaving(),
+			holder == null ? null : holder.getSaveSyncFuture().isDone(), pending.containsKey(key),
+			((Set<?>) readField(chunks, ChunkMap.class, "toDrop")).contains(key),
+			((Queue<?>) readField(chunks, ChunkMap.class, "unloadQueue")).size(), tickets == null ? null : tickets.getTickets(key),
+			nearbyTicketChunks, nearbyTickets);
 	}
 
 	private void noUnloadReward() {
@@ -258,10 +304,13 @@ final class MasterLifecycleChecks {
 	private static Set<?> active() { return (Set<?>) field(null, "ACTIVE"); }
 	private static ServerBossEvent bar(SwordMaster master) { return (ServerBossEvent) field(master, "bar"); }
 	private static Object field(SwordMaster master, String name) {
+		return readField(master, SwordMaster.class, name);
+	}
+	private static Object readField(Object instance, Class<?> owner, String name) {
 		try {
-			Field field = SwordMaster.class.getDeclaredField(name);
+			Field field = owner.getDeclaredField(name);
 			field.setAccessible(true);
-			return field.get(master);
+			return field.get(instance);
 		} catch (ReflectiveOperationException e) { throw new AssertionError(e); }
 	}
 	private static void check(boolean result, String message) {
