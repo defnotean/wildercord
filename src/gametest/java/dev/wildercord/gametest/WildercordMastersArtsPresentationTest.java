@@ -72,6 +72,8 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			});
 			context.waitTicks(10);
 			world.getConnection().waitForChunksRender();
+			context.waitTicks(20);
+			context.runOnClient(MastersFirstPersonMotionProbe::verify);
 			controls(context);
 			menusDiscardQueuedInput(context, world);
 			holdDoesNotRepeat(context, world);

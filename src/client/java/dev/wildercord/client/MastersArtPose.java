@@ -79,6 +79,17 @@ public final class MastersArtPose {
 		return true;
 	}
 
+	/** The same extracted palette owns residual attack motion; genuine equip/use retains vanilla. */
+	public static float firstPersonOwnership(InteractionHand hand, AvatarRenderState state,
+			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands) {
+		Frame frame = frame(state);
+		boolean owns = hand == InteractionHand.MAIN_HAND && frame != null
+			&& hands instanceof MastersHandMotionState motion && !motion.wildercord$mainHandEquipping()
+			&& !hands.mainHandItem.isEmpty()
+			&& net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem, state.getMainHandItemStack());
+		return dev.wildercord.aura.MastersViewMotion.ownership(frame == null ? 0 : frame.pose().weight(), owns);
+	}
+
 	/** Main-hand weapon travel follows the same accepted timeline, mirrored for left-handed play. */
 	public static void firstPerson(PoseStack stack, InteractionHand hand, AvatarRenderState state, float inverseArmHeight) {
 		Frame frame = frame(state);

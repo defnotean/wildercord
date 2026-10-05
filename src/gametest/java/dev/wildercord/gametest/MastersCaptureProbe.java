@@ -31,14 +31,17 @@ public final class MastersCaptureProbe {
 	private static boolean armed;
 	private static BladeBounds blade;
 	private static float[] handProjection;
+	private static HandMotion handMotion;
 	private static HudLayout hud;
 	private static final List<HudSprite> hudSprites = new ArrayList<>();
 	public record BladeBounds(double minX, double minY, double maxX, double maxY) {}
 	public record HudLayout(int guiWidth, int guiHeight, int top) {}
 	public record PixelStats(int cyan, double largestSpanGui, double fireFraction, int hudTopPixel) {}
 	private record HudSprite(String sprite, int x, int y, int width, int height) {}
+	private record HandMotion(float attackPhase, float inverseArmHeight, float previousHeight, float currentHeight, float modelSwapScale,
+		boolean genuineEquip, float artOwnership, dev.wildercord.client.MastersArtPose.Frame renderedArt) {}
 	private record CaptureEvidence(String name, int width, int height, boolean first, int swordSubmits, int bodySubmits,
-		BladeBounds bladeBounds, HudLayout hud, List<HudSprite> hudSprites, float[] handProjection, PixelStats pixels) {}
+		BladeBounds bladeBounds, HudLayout hud, List<HudSprite> hudSprites, float[] handProjection, HandMotion handMotion, PixelStats pixels) {}
 
 	private static int owner, hands, bodies;
 	private MastersCaptureProbe() {}
@@ -49,6 +52,7 @@ public final class MastersCaptureProbe {
 		hands = bodies = 0;
 		blade = null;
 		handProjection = null;
+		handMotion = null;
 		hud = null;
 		hudSprites.clear();
 		armed = true;
@@ -66,9 +70,15 @@ public final class MastersCaptureProbe {
 		hudSprites.add(new HudSprite(sprite.toString(), x, y, width, height));
 	}
 
-	public static void hand(int id, ItemStackRenderState item, PoseStack pose) {
+	public static void hand(int id, ItemStackRenderState item, PoseStack pose,
+			net.minecraft.client.renderer.entity.state.AvatarRenderState avatar,
+			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands, float attack, float inverseHeight) {
 		if (!armed || id != owner) return;
-		hands++;
+		MastersCaptureProbe.hands++;
+		handMotion = new HandMotion(attack, inverseHeight, hands.oldMainHandHeight, hands.mainHandHeight, hands.mainHandSwapScale,
+			((dev.wildercord.client.MastersHandMotionState) hands).wildercord$mainHandEquipping(),
+			dev.wildercord.client.MastersArtPose.firstPersonOwnership(net.minecraft.world.InteractionHand.MAIN_HAND, avatar, hands),
+			avatar.getData(dev.wildercord.client.MastersArtPose.FRAME));
 		Minecraft mc = Minecraft.getInstance();
 		var camera = new CameraRenderState();
 		mc.gameRenderer.mainCamera().extractRenderState(camera, DELTA);
@@ -119,6 +129,8 @@ public final class MastersCaptureProbe {
 			}
 		}
 		Wildercord.LOGGER.info("MASTERS_NATIVE_RENDER name={} first={} swordSubmits={} bodySubmits={}", name, first, hands, bodies);
+		if (first && handMotion != null) Wildercord.LOGGER.info("MASTERS_NATIVE_HAND_MOTION name={} attack={} inverseHeight={} genuineEquip={} ownership={}",
+			name, handMotion.attackPhase, handMotion.inverseArmHeight, handMotion.genuineEquip, handMotion.artOwnership);
 	}
 
 	/** Same native update/extract/render/readback as Fabric, without waiting between phase renders. */
@@ -136,6 +148,7 @@ public final class MastersCaptureProbe {
 			HudLayout capturedHud = hud;
 			var capturedHudSprites = List.copyOf(hudSprites);
 			float[] capturedProjection = handProjection;
+			HandMotion capturedMotion = handMotion;
 			int capturedHands = hands, capturedBodies = bodies;
 			net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image -> {
 				try (image) {
@@ -144,7 +157,7 @@ public final class MastersCaptureProbe {
 					image.writeToFile(path); // Persist the exact native buffer, including rejected evidence.
 					PixelStats pixels = measurePixels(image.getWidth(), image.getHeight(), image.getPixels(), capturedBlade, capturedHud);
 					var evidence = new CaptureEvidence(name, image.getWidth(), image.getHeight(), first, capturedHands, capturedBodies,
-						capturedBlade, capturedHud, capturedHudSprites, capturedProjection, pixels);
+						capturedBlade, capturedHud, capturedHudSprites, capturedProjection, capturedMotion, pixels);
 					Files.writeString(path.resolveSibling(name + ".json"), new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(evidence));
 					Wildercord.LOGGER.info("MASTERS_NATIVE_PIXELS name={} hud={} bounds={} cyan={} spanGui={} fireFraction={}",
 						name, capturedHud, capturedBlade, pixels.cyan, pixels.largestSpanGui, pixels.fireFraction);

@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameType;
 
 import java.util.List;
@@ -182,17 +184,33 @@ public final class ManaSkinChecks {
 	}
 
 	private static void armour(ServerLevel level) {
-		Target control = add(level), skin = add(level);
+		Target attacker = add(level), control = add(level), skin = add(level);
 		try {
 			control.setAttached(WildercordAttachments.CIRCLES, 0);
 			dress(control); dress(skin);
-			hit(control, 28); hit(skin, 28);
+			// generic() bypasses armour in vanilla; this comparison needs an actual physical source.
+			DamageSource physical = level.damageSources().playerAttack(attacker);
+			check(!physical.is(DamageTypeTags.BYPASSES_ARMOR) && !physical.is(DamageTypeTags.BYPASSES_ENCHANTMENTS)
+				&& physical.getEntity() == attacker && physical.getDirectEntity() == attacker,
+				"The P4 probe has a physical owner and admits both native armour and enchantments");
+			check(dev.wildercord.player.Heart.active(control) == 0 && dev.wildercord.player.Heart.active(skin) == 20
+				&& close(control.getHealth(), 20) && close(skin.getHealth(), 20)
+				&& control.getAbsorptionAmount() == 0 && skin.getAbsorptionAmount() == 0,
+				"The P4 comparison begins with equal health and no absorption, with Skin active only on its recipient");
+			boolean controlAccepted = control.hurtServer(level, physical, 28);
+			boolean skinAccepted = skin.hurtServer(level, physical, 28);
 			float wound = 20 - control.getHealth();
+			Wildercord.LOGGER.info("[mana-skin-native] P4 source={} bypassArmour={} accepted={}/{} controlHealth={} skinHealth={} nativeWound={} finalWound={} manaSpent={} armour={}/{} toughness={}/{} circles={}/{}",
+				physical.typeHolder().unwrapKey().orElseThrow().identifier(), physical.is(DamageTypeTags.BYPASSES_ARMOR), controlAccepted, skinAccepted,
+				control.getHealth(), skin.getHealth(), wound, 20 - skin.getHealth(), 100 - Spellbooks.mana(skin), control.getArmorValue(), skin.getArmorValue(),
+				control.getAttributeValue(Attributes.ARMOR_TOUGHNESS), skin.getAttributeValue(Attributes.ARMOR_TOUGHNESS),
+				dev.wildercord.player.Heart.active(control), dev.wildercord.player.Heart.active(skin));
+			check(controlAccepted && skinAccepted && control.getLastDamageSource() == physical && skin.getLastDamageSource() == physical,
+				"Both P4 recipients accept and retain the identical native physical damage source");
 			check(wound > 1.25F && wound < 5, "Real Protection IV netherite produces the small native control wound");
 			check(close(20 - skin.getHealth(), wound * .8F) && close(100 - Spellbooks.mana(skin), wound * .4F),
 				"Protection IV retains eighty percent health loss and pays two mana per restored health");
-			Wildercord.LOGGER.info("[mana-skin-native] P4 raw=28 nativeWound={} finalWound={} manaSpent={}", wound, 20 - skin.getHealth(), 100 - Spellbooks.mana(skin));
-		} finally { control.discard(); skin.discard(); }
+		} finally { attacker.discard(); control.discard(); skin.discard(); }
 	}
 
 	private static void lifesaves(ServerLevel level) {
@@ -272,6 +290,8 @@ public final class ManaSkinChecks {
 		for (int i = 0; i < slots.length; i++) { var stack = new ItemStack(items[i]); stack.enchant(enchantment, 4); target.setItemSlot(slots[i], stack); }
 		target.doTick();
 		check(target.getArmorValue() == 20 && target.getAttributeValue(Attributes.ARMOR_TOUGHNESS) >= 12, "Native equipment ticking installs netherite armour");
+		for (EquipmentSlot slot : slots) check(EnchantmentHelper.getItemEnchantmentLevel(enchantment, target.getItemBySlot(slot)) == 4,
+			"The native " + slot + " equipment really retains Protection IV");
 	}
 	private static void hit(Target target, float damage) { target.hurtServer(target.level(), target.level().damageSources().generic(), damage); }
 	private static boolean close(float actual, float expected) { return Math.abs(actual - expected) < .001F; }

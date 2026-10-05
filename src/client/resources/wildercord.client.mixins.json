@@ -26,6 +26,8 @@
 		"MouseHandlerMixin",
 		"ItemInHandLayerAuraMixin",
 		"FirstPersonAuraMixin",
+		"MastersHandEquipMixin",
+		"MastersHandMotionStateMixin",
 		"ItemLayerAuraMixin",
 		"EntityRendererAuraSenseMixin",
 		"MinecraftStringsMixin",
