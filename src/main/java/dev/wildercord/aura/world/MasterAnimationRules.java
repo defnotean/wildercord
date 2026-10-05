@@ -8,7 +8,7 @@ package dev.wildercord.aura.world;
 public final class MasterAnimationRules {
 	private MasterAnimationRules() {}
 
-	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6;
+	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7;
 	public record Joint(float x, float y, float z) {
 		Joint toward(Joint other, float t) {
 			return new Joint(lerp(x, other.x, t), lerp(y, other.y, t), lerp(z, other.z, t));
@@ -76,6 +76,17 @@ public final class MasterAnimationRules {
 	private static final Pose PURSUIT_STEP = p(j(.48F, .22F, -.05F), j(-.22F, 0, 0),
 		j(-.70F, .35F, -.32F), j(.24F, -.18F, -.36F), .28F, -45);
 
+	// Gale carries its blade high while slipping sideways, plants, then opens a compact point reply.
+	// These original rigid-rig keys remain the explicit fallback for the optional Sweep-only articulated backend.
+	private static final Pose REPRISE_GATHER = p(j(.05F, -.18F, .08F), j(-.02F, .08F, -.04F),
+		j(-1.70F, -.10F, -.42F), j(-.65F, .30F, .25F), .18F, -32);
+	private static final Pose REPRISE_STEP = p(j(.10F, -.30F, .28F), j(-.04F, .12F, -.14F),
+		j(-1.65F, .35F, -.52F), j(-.40F, .40F, .40F), .10F, -40);
+	private static final Motion REPRISE_MOTION = new Motion(
+		p(j(-.04F, .48F, .06F), j(.02F, 0, -.03F), j(-1.25F, .38F, -.13F), j(-.82F, -.22F, -.18F), .22F, -65),
+		p(j(.23F, -.32F, -.04F), j(-.10F, 0, .02F), j(-1.52F, -.05F, -.10F), j(.15F, .22F, -.32F), .22F, -87),
+		p(j(.20F, -.50F, -.03F), j(-.08F, 0, .01F), j(-.95F, -.24F, -.13F), j(-.30F, .18F, -.25F), .22F, -80));
+
 	private static final Pose GUARD = p(j(.10F, .10F, 0), j(-.04F, 0, 0), j(-1.42F, -.55F, -.25F), j(-1.05F, .40F, -.25F), .14F, 0);
 	private static final Pose DODGE = p(j(.34F, -.18F, -.08F), j(-.18F, 0, .04F), j(-1.05F, .20F, -.35F), j(-.68F, -.18F, -.38F), .28F, 0);
 	private static final Pose STAGGER = p(j(-.15F, .06F, .03F), j(.12F, 0, 0), j(-.45F, .16F, .30F), j(-.35F, -.12F, -.40F), .12F, 0);
@@ -92,10 +103,12 @@ public final class MasterAnimationRules {
 			case BREAK_CAST -> BREAK_MOTION;
 			case CINDER_WAKE -> CINDER_MOTION;
 			case PURSUIT_BREAK -> PURSUIT_MOTION;
+			case CROSSWIND_REPRISE -> REPRISE_MOTION;
 			default -> null;
 		};
 		if (motion == null || !Float.isFinite(age) || age < 0 || tell < 1 || tell > 80 || active < 1 || active > 10
 			|| recovery < 1 || recovery > 120 || age >= tell + active + recovery) return NONE;
+		if (attack == CROSSWIND_REPRISE) return reprise(age, tell, active, recovery);
 		if (attack == PURSUIT_BREAK) return pursuit(age, tell, active, recovery);
 		if (attack == CINDER_WAKE && age >= tell + 6) return emberWake(age, tell, active, recovery);
 		float chamberAt = tell * .65F;
@@ -108,6 +121,21 @@ public final class MasterAnimationRules {
 		float enter = smooth(age / Math.max(1, chamberAt));
 		float leave = 1 - smooth((age - followAt) / (tell + active + recovery - followAt));
 		return pose.weight(enter * leave);
+	}
+
+	private static Pose reprise(float age, int tell, int active, int recovery) {
+		float step = tell * GaleRepriseRules.GATHER / GaleRepriseRules.TELL;
+		float plant = tell * (GaleRepriseRules.GATHER + GaleRepriseRules.STEP_TICKS) / GaleRepriseRules.TELL;
+		float chamber = tell * .65F, follow = tell + active + Math.min(3, recovery * .20F);
+		Pose pose;
+		if (age < step) pose = REPRISE_GATHER.toward(REPRISE_STEP, smooth(age / step));
+		else if (age < plant) pose = REPRISE_STEP.toward(REPRISE_MOTION.chamber, smooth((age - step) / (plant - step)));
+		else if (age < chamber) pose = REPRISE_MOTION.chamber;
+		else if (age < tell) pose = REPRISE_MOTION.chamber.toward(REPRISE_MOTION.impact, smooth((age - chamber) / (tell - chamber)));
+		else if (age < follow) pose = REPRISE_MOTION.impact.toward(REPRISE_MOTION.follow, smooth((age - tell) / (follow - tell)));
+		else pose = REPRISE_MOTION.follow;
+		return pose.weight(smooth(age / Math.max(1, step * .5F))
+			* (1 - smooth((age - follow) / (tell + active + recovery - follow))));
 	}
 
 	private static Pose pursuit(float age, int tell, int active, int recovery) {

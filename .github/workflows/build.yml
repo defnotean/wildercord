@@ -127,7 +127,7 @@ jobs:
 
   # Additional focused evidence for the Masters foundation; never replaces the four full shards.
   masters-native:
-    name: Masters update (17 focused suites)
+    name: Masters update (18 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -146,7 +146,7 @@ jobs:
       - name: Mark fresh Masters screenshot inputs
         continue-on-error: true
         run: python tools/curate_masters_frames.py --prepare --marker artifacts/review/masters-frames-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the 17 focused update suites
+      - name: Run the 18 focused update suites
         env:
           LIBGL_ALWAYS_SOFTWARE: "1"
           SDL_VIDEO_FORCE_EGL: "1"

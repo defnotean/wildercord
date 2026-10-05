@@ -46,6 +46,16 @@ Sidestep outside the 1.6-block-wide final lane, backstep beyond its 3.25-block r
 
 Releasing the spell baits a paid cancellation, with no Aura or cooldown refund. The Master brakes and remains open for 1.5 seconds, just as it does after the strike. Restarting the spell cannot erase that opening or cause an immediate second dash. Sustained baiting, eight-player pressure and the new movement still need native playtest balance; this does not claim a measured difficulty multiplier. Its new body motion uses the original fallback rig, including when the optional articulated renderer is enabled.
 
+### Answering Gale's Crosswind Reprise
+
+After its first completed attack and then once per four completed attacks, a free Gale Master may choose Crosswind Reprise against its current enrolled target 2.5–4.75 blocks away. It spends 24 Aura at commitment and cannot use this form again for at least seven seconds. The existing shared exhaustion rule still makes the Master breathe below 28 Aura, before it can choose another attack. Its body warns for 0.4 seconds, moves sideways **1.8 blocks total** in four collision-checked steps over 0.2 seconds, then plants and marks a separate narrow reply for a full 0.5 seconds. Slowness shortens the accepted step; haste cannot extend it.
+
+The reply aims toward the target's original position from the planned landing, locked before departure. It never turns to follow later movement. Step out of the 1.5-block-wide lane, backstep beyond its 5.25-block reach, use solid cover, dodge or face the blade and parry. Only the originally selected enrolled target can take its one 26-base-damage hit, regardless of party size. This form adds no spell interruption, invulnerability, health or damage scaling.
+
+The Master cannot escape its own committed attack, guard or recovery to start this step. Walls, hazards, gaps, fluid and arena/world-border edges reject or stop the native movement without teleporting. A hit, miss or cancelled attempt leaves 1.6 seconds of exposed recovery, with no Aura or cooldown refund. Cover clips the marked reply at the warning; removing that cover cannot extend it into an unmarked hit. An early interrupt, external knockback, paused AI or the selected target leaving cancels the pending reply.
+
+Its original high-blade lateral lean, planted chamber, point reply and recovery use the existing synchronized Master timeline and rigid body/weapon rig. The optional articulated backend currently covers only the Master Sweep; Crosswind intentionally uses the authored rigid fallback in either setting. Native render and multiplayer balance remain playtest requirements, not claims established by the pure animation tests.
+
 ### Reading Ember's Cinder Wake
 
 Ember commits its direction when the first outline appears. After 1.2 seconds it makes a broad, four-block cut. Backstep beyond that cut, then watch the new narrow, crossbar-marked lanes: they ignite once after another 1.3 seconds. Step sideways out of a lane, move beside or behind the blade, or take solid cover. The second strike cannot turn to follow you. Each beat deals 26 base damage before your ordinary defenses.

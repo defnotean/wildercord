@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MasterAnimationRulesTest {
 	@Test
 	void onlyLiveBoundedServerTimelinesAnimate() {
-		for (int id : new int[] {-1, 0, 7, Integer.MAX_VALUE}) {
+		for (int id : new int[] {-1, 0, 8, Integer.MAX_VALUE}) {
 			assertSame(MasterAnimationRules.NONE, MasterAnimationRules.sample(id, 2, 18, 1, 19));
 		}
 		for (float age : new float[] {-1, Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 38, 200}) {
@@ -111,6 +111,25 @@ class MasterAnimationRulesTest {
 		assertEquals(.25F, MasterAnimationRules.defence(1, 1, .25F).weight());
 		assertNotEquals(MasterAnimationRules.defence(1, 0, 0).body(), MasterAnimationRules.defence(0, 1, 0).body());
 		assertEquals(0, MasterAnimationRules.defence(0, 1, 0).bladeTilt());
+	}
+
+	@Test
+	void crosswindHasAReadableLateralGatherPlantAndDistinctReply() {
+		var move = MastersRules.Move.CROSSWIND_REPRISE;
+		assertEquals(7, move.ordinal() + 1);
+		assertEquals(MasterAnimationRules.CROSSWIND_REPRISE, move.ordinal() + 1);
+		var step = sample(move, GaleRepriseRules.GATHER);
+		var plant = sample(move, GaleRepriseRules.GATHER + GaleRepriseRules.STEP_TICKS);
+		var reply = sample(move, move.tell);
+		assertTrue(step.body().z() > .25F && step.sword().x() < -1.5F, "Visible lean carries a high blade through lateral movement");
+		assertTrue(plant.body().y() > .4F && plant.stance() > step.stance(), "The planted chamber precedes the separately warned reply");
+		assertTrue(reply.bladeTilt() < -80 && reply.body().y() < 0, "The reply opens a compact point-first stroke");
+		for (var other : MastersRules.Move.values()) if (other != move) assertNotEquals(reply, sample(other, other.tell));
+		for (float at : new float[] {GaleRepriseRules.GATHER, GaleRepriseRules.GATHER + GaleRepriseRules.STEP_TICKS}) {
+			var before = values(sample(move, at - .0001F));
+			var after = values(sample(move, at + .0001F));
+			for (int n = 0; n < before.length; n++) assertEquals(before[n], after[n], .003F, "Crosswind handoff channel " + n);
+		}
 	}
 
 	@Test

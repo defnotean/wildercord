@@ -259,6 +259,7 @@
       "dev.wildercord.cast.WardReflectReceiptTest",
       "dev.wildercord.party.PartyMutationSafetyTest",
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
+      "dev.wildercord.aura.world.ManaSkinSustainChecks",
       "dev.wildercord.gametest.WildercordMastersArtsTest",
       "dev.wildercord.aura.world.SwordMasterTrialTest",
       "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",

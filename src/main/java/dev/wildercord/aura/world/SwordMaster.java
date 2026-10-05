@@ -85,6 +85,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private EmberAfterburn afterburn;
 	private MasterPursuit pursuit;
 	private long pursuitReadyAt;
+	private GaleReprise reprise;
+	private long repriseReadyAt;
 
 	public SwordMaster(EntityType<? extends SwordMaster> type, Level level) {
 		super(type, level);
@@ -359,6 +361,14 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	boolean afterburnPending() { return afterburn != null; }
 	boolean pursuitPending() { return pursuit != null; }
+	boolean reprisePending() { return reprise != null; }
+
+	boolean canBeginReprise(long now) {
+		return canMaintainAfterburn() && !isNoAi() && attack == null && now >= recoverUntil
+			&& now >= dodgeUntil && !guarding();
+	}
+
+	boolean canMaintainReprise() { return canMaintainAfterburn() && !isNoAi() && attack == MastersRules.Move.CROSSWIND_REPRISE; }
 
 	boolean canMaintainPursuit() { return canMaintainAfterburn() && attack == MastersRules.Move.PURSUIT_BREAK; }
 
@@ -432,7 +442,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			bar.setProgress(getHealth() / getMaxHealth());
 			Component activity = !started
 				? Component.translatable("boss.wildercord.master.prepare", participants.size(), MastersRules.MAX_PARTICIPANTS, Math.max(0, (begins - now + 19) / 20))
-				: Component.translatable("boss.wildercord.master." + (attack != null ? pursuit != null && pursuit.strikeWarned() ? "pursuit_strike" : attack.name().toLowerCase(java.util.Locale.ROOT) : afterburn != null ? "afterburn"
+				: Component.translatable("boss.wildercord.master." + (attack != null ? pursuit != null && pursuit.strikeWarned() ? "pursuit_strike" : reprise != null && reprise.replyWarned() ? "crosswind_reply" : attack.name().toLowerCase(java.util.Locale.ROOT) : afterburn != null ? "afterburn"
 					: staggered() || Stance.opened(this) ? "broken" : now < breathingUntil ? "breathing" : now < recoverUntil ? "recover" : guarding() ? "guard" : "ready"));
 			bar.setName(Component.translatable("boss.wildercord.master.status", method().id(), activity));
 		}
@@ -453,6 +463,9 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			setHealth(getMaxHealth());
 			if (discipline == MastersRules.EMBER) for (ServerPlayer player : level.players()) {
 				if (participant(player)) player.sendSystemMessage(Component.translatable("message.wildercord.master.ember_lesson"));
+			}
+			if (discipline == MastersRules.GALE) for (ServerPlayer player : level.players()) {
+				if (participant(player)) player.sendSystemMessage(Component.translatable("message.wildercord.master.gale_lesson"));
 			}
 			for (ServerPlayer player : level.players()) if (participant(player)) {
 				player.sendSystemMessage(Component.translatable("message.wildercord.master.pursuit_lesson")
@@ -532,6 +545,16 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			faceTarget(target);
 			if (raiseGuard()) { aura -= MastersRules.GUARD_COST; return; }
 		}
+		if (target instanceof ServerPlayer player) {
+			GaleReprise opening = GaleReprise.prepare(this, player, discipline, sequence, aura, now, repriseReadyAt);
+			if (opening != null) {
+				beginAttack(level, player, MastersRules.Move.CROSSWIND_REPRISE, now);
+				reprise = opening;
+				repriseReadyAt = now + GaleRepriseRules.COOLDOWN;
+				reprise.tick(now);
+				return;
+			}
+		}
 		if (evadeThreat(level, now)) return;
 		double targetHeight = target.getBoundingBox().getCenter().y - slashOrigin().y;
 		if (Math.abs(targetHeight) <= 2.5 && distanceTo(target) > 6 && sequence % 3 != 0) {
@@ -560,7 +583,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		approachStarted = 0;
 		setDeltaMovement(0, getDeltaMovement().y, 0);
 		aura -= move == MastersRules.Move.CINDER_WAKE ? EmberWakeRules.COST
-			: move == MastersRules.Move.PURSUIT_BREAK ? MasterPursuitRules.school(discipline).cost() : MastersRules.ATTACK_COST;
+			: move == MastersRules.Move.PURSUIT_BREAK ? MasterPursuitRules.school(discipline).cost()
+			: move == MastersRules.Move.CROSSWIND_REPRISE ? GaleRepriseRules.COST : MastersRules.ATTACK_COST;
 		attackAt = now + move.tell;
 		lockedAim = null;
 		lockedOrigin = null;
@@ -581,6 +605,24 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	private void tickAttack(ServerLevel level, long now, LivingEntity target) {
 		getNavigation().stop();
+		if (attack == MastersRules.Move.CROSSWIND_REPRISE) {
+			GaleReprise running = reprise;
+			if (running != null && running.tick(now)) return;
+			if (attack != MastersRules.Move.CROSSWIND_REPRISE) return;
+			boolean released = running != null && running.released();
+			if (!released) cancelAttack();
+			else {
+				reprise = null;
+				attack = null;
+				setState(WINDUP, false);
+				guardNext = MastersRules.guardAfter(discipline, ++sequence);
+				retargetBetweenAttacks(level);
+			}
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+			recoverUntil = now + GaleRepriseRules.RECOVERY;
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+			return;
+		}
 		if (attack == MastersRules.Move.PURSUIT_BREAK) {
 			MasterPursuit running = pursuit;
 			if (running != null && running.tick(now)) return;
@@ -769,6 +811,12 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	private void cancelAttack() {
+		if (reprise != null) {
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+			recoverUntil = Math.max(recoverUntil, level().getGameTime() + GaleRepriseRules.RECOVERY);
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+		}
+		reprise = null;
 		if (pursuit != null) {
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 			recoverUntil = Math.max(recoverUntil, level().getGameTime() + MasterPursuitRules.RECOVERY);

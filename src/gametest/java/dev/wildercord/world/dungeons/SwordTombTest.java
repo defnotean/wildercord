@@ -8,12 +8,18 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.*;
 import java.util.*;
 
@@ -73,21 +79,46 @@ public final class SwordTombTest implements FabricClientGameTest {
 			use(c,altar);c.waitTicks(10);world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(scrolls(p)==2,"Saved reward ledger blocks a second claim");var parts=new HashSet<String>();for(int i=0;i<p.getInventory().getContainerSize();i++){var part=p.getInventory().getItem(i).get(TechniqueScrollItem.PART);if(part!=null)parts.add(part);}check(parts.size()==2,"The two awarded scrolls carry different valid parts");});aim(c,altar,0);shot(c,"sword_tomb_rewards");
 			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();for(int i=0;i<p.getInventory().getContainerSize();i++){var item=p.getInventory().getItem(i);if(item.has(DataComponents.WRITTEN_BOOK_CONTENT)){p.setItemInHand(InteractionHand.MAIN_HAND,item.copy());break;}}});c.waitTicks(10);c.runOnClient(mc->mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND));c.waitTicks(10);c.runOnClient(mc->check(mc.gui.screen() instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen,"The actual awarded testament opens for reading"));shot(c,"sword_tomb_testament");
 		}
-		try(var natural=c.worldBuilder().setUseConsistentSettings(false).create()){
+		try(var natural=c.worldBuilder().setUseConsistentSettings(false).adjustSettings(settings->settings.setSeed("811")).create()){
 			c.waitTicks(40);natural.getServer().runCommand("gamerule spawn_mobs false");natural.getServer().runCommand("time set 6000");
-			BlockPos habitat=natural.getServer().computeOnServer(s->{var source=s.overworld().getChunkSource();var b=source.getGenerator().getBiomeSource().findBiomeHorizontal(1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(811),true,source.randomState());check(b!=null,"Normal world has a surface tomb habitat");return b.getFirst();});
-			BlockPos found=null;
-			for(int i=0;i<16 && found==null;i++){
-				int x=habitat.getX()+(i%4)*64,z=habitat.getZ()+(i/4)*64;
-				natural.getServer().runOnServer(s->{for(int cx=(x>>4)-4;cx<=(x>>4)+4;cx++)for(int cz=(z>>4)-4;cz<=(z>>4)+4;cz++)s.overworld().getChunk(cx,cz);});
-				natural.getServer().runCommand("place structure wildercord:sword_tomb "+x+" 70 "+z);
-				found=natural.getServer().computeOnServer(s->{for(int cx=(x>>4)-4;cx<=(x>>4)+4;cx++)for(int cz=(z>>4)-4;cz<=(z>>4)+4;cz++)for(var be:s.overworld().getChunk(cx,cz).getBlockEntities().values())if(be instanceof TombReliquaryEntity t && t.authentic())return t.getBlockPos();return null;});
-			}
-			check(found!=null,"Registered tomb placement generates an authentic reliquary on normal terrain");BlockPos at=found;
+			var site=natural.getServer().computeOnServer(s->findNaturalTombSite(s.overworld()));
+			natural.getServer().runOnServer(s->{
+				var b=site.bounds();
+				for(int cx=b.minX()>>4;cx<=b.maxX()>>4;cx++)for(int cz=b.minZ()>>4;cz<=b.maxZ()>>4;cz++)s.overworld().getChunk(cx,cz);
+				boolean[] succeeded={false};int[] result={0};
+				s.getCommands().performPrefixedCommand(s.createCommandSourceStack().withCallback((ok,value)->{succeeded[0]=ok;result[0]=value;}),
+					"place structure wildercord:sword_tomb "+site.command().getX()+" 70 "+site.command().getZ());
+				check(succeeded[0] && result[0]==1,"Registered tomb placement command succeeds at "+site.command()+" in seed "+s.overworld().getSeed());
+				check(s.overworld().getBlockEntity(site.altar()) instanceof TombReliquaryEntity t && t.authentic(),"Registered tomb placement generates an authentic reliquary on normal terrain");
+			});
+			BlockPos at=site.altar();
 			BlockPos entrance=natural.getServer().computeOnServer(s->at.relative(s.overworld().getBlockState(at).getValue(TombReliquary.FACING).getOpposite(),42).above(12));
 			natural.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),entrance.getX()+7.5,entrance.getY()+5,entrance.getZ()+7.5,Set.<Relative>of(),0,25,false);p.getAbilities().flying=true;p.onUpdateAbilities();});
 			c.waitTicks(30);aim(c,entrance,0);c.waitTicks(30);natural.getConnection().waitForChunksRender();shot(c,"sword_tomb_natural_entrance");
 		}
+	}
+	private record NaturalTombSite(BlockPos command,BoundingBox bounds,BlockPos altar){}
+	private static NaturalTombSite findNaturalTombSite(ServerLevel level){
+		check(dev.wildercord.config.Config.get().auraWorld().swordTombs(),"Natural tomb generation is enabled");
+		var source=level.getChunkSource();var generator=source.getGenerator();var randomState=source.randomState();
+		var habitat=generator.getBiomeSource().findBiomeHorizontal(1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(811),true,randomState);
+		check(habitat!=null,"Normal world has a surface tomb habitat");
+		var origin=ChunkPos.containing(habitat.getFirst());
+		var tomb=level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,Identifier.parse("wildercord:sword_tomb")));
+		var sampler=randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED);
+		// A plains biome sample need not put the rotated entrance on dry ground. Probe the
+		// registered generation path first; load only the successful start's actual footprint.
+		for(int radius=0;radius<=32;radius++)for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++){
+			if(Math.max(Math.abs(dx),Math.abs(dz))!=radius)continue;
+			var chunk=new ChunkPos(origin.x()+dx,origin.z()+dz);
+			var start=tomb.value().generate(tomb,level.dimension(),level.registryAccess(),generator,generator.getBiomeSource(),sampler,randomState,
+				level.getStructureTemplateManager(),level.getSeed(),chunk,0,level,tomb.value().biomes()::contains);
+			if(!start.isValid())continue;
+			check(start.getPieces().size()==1 && start.getPieces().getFirst() instanceof SwordTombPiece,"Registered tomb start contains its authored piece");
+			var piece=(SwordTombPiece)start.getPieces().getFirst();
+			return new NaturalTombSite(new BlockPos(chunk.getMinBlockX(),70,chunk.getMinBlockZ()),start.getBoundingBox(),piece.localPosition(20,1,44));
+		}
+		throw new AssertionError("No valid registered tomb start within 32 chunks of "+habitat.getFirst()+" in seed "+level.getSeed());
 	}
 	private static void placePlayer(TestSingleplayerContext w,BlockPos at,int stage){w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),at.getX()+.5,at.getY(),at.getZ()+.5,Set.<Relative>of(),0,0,false);p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",stage,0,70,0));p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_SWORD));p.fallDistance=0;});}
 	private static void await(ClientGameTestContext c,TestSingleplayerContext w,UUID id,int move){for(int i=0;i<240;i++){if(w.getServer().computeOnServer(s->s.overworld().getEntity(id) instanceof Gravekeeper k && k.move()==move))return;c.waitTicks(1);}throw new AssertionError("Keeper did not reach move "+move);}

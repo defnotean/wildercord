@@ -599,7 +599,15 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 
 	/** The middle of a slot on the open container screen, in window pixels. */
 	private static double[] pixel(ClientGameTestContext context, java.util.function.Predicate<Slot> which) {
+		return pixel(context, "container slot", which);
+	}
+
+	private static double[] pixel(ClientGameTestContext context, String stage, java.util.function.Predicate<Slot> which) {
 		return context.computeOnClient(mc -> {
+			check(mc.player != null && mc.player.isAlive() && mc.gui.screen() instanceof AbstractContainerScreen<?>,
+				stage + " requires a living player and an open container; screen="
+					+ (mc.gui.screen() == null ? "null" : mc.gui.screen().getClass().getSimpleName())
+					+ "; " + playerState(mc.player));
 			AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) mc.gui.screen();
 			for (Slot slot : screen.getMenu().slots) {
 				if (which.test(slot)) {
@@ -889,25 +897,62 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 	}
 
 	private static void dimensionChange(ClientGameTestContext context, TestSingleplayerContext world) {
-		world.getServer().runOnServer(server -> {
+		Vec3 home = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
-			ready(player, new ItemStack(WildercordItems.ECHO_CORD));
+			Vec3 at = ready(player, new ItemStack(WildercordItems.ECHO_CORD));
 			clearDrops(player);
 			fill(player, gear(GearDef.greaterStaff("void")), gear(GearDef.THRIFT), gear(GearDef.TOME));
+			// A dimension-sync test needs a real landing, regardless of the Nether terrain at y=100.
+			ServerLevel nether = server.getLevel(Level.NETHER);
+			check(nether != null, "the dimension fixture needs the Nether");
+			for (int x = -1; x <= 1; x++) {
+				for (int z = -1; z <= 1; z++) {
+					nether.setBlockAndUpdate(new BlockPos(x, 99, z), Blocks.STONE.defaultBlockState());
+					for (int y = 100; y <= 102; y++) {
+						nether.setBlockAndUpdate(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState());
+					}
+				}
+			}
+			return at;
 		});
 		context.waitTicks(5);
+		checkGrounded(context, world, "dimension departure", home);
 		world.getServer().runCommand("execute in minecraft:the_nether run tp @p 0 100 0");
 		context.waitFor(mc -> mc.level != null && mc.level.dimension() == Level.NETHER, 1200);
 		context.waitTicks(20);
+		checkGrounded(context, world, "Nether arrival", new Vec3(0.5, 100, 0.5));
 		String there = world.getServer().computeOnServer(server -> GearSlots.equipped(player(server)).size() == 3 && drops(player(server)).isEmpty() ? null
 			: "the gear should stay in its slots through a dimension change (" + GearSlots.equipped(player(server)) + ")");
 		check(there == null, there);
 		check(context.computeOnClient(mc -> GearSlots.equipped(mc.player).size()) == 3, "the client should see the gear after a dimension change");
-		world.getServer().runCommand("execute in minecraft:overworld run tp @p 0 100 0");
+		// Return to the prepared ground, not y=100 above the flat world's y=-60 floor. Teleporting
+		// a falling player down in the next ready() call clears velocity but preserves fall distance.
+		world.getServer().runCommand("execute in minecraft:overworld run tp @p " + home.x + " " + home.y + " " + home.z);
 		context.waitFor(mc -> mc.level != null && mc.level.dimension() == Level.OVERWORLD, 1200);
 		context.waitTicks(20);
+		checkGrounded(context, world, "Overworld return", home);
 		check(context.computeOnClient(mc -> GearSlots.equipped(mc.player).size()) == 3, "the client should see the gear after coming back");
 		check(world.getServer().computeOnServer(server -> GearSlots.equipped(player(server)).size() == 3), "the gear should be in its slots after coming back");
+	}
+
+	private static String playerState(net.minecraft.world.entity.player.Player player) {
+		return player == null ? "player=null" : "dimension=" + player.level().dimension() + ", position=" + player.position()
+			+ ", health=" + player.getHealth() + ", onGround=" + player.onGround() + ", fallDistance=" + player.fallDistance
+			+ ", velocity=" + player.getDeltaMovement();
+	}
+
+	private static void checkGrounded(ClientGameTestContext context, TestSingleplayerContext world, String stage, Vec3 expected) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			BlockPos below = player.blockPosition().below();
+			String state = playerState(player) + ", support=" + player.level().getBlockState(below);
+			org.slf4j.LoggerFactory.getLogger("gear slots").info("{}: {}", stage, state);
+			check(player.isAlive() && player.onGround() && player.fallDistance == 0
+				&& player.level().getBlockState(below).isCollisionShapeFullBlock(player.level(), below)
+				&& (expected == null || player.position().distanceToSqr(expected) < 0.01),
+				stage + " requires a living player on the prepared ground; " + state + ", expected=" + expected);
+		});
+		context.runOnClient(mc -> check(mc.player != null && mc.player.isAlive(), stage + " client: " + playerState(mc.player)));
 	}
 
 	private static void afterASave(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -940,6 +985,7 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 	}
 
 	private static void screens(ClientGameTestContext context, TestSingleplayerContext world) {
+		checkGrounded(context, world, "inventory screenshots before setup", null);
 		world.getServer().runCommand("gamerule keep_inventory false");
 		for (boolean full : new boolean[]{false, true}) {
 			world.getServer().runOnServer(server -> {
@@ -952,17 +998,18 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 			});
 			context.waitTicks(5);
 			String tag = full ? "filled" : "empty";
+			checkGrounded(context, world, "survival_" + tag + " setup", null);
 			context.runOnClient(mc -> mc.gui.setScreen(new InventoryScreen(mc.player)));
 			context.waitTicks(8);
 			context.getInput().setCursorPos(4, 4);
 			context.waitTicks(3);
 			shot(context, "survival_" + tag);
 			// Hovering a slot: what an empty one is for, and the piece in a full one.
-			double[] focus = pixel(context, gearSlot(GearSlot.FOCUS));
+			double[] focus = pixel(context, "survival_" + tag + " focus hover", gearSlot(GearSlot.FOCUS));
 			context.getInput().setCursorPos(focus[0], focus[1]);
 			context.waitTicks(4);
 			shot(context, "survival_" + tag + "_hover");
-			double[] staff = pixel(context, gearSlot(GearSlot.STAFF));
+			double[] staff = pixel(context, "survival_" + tag + " staff hover", gearSlot(GearSlot.STAFF));
 			context.getInput().setCursorPos(staff[0], staff[1]);
 			context.waitTicks(4);
 			shot(context, "survival_" + tag + "_hover_staff");
@@ -994,7 +1041,7 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 			context.getInput().setCursorPos(4, 4);
 			context.waitTicks(3);
 			shot(context, "creative_" + tag);
-			double[] creativeFocus = pixel(context, gearSlot(GearSlot.FOCUS));
+			double[] creativeFocus = pixel(context, "creative_" + tag + " focus hover", gearSlot(GearSlot.FOCUS));
 			context.getInput().setCursorPos(creativeFocus[0], creativeFocus[1]);
 			context.waitTicks(4);
 			shot(context, "creative_" + tag + "_hover");
