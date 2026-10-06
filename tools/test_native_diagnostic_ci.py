@@ -183,7 +183,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(set(result["observedWorldSeeds"]), set(diagnostic.SEEDS[case]))
 
     def test_failed_missing_mixed_truncated_and_replayed_evidence_never_pass(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return"):
             self.assert_invalid_evidence_never_passes(case)
 
     def assert_invalid_evidence_never_passes(self, case):
@@ -296,7 +296,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(self.collect(data, duplicate)["diagnosticOutcome"], "unverified")
 
     def test_unique_seed_receipt_rule_does_not_change_other_cases(self):
-        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring"}:
+        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return"}:
             data = self.fixture(case)
             entry, seed = next(iter(diagnostic.SEEDS[case].items()))
             repeated = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) + "\n"
@@ -326,8 +326,26 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
     def test_general_manifest_cannot_relabel_diagnostic_as_focused_or_full(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return"):
             self.assert_manifest_cannot_relabel_diagnostic(case)
+
+    def test_ecology_return_selects_only_three_whole_classes_and_observes_reopen(self):
+        entries = ["dev.wildercord.wildlife.RootmoltCounterTest",
+                   "dev.wildercord.wildlife.ReedRefugeTest",
+                   "dev.wildercord.wildlife.SiltcrestBankReturnTest"]
+        self.assertEqual(diagnostic.CASES["ecology-return"], "diagnostic-ecology-return")
+        self.assertEqual(suites.select_entries(suite="diagnostic-ecology-return"),
+                         {"kind": "diagnostic", "name": "diagnostic-ecology-return",
+                          "count": 3, "entries": entries})
+        expected = {entry: None for entry in [*entries, entries[1] + "#reopen"]}
+        self.assertEqual(diagnostic.SEEDS["ecology-return"], expected)
+        data = self.fixture("ecology-return")
+        good = self.log(data)
+        for entry in expected:
+            marker = diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": "1"})
+            for bad in (good.replace(marker, ""), good + marker + "\n"):
+                with self.subTest(entry=entry):
+                    self.assertEqual(self.collect(data, bad)["diagnosticOutcome"], "unverified")
 
     def test_kiln_selects_only_three_whole_classes_in_original_order(self):
         self.assertEqual(diagnostic.CASES["kiln-ring"], "diagnostic-kiln-ring")
@@ -354,7 +372,7 @@ class EvidenceTests(unittest.TestCase):
                 self.assertNotEqual(manifest.get("focusedClientGate"), "passed")
 
     def test_collect_preserves_evidence_after_head_advances_or_origin_fails(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return"):
             self.assert_collect_preserves_evidence(case)
 
     def assert_collect_preserves_evidence(self, case):

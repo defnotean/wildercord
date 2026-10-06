@@ -1,4 +1,5 @@
 """Bounded supervisor regression tests; no Minecraft process is started."""
+import ast
 import contextlib
 import copy
 import hashlib
@@ -7,6 +8,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -20,6 +22,15 @@ spec = importlib.util.spec_from_file_location("supervisor", ROOT / "tools/native
 supervisor = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(supervisor)
 CONTRACT = json.loads((ROOT / supervisor.CONTRACT).read_text())
+ORIGINAL_CASES = [
+    spell + "_" + case
+    for spell in ("BREAK_CAST", "DRIVING_CUT")
+    for case in ("HEALTH", "FULL_ABSORPTION", "MANA_SKIN", "REVERSAL", "TOTEM", "GUARD", "STEP", "WARD",
+                 "RESISTANCE", "REJECTED", "REPLACED", "EQUAL_TOKEN", "NEW_CHARGE", "IDLE", "WINDUP_REPLACEMENT")
+] + ["SHARED_BREAK_CAST_TO_DRIVING_CUT", "SHARED_DRIVING_CUT_TO_BREAK_CAST", "IDLE_SEAL_RECOVERY",
+     "CHARGED_SEAL_RECOVERY", "NONPLAYER"]
+COUNTER_CASES = ["COUNTER_QUIETUS_PAID_BOLT", "COUNTER_QUIETUS_THIRTEEN_EXISTING", "COUNTER_REFLECTED_RESPAWN_NULLCATCH"]
+EXPECTED_CASES = ORIGINAL_CASES + COUNTER_CASES
 
 
 def write_json(path, data):
@@ -81,18 +92,63 @@ class Fixture(unittest.TestCase):
 
 
 class ContractTests(Fixture):
-    def test_exact_35_case_roster_and_offline_profiles(self):
+    def test_exact_38_case_roster_retains_original_35_and_offline_profiles(self):
         contract = supervisor.load_contract(self.root)
         cases = contract["cases"]
-        self.assertEqual(len(cases), 35)
-        self.assertEqual(cases[0], "BREAK_CAST_HEALTH")
-        self.assertEqual(cases[15], "DRIVING_CUT_HEALTH")
-        self.assertEqual(cases[-5:], ["SHARED_BREAK_CAST_TO_DRIVING_CUT", "SHARED_DRIVING_CUT_TO_BREAK_CAST", "IDLE_SEAL_RECOVERY", "CHARGED_SEAL_RECOVERY", "NONPLAYER"])
+        self.assertEqual(len(cases), 38)
+        self.assertEqual(cases, EXPECTED_CASES)
+        self.assertEqual(cases[:35], ORIGINAL_CASES)
+        self.assertEqual(cases[35:], COUNTER_CASES)
+        self.assertEqual(contract["expectedCount"], 38)
+        self.assertEqual(contract["limits"], {"maxJvms": 2, "maxHeapMiBPerJvm": 2048, "maxCases": 38, "maxTimeoutSeconds": 900})
         for name, expected in supervisor.PROFILES.values():
             raw = bytearray(hashlib.md5(("OfflinePlayer:" + name).encode()).digest())
             raw[6] = raw[6] & 15 | 48; raw[8] = raw[8] & 63 | 128
             self.assertEqual(str(uuid.UUID(bytes=bytes(raw))), expected)
         self.assertNotEqual(supervisor.PROFILES["host"][1], supervisor.PROFILES["peer"][1])
+
+    def test_exporter_binds_the_same_ordered_roster(self):
+        exporter = (ROOT / "tools/native/export_two_client_launch.init.gradle").read_text()
+        roster = re.search(r"def expectedCases = (\[.*?\])", exporter, re.DOTALL)
+        self.assertIsNotNone(roster)
+        self.assertEqual(ast.literal_eval(roster[1]), EXPECTED_CASES)
+        self.assertIn("contract.cases != expectedCases", exporter)
+
+    def test_every_case_is_mandatory_and_cannot_be_substituted(self):
+        for index, case in enumerate(EXPECTED_CASES):
+            for replacement in ([], ["FOREIGN_CASE"], [EXPECTED_CASES[(index + 1) % len(EXPECTED_CASES)]]):
+                value = copy.deepcopy(CONTRACT)
+                value["cases"][index:index + 1] = replacement
+                # A consistent count must not legitimize dropping an original or counter case.
+                value["expectedCount"] = len(value["cases"])
+                value["limits"]["maxCases"] = len(value["cases"])
+                write_json(self.root / supervisor.CONTRACT, value)
+                with self.subTest(case=case, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 38-case roster"):
+                    supervisor.load_contract(self.root)
+
+    def test_original_counter_and_boundary_order_cannot_change(self):
+        for first, second in ((0, 1), (34, 35), (35, 36), (36, 37)):
+            value = copy.deepcopy(CONTRACT)
+            value["cases"][first], value["cases"][second] = value["cases"][second], value["cases"][first]
+            write_json(self.root / supervisor.CONTRACT, value)
+            with self.subTest(first=first, second=second), self.assertRaisesRegex(ValueError, "exact ordered 38-case roster"):
+                supervisor.load_contract(self.root)
+
+    def test_legacy_count_invalid_rosters_and_relaxed_limits_are_rejected(self):
+        mutations = [("expectedCount", 35), ("cases", ORIGINAL_CASES), ("cases", None),
+                     ("cases", [None] + EXPECTED_CASES[1:]), ("cases", [{}] + EXPECTED_CASES[1:])]
+        for field, replacement in mutations:
+            value = copy.deepcopy(CONTRACT)
+            value[field] = replacement
+            write_json(self.root / supervisor.CONTRACT, value)
+            with self.subTest(field=field, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 38-case roster"):
+                supervisor.load_contract(self.root)
+        for field, replacement in (("maxJvms", 3), ("maxHeapMiBPerJvm", 4096), ("maxCases", 35), ("maxTimeoutSeconds", 901)):
+            value = copy.deepcopy(CONTRACT)
+            value["limits"][field] = replacement
+            write_json(self.root / supervisor.CONTRACT, value)
+            with self.subTest(limit=field), self.assertRaisesRegex(ValueError, "resource limits"):
+                supervisor.load_contract(self.root)
 
     def test_contract_cannot_change_profiles_count_or_witness_paths(self):
         for field in ("peerProfile", "profiles", "cases", "terminalWitnesses"):
@@ -149,7 +205,7 @@ class ProvenanceTests(Fixture):
             self.validate()
 
     def test_wrong_head_suite_project_main_or_java_are_rejected(self):
-        for key, bad in (("sourceHead", "0" * 40), ("suite", "moon"), ("project", str(self.root.parent)), ("main", "foreign.Main"), ("java", "/bin/sh")):
+        for key, bad in (("schemaVersion", 1), ("sourceHead", "0" * 40), ("suite", "moon"), ("project", str(self.root.parent)), ("main", "foreign.Main"), ("java", "/bin/sh")):
             old = self.launch[key]; self.launch[key] = bad
             with self.subTest(key=key), self.assertRaises(ValueError):
                 self.validate()
@@ -176,6 +232,22 @@ class ProvenanceTests(Fixture):
         target.write_text("{}")
         with self.assertRaisesRegex(ValueError, "Processed contract"):
             self.validate()
+
+    def test_contract_path_and_hash_remain_bound_to_source(self):
+        for key, bad in (("contract", "build/alternate-contract.json"), ("contractSha256", "0" * 64)):
+            original = self.launch[key]
+            self.launch[key] = bad
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "Source contract changed"):
+                self.validate()
+            self.launch[key] = original
+
+    def test_java_and_launch_config_bytes_remain_hash_bound(self):
+        for path in (self.java, self.config):
+            original = path.read_bytes()
+            path.write_bytes(original + b"\n")
+            with self.subTest(path=path.name), self.assertRaisesRegex(ValueError, "Runtime input changed"):
+                self.validate()
+            path.write_bytes(original)
 
     def test_jvm_and_environment_injection_is_rejected(self):
         for argument in ("-javaagent:/tmp/agent.jar", "@/tmp/args", "-jar", "-Djava.system.class.loader=foreign.Loader", "-Dwildercord.mp.role=peer", "-Dfabric.addMods=/tmp/foreign.jar"):
@@ -317,6 +389,21 @@ class WitnessTests(Fixture):
         with self.assertRaisesRegex(ValueError, "duplicate"):
             self.validate_witnesses()
 
+    def test_every_terminal_rejects_legacy_missing_replaced_or_reordered_counter_cases(self):
+        bad_rosters = [ORIGINAL_CASES, EXPECTED_CASES + ["EXTRA_CASE"], ORIGINAL_CASES + list(reversed(COUNTER_CASES))]
+        for index in range(35, 38):
+            bad_rosters.append(EXPECTED_CASES[:index] + EXPECTED_CASES[index + 1:])
+            bad_rosters.append(EXPECTED_CASES[:index] + ["FOREIGN_CASE"] + EXPECTED_CASES[index + 1:])
+        for filename in supervisor.TERMINALS:
+            target = self.ipc / filename
+            original = target.read_text()
+            for cases in bad_rosters:
+                target.write_text("\n".join("cases=" + ",".join(cases) if line.startswith("cases=") else line for line in original.splitlines()))
+                with self.subTest(filename=filename, cases=cases), self.assertRaisesRegex(ValueError, "mismatched cases"):
+                    self.validate_witnesses()
+            target.write_text(original)
+        self.assertEqual(len(self.validate_witnesses()), 3)
+
     def test_identical_pids_and_symlink_witnesses_fail(self):
         self.jobs[1][1].pid = 1001
         with self.assertRaisesRegex(ValueError, "distinct"):
@@ -378,6 +465,7 @@ class LifecycleTests(Fixture):
         processes = [FakeProcess(1101, 0), FakeProcess(1102, 0)]
         report = self.fake_run(processes, publish=True)
         self.assertEqual(report["status"], "passed")
+        self.assertEqual(report["cases"], EXPECTED_CASES)
         self.assertTrue(report["runIdentity"].startswith("123-2-"))
         self.assertEqual(len(report["processes"]), 2)
         for role in ("host", "peer"):
@@ -396,6 +484,19 @@ class LifecycleTests(Fixture):
         with patch.dict(os.environ, {"GITHUB_ACTIONS": "false", "CI_MINECRAFT_EULA_ACCEPTED": "false"}):
             with self.assertRaisesRegex(ValueError, "EULA"):
                 supervisor.run(self.options(), self.root)
+        report = json.loads((self.options().output / "result.json").read_text())
+        self.assertEqual(report["stage"], "preflight")
+        self.assertEqual(report["processes"], {})
+        self.assertEqual(report["status"], "failed")
+
+    def test_legacy_roster_fails_preflight_before_starting_java(self):
+        value = copy.deepcopy(CONTRACT)
+        value["cases"] = ORIGINAL_CASES
+        value["expectedCount"] = value["limits"]["maxCases"] = 35
+        write_json(self.root / supervisor.CONTRACT, value)
+        with patch.object(supervisor, "ignored_output"), patch.object(supervisor.subprocess, "Popen") as spawn, self.assertRaisesRegex(ValueError, "exact ordered 38-case roster"):
+            supervisor.run(self.options(), self.root)
+        spawn.assert_not_called()
         report = json.loads((self.options().output / "result.json").read_text())
         self.assertEqual(report["stage"], "preflight")
         self.assertEqual(report["processes"], {})

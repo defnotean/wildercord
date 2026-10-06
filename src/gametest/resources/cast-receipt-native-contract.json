@@ -37,9 +37,12 @@
     "SHARED_DRIVING_CUT_TO_BREAK_CAST",
     "IDLE_SEAL_RECOVERY",
     "CHARGED_SEAL_RECOVERY",
-    "NONPLAYER"
+    "NONPLAYER",
+    "COUNTER_QUIETUS_PAID_BOLT",
+    "COUNTER_QUIETUS_THIRTEEN_EXISTING",
+    "COUNTER_REFLECTED_RESPAWN_NULLCATCH"
   ],
-  "expectedCount": 35,
+  "expectedCount": 38,
   "profiles": {
     "aura": {
       "username": "WCAuraHost",
@@ -72,7 +75,7 @@
   "limits": {
     "maxJvms": 2,
     "maxHeapMiBPerJvm": 2048,
-    "maxCases": 35,
+    "maxCases": 38,
     "maxTimeoutSeconds": 900
   },
   "routing": "Supervised-only; never registered in the ordinary single-client descriptor."

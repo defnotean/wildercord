@@ -114,5 +114,15 @@
       "dev.wildercord.aura.world.EmberKilnPresentationTest",
       "dev.wildercord.aura.world.EmberKilnOpponentViewTest"
     ]
+  },
+  "diagnostic-ecology-return": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: three whole original ecology classes, with unchanged native journey/rest budgets and bounded passive path receipts. Rootmolt uses genuine client approach during its original post-spell warning wait. Never release acceptance.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.wildlife.RootmoltCounterTest",
+      "dev.wildercord.wildlife.ReedRefugeTest",
+      "dev.wildercord.wildlife.SiltcrestBankReturnTest"
+    ]
   }
 }

@@ -1,11 +1,14 @@
 package dev.wildercord.aura.world;
 
 import com.google.gson.JsonParser;
+import dev.wildercord.cast.NextCounterPairedCases;
+import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
@@ -20,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -37,6 +41,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 	private String role;
 	private List<String> expected;
 	private UUID hostId, peerId;
+	private net.minecraft.client.player.LocalPlayer counterDeadBody;
 	private long deadline, otherPid;
 
 	@Override public void runTest(ClientGameTestContext context) {
@@ -90,6 +95,9 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			});
 			new CastHitReceiptConsistencyChecks().runConnectedPair(context, server, hostId, peerId,
 				id -> observeCase(context, server, id), this::passCase);
+			new NextCounterPairedCases().runConnectedPair(context, server, hostId, peerId,
+				() -> respawnPeer(context, server),
+				(id, proof) -> observeCase(context, server, id, proof, !id.equals(NextCounterPairedCases.CASES.get(2))), this::passCase);
 			check(completed.equals(expected), "All preserved native scenarios passed in declared order");
 			write("disconnect-peer", Map.of("cases", String.join(",", completed)));
 			await(context, () -> exists("peer-disconnected") && exists("peer-cast-receipt-passed")
@@ -101,18 +109,30 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 	}
 
 	private void observeCase(ClientGameTestContext context, TestServerContext server, String id) {
+		observeCase(context, server, id, Map.of(), true);
+	}
+
+	private void observeCase(ClientGameTestContext context, TestServerContext server, String id, Map<String, String> proof, boolean synchronize) {
 		int index = observed.size();
 		check(index == completed.size() && index < expected.size() && expected.get(index).equals(id), "No missing, duplicate or reordered native cases");
 		// One actual synchronization tick publishes the already-verified outcome before the independent receiver observes it.
-		long beforeSync = server.computeOnServer(s -> s.overworld().getGameTime());
-		server.waitFor(s -> s.overworld().getGameTime() > beforeSync, 5);
+		// The reflected-flight case has already ticked and must be observed before its next ordinary collision step.
+		if (synchronize) {
+			long beforeSync = server.computeOnServer(s -> s.overworld().getGameTime());
+			server.waitFor(s -> s.overworld().getGameTime() > beforeSync, 5);
+		}
 		Map<String, String> snapshot = server.computeOnServer(s -> {
 			ServerPlayer peer = s.getPlayerList().getPlayer(peerId), host = s.getPlayerList().getPlayer(hostId);
 			check(peer != null && host != null && peer.isAlive() && peer.connection.player == peer, "Recipient survives on its actual connection");
 			var charge = peer.getAttached(WildercordAttachments.CHARGE);
-			return Map.of("case", id, "health", Float.toString(peer.getHealth()), "absorption", Float.toString(peer.getAbsorptionAmount()),
+			var sample = new HashMap<>(Map.of("case", id, "health", Float.toString(peer.getHealth()), "absorption", Float.toString(peer.getAbsorptionAmount()),
 				"chargeStart", Long.toString(charge == null ? -1 : charge.start()), "recipientEntity", Integer.toString(peer.getId()),
-				"actorEntity", Integer.toString(host.getId()), "serverTick", Long.toString(peer.level().getGameTime()));
+				"actorEntity", Integer.toString(host.getId()), "serverTick", Long.toString(peer.level().getGameTime())));
+			if (!proof.isEmpty()) {
+				check(proof.keySet().stream().noneMatch(sample::containsKey), "Counter proof cannot replace shared outcome identity");
+				sample.putAll(proof); sample.put("mana", Float.toString(Spellbooks.mana(peer)));
+			}
+			return Map.copyOf(sample);
 		});
 		String stem = String.format(java.util.Locale.ROOT, "case-%02d", index);
 		write(stem + "-ready", snapshot);
@@ -121,7 +141,37 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 		await(context, () -> exists(stem + "-seen"), "Peer receives " + id, true);
 		Properties seen = read(stem + "-seen", "peer");
 		check(id.equals(seen.getProperty("case")) && Long.parseLong(seen.getProperty("pid")) == otherPid, "Expected peer acknowledges this exact case");
+		if (!proof.isEmpty()) {
+			for (String key : List.of("projectileUuid", "projectilePresent", "mana"))
+				check(snapshot.get(key).equals(seen.getProperty(key)), "Peer acknowledges the exact native counter outcome: " + key);
+			if (Boolean.parseBoolean(proof.get("projectilePresent"))) check("true".equals(seen.getProperty("replacementBody")), "Peer separately proves its new live body differs from the dead one");
+		}
 		observed.add(id);
+	}
+
+	private void respawnPeer(ClientGameTestContext context, TestServerContext server) {
+		ServerPlayer prior = server.computeOnServer(s -> s.getPlayerList().getPlayer(peerId));
+		check(prior != null && !prior.isAlive(), "Counter respawn begins with the actual dead shooter body");
+		write("counter-respawn-peer", Map.of("priorEntity", Integer.toString(prior.getId()), "uuid", peerId.toString()));
+		// Publish the actual death packet, then wait for the separate client to send its ordinary respawn request.
+		context.waitTicks(1);
+		await(context, () -> exists("counter-respawn-requested"), "Peer sends its native respawn packet", true);
+		Properties request = read("counter-respawn-requested", "peer");
+		check(request.getProperty("priorEntity").equals(Integer.toString(prior.getId())) && request.getProperty("uuid").equals(peerId.toString()),
+			"Respawn request names the exact dead peer body and unchanged profile");
+		server.waitFor(s -> {
+			var next = s.getPlayerList().getPlayer(peerId);
+			return next != null && next != prior && next.isAlive() && next.connection.player == next;
+		}, 4);
+		await(context, () -> exists("counter-peer-respawned"), "Peer receives its genuine replacement body", true);
+		Properties result = read("counter-peer-respawned", "peer");
+		server.runOnServer(s -> {
+			var next = s.getPlayerList().getPlayer(peerId);
+			check(!prior.isAlive() && next != prior && next.isAlive() && next.connection.player == next && next.getUUID().equals(prior.getUUID())
+				&& result.getProperty("uuid").equals(peerId.toString()) && Integer.parseInt(result.getProperty("priorEntity")) == prior.getId()
+				&& Integer.parseInt(result.getProperty("replacementEntity")) == next.getId(),
+				"Both roles prove the actual replacement body, same profile UUID, and permanently dead original body");
+		});
 	}
 
 	private void passCase(String id) {
@@ -146,6 +196,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			write("peer-connected", Map.of());
 			for (int i = 0; i < expected.size(); i++) {
 				String stem = String.format(java.util.Locale.ROOT, "case-%02d", i), id = expected.get(i);
+				if (id.equals(NextCounterPairedCases.CASES.get(2))) respawnAsPeer(context);
 				await(context, () -> exists(stem + "-ready"), "Native case " + id, false);
 				Properties sample = read(stem + "-ready", "host");
 				check(id.equals(sample.getProperty("case")), "Live case follows the immutable contract");
@@ -156,16 +207,34 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 					if (mc.player == null || mc.level == null || !mc.player.getUUID().equals(peerId) || mc.player.getId() != recipient
 						|| mc.level.getPlayerByUUID(hostId) == null || mc.level.getPlayerByUUID(hostId).getId() != actor) return false;
 					var charge = mc.player.getAttached(WildercordAttachments.CHARGE);
-					return Math.abs(mc.player.getHealth() - health) < .001F && Math.abs(mc.player.getAbsorptionAmount() - absorption) < .001F
-						&& (charge == null ? chargeStart == -1 : charge.start() == chargeStart);
+					if (Math.abs(mc.player.getHealth() - health) >= .001F || Math.abs(mc.player.getAbsorptionAmount() - absorption) >= .001F
+						|| !(charge == null ? chargeStart == -1 : charge.start() == chargeStart)) return false;
+					if (sample.containsKey("projectileUuid")) {
+						if (Math.abs(Spellbooks.mana(mc.player) - Float.parseFloat(sample.getProperty("mana"))) >= .001F) return false;
+						var bolt = mc.level.getEntity(Integer.parseInt(sample.getProperty("projectileEntity")));
+						if (Boolean.parseBoolean(sample.getProperty("projectilePresent"))) {
+							return bolt != null && bolt.isAlive() && bolt.getUUID().equals(UUID.fromString(sample.getProperty("projectileUuid")))
+								&& mc.player.getId() == Integer.parseInt(sample.getProperty("replacementEntity"))
+								&& counterDeadBody != null && mc.player != counterDeadBody && counterDeadBody.isDeadOrDying()
+								&& mc.player.getUUID().equals(UUID.fromString(sample.getProperty("replacementUuid")));
+						}
+						return bolt == null;
+					}
+					return true;
 				}, 240);
-				write(stem + "-seen", Map.of("case", id, "recipientEntity", Integer.toString(recipient), "actorEntity", Integer.toString(actor)));
+				var seen = new HashMap<>(Map.of("case", id, "recipientEntity", Integer.toString(recipient), "actorEntity", Integer.toString(actor)));
+				if (sample.containsKey("projectileUuid")) {
+					seen.put("projectileUuid", sample.getProperty("projectileUuid")); seen.put("projectilePresent", sample.getProperty("projectilePresent"));
+					seen.put("mana", sample.getProperty("mana"));
+					if (Boolean.parseBoolean(sample.getProperty("projectilePresent"))) seen.put("replacementBody", "true");
+				}
+				write(stem + "-seen", seen);
 				await(context, () -> exists(stem + "-passed"), "Remaining server assertions pass for " + id, false);
 				check(id.equals(read(stem + "-passed", "host").getProperty("case")), "Host confirms this exact case after all strict probes");
 				completed.add(id);
 			}
 			await(context, () -> exists("disconnect-peer"), "Native assertions complete before departure", false);
-			check(read("disconnect-peer", "host").getProperty("cases").equals(String.join(",", completed)), "Both roles finish the same complete 35-case ledger");
+			check(read("disconnect-peer", "host").getProperty("cases").equals(String.join(",", completed)), "Both roles finish the same complete 38-case ledger");
 			context.runOnClient(mc -> mc.disconnect(new TitleScreen(), false));
 			context.waitFor(mc -> mc.player == null && mc.level == null, 300);
 			write("peer-disconnected", Map.of("cases", String.join(",", completed)));
@@ -173,6 +242,22 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			await(context, () -> exists("host-cast-receipt-passed"), "Host observes connection removal", false);
 			read("host-cast-receipt-passed", "host");
 		} finally { context.runOnClient(mc -> { if (mc.level != null) mc.disconnect(new TitleScreen(), false); }); }
+	}
+
+	private void respawnAsPeer(ClientGameTestContext context) {
+		await(context, () -> exists("counter-respawn-peer"), "Counter host confirms actual shooter death", false);
+		Properties command = read("counter-respawn-peer", "host");
+		int prior = Integer.parseInt(command.getProperty("priorEntity"));
+		check(peerId.toString().equals(command.getProperty("uuid")), "Respawn command selects this existing peer profile");
+		context.waitFor(mc -> mc.player != null && mc.player.getUUID().equals(peerId) && mc.player.getId() == prior && mc.player.isDeadOrDying(), 240);
+		counterDeadBody = context.computeOnClient(mc -> mc.player);
+		context.runOnClient(mc -> mc.player.respawn());
+		write("counter-respawn-requested", Map.of("priorEntity", Integer.toString(prior), "uuid", peerId.toString()));
+		// Vanilla deliberately reuses the entity ID across respawn; the live object identity must actually change.
+		context.waitFor(mc -> mc.player != null && mc.player != counterDeadBody && mc.player.getUUID().equals(peerId) && mc.player.isAlive()
+			&& !(mc.gui.screen() instanceof DeathScreen), 240);
+		write("counter-peer-respawned", Map.of("priorEntity", Integer.toString(prior), "uuid", peerId.toString(),
+			"replacementEntity", context.computeOnClient(mc -> Integer.toString(mc.player.getId()))));
 	}
 
 	private void await(ClientGameTestContext context, BooleanSupplier condition, String reason, boolean freezeServerPhase) {
@@ -210,7 +295,8 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			check(input != null, "Source-controlled native case contract is packaged");
 			var json = JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonObject();
 			var cases = new ArrayList<String>(); json.getAsJsonArray("cases").forEach(value -> cases.add(value.getAsString()));
-			check(json.get("expectedCount").getAsInt() == 35 && cases.equals(CastHitReceiptConsistencyChecks.expectedCases()), "Contract preserves all 35 compiled combat scenarios exactly");
+			var compiled = new ArrayList<>(CastHitReceiptConsistencyChecks.expectedCases()); compiled.addAll(NextCounterPairedCases.CASES);
+			check(json.get("expectedCount").getAsInt() == 38 && cases.equals(compiled), "Contract preserves all 35 compiled combat scenarios plus exactly three paired counters");
 			return List.copyOf(cases);
 		} catch (java.io.IOException failure) { throw new AssertionError(failure); }
 	}

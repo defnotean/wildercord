@@ -33,6 +33,47 @@ TERMINALS = {"host-cast-receipt-passed.properties": "host",
              "peer-cast-receipt-passed.properties": "peer", "peer-disconnected.properties": "peer"}
 IDENTITY = ("nonce", "suite", "sourceHead", "checkoutSha", "prHeadSha", "descriptorSha256", "hostUuid", "peerUuid", "runIdentity")
 MAX_TIMEOUT = 900
+# Keep the original 35 identities in place; additions are mandatory and ordered.
+CASES = (
+    "BREAK_CAST_HEALTH",
+    "BREAK_CAST_FULL_ABSORPTION",
+    "BREAK_CAST_MANA_SKIN",
+    "BREAK_CAST_REVERSAL",
+    "BREAK_CAST_TOTEM",
+    "BREAK_CAST_GUARD",
+    "BREAK_CAST_STEP",
+    "BREAK_CAST_WARD",
+    "BREAK_CAST_RESISTANCE",
+    "BREAK_CAST_REJECTED",
+    "BREAK_CAST_REPLACED",
+    "BREAK_CAST_EQUAL_TOKEN",
+    "BREAK_CAST_NEW_CHARGE",
+    "BREAK_CAST_IDLE",
+    "BREAK_CAST_WINDUP_REPLACEMENT",
+    "DRIVING_CUT_HEALTH",
+    "DRIVING_CUT_FULL_ABSORPTION",
+    "DRIVING_CUT_MANA_SKIN",
+    "DRIVING_CUT_REVERSAL",
+    "DRIVING_CUT_TOTEM",
+    "DRIVING_CUT_GUARD",
+    "DRIVING_CUT_STEP",
+    "DRIVING_CUT_WARD",
+    "DRIVING_CUT_RESISTANCE",
+    "DRIVING_CUT_REJECTED",
+    "DRIVING_CUT_REPLACED",
+    "DRIVING_CUT_EQUAL_TOKEN",
+    "DRIVING_CUT_NEW_CHARGE",
+    "DRIVING_CUT_IDLE",
+    "DRIVING_CUT_WINDUP_REPLACEMENT",
+    "SHARED_BREAK_CAST_TO_DRIVING_CUT",
+    "SHARED_DRIVING_CUT_TO_BREAK_CAST",
+    "IDLE_SEAL_RECOVERY",
+    "CHARGED_SEAL_RECOVERY",
+    "NONPLAYER",
+    "COUNTER_QUIETUS_PAID_BOLT",
+    "COUNTER_QUIETUS_THIRTEEN_EXISTING",
+    "COUNTER_REFLECTED_RESPAWN_NULLCATCH",
+)
 PATH_PROPERTIES = {"fabric.dli.config", "fabric.remapClasspathFile", "fabric.addMods", "fabric.classPathGroups",
                    "java.library.path", "org.lwjgl.librarypath", "log4j.configurationFile",
                    "fabric.client.gametest.testModResourcesPath", "fabric.gameJarPath", "fabric.gameJarPath.client"}
@@ -195,9 +236,10 @@ def load_contract(root):
     require(contract.get("schemaVersion") == 1 and contract.get("suite") == SUITE and contract.get("entrypoint") == ENTRYPOINT,
             "Unexpected source-controlled suite contract")
     cases = contract.get("cases")
-    require(isinstance(cases, list) and len(cases) == 35 and len(set(cases)) == 35 and contract.get("expectedCount") == 35,
-            "Cast contract requires exactly 35 unique cases")
-    require(all(isinstance(case, str) and re.fullmatch(r"[A-Z0-9_]+", case) for case in cases), "Invalid case identity")
+    require(cases == list(CASES) and contract.get("expectedCount") == len(CASES),
+            "Cast contract requires the exact ordered 38-case roster")
+    require(contract.get("limits") == {"maxJvms": 2, "maxHeapMiBPerJvm": 2048, "maxCases": len(CASES), "maxTimeoutSeconds": MAX_TIMEOUT},
+            "Unexpected cast contract resource limits")
     require(contract.get("terminalWitnesses") == list(TERMINALS), "Unexpected terminal paths")
     require(contract.get("profiles", {}).get("aura") == {"username": PROFILES["host"][0], "offlineUuid": PROFILES["host"][1]}, "Invalid fixed host profile")
     require(contract.get("peerProfile") == {"username": PROFILES["peer"][0], "offlineUuid": PROFILES["peer"][1]}, "Invalid fixed peer profile")

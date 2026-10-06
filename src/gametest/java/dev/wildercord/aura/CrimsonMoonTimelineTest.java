@@ -7,6 +7,7 @@ import dev.wildercord.aura.arts.ArtKit;
 import dev.wildercord.aura.arts.CrimsonArts;
 import dev.wildercord.cast.Effects;
 import dev.wildercord.cast.Scheduler;
+import dev.wildercord.client.MastersArtsClient;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -17,6 +18,7 @@ import net.minecraft.network.protocol.game.ServerboundAttackPacket;
 import net.minecraft.network.protocol.game.ServerboundPunchPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
@@ -58,7 +60,7 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
         final List<LivingEntity> selected = new ArrayList<>(), excluded = new ArrayList<>();
         final List<Hit> hits = new ArrayList<>();
         Foe input;
-        long accepted = -1, released = -1, cooldown, bucketAt;
+        long accepted = -1, released = -1, cooldown, bucketAt, clientTurnReceived = -1;
         int spends, releases, processed;
         double cost, paid, bucket, drunk, releaseMomentum, peakStance;
         float beforeHealth, releaseHealth;
@@ -117,11 +119,17 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
             try {
                 for (Case scenario : Case.values()) {
                     waitForRealRest(context, world);
+                    // Restore the actual client look between scenarios, including after the turn probe.
+                    context.runOnClient(mc -> { mc.player.setYRot(0); mc.player.setYHeadRot(0); mc.player.setXRot(0); });
+                    context.waitTicks(2);
                     Probe[] holder = new Probe[1];
                     world.getServer().runOnServer(server -> {
                         Probe p = new Probe(scenario, server.getPlayerList().getPlayers().getFirst());
+                        near(Mth.wrapDegrees(p.owner.getYRot()), 0, "The server receives the actual client setup heading");
+                        near(p.owner.getXRot(), 0, "The server receives the actual client setup pitch");
                         holder[0] = current = p; prepare(p); beginInput(p);
                     });
+                    if (scenario == Case.MOVED_FEET_STALE_STRUCK) turnConnectedClient(context, world, holder[0]);
                     context.waitTicks(125);
                     world.getServer().runOnServer(server -> {
                         Probe p = holder[0]; rethrow(p); verify(p); cleanup(p); current = null;
@@ -135,6 +143,33 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
                 });
             }
         }
+    }
+
+    /** The connected client owns look direction; wait for its teleport before sending a real turn. */
+    private static void turnConnectedClient(ClientGameTestContext context, TestSingleplayerContext world, Probe p) {
+        context.waitFor(mc -> {
+            var timeline = MastersArtsClient.timeline(mc.player);
+            return timeline != null && timeline.move() == 19 && Math.abs(mc.player.getX() - 4.5) < .001
+                && Math.abs(mc.player.getZ() - .5) < .001;
+        }, 60);
+        context.runOnClient(mc -> {
+            var timeline = MastersArtsClient.timeline(mc.player);
+            check(timeline != null && mc.level.getGameTime() < timeline.startTick() + 8,
+                "The real client receives the moved origin with time left to turn during windup");
+            mc.player.setYRot(180); mc.player.setYHeadRot(180); mc.player.setXRot(70);
+        });
+        boolean[] received = {false};
+        for (int attempt = 0; attempt < 3 && !received[0]; attempt++) {
+            context.waitTicks(1); // Vanilla sends the connected LocalPlayer's changed rotation.
+            world.getServer().runOnServer(server -> {
+                rethrow(p);
+                if (Math.abs(Mth.wrapDegrees(p.owner.getYRot() - 180)) < .001 && Math.abs(p.owner.getXRot() - 70) < .001) {
+                    p.clientTurnReceived = p.level.getGameTime(); received[0] = true;
+                    check(p.clientTurnReceived < p.accepted + 10, "The real turn packet reaches the server before release");
+                }
+            });
+        }
+        check(received[0], "The server must observe the actual connected client's turn during paid windup");
     }
 
     private static void waitForRealRest(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -249,7 +284,7 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
             check(!Momentum.FINAL_GATE.met(p.owner), "The formerly met Final condition now actually closes after payment");
         }
         if (p.scenario == Case.MOVED_FEET_STALE_STRUCK) Scheduler.later(3, () -> checked(p, () -> {
-            p.owner.teleportTo(4.5, 100, .5); p.owner.setYRot(180); p.owner.setXRot(70);
+            p.owner.teleportTo(4.5, 100, .5);
         }));
         if (p.scenario == Case.SHARED_MENDING) {
             p.owner.setHealth(p.beforeHealth - 10);
@@ -275,7 +310,9 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
             if (p.scenario == Case.MOVED_FEET_STALE_STRUCK) {
                 near(owner.getX(), 4.5, "Release uses current feet after accepted movement");
                 near(owner.getZ(), .5, "Movement leaves the accepted horizontal origin plane");
-                near(owner.getYRot(), 180, "The owner really turned away before release");
+                check(p.clientTurnReceived >= p.accepted && p.clientTurnReceived < p.released, "The connected client turn was observed before release");
+                near(Mth.wrapDegrees(owner.getYRot() - 180), 0, "The owner keeps the actual received opposite heading at release");
+                near(owner.getXRot(), 70, "The actual received client pitch remains in effect at release");
             }
             if (p.scenario == Case.EMPTY_GATE_CLOSED) near(p.releaseMomentum, 0, "Closed Final condition is not rechecked after payment");
             else near(p.releaseMomentum, 100 - MomentumRules.FINAL_SPEND, "Final completion consumes momentum once at release");

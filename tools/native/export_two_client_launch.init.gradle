@@ -9,6 +9,47 @@ gradle.projectsEvaluated {
     def root = p.projectDir.canonicalFile
     def expectedEntry = 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
     def contractPath = 'src/gametest/resources/cast-receipt-native-contract.json'
+    // Match the supervisor's ordered roster, including every original case.
+    def expectedCases = [
+        'BREAK_CAST_HEALTH',
+        'BREAK_CAST_FULL_ABSORPTION',
+        'BREAK_CAST_MANA_SKIN',
+        'BREAK_CAST_REVERSAL',
+        'BREAK_CAST_TOTEM',
+        'BREAK_CAST_GUARD',
+        'BREAK_CAST_STEP',
+        'BREAK_CAST_WARD',
+        'BREAK_CAST_RESISTANCE',
+        'BREAK_CAST_REJECTED',
+        'BREAK_CAST_REPLACED',
+        'BREAK_CAST_EQUAL_TOKEN',
+        'BREAK_CAST_NEW_CHARGE',
+        'BREAK_CAST_IDLE',
+        'BREAK_CAST_WINDUP_REPLACEMENT',
+        'DRIVING_CUT_HEALTH',
+        'DRIVING_CUT_FULL_ABSORPTION',
+        'DRIVING_CUT_MANA_SKIN',
+        'DRIVING_CUT_REVERSAL',
+        'DRIVING_CUT_TOTEM',
+        'DRIVING_CUT_GUARD',
+        'DRIVING_CUT_STEP',
+        'DRIVING_CUT_WARD',
+        'DRIVING_CUT_RESISTANCE',
+        'DRIVING_CUT_REJECTED',
+        'DRIVING_CUT_REPLACED',
+        'DRIVING_CUT_EQUAL_TOKEN',
+        'DRIVING_CUT_NEW_CHARGE',
+        'DRIVING_CUT_IDLE',
+        'DRIVING_CUT_WINDUP_REPLACEMENT',
+        'SHARED_BREAK_CAST_TO_DRIVING_CUT',
+        'SHARED_DRIVING_CUT_TO_BREAK_CAST',
+        'IDLE_SEAL_RECOVERY',
+        'CHARGED_SEAL_RECOVERY',
+        'NONPLAYER',
+        'COUNTER_QUIETUS_PAID_BOLT',
+        'COUNTER_QUIETUS_THIRTEEN_EXISTING',
+        'COUNTER_REFLECTED_RESPAWN_NULLCATCH'
+    ]
     def git = { List<String> arguments ->
         def process = new ProcessBuilder(['git', '-C', root.absolutePath] + arguments).redirectErrorStream(true).start()
         def output = new StringBuffer()
@@ -69,7 +110,8 @@ gradle.projectsEvaluated {
             if (!p.sourceSets.gametest.output.classesDirs.files.any { new File(it, classPath).isFile() }) throw new GradleException('Supervised entrypoint class is missing from compiled gametest output')
             def contractFile = new File(root, contractPath)
             def contract = new JsonSlurper().parse(contractFile)
-            if (contract.suite != 'cast-receipt' || contract.entrypoint != expectedEntry || contract.expectedCount != 35 || contract.cases.size() != 35) throw new GradleException('Unexpected cast receipt source contract')
+            if (contract.schemaVersion != 1 || contract.suite != 'cast-receipt' || contract.entrypoint != expectedEntry || contract.expectedCount != expectedCases.size() || contract.cases != expectedCases) throw new GradleException('Unexpected ordered 38-case cast receipt source contract')
+            if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: expectedCases.size(), maxTimeoutSeconds: 900]) throw new GradleException('Unexpected cast receipt resource limits')
             if (digest(new File(descriptor.parentFile, contractFile.name)) != digest(contractFile)) throw new GradleException('Processed contract differs from source contract')
             def taskBase = Class.forName('net.fabricmc.loom.task.AbstractRunTask', true, run.class.classLoader)
             def useArgs = taskBase.getDeclaredMethod('getUseArgFile')
