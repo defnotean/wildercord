@@ -11,7 +11,11 @@ public final class MastersStyleRules {
 		/** Re-query the committed cone at impact; an old last-swing victim cannot bypass its direction or reach. */
 		ACTIVE_CONE,
 		/** Keep the server-observed last-swing victim for a target/counter performer to validate itself. */
-		STRING_TARGET
+		STRING_TARGET,
+		/** Capture Hailfall's observed cloud anchor and independent direct-priority right before its windup. */
+		HAILFALL_RECEIPT,
+		/** Capture Skyfall's observed-victim, nearest-cone or explicit-ground route before its windup. */
+		SKYFALL_RECEIPT
 	}
 
 	/**
@@ -34,7 +38,9 @@ public final class MastersStyleRules {
 		new Style(11, "echo_cut", 6, 20, TargetPolicy.ACTIVE_CONE),
 		new Style(12, "bloodletting", 6, 12, TargetPolicy.ACTIVE_CONE),
 		new Style(13, "rising_cinders", 8, 16, TargetPolicy.ACTIVE_CONE),
-		new Style(14, "blossom_fall", 8, 18, TargetPolicy.ACTIVE_CONE)
+		new Style(14, "blossom_fall", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(15, "hailfall", 8, 16, TargetPolicy.HAILFALL_RECEIPT),
+		new Style(16, "skyfall", 6, 16, TargetPolicy.SKYFALL_RECEIPT)
 	);
 
 	public static Style of(String art) {

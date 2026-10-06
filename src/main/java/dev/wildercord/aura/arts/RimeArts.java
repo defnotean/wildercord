@@ -176,27 +176,24 @@ public final class RimeArts {
 	// ------------------------------------------------------------------ II. Hailfall
 
 	static boolean hailfall(ServerPlayer player, AuraApi.StringContext context) {
+		var release = dev.wildercord.aura.MastersArts.releaseTargets(player, HAILFALL);
+		if (release == null) return false;
 		ServerLevel level = player.level();
+		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING, true, 1.35F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_hailfall", 1.0F, 1.0F);
-		for (LivingEntity foe : ArtKit.arc(player, context.struck(), ArtRules.HAIL_CUT_REACH, 120, 4)) {
+		for (LivingEntity foe : ArtKit.arc(player, release.direct(), ArtRules.HAIL_CUT_REACH, 120, 4)) {
+			// Visible immediate cuts are intentional counterplay; already-released stones keep their ordinary area admission.
+			if (!player.hasLineOfSight(foe)) continue;
 			hits.strike(foe, ArtRules.HAIL_CUT_FACTOR, AuraFxRules.Weight.FULL);
 			ArtKit.chill(player, foe, ArtRules.HAIL_SLOW, 0);
 		}
-		// The cloud: over the foe struck, or ahead on the ground.
-		LivingEntity struck = context.struck();
-		Vec3 centre;
-		if (struck != null && struck.isAlive() && struck.distanceToSqr(player) < 7 * 7) {
-			centre = struck.position();
-		} else {
-			Vec3 ahead = feet.add(look.scale(ArtRules.HAIL_AHEAD));
-			Vec3 ground = ArtKit.floor(level, ahead, 1.5, 3);
-			centre = ground == null ? ahead : ground;
-		}
+		// The receipt samples a valid accepted body once, or keeps an explicitly accepted ground point. The cloud never tracks.
+		Vec3 centre = release.point();
 		ArtLight world = ArtLight.world(player);
 		Vec3 sky = centre.add(0, 4.6, 0);
 		world.sigil(sky, ArtKit.UP, SigilOption.BAND, color, ArtRules.HAIL_RADIUS * 1.1, ArtRules.HAIL_TICKS + 12, 0.05);
@@ -211,20 +208,21 @@ public final class RimeArts {
 			Vec3 drop = centre.add(Math.cos(a) * d, 0, Math.sin(a) * d);
 			int delay = 2 + i * ArtRules.HAIL_TICKS / ArtRules.HAIL_STONES;
 			Scheduler.later(delay, () -> {
-				if (!player.isAlive() || player.level() != level) {
+				if (!owner.valid()) {
 					return;
 				}
 				// A stone of ice streaking down, and breaking where it lands.
 				world.ray(drop.add(0, 4.4, 0), drop.add(0, 0.15, 0), WHITE, 0.09, 4);
 				world.ray(drop.add(0, 4.4, 0), drop.add(0, 0.15, 0), color, 0.2, 3);
-				Scheduler.later(2, () -> stone(player, hits, drop, color, struckBy));
+				Scheduler.later(2, () -> stone(player, owner, hits, drop, color, struckBy));
 			});
 		}
 		return true;
 	}
 
-	private static void stone(ServerPlayer player, ArtKit.Hits hits, Vec3 at, int color, Map<UUID, Integer> struckBy) {
-		ServerLevel level = player.level();
+	private static void stone(ServerPlayer player, ReleasedArtOwner owner, ArtKit.Hits hits, Vec3 at, int color, Map<UUID, Integer> struckBy) {
+		if (!owner.valid()) return;
+		ServerLevel level = owner.level();
 		Vec3 ground = ArtKit.floor(level, at.add(0, 1, 0), 1.5, 3);
 		Vec3 p = ground == null ? at : ground;
 		ArtLight.world(player).ring(p.add(0, 0.1, 0), ArtKit.UP, WHITE, 0.1, 0.9, 0.05, 6);

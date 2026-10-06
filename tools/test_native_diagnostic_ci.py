@@ -29,7 +29,7 @@ class RequestTests(unittest.TestCase):
         self.assertNotIn("cancel-in-progress: true", diagnostic_job)
 
     def test_request_accepts_only_fixed_cases_or_disabled(self):
-        for data in (self.request(), self.request(case="aura-fx"), self.request(case=None, sourceSha=None)):
+        for data in (self.request(), self.request(case="aura-fx"), self.request(case="battlefields-generation"), self.request(case=None, sourceSha=None)):
             self.assertEqual(diagnostic.parse_request(json.dumps(data)), data)
 
     def test_schema_types_unknowns_commands_paths_seeds_and_duplicates_rejected(self):

@@ -1,7 +1,7 @@
 {
   "masters": {
     "description": "Masters update combat, progression, presentation and bounded existing-world upgrade safety.",
-    "expectedCount": 18,
+    "expectedCount": 20,
     "entries": [
       "dev.wildercord.party.PartyMutationSafetyTest",
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
@@ -13,6 +13,8 @@
       "dev.wildercord.party.PartyOfflineProjectileTest",
       "dev.wildercord.aura.MastersStyleTimelineTest",
       "dev.wildercord.party.MastersSecondFormTimelineTest",
+      "dev.wildercord.aura.HailfallReleasedOwnerTest",
+      "dev.wildercord.aura.HailSkyAcceptanceTest",
       "dev.wildercord.aura.world.DuelistMasterAccessTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.aura.world.MasterVictoriesTest",
@@ -51,6 +53,14 @@
     "expectedCount": 1,
     "entries": [
       "dev.wildercord.gametest.WildercordAuraFxTest"
+    ]
+  },
+  "diagnostic-battlefields-generation": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original Battlefields class, retaining registered placement and the original sixteen-candidate bound with passive terrain receipts. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.world.dungeons.BattlefieldsTest"
     ]
   }
 }

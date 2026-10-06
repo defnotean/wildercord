@@ -187,7 +187,7 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
   }
   return false;
  }
- public void runTest(ClientGameTestContext c){boolean proved=false;
+ public void runTest(ClientGameTestContext c){boolean proved=false;var trials=new ArrayList<String>();
   for(int trial=0;trial<8&&!proved;trial++)try(var w=c.worldBuilder().create()){
    c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
    w.getServer().runOnServer(s->{bird=null;observed=null;admission=null;calls=0;fish.clear();rejections.clear();swimmingShore(s.overworld());observer(s.getPlayerList().getPlayers().getFirst(),new Vec3(.5,101.7,.5));for(int i=0;i<3;i++){var prey=new WitnessCod(s.overworld());prey.snapTo(1.5+i,100.1,.5,0,0);check(s.overworld().addFreshEntity(prey),"Native swimming witness is added to the supplied shallow shore");fish.add(prey);}});
@@ -195,12 +195,23 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
     // Candidate fixture: await measured native swimming, never a fixed delay or a supplied impulse.
     await(c,w,500,s->admitPredator(s.overworld()),"Supplied shallow shore must establish sustained ordinary swimming before predator admission");
     await(c,w,240,s->observed!=null||calls>0,"Ordinary native stalking reaches a genuine commitment or actual catch");
-    w.getServer().runOnServer(s->check(observed!=null&&observed.quarry==admission.quarry(),"Actual native hunt commits to the same fish whose own swimming admitted this trial"));
+    int number=trial+1;
+    boolean qualifying=w.getServer().computeOnServer(s->{
+     check(observed!=null&&admission!=null,"Actual native hunt must expose its committed quarry before a dodge witness can qualify");
+     boolean same=observed.quarry==admission.quarry();
+     String receipt="trial="+number+" qualifying="+same+" admitted="+admission.quarry().getUUID()+" chosen="+observed.quarry.getUUID()
+      +" admittedTick="+admission.tick()+" firstCoilTick="+observed.first.tick()+" admittedEightTickProgressSqr="+horizontal(admission.to().subtract(admission.from())).lengthSqr()
+      +" chosenWild="+SiltcrestBittern.wildFish(observed.quarry,s.overworld())+" chosenHealth="+observed.quarry.getHealth();
+     trials.add(receipt);System.out.println("SILTCREST_DODGE_QUALIFICATION "+receipt);
+     // The ordinary hunt chooses from its live pool when it starts, after fixture admission.
+     // A different choice is not this trial's qualified swimming witness; never force it back.
+     return same;
+    });
     await(c,w,24,s->observed==null||!observed.active(bird),"Original finite coil resolves after actual fish movement");
-    proved=w.getServer().computeOnServer(s->refusedEscape(s.overworld()));
+    proved=qualifying&&w.getServer().computeOnServer(s->refusedEscape(s.overworld()));
    }finally{int number=trial+1;w.getServer().runOnServer(s->diagnose(s.overworld(),number));}
   }
-  check(proved,"At least one actually observed unforced >.6 fish escape must retain pre-damage refusal and finite failed-attempt rest");
+  check(proved,"At least one actually observed unforced >.6 fish escape must retain pre-damage refusal and finite failed-attempt rest; trials="+trials);
  }
  private boolean sameCancellation(){return observed!=null&&(Integer)field(bird,"epoch")==observed.epoch+1&&field(bird,"quarry")==null&&field(bird,"committed")==null;}
  private boolean refusedEscape(ServerLevel l){
@@ -210,7 +221,7 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
  private void diagnose(ServerLevel l,int trial){
   for(var witness:fish)witness.diagnoseMotion(trial);
   if(bird==null){System.out.println("SILTCREST_DODGE trial="+trial+" outcome=admission_timeout now="+l.getGameTime()+" calls="+calls+" rejected="+rejections+" fish="+fish.stream().map(WitnessCod::swimDiagnostic).toList());return;}
-  String outcome=refusedEscape(l)?"refused_escape":observed!=null&&observed.escape!=null&&observed.last.distanceSqr()<=.36?"escaped_returned":calls>0?"catch":observed==null||observed.escape==null?"no_escape":"escape_without_refusal";
+  String outcome=observed!=null&&admission!=null&&observed.quarry!=admission.quarry()?"nonqualifying_quarry":refusedEscape(l)?"refused_escape":observed!=null&&observed.escape!=null&&observed.last.distanceSqr()<=.36?"escaped_returned":calls>0?"catch":observed==null||observed.escape==null?"no_escape":"escape_without_refusal";
   System.out.println("SILTCREST_DODGE trial="+trial+" outcome="+outcome+" quarry="+(observed==null?"none":observed.quarry.getUUID())+" committed="+(observed==null?"none":observed.committed)+" epoch="+(observed==null?"none":observed.epoch)+" actualEpoch="+field(bird,"epoch")+" sameCancellation="+sameCancellation()+" first="+(observed==null?"none":observed.first)+" firstEscape="+(observed==null?"none":observed.escape)+" max="+(observed==null?"none":observed.max)+" final="+(observed==null?"none":observed.last)+" now="+l.getGameTime()+" pose="+bird.pose()+" phase="+bird.phase()+" calls="+calls+" alive="+(observed!=null&&observed.quarry.isAlive())+" health="+(observed==null?"none":observed.quarry.getHealth())+" rest="+(bird.huntReady()-l.getGameTime()));
  }
  private static Object field(Object o,String name){try{var f=o.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(o);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}

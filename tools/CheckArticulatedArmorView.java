@@ -30,6 +30,8 @@ public final class CheckArticulatedArmorView {
 	public static void main(String[] args) throws Exception {
 		boolean shared = args.length == 1 && args[0].equals("--shared-player");
 		boolean openingStyles = args.length == 1 && args[0].equals("--opening-styles");
+		boolean hailSky = args.length == 1 && args[0].equals("--hail-sky");
+		boolean styles = openingStyles || hailSky;
 		var roots = EntityModelSet.vanilla();
 		BufferedImage texture;
 		try (var stream = CheckArticulatedArmorView.class.getResourceAsStream(TEXTURE)) {
@@ -41,17 +43,19 @@ public final class CheckArticulatedArmorView {
 		boolean comma = false;
 		boolean pass = true;
 		for (boolean slim : new boolean[] {false, true}) for (boolean left : new boolean[] {false, true})
-			for (int move : openingStyles ? new int[] {3, 4} : shared ? new int[] {1, 2} : new int[] {0}) {
+			for (int move : hailSky ? new int[] {15, 16} : openingStyles ? new int[] {3, 4} : shared ? new int[] {1, 2} : new int[] {0}) {
 			var model = new ArticulatedArmorGeometry(roots.bakeLayer((slim ? ModelLayers.PLAYER_SLIM_ARMOR : ModelLayers.PLAYER_ARMOR).chest()), EquipmentSlot.CHEST, true);
 			double nearest = -Double.MAX_VALUE, worstAge = 0, worstYaw = 0, worstPitch = 0, maxCenterCoverage = 0;
 			int placements = 0, crosshairOccluded = 0;
-			var style = openingStyles ? MastersStyleRules.animation(move) : null;
+			var style = styles ? MastersStyleRules.animation(move) : null;
 			if (openingStyles && (style == null || style.windup() != 6 || style.recovery() != 12))
 				throw new AssertionError("Opening-style audit requires the accepted 6/12 animation window");
-			var rule = openingStyles ? null : MastersArtRules.move(move);
-			int windup = openingStyles ? style.windup() : rule.windup();
-			int recovery = openingStyles ? style.recovery() : rule.recovery();
-			String clip = openingStyles ? style.art() : rule.id();
+			if (hailSky && (style == null || style.windup() != (move == 15 ? 8 : 6) || style.recovery() != 16))
+				throw new AssertionError("Hail/Sky audit requires accepted 8/16 and 6/16 windows");
+			var rule = styles ? null : MastersArtRules.move(move);
+			int windup = styles ? style.windup() : rule.windup();
+			int recovery = styles ? style.recovery() : rule.recovery();
+			String clip = styles ? style.art() : rule.id();
 			for (int step = 0; step <= (windup + recovery) * 8; step++) {
 				float age = step / 8F;
 				var combat = ArticulatedCombatPose.samplePlayer(move, age, windup, recovery, left);
@@ -86,8 +90,8 @@ public final class CheckArticulatedArmorView {
 			pass &= safe;
 			if (comma) out.append(','); comma = true;
 			out.append("{");
-			if (shared || openingStyles) out.append("\"move\":").append(move).append(",\"clip\":\"").append(clip).append("\",");
-			if (openingStyles) out.append("\"windup\":").append(windup).append(",\"recovery\":").append(recovery)
+			if (shared || styles) out.append("\"move\":").append(move).append(",\"clip\":\"").append(clip).append("\",");
+			if (styles) out.append("\"windup\":").append(windup).append(",\"recovery\":").append(recovery)
 				.append(",\"sampledFrames\":").append((windup + recovery) * 8 + 1).append(',');
 			out.append("\"slim\":").append(slim).append(",\"left\":").append(left).append(",\"placements\":").append(placements)
 				.append(",\"nearestZ\":").append(nearest).append(",\"clearanceBlocks\":").append(NEAR - nearest)

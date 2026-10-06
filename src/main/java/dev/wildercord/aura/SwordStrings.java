@@ -325,11 +325,11 @@ public final class SwordStrings {
 		// Target/counter forms must opt into their own validation rather than losing the observed victim
 		// just because they acquire a timeline. Cone releases deliberately re-query on the active frame.
 		AuraApi.StringContext context = new AuraApi.StringContext(art, marks,
-			style == null || style.targets() == MastersStyleRules.TargetPolicy.STRING_TARGET ? struck(player) : null, now);
+			style == null || style.targets() != MastersStyleRules.TargetPolicy.ACTIVE_CONE ? struck(player) : null, now);
 		// Price is fixed before either the windup or the art can change momentum.
 		double cost = price(player, art);
 		if (style != null) {
-			if (!MastersArts.beginStyle(player, art, () -> {
+			if (!MastersArts.beginStyle(player, art, context, () -> {
 				if (runPerformer(player, art, context)) completed(player, art, context);
 			})) return false;
 			// The accepted tell commits payment once. Interrupted or whiffed forms keep this price and rest.

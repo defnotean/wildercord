@@ -13,7 +13,7 @@ class MastersStyleAnimationTest {
 	void everyAuthoredFormHasItsOwnBodyAndWeaponPoseWithoutOpeningANewInputOrdinal() {
 		var bodies = new HashSet<MastersArtAnimation.Pose>();
 		var hands = new HashSet<MastersArtAnimation.Hand>();
-		assertEquals(12, MastersStyleRules.STYLES.size());
+		assertEquals(14, MastersStyleRules.STYLES.size());
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(MastersArtAnimation.supports(style.animation()));
 			assertNull(MastersArtRules.move(style.animation()), "Style poses are not trusted client action IDs");
@@ -22,7 +22,7 @@ class MastersStyleAnimationTest {
 			assertTrue(bodies.add(pose), "Distinct body choreography for " + style.art());
 			assertTrue(hands.add(pose.hand()), "Distinct weapon choreography for " + style.art());
 		}
-		for (int id : new int[] {-1, 15, Integer.MAX_VALUE}) assertFalse(MastersArtAnimation.supports(id));
+		for (int id : new int[] {-1, 17, Integer.MAX_VALUE}) assertFalse(MastersArtAnimation.supports(id));
 	}
 
 	@Test
@@ -51,6 +51,9 @@ class MastersStyleAnimationTest {
 			} else if (style.art().equals("echo_cut")) {
 				boundaries.addAll(List.of((float) (windup + 3), (float) (windup + ArtRules.ECHO_DELAY - 3),
 					(float) (windup + ArtRules.ECHO_DELAY), (float) (windup + ArtRules.ECHO_DELAY + 2)));
+			} else if (style.art().equals("skyfall")) {
+				boundaries.addAll(List.of(windup + ArtRules.SKYFALL_DELAY * .5F, (float) (windup + ArtRules.SKYFALL_DELAY),
+					(float) (windup + ArtRules.SKYFALL_DELAY + 2)));
 			} else boundaries.add(windup + Math.min(4, recovery * .25F));
 			for (float boundary : boundaries) {
 				var before = sample(style, boundary - .001F);
@@ -231,6 +234,23 @@ class MastersStyleAnimationTest {
 				}
 			}
 		}
+	}
+
+	@Test
+	void hailfallLiftsItsEdgeOnceAndSkyfallAnswersAtTheExistingBoltDelay() {
+		var hail = MastersStyleRules.of("hailfall");
+		var low = sample(hail, hail.windup() * .65F);
+		var high = sample(hail, hail.windup());
+		assertTrue(high.sword().x() < low.sword().x() - .8F);
+		assertTrue(high.hand().y() > low.hand().y() + .15F);
+		var sky = MastersStyleRules.of("skyfall");
+		var call = sample(sky, sky.windup());
+		assertEquals(call, sample(sky, sky.windup() + ArtRules.SKYFALL_DELAY * .5F));
+		var answer = sample(sky, sky.windup() + ArtRules.SKYFALL_DELAY);
+		assertTrue(answer.sword().x() > call.sword().x() + 1);
+		assertTrue(answer.hand().pitch() > call.hand().pitch() + 90);
+		assertEquals(1, answer.weight());
+		assertNotEquals(high, call);
 	}
 
 	private static MastersArtAnimation.Pose sample(MastersStyleRules.Style style, float age) {

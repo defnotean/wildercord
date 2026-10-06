@@ -125,6 +125,29 @@ public final class MastersStyleAnimation {
 		pose(j(.25F, -.26F, .10F), j(-.12F, .10F, -.02F), j(-.45F, -.20F, -.18F), j(-.32F, -.08F, -.62F),
 			j(-.56F, .10F, -.10F), j(.30F, -.08F, .08F), .60F, -.44F, h(-.12F, .28F, -.40F, 48, -30, 16)));
 
+	// Hailfall opens Rime's folded guard upward once. The cloud's seven drops have their
+	// own released lifetime; the swordsman holds the lifted edge, never strikes seven times.
+	private static final Motion HAILFALL = new Motion(
+		pose(j(.08F, .20F, -.04F), j(-.04F, -.08F, 0), j(-1.04F, .35F, -.18F), j(-1.18F, -.25F, .18F),
+			j(-.34F, -.08F, -.07F), j(.22F, .08F, .06F), .38F, .08F, h(.02F, .10F, -.18F, 8, 16, -16)),
+		pose(j(-.06F, -.18F, .04F), j(.02F, .08F, -.02F), j(-2.02F, -.32F, -.30F), j(-.85F, -.12F, .30F),
+			j(-.25F, .08F, -.06F), j(.18F, -.06F, .06F), .18F, -.32F, h(-.12F, .30F, -.30F, -62, -14, 22)),
+		pose(j(-.04F, -.22F, .03F), j(.02F, .10F, -.01F), j(-2.32F, -.30F, -.35F), j(-1.04F, -.18F, .20F),
+			j(-.24F, .06F, -.06F), j(.17F, -.05F, .05F), .20F, -.18F, h(-.16F, .36F, -.22F, -78, -20, 28)));
+
+	// Skyfall holds a tall lightning-rod line at release. Its later short answer belongs
+	// to the already released bolt, not a second physical attack or a new target query.
+	private static final Motion SKYFALL = new Motion(
+		pose(j(-.08F, .12F, -.08F), j(-.08F, -.04F, .03F), j(-2.26F, .18F, -.32F), j(-.75F, -.25F, -.42F),
+			j(-.28F, -.12F, -.09F), j(.24F, .10F, .08F), .26F, .12F, h(.10F, .34F, -.22F, -82, 14, -18)),
+		pose(j(-.12F, -.04F, -.05F), j(-.06F, .02F, .02F), j(-2.60F, .06F, -.26F), j(-.48F, -.16F, -.58F),
+			j(-.36F, -.10F, -.10F), j(.28F, .08F, .09F), .34F, -.10F, h(.08F, .42F, -.28F, -100, 6, -10)),
+		pose(j(.06F, -.10F, .02F), j(-.03F, .04F, 0), j(-1.35F, -.14F, -.22F), j(-.84F, -.18F, -.30F),
+			j(-.28F, -.08F, -.08F), j(.20F, .06F, .07F), .38F, -.12F, h(.02F, .16F, -.24F, -28, -8, 10)));
+	private static final Pose SKYFALL_ANSWER = pose(j(.16F, -.12F, .03F), j(-.08F, .05F, -.01F),
+		j(-1.12F, -.18F, -.20F), j(-.35F, -.18F, -.62F), j(-.48F, -.10F, -.10F), j(.32F, .08F, .09F),
+		.62F, -.38F, h(.02F, .12F, -.40F, 18, -10, 14));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -139,8 +162,21 @@ public final class MastersStyleAnimation {
 			case 12 -> BLOODLETTING;
 			case 13 -> CINDERS;
 			case 14 -> BLOSSOM;
+			case 15 -> HAILFALL;
+			case 16 -> SKYFALL;
 			default -> null;
 		};
+	}
+
+	/** The release stays at windup; only this cosmetic answer follows the bolt's shared delay. */
+	static Pose skyfall(Motion motion, float age, int windup, int recovery) {
+		if (age < windup) return MastersArtAnimation.sample(motion, age, windup, recovery);
+		float t = age - windup, answerAt = Math.min(ArtRules.SKYFALL_DELAY, recovery * .65F);
+		float holdUntil = answerAt * .5F, followAt = Math.min(recovery * .8F, answerAt + 2);
+		Pose frame = t < holdUntil ? motion.impact()
+			: t < answerAt ? motion.impact().toward(SKYFALL_ANSWER, smooth((t - holdUntil) / (answerAt - holdUntil)))
+			: t < followAt ? SKYFALL_ANSWER.toward(motion.follow(), smooth((t - answerAt) / (followAt - answerAt))) : motion.follow();
+		return frame.weight(1 - smooth((t - followAt) / (recovery - followAt)));
 	}
 
 	/** Repeated blade releases follow the very same beat constants used by the server performers. */

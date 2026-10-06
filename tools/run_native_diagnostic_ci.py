@@ -27,7 +27,8 @@ MAX_LOG_BYTES = 16 * 1024 * 1024
 MAX_SNAPSHOTS = 16
 MAX_SNAPSHOT_BYTES = 256 * 1024
 SNAPSHOTS = "build/run/clientGameTest/logs/ci-diagnostics"
-CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx"}
+CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
+         "battlefields-generation": "diagnostic-battlefields-generation"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
@@ -37,6 +38,7 @@ SEEDS = {
                 "dev.wildercord.wildlife.WetlandTerrainAbsenceTest": "-7620530482425397421",
                 "dev.wildercord.wildlife.WetlandTerrainTest": "-7620530482425397421"},
     "aura-fx": {"dev.wildercord.gametest.WildercordAuraFxTest": None},
+    "battlefields-generation": {"dev.wildercord.world.dungeons.BattlefieldsTest": None},
 }
 CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_catalog.json",
                 "src/gametest/resources/fabric.mod.json", "build.gradle", "gradle.properties",
@@ -66,7 +68,7 @@ def parse_request(raw):
         if sha is not None:
             raise ValueError("Disabled request requires null sourceSha")
     elif not isinstance(case, str) or case not in CASES:
-        raise ValueError("Diagnostic case must be null, wetland or aura-fx")
+        raise ValueError("Diagnostic case must be null, wetland, aura-fx or battlefields-generation")
     elif not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha):
         raise ValueError("Active request requires a full lowercase sourceSha")
     return data

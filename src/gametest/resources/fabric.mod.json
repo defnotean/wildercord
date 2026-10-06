@@ -269,6 +269,8 @@
       "dev.wildercord.party.PartyOfflineProjectileTest",
       "dev.wildercord.aura.MastersStyleTimelineTest",
       "dev.wildercord.party.MastersSecondFormTimelineTest",
+      "dev.wildercord.aura.HailfallReleasedOwnerTest",
+      "dev.wildercord.aura.HailSkyAcceptanceTest",
       "dev.wildercord.aura.world.DuelistMasterAccessTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.aura.world.MasterVictoriesTest",
@@ -296,7 +298,8 @@
     "moonreed-source-gametest.mixins.json",
     "wetland-generation-gametest.mixins.json",
     "articulated-shared-receipt-gametest.mixins.json",
-    "aura-body-motes-gametest.mixins.json"
+    "aura-body-motes-gametest.mixins.json",
+    "memorial-generation-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

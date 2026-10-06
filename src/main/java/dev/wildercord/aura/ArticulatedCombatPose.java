@@ -15,6 +15,7 @@ public final class ArticulatedCombatPose {
 	// Player activation ordinals and NPC attack ordinals are separate namespaces.
 	public static final int SPELLCUT = 0, RISING_BREAK = 1, DRIVING_CUT = 2;
 	public static final int KINDLING_DRAW = 3, FROSTBITE = 4;
+	public static final int HAILFALL = 15, SKYFALL = 16;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -338,6 +339,52 @@ public final class ArticulatedCombatPose {
 				v(7.1F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.02F, .08F, .25F), -.92F, r(.10F, -.10F, .10F)))),
 		v(-2.25F, 22, 1.2F), v(2.25F, 22, -1.4F));
 
+	// Hailfall releases one controlled upward cut from a folded Rime guard. Its high finish
+	// settles while the separate cloud continues; knees and soles never imply a caster leap.
+	private static final Motion HAILFALL_MOTION = new Motion(
+		new Key(v(-.08F, .94F, .12F), r(.035F, .12F, -.02F), r(.025F, .08F, -.015F), r(.03F, .13F, -.02F), r(-.06F, -.25F, .015F),
+			arm(r(.015F, .05F, -.035F), r(-.86F, .24F, -.20F), -.98F, r(1.02F, -.23F, -.28F)),
+			arm(r(0, -.04F, .03F), r(-1.00F, -.24F, -.18F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.3F, 3.5F), arm(r(.015F, .04F, -.03F), r(-1.06F, .10F, -.24F), -.90F, r(1.02F, -.16F, -.18F)),
+				v(7.2F, -6.1F, 3.6F), arm(r(0, -.03F, .03F), r(-1.01F, .08F, .25F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.10F, .68F, -.22F), r(-.025F, -.10F, .015F), r(-.02F, -.07F, .01F), r(-.035F, -.13F, .025F), r(.04F, .22F, -.015F),
+			arm(r(.025F, -.045F, -.035F), r(-1.86F, -.18F, -.30F), -.40F, r(.53F, .06F, .22F)),
+			arm(r(0, .04F, .03F), r(-.76F, -.21F, -.22F), -.90F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-8.2F, -4.5F, 2.6F), arm(r(.02F, -.04F, -.03F), r(-1.53F, -.14F, -.24F), -.42F, r(.43F, .06F, .24F)),
+				v(7.2F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.95F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.07F, .85F, -.10F), r(-.02F, -.12F, .01F), r(-.015F, -.08F, .01F), r(-.03F, -.14F, .015F), r(.035F, .25F, -.01F),
+			arm(r(.02F, -.05F, -.03F), r(-2.14F, -.24F, -.34F), -.62F, r(.40F, .10F, .30F)),
+			arm(r(0, .03F, .025F), r(-.94F, -.23F, -.18F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.8F, -4.5F, 2.9F), arm(r(.015F, -.05F, -.03F), r(-1.57F, -.24F, -.20F), -.62F, r(.35F, .10F, .32F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .10F)))),
+		v(-2.30F, 22, 1.25F), v(2.30F, 22, -1.45F));
+
+	// Skyfall presents the blade to the sky above a braced base. The off hand opens at
+	// release, the blade holds, then the elbow answers the bolt exactly six ticks later.
+	private static final Motion SKYFALL_MOTION = new Motion(
+		new Key(v(-.12F, .96F, .12F), r(-.025F, .07F, -.02F), r(-.035F, .04F, -.015F), r(-.045F, .08F, -.02F), r(-.05F, -.14F, .015F),
+			arm(r(.03F, .04F, -.04F), r(-2.18F, .10F, -.28F), -.56F, r(.40F, -.05F, -.12F)),
+			arm(r(0, -.04F, .03F), r(-.78F, -.26F, -.24F), -.92F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.4F, -4.4F, 2.9F), arm(r(.02F, .025F, -.03F), r(-1.55F, .06F, -.24F), -.64F, r(.28F, -.04F, -.10F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, -.03F, .03F), r(-.96F, .10F, .27F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.04F, 1.02F, -.12F), r(-.04F, -.025F, -.015F), r(-.035F, -.015F, -.01F), r(-.055F, -.04F, -.015F), r(-.025F, .065F, .01F),
+			arm(r(.04F, -.02F, -.025F), r(-2.48F, .025F, -.22F), -.34F, r(.25F, .025F, .08F)),
+			arm(r(0, .045F, .03F), r(-.48F, -.21F, -.40F), -.76F, r(.08F, -.10F, .12F)),
+			new ViewKey(v(-8.8F, -4.0F, 2.6F), arm(r(.025F, -.025F, -.03F), r(-1.72F, -.045F, -.22F), -.36F, r(.19F, .02F, .08F)),
+				v(7.7F, -6.1F, 3.8F), arm(r(0, .035F, .03F), r(-.87F, .08F, .30F), -.85F, r(.10F, -.10F, .10F)))),
+		new Key(v(.02F, 1.00F, -.08F), r(.035F, -.07F, .015F), r(.025F, -.035F, .01F), r(.025F, -.055F, .015F), r(-.045F, .12F, -.01F),
+			arm(r(.02F, -.025F, -.03F), r(-1.18F, -.13F, -.22F), -.88F, r(.83F, .04F, .15F)),
+			arm(r(0, .025F, .025F), r(-.86F, -.22F, -.20F), -.94F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.2F, -5.0F, 3.2F), arm(r(.015F, -.025F, -.03F), r(-1.16F, -.10F, -.23F), -.82F, r(.85F, .025F, .13F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, .025F, .03F), r(-.98F, .08F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		v(-2.40F, 22, 1.50F), v(2.40F, 22, -1.60F));
+	private static final Key SKYFALL_ANSWER = new Key(v(.10F, 1.24F, -.26F), r(.085F, -.08F, .02F), r(.045F, -.045F, .015F),
+		r(.065F, -.07F, .02F), r(-.10F, .15F, -.015F),
+		arm(r(.025F, -.035F, -.03F), r(-.98F, -.16F, -.22F), -.54F, r(.72F, .07F, .20F)),
+		arm(r(0, .04F, .03F), r(-.40F, -.24F, -.37F), -.82F, r(.10F, -.10F, .10F)),
+		new ViewKey(v(-8.2F, -5.25F, 2.4F), arm(r(.02F, -.035F, -.03F), r(-1.16F, -.12F, -.24F), -.45F, r(.75F, .04F, .18F)),
+			v(7.7F, -6.1F, 3.8F), arm(r(0, .03F, .03F), r(-.88F, .08F, .28F), -.88F, r(.10F, -.10F, .10F))));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -346,20 +393,23 @@ public final class ArticulatedCombatPose {
 		return sample(SPELLCUT_MOTION, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
 	}
 
-	/** Only shared player activation IDs are admitted here; NPC IDs use supportsMaster. */
+	/** Only authored player presentation IDs are admitted here; NPC IDs use supportsMaster. */
 	public static boolean supportsPlayer(int move) {
-		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE;
+		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
+			|| move == HAILFALL || move == SKYFALL;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
 	public static Pose samplePlayer(int move, float age, int windup, int recovery, boolean leftHanded) {
 		if (move == SPELLCUT) return sampleSpellcut(move, age, windup, recovery, leftHanded);
 		if (!supportsPlayer(move) || !valid(age, windup, 60, recovery) || age >= windup + recovery) return NONE;
+		if (move == SKYFALL) return skyfall(age, windup, recovery, leftHanded);
 		Motion motion = switch (move) {
 			case RISING_BREAK -> RISING_MOTION;
 			case DRIVING_CUT -> DRIVING_MOTION;
 			case KINDLING_DRAW -> KINDLING_MOTION;
 			case FROSTBITE -> FROSTBITE_MOTION;
+			case HAILFALL -> HAILFALL_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
@@ -413,6 +463,17 @@ public final class ArticulatedCombatPose {
 			: age < followAt ? motion.impact.toward(motion.follow, smooth((age - impact) / (followAt - impact))) : motion.follow;
 		float weight = smooth(age / Math.max(1, chamberAt)) * (1 - smooth((age - followAt) / (end - followAt)));
 		return assemble(key, weight, age, impact, active, motion.rightPlant, motion.leftPlant, leftHanded);
+	}
+
+	private static Pose skyfall(float age, int windup, int recovery, boolean leftHanded) {
+		if (age < windup) return sample(SKYFALL_MOTION, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
+		float t = age - windup, answerAt = Math.min(ArtRules.SKYFALL_DELAY, recovery * .65F);
+		float holdUntil = answerAt * .5F, followAt = Math.min(recovery * .8F, answerAt + 2);
+		Key key = t < holdUntil ? SKYFALL_MOTION.impact
+			: t < answerAt ? SKYFALL_MOTION.impact.toward(SKYFALL_ANSWER, smooth((t - holdUntil) / (answerAt - holdUntil)))
+			: t < followAt ? SKYFALL_ANSWER.toward(SKYFALL_MOTION.follow, smooth((t - answerAt) / (followAt - answerAt))) : SKYFALL_MOTION.follow;
+		float weight = 1 - smooth((t - followAt) / (recovery - followAt));
+		return assemble(key, weight, age, windup, 1, SKYFALL_MOTION.rightPlant, SKYFALL_MOTION.leftPlant, leftHanded);
 	}
 
 	private static Pose reprise(float age, int tell, int active, int recovery, boolean leftHanded) {

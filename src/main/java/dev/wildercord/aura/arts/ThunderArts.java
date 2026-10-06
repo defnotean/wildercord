@@ -122,21 +122,16 @@ public final class ThunderArts {
 	// ------------------------------------------------------------------ II. Skyfall
 
 	static boolean skyfall(ServerPlayer player, AuraApi.StringContext context) {
+		var release = dev.wildercord.aura.MastersArts.releaseTargets(player, SKYFALL);
+		if (release == null) return false;
 		ServerLevel level = player.level();
+		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING, false, 1.35F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
-		// What the bolt is called down on: the foe struck, or the nearest in front, or the ground ahead.
-		LivingEntity target = ArtKit.primary(player, context, 6.0, 90);
-		Vec3 point;
-		if (target != null) {
-			point = target.position();
-		} else {
-			Vec3 ahead = player.position().add(look.scale(ArtRules.SKYFALL_AHEAD));
-			Vec3 ground = ArtKit.floor(level, ahead, 1.5, 3);
-			point = ground == null ? ahead : ground;
-		}
+		// Selection happened at acceptance; this is the one authorized release sample, never a fresh primary search.
+		Vec3 point = release.point();
 		ArtLight world = ArtLight.world(player);
 		world.ground(point, SigilOption.TARGET, color, ArtRules.SKYFALL_RADIUS * 1.1, ArtRules.SKYFALL_DELAY + 6, 0.12);
 		world.groundRing(point, WHITE, ArtRules.SKYFALL_RADIUS * 1.6, 0.3, 0.05, ArtRules.SKYFALL_DELAY);
@@ -144,10 +139,10 @@ public final class ThunderArts {
 		world.arc(point.add(0, 9, 0), point.add(0.6, 11.5, -0.4), color, 0.06, 2, false, ArtRules.SKYFALL_DELAY);
 		Feels.sound(level, point.add(0, 1, 0), "aura_art_skyfall", 1.2F, 1.0F);
 		Scheduler.later(ArtRules.SKYFALL_DELAY, () -> {
-			if (!player.isAlive() || player.level() != level) {
+			if (!owner.valid()) {
 				return;
 			}
-			Vec3 at = target != null && target.isAlive() && target.distanceToSqr(point) < 16 ? target.position() : point;
+			Vec3 at = release.skyfallPoint(player);
 			strike(player, at, color, 1.0F);
 			Set<LivingEntity> struck = new HashSet<>();
 			for (LivingEntity foe : ArtKit.around(player, at, ArtRules.SKYFALL_RADIUS, 1.0, 3.0, 6)) {

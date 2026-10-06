@@ -76,6 +76,8 @@ public final class MastersArts {
 		builder -> builder.initializer(() -> Rest.NONE).persistent(Rest.CODEC).copyOnDeath());
 	private record Aim(ServerPlayer player, Vec3 direction, Vec3 view) {}
 	private static Aim activeAim;
+	private record Targets(ServerPlayer player, dev.wildercord.aura.arts.ArtReleaseTargets.Release receipt) {}
+	private static Targets activeTargets;
 	private record Pending(ServerPlayer player, java.util.function.BooleanSupplier valid) {}
 	private static final Map<UUID, Pending> PENDING = new HashMap<>();
 	/** A short physical continuation, separate from already-launched fields, wounds and afterimages. */
@@ -106,6 +108,7 @@ public final class MastersArts {
 	private static final PacketThrottle REQUESTS = new PacketThrottle(6, 4);
 
 	public static void init() {
+		dev.wildercord.aura.arts.ReleasedArtOwner.init();
 		PayloadTypeRegistry.serverboundPlay().register(Activate.TYPE, Activate.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Performed.TYPE, Performed.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Activate.TYPE, (payload, context) -> {
@@ -116,7 +119,7 @@ public final class MastersArts {
 			forget(handler.player.getUUID());
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			REQUESTS.clear(); PENDING.clear(); activeAim = null; performingContinuation = null;
+			REQUESTS.clear(); PENDING.clear(); activeAim = null; activeTargets = null; performingContinuation = null;
 			CONTINUATIONS.values().forEach(sequence -> sequence.cancelled = true);
 			CONTINUATIONS.clear();
 		});
@@ -164,21 +167,33 @@ public final class MastersArts {
 	 * Starts one selected style's physical windup. SwordStrings commits its own price and individual rest once this accepts;
 	 * the performer and its success hooks run only at the active frame. Other arts keep their existing timing.
 	 */
-	static boolean beginStyle(ServerPlayer player, AuraApi.StringArt art, Runnable impact) {
+	static boolean beginStyle(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context, Runnable impact) {
 		MastersStyleRules.Style style = MastersStyleRules.of(art.id());
 		if (style == null || committed(player) || !eligible(player) || Aura.stage(player) < art.stage()
 			|| !art.available().test(player) || !dev.wildercord.config.Config.get().aura().strings().enabled()) return false;
+		Vec3 aim = ArtKit.flat(player);
+		Vec3 view = player.getViewVector(1.0F);
+		boolean targetBearing = style.targets() == MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
+			|| style.targets() == MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT;
+		var accepted = targetBearing ? dev.wildercord.aura.arts.ArtReleaseTargets.accept(player, context, aim, view) : null;
+		if (targetBearing && accepted == null) return false;
 		long now = player.level().getServer().overworld().getGameTime();
 		Rest rest = player.getAttachedOrElse(REST, Rest.NONE);
 		player.setAttached(REST, new Rest(rest.spellcut(), rest.rising(), rest.driving(), now + style.windup() + style.recovery()));
-		Vec3 aim = ArtKit.flat(player);
-		Vec3 view = player.getViewVector(1.0F);
 		schedule(player, style.animation(), style.windup(), style.recovery(),
 			() -> Aura.stage(player) >= art.stage() && art.available().test(player)
-				&& dev.wildercord.config.Config.get().aura().strings().enabled(), () -> {
+				&& dev.wildercord.config.Config.get().aura().strings().enabled()
+				&& (accepted == null || accepted.ownerValid(player)), () -> {
 				Aim outer = activeAim;
+				Targets outerTargets = activeTargets;
 				activeAim = new Aim(player, aim, view);
-				try { impact.run(); } finally { activeAim = outer; }
+				try {
+					var release = accepted == null ? null : accepted.release(player);
+					// A lost selected target is a paid whiff: keep the readable accepted motion/recovery, with no effects or hooks.
+					if (targetBearing && release == null) return;
+					activeTargets = release == null ? null : new Targets(player, release);
+					impact.run();
+				} finally { activeAim = outer; activeTargets = outerTargets; }
 			});
 		return true;
 	}
@@ -191,6 +206,12 @@ public final class MastersArts {
 	/** Full locked view for the two first forms whose projectiles retain their original upward/downward pitch. */
 	public static Vec3 committedView(net.minecraft.world.entity.Entity entity) {
 		return activeAim != null && activeAim.player() == entity ? activeAim.view() : null;
+	}
+
+	/** The validated release receipt exists only inside its own performer; delayed effects retain their copied release point. */
+	public static dev.wildercord.aura.arts.ArtReleaseTargets.Release releaseTargets(ServerPlayer player, String art) {
+		return activeTargets != null && activeTargets.player() == player && activeTargets.receipt().art().equals(art)
+			? activeTargets.receipt() : null;
 	}
 
 	private static boolean eligible(ServerPlayer player) {

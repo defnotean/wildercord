@@ -173,6 +173,7 @@ public final class MastersArtAnimation {
 		if (motion == null || !Float.isFinite(age) || windup <= 0 || windup > 60 || recovery <= 0 || recovery > 120
 				|| age < 0 || age >= windup + recovery) return NONE;
 		if (move == 5 || move == 11) return MastersStyleAnimation.repeated(move, motion, age, windup, recovery);
+		if (move == 16) return MastersStyleAnimation.skyfall(motion, age, windup, recovery);
 		return sample(motion, age, windup, recovery);
 	}
 
