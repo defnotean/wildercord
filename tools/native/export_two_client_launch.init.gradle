@@ -5,10 +5,13 @@ import java.security.MessageDigest
 // This exports a bounded client command; it never executes runClientGameTest.
 gradle.projectsEvaluated {
     def p = gradle.rootProject
-    if (p.findProperty('twoClientSuite')?.toString() != 'cast-receipt') throw new GradleException('Bounded export requires -PtwoClientSuite=cast-receipt')
+    def suite = p.findProperty('twoClientSuite')?.toString()
+    if (!(suite in ['cast-receipt', 'moon'])) throw new GradleException('Bounded export requires -PtwoClientSuite=cast-receipt or moon')
+    def maxTimeoutSeconds = suite == 'moon' ? 180 : 900
     def root = p.projectDir.canonicalFile
-    def expectedEntry = 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
-    def contractPath = 'src/gametest/resources/cast-receipt-native-contract.json'
+    def expectedEntry = suite == 'moon' ? 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest' : 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
+    def contractPath = suite == 'moon' ? 'src/gametest/resources/crimson-moon-native-contract.json' : 'src/gametest/resources/cast-receipt-native-contract.json'
+    def expectedMixins = suite == 'moon' ? ['crimson-moon-multiplayer-gametest.mixins.json'] : []
     // Match the supervisor's ordered roster, including every original case.
     def expectedCases = [
         'BREAK_CAST_HEALTH',
@@ -52,8 +55,13 @@ gradle.projectsEvaluated {
         'SPECTATOR_BOLT_VENOM',
         'SPECTATOR_SPARK_VENOM',
         'SPECTATOR_RAY_VENOM',
-        'SPECTATOR_TOUCH_VENOM'
+        'SPECTATOR_TOUCH_VENOM',
+        'LIFE_SELF_HEAL_FIRST_PERSON',
+        'LIFE_SELF_HEAL_THIRD_PERSON',
+        'LIFE_SELF_HEAL_CAMERA_TRANSITIONS',
+        'LIFE_SELF_SECOND_WIND_REDUCED_FLASH'
     ]
+    if (suite == 'moon') expectedCases = ['articulated_netherite_funded_right_release']
     def git = { List<String> arguments ->
         def process = new ProcessBuilder(['git', '-C', root.absolutePath] + arguments).redirectErrorStream(true).start()
         def output = new StringBuffer()
@@ -110,12 +118,17 @@ gradle.projectsEvaluated {
             def descriptor = inside(new File(p.tasks.named('processGametestResources').get().destinationDir, 'fabric.mod.json'), [new File(root, 'build'), new File(root, 'build-alt')])
             def descriptorData = new JsonSlurper().parse(descriptor)
             if (descriptorData.entrypoints['fabric-client-gametest'] != [expectedEntry]) throw new GradleException('Generated descriptor does not match the requested supervised fixture')
+            if (suite == 'moon' && (descriptorData.mixins ?: []).contains('crimson-moon-owner-gametest.mixins.json')) throw new GradleException('Paired Moon hooks must not be injected twice')
+            expectedMixins.each { name ->
+                if ((descriptorData.mixins ?: []).count { it == name } != 1) throw new GradleException('Moon passive hooks must be registered exactly once')
+                if (digest(new File(descriptor.parentFile, name)) != digest(new File(root, 'src/gametest/resources/' + name))) throw new GradleException('Processed Moon hooks differ from reviewed source')
+            }
             def classPath = expectedEntry.replace('.', '/') + '.class'
             if (!p.sourceSets.gametest.output.classesDirs.files.any { new File(it, classPath).isFile() }) throw new GradleException('Supervised entrypoint class is missing from compiled gametest output')
             def contractFile = new File(root, contractPath)
             def contract = new JsonSlurper().parse(contractFile)
-            if (contract.schemaVersion != 1 || contract.suite != 'cast-receipt' || contract.entrypoint != expectedEntry || contract.expectedCount != expectedCases.size() || contract.cases != expectedCases) throw new GradleException('Unexpected ordered 42-case cast receipt source contract')
-            if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: expectedCases.size(), maxTimeoutSeconds: 900]) throw new GradleException('Unexpected cast receipt resource limits')
+            if (contract.schemaVersion != 1 || contract.suite != suite || contract.entrypoint != expectedEntry || contract.expectedCount != expectedCases.size() || contract.cases != expectedCases) throw new GradleException('Unexpected exact ordered source contract for ' + suite)
+            if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: expectedCases.size(), maxTimeoutSeconds: maxTimeoutSeconds]) throw new GradleException('Unexpected supervised resource limits')
             if (digest(new File(descriptor.parentFile, contractFile.name)) != digest(contractFile)) throw new GradleException('Processed contract differs from source contract')
             def taskBase = Class.forName('net.fabricmc.loom.task.AbstractRunTask', true, run.class.classLoader)
             def useArgs = taskBase.getDeclaredMethod('getUseArgFile')
@@ -178,14 +191,14 @@ gradle.projectsEvaluated {
             }
             output.parentFile.mkdirs()
             output.setText(JsonOutput.prettyPrint(JsonOutput.toJson([
-                schemaVersion: 2, suite: 'cast-receipt', sourceHead: sourceHead, checkoutSha: sourceHead, prHeadSha: prHeadSha, project: root.absolutePath,
+                schemaVersion: 2, suite: suite, maxTimeoutSeconds: maxTimeoutSeconds, sourceHead: sourceHead, checkoutSha: sourceHead, prHeadSha: prHeadSha, project: root.absolutePath,
                 descriptor: descriptor.absolutePath, descriptorSha256: digest(descriptor),
                 contract: contractPath, contractSha256: digest(contractFile),
                 java: javaFile.absolutePath, main: run.mainClass.get(), classpath: classpath,
                 jvm: jvm, args: args, environment: environment, runtimeSha256: fingerprints,
                 loomVersion: p.property('loom_version').toString()
             ])), 'UTF-8')
-            logger.lifecycle('Exported bounded cast-receipt launch for ' + sourceHead + ' to ' + output)
+            logger.lifecycle('Exported bounded ' + suite + ' launch for ' + sourceHead + ' to ' + output)
         }
     }
 }

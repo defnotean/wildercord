@@ -3,6 +3,7 @@ package dev.wildercord.aura.world;
 import com.google.gson.JsonParser;
 import dev.wildercord.cast.NextCounterPairedCases;
 import dev.wildercord.cast.SpectatorPairedCases;
+import dev.wildercord.cast.LifeOwnerPairedCases;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -104,6 +105,9 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 				(id, proof) -> observeCase(context, server, id, proof, !id.equals(NextCounterPairedCases.CASES.get(2))), this::passCase);
 			new SpectatorPairedCases().runConnectedPair(context, server, hostId, peerId,
 				(id, proof) -> observeCase(context, server, id, proof, true), this::passCase);
+			new LifeOwnerPairedCases().runConnectedPair(context, server, hostId, peerId,
+				(id, proof) -> prepareLifePeer(context, server, id, proof),
+				(id, proof) -> observeCase(context, server, id, proof, true), this::passCase);
 			check(completed.equals(expected), "All preserved native scenarios passed in declared order");
 			GameType hostMode = server.computeOnServer(s -> s.getPlayerList().getPlayer(hostId).gameMode.getGameModeForPlayer());
 			GameType peerMode = server.computeOnServer(s -> s.getPlayerList().getPlayer(peerId).gameMode.getGameModeForPlayer());
@@ -156,6 +160,12 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			return Map.copyOf(sample);
 		});
 		String stem = String.format(java.util.Locale.ROOT, "case-%02d", index);
+		if (LifeOwnerPairedCases.CASES.contains(id)) {
+			await(context, () -> exists(stem + "-captured"), "Peer captures original live Life material " + id, true);
+			Properties captured = read(stem + "-captured", "peer");
+			verifyLifeRole(captured, id, snapshot.get("actorEntity"), snapshot.get("recipientEntity"));
+			check("resident".equals(captured.getProperty("lifeCapture")), "Peer captured material already inserted into native render groups");
+		}
 		write(stem + "-ready", snapshot);
 		// Fabric pauses the server at this test phase. The separate peer can process packets without ageing
 		// the server's 20-tick seal or letting later regeneration replace this observed delivery snapshot.
@@ -171,7 +181,61 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			for (String key : List.of("victimUuid", "victimEntity", "victimHealth", "victimPoisonParticles", "casterMode", "spectatorMode"))
 				check(snapshot.get(key).equals(seen.getProperty(key)), "Live spectator acknowledges its exact native delivery outcome: " + key);
 		}
+		if (LifeOwnerPairedCases.CASES.contains(id)) {
+			verifyLifeMeasurements(id, snapshot, seen);
+		}
 		observed.add(id);
+	}
+
+	private void prepareLifePeer(ClientGameTestContext context, TestServerContext server, String id, Map<String, String> proof) {
+		int index = completed.size();
+		check(index >= 42 && index < expected.size() && expected.get(index).equals(id) && LifeOwnerPairedCases.CASES.contains(id)
+			&& observed.size() == index && id.equals(proof.get("case")) && hostId.toString().equals(proof.get("lifeSource")),
+			"Only the four appended Life cases may arm a peer before their single payment");
+		String viewerEntity = server.computeOnServer(s -> {
+			var host = s.getPlayerList().getPlayer(hostId); var peer = s.getPlayerList().getPlayer(peerId);
+			check(host != null && peer != null && host.connection.player == host && peer.connection.player == peer
+				&& host.isAlive() && peer.isAlive() && host.gameMode.getGameModeForPlayer() == GameType.SURVIVAL && peer.gameMode.getGameModeForPlayer() == GameType.SURVIVAL
+				&& Integer.toString(host.getId()).equals(proof.get("lifeOwnerEntity")), "Life arm request names the exact two current connected bodies");
+			return Integer.toString(peer.getId());
+		});
+		var prepare = new HashMap<>(proof); prepare.put("lifeViewerUuid", peerId.toString()); prepare.put("lifeViewerEntity", viewerEntity);
+		String stem = String.format(java.util.Locale.ROOT, "case-%02d", index);
+		write(stem + "-prepare", prepare);
+		await(context, () -> exists(stem + "-armed"), "Real peer arms before Life payment " + id, true);
+		Properties armed = read(stem + "-armed", "peer");
+		verifyLifeRole(armed, id, proof.get("lifeOwnerEntity"), viewerEntity);
+		check("true".equals(armed.getProperty("lifeCameraNative")), "Independent peer armed only its actual native player camera");
+	}
+
+	private void verifyLifeRole(Properties fields, String id, String ownerEntity, String viewerEntity) {
+		check(id.equals(fields.getProperty("case")) && hostId.toString().equals(fields.getProperty("lifeSource"))
+			&& peerId.toString().equals(fields.getProperty("lifeViewerUuid")) && ownerEntity.equals(fields.getProperty("lifeOwnerEntity"))
+			&& viewerEntity.equals(fields.getProperty("lifeViewerEntity")), "Life handshake preserves exact source, viewer and both body identities");
+	}
+
+	private void verifyLifeMeasurements(String id, Map<String, String> ready, Properties seen) {
+		check(id.equals(ready.get("caseLife")) && "APPLY".equals(ready.get("lifeMoment"))
+			&& hostId.toString().equals(ready.get("lifeSource")) && hostId.toString().equals(ready.get("lifeOwnerSource"))
+			&& hostId.toString().equals(seen.getProperty("lifePeerSource")) && "true".equals(ready.get("lifeOwnerCameraNative"))
+			&& "true".equals(seen.getProperty("lifePeerCameraNative")), "Both independent native samples preserve the genuine original self APPLY source");
+		int full = lifeCount(ready.get("lifeFullPieces")), minimal = lifeCount(ready.get("lifeMinimalPieces"));
+		check(full > 0 && minimal > 0 && minimal <= full, "Bounded nonempty authored Life recipes required");
+		boolean first = id.equals(LifeOwnerPairedCases.CASES.getFirst());
+		int own = lifeCount(ready.get("lifeOwnerPieces")), ownUnique = lifeCount(ready.get("lifeOwnerUnique")), ownExtracted = lifeCount(ready.get("lifeOwnerExtracted"));
+		check(own == (first ? 0 : full) && ownUnique == own && (first ? ownExtracted == 0 : ownExtracted > 0 && ownExtracted <= own),
+			"Owner reports the exact safe first-person or complete third-person body once");
+		int peer = lifeCount(seen.getProperty("lifePeerPieces")), unique = lifeCount(seen.getProperty("lifePeerUnique")), extracted = lifeCount(seen.getProperty("lifePeerExtracted"));
+		check(peer == minimal && unique == peer && extracted > 0 && extracted <= peer, "Second JVM independently observes one exact Minimal body in native render groups");
+		if (id.equals(LifeOwnerPairedCases.CASES.getLast())) {
+			check(lifeCount(ready.get("lifeOwnerTime")) > 0 && lifeCount(ready.get("lifeOwnerReducedSamples")) > 0
+				&& lifeCount(seen.getProperty("lifePeerTime")) > 0 && lifeCount(seen.getProperty("lifePeerReducedSamples")) > 0,
+				"Both real clients retain Time support and independently sample reduced-flash Life alpha");
+		}
+	}
+	private static int lifeCount(String value) {
+		check(value != null && value.matches("0|[1-9][0-9]{0,2}"), "Canonical bounded Life measurement required");
+		int count = Integer.parseInt(value); check(count <= 128, "Life measurement remains bounded"); return count;
 	}
 
 	private void respawnPeer(ClientGameTestContext context, TestServerContext server) {
@@ -222,6 +286,24 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			for (int i = 0; i < expected.size(); i++) {
 				String stem = String.format(java.util.Locale.ROOT, "case-%02d", i), id = expected.get(i);
 				if (id.equals(NextCounterPairedCases.CASES.get(2))) respawnAsPeer(context);
+				if (LifeOwnerPairedCases.CASES.contains(id)) {
+					await(context, () -> exists(stem + "-prepare"), "Life owner prepares " + id, false);
+					Properties prepare = read(stem + "-prepare", "host");
+					check(id.equals(prepare.getProperty("case")) && hostId.toString().equals(prepare.getProperty("lifeSource"))
+						&& peerId.toString().equals(prepare.getProperty("lifeViewerUuid")), "Life prepare names the exact source and this real viewer");
+					context.waitFor(mc -> mc.player != null && mc.level != null && mc.player.getUUID().equals(peerId)
+						&& Integer.toString(mc.player.getId()).equals(prepare.getProperty("lifeViewerEntity"))
+						&& mc.level.getPlayerByUUID(hostId) != null && Integer.toString(mc.level.getPlayerByUUID(hostId).getId()).equals(prepare.getProperty("lifeOwnerEntity"))
+						&& mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SURVIVAL
+						&& mc.getConnection().getPlayerInfo(hostId) != null && mc.getConnection().getPlayerInfo(hostId).getGameMode() == GameType.SURVIVAL, 120);
+					LifeOwnerPairedCases.armPeer(context, id, hostId);
+					var armed = context.computeOnClient(mc -> Map.of("case", id, "lifeSource", hostId.toString(), "lifeViewerUuid", mc.player.getUUID().toString(),
+						"lifeOwnerEntity", Integer.toString(mc.level.getPlayerByUUID(hostId).getId()), "lifeViewerEntity", Integer.toString(mc.player.getId()),
+						"lifeCameraNative", Boolean.toString(mc.getCameraEntity() == mc.player && mc.gameRenderer.mainCamera().entity() == mc.player)));
+					write(stem + "-armed", armed);
+					LifeOwnerPairedCases.capturePeer(context, id);
+					var captured = new HashMap<>(armed); captured.put("lifeCapture", "resident"); write(stem + "-captured", captured);
+				}
 				await(context, () -> exists(stem + "-ready"), "Native case " + id, false);
 				Properties sample = read(stem + "-ready", "host");
 				check(id.equals(sample.getProperty("case")), "Live case follows the immutable contract");
@@ -267,6 +349,11 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 					for (String key : List.of("victimUuid", "victimEntity", "victimHealth", "victimPoisonParticles", "casterMode", "spectatorMode"))
 						seen.put(key, sample.getProperty(key));
 				}
+				if (LifeOwnerPairedCases.CASES.contains(id)) {
+					check(hostId.toString().equals(sample.getProperty("lifeSource")) && "APPLY".equals(sample.getProperty("lifeMoment")), "Life ready refers to the same original self APPLY");
+					var proof = new HashMap<String, String>(); for (String key : sample.stringPropertyNames()) proof.put(key, sample.getProperty(key));
+					seen.putAll(LifeOwnerPairedCases.finishPeer(context, id, proof));
+				}
 				write(stem + "-seen", seen);
 				await(context, () -> exists(stem + "-passed"), "Remaining server assertions pass for " + id, false);
 				check(id.equals(read(stem + "-passed", "host").getProperty("case")), "Host confirms this exact case after all strict probes");
@@ -274,7 +361,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			}
 			await(context, () -> exists("disconnect-peer"), "Native assertions complete before departure", false);
 			Properties departure = read("disconnect-peer", "host");
-			check(departure.getProperty("cases").equals(String.join(",", completed)), "Both roles finish the same complete 42-case ledger");
+			check(departure.getProperty("cases").equals(String.join(",", completed)), "Both roles finish the same complete 46-case ledger");
 			context.waitFor(mc -> mc.gameMode != null && mc.gameMode.getPlayerMode().getName().equals(departure.getProperty("peerMode"))
 				&& mc.getConnection() != null && mc.getConnection().getPlayerInfo(hostId) != null
 				&& mc.getConnection().getPlayerInfo(hostId).getGameMode().getName().equals(departure.getProperty("hostMode")), 60);
@@ -284,7 +371,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			write("peer-cast-receipt-passed", Map.of("cases", String.join(",", completed)));
 			await(context, () -> exists("host-cast-receipt-passed"), "Host observes connection removal", false);
 			read("host-cast-receipt-passed", "host");
-		} finally { context.runOnClient(mc -> { if (mc.level != null) mc.disconnect(new TitleScreen(), false); }); }
+		} finally { LifeOwnerPairedCases.abortPeer(context); context.runOnClient(mc -> { if (mc.level != null) mc.disconnect(new TitleScreen(), false); }); }
 	}
 
 	private void respawnAsPeer(ClientGameTestContext context) {
@@ -338,8 +425,8 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			check(input != null, "Source-controlled native case contract is packaged");
 			var json = JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonObject();
 			var cases = new ArrayList<String>(); json.getAsJsonArray("cases").forEach(value -> cases.add(value.getAsString()));
-			var compiled = new ArrayList<>(CastHitReceiptConsistencyChecks.expectedCases()); compiled.addAll(NextCounterPairedCases.CASES); compiled.addAll(SpectatorPairedCases.CASES);
-			check(json.get("expectedCount").getAsInt() == 42 && cases.equals(compiled), "Contract preserves all 38 compiled scenarios plus exactly four paid spectator deliveries");
+			var compiled = new ArrayList<>(CastHitReceiptConsistencyChecks.expectedCases()); compiled.addAll(NextCounterPairedCases.CASES); compiled.addAll(SpectatorPairedCases.CASES); compiled.addAll(LifeOwnerPairedCases.CASES);
+			check(json.get("expectedCount").getAsInt() == 46 && cases.equals(compiled), "Contract preserves all 42 compiled scenarios plus exactly four explicit Life comparisons");
 			return List.copyOf(cases);
 		} catch (java.io.IOException failure) { throw new AssertionError(failure); }
 	}

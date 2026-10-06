@@ -83,6 +83,8 @@ public final class CrimsonMoonRenderMath {
         }
         return new Comparison(operation,expected,actual,error,valid&&error<=EPSILON);
     }
+    /** Enclosing visibility gates every child even when its own root has no cubes. */
+    public static List<Float> outerRoot(Matrix4fc matrix,boolean visible){var out=new ArrayList<>(values(matrix));out.add(visible?1F:0F);return List.copyOf(out);}
     public static List<Float> values(Matrix4fc matrix){var out=new ArrayList<Float>();for(float v:matrix.get(new float[16]))out.add(v);return out;}
     public static List<Float> values(Map<?,Part> parts){
         var out=new ArrayList<Float>();for(var p:parts.values())for(float v:new float[]{p.x,p.y,p.z,p.rx,p.ry,p.rz,p.sx,p.sy,p.sz})out.add(v);return out;

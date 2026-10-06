@@ -130,8 +130,68 @@ public final class CrimsonMoonProofChecks {
         }
         check(!CrimsonMoonRenderMath.age(10,11),"Release is strictly [10,11)");
         check(!CrimsonMoonRenderMath.age(14,12),"Old HitStop recovery cannot prove follow-through");
+        remoteProof();
         scopeCleanup();
         System.out.println("PASS "+checked+" source-side Moon mutation checks; no native renderer, screenshot, observer or pixel review was run.");
+    }
+    private static void remoteProof(){
+        check(CrimsonMoonMultiplayerProof.boundedTimeout(60)&&CrimsonMoonMultiplayerProof.boundedTimeout(180),"Moon accepts only its bounded native budget");
+        for(int seconds:new int[]{0,59,181,900,Integer.MAX_VALUE})check(!CrimsonMoonMultiplayerProof.boundedTimeout(seconds),"Moon rejects out-of-bounds native budgets");
+        check(CrimsonMoonMultiplayerProof.remoteIdentity("actor",41,"observer",42,"observer",42,"actor",41,true,true,true),"Actual distinct peer observes the actual actor");
+        for(String[] ids:List.of(new String[]{"actor","observer","actor","actor"},new String[]{"actor","actor","actor","actor"},
+            new String[]{"actor","observer","observer","wrong actor"},new String[]{"actor","observer","wrong peer","actor"}))
+            check(!CrimsonMoonMultiplayerProof.remoteIdentity(ids[0],41,ids[1],42,ids[2],42,ids[3],41,true,true,true),"Wrong actor or observer UUID cannot prove remote coverage");
+        check(!CrimsonMoonMultiplayerProof.remoteIdentity("actor",41,"observer",42,"observer",41,"actor",41,true,true,true),"Wrong observer entity fails");
+        check(!CrimsonMoonMultiplayerProof.remoteIdentity("actor",41,"observer",42,"observer",42,"actor",42,true,true,true),"Wrong actor entity fails");
+        for(int rejected=0;rejected<3;rejected++)check(!CrimsonMoonMultiplayerProof.remoteIdentity("actor",41,"observer",42,"observer",42,"actor",41,rejected!=0,rejected!=1,rejected!=2),"Different world, fabricated body or substituted camera fails");
+        check(CrimsonMoonMultiplayerProof.sourceAfterRelease(2,3,4),"Local extraction sequence establishes genuine after-read order");
+        for(long[] sequence:new long[][]{{0,3,4},{2,2,4},{3,2,4},{2,4,4},{2,4,3}})
+            check(!CrimsonMoonMultiplayerProof.sourceAfterRelease(sequence[0],sequence[1],sequence[2]),"Stale source or reversed extraction cannot prove release association");
+        check(CrimsonMoonMultiplayerProof.damageAfterBothImages(100,110,115,true,true),"Both completed images before genuine far-band damage pass");
+        for(long[] times:new long[][]{{100,109,115},{100,111,115},{100,110,110},{100,110,116}})
+            check(!CrimsonMoonMultiplayerProof.damageAfterBothImages(times[0],times[1],times[2],true,true),"Wrong release or damage age cannot pass");
+        check(!CrimsonMoonMultiplayerProof.damageAfterBothImages(100,110,115,false,true),"Missing owner image before damage fails");
+        check(!CrimsonMoonMultiplayerProof.damageAfterBothImages(100,110,115,true,false),"Missing genuine peer image before damage fails");
+        check(CrimsonMoonMultiplayerProof.orderClaim(100,110,115,15,5,true,false),"Completed causal order explicitly keeps exact frame correspondence unproved");
+        check(!CrimsonMoonMultiplayerProof.orderClaim(100,110,115,15,5,true,true),"A causal interval cannot establish exact server release-frame correspondence");
+        check(!CrimsonMoonMultiplayerProof.orderClaim(100,110,115,15,5,false,false),"An unproved causal interval cannot pass");
+        check(!CrimsonMoonMultiplayerProof.orderClaim(100,110,115,5,15,true,false),"Swapped acceptance-age and release-delay units fail");
+        check(!CrimsonMoonMultiplayerProof.orderClaim(100,110,115,15,15,true,false),"Acceptance-relative age cannot masquerade as release-relative delay");
+        check(!CrimsonMoonMultiplayerProof.orderClaim(100,110,115,5,5,true,false),"Release-relative delay cannot masquerade as acceptance-relative age");
+        check(!CrimsonMoonMultiplayerProof.orderClaim(100,110,115,14,4,true,false),"In-range offsets must still match the actual three ticks exactly");
+        check(!CrimsonMoonMultiplayerProof.orderClaim(100,111,115,15,4,true,false),"A plausible delay cannot hide the wrong release tick");
+        for(boolean left:new boolean[]{false,true})for(boolean slim:new boolean[]{false,true})for(float age:new float[]{.1F,6.5F,10,14,29.5F}){
+            var vanilla=new LinkedHashMap<String,Part>();vanilla.put("head",part(0,0,0,.3F,-.7F,.1F));
+            vanilla.put("leftArm",part(5.1F,2.2F,.2F,-.4F,.2F,.1F));vanilla.put("rightArm",part(-5.1F,1.8F,-.2F,-.7F,-.2F,-.1F));
+            var pose=ArticulatedCombatPose.samplePlayer(19,age,10,20,left);var parts=CrimsonMoonRenderMath.body(pose,vanilla,slim);
+            var root=new Matrix4f().translation(2,3,4).rotateY(.7F).scale(-.9375F,-.9375F,.9375F);
+            var expected=CrimsonMoonRenderMath.sword(root,parts,left,slim);
+            for(var changedOuter:new Matrix4f[]{new Matrix4f().translation(.13F,0,0),new Matrix4f().rotateY(.2F),new Matrix4f().scale(1.1F)}){
+                var submittedOuter=new Matrix4f();var retainedOuter=new Matrix4f(submittedOuter);
+                submittedOuter.set(changedOuter);
+                var retained=CrimsonMoonRenderMath.outerRoot(retainedOuter,true);
+                var actualOuter=CrimsonMoonRenderMath.outerRoot(submittedOuter,true);
+                check(!CrimsonMoonRenderMath.compare("deferred_outer_root",retained,actualOuter).matched(),"Deferred body rejects an enclosing root changed after submission");
+                check(!CrimsonMoonRenderMath.compare("item_entry_outer_root",retained,actualOuter).matched(),"World-item entry rejects an enclosing root changed after submission");
+                var expectedItem=CrimsonMoonRenderMath.sword(new Matrix4f(root).mul(retainedOuter),parts,left,slim);
+                var changedItem=CrimsonMoonRenderMath.sword(new Matrix4f(root).mul(submittedOuter),parts,left,slim);
+                check(!CrimsonMoonRenderMath.compare("retained_root_item",CrimsonMoonRenderMath.values(expectedItem),CrimsonMoonRenderMath.values(changedItem)).matched(),"Expected world item cannot follow the changed live enclosing root");
+                check(retained.equals(CrimsonMoonRenderMath.outerRoot(new Matrix4f(),true)),"The retained enclosing root snapshot is not a mutable model alias");
+            }
+            check(!CrimsonMoonRenderMath.compare("hidden_deferred_outer_root",CrimsonMoonRenderMath.outerRoot(new Matrix4f(),true),
+                CrimsonMoonRenderMath.outerRoot(new Matrix4f(),false)).matched(),"Hidden enclosing root cannot prove a visible deferred body");
+            check(!CrimsonMoonRenderMath.compare("hidden_item_outer_root",CrimsonMoonRenderMath.outerRoot(new Matrix4f(),true),
+                CrimsonMoonRenderMath.outerRoot(new Matrix4f(),false)).matched(),"World-item entry must retain the visible enclosing body root");
+            var stale=new EnumMap<>(parts);var joint=left?ArticulatedCombatPose.Joint.LEFT_FOREARM:ArticulatedCombatPose.Joint.RIGHT_FOREARM;
+            var prior=stale.get(joint);stale.put(joint,prior.rotation(prior.rx()+.31F,prior.ry(),prior.rz()));
+            check(!CrimsonMoonRenderMath.compare("stale_world_socket",CrimsonMoonRenderMath.values(expected),CrimsonMoonRenderMath.values(CrimsonMoonRenderMath.sword(root,stale,left,slim))).matched(),"Stale world rig cannot satisfy the actual world-item matrix");
+            check(!CrimsonMoonRenderMath.compare("substituted_world_item_root",CrimsonMoonRenderMath.values(expected),CrimsonMoonRenderMath.values(CrimsonMoonRenderMath.sword(new Matrix4f(),parts,left,slim))).matched(),"Another submitted root fails despite the correct palette");
+            if(pose.weight()>0&&pose.weight()<1)check(!CrimsonMoonRenderMath.compare("missing_world_item_vanilla_blend",CrimsonMoonRenderMath.values(expected),
+                CrimsonMoonRenderMath.values(CrimsonMoonRenderMath.sword(root,CrimsonMoonRenderMath.palette(pose::local),left,slim))).matched(),"World item needs the observed vanilla baseline at partial weight");
+        }
+        check(!CrimsonMoonRenderMath.item(21,22,true,true,true),"Substituted world item state fails despite unchanged stack");
+        check(!CrimsonMoonRenderMath.originalSkin("connected","substitute","slim","slim",true),"Substituted same-width remote skin fails");
+        check(!CrimsonMoonRenderMath.originalSkin("connected","connected","slim","slim",false),"Substituted world material fails despite matching extracted skin");
     }
     /** Simulates owner/getter/cast failures without instantiating Minecraft or its renderers. */
     private static void scopeCleanup(){
@@ -173,4 +233,3 @@ public final class CrimsonMoonProofChecks {
     }
     private static Part part(float x,float y,float z,float rx,float ry,float rz){return new Part(x,y,z,rx,ry,rz,1,1,1,x==5.1F?5:x==-5.1F?-5:x,y,z);}
 }
-

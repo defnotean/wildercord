@@ -195,9 +195,20 @@ public final class EmberKilnTest implements FabricClientGameTest {
 			if (choice != Answer.INTERRUPT) cleanup();
 		});
 		if (choice == Answer.INTERRUPT) at(world, EmberKilnRules.TELL + EmberKilnRules.RECOVERY, () -> {
-			check(master.attackAnimation() == 3 && master.attackElapsed(0) == 0 && !master.kilnPending() && close(master.auraRemaining(), 32),
-				"After full recovery the still-eligible slot uses ordinary Crescent because the paid 180-tick cooldown survives interruption");
-			check(!accepted.tick(level.getGameTime()) && master.attackAnimation() == 3, "The old instance cannot cancel or mutate a later accepted attack");
+			MastersRules.Move next = java.util.Arrays.stream(MastersRules.Move.values())
+				.filter(move -> move.ordinal() + 1 == master.attackAnimation())
+				.filter(move -> move == MastersRules.Move.SWEEP || move == MastersRules.Move.THRUST || move == MastersRules.Move.CRESCENT)
+				.findFirst().orElse(null);
+			String state = "move=" + next + " age=" + master.attackElapsed(0) + " aura=" + master.auraRemaining()
+				+ " now=" + level.getGameTime() + " kilnReadyAt=" + kilnReadyAt(master);
+			check(next != null && master.attackElapsed(0) == 0 && master.state(AuraFighter.WINDUP)
+				&& master.attackTellTicks() == next.tell && !master.kilnPending() && close(master.auraRemaining(), 32),
+				"After the full recovery the planner admits one legal ordinary warning and its exact 16-Aura cost: " + state);
+			check(kilnReadyAt(master) == began + EmberKilnRules.COOLDOWN && level.getGameTime() < kilnReadyAt(master),
+				"The original paid 180-tick ring cooldown survives interruption and the next admission: " + state);
+			check(!accepted.tick(level.getGameTime()) && master.attackAnimation() == next.ordinal() + 1
+				&& master.attackElapsed(0) == 0 && close(master.auraRemaining(), 32),
+				"The old instance cannot cancel, repay or mutate the actual later accepted attack");
 			cleanup();
 		});
 	}
@@ -378,6 +389,11 @@ public final class EmberKilnTest implements FabricClientGameTest {
 			var until = ward.getClass().getDeclaredField("until"); until.setAccessible(true);
 			return new SightState(ward, charges.getInt(ward), until.getLong(ward));
 		} catch (ReflectiveOperationException error) { throw new AssertionError(error); }
+	}
+
+	private static long kilnReadyAt(SwordMaster master) {
+		try { var field = SwordMaster.class.getDeclaredField("kilnReadyAt"); field.setAccessible(true); return field.getLong(master); }
+		catch (ReflectiveOperationException error) { throw new AssertionError(error); }
 	}
 
 	private static EmberKiln owned(SwordMaster master) {

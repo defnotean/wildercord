@@ -6,7 +6,7 @@ Updated 6 October 2026. This is the plan for the expanded update, not a claim th
 
 The current foundation includes three Master schools with consent-based trials, finite Aura, readable attack commitments, shared cast-punish pursuit, and an Ember, Gale and Stone signature. Party protection, first-clear records, the 100-crystal absorption cap and progression through Circle XX are implemented. Mana Skin now rebates a bounded fraction of actual nonlethal health damage rather than damage before armor.
 
-Three shared player arts and seventeen existing style forms have authored body/hand timelines in this source checkpoint, now including Crimson Moon. Only part of that catalog has the articulated body backend and complete native visual evidence. Thirty-three of the fifty existing style arts still lack their new body choreography. Crimson Moon's Final-input/lifetime suites and stronger visual receipts remain pending native acceptance. New choreography is not counted as a new gameplay ability.
+Three shared player arts and seventeen existing style forms have authored body/hand timelines in this source checkpoint, now including Crimson Moon. Only part of that catalog has the articulated body backend and complete native visual evidence. Thirty-three of the fifty existing style arts still lack their new body choreography. Crimson Moon's Final-input and released-lifetime suites have passed on published checkpoints, and one funded owner-first-person release passes on dff8c58f. The four-view genuine observer slice and complete visual catalog remain unverified. New choreography is not counted as a new gameplay ability.
 
 The branch also contains opt-in articulated combat, supported armor and funded Aura-shell presentation, staged in-game presentation preferences, and a bounded operator-approved pavilion upgrade for existing worlds. Each has its own remaining compatibility and runtime checks. The pavilion does not yet retrofit the full dungeon, boss or encounter catalog.
 
@@ -28,7 +28,7 @@ This is the next gameplay vertical slice alongside the stability work. Circle VI
 - Add bounded high-tier options with costs, limited preparation or equipment slots, commitment and recovery. Avoid filling later circles with only mana, regeneration and damage multipliers.
 - Test old-save progression, already-qualified players, respec/reset behavior where supported, party interactions and the lowest legitimate access route.
 
-The first authored player capabilities are **Relay Circle** and **Wall Turn**. Both are integrated after independent source review. All four Relay lesson, lifetime, defence and impact suites return successfully on `a2ff00e1`; a caught inactive test-listener error still needs a clean rerun after its fixture repair. All three Wall Turn Lesson, Safety and Commitment diagnostic suites pass, including reciprocal Relay switching. These are scoped results, with final-candidate, multiplayer and visual checks still open. Relay gives an eligible Circle VIII Archivist a paid focus and a second deliberate cast input, with restricted spell grammar and two sightlines. Wall Turn gives a Sovereign with a recorded Gale clear one equipped movement form: an exposed wall brace, outward kick and real landing recovery. Each has an original retrievable lesson and must work for already-qualified characters without repeated progression. Wall Turn currently uses authored Classic body/hand poses with whole articulated fallback; its segmented joint palette and continuous movement presentation remain unfinished.
+The first authored player capabilities are **Relay Circle** and **Wall Turn**. Both are integrated after independent source review. All four Relay lesson, lifetime, defence and impact suites return successfully on published `dff8c58f`, after the inactive-listener correction. All three Wall Turn Lesson, Safety and Commitment diagnostic suites pass, including reciprocal Relay switching. These are scoped results, with final-candidate, multiplayer and visual checks still open. Relay gives an eligible Circle VIII Archivist a paid focus and a second deliberate cast input, with restricted spell grammar and two sightlines. Wall Turn gives a Sovereign with a recorded Gale clear one equipped movement form: an exposed wall brace, outward kick and real landing recovery. Each has an original retrievable lesson and must work for already-qualified characters without repeated progression. Wall Turn currently uses authored Classic body/hand poses with whole articulated fallback; its segmented joint palette and continuous movement presentation remain unfinished.
 
 ## Priority 3: expand magic through distinct uses
 
@@ -39,6 +39,8 @@ The first authored player capabilities are **Relay Circle** and **Wall Turn**. B
 
 The catalog expansion will be delivered in tested packs, with new abilities, upgrades, recipes and cosmetic variants counted separately.
 
+The next isolated mage feasibility candidate is Reweave at Circle XII: changing one already-paid circular Harm field into a warned fixed lane while preserving its original expiry, remaining beats and shared target budget. It is not yet a learned or usable ability. Resident-only wards, delayed callback ownership and actual native geometry must pass before its retrievable Tide Scribe lesson, final cost and input policy are completed.
+
 ## Priority 4: expand Aura movement and sword expression
 
 - Add learned footwork, evasion, gap closing, stance choices, parry follow-ups, spell-cut counters and aerial options connected to sword styles.
@@ -48,12 +50,14 @@ The catalog expansion will be delivered in tested packs, with new abilities, upg
 
 New movements must change positioning decisions without replacing every dodge, cover choice or punish window with unlimited mobility.
 
+Stone Hinge is in native feasibility review. Its proposed melee knockback redirect must preserve actual damage, vertical physics and ordinary knockback on refusal. The current proof only observes genuine damage/impulse provenance; the movement itself is withheld until the first real lateral step can commit safely. It is not an unlocked form, and its proposed costs/counter remain unsettled.
+
 ## Priority 5: bosses with large, distinct repertoires
 
 The requested long-range goal is hundreds of genuinely different fighting moves and many legal combinations. It is not met. The current three-school union has nine named attack actions, including Ember's Kiln Ring; Ember has seven available actions, while Gale and Stone each have six. School tuning variants, individual sub-hits and permutations do not increase that unique-action count.
 
-- Build an immutable attack catalog with stable IDs and explicit school, timing, resource, warning and animation contracts. The first passive catalog and compatibility layer are implemented with parity tests; live selection and execution do not use them yet.
-- The bounded school-specific graph now has a source-reviewed live adapter for eligible ordinary attack choices, with seeded history, recent-move avoidance and complete paid recovery. Existing priority responses and signatures retain their own admission. The integrated adapter still needs native transition, party and counterplay acceptance; a seed alone cannot reproduce player behavior.
+- Build an immutable attack catalog with stable IDs and explicit school, timing, resource, warning and animation contracts. The immutable catalog and compatibility layer are implemented with parity tests. The live adapter is currently limited to ordinary attack choices; it does not yet execute a large authored pack or unrestricted signature combinations.
+- The bounded school-specific graph now has a source-reviewed live adapter for eligible ordinary attack choices, with seeded history, recent-move avoidance and complete paid recovery. Existing priority responses and signatures retain their own admission. Its bounded native ordinary-planner suite passes on dff8c58f, including the authored transition/cancellation checks. Real coordinated-party and human counterplay acceptance remain open; a seed alone cannot reproduce player behavior.
 - Preserve complete recovery and punish windows between attacks. No graph may bypass a due guard, Aura cost, cooldown, terrain check or committed aim, and no boss reads a future player input.
 - Expand with small original packs whose attacks differ mechanically and visually, then broaden the repertoire after native counterplay and animation review.
 - Track unique authored attacks, variants, transition edges and observed combinations separately. Finite catalogs cannot guarantee that no long fight ever repeats a sequence.

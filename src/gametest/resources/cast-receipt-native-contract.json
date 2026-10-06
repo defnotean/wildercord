@@ -44,9 +44,13 @@
     "SPECTATOR_BOLT_VENOM",
     "SPECTATOR_SPARK_VENOM",
     "SPECTATOR_RAY_VENOM",
-    "SPECTATOR_TOUCH_VENOM"
+    "SPECTATOR_TOUCH_VENOM",
+    "LIFE_SELF_HEAL_FIRST_PERSON",
+    "LIFE_SELF_HEAL_THIRD_PERSON",
+    "LIFE_SELF_HEAL_CAMERA_TRANSITIONS",
+    "LIFE_SELF_SECOND_WIND_REDUCED_FLASH"
   ],
-  "expectedCount": 42,
+  "expectedCount": 46,
   "profiles": {
     "aura": {
       "username": "WCAuraHost",
@@ -79,7 +83,7 @@
   "limits": {
     "maxJvms": 2,
     "maxHeapMiBPerJvm": 2048,
-    "maxCases": 42,
+    "maxCases": 46,
     "maxTimeoutSeconds": 900
   },
   "routing": "Supervised-only; never registered in the ordinary single-client descriptor."

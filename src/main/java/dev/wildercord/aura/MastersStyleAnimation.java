@@ -67,11 +67,12 @@ public final class MastersStyleAnimation {
 			j(-.40F, .12F, -.10F), j(.25F, -.10F, .08F), .3F, -.30F, h(-.20F, -.05F, .02F, 25, -20, 35)));
 
 	// Hollow closes around the hilt, slices a narrow seam, then draws the weapon inward again.
+	// Keep the first-person wrist open through the seam: the old turn exposed only its dark edge.
 	private static final Motion VOID_CUT = new Motion(
 		pose(j(.32F, .22F, .06F), j(-.18F, -.08F, 0), j(-1.15F, .45F, -.18F), j(-1.35F, -.45F, .20F),
 			j(-.55F, -.08F, -.08F), j(.45F, .08F, .08F), .85F, .20F, h(.08F, -.05F, -.20F, -5, 18, -10)),
 		pose(j(.20F, -.35F, -.06F), j(-.10F, .10F, .02F), j(-1.48F, -.60F, -.15F), j(-1.20F, -.30F, .18F),
-			j(-.60F, .08F, -.08F), j(.40F, -.06F, .08F), .70F, -.40F, h(-.20F, -.08F, -.35F, -18, -25, 14)),
+			j(-.60F, .08F, -.08F), j(.40F, -.06F, .08F), .70F, -.40F, h(-.20F, -.08F, -.35F, -18, -5, -10)),
 		pose(j(.28F, -.10F, 0), j(-.15F, .05F, 0), j(-1.15F, -.10F, -.25F), j(-1.35F, -.35F, .25F),
 			j(-.45F, .04F, -.08F), j(.35F, -.03F, .08F), .80F, .10F, h(-.02F, -.16F, -.10F, -2, -3, 8)));
 

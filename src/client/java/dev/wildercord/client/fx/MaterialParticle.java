@@ -16,6 +16,8 @@ import net.minecraft.util.RandomSource;
 public final class MaterialParticle extends SingleQuadParticle implements SigilGroup.Extent {
 	private final int style;
 	private final float size, phase;
+	private final java.util.UUID outcomeSource=LifeOwnerClearance.source();
+	private final boolean outcomeOwner=LifeOwnerClearance.owner();
 	MaterialParticle(ClientLevel level, double x, double y, double z, MaterialOption o, double vx, double vy, double vz) {
 		super(level,x,y,z,SpellCircleParticle.particleSprite("material_"+o.style()+"_0"));
 		style=o.style(); size=o.size(); lifetime=o.lifetime(); phase=random.nextFloat()*6.283185F;
@@ -47,7 +49,9 @@ public final class MaterialParticle extends SingleQuadParticle implements SigilG
 		quadSize=size*(style==MaterialOption.VOID?1-t*.7F:style==MaterialOption.VAPOUR?.6F+t:1);
 		setSprite(SpellCircleParticle.particleSprite("material_"+style+"_"+(age/4%2)));
 	}
-	@Override public void extract(QuadParticleRenderState state, Camera camera, float partial) { super.extract(state,camera,partial); }
+	@Override public void extract(QuadParticleRenderState state, Camera camera, float partial) {
+		if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))super.extract(state,camera,partial);
+	}
 	@Override protected Layer getLayer() { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? Layer.TRANSLUCENT : GlowLayers.GLOW; }
 	@Override public int getLightCoords(float partial) { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? super.getLightCoords(partial) : LightCoordsUtil.FULL_BRIGHT; }
 	@Override public ParticleRenderType getGroup(){return SigilGroup.TYPE;}

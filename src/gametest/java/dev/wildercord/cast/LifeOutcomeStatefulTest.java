@@ -7,6 +7,7 @@ import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -35,7 +36,9 @@ public final class LifeOutcomeStatefulTest implements FabricClientGameTest {
   try(var world=c.worldBuilder().create()){
    gallery.waitTicks(30);var server=world.getServer();server.runCommand("gamerule spawn_mobs false");server.runCommand("gamerule natural_health_regeneration false");
    server.runCommand("fill -12 100 -12 12 100 24 polished_deepslate");server.runCommand("fill -5 101 18 5 108 18 stone");
-   server.runOnServer(s->{actor=gallery.actor(s);var p=player(s);p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var book=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())book=book.learn(r.id());Spellbooks.set(p,book);p.setHealth(12);p.removeAllEffects();observed.clear();LifeOwnerEvents.observe(e->{observed.add(e);gallery.observe(e);});});gallery.waitTicks(8);
+   boolean aimed=Set.of("root_bulwark","bloomstep","vinelash","drowse").contains(rune);
+   gallery.prepare(aimed?CameraType.FIRST_PERSON:CameraType.THIRD_PERSON_FRONT,aimed?0:-90,aimed?0:-15);
+   server.runOnServer(s->{actor=gallery.actor(s);var p=player(s);p.setGameMode(GameType.SURVIVAL);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var book=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())book=book.learn(r.id());Spellbooks.set(p,book);p.setHealth(12);p.removeAllEffects();observed.clear();LifeOwnerEvents.observe(e->{observed.add(e);gallery.observe(e);});});gallery.waitTicks(8);
    switch(rune){
     case "reversal" -> {
      server.runOnServer(s->{var p=player(s);paid(p,"self",rune);});gallery.waitTicks(6);
@@ -145,6 +148,6 @@ public final class LifeOutcomeStatefulTest implements FabricClientGameTest {
  private static void crop(net.minecraft.server.level.ServerLevel l,int x,int z,int age){l.setBlock(new BlockPos(x,100,z),Blocks.FARMLAND.defaultBlockState(),3);l.setBlock(new BlockPos(x,101,z),Blocks.WHEAT.defaultBlockState().setValue(CropBlock.AGE,age),3);}
  private static int count(net.minecraft.server.level.ServerLevel l,Block b){int n=0;for(var p:BlockPos.betweenClosed(-6,101,-6,6,108,20))if(l.getBlockState(p).is(b))n++;return n;}
  private static Map<?,?> map(Class<?> owner,String name){try{var f=owner.getDeclaredField(name);f.setAccessible(true);return (Map<?,?>)f.get(null);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}
- private static void paid(ServerPlayer p,String...paths){check(SpellCaster.edit(p,0,Arrays.stream(paths).map(x->"wildercord:"+x).toList())==null,"Real learned spell accepted");Spellbooks.setReadyAt(p,0,0);Spellbooks.setMana(p,100);float start=Spellbooks.mana(p);for(String path:paths){var rune=Runes.get("wildercord:"+path).orElseThrow();if(Runes.innate(rune)){p.setAttached(dev.wildercord.player.WildercordAttachments.INNATE,"");SpellCaster.cast(p,0);check(Spellbooks.mana(p)==start,"Learned foreign innate refuses before payment: "+path);p.setAttached(dev.wildercord.player.WildercordAttachments.INNATE,rune.id());}}SpellCaster.cast(p,0);check(Spellbooks.mana(p)<start,"Actual Survival payment");}
+ private void paid(ServerPlayer p,String...paths){gallery.beforePayment(p);check(SpellCaster.edit(p,0,Arrays.stream(paths).map(x->"wildercord:"+x).toList())==null,"Real learned spell accepted");Spellbooks.setReadyAt(p,0,0);Spellbooks.setMana(p,100);float start=Spellbooks.mana(p);for(String path:paths){var rune=Runes.get("wildercord:"+path).orElseThrow();if(Runes.innate(rune)){p.setAttached(dev.wildercord.player.WildercordAttachments.INNATE,"");SpellCaster.cast(p,0);check(Spellbooks.mana(p)==start,"Learned foreign innate refuses before payment: "+path);p.setAttached(dev.wildercord.player.WildercordAttachments.INNATE,rune.id());}}SpellCaster.cast(p,0);check(Spellbooks.mana(p)<start,"Actual Survival payment");}
  private static void check(boolean yes,String why){if(!yes)throw new AssertionError(why);}
 }

@@ -158,7 +158,7 @@ jobs:
 
   # Additional focused evidence for the Masters foundation; never replaces the four full shards.
   masters-native:
-    name: Masters update (36 focused suites)
+    name: Masters update (38 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -186,7 +186,7 @@ jobs:
         id: void-cut-start
         continue-on-error: true
         run: python tools/collect_void_cut_diagnostics.py --prepare --job-group masters-native --marker artifacts/review/void-cut-masters-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the 36 focused update suites
+      - name: Run the 38 focused update suites
         env:
           CI_MINECRAFT_EULA_ACCEPTED: "true"
           LIBGL_ALWAYS_SOFTWARE: "1"
@@ -274,7 +274,7 @@ jobs:
 
   # Mandatory replacement for charge-owning fake PvP recipients: two actual TCP clients.
   connected-combat-native:
-    name: Connected cast receipts (42 cases)
+    name: Connected cast receipts (46 cases) and Moon (4 views)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -287,11 +287,17 @@ jobs:
         with:
           python-version: "3.12"
       - uses: gradle/actions/setup-gradle@v6
+      - name: Install existing image-verification dependency
+        run: pip install pillow
       - name: Verify bounded two-client supervision
-        run: python -m unittest discover -s tools -p 'test_two_client_supervisor.py' -v
+        run: |
+          python -m unittest discover -s tools -p 'test_two_client_supervisor.py' -v
+          python -m unittest discover -s tools -p 'test_moon_two_client_supervisor.py' -v
+          python -m unittest discover -s tools -p 'test_paired_moon_matrix.py' -v
+          python -m unittest discover -s tools -p 'test_curate_moon_frames.py' -v
       - name: Install existing virtual-display dependencies
         run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
-      - name: Run all 42 connected cast cases
+      - name: Run all 46 cast cases then four sequential Moon views
         timeout-minutes: 24
         env:
           CI_MINECRAFT_EULA_ACCEPTED: "true"
@@ -299,8 +305,7 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: "1"
           SDL_VIDEO_FORCE_EGL: "1"
         run: |
-          ./gradlew -I tools/native/export_two_client_launch.init.gradle exportTwoClientLaunch -PtwoClientSuite=cast-receipt -PtwoClientLaunch=build/native/cast-launch.json --no-daemon --stacktrace --console=plain
-          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX +render -noreset' python tools/native/launch_two_clients.py build/native/cast-launch.json --suite cast-receipt --profile aura --output build/native/cast-receipt --timeout 900
+          xvfb-run -a -s '-screen 0 1280x720x24 +extension GLX +render -noreset' python tools/native/run_paired_matrix.py --output build/native/paired-matrix --total-timeout 1380
       - name: Preserve both clients and partial failure evidence
         if: always()
         timeout-minutes: 3
@@ -313,6 +318,21 @@ jobs:
             build/native/**/*.properties
             build/native/**/*.log
             build/native/**/screenshots/**
+      - name: Curate original paired Moon frames (visual review pending)
+        id: curated-moon
+        if: always()
+        continue-on-error: true
+        env:
+          WILDERCORD_PR_HEAD_SHA: "${{ github.event.pull_request.head.sha || '' }}"
+        run: python tools/curate_moon_frames.py --output artifacts/review/paired-moon-curated-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Preserve bounded paired Moon originals and diagnostic index
+        if: always() && steps.curated-moon.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v7
+        with:
+          name: paired-moon-curated-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/review/paired-moon-curated-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: error
 
   # Opt-in renderer acceptance only; all existing Masters and full-descriptor gates remain.
   articulated-native:
@@ -368,7 +388,12 @@ jobs:
             build/run/clientGameTest/screenshots/combat_settings_854.png
             build/run/clientGameTest/screenshots/combat_settings_1920.png
           if-no-files-found: warn
-      - name: Preserve original Moon owner FP diagnostic frame
+      - name: Collect exact logged Moon owner receipt and original frame
+        id: curated-moon-owner
+        if: always()
+        continue-on-error: true
+        run: python tools/curate_moon_frames.py --owner --output artifacts/review/moon-owner-curated-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Preserve original Moon owner FP diagnostic frame and receipt
         if: always()
         uses: actions/upload-artifact@v7
         with:
@@ -376,7 +401,7 @@ jobs:
           path: |
             build/run/clientGameTest/screenshots/crimson_moon_owner_fp_slim_articulated_netherite_funded_right_release.png
             build/run/clientGameTest/screenshots/crimson_moon_owner_fp_wide_articulated_netherite_funded_right_release.png
-            build/run/clientGameTest/screenshots/crimson-moon-owner-receipts/*/000001.json
+            artifacts/review/moon-owner-curated-${{ github.run_id }}-${{ github.run_attempt }}/
             artifacts/review/moon-owner-launch.json
             artifacts/review/articulated-native-manifest.json
           if-no-files-found: warn

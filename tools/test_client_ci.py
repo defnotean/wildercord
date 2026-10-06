@@ -25,11 +25,11 @@ def launcher_log(selection, *, result=0, build="BUILD SUCCESSFUL"):
 
 
 class SelectionTests(unittest.TestCase):
-    def test_masters_update_preserves_prior_thirty_five_and_keeps_presentation_last(self):
+    def test_masters_update_preserves_prior_thirty_six_and_keeps_presentation_last(self):
         selected = client_suites.select_entries(suite="masters")
         full = client_suites.select_entries()
-        self.assertEqual(selected["count"], 36)
-        self.assertEqual(len(set(selected["entries"])), 36)
+        self.assertEqual(selected["count"], 38)
+        self.assertEqual(len(set(selected["entries"])), 38)
         self.assertTrue(set(selected["entries"]).issubset(full["entries"]))
         self.assertEqual(selected["entries"][:29], [
             "dev.wildercord.cast.RelayCircleTest",
@@ -69,6 +69,8 @@ class SelectionTests(unittest.TestCase):
             "dev.wildercord.aura.world.EmberKilnTest",
             "dev.wildercord.aura.world.EmberKilnPresentationTest",
             "dev.wildercord.aura.world.EmberKilnOpponentViewTest",
+            "dev.wildercord.cast.LifeOwnerCameraTest",
+            "dev.wildercord.cast.LifeOutcomeTransportTest",
             "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",
         ])
         self.assertEqual(selected["entries"][-1], "dev.wildercord.gametest.WildercordMastersArtsPresentationTest")
@@ -100,14 +102,18 @@ class SelectionTests(unittest.TestCase):
     def test_spectator_delivery_coverage_is_mandatory_in_the_genuine_pair(self):
         self.assertNotIn("dev.wildercord.cast.SpectatorDeliveryTest", client_suites.select_entries()["entries"])
         contract = json.loads((client_suites.ROOT / "src/gametest/resources/cast-receipt-native-contract.json").read_text())
-        self.assertEqual(contract["expectedCount"], 42)
-        self.assertEqual(contract["cases"][-4:], ["SPECTATOR_BOLT_VENOM", "SPECTATOR_SPARK_VENOM",
+        self.assertEqual(contract["expectedCount"], 46)
+        self.assertEqual(contract["cases"][38:42], ["SPECTATOR_BOLT_VENOM", "SPECTATOR_SPARK_VENOM",
                                                 "SPECTATOR_RAY_VENOM", "SPECTATOR_TOUCH_VENOM"])
         workflow = (client_suites.ROOT / ".github/workflows/build.yml").read_text().split("  connected-combat-native:", 1)[1].split("  articulated-native:", 1)[0]
-        self.assertIn("Connected cast receipts (42 cases)", workflow)
-        self.assertNotIn("continue-on-error", workflow)
-        self.assertIn("--suite cast-receipt", workflow)
-        self.assertIn("--timeout 900", workflow)
+        self.assertIn("Connected cast receipts (46 cases)", workflow)
+        mandatory = workflow.split("      - name: Preserve both clients", 1)[0]
+        self.assertNotIn("continue-on-error", mandatory)
+        self.assertIn("run_paired_matrix.py", mandatory)
+        self.assertIn("--total-timeout 1380", mandatory)
+        from native import launch_two_clients, run_paired_matrix
+        self.assertEqual(launch_two_clients.MAX_TIMEOUT, 900)
+        self.assertEqual(run_paired_matrix.selected(run_paired_matrix.GROUPS[0])["cases"], contract["cases"])
 
     def test_four_shards_preserve_full_order_without_gaps_or_duplicates(self):
         full = client_suites.select_entries()["entries"]
@@ -144,7 +150,7 @@ class SelectionTests(unittest.TestCase):
             -1, group["entries"][0]), "duplicate")
 
     def test_missing_catalog_entry_is_rejected(self):
-        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 36")
+        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 38")
 
     def test_unregistered_catalog_entry_is_rejected(self):
         self.assert_bad_catalog(lambda group: group["entries"].__setitem__(
@@ -156,7 +162,7 @@ class SelectionTests(unittest.TestCase):
                 self.assert_bad_catalog(lambda group: group.update(entries=entries), "nonempty")
 
     def test_invalid_expected_count_is_rejected(self):
-        for count in (27, 30, 33, 34, 35, 37, 36.0, True, "36"):
+        for count in (27, 30, 33, 34, 35, 36, 37, 38.0, True, "38"):
             with self.subTest(count=count):
                 self.assert_bad_catalog(lambda group: group.update(expectedCount=count), "exactly")
 
@@ -270,14 +276,14 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(status, 1 if manifest.get("focusedClientGate") == "unverified" else 0)
             return manifest
 
-    def test_focused_success_is_exactly_thirty_six_and_never_a_full_pass(self):
+    def test_focused_success_is_exactly_thirty_eight_and_never_a_full_pass(self):
         selection = client_suites.select_entries(suite="masters")
         manifest = self.manifest(launcher_log(selection), "--suite", "masters")
         self.assertEqual(manifest["selection"], selection)
         self.assertEqual([s["suite"] for s in manifest["clientSuites"]], selection["entries"])
         self.assertEqual(manifest["focusedClientGate"], "passed")
         self.assertEqual(manifest["fullClientGate"], "unverified")
-        self.assertEqual(manifest["counts"], {"passed": 36, "skipped": 0, "unverified": 0})
+        self.assertEqual(manifest["counts"], {"passed": 38, "skipped": 0, "unverified": 0})
         self.assertEqual(manifest["verificationIssues"], [])
         self.assertIn("full client gate and animation gallery are not established", manifest["basis"])
 
@@ -293,24 +299,28 @@ class ManifestTests(unittest.TestCase):
                 manifest = self.manifest(log, "--suite", "masters")
                 self.assertEqual(manifest["fullClientGate"], "unverified")
                 self.assertEqual(manifest["focusedClientGate"], "unverified")
-                self.assertEqual(manifest["counts"]["unverified"], 36)
+                self.assertEqual(manifest["counts"]["unverified"], 38)
 
-    def test_prior_twenty_seven_through_thirty_five_evidence_cannot_pass_expanded_gate(self):
+    def test_prior_twenty_seven_through_thirty_six_evidence_cannot_pass_expanded_gate(self):
         selection = client_suites.select_entries(suite="masters")
         # Preserve the actual old order: presentation preceded the three appended Wall suites.
         moon = {"dev.wildercord.aura.CrimsonMoonReleasedOwnerTest", "dev.wildercord.aura.CrimsonMoonTimelineTest"}
-        prior_thirty_five = [entry for entry in selection["entries"] if entry != "dev.wildercord.aura.world.MasterOrdinaryPlannerTest"]
+        life = {"dev.wildercord.cast.LifeOwnerCameraTest", "dev.wildercord.cast.LifeOutcomeTransportTest"}
+        prior_thirty_six = [entry for entry in selection["entries"] if entry not in life]
+        self.assertEqual(len(prior_thirty_six), 36)
+        prior_thirty_five = [entry for entry in prior_thirty_six if entry != "dev.wildercord.aura.world.MasterOrdinaryPlannerTest"]
         prior_thirty_three = [entry for entry in prior_thirty_five if entry not in moon]
         prior_twenty_seven = prior_thirty_three[:26] + [prior_thirty_three[-1]]
         prior_thirty = prior_twenty_seven + prior_thirty_three[26:29]
-        for entries in (prior_twenty_seven, prior_thirty, prior_thirty_three, prior_thirty_five):
+        partial_life = [[entry for entry in selection["entries"] if entry != omitted] for omitted in life]
+        for entries in (prior_twenty_seven, prior_thirty, prior_thirty_three, prior_thirty_five, prior_thirty_six, *partial_life):
             with self.subTest(previous_count=len(entries)):
                 previous = {**selection, "count": len(entries), "entries": entries}
                 manifest = self.manifest(launcher_log(previous), "--suite", "masters")
                 self.assertEqual(manifest["selection"], selection)
                 self.assertEqual(manifest["focusedClientGate"], "unverified")
                 self.assertEqual(manifest["fullClientGate"], "unverified")
-                self.assertEqual(manifest["counts"], {"passed": 0, "skipped": 0, "unverified": 36})
+                self.assertEqual(manifest["counts"], {"passed": 0, "skipped": 0, "unverified": 38})
                 self.assertEqual(len(manifest["verificationIssues"]), 2)
 
     def test_prior_five_articulated_suites_cannot_pass_the_six_suite_gate(self):

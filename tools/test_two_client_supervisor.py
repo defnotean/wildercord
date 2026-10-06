@@ -32,12 +32,38 @@ ORIGINAL_CASES = [
 COUNTER_CASES = ["COUNTER_QUIETUS_PAID_BOLT", "COUNTER_QUIETUS_THIRTEEN_EXISTING", "COUNTER_REFLECTED_RESPAWN_NULLCATCH"]
 PRESERVED_CASES = ORIGINAL_CASES + COUNTER_CASES
 SPECTATOR_CASES = ["SPECTATOR_BOLT_VENOM", "SPECTATOR_SPARK_VENOM", "SPECTATOR_RAY_VENOM", "SPECTATOR_TOUCH_VENOM"]
-EXPECTED_CASES = PRESERVED_CASES + SPECTATOR_CASES
+PRIOR_CASES = PRESERVED_CASES + SPECTATOR_CASES
+LIFE_CASES = ["LIFE_SELF_HEAL_FIRST_PERSON", "LIFE_SELF_HEAL_THIRD_PERSON", "LIFE_SELF_HEAL_CAMERA_TRANSITIONS", "LIFE_SELF_SECOND_WIND_REDUCED_FLASH"]
+EXPECTED_CASES = PRIOR_CASES + LIFE_CASES
 
 
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data))
+
+
+def write_life_witnesses(ipc, identity, pids):
+    """Synthetic validator inputs only; never launch Minecraft or claim native acceptance."""
+    for index, case in enumerate(LIFE_CASES, 42):
+        role_fields = {"lifeSource": identity["hostUuid"], "lifeViewerUuid": identity["peerUuid"],
+                       "lifeOwnerEntity": "1", "lifeViewerEntity": "2"}
+        full, minimal = (3, 3) if case == LIFE_CASES[-1] else (11, 7)
+        own = 0 if case == LIFE_CASES[0] else full
+        support = "1" if case == LIFE_CASES[-1] else "0"
+        ready = {"actorEntity": "1", "recipientEntity": "2", "caseLife": case, "lifeMoment": "APPLY",
+                 "lifeSource": identity["hostUuid"], "lifeOwnerSource": identity["hostUuid"],
+                 "lifeFullPieces": str(full), "lifeMinimalPieces": str(minimal), "lifeOwnerPieces": str(own),
+                 "lifeOwnerUnique": str(own), "lifeOwnerExtracted": str(own), "lifeOwnerCameraNative": "true",
+                 "lifeOwnerTime": support, "lifeOwnerReducedSamples": support}
+        seen = {"actorEntity": "1", "recipientEntity": "2", "lifePeerSource": identity["hostUuid"],
+                "lifePeerPieces": str(minimal), "lifePeerUnique": str(minimal), "lifePeerExtracted": str(minimal),
+                "lifePeerCameraNative": "true", "lifePeerTime": support, "lifePeerReducedSamples": support}
+        phases = (("prepare", "host", role_fields), ("armed", "peer", {**role_fields, "lifeCameraNative": "true"}),
+                  ("captured", "peer", {**role_fields, "lifeCameraNative": "true", "lifeCapture": "resident"}),
+                  ("ready", "host", ready), ("seen", "peer", seen), ("passed", "host", {}))
+        for phase, role, fields in phases:
+            values = {**identity, "role": role, "pid": str(pids[role]), "case": case, **fields}
+            (ipc / f"case-{index:02d}-{phase}.properties").write_text("\n".join(key + "=" + value for key, value in values.items()) + "\n")
 
 
 class Fixture(unittest.TestCase):
@@ -94,17 +120,19 @@ class Fixture(unittest.TestCase):
 
 
 class ContractTests(Fixture):
-    def test_exact_42_case_roster_retains_all_38_and_offline_profiles(self):
+    def test_exact_46_case_roster_retains_all_42_and_offline_profiles(self):
         contract = supervisor.load_contract(self.root)
         cases = contract["cases"]
-        self.assertEqual(len(cases), 42)
+        self.assertEqual(len(cases), 46)
         self.assertEqual(cases, EXPECTED_CASES)
         self.assertEqual(cases[:35], ORIGINAL_CASES)
         self.assertEqual(cases[:38], PRESERVED_CASES)
         self.assertEqual(cases[35:38], COUNTER_CASES)
-        self.assertEqual(cases[38:], SPECTATOR_CASES)
-        self.assertEqual(contract["expectedCount"], 42)
-        self.assertEqual(contract["limits"], {"maxJvms": 2, "maxHeapMiBPerJvm": 2048, "maxCases": 42, "maxTimeoutSeconds": 900})
+        self.assertEqual(cases[38:42], SPECTATOR_CASES)
+        self.assertEqual(cases[:42], PRIOR_CASES)
+        self.assertEqual(cases[42:], LIFE_CASES)
+        self.assertEqual(contract["expectedCount"], 46)
+        self.assertEqual(contract["limits"], {"maxJvms": 2, "maxHeapMiBPerJvm": 2048, "maxCases": 46, "maxTimeoutSeconds": 900})
         for name, expected in supervisor.PROFILES.values():
             raw = bytearray(hashlib.md5(("OfflinePlayer:" + name).encode()).digest())
             raw[6] = raw[6] & 15 | 48; raw[8] = raw[8] & 63 | 128
@@ -127,27 +155,27 @@ class ContractTests(Fixture):
                 value["expectedCount"] = len(value["cases"])
                 value["limits"]["maxCases"] = len(value["cases"])
                 write_json(self.root / supervisor.CONTRACT, value)
-                with self.subTest(case=case, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 42-case roster"):
+                with self.subTest(case=case, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 46-case roster"):
                     supervisor.load_contract(self.root)
 
     def test_original_counter_spectator_and_boundary_order_cannot_change(self):
-        for first, second in ((0, 1), (34, 35), (35, 36), (36, 37), (37, 38), (38, 39), (40, 41)):
+        for first, second in ((0, 1), (34, 35), (35, 36), (36, 37), (37, 38), (38, 39), (40, 41), (41, 42), (42, 43), (44, 45)):
             value = copy.deepcopy(CONTRACT)
             value["cases"][first], value["cases"][second] = value["cases"][second], value["cases"][first]
             write_json(self.root / supervisor.CONTRACT, value)
-            with self.subTest(first=first, second=second), self.assertRaisesRegex(ValueError, "exact ordered 42-case roster"):
+            with self.subTest(first=first, second=second), self.assertRaisesRegex(ValueError, "exact ordered 46-case roster"):
                 supervisor.load_contract(self.root)
 
     def test_legacy_count_invalid_rosters_and_relaxed_limits_are_rejected(self):
-        mutations = [("expectedCount", 35), ("expectedCount", 38), ("cases", ORIGINAL_CASES), ("cases", PRESERVED_CASES), ("cases", None),
+        mutations = [("expectedCount", 35), ("expectedCount", 38), ("expectedCount", 42), ("cases", PRIOR_CASES), ("cases", ORIGINAL_CASES), ("cases", PRESERVED_CASES), ("cases", None),
                      ("cases", [None] + EXPECTED_CASES[1:]), ("cases", [{}] + EXPECTED_CASES[1:])]
         for field, replacement in mutations:
             value = copy.deepcopy(CONTRACT)
             value[field] = replacement
             write_json(self.root / supervisor.CONTRACT, value)
-            with self.subTest(field=field, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 42-case roster"):
+            with self.subTest(field=field, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 46-case roster"):
                 supervisor.load_contract(self.root)
-        for field, replacement in (("maxJvms", 3), ("maxHeapMiBPerJvm", 4096), ("maxCases", 35), ("maxCases", 38), ("maxTimeoutSeconds", 901)):
+        for field, replacement in (("maxJvms", 3), ("maxHeapMiBPerJvm", 4096), ("maxCases", 35), ("maxCases", 38), ("maxCases", 42), ("maxTimeoutSeconds", 901)):
             value = copy.deepcopy(CONTRACT)
             value["limits"][field] = replacement
             write_json(self.root / supervisor.CONTRACT, value)
@@ -373,6 +401,8 @@ class WitnessTests(Fixture):
             values = {**self.identity, "role": role, "pid": "1001" if role == "host" else "1002", "cases": ",".join(CONTRACT["cases"])}
             (self.ipc / filename).write_text("# Java properties\n" + "\n".join(key + "=" + value for key, value in values.items()) + "\n")
 
+        write_life_witnesses(self.ipc, self.identity, {role: process.pid for role, process in self.jobs})
+
     def validate_witnesses(self):
         return supervisor.validate_witnesses(self.ipc, self.identity, CONTRACT["cases"], self.jobs)
 
@@ -394,10 +424,10 @@ class WitnessTests(Fixture):
             self.validate_witnesses()
 
     def test_every_terminal_rejects_legacy_missing_replaced_or_reordered_added_cases(self):
-        bad_rosters = [ORIGINAL_CASES, PRESERVED_CASES, EXPECTED_CASES + ["EXTRA_CASE"],
+        bad_rosters = [ORIGINAL_CASES, PRESERVED_CASES, PRIOR_CASES, EXPECTED_CASES + ["EXTRA_CASE"],
                        ORIGINAL_CASES + list(reversed(COUNTER_CASES)) + SPECTATOR_CASES,
                        PRESERVED_CASES + list(reversed(SPECTATOR_CASES))]
-        for index in range(35, 42):
+        for index in range(35, 46):
             bad_rosters.append(EXPECTED_CASES[:index] + EXPECTED_CASES[index + 1:])
             bad_rosters.append(EXPECTED_CASES[:index] + ["FOREIGN_CASE"] + EXPECTED_CASES[index + 1:])
         for filename in supervisor.TERMINALS:
@@ -420,6 +450,42 @@ class WitnessTests(Fixture):
         target.symlink_to(self.ipc / "saved.properties")
         with self.assertRaisesRegex(ValueError, "symlink"):
             self.validate_witnesses()
+
+    def test_every_new_life_handshake_phase_is_required(self):
+        for index in range(42, 46):
+            for phase in ("prepare", "armed", "captured", "ready", "seen", "passed"):
+                target = self.ipc / f"case-{index:02d}-{phase}.properties"
+                original = target.read_text(); target.unlink()
+                with self.subTest(index=index, phase=phase), self.assertRaisesRegex(ValueError, "Missing"):
+                    self.validate_witnesses()
+                target.write_text(original)
+
+    def test_life_roles_sources_camera_and_unique_measurements_fail_closed(self):
+        mutations = [("prepare", "lifeSource", self.identity["peerUuid"]),
+                     ("prepare", "lifeViewerUuid", self.identity["hostUuid"]), ("prepare", "lifeOwnerEntity", "2"),
+                     ("armed", "role", "host"), ("armed", "lifeSource", ""), ("armed", "lifeCameraNative", "false"),
+                     ("captured", "lifeSource", "not-a-uuid"), ("captured", "lifeCapture", "queued"),
+                     ("ready", "role", "peer"), ("ready", "lifeSource", self.identity["peerUuid"]),
+                     ("ready", "lifeOwnerSource", self.identity["peerUuid"]), ("ready", "lifeMoment", "PULSE"),
+                     ("ready", "lifeOwnerPieces", "1"), ("ready", "lifeFullPieces", "129"),
+                     ("seen", "lifePeerSource", self.identity["peerUuid"]), ("seen", "lifePeerCameraNative", "yes"),
+                     ("seen", "lifePeerUnique", "8"), ("seen", "lifePeerPieces", "07"),
+                     ("seen", "lifePeerExtracted", "0"), ("passed", "role", "peer")]
+        for phase, key, value in mutations:
+            target = self.ipc / f"case-42-{phase}.properties"; original = target.read_text()
+            target.write_text("\n".join(key + "=" + value if line.startswith(key + "=") else line for line in original.splitlines()))
+            with self.subTest(phase=phase, key=key, value=value), self.assertRaises(ValueError):
+                self.validate_witnesses()
+            target.write_text(original)
+
+    def test_reduced_flash_requires_independent_time_and_alpha_samples(self):
+        for phase, prefix in (("ready", "lifeOwner"), ("seen", "lifePeer")):
+            for suffix in ("Time", "ReducedSamples"):
+                target = self.ipc / f"case-45-{phase}.properties"; original = target.read_text(); key = prefix + suffix
+                target.write_text("\n".join(key + "=0" if line.startswith(key + "=") else line for line in original.splitlines()))
+                with self.subTest(phase=phase, key=key), self.assertRaisesRegex(ValueError, "Time support"):
+                    self.validate_witnesses()
+                target.write_text(original)
 
 
 class FakeProcess:
@@ -463,6 +529,7 @@ class LifecycleTests(Fixture):
                 for filename, role in supervisor.TERMINALS.items():
                     values = {**identity, "role": role, "pid": str(processes[0 if role == "host" else 1].pid), "cases": ",".join(CONTRACT["cases"])}
                     (options.output / "ipc" / filename).write_text("\n".join(key + "=" + value for key, value in values.items()))
+                write_life_witnesses(options.output / "ipc", identity, {"host": processes[0].pid, "peer": processes[1].pid})
             return process
         with patch.dict(os.environ, {"GITHUB_ACTIONS": "true", "CI_MINECRAFT_EULA_ACCEPTED": "true", "GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "2"}), patch.object(supervisor, "ignored_output"), patch.object(supervisor, "source_head", return_value=self.head), patch.object(supervisor, "validate_launch", return_value="a" * 64), patch.object(supervisor.subprocess, "Popen", side_effect=spawn):
             return supervisor.run(options, self.root)
@@ -496,7 +563,7 @@ class LifecycleTests(Fixture):
         self.assertEqual(report["status"], "failed")
 
     def test_legacy_roster_fails_preflight_before_starting_java(self):
-        for roster in (ORIGINAL_CASES, PRESERVED_CASES):
+        for roster in (ORIGINAL_CASES, PRESERVED_CASES, PRIOR_CASES):
             with self.subTest(legacy_count=len(roster)):
                 value = copy.deepcopy(CONTRACT)
                 value["cases"] = roster
@@ -504,7 +571,7 @@ class LifecycleTests(Fixture):
                 write_json(self.root / supervisor.CONTRACT, value)
                 options = self.options()
                 options.output = self.root / "build/native" / ("legacy-" + str(len(roster)))
-                with patch.object(supervisor, "ignored_output"), patch.object(supervisor.subprocess, "Popen") as spawn, self.assertRaisesRegex(ValueError, "exact ordered 42-case roster"):
+                with patch.object(supervisor, "ignored_output"), patch.object(supervisor.subprocess, "Popen") as spawn, self.assertRaisesRegex(ValueError, "exact ordered 46-case roster"):
                     supervisor.run(options, self.root)
                 spawn.assert_not_called()
                 report = json.loads((options.output / "result.json").read_text())

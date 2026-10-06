@@ -6,7 +6,7 @@ import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.client.CameraType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -34,7 +34,8 @@ public final class LifeOutcomeDeliveryTest implements FabricClientGameTest {
    server.runCommand("gamerule spawn_mobs false");server.runCommand("gamerule natural_health_regeneration false");server.runCommand("time set 6000");
    server.runCommand("fill -16 100 -12 16 100 24 polished_deepslate");
    server.runCommand("fill -12 101 20 12 109 20 gray_concrete");
-   server.runOnServer(s->{actor=gallery.actor(s);var p=player(s);p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);observed.clear();LifeOwnerEvents.observe(e->{observed.add(e);gallery.observe(e);});});
+   gallery.prepare(CameraType.THIRD_PERSON_FRONT,-90,-15);
+   server.runOnServer(s->{actor=gallery.actor(s);var p=player(s);p.setGameMode(GameType.SURVIVAL);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);observed.clear();LifeOwnerEvents.observe(e->{observed.add(e);gallery.observe(e);});});
    gallery.waitTicks(12);
    server.runOnServer(s->{var p=player(s);p.setHealth(4);paid(p,"self","heal");});gallery.waitTicks(8);
    server.runOnServer(s->check(player(s).getHealth()>4,"Heal actually increases recipient health"));
@@ -66,13 +67,12 @@ public final class LifeOutcomeDeliveryTest implements FabricClientGameTest {
    server.runOnServer(s->{int cells=0;for(var pos:BlockPos.betweenClosed(-3,100,-3,3,102,3))if(s.overworld().getBlockState(pos).is(Blocks.GLOW_LICHEN))cells++;check(cells>0,"Glimmer places actual supported lichen");});
    // A real hostile Bolt proves delivery at its struck victim, not at the casting hand.
    server.runCommand("summon pillager 0.5 101 10.5 {NoAI:1b,Silent:1b}");gallery.waitTicks(8);
-   // A real spectator deliberately overlaps the live firing line. Observers must not consume a spell.
-   server.runOnServer(s->{var observer=s.getPlayerList().getPlayers().getFirst();observer.teleportTo(s.overworld(),.5,101,3.5,Set.<Relative>of(),180,0,false);check(observer.isSpectator(),"Actual spectator occupies the shot line");paid(player(s),"bolt","venom");});gallery.waitTicks(20);
-   server.runOnServer(s->{var targets=s.overworld().getEntitiesOfClass(net.minecraft.world.entity.monster.illager.Pillager.class,new net.minecraft.world.phys.AABB(-2,100,7,3,106,14));check(!targets.isEmpty()&&targets.getFirst().getHealth()<targets.getFirst().getMaxHealth()&&targets.getFirst().hasEffect(MobEffects.POISON),"Venom Bolt passes actual spectator and produces hostile damage and marker");targets.forEach(net.minecraft.world.entity.Entity::discard);});
-   gallery.waitTicks(10);server.runOnServer(s->{var p=player(s);p.removeAllEffects();p.setHealth(4);paid(p,"self","regrowth");});gallery.waitTicks(8);
-   // FakePlayer does not run vanilla living ticks. Keep its genuine rendered admission,
-   // then verify all vanilla regeneration stages and healing on the connected Survival player.
-   server.runOnServer(s->{actor=s.getPlayerList().getPlayers().getFirst();actor.setGameMode(GameType.SURVIVAL);actor.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);NextSignatureNative.teach(actor);actor.removeAllEffects();actor.setHealth(4);paid(actor,"self","regrowth");});gallery.waitTicks(8);
+   gallery.prepare(CameraType.FIRST_PERSON,0,0);
+   server.runOnServer(s->paid(player(s),"bolt","venom"));gallery.waitTicks(20);
+   server.runOnServer(s->{var targets=s.overworld().getEntitiesOfClass(net.minecraft.world.entity.monster.illager.Pillager.class,new net.minecraft.world.phys.AABB(-2,100,7,3,106,14));check(!targets.isEmpty()&&targets.getFirst().getHealth()<targets.getFirst().getMaxHealth()&&targets.getFirst().hasEffect(MobEffects.POISON),"Connected-owner Venom Bolt produces actual hostile damage and Poison");targets.forEach(net.minecraft.world.entity.Entity::discard);});
+   gallery.waitTicks(10);gallery.prepare(CameraType.THIRD_PERSON_FRONT,-90,-15);server.runOnServer(s->{var p=player(s);p.removeAllEffects();p.setHealth(4);paid(p,"self","regrowth");});gallery.waitTicks(8);
+   // Keep the existing second paid admission, now on the same connected owner, then follow vanilla stages.
+   server.runOnServer(s->{var p=player(s);p.removeAllEffects();p.setHealth(4);paid(p,"self","regrowth");});gallery.waitTicks(8);
    server.runOnServer(s->check(player(s).getEffect(MobEffects.REGENERATION).getAmplifier()==0,"Regrowth begins real stageI"));gallery.waitTicks(60);
    server.runOnServer(s->check(player(s).getEffect(MobEffects.REGENERATION).getAmplifier()==1,"Regrowth advances real stageII"));gallery.waitTicks(60);
    server.runOnServer(s->{var p=player(s);check(p.getEffect(MobEffects.REGENERATION).getAmplifier()==2&&p.getHealth()>4,"Regrowth advances real stageIII and heals");});
@@ -86,6 +86,6 @@ public final class LifeOutcomeDeliveryTest implements FabricClientGameTest {
    });
   }finally{LifeOwnerEvents.clear();observed.clear();actor=null;gallery=null;}
  }
- private static void paid(net.minecraft.server.level.ServerPlayer p,String...paths){check(SpellCaster.edit(p,0,Arrays.stream(paths).map(s->"wildercord:"+s).toList())==null,"Accepted real delivery");Spellbooks.setReadyAt(p,0,0);Spellbooks.setMana(p,100);float before=Spellbooks.mana(p);SpellCaster.cast(p,0);check(Spellbooks.mana(p)<before,"Survival delivery spends mana");}
+ private void paid(net.minecraft.server.level.ServerPlayer p,String...paths){gallery.beforePayment(p);check(SpellCaster.edit(p,0,Arrays.stream(paths).map(s->"wildercord:"+s).toList())==null,"Accepted real delivery");Spellbooks.setReadyAt(p,0,0);Spellbooks.setMana(p,100);float before=Spellbooks.mana(p);SpellCaster.cast(p,0);check(Spellbooks.mana(p)<before,"Survival delivery spends mana");}
  private static void check(boolean yes,String why){if(!yes)throw new AssertionError(why);}
 }

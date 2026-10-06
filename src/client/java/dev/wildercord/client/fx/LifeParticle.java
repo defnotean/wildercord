@@ -3,16 +3,23 @@ package dev.wildercord.client.fx;
 import dev.wildercord.content.LifeOption;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.util.RandomSource;
 
 /** Living matter has material-specific movement; all silhouettes use the sampled world light. */
 public final class LifeParticle extends SingleQuadParticle implements SigilGroup.Extent {
  private final LifeOption material;
+ private final java.util.UUID outcomeSource=LifeOwnerClearance.source();
+ private final boolean outcomeOwner=LifeOwnerClearance.owner();
  LifeParticle(ClientLevel level,double x,double y,double z,LifeOption option) {
   super(level,x,y,z,SpellCircleParticle.particleSprite("life_"+option.style()+"_0"));
   material=option;lifetime=option.lifetime();hasPhysics=false;quadSize=option.size();
   setColor((option.color()>>16&255)/255F,(option.color()>>8&255)/255F,(option.color()&255)/255F);
   xd=option.drift().x;yd=option.drift().y;zd=option.drift().z;oRoll=roll=option.spin();
+ }
+ @Override public void extract(QuadParticleRenderState state,Camera camera,float partial){
+  if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))super.extract(state,camera,partial);
  }
  @Override public void tick() {
   xo=x;yo=y;zo=z;oRoll=roll;if(age++>=lifetime){remove();return;}

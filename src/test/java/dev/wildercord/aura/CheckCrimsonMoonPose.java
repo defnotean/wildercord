@@ -114,8 +114,8 @@ public final class CheckCrimsonMoonPose {
     private static void near(float a,float b,float e,String reason) { require(Math.abs(a-b)<=e,reason+": "+a+" vs "+b); }
     private static void require(boolean value,String reason) { checks++; if(!value)throw new AssertionError(reason); }
     static String legacyFingerprint() throws Exception { return legacyFingerprint(false); }
-    /** Exclude only the revised Red Rain windup hand x/yaw/roll; keep every other component. */
-    static String legacyFingerprint(boolean excludeRedRainWindupHand) throws Exception {
+    /** Normalize only reviewed first-person components to their immutable baseline representation. */
+    static String legacyFingerprint(boolean normalizeReviewedHands) throws Exception {
         MessageDigest digest=MessageDigest.getInstance("SHA-256");
         for(int move=0;move<=18;move++) {
             var style=MastersStyleRules.animation(move); int tell=style==null?MastersArtRules.move(move).windup():style.windup();
@@ -123,9 +123,22 @@ public final class CheckCrimsonMoonPose {
             for(int step=0;step<=(tell+recovery)*8;step++) {
                 float age=step/8F;
                 var classic=MastersArtAnimation.sample(move,age,tell,recovery);
-                if(excludeRedRainWindupHand && move==18 && age<tell) classic=new MastersArtAnimation.Pose(classic.weight(),classic.body(),
+                if(normalizeReviewedHands && move==18 && age<tell) classic=new MastersArtAnimation.Pose(classic.weight(),classic.body(),
                     classic.head(),classic.sword(),classic.guard(),classic.frontLeg(),classic.rearLeg(),classic.lower(),classic.forward(),
                     new MastersArtAnimation.Hand(0,classic.hand().y(),classic.hand().z(),classic.hand().pitch(),0,0));
+                // Restore only the two reviewed Void Cut wrist components inside their changed
+                // interpolation interval. Keep the existing immutable baseline hash: every other
+                // value, plus both untouched hand endpoints, still enters the digest unchanged.
+                if(normalizeReviewedHands && move==9 && age>tell*.65F && age<tell+Math.min(4,recovery*.25F)) {
+                    float t=age<tell ? MastersArtAnimation.smooth((age-tell*.65F)/(tell-tell*.65F))
+                        : MastersArtAnimation.smooth((age-tell)/Math.min(4,recovery*.25F));
+                    float yaw=age<tell ? 18+(-25-18)*t : -25+(-3-(-25))*t;
+                    float roll=age<tell ? -10+(14-(-10))*t : 14+(8-14)*t;
+                    var h=classic.hand();
+                    classic=new MastersArtAnimation.Pose(classic.weight(),classic.body(),classic.head(),classic.sword(),
+                        classic.guard(),classic.frontLeg(),classic.rearLeg(),classic.lower(),classic.forward(),
+                        new MastersArtAnimation.Hand(h.x(),h.y(),h.z(),h.pitch(),yaw,roll));
+                }
                 digest.update(classic.toString().getBytes(StandardCharsets.UTF_8));
                 for(boolean left:new boolean[]{false,true}) {
                     Pose pose=samplePlayer(move,age,tell,recovery,left);ViewPose v=view(pose,left);

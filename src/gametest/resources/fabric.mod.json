@@ -65,6 +65,8 @@
       "dev.wildercord.cast.LifeOutcomeRecipeTest",
       "dev.wildercord.cast.LifeOutcomeSurfaceTest",
       "dev.wildercord.client.fx.LifeOutcomeQualityTest",
+      "dev.wildercord.cast.LifeOwnerCameraTest",
+      "dev.wildercord.cast.LifeOutcomeTransportTest",
       "dev.wildercord.cast.LifeOutcomeSourceTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.cast.BloomstepArrivalCaptureTest",
@@ -321,7 +323,8 @@
     "sleeping-blade-generation-gametest.mixins.json",
     "siltcrest-presentation-gametest.mixins.json",
     "ecology-return-gametest.mixins.json",
-    "crimson-moon-owner-gametest.mixins.json"
+    "crimson-moon-owner-gametest.mixins.json",
+    "archive-placement-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

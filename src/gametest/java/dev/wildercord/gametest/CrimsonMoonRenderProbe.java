@@ -43,12 +43,18 @@ public final class CrimsonMoonRenderProbe {
     private static final String RUN=UUID.randomUUID().toString();
     private static final AtomicLong SEQ=new AtomicLong();
     private static final Map<String,Expected> ARMED=new HashMap<>();
+    private static final Map<String,Paired> PAIRED=new HashMap<>();
+    private static final Map<String,Path> RECEIPTS=new HashMap<>();
     private static final Map<String,Report> DONE=new HashMap<>();
     private static final Map<Object,Token> TOKENS=new IdentityHashMap<>();
     private static final ThreadLocal<Scope> CURRENT=new ThreadLocal<>();
     private static final ThreadLocal<CopyCall> COPYING=new ThreadLocal<>();
     private static UUID watched;
-    private record Origin(UUID owner,int entity,long activation,float age){}
+    private record Origin(UUID owner,int entity,long activation,float age,long sequence){}
+    public record Paired(String role,String observerUuid,int observerEntity,String angle,Path releaseReceipt,Map<String,String> releaseIdentity){
+        public Paired { releaseIdentity=Map.copyOf(releaseIdentity); }
+    }
+    public record Artifact(Report report,Path receipt,String sha256){}
     private static final IdentityHashMap<MastersArtPose.Frame,Origin> ORIGINS=new IdentityHashMap<>();
     private static final ArrayDeque<MastersArtPose.Frame> HISTORY=new ArrayDeque<>();
     public record Expected(String name,int owner,String uuid,long activation,String mode,String view,String hand,String skin,
@@ -60,7 +66,7 @@ public final class CrimsonMoonRenderProbe {
     public record Copy(long extractSequence,long renderSequence,long copySequence,int width,int height,
         Map<String,String> observations,List<Pass> passes){}
     public record Report(int schemaVersion,String runId,String launchNonce,Expected expected,Copy copy,
-        ArticulatedRenderReceipt.Pixels callbackPixels,ArticulatedRenderReceipt.Binding image,boolean verified,
+        ArticulatedRenderReceipt.Pixels callbackPixels,ArticulatedRenderReceipt.Binding image,boolean scopeCleanupVerified,boolean releaseObservedBeforeSource,boolean verified,
         boolean pixelQualityReviewed,String phaseBasis,boolean serverReleaseFrameCorrespondenceVerified,List<String> failures){}
     private record Extracted(long source,long state,String uuid,String skin,String texture,Palette palette,
         MastersArtPose.Frame classic,ArticulatedCombat.Frame articulated,PlayerModel model,ItemStack main,ItemStack off,
@@ -69,6 +75,8 @@ public final class CrimsonMoonRenderProbe {
     private record View(AvatarRenderState avatar,ArticulatedViewModel model,ArticulatedViewModel.Frame frame,ArticulatedCombatPose.ViewPose expectedPose,Matrix4f root,RenderType material){}
     public record ViewCall(AvatarRenderState avatar,InteractionHand hand,Matrix4f before,ViewCall previous){}
     public record DeferredCall(Model<?> model,Object state,DeferredCall previous){}
+    private record World(AvatarRenderState avatar,PlayerModel model,Matrix4f root,Matrix4f modelRoot,boolean modelRootVisible,RenderType material){}
+    public record WorldItem(AvatarRenderState avatar,PlayerModel model,ItemStackRenderState item,Matrix4f expected,WorldItem previous){}
     public static final class FallbackView {
         final AvatarRenderState avatar;final FirstPersonHandsAndItemsRenderState hands;final FirstPersonHandsAndItemsRenderer renderer;
         final Matrix4f before,expectedItem;final float inverse,ownership;final ItemStackRenderState item;final FallbackView previous;
@@ -83,8 +91,8 @@ public final class CrimsonMoonRenderProbe {
     public static final class Token {
         final Expected expected;final List<String> failures=new ArrayList<>();final Map<String,String> observations=new LinkedHashMap<>();
         final List<Pass> passes=new ArrayList<>();long extracted,rendered;Copy copy;ArticulatedRenderReceipt.Pixels pixels;ArticulatedRenderReceipt.Binding image;
-        int callbacks;boolean ended;
-        Token(Expected e){expected=e;}
+        int callbacks;boolean ended,scopeCleanupVerified;final Paired paired;long releaseRead,sourceSequence;
+        Token(Expected e,Paired paired){expected=e;this.paired=paired;}
         synchronized void reject(String reason){if(!failures.contains(reason))failures.add(reason);}
         synchronized void observe(String key,Object value){if(copy!=null||ended)reject("late_observation");else observations.put(key,String.valueOf(value));}
         synchronized void pass(Pass value){if(copy!=null||ended)reject("late_pass");else passes.add(value);}
@@ -96,6 +104,9 @@ public final class CrimsonMoonRenderProbe {
         final IdentityHashMap<AvatarRenderState,Extracted> sources=new IdentityHashMap<>();
         final IdentityHashMap<PlayerModel,Map<String,Part>> baselines=new IdentityHashMap<>();
         final IdentityHashMap<ArticulatedViewModel.Frame,View> views=new IdentityHashMap<>();
+        final IdentityHashMap<AvatarRenderState,World> worlds=new IdentityHashMap<>();
+        final IdentityHashMap<AvatarRenderState,Map<String,Part>> layerBaselines=new IdentityHashMap<>();
+        WorldItem worldItem;
         ViewCall view;DeferredCall deferred;FallbackView fallback;
         Scope(Token token,Scope previous){this.token=token;this.previous=previous;}
     }
@@ -103,19 +114,26 @@ public final class CrimsonMoonRenderProbe {
     public static void unwatch(){watch(null);}
     public static void classicExtracted(Avatar owner,AvatarRenderState state,float partial){
         if(!owner.getUUID().equals(watched))return;var frame=state.getData(MastersArtPose.FRAME);if(frame==null||frame.move()!=19)return;
-        synchronized(ORIGINS){ORIGINS.put(frame,new Origin(owner.getUUID(),owner.getId(),frame.activation(),owner.level().getGameTime()-frame.activation()+partial));
+        synchronized(ORIGINS){ORIGINS.put(frame,new Origin(owner.getUUID(),owner.getId(),frame.activation(),owner.level().getGameTime()-frame.activation()+partial,SEQ.incrementAndGet()));
             HISTORY.add(frame);while(HISTORY.size()>512)ORIGINS.remove(HISTORY.removeFirst());}
     }
     public static void arm(Expected expected){synchronized(ARMED){if(ARMED.putIfAbsent(expected.name(),expected)!=null)throw new AssertionError("Duplicate Moon capture");}}
-    public static void disarm(String name){synchronized(ARMED){ARMED.remove(name);}}
-    public static Report requireVerified(String name){Report report;synchronized(DONE){report=DONE.remove(name);}if(report==null||!report.verified())throw new AssertionError("Missing verified Moon receipt: "+name);return report;}
+    public static void armPaired(Expected expected,Paired paired){synchronized(ARMED){arm(expected);PAIRED.put(expected.name(),paired);}}
+    public static void disarm(String name){synchronized(ARMED){ARMED.remove(name);PAIRED.remove(name);}}
+    public static Report requireVerified(String name){Report report;synchronized(DONE){report=DONE.remove(name);}synchronized(RECEIPTS){RECEIPTS.remove(name);}if(report==null||!report.verified())throw new AssertionError("Missing verified Moon receipt: "+name);return report;}
+    public static Artifact requireArtifact(String name){Path path;synchronized(RECEIPTS){path=RECEIPTS.get(name);}var report=requireVerified(name);
+        try{return new Artifact(report,path,ArticulatedRenderReceipt.sha256(Files.readAllBytes(path)));}catch(Exception failure){throw new AssertionError("Missing persisted Moon report",failure);}}
     public static Token begin(TestScreenshotOptions options){
         if(!(options instanceof TestScreenshotOptionsImpl value)||!value.name.startsWith(PREFIX))return null;
         String nonce=System.getenv("WILDERCORD_MOON_RECEIPT_NONCE");
         if(nonce==null||!UUID.fromString(nonce).toString().equals(nonce))throw new AssertionError("Fresh canonical WILDERCORD_MOON_RECEIPT_NONCE is required");
-        Expected expected;synchronized(ARMED){expected=ARMED.remove(value.name);}if(expected==null)throw new AssertionError("Unarmed Moon screenshot");
-        if(!expected.view().equals("fp"))throw new AssertionError("World held-item matrix proof is not complete; no verified world capture is allowed");
-        Token token=new Token(expected);synchronized(TOKENS){if(TOKENS.putIfAbsent(options,token)!=null)throw new AssertionError("Reused screenshot options");}return token;
+        Expected expected;Paired paired;synchronized(ARMED){expected=ARMED.remove(value.name);paired=PAIRED.remove(value.name);}if(expected==null)throw new AssertionError("Unarmed Moon screenshot");
+        if(!expected.view().equals("fp")&&!(expected.view().equals("remote")&&paired!=null&&paired.role().equals("peer")))
+            throw new AssertionError("Owner world remains unproved; only the supervised actual peer can request remote capture");
+        if(paired!=null&&(!(paired.role().equals("host")&&expected.view().equals("fp")||paired.role().equals("peer")&&expected.view().equals("remote"))
+            ||!expected.mode().equals("articulated")||!expected.hand().equals("RIGHT")||!expected.phase().equals("ACTIVE")||expected.age()!=10
+            ||!List.of("front_oblique","reverse_oblique").contains(paired.angle())))throw new AssertionError("Paired role and bounded release capture disagree");
+        Token token=new Token(expected,paired);synchronized(TOKENS){if(TOKENS.putIfAbsent(options,token)!=null)throw new AssertionError("Reused screenshot options");}return token;
     }
     public static void unregister(TestScreenshotOptions options,Token token){synchronized(TOKENS){TOKENS.remove(options,token);}}
     public static Scope enter(TestScreenshotCommonOptionsImpl<?> options,Minecraft mc){
@@ -125,23 +143,53 @@ public final class CrimsonMoonRenderProbe {
         return CrimsonMoonScopeGuard.initialize(CURRENT,s,()->{
         var e=token.expected;
         if(previous!=null)token.reject("nested_capture");
-        if(mc.player==null||mc.player.getId()!=e.owner()||!mc.player.getUUID().toString().equals(e.uuid()))token.reject("wrong_owner");
+        if(mc.player==null||mc.level==null)throw new AssertionError("Missing connected client");
+        var actor=mc.level.getPlayerByUUID(UUID.fromString(e.uuid()));
+        boolean remote=e.view().equals("remote");
+        if(remote){
+            var paired=token.paired;
+            if(!CrimsonMoonMultiplayerProof.remoteIdentity(e.uuid(),e.owner(),paired.observerUuid(),paired.observerEntity(),
+                mc.player.getUUID().toString(),mc.player.getId(),actor==null?null:actor.getUUID().toString(),actor==null?-1:actor.getId(),
+                actor!=null&&actor.level()==mc.level,actor instanceof net.minecraft.client.player.RemotePlayer,mc.getCameraEntity()==mc.player))token.reject("wrong_remote_actor_or_observer");
+        } else if(actor!=mc.player||mc.player.getId()!=e.owner())token.reject("wrong_owner");
+        if(actor==null)throw new AssertionError("Missing actual connected actor");
         if(mc.getCameraEntity()!=mc.player)token.reject("substituted_camera");
-        if(mc.options.getCameraType().isFirstPerson()!=e.view().equals("fp"))token.reject("wrong_owner_camera");
-        if(mc.isPaused()||mc.level.tickRateManager().isEntityFrozen(mc.player))token.reject("paused_or_frozen");
-        var timeline=MastersArtsClient.timeline(mc.player);
+        if(!mc.options.getCameraType().isFirstPerson())token.reject("wrong_owner_or_observer_camera");
+        if(remote){
+            boolean front=token.paired.angle().equals("front_oblique");double x=front?4.5:-3.5,z=front?5.5:-4.5;float yaw=front?141.3402F:-38.6598F;
+            if(Math.abs(mc.player.getX()-x)>.01||Math.abs(mc.player.getY()-100)>.01||Math.abs(mc.player.getZ()-z)>.01
+                ||Math.abs(net.minecraft.util.Mth.wrapDegrees(mc.player.getYRot()-yaw))>.01||Math.abs(mc.player.getXRot()-7)>.01)token.reject("wrong_actual_observer_angle");
+            token.observe("observerPosition",mc.player.position());token.observe("observerYaw",mc.player.getYRot());token.observe("observerPitch",mc.player.getXRot());
+        }
+        if(mc.isPaused()||mc.level.tickRateManager().isEntityFrozen(actor)||mc.level.tickRateManager().isEntityFrozen(mc.player))token.reject("paused_or_frozen");
+        var timeline=MastersArtsClient.timeline(actor);
         if(e.phase().equals("NONE")){if(timeline!=null)token.reject("neutral_timeline_present");}
         else if(timeline==null||timeline.entity()!=e.owner()||timeline.move()!=19||timeline.startTick()!=e.activation()||timeline.windup()!=10||timeline.recovery()!=20)token.reject("wrong_accepted_timeline");
-        token.observe("timeline",timeline);token.observe("camera",mc.options.getCameraType());token.observe("observerCoverage",false);
-        token.observe("tick",mc.level.getGameTime());token.observe("partial",options.deltaTicks);token.observe("owner",mc.player.getUUID());
-        s.originalSkin=mc.player.getSkin();
-        s.originalModel=((net.minecraft.client.renderer.entity.player.AvatarRenderer<?>)mc.getEntityRenderDispatcher().getRenderer(mc.player)).getModel();
+        token.observe("timeline",timeline);token.observe("camera",mc.options.getCameraType());token.observe("observerCoverage",remote);
+        token.observe("tick",mc.level.getGameTime());token.observe("partial",options.deltaTicks);token.observe("owner",actor.getUUID());
+        token.observe("observerUuid",mc.player.getUUID());token.observe("observerEntity",mc.player.getId());
+        if(!(actor instanceof net.minecraft.client.player.AbstractClientPlayer connectedActor))throw new AssertionError("Actor is not an actual connected client player");
+        s.originalSkin=connectedActor.getSkin();
+        s.originalModel=((net.minecraft.client.renderer.entity.player.AvatarRenderer<?>)mc.getEntityRenderDispatcher().getRenderer(actor)).getModel();
         token.observe("connectedSkinTexture",s.originalSkin.body().texturePath());token.observe("connectedSkinModel",s.originalSkin.model());
+        if(token.paired!=null){
+            var proof=CrimsonMoonMultiplayerProof.readRelease(token.paired.releaseReceipt(),token.paired.releaseIdentity());
+            if(proof.accepted()!=e.activation())token.reject("release_action_changed");
+            token.releaseRead=SEQ.incrementAndGet();token.observe("releaseReceiptSha256",proof.sha256());
+            token.observe("serverReleaseTick",proof.released());token.observe("releaseReadSequence",token.releaseRead);
+            token.observe("observerAngle",token.paired.angle());token.observe("pairedRole",token.paired.role());
+        }
         token.observe("viewport",mc.getWindow().getWidth()+"x"+mc.getWindow().getHeight());
         },CrimsonMoonRenderProbe::clearScope);
     }
-    public static void leave(Scope s){if(s==null)return;try{clearScope(s);}finally{CrimsonMoonScopeGuard.restore(CURRENT,s.previous);}}
-    private static void clearScope(Scope s){s.sources.clear();s.views.clear();s.baselines.clear();s.ids.clear();s.view=null;s.deferred=null;s.fallback=null;s.target=null;s.texture=null;s.originalSkin=null;s.originalModel=null;}
+    public static void leave(Scope s){if(s==null)return;
+        try{clearScope(s);}finally{CrimsonMoonScopeGuard.restore(CURRENT,s.previous);}
+        if(s.token!=null){s.token.scopeCleanupVerified=CURRENT.get()==s.previous&&s.sources.isEmpty()&&s.views.isEmpty()&&s.worlds.isEmpty()
+            &&s.baselines.isEmpty()&&s.layerBaselines.isEmpty()&&s.ids.isEmpty()&&s.view==null&&s.worldItem==null&&s.deferred==null&&s.fallback==null
+            &&s.target==null&&s.texture==null&&s.originalSkin==null&&s.originalModel==null;
+            if(!s.token.scopeCleanupVerified)s.token.reject("failed_scope_cleanup");}
+    }
+    private static void clearScope(Scope s){s.sources.clear();s.views.clear();s.worlds.clear();s.layerBaselines.clear();s.baselines.clear();s.ids.clear();s.view=null;s.worldItem=null;s.deferred=null;s.fallback=null;s.target=null;s.texture=null;s.originalSkin=null;s.originalModel=null;}
     public static void extractBegin(DeltaTracker delta){var s=CURRENT.get();if(s!=null){s.extracting=true;s.token.observe("renderPartial",delta.getGameTimeDeltaPartialTick(false));}}
     public static void extractEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.extracting=false;if(completed)s.token.extracted=SEQ.incrementAndGet();}}
     public static void extracted(Entity entity,float partial,EntityRenderState state){
@@ -150,7 +198,7 @@ public final class CrimsonMoonRenderProbe {
         float age=entity.level().getGameTime()-e.activation()+partial;
         if(c!=null){
             Origin origin;synchronized(ORIGINS){origin=ORIGINS.get(c);}
-            if(origin==null||!origin.owner().toString().equals(e.uuid())||origin.entity()!=e.owner()||origin.activation()!=e.activation())s.token.reject("missing_exact_classic_origin");else age=origin.age();
+            if(origin==null||!origin.owner().toString().equals(e.uuid())||origin.entity()!=e.owner()||origin.activation()!=e.activation())s.token.reject("missing_exact_classic_origin");else {age=origin.age();s.token.sourceSequence=origin.sequence();s.token.observe("sourceFrameSequence",origin.sequence());}
             if(c.activation()!=e.activation()||c.move()!=19||c.leftHanded()!=e.hand().equals("LEFT")||!c.pose().equals(MastersArtAnimation.sample(19,age,10,20)))s.token.reject("wrong_classic_source");
         }
         String phase=age<0||age>=30?"NONE":age<10?"WINDUP":age<11?"ACTIVE":"RECOVERY";
@@ -202,7 +250,9 @@ public final class CrimsonMoonRenderProbe {
     public static DeferredCall deferredEnter(Model<?> model,Object state){var s=rendering();if(s==null)return null;var call=new DeferredCall(model,state,s.deferred);s.deferred=call;return call;}
     public static void deferredLeave(DeferredCall call){var s=rendering();if(s!=null&&call!=null)s.deferred=call.previous();}
     public static void bodyBaseline(PlayerModel model,AvatarRenderState a){
-        var s=rendering();if(s==null||a.id!=s.token.expected.owner()||s.deferred==null||s.deferred.model()!=model||s.deferred.state()!=a)return;
+        var s=rendering();if(s==null||a.id!=s.token.expected.owner())return;
+        if(s.deferred==null){if(s.token.expected.view().equals("remote")&&s.sources.containsKey(a)&&s.sources.get(a).model()==model)s.layerBaselines.put(a,rigid(model));return;}
+        if(s.deferred.model()!=model||s.deferred.state()!=a)return;
         if(s.baselines.put(model,rigid(model))!=null)s.token.reject("duplicate_vanilla_baseline");
     }
     public static void bodyPalette(PlayerModel model,AvatarRenderState a){
@@ -219,8 +269,59 @@ public final class CrimsonMoonRenderProbe {
         }else if(source!=null&&baseline!=null)proof=CrimsonMoonRenderMath.compare("deferred_classic_locals",
             CrimsonMoonRenderMath.values(CrimsonMoonRenderMath.classic(source.classic()==null?null:source.classic().pose(),a.mainArm==HumanoidArm.LEFT,baseline)),
             CrimsonMoonRenderMath.values(rigid(model)));
+        if(s.token.expected.view().equals("remote")){
+            var world=s.worlds.get(a);
+            if(world==null||world.model()!=model)s.token.reject("deferred_body_without_retained_outer_root");
+            else if(proof!=null){
+                var expected=new ArrayList<>(proof.expected());expected.addAll(CrimsonMoonRenderMath.outerRoot(world.modelRoot(),world.modelRootVisible()));
+                var actual=new ArrayList<>(proof.actual());actual.addAll(CrimsonMoonRenderMath.outerRoot(part(model.root()).matrix(),model.root().visible));
+                proof=CrimsonMoonRenderMath.compare("deferred_body_locals_and_retained_outer_root",expected,actual);
+            }
+        }
         pass(s,"body",a,model,null,proof,segmented,rigid);
     }
+    /** Captures the actual body submission and its material, before any deferred model reuse. */
+    public static void worldSubmitted(Model<?> model,Object state,Matrix4fc root,RenderType material){
+        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof AvatarRenderState a)||a.id!=s.token.expected.owner())return;
+        var source=s.sources.get(a);
+        if(source==null||source.model()!=model||!(model instanceof PlayerModel player)){s.token.reject("world_submit_without_exact_model");return;}
+        var expectedMaterial=player.renderType(source.originalSkin().body().texturePath());
+        if(!CrimsonMoonRenderMath.originalSkin(source.originalSkin().body().texturePath().toString(),a.skin.body().texturePath().toString(),
+            source.originalSkin().model().getSerializedName(),a.skin.model().getSerializedName(),material==expectedMaterial))s.token.reject("wrong_world_skin_material");
+        var submittedModelRoot=part(player.root()).matrix();
+        var rootProof=CrimsonMoonRenderMath.compare("world_root_identity",CrimsonMoonRenderMath.outerRoot(new Matrix4f(),true),CrimsonMoonRenderMath.outerRoot(submittedModelRoot,player.root().visible));
+        // Store a detached snapshot only after comparing the enclosing root against its authoritative bind.
+        if(s.worlds.put(a,new World(a,player,new Matrix4f(root),new Matrix4f(submittedModelRoot),player.root().visible,material))!=null)s.token.reject("duplicate_world_body_submit");
+        s.token.observe("originalSkinMaterialIdentity",id(s,expectedMaterial));s.token.observe("submittedSkinMaterialIdentity",id(s,material));
+        // Both deferred preparation and the actual item-layer entry must retain this verified outer root.
+        pass(s,"body_submit",a,model,null,rootProof,true,false);
+    }
+    /** The baseline comes from the real vanilla-to-articulated boundary for this same state/model. */
+    public static WorldItem worldItemBegin(Object parent,ArmedEntityRenderState state,ItemStackRenderState item,ItemStack stack,HumanoidArm arm,PoseStack pose){
+        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof AvatarRenderState a)||a.id!=s.token.expected.owner()||arm!=a.mainArm)return null;
+        var source=s.sources.get(a);var world=s.worlds.get(a);var baseline=s.layerBaselines.remove(a);
+        if(source==null||world==null||parent!=source.model()||world.model()!=parent||baseline==null){s.token.reject("world_item_without_exact_vanilla_baseline");return null;}
+        var model=source.model();boolean same=ItemStack.isSameItemSameComponents(stack,source.main())&&stack.getCount()==source.main().getCount();
+        boolean eligible=CrimsonMoonRenderMath.item(id(s,source.item()),id(s,item),stack.is(Items.DIAMOND_SWORD),offhand(a).isEmpty(),same)
+            &&!item.isEmpty()&&!a.isUsingItem&&!a.isBaby&&a.ticksUsingItem(arm)==0
+            &&(a.currentSwing==null||a.currentSwing.animation().type()!=SwingAnimationType.STAB)&&ArticulatedCombat.frame(a)==source.articulated();
+        s.token.observe("worldHandEligible",eligible);if(!eligible)s.token.reject("ineligible_ordinary_world_hand");
+        if(!CrimsonMoonRenderMath.compare("world_item_root",CrimsonMoonRenderMath.values(world.root()),CrimsonMoonRenderMath.values(pose.last().pose())).matched())s.token.reject("changed_world_item_root");
+        var rig=((ArticulatedModelAccess)model).wildercord$rig();
+        var expectedBody=CrimsonMoonRenderMath.body(source.expectedBody(),baseline,rig.slim());
+        if(!CrimsonMoonRenderMath.compare("world_item_retained_model_root",CrimsonMoonRenderMath.outerRoot(world.modelRoot(),world.modelRootVisible()),
+            CrimsonMoonRenderMath.outerRoot(part(model.root()).matrix(),model.root().visible)).matched())s.token.reject("changed_world_item_model_root");
+        // Derive the item from the retained verified root, never from a later mutable model value.
+        var expected=CrimsonMoonRenderMath.sword(new Matrix4f(world.root()).mul(world.modelRoot()),expectedBody,arm==HumanoidArm.LEFT,rig.slim());
+        var call=new WorldItem(a,model,item,expected,s.worldItem);s.worldItem=call;return call;
+    }
+    public static void worldItemSubmitted(WorldItem call,ItemStackRenderState item,Matrix4fc actual){
+        var s=rendering();if(s==null||call==null)return;
+        if(s.worldItem!=call||call.item()!=item)s.token.reject("substituted_world_item_submission");
+        pass(s,"world_item",call.avatar(),call.model(),item,CrimsonMoonRenderMath.compare("actual_world_socket_item_matrix",
+            CrimsonMoonRenderMath.values(call.expected()),CrimsonMoonRenderMath.values(actual)),true,false);
+    }
+    public static void worldItemEnd(WorldItem call,boolean completed){var s=rendering();if(s!=null&&call!=null){if(!completed)s.token.reject("incomplete_world_item_scope");s.worldItem=call.previous();}}
     public static ViewCall viewEnter(AvatarRenderState a,float partial,InteractionHand hand,PoseStack stack){
         var s=rendering();if(s==null||a.id!=s.token.expected.owner())return null;var call=new ViewCall(a,hand,new Matrix4f(stack.last().pose()),s.view);s.view=call;return call;
     }
@@ -300,10 +401,11 @@ public final class CrimsonMoonRenderProbe {
     public static void fallbackViewEnd(FallbackView call,boolean completed){var s=rendering();if(s!=null&&call!=null){if(!completed)s.token.reject("incomplete_native_call");s.fallback=call.previous;}}
     private static void pass(Scope s,String kind,AvatarRenderState a,Object model,Object item,Comparison proof,boolean segmented,boolean rigid){
         var e=s.sources.get(a);boolean matched=e!=null&&matches(s,e,a);if(proof==null||!proof.matched())s.token.reject("geometry_mismatch:"+kind);
-        s.token.pass(new Pass(kind,new Binding(e==null?0:e.source(),id(s,a),id(s,model),id(s,item),skinMaterial(s,a,model),a.id,e==null?"missing":e.uuid(),
+        s.token.pass(new Pass(kind,new Binding(e==null?0:e.source(),id(s,a),id(s,model),id(s,item!=null?item:s.token.expected.view().equals("remote")&&e!=null?e.item():null),skinMaterial(s,a,model),a.id,e==null?"missing":e.uuid(),
             a.skin.model().toString(),a.skin.body().texturePath().toString(),a.mainArm.name(),e==null?null:e.palette(),matched),proof,segmented,rigid));
     }
     private static long skinMaterial(Scope s,AvatarRenderState a,Object model){
+        var world=s.worlds.get(a);if(world!=null&&world.model()==model)return id(s,world.material());
         var views=s.views.values().stream().filter(v->v.avatar()==a&&v.model()==model).toList();
         return views.size()==1?id(s,views.getFirst().material()):0;
     }
@@ -380,17 +482,22 @@ public final class CrimsonMoonRenderProbe {
         var c=t.copy;if(c==null||c.extractSequence()<=0||c.renderSequence()<=c.extractSequence()||c.copySequence()<=c.renderSequence())t.reject("missing_native_stages");
         if(t.image==null||t.pixels==null||!t.pixels.equals(t.image.decodedPixels()))t.reject("png_pixels_not_bound");
         if(c==null)return;if(t.pixels!=null&&(c.width()!=t.pixels.width()||c.height()!=t.pixels.height()))t.reject("wrong_copy_dimensions");
-        boolean fp=t.expected.view().equals("fp");if(!fp)t.reject("world_held_item_proof_incomplete");
+        boolean fp=t.expected.view().equals("fp"),remote=t.expected.view().equals("remote")&&t.paired!=null;
+        if(!fp&&!remote)t.reject("world_held_item_proof_incomplete");
+        if(!t.scopeCleanupVerified)t.reject("missing_scope_cleanup");
+        if(t.paired!=null&&!CrimsonMoonMultiplayerProof.sourceAfterRelease(t.releaseRead,t.sourceSequence,c.extractSequence()))t.reject("source_not_causally_after_server_release");
         boolean art=t.expected.mode().equals("articulated"),active=!t.expected.phase().equals("NONE");
-        if(!"true".equals(c.observations().get("ordinaryHandAdmission"))||!"true".equals(c.observations().get("handEquipKnown"))
-            ||!"false".equals(c.observations().get("handEquipping"))||!"true".equals(c.observations().get("handSameItem")))t.reject("missing_eligible_ordinary_hand_witness");
-        List<String> allowed=!fp?List.of("body"):art?List.of("view_submit","view_deferred","view_item"):List.of("classic_transform","native_item");
+        if(fp&&(!"true".equals(c.observations().get("ordinaryHandAdmission"))||!"true".equals(c.observations().get("handEquipKnown"))
+            ||!"false".equals(c.observations().get("handEquipping"))||!"true".equals(c.observations().get("handSameItem"))))t.reject("missing_eligible_ordinary_hand_witness");
+        if(remote&&!"true".equals(c.observations().get("worldHandEligible")))t.reject("missing_ordinary_world_hand_witness");
+        List<String> allowed=!fp?List.of("body_submit","body","world_item"):art?List.of("view_submit","view_deferred","view_item"):List.of("classic_transform","native_item");
         for(String kind:allowed)if(c.passes().stream().filter(p->p.kind().equals(kind)).count()!=1)t.reject("missing_or_duplicate_"+kind);
         Binding first=c.passes().isEmpty()?null:c.passes().getFirst().binding();
         for(var p:c.passes()){
             var b=p.binding();var palette=b.palette();
             if(!allowed.contains(p.kind())||!b.matched()||b.source()<=0||b.state()<=0||b.model()<=0||b.owner()!=t.expected.owner()||!b.uuid().equals(t.expected.uuid()))t.reject("unbound_pass_identity");
             if(first!=null&&(b.source()!=first.source()||b.state()!=first.state()||b.model()!=first.model()||!Objects.equals(b.palette(),first.palette())||!b.skin().equals(first.skin())||!b.texture().equals(first.texture())||!b.hand().equals(first.hand())))t.reject("conflicting_pass_identity");
+            if(remote&&(b.item()<=0||first!=null&&b.item()!=first.item()))t.reject("conflicting_world_item_identity");
             if(!b.hand().equals(t.expected.hand())||!b.skin().equalsIgnoreCase(t.expected.skin()))t.reject("wrong_pass_appearance");
             if(art&&b.skinMaterial()<=0)t.reject("unbound_original_skin_material");
             if(first!=null&&b.skinMaterial()!=first.skinMaterial())t.reject("changed_skin_material_identity");
@@ -403,12 +510,11 @@ public final class CrimsonMoonRenderProbe {
     }
     private static void persist(Token t){
         String nonce=System.getenv("WILDERCORD_MOON_RECEIPT_NONCE");if(nonce==null)nonce="unbound";
-        var report=new Report(2,RUN,nonce,t.expected,t.copy,t.pixels,t.image,t.ended&&t.failures.isEmpty(),false,"authored_post_hitstop_source_palette",false,List.copyOf(t.failures));
+        var report=new Report(t.paired==null?2:3,RUN,nonce,t.expected,t.copy,t.pixels,t.image,t.scopeCleanupVerified,t.copy!=null&&CrimsonMoonMultiplayerProof.sourceAfterRelease(t.releaseRead,t.sourceSequence,t.copy.extractSequence()),t.ended&&t.failures.isEmpty(),false,"authored_post_hitstop_source_palette",false,List.copyOf(t.failures));
         try{var dir=FabricLoader.getInstance().getGameDir().resolve("screenshots/crimson-moon-owner-receipts").resolve(RUN);Files.createDirectories(dir);
             var path=dir.resolve(String.format(Locale.ROOT,"%06d.json",SEQ.incrementAndGet()));Files.writeString(path,new GsonBuilder().setPrettyPrinting().create().toJson(report)+"\n",StandardOpenOption.CREATE_NEW);
-            if(report.verified())synchronized(DONE){DONE.put(t.expected.name(),report);}
+            if(report.verified()){synchronized(DONE){DONE.put(t.expected.name(),report);}synchronized(RECEIPTS){RECEIPTS.put(t.expected.name(),path);}}
             System.out.println("CRIMSON_MOON_OWNER_RECEIPT name="+t.expected.name()+" verified="+report.verified()+" actualSourceAge="+t.observations.get("actualSourceAge")+" receipt="+path+" phaseBasis=authored_post_hitstop_source_palette serverReleaseFrameCorrespondenceVerified=false pixelQualityReviewed=false");
         }catch(Exception failure){throw new AssertionError("Could not persist native Moon receipt",failure);}
     }
 }
-

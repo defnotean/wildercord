@@ -25,9 +25,11 @@ final class LifeOutcomeTransport {
   });
   if(invalid[0]||points.isEmpty()){if(invalid[0])VisualMetrics.dropped();return;}
   for(var player:e.level().players()){
-   // Require at least one visible existing-range piece; anchor alone would clip legitimate edge pieces.
+   // Only the known source may defer eye clearance to its real local camera. The server cannot
+   // know whether that camera is in first or third person; range and full recipe cost still apply.
+   boolean owner=LifeOutcomePayload.own(e.source(),player.getUUID());
    boolean visible=points.stream().anyMatch(at->Fx.inRange(e.level(),player,false,at.x,at.y,at.z)
-    &&at.distanceToSqr(player.getEyePosition())>=1.1*1.1);
+    &&(owner||at.distanceToSqr(player.getEyePosition())>=1.1*1.1));
    if(!visible||!DecorationBudget.accept(player,count[0]))continue;
    ServerPlayNetworking.send(player,payload);VisualMetrics.recipient();
   }

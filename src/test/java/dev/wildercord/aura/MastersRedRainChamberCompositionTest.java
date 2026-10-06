@@ -32,7 +32,8 @@ class MastersRedRainChamberCompositionTest {
 	void recordedNativeFailureHasNoVisibleBroadFaceAndCorrectedChamberRestoresIt() throws Exception {
 		var texture = texture();
 		var observed = new Matrix4f(FAILED_NATIVE_PROJECTION);
-		// Native hand projection uses reversed depth. Preserve its actual residual swing/view matrix.
+		// Native hand projection uses reversed depth. Separate the camera prefix from the
+		// residual swing so both retain their actual side of the authored hand.
 		var projection = new Matrix4f().zero().m00((float) (1 / Math.tan(Math.toRadians(35)) / (1280D / 720)))
 			.m11((float) (1 / Math.tan(Math.toRadians(35)))).m22(NEAR / (2048 - NEAR))
 			.m32(NEAR * 2048 / (2048 - NEAR)).m23(-1);
@@ -45,8 +46,12 @@ class MastersRedRainChamberCompositionTest {
 		var broken = metrics(texture, originalItem, LAYOUTS[1]);
 		assertEquals(0, broken.area, "Regression fixture must expose neither broad face");
 		assertTrue(Math.abs(faceDistance(originalItem)) < .68F / 32, "Camera lies within the sprite's thickness slab");
-		var corrected = hand(chamber, true, -90, -75, NATIVE_HEIGHT)
-			.mul(hand(originalPose, true, -90, -75, NATIVE_HEIGHT).invert()).mul(actualCamera).mul(item(true));
+		var residualSwing = MastersViewMotion.fadeSwing(swing(.75F, true), chamber.weight());
+		var originalHandAndSwing = hand(originalPose, true, -90, -75, NATIVE_HEIGHT).mul(residualSwing);
+		var cameraPrefix = new Matrix4f(actualCamera).mul(originalHandAndSwing.invert());
+		assertTrue(cameraPrefix.getTranslation(new Vector3f()).length() < .00001F,
+			"Recorded residual decomposes into the native camera rotation before hand and swing");
+		var corrected = cameraPrefix.mul(hand(chamber, true, -90, -75, NATIVE_HEIGHT)).mul(residualSwing).mul(item(true));
 		var fixed = metrics(texture, corrected, LAYOUTS[1]);
 		assertReadable(fixed, LAYOUTS[1], "corrected exact native camera");
 		assertFalse(fixed.aimOverlap, "The correction keeps the native aim corridor clear");
