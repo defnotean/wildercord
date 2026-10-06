@@ -26,6 +26,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -56,6 +57,7 @@ public final class ArtFieldMutationSafetyTest implements FabricClientGameTest {
 	private static final Vec3 MOTION = new Vec3(.31, .24, -.17);
 	private static final String PROBE = "field_mutation_probe";
 	private static Consumer<Hit> onDamage;
+	private static Runnable beforeTick;
 	private static boolean listening;
 	private record Hit(LivingEntity target, DamageSource source, float damage) {}
 	private static final class Guest extends FakePlayer {
@@ -76,6 +78,10 @@ public final class ArtFieldMutationSafetyTest implements FabricClientGameTest {
 				Consumer<Hit> action = onDamage;
 				if (action != null && damage > 0) action.accept(new Hit(target, source, damage));
 			});
+			ServerTickEvents.START_SERVER_TICK.register(server -> {
+				Runnable action = beforeTick;
+				if (action != null) action.run();
+			});
 		}
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(40);
@@ -93,12 +99,15 @@ public final class ArtFieldMutationSafetyTest implements FabricClientGameTest {
 				nestedAndThrowingScopes(context, world, true);
 			} finally {
 				onDamage = null;
+				beforeTick = null;
 				world.getServer().runOnServer(server -> cleanup(server.getPlayerList().getPlayers().getFirst()));
 			}
 		}
 	}
 
 	private void duelEndsDuringRain(ClientGameTestContext context, TestSingleplayerContext world) {
+		int[] admittedTicks = {0};
+		String[] admissionFailure = {null};
 		world.getServer().runOnServer(server -> {
 			ServerPlayer owner = prepare(server, "crimson");
 			guest = guest(owner, FEET.add(0, 0, 9));
@@ -110,9 +119,22 @@ public final class ArtFieldMutationSafetyTest implements FabricClientGameTest {
 			var duel = Duels.startBout(owner, guest, new DuelRules.Terms(40, 0, 600, SparRules.KNOCKOUT, SparRules.KNOCKOUT, false), FEET, null);
 			duel.tick(owner.level().getGameTime());
 			check(ArtKit.harmable(owner, guest) && Parties.sameParty(owner, guest), "Fighting duellists are party allies and the pulse may initially hit");
+			beforeTick = () -> {
+				if (owner.isAlive() && owner.position().distanceToSqr(FEET) < 1 && guest.isAlive()
+						&& Duels.inDuel(guest) && duel.fighting() && ArtKit.harmable(owner, guest)
+						&& ArtFields.inside(owner, CrimsonArts.RAIN, guest)) {
+					admittedTicks[0]++;
+				} else {
+					admissionFailure[0] = "Native pre-pulse admission changed: owner=" + owner.position() + ", ownerHealth=" + owner.getHealth()
+						+ ", guestHealth=" + guest.getHealth() + ", ending=" + duel.ending() + ", harmable=" + ArtKit.harmable(owner, guest)
+						+ ", inside=" + ArtFields.inside(owner, CrimsonArts.RAIN, guest);
+					beforeTick = null;
+				}
+			};
 			onDamage = hit -> {
 				if (hit.target != guest || hit.source.getEntity() != owner) return;
 				onDamage = null;
+				beforeTick = null;
 				observed = true;
 				check(hit.damage < SparRules.KNOCKOUT, "Rain ends the duel through nonlethal stop-health AFTER_DAMAGE, not death interception");
 				check(!Duels.inDuel(guest) && duel.ending() == DuelRules.Ending.KNOCKOUT,
@@ -122,6 +144,8 @@ public final class ArtFieldMutationSafetyTest implements FabricClientGameTest {
 		});
 		context.waitTicks(ArtRules.BLEED_PERIOD + 2);
 		world.getServer().runOnServer(server -> {
+			check(admissionFailure[0] == null, admissionFailure[0]);
+			check(admittedTicks[0] > 0, "Native ticks actually witnessed owner liveness and opponent admission before the rain hit");
 			check(observed, "A real native Red Rain damage callback ran");
 			check(!Reactions.has(guest, Reactions.Mark.BLEEDING), "Red Rain cannot add BLEEDING after its damage ends the allied duel");
 			check(Effects.applying() == null && Effects.applyingCast() == null, "The ordinary pulse restores ambient source context");
@@ -306,7 +330,12 @@ public final class ArtFieldMutationSafetyTest implements FabricClientGameTest {
 		owner.setHealth(owner.getMaxHealth());
 		owner.removeAllEffects();
 		owner.clearFire();
-		move(owner, FEET);
+		// A connected player must receive the teleport packet. Raw snapTo leaves its client at the
+		// superflat spawn (y=-60), whose next movement packet looks like a fatal fall from this platform.
+		check(owner.teleportTo(owner.level(), FEET.x, FEET.y, FEET.z, java.util.Set.of(), 0, 0, false),
+			"The connected owner is teleported through the native player connection");
+		owner.setDeltaMovement(Vec3.ZERO);
+		owner.resetFallDistance();
 		owner.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
 		owner.setAttached(AuraAttachments.AURA, new AuraAttachments.Data(method, AuraRules.SOVEREIGN, 4500, 160, 0));
 		return owner;
@@ -314,6 +343,7 @@ public final class ArtFieldMutationSafetyTest implements FabricClientGameTest {
 
 	private void cleanup(ServerPlayer owner) {
 		onDamage = null;
+		beforeTick = null;
 		Duels.callOff(owner);
 		MethodArts.forget(owner.getUUID());
 		Parties.session(owner.level().getServer()).rules.clear();

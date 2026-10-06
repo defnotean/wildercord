@@ -57,7 +57,7 @@ public final class CombatPresentationSettingsTest implements FabricClientGameTes
   try(var world=c.worldBuilder().create()){
    c.waitTicks(25);
    c.runOnClient(mc->{for(String key:keys)System.clearProperty(key);write(file,"{\"unrelated\":{\"keep\":17},\"own\":\"FULL\"}");MagicQuality.load();check(!ArticulatedCombat.enabled()&&!ArticulatedCombat.stableCamera(),"An ordinary old config retains Classic and Default camera");});
-   MagicSettingsScreen parent=new MagicSettingsScreen();c.setScreen(()->parent);click(c,"title");
+   MagicSettingsScreen parent=c.computeOnClient(mc->new MagicSettingsScreen());c.setScreen(()->parent);click(c,"title");
    c.runOnClient(mc->{check(mc.gui.screen() instanceof CombatPresentationScreen,"The ordinary settings entry opens the child");check(!button(mc,"apply").active,"Opening the draft does not enable Apply");});
    choose(c,"animation");escape(c);
    c.runOnClient(mc->{check(mc.gui.screen()==parent,"Escape returns to the exact parent");check(!ArticulatedCombat.enabled()&&!read(file).contains("combat_presentation"),"Escape discards all changes without writing");});
