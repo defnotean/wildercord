@@ -29,6 +29,7 @@ import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
@@ -99,6 +100,7 @@ public final class MastersGroundFieldTimelineTest implements FabricClientGameTes
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		checkHeadingContract();
 		installObservers();
 		AuraApi.StringHook release = MastersGroundFieldTimelineTest::released;
 		AuraApi.SpendHook spend = (owner, paid, reason, backlash) -> {
@@ -294,7 +296,9 @@ public final class MastersGroundFieldTimelineTest implements FabricClientGameTes
 				check(q.field != null && q.field.shape().centre().distanceTo(centre) < 1.0E-5,
 					"The field uses release-time owner feet, accepted level facing and the original floor/fallback search");
 				check(q.owner.position().distanceTo(releaseFeet) < 1.0E-5, "The owner really moved during the native windup");
-				check(q.owner.getYRot() == 180, "The camera really reversed before release");
+				float serverYaw = q.owner.getYRot();
+				check(reversedHeading(serverYaw), "The camera really reversed before release: serverYaw=" + serverYaw
+					+ ", wrappedServerYaw=" + Mth.wrapDegrees(serverYaw) + ", expectedWrappedYaw=-180.0");
 				q.owner.teleportTo(q.level, 18.5, acceptedFeet.y, -8.5, Set.of(), 90, 0, false);
 			};
 			p.afterTick = q -> {
@@ -315,9 +319,15 @@ public final class MastersGroundFieldTimelineTest implements FabricClientGameTes
 			}));
 		});
 		context.waitTicks(8 + (id.equals(HollowArts.COLLAPSE) ? ArtRules.COLLAPSE_TICKS : ArtRules.RAIN_TICKS) + 5);
+		// This is later client evidence, not a claim about the release callback's contemporaneous camera state.
+		float clientYawAtVerification = context.computeOnClient(mc -> mc.player == null ? Float.NaN : mc.player.getYRot());
 		world.getServer().runOnServer(server -> {
 			Probe p = current;
-			verify(p, true);
+			try { verify(p, true); }
+			catch (AssertionError failure) {
+				throw new AssertionError("Native ground anchor verification: clientYawAtVerification=" + clientYawAtVerification
+					+ ", wrappedClientYawAtVerification=" + Mth.wrapDegrees(clientYawAtVerification), failure);
+			}
 			check(p.targets.getLast().getHealth() < HEALTH, "The actual release-location victim receives the native field's damage");
 			check(ArtFields.count(p.owner, p.kind()) == 0, "The original field expires on its own lifetime");
 			Wildercord.LOGGER.info("GROUND_FIELD_ANCHOR art={} floor={} accepted={} release={} centre={}", id, floor, p.accepted, p.released, p.field.shape().centre());
@@ -601,6 +611,17 @@ public final class MastersGroundFieldTimelineTest implements FabricClientGameTes
 
 	private static void near(double actual, double expected, String reason) {
 		check(Math.abs(actual - expected) < .002, reason + ": expected " + expected + ", got " + actual);
+	}
+
+	/** Real client movement normalizes +180 to -180; both represent the exact same reversed heading. */
+	static boolean reversedHeading(float yaw) { return Mth.wrapDegrees(yaw) == -180; }
+
+	/** Native and standalone fixture checks keep normalization exact, without admitting nearly reversed headings. */
+	static void checkHeadingContract() {
+		for (float yaw : new float[] {180, -180, 540, -540})
+			check(reversedHeading(yaw), "Equivalent reversed headings pass: " + yaw);
+		for (float yaw : new float[] {0, 90, -90, 360, 179.999F, -179.999F, 180.001F, Float.NaN, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY})
+			check(!reversedHeading(yaw), "An unreversed or invalid heading still fails: " + yaw);
 	}
 
 	private static void check(boolean value, String reason) { if (!value) throw new AssertionError(reason); }

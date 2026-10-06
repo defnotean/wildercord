@@ -29,7 +29,8 @@ MAX_SNAPSHOT_BYTES = 256 * 1024
 SNAPSHOTS = "build/run/clientGameTest/logs/ci-diagnostics"
 CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "battlefields-generation": "diagnostic-battlefields-generation",
-         "siltcrest-presentation": "diagnostic-siltcrest-presentation"}
+         "siltcrest-presentation": "diagnostic-siltcrest-presentation",
+         "fungal-nursery": "diagnostic-fungal-nursery"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
@@ -41,6 +42,7 @@ SEEDS = {
     "aura-fx": {"dev.wildercord.gametest.WildercordAuraFxTest": None},
     "battlefields-generation": {"dev.wildercord.world.dungeons.BattlefieldsTest": "4424506075848880372"},
     # Separate disposable worlds: observe each seed without changing the fixture RNG.
+    "fungal-nursery": {"dev.wildercord.wildlife.FungalNurseryTest": None},
     "siltcrest-presentation": {"dev.wildercord.wildlife.SiltcrestPresentationTest#full": None,
                               "dev.wildercord.wildlife.SiltcrestPresentationTest#minimal": None},
 }

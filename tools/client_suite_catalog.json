@@ -74,5 +74,13 @@
     "entries": [
       "dev.wildercord.wildlife.SiltcrestPresentationTest"
     ]
+  },
+  "diagnostic-fungal-nursery": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original FungalNursery class, including earned crafting, real visitor rests and saved-world reopen, with bounded passive repeat-arrival receipts. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.wildlife.FungalNurseryTest"
+    ]
   }
 }
