@@ -132,9 +132,11 @@ public final class StoneHingeFeasibilityTest implements FabricClientGameTest {
 					var invulnerable = melee(); refused("native invulnerability", invulnerable);
 					check(invulnerable.impulses().isEmpty(), "Rejected damage produces no captured native knockback");
 
-					prepare(); player.setYRot(180);
+					prepare(); placeRearAttacker();
 					var rear = melee(); refused("rear native melee", rear);
-					check(rear.onlyHit().healthLost() > 0 && !rear.impulses().isEmpty(), "Rear damage and knockback remain native");
+					check(!rear.onlyHit().frontal() && rear.onlyHit().facingDot() < 0
+						&& rear.onlyHit().healthLost() > 0 && !rear.impulses().isEmpty(),
+						"The observed rear source still deals native damage and knockback");
 
 					prepare();
 					var spoof = StoneHingeImpulseProbe.capture(player, () -> player.hurtServer(player.level(), player.damageSources().mobAttack(attacker), 8));
@@ -295,6 +297,20 @@ public final class StoneHingeFeasibilityTest implements FabricClientGameTest {
 		Spellbooks.setCord(player, ItemStack.EMPTY); player.setNoGravity(false); player.setYRot(0); player.setXRot(0);
 		player.setDeltaMovement(new Vec3(.12, 0, .06)); Effects.readyToHurt(player);
 		if (attacker != null) attacker.snapTo(player.getX(), player.getY(), player.getZ() + 1.5, 180, 0);
+	}
+	/** Rear is measured against the connected body's actual view; changing body yaw alone does not turn head yaw. */
+	private void placeRearAttacker() {
+		Vec3 look = player.getViewVector(1.0F);
+		check(Double.isFinite(look.x) && Double.isFinite(look.y) && Double.isFinite(look.z) && look.horizontalDistanceSqr() > 1.0E-6,
+			"The real connected body has a finite nonvertical view for the rear fixture: " + look);
+		Vec3 forward = new Vec3(look.x, 0, look.z).normalize();
+		Vec3 rear = player.position().subtract(forward.scale(1.5));
+		attacker.setPos(rear);
+		Vec3 actual = attacker.position().subtract(player.position());
+		double dot = look.x * actual.x + look.z * actual.z;
+		check(dot < -1.0E-4 && !AuraGuard.facing(player, attacker.position()),
+			"The actual source is behind the unchanged frontal predicate before damage: look=" + look + ", sourceDelta=" + actual
+				+ ", bodyYaw=" + player.getYRot() + ", headYaw=" + player.getYHeadRot() + ", facingDot=" + dot);
 	}
 	private StoneHingeImpulseProbe.Trial melee() {
 		check(attacker.isAlive() && !attacker.isRemoved() && Targets.canHarm(attacker, player), "The ordinary hostile melee source is alive and lawful");

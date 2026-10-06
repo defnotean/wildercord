@@ -154,7 +154,9 @@ public final class StoneHingeImpulseProbe {
 		final Hit previous;
 		final DamageSource source;
 		final net.minecraft.server.level.ServerLevel level;
-		final Vec3 position;
+		final Vec3 position, look, attackerPosition, sourcePosition;
+		final float bodyYaw, headYaw, pitch;
+		final double facingDot;
 		final boolean melee, frontal, hostile;
 		boolean returned, complete, observed, observing, contaminated, lethal;
 		float healthLost, absorptionLost;
@@ -162,6 +164,10 @@ public final class StoneHingeImpulseProbe {
 			this.trial = trial; this.source = source; this.previous = previous;
 			ServerPlayer player = trial.player; level = player.level(); position = player.position();
 			LivingEntity attacker = source.getEntity() instanceof LivingEntity living ? living : null;
+			look = player.getViewVector(1.0F); bodyYaw = player.getYRot(); headYaw = player.getYHeadRot(); pitch = player.getXRot();
+			attackerPosition = attacker == null ? null : attacker.position(); sourcePosition = source.getSourcePosition();
+			facingDot = attackerPosition == null ? Double.NaN
+				: look.x * (attackerPosition.x - position.x) + look.z * (attackerPosition.z - position.z);
 			Melee scope = MELEE.get();
 			boolean exactMelee = scope != null && scope.attacker == attacker && scope.target == player && scope.source == source;
 			melee = exactMelee && attacker != null && source.getDirectEntity() == attacker
@@ -178,6 +184,8 @@ public final class StoneHingeImpulseProbe {
 		public boolean observed() { return observed; }
 		public boolean lethal() { return lethal; }
 		public boolean melee() { return melee; }
+		public boolean frontal() { return frontal; }
+		public double facingDot() { return facingDot; }
 		public boolean returned() { return returned; }
 		public boolean contaminated() { return contaminated; }
 		public float healthLost() { return healthLost; }
@@ -185,7 +193,9 @@ public final class StoneHingeImpulseProbe {
 		public DamageSource source() { return source; }
 		public String summary() { return "{source=" + source.getMsgId() + ", returned=" + returned + ", observed=" + observed
 			+ ", healthLost=" + healthLost + ", absorptionLost=" + absorptionLost + ", lethal=" + lethal + ", melee=" + melee
-			+ ", frontal=" + frontal + ", hostile=" + hostile + ", nested=" + contaminated + "}"; }
+			+ ", frontal=" + frontal + ", hostile=" + hostile + ", nested=" + contaminated
+			+ ", target=" + position + ", attacker=" + attackerPosition + ", sourcePosition=" + sourcePosition + ", look=" + look
+			+ ", bodyYaw=" + bodyYaw + ", headYaw=" + headYaw + ", pitch=" + pitch + ", facingDot=" + facingDot + "}"; }
 	}
 
 	public static Hit begin(Player player, DamageSource source) {

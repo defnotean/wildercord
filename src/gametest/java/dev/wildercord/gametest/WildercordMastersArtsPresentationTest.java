@@ -201,10 +201,24 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private static boolean inspect(ClientGameTestContext context) {
+		return inspect(context, false);
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	private static boolean inspect(ClientGameTestContext context, boolean lateMoonRecovery) {
 		return context.computeOnClient(mc -> {
 			var timeline = MastersArtsClient.timeline(mc.player);
 			var expected = MastersArtsClient.pose(mc.player, .5F);
-			if (timeline == null || expected.weight() < .15F) return false;
+			if (timeline == null) return false;
+			float age = mc.level.getGameTime() - timeline.startTick() + .5F;
+			// Moon deliberately captures its late settle at 27.5/30. The unchanged
+			// cubic fade is 0.06561279 there, below the other phases' admission floor.
+			boolean moonSettle = lateMoonRecovery && timeline.move() == 19
+				&& timeline.windup() == 10 && timeline.recovery() == 20 && age == 27.5F;
+			if (moonSettle) check(Float.isFinite(expected.weight()) && expected.weight() > 0
+				&& Math.abs(expected.weight() - .06561279F) < .000001F,
+				"Moon's exact late-recovery sample retains its positive authored fade");
+			else if (expected.weight() < .15F) return false;
 			AvatarRenderer renderer = (AvatarRenderer) mc.getEntityRenderDispatcher().getRenderer(mc.player);
 			AvatarRenderState state = (AvatarRenderState) renderer.createRenderState(mc.player, .5F);
 			PlayerModel model = (PlayerModel) renderer.getModel();
@@ -526,7 +540,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			Wildercord.LOGGER.info("MASTERS_CAPTURE_PHASE name={} phase={} age={} windup={} recovery={}",
 				prefix, phase, age, move.windup(), move.recovery());
 		});
-		check(inspect(context), "The registered live rig participates during " + phase);
+		check(inspect(context, phase.equals("recovery")), "The registered live rig participates during " + phase);
 		return context.computeOnClient(mc -> MastersCaptureProbe.capture(mc, prefix + "_" + phase));
 	}
 

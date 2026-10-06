@@ -53,6 +53,21 @@ public final class OpeningCaptureWait {
 	public static Result await(Snapshot snapshot) {
 		return await(snapshot, System::nanoTime, LockSupport::parkNanos);
 	}
+	/** Waits for another JVM's genuine receipt within the existing launch deadline, without running a game tick. */
+	public static void awaitSignal(BooleanSupplier ready, long deadline, String reason) {
+		awaitSignal(ready, deadline, reason, System::nanoTime, LockSupport::parkNanos);
+	}
+	static void awaitSignal(BooleanSupplier ready, long deadline, String reason, LongSupplier clock, LongConsumer park) {
+		CleanupScope scope = CLEANUP.get();
+		if (scope == null) throw new IllegalStateException("Opening capture wait requires its outer cleanup scope");
+		while (true) {
+			if (scope.interrupted()) throw scope.interruption;
+			long remaining = deadline - clock.getAsLong();
+			if (remaining <= 0) throw new AssertionError("Finite native handshake expired: " + reason);
+			if (ready.getAsBoolean()) return;
+			park.accept(Math.min(POLL_NANOS, remaining));
+		}
+	}
 	static Result await(Snapshot snapshot, LongSupplier clock, LongConsumer park) {
 		CleanupScope scope = CLEANUP.get();
 		if (scope == null) throw new IllegalStateException("Opening capture wait requires its outer cleanup scope");

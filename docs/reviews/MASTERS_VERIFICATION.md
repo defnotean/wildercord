@@ -4,6 +4,8 @@ Base: `ebb2887f7d7becccf339918c00a9741721606fb1` (main).
 
 Development version: `0.11.0-masters-dev`.
 
+Current native outcomes and open release gates are maintained in the [release checklist](RELEASE_READINESS.md). The dated checkpoints below preserve their original evidence and limitations; their pending statements are historical, not the current feature status.
+
 ## Native acceptance checkpoint: 2026-10-05 13:39 UTC
 
 Published commit [`6ac294e21dd67598b34235298ca0d85909f43103`](https://github.com/defnotean/wildercord/commit/6ac294e21dd67598b34235298ca0d85909f43103), [run 37316763054](https://github.com/defnotean/wildercord/actions/runs/37316763054), has passed the normal **Build**, the complete **16-suite Masters-focused native job**, and the **one-suite articulated native job**. The latter retains the strict 0.001-block hand-grip convergence assertion with a genuinely positive-weight recovery sample after correcting the slim-arm pivot. The four aggregate gameplay shards were still running at this checkpoint; a full-repository native pass is **not** established.

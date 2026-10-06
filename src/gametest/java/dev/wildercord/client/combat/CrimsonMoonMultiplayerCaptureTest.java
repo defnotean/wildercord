@@ -249,7 +249,13 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
     }
     private void capture(ClientGameTestContext c){
         try {
-        c.waitFor(mc->{boolean age=mc.level.getGameTime()>=acceptedTick+10;boolean released=age&&exists("case-00-release");clocks.client("capture-wait",mc,age?Boolean.toString(released):"not_checked",null,true);return age&&released;},45);
+        c.waitFor(mc->{boolean age=mc.level.getGameTime()>=acceptedTick+10;boolean released=age&&exists("case-00-release");clocks.client("capture-wait",mc,age?Boolean.toString(released):"not_checked",null,true);
+            // A peer may arrive ahead of the server, then receive an ordinary time correction.
+            // Only its genuine exact age-10 observation can stop local ticking before release.
+            return age&&(released||role.equals("peer")&&mc.level.getGameTime()==acceptedTick+10);},45);
+        // Holding the peer's existing test phase leaves the other JVM's client/server free to
+        // reach the original release. No world time, timeline, pause or frozen flag is changed.
+        if(role.equals("peer"))awaitWithoutTicks(()->exists("case-00-release"),"Actual server release precedes the peer's unchanged source frame");
         var snapshot=c.computeOnClient(mc->{boolean held=HitStop.holding();var value=new OpeningCaptureWait.Snapshot(new OpeningCaptureWait.Identity(hostId,actorEntity,actorEntity,19,acceptedTick,mc.level.getGameTime()),held,System.nanoTime()+(held?MAX_HOLD:0));clocks.client("capture-snapshot",mc,"true",held,false);return value;});OpeningCaptureWait.await(snapshot);
         String view=role.equals("host")?"fp":"remote";
         String name=CrimsonMoonRenderProbe.PREFIX+view+"_"+skin+"_"+angle+"_"+CASE;
@@ -307,6 +313,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
             "Acceptance-relative age and release-relative delay match the actual server ticks");
     }
     private void checkAction(Properties value){for(var field:action().entrySet())check(field.getValue().equals(value.getProperty(field.getKey())),"Same accepted action: "+field.getKey());}
+    private void awaitWithoutTicks(BooleanSupplier condition,String reason){OpeningCaptureWait.awaitSignal(()->{check(!exists("host-failure")&&!exists("peer-failure"),"Both native processes remain healthy: "+reason);return condition.getAsBoolean();},deadline,reason);}
     private void await(ClientGameTestContext c,BooleanSupplier condition,String reason){while(System.nanoTime()<deadline){check(!exists("host-failure")&&!exists("peer-failure"),"Both native processes remain healthy: "+reason);if(condition.getAsBoolean())return;c.waitTicks(1);}throw new AssertionError("Finite native handshake expired: "+reason);}
     private boolean exists(String name){return Files.isRegularFile(directory.resolve(name+".properties"));}
     private Properties read(String name,String expectedRole){try(var input=Files.newInputStream(directory.resolve(name+".properties"))){var value=new Properties();value.load(input);for(String key:identity.stringPropertyNames())check(identity.getProperty(key).equals(value.getProperty(key)),"Native witness identity: "+key);check(expectedRole.equals(value.getProperty("role")),"Expected witness role");long pid=Long.parseLong(value.getProperty("pid"));check(pid>0&&(expectedRole.equals(role)?pid==ProcessHandle.current().pid():otherPid==0||pid==otherPid),"Exact native process identity");return value;}catch(java.io.IOException failure){throw new AssertionError(failure);}}

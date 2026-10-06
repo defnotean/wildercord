@@ -39,7 +39,7 @@ The first authored player capabilities are **Relay Circle** and **Wall Turn**. B
 
 The catalog expansion will be delivered in tested packs, with new abilities, upgrades, recipes and cosmetic variants counted separately.
 
-The next isolated mage feasibility candidate is Reweave at Circle XII: changing one already-paid circular Harm field into a warned fixed lane while preserving its original expiry, remaining beats and shared target budget. It is not yet a learned or usable ability. Resident-only wards, delayed callback ownership and actual native geometry must pass before its retrievable Tide Scribe lesson, final cost and input policy are completed.
+Reweave's whole native field-feasibility class now passes on `6c750309`. The playable Circle XII slice is being authored separately: an old-save-accessible Ebb Ledger lesson for a Low Tide holder, one 40-base-mana Harm field with shared rest, and one warned disc-to-lane conversion that preserves expiry, remaining beats and the original target budget. It is not yet a learned or usable ability. Ordinary lesson, equip/input, persistence and multiplayer acceptance remain required; this counts as one new capability.
 
 ## Priority 4: expand Aura movement and sword expression
 
