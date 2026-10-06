@@ -48,7 +48,7 @@ public final class PassiveCaster {
 	/** The runes of a passive that will actually run: learned, held by the Cord, and inside its sockets. */
 	public static List<RuneDef> activeRunes(List<String> ids, Spellbook book, CordTier tier) {
 		List<RuneDef> runes = new ArrayList<>();
-		if (tier == null || dev.wildercord.spell.RelayRules.containsIds(ids)) {
+		if (tier == null || dev.wildercord.spell.RelayRules.containsIds(ids) || dev.wildercord.spell.ReweaveRules.containsIds(ids)) {
 			return runes;
 		}
 		for (int i = 0; i < Math.min(ids.size(), sockets(tier)); i++) {

@@ -465,6 +465,8 @@ public final class Runes {
 	// New shapes are appended too: generated circles retain the roster order of existing runes.
 	public static final RuneDef RELAY = shape("relay", "Relay", 4, 24, 1.0, "An Archive lesson for active Circle VIII and an Echo Cord: place a visible focus within 8 blocks, then press cast again within 4 seconds to release one aimed ray. Relay then Harm, Frost or Shock only; 90% normal strength, 16 blocks total path, 8-second shared rest. No modifiers, links, Knots, woven runes or storage.");
 
+	public static final RuneDef REWEAVE = shape("reweave", "Reweave", 4, 32, 1.0, "The Ebb Ledger teaches active Circle XII to rewrite one paid Harm field once. Place a radius-2 disc within 8 blocks; its four half-Harm beats remain at 0.4, 1.4, 2.4 and 3.4 seconds, expiring at 4 seconds. A fresh cast press fixes a 7 by 1.25 block lane after a silent 0.4-second warning. Forty base mana once, eight-second shared rest. Reweave then Harm only; no modifiers, links, composites or storage.");
+
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());
 

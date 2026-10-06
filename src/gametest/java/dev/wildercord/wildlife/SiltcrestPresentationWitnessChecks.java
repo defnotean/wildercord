@@ -82,7 +82,7 @@ public final class SiltcrestPresentationWitnessChecks {
   for(int tick=0;tick<52;tick++){shared.advance(remainder);shared.observe(32+shared.advances());}
   expectFailure(()->shared.advance(shared.phase(80)),"another refusal or fresh phase cannot renew either exhausted hunt budget");
  }
- private static List<JsonObject> recorded() {
+ static List<JsonObject> recorded() {
   try(var stream=SiltcrestPresentationWitnessChecks.class.getResourceAsStream("/siltcrest/presentation-refusal.json")) {
    check(stream!=null,"Recorded refusal receipt resource exists");
    var data=JsonParser.parseReader(new InputStreamReader(stream,StandardCharsets.UTF_8)).getAsJsonObject();var rows=new ArrayList<JsonObject>();
@@ -94,7 +94,7 @@ public final class SiltcrestPresentationWitnessChecks {
  private static List<JsonObject> copy(List<JsonObject> rows){var result=new ArrayList<JsonObject>();for(var row:rows)result.add(row.deepCopy());return result;}
  private static void rejected(List<JsonObject> original,Consumer<List<JsonObject>> change,String why){var rows=copy(original);change.accept(rows);expectFailure(()->policy(original).inspect(rows,0,0),why);}
  private static void expectFailure(Runnable action,String why){boolean failed=false;try{action.run();}catch(AssertionError expected){failed=true;}check(failed,"Invalid proof must fail: "+why);}
- private static List<JsonObject> successful(List<JsonObject> nativeEscape) {
+ static List<JsonObject> successful(List<JsonObject> nativeEscape) {
   var admission=nativeEscape.getFirst().deepCopy();var enter=nativeEscape.get(1).deepCopy();enter.add("admittedFish",admission.get("admittedFish").deepCopy());
   var call=enter.deepCopy();call.addProperty("event","damage_call");call.addProperty("huntReady",266);
   call.addProperty("damageTargetUuid",call.get("quarryUuid").getAsString());call.addProperty("damageTargetIsAdmitted",true);call.addProperty("damageAmount",4);

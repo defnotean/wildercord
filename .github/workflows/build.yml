@@ -158,7 +158,7 @@ jobs:
 
   # Additional focused evidence for the Masters foundation; never replaces the four full shards.
   masters-native:
-    name: Masters update (38 focused suites)
+    name: Masters update (39 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -186,7 +186,7 @@ jobs:
         id: void-cut-start
         continue-on-error: true
         run: python tools/collect_void_cut_diagnostics.py --prepare --job-group masters-native --marker artifacts/review/void-cut-masters-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the 38 focused update suites
+      - name: Run the 39 focused update suites
         timeout-minutes: 85
         env:
           CI_MINECRAFT_EULA_ACCEPTED: "true"

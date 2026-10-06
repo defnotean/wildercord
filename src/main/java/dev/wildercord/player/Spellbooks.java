@@ -75,6 +75,11 @@ public final class Spellbooks {
 			long sharedLeft = Math.clamp(player.getAttachedOrElse(dev.wildercord.cast.RelayState.REST, 0L) - clock, 0, dev.wildercord.spell.RelayRules.REST_TICKS);
 			readyAt = Math.max(readyAt, player.level().getGameTime() + sharedLeft);
 		}
+        if (spell >= 0 && spell < dev.wildercord.gear.SpellSlots.ALL && dev.wildercord.spell.ReweaveRules.containsIds(get(player).spells().get(spell))) {
+            long clock = player instanceof net.minecraft.server.level.ServerPlayer p ? dev.wildercord.cast.ReweaveFields.now(p) : player.level().getGameTime();
+            long left = Math.clamp(player.getAttachedOrElse(dev.wildercord.cast.ReweaveState.REST, 0L) - clock, 0, dev.wildercord.spell.ReweaveRules.REST_TICKS);
+            readyAt = Math.max(readyAt, player.level().getGameTime() + left);
+        }
 		return readyAt - player.level().getGameTime() > MAX_COOLDOWN ? 0L : readyAt;
 	}
 

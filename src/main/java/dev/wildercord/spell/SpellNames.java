@@ -40,6 +40,7 @@ public final class SpellNames {
 			return "";
 		}
 		if (RelayRules.contains(runes) && !RelayRules.valid(runes)) return "Unfinished Relay";
+		if (ReweaveRules.contains(runes) && !ReweaveRules.valid(runes)) return "Unfinished Reweave";
 		return auto(SpellCompiler.compile(runes).root());
 	}
 

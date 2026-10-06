@@ -1,126 +1,116 @@
 package dev.wildercord.wildlife;
 
 import static dev.wildercord.wildlife.SiltcrestNative.check;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
+import java.util.Map;
+import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.animal.fish.Cod;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.animal.fish.AbstractFish;
 
-/** Test-only reads around unchanged native AI and delegate-once vanilla damage, including screenshot waits. */
+/** Passive full-cohort audit. Failures are latched for the harness, never thrown through native AI. */
 final class SiltcrestEcologyProbe implements AutoCloseable {
- private static final int LIMIT=32;
+ record Cohort(int index,int x,int z,SiltcrestBittern bird,List<AbstractFish> fish) {}
+ record State(long clock,long firstCoil,List<SiltcrestPresentationWitness.Candidate> candidates) {}
  private static volatile SiltcrestEcologyProbe active;
  private static boolean registered;
- private final List<Cod> fish=new ArrayList<>();
- private final List<String> first=new ArrayList<>(),firstTransitions=new ArrayList<>(),firstCoil=new ArrayList<>();
- private final ArrayDeque<String> last=new ArrayDeque<>(),lastTransitions=new ArrayDeque<>(),lastCoil=new ArrayDeque<>();
- private final List<String> receipts=new ArrayList<>(),screenshots=new ArrayList<>();
- private MinecraftServer server;
- private SiltcrestBittern bird;
- private String previous="";
- private int ticks,hurtCalls,transitionCount,coilSamples,receiptCount;
+ private final MinecraftServer server;
+ final List<Cohort> cohorts;
+ private final List<SiltcrestPresentationProbe.Session> sessions;
+ private final SiltcrestEcologyWitness witness;
+ private final Map<UUID,Integer> entityTicks=new HashMap<>();
+ private final Map<UUID,DamageSource> verifiedDeaths=new HashMap<>();
+ private final ArrayDeque<String> recent=new ArrayDeque<>();
+ private final List<String> first=new ArrayList<>();
+ private List<SiltcrestPresentationWitness.Candidate> candidates;
+ private AssertionError failure;
+ private long firstCoil=-1,lastTick=-1;
+ private int ticks;
+ private boolean closed;
 
- SiltcrestEcologyProbe(){register();}
- private static synchronized void register(){
+ SiltcrestEcologyProbe(MinecraftServer server,List<Cohort> cohorts) {
+  check(active==null&&cohorts.size()==SiltcrestEcologyWitness.COHORTS,"One fixed three-cohort ecology scope");
+  this.server=server;this.cohorts=List.copyOf(cohorts);
+  sessions=SiltcrestPresentationProbe.beginEcology(server.overworld(),cohorts.stream().map(Cohort::bird).toList());
+  witness=new SiltcrestEcologyWitness(cohorts.stream().map(c->c.bird().getUUID().toString()).toList());
+  register();active=this;
+ }
+ private static synchronized void register() {
   if(registered)return;registered=true;
-  // Match the existing performance probe's scoped listener pattern; retain no world after close.
-  ServerTickEvents.END_SERVER_TICK.register(s->{var p=active;if(p!=null&&p.server==s)p.endTick();});
+  ServerTickEvents.END_SERVER_TICK.register(server->{var probe=active;if(probe!=null&&probe.server==server)probe.endTick();});
  }
- void begin(MinecraftServer s){check(active==null,"Only this ecology observation is active");server=s;active=this;}
- void bind(SiltcrestBittern b){bird=b;}
- void fish(ServerLevel l,int i){
-  // EntityType.create(Level, COMMAND) checks canSpawn and invokes the Cod constructor.
-  // Keep that check, registered COD attributes and the original initial placement.
-  check(EntityTypes.COD.canSpawn(l),"Actual vanilla prey factory eligibility");
-  var f=new WitnessCod(l);f.snapTo(1.5+i%4,100.1,.5+(i/4)%4,0,0);l.addFreshEntity(f);fish.add(f);
+ private void endTick() {
+  if(closed)return;
+  try {
+   var level=server.overworld();long now=level.getGameTime();
+   check(lastTick<0||now==lastTick+1,"Every native server tick in the shared observation is consecutive");lastTick=now;ticks++;
+   qualify();audit(level);
+   String row="clock="+now+" firstCoil="+firstCoil+" cohorts="+cohorts.stream().map(c->"index="+c.index()+" source="+c.bird().getUUID()+" body="+c.bird().position()+" pose="+c.bird().pose()+" ready="+c.bird().huntReady()+" pool="+c.bird().preyPool(level).size()+" fish="+c.fish().stream().map(f->f.getUUID()+"@"+f.position()+" health="+f.getHealth()+" ticks="+f.tickCount).toList()).toList();
+   if(first.size()<24)first.add(row);if(recent.size()==24)recent.removeFirst();recent.addLast(row);
+  }catch(Throwable invalid){if(failure==null)failure=invalid instanceof AssertionError a?a:new AssertionError("Native ecology observation failed",invalid);}
  }
- private final class WitnessCod extends Cod {
-  WitnessCod(ServerLevel l){super(EntityTypes.COD,l);}
-  @Override public void tick(){
-   super.tick();
-   if(active!=SiltcrestEcologyProbe.this||bird==null||bird.pose()!=SiltcrestBittern.COILING||read(bird,"quarry")!=this)return;
-   // Fish are inserted before the bird. This records native fish movement while
-   // the commitment is still active, before the bird can resolve its final coil tick.
-   String row=state("after_quarry_tick");coilSamples++;retain(firstCoil,lastCoil,row);
-  }
-  @Override public boolean hurtServer(ServerLevel l,DamageSource damage,float amount){
-   if(active!=SiltcrestEcologyProbe.this)return super.hurtServer(l,damage,amount);
-   int call=++hurtCalls;String source=identity(damage.getEntity());
-   receipt("hurt_before call="+call+" fish="+getUUID()+" damage="+damage+" source="+source+" amount="+amount+" "+state("before_hurt"));
-   boolean returned=false,hit=false;
-   try{hit=super.hurtServer(l,damage,amount);returned=true;return hit;}
-   finally{receipt("hurt_after call="+call+" returned="+returned+" hit="+hit+" sameDamageSource="+(getLastDamageSource()==damage)+" finalDamage="+damageState(getLastDamageSource())+" "+state("after_hurt"));}
+ private void qualify() {
+  if(failure!=null)throw failure;
+  candidates=witness.inspect(sessions.stream().map(s->new SiltcrestEcologyWitness.Feed(s.records,s.errors,s.omitted)).toList());
+  // Read all retained admissions: a later candidate cannot replace the first-coil deadline.
+  for(var session:sessions)for(var row:session.records)if(row.get("event").getAsString().equals("coil_admitted")){
+   long tick=row.get("clock").getAsLong();if(firstCoil<0||tick<firstCoil)firstCoil=tick;
   }
  }
- private void endTick(){
-  if(bird==null)return;
-  String row=state("end_server_tick");ticks++;retain(first,last,row);
-  String key=bird.pose()+":"+read(bird,"epoch")+":"+bird.huntReady()+":"+identity((Entity)read(bird,"quarry"))+":"+fish.stream().map(f->f.getUUID()+":"+f.getHealth()+":"+f.isAlive()+":"+f.isRemoved()).toList();
-  if(!key.equals(previous)){transitionCount++;retain(firstTransitions,lastTransitions,row);previous=key;}
- }
- private void receipt(String row){receiptCount++;if(receipts.size()<LIMIT)receipts.add(row);}
- private static void retain(List<String> first,ArrayDeque<String> last,String row){
-  if(first.size()<LIMIT)first.add(row);if(last.size()==LIMIT)last.removeFirst();last.addLast(row);
- }
- void screenshot(ClientGameTestContext c,TestSingleplayerContext w,String name){
-  long before=w.getServer().computeOnServer(s->s.overworld().getGameTime());
-  boolean completed=false;
-  try{c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());completed=true;}
-  finally{
-   long after=w.getServer().computeOnServer(s->s.overworld().getGameTime());
-   String row="name="+name+" before="+before+" after="+after+" elapsed="+(after-before)+" completed="+completed;
-   if(screenshots.size()<LIMIT)screenshots.add(row);System.out.println("SILTCREST_ECOLOGY_SCREENSHOT "+row);
+ private void audit(ServerLevel level) {
+  for(int i=0;i<cohorts.size();i++) {
+   var cohort=cohorts.get(i);var bird=cohort.bird();var candidate=candidates.get(i);
+   check(bird.isAlive()&&!bird.isRemoved()&&!bird.isNoAi()&&bird.getHealth()==12,"Every original healthy bird retains ordinary AI");resident(level,bird);
+   var raw=level.getEntitiesOfClass(AbstractFish.class,bird.getBoundingBox().inflate(6));
+   check(raw.stream().allMatch(cohort.fish()::contains),"The production raw inflate(6) query cannot see another cohort's prey");
+   int alive=0;
+   for(var fish:cohort.fish()) {
+    var damage=fish.getLastDamageSource();
+    var population=new SiltcrestEcologyWitness.Fish(fish.getUUID().toString(),fish.isAlive(),fish.isRemoved(),fish.getHealth(),damage!=null,damage==null||damage.getEntity()==null?null:damage.getEntity().getUUID().toString(),damage==null||damage.getDirectEntity()==null?null:damage.getDirectEntity().getUUID().toString());
+    boolean earned=verifiedDeaths.containsKey(fish.getUUID());
+    if(earned)SiltcrestEcologyWitness.auditRetainedDeath(population,damage==verifiedDeaths.get(fish.getUUID()));
+    else {
+     earned=SiltcrestEcologyWitness.auditFish(population,candidate,bird.getUUID().toString());
+     if(earned)verifiedDeaths.put(fish.getUUID(),damage);
+    }
+    if(!earned) {
+     check(SiltcrestBittern.wildFish(fish,level)&&!fish.isNoAi(),"Each living unowned fish retains ordinary water AI");resident(level,fish);alive++;
+     var box=fish.getBoundingBox();
+     check(box.minX>=cohort.x()+1-.001&&box.maxX<=cohort.x()+5+.001&&box.minZ>=cohort.z()-.001&&box.maxZ<=cohort.z()+4+.001,"Ordinary living prey remains physically inside its original four-by-four pond");
+    }
+   }
+   check(alive==(candidate!=null&&candidate.outcome()==SiltcrestPresentationWitness.Outcome.CAUGHT?2:3),"Exactly three healthy fish become exactly two only after a complete native kill receipt");
   }
+  for(int a=0;a<cohorts.size();a++)for(int b=a+1;b<cohorts.size();b++)for(var f:cohorts.get(a).fish())for(var g:cohorts.get(b).fish())
+   if(f.isAlive()&&g.isAlive())check(!f.getBoundingBox().inflate(8).intersects(g.getBoundingBox()),"Native schooling inflate(8) remains isolated across every living fish pair");
  }
- private String state(String event){
-  var l=server.overworld();var committed=(Vec3)read(bird,"committed");
-  return "event="+event+" now="+l.getGameTime()+" bird="+identity(bird)+" body="+bird.position()
-   +" alive="+bird.isAlive()+" removed="+bird.isRemoved()+" sameLevel="+(bird.level()==l)
-   +" pose="+bird.pose()+" phase="+bird.phase()+" left="+read(bird,"left")+" epoch="+read(bird,"epoch")
-   +" ready="+bird.huntReady()+" remaining="+(bird.huntReady()-l.getGameTime())
-   +" ground="+bird.onGround()+" standingBank="+BitternHabitat.standingBank(bird)+" water="+bird.isInWater()
-   +" disturbed="+bird.disturbed(l)+" night="+WetlandRules.night(l.getOverworldClockTime())+" rain="+l.isRaining()
-   +" pool="+bird.preyPool(l).size()+" quarry="+identity((Entity)read(bird,"quarry"))+" committed="+committed
-   +" pendingPreen="+read(bird,"pendingPreen")+" shelter="+bird.shelter()+" shelterUntil="+bird.shelterUntil()
-   +" navigation="+route(bird)+" hunt="+hunt()+" fish="+fish.stream().map(f->fishState(l,f,committed)).toList();
+ private void resident(ServerLevel level,Entity entity) {
+  check(entity.level()==level&&level.getEntity(entity.getUUID())==entity&&level.hasChunkAt(entity.blockPosition()),"Original actor is loaded and registered in the same world");
+  Integer before=entityTicks.put(entity.getUUID(),entity.tickCount);
+  check(entity.tickCount>0&&(before==null||entity.tickCount==before+1),"Every living observed actor actually ticks once per native server tick");
  }
- private String fishState(ServerLevel l,Cod f,Vec3 committed){
-  return "id="+f.getUUID()+" body="+f.position()+" center="+f.getBoundingBox().getCenter()+" hp="+f.getHealth()
-   +" alive="+f.isAlive()+" removed="+f.isRemoved()+" wild="+SiltcrestBittern.wildFish(f,l)+" noAI="+f.isNoAi()
-   +" sameLevel="+(f.level()==l)+" loaded="+l.hasChunkAt(f.blockPosition())+" named="+f.hasCustomName()
-   +" bucket="+f.fromBucket()+" persistent="+f.isPersistenceRequired()+" water="+f.isInWater()
-   +" distanceSqr="+bird.distanceToSqr(f)+" committedDistanceSqr="+(committed==null?"none":f.getBoundingBox().getCenter().distanceToSqr(committed))
-   +" sight="+bird.loadedSight(f)+" damage="+damageState(f.getLastDamageSource())+" navigation="+route(f);
+ State state() {
+  check(!closed,"Only the active native hunt supplies observations");qualify();
+  return new State(server.overworld().getGameTime(),firstCoil,candidates);
  }
- private String hunt(){
-  return bird.getGoalSelector().getAvailableGoals().stream().filter(w->w.getGoal() instanceof BitternHuntGoal).map(w->{var g=w.getGoal();return "running="+w.isRunning()+" quarry="+identity((Entity)read(g,"quarry"))+" origin="+read(g,"origin")+" bank="+read(g,"bank")+" cursor="+read(g,"cursor")+" retries="+read(g,"retries")+" left="+read(g,"left")+" scanAt="+read(g,"scanAt")+" searchAt="+read(g,"searchAt");}).toList().toString();
+ static int epoch(SiltcrestBittern bird) {
+  try{var field=SiltcrestBittern.class.getDeclaredField("epoch");field.setAccessible(true);return field.getInt(bird);}
+  catch(ReflectiveOperationException failure){throw new AssertionError("Exact native capture epoch is available",failure);}
  }
- private static String route(net.minecraft.world.entity.Mob mob){
-  var n=mob.getNavigation();var p=n.getPath();
-  return "done="+n.isDone()+(p==null?" path=none":" pathDone="+p.isDone()+" canReach="+p.canReach()+" next="+p.getNextNodeIndex()+" nodes="+p.getNodeCount()+" target="+p.getTarget());
+ void finish() {
+  var state=state();check(SiltcrestEcologyWitness.winner(state.candidates())>=0&&SiltcrestEcologyWitness.resolved(state.candidates()),"A complete real kill and every other commitment must resolve before hunt observation ends");close();
  }
- private static String identity(Entity e){return e==null?"none":e.getUUID().toString();}
- private static String damageState(DamageSource d){return d==null?"none":d+" source="+identity(d.getEntity())+" direct="+identity(d.getDirectEntity());}
- private static Object read(Object o,String name){
-  try{var f=o.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(o);}
-  catch(ReflectiveOperationException e){throw new AssertionError("Native ecology diagnostic field missing: "+name,e);}
+ @Override public void close() {
+  if(closed)return;closed=true;if(active==this)active=null;
+  SiltcrestPresentationProbe.endEcology(sessions);
+  System.out.println("SILTCREST_ECOLOGY_SUMMARY cohorts=3 sharedPostCoilTicks=500 firstCoil="+firstCoil+" observedTicks="+ticks+" finalCandidates="+candidates+" failure="+failure);
+  for(var row:first)System.out.println("SILTCREST_ECOLOGY_FIRST "+row);
+  for(var row:recent)System.out.println("SILTCREST_ECOLOGY_LAST "+row);
  }
- @Override public void close(){
-  if(active==this)active=null;
-  System.out.println("SILTCREST_ECOLOGY_SUMMARY ticks="+ticks+" hurtCalls="+hurtCalls+" transitions="+transitionCount+" coilSamples="+coilSamples+" receiptCount="+receiptCount+" screenshots="+screenshots);
-  print("FIRST",first);print("LAST",last);print("TRANSITION_FIRST",firstTransitions);print("TRANSITION_LAST",lastTransitions);print("COIL_FIRST",firstCoil);print("COIL_LAST",lastCoil);print("HURT",receipts);
-  server=null;bird=null;fish.clear();
- }
- private static void print(String label,Iterable<String> rows){for(String row:rows)System.out.println("SILTCREST_ECOLOGY_"+label+" "+row);}
 }

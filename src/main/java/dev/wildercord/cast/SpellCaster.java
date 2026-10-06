@@ -55,6 +55,11 @@ public final class SpellCaster {
 			if (tier != CordTier.ECHO || raw.size() != ids.size() || !dev.wildercord.spell.RelayRules.valid(raw)
 				|| ids.stream().anyMatch(id -> !book.knows(id))) return sockets;
 		}
+		if (dev.wildercord.spell.ReweaveRules.containsIds(ids)) {
+            var raw = ids.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (tier != CordTier.ECHO || spell >= CordTier.ECHO.spells || raw.size() != ids.size()
+                || !dev.wildercord.spell.ReweaveRules.valid(raw) || ids.stream().anyMatch(id -> !book.knows(id))) return sockets;
+        }
 		if (tier == null || spell < 0 || spell >= tier.spells && spell != dev.wildercord.gear.SpellSlots.TOME) {
 			return sockets;
 		}
@@ -93,6 +98,12 @@ public final class SpellCaster {
 	}
 	private static void cast(ServerPlayer player, int requested, double charge, Charging.Performance performance, ActionAdmission admission) {
 		if (dev.wildercord.aura.MastersArts.committed(player) || RelayCircles.committed(player)) return;
+        if (ReweaveFields.contains(player, requested)) {
+            int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
+            String problem = ReweaveFields.problem(player, slot);
+            fail(player, Component.literal(problem == null ? "Reweave uses fresh cast-key presses: place, release the key, then rewrite." : problem));
+            return;
+        }
 		if (RelayCircles.contains(player, requested)) {
 			int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
 			String problem = RelayCircles.problem(player, slot);
@@ -462,6 +473,19 @@ public final class SpellCaster {
 	 */
 	public static Component edit(ServerPlayer player, int spell, List<String> runeIds) {
 		RelayCircles.cancel(player);
+        if (dev.wildercord.spell.ReweaveRules.containsIds(runeIds)) {
+            if (spell < 0 || spell >= CordTier.ECHO.spells || runeIds.size() > CordTier.MAX_SOCKETS)
+                return Component.literal("Reweave needs a bounded ordinary Echo Cord row.");
+            if (!dev.wildercord.player.MasterStudies.knowsReweave(player) || !dev.wildercord.player.MasterStudies.eligibleReweave(player))
+                return Component.literal("Study Ebb Ledger in Grimoire > Master studies with active XII and Low Tide.");
+            if (Spellbooks.tier(player) != CordTier.ECHO || !dev.wildercord.gear.Gear.spellOpen(player, CordTier.ECHO, spell))
+                return Component.literal("Reweave needs your Echo Cord and an open ordinary slot.");
+            if (runeIds.stream().anyMatch(id -> !Spellbooks.knows(player, id))) return Component.literal("Learn each rune before threading Reweave.");
+            var raw = runeIds.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (raw.size() != runeIds.size()) return Component.literal("This Reweave draft contains unreadable runes.");
+            Spellbooks.set(player, Spellbooks.get(player).withSpell(spell, List.copyOf(runeIds)));
+            return dev.wildercord.spell.ReweaveRules.valid(raw) ? null : Component.literal(dev.wildercord.spell.ReweaveRules.GRAMMAR_PROBLEM);
+        }
 		if (dev.wildercord.spell.RelayRules.containsIds(runeIds)) {
 			if (runeIds.size() > CordTier.MAX_SOCKETS)
 				return Component.literal("This Relay draft contains too many runes; the accepted row is restored.");

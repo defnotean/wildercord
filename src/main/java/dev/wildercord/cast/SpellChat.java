@@ -56,6 +56,7 @@ public final class SpellChat {
 		List<String> ids = SpellCodes.decode(code);
 		for (String id : ids) Runes.get(id).ifPresent(runes::add);
 		if (dev.wildercord.spell.RelayRules.containsIds(ids) && (runes.size() != ids.size() || !dev.wildercord.spell.RelayRules.valid(runes))) return List.of(Runes.RELAY);
+		if (dev.wildercord.spell.ReweaveRules.containsIds(ids) && (runes.size() != ids.size() || !dev.wildercord.spell.ReweaveRules.valid(runes))) return List.of(Runes.REWEAVE);
 		return runes;
 	}
 

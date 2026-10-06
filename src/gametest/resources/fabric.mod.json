@@ -305,7 +305,8 @@
       "dev.wildercord.client.combat.CrimsonMoonCaptureTest",
       "dev.wildercord.aura.world.MasterOrdinaryPlannerTest",
       "dev.wildercord.cast.ReweaveFeasibilityTest",
-      "dev.wildercord.aura.StoneHingeFeasibilityTest"
+      "dev.wildercord.aura.StoneHingeFeasibilityTest",
+      "dev.wildercord.cast.ReweavePlayableTest"
     ]
   },
   "mixins": [

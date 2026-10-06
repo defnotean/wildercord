@@ -127,6 +127,8 @@ public final class Wildercord implements ModInitializer {
 		SpellCaster.init();
 		dev.wildercord.cast.RelayCircles.init();
 		dev.wildercord.content.RelayLesson.init();
+        dev.wildercord.cast.ReweaveFields.init();
+        dev.wildercord.content.ReweaveLesson.init();
 		WildercordCommand.init();
 		dev.wildercord.travel.Travel.init();
 		dev.wildercord.loadout.Loadouts.init();

@@ -17,7 +17,7 @@ import subprocess
 import sys
 
 from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIES,
-                           progression_completion, select_entries, selection_issues)
+                           progression_completion, reweave_player_completion, REWEAVE_PLAYER_ENTRIES, select_entries, selection_issues)
 import run_client_ci
 from native_ci_diagnostics import SCENE_PREFIX
 
@@ -37,11 +37,14 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "kiln-ring": "diagnostic-kiln-ring",
          "ecology-return": "diagnostic-ecology-return",
          "stasis-gallery": "diagnostic-stasis-gallery",
-         "progression-feasibility": "diagnostic-progression-feasibility"}
+         "progression-feasibility": "diagnostic-progression-feasibility",
+         "reweave-player": "diagnostic-reweave-player"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
+    "reweave-player": {"dev.wildercord.cast.ReweavePlayableTest#lesson": None,
+                       "dev.wildercord.cast.ReweavePlayableTest#input": None},
     "progression-feasibility": dict.fromkeys(PROGRESSION_ENTRIES),
     "stasis-gallery": {"dev.wildercord.gametest.WildercordScreenshots": None},
     "ecology-return": {"dev.wildercord.wildlife.RootmoltCounterTest": None,
@@ -73,7 +76,21 @@ CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_cata
 
 
 # Include every new proof helper and exact test-only instrumentation used by this case.
-CASE_FILES = {"progression-feasibility": (
+CASE_FILES = {"reweave-player": (
+    "src/main/java/dev/wildercord/cast/ReweaveFields.java",
+    "src/main/java/dev/wildercord/cast/ReweaveState.java",
+    "src/main/java/dev/wildercord/net/ReweaveInput.java",
+    "src/main/java/dev/wildercord/mixin/ReweavePlayerModeMixin.java",
+    "src/main/resources/wildercord.mixins.json",
+    "src/main/java/dev/wildercord/content/ReweaveLesson.java",
+    "src/main/java/dev/wildercord/player/MasterStudies.java",
+    "src/main/java/dev/wildercord/spell/MasterStudyRules.java",
+    "src/main/java/dev/wildercord/spell/ReweaveRules.java",
+    "src/client/java/dev/wildercord/client/ReweaveClient.java",
+    "src/client/java/dev/wildercord/client/ReweaveLessonScreen.java",
+    "src/gametest/java/dev/wildercord/content/ReweaveLessonChecks.java",
+    "tools/generate_reweave_lesson.py",
+), "progression-feasibility": (
     "src/main/java/dev/wildercord/cast/ReweaveFields.java",
     "src/main/java/dev/wildercord/spell/ReweaveRules.java",
     "src/test/java/dev/wildercord/spell/ReweaveRulesTest.java",
@@ -196,6 +213,10 @@ def current(env, *, observed_head=None):
             "kind": "diagnostic", "name": CASES["progression-feasibility"],
             "count": 2, "entries": list(PROGRESSION_ENTRIES)}:
         raise ValueError("Progression feasibility requires exactly both complete allowlisted classes in order")
+    if request["case"] == "reweave-player" and selection != {
+            "kind": "diagnostic", "name": CASES["reweave-player"],
+            "count": 1, "entries": list(REWEAVE_PLAYER_ENTRIES)}:
+        raise ValueError("Reweave player diagnostic must retain exactly its whole registered class")
     paths = [*CONFIG_FILES, *CASE_FILES.get(request["case"], ())]
     if selection:
         paths += ["src/gametest/java/" + entry.replace(".", "/") + ".java" for entry in selection["entries"]]
@@ -261,15 +282,15 @@ def observed_seeds(log, case):
             continue
         try:
             marker = json.loads(line.split(SEED_PREFIX, 1)[1],
-                                object_pairs_hook=unique_object if case == "progression-feasibility" else dict)
-            if case == "progression-feasibility" and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
+                                object_pairs_hook=unique_object if case in ("progression-feasibility", "reweave-player") else dict)
+            if case in ("progression-feasibility", "reweave-player") and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
                 raise ValueError()
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
-            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility") and entry in found:
+            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player") and entry in found:
                 issues.append("Repeated native world seed marker for " + entry)
-            if case == "progression-feasibility" and not -(2 ** 63) <= int(seed) < 2 ** 63:
+            if case in ("progression-feasibility", "reweave-player") and not -(2 ** 63) <= int(seed) < 2 ** 63:
                 raise ValueError()
             found.setdefault(entry, set()).add(seed)
         except (ValueError, KeyError, TypeError):
@@ -344,6 +365,8 @@ def collect(env):
     issues.extend(seed_issues)
     if data["request"]["case"] == "progression-feasibility":
         data["completedEntries"], _ = progression_completion(log)
+    if data["request"]["case"] == "reweave-player":
+        data["completedEntries"], _ = reweave_player_completion(log)
     successful = "BUILD SUCCESSFUL" in log and "BUILD FAILED" not in log and not issues
     data.update(diagnosticOutcome="passed" if successful else "unverified",
                 observedWorldSeeds=seeds, verificationIssues=issues,

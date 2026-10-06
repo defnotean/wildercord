@@ -7,15 +7,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CircleDisciplinesTest {
 	static SpellPlan.Group group(RuneDef circle,RuneDef effect){return SpellCompiler.compile(List.of(Runes.BOLT,circle,effect)).root().groups.getFirst();}
-	@Test void ordinaryShapesAcceptDisciplinesAndRelayExplicitlyRefuses() {
+	@Test void ordinaryShapesAcceptDisciplinesAndMasterLessonsExplicitlyRefuse() {
 		var circles=Runes.all().stream().filter(CircleDisciplines::isCircle).toList();assertEquals(12,circles.size());
 		var designs=new HashSet<CircleDisciplines.Design>();
 		for(var circle:circles){designs.add(CircleDisciplines.profile(circle).design());
 			for(var shape:Runes.all().stream().filter(r->r.family()==RuneFamily.SHAPE).toList()){
-				var compiled=SpellCompiler.compile(List.of(shape,circle,Runes.FIRE));
-				if (shape.equals(Runes.RELAY)) {
-					assertTrue(compiled.isEmpty(), "The initial Relay lesson refuses every discipline before payment");
-					assertEquals(0, compiled.cost()); assertTrue(compiled.warnings().contains(RelayRules.GRAMMAR_PROBLEM));
+				boolean lesson=shape.equals(Runes.RELAY) || shape.equals(Runes.REWEAVE);
+				RuneDef effect=lesson?Runes.HARM:Runes.FIRE;
+				var compiled=SpellCompiler.compile(List.of(shape,circle,effect));
+				if (lesson) {
+					var plain=SpellCompiler.compile(List.of(shape,effect));
+					assertFalse(plain.isEmpty(), shape.name()+" accepts its exact Harm payload");
+					assertTrue(plain.warnings().isEmpty());
+					assertTrue(compiled.isEmpty(), shape.name()+" refuses "+circle.name()+" before payment");
+					assertEquals(0, compiled.cost());
+					assertTrue(compiled.warnings().contains(shape.equals(Runes.RELAY)
+						?RelayRules.GRAMMAR_PROBLEM:ReweaveRules.GRAMMAR_PROBLEM));
 					continue;
 				}
 				assertTrue(compiled.warnings().isEmpty(),circle.name()+" / "+shape.name()+compiled.warnings());

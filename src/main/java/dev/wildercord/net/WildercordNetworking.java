@@ -312,7 +312,8 @@ public final class WildercordNetworking {
 			if (!allowed(context)) {
 				return;
 			}
-			boolean relayEdit = dev.wildercord.spell.RelayRules.containsIds(payload.runes()) || dev.wildercord.cast.RelayCircles.contains(context.player(), payload.spell());
+			boolean relayEdit = dev.wildercord.spell.RelayRules.containsIds(payload.runes()) || dev.wildercord.cast.RelayCircles.contains(context.player(), payload.spell())
+                || dev.wildercord.spell.ReweaveRules.containsIds(payload.runes()) || dev.wildercord.cast.ReweaveFields.contains(context.player(), payload.spell());
 			net.minecraft.network.chat.Component problem = SpellCaster.edit(context.player(), payload.spell(), payload.runes());
 			if (relayEdit) RelayEditorReply.reply(context.player(), payload, problem);
 			if (problem != null) {

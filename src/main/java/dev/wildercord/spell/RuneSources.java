@@ -32,6 +32,7 @@ public final class RuneSources {
 	private static final Map<String, Source> ALL = new LinkedHashMap<>();
 
 	// ---- Permanent lessons: never included in ordinary Archive or other common loot pools.
+	public static final Source REWEAVE_LESSON = source("lesson:reweave", "Ebb Ledger, retrievable in the Grimoire after Low Tide; study with active Circle XII", Runes.REWEAVE);
 	public static final Source RELAY_LESSON = source("lesson:relay", "The Margin Between Places, at an inactive Archive Lectern after Circle VIII and the Archivist", Runes.RELAY);
 
 	/** Entitlement is taught by a lesson, never supplied by common loot or crafting. */

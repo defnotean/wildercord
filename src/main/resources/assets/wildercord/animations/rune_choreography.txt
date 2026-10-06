@@ -40,6 +40,8 @@ constellation|STAR|TETHER|CROWN
 glaive|CRESCENT|ORBIT|CLAW
 imprint|SEAL|MIRROR|DIAMOND
 latch|NEEDLE|CHAIN|SEAL
+# The same paid inscription unfolds into four ruled obligations; no renewed circle or water wall.
+reweave|SEAL|TETHER|LEDGER
 
 # Wind, life, arcane and foundational effects
 feather_fall|WING|PETAL|MIST

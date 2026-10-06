@@ -96,6 +96,8 @@ public final class WildercordClient implements ClientModInitializer {
 		MasteryClient.init();
 		RelayClient.init();
 		RelayLessonScreen.register();
+        ReweaveClient.init();
+        ReweaveLessonScreen.register();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.BACKPACK, BackpackScreen::new);
 		BlankRuneTooltip.init();

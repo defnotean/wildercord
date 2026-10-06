@@ -144,6 +144,7 @@ public class CordScreen extends Screen {
 	private int grimoireScroll;
 	/** The retrievable Archive lesson's visible row, in the Cord panel's coordinates. */
 	private int relayLessonY = -1;
+    private int reweaveLessonY = -1;
 	/** Where the field guide's heading falls among the Grimoire's lines, and whether to scroll there on the next draw. */
 	private int fieldGuideAt;
 	private boolean toFieldGuide;
@@ -404,6 +405,7 @@ public class CordScreen extends Screen {
 	}
 
 	/** The saved Archive lesson's readable row, or null while it is outside the Grimoire viewport. */
+    public double[] reweaveLessonPoint() { return reweaveLessonY < 0 ? null : onScreen(TEXT_X + 18, reweaveLessonY + 4); }
 	public double[] relayLessonPoint() {
 		return relayLessonY < 0 ? null : onScreen(TEXT_X + 18, relayLessonY + 4);
 	}
@@ -1551,6 +1553,14 @@ public class CordScreen extends Screen {
 			return passiveReadout(tier, out, width);
 		}
 		List<String> spell = spells.get(editing);
+        if (dev.wildercord.spell.ReweaveRules.containsIds(spell)) {
+            var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (raw.size() != spell.size() || !dev.wildercord.spell.ReweaveRules.valid(raw)) {
+                wrap(out, Component.literal("Unfinished Reweave · cannot cast"), 0, width, 0xFFE06060);
+                wrap(out, Component.literal(dev.wildercord.spell.ReweaveRules.GRAMMAR_PROBLEM), 0, width, TEXT);
+                refusal(out, width); return out;
+            }
+        }
 		if (dev.wildercord.spell.RelayRules.containsIds(spell)) {
 			var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
 			if (raw.size() != spell.size() || !dev.wildercord.spell.RelayRules.valid(raw)) {
@@ -1915,6 +1925,11 @@ public class CordScreen extends Screen {
 				? "screen.wildercord.relay_lesson.heart_copied" : "message.wildercord.relay_lesson.invitation")
 				.withColor(0x7FDAD4));
 		}
+        if (circles >= 12 || Heart.discovered(player, "feat:" + dev.wildercord.spell.Feats.TIDE_SCRIBE)) {
+            lines.add(Component.translatable(dev.wildercord.player.MasterStudies.knowsReweave(player)
+                ? "screen.wildercord.reweave_lesson.heart_known" : dev.wildercord.player.MasterStudies.hasReweaveLesson(player)
+                ? "screen.wildercord.reweave_lesson.heart_copied" : "message.wildercord.reweave_lesson.invitation").withColor(0xB9A0EE));
+        }
 		lines.add(Component.empty());
 		if (circles >= Circles.MAX) {
 			lines.add(Component.translatable("screen.wildercord.heart.complete", Circles.MAX).withStyle(ChatFormatting.GOLD));
@@ -2229,6 +2244,11 @@ public class CordScreen extends Screen {
 			return true;
 		}
 		if (grimoirePage) {
+            if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && reweaveLessonY >= 0
+                && dev.wildercord.player.MasterStudies.hasReweaveLesson(minecraft.player)
+                && inside(mx, my, TEXT_X + 8, reweaveLessonY - 1, W - 32 - TEXT_X, LINE)) {
+                click(); minecraft.gui.setScreen(new ReweaveLessonScreen(this)); return true;
+            }
 			if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && relayLessonY >= 0
 				&& dev.wildercord.player.MasterStudies.hasRelayLesson(minecraft.player)
 				&& inside(mx, my, TEXT_X + 8, relayLessonY - 1, W - 32 - TEXT_X, LINE)) {
@@ -2731,6 +2751,15 @@ public class CordScreen extends Screen {
 			return;
 		}
 		List<String> decoded = dev.wildercord.spell.SpellCodes.decode(code);
+        if (dev.wildercord.spell.ReweaveRules.containsIds(decoded)) {
+            var raw = decoded.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
+                || !dev.wildercord.spell.ReweaveRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
+                || !dev.wildercord.player.MasterStudies.knowsReweave(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleReweave(minecraft.player)) {
+                minecraft.player.sendOverlayMessage(Component.literal("Reweave needs Ebb Ledger study, active XII, Low Tide, Echo Cord and exactly Reweave + Harm.").withColor(0xE06060));
+                return;
+            }
+        }
 		if (dev.wildercord.spell.RelayRules.containsIds(decoded)) {
 			var raw = decoded.stream().map(Runes::get).flatMap(Optional::stream).toList();
 			if (passivePage || tier() != CordTier.ECHO || raw.size() != decoded.size()
@@ -2852,7 +2881,7 @@ public class CordScreen extends Screen {
 		Player player = minecraft.player;
 		List<String> found = Heart.grimoire(player);
 		List<GrimoireLine> lines = new ArrayList<>();
-		relayLessonY = -1;
+		relayLessonY = -1; reweaveLessonY = -1;
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.relay_lesson.heading"), 0, GOLD, null));
 		boolean relayKnown = dev.wildercord.player.MasterStudies.knowsRelay(player);
 		boolean relayCopied = dev.wildercord.player.MasterStudies.hasRelayLesson(player);
@@ -2863,6 +2892,13 @@ public class CordScreen extends Screen {
 				: "message.wildercord.relay_lesson.invitation").withStyle(ChatFormatting.GRAY))));
 		if (relayCopied) lines.add(new GrimoireLine(Component.translatable(!relayKnown ? "screen.wildercord.relay_lesson.study_pending" : dev.wildercord.player.MasterStudies.practicedRelay(player)
 			? "screen.wildercord.relay_lesson.practiced" : "screen.wildercord.relay_lesson.practice_pending"), 8, DIM, null));
+        boolean reweaveKnown = dev.wildercord.player.MasterStudies.knowsReweave(player);
+        boolean reweaveCopied = dev.wildercord.player.MasterStudies.hasReweaveLesson(player);
+        int reweaveLessonIndex = reweaveCopied ? lines.size() : -1;
+        lines.add(new GrimoireLine(Component.translatable(reweaveKnown ? "screen.wildercord.reweave_lesson.entry"
+            : reweaveCopied ? "screen.wildercord.reweave_lesson.copied" : "screen.wildercord.reweave_lesson.unknown"), 8, reweaveCopied ? CYAN : DIM,
+            List.of(Component.translatable(reweaveKnown ? "screen.wildercord.reweave_lesson.retrieve" : "screen.wildercord.reweave_lesson.retrieve_copied").withStyle(ChatFormatting.GRAY))));
+        if (reweaveCopied && !reweaveKnown) lines.add(new GrimoireLine(Component.translatable("screen.wildercord.reweave_lesson.study_pending"), 8, DIM, null));
 		int top = SPELL_TOP - 4;
 		int bottom = H - 12;
 		sprite(g, SPR_INSET, 10, top - 3, W - 20, bottom + 3 - (top - 3));
@@ -2987,6 +3023,7 @@ public class CordScreen extends Screen {
 			GrimoireLine line = lines.get(first + i);
 			int y = top + i * LINE;
 			if (first + i == relayLessonIndex && y >= top && y + LINE <= bottom) relayLessonY = y;
+            if (first + i == reweaveLessonIndex && y >= top && y + LINE <= bottom) reweaveLessonY = y;
    String lifeLink=lifeJournalLinks.get(first+i);if(lifeLink!=null && y>=top && y+LINE<=bottom)visibleLifeJournalLinks.add(new LifeJournalLink(y,lifeLink));
 			int x = TEXT_X + line.x();
 			if (line.x() == 0) {

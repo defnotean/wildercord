@@ -3,6 +3,7 @@ package dev.wildercord.cast.feel;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneFamily;
 import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.ReweaveRules;
 import dev.wildercord.spell.SpellCompiler;
 import dev.wildercord.spell.SpellPlan;
 import org.junit.jupiter.api.Test;
@@ -84,12 +85,30 @@ class FeelTest {
 					assertTrue(compiled.isEmpty()); assertEquals(0, compiled.cost()); assertFalse(compiled.warnings().isEmpty());
 					continue;
 				}
+				if (shape.equals(Runes.REWEAVE) && !effect.equals(Runes.HARM)) {
+					assertTrue(compiled.isEmpty(), "Reweave refuses " + effect.name());
+					assertEquals(0, compiled.cost());
+					assertTrue(compiled.warnings().contains(ReweaveRules.GRAMMAR_PROBLEM));
+					continue;
+				}
+				assertFalse(compiled.isEmpty(), shape.name() + " / " + effect.name());
 				SpellPlan.Group g = compiled.root().groups.getFirst();
 				Feel f = Feel.of(g, 30, 0.5);
 				assertNotNull(f.role());
 				assertNotNull(f.motion());
 			}
 		}
+	}
+
+	@Test
+	void reweavesExactHarmFieldUsesTheGroundInscriptionGesture() {
+		var compiled = SpellCompiler.compile(List.of(Runes.REWEAVE, Runes.HARM));
+		assertTrue(compiled.warnings().isEmpty());
+		assertEquals(1, compiled.root().groups.size());
+		Feel feel = Feel.of(compiled.root().groups.getFirst(), compiled.cost(), 0);
+		assertEquals(Motion.SEAL, feel.motion());
+		assertEquals(Role.STRIKE, feel.role());
+		assertTrue(ShapeFeels.hasGesture(Runes.REWEAVE.path()));
 	}
 
 	@Test

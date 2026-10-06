@@ -16,7 +16,9 @@ class ReweaveRulesTest {
         assertFalse(ReweaveRules.eligible(12, true, false));
         assertEquals(300000, Circles.condenseNeeded(12));
         assertEquals(List.of(new Circles.Requirement(Circles.Need.RUNEBOUND, 20), Circles.Requirement.feat(Feats.TIDE_SCRIBE)), Circles.requirements(12));
-        assertTrue(Runes.get(ReweaveRules.ID).isEmpty(), "Feasibility cannot publish a half-built player capability");
+        assertSame(Runes.REWEAVE, Runes.get(ReweaveRules.ID).orElseThrow());
+        assertSame(Runes.REWEAVE, ReweaveRules.RUNE);
+        assertEquals("Reweave", ReweaveRules.RUNE.name());
         assertNotNull(Passives.problem(ReweaveRules.RUNES));
     }
     @Test void fourAbsoluteBeatsAndNoSameTickReplay() {

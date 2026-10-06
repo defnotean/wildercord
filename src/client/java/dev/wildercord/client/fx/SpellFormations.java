@@ -205,6 +205,27 @@ public final class SpellFormations {
     case GLAIVE -> { line(point(-q*.6,-q*.6,0),point(q*.6,q*.6,0),false); slash(point(q*.45,q*.45,0),q*.5,Math.PI*1.3,Math.PI/4); }
     case IMPRINT -> { polygon(6,q,0); polygon(3,q*.55,Math.PI/2); }
     case RELAY -> { ring(point(-q*.6,0,0),q*.35,false); ring(point(q*.6,0,0),q*.35*(1-.5*t),false); line(point(-q*.25,0,0),point(q*.25,0,0),false); }
+    case REWEAVE -> {
+     // A miniature floor inscription unfolds into the same four ruled marks, never a projectile or wall.
+     Vec3 along=new Vec3(forward.x,0,forward.z);
+     along=along.lengthSqr()<.0001?new Vec3(0,0,1):along.normalize();
+     Vec3 across=along.cross(UP);
+     if(beat==1) {
+      ring(focus,q*.65,true);
+      for(int i=0;i<4;i++) {
+       double a=i*Math.PI/2;
+       Vec3 spoke=across.scale(Math.cos(a)).add(along.scale(Math.sin(a)));
+       line(focus.add(spoke.scale(q*.35)),focus.add(spoke.scale(q*.55)),false);
+      }
+     } else {
+      double half=q*.16,length=q*1.8;
+      for(int side:new int[]{-1,1})line(focus.add(across.scale(side*half)),focus.add(across.scale(side*half)).add(along.scale(length)),false);
+      for(int i=0;i<4;i++) {
+       Vec3 mark=focus.add(along.scale(length*(i+.5)/4));
+       line(mark.subtract(across.scale(half)),mark.add(across.scale(half)),false);
+      }
+     }
+    }
     case LATCH -> { slash(point(-.2,0,0),q*.6,Math.PI*1.4,0); slash(point(.2,0,0),q*.6,Math.PI*1.4,Math.PI); line(point(-.2,0,0),point(.2,0,0),false); }
    }
    for(String id:event.runes())if(NextSignatureForms.supports(id) && !FrostFormations.supports(id) && !VoidForms.supports(id) && !LifeForms.supports(id))

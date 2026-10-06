@@ -1,12 +1,13 @@
 {
   "masters": {
-    "description": "Masters update combat, progression, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln counterplay and Crimson Moon release/lifetime acceptance.",
-    "expectedCount": 38,
+    "description": "Masters update combat, progression including learned Circle XII Reweave, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln counterplay and Crimson Moon release/lifetime acceptance.",
+    "expectedCount": 39,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
       "dev.wildercord.cast.RelayDefenceTest",
       "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.cast.ReweavePlayableTest",
       "dev.wildercord.party.PartyMutationSafetyTest",
       "dev.wildercord.party.ArtFieldMutationSafetyTest",
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
@@ -139,11 +140,19 @@
   },
   "diagnostic-progression-feasibility": {
     "purpose": "diagnostic",
-    "description": "Diagnostic only: the complete Reweave mechanism and Stone Hinge native receipt feasibility classes. Reweave has no ordinary rune or lesson registration; Stone Hinge movement remains disabled. Never release acceptance.",
+    "description": "Diagnostic only: the complete Reweave mechanism and Stone Hinge native receipt feasibility classes. Reweave ordinary player-path acceptance is separate; Stone Hinge movement remains disabled. Never release acceptance.",
     "expectedCount": 2,
     "entries": [
       "dev.wildercord.cast.ReweaveFeasibilityTest",
       "dev.wildercord.aura.StoneHingeFeasibilityTest"
+    ]
+  },
+  "diagnostic-reweave-player": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: complete Ebb Ledger retrieval/study and ordinary Reweave learn/equip/input/paid-field/lifecycle class. Synthetic XII/Low Tide setup is declared; no broad release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.cast.ReweavePlayableTest"
     ]
   }
 }

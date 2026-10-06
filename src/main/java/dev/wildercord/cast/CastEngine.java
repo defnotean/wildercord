@@ -49,17 +49,17 @@ public final class CastEngine {
 		runSegment(cast, root, Cast.Trigger.self(cast.caster));
 	}
 
-	/** Relay can only leave through its paid focus receipt, never a copy, stored cast or monster fallback. */
-	private static boolean containsRelay(SpellPlan.Segment segment) {
+	/** Restricted lesson shapes use their paid runtime receipt, never a copy, stored cast or monster fallback. */
+	private static boolean containsRestrictedLesson(SpellPlan.Segment segment) {
 		for (int depth = 0; segment != null && depth <= Cast.MAX_DEPTH; depth++) {
-			if (segment.groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID))) return true;
+			if (segment.groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID) || g.shape.is(dev.wildercord.spell.ReweaveRules.ID))) return true;
 			segment = segment.link == null ? null : segment.link.next;
 		}
 		return segment != null;
 	}
 
 	static void runSegment(Cast cast, SpellPlan.Segment seg, Cast.Trigger at) {
-		if (seg == null || !cast.alive() || containsRelay(seg) || !cast.takeSegment()) {
+		if (seg == null || !cast.alive() || containsRestrictedLesson(seg) || !cast.takeSegment()) {
 			return;
 		}
 		if(seg != cast.info.root() || cast.depth>0)FormationVfx.continuation(cast,seg,at);

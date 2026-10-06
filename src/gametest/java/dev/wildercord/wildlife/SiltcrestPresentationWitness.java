@@ -8,11 +8,12 @@ import java.util.List;
 final class SiltcrestPresentationWitness {
  enum Outcome { PENDING,ESCAPED,CAUGHT }
  record Candidate(int epoch,String quarry,long admittedTick,long strikeTick,long huntReady,Outcome outcome) {}
- private final String source,trial;
+ private final String source,trial,suite;private final boolean ecology;
  private int consumed,step,epoch;private long admittedTick,strikeTick=-1,ready;
  private JsonObject admitted,entered,called,cancelled;
  private Outcome outcome=Outcome.PENDING;
- SiltcrestPresentationWitness(String source,String trial){this.source=source;this.trial=trial;}
+ SiltcrestPresentationWitness(String source,String trial){this(source,trial,false);}
+ SiltcrestPresentationWitness(String source,String trial,boolean ecology){this.source=source;this.trial=trial;this.ecology=ecology;suite=ecology?SiltcrestPresentationProbe.ECOLOGY_SUITE:SiltcrestPresentationProbe.SUITE;}
 
  Candidate inspect(List<JsonObject> rows,int errors,int omitted) {
   require(errors==0&&omitted==0,"Complete error-free native receipts own qualification");
@@ -21,7 +22,7 @@ final class SiltcrestPresentationWitness {
   return admitted==null?null:new Candidate(epoch,text(admitted,"quarryUuid"),admittedTick,strikeTick,ready,outcome);
  }
  private void accept(JsonObject row) {
-  require(text(row,"suite").equals(SiltcrestPresentationProbe.SUITE)&&text(row,"trial").equals(trial)
+  require(text(row,"suite").equals(suite)&&text(row,"trial").equals(trial)
     &&text(row,"sourceUuid").equals(source)&&!bool(row,"threw"),"Exact source/trial and normal native return own every receipt");
   String event=text(row,"event");
   if(event.equals("coil_admitted")) {
@@ -33,7 +34,7 @@ final class SiltcrestPresentationWitness {
    require(integer(row,"pose")==SiltcrestBittern.COILING&&integer(row,"phase")==0&&integer(row,"left")==SiltcrestBittern.COIL
      &&!bool(row,"pendingPreen")&&admittedTick>=number(row,"huntReady"),"Original ready grounded sixteen-tick coil admission");
    var target=object(row,"admittedFish");
-   require(decimal(target,"sourceDistanceSqr")<=3.24&&decimal(target,"committedDistanceSqr")==0
+   require(bool(target,"loadedSight")&&decimal(target,"sourceDistanceSqr")<=3.24&&decimal(target,"committedDistanceSqr")==0
      &&value(row,"committed").equals(value(target,"center")),"Admission locks the actual eligible nearby quarry center");
    return;
   }
@@ -60,7 +61,8 @@ final class SiltcrestPresentationWitness {
     require(step==2&&outcome==Outcome.PENDING,"Only a pre-damage final strike refusal may be nonqualifying");
     nativeStrike(row);source(row,3);fish(row,true);
     require(integer(row,"cancelPause")==40&&number(row,"huntReady")==strikeTick+200,"Exact native failed-strike cancellation retains two hundred ticks");
-    require(decimal(object(row,"admittedFish"),"committedDistanceSqr")>.36
+    var target=object(row,"admittedFish");
+    require((decimal(target,"committedDistanceSqr")>.36||ecology&&(decimal(target,"sourceDistanceSqr")>3.24||!bool(target,"loadedSight")))
       &&value(row,"admittedFish").equals(value(entered,"admittedFish")),"The live native quarry actually escaped the locked center before any damage");
     cancelled=row;step=5;
    }
@@ -93,13 +95,13 @@ final class SiltcrestPresentationWitness {
  }
  private void source(JsonObject row,int pool) {
   require(bool(row,"sourceAlive")&&!bool(row,"sourceRemoved")&&bool(row,"sourceTracked")&&bool(row,"ground")&&!bool(row,"water")
-    &&bool(row,"night")&&!bool(row,"raining")&&!bool(row,"disturbed")&&integer(row,"pool")>=pool
+    &&bool(row,"night")&&!bool(row,"raining")&&!bool(row,"disturbed")&&(ecology?integer(row,"pool")==pool:integer(row,"pool")>=pool)
     &&decimal(row,"sourceHealth")==decimal(admitted,"sourceHealth")&&value(row,"sourcePosition").equals(value(admitted,"sourcePosition")),"The original healthy supported source remains undisturbed and still through its commitment");
  }
  private void fish(JsonObject row,boolean alive) {
   var fish=object(row,"admittedFish");
   require(bool(fish,"sameWorld")&&!bool(fish,"removed")&&bool(fish,"water")&&!bool(fish,"fromBucket")&&!bool(fish,"named")
-    &&!bool(fish,"persistent")&&!bool(fish,"noAi")&&bool(fish,"loaded")&&bool(fish,"loadedSight"),"Original unowned loaded ordinary-AI quarry remains in the supplied water with sight");
+    &&!bool(fish,"persistent")&&!bool(fish,"noAi")&&bool(fish,"loaded")&&(ecology||bool(fish,"loadedSight")),"Original unowned loaded ordinary-AI quarry remains in the supplied water; presentation also requires sight");
   require(bool(fish,"alive")==alive&&bool(fish,"wild")==alive
     &&(alive?decimal(fish,"health")==3:decimal(fish,"health")<=0),"Refusal preserves the healthy fish; successful damage owns its death");
  }
@@ -109,9 +111,10 @@ final class SiltcrestPresentationWitness {
     &&integer(row,"phase")==0&&integer(row,"left")==6&&!bool(row,"pendingPreen"),"Original live commitment enters the native six-tick strike unchanged");
  }
  private void nativeStrike(JsonObject row){liveCommitment(row);require(number(row,"clock")==strikeTick,"Synchronous native strike boundary retains its source clock");}
- private void inReach(JsonObject row){var fish=object(row,"admittedFish");require(decimal(fish,"committedDistanceSqr")<=.36&&decimal(fish,"sourceDistanceSqr")<=3.24,"Actual successful quarry satisfies both native reach gates");}
+ private void inReach(JsonObject row){var fish=object(row,"admittedFish");require(bool(fish,"loadedSight")&&decimal(fish,"committedDistanceSqr")<=.36&&decimal(fish,"sourceDistanceSqr")<=3.24,"Actual successful quarry satisfies sight and both native reach gates");}
  private void damage(JsonObject row) {
   require(bool(row,"damageTargetIsAdmitted")&&text(row,"damageTargetUuid").equals(text(admitted,"quarryUuid"))&&decimal(row,"damageAmount")==4,"Exactly the admitted quarry receives the original four-damage native call");
+  if(ecology)require(text(row,"damageSourceUuid").equals(source)&&text(row,"damageDirectUuid").equals(source),"The same native bird owns both direct and responsible damage identity");
  }
  static long phaseDeadline(long deadline,long now,int cap){return Math.min(deadline,now+cap);}
  /** Neither a stopped server clock nor another rejected commitment can renew the original allowance. */

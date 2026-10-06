@@ -15,20 +15,36 @@ import java.util.function.Consumer;
 /** Passive GameTest receipts. No AI, path, RNG, damage, pose or clock operation is supplied here. */
 public final class SiltcrestPresentationProbe {
  static final String SUITE="dev.wildercord.wildlife.SiltcrestPresentationTest";
+ static final String ECOLOGY_SUITE="dev.wildercord.wildlife.SiltcrestEcologyTest";
  static final int MAX_RECORDS=64;
  private static volatile Session active;
+ private static volatile List<Session> ecology=List.of();
  private SiltcrestPresentationProbe() {}
 
  static Session begin(ServerLevel level,SiltcrestBittern bird,String trial) {
   return install(SUITE,level,bird,trial,Thread.currentThread(),line -> System.out.println("SILTCREST_PRESENTATION "+line));
  }
+ static synchronized List<Session> beginEcology(ServerLevel level,List<SiltcrestBittern> birds) {
+  return installEcology(level,birds,Thread.currentThread(),line->System.out.println("SILTCREST_ECOLOGY_NATIVE "+line));
+ }
+ static synchronized List<Session> installEcology(Object level,List<?> birds,Thread owner,Consumer<String> sink) {
+  if(active!=null||!ecology.isEmpty()||birds.size()!=3||birds.stream().distinct().count()!=3)throw new AssertionError("Exactly three isolated ecology sources own one observation scope");
+  var sessions=new ArrayList<Session>();
+  for(int i=0;i<birds.size();i++)sessions.add(new Session(ECOLOGY_SUITE,level,birds.get(i),"cohort_"+(i+1),owner,sink,null));
+  ecology=List.copyOf(sessions);return ecology;
+ }
+ static synchronized void endEcology(List<Session> sessions) {
+  if(ecology!=sessions)throw new AssertionError("Only the owning ecology group may close its observation scope");
+  ecology=List.of();for(var session:sessions)session.close();
+ }
  static synchronized Session install(String suite,Object world,Object bird,String trial,Thread owner,Consumer<String> sink) {
   var session=new Session(suite,world,bird,trial,owner,sink,active);active=session;return session;
  }
  static boolean matches(Session s,String suite,Object world,Object bird,Thread thread) {
-  return s!=null&&!s.closed&&SUITE.equals(suite)&&SUITE.equals(s.suite)&&s.world==world&&s.bird==bird&&s.owner==thread;
+  return s!=null&&!s.closed&&(SUITE.equals(suite)||ECOLOGY_SUITE.equals(suite))&&suite.equals(s.suite)&&s.world==world&&s.bird==bird&&s.owner==thread;
  }
  static Session selected(String suite,Object world,Object bird,Thread thread) {
+  if(ECOLOGY_SUITE.equals(suite))return ecology.stream().filter(s->matches(s,suite,world,bird,thread)).findFirst().orElse(null);
   var s=active;return matches(s,suite,world,bird,thread)?s:null;
  }
  private static String currentSuite() {
@@ -38,9 +54,9 @@ public final class SiltcrestPresentationProbe {
  /** Every value is read at the real native boundary, before cancellation clears the commitment. */
  public static void observe(SiltcrestBittern bird,String event,AbstractFish quarry,Vec3 committed,int epoch,int left,
                             boolean pendingPreen,Integer pause,AbstractFish damaged,DamageSource damage,Float amount,Boolean result,boolean threw) {
-  var s=active;if(s==null)return;
+  if(active==null&&ecology.isEmpty())return;
+  var s=selected(currentSuite(),bird.level(),bird,Thread.currentThread());if(s==null)return;
   try {
-   if(selected(currentSuite(),bird.level(),bird,Thread.currentThread())!=s)return;
    if(event.equals("coil_admitted")){s.admitted=quarry;s.locked=committed;s.admittedEpoch=epoch;s.admittedTick=SiltcrestBittern.clock(bird.level());}
    if(event.equals("damage_call"))s.damageCalls++;
    if(event.equals("damage_return"))s.damageReturns++;
@@ -65,6 +81,8 @@ public final class SiltcrestPresentationProbe {
    if(damaged!=null){
     out.addProperty("damageTargetUuid",damaged.getUUID().toString());out.addProperty("damageTargetIsAdmitted",damaged==s.admitted);
     out.addProperty("damageAmount",amount);out.addProperty("damageResult",result);out.addProperty("damageThrew",threw);
+    out.addProperty("damageSourceUuid",damage.getEntity()==null?null:damage.getEntity().getUUID().toString());
+    out.addProperty("damageDirectUuid",damage.getDirectEntity()==null?null:damage.getDirectEntity().getUUID().toString());
     out.addProperty("damageSourceMatchesLast",damaged.getLastDamageSource()==damage);out.add("damageTarget",fish(bird,level,damaged,s.locked));
    }
    out.addProperty("threw",threw);s.retain(out);

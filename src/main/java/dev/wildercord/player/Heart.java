@@ -223,6 +223,7 @@ public final class Heart {
 	/** @param factor one more factor on the cooldown, e.g. a found secret spell's ({@link #secretCooldown}) */
 	public static int cooldownTicks(Player player, SpellCompiler.Compiled compiled, double factor) {
 		if (compiled.root().groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID))) return dev.wildercord.spell.RelayRules.REST_TICKS;
+        if (compiled.root().groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.ReweaveRules.ID))) return dev.wildercord.spell.ReweaveRules.REST_TICKS;
 		return (int) Math.max(5, Math.round(compiled.cooldownTicks() * bonuses(player).cooldown() * factor));
 	}
 

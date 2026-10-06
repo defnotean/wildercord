@@ -31,14 +31,15 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Package-private mechanism proof, started only by the native feasibility suite. Not registered in
- * Wildercord, SpellCaster, a packet, editor, lesson, item, storage or passive path. Policy is provisional.
+ * One body-bound paid Harm field. A fresh admitted edge rewrites its footprint once, retaining the
+ * original ledger, release statistics, absolute beats and expiry.
  */
-final class ReweaveFields {
+public final class ReweaveFields {
     private ReweaveFields() {}
     private static final Map<ServerPlayer, Field> FIELDS = new IdentityHashMap<>();
     private static final Map<ServerPlayer, RelayInputRules.Edges> INPUT = new WeakHashMap<>();
-    private static final Map<ServerPlayer, Long> REST = new WeakHashMap<>();
+    private static final Map<ServerPlayer, Long> MODE_EPOCHS = new WeakHashMap<>();
+    private static long nextField;
     private static boolean initialized;
 
     private static final class Field {
@@ -48,6 +49,7 @@ final class ReweaveFields {
         final Vec3 center;
         final BlockPos floor;
         final int slot, cost;
+        final long id = ++nextField, modeEpoch;
         final DungeonWards.MovementWard ward;
         final SpellCompiler.Compiled compiled;
         ReweaveRules.Timeline timeline;
@@ -56,19 +58,20 @@ final class ReweaveFields {
         boolean retired, impactActive;
         long observed;
         Field(ServerPlayer p, int slot, int cost, Vec3 center, BlockPos floor, SpellCompiler.Compiled compiled) {
-            this.player = p; this.owner = ReleasedArtOwner.capture(p); this.level = p.level();
+            this.player = p; this.owner = ReleasedArtOwner.capture(p); this.level = p.level(); this.modeEpoch = MODE_EPOCHS.getOrDefault(p, 0L);
             this.slot = slot; this.cost = cost; this.center = center; this.floor = floor.immutable(); this.compiled = compiled;
             this.ward = DungeonWards.movementWard(level, p.blockPosition());
             this.timeline = ReweaveRules.Timeline.start(now(p)); this.observed = now(p);
         }
         boolean valid() {
             long tick = now(player);
-            if (retired || FIELDS.get(player) != this || !owner.valid() || tick < observed || timeline.expired(tick)) {
+            if (retired || FIELDS.get(player) != this || !actorValid() || tick < observed || timeline.expired(tick)) {
                 retired = true; return false;
             }
             observed = tick;
             return true;
         }
+        boolean actorValid() { return owner.valid() && !player.isSpectator() && modeEpoch == MODE_EPOCHS.getOrDefault(player, 0L); }
         AABB bounds(Vec3 lane) {
             if (lane == null) return new AABB(center.x - 2, center.y - .13, center.z - 2,
                 center.x + 2, center.y + ReweaveRules.HEIGHT, center.z + 2);
@@ -78,7 +81,7 @@ final class ReweaveFields {
                 Math.max(center.x, end.x) + half, center.y + ReweaveRules.HEIGHT, Math.max(center.z, end.z) + half);
         }
         boolean geometry(Vec3 lane) {
-            if (!finite(player.getEyePosition()) || !loaded(level, floor) || !sameWard(this, player.blockPosition())
+            if (!finite(player.getEyePosition()) || player.getEyePosition().distanceTo(center) > ReweaveRules.LOS_RANGE || !loaded(level, floor) || !sameWard(this, player.blockPosition())
                 || level.getBlockState(floor).getCollisionShape(level, floor).isEmpty()) return false;
             AABB box = bounds(lane);
             // Conservative finite box: every queried chunk/ward cell is checked before clip/entity access.
@@ -101,7 +104,7 @@ final class ReweaveFields {
             if (delta.y < -.13 || delta.y > ReweaveRules.HEIGHT) return false;
             boolean inside = direction == null ? ReweaveRules.insideDisc(delta.x, delta.z)
                 : ReweaveRules.insideLane(delta.x, delta.z, direction.x, direction.z);
-            return inside && impactReadsLoaded(e.getBoundingBox().getCenter()) && clear(this, center, e.getBoundingBox().getCenter())
+            return inside && player.getEyePosition().distanceTo(e.getBoundingBox().getCenter()) <= ReweaveRules.LOS_RANGE && impactReadsLoaded(e.getBoundingBox().getCenter()) && clear(this, center, e.getBoundingBox().getCenter())
                 && clear(this, player.getEyePosition(), e.getBoundingBox().getCenter());
         }
         private boolean impactValid() {
@@ -125,10 +128,10 @@ final class ReweaveFields {
         return f == null || !f.valid() ? null : new View(f.center, f.direction, f.timeline.created(), f.timeline.expires(),
             f.timeline.nextBeat(), f.timeline.convertedAt(), f.cost, f.cast.payment(), f.cast.identity(), f.cast.power);
     }
-    static long rest(ServerPlayer player) { return REST.getOrDefault(player, 0L); }
-    static long now(ServerPlayer player) { return player.level().getServer().overworld().getGameTime(); }
+    public static long rest(ServerPlayer player) { return player.getAttachedOrElse(ReweaveState.REST, 0L); }
+    public static long now(ServerPlayer player) { return player.level().getServer().overworld().getGameTime(); }
     static boolean entitled(ServerPlayer player) {
-        return ReweaveRules.eligible(Heart.active(player), Heart.discovered(player, "feat:" + Feats.TIDE_SCRIBE), Heart.discovered(player, ReweaveRules.STUDY));
+        return dev.wildercord.player.MasterStudies.knowsReweave(player) && dev.wildercord.player.MasterStudies.eligibleReweave(player);
     }
     private static boolean available(ServerPlayer p) {
         return p.isAlive() && !p.isRemoved() && !p.isSpectator() && !p.isSleeping() && !p.isPassenger()
@@ -139,60 +142,103 @@ final class ReweaveFields {
             && Float.isFinite(p.getXRot()) && Float.isFinite(p.getYRot()) && finite(p.getEyePosition());
     }
     private static boolean row(ServerPlayer p, int slot) {
-        return slot >= 0 && slot < dev.wildercord.gear.SpellSlots.ALL && Spellbooks.tier(p) == CordTier.ECHO
+        return slot >= 0 && slot < CordTier.ECHO.spells && Spellbooks.tier(p) == CordTier.ECHO
             && dev.wildercord.gear.Gear.spellOpen(p, CordTier.ECHO, slot)
             && Spellbooks.get(p).spells().get(slot).equals(ReweaveRules.IDS)
             && ReweaveRules.IDS.stream().allMatch(Spellbooks.get(p)::knows);
     }
 
-    /** Authoritative production-style payment route, deliberately not wired to any player input. */
+    public static boolean contains(ServerPlayer p, int requested) {
+        int slot = requested < 0 ? Spellbooks.get(p).selected() : requested;
+        return slot >= 0 && slot < dev.wildercord.gear.SpellSlots.ALL && ReweaveRules.containsIds(Spellbooks.get(p).spells().get(slot));
+    }
+    public static String problem(ServerPlayer p, int slot) {
+        if (slot < 0 || slot >= CordTier.ECHO.spells) return "Reweave needs an ordinary Echo Cord slot.";
+        if (!ReweaveRules.IDS.equals(Spellbooks.get(p).spells().get(slot))) return ReweaveRules.GRAMMAR_PROBLEM;
+        if (!entitled(p)) return "Study Ebb Ledger in Grimoire > Master studies with active Circle XII and Low Tide.";
+        if (!row(p, slot)) return "Reweave needs your Echo Cord and both learned runes.";
+        return null;
+    }
+    /** Original mechanism diagnostic bridge; ordinary packets always carry the exact field identity. */
     static void input(ServerPlayer p, int action, int slot, long nonce) {
+        Field field = FIELDS.get(p);
+        input(p, action, slot, nonce, field == null ? 0 : field.id);
+    }
+    public static void input(ServerPlayer p, int action, int requested, long nonce, long fieldId) {
         try (var admission = ActionAdmission.begin(p)) {
-            if (admission == null || slot < 0 || slot >= dev.wildercord.gear.SpellSlots.ALL
+            if (admission == null || requested < -1 || requested >= dev.wildercord.gear.SpellSlots.ALL
                 || !INPUT.computeIfAbsent(p, ignored -> new RelayInputRules.Edges()).accept(action, nonce, now(p))) return;
-            if (action == RelayInputRules.CANCEL) { cancel(p); return; }
-            if (action != RelayInputRules.DOWN || !available(p) || !row(p, slot)) return;
+            int slot = requested < 0 ? Spellbooks.get(p).selected() : requested;
             Field previous = FIELDS.get(p);
-            if (previous != null) {
-                if (!previous.valid()) { cancel(p); return; }
-                if (slot == previous.slot) convert(previous);
-                return; // A second field is never a replacement/refund route in this proof.
+            if (action == RelayInputRules.UP) return;
+            if (previous != null && (!previous.valid() || fieldId != previous.id)) {
+                if (!previous.valid()) cancel(p);
+                return;
             }
+            if (action == RelayInputRules.CANCEL || action == RelayInputRules.DOWN && p.isShiftKeyDown()) {
+                if (previous != null && slot == previous.slot) cancel(p);
+                return;
+            }
+            if (action != RelayInputRules.DOWN) return;
+            String problem = problem(p, slot);
+            if (problem != null) { fail(p, problem); return; }
+            if (!available(p)) return;
+            if (previous != null) {
+                if (slot == previous.slot) convert(previous);
+                else fail(p, "Your original Reweave row owns the released field.");
+                return;
+            }
+            if (fieldId != 0) return;
             place(p, slot, admission);
         }
     }
+    private static void fail(ServerPlayer p, String text) {
+        p.sendOverlayMessage(net.minecraft.network.chat.Component.literal(text).withColor(0xE0B8D5));
+    }
+    private static void publish(Field f) {
+        if (!f.valid()) return;
+        long tick = now(f.player);
+        int phase = f.direction == null ? ReweaveState.DISC : f.timeline.warning(tick) ? ReweaveState.WARNING : ReweaveState.LANE;
+        f.player.setAttached(ReweaveState.VIEW, new ReweaveState(phase, f.slot, f.id, f.timeline.created(), f.timeline.expires(),
+            f.timeline.converted() ? f.timeline.convertedAt() + ReweaveRules.WARNING : 0, f.timeline.nextBeat(), f.center,
+            f.direction == null ? f.center : f.center.add(f.direction.scale(ReweaveRules.LANE_LENGTH)), !f.geometry(f.direction), tick, f.level.getGameTime()));
+    }
     private static void place(ServerPlayer p, int slot, ActionAdmission admission) {
         long tick = now(p);
-        if (tick < rest(p) || p.level().getGameTime() < Spellbooks.readyAt(p, slot) || WildSurge.freeRecast(p, p.level().getGameTime())) return;
+        if (tick < rest(p) || p.level().getGameTime() < Spellbooks.readyAt(p, slot)) { fail(p, "Reweave is resting; its eight-second rest is shared across slots."); return; }
+        if (WildSurge.freeRecast(p, p.level().getGameTime())) { fail(p, "Reweave cannot spend a free recast; use it with another spell first."); return; }
         Vec3 eye = p.getEyePosition(), aim = eye.add(p.getLookAngle().scale(ReweaveRules.PLACE_RANGE));
         if (!pathLoaded(p.level(), eye, aim)) return;
         var hit = p.level().clip(new ClipContext(eye, aim, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, p));
-        if (hit.getType() != HitResult.Type.BLOCK || hit.getDirection() != Direction.UP) return;
+        if (hit.getType() != HitResult.Type.BLOCK || hit.getDirection() != Direction.UP) { fail(p, "Aim at visible floor within eight blocks."); return; }
         Vec3 at = hit.getLocation().add(0, .12, 0);
         var compiled = SpellCompiler.compile(ReweaveRules.RUNES);
         int cost = Heart.manaCost(p, compiled, Mastery.costFactor(p, ReweaveRules.RUNES));
-        if (cost <= 0 || !Float.isFinite(Spellbooks.mana(p)) || Spellbooks.mana(p) < cost) return;
+        if (cost <= 0 || !p.isCreative() && (!Float.isFinite(Spellbooks.mana(p)) || Spellbooks.mana(p) < cost)) { fail(p, "Reweave needs " + cost + " mana and cannot overcast."); return; }
         Field field = new Field(p, slot, cost, at, hit.getBlockPos(), compiled);
-        if (!field.owner.valid() || !field.geometry(null)) return;
+        if (!field.actorValid() || !field.geometry(null)) return;
         var cord = Spellbooks.cord(p); var book = Spellbooks.get(p); int circles = Heart.active(p);
+        var gear = dev.wildercord.gear.Gear.of(p);
         if (!dev.wildercord.api.WildercordEvents.BEFORE_CAST.invoker().allow(p, slot, ReweaveRules.RUNES, cost)) return;
-        if (!admission.valid() || !field.owner.valid() || !available(p) || !row(p, slot) || FIELDS.containsKey(p)
-            || cord != Spellbooks.cord(p) || !book.equals(Spellbooks.get(p)) || circles != Heart.active(p)
+        if (!admission.valid() || !field.actorValid() || !available(p) || !row(p, slot) || FIELDS.containsKey(p)
+            || cord != Spellbooks.cord(p) || !book.equals(Spellbooks.get(p)) || circles != Heart.active(p) || !gear.equals(dev.wildercord.gear.Gear.of(p))
             || !field.geometry(null) || p.getEyePosition().distanceTo(at) > ReweaveRules.PLACE_RANGE + .13
             || tick < rest(p) || Spellbooks.readyAt(p, slot) > p.level().getGameTime()
-            || WildSurge.freeRecast(p, p.level().getGameTime()) || !Float.isFinite(Spellbooks.mana(p)) || Spellbooks.mana(p) < cost) return;
+            || WildSurge.freeRecast(p, p.level().getGameTime()) || !p.isCreative() && (!Float.isFinite(Spellbooks.mana(p)) || Spellbooks.mana(p) < cost)) return;
         float mana = Spellbooks.mana(p);
         Heart.Bonuses bonuses = Heart.bonuses(p, mana >= dev.wildercord.player.Mana.max(p) - .5F);
         bonuses = bonuses.withPower(bonuses.power() * Mastery.powerFactor(p, ReweaveRules.RUNES));
         field.cast = new Cast(p, 1, bonuses, false, null, new Cast.Info(compiled.root(), 2, Heart.leaning(p), ReweaveRules.RUNES))
-            .weigh(compiled.cost()).damagePrice(cost).gear(dev.wildercord.gear.Gear.of(p)).withAffinity()
+            .weigh(compiled.cost()).damagePrice(cost).gear(gear).withAffinity()
             .admission(field::admits).blockAdmission(ignored -> false).lifetime(field::impactValid).incoming(at);
         // Reserve exactly one field/payment/rest before progression callbacks can re-enter casting.
-        Spellbooks.setMana(p, mana - cost);
-        REST.put(p, tick + ReweaveRules.REST_TICKS);
+        if (!p.isCreative()) Spellbooks.setMana(p, mana - cost);
+        p.setAttached(ReweaveState.REST, tick + ReweaveRules.REST_TICKS);
         Spellbooks.setReadyAt(p, slot, p.level().getGameTime() + ReweaveRules.REST_TICKS);
         FIELDS.put(p, field);
-        dev.wildercord.aura.Unity.manaSpent(p, cost);
+        RelayCircles.cancel(p);
+        dev.wildercord.aura.MasterForms.cancel(p);
+        if (!p.isCreative()) dev.wildercord.aura.Unity.manaSpent(p, cost);
         if (!field.valid()) { cancel(p); return; }
         // Unity/add-on callbacks may change ward references after payment. Recheck before Mastery's legacy structure lookup.
         if (!field.geometry(null)) { cancel(p); return; }
@@ -202,12 +248,19 @@ final class ReweaveFields {
         HeartCircles.onCast(p);
         if (!field.valid()) { cancel(p); return; }
         dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(p, slot, ReweaveRules.RUNES, cost);
-        if (!field.valid()) cancel(p);
+        if (!field.valid()) cancel(p); else {
+            publish(field);
+            p.setAttached(dev.wildercord.player.WildercordAttachments.CAST_POSE,
+                new dev.wildercord.player.WildercordAttachments.CastPose(ReweaveRules.ID, p.level().getGameTime()));
+            FormationVfx.send(field.cast, ReweaveRules.RUNES);
+            RunicAnimations.reweave(p, () -> field.valid() && field.geometry(field.direction));
+            Fx.sound(field.level, at, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME, .45F, .85F);
+        }
     }
     private static void convert(Field field) {
         long tick = now(field.player);
         var converted = field.timeline.convert(tick);
-        if (converted == null) return;
+        if (converted == null) { fail(field.player, field.timeline.converted() ? "This field has already been rewritten." : "Too late: no beat remains after the warning."); return; }
         Vec3 eye = field.player.getEyePosition(), far = eye.add(field.player.getLookAngle().scale(ReweaveRules.PLACE_RANGE));
         if (!pathLoaded(field.level, eye, far)) return;
         var hit = field.level.clip(new ClipContext(eye, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, field.player));
@@ -215,16 +268,18 @@ final class ReweaveFields {
         Vec3 delta = aim.subtract(field.center).multiply(1, 0, 1);
         if (!finite(delta) || delta.lengthSqr() < .01) return;
         Vec3 direction = delta.normalize();
-        if (!field.valid() || !field.geometry(direction)) return;
+        if (!field.valid() || !field.geometry(direction)) { fail(field.player, "The lane is blocked, out of reach or crosses an unresolved ward. Your field remains."); return; }
         // This is the only rewrite: same Cast/payment/center/expiry, no price, progression or statistics refresh.
         field.timeline = converted;
         field.direction = direction;
+        publish(field);
+        Fx.sound(field.level, field.center, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME, .4F, 1.35F);
     }
     private static void tick(Field field) {
         if (!field.valid()) { cancel(field.player); return; }
         var advance = field.timeline.advance(now(field.player));
         field.timeline = advance.timeline(); // Consume before any callback; warnings and late ticks get no replay.
-        if (!advance.strike() || !field.geometry(field.direction)) return;
+        if (!advance.strike() || !field.geometry(field.direction)) { if (now(field.player) % 4 == 0 || advance.strike()) publish(field); return; }
         try (var admission = ActionAdmission.begin(field.player)) {
             if (admission == null) return;
             List<LivingEntity> targets = new ArrayList<>();
@@ -240,17 +295,25 @@ final class ReweaveFields {
                     if (!field.admits(target)) continue;
                     Vec3 direction = field.direction == null ? target.position().subtract(field.center).normalize() : field.direction;
                     Cast beat = field.cast.child(ReweaveRules.BEAT_POWER); // Shared budget: deliberately never pulse()/again().
+                    long before = target instanceof TrainingDummy dummy ? dummy.hitSequence() : -1;
                     Effects.lingering(() -> CastEngine.onHit(beat, field.compiled.root().groups.getFirst(),
                         new Cast.Hit(List.of(target), target.getBoundingBox().getCenter(), direction, field.center, null, null, false), null));
+                    if (field.valid() && field.direction != null && target instanceof TrainingDummy dummy && dummy.hitSequence() > before
+                        && !ReweaveRules.insideDisc(target.getX() - field.center.x, target.getZ() - field.center.z))
+                        dev.wildercord.player.MasterStudies.completeReweavePractice(field.player);
                 }
             } finally { field.impactActive = false; field.impactPoint = null; }
         }
-        if (!field.valid()) cancel(field.player);
+        if (!field.valid()) cancel(field.player); else publish(field);
     }
-    static void cancel(ServerPlayer p) {
+    public static void cancel(ServerPlayer p) {
         Field field = FIELDS.remove(p);
+        p.removeAttached(ReweaveState.VIEW);
         if (field != null) { field.retired = true; field.cast.cancel(); dev.wildercord.aura.ResonantStrikes.retire(field.cast); }
     }
+    /** Actual game-mode transition hook; polling alone cannot observe a same-tick spectator round trip. */
+    public static void spectatorEntered(ServerPlayer p) { MODE_EPOCHS.put(p, MODE_EPOCHS.getOrDefault(p, 0L) + 1); retire(p); }
+    private static void retire(ServerPlayer p) { cancel(p); INPUT.remove(p); }
     private static boolean finite(Vec3 p) { return Double.isFinite(p.x) && Double.isFinite(p.y) && Double.isFinite(p.z); }
     private static boolean loaded(ServerLevel level, BlockPos p) {
         return level.hasChunkAt(p) && !level.isOutsideBuildHeight(p) && level.getWorldBorder().isWithinBounds(p);
@@ -272,16 +335,22 @@ final class ReweaveFields {
         var hit = f.level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, f.player));
         return hit.getType() == HitResult.Type.MISS || hit.getLocation().distanceToSqr(to) < .0004;
     }
-    /** Only the native mechanism test calls this; intentionally absent from Wildercord.init. */
-    static void initFeasibility() {
+    /** Retained entry name for the original mechanism diagnostic. */
+    static void initFeasibility() { init(); }
+    public static void init() {
         if (initialized) return;
         initialized = true;
+        dev.wildercord.net.ReweaveInput.init();
+        net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer p) retire(p); });
+        net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((p, from, to) -> retire(p));
+        net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AFTER_RESPAWN.register((old, fresh, alive) -> retire(old));
+        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> retire(handler.player));
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for (Field field : List.copyOf(FIELDS.values())) if (field.level.getServer() == server) tick(field);
         });
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
             for (ServerPlayer p : List.copyOf(FIELDS.keySet())) if (p.level().getServer() == server) cancel(p);
-            INPUT.clear(); REST.clear();
+            INPUT.clear(); MODE_EPOCHS.clear();
         });
     }
 }

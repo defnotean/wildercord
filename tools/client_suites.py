@@ -15,6 +15,7 @@ EXIT_PREFIX = "WILDERCORD_CLIENT_EXIT_CODE "
 REQUEST_PREFIX = "WILDERCORD_NATIVE_REQUEST "
 PROGRESSION_ENTRIES = ("dev.wildercord.cast.ReweaveFeasibilityTest",
                        "dev.wildercord.aura.StoneHingeFeasibilityTest")
+REWEAVE_PLAYER_ENTRIES = ("dev.wildercord.cast.ReweavePlayableTest",)
 
 
 def parse_shard(value):
@@ -95,6 +96,9 @@ def selection_issues(log, selection):
     if selection.get("name") == "diagnostic-progression-feasibility":
         _, completion_issues = progression_completion(log)
         issues.extend(completion_issues)
+    if selection.get("name") == "diagnostic-reweave-player":
+        _, completion_issues = reweave_player_completion(log)
+        issues.extend(completion_issues)
     return issues
 
 
@@ -109,6 +113,15 @@ def _unique_completion_object(pairs):
 
 def progression_completion(log):
     """Require the pinned runner's setup/run/cleanup/return for both whole classes."""
+    return _whole_class_completion(log, PROGRESSION_ENTRIES, "Progression feasibility")
+
+
+def reweave_player_completion(log):
+    """Require the whole ordinary learn/equip/input/lifecycle class to clean up and return."""
+    return _whole_class_completion(log, REWEAVE_PLAYER_ENTRIES, "Reweave player")
+
+
+def _whole_class_completion(log, entries, label):
     events, issues = [], []
     for line in log.splitlines():
         if SCENE_PREFIX not in line:
@@ -123,10 +136,10 @@ def progression_completion(log):
                 raise ValueError()
             events.append((marker["suite"], marker["event"], marker["phase"]))
         except (ValueError, KeyError, TypeError, OverflowError):
-            issues.append("Malformed progression feasibility completion evidence")
-    expected = [(entry, event, phase) for entry in PROGRESSION_ENTRIES
+            issues.append(f"Malformed {label.lower()} completion evidence")
+    expected = [(entry, event, phase) for entry in entries
                 for event, phase in (("start", "setup"), ("phase", "run"),
                                      ("phase", "cleanup"), ("end", "returned"))]
     if events != expected:
-        issues.append("Progression feasibility requires exactly both completed whole classes in order")
-    return [entry for entry in PROGRESSION_ENTRIES if (entry, "end", "returned") in events], issues
+        issues.append(f"{label} requires exactly its completed whole classes in order")
+    return [entry for entry in entries if (entry, "end", "returned") in events], issues

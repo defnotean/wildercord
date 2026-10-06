@@ -12,6 +12,7 @@ import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RelayRules;
+import dev.wildercord.spell.ReweaveRules;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.Secrets;
 import dev.wildercord.spell.SpellCompiler;
@@ -48,7 +49,7 @@ public class SpellScrollItem extends Item {
 	}
 
 	public static List<RuneDef> runesOf(ScrollSpell scroll) {
-		if (RelayRules.containsIds(scroll.runes())) return List.of();
+		if (RelayRules.containsIds(scroll.runes()) || ReweaveRules.containsIds(scroll.runes())) return List.of();
 		List<RuneDef> runes = new ArrayList<>();
 		for (String id : scroll.runes()) {
 			Runes.get(id).ifPresent(runes::add);
@@ -65,6 +66,10 @@ public class SpellScrollItem extends Item {
 		Spellbook book = Spellbooks.get(player);
 		if (spell >= 0 && spell < book.spells().size() && RelayRules.containsIds(book.spells().get(spell))) {
 			player.sendOverlayMessage(Component.literal(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+			return;
+		}
+		if (spell >= 0 && spell < book.spells().size() && ReweaveRules.containsIds(book.spells().get(spell))) {
+			player.sendOverlayMessage(Component.literal(ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
 			return;
 		}
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
@@ -135,6 +140,10 @@ public class SpellScrollItem extends Item {
 			if (player instanceof ServerPlayer server) server.sendOverlayMessage(Component.literal(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
 			return InteractionResult.FAIL;
 		}
+		if (ReweaveRules.containsIds(scroll.runes())) {
+			if (player instanceof ServerPlayer server) server.sendOverlayMessage(Component.literal(ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+			return InteractionResult.FAIL;
+		}
 		if (player instanceof ServerPlayer serverPlayer && player.isShiftKeyDown() && stack.has(Inscription.TYPE)) {
 			// Studied rather than read: an inscribed scroll teaches its spell (see cast.Inscriptions).
 			Component refused = dev.wildercord.cast.Inscriptions.study(serverPlayer, stack);
@@ -189,6 +198,9 @@ public class SpellScrollItem extends Item {
 		if (scroll == null) {
 			builder.accept(Component.translatable("tooltip.wildercord.scroll_blank").withStyle(ChatFormatting.GRAY));
 			return;
+		}
+		if (ReweaveRules.containsIds(scroll.runes())) {
+			builder.accept(Component.literal(ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
 		}
 		List<RuneDef> runes = runesOf(scroll);
 		if (!runes.isEmpty()) {

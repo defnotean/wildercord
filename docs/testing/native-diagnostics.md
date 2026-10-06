@@ -77,3 +77,5 @@ establish diagnostic success. Missing/failed/timed-out evidence remains unverifi
 External and self-JVM stack snapshots are preserved from their exact known paths,
 at most 16 files of 256 KiB each, with hashes and any truncation or omissions.
 A green diagnostic result does not resolve any release gate by itself.
+
+- `reweave-player`: exactly the complete `ReweavePlayableTest`, including the dedicated Ebb Ledger lesson helper and a second connected learn/equip/input/lifecycle world. The two observed seed labels are `ReweavePlayableTest#lesson` and `#input`. Its runner must emit the exact setup/run/cleanup/returned sequence once; seed markers and a successful build alone are insufficient. This is ordinary-path diagnostic evidence only, separate from the precursor and the release groups.

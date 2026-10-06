@@ -2614,6 +2614,13 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/relay"
         }
+      },
+      {
+        "when": "wildercord:reweave",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/reweave"
+        }
       }
     ],
     "fallback": {

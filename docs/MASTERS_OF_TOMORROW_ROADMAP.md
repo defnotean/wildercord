@@ -39,7 +39,7 @@ The first authored player capabilities are **Relay Circle** and **Wall Turn**. B
 
 The catalog expansion will be delivered in tested packs, with new abilities, upgrades, recipes and cosmetic variants counted separately.
 
-Reweave's whole native field-feasibility class now passes on `6c750309`. The playable Circle XII slice is being authored separately: an old-save-accessible Ebb Ledger lesson for a Low Tide holder, one 40-base-mana Harm field with shared rest, and one warned disc-to-lane conversion that preserves expiry, remaining beats and the original target budget. It is not yet a learned or usable ability. Ordinary lesson, equip/input, persistence and multiplayer acceptance remain required; this counts as one new capability.
+Reweave's whole native field-feasibility class passes on `6c750309` and `5cea20d1`. The reviewed Circle XII player slice is now implemented in source: an old-save-accessible Ebb Ledger lesson for a Low Tide holder, one 40-base-mana Harm field with shared rest, and one warned disc-to-lane conversion that preserves expiry, remaining beats and the original target budget. Real lesson/editor/rebound-key tests are included, but their native execution is still pending. Full restart, multiplayer and visual acceptance remain required; this counts as one new capability.
 
 ## Priority 4: expand Aura movement and sword expression
 
@@ -50,7 +50,7 @@ Reweave's whole native field-feasibility class now passes on `6c750309`. The pla
 
 New movements must change positioning decisions without replacing every dodge, cover choice or punish window with unlimited mobility.
 
-Stone Hinge is in native feasibility review. Its proposed melee knockback redirect must preserve actual damage, vertical physics and ordinary knockback on refusal. The current proof only observes genuine damage/impulse provenance; the movement itself is withheld until the first real lateral step can commit safely. It is not an unlocked form, and its proposed costs/counter remain unsettled.
+Stone Hinge's native damage/impulse precursor passes on `5cea20d1`. Its proposed melee knockback redirect must preserve actual damage, vertical physics and ordinary knockback on refusal. Independent review rejects the first server-move/velocity-packet approach because it cannot synchronize the already-moved position to the owning client. A bounded native negative control and a revised movement protocol are next; it remains unavailable as an ordinary form.
 
 ## Priority 5: bosses with large, distinct repertoires
 

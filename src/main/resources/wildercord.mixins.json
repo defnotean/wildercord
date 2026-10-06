@@ -5,6 +5,7 @@
 	"mixins": [
 		"RelayLivingDamageMixin",
 		"RelayPlayerDamageMixin",
+		"ReweavePlayerModeMixin",
 		"MossveilEffectAccess",
 		"MossveilEffectNotice",
 		"InventoryMenuMixin",

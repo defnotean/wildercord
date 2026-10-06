@@ -2,7 +2,12 @@ package dev.wildercord.content.dungeons;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -16,6 +21,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
@@ -69,6 +75,18 @@ public class DungeonAltarBlock extends Block implements EntityBlock {
 	public DungeonAltarBlock(BlockBehaviour.Properties properties) {
 		super(properties);
 		registerDefaultState(defaultBlockState().setValue(KIND, Kind.CINDER).setValue(AWAKE, false));
+	}
+
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (state.getValue(KIND) != Kind.TIDE) return InteractionResult.PASS;
+		if (player instanceof ServerPlayer serverPlayer) dev.wildercord.content.ReweaveLesson.open(serverPlayer, pos);
+		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		return useWithoutItem(state, level, pos, player, hit);
 	}
 
 	@Override

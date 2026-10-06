@@ -356,7 +356,7 @@ Two particular effects, an amethyst shard and 3 XP levels. The pair makes its si
 
 The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
 
-## Runes of the world (54 runes, found only)
+## Runes of the world (55 runes, found only)
 
 Never crafted, whatever their tier: each is found only in its own places (vanilla structures, a biome by
 Attunement, Wildercord's dungeons and bosses, world events). Attunement: meditate with a Blank Rune in hand
@@ -418,6 +418,7 @@ in the right biome, under the right conditions, for 20 seconds.
 | Constellation | Shape | III | The Astral Observatory |
 | Vortex | Shape | III | Ominous vaults |
 | Relay | Shape | IV | The Margin Between Places, at an inactive Archive Lectern after Circle VIII and the Archivist |
+| Reweave | Shape | IV | Ebb Ledger, retrievable in the Grimoire after Low Tide; study with active Circle XII |
 
 ## Innate runes (10, never crafted or found)
 

@@ -12,7 +12,7 @@ public enum Motion {
 	SLASH,
 	/** Radiating from a point: Burst, Nova, Ring, Pillar. */
 	BLAST,
-	/** A seal on the ground that lingers: Zone, Totem, Wall, Vortex, Domain, Imprint, Mine, Snare, Trail. */
+	/** A seal on the ground that lingers: Zone, Totem, Wall, Vortex, Domain, Imprint, Mine, Snare, Trail, Relay, Reweave. */
 	SEAL,
 	/** Called from above: Rain, Constellation. */
 	CALL,
@@ -27,7 +27,7 @@ public enum Motion {
 			case "beam", "lance", "prism", "stream", "latch", "sweep" -> BEAM;
 			case "cone", "crescent", "glaive", "barrage", "wave", "blitz" -> SLASH;
 			case "burst", "nova", "ring", "pillar" -> BLAST;
-			case "zone", "totem", "wall", "vortex", "domain", "imprint", "mine", "snare", "trail", "relay" -> SEAL;
+			case "zone", "totem", "wall", "vortex", "domain", "imprint", "mine", "snare", "trail", "relay", "reweave" -> SEAL;
 			case "rain", "constellation" -> CALL;
 			case "self", "orbit", "trigger" -> AURA;
 			default -> HURL;

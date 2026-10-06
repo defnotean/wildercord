@@ -36,8 +36,13 @@ public final class LifeDeliveryTest implements FabricClientGameTest {
    c.runOnClient(mc->mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT));shot(c,"life_delivery_self_heal");
    c.waitTicks(8);server.runOnServer(s->check(s.getPlayerList().getPlayers().getFirst().getHealth()>10,"Paid Self Heal actually restores health"));
    c.waitTicks(12);server.runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();paid(p,"self","bramble");});c.waitTicks(12);c.runOnClient(mc->check(noBolts(mc),"Self Bramble creates no projectile"));shot(c,"life_delivery_self_bramble");
-   server.runCommand("summon husk 0.5 101 2.5 {NoAI:1b,Silent:1b}");c.waitTicks(4);
-   server.runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var attacker=s.overworld().getEntitiesOfClass(Husk.class,p.getBoundingBox().inflate(4)).getFirst();p.setInvulnerableTime(0);p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(attacker),2);});
+   // NoAI still permits the Runebound load roll; this reflection fixture needs an ordinary 20-health Husk.
+   server.runCommand("summon husk 0.5 101 2.5 {NoAI:1b,Silent:1b,Tags:[\"wildercord.rolled\"]}");c.waitTicks(4);
+   server.runOnServer(s->{
+    var p=s.getPlayerList().getPlayers().getFirst();var attacker=s.overworld().getEntitiesOfClass(Husk.class,p.getBoundingBox().inflate(4)).getFirst();
+    check(attacker.getHealth()==20 && attacker.getMaxHealth()==20 && Runebound.spellOf(attacker).isEmpty(),"Bramble attacker is an ordinary full-health Husk");
+    p.setInvulnerableTime(0);check(p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(attacker),2),"Bramble receives a real incoming attack");
+   });
    c.waitTicks(4);server.runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var attackers=s.overworld().getEntitiesOfClass(Husk.class,p.getBoundingBox().inflate(5));check(!attackers.isEmpty() && attackers.getFirst().getHealth()<20,"Paid Bramble reflects the real incoming attack");attackers.forEach(net.minecraft.world.entity.Entity::discard);});
    // World effect is delivered by a paid Self cast over adjacent farmland.
    server.runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var farmland=new BlockPos(1,100,0);s.overworld().setBlock(farmland,Blocks.FARMLAND.defaultBlockState(),3);s.overworld().setBlock(farmland.above(),Blocks.WHEAT.defaultBlockState(),3);paid(p,"self","grow");});

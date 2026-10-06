@@ -45,7 +45,7 @@ public record Imbued(List<String> runes, int charges, int color, boolean glint, 
 		Imbued::new);
 
 	public Imbued {
-		runes = dev.wildercord.spell.RelayRules.boundedIds(runes, MAX_RUNES);
+		runes = dev.wildercord.spell.ReweaveRules.boundedIds(runes, MAX_RUNES);
 		charges = Math.max(0, Math.min(99, charges));
 	}
 
