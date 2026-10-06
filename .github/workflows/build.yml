@@ -154,6 +154,11 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install existing image-verification dependency
+        run: pip install pillow
       - uses: gradle/actions/setup-gradle@v6
       - name: Check native CI selection and evidence tooling
         run: python -m unittest discover -s tools -p 'test_*ci*.py' -v
