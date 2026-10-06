@@ -137,6 +137,8 @@ public final class RelayLessonChecks {
 			use(context);
 			long first = nonce(context);
 			check(first != originalReading, "Repeated real access opens a new transient reading rather than reusing its nonce");
+			LessonState copiedState = world.getServer().computeOnServer(server -> lessonState(player(server)));
+			awaitClientLesson(context, copiedState, "before_copied_round_trip");
 			world.getServer().runOnServer(server -> {
 				var player = player(server);
 				Rewards afterRepeat = rewards(player, "after_repeat_copy");
@@ -146,6 +148,8 @@ public final class RelayLessonChecks {
 				roundTrip(player, false);
 				player.teleportTo(player.level(), 25.5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
 			});
+			context.waitTicks(3);
+			assertClientLesson(context, copiedState, "after_copied_round_trip");
 			context.waitTicks(105);
 			world.getServer().runOnServer(server -> {
 				long now = server.overworld().getGameTime();
@@ -199,6 +203,8 @@ public final class RelayLessonChecks {
 			advance(context);
 			assertPage(context, 2, false);
 			send(context, completed, 3);
+			LessonState learnedState = world.getServer().computeOnServer(server -> lessonState(player(server)));
+			awaitClientLesson(context, learnedState, "before_learned_round_trip");
 			world.getServer().runOnServer(server -> {
 				var player = player(server);
 				check(MasterStudies.knowsRelay(player) && Spellbooks.knows(player, Runes.RELAY.id()), "Saved three-page reading teaches despite a respawned Archivist");
@@ -207,14 +213,14 @@ public final class RelayLessonChecks {
 				check(!MasterStudies.practicedRelay(player), "Reading cannot claim Dummy practice");
 				roundTrip(player, true);
 			});
+			context.waitTicks(3);
+			assertClientLesson(context, learnedState, "after_learned_round_trip");
 			context.getInput().pressKey(InputConstants.KEY_ESCAPE);
 			context.waitTicks(5);
 			// The in-game Grimoire reads the retained pages without a physical book.
 			context.setScreen(CordScreen::new);
 			context.waitTicks(3);
-			click(context, context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).pagePoint(2)));
-			context.waitTicks(3);
-			click(context, context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).relayLessonPoint()));
+			openGrimoireLesson(context);
 			assertPage(context, 0, false);
 			context.takeScreenshot(TestScreenshotOptions.of("relay_grimoire_retrieval").disableCounterPrefix());
 			context.runOnClient(mc -> mc.gui.setScreen(null));
@@ -310,8 +316,7 @@ public final class RelayLessonChecks {
 	private static void retrieve(ClientGameTestContext context) {
 		context.setScreen(CordScreen::new);
 		context.waitTicks(3);
-		click(context, context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).pagePoint(2)));
-		click(context, context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).relayLessonPoint()));
+		openGrimoireLesson(context);
 		context.waitTicks(3);
 	}
 
@@ -357,14 +362,127 @@ public final class RelayLessonChecks {
 				player.getInventory().setItem(slot, ItemStack.EMPTY);
 		}
 	}
+	/** NBT loading initializes a detached body. It is not a live-player attachment resync operation. */
 	private static void roundTrip(ServerPlayer player, boolean learned) {
+		var server = player.level().getServer();
+		var players = server.getPlayerList();
+		LessonState before = lessonState(player);
+		Rewards originalRewards = rewards(player, learned ? "learned_before_detached_load" : "copied_before_detached_load");
+		Spellbook originalBook = Spellbooks.get(player);
+		var connection = player.connection;
 		var saved = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.level().registryAccess());
 		player.saveWithoutId(saved);
-		player.setAttached(WildercordAttachments.GRIMOIRE, List.of());
-		Spellbooks.set(player, Spellbook.EMPTY);
-		player.load(TagValueInput.create(ProblemReporter.DISCARDING, player.level().registryAccess(), saved.buildResult()));
-		check(MasterStudies.hasRelayLesson(player) && MasterStudies.knowsRelay(player) == learned
-			&& Spellbooks.knows(player, Runes.RELAY.id()) == learned, "Copying survives save/load independently of learning");
+		// The supported 26.3 constructor makes stats/advancement cache entries even before joining.
+		// Use a unique profile, then clear only this temporary probe's entries and listeners in finally.
+		var stats = playerCache(server, "stats");
+		var advancements = playerCache(server, "advancements");
+		java.util.UUID probeId;
+		do { probeId = java.util.UUID.randomUUID(); } while (stats.containsKey(probeId) || advancements.containsKey(probeId) || players.getPlayer(probeId) != null);
+		int playerCount = players.getPlayers().size();
+		var statsBefore = new java.util.HashMap<>(stats);
+		var advancementsBefore = new java.util.HashMap<>(advancements);
+		var liveAdvancements = player.getAdvancements();
+		ServerPlayer restored = null;
+		Object createdStats = null;
+		net.minecraft.server.PlayerAdvancements createdAdvancements = null;
+		try {
+			restored = new ServerPlayer(server, player.level(),
+				new com.mojang.authlib.GameProfile(probeId, "RelaySaveProbe"), player.clientInformation());
+			// Capture the constructor's unique profile keys and objects before load can replace entity UUID.
+			createdStats = stats.get(probeId);
+			createdAdvancements = (net.minecraft.server.PlayerAdvancements) advancements.get(probeId);
+			check(createdStats == restored.getStats() && createdAdvancements == restored.getAdvancements(),
+				"Detached constructor owns only its unique profile's temporary cache entries");
+			check(restored.connection == null && !players.getPlayers().contains(restored) && !player.level().players().contains(restored),
+				"Persistence probe has no connection and is never registered or ticked");
+			restored.load(TagValueInput.create(ProblemReporter.DISCARDING, player.level().registryAccess(), saved.buildResult()));
+			check(MasterStudies.hasRelayLesson(restored) && MasterStudies.knowsRelay(restored) == learned
+				&& Spellbooks.knows(restored, Runes.RELAY.id()) == learned && lessonState(restored).equals(before)
+				&& Spellbooks.get(restored).equals(originalBook), "Detached original player-type load retains copied/learned/rune data");
+			check(players.getPlayer(restored.getUUID()) != restored && restored.connection == null,
+				"A detached persistence probe cannot become a connected action owner");
+		} finally {
+			// If construction itself failed, only these previously absent keys can have been created.
+			if (createdStats == null) createdStats = stats.get(probeId);
+			if (createdAdvancements == null) createdAdvancements = (net.minecraft.server.PlayerAdvancements) advancements.get(probeId);
+			if (createdAdvancements != null) {
+				createdAdvancements.clearTriggers();
+				advancements.remove(probeId, createdAdvancements);
+			}
+			if (createdStats != null) stats.remove(probeId, createdStats);
+			boolean liveOwnerUnchanged = probeField(liveAdvancements, "player") == player;
+			liveAdvancements.setPlayer(player); // restore the original owner even on an unexpected load failure
+			check(stats.equals(statsBefore) && advancements.equals(advancementsBefore)
+				&& (createdAdvancements == null || ((java.util.Map<?, ?>) probeField(createdAdvancements, "activeTriggers")).isEmpty()),
+				"Detached load clears its trigger owner and leaves all preexisting cache entries unchanged, including failure paths");
+			check(players.getPlayers().size() == playerCount && (restored == null || restored.connection == null
+				&& !players.getPlayers().contains(restored) && !player.level().players().contains(restored)
+				&& player.level().getEntity(restored.getId()) != restored && players.getPlayer(restored.getUUID()) != restored),
+				"Detached load never registers or retains a player/action owner");
+			check(liveOwnerUnchanged && players.getPlayer(player.getUUID()) == player && player.connection == connection
+				&& lessonState(player).equals(before) && Spellbooks.get(player).equals(originalBook)
+				&& rewards(player, learned ? "learned_after_detached_load" : "copied_after_detached_load").equals(originalRewards),
+				"Detached save/load leaves the live connected body and its receipt/rewards unchanged");
+		}
+	}
+
+	private static Object probeField(net.minecraft.server.PlayerAdvancements progress, String name) {
+		try { var field = net.minecraft.server.PlayerAdvancements.class.getDeclaredField(name); field.setAccessible(true); return field.get(progress); }
+		catch (ReflectiveOperationException failure) { throw new AssertionError("26.3 advancement ownership probe unavailable", failure); }
+	}
+
+	@SuppressWarnings("unchecked")
+	private static java.util.Map<java.util.UUID, Object> playerCache(MinecraftServer server, String name) {
+		try {
+			var field = net.minecraft.server.players.PlayerList.class.getDeclaredField(name); field.setAccessible(true);
+			return (java.util.Map<java.util.UUID, Object>) field.get(server.getPlayerList());
+		} catch (ReflectiveOperationException failure) { throw new AssertionError("26.3 detached-player cache cleanup unavailable", failure); }
+	}
+
+	private record LessonState(List<String> grimoire, List<String> runes, boolean copied, boolean learned) {}
+	private static LessonState lessonState(net.minecraft.world.entity.player.Player player) {
+		return new LessonState(List.copyOf(Heart.grimoire(player)), List.copyOf(Spellbooks.get(player).learned()),
+			MasterStudies.hasRelayLesson(player), MasterStudies.knowsRelay(player));
+	}
+	private static void awaitClientLesson(ClientGameTestContext context, LessonState expected, String phase) {
+		context.waitFor(mc -> mc.player != null && lessonState(mc.player).equals(expected), 100);
+		assertClientLesson(context, expected, phase);
+	}
+	private static void assertClientLesson(ClientGameTestContext context, LessonState expected, String phase) {
+		context.runOnClient(mc -> {
+			var actual = lessonState(mc.player);
+			System.out.println("WILDERCORD_RELAY_LESSON_CLIENT " + phase + " thread=" + Thread.currentThread().getName() + " " + actual);
+			check(actual.equals(expected), "Live client lesson state remains unchanged through detached persistence: expected=" + expected + ", actual=" + actual);
+		});
+	}
+
+	private static void openGrimoireLesson(ClientGameTestContext context) {
+		context.runOnClient(mc -> lessonControl(mc, "before_grimoire_click"));
+		click(context, context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).pagePoint(2)));
+		double[] point = context.computeOnClient(mc -> lessonControl(mc, "after_grimoire_click"));
+		if (point == null) context.takeScreenshot(TestScreenshotOptions.of("relay_lesson_missing_control").disableCounterPrefix());
+		context.runOnClient(mc -> check(grimoirePage((CordScreen) mc.gui.screen()), "The real Grimoire tab click selects its page"));
+		click(context, point);
+	}
+	private static double[] lessonControl(net.minecraft.client.Minecraft mc, String phase) {
+		var value = new com.google.gson.JsonObject();
+		value.addProperty("phase", phase); value.addProperty("thread", Thread.currentThread().getName());
+		value.addProperty("screen", mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName());
+		value.addProperty("copied", MasterStudies.hasRelayLesson(mc.player)); value.addProperty("learned", MasterStudies.knowsRelay(mc.player));
+		var found = new com.google.gson.JsonArray(); Heart.grimoire(mc.player).stream().limit(32).forEach(found::add); value.add("grimoire", found);
+		double[] point = null;
+		if (mc.gui.screen() instanceof CordScreen cord) {
+			value.addProperty("grimoirePage", grimoirePage(cord)); value.addProperty("scroll", cord.lifeJournalScroll());
+			value.addProperty("width", cord.width); value.addProperty("height", cord.height); value.addProperty("guiScale", mc.getWindow().getGuiScale());
+			point = cord.relayLessonPoint();
+			var at = new com.google.gson.JsonArray(); if (point != null) { at.add(point[0]); at.add(point[1]); } value.add("control", at);
+		}
+		System.out.println("WILDERCORD_RELAY_LESSON_UI " + value);
+		return point;
+	}
+	private static boolean grimoirePage(CordScreen cord) {
+		try { var field = CordScreen.class.getDeclaredField("grimoirePage"); field.setAccessible(true); return field.getBoolean(cord); }
+		catch (ReflectiveOperationException failure) { throw new AssertionError("Read-only Grimoire page probe unavailable", failure); }
 	}
 	private record Rewards(int condensed, int xp, String innate, List<String> grimoire, List<String> runes, boolean starterGiven) {}
 
