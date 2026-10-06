@@ -67,6 +67,11 @@ import java.util.Optional;
  * wrapped, clipped, or left out rather than allowed to spill.</p>
  */
 public class CordScreen extends Screen {
+	private static final java.util.concurrent.atomic.AtomicLong EDITORS = new java.util.concurrent.atomic.AtomicLong();
+	private final long editorSession = EDITORS.incrementAndGet();
+	private final long[] editorRevisions = new long[dev.wildercord.gear.SpellSlots.ALL];
+	private net.minecraft.client.player.LocalPlayer editorBody;
+	private net.minecraft.client.multiplayer.ClientLevel editorWorld;
 	private static final int W = 372;
 	private static final int BASE_H = 308;
 	private static final int CELL = 18;
@@ -137,6 +142,8 @@ public class CordScreen extends Screen {
 	/** The Grimoire page: everything discovered, in place of the rows, Codex and readout. */
 	private boolean grimoirePage;
 	private int grimoireScroll;
+	/** The retrievable Archive lesson's visible row, in the Cord panel's coordinates. */
+	private int relayLessonY = -1;
 	/** Where the field guide's heading falls among the Grimoire's lines, and whether to scroll there on the next draw. */
 	private int fieldGuideAt;
 	private boolean toFieldGuide;
@@ -276,6 +283,18 @@ public class CordScreen extends Screen {
 		return new dev.wildercord.player.MasteryAttachments.Look(0, rank, shown.seed(), hue ? dev.wildercord.player.MasteryAttachments.Look.HUE : 0);
 	}
 
+	public long editorSession() { return editorSession; }
+	public long editorRevision(int row) { return editorRevisions[row]; }
+
+	/** Apply only the response for the row still being displayed, preserving any newer local input. */
+	public void reconcileRelay(dev.wildercord.net.RelayEditorReply reply) {
+		if (reply.session() != editorSession || minecraft.player != editorBody || minecraft.level != editorWorld
+			|| reply.slot() < 0 || reply.slot() >= spells.size() || reply.revision() != editorRevisions[reply.slot()]
+			|| !dev.wildercord.net.RelayEditorReply.key(spells.get(reply.slot())).equals(reply.request())) return;
+		spells.set(reply.slot(), new ArrayList<>(reply.accepted()));
+		if (!reply.reason().isEmpty()) deny(Component.literal(reply.reason()));
+	}
+
 	/** Copies the spells and passives to edit from the synced spellbook: on opening, and after a loadout is loaded. */
 	private void readBook() {
 		Player player = minecraft.player;
@@ -283,6 +302,8 @@ public class CordScreen extends Screen {
 			return;
 		}
 		copied = true;
+		editorBody = minecraft.player; editorWorld = minecraft.level;
+		for (int row = 0; row < editorRevisions.length; row++) editorRevisions[row]++;
 		Spellbook book = Spellbooks.get(player);
 		spells.clear();
 		for (List<String> spell : book.spells()) {
@@ -365,6 +386,11 @@ public class CordScreen extends Screen {
 	public double[] pagePoint(int page) {
 		PageTabs tabs = pageTabs(font, Component.translatable(tier().itemKey()));
 		return onScreen(tabs.x()[page] + tabs.w()[page] / 2.0, 7 + 6.5);
+	}
+
+	/** The saved Archive lesson's readable row, or null while it is outside the Grimoire viewport. */
+	public double[] relayLessonPoint() {
+		return relayLessonY < 0 ? null : onScreen(TEXT_X + 18, relayLessonY + 4);
 	}
 
 	/** The Cord's name as the header draws it (cut short when the row is crowded). */
@@ -914,6 +940,9 @@ public class CordScreen extends Screen {
 		if (tier == null) {
 			g.centeredText(font, Component.translatable("screen.wildercord.no_cord"), W / 2, H / 2 - 10, TEXT);
 			g.centeredText(font, Component.translatable("screen.wildercord.no_cord_hint"), W / 2, H / 2 + 4, DIM);
+			if (dev.wildercord.player.MasterStudies.hasRelayLesson(minecraft.player)) {
+				g.centeredText(font, Component.translatable("screen.wildercord.relay_lesson.entry"), W / 2, H / 2 + 25, CYAN);
+			}
 			// Aura needs no Cord: its page is open to everyone.
 			return drawAuraBadge(g, mx, my);
 		}
@@ -1505,6 +1534,14 @@ public class CordScreen extends Screen {
 			return passiveReadout(tier, out, width);
 		}
 		List<String> spell = spells.get(editing);
+		if (dev.wildercord.spell.RelayRules.containsIds(spell)) {
+			var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
+			if (raw.size() != spell.size() || !dev.wildercord.spell.RelayRules.valid(raw)) {
+				wrap(out, Component.literal("Unfinished Relay · cannot cast"), 0, width, 0xFFE06060);
+				wrap(out, Component.literal(dev.wildercord.spell.RelayRules.GRAMMAR_PROBLEM), 0, width, TEXT);
+				refusal(out, width); return out;
+			}
+		}
 		List<RuneDef> runes = runesAt(spell, SpellCaster.activeSockets(spell, book(), editing, tier));
 		if (runes.isEmpty()) {
 			wrap(out, Component.translatable("screen.wildercord.empty_spell"), 0, width, DIM);
@@ -1855,6 +1892,12 @@ public class CordScreen extends Screen {
 			Component text = Component.translatable("screen.wildercord.heart.perk." + perk, Circles.ordinal(perk));
 			lines.add(active >= perk ? text.copy().withStyle(ChatFormatting.AQUA) : text.copy().withStyle(ChatFormatting.DARK_GRAY));
 		}
+		if (circles >= Circles.ARCHMAGE) {
+			lines.add(Component.translatable(dev.wildercord.player.MasterStudies.knowsRelay(player)
+				? "screen.wildercord.relay_lesson.heart_known" : dev.wildercord.player.MasterStudies.hasRelayLesson(player)
+				? "screen.wildercord.relay_lesson.heart_copied" : "message.wildercord.relay_lesson.invitation")
+				.withColor(0x7FDAD4));
+		}
 		lines.add(Component.empty());
 		if (circles >= Circles.MAX) {
 			lines.add(Component.translatable("screen.wildercord.heart.complete", Circles.MAX).withStyle(ChatFormatting.GOLD));
@@ -2094,6 +2137,12 @@ public class CordScreen extends Screen {
 			return true;
 		}
 		if (tier() == null) {
+			if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && dev.wildercord.player.MasterStudies.hasRelayLesson(minecraft.player)
+				&& inside(mx, my, 14, H / 2 + 22, W - 28, 16)) {
+				click();
+				minecraft.gui.setScreen(new RelayLessonScreen(this));
+				return true;
+			}
 			return super.mouseClicked(event, doubleClick);
 		}
 		if (pressedRune != null || pressedSocket >= 0) {
@@ -2161,6 +2210,13 @@ public class CordScreen extends Screen {
 			return true;
 		}
 		if (grimoirePage) {
+			if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && relayLessonY >= 0
+				&& dev.wildercord.player.MasterStudies.hasRelayLesson(minecraft.player)
+				&& inside(mx, my, TEXT_X + 8, relayLessonY - 1, W - 32 - TEXT_X, LINE)) {
+				click();
+				minecraft.gui.setScreen(new RelayLessonScreen(this));
+				return true;
+			}
    if(event.button()==InputConstants.MOUSE_BUTTON_LEFT)for(var link:visibleLifeJournalLinks)if(inside(mx,my,TEXT_X+8,link.y()-1,W-32-TEXT_X,LINE)){
     click();if(link.target().equals("settings"))minecraft.gui.setScreen(new MagicSettingsScreen(this));
     else Runes.get(link.target()).filter(r -> book().knows(r.id())).ifPresent(r -> {showPage(0);query=RuneItem.runeName(r).getString();filter=null;category=null;codexScroll=0;searchFocused=true;});
@@ -2421,7 +2477,7 @@ public class CordScreen extends Screen {
 		if (passivePage) {
 			ClientPlayNetworking.send(new WildercordNetworking.EditPassive(row, List.copyOf(passives.get(row))));
 		} else {
-			ClientPlayNetworking.send(new WildercordNetworking.EditSpell(row, List.copyOf(spells.get(row))));
+			ClientPlayNetworking.send(new WildercordNetworking.EditSpell(row, List.copyOf(spells.get(row)), editorSession, ++editorRevisions[row]));
 		}
 	}
 
@@ -2655,9 +2711,19 @@ public class CordScreen extends Screen {
 			minecraft.player.sendOverlayMessage(Component.translatable("message.wildercord.code_none").withColor(0xE06060));
 			return;
 		}
+		List<String> decoded = dev.wildercord.spell.SpellCodes.decode(code);
+		if (dev.wildercord.spell.RelayRules.containsIds(decoded)) {
+			var raw = decoded.stream().map(Runes::get).flatMap(Optional::stream).toList();
+			if (passivePage || tier() != CordTier.ECHO || raw.size() != decoded.size()
+				|| !dev.wildercord.spell.RelayRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
+				|| !dev.wildercord.player.MasterStudies.knowsRelay(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleRelay(minecraft.player)) {
+				minecraft.player.sendOverlayMessage(Component.literal("Relay needs its Archive lesson, active VIII, Echo Cord and exactly Relay + Harm, Frost or Shock.").withColor(0xE06060));
+				return;
+			}
+		}
 		List<String> kept = new ArrayList<>();
 		int missing = 0;
-		for (String id : dev.wildercord.spell.SpellCodes.decode(code)) {
+		for (String id : decoded) {
 			Optional<RuneDef> rune = Runes.get(id);
 			if (rune.isPresent() && book().knows(id) && holds(rune.get()) && kept.size() < sockets()) {
 				kept.add(id);
@@ -2767,6 +2833,17 @@ public class CordScreen extends Screen {
 		Player player = minecraft.player;
 		List<String> found = Heart.grimoire(player);
 		List<GrimoireLine> lines = new ArrayList<>();
+		relayLessonY = -1;
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.relay_lesson.heading"), 0, GOLD, null));
+		boolean relayKnown = dev.wildercord.player.MasterStudies.knowsRelay(player);
+		boolean relayCopied = dev.wildercord.player.MasterStudies.hasRelayLesson(player);
+		int relayLessonIndex = relayCopied ? lines.size() : -1;
+		lines.add(new GrimoireLine(Component.translatable(relayKnown
+			? "screen.wildercord.relay_lesson.entry" : relayCopied ? "screen.wildercord.relay_lesson.copied" : "screen.wildercord.relay_lesson.unknown"), 8, relayCopied ? CYAN : DIM,
+			List.of(Component.translatable(relayKnown ? "screen.wildercord.relay_lesson.retrieve" : relayCopied ? "screen.wildercord.relay_lesson.retrieve_copied"
+				: "message.wildercord.relay_lesson.invitation").withStyle(ChatFormatting.GRAY))));
+		if (relayCopied) lines.add(new GrimoireLine(Component.translatable(!relayKnown ? "screen.wildercord.relay_lesson.study_pending" : dev.wildercord.player.MasterStudies.practicedRelay(player)
+			? "screen.wildercord.relay_lesson.practiced" : "screen.wildercord.relay_lesson.practice_pending"), 8, DIM, null));
 		int top = SPELL_TOP - 4;
 		int bottom = H - 12;
 		sprite(g, SPR_INSET, 10, top - 3, W - 20, bottom + 3 - (top - 3));
@@ -2884,6 +2961,7 @@ public class CordScreen extends Screen {
 		for (int i = 0; i < visible + 1 && first + i < lines.size(); i++) {
 			GrimoireLine line = lines.get(first + i);
 			int y = top + i * LINE;
+			if (first + i == relayLessonIndex && y >= top && y + LINE <= bottom) relayLessonY = y;
    String lifeLink=lifeJournalLinks.get(first+i);if(lifeLink!=null && y>=top && y+LINE<=bottom)visibleLifeJournalLinks.add(new LifeJournalLink(y,lifeLink));
 			int x = TEXT_X + line.x();
 			if (line.x() == 0) {

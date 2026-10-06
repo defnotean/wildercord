@@ -9,7 +9,8 @@ public final class ResonantRules {
 	public static final int WINDOW = 24, REST = 80, LIMIT = 1024;
 	public static final double COST = 4;
 	public static final List<String> ELEMENTS = List.of("fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood");
-	public record Hit(UUID player, String element, float taken, long tick, boolean blade) {
+	public record Hit(UUID player, String element, float taken, long tick, boolean blade, boolean scoped) {
+		public Hit(UUID player, String element, float taken, long tick, boolean blade) { this(player, element, taken, tick, blade, false); }
 		public boolean valid() { return player != null && ELEMENTS.contains(element) && Float.isFinite(taken) && taken > 0; }
 	}
 	public record Pair(Hit spell, Hit blade) {}
@@ -66,5 +67,6 @@ public final class ResonantRules {
 		private static <T> void bound(LinkedHashMap<UUID,T> map) { while (map.size() > LIMIT) map.pollFirstEntry(); }
 		public void forget(UUID player) { pending.values().removeIf(h -> h.player().equals(player)); }
 		public int size() { return pending.size() + targets.size() + blades.size(); }
+		public void retire(UUID target, Hit expected) { pending.remove(target, expected); }
 	}
 }

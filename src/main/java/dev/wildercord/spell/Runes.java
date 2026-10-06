@@ -462,6 +462,9 @@ public final class Runes {
 	// ---- Flight (see cast/Soar): crafted like the rest, and defined last, so no older rune's magic circle changes.
 	public static final RuneDef SOAR = effect("soar", "Soar", 3, 18, "wind", EffectKind.HELPFUL, "Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump and sneak to rise and sink. It can't be renewed mid-flight, and when the wind fades it sets you down gently, then your wings need 30 seconds' rest. A pull or a grounding wind tears it away, and it won't lift anyone in a warded arena.", DURATION);
 
+	// New shapes are appended too: generated circles retain the roster order of existing runes.
+	public static final RuneDef RELAY = shape("relay", "Relay", 4, 24, 1.0, "An Archive lesson for active Circle VIII and an Echo Cord: place a visible focus within 8 blocks, then press cast again within 4 seconds to release one aimed ray. Relay then Harm, Frost or Shock only; 90% normal strength, 16 blocks total path, 8-second shared rest. No modifiers, links, Knots, woven runes or storage.");
+
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());
 

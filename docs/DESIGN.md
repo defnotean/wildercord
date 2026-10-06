@@ -2735,3 +2735,98 @@ The newly appended synchronized animation ID is 6; original IDs 1–4 and Cinder
 The close-range Master `BREAK_CAST` and player Driving Cut now reuse pursuit's exact source/target-scoped `Player.actuallyHurt` receipt. The original health-delta return, damage, healing, armour, PvP scaling, stance wear and hit callbacks remain unchanged. Positive native health or absorption loss counts before Mana Skin, Reversal or totem restoration; full guards, dodges, ward rejections, invulnerability and zero resolved damage do not.
 
 These two releases capture the exact held-charge attachment immediately before the entire synchronous hit and compare object identity afterward. Callback-created or replaced charges cannot inherit an earlier hit, even with equal fields or the same start tick. A callback replacing a stage record is conservatively refused; ordinary charge progression does not tick inside the synchronous hit. BREAK_CAST requests only the existing shared `Statuses.interrupt`. Driving Cut first checks the existing `CastLock` seal/recovery admission without mutation, then requires that request to succeed before its existing 20-tick lock against a charged player, preserving both CastLock recovery and the shared 160-tick interruption protection. It retains its existing 20-tick seal and CastLock recovery against a player genuinely idle before and after the hit. A refused interrupt or replacement charge gets no seal. Non-player Driving Cut behavior and every move's damage, target limit, cost, rest, tell and recovery remain unchanged.
+
+
+## Relay Circle: the Archive margin
+
+Active Circle VIII and the existing Archivist feat make a surviving, quiet Archive Lectern offer
+*The Margin Between Places*. Legitimate access saves a permanent verified copying receipt;
+reading its three authored pages now or later through Grimoire learns Relay permanently. Copying
+alone teaches no rune and completes no practice. Neither a forged packet nor a portable book grants
+the receipt. The Grimoire retains unfinished and learned pages through full inventory, book loss and
+reconnect. An optional paid Dummy exercise records practice without XP.
+
+Relay occupies an ordinary active slot. Its first fresh cast-key press pays 24 plus the normal
+Harm, Frost or Shock base price with ordinary discounts once, then fixes a focus on visible floor
+within eight blocks. Release the key, move/aim, and press again within four seconds to commit a
+fixed six-tick warned ray. Release has ten ticks of casting recovery; the shape has eight seconds
+of shared rest across slots. Every accepted effect has 0.9 normal strength and existing damage caps.
+
+The original connected living body, same Echo Cord, slot, paid compiled pair and active lesson
+gate must survive until impact. Death, respawn, dimension transition, disconnect, slot selection,
+editing, menu opening or sneak-casting cancels without refund. Damage, a successful shared interruption, silence or lost sight
+also cancels. Both path legs, every victim’s current caster visibility, loaded cells, world border
+and dungeon ward membership are rechecked. Total path is at most sixteen blocks. Nothing is
+transported. Regular Shock reactions remain subject to the same paid budget and current admission.
+
+The grammar is deliberately exactly Relay + Harm/Frost/Shock. No links, modifiers, woven runes,
+Knots, passive, scroll, Imbue, overcast, channeling or free copies. Unsupported original rows refuse
+whole before payment or filtering; the editor never silently turns them into Self.
+
+Relay participates in the ordinary interruption path: `Statuses.interrupt` calls
+`Charging.interrupt`, which retires a pending Relay and reports success through the existing
+160-tick interruption immunity. No separate immunity is introduced. CastLock still cancels
+directly under its existing seal/recovery rules. Starting a committed Master art uses the same
+Charging interruption path; an active Master commitment prevents Relay placement/release.
+Normal Cord casts, scrolls and Imbue releases close an uncommitted focus and cannot overlap
+Relay’s warning or ten-tick casting recovery. Positive native damage cancels either focus phase.
+
+Entitled in-progress Relay edits are saved as exact, bounded noncastable drafts, with a visible
+whole-row grammar warning. Unauthorized/oversized edits restore the accepted row using a reply
+bound to the exact editor session, row revision and requested content. Replies follow explicit
+retained editor ancestry while a child screen is open; closed sessions and older edits cannot
+modify a replacement editor or a newer draft, including an A→B→A edit sequence. Library and
+loadout changes use the same central spellbook invalidation, including same-tick round trips.
+
+The verified receipt requires active VIII, the existing Archivist feat and an actual quiet spent
+lectern, including legacy saves without the later slain flag. Subsequent reading no longer holds
+the lectern or boss: normal missing-boss rearm and respawn continue. Each transient reading still
+checks current entitlement, exact connected body and ordered nonce pages within five minutes.
+No boss clear or changed reward is granted; a valid unfinished copy is retrievable without a return
+journey or second boss fight.
+
+Defensive reflections carry the original paid lifetime separately from the current defender and
+recipient. Repeated parries, Mirror-thread retaliation, mastery chain bonuses and water/arena
+conduction or Frost control retain admission, actual incoming origin and payment/entity limits.
+The creature allowance for these scoped impacts belongs to the original payment; a reflected Cast
+cannot replenish it. Mastery chaining checks a bounded nearest-target query and the actual
+primary-to-secondary sightline without adding RNG draws. Relay can complete a primed blade resonance
+while its receipt is live; closing the focus retires any unused scoped spell credit.
+
+Reprieve preserves its existing already-admitted-wound boundary. The full hit reserves the shared
+damage allowance before immediate damage. Recording the delayed share requires current target
+admission and paid lifetime after native damage callbacks. Once that reduced debt is validly
+recorded, its ordinary installments remain owed by the original target after focus expiry or gear
+changes, without charging the allowance again or invoking recursive rune effects.
+
+The native Relay matrix includes editor replies through nested children, stale same-content edits,
+closed editor sessions, copied-but-unfinished reconnect, unchanged legacy boss rearm/respawn,
+actual inherited Mastery chain allowance/origin/cover/overflow, Mirror-thread allowance and
+ALLOW_DAMAGE/AFTER_DAMAGE retirement, Tide Frost creature allowance, and Reprieve debt creation
+versus normal paid-focus retirement. These are authored native cases; compilation is not execution.
+The generic Fire shape gallery explicitly excludes Relay's unsupported pairing; the dedicated
+Relay suite exercises and records its paid two-input presentation.
+
+Relay terrain side effects also retain the original receipt. World frost, arena ice and residues
+(including Mastery’s existing residue sink) reserve the same paid block allowance and recheck
+caster/focus visibility, total path and ward membership for each changed cell. Terrain that was
+validly placed remains the ordinary world result; later focus retirement does not roll it back.
+The scoped arena hook refuses an over-cap active arena set before enumeration.
+
+For Relay, the inherited post-effect hooks run inside the same saved Effects context as the direct
+effect, with unconditional finally restoration. This includes Mastery residue triggered by the
+first water/arena collateral wound when a primary Shield absorbed the ray. Ordinary spells retain
+their prior post-effect outer context. A nested conduction callback cannot leave a retired receipt
+available for subsequent creeper charging; the charge mutation rechecks current target admission.
+
+A matching Rune Seal must itself pass the Relay block admission check at activation, including
+visibility to its own solid hit surface. After that accepted activation, the existing connected
+door response remains one bounded device action (MAX_DOOR 96); it does not require visibility to
+each linked block. Native source covers a real visible initiating seal and the same seal behind
+intervening cover, alongside world-collateral residue with a zero-block allowance, scope restoration
+and a pinned positive/retired creeper-charge pair. Native execution remains a separate gate.
+
+Relay Harm’s inherited arcane shimmer uses the bounded collateral query, current victim and
+incoming-leg sightlines, and the shared creature allowance before applying Glowing. Native source
+covers a visible invisible foe, exhausted allowance, intervening cover and candidate overflow.
+Ordinary arcane shimmer retains its existing reveal behavior.

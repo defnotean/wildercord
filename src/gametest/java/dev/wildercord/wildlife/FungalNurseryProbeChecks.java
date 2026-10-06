@@ -6,6 +6,13 @@ import net.minecraft.core.BlockPos;
 /** Standalone negative controls for optional native evidence; does not create a world or alter AI. */
 public final class FungalNurseryProbeChecks {
  public static void main(String[] arguments) throws Exception {
+  var plant=new BlockPos(4,30,0);var floor=new BlockPos(4,30,2);
+  var approach=FungalNurseryTest.nurseryApproachCells(plant,floor);
+  check(approach.size()==12&&new java.util.HashSet<>(approach).size()==12,"North entrance is deduplicated with the original nine plant cells");
+  var originalCells=new ArrayList<BlockPos>();for(var at:BlockPos.betweenClosed(plant.offset(-1,0,-1),plant.offset(1,0,1)))originalCells.add(at.immutable());
+  check(approach.subList(0,9).equals(originalCells),"Existing real pruning scan order is preserved");
+  for(var direction:net.minecraft.core.Direction.Plane.HORIZONTAL)check(approach.contains(floor.relative(direction)),"Every cardinal entrance is considered");
+  check(!approach.contains(floor.offset(-1,0,1))&&!approach.contains(floor.offset(1,0,1))&&!approach.contains(floor),"No diagonal garden expansion or canopy-floor replacement enters pruning");
   var absent=FungalNurseryProbe.visit(null,true);
   check(!absent.present()&&!absent.running()&&absent.destination()==null,"An absent goal cannot become an active arrival");
   var goal=new InactiveVisit();

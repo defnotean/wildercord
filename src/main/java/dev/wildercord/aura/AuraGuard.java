@@ -99,7 +99,7 @@ public final class AuraGuard {
 		if (!projectile && !blow) {
 			return false;
 		}
-		return faces(player, direct.position());
+		return faces(player, source instanceof dev.wildercord.cast.RelayDamageSource ? source.getSourcePosition() : direct.position());
 	}
 
 	/** Whether {@code from} is in front of the player (the guard's half). */

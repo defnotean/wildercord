@@ -39,6 +39,7 @@ public final class SpellNames {
 		if (runes.isEmpty()) {
 			return "";
 		}
+		if (RelayRules.contains(runes) && !RelayRules.valid(runes)) return "Unfinished Relay";
 		return auto(SpellCompiler.compile(runes).root());
 	}
 

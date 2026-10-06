@@ -31,6 +31,14 @@ public final class RuneSources {
 
 	private static final Map<String, Source> ALL = new LinkedHashMap<>();
 
+	// ---- Permanent lessons: never included in ordinary Archive or other common loot pools.
+	public static final Source RELAY_LESSON = source("lesson:relay", "The Margin Between Places, at an inactive Archive Lectern after Circle VIII and the Archivist", Runes.RELAY);
+
+	/** Entitlement is taught by a lesson, never supplied by common loot or crafting. */
+	public static boolean lessonOnly(RuneDef rune) {
+		return sourcesOf(rune).stream().anyMatch(source -> source.id().startsWith("lesson:"));
+	}
+
 	// ---- Vanilla structures (loot injected into their chests by WildercordLoot)
 	public static final Source ANCIENT_CITY = source("ancient_city", "Ancient cities", Runes.ECHOLOCATE, Runes.RESONANT_SHRIEK);
 	public static final Source OCEAN_MONUMENT = source("ocean_monument", "Ocean monuments (Elder Guardians)", Runes.TIDECALL);

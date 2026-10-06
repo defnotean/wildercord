@@ -50,6 +50,11 @@ public final class SpellCaster {
 	 */
 	public static List<Integer> activeSockets(List<String> ids, Spellbook book, int spell, CordTier tier) {
 		List<Integer> sockets = new ArrayList<>();
+		if (dev.wildercord.spell.RelayRules.containsIds(ids)) {
+			var raw = ids.stream().map(Runes::get).flatMap(Optional::stream).toList();
+			if (tier != CordTier.ECHO || raw.size() != ids.size() || !dev.wildercord.spell.RelayRules.valid(raw)
+				|| ids.stream().anyMatch(id -> !book.knows(id))) return sockets;
+		}
 		if (tier == null || spell < 0 || spell >= tier.spells && spell != dev.wildercord.gear.SpellSlots.TOME) {
 			return sockets;
 		}
@@ -82,7 +87,14 @@ public final class SpellCaster {
 	 * inside the bonus cap against players), and its surge chance is rolled as the spell leaves.
 	 */
 	public static void cast(ServerPlayer player, int requested, double charge, Charging.Performance performance) {
-		if (dev.wildercord.aura.MastersArts.committed(player)) return;
+		if (dev.wildercord.aura.MastersArts.committed(player) || RelayCircles.committed(player)) return;
+		if (RelayCircles.contains(player, requested)) {
+			int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
+			String problem = RelayCircles.problem(player, slot);
+			fail(player, Component.literal(problem == null ? "Relay Circle uses fresh cast-key presses: place, release the key, then press again." : problem));
+			return;
+		}
+		if (RelayCircles.pending(player)) RelayCircles.cancel(player);
 		if (!player.isAlive() || player.isSpectator()) {
 			return;
 		}
@@ -402,6 +414,7 @@ public final class SpellCaster {
 	private static final java.util.Map<java.util.UUID, int[]> COMBO = new java.util.HashMap<>();
 
 	public static void select(ServerPlayer player, int spell) {
+		RelayCircles.cancel(player);
 		CordTier tier = Spellbooks.tier(player);
 		// Steps through the Cord's spells, and on to the tome's while it's in the off-hand.
 		int index = dev.wildercord.gear.SpellSlots.resolve(tier == null ? 1 : tier.spells, dev.wildercord.gear.Gear.tome(player), spell);
@@ -428,6 +441,22 @@ public final class SpellCaster {
 	 * @return null if everything was accepted, otherwise why something was left out
 	 */
 	public static Component edit(ServerPlayer player, int spell, List<String> runeIds) {
+		RelayCircles.cancel(player);
+		if (dev.wildercord.spell.RelayRules.containsIds(runeIds)) {
+			if (runeIds.size() > CordTier.MAX_SOCKETS)
+				return Component.literal("This Relay draft contains too many runes; the accepted row is restored.");
+			if (!dev.wildercord.player.MasterStudies.knowsRelay(player) || !dev.wildercord.player.MasterStudies.eligibleRelay(player))
+				return Component.literal("Study Relay Circle at the quiet Archive lectern with eight active Heart Circles.");
+			if (Spellbooks.tier(player) != CordTier.ECHO || !dev.wildercord.gear.Gear.spellOpen(player, CordTier.ECHO, spell))
+				return Component.literal("Relay needs an Echo Cord and an open ordinary spell slot.");
+			if (runeIds.stream().anyMatch(id -> !Spellbooks.knows(player, id)))
+				return Component.literal("Learn both runes before threading this Relay spell.");
+			var runes = runeIds.stream().map(Runes::get).flatMap(Optional::stream).toList();
+			if (runes.size() != runeIds.size()) return Component.literal("This Relay draft contains unreadable runes; the accepted row is restored.");
+			// An entitled in-progress draft stays exactly as written and cannot cast until the whole grammar is valid.
+			Spellbooks.set(player, Spellbooks.get(player).withSpell(spell, List.copyOf(runeIds)));
+			return dev.wildercord.spell.RelayRules.valid(runes) ? null : Component.literal(dev.wildercord.spell.RelayRules.GRAMMAR_PROBLEM);
+		}
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null) {
 			return Component.translatable("message.wildercord.no_cord");
@@ -471,6 +500,7 @@ public final class SpellCaster {
 	 * @return null if everything was accepted, otherwise why something was left out
 	 */
 	public static Component editPassive(ServerPlayer player, int slot, List<String> runeIds) {
+		if (dev.wildercord.spell.RelayRules.containsIds(runeIds)) return Component.literal("Relay Circle cannot be sustained as a passive.");
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null) {
 			return Component.translatable("message.wildercord.no_cord");

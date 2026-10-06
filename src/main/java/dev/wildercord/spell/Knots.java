@@ -76,6 +76,7 @@ public final class Knots {
 	 * Knots at most {@link #MAX_DEPTH} deep.
 	 */
 	public static String problem(List<RuneDef> runes) {
+		if (RelayRules.contains(runes)) return "Relay is an Archive lesson and cannot be tied into a Knot.";
 		if (runes.isEmpty()) {
 			return "There's nothing in that spell to tie.";
 		}
@@ -217,6 +218,7 @@ public final class Knots {
 	}
 
 	private static Optional<RuneDef> read(String id) {
+		if (RelayRules.containsIds(List.of(id))) return Optional.empty();
 		Parsed parsed = parse(id);
 		if (parsed == null || parsed.ids().isEmpty() || parsed.ids().size() > MAX_RUNES) {
 			return Optional.empty();

@@ -20,6 +20,7 @@ import dev.wildercord.client.fx.HitStop;
 import dev.wildercord.client.render.AuraShellLayer;
 import dev.wildercord.gametest.MastersCaptureProbe;
 import dev.wildercord.gametest.ArticulatedSharedRenderProbe;
+import dev.wildercord.gametest.OpeningCaptureWait;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
@@ -64,6 +65,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 final class ArticulatedOpeningStyleChecks {
 	private ArticulatedOpeningStyleChecks() {}
 	private static final float CAPTURE_TICK_DELTA = .5F;
+	private static final long MAX_HIT_STOP_NANOS = Arrays.stream(dev.wildercord.aura.AuraFxRules.Weight.values())
+		.mapToInt(weight -> dev.wildercord.aura.AuraFxRules.hitStop(weight, 1)).max().orElseThrow() * 1_000_000L;
 	private static final int[] MOVES = {3, 4};
 	private static final EquipmentSlot[] ARMOR = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 	private static final ArticulatedCombatPose.Phase[] PHASES = {ArticulatedCombatPose.Phase.WINDUP,
@@ -130,6 +133,11 @@ final class ArticulatedOpeningStyleChecks {
 	private static boolean opening(String art) { return art.equals("kindling_draw") || art.equals("frostbite"); }
 
 	private static void capture(ClientGameTestContext context, boolean firstPerson) {
+		if (firstPerson) dev.wildercord.gametest.OpeningCaptureWaitNativeChecks.verify(context);
+		OpeningCaptureWait.withCleanup(() -> captureScoped(context, firstPerson));
+	}
+
+	private static void captureScoped(ClientGameTestContext context, boolean firstPerson) {
 		String[] properties = {ArticulatedCombat.ENABLE_PROPERTY, ArticulatedCombat.STABLE_CAMERA_PROPERTY,
 			ArticulatedArmorRenderer.ENABLE_PROPERTY, ArticulatedArmorRenderer.VIEW_PROPERTY, ArticulatedAuraShellRenderer.ENABLE_PROPERTY};
 		String[] previous = Arrays.stream(properties).map(System::getProperty).toArray(String[]::new);
@@ -242,21 +250,37 @@ final class ArticulatedOpeningStyleChecks {
 			context.getInput().holdKey(o -> o.keyShift); context.waitTicks(2);
 			context.getInput().pressKey(o -> o.keyAttack); context.getInput().releaseKey(o -> o.keyShift);
 			context.runOnClient(mc -> mc.options.setCameraType(firstPerson ? CameraType.FIRST_PERSON : CameraType.THIRD_PERSON_FRONT));
+			OpeningCaptureWait.Snapshot[] capture = new OpeningCaptureWait.Snapshot[1];
 			try {
 				context.waitFor(mc -> {
 					if (samples.size() == 36) { String before = samples.removeFirst(); samples.removeFirst(); samples.addFirst(before); }
 					samples.addLast(receipt(mc));
 					var accepted = MastersArtsClient.timeline(mc.player); var state = state(mc);
 					var frame = disabled ? state.getData(ArticulatedCombat.FRAME) : ArticulatedCombat.frame(state);
-					return accepted != null && accepted.move() == style.animation() && frame != null && frame.move() == style.animation()
+					boolean admitted = accepted != null && accepted.move() == style.animation() && frame != null && frame.move() == style.animation()
 						&& frame.pose().phase() == phase && !state.isCrouching;
+					if (admitted) {
+						boolean held = HitStop.holding();
+						// Capture after observing the hold: every existing deadline is at most one
+						// production maximum from now. No new impacts can tick through Fabric's barrier.
+						capture[0] = new OpeningCaptureWait.Snapshot(captureIdentity(mc), held,
+							System.nanoTime() + (held ? MAX_HIT_STOP_NANOS : 0));
+					}
+					return admitted;
 				}, 35);
 			} catch (AssertionError failure) {
 				System.out.println("ARTICULATED_OPENING_ADMISSION_TIMEOUT name=" + name + " boundedClientSamples=" + samples
 					+ " serverSpends=" + audit.spends + " serverCompletions=" + audit.completions + " serverImpacts=" + audit.impacts);
 				throw failure;
 			}
+			// Only monotonic-clock reads and short parks occur here. Do not add Fabric dispatch:
+			// its interruption-sensitive task/ack handshake is outside this fixture's wait contract.
+			var ready = OpeningCaptureWait.await(capture[0]);
 			MastersArts.Performed accepted = context.computeOnClient(mc -> {
+				OpeningCaptureWait.requireReady(capture[0], captureIdentity(mc), HitStop.holding());
+				System.out.println("ARTICULATED_OPENING_RENDER_READY name=" + name + " identity=" + capture[0].identity()
+					+ " holdObserved=" + ready.observedHold() + " clockPolls=" + ready.clockPolls() + " waitedNanos=" + ready.elapsedNanos()
+					+ " actualNaturalExpiry=true screenshotEvidence=false");
 				var timeline = MastersArtsClient.timeline(mc.player); var state = state(mc);
 				var raw = state.getData(ArticulatedCombat.FRAME);
 				check(timeline != null && timeline.entity() == mc.player.getId() && timeline.move() == style.animation()
@@ -452,6 +476,12 @@ final class ArticulatedOpeningStyleChecks {
 	}
 	private static AvatarRenderState state(Minecraft mc) {
 		return (AvatarRenderState) mc.getEntityRenderDispatcher().getRenderer(mc.player).createRenderState(mc.player, CAPTURE_TICK_DELTA);
+	}
+	private static OpeningCaptureWait.Identity captureIdentity(Minecraft mc) {
+		if (mc.player == null || mc.level == null) return null;
+		var accepted = MastersArtsClient.timeline(mc.player);
+		return accepted == null ? null : new OpeningCaptureWait.Identity(mc.player.getUUID(), mc.player.getId(), accepted.entity(),
+			accepted.move(), accepted.startTick(), mc.level.getGameTime());
 	}
 	private static String receipt(Minecraft mc) {
 		var state = state(mc); var frame = state.getData(ArticulatedCombat.FRAME);

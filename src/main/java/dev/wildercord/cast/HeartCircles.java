@@ -193,6 +193,9 @@ public final class HeartCircles {
 		if (n == Circles.MANA_SKIN || n == Circles.FLOW || n == Circles.OVERFLOW || n == Circles.ARCHMAGE) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.perk." + n).withColor(0xF5C46A));
 		}
+		if (n == Circles.ARCHMAGE) {
+			player.sendSystemMessage(Component.translatable("message.wildercord.relay_lesson.invitation").withColor(0x7FDAD4));
+		}
 		if (n == 1) {
 			// The heart's first ring wakes something only this caster has.
 			AWAKENING.add(player.getUUID());

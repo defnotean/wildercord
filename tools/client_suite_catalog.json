@@ -1,8 +1,12 @@
 {
   "masters": {
     "description": "Masters update combat, progression, presentation and bounded existing-world upgrade safety.",
-    "expectedCount": 23,
+    "expectedCount": 27,
     "entries": [
+      "dev.wildercord.cast.RelayCircleTest",
+      "dev.wildercord.cast.RelayLifetimeTest",
+      "dev.wildercord.cast.RelayDefenceTest",
+      "dev.wildercord.party.RelayImpactTest",
       "dev.wildercord.party.PartyMutationSafetyTest",
       "dev.wildercord.party.ArtFieldMutationSafetyTest",
       "dev.wildercord.gametest.WildercordHeartCirclesTest",

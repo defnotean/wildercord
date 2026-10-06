@@ -329,3 +329,4 @@ shard_compass|DIAMOND|GEAR|NEEDLE
 root_carry|ROOTS|SHELL|VINE
 watchweft|EYE|GEAR|FAN
 manabraid|NEEDLE|TETHER|HEART
+relay|SEAL|TETHER|LANCE

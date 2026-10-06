@@ -37,6 +37,7 @@ final class ShapeFeels {
 		Map.entry("zone", new Gesture(1.0F, 0.55F)), Map.entry("totem", new Gesture(1.122F, 0.55F)), Map.entry("wall", new Gesture(1.498F * O, 0.6F)),
 		Map.entry("vortex", new Gesture(1.682F * O, 0.6F)), Map.entry("domain", new Gesture(0.5F, 0.85F)), Map.entry("imprint", new Gesture(1.26F, 0.45F)),
 		Map.entry("mine", new Gesture(1.498F, 0.3F)), Map.entry("snare", new Gesture(1.682F, 0.3F)), Map.entry("trail", new Gesture(1.26F, 0.35F)),
+		Map.entry("relay", new Gesture(1.122F, 0.4F)),
 		// CALL
 		Map.entry("rain", new Gesture(1.0F, 0.6F)), Map.entry("constellation", new Gesture(1.498F, 0.55F)),
 		// AURA

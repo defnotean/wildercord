@@ -32,7 +32,7 @@ import java.util.Locale;
  * and the stage it opens at, with the marks' meanings at the foot. Opened from the Cord screen's Aura badge (with or without a
  * Cord), drawn in the Cord screen's stone and gold.
  */
-public class AuraScreen extends Screen {
+public class AuraScreen extends Screen implements CordEditorParent {
 	private static final int W = 320;
 	private static final int H = 340;
 	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
@@ -44,6 +44,7 @@ public class AuraScreen extends Screen {
 	private static final int FAINT = 0xFF5A5470;
 
 	private final Screen parent;
+ @Override public Screen cordEditorParent(){return parent;}
 	/** Whether the list shows the sword strings' arts instead of the techniques (kept while the game runs). */
 	private static boolean arts;
 	/** Whether it shows the Way tree instead (kept while the game runs; wins over {@link #arts}). */

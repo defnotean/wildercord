@@ -142,7 +142,7 @@ public final class Shields {
 			LivingEntity t = targets.get(i);
 			Vec3 c = t.getBoundingBox().getCenter();
 			// Where it came from: the point it struck, unless that's the creature itself (then the caster).
-			Vec3 from = hit.point().distanceToSqr(c) > 0.36 ? hit.point() : cast.caster.getEyePosition();
+			Vec3 from = cast.guardedImpact() ? cast.incoming() : hit.point().distanceToSqr(c) > 0.36 ? hit.point() : cast.caster.getEyePosition();
 			if (stops(cast, t, from)) {
 				if (through == null) {
 					through = new ArrayList<>(targets.subList(0, i));
@@ -175,7 +175,9 @@ public final class Shields {
 			}
 		}
 		// A perfect aura guard (see aura.AuraGuard) turns a spell as a Shield raised at the last moment does: negated, and answered.
-		if (Parry.parriable(Effects.isLingering()) && dev.wildercord.aura.AuraGuard.parries(target)) {
+		if (Parry.parriable(Effects.isLingering())
+			&& (!cast.guardedImpact() || target instanceof ServerPlayer player && dev.wildercord.aura.AuraGuard.faces(player, from))
+			&& dev.wildercord.aura.AuraGuard.parries(target)) {
 			guardParry(cast, target, from);
 			return true;
 		}
@@ -418,7 +420,8 @@ public final class Shields {
 			|| !Targets.canHarm(defender, caster)) {
 			return;
 		}
-		Cast turned = cast.reflected(defender);
+		Cast turned = RelayCircles.reflected(cast, defender, caster, at);
+		if (cast.guardedImpact() && (!turned.admits(caster) || turned.takeEntities(1) < 1)) return;
 		Vec3 hit = caster.getBoundingBox().getCenter();
 		Light.ray(cast.level, at, hit, color, 0.16, 8);
 		Light.ray(cast.level, at, hit, PARRY_COLOR, 0.07, 6);

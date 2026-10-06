@@ -87,6 +87,7 @@ public final class Reactions {
 	}
 
 	public static void mark(Entity target, Mark mark, int ticks) {
+		if (Effects.applyingCast() != null && !Effects.applyingCast().admits(target)) return;
 		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		markAllowed(target, mark, ticks);
 	}
@@ -197,7 +198,9 @@ public final class Reactions {
 
 	/** Called for storm-element damage: returns the damage multiplier after Conduct / Overload. */
 	public static double storm(Cast cast, LivingEntity target) {
-		return conduct(cast, target) * overload(cast, target);
+		if (!cast.admits(target)) return 1;
+		double conducted = conduct(cast, target);
+		return cast.admits(target) ? conducted * overload(cast, target) : 1;
 	}
 
 	/** Conduct: storm on a wet target arcs on to two more enemies. */
@@ -208,13 +211,14 @@ public final class Reactions {
 		ServerLevel level = cast.level;
 		reacted(target);
 		int arcs = 0;
-		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(5.0), e -> Targets.canHarm(cast.caster, e))) {
+		for (Entity e : collateral(cast, target, 5.0)) {
 			if (arcs++ >= 2) {
 				break;
 			}
 			LivingEntity other = (LivingEntity) e;
+			if (!cast.admits(other) || cast.guardedImpact() && cast.takeEntities(1) < 1) continue;
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), other.getBoundingBox().getCenter());
-			Effects.hurt(cast, other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4);
+			reactionHurt(cast, target, other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4);
 		}
 		ReactionVfx.conduct(level, target);
 		callout(cast, "conduct", 0xFFE650);
@@ -235,7 +239,7 @@ public final class Reactions {
 		reacted(target);
 		Vec3 c = target.getBoundingBox().getCenter();
 		List<LivingEntity> struck = new ArrayList<>();
-		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(ReactionRules.OVERLOAD_RADIUS), e -> Targets.canHarm(cast.caster, e))) {
+		for (Entity e : collateral(cast, target, ReactionRules.OVERLOAD_RADIUS)) {
 			if (e.getBoundingBox().getCenter().distanceTo(c) <= ReactionRules.OVERLOAD_RADIUS + e.getBbWidth() / 2) {
 				struck.add((LivingEntity) e);
 			}
@@ -243,8 +247,10 @@ public final class Reactions {
 		ReactionVfx.overload(level, target, struck);
 		long now = level.getGameTime();
 		for (LivingEntity other : struck) {
+			if (!cast.admits(other) || cast.guardedImpact() && cast.takeEntities(1) < 1) continue;
 			reacted(other);
-			Effects.hurt(cast, other, level.damageSources().explosion(cast.caster, cast.caster), ReactionRules.OVERLOAD_DAMAGE);
+			reactionHurt(cast, target, other, level.damageSources().explosion(cast.caster, cast.caster), ReactionRules.OVERLOAD_DAMAGE);
+			if (!cast.admits(other)) continue;
 			Long thrown = THROWN.put(other.getUUID(), now);
 			if (thrown == null || thrown != now) {
 				Vec3 away = Effects.horizontal(other.position().subtract(target.position()), cast.caster.getLookAngle());
@@ -254,6 +260,26 @@ public final class Reactions {
 		callout(cast, ReactionRules.OVERLOAD, ReactionRules.color(ReactionRules.OVERLOAD));
 		Residues.reaction(cast, "storm", target);
 		return ReactionRules.OVERLOAD_BONUS;
+	}
+
+	/** Relay collateral retains ordinary reactions, bounded by its paid budget and both current sightlines. */
+	private static List<Entity> collateral(Cast cast, LivingEntity from, double radius) {
+		if (!cast.guardedImpact()) return cast.level.getEntities(from, from.getBoundingBox().inflate(radius), e -> Targets.canHarm(cast.caster, e));
+		List<Entity> found = new ArrayList<>();
+		cast.level.getEntities(net.minecraft.world.level.entity.EntityTypeTest.forClass(LivingEntity.class), from.getBoundingBox().inflate(radius),
+			e -> e != from && e != cast.caster && e.isAlive(), found, Cast.MAX_ENTITIES + 1);
+		if (found.size() > Cast.MAX_ENTITIES) return List.of();
+		found.removeIf(e -> !cast.admits(e) || cast.caster instanceof net.minecraft.server.level.ServerPlayer player
+			&& !RelayCircles.clear(cast.level, player, from.getBoundingBox().getCenter(), e.getBoundingBox().getCenter()));
+		found.sort(java.util.Comparator.comparingDouble((Entity e) -> e.distanceToSqr(from)).thenComparingInt(Entity::getId));
+		return found;
+	}
+
+	private static void reactionHurt(Cast cast, LivingEntity from, LivingEntity target, net.minecraft.world.damagesource.DamageSource source, double amount) {
+		Vec3 previous = cast.incoming();
+		if (cast.guardedImpact()) cast.incoming(from.getBoundingBox().getCenter());
+		try { Effects.hurt(cast, target, source, amount); }
+		finally { if (cast.guardedImpact()) cast.incoming(previous); }
 	}
 
 	/** Called for blasts: returns the radius multiplier after Implode (damage bonus is radius-based too). */
@@ -305,6 +331,7 @@ public final class Reactions {
 	 * multiplier.
 	 */
 	public static double hit(Cast cast, LivingEntity target, String element) {
+		if (!cast.admits(target)) return 1;
 		double multiplier = Statuses.airborneFactor(target);
 		if (multiplier > 1.0) {
 			StatusVfx.airborneBite(cast.level, target);

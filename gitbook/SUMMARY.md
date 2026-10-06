@@ -16,6 +16,7 @@
   * [Passive Spells](spellcraft/passives.md)
   * [Circle Disciplines](spellcraft/circle-disciplines.md)
   * [Physical Magic](spellcraft/physical-magic.md)
+  * [Relay Circle](spellcraft/relay-circle.md)
   * [Living Materials](spellcraft/living-materials.md)
   * [Reading Life Magic](spellcraft/life-outcomes.md)
   * [Shadow Materials](spellcraft/shadow-materials.md)

@@ -290,6 +290,8 @@ public final class WildercordKeys {
 			}
 		}
 		boolean playing = client.player != null && client.player.isAlive() && client.gui.screen() == null;
+		RelayClient.beginTick(client);
+		if (!RelayClient.key(client, cast, -1) || charging) {
 		// The cast key: a tap casts at once; held, the spell charges until it's let go.
 		while (cast.consumeClick()) {
 			if (castHeld < 0 && playing) {
@@ -319,8 +321,13 @@ public final class WildercordKeys {
 				charging = false;
 			}
 		}
+		} else {
+			while (cast.consumeClick()) {}
+			castHeld = -1; charging = false;
+		}
 		// The switch key: a tap moves on; held, the spell wheel opens.
 		while (next.consumeClick()) {
+			RelayClient.cancel();
 			if (nextHeld < 0 && playing) {
 				nextHeld = 0;
 			}
@@ -359,9 +366,10 @@ public final class WildercordKeys {
 			}
 		}
 		for (int i = 0; i < CAST_N.length; i++) {
+			boolean relay = RelayClient.key(client, CAST_N[i], i);
 			while (CAST_N[i].consumeClick()) {
 				if (client.player != null) {
-					ClientPlayNetworking.send(new WildercordNetworking.CastSpell(i));
+					if (!relay && playing) ClientPlayNetworking.send(new WildercordNetworking.CastSpell(i));
 				}
 			}
 		}

@@ -4,6 +4,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Add the Archive’s Relay Circle lesson at active Heart Circle VIII: one paid remote focus, a fresh second cast-key press, a warned ray, and persistent three-page lore/practice guidance. The initial shape accepts only Relay with Harm, Frost or Shock.
+
 ### Masters of Tomorrow, development foundation
 
 - Let rimehares shed excess horizontal momentum during fast grounded recovery so bounds can follow native waypoints and settle at the end of a route. Native escape, terrain and arrival checks remain release gates.

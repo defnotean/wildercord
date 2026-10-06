@@ -56,7 +56,7 @@ public final class RuneCategories {
 		return switch (family) {
 			case SHAPE -> switch (path) {
 				case "self", "orbit" -> "personal";
-				case "touch", "beam", "barrage", "blitz", "ray", "lance", "sweep", "prism", "stream" -> "direct";
+				case "touch", "beam", "barrage", "blitz", "ray", "lance", "sweep", "prism", "stream", "relay" -> "direct";
 				case "bolt", "arc", "wave", "crescent", "orb", "spark", "wisp", "comet", "ricochet", "cluster" -> "projectile";
 				// New runes (batch 2); Imprint waits where you stood, as a Mine does, so it's lingering.
 				case "latch" -> "direct";

@@ -882,6 +882,9 @@ def write_lang(runes):
     import masters_art
     lang.update(masters_art.LANG)
     masters_art.write(sys.modules[__name__])
+    import generate_relay_lesson
+    lang.update(generate_relay_lesson.LANG)
+    generate_relay_lesson.write(sys.modules[__name__])
     import way_art
     lang.update(way_art.LANG)
     import technique_art

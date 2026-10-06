@@ -11,6 +11,7 @@ import dev.wildercord.player.Spellbook;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.RelayRules;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.Secrets;
 import dev.wildercord.spell.SpellCompiler;
@@ -47,6 +48,7 @@ public class SpellScrollItem extends Item {
 	}
 
 	public static List<RuneDef> runesOf(ScrollSpell scroll) {
+		if (RelayRules.containsIds(scroll.runes())) return List.of();
 		List<RuneDef> runes = new ArrayList<>();
 		for (String id : scroll.runes()) {
 			Runes.get(id).ifPresent(runes::add);
@@ -61,6 +63,10 @@ public class SpellScrollItem extends Item {
 			return;
 		}
 		Spellbook book = Spellbooks.get(player);
+		if (spell >= 0 && spell < book.spells().size() && RelayRules.containsIds(book.spells().get(spell))) {
+			player.sendOverlayMessage(Component.literal(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+			return;
+		}
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		if (runes.isEmpty() || compiled.isEmpty()) {
@@ -125,6 +131,10 @@ public class SpellScrollItem extends Item {
 		if (scroll == null) {
 			return InteractionResult.PASS;
 		}
+		if (RelayRules.containsIds(scroll.runes())) {
+			if (player instanceof ServerPlayer server) server.sendOverlayMessage(Component.literal(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+			return InteractionResult.FAIL;
+		}
 		if (player instanceof ServerPlayer serverPlayer && player.isShiftKeyDown() && stack.has(Inscription.TYPE)) {
 			// Studied rather than read: an inscribed scroll teaches its spell (see cast.Inscriptions).
 			Component refused = dev.wildercord.cast.Inscriptions.study(serverPlayer, stack);
@@ -135,6 +145,7 @@ public class SpellScrollItem extends Item {
 			return InteractionResult.SUCCESS;
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
+			if (!dev.wildercord.cast.RelayCircles.beforeOtherSpell(serverPlayer)) return InteractionResult.FAIL;
 			List<RuneDef> runes = runesOf(scroll);
 			SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 			if (runes.isEmpty() || compiled.isEmpty()) {

@@ -14,7 +14,7 @@ Earlier focused native checkpoints have passed. Recent published checkpoints sti
 
 ## Priority 1: a dependable playable foundation
 
-- Fix and rerun the settings UI and field-callback fixtures without weakening their assertions. Confirm the real dedicated-server lifecycle tests after the approved disposable-server EULA setup.
+- Retain the newly passed native settings, field-callback and Hail owner/acceptance scenes on the final candidate. Finish the later ground-field and phase-capture checks without weakening assertions; earlier scene passes do not make a whole job green.
 - Resolve the actual wildlife navigation/arrival and presentation failures using observed causes. Preserve natural behavior, existing bounds and the full aggregate test order.
 - Complete actual body, weapon, first-person, armor and effects evidence for the current authored forms. Keep Classic presentation as the default while supported opt-in paths are validated.
 - Keep all four aggregate native shards and the separately labeled focused groups. Every release claim must refer to the exact candidate.
@@ -28,7 +28,7 @@ This is the next gameplay vertical slice alongside the stability work. Circle VI
 - Add bounded high-tier options with costs, limited preparation or equipment slots, commitment and recovery. Avoid filling later circles with only mana, regeneration and damage multipliers.
 - Test old-save progression, already-qualified players, respec/reset behavior where supported, party interactions and the lowest legitimate access route.
 
-The exact first mechanics are under source audit. Proposed ideas are not unlocks until the real learning and use paths work in-game.
+The first authored player capabilities are **Relay Circle** and **Wall Turn**. Relay is integrated in this source checkpoint after independent review; its actual native acceptance remains pending. Wall Turn remains isolated in implementation and review. Relay gives an eligible Circle VIII Archivist a paid focus and a second deliberate cast input, with restricted spell grammar and two sightlines. Wall Turn gives a Sovereign with a recorded Gale clear one equipped movement form: an exposed wall brace, outward kick and real landing recovery. Each has an original retrievable lesson and must work for already-qualified characters without repeated progression. Neither has completed native gameplay acceptance. Relay source review has closed its paid ownership, inherited-effect budget and interrupted lesson-access findings. Wall Turn review continues on accessibility and combined movement/casting interactions.
 
 ## Priority 3: expand magic through distinct uses
 

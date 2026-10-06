@@ -6,6 +6,10 @@
   "environment": "*",
   "entrypoints": {
     "fabric-client-gametest": [
+      "dev.wildercord.cast.RelayCircleTest",
+      "dev.wildercord.cast.RelayLifetimeTest",
+      "dev.wildercord.cast.RelayDefenceTest",
+      "dev.wildercord.party.RelayImpactTest",
       "dev.wildercord.cast.CampConcordCraftTest",
       "dev.wildercord.cast.WatchweftAdmissionTest",
       "dev.wildercord.cast.WatchweftHistoryTest",

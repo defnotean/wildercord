@@ -49,8 +49,17 @@ public final class CastEngine {
 		runSegment(cast, root, Cast.Trigger.self(cast.caster));
 	}
 
+	/** Relay can only leave through its paid focus receipt, never a copy, stored cast or monster fallback. */
+	private static boolean containsRelay(SpellPlan.Segment segment) {
+		for (int depth = 0; segment != null && depth <= Cast.MAX_DEPTH; depth++) {
+			if (segment.groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID))) return true;
+			segment = segment.link == null ? null : segment.link.next;
+		}
+		return segment != null;
+	}
+
 	static void runSegment(Cast cast, SpellPlan.Segment seg, Cast.Trigger at) {
-		if (seg == null || !cast.alive() || !cast.takeSegment()) {
+		if (seg == null || !cast.alive() || containsRelay(seg) || !cast.takeSegment()) {
 			return;
 		}
 		if(seg != cast.info.root() || cast.depth>0)FormationVfx.continuation(cast,seg,at);
@@ -547,6 +556,7 @@ public final class CastEngine {
 				});
 			}
 		}
+		if (cast.guardedImpact() && !cast.alive()) return;
 		// A world's resonance riding this cast may add its twist to the hit (see TwistMagic).
 		TwistMagic.onHit(cast, g, hit);
 		cast.siphon(aliveBefore.stream().filter(e -> Targets.canHarm(cast.caster, e) || !e.isAlive()).count());

@@ -17,9 +17,13 @@ def run_pure_checks():
     with tempfile.TemporaryDirectory(prefix="articulated-receipt-classes-") as output:
         subprocess.run([javac, "--release", "25", "-d", output,
                         str(sources / "ArticulatedRenderReceipt.java"),
-                        str(sources / "ArticulatedRenderReceiptChecks.java")], check=True)
+                        str(sources / "ArticulatedRenderReceiptChecks.java"),
+                        str(sources / "OpeningCaptureWait.java"),
+                        str(sources / "OpeningCaptureWaitChecks.java")], check=True)
         subprocess.run([java, "-Djava.awt.headless=true", "-cp", output,
                         "dev.wildercord.gametest.ArticulatedRenderReceiptChecks"], check=True)
+        subprocess.run([java, "-cp", output,
+                        "dev.wildercord.gametest.OpeningCaptureWaitChecks"], check=True)
 
 
 if __name__ == "__main__":

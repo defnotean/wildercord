@@ -15,8 +15,9 @@ import java.util.Locale;
  * the body's aura, impacts, technique banners and the sword string indicator, then sigil tracing, its assist and whose
  * incantations show). The columns and preset buttons narrow to fit Minecraft's minimum GUI; rows close up on short screens.
  */
-public final class MagicSettingsScreen extends Screen {
+public final class MagicSettingsScreen extends Screen implements CordEditorParent {
  private final Screen returnTo;
+ @Override public Screen cordEditorParent(){return returnTo;}
  public MagicSettingsScreen(){this(null);}
  public MagicSettingsScreen(Screen returnTo){super(Component.literal("Magic visuals"));this.returnTo=returnTo;}
  @Override public void onClose(){if(returnTo!=null)minecraft.gui.setScreen(returnTo);else super.onClose();}

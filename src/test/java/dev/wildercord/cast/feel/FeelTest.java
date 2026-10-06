@@ -79,7 +79,12 @@ class FeelTest {
 				if (effect.family() != RuneFamily.EFFECT) {
 					continue;
 				}
-				SpellPlan.Group g = SpellCompiler.compile(List.of(shape, effect)).root().groups.getFirst();
+				var compiled = SpellCompiler.compile(List.of(shape, effect));
+				if (shape.equals(Runes.RELAY) && !dev.wildercord.spell.RelayRules.valid(List.of(shape, effect))) {
+					assertTrue(compiled.isEmpty()); assertEquals(0, compiled.cost()); assertFalse(compiled.warnings().isEmpty());
+					continue;
+				}
+				SpellPlan.Group g = compiled.root().groups.getFirst();
 				Feel f = Feel.of(g, 30, 0.5);
 				assertNotNull(f.role());
 				assertNotNull(f.motion());

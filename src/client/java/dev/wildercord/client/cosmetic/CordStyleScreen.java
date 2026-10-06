@@ -48,7 +48,7 @@ import java.util.List;
  * <p>Drawn like the rest of the Cord screen (same panel, header and page tabs, same scaling), so
  * it reads as one of its pages.</p>
  */
-public class CordStyleScreen extends Screen {
+public class CordStyleScreen extends Screen implements dev.wildercord.client.CordEditorParent {
 	private static final int W = 372;
 	private static final int H = 292;
 	private static final int CELL = 18;
@@ -79,6 +79,7 @@ public class CordStyleScreen extends Screen {
 	private static final int GLOW_ROW = 9;
 
 	private final CordScreen parent;
+	@Override public Screen cordEditorParent(){return parent;}
 	private Option hovered;
 	private final long opened = net.minecraft.util.Util.getMillis();
 

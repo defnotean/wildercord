@@ -84,10 +84,11 @@ public final class RimehareHopChecks {
 	private static void terrain(ClientGameTestContext context, TestSingleplayerContext world) {
 		world.getServer().runOnServer(server -> {
 			var level = server.overworld();
-			// A full-height wall plus damaging floor makes the direct line unusable; native A* chooses the detour.
-			for (int x = -2; x <= 2; x++) for (int y = 100; y <= 102; y++)
-				level.setBlock(new BlockPos(x, y, -4), Blocks.STONE_BRICKS.defaultBlockState(), 2);
-			for (int x = -4; x <= -3; x++) for (int z = -5; z <= -3; z++)
+			// Keep this detour within the hare's native 16-block planning range. The full-height pillar
+			// still blocks the direct line, and the adjacent damaging floor leaves native A* a safe detour.
+			for (int y = 100; y <= 102; y++)
+				level.setBlock(new BlockPos(0, y, -4), Blocks.STONE_BRICKS.defaultBlockState(), 2);
+			for (int x = -2; x <= -1; x++) for (int z = -5; z <= -3; z++)
 				level.setBlock(new BlockPos(x, 99, z), Blocks.MAGMA_BLOCK.defaultBlockState(), 2);
 			// The destination itself is half-height terrain, so completion must actually reach its surface.
 			for (int x = -18; x <= 18; x++) for (int z = -18; z <= -9; z++)
@@ -99,11 +100,14 @@ public final class RimehareHopChecks {
 			Path path = hare.getNavigation().getPath();
 			check(hare.getNavigation().getClass() == GroundPathNavigation.class,
 				"Rimehare must retain unmodified vanilla ground navigation");
+			boolean detoursAroundPillar = false;
 			for (int i = 0; i < path.getNodeCount(); i++) {
 				var node = path.getNode(i);
+				if (node.z == -4 && node.x != 0) detoursAroundPillar = true;
 				check(node.type != PathType.FIRE && node.type != PathType.FIRE_IN_NEIGHBOR && node.type != PathType.BLOCKED,
 					"Native route retains hazard/collision filters: " + node + "/" + node.type);
 			}
+			check(detoursAroundPillar, "Native route must actually detour around the full-height obstruction: " + hare.receipt());
 		});
 		for (int tick = 0; tick < 200; tick++) {
 			context.waitTicks(1);

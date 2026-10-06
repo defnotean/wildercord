@@ -10,8 +10,9 @@ import net.minecraft.network.chat.Component;
 import java.util.Locale;
 
 /** Small, staged local preference page. Opening, resizing and Back never apply the draft. */
-public final class CombatPresentationScreen extends Screen {
+public final class CombatPresentationScreen extends Screen implements CordEditorParent {
  private final Screen returnTo;
+ @Override public Screen cordEditorParent(){return returnTo;}
  private Draft draft;
  private boolean failed;
  public CombatPresentationScreen(Screen returnTo){super(text("title"));this.returnTo=returnTo;draft=new Draft(CombatPresentation.saved());}
@@ -57,8 +58,9 @@ public final class CombatPresentationScreen extends Screen {
   for(var line:font.split(status(),w)){if(y+9>height-80)break;g.text(font,line,x,y,failed?0xFFFFAAAA:0xFFCCCCCC,false);y+=10;}
  }
  /** Always-visible paged help: readable at minimum GUI size, keyboard and narrator accessible. */
- private static final class Help extends Screen {
+ private static final class Help extends Screen implements CordEditorParent {
   private final CombatPresentationScreen parent;
+  @Override public Screen cordEditorParent(){return parent;}
   private int page;
   private static final int PAGES=6;
   Help(CombatPresentationScreen parent){super(text("help"));this.parent=parent;}

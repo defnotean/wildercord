@@ -98,7 +98,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL))return false;
 		boolean front=false,axe=false;
-		var from=source.getDirectEntity();if(from!=null){var delta=from.position().subtract(position()).multiply(1,0,1).normalize();front=delta.dot(direction)>.3;}
+		var from=source.getDirectEntity();var origin=source instanceof dev.wildercord.cast.RelayDamageSource?source.getSourcePosition():from==null?null:from.position();if(origin!=null){var delta=origin.subtract(position()).multiply(1,0,1).normalize();front=delta.dot(direction)>.3;}
 		if(source.getEntity() instanceof ServerPlayer p){
 			axe=source.is(DamageTypes.PLAYER_ATTACK) && p.getMainHandItem().is(ItemTags.AXES);
 			if(move()==SwordTombRules.GUARD && front && axe){pose(SwordTombRules.BROKEN,SwordTombRules.BROKEN_TICKS);Feels.sound(level,position(),"aura_tomb_break",1,1);}

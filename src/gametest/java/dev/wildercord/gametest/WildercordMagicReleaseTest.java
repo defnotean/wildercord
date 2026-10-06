@@ -87,6 +87,11 @@ public class WildercordMagicReleaseTest implements FabricClientGameTest {
 			cast(context, world, "rain_fire_wind", Runes.RAIN, Runes.FIRE, Runes.WINDCUT);
 			cast(context, world, "zone_life", Runes.ZONE, Runes.GROW);
 			for (RuneDef rune : Runes.all()) if (rune.family() == dev.wildercord.spell.RuneFamily.SHAPE) {
+				// Relay has a paid two-input protocol and restricted payload; its dedicated suite records the real focus/release.
+				if (rune == Runes.RELAY) {
+					if (!dev.wildercord.spell.SpellCompiler.compile(List.of(rune, Runes.FIRE)).isEmpty()) throw new AssertionError("The gallery must never present unsupported Relay + Fire as a successful cast");
+					continue;
+				}
 				world.getServer().runOnServer(server -> server.getPlayerList().getPlayers().getFirst()
 					.teleportTo(server.overworld(), 0.5, 160, 0.5, Set.<Relative>of(), 0, 0, false));
 				context.waitTicks(3);

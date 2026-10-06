@@ -7,12 +7,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CircleDisciplinesTest {
 	static SpellPlan.Group group(RuneDef circle,RuneDef effect){return SpellCompiler.compile(List.of(Runes.BOLT,circle,effect)).root().groups.getFirst();}
-	@Test void everyShapeAcceptsEveryDisciplineAndGetsAReadout() {
+	@Test void ordinaryShapesAcceptDisciplinesAndRelayExplicitlyRefuses() {
 		var circles=Runes.all().stream().filter(CircleDisciplines::isCircle).toList();assertEquals(12,circles.size());
 		var designs=new HashSet<CircleDisciplines.Design>();
 		for(var circle:circles){designs.add(CircleDisciplines.profile(circle).design());
 			for(var shape:Runes.all().stream().filter(r->r.family()==RuneFamily.SHAPE).toList()){
 				var compiled=SpellCompiler.compile(List.of(shape,circle,Runes.FIRE));
+				if (shape.equals(Runes.RELAY)) {
+					assertTrue(compiled.isEmpty(), "The initial Relay lesson refuses every discipline before payment");
+					assertEquals(0, compiled.cost()); assertTrue(compiled.warnings().contains(RelayRules.GRAMMAR_PROBLEM));
+					continue;
+				}
 				assertTrue(compiled.warnings().isEmpty(),circle.name()+" / "+shape.name()+compiled.warnings());
 				assertEquals(0,compiled.attachedTo()[1]);assertTrue(compiled.lines().stream().anyMatch(s->s.contains(circle.name())));
 			}

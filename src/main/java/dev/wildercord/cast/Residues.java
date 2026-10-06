@@ -183,7 +183,7 @@ public final class Residues {
 			return;
 		}
 		BlockPos impact = hit.block() != null ? hit.block() : BlockPos.containing(hit.point());
-		if (leave(cast.level, kind.get(), impact, strength, cast.caster, source) > 0) {
+		if (leave(cast.level, kind.get(), impact, strength, cast.caster, source, cast) > 0) {
 			RESTED.put(cast.caster.getUUID(), cast.level.getGameTime());
 		}
 	}
@@ -203,7 +203,7 @@ public final class Residues {
 		if (kind.isEmpty() || cast.level.getRandom().nextDouble() >= reactionChance || !rested(cast.caster, Source.REACTION, now)) {
 			return;
 		}
-		if (leave(cast.level, kind.get(), BlockPos.containing(at), ResidueRules.REACTION_STRENGTH, cast.caster, Source.REACTION) > 0) {
+		if (leave(cast.level, kind.get(), BlockPos.containing(at), ResidueRules.REACTION_STRENGTH, cast.caster, Source.REACTION, cast) > 0) {
 			RESTED.put(cast.caster.getUUID(), now);
 		}
 	}
@@ -240,10 +240,11 @@ public final class Residues {
 			return 0;
 		}
 		return leave(level, kind.get(), BlockPos.containing(at), Math.min(strength, ResidueRules.MAX_STRENGTH), by,
-			by instanceof ServerPlayer || by == null ? Source.SPELL : Source.BOSS);
+			by instanceof ServerPlayer || by == null ? Source.SPELL : Source.BOSS,
+			Effects.applyingCast() != null && Effects.applyingCast().caster == by && Effects.applyingCast().level == level ? Effects.applyingCast() : null);
 	}
 
-	private static int leave(ServerLevel level, Kind kind, BlockPos impact, double strength, @Nullable LivingEntity by, Source source) {
+	private static int leave(ServerLevel level, Kind kind, BlockPos impact, double strength, @Nullable LivingEntity by, Source source, @Nullable Cast cast) {
 		dev.wildercord.config.WildercordConfig.ResidueSettings cfg = Config.get().residues();
 		if (!cfg.enabled()) {
 			return 0;
@@ -276,6 +277,7 @@ public final class Residues {
 			if (spot == null || judge(level, kind, spot, by) != null || record.ledger.admit(spot.getX(), spot.getY(), spot.getZ(), owner, caps) != null) {
 				continue;
 			}
+			if (cast != null && cast.guardedImpact() && (!cast.admitsBlock(spot) || !cast.takeBlock())) continue;
 			put(level, record, kind, spot, now, due, 0, owner);
 			left++;
 		}

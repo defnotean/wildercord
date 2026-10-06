@@ -299,7 +299,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 			return damage;
 		}
 		Entity direct = source.getDirectEntity();
-		Vec3 from = direct != null ? direct.position() : source.getSourcePosition();
+		Vec3 from = source instanceof dev.wildercord.cast.RelayDamageSource ? source.getSourcePosition() : direct != null ? direct.position() : source.getSourcePosition();
 		if (from == null || !facing(from)) {
 			return damage;
 		}

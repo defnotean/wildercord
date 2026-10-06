@@ -94,6 +94,8 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());
 		ImbuedTooltip.init();
 		MasteryClient.init();
+		RelayClient.init();
+		RelayLessonScreen.register();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.BACKPACK, BackpackScreen::new);
 		BlankRuneTooltip.init();

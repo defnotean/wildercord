@@ -24,12 +24,15 @@ def launcher_log(selection, *, result=0, build="BUILD SUCCESSFUL"):
 
 
 class SelectionTests(unittest.TestCase):
-    def test_masters_update_is_twenty_three_registered_unique_entries(self):
+    def test_masters_update_is_twenty_seven_registered_unique_entries(self):
         selected = client_suites.select_entries(suite="masters")
         full = client_suites.select_entries()
-        self.assertEqual(selected["count"], 23)
-        self.assertEqual(len(set(selected["entries"])), 23)
+        self.assertEqual(selected["count"], 27)
+        self.assertEqual(len(set(selected["entries"])), 27)
         self.assertTrue(set(selected["entries"]).issubset(full["entries"]))
+        self.assertEqual(selected["entries"][:4], [
+            "dev.wildercord.cast.RelayCircleTest", "dev.wildercord.cast.RelayLifetimeTest",
+            "dev.wildercord.cast.RelayDefenceTest", "dev.wildercord.party.RelayImpactTest"])
         self.assertEqual(selected["entries"][-1],
                          "dev.wildercord.gametest.WildercordMastersArtsPresentationTest")
         for lifecycle in ("dev.wildercord.aura.HailfallReleasedOwnerTest",
@@ -83,7 +86,7 @@ class SelectionTests(unittest.TestCase):
             -1, group["entries"][0]), "duplicate")
 
     def test_missing_catalog_entry_is_rejected(self):
-        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 23")
+        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 27")
 
     def test_unregistered_catalog_entry_is_rejected(self):
         self.assert_bad_catalog(lambda group: group["entries"].__setitem__(
@@ -95,7 +98,7 @@ class SelectionTests(unittest.TestCase):
                 self.assert_bad_catalog(lambda group: group.update(entries=entries), "nonempty")
 
     def test_invalid_expected_count_is_rejected(self):
-        for count in (22, 24, 23.0, True, "23"):
+        for count in (26, 28, 27.0, True, "27"):
             with self.subTest(count=count):
                 self.assert_bad_catalog(lambda group: group.update(expectedCount=count), "exactly")
 
@@ -193,7 +196,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual([s["suite"] for s in manifest["clientSuites"]], selection["entries"])
         self.assertEqual(manifest["focusedClientGate"], "passed")
         self.assertEqual(manifest["fullClientGate"], "unverified")
-        self.assertEqual(manifest["counts"], {"passed": 23, "skipped": 0, "unverified": 0})
+        self.assertEqual(manifest["counts"], {"passed": 27, "skipped": 0, "unverified": 0})
         self.assertEqual(manifest["verificationIssues"], [])
         self.assertIn("full client gate and animation gallery are not established", manifest["basis"])
 
@@ -209,7 +212,7 @@ class ManifestTests(unittest.TestCase):
                 manifest = self.manifest(log, "--suite", "masters")
                 self.assertEqual(manifest["fullClientGate"], "unverified")
                 self.assertEqual(manifest["focusedClientGate"], "unverified")
-                self.assertEqual(manifest["counts"]["unverified"], 23)
+                self.assertEqual(manifest["counts"]["unverified"], 27)
 
     def test_mismatched_stale_duplicate_or_invalid_selection_cannot_pass(self):
         selection = client_suites.select_entries(suite="masters")

@@ -27,7 +27,7 @@ public enum Motion {
 			case "beam", "lance", "prism", "stream", "latch", "sweep" -> BEAM;
 			case "cone", "crescent", "glaive", "barrage", "wave", "blitz" -> SLASH;
 			case "burst", "nova", "ring", "pillar" -> BLAST;
-			case "zone", "totem", "wall", "vortex", "domain", "imprint", "mine", "snare", "trail" -> SEAL;
+			case "zone", "totem", "wall", "vortex", "domain", "imprint", "mine", "snare", "trail", "relay" -> SEAL;
 			case "rain", "constellation" -> CALL;
 			case "self", "orbit", "trigger" -> AURA;
 			default -> HURL;

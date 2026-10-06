@@ -65,6 +65,7 @@ public final class SpellCompiler {
 
 	/** The runes an Imbue in {@code spell} would store: everything after the first Imbue (empty if there's none). */
 	public static List<RuneDef> stored(List<RuneDef> spell) {
+		if (RelayRules.contains(spell)) return List.of();
 		for (int i = 0; i < spell.size(); i++) {
 			if (spell.get(i).is(Runes.IMBUE.id())) {
 				return List.copyOf(spell.subList(i + 1, spell.size()));
@@ -78,11 +79,24 @@ public final class SpellCompiler {
 	}
 
 	private static Compiled compileFresh(List<RuneDef> runes, RuneDef implicitShape, Ranks.Lookup ranks) {
+		String relayProblem = RelayRules.problem(runes);
+		if (RelayRules.contains(runes) && implicitShape.is(Runes.TRIGGER.id())) relayProblem = RelayRules.STORAGE_PROBLEM;
+		if (relayProblem != null) {
+			int[] attached = new int[runes.size()];
+			Arrays.fill(attached, NOT_A_MODIFIER);
+			return new Compiled(new SpellPlan.Segment(implicitShape), 0, 0,
+				List.of(relayProblem), List.of(relayProblem), attached, 0);
+		}
 		Reader reader = new Reader(expand(runes), runes.size(), true, implicitShape, ranks);
 		SpellPlan.Segment root = reader.segment(0, implicitShape, List.of(), false);
 		double cost = cost(root);
 		List<String> lines = new ArrayList<>();
 		describe(root, "", "", lines);
+		if (RelayRules.valid(runes)) {
+			lines.add("Relay costs " + RelayRules.BASE_MANA + " mana plus the effect (" + trim(cost) + " before normal discounts), paid once when placed.");
+			lines.add("90% normal effect strength; " + seconds(RelayRules.REST_TICKS) + " shared rest across all slots; no second payment or refund.");
+			lines.add("Release within " + seconds(RelayRules.FOCUS_TICKS) + "; " + RelayRules.WARN_TICKS + "-tick warning and " + RelayRules.RECOVERY_TICKS + "-tick recovery.");
+		}
 		for (RuneDef rune : runes) {
 			if (Knots.isKnot(rune)) {
 				lines.add(rune.name() + " is a Knot: " + Knots.flatten(List.of(rune)).size() + " runes in one socket, "
@@ -97,7 +111,7 @@ public final class SpellCompiler {
 		if (healthCost > 0) {
 			lines.add("Costs " + healthCost + " health instead of mana.");
 		}
-		return new Compiled(root, cost, SpellNumbers.cooldownTicks(cost, rapid, vows), List.copyOf(lines), List.copyOf(reader.warnings), reader.attachedTo,
+		return new Compiled(root, cost, RelayRules.valid(runes) ? RelayRules.REST_TICKS : SpellNumbers.cooldownTicks(cost, rapid, vows), List.copyOf(lines), List.copyOf(reader.warnings), reader.attachedTo,
 			healthCost);
 	}
 
@@ -705,6 +719,9 @@ public final class SpellCompiler {
 		}
 		if (id.equals(Runes.STREAM.id())) {
 			return "A stream of " + SpellNumbers.streamStrikes(g) + " strikes (35% power each)";
+		}
+		if (id.equals(RelayRules.ID)) {
+			return "A Relay focus (place within " + blocks(RelayRules.PLACE_RANGE) + ", aim and press cast again, " + blocks(RelayRules.MAX_PATH) + " total path)";
 		}
 		if (id.equals(Runes.VORTEX.id())) {
 			return "A vortex's eye (" + blocks(SpellNumbers.vortexEye(g)) + ", drags in from " + blocks(SpellNumbers.vortexRadius(g)) + ", "

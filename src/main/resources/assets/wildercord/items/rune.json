@@ -2607,6 +2607,13 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/soar"
         }
+      },
+      {
+        "when": "wildercord:relay",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/relay"
+        }
       }
     ],
     "fallback": {

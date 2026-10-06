@@ -95,7 +95,7 @@ final class StoneFracture {
 
 	/** Rear punishment belongs to the brace, never to the final committed reply. */
 	boolean rearHit(DamageSource source, long now) {
-		Vec3 from = source.getDirectEntity() != null ? source.getDirectEntity().position() : source.getSourcePosition();
+		Vec3 from = source instanceof dev.wildercord.cast.RelayDamageSource ? source.getSourcePosition() : source.getDirectEntity() != null ? source.getDirectEntity().position() : source.getSourcePosition();
 		return bracing(now) && from != null && StoneFractureRules.rear(from.subtract(origin).dot(aim));
 	}
 

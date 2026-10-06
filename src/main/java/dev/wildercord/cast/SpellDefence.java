@@ -121,19 +121,21 @@ public final class SpellDefence {
 
 	/** A hit from a known cast: children and repeated landings carry its identity through the guard. */
 	public static boolean hurt(ServerLevel level, LivingEntity target, DamageSource source, float amount, Cast cast) {
+		if (!cast.admits(target)) return false;
 		float admitted=cast.admitDamage(target,amount);
-        return admitted>0 && hurt(level, target, source, admitted, cast.identity());
+        DamageSource incoming = cast.guardedImpact() ? new RelayDamageSource(source, cast) : source;
+        return admitted>0 && hurt(level, target, incoming, admitted, cast.identity());
 	}
 
 	/** Only Effects uses this after reserving the shared allowance before its hit callbacks. */
     static boolean hurtAdmitted(ServerLevel level,LivingEntity target,DamageSource source,float amount,Cast cast) {
-        return amount>0 && hurt(level,target,source,amount,cast.identity());
+        return amount>0 && cast.admits(target) && hurt(level,target,source,amount,cast.identity());
     }
 
 	/** A paid blade/spell resonance: normal shield, armour, boss resistance and cast guard, with no recursive rune triggers. */
 	public static void resonantHurt(Cast cast, LivingEntity target, float amount) {
-		if (!cast.alive() || !target.isAlive() || !Float.isFinite(amount) || amount <= 0
-				|| Shields.stops(cast, target, cast.caster.getEyePosition())) return;
+		if (!cast.alive() || !target.isAlive() || !cast.admits(target) || !Float.isFinite(amount) || amount <= 0
+				|| Shields.stops(cast, target, cast.incoming())) return;
 		Effects.readyToHurt(target);
 		Dungeons.spellHit(() -> hurt(cast.level, target,
 			cast.level.damageSources().source(net.minecraft.world.damagesource.DamageTypes.MAGIC,cast.caster,cast.caster), amount, cast));
@@ -157,7 +159,7 @@ public final class SpellDefence {
 			float delayed = left * DefensiveFoci.DELAY_SHARE;
 			float immediate = left - delayed;
 			boolean hurt = guarded(target, castIdentity, () -> target.hurtServer(level, spell, immediate));
-			if (hurt) DefensiveFoci.defer(serverPlayer, delayed,spell);
+			if (hurt && (!(spell instanceof RelayDamageSource relay) || relay.admits(serverPlayer))) DefensiveFoci.defer(serverPlayer, delayed,spell);
 			return hurt;
 		}
 		return guarded(target, castIdentity, () -> target.hurtServer(level, spell, left));

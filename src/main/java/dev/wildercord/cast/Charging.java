@@ -126,6 +126,9 @@ public final class Charging {
 	}
 
 	public static void request(ServerPlayer player, int requested, boolean start) {
+		if (RelayCircles.committed(player) || RelayCircles.contains(player, requested)
+			&& (start || !player.hasAttached(WildercordAttachments.CHARGE))) return;
+		if (RelayCircles.pending(player)) RelayCircles.cancel(player);
 		if (dev.wildercord.aura.MastersArts.committed(player)) return;
 		if (start) {
 			begin(player, requested);
@@ -246,9 +249,10 @@ public final class Charging {
 	 * Returns whether there was a charge or an interruptible Aura performance.
 	 */
 	public static boolean interrupt(ServerPlayer player) {
+		boolean relayInterrupted = RelayCircles.interrupt(player);
 		boolean artInterrupted = dev.wildercord.aura.MastersArts.cancel(player);
 		if (!player.hasAttached(WildercordAttachments.CHARGE)) {
-			return artInterrupted;
+			return artInterrupted || relayInterrupted;
 		}
 		stop(player);
 		FIZZLED.add(player.getUUID());

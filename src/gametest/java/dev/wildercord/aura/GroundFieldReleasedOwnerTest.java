@@ -10,6 +10,7 @@ import dev.wildercord.aura.arts.ReleasedArtOwner;
 import dev.wildercord.cast.Reactions;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.Statuses;
+import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerConnection;
@@ -419,6 +420,8 @@ public final class GroundFieldReleasedOwnerTest implements FabricClientGameTest 
 	private static LivingEntity target(ServerLevel level, Vec3 centre) {
 		var target = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
 		check(target != null, "A native ground-field target exists");
+		// This fixture needs an ordinary 200-health victim; native entity admission must not roll unrelated Runebound health.
+		target.addTag("wildercord.rolled");
 		target.setNoAi(true);
 		target.setNoGravity(true);
 		target.setPersistenceRequired();
@@ -426,7 +429,12 @@ public final class GroundFieldReleasedOwnerTest implements FabricClientGameTest 
 		target.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
 		target.setHealth(HEALTH);
 		target.snapTo(centre.x, centre.y, centre.z, 180, 0);
-		level.addFreshEntity(target);
+		check(level.addFreshEntity(target), "The native ground-field target is admitted to its world");
+		check(target.getHealth() == HEALTH && target.getMaxHealth() == HEALTH
+			&& !target.hasAttached(WildercordAttachments.RUNEBOUND)
+			&& !target.getAttribute(Attributes.MAX_HEALTH).hasModifier(Wildercord.id("runebound_health")),
+			"Native admission preserves the ordinary 200-health baseline: " + targetState(target));
+		untouched(target, "Each admitted primary, second or destination victim starts untouched");
 		return target;
 	}
 
@@ -441,7 +449,18 @@ public final class GroundFieldReleasedOwnerTest implements FabricClientGameTest 
 
 	private static void untouched(LivingEntity target, String reason) {
 		check(target.isAlive() && target.getHealth() == HEALTH && !Reactions.has(target, Reactions.Mark.SHADOWED)
-			&& !Reactions.has(target, Reactions.Mark.BLEEDING), reason);
+			&& !Reactions.has(target, Reactions.Mark.BLEEDING), reason + ": " + targetState(target));
+	}
+
+	private static String targetState(LivingEntity target) {
+		return "tick=" + target.level().getGameTime() + " world=" + target.level().dimension()
+			+ " uuid=" + target.getUUID() + " alive=" + target.isAlive() + " removed=" + target.isRemoved()
+			+ " health=" + target.getHealth() + " maxHealth=" + target.getMaxHealth()
+			+ " shadowed=" + Reactions.has(target, Reactions.Mark.SHADOWED)
+			+ " bleeding=" + Reactions.has(target, Reactions.Mark.BLEEDING)
+			+ " runebound=" + target.hasAttached(WildercordAttachments.RUNEBOUND)
+			+ " runeboundHealth=" + target.getAttribute(Attributes.MAX_HEALTH).hasModifier(Wildercord.id("runebound_health"))
+			+ " rolled=" + target.entityTags().contains("wildercord.rolled") + " position=" + target.position();
 	}
 
 	private static void checked(Probe probe, Runnable action) {

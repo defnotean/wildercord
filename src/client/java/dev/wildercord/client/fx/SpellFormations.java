@@ -204,6 +204,7 @@ public final class SpellFormations {
     case CONSTELLATION -> { polygon(5,q,t*.1); line(point(0,q,0),point(-q*.59,-q*.81,0),false); line(point(-q*.59,-q*.81,0),point(q*.95,q*.31,0),false); }
     case GLAIVE -> { line(point(-q*.6,-q*.6,0),point(q*.6,q*.6,0),false); slash(point(q*.45,q*.45,0),q*.5,Math.PI*1.3,Math.PI/4); }
     case IMPRINT -> { polygon(6,q,0); polygon(3,q*.55,Math.PI/2); }
+    case RELAY -> { ring(point(-q*.6,0,0),q*.35,false); ring(point(q*.6,0,0),q*.35*(1-.5*t),false); line(point(-q*.25,0,0),point(q*.25,0,0),false); }
     case LATCH -> { slash(point(-.2,0,0),q*.6,Math.PI*1.4,0); slash(point(.2,0,0),q*.6,Math.PI*1.4,Math.PI); line(point(-.2,0,0),point(.2,0,0),false); }
    }
    for(String id:event.runes())if(NextSignatureForms.supports(id) && !FrostFormations.supports(id) && !VoidForms.supports(id) && !LifeForms.supports(id))

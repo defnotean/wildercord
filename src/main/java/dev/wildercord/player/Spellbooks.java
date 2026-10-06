@@ -22,6 +22,8 @@ public final class Spellbooks {
 		if (old.equals(book)) {
 			return;
 		}
+		if (player instanceof net.minecraft.server.level.ServerPlayer p
+			&& (old.selected() != book.selected() || !old.spells().equals(book.spells()))) dev.wildercord.cast.RelayCircles.cancel(p);
 		player.setAttached(WildercordAttachments.SPELLBOOK, book);
 		if (!old.learned().equals(book.learned()) && player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
 			dev.wildercord.advancement.Advancements.runesKnown(serverPlayer);
@@ -41,6 +43,7 @@ public final class Spellbooks {
 	}
 
 	public static void setCord(Player player, ItemStack stack) {
+		if (player instanceof net.minecraft.server.level.ServerPlayer p) dev.wildercord.cast.RelayCircles.cancel(p);
 		player.setAttached(WildercordAttachments.CORD, stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1));
 		if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
 			dev.wildercord.advancement.Advancements.cord(serverPlayer);
@@ -66,6 +69,12 @@ public final class Spellbooks {
 	public static long readyAt(Player player, int spell) {
 		List<Long> cooldowns = player.getAttachedOrElse(WildercordAttachments.COOLDOWNS, List.of());
 		long readyAt = spell >= 0 && spell < cooldowns.size() ? cooldowns.get(spell) : 0L;
+		if (spell >= 0 && spell < dev.wildercord.gear.SpellSlots.ALL
+			&& dev.wildercord.spell.RelayRules.containsIds(get(player).spells().get(spell))) {
+			long clock = player instanceof net.minecraft.server.level.ServerPlayer p ? dev.wildercord.cast.RelayCircles.now(p) : player.level().getGameTime();
+			long sharedLeft = Math.clamp(player.getAttachedOrElse(dev.wildercord.cast.RelayState.REST, 0L) - clock, 0, dev.wildercord.spell.RelayRules.REST_TICKS);
+			readyAt = Math.max(readyAt, player.level().getGameTime() + sharedLeft);
+		}
 		return readyAt - player.level().getGameTime() > MAX_COOLDOWN ? 0L : readyAt;
 	}
 

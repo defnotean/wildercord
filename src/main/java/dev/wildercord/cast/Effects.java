@@ -154,6 +154,7 @@ public final class Effects {
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
+		if (cast.guardedImpact() && !cast.alive()) return;
 		if(Runes.innate(node.effect) && cast.caster instanceof ServerPlayer owner && !owner.isCreative()
 			&& !dev.wildercord.player.Heart.innate(owner).equals(node.effect.id()))return;
 		if(PhysicalMagic.interact(cast,node.effect,hit))return;
@@ -176,6 +177,9 @@ public final class Effects {
 		thirst = SpellNumbers.thirstShare(node);
 		try {
 			applyEffect(cast, node, hit, groupPower);
+			// A Relay's inherited hooks are still part of its original paid effect. Keep their
+			// mastery, damage and residue callbacks in this exact scope, including on exceptions.
+			if (cast.guardedImpact()) afterEffect(cast, node, hit, groupPower);
 		} finally {
 			executeBonus = outerBonus;
 			currentElement = outerElement;
@@ -185,15 +189,28 @@ public final class Effects {
 			applyingCast = outerCast;
 			thirst = outerThirst;
 		}
+		// Ordinary spells retain their existing post-effect outer context.
+		if (!cast.guardedImpact()) afterEffect(cast, node, hit, groupPower);
+	}
+
+	private static void afterEffect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
+		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		RuneSeals.onSpell(cast, hit, node.effect.element());
+		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		WorldQuirks.after(cast, node, hit, groupPower);
+		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		WorldMagic.onSpell(cast, node, hit, groupPower);
 		// Strong magic leaves a lasting mark of its element where it lands.
+		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		Residues.onSpell(cast, node, hit);
+		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.cast.events.WorldEvents.onSpell(cast, hit, node.effect.element());
+		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.familiar.Familiars.onSpell(cast, hit, node.effect.element());
+		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		Dungeons.onSpell(cast, hit, node.effect.element());
 		// Monsters that answer magic: a Gloomstalker shown by light, a harpy dragged down by earth.
+		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.monster.Monsters.onSpell(cast, hit, node.effect);
 	}
 
@@ -281,7 +298,7 @@ public final class Effects {
 		double duration = SpellNumbers.duration(node) * cast.duration * WorldQuirks.duration(cast, rune, hit);
 		int amplify = node.count(Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
-		List<LivingEntity> harmed = filter(hit.entities(), e -> Targets.canHarm(caster, e));
+		List<LivingEntity> harmed = filter(hit.entities(), e -> Targets.canHarm(caster, e) && cast.admits(e));
 		if (!harmed.isEmpty() && (rune.kind() == dev.wildercord.spell.EffectKind.HARMFUL || rune.kind() == dev.wildercord.spell.EffectKind.MOVEMENT && !hit.self())) {
 			// A Shield stops a spell that costs no more than the one that raised it; a costlier one breaks it and goes through.
 			harmed = Shields.screen(cast, harmed, hit);
@@ -338,6 +355,7 @@ public final class Effects {
 			}
 			case "harm" -> harmed.forEach(t -> {
 				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 7 * power);
+				if (!cast.admits(t)) return;
 				Exposed.mark(t, Exposed.HARM_TICKS);
 				Vfx.harm(level, t);
 			});
@@ -399,8 +417,11 @@ public final class Effects {
     harmed.forEach(t -> {
     int priorFrost=t.getTicksFrozen();
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 5 * power);
+				if (!cast.admits(t)) return;
 				boolean freshSlow=t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(4, duration), 2, false, true));
+				if (!cast.admits(t)) return;
 				t.setTicksFrozen(Math.max(t.getTicksFrozen(), t.getTicksRequiredToFreeze() + ticks(4, duration)));
+				if (!cast.admits(t)) return;
 				Reactions.mark(t, Reactions.Mark.FROZEN);
 				if(freshSlow || t.getTicksFrozen()>priorFrost)dev.wildercord.wildlife.EmberContent.cool(cast,t);
 				Vfx.frost(level, t);
@@ -894,6 +915,7 @@ public final class Effects {
 	}
 
 	static void push(LivingEntity target, Vec3 impulse) {
+		if (applyingCast != null && !applyingCast.admits(target)) return;
 		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		// Anchor: nothing a spell does moves it.
 		if (VoidTime.anchored(target)) {
@@ -986,9 +1008,9 @@ public final class Effects {
 	static void hurtCapped(Cast cast, LivingEntity target, DamageSource source, double amount,
 			java.util.function.DoubleUnaryOperator finalAdmission) {
 		// A delayed hit rechecks relationships before shields, reactions or shared budgets are paid.
-		if (!Targets.canHarm(cast.caster, target)) return;
+		if (!Targets.canHarm(cast.caster, target) || !cast.admits(target)) return;
 		// Damage that didn't come through a shape's hit (a meteor landing, a secret spell's blast) meets a Shield here.
-		if (Shields.stops(cast, target, cast.caster.getEyePosition())) {
+		if (Shields.stops(cast, target, cast.incoming())) {
 			return;
 		}
 		// What the moment adds to the hit (a setup paying off, a weakness, a reaction), multiplied together.
@@ -1031,7 +1053,7 @@ public final class Effects {
 		if (target instanceof Player && cast.caster instanceof Player) {
 			damage *= (float) dev.wildercord.config.Config.get().pvpDamageScale();
 		}
-		if (!Float.isFinite(damage) || damage<=0) return;
+		if (!Float.isFinite(damage) || damage<=0 || !cast.admits(target)) return;
 		double allowed=finalAdmission.applyAsDouble(damage);
 		if (!Double.isFinite(allowed) || allowed<=0) return;
 		damage=(float)Math.min(damage,allowed);
@@ -1043,11 +1065,14 @@ public final class Effects {
 		if (damage > 0) {
 			dev.wildercord.runesmith.Contracts.onSpellHit(cast.caster, target, currentElement);
 		}
+		if (!cast.admits(target)) return;
 		readyToHurt(target);
 		float dealt = damage;
 		float before = target.getHealth();
 		// A player's defences against spells (armour, Warding, Warded, the spellguard) are met there.
-		Dungeons.spellHit(() -> SpellDefence.hurtAdmitted(cast.level, target, source, dealt, cast));
+		DamageSource admittedSource = cast.guardedImpact() ? new RelayDamageSource(source, cast) : source;
+		Dungeons.spellHit(() -> SpellDefence.hurtAdmitted(cast.level, target, admittedSource, dealt, cast));
+		if (cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
 		// A heavy hit lands with a punch for whoever cast it.
 		if (damage >= 8) {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));
@@ -1596,16 +1621,29 @@ public final class Effects {
 
 	/** Shock: a small zap that arcs on to the nearest other enemy. */
 	private static void shock(Cast cast, LivingEntity target, double power) {
+		if (!cast.admits(target)) return;
 		ServerLevel level = cast.level;
 		Vfx.shockArc(level, target.getBoundingBox().getCenter().add(0, 1.2, 0), target.getBoundingBox().getCenter());
 		hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4 * power * Reactions.storm(cast, target));
+		if (cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
 		// The arc looks for a conductor first (a wet enemy, or one in metal armour) within 5; else the nearest within 4.
 		LivingEntity next = null;
 		boolean conductor = false;
 		double best = Double.MAX_VALUE;
-		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(5.0), e -> e instanceof LivingEntity && Targets.canHarm(cast.caster, e))) {
+		List<Entity> nearby;
+		if (cast.guardedImpact()) {
+			nearby = new ArrayList<>();
+			level.getEntities(net.minecraft.world.level.entity.EntityTypeTest.forClass(LivingEntity.class), target.getBoundingBox().inflate(5.0),
+				e -> e != target && e != cast.caster && e.isAlive(), nearby, Cast.MAX_ENTITIES + 1);
+			if (nearby.size() > Cast.MAX_ENTITIES) return;
+			nearby.sort(java.util.Comparator.comparingDouble((Entity e) -> e.distanceToSqr(target)).thenComparingInt(Entity::getId));
+		} else nearby = level.getEntities(target, target.getBoundingBox().inflate(5.0), e -> e instanceof LivingEntity && Targets.canHarm(cast.caster, e));
+		for (Entity e : nearby) {
+			if (!Targets.canHarm(cast.caster, e) || !cast.admits(e)) continue;
 			LivingEntity other = (LivingEntity) e;
 			double d = other.distanceToSqr(target);
+			if (cast.guardedImpact() && cast.caster instanceof ServerPlayer owner
+				&& !RelayCircles.clear(level, owner, target.getBoundingBox().getCenter(), other.getBoundingBox().getCenter())) continue;
 			boolean conducts = conducts(other);
 			if (d > 25 || (!conducts && d > 16) || (conducts != conductor ? !conducts : d >= best)) {
 				continue;
@@ -1617,7 +1655,14 @@ public final class Effects {
 		if (next != null) {
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
 			StormEarthFx.tether(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
-			hurt(cast, next, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), (conductor ? 4 : 3) * power * Reactions.storm(cast, next));
+			if (cast.guardedImpact() && cast.takeEntities(1) < 1) return;
+			Vec3 previousOrigin = cast.incoming();
+			if (cast.guardedImpact()) cast.incoming(target.getBoundingBox().getCenter());
+			try {
+				hurt(cast, next, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), (conductor ? 4 : 3) * power * Reactions.storm(cast, next));
+			} finally {
+				if (cast.guardedImpact()) cast.incoming(previousOrigin);
+			}
 		}
 	}
 

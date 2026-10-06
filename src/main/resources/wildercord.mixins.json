@@ -3,6 +3,8 @@
 	"package": "dev.wildercord.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
+		"RelayLivingDamageMixin",
+		"RelayPlayerDamageMixin",
 		"MossveilEffectAccess",
 		"MossveilEffectNotice",
 		"InventoryMenuMixin",
