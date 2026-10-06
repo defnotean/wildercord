@@ -162,6 +162,19 @@ class SpellCompilerTest {
 	}
 
 	@Test
+	void missingSpellAndUnattachedModifierAreEmptyButAnExplicitSelfShapeIsAdmitted() {
+		assertTrue(compile().isEmpty());
+		SpellCompiler.Compiled modifier = compile(AMPLIFY);
+		assertTrue(modifier.isEmpty());
+		assertEquals(SpellCompiler.UNATTACHED, modifier.attachedTo()[0]);
+		SpellCompiler.Compiled self = compile(SELF);
+		assertFalse(self.isEmpty(), "A warning-only shape remains a compiled spell for ordinary admission");
+		assertSame(SELF, self.root().groups.getFirst().shape);
+		assertTrue(self.root().groups.getFirst().effects.isEmpty());
+		assertTrue(self.warnings().contains("Self has no effect after it."));
+	}
+
+	@Test
 	void pulsePaysForTheRestThreeTimes() {
 		SpellCompiler.Compiled c = compile(PULSE, BOLT, FIRE);
 		assertEquals(2 + 3 * (3 + 8 * 1.1), c.cost(), 1e-9);

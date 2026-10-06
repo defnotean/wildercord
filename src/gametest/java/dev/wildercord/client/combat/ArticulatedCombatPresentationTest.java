@@ -7,6 +7,7 @@ import dev.wildercord.aura.ArticulatedCombatPose.Joint;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.MastersArts;
 import dev.wildercord.aura.world.GaleRepriseRules;
+import dev.wildercord.aura.world.EmberKilnRules;
 import dev.wildercord.aura.world.MasterAnimationRules;
 import dev.wildercord.aura.world.MasterSchoolMotionChecks;
 import dev.wildercord.aura.world.StoneFractureRules;
@@ -242,9 +243,9 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 	/** Synthetic regression matrix only; none of these mutations are reported as live NPC footage. */
 	private static void masterSchools(MasterRenderer renderer, SwordMaster master) {
 		MasterModel model = renderer.getModel();
-		for (boolean left : new boolean[] {false, true}) for (int move : new int[] {7, 8}) {
-			int tell = move == 7 ? GaleRepriseRules.TELL : StoneFractureRules.TELL;
-			int recovery = (move == 7 ? GaleRepriseRules.RECOVERY : StoneFractureRules.RECOVERY) - 1;
+		for (boolean left : new boolean[] {false, true}) for (int move : new int[] {7, 8, 9}) {
+			int tell = move == 9 ? EmberKilnRules.TELL : move == 7 ? GaleRepriseRules.TELL : StoneFractureRules.TELL;
+			int recovery = (move == 9 ? EmberKilnRules.RECOVERY : move == 7 ? GaleRepriseRules.RECOVERY : StoneFractureRules.RECOVERY) - 1;
 			for (float age : new float[] {4, move == 7 ? 9 : 12, tell - 6, tell, tell + recovery / 2F}) {
 				AuraFighterRenderState state = masterState(renderer, master, move, age, tell, recovery, left);
 				model.setupAnim(state);
@@ -297,7 +298,7 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 			masterFallback(model, masterState(renderer, master, move, tell + 1 + recovery, tell, recovery, left),
 				"Expired accepted school timeline cannot leave the segmented body visible");
 			model.setupAnim(masterState(renderer, master, move, tell, tell, recovery, left));
-			masterFallback(model, masterState(renderer, master, 9, tell, tell, recovery, left),
+			masterFallback(model, masterState(renderer, master, 10, tell, tell, recovery, left),
 				"An unsupported future Master form keeps the complete original renderer");
 			if (move == 7) galeLanding(renderer, master, left);
 		}
@@ -326,9 +327,9 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 				}
 			}
 		}
-		for (int move : new int[] {1, 8}) {
-			var state = masterState(renderer, master, move, 12, move == 1 ? 18 : StoneFractureRules.TELL,
-				move == 1 ? 19 : StoneFractureRules.RECOVERY - 1, left);
+		for (int move : new int[] {1, 8, 9}) {
+			var state = masterState(renderer, master, move, 12, move == 1 ? 18 : move == 9 ? EmberKilnRules.TELL : StoneFractureRules.TELL,
+				move == 1 ? 19 : (move == 9 ? EmberKilnRules.RECOVERY : StoneFractureRules.RECOVERY) - 1, left);
 			var frame = state.getData(ArticulatedCombat.FRAME);
 			state.setData(ArticulatedCombat.FRAME, new ArticulatedCombat.Frame(frame.pose(), frame.activation(), frame.move(),
 				frame.master(), frame.leftHanded(), frame.yawDelta(), frame.pitchDelta(), false, 0));

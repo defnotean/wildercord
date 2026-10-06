@@ -8,7 +8,7 @@ package dev.wildercord.aura.world;
 public final class MasterAnimationRules {
 	private MasterAnimationRules() {}
 
-	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7, STONE_FRACTURE = 8;
+	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7, STONE_FRACTURE = 8, KILN_RING = 9;
 	public record Joint(float x, float y, float z) {
 		Joint toward(Joint other, float t) {
 			return new Joint(lerp(x, other.x, t), lerp(y, other.y, t), lerp(z, other.z, t));
@@ -16,11 +16,14 @@ public final class MasterAnimationRules {
 	}
 
 	/** The two legs share a split-stance angle so both rigid soles can meet the same floor. */
-	public record Pose(float weight, Joint body, Joint head, Joint sword, Joint offhand, float stance, float bladeTilt) {
-		Pose weight(float value) { return new Pose(value, body, head, sword, offhand, stance, bladeTilt); }
+	public record Pose(float weight, Joint body, Joint head, Joint sword, Joint offhand, float stance, float bladeTilt, float rootYaw) {
+		public Pose(float weight, Joint body, Joint head, Joint sword, Joint offhand, float stance, float bladeTilt) {
+			this(weight, body, head, sword, offhand, stance, bladeTilt, 0);
+		}
+		Pose weight(float value) { return new Pose(value, body, head, sword, offhand, stance, bladeTilt, rootYaw); }
 		Pose toward(Pose other, float t) {
 			return new Pose(1, body.toward(other.body, t), head.toward(other.head, t), sword.toward(other.sword, t),
-				offhand.toward(other.offhand, t), lerp(stance, other.stance, t), lerp(bladeTilt, other.bladeTilt, t));
+				offhand.toward(other.offhand, t), lerp(stance, other.stance, t), lerp(bladeTilt, other.bladeTilt, t), lerp(rootYaw, other.rootYaw, t));
 		}
 	}
 
@@ -98,6 +101,14 @@ public final class MasterAnimationRules {
 		p(j(.42F, -.06F, .02F), j(-.20F, 0, 0), j(-.86F, -.08F, -.10F), j(-.74F, .12F, -.20F), .28F, -112),
 		p(j(.30F, -.12F, .02F), j(-.12F, 0, 0), j(-.52F, -.12F, -.12F), j(-.42F, .14F, -.24F), .28F, -102));
 
+	// One full-body turn gathers the kiln, then a low circular release lights the complete
+	// fixed annulus at once. Root yaw is separate from the modest torso twist and never moves
+	// the entity. Its completed 2pi turn stays neutral through the fade instead of rewinding.
+	private static final Motion KILN_MOTION = new Motion(
+		p(j(.19F, .50F, -.02F), j(-.09F, -.20F, .01F), j(.10F, .65F, .30F), j(-.86F, -.32F, .24F), .24F, -5.126191F),
+		p(j(.28F, -.46F, .025F), j(-.13F, .22F, -.01F), j(-.12F, -.88F, -.60F), j(-.54F, .28F, .48F), .24F, 24.677765F),
+		p(j(.20F, -.74F, .02F), j(-.09F, .32F, -.01F), j(.12F, -1.15F, -.42F), j(-.38F, .18F, .35F), .24F, 5.301068F));
+
 	private static final Pose GUARD = p(j(.10F, .10F, 0), j(-.04F, 0, 0), j(-1.42F, -.55F, -.25F), j(-1.05F, .40F, -.25F), .14F, 0);
 	private static final Pose DODGE = p(j(.34F, -.18F, -.08F), j(-.18F, 0, .04F), j(-1.05F, .20F, -.35F), j(-.68F, -.18F, -.38F), .28F, 0);
 	private static final Pose STAGGER = p(j(-.15F, .06F, .03F), j(.12F, 0, 0), j(-.45F, .16F, .30F), j(-.35F, -.12F, -.40F), .12F, 0);
@@ -116,10 +127,12 @@ public final class MasterAnimationRules {
 			case PURSUIT_BREAK -> PURSUIT_MOTION;
 			case CROSSWIND_REPRISE -> REPRISE_MOTION;
 			case STONE_FRACTURE -> FRACTURE_MOTION;
+			case KILN_RING -> KILN_MOTION;
 			default -> null;
 		};
 		if (motion == null || !Float.isFinite(age) || age < 0 || tell < 1 || tell > 80 || active < 1 || active > 10
 			|| recovery < 1 || recovery > 120 || age >= tell + active + recovery) return NONE;
+		if (attack == KILN_RING) return kiln(age, tell, active, recovery);
 		if (attack == CROSSWIND_REPRISE) return reprise(age, tell, active, recovery);
 		if (attack == STONE_FRACTURE) return fracture(age, tell, active, recovery);
 		if (attack == PURSUIT_BREAK) return pursuit(age, tell, active, recovery);
@@ -134,6 +147,23 @@ public final class MasterAnimationRules {
 		float enter = smooth(age / Math.max(1, chamberAt));
 		float leave = 1 - smooth((age - followAt) / (tell + active + recovery - followAt));
 		return pose.weight(enter * leave);
+	}
+
+	/** Already eased model-root yaw. Never multiply this angle by pose weight during recovery. */
+	public static float kilnTurn(float age, int tell) {
+		if (!Float.isFinite(age) || age < 0 || tell < 1 || tell > 80) return 0;
+		float progress = smooth((age / tell - .20F) / .60F);
+		return progress == 0 ? 0 : -(float) (Math.PI * 2) * progress;
+	}
+
+	private static Pose kiln(float age, int tell, int active, int recovery) {
+		float gather = tell * .20F, release = tell * .80F;
+		float follow = tell + active + Math.min(3, recovery * .20F), end = tell + active + recovery;
+		Pose pose = age < release ? KILN_MOTION.chamber
+			: age < tell ? KILN_MOTION.chamber.toward(KILN_MOTION.impact, smooth((age - release) / (tell - release)))
+			: age < follow ? KILN_MOTION.impact.toward(KILN_MOTION.follow, smooth((age - tell) / (follow - tell))) : KILN_MOTION.follow;
+		float weight = smooth(age / Math.max(1, gather)) * (1 - smooth((age - follow) / (end - follow)));
+		return new Pose(weight, pose.body, pose.head, pose.sword, pose.offhand, pose.stance, pose.bladeTilt, kilnTurn(age, tell));
 	}
 
 	private static Pose fracture(float age, int tell, int active, int recovery) {

@@ -6,6 +6,7 @@ import com.mojang.math.Axis;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.ArticulatedCombatPose.Joint;
 import dev.wildercord.aura.world.GaleRepriseRules;
+import dev.wildercord.aura.world.EmberKilnRules;
 import dev.wildercord.aura.world.MasterSchoolMotionChecks.ServerFrame;
 import dev.wildercord.aura.world.StoneFractureRules;
 import dev.wildercord.aura.world.SwordMaster;
@@ -59,7 +60,7 @@ public final class MastersNpcCaptureProbe {
 	public record Timeline(long clientGameTick, long acceptedTick, int attackId, float partial, float age,
 		int tell, int active, int recovery, boolean fallbackRig, MasterModel.Frame frame) {}
 	public record Point(double x, double y) {}
-	public record Ray(Vec3 from, Vec3 to, Vec3 renderedEnd, float width, int particleAge, int lifetime, float partial) {}
+	public record Ray(Vec3 from, Vec3 to, Vec3 renderedEnd, float width, int particleAge, int lifetime, float partial, int color) {}
 	public record WarningPixels(Ray ray, Point from, Point to, int coloredBins, int sampledBins) {}
 	public record BodyPixels(int nonBlackPixels, int chromaticPixels, int distinctColors, int luminanceRange) {}
 	/** Unclamped normalized bounds of the observed geometry, including every visible cube/held-item extent. */
@@ -68,7 +69,7 @@ public final class MastersNpcCaptureProbe {
 	public record ArticulatedFrame(long activation, int move, String phase, float weight, boolean leftHanded,
 		boolean scriptedFootwork, double horizontalVelocitySquared, double interpolatedTravelSquared, float walkAnimationSpeed) {}
 	public record ModelReceipt(String backend, boolean segmentedRootVisible, boolean[] rigidPartsVisible,
-		List<String> transformNames, float[] transforms) {}
+		List<String> transformNames, float[] transforms, float[] modelRootTransform) {}
 	/** Entry/hand matrices are observed; resolved item matrices apply vanilla's fixed adult item offsets to that receipt. */
 	public record HandReceipt(String hand, float[] entryMatrix, float[] nativeHandMatrix, float[] resolvedItemMatrix,
 		float[] expectedSocketItemMatrix, float hiltDistance, float maximumMatrixError) {}
@@ -155,7 +156,8 @@ public final class MastersNpcCaptureProbe {
 			modelPose[at] = p.x; modelPose[at + 1] = p.y; modelPose[at + 2] = p.z;
 			modelPose[at + 3] = p.xRot; modelPose[at + 4] = p.yRot; modelPose[at + 5] = p.zRot;
 		}
-		modelReceipts.add(new ModelReceipt(rig.root.visible ? "segmented" : "rigid", rig.root.visible, visible, names, modelPose));
+		modelReceipts.add(new ModelReceipt(rig.root.visible ? "segmented" : "rigid", rig.root.visible, visible, names, modelPose,
+			new float[] {model.root().x, model.root().y, model.root().z, model.root().xRot, model.root().yRot, model.root().zRot}));
 		if (rig.root.visible && bodyEntry != null) {
 			PoseStack submitted = new PoseStack(); submitted.last().pose().set(bodyEntry);
 			model.root().visit(submitted, (pose, path, index, cube) -> {
@@ -200,9 +202,10 @@ public final class MastersNpcCaptureProbe {
 	}
 	/** Native LightParticle ray extraction; its world position/color identifies the actual floor warning. */
 	public static void ray(int color, Vec3 from, Vec3 delta, float width, int age, int lifetime, float partial) {
-		if (subject == null || color != subject.auraColor() || Math.abs(from.y - origin.y - .12) > .01
+		if (subject == null || color != subject.auraColor() && !(subject.attackAnimation() == 9 && color == 0x73E2CB)
+			|| Math.abs(from.y - origin.y - .12) > .01
 			|| from.distanceToSqr(origin) > 64 || Math.abs(delta.y) > .001 || age + partial >= lifetime) return;
-		rays.add(new Ray(from, from.add(delta), from.add(delta.scale(Math.min(1, (age + partial) / 2))), width, age, lifetime, partial));
+		rays.add(new Ray(from, from.add(delta), from.add(delta.scale(Math.min(1, (age + partial) / 2))), width, age, lifetime, partial, color));
 	}
 
 	public static CompletableFuture<Evidence> capture(Minecraft mc, SwordMaster master, String name, String phase,
@@ -212,13 +215,19 @@ public final class MastersNpcCaptureProbe {
 
 	public static CompletableFuture<Evidence> capture(Minecraft mc, SwordMaster master, String name, String phase,
 		int requestedTick, int requiredWarningSegments, Vec3 acceptedOrigin, ServerFrame serverFrame, boolean articulated) {
+		return capture(mc, master, name, phase, requestedTick, requiredWarningSegments, acceptedOrigin, serverFrame,
+			articulated, articulated && !phase.equals("reply_warning"));
+	}
+
+	/** Explicit framing allows the same close-body and complete-ring gates for both NPC backends. */
+	public static CompletableFuture<Evidence> capture(Minecraft mc, SwordMaster master, String name, String phase,
+		int requestedTick, int requiredWarningSegments, Vec3 acceptedOrigin, ServerFrame serverFrame, boolean articulated, boolean closeBody) {
 		check(subject == null, "NPC captures must not overlap");
 		subject = master; origin = acceptedOrigin; timeline = null; renderedState = null; modelPose = null;
 		bodies = models = 0; rays.clear(); modelReceipts.clear(); handReceipts.clear(); articulatedFrame = null;
 		handEntry = null; enteringHand = null;
 		bodyEntry = viewProjection = null; bodyBounds = new BoundsAccumulator(); bladeBounds = new BoundsAccumulator();
 		zeroToOneDepth = RenderSystem.getDevice().getDeviceInfo().isZZeroToOne();
-		boolean closeBody = articulated && !phase.equals("reply_warning");
 		boolean fullWarningCoverage = !closeBody;
 		var result = new CompletableFuture<Evidence>();
 		try {
@@ -310,7 +319,7 @@ public final class MastersNpcCaptureProbe {
 						true, phase, requestedTick, image.getWidth(), image.getHeight(), capturedTimeline, serverFrame, capturedBodies, capturedModels,
 						capturedPose, eye, capturedPosition, List.copyOf(bodyPoints), bodyPixels, warnings, validationFailure,
 						articulated ? "segmented" : "rigid", capturedFrame, capturedModelsReceipts, capturedHands,
-						articulated ? closeBody ? "body_close" : "warning_lane" : "legacy_wide", capturedFov,
+						closeBody ? "body_close" : capturedTimeline.attackId == 9 ? "warning_ring" : articulated ? "warning_lane" : "legacy_wide", capturedFov,
 						fullWarningCoverage ? "full_lane" : "visible_portion", capturedBodyBounds, capturedBladeBounds,
 						articulated ? "visible_native_model_cube_vertices_with_body_submit_matrix" : null,
 						articulated ? "resolved_native_item_extents_with_hand_receipt_and_vanilla_adult_offsets" : null,
@@ -370,6 +379,17 @@ public final class MastersNpcCaptureProbe {
 
 	private static List<Vec3[]> expectedRays(int age, int attack, Vec3 origin) {
 		// The last real particle may fade through release; these beats require no warning segments.
+		if (attack == 9) {
+			if (age >= EmberKilnRules.TELL) return List.of();
+			var ring = new ArrayList<Vec3[]>();
+			for (double radius : new double[] {EmberKilnRules.INNER, EmberKilnRules.OUTER / Math.cos(Math.PI / EmberKilnRules.SECTORS)})
+				for (int i = 0; i < EmberKilnRules.SECTORS; i++) {
+					double a = EmberKilnRules.angle(i), b = EmberKilnRules.angle(i + 1);
+					ring.add(new Vec3[] {origin.add(radius * Math.cos(a), .12, radius * Math.sin(a)),
+						origin.add(radius * Math.cos(b), .12, radius * Math.sin(b))});
+				}
+			return ring;
+		}
 		if (age >= (attack == 7 ? GaleRepriseRules.TELL : StoneFractureRules.TELL)) return List.of();
 		var result = new ArrayList<Vec3[]>();
 		Vec3 feet = origin.add(0, .12, 0);
@@ -454,7 +474,7 @@ public final class MastersNpcCaptureProbe {
 			for (int y = Math.max(0, cy - 3); y <= Math.min(height - 1, cy + 3); y++)
 				for (int x = Math.max(0, cx - 3); x <= Math.min(width - 1, cx + 3); x++) {
 					int rgb = pixels[y * width + x], r = rgb >> 16 & 255, g = rgb >> 8 & 255, b = rgb & 255;
-					if (attack == 7 ? g > 130 && g > r + 3 && b > r : r > 130 && r > g + 3 && g > b + 3) found = true;
+					if (attack == 7 || attack == 9 && ray.color == 0x73E2CB ? g > 130 && g > r + 3 && b > r : r > 130 && r > g + 3 && g > b + 3) found = true;
 				}
 			if (found) visible++;
 		}

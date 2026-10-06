@@ -84,6 +84,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private MastersRules.Move attack;
 	private Vec3 lockedAim, lockedOrigin;
 	private EmberAfterburn afterburn;
+	private EmberKiln kiln;
+	private long kilnReadyAt;
 	private MasterPursuit pursuit;
 	private long pursuitReadyAt;
 	private GaleReprise reprise;
@@ -372,6 +374,12 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	public Set<UUID> challengers() { return Set.copyOf(participants); }
 	public double auraRemaining() { return aura; }
 
+	boolean kilnPending() { return kiln != null; }
+	boolean canBeginKiln(long now) { return canBeginReprise(now) && !guardNext && afterburn == null; }
+	boolean canMaintainKiln(EmberKiln instance) {
+		return kiln == instance && attack == MastersRules.Move.KILN_RING && canMaintainAfterburn() && !isNoAi();
+	}
+
 	boolean afterburnPending() { return afterburn != null; }
 	boolean pursuitPending() { return pursuit != null; }
 	boolean reprisePending() { return reprise != null; }
@@ -609,6 +617,22 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			: target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4 ? MastersRules.Move.BREAK_CAST
 			: EmberWakeRules.next(discipline, sequence, MastersRules.phase(getHealth(), getMaxHealth()), distanceTo(target)) ? MastersRules.Move.CINDER_WAKE
 			: MastersRules.move(discipline, sequence, MastersRules.phase(getHealth(), getMaxHealth()), distanceTo(target));
+		// Only an ordinary Ember slot can admit the ring; due guards, casts, Wake and ranged responses win first.
+		if (!MastersRules.needsCrescent(distanceTo(target), targetHeight)
+			&& !(target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4)
+			&& next != MastersRules.Move.CINDER_WAKE && target instanceof ServerPlayer player) {
+			EmberKiln opening = EmberKiln.prepare(this, player, discipline, sequence, aura, now, kilnReadyAt);
+			if (opening != null) {
+				beginAttack(level, target, MastersRules.Move.KILN_RING, now);
+				kiln = opening;
+				kilnReadyAt = now + EmberKilnRules.COOLDOWN;
+				// Reserve the complete timeline at admission. Interruption cannot shorten the promised punish window.
+				recoverUntil = Math.max(recoverUntil, opening.endsAt());
+				guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+				if (!opening.tick(now)) cancelAttack();
+				return;
+			}
+		}
 		beginAttack(level, target, next, now);
 	}
 
@@ -622,7 +646,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		aura -= move == MastersRules.Move.CINDER_WAKE ? EmberWakeRules.COST
 			: move == MastersRules.Move.PURSUIT_BREAK ? MasterPursuitRules.school(discipline).cost()
 			: move == MastersRules.Move.CROSSWIND_REPRISE ? GaleRepriseRules.COST
-			: move == MastersRules.Move.STONE_FRACTURE ? StoneFractureRules.COST : MastersRules.ATTACK_COST;
+			: move == MastersRules.Move.STONE_FRACTURE ? StoneFractureRules.COST
+			: move == MastersRules.Move.KILN_RING ? EmberKilnRules.COST : MastersRules.ATTACK_COST;
 		attackAt = now + move.tell;
 		lockedAim = null;
 		lockedOrigin = null;
@@ -638,11 +663,27 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		getNavigation().stop();
 		Feels.sound(level, position(), "duelist_knight_windup", 1, move == MastersRules.Move.BREAK_CAST ? 1.3F : 0.9F);
 		AuraFx.banner(this, Component.translatable("boss.wildercord.master." + move.name().toLowerCase(java.util.Locale.ROOT)),
-			Component.empty(), auraColor(), AuraFxRules.BannerKind.ART);
+			move == MastersRules.Move.KILN_RING ? Component.translatable("message.wildercord.master.kiln_hint") : Component.empty(), auraColor(), AuraFxRules.BannerKind.ART);
 	}
 
 	private void tickAttack(ServerLevel level, long now, LivingEntity target) {
 		getNavigation().stop();
+		if (attack == MastersRules.Move.KILN_RING) {
+			EmberKiln running = kiln;
+			if (running != null && running.tick(now)) return;
+			if (attack != MastersRules.Move.KILN_RING || kiln != running) return;
+			if (running == null || !running.released()) cancelAttack();
+			else {
+				kiln = null; attack = null;
+				setState(WINDUP, false);
+				guardNext = MastersRules.guardAfter(discipline, ++sequence);
+				retargetBetweenAttacks(level);
+			}
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+			recoverUntil = Math.max(recoverUntil, now + EmberKilnRules.RECOVERY);
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+			return;
+		}
 		if (attack == MastersRules.Move.STONE_FRACTURE) {
 			StoneFracture running = fracture;
 			if (running != null && running.tick(now)) return;
@@ -868,6 +909,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	private void cancelAttack() {
+		if (kiln != null) {
+			kiln.stop();
+			recoverUntil = Math.max(recoverUntil, Math.max(kiln.endsAt(), level().getGameTime() + EmberKilnRules.RECOVERY));
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+		}
+		kiln = null;
 		if (fracture != null) {
 			dropGuard();
 			setDeltaMovement(0, getDeltaMovement().y, 0);

@@ -11,8 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Passive inventory of existing authored Master attacks. Only unconnected helpers read it; no live entity, renderer,
- * loader or damage path uses it yet.
+ * Passive inventory of existing Master attacks and the isolated Kiln Ring candidate. Only unconnected helpers read it;
+ * no live entity, renderer, loader or damage path uses it yet.
  * School references, parameter variants and combinations do not create additional authored attack IDs.
  */
 public final class MasterMoveCatalog {
@@ -20,7 +20,7 @@ public final class MasterMoveCatalog {
 	public static final int MAX_WIRE_ID = 32767;
 
 	/** Closed references to existing code, never class names, commands or data-driven effect programs. */
-	public enum ExecutionFamily { MELEE, CRESCENT, CINDER_WAKE, PURSUIT, REPRISE, FRACTURE }
+	public enum ExecutionFamily { MELEE, CRESCENT, CINDER_WAKE, PURSUIT, REPRISE, FRACTURE, KILN }
 
 	/** Timing, payment, warnings, counterplay and presentation remain owned by the existing implementation. */
 	public record Definition(String id, int wireId, MastersRules.Move legacyMove, Set<Integer> schools,
@@ -50,7 +50,8 @@ public final class MasterMoveCatalog {
 		new Definition("wildercord:master/cinder_wake", 5, MastersRules.Move.CINDER_WAKE, Set.of(MastersRules.EMBER), ExecutionFamily.CINDER_WAKE),
 		new Definition("wildercord:master/pursuit_break", 6, MastersRules.Move.PURSUIT_BREAK, ALL_SCHOOLS, ExecutionFamily.PURSUIT),
 		new Definition("wildercord:master/crosswind_reprise", 7, MastersRules.Move.CROSSWIND_REPRISE, Set.of(MastersRules.GALE), ExecutionFamily.REPRISE),
-		new Definition("wildercord:master/stone_fracture", 8, MastersRules.Move.STONE_FRACTURE, Set.of(MastersRules.STONE), ExecutionFamily.FRACTURE)));
+		new Definition("wildercord:master/stone_fracture", 8, MastersRules.Move.STONE_FRACTURE, Set.of(MastersRules.STONE), ExecutionFamily.FRACTURE),
+		new Definition("wildercord:master/kiln_ring", 9, MastersRules.Move.KILN_RING, Set.of(MastersRules.EMBER), ExecutionFamily.KILN)));
 
 	private final List<Definition> definitions;
 	private final Map<String, Definition> byId;
@@ -80,6 +81,7 @@ public final class MasterMoveCatalog {
 
 	public static MasterMoveCatalog legacy() { return LEGACY; }
 	public List<Definition> definitions() { return definitions; }
+	/** Structural ID count, not a native-certification or delivery claim. */
 	public int authoredAttackCount() { return definitions.size(); }
 	public Optional<Definition> byId(String id) { return Optional.ofNullable(byId.get(Objects.requireNonNull(id, "id"))); }
 

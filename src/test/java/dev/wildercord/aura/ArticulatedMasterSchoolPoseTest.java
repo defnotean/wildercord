@@ -16,8 +16,8 @@ class ArticulatedMasterSchoolPoseTest {
 	void supportedNpcIdsAndExactServerPhasesStayBounded() {
 		assertEquals(MasterAnimationRules.CROSSWIND_REPRISE, MASTER_CROSSWIND_REPRISE);
 		assertEquals(MasterAnimationRules.STONE_FRACTURE, MASTER_STONE_FRACTURE);
-		for (int move = -1; move <= 9; move++)
-			assertEquals(move == 1 || move == 7 || move == 8, supportsMaster(move));
+		for (int move = -1; move <= 10; move++)
+			assertEquals(move == 1 || move == 7 || move == 8 || move == 9, supportsMaster(move));
 		for (int move : new int[] {7, 8}) {
 			int tell = tell(move), recovery = recovery(move);
 			assertEquals(Phase.WINDUP, sample(move, tell - .001F, false).phase());

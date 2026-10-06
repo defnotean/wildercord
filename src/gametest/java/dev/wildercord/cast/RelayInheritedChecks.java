@@ -72,8 +72,10 @@ public final class RelayInheritedChecks {
 					scribe[0].forceTide(false);scribe[0].discard();wet[0].discard();wet[1].discard();CampConcordNative.config(original);
 				});c.waitTicks(12);
 
-				for(int blocks:List.of(32,1)){
-				// A real Frost release reaches the arena ice mechanic while its creature allowance is already spent.
+				// Keep the original ground-level geometry as a policy diagnostic. The required
+				// arena-positive cases use wet bodies above the ice and a visible arena-only cell.
+				for(boolean elevated:List.of(false,true)) for(int blocks:elevated?List.of(32,1):List.of(32)){
+				FrostProbe frost=new FrostProbe(elevated,blocks);
 				world.getServer().runOnServer(s->{
 					RelayCircleTest.prepare(owner,Runes.FROST);CampConcordNative.config(CampConcordNative.copy(original,Map.of("maxCreatures",1,"maxBlocks",blocks)));
 					BlockPos altar=new BlockPos(8,150,6);
@@ -81,10 +83,52 @@ public final class RelayInheritedChecks {
 					scribe[0]=TideScribe.rise(owner.level(),altar);RelayCircleTest.check(scribe[0]!=null,"Native frost arena creates");scribe[0].setNoAi(true);scribe[0].setNoGravity(true);scribe[0].forceTide(true);scribe[0].mechanic(owner.level(),owner.level().getGameTime());scribe[0].snapTo(2.5,150,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
 					for(int x=-1;x<=4;x++)for(int z=5;z<=8;z++)for(int y=150;y<=151;y++)owner.level().setBlock(new BlockPos(x,y,z),Blocks.WATER.defaultBlockState(),2);
 					wet[0]=dummy(owner,.5,6.5);
+					if(elevated){
+						// Two-deep water ends at y152. Both complete creature rays stay above it.
+						for(int x=-1;x<=1;x++)for(int z=-1;z<=1;z++)owner.level().setBlock(new BlockPos(x,151,z),Blocks.STONE.defaultBlockState(),2);
+						owner.teleportTo(owner.level(),.5,152,.5,Set.of(),0,55,false);owner.setDeltaMovement(Vec3.ZERO);
+						wet[0].snapTo(.5,151.2,6.5,180,0);wet[0].setDeltaMovement(Vec3.ZERO);
+						scribe[0].snapTo(2.5,151.2,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
+						RelayCircleTest.check(owner.level().getBlockState(FROST_CELL).is(Blocks.WATER),"Arena-only candidate starts as real flood water");
+						// Ordinary surface Frost requires air above; the Tide arena also freezes under lily pads.
+						owner.level().setBlock(FROST_CELL.above(),Blocks.LILY_PAD.defaultBlockState(),2);
+					}
+					frost.primary=wet[0];frost.scribe=scribe[0];
+					RelayCircleTest.check(frostEvidence(frost,"setup").ice()==0,"Each Frost case starts without residual ice in its full mutation volume");
 				});c.waitTicks(3);
-				world.getServer().runOnServer(s->{RelayCircleTest.check(scribe[0].isInWater()&&!scribe[0].stranded()&&scribe[0].distanceTo(wet[0])<3.5,"Scribe is an otherwise eligible nearby Frost strand victim");RelayCircleTest.directDown(owner);});c.waitTicks(2);
-				world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,wet[0].getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);
-				world.getServer().runOnServer(s->{RelayCircleTest.check(wet[0].hitSequence()==1 && (blocks==1 || scribe[0].icedCells()>0),"The actual Relay Frost reaches primary damage and the admitted native arena ice mechanic"); int ice=0; for(var pos:BlockPos.betweenClosed(-4,150,2,6,154,11)) if(owner.level().getBlockState(pos).is(Blocks.ICE)||owner.level().getBlockState(pos).is(Blocks.FROSTED_ICE))ice++; RelayCircleTest.check(ice>0&&ice<=blocks,"World frost and arena frost share one paid block allowance");RelayCircleTest.check(!scribe[0].stranded(),"Arena Frost cannot spend a second creature after the paid primary exhausted its allowance");scribe[0].forceTide(false);scribe[0].discard();wet[0].discard();CampConcordNative.config(original);});c.waitTicks(12);
+				world.getServer().runOnServer(s->{RelayCircleTest.check(scribe[0].isInWater()&&!scribe[0].stranded()&&scribe[0].distanceTo(wet[0])<3.5,"Scribe is an otherwise eligible nearby Frost strand victim");RelayCircleTest.directDown(owner);
+					var state=owner.getAttached(RelayState.VIEW);RelayCircleTest.check(state!=null&&state.phase()==RelayState.PLACED,"Frost diagnostic places the actual paid focus");
+					frost.focus=((Map<?,?>)readField(RelayCircles.class,null,"FOCI")).get(owner);
+					frost.receipt=(Cast)readField(frost.focus.getClass(),frost.focus,"cast");
+					RelayCircleTest.check(remainingBlocks(frost)==blocks,"Actual paid Frost receipt captures the configured block allowance");
+				});c.waitTicks(2);
+				world.getServer().runOnServer(s->{
+					RelayCircleTest.aim(owner,wet[0].getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);
+					frost.warning=owner.getAttached(RelayState.VIEW);frostEvidence(frost,"committed");
+					RelayCircleTest.check(frost.warning!=null&&frost.warning.phase()==RelayState.WARNING,"Frost diagnostic commits the actual warned ray");
+					if(elevated){
+						RelayCircleTest.check(wet[0].isInWater()&&scribe[0].isInWater(),"Clear-lane primary and nearby Scribe are actually wading");
+						RelayCircleTest.check(aboveSurface(frost,152),"Both complete creature rays and the fixed warned lane are above the entire water surface");
+						RelayCircleTest.check(frost.receipt.admits(wet[0])&&RelayCircles.admitsFrom(frost.receipt,wet[0].getBoundingBox().getCenter(),scribe[0]),"Both primary and secondary Scribe satisfy actual pre-impact admission");
+						RelayCircleTest.check(owner.level().getBlockState(FROST_CELL.above()).is(Blocks.LILY_PAD)&&frost.receipt.admitsBlock(FROST_CELL),"Real lily-pad cell is visible to both origins and reserved for the native arena hook");
+					}
+				});c.waitTicks(8);
+				world.getServer().runOnServer(s->{
+					var evidence=frostEvidence(frost,"released");
+					RelayCircleTest.check(wet[0].hitSequence()==1,"The actual Relay Frost wounds the primary exactly once");
+					if(elevated){
+						RelayCircleTest.check(blocks==1||scribe[0].icedCells()>0,"The clear-lane actual Relay Frost reaches the admitted native arena ice mechanic");
+						RelayCircleTest.check(aboveSurface(frost,evidence.highestIce())&&evidence.eyeClear()&&evidence.focusClear()&&evidence.laneClear(),"Both complete rays remain above every newly frozen surface after the real release");
+						RelayCircleTest.check(RelayCircles.clear(owner.level(),owner,wet[0].getBoundingBox().getCenter(),scribe[0].getBoundingBox().getCenter()),"New ice does not hide the nearby Scribe behind the exhausted creature-budget check");
+						RelayCircleTest.check(blocks==1?scribe[0].icedCells()==0:owner.level().getBlockState(FROST_CELL).is(Blocks.ICE),"The admitted arena-only cell freezes only when the shared block allowance remains");
+					}else if(scribe[0].icedCells()==0){
+						RelayCircleTest.check(!evidence.eyeClear()||!evidence.focusClear()||!evidence.laneClear()||remainingBlocks(frost)==0,"Ground-level skipped arena icing has observed cover or exhausted allowance (diagnostic, not the positive control)");
+					}
+					RelayCircleTest.check(evidence.ice()>0&&evidence.ice()<=blocks,"World frost and arena frost share one paid block allowance");
+					RelayCircleTest.check(remainingBlocks(frost)>=0&&remainingBlocks(frost)<=blocks-evidence.ice(),"Every actual ice cell consumes the original shared paid allowance");
+					RelayCircleTest.check(!scribe[0].stranded(),"Arena Frost cannot spend a second creature after the paid primary exhausted its allowance");
+					scribe[0].forceTide(false);scribe[0].discard();wet[0].discard();CampConcordNative.config(original);
+				});c.waitTicks(12);
 
 				}
 
@@ -130,6 +174,55 @@ public final class RelayInheritedChecks {
 			} finally {world.getServer().runOnServer(s->CampConcordNative.config(original));}
 		} finally {owner=null;watched=null;retireBonus=false;}
 	}
+	private static final BlockPos FROST_CELL=new BlockPos(0,151,4);
+	private static final class FrostProbe {
+		final boolean elevated;final int blocks;
+		TrainingDummy primary;TideScribe scribe;Cast receipt;Object focus;RelayState warning;
+		FrostProbe(boolean elevated,int blocks){this.elevated=elevated;this.blocks=blocks;}
+	}
+	private record FrostEvidence(int ice,double highestIce,boolean eyeClear,boolean focusClear,boolean laneClear){}
+	private static boolean aboveSurface(FrostProbe frost,double top){
+		// Straight segments never dip below their lower endpoint.
+		return frost.warning.focus().y>top&&frost.warning.end().y>top&&owner.getEyePosition().y>top
+			&&frost.primary.getBoundingBox().getCenter().y>top&&frost.scribe.getBoundingBox().getCenter().y>top;
+	}
+	private static FrostEvidence frostEvidence(FrostProbe frost,String phase){
+		var value=new com.google.gson.JsonObject();var cells=new com.google.gson.JsonArray();
+		int ice=0,worldIce=0,arenaIce=0;double highest=0;
+		for(var pos:BlockPos.betweenClosed(-4,150,2,6,154,11)){
+			var state=owner.level().getBlockState(pos);
+			if(!state.is(Blocks.ICE)&&!state.is(Blocks.FROSTED_ICE))continue;
+			ice++;if(state.is(Blocks.ICE))arenaIce++;else worldIce++;
+			highest=Math.max(highest,pos.getY()+1);
+			if(cells.size()<32)cells.add(pos.getX()+","+pos.getY()+","+pos.getZ()+":"+(state.is(Blocks.ICE)?"arena":"world"));
+		}
+		var primary=frost.primary.getBoundingBox().getCenter();var view=owner.getAttached(RelayState.VIEW);
+		boolean eyeClear=RelayCircles.clear(owner.level(),owner,owner.getEyePosition(),primary);
+		boolean focusClear=frost.warning!=null&&RelayCircles.clear(owner.level(),owner,frost.warning.focus(),primary);
+		boolean laneClear=frost.warning!=null&&RelayCircles.clear(owner.level(),owner,frost.warning.focus(),frost.warning.end());
+		value.addProperty("phase",phase);value.addProperty("geometry",frost.elevated?"clear_lane_positive":"original_ground_diagnostic");
+		value.addProperty("tick",owner.level().getGameTime());value.addProperty("blockLimit",frost.blocks);
+		value.addProperty("primaryHits",frost.primary.hitSequence());value.addProperty("lastDamage",frost.primary.lastDamage());
+		value.addProperty("primaryWet",frost.primary.isInWater());value.addProperty("scribeWet",frost.scribe.isInWater());
+		value.addProperty("primaryCenter",primary.toString());value.addProperty("scribeCenter",frost.scribe.getBoundingBox().getCenter().toString());
+		value.addProperty("casterEye",owner.getEyePosition().toString());value.addProperty("focus",frost.warning==null?"unset":frost.warning.focus().toString());
+		value.addProperty("fixedEnd",frost.warning==null?"unset":frost.warning.end().toString());
+		value.addProperty("viewPhase",view==null?0:view.phase());value.addProperty("focusRegistered",RelayCircles.pending(owner));
+		value.addProperty("focusRetired",frost.focus!=null&&(boolean)readField(frost.focus.getClass(),frost.focus,"retired"));
+		value.addProperty("eyeToPrimaryClear",eyeClear);value.addProperty("focusToPrimaryClear",focusClear);value.addProperty("fixedLaneClear",laneClear);
+		value.addProperty("worldFrostedIce",worldIce);value.addProperty("arenaIceBlocks",arenaIce);value.addProperty("totalIce",ice);
+		value.addProperty("scribeIcedCells",frost.scribe.icedCells());value.addProperty("scribeStranded",frost.scribe.stranded());
+		value.addProperty("remainingPaidBlocks",remainingBlocks(frost));
+		value.addProperty("remainingPaidCreatures",frost.receipt==null?-1:(int)readField(frost.receipt.payment().getClass(),frost.receipt.payment(),"guardedEntities"));
+		value.add("iceCells",cells);System.out.println("WILDERCORD_RELAY_FROST "+value);
+		return new FrostEvidence(ice,highest,eyeClear,focusClear,laneClear);
+	}
+	private static int remainingBlocks(FrostProbe frost){return frost.receipt==null?-1:(int)readField(frost.receipt.payment().getClass(),frost.receipt.payment(),"guardedBlocks");}
+	private static Object readField(Class<?> type,Object target,String name){
+		try{var field=type.getDeclaredField(name);field.setAccessible(true);return field.get(target);}
+		catch(ReflectiveOperationException failure){throw new AssertionError("Read-only native Frost receipt probe unavailable: "+name,failure);}
+	}
+
 	private static TrainingDummy dummy(ServerPlayer player,double x,double z){
 		var dummy=WildercordEntities.TRAINING_DUMMY.create(player.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(dummy!=null,"Native dummy creates");dummy.snapTo(x,150,z,180,0);dummy.setNoGravity(true);player.level().addFreshEntity(dummy);return dummy;
 	}

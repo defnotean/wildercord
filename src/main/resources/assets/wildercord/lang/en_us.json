@@ -4365,6 +4365,8 @@
   "boss.wildercord.master.fracture_reply": "Fracture reply: leave the narrow lane",
   "message.wildercord.master.fracture_hint": "Reply in 0.6s: sidestep, backstep, use cover or face the blade and parry.",
   "message.wildercord.master.stone_lesson": "Stone master: I plant for 0.4s, brace for 0.6s, then warn a narrow reply for 0.6s. Hit my back during the brace, break my stance or axe the guard. Leave the reply lane or parry, then counter for 2s. Each attempt costs 28 Aura, with at least 9s between attempts.",
+  "boss.wildercord.master.kiln_ring": "Kiln Ring",
+  "message.wildercord.master.kiln_hint": "Step inside the blue rim, escape the outer edge, or jump over the low ring.",
   "boss.wildercord.master.cinder_wake": "Cinder Wake: leave the broad cut",
   "boss.wildercord.master.afterburn": "Afterburn: leave the marked lanes",
   "message.wildercord.master.afterburn_hint": "Afterburn in 1.3s: step out of the marked lanes.",

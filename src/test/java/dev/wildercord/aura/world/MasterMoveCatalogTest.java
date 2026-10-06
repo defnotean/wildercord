@@ -16,13 +16,13 @@ class MasterMoveCatalogTest {
 	private static final Map<MastersRules.Move, Integer> WIRE_IDS = Map.of(
 		MastersRules.Move.SWEEP, 1, MastersRules.Move.THRUST, 2, MastersRules.Move.CRESCENT, 3,
 		MastersRules.Move.BREAK_CAST, 4, MastersRules.Move.CINDER_WAKE, 5, MastersRules.Move.PURSUIT_BREAK, 6,
-		MastersRules.Move.CROSSWIND_REPRISE, 7, MastersRules.Move.STONE_FRACTURE, 8);
+		MastersRules.Move.CROSSWIND_REPRISE, 7, MastersRules.Move.STONE_FRACTURE, 8, MastersRules.Move.KILN_RING, 9);
 
 	@Test
 	void freezesAllExistingWireAndStableIdsWithoutCountingSchoolVariantsAsAttacks() {
-		assertEquals(8, CATALOG.authoredAttackCount());
+		assertEquals(9, CATALOG.authoredAttackCount(), "Eight existing IDs plus the proposed, not yet certified Kiln Ring");
 		assertEquals(Set.of(MastersRules.Move.values()), WIRE_IDS.keySet(), "A new legacy enum needs deliberate catalog review");
-		List<String> names = List.of("sweep", "thrust", "crescent", "break_cast", "cinder_wake", "pursuit_break", "crosswind_reprise", "stone_fracture");
+		List<String> names = List.of("sweep", "thrust", "crescent", "break_cast", "cinder_wake", "pursuit_break", "crosswind_reprise", "stone_fracture", "kiln_ring");
 		for (var entry : WIRE_IDS.entrySet()) {
 			var definition = CATALOG.forMove(entry.getKey());
 			assertEquals(entry.getValue().intValue(), definition.wireId());
@@ -32,23 +32,23 @@ class MasterMoveCatalogTest {
 			assertSame(definition, CATALOG.byWireId(entry.getValue()).orElseThrow());
 			assertSame(definition, CATALOG.byId(definition.id()).orElseThrow());
 		}
-		assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8), CATALOG.definitions().stream().map(MasterMoveCatalog.Definition::wireId).toList());
+		assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9), CATALOG.definitions().stream().map(MasterMoveCatalog.Definition::wireId).toList());
 	}
 
 	@Test
-	void eachSchoolHasFiveSharedActionsAndOnlyItsOwnSignature() {
-		List<Set<Integer>> expected = List.of(Set.of(1, 2, 3, 4, 5, 6), Set.of(1, 2, 3, 4, 6, 7), Set.of(1, 2, 3, 4, 6, 8));
+	void eachSchoolHasFiveSharedActionsAndOnlyItsOwnSignatures() {
+		List<Set<Integer>> expected = List.of(Set.of(1, 2, 3, 4, 5, 6, 9), Set.of(1, 2, 3, 4, 6, 7), Set.of(1, 2, 3, 4, 6, 8));
 		Set<String> union = new HashSet<>();
 		int references = 0;
 		for (int school = MastersRules.EMBER; school <= MastersRules.STONE; school++) {
 			var available = CATALOG.forSchool(school);
-			assertEquals(6, available.size());
+			assertEquals(school == MastersRules.EMBER ? 7 : 6, available.size());
 			assertEquals(expected.get(school), Set.copyOf(available.stream().map(MasterMoveCatalog.Definition::wireId).toList()));
 			available.forEach(definition -> union.add(definition.id()));
 			references += available.size();
 		}
-		assertEquals(18, references);
-		assertEquals(8, union.size());
+		assertEquals(19, references);
+		assertEquals(9, union.size());
 		assertTrue(CATALOG.forSchool(-1).isEmpty());
 		assertTrue(CATALOG.forSchool(3).isEmpty());
 		assertTrue(CATALOG.forSchool(Integer.MAX_VALUE).isEmpty());
@@ -56,7 +56,7 @@ class MasterMoveCatalogTest {
 
 	@Test
 	void preservesPaymentAndDamageAcrossLegacySchoolsAndPartySizes() {
-		double[][] costs = {{16, 16, 16, 16, 24, 28, 24, 28}, {16, 16, 16, 16, 24, 26, 24, 28}, {16, 16, 16, 16, 24, 30, 24, 28}};
+		double[][] costs = {{16, 16, 16, 16, 24, 28, 24, 28, 28}, {16, 16, 16, 16, 24, 26, 24, 28, 28}, {16, 16, 16, 16, 24, 30, 24, 28, 28}};
 		for (int school : new int[] {Integer.MIN_VALUE, -1, 0, 1, 2, 3, Integer.MAX_VALUE}) {
 			for (var entry : WIRE_IDS.entrySet()) {
 				MastersRules.Move move = entry.getKey();
@@ -73,11 +73,11 @@ class MasterMoveCatalogTest {
 
 	@Test
 	void retainsTheHitTickInsideRecoveryAndEveryExistingAnimationBoundary() {
-		int[] tells = {18, 22, 20, 20, 24, 22, 22, 32};
-		int[] recoveries = {20, 24, 24, 24, 56, 30, 32, 40};
+		int[] tells = {18, 22, 20, 20, 24, 22, 22, 32, 40};
+		int[] recoveries = {20, 24, 24, 24, 56, 30, 32, 40, 48};
 		int[] rendererIds = {MasterAnimationRules.SWEEP, MasterAnimationRules.THRUST, MasterAnimationRules.CRESCENT,
 			MasterAnimationRules.BREAK_CAST, MasterAnimationRules.CINDER_WAKE, MasterAnimationRules.PURSUIT_BREAK,
-			MasterAnimationRules.CROSSWIND_REPRISE, MasterAnimationRules.STONE_FRACTURE};
+			MasterAnimationRules.CROSSWIND_REPRISE, MasterAnimationRules.STONE_FRACTURE, MasterAnimationRules.KILN_RING};
 		for (var entry : WIRE_IDS.entrySet()) {
 			int wireId = entry.getValue();
 			var move = entry.getKey();
@@ -97,7 +97,7 @@ class MasterMoveCatalogTest {
 
 	@Test
 	void unknownWireIdsAndIdleNeverAliasAnAttack() {
-		for (int id : new int[] {Integer.MIN_VALUE, -1, 0, 9, 255, MasterMoveCatalog.MAX_WIRE_ID, Integer.MAX_VALUE}) {
+		for (int id : new int[] {Integer.MIN_VALUE, -1, 0, 10, 255, MasterMoveCatalog.MAX_WIRE_ID, Integer.MAX_VALUE}) {
 			assertTrue(CATALOG.byWireId(id).isEmpty());
 			assertEquals(0, LegacyMasterMoves.tellTicks(id));
 			assertEquals(0, LegacyMasterMoves.activeTicks(id));
@@ -116,7 +116,7 @@ class MasterMoveCatalogTest {
 		var input = new ArrayList<>(CATALOG.definitions());
 		var snapshot = new MasterMoveCatalog(input);
 		input.clear();
-		assertEquals(8, snapshot.authoredAttackCount());
+		assertEquals(9, snapshot.authoredAttackCount());
 		assertThrows(UnsupportedOperationException.class, () -> snapshot.definitions().clear());
 		assertThrows(UnsupportedOperationException.class, () -> snapshot.forSchool(MastersRules.GALE).clear());
 	}

@@ -1,6 +1,7 @@
 package dev.wildercord.aura;
 
 import dev.wildercord.aura.world.GaleRepriseRules;
+import dev.wildercord.aura.world.MasterAnimationRules;
 import dev.wildercord.aura.world.StoneFractureRules;
 
 /**
@@ -17,7 +18,7 @@ public final class ArticulatedCombatPose {
 	public static final int KINDLING_DRAW = 3, FROSTBITE = 4;
 	public static final int HAILFALL = 15, SKYFALL = 16;
 	public static final int COLLAPSE = 17, RED_RAIN = 18;
-	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8;
+	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
 	public record Vec3(float x, float y, float z) {
@@ -298,6 +299,21 @@ public final class ArticulatedCombatPose {
 			arm(r(0, .04F, .03F), r(-.36F, .12F, -.20F), -.85F, r(.08F, -.10F, .10F)), VIEW_BIND),
 		v(-2.75F, 22, 1.8F), v(2.75F, 22, -1.8F));
 
+	// Kiln coils through a whole model-space turn with a low, close blade. The release opens
+	// only after both feet settle, in time with the single radial ignition. This is an NPC clip;
+	// VIEW_BIND is inert metadata and no player move or camera composition is admitted for it.
+	private static final Motion KILN_MOTION = new Motion(
+		new Key(v(0, 2.70F, 0), r(.10F, .16F, 0), r(.07F, .13F, -.015F), r(.06F, .18F, -.025F), r(-.12F, -.32F, .015F),
+			arm(r(.015F, .08F, -.035F), r(.08F, .40F, .30F), -.40F, r(.018758F, .385363F, -.290471F)),
+			arm(r(0, -.06F, .035F), r(-.74F, -.26F, .22F), -.95F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 2.80F, 0), r(.13F, -.18F, .015F), r(.085F, -.12F, .01F), r(.07F, -.23F, .025F), r(-.15F, .36F, -.015F),
+			arm(r(.025F, -.06F, -.035F), r(-.08F, -.72F, -.58F), -.28F, r(.266354F, -.311736F, .627197F)),
+			arm(r(0, .065F, .03F), r(-.42F, .22F, .48F), -.72F, r(.10F, -.10F, .12F)), VIEW_BIND),
+		new Key(v(0, 2.55F, 0), r(.10F, -.27F, .01F), r(.06F, -.16F, .01F), r(.05F, -.27F, .02F), r(-.11F, .44F, -.015F),
+			arm(r(.02F, -.08F, -.025F), r(.12F, -.96F, -.45F), -.54F, r(.468118F, -.221315F, .442651F)),
+			arm(r(0, .05F, .025F), r(-.34F, .18F, .35F), -.82F, r(.08F, -.10F, .10F)), VIEW_BIND),
+		v(-2.6F, 22, 1.1F), v(2.6F, 22, -1.1F));
+
 	// Kindling gathers the hilt beside the rear hip, opens the elbow into a low draw-cut,
 	// then lets the blade and free arm travel outward. The separate ground fire line is
 	// the existing performer's effect; neither this planted motion nor its view moves the player.
@@ -460,7 +476,7 @@ public final class ArticulatedCombatPose {
 
 	/** Only these original NPC clips own the segmented backend; every other ID keeps its fallback. */
 	public static boolean supportsMaster(int attack) {
-		return attack == MASTER_SWEEP || attack == MASTER_CROSSWIND_REPRISE || attack == MASTER_STONE_FRACTURE;
+		return attack == MASTER_SWEEP || attack == MASTER_CROSSWIND_REPRISE || attack == MASTER_STONE_FRACTURE || attack == MASTER_EMBER_KILN_RING;
 	}
 
 	/** The sole locomotion exception: Gale's four accepted step ticks, never ordinary walking. */
@@ -473,6 +489,7 @@ public final class ArticulatedCombatPose {
 	/** Accepted tell/active/recovery windows are shared with the server, including school-form beats. */
 	public static Pose sampleMaster(int attack, float age, int tell, int active, int recovery, boolean leftHanded) {
 		if (!supportsMaster(attack) || !valid(age, tell, 80, recovery) || active < 1 || active > 10 || age >= tell + active + recovery) return NONE;
+		if (attack == MASTER_EMBER_KILN_RING) return kiln(age, tell, active, recovery, leftHanded);
 		if (attack == MASTER_CROSSWIND_REPRISE) return reprise(age, tell, active, recovery, leftHanded);
 		if (attack == MASTER_STONE_FRACTURE) return fracture(age, tell, active, recovery, leftHanded);
 		return sample(SWEEP_MOTION, age, tell, active, tell + active + Math.min(3, recovery * .20F), tell + active + recovery, leftHanded);
@@ -543,6 +560,42 @@ public final class ArticulatedCombatPose {
 		return assemble(key, weight, age, tell, active, right, left, leftHanded);
 	}
 
+	private static Pose kiln(float age, int tell, int active, int recovery, boolean leftHanded) {
+		float gather = tell * .20F, release = tell * .80F;
+		float follow = tell + active + Math.min(3, recovery * .20F), end = tell + active + recovery;
+		Key key = age < release ? KILN_MOTION.chamber
+			: age < tell ? KILN_MOTION.chamber.toward(KILN_MOTION.impact, smooth((age - release) / (tell - release)))
+			: age < follow ? KILN_MOTION.impact.toward(KILN_MOTION.follow, smooth((age - tell) / (follow - tell))) : KILN_MOTION.follow;
+		float weight = smooth(age / Math.max(1, gather)) * (1 - smooth((age - follow) / (end - follow)));
+		Pose posed = assemble(key, weight, age, tell, active, KILN_MOTION.rightPlant, KILN_MOTION.leftPlant, false);
+		Transform[] local = posed.local.clone();
+		float turn = MasterAnimationRules.kilnTurn(age, tell);
+		Matrix root = new Transform(0, 0, 0, r(0, turn, 0)).matrix();
+		// Compose AFTER the ordinary key blend: shortest-arc interpolation cannot represent a
+		// complete revolution. Keep the completed turn through recovery, without unwinding it.
+		rotate(local, Joint.PELVIS, root.multiply(local[Joint.PELVIS.ordinal()].matrix()).rotation());
+		Vec3 pole = root.direction(v(0, 0, -1));
+		for (boolean left : new boolean[] {false, true}) {
+			Vec3 ankle = left ? KILN_MOTION.leftPlant : KILN_MOTION.rightPlant;
+			float footTurn = turn, lift = 0;
+			if (age >= gather && age < release) {
+				// Four compact quarter-turn pivots. One foot clears while the other supports the
+				// body; the second catches up before the next pivot. Both plant before ignition.
+				float quarters = (age - gather) / (release - gather) * 4;
+				int quarter = Math.min(3, (int) quarters);
+				float part = quarters - quarter, step = clamp(part * 2 - (left ? 1 : 0));
+				float from = MasterAnimationRules.kilnTurn(gather + (release - gather) * quarter / 4, tell);
+				float to = MasterAnimationRules.kilnTurn(gather + (release - gather) * (quarter + 1) / 4, tell);
+				footTurn = lerp(from, to, smooth(step));
+				lift = .85F * (float) Math.pow(Math.sin(Math.PI * step), 2);
+			}
+			Matrix pivot = new Transform(0, 0, 0, r(0, footTurn, 0)).matrix();
+			Vec3 target = pivot.transform(ankle).plus(v(0, -lift, 0));
+			plant(local, left, v(left ? 1.9F : -1.9F, 22, 0).toward(target, weight), pole, footTurn);
+		}
+		return new Pose(weight, posed.phase, leftHanded ? reflect(local) : local, VIEW_BIND);
+	}
+
 	private static Pose fracture(float age, int tell, int active, int recovery, boolean leftHanded) {
 		float plant = tell * StoneFractureRules.PLANT / (float) StoneFractureRules.TELL;
 		float warning = tell * (StoneFractureRules.PLANT + StoneFractureRules.BRACE) / (float) StoneFractureRules.TELL;
@@ -577,6 +630,10 @@ public final class ArticulatedCombatPose {
 	 * Solving after blend, rather than blending solved angles, keeps every sole corner on Y=24.
 	 */
 	private static void plant(Transform[] local, boolean left, Vec3 ankle) {
+		plant(local, left, ankle, v(0, 0, -1), 0);
+	}
+
+	private static void plant(Transform[] local, boolean left, Vec3 ankle, Vec3 kneePole, float footYaw) {
 		Joint thigh = left ? Joint.LEFT_THIGH : Joint.RIGHT_THIGH;
 		Joint shin = left ? Joint.LEFT_SHIN : Joint.RIGHT_SHIN;
 		Joint foot = left ? Joint.LEFT_FOOT : Joint.RIGHT_FOOT;
@@ -588,7 +645,7 @@ public final class ArticulatedCombatPose {
 		// Authored targets are inside the reachable annulus. This bound handles floating-point noise.
 		float reach = Math.max(2.000001F, Math.min(10, distance));
 		Vec3 direction = delta.unit();
-		Vec3 pole = inverse.direction(v(0, 0, -1));
+		Vec3 pole = inverse.direction(kneePole);
 		Vec3 bend = pole.minus(direction.times(pole.dot(direction))).unit();
 		float along = (36 + reach * reach - 16) / (2 * reach);
 		float height = (float) Math.sqrt(Math.max(0, 36 - along * along));
@@ -600,7 +657,9 @@ public final class ArticulatedCombatPose {
 		rotate(local, thigh, hipRotation);
 		rotate(local, shin, r(knee, 0, 0));
 		Matrix lower = pelvis.multiply(local[thigh.ordinal()].matrix()).multiply(local[shin.ordinal()].matrix());
-		rotate(local, foot, lower.inverseRigid().rotation());
+		Matrix level = lower.inverseRigid();
+		if (footYaw != 0) level = level.multiply(new Transform(0, 0, 0, r(0, footYaw, 0)).matrix());
+		rotate(local, foot, level.rotation());
 	}
 
 	private static Transform[] bind() {

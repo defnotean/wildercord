@@ -29,6 +29,7 @@ public final class LegacyMasterMoves {
 			case PURSUIT_BREAK -> MasterPursuitRules.school(discipline).cost();
 			case CROSSWIND_REPRISE -> GaleRepriseRules.COST;
 			case STONE_FRACTURE -> StoneFractureRules.COST;
+			case KILN_RING -> EmberKilnRules.COST;
 			case SWEEP, THRUST, CRESCENT, BREAK_CAST -> MastersRules.ATTACK_COST;
 		};
 	}

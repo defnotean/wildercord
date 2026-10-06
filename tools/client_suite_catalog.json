@@ -1,7 +1,7 @@
 {
   "masters": {
-    "description": "Masters update combat, progression, presentation, bounded existing-world upgrade safety and Wall Turn lesson, safety and commitment acceptance.",
-    "expectedCount": 30,
+    "description": "Masters update combat, progression, presentation, bounded existing-world upgrade safety, Wall Turn and the candidate Ember Kiln counterplay/visual acceptance.",
+    "expectedCount": 33,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
@@ -29,10 +29,13 @@
       "dev.wildercord.aura.SwordStringAuthorityTest",
       "dev.wildercord.aura.CrescentCoverTest",
       "dev.wildercord.aura.CrescentAudienceTest",
-      "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",
       "dev.wildercord.aura.WallTurnLessonTest",
       "dev.wildercord.aura.WallTurnSafetyTest",
-      "dev.wildercord.aura.WallTurnCommitmentTest"
+      "dev.wildercord.aura.WallTurnCommitmentTest",
+      "dev.wildercord.aura.world.EmberKilnTest",
+      "dev.wildercord.aura.world.EmberKilnPresentationTest",
+      "dev.wildercord.aura.world.EmberKilnOpponentViewTest",
+      "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
     ]
   },
   "articulated": {

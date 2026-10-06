@@ -59,6 +59,7 @@ public final class MasterModelPresentationTest implements FabricClientGameTest {
 							var pose = MasterAnimationRules.sample(move.ordinal() + 1, age, move.tell, 1, move.recovery - 1);
 							state.setData(MasterModel.FRAME, new MasterModel.Frame(pose, left));
 							model.setupAnim(state);
+							near(pose.rootYaw() * (left ? -1 : 1), model.root().yRot, "Full turn belongs to the root and mirrors with the hand");
 							if (pose.weight() == 1) {
 								var expected = MasterAnimationRules.mirrored(pose.sword(), left);
 								ModelPart sword = left ? model.leftArm : model.rightArm;
@@ -124,6 +125,7 @@ public final class MasterModelPresentationTest implements FabricClientGameTest {
 
 	private static float[] snapshot(MasterModel model) {
 		var parts = new java.util.ArrayList<ModelPart>();
+		parts.add(model.root());
 		for (ModelPart part : new ModelPart[] {model.body, model.head, model.rightArm, model.leftArm, model.rightLeg, model.leftLeg}) {
 			parts.addAll(part.getAllParts());
 		}

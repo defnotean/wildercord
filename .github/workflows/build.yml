@@ -145,7 +145,7 @@ jobs:
 
   # Additional focused evidence for the Masters foundation; never replaces the four full shards.
   masters-native:
-    name: Masters update (30 focused suites)
+    name: Masters update (33 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -173,7 +173,7 @@ jobs:
         id: void-cut-start
         continue-on-error: true
         run: python tools/collect_void_cut_diagnostics.py --prepare --job-group masters-native --marker artifacts/review/void-cut-masters-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the 30 focused update suites
+      - name: Run the 33 focused update suites
         env:
           CI_MINECRAFT_EULA_ACCEPTED: "true"
           LIBGL_ALWAYS_SOFTWARE: "1"
@@ -182,6 +182,26 @@ jobs:
       - name: Record focused Masters outcomes
         if: always()
         run: python tools/test_manifest.py --suite masters --log masters-native.log --output artifacts/review/masters-native-manifest.json
+      - name: Preserve original Kiln diagnostics (not visual acceptance)
+        if: always() && hashFiles('build/run/clientGameTest/screenshots/ember_kiln_*.png') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: ember-kiln-diagnostics-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/run/clientGameTest/screenshots/ember_kiln_segmented_front_coil.png
+            build/run/clientGameTest/screenshots/ember_kiln_segmented_front_coil.json
+            build/run/clientGameTest/screenshots/ember_kiln_segmented_front_release.png
+            build/run/clientGameTest/screenshots/ember_kiln_segmented_front_release.json
+            build/run/clientGameTest/screenshots/ember_kiln_segmented_front_recovery.png
+            build/run/clientGameTest/screenshots/ember_kiln_segmented_front_recovery.json
+            build/run/clientGameTest/screenshots/ember_kiln_segmented_wide_warning.png
+            build/run/clientGameTest/screenshots/ember_kiln_segmented_wide_warning.json
+            build/run/clientGameTest/screenshots/ember_kiln_opponent_segmented_fov90_normal_inward_warning.png
+            build/run/clientGameTest/screenshots/ember_kiln_opponent_segmented_fov90_normal_inward_warning.json
+            build/run/clientGameTest/screenshots/ember_kiln_opponent_segmented_fov90_reduced_inward_warning.png
+            build/run/clientGameTest/screenshots/ember_kiln_opponent_segmented_fov90_reduced_inward_warning.json
+            artifacts/review/masters-native-manifest.json
+          if-no-files-found: warn
       - name: Preserve Red Rain diagnostic frames (not visual acceptance)
         if: always()
         uses: actions/upload-artifact@v7
@@ -355,6 +375,19 @@ jobs:
       - name: Record bounded diagnostic evidence, never release acceptance
         if: always() && steps.request.outputs.enabled == 'true'
         run: python tools/run_native_diagnostic_ci.py --collect
+      - name: Preserve original Wall Turn UI diagnostics (not release acceptance)
+        if: always() && steps.request.outputs.enabled == 'true' && hashFiles('build/run/clientGameTest/screenshots/wall_turn_teacher_story.png', 'build/run/clientGameTest/screenshots/wall_turn_teacher_illustration.png', 'build/run/clientGameTest/screenshots/wall_turn_equipped_slot.png') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: wall-turn-ui-diagnostics-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/run/clientGameTest/screenshots/wall_turn_teacher_story.png
+            build/run/clientGameTest/screenshots/wall_turn_teacher_illustration.png
+            build/run/clientGameTest/screenshots/wall_turn_equipped_slot.png
+            artifacts/review/native-diagnostic/request-provenance.json
+            artifacts/review/native-diagnostic/diagnostic-result.json
+          if-no-files-found: warn
+          retention-days: 7
       - name: Preserve diagnostic request and native evidence
         if: always() && steps.request.outcome == 'success'
         uses: actions/upload-artifact@v7

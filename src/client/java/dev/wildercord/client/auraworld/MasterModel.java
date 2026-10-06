@@ -55,6 +55,10 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 		if (frame == null || frame.pose().weight() <= 0) return;
 		var pose = frame.pose();
 		float weight = pose.weight();
+		// A visual root pivot carries both legs and every attachment. Vanilla translateToHand
+		// applies this same root before the arm, so the held blade cannot detach during the turn.
+		// The sampler already eased it; fading a completed 2pi turn would spin backwards.
+		root.yRot += pose.rootYaw() * side;
 		joint(body, pose.body(), left, weight);
 		joint(sword, pose.sword(), left, weight);
 		joint(offhand, pose.offhand(), left, weight);

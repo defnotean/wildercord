@@ -7,17 +7,20 @@ import dev.wildercord.aura.world.MasterVictoryRules;
 import dev.wildercord.aura.world.MastersRules;
 import dev.wildercord.cast.*;
 import dev.wildercord.content.ScrollSpell;
+import dev.wildercord.content.SpellScrollItem;
 import dev.wildercord.content.WildercordComponents;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.RelayInputRules;
 import dev.wildercord.spell.RelayRules;
 import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -59,11 +62,8 @@ final class WallRelayChecks {
 				SpellCaster.cast(p, 99); Charging.request(p, 99, true);
 				RelayCircles.input(p, RelayInputRules.DOWN, 99, ++nonce);
 				check(RelayCircles.pending(p) && Spellbooks.mana(p) == mana && relayRest(p) == rest, "Malformed cast, charge and Relay packets leave paid focus and rest intact");
-				var blank = new ItemStack(WildercordItems.SPELL_SCROLL);
-				blank.set(WildercordComponents.SCROLL, new ScrollSpell(List.of(Runes.SELF.id()), "Empty", "Fixture"));
-				p.setItemInHand(InteractionHand.OFF_HAND, blank);
-				WildercordItems.SPELL_SCROLL.use(p.level(), p, InteractionHand.OFF_HAND);
-				check(RelayCircles.pending(p) && blank.getCount() == 1, "A rejected empty scroll does not erase a paid focus");
+				rejectedScroll(p, List.of(), "empty");
+				rejectedScroll(p, List.of(Runes.AMPLIFY.id()), "unattached_modifier");
 				Spellbooks.setMana(p, 0); SpellCaster.cast(p, 1);
 				check(RelayCircles.pending(p) && relayRest(p) == rest && Spellbooks.readyAt(p, 0) == slotRest, "Insufficient ordinary spell resources preserve the prior paid focus and both cooldowns");
 				Spellbooks.setMana(p, mana);
@@ -98,6 +98,30 @@ final class WallRelayChecks {
 				check(relayRest(p) == rest && Spellbooks.readyAt(p, 0) == slotRest && p.fallDistance >= 7, "Relay cooldowns and accumulated fall risk are unchanged by the accepted switch");
 				check(!MasterForms.request(p, new MasterForms.Action(WallTurnRules.PRESS, MasterForms.view(p).epoch(), acceptedSequence)) && !press(p)
 					&& MasterForms.data(p).readyAt() == wallRest && Aura.aura(p) == 140, "Same-tick replay and hold repeat cannot pay or switch twice");
+			});
+
+			fresh(c, world);
+			world.getServer().runOnServer(server -> {
+				var p = server.getPlayerList().getPlayers().getFirst(); float beforePlacement = Spellbooks.mana(p);
+				down(p);
+				check(RelayCircles.pending(p) && Spellbooks.mana(p) < beforePlacement, "Accepted SELF scroll fixture begins with a real paid Relay focus");
+				float mana = Spellbooks.mana(p), aura = Aura.aura(p); long rest = relayRest(p), slotRest = Spellbooks.readyAt(p, 0);
+				var cord = Spellbooks.cord(p); var mainHand = p.getMainHandItem(); var form = MasterForms.data(p);
+				var definition = new ScrollSpell(List.of(Runes.SELF.id()), "Self without a payload", "Fixture");
+				var compiled = SpellCompiler.compile(SpellScrollItem.runesOf(definition));
+				check(!compiled.isEmpty() && compiled.root().groups.getFirst().effects.isEmpty(), "SELF without a payload is an admitted shape group, not an empty compilation");
+				var scroll = new ItemStack(WildercordItems.SPELL_SCROLL); scroll.set(WildercordComponents.SCROLL, definition);
+				scrollBoundary(p, scroll, "self", "before_offhand", compiled.isEmpty(), null);
+				p.setItemInHand(InteractionHand.OFF_HAND, scroll);
+				scrollBoundary(p, scroll, "self", "after_offhand", compiled.isEmpty(), null);
+				check(RelayCircles.pending(p) && Spellbooks.cord(p) == cord && p.getMainHandItem() == mainHand,
+					"Equipping the SELF scroll in the offhand preserves the original paid focus and held identities before use");
+				var result = WildercordItems.SPELL_SCROLL.use(p.level(), p, InteractionHand.OFF_HAND);
+				scrollBoundary(p, scroll, "self", "after_use", compiled.isEmpty(), result);
+				check(result == InteractionResult.SUCCESS && !RelayCircles.pending(p) && scroll.getCount() == 0,
+					"An actually admitted SELF-only scroll retires the uncommitted focus and consumes the scroll once");
+				check(Spellbooks.mana(p) == mana && Aura.aura(p) == aura && relayRest(p) == rest && Spellbooks.readyAt(p, 0) == slotRest && MasterForms.data(p).equals(form),
+					"Accepted scroll use preserves paid Relay cost/rest and does not alter the Master-form reservation");
 			});
 
 			fresh(c, world);
@@ -222,6 +246,30 @@ final class WallRelayChecks {
 			});
 			blockerCancellation(c, world);
 		} finally { hooked = null; before = null; spent = null; after = null; movementBlocker = null; afterServerTick = null; spentReason = "master_form:wall_turn"; }
+	}
+	private static void rejectedScroll(ServerPlayer p, List<String> ids, String label) {
+		float mana = Spellbooks.mana(p), aura = Aura.aura(p); long rest = relayRest(p), slotRest = Spellbooks.readyAt(p, 0);
+		var cord = Spellbooks.cord(p); var mainHand = p.getMainHandItem(); var form = MasterForms.data(p);
+		var definition = new ScrollSpell(ids, label, "Fixture");
+		var compiled = SpellCompiler.compile(SpellScrollItem.runesOf(definition));
+		check(compiled.isEmpty(), "The rejected scroll fixture must actually compile empty: " + label);
+		var scroll = new ItemStack(WildercordItems.SPELL_SCROLL); scroll.set(WildercordComponents.SCROLL, definition);
+		scrollBoundary(p, scroll, label, "before_offhand", compiled.isEmpty(), null);
+		p.setItemInHand(InteractionHand.OFF_HAND, scroll);
+		scrollBoundary(p, scroll, label, "after_offhand", compiled.isEmpty(), null);
+		check(RelayCircles.pending(p) && Spellbooks.cord(p) == cord && p.getMainHandItem() == mainHand,
+			"Offhand assignment preserves the original paid focus and held identities before rejected use: " + label);
+		var result = WildercordItems.SPELL_SCROLL.use(p.level(), p, InteractionHand.OFF_HAND);
+		scrollBoundary(p, scroll, label, "after_use", compiled.isEmpty(), result);
+		check(result == InteractionResult.FAIL && RelayCircles.pending(p) && scroll.getCount() == 1,
+			"A genuinely rejected scroll does not erase a paid focus or consume its item: " + label);
+		check(Spellbooks.mana(p) == mana && Aura.aura(p) == aura && relayRest(p) == rest && Spellbooks.readyAt(p, 0) == slotRest && MasterForms.data(p).equals(form),
+			"Rejected scroll use preserves both paid resource/commitment domains: " + label);
+	}
+	private static void scrollBoundary(ServerPlayer p, ItemStack scroll, String label, String phase, boolean empty, InteractionResult result) {
+		String outcome = result == null ? "not_called" : result == InteractionResult.FAIL ? "fail" : result == InteractionResult.SUCCESS ? "success" : "other";
+		dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_SCROLL {\"case\":\"{}\",\"phase\":\"{}\",\"compiledEmpty\":{},\"result\":\"{}\",\"relayPending\":{},\"scrollCount\":{},\"mana\":{},\"relayRest\":{},\"slotReady\":{}}",
+			label, phase, empty, outcome, RelayCircles.pending(p), scroll.getCount(), Spellbooks.mana(p), relayRest(p), Spellbooks.readyAt(p, 0));
 	}
 	private void blockerCancellation(ClientGameTestContext c, TestSingleplayerContext world) {
 		Vec3 untouched = new Vec3(.11, -.03, 0);
