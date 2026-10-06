@@ -126,6 +126,7 @@ public final class StoneHingeVelocityComparisonTest implements FabricClientGameT
 			Vec3 side = new Vec3(-forward.z, 0, forward.x).scale(which.sign());
 			attacker.setPos(player.position().add(forward.scale(which == Case.REAR ? -1.5 : 1.5)));
 			check(AuraGuard.facing(player, attacker.position()) == (which != Case.REAR), "Real source geometry matches the tested frontal/rear condition");
+			verifyPreparedResources(which, "before-hit-after-settle");
 			Effects.readyToHurt(player); StoneHingeImpulseProbe.assertIdle();
 			Trace trace = StoneHingeOwnerProbe.start("velocity-" + which.name().toLowerCase(java.util.Locale.ROOT), player, owner, ownerBefore, side); running = trace;
 			trace.record("server-before-hit", "real full attack; explicit test-only velocity opt-in", null, Body.of(player));
@@ -133,7 +134,8 @@ public final class StoneHingeVelocityComparisonTest implements FabricClientGameT
 				if (which == Case.CLOSE_AURA) player.hurtServer(player.level(), player.level().damageSources().source(Aura.DAMAGE, attacker, attacker), 8);
 				else attacker.doHurtTarget(player.level(), player);
 			});
-			trace.record("server-after-hit", strike.receipt().summary(), null, Body.of(player));
+			trace.record("server-after-hit", strike.receipt().summary() + ", resourcesBefore=" + strike.before()
+				+ ", resourcesAfterNativeHit=" + strike.nativeOutcome() + ", maxAbsorption=" + player.getMaxAbsorption(), null, Body.of(player));
 			if (which == Case.INTERVENING_IMPULSE) player.knockback(.2, 1, 0, player.damageSources().mobAttack(attacker), 0);
 			State beforeTurn = State.of(player);
 			Decision decision = which.control() ? null : strike.turn(which.sign());
@@ -146,7 +148,8 @@ public final class StoneHingeVelocityComparisonTest implements FabricClientGameT
 				check(strike.turn(which.sign()) == Decision.DUPLICATE && State.of(player).equals(outcome), "A duplicate attempt cannot rotate, restore, or replay any impulse");
 			}
 			if (which == Case.ABSORPTION) check(strike.receipt().onlyHit().healthLost() == 0 && strike.receipt().onlyHit().absorptionLost() > 0
-				&& outcome.health() == strike.before().health() && outcome.absorption() < strike.before().absorption(), "Native absorption payment remains lost after rotation");
+				&& outcome.health() == strike.before().health() && outcome.absorption() < strike.before().absorption(),
+				"Native absorption payment remains lost after rotation: before=" + strike.before() + ", native=" + strike.nativeOutcome() + ", after=" + outcome);
 			if (which == Case.ORDINARY || which.falling()) check(strike.receipt().eligibleReceipt(), "The actual control/falling melee otherwise has a qualifying native wound and impulse");
 			if (which == Case.REAR) check(strike.receipt().onlyHit().healthLost() > 0 && !strike.receipt().onlyHit().frontal()
 				&& strike.receipt().onlyHit().facingDot() < 0 && strike.receipt().impulses().size() == 1, "The rear refusal retains a real rear wound and native impulse");
@@ -214,7 +217,11 @@ public final class StoneHingeVelocityComparisonTest implements FabricClientGameT
 		if (which == Case.WALL_CLIPPED) for (int z = -4; z <= 4; z++) for (int y = 181; y <= 186; y++) player.level().setBlockAndUpdate(new BlockPos(-1, y, z), Blocks.STONE.defaultBlockState());
 		if (which.falling()) for (int x = -1; x <= 1; x++) for (int z = -1; z <= 1; z++) player.level().setBlockAndUpdate(new BlockPos(x, 192, z), Blocks.STONE.defaultBlockState());
 		player.setGameMode(GameType.SURVIVAL); player.setPermanentlyInvulnerable(which == Case.INVULNERABLE); player.removeAllEffects(); player.setNoGravity(false);
-		player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200); player.setHealth(200); player.setAbsorptionAmount(which == Case.ABSORPTION ? 32 : 0);
+		player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200); player.setHealth(200);
+		// Native setAbsorptionAmount clamps immediately to this attribute; configure the fixture cap before funding it.
+		player.getAttribute(Attributes.MAX_ABSORPTION).setBaseValue(which == Case.ABSORPTION ? 32 : 0);
+		player.setAbsorptionAmount(which == Case.ABSORPTION ? 32 : 0);
+		verifyPreparedResources(which, "immediately-funded");
 		player.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(which == Case.FULL_RESISTANCE ? 1 : which == Case.PARTIAL_RESISTANCE ? .5 : 0);
 		for (EquipmentSlot slot : List.of(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)) player.setItemSlot(slot, ItemStack.EMPTY);
 		player.setAttached(AuraAttachments.AURA, AuraAttachments.Data.NONE); player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE); player.setAttached(WildercordAttachments.CIRCLES, 0);
@@ -232,6 +239,13 @@ public final class StoneHingeVelocityComparisonTest implements FabricClientGameT
 		}
 		attacker.snapTo(.5, which.falling() ? 193 : 181, 2, 180, 0); player.level().addFreshEntity(attacker);
 		Wildercord.LOGGER.info("STONE_HINGE_VELOCITY_CASE_SETUP {\"suite\":\"dev.wildercord.aura.StoneHingeVelocityComparisonTest\",\"case\":\"{}\",\"seed\":\"{}\",\"setup\":\"test-only velocity opt-in; controls and payment not exercised\"}", which, player.level().getSeed());
+	}
+	private void verifyPreparedResources(Case which, String phase) {
+		float expectedAbsorption = which == Case.ABSORPTION ? 32 : 0;
+		Wildercord.LOGGER.info("STONE_HINGE_VELOCITY_RESOURCES case={} phase={} health={} absorption={} maxAbsorption={}",
+			which, phase, player.getHealth(), player.getAbsorptionAmount(), player.getMaxAbsorption());
+		check(player.getHealth() == 200 && player.getMaxAbsorption() == expectedAbsorption && player.getAbsorptionAmount() == expectedAbsorption,
+			"The real fixture body retains its declared health and absorption resources at " + phase + " for " + which);
 	}
 	private static void verifyRotation(StoneHingeVelocityExperiment.Strike strike, State before, State after, int sign) {
 		var impulse = strike.receipt().impulses().getFirst();
