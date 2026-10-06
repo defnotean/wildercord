@@ -196,15 +196,11 @@ public class Glimmerwing extends AmbientCreature {
 			lureLeft = 80;
 			return;
 		}
-		// A damp moonlit flower takes one bounded 147-cell look every two seconds.
+		// Open-sky flowers are column tops: at most 49 resident cells every two seconds.
         flower=null;
         if(WetlandRules.night(level.getOverworldClockTime())) {
-            for(var at:BlockPos.betweenClosed(blockPosition().offset(-3,-1,-3),blockPosition().offset(3,1,3))) {
-                if(!level.hasChunkAt(at))continue;var state=level.getBlockState(at);
-                if(state.is(WetlandGarden.REED) && state.getValue(MoonreedBlock.AGE)==1 && MoonreedBlock.canBloom(level,at,level.getOverworldClockTime())) {
-                    flower=at.immutable();lure=Vec3.atCenterOf(at).add(0,.4,0);lureLeft=100;target=null;return;
-                }
-            }
+            flower=MoonreedBlock.findBud(level,blockPosition());
+            if(flower!=null){lure=Vec3.atCenterOf(flower).add(0,.4,0);lureLeft=100;target=null;return;}
         }
         // A few looks around for light, keeping the brightest: over a few tries the swarm finds the lamp.
 		BlockPos here = blockPosition();

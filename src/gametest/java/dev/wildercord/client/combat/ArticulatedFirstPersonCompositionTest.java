@@ -191,6 +191,47 @@ public final class ArticulatedFirstPersonCompositionTest implements FabricClient
 		check(!ArticulatedViewModel.submit(state, hands, .5F, InteractionHand.MAIN_HAND, stack, collector, 0x00F000F0) && count == calls.size(), "Ordinary swing retains its native first-person animation");
 		state.swingAnimation = 0; state.chestEquipment = new ItemStack(Items.DIAMOND_CHESTPLATE);
 		check(!ArticulatedViewModel.submit(state, hands, .5F, InteractionHand.MAIN_HAND, stack, collector, 0x00F000F0) && count == calls.size(), "Unsupported armor retains all fallback gear and hands");
+		state.chestEquipment = ItemStack.EMPTY;
+		var idle = state.getData(ArticulatedCombat.FRAME);
+		var motion = (dev.wildercord.client.MastersHandMotionState) hands;
+		for (int move : new int[] {3, 4}) {
+			boolean left = state.mainArm == HumanoidArm.LEFT;
+			state.setData(ArticulatedCombat.FRAME, new ArticulatedCombat.Frame(
+				ArticulatedCombatPose.samplePlayer(move, 1.5F, 6, 12, left), 123, move, false, left, 0, 0));
+			state.swingAnimation = .5F; motion.wildercord$mainHandEquipping(false);
+			for (float[] heights : new float[][] {{1, .6F}, {.6F, .2F}, {.2F, 0}, {0, .4F}, {.4F, .8F}, {.8F, 1}}) {
+				hands.oldMainHandHeight = heights[0]; hands.mainHandHeight = heights[1]; calls.clear();
+				check(ArticulatedViewModel.submit(state, hands, .5F, InteractionHand.MAIN_HAND, stack, collector, 0x00F000F0),
+					"Accepted opening owns its ordinary same-item attack lowering");
+				check(calls.stream().filter("submitModel"::equals).count() == 1 && calls.stream().filter("submitItem"::equals).count() == 1
+					&& before.equals(stack.last().pose()), "Low-height opening submits real skin and sword once and restores transforms");
+				int submitted = calls.size();
+				check(ArticulatedViewModel.submit(state, hands, .5F, InteractionHand.OFF_HAND, stack, collector, 0x00F000F0)
+					&& calls.size() == submitted, "Low-height opening never doubles the arms on the offhand callback");
+			}
+			motion.wildercord$mainHandEquipping(true);
+			for (float height : new float[] {1, .2F, .8F}) {
+				hands.oldMainHandHeight = hands.mainHandHeight = height;
+				noViewSubmission(state, hands, "Real same-item equip/use stays native at onset, lowering and raising");
+			}
+			motion.wildercord$mainHandEquipping(false); hands.mainHandItem = new ItemStack(Items.STONE_SWORD);
+			noViewSubmission(state, hands, "An accepted art never replaces the actual swapped held stack");
+			hands.mainHandItem = state.getMainHandItemStack().copy(); state.isUsingItem = true;
+			noViewSubmission(state, hands, "Item use retains the complete native renderer"); state.isUsingItem = false;
+			state.chestEquipment = new ItemStack(Items.DIAMOND_CHESTPLATE);
+			noViewSubmission(state, hands, "Unsupported armor retains all native gear during an accepted opening"); state.chestEquipment = ItemStack.EMPTY;
+		}
+		state.setData(ArticulatedCombat.FRAME, idle);
+		noViewSubmission(state, hands, "Cancellation restores the ordinary swing with no stale articulated nodes");
+		state.swingAnimation = 0;
+		noViewSubmission(state, hands, "Idle cannot bypass the ordinary low-height gate");
+		System.out.println("ARTICULATED_SYNTHETIC_HAND_ADMISSION passed: same-item attack, swap, use, fallback, cancellation; screenshotEvidence=false");
+	}
+
+	private static void noViewSubmission(AvatarRenderState state, FirstPersonHandsAndItemsRenderState hands, String message) {
+		List<String> calls = new ArrayList<>(); PoseStack pose = new PoseStack(); Matrix4f before = new Matrix4f(pose.last().pose());
+		check(!ArticulatedViewModel.submit(state, hands, .5F, InteractionHand.MAIN_HAND, pose, collector(calls), 0x00F000F0)
+			&& calls.isEmpty() && before.equals(pose.last().pose()), message);
 	}
 
 	private static SubmitNodeCollector collector(List<String> calls) {

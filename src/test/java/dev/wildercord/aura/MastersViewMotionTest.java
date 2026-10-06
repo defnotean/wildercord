@@ -213,6 +213,49 @@ class MastersViewMotionTest {
 		}
 	}
 
+	@Test
+	void acceptedArtKeepsTheSameItemThroughoutAnOrdinaryAttackDipButIdleDoesNot() {
+		var transition = settledTransition();
+		for (float[] heights : new float[][] {{1, .6F}, {.6F, .2F}, {.2F, 0}, {0, .4F}, {.4F, .8F}, {.8F, 1}, {1, 1}}) {
+			transition.tick(false, false, heights[0], heights[1]);
+			float height = (heights[0] + heights[1]) / 2;
+			assertEquals(MastersViewMotion.HandAdmission.ACCEPTED_ART,
+				MastersViewMotion.articulatedHandAdmission(true, height, true, true, transition.active()));
+			assertEquals(height >= .999F, MastersViewMotion.articulatedHandAdmission(false, height, true, true, transition.active()).admitted());
+		}
+	}
+
+	@Test
+	void acceptedArtCannotTakeOverARealSwapEvenBeforeLoweringOrAfterTheVisibleItemMatches() {
+		var transition = settledTransition();
+		transition.tick(true, false, 1, 1);
+		assertEquals(MastersViewMotion.HandAdmission.EQUIP_OR_USE,
+			MastersViewMotion.articulatedHandAdmission(true, 1, true, true, transition.active()));
+		for (float[] heights : new float[][] {{1, .6F}, {.6F, .2F}, {.2F, 0}, {0, .4F}, {.4F, .8F}, {.8F, 1}}) {
+			transition.tick(false, false, heights[0], heights[1]);
+			assertEquals(MastersViewMotion.HandAdmission.EQUIP_OR_USE,
+				MastersViewMotion.articulatedHandAdmission(true, (heights[0] + heights[1]) / 2, true, true, transition.active()));
+		}
+		transition.tick(false, false, 1, 1);
+		assertTrue(MastersViewMotion.articulatedHandAdmission(true, 1, true, true, transition.active()).admitted());
+		transition.begin(); // Native itemUsed uses the same provenance, including a same-item lowering.
+		assertFalse(MastersViewMotion.articulatedHandAdmission(true, .2F, true, true, transition.active()).admitted());
+	}
+
+	@Test
+	void mismatchedUnknownAndInvalidHandsNeverGainAcceptedArtOwnership() {
+		for (float height : new float[] {0, .2F, .9F, 1}) {
+			assertEquals(MastersViewMotion.HandAdmission.HELD_ITEM_MISMATCH,
+				MastersViewMotion.articulatedHandAdmission(true, height, false, true, false));
+			assertEquals(MastersViewMotion.HandAdmission.UNKNOWN_EQUIP,
+				MastersViewMotion.articulatedHandAdmission(true, height, true, false, false));
+		}
+		for (float invalid : new float[] {Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY}) {
+			assertEquals(MastersViewMotion.HandAdmission.INVALID_HEIGHT,
+				MastersViewMotion.articulatedHandAdmission(true, invalid, true, true, false));
+		}
+	}
+
 	private static MastersViewMotion.EquipTransition settledTransition() {
 		var transition = new MastersViewMotion.EquipTransition();
 		transition.tick(false, false, 1, 1);

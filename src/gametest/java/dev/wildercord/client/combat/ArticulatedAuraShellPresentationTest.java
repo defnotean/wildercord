@@ -183,6 +183,7 @@ public final class ArticulatedAuraShellPresentationTest implements FabricClientG
 	private static void assertView(AvatarRenderState state, boolean armored) {
 		FirstPersonHandsAndItemsRenderState hands = new FirstPersonHandsAndItemsRenderState();
 		hands.mainHandItem = state.getMainHandItemStack().copy(); hands.oldMainHandHeight = hands.mainHandHeight = 1;
+		((dev.wildercord.client.MastersHandMotionState) hands).wildercord$mainHandEquipping(false);
 		Receipts receipts = new Receipts();
 		check(ArticulatedViewModel.submit(state, hands, .5F, InteractionHand.MAIN_HAND, new PoseStack(), receipts.collector(), LIGHT), "Funded first-person path owns arms and sword");
 		check(receipts.models.stream().filter(r -> r.model() instanceof ArticulatedViewModel).count() == 1, "First person submits skin exactly once");

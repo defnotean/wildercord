@@ -2290,9 +2290,23 @@ class OpeningReceiptCuratorTests(CuratorFixture):
     def save_report(self):
         self.report_path.write_text(json.dumps(self.report))
 
+    def finish_rewritten_evidence(self):
+        """Give synthetic rewrites a coherent filesystem-clock boundary, not a wall-clock race.
+
+        Some runners stamp inode times more coarsely than time.time_ns(). The
+        forged payload must reach the intended semantic check, while production
+        freshness rules remain unchanged. All paths here belong to this fixture.
+        """
+        screenshots = self.root / self.source
+        paths = [screenshots, *screenshots.rglob("*"), self.root / "native.log"]
+        stamps = [path.stat() for path in paths]
+        self.report["provenance"]["finishedNs"] = max(
+            self.report["provenance"]["startedNs"],
+            *(max(info.st_mtime_ns, info.st_ctime_ns) for info in stamps))
+        self.save_report()
+
     def replace_raw_record(self, path, record):
         """Forge coherent package hashes; semantic checks must still reject it."""
-        import time
         data = json.dumps(record).encode()
         path.write_bytes(data)
         (self.report_path.parent / "opening-receipts" / path.name).write_bytes(data)
@@ -2308,8 +2322,7 @@ class OpeningReceiptCuratorTests(CuratorFixture):
             if observation["receiptRelativePath"] == path.name:
                 observation["receiptSha256"] = entry["sha256"]
                 observation["pngSha256"] = record["image"]["pngSha256"]
-        self.report["provenance"]["finishedNs"] = time.time_ns()
-        self.save_report()
+        self.finish_rewritten_evidence()
 
     def assert_unknown(self, result):
         self.assertEqual(result["openingReceiptEvidence"]["status"], "unavailable")
@@ -2526,8 +2539,13 @@ class OpeningReceiptCuratorTests(CuratorFixture):
         data[-8] ^= 1
         image.write_bytes(data)
         record["image"]["pngSha256"] = hashlib.sha256(data).hexdigest()
-        self.replace_raw_record(receipt_path, record)
-        result = self.curate(opening_receipt_report=report)
+        # Reproduce a wall clock ahead of the last inode tick. A valid synthetic
+        # prefix must still reach CRC validation instead of failing its own dates.
+        import time
+        clock = time.time_ns
+        with patch("time.time_ns", side_effect=lambda: clock() + 1_000_000):
+            self.replace_raw_record(receipt_path, record)
+            result = self.curate(opening_receipt_report=report)
         self.assert_unknown(result)
         self.assertIn("PNG chunk CRC mismatch", result["openingReceiptEvidence"]["diagnostic"])
 
@@ -2597,8 +2615,7 @@ class OpeningReceiptCuratorTests(CuratorFixture):
                 entry = next(item for item in self.report["package"]["records"] if item["name"] == path.name)
                 entry.update(bytes=len(nested), sha256=hashlib.sha256(nested).hexdigest())
                 self.report["package"]["recordBytes"] = sum(item["bytes"] for item in self.report["package"]["records"])
-            self.report["provenance"]["finishedNs"] = time.time_ns()
-            self.save_report()
+            self.finish_rewritten_evidence()
         result = self.curate(opening_receipt_report=report)
         self.assert_unknown(result)
         self.assertGreater(len(result["frames"]), 0)

@@ -411,6 +411,7 @@ public final class ArticulatedArmorPresentationTest implements FabricClientGameT
 		FirstPersonHandsAndItemsRenderState hands = new FirstPersonHandsAndItemsRenderState();
 		hands.mainHandItem = state.getMainHandItemStack().copy();
 		hands.oldMainHandHeight = hands.mainHandHeight = 1;
+		((dev.wildercord.client.MastersHandMotionState) hands).wildercord$mainHandEquipping(false);
 		ReceiptCollector submitted = new ReceiptCollector();
 		check(ArticulatedViewModel.submit(state, hands, .5F, InteractionHand.MAIN_HAND, new PoseStack(), submitted.collector(), LIGHT),
 			"The real accepted first-person path owns both arms and the held sword");

@@ -1,0 +1,19 @@
+# Moonreed acquisition bounds — 2026-10-06
+
+The native source `8de18a5d` failure at run 37401763763, job 112070307434 was an acquisition miss: all 11 ordinary searches excluded the root vertically. The root remained a loaded, moist, open-sky age 1 bud at Y30; the real tracked moth searched from floored Y32–34, above the old ±1 window. It never attempted pollination or a lease. The older `25bd` failure lacks those receipts and its cause remains unknown.
+
+Acquisition now considers one WORLD_SURFACE top cell in each of the same 7×7 horizontal columns, at the existing 40-tick cadence. Because a Moonreed is non-air, its openSky predicate can only pass at WORLD_SURFACE−1. Thus at most 49 candidate reads preserve every old exposed root, including raised and floating roots. Old Y±1 roots retain priority and the original iterator order (Z, then Y, then X). Only if none qualify can a root at Y−4 through Y−2 be selected, covering the normal flight/ground relationship. There are no added random draws, actor phase changes, forced poses, or target assignments outside the ordinary acquisition path.
+
+The search guards every candidate and water-column read. Water already observed in a loaded neighbor, or actual rain at the loaded root, proves moisture even when other neighbors are absent. Water known only to an absent chunk is deferred until it becomes resident. This explicitly differs from the old moisture query, which could load a neighbor. Search never requests that load. Admission, contact distance, source identity/liveness, writer and post-write checks remain unchanged. Recent casters still outrank flowers, and flowers still outrank sampled lamps.
+
+The pure contract suite covers all 147 old candidate positions, an independent legacy-volume oracle over 200 generated arrangements, old-band ordering, new range limits, roof/dry/rain conditions, water depths/directions, partial residency, and worst-case query counts: 49 heights, 49 candidate reads, 245 loaded checks, 588 fluid reads and 49 rain checks. Queries stop earlier after completing the first old-band Z row with an eligible root.
+
+Authored native adapter/priority coverage and the original unpaused source 445-tick arrival scene check the real world path. The latter requires observed acquisition, actual movement from outside contact, the production entity-source pollination overload and successful lease admission. Native execution results must be recorded by the exact-source gate; compilation and pure contracts alone do not establish natural arrival.
+
+## Completed-residency correction
+
+The acquisition adapter snapshots `ServerChunkCache.getChunkNow` results and reads terrain/fluid data directly from completed `LevelChunk` objects. In official 26.3, `hasChunkAt` only proves FULL ticket eligibility and can precede generation completion. Likewise `getChunk(..., false)` can still join an eligible unfinished future. Those APIs therefore cannot establish this search's nonloading contract.
+
+Rain keeps the native weather, sky, motion-height and biome zoom rules, using a completed-chunk resolver for the exact biome selected by the native zoom. Missing selected biome evidence defers rain; it does not require every neighboring chunk to be present. The uncached biome fallback supplies the resolver's required return value but is never accepted as rain evidence. Loaded water still suffices independently. Admission and the rest of the world retain their existing predicates.
+
+A compiled-adapter contract rejects ticket-only checks and implicit loading world reads, including the ordinary biome/rain routes. The native adapter suite also checks that searching a genuinely absent remote FULL chunk leaves it absent. This absent case does not claim to create or observe the narrower ticket-eligible-but-unfinished state; the official API trace and forbidden-call contract establish that distinction.

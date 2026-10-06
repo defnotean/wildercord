@@ -30,6 +30,11 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(selected["count"], 23)
         self.assertEqual(len(set(selected["entries"])), 23)
         self.assertTrue(set(selected["entries"]).issubset(full["entries"]))
+        self.assertEqual(selected["entries"][-1],
+                         "dev.wildercord.gametest.WildercordMastersArtsPresentationTest")
+        for lifecycle in ("dev.wildercord.aura.HailfallReleasedOwnerTest",
+                          "dev.wildercord.aura.GroundFieldReleasedOwnerTest"):
+            self.assertLess(selected["entries"].index(lifecycle), len(selected["entries"]) - 1)
 
     def test_articulated_is_five_registered_acceptance_slices(self):
         selected = client_suites.select_entries(suite="articulated")

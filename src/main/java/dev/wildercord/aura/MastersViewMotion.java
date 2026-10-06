@@ -8,6 +8,24 @@ import org.joml.Quaternionf;
 public final class MastersViewMotion {
 	private MastersViewMotion() {}
 
+	public enum HandAdmission {
+		SETTLED, ACCEPTED_ART, HELD_ITEM_MISMATCH, INVALID_HEIGHT, UNKNOWN_EQUIP, EQUIP_OR_USE, UNSETTLED;
+		public boolean admitted() { return this == SETTLED || this == ACCEPTED_ART; }
+	}
+
+	/** Same-item attack lowering belongs to an accepted art; real equip/use always keeps vanilla. */
+	public static HandAdmission articulatedHandAdmission(boolean acceptedArt, float height, boolean sameItem,
+			boolean equipKnown, boolean equipping) {
+		if (!sameItem) return HandAdmission.HELD_ITEM_MISMATCH;
+		if (!Float.isFinite(height)) return HandAdmission.INVALID_HEIGHT;
+		if (acceptedArt) {
+			if (!equipKnown) return HandAdmission.UNKNOWN_EQUIP;
+			if (equipping) return HandAdmission.EQUIP_OR_USE;
+			return HandAdmission.ACCEPTED_ART;
+		}
+		return height >= .999F ? HandAdmission.SETTLED : HandAdmission.UNSETTLED;
+	}
+
 	/** An ineligible or nonfinite pose never takes ownership of vanilla motion. */
 	public static float ownership(float poseWeight, boolean eligible) {
 		return eligible && Float.isFinite(poseWeight) ? Math.max(0, Math.min(1, poseWeight)) : 0;

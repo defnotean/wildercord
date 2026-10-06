@@ -24,8 +24,9 @@ public abstract class ArticulatedSharedViewMixin {
 	private static boolean wildercord$view(AvatarRenderState avatar, FirstPersonHandsAndItemsRenderState hands, float partial,
 			InteractionHand hand, PoseStack pose, SubmitNodeCollector collector, int light, Operation<Boolean> original) {
 		var call = ArticulatedSharedRenderProbe.viewEnter(avatar, partial, hand);
-		try { return original.call(avatar, hands, partial, hand, pose, collector, light); }
-		finally { ArticulatedSharedRenderProbe.viewLeave(call); }
+		boolean submitted = false;
+		try { submitted = original.call(avatar, hands, partial, hand, pose, collector, light); return submitted; }
+		finally { ArticulatedSharedRenderProbe.viewLeave(call, submitted); }
 	}
 
 	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;Lnet/minecraft/client/renderer/state/level/FirstPersonHandsAndItemsRenderState;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)Z",

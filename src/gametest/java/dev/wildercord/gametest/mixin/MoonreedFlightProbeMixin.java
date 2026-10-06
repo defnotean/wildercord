@@ -2,6 +2,7 @@ package dev.wildercord.gametest.mixin;
 
 import dev.wildercord.wildlife.Glimmerwing;
 import dev.wildercord.wildlife.MoonreedSourceProbe;
+import dev.wildercord.wildlife.MoonreedPriorityProbe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
@@ -20,9 +21,9 @@ public abstract class MoonreedFlightProbeMixin {
  @Shadow private int retarget;
  @Shadow private int lureLeft;
  @Inject(method="seekLure(Lnet/minecraft/server/level/ServerLevel;)V",at=@At("HEAD"))
- private void wildercord$searchHead(ServerLevel level,CallbackInfo ci){MoonreedSourceProbe.search((Glimmerwing)(Object)this,false,flower,target,lure,retarget,lureLeft);}
+ private void wildercord$searchHead(ServerLevel level,CallbackInfo ci){MoonreedSourceProbe.search((Glimmerwing)(Object)this,false,flower,target,lure,retarget,lureLeft);MoonreedPriorityProbe.search((Glimmerwing)(Object)this,false,flower,lure,lureLeft);}
  @Inject(method="seekLure(Lnet/minecraft/server/level/ServerLevel;)V",at=@At("RETURN"))
- private void wildercord$searchReturn(ServerLevel level,CallbackInfo ci){MoonreedSourceProbe.search((Glimmerwing)(Object)this,true,flower,target,lure,retarget,lureLeft);}
+ private void wildercord$searchReturn(ServerLevel level,CallbackInfo ci){MoonreedSourceProbe.search((Glimmerwing)(Object)this,true,flower,target,lure,retarget,lureLeft);MoonreedPriorityProbe.search((Glimmerwing)(Object)this,true,flower,lure,lureLeft);}
  @Inject(method="customServerAiStep(Lnet/minecraft/server/level/ServerLevel;)V",at=@At("RETURN"))
  private void wildercord$flightReturn(ServerLevel level,CallbackInfo ci){MoonreedSourceProbe.flight((Glimmerwing)(Object)this,flower,target,lure,retarget,lureLeft);}
 }

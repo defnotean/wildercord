@@ -3,6 +3,8 @@ package dev.wildercord.client.combat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.wildercord.aura.ArticulatedCombatPose;
+import dev.wildercord.aura.MastersViewMotion;
+import dev.wildercord.client.MastersHandMotionState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.player.PlayerModel;
@@ -34,8 +36,7 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 	public static boolean submit(AvatarRenderState avatar, net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands,
 			float partial, InteractionHand hand, PoseStack stack, SubmitNodeCollector collector, int light) {
 		ArticulatedCombat.Frame combat = ArticulatedCombat.viewFrame(avatar);
-		if (combat == null || net.minecraft.util.Mth.lerp(partial, hands.oldMainHandHeight, hands.mainHandHeight) < .999F
-			|| !net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem, avatar.getMainHandItemStack())) return false;
+		if (combat == null || !handAdmission(combat, avatar, hands, partial).admitted()) return false;
 		PlayerModel playerModel = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar).getModel();
 		if (playerModel.getClass() != PlayerModel.class || !(playerModel instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
 		if (hand != InteractionHand.MAIN_HAND) return true;
@@ -68,6 +69,17 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 			stack.popPose();
 		}
 		return true;
+	}
+
+	/** Reads the extracted state only; also used by passive native admission diagnostics. */
+	public static MastersViewMotion.HandAdmission handAdmission(ArticulatedCombat.Frame combat, AvatarRenderState avatar,
+			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands, float partial) {
+		boolean acceptedArt = combat.move() != -1 && combat.activation() != Long.MIN_VALUE && combat.pose().weight() > 0;
+		boolean known = hands instanceof MastersHandMotionState;
+		return MastersViewMotion.articulatedHandAdmission(acceptedArt,
+			net.minecraft.util.Mth.lerp(partial, hands.oldMainHandHeight, hands.mainHandHeight),
+			net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem, avatar.getMainHandItemStack()),
+			known, known && ((MastersHandMotionState) hands).wildercord$mainHandEquipping());
 	}
 
 	public ArticulatedRig rig() { return rig; }

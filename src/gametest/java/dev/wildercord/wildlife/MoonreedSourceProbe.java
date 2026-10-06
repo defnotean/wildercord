@@ -16,10 +16,10 @@ public final class MoonreedSourceProbe {
  private static final int MAX_RECORDS=256;
  private static Session active;
  private static final class Session {
-  final ServerLevel level;final BlockPos root;final Glimmerwing moth;final long started;
+  final ServerLevel level;final BlockPos root;final Glimmerwing moth;final long started;final double initialDistanceSquared;
   final List<JsonObject> records=new ArrayList<>();
   int dropped,errors,searches,acquired,lost,pollinations,successes,leaseGranted,leaseRefused,pollinationDepth;boolean searchHadRoot,frozen;
-  Session(ServerLevel level,BlockPos root,Glimmerwing moth){this.level=level;this.root=root.immutable();this.moth=moth;started=level.getGameTime();}
+  Session(ServerLevel level,BlockPos root,Glimmerwing moth){this.level=level;this.root=root.immutable();this.moth=moth;started=level.getGameTime();initialDistanceSquared=moth.position().distanceToSqr(Vec3.atCenterOf(root).add(0,.4,0));}
  }
  public static synchronized void begin(ServerLevel level,BlockPos root,Glimmerwing moth){
   try{active=new Session(level,root,moth);record("begin",null,null,null,0,0,null);}catch(Throwable ignored){active=null;}
@@ -52,17 +52,20 @@ public final class MoonreedSourceProbe {
   return arrived;
  }
  /** Flush only after the original wait, so log I/O does not pace flight or acquisition. */
- public static synchronized void finish(boolean arrived){
-  var s=active;if(s==null)return;active=null;
+ public static synchronized boolean finish(boolean arrived){
+  var s=active;if(s==null)return false;active=null;
+  boolean observed=arrived&&s.frozen&&s.initialDistanceSquared>1&&s.searches>0&&s.acquired>0&&s.pollinations>0&&s.successes>0&&s.leaseGranted>0&&s.leaseRefused==0&&s.errors==0&&s.dropped==0;
   try {
    var summary=new JsonObject();summary.addProperty("event","summary");summary.addProperty("searches",s.searches);
    summary.addProperty("arrived",arrived);summary.addProperty("rootAcquisitions",s.acquired);summary.addProperty("rootLossesAtSearch",s.lost);summary.addProperty("pollinationAttempts",s.pollinations);
    summary.addProperty("pollinationSuccesses",s.successes);summary.addProperty("leaseGranted",s.leaseGranted);
    summary.addProperty("leaseRefused",s.leaseRefused);summary.addProperty("records",s.records.size());
    summary.addProperty("dropped",s.dropped);summary.addProperty("observationErrors",s.errors);
+   summary.addProperty("initialDistanceSquared",s.initialDistanceSquared);summary.addProperty("naturalArrivalObserved",observed);
    Wildercord.LOGGER.info("WILDERCORD_MOONREED_SOURCE {}",summary);
    for(var record:s.records)Wildercord.LOGGER.info("WILDERCORD_MOONREED_SOURCE {}",record);
   }catch(Throwable ignored){/* Diagnostics must not replace the original assertion. */}
+  return observed;
  }
  private static void record(String event,BlockPos flower,Vec3 target,Vec3 lure,int retarget,int lureLeft,Boolean result){
   var s=active;if(s==null||s.frozen)return;
@@ -77,6 +80,7 @@ public final class MoonreedSourceProbe {
    out.addProperty("sourceChunkLoaded",moth.level().hasChunkAt(here));out.add("position",vector(moth.position()));out.add("velocity",vector(moth.getDeltaMovement()));
    out.addProperty("rootDistanceSquared",moth.position().distanceToSqr(Vec3.atCenterOf(root).add(0,.4,0)));
    out.addProperty("rootInSearchBox",Math.abs(here.getX()-root.getX())<=3&&Math.abs(here.getY()-root.getY())<=1&&Math.abs(here.getZ()-root.getZ())<=3);
+   out.addProperty("rootInAcquisitionBand",Math.abs(here.getX()-root.getX())<=3&&root.getY()>=here.getY()-4&&root.getY()<=here.getY()+1&&Math.abs(here.getZ()-root.getZ())<=3);
    out.addProperty("searchPhase",Math.floorMod(moth.tickCount+moth.getId(),40));out.addProperty("clock",level.getOverworldClockTime());
    out.addProperty("night",WetlandRules.night(level.getOverworldClockTime()));out.addProperty("rootChunkLoaded",level.hasChunkAt(root));
    out.addProperty("rootWithinBorder",level.getWorldBorder().isWithinBounds(root));

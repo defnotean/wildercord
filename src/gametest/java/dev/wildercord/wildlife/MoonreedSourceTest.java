@@ -45,8 +45,9 @@ public final class MoonreedSourceTest implements FabricClientGameTest {
    });
    c.waitTicks(45);w.getServer().runOnServer(s->{check(transferred!=null&&s.getLevel(Level.NETHER).getEntity(transferred.getUUID())==transferred&&transferred.isAlive()&&!transferred.isRemoved(),"Actual portal ticket admits the exact transferred source into destination UUID lookup after ordinary ticks");transferred.discard();transferred=null;});
    boolean arrived=false;for(int n=0;n<80;n++){boolean lastAttempt=n==79;c.waitTicks(5);if(w.getServer().computeOnServer(s->MoonreedSourceProbe.waited(s.overworld().getBlockState(ROOT).is(WetlandGarden.REED)&&s.overworld().getBlockState(ROOT).getValue(MoonreedBlock.AGE)==2,lastAttempt))){arrived=true;break;}}
-   MoonreedSourceProbe.finish(arrived);
+   boolean observed=MoonreedSourceProbe.finish(arrived);
    check(arrived,"Actual unpaused Glimmerwing finds and reaches the bud through production entity-source overload; no injected arrival pose");
+   check(observed,"Passive native receipt observes an initially distant moth acquire this root, enter the production entity overload and succeed through the pollination lease without observation errors");
    }finally{MoonreedSourceProbe.clear();}
   }
  }

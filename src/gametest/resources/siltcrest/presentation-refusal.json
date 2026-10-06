@@ -1,0 +1,332 @@
+{
+  "provenance": {
+    "commit": "38d16ca013dae54008a44546c65c809cf933e0be",
+    "run": "37405446617",
+    "job": "112081882173",
+    "description": "Actual native passive receipts. Synthetic successful cases in checks are classifier controls, not native proof."
+  },
+  "events": [
+    {
+      "event": "coil_admitted",
+      "suite": "dev.wildercord.wildlife.SiltcrestPresentationTest",
+      "trial": "siltcrest_full",
+      "clock": 51,
+      "entityTick": 19,
+      "world": "minecraft:overworld",
+      "sourceId": 5,
+      "sourceUuid": "711e05c4-7763-4e88-a2e6-0971e0e5168a",
+      "sourcePosition": [
+        1.098284683013936,
+        101.0,
+        -0.07242079110334632
+      ],
+      "sourceAlive": true,
+      "sourceRemoved": false,
+      "sourceHealth": 12.0,
+      "sourceTracked": true,
+      "ground": true,
+      "water": false,
+      "pose": 2,
+      "phase": 0,
+      "epoch": 1,
+      "left": 16,
+      "pendingPreen": false,
+      "huntReady": 0,
+      "controlReady": 0,
+      "night": true,
+      "raining": false,
+      "disturbed": false,
+      "pool": 3,
+      "quarryUuid": "55a11ae1-907a-4a02-9b70-cf64b68968da",
+      "committed": [
+        1.5,
+        100.25880012025725,
+        0.9006767036330736
+      ],
+      "admittedEpoch": 1,
+      "admittedTick": 51,
+      "admittedLocked": [
+        1.5,
+        100.25880012025725,
+        0.9006767036330736
+      ],
+      "sameAdmittedQuarry": true,
+      "admittedFish": {
+        "id": 2,
+        "uuid": "55a11ae1-907a-4a02-9b70-cf64b68968da",
+        "position": [
+          1.5,
+          100.10880011429678,
+          0.9006767036330736
+        ],
+        "center": [
+          1.5,
+          100.25880012025725,
+          0.9006767036330736
+        ],
+        "velocity": [
+          0.0,
+          -0.015133634532579418,
+          0.04085740722573336
+        ],
+        "sameWorld": true,
+        "alive": true,
+        "removed": false,
+        "health": 3.0,
+        "water": true,
+        "fromBucket": false,
+        "named": false,
+        "persistent": false,
+        "noAi": false,
+        "loaded": true,
+        "wild": true,
+        "sourceDistanceSqr": 1.902531166440936,
+        "loadedSight": true,
+        "committedDistanceSqr": 0.0,
+        "lastDamage": null
+      },
+      "threw": false
+    },
+    {
+      "event": "strike_enter",
+      "suite": "dev.wildercord.wildlife.SiltcrestPresentationTest",
+      "trial": "siltcrest_full",
+      "clock": 66,
+      "entityTick": 34,
+      "world": "minecraft:overworld",
+      "sourceId": 5,
+      "sourceUuid": "711e05c4-7763-4e88-a2e6-0971e0e5168a",
+      "sourcePosition": [
+        1.098284683013936,
+        101.0,
+        -0.07242079110334632
+      ],
+      "sourceAlive": true,
+      "sourceRemoved": false,
+      "sourceHealth": 12.0,
+      "sourceTracked": true,
+      "ground": true,
+      "water": false,
+      "pose": 3,
+      "phase": 0,
+      "epoch": 1,
+      "left": 6,
+      "pendingPreen": false,
+      "huntReady": 0,
+      "controlReady": 0,
+      "night": true,
+      "raining": false,
+      "disturbed": false,
+      "pool": 3,
+      "quarryUuid": "55a11ae1-907a-4a02-9b70-cf64b68968da",
+      "committed": [
+        1.5,
+        100.25880012025725,
+        0.9006767036330736
+      ],
+      "admittedEpoch": 1,
+      "admittedTick": 51,
+      "admittedLocked": [
+        1.5,
+        100.25880012025725,
+        0.9006767036330736
+      ],
+      "sameAdmittedQuarry": true,
+      "admittedFish": {
+        "id": 2,
+        "uuid": "55a11ae1-907a-4a02-9b70-cf64b68968da",
+        "position": [
+          1.5,
+          100.0,
+          1.7536884848232754
+        ],
+        "center": [
+          1.5,
+          100.15000000596046,
+          1.7536884848232752
+        ],
+        "velocity": [
+          0.0,
+          -0.005,
+          0.057203494176333504
+        ],
+        "sameWorld": true,
+        "alive": true,
+        "removed": false,
+        "health": 3.0,
+        "water": true,
+        "fromBucket": false,
+        "named": false,
+        "persistent": false,
+        "noAi": false,
+        "loaded": true,
+        "wild": true,
+        "sourceDistanceSqr": 4.496050283526465,
+        "loadedSight": true,
+        "committedDistanceSqr": 0.7394665637202736,
+        "lastDamage": null
+      },
+      "threw": false
+    },
+    {
+      "event": "cancel_enter",
+      "suite": "dev.wildercord.wildlife.SiltcrestPresentationTest",
+      "trial": "siltcrest_full",
+      "clock": 66,
+      "entityTick": 34,
+      "world": "minecraft:overworld",
+      "sourceId": 5,
+      "sourceUuid": "711e05c4-7763-4e88-a2e6-0971e0e5168a",
+      "sourcePosition": [
+        1.098284683013936,
+        101.0,
+        -0.07242079110334632
+      ],
+      "sourceAlive": true,
+      "sourceRemoved": false,
+      "sourceHealth": 12.0,
+      "sourceTracked": true,
+      "ground": true,
+      "water": false,
+      "pose": 3,
+      "phase": 0,
+      "epoch": 1,
+      "left": 6,
+      "pendingPreen": false,
+      "huntReady": 266,
+      "controlReady": 0,
+      "night": true,
+      "raining": false,
+      "disturbed": false,
+      "pool": 3,
+      "quarryUuid": "55a11ae1-907a-4a02-9b70-cf64b68968da",
+      "committed": [
+        1.5,
+        100.25880012025725,
+        0.9006767036330736
+      ],
+      "admittedEpoch": 1,
+      "admittedTick": 51,
+      "admittedLocked": [
+        1.5,
+        100.25880012025725,
+        0.9006767036330736
+      ],
+      "sameAdmittedQuarry": true,
+      "admittedFish": {
+        "id": 2,
+        "uuid": "55a11ae1-907a-4a02-9b70-cf64b68968da",
+        "position": [
+          1.5,
+          100.0,
+          1.7536884848232754
+        ],
+        "center": [
+          1.5,
+          100.15000000596046,
+          1.7536884848232752
+        ],
+        "velocity": [
+          0.0,
+          -0.005,
+          0.057203494176333504
+        ],
+        "sameWorld": true,
+        "alive": true,
+        "removed": false,
+        "health": 3.0,
+        "water": true,
+        "fromBucket": false,
+        "named": false,
+        "persistent": false,
+        "noAi": false,
+        "loaded": true,
+        "wild": true,
+        "sourceDistanceSqr": 4.496050283526465,
+        "loadedSight": true,
+        "committedDistanceSqr": 0.7394665637202736,
+        "lastDamage": null
+      },
+      "cancelPause": 40,
+      "threw": false
+    },
+    {
+      "event": "strike_exit",
+      "suite": "dev.wildercord.wildlife.SiltcrestPresentationTest",
+      "trial": "siltcrest_full",
+      "clock": 66,
+      "entityTick": 34,
+      "world": "minecraft:overworld",
+      "sourceId": 5,
+      "sourceUuid": "711e05c4-7763-4e88-a2e6-0971e0e5168a",
+      "sourcePosition": [
+        1.098284683013936,
+        101.0,
+        -0.07242079110334632
+      ],
+      "sourceAlive": true,
+      "sourceRemoved": false,
+      "sourceHealth": 12.0,
+      "sourceTracked": true,
+      "ground": true,
+      "water": false,
+      "pose": 0,
+      "phase": 0,
+      "epoch": 2,
+      "left": 0,
+      "pendingPreen": false,
+      "huntReady": 266,
+      "controlReady": 0,
+      "night": true,
+      "raining": false,
+      "disturbed": false,
+      "pool": 3,
+      "quarryUuid": null,
+      "committed": null,
+      "admittedEpoch": 1,
+      "admittedTick": 51,
+      "admittedLocked": [
+        1.5,
+        100.25880012025725,
+        0.9006767036330736
+      ],
+      "sameAdmittedQuarry": false,
+      "admittedFish": {
+        "id": 2,
+        "uuid": "55a11ae1-907a-4a02-9b70-cf64b68968da",
+        "position": [
+          1.5,
+          100.0,
+          1.7536884848232754
+        ],
+        "center": [
+          1.5,
+          100.15000000596046,
+          1.7536884848232752
+        ],
+        "velocity": [
+          0.0,
+          -0.005,
+          0.057203494176333504
+        ],
+        "sameWorld": true,
+        "alive": true,
+        "removed": false,
+        "health": 3.0,
+        "water": true,
+        "fromBucket": false,
+        "named": false,
+        "persistent": false,
+        "noAi": false,
+        "loaded": true,
+        "wild": true,
+        "sourceDistanceSqr": 4.496050283526465,
+        "loadedSight": true,
+        "committedDistanceSqr": 0.7394665637202736,
+        "lastDamage": null
+      },
+      "currentFish": null,
+      "threw": false
+    }
+  ]
+}

@@ -231,6 +231,7 @@
       "dev.wildercord.client.fx.RootCarryPresentationTest",
       "dev.wildercord.cast.RootCarryOutcomeOwnershipTest",
       "dev.wildercord.wildlife.MoonreedSourceTest",
+      "dev.wildercord.wildlife.MoonreedAcquisitionTest",
       "dev.wildercord.wildlife.TidewardPendingReceiverTest",
       "dev.wildercord.wildlife.MixedWetlandPerformanceTest",
       "dev.wildercord.wildlife.WildlifeSpawnThreadTest",

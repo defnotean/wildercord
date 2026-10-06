@@ -62,6 +62,8 @@ public final class RimehareHopChecks {
 				"An unfinished ground turn must not accelerate sideways: " + first);
 			check(hare.hops.size() >= 2 && hare.landingRecoveries > 0,
 				"A real flight and grounded recovery must both occur: " + hare.receipt());
+			check(hare.landingRecoveries == hare.hops.size() - 1 && hare.hops.getFirst().previousLanding() == -1,
+				"Only an actual bound can begin landing recovery; initial spawn settling cannot: " + hare.receipt());
 			check(hare.shortestRecovery >= 3, "A landing must get at least three grounded navigation ticks: " + hare.receipt());
 			check(hare.recoveryTicks >= 3 && hare.brakedRecoveryTicks > 0 && hare.maxRecoveryStep <= 1.000001,
 				"Fast recovery must brake through native friction before it skips a waypoint cell: " + hare.receipt());
@@ -208,7 +210,11 @@ public final class RimehareHopChecks {
 			return created;
 		});
 		context.waitTicks(3);
-		world.getServer().runOnServer(server -> check(hare.onGround() && hare.hops.isEmpty(), "Idle test animal must settle naturally before its route"));
+		world.getServer().runOnServer(server -> {
+			check(hare.onGround() && hare.hops.isEmpty(), "Idle test animal must settle naturally before its route");
+			check(hare.landed == -1 && hare.landingRecoveries == 0 && !hare.boundInFlight && !hare.airborne,
+				"Initial spawn settling must not arm a bound's recovery: " + hare.receipt());
+		});
 		return hare;
 	}
 
@@ -228,7 +234,7 @@ public final class RimehareHopChecks {
 		}
 	}
 
-	private record Hop(int tick, float yaw, Vec3 position) {}
+	private record Hop(int tick, float yaw, Vec3 position, int previousLanding, int recoveryTicks) {}
 
 	/** Supplied routes isolate the actual Rimehare controls; only autonomous destination selection is disabled. */
 	private static final class ObservedHare extends Rimehare {
@@ -238,7 +244,7 @@ public final class RimehareHopChecks {
 		private double maxRecoveryStep, stoppedSpeed;
 		private boolean observeStoppedInput;
 		private int observedStoppedTicks, acceleratedStoppedTicks;
-		private boolean airborne;
+		private boolean boundInFlight, airborne;
 		private float previousYaw;
 
 		private ObservedHare(ServerLevel level) {
@@ -271,22 +277,28 @@ public final class RimehareHopChecks {
 				if (zza != 0 || xxa != 0 || speed > stoppedSpeed + 1e-8) acceleratedStoppedTicks++;
 				stoppedSpeed = speed;
 			}
-			if (!onGround()) airborne = true;
-			if (onGround() && airborne && getDeltaMovement().y <= 0) {
+			// A newly spawned entity settles onto the floor before its first bound. Only a real
+			// jump callback arms this observation; that initial settling is not landing recovery.
+			if (boundInFlight && !onGround()) airborne = true;
+			if (boundInFlight && onGround() && airborne && getDeltaMovement().y <= 0) {
 				landed = tickCount;
+				boundInFlight = false;
 				airborne = false;
 			}
 		}
 
 		@Override
 		public void jumpFromGround() {
+			int previousLanding = landed;
 			if (landed >= 0) {
 				shortestRecovery = Math.min(shortestRecovery, tickCount - landed);
 				landingRecoveries++;
 				landed = -1;
 			}
-			hops.add(new Hop(tickCount, getYRot(), position()));
+			hops.add(new Hop(tickCount, getYRot(), position(), previousLanding,
+				previousLanding < 0 ? -1 : tickCount - previousLanding));
 			super.jumpFromGround();
+			boundInFlight = true;
 		}
 
 		private String receipt() {

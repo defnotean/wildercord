@@ -25,6 +25,7 @@ public abstract class ArticulatedOpeningFallbackMixin {
 	private void wildercord$fallback(PlayerRenderState player, FirstPersonHandsAndItemsRenderState hands, float partial,
 			float xRot, InteractionHand hand, float attack, ItemStack stack, float inverseArmHeight,
 			PoseStack pose, SubmitNodeCollector collector, int light, Operation<Void> original) {
+		ArticulatedSharedRenderProbe.viewAttempt(player.avatarRenderState, hands, partial, hand);
 		var previous = wildercord$openingFallback.get();
 		var call = ArticulatedSharedRenderProbe.fallbackViewBegin((FirstPersonHandsAndItemsRenderer) (Object) this,
 			player.avatarRenderState, hands, hand, stack);

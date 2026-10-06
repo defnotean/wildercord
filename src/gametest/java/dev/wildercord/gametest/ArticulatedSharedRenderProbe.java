@@ -146,6 +146,8 @@ public final class ArticulatedSharedRenderProbe {
 				s.observe("expectedBackend", ArticulatedRenderReceipt.fallback(token.session.identity().trial()) ? "full_fallback" : "segmented");
 				s.observe("shellAdapterEnabled", ArticulatedAuraShellRenderer.enabled());
 				s.observe("bannerClassification", "unclassified:not_observed");
+				s.observe("nativeMainHandCalled", false); s.observe("viewSubmitCalled", false); s.observe("viewSubmitReturned", "not_called");
+				s.observe("hudHidden", mc.gui.hud.isHidden()); s.observe("screen", mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName());
 				if (token.expected != null) {
 					s.observe("expectedOwnerId", token.expected.owner()); s.observe("expectedOwnerUuid", token.expected.ownerUuid());
 					s.observe("expectedMove", token.expected.move()); s.observe("expectedStartTick", token.expected.startTick());
@@ -248,9 +250,32 @@ public final class ArticulatedSharedRenderProbe {
 	}
 	public static ViewCall viewEnter(AvatarRenderState avatar, float partial, InteractionHand hand) {
 		Scope scope = rendering(); if (scope == null || avatar.id != scope.owner) return null;
+		if (opening(scope) && hand == InteractionHand.MAIN_HAND) guard(scope.token, () -> scope.token.session.observe("viewSubmitCalled", true));
 		ViewCall call = new ViewCall(avatar, hand, partial, scope.viewCall); scope.viewCall = call; return call;
 	}
-	public static void viewLeave(ViewCall call) { Scope scope = rendering(); if (scope != null && call != null) scope.viewCall = call.previous(); }
+	public static void viewLeave(ViewCall call, boolean submitted) {
+		Scope scope = rendering(); if (scope == null || call == null) return;
+		if (opening(scope) && call.hand() == InteractionHand.MAIN_HAND) guard(scope.token, () -> scope.token.session.observe("viewSubmitReturned", submitted));
+		scope.viewCall = call.previous();
+	}
+	/** The real hand callback, including unsupported/fallback attempts; observations never count as passes. */
+	public static void viewAttempt(AvatarRenderState avatar, FirstPersonHandsAndItemsRenderState hands, float partial, InteractionHand hand) {
+		Scope scope = rendering();
+		if (scope == null || !opening(scope) || avatar == null || avatar.id != scope.owner || hand != InteractionHand.MAIN_HAND) return;
+		guard(scope.token, () -> {
+			var s = scope.token.session; var combat = ArticulatedCombat.viewFrame(avatar);
+			s.observe("nativeMainHandCalled", true);
+			s.observe("viewHandAdmission", combat == null ? "UNSUPPORTED_POSE" : ArticulatedViewModel.handAdmission(combat, avatar, hands, partial));
+			s.observe("viewOldMainHandHeight", hands.oldMainHandHeight); s.observe("viewMainHandHeight", hands.mainHandHeight);
+			s.observe("viewInterpolatedHeight", net.minecraft.util.Mth.lerp(partial, hands.oldMainHandHeight, hands.mainHandHeight));
+			s.observe("viewEquipKnown", hands instanceof dev.wildercord.client.MastersHandMotionState);
+			s.observe("viewEquipping", hands instanceof dev.wildercord.client.MastersHandMotionState motion ? String.valueOf(motion.wildercord$mainHandEquipping()) : "unknown");
+			s.observe("viewSameItem", ItemStack.isSameItemSameComponents(hands.mainHandItem, avatar.getMainHandItemStack()));
+			s.observe("viewSwing", avatar.swingAnimation); s.observe("viewCrouching", avatar.isCrouching); s.observe("viewUsingItem", avatar.isUsingItem);
+			var model = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar).getModel();
+			s.observe("viewModelSupported", model.getClass() == PlayerModel.class && model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned());
+		});
+	}
 	public static void viewSubmitted(Model<?> model, Object renderState) {
 		Scope scope = rendering();
 		if (scope == null || scope.viewCall == null || scope.viewCall.hand() != InteractionHand.MAIN_HAND

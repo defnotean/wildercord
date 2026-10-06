@@ -182,6 +182,18 @@ jobs:
       - name: Record focused Masters outcomes
         if: always()
         run: python tools/test_manifest.py --suite masters --log masters-native.log --output artifacts/review/masters-native-manifest.json
+      - name: Preserve Red Rain diagnostic frames (not visual acceptance)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: masters-red-rain-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/run/clientGameTest/screenshots/masters_style_red_rain_left_turn_first_windup.png
+            build/run/clientGameTest/screenshots/masters_style_red_rain_left_turn_first_windup.json
+            build/run/clientGameTest/screenshots/masters_style_red_rain_first_windup.png
+            build/run/clientGameTest/screenshots/masters_style_red_rain_first_windup.json
+            build/run/clientGameTest/screenshots/masters_style_red_rain_left_turn_third_back_windup.json
+          if-no-files-found: warn
       - name: Collect bounded Void Cut diagnostics (may include rejected frames)
         id: void-cut-diagnostics
         if: always() && steps.void-cut-start.outcome == 'success'
