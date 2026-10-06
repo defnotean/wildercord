@@ -40,10 +40,15 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 	private static Vec3 fragmentOrigin;
 	private static Defender reprieveTarget;
 	private static boolean retireDebt;
+	private static Defender directionalTarget;
+	private static int directionalMode, directionalSources;
+	private static Vec3 directionalFocus;
 
 	@Override public void runTest(ClientGameTestContext c){
 		if(!observing){observing=true;
 			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((target,source,amount)->{
+				if(directionalTarget!=null&&directionalFocus!=null&&source instanceof RelayDamageSource&&(target==directionalTarget||target==watchedOwner)&&directionalSources++<8)
+					directionEvidence("damage_callback",target,source);
 				if(source instanceof RelayDamageSource && target==mirrorTarget){
 					RelayCircleTest.check(ArmorResponses.mirrorReady(mirrorTarget),"Timed native mantle fixture is active before the actual Relay damage");mirrorAdmissions++;
 					if(mirrorMode==2)dev.wildercord.player.Spellbooks.setCord(watchedOwner,new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
@@ -74,12 +79,17 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 					owner.setHealth(owner.getMaxHealth());owner.removeAllEffects();Effects.readyToHurt(owner);
 					defender.setHealth(defender.getMaxHealth());defender.removeAllEffects();Effects.readyToHurt(defender);
 					defender.removeAttached(dev.wildercord.player.WildercordAttachments.SPELL_SHIELD);
-					defender.snapTo(.5,150,6.5,facing==1?0:180,0);defender.setShiftKeyDown(true);
+					float yaw=facing==1?0:180;
+					defender.snapTo(.5,150,6.5,yaw,0);
+					// FakePlayer.tick does not align the head read by getViewVector/AuraGuard.facing.
+					defender.setYHeadRot(yaw);defender.setYBodyRot(yaw);defender.setShiftKeyDown(true);
+					directionalTarget=defender;directionalMode=facing;directionalSources=0;
 					defender.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(Items.DIAMOND_SWORD));
 					defender.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("starlit",AuraRules.FLOW,150,100,0));
 					defender.setAttached(AuraAttachments.STATE,AuraAttachments.State.NONE);
 					RelayCircleTest.reset(owner,Runes.HARM);RelayCircleTest.directDown(owner);
 					RelayCircleTest.check(RelayCircles.pending(owner),"Directional fixture really places a paid focus");
+					directionalFocus=owner.getAttached(RelayState.VIEW).focus();
 					owner.teleportTo(owner.level(),-3.5,150,8.5,Set.of(),0,0,false);
 				});c.waitTicks(2);
 				world.getServer().runOnServer(s->{
@@ -87,6 +97,9 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 					RelayCircleTest.check(owner.getAttached(RelayState.VIEW).phase()==RelayState.WARNING,"Opposite-side caster retains two clear bounded legs");
 					Scheduler.later(4,()->{
 						try {
+							directionEvidence("before_defence",null,null);
+							RelayCircleTest.check(AuraGuard.facing(defender,directionalFocus)==(facing!=1)
+								&&AuraGuard.facing(defender,owner.getEyePosition())==(facing==1),"Native guard view distinguishes the real focus from the opposite-side caster");
 							if(facing>=2){
 								Shields.raise(new Cast(defender).weigh(60),defender,80);
 								if(facing==3)Shields.raise(new Cast(owner).weigh(60),owner,80);
@@ -95,7 +108,8 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 					});
 				});c.waitTicks(8);
 				world.getServer().runOnServer(s->{
-					if(failure!=null)throw new AssertionError("Guard setup failed",failure);
+					directionEvidence("after_impact",null,null);
+					if(failure!=null)throw new AssertionError("Guard setup failed in mode "+facing,failure);
 					if(facing==1){
 						RelayCircleTest.check(defender.getHealth()<defender.getMaxHealth(),"Facing the caster with the focus behind does not stop the ray");
 						RelayCircleTest.check(AuraGuard.perfectNow(defender),"A rear Relay does not consume the unused perfect guard");
@@ -110,7 +124,7 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 					}
 				});c.waitTicks(12);
 			}
-			cancelSecond=false;
+			cancelSecond=false;directionalTarget=null;directionalFocus=null;
 			var original=world.getServer().computeOnServer(server->dev.wildercord.config.Config.get());
 			try {
 				for(int mode=0;mode<4;mode++){
@@ -152,6 +166,24 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 					});c.waitTicks(12);
 				}
 			}finally{world.getServer().runOnServer(server->dev.wildercord.cast.CampConcordNative.config(original));}
-		} finally {cancelSecond=false;watchedOwner=null;mirrorTarget=null;reprieveTarget=null;}
+		} finally {cancelSecond=false;watchedOwner=null;mirrorTarget=null;reprieveTarget=null;directionalTarget=null;directionalFocus=null;}
+	}
+
+	private static void directionEvidence(String phase,net.minecraft.world.entity.LivingEntity target,DamageSource source){
+		var value=new com.google.gson.JsonObject();
+		value.addProperty("phase",phase);value.addProperty("mode",directionalMode);value.addProperty("tick",watchedOwner.level().getGameTime());
+		value.addProperty("entityYaw",directionalTarget.getYRot());value.addProperty("bodyYaw",directionalTarget.yBodyRot);value.addProperty("headYaw",directionalTarget.getYHeadRot());
+		value.addProperty("view",directionalTarget.getViewVector(1).toString());value.addProperty("defender",directionalTarget.position().toString());
+		value.addProperty("caster",watchedOwner.getEyePosition().toString());value.addProperty("paidFocus",directionalFocus.toString());
+		value.addProperty("facesFocus",AuraGuard.facing(directionalTarget,directionalFocus));value.addProperty("facesCaster",AuraGuard.facing(directionalTarget,watchedOwner.getEyePosition()));
+		value.addProperty("guarding",AuraGuard.guarding(directionalTarget));value.addProperty("perfect",AuraGuard.perfectNow(directionalTarget));
+		value.addProperty("defenderHealth",directionalTarget.getHealth());value.addProperty("casterHealth",watchedOwner.getHealth());
+		value.addProperty("blockedCallbacks",blocked);value.addProperty("sourceCallbacks",directionalSources);
+		if(source!=null){
+			value.addProperty("damageType",source.getMsgId());value.addProperty("sourceClass",source.getClass().getSimpleName());
+			value.addProperty("incomingOrigin",source.getSourcePosition()==null?"none":source.getSourcePosition().toString());
+			value.addProperty("target",target==directionalTarget?"defender":"original_caster");
+		}
+		System.out.println("WILDERCORD_RELAY_DEFENCE "+value);
 	}
 }

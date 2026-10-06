@@ -201,6 +201,14 @@ jobs:
         with:
           name: ember-kiln-diagnostics-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_coil.png
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_coil.json
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_release.png
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_release.json
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_recovery.png
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_recovery.json
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_wide_warning.png
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_wide_warning.json
             build/run/clientGameTest/screenshots/ember_kiln_segmented_front_coil.png
             build/run/clientGameTest/screenshots/ember_kiln_segmented_front_coil.json
             build/run/clientGameTest/screenshots/ember_kiln_segmented_front_release.png
@@ -402,11 +410,19 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
       - name: Preserve original Kiln diagnostic frames (not release or visual acceptance)
-        if: always() && steps.request.outputs.enabled == 'true' && hashFiles('build/run/clientGameTest/screenshots/ember_kiln_segmented_front_coil.png', 'build/run/clientGameTest/screenshots/ember_kiln_segmented_front_release.png', 'build/run/clientGameTest/screenshots/ember_kiln_segmented_front_recovery.png', 'build/run/clientGameTest/screenshots/ember_kiln_segmented_wide_warning.png', 'build/run/clientGameTest/screenshots/ember_kiln_opponent_segmented_fov90_normal_inward_warning.png', 'build/run/clientGameTest/screenshots/ember_kiln_opponent_segmented_fov90_reduced_inward_warning.png') != ''
+        if: always() && steps.request.outputs.enabled == 'true' && hashFiles('build/run/clientGameTest/screenshots/ember_kiln_rigid_front_coil.png', 'build/run/clientGameTest/screenshots/ember_kiln_rigid_front_release.png', 'build/run/clientGameTest/screenshots/ember_kiln_rigid_front_recovery.png', 'build/run/clientGameTest/screenshots/ember_kiln_rigid_wide_warning.png', 'build/run/clientGameTest/screenshots/ember_kiln_segmented_front_coil.png', 'build/run/clientGameTest/screenshots/ember_kiln_segmented_front_release.png', 'build/run/clientGameTest/screenshots/ember_kiln_segmented_front_recovery.png', 'build/run/clientGameTest/screenshots/ember_kiln_segmented_wide_warning.png', 'build/run/clientGameTest/screenshots/ember_kiln_opponent_segmented_fov90_normal_inward_warning.png', 'build/run/clientGameTest/screenshots/ember_kiln_opponent_segmented_fov90_reduced_inward_warning.png') != ''
         uses: actions/upload-artifact@v7
         with:
           name: ember-kiln-native-diagnostic-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_coil.png
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_coil.json
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_release.png
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_release.json
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_recovery.png
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_front_recovery.json
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_wide_warning.png
+            build/run/clientGameTest/screenshots/ember_kiln_rigid_wide_warning.json
             build/run/clientGameTest/screenshots/ember_kiln_segmented_front_coil.png
             build/run/clientGameTest/screenshots/ember_kiln_segmented_front_coil.json
             build/run/clientGameTest/screenshots/ember_kiln_segmented_front_release.png

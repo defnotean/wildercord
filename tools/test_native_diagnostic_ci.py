@@ -33,11 +33,13 @@ class RequestTests(unittest.TestCase):
             data = self.request(case=case, sourceSha="a" * 40 if case else None)
             self.assertEqual(diagnostic.parse_request(json.dumps(data)), data)
 
-    def test_kiln_diagnostic_upload_keeps_six_original_pairs_and_own_provenance(self):
+    def test_kiln_diagnostic_upload_keeps_early_rigid_and_segmented_pairs_with_own_provenance(self):
         workflow = (suites.ROOT / ".github/workflows/build.yml").read_text()
         diagnostic_job = workflow.split("\n  native-diagnostic:\n", 1)[1]
         step = diagnostic_job.split("      - name: Preserve original Kiln diagnostic frames (not release or visual acceptance)\n", 1)[1].split("      - name:", 1)[0]
-        names = ("ember_kiln_segmented_front_coil", "ember_kiln_segmented_front_release",
+        names = ("ember_kiln_rigid_front_coil", "ember_kiln_rigid_front_release",
+                 "ember_kiln_rigid_front_recovery", "ember_kiln_rigid_wide_warning",
+                 "ember_kiln_segmented_front_coil", "ember_kiln_segmented_front_release",
                  "ember_kiln_segmented_front_recovery", "ember_kiln_segmented_wide_warning",
                  "ember_kiln_opponent_segmented_fov90_normal_inward_warning",
                  "ember_kiln_opponent_segmented_fov90_reduced_inward_warning")

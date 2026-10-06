@@ -316,6 +316,7 @@
     "articulated-shared-receipt-gametest.mixins.json",
     "aura-body-motes-gametest.mixins.json",
     "memorial-generation-gametest.mixins.json",
+    "sleeping-blade-generation-gametest.mixins.json",
     "siltcrest-presentation-gametest.mixins.json"
   ],
   "depends": {

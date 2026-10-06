@@ -10,6 +10,7 @@ import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.FieldGuide;
 import dev.wildercord.wildlife.Cinderfox;
 import dev.wildercord.wildlife.Glimmerwing;
+import dev.wildercord.wildlife.GlimmerwingLanternProbe;
 import dev.wildercord.wildlife.LumenStag;
 import dev.wildercord.wildlife.MossbackTortoise;
 import dev.wildercord.wildlife.Rimehare;
@@ -560,20 +561,30 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 
 	private void glimmerwing(ClientGameTestContext context, TestSingleplayerContext world) {
 		world.getServer().runCommand("time set 18000");
-		int moth = world.getServer().computeOnServer(server -> {
-			ServerPlayer player = player(server);
-			put(player, MOTHS.add(0, 0, 9), 180);
-			return spawn(Wildlife.GLIMMERWING, player.level(), MOTHS.add(6, 2, 0), 0, false).getId();
-		});
-		double nearest = Double.MAX_VALUE;
-		for (int i = 0; i < 25 && nearest > 3.2; i++) {
-			context.waitTicks(20);
-			nearest = world.getServer().computeOnServer(server -> {
-				Entity found = player(server).level().getEntity(moth);
-				return found == null ? Double.MAX_VALUE : found.position().distanceTo(MOTHS.add(0, 1.5, -1));
+		GlimmerwingLanternProbe.Session[] lanternProbe = new GlimmerwingLanternProbe.Session[1];
+		try {
+			int moth = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = player(server);
+				put(player, MOTHS.add(0, 0, 9), 180);
+				Glimmerwing spawned = spawn(Wildlife.GLIMMERWING, player.level(), MOTHS.add(6, 2, 0), 0, false);
+				lanternProbe[0] = GlimmerwingLanternProbe.begin(player.level(), spawned, BlockPos.containing(MOTHS.add(0, 1.5, -1)));
+				return spawned.getId();
 			});
+			double nearest = Double.MAX_VALUE;
+			for (int i = 0; i < 25 && nearest > 3.2; i++) {
+				int attempt = i + 1;
+				context.waitTicks(20);
+				nearest = world.getServer().computeOnServer(server -> {
+					Entity found = player(server).level().getEntity(moth);
+					double distance = found == null ? Double.MAX_VALUE : found.position().distanceTo(MOTHS.add(0, 1.5, -1));
+					GlimmerwingLanternProbe.sampled(lanternProbe[0], player(server).level(), found, distance, attempt);
+					return distance;
+				});
+			}
+			check(nearest <= 3.2, "a glimmerwing should find the lantern and circle it (nearest " + String.format("%.1f", nearest) + ")");
+		} finally {
+			world.getServer().runOnServer(server -> GlimmerwingLanternProbe.finish(lanternProbe[0]));
 		}
-		check(nearest <= 3.2, "a glimmerwing should find the lantern and circle it (nearest " + String.format("%.1f", nearest) + ")");
 		world.getServer().runOnServer(server -> clear(player(server).level(), MOTHS, 12));
 
 		// Fresh magic draws them more than any lamp: a player who keeps casting has them round their head.

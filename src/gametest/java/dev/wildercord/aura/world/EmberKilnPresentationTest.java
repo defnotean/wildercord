@@ -77,7 +77,7 @@ public final class EmberKilnPresentationTest implements FabricClientGameTest {
 		boolean close = !view.equals("wide");
 		try {
 			frameObserver(world, view);
-			context.runOnClient(mc -> mc.options.fov().set(close ? 50 : 43));
+			context.runOnClient(mc -> mc.options.fov().set(close ? 50 : 36));
 			context.waitTicks(8);
 			world.getConnection().waitForChunksRender();
 			beginNaturally(world);
@@ -132,9 +132,11 @@ public final class EmberKilnPresentationTest implements FabricClientGameTest {
 				case "side" -> origin.add(0, 0, -4.8);
 				default -> origin.add(6, 10.3, 6);
 			};
-			// High wide framing clears the complete inner rim above the hood. The closer
-			// front/side views separately establish the whole-body and blade silhouettes.
-			Vec3 focus = view.equals("wide") ? origin.add(.5, .12, .5) : origin.add(0, 1.05, 0);
+			// Same high eye clears the complete inner rim. Native spectator flight widens
+			// slider 36 to about 39.6 degrees: the recentered full ring fits the unchanged
+			// 3% viewport margin and its body probe spans about 79 pixels at native 720p.
+			// Front/side frames separately establish the detailed body and blade silhouettes.
+			Vec3 focus = view.equals("wide") ? origin.add(.8, .12, .8) : origin.add(0, 1.05, 0);
 			Vec3 look = focus.subtract(camera.add(0, observer.getEyeHeight(), 0));
 			float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
 			float pitch = (float) -Math.toDegrees(Math.atan2(look.y, look.horizontalDistance()));

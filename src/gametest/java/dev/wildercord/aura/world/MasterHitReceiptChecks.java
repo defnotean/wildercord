@@ -8,6 +8,7 @@ import dev.wildercord.aura.AuraGuard;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.AuraStep;
 import dev.wildercord.cast.CastEngine;
+import dev.wildercord.cast.CastReceiptWardProbe;
 import dev.wildercord.cast.Charging;
 import dev.wildercord.cast.Effects;
 import dev.wildercord.cast.SpellCaster;
@@ -50,7 +51,8 @@ import java.util.UUID;
 /**
  * Native damage-event/charge seam checks, deliberately with the enrolled Master AI paused.
  * These do not prove pursuit movement or timing; MasterPursuitChecks owns that integration.
- * Every interruption-positive probe gets a new target UUID. Production Statuses cooldowns are never cleared.
+ * Every charged recipient is the actual connected player. Positive probes wait the real shared interruption interval;
+ * fake players are passive other-target witnesses. Production Statuses cooldowns are never cleared.
  */
 final class MasterHitReceiptChecks {
 	private static final float HIT = 28, HEALTH = 200;
@@ -59,12 +61,13 @@ final class MasterHitReceiptChecks {
 	private enum Defence { BARE, FULL_ABSORPTION, PARTIAL_ABSORPTION, MANA_SKIN, SKIN_AND_ABSORPTION,
 		PROTECTION_AND_SKIN, REVERSAL, TOTEM, RESISTANCE_V, FORESIGHT, REJECTED, NONPARTICIPANT, OTHER_SOURCE, OTHER_TARGET }
 	private static final class Challenger extends FakePlayer {
-		boolean rejectDamage;
 		Challenger(ServerLevel level) { super(level, new GameProfile(UUID.randomUUID(), "ReceiptTarget")); }
-		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return rejectDamage; }
+		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return false; }
 	}
 	private SwordMaster master;
-	private Challenger target, outsider;
+	private ServerPlayer target;
+	private Challenger outsider;
+	private long interruptReadyAt;
 	private Vec3 origin;
 
 	void run(ClientGameTestContext context) {
@@ -79,18 +82,25 @@ final class MasterHitReceiptChecks {
 					player.level().setBlockAndUpdate(BlockPos.containing(origin).offset(x, -1, z), Blocks.STONE.defaultBlockState());
 				place(player, 8, 3);
 			});
-			for (Defence defence : Defence.values()) world.getServer().runOnServer(server -> isolated(server.getPlayerList().getPlayers().getFirst(), defence));
+			for (Defence defence : Defence.values()) {
+				world.getServer().waitFor(server -> server.overworld().getGameTime() >= interruptReadyAt
+					&& CastReceiptWardProbe.active(server.getPlayerList().getPlayers().getFirst()).isEmpty(), 1205);
+				world.getServer().runOnServer(server -> isolated(server.getPlayerList().getPlayers().getFirst(), defence));
+			}
+			world.getServer().waitFor(server -> CastReceiptWardProbe.active(server.getPlayerList().getPlayers().getFirst()).isEmpty(), 1205);
 			clientDefences(context, world);
 		}
 	}
 
 	private void isolated(ServerPlayer observer, Defence defence) {
 		ServerLevel level = observer.level();
-		target = add(level, 0, 3);
+		PlayerState original = new PlayerState(observer);
+		target = observer; prepare(target); place(target, 0, 3);
+		check(CastReceiptWardProbe.active(target).isEmpty(), "No previous UUID-scoped ward can answer this isolated damage probe");
 		outsider = add(level, 4, 3);
 		try {
-			start(target);
-			ServerPlayer measured = defence == Defence.NONPARTICIPANT || defence == Defence.OTHER_TARGET ? outsider : target;
+			start(defence == Defence.NONPARTICIPANT || defence == Defence.OTHER_TARGET ? outsider : target);
+			ServerPlayer measured = target;
 			boolean skin = defence == Defence.MANA_SKIN || defence == Defence.SKIN_AND_ABSORPTION || defence == Defence.PROTECTION_AND_SKIN;
 			if (skin) target.setAttached(WildercordAttachments.CIRCLES, 3);
 			float absorption = defence == Defence.FULL_ABSORPTION ? 64 : defence == Defence.PARTIAL_ABSORPTION ? 4
@@ -99,12 +109,13 @@ final class MasterHitReceiptChecks {
 			check(close(target.getAbsorptionAmount(), absorption), defence + ": real absorption capacity admits the fixture hearts");
 			if (defence == Defence.PROTECTION_AND_SKIN) {
 				dress(target);
-				// FakePlayer.tick() is intentionally empty. Its inherited native doTick installs equipment modifiers.
-				target.doTick();
+				// Native equipment reconciliation installs the actual armour modifiers before this same-call damage probe.
+				reconcileEquipment(target);
 				check(target.getArmorValue() == 20 && target.getAttributeValue(Attributes.ARMOR_TOUGHNESS) >= 12,
 					"Real Protection IV netherite has its native armour/toughness before the probe");
 			}
 			if (defence == Defence.REVERSAL) {
+				check(dev.wildercord.cast.DeathsDoor.resting(target) == 0, "The real Reversal probe is outside death-save recovery");
 				target.setHealth(2);
 				CastEngine.cast(target, SpellCompiler.compile(List.of(Runes.SELF, Runes.REVERSAL)).root());
 			}
@@ -116,7 +127,7 @@ final class MasterHitReceiptChecks {
 			}
 			if (defence == Defence.FORESIGHT)
 				CastEngine.cast(target, SpellCompiler.compile(List.of(Runes.SELF, Runes.FORESIGHT)).root());
-			if (defence == Defence.REJECTED) target.rejectDamage = true;
+			if (defence == Defence.REJECTED) { target.setPermanentlyInvulnerable(true); check(target.isPermanentlyInvulnerable(), "Native invulnerability rejects the hit"); }
 			charge(measured);
 			if (skin) check(Heart.active(target) == 3 && Spellbooks.mana(target) == 100, "Circle III Mana Skin starts with exactly 100 mana");
 			var held = measured.getAttached(WildercordAttachments.CHARGE);
@@ -129,7 +140,7 @@ final class MasterHitReceiptChecks {
 					measured.hurtServer(level, level.damageSources().generic(), HIT);
 					return healthBefore - measured.getHealth();
 				}
-				return master.projected(defence == Defence.OTHER_TARGET ? target : measured, defence == Defence.FORESIGHT ? 12 : HIT);
+				return master.projected(defence == Defence.OTHER_TARGET ? outsider : measured, defence == Defence.FORESIGHT ? 12 : HIT);
 			});
 			String note = defence + " " + receipt + ", health=" + measured.getHealth() + ", absorption=" + measured.getAbsorptionAmount()
 				+ ", mana=" + Spellbooks.mana(measured);
@@ -159,8 +170,9 @@ final class MasterHitReceiptChecks {
 				if (defence == Defence.TOTEM) check(measured.isAlive() && measured.getOffhandItem().isEmpty() && close(measured.getHealth(), 1)
 					&& measured.hasEffect(MobEffects.ABSORPTION), "A real offhand totem is consumed and restores life after the wound: " + note);
 				// This is the public interruption seam used after receipt admission, not a second simulated attack.
-				Effects.withSource(master, () -> check(Statuses.interrupt(measured), "Fresh UUID admits a real Statuses interruption: " + note));
+				Effects.withSource(master, () -> check(Statuses.interrupt(measured), "The actual elapsed shared immunity admits a real Statuses interruption: " + note));
 				check(!measured.hasAttached(WildercordAttachments.CHARGE), "Resolved damage breaks precisely the previously held spell: " + note);
+				interruptReadyAt = measured.level().getGameTime() + Statuses.INTERRUPT_GAP;
 			} else {
 				check(receipt.healthLost() == 0 && receipt.absorptionLost() == 0, "A rejected or unrelated event cannot manufacture receipt damage: " + note);
 				if (defence == Defence.RESISTANCE_V) {
@@ -172,14 +184,14 @@ final class MasterHitReceiptChecks {
 				check(measured.getAbsorptionAmount() == absorptionBefore && Spellbooks.mana(measured) == manaBefore, "Rejected hits do not spend absorption or mana: " + note);
 				if (defence == Defence.FORESIGHT) check(measured.position().distanceToSqr(positionBefore) > .5,
 					"The real self-cast Foresight ward executes its native sidestep");
-				if (defence == Defence.OTHER_TARGET) check(close(target.getHealth(), HEALTH - HIT), "The unrelated target's native hit really landed");
+				if (defence == Defence.OTHER_TARGET) check(close(outsider.getHealth(), HEALTH - HIT), "The unrelated target's native hit really landed");
 				if (defence == Defence.NONPARTICIPANT || defence == Defence.REJECTED || defence == Defence.FORESIGHT)
 					check(measured.getLastDamageSource() == sourceBefore, "A stopped hit does not replace the last accepted damage source: " + note);
 				check(measured.getAttached(WildercordAttachments.CHARGE) == held, "The exact held charge survives the non-damaging receipt: " + note);
 			}
 		} finally {
 			if (master != null) { master.discard(); master = null; }
-			Charging.forget(target); target.discard(); target = null;
+			Charging.forget(target); original.restore(target); target = null;
 			Charging.forget(outsider); outsider.discard(); outsider = null;
 		}
 	}
@@ -197,6 +209,7 @@ final class MasterHitReceiptChecks {
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				charge(player); player.setAttached(WildercordAttachments.CIRCLES, 3); player.setAbsorptionAmount(64);
+				check(CastReceiptWardProbe.active(player).isEmpty(), "No earlier ward can mask the real frontal parry");
 				player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
 				player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("ember", AuraRules.FLOW, 0, 40, 0));
 				check(player.isShiftKeyDown() && AuraGuard.faces(player, master.position()), "Actual client sneak and facing support a frontal parry");
@@ -217,6 +230,7 @@ final class MasterHitReceiptChecks {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("gale", AuraRules.FORM, 0, 80, 0));
 				charge(player);
+				check(CastReceiptWardProbe.active(player).isEmpty(), "No earlier ward can mask the real Aura Step");
 				float aura = Aura.aura(player);
 				check(AuraStep.step(player) && Aura.aura(player) < aura, "A naturally grounded player buys a real Aura Step through its public entrypoint");
 				preserves(player, "Real Aura Step untouchable window");
@@ -267,14 +281,23 @@ final class MasterHitReceiptChecks {
 		player.snapTo(origin.x + x, origin.y, origin.z + z, 180, 0); level.addNewPlayer(player); return player;
 	}
 	private void prepare(ServerPlayer player) {
-		player.setGameMode(GameType.SURVIVAL); player.removeAllEffects();
+		player.setGameMode(GameType.SURVIVAL); player.setPermanentlyInvulnerable(false); player.removeAllEffects();
 		player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(HEALTH); player.setHealth(HEALTH);
 		player.getAttribute(Attributes.MAX_ABSORPTION).setBaseValue(64); player.setAbsorptionAmount(0);
 		for (EquipmentSlot slot : EQUIPMENT) player.setItemSlot(slot, ItemStack.EMPTY);
+		if (!(player instanceof FakePlayer)) reconcileEquipment(player);
 		player.setAttached(AuraAttachments.AURA, AuraAttachments.Data.NONE); player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);
 		player.setAttached(WildercordAttachments.CIRCLES, 0); player.setAttached(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE);
 	}
+	private static void reconcileEquipment(ServerPlayer player) {
+		var held = player.getAttached(WildercordAttachments.CHARGE);
+		check(held == null, "Equipment reconciliation occurs before a held spell is admitted");
+		player.doTick();
+		check(player.getAttached(WildercordAttachments.CHARGE) == held, "Native equipment reconciliation cannot replace pre-probe held state");
+	}
 	private void charge(ServerPlayer player) {
+		check(player.level().getServer().getPlayerList().getPlayer(player.getUUID()) == player
+			&& player.connection != null && player.connection.player == player, "Real Charging requires the exact connected recipient body");
 		Spellbooks.setCord(player, new ItemStack(WildercordItems.TWINE_CORD));
 		List<String> runes = List.of(Runes.BOLT.id(), Runes.HARM.id());
 		Spellbooks.set(player, new Spellbook(runes, List.of(runes), 0, true));
@@ -307,6 +330,7 @@ final class MasterHitReceiptChecks {
 		final float health, absorption, mana, yaw, pitch;
 		final Vec3 position, velocity;
 		final GameType mode;
+		final boolean invulnerable;
 		final EnumMap<EquipmentSlot, ItemStack> equipment = new EnumMap<>(EquipmentSlot.class);
 		final List<MobEffectInstance> effects = new ArrayList<>();
 		final AuraAttachments.Data aura;
@@ -317,6 +341,7 @@ final class MasterHitReceiptChecks {
 		final WildercordAttachments.Cracks cracks;
 		final List<Long> cooldowns;
 		PlayerState(ServerPlayer player) {
+			invulnerable = player.isPermanentlyInvulnerable();
 			maxHealth = player.getAttribute(Attributes.MAX_HEALTH).getBaseValue(); maxAbsorption = player.getAttribute(Attributes.MAX_ABSORPTION).getBaseValue();
 			health = player.getHealth(); absorption = player.getAbsorptionAmount(); mana = Spellbooks.mana(player);
 			position = player.position(); velocity = player.getDeltaMovement(); yaw = player.getYRot(); pitch = player.getXRot(); mode = player.gameMode.getGameModeForPlayer();
@@ -332,7 +357,7 @@ final class MasterHitReceiptChecks {
 			player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(maxHealth); player.getAttribute(Attributes.MAX_ABSORPTION).setBaseValue(maxAbsorption);
 			for (var entry : equipment.entrySet()) player.setItemSlot(entry.getKey(), entry.getValue());
 			for (var effect : effects) player.addEffect(effect);
-			player.setHealth(health); player.setAbsorptionAmount(absorption); player.setGameMode(mode);
+			player.setHealth(health); player.setAbsorptionAmount(absorption); player.setGameMode(mode); player.setPermanentlyInvulnerable(invulnerable);
 			player.setAttached(AuraAttachments.AURA, aura); player.setAttached(AuraAttachments.STATE, state);
 			player.setAttached(WildercordAttachments.CIRCLES, circles); player.setAttached(WildercordAttachments.CRACKS, cracks);
 			Spellbooks.set(player, book); Spellbooks.setCord(player, cord); Spellbooks.setMana(player, mana); player.setAttached(WildercordAttachments.COOLDOWNS, cooldowns);

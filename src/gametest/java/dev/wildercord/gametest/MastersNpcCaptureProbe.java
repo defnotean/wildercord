@@ -78,7 +78,7 @@ public final class MastersNpcCaptureProbe {
 		int bodySubmits, int modelPasses, float[] modelPose, Vec3 camera, Vec3 renderedPosition,
 		List<Point> bodyPoints, BodyPixels bodyPixels, List<WarningPixels> warnings, String renderFailure,
 		String expectedBackend, ArticulatedFrame articulatedFrame, List<ModelReceipt> modelReceipts, List<HandReceipt> handReceipts,
-		String framing, int fov, String warningCoverage, ProjectedBounds bodyBounds, ProjectedBounds bladeBounds,
+		String framing, int fov, Double effectiveProjectionFov, Double bodyProbeHeightPixels, String warningCoverage, ProjectedBounds bodyBounds, ProjectedBounds bladeBounds,
 		String bodyBoundsSource, String bladeBoundsSource, float[] bodySubmitMatrix, float[] viewRotationProjectionMatrix, String warningValidation, String captureStatus) {}
 	private static SwordMaster subject;
 	private static Vec3 origin;
@@ -237,12 +237,20 @@ public final class MastersNpcCaptureProbe {
 			ProjectedBounds capturedBodyBounds = articulated ? bodyBounds.snapshot() : null;
 			ProjectedBounds capturedBladeBounds = articulated ? bladeBounds.snapshot() : null;
 			float[] capturedBodyMatrix = bodyEntry == null ? null : bodyEntry.get(new float[16]);
-			float[] capturedProjection = viewProjection == null ? null : viewProjection.get(new float[16]);
+			Matrix4f actualCameraMatrix = mc.gameRenderer.mainCamera().getViewRotationProjectionMatrix(new Matrix4f());
+			float[] capturedProjection = actualCameraMatrix.get(new float[16]);
+			Double effectiveProjectionFov = projectionFov(actualCameraMatrix);
+			float cameraReportedFov = mc.gameRenderer.mainCamera().getFov();
+			Double bodyProbeHeightPixels = null;
 			int capturedFov = mc.options.fov().get();
 			List<Point> bodyPoints = new ArrayList<>();
 			String failure = null;
 			try {
 				check(!mc.isPaused() && mc.player.isSpectator() && mc.options.getCameraType().isFirstPerson(), "The camera is an unpaused real spectator");
+				check(effectiveProjectionFov != null && Float.isFinite(cameraReportedFov)
+					&& Math.abs(effectiveProjectionFov - cameraReportedFov) < .01,
+					"The actual projection matrix and native camera agree on effective FOV [matrix=" + effectiveProjectionFov
+						+ ", camera=" + cameraReportedFov + ", slider=" + capturedFov + "]");
 				check(bodies > 0 && models > 0 && modelPose != null, "Native NPC body submission and animated model passes must both occur");
 				check(timeline != null && timeline.attackId == serverFrame.attackId() && timeline.acceptedTick == serverFrame.acceptedTick(), "The submitted model must belong to the accepted server form");
 				check(Math.abs(timeline.clientGameTick - serverFrame.gameTick()) <= 1, "Server observation must be contemporaneous with native extraction");
@@ -279,7 +287,13 @@ public final class MastersNpcCaptureProbe {
 					check(clear(mc, eye, point), "Stage and other bodies must not occlude the master");
 				}
 				double height = bodyPoints.stream().mapToDouble(Point::y).max().orElseThrow() - bodyPoints.stream().mapToDouble(Point::y).min().orElseThrow();
-				check(height * mc.getWindow().getHeight() >= 70, "The visible native NPC must be large enough to review its motion");
+				bodyProbeHeightPixels = height * mc.getWindow().getHeight();
+				Wildercord.LOGGER.info("MASTERS_NPC_PROJECTION name={} bodyHeightPx={} minimumPx=70 framebuffer={}x{} sliderFov={} effectiveProjectionFov={} cameraFov={} fovEffects={} eye={}",
+					name, bodyProbeHeightPixels, mc.getWindow().getWidth(), mc.getWindow().getHeight(), capturedFov,
+					effectiveProjectionFov, cameraReportedFov, mc.options.fovEffectScale().get(), eye);
+				check(bodyProbeHeightPixels >= 70, "The visible native NPC must be large enough to review its motion [pixels=" + bodyProbeHeightPixels
+					+ ", minimum=70, framebuffer=" + mc.getWindow().getWidth() + "x" + mc.getWindow().getHeight()
+					+ ", sliderFov=" + capturedFov + ", effectiveProjectionFov=" + effectiveProjectionFov + "]");
 				if (fullWarningCoverage) for (Vec3[] expected : expectedRays(requestedTick, serverFrame.attackId(), acceptedOrigin))
 					check(rays.stream().anyMatch(ray -> sameRay(ray, expected)), "Every actual warning segment must be extracted: " + phase);
 				check(expectedRays(requestedTick, serverFrame.attackId(), acceptedOrigin).size() == requiredWarningSegments, "The phase warning contract must match its geometry");
@@ -294,6 +308,7 @@ public final class MastersNpcCaptureProbe {
 			List<HandReceipt> capturedHands = List.copyOf(handReceipts);
 			var projectedRays = capturedRays.stream().map(ray -> projectRay(mc, ray, fullWarningCoverage)).toList();
 			String renderFailure = failure;
+			Double capturedBodyProbeHeight = bodyProbeHeightPixels;
 			net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image -> {
 				try (image) {
 					var path = FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name + ".png");
@@ -319,7 +334,7 @@ public final class MastersNpcCaptureProbe {
 						true, phase, requestedTick, image.getWidth(), image.getHeight(), capturedTimeline, serverFrame, capturedBodies, capturedModels,
 						capturedPose, eye, capturedPosition, List.copyOf(bodyPoints), bodyPixels, warnings, validationFailure,
 						articulated ? "segmented" : "rigid", capturedFrame, capturedModelsReceipts, capturedHands,
-						closeBody ? "body_close" : capturedTimeline.attackId == 9 ? "warning_ring" : articulated ? "warning_lane" : "legacy_wide", capturedFov,
+						closeBody ? "body_close" : capturedTimeline.attackId == 9 ? "warning_ring" : articulated ? "warning_lane" : "legacy_wide", capturedFov, effectiveProjectionFov, capturedBodyProbeHeight,
 						fullWarningCoverage ? "full_lane" : "visible_portion", capturedBodyBounds, capturedBladeBounds,
 						articulated ? "visible_native_model_cube_vertices_with_body_submit_matrix" : null,
 						articulated ? "resolved_native_item_extents_with_hand_receipt_and_vanilla_adult_offsets" : null,
@@ -406,6 +421,14 @@ public final class MastersNpcCaptureProbe {
 		}
 		return result;
 	}
+	/** The view rotation is orthonormal: its projected Y row norm is cot(vertical FOV / 2). */
+	private static Double projectionFov(Matrix4f viewRotationProjection) {
+		double x = viewRotationProjection.m01(), y = viewRotationProjection.m11(), z = viewRotationProjection.m21();
+		double focal = Math.sqrt(x * x + y * y + z * z);
+		if (!Double.isFinite(focal) || focal <= 0) return null;
+		return Math.toDegrees(2 * Math.atan(1 / focal));
+	}
+
 	private static boolean sameRay(Ray actual, Vec3[] expected) {
 		return actual.from.distanceToSqr(expected[0]) < .0001 && actual.to.distanceToSqr(expected[1]) < .0001;
 	}
