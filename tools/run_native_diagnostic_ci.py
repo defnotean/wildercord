@@ -31,7 +31,8 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "battlefields-generation": "diagnostic-battlefields-generation",
          "siltcrest-presentation": "diagnostic-siltcrest-presentation",
          "fungal-nursery": "diagnostic-fungal-nursery",
-         "wall-turn": "diagnostic-wall-turn"}
+         "wall-turn": "diagnostic-wall-turn",
+         "kiln-ring": "diagnostic-kiln-ring"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
@@ -50,6 +51,9 @@ SEEDS = {
                   "dev.wildercord.aura.WallTurnSafetyTest": None,
                   "dev.wildercord.aura.WallTurnCommitmentTest": None,
                   "dev.wildercord.aura.WallTurnCommitmentTest#relay": None},
+    "kiln-ring": {"dev.wildercord.aura.world.EmberKilnTest": None,
+                  "dev.wildercord.aura.world.EmberKilnPresentationTest": None,
+                  "dev.wildercord.aura.world.EmberKilnOpponentViewTest": None},
 }
 CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_catalog.json",
                 "src/gametest/resources/fabric.mod.json", "build.gradle", "gradle.properties",
@@ -228,7 +232,7 @@ def observed_seeds(log, case):
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
-            if case == "wall-turn" and entry in found:
+            if case in ("wall-turn", "kiln-ring") and entry in found:
                 issues.append("Repeated native world seed marker for " + entry)
             found.setdefault(entry, set()).add(seed)
         except (ValueError, KeyError, TypeError):

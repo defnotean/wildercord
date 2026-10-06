@@ -53,6 +53,7 @@ public final class EmberKilnPresentationTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerPlayer observer = server.getPlayerList().getPlayers().getFirst();
 				level = observer.level(); origin = new Vec3(observer.getBlockX() + .5, 181, observer.getBlockZ() + .5);
+				dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.aura.world.EmberKilnPresentationTest\",\"seed\":\"{}\"}", level.getSeed());
 				for (int x = -18; x <= 18; x++) for (int z = -18; z <= 18; z++)
 					level.setBlockAndUpdate(BlockPos.containing(origin).offset(x, -1, z), Blocks.POLISHED_DEEPSLATE.defaultBlockState());
 				observer.setGameMode(GameType.SPECTATOR);

@@ -68,6 +68,7 @@ public final class EmberKilnTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerPlayer observer = server.getPlayerList().getPlayers().getFirst();
 				level = observer.level(); origin = new Vec3(observer.getBlockX() + .5, 181, observer.getBlockZ() + .5);
+				dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.aura.world.EmberKilnTest\",\"seed\":\"{}\"}", level.getSeed());
 				for (int x = -28; x <= 48; x++) for (int z = -28; z <= 28; z++)
 					level.setBlockAndUpdate(BlockPos.containing(origin).offset(x, -1, z), Blocks.STONE.defaultBlockState());
 				observer.setGameMode(GameType.SPECTATOR); place(observer, 0, 2, 0);

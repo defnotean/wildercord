@@ -102,5 +102,15 @@
       "dev.wildercord.aura.WallTurnSafetyTest",
       "dev.wildercord.aura.WallTurnCommitmentTest"
     ]
+  },
+  "diagnostic-kiln-ring": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original Ember Kiln mechanics, presentation and opponent-view classes, retaining all native assertions and original world settings. Never release acceptance.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.aura.world.EmberKilnTest",
+      "dev.wildercord.aura.world.EmberKilnPresentationTest",
+      "dev.wildercord.aura.world.EmberKilnOpponentViewTest"
+    ]
   }
 }

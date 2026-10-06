@@ -70,6 +70,7 @@ public final class EmberKilnOpponentViewTest implements FabricClientGameTest {
 				"gamerule advance_time false", "time set 3000", "weather clear")) world.getServer().runCommand(command);
 			world.getServer().runOnServer(server -> {
 				player = server.getPlayerList().getPlayers().getFirst(); level = player.level();
+				dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.aura.world.EmberKilnOpponentViewTest\",\"seed\":\"{}\"}", level.getSeed());
 				origin = new Vec3(player.getBlockX() + .5, 181, player.getBlockZ() + .5);
 				for (int x = -18; x <= 18; x++) for (int z = -18; z <= 18; z++)
 					level.setBlockAndUpdate(BlockPos.containing(origin).offset(x, -1, z), Blocks.POLISHED_DEEPSLATE.defaultBlockState());

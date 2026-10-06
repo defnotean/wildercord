@@ -18,13 +18,22 @@ commit that changes **only that request file**. Set `sourceSha` to the full lowe
 must have exactly that one parent. Both commits are recorded in the evidence; the
 checkout is the exact PR head, whose code is identical to the requested source.
 
-The only case names are:
+The fixed case allowlist is defined in `tools/run_native_diagnostic_ci.py` and includes:
 
 - `wetland`: the original entire `WetlandGardenTest`, then the original entire
   `WetlandTerrainTest`, including the fixed failing seed `-7620530482425397421`,
   original habitat, search bounds and natural-presence assertion.
 - `aura-fx`: the original entire `WildercordAuraFxTest`, including Glow and all other
   subcases. Its original Fabric world settings and fixture settings are preserved.
+- `kiln-ring`: the three complete `EmberKilnTest`, `EmberKilnPresentationTest` and
+  `EmberKilnOpponentViewTest` classes, in their original Masters/full-descriptor
+  order. Each fixture passively records its actual world seed once, without RNG
+  draws or seed overrides. Missing, repeated, conflicting or foreign receipts
+  cannot pass; all three fixture sources are hashed in the existing provenance.
+  The existing diagnostic job preserves the six fixed Kiln PNG/JSON pairs from
+  the Masters artifact, unchanged, alongside request/result provenance under
+  `ember-kiln-native-diagnostic-<head>-<run>-<attempt>`. Images remain diagnostic
+  evidence requiring visual review; the 33-class Masters roster is unchanged.
 
 A later unrelated source commit makes the old request inactive. An explicit
 GitHub job rerun of the same still-valid request is allowed and records its new

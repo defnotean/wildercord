@@ -32,11 +32,21 @@ public final class RelayInheritedChecks {
 	private static TrainingDummy watched;
 	private static boolean retireBonus;
 	private static int bonusAttempts;
+	private static ResonanceProbe resonance;
 	public static void run(ClientGameTestContext c) {
 		if(!registered){registered=true;ServerLivingEntityEvents.ALLOW_DAMAGE.register((target,source,amount)->{
-			if(target==watched && source instanceof RelayDamageSource && source.is(DamageTypes.MAGIC)) {
-				bonusAttempts++;
-				if(retireBonus)Spellbooks.setCord(owner,new ItemStack(WildercordItems.ECHO_CORD));
+			if(target==watched && resonance!=null){
+				if(source instanceof RelayDamageSource relay){
+					boolean original=resonance.paid!=null&&relay.cast()==resonance.paid&&relay.cast().payment()==resonance.paid.payment()&&relay.cast().identity()==resonance.paid.identity()
+						&&relay.cast().caster==owner&&source.getEntity()==owner&&Spellbooks.cord(owner)==resonance.cord
+						&&source.getSourcePosition().equals(resonance.paid.incoming());
+					if(source.is(DamageTypes.FREEZE)){resonance.primaryAttempts++;resonance.primaryReceipt=original;resonance.primarySpent=damageSpent(relay.cast());}
+					if(source.is(DamageTypes.MAGIC)){
+						bonusAttempts++;resonance.bonusReceipt=original;resonance.bonusSpent=damageSpent(relay.cast());
+						if(retireBonus){Spellbooks.setCord(owner,new ItemStack(WildercordItems.ECHO_CORD));resonance.retired=!relay.admits(watched)&&!RelayCircles.pending(owner);}
+					}
+				}
+				if(resonance.callbacks++<8)resonanceEvidence("damage_callback:"+source.getMsgId()+":"+source.getClass().getSimpleName()+":"+amount);
 			}
 			return true;
 		});}
@@ -133,21 +143,40 @@ public final class RelayInheritedChecks {
 				}
 
 				for(boolean retire:List.of(false,true)){
+					// The same swordsman must finish the real per-player rest, even on a fresh dummy.
+					if(retire)c.waitTicks(ResonantRules.REST+1);
 					world.getServer().runOnServer(s->{
 						RelayCircleTest.prepare(owner,Runes.FROST);
 						owner.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(Items.DIAMOND_SWORD));
 						owner.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("starlit",AuraRules.FLOW,150,100,0));
-						watched=dummy(owner,.5,6.5);retireBonus=retire;bonusAttempts=0;
+						watched=dummy(owner,.5,6.5);retireBonus=retire;bonusAttempts=0;resonance=new ResonanceProbe();
+						resonance.reactions=ResonantStrikes.reactions();
+						resonanceEvidence("before_blade");
+						RelayCircleTest.check(!resonanceResting(),"The actual swordsman rest is over before the independent resonance case");
 						float blade=AuraCombat.projected(owner,watched,4,1,true);
 						RelayCircleTest.check(blade>0,"A real native projected blade wound primes the normal resonance ledger");
+						var primed=resonanceOpening();resonanceEvidence("after_blade");
+						RelayCircleTest.check(primed!=null&&primed.blade()&&primed.player().equals(owner.getUUID())&&primed.taken()==blade
+							&&ResonantRules.within(RelayCircles.now(owner),primed.tick(),ResonantRules.WINDOW),"The actual projected wound records a fresh blade opening for this target");
 						RelayCircleTest.directDown(owner);
+						var focus=((Map<?,?>)readField(RelayCircles.class,null,"FOCI")).get(owner);
+						RelayCircleTest.check(focus!=null,"Resonance fixture places its actual paid Relay focus");
+						resonance.paid=(Cast)readField(focus.getClass(),focus,"cast");resonance.cord=Spellbooks.cord(owner);
 					});c.waitTicks(2);
-					world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,watched.getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);
+					world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,watched.getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);
+						resonanceEvidence("committed");var view=owner.getAttached(RelayState.VIEW);
+						RelayCircleTest.check(view!=null&&view.phase()==RelayState.WARNING,"Primed resonance commits the actual warned Relay ray");
+					});c.waitTicks(8);
 					world.getServer().runOnServer(s->{
-						RelayCircleTest.check(bonusAttempts==1,"The actual resonance bonus keeps RelayDamageSource and the original paid receipt");
+						resonanceEvidence("after_release");
+						RelayCircleTest.check(resonance.primaryAttempts==1&&resonance.primaryReceipt,"Actual Frost damage keeps the original paid identity and connected body");
+						RelayCircleTest.check(bonusAttempts==1&&resonance.bonusReceipt,"The actual resonance bonus keeps RelayDamageSource and the original paid receipt");
+						RelayCircleTest.check(resonance.primarySpent>0&&resonance.bonusSpent>resonance.primarySpent,"Primary and bonus reserve damage from the same original payment");
+						RelayCircleTest.check(ResonantStrikes.reactions()==resonance.reactions+(retire?0:1),"Only the admitted complete resonance reaches its utility and completion callback");
+						if(retire)RelayCircleTest.check(resonance.retired,"Replacing the actual Cord inside the bonus callback retires that original receipt immediately");
 						RelayCircleTest.check(watched.hitSequence()==(retire?2:3),"Pre-damage callback can reject only the resonance bonus while retaining the earlier actual blade and frost hits");
 						if(retire)RelayCircleTest.check(!watched.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS)&&watched.getTicksFrozen()==0,"Retired resonance cannot resume utility or Frost follow-up writes");
-						watched.discard();watched=null;retireBonus=false;
+						watched.discard();watched=null;retireBonus=false;resonance=null;
 					});c.waitTicks(12);
 				}
 
@@ -172,8 +201,42 @@ public final class RelayInheritedChecks {
 				world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,behind[0].getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);
 				world.getServer().runOnServer(s->RelayCircleTest.check(behind[0].hitSequence()==0&&pet[0].getHealth()==pet[0].getMaxHealth(),"Protected nearest focus-lane body stops the unpiercing ray without receiving harm"));
 			} finally {world.getServer().runOnServer(s->CampConcordNative.config(original));}
-		} finally {owner=null;watched=null;retireBonus=false;}
+		} finally {owner=null;watched=null;retireBonus=false;resonance=null;}
 	}
+	private static final class ResonanceProbe {
+		Cast paid;ItemStack cord;int reactions,callbacks,primaryAttempts;
+		boolean primaryReceipt,bonusReceipt,retired;double primarySpent,bonusSpent;
+	}
+	private static Object resonanceLedger(){return readField(ResonantStrikes.class,null,"ledger");}
+	private static ResonantRules.Hit resonanceOpening(){
+		return (ResonantRules.Hit)((Map<?,?>)readField(ResonantRules.Ledger.class,resonanceLedger(),"pending")).get(watched.getUUID());
+	}
+	private static Long resonanceRest(){
+		return (Long)((Map<?,?>)readField(ResonantRules.Ledger.class,resonanceLedger(),"blades")).get(owner.getUUID());
+	}
+	private static boolean resonanceResting(){var rest=resonanceRest();return rest!=null&&ResonantRules.within(RelayCircles.now(owner),rest,ResonantRules.REST-1);}
+	private static double damageSpent(Cast cast){
+		var allowance=readField(cast.payment().getClass(),cast.payment(),"damage");
+		if(allowance==null)return 0;
+		var used=(Map<?,?>)readField(SpellDamageAllowance.class,allowance,"used");
+		var amount=(Number)used.get(watched.getUUID());return amount==null?0:amount.doubleValue();
+	}
+	private static void resonanceEvidence(String phase){
+		var value=new com.google.gson.JsonObject();var opening=resonanceOpening();var rest=resonanceRest();
+		value.addProperty("phase",phase);value.addProperty("retireBonus",retireBonus);value.addProperty("tick",RelayCircles.now(owner));
+		value.addProperty("bladeRestStarted",rest==null?-1:rest);value.addProperty("bladeRestUntil",rest==null?-1:rest+ResonantRules.REST);value.addProperty("bladeResting",resonanceResting());
+		value.addProperty("opening",opening==null?"none":opening.toString());value.addProperty("hits",watched.hitSequence());
+		value.addProperty("lastDamage",watched.lastDamage());value.addProperty("primaryAttempts",resonance.primaryAttempts);value.addProperty("bonusAttempts",bonusAttempts);
+		value.addProperty("primaryReceiptMatches",resonance.primaryReceipt);value.addProperty("bonusReceiptMatches",resonance.bonusReceipt);
+		value.addProperty("primaryReserved",resonance.primarySpent);value.addProperty("bonusReserved",resonance.bonusSpent);
+		value.addProperty("retiredInsideCallback",resonance.retired);value.addProperty("reactionsBefore",resonance.reactions);value.addProperty("reactionsNow",ResonantStrikes.reactions());
+		value.addProperty("aura",Aura.aura(owner));value.addProperty("auraStage",Aura.stage(owner));value.addProperty("auraEnabled",Aura.enabled(owner));value.addProperty("holdsWeapon",Aura.holdsWeapon(owner));
+		value.addProperty("focusRegistered",RelayCircles.pending(owner));
+		value.addProperty("remainingPaidCreatures",resonance.paid==null?-1:(int)readField(resonance.paid.payment().getClass(),resonance.paid.payment(),"guardedEntities"));
+		value.addProperty("remainingPaidBlocks",resonance.paid==null?-1:(int)readField(resonance.paid.payment().getClass(),resonance.paid.payment(),"guardedBlocks"));
+		System.out.println("WILDERCORD_RELAY_RESONANCE "+value);
+	}
+
 	private static final BlockPos FROST_CELL=new BlockPos(0,151,4);
 	private static final class FrostProbe {
 		final boolean elevated;final int blocks;

@@ -33,6 +33,32 @@ class RequestTests(unittest.TestCase):
             data = self.request(case=case, sourceSha="a" * 40 if case else None)
             self.assertEqual(diagnostic.parse_request(json.dumps(data)), data)
 
+    def test_kiln_diagnostic_upload_keeps_six_original_pairs_and_own_provenance(self):
+        workflow = (suites.ROOT / ".github/workflows/build.yml").read_text()
+        diagnostic_job = workflow.split("\n  native-diagnostic:\n", 1)[1]
+        step = diagnostic_job.split("      - name: Preserve original Kiln diagnostic frames (not release or visual acceptance)\n", 1)[1].split("      - name:", 1)[0]
+        names = ("ember_kiln_segmented_front_coil", "ember_kiln_segmented_front_release",
+                 "ember_kiln_segmented_front_recovery", "ember_kiln_segmented_wide_warning",
+                 "ember_kiln_opponent_segmented_fov90_normal_inward_warning",
+                 "ember_kiln_opponent_segmented_fov90_reduced_inward_warning")
+        images = ["build/run/clientGameTest/screenshots/" + name + ".png" for name in names]
+        pairs = ["build/run/clientGameTest/screenshots/" + name + suffix
+                 for name in names for suffix in (".png", ".json")]
+        paths = step.split("          path: |\n", 1)[1].split("          if-no-files-found:", 1)[0]
+        self.assertEqual([line.strip() for line in paths.splitlines()], pairs + [
+            diagnostic.OUTPUT + "/request-provenance.json", diagnostic.OUTPUT + "/diagnostic-result.json"])
+        self.assertIn("if: always() && steps.request.outputs.enabled == 'true' && hashFiles("
+                      + ", ".join("'" + path + "'" for path in images) + ") != ''", step)
+        self.assertIn("uses: actions/upload-artifact@v7", step)
+        self.assertIn("name: ember-kiln-native-diagnostic-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}", step)
+        self.assertIn("if-no-files-found: warn", step)
+        self.assertNotIn("run:", step)
+        masters = workflow.split("      - name: Preserve original Kiln diagnostics (not visual acceptance)\n", 1)[1].split("      - name:", 1)[0]
+        masters_paths = masters.split("          path: |\n", 1)[1].split("          if-no-files-found:", 1)[0]
+        self.assertEqual([line.strip() for line in masters_paths.splitlines()], pairs + [
+            "artifacts/review/masters-native-manifest.json"])
+        self.assertNotIn("name: ember-kiln-native-diagnostic-", masters)
+
     def test_schema_types_unknowns_commands_paths_seeds_and_duplicates_rejected(self):
         invalid = [[], None, {}, self.request(schemaVersion=True), self.request(schemaVersion=2),
                    self.request(case=[]), self.request(case=""), self.request(case="masters"),
@@ -41,6 +67,9 @@ class RequestTests(unittest.TestCase):
                    self.request(case="diagnostic-wall-turn"), self.request(case="wall-turn#relay"),
                    self.request(case="dev.wildercord.aura.WallTurnLessonTest"),
                    self.request(case="wall-turn; touch /tmp/injected"),
+                   self.request(case="diagnostic-kiln-ring"), self.request(case="kiln-ring#inward"),
+                   self.request(case="dev.wildercord.aura.world.EmberKilnTest"),
+                   self.request(case="kiln-ring; touch /tmp/injected"),
                    self.request(sourceSha="a" * 39), self.request(sourceSha="A" * 40),
                    self.request(sourceSha="HEAD"), self.request(sourceSha=True),
                    self.request(case=None), self.request(sourceSha=None)]
@@ -152,7 +181,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(set(result["observedWorldSeeds"]), set(diagnostic.SEEDS[case]))
 
     def test_failed_missing_mixed_truncated_and_replayed_evidence_never_pass(self):
-        for case in ("aura-fx", "wall-turn"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring"):
             self.assert_invalid_evidence_never_passes(case)
 
     def assert_invalid_evidence_never_passes(self, case):
@@ -226,6 +255,52 @@ class EvidenceTests(unittest.TestCase):
                 diagnostic.run(diagnostic.FIXED_ENV)
             self.assertEqual(launch.call_count, 1)
 
+    def test_kiln_requires_exactly_one_receipt_for_each_original_world(self):
+        data = self.fixture("kiln-ring")
+        expected = {entry: None for entry in (
+            "dev.wildercord.aura.world.EmberKilnTest",
+            "dev.wildercord.aura.world.EmberKilnPresentationTest",
+            "dev.wildercord.aura.world.EmberKilnOpponentViewTest",
+        )}
+        self.assertEqual(diagnostic.SEEDS["kiln-ring"], expected)
+        good = self.log(data)
+        for index, entry in enumerate(expected):
+            good = good.replace(json.dumps({"suite": entry, "seed": "1"}),
+                                json.dumps({"suite": entry, "seed": str(index + 10)}))
+        self.assertEqual(self.collect(data, good)["diagnosticOutcome"], "passed")
+        for index, entry in enumerate(expected):
+            marker = diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": str(index + 10)})
+            invalid = (good.replace(marker, ""), good + marker + "\n",
+                       good + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": "99"}) + "\n")
+            for log in invalid:
+                with self.subTest(entry=entry, log=log):
+                    self.assertEqual(self.collect(data, log)["diagnosticOutcome"], "unverified")
+        for foreign in ("dev.wildercord.aura.WallTurnLessonTest",
+                        "dev.wildercord.aura.world.EmberKilnOpponentViewTest#inward"):
+            log = good + diagnostic.SEED_PREFIX + json.dumps({"suite": foreign, "seed": "1"}) + "\n"
+            self.assertEqual(self.collect(data, log)["diagnosticOutcome"], "unverified")
+
+    def test_kiln_rejects_replayed_request_head_run_and_attempt_evidence(self):
+        data = self.fixture("kiln-ring")
+        for section, key, value in (("request", "sourceSha", "d" * 40),
+                                    ("provenance", "headSha", "d" * 40),
+                                    ("provenance", "runId", "456"),
+                                    ("provenance", "runAttempt", "2")):
+            stale = copy.deepcopy(data)
+            stale[section][key] = value
+            with self.subTest(section=section, key=key):
+                self.assertEqual(self.collect(data, self.log(stale))["diagnosticOutcome"], "unverified")
+        duplicate = self.log(data) + suites.REQUEST_PREFIX + json.dumps(diagnostic.receipt(data)) + "\n"
+        self.assertEqual(self.collect(data, duplicate)["diagnosticOutcome"], "unverified")
+
+    def test_unique_seed_receipt_rule_does_not_change_other_cases(self):
+        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring"}:
+            data = self.fixture(case)
+            entry, seed = next(iter(diagnostic.SEEDS[case].items()))
+            repeated = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) + "\n"
+            with self.subTest(case=case):
+                self.assertEqual(self.collect(data, repeated)["diagnosticOutcome"], "passed")
+
     def test_catalog_and_launcher_reuse_whole_classes_with_diagnostic_scope(self):
         for case, group in diagnostic.CASES.items():
             selection = suites.select_entries(suite=group)
@@ -249,8 +324,21 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
     def test_general_manifest_cannot_relabel_diagnostic_as_focused_or_full(self):
-        for case in ("aura-fx", "wall-turn"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring"):
             self.assert_manifest_cannot_relabel_diagnostic(case)
+
+    def test_kiln_selects_only_three_whole_classes_in_original_order(self):
+        self.assertEqual(diagnostic.CASES["kiln-ring"], "diagnostic-kiln-ring")
+        entries = ["dev.wildercord.aura.world.EmberKilnTest",
+                   "dev.wildercord.aura.world.EmberKilnPresentationTest",
+                   "dev.wildercord.aura.world.EmberKilnOpponentViewTest"]
+        selection = suites.select_entries(suite="diagnostic-kiln-ring")
+        self.assertEqual(selection, {"kind": "diagnostic", "name": "diagnostic-kiln-ring",
+                                     "count": 3, "entries": entries})
+        masters = suites.select_entries(suite="masters")
+        self.assertEqual(masters["count"], 33)
+        for source in (suites.select_entries(), masters):
+            self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
     def assert_manifest_cannot_relabel_diagnostic(self, case):
         data = self.fixture(case)
@@ -264,7 +352,7 @@ class EvidenceTests(unittest.TestCase):
                 self.assertNotEqual(manifest.get("focusedClientGate"), "passed")
 
     def test_collect_preserves_evidence_after_head_advances_or_origin_fails(self):
-        for case in ("aura-fx", "wall-turn"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring"):
             self.assert_collect_preserves_evidence(case)
 
     def assert_collect_preserves_evidence(self, case):

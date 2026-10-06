@@ -19,11 +19,13 @@ public final class EarthFlightTest implements FabricClientGameTest {
  private static int cameraId;
  @Override public void runTest(ClientGameTestContext c) {
   var previous=c.computeOnClient(mc->MagicQuality.own);
+  var previousCamera=c.computeOnClient(mc->mc.options.getCameraType());
   try(var w=c.worldBuilder().create()) {
    c.waitTicks(40);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 6000");w.getServer().runCommand("weather clear");
    w.getServer().runCommand("fill -16 100 -12 16 100 40 polished_deepslate");w.getServer().runCommand("fill -12 101 32 12 109 32 gray_concrete");
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);var camera=net.minecraft.world.entity.EntityTypes.TEXT_DISPLAY.create(s.overworld(),net.minecraft.world.entity.EntitySpawnReason.COMMAND);camera.snapTo(3,102,10,90,0);camera.setNoGravity(true);camera.setInvisible(true);s.overworld().addFreshEntity(camera);cameraId=camera.getId();});c.waitTicks(15);
-   c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
+   c.runOnClient(mc->{mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();
+    System.out.println("WILDERCORD_EARTH_FLIGHT_VIEW "+new com.google.gson.Gson().toJson(Map.of("phase","setup","incomingCameraType",previousCamera.name(),"cameraType",mc.options.getCameraType().name())));});
    var empty=c.computeOnClient(mc->snapshot(mc,"earth_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
    check(EarthForms.RUNES.size()==33,"Explicit complete earth roster");
    check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("earth")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(EarthForms.RUNES)),"Authored runtime earth roster matches");
@@ -44,7 +46,7 @@ public final class EarthFlightTest implements FabricClientGameTest {
    }
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(8);
    c.runOnClient(mc->check(((Set<?>)field(null,BoltComets.class,"DRAWN")).isEmpty(),"Removed entity IDs retire independently of particle lifetime"));
-  }finally{c.runOnClient(mc->MagicQuality.own=previous);}
+  }finally{c.runOnClient(mc->{MagicQuality.own=previous;mc.options.setCameraType(previousCamera);});}
  }
  static boolean authoredNear(net.minecraft.client.Minecraft mc,RuneBolt bolt){
   // Two emission ticks plus the authored body offset; network movement may arrive after the latest client emission.
@@ -94,21 +96,63 @@ public final class EarthFlightTest implements FabricClientGameTest {
   var live=particles(mc.particleEngine).stream().filter(p->p.isAlive() && (p instanceof EarthParticle || p instanceof MaterialParticle)
     && ((Number)field(p,Particle.class,"lifetime")).intValue()==5).toList();
   check(live.stream().anyMatch(p->p instanceof EarthParticle),"Actual production earth retained for close view");
-  mc.particleEngine.clearParticles();var empty=capturePixels(mc,name+"_background");
-  for(var particle:live)mc.particleEngine.add(particle);
-  mc.particleEngine.tick();
-  var drawn=capturePixels(mc,name);mc.setCameraEntity(mc.player);
-  return empty.thenCombine(drawn,(a,b)->{
-   int changed=0;for(int i=0;i<a.length;i++){int x=a[i],y=b[i];int d=Math.abs((x>>16&255)-(y>>16&255))+Math.abs((x>>8&255)-(y>>8&255))+Math.abs((x&255)-(y&255));if(d>20)changed++;}
-   check(changed>10,"Isolated close flight changes visible pixels: "+name+" changed="+changed);return (Void)null;
-  });
+  var views=new ArrayList<CloseViewReceipt>(2);
+  try {
+   mc.particleEngine.clearParticles();var empty=capturePixels(mc,name+"_background",camera,bolt,views);
+   for(var particle:live)mc.particleEngine.add(particle);
+   mc.particleEngine.tick();
+   var drawn=capturePixels(mc,name,camera,bolt,views);
+   return empty.thenCombine(drawn,(a,b)->{
+    check(a.length==b.length,"Matched close-view pixel dimensions: "+name);
+    int changed=0;for(int i=0;i<a.length;i++){int x=a[i],y=b[i];int d=Math.abs((x>>16&255)-(y>>16&255))+Math.abs((x>>8&255)-(y>>8&255))+Math.abs((x&255)-(y&255));if(d>20)changed++;}
+    if(changed<=10 || name.equals("earth_view_shield"))System.out.println("WILDERCORD_EARTH_FLIGHT_VIEW "+new com.google.gson.Gson().toJson(Map.of("name",name,"phase","comparison","changedPixels",changed,"emptyPixels",a.length,"drawnPixels",b.length,"views",views)));
+    check(changed>10,"Isolated close flight changes visible pixels: "+name+" changed="+changed);return (Void)null;
+   });
+  } finally {mc.setCameraEntity(mc.player);}
  }
  static java.util.concurrent.CompletableFuture<int[]> capturePixels(net.minecraft.client.Minecraft mc,String name){
+  return capturePixels(mc,name,null,null,null);
+ }
+ private static java.util.concurrent.CompletableFuture<int[]> capturePixels(net.minecraft.client.Minecraft mc,String name,net.minecraft.world.entity.Entity reviewCamera,RuneBolt bolt,List<CloseViewReceipt> views){
   var result=new java.util.concurrent.CompletableFuture<int[]>();
-  mc.gameRenderer.update(net.minecraft.client.DeltaTracker.ONE);mc.gameRenderer.extract(net.minecraft.client.DeltaTracker.ONE,true);mc.gameRenderer.render();
+  mc.gameRenderer.update(net.minecraft.client.DeltaTracker.ONE);
+  if(reviewCamera!=null){
+   var view=closeViewReceipt(mc,name,reviewCamera,bolt);views.add(view);
+   boolean aligned=mc.options.getCameraType()==net.minecraft.client.CameraType.FIRST_PERSON
+    && mc.gameRenderer.mainCamera().entity()==reviewCamera && !view.detached()
+    && Math.abs(net.minecraft.util.Mth.wrapDegrees(view.yaw()-90))<.001F && Math.abs(view.pitch())<.001F;
+   boolean matched=views.size()==1 || views.getFirst().position().equals(view.position())
+    && views.getFirst().yaw()==view.yaw() && views.getFirst().pitch()==view.pitch();
+   if(!aligned || !matched)System.out.println("WILDERCORD_EARTH_FLIGHT_VIEW "+new com.google.gson.Gson().toJson(views));
+   check(aligned,"Actual review camera uses the authored first-person side view: "+name);
+   check(matched,"Matched actual camera pose across close-view captures: "+name);
+  }
+  mc.gameRenderer.extract(net.minecraft.client.DeltaTracker.ONE,true);mc.gameRenderer.render();
   com.mojang.blaze3d.systems.RenderSystem.getDevice().createCommandEncoder().submit();
   net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image->{try(image){var path=java.nio.file.Path.of("screenshots",name+".png");java.nio.file.Files.createDirectories(path.getParent());image.writeToFile(path);result.complete(image.getPixels());}catch(Throwable e){result.completeExceptionally(e);}});
   return result;
+ }
+ // Passive receipts of the existing camera and particles after the original update. No extra tick or extract.
+ private record ParticleView(String type,int age,int lifetime,float alpha,Vec3 position,double reach,boolean inFrustum){}
+ private record CloseViewReceipt(String name,String phase,long gameTime,int boltId,int boltAge,Vec3 boltPosition,Vec3 boltVelocity,
+  String cameraType,int expectedEntityId,int actualEntityId,boolean detached,Vec3 expectedPosition,Vec3 position,float yaw,float pitch,
+  int fov,String ownQuality,String otherQuality,boolean reducedFlash,int particleCount,int positiveAlphaInFrustum,List<ParticleView> particles){}
+ private static CloseViewReceipt closeViewReceipt(net.minecraft.client.Minecraft mc,String name,net.minecraft.world.entity.Entity expected,RuneBolt bolt){
+  var camera=mc.gameRenderer.mainCamera();var samples=new ArrayList<ParticleView>();int count=0,visible=0;
+  // Match the native LevelExtractor's expanded copy; never modify the camera's own frustum.
+  var particleFrustum=new net.minecraft.client.renderer.culling.Frustum(camera.getCullFrustum()).offset(-3.0F);
+  for(var particle:particles(mc.particleEngine)){
+   if(!(particle instanceof EarthParticle || particle instanceof MaterialParticle))continue;
+   count++;var position=at(particle);double reach=((SigilGroup.Extent)particle).reach();
+   boolean inFrustum=particleFrustum.isVisible(new net.minecraft.world.phys.AABB(position.x-reach,position.y-reach,position.z-reach,position.x+reach,position.y+reach,position.z+reach));
+   float alpha=((Number)field(particle,SingleQuadParticle.class,"alpha")).floatValue();
+   if(particle.isAlive() && alpha>0 && inFrustum)visible++;
+   if(samples.size()<24)samples.add(new ParticleView(particle.getClass().getSimpleName(),
+    ((Number)field(particle,Particle.class,"age")).intValue(),((Number)field(particle,Particle.class,"lifetime")).intValue(),alpha,position,reach,inFrustum));
+  }
+  return new CloseViewReceipt(name,"after_update_before_extract",mc.level.getGameTime(),bolt.getId(),bolt.tickCount,bolt.position(),bolt.getDeltaMovement(),
+   mc.options.getCameraType().name(),expected.getId(),camera.entity()==null?-1:camera.entity().getId(),camera.isDetached(),expected.position(),camera.position(),camera.yRot(),camera.xRot(),
+   mc.options.fov().get(),MagicQuality.own.name(),MagicQuality.others.name(),MagicQuality.reducedFlash,count,visible,List.copyOf(samples));
  }
  static java.util.concurrent.CompletableFuture<Void> snapshot(net.minecraft.client.Minecraft mc,String name) {
   // Capture this exact production-particle step, without extra screenshot helper ticks.
