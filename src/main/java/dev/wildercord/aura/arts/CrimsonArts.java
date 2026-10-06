@@ -342,7 +342,8 @@ public final class CrimsonArts {
 	// ------------------------------------------------------------------ V. Crimson Moon
 
 	static boolean crimsonMoon(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
+		ServerLevel level = released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -374,6 +375,7 @@ public final class CrimsonArts {
 			double d = 1.2 + k * 1.2;
 			int delay = k;
 			Scheduler.later(1 + delay, () -> {
+				if (!released.valid()) return;
 				Vec3 c = feet.add(0, 0.35, 0);
 				world.slash(c, ArtKit.UP, look, color, d, span, 0.42, 1, 12);
 				world.bare().slash(c.add(0, 0.02, 0), ArtKit.UP, look, PALE, d * 0.97, span * 0.94, 0.1, 1, 10);
@@ -386,15 +388,17 @@ public final class CrimsonArts {
 		for (LivingEntity foe : ArtKit.arc(player, context.struck(), ArtRules.MOON_RADIUS, ArtRules.MOON_DEGREES, ArtRules.MOON_TARGETS)) {
 			int index = n++;
 			Scheduler.later(1 + Math.min(4, (int) (foe.distanceTo(player) / 1.2)), () -> {
-				if (!foe.isAlive() || !player.isAlive()) {
+				if (!released.valid() || !foe.isAlive() || foe.isRemoved() || foe.level() != level) {
 					return;
 				}
 				float took = hits.strike(foe, ArtRules.MOON_FACTOR, AuraFxRules.Weight.GRAND);
+				// The common hit may finish after an event retires its owner; Moon-specific work must not resume.
+				if (!released.valid() || foe.isRemoved() || foe.level() != level) return;
 				drink.from(foe, took);
 				if (foe.isAlive()) {
 					gash(player, foe, index % 2 == 0);
 					splash(player, foe.getBoundingBox().getCenter(), 1.2);
-					ArtKit.wound(hits, foe, ArtRules.MOON_BLEED, ArtRules.MOON_BLEEDS, drink, CrimsonArts::drip);
+					ArtKit.wound(hits, foe, ArtRules.MOON_BLEED, ArtRules.MOON_BLEEDS, drink, CrimsonArts::drip, released);
 				}
 			});
 		}

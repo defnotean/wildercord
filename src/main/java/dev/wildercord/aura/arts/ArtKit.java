@@ -844,6 +844,34 @@ public final class ArtKit {
 		}
 	}
 
+	/**
+	 * An opt-in wound owned by an already released original body. Moon's wounds outlive weapon changes and
+	 * physical recovery, but never a death, disconnect or world departure. Other wound callers retain the
+	 * original helper above. Each hit still evaluates the ordinary live party/team/duel/trial admission.
+	 */
+	public static void wound(Hits hits, LivingEntity foe, double factor, int times, Drink drink,
+			java.util.function.Consumer<LivingEntity> drip, ReleasedArtOwner released) {
+		ServerPlayer player = hits.player();
+		ServerLevel level = released.level();
+		if (!released.owns(player) || !released.valid() || foe == null || !foe.isAlive() || foe.isRemoved()
+			|| foe.level() != level || times <= 0 || factor <= 0 || !harmable(player, foe)) return;
+		Reactions.mark(foe, Reactions.Mark.BLEEDING, times * ArtRules.BLEED_PERIOD + 10);
+		Vec3[] last = {foe.position()};
+		for (int i = 1; i <= times; i++) {
+			Scheduler.later(i * ArtRules.BLEED_PERIOD, () -> {
+				if (!released.valid() || !foe.isAlive() || foe.isRemoved() || foe.level() != level || !harmable(player, foe)) return;
+				boolean moving = foe.position().distanceToSqr(last[0]) > 0.04;
+				last[0] = foe.position();
+				float taken = hits.raw(foe, weapon(player) * factor * hits.scaling() * (moving ? ArtRules.BLEED_MOVING : 1.0), null);
+				// Do not require survival: an admitted lethal wound still drinks its actual health loss.
+				if (!released.valid() || foe.isRemoved() || foe.level() != level) return;
+				if (drip != null) drip.accept(foe);
+				if (!released.valid() || foe.isRemoved() || foe.level() != level) return;
+				if (drink != null) drink.from(foe, taken);
+			});
+		}
+	}
+
 	// ------------------------------------------------------------------ moving the swordsman
 
 	/** Where a dash along {@code dir} can go ({@link AuraStep#path}: never through anything solid, over a ward's edge, into lava or fire). */

@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +37,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-/** Native movement, damage, charging and cancellation contracts, run from the existing Masters trial suite. */
+/**
+ * Native movement, damage, charging and cancellation contracts, run from the existing Masters trial suite.
+ * The actual connected client owns every charge and the death/respawn probe. Fake guests are passive
+ * roster/spread witnesses; a separate actual-client trial checks an unaccepted charging bystander.
+ */
 final class MasterPursuitChecks {
 	private static final class Challenger extends FakePlayer {
 		Challenger(ServerLevel level, String name) { super(level, new GameProfile(UUID.randomUUID(), name)); }
@@ -69,7 +74,8 @@ final class MasterPursuitChecks {
 				for (int x = -30; x <= 55; x++) for (int z = -30; z <= 30; z++)
 					player.level().setBlockAndUpdate(BlockPos.containing(origin).offset(x, -1, z), Blocks.STONE.defaultBlockState());
 			});
-			for (int discipline : new int[] {MastersRules.EMBER, MastersRules.GALE, MastersRules.STONE}) {
+				unacceptedCharge(world);
+				for (int discipline : new int[] {MastersRules.EMBER, MastersRules.GALE, MastersRules.STONE}) {
 				school = discipline;
 				scenario(context, world, Answer.HOLD, discipline == MastersRules.GALE ? 8 : 1);
 			}
@@ -83,7 +89,7 @@ final class MasterPursuitChecks {
 		// A new Master does not reset the shared target UUID's anti-lockout window.
 		if (previouslyInterrupted && interrupts(answer)) context.waitTicks(Statuses.INTERRUPT_GAP);
 		targetDistance = answer == Answer.HOLD ? school == MastersRules.GALE ? 9 : school == MastersRules.EMBER ? 7 : 6 : 6;
-		world.getServer().runOnServer(server -> setup(server.getPlayerList().getPlayers().getFirst(), count, answer == Answer.TARGET_DEATH, true));
+			world.getServer().runOnServer(server -> setup(server.getPlayerList().getPlayers().getFirst(), count, true));
 		if (answer == Answer.APPROACH) {
 			context.waitTicks(4);
 			world.getServer().runOnServer(server -> {
@@ -181,7 +187,7 @@ final class MasterPursuitChecks {
 			float health = caster.getHealth();
 			master.customServerAiStep(player.level());
 			check(caster.getHealth() == health, "Same-tick re-entry cannot repeat damage");
-			check(bystander.getHealth() == 200, "A nearby unaccepted caster is never pursued or hit");
+				check(bystander.getHealth() == 200, "A nearby passive bystander is never pursued or hit");
 			for (var guest : guests) if (guest != caster) check(guest.getHealth() == 200, "Eight-player spread cannot multiply this targeted strike");
 			check(master.auraRemaining() == MastersRules.AURA_MAX - MasterPursuitRules.school(school).cost(), "Completed, interrupted and baited attempts keep their Aura payment");
 		});
@@ -195,12 +201,27 @@ final class MasterPursuitChecks {
 			check(!master.state(AuraFighter.WINDUP) && !master.guarding(), "A full thirty-tick exposed recovery follows the strike");
 			check(master.auraRemaining() == MastersRules.AURA_MAX - MasterPursuitRules.school(school).cost(), "Recovery cannot be cancelled into another paid dash");
 		});
-		world.getServer().runOnServer(server -> cleanup(server.getPlayerList().getPlayers().getFirst()));
+			int[] respawnedEntity = {-1};
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				if (answer == Answer.TARGET_DEATH) {
+					check(player == caster && !player.isAlive(), "The pursued connected body really died before cleanup");
+					player.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
+					ServerPlayer replacement = server.getPlayerList().getPlayer(player.getUUID());
+					check(replacement != null && replacement != player && replacement.isAlive() && player.isRemoved()
+						&& replacement.connection.player == replacement, "Native respawn replaces the dead body on its actual connection");
+					respawnedEntity[0] = replacement.getId();
+					player = replacement;
+				}
+				cleanup(player);
+			});
+			if (answer == Answer.TARGET_DEATH) context.waitFor(mc -> mc.player != null
+				&& mc.player.getId() == respawnedEntity[0] && mc.player.isAlive(), 40);
 	}
 
 	private void resourceAndFeintChecks(ClientGameTestContext context, TestSingleplayerContext world) {
 		targetDistance = 6;
-		world.getServer().runOnServer(server -> setup(server.getPlayerList().getPlayers().getFirst(), 1, false, false));
+			world.getServer().runOnServer(server -> setup(server.getPlayerList().getPlayers().getFirst(), 1, false));
 		context.waitTicks(4);
 		world.getServer().runOnServer(server -> {
 			check(master.onGround() && master.started(), "Resource fixture grounds under actual AI before a deliberate pause");
@@ -314,16 +335,21 @@ final class MasterPursuitChecks {
 			.filter(bolt -> bolt.getOwner() == owner).toList();
 	}
 
-	private void setup(ServerPlayer player, int count, boolean fakeCaster, boolean heldCharge) {
-		absorptionCapacityBefore = player.getAttribute(Attributes.MAX_ABSORPTION).getBaseValue();
+		/** Fake guests are passive roster witnesses; only the actual connected body may admit a held action. */
+		private void prepareClient(ServerPlayer player) {
+			absorptionCapacityBefore = player.getAttribute(Attributes.MAX_ABSORPTION).getBaseValue();
 		player.setGameMode(GameType.SURVIVAL); player.removeAllEffects(); player.setAbsorptionAmount(0);
 		player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200); player.setHealth(200);
 		player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
 		for (EquipmentSlot slot : List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)) player.setItemSlot(slot, ItemStack.EMPTY);
 		player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE); player.setAttached(AuraAttachments.AURA, AuraAttachments.Data.NONE);
-		place(player, fakeCaster ? 6 : 0, 6);
-		for (int i = 1; i < count; i++) guests.add(add(player.level(), "PursuitAlly" + i, 6, -8 + i * 2));
-		caster = fakeCaster ? guests.getFirst() : player;
+		}
+
+		private void setup(ServerPlayer player, int count, boolean heldCharge) {
+			prepareClient(player);
+			place(player, 0, 6);
+			for (int i = 1; i < count; i++) guests.add(add(player.level(), "PursuitAlly" + i, 6, -8 + i * 2));
+			caster = player;
 		place(caster, 0, targetDistance);
 		bystander = add(player.level(), "PursuitBystander", 2, 7);
 		master = AuraWorld.SWORD_MASTER.create(player.level(), EntitySpawnReason.COMMAND);
@@ -333,11 +359,58 @@ final class MasterPursuitChecks {
 		enroll(player); for (var guest : guests) enroll(guest);
 		probePath(player.level());
 		if (heldCharge) charge(caster);
-		charge(bystander); // A genuine outside charge must never be an admitted opportunity.
 		check(SwordMaster.ready(player) == 1, "Every challenger explicitly accepts the trial");
 		master.setTarget(caster);
-		check(master.challengerCount() == count && !master.challengers().contains(bystander.getUUID()), "The enrolled party excludes the unaccepted caster");
-	}
+			check(master.challengerCount() == count && !master.challengers().contains(bystander.getUUID()), "The enrolled party excludes the passive bystander");
+		}
+
+		/** The real client's held spell is an opening in every respect except consent to this already active trial. */
+		private void unacceptedCharge(TestSingleplayerContext world) {
+			school = MastersRules.GALE;
+			long[] groundedAt = new long[1];
+			world.getServer().runOnServer(server -> {
+				caster = server.getPlayerList().getPlayers().getFirst(); prepareClient(caster); place(caster, 0, 6);
+				var enrolled = add(caster.level(), "PursuitEnrolled", 6, 6); guests.add(enrolled);
+				bystander = add(caster.level(), "PursuitBystander", 2, 7);
+				master = AuraWorld.SWORD_MASTER.create(caster.level(), EntitySpawnReason.COMMAND);
+				check(master != null, "Unaccepted-caster Master is constructible");
+				master.setDiscipline(school); master.snapTo(origin.x, origin.y, origin.z, 0, 0); caster.level().addFreshEntity(master);
+				enroll(enrolled);
+				check(SwordMaster.ready(enrolled) == 1, "The passive challenger explicitly locks its own trial");
+				master.setTarget(enrolled);
+				charge(caster);
+			});
+			world.getServer().waitFor(server -> {
+				if (!master.started() || !master.onGround()) return false;
+				groundedAt[0] = caster.level().getGameTime();
+				master.setNoAi(true); // Pause after natural grounding while the initial recovery elapses.
+				return true;
+			}, 20);
+			world.getServer().waitFor(server -> caster.level().getGameTime() >= groundedAt[0] + 22, 25);
+			world.getServer().runOnServer(server -> {
+				long now = caster.level().getGameTime();
+				master.setNoAi(false);
+				check(MasterPursuit.liveCharge(caster, now)
+					&& MasterPursuitRules.observedCharge(now - caster.getAttached(WildercordAttachments.CHARGE).start()),
+					"The actual unenrolled connected client holds an observed native charge");
+				check(master.onGround() && master.hasLineOfSight(caster)
+					&& MasterPursuitRules.eligible(school, master.distanceTo(caster), caster.getY() - master.getY(), master.auraRemaining(), now, 0)
+					&& MasterPursuit.safePath(master, caster.level(), new Vec3(0, 0, 4)), "The unenrolled charge has otherwise legal range, resources and a clear runway");
+				check(master.started() && master.challengerCount() == 1 && !master.challengers().contains(caster.getUUID())
+					&& !master.canHarmParticipant(caster), "Only the consenting witness belongs to the active locked trial");
+				check(MasterPursuit.prepare(master, caster, school, master.auraRemaining(), now, 0) == null,
+					"The real charge cannot bypass participant admission");
+				check(master.auraRemaining() == MastersRules.AURA_MAX, "Refused pursuit admission spends no Aura");
+				master.setTarget(caster); // Natural AI must reject even an externally selected unaccepted caster.
+				groundedAt[0] = now;
+			});
+			world.getServer().waitFor(server -> caster.level().getGameTime() > groundedAt[0], 5);
+			world.getServer().runOnServer(server -> {
+				check(master.getTarget() != caster && !master.pursuitPending() && caster.getHealth() == 200,
+					"Natural AI retargets its participant and leaves the unaccepted real caster unharmed");
+				cleanup(caster);
+			});
+		}
 
 	private void awaitBegin(TestSingleplayerContext world) {
 		world.getServer().waitFor(server -> {
@@ -358,7 +431,9 @@ final class MasterPursuitChecks {
 		}, 45);
 	}
 
-	private void charge(ServerPlayer player) {
+		private void charge(ServerPlayer player) {
+			check(player.level().getServer().getPlayerList().getPlayer(player.getUUID()) == player
+				&& player.connection != null && player.connection.player == player, "Native Charging belongs to the exact connected player body");
 		Charging.interrupt(player);
 		Spellbooks.setCord(player, new ItemStack(WildercordItems.TWINE_CORD));
 		List<String> runes = List.of(Runes.BOLT.id(), Runes.HARM.id());
@@ -370,7 +445,8 @@ final class MasterPursuitChecks {
 			+ ", activeRunes=" + active + ", mana=" + Spellbooks.mana(player) + ", school=" + school + ", time=" + player.level().getGameTime() + ", readyAt=" + Spellbooks.readyAt(player, 0)
 			+ ", priorCharge=" + player.hasAttached(WildercordAttachments.CHARGE) + ", alive=" + player.isAlive()
 			+ ", spectator=" + player.isSpectator() + ", castLocked=" + dev.wildercord.cast.CastLock.locked(player)
-			+ ", artCommitted=" + dev.wildercord.aura.MastersArts.committed(player) + "]";
+				+ ", artCommitted=" + dev.wildercord.aura.MastersArts.committed(player)
+				+ ", connectedBody=" + (player.level().getServer().getPlayerList().getPlayer(player.getUUID()) == player) + "]";
 		check(active.equals(runes), "The equipped fixture exposes both canonical registered runes" + receipt);
 		Charging.request(player, 0, true);
 		check(player.hasAttached(WildercordAttachments.CHARGE), "The native Charging entrypoint accepted this held spell" + receipt);

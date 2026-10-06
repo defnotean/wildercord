@@ -5,6 +5,7 @@ import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.AuraGuard;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.cast.CastEngine;
+import dev.wildercord.cast.Wards;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import dev.wildercord.cast.Effects;
@@ -33,6 +34,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -59,6 +61,9 @@ public final class EmberKilnTest implements FabricClientGameTest {
 	private Answer answer;
 	private int callbacks;
 	private EmberKiln accepted;
+	private Vec3 foresightPosition;
+	private record SightState(Object ward, int charges, long until) {}
+	private SightState admittedSight;
 
 	@Override public void runTest(ClientGameTestContext context) {
 		registerCallback();
@@ -93,7 +98,12 @@ public final class EmberKilnTest implements FabricClientGameTest {
 				case CALLBACK_ENTRY -> place(party.get(1), -2, 0, 0);
 				case OUTER -> place(target, 6.1, 0, 0);
 				case GUARD -> guard();
-				case ABSORPTION -> target.setAbsorptionAmount(40);
+				case ABSORPTION -> {
+					// This freshly created challenger is discarded by cleanup; no live player's attributes change.
+					target.getAttribute(Attributes.MAX_ABSORPTION).setBaseValue(40);
+					target.setAbsorptionAmount(40);
+					check(close(target.getAbsorptionAmount(), 40), "The native fixture admits all 40 absorption before the pulse: " + target.getAbsorptionAmount());
+				}
 				case INSERT_COVER -> cover(2, 0, true);
 				case REMOVE_COVER -> { cover(0, 2, false); place(target, 0, 0, 4); }
 				case BLOCK_ESCAPE -> cover(5, 0, true);
@@ -133,7 +143,13 @@ public final class EmberKilnTest implements FabricClientGameTest {
 		at(world, EmberKilnRules.TELL - 1, () -> {
 			if (choice != Answer.TARGET_DEATH) check(target.getHealth() == HEALTH, "The entire learned tell is harmless: " + choice);
 			if (choice == Answer.PARRY) guard();
-			if (choice == Answer.FORESIGHT) CastEngine.cast(target, SpellCompiler.compile(List.of(Runes.SELF, Runes.FORESIGHT)).root());
+			if (choice == Answer.FORESIGHT) {
+				foresightPosition = target.position();
+				CastEngine.cast(target, SpellCompiler.compile(List.of(Runes.SELF, Runes.FORESIGHT)).root());
+				admittedSight = sight(target);
+				check(admittedSight != null && admittedSight.charges() == 2 && admittedSight.until() > began + EmberKilnRules.TELL,
+					"The real Self/Foresight cast admits two active charges before impact: " + admittedSight);
+			}
 			if (choice == Answer.REENTRANT || choice == Answer.CALLBACK_ENTRY || choice == Answer.CALLBACK_EXIT) active = this;
 		});
 		at(world, EmberKilnRules.TELL, () -> {
@@ -143,8 +159,23 @@ public final class EmberKilnTest implements FabricClientGameTest {
 				check(close(HEALTH - target.getHealth(), EmberKilnRules.DAMAGE), "Staying in the ring takes its ordinary 26-damage budget: " + choice);
 				check(target.getLastDamageSource() != null && target.getLastDamageSource().getEntity() == master, "Every hit retains its exact trial owner");
 				if (choice == Answer.HOLD) for (Challenger player : party) check(close(HEALTH - player.getHealth(), EmberKilnRules.DAMAGE), "All eight independently receive at most one unchanged hit");
+			} else if (choice == Answer.FORESIGHT) {
+				SightState remaining = sight(target);
+				float lost = HEALTH - target.getHealth();
+				String receipt = " [health=" + target.getHealth() + ", lost=" + lost + ", before=" + admittedSight
+					+ ", after=" + remaining + ", from=" + foresightPosition + ", to=" + target.position() + "]";
+				check(close(lost, 14), "Foresight's existing 12-point cap leaves 14 damage from the 26-point pulse" + receipt);
+				check(remaining != null && remaining.ward() == admittedSight.ward() && remaining.charges() == 1
+					&& remaining.until() == admittedSight.until(), "The single pulse spends exactly one original ward charge" + receipt);
+				Vec3 delta = target.position().subtract(origin);
+				check(target.position().distanceToSqr(foresightPosition) > .5 && EmberKilnRules.hits(delta.x, delta.z, delta.y),
+					"The ward really sidesteps while remaining inside this broad ring" + receipt);
+				check(target.getLastDamageSource() != null && target.getLastDamageSource().getEntity() == master,
+					"The ward's residual damage retains the actual pulse owner" + receipt);
 			} else if (choice == Answer.GUARD) check(target.getHealth() > HEALTH - EmberKilnRules.DAMAGE, "Facing held guard reduces real projected ring damage");
-			else if (choice == Answer.ABSORPTION) check(target.getHealth() == HEALTH && target.getAbsorptionAmount() < 40, "Absorption resolves through the ordinary damage pathway");
+			else if (choice == Answer.ABSORPTION) check(target.getHealth() == HEALTH && close(target.getAbsorptionAmount(), 14),
+				"The unchanged 26-point pulse consumes exactly 26 of 40 absorption and no health [health=" + target.getHealth()
+					+ ", absorption=" + target.getAbsorptionAmount() + "]");
 			else if (choice == Answer.REENTRANT || choice == Answer.CALLBACK_ENTRY || choice == Answer.CALLBACK_EXIT) {
 				check(callbacks == 1 && party.stream().filter(p -> p.getHealth() < HEALTH).count() == 1, "Native callback cancellation, escape or late entry cannot create a later roster hit: " + choice);
 			} else if (choice != Answer.TARGET_DEATH) check(target.getHealth() == HEALTH, "This counter leaves the challenger unharmed: " + choice);
@@ -337,6 +368,18 @@ public final class EmberKilnTest implements FabricClientGameTest {
 			check(now == expected, "Observe exact native Kiln frame " + age + ": expected=" + expected + ", actual=" + now); action.run(); return true;
 		}, age + 20);
 	}
+	/** Read the real ward without adding production test hooks or changing its cap/charges. */
+	private static SightState sight(ServerPlayer player) {
+		try {
+			var field = Wards.class.getDeclaredField("FORESIGHT"); field.setAccessible(true);
+			Object ward = ((Map<?, ?>) field.get(null)).get(player.getUUID());
+			if (ward == null) return null;
+			var charges = ward.getClass().getDeclaredField("charges"); charges.setAccessible(true);
+			var until = ward.getClass().getDeclaredField("until"); until.setAccessible(true);
+			return new SightState(ward, charges.getInt(ward), until.getLong(ward));
+		} catch (ReflectiveOperationException error) { throw new AssertionError(error); }
+	}
+
 	private static EmberKiln owned(SwordMaster master) {
 		try { var field = SwordMaster.class.getDeclaredField("kiln"); field.setAccessible(true); return (EmberKiln) field.get(master); }
 		catch (ReflectiveOperationException error) { throw new AssertionError(error); }
