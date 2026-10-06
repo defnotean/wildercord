@@ -172,14 +172,18 @@ class EvidenceTests(unittest.TestCase):
     def log(self, data):
         selection = data["selection"]
         completion = ""
-        if data["request"]["case"] in ("progression-feasibility", "reweave-player"):
-            entries = diagnostic.PROGRESSION_ENTRIES if data["request"]["case"] == "progression-feasibility" else diagnostic.REWEAVE_PLAYER_ENTRIES
+        if data["request"]["case"] in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative"):
+            entries = {"progression-feasibility": diagnostic.PROGRESSION_ENTRIES,
+                       "reweave-player": diagnostic.REWEAVE_PLAYER_ENTRIES,
+                       "stone-hinge-owner-negative": diagnostic.STONE_OWNER_NEGATIVE_ENTRIES}[data["request"]["case"]]
             completion = "".join(diagnostic.SCENE_PREFIX + json.dumps({
                 "suite": entry, "event": event, "phase": phase,
                 "elapsedSeconds": 1.0, "sceneElapsedSeconds": 0.5}) + "\n"
                 for entry in entries
                 for event, phase in (("start", "setup"), ("phase", "run"),
                                      ("phase", "cleanup"), ("end", "returned")))
+        if data["request"]["case"] == "stone-hinge-owner-negative":
+            completion += suites.STONE_OWNER_NEGATIVE_PREFIX + suites.STONE_OWNER_NEGATIVE_RESULT + "\n"
         return (suites.SELECTION_PREFIX + json.dumps(selection) + "\n" + suites.DESCRIPTOR_PREFIX + json.dumps(selection) + "\n"
                 + suites.REQUEST_PREFIX + json.dumps(diagnostic.receipt(data)) + "\n"
                 + "\n".join(diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) for entry, seed in diagnostic.SEEDS[data["request"]["case"]].items())
@@ -210,7 +214,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(set(result["observedWorldSeeds"]), set(diagnostic.SEEDS[case]))
 
     def test_failed_missing_mixed_truncated_and_replayed_evidence_never_pass(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative"):
             self.assert_invalid_evidence_never_passes(case)
 
     def assert_invalid_evidence_never_passes(self, case):
@@ -333,7 +337,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
 
     def test_unique_seed_receipt_rule_does_not_change_other_cases(self):
-        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player"}:
+        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative"}:
             data = self.fixture(case)
             entry, seed = next(iter(diagnostic.SEEDS[case].items()))
             repeated = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) + "\n"
@@ -458,6 +462,43 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(result["provenance"]["headSha"], head)
             self.assertEqual((root / diagnostic.OUTPUT / "native.log").read_text(), self.log(data))
 
+    def test_stone_owner_negative_retains_scope_completion_and_two_worlds(self):
+        entry = diagnostic.STONE_OWNER_NEGATIVE_ENTRIES[0]
+        group = "diagnostic-stone-hinge-owner-negative"
+        self.assertEqual(suites.select_entries(suite=group), {
+            "kind": "diagnostic", "name": group, "count": 1, "entries": [entry]})
+        self.assertEqual(set(diagnostic.SEEDS["stone-hinge-owner-negative"]), {
+            entry + "#ordinary-native-hit-control", entry + "#server-step-plus-motion-negative"})
+        for release in ("masters", "articulated"):
+            self.assertNotIn(entry, suites.select_entries(suite=release)["entries"])
+        self.assertEqual(suites.select_entries()["entries"].count(entry), 1)
+        data = self.fixture("stone-hinge-owner-negative"); good = self.log(data)
+        result = self.collect(data, good)
+        self.assertEqual(result["completedEntries"], [entry])
+        self.assertEqual(result["movementGate"], "NOT_PROVEN")
+        self.assertIs(result["gameplayEnabled"], False)
+        self.assert_invalid_evidence_never_passes("stone-hinge-owner-negative")
+        for invalid in (good.replace("movement_gate=NOT_PROVEN", "movement_gate=PROVEN"),
+                        good.replace("gameplay_enabled=false", "gameplay_enabled=true"),
+                        good.replace("conditional_shared_rest_ticks=120", "conditional_shared_rest_ticks=0"),
+                        good.replace(suites.STONE_OWNER_NEGATIVE_PREFIX, "missing "),
+                        good + suites.STONE_OWNER_NEGATIVE_PREFIX + suites.STONE_OWNER_NEGATIVE_RESULT + "\n",
+                        good.replace('"phase": "cleanup"', '"phase": "missing"'),
+                        good.replace('"phase": "returned"', '"phase": "threw"'),
+                        good + diagnostic.SEED_PREFIX + json.dumps({"suite": entry + "#ordinary-native-hit-control", "seed": "1"}) + "\n"):
+            with self.subTest(log=invalid):
+                self.assertEqual(self.collect(data, invalid)["diagnosticOutcome"], "unverified")
+
+    def test_stone_owner_negative_rejects_relabelled_or_foreign_selection(self):
+        group = "diagnostic-stone-hinge-owner-negative"
+        for update in ({"purpose": "release"}, {"entries": [diagnostic.PROGRESSION_ENTRIES[1]]},
+                       {"entries": list(diagnostic.STONE_OWNER_NEGATIVE_ENTRIES) * 2, "expectedCount": 2}):
+            with tempfile.TemporaryDirectory() as temp:
+                catalog = json.loads(suites.CATALOG.read_text()); catalog[group].update(update)
+                path = Path(temp) / "catalog.json"; path.write_text(json.dumps(catalog))
+                with self.subTest(update=update), self.assertRaises(ValueError):
+                    suites.select_entries(suite=group, catalog=path)
+
     def test_reweave_player_selects_one_whole_class_and_two_unique_worlds(self):
         entry = "dev.wildercord.cast.ReweavePlayableTest"
         self.assertEqual(suites.select_entries(suite="diagnostic-reweave-player"), {
@@ -486,7 +527,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(diagnostic.CASES["progression-feasibility"], "diagnostic-progression-feasibility")
         self.assertEqual(suites.select_entries(suite="diagnostic-progression-feasibility"), {
             "kind": "diagnostic", "name": "diagnostic-progression-feasibility", "count": 2, "entries": entries})
-        self.assertEqual(suites.select_entries()["entries"][-3:], entries + ["dev.wildercord.cast.ReweavePlayableTest"])
+        self.assertEqual(suites.select_entries()["entries"][-4:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES])
         for name, count in (("masters", 39), ("articulated", 6)):
             selection = suites.select_entries(suite=name)
             self.assertEqual(selection["count"], count)

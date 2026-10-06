@@ -16,6 +16,10 @@ REQUEST_PREFIX = "WILDERCORD_NATIVE_REQUEST "
 PROGRESSION_ENTRIES = ("dev.wildercord.cast.ReweaveFeasibilityTest",
                        "dev.wildercord.aura.StoneHingeFeasibilityTest")
 REWEAVE_PLAYER_ENTRIES = ("dev.wildercord.cast.ReweavePlayableTest",)
+STONE_OWNER_NEGATIVE_ENTRIES = ("dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest",)
+STONE_OWNER_NEGATIVE_PREFIX = "STONE_HINGE_OWNER_NEGATIVE "
+STONE_OWNER_NEGATIVE_RESULT = ("expected_incompatibility=observed movement_gate=NOT_PROVEN "
+                               "gameplay_enabled=false conditional_shared_rest_ticks=120")
 
 
 def parse_shard(value):
@@ -59,6 +63,9 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         if suite == "diagnostic-progression-feasibility" and (
                 purpose != "diagnostic" or selected != list(PROGRESSION_ENTRIES)):
             raise ValueError("Progression feasibility requires exactly both complete diagnostic classes in order")
+        if suite == "diagnostic-stone-hinge-owner-negative" and (
+                purpose != "diagnostic" or selected != list(STONE_OWNER_NEGATIVE_ENTRIES)):
+            raise ValueError("Stone owner negative control requires its exact complete diagnostic class")
         return {"kind": "diagnostic" if purpose == "diagnostic" else "suite",
                 "name": suite, "count": len(selected), "entries": selected}
     if shard is not None:
@@ -99,6 +106,9 @@ def selection_issues(log, selection):
     if selection.get("name") == "diagnostic-reweave-player":
         _, completion_issues = reweave_player_completion(log)
         issues.extend(completion_issues)
+    if selection.get("name") == "diagnostic-stone-hinge-owner-negative":
+        _, completion_issues = stone_owner_negative_completion(log)
+        issues.extend(completion_issues)
     return issues
 
 
@@ -119,6 +129,16 @@ def progression_completion(log):
 def reweave_player_completion(log):
     """Require the whole ordinary learn/equip/input/lifecycle class to clean up and return."""
     return _whole_class_completion(log, REWEAVE_PLAYER_ENTRIES, "Reweave player")
+
+
+def stone_owner_negative_completion(log):
+    """A completed negative control cannot become evidence of available movement."""
+    completed, issues = _whole_class_completion(log, STONE_OWNER_NEGATIVE_ENTRIES, "Stone owner negative control")
+    markers = [line.split(STONE_OWNER_NEGATIVE_PREFIX, 1)[1].strip()
+               for line in log.splitlines() if STONE_OWNER_NEGATIVE_PREFIX in line]
+    if markers != [STONE_OWNER_NEGATIVE_RESULT]:
+        issues.append("Stone owner negative control requires exactly its unchanged NOT_PROVEN result")
+    return completed, issues
 
 
 def _whole_class_completion(log, entries, label):

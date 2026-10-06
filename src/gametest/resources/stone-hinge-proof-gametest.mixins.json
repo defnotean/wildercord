@@ -7,7 +7,15 @@
     "StoneHingeMobProbeMixin",
     "StoneHingeKnockbackProbeMixin",
     "StoneHingeMasterProbeMixin",
-    "StoneHingeAuraSourceProbeMixin"
+    "StoneHingeAuraSourceProbeMixin",
+    "StoneHingeOwnerServerProbeMixin",
+    "StoneHingeOwnerSendProbeMixin"
   ],
-  "injectors": {"defaultRequire": 1}
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "StoneHingeOwnerClientProbeMixin",
+    "StoneHingeOwnerPositionSendProbeMixin"
+  ]
 }

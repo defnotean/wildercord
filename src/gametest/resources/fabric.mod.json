@@ -306,7 +306,8 @@
       "dev.wildercord.aura.world.MasterOrdinaryPlannerTest",
       "dev.wildercord.cast.ReweaveFeasibilityTest",
       "dev.wildercord.aura.StoneHingeFeasibilityTest",
-      "dev.wildercord.cast.ReweavePlayableTest"
+      "dev.wildercord.cast.ReweavePlayableTest",
+      "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest"
     ]
   },
   "mixins": [

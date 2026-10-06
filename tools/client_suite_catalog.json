@@ -154,5 +154,13 @@
     "entries": [
       "dev.wildercord.cast.ReweavePlayableTest"
     ]
+  },
+  "diagnostic-stone-hinge-owner-negative": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: whole stationary-owner negative control with two real connected worlds. Expected incompatibility does not prove or enable Stone Hinge movement.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest"
+    ]
   }
 }
