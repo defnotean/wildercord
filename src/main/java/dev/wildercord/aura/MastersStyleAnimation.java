@@ -148,6 +148,26 @@ public final class MastersStyleAnimation {
 		j(-1.12F, -.18F, -.20F), j(-.35F, -.18F, -.62F), j(-.48F, -.10F, -.10F), j(.32F, .08F, .09F),
 		.62F, -.38F, h(.02F, .12F, -.40F, 18, -10, 14));
 
+	// Collapse plants a broad base, drives the raised edge down once, then absorbs its weight.
+	// The released fissure lives independently; its pulses never restart the physical strike.
+	private static final Motion COLLAPSE = new Motion(
+		pose(j(-.12F, .10F, -.02F), j(.05F, -.04F, 0), j(-2.45F, .12F, -.25F), j(-1.72F, -.18F, .15F),
+			j(-.48F, -.14F, -.15F), j(.34F, .12F, .13F), .70F, .18F, h(.02F, .46F, -.16F, -92, 6, -12)),
+		pose(j(.48F, -.06F, .02F), j(-.22F, .02F, 0), j(-.58F, -.06F, -.16F), j(-.85F, -.12F, .15F),
+			j(-.85F, -.12F, -.16F), j(.52F, .10F, .14F), 1.18F, -.88F, h(-.04F, .28F, -.44F, 58, -5, 12)),
+		pose(j(.34F, -.08F, .01F), j(-.16F, .03F, 0), j(-.35F, -.08F, -.14F), j(-.64F, -.10F, .15F),
+			j(-.68F, -.10F, -.14F), j(.40F, .08F, .12F), .95F, -.48F, h(-.06F, .34F, -.34F, 46, -10, 16)));
+
+	// Red Rain coils above the outside shoulder and rakes diagonally into an open, low finish.
+	// Crimson's pool persists after this one release while the blade recovers along the far side.
+	private static final Motion RED_RAIN = new Motion(
+		pose(j(.14F, .48F, -.16F), j(-.08F, -.18F, .05F), j(-2.08F, .72F, -.66F), j(-.82F, -.28F, -.46F),
+			j(-.54F, -.16F, -.12F), j(.34F, .12F, .10F), .64F, .14F, h(.06F, .38F, -.14F, -62, 30, -38)),
+		pose(j(.34F, -.46F, .20F), j(-.17F, .18F, -.06F), j(-.66F, -.82F, -.38F), j(-.16F, -.12F, -.88F),
+			j(-.78F, .14F, -.14F), j(.44F, -.10F, .12F), .98F, -.80F, h(-.28F, .28F, -.40F, 42, -32, 46)),
+		pose(j(.23F, -.62F, .14F), j(-.11F, .22F, -.04F), j(-.34F, -1.02F, -.12F), j(-.30F, -.16F, -.68F),
+			j(-.55F, .11F, -.11F), j(.32F, -.08F, .09F), .74F, -.42F, h(-.34F, .34F, -.28F, 48, -40, 58)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -164,6 +184,8 @@ public final class MastersStyleAnimation {
 			case 14 -> BLOSSOM;
 			case 15 -> HAILFALL;
 			case 16 -> SKYFALL;
+			case 17 -> COLLAPSE;
+			case 18 -> RED_RAIN;
 			default -> null;
 		};
 	}

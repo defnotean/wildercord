@@ -6,7 +6,7 @@ import java.util.List;
 public final class MastersStyleRules {
 	private MastersStyleRules() {}
 
-	/** How this art chooses its first victim when its fixed active frame arrives. Every new profile must decide explicitly. */
+	/** How this art chooses its target or ground anchor at its fixed active frame. Every new profile must decide explicitly. */
 	public enum TargetPolicy {
 		/** Re-query the committed cone at impact; an old last-swing victim cannot bypass its direction or reach. */
 		ACTIVE_CONE,
@@ -15,7 +15,9 @@ public final class MastersStyleRules {
 		/** Capture Hailfall's observed cloud anchor and independent direct-priority right before its windup. */
 		HAILFALL_RECEIPT,
 		/** Capture Skyfall's observed-victim, nearest-cone or explicit-ground route before its windup. */
-		SKYFALL_RECEIPT
+		SKYFALL_RECEIPT,
+		/** Plant an untargeted field from release-time feet and accepted facing; never promote the observed victim. */
+		GROUND_AHEAD
 	}
 
 	/**
@@ -40,7 +42,9 @@ public final class MastersStyleRules {
 		new Style(13, "rising_cinders", 8, 16, TargetPolicy.ACTIVE_CONE),
 		new Style(14, "blossom_fall", 8, 18, TargetPolicy.ACTIVE_CONE),
 		new Style(15, "hailfall", 8, 16, TargetPolicy.HAILFALL_RECEIPT),
-		new Style(16, "skyfall", 6, 16, TargetPolicy.SKYFALL_RECEIPT)
+		new Style(16, "skyfall", 6, 16, TargetPolicy.SKYFALL_RECEIPT),
+		new Style(17, "collapse", 8, 18, TargetPolicy.GROUND_AHEAD),
+		new Style(18, "red_rain", 8, 16, TargetPolicy.GROUND_AHEAD)
 	);
 
 	public static Style of(String art) {

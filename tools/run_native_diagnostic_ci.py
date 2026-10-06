@@ -28,7 +28,8 @@ MAX_SNAPSHOTS = 16
 MAX_SNAPSHOT_BYTES = 256 * 1024
 SNAPSHOTS = "build/run/clientGameTest/logs/ci-diagnostics"
 CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
-         "battlefields-generation": "diagnostic-battlefields-generation"}
+         "battlefields-generation": "diagnostic-battlefields-generation",
+         "siltcrest-presentation": "diagnostic-siltcrest-presentation"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
@@ -39,6 +40,9 @@ SEEDS = {
                 "dev.wildercord.wildlife.WetlandTerrainTest": "-7620530482425397421"},
     "aura-fx": {"dev.wildercord.gametest.WildercordAuraFxTest": None},
     "battlefields-generation": {"dev.wildercord.world.dungeons.BattlefieldsTest": "4424506075848880372"},
+    # Separate disposable worlds: observe each seed without changing the fixture RNG.
+    "siltcrest-presentation": {"dev.wildercord.wildlife.SiltcrestPresentationTest#full": None,
+                              "dev.wildercord.wildlife.SiltcrestPresentationTest#minimal": None},
 }
 CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_catalog.json",
                 "src/gametest/resources/fabric.mod.json", "build.gradle", "gradle.properties",
@@ -68,7 +72,7 @@ def parse_request(raw):
         if sha is not None:
             raise ValueError("Disabled request requires null sourceSha")
     elif not isinstance(case, str) or case not in CASES:
-        raise ValueError("Diagnostic case must be null, wetland, aura-fx or battlefields-generation")
+        raise ValueError("Diagnostic case must be null or one of: " + ", ".join(CASES))
     elif not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha):
         raise ValueError("Active request requires a full lowercase sourceSha")
     return data

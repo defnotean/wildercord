@@ -183,7 +183,8 @@ public final class HollowArts {
 	// ------------------------------------------------------------------ II. Collapse
 
 	static boolean collapse(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
+		ServerLevel level = released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -198,7 +199,7 @@ public final class HollowArts {
 		// A seal of darkness spinning fast on the ground round the well, a violet ring round it turning the other way.
 		world.bare().ground(well, SigilOption.BAND, ABYSS, ArtRules.COLLAPSE_PULL * 0.75, ArtRules.COLLAPSE_TICKS + 8, 0.25);
 		world.ground(well, SigilOption.BAND, color, ArtRules.COLLAPSE_PULL, ArtRules.COLLAPSE_TICKS + 8, -0.18);
-		ArtFields.open(player, WELL, ArtFields.disc(() -> well, ArtRules.COLLAPSE_PULL, 2.5), ArtRules.COLLAPSE_TICKS, 1, (field, owner, age) -> {
+		ArtFields.openReleased(player, released, WELL, ArtFields.disc(() -> well, ArtRules.COLLAPSE_PULL, 2.5), ArtRules.COLLAPSE_TICKS, 1, (field, owner, age) -> {
 			ServerLevel lv = field.level();
 			ArtLight w = ArtLight.world(owner);
 			int c = ArtKit.color(owner);
@@ -233,6 +234,7 @@ public final class HollowArts {
 				for (LivingEntity foe : ArtKit.around(owner, well, ArtRules.COLLAPSE_RADIUS, 1.5, 3.0, ArtRules.COLLAPSE_TARGETS)) {
 					double d = foe.position().subtract(well).horizontalDistance();
 					hits.strike(foe, ArtRules.falloff(ArtRules.COLLAPSE_CENTRE, ArtRules.COLLAPSE_EDGE, d, ArtRules.COLLAPSE_RADIUS), AuraFxRules.Weight.HEAVY);
+					if (!field.active()) break;
 					if (foe.isAlive()) {
 						shadow(owner, foe, 0.6);
 						// The collapse leaves them where it gathered them, for the next cut.

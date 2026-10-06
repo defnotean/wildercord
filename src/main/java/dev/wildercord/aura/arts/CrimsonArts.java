@@ -171,7 +171,8 @@ public final class CrimsonArts {
 	// ------------------------------------------------------------------ II. Red Rain
 
 	static boolean redRain(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
+		ServerLevel level = released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -190,8 +191,12 @@ public final class CrimsonArts {
 		world.ground(centre, SigilOption.CRACKED, DEEP, ArtRules.RAIN_RADIUS * 0.8, ArtRules.RAIN_TICKS + 10, 0);
 		splash(player, centre.add(0, 0.5, 0), 1.3);
 		ScreenFx.shake(level, centre, 0.12F, 8);
-		for (LivingEntity foe : ArtKit.around(player, centre, ArtRules.RAIN_RADIUS, 1.5, 3.0, ArtRules.RAIN_TARGETS)) {
+		for (LivingEntity foe : ArtKit.aroundVisible(player, centre, ArtRules.RAIN_RADIUS, 1.5, 3.0, ArtRules.RAIN_TARGETS)) {
+			// Only this immediate burst gains owner LOS counterplay; delayed rain keeps its existing cover behavior.
+			if (!released.valid()) break;
+			if (!player.hasLineOfSight(foe)) continue;
 			float took = hits.strike(foe, ArtRules.RAIN_FACTOR);
+			if (!released.valid()) break;
 			drink.from(foe, took);
 			if (foe.isAlive()) {
 				// Held where the rain falls (the strike's knock would carry it out from under it).
@@ -199,10 +204,11 @@ public final class CrimsonArts {
 				gash(player, foe, foe.getId() % 2 == 0);
 			}
 		}
+		if (!released.valid()) return true;
 		// The rain: a red mist overhead, drops falling, a heartbeat over the ground; every foe under it bleeds, and you drink.
 		Vec3 sky = centre.add(0, 3.2, 0);
 		Motes.clouds(level, sky, 7, ArtRules.RAIN_RADIUS * 0.6, 0x7A1424, 1.0, ArtRules.RAIN_TICKS + 8, Vec3.ZERO, 0.01, 0.5);
-		ArtFields.open(player, RAIN, ArtFields.disc(() -> centre, ArtRules.RAIN_RADIUS, 2.5), ArtRules.RAIN_TICKS, 2, (field, owner, age) -> {
+		ArtFields.openReleased(player, released, RAIN, ArtFields.disc(() -> centre, ArtRules.RAIN_RADIUS, 2.5), ArtRules.RAIN_TICKS, 2, (field, owner, age) -> {
 			ServerLevel lv = field.level();
 			RandomSource r = lv.getRandom();
 			ArtLight rain = ArtLight.world(owner);
@@ -225,6 +231,7 @@ public final class CrimsonArts {
 				AuraPhysicalFx.pulse(lv, centre.add(0, 0.1, 0), ArtKit.UP, ArtRules.RAIN_RADIUS * 0.9);
 				for (LivingEntity foe : field.foes(owner)) {
 					float took = hits.strike(foe, ArtRules.RAIN_BLEED, null);
+					if (!field.active()) break;
 					dev.wildercord.cast.Reactions.mark(foe, dev.wildercord.cast.Reactions.Mark.BLEEDING, 30);
 					drip(foe);
 					drink.from(foe, took);

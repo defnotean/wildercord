@@ -166,6 +166,19 @@ class EvidenceTests(unittest.TestCase):
         result = self.collect(data, self.log(data).replace('-7620530482425397421', '42'))
         self.assertEqual(result["diagnosticOutcome"], "unverified")
 
+    def test_siltcrest_requires_both_quality_world_seeds(self):
+        data = self.fixture("siltcrest-presentation")
+        good = self.log(data)
+        key = "dev.wildercord.wildlife.SiltcrestPresentationTest#minimal"
+        distinct = good.replace(json.dumps({"suite": key, "seed": "1"}),
+                                json.dumps({"suite": key, "seed": "2"}))
+        self.assertEqual(self.collect(data, distinct)["diagnosticOutcome"], "passed")
+        missing = "\n".join(line for line in distinct.splitlines()
+                            if not (diagnostic.SEED_PREFIX in line and key in line))
+        self.assertEqual(self.collect(data, missing)["diagnosticOutcome"], "unverified")
+        conflicting = distinct + diagnostic.SEED_PREFIX + json.dumps({"suite": key, "seed": "3"}) + "\n"
+        self.assertEqual(self.collect(data, conflicting)["diagnosticOutcome"], "unverified")
+
     def test_launcher_is_called_once_and_only_for_prepared_fixed_suite(self):
         data = self.fixture()
         with tempfile.TemporaryDirectory() as temp, patch.object(diagnostic, "ROOT", Path(temp)), patch.object(diagnostic, "prepared", return_value=data), patch.object(run_client_ci, "main", return_value=7) as launch:
@@ -185,6 +198,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(run_client_ci.launch_command(selection)[-1], "-PciSuite=" + group)
             self.assertEqual(native_ci_diagnostics.snapshot_thresholds(selection), (1800, 2700))
         self.assertEqual(suites.select_entries(suite="diagnostic-aura-fx")["entries"], ["dev.wildercord.gametest.WildercordAuraFxTest"])
+        self.assertEqual(suites.select_entries(suite="diagnostic-siltcrest-presentation")["entries"], ["dev.wildercord.wildlife.SiltcrestPresentationTest"])
         self.assertEqual(suites.select_entries(suite="diagnostic-wetland")["entries"][-3:], ["dev.wildercord.wildlife.WetlandGardenTest", "dev.wildercord.wildlife.WetlandTerrainAbsenceTest", "dev.wildercord.wildlife.WetlandTerrainTest"])
 
     def test_general_manifest_cannot_relabel_diagnostic_as_focused_or_full(self):

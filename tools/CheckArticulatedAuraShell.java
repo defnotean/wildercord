@@ -23,7 +23,8 @@ public final class CheckArticulatedAuraShell {
 	public static void main(String[] args) {
 		boolean openingStyles = args.length == 1 && args[0].equals("--opening-styles");
 		boolean hailSky = args.length == 1 && args[0].equals("--hail-sky");
-		boolean styles = openingStyles || hailSky;
+		boolean groundFields = args.length == 1 && args[0].equals("--ground-fields");
+		boolean styles = openingStyles || hailSky || groundFields;
 		int snapshots = 0, negatives = 0;
 		for (boolean slim : new boolean[] {false, true}) {
 			var source = source(slim);
@@ -35,12 +36,14 @@ public final class CheckArticulatedAuraShell {
 			check(world.mesh().faces().size() > 36, "World shell actually has joint subdivisions");
 			validateSource(source, world);
 			var rig = new ArticulatedRig(slim, false);
-			for (boolean left : new boolean[] {false, true}) for (int move : hailSky ? new int[] {15, 16} : openingStyles ? new int[] {3, 4} : new int[] {0, 1, 2}) {
+			for (boolean left : new boolean[] {false, true}) for (int move : groundFields ? new int[] {17, 18} : hailSky ? new int[] {15, 16} : openingStyles ? new int[] {3, 4} : new int[] {0, 1, 2}) {
 				var style = styles ? MastersStyleRules.animation(move) : null;
 				if (openingStyles && (style == null || style.windup() != 6 || style.recovery() != 12))
 					throw new AssertionError("Opening-style shell audit requires the accepted 6/12 animation window");
 				if (hailSky && (style == null || style.windup() != (move == 15 ? 8 : 6) || style.recovery() != 16))
 					throw new AssertionError("Hail/Sky audit requires accepted 8/16 and 6/16 windows");
+				if (groundFields && (style == null || style.windup() != 8 || style.recovery() != (move == 17 ? 18 : 16)))
+					throw new AssertionError("Ground field audit requires accepted 8/18 and 8/16 windows");
 				var rule = styles ? null : MastersArtRules.move(move);
 				int windup = styles ? style.windup() : rule.windup();
 				int recovery = styles ? style.recovery() : rule.recovery();
@@ -93,7 +96,7 @@ public final class CheckArticulatedAuraShell {
 				reject(() -> new ArticulatedAuraShellGeometry(uv, slim, armsOnly), "Altered UV"); negatives++;
 			}
 		}
-		String scope = hailSky ? ",\"clips\":[\"hailfall\",\"skyfall\"],\"timeStepTicks\":0.125,\"windows\":[[8,16],[6,16]],\"variants\":8" : openingStyles ? ",\"clips\":[\"" + MastersStyleRules.animation(3).art() + "\",\"" + MastersStyleRules.animation(4).art()
+		String scope = groundFields ? ",\"clips\":[\"collapse\",\"red_rain\"],\"timeStepTicks\":0.125,\"windows\":[[8,18],[8,16]],\"variants\":8" : hailSky ? ",\"clips\":[\"hailfall\",\"skyfall\"],\"timeStepTicks\":0.125,\"windows\":[[8,16],[6,16]],\"variants\":8" : openingStyles ? ",\"clips\":[\"" + MastersStyleRules.animation(3).art() + "\",\"" + MastersStyleRules.animation(4).art()
 			+ "\"],\"timeStepTicks\":0.125,\"windup\":6,\"recovery\":12,\"variants\":8" : "";
 		System.out.println("{\"kind\":\"offline original-runtime shell geometry and deferred palettes\",\"snapshots\":" + snapshots + ",\"negativeCases\":" + negatives + scope + ",\"passes\":true,\"native\":\"not run\"}");
 	}

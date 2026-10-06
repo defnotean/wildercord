@@ -16,6 +16,7 @@ public final class ArticulatedCombatPose {
 	public static final int SPELLCUT = 0, RISING_BREAK = 1, DRIVING_CUT = 2;
 	public static final int KINDLING_DRAW = 3, FROSTBITE = 4;
 	public static final int HAILFALL = 15, SKYFALL = 16;
+	public static final int COLLAPSE = 17, RED_RAIN = 18;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -385,6 +386,46 @@ public final class ArticulatedCombatPose {
 		new ViewKey(v(-8.2F, -5.25F, 2.4F), arm(r(.02F, -.035F, -.03F), r(-1.16F, -.12F, -.24F), -.45F, r(.75F, .04F, .18F)),
 			v(7.7F, -6.1F, 3.8F), arm(r(0, .03F, .03F), r(-.88F, .08F, .28F), -.88F, r(.10F, -.10F, .10F))));
 
+	// Collapse carries a near-vertical drive through pelvis, spine and both elbows. The planted
+	// stance absorbs the stop; the fissure's later pulses belong to the field, never this rig.
+	private static final Motion COLLAPSE_MOTION = new Motion(
+		new Key(v(-.02F, 1.05F, .18F), r(-.035F, .035F, -.01F), r(-.04F, .025F, -.005F), r(-.045F, .035F, -.01F), r(.06F, -.07F, .005F),
+			arm(r(.025F, .035F, -.035F), r(-2.20F, .08F, -.22F), -.65F, r(.56F, -.06F, -.14F)),
+			arm(r(0, -.03F, .03F), r(-1.32F, -.18F, -.20F), -.98F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.4F, -4.35F, 2.9F), arm(r(.02F, .025F, -.03F), r(-1.60F, .035F, -.23F), -.66F, r(.40F, -.04F, -.12F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.04F, .06F, .25F), -.94F, r(.10F, -.10F, .10F)))),
+		new Key(v(.03F, 1.10F, -.52F), r(.14F, -.02F, .005F), r(.09F, -.015F, .005F), r(.105F, -.03F, .01F), r(-.19F, .05F, -.01F),
+			arm(r(.035F, -.02F, -.035F), r(-.70F, -.06F, -.15F), -.42F, r(1.30F, .06F, .16F)),
+			arm(r(0, .035F, .03F), r(-.87F, -.16F, -.18F), -.85F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-8.1F, -5.65F, 2.4F), arm(r(.02F, -.025F, -.03F), r(-1.02F, -.07F, -.24F), -.44F, r(0, .40F, -.15F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, .025F, .03F), r(-.96F, .08F, .27F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.02F, 1.05F, -.28F), r(.10F, -.03F, .005F), r(.065F, -.02F, .005F), r(.075F, -.04F, .01F), r(-.14F, .065F, -.01F),
+			arm(r(.025F, -.03F, -.03F), r(-.48F, -.08F, -.14F), -.70F, r(1.22F, .05F, .14F)),
+			arm(r(0, .025F, .025F), r(-.73F, -.18F, -.18F), -.92F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.2F, -5.4F, 3.0F), arm(r(.015F, -.025F, -.03F), r(-1.04F, -.09F, -.23F), -.74F, r(.15F, .25F, -.08F)),
+				v(7.2F, -6.1F, 3.6F), arm(r(0, .02F, .03F), r(-1.01F, .07F, .25F), -.92F, r(.10F, -.10F, .10F)))),
+		v(-2.55F, 22, 1.55F), v(2.55F, 22, -1.65F));
+
+	// Red Rain's coiled outside shoulder unwinds into one descending rake. Its open guard
+	// counterbalances the cross-body blade while the separate pool continues after recovery.
+	private static final Motion RED_RAIN_MOTION = new Motion(
+		new Key(v(-.23F, 1.03F, .16F), r(.05F, .22F, -.03F), r(.035F, .16F, -.025F), r(.035F, .24F, -.04F), r(-.07F, -.39F, .03F),
+			arm(r(.025F, .09F, -.05F), r(-1.95F, .48F, -.48F), -.85F, r(.62F, -.22F, -.42F)),
+			arm(r(0, -.06F, .04F), r(-.79F, -.29F, -.22F), -.94F, r(.10F, -.12F, .08F)),
+			new ViewKey(v(-7.7F, -4.7F, 3.1F), arm(r(.02F, .06F, -.035F), r(-1.43F, .20F, -.30F), -.84F, r(.62F, -.12F, -.25F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.035F, .03F), r(-1.00F, .08F, .26F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.25F, 1.10F, -.48F), r(.115F, -.21F, .035F), r(.075F, -.15F, .025F), r(.085F, -.24F, .04F), r(-.15F, .38F, -.03F),
+			arm(r(.035F, -.075F, -.04F), r(-.71F, -.76F, -.28F), -.38F, r(1.13F, .22F, .48F)),
+			arm(r(0, .065F, .04F), r(-.30F, -.24F, -.47F), -.77F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-8.3F, -5.4F, 2.4F), arm(r(.02F, -.065F, -.035F), r(-1.08F, -.48F, -.31F), -.42F, r(-.15F, .65F, .45F)),
+				v(7.6F, -6.1F, 3.8F), arm(r(0, .045F, .03F), r(-.89F, .08F, .29F), -.87F, r(.10F, -.10F, .10F)))),
+		new Key(v(.18F, 1.05F, -.25F), r(.075F, -.28F, .025F), r(.05F, -.18F, .02F), r(.055F, -.29F, .03F), r(-.10F, .47F, -.025F),
+			arm(r(.025F, -.10F, -.03F), r(-.42F, -.98F, -.10F), -.66F, r(1.18F, .22F, .57F)),
+			arm(r(0, .05F, .03F), r(-.43F, -.22F, -.38F), -.84F, r(.08F, -.10F, .10F)),
+			new ViewKey(v(-9.4F, -5.1F, 2.9F), arm(r(.015F, -.08F, -.03F), r(-1.06F, -.62F, -.22F), -.76F, r(.12F, .55F, .58F)),
+				v(7.6F, -6.1F, 3.8F), arm(r(0, .035F, .03F), r(-.96F, .06F, .27F), -.90F, r(.10F, -.10F, .10F)))),
+		v(-2.45F, 22, 1.45F), v(2.45F, 22, -1.65F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -396,7 +437,7 @@ public final class ArticulatedCombatPose {
 	/** Only authored player presentation IDs are admitted here; NPC IDs use supportsMaster. */
 	public static boolean supportsPlayer(int move) {
 		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
-			|| move == HAILFALL || move == SKYFALL;
+			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -410,6 +451,8 @@ public final class ArticulatedCombatPose {
 			case KINDLING_DRAW -> KINDLING_MOTION;
 			case FROSTBITE -> FROSTBITE_MOTION;
 			case HAILFALL -> HAILFALL_MOTION;
+			case COLLAPSE -> COLLAPSE_MOTION;
+			case RED_RAIN -> RED_RAIN_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);

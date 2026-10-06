@@ -166,10 +166,12 @@ public final class ArtFields {
 		final long until;
 		final int period;
 		final Pulse pulse;
+		final ReleasedArtOwner releasedOwner;
 		End end;
 		boolean done;
 
-		Field(UUID owner, ServerLevel level, String kind, Shape shape, long start, long until, int period, Pulse pulse) {
+		Field(UUID owner, ServerLevel level, String kind, Shape shape, long start, long until, int period, Pulse pulse, ReleasedArtOwner releasedOwner) {
+			this.releasedOwner = releasedOwner;
 			this.owner = owner;
 			this.level = level;
 			this.kind = kind;
@@ -220,6 +222,12 @@ public final class ArtFields {
 			return out;
 		}
 
+		/** An opt-in released field cannot outlive its original body/world, including inside damage callbacks. */
+		public boolean active() {
+			if (releasedOwner != null && !releasedOwner.valid()) done = true;
+			return !done;
+		}
+
 		/** Something to do once it's over. */
 		public Field onEnd(End end) {
 			this.end = end;
@@ -240,8 +248,9 @@ public final class ArtFields {
 
 	/** A retired pulse cannot keep harming through a target list it collected before a synchronous callback. */
 	public static boolean blocksRetiredHarm(Entity source, Entity target) {
-		return pulsing != null && pulsing.done && source == pulseOwner && source != target
-			&& Effects.applying() == pulseOwner && Effects.applyingCast() == null && Effects.sourceScope() == pulseScope;
+		return pulsing != null && source == pulseOwner && source != target
+			&& Effects.applying() == pulseOwner && Effects.applyingCast() == null && Effects.sourceScope() == pulseScope
+			&& !pulsing.active();
 	}
 
 	static void init() {
@@ -253,12 +262,30 @@ public final class ArtFields {
 	 * tick). Ends the owner's oldest field of any kind if they already have {@link #PER_PLAYER}.
 	 */
 	public static Field open(ServerPlayer owner, String kind, Shape shape, int ticks, int period, Pulse pulse) {
+		return open(owner, null, kind, shape, ticks, period, pulse);
+	}
+
+	/**
+	 * Opt-in released lifetime. Capture before the performer's first effect, so callbacks cannot rebind a committed
+	 * field to a replacement body or world. Weapon/method changes and physical interruption do not retire it.
+	 * Existing callers of {@link #open} retain their original owner lookup and lifetime.
+	 */
+	public static Field openReleased(ServerPlayer owner, ReleasedArtOwner releasedOwner, String kind, Shape shape,
+			int ticks, int period, Pulse pulse) {
+		java.util.Objects.requireNonNull(releasedOwner, "A released field requires its original owner lifetime");
+		if (!releasedOwner.owns(owner)) throw new IllegalArgumentException("A released field belongs to its original body");
+		return open(owner, releasedOwner, kind, shape, ticks, period, pulse);
+	}
+
+	private static Field open(ServerPlayer owner, ReleasedArtOwner releasedOwner, String kind, Shape shape,
+			int ticks, int period, Pulse pulse) {
 		long now = owner.level().getGameTime();
-		Field field = new Field(owner.getUUID(), owner.level(), kind, shape, now, now + Math.max(1, ticks), period, pulse);
+		Field field = new Field(owner.getUUID(), releasedOwner == null ? owner.level() : releasedOwner.level(), kind, shape, now, now + Math.max(1, ticks), period, pulse, releasedOwner);
+		if (!field.active()) return field;
 		FIELDS.add(field);
 		// Add first: an end callback may open another field, which must see and respect this replacement too.
 		while (true) {
-			List<Field> theirs = FIELDS.stream().filter(f -> f.owner.equals(owner.getUUID()) && !f.done).toList();
+			List<Field> theirs = FIELDS.stream().filter(f -> f.owner.equals(owner.getUUID()) && f.active()).toList();
 			if (theirs.size() <= PER_PLAYER) break;
 			finish(theirs.getFirst());
 		}
@@ -294,7 +321,7 @@ public final class ArtFields {
 		for (Field field : List.copyOf(FIELDS)) {
 			ServerPlayer owner = server.getPlayerList().getPlayer(field.owner);
 			long now = field.level.getGameTime();
-			if (field.done || owner == null || !owner.isAlive() || owner.level() != field.level || now > field.until) {
+			if (!field.active() || owner == null || !owner.isAlive() || owner.level() != field.level || now > field.until) {
 				finish(field);
 				continue;
 			}
@@ -326,7 +353,7 @@ public final class ArtFields {
 	public static int count(ServerPlayer owner, String kind) {
 		int n = 0;
 		for (Field f : FIELDS) {
-			if (f.owner.equals(owner.getUUID()) && !f.done && f.kind.equals(kind) && owner.level().getGameTime() <= f.until) {
+			if (f.owner.equals(owner.getUUID()) && f.active() && f.kind.equals(kind) && owner.level().getGameTime() <= f.until) {
 				n++;
 			}
 		}
@@ -336,7 +363,7 @@ public final class ArtFields {
 	/** Whether {@code e} stands in a field of {@code kind} of {@code owner}'s now. */
 	public static boolean inside(ServerPlayer owner, String kind, Entity e) {
 		for (Field f : FIELDS) {
-			if (f.owner.equals(owner.getUUID()) && !f.done && f.kind.equals(kind) && f.level == e.level() && owner.level().getGameTime() <= f.until
+			if (f.owner.equals(owner.getUUID()) && f.active() && f.kind.equals(kind) && f.level == e.level() && owner.level().getGameTime() <= f.until
 					&& f.shape.contains(e)) {
 				return true;
 			}

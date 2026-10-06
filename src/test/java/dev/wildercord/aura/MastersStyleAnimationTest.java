@@ -13,7 +13,7 @@ class MastersStyleAnimationTest {
 	void everyAuthoredFormHasItsOwnBodyAndWeaponPoseWithoutOpeningANewInputOrdinal() {
 		var bodies = new HashSet<MastersArtAnimation.Pose>();
 		var hands = new HashSet<MastersArtAnimation.Hand>();
-		assertEquals(14, MastersStyleRules.STYLES.size());
+		assertEquals(16, MastersStyleRules.STYLES.size());
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(MastersArtAnimation.supports(style.animation()));
 			assertNull(MastersArtRules.move(style.animation()), "Style poses are not trusted client action IDs");
@@ -22,7 +22,7 @@ class MastersStyleAnimationTest {
 			assertTrue(bodies.add(pose), "Distinct body choreography for " + style.art());
 			assertTrue(hands.add(pose.hand()), "Distinct weapon choreography for " + style.art());
 		}
-		for (int id : new int[] {-1, 17, Integer.MAX_VALUE}) assertFalse(MastersArtAnimation.supports(id));
+		for (int id : new int[] {-1, 19, Integer.MAX_VALUE}) assertFalse(MastersArtAnimation.supports(id));
 	}
 
 	@Test
@@ -251,6 +251,32 @@ class MastersStyleAnimationTest {
 		assertTrue(answer.hand().pitch() > call.hand().pitch() + 90);
 		assertEquals(1, answer.weight());
 		assertNotEquals(high, call);
+	}
+
+	@Test
+	void groundFieldsDriveDownOnceWithDistinctCrossBodyAndVerticalFinishes() {
+		for (String art : new String[] {"collapse", "red_rain"}) {
+			var style = MastersStyleRules.of(art);
+			var chamber = sample(style, style.windup() * .65F);
+			var release = sample(style, style.windup());
+			assertTrue(release.sword().x() > chamber.sword().x() + 1, "The raised arm descends once");
+			assertTrue(release.hand().pitch() > chamber.hand().pitch() + 90, "The independent view follows the falling edge");
+			assertTrue(release.hand().z() < chamber.hand().z(), "The hilt commits safely away from the camera");
+			assertEquals(0, MastersArtAnimation.bladeTilt(style.animation(), style.windup() * .65F, style.windup(), 1), .0001F);
+			assertTrue(MastersArtAnimation.bladeTilt(style.animation(), style.windup(), style.windup(), 1) <= -80);
+			var follow = sample(style, style.windup() + 4);
+			for (float age = style.windup() + 4; age < style.windup() + style.recovery(); age += .125F) {
+				var recovery = sample(style, age);
+				assertEquals(follow.hand(), recovery.hand(), "Field pulses never restart the physical blade");
+				assertTrue(recovery.weight() <= follow.weight());
+			}
+			assertEquals(0, MastersArtAnimation.bladeTilt(style.animation(), style.windup() + style.recovery(), style.windup(), 0), .0001F);
+		}
+		var collapse = sample(MastersStyleRules.of("collapse"), 8);
+		var rain = sample(MastersStyleRules.of("red_rain"), 8);
+		assertTrue(Math.abs(collapse.body().y()) < .10F, "Collapse stays close to the vertical drive");
+		assertTrue(Math.abs(rain.body().y()) > .40F, "Red Rain unwinds across the body");
+		assertTrue(Math.abs(rain.hand().roll()) > Math.abs(collapse.hand().roll()) + 25);
 	}
 
 	private static MastersArtAnimation.Pose sample(MastersStyleRules.Style style, float age) {

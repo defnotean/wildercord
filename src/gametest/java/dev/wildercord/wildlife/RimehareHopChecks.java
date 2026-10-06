@@ -63,13 +63,18 @@ public final class RimehareHopChecks {
 			check(hare.hops.size() >= 2 && hare.landingRecoveries > 0,
 				"A real flight and grounded recovery must both occur: " + hare.receipt());
 			check(hare.shortestRecovery >= 3, "A landing must get at least three grounded navigation ticks: " + hare.receipt());
-			check(hare.getNavigation().isDone() && hare.position().distanceTo(new Vec3(.5, 100, -12.5)) < 1.5,
-				"Native waypoints must progress to the finite route's end: " + hare.receipt());
+			check(hare.recoveryTicks >= 3 && hare.brakedRecoveryTicks > 0 && hare.maxRecoveryStep <= 1.000001,
+				"Fast recovery must brake through native friction before it skips a waypoint cell: " + hare.receipt());
+			check(hare.getNavigation().isDone(), "Native waypoints must finish their finite route: " + hare.receipt());
+			check(hare.position().distanceTo(new Vec3(.5, 100, -12.5)) < 1.5,
+				"Completing the finite route must not launch away from its destination: " + hare.receipt());
 			return hare.hops.size();
 		});
 		context.waitTicks(20);
 		world.getServer().runOnServer(server -> {
 			check(hare.hops.size() == bounds, "An expired path must not rebound from residual horizontal velocity");
+			check(hare.onGround() && hare.position().distanceTo(new Vec3(.5, 100, -12.5)) < 1.5,
+				"The expired route must settle by its destination: " + hare.receipt());
 			hare.discard();
 		});
 	}
@@ -140,6 +145,31 @@ public final class RimehareHopChecks {
 			check(hare.hops.size() == beforeStop && hare.onGround(), "NoAI must not bound despite a path and residual movement");
 			hare.discard();
 		});
+		ObservedHare recovering = spawn(context, world, 180);
+		world.getServer().runOnServer(server -> route(recovering, new Vec3(.5, 100, -12.5)));
+		int stopBounds = -1;
+		for (int tick = 0; tick < 50; tick++) {
+			context.waitTicks(1);
+			stopBounds = world.getServer().computeOnServer(server -> {
+				if (recovering.lastBrakedRecoveryTick != recovering.tickCount || !recovering.onGround()) return -1;
+				// Stop in the callback that observes braking; retain every subsequent server tick's input.
+				recovering.getNavigation().stop();
+				recovering.observeStoppedInput = true;
+				recovering.stoppedSpeed = recovering.getDeltaMovement().horizontalDistanceSqr();
+				return recovering.hops.size();
+			});
+			if (stopBounds >= 0) break;
+		}
+		check(stopBounds >= 0, "Recovery stop must observe an actual native braking tick");
+		int beforeRecoveryStop = stopBounds;
+		context.waitTicks(20);
+		world.getServer().runOnServer(server -> {
+			check(recovering.hops.size() == beforeRecoveryStop && recovering.onGround()
+				&& recovering.observedStoppedTicks > 0 && recovering.acceleratedStoppedTicks == 0
+				&& recovering.zza == 0 && recovering.getDeltaMovement().horizontalDistanceSqr() < .001,
+				"Stopping during recovery must consume the old move command: " + recovering.receipt());
+			recovering.discard();
+		});
 		ObservedHare idle = spawn(context, world, 0);
 		world.getServer().runOnServer(server -> idle.setDeltaMovement(.12, 0, 0));
 		context.waitTicks(20);
@@ -185,6 +215,10 @@ public final class RimehareHopChecks {
 	private static void route(ObservedHare hare, Vec3 destination) {
 		check(hare.getNavigation().moveTo(destination.x, destination.y, destination.z, 2.6)
 			&& hare.getNavigation().getPath().canReach(), "Native pathfinder must admit the fixture route: " + hare.receipt());
+		// The native overload allows one block of reach; keep both that actual endpoint and the requested
+		// destination in the receipt so completion and post-arrival drift cannot be confused.
+		check(hare.getNavigation().getPath().getEndNode().asBlockPos().distManhattan(hare.getNavigation().getPath().getTarget()) <= 1,
+			"Native destination admission must retain the one-block reach range: " + hare.receipt());
 	}
 
 	private static void arena(ServerLevel level) {
@@ -200,6 +234,10 @@ public final class RimehareHopChecks {
 	private static final class ObservedHare extends Rimehare {
 		private final List<Hop> hops = new ArrayList<>();
 		private int landed = -1, shortestRecovery = Integer.MAX_VALUE, landingRecoveries;
+		private int recoveryTicks, brakedRecoveryTicks, lastBrakedRecoveryTick = -1;
+		private double maxRecoveryStep, stoppedSpeed;
+		private boolean observeStoppedInput;
+		private int observedStoppedTicks, acceleratedStoppedTicks;
 		private boolean airborne;
 		private float previousYaw;
 
@@ -214,7 +252,25 @@ public final class RimehareHopChecks {
 
 		@Override
 		public void aiStep() {
+			boolean wasGrounded = onGround();
+			Vec3 positionBefore = position();
+			double speedBefore = getDeltaMovement().horizontalDistanceSqr();
+			int landingBefore = landed;
 			super.aiStep();
+			if (wasGrounded && onGround() && landingBefore >= 0 && tickCount - landingBefore <= 3) {
+				recoveryTicks++;
+				maxRecoveryStep = Math.max(maxRecoveryStep, position().subtract(positionBefore).horizontalDistance());
+				if (zza == 0 && xxa == 0 && getDeltaMovement().horizontalDistanceSqr() < speedBefore) {
+					brakedRecoveryTicks++;
+					lastBrakedRecoveryTick = tickCount;
+				}
+			}
+			if (observeStoppedInput) {
+				observedStoppedTicks++;
+				double speed = getDeltaMovement().horizontalDistanceSqr();
+				if (zza != 0 || xxa != 0 || speed > stoppedSpeed + 1e-8) acceleratedStoppedTicks++;
+				stoppedSpeed = speed;
+			}
 			if (!onGround()) airborne = true;
 			if (onGround() && airborne && getDeltaMovement().y <= 0) {
 				landed = tickCount;
@@ -234,8 +290,13 @@ public final class RimehareHopChecks {
 		}
 
 		private String receipt() {
-			return "position=" + position() + ", velocity=" + getDeltaMovement() + ", hops=" + hops
-				+ ", recovery=" + shortestRecovery + ", path=" + getNavigation().getPath();
+			Path path = getNavigation().getPath();
+			return "tick=" + tickCount + ", position=" + position() + ", velocity=" + getDeltaMovement() + ", hops=" + hops
+				+ ", recovery=" + shortestRecovery + ", recoveryTicks=" + recoveryTicks
+				+ ", brakedRecoveryTicks=" + brakedRecoveryTicks + ", maxRecoveryStep=" + maxRecoveryStep
+				+ ", stoppedTicks=" + observedStoppedTicks + ", acceleratedStoppedTicks=" + acceleratedStoppedTicks + ", path=" + path
+				+ (path == null ? "" : ", node=" + path.getNextNodeIndex() + "/" + path.getNodeCount()
+					+ ", done=" + path.isDone() + ", target=" + path.getTarget() + ", end=" + path.getEndNode());
 		}
 	}
 

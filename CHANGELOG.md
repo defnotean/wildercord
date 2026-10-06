@@ -6,6 +6,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
+- Let rimehares shed excess horizontal momentum during fast grounded recovery so bounds can follow native waypoints and settle at the end of a route. Native escape, terrain and arrival checks remain release gates.
+
 - Extended the default-off original articulated player preview to Rising Break and Driving Cut, with separate low-to-high and point/recoil body forms and HUD-safe hand compositions. Existing gameplay windows, inputs and full unsupported-state fallback remain; accepted-input native visual review is pending.
 
 - Added Stone Fracture: a fixed-facing paid brace with rear/axe/stance counters, a separate narrow reply warning, original body/weapon motion and a guaranteed two-second recovery. This isolated slice still requires its native gameplay and visual gate.

@@ -130,6 +130,16 @@ public class Rimehare extends Animal {
 					mob.setXxa(0);
 					return;
 				}
+				double requestedSpeed = speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
+				if (mob.boundCooldown.shouldBrake(mob.getDeltaMovement().horizontalDistance(), requestedSpeed)) {
+					operation = Operation.WAIT;
+					// Shed excess momentum during recovery before a full-speed input could skip a
+					// waypoint cell. Slower steps keep their requested movement input.
+					mob.setSpeed(0);
+					mob.setZza(0);
+					mob.setXxa(0);
+					return;
+				}
 				mob.groundedMove = true;
 			}
 			// This also retains the native JUMPING operation for steps, and FloatGoal in water.

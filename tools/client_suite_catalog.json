@@ -1,7 +1,7 @@
 {
   "masters": {
     "description": "Masters update combat, progression, presentation and bounded existing-world upgrade safety.",
-    "expectedCount": 21,
+    "expectedCount": 23,
     "entries": [
       "dev.wildercord.party.PartyMutationSafetyTest",
       "dev.wildercord.party.ArtFieldMutationSafetyTest",
@@ -16,6 +16,8 @@
       "dev.wildercord.party.MastersSecondFormTimelineTest",
       "dev.wildercord.aura.HailfallReleasedOwnerTest",
       "dev.wildercord.aura.HailSkyAcceptanceTest",
+      "dev.wildercord.party.MastersGroundFieldTimelineTest",
+      "dev.wildercord.aura.GroundFieldReleasedOwnerTest",
       "dev.wildercord.aura.world.DuelistMasterAccessTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.aura.world.MasterVictoriesTest",
@@ -63,6 +65,14 @@
     "expectedCount": 1,
     "entries": [
       "dev.wildercord.world.dungeons.BattlefieldsTest"
+    ]
+  },
+  "diagnostic-siltcrest-presentation": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: whole original Siltcrest presentation class in both qualities, retaining natural hunts and waits with passive admission/strike/cancellation receipts. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.wildlife.SiltcrestPresentationTest"
     ]
   }
 }

@@ -465,6 +465,8 @@ Feature guides: [expeditions](docs/features/expeditions.md), [elemental armour](
 
 ## Roadmap
 
+The expanded combat, magic, progression and lore update is tracked in the [Masters of Tomorrow development roadmap](docs/MASTERS_OF_TOMORROW_ROADMAP.md). Its [release checklist](docs/reviews/RELEASE_READINESS.md) distinguishes tested checkpoints from unfinished features and remaining runtime acceptance.
+
 - More dungeons, bosses and runes of the world.
 - More reactions and secret spells.
 - Balance passes from what players find on real servers.

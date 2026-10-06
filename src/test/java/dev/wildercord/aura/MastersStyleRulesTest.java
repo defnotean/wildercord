@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(14, MastersStyleRules.STYLES.size());
+		assertEquals(16, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
@@ -18,6 +18,7 @@ class MastersStyleRulesTest {
 			assertEquals(style.animation() <= 12 ? 0 : 1, ArtRules.art(style.art()).slot());
 			assertEquals(style.animation() == 15 ? MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
 				: style.animation() == 16 ? MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT
+				: style.animation() >= 17 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
 				: MastersStyleRules.TargetPolicy.ACTIVE_CONE, style.targets());
 			assertSame(style, MastersStyleRules.of(style.art()));
 			assertSame(style, MastersStyleRules.animation(style.animation()));
@@ -56,8 +57,8 @@ class MastersStyleRulesTest {
 
 	@Test
 	void profilesMustExplicitlyChooseWhetherTheObservedStringVictimIsRetained() {
-		assertThrows(NullPointerException.class, () -> new MastersStyleRules.Style(17, "counter_fixture", 6, 12, null));
-		var counter = new MastersStyleRules.Style(17, "counter_fixture", 6, 12, MastersStyleRules.TargetPolicy.STRING_TARGET);
+		assertThrows(NullPointerException.class, () -> new MastersStyleRules.Style(19, "counter_fixture", 6, 12, null));
+		var counter = new MastersStyleRules.Style(19, "counter_fixture", 6, 12, MastersStyleRules.TargetPolicy.STRING_TARGET);
 		assertEquals(MastersStyleRules.TargetPolicy.STRING_TARGET, counter.targets());
 		assertNull(MastersStyleRules.of(counter.art()), "A policy fixture does not expand the shipping catalog");
 	}
@@ -81,6 +82,31 @@ class MastersStyleRulesTest {
 		assertEquals(.28, ArtRules.HAIL_STONE_FACTOR);
 		assertEquals(.95, ArtRules.SKYFALL_FACTOR);
 		assertEquals(.4, ArtRules.SKYFALL_ARC_FACTOR);
+	}
+
+	@Test
+	void untargetedGroundFieldsUseTheirOwnExplicitPolicyAndOriginalValues() {
+		for (String art : new String[] {"collapse", "red_rain"}) {
+			var style = MastersStyleRules.of(art);
+			assertEquals(art.equals("collapse") ? 17 : 18, style.animation());
+			assertEquals(8, style.windup());
+			assertEquals(art.equals("collapse") ? 18 : 16, style.recovery());
+			assertEquals(MastersStyleRules.TargetPolicy.GROUND_AHEAD, style.targets());
+			assertEquals(8, ArtRules.art(art).cost());
+			assertEquals(80, ArtRules.art(art).cooldown());
+			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
+			assertNull(MastersArtRules.move(style.animation()));
+		}
+		assertEquals(16, ArtRules.COLLAPSE_TICKS);
+		assertEquals(2.5, ArtRules.COLLAPSE_AHEAD);
+		assertEquals(4.5, ArtRules.COLLAPSE_PULL);
+		assertEquals(2.2, ArtRules.COLLAPSE_RADIUS);
+		assertEquals(40, ArtRules.RAIN_TICKS);
+		assertEquals(10, ArtRules.BLEED_PERIOD);
+		assertEquals(2, ArtRules.RAIN_AHEAD);
+		assertEquals(3.5, ArtRules.RAIN_RADIUS);
+		assertEquals(.30, ArtRules.RAIN_DRINK);
+		assertEquals(4, ArtRules.RAIN_DRINK_MAX);
 	}
 
 	@Test

@@ -45,8 +45,8 @@ def sources() -> dict[str, str]:
     return {name: sha(ROOT / name) for name in SOURCES + INSPECTED}
 
 
-def run(out: Path, verify: Path, shared_player: bool = False, opening_styles: bool = False, hail_sky: bool = False) -> None:
-    if sum([shared_player, opening_styles, hail_sky]) > 1:
+def run(out: Path, verify: Path, shared_player: bool = False, opening_styles: bool = False, hail_sky: bool = False, ground_fields: bool = False) -> None:
+    if sum([shared_player, opening_styles, hail_sky, ground_fields]) > 1:
         raise ValueError('Select one bounded geometry domain')
     out.mkdir(parents=True, exist_ok=True)
     if any(out.iterdir()):
@@ -80,7 +80,7 @@ def run(out: Path, verify: Path, shared_player: bool = False, opening_styles: bo
                  *[str(ROOT / name) for name in SOURCES if name.endswith('.java')]]]
     report = {'kind': 'offline source geometry', 'native': 'not run', 'mixinRuntime': 'not run',
               'source_before': before, 'dependency_sha256': hashes, 'passed': False,
-              'geometry_domain': ['hailfall', 'skyfall'] if hail_sky else ['kindling_draw', 'frostbite'] if opening_styles else ['rising_break', 'driving_cut'] if shared_player else ['spellcut'],
+              'geometry_domain': ['collapse', 'red_rain'] if ground_fields else ['hailfall', 'skyfall'] if hail_sky else ['kindling_draw', 'frostbite'] if opening_styles else ['rising_break', 'driving_cut'] if shared_player else ['spellcut'],
               'palette_input_domain': 'existing immutable-palette and equipment-input regressions'}
     try:
         with (out / 'compile.log').open('w') as log:
@@ -91,8 +91,8 @@ def run(out: Path, verify: Path, shared_player: bool = False, opening_styles: bo
             # Concurrent isolated verifiers can share a PID-named perf-data file. Keep the
             # JVM's optional performance counters from injecting a lock warning into JSON.
             command = [str(java / 'java'), '-XX:-UsePerfData', '-Xmx2G', '-cp', str(classes) + os.pathsep + cp, main]
-            if (shared_player or opening_styles or hail_sky) and main in ['CheckArticulatedArmorGeometry', 'CheckArticulatedArmorView']:
-                command.append('--hail-sky' if hail_sky else '--opening-styles' if opening_styles else '--shared-player')
+            if (shared_player or opening_styles or hail_sky or ground_fields) and main in ['CheckArticulatedArmorGeometry', 'CheckArticulatedArmorView']:
+                command.append('--ground-fields' if ground_fields else '--hail-sky' if hail_sky else '--opening-styles' if opening_styles else '--shared-player')
             commands.append(command)
             with (out / filename).open('w') as result, (out / (main + '.log')).open('w') as log:
                 subprocess.run(command, cwd=ROOT, stdout=result, stderr=log, check=True)
@@ -120,8 +120,9 @@ def main() -> None:
     domain.add_argument('--shared-player', action='store_true', help='Audit Rising Break and Driving Cut geometry instead of the default Spellcut domain')
     domain.add_argument('--opening-styles', action='store_true', help='Audit only Kindling Draw and Frostbite (presentation IDs 3 and 4) in their accepted 6/12 windows')
     domain.add_argument('--hail-sky', action='store_true', help='Audit Hailfall and Skyfall in their accepted 8/16 and 6/16 windows')
+    domain.add_argument('--ground-fields', action='store_true', help='Audit Collapse and Red Rain in their accepted 8/18 and 8/16 windows')
     args = parser.parse_args()
-    run(args.out.resolve(), args.verification.resolve(), args.shared_player, args.opening_styles, args.hail_sky)
+    run(args.out.resolve(), args.verification.resolve(), args.shared_player, args.opening_styles, args.hail_sky, args.ground_fields)
 
 
 if __name__ == '__main__':

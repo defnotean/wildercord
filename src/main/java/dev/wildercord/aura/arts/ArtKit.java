@@ -144,9 +144,18 @@ public final class ArtKit {
 
 	/** The foes within {@code radius} of {@code centre} (level), from {@code below} under it to {@code above} over it, nearest first. */
 	public static List<LivingEntity> around(ServerPlayer player, Vec3 centre, double radius, double below, double above, int max) {
+		return around(player, centre, radius, below, above, max, false);
+	}
+
+	/** The same area query, with owner LOS applied before the target cap; used only by Red Rain's immediate burst. */
+	public static List<LivingEntity> aroundVisible(ServerPlayer player, Vec3 centre, double radius, double below, double above, int max) {
+		return around(player, centre, radius, below, above, max, true);
+	}
+
+	private static List<LivingEntity> around(ServerPlayer player, Vec3 centre, double radius, double below, double above, int max, boolean visible) {
 		List<LivingEntity> out = new ArrayList<>();
 		AABB box = new AABB(centre.x - radius - 1, centre.y - below, centre.z - radius - 1, centre.x + radius + 1, centre.y + above, centre.z + radius + 1);
-		for (Entity e : player.level().getEntities(player, box, e -> harmable(player, e))) {
+		for (Entity e : player.level().getEntities(player, box, e -> harmable(player, e) && (!visible || player.hasLineOfSight(e)))) {
 			double dx = e.getX() - centre.x;
 			double dz = e.getZ() - centre.z;
 			double reach = radius + e.getBbWidth() / 2;

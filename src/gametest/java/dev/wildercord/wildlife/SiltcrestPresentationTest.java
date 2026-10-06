@@ -15,13 +15,15 @@ import java.util.concurrent.CompletableFuture;
 
 /** Actual unpaused model poses. Full/Minimal spell settings do not substitute for this creature's own rig. */
 public final class SiltcrestPresentationTest implements FabricClientGameTest {
- private SiltcrestBittern source;private int entityId;
+ private SiltcrestBittern source;private int entityId;private SiltcrestPresentationProbe.Session observation;
  public void runTest(ClientGameTestContext c){var camera=c.computeOnClient(mc->mc.options.getCameraType());boolean hud=c.computeOnClient(mc->mc.gui.hud.isHidden());int[] size=c.computeOnClient(mc->new int[]{mc.getWindow().getWidth(),mc.getWindow().getHeight()});var own=MagicQuality.own;var others=MagicQuality.others;boolean flash=MagicQuality.reducedFlash;
   try{
+   SiltcrestPresentationProbeChecks.verify();
    c.runOnClient(mc->{mc.getWindow().setWindowed(1920,1080);mc.resizeGui();mc.options.setCameraType(CameraType.FIRST_PERSON);clean(mc);});
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))try(var w=c.worldBuilder().create()){
+    try{
     String prefix="siltcrest_"+quality.name().toLowerCase(Locale.ROOT);c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
-    w.getServer().runOnServer(s->{var l=s.overworld();floor(l);for(var light:List.of(new BlockPos(0,100,-2),new BlockPos(5,100,2),new BlockPos(-3,100,-2)))l.setBlock(light,Blocks.SEA_LANTERN.defaultBlockState(),2);var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(l,.5,101,-2,Set.<Relative>of(),0,0,false);for(int i=0;i<3;i++)fish(l,i);source=bird(l,.5,.5);entityId=source.getId();check(BitternHabitat.bank(l,source.blockPosition())&&l.getFluidState(source.blockPosition()).isEmpty(),"Actual initial dry supported bank is adjacent to the supplied pond");});
+    w.getServer().runOnServer(s->{var l=s.overworld();dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.SiltcrestPresentationTest#"+quality.name().toLowerCase(Locale.ROOT)+"\",\"seed\":\""+l.getSeed()+"\"}");floor(l);for(var light:List.of(new BlockPos(0,100,-2),new BlockPos(5,100,2),new BlockPos(-3,100,-2)))l.setBlock(light,Blocks.SEA_LANTERN.defaultBlockState(),2);var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(l,.5,101,-2,Set.<Relative>of(),0,0,false);for(int i=0;i<3;i++)fish(l,i);source=bird(l,.5,.5);entityId=source.getId();check(BitternHabitat.bank(l,source.blockPosition())&&l.getFluidState(source.blockPosition()).isEmpty(),"Actual initial dry supported bank is adjacent to the supplied pond");observation=SiltcrestPresentationProbe.begin(l,source,prefix);});
     c.runOnClient(mc->{MagicQuality.own=quality;MagicQuality.others=quality;MagicQuality.reducedFlash=false;clean(mc);});
     phase(c,w,SiltcrestBittern.COILING,"Actual ordinary dry-bank hunt reaches real coiling",500);var coilFrame=capture(c,prefix+"_actual_coil",SiltcrestBittern.COILING);
     phase(c,w,SiltcrestBittern.STRIKING,"Actual admitted wild fish strike reaches its original six-tick phase",80);var strikeFrame=capture(c,prefix+"_actual_strike",SiltcrestBittern.STRIKING);
@@ -32,6 +34,7 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
     w.getServer().runOnServer(s->{var l=s.overworld();l.setBlock(new BlockPos(-2,103,-2),Blocks.OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT,true),2);l.setBlock(new BlockPos(-1,100,-2),Blocks.WATER.defaultBlockState(),2);});w.getServer().runCommand("time set 6000");
     phase(c,w,SiltcrestBittern.SHELTERING,"Actual daytime shelter navigation reaches supplied covered dry bank",420);
     w.getServer().runOnServer(s->check(source.onGround()&&source.shelter()!=null&&BitternHabitat.shelter(s.overworld(),source.shelter())&&source.distanceToSqr(source.shelter().getX()+.5,source.shelter().getY(),source.shelter().getZ()+.5)<=.36&&source.huntReady()==meal,"Actual grounded canopy rest retains earned appetite"));finish(c,capture(c,prefix+"_actual_shelter",SiltcrestBittern.SHELTERING));
+    }finally{if(observation!=null){try{observation.close();}finally{observation=null;}}}
    }
   }finally{c.runOnClient(mc->{MagicQuality.own=own;MagicQuality.others=others;MagicQuality.reducedFlash=flash;mc.options.setCameraType(camera);if(mc.gui.hud.isHidden()!=hud)mc.gui.hud.toggle();mc.getWindow().setWindowed(size[0],size[1]);mc.resizeGui();});}
  }

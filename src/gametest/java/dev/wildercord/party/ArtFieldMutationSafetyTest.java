@@ -304,10 +304,19 @@ public final class ArtFieldMutationSafetyTest implements FabricClientGameTest {
 				ends[0]++;
 				check(Effects.applying() == spellSource && Effects.applyingCast() == unrelated, "End cleanup runs after the pulse's source scope has unwound");
 				check(witness.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30), spellSource), "The enclosing spell retains harmful effects even when it shares the retired field's owner");
-				witness.setInvulnerableTime(0);
+				// The outer hit is still on the stack. Clear the living damage cooldown too, as ordinary stacked spells do.
+				int priorCooldown = witness.damageCooldownTime;
+				Effects.readyToHurt(witness);
+				check(witness.damageCooldownTime == 0, "The independent nested hit begins without the outer hit's damage cooldown");
 				float before = witness.getHealth();
-				check(witness.hurtServer(owner.level(), owner.level().damageSources().playerAttack(spellSource), 1)
-					&& witness.getHealth() < before, "The enclosing source retains actual damage admission during field end cleanup");
+				DamageSource source = owner.level().damageSources().playerAttack(spellSource);
+				check(!Parties.blocksDamage(witness, source), "The restored enclosing source passes field and party admission before the nested hit");
+				boolean accepted = witness.hurtServer(owner.level(), source, 1);
+				String evidence = "sameOwner=" + sameOwner + ", source=" + spellSource.getUUID() + ", health=" + before + " -> " + witness.getHealth()
+					+ ", priorCooldown=" + priorCooldown + ", resultingCooldown=" + witness.damageCooldownTime
+					+ ", sourceRestored=" + (Effects.applying() == spellSource) + ", castRestored=" + (Effects.applyingCast() == unrelated);
+				check(accepted, "The enclosing source retains actual damage admission during field end cleanup: " + evidence);
+				check(witness.getHealth() < before, "The admitted nested hit removes real health during field end cleanup: " + evidence);
 				ArtFields.open(owner, "after_end", ArtFields.disc(() -> FEET, 1, 1), 20, 1, (next, player, age) -> next.end());
 			});
 		});

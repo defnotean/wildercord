@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-/** Opt-in lifetime for a released Hailfall cloud or Skyfall bolt, independent of weapon and physical recovery. */
+/** Opt-in lifetime for a released cloud, bolt or ground field, independent of weapon and physical recovery. */
 public final class ReleasedArtOwner {
 	private static final class Life { boolean retired; }
 	private static final Map<ServerPlayer, Life> LIVES = new WeakHashMap<>();
@@ -27,6 +27,8 @@ public final class ReleasedArtOwner {
 
 	public static ReleasedArtOwner capture(ServerPlayer player) { return new ReleasedArtOwner(player); }
 	public ServerLevel level() { return level; }
+	/** Exact original body identity, for field admission without rebinding a previous release. */
+	boolean owns(ServerPlayer owner) { return player == owner; }
 
 	/** A retired original body can never become this release's owner again, even after a same-tick world round trip. */
 	public boolean valid() {
