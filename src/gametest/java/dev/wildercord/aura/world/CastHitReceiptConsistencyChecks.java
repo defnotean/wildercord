@@ -78,9 +78,9 @@ public final class CastHitReceiptConsistencyChecks {
 	private Case probe;
 	private WildercordAttachments.Charge beforeCharge, callbackCharge;
 	private DamageSource beforeSource, acceptedSource;
-	private float beforeHealth, beforeAbsorption, beforeMana, nativeHealthAfter;
+	private float beforeHealth, beforeAbsorption, beforeMana, nativeHealthAfter, manaAtRelease;
 	private int callbacks;
-	private long begun, drivingReady, impactAt;
+	private long begun, drivingReady, impactAt, releaseObservedAt;
 	private boolean releaseFinished;
 
 	static List<String> expectedCases() {
@@ -215,7 +215,7 @@ public final class CastHitReceiptConsistencyChecks {
 				beforeImpact(configure);
 				master.customServerAiStep(target.level());
 				check(!master.state(AuraFighter.WINDUP), "The accepted original Master releases its pending hit");
-				active = null;
+				finishRelease();
 				return true;
 			}, MastersRules.Move.BREAK_CAST.tell + 5);
 		} else {
@@ -231,7 +231,7 @@ public final class CastHitReceiptConsistencyChecks {
 				check(close((float) Aura.aura(player), 100 - (float) MastersArtRules.DRIVING_CUT.cost()), "Driving Cut commits its unchanged eighteen-Aura price");
 				drivingReady = s.overworld().getGameTime() + MastersArtRules.DRIVING_CUT.rest();
 				check(close(target.getHealth(), HEALTH), "The scheduled Driving Cut windup is harmless");
-				Scheduler.later(MastersArtRules.DRIVING_CUT.windup(), () -> { active = null; releaseFinished = true; });
+				Scheduler.later(MastersArtRules.DRIVING_CUT.windup(), () -> { finishRelease(); releaseFinished = true; });
 			});
 			server.waitFor(s -> releaseFinished, MastersArtRules.DRIVING_CUT.windup() + 5);
 		}
@@ -284,20 +284,31 @@ public final class CastHitReceiptConsistencyChecks {
 		beforeCharge = target.getAttached(WildercordAttachments.CHARGE);
 		if (probe != Case.NEW_CHARGE && probe != Case.IDLE) check(beforeCharge != null, "A real held charge survives until the pre-impact snapshot");
 		beforeHealth = target.getHealth(); beforeAbsorption = target.getAbsorptionAmount(); beforeMana = Spellbooks.mana(target);
-		nativeHealthAfter = Float.NaN;
+		nativeHealthAfter = Float.NaN; manaAtRelease = Float.NaN; releaseObservedAt = -1;
 		beforeSource = target.getLastDamageSource(); positionBefore = target.position();
 		callbackCharge = null; acceptedSource = null; callbacks = 0; active = this;
 	}
 
+	private void finishRelease() {
+		// The scheduled art and its damage reactions have returned, before later END_SERVER_TICK mana regeneration.
+		releaseObservedAt = target.level().getGameTime();
+		check(active == this && releaseObservedAt == impactAt, "Observe actual mana in the same native release tick");
+		manaAtRelease = Spellbooks.mana(target);
+		active = null;
+	}
+
 	private void verify() {
 		String note = route + "/" + probe + " health=" + target.getHealth() + ", absorption=" + target.getAbsorptionAmount()
-			+ ", mana=" + Spellbooks.mana(target) + ", callbacks=" + callbacks + ", locked=" + CastLock.locked(target);
+			+ ", mana=" + Spellbooks.mana(target) + ", manaBefore=" + beforeMana + ", manaAtRelease=" + manaAtRelease
+			+ ", impactAt=" + impactAt + ", releaseObservedAt=" + releaseObservedAt + ", verifyAt=" + target.level().getGameTime()
+			+ ", callbacks=" + callbacks + ", locked=" + CastLock.locked(target);
 		Wildercord.LOGGER.info("[cast-hit-consistency] {}", note);
+		check(Float.isFinite(manaAtRelease) && releaseObservedAt == impactAt, "The completed release has a finite same-tick resource snapshot: " + note);
 		boolean prevented = switch (probe) { case GUARD, STEP, WARD, RESISTANCE, REJECTED -> true; default -> false; };
 		boolean replacement = probe == Case.REPLACED || probe == Case.EQUAL_TOKEN || probe == Case.NEW_CHARGE;
 		if (prevented) {
 			check(close(target.getHealth(), beforeHealth) && close(target.getAbsorptionAmount(), beforeAbsorption)
-				&& close(Spellbooks.mana(target), beforeMana), "A genuine prevention spends no health, absorption or Mana Skin: " + note);
+				&& close(manaAtRelease, beforeMana), "A genuine prevention spends no health, absorption or Mana Skin: " + note);
 			check(target.getAttached(WildercordAttachments.CHARGE) == beforeCharge && !CastLock.locked(target),
 				"A true prevention preserves the precise held spell without a follow-up lock: " + note);
 			if (probe == Case.GUARD) check(!AuraGuard.perfectNow(target) && AuraGuard.caught(target) != null,
@@ -312,7 +323,7 @@ public final class CastHitReceiptConsistencyChecks {
 		if (probe == Case.FULL_ABSORPTION) check(close(target.getHealth(), beforeHealth) && target.getAbsorptionAmount() < beforeAbsorption,
 			"A zero-health-loss release genuinely consumes absorption: " + note);
 		else if (probe == Case.MANA_SKIN) {
-			float netWound = beforeHealth - target.getHealth(), paidRecovery = (beforeMana - Spellbooks.mana(target)) / 2;
+			float netWound = beforeHealth - target.getHealth(), paidRecovery = (beforeMana - manaAtRelease) / 2;
 			float nativeWound = beforeHealth - nativeHealthAfter;
 			float expectedRecovery = nativeWound * .2F >= .25F ? nativeWound * .2F : 0;
 			check(Float.isFinite(nativeHealthAfter) && nativeWound > 0 && netWound > 0
