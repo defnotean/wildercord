@@ -40,6 +40,7 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 	private static Vec3 fragmentOrigin;
 	private static Defender reprieveTarget;
 	private static boolean retireDebt;
+	private static DebtProbe debt;
 	private static Defender directionalTarget;
 	private static int directionalMode, directionalSources;
 	private static Vec3 directionalFocus;
@@ -47,6 +48,14 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext c){
 		if(!observing){observing=true;
 			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((target,source,amount)->{
+				if(target==reprieveTarget&&source instanceof RelayDamageSource relay&&debt!=null){
+					debt.admissions++;debt.reserved=reservedDamage(relay.cast());
+					// The plain defender has identity reduction; read the paid reservation without rerunning defence.
+					debt.plainDefence=plainReprieve(reprieveTarget);debt.immediate=amount;
+					debt.available=DefensiveFoci.available(reprieveTarget,debt.reserved);
+					debt.sameReceipt=relay.cast()==debt.paid&&relay.cast().payment()==debt.paid.payment()&&relay.cast().caster==watchedOwner;
+					debtEvidence("native_immediate_admission");
+				}
 				if(directionalTarget!=null&&directionalFocus!=null&&source instanceof RelayDamageSource&&(target==directionalTarget||target==watchedOwner)&&directionalSources++<8)
 					directionEvidence("damage_callback",target,source);
 				if(source instanceof RelayDamageSource && target==mirrorTarget){
@@ -56,8 +65,14 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 				return true;
 			});
 			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((target,source,base,taken,blockedDamage)->{
-				if(target==reprieveTarget && source instanceof RelayDamageSource && retireDebt)
-					dev.wildercord.player.Spellbooks.setCord(watchedOwner,new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
+				if(target==reprieveTarget&&source instanceof RelayDamageSource relay&&debt!=null){
+					debt.callbacks++;debt.owedInsideCallback=reprieveTarget.getAttachedOrElse(DefensiveFoci.STATE,DefensiveFoci.State.EMPTY).owed();
+					if(retireDebt){
+						dev.wildercord.player.Spellbooks.setCord(watchedOwner,new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
+						debt.retired=!relay.cast().alive()&&!RelayCircles.pending(watchedOwner);
+					}
+					debtEvidence("native_after_damage");
+				}
 				if(target==mirrorTarget && source instanceof RelayDamageSource && mirrorMode==3)
 					dev.wildercord.player.Spellbooks.setCord(watchedOwner,new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
 			});
@@ -154,19 +169,70 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 						defender.snapTo(.5,150,6.5,180,0);defender.setHealth(defender.getMaxHealth());Effects.readyToHurt(defender);defender.removeAllEffects();
 						defender.setItemSlot(EquipmentSlot.CHEST,ItemStack.EMPTY);defender.removeAttached(ArmorResponses.STATE);defender.removeAttached(DefensiveFoci.STATE);
 						dev.wildercord.gear.GearSlots.set(defender,dev.wildercord.gear.GearSlot.FOCUS,new ItemStack(dev.wildercord.gear.GearItems.get(dev.wildercord.gear.GearDef.REPRIEVE)));
-						reprieveTarget=defender;RelayCircleTest.directDown(owner);
+						// Default PvP Relay Harm is below Reprieve's six-damage gate; real casting gear qualifies it.
+						var staff=dev.wildercord.gear.GearDef.greaterStaff("arcane");
+						RelayCircleTest.check(dev.wildercord.gear.GearSlots.set(owner,dev.wildercord.gear.GearSlot.STAFF,new ItemStack(dev.wildercord.gear.GearItems.get(staff)))
+							&&dev.wildercord.gear.Gear.of(owner).pieces().contains(staff),"The caster equips a real greater arcane staff before paying for Relay");
+						RelayCircleTest.check(plainReprieve(defender)&&DefensiveFoci.available(defender,6),"Plain equipped Reprieve is ready at its unchanged native threshold");
+						reprieveTarget=defender;debt=new DebtProbe();debt.healthBefore=defender.getHealth();RelayCircleTest.directDown(owner);
+						var focus=((java.util.Map<?,?>)readField(RelayCircles.class,null,"FOCI")).get(owner);
+						RelayCircleTest.check(focus!=null,"Qualifying Reprieve fixture places a real paid Relay focus");
+						debt.paid=(Cast)readField(focus.getClass(),focus,"cast");
+						RelayCircleTest.check(debt.paid.gearPower("arcane")>=dev.wildercord.gear.GearDef.GREATER_STAFF_POWER,"The paid Relay snapshots the qualifying staff power");
+						debtEvidence("paid_focus");
 					});c.waitTicks(2);
 					world.getServer().runOnServer(server->{RelayCircleTest.aim(owner,defender.getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);
 					world.getServer().runOnServer(server->{
-						float owed=defender.getAttachedOrElse(DefensiveFoci.STATE,DefensiveFoci.State.EMPTY).owed();
+						float owed=defender.getAttachedOrElse(DefensiveFoci.STATE,DefensiveFoci.State.EMPTY).owed();debtEvidence("after_release");
+						RelayCircleTest.check(debt.admissions==1&&debt.callbacks==1&&debt.sameReceipt,"The actual immediate wound uses the original paid Relay receipt once");
+						RelayCircleTest.check(debt.plainDefence&&debt.available&&debt.reserved>=6&&debt.reserved<=1024,"The actual paid hit with identity reduction qualifies for ready Reprieve");
+						RelayCircleTest.check(closeDebt(debt.immediate,debt.reserved*(1-DefensiveFoci.DELAY_SHARE))
+							&&closeDebt(debt.healthBefore-defender.getHealth(),debt.immediate),"Reprieve accepts the actual immediate share before its debt decision");
+						RelayCircleTest.check(debt.owedInsideCallback==0&&(!cancel||debt.retired),"The native callback precedes debt creation and retirement closes its original receipt");
+						RelayCircleTest.check(closeDebt(reservedDamage(debt.paid),debt.reserved),"Full incoming damage is reserved once before the partial wound and debt callback");
 						RelayCircleTest.check(defender.getHealth()<defender.getMaxHealth(),"Actual native Reprieve branch accepts the immediate partial wound");
 						RelayCircleTest.check(!RelayCircles.pending(owner),"Original focus has retired before checking accepted debt");
 						RelayCircleTest.check(cancel?owed==0:owed>0,"Callback retirement prevents new debt; a debt accepted before normal focus retirement remains an already-admitted wound");
-						reprieveTarget=null;dev.wildercord.gear.GearSlots.clear(defender,dev.wildercord.gear.GearSlot.FOCUS);
+						RelayCircleTest.check(closeDebt(owed,cancel?0:debt.reserved*DefensiveFoci.DELAY_SHARE),"Only valid post-callback admission records the exact deferred share");
+						reprieveTarget=null;debt=null;dev.wildercord.gear.GearSlots.clear(defender,dev.wildercord.gear.GearSlot.FOCUS);
+						dev.wildercord.gear.GearSlots.clear(owner,dev.wildercord.gear.GearSlot.STAFF);
 					});c.waitTicks(12);
 				}
 			}finally{world.getServer().runOnServer(server->dev.wildercord.cast.CampConcordNative.config(original));}
-		} finally {cancelSecond=false;watchedOwner=null;mirrorTarget=null;reprieveTarget=null;directionalTarget=null;directionalFocus=null;}
+		} finally {cancelSecond=false;watchedOwner=null;mirrorTarget=null;reprieveTarget=null;debt=null;directionalTarget=null;directionalFocus=null;}
+	}
+
+	private static final class DebtProbe {
+		Cast paid;int admissions,callbacks;float healthBefore,reserved,immediate,owedInsideCallback;
+		boolean available,sameReceipt,retired,plainDefence;
+	}
+	private static boolean closeDebt(float actual,float expected){return Math.abs(actual-expected)<.001F;}
+	private static boolean plainReprieve(ServerPlayer player){
+		return player.getArmorValue()==0&&player.getAbsorptionAmount()==0&&player.getActiveEffects().isEmpty()
+			&&java.util.List.of(EquipmentSlot.HEAD,EquipmentSlot.CHEST,EquipmentSlot.LEGS,EquipmentSlot.FEET).stream().allMatch(slot->player.getItemBySlot(slot).isEmpty())
+			&&dev.wildercord.gear.Gear.of(player).pieces().equals(java.util.List.of(dev.wildercord.gear.GearDef.REPRIEVE));
+	}
+	private static float reservedDamage(Cast cast){
+		Object allowance=readField(cast.payment().getClass(),cast.payment(),"damage");
+		if(allowance==null)return 0;
+		var amount=(Number)((java.util.Map<?,?>)readField(SpellDamageAllowance.class,allowance,"used")).get(reprieveTarget.getUUID());
+		return amount==null?0:amount.floatValue();
+	}
+	private static Object readField(Class<?> type,Object target,String name){
+		try{var field=type.getDeclaredField(name);field.setAccessible(true);return field.get(target);}
+		catch(ReflectiveOperationException failure){throw new AssertionError("Read-only Reprieve receipt probe unavailable: "+name,failure);}
+	}
+	private static void debtEvidence(String phase){
+		var value=new com.google.gson.JsonObject();var state=reprieveTarget.getAttachedOrElse(DefensiveFoci.STATE,DefensiveFoci.State.EMPTY);
+		value.addProperty("phase",phase);value.addProperty("retireInCallback",retireDebt);value.addProperty("tick",watchedOwner.level().getGameTime());
+		value.addProperty("casterArcaneGearPower",debt.paid==null?0:debt.paid.gearPower("arcane"));
+		value.addProperty("reprieveEquipped",dev.wildercord.gear.Gear.of(reprieveTarget).pieces().contains(dev.wildercord.gear.GearDef.REPRIEVE));
+		value.addProperty("reservedFullHit",debt.reserved);value.addProperty("identityReductionVerified",debt.plainDefence);value.addProperty("nativeImmediate",debt.immediate);
+		value.addProperty("availableAtAdmission",debt.available);value.addProperty("samePaidReceipt",debt.sameReceipt);
+		value.addProperty("admissions",debt.admissions);value.addProperty("callbacks",debt.callbacks);value.addProperty("owedInsideCallback",debt.owedInsideCallback);
+		value.addProperty("owed",state.owed());value.addProperty("observedImmediatePlusDebt",debt.immediate+state.owed());value.addProperty("recharge",state.reprieve());value.addProperty("health",reprieveTarget.getHealth());
+		value.addProperty("retiredInsideCallback",debt.retired);value.addProperty("focusRegistered",RelayCircles.pending(watchedOwner));
+		System.out.println("WILDERCORD_RELAY_REPRIEVE "+value);
 	}
 
 	private static void directionEvidence(String phase,net.minecraft.world.entity.LivingEntity target,DamageSource source){
