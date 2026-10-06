@@ -292,6 +292,18 @@ public final class Mastery {
 		}
 	}
 
+    /** A verified field cut earns utility once, without hit procs, refund traits or environment reads. */
+    static void onExcise(ServerPlayer player) {
+        if (!Config.get().mastery().enabled() || player.isCreative() || player.isSpectator()) return;
+        var runes = dev.wildercord.spell.ExciseRules.RUNES;
+        String key = keyOf(runes);
+        Tally tally = new Tally(player.getUUID(), key, runes, List.of(), true, 1, false, 0,
+            Set.of(), place(player.blockPosition()));
+        earn(player, tally, MasteryRules.UTILITY, "", player.level().dimension() == PracticeRoom.DIMENSION, false);
+        MasteryBook.Entry entry = MasteryAttachments.book(player).entry(key).orElse(null);
+        show(player, key, entry == null ? MasteryRules.FIRST : entry.rank(), entry == null ? MasterySigil.seed(player.getUUID(), key) : entry.seed(), List.of());
+    }
+
 	/** Gives a scroll's cast the traits inscribed on it (it learns nothing), and the reader the scroll's look while it goes off. */
 	public static void onScrollCast(ServerPlayer player, List<RuneDef> runes, Cast cast, List<String> traits, int rank, long seed) {
 		if (!Config.get().mastery().traits()) {

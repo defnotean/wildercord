@@ -97,6 +97,19 @@ processResources {
 	}
 }
 
+// Life32 has an unchanged generic31 renderer plus one separately admitted held lesson.
+def lifeExciseEntries = [
+    'dev.wildercord.client.fx.LifeRecipeTest',
+    'dev.wildercord.client.fx.LifeFormationTest',
+    'dev.wildercord.client.fx.LifeFlightTest',
+    'dev.wildercord.cast.LifeOutcomeRecipeTest',
+    'dev.wildercord.cast.ExcisePlayableTest'
+]
+def validateLifeExciseSelection = { name, group ->
+    if (name == 'diagnostic-life-excise' && (group.purpose != 'diagnostic' || group.expectedCount != 5 || group.entries != lifeExciseEntries))
+        throw new GradleException('Life32 requires all four generic suites and the separate Excise ordinary class, without release relabeling')
+}
+
 // Focused in-world screenshot suites keep iteration fast while the full descriptor remains available.
 tasks.named('processGametestResources') {
 	inputs.file('tools/client_suite_catalog.json')
@@ -127,6 +140,10 @@ tasks.named('processGametestResources') {
 	inputs.property('ciShard', project.findProperty('ciShard') ?: '')
 	inputs.property('ciShards', project.findProperty('ciShards') ?: '')
 	doLast {
+        def originalDescriptor = new groovy.json.JsonSlurper().parse(file("${destinationDir}/fabric.mod.json"))
+        def fullEntries = originalDescriptor.entrypoints['fabric-client-gametest']
+        if (lifeExciseEntries.take(4).any { fullEntries.contains(it) } && !fullEntries.contains(lifeExciseEntries.last()))
+            throw new GradleException('Life32 full descriptor must retain the separate Excise ordinary class')
 		def selectors = ['ciSuite', 'ciShard', 'focusedSuite', 'twoClientSuite', 'encounterSuite',
 			'cinnamonSuite', 'defensiveSuite', 'practiceSuite', 'magicSuite', 'fusionSuite',
 			'runeSuite', 'mechanicsSuite', 'tourSuite', 'parrySuite', 'signatureSuite', 'tailSuite']
@@ -159,6 +176,7 @@ tasks.named('processGametestResources') {
 			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))
 			if (!catalog.containsKey(name)) throw new GradleException("Unknown ciSuite '${name}'; choose from ${catalog.keySet().join(', ')}")
 			def group = catalog[name]
+            validateLifeExciseSelection(name, group)
 			if (!(group.get('purpose', 'release') in ['release', 'diagnostic'])) throw new GradleException("ciSuite '${name}' has an unknown purpose")
 			def selected = group.entries
 			if (!(selected instanceof List) || selected.isEmpty() || !selected.every { it instanceof String && !it.trim().isEmpty() }) throw new GradleException("ciSuite '${name}' must contain a nonempty list of entrypoint names")
@@ -247,6 +265,7 @@ tasks.named('runClientGameTest') {
 			def descriptor = new groovy.json.JsonSlurper().parse(file("${resources.destinationDir}/fabric.mod.json"))
 			def entries = descriptor.entrypoints['fabric-client-gametest']
 			if (!catalog.containsKey(name) || entries != catalog[name].entries) throw new GradleException('Processed client descriptor does not match ciSuite catalog selection')
+            validateLifeExciseSelection(name, catalog[name])
 			logger.lifecycle('WILDERCORD_CLIENT_DESCRIPTOR ' + groovy.json.JsonOutput.toJson(
 				[kind: catalog[name].purpose == 'diagnostic' ? 'diagnostic' : 'suite', name: name, count: entries.size(), entries: entries]))
 		}

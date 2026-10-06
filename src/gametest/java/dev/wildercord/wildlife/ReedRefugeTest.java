@@ -136,12 +136,18 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   w.getServer().runOnServer(s -> {
    var dry=new BlockPos(-8,102,3);
    var reference=new net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation(routeVisitor,s.overworld());
+   var configuration=queryConfiguration(reference);var maluses=queryMaluses(routeVisitor);
+   check(configuration.equals(queryConfiguration(routeVisitor.getNavigation())),"Reference and actual dry queries begin with identical native search bounds and evaluator flags");
    dryRouteReceipt("before",routeVisitor,dry,reference,null,null);
    var expected=reference.createPath(dry,0);
    dryRouteReceipt("after_reference",routeVisitor,dry,reference,expected,null);
+   check(configuration.equals(queryConfiguration(reference)) && configuration.equals(queryConfiguration(routeVisitor.getNavigation())) && maluses.equals(queryMaluses(routeVisitor)),"Reference query preserves the original search configuration and actor maluses");
    var actual=routeVisitor.getNavigation().createPath(dry,0);
    dryRouteReceipt("after_actual",routeVisitor,dry,reference,expected,actual);
-   check(expected!=null && expected.canReach() && actual!=null && actual.canReach() && actual.sameAs(expected),"After a refuge query, an ordinary dry destination retains the native amphibious route");
+   check(configuration.equals(queryConfiguration(reference)) && configuration.equals(queryConfiguration(routeVisitor.getNavigation())) && maluses.equals(queryMaluses(routeVisitor)),"Actual dry query preserves the same search configuration and actor maluses");
+   // The bounded vanilla search also returns a partial route here. Compare its
+   // complete result, then prove actual dry walking separately with TemptGoal.
+   check(sameNativeRoute(expected,actual,dry),"After a refuge query, native and custom dry searches return identical target, nodes, costs, cursor and reachability, including partial paths");
    routeVisitor.setNoAi(true);checkOrdinaryLook(routeVisitor,"removed refuge");
    walker=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);walker.snapTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
    p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<Relative>of(),180,0,false);
@@ -151,6 +157,22 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   check(tempted,"An ordinary TemptGoal still walks the newt across dry land using native amphibious navigation");
   w.getServer().runOnServer(s -> p(s).setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY));
   verifyStuckLookRestoration(c,w);
+ }
+
+ private static List<Object> queryConfiguration(net.minecraft.world.entity.ai.navigation.PathNavigation navigation) {
+  var evaluator=navigation.getNodeEvaluator();var finder=observedField(navigation,"pathFinder");
+  var followRange=((net.minecraft.world.entity.Mob)observedField(navigation,"mob")).getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE);
+  return List.of(followRange,observedField(navigation,"requiredPathLength"),observedField(navigation,"maxVisitedNodesMultiplier"),observedField(finder,"maxVisitedNodes"),
+   evaluator.canFloat(),evaluator.canPassDoors(),evaluator.canOpenDoors(),evaluator.canWalkOverFences(),observedField(evaluator,"prefersShallowSwimming"));
+ }
+ private static List<Float> queryMaluses(LanternNewt n) {
+  return List.of(n.getPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER),n.getPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER_BORDER),n.getPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WALKABLE));
+ }
+ static boolean sameNativeRoute(net.minecraft.world.level.pathfinder.Path expected,net.minecraft.world.level.pathfinder.Path actual,BlockPos target) {
+  if(expected==null || actual==null || expected.getNodeCount()==0 || !expected.getTarget().equals(target) || !actual.getTarget().equals(target)
+    || expected.canReach()!=actual.canReach() || expected.isDone()!=actual.isDone() || expected.getNextNodeIndex()!=actual.getNextNodeIndex() || !actual.sameAs(expected))return false;
+  for(int i=0;i<expected.getNodeCount();i++) {var e=expected.getNode(i);var a=actual.getNode(i);if(e.type!=a.type || Float.compare(e.costMalus,a.costMalus)!=0)return false;}
+  return true;
  }
 
  /** Reads the two existing query results and their original configuration; never requests another path. */

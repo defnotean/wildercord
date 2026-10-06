@@ -288,6 +288,7 @@ public final class SwordStrings {
 
 	/** A request from the player's client: checked, then performed or refused. */
 	static void request(ServerPlayer player, Perform payload) {
+        if (dev.wildercord.cast.ExciseCasting.blocking(player)) return;
 		Optional<AuraApi.StringArt> art = AuraApi.artOf(player, payload.art());
 		if (art.isEmpty()) {
 			refuse(player, payload.art(), null, Refusal.CLOSED);
@@ -318,7 +319,7 @@ public final class SwordStrings {
 	 * is won ({@link #release}) and is lost, still paid for, if not ({@link #forfeit}).
 	 */
 	public static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
-		if (MastersArts.committed(player) || MasterForms.committed(player)) return false;
+		if (dev.wildercord.cast.ExciseCasting.blocking(player) || MastersArts.committed(player) || MasterForms.committed(player)) return false;
 		if (!releasing && Clashes.meets(player, art, marks)) return true;
 		long now = player.level().getGameTime();
 		MastersStyleRules.Style style = MastersStyleRules.of(art.id());

@@ -48,6 +48,20 @@ public final class RuneEtchingsTest implements FabricClientGameTest {
 				check(RuneEtchings.etch(p.getMainHandItem(),RuneItem.stack(Runes.TOUCH),p).isEmpty(),"Shape rejected");
 				check(RuneEtchings.etch(p.getMainHandItem(),RuneItem.stack(Runes.HARM,2),p).isEmpty(),"Ranked rune preserved instead of discarded");
 				foe=EntityTypes.HUSK.create(s.overworld(),EntitySpawnReason.COMMAND);foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);foe.setHealth(200);((net.minecraft.world.entity.Mob)foe).setNoAi(true);foe.snapTo(.5,101,1,180,0);s.overworld().addFreshEntity(foe);
+                // Same funded native fixture and foe as the positive Harm art immediately below.
+                ItemStack ordinaryBlade = p.getMainHandItem();
+                ItemStack lessonRune = RuneItem.stack(Runes.EXCISE);
+                check(RuneEtchings.etch(ordinaryBlade, lessonRune, p).isEmpty() && lessonRune.getCount() == 1,
+                    "A physical Excise rune cannot be consumed into blade storage");
+                ItemStack forged = ordinaryBlade.copy(); forged.set(RuneEtchings.RUNE, Runes.EXCISE.id());
+                p.setItemInHand(InteractionHand.MAIN_HAND, forged);
+                float refusedMana = Spellbooks.mana(p), refusedHealth = foe.getHealth();
+                long refusedRest = p.getAttachedOrElse(RuneEtchings.READY, 0L);
+                check(!RuneEtchings.wake(p, foe, 4), "Saved/forged Excise blade refuses without an empty-plan crash");
+                check(Spellbooks.mana(p) == refusedMana && foe.getHealth() == refusedHealth
+                    && p.getAttachedOrElse(RuneEtchings.READY, 0L) == refusedRest,
+                    "Unsupported stored Excise spends no mana, cooldown or damage");
+                p.setItemInHand(InteractionHand.MAIN_HAND, ordinaryBlade);
 				float before=Spellbooks.mana(p), healthBefore=foe.getHealth();
 				float artDamage=ArtKit.hits(p,AuraFx.art(p)).raw(foe,4,null);
 				// Compare against the actual art damage: method bonuses and world conditions can change its base four.

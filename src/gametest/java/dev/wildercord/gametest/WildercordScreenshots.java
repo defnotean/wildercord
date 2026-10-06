@@ -269,6 +269,9 @@ public class WildercordScreenshots implements FabricClientGameTest {
 	 * test instead of a play session. A handful of screenshots show the effects in flight.
 	 */
 	private static void castEverything(ClientGameTestContext context, TestSingleplayerContext world) {
+        dev.wildercord.client.fx.LifeRuntimePartitionChecks.verify();
+        dev.wildercord.Wildercord.LOGGER.info("EXCISE_PRESENTATION_REQUIRED ordinary={} presentation={}; unchanged fixed legacy cast table provides no held-cut coverage",
+            dev.wildercord.client.fx.LifeRuntimePartitionChecks.EXCISE_ORDINARY, dev.wildercord.client.fx.LifeRuntimePartitionChecks.EXCISE_PRESENTATION);
 		world.getServer().runOnServer(server -> {
 			server.setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();

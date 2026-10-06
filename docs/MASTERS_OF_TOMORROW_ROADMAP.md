@@ -41,7 +41,7 @@ The catalog expansion will be delivered in tested packs, with new abilities, upg
 
 Reweave's whole native field-feasibility class passes on `6c750309` and `5cea20d1`. The reviewed Circle XII player slice is now implemented: an old-save-accessible Ebb Ledger lesson for a Low Tide holder, one 40-base-mana Harm field with shared rest, and one warned disc-to-lane conversion that preserves expiry, remaining beats and the original target budget. Its complete native player class passes on `3f8b54e1`, including real lesson/editor/rebound-key use and reconnect/respawn checks. Full restart, broader multiplayer and visual acceptance remain required; this counts as one new capability.
 
-The next isolated mage slice is **Excise at Circle XVI**: a retrievable Rootbound lesson and a paid, interruptible commitment to remove one hostile deployed Zone emitter. The planned contract preserves sibling fields and previously inflicted poison or other aftereffects. It is being authored and reviewed separately; it is not yet integrated or usable in this checkpoint.
+The source now implements **Excise at Circle XVI**: a retrievable Rootbound lesson and a paid, interruptible commitment to remove one hostile deployed Zone emitter. The reviewed contract preserves sibling fields and previously inflicted poison or other aftereffects. Its ordinary-player native class is wired into the expanded40-suite update gate, but has not yet executed on the integrated candidate. Genuine player-owner permissions, observer visuals and process restart remain open; this counts as one authored capability, not completion of the magic expansion.
 
 ## Priority 4: expand Aura movement and sword expression
 

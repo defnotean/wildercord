@@ -137,7 +137,7 @@ public final class ReweaveFields {
         return p.isAlive() && !p.isRemoved() && !p.isSpectator() && !p.isSleeping() && !p.isPassenger()
             && p.level().getServer().getPlayerList().getPlayer(p.getUUID()) == p && entitled(p)
             && !CastLock.locked(p) && !dev.wildercord.aura.arts.ArtWards.silenced(p) && !VoidTime.hushed(p) && !FusedFrostWards.sealed(p)
-            && !dev.wildercord.aura.MastersArts.committed(p) && !RelayCircles.committed(p)
+            && !dev.wildercord.aura.MastersArts.committed(p) && !ExciseCasting.committed(p) && !RelayCircles.committed(p)
             && p.containerMenu == p.inventoryMenu && !p.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE)
             && Float.isFinite(p.getXRot()) && Float.isFinite(p.getYRot()) && finite(p.getEyePosition());
     }

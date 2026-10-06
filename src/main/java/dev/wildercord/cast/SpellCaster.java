@@ -55,6 +55,11 @@ public final class SpellCaster {
 			if (tier != CordTier.ECHO || raw.size() != ids.size() || !dev.wildercord.spell.RelayRules.valid(raw)
 				|| ids.stream().anyMatch(id -> !book.knows(id))) return sockets;
 		}
+        if (dev.wildercord.spell.ExciseRules.containsIds(ids)) {
+            var raw = ids.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (tier != CordTier.ECHO || spell >= CordTier.ECHO.spells || raw.size() != ids.size()
+                || !dev.wildercord.spell.ExciseRules.valid(raw) || ids.stream().anyMatch(id -> !book.knows(id))) return sockets;
+        }
 		if (dev.wildercord.spell.ReweaveRules.containsIds(ids)) {
             var raw = ids.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (tier != CordTier.ECHO || spell >= CordTier.ECHO.spells || raw.size() != ids.size()
@@ -97,6 +102,13 @@ public final class SpellCaster {
 		}
 	}
 	private static void cast(ServerPlayer player, int requested, double charge, Charging.Performance performance, ActionAdmission admission) {
+        if (ExciseCasting.committed(player)) return;
+        if (ExciseCasting.contains(player, requested)) {
+            int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
+            String problem = ExciseCasting.problem(player, slot);
+            fail(player, Component.literal(problem == null ? "Hold your Cast key to cut one hostile Zone knot." : problem));
+            return;
+        }
 		if (dev.wildercord.aura.MastersArts.committed(player) || RelayCircles.committed(player)) return;
         if (ReweaveFields.contains(player, requested)) {
             int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
@@ -197,7 +209,7 @@ public final class SpellCaster {
 			return;
 		}
 		// Callback changes cannot turn a rejected switch into cancellation of a paid focus or wall brace.
-		if (!admission.valid() || dev.wildercord.aura.MastersArts.committed(player) || RelayCircles.committed(player)
+		if (!admission.valid() || ExciseCasting.committed(player) || dev.wildercord.aura.MastersArts.committed(player) || RelayCircles.committed(player)
 			|| Spellbooks.cord(player) != cord || Spellbooks.tier(player) != tier || Heart.active(player) != circles
 			|| !dev.wildercord.gear.Gear.spellOpen(player, tier, spell) || !activeRunes(Spellbooks.get(player), spell, tier).equals(runes)
 			|| !Spellbooks.get(player).spells().get(spell).equals(book.spells().get(spell))
@@ -472,6 +484,21 @@ public final class SpellCaster {
 	 * @return null if everything was accepted, otherwise why something was left out
 	 */
 	public static Component edit(ServerPlayer player, int spell, List<String> runeIds) {
+        if (dev.wildercord.spell.ExciseRules.containsIds(runeIds)) {
+            if (spell < 0 || spell >= CordTier.ECHO.spells || runeIds.size() > CordTier.MAX_SOCKETS)
+                return Component.literal("Excise needs a bounded ordinary Echo Cord row.");
+            if (!dev.wildercord.player.MasterStudies.knowsExcise(player) || !dev.wildercord.player.MasterStudies.eligibleExcise(player))
+                return Component.literal("Study Rootbound with active Circle XVI and Heartwood in Grimoire > Master studies.");
+            if (Spellbooks.tier(player) != CordTier.ECHO || !dev.wildercord.gear.Gear.spellOpen(player, CordTier.ECHO, spell))
+                return Component.literal("Excise needs your Echo Cord and an open ordinary slot.");
+            if (runeIds.stream().anyMatch(id -> !Spellbooks.knows(player, id))) return Component.literal("Learn both runes before threading Excise.");
+            var raw = runeIds.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (raw.size() != runeIds.size()) return Component.literal("This Excise draft contains unreadable runes.");
+            Spellbooks.set(player, Spellbooks.get(player).withSpell(spell, List.copyOf(runeIds)));
+            ExciseCasting.cancel(player);
+            return dev.wildercord.spell.ExciseRules.valid(raw) ? null : Component.literal(dev.wildercord.spell.ExciseRules.GRAMMAR_PROBLEM);
+        }
+        ExciseCasting.cancel(player);
 		RelayCircles.cancel(player);
         if (dev.wildercord.spell.ReweaveRules.containsIds(runeIds)) {
             if (spell < 0 || spell >= CordTier.ECHO.spells || runeIds.size() > CordTier.MAX_SOCKETS)
@@ -544,6 +571,7 @@ public final class SpellCaster {
 	 * @return null if everything was accepted, otherwise why something was left out
 	 */
 	public static Component editPassive(ServerPlayer player, int slot, List<String> runeIds) {
+        if (dev.wildercord.spell.ExciseRules.containsIds(runeIds)) return Component.literal(dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM);
 		if (dev.wildercord.spell.RelayRules.containsIds(runeIds)) return Component.literal("Relay Circle cannot be sustained as a passive.");
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null) {

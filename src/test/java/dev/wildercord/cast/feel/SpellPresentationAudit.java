@@ -16,7 +16,7 @@ public final class SpellPresentationAudit {
     signatures++;row.addProperty("motion_override",signature.motion==null?"":signature.motion.name());row.addProperty("scale",signature.scale);row.addProperty("accent",signature.accent==null?"":String.format("%06X",signature.accent));
     for(var phase:Phase.values()) {var data=new JsonObject();data.addProperty("hook",signature.hookOf(phase)!=null);data.addProperty("replaces_default",signature.replaces(phase));var cue=signature.soundOf(phase);data.addProperty("sound",cue==null?"":cue.name());if(cue!=null) {data.addProperty("volume",cue.volume());data.addProperty("pitch",cue.pitch());}if(signature.hookOf(phase)!=null)hooks++;phases.add(phase.name(),data);}
    }
-   row.add("phases",phases);row.addProperty("native_review","pending");row.addProperty("formation_review","shape and element layers present; per-effect choreography unverified");rows.add(row);
+   row.add("phases",phases);row.addProperty("native_review","pending");row.addProperty("formation_review",rune.equals(Runes.EXCISE) ? "custom Beam-only held-core route: ExcisePlayableTest + ExciseClient; generic formation/flight not applicable; owner/observer/reduced-flash visual coverage pending" : "shape and element layers present; per-effect choreography unverified");rows.add(row);
   }
   root.add("runes",rows);root.add("family_counts",new Gson().toJsonTree(counts));root.addProperty("registered_signatures",signatures);root.addProperty("registered_phase_hooks",hooks);
   root.addProperty("scope","Finite built-in runtime rune registry. Dynamic Knots/Woven runes, Aura techniques, source-dispatched effects and native presentation require separate review. Registry presence does not prove unique art, sound or mechanics.");

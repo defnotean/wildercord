@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-/** Captures the production rune animation at three moments for every castable rune. */
+/** Captures ordinary rune choreography; custom held Excise presentation remains a separate mandatory gate. */
 public class RunicAnimationGalleryTest implements FabricClientGameTest {
 	private record Panel(RuneDef rune, boolean landing) {
 		String label() { return rune.name() + (landing ? " · impact" : " · release"); }
@@ -56,11 +56,17 @@ public class RunicAnimationGalleryTest implements FabricClientGameTest {
 				player.setDeltaMovement(Vec3.ZERO);
 			});
 			context.waitTicks(20);
-			List<RuneDef> castable = Runes.all().stream()
+			dev.wildercord.client.fx.LifeRuntimePartitionChecks.verify();
+            List<RuneDef> castable = Runes.all().stream()
 				.filter(r -> r.family() == RuneFamily.SHAPE || r.family() == RuneFamily.EFFECT)
+                .filter(r -> !r.equals(Runes.EXCISE))
 				.sorted(Comparator.comparing((RuneDef r) -> r.family() == RuneFamily.SHAPE ? "" : r.element())
 					.thenComparing(RuneDef::name)).toList();
-			List<Panel> panels = new ArrayList<>();
+			if (castable.size() + 1 != Runes.all().stream().filter(r -> r.family() == RuneFamily.SHAPE || r.family() == RuneFamily.EFFECT).count())
+                throw new AssertionError("Only custom held Excise is reserved outside ordinary choreography panels");
+            dev.wildercord.Wildercord.LOGGER.info("EXCISE_PRESENTATION_REQUIRED ordinary={} presentation={}; generic choreography panels are not held-cut visual proof",
+                dev.wildercord.client.fx.LifeRuntimePartitionChecks.EXCISE_ORDINARY, dev.wildercord.client.fx.LifeRuntimePartitionChecks.EXCISE_PRESENTATION);
+            List<Panel> panels = new ArrayList<>();
 			for (RuneDef rune : castable) {
 				panels.add(new Panel(rune, false));
 			}
@@ -78,6 +84,9 @@ public class RunicAnimationGalleryTest implements FabricClientGameTest {
 			</style><h1>WilderCord rune animations</h1><p>These are screenshots from the running Minecraft client.
 			Each set shows the same nine runes three, six and ten ticks after release or impact.
 			The numbered key follows the three by three grid from top left to bottom right. Click a frame for full resolution.</p>
+            <p>Excise is reserved for its separate Beam-only held-core route: dev.wildercord.cast.ExcisePlayableTest and
+            dev.wildercord.client.ExciseClient. This generic choreography gallery contains no Excise release or impact
+            success panel and does not establish its owner/observer/reduced-flash presentation coverage.</p>
 			""");
 			Path output = null;
 			int batchLimit = Integer.parseInt(System.getenv().getOrDefault("WILDERCORD_ANIMATION_GALLERY_BATCHES", "999"));

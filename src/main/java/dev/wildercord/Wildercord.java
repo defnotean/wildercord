@@ -128,6 +128,8 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.RelayCircles.init();
 		dev.wildercord.content.RelayLesson.init();
         dev.wildercord.cast.ReweaveFields.init();
+        dev.wildercord.cast.ExciseCasting.init();
+        dev.wildercord.content.ExciseLesson.init();
         dev.wildercord.content.ReweaveLesson.init();
 		WildercordCommand.init();
 		dev.wildercord.travel.Travel.init();

@@ -308,7 +308,8 @@
       "dev.wildercord.aura.StoneHingeFeasibilityTest",
       "dev.wildercord.cast.ReweavePlayableTest",
       "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest",
-      "dev.wildercord.aura.StoneHingeVelocityComparisonTest"
+      "dev.wildercord.aura.StoneHingeVelocityComparisonTest",
+      "dev.wildercord.cast.ExcisePlayableTest"
     ]
   },
   "mixins": [

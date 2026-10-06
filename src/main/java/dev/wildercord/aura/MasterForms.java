@@ -125,7 +125,7 @@ public final class MasterForms {
 			&& !Reactions.has(player, Reactions.Mark.FROZEN) && !Reactions.has(player, Reactions.Mark.PULLED) && !Reactions.has(player, Reactions.Mark.AIRBORNE)
 			&& (slow == null || slow.getAmplifier() < 4) && !player.hasEffect(MobEffects.LEVITATION)
 			&& !Stance.opened(player) && !Clashes.holding(player) && !AuraGuard.guarding(player) && !Awakening.spent(player)
-			&& !MastersArts.committed(player) && !dev.wildercord.cast.RelayCircles.committed(player)
+			&& !MastersArts.committed(player) && !dev.wildercord.cast.ExciseCasting.committed(player) && !dev.wildercord.cast.RelayCircles.committed(player)
 			&& player.containerMenu == player.inventoryMenu && Float.isFinite(player.getYRot()) && Float.isFinite(player.getXRot());
 	}
 	/** Only the physical brace/kick owns motion. An admitted ordinary swing/cast can retire it. */
@@ -157,7 +157,7 @@ public final class MasterForms {
 		if (packet.action() == WallTurnRules.EQUIP || packet.action() == WallTurnRules.UNEQUIP) {
 			Progress p = data(player);
 			if (!p.learned() || packet.action() == WallTurnRules.EQUIP && !eligibleLesson(player) || committed(player) || p.airborneUsed() || Aura.inFight(player)
-				|| MastersArts.committed(player) || dev.wildercord.cast.RelayCircles.committed(player) || MasterFormMovement.occupied(player) || player.hasAttached(WildercordAttachments.CHARGE)
+				|| MastersArts.committed(player) || dev.wildercord.cast.ExciseCasting.committed(player) || dev.wildercord.cast.RelayCircles.committed(player) || MasterFormMovement.occupied(player) || player.hasAttached(WildercordAttachments.CHARGE)
 				|| now(player) < p.readyAt() || !WallTurn.safeLanding(player)) return refusal(player, "equip_wait");
 			if (SESSIONS.get(player) != s || !admission.valid() || !data(player).equals(p)) return false;
 			player.setAttached(PROGRESS, new Progress(true, packet.action() == WallTurnRules.EQUIP ? WALL_TURN : 0,

@@ -167,7 +167,7 @@ public final class RelayCircles {
 		return player.isAlive() && !player.isRemoved() && !player.isSpectator() && !player.isSleeping() && !player.isPassenger()
 			&& player.level().getServer().getPlayerList().getPlayer(player.getUUID()) == player
 			&& !CastLock.locked(player) && !dev.wildercord.aura.arts.ArtWards.silenced(player) && !VoidTime.hushed(player) && !FusedFrostWards.sealed(player)
-			&& !dev.wildercord.aura.MastersArts.committed(player)
+			&& !dev.wildercord.aura.MastersArts.committed(player) && !ExciseCasting.committed(player)
 			&& Float.isFinite(player.getXRot()) && Float.isFinite(player.getYRot()) && finite(player.getEyePosition())
 			&& player.containerMenu == player.inventoryMenu
 			&& !player.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE);

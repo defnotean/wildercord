@@ -52,7 +52,7 @@ public final class CastEngine {
 	/** Restricted lesson shapes use their paid runtime receipt, never a copy, stored cast or monster fallback. */
 	private static boolean containsRestrictedLesson(SpellPlan.Segment segment) {
 		for (int depth = 0; segment != null && depth <= Cast.MAX_DEPTH; depth++) {
-			if (segment.groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID) || g.shape.is(dev.wildercord.spell.ReweaveRules.ID))) return true;
+			if (segment.groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID) || g.shape.is(dev.wildercord.spell.ReweaveRules.ID) || g.effects.stream().anyMatch(e -> e.effect.is(dev.wildercord.spell.ExciseRules.ID)))) return true;
 			segment = segment.link == null ? null : segment.link.next;
 		}
 		return segment != null;
@@ -370,7 +370,9 @@ public final class CastEngine {
 			int interval = SpellNumbers.zoneInterval(g);
 			for (Vec3 center : spread(aimPoint(cast, at), copies, radius)) {
 				Vfx.zoneOpen(cast.level, center, radius, theme, pulses * interval + 12);
+                NativeZoneEmitters.Emitter emitter = NativeZoneEmitters.register(cast, g, anchored, center, (pulses - 1) * interval + 1, pulses);
 				ShapeRunners.steps(cast, 1, interval, (pulses - 1) * interval, t -> {
+                    if (emitter != null && !emitter.beginPulse()) return;
 					Cast child = cast.pulse();
 					if (!child.alive()) {
 						return;
@@ -508,6 +510,7 @@ public final class CastEngine {
 
 	/** Applies a group's effects to a hit, then fires any On Hit / On Kill link watching it. */
 	public static void onHit(Cast cast, SpellPlan.Group g, Cast.Hit hit, SpellPlan.Link anchored) {
+        if (g.effects.stream().anyMatch(e -> e.effect.is(dev.wildercord.spell.ExciseRules.ID))) return;
 		if (!cast.alive()) {
 			return;
 		}

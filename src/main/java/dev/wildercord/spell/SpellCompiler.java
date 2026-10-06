@@ -65,7 +65,7 @@ public final class SpellCompiler {
 
 	/** The runes an Imbue in {@code spell} would store: everything after the first Imbue (empty if there's none). */
 	public static List<RuneDef> stored(List<RuneDef> spell) {
-		if (RelayRules.contains(spell) || ReweaveRules.contains(spell)) return List.of();
+		if (RelayRules.contains(spell) || ReweaveRules.contains(spell) || ExciseRules.contains(spell)) return List.of();
 		for (int i = 0; i < spell.size(); i++) {
 			if (spell.get(i).is(Runes.IMBUE.id())) {
 				return List.copyOf(spell.subList(i + 1, spell.size()));
@@ -83,7 +83,9 @@ public final class SpellCompiler {
 		if (RelayRules.contains(runes) && implicitShape.is(Runes.TRIGGER.id())) relayProblem = RelayRules.STORAGE_PROBLEM;
 		String reweaveProblem = ReweaveRules.problem(runes);
 		if (ReweaveRules.contains(runes) && implicitShape.is(Runes.TRIGGER.id())) reweaveProblem = ReweaveRules.STORAGE_PROBLEM;
-		String problem = relayProblem != null ? relayProblem : reweaveProblem;
+		String exciseProblem = ExciseRules.problem(runes);
+        if (ExciseRules.contains(runes) && implicitShape.is(Runes.TRIGGER.id())) exciseProblem = ExciseRules.STORAGE_PROBLEM;
+        String problem = relayProblem != null ? relayProblem : reweaveProblem != null ? reweaveProblem : exciseProblem;
 		if (problem != null) {
 			int[] attached = new int[runes.size()];
 			Arrays.fill(attached, NOT_A_MODIFIER);
@@ -105,6 +107,11 @@ public final class SpellCompiler {
 			lines.add("Four pulses on the original schedule at 50% normal Harm strength; " + seconds(ReweaveRules.REST_TICKS) + " shared rest across all slots.");
 			lines.add("Rewrite the disc into a lane once, with an " + ReweaveRules.WARNING + "-tick warning; no extra payment, refund, extended lifetime or replayed pulses.");
 		}
+        if (ExciseRules.valid(runes)) {
+            lines.add("Excise costs 36 base mana, paid once; 12-second shared rest across slots.");
+            lines.add("Hold Cast for 16 ticks on one hostile Zone core within 12 blocks; 12-tick recovery on success or cancellation.");
+            lines.add("Cuts only future pulses from that core. Sibling fields and existing poison or fire remain. No refund or overcast.");
+        }
 		for (RuneDef rune : runes) {
 			if (Knots.isKnot(rune)) {
 				lines.add(rune.name() + " is a Knot: " + Knots.flatten(List.of(rune)).size() + " runes in one socket, "
@@ -119,7 +126,7 @@ public final class SpellCompiler {
 		if (healthCost > 0) {
 			lines.add("Costs " + healthCost + " health instead of mana.");
 		}
-		return new Compiled(root, cost, RelayRules.valid(runes) ? RelayRules.REST_TICKS : ReweaveRules.valid(runes) ? ReweaveRules.REST_TICKS : SpellNumbers.cooldownTicks(cost, rapid, vows), List.copyOf(lines), List.copyOf(reader.warnings), reader.attachedTo,
+		return new Compiled(root, cost, RelayRules.valid(runes) ? RelayRules.REST_TICKS : ReweaveRules.valid(runes) ? ReweaveRules.REST_TICKS : ExciseRules.valid(runes) ? ExciseRules.REST_TICKS : SpellNumbers.cooldownTicks(cost, rapid, vows), List.copyOf(lines), List.copyOf(reader.warnings), reader.attachedTo,
 			healthCost);
 	}
 

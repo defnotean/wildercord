@@ -25,18 +25,19 @@ def launcher_log(selection, *, result=0, build="BUILD SUCCESSFUL"):
 
 
 class SelectionTests(unittest.TestCase):
-    def test_masters_update_preserves_prior_thirty_eight_and_keeps_presentation_last(self):
+    def test_masters_update_preserves_prior_thirty_nine_and_keeps_presentation_last(self):
         selected = client_suites.select_entries(suite="masters")
         full = client_suites.select_entries()
-        self.assertEqual(selected["count"], 39)
-        self.assertEqual(len(set(selected["entries"])), 39)
+        self.assertEqual(selected["count"], 40)
+        self.assertEqual(len(set(selected["entries"])), 40)
         self.assertTrue(set(selected["entries"]).issubset(full["entries"]))
-        self.assertEqual(selected["entries"][:30], [
+        self.assertEqual(selected["entries"][:31], [
             "dev.wildercord.cast.RelayCircleTest",
             "dev.wildercord.cast.RelayLifetimeTest",
             "dev.wildercord.cast.RelayDefenceTest",
             "dev.wildercord.party.RelayImpactTest",
             "dev.wildercord.cast.ReweavePlayableTest",
+            "dev.wildercord.cast.ExcisePlayableTest",
             "dev.wildercord.party.PartyMutationSafetyTest",
             "dev.wildercord.party.ArtFieldMutationSafetyTest",
             "dev.wildercord.gametest.WildercordHeartCirclesTest",
@@ -63,7 +64,7 @@ class SelectionTests(unittest.TestCase):
             "dev.wildercord.aura.CrescentCoverTest",
             "dev.wildercord.aura.CrescentAudienceTest",
         ])
-        self.assertEqual(selected["entries"][30:], [
+        self.assertEqual(selected["entries"][31:], [
             "dev.wildercord.aura.WallTurnLessonTest",
             "dev.wildercord.aura.WallTurnSafetyTest",
             "dev.wildercord.aura.WallTurnCommitmentTest",
@@ -153,7 +154,7 @@ class SelectionTests(unittest.TestCase):
             -1, group["entries"][0]), "duplicate")
 
     def test_missing_catalog_entry_is_rejected(self):
-        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 39")
+        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 40")
 
     def test_unregistered_catalog_entry_is_rejected(self):
         self.assert_bad_catalog(lambda group: group["entries"].__setitem__(
@@ -165,7 +166,7 @@ class SelectionTests(unittest.TestCase):
                 self.assert_bad_catalog(lambda group: group.update(entries=entries), "nonempty")
 
     def test_invalid_expected_count_is_rejected(self):
-        for count in (27, 30, 33, 34, 35, 36, 37, 38, 39.0, True, "39"):
+        for count in (27, 30, 33, 34, 35, 36, 37, 38, 39, 40.0, True, "40"):
             with self.subTest(count=count):
                 self.assert_bad_catalog(lambda group: group.update(expectedCount=count), "exactly")
 
@@ -286,7 +287,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual([s["suite"] for s in manifest["clientSuites"]], selection["entries"])
         self.assertEqual(manifest["focusedClientGate"], "passed")
         self.assertEqual(manifest["fullClientGate"], "unverified")
-        self.assertEqual(manifest["counts"], {"passed": 39, "skipped": 0, "unverified": 0})
+        self.assertEqual(manifest["counts"], {"passed": 40, "skipped": 0, "unverified": 0})
         self.assertEqual(manifest["verificationIssues"], [])
         self.assertIn("full client gate and animation gallery are not established", manifest["basis"])
 
@@ -302,14 +303,16 @@ class ManifestTests(unittest.TestCase):
                 manifest = self.manifest(log, "--suite", "masters")
                 self.assertEqual(manifest["fullClientGate"], "unverified")
                 self.assertEqual(manifest["focusedClientGate"], "unverified")
-                self.assertEqual(manifest["counts"]["unverified"], 39)
+                self.assertEqual(manifest["counts"]["unverified"], 40)
 
-    def test_prior_twenty_seven_through_thirty_eight_evidence_cannot_pass_expanded_gate(self):
+    def test_prior_twenty_seven_through_thirty_nine_evidence_cannot_pass_expanded_gate(self):
         selection = client_suites.select_entries(suite="masters")
         # Preserve the actual old order: presentation preceded the three appended Wall suites.
         moon = {"dev.wildercord.aura.CrimsonMoonReleasedOwnerTest", "dev.wildercord.aura.CrimsonMoonTimelineTest"}
         life = {"dev.wildercord.cast.LifeOwnerCameraTest", "dev.wildercord.cast.LifeOutcomeTransportTest"}
-        prior_thirty_eight = [entry for entry in selection["entries"] if entry != "dev.wildercord.cast.ReweavePlayableTest"]
+        prior_thirty_nine = [entry for entry in selection["entries"] if entry != "dev.wildercord.cast.ExcisePlayableTest"]
+        self.assertEqual(len(prior_thirty_nine), 39)
+        prior_thirty_eight = [entry for entry in prior_thirty_nine if entry != "dev.wildercord.cast.ReweavePlayableTest"]
         self.assertEqual(len(prior_thirty_eight), 38)
         prior_thirty_six = [entry for entry in prior_thirty_eight if entry not in life]
         self.assertEqual(len(prior_thirty_six), 36)
@@ -318,14 +321,14 @@ class ManifestTests(unittest.TestCase):
         prior_twenty_seven = prior_thirty_three[:26] + [prior_thirty_three[-1]]
         prior_thirty = prior_twenty_seven + prior_thirty_three[26:29]
         partial_life = [[entry for entry in selection["entries"] if entry != omitted] for omitted in life]
-        for entries in (prior_twenty_seven, prior_thirty, prior_thirty_three, prior_thirty_five, prior_thirty_six, prior_thirty_eight, *partial_life):
+        for entries in (prior_twenty_seven, prior_thirty, prior_thirty_three, prior_thirty_five, prior_thirty_six, prior_thirty_eight, prior_thirty_nine, *partial_life):
             with self.subTest(previous_count=len(entries)):
                 previous = {**selection, "count": len(entries), "entries": entries}
                 manifest = self.manifest(launcher_log(previous), "--suite", "masters")
                 self.assertEqual(manifest["selection"], selection)
                 self.assertEqual(manifest["focusedClientGate"], "unverified")
                 self.assertEqual(manifest["fullClientGate"], "unverified")
-                self.assertEqual(manifest["counts"], {"passed": 0, "skipped": 0, "unverified": 39})
+                self.assertEqual(manifest["counts"], {"passed": 0, "skipped": 0, "unverified": 40})
                 self.assertEqual(len(manifest["verificationIssues"]), 2)
 
     def test_prior_five_articulated_suites_cannot_pass_the_six_suite_gate(self):

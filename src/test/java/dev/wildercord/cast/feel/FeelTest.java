@@ -91,6 +91,12 @@ class FeelTest {
 					assertTrue(compiled.warnings().contains(ReweaveRules.GRAMMAR_PROBLEM));
 					continue;
 				}
+                if (effect.equals(Runes.EXCISE) && !shape.equals(Runes.BEAM)) {
+                    assertTrue(compiled.isEmpty(), "Excise refuses " + shape.name());
+                    assertEquals(0, compiled.cost());
+                    assertTrue(compiled.warnings().contains(dev.wildercord.spell.ExciseRules.GRAMMAR_PROBLEM));
+                    continue;
+                }
 				assertFalse(compiled.isEmpty(), shape.name() + " / " + effect.name());
 				SpellPlan.Group g = compiled.root().groups.getFirst();
 				Feel f = Feel.of(g, 30, 0.5);
@@ -176,7 +182,11 @@ class FeelTest {
 		// Check dynamically assembled Life names and keep signature voices single.
 		for (RuneDef rune : Runes.all()) {
 			if (rune.family() != RuneFamily.EFFECT || !rune.element().equals("life")) continue;
-			if (rune.path().equals("root_carry")) {
+			if (rune.path().equals("excise")) {
+                assertTrue(kit.contains("life_stinger_thorn"), "The dedicated held cut uses its explicit dry root cue");
+                assertFalse(kit.contains("life_auth_excise_cue"), "A field-cut must not duplicate generic Life hit voices");
+                assertFalse(kit.contains("life_auth_excise_outcome"), "A field-cut has no generic Life hit outcome");
+            } else if (rune.path().equals("root_carry")) {
 				for (String voice : java.util.List.of("cue", "select", "settle")) assertTrue(kit.contains("root_carry_" + voice), "Dedicated root owner voice missing: " + voice);
 				assertFalse(kit.contains("life_auth_root_carry_cue"), "Dedicated owner must not duplicate a Life cue");
 				assertFalse(kit.contains("life_auth_root_carry_outcome"), "Dedicated owner must not invent a Life delta voice");

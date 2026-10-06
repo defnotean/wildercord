@@ -172,11 +172,12 @@ class EvidenceTests(unittest.TestCase):
     def log(self, data):
         selection = data["selection"]
         completion = ""
-        if data["request"]["case"] in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations"):
+        if data["request"]["case"] in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise"):
             entries = {"progression-feasibility": diagnostic.PROGRESSION_ENTRIES,
                        "reweave-player": diagnostic.REWEAVE_PLAYER_ENTRIES,
                        "stone-hinge-owner-negative": diagnostic.STONE_OWNER_NEGATIVE_ENTRIES,
-                       "movement-foundations": diagnostic.MOVEMENT_FOUNDATION_ENTRIES}[data["request"]["case"]]
+                       "movement-foundations": diagnostic.MOVEMENT_FOUNDATION_ENTRIES,
+                       "excise": diagnostic.LIFE_EXCISE_ENTRIES}[data["request"]["case"]]
             completion = "".join(diagnostic.SCENE_PREFIX + json.dumps({
                 "suite": entry, "event": event, "phase": phase,
                 "elapsedSeconds": 1.0, "sceneElapsedSeconds": 0.5}) + "\n"
@@ -217,7 +218,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(set(result["observedWorldSeeds"]), set(diagnostic.SEEDS[case]))
 
     def test_failed_missing_mixed_truncated_and_replayed_evidence_never_pass(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise"):
             self.assert_invalid_evidence_never_passes(case)
 
     def assert_invalid_evidence_never_passes(self, case):
@@ -340,7 +341,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
 
     def test_unique_seed_receipt_rule_does_not_change_other_cases(self):
-        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations"}:
+        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise"}:
             data = self.fixture(case)
             entry, seed = next(iter(diagnostic.SEEDS[case].items()))
             repeated = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) + "\n"
@@ -403,7 +404,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(selection, {"kind": "diagnostic", "name": "diagnostic-kiln-ring",
                                      "count": 3, "entries": entries})
         masters = suites.select_entries(suite="masters")
-        self.assertEqual(masters["count"], 39)
+        self.assertEqual(masters["count"], 40)
         for source in (suites.select_entries(), masters):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
@@ -464,6 +465,36 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(result["headAtCollection"]["status"], "unavailable")
             self.assertEqual(result["provenance"]["headSha"], head)
             self.assertEqual((root / diagnostic.OUTPUT / "native.log").read_text(), self.log(data))
+
+    def test_excise_requires_all_five_whole_classes_and_four_observed_worlds(self):
+        entry = diagnostic.EXCISE_ENTRIES[0]; group = "diagnostic-life-excise"; entries = list(diagnostic.LIFE_EXCISE_ENTRIES)
+        self.assertEqual(suites.select_entries(suite=group), {"kind": "diagnostic", "name": group, "count": 5, "entries": entries})
+        self.assertEqual(diagnostic.SEEDS["excise"], {
+            "dev.wildercord.client.fx.LifeFormationTest": None,
+            "dev.wildercord.client.fx.LifeFlightTest": None,
+            "dev.wildercord.cast.ExcisePlayableTest#lesson": None,
+            "dev.wildercord.cast.ExcisePlayableTest": None})
+        self.assertEqual(suites.select_entries(suite="masters")["entries"].count(entry), 1)
+        self.assertNotIn(entry, suites.select_entries(suite="articulated")["entries"])
+        data = self.fixture("excise"); good = self.log(data)
+        result = self.collect(data, good)
+        self.assertEqual(result["completedEntries"], entries)
+        self.assert_invalid_evidence_never_passes("excise")
+        old_single = copy.deepcopy(data); old_single["selection"] = {"kind": "diagnostic", "name": "diagnostic-excise", "count": 1, "entries": [entry]}
+        self.assertEqual(self.collect(data, self.log(old_single))["diagnosticOutcome"], "unverified")
+        for invalid in (good.replace('"phase": "cleanup"', '"phase": "missing"'),
+                        good.replace('"phase": "returned"', '"phase": "threw"'),
+                        good + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": "1"}) + "\n",
+                        good.replace('"seed": "1"', '"seed": "9223372036854775808"')):
+            with self.subTest(log=invalid):
+                self.assertEqual(self.collect(data, invalid)["diagnosticOutcome"], "unverified")
+        for update in ({"purpose": "release"}, {"entries": [diagnostic.REWEAVE_PLAYER_ENTRIES[0]]},
+                       {"entries": [entry], "expectedCount": 1}, {"entries": entries[::-1]}):
+            with tempfile.TemporaryDirectory() as temp:
+                catalog = json.loads(suites.CATALOG.read_text()); catalog[group].update(update)
+                path = Path(temp) / "catalog.json"; path.write_text(json.dumps(catalog))
+                with self.subTest(update=update), self.assertRaises(ValueError):
+                    suites.select_entries(suite=group, catalog=path)
 
     def test_movement_foundations_requires_both_whole_classes_and_fifteen_case_owner_result(self):
         group = "diagnostic-movement-foundations"; entries = list(diagnostic.MOVEMENT_FOUNDATION_ENTRIES)
@@ -565,8 +596,8 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(diagnostic.CASES["progression-feasibility"], "diagnostic-progression-feasibility")
         self.assertEqual(suites.select_entries(suite="diagnostic-progression-feasibility"), {
             "kind": "diagnostic", "name": "diagnostic-progression-feasibility", "count": 2, "entries": entries})
-        self.assertEqual(suites.select_entries()["entries"][-5:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES, diagnostic.STONE_VELOCITY_ENTRY])
-        for name, count in (("masters", 39), ("articulated", 6)):
+        self.assertEqual(suites.select_entries()["entries"][-6:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES, diagnostic.STONE_VELOCITY_ENTRY, *diagnostic.EXCISE_ENTRIES])
+        for name, count in (("masters", 40), ("articulated", 6)):
             selection = suites.select_entries(suite=name)
             self.assertEqual(selection["count"], count)
             self.assertTrue(set(entries).isdisjoint(selection["entries"]))

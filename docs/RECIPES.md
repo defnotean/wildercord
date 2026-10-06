@@ -356,7 +356,7 @@ Two particular effects, an amethyst shard and 3 XP levels. The pair makes its si
 
 The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
 
-## Runes of the world (55 runes, found only)
+## Runes of the world (56 runes, found only)
 
 Never crafted, whatever their tier: each is found only in its own places (vanilla structures, a biome by
 Attunement, Wildercord's dungeons and bosses, world events). Attunement: meditate with a Blank Rune in hand
@@ -406,6 +406,7 @@ in the right biome, under the right conditions, for 20 seconds.
 | Sunscorch | Effect | III | Attuned in the badlands |
 | Tidecall | Effect | III | Ocean monuments (Elder Guardians) |
 | Cinderheart | Effect | IV | the Cinder Warden |
+| Excise | Effect | IV | The Root That Outlived Its Gardener, retrievable in Grimoire after Heartwood; study with active Circle XVI |
 | Starmaw | Effect | IV | the Star Eater |
 | Tidewrit | Effect | IV | the Tide Scribe |
 | If Wet | Link | II | The Drowned Scriptorium |

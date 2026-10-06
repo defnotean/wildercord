@@ -50,9 +50,11 @@ public final class RuneEtchings {
 		long now=p.level().getServer().overworld().getGameTime();
 		if (!RuneEtchingRules.ready(now,p.getAttachedOrElse(READY,0L))) return false;
 		int price=RuneEtchingRules.price(rune);
+        if (price <= 0) return false;
 		float mana=Spellbooks.mana(p);
 		if (Spellbooks.tier(p)==null || !Float.isFinite(mana) || mana<price) return false;
 		var plan=SpellCompiler.compile(List.of(Runes.TOUCH,rune));
+        if (plan.isEmpty() || plan.root().groups.isEmpty() || plan.root().groups.getFirst().effects.isEmpty()) return false;
 		int rest=Math.max(RuneEtchingRules.REST,plan.cooldownTicks());
 		if (now>Long.MAX_VALUE-rest) return false;
 		p.setAttached(READY,now+rest);

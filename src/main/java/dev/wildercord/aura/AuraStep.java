@@ -77,7 +77,7 @@ public final class AuraStep {
 
 	/** The technique: step. */
 	public static boolean step(ServerPlayer player) {
-		if (dev.wildercord.cast.ActionAdmission.busy(player)) return false;
+		if (dev.wildercord.cast.ActionAdmission.busy(player) || dev.wildercord.cast.ExciseCasting.committed(player)) return false;
 		if (MasterForms.committed(player)) return false;
 		long now = player.level().getGameTime();
 		if (!Aura.holdsWeapon(player)) {

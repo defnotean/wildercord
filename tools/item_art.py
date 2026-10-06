@@ -430,6 +430,17 @@ def family_stone(family: str, element: str) -> Stone:
 #  'k' near-black, 'w' white, 'r'/'R'/'p' blood shade/main/light (see EXTRA)
 
 GLYPHS: dict[str, str] = {
+    "excise": """
+        .#..+..#.
+        ..#.+.#..
+        ...#+#...
+        ....+....
+        ......+##
+        ....+....
+        ...#+#...
+        ..#.+.#..
+        .#..+..#.
+    """,
     # One circular inscription unfolds into three ruled lines, retaining its four allotted marks.
     "reweave": """
         ..+###+..

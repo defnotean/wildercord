@@ -141,7 +141,7 @@ public final class MastersArts {
 
 	/** The same validated entrypoint is available to tests; a client cannot supply a victim or bypass payment. */
 	public static boolean activate(ServerPlayer player, int ordinal) {
-		if (dev.wildercord.cast.ActionAdmission.busy(player)) return false;
+		if (dev.wildercord.cast.ActionAdmission.busy(player) || dev.wildercord.cast.ExciseCasting.blocking(player)) return false;
 		MastersArtRules.Move move = MastersArtRules.move(ordinal);
 		if (MasterForms.committed(player) || move == null || !Float.isFinite(player.getYRot()) || !Float.isFinite(player.getXRot()) || !player.isAlive() || player.isSpectator() || !Aura.enabled(player) || !Aura.holdsWeapon(player)
 			|| Awakening.spent(player) || AuraGuard.guarding(player) || Clashes.holding(player) || player.isSleeping()
@@ -170,7 +170,7 @@ public final class MastersArts {
 	 */
 	static boolean beginStyle(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context, Runnable impact) {
 		MastersStyleRules.Style style = MastersStyleRules.of(art.id());
-		if (MasterForms.committed(player) || style == null || committed(player) || !eligible(player) || Aura.stage(player) < art.stage()
+		if (dev.wildercord.cast.ExciseCasting.blocking(player) || MasterForms.committed(player) || style == null || committed(player) || !eligible(player) || Aura.stage(player) < art.stage()
 			|| !art.available().test(player) || !dev.wildercord.config.Config.get().aura().strings().enabled()) return false;
 		Vec3 aim = ArtKit.flat(player);
 		Vec3 view = player.getViewVector(1.0F);

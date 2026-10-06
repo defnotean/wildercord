@@ -16,6 +16,7 @@ REQUEST_PREFIX = "WILDERCORD_NATIVE_REQUEST "
 PROGRESSION_ENTRIES = ("dev.wildercord.cast.ReweaveFeasibilityTest",
                        "dev.wildercord.aura.StoneHingeFeasibilityTest")
 REWEAVE_PLAYER_ENTRIES = ("dev.wildercord.cast.ReweavePlayableTest",)
+EXCISE_ENTRIES = ("dev.wildercord.cast.ExcisePlayableTest",)
 STONE_OWNER_NEGATIVE_ENTRIES = ("dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest",)
 STONE_OWNER_NEGATIVE_PREFIX = "STONE_HINGE_OWNER_NEGATIVE "
 STONE_OWNER_NEGATIVE_RESULT = ("expected_incompatibility=observed movement_gate=NOT_PROVEN "
@@ -28,6 +29,14 @@ STONE_VELOCITY_PREFIX = "STONE_HINGE_VELOCITY_COMPARISON "
 STONE_VELOCITY_RESULT = ("owner_cases=15 owner_gate=observed peer_gate=NOT_PROVEN latency_gate=NOT_PROVEN "
                          "admission_gate=NOT_PROVEN movement_gate=NOT_PROVEN gameplay_enabled=false "
                          "conditional_aura=20 conditional_shared_rest_ticks=120 conditional_brace_ticks=6 conditional_catch_ticks=12")
+LIFE_EXCISE_ENTRIES = (
+    "dev.wildercord.client.fx.LifeRecipeTest",
+    "dev.wildercord.client.fx.LifeFormationTest",
+    "dev.wildercord.client.fx.LifeFlightTest",
+    "dev.wildercord.cast.LifeOutcomeRecipeTest",
+    "dev.wildercord.cast.ExcisePlayableTest",
+)
+
 
 
 def parse_shard(value):
@@ -53,6 +62,8 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         raise ValueError("--suite and --shard cannot be combined")
     entries = validate_entries(json.loads(descriptor.read_text(encoding="utf-8"))
                                ["entrypoints"]["fabric-client-gametest"], "Full descriptor")
+    if any(entry in entries for entry in LIFE_EXCISE_ENTRIES[:-1]) and LIFE_EXCISE_ENTRIES[-1] not in entries:
+        raise ValueError("Life32 requires its separate Excise ordinary class in the full descriptor; generic31 is not complete coverage")
     if suite is not None:
         groups = json.loads(catalog.read_text(encoding="utf-8"))
         if suite not in groups:
@@ -68,6 +79,9 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         purpose = group.get("purpose", "release")
         if purpose not in ("release", "diagnostic"):
             raise ValueError(f"Suite {suite} has an unknown purpose")
+        if suite == "diagnostic-life-excise" and (
+                purpose != "diagnostic" or selected != list(LIFE_EXCISE_ENTRIES)):
+            raise ValueError("Life32 requires all four unchanged generic suites and the separate Excise ordinary class in order")
         if suite == "diagnostic-progression-feasibility" and (
                 purpose != "diagnostic" or selected != list(PROGRESSION_ENTRIES)):
             raise ValueError("Progression feasibility requires exactly both complete diagnostic classes in order")
@@ -77,6 +91,8 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         if suite == "diagnostic-movement-foundations" and (
                 purpose != "diagnostic" or selected != list(MOVEMENT_FOUNDATION_ENTRIES)):
             raise ValueError("Movement foundations requires exactly both whole diagnostic classes in order")
+        if suite == "diagnostic-excise" and (purpose != "diagnostic" or selected != list(EXCISE_ENTRIES)):
+            raise ValueError("Excise diagnostic requires its exact complete registered class")
         return {"kind": "diagnostic" if purpose == "diagnostic" else "suite",
                 "name": suite, "count": len(selected), "entries": selected}
     if shard is not None:
@@ -123,6 +139,12 @@ def selection_issues(log, selection):
     if selection.get("name") == "diagnostic-movement-foundations":
         _, completion_issues = movement_foundations_completion(log)
         issues.extend(completion_issues)
+    if selection.get("name") == "diagnostic-excise":
+        _, completion_issues = excise_completion(log)
+        issues.extend(completion_issues)
+    if selection.get("name") == "diagnostic-life-excise":
+        _, completion_issues = life_excise_completion(log)
+        issues.extend(completion_issues)
     return issues
 
 
@@ -163,6 +185,16 @@ def movement_foundations_completion(log):
     if markers != [STONE_VELOCITY_RESULT]:
         issues.append("Movement foundations requires the exact fifteen-case owner result with remaining gates NOT_PROVEN")
     return completed, issues
+
+
+def excise_completion(log):
+    """Require ordinary study/input/lifecycle cleanup and full return; no partial pass."""
+    return _whole_class_completion(log, EXCISE_ENTRIES, "Excise player")
+
+
+def life_excise_completion(log):
+    """Generic Life coverage and the custom held route must all cleanly return."""
+    return _whole_class_completion(log, LIFE_EXCISE_ENTRIES, "Life and Excise")
 
 
 def _whole_class_completion(log, entries, label):

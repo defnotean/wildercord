@@ -465,7 +465,7 @@ public final class Aura {
 
 	/** Sets off the technique a trigger gives the player's stage; says why not when there's none. */
 	public static boolean press(ServerPlayer player, AuraApi.Trigger trigger) {
-		if (dev.wildercord.cast.ActionAdmission.busy(player)) return false;
+		if (dev.wildercord.cast.ActionAdmission.busy(player) || dev.wildercord.cast.ExciseCasting.committed(player)) return false;
 		if (MastersArts.committed(player) || MasterForms.committed(player)) return false;
 		if (!player.isAlive() || player.isSpectator()) {
 			return false;

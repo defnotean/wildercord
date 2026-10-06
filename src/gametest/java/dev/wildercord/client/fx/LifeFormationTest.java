@@ -27,7 +27,7 @@ public final class LifeFormationTest implements FabricClientGameTest {
   try(var w=c.worldBuilder().create()) {
    c.waitTicks(40);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 6000");w.getServer().runCommand("weather clear");
    w.getServer().runCommand("fill -16 100 -12 16 100 20 polished_deepslate");w.getServer().runCommand("fill -12 101 8 12 109 8 gray_concrete");
-   w.getServer().runOnServer(s -> {var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);});c.waitTicks(15);
+   w.getServer().runOnServer(s -> {dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.client.fx.LifeFormationTest\",\"seed\":\"{}\"}", s.overworld().getSeed());var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);});c.waitTicks(15);
    c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.options.setCameraType(CameraType.FIRST_PERSON);if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();verifyRecipes();});
    w.getServer().runOnServer(s -> {
     var buffer=new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(),s.registryAccess());
@@ -38,8 +38,8 @@ public final class LifeFormationTest implements FabricClientGameTest {
     }}finally{buffer.release();}
    });
    var baseline=c.computeOnClient(mc -> snapshot(mc,"life_formation_background"));c.waitFor(mc -> baseline.isDone());baseline.join();
-   var life=Runes.all().stream().filter(r -> r.family()==RuneFamily.EFFECT && r.element().equals("life")).map(r -> r.id()).sorted().toList();
-   check(life.size()==31&&life.size()==LifeForms.RUNES.size(),"Reviewed life roster changes require explicit expansion of this suite");
+   var life=LifeRuntimePartitionChecks.genericIds();
+   check(life.size()==31&&life.size()==LifeForms.RUNES.size(),"All original Life31 cases remain; Excise is a separately mandatory held route");
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL)) {
     c.runOnClient(mc -> MagicQuality.own=quality);
     for(var id:life) {
@@ -105,7 +105,7 @@ public final class LifeFormationTest implements FabricClientGameTest {
    "soulbond",dev.wildercord.content.MaterialOption.ARCANE,"second_wind",dev.wildercord.content.MaterialOption.TIME,
    "stitchtime",dev.wildercord.content.MaterialOption.TIME,"bloomstep",dev.wildercord.content.MaterialOption.VOID);
   for(var entry:ingredients.entrySet()){var styles=new HashSet<Integer>();LifeForms.prepare("wildercord:"+entry.getKey(),2,1,Vec3.ZERO,new Vec3(1,0,0),new Vec3(0,1,0),new Vec3(0,0,1),true,(option,at)->{if(option instanceof dev.wildercord.content.MaterialOption m)styles.add(m.style());});check(styles.contains(entry.getValue()),"Supporting materials remain in Minimal: "+entry.getKey());}
-  check(Runes.all().stream().filter(r->r.family()==RuneFamily.EFFECT && r.element().equals("life")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(LifeForms.RUNES)),"Exact runtime life roster includes fusions and innate");
+  LifeRuntimePartitionChecks.verify();
 
 
  }

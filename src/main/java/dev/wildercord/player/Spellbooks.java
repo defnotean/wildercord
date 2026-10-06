@@ -23,7 +23,9 @@ public final class Spellbooks {
 			return;
 		}
 		if (player instanceof net.minecraft.server.level.ServerPlayer p
-			&& (old.selected() != book.selected() || !old.spells().equals(book.spells()))) dev.wildercord.cast.RelayCircles.cancel(p);
+			&& (old.selected() != book.selected() || !old.spells().equals(book.spells()))) {
+            dev.wildercord.cast.RelayCircles.cancel(p); dev.wildercord.cast.ExciseCasting.cancel(p);
+        }
 		player.setAttached(WildercordAttachments.SPELLBOOK, book);
 		if (!old.learned().equals(book.learned()) && player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
 			dev.wildercord.advancement.Advancements.runesKnown(serverPlayer);
@@ -43,7 +45,7 @@ public final class Spellbooks {
 	}
 
 	public static void setCord(Player player, ItemStack stack) {
-		if (player instanceof net.minecraft.server.level.ServerPlayer p) dev.wildercord.cast.RelayCircles.cancel(p);
+		if (player instanceof net.minecraft.server.level.ServerPlayer p) { dev.wildercord.cast.RelayCircles.cancel(p); dev.wildercord.cast.ExciseCasting.cancel(p); }
 		player.setAttached(WildercordAttachments.CORD, stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1));
 		if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
 			dev.wildercord.advancement.Advancements.cord(serverPlayer);
@@ -80,7 +82,12 @@ public final class Spellbooks {
             long left = Math.clamp(player.getAttachedOrElse(dev.wildercord.cast.ReweaveState.REST, 0L) - clock, 0, dev.wildercord.spell.ReweaveRules.REST_TICKS);
             readyAt = Math.max(readyAt, player.level().getGameTime() + left);
         }
-		return readyAt - player.level().getGameTime() > MAX_COOLDOWN ? 0L : readyAt;
+		if (spell >= 0 && spell < dev.wildercord.gear.SpellSlots.ALL && dev.wildercord.spell.ExciseRules.containsIds(get(player).spells().get(spell))) {
+            long clock = player instanceof net.minecraft.server.level.ServerPlayer p ? dev.wildercord.cast.ExciseCasting.now(p) : player.level().getGameTime();
+            long left = Math.clamp(player.getAttachedOrElse(dev.wildercord.cast.ExciseState.REST, 0L) - clock, 0, dev.wildercord.spell.ExciseRules.REST_TICKS);
+            readyAt = Math.max(readyAt, player.level().getGameTime() + left);
+        }
+        return readyAt - player.level().getGameTime() > MAX_COOLDOWN ? 0L : readyAt;
 	}
 
 	public static void setReadyAt(Player player, int spell, long gameTime) {

@@ -20,6 +20,7 @@ from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIE
                            progression_completion, reweave_player_completion, REWEAVE_PLAYER_ENTRIES,
                            stone_owner_negative_completion, STONE_OWNER_NEGATIVE_ENTRIES,
                            movement_foundations_completion, MOVEMENT_FOUNDATION_ENTRIES, STONE_VELOCITY_ENTRY, REED_REFUGE_ENTRY,
+                           excise_completion, EXCISE_ENTRIES, life_excise_completion, LIFE_EXCISE_ENTRIES,
                            select_entries, selection_issues)
 import run_client_ci
 from native_ci_diagnostics import SCENE_PREFIX
@@ -43,11 +44,13 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "progression-feasibility": "diagnostic-progression-feasibility",
          "reweave-player": "diagnostic-reweave-player",
          "stone-hinge-owner-negative": "diagnostic-stone-hinge-owner-negative",
-         "movement-foundations": "diagnostic-movement-foundations"}
+         "movement-foundations": "diagnostic-movement-foundations", "excise": "diagnostic-life-excise"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
+    "excise": {LIFE_EXCISE_ENTRIES[1]: None, LIFE_EXCISE_ENTRIES[2]: None,
+               EXCISE_ENTRIES[0] + "#lesson": None, EXCISE_ENTRIES[0]: None},
     "movement-foundations": {STONE_VELOCITY_ENTRY: None, REED_REFUGE_ENTRY: None,
                              REED_REFUGE_ENTRY + "#reopen": None},
     "stone-hinge-owner-negative": {STONE_OWNER_NEGATIVE_ENTRIES[0] + "#" + name: None for name in
@@ -133,6 +136,90 @@ CASE_FILES["movement-foundations"] = (*CASE_FILES["stone-hinge-owner-negative"],
     "src/gametest/java/dev/wildercord/wildlife/EcologyReturnProbe.java",
     "src/gametest/java/dev/wildercord/wildlife/EcologyReturnProbeChecks.java",
     "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeVelocityExperiment.java",
+)
+
+# Fixed authored slice paths, bound to the exact source commit; no request-provided paths.
+CASE_FILES["excise"] = (
+    'src/client/java/dev/wildercord/client/CordScreen.java',
+    'src/client/java/dev/wildercord/client/ExciseClient.java',
+    'src/client/java/dev/wildercord/client/ExciseLessonScreen.java',
+    'src/client/java/dev/wildercord/client/WildercordClient.java',
+    'src/client/java/dev/wildercord/client/WildercordKeys.java',
+    'src/gametest/java/dev/wildercord/content/ExciseLessonChecks.java',
+    'src/main/java/dev/wildercord/Wildercord.java',
+    'src/main/java/dev/wildercord/aura/Aura.java',
+    'src/main/java/dev/wildercord/aura/AuraDominion.java',
+    'src/main/java/dev/wildercord/aura/AuraGuard.java',
+    'src/main/java/dev/wildercord/aura/AuraSlash.java',
+    'src/main/java/dev/wildercord/aura/AuraStep.java',
+    'src/main/java/dev/wildercord/aura/Awakening.java',
+    'src/main/java/dev/wildercord/aura/MasterForms.java',
+    'src/main/java/dev/wildercord/aura/MastersArts.java',
+    'src/main/java/dev/wildercord/aura/SwordStrings.java',
+    'src/main/java/dev/wildercord/aura/Unity.java',
+    'src/main/java/dev/wildercord/cast/CastEngine.java',
+    'src/main/java/dev/wildercord/cast/CastLock.java',
+    'src/main/java/dev/wildercord/cast/Charging.java',
+    'src/main/java/dev/wildercord/cast/ExciseCasting.java',
+    'src/main/java/dev/wildercord/cast/ExciseState.java',
+    'src/main/java/dev/wildercord/cast/Imbuing.java',
+    'src/main/java/dev/wildercord/cast/Mastery.java',
+    'src/main/java/dev/wildercord/cast/NativeZoneEmitters.java',
+    'src/main/java/dev/wildercord/cast/PassiveCaster.java',
+    'src/main/java/dev/wildercord/cast/RelayCircles.java',
+    'src/main/java/dev/wildercord/cast/ReweaveFields.java',
+    'src/main/java/dev/wildercord/cast/SpellCaster.java',
+    'src/main/java/dev/wildercord/cast/SpellChat.java',
+    'src/main/java/dev/wildercord/cast/feel/LifeFeels.java',
+    'src/main/java/dev/wildercord/content/ExciseLesson.java',
+    'src/main/java/dev/wildercord/content/Imbued.java',
+    'src/main/java/dev/wildercord/content/RuneItem.java',
+    'src/main/java/dev/wildercord/content/ScrollSpell.java',
+    'src/main/java/dev/wildercord/content/SpellScrollItem.java',
+    'src/main/java/dev/wildercord/mixin/PlayerAuraMixin.java',
+    'src/main/java/dev/wildercord/mixin/ReweavePlayerModeMixin.java',
+    'src/main/java/dev/wildercord/net/ExciseCores.java',
+    'src/main/java/dev/wildercord/net/ExciseInput.java',
+    'src/main/java/dev/wildercord/net/WildercordNetworking.java',
+    'src/main/java/dev/wildercord/player/Heart.java',
+    'src/main/java/dev/wildercord/player/MasterStudies.java',
+    'src/main/java/dev/wildercord/player/Spellbook.java',
+    'src/main/java/dev/wildercord/player/Spellbooks.java',
+    'src/main/java/dev/wildercord/spell/ExciseRules.java',
+    'src/main/java/dev/wildercord/spell/Fusions.java',
+    'src/main/java/dev/wildercord/spell/Knots.java',
+    'src/main/java/dev/wildercord/spell/MasterStudyRules.java',
+    'src/main/java/dev/wildercord/spell/RuneSources.java',
+    'src/main/java/dev/wildercord/spell/Runes.java',
+    'src/main/java/dev/wildercord/spell/SpellCodes.java',
+    'src/main/java/dev/wildercord/spell/SpellCompiler.java',
+    'src/main/java/dev/wildercord/spell/SpellNames.java',
+    'src/main/resources/assets/wildercord/animations/rune_choreography.txt',
+    'src/main/resources/assets/wildercord/items/excise_lesson.json',
+    'src/main/resources/assets/wildercord/items/rune.json',
+    'src/main/resources/assets/wildercord/lang/en_us.json',
+    'src/main/resources/assets/wildercord/models/item/excise_lesson.json',
+    'src/main/resources/assets/wildercord/models/item/rune/excise.json',
+    'src/main/resources/assets/wildercord/textures/item/excise_lesson.png',
+    'src/main/resources/assets/wildercord/textures/item/rune/excise.png',
+    'src/main/resources/assets/wildercord/textures/item/rune/excise.png.mcmeta',
+    'src/main/resources/assets/wildercord/textures/particle/circle/excise_band.png',
+    'src/main/resources/assets/wildercord/textures/particle/circle/excise_mark.png',
+    'src/test/java/dev/wildercord/cast/feel/FeelTest.java',
+    'src/test/java/dev/wildercord/spell/EveryRuneCompilationTest.java',
+    'src/test/java/dev/wildercord/spell/ExciseRulesTest.java',
+    'src/test/java/dev/wildercord/spell/RuneChoreographyTest.java',
+)
+
+CASE_FILES["excise"] += (
+    "src/main/java/dev/wildercord/aura/RuneEtchingRules.java",
+    "src/main/java/dev/wildercord/aura/RuneEtchings.java",
+    "src/main/java/dev/wildercord/cast/Inscriptions.java",
+    "src/gametest/java/dev/wildercord/client/fx/LifeRuntimePartitionChecks.java",
+    "src/gametest/java/dev/wildercord/aura/RuneEtchingsTest.java",
+    "src/gametest/java/dev/wildercord/cast/RunicAnimationGalleryTest.java",
+    "src/gametest/java/dev/wildercord/gametest/WildercordMagicReleaseTest.java",
+    "src/gametest/java/dev/wildercord/gametest/WildercordScreenshots.java",
 )
 
 
@@ -255,6 +342,9 @@ def current(env, *, observed_head=None):
             "kind": "diagnostic", "name": CASES["movement-foundations"],
             "count": 2, "entries": list(MOVEMENT_FOUNDATION_ENTRIES)}:
         raise ValueError("Movement foundations requires its exact two complete classes in order")
+    if request["case"] == "excise" and selection != {
+            "kind": "diagnostic", "name": CASES["excise"], "count": 5, "entries": list(LIFE_EXCISE_ENTRIES)}:
+        raise ValueError("Life and Excise diagnostic must retain all five whole registered classes")
     paths = [*CONFIG_FILES, *CASE_FILES.get(request["case"], ())]
     if selection:
         paths += ["src/gametest/java/" + entry.replace(".", "/") + ".java" for entry in selection["entries"]]
@@ -320,15 +410,15 @@ def observed_seeds(log, case):
             continue
         try:
             marker = json.loads(line.split(SEED_PREFIX, 1)[1],
-                                object_pairs_hook=unique_object if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations") else dict)
-            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations") and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
+                                object_pairs_hook=unique_object if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") else dict)
+            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
                 raise ValueError()
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
-            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations") and entry in found:
+            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") and entry in found:
                 issues.append("Repeated native world seed marker for " + entry)
-            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations") and not -(2 ** 63) <= int(seed) < 2 ** 63:
+            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") and not -(2 ** 63) <= int(seed) < 2 ** 63:
                 raise ValueError()
             found.setdefault(entry, set()).add(seed)
         except (ValueError, KeyError, TypeError):
@@ -412,6 +502,8 @@ def collect(env):
         data["completedEntries"], _ = movement_foundations_completion(log)
         data.update(movementGate="NOT_PROVEN", gameplayEnabled=False, peerGate="NOT_PROVEN",
                     latencyGate="NOT_PROVEN", admissionGate="NOT_PROVEN")
+    if data["request"]["case"] == "excise":
+        data["completedEntries"], _ = life_excise_completion(log)
     successful = "BUILD SUCCESSFUL" in log and "BUILD FAILED" not in log and not issues
     data.update(diagnosticOutcome="passed" if successful else "unverified",
                 observedWorldSeeds=seeds, verificationIssues=issues,

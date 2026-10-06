@@ -224,6 +224,7 @@ public final class Heart {
 	public static int cooldownTicks(Player player, SpellCompiler.Compiled compiled, double factor) {
 		if (compiled.root().groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID))) return dev.wildercord.spell.RelayRules.REST_TICKS;
         if (compiled.root().groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.ReweaveRules.ID))) return dev.wildercord.spell.ReweaveRules.REST_TICKS;
+		if (compiled.root().groups.stream().anyMatch(g -> g.effects.stream().anyMatch(e -> e.effect.is(dev.wildercord.spell.ExciseRules.ID)))) return dev.wildercord.spell.ExciseRules.REST_TICKS;
 		return (int) Math.max(5, Math.round(compiled.cooldownTicks() * bonuses(player).cooldown() * factor));
 	}
 

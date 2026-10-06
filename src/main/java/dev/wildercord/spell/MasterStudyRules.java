@@ -17,6 +17,12 @@ public final class MasterStudyRules {
 	public static final String REWEAVE_REPLACEMENT = "study:reweave_replacement";
 	public static final String REWEAVE_PRACTICE = "practice:reweave";
 	public static final int REWEAVE_CIRCLE = 12;
+    public static final String EXCISE = "study:excise", EXCISE_COPIED = "study:excise_copied",
+        EXCISE_COPY = "study:excise_copy", EXCISE_REPLACEMENT = "study:excise_replacement", EXCISE_PRACTICE = "practice:excise";
+    public static final int EXCISE_CIRCLE = 16;
+    public static boolean eligibleExcise(int activeCircles, boolean heartwood) { return activeCircles >= EXCISE_CIRCLE && heartwood; }
+    public static boolean hasExciseLesson(boolean heartwood, boolean copied, boolean learned) { return heartwood || copied || learned; }
+    public static boolean mayStudyExcise(int activeCircles, boolean heartwood, boolean copied) { return copied && eligibleExcise(activeCircles, heartwood); }
 	public static final int PAGES = 3;
 	public static final int READING_TICKS = 20 * 60 * 5;
 	public static final double REACH = 5.5;

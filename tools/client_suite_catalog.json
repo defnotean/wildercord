@@ -1,13 +1,14 @@
 {
   "masters": {
     "description": "Masters update combat, progression including learned Circle XII Reweave, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln counterplay and Crimson Moon release/lifetime acceptance.",
-    "expectedCount": 39,
+    "expectedCount": 40,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
       "dev.wildercord.cast.RelayDefenceTest",
       "dev.wildercord.party.RelayImpactTest",
       "dev.wildercord.cast.ReweavePlayableTest",
+      "dev.wildercord.cast.ExcisePlayableTest",
       "dev.wildercord.party.PartyMutationSafetyTest",
       "dev.wildercord.party.ArtFieldMutationSafetyTest",
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
@@ -170,6 +171,26 @@
     "entries": [
       "dev.wildercord.aura.StoneHingeVelocityComparisonTest",
       "dev.wildercord.wildlife.ReedRefugeTest"
+    ]
+  },
+  "diagnostic-excise": {
+    "purpose": "diagnostic",
+    "description": "Bounded Circle XVI Excise: native ordered study, ordinary rebound hold, exact Witch Zone emitter retirement, preserved sibling pulses and prior venom, paid cancellation and lifecycle. Connected paired party/PvP and actual saved-process restart remain separate gates.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.cast.ExcisePlayableTest"
+    ]
+  },
+  "diagnostic-life-excise": {
+    "purpose": "diagnostic",
+    "description": "Exact Life32 partition: retain every generic31 Full/Minimal preparation, flight and existing outcome case, then separately require the ordinary Beam-only Excise lesson/input/core suite. A generic Life pass is not Excise visual acceptance; paired observer/reduced-flash and restart gates remain separate.",
+    "expectedCount": 5,
+    "entries": [
+      "dev.wildercord.client.fx.LifeRecipeTest",
+      "dev.wildercord.client.fx.LifeFormationTest",
+      "dev.wildercord.client.fx.LifeFlightTest",
+      "dev.wildercord.cast.LifeOutcomeRecipeTest",
+      "dev.wildercord.cast.ExcisePlayableTest"
     ]
   }
 }

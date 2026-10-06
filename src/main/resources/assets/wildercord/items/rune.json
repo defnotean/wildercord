@@ -2616,6 +2616,13 @@
         }
       },
       {
+        "when": "wildercord:excise",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/excise"
+        }
+      },
+      {
         "when": "wildercord:reweave",
         "model": {
           "type": "minecraft:model",

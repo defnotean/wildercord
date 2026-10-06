@@ -145,6 +145,7 @@ public class CordScreen extends Screen {
 	/** The retrievable Archive lesson's visible row, in the Cord panel's coordinates. */
 	private int relayLessonY = -1;
     private int reweaveLessonY = -1;
+    private int exciseLessonY = -1;
 	/** Where the field guide's heading falls among the Grimoire's lines, and whether to scroll there on the next draw. */
 	private int fieldGuideAt;
 	private boolean toFieldGuide;
@@ -405,6 +406,7 @@ public class CordScreen extends Screen {
 	}
 
 	/** The saved Archive lesson's readable row, or null while it is outside the Grimoire viewport. */
+    public double[] exciseLessonPoint() { return exciseLessonY < 0 ? null : onScreen(TEXT_X + 18, exciseLessonY + 4); }
     public double[] reweaveLessonPoint() { return reweaveLessonY < 0 ? null : onScreen(TEXT_X + 18, reweaveLessonY + 4); }
 	public double[] relayLessonPoint() {
 		return relayLessonY < 0 ? null : onScreen(TEXT_X + 18, relayLessonY + 4);
@@ -1553,7 +1555,14 @@ public class CordScreen extends Screen {
 			return passiveReadout(tier, out, width);
 		}
 		List<String> spell = spells.get(editing);
-        if (dev.wildercord.spell.ReweaveRules.containsIds(spell)) {
+        if (dev.wildercord.spell.ExciseRules.containsIds(spell)) {
+            var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (raw.size() != spell.size() || !dev.wildercord.spell.ExciseRules.valid(raw)) {
+                wrap(out, Component.literal("Unfinished Excise · cannot cast"), 0, width, 0xFFE06060);
+                wrap(out, Component.literal(dev.wildercord.spell.ExciseRules.GRAMMAR_PROBLEM), 0, width, TEXT);
+                refusal(out, width); return out;
+            }
+        }        if (dev.wildercord.spell.ReweaveRules.containsIds(spell)) {
             var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (raw.size() != spell.size() || !dev.wildercord.spell.ReweaveRules.valid(raw)) {
                 wrap(out, Component.literal("Unfinished Reweave · cannot cast"), 0, width, 0xFFE06060);
@@ -2244,6 +2253,11 @@ public class CordScreen extends Screen {
 			return true;
 		}
 		if (grimoirePage) {
+            if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && exciseLessonY >= 0
+                && dev.wildercord.player.MasterStudies.hasExciseLesson(minecraft.player)
+                && inside(mx, my, TEXT_X + 8, exciseLessonY - 1, W - 32 - TEXT_X, LINE)) {
+                click(); minecraft.gui.setScreen(new ExciseLessonScreen(this)); return true;
+            }
             if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && reweaveLessonY >= 0
                 && dev.wildercord.player.MasterStudies.hasReweaveLesson(minecraft.player)
                 && inside(mx, my, TEXT_X + 8, reweaveLessonY - 1, W - 32 - TEXT_X, LINE)) {
@@ -2751,6 +2765,15 @@ public class CordScreen extends Screen {
 			return;
 		}
 		List<String> decoded = dev.wildercord.spell.SpellCodes.decode(code);
+        if (dev.wildercord.spell.ExciseRules.containsIds(decoded)) {
+            var raw = decoded.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
+                || !dev.wildercord.spell.ExciseRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
+                || !dev.wildercord.player.MasterStudies.knowsExcise(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleExcise(minecraft.player)) {
+                minecraft.player.sendOverlayMessage(Component.literal("Excise needs Rootbound study, active XVI, Heartwood, Echo Cord and exactly Beam + Excise.").withColor(0xE06060));
+                return;
+            }
+        }
         if (dev.wildercord.spell.ReweaveRules.containsIds(decoded)) {
             var raw = decoded.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
@@ -2881,7 +2904,7 @@ public class CordScreen extends Screen {
 		Player player = minecraft.player;
 		List<String> found = Heart.grimoire(player);
 		List<GrimoireLine> lines = new ArrayList<>();
-		relayLessonY = -1; reweaveLessonY = -1;
+		relayLessonY = -1; reweaveLessonY = -1; exciseLessonY = -1;
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.relay_lesson.heading"), 0, GOLD, null));
 		boolean relayKnown = dev.wildercord.player.MasterStudies.knowsRelay(player);
 		boolean relayCopied = dev.wildercord.player.MasterStudies.hasRelayLesson(player);
@@ -2899,6 +2922,13 @@ public class CordScreen extends Screen {
             : reweaveCopied ? "screen.wildercord.reweave_lesson.copied" : "screen.wildercord.reweave_lesson.unknown"), 8, reweaveCopied ? CYAN : DIM,
             List.of(Component.translatable(reweaveKnown ? "screen.wildercord.reweave_lesson.retrieve" : "screen.wildercord.reweave_lesson.retrieve_copied").withStyle(ChatFormatting.GRAY))));
         if (reweaveCopied && !reweaveKnown) lines.add(new GrimoireLine(Component.translatable("screen.wildercord.reweave_lesson.study_pending"), 8, DIM, null));
+        boolean exciseKnown = dev.wildercord.player.MasterStudies.knowsExcise(player);
+        boolean exciseCopied = dev.wildercord.player.MasterStudies.hasExciseLesson(player);
+        int exciseLessonIndex = exciseCopied ? lines.size() : -1;
+        lines.add(new GrimoireLine(Component.translatable(exciseKnown ? "screen.wildercord.excise_lesson.entry"
+            : exciseCopied ? "screen.wildercord.excise_lesson.copied" : "screen.wildercord.excise_lesson.unknown"), 8, exciseCopied ? CYAN : DIM,
+            List.of(Component.translatable(exciseKnown ? "screen.wildercord.excise_lesson.retrieve" : "screen.wildercord.excise_lesson.retrieve_copied").withStyle(ChatFormatting.GRAY))));
+        if (exciseCopied && !exciseKnown) lines.add(new GrimoireLine(Component.translatable("screen.wildercord.excise_lesson.study_pending"), 8, DIM, null));
 		int top = SPELL_TOP - 4;
 		int bottom = H - 12;
 		sprite(g, SPR_INSET, 10, top - 3, W - 20, bottom + 3 - (top - 3));
@@ -3024,6 +3054,7 @@ public class CordScreen extends Screen {
 			int y = top + i * LINE;
 			if (first + i == relayLessonIndex && y >= top && y + LINE <= bottom) relayLessonY = y;
             if (first + i == reweaveLessonIndex && y >= top && y + LINE <= bottom) reweaveLessonY = y;
+            if (first + i == exciseLessonIndex && y >= top && y + LINE <= bottom) exciseLessonY = y;
    String lifeLink=lifeJournalLinks.get(first+i);if(lifeLink!=null && y>=top && y+LINE<=bottom)visibleLifeJournalLinks.add(new LifeJournalLink(y,lifeLink));
 			int x = TEXT_X + line.x();
 			if (line.x() == 0) {

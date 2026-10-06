@@ -13,7 +13,7 @@ import static dev.wildercord.content.MaterialOption.*;
 /** Draft acceptance contract; promote and run only with the Life integrations. */
 public final class LifeRecipeTest implements FabricClientGameTest {
  @Override public void runTest(ClientGameTestContext c) {
-  check(new HashSet<>(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("life")).map(r->r.id().substring(11)).toList()).equals(new HashSet<>(LifeForms.RUNES)),"Exact runtime Life roster");
+  LifeRuntimePartitionChecks.verify();
   check(LifeForms.RUNES.size()==31,"Explicit reviewed Life31 preparation/travel roster");
   var uniquePrep=new HashSet<String>();var uniqueFlight=new HashSet<String>();
   for(String rune:LifeForms.RUNES)for(boolean minimal:new boolean[]{false,true}) {

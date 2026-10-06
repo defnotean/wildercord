@@ -38,6 +38,7 @@ public final class AuraGuard {
 
 	/** Raises the guard (the technique): Flow, an aura weapon in hand, rested, and its price paid. */
 	public static boolean raise(ServerPlayer player) {
+        if (dev.wildercord.cast.ExciseCasting.blocking(player)) return false;
 		long now = player.level().getGameTime();
 		AuraAttachments.State state = Aura.state(player);
 		if (!Aura.holdsWeapon(player)) {

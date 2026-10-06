@@ -126,8 +126,8 @@ public final class Charging {
 	}
 
 	public static void request(ServerPlayer player, int requested, boolean start) {
-		if (ActionAdmission.busy(player)) return;
-		if (RelayCircles.committed(player) || (RelayCircles.contains(player, requested) || ReweaveFields.contains(player, requested))
+		if (ActionAdmission.busy(player) || ExciseCasting.committed(player)) return;
+		if (RelayCircles.committed(player) || (RelayCircles.contains(player, requested) || ReweaveFields.contains(player, requested) || ExciseCasting.contains(player, requested))
 			&& (start || !player.hasAttached(WildercordAttachments.CHARGE))) return;
 		if (dev.wildercord.aura.MastersArts.committed(player)) return;
 		if (start) {
