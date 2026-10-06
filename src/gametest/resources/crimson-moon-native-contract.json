@@ -53,6 +53,10 @@
   ],
   "caseWitnesses": [
     "case-00-ready.properties",
+    "case-00-clock-initial.properties",
+    "case-00-clock-rendezvous.properties",
+    "case-00-clock-ack.properties",
+    "case-00-clock-ready.properties",
     "case-00-accepted.properties",
     "case-00-release.properties",
     "host-case-00-observed.properties",

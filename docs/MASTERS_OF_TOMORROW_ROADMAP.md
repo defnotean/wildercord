@@ -39,7 +39,7 @@ The first authored player capabilities are **Relay Circle** and **Wall Turn**. B
 
 The catalog expansion will be delivered in tested packs, with new abilities, upgrades, recipes and cosmetic variants counted separately.
 
-Reweave's whole native field-feasibility class passes on `6c750309` and `5cea20d1`. The reviewed Circle XII player slice is now implemented in source: an old-save-accessible Ebb Ledger lesson for a Low Tide holder, one 40-base-mana Harm field with shared rest, and one warned disc-to-lane conversion that preserves expiry, remaining beats and the original target budget. Real lesson/editor/rebound-key tests are included, but their native execution is still pending. Full restart, multiplayer and visual acceptance remain required; this counts as one new capability.
+Reweave's whole native field-feasibility class passes on `6c750309` and `5cea20d1`. The reviewed Circle XII player slice is now implemented: an old-save-accessible Ebb Ledger lesson for a Low Tide holder, one 40-base-mana Harm field with shared rest, and one warned disc-to-lane conversion that preserves expiry, remaining beats and the original target budget. Its complete native player class passes on `3f8b54e1`, including real lesson/editor/rebound-key use and reconnect/respawn checks. Full restart, broader multiplayer and visual acceptance remain required; this counts as one new capability.
 
 ## Priority 4: expand Aura movement and sword expression
 

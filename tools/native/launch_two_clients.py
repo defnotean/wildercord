@@ -97,7 +97,9 @@ MOON_ANGLES = ("front_oblique", "reverse_oblique")
 MOON_TERMINALS = {"host-moon-passed.properties": "host", "peer-moon-passed.properties": "peer",
                   "peer-disconnected.properties": "peer"}
 MOON_MIXINS = ("crimson-moon-multiplayer-gametest.mixins.json",)
-MOON_CASE_WITNESSES = ("case-00-ready.properties", "case-00-accepted.properties", "case-00-release.properties",
+MOON_CLOCK_WITNESSES = {"case-00-clock-initial.properties": "peer", "case-00-clock-rendezvous.properties": "host",
+                        "case-00-clock-ack.properties": "peer", "case-00-clock-ready.properties": "host"}
+MOON_CASE_WITNESSES = ("case-00-ready.properties", *MOON_CLOCK_WITNESSES, "case-00-accepted.properties", "case-00-release.properties",
                        "host-case-00-observed.properties", "peer-case-00-observed.properties", "case-00-passed.properties")
 
 
@@ -579,6 +581,36 @@ def moon_image(game, role, values, identity, action, release_sha):
     return record
 
 
+def validate_moon_clock(ipc, identity, pids, actors, accepted_tick):
+    """Verify the immutable pre-input rendezvous, independently of later pacing witnesses."""
+    phases = {}
+    for filename, role in MOON_CLOCK_WITNESSES.items():
+        values = witness(ipc, filename, role, identity, pids)
+        require(all(values.get(key) == value for key, value in actors.items()),
+                filename + " changed the Moon clock actor/observer pair")
+        phases[filename] = values
+    initial, rendezvous, ack, ready = phases.values()
+    client = decimal(initial.get("clockInitialClientTick"), "Moon initial client tick")
+    server = decimal(rendezvous.get("clockInitialServerTick"), "Moon initial server tick")
+    target = decimal(rendezvous.get("clockRendezvousTick"), "Moon clock rendezvous tick")
+    require(target == max(client, server), "Moon clock rendezvous must equal the maximum initial clock")
+    shared = {"clockInitialClientTick": str(client), "clockInitialServerTick": str(server),
+              "clockRendezvousTick": str(target)}
+    for label, values in (("rendezvous", rendezvous), ("ack", ack), ("ready", ready)):
+        require(all(values.get(key) == value for key, value in shared.items()),
+                "Moon clock " + label + " changed the immutable initial clocks or rendezvous")
+    require(rendezvous.get("clockServerTick") == str(target) and ack.get("clockClientTick") == str(target)
+            and ready.get("clockServerTick") == str(target) and ready.get("clockClientTick") == str(target),
+            "Moon clocks must rendezvous exactly without overshoot")
+    upstream = {}
+    for label, values in (("initial", initial), ("rendezvous", rendezvous), ("ack", ack), ("ready", ready)):
+        require(all(values.get(key) == value for key, value in upstream.items()),
+                "Moon clock " + label + " changed an upstream receipt hash")
+        upstream["clock" + label.capitalize() + "Sha256"] = digest(ipc / ("case-00-clock-" + label + ".properties"))
+    require(target < accepted_tick, "Moon action must be accepted after the completed clock rendezvous")
+    return {"clockRendezvousTick": str(target), "clockReadySha256": upstream["clockReadySha256"]}
+
+
 def validate_moon_evidence(ipc, identity, pids):
     ready = witness(ipc, "case-00-ready.properties", "host", identity, pids)
     accepted = witness(ipc, "case-00-accepted.properties", "host", identity, pids)
@@ -590,8 +622,10 @@ def validate_moon_evidence(ipc, identity, pids):
               "releaseTick": decimal(released.get("releaseTick"), "release tick")}
     require(action["actorEntity"] != action["observerEntity"], "Remote image must observe a distinct actual player")
     require(ready.get("actorUuid") == identity["hostUuid"] and ready.get("observerUuid") == identity["peerUuid"], "Wrong ready actor/observer pair")
-    common = {"acceptedTick": str(action["acceptedTick"]), "actorEntity": str(action["actorEntity"]),
-              "observerEntity": str(action["observerEntity"]), "actorUuid": identity["hostUuid"], "observerUuid": identity["peerUuid"], "move": "19", "windup": "10", "recovery": "20"}
+    actors = {"actorEntity": str(action["actorEntity"]), "observerEntity": str(action["observerEntity"]),
+              "actorUuid": identity["hostUuid"], "observerUuid": identity["peerUuid"]}
+    clock = validate_moon_clock(ipc, identity, pids, actors, action["acceptedTick"])
+    common = {**actors, **clock, "acceptedTick": str(action["acceptedTick"]), "move": "19", "windup": "10", "recovery": "20"}
     for label, values in (("accepted", accepted), ("released", released), ("passed", passed)):
         require(all(values.get(key) == value for key, value in common.items()), "Moon " + label + " action changed")
     require(action["releaseTick"] == action["acceptedTick"] + 10 and released.get("completionOffset") == "10"

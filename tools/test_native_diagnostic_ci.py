@@ -367,6 +367,9 @@ class EvidenceTests(unittest.TestCase):
             self.assert_manifest_cannot_relabel_diagnostic(case)
 
     def test_ecology_return_selects_only_three_whole_classes_and_observes_reopen(self):
+        self.assertEqual(diagnostic.CASE_FILES["ecology-return"], (
+            "src/main/java/dev/wildercord/wildlife/LanternNewt.java",
+            "src/main/java/dev/wildercord/wildlife/NewtPathNavigation.java"))
         entries = ["dev.wildercord.wildlife.RootmoltCounterTest",
                    "dev.wildercord.wildlife.ReedRefugeTest",
                    "dev.wildercord.wildlife.SiltcrestBankReturnTest"]

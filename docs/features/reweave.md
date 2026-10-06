@@ -1,6 +1,6 @@
 # Reweave: Ebb Ledger
 
-This is one Circle XII capability in the development source. Its precursor mechanism passed natively on public `6c750309`; the ordinary player path below is implemented but requires its own candidate-native acceptance. No full-release result is implied.
+This is one Circle XII capability in the development source. Its precursor mechanism passed natively on public `6c750309`. The complete ordinary-player diagnostic passes on [`3f8b54e1`](https://github.com/defnotean/wildercord/actions/runs/37524600196) in 56.35 seconds: an eligible fixture character actually studies the three Grimoire pages, equips through Codex clicks, then places and rewrites through rebound keys. This does not claim a naturally played boss victory or a full-release result.
 
 ## Learn and equip
 
@@ -32,4 +32,4 @@ The HUD shows remaining time and beats, the active bound control, and whether a 
 
 `ReweavePlayableTest` uses actual Grimoire pages, editor clicks, rebound Cast/direct-slot controls, actual paid wounds and original identity checks. Its declared XII/Low Tide fixture is not a naturally played boss-clear claim. It also covers held menu-return input, rejected/stale/duplicate packets, shared rest, body transitions and real reconnect. `ReweaveLessonChecks` covers forgery, full inventory, replacement limits and stale reading sessions.
 
-Independent compilation/unit checks and source review are separate from native execution. Native ordinary-path completion, original screenshots, connected party/pet mutation checks, explicit range boundaries, a full restart and broader balance/performance remain candidate acceptance gates.
+Independent compilation/unit checks and source review are separate from native execution. The ordinary-path class now completes, including real reconnect/respawn preservation of its learned study. Original screenshot review, connected party/pet mutation checks, explicit range boundaries, a full restart and broader balance/performance remain candidate acceptance gates.

@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -32,6 +33,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 
 /** One fresh world and accepted Final, two real TCP clients, two causally bounded native images. */
 public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGameTest {
@@ -48,8 +50,13 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
     private int actorEntity,observerEntity;
     private volatile long acceptedTick=Long.MIN_VALUE;
     private final ClockObservations clocks=new ClockObservations();
+    private final CrimsonMoonClockPacing.Series peerClocks=new CrimsonMoonClockPacing.Series();
+    private boolean peerPacing;
+    private long rendezvousTick=Long.MIN_VALUE;
+    private String clockReadySha;
     private static volatile Audit current;
     private static boolean damageHooked;
+    private static boolean clockHooked;
     private record Spend(long tick,double paid,double expected,int rest,double momentum,boolean committed,boolean backlash){}
     private record Completion(long tick,long accepted,List<Integer> marks){}
     private record Damage(long tick,float amount,boolean hostImage,boolean peerImage,String hostWitnessSha256,String peerWitnessSha256){}
@@ -107,6 +114,9 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
         final List<Completion> completions=new CopyOnWriteArrayList<>();
         final List<Damage> damage=new CopyOnWriteArrayList<>();
         volatile Throwable failure;
+        net.minecraft.server.MinecraftServer pacingServer;
+        boolean publishClock;
+        long clockSequence,lastServerTick=Long.MIN_VALUE;
         final AuraApi.SpendHook spend=(p,paid,reason,backlash)->{
             if(p.getUUID().equals(hostId)&&reason.equals("art:"+ART)){
                 var art=AuraApi.artOf(p,ART).orElseThrow();
@@ -128,6 +138,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
             if(!damageHooked){ServerLivingEntityEvents.AFTER_DAMAGE.register((entity,source,base,taken,blocked)->{
                 var audit=current;if(audit!=null&&entity==audit.target&&!audit.spends.isEmpty()&&source.is(Aura.DAMAGE)&&source.getEntity() instanceof ServerPlayer p&&p.getUUID().equals(audit.owner()))audit.hit(p.level().getGameTime(),taken);
             });damageHooked=true;}
+            if(!clockHooked){ServerTickEvents.END_SERVER_TICK.register(server->{var audit=current;if(audit!=null&&audit.publishClock&&audit.pacingServer==server)audit.publishClock(server.overworld().getGameTime());});clockHooked=true;}
             AuraApi.onSpend(spend);AuraApi.onString(done);
         }
         UUID owner(){return hostId;}
@@ -140,7 +151,13 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
                 damage.add(new Damage(tick,amount,host,peer,hostHash,peerHash));
             }catch(Throwable problem){failure=problem;}
         }
-        @Override public void close(){current=null;AuraApi.spendHooks().remove(spend);AuraApi.stringHooks().remove(done);}
+        void publishClock(long tick){
+            try{check(tick>=rendezvousTick&&tick>=lastServerTick,"Actual END_SERVER_TICK clock never rolls back");lastServerTick=tick;
+                var fields=clockIdentity();fields.put("clockPhase","END_SERVER_TICK");fields.put("clockSequence",Long.toString(++clockSequence));fields.put("clockServerTick",Long.toString(tick));
+                replaceClock(fields);
+            }catch(Throwable problem){failure=problem;publishClock=false;if(!exists("host-failure"))write("host-failure",Map.of("error",problem.toString()));}
+        }
+        @Override public void close(){publishClock=false;pacingServer=null;current=null;AuraApi.spendHooks().remove(spend);AuraApi.stringHooks().remove(done);}
     }
     @Override public void runTest(ClientGameTestContext context){OpeningCaptureWait.withCleanup(()->run(context));}
     private void run(ClientGameTestContext c){
@@ -160,7 +177,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
             c.getInput().releaseKey(o->o.keyAttack);c.getInput().releaseKey(o->o.keyShift);CrimsonMoonRenderProbe.unwatch();HitStop.clear();
             for(int i=0;i<SETTINGS.length;i++){if(previous[i]==null)System.clearProperty(SETTINGS[i]);else System.setProperty(SETTINGS[i],previous[i]);}
             c.runOnClient(mc->{mc.options.setCameraType(camera);mc.options.mainHand().set(hand);mc.options.broadcastOptions();mc.options.toggleCrouch().set(toggle);mc.getWindow().setWindowed(width,height);mc.getWindow().setFullscreen(fullscreen);mc.options.guiScale().set(gui);mc.resizeGui();if(mc.gui.hud.isHidden()!=hidden)mc.gui.hud.toggle();});
-            }finally{clocks.clear();}
+            }finally{clocks.clear();peerPacing=false;peerClocks.clear();rendezvousTick=Long.MIN_VALUE;clockReadySha=null;}
         }
     }
     private void configure(){
@@ -196,9 +213,13 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
             write("case-00-ready",identities());
             c.runOnClient(mc->{mc.gui.setScreen(null);mc.options.broadcastOptions();mc.player.setYRot(0);mc.player.setXRot(3);CrimsonMoonRenderProbe.watch(hostId);});
             await(c,()->exists("peer-capture-ready"),"Actual observer takes its ordinary first-person position");read("peer-capture-ready","peer");c.waitTicks(15);
+            c.waitFor(mc->mc.player.getAttackStrengthScale(0)>=.999F,40);
+            alignHost(c,server,audit);
             int requests=c.computeOnClient(mc->SwordStringsClient.counts()[0]);
             for(int i=0;i<3;i++){
-                c.waitFor(mc->mc.player.getAttackStrengthScale(0)>=.999F,40);c.getInput().pressKey(o->o.keyAttack);c.waitTicks(2);boolean last=i==2;
+                if(i>0)c.waitFor(mc->mc.player.getAttackStrengthScale(0)>=.999F,40);
+                if(i==0)server.runOnServer(s->check(s.overworld().getGameTime()==rendezvousTick&&audit.spends.isEmpty()&&acceptedTick==Long.MIN_VALUE,"Actual rendezvous remains exact immediately before the first attack"));
+                c.getInput().pressKey(o->o.keyAttack);c.waitTicks(2);boolean last=i==2;
                 server.runOnServer(s->{audit.target.snapTo(.5,100,last?5.6:3.1,180,0);audit.target.setDeltaMovement(Vec3.ZERO);if(last){var host=s.getPlayerList().getPlayer(hostId);host.setAttached(AuraAttachments.AURA,Aura.data(host).withAura(AuraRules.capacity(AuraRules.SOVEREIGN)));}});c.waitTicks(12);
             }
             check(c.computeOnClient(mc->SwordStringsClient.chain().size()>=3),"Three actual fully charged attacks precede LOW");
@@ -237,9 +258,10 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
             await(c,()->exists("case-00-ready"),"Server positions the actual observer");var command=read("case-00-ready","host");actorEntity=Integer.parseInt(command.getProperty("actorEntity"));observerEntity=Integer.parseInt(command.getProperty("observerEntity"));
             c.waitFor(mc->mc.player.getId()==observerEntity&&mc.level.getPlayerByUUID(hostId)!=null&&mc.level.getPlayerByUUID(hostId).getId()==actorEntity&&Math.abs(mc.player.getX()-(angle.equals("front_oblique")?4.5:-3.5))<.01&&Math.abs(mc.player.getZ()-(angle.equals("front_oblique")?5.5:-4.5))<.01,240);
             c.runOnClient(mc->{mc.gui.setScreen(null);mc.options.broadcastOptions();mc.player.setYRot(observerYaw());mc.player.setXRot(7);CrimsonMoonRenderProbe.watch(hostId);});write("peer-capture-ready",identities());
+            alignPeer(c);
             await(c,()->exists("case-00-accepted"),"Actual paid accepted Final");var accepted=read("case-00-accepted","host");acceptedTick=Long.parseLong(accepted.getProperty("acceptedTick"));checkAction(accepted);
-            c.waitFor(mc->{var actor=mc.level.getPlayerByUUID(hostId);var timeline=MastersArtsClient.timeline(actor);boolean timelineReady=timeline!=null&&timeline.entity()==actorEntity&&timeline.move()==19&&timeline.startTick()==acceptedTick&&timeline.windup()==10&&timeline.recovery()==20;if(timelineReady)clocks.client("timeline-ready",mc,"not_checked",null,false);return timelineReady;},35);
-            capture(c);
+            waitForSource(c,mc->{var actor=mc.level.getPlayerByUUID(hostId);var timeline=MastersArtsClient.timeline(actor);boolean timelineReady=timeline!=null&&timeline.entity()==actorEntity&&timeline.move()==19&&timeline.startTick()==acceptedTick&&timeline.windup()==10&&timeline.recovery()==20;if(timelineReady)clocks.client("timeline-ready",mc,"not_checked",null,false);return timelineReady;},35);
+            try{capture(c);}finally{peerPacing=false;peerClocks.clear();}
             await(c,()->exists("case-00-passed"),"Host proves both images precede first direct damage");var passed=read("case-00-passed","host");checkAction(passed);checkOrder(passed);
             await(c,()->exists("disconnect-peer"),"Native assertions complete before departure");checkAction(read("disconnect-peer","host"));
             c.runOnClient(mc->mc.disconnect(new TitleScreen(),false));c.waitFor(mc->mc.player==null&&mc.level==null,300);
@@ -249,7 +271,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
     }
     private void capture(ClientGameTestContext c){
         try {
-        c.waitFor(mc->{boolean age=mc.level.getGameTime()>=acceptedTick+10;boolean released=age&&exists("case-00-release");clocks.client("capture-wait",mc,age?Boolean.toString(released):"not_checked",null,true);
+        waitForSource(c,mc->{boolean age=mc.level.getGameTime()>=acceptedTick+10;boolean released=age&&exists("case-00-release");clocks.client("capture-wait",mc,age?Boolean.toString(released):"not_checked",null,true);
             // A peer may arrive ahead of the server, then receive an ordinary time correction.
             // Only its genuine exact age-10 observation can stop local ticking before release.
             return age&&(released||role.equals("peer")&&mc.level.getGameTime()==acceptedTick+10);},45);
@@ -281,6 +303,72 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
         write(role+"-case-00-observed",fields);
         }finally{clocks.report("capture-exit",null);}
     }
+    private Map<String,String> clockIdentity(){
+        check(rendezvousTick>=0&&clockReadySha!=null,"Actual pre-input clock handshake completed");
+        var fields=identities();fields.put("clockRendezvousTick",Long.toString(rendezvousTick));fields.put("clockReadySha256",clockReadySha);return fields;
+    }
+    private void checkIdentities(Properties value){for(var field:identities().entrySet())check(field.getValue().equals(value.getProperty(field.getKey())),"Same connected clock body: "+field.getKey());}
+    private void checkFields(Properties value,Map<String,String> expected){for(var field:expected.entrySet())check(field.getValue().equals(value.getProperty(field.getKey())),"Same clock handshake: "+field.getKey());}
+    private void healthy(String reason){check(System.nanoTime()<deadline,"Finite native handshake expired: "+reason);check(!exists("host-failure")&&!exists("peer-failure"),"Both native processes remain healthy: "+reason);}
+    private void alignHost(ClientGameTestContext c,TestServerContext server,Audit audit){
+        await(c,()->exists("case-00-clock-initial"),"Peer observes its actual initial clock before inputs");
+        var initial=read("case-00-clock-initial","peer");checkIdentities(initial);
+        long client=CrimsonMoonClockPacing.tick(initial.getProperty("clockInitialClientTick"));
+        long start=server.computeOnServer(s->s.overworld().getGameTime());rendezvousTick=CrimsonMoonClockPacing.rendezvous(client,start);
+        while(!server.computeOnServer(s->CrimsonMoonClockPacing.reached(s.overworld().getGameTime(),rendezvousTick))){healthy("Host reaches the actual rendezvous");c.waitTicks(1);}
+        var common=identities();common.put("clockInitialClientTick",Long.toString(client));common.put("clockInitialServerTick",Long.toString(start));common.put("clockRendezvousTick",Long.toString(rendezvousTick));common.put("clockInitialSha256",fileSha("case-00-clock-initial"));
+        server.runOnServer(s->{check(s.overworld().getGameTime()==rendezvousTick&&audit.spends.isEmpty()&&acceptedTick==Long.MIN_VALUE,"Actual server rendezvous precedes all inputs");
+            var fields=new HashMap<>(common);fields.put("clockServerTick",Long.toString(s.overworld().getGameTime()));write("case-00-clock-rendezvous",fields);});
+        common.put("clockRendezvousSha256",fileSha("case-00-clock-rendezvous"));
+        // Host client and server remain in their ordinary test phase while the peer catches up.
+        awaitWithoutTicks(()->exists("case-00-clock-ack"),"Peer naturally reaches the held actual server tick");
+        var ack=read("case-00-clock-ack","peer");checkIdentities(ack);checkFields(ack,common);
+        check(CrimsonMoonClockPacing.tick(ack.getProperty("clockClientTick"))==rendezvousTick,"Exact actual peer rendezvous acknowledgement");
+        c.runOnClient(mc->{mc.gui.hud.getChat().clearMessages(false);mc.gui.toastManager().clear();});
+        server.runOnServer(s->{check(s.overworld().getGameTime()==rendezvousTick&&audit.spends.isEmpty()&&acceptedTick==Long.MIN_VALUE,"Host retains exact rendezvous before enabling real inputs");
+            var fields=new HashMap<>(common);fields.put("clockServerTick",Long.toString(s.overworld().getGameTime()));fields.put("clockClientTick",ack.getProperty("clockClientTick"));fields.put("clockAckSha256",fileSha("case-00-clock-ack"));write("case-00-clock-ready",fields);
+            clockReadySha=fileSha("case-00-clock-ready");audit.pacingServer=s;audit.publishClock=true;
+        });
+    }
+    private void alignPeer(ClientGameTestContext c){
+        long initial=c.computeOnClient(mc->{mc.gui.hud.getChat().clearMessages(false);mc.gui.toastManager().clear();return mc.level.getGameTime();});
+        var first=identities();first.put("clockInitialClientTick",Long.toString(initial));write("case-00-clock-initial",first);
+        awaitWithoutTicks(()->exists("case-00-clock-rendezvous"),"Host observes and holds its actual rendezvous");
+        var offered=read("case-00-clock-rendezvous","host");checkIdentities(offered);
+        long start=CrimsonMoonClockPacing.tick(offered.getProperty("clockInitialServerTick"));rendezvousTick=CrimsonMoonClockPacing.tick(offered.getProperty("clockRendezvousTick"));
+        var common=identities();common.put("clockInitialClientTick",Long.toString(initial));common.put("clockInitialServerTick",Long.toString(start));common.put("clockRendezvousTick",Long.toString(rendezvousTick));common.put("clockInitialSha256",fileSha("case-00-clock-initial"));checkFields(offered,common);
+        check(rendezvousTick==CrimsonMoonClockPacing.rendezvous(initial,start)&&CrimsonMoonClockPacing.tick(offered.getProperty("clockServerTick"))==rendezvousTick,"Rendezvous names the actual reached server clock");
+        while(!c.computeOnClient(mc->CrimsonMoonClockPacing.reached(mc.level.getGameTime(),rendezvousTick))){healthy("Peer reaches actual rendezvous without retiming");c.waitTicks(1);}
+        common.put("clockRendezvousSha256",fileSha("case-00-clock-rendezvous"));
+        var fields=new HashMap<>(common);fields.put("clockClientTick",Long.toString(c.computeOnClient(mc->mc.level.getGameTime())));write("case-00-clock-ack",fields);
+        awaitWithoutTicks(()->exists("case-00-clock-ready"),"Host rechecks the unchanged native rendezvous before inputs");
+        var ready=read("case-00-clock-ready","host");checkIdentities(ready);checkFields(ready,common);
+        check(ready.getProperty("clockAckSha256").equals(fileSha("case-00-clock-ack"))&&CrimsonMoonClockPacing.tick(ready.getProperty("clockClientTick"))==rendezvousTick&&CrimsonMoonClockPacing.tick(ready.getProperty("clockServerTick"))==rendezvousTick,"Immutable exact-clock acknowledgement chain");
+        check(c.computeOnClient(mc->mc.level.getGameTime())==rendezvousTick,"Peer source clock remains unchanged through readiness");
+        clockReadySha=fileSha("case-00-clock-ready");peerClocks.clear();peerPacing=true;
+    }
+    private void peerTick(ClientGameTestContext c){
+        long client=c.computeOnClient(mc->mc.level.getGameTime());
+        awaitWithoutTicks(()->{
+            if(!exists("host-clock-latest"))return false;
+            var expected=clockIdentity();for(String key:identity.stringPropertyNames())expected.put(key,identity.getProperty(key));expected.put("role","host");expected.put("pid",Long.toString(otherPid));expected.put("clockPhase","END_SERVER_TICK");
+            try {var sample=peerClocks.observe(CrimsonMoonClockPacing.read(Files.readAllBytes(directory.resolve("host-clock-latest.properties")),expected));return client<sample.serverTick();}
+            catch(java.io.IOException failure){throw new AssertionError("Missing actual server clock observation",failure);}
+        },"Actual server clock permits one ordinary peer tick");
+        c.waitTicks(1);
+    }
+    private int waitForSource(ClientGameTestContext c,Predicate<Minecraft> predicate,int ticks){
+        if(!peerPacing)return c.waitFor(predicate,ticks);
+        return CrimsonMoonClockPacing.waitFor(()->{healthy("Bounded native source wait");return c.computeOnClient(predicate::test);},ticks,()->peerTick(c));
+    }
+    private void replaceClock(Map<String,String> fields){
+        try {
+            var value=new Properties();value.putAll(identity);value.putAll(fields);value.setProperty("role","host");value.setProperty("pid",Long.toString(ProcessHandle.current().pid()));
+            Path target=directory.resolve("host-clock-latest.properties"),temporary=directory.resolve("host-clock-latest.tmp");
+            try(var out=Files.newOutputStream(temporary,StandardOpenOption.CREATE_NEW)){value.store(out,"Actual native END_SERVER_TICK observation; no clock assignment");}
+            Files.move(temporary,target,StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING);
+        }catch(java.io.IOException failure){throw new AssertionError("Cannot publish actual native server clock",failure);}
+    }
     private void prepare(ServerPlayer host,ServerPlayer peer,Audit audit){
         check(host.level().getGameTime()>=SwordStrings.readyAt(host,ART),"Fresh action respects real individual rest");
         host.setGameMode(GameType.SURVIVAL);host.teleportTo(host.level(),.5,100,.5,Set.<Relative>of(),0,3,false);host.setDeltaMovement(Vec3.ZERO);host.removeAllEffects();host.setHealth(host.getMaxHealth());host.getFoodData().setFoodLevel(20);
@@ -298,7 +386,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
     }
     private float observerYaw(){return angle.equals("front_oblique")?141.3402F:-38.6598F;}
     private Map<String,String> identities(){return new HashMap<>(Map.of("actorEntity",Integer.toString(actorEntity),"observerEntity",Integer.toString(observerEntity),"actorUuid",hostId.toString(),"observerUuid",peerId.toString()));}
-    private Map<String,String> action(){var fields=identities();fields.put("acceptedTick",Long.toString(acceptedTick));fields.put("move","19");fields.put("windup","10");fields.put("recovery","20");return fields;}
+    private Map<String,String> action(){var fields=clockIdentity();check(acceptedTick>rendezvousTick,"Actual action follows the proven pre-input rendezvous");fields.put("acceptedTick",Long.toString(acceptedTick));fields.put("move","19");fields.put("windup","10");fields.put("recovery","20");return fields;}
     private Map<String,String> terminal(Properties passed){
         checkAction(passed);checkOrder(passed);var fields=action();
         for(String key:List.of("releaseTick","firstDamageTick","firstDamageAgeTicks","firstDamageDelayTicks","releaseImageDamageOrderVerified","serverReleaseFrameCorrespondenceVerified"))fields.put(key,passed.getProperty(key));
@@ -314,7 +402,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
     }
     private void checkAction(Properties value){for(var field:action().entrySet())check(field.getValue().equals(value.getProperty(field.getKey())),"Same accepted action: "+field.getKey());}
     private void awaitWithoutTicks(BooleanSupplier condition,String reason){OpeningCaptureWait.awaitSignal(()->{check(!exists("host-failure")&&!exists("peer-failure"),"Both native processes remain healthy: "+reason);return condition.getAsBoolean();},deadline,reason);}
-    private void await(ClientGameTestContext c,BooleanSupplier condition,String reason){while(System.nanoTime()<deadline){check(!exists("host-failure")&&!exists("peer-failure"),"Both native processes remain healthy: "+reason);if(condition.getAsBoolean())return;c.waitTicks(1);}throw new AssertionError("Finite native handshake expired: "+reason);}
+    private void await(ClientGameTestContext c,BooleanSupplier condition,String reason){while(System.nanoTime()<deadline){check(!exists("host-failure")&&!exists("peer-failure"),"Both native processes remain healthy: "+reason);if(condition.getAsBoolean())return;if(peerPacing)peerTick(c);else c.waitTicks(1);}throw new AssertionError("Finite native handshake expired: "+reason);}
     private boolean exists(String name){return Files.isRegularFile(directory.resolve(name+".properties"));}
     private Properties read(String name,String expectedRole){try(var input=Files.newInputStream(directory.resolve(name+".properties"))){var value=new Properties();value.load(input);for(String key:identity.stringPropertyNames())check(identity.getProperty(key).equals(value.getProperty(key)),"Native witness identity: "+key);check(expectedRole.equals(value.getProperty("role")),"Expected witness role");long pid=Long.parseLong(value.getProperty("pid"));check(pid>0&&(expectedRole.equals(role)?pid==ProcessHandle.current().pid():otherPid==0||pid==otherPid),"Exact native process identity");return value;}catch(java.io.IOException failure){throw new AssertionError(failure);}}
     private void write(String name,Map<String,String> fields){try{var value=new Properties();value.putAll(identity);for(var field:fields.entrySet()){check(!value.containsKey(field.getKey())||value.getProperty(field.getKey()).equals(field.getValue()),"No identity replacement");value.setProperty(field.getKey(),field.getValue());}value.setProperty("role",role);value.setProperty("pid",Long.toString(ProcessHandle.current().pid()));Path target=directory.resolve(name+".properties"),temporary=directory.resolve(name+".tmp");check(!Files.exists(target),"Witness written exactly once: "+name);try(var out=Files.newOutputStream(temporary,StandardOpenOption.CREATE_NEW)){value.store(out,"Bounded genuine Moon capture witness");}Files.move(temporary,target,StandardCopyOption.ATOMIC_MOVE);}catch(java.io.IOException failure){throw new AssertionError(failure);}}

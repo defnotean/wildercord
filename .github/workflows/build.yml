@@ -262,6 +262,22 @@ jobs:
           name: masters-native-curated-${{ github.run_id }}-${{ github.run_attempt }}
           path: artifacts/review/masters-native-curated-${{ github.run_id }}-${{ github.run_attempt }}/
           if-no-files-found: error
+      - name: Preserve original Reweave player diagnostics (not visual acceptance)
+        if: always() && hashFiles('artifacts/review/masters-native-manifest.json') != '' && hashFiles('build/run/clientGameTest/screenshots/reweave_grimoire_retrieval.png', 'build/run/clientGameTest/screenshots/reweave_ebb_ledger_history.png', 'build/run/clientGameTest/screenshots/reweave_ebb_ledger_controls.png', 'build/run/clientGameTest/screenshots/reweave_learned_equipped_row.png', 'build/run/clientGameTest/screenshots/reweave_paid_disc_rebound_cast.png', 'build/run/clientGameTest/screenshots/reweave_paid_lane_warning.png', 'build/run/clientGameTest/screenshots/reweave_paid_lane_dummy_hit.png') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: reweave-player-masters-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/run/clientGameTest/screenshots/reweave_grimoire_retrieval.png
+            build/run/clientGameTest/screenshots/reweave_ebb_ledger_history.png
+            build/run/clientGameTest/screenshots/reweave_ebb_ledger_controls.png
+            build/run/clientGameTest/screenshots/reweave_learned_equipped_row.png
+            build/run/clientGameTest/screenshots/reweave_paid_disc_rebound_cast.png
+            build/run/clientGameTest/screenshots/reweave_paid_lane_warning.png
+            build/run/clientGameTest/screenshots/reweave_paid_lane_dummy_hit.png
+            artifacts/review/masters-native-manifest.json
+          if-no-files-found: warn
+          retention-days: 7
       - name: Preserve focused Masters evidence
         if: always()
         uses: actions/upload-artifact@v7
@@ -476,6 +492,23 @@ jobs:
       - name: Record bounded diagnostic evidence, never release acceptance
         if: always() && steps.request.outputs.enabled == 'true'
         run: python tools/run_native_diagnostic_ci.py --collect
+      - name: Preserve original Reweave player diagnostics (not visual acceptance)
+        if: always() && steps.request.outputs.enabled == 'true' && hashFiles('build/run/clientGameTest/screenshots/reweave_grimoire_retrieval.png', 'build/run/clientGameTest/screenshots/reweave_ebb_ledger_history.png', 'build/run/clientGameTest/screenshots/reweave_ebb_ledger_controls.png', 'build/run/clientGameTest/screenshots/reweave_learned_equipped_row.png', 'build/run/clientGameTest/screenshots/reweave_paid_disc_rebound_cast.png', 'build/run/clientGameTest/screenshots/reweave_paid_lane_warning.png', 'build/run/clientGameTest/screenshots/reweave_paid_lane_dummy_hit.png') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: reweave-player-diagnostic-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/run/clientGameTest/screenshots/reweave_grimoire_retrieval.png
+            build/run/clientGameTest/screenshots/reweave_ebb_ledger_history.png
+            build/run/clientGameTest/screenshots/reweave_ebb_ledger_controls.png
+            build/run/clientGameTest/screenshots/reweave_learned_equipped_row.png
+            build/run/clientGameTest/screenshots/reweave_paid_disc_rebound_cast.png
+            build/run/clientGameTest/screenshots/reweave_paid_lane_warning.png
+            build/run/clientGameTest/screenshots/reweave_paid_lane_dummy_hit.png
+            artifacts/review/native-diagnostic/request-provenance.json
+            artifacts/review/native-diagnostic/diagnostic-result.json
+          if-no-files-found: warn
+          retention-days: 7
       - name: Preserve original Wall Turn UI diagnostics (not release acceptance)
         if: always() && steps.request.outputs.enabled == 'true' && hashFiles('build/run/clientGameTest/screenshots/wall_turn_teacher_story.png', 'build/run/clientGameTest/screenshots/wall_turn_teacher_illustration.png', 'build/run/clientGameTest/screenshots/wall_turn_equipped_slot.png') != ''
         uses: actions/upload-artifact@v7

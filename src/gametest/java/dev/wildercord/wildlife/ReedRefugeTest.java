@@ -22,7 +22,7 @@ import java.util.*;
 /** Actual client construction, amphibian routes, finite rests, wake conditions and saved habitat. */
 public final class ReedRefugeTest implements FabricClientGameTest {
  private static final BlockPos ROOF=new BlockPos(3,101,3),DRY=new BlockPos(-4,102,-1);
- private static LanternNewt first,second,third;private static UUID saved;private static long firstRest,secondRest,savedRest;
+ private static LanternNewt first,second,third,surfaceVisitor,routeVisitor,walker;private static UUID saved;private static long firstRest,secondRest,savedRest;
  @Override public void runTest(ClientGameTestContext c) {
   EcologyReturnProbeChecks.verify();
   TestWorldSave save;
@@ -41,7 +41,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
     check(s.overworld().getBlockEntity(ROOF)==null,"Habitat has no ticking block entity");p(s).setGameMode(GameType.CREATIVE);p(s).setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);aim(s,new Vec3(3.5,101.3,3.5),3);
     s.overworld().setBlock(new BlockPos(2,101,3),Blocks.GLASS.defaultBlockState(),2);first=spawn(s,.5,3.5);
    });
-   awaitRest(c,w,()->first,"Newt swims around a separate obstacle into a real waterlogged roof");
+   awaitRest(c,w,()->first,"Newt swims around a separate obstacle into a real waterlogged roof",true);
    w.getServer().runOnServer(s -> {check(first.getX()>3.2 && first.getZ()>3.2 && first.getZ()<3.8,"Settled body is actually beneath roof");firstRest=first.refugeReady();check(first.getHealth()==10 && first.pearlReady()==0 && pearls(s)==0,"Rest heals nothing, grants nothing and changes no pearl clock");second=spawn(s,.5,4.5);aim(s,first.position(),3);});c.waitTicks(16);int firstId=w.getServer().computeOnServer(srv -> first.getId());check(c.computeOnClient(mc -> ((LanternNewt)mc.level.getEntity(firstId)).rest>.9F),"Actual resting pose blends on synchronized client");shot(c,"reed_refuge_sleeping_newt");c.waitTicks(30);
    w.getServer().runOnServer(s -> {check(first.resting() && !second.resting(),"A roof holds one resting visitor: first="+first.resting()+" at "+first.position()+", second="+second.resting()+" at "+second.position());});c.waitTicks(110);
    w.getServer().runOnServer(s -> {check(!first.resting() && first.refugeReady()==firstRest && first.pearlReady()==0,"Rest ends naturally without renewing its deadline");first.setNoAi(true);first.teleportTo(-3,101.1,6);s.overworld().removeBlock(new BlockPos(2,101,3),false);});
@@ -60,14 +60,80 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    w.getServer().runOnServer(s -> {third.setNoAi(true);third.teleportTo(-3,101.1,4);third=spawn(s,3.5,3.5);});awaitRest(c,w,()->third,"Another visitor settles before roof removal");
    w.getServer().runOnServer(s -> {savedRest=third.refugeReady();s.overworld().destroyBlock(ROOF,true);});c.waitTicks(5);
    check(w.getServer().computeOnServer(s -> !third.resting() && third.refugeReady()==savedRest && s.overworld().getEntitiesOfClass(ItemEntity.class,new AABB(ROOF).inflate(2),e -> e.getItem().is(WetlandShelters.REFUGE_ITEM)).stream().mapToInt(e -> e.getItem().getCount()).sum()==1),"Breaking roof wakes visitor and drops exactly one roof");
+   verifyNavigationCases(c,w);
   }
  }
  private static LanternNewt spawn(MinecraftServer s,double x,double z) {var n=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);n.snapTo(x,101.1,z,0,0);n.getRandom().setSeed(314);s.overworld().addFreshEntity(n);return n;}
  private static void awaitRest(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> target,String why) {
+  awaitRest(c,w,target,why,false);
+ }
+ private static void awaitRest(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> target,String why,boolean glassDetour) {
   var probe=w.getServer().computeOnServer(s->EcologyReturnProbe.begin(EcologyReturnProbe.REED,s.overworld(),target.get()));
-  try{for(int i=0;i<100;i++) {c.waitTicks(5);if(w.getServer().computeOnServer(s -> target.get().resting()))return;}
+  var witness=new RefugeRouteWitness();
+  try{for(int i=0;i<100;i++) {c.waitTicks(5);if(w.getServer().computeOnServer(s -> {var n=target.get();witness.observe(n,glassDetour);return n.resting();})) {
+    check(!glassDetour || witness.aquaticDetour && witness.bodyPassedGlass,"Native aquatic route and actual body both pass around the unchanged glass");return;
+   }}
    throw new AssertionError(w.getServer().computeOnServer(s -> why+": "+EcologyReturnProbe.body(target.get())));
   }finally{probe.close();}
+ }
+
+ /** Observes paths the real goal already requested; never creates or changes a route. */
+ private static final class RefugeRouteWitness {
+  boolean aquaticDetour,bodyPassedGlass;
+  void observe(LanternNewt n,boolean glassDetour) {
+   check(n.level().noCollision(n,n.getBoundingBox()),"Swimming body never overlaps the real obstacle or refuge shape");
+   var path=n.getNavigation().getPath();
+   if(path!=null && path.getTarget().equals(ROOF)) {
+    boolean around=false;
+    for(int i=0;i<path.getNodeCount();i++) {var node=path.getNode(i);var at=new BlockPos(node.x,node.y,node.z);
+     check(n.level().getFluidState(at).is(net.minecraft.tags.FluidTags.WATER),"Refuge's native path contains only aquatic nodes: "+EcologyReturnProbe.path(path));
+     around|=node.z!=ROOF.getZ();
+    }
+    aquaticDetour|=around;
+   }
+   var box=n.getBoundingBox();
+   if(glassDetour) {
+    check(n.level().getBlockState(new BlockPos(2,101,3)).is(Blocks.GLASS),"Separate glass obstacle remains present throughout the detour");
+    bodyPassedGlass|=n.getX()>2 && n.getX()<3 && (box.maxZ<=3 || box.minZ>=4);
+   }
+   if(n.resting())check(n.beneathRefuge(ROOF),"Rest begins only after physical arrival beneath the waterlogged roof");
+  }
+ }
+
+ private static void verifyNavigationCases(ClientGameTestContext c,TestSingleplayerContext w) {
+  w.getServer().runCommand("weather clear");w.getServer().runCommand("time set 6000");
+  w.getServer().runOnServer(s -> {
+   s.overworld().setBlock(ROOF,WetlandShelters.REFUGE.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,true),2);
+   surfaceVisitor=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);surfaceVisitor.snapTo(.5,101.6,3.5,0,0);surfaceVisitor.getRandom().setSeed(314);s.overworld().addFreshEntity(surfaceVisitor);
+  });c.waitTicks(1);
+  w.getServer().runOnServer(s -> {
+   check(surfaceVisitor.isInWater() && surfaceVisitor.getY()>=101.5,"Surface swimmer has wet feet but a dry rounded native start");
+   var path=surfaceVisitor.getNavigation().createPath(ROOF,0);
+   check(path!=null && path.canReach() && path.getNode(0).y==101,"Surface-height swimmer's native refuge search starts in its actual water cell");
+   for(int i=0;i<path.getNodeCount();i++) {var node=path.getNode(i);check(s.overworld().getFluidState(new BlockPos(node.x,node.y,node.z)).is(net.minecraft.tags.FluidTags.WATER),"Surface route retains aquatic candidate filtering");}
+   surfaceVisitor.discard();routeVisitor=spawn(s,.5,3.5);
+  });
+  boolean approaching=false;
+  for(int i=0;i<500;i++) {c.waitTicks(1);if(w.getServer().computeOnServer(s -> {var path=routeVisitor.getNavigation().getPath();return path!=null && path.getTarget().equals(ROOF) && path.getNextNodeIndex()==path.getNodeCount()-1 && !routeVisitor.beneathRefuge(ROOF);})) {approaching=true;break;}}
+  check(approaching,"Ordinary Shelter goal reaches a live final native waypoint before the removal check");
+  w.getServer().runOnServer(s -> s.overworld().removeBlock(ROOF,false));
+  for(int i=0;i<25;i++) {c.waitTicks(1);w.getServer().runOnServer(s -> {
+   var path=routeVisitor.getNavigation().getPath();
+   check(!routeVisitor.resting() && routeVisitor.refugeReady()==0 && (path==null || !path.getTarget().equals(ROOF)),"Removing a refuge during final approach stops that route without rewarding arrival");
+  });}
+  w.getServer().runOnServer(s -> {
+   var dry=new BlockPos(-8,102,3);
+   var expected=new net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation(routeVisitor,s.overworld()).createPath(dry,0);
+   var actual=routeVisitor.getNavigation().createPath(dry,0);
+   check(expected!=null && expected.canReach() && actual!=null && actual.canReach() && actual.sameAs(expected),"After a refuge query, an ordinary dry destination retains the native amphibious route");
+   routeVisitor.setNoAi(true);
+   walker=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);walker.snapTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
+   p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<Relative>of(),180,0,false);
+  });
+  boolean tempted=false;
+  for(int i=0;i<100;i++) {c.waitTicks(2);if(w.getServer().computeOnServer(s -> walker.getZ()>3.5 && !walker.isInWater() && walker.getGoalSelector().getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal() instanceof net.minecraft.world.entity.ai.goal.TemptGoal))) {tempted=true;break;}}
+  check(tempted,"An ordinary TemptGoal still walks the newt across dry land using native amphibious navigation");
+  w.getServer().runOnServer(s -> p(s).setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY));
  }
 
  private static void feed(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> n) {int id=w.getServer().computeOnServer(s -> n.get().getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);});}

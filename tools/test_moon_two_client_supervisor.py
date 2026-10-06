@@ -182,6 +182,7 @@ class MoonEvidenceTests(unittest.TestCase):
                      'acceptedTick':'100','move':'19','windup':'10','recovery':'20'}
         self.values={};self.records={}
         self.write('case-00-ready','host',{key:self.action[key] for key in ('actorEntity','observerEntity','actorUuid','observerUuid')})
+        self.write_clock_chain()
         self.write('case-00-accepted','host',self.action)
         self.write('case-00-release','host',{**self.action,'releaseTick':'110','completionOffset':'10','marks':'FULL,FULL,FULL,LOW'})
         release_sha=s.digest(self.ipc/'case-00-release.properties')
@@ -215,6 +216,33 @@ class MoonEvidenceTests(unittest.TestCase):
         self.values[name]={**self.identity,'role':role,'pid':str(self.pids[role]),'cases':s.MOON_CASE,'serverReleaseFrameCorrespondenceVerified':'false',**fields};self.flush(name)
     def flush(self,name):
         (self.ipc/(name+'.properties')).write_text(''.join(key+'='+str(value)+'\n' for key,value in self.values[name].items()),encoding='iso-8859-1')
+    def write_clock_chain(self,client=90,server=95):
+        actors={key:self.action[key] for key in ('actorEntity','observerEntity','actorUuid','observerUuid')}
+        target=max(client,server)
+        self.write('case-00-clock-initial','peer',{**actors,'clockInitialClientTick':str(client)})
+        shared={**actors,'clockInitialClientTick':str(client),'clockInitialServerTick':str(server),'clockRendezvousTick':str(target),
+                'clockInitialSha256':s.digest(self.ipc/'case-00-clock-initial.properties')}
+        self.write('case-00-clock-rendezvous','host',{**shared,'clockServerTick':str(target)})
+        shared['clockRendezvousSha256']=s.digest(self.ipc/'case-00-clock-rendezvous.properties')
+        self.write('case-00-clock-ack','peer',{**shared,'clockClientTick':str(target)})
+        shared['clockAckSha256']=s.digest(self.ipc/'case-00-clock-ack.properties')
+        self.write('case-00-clock-ready','host',{**shared,'clockServerTick':str(target),'clockClientTick':str(target)})
+        self.action.update(clockRendezvousTick=str(target),clockReadySha256=s.digest(self.ipc/'case-00-clock-ready.properties'))
+    def rehash_clock_chain(self):
+        upstream={}
+        for phase in ('initial','rendezvous','ack','ready'):
+            name='case-00-clock-'+phase;self.values[name].update(upstream);self.flush(name)
+            upstream['clock'+phase.capitalize()+'Sha256']=s.digest(self.ipc/(name+'.properties'))
+        binding={'clockRendezvousTick':self.values['case-00-clock-rendezvous']['clockRendezvousTick'],
+                 'clockReadySha256':upstream['clockReadySha256']}
+        self.action.update(binding)
+        for name,values in self.values.items():
+            if 'acceptedTick' in values:values.update(binding);self.flush(name)
+        release_sha=s.digest(self.ipc/'case-00-release.properties')
+        for role in ('host','peer'):
+            self.values[role+'-case-00-observed']['releaseReceiptSha256']=release_sha
+            self.records[role]['copy']['observations']['releaseReceiptSha256']=release_sha
+        self.rebind()
     def rebind(self):
         passed={**self.action,'releaseTick':'110','completionOffset':'10','firstDamageTick':'115','firstDamageAgeTicks':'15','firstDamageDelayTicks':'5',
                 'serverReleaseFrameCorrespondenceVerified':'false','releaseImageDamageOrderVerified':'true'}
@@ -226,6 +254,113 @@ class MoonEvidenceTests(unittest.TestCase):
     def verify(self):return s.validate_witnesses(self.ipc,self.identity,[s.MOON_CASE],self.jobs,self.selected)
 
     def test_complete_causal_interval_is_accepted_without_exact_frame_claim(self):self.assertEqual(self.verify(),list(s.MOON_TERMINALS))
+    def test_clock_rendezvous_accepts_each_initial_order_and_equal_clocks(self):
+        for client,server in ((90,95),(95,90),(95,95),(0,0)):
+            with self.subTest(client=client,server=server):
+                self.write_clock_chain(client,server);self.rehash_clock_chain();self.verify()
+    def test_clock_validation_uses_immutable_chain_without_latest_pacing_witness(self):
+        self.verify()
+        for role in ('host','peer'):
+            self.write(role+'-clock-latest',role,{'clockClientTick':'999999','clockServerTick':'888888'})
+        self.verify()
+    def test_each_clock_receipt_is_required(self):
+        for filename in s.MOON_CLOCK_WITNESSES:
+            path=self.ipc/filename;original=path.read_bytes();path.unlink()
+            with self.subTest(witness=filename),self.assertRaisesRegex(ValueError,'Missing or symlink'):self.verify()
+            path.write_bytes(original)
+        self.verify()
+    def test_every_clock_receipt_binds_role_pid_run_and_case_identity(self):
+        for filename in s.MOON_CLOCK_WITNESSES:
+            name=filename[:-11]
+            for field in (*self.identity,'role','pid','cases'):
+                with self.subTest(witness=name,field=field):
+                    original=self.values[name][field];self.values[name][field]='wrong';self.rehash_clock_chain()
+                    with self.assertRaisesRegex(ValueError,'mismatched '+field):self.verify()
+                    self.values[name][field]=original;self.rehash_clock_chain()
+        self.verify()
+    def test_clock_actor_and_observer_cannot_be_substituted_even_when_rehashed(self):
+        for filename in s.MOON_CLOCK_WITNESSES:
+            name=filename[:-11]
+            for field in ('actorEntity','observerEntity','actorUuid','observerUuid'):
+                with self.subTest(witness=name,field=field):
+                    original=self.values[name][field];self.values[name][field]='different';self.rehash_clock_chain()
+                    with self.assertRaisesRegex(ValueError,'clock actor/observer pair'):self.verify()
+                    self.values[name][field]=original;self.rehash_clock_chain()
+        self.verify()
+    def test_every_upstream_clock_hash_is_required_and_exact(self):
+        for phase,fields in (('rendezvous',('clockInitialSha256',)),('ack',('clockInitialSha256','clockRendezvousSha256')),
+                             ('ready',('clockInitialSha256','clockRendezvousSha256','clockAckSha256'))):
+            name='case-00-clock-'+phase
+            for field in fields:
+                for value in (None,'f'*64):
+                    with self.subTest(witness=name,field=field,value=value):
+                        original=self.values[name].copy();self.values[name].pop(field)
+                        if value is not None:self.values[name][field]=value
+                        self.flush(name)
+                        with self.assertRaisesRegex(ValueError,'upstream receipt hash'):self.verify()
+                        self.values[name]=original;self.flush(name)
+        self.verify()
+    def test_mutating_clock_file_bytes_invalidates_downstream_hash(self):
+        for filename in s.MOON_CLOCK_WITNESSES:
+            path=self.ipc/filename;original=path.read_bytes();path.write_bytes(original+b'# changed immutable receipt\n')
+            with self.subTest(witness=filename),self.assertRaises(ValueError):self.verify()
+            path.write_bytes(original)
+        self.verify()
+    def test_overshot_or_unreached_clock_is_rejected_even_when_rehashed(self):
+        for phase,field in (('rendezvous','clockServerTick'),('ack','clockClientTick'),('ready','clockServerTick'),('ready','clockClientTick')):
+            name='case-00-clock-'+phase
+            for tick in ('94','96'):
+                with self.subTest(witness=name,field=field,tick=tick):
+                    original=self.values[name][field];self.values[name][field]=tick;self.rehash_clock_chain()
+                    with self.assertRaisesRegex(ValueError,'without overshoot'):self.verify()
+                    self.values[name][field]=original;self.rehash_clock_chain()
+        self.verify()
+    def test_rehashed_contradictory_initial_clocks_and_rendezvous_are_rejected(self):
+        mutations=[('initial','clockInitialClientTick'),('rendezvous','clockInitialClientTick'),('rendezvous','clockInitialServerTick')]
+        mutations.extend((phase,field) for phase in ('ack','ready') for field in ('clockInitialClientTick','clockInitialServerTick','clockRendezvousTick'))
+        for phase,field in mutations:
+            name='case-00-clock-'+phase
+            with self.subTest(witness=name,field=field):
+                original=self.values[name][field];self.values[name][field]=str(int(original)-1);self.rehash_clock_chain()
+                with self.assertRaisesRegex(ValueError,'maximum initial clock|immutable initial clocks or rendezvous'):self.verify()
+                self.values[name][field]=original;self.rehash_clock_chain()
+        self.verify()
+    def test_consistently_substituted_rendezvous_cannot_change_initial_maximum(self):
+        for target in ('94','96'):
+            for phase in ('rendezvous','ack','ready'):
+                values=self.values['case-00-clock-'+phase];values['clockRendezvousTick']=target
+                for field in ('clockServerTick','clockClientTick'):
+                    if field in values:values[field]=target
+            self.rehash_clock_chain()
+            with self.subTest(target=target),self.assertRaisesRegex(ValueError,'maximum initial clock'):self.verify()
+        self.write_clock_chain();self.rehash_clock_chain();self.verify()
+    def test_acceptance_at_or_before_clock_ready_is_rejected_even_when_rehashed(self):
+        for client,server in ((99,100),(100,99),(99,101),(101,99)):
+            self.write_clock_chain(client,server);self.rehash_clock_chain()
+            with self.subTest(client=client,server=server),self.assertRaisesRegex(ValueError,'after the completed clock rendezvous'):self.verify()
+        self.write_clock_chain();self.rehash_clock_chain();self.verify()
+    def test_clock_ticks_require_canonical_nonnegative_bounded_integers(self):
+        for phase,field in (('initial','clockInitialClientTick'),('rendezvous','clockInitialServerTick'),('rendezvous','clockRendezvousTick')):
+            name='case-00-clock-'+phase
+            for value in ('-1','1.5','NaN','095',str(2**63),''):
+                with self.subTest(witness=name,field=field,value=value):
+                    original=self.values[name][field];self.values[name][field]=value;self.rehash_clock_chain()
+                    with self.assertRaisesRegex(ValueError,'Invalid Moon'):self.verify()
+                    self.values[name][field]=original;self.rehash_clock_chain()
+        self.verify()
+    def test_all_action_receipts_bind_completed_clock_rendezvous(self):
+        names=['case-00-accepted','case-00-release','host-case-00-observed','peer-case-00-observed','case-00-passed']
+        names.extend(filename[:-11] for filename in s.MOON_TERMINALS)
+        for name in names:
+            for field,value in (('clockRendezvousTick','94'),('clockReadySha256','f'*64)):
+                for remove in (False,True):
+                    with self.subTest(witness=name,field=field,missing=remove):
+                        original=self.values[name].copy();self.values[name].pop(field)
+                        if not remove:self.values[name][field]=value
+                        self.flush(name)
+                        with self.assertRaises(ValueError):self.verify()
+                        self.values[name]=original;self.flush(name)
+        self.verify()
     def test_wrong_role_pid_nonce_and_missing_terminal_are_rejected(self):
         for key,value in [('pid','111'),('nonce','stale'),('cases','another_case')]:
             with self.subTest(key=key):

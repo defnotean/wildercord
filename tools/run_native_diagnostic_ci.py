@@ -76,7 +76,10 @@ CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_cata
 
 
 # Include every new proof helper and exact test-only instrumentation used by this case.
-CASE_FILES = {"reweave-player": (
+CASE_FILES = {"ecology-return": (
+    "src/main/java/dev/wildercord/wildlife/LanternNewt.java",
+    "src/main/java/dev/wildercord/wildlife/NewtPathNavigation.java",
+), "reweave-player": (
     "src/main/java/dev/wildercord/cast/ReweaveFields.java",
     "src/main/java/dev/wildercord/cast/ReweaveState.java",
     "src/main/java/dev/wildercord/net/ReweaveInput.java",
