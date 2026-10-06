@@ -338,7 +338,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(selection, {"kind": "diagnostic", "name": "diagnostic-kiln-ring",
                                      "count": 3, "entries": entries})
         masters = suites.select_entries(suite="masters")
-        self.assertEqual(masters["count"], 33)
+        self.assertEqual(masters["count"], 35)
         for source in (suites.select_entries(), masters):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 

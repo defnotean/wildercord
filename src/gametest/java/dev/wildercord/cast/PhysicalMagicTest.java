@@ -50,11 +50,20 @@ public final class PhysicalMagicTest implements FabricClientGameTest {
 			int targetId=world.getServer().computeOnServer(s->{
 				var p=s.getPlayerList().getPlayers().getFirst();
 				var target=net.minecraft.world.entity.EntityTypes.HUSK.create(p.level(),net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-				target.setNoAi(true);target.setNoGravity(true);target.snapTo(.5,102.5,5.5,0,0);p.level().addFreshEntity(target);
+				check(target!=null,"water target is created");
+				// This scene needs an ordinary husk; entity-load Runebound promotion changes its health.
+				target.addTag("wildercord.rolled");
+				target.setNoAi(true);target.setNoGravity(true);target.snapTo(.5,102.5,5.5,0,0);
+				check(p.level().addFreshEntity(target),"water target is admitted to the real world");
+				waterReceipt("before",p,target);
+				check(target.getHealth()==20 && target.getMaxHealth()==20 && target.getAbsorptionAmount()==0
+					&& !target.hasAttached(dev.wildercord.player.WildercordAttachments.RUNEBOUND),
+					"admitted water target has ordinary twenty-point health without Runebound or absorption");
 				p.level().setBlockAndUpdate(new BlockPos(0,100,1),Blocks.WATER.defaultBlockState());
 				Effects.apply(new Cast(p),node(Runes.TIDAL_LIFT),waterHit(p));return target.getId();
 			});ctx.waitTicks(48);
 			world.getServer().runOnServer(s->{var t=(net.minecraft.world.entity.LivingEntity)s.overworld().getEntity(targetId);
+				waterReceipt("after",s.getPlayerList().getPlayers().getFirst(),t);
 				check(t.getHealth()<20 && t.getHealth()>=16,"water attack deals one bounded hit; health="+t.getHealth());
 				check(Reactions.has(t,Reactions.Mark.SOAKED),"water leaves a conductive soaked mark");t.discard();
 				s.overworld().setBlockAndUpdate(new BlockPos(0,100,1),Blocks.AIR.defaultBlockState());
@@ -110,6 +119,15 @@ public final class PhysicalMagicTest implements FabricClientGameTest {
 	private static SpellPlan.EffectNode node(RuneDef rune){return SpellCompiler.compile(List.of(Runes.BEAM,rune)).root().groups.getFirst().effects.getFirst();}
 	private static Cast.Hit wallHit(ServerPlayer p){return new Cast.Hit(List.of(),new Vec3(.5,100,3.5),new Vec3(0,0,1),p.position(),new BlockPos(0,99,3),Direction.UP,false);}
 	private static Cast.Hit waterHit(ServerPlayer p){return new Cast.Hit(List.of(),new Vec3(.5,100,8.5),new Vec3(0,0,1),p.position(),null,null,false);}
+	private static void waterReceipt(String phase,ServerPlayer owner,net.minecraft.world.entity.LivingEntity target){
+		check(target!=null,"water target remains in the real world for "+phase+" receipt");
+		System.out.println("PHYSICAL_WATER_RECEIPT phase="+phase+" tick="+owner.level().getGameTime()
+			+" owner="+owner.getUUID()+" ownerPos="+owner.position()+" target="+target.getUUID()+" targetPos="+target.position()
+			+" health="+target.getHealth()+" maxHealth="+target.getMaxHealth()+" absorption="+target.getAbsorptionAmount()
+			+" runebound="+target.hasAttached(dev.wildercord.player.WildercordAttachments.RUNEBOUND)
+			+" adept="+target.entityTags().contains("wildercord.adept")+" soaked="+Reactions.has(target,Reactions.Mark.SOAKED)
+			+" lastDamageByOwner="+(target.getLastDamageSource()!=null && target.getLastDamageSource().getEntity()==owner));
+	}
 	private static void shot(ClientGameTestContext c,String name){c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
 	private static void check(boolean condition,String message){if(!condition)throw new AssertionError(message);}
 }

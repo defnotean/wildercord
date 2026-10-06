@@ -55,6 +55,7 @@ import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
@@ -133,7 +134,11 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			context.waitTicks(40);
 			world.getServer().runCommand("gamerule spawn_mobs false");
 			world.getServer().runCommand("gamerule advance_time false");
-			world.getServer().runCommand("gamerule natural_regeneration false");
+			world.getServer().runOnServer(server -> {
+				server.overworld().getGameRules().set(GameRules.NATURAL_HEALTH_REGENERATION, false, server);
+				check(!server.overworld().getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION),
+					"Natural health regeneration is disabled for explicit art-healing checks");
+			});
 			world.getServer().runCommand("difficulty normal");
 			world.getServer().runCommand("time set 3000");
 			world.getServer().runCommand("weather clear");
@@ -842,26 +847,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				if (struck < 4) {
 					return "the moon should strike every husk before the swordsman hard and open wounds in them (" + struck + " of 4)";
 				}
-				// The price: a quarter of the greatest health, never past a heart.
-				AuraApi.StringArt art = AuraApi.string(CrimsonArts.CRIMSON_MOON).orElseThrow();
-				p.removeAttached(SwordStrings.COOLDOWNS);
-				p.setHealth(p.getMaxHealth());
-				SwordStrings.perform(p, art, marks(art));
-				float whole = p.getHealth();
-				p.removeAttached(SwordStrings.COOLDOWNS);
-				p.setHealth(3.0F);
-				SwordStrings.perform(p, art, marks(art));
-				float low = p.getHealth();
-				p.removeAttached(SwordStrings.COOLDOWNS);
-				p.setHealth(1.5F);
-				SwordStrings.perform(p, art, marks(art));
-				float lowest = p.getHealth();
-				p.setHealth(p.getMaxHealth());
-				if (Math.abs(whole - p.getMaxHealth() * 0.75F) > 0.01F) {
-					return "it should cost a quarter of a whole swordsman's health (" + whole + ")";
-				}
-				return Math.abs(low - ArtRules.MOON_FLOOR) < 0.01F && Math.abs(lowest - 1.5F) < 0.01F ? null
-					: "it should never take a swordsman under a heart (3 to " + low + ", 1.5 to " + lowest + ")";
+				return null;
 			}));
 		return out;
 	}
@@ -1021,6 +1007,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		});
 		check(paid == null, scene.id + ": " + paid);
 		if (scene.id.equals(RimeArts.FROSTBITE)) thirdCrust(context, world);
+		if (scene.id.equals(CrimsonArts.CRIMSON_MOON)) moonToll(context, world);
 		// ---- played again, from behind and above.
 		boolean finalArt = scene.slot == AuraApi.ArtSlot.FINAL;
 		for (int view = 0; view < (finalArt ? 2 : 1); view++) {
@@ -1092,6 +1079,57 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				mc.gui.hud.toggle();
 			}
 		});
+	}
+
+	/** Preserve the three legacy health thresholds at actual paid releases, with real physical recovery. */
+	private static void moonToll(ClientGameTestContext context, TestSingleplayerContext world) {
+		var timing = dev.wildercord.aura.MastersStyleRules.of(CrimsonArts.CRIMSON_MOON);
+		check(timing != null, "Moon's toll checks require its real fixed-release profile");
+		context.waitTicks(timing.recovery() + 1);
+		on(world, player -> {
+			check(!player.level().getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION),
+				"Natural healing remains disabled before asynchronous toll probes");
+			kill(player); return null;
+		});
+		for (float initial : new float[] {Float.NaN, 3.0F, 1.5F}) {
+			int[] releases = {0};
+			float[] before = {0}, observed = {Float.NaN};
+			java.util.UUID owner = on(world, ServerPlayer::getUUID);
+			AuraApi.StringHook hook = (player, art, receipt) -> {
+				if (player.getUUID().equals(owner) && art.id().equals(CrimsonArts.CRIMSON_MOON)) {
+					releases[0]++; observed[0] = player.getHealth();
+				}
+			};
+			try {
+				on(world, player -> {
+					AuraApi.onString(hook);
+					// The original isolated performer-price fixture reset individual rests. Keep that setup,
+					// but never clear or shorten actual physical commitment; genuine input has its own suite.
+					player.removeAttached(SwordStrings.COOLDOWNS);
+					player.setAttached(AuraAttachments.AURA, Aura.data(player).withAura(AuraRules.capacity(AuraRules.SOVEREIGN)));
+					before[0] = Float.isNaN(initial) ? player.getMaxHealth() : initial;
+					player.setHealth(before[0]);
+					check(ArtKit.arc(player, null, ArtRules.MOON_RADIUS, ArtRules.MOON_DEGREES, ArtRules.MOON_TARGETS).isEmpty(),
+						"No released hit may heal over the isolated toll");
+					AuraApi.StringArt art = AuraApi.string(CrimsonArts.CRIMSON_MOON).orElseThrow();
+					check(SwordStrings.perform(player, art, marks(art)), "The registered Moon enters its paid windup");
+					check(player.getHealth() == before[0] && releases[0] == 0, "No health toll before release");
+					return null;
+				});
+				context.waitTicks(timing.windup() + 1);
+				String result = on(world, player -> {
+					float expected = Float.isNaN(initial) ? player.getMaxHealth() * .75F : initial == 3 ? (float) ArtRules.MOON_FLOOR : 1.5F;
+					return releases[0] == 1 && Float.isFinite(observed[0]) && Math.abs(observed[0] - expected) <= .01F
+						&& Math.abs(player.getHealth() - expected) <= .01F ? null
+						: "Moon toll mismatch: before=" + before[0] + ", release health=" + observed[0] + ", expected=" + expected + ", completions=" + releases[0];
+				});
+				check(result == null, result);
+			} finally {
+				on(world, player -> { AuraApi.stringHooks().remove(hook); return null; });
+			}
+			context.waitTicks(timing.recovery() + 1);
+		}
+		on(world, player -> { player.setHealth(player.getMaxHealth()); return null; });
 	}
 
 	private static int styleWindup(String id) {

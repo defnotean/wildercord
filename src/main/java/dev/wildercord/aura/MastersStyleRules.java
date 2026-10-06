@@ -44,7 +44,8 @@ public final class MastersStyleRules {
 		new Style(15, "hailfall", 8, 16, TargetPolicy.HAILFALL_RECEIPT),
 		new Style(16, "skyfall", 6, 16, TargetPolicy.SKYFALL_RECEIPT),
 		new Style(17, "collapse", 8, 18, TargetPolicy.GROUND_AHEAD),
-		new Style(18, "red_rain", 8, 16, TargetPolicy.GROUND_AHEAD)
+		new Style(18, "red_rain", 8, 16, TargetPolicy.GROUND_AHEAD),
+		new Style(19, "crimson_moon", 10, 20, TargetPolicy.ACTIVE_CONE)
 	);
 
 	public static Style of(String art) {

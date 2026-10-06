@@ -286,6 +286,7 @@
       "dev.wildercord.party.MastersGroundFieldTimelineTest",
       "dev.wildercord.aura.GroundFieldReleasedOwnerTest",
       "dev.wildercord.aura.CrimsonMoonReleasedOwnerTest",
+      "dev.wildercord.aura.CrimsonMoonTimelineTest",
       "dev.wildercord.aura.world.DuelistMasterAccessTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.aura.world.MasterVictoriesTest",

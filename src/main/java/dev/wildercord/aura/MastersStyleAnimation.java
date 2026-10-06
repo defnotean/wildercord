@@ -168,6 +168,16 @@ public final class MastersStyleAnimation {
 		pose(j(.23F, -.62F, .14F), j(-.11F, .22F, -.04F), j(-.34F, -1.02F, -.12F), j(-.30F, -.16F, -.68F),
 			j(-.55F, .11F, -.11F), j(.32F, -.08F, .09F), .74F, -.42F, h(-.34F, .34F, -.28F, 48, -40, 58)));
 
+	// Moon coils beside the outside hip over a low broad base, then makes one rising-edge
+	// sweep. The free hand counterbalances the far-side finish; delayed wounds add no cuts.
+	private static final Motion CRIMSON_MOON = new Motion(
+		pose(j(.18F, .65F, -.12F), j(-.09F, -.28F, .04F), j(-.22F, .78F, .36F), j(-.64F, -.26F, -.72F),
+			j(-.70F, -.24F, -.20F), j(.46F, .21F, .18F), 1.02F, .14F, h(-.05F, .40F, -.35F, 12, 28, -28)),
+		pose(j(.12F, -.62F, .12F), j(-.06F, .26F, -.04F), j(-1.20F, -1.10F, -.22F), j(-.18F, .24F, -1.05F),
+			j(-.66F, .22F, -.20F), j(.42F, -.18F, .18F), .90F, -.56F, h(-.26F, .26F, -.34F, -12, -42, 34)),
+		pose(j(.08F, -.82F, .10F), j(-.04F, .34F, -.03F), j(-1.36F, -1.32F, -.08F), j(.06F, .18F, -.88F),
+			j(-.56F, .20F, -.18F), j(.36F, -.16F, .16F), .80F, -.28F, h(-.34F, .30F, -.22F, -24, -56, 48)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -186,6 +196,7 @@ public final class MastersStyleAnimation {
 			case 16 -> SKYFALL;
 			case 17 -> COLLAPSE;
 			case 18 -> RED_RAIN;
+			case 19 -> CRIMSON_MOON;
 			default -> null;
 		};
 	}

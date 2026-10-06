@@ -8,6 +8,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
+- Added a committed release and original Classic/articulated body and first-person motion to the existing Crimson Moon Final. Its ten-tick warning uses accepted facing and release-time feet with visible-cone admission; the existing price, rest, release-only health toll, outward arcs, wounds and healing caps remain. Native Final/lifetime and stronger visual verification remain pending.
+
 - Added Ember Kiln Ring: a stationary warned annulus with an inner pocket, outer escape, cover and timed-jump counters, original body/weapon motion, finite Aura and full recovery. Its three dedicated native mechanics, presentation and opponent-view suites pass on `160ff125`; final-candidate and continuous gameplay acceptance remain open.
 
 - Let Glimmerwings sense the lantern light already around them and follow a bounded brighter-air gradient, preserving their existing natural flight and exploratory searches. The strengthened native check requires actual light acquisition and lured flight before arrival; candidate runtime acceptance remains pending.
@@ -2486,4 +2488,3 @@ The first public version.
 - Server-authoritative casting with per-cast budgets, friendly fire off, and PvP damage scaling.
 - A generated asset pipeline (`tools/`) driven by the rune roster.
 - Unit tests for the spell engine and client game tests for mechanics and layout.
-

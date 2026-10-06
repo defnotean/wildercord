@@ -1,7 +1,7 @@
 {
   "masters": {
-    "description": "Masters update combat, progression, presentation, bounded existing-world upgrade safety, Wall Turn and the candidate Ember Kiln counterplay/visual acceptance.",
-    "expectedCount": 33,
+    "description": "Masters update combat, progression, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln counterplay and Crimson Moon release/lifetime acceptance.",
+    "expectedCount": 35,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
@@ -12,6 +12,8 @@
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
       "dev.wildercord.aura.world.ManaSkinSustainChecks",
       "dev.wildercord.gametest.WildercordMastersArtsTest",
+      "dev.wildercord.aura.CrimsonMoonReleasedOwnerTest",
+      "dev.wildercord.aura.CrimsonMoonTimelineTest",
       "dev.wildercord.aura.world.SwordMasterTrialTest",
       "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
       "dev.wildercord.party.PartyOfflineProjectileTest",

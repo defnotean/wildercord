@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.ArtRules;
+import dev.wildercord.aura.AuraRules;
+import dev.wildercord.aura.Momentum;
 import dev.wildercord.aura.MastersArts;
 import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.client.AuraScreen;
@@ -89,7 +91,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			for (var style : MastersStyleRules.STYLES) {
 				captureStyle(context, world, style, CameraType.THIRD_PERSON_BACK, "third_back");
 				captureStyle(context, world, style, CameraType.FIRST_PERSON, "first");
-				if (ArtRules.art(style.art()).slot() == 1) {
+				if (ArtRules.art(style.art()).slot() == 1 || ArtRules.art(style.art()).slot() == 4) {
 					captureStyle(context, world, style, CameraType.THIRD_PERSON_BACK, "left_turn_third_back", true, false);
 					captureStyle(context, world, style, CameraType.FIRST_PERSON, "left_turn_first", true, false);
 					captureStyle(context, world, style, CameraType.FIRST_PERSON, "cancelled", false, true);
@@ -326,7 +328,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.waitTicks(30);
 	}
 
-	/** Uses actual first-form swing/swing/low or second-form leap/low controls, never a synthetic pose receipt. */
+	/** Uses real first-form, leap/low, or full/full/full/low Final input for the registered family. */
 	private static void captureStyle(ClientGameTestContext context, TestSingleplayerContext world, MastersStyleRules.Style style,
 			CameraType camera, String view) {
 		captureStyle(context, world, style, camera, view, false, false);
@@ -334,16 +336,25 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 
 	private static void captureStyle(ClientGameTestContext context, TestSingleplayerContext world, MastersStyleRules.Style style,
 			CameraType camera, String view, boolean leftHanded, boolean cancel) {
-		boolean second = ArtRules.art(style.art()).slot() == 1;
+		int slot = ArtRules.art(style.art()).slot();
+		boolean second = slot == 1, finalArt = slot == 4;
+		check(slot == 0 || second || finalArt, "The capture declares its supported input family");
 		context.getInput().releaseKey(o -> o.keyShift);
-		context.waitTicks(105);
+		context.waitTicks(finalArt ? ArtRules.art(style.art()).cooldown() + 5 : 105);
 		Mob[] target = new Mob[1];
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 			prepare(player);
 			player.teleportTo(server.overworld(), .5, 100, .5, Set.<Relative>of(), 0, 3, false);
 			player.setDeltaMovement(Vec3.ZERO);
-			player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data(ArtRules.art(style.art()).method(), 4, 1800, 100, 0));
+			player.setAttached(AuraAttachments.AURA, finalArt
+				? new AuraAttachments.Data(ArtRules.art(style.art()).method(), AuraRules.SOVEREIGN,
+					AuraRules.threshold(AuraRules.SOVEREIGN), AuraRules.capacity(AuraRules.SOVEREIGN), 0)
+				: new AuraAttachments.Data(ArtRules.art(style.art()).method(), 4, 1800, 100, 0));
+			if (finalArt) {
+				player.setHealth(player.getMaxHealth());
+				player.setAttached(Momentum.MOMENTUM, new Momentum.State(100, player.level().getGameTime() + 100000, 0, 0, 0));
+			}
 			Mob foe = EntityTypes.HUSK.create(player.level(), EntitySpawnReason.COMMAND);
 			check(foe != null, "Actual style target exists");
 			foe.addTag("wildercord.rolled");
@@ -377,7 +388,8 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			}
 			context.waitTicks(1);
 		}
-		for (int swing = 0; swing < (second ? 1 : 2); swing++) {
+		for (int swing = 0; swing < (second ? 1 : finalArt ? 3 : 2); swing++) {
+			if (finalArt) context.waitFor(mc -> mc.player.getAttackStrengthScale(0) >= .999F, 40);
 			context.getInput().pressKey(o -> o.keyAttack);
 			context.waitTicks(2);
 			world.getServer().runOnServer(server -> {
@@ -397,7 +409,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		if (cancel) {
 			world.getServer().runOnServer(server -> MastersArts.cancel(server.getPlayerList().getPlayers().getFirst()));
 			context.waitFor(mc -> MastersArtsClient.timeline(mc.player) == null, 20);
-			check(context.computeOnClient(mc -> MastersArtsClient.pose(mc.player, .5F).weight() == 0), "Cancelled second-form body and hand poses clear together");
+			check(context.computeOnClient(mc -> MastersArtsClient.pose(mc.player, .5F).weight() == 0), "Cancelled authored body and hand poses clear together");
 			waitForCancelledNeutral(context, prefix);
 			shot(context, prefix + "_neutral");
 			world.getServer().runOnServer(server -> target[0].discard());
@@ -456,6 +468,9 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 
 	/** Samples real accepted time, never a loop index presented as an active/recovery beat. */
 	private static void captureBeats(ClientGameTestContext context, String prefix) {
+		if (context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player).move() == 19)) {
+			captureMoonBeats(context, prefix); return;
+		}
 		context.runOnClient(mc -> {
 			if (!mc.options.getCameraType().isFirstPerson()) mc.player.setXRot(12);
 		});
@@ -478,6 +493,22 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		awaitShots(context, CompletableFuture.allOf(windup, active, recovery));
 	}
 
+	/** Label the physical release separately from the distance-delayed damage. */
+	private static void captureMoonBeats(ClientGameTestContext context, String prefix) {
+		java.util.List<CompletableFuture<Void>> frames = new java.util.ArrayList<>();
+		int[] ticks = {6, 10, 14, 27};
+		String[] names = {"windup", "release", "delayed_damage", "recovery"};
+		for (int i = 0; i < ticks.length; i++) {
+			int wanted = ticks[i];
+			context.waitFor(mc -> {
+				var move = MastersArtsClient.timeline(mc.player);
+				return move != null && mc.level.getGameTime() - move.startTick() >= wanted;
+			}, 35);
+			frames.add(phaseShot(context, prefix, names[i]));
+		}
+		awaitShots(context, CompletableFuture.allOf(frames.toArray(CompletableFuture[]::new)));
+	}
+
 	private static CompletableFuture<Void> phaseShot(ClientGameTestContext context, String prefix, String phase) {
 		context.runOnClient(mc -> {
 			var move = MastersArtsClient.timeline(mc.player);
@@ -486,6 +517,8 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			boolean correct = switch (phase) {
 				case "windup" -> age >= 0 && age < move.windup();
 				case "active" -> age >= move.windup() && age < move.windup() + 2;
+				case "release" -> move.move() == 19 && age >= 10 && age < 11;
+				case "delayed_damage" -> move.move() == 19 && age >= 11 && age < 16;
 				case "recovery" -> age >= move.windup() + move.recovery() / 2 && age < move.windup() + move.recovery();
 				default -> false;
 			};

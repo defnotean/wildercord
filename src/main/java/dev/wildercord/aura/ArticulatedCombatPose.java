@@ -18,6 +18,7 @@ public final class ArticulatedCombatPose {
 	public static final int KINDLING_DRAW = 3, FROSTBITE = 4;
 	public static final int HAILFALL = 15, SKYFALL = 16;
 	public static final int COLLAPSE = 17, RED_RAIN = 18;
+	public static final int CRIMSON_MOON = 19;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -442,6 +443,26 @@ public final class ArticulatedCombatPose {
 				v(7.6F, -6.1F, 3.8F), arm(r(0, .035F, .03F), r(-.96F, .06F, .27F), -.90F, r(.10F, -.10F, .10F)))),
 		v(-2.45F, 22, 1.45F), v(2.45F, 22, -1.65F));
 
+	// One original low, broad sweep. The body and view use separate keys; no released wound
+	// or expanding ground crescent can restart the physical blade after its accepted release.
+	private static final Motion CRIMSON_MOON_MOTION = new Motion(
+		new Key(v(-.28F, 1.10F, .14F), r(.065F, .32F, -.025F), r(.04F, .20F, -.02F), r(.045F, .25F, -.035F), r(-.08F, -.48F, .025F),
+			arm(r(.025F, .10F, -.04F), r(-.38F, .38F, .22F), -.60F, r(1.05F, -.25F, -.62F)),
+			arm(r(0, -.07F, .04F), r(-.66F, -.28F, -.37F), -.94F, r(.12F, -.12F, .10F)),
+			new ViewKey(v(-7.8F, -5.3F, 3.2F), arm(r(.02F, .065F, -.035F), r(-1.08F, .28F, -.24F), -.85F, r(.65F, -.28F, -.42F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, -.04F, .03F), r(-1.00F, .08F, .28F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.25F, 1.04F, -.38F), r(.055F, -.20F, .025F), r(.035F, -.14F, .02F), r(.045F, -.28F, .035F), r(-.07F, .40F, -.025F),
+			arm(r(.035F, -.08F, -.035F), r(-1.16F, -.95F, -.06F), -.35F, r(.78F, .28F, .55F)),
+			arm(r(0, .075F, .045F), r(-.22F, .20F, -.90F), -.70F, r(.10F, -.10F, .14F)),
+			new ViewKey(v(-7.9F, -4.95F, 2.5F), arm(r(.025F, -.065F, -.035F), r(-1.22F, -.56F, -.32F), -.40F, r(.25F, .52F, .50F)),
+				v(7.8F, -6.1F, 3.8F), arm(r(0, .05F, .03F), r(-.88F, .14F, .32F), -.86F, r(.10F, -.10F, .12F)))),
+		new Key(v(.18F, .98F, -.20F), r(.04F, -.28F, .02F), r(.025F, -.19F, .02F), r(.03F, -.33F, .03F), r(-.05F, .51F, -.02F),
+			arm(r(.025F, -.10F, -.025F), r(-1.32F, -1.16F, .02F), -.60F, r(.86F, .30F, .62F)),
+			arm(r(0, .055F, .035F), r(-.34F, .16F, -.74F), -.84F, r(.08F, -.10F, .12F)),
+			new ViewKey(v(-8.8F, -5.15F, 2.8F), arm(r(.02F, -.08F, -.03F), r(-1.14F, -.68F, -.25F), -.74F, r(.30F, .48F, .60F)),
+				v(7.8F, -6.1F, 3.8F), arm(r(0, .035F, .03F), r(-.94F, .10F, .30F), -.90F, r(.10F, -.10F, .10F)))),
+		v(-2.75F, 22, 1.55F), v(2.75F, 22, -1.75F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -453,7 +474,7 @@ public final class ArticulatedCombatPose {
 	/** Only authored player presentation IDs are admitted here; NPC IDs use supportsMaster. */
 	public static boolean supportsPlayer(int move) {
 		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
-			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN;
+			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -469,6 +490,7 @@ public final class ArticulatedCombatPose {
 			case HAILFALL -> HAILFALL_MOTION;
 			case COLLAPSE -> COLLAPSE_MOTION;
 			case RED_RAIN -> RED_RAIN_MOTION;
+			case CRIMSON_MOON -> CRIMSON_MOON_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);

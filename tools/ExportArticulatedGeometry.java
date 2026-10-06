@@ -18,10 +18,11 @@ public final class ExportArticulatedGeometry {
     private static double maxMatrixError, maxSocketError;
     private static int matricesChecked, socketsChecked;
     public static void main(String[] args) {
+        boolean moon = args.length == 1 && args[0].equals("--crimson-moon");
         StringBuilder out = new StringBuilder(400000);
         out.append("{\"schema\":1,\"provenance\":\"actual ArticulatedRig ModelPart.Cube polygons\",\"variants\":[");
         boolean comma = false;
-        for (boolean master : new boolean[] {false, true}) for (boolean slim : new boolean[] {false, true}) {
+        for (boolean master : moon ? new boolean[] {false} : new boolean[] {false, true}) for (boolean slim : new boolean[] {false, true}) {
             if (master && slim) continue;
             if (comma) out.append(','); comma = true;
             ArticulatedRig rig = new ArticulatedRig(slim, master);
@@ -48,10 +49,10 @@ public final class ExportArticulatedGeometry {
             out.append("]}");
             // Compare the pure FK matrices with the exact official ModelPart Euler implementation.
             for (boolean left : new boolean[] {false, true}) {
-                int end = master ? 38 : 16;
+                int end = moon ? 30 : master ? 38 : 16;
                 for (int tick = 0; tick <= end * 8; tick++) {
                     float age = tick / 8F;
-                    var pose = master ? ArticulatedCombatPose.sampleMaster(1, age, 18, 1, 19, left)
+                    var pose = moon ? ArticulatedCombatPose.samplePlayer(19, age, 10, 20, left) : master ? ArticulatedCombatPose.sampleMaster(1, age, 18, 1, 19, left)
                         : ArticulatedCombatPose.sampleSpellcut(0, age, 4, 12, left);
                     rig.apply(pose::local);
                     check(rig, pose::world, slim);

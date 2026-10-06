@@ -9,16 +9,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(16, MastersStyleRules.STYLES.size());
+		assertEquals(17, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(ids.add(style.animation()));
 			assertTrue(names.add(style.art()));
-			assertEquals(style.animation() <= 12 ? 0 : 1, ArtRules.art(style.art()).slot());
+			assertEquals(style.animation() <= 12 ? 0 : style.animation() == 19 ? 4 : 1, ArtRules.art(style.art()).slot());
 			assertEquals(style.animation() == 15 ? MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
 				: style.animation() == 16 ? MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT
-				: style.animation() >= 17 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
+				: style.animation() == 17 || style.animation() == 18 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
 				: MastersStyleRules.TargetPolicy.ACTIVE_CONE, style.targets());
 			assertSame(style, MastersStyleRules.of(style.art()));
 			assertSame(style, MastersStyleRules.animation(style.animation()));
@@ -57,8 +57,8 @@ class MastersStyleRulesTest {
 
 	@Test
 	void profilesMustExplicitlyChooseWhetherTheObservedStringVictimIsRetained() {
-		assertThrows(NullPointerException.class, () -> new MastersStyleRules.Style(19, "counter_fixture", 6, 12, null));
-		var counter = new MastersStyleRules.Style(19, "counter_fixture", 6, 12, MastersStyleRules.TargetPolicy.STRING_TARGET);
+		assertThrows(NullPointerException.class, () -> new MastersStyleRules.Style(20, "counter_fixture", 6, 12, null));
+		var counter = new MastersStyleRules.Style(20, "counter_fixture", 6, 12, MastersStyleRules.TargetPolicy.STRING_TARGET);
 		assertEquals(MastersStyleRules.TargetPolicy.STRING_TARGET, counter.targets());
 		assertNull(MastersStyleRules.of(counter.art()), "A policy fixture does not expand the shipping catalog");
 	}

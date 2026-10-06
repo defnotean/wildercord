@@ -23,7 +23,7 @@ class ArticulatedGroundFieldPoseTest {
 			assertFalse(supportsMaster(move));
 			assertEquals(move == COLLAPSE ? "collapse" : "red_rain", MastersStyleRules.animation(move).art());
 		}
-		for (int move : new int[] {-1, 5, 14, 19, Integer.MAX_VALUE}) {
+		for (int move : new int[] {-1, 5, 14, 20, Integer.MAX_VALUE}) {
 			assertFalse(supportsPlayer(move));
 			assertSame(NONE, samplePlayer(move, 5, 8, 18, false));
 		}

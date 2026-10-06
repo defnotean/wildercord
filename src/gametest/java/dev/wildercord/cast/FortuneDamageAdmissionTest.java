@@ -1,6 +1,5 @@
 package dev.wildercord.cast;
 
-import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -8,7 +7,6 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.illager.Pillager;
-import net.minecraft.world.level.GameType;
 import java.util.*;
 
 /** Negative cases exercise the final damage gate directly, not public spell delivery.
@@ -25,9 +23,9 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
    server.runCommand("gamerule natural_health_regeneration false");
    server.runCommand("fill -12 100 -12 12 100 20 polished_deepslate");
    server.runOnServer(s->{
-    var viewer=s.getPlayerList().getPlayers().getFirst();viewer.setGameMode(GameType.SPECTATOR);
-    caster=NextSignatureNative.guest(viewer,"FortuneGate",false);
-    caster.snapTo(.5,101,.5,0,0);NextSignatureNative.ground(caster);
+    // Paid admission owns the connected body; pose also synchronizes its client.
+    caster=NextSignatureNative.player(s);NextSignatureNative.teach(caster);
+    NextSignatureNative.pose(caster,.5,.5,0);NextSignatureNative.ground(caster);
     caster.setAttached(WildercordAttachments.INNATE,Runes.FORTUNE.id());
     LifeOwnerEvents.observe(events::add);target=foe(caster);
     // Establish this fixture's unmarked final amount. Its callback denies before any damage.
