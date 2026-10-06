@@ -17,12 +17,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -43,16 +41,18 @@ public final class LifeOwnerPairedCases {
   check(!host.equals(peer),"Two distinct connected profiles required for Life comparisons");
   var modes=server.computeOnServer(s->List.of(connected(s,host).gameMode.getGameModeForPlayer(),connected(s,peer).gameMode.getGameModeForPlayer()));
   String innate=server.computeOnServer(s->connected(s,host).getAttached(WildercordAttachments.INNATE));
+  var lighting=server.computeOnServer(LifeCaptureStage.Lighting::new);
   try{
+   LifeCaptureStage.rejectPreviousStage(c,host);
+   server.runOnServer(s->lighting.noon());
    for(String id:CASES){
     server.waitFor(s->!CastLock.locked(connected(s,host))&&!dev.wildercord.aura.MastersArts.committed(connected(s,host)),NextSignatureRules.REST+5);
     outcome=null;
     server.runOnServer(s->{var actor=connected(s,host);var viewer=connected(s,peer);
-     for(var pos:BlockPos.betweenClosed(-6,101,-6,6,107,8))actor.level().setBlockAndUpdate(pos,Blocks.AIR.defaultBlockState());
-     for(var pos:BlockPos.betweenClosed(-6,100,-6,6,100,8))actor.level().setBlockAndUpdate(pos,Blocks.POLISHED_DEEPSLATE.defaultBlockState());
+     LifeCaptureStage.build(actor.level());
      NextSignatureNative.teach(actor);NextSignatureNative.teach(viewer);
-     check(actor.teleportTo(actor.level(),.5,101,.5,Set.of(),0,0,false),"Actual connected owner reaches fixture before payment");
-     check(viewer.teleportTo(actor.level(),3.5,101,3.5,Set.of(),135,10,false),"Actual second viewer reaches a separate clear viewpoint away from the owner's front camera");
+     check(actor.teleportTo(actor.level(),LifeCaptureStage.OWNER.x,LifeCaptureStage.OWNER.y,LifeCaptureStage.OWNER.z,Set.of(),0,0,false),"Actual connected owner reaches fixture before payment");
+     check(viewer.teleportTo(actor.level(),LifeCaptureStage.VIEWER.x,LifeCaptureStage.VIEWER.y,LifeCaptureStage.VIEWER.z,Set.of(),135,10,false),"Actual second viewer reaches a separate clear viewpoint away from the owner's front camera");
      actor.setDeltaMovement(Vec3.ZERO);viewer.setDeltaMovement(Vec3.ZERO);actor.removeAllEffects();viewer.removeAllEffects();actor.setAbsorptionAmount(0);actor.setHealth(4);
      LifeOwnerEvents.observe(e->{if(e.rune().equals(id.equals(CASES.get(3))?"second_wind":"heal")
        &&e.moment()==LifeOwnerEvents.Moment.APPLY){
@@ -62,6 +62,7 @@ public final class LifeOwnerPairedCases {
     arm(c,id,host,true);
     preparePeer.accept(id,Map.of("case",id,"lifeSource",host.toString(),"lifeOwnerEntity",Integer.toString(server.computeOnServer(s->connected(s,host).getId()))));
     // preparePeer is a barrier: the other real JVM has already configured and armed its sampler.
+    c.runOnClient(mc->LifeCaptureStage.verify(mc,host,true));
     server.runOnServer(s->{var actor=connected(s,host);var rune=id.equals(CASES.get(3))?Runes.get("wildercord:second_wind").orElseThrow():Runes.HEAL;
      if(id.equals(CASES.get(3)))actor.setAttached(WildercordAttachments.INNATE,rune.id());NextSignatureNative.cast(actor,Runes.SELF,rune);
     });c.waitTicks(5);
@@ -80,8 +81,10 @@ public final class LifeOwnerPairedCases {
     completed.accept(id);LifeOwnerEvents.clear();c.waitTicks(12);
    }
   }finally{
-   disarm(c);LifeOwnerEvents.clear();outcome=null;
-   server.runOnServer(s->{connected(s,host).setAttached(WildercordAttachments.INNATE,innate);connected(s,host).setGameMode(modes.get(0));connected(s,peer).setGameMode(modes.get(1));});
+   try{disarm(c);}finally{
+    LifeOwnerEvents.clear();outcome=null;
+    server.runOnServer(s->{lighting.close();connected(s,host).setAttached(WildercordAttachments.INNATE,innate);connected(s,host).setGameMode(modes.get(0));connected(s,peer).setGameMode(modes.get(1));});
+   }
   }
  }
  /** The peer must call this before acknowledging the supervisor's prepare request. */
@@ -100,6 +103,7 @@ public final class LifeOwnerPairedCases {
 
  private static void arm(ClientGameTestContext c,String id,UUID source,boolean owner){
   check(CASES.contains(id),"Declared Life comparison ID required");
+  LifeCaptureStage.await(c,source,owner);
   c.runOnClient(mc->{check(active==null&&mc.player!=null&&mc.level!=null,"No overlapping Life comparison sampler");
    check(owner==mc.player.getUUID().equals(source),"Owner and second viewer roles follow their actual profiles");
    if(!registered){ClientTickEvents.END_CLIENT_TICK.register(client->{if(active!=null)active.sample(client);});registered=true;}
@@ -180,7 +184,8 @@ public final class LifeOwnerPairedCases {
      check(Math.abs(alpha-normal*.72F)<.0001,"Real Life sample honors reduced-flash alpha");reducedSamples++;}
    }
   }
-  void restore(Minecraft mc){mc.setCameraEntity(mc.player);mc.options.setCameraType(camera);MagicQuality.own=own;MagicQuality.others=others;MagicQuality.reducedFlash=reduced;}
+  void restore(Minecraft mc){mc.setCameraEntity(mc.player);mc.options.setCameraType(camera);MagicQuality.own=own;MagicQuality.others=others;MagicQuality.reducedFlash=reduced;
+   check(mc.getCameraEntity()==mc.player&&mc.options.getCameraType()==camera&&MagicQuality.own==own&&MagicQuality.others==others&&MagicQuality.reducedFlash==reduced,"Success or abort restores the native camera and exact quality/flash settings");}
  }
  private static int extracted(Minecraft mc,List<Particle> particles){int count=0;for(var p:particles)if(p.isAlive()){
   var state=new QuadParticleRenderState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.mainCamera(),1);if(!state.isEmpty())count++;

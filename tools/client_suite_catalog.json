@@ -136,5 +136,14 @@
     "entries": [
       "dev.wildercord.gametest.WildercordScreenshots"
     ]
+  },
+  "diagnostic-progression-feasibility": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the complete Reweave mechanism and Stone Hinge native receipt feasibility classes. Reweave has no ordinary rune or lesson registration; Stone Hinge movement remains disabled. Never release acceptance.",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.cast.ReweaveFeasibilityTest",
+      "dev.wildercord.aura.StoneHingeFeasibilityTest"
+    ]
   }
 }

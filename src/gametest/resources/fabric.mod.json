@@ -303,7 +303,9 @@
       "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
       "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
       "dev.wildercord.client.combat.CrimsonMoonCaptureTest",
-      "dev.wildercord.aura.world.MasterOrdinaryPlannerTest"
+      "dev.wildercord.aura.world.MasterOrdinaryPlannerTest",
+      "dev.wildercord.cast.ReweaveFeasibilityTest",
+      "dev.wildercord.aura.StoneHingeFeasibilityTest"
     ]
   },
   "mixins": [
@@ -324,7 +326,8 @@
     "siltcrest-presentation-gametest.mixins.json",
     "ecology-return-gametest.mixins.json",
     "crimson-moon-owner-gametest.mixins.json",
-    "archive-placement-gametest.mixins.json"
+    "archive-placement-gametest.mixins.json",
+    "stone-hinge-proof-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

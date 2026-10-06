@@ -86,7 +86,8 @@ final class FieldFusionForms {
      double delay=lane*.24,sweep=flight?Math.sin(t-delay)*.08:Math.clamp(t-delay,0,1)*.25;
      p.path(MaterialOption.WIND,0xCED9B3,new double[][]{{-.4,lane*.12-.16,-.08},{0,lane*.12-.03,.12+sweep},{.42,lane*.12-.13,-.08}});
      p.root(new double[][]{{(lane-1)*.15,-.22,-.1},{(lane-1)*.15+.08*sweep,-.34,-.14}},0xAB9A5C);
-     p.dot(MaterialOption.PETAL,0x8F9B58,(lane-1)*.15,-.18,-.13,.065);
+     // Outer leaves carry Life in flight; the central Wind, all stalks and grain remain within the family budget.
+     if(!flight || lane!=1)p.dot(MaterialOption.PETAL,0x8F9B58,(lane-1)*.15,-.18,-.13,.065);
      if(flight||t>delay+.2)p.grit((lane-1)*.12,-.2-(t%1)*.08,-.28-lane*.07,0,-.014,-.02);
     }
    }

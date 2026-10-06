@@ -27,7 +27,7 @@ public final class NativeJvmDiagnostics {
 	private NativeJvmDiagnostics() { }
 
 	enum Mode {
-		DISABLED(new long[0]), FOCUSED(new long[] {1800, 2700}), FULL(new long[] {5400, 9000});
+		DISABLED(new long[0]), FOCUSED(new long[] {1800, 2700}), MASTERS(new long[] {1800, 2700, 4500}), FULL(new long[] {5400, 9000});
 		final long[] seconds;
 		Mode(long[] seconds) { this.seconds = seconds; }
 	}
@@ -35,7 +35,8 @@ public final class NativeJvmDiagnostics {
 	static Mode mode(String ci, String job) {
 		if (!"true".equals(ci) || job == null) return Mode.DISABLED;
 		return switch (job) {
-			case "masters-native", "articulated-native", "native-diagnostic" -> Mode.FOCUSED;
+			case "masters-native" -> Mode.MASTERS;
+			case "articulated-native", "native-diagnostic" -> Mode.FOCUSED;
 			case "game-tests" -> Mode.FULL;
 			default -> Mode.DISABLED;
 		};

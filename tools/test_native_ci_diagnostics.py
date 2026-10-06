@@ -36,6 +36,14 @@ class ProcTree:
         return diagnostics.process_identity(pid, self.path)
 
 
+class SnapshotBudgetTests(unittest.TestCase):
+    def test_expanded_masters_gets_bounded_late_snapshot_without_changing_other_jobs(self):
+        self.assertEqual(diagnostics.snapshot_thresholds({"kind": "suite", "name": "masters"}), (1800, 2700, 4500))
+        self.assertEqual(diagnostics.snapshot_thresholds({"kind": "suite", "name": "articulated"}), (1800, 2700))
+        self.assertEqual(diagnostics.snapshot_thresholds({"kind": "diagnostic", "name": "diagnostic-progression-feasibility"}), (1800, 2700))
+        self.assertEqual(diagnostics.snapshot_thresholds({"kind": "shard"}), (5400, 9000))
+
+
 class OwnershipTests(unittest.TestCase):
     def test_only_java_descendants_in_original_group_and_session(self):
         with tempfile.TemporaryDirectory() as temp:

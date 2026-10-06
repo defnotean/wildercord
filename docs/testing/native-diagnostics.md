@@ -20,6 +20,18 @@ checkout is the exact PR head, whose code is identical to the requested source.
 
 The fixed case allowlist is defined in `tools/run_native_diagnostic_ci.py` and includes:
 
+- `progression-feasibility`: exactly the complete `ReweaveFeasibilityTest`, then
+  `StoneHingeFeasibilityTest`. Both are appended to the full descriptor without
+  changing existing order; the 38-class Masters, six-class articulated and 46-case
+  paired rosters stay unchanged. Each original world seed is observed once without
+  RNG draws or overrides. Both classes must complete the existing runner's
+  setup/run/cleanup/returned sequence exactly once in order, alongside matching
+  source/request/head/run/attempt, processed descriptor and successful exit evidence.
+  Missing, repeated, failed, foreign or malformed completion/seed receipts cannot
+  pass. Every new proof helper and Stone Hinge test-only mixin/config is hashed.
+  Reweave retains no ordinary RuneDef, lesson or input registration. Stone Hinge
+  retains its movement-disabled boundary; success proves neither its six-step
+  movement nor progression teaching, price approval or release acceptance.
 - `wetland`: the original entire `WetlandGardenTest`, then the original entire
   `WetlandTerrainTest`, including the fixed failing seed `-7620530482425397421`,
   original habitat, search bounds and natural-presence assertion.

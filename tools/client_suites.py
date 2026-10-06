@@ -1,7 +1,10 @@
 """Shared native CI selection and evidence helpers; no Minecraft or third-party imports."""
 import json
+import math
 from pathlib import Path
 import re
+
+from native_ci_diagnostics import SCENE_PREFIX
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "tools/client_suite_catalog.json"
@@ -10,6 +13,8 @@ SELECTION_PREFIX = "WILDERCORD_CLIENT_SELECTION "
 DESCRIPTOR_PREFIX = "WILDERCORD_CLIENT_DESCRIPTOR "
 EXIT_PREFIX = "WILDERCORD_CLIENT_EXIT_CODE "
 REQUEST_PREFIX = "WILDERCORD_NATIVE_REQUEST "
+PROGRESSION_ENTRIES = ("dev.wildercord.cast.ReweaveFeasibilityTest",
+                       "dev.wildercord.aura.StoneHingeFeasibilityTest")
 
 
 def parse_shard(value):
@@ -50,6 +55,9 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         purpose = group.get("purpose", "release")
         if purpose not in ("release", "diagnostic"):
             raise ValueError(f"Suite {suite} has an unknown purpose")
+        if suite == "diagnostic-progression-feasibility" and (
+                purpose != "diagnostic" or selected != list(PROGRESSION_ENTRIES)):
+            raise ValueError("Progression feasibility requires exactly both complete diagnostic classes in order")
         return {"kind": "diagnostic" if purpose == "diagnostic" else "suite",
                 "name": suite, "count": len(selected), "entries": selected}
     if shard is not None:
@@ -84,4 +92,41 @@ def selection_issues(log, selection):
         exits = [line[len(EXIT_PREFIX):] for line in log.splitlines() if line.startswith(EXIT_PREFIX)]
         if exits != ["0"]:
             issues.append("Focused run has no single successful launcher exit")
+    if selection.get("name") == "diagnostic-progression-feasibility":
+        _, completion_issues = progression_completion(log)
+        issues.extend(completion_issues)
     return issues
+
+
+def _unique_completion_object(pairs):
+    marker = {}
+    for key, value in pairs:
+        if key in marker:
+            raise ValueError("Duplicate completion field")
+        marker[key] = value
+    return marker
+
+
+def progression_completion(log):
+    """Require the pinned runner's setup/run/cleanup/return for both whole classes."""
+    events, issues = [], []
+    for line in log.splitlines():
+        if SCENE_PREFIX not in line:
+            continue
+        try:
+            marker = json.loads(line.split(SCENE_PREFIX, 1)[1], object_pairs_hook=_unique_completion_object)
+            if not isinstance(marker, dict) or set(marker) != {
+                    "suite", "event", "phase", "elapsedSeconds", "sceneElapsedSeconds"}:
+                raise ValueError()
+            if any(type(marker[key]) not in (float, int) or not math.isfinite(marker[key]) or marker[key] < 0
+                   for key in ("elapsedSeconds", "sceneElapsedSeconds")):
+                raise ValueError()
+            events.append((marker["suite"], marker["event"], marker["phase"]))
+        except (ValueError, KeyError, TypeError, OverflowError):
+            issues.append("Malformed progression feasibility completion evidence")
+    expected = [(entry, event, phase) for entry in PROGRESSION_ENTRIES
+                for event, phase in (("start", "setup"), ("phase", "run"),
+                                     ("phase", "cleanup"), ("end", "returned"))]
+    if events != expected:
+        issues.append("Progression feasibility requires exactly both completed whole classes in order")
+    return [entry for entry in PROGRESSION_ENTRIES if (entry, "end", "returned") in events], issues

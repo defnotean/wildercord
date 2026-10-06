@@ -85,6 +85,11 @@ class RequestTests(unittest.TestCase):
                    self.request(case="diagnostic-kiln-ring"), self.request(case="kiln-ring#inward"),
                    self.request(case="dev.wildercord.aura.world.EmberKilnTest"),
                    self.request(case="kiln-ring; touch /tmp/injected"),
+                   self.request(case="diagnostic-progression-feasibility"),
+                   self.request(case="progression-feasibility#reweave"),
+                   self.request(case="dev.wildercord.cast.ReweaveFeasibilityTest"),
+                   self.request(case="dev.wildercord.aura.StoneHingeFeasibilityTest"),
+                   self.request(case="progression-feasibility; touch /tmp/injected"),
                    self.request(sourceSha="a" * 39), self.request(sourceSha="A" * 40),
                    self.request(sourceSha="HEAD"), self.request(sourceSha=True),
                    self.request(case=None), self.request(sourceSha=None)]
@@ -166,10 +171,18 @@ class EvidenceTests(unittest.TestCase):
 
     def log(self, data):
         selection = data["selection"]
+        completion = ""
+        if data["request"]["case"] == "progression-feasibility":
+            completion = "".join(diagnostic.SCENE_PREFIX + json.dumps({
+                "suite": entry, "event": event, "phase": phase,
+                "elapsedSeconds": 1.0, "sceneElapsedSeconds": 0.5}) + "\n"
+                for entry in diagnostic.PROGRESSION_ENTRIES
+                for event, phase in (("start", "setup"), ("phase", "run"),
+                                     ("phase", "cleanup"), ("end", "returned")))
         return (suites.SELECTION_PREFIX + json.dumps(selection) + "\n" + suites.DESCRIPTOR_PREFIX + json.dumps(selection) + "\n"
                 + suites.REQUEST_PREFIX + json.dumps(diagnostic.receipt(data)) + "\n"
                 + "\n".join(diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) for entry, seed in diagnostic.SEEDS[data["request"]["case"]].items())
-                + "\nBUILD SUCCESSFUL\n" + suites.EXIT_PREFIX + "0\n")
+                + "\n" + completion + "BUILD SUCCESSFUL\n" + suites.EXIT_PREFIX + "0\n")
 
     def collect(self, data, log, *, launch=True, budget=diagnostic.MAX_LOG_BYTES):
         with tempfile.TemporaryDirectory() as temp:
@@ -196,7 +209,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(set(result["observedWorldSeeds"]), set(diagnostic.SEEDS[case]))
 
     def test_failed_missing_mixed_truncated_and_replayed_evidence_never_pass(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility"):
             self.assert_invalid_evidence_never_passes(case)
 
     def assert_invalid_evidence_never_passes(self, case):
@@ -319,7 +332,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
 
     def test_unique_seed_receipt_rule_does_not_change_other_cases(self):
-        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery"}:
+        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility"}:
             data = self.fixture(case)
             entry, seed = next(iter(diagnostic.SEEDS[case].items()))
             repeated = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) + "\n"
@@ -349,7 +362,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
     def test_general_manifest_cannot_relabel_diagnostic_as_focused_or_full(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility"):
             self.assert_manifest_cannot_relabel_diagnostic(case)
 
     def test_ecology_return_selects_only_three_whole_classes_and_observes_reopen(self):
@@ -395,7 +408,7 @@ class EvidenceTests(unittest.TestCase):
                 self.assertNotEqual(manifest.get("focusedClientGate"), "passed")
 
     def test_collect_preserves_evidence_after_head_advances_or_origin_fails(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility"):
             self.assert_collect_preserves_evidence(case)
 
     def assert_collect_preserves_evidence(self, case):
@@ -403,7 +416,7 @@ class EvidenceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             selection = suites.select_entries(suite=diagnostic.CASES[case])
-            paths = [*diagnostic.CONFIG_FILES, ".gitignore", *["src/gametest/java/" + name.replace(".", "/") + ".java" for name in selection["entries"]]]
+            paths = [*diagnostic.CONFIG_FILES, *diagnostic.CASE_FILES.get(case, ()), ".gitignore", *["src/gametest/java/" + name.replace(".", "/") + ".java" for name in selection["entries"]]]
             if case == "wall-turn":
                 paths.append("src/gametest/java/dev/wildercord/aura/WallRelayChecks.java")
             for name in paths:
@@ -440,6 +453,104 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(result["headAtCollection"]["status"], "unavailable")
             self.assertEqual(result["provenance"]["headSha"], head)
             self.assertEqual((root / diagnostic.OUTPUT / "native.log").read_text(), self.log(data))
+
+    def test_progression_selects_exactly_two_registered_whole_classes_outside_release_rosters(self):
+        entries = ["dev.wildercord.cast.ReweaveFeasibilityTest", "dev.wildercord.aura.StoneHingeFeasibilityTest"]
+        self.assertEqual(list(diagnostic.PROGRESSION_ENTRIES), entries)
+        self.assertEqual(diagnostic.CASES["progression-feasibility"], "diagnostic-progression-feasibility")
+        self.assertEqual(suites.select_entries(suite="diagnostic-progression-feasibility"), {
+            "kind": "diagnostic", "name": "diagnostic-progression-feasibility", "count": 2, "entries": entries})
+        self.assertEqual(suites.select_entries()["entries"][-2:], entries)
+        for name, count in (("masters", 38), ("articulated", 6)):
+            selection = suites.select_entries(suite=name)
+            self.assertEqual(selection["count"], count)
+            self.assertTrue(set(entries).isdisjoint(selection["entries"]))
+        contract = json.loads((suites.ROOT / "src/gametest/resources/cast-receipt-native-contract.json").read_text())
+        self.assertEqual(contract["expectedCount"], 46)
+        self.assertTrue(set(entries).isdisjoint(contract["cases"]))
+        self.assertEqual(diagnostic.SEEDS["progression-feasibility"], dict.fromkeys(entries))
+        descriptor = json.loads(suites.DESCRIPTOR.read_text())
+        self.assertEqual(descriptor["mixins"].count("stone-hinge-proof-gametest.mixins.json"), 1)
+        for entry in entries:
+            source = (suites.ROOT / ("src/gametest/java/" + entry.replace(".", "/") + ".java")).read_text()
+            self.assertEqual(source.count("WILDERCORD_NATIVE_WORLD "), 1)
+            self.assertIn("server.overworld().getSeed()", source)
+
+    def test_progression_requires_each_seed_and_complete_ordered_cleanup_return(self):
+        data = self.fixture("progression-feasibility"); good = self.log(data)
+        result = self.collect(data, good)
+        self.assertEqual(result["diagnosticOutcome"], "passed")
+        self.assertEqual(result["completedEntries"], list(diagnostic.PROGRESSION_ENTRIES))
+        lines = good.splitlines()
+        for index, line in enumerate(lines):
+            if diagnostic.SEED_PREFIX in line or diagnostic.SCENE_PREFIX in line:
+                for bad in ("\n".join(lines[:index] + lines[index + 1:]), good + line + "\n"):
+                    with self.subTest(marker=line):
+                        self.assertEqual(self.collect(data, bad)["diagnosticOutcome"], "unverified")
+        for old, new in (("returned", "threw"), ("cleanup", "run"),
+                         (diagnostic.PROGRESSION_ENTRIES[0], "foreign.Class")):
+            self.assertEqual(self.collect(data, good.replace(old, new))["diagnosticOutcome"], "unverified")
+        scene_lines = [line for line in lines if diagnostic.SCENE_PREFIX in line]
+        remaining = [line for line in lines if diagnostic.SCENE_PREFIX not in line]
+        self.assertEqual(self.collect(data, "\n".join(remaining + list(reversed(scene_lines))))["diagnosticOutcome"], "unverified")
+        for malformed in ("{", "[]", "null", '{"suite":[]}',
+                          '{"suite":"x","suite":"y"}',
+                          scene_lines[0].split(diagnostic.SCENE_PREFIX, 1)[1].replace('1.0', 'true'),
+                          scene_lines[0].split(diagnostic.SCENE_PREFIX, 1)[1].replace('1.0', 'NaN')):
+            self.assertEqual(self.collect(data, good + diagnostic.SCENE_PREFIX + malformed + "\n")["diagnosticOutcome"], "unverified")
+
+    def test_progression_catalog_rejects_partial_reordered_duplicate_foreign_or_release_selections(self):
+        for update in ({"entries": [diagnostic.PROGRESSION_ENTRIES[0]], "expectedCount": 1},
+                       {"entries": list(reversed(diagnostic.PROGRESSION_ENTRIES))},
+                       {"entries": [diagnostic.PROGRESSION_ENTRIES[0]] * 2},
+                       {"entries": [diagnostic.PROGRESSION_ENTRIES[0], "foreign.Class"]},
+                       {"purpose": "release"}, {"expectedCount": True}):
+            with tempfile.TemporaryDirectory() as temp:
+                catalog = json.loads(suites.CATALOG.read_text())
+                catalog["diagnostic-progression-feasibility"].update(update)
+                path = Path(temp) / "catalog.json"; path.write_text(json.dumps(catalog))
+                with self.subTest(update=update), self.assertRaises(ValueError):
+                    suites.select_entries(suite="diagnostic-progression-feasibility", catalog=path)
+
+    def test_progression_malformed_seed_and_generic_manifest_without_completion_cannot_pass(self):
+        data = self.fixture("progression-feasibility"); good = self.log(data)
+        entry = diagnostic.PROGRESSION_ENTRIES[0]
+        for bad in (json.dumps({"suite": entry, "seed": str(2 ** 63)}),
+                    json.dumps({"suite": entry, "seed": "1", "override": True}),
+                    '{"suite": "' + entry + '", "seed":"1", "seed":"1"}'):
+            marker = diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": "1"})
+            self.assertEqual(self.collect(data, good.replace(marker, diagnostic.SEED_PREFIX + bad))["diagnosticOutcome"], "unverified")
+        incomplete = "\n".join(line for line in good.splitlines() if diagnostic.SCENE_PREFIX not in line)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp); log = root / "native.log"; out = root / "manifest.json"; log.write_text(incomplete)
+            with patch.object(test_manifest, "ROOT", root), redirect_stdout(io.StringIO()):
+                test_manifest.main(["--log", str(log), "--output", str(out), "--suite", "diagnostic-progression-feasibility"])
+            self.assertEqual(json.loads(out.read_text())["diagnosticOutcome"], "unverified")
+
+    def test_progression_rejects_stale_head_source_run_and_attempt_receipts(self):
+        data = self.fixture("progression-feasibility")
+        for key, value in (("headSha", "e" * 40), ("runId", "999"), ("runAttempt", "2")):
+            changed = copy.deepcopy(data); changed["provenance"][key] = value
+            self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
+        changed = copy.deepcopy(data); changed["request"]["sourceSha"] = "e" * 40
+        self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
+        request = data["request"]
+        identity = {"headSha": "b" * 40, "observedLiveHeadSha": "b" * 40}
+        self.assertEqual(diagnostic.request_state(request, identity, ["c" * 40], [diagnostic.REQUEST]), "inactive-stale-request")
+        self.assertEqual(diagnostic.request_state(request, {**identity, "observedLiveHeadSha": "c" * 40}, ["a" * 40], [diagnostic.REQUEST]), "inactive-stale-pr-head")
+
+    def test_progression_current_rejects_incomplete_reordered_or_relabelled_catalog(self):
+        data = self.fixture("progression-feasibility")
+        for entries, count, kind in ((list(diagnostic.PROGRESSION_ENTRIES[:1]), 1, "diagnostic"),
+                                     (list(reversed(diagnostic.PROGRESSION_ENTRIES)), 2, "diagnostic"),
+                                     (list(diagnostic.PROGRESSION_ENTRIES), 2, "suite")):
+            selection = {**data["selection"], "entries": entries, "count": count, "kind": kind}
+            with tempfile.TemporaryDirectory() as temp, patch.object(diagnostic, "ROOT", Path(temp)):
+                path = Path(temp) / diagnostic.REQUEST; path.parent.mkdir(); path.write_text(json.dumps(data["request"]))
+                with patch.object(diagnostic, "identity", return_value={"headSha": "b" * 40, "observedLiveHeadSha": "b" * 40}), \
+                        patch.object(diagnostic, "git", side_effect=["b" * 40 + " " + "a" * 40, diagnostic.REQUEST]), \
+                        patch.object(diagnostic, "select_entries", return_value=selection), self.assertRaises(ValueError):
+                    diagnostic.current({})
 
     def test_unknown_cli_arguments_fail_without_native_launch(self):
         with patch.object(run_client_ci, "main") as launch:

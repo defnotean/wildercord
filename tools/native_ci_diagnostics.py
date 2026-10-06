@@ -22,7 +22,11 @@ ATTACH_SECONDS = 10
 
 
 def snapshot_thresholds(selection):
-    # Leave headroom for setup and the existing 60/180 minute workflow limits.
+    # The expanded Masters selection has a measured 90-minute job/85-minute native step.
+    # Retain the earlier snapshots and add a bounded late snapshot before its new cap.
+    if selection["kind"] == "suite" and selection.get("name") == "masters":
+        return (30 * 60, 45 * 60, 75 * 60)
+    # Other focused/diagnostic and aggregate jobs keep their 60/180-minute limits.
     return (30 * 60, 45 * 60) if selection["kind"] in ("suite", "diagnostic") else (90 * 60, 150 * 60)
 
 

@@ -83,6 +83,8 @@ class SelectionTests(unittest.TestCase):
         count = client_suites.select_entries(suite="masters")["count"]
         self.assertIn(f"name: Masters update ({count} focused suites)", section)
         self.assertIn(f"name: Run the {count} focused update suites", section)
+        self.assertIn("    timeout-minutes: 90\n", section)
+        self.assertIn(f"      - name: Run the {count} focused update suites\n        timeout-minutes: 85\n", section)
         self.assertIn("python tools/run_client_ci.py --suite masters --log masters-native.log", section)
         self.assertIn("python tools/test_manifest.py --suite masters --log masters-native.log", section)
 

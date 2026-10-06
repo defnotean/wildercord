@@ -1,5 +1,6 @@
 package dev.wildercord.client.combat;
 
+import com.google.gson.Gson;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.*;
 import dev.wildercord.client.MastersArtsClient;
@@ -13,6 +14,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
@@ -45,11 +47,60 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
     private long deadline,otherPid;
     private int actorEntity,observerEntity;
     private volatile long acceptedTick=Long.MIN_VALUE;
+    private final ClockObservations clocks=new ClockObservations();
     private static volatile Audit current;
     private static boolean damageHooked;
     private record Spend(long tick,double paid,double expected,int rest,double momentum,boolean committed,boolean backlash){}
     private record Completion(long tick,long accepted,List<Integer> marks){}
     private record Damage(long tick,float amount,boolean hostImage,boolean peerImage,String hostWitnessSha256,String peerWitnessSha256){}
+    /** Bounded observations of existing handoffs, never a clock adjustment or image receipt. */
+    private final class ClockObservations {
+        private static final int LIMIT=96;
+        private final List<Map<String,Object>> points=new ArrayList<>();
+        private final Gson gson=new Gson();
+        private long started=System.nanoTime(),sequence;
+        private int dropped,observationErrors;
+        private String lastWait;
+        private boolean firstAge;
+        synchronized void clear(){points.clear();started=System.nanoTime();sequence=0;dropped=0;observationErrors=0;lastWait=null;firstAge=false;}
+        private Map<String,Object> point(String phase,long tick){
+            var p=new LinkedHashMap<String,Object>();p.put("sequence",++sequence);p.put("elapsedNanos",System.nanoTime()-started);
+            p.put("phase",phase);p.put("thread",Thread.currentThread().getName());p.put("acceptedTick",acceptedTick);p.put("gameTick",tick);
+            if(acceptedTick!=Long.MIN_VALUE)p.put("ageTicks",tick-acceptedTick);
+            return p;
+        }
+        private void add(Map<String,Object> p){if(points.size()<LIMIT)points.add(p);else dropped++;}
+        synchronized void server(String phase,long tick){
+            try {
+            var p=point(phase,tick);p.put("clockOwner","server");add(p);
+            // Record both phases, then log after the actual write so logging cannot delay its publication.
+            if(phase.endsWith("after-write"))emit("server-write-complete",List.copyOf(points),null);
+            }catch(Throwable ignored){observationErrors++;}
+        }
+        synchronized void client(String phase,Minecraft mc,String release,Boolean held,boolean wait){
+            try {
+            long tick=mc.level.getGameTime();var actor=mc.level.getPlayerByUUID(hostId);var timeline=MastersArtsClient.timeline(actor);
+            String source=timeline==null?"absent":timeline.toString();String key=tick+"/"+release+"/"+source;
+            boolean first=wait&&!firstAge&&tick>=acceptedTick+10;
+            if(wait&&key.equals(lastWait)&&!first)return;
+            if(wait){phase=lastWait==null?"capture-entry":"capture-wait-change";lastWait=key;if(first)firstAge=true;}
+            var p=point(phase,tick);p.put("clockOwner","client");p.put("releaseReceipt",release);p.put("timeline",source);
+            p.put("actorUuid",actor==null?"absent":actor.getUUID().toString());p.put("actorEntity",actor==null?-1:actor.getId());
+            p.put("observerEntity",mc.player==null?-1:mc.player.getId());p.put("firstAgeAtLeast10",first);
+            if(held!=null)p.put("hitStopHolding",held);add(p);
+            }catch(Throwable ignored){observationErrors++;}
+        }
+        synchronized void report(String phase,Throwable failure){try{emit(phase,List.copyOf(points),failure);}catch(Throwable ignored){observationErrors++;}}
+        private void emit(String phase,List<Map<String,Object>> values,Throwable failure){
+            var report=new LinkedHashMap<String,Object>();report.put("schemaVersion",1);report.put("phase",phase);report.put("role",role);
+            report.put("pid",ProcessHandle.current().pid());report.put("nonce",identity.getProperty("nonce"));report.put("runIdentity",identity.getProperty("runIdentity"));
+            report.put("sourceHead",identity.getProperty("sourceHead"));report.put("case",CASE);report.put("clockBasis","process_local_monotonic_observation");
+            report.put("sourceBasis","client_game_time_and_accepted_timeline");report.put("screenshotEvidence",false);
+            report.put("serverReleaseFrameCorrespondenceVerified",false);report.put("droppedObservations",dropped);report.put("observationErrors",observationErrors);report.put("observations",values);
+            if(failure!=null)report.put("error",failure.toString());
+            System.out.println("CRIMSON_MOON_CLOCK_DIAGNOSTIC "+gson.toJson(report));
+        }
+    }
     private final class Audit implements AutoCloseable {
         Mob target;
         final List<Spend> spends=new CopyOnWriteArrayList<>();
@@ -61,7 +112,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
                 var art=AuraApi.artOf(p,ART).orElseThrow();
                 spends.add(new Spend(p.level().getGameTime(),paid,SwordStrings.price(p,art),SwordStrings.rest(p,art),Momentum.value(p),MastersArts.committed(p),backlash));
                 check(spends.size()==1,"Only one real Final is admitted");acceptedTick=p.level().getGameTime();
-                write("case-00-accepted",action());
+                clocks.server("accepted-before-write",p.level().getGameTime());write("case-00-accepted",action());clocks.server("accepted-after-write",p.level().getGameTime());
             }
         };
         final AuraApi.StringHook done=(p,art,receipt)->{
@@ -70,7 +121,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
                 check(completions.size()==1&&completion.accepted()==acceptedTick&&CrimsonMoonRenderMath.releaseAt(acceptedTick,completion.tick()),"Actual completion is exactly accepted+10");
                 check(completion.marks().size()==4&&completion.marks().subList(0,3).stream().allMatch(SwordString.Token.FULL::fits)&&SwordString.Token.LOW.fits(completion.marks().getLast()),"Actual FULL/FULL/FULL/LOW completion");
                 var fields=action();fields.put("releaseTick",Long.toString(completion.tick()));fields.put("completionOffset","10");fields.put("marks","FULL,FULL,FULL,LOW");
-                write("case-00-release",fields);
+                clocks.server("release-before-write",p.level().getGameTime());write("case-00-release",fields);clocks.server("release-after-write",p.level().getGameTime());
             }
         };
         Audit(){check(current==null,"Moon audits do not overlap");current=this;
@@ -94,6 +145,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
     @Override public void runTest(ClientGameTestContext context){OpeningCaptureWait.withCleanup(()->run(context));}
     private void run(ClientGameTestContext c){
         configure();
+        clocks.clear();
         String[] previous=Arrays.stream(SETTINGS).map(System::getProperty).toArray(String[]::new);
         var camera=c.computeOnClient(mc->mc.options.getCameraType());var hand=c.computeOnClient(mc->mc.options.mainHand().get());
         int width=c.computeOnClient(mc->mc.getWindow().getScreenWidth()),height=c.computeOnClient(mc->mc.getWindow().getScreenHeight()),gui=c.computeOnClient(mc->mc.options.guiScale().get());
@@ -102,11 +154,13 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
             for(String setting:SETTINGS)System.setProperty(setting,"true");
             c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(3);mc.resizeGui();mc.options.toggleCrouch().set(false);mc.options.mainHand().set(HumanoidArm.RIGHT);mc.options.setCameraType(CameraType.FIRST_PERSON);if(mc.gui.hud.isHidden())mc.gui.hud.toggle();});
             if(role.equals("host"))host(c);else peer(c);
-        }catch(Throwable failure){if(!exists(role+"-failure"))write(role+"-failure",Map.of("error",failure.toString()));throw failure;}
+        }catch(Throwable failure){clocks.report("failure",failure);if(!exists(role+"-failure"))write(role+"-failure",Map.of("error",failure.toString()));throw failure;}
         finally {
+            try {
             c.getInput().releaseKey(o->o.keyAttack);c.getInput().releaseKey(o->o.keyShift);CrimsonMoonRenderProbe.unwatch();HitStop.clear();
             for(int i=0;i<SETTINGS.length;i++){if(previous[i]==null)System.clearProperty(SETTINGS[i]);else System.setProperty(SETTINGS[i],previous[i]);}
             c.runOnClient(mc->{mc.options.setCameraType(camera);mc.options.mainHand().set(hand);mc.options.broadcastOptions();mc.options.toggleCrouch().set(toggle);mc.getWindow().setWindowed(width,height);mc.getWindow().setFullscreen(fullscreen);mc.options.guiScale().set(gui);mc.resizeGui();if(mc.gui.hud.isHidden()!=hidden)mc.gui.hud.toggle();});
+            }finally{clocks.clear();}
         }
     }
     private void configure(){
@@ -152,7 +206,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
             c.getInput().holdKey(o->o.keyShift);c.waitTicks(2);check(c.computeOnClient(mc->Momentum.peak(mc.player)&&AuraApi.artOf(mc.player,ART).orElseThrow().condition().met(mc.player)),"Actual synced peak at LOW");
             c.getInput().pressKey(o->o.keyAttack);c.getInput().releaseKey(o->o.keyShift);
             c.waitFor(mc->MastersArtsClient.timeline(mc.player)!=null&&MastersArtsClient.timeline(mc.player).move()==19,35);
-            c.runOnClient(mc->{var accepted=MastersArtsClient.timeline(mc.player);check(accepted.startTick()==acceptedTick&&accepted.entity()==actorEntity&&accepted.windup()==10&&accepted.recovery()==20,"Client received this same actual accepted timeline");check(SwordStringsClient.counts()[0]==requests+1&&SwordStringsClient.lastAsked().equals(ART),"Exactly one real reader request names Moon");});
+            c.runOnClient(mc->{var accepted=MastersArtsClient.timeline(mc.player);clocks.client("timeline-ready",mc,"not_checked",null,false);check(accepted.startTick()==acceptedTick&&accepted.entity()==actorEntity&&accepted.windup()==10&&accepted.recovery()==20,"Client received this same actual accepted timeline");check(SwordStringsClient.counts()[0]==requests+1&&SwordStringsClient.lastAsked().equals(ART),"Exactly one real reader request names Moon");});
             capture(c);
             c.waitFor(mc->mc.level.getGameTime()>=acceptedTick+34,45);
             server.runOnServer(s->{
@@ -184,7 +238,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
             c.waitFor(mc->mc.player.getId()==observerEntity&&mc.level.getPlayerByUUID(hostId)!=null&&mc.level.getPlayerByUUID(hostId).getId()==actorEntity&&Math.abs(mc.player.getX()-(angle.equals("front_oblique")?4.5:-3.5))<.01&&Math.abs(mc.player.getZ()-(angle.equals("front_oblique")?5.5:-4.5))<.01,240);
             c.runOnClient(mc->{mc.gui.setScreen(null);mc.options.broadcastOptions();mc.player.setYRot(observerYaw());mc.player.setXRot(7);CrimsonMoonRenderProbe.watch(hostId);});write("peer-capture-ready",identities());
             await(c,()->exists("case-00-accepted"),"Actual paid accepted Final");var accepted=read("case-00-accepted","host");acceptedTick=Long.parseLong(accepted.getProperty("acceptedTick"));checkAction(accepted);
-            c.waitFor(mc->{var actor=mc.level.getPlayerByUUID(hostId);var timeline=MastersArtsClient.timeline(actor);return timeline!=null&&timeline.entity()==actorEntity&&timeline.move()==19&&timeline.startTick()==acceptedTick&&timeline.windup()==10&&timeline.recovery()==20;},35);
+            c.waitFor(mc->{var actor=mc.level.getPlayerByUUID(hostId);var timeline=MastersArtsClient.timeline(actor);boolean timelineReady=timeline!=null&&timeline.entity()==actorEntity&&timeline.move()==19&&timeline.startTick()==acceptedTick&&timeline.windup()==10&&timeline.recovery()==20;if(timelineReady)clocks.client("timeline-ready",mc,"not_checked",null,false);return timelineReady;},35);
             capture(c);
             await(c,()->exists("case-00-passed"),"Host proves both images precede first direct damage");var passed=read("case-00-passed","host");checkAction(passed);checkOrder(passed);
             await(c,()->exists("disconnect-peer"),"Native assertions complete before departure");checkAction(read("disconnect-peer","host"));
@@ -194,16 +248,19 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
         }finally{c.runOnClient(mc->{if(mc.level!=null)mc.disconnect(new TitleScreen(),false);});}
     }
     private void capture(ClientGameTestContext c){
-        c.waitFor(mc->mc.level.getGameTime()>=acceptedTick+10&&exists("case-00-release"),45);
-        var snapshot=c.computeOnClient(mc->{boolean held=HitStop.holding();return new OpeningCaptureWait.Snapshot(new OpeningCaptureWait.Identity(hostId,actorEntity,actorEntity,19,acceptedTick,mc.level.getGameTime()),held,System.nanoTime()+(held?MAX_HOLD:0));});OpeningCaptureWait.await(snapshot);
+        try {
+        c.waitFor(mc->{boolean age=mc.level.getGameTime()>=acceptedTick+10;boolean released=age&&exists("case-00-release");clocks.client("capture-wait",mc,age?Boolean.toString(released):"not_checked",null,true);return age&&released;},45);
+        var snapshot=c.computeOnClient(mc->{boolean held=HitStop.holding();var value=new OpeningCaptureWait.Snapshot(new OpeningCaptureWait.Identity(hostId,actorEntity,actorEntity,19,acceptedTick,mc.level.getGameTime()),held,System.nanoTime()+(held?MAX_HOLD:0));clocks.client("capture-snapshot",mc,"true",held,false);return value;});OpeningCaptureWait.await(snapshot);
         String view=role.equals("host")?"fp":"remote";
         String name=CrimsonMoonRenderProbe.PREFIX+view+"_"+skin+"_"+angle+"_"+CASE;
         var release=read("case-00-release","host");checkAction(release);
         var expectedRelease=new HashMap<String,String>();for(String key:identity.stringPropertyNames())expectedRelease.put(key,identity.getProperty(key));expectedRelease.putAll(action());expectedRelease.put("role","host");expectedRelease.put("pid",Long.toString(role.equals("host")?ProcessHandle.current().pid():otherPid));
         c.runOnClient(mc->{
             var actor=mc.level.getPlayerByUUID(hostId);check(actor instanceof net.minecraft.client.player.AbstractClientPlayer connectedActor&&connectedActor.getSkin().model().getSerializedName().equals(skin),"Actual unchanged connected skin width");
-            OpeningCaptureWait.requireReady(snapshot,new OpeningCaptureWait.Identity(hostId,actorEntity,actorEntity,19,acceptedTick,mc.level.getGameTime()),HitStop.holding());
+            var readyIdentity=new OpeningCaptureWait.Identity(hostId,actorEntity,actorEntity,19,acceptedTick,mc.level.getGameTime());boolean held=HitStop.holding();
+            try{OpeningCaptureWait.requireReady(snapshot,readyIdentity,held);}finally{clocks.client("capture-ready",mc,"true",held,false);}
             check(!HitStop.holding()&&CrimsonMoonRenderMath.age(10,mc.level.getGameTime()-acceptedTick),"Unretimed release source remains in [10,11)");
+            clocks.client("capture-arm",mc,"true",false,false);
             CrimsonMoonRenderProbe.armPaired(new CrimsonMoonRenderProbe.Expected(name,actorEntity,hostId.toString(),acceptedTick,"articulated",view,"RIGHT",skin,true,true,"ACTIVE",10),
                 new CrimsonMoonRenderProbe.Paired(role,peerId.toString(),observerEntity,angle,directory.resolve("case-00-release.properties"),expectedRelease));
         });
@@ -216,6 +273,7 @@ public final class CrimsonMoonMultiplayerCaptureTest implements FabricClientGame
         fields.put("receiptRelativePath",game.relativize(receipt).toString());fields.put("pngRelativePath",report.image().relativeImagePath());fields.put("actualSourceAge",report.copy().observations().get("actualSourceAge"));fields.put("releaseReceiptSha256",report.copy().observations().get("releaseReceiptSha256"));
         fields.put("releaseImageDamageOrderVerified","false");fields.put("releaseObservedBeforeSource","true");fields.put("scopeCleanupVerified","true");fields.put("serverReleaseFrameCorrespondenceVerified","false");fields.put("pixelQualityReviewed","false");
         write(role+"-case-00-observed",fields);
+        }finally{clocks.report("capture-exit",null);}
     }
     private void prepare(ServerPlayer host,ServerPlayer peer,Audit audit){
         check(host.level().getGameTime()>=SwordStrings.readyAt(host,ART),"Fresh action respects real individual rest");

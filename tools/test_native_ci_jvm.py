@@ -31,12 +31,13 @@ class NativeJvmTests(unittest.TestCase):
 
     def test_activation_job_ids_and_thresholds_match_current_workflow(self):
         workflow = (ROOT / ".github/workflows/build.yml").read_text()
-        for job, limit in (("masters-native", 60), ("articulated-native", 60), ("game-tests", 180), ("native-diagnostic", 60)):
+        for job, limit in (("masters-native", 90), ("articulated-native", 60), ("game-tests", 180), ("native-diagnostic", 60)):
             # Job fields have four spaces, so inspect until the next two-space job key.
             section = workflow.split(f"\n  {job}:\n", 1)[1]
             section = re.split(r"\n  [a-z][a-z-]*:\n", section, maxsplit=1)[0]
             self.assertIn(f"timeout-minutes: {limit}", section)
         from native_ci_diagnostics import snapshot_thresholds
+        self.assertEqual(snapshot_thresholds({"kind": "suite", "name": "masters"}), (1800, 2700, 4500))
         self.assertEqual(snapshot_thresholds({"kind": "suite"}), (1800, 2700))
         self.assertEqual(snapshot_thresholds({"kind": "shard"}), (5400, 9000))
 

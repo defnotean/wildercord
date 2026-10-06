@@ -4,6 +4,26 @@ This is a release gate, not a declaration of readiness. Keep the pull request in
 
 The [player-facing development roadmap](../MASTERS_OF_TOMORROW_ROADMAP.md) records the expanded requested content scope and priorities. Planned spells, movement, lore and hundreds of distinct boss attacks are not completed by the current foundation.
 
+## Progression diagnostics and observed native corrections (2026-10-06, 18:43 UTC)
+
+Published `8d7be28c` in [run 37508370261](https://github.com/defnotean/wildercord/actions/runs/37508370261) passes the normal build, aggregate shard 1, and the whole Nursery diagnostic. Its actual first harvested gill has one native spawn/contact/pickup, inventory zero to one within the unchanged twenty ticks, and the full class returns after 119.6 seconds. The earlier unobserved pickup failure remains unexplained. Other aggregate/focused results are still pending at this checkpoint.
+
+The paired group's complete **46-case cast/Life sub-run passes** in 430.306 seconds with both JVMs exiting zero. All 150 per-case phase witnesses and three terminals match the exact source, nonce, roles and processes. The subsequent first Moon observer view fails before screenshot arming because its source age is outside `[10,11)`; the combined paired job fails and **zero remote Moon views are accepted**. Actual server acceptance/release are ticks 182/192. The missed client age was not recorded, so bounded passive clock receipts now preserve the unchanged wait and phase requirements rather than assuming a production playback defect or widening a tolerance.
+
+Real Life owner/peer particles are visible in the originals, but a retained earlier arena floor at y180 shadows the later y101 scene. The reviewed fixture moves the whole Life setup to floor/body y220/221 with the same relative camera geometry. Both clients must observe resident stage geometry, open columns and genuine daylight before arming/payment. Stale chat/toasts clear before the action; the real HUD/hands remain. Full ClockState and weather restore in cleanup, with gameTime/cooldowns untouched. Fresh bright-stage captures remain pending.
+
+The original-main Thresherwind flight recipe emits sixteen callbacks against its existing strict fewer-than-sixteen family cap. The reviewed correction removes only its repeated central flight leaf marker: Full fifteen, Minimal ten. Airflow lanes, central Wind, stalks/grain, preparation and gameplay remain unchanged. An actual 420-sample before/after comparison leaves every other sampled callback unchanged; the strict family assertion stays. Native gallery acceptance remains pending.
+
+The next fixed diagnostic runs exactly the whole Reweave and Stone Hinge feasibility classes, with both ordered completions and original observed seeds required. They append to the full descriptor (298 to 300) without changing any existing order; focused scopes stay 38/6/46 plus four Moon views. Reweave has no ordinary RuneDef, input or lesson registration. Stone Hinge has no gameplay movement implementation. Their reviewed resident-ward/echo/cleanup and exact default-impulse safeguards must run natively before either design advances; diagnostic success cannot claim a released ability or full gate.
+
+The frozen combined checkpoint compiles **818 main / 260 client / 449 native-test / 179 unit-test** files and passes **1,520 JUnit** and **469 Python** tests with unchanged source fingerprints. These are source/tooling results, not native acceptance of the new changes.
+
+## Measured focused CI budget adjustment (2026-10-06, 18:35 UTC)
+
+The existing Masters job is bounded at 90 minutes with an 85-minute native step for its expanded 38-class selection. On dff8c58f, the first 32 completed update classes took 2,747.2 seconds. The same head's three completed Kiln classes on aggregate shard 4 took another 935.9 seconds, and its still-incomplete presentation segment took 234.3 seconds before failing Void Cut. The cross-job sum is 3,917.3 seconds (65.3 minutes), excluding the rest of presentation and the two added Life classes. This is a workload estimate across separate runners, not a guarantee or a historical timeout diagnosis.
+
+All gameplay waits, assertions, selection order and retry policy are unchanged. Other jobs keep their existing caps. The owned-JVM diagnostics retain their 30/45-minute snapshots and add one bounded 75-minute Masters snapshot before the new native-step cap. Existing always-run evidence collection remains; the job cap still includes setup and cleanup, and actual candidate elapsed time must be recorded before claiming the full selection passed. No new runner service, paid plan or compute provisioning is introduced.
+
 ## Next source checkpoint: owner Life and paired Moon (native pending)
 
 The reviewed Life owner-camera correction and connected gallery fixtures are integrated locally. Two exact native entries expand the update group from 36 to 38, with all original entries retained and the existing presentation class last. The paired contract preserves all 42 cases and appends four explicit Life owner/second-viewer comparisons. It arms the genuine peer before payment, captures original particles while resident in native render groups, then binds both roles' independent measurements before completion. Old 36-entry and 42-case evidence cannot pass the expanded selections.

@@ -53,6 +53,7 @@ public final class WindFlightTest implements FabricClientGameTest {
    && ((Number)field(p,Particle.class,"lifetime")).intValue()==5 && at(p).distanceTo(bolt.position())<reach);
  }
  private static void recipes(){
+  ThresherwindRecipeChecks.verify();
   check(FlightBodies.covers("wildercord:windcut,wildercord:cyclone"),"Complete authored mixed group");
   for(String ids:List.of("","wildercord:windcut,!","wildercord:windcut,wildercord:harm","other:windcut","wildercord:windcut,"))
    check(!FlightBodies.covers(ids),"Incomplete or foreign identity retains fallback: "+ids);

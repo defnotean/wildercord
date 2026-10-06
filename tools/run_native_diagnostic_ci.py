@@ -16,8 +16,10 @@ import re
 import subprocess
 import sys
 
-from client_suites import ROOT, EXIT_PREFIX, REQUEST_PREFIX, select_entries, selection_issues
+from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIES,
+                           progression_completion, select_entries, selection_issues)
 import run_client_ci
+from native_ci_diagnostics import SCENE_PREFIX
 
 REQUEST = ".github/native-diagnostic-request.json"
 OUTPUT = "artifacts/review/native-diagnostic"
@@ -34,11 +36,13 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "wall-turn": "diagnostic-wall-turn",
          "kiln-ring": "diagnostic-kiln-ring",
          "ecology-return": "diagnostic-ecology-return",
-         "stasis-gallery": "diagnostic-stasis-gallery"}
+         "stasis-gallery": "diagnostic-stasis-gallery",
+         "progression-feasibility": "diagnostic-progression-feasibility"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
+    "progression-feasibility": dict.fromkeys(PROGRESSION_ENTRIES),
     "stasis-gallery": {"dev.wildercord.gametest.WildercordScreenshots": None},
     "ecology-return": {"dev.wildercord.wildlife.RootmoltCounterTest": None,
                        "dev.wildercord.wildlife.ReedRefugeTest": None,
@@ -66,6 +70,23 @@ CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_cata
                 "src/gametest/resources/fabric.mod.json", "build.gradle", "gradle.properties",
                 "gradle/wrapper/gradle-wrapper.properties", "tools/run_native_diagnostic_ci.py",
                 "tools/run_client_ci.py", "tools/client_suites.py", "tools/native_ci_diagnostics.py")
+
+
+# Include every new proof helper and exact test-only instrumentation used by this case.
+CASE_FILES = {"progression-feasibility": (
+    "src/main/java/dev/wildercord/cast/ReweaveFields.java",
+    "src/main/java/dev/wildercord/spell/ReweaveRules.java",
+    "src/test/java/dev/wildercord/spell/ReweaveRulesTest.java",
+    "src/gametest/java/dev/wildercord/aura/world/StoneHingeMasterReleaseChecks.java",
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeImpulseProbe.java",
+    *("src/gametest/java/dev/wildercord/gametest/stonehinge/mixin/" + name + ".java" for name in (
+        "StoneHingePlayerProbeMixin", "StoneHingeMobProbeMixin", "StoneHingeKnockbackProbeMixin",
+        "StoneHingeMasterProbeMixin", "StoneHingeAuraSourceProbeMixin")),
+    "src/gametest/resources/stone-hinge-proof-gametest.mixins.json",
+    "src/gametest/resources/native-diagnostics-gametest.mixins.json",
+    "src/gametest/java/dev/wildercord/gametest/mixin/NativeSceneTraceMixin.java",
+    "tools/check_stone_hinge_native_contract.py",
+)}
 
 
 def unique_object(pairs):
@@ -171,7 +192,11 @@ def current(env, *, observed_head=None):
     selection = select_entries(suite=CASES[request["case"]]) if request["case"] else None
     if selection is not None and selection["kind"] != "diagnostic":
         raise ValueError("Allowlisted case must remain explicitly diagnostic in the catalog")
-    paths = list(CONFIG_FILES)
+    if request["case"] == "progression-feasibility" and selection != {
+            "kind": "diagnostic", "name": CASES["progression-feasibility"],
+            "count": 2, "entries": list(PROGRESSION_ENTRIES)}:
+        raise ValueError("Progression feasibility requires exactly both complete allowlisted classes in order")
+    paths = [*CONFIG_FILES, *CASE_FILES.get(request["case"], ())]
     if selection:
         paths += ["src/gametest/java/" + entry.replace(".", "/") + ".java" for entry in selection["entries"]]
     if request["case"] == "wall-turn":
@@ -235,12 +260,17 @@ def observed_seeds(log, case):
         if SEED_PREFIX not in line:
             continue
         try:
-            marker = json.loads(line.split(SEED_PREFIX, 1)[1])
+            marker = json.loads(line.split(SEED_PREFIX, 1)[1],
+                                object_pairs_hook=unique_object if case == "progression-feasibility" else dict)
+            if case == "progression-feasibility" and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
+                raise ValueError()
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
-            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery") and entry in found:
+            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility") and entry in found:
                 issues.append("Repeated native world seed marker for " + entry)
+            if case == "progression-feasibility" and not -(2 ** 63) <= int(seed) < 2 ** 63:
+                raise ValueError()
             found.setdefault(entry, set()).add(seed)
         except (ValueError, KeyError, TypeError):
             issues.append("Invalid native world seed marker")
@@ -312,6 +342,8 @@ def collect(env):
         issues.append("Native log request provenance is invalid")
     seeds, seed_issues = observed_seeds(log, data["request"]["case"])
     issues.extend(seed_issues)
+    if data["request"]["case"] == "progression-feasibility":
+        data["completedEntries"], _ = progression_completion(log)
     successful = "BUILD SUCCESSFUL" in log and "BUILD FAILED" not in log and not issues
     data.update(diagnosticOutcome="passed" if successful else "unverified",
                 observedWorldSeeds=seeds, verificationIssues=issues,

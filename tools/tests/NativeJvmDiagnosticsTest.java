@@ -33,7 +33,7 @@ public final class NativeJvmDiagnosticsTest {
 
 	private static void activation() {
 		for (String job : new String[] {"masters-native", "articulated-native", "native-diagnostic"}) {
-			check(NativeJvmDiagnostics.mode("true", job) == NativeJvmDiagnostics.Mode.FOCUSED, "focused job");
+			check(NativeJvmDiagnostics.mode("true", job) == (job.equals("masters-native") ? NativeJvmDiagnostics.Mode.MASTERS : NativeJvmDiagnostics.Mode.FOCUSED), "focused job");
 			for (String ci : new String[] {null, "", "false", "TRUE", "1"}) {
 				check(NativeJvmDiagnostics.mode(ci, job) == NativeJvmDiagnostics.Mode.DISABLED, "fail closed without exact CI");
 			}
@@ -45,7 +45,7 @@ public final class NativeJvmDiagnosticsTest {
 	}
 
 	private static void thresholds() {
-		for (var mode : new NativeJvmDiagnostics.Mode[] {NativeJvmDiagnostics.Mode.FOCUSED, NativeJvmDiagnostics.Mode.FULL}) {
+		for (var mode : new NativeJvmDiagnostics.Mode[] {NativeJvmDiagnostics.Mode.FOCUSED, NativeJvmDiagnostics.Mode.MASTERS, NativeJvmDiagnostics.Mode.FULL}) {
 			// Deliberately cross the signed nanoTime wraparound boundary.
 			long start = Long.MAX_VALUE - TimeUnit.SECONDS.toNanos(10);
 			List<Long> calls = new ArrayList<>();
@@ -60,8 +60,15 @@ public final class NativeJvmDiagnosticsTest {
 			check(calls.equals(List.of(mode.seconds[0])), "one first threshold");
 			session.scene("dev.wildercord.OtherTest", "run");
 			session.poll(start + TimeUnit.SECONDS.toNanos(mode.seconds[1]));
+			if (mode == NativeJvmDiagnostics.Mode.MASTERS) {
+				session.poll(start + TimeUnit.SECONDS.toNanos(4500) - 1);
+				check(calls.equals(List.of(1800L, 2700L)), "no early late-Masters snapshot");
+				session.poll(start + TimeUnit.SECONDS.toNanos(4500));
+				check(calls.equals(List.of(1800L, 2700L, 4500L)), "one bounded late-Masters snapshot");
+			}
 			session.poll(start + TimeUnit.DAYS.toNanos(1));
-			check(calls.equals(List.of(mode.seconds[0], mode.seconds[1])), "two total across scene transitions");
+			check(calls.equals(mode == NativeJvmDiagnostics.Mode.MASTERS ? List.of(1800L, 2700L, 4500L)
+				: List.of(mode.seconds[0], mode.seconds[1])), "exact bounded total across scene transitions");
 			session.close();
 			session.scene("dev.wildercord.LateTest", "setup");
 			check(session.scene.suite().equals("none") && session.testThreadId == 0, "close clears scene and IDs");
