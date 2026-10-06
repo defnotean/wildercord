@@ -8,7 +8,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
-- Added the source-reviewed Ember Kiln Ring candidate: a stationary warned annulus with an inner pocket, outer escape, cover and timed-jump counters, original body/weapon motion, finite Aura and full recovery. Dedicated native counterplay and visual acceptance remain pending.
+- Added Ember Kiln Ring: a stationary warned annulus with an inner pocket, outer escape, cover and timed-jump counters, original body/weapon motion, finite Aura and full recovery. Its three dedicated native mechanics, presentation and opponent-view suites pass on `160ff125`; final-candidate and continuous gameplay acceptance remain open.
+
+- Let Glimmerwings sense the lantern light already around them and follow a bounded brighter-air gradient, preserving their existing natural flight and exploratory searches. The strengthened native check requires actual light acquisition and lured flight before arrival; candidate runtime acceptance remains pending.
 
 - Added the isolated Wall Turn lesson: a Sovereign with a recorded Gale clear can learn from a wandering teacher, retain its original three-page story, and equip one separate Master form. Fresh C inputs brace and kick through a bounded, paid server movement with real collision, fall risk and safe-landing recovery. Classic body/hand presentation and native acceptance suites accompany the source; final combined native acceptance is pending.
 
@@ -2484,5 +2486,4 @@ The first public version.
 - Server-authoritative casting with per-cast budgets, friendly fire off, and PvP damage scaling.
 - A generated asset pipeline (`tools/`) driven by the rune roster.
 - Unit tests for the spell engine and client game tests for mechanics and layout.
-
 

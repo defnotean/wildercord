@@ -570,18 +570,23 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 				lanternProbe[0] = GlimmerwingLanternProbe.begin(player.level(), spawned, BlockPos.containing(MOTHS.add(0, 1.5, -1)));
 				return spawned.getId();
 			});
+			record LanternSample(double distance, boolean arrived) {}
 			double nearest = Double.MAX_VALUE;
-			for (int i = 0; i < 25 && nearest > 3.2; i++) {
+			boolean arrived = false;
+			for (int i = 0; i < 25 && !arrived; i++) {
 				int attempt = i + 1;
 				context.waitTicks(20);
-				nearest = world.getServer().computeOnServer(server -> {
+				LanternSample sample = world.getServer().computeOnServer(server -> {
 					Entity found = player(server).level().getEntity(moth);
 					double distance = found == null ? Double.MAX_VALUE : found.position().distanceTo(MOTHS.add(0, 1.5, -1));
 					GlimmerwingLanternProbe.sampled(lanternProbe[0], player(server).level(), found, distance, attempt);
-					return distance;
+					return new LanternSample(distance, GlimmerwingLanternProbe.arrived(lanternProbe[0]));
 				});
+				nearest = sample.distance();
+				arrived = sample.arrived();
 			}
-			check(nearest <= 3.2, "a glimmerwing should find the lantern and circle it (nearest " + String.format("%.1f", nearest) + ")");
+			check(arrived, "a glimmerwing should acquire the lantern, select a lured flight target, then arrive naturally within 500 ticks (last distance "
+					+ String.format("%.1f", nearest) + ")");
 		} finally {
 			world.getServer().runOnServer(server -> GlimmerwingLanternProbe.finish(lanternProbe[0]));
 		}

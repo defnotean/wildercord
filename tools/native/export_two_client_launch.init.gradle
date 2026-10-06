@@ -1,30 +1,145 @@
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import java.security.MessageDigest
 
-// Proposal: root invokes serialized AFTER promotion/compilation, never executes the game task.
+// This exports a bounded client command; it never executes runClientGameTest.
 gradle.projectsEvaluated {
- def p=gradle.rootProject
- if (!p.hasProperty('twoClientSuite')) throw new GradleException('Export requires -PtwoClientSuite to select the supervised two-process fixture')
- p.tasks.register('exportTwoClientLaunch') {
-  dependsOn p.tasks.named('gametestClasses'),p.tasks.named('configureLaunch')
-  doLast {
-   def run=p.tasks.named('runClientGameTest').get()
-   if(run.microsoftAuthenticationEnabled.get())throw new GradleException('Use offline development profiles for isolated local fixture')
-   def base=Class.forName('net.fabricmc.loom.task.AbstractRunTask',true,run.class.classLoader)
-   def useArgs=base.getDeclaredMethod('getUseArgFile');useArgs.accessible=true;useArgs.invoke(run).set(false)
-   def jvm=new ArrayList(run.jvmArgs ?: [])
-   run.systemProperties.each {k,v->jvm.add('-D'+k+'='+v)}
-   // Preserve custom JavaExec JVM providers; Loom's provider supplies getGameJvmArgs.
-   run.jvmArgumentProviders.each {provider->jvm.addAll(provider.asArguments())}
-   def args=new ArrayList(run.args ?: [])
-   run.argumentProviders.each {provider->args.addAll(provider.asArguments())}
-   def output=p.file(p.findProperty('twoClientLaunch') ?: 'artifacts/drafts/aura-closure/two-clients/launch.json')
-   output.parentFile.mkdirs()
-   output.setText(JsonOutput.prettyPrint(JsonOutput.toJson([
-    java:run.javaLauncher.get().executablePath.asFile.absolutePath,
-    main:run.mainClass.get(),classpath:run.classpath.files.collect{it.absolutePath},
-    jvm:jvm,args:args,environment:[ALSOFT_DRIVERS:run.environment['ALSOFT_DRIVERS']],
-    project:p.projectDir.absolutePath,loomVersion:'1.18.2'
-   ])),'UTF-8')
-  }
- }
+    def p = gradle.rootProject
+    if (p.findProperty('twoClientSuite')?.toString() != 'cast-receipt') throw new GradleException('Bounded export requires -PtwoClientSuite=cast-receipt')
+    def root = p.projectDir.canonicalFile
+    def expectedEntry = 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
+    def contractPath = 'src/gametest/resources/cast-receipt-native-contract.json'
+    def git = { List<String> arguments ->
+        def process = new ProcessBuilder(['git', '-C', root.absolutePath] + arguments).redirectErrorStream(true).start()
+        def output = new StringBuffer()
+        def reader = process.consumeProcessOutputStream(output)
+        if (!process.waitFor(15, java.util.concurrent.TimeUnit.SECONDS)) {
+            process.destroyForcibly()
+            throw new GradleException('Git provenance check exceeded its deadline')
+        }
+        reader.join(1000)
+        if (reader.isAlive()) throw new GradleException('Git provenance output did not finish')
+        if (process.exitValue() != 0) throw new GradleException('Git provenance check failed: ' + output)
+        output.toString().trim()
+    }
+    def inside = { File path, List<File> roots ->
+        def canonical = path.canonicalFile
+        if (!roots.any { canonical.toPath().startsWith(it.canonicalFile.toPath()) }) throw new GradleException('Path escapes allowed roots: ' + path)
+        canonical
+    }
+    Closure<String> digest
+    digest = { File path ->
+        if (java.nio.file.Files.isSymbolicLink(path.toPath())) throw new GradleException('Symlink runtime input: ' + path)
+        def md = MessageDigest.getInstance('SHA-256')
+        if (path.isDirectory()) {
+            def children = []
+            path.eachFileRecurse { child ->
+                if (java.nio.file.Files.isSymbolicLink(child.toPath())) throw new GradleException('Symlink runtime input: ' + child)
+                if (child.isFile()) children.add(child)
+            }
+            children.sort { a, b -> path.toPath().relativize(a.toPath()).toString().replace('\\', '/') <=> path.toPath().relativize(b.toPath()).toString().replace('\\', '/') }.each { child ->
+                md.update(path.toPath().relativize(child.toPath()).toString().replace('\\', '/').getBytes('UTF-8'))
+                md.update((byte) 0)
+                md.update((digest(child) + '\n').getBytes('UTF-8'))
+            }
+        } else {
+            if (!path.isFile()) throw new GradleException('Missing runtime input: ' + path)
+            path.withInputStream { input ->
+                byte[] buffer = new byte[1024 * 1024]
+                int size
+                while ((size = input.read(buffer)) != -1) md.update(buffer, 0, size)
+            }
+        }
+        md.digest().encodeHex().toString()
+    }
+    p.tasks.register('exportTwoClientLaunch') {
+        dependsOn p.tasks.named('gametestClasses'), p.tasks.named('configureLaunch')
+        outputs.upToDateWhen { false }
+        doLast {
+            if (git(['status', '--porcelain', '--untracked-files=normal'])) throw new GradleException('Commit source changes before exporting a native launch')
+            def sourceHead = git(['rev-parse', 'HEAD'])
+            def prHeadSha = System.getenv('WILDERCORD_PR_HEAD_SHA') ?: ''
+            if (prHeadSha && !(prHeadSha ==~ /[a-f0-9]{40}/)) throw new GradleException('Malformed explicit PR-head association')
+            def run = p.tasks.named('runClientGameTest').get()
+            if (run.microsoftAuthenticationEnabled.get()) throw new GradleException('The fixture requires fixed offline development profiles')
+            def descriptor = inside(new File(p.tasks.named('processGametestResources').get().destinationDir, 'fabric.mod.json'), [new File(root, 'build'), new File(root, 'build-alt')])
+            def descriptorData = new JsonSlurper().parse(descriptor)
+            if (descriptorData.entrypoints['fabric-client-gametest'] != [expectedEntry]) throw new GradleException('Generated descriptor does not match the requested supervised fixture')
+            def classPath = expectedEntry.replace('.', '/') + '.class'
+            if (!p.sourceSets.gametest.output.classesDirs.files.any { new File(it, classPath).isFile() }) throw new GradleException('Supervised entrypoint class is missing from compiled gametest output')
+            def contractFile = new File(root, contractPath)
+            def contract = new JsonSlurper().parse(contractFile)
+            if (contract.suite != 'cast-receipt' || contract.entrypoint != expectedEntry || contract.expectedCount != 35 || contract.cases.size() != 35) throw new GradleException('Unexpected cast receipt source contract')
+            if (digest(new File(descriptor.parentFile, contractFile.name)) != digest(contractFile)) throw new GradleException('Processed contract differs from source contract')
+            def taskBase = Class.forName('net.fabricmc.loom.task.AbstractRunTask', true, run.class.classLoader)
+            def useArgs = taskBase.getDeclaredMethod('getUseArgFile')
+            useArgs.accessible = true
+            useArgs.invoke(run).set(false)
+            def jvm = new ArrayList(run.jvmArgs ?: [])
+            run.systemProperties.each { key, value -> jvm.add('-D' + key + '=' + value) }
+            run.jvmArgumentProviders.each { provider -> jvm.addAll(provider.asArguments()) }
+            def args = new ArrayList(run.args ?: [])
+            run.argumentProviders.each { provider -> args.addAll(provider.asArguments()) }
+            def output = inside(p.file(p.findProperty('twoClientLaunch') ?: 'build/native/cast-launch.json'), [new File(root, 'build'), new File(root, 'build-alt'), new File(root, 'artifacts')])
+            // Evidence must not dirty the source it attests to.
+            git(['check-ignore', output.absolutePath])
+            def runtimeRoots = [root, new File(gradle.gradleUserHomeDir, 'caches'), new File(gradle.gradleUserHomeDir, 'jdks')]
+            def javaFile = run.javaLauncher.get().executablePath.asFile.canonicalFile
+            if (!(javaFile.name in ['java', 'java.exe']) || run.mainClass.get() != 'net.fabricmc.devlaunchinjector.Main') throw new GradleException('Only the configured Java/Fabric client launcher is exportable')
+            def classpath = run.classpath.files.collect { inside(it, runtimeRoots).absolutePath }
+            def paths = [javaFile] as Set
+            paths.addAll(classpath.collect { new File(it) })
+            def pathProperties = ['fabric.dli.config', 'fabric.remapClasspathFile', 'fabric.addMods', 'fabric.classPathGroups', 'java.library.path', 'org.lwjgl.librarypath', 'log4j.configurationFile', 'fabric.client.gametest.testModResourcesPath', 'fabric.gameJarPath', 'fabric.gameJarPath.client']
+            def multiplePaths = ['fabric.addMods', 'fabric.classPathGroups', 'java.library.path', 'org.lwjgl.librarypath']
+            def properties = [:]
+            jvm.findAll { it.startsWith('-D') }.each { argument ->
+                def parts = argument.substring(2).split('=', 2)
+                properties[parts[0]] = parts.length == 2 ? parts[1] : ''
+            }
+            def configValue = properties['fabric.dli.config']
+            if (!configValue) throw new GradleException('Missing Fabric launch config')
+            def configPath = configValue.replaceAll(/@@([0-9a-fA-F]{1,4})/) { match, hex -> ((char) Integer.parseInt(hex, 16)).toString() }
+            def configFile = inside(new File(configPath), runtimeRoots)
+            properties['fabric.dli.config'] = configPath
+            def section = ''
+            configFile.eachLine('UTF-8') { line ->
+                if (line.trim()) {
+                    if (!line.startsWith(' ') && !line.startsWith('\t')) section = line.trim()
+                    else if (section in ['commonProperties', 'clientProperties']) {
+                        def parts = line.trim().split('=', 2)
+                        properties[parts[0].trim()] = parts.length == 2 ? parts[1].trim() : ''
+                    }
+                }
+            }
+            properties.each { key, value ->
+                if (key in pathProperties) {
+                    def separator = key == 'log4j.configurationFile' ? ',' : File.pathSeparator
+                    def values = key in multiplePaths || key == 'log4j.configurationFile' ? value.split(java.util.regex.Pattern.quote(separator)) : [value]
+                    values.findAll { it }.each { paths.add(inside(new File(it), runtimeRoots)) }
+                }
+            }
+            if (properties['fabric.remapClasspathFile']) {
+                new File(properties['fabric.remapClasspathFile']).getText('UTF-8').trim().split(java.util.regex.Pattern.quote(File.pathSeparator)).findAll { it }.each {
+                    paths.add(inside(new File(it), runtimeRoots))
+                }
+            }
+            def fingerprints = [:]
+            paths.sort { it.absolutePath }.each { fingerprints[it.absolutePath] = digest(it) }
+            def environment = [:]
+            if (run.environment['ALSOFT_DRIVERS'] != null) {
+                if (run.environment['ALSOFT_DRIVERS'] != 'null') throw new GradleException('Bounded native export requires the existing null OpenAL backend')
+                environment.ALSOFT_DRIVERS = 'null'
+            }
+            output.parentFile.mkdirs()
+            output.setText(JsonOutput.prettyPrint(JsonOutput.toJson([
+                schemaVersion: 2, suite: 'cast-receipt', sourceHead: sourceHead, checkoutSha: sourceHead, prHeadSha: prHeadSha, project: root.absolutePath,
+                descriptor: descriptor.absolutePath, descriptorSha256: digest(descriptor),
+                contract: contractPath, contractSha256: digest(contractFile),
+                java: javaFile.absolutePath, main: run.mainClass.get(), classpath: classpath,
+                jvm: jvm, args: args, environment: environment, runtimeSha256: fingerprints,
+                loomVersion: p.property('loom_version').toString()
+            ])), 'UTF-8')
+            logger.lifecycle('Exported bounded cast-receipt launch for ' + sourceHead + ' to ' + output)
+        }
+    }
 }

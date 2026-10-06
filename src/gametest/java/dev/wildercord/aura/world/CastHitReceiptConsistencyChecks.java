@@ -1,6 +1,5 @@
 package dev.wildercord.aura.world;
 
-import com.mojang.authlib.GameProfile;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraAttachments;
@@ -11,6 +10,8 @@ import dev.wildercord.aura.MastersArtRules;
 import dev.wildercord.aura.MastersArts;
 import dev.wildercord.aura.arts.ArtKit;
 import dev.wildercord.cast.CastEngine;
+import dev.wildercord.cast.CastReceiptWardProbe;
+import dev.wildercord.cast.DeathsDoor;
 import dev.wildercord.cast.CastLock;
 import dev.wildercord.cast.Charging;
 import dev.wildercord.cast.Effects;
@@ -24,8 +25,9 @@ import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
+import net.minecraft.server.MinecraftServer;
+import java.util.function.Consumer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -57,22 +59,19 @@ import java.util.UUID;
  * Targets begin real charges; accepted callbacks, native defences and both interruption cooldowns remain live.
  * The paused Master isolates release admission, not pursuit movement. The Driving Cut owner is the real client.
  */
-final class CastHitReceiptConsistencyChecks {
+public final class CastHitReceiptConsistencyChecks {
 	private static final float HEALTH = 200;
 	private static final List<EquipmentSlot> EQUIPMENT = List.of(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND,
 		EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET);
 	private enum Route { BREAK_CAST, DRIVING_CUT }
 	private enum Case { HEALTH, FULL_ABSORPTION, MANA_SKIN, REVERSAL, TOTEM, GUARD, STEP, WARD,
 		RESISTANCE, REJECTED, REPLACED, EQUAL_TOKEN, NEW_CHARGE, IDLE, WINDUP_REPLACEMENT }
-	private static final class Challenger extends FakePlayer {
-		boolean rejectDamage;
-		Challenger(ServerLevel level) { super(level, new GameProfile(UUID.randomUUID(), "CastReceipt")); }
-		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return rejectDamage; }
-	}
 	private static boolean registered;
 	private static CastHitReceiptConsistencyChecks active;
 	private SwordMaster master;
-	private Challenger target;
+	private ServerPlayer target;
+	private UUID actorId, recipientId;
+	private long recipientReadyAt;
 	private LivingEntity attacker;
 	private Vec3 origin, positionBefore;
 	private Route route;
@@ -84,40 +83,80 @@ final class CastHitReceiptConsistencyChecks {
 	private long begun, drivingReady, impactAt;
 	private boolean releaseFinished;
 
+	static List<String> expectedCases() {
+		var cases = new java.util.ArrayList<String>();
+		for (Route route : Route.values()) for (Case sample : Case.values()) cases.add(route.name() + "_" + sample.name());
+		cases.addAll(List.of("SHARED_BREAK_CAST_TO_DRIVING_CUT", "SHARED_DRIVING_CUT_TO_BREAK_CAST",
+			"IDLE_SEAL_RECOVERY", "CHARGED_SEAL_RECOVERY", "NONPLAYER"));
+		return List.copyOf(cases);
+	}
+
+	/** Single-client aggregate keeps all fifteen NPC releases; the mandatory paired suite owns the PvP roles. */
 	void run(ClientGameTestContext context) {
-		registerCallbacks();
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(40);
-			for (String command : List.of("difficulty normal", "gamerule spawn_mobs false", "gamerule natural_health_regeneration false"))
-				world.getServer().runCommand(command);
-			world.getServer().runOnServer(server -> {
-				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			runMatrix(context, world.getServer(), false, ignored -> {}, ignored -> {});
+		}
+	}
+
+	/** Both IDs must be distinct genuine connected bodies; no player-registry or charge-state substitution. */
+	public void runConnectedPair(ClientGameTestContext context, TestServerContext server, UUID actorId, UUID recipientId, Consumer<String> observed, Consumer<String> completed) {
+		check(!actorId.equals(recipientId), "Driving Cut has two distinct connected roles");
+		this.actorId = actorId; this.recipientId = recipientId;
+		runMatrix(context, server, true, observed, completed);
+	}
+
+	private void runMatrix(ClientGameTestContext context, TestServerContext server, boolean paired, Consumer<String> observed, Consumer<String> completed) {
+		registerCallbacks();
+		try {
+			for (String command : List.of("difficulty normal", "gamerule spawn_mobs false", "gamerule natural_health_regeneration false")) server.runCommand(command);
+			server.runOnServer(s -> {
+				ServerPlayer player = actor(s);
 				origin = new Vec3(player.getBlockX() + .5, 181, player.getBlockZ() + .5);
 				for (int x = -15; x <= 15; x++) for (int z = -15; z <= 15; z++)
 					player.level().setBlockAndUpdate(BlockPos.containing(origin).offset(x, -1, z), Blocks.STONE.defaultBlockState());
 				prepare(player); place(player, 8, 3, 180);
+				check(actor(s).level() == recipient(s).level(), "Both connected roles share the native encounter world");
 			});
-			for (Route selected : Route.values()) for (Case selectedCase : Case.values()) {
-				world.getServer().runOnServer(server -> {
-					route = selected; probe = selectedCase;
-					target = add(server.getPlayerList().getPlayers().getFirst().level());
-					charge(target);
-				});
+			for (Route selected : paired ? Route.values() : new Route[] {Route.BREAK_CAST}) for (Case selectedCase : Case.values()) {
+				freshRecipient(server, selected, selectedCase, true);
 				try {
-					release(context, world, true);
-					world.getServer().runOnServer(server -> verify());
-					// The real Step owns queued movement; finish it before discarding its player body.
-					if (selectedCase == Case.STEP) world.getServer().waitFor(server ->
-						target.level().getGameTime() >= impactAt + Math.max(AuraRules.STEP_TICKS, AuraRules.STEP_GUARD_TICKS) + 2,
-						Math.max(AuraRules.STEP_TICKS, AuraRules.STEP_GUARD_TICKS) + 5);
-				} finally { world.getServer().runOnServer(server -> clearTarget()); }
+					release(context, server, true);
+					server.runOnServer(s -> verify());
+					if (selectedCase == Case.STEP) server.waitFor(s -> target.level().getGameTime() >= impactAt
+						+ Math.max(AuraRules.STEP_TICKS, AuraRules.STEP_GUARD_TICKS) + 2, Math.max(AuraRules.STEP_TICKS, AuraRules.STEP_GUARD_TICKS) + 5);
+					observed.accept(selected.name() + "_" + selectedCase.name());
+				} finally { server.runOnServer(s -> clearTarget()); }
+				completed.accept(selected.name() + "_" + selectedCase.name());
 			}
-			sharedImmunity(context, world, Route.BREAK_CAST);
-			sharedImmunity(context, world, Route.DRIVING_CUT);
-			idleSealRecovery(context, world);
-			chargedSealRecovery(context, world);
-			nonplayer(context, world);
-		} finally { active = null; }
+			if (paired) {
+				sharedImmunity(context, server, Route.BREAK_CAST, () -> observed.accept("SHARED_BREAK_CAST_TO_DRIVING_CUT")); completed.accept("SHARED_BREAK_CAST_TO_DRIVING_CUT");
+				sharedImmunity(context, server, Route.DRIVING_CUT, () -> observed.accept("SHARED_DRIVING_CUT_TO_BREAK_CAST")); completed.accept("SHARED_DRIVING_CUT_TO_BREAK_CAST");
+				idleSealRecovery(context, server, () -> observed.accept("IDLE_SEAL_RECOVERY")); completed.accept("IDLE_SEAL_RECOVERY");
+				chargedSealRecovery(context, server, () -> observed.accept("CHARGED_SEAL_RECOVERY")); completed.accept("CHARGED_SEAL_RECOVERY");
+				nonplayer(context, server); observed.accept("NONPLAYER"); completed.accept("NONPLAYER");
+			}
+		} finally { active = null; server.runOnServer(s -> clearTarget()); }
+	}
+
+	private ServerPlayer actor(MinecraftServer server) { return connected(server, actorId); }
+	private ServerPlayer recipient(MinecraftServer server) { return connected(server, recipientId == null ? actorId : recipientId); }
+	private static ServerPlayer connected(MinecraftServer server, UUID id) {
+		ServerPlayer player = id == null ? server.getPlayerList().getPlayers().getFirst() : server.getPlayerList().getPlayer(id);
+		check(player != null && server.getPlayerList().getPlayer(player.getUUID()) == player && player.connection != null
+			&& player.connection.player == player && player.isAlive(), "The native fixture retains its exact connected role body");
+		return player;
+	}
+	private void freshRecipient(TestServerContext server, Route nextRoute, Case nextCase, boolean chargeNow) {
+		server.waitFor(s -> actor(s).connection.hasClientLoaded() && recipient(s).connection.hasClientLoaded()
+			&& s.overworld().getGameTime() >= recipientReadyAt && CastReceiptWardProbe.active(recipient(s)).isEmpty()
+			&& (nextCase != Case.REVERSAL || DeathsDoor.resting(recipient(s)) == 0), DeathsDoor.REST + 5);
+		server.runOnServer(s -> {
+			route = nextRoute; probe = nextCase; target = recipient(s); prepare(target); place(target, 0, 3, 180);
+			check(CastReceiptWardProbe.active(target).isEmpty(), "No previous UUID-scoped ward can mask this release or defence");
+			if (nextCase == Case.MANA_SKIN) { dress(target); reconcileEquipment(target); }
+			if (chargeNow) charge(target);
+		});
 	}
 
 	private static void registerCallbacks() {
@@ -156,21 +195,21 @@ final class CastHitReceiptConsistencyChecks {
 		});
 	}
 
-	private void release(ClientGameTestContext context, TestSingleplayerContext world, boolean configure) {
+	private void release(ClientGameTestContext context, TestServerContext server, boolean configure) {
 		if (route == Route.BREAK_CAST) {
-			world.getServer().runOnServer(server -> {
-				place(server.getPlayerList().getPlayers().getFirst(), 8, 3, 180);
+			server.runOnServer(s -> {
+				if (actor(s) != target) place(actor(s), 8, 3, 180);
 				startMaster(); begun = target.level().getGameTime();
 			});
-			world.getServer().waitFor(server -> target.level().getGameTime() >= begun + 21, 25);
-			world.getServer().runOnServer(server -> {
+			server.waitFor(s -> target.level().getGameTime() >= begun + 21, 25);
+			server.runOnServer(s -> {
 				master.setTarget(target); master.customServerAiStep(target.level());
 				check(master.attackAnimation() == MastersRules.Move.BREAK_CAST.ordinal() + 1 && master.state(AuraFighter.WINDUP),
 					"A real held spell inside four blocks selects the original BREAK_CAST tell");
 				begun = target.level().getGameTime();
 				check(close(target.getHealth(), HEALTH), "The original Master windup is harmless");
 			});
-			world.getServer().waitFor(server -> {
+			server.waitFor(s -> {
 				if (target.level().getGameTime() < begun + MastersRules.Move.BREAK_CAST.tell) return false;
 				check(target.level().getGameTime() == begun + MastersRules.Move.BREAK_CAST.tell, "Observe the original Master exact release frame");
 				beforeImpact(configure);
@@ -180,21 +219,21 @@ final class CastHitReceiptConsistencyChecks {
 				return true;
 			}, MastersRules.Move.BREAK_CAST.tell + 5);
 		} else {
-			world.getServer().waitFor(server -> server.overworld().getGameTime() >= drivingReady,
+			server.waitFor(s -> s.overworld().getGameTime() >= drivingReady,
 				MastersArtRules.DRIVING_CUT.rest() + 5);
-			world.getServer().runOnServer(server -> {
-				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			server.runOnServer(s -> {
+				ServerPlayer player = actor(s);
 				prepareActor(player); attacker = player; releaseFinished = false;
 				check(ArtKit.harmable(player, target) && player.hasLineOfSight(target), "The real client may target this player through the native art selector");
 				// Same deadline and FIFO as the real release: defence starts before impact, Step motion after it.
 				Scheduler.later(MastersArtRules.DRIVING_CUT.windup(), () -> beforeImpact(configure));
 				check(MastersArts.activate(player, 2), "The real connected client accepts Driving Cut through its public entrypoint");
 				check(close((float) Aura.aura(player), 100 - (float) MastersArtRules.DRIVING_CUT.cost()), "Driving Cut commits its unchanged eighteen-Aura price");
-				drivingReady = server.overworld().getGameTime() + MastersArtRules.DRIVING_CUT.rest();
+				drivingReady = s.overworld().getGameTime() + MastersArtRules.DRIVING_CUT.rest();
 				check(close(target.getHealth(), HEALTH), "The scheduled Driving Cut windup is harmless");
 				Scheduler.later(MastersArtRules.DRIVING_CUT.windup(), () -> { active = null; releaseFinished = true; });
 			});
-			world.getServer().waitFor(server -> releaseFinished, MastersArtRules.DRIVING_CUT.windup() + 5);
+			server.waitFor(s -> releaseFinished, MastersArtRules.DRIVING_CUT.windup() + 5);
 		}
 	}
 
@@ -208,9 +247,9 @@ final class CastHitReceiptConsistencyChecks {
 				check(close(target.getAbsorptionAmount(), 64), "MAX_ABSORPTION permits all fixture hearts");
 			}
 			case MANA_SKIN -> {
-				target.setAttached(WildercordAttachments.CIRCLES, 3); dress(target); target.doTick();
+				target.setAttached(WildercordAttachments.CIRCLES, 3);
 				check(target.getArmorValue() == 20 && target.getAttributeValue(Attributes.ARMOR_TOUGHNESS) >= 12,
-					"Inherited native doTick installs real Protection IV netherite despite FakePlayer.tick being empty");
+					"Native equipment reconciliation installed real Protection IV netherite before Charging");
 			}
 			case REVERSAL -> {
 				target.setHealth(1); CastEngine.cast(target, SpellCompiler.compile(List.of(Runes.SELF, Runes.REVERSAL)).root());
@@ -237,7 +276,7 @@ final class CastHitReceiptConsistencyChecks {
 				CastEngine.cast(target, SpellCompiler.compile(List.of(Runes.SELF, Runes.FORESIGHT)).root());
 			}
 			case RESISTANCE -> check(target.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 100, 4)), "Native Resistance V is installed");
-			case REJECTED -> target.rejectDamage = true;
+			case REJECTED -> target.setPermanentlyInvulnerable(true);
 			case NEW_CHARGE, IDLE -> Charging.interrupt(target);
 			case WINDUP_REPLACEMENT -> { Charging.interrupt(target); Charging.request(target, 0, true); }
 			default -> { }
@@ -295,60 +334,65 @@ final class CastHitReceiptConsistencyChecks {
 		}
 	}
 
-	private void sharedImmunity(ClientGameTestContext context, TestSingleplayerContext world, Route first) {
-		world.getServer().runOnServer(server -> {
-			route = first; probe = Case.HEALTH; target = add(server.getPlayerList().getPlayers().getFirst().level()); charge(target);
-		});
+	private void sharedImmunity(ClientGameTestContext context, TestServerContext server, Route first, Runnable observe) {
+		freshRecipient(server, first, Case.HEALTH, true);
 		try {
-			release(context, world, true);
+			release(context, server, true);
 			long[] interruptedAt = new long[1];
-			world.getServer().runOnServer(server -> { verify(); interruptedAt[0] = impactAt; discardMaster(); });
-			world.getServer().waitFor(server -> target.level().getGameTime() >= interruptedAt[0] + MastersArtRules.INTERRUPT_TICKS + 1,
+			server.runOnServer(s -> { verify(); interruptedAt[0] = impactAt; discardMaster(); });
+			server.waitFor(s -> target.level().getGameTime() >= interruptedAt[0] + MastersArtRules.INTERRUPT_TICKS + 1,
 				MastersArtRules.INTERRUPT_TICKS + 5);
-			world.getServer().runOnServer(server -> {
+			server.runOnServer(s -> {
 				check(!CastLock.locked(target), "The original short seal expires without clearing shared Statuses immunity");
 				target.setHealth(HEALTH); place(target, 0, 3, 180); charge(target);
 				route = first == Route.BREAK_CAST ? Route.DRIVING_CUT : Route.BREAK_CAST;
 			});
-			release(context, world, false);
-			world.getServer().runOnServer(server -> {
+			release(context, server, false);
+			server.runOnServer(s -> {
 				check(target.level().getGameTime() - interruptedAt[0] < Statuses.INTERRUPT_GAP, "Both real releases occur inside the same untouched 160-tick immunity");
 				check(target.getHealth() < beforeHealth && target.getAttached(WildercordAttachments.CHARGE) == beforeCharge && !CastLock.locked(target),
 					"An accepted " + route + " cannot bypass the shared immunity earned by " + first);
 				Effects.withSource(attacker, () -> check(!Statuses.interrupt(target), "Neither cross-route strike resets the existing shared immunity"));
 				Wildercord.LOGGER.info("[cast-hit-consistency] shared immunity {} -> {} preserved", first, route);
 			});
-			world.getServer().waitFor(server -> {
+			observe.run(); // Witness the protected charge before its deliberate end.
+			server.runOnServer(s -> Charging.interrupt(target));
+			server.waitFor(s -> target.level().getGameTime() >= interruptedAt[0] + Statuses.INTERRUPT_GAP - 6, Statuses.INTERRUPT_GAP + 5);
+			server.runOnServer(s -> {
+				charge(target); beforeCharge = target.getAttached(WildercordAttachments.CHARGE);
+				check(beforeCharge.start() >= interruptedAt[0] + Statuses.INTERRUPT_GAP - 6,
+					"A fresh real edge-probe charge tests retained immunity without bypassing normal overchannel");
+			});
+			server.waitFor(s -> {
 				if (target.level().getGameTime() < interruptedAt[0] + Statuses.INTERRUPT_GAP - 1) return false;
 				Effects.withSource(attacker, () -> check(target.level().getGameTime() == interruptedAt[0] + Statuses.INTERRUPT_GAP - 1
 					&& !Statuses.interrupt(target) && target.getAttached(WildercordAttachments.CHARGE) == beforeCharge,
 					"The exact native held spell remains protected through tick 159"));
 				return true;
 			}, Statuses.INTERRUPT_GAP + 5);
-			world.getServer().waitFor(server -> {
+			server.waitFor(s -> {
 				if (target.level().getGameTime() < interruptedAt[0] + Statuses.INTERRUPT_GAP) return false;
 				Effects.withSource(attacker, () -> check(target.level().getGameTime() == interruptedAt[0] + Statuses.INTERRUPT_GAP
 					&& Statuses.interrupt(target) && !target.hasAttached(WildercordAttachments.CHARGE),
 					"A refused cross-route strike does not extend the original immunity beyond tick 160"));
 				return true;
 			}, 5);
-		} finally { world.getServer().runOnServer(server -> clearTarget()); }
+		} finally { server.runOnServer(s -> clearTarget()); }
 	}
 
-	private void idleSealRecovery(ClientGameTestContext context, TestSingleplayerContext world) {
-		world.getServer().runOnServer(server -> {
-			route = Route.DRIVING_CUT; probe = Case.IDLE; target = add(server.getPlayerList().getPlayers().getFirst().level()); charge(target);
-		});
+	private void idleSealRecovery(ClientGameTestContext context, TestServerContext server, Runnable observe) {
+		freshRecipient(server, Route.DRIVING_CUT, Case.IDLE, true);
 		try {
-			release(context, world, true);
-			world.getServer().runOnServer(server -> verify());
-			world.getServer().waitFor(server -> {
+			release(context, server, true);
+			server.runOnServer(s -> verify());
+			observe.run(); // Witness the live seal before exact19/20 boundaries and subsequent cleanup.
+			server.waitFor(s -> {
 				if (target.level().getGameTime() < impactAt + MastersArtRules.INTERRUPT_TICKS - 1) return false;
 				check(target.level().getGameTime() == impactAt + MastersArtRules.INTERRUPT_TICKS - 1 && CastLock.locked(target),
 					"The original idle-player seal still holds on tick nineteen");
 				return true;
 			}, MastersArtRules.INTERRUPT_TICKS + 5);
-			world.getServer().waitFor(server -> {
+			server.waitFor(s -> {
 				if (target.level().getGameTime() < impactAt + MastersArtRules.INTERRUPT_TICKS) return false;
 				check(target.level().getGameTime() == impactAt + MastersArtRules.INTERRUPT_TICKS && !CastLock.locked(target),
 					"The idle-player Driving Cut seal expires on its unchanged exact twentieth tick");
@@ -358,47 +402,50 @@ final class CastHitReceiptConsistencyChecks {
 				Effects.withSource(attacker, () -> check(Statuses.interrupt(target), "An idle-player seal consumes no shared charge-interruption immunity"));
 				return true;
 			}, 5);
-		} finally { world.getServer().runOnServer(server -> clearTarget()); }
+		} finally { server.runOnServer(s -> clearTarget()); }
 	}
 
 
-	private void chargedSealRecovery(ClientGameTestContext context, TestSingleplayerContext world) {
-		world.getServer().waitFor(server -> server.overworld().getGameTime() >= drivingReady, MastersArtRules.DRIVING_CUT.rest() + 5);
+	private void chargedSealRecovery(ClientGameTestContext context, TestServerContext server, Runnable observe) {
+		server.waitFor(s -> s.overworld().getGameTime() >= drivingReady, MastersArtRules.DRIVING_CUT.rest() + 5);
 		long[] sealedAt = new long[1];
-		world.getServer().runOnServer(server -> {
-			route = Route.DRIVING_CUT; probe = Case.HEALTH; target = add(server.getPlayerList().getPlayers().getFirst().level());
-			Effects.withSource(server.getPlayerList().getPlayers().getFirst(), () -> CastLock.lock(target, MastersArtRules.INTERRUPT_TICKS));
+		freshRecipient(server, Route.DRIVING_CUT, Case.HEALTH, false);
+		server.runOnServer(s -> {
+			Effects.withSource(actor(s), () -> CastLock.lock(target, MastersArtRules.INTERRUPT_TICKS));
 			sealedAt[0] = target.level().getGameTime();
 			check(CastLock.locked(target), "A genuine earlier idle seal starts its original native recovery window");
 		});
 		try {
-			world.getServer().waitFor(server -> target.level().getGameTime() >= sealedAt[0] + MastersArtRules.INTERRUPT_TICKS + 1,
+			server.waitFor(s -> target.level().getGameTime() >= sealedAt[0] + MastersArtRules.INTERRUPT_TICKS + 1,
 				MastersArtRules.INTERRUPT_TICKS + 5);
-			world.getServer().runOnServer(server -> {
+			server.runOnServer(s -> {
 				check(!CastLock.locked(target), "The old seal is unlocked before a real new spell starts");
 				charge(target);
 			});
-			release(context, world, false);
-			world.getServer().runOnServer(server -> {
+			release(context, server, false);
+			server.runOnServer(s -> {
 				check(target.level().getGameTime() < sealedAt[0] + MastersArtRules.INTERRUPT_TICKS + CastLock.PLAYER_RECOVERY,
 					"The new actual Driving Cut arrives inside the unchanged forty-tick seal recovery");
 				check(target.getHealth() < beforeHealth && target.getAttached(WildercordAttachments.CHARGE) == beforeCharge && !CastLock.locked(target),
 					"Recovery refuses both a fresh seal and charge interruption despite accepted Driving Cut damage");
+			});
+			observe.run(); // Protected charge is still live; the following immunity probe remains mandatory.
+			server.runOnServer(s -> {
 				Effects.withSource(attacker, () -> check(Statuses.interrupt(target), "Refused recovery consumes none of the shared 160-tick interruption immunity"));
 				Wildercord.LOGGER.info("[cast-hit-consistency] native cast-lock recovery preserves charge and shared immunity");
 			});
-		} finally { world.getServer().runOnServer(server -> clearTarget()); }
+		} finally { server.runOnServer(s -> clearTarget()); }
 	}
 
-	private void nonplayer(ClientGameTestContext context, TestSingleplayerContext world) {
+	private void nonplayer(ClientGameTestContext context, TestServerContext server) {
 		LivingEntity[] mob = new LivingEntity[1];
 		String[] snapshots = new String[3];
 		long[] releasedAt = {-1};
 		ItemStack[] blade = new ItemStack[1];
 		Vec3[] aim = new Vec3[1];
-		world.getServer().waitFor(server -> server.overworld().getGameTime() >= drivingReady, MastersArtRules.DRIVING_CUT.rest() + 5);
-		world.getServer().runOnServer(server -> {
-			ServerPlayer player = server.getPlayerList().getPlayers().getFirst(); prepareActor(player); releaseFinished = false;
+		server.waitFor(s -> s.overworld().getGameTime() >= drivingReady, MastersArtRules.DRIVING_CUT.rest() + 5);
+		server.runOnServer(s -> {
+			ServerPlayer player = actor(s); prepareActor(player); releaseFinished = false;
 			var husk = EntityTypes.HUSK.create(player.level(), EntitySpawnReason.COMMAND);
 			check(husk != null, "The ordinary non-player target is constructible");
 			husk.setNoAi(true); husk.getAttribute(Attributes.MAX_HEALTH).setBaseValue(HEALTH); husk.setHealth(HEALTH);
@@ -422,9 +469,9 @@ final class CastHitReceiptConsistencyChecks {
 				releaseFinished = true;
 			});
 		});
-		world.getServer().waitFor(server -> releaseFinished, MastersArtRules.DRIVING_CUT.windup() + 5);
-		world.getServer().runOnServer(server -> {
-			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+		server.waitFor(s -> releaseFinished, MastersArtRules.DRIVING_CUT.windup() + 5);
+		server.runOnServer(s -> {
+			ServerPlayer player = actor(s);
 			String observed = nonplayerSnapshot(player, mob[0], blade[0], aim[0]);
 			String note = "admission={" + snapshots[0] + "}, before={" + snapshots[1] + "}, release={" + snapshots[2]
 				+ "}, observed={" + observed + "}, observationGap=" + (player.level().getGameTime() - releasedAt[0]);
@@ -459,27 +506,28 @@ final class CastHitReceiptConsistencyChecks {
 		master.customServerAiStep(target.level()); attacker = master;
 		check(master.started() && master.canHarmParticipant(target), "The real original Master's trial is started and legally owns this target");
 	}
-	private Challenger add(ServerLevel level) {
-		Challenger player = new Challenger(level); prepare(player);
-		player.snapTo(origin.x, origin.y, origin.z + 3, 180, 0);
-		// snapTo sets yaw/pitch; FakePlayer.tick never aligns the head used by getViewVector/guard facing.
-		player.setYHeadRot(180); player.setYBodyRot(180);
-		level.addNewPlayer(player); return player;
-	}
 	private void prepareActor(ServerPlayer player) {
 		player.removeAllEffects(); player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);
 		player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("gale", AuraRules.FORM, 1800, 100, 0));
 		player.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD)); place(player, 0, 0, 0);
 	}
 	private static void prepare(ServerPlayer player) {
-		player.setGameMode(GameType.SURVIVAL); player.removeAllEffects();
+		player.setGameMode(GameType.SURVIVAL); player.setPermanentlyInvulnerable(false); player.removeAllEffects();
 		player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(HEALTH); player.setHealth(HEALTH);
 		player.getAttribute(Attributes.MAX_ABSORPTION).setBaseValue(64); player.setAbsorptionAmount(0);
 		for (EquipmentSlot slot : EQUIPMENT) player.setItemSlot(slot, ItemStack.EMPTY);
+		reconcileEquipment(player);
 		player.setAttached(AuraAttachments.AURA, AuraAttachments.Data.NONE); player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);
 		player.setAttached(WildercordAttachments.CIRCLES, 0); player.setAttached(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE);
 	}
+	private static void reconcileEquipment(ServerPlayer player) {
+		check(!player.hasAttached(WildercordAttachments.CHARGE), "Native armour reconciliation precedes any held action");
+		player.doTick();
+		check(!player.hasAttached(WildercordAttachments.CHARGE), "Native reconciliation does not create a held action");
+	}
 	private static void charge(ServerPlayer player) {
+		check(player.level().getServer().getPlayerList().getPlayer(player.getUUID()) == player && player.connection.player == player,
+			"Only the exact connected recipient can request a native held spell");
 		Spellbooks.setCord(player, new ItemStack(WildercordItems.TWINE_CORD));
 		List<String> runes = List.of(Runes.BOLT.id(), Runes.HARM.id());
 		Spellbooks.set(player, new Spellbook(runes, List.of(runes), 0, true));
@@ -499,7 +547,11 @@ final class CastHitReceiptConsistencyChecks {
 	private void discardMaster() { if (master != null) { master.discard(); master = null; } }
 	private void clearTarget() {
 		active = null; discardMaster();
-		if (target != null) { Charging.forget(target); target.discard(); target = null; }
+		if (target != null) {
+			recipientReadyAt = target.level().getGameTime() + Statuses.INTERRUPT_GAP;
+			Charging.forget(target); target.setPermanentlyInvulnerable(false); target.removeAllEffects(); target.setAbsorptionAmount(0);
+			target.setHealth(HEALTH); target.setDeltaMovement(Vec3.ZERO); target = null;
+		}
 		attacker = null;
 	}
 	private static boolean close(float a, float b) { return Math.abs(a - b) < .001F; }

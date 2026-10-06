@@ -122,7 +122,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 	}
 	private static void register(){
 		if(registered)return;registered=true;
-		WildercordEvents.SPELL_HIT.register((caster,targets,point,effects)->{if(caster==owner&&targets.contains(guest)&&onHit!=null){Runnable action=onHit;onHit=null;action.run();}});
+		WildercordEvents.SPELL_HIT.register((caster,targets,point,effects)->{if(onHit!=null&&owner!=null&&guest!=null&&caster==owner&&targets.contains(guest)){Runnable action=onHit;onHit=null;action.run();}});
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((target,source,base,damage,blocked)->{if(target==guest&&source instanceof RelayDamageSource&&damage>0&&afterDamage!=null){Runnable action=afterDamage;afterDamage=null;action.run();}});
 	}
 }
