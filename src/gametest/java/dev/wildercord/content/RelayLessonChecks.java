@@ -68,6 +68,7 @@ public final class RelayLessonChecks {
 				player.setAttached(WildercordAttachments.GRIMOIRE, List.of("feat:archivist"));
 				player.setAttached(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE);
 				player.setAttached(WildercordAttachments.CONDENSED, 123);
+				rewards(player, "fixture_seeded");
 			});
 			context.waitTicks(10);
 			// A forged portable copy can be read normally but cannot grant a permanent study or rune.
@@ -83,14 +84,17 @@ public final class RelayLessonChecks {
 			checkNotReading(context, "Below VIII cannot begin study");
 			world.getServer().runOnServer(server -> {
 				player(server).setAttached(WildercordAttachments.CIRCLES, 8);
-				player(server).setAttached(WildercordAttachments.GRIMOIRE, List.of());
+				// Exercise only the missing-victory gate; retain the ordinary one-time awakening record.
+				player(server).setAttached(WildercordAttachments.GRIMOIRE,
+					Heart.grimoire(player(server)).stream().filter(key -> !key.equals("feat:archivist")).toList());
 			});
 			context.waitTicks(3);
 			use(context);
 			checkNotReading(context, "VIII without the permanent Archivist feat cannot begin study");
 			world.getServer().runOnServer(server -> {
 				var player = player(server);
-				player.setAttached(WildercordAttachments.GRIMOIRE, List.of("feat:archivist"));
+				var found = new java.util.ArrayList<>(Heart.grimoire(player)); found.add("feat:archivist");
+				player.setAttached(WildercordAttachments.GRIMOIRE, List.copyOf(found));
 				for (int slot = 0; slot < 36; slot++) player.getInventory().setItem(slot, new ItemStack(Items.COBBLESTONE, 64));
 			});
 			context.waitTicks(3);
@@ -106,15 +110,39 @@ public final class RelayLessonChecks {
 				server.overworld().setBlock(LECTERN.north(), Blocks.AIR.defaultBlockState(), 3);
 			});
 			context.waitTicks(3);
-			int copyExperience = world.getServer().computeOnServer(server -> player(server).totalExperience);
+			Rewards beforeCopy = world.getServer().computeOnServer(server -> {
+				Rewards before = rewards(player(server), "before_copy");
+				check(!before.innate().isEmpty() && before.grimoire().contains("feat:innate")
+					&& before.runes().contains(before.innate()) && before.starterGiven(),
+					"Ordinary one-time awakening and starter learning finish before the copy reward boundary: " + before);
+				return before;
+			});
 			use(context);
-			long first = nonce(context);
+			long originalReading = nonce(context);
 			world.getServer().runOnServer(server -> {
 				var player = player(server);
 				check(Heart.discovered(player, MasterStudyRules.RELAY_COPIED) && !MasterStudies.knowsRelay(player)
 					&& !Spellbooks.knows(player, Runes.RELAY.id()) && !MasterStudies.practicedRelay(player), "Real access copies but neither teaches nor completes practice");
 				check(books(player) == 0, "A full inventory cannot prevent the permanent copied receipt");
-				check(Heart.condensed(player) == 123 && player.totalExperience == copyExperience, "Copying adds no condensed mana or XP");
+				Rewards afterCopy = rewards(player, "after_copy");
+				check(afterCopy.condensed() == beforeCopy.condensed() && afterCopy.xp() == beforeCopy.xp(),
+					"Copying adds no condensed mana or XP: before=" + beforeCopy + ", after=" + afterCopy);
+				var expected = new java.util.ArrayList<>(beforeCopy.grimoire()); expected.add(MasterStudyRules.RELAY_COPIED);
+				check(afterCopy.grimoire().equals(expected) && afterCopy.runes().equals(beforeCopy.runes())
+					&& afterCopy.innate().equals(beforeCopy.innate()) && afterCopy.starterGiven() == beforeCopy.starterGiven(),
+					"First copying changes only the verified lesson receipt");
+			});
+			context.runOnClient(mc -> mc.gui.screen().onClose()); context.waitTicks(3);
+			Rewards beforeRepeat = world.getServer().computeOnServer(server -> rewards(player(server), "before_repeat_copy"));
+			use(context);
+			long first = nonce(context);
+			check(first != originalReading, "Repeated real access opens a new transient reading rather than reusing its nonce");
+			world.getServer().runOnServer(server -> {
+				var player = player(server);
+				Rewards afterRepeat = rewards(player, "after_repeat_copy");
+				check(afterRepeat.equals(beforeRepeat) && books(player) == 0
+					&& afterRepeat.grimoire().stream().filter(MasterStudyRules.RELAY_COPIED::equals).count() == 1,
+					"Repeated real copying is idempotent and grants no rewards, duplicate receipt or runes: before=" + beforeRepeat + ", after=" + afterRepeat);
 				roundTrip(player, false);
 				player.teleportTo(player.level(), 25.5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
 			});
@@ -337,6 +365,24 @@ public final class RelayLessonChecks {
 		player.load(TagValueInput.create(ProblemReporter.DISCARDING, player.level().registryAccess(), saved.buildResult()));
 		check(MasterStudies.hasRelayLesson(player) && MasterStudies.knowsRelay(player) == learned
 			&& Spellbooks.knows(player, Runes.RELAY.id()) == learned, "Copying survives save/load independently of learning");
+	}
+	private record Rewards(int condensed, int xp, String innate, List<String> grimoire, List<String> runes, boolean starterGiven) {}
+
+	/** Exact action-boundary snapshots; historical pre-copy values are printed rather than inferred. */
+	private static Rewards rewards(ServerPlayer player, String phase) {
+		Rewards state = new Rewards(Heart.condensed(player), player.totalExperience, Heart.innate(player),
+			List.copyOf(Heart.grimoire(player)), List.copyOf(Spellbooks.get(player).learned()), Spellbooks.get(player).starterGiven());
+		var value = new com.google.gson.JsonObject();
+		value.addProperty("phase", phase); value.addProperty("tick", player.level().getGameTime());
+		value.addProperty("condensed", state.condensed()); value.addProperty("xp", state.xp());
+		value.addProperty("circles", Heart.circles(player)); value.addProperty("innate", state.innate());
+		value.addProperty("starterGiven", state.starterGiven());
+		var found = new com.google.gson.JsonArray(); state.grimoire().stream().limit(32).forEach(found::add);
+		value.add("grimoire", found); value.addProperty("grimoireCount", state.grimoire().size());
+		var runes = new com.google.gson.JsonArray(); state.runes().stream().limit(32).forEach(runes::add);
+		value.add("runes", runes); value.addProperty("runeCount", state.runes().size());
+		System.out.println("WILDERCORD_RELAY_LESSON_REWARDS " + value);
+		return state;
 	}
 	private static void check(boolean condition, String message) { if (!condition) throw new AssertionError(message); }
 }
