@@ -126,6 +126,7 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 		if (!failures.isEmpty()) {
 			throw new AssertionError("Wildlife: " + String.join("; ", failures));
 		}
+		dev.wildercord.wildlife.RimehareHopChecks.run(context);
 	}
 
 	private void check(boolean ok, String what) {

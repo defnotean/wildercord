@@ -81,6 +81,7 @@ public final class ArticulatedRenderReceiptChecks {
 			check(first.report().copy().passes().stream().filter(p -> p.kind().equals("view_attachment")).count() == 1
 				&& first.report().copy().passes().stream().filter(p -> p.kind().equals("view_deferred")).count() == 1, "attachment setup is separate from deferred setup");
 			immutableCopies(); invalidSubmissions(); callbackSafety(pixels); delayedCallbackIsolation(pixels, binding);
+			openingChecks(pixels, binding);
 			check(ArticulatedRenderReceipt.stillMatches(binding), "unchanged returned image remains associated");
 			source.setRGB(0, 0, 0xff654321); ImageIO.write(source, "PNG", image.toFile());
 			check(!ArticulatedRenderReceipt.stillMatches(binding), "later filename reuse invalidates old receipt");
@@ -163,5 +164,57 @@ public final class ArticulatedRenderReceiptChecks {
 		check(a.report().verified() && a.report().copy() == copy && a.report().renderedPhase().equals("ACTIVE")
 			&& b.report().callbackPixels() == null, "delayed callback remains bound to immutable capture across threads and later renders");
 	}
+	private static ArticulatedRenderReceipt.Session openingSession(boolean first, boolean fallback, String requested) {
+		String name = "articulated_opening_style_kindling_draw_" + (first ? "first" : "third")
+			+ "_right_netherite_funded_shell" + (fallback ? "_adapter_disabled" : "") + "_requested_" + requested.toLowerCase();
+		var s = new ArticulatedRenderReceipt.Session(new ArticulatedRenderReceipt.Identity("opening-run", ++ids, name, requested), "launch-nonce");
+		for (var entry : Map.of("firstPerson", String.valueOf(first), "paused", "false", "frozen", "false", "ownerId", "7", "ownerUuid", "owner-uuid",
+			"acceptedStartTick", "42", "acceptedMove", "3", "renderTargetGeneration", "1", "renderTextureGeneration", "2").entrySet()) s.observe(entry.getKey(), entry.getValue());
+		for (var entry : Map.of("openingArmed", "true", "expectedBackend", fallback ? "full_fallback" : "segmented", "shellAdapterEnabled", String.valueOf(!fallback),
+			"expectedOwnerId", "7", "expectedOwnerUuid", "owner-uuid", "expectedMove", "3", "expectedStartTick", "42", "acceptedEntity", "7").entrySet()) s.observe(entry.getKey(), entry.getValue());
+		s.extracted(10); s.rendered(20); return s;
+	}
+	private static ArticulatedRenderReceipt.Pass openingPass(String kind, boolean fallback) {
+		Map<String, String> a = new HashMap<>(Map.of("skinModel", "wide", "skinTexture", "actual-skin", "rigWidth", "wide", "mainArm", "RIGHT",
+			"ownerUuid", "owner-uuid", "avatarStateIdentity", "100", "extractedStateIdentity", "100", "postHitStopExtractionMatched", "true"));
+		a.putAll(Map.of("rawAcceptedPhase", "ACTIVE", "rawActivation", "42", "rawMove", "3", "rawLeftHanded", "false", "rawPaletteSha256", "raw-palette",
+			"shellGlowPresent", "true", "shellAdapterEnabled", String.valueOf(!fallback), "segmentedVisible", String.valueOf(!fallback), "rigidVisible", String.valueOf(fallback), "segmentedRootVisible", String.valueOf(!fallback)));
+		a.putAll(Map.of("head", "minecraft:netherite_helmet:foil=true", "chest", "minecraft:netherite_chestplate:foil=true", "legs", "minecraft:netherite_leggings:foil=true",
+			"feet", "minecraft:netherite_boots:foil=true", "mainHand", "minecraft:diamond_sword:foil=false", "fallbackFrameCompatible", String.valueOf(!fallback), "itemStateIdentity", "300"));
+		return new ArticulatedRenderReceipt.Pass(kind, 100, 200, 7, new ArticulatedRenderReceipt.Palette(42, 3, "ACTIVE", 1, false, false, "raw-palette"), a);
+	}
+	private static void openingPasses(ArticulatedRenderReceipt.Session s, boolean first, boolean fallback) {
+		s.pass(openingPass(first ? (fallback ? "view_fallback_submit" : "view_submit") : "body_submit", fallback));
+		s.pass(openingPass(first ? (fallback ? "view_fallback_item" : "view_deferred") : "body_deferred", fallback));
+		if (first && !fallback) s.pass(openingPass("view_item", false));
+	}
+	private static void openingChecks(ArticulatedRenderReceipt.Pixels pixels, ArticulatedRenderReceipt.Binding binding) {
+		for (boolean first : new boolean[] {false, true}) for (boolean fallback : new boolean[] {false, true}) {
+			var s = openingSession(first, fallback, "ACTIVE"); openingPasses(s, first, fallback);
+			s.enqueue(30, new ArticulatedRenderReceipt.Target(1, 2, 2, 2, 0)); finish(s, pixels, binding);
+			check(s.report().verified(), "exact accepted opening native backend binds: " + first + "/" + fallback + " " + s.report().failures());
+			check(s.report().schemaVersion() == 2 && s.report().rawAcceptedPhase().equals("ACTIVE") && s.report().rawRequestedPhaseObserved(), "opening raw phase is separate actual evidence");
+			check(s.report().renderedPhase().equals(fallback ? "FALLBACK" : "ACTIVE") && s.report().requestedPhaseObserved() == !fallback
+				&& s.report().unpausedPhaseCoverage() == !fallback, "fallback never claims segmented phase coverage");
+		}
+		var missed = openingSession(false, false, "WINDUP"); openingPasses(missed, false, false);
+		missed.enqueue(30, new ArticulatedRenderReceipt.Target(1, 2, 2, 2, 0)); finish(missed, pixels, binding);
+		check(missed.report().verified() && !missed.report().rawRequestedPhaseObserved() && !missed.report().requestedPhaseObserved(), "opening phase miss retains exact actual palette");
+		var wrong = openingSession(false, false, "ACTIVE"); wrong.observe("expectedStartTick", 41); openingPasses(wrong, false, false);
+		wrong.enqueue(30, new ArticulatedRenderReceipt.Target(1, 2, 2, 2, 0)); finish(wrong, pixels, binding);
+		check(!wrong.report().verified() && wrong.report().failures().contains("wrong_expected_StartTick"), "new activation cannot replace explicitly armed accepted opening");
+		var copied = openingSession(false, false, "ACTIVE"); copied.pass(openingPass("body_submit", false));
+		var bad = openingPass("body_deferred", false); var attrs = new HashMap<>(bad.attributes()); attrs.put("extractedStateIdentity", "101");
+		copied.pass(new ArticulatedRenderReceipt.Pass(bad.kind(), bad.stateIdentity(), bad.modelIdentity(), bad.owner(), bad.palette(), attrs));
+		copied.enqueue(30, new ArticulatedRenderReceipt.Target(1, 2, 2, 2, 0));
+		check(copied.report().failures().contains("wrong_opening_extraction"), "another extracted avatar state cannot prove submitted owner");
+		var pretend = openingSession(false, true, "ACTIVE"); pretend.pass(openingPass("body_submit", true)); pretend.pass(openingPass("body_deferred", false));
+		pretend.enqueue(30, new ArticulatedRenderReceipt.Target(1, 2, 2, 2, 0));
+		check(pretend.report().failures().contains("wrong_opening_backend"), "segmented geometry cannot stand in for declared full fallback");
+		var noItem = openingSession(true, true, "ACTIVE"); noItem.pass(openingPass("view_fallback_submit", true));
+		noItem.enqueue(30, new ArticulatedRenderReceipt.Target(1, 2, 2, 2, 0));
+		check(noItem.report().failures().contains("expected_one_opening_item"), "vanilla callback alone cannot stand in for actual fallback sword submission");
+	}
+
 	private static void check(boolean condition, String message) { if (!condition) throw new AssertionError(message); checks++; }
 }

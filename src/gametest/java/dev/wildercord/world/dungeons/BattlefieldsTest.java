@@ -29,6 +29,11 @@ import java.util.Set;
 
 /** Rotated real structures, persisted provenance, client use packets, cancelled memories and finite rewards. */
 public final class BattlefieldsTest implements FabricClientGameTest {
+	// Representative normal-terrain compatibility, not a promise that an arbitrary world's 16 sites admit generation.
+	// Observed unchanged in https://github.com/defnotean/wildercord/actions/runs/37395703968/job/112051018891
+	static final String REPRESENTATIVE_SEED="4424506075848880372";
+	private static final BlockPos REPRESENTATIVE_HABITAT=new BlockPos(1408,70,1088);
+	private static final BlockPos REPRESENTATIVE_MARKER=new BlockPos(1423,64,1103);
 	@Override public void runTest(ClientGameTestContext context) {
 		BattlefieldsGenerationProbeChecks.verify();
 		try (var world=context.worldBuilder().create()) {
@@ -108,8 +113,10 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 			shot(context,"battlefield_lore_book");
 		}
 		dev.wildercord.Wildercord.LOGGER.info("BATTLEFIELD_GENERATION PRIOR_CHECKS completed=12_rotated_variants,persisted_provenance,standing_cancellation,three_discoveries,finite_repeat_rewards,unprovenanced_marker_false,book_screen");
-		try (var natural=context.worldBuilder().setUseConsistentSettings(false).create();
+		try (var natural=context.worldBuilder().setUseConsistentSettings(false)
+				.adjustSettings(settings -> settings.setSeed(REPRESENTATIVE_SEED)).create();
 			 var probe=natural.getServer().computeOnServer(server -> BattlefieldsGenerationProbe.begin(server.overworld().getSeed()))) {
+			check(probe.seed==Long.parseLong(REPRESENTATIVE_SEED),"Representative normal-world seed is applied exactly");
 			context.waitTicks(50);natural.getServer().runCommand("gamerule spawn_mobs false");natural.getServer().runCommand("time set 6000");
 			natural.getServer().runOnServer(server -> server.getPlayerList().getPlayers().getFirst().setGameMode(GameType.CREATIVE));
 			BlockPos found=null;
@@ -122,6 +129,7 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 					registered.value().getClass().getName(),registered.value().biomes().contains(nearest.getSecond()));
 				return nearest.getFirst();
 			});
+			check(habitat.equals(REPRESENTATIVE_HABITAT),"Representative plains sample is unchanged: "+habitat);
 			for (int attempt=0;attempt<16 && found==null;attempt++) {
 				int x=habitat.getX()+(attempt%4)*48;
 				int z=habitat.getZ()+(attempt/4)*48;
@@ -150,15 +158,32 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 					}
 					command.scanned(null);return null;
 				});
+				// The known first original candidate must still work. Never hide drift by selecting a later site.
+				requireRepresentativeAdmission(command.admission());
+				check(REPRESENTATIVE_MARKER.equals(found),"Representative command produces its exact authentic marker, not a nearby one: "+found);
 			}
 			check(found!=null,"The registered structure generates an authentic memorial on normal terrain; "+probe.summary());
 			BlockPos at=found;
 			natural.getServer().runOnServer(server -> {
+				var level=server.overworld();
+				check(level.getBlockState(at).is(Battlefields.MEMORIAL),"Representative generated marker has the registered memorial block type");
+				check(level.getBlockEntity(at) instanceof BattlefieldMemoryEntity m && m.oldGround(),"Exact representative memorial retains generated provenance");
 				var p=server.getPlayerList().getPlayers().getFirst();p.teleportTo(p.level(),at.getX()+.5,at.getY()+9,at.getZ()-14.5,Set.<Relative>of(),0,27,false);
 				p.getAbilities().flying=true;p.onUpdateAbilities();
 			});
 			context.waitTicks(50);natural.getConnection().waitForChunksRender();shot(context,"battlefield_natural_terrain");
 		}
+	}
+	static void requireRepresentativeAdmission(BattlefieldsGenerationProbe.Admission observed) {
+		check(Boolean.TRUE.equals(observed.enabled()),"Representative generation uses the actual enabled battlefield config: "+observed);
+		check("north".equals(observed.direction()) && new BlockPos(1423,0,1103).equals(observed.centre())
+			&& observed.heightCalls()==6 && Integer.valueOf(63).equals(observed.surface()) && Integer.valueOf(63).equals(observed.floor())
+			&& observed.neighbours().equals(List.of(62,66,63,66)) && Integer.valueOf(63).equals(observed.sea()),
+			"Representative terrain and original generation RNG remain compatible: "+observed);
+		check(observed.locateCalls()==1 && Boolean.TRUE.equals(observed.footing()) && Boolean.TRUE.equals(observed.locateAdmitted()),
+			"Representative original footing and locate admit the registered start: "+observed);
+		check(observed.commandReturned() && observed.callbackCalls()==1 && Boolean.TRUE.equals(observed.commandSuccess())
+			&& Integer.valueOf(1).equals(observed.commandResult()),"Representative registered placement command succeeds: "+observed);
 	}
 	private static int books(net.minecraft.server.level.ServerPlayer p) {
 		int n=0;for (int i=0;i<p.getInventory().getContainerSize();i++) if(p.getInventory().getItem(i).has(DataComponents.WRITTEN_BOOK_CONTENT)) n++;

@@ -14,6 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** Camera shake from big magic, applied where the view already bobs when you're hurt. */
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
+	@Inject(method = "extract", at = @At("HEAD"))
+	private void wildercord$presentationFrame(CallbackInfo ci) { dev.wildercord.client.CombatPresentation.beginFrame(); }
+	@Inject(method = "render", at = @At("RETURN"))
+	private void wildercord$presentationFrameDone(CallbackInfo ci) { dev.wildercord.client.CombatPresentation.endFrame(); }
+
 	@Inject(method = "bobHurt", at = @At("HEAD"), cancellable = true)
 	private void wildercord$shake(CameraRenderState camera, PoseStack pose, CallbackInfo ci) {
 		if (dev.wildercord.client.combat.ArticulatedCombat.stableCamera()) { ci.cancel(); return; }

@@ -1,4 +1,4 @@
-"""Stdlib, tempfile-only curator checks; never launches Java or native gameplay."""
+"""Tempfile-only curator checks; optional receipt tests use Pillow, never native gameplay."""
 import hashlib
 import json
 import os
@@ -2239,6 +2239,412 @@ class ProvenanceTests(unittest.TestCase):
                           {"GITHUB_REPOSITORY": "../../other"}, {"GITHUB_EVENT_NAME": "workflow_dispatch"}):
             with self.subTest(overrides=overrides), self.assertRaises(curator.EvidenceError):
                 self.provenance(**overrides)
+
+
+class OpeningReceiptCuratorTests(CuratorFixture):
+    """Synthetic wrapped receipts only; no Gradle, Java, or native process."""
+    suite = "articulated"
+
+    def build_report(self, *, exit_code=0, png_padding=0, **generation):
+        # Optional receipt ingestion alone uses Pillow. Existing curator modes
+        # retain their opaque-PNG/stdlib contract.
+        import run_articulated_receipt_gate as gate
+        from test_run_articulated_receipt_gate import NativeReceiptGateTests
+        from client_suites import EXIT_PREFIX, SELECTION_PREFIX
+        helper = NativeReceiptGateTests()
+        helper.root = self.root
+        helper.game = self.root / Path(self.source).parent
+        helper.receipt_root = helper.game / "screenshots/articulated-shared-receipts"
+        helper.pid = 1234
+        destination = self.root / "review/receipt-bundle"
+
+        def runner(command, repo, environment):
+            helper.generate(environment)
+            opening = helper.generate(environment, profile="opening", **generation)
+            if png_padding:
+                import struct
+                import zlib
+                kind, payload = b"npAd", b"x" * png_padding
+                chunk = struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", zlib.crc32(payload, zlib.crc32(kind)))
+                for record_path in opening.glob("*.json"):
+                    record = json.loads(record_path.read_text())
+                    path = helper.game / record["image"]["relativeImagePath"]
+                    original = path.read_bytes()
+                    data = original[:-12] + chunk + original[-12:]
+                    path.write_bytes(data)
+                    record["image"].update(pngBytes=len(data), pngSha256=hashlib.sha256(data).hexdigest())
+                    record_path.write_text(json.dumps(record))
+            (self.root / "native.log").write_text(SELECTION_PREFIX + json.dumps({"kind": "suite", "name": "articulated"})
+                + "\n" + EXIT_PREFIX + str(exit_code) + "\n")
+            return gate.NativeExit(exit_code, helper.pid)
+
+        gate.run_gate(self.root, helper.game, destination, Path("native.log"), runner=runner,
+                      commit_reader=lambda repo: self.identity["workflowSha"],
+                      environment={"GITHUB_SHA": self.identity["workflowSha"], "GITHUB_RUN_ID": self.identity["runId"],
+                                   "GITHUB_RUN_ATTEMPT": self.identity["runAttempt"]}, include_opening=True)
+        self.report_path = destination / "opening-association-report.json"
+        self.report = json.loads(self.report_path.read_text())
+        self.shared_bytes = (destination / "association-report.json").read_bytes()
+        return self.report_path.relative_to(self.root).as_posix()
+
+    def save_report(self):
+        self.report_path.write_text(json.dumps(self.report))
+
+    def replace_raw_record(self, path, record):
+        """Forge coherent package hashes; semantic checks must still reject it."""
+        import time
+        data = json.dumps(record).encode()
+        path.write_bytes(data)
+        (self.report_path.parent / "opening-receipts" / path.name).write_bytes(data)
+        entry = {"name": path.name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+        records = self.report["package"]["records"]
+        records[:] = [item for item in records if item["name"] != path.name] + [entry]
+        self.report["package"].update(recordCount=len(records), recordBytes=sum(item["bytes"] for item in records))
+        tokens = {tuple((value["identity"][key] for key in ("runId", "captureSequence")))
+                  for value in (json.loads(item.read_text()) for item in path.parent.glob("*.json"))}
+        self.report["package"]["captureTokens"] = [{"runId": run, "captureSequence": sequence}
+                                                   for run, sequence in sorted(tokens)]
+        for observation in self.report["observations"]:
+            if observation["receiptRelativePath"] == path.name:
+                observation["receiptSha256"] = entry["sha256"]
+                observation["pngSha256"] = record["image"]["pngSha256"]
+        self.report["provenance"]["finishedNs"] = time.time_ns()
+        self.save_report()
+
+    def assert_unknown(self, result):
+        self.assertEqual(result["openingReceiptEvidence"]["status"], "unavailable")
+        self.assertFalse(result["openingReceiptEvidence"]["associationVerified"])
+        self.assertLessEqual(len(result["openingReceiptEvidence"]["diagnostic"]), 500)
+        for row in result["openingStyleCoverage"]:
+            self.assertEqual(row["renderedPhase"], "unknown")
+            self.assertEqual(row["verifiedRenderedPhases"], [])
+            self.assertNotIn("openingRenderReceipt", row)
+        for frame in result["frames"]:
+            if frame.get("form") == "opening_style":
+                self.assertEqual(frame["phase"], "unknown")
+                self.assertNotIn("openingRenderReceipt", frame)
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_exact_current_report_enriches_all_72_without_changing_selection_or_pngs(self):
+        report = self.build_report()
+        baseline = self.curate()
+        result = curator.curate(self.root, self.source, self.marker, "review/enriched", self.identity,
+                                suite=self.suite, opening_receipt_report=report)
+        self.assertEqual([item["sourcePath"] for item in baseline["frames"]],
+                         [item["sourcePath"] for item in result["frames"]])
+        self.assertEqual(result["openingReceiptEvidence"]["verifiedImages"], 72)
+        self.assertTrue(result["openingReceiptEvidence"]["sourceGate"]["gatePassed"])
+        self.assertEqual(result["selectedMetadataCount"], baseline["selectedMetadataCount"])
+        for row in result["openingStyleCoverage"]:
+            receipt = row["openingRenderReceipt"]
+            self.assertEqual(receipt["trial"] + ".png", row["expectedFilename"])
+            self.assertEqual(row["renderedPhase"], "FALLBACK" if "_adapter_disabled_" in row["expectedFilename"]
+                             else row["requestedPhase"].upper())
+            self.assertEqual(receipt["receiptSha256"], hashlib.sha256((self.root / receipt["receiptSourcePath"]).read_bytes()).hexdigest())
+            self.assertEqual(receipt["mainHand"], "minecraft:diamond_sword:foil=false")
+            self.assertIn(receipt["skinModel"], ("wide", "slim"))
+            self.assertEqual(row["imageReceiptBinding"], "verified_native_readback")
+        for frame in result["frames"]:
+            self.assertEqual((self.root / frame["sourcePath"]).read_bytes(),
+                             (self.root / "review/enriched" / frame["artifactPath"]).read_bytes())
+            if frame.get("form") == "opening_style":
+                self.assertEqual(frame["phaseBasis"], "native_render_receipt_readback")
+                self.assertEqual(frame["preCaptureReceipt"]["status"], "not_ingested")
+        self.assertEqual((self.report_path.parent / "association-report.json").read_bytes(), self.shared_bytes)
+        self.assertFalse(result["testVerdict"]["establishedByThisArtifact"])
+
+    def test_fallback_retains_raw_phase_and_cannot_supply_articulated_active_coverage(self):
+        result = self.curate(opening_receipt_report=self.build_report())
+        fallbacks = [frame for frame in result["frames"] if frame.get("expectedBackend") == "full_fallback"]
+        self.assertEqual(len(fallbacks), 8)
+        for frame in fallbacks:
+            self.assertEqual((frame["phase"], frame["renderedPhase"], frame["rawAcceptedPhase"]), ("fallback", "FALLBACK", "ACTIVE"))
+            self.assertFalse(frame["openingRenderReceipt"]["requestedPhaseObserved"])
+            self.assertFalse(frame["openingRenderReceipt"]["unpausedPhaseCoverage"])
+            self.assertTrue(frame["openingRenderReceipt"]["fallbackPhaseCoverage"])
+
+    def test_phase_misses_and_native_failure_remain_visible_with_actual_associations(self):
+        result = self.curate(opening_receipt_report=self.build_report(exit_code=9, active_miss=True))
+        evidence = result["openingReceiptEvidence"]
+        self.assertEqual(evidence["status"], "verified")
+        gate = evidence["sourceGate"]
+        self.assertFalse(gate["nativeSucceeded"] or gate["phaseCoverageVerified"] or gate["gatePassed"])
+        self.assertTrue(gate["phaseCoverageMisses"])
+        self.assertEqual(gate["errors"], self.report["errors"])
+        active = [row for row in result["openingStyleCoverage"] if row["requestedPhase"] == "active"]
+        self.assertTrue(all(row["rawAcceptedPhase"] == "RECOVERY" for row in active))
+        self.assertTrue(all(row["renderedPhase"] == ("FALLBACK" if "_adapter_disabled_" in row["expectedFilename"] else "RECOVERY") for row in active))
+
+    def test_all_72_verified_facts_survive_budget_omission_without_extra_files(self):
+        report = self.build_report()
+        budget = curator.ARTICULATED_MANIFEST_RESERVE + 500
+        baseline = self.curate(budget=budget)
+        result = curator.curate(self.root, self.source, self.marker, "review/enriched", self.identity, budget,
+                                suite=self.suite, opening_receipt_report=report)
+        self.assertEqual([item["sourcePath"] for item in baseline["frames"]],
+                         [item["sourcePath"] for item in result["frames"]])
+        rows = result["openingStyleCoverage"]
+        self.assertEqual(sum(row["captured"] for row in rows), 72)
+        self.assertTrue(any(row["omittedForBudget"] for row in rows))
+        self.assertTrue(all("openingRenderReceipt" in row for row in rows))
+        self.assertFalse(any(row["missingCapture"] for row in rows))
+        files = [path for path in (self.root / "review/enriched").rglob("*") if path.is_file()]
+        total = sum(path.stat().st_size for path in files)
+        self.assertLessEqual(total + result["limits"]["storedZipOverheadBytes"], budget)
+        self.assertEqual(len(files), result["selectedFrameCount"] + 1)
+
+    def test_missing_report_preserves_captured_and_missing_distinction(self):
+        name = next(iter(curator.OPENING_STYLE_SLOTS))
+        self.shot(name)
+        result = self.curate(opening_receipt_report="review/missing-opening-report.json")
+        self.assert_unknown(result)
+        self.assertEqual(sum(row["captured"] for row in result["openingStyleCoverage"]), 1)
+        self.assertEqual(sum(row["missingCapture"] for row in result["openingStyleCoverage"]), 71)
+
+    def test_verified_large_pngs_stay_byte_identical_below_14_million_including_manifest(self):
+        report = self.build_report(png_padding=240_000)
+        result = self.curate(opening_receipt_report=report)
+        self.assertTrue(any(row["omittedForBudget"] for row in result["openingStyleCoverage"]))
+        self.assertTrue(all("openingRenderReceipt" in row for row in result["openingStyleCoverage"]))
+        output = self.root / self.output
+        files = [path for path in output.rglob("*") if path.is_file()]
+        self.assertLessEqual(sum(path.stat().st_size for path in files) + result["limits"]["storedZipOverheadBytes"], 14_000_000)
+        for frame in result["frames"]:
+            self.assertEqual((self.root / frame["sourcePath"]).read_bytes(), (output / frame["artifactPath"]).read_bytes())
+
+    def test_missing_bound_png_remains_missing_without_accepting_other_report_claims(self):
+        report = self.build_report()
+        observation = self.report["observations"][0]
+        (Path(self.report["gameDirectory"]) / observation["relativeImagePath"]).unlink()
+        result = self.curate(opening_receipt_report=report)
+        self.assert_unknown(result)
+        self.assertEqual(sum(row["missingCapture"] for row in result["openingStyleCoverage"]), 1)
+        self.assertEqual(sum(row["captured"] for row in result["openingStyleCoverage"]), 71)
+
+    def test_report_claims_cannot_override_native_observations_or_gate(self):
+        report = self.build_report(active_miss=True)
+        changes = (
+            lambda value: value.update(schemaVersion=1),
+            lambda value: value.update(gatePassed=True),
+            lambda value: value["observations"][0].update(skinModel="invented_skin"),
+            lambda value: value["observations"][0].update(renderedPhase="invented_phase"),
+            lambda value: value["observations"][0].update(receiptSha256="f" * 64),
+            lambda value: value["observations"][0].update(pngSha256="f" * 64),
+            lambda value: value["observations"][0].update(relativeImagePath=value["observations"][1]["relativeImagePath"]),
+            lambda value: value["observations"].__setitem__(0, value["observations"][1]),
+            lambda value: value["package"]["records"].append(value["package"]["records"][0]),
+            lambda value: value["package"].update(complete=False),
+        )
+        original = self.report_path.read_text()
+        for index, change in enumerate(changes):
+            with self.subTest(change=index):
+                self.report = json.loads(original)
+                change(self.report)
+                self.save_report()
+                self.assert_unknown(curator.curate(self.root, self.source, self.marker, f"review/bad-{index}",
+                    self.identity, suite=self.suite, opening_receipt_report=report))
+
+    def test_old_wrong_root_commit_attempt_nonce_or_exit_are_rejected(self):
+        import uuid
+        report = self.build_report()
+        original = self.report_path.read_text()
+        changes = (
+            lambda value: value["provenance"].update(startedNs=self.started - 1),
+            lambda value: value["provenance"].update(checkout=str(self.root.parent)),
+            lambda value: value["provenance"].update(sourceCommit="c" * 40),
+            lambda value: value["provenance"].update(GITHUB_SHA="c" * 40),
+            lambda value: value["provenance"].update(GITHUB_RUN_ID="121"),
+            lambda value: value["provenance"].update(GITHUB_RUN_ATTEMPT="3"),
+            lambda value: value["provenance"].update(launchNonce=str(uuid.uuid4())),
+            lambda value: value["provenance"].update(nativeProcessExitConfirmed=False),
+            lambda value: value["provenance"].update(nativeLogSha256="c" * 64),
+            lambda value: value.update(gameDirectory=str(self.root)),
+            lambda value: value.update(receiptDirectory=str(self.root)),
+            lambda value: value["package"].update(sourceDirectory=str(self.root)),
+            lambda value: value["package"].update(runId=str(uuid.uuid4())),
+        )
+        for index, change in enumerate(changes):
+            with self.subTest(change=index):
+                self.report = json.loads(original)
+                change(self.report)
+                self.save_report()
+                self.assert_unknown(curator.curate(self.root, self.source, self.marker, f"review/bad-{index}",
+                    self.identity, suite=self.suite, opening_receipt_report=report))
+
+    def test_changed_png_is_not_hidden_by_unchanged_report(self):
+        report = self.build_report()
+        path = Path(self.report["gameDirectory"]) / self.report["observations"][0]["relativeImagePath"]
+        data = bytearray(path.read_bytes())
+        data[-8] ^= 1
+        path.write_bytes(data)
+        self.assert_unknown(self.curate(opening_receipt_report=report))
+
+    def test_modified_packaged_record_invalidates_the_full_opening_mapping(self):
+        report = self.build_report()
+        record = self.report_path.parent / "opening-receipts" / self.report["package"]["records"][0]["name"]
+        record.write_bytes(record.read_bytes() + b" ")
+        self.assert_unknown(self.curate(opening_receipt_report=report))
+
+    def test_late_record_cannot_hide_behind_successful_packaged_record(self):
+        report = self.build_report()
+        source = Path(self.report["receiptDirectory"])
+        record = json.loads(next(source.glob("*.json")).read_text())
+        record.update(verified=False, failures=["late_callback"])
+        (source / "late-record.json").write_text(json.dumps(record))
+        self.assert_unknown(self.curate(opening_receipt_report=report))
+
+    def test_forged_matching_package_hashes_do_not_replace_raw_record_validation(self):
+        report = self.build_report()
+        path = Path(self.report["receiptDirectory"]) / self.report["package"]["records"][0]["name"]
+        original_report, original_record = json.dumps(self.report), path.read_text()
+        mutations = (
+            lambda value: value.update(nativeLaunchNonce="unbound"),
+            lambda value: value["copy"]["observation"].update(nativeLaunchNonce="unbound"),
+            lambda value: value["copy"]["passes"][0]["attributes"].update(head="empty"),
+            lambda value: value["copy"]["observation"].update(acceptedMove="1000"),
+            lambda value: value["copy"]["passes"][0]["palette"].update(phase="NONE"),
+        )
+        for index, mutation in enumerate(mutations):
+            with self.subTest(mutation=index):
+                self.report = json.loads(original_report)
+                record = json.loads(original_record)
+                mutation(record)
+                self.replace_raw_record(path, record)
+                result = curator.curate(self.root, self.source, self.marker, f"review/bad-{index}",
+                    self.identity, suite=self.suite, opening_receipt_report=report)
+                self.assert_unknown(result)
+                if index >= 2:
+                    self.assertIn("native association recheck failed", result["openingReceiptEvidence"]["diagnostic"])
+
+    def test_forged_png_hash_still_rechecks_original_crc_and_callback_pixels(self):
+        report = self.build_report()
+        source = Path(self.report["receiptDirectory"])
+        receipt_path = source / self.report["observations"][0]["receiptRelativePath"]
+        record = json.loads(receipt_path.read_text())
+        image = Path(self.report["gameDirectory"]) / record["image"]["relativeImagePath"]
+        data = bytearray(image.read_bytes())
+        data[-8] ^= 1
+        image.write_bytes(data)
+        record["image"]["pngSha256"] = hashlib.sha256(data).hexdigest()
+        self.replace_raw_record(receipt_path, record)
+        result = self.curate(opening_receipt_report=report)
+        self.assert_unknown(result)
+        self.assertIn("PNG chunk CRC mismatch", result["openingReceiptEvidence"]["diagnostic"])
+
+    def test_forged_complete_manifest_cannot_hide_duplicate_or_failed_late_tokens(self):
+        report = self.build_report()
+        source = Path(self.report["receiptDirectory"])
+        record = json.loads(next(source.glob("*.json")).read_text())
+        record.update(verified=False, failures=["late_callback"])
+        self.replace_raw_record(source / "late-record.json", record)
+        result = self.curate(opening_receipt_report=report)
+        self.assert_unknown(result)
+        self.assertIn("late-invalidated", result["openingReceiptEvidence"]["diagnostic"])
+
+    def test_forged_report_cannot_reuse_a_shared_capture_token(self):
+        report = self.build_report()
+        path = Path(self.report["receiptDirectory"]) / self.report["observations"][0]["receiptRelativePath"]
+        record = json.loads(path.read_text())
+        record["identity"]["captureSequence"] = 1
+        record["copy"]["identity"]["captureSequence"] = 1
+        self.replace_raw_record(path, record)
+        self.report["observations"][0]["captureSequence"] = 1
+        self.save_report()
+        result = self.curate(opening_receipt_report=report)
+        self.assert_unknown(result)
+        self.assertIn("already belongs to a shared record", result["openingReceiptEvidence"]["diagnostic"])
+
+    def test_late_directory_change_during_copy_prevents_publication(self):
+        report = self.build_report()
+        source = Path(self.report["receiptDirectory"])
+        original_digest = curator.digest
+        changed = False
+
+        def changed_while_copying(path):
+            nonlocal changed
+            if not changed:
+                changed = True
+                (source / "late-record.json").write_text("{}")
+            return original_digest(path)
+
+        with patch.object(curator, "digest", side_effect=changed_while_copying):
+            with self.assertRaisesRegex(curator.EvidenceError, "Opening receipt evidence changed"):
+                self.curate(opening_receipt_report=report)
+        self.assertFalse((self.root / self.output).exists())
+
+    def test_duplicate_report_json_keys_are_not_silently_overwritten(self):
+        report = self.build_report()
+        data = self.report_path.read_text()
+        self.report_path.write_text('{"schemaVersion": 1,' + data[1:])
+        result = self.curate(opening_receipt_report=report)
+        self.assert_unknown(result)
+        self.assertIn("duplicate JSON", result["openingReceiptEvidence"]["diagnostic"])
+
+    def check_nested_evidence_remains_unknown(self, target):
+        import time
+        report = self.build_report()
+        nested = b"[" * 10_000 + b"0" + b"]" * 10_000
+        if target == "report":
+            self.report_path.write_bytes(nested)
+        else:
+            root = Path(self.report["receiptDirectory"])
+            if target == "shared":
+                root = root.parent.parent / "articulated-shared-receipts" / root.name
+            path = next(root.glob("*.json"))
+            path.write_bytes(nested)
+            if target == "opening":
+                (self.report_path.parent / "opening-receipts" / path.name).write_bytes(nested)
+                entry = next(item for item in self.report["package"]["records"] if item["name"] == path.name)
+                entry.update(bytes=len(nested), sha256=hashlib.sha256(nested).hexdigest())
+                self.report["package"]["recordBytes"] = sum(item["bytes"] for item in self.report["package"]["records"])
+            self.report["provenance"]["finishedNs"] = time.time_ns()
+            self.save_report()
+        result = self.curate(opening_receipt_report=report)
+        self.assert_unknown(result)
+        self.assertGreater(len(result["frames"]), 0)
+        self.assertIn("RecursionError", result["openingReceiptEvidence"]["diagnostic"])
+        self.assertLessEqual(len(result["openingReceiptEvidence"]["diagnostic"]), 500)
+        self.assertTrue((self.root / self.output / "manifest.json").is_file())
+
+    def test_deeply_nested_optional_report_preserves_curation(self):
+        self.check_nested_evidence_remains_unknown("report")
+
+    def test_deeply_nested_original_and_packaged_receipt_preserves_curation(self):
+        self.check_nested_evidence_remains_unknown("opening")
+
+    def test_deeply_nested_shared_receipt_preserves_curation(self):
+        self.check_nested_evidence_remains_unknown("shared")
+
+    def test_original_association_failure_and_errors_stay_explicit(self):
+        result = self.curate(opening_receipt_report=self.build_report(nonce="unbound"))
+        self.assert_unknown(result)
+        evidence = result["openingReceiptEvidence"]
+        self.assertIn("associationVerified", evidence["unverifiedReportedFailures"])
+        self.assertTrue(any("native child launch" in error for error in evidence["unverifiedReportedErrors"]))
+
+    def test_exact_report_path_disallows_escaping_and_symlinks(self):
+        report = self.build_report()
+        (self.root / "linked-report.json").symlink_to(self.report_path)
+        for index, path in enumerate((str(self.report_path), "../outside.json", "linked-report.json",
+                                      report.replace("review/", "review/./"))):
+            with self.subTest(path=path):
+                self.assert_unknown(curator.curate(self.root, self.source, self.marker, f"review/bad-{index}",
+                    self.identity, suite=self.suite, opening_receipt_report=path))
+
+    def test_report_is_opt_in_and_other_modes_do_not_import_verifier(self):
+        self.build_report()
+        import builtins
+        original_import = builtins.__import__
+
+        def guarded(name, *args, **kwargs):
+            if name in ("run_articulated_receipt_gate", "verify_articulated_render_receipts", "PIL"):
+                raise AssertionError("default curation must not import receipt/decode tools")
+            return original_import(name, *args, **kwargs)
+
+        with patch("builtins.__import__", side_effect=guarded):
+            result = self.curate()
+        self.assertEqual(result["openingReceiptEvidence"]["status"], "not_requested")
+        self.assertTrue(all(row["renderedPhase"] == "unknown" for row in result["openingStyleCoverage"]))
 
 
 if __name__ == "__main__":

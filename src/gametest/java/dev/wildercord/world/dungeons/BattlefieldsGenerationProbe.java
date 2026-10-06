@@ -81,7 +81,7 @@ public final class BattlefieldsGenerationProbe {
   private BlockPos habitat;
   Session(long seed,Consumer<String> sink) {
    this.seed=seed;this.sink=sink;
-   emit("BEGIN suite="+SUITE+", seed="+seed+", candidates=16, seedPolicy=unchanged_random_normal_world, biomePolicy=vanilla_place_command_unfiltered");
+   emit("BEGIN suite="+SUITE+", seed="+seed+", candidates=16, seedPolicy=representative_fixed_normal_world, biomePolicy=vanilla_place_command_unfiltered");
   }
   void habitat(BlockPos at,String biome,String structureClass,boolean allowed) {
    if(habitat!=null)throw new IllegalStateException("Memorial habitat already observed");
@@ -109,6 +109,11 @@ public final class BattlefieldsGenerationProbe {
   }
  }
 
+ /** Immutable copy of values already observed; this does not invoke generation or read the world. */
+ record Admission(Boolean enabled,String direction,BlockPos centre,int heightCalls,Integer surface,Integer floor,
+   List<Integer> neighbours,Integer sea,Boolean footing,Boolean locateAdmitted,int locateCalls,
+   boolean commandReturned,int callbackCalls,Boolean commandSuccess,Integer commandResult) {}
+
  static final class Candidate implements AutoCloseable {
   private final Session session;
   private Object world;
@@ -132,6 +137,11 @@ public final class BattlefieldsGenerationProbe {
    session.outcomes.merge(outcome(),1,Integer::sum);
    session.emit("SCAN attempt="+ordinal+", observedMemorials="+markerCount+", retainedMarkers="+markers+", omittedMarkers="+Math.max(0,markerCount-markers.size())
      +", authenticFound="+position(found)+", scanStoppedAtFirstAuthentic=true, expectedMarker="+position(expectedMarker())+", outcome="+outcome());
+  }
+  Admission admission() {
+   return new Admission(enabled,direction,centre,heightCalls,footing==null ? null : surface,footing==null ? null : floor,
+     Arrays.stream(neighbours).boxed().toList(),footing==null ? null : sea,footing,locateAdmitted,locateCalls,
+     commandReturned,callbackCalls,commandSuccess,callbackCalls==0 ? null : commandResult);
   }
   private BlockPos expectedMarker() {return centre==null || !Boolean.TRUE.equals(footing) ? null : centre.atY(surface+1);}
   String outcome() {

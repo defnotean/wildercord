@@ -42,8 +42,8 @@ public final class ArticulatedArmorRenderer {
 		viewModel = new ArticulatedArmorGeometry(modelSet.bakeLayer(layers.chest()), EquipmentSlot.CHEST, true);
 	}
 
-	public static boolean enabled() { return ArticulatedCombat.enabled() && Boolean.getBoolean(ENABLE_PROPERTY); }
-	public static boolean viewEnabled() { return enabled() && Boolean.getBoolean(VIEW_PROPERTY); }
+	public static boolean enabled() { return dev.wildercord.client.CombatPresentation.effective().armor(); }
+	public static boolean viewEnabled() { return dev.wildercord.client.CombatPresentation.effective().armorArms(); }
 
 	/** Unknown items/components always retain the entire previous renderer, including their layers. */
 	public static boolean compatible(HumanoidRenderState state) {

@@ -38,7 +38,7 @@ SEEDS = {
                 "dev.wildercord.wildlife.WetlandTerrainAbsenceTest": "-7620530482425397421",
                 "dev.wildercord.wildlife.WetlandTerrainTest": "-7620530482425397421"},
     "aura-fx": {"dev.wildercord.gametest.WildercordAuraFxTest": None},
-    "battlefields-generation": {"dev.wildercord.world.dungeons.BattlefieldsTest": None},
+    "battlefields-generation": {"dev.wildercord.world.dungeons.BattlefieldsTest": "4424506075848880372"},
 }
 CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_catalog.json",
                 "src/gametest/resources/fabric.mod.json", "build.gradle", "gradle.properties",

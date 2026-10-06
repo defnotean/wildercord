@@ -3,7 +3,9 @@
 Run --prepare before the native suites and run again afterwards with the same
 --marker and --suite (Masters by default). This report is visual evidence only:
 test_manifest.py owns gate status.
-No images are rendered, resized, decoded, or re-encoded here.
+No images are rendered, resized, or re-encoded here. By default images are not
+decoded. Explicit opening-receipt ingestion lazily uses the native verifier to
+decode unchanged PNGs solely to recheck their callback/readback identity.
 """
 import argparse
 import hashlib
@@ -896,6 +898,7 @@ def opening_style_coverage(groups, selected):
         info, candidate = row["info"], row["candidate"]
         captured = candidate is not None
         chosen = captured and candidate["sourcePath"] in paths
+        receipt = candidate.get("openingRenderReceipt") if captured else None
         coverage.append({**{key: info[key] for key in (
             "art", "camera", "hand", "view", "sourceSuite", "equipment", "equipmentBasis",
             "armorEnchantment", "armorTrim", "shellConfiguration", "shellAdapterEnabled", "configurationBasis",
@@ -905,7 +908,247 @@ def opening_style_coverage(groups, selected):
             "missingCapture": not captured, "omittedForBudget": captured and not chosen,
             "renderedPhase": "unknown", "verifiedRenderedPhases": [], "nativePixelReviewRequired": True,
             "preCaptureReceiptStatus": "not_ingested", "imageReceiptBinding": "not_in_scope"})
+        if receipt is not None:
+            coverage[-1].update(renderedPhase=receipt["renderedPhase"],
+                                verifiedRenderedPhases=[receipt["renderedPhase"]],
+                                rawAcceptedPhase=receipt["rawAcceptedPhase"],
+                                expectedBackend=receipt["expectedBackend"],
+                                imageReceiptBinding="verified_native_readback",
+                                openingRenderReceipt=receipt)
     return coverage
+
+
+def read_opening_receipts(root, source, stamp, identity, relative, groups):
+    """Recheck one exact wrapped opening report; failures preserve unknown labels.
+
+    The full original records and packaged copies are both required. The optional
+    import keeps existing curator modes stdlib-only. The native verifier checks
+    PNG CRCs, unchanged encoded bytes, decoded callback pixels, and native record
+    semantics. No image is modified, and no receipt is selected by basename.
+    """
+    summary = {"status": "not_requested", "associationVerified": False,
+               "nativePixelReviewRequired": True, "exactImpactPixelCoverage": "unverified",
+               "note": "Receipt association does not establish native acceptance or pixel-review success."}
+    if relative is None:
+        return summary, {}, {}
+    summary.update(status="unavailable", reportPath=str(relative)[:500])
+    snapshots = {}
+
+    def require(condition, message):
+        if not condition:
+            raise EvidenceError(message)
+
+    def watch(path):
+        safe_path(root, path.relative_to(root))
+        snapshots[path] = path.stat()
+
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            require(key not in result, "duplicate JSON object key in opening evidence")
+            result[key] = value
+        return result
+
+    def absolute(value):
+        require(isinstance(value, str), "opening evidence path is missing")
+        path = Path(value)
+        require(path.is_absolute() and path.as_posix() == value and ".." not in path.parts,
+                "opening evidence path is not exact and canonical")
+        return safe_path(root, path.relative_to(root))
+
+    try:
+        from run_articulated_receipt_gate import (MAX_RECORD_BYTES, MAX_RECORDS, MAX_REPORT_BYTES,
+            NativeExit, apply_phase_coverage, bounded_entries, confirm_native_exit, snapshot_records)
+        from verify_articulated_render_receipts import bounded_file, relative_evidence_path, verify
+        import uuid
+
+        root = root.resolve(strict=True)
+        report_path = safe_path(root, relative_evidence_path(str(relative)))
+        watch(report_path)
+        report_data = bounded_file(report_path, root, MAX_REPORT_BYTES)
+        report = json.loads(report_data, object_pairs_hook=pairs)
+        require(type(report["schemaVersion"]) is int and report["schemaVersion"] == 2,
+                "opening report must use schema 2")
+        # These are explicitly untrusted report failures until revalidation
+        # succeeds. Never turn a failed native/phase gate into a curation pass.
+        summary["unverifiedReportedFailures"] = {key: False for key in
+            ("associationVerified", "nativeSucceeded", "phaseCoverageVerified", "fallbackPhaseCoverageVerified", "gatePassed")
+            if report.get(key) is False}
+        errors = report.get("errors", [])
+        require(isinstance(errors, list) and all(isinstance(error, str) for error in errors), "invalid opening report errors")
+        summary["unverifiedReportedErrors"] = [error[:500] for error in errors[:96]]
+        summary["reportedErrorCount"] = len(errors)
+        prov, package = report["provenance"], report["package"]
+        require(prov["checkout"] == str(root), "opening checkout differs from this repository")
+        for report_key, identity_key in (("sourceCommit", "workflowSha"), ("GITHUB_SHA", "workflowSha"),
+                                         ("GITHUB_RUN_ID", "runId"), ("GITHUB_RUN_ATTEMPT", "runAttempt")):
+            require(prov[report_key] == identity[identity_key], "opening report differs from current run provenance")
+        require(identity.get("checkedOutSha", identity["workflowSha"]) == prov["sourceCommit"],
+                "opening source commit differs from checkout identity")
+        nonce = prov["launchNonce"]
+        require(isinstance(nonce, str) and str(uuid.UUID(nonce)) == nonce, "opening launch nonce is not canonical")
+        started, finished = prov["startedNs"], prov["finishedNs"]
+        require(type(started) is int and type(finished) is int
+                and stamp["startedNs"] <= started <= finished <= time.time_ns(),
+                "opening native launch is older than the current marker or unfinished")
+        require(snapshots[report_path].st_mtime_ns >= finished and snapshots[report_path].st_ctime_ns >= finished,
+                "opening report predates the completed native launch")
+        require(prov["waitedForExit"] is True and prov["nativeProcessExitConfirmed"] is True
+                and type(prov["nativeExitCode"]) is int and prov["nativeExitCode"] >= 0
+                and type(prov["launcherPid"]) is int and prov["launcherPid"] > 0,
+                "opening native process completion is unconfirmed")
+        game = absolute(report["gameDirectory"])
+        require(game == absolute(prov["gameDirectory"]) and source == game / "screenshots",
+                "opening game/screenshot root differs from this curation")
+        receipt_root = game / "screenshots/articulated-opening-receipts"
+        run = package["runId"]
+        require(isinstance(run, str) and str(uuid.UUID(run)) == run, "opening run ID is not canonical")
+        receipts = absolute(report["receiptDirectory"])
+        require(receipts == absolute(package["sourceDirectory"]) == receipt_root / run,
+                "opening receipt root differs from the exact source run")
+        require(bounded_entries(receipt_root, 2) == [receipts], "opening source has multiple or missing runs")
+        require(package["complete"] is True, "opening record package is incomplete")
+        watch(receipt_root)
+        watch(receipts)
+        require(started <= snapshots[receipts].st_mtime_ns <= finished
+                and started <= snapshots[receipts].st_ctime_ns <= finished,
+                "opening receipt directory is stale or changed after native exit")
+        source_records = snapshot_records(receipts, started, finished)
+        listed = package["records"]
+        require(isinstance(listed, list) and len(listed) <= MAX_RECORDS, "invalid opening record manifest")
+        expected_records = {}
+        for entry in listed:
+            name = entry["name"]
+            require(isinstance(name, str) and relative_evidence_path(name).name == name
+                    and name.endswith(".json") and name not in expected_records,
+                    "duplicate or unsafe opening record path")
+            require(type(entry["bytes"]) is int and 0 < entry["bytes"] <= MAX_RECORD_BYTES
+                    and isinstance(entry["sha256"], str) and re.fullmatch(r"[0-9a-f]{64}", entry["sha256"]),
+                    "invalid opening record byte/hash manifest")
+            expected_records[name] = entry
+        require(set(source_records) == set(expected_records) and package["recordCount"] == len(expected_records)
+                and package["recordBytes"] == sum(entry["bytes"] for entry in listed),
+                "opening source records differ from complete packaged manifest")
+        copies = report_path.parent / "opening-receipts"
+        watch(copies)
+        require({path.name for path in bounded_entries(copies, MAX_RECORDS)} == set(expected_records),
+                "opening packaged records differ from complete manifest")
+        tokens = set()
+        for name, entry in expected_records.items():
+            original, copied = receipts / name, copies / name
+            watch(original)
+            watch(copied)
+            data = bounded_file(original, root, MAX_RECORD_BYTES)
+            require(len(data) == entry["bytes"] and hashlib.sha256(data).hexdigest() == entry["sha256"]
+                    and bounded_file(copied, root, MAX_RECORD_BYTES) == data,
+                    "opening source/packaged record bytes or hashes differ")
+            record = json.loads(data, object_pairs_hook=pairs)
+            require(record["identity"]["runId"] == run and record["nativeLaunchNonce"] == nonce
+                    and record["copy"]["observation"]["nativeLaunchNonce"] == nonce,
+                    "opening record does not belong to this native run/launch nonce")
+            sequence = record["identity"]["captureSequence"]
+            require(type(sequence) is int and sequence > 0, "invalid opening capture sequence")
+            tokens.add((run, sequence))
+        require(package["captureTokens"] == [{"runId": run_id, "captureSequence": sequence}
+                                               for run_id, sequence in sorted(tokens)],
+                "opening capture token manifest conflicts with original records")
+        native_log = absolute(prov["nativeLog"])
+        watch(native_log)
+        require(isinstance(prov["command"], list) and len(prov["command"]) == 6
+                and isinstance(prov["command"][0], str) and bool(prov["command"][0])
+                and prov["command"][1:] == [str(root / "tools/run_client_ci.py"), "--suite", "articulated", "--log", str(native_log)],
+                "opening report does not identify the unchanged native suite launcher")
+        require(started <= snapshots[native_log].st_ctime_ns <= finished,
+                "opening native completion log changed after process exit")
+        confirmed = confirm_native_exit(native_log, NativeExit(prov["nativeExitCode"], prov["launcherPid"]), started, finished)
+        require(all(prov[key] == value for key, value in confirmed.items()),
+                "opening native completion log differs from report")
+        expected_trials = {name.removesuffix(".png") for name in OPENING_STYLE_SLOTS}
+        require(report["plannedTrials"] == sorted(expected_trials) and report["expectedArticulatedTrials"] == 64
+                and report["expectedFallbackTrials"] == 8, "opening report has a different planned matrix")
+        require(report["associationVerified"] is True, "opening report association failed")
+        require(isinstance(report["observations"], list) and len(report["observations"]) == 72,
+                "opening report does not contain exactly 72 observations")
+        candidates = {frame["sourcePath"]: frame for frames in groups.values() for frame in frames
+                      if frame.get("form") == "opening_style"}
+        for observation in report["observations"]:
+            path = safe_path(root, (game / relative_evidence_path(observation["relativeImagePath"])).relative_to(root))
+            watch(path)
+            frame = candidates.get(path.relative_to(root).as_posix())
+            require(frame is not None and frame["scene"] == observation["trial"]
+                    and frame["bytes"] == observation["pngBytes"],
+                    "opening image is not the exact fresh candidate for its trial")
+            require(started <= snapshots[path].st_mtime_ns <= finished
+                    and started <= snapshots[path].st_ctime_ns <= finished,
+                    "opening PNG is stale or changed after native exit")
+        checked = verify(receipts, game, 72, expected_trials, profile="opening")
+        require(checked["associationVerified"], "opening native association recheck failed: " + "; ".join(checked["errors"])[:400])
+        # Tokens are global to the one native observer. Read only identities and
+        # image paths from the separate shared source; its 120-trial verdict and
+        # report remain independent, including when shared phase coverage fails.
+        shared_root = game / "screenshots/articulated-shared-receipts"
+        watch(shared_root)
+        shared_runs = bounded_entries(shared_root, 2)
+        require(shared_runs == [shared_root / run],
+                "opening run differs from or lacks the same native child's shared run")
+        if shared_runs:
+            shared = shared_runs[0]
+            watch(shared)
+            require(started <= snapshots[shared].st_mtime_ns <= finished
+                    and started <= snapshots[shared].st_ctime_ns <= finished,
+                    "shared token directory is stale or changed after native exit")
+            shared_records = snapshot_records(shared, started, finished)
+            images = {entry["relativeImagePath"] for entry in checked["observations"]}
+            for name in shared_records:
+                path = shared / name
+                watch(path)
+                record = json.loads(bounded_file(path, root, MAX_RECORD_BYTES), object_pairs_hook=pairs)
+                token = record["identity"]
+                require(token["runId"] == run and type(token["captureSequence"]) is int and token["captureSequence"] > 0
+                        and record["nativeLaunchNonce"] == nonce
+                        and (record.get("copy") is None or record["copy"]["observation"]["nativeLaunchNonce"] == nonce),
+                        "shared token record belongs to a different native run/launch nonce")
+                require((token["runId"], token["captureSequence"]) not in tokens,
+                        "opening capture token already belongs to a shared record")
+                image = record.get("image")
+                require(not isinstance(image, dict) or image.get("relativeImagePath") not in images,
+                        "opening PNG already belongs to a shared record")
+            require(snapshot_records(shared, started, finished) == shared_records,
+                    "shared token records changed during opening validation")
+        checked["nativeSucceeded"] = prov["nativeExitCode"] == 0
+        if not checked["nativeSucceeded"]:
+            checked["errors"].append(f"original native launcher failed with exit code {prov['nativeExitCode']}")
+        apply_phase_coverage(checked, "opening")
+        require(all(report.get(key) == value for key, value in checked.items()),
+                "opening report observations or gate verdicts conflict with native evidence")
+        require(snapshot_records(receipts, started, finished) == source_records,
+                "opening records changed during curation")
+        check_opening_snapshot(root, snapshots)
+        mapping = {}
+        for observation in checked["observations"]:
+            item = dict(observation)
+            item.update(receiptSourcePath=(receipts / item["receiptRelativePath"]).relative_to(root).as_posix(),
+                        reportPath=report_path.relative_to(root).as_posix())
+            mapping[(game / item["relativeImagePath"]).relative_to(root).as_posix()] = item
+        summary.update(status="verified", associationVerified=True, reportSha256=hashlib.sha256(report_data).hexdigest(),
+                       verifiedImages=len(mapping), launchNonce=nonce, receiptRunId=run,
+                       sourceGate={key: checked[key] for key in ("nativeSucceeded", "phaseCoverageVerified",
+                           "fallbackPhaseCoverageVerified", "gatePassed", "phaseCoverageMisses", "fallbackPhaseCoverageMisses", "errors")},
+                       sidecars="Complete original records remain in the separate opening metadata package; selected facts are embedded here.")
+        summary.pop("unverifiedReportedFailures")
+        summary.pop("unverifiedReportedErrors")
+        return summary, mapping, snapshots
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, IndexError, ImportError, RecursionError) as failure:
+        summary["diagnostic"] = f"{type(failure).__name__}: {failure}"[:500]
+        return summary, {}, {}
+
+
+def check_opening_snapshot(root, snapshots):
+    """A late file, replacement, or edit revokes the previously verified bundle."""
+    for path, before in snapshots.items():
+        current = safe_path(root, path.relative_to(root))
+        if not unchanged(before, current.stat()):
+            raise EvidenceError("Opening receipt evidence changed during curation")
 
 
 def select_articulated(groups, budget):
@@ -1157,8 +1400,10 @@ def select_articulated(groups, budget):
     return selected, [row["coverage"] for row in rows]
 
 
-def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite="masters"):
+def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite="masters", opening_receipt_report=None):
     entrypoint = suite_name(suite)
+    if opening_receipt_report is not None and suite != "articulated":
+        raise EvidenceError("Opening receipt ingestion requires the articulated suite")
     manifest_reserve = ARTICULATED_MANIFEST_RESERVE if suite == "articulated" else MANIFEST_RESERVE
     if not manifest_reserve <= budget <= BUDGET:
         raise EvidenceError(f"Budget must be between {manifest_reserve} and {BUDGET} bytes")
@@ -1209,6 +1454,22 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
         groups.setdefault((info["scene"], info["view"], info["phase"]), []).append(info)
     selector = select_articulated if suite == "articulated" else select_masters
     selected, coverage = selector(groups, budget)
+    opening_summary, opening_snapshots = None, {}
+    if suite == "articulated":
+        opening_summary, observations, opening_snapshots = read_opening_receipts(
+            root, source, stamp, identity, opening_receipt_report, groups)
+        # Enrich after selection. The original unknown-phase group keys and
+        # byte allocation remain intact, including all budget-omitted candidates.
+        for frames in groups.values():
+            for frame in frames:
+                receipt = observations.get(frame["sourcePath"])
+                if receipt is not None:
+                    frame.update(openingRenderReceipt=receipt, phase=receipt["renderedPhase"].lower(),
+                                 renderedPhase=receipt["renderedPhase"], rawAcceptedPhase=receipt["rawAcceptedPhase"],
+                                 expectedBackend=receipt["expectedBackend"], phaseBasis="native_render_receipt_readback",
+                                 imageReceiptBinding="verified_native_readback",
+                                 actualSkin={key: receipt[key] for key in ("skinModel", "skinTexture", "rigWidth")},
+                                 actualEquipment={key: receipt[key] for key in ("head", "chest", "legs", "feet", "mainHand")})
     manifest = {
         "schemaVersion": 1, "artifactKind": "curated_native_visual_evidence_only",
         "status": "available" if selected else "unavailable", "provenance": identity,
@@ -1261,6 +1522,7 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
             "sharedPlayerCoverage": shared_player_coverage(groups, selected),
             "fundedShellCoverage": funded_shell_coverage(groups, selected),
             "openingStyleCoverage": opening_style_coverage(groups, selected),
+            "openingReceiptEvidence": opening_summary,
             "basis": "Byte-identical native PNGs from the four articulated suites. Original combat samples "
                      "follow real Spellcut input and its server-accepted timeline; HUD idle-before/after "
                      "captures are explicitly idle. Left/right denote the local owner's configured main hand; "
@@ -1297,9 +1559,13 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                      "windows describe its contract, not an ingested acceptance receipt. Skin denotes unarmored equipment, "
                      "never a verified live skin width; the synthetic wide/slim probes are not screenshot evidence. "
                      "Opening filenames identify requested camera, hand, equipment, shell/adapter configuration and phase. "
-                     "Their ARTICULATED_OPENING_SAMPLE and separate server logs remain in full evidence and are not ingested; "
-                     "actual skin, accepted move/activation and pre-capture age/phase stay unknown here. No token/readback "
-                     "association binds these images to the logs; requested or pre-capture phase is not rendered phase. "
+                     "Their ARTICULATED_OPENING_SAMPLE and separate server logs remain in full evidence and are not ingested. "
+                     "An explicitly supplied current-run opening receipt report can separately establish exact native readback "
+                     "association, actual rendered phase, accepted action identity, skin, equipment and shell facts. "
+                     "Its original records, complete directory, hashes, PNG pixels, provenance and confirmed native exit "
+                     "are rechecked; absent or invalid receipts retain unknown observations with a bounded diagnostic. "
+                     "Requested or pre-capture phase is not rendered phase. Fallback remains FALLBACK, with its raw "
+                     "accepted phase reported separately. Original phase misses and native failures remain visible. "
                      "Opening coverage reports captured/included/budget-omitted/missing slots, never 72 accepted trials or "
                      "a failed verdict for missing images. Disabled-adapter frames remain explicitly labeled fallback requests. "
                      "Even a matching pre-capture log receipt would not establish the framebuffer phase. "
@@ -1371,6 +1637,8 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
             if before.st_size != frame["bytes"] or before.st_mtime_ns < stamp["startedNs"]:
                 raise EvidenceError("Source changed during curation")
             checksum = digest(path)
+            if "openingRenderReceipt" in frame and checksum != frame["openingRenderReceipt"]["pngSha256"]:
+                raise EvidenceError("Opening PNG changed after receipt validation")
             copied = staging / frame["artifactPath"]
             shutil.copyfile(path, copied)
             after = safe_path(root, frame["sourcePath"]).stat()
@@ -1389,6 +1657,7 @@ def curate(root, screenshots, marker, output, identity, budget=BUDGET, *, suite=
                         or copied.stat().st_size != metadata["bytes"]
                         or hashlib.sha256(copied.read_bytes()).hexdigest() != metadata["sha256"]):
                     raise EvidenceError("NPC metadata changed after validation")
+        check_opening_snapshot(root, opening_snapshots)
         data = encode(manifest)
         artifact_bytes = sum(frame_bytes(item) for item in selected) + len(data)
         if (len(data) > manifest_reserve or artifact_bytes > budget
@@ -1410,15 +1679,19 @@ def main(argv=None):
     parser.add_argument("--marker", required=True, help="Unique repository-relative pre-run marker path")
     parser.add_argument("--output", help="New repository-relative curated artifact directory")
     parser.add_argument("--budget", type=int, default=BUDGET)
+    parser.add_argument("--opening-receipt-report", help="Exact repository-relative opening-association-report.json path; articulated curation only")
     args = parser.parse_args(argv)
     if not args.prepare and not args.output:
         parser.error("--output is required when curating")
+    if args.opening_receipt_report and (args.prepare or args.suite != "articulated"):
+        parser.error("--opening-receipt-report requires articulated curation, not --prepare")
     try:
         identity = provenance(ROOT, os.environ)
         if args.prepare:
             prepare(ROOT, args.screenshots, args.marker, identity, suite=args.suite)
         else:
-            result = curate(ROOT, args.screenshots, args.marker, args.output, identity, args.budget, suite=args.suite)
+            result = curate(ROOT, args.screenshots, args.marker, args.output, identity, args.budget, suite=args.suite,
+                            opening_receipt_report=args.opening_receipt_report)
             print(json.dumps({"output": args.output, "status": result["status"], "frames": len(result["frames"])}))
     except (EvidenceError, OSError, ValueError, subprocess.SubprocessError) as exc:
         print(f"Visual evidence unavailable: {exc}", file=sys.stderr)

@@ -101,6 +101,7 @@ public final class BattlefieldsGenerationProbeChecks {
    }
   }
   classificationChecks(world,seed);
+  representativeControls();
   var cappedRows=new ArrayList<String>();var capped=new BattlefieldsGenerationProbe.Session(seed,cappedRows::add);
   try(capped) {for(int i=0;i<100;i++)capped.emit("synthetic");}
   check(cappedRows.size()==BattlefieldsGenerationProbe.MAX_LINES+1,"receipt line count is bounded including final summary");
@@ -109,7 +110,17 @@ public final class BattlefieldsGenerationProbeChecks {
   brokenSink.habitat(BlockPos.ZERO,"synthetic","synthetic",true);
   try(brokenSink;var command=brokenSink.command(world,0,0,0)) {command.callback(false,0);command.returned();}
   check(brokenSink.summary().contains("sinkFailures=4"),"sink failure is counted without replacing original result or cleanup");
-  System.out.println("BATTLEFIELD_GENERATION CHECKS completed=scene_world_seed_chunk_thread_scope,nested_masking,original16_bound,return_exception_cleanup,sink_failure,line_cap,command_result_distinction; syntheticControlsOnly=true");
+  System.out.println("BATTLEFIELD_GENERATION CHECKS completed=scene_world_seed_chunk_thread_scope,nested_masking,original16_bound,return_exception_cleanup,sink_failure,line_cap,command_result_distinction,representative_terrain_contract; syntheticControlsOnly=true");
+ }
+ private static void representativeControls() {
+  // Replay the observed native receipt, then independently vary consequential evidence.
+  for(int fault=0;fault<7;fault++) {
+   var observation=new BattlefieldsGenerationProbe.Admission(fault!=1,"north",new BlockPos(1423,0,1103),6,
+     fault==2 ? 64 : 63,63,java.util.List.of(62,66,63,66),63,fault!=3,fault!=4,1,true,fault==5 ? 0 : 1,fault!=6,1);
+   boolean rejected=false;
+   try {BattlefieldsTest.requireRepresentativeAdmission(observation);}catch(AssertionError expected) {rejected=true;}
+   check(rejected==(fault!=0),"representative contract accepts the observed receipt and rejects changed config, terrain, footing, locate or command evidence: "+fault);
+  }
  }
  private static void classificationChecks(Object world,long seed) {
   var rows=new ArrayList<String>();

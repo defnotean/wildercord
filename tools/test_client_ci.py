@@ -24,17 +24,18 @@ def launcher_log(selection, *, result=0, build="BUILD SUCCESSFUL"):
 
 
 class SelectionTests(unittest.TestCase):
-    def test_masters_update_is_twenty_registered_unique_entries(self):
+    def test_masters_update_is_twenty_one_registered_unique_entries(self):
         selected = client_suites.select_entries(suite="masters")
         full = client_suites.select_entries()
-        self.assertEqual(selected["count"], 20)
-        self.assertEqual(len(set(selected["entries"])), 20)
+        self.assertEqual(selected["count"], 21)
+        self.assertEqual(len(set(selected["entries"])), 21)
         self.assertTrue(set(selected["entries"]).issubset(full["entries"]))
 
-    def test_articulated_is_four_registered_acceptance_slices(self):
+    def test_articulated_is_five_registered_acceptance_slices(self):
         selected = client_suites.select_entries(suite="articulated")
-        self.assertEqual(selected["count"], 4)
+        self.assertEqual(selected["count"], 5)
         self.assertEqual(selected["entries"], [
+            "dev.wildercord.client.CombatPresentationSettingsTest",
             "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
             "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
             "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
@@ -77,7 +78,7 @@ class SelectionTests(unittest.TestCase):
             -1, group["entries"][0]), "duplicate")
 
     def test_missing_catalog_entry_is_rejected(self):
-        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 20")
+        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 21")
 
     def test_unregistered_catalog_entry_is_rejected(self):
         self.assert_bad_catalog(lambda group: group["entries"].__setitem__(
@@ -89,7 +90,7 @@ class SelectionTests(unittest.TestCase):
                 self.assert_bad_catalog(lambda group: group.update(entries=entries), "nonempty")
 
     def test_invalid_expected_count_is_rejected(self):
-        for count in (19, 21, 20.0, True, "20"):
+        for count in (20, 22, 21.0, True, "21"):
             with self.subTest(count=count):
                 self.assert_bad_catalog(lambda group: group.update(expectedCount=count), "exactly")
 
@@ -180,14 +181,14 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(status, 1 if manifest.get("focusedClientGate") == "unverified" else 0)
             return manifest
 
-    def test_focused_success_is_exactly_eighteen_and_never_a_full_pass(self):
+    def test_focused_success_is_exactly_twenty_one_and_never_a_full_pass(self):
         selection = client_suites.select_entries(suite="masters")
         manifest = self.manifest(launcher_log(selection), "--suite", "masters")
         self.assertEqual(manifest["selection"], selection)
         self.assertEqual([s["suite"] for s in manifest["clientSuites"]], selection["entries"])
         self.assertEqual(manifest["focusedClientGate"], "passed")
         self.assertEqual(manifest["fullClientGate"], "unverified")
-        self.assertEqual(manifest["counts"], {"passed": 20, "skipped": 0, "unverified": 0})
+        self.assertEqual(manifest["counts"], {"passed": 21, "skipped": 0, "unverified": 0})
         self.assertEqual(manifest["verificationIssues"], [])
         self.assertIn("full client gate and animation gallery are not established", manifest["basis"])
 
@@ -203,7 +204,7 @@ class ManifestTests(unittest.TestCase):
                 manifest = self.manifest(log, "--suite", "masters")
                 self.assertEqual(manifest["fullClientGate"], "unverified")
                 self.assertEqual(manifest["focusedClientGate"], "unverified")
-                self.assertEqual(manifest["counts"]["unverified"], 20)
+                self.assertEqual(manifest["counts"]["unverified"], 21)
 
     def test_mismatched_stale_duplicate_or_invalid_selection_cannot_pass(self):
         selection = client_suites.select_entries(suite="masters")

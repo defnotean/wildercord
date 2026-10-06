@@ -1,9 +1,10 @@
 {
   "masters": {
     "description": "Masters update combat, progression, presentation and bounded existing-world upgrade safety.",
-    "expectedCount": 20,
+    "expectedCount": 21,
     "entries": [
       "dev.wildercord.party.PartyMutationSafetyTest",
+      "dev.wildercord.party.ArtFieldMutationSafetyTest",
       "dev.wildercord.gametest.WildercordHeartCirclesTest",
       "dev.wildercord.aura.world.ManaSkinSustainChecks",
       "dev.wildercord.gametest.WildercordMastersArtsTest",
@@ -26,9 +27,10 @@
     ]
   },
   "articulated": {
-    "description": "Opt-in segmented body, first-person hand sockets and HUD composition, gated netherite armor, and normally funded Aura Armour shell acceptance.",
-    "expectedCount": 4,
+    "description": "Staged local combat preferences, opt-in segmented body, first-person hand sockets and HUD composition, gated netherite armor, and normally funded Aura Armour shell acceptance.",
+    "expectedCount": 5,
     "entries": [
+      "dev.wildercord.client.CombatPresentationSettingsTest",
       "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
       "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
       "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",

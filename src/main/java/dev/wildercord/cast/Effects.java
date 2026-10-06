@@ -103,6 +103,8 @@ public final class Effects {
 	private static LivingEntity applying;
 	/** The cast being applied right now (null outside one): health it restores counts toward the spell's mastery. */
 	private static Cast applyingCast;
+	/** Opaque identity of the innermost non-spell source scope, retained only while its action is on the stack. */
+	private static Object sourceScope;
 	/** Thirst on the effect being applied: the share of the damage it deals that heals its caster (0 = none). */
 	private static double thirst;
 
@@ -121,6 +123,11 @@ public final class Effects {
 		return applyingCast;
 	}
 
+	/** Identity of the current {@link #withSource} scope, or null outside one. Callers may compare, never replace it. */
+	public static Object sourceScope() {
+		return sourceScope;
+	}
+
 	/**
 	 * Attribute non-spell actions (a sword art or a projectile's impact) without borrowing an
 	 * unrelated spell's cast. Nested calls and failures always restore their caller's context.
@@ -128,13 +135,16 @@ public final class Effects {
 	public static <T> T withSource(LivingEntity source, java.util.function.Supplier<T> action) {
 		LivingEntity outerApplying = applying;
 		Cast outerCast = applyingCast;
+		Object outerScope = sourceScope;
 		applying = source;
 		applyingCast = null;
+		sourceScope = new Object();
 		try {
 			return action.get();
 		} finally {
 			applying = outerApplying;
 			applyingCast = outerCast;
+			sourceScope = outerScope;
 		}
 	}
 

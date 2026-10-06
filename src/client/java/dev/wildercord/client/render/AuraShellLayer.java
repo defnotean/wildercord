@@ -6,10 +6,12 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.AuraPresence;
+import dev.wildercord.aura.AuraShellMaterial;
 import dev.wildercord.client.AuraClient;
 import dev.wildercord.client.combat.ArticulatedAuraShellRenderer;
 import dev.wildercord.client.combat.ArticulatedModelAccess;
 import dev.wildercord.client.compat.ShaderCompat;
+import dev.wildercord.client.fx.MagicQuality;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -38,7 +40,7 @@ import java.util.List;
  * What the top stages of aura look like on a player, for everyone:
  * <ul>
  * <li>aura armour's shell (Form, with aura enough): the body drawn again a little larger, in a faint, slowly shimmering skin of
- * the aura's colour, flaring for a moment where a blow strikes it;</li>
+ * the aura's colour, flaring for a moment where a blow strikes it unless the viewer enables Reduced flash;</li>
  * <li>Aura Step's afterimages: the player as they were at points along the dash, in their aura's colour, fading behind them.</li>
  * </ul>
  * Both are vanilla's glowing-eyes and emissive translucent types, so a shader pack draws them as it draws its own glowing
@@ -169,12 +171,10 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		AuraPresence.Look presence = AuraPresence.look(player);
 		float time = player.level().getGameTime() + partial;
 		if (presence.shell() && look.stage() > 0) {
-			// Faint at rest, breathing slowly; flaring white-hot for a moment when a blow lands on it.
+			// Both shell backends receive the same material, including the viewer's Reduced flash choice.
 			float since = presence.shellStruckAt() < 0 ? 99 : time - presence.shellStruckAt();
-			float flare = since >= 0 && since < 8 ? 1 - since / 8F : 0;
-			float alpha = Math.min(1.0F, 0.3F + 0.07F * Mth.sin(time * 0.09F + player.getId()) + 0.4F * flare);
-			int rgb = mix(look.color(), 0xFFFFFF, 0.1F + 0.3F * flare);
-			state.setData(SHELL_GLOW, (Mth.clamp(Math.round(alpha * 255), 0, 255) << 24) | rgb);
+			state.setData(SHELL_GLOW, AuraShellMaterial.argb(look.color(), Mth.sin(time * 0.09F + player.getId()), since,
+				MagicQuality.reducedFlash));
 		}
 		List<AuraClient.Afterimage> images = AuraClient.afterimages(player.getId(), time);
 		if (!images.isEmpty()) {

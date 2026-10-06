@@ -15,6 +15,7 @@ from PIL import Image
 import run_articulated_receipt_gate as gate
 from client_suites import EXIT_PREFIX, SELECTION_PREFIX
 from verify_articulated_render_receipts import STAGES, image_evidence
+from test_verify_articulated_render_receipts import opening_fixture
 
 
 class NativeReceiptGateTests(unittest.TestCase):
@@ -29,16 +30,19 @@ class NativeReceiptGateTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
-    def generate(self, environment, *, nonce=None, phase_miss=False, active_miss=False, paused=False, frozen=False, count=120):
-        run_id = str(uuid.uuid4())
-        directory = self.receipt_root / run_id
+    def generate(self, environment, *, nonce=None, phase_miss=False, active_miss=False, paused=False, frozen=False, count=None, profile="shared", run_id=None):
+        if run_id is None:
+            run_id = next(self.receipt_root.iterdir()).name if profile == "opening" and self.receipt_root.exists() else str(uuid.uuid4())
+        root = self.receipt_root if profile == "shared" else self.game / "screenshots/articulated-opening-receipts"
+        directory = root / run_id
         directory.mkdir(parents=True)
         png = self.game / "screenshots/template.png"
         Image.new("RGBA", (2, 2), (18, 52, 86, 255)).save(png)
         image_bytes = png.read_bytes()
         pixels = image_evidence(image_bytes)
         launch_nonce = environment[gate.NONCE_ENV] if nonce is None else nonce
-        for sequence, trial in enumerate(sorted(gate.planned_trials())[:count], start=1):
+        trials = gate.planned_trials() if profile == "shared" else gate.planned_opening_trials()
+        for sequence, trial in enumerate(sorted(trials)[:count], start=1 if profile == "shared" else 121):
             requested = trial.rsplit("_requested_", 1)[1].upper()
             phase = "ACTIVE" if phase_miss else requested
             if active_miss and requested == "ACTIVE":
@@ -74,11 +78,22 @@ class NativeReceiptGateTests(unittest.TestCase):
                                "observation": {"nativeLaunchNonce": launch_nonce, "firstPerson": str(first).lower(), "paused": str(paused).lower(), "frozen": str(frozen).lower(),
                                                "ownerId": "7", "acceptedStartTick": "42", "acceptedMove": str(move), "renderTargetGeneration": "1", "renderTextureGeneration": "2"},
                                "passes": passes}}
+            if profile == "opening":
+                record = opening_fixture(record, trial)
+                if phase_miss or (active_miss and requested == "ACTIVE"):
+                    for entry in record["copy"]["passes"]:
+                        entry["palette"]["phase"] = phase
+                        entry["attributes"]["rawAcceptedPhase"] = phase
+                    fallback = record["expectedBackend"] == "full_fallback"
+                    record.update(rawAcceptedPhase=phase, rawRequestedPhaseObserved=phase == requested,
+                                  renderedPhase="FALLBACK" if fallback else phase,
+                                  requestedPhaseObserved=not fallback and phase == requested,
+                                  unpausedPhaseCoverage=not fallback and phase == requested and not paused and not frozen)
             (directory / f"{sequence:06d}-receipt-1.json").write_text(json.dumps(record))
         png.unlink()
         return directory
 
-    def run_case(self, write=None, exit_code=0, environment=None):
+    def run_case(self, write=None, exit_code=0, environment=None, include_opening=False):
         def runner(command, repo, environment):
             self.assertEqual(command[2:4], ["--suite", "articulated"])
             self.assertEqual(Path(command[1]), self.root / "tools/run_client_ci.py")
@@ -87,10 +102,12 @@ class NativeReceiptGateTests(unittest.TestCase):
                 write(environment)
             else:
                 self.generate(environment)
+                if include_opening:
+                    self.generate(environment, profile="opening")
             (self.root / "native.log").write_text(SELECTION_PREFIX + json.dumps({"kind": "suite", "name": "articulated"}) + "\n" + EXIT_PREFIX + str(exit_code) + "\n")
             return gate.NativeExit(exit_code, self.pid)
         return gate.run_gate(self.root, self.game, self.output, Path("native.log"), runner=runner,
-                             commit_reader=lambda repo: "test-head", environment={} if environment is None else environment)
+                             commit_reader=lambda repo: "test-head", environment={} if environment is None else environment, include_opening=include_opening)
 
     def report(self):
         return json.loads((self.output / "association-report.json").read_text())
@@ -331,6 +348,219 @@ class NativeReceiptGateTests(unittest.TestCase):
         self.assertTrue(report["package"]["complete"])
         self.assertTrue(report["errorDetailsBounded"])
         self.assertLessEqual((self.output / "association-report.json").stat().st_size, gate.MAX_REPORT_BYTES)
+
+
+    def opening_report(self):
+        return json.loads((self.output / "opening-association-report.json").read_text())
+
+    def test_exact_independent_opening_matrix(self):
+        shared = gate.planned_trials()
+        opening = gate.planned_opening_trials()
+        self.assertEqual(len(shared), 120)
+        self.assertEqual(len(opening), 72)
+        self.assertFalse(shared & opening)
+        self.assertEqual(sum("_first_" in trial for trial in opening), 36)
+        self.assertEqual(sum("_third_" in trial for trial in opening), 36)
+        self.assertEqual(sum("_adapter_disabled_" in trial for trial in opening), 8)
+        self.assertIn("articulated_opening_style_kindling_draw_first_left_netherite_funded_shell_adapter_disabled_requested_active", opening)
+        self.assertNotIn("articulated_opening_style_frostbite_third_right_skin_funded_shell_requested_windup", opening)
+
+    def test_include_opening_packages_separate72_from_one_exact_native_launch(self):
+        with mock.patch.object(self, "generate", wraps=self.generate) as generated:
+            self.assertEqual(self.run_case(include_opening=True), 0)
+        self.assertEqual(generated.call_count, 2)
+        shared, opening = self.report(), self.opening_report()
+        self.assertEqual(shared["expectedTrials"], 120)
+        self.assertEqual(shared["verifiedImages"], 120)
+        self.assertTrue(shared["gatePassed"])
+        self.assertEqual(opening["expectedTrials"], 72)
+        self.assertEqual(opening["verifiedImages"], 72)
+        self.assertTrue(opening["gatePassed"])
+        self.assertTrue(opening["phaseCoverageVerified"])
+        self.assertTrue(opening["fallbackPhaseCoverageVerified"])
+        self.assertEqual(shared["provenance"], opening["provenance"])
+        shared_tokens = {(token["runId"], token["captureSequence"]) for token in shared["package"]["captureTokens"]}
+        opening_tokens = {(token["runId"], token["captureSequence"]) for token in opening["package"]["captureTokens"]}
+        self.assertEqual(len(shared_tokens), 120)
+        self.assertEqual(len(opening_tokens), 72)
+        self.assertFalse(shared_tokens & opening_tokens)
+        self.assertEqual({entry["captureSequence"] for entry in opening["observations"]}, set(range(121, 193)))
+        self.assertEqual(shared["provenance"]["command"][2:4], ["--suite", "articulated"])
+        self.assertEqual(len(list((self.output / "opening-receipts").glob("*.json"))), 72)
+        self.assertFalse(list(self.output.rglob("*.png")))
+        self.assertLessEqual(sum(path.stat().st_size for path in self.output.rglob("*") if path.is_file()), gate.MAX_METADATA_BYTES)
+        for observed in opening["observations"]:
+            self.assertEqual(hashlib.sha256((self.game / observed["relativeImagePath"]).read_bytes()).hexdigest(), observed["pngSha256"])
+            sidecar = Path(opening["receiptDirectory"]) / observed["receiptRelativePath"]
+            self.assertEqual(hashlib.sha256(sidecar.read_bytes()).hexdigest(), observed["receiptSha256"])
+
+    def test_default_shared_gate_ignores_opening_without_changing_planned_proof(self):
+        def both(env):
+            self.generate(env)
+            self.generate(env, profile="opening", count=1)
+        self.assertEqual(self.run_case(both), 0)
+        self.assertEqual(self.report()["expectedTrials"], 120)
+        self.assertFalse((self.output / "opening-association-report.json").exists())
+
+    def test_missing_opening_keeps_passing_shared_proof_but_fails_optional_gate(self):
+        self.assertEqual(self.run_case(lambda env: self.generate(env), include_opening=True), 1)
+        self.assertTrue(self.report()["gatePassed"])
+        self.assertFalse(self.opening_report()["gatePassed"])
+        self.assertFalse(self.opening_report()["package"]["complete"])
+
+    def test_opening_success_cannot_hide_shared_missing_trial(self):
+        def missing(env):
+            self.generate(env, count=119)
+            self.generate(env, profile="opening")
+        self.assertEqual(self.run_case(missing, include_opening=True), 1)
+        self.assertFalse(self.report()["gatePassed"])
+        self.assertTrue(self.opening_report()["gatePassed"])
+
+    def test_opening_native_failure_survives_both_valid_associations(self):
+        self.assertEqual(self.run_case(exit_code=9, include_opening=True), 1)
+        for report in (self.report(), self.opening_report()):
+            self.assertTrue(report["associationVerified"])
+            self.assertFalse(report["nativeSucceeded"])
+            self.assertFalse(report["gatePassed"])
+            self.assertTrue(any("exit code 9" in error for error in report["errors"]))
+
+    def test_opening_phase_misses_fail_both_truthful_coverage_dimensions(self):
+        def misses(env):
+            self.generate(env)
+            self.generate(env, profile="opening", active_miss=True)
+        self.assertEqual(self.run_case(misses, include_opening=True), 1)
+        self.assertTrue(self.report()["gatePassed"])
+        report = self.opening_report()
+        self.assertTrue(report["associationVerified"])
+        self.assertFalse(report["phaseCoverageVerified"])
+        self.assertFalse(report["fallbackPhaseCoverageVerified"])
+        self.assertEqual(len(report["phaseCoverageMisses"]), 32)
+        self.assertEqual(len(report["fallbackPhaseCoverageMisses"]), 8)
+        self.assertTrue(all(entry["renderedPhase"] == "FALLBACK" for entry in report["fallbackPhaseCoverageMisses"]))
+
+    def test_opening_stale_root_prevents_native_launch(self):
+        self.generate({gate.NONCE_ENV: "old"}, profile="opening", count=1)
+        never = mock.Mock(side_effect=AssertionError("stale opening root must prevent launch"))
+        result = gate.run_gate(self.root, self.game, self.output, Path("native.log"), runner=never,
+                               commit_reader=lambda repo: "test-head", environment={}, include_opening=True)
+        self.assertEqual(result, 1)
+        never.assert_not_called()
+        self.assertTrue(any("preexisting opening" in error for error in self.opening_report()["errors"]))
+
+    def test_opening_fresh_files_with_copied_nonce_fail_only_opening(self):
+        def copied(env):
+            self.generate(env)
+            self.generate(env, profile="opening", nonce="copied")
+        self.assertEqual(self.run_case(copied, include_opening=True), 1)
+        self.assertTrue(self.report()["gatePassed"])
+        self.assertFalse(self.opening_report()["associationVerified"])
+        self.assertTrue(self.opening_report()["package"]["complete"])
+
+    def test_aggregate_budget_covers_both_complete_receipt_sets_and_reports(self):
+        sizes = {}
+        def measured(env):
+            for profile in ("shared", "opening"):
+                directory = self.generate(env, profile=profile)
+                sizes[profile] = sum(path.stat().st_size for path in directory.glob("*.json"))
+            # Allow all shared bytes and only half the complete opening set.
+            limited = 2 * gate.MAX_REPORT_BYTES + sizes["shared"] + sizes["opening"] // 2
+            self.budget_patch = mock.patch.object(gate, "MAX_METADATA_BYTES", limited)
+            self.budget_patch.start()
+        try:
+            self.assertEqual(self.run_case(measured, include_opening=True), 1)
+            self.assertTrue(self.report()["gatePassed"])
+            self.assertFalse(self.opening_report()["package"]["complete"])
+            self.assertTrue(any("budget" in error for error in self.opening_report()["errors"]))
+            self.assertLessEqual(sum(path.stat().st_size for path in self.output.rglob("*") if path.is_file()), gate.MAX_METADATA_BYTES)
+        finally:
+            if hasattr(self, "budget_patch"):
+                self.budget_patch.stop()
+
+    def test_opening_symlink_and_hardlink_images_fail_association(self):
+        def linked(env):
+            self.generate(env)
+            directory = self.generate(env, profile="opening")
+            for index, path in enumerate(sorted(directory.glob("*.json"))[:2]):
+                record = json.loads(path.read_text())
+                image = self.game / record["image"]["relativeImagePath"]
+                original = image.with_suffix(".original")
+                image.rename(original)
+                if index == 0:
+                    image.symlink_to(original.name)
+                else:
+                    os.link(original, image)
+        self.assertEqual(self.run_case(linked, include_opening=True), 1)
+        self.assertTrue(self.report()["gatePassed"])
+        self.assertFalse(self.opening_report()["associationVerified"])
+
+
+    def test_shared_png_cannot_double_as_an_opening_capture(self):
+        def reused(env):
+            shared = self.generate(env)
+            opening = self.generate(env, profile="opening")
+            original = json.loads(next(shared.glob("*.json")).read_text())
+            path = next(opening.glob("*.json"))
+            record = json.loads(path.read_text())
+            record["image"] = original["image"]
+            path.write_text(json.dumps(record))
+        self.assertEqual(self.run_case(reused, include_opening=True), 1)
+        self.assertTrue(self.report()["gatePassed"])
+        self.assertFalse(self.opening_report()["associationVerified"])
+        self.assertTrue(any("already belong to shared" in error for error in self.opening_report()["errors"]))
+
+    def test_opening_run_uuid_must_match_same_native_shared_run(self):
+        def mismatched(env):
+            self.generate(env)
+            self.generate(env, profile="opening", run_id=str(uuid.uuid4()))
+        self.assertEqual(self.run_case(mismatched, include_opening=True), 1)
+        self.assertTrue(self.report()["gatePassed"])
+        self.assertFalse(self.opening_report()["associationVerified"])
+        self.assertTrue(any("run UUID differs" in error for error in self.opening_report()["errors"]))
+
+    def test_opening_capture_token_cannot_duplicate_shared_token(self):
+        def duplicate(env):
+            self.generate(env)
+            opening = self.generate(env, profile="opening")
+            path = next(opening.glob("*.json"))
+            record = json.loads(path.read_text())
+            record["identity"]["captureSequence"] = 1
+            record["copy"]["identity"]["captureSequence"] = 1
+            path.write_text(json.dumps(record))
+        self.assertEqual(self.run_case(duplicate, include_opening=True), 1)
+        self.assertTrue(self.report()["gatePassed"])
+        self.assertEqual(self.opening_report()["verifiedImages"], 72)
+        self.assertFalse(self.opening_report()["associationVerified"])
+        self.assertFalse(self.opening_report()["gatePassed"])
+        self.assertTrue(any("capture tokens already belong" in error for error in self.opening_report()["errors"]))
+
+    def test_failed_shared_record_still_reserves_its_capture_token(self):
+        def duplicate(env):
+            shared = self.generate(env)
+            self.generate(env, profile="opening")
+            path = next(shared.glob("*.json"))
+            record = json.loads(path.read_text())
+            record["identity"]["captureSequence"] = 121
+            record.update(verified=False, failures=["original_operation_failed"], copy=None, stages=["requested"])
+            path.write_text(json.dumps(record))
+        self.assertEqual(self.run_case(duplicate, include_opening=True), 1)
+        self.assertFalse(self.report()["gatePassed"])
+        self.assertEqual(self.report()["verifiedImages"], 119)
+        self.assertEqual(self.opening_report()["verifiedImages"], 72)
+        self.assertFalse(self.opening_report()["associationVerified"])
+        self.assertTrue(any("capture tokens already belong" in error for error in self.opening_report()["errors"]))
+
+    def test_late_opening_record_cannot_claim_shared_token(self):
+        def duplicate(env):
+            self.generate(env)
+            opening = self.generate(env, profile="opening")
+            record = json.loads(next(opening.glob("*.json")).read_text())
+            record["identity"]["captureSequence"] = 1
+            record.update(verified=False, failures=["late_callback"], copy=None, stages=["requested"])
+            (opening / "000001-late-2.json").write_text(json.dumps(record))
+        self.assertEqual(self.run_case(duplicate, include_opening=True), 1)
+        self.assertTrue(self.report()["gatePassed"])
+        self.assertEqual(self.opening_report()["package"]["recordCount"], 73)
+        self.assertTrue(any("capture tokens already belong" in error for error in self.opening_report()["errors"]))
 
 
 if __name__ == "__main__":

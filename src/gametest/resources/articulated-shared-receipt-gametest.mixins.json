@@ -8,7 +8,8 @@
     "ArticulatedSharedViewMixin",
     "ArticulatedSharedPlayerPaletteMixin",
     "ArticulatedSharedDeferredMixin",
-    "ArticulatedSharedExtractionMixin"
+    "ArticulatedSharedExtractionMixin",
+    "ArticulatedOpeningFallbackMixin"
   ],
   "injectors": {"defaultRequire": 1}
 }

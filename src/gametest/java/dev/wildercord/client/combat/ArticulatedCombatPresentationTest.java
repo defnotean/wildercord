@@ -48,9 +48,11 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 		ArticulatedSharedPlayerChecks.body(context);
 		ArticulatedOpeningStyleChecks.body(context);
 		String previous = System.getProperty(ArticulatedCombat.ENABLE_PROPERTY);
+		String previousCamera = System.getProperty(ArticulatedCombat.STABLE_CAMERA_PROPERTY);
 		CameraType camera = context.computeOnClient(mc -> mc.options.getCameraType());
 		HumanoidArm hand = context.computeOnClient(mc -> mc.options.mainHand().get());
 		System.setProperty(ArticulatedCombat.ENABLE_PROPERTY, "true");
+		System.setProperty(ArticulatedCombat.STABLE_CAMERA_PROPERTY, "true");
 		int[] masterId = {-1};
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(30);
@@ -217,6 +219,7 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 		} finally {
 			HitStop.clear();
 			if (previous == null) System.clearProperty(ArticulatedCombat.ENABLE_PROPERTY); else System.setProperty(ArticulatedCombat.ENABLE_PROPERTY, previous);
+			if (previousCamera == null) System.clearProperty(ArticulatedCombat.STABLE_CAMERA_PROPERTY); else System.setProperty(ArticulatedCombat.STABLE_CAMERA_PROPERTY, previousCamera);
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(camera);
 				mc.options.mainHand().set(hand);

@@ -22,6 +22,7 @@ import javax.imageio.ImageIO;
 /** Minecraft-independent receipt rules. Kept in the test mod, never shipped in the game mod. */
 public final class ArticulatedRenderReceipt {
 	public static final String PREFIX = "articulated_shared_";
+	public static final String OPENING_PREFIX = "articulated_opening_style_";
 	public static final String PIXEL_FORMAT = "argb32-be-row-major-v1";
 	private ArticulatedRenderReceipt() {}
 
@@ -48,11 +49,13 @@ public final class ArticulatedRenderReceipt {
 	public record Report(int schemaVersion, Identity identity, String origin, String nativeLaunchNonce, List<String> stages, Copy copy,
 			Pixels callbackPixels, Binding image, String renderedPhase, boolean requestedPhaseObserved,
 			boolean unpausedPhaseCoverage, String exactImpactPixelCoverage, boolean nativePixelReviewRequired,
-			boolean verified, List<String> failures) {
+			boolean verified, List<String> failures, String expectedBackend, String rawAcceptedPhase, Boolean rawRequestedPhaseObserved) {
 		public Report { stages = List.copyOf(stages); failures = List.copyOf(failures); }
 	}
 
-	public static boolean inScope(String name) { return name != null && name.startsWith(PREFIX); }
+	public static boolean opening(String name) { return name != null && name.startsWith(OPENING_PREFIX); }
+	public static boolean fallback(String name) { return opening(name) && name.contains("_adapter_disabled_requested_"); }
+	public static boolean inScope(String name) { return name != null && (name.startsWith(PREFIX) || opening(name)); }
 	public static String requestedPhase(String name) {
 		int at = name.lastIndexOf("_requested_");
 		if (at < 0) return "unknown";
@@ -138,8 +141,12 @@ public final class ArticulatedRenderReceipt {
 			boolean matched = verified && !rendered.equals("unknown") && identity.requestedPhase().equals(rendered);
 			boolean unpaused = copy != null && "false".equals(copy.observation().get("paused"))
 				&& "false".equals(copy.observation().get("frozen"));
-			return new Report(1, identity, "fabric_test_screenshot", nativeLaunchNonce, stages, copy, pixels, binding, rendered, matched,
-				matched && unpaused, "unverified", true, verified, failures);
+			boolean opening = opening(identity.trial());
+			String raw = opening ? rawPhase(copy) : null;
+			return new Report(opening ? 2 : 1, identity, "fabric_test_screenshot", nativeLaunchNonce, stages, copy, pixels, binding, rendered, matched,
+				matched && unpaused, "unverified", true, verified, failures,
+				opening ? (fallback(identity.trial()) ? "full_fallback" : "segmented") : null, raw,
+				opening ? verified && identity.requestedPhase().equals(raw) : null);
 		}
 		private void validate(Copy snapshot) {
 			if (snapshot.extractionSequence() <= 0) reject("missing_extraction");
@@ -149,6 +156,7 @@ public final class ArticulatedRenderReceipt {
 			if (snapshot.target().mipLevel() != 0) reject("unexpected_copy_mip");
 			if (!String.valueOf(snapshot.target().targetGeneration()).equals(snapshot.observation().get("renderTargetGeneration"))
 				|| !String.valueOf(snapshot.target().textureGeneration()).equals(snapshot.observation().get("renderTextureGeneration"))) reject("render_copy_target_mismatch");
+			if (opening(identity.trial())) { validateOpening(snapshot); return; }
 			boolean first = "true".equals(snapshot.observation().get("firstPerson"));
 			String submission = first ? "view_submit" : "body_submit", deferred = first ? "view_deferred" : "body_deferred";
 			List<Pass> submissions = snapshot.passes().stream().filter(p -> p.kind().equals(submission)).toList();
@@ -173,13 +181,75 @@ public final class ArticulatedRenderReceipt {
 				}
 			}
 		}
+		private void validateOpening(Copy snapshot) {
+			Map<String, String> o = snapshot.observation();
+			boolean first = "true".equals(o.get("firstPerson")), fallback = fallback(identity.trial());
+			String backend = fallback ? "full_fallback" : "segmented";
+			if (!"true".equals(o.get("openingArmed")) || !backend.equals(o.get("expectedBackend"))) reject("missing_opening_expectation");
+			for (String field : List.of("OwnerId", "OwnerUuid", "Move", "StartTick")) {
+				String observed = field.startsWith("Owner") ? Character.toLowerCase(field.charAt(0)) + field.substring(1) : "accepted" + field;
+				if (o.get("expected" + field) == null || !o.get("expected" + field).equals(o.get(observed))) reject("wrong_expected_" + field);
+			}
+			if (!Objects.equals(o.get("ownerId"), o.get("acceptedEntity"))) reject("wrong_accepted_entity");
+			if (!String.valueOf(!fallback).equals(o.get("shellAdapterEnabled"))) reject("wrong_shell_adapter");
+			String submitKind = first ? (fallback ? "view_fallback_submit" : "view_submit") : "body_submit";
+			String drawKind = first ? (fallback ? "view_fallback_item" : "view_deferred") : "body_deferred";
+			List<Pass> submits = snapshot.passes().stream().filter(p -> p.kind().equals(submitKind)).toList();
+			List<Pass> draws = snapshot.passes().stream().filter(p -> p.kind().equals(drawKind)).toList();
+			if (submits.size() != 1 || draws.isEmpty() || first && fallback && draws.size() != 1) reject("missing_opening_native_pass");
+			List<String> allowed = first ? (fallback ? List.of("view_fallback_submit", "view_fallback_item")
+				: List.of("view_submit", "view_deferred", "view_attachment", "view_item")) : List.of("body_submit", "body_deferred", "body_attachment");
+			for (Pass p : snapshot.passes()) {
+				if (!allowed.contains(p.kind())) reject("unexpected_opening_pass:" + p.kind());
+				if (p.stateIdentity() <= 0 || p.modelIdentity() <= 0 || !String.valueOf(p.owner()).equals(o.get("ownerId"))) reject("wrong_opening_identity");
+				Palette palette = p.palette(); Map<String, String> a = p.attributes();
+				if (palette == null || palette.master() || !String.valueOf(palette.activation()).equals(o.get("acceptedStartTick"))
+					|| !String.valueOf(palette.move()).equals(o.get("acceptedMove"))) { reject("wrong_opening_activation"); continue; }
+				if (!Objects.equals(a.get("ownerUuid"), o.get("ownerUuid")) || !"true".equals(a.get("postHitStopExtractionMatched"))
+					|| !Objects.equals(a.get("avatarStateIdentity"), a.get("extractedStateIdentity"))) reject("wrong_opening_extraction");
+				if (!palette.phase().equals(a.get("rawAcceptedPhase")) || !String.valueOf(palette.activation()).equals(a.get("rawActivation"))
+					|| !String.valueOf(palette.move()).equals(a.get("rawMove"))) reject("changed_post_hitstop_palette");
+				if (!String.valueOf(palette.leftHanded()).equals(a.get("rawLeftHanded")) || !String.valueOf(palette.leftHanded()).equals(String.valueOf("LEFT".equals(a.get("mainArm"))))) reject("wrong_opening_hand");
+				if (!String.valueOf(!fallback).equals(a.get("shellAdapterEnabled"))) reject("changed_shell_adapter");
+				for (String field : List.of("skinModel", "skinTexture", "rigWidth", "head", "chest", "legs", "feet", "mainHand", "rawPaletteSha256"))
+					if (a.get(field) == null || a.get(field).isEmpty() || a.get(field).equals("unknown")) reject("unknown_opening_appearance:" + field);
+			}
+			if (submits.size() == 1) {
+				Pass submitted = submits.getFirst();
+				for (Pass p : draws) {
+					if (p.stateIdentity() != submitted.stateIdentity() || p.modelIdentity() != submitted.modelIdentity() || !Objects.equals(p.palette(), submitted.palette())) reject("conflicting_deferred_palette");
+					for (String field : List.of("skinModel", "skinTexture", "rigWidth", "avatarStateIdentity", "ownerUuid", "head", "chest", "legs", "feet", "mainHand", "shellGlowPresent", "shellAdapterEnabled", "rawPaletteSha256"))
+						if (!Objects.equals(p.attributes().get(field), submitted.attributes().get(field))) reject("conflicting_opening_appearance:" + field);
+					if (!String.valueOf(!fallback).equals(p.attributes().get("segmentedVisible"))) reject("wrong_opening_backend");
+					if (fallback && (!"false".equals(p.attributes().get("fallbackFrameCompatible"))
+						|| !first && (!"true".equals(p.attributes().get("rigidVisible")) || !"false".equals(p.attributes().get("segmentedRootVisible"))))) reject("incomplete_native_fallback");
+				}
+				if (first) {
+					List<Pass> items = snapshot.passes().stream().filter(p -> p.kind().equals(fallback ? "view_fallback_item" : "view_item")).toList();
+					if (items.size() != 1) reject("expected_one_opening_item");
+					else if (items.getFirst().stateIdentity() != submitted.stateIdentity() || items.getFirst().modelIdentity() != submitted.modelIdentity()
+						|| !Objects.equals(items.getFirst().palette(), submitted.palette())) reject("conflicting_opening_item");
+				}
+			}
+		}
+
 	}
 
 	private static String renderedPhase(Copy copy) {
 		if (copy == null) return "unknown";
+		if (fallback(copy.identity().trial())) {
+			String kind = "true".equals(copy.observation().get("firstPerson")) ? "view_fallback_item" : "body_deferred";
+			return copy.passes().stream().anyMatch(p -> p.kind().equals(kind) && "false".equals(p.attributes().get("segmentedVisible"))) ? "FALLBACK" : "unknown";
+		}
 		String kind = "true".equals(copy.observation().get("firstPerson")) ? "view_deferred" : "body_deferred";
 		List<String> phases = copy.passes().stream().filter(p -> p.kind().equals(kind) && p.palette() != null
 			&& "true".equals(p.attributes().get("segmentedVisible"))).map(p -> p.palette().phase()).distinct().toList();
+		return phases.size() == 1 ? phases.getFirst() : "unknown";
+	}
+
+	private static String rawPhase(Copy copy) {
+		if (copy == null) return "unknown";
+		List<String> phases = copy.passes().stream().map(p -> p.attributes().get("rawAcceptedPhase")).filter(Objects::nonNull).distinct().toList();
 		return phases.size() == 1 ? phases.getFirst() : "unknown";
 	}
 

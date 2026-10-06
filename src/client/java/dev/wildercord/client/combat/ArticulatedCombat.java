@@ -69,10 +69,10 @@ public final class ArticulatedCombat {
 		};
 	}
 
-	/** Developer/client JVM switch until the native acceptance matrix has actually passed. */
-	public static boolean enabled() { return Boolean.getBoolean(ENABLE_PROPERTY); }
+	/** Explicit saved opt-in or developer override; compatibility below remains authoritative. */
+	public static boolean enabled() { return dev.wildercord.client.CombatPresentation.effective().articulated(); }
 	public static boolean stableCamera() {
-		return enabled() && Boolean.parseBoolean(System.getProperty(STABLE_CAMERA_PROPERTY, "true"));
+		return dev.wildercord.client.CombatPresentation.effective().stableCamera();
 	}
 
 	public static void extract(Avatar avatar, AvatarRenderState state, float partial) {

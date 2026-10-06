@@ -1,12 +1,14 @@
-# Passive shared-player render receipts
+# Passive shared-player and opening-style render receipts
 
 These observers belong only to the client GameTest mod. Register
 `articulated-shared-receipt-gametest.mixins.json` in that mod's `fabric.mod.json`.
 The existing `masters-capture-gametest.mixins.json` still registers the body submission
 observer. Neither configuration belongs in the production mod.
 
-Only a `TestScreenshotOptionsImpl.name` starting with `articulated_shared_` arms a
-receipt. The outer Fabric screenshot operation and its existing client-thread
+Only a `TestScreenshotOptionsImpl.name` starting with `articulated_shared_` or
+`articulated_opening_style_` arms a receipt. Shared receipts retain schema 1 and
+their independent 120-trial proof; opening receipts use schema 2 and a separate
+72-trial proof. The outer Fabric screenshot operation and its existing client-thread
 lambda share a token by options-object identity. An unmatched nested operation
 suspends the active scope. The original options, update, extraction, render,
 command submission, screenshot call, consumer and returned path stay unchanged.
@@ -56,6 +58,9 @@ ARGB ordering. Alpha participates in the hash. PNG bytes are never modified.
 
 Receipts are written to
 `screenshots/articulated-shared-receipts/<run UUID>/<capture>-<kind>-<sequence>.json`.
+Opening receipts use the separate
+`screenshots/articulated-opening-receipts/<run UUID>/` directory with the same
+immutable record naming rules.
 The existing image paths and images are preserved, including rejected images.
 An original screenshot exception is rethrown unchanged. Observer errors cannot
 skip the original consumer or strand its completion future. When a normal
@@ -91,6 +96,104 @@ digest mismatch makes association verification fail. The output preserves phase
 misses and lists only actually observed skin coverage. A passing association
 check is not a visual acceptance verdict or proof of complete phase coverage.
 
+Opening artifacts can be checked independently with `--profile opening
+--expected-count 72` and their own exact trial manifest. This does not supply any
+of the shared matrix's 120 captures. Receipt metadata can live in a separately
+extracted metadata artifact while `--game-dir` points to the original PNG artifact.
+Each observation includes `relativeImagePath`, `pngBytes`, and `pngSha256`, plus
+`receiptRelativePath` and `receiptSha256`. Resolve image paths against the report's
+`gameDirectory` and receipt paths against `receiptDirectory` (the runner also
+records this original receipt root in `package.sourceDirectory`). Select the
+corresponding extracted roots when original machine paths are unavailable. Match
+both the exact relative path and hash; a matching basename alone is insufficient.
+The packaged sidecar has the same filename and unchanged bytes under `receipts/`
+or `opening-receipts/`.
+
+Verification checks every original PNG chunk CRC before decoding, including
+IDAT and ancillary chunks. It rejects malformed/truncated PNGs, animated PNGs,
+trailing bytes, linked/non-regular evidence files, noncanonical/escaping paths,
+and dimensions exceeding 8,192 per axis or 16,777,216 total pixels. PNG input is
+limited to 64 MiB. These are read/decode safety bounds; no image is copied,
+re-encoded, cropped, resized or repaired.
+
+## Opening-style evidence
+
+The unchanged opening fixture requests 36 captures per camera: Kindling Draw and
+Frostbite, both hands, bare skin or enchanted netherite, and shell-down or funded
+shell. Skin/shell-down and netherite/funded-shell have all three phases; crossed
+combinations retain only ACTIVE. Each art/hand/camera also has one armored,
+funded-shell adapter-disabled negative, for 64 segmented and eight full-fallback
+captures in total.
+
+Opening arming binds the exact admitted owner UUID/entity, move and activation
+start. Each actual pass binds the same owner's post-HitStop extracted avatar
+state, raw accepted palette/action, live skin/rig width, hand, equipment and
+shell adapter state. Camera, move, hand, equipment, shell and backend must agree
+with the exact trial name. The main-hand articulated view has its own transformed
+palette hash; its raw body extraction hash is preserved separately. Repeated
+deferred preparations must agree on their installed geometry hash.
+
+The eight adapter-disabled negatives require complete fallback. Third-person
+captures retain actual body submission and deferred preparation, with all rigid
+parts visible, the segmented root hidden, incompatible articulated frame, and a
+hash of the actual rigid transforms. First-person vanilla sword rendering has
+no deferred arm-model draw: its evidence is one `view_fallback_submit` and one
+`view_fallback_item`, bound to the real hands state, renderer and main-hand item
+state. A fabricated deferred arm or a segmented pass cannot supply this proof.
+
+Fallback receipts say `renderedPhase: "FALLBACK"`, with
+`requestedPhaseObserved: false` and `unpausedPhaseCoverage: false`. They separately
+retain `rawAcceptedPhase` and `rawRequestedPhaseObserved`. The opening gate's
+`phaseCoverageVerified` requires all 64 actual segmented phase captures;
+`fallbackPhaseCoverageVerified` independently requires all eight complete
+fallback captures to match their raw accepted phase while unpaused/unfrozen.
+Both are required for the opening gate. A raw phase match never counts as an
+articulated rendered pose. Actual shell state is evidence about the render state,
+not a shell-pixel verdict; banner classification remains explicitly unclassified
+unless observed. Native pixel review and exact impact-pixel limits still apply.
+
+### Optional curator ingestion
+
+Prepare the usual articulated curator marker before the native launch. After
+the wrapper has completed with `--include-opening`, opt into receipt facts using
+the exact repository-relative report path:
+
+```sh
+python tools/curate_masters_frames.py --suite articulated \
+  --marker artifacts/review/articulated-current-run.json \
+  --output artifacts/review/articulated-curated \
+  --opening-receipt-report artifacts/review/articulated-native-receipts-RUN_ID-RUN_ATTEMPT/opening-association-report.json
+```
+
+This requires the current checkout's original game/receipt roots and the
+complete runner metadata package. It does not search for a report by basename
+or remap another machine's paths. The curator checks the pre-run marker,
+checkout and CI run/attempt, launch nonce, confirmed native exit and unchanged
+native log, exact source/package record set and hashes, freshness, and exact
+trial/image/sidecar paths. It also checks the same-run shared records for reused
+capture tokens or image paths, including failed/late records, without replacing
+the independent shared proof or requiring its phase gate to pass. It lazily invokes the opening verifier to recheck
+native record semantics, PNG CRCs and hashes, and decoded callback-pixel identity.
+Only this opt-in mode needs Pillow or decodes PNGs; it never rewrites an image.
+A missing or invalid report leaves phase/skin observations unknown with a
+bounded diagnostic. New late records or changing evidence invalidate the bundle.
+
+Facts are added after the existing image selection. All 72 coverage rows still
+distinguish captured, included, omitted for budget and missing PNGs; verified
+observations remain visible for budget-omitted images. Disabled-adapter images
+report `renderedPhase: "FALLBACK"` and a separate `rawAcceptedPhase`, never
+articulated ACTIVE coverage. Original phase misses and native failures remain
+visible in `openingReceiptEvidence.sourceGate`, even when associations verify.
+Neither this manifest nor PNG presence declares native or visual acceptance.
+
+The selected PNG order and byte allocation stay unchanged. Compact verified
+facts plus exact source receipt path/hash live in the existing manifest reserve;
+complete raw opening sidecars remain in the separate bounded metadata package.
+Existing NPC sidecars and the manifest remain under the curator's 14,000,000-byte
+total cap, including stored ZIP overhead. No re-encoding, retry, repair, shared
+120-trial proof change, or workflow change is performed. Without the option,
+opening observations keep the existing unknown labels.
+
 ## Checks and native gate
 
 ```sh
@@ -120,6 +223,17 @@ Pillow; use the repository's existing setup-python and `pip install pillow`
 pattern. The native launcher still requires its existing Java 25, Gradle, virtual
 display, and Mesa setup. No native process is started by the test command above.
 
+Add `--include-opening` to opt into the independent 72-trial opening gate. The
+wrapper still launches that same native suite exactly once. It verifies both
+fresh receipt roots after the same confirmed native exit and nonce, requires
+their run UUIDs to match the observer's single run identity, and writes
+`opening-association-report.json` plus `opening-receipts/` alongside the existing
+shared report and `receipts/`. The default command and `planned_trials()` remain
+exactly the shared 120-trial gate. No suite catalog, workflow or job is changed.
+With the option enabled, either failed report or native failure makes the command
+fail; a passing shared report remains independently visible when opening fails,
+and a passing opening report cannot replace missing shared evidence.
+
 The wrapper creates a fresh nonce and retains it in memory for its one owned
 launch. GameTest receipts carry this nonce at the top level, including failures
 before the copy stage. The wrapper waits for its launcher and requires that
@@ -144,8 +258,11 @@ Upload the wrapper's entire output directory as the small metadata artifact:
   including failed/late records, copied byte-for-byte
 
 The uncompressed output is at most 24 MiB: each raw record is limited to 128 KiB,
-at most 256 records are accepted, all raw records share a 23 MiB allowance, and
-the report has a 1 MiB allowance. Exceeding any bound fails the gate; records are
+at most 256 records per selected profile are accepted, shared-only raw records
+have a 23 MiB allowance, and the report has a 1 MiB allowance. With opening
+enabled, both profiles' raw records share one 22 MiB allowance and each independent
+report has a 1 MiB allowance. The aggregate stays at most 24 MiB, below 32 MiB.
+Exceeding any bound fails the gate; records are
 never truncated. If only the observation summary exceeds its allowance, the
 wrapper keeps complete raw records and writes a small explicit failure report.
 Earlier validation/budget failures can leave an incomplete metadata package;

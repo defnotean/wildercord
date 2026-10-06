@@ -28,7 +28,7 @@ public final class ArticulatedAuraShellRenderer {
 		view = new ArticulatedAuraShellGeometry(source, slim, true);
 	}
 
-	public static boolean enabled() { return ArticulatedCombat.enabled() && Boolean.parseBoolean(System.getProperty(ENABLE_PROPERTY, "true")); }
+	public static boolean enabled() { return dev.wildercord.client.CombatPresentation.effective().auraShell(); }
 
 	/** Readiness is extracted from the exact layer list before any body or item owns a frame. */
 	public boolean supports(AvatarRenderState state) {

@@ -18,9 +18,12 @@ import dev.wildercord.client.MastersArtsClient;
 import dev.wildercord.client.SwordStringsClient;
 import dev.wildercord.client.fx.HitStop;
 import dev.wildercord.client.render.AuraShellLayer;
+import dev.wildercord.gametest.MastersCaptureProbe;
+import dev.wildercord.gametest.ArticulatedSharedRenderProbe;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -28,6 +31,7 @@ import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -54,8 +58,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Additive native first-form checks, ready for the existing articulated body and first-person suites.
  * Every screenshot follows a fresh, server-accepted attack/attack/low string. Synthetic skin-width,
  * socket and fallback probes are separate and never stand in for a live player's screenshot.
- * The opening-style screenshot prefix is intentionally outside the shared-art readback receipt scope:
- * requested/pre-capture phase is observed here; screenshot latency leaves rendered phase unverified.
+ * Opening screenshots receive their own passive native receipts, independently of the shared 120.
+ * Requested/pre-capture phase never substitutes for the actual post-HitStop rendered palette.
  */
 final class ArticulatedOpeningStyleChecks {
 	private ArticulatedOpeningStyleChecks() {}
@@ -67,8 +71,13 @@ final class ArticulatedOpeningStyleChecks {
 	private record Settings(CameraType camera, HumanoidArm hand, int width, int height, int gui,
 		boolean fullscreen, boolean hidden, boolean toggleCrouch, boolean attackDown, boolean shiftDown) {}
 	private record Spend(String art, long tick, double paid, double expected, float remaining,
-		int rest, boolean backlash, boolean committed) {}
-	private record Completion(String art, long acceptedAt, long performedAt, List<Integer> marks) {}
+		int rest, boolean backlash, boolean committed, TargetGeometry target) {}
+	private record Completion(String art, long acceptedAt, long performedAt, List<Integer> marks,
+		int fireTicks, int slowAmplifier, int slowTicks) {}
+	private record TargetGeometry(Vec3 position, double distance, boolean inCone, boolean lineOfSight, boolean visible) {}
+	private record Impact(String art, long tick, int target, float taken, float health, TargetGeometry geometry) {}
+	private static volatile Audit activeAudit;
+	private static boolean damageHooked;
 
 	static void body(ClientGameTestContext context) { capture(context, false); }
 	static void hud(ClientGameTestContext context) { capture(context, true); }
@@ -76,23 +85,46 @@ final class ArticulatedOpeningStyleChecks {
 	/** Temporary real server hooks isolate art payment from legitimate swing-coat costs and gains. */
 	private static final class Audit implements AutoCloseable {
 		volatile UUID owner;
+		Mob target;
 		final List<Spend> spends = new CopyOnWriteArrayList<>();
 		final List<Completion> completions = new CopyOnWriteArrayList<>();
+		final List<Impact> impacts = new CopyOnWriteArrayList<>();
 		final AuraApi.SpendHook spend = (player, paid, reason, backlash) -> {
 			if (!player.getUUID().equals(owner) || !reason.startsWith("art:")) return;
 			String id = reason.substring(4);
 			if (!opening(id)) return;
 			var art = AuraApi.string(id).orElseThrow();
 			spends.add(new Spend(id, player.level().getGameTime(), paid, SwordStrings.price(player, art),
-				Aura.aura(player), SwordStrings.rest(player, art), backlash, MastersArts.committed(player)));
+				Aura.aura(player), SwordStrings.rest(player, art), backlash, MastersArts.committed(player), targetGeometry(player, target, id)));
 		};
 		final AuraApi.StringHook completion = (player, art, context) -> {
-			if (player.getUUID().equals(owner) && opening(art.id()))
-				completions.add(new Completion(art.id(), context.at(), player.level().getGameTime(), context.marks()));
+			if (player.getUUID().equals(owner) && opening(art.id())) {
+				var slow = target.getEffect(MobEffects.SLOWNESS);
+				completions.add(new Completion(art.id(), context.at(), player.level().getGameTime(), context.marks(),
+					target.getRemainingFireTicks(), slow == null ? -1 : slow.getAmplifier(), slow == null ? 0 : slow.getDuration()));
+			}
 		};
-		Audit() { AuraApi.onSpend(spend); AuraApi.onString(completion); }
-		void reset(ServerPlayer player) { owner = player.getUUID(); spends.clear(); completions.clear(); }
-		@Override public void close() { owner = null; AuraApi.spendHooks().remove(spend); AuraApi.stringHooks().remove(completion); }
+		Audit() {
+			check(activeAudit == null, "Opening impact audits cannot overlap");
+			if (!damageHooked) {
+				// Passive identity-bound observation: coat/fire damage from the two earlier swings is not an art hit.
+				ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
+					Audit audit = activeAudit;
+					var art = SwordStrings.performing();
+					if (audit == null || entity != audit.target || art == null || !opening(art.id()) || !source.is(Aura.DAMAGE)
+						|| !(source.getEntity() instanceof ServerPlayer player) || !player.getUUID().equals(audit.owner)) return;
+					audit.impacts.add(new Impact(art.id(), player.level().getGameTime(), entity.getId(), taken,
+						entity.getHealth(), targetGeometry(player, audit.target, art.id())));
+				});
+				damageHooked = true;
+			}
+			activeAudit = this; AuraApi.onSpend(spend); AuraApi.onString(completion);
+		}
+		void reset(ServerPlayer player) { owner = player.getUUID(); target = null; spends.clear(); completions.clear(); impacts.clear(); }
+		@Override public void close() {
+			activeAudit = null; owner = null; target = null;
+			AuraApi.spendHooks().remove(spend); AuraApi.stringHooks().remove(completion);
+		}
 	}
 
 	private static boolean opening(String art) { return art.equals("kindling_draw") || art.equals("frostbite"); }
@@ -173,9 +205,9 @@ final class ArticulatedOpeningStyleChecks {
 				audit.reset(player); prepare(player, style, armored, shell);
 				Mob foe = EntityTypes.HUSK.create(player.level(), EntitySpawnReason.COMMAND);
 				check(foe != null, "Real string input has a living target");
-				foe.addTag("wildercord.rolled"); foe.setNoAi(true); foe.setNoGravity(true);
+				foe.addTag("wildercord.rolled"); foe.setNoAi(true);
 				foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200); foe.setHealth(200);
-				foe.snapTo(.5, 100, 3.1, 180, 0); player.level().addFreshEntity(foe); target[0] = foe;
+				foe.snapTo(.5, 100, 3.1, 180, 0); player.level().addFreshEntity(foe); target[0] = foe; audit.target = foe;
 			});
 			context.runOnClient(mc -> {
 				mc.gui.setScreen(null); mc.options.setCameraType(CameraType.FIRST_PERSON);
@@ -189,10 +221,24 @@ final class ArticulatedOpeningStyleChecks {
 			// Same supported controls as WildercordMastersArtsPresentationTest.captureStyle; no direct perform call or forged payload.
 			for (int swing = 0; swing < 2; swing++) {
 				context.getInput().pressKey(o -> o.keyAttack); context.waitTicks(2);
-				world.getServer().runOnServer(server -> { target[0].snapTo(.5, 100, 3.1, 180, 0); target[0].setDeltaMovement(Vec3.ZERO); });
+				boolean lastSetupSwing = swing == 1;
+				world.getServer().runOnServer(server -> {
+					// Both first forms re-query their real 120-degree cone at release. After the second real
+					// hit, use the existing reset to put that visible victim off the front camera-to-owner line.
+					// The unchanged twelve-tick wait below lets its ordinary client interpolation settle.
+					target[0].snapTo(lastSetupSwing ? 2.2 : .5, 100, lastSetupSwing ? 2.0 : 3.1, 180, 0);
+					target[0].setDeltaMovement(Vec3.ZERO);
+					if (lastSetupSwing) assertTarget(targetGeometry(server.getPlayerList().getPlayers().getFirst(), target[0], style.art()), "before low input");
+				});
 				context.waitTicks(12);
 			}
 			check(context.computeOnClient(mc -> SwordStringsClient.chain().size() == 2), "Two genuine attacks precede the low finishing swing");
+			context.runOnClient(mc -> {
+				var victim = mc.level.getEntity(target[0].getId());
+				check(victim != null && !victim.isInvisible() && victim.getPosition(CAPTURE_TICK_DELTA).distanceToSqr(new Vec3(2.2, 100, 2.0)) < .01,
+					"The real visible off-axis victim has settled on the client before the low finishing input");
+			});
+			// No target position/velocity writes follow this point: ordinary gravity, knockback and effects run.
 			context.getInput().holdKey(o -> o.keyShift); context.waitTicks(2);
 			context.getInput().pressKey(o -> o.keyAttack); context.getInput().releaseKey(o -> o.keyShift);
 			context.runOnClient(mc -> mc.options.setCameraType(firstPerson ? CameraType.FIRST_PERSON : CameraType.THIRD_PERSON_FRONT));
@@ -207,7 +253,7 @@ final class ArticulatedOpeningStyleChecks {
 				}, 35);
 			} catch (AssertionError failure) {
 				System.out.println("ARTICULATED_OPENING_ADMISSION_TIMEOUT name=" + name + " boundedClientSamples=" + samples
-					+ " serverSpends=" + audit.spends + " serverCompletions=" + audit.completions);
+					+ " serverSpends=" + audit.spends + " serverCompletions=" + audit.completions + " serverImpacts=" + audit.impacts);
 				throw failure;
 			}
 			MastersArts.Performed accepted = context.computeOnClient(mc -> {
@@ -234,16 +280,34 @@ final class ArticulatedOpeningStyleChecks {
 					+ " windup=" + timeline.windup() + " recovery=" + timeline.recovery() + " requestedPhase=" + phase
 					+ " preCapturePhase=" + raw.pose().phase() + " preCaptureAge=" + (mc.level.getGameTime() - timeline.startTick() + CAPTURE_TICK_DELTA)
 					+ " shell=" + shell + " shellAdapter=" + !disabled + " supportedPresentation=" + !disabled
-					+ " renderedPhase=unknown screenshotLatencyMayChangePhase=true imageReceiptBinding=not_in_scope nativePixelReviewRequired=true exactImpactPixelCoverage=unverified");
+					+ " renderedPhase=unknown screenshotLatencyMayChangePhase=true imageReceiptBinding=pending_passive_native_receipt nativePixelReviewRequired=true exactImpactPixelCoverage=unverified");
+				ArticulatedSharedRenderProbe.armOpening(name, timeline, mc);
 				return timeline;
 			});
 			// No server call between the observed pre-capture state and the screenshot request.
-			context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix().withDeltaTicks(CAPTURE_TICK_DELTA));
+			if (!firstPerson) context.runOnClient(MastersCaptureProbe::begin);
+			try {
+				context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix().withDeltaTicks(CAPTURE_TICK_DELTA));
+				// Reuse the established native owner-submit and viewport/occlusion checks for every opening
+				// windup, release and recovery request; passive receipts independently bind phase and PNG.
+				if (!firstPerson) context.runOnClient(mc -> MastersCaptureProbe.verifyRender(mc, name));
+			} finally {
+				if (!firstPerson) context.runOnClient(mc -> MastersCaptureProbe.end());
+			}
 			context.waitTicks(style.windup() + style.recovery() + 2);
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				check(audit.spends.size() == 1 && audit.completions.size() == 1, "The real first form pays and performs exactly once");
 				Spend spend = audit.spends.getFirst(); Completion done = audit.completions.getFirst();
+				assertTarget(spend.target(), "accepted windup");
+				check(audit.impacts.size() == 1, "The exact real first-form performer damages its off-axis victim once");
+				Impact impact = audit.impacts.getFirst();
+				check(impact.art().equals(style.art()) && impact.tick() == done.performedAt() && impact.target() == target[0].getId()
+					&& impact.taken() > 0 && impact.health() > 0, "Actual native damage belongs to this owner, opening, victim and release tick");
+				assertTarget(impact.geometry(), "actual damaging release");
+				check(style.art().equals("kindling_draw") ? done.fireTicks() >= ArtRules.KINDLING_IGNITE
+					: done.slowAmplifier() == 1 && done.slowTicks() >= ArtRules.FROSTBITE_SLOW,
+					"The real opening performer retains its full ignition or Slowness II effect on the visible victim");
 				check(spend.art().equals(style.art()) && spend.tick() == accepted.startTick() && spend.paid() > 0
 					&& Math.abs(spend.paid() - spend.expected()) < .0001 && !spend.backlash() && spend.committed(),
 					"The accepted server windup immediately paid its actual SwordStrings price exactly once");
@@ -254,7 +318,7 @@ final class ArticulatedOpeningStyleChecks {
 					&& done.performedAt() <= done.acceptedAt() + style.windup() + 1 && done.marks().size() == 3
 					&& SwordString.Token.LOW.fits(done.marks().getLast()), "The actual deferred performer retains its accepted input identity and low finishing mark");
 				check(AuraArmour.up(player) == shell && !MastersArts.committed(player), "Real recovery expires while funded shell eligibility remains ordinary");
-				System.out.println("ARTICULATED_OPENING_SERVER name=" + name + " spend=" + spend + " completion=" + done
+				System.out.println("ARTICULATED_OPENING_SERVER name=" + name + " spend=" + spend + " completion=" + done + " impact=" + impact
 					+ " performedDelta=" + (done.performedAt() - accepted.startTick()) + " schedulerTickTolerance=1 readyAt=" + SwordStrings.readyAt(player, style.art())
 					+ " finalAura=" + Aura.aura(player) + " shellUp=" + AuraArmour.up(player));
 			});
@@ -265,6 +329,7 @@ final class ArticulatedOpeningStyleChecks {
 				check((ArticulatedCombat.viewFrame(idle) != null) == !disabled, "Stable first-person idle respects the live shell adapter fallback");
 			});
 		} finally {
+			ArticulatedSharedRenderProbe.disarmOpening(name);
 			context.getInput().releaseKey(o -> o.keyShift); context.getInput().releaseKey(o -> o.keyAttack);
 			world.getServer().runOnServer(server -> {
 				if (target[0] != null) target[0].discard();
@@ -272,6 +337,20 @@ final class ArticulatedOpeningStyleChecks {
 			});
 			System.setProperty(ArticulatedAuraShellRenderer.ENABLE_PROPERTY, "true");
 		}
+	}
+
+	private static TargetGeometry targetGeometry(ServerPlayer player, Mob target, String art) {
+		check(target != null, "Opening target exists for the entire accepted trial");
+		Vec3 to = target.position().subtract(player.position());
+		double reach = art.equals("kindling_draw") ? ArtRules.KINDLING_REACH : ArtRules.FROSTBITE_REACH;
+		double degrees = art.equals("kindling_draw") ? ArtRules.KINDLING_DEGREES : ArtRules.FROSTBITE_DEGREES;
+		return new TargetGeometry(target.position(), to.length(), Math.abs(to.y) <= 2.2
+			&& ArtRules.inCone(to.x, to.z, 0, 1, reach, degrees), player.hasLineOfSight(target),
+			target.isAlive() && !target.isInvisible() && !target.isRemoved());
+	}
+	private static void assertTarget(TargetGeometry geometry, String at) {
+		check(geometry.inCone() && geometry.lineOfSight() && geometry.visible(),
+			"The real visible victim remains within strict opening reach/cone and unobstructed at " + at + ": " + geometry);
 	}
 
 	private static void prepare(ServerPlayer player, MastersStyleRules.Style style, boolean armored, boolean shell) {

@@ -63,7 +63,8 @@ public final class ArtKit {
 
 	/** Whether an art of {@code player}'s may harm {@code entity}: alive, not them, a foe by the mod's rules, and the game's team rule too. */
 	public static boolean harmable(ServerPlayer player, Entity entity) {
-		return entity instanceof LivingEntity living && living.isAlive() && entity != player && !entity.isSpectator() && Targets.canHarm(player, entity)
+		return !ArtFields.blocksRetiredHarm(player, entity)
+			&& entity instanceof LivingEntity living && living.isAlive() && entity != player && !entity.isSpectator() && Targets.canHarm(player, entity)
 			&& (dev.wildercord.aura.MastersArts.committedAim(player) == null || player.hasLineOfSight(entity))
 			&& (!(entity instanceof Player other) || player.canHarmPlayer(other));
 	}
@@ -394,6 +395,8 @@ public final class ArtKit {
 			if (foe instanceof Player) {
 				pvp.merge(foe.getUUID(), dealt, Double::sum);
 			}
+			// Damage callbacks can retire this field. Keep the resolved receipt/cap, but no later stance or hit side effects.
+			if (ArtFields.blocksRetiredHarm(player, foe)) return taken;
 			if (taken > 0 && !answer && (!foe.isAlive() || foe.isDeadOrDying())) {
 				dev.wildercord.aura.BondedBlades.artFelled(player, foe);
 			}

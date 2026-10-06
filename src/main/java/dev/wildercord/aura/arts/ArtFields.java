@@ -1,5 +1,6 @@
 package dev.wildercord.aura.arts;
 
+import dev.wildercord.cast.Effects;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -10,7 +11,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -233,6 +233,16 @@ public final class ArtFields {
 	}
 
 	private static final List<Field> FIELDS = new ArrayList<>();
+	/** Only retained while a pulse is on the server stack; callbacks can retire it before the pulse returns. */
+	private static Field pulsing;
+	private static ServerPlayer pulseOwner;
+	private static Object pulseScope;
+
+	/** A retired pulse cannot keep harming through a target list it collected before a synchronous callback. */
+	public static boolean blocksRetiredHarm(Entity source, Entity target) {
+		return pulsing != null && pulsing.done && source == pulseOwner && source != target
+			&& Effects.applying() == pulseOwner && Effects.applyingCast() == null && Effects.sourceScope() == pulseScope;
+	}
 
 	static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(ArtFields::tick);
@@ -244,24 +254,23 @@ public final class ArtFields {
 	 */
 	public static Field open(ServerPlayer owner, String kind, Shape shape, int ticks, int period, Pulse pulse) {
 		long now = owner.level().getGameTime();
-		List<Field> theirs = new ArrayList<>();
-		for (Field f : FIELDS) {
-			if (f.owner.equals(owner.getUUID()) && !f.done) {
-				theirs.add(f);
-			}
-		}
-		while (theirs.size() >= PER_PLAYER) {
-			finish(theirs.removeFirst());
-		}
-		while (FIELDS.size() >= MAX) {
-			finish(FIELDS.removeFirst());
-		}
 		Field field = new Field(owner.getUUID(), owner.level(), kind, shape, now, now + Math.max(1, ticks), period, pulse);
 		FIELDS.add(field);
+		// Add first: an end callback may open another field, which must see and respect this replacement too.
+		while (true) {
+			List<Field> theirs = FIELDS.stream().filter(f -> f.owner.equals(owner.getUUID()) && !f.done).toList();
+			if (theirs.size() <= PER_PLAYER) break;
+			finish(theirs.getFirst());
+		}
+		while (FIELDS.size() > MAX) {
+			finish(FIELDS.getFirst());
+		}
 		return field;
 	}
 
 	private static void finish(Field field) {
+		// Detach before calling user code: a callback can forget or open fields itself.
+		FIELDS.remove(field);
 		if (field.done && field.end == null) {
 			return;
 		}
@@ -281,23 +290,33 @@ public final class ArtFields {
 		if (FIELDS.isEmpty()) {
 			return;
 		}
-		for (Iterator<Field> it = FIELDS.iterator(); it.hasNext(); ) {
-			Field field = it.next();
+		// Damage/end callbacks may open or remove fields. New fields first beat on a later tick.
+		for (Field field : List.copyOf(FIELDS)) {
 			ServerPlayer owner = server.getPlayerList().getPlayer(field.owner);
 			long now = field.level.getGameTime();
 			if (field.done || owner == null || !owner.isAlive() || owner.level() != field.level || now > field.until) {
-				it.remove();
 				finish(field);
 				continue;
 			}
 			long age = now - field.start;
 			if (age > 0 && age % field.period == 0) {
+				Field outerPulse = pulsing;
+				ServerPlayer outerOwner = pulseOwner;
+				Object outerScope = pulseScope;
+				pulsing = field;
+				pulseOwner = owner;
 				try {
-					field.pulse.pulse(field, owner, age);
+					Effects.withSource(owner, () -> {
+						pulseScope = Effects.sourceScope();
+						field.pulse.pulse(field, owner, age);
+					});
 				} catch (RuntimeException e) {
 					dev.wildercord.Wildercord.LOGGER.warn("An art's field failed; ending it", e);
-					it.remove();
 					finish(field);
+				} finally {
+					pulsing = outerPulse;
+					pulseOwner = outerOwner;
+					pulseScope = outerScope;
 				}
 			}
 		}
@@ -326,16 +345,19 @@ public final class ArtFields {
 	}
 
 	static void forget(UUID id) {
-		for (Iterator<Field> it = FIELDS.iterator(); it.hasNext(); ) {
-			Field f = it.next();
+		for (Field f : List.copyOf(FIELDS)) {
 			if (f.owner.equals(id)) {
-				it.remove();
 				finish(f);
 			}
 		}
 	}
 
 	static void clear() {
+		// Preserve silent server-stop cleanup, while retiring a pulse still unwinding on this stack.
+		for (Field field : FIELDS) {
+			field.done = true;
+			field.end = null;
+		}
 		FIELDS.clear();
 	}
 }

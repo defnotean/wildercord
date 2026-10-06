@@ -87,6 +87,7 @@ public final class Parties {
 
 	/** True only for party-attributed harm, never self costs, healing or an unrelated monster/world hazard. */
 	public static boolean blocksHarm(Entity attacker, Entity target) {
+		if (dev.wildercord.aura.arts.ArtFields.blocksRetiredHarm(attacker, target)) return true;
 		// Trial boundaries also apply at status/physics mutation sinks, not only when an effect chooses its target.
 		if (attacker != null && attacker != target) {
 			if (attacker instanceof dev.wildercord.aura.world.SwordMaster master && !master.canHarmParticipant(target)) return true;

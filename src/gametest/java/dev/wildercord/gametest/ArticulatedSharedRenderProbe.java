@@ -5,6 +5,9 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.renderpearl.api.textures.GpuTexture;
 import dev.wildercord.aura.ArticulatedCombatPose;
+import dev.wildercord.aura.MastersArts;
+import dev.wildercord.client.combat.ArticulatedAuraShellRenderer;
+import dev.wildercord.client.render.AuraShellLayer;
 import dev.wildercord.client.MastersArtsClient;
 import dev.wildercord.client.combat.ArticulatedCombat;
 import dev.wildercord.client.combat.ArticulatedModelAccess;
@@ -21,6 +24,8 @@ import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -45,6 +50,7 @@ import java.util.function.Function;
 public final class ArticulatedSharedRenderProbe {
 	private static final String RUN = UUID.randomUUID().toString();
 	private static final AtomicLong SEQUENCE = new AtomicLong();
+	private static final Map<String, Expected> OPENINGS = new LinkedHashMap<>();
 	private static final Map<Object, Token> TOKENS = new IdentityHashMap<>();
 	private static final ThreadLocal<Scope> CURRENT = new ThreadLocal<>();
 	private static final ThreadLocal<CopyCall> COPYING = new ThreadLocal<>();
@@ -54,7 +60,9 @@ public final class ArticulatedSharedRenderProbe {
 	public static final class Token {
 		final ArticulatedRenderReceipt.Session session;
 		final AtomicLong diagnosticSequence = new AtomicLong();
+		final Expected expected;
 		Token(String name) {
+			synchronized (OPENINGS) { expected = OPENINGS.remove(name); }
 			session = new ArticulatedRenderReceipt.Session(new ArticulatedRenderReceipt.Identity(RUN,
 				SEQUENCE.incrementAndGet(), name, ArticulatedRenderReceipt.requestedPhase(name)), System.getenv("WILDERCORD_SHARED_RECEIPT_NONCE"));
 		}
@@ -65,6 +73,7 @@ public final class ArticulatedSharedRenderProbe {
 		final IdentityHashMap<AvatarRenderState, Body> bodies = new IdentityHashMap<>();
 		final IdentityHashMap<ArticulatedViewModel.Frame, View> views = new IdentityHashMap<>();
 		final List<String> extractions = new ArrayList<>();
+		final IdentityHashMap<AvatarRenderState, Extracted> openingExtractions = new IdentityHashMap<>();
 		int owner;
 		boolean extracting, rendering;
 		RenderTarget renderedTarget;
@@ -76,12 +85,26 @@ public final class ArticulatedSharedRenderProbe {
 	}
 	public record ViewCall(AvatarRenderState avatar, InteractionHand hand, float partial, ViewCall previous) {}
 	public record DeferredCall(Model<?> model, Object state, DeferredCall previous) {}
+	private record Expected(int owner, String ownerUuid, int move, long startTick) {}
+	private record Extracted(int owner, String ownerUuid, long stateId, ArticulatedRenderReceipt.Palette palette) {}
+	public record FallbackView(FirstPersonHandsAndItemsRenderer renderer, FirstPersonHandsAndItemsRenderState hands,
+		AvatarRenderState avatar, ArticulatedRenderReceipt.Palette palette, Map<String, String> attributes) {}
 	private record Body(Model<?> model, long stateId) {}
 	private record View(ArticulatedViewModel model, AvatarRenderState avatar, ArticulatedRenderReceipt.Palette palette,
 			long stateId, Map<String, String> appearance) {}
 	private record CopyCall(Token token, RenderTarget target, Consumer<NativeImage> consumer, GpuTexture texture, long targetId, long textureId,
 			int width, int height, CopyCall previous) {}
 	private record WeakIdentity(WeakReference<Object> reference, long sequence) {}
+
+	/** Bind the existing admission's exact accepted action; no renderer call or scheduling change. */
+	public static void armOpening(String name, MastersArts.Performed accepted, Minecraft mc) {
+		if (!ArticulatedRenderReceipt.opening(name)) throw new IllegalArgumentException("Not an opening capture");
+		synchronized (OPENINGS) {
+			if (OPENINGS.putIfAbsent(name, new Expected(mc.player.getId(), mc.player.getUUID().toString(), accepted.move(), accepted.startTick())) != null)
+				throw new IllegalStateException("Opening capture already armed: " + name);
+		}
+	}
+	public static void disarmOpening(String name) { synchronized (OPENINGS) { OPENINGS.remove(name); } }
 
 	public static Token begin(TestScreenshotOptions options) {
 		if (!(options instanceof TestScreenshotOptionsImpl actual) || !ArticulatedRenderReceipt.inScope(actual.name)) return null;
@@ -117,6 +140,17 @@ public final class ArticulatedSharedRenderProbe {
 			s.observe("ownerUuid", mc.player.getUUID()); s.observe("ownerId", scope.owner);
 			s.observe("clientGameTick", mc.level.getGameTime()); s.observe("ownerTickCount", mc.player.tickCount);
 			s.observe("acceptedMove", timeline == null ? -1 : timeline.move());
+			if (ArticulatedRenderReceipt.opening(token.session.identity().trial())) {
+				s.observe("openingArmed", token.expected != null);
+				s.observe("acceptedEntity", timeline == null ? -1 : timeline.entity());
+				s.observe("expectedBackend", ArticulatedRenderReceipt.fallback(token.session.identity().trial()) ? "full_fallback" : "segmented");
+				s.observe("shellAdapterEnabled", ArticulatedAuraShellRenderer.enabled());
+				s.observe("bannerClassification", "unclassified:not_observed");
+				if (token.expected != null) {
+					s.observe("expectedOwnerId", token.expected.owner()); s.observe("expectedOwnerUuid", token.expected.ownerUuid());
+					s.observe("expectedMove", token.expected.move()); s.observe("expectedStartTick", token.expected.startTick());
+				}
+			}
 			s.observe("acceptedStartTick", timeline == null ? Long.MIN_VALUE : timeline.startTick());
 			s.observe("acceptedWindup", timeline == null ? -1 : timeline.windup());
 			s.observe("acceptedRecovery", timeline == null ? -1 : timeline.recovery());
@@ -136,7 +170,7 @@ public final class ArticulatedSharedRenderProbe {
 		if (scope == null) return;
 		CURRENT.set(scope.previous);
 		// Drop every mutable game object before the asynchronous readback can outlive this invocation.
-		scope.bodies.clear(); scope.views.clear(); scope.viewCall = null; scope.deferredCall = null;
+		scope.bodies.clear(); scope.views.clear(); scope.openingExtractions.clear(); scope.viewCall = null; scope.deferredCall = null;
 		scope.renderedTarget = null; scope.renderedTexture = null;
 	}
 	public static void extractBegin(DeltaTracker delta) {
@@ -161,8 +195,11 @@ public final class ArticulatedSharedRenderProbe {
 	public static void extracted(Entity entity, float partial, EntityRenderState state) {
 		Scope scope = CURRENT.get();
 		if (scope == null || !scope.extracting || entity.getId() != scope.owner || !(state instanceof AvatarRenderState avatar)) return;
-		guard(scope.token, () -> scope.extractions.add("state=" + identity(avatar) + ",entityPartial=" + partial
-			+ ",postHitStop=" + palette(avatar.getData(ArticulatedCombat.FRAME))));
+		guard(scope.token, () -> {
+			var raw = palette(avatar.getData(ArticulatedCombat.FRAME));
+			scope.extractions.add("state=" + identity(avatar) + ",entityPartial=" + partial + ",postHitStop=" + raw);
+			if (opening(scope)) scope.openingExtractions.put(avatar, new Extracted(entity.getId(), entity.getUUID().toString(), identity(avatar), raw));
+		});
 	}
 	public static void renderBegin() {
 		Scope scope = CURRENT.get(); if (scope == null) return;
@@ -198,6 +235,12 @@ public final class ArticulatedSharedRenderProbe {
 				&& bodyVisible(access.wildercord$rig()) && !model.head.visible && !model.body.visible && !model.leftArm.visible && !model.rightArm.visible
 				&& !model.leftLeg.visible && !model.rightLeg.visible;
 			appearance.put("segmentedVisible", String.valueOf(visible));
+			if (opening(scope)) {
+				appearance.put("rigidVisible", String.valueOf(rigidVisible(model)));
+				appearance.put("segmentedRootVisible", String.valueOf(model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned() && access.wildercord$rig().root.visible));
+				appearance.put("fallbackFrameCompatible", String.valueOf(ArticulatedCombat.frame(avatar) != null));
+				appearance.put("actualPaletteSha256", visible && model instanceof ArticulatedModelAccess access ? rigHash(access.wildercord$rig()) : rigidHash(model));
+			}
 			if (model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned()) appearance.put("rigPaletteSha256", rigHash(access.wildercord$rig()));
 			String kind = deferred(scope, model, avatar) ? "body_deferred" : "body_attachment";
 			scope.token.session.pass(pass(kind, avatar, model, palette(avatar.getData(ArticulatedCombat.FRAME)), appearance));
@@ -257,6 +300,43 @@ public final class ArticulatedSharedRenderProbe {
 		});
 	}
 
+	/** The real vanilla sword path has no arm model. Preserve that fact instead of inventing a deferred pass. */
+	public static FallbackView fallbackViewBegin(FirstPersonHandsAndItemsRenderer renderer, AvatarRenderState avatar,
+			FirstPersonHandsAndItemsRenderState hands, InteractionHand hand, ItemStack stack) {
+		Scope scope = rendering();
+		if (scope == null || !opening(scope) || !ArticulatedRenderReceipt.fallback(scope.token.session.identity().trial())
+			|| avatar == null || avatar.id != scope.owner || hand != InteractionHand.MAIN_HAND) return null;
+		try {
+			if (!ItemStack.isSameItemSameComponents(stack, avatar.getMainHandItemStack())
+				|| !ItemStack.isSameItemSameComponents(stack, hands.mainHandItem) || hands.mainHandRenderState.isEmpty()) {
+				scope.token.session.reject("wrong_native_fallback_item"); return null;
+			}
+			var model = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar).getModel();
+			Map<String, String> attributes = appearance(avatar, model);
+			attributes.put("fallbackFrameCompatible", String.valueOf(ArticulatedCombat.viewFrame(avatar) != null));
+			attributes.put("segmentedVisible", "false");
+			attributes.put("itemStateIdentity", String.valueOf(identity(hands.mainHandRenderState)));
+			attributes.put("nativeRenderer", renderer.getClass().getName());
+			return new FallbackView(renderer, hands, avatar, palette(avatar.getData(ArticulatedCombat.FRAME)), Map.copyOf(attributes));
+		} catch (Throwable failure) { scope.token.session.reject("fallback_observer_failed:" + failure); return null; }
+	}
+	public static void fallbackViewItem(FallbackView call, ItemStackRenderState item) {
+		Scope scope = rendering(); if (scope == null || call == null) return;
+		guard(scope.token, () -> {
+			if (item != call.hands().mainHandRenderState || item.isEmpty()) { scope.token.session.reject("wrong_native_fallback_submission"); return; }
+			scope.token.session.pass(new ArticulatedRenderReceipt.Pass("view_fallback_item", identity(call.hands()), identity(call.renderer()),
+				call.avatar().id, call.palette(), call.attributes()));
+		});
+	}
+	public static void fallbackViewEnd(FallbackView call, boolean completed) {
+		Scope scope = rendering(); if (scope == null || call == null) return;
+		guard(scope.token, () -> {
+			if (!completed) { scope.token.session.reject("incomplete_native_fallback"); return; }
+			scope.token.session.pass(new ArticulatedRenderReceipt.Pass("view_fallback_submit", identity(call.hands()), identity(call.renderer()),
+				call.avatar().id, call.palette(), call.attributes()));
+		});
+	}
+
 	/** Only the exact Fabric call site arms COPYING, after GameRenderer's thumbnail work has finished. */
 	public static void screenshot(RenderTarget target, Consumer<NativeImage> originalConsumer,
 			java.util.function.BiConsumer<RenderTarget, Consumer<NativeImage>> originalCall) {
@@ -294,7 +374,7 @@ public final class ArticulatedSharedRenderProbe {
 		});
 		token.session.finish(); persist(token, "receipt");
 		var report = token.session.report();
-		System.out.println("ARTICULATED_SHARED_RENDER_RECEIPT name=" + report.identity().trial() + " requestedPhase="
+		System.out.println((ArticulatedRenderReceipt.opening(report.identity().trial()) ? "ARTICULATED_OPENING_RENDER_RECEIPT name=" : "ARTICULATED_SHARED_RENDER_RECEIPT name=") + report.identity().trial() + " requestedPhase="
 			+ report.identity().requestedPhase() + " renderedPhase=" + report.renderedPhase() + " verified=" + report.verified()
 			+ " requestedPhaseObserved=" + report.requestedPhaseObserved() + " nativePixelReviewRequired=true exactImpactPixelCoverage=unverified");
 		if (!report.verified()) throw new AssertionError("Passive shared-player screenshot receipt rejected: " + report.failures());
@@ -306,7 +386,7 @@ public final class ArticulatedSharedRenderProbe {
 	}
 	private static void persist(Token token, String suffix) {
 		try {
-			Path directory = FabricLoader.getInstance().getGameDir().resolve("screenshots/articulated-shared-receipts").resolve(RUN);
+			Path directory = FabricLoader.getInstance().getGameDir().resolve(ArticulatedRenderReceipt.opening(token.session.identity().trial()) ? "screenshots/articulated-opening-receipts" : "screenshots/articulated-shared-receipts").resolve(RUN);
 			Files.createDirectories(directory);
 			Path receipt = directory.resolve(String.format(java.util.Locale.ROOT, "%06d-%s-%d.json", token.session.identity().captureSequence(), suffix, token.diagnosticSequence.incrementAndGet()));
 			Files.writeString(receipt, new GsonBuilder().setPrettyPrinting().create().toJson(token.session.report()) + "\n", StandardOpenOption.CREATE_NEW);
@@ -316,6 +396,7 @@ public final class ArticulatedSharedRenderProbe {
 			System.err.println("ARTICULATED_SHARED_RECEIPT_FAILURE name=" + token.session.identity().trial() + " failure=" + failure);
 		}
 	}
+	private static boolean opening(Scope scope) { return ArticulatedRenderReceipt.opening(scope.token.session.identity().trial()); }
 	private static Scope rendering() { Scope scope = CURRENT.get(); return scope != null && scope.rendering ? scope : null; }
 	private static void guard(Token token, Runnable observer) {
 		try { observer.run(); }
@@ -351,6 +432,18 @@ public final class ArticulatedSharedRenderProbe {
 		}
 		return ArticulatedRenderReceipt.sha256(values.toString().getBytes(StandardCharsets.US_ASCII));
 	}
+	private static boolean rigidVisible(PlayerModel model) {
+		return model.root().visible && List.of(model.head, model.body, model.leftArm, model.rightArm, model.leftLeg, model.rightLeg)
+			.stream().allMatch(part -> part.visible && !part.skipDraw);
+	}
+	private static String rigidHash(PlayerModel model) {
+		StringBuilder values = new StringBuilder("rigid-local-floathex-visible-skipdraw-v1\n");
+		for (var part : List.of(model.head, model.body, model.leftArm, model.rightArm, model.leftLeg, model.rightLeg)) {
+			values.append(part.visible).append(':').append(part.skipDraw).append(':');
+			append(values, part.x, part.y, part.z, part.xRot, part.yRot, part.zRot, part.xScale, part.yScale, part.zScale);
+		}
+		return ArticulatedRenderReceipt.sha256(values.toString().getBytes(StandardCharsets.US_ASCII));
+	}
 	private static boolean bodyVisible(ArticulatedRig rig) {
 		if (!rig.root.visible) return false;
 		for (var joint : ArticulatedCombatPose.Joint.values()) if (!rig.part(joint).visible || rig.part(joint).skipDraw) return false;
@@ -373,6 +466,22 @@ public final class ArticulatedSharedRenderProbe {
 		out.put("skinTexture", avatar.skin == null ? "unknown" : avatar.skin.body().texturePath().toString());
 		out.put("rigWidth", model instanceof ArticulatedViewModel view ? (view.rig().slim() ? "slim" : "wide")
 			: model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned() ? (access.wildercord$rig().slim() ? "slim" : "wide") : "unknown");
+		Scope scope = rendering();
+		if (scope != null && opening(scope)) {
+			Extracted extracted = scope.openingExtractions.get(avatar);
+			out.put("avatarStateIdentity", String.valueOf(identity(avatar)));
+			out.put("extractedStateIdentity", extracted == null ? "0" : String.valueOf(extracted.stateId()));
+			out.put("ownerUuid", extracted == null ? "unknown" : extracted.ownerUuid());
+			out.put("postHitStopExtractionMatched", String.valueOf(extracted != null && extracted.owner() == avatar.id
+				&& java.util.Objects.equals(extracted.palette(), palette(avatar.getData(ArticulatedCombat.FRAME)))));
+			if (extracted != null && extracted.palette() != null) {
+				out.put("rawAcceptedPhase", extracted.palette().phase()); out.put("rawActivation", String.valueOf(extracted.palette().activation()));
+				out.put("rawMove", String.valueOf(extracted.palette().move())); out.put("rawLeftHanded", String.valueOf(extracted.palette().leftHanded()));
+				out.put("rawPaletteSha256", extracted.palette().localsSha256());
+			}
+			out.put("shellGlowPresent", String.valueOf(avatar.getData(AuraShellLayer.SHELL_GLOW) != null));
+			out.put("shellAdapterEnabled", String.valueOf(ArticulatedAuraShellRenderer.enabled()));
+		}
 		out.put("mainArm", avatar.mainArm.name());
 		out.put("mainHand", item(avatar.getMainHandItemStack())); out.put("head", item(avatar.headEquipment));
 		out.put("chest", item(avatar.chestEquipment)); out.put("legs", item(avatar.legsEquipment)); out.put("feet", item(avatar.feetEquipment));

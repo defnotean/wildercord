@@ -27,6 +27,12 @@ public final class ScreenEffects {
 	private static int tintTicks;
 	private static float tintAlpha;
 
+	/** Drop only local camera effects; preserve warning/domain tint and accepted aim. */
+	public static void clearCameraMotion() {
+		shake=kick=0;shakeTicks=shakeTotal=kickTicks=kickTotal=0;
+		nudgeYaw=nudgePitch=0;nudgeAt=0;nudgeMillis=0;
+	}
+
 	public static void receive(WildercordNetworking.ScreenFx fx) {
 		if ((!MagicQuality.cameraShake || dev.wildercord.client.combat.ArticulatedCombat.stableCamera())
 			&& fx.kind() != WildercordNetworking.ScreenFx.TINT) return;

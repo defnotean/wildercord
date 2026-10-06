@@ -50,7 +50,9 @@ fabricApi {
 		modId = "wildercord-gametest"
 		enableGameTests = false
 		enableClientGameTests = true
-		eula = false
+		// Owner-approved Minecraft EULA acceptance applies only to the explicitly opted-in disposable CI runs.
+		// Loom writes clientGameTest/eula.txt after clearing that run directory; local runs keep their own choice.
+		eula = System.getenv('GITHUB_ACTIONS') == 'true' && System.getenv('CI_MINECRAFT_EULA_ACCEPTED') == 'true'
 	}
 }
 
