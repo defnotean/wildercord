@@ -32,6 +32,13 @@ public final class LanternNewt extends PathfinderMob {
  public long refugeReady() {return refugeReady;}
 	public LanternNewt(EntityType<? extends LanternNewt> type,Level level) {
 		super(type,level);moveControl=new SmoothSwimmingMoveControl<>(this,85,10,.7F,.65F,true);
+		lookControl=new net.minecraft.world.entity.ai.control.LookControl(this) {
+			private boolean swimmingToRefuge() {return getNavigation() instanceof NewtPathNavigation n && n.followingRefuge();}
+			// Move control builds its swimming pitch over several ticks. The ordinary
+			// look reset would erase it every tick and let buoyancy win the descent.
+			@Override protected boolean resetXRotOnTick() {return !swimmingToRefuge();}
+			@Override protected Optional<Float> getXRotD() {return swimmingToRefuge()?Optional.empty():super.getXRotD();}
+		};
 		setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER,0);xpReward=0;
 	}
 	public static AttributeSupplier.Builder attributes() {return createMobAttributes().add(Attributes.MAX_HEALTH,10).add(Attributes.MOVEMENT_SPEED,.22).add(Attributes.FOLLOW_RANGE,12).add(Attributes.TEMPT_RANGE,10).add(Attributes.STEP_HEIGHT,.6);}

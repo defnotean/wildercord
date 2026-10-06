@@ -45,10 +45,12 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
   var frames=new ArrayList<CompletableFuture<Void>>();var rejected=new ArrayList<Integer>();
   int frameEpoch=-1,strikeTicks=0;SiltcrestPresentationWitness.Budget.Limit strikeLimit=null,preenLimit=null;String coilName=null;
   CompletableFuture<Void> coilFrame=null,strikeFrame=null;
+  try(var paths=new SiltcrestPresentationPathProbe(observation)) {
   while(true) {
    var state=w.getServer().computeOnServer(s->{
     check(source.level()==s.overworld()&&source.isAlive()&&!source.isRemoved()&&s.overworld().getEntity(entityId)==source,"Original living source and world own the complete natural hunt budget");
-    return new HuntState(SiltcrestBittern.clock(s.overworld()),source.pose(),source.huntReady(),policy.inspect(observation.records,observation.errors,observation.omitted));
+    var observed=new HuntState(SiltcrestBittern.clock(s.overworld()),source.pose(),source.huntReady(),policy.inspect(observation.records,observation.errors,observation.omitted));
+    paths.sample(observed.candidate());return observed;
    });
    budget.observe(state.clock());SiltcrestPresentationWitness.Budget.Limit waiting=null;
    // Never defer a known failed pixel assertion merely because this commitment was rejected.
@@ -96,6 +98,7 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
    }
    budget.advance(waiting);
    c.waitTicks(1);
+  }
   }
  }
  private boolean ready(ClientGameTestContext c,int pose){return c.computeOnClient(mc->{var e=mc.level==null?null:mc.level.getEntity(entityId);if(!(e instanceof SiltcrestBittern b)||!b.isAlive()||b.pose()!=pose)return false;return switch(pose){case SiltcrestBittern.COILING->b.coil>=.3F;case SiltcrestBittern.STRIKING->b.strike>=.5F;case SiltcrestBittern.PREENING->b.preen>=.3F;default->false;};});}

@@ -29,12 +29,12 @@ public final class StoneHingeOwnerProbe {
 	private static final ThreadLocal<PositionSend> MOVEMENT = new ThreadLocal<>();
 	public interface ConnectionState { boolean stoneHinge$awaitingTeleport(); }
 
-	public record Body(Vec3 position, Vec3 motion, double fall, boolean grounded, boolean neutral, float health, int entity, long tick) {
+	public record Body(Vec3 position, Vec3 motion, double fall, boolean grounded, boolean neutral, float health, int entity, long tick, boolean horizontalCollision) {
 		public static Body of(Player player) {
 			boolean neutral = player instanceof ServerPlayer server ? server.getLastClientInput().equals(Input.EMPTY)
 				: player instanceof LocalPlayer client && client.input.keyPresses.equals(Input.EMPTY);
 			return new Body(player.position(), player.getDeltaMovement(), player.fallDistance, player.onGround(), neutral,
-				player.getHealth(), player.getId(), player.level().getGameTime());
+				player.getHealth(), player.getId(), player.level().getGameTime(), player.horizontalCollision);
 		}
 	}
 	public record Event(int index, String kind, String data, Body before, Body after) {}

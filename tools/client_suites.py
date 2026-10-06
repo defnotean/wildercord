@@ -21,6 +21,13 @@ STONE_OWNER_NEGATIVE_PREFIX = "STONE_HINGE_OWNER_NEGATIVE "
 STONE_OWNER_NEGATIVE_RESULT = ("expected_incompatibility=observed movement_gate=NOT_PROVEN "
                                "gameplay_enabled=false conditional_shared_rest_ticks=120")
 
+MOVEMENT_FOUNDATION_ENTRIES = ("dev.wildercord.wildlife.ReedRefugeTest",
+                               "dev.wildercord.aura.StoneHingeVelocityComparisonTest")
+STONE_VELOCITY_PREFIX = "STONE_HINGE_VELOCITY_COMPARISON "
+STONE_VELOCITY_RESULT = ("owner_cases=15 owner_gate=observed peer_gate=NOT_PROVEN latency_gate=NOT_PROVEN "
+                         "admission_gate=NOT_PROVEN movement_gate=NOT_PROVEN gameplay_enabled=false "
+                         "conditional_aura=20 conditional_shared_rest_ticks=120 conditional_brace_ticks=6 conditional_catch_ticks=12")
+
 
 def parse_shard(value):
     if not re.fullmatch(r"[0-9]+/[0-9]+", value):
@@ -66,6 +73,9 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         if suite == "diagnostic-stone-hinge-owner-negative" and (
                 purpose != "diagnostic" or selected != list(STONE_OWNER_NEGATIVE_ENTRIES)):
             raise ValueError("Stone owner negative control requires its exact complete diagnostic class")
+        if suite == "diagnostic-movement-foundations" and (
+                purpose != "diagnostic" or selected != list(MOVEMENT_FOUNDATION_ENTRIES)):
+            raise ValueError("Movement foundations requires exactly both whole diagnostic classes in order")
         return {"kind": "diagnostic" if purpose == "diagnostic" else "suite",
                 "name": suite, "count": len(selected), "entries": selected}
     if shard is not None:
@@ -109,6 +119,9 @@ def selection_issues(log, selection):
     if selection.get("name") == "diagnostic-stone-hinge-owner-negative":
         _, completion_issues = stone_owner_negative_completion(log)
         issues.extend(completion_issues)
+    if selection.get("name") == "diagnostic-movement-foundations":
+        _, completion_issues = movement_foundations_completion(log)
+        issues.extend(completion_issues)
     return issues
 
 
@@ -138,6 +151,16 @@ def stone_owner_negative_completion(log):
                for line in log.splitlines() if STONE_OWNER_NEGATIVE_PREFIX in line]
     if markers != [STONE_OWNER_NEGATIVE_RESULT]:
         issues.append("Stone owner negative control requires exactly its unchanged NOT_PROVEN result")
+    return completed, issues
+
+
+def movement_foundations_completion(log):
+    """Require the complete refuge lifecycle and bounded owner-only velocity proof."""
+    completed, issues = _whole_class_completion(log, MOVEMENT_FOUNDATION_ENTRIES, "Movement foundations")
+    markers = [line.split(STONE_VELOCITY_PREFIX, 1)[1].strip()
+               for line in log.splitlines() if STONE_VELOCITY_PREFIX in line]
+    if markers != [STONE_VELOCITY_RESULT]:
+        issues.append("Movement foundations requires the exact fifteen-case owner result with remaining gates NOT_PROVEN")
     return completed, issues
 
 

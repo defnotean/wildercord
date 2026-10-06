@@ -307,7 +307,8 @@
       "dev.wildercord.cast.ReweaveFeasibilityTest",
       "dev.wildercord.aura.StoneHingeFeasibilityTest",
       "dev.wildercord.cast.ReweavePlayableTest",
-      "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest"
+      "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest",
+      "dev.wildercord.aura.StoneHingeVelocityComparisonTest"
     ]
   },
   "mixins": [

@@ -14,6 +14,8 @@ final class NewtPathNavigation extends AmphibiousPathNavigation {
 
  NewtPathNavigation(LanternNewt newt,Level level) {super(newt,level);}
 
+ boolean followingRefuge() {return refugeRoute && !isDone();}
+
  private boolean waterloggedRefuge(BlockPos at) {
   if(!level.hasChunkAt(at))return false;
   var state=level.getBlockState(at);

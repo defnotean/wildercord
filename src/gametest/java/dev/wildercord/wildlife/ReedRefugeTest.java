@@ -22,7 +22,7 @@ import java.util.*;
 /** Actual client construction, amphibian routes, finite rests, wake conditions and saved habitat. */
 public final class ReedRefugeTest implements FabricClientGameTest {
  private static final BlockPos ROOF=new BlockPos(3,101,3),DRY=new BlockPos(-4,102,-1);
- private static LanternNewt first,second,third,surfaceVisitor,routeVisitor,walker;private static UUID saved;private static long firstRest,secondRest,savedRest;
+ private static LanternNewt first,second,third,surfaceVisitor,routeVisitor,walker,stuckVisitor;private static UUID saved;private static long firstRest,secondRest,savedRest;
  @Override public void runTest(ClientGameTestContext c) {
   EcologyReturnProbeChecks.verify();
   TestWorldSave save;
@@ -71,7 +71,8 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   var probe=w.getServer().computeOnServer(s->EcologyReturnProbe.begin(EcologyReturnProbe.REED,s.overworld(),target.get()));
   var witness=new RefugeRouteWitness();
   try{for(int i=0;i<100;i++) {c.waitTicks(5);if(w.getServer().computeOnServer(s -> {var n=target.get();witness.observe(n,glassDetour);return n.resting();})) {
-    check(!glassDetour || witness.aquaticDetour && witness.bodyPassedGlass,"Native aquatic route and actual body both pass around the unchanged glass");return;
+    check(!glassDetour || witness.aquaticDetour && witness.bodyPassedGlass,"Native aquatic route and actual body both pass around the unchanged glass");
+    check(!glassDetour || witness.descendingPitch && witness.descendingBody,"Actual refuge swimmer retains native downward pitch and descends before arrival");return;
    }}
    throw new AssertionError(w.getServer().computeOnServer(s -> why+": "+EcologyReturnProbe.body(target.get())));
   }finally{probe.close();}
@@ -79,7 +80,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
 
  /** Observes paths the real goal already requested; never creates or changes a route. */
  private static final class RefugeRouteWitness {
-  boolean aquaticDetour,bodyPassedGlass;
+  boolean aquaticDetour,bodyPassedGlass,descendingPitch,descendingBody;
   void observe(LanternNewt n,boolean glassDetour) {
    check(n.level().noCollision(n,n.getBoundingBox()),"Swimming body never overlaps the real obstacle or refuge shape");
    var path=n.getNavigation().getPath();
@@ -90,13 +91,18 @@ public final class ReedRefugeTest implements FabricClientGameTest {
      around|=node.z!=ROOF.getZ();
     }
     aquaticDetour|=around;
+    descendingPitch|=n.getXRot()>5 && n.yya<0;
+    descendingBody|=n.getDeltaMovement().y<-.003;
    }
    var box=n.getBoundingBox();
    if(glassDetour) {
     check(n.level().getBlockState(new BlockPos(2,101,3)).is(Blocks.GLASS),"Separate glass obstacle remains present throughout the detour");
     bodyPassedGlass|=n.getX()>2 && n.getX()<3 && (box.maxZ<=3 || box.minZ>=4);
    }
-   if(n.resting())check(n.beneathRefuge(ROOF),"Rest begins only after physical arrival beneath the waterlogged roof");
+   if(n.resting()) {
+    check(n.beneathRefuge(ROOF),"Rest begins only after physical arrival beneath the waterlogged roof");
+    check(!((NewtPathNavigation)n.getNavigation()).followingRefuge() && n.getXRot()==0,"Ordinary pitch reset resumes after actual refuge arrival");
+   }
   }
  }
 
@@ -111,6 +117,12 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    var path=surfaceVisitor.getNavigation().createPath(ROOF,0);
    check(path!=null && path.canReach() && path.getNode(0).y==101,"Surface-height swimmer's native refuge search starts in its actual water cell");
    for(int i=0;i<path.getNodeCount();i++) {var node=path.getNode(i);check(s.overworld().getFluidState(new BlockPos(node.x,node.y,node.z)).is(net.minecraft.tags.FluidTags.WATER),"Surface route retains aquatic candidate filtering");}
+   // Separate native control contract: this actor is discarded before the real
+   // approach witness. No controller calls are injected into natural arrival.
+   check(surfaceVisitor.getNavigation().moveTo(path,.7),"Native surface path is accepted for the look-control contract");
+   surfaceVisitor.setXRot(30);surfaceVisitor.getLookControl().setLookAt(surfaceVisitor.getX()+2,surfaceVisitor.getEyeY()+1,surfaceVisitor.getZ()+2,10,20);surfaceVisitor.getLookControl().tick();
+   check(surfaceVisitor.getXRot()==30,"Active refuge navigation retains swimming pitch despite an old look target");
+   surfaceVisitor.getNavigation().stop();checkOrdinaryLook(surfaceVisitor,"explicit refuge cancellation");
    surfaceVisitor.discard();routeVisitor=spawn(s,.5,3.5);
   });
   boolean approaching=false;
@@ -126,7 +138,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    var expected=new net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation(routeVisitor,s.overworld()).createPath(dry,0);
    var actual=routeVisitor.getNavigation().createPath(dry,0);
    check(expected!=null && expected.canReach() && actual!=null && actual.canReach() && actual.sameAs(expected),"After a refuge query, an ordinary dry destination retains the native amphibious route");
-   routeVisitor.setNoAi(true);
+   routeVisitor.setNoAi(true);checkOrdinaryLook(routeVisitor,"removed refuge");
    walker=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);walker.snapTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
    p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<Relative>of(),180,0,false);
   });
@@ -134,6 +146,50 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   for(int i=0;i<100;i++) {c.waitTicks(2);if(w.getServer().computeOnServer(s -> walker.getZ()>3.5 && !walker.isInWater() && walker.getGoalSelector().getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal() instanceof net.minecraft.world.entity.ai.goal.TemptGoal))) {tempted=true;break;}}
   check(tempted,"An ordinary TemptGoal still walks the newt across dry land using native amphibious navigation");
   w.getServer().runOnServer(s -> p(s).setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY));
+  verifyStuckLookRestoration(c,w);
+ }
+
+ /** Compares the real restored controller to vanilla on an actor retired from its movement case. */
+ private static void checkOrdinaryLook(LanternNewt n,String after) {
+  check(!((NewtPathNavigation)n.getNavigation()).followingRefuge(),"Refuge pitch ownership ends after "+after);
+  var ordinary=new net.minecraft.world.entity.ai.control.LookControl(n);
+  n.setXRot(30);ordinary.setLookAt(n.getX()+2,n.getEyeY()+1,n.getZ()+2,10,20);ordinary.tick();float expected=n.getXRot();
+  n.setXRot(30);n.getLookControl().setLookAt(n.getX()+2,n.getEyeY()+1,n.getZ()+2,10,20);n.getLookControl().tick();
+  check(n.getXRot()==expected,"Default pitch reset and target-looking behavior resume after "+after);
+ }
+
+ private static boolean shelterRunning(LanternNewt n) {return n.getGoalSelector().getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter"));}
+ private static int shelterTicksLeft(LanternNewt n) {
+  var goal=n.getGoalSelector().getAvailableGoals().stream().filter(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter")).findFirst().orElseThrow().getGoal();
+  try{var field=goal.getClass().getDeclaredField("travelLeft");field.setAccessible(true);return field.getInt(goal);}
+  catch(ReflectiveOperationException failure){throw new AssertionError("Cannot observe the actual Shelter journey counter",failure);}
+ }
+ private static void verifyStuckLookRestoration(ClientGameTestContext c,TestSingleplayerContext w) {
+  w.getServer().runOnServer(s -> {s.overworld().setBlock(ROOF,WetlandShelters.REFUGE.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,true),2);stuckVisitor=spawn(s,.5,3.5);});
+  boolean started=false;
+  for(int i=0;i<500;i++) {c.waitTicks(1);if(w.getServer().computeOnServer(s -> shelterRunning(stuckVisitor) && ((NewtPathNavigation)stuckVisitor.getNavigation()).followingRefuge())) {started=true;break;}}
+  check(started,"Ordinary Shelter starts before the separate blocked-journey case");
+  var journey=w.getServer().computeOnServer(s -> {
+   var at=stuckVisitor.blockPosition();
+   // Enclose this later test actor after admission without overlapping its body.
+   // The original glass-detour fixture and arrival proof have already completed.
+   for(var d:Direction.Plane.HORIZONTAL)s.overworld().setBlock(at.relative(d),Blocks.GLASS.defaultBlockState(),2);
+   s.overworld().setBlock(at.above(),Blocks.GLASS.defaultBlockState(),2);
+   check(s.overworld().noCollision(stuckVisitor,stuckVisitor.getBoundingBox()),"Stuck case leaves the actual body clear inside its water cell");
+   return new int[]{stuckVisitor.tickCount,shelterTicksLeft(stuckVisitor)};
+  });
+  boolean stuck=false,expired=false;
+  for(int i=0;i<260;i++) {c.waitTicks(1);var state=w.getServer().computeOnServer(s -> {
+   var navigation=(NewtPathNavigation)stuckVisitor.getNavigation();
+   if(navigation.isStuck())check(!navigation.followingRefuge() && stuckVisitor.getXRot()==0,"Native stuck termination immediately restores ordinary pitch reset");
+   return new int[]{navigation.isStuck()?1:0,shelterRunning(stuckVisitor)?1:0,stuckVisitor.tickCount-journey[0]};
+  });stuck|=state[0]!=0;if(state[1]==0) {
+   // Record the first stop, including an early water/availability exit, against
+   // the actual remaining counter; selectors check every other tick.
+   check(state[2]>=journey[1] && state[2]<=journey[1]+2,"Blocked Shelter first stops when its original journey counter expires: remaining="+journey[1]+", observed age="+state[2]);expired=true;break;
+  }}
+  check(stuck && expired,"Native stuck detection and the unchanged finite Shelter journey both end the blocked approach");
+  w.getServer().runOnServer(s -> {check(!stuckVisitor.resting() && stuckVisitor.refugeReady()==0,"Blocked approach never counts as arrival");stuckVisitor.setNoAi(true);checkOrdinaryLook(stuckVisitor,"native stuck detection and journey expiry");});
  }
 
  private static void feed(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> n) {int id=w.getServer().computeOnServer(s -> n.get().getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);});}

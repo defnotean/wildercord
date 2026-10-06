@@ -18,7 +18,8 @@ import sys
 
 from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIES,
                            progression_completion, reweave_player_completion, REWEAVE_PLAYER_ENTRIES,
-                           stone_owner_negative_completion, STONE_OWNER_NEGATIVE_ENTRIES, select_entries, selection_issues)
+                           stone_owner_negative_completion, STONE_OWNER_NEGATIVE_ENTRIES,
+                           movement_foundations_completion, MOVEMENT_FOUNDATION_ENTRIES, select_entries, selection_issues)
 import run_client_ci
 from native_ci_diagnostics import SCENE_PREFIX
 
@@ -40,11 +41,14 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "stasis-gallery": "diagnostic-stasis-gallery",
          "progression-feasibility": "diagnostic-progression-feasibility",
          "reweave-player": "diagnostic-reweave-player",
-         "stone-hinge-owner-negative": "diagnostic-stone-hinge-owner-negative"}
+         "stone-hinge-owner-negative": "diagnostic-stone-hinge-owner-negative",
+         "movement-foundations": "diagnostic-movement-foundations"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
+    "movement-foundations": {MOVEMENT_FOUNDATION_ENTRIES[0]: None,
+                             MOVEMENT_FOUNDATION_ENTRIES[0] + "#reopen": None, MOVEMENT_FOUNDATION_ENTRIES[1]: None},
     "stone-hinge-owner-negative": {STONE_OWNER_NEGATIVE_ENTRIES[0] + "#" + name: None for name in
                                    ("ordinary-native-hit-control", "server-step-plus-motion-negative")},
     "reweave-player": {"dev.wildercord.cast.ReweavePlayableTest#lesson": None,
@@ -121,6 +125,14 @@ CASE_FILES = {"stone-hinge-owner-negative": (
     "src/gametest/java/dev/wildercord/gametest/mixin/NativeSceneTraceMixin.java",
     "tools/check_stone_hinge_native_contract.py",
 )}
+
+CASE_FILES["movement-foundations"] = (*CASE_FILES["stone-hinge-owner-negative"],
+    "src/main/java/dev/wildercord/wildlife/LanternNewt.java",
+    "src/main/java/dev/wildercord/wildlife/NewtPathNavigation.java",
+    "src/gametest/java/dev/wildercord/wildlife/EcologyReturnProbe.java",
+    "src/gametest/java/dev/wildercord/wildlife/EcologyReturnProbeChecks.java",
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeVelocityExperiment.java",
+)
 
 
 def unique_object(pairs):
@@ -238,6 +250,10 @@ def current(env, *, observed_head=None):
             "kind": "diagnostic", "name": CASES["stone-hinge-owner-negative"],
             "count": 1, "entries": list(STONE_OWNER_NEGATIVE_ENTRIES)}:
         raise ValueError("Stone owner negative control must retain its whole registered class")
+    if request["case"] == "movement-foundations" and selection != {
+            "kind": "diagnostic", "name": CASES["movement-foundations"],
+            "count": 2, "entries": list(MOVEMENT_FOUNDATION_ENTRIES)}:
+        raise ValueError("Movement foundations requires its exact two complete classes in order")
     paths = [*CONFIG_FILES, *CASE_FILES.get(request["case"], ())]
     if selection:
         paths += ["src/gametest/java/" + entry.replace(".", "/") + ".java" for entry in selection["entries"]]
@@ -303,15 +319,15 @@ def observed_seeds(log, case):
             continue
         try:
             marker = json.loads(line.split(SEED_PREFIX, 1)[1],
-                                object_pairs_hook=unique_object if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative") else dict)
-            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative") and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
+                                object_pairs_hook=unique_object if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations") else dict)
+            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations") and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
                 raise ValueError()
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
-            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative") and entry in found:
+            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations") and entry in found:
                 issues.append("Repeated native world seed marker for " + entry)
-            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative") and not -(2 ** 63) <= int(seed) < 2 ** 63:
+            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations") and not -(2 ** 63) <= int(seed) < 2 ** 63:
                 raise ValueError()
             found.setdefault(entry, set()).add(seed)
         except (ValueError, KeyError, TypeError):
@@ -391,6 +407,10 @@ def collect(env):
     if data["request"]["case"] == "stone-hinge-owner-negative":
         data["completedEntries"], _ = stone_owner_negative_completion(log)
         data.update(movementGate="NOT_PROVEN", gameplayEnabled=False)
+    if data["request"]["case"] == "movement-foundations":
+        data["completedEntries"], _ = movement_foundations_completion(log)
+        data.update(movementGate="NOT_PROVEN", gameplayEnabled=False, peerGate="NOT_PROVEN",
+                    latencyGate="NOT_PROVEN", admissionGate="NOT_PROVEN")
     successful = "BUILD SUCCESSFUL" in log and "BUILD FAILED" not in log and not issues
     data.update(diagnosticOutcome="passed" if successful else "unverified",
                 observedWorldSeeds=seeds, verificationIssues=issues,

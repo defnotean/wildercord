@@ -24,6 +24,7 @@ public final class WindFormationTest implements FabricClientGameTest {
  private static int[] background;
  @Override public void runTest(ClientGameTestContext c) {
   var previous=c.computeOnClient(mc -> MagicQuality.own);
+  var previousCamera=c.computeOnClient(mc -> mc.options.getCameraType());
   try(var w=c.worldBuilder().create()) {
    c.waitTicks(40);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 6000");w.getServer().runCommand("weather clear");
    w.getServer().runCommand("fill -16 100 -12 16 100 20 polished_deepslate");w.getServer().runCommand("fill -12 101 8 12 109 8 gray_concrete");
@@ -67,7 +68,7 @@ public final class WindFormationTest implements FabricClientGameTest {
    });c.waitTicks(4);c.runOnClient(mc -> {int found=0;for(var particle:particles(mc.particleEngine))if(particle.isAlive() && particle instanceof AirflowParticle && at(particle).distanceTo(mc.player.position().add(0,.7,0))<1.65)found++;check(found>0,"Paid Self preparation stays on caster");});
    var self=c.computeOnClient(mc -> snapshot(mc,"wind_formation_paid_swift"));c.waitFor(mc -> self.isDone());self.join();
    w.getServer().runOnServer(s -> check(s.getPlayerList().getPlayers().getFirst().hasEffect(net.minecraft.world.effect.MobEffects.SPEED),"Self Swift grants Speed after release"));
-  } finally {c.runOnClient(mc -> MagicQuality.own=previous);}
+  } finally {c.runOnClient(mc -> {MagicQuality.own=previous;mc.options.setCameraType(previousCamera);});}
  }
  private static java.util.concurrent.CompletableFuture<Void> snapshot(net.minecraft.client.Minecraft mc,String name) {
   // Capture this exact production-particle step, without extra screenshot helper ticks.

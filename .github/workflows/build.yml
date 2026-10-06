@@ -145,6 +145,17 @@ jobs:
           name: void-cut-diagnostics-game-tests-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: artifacts/review/void-cut-diagnostics-game-tests-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}/
           if-no-files-found: error
+      - name: Preserve original Wind flight comparison (diagnostic only)
+        if: always() && hashFiles('build/run/clientGameTest/screenshots/wind_view_cushion_background.png', 'build/run/clientGameTest/screenshots/wind_view_cushion.png') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: wind-flight-diagnostic-${{ matrix.shard }}-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/run/clientGameTest/screenshots/wind_view_cushion_background.png
+            build/run/clientGameTest/screenshots/wind_view_cushion.png
+            artifacts/review/test-manifest.json
+          if-no-files-found: warn
+          retention-days: 7
       - name: Preserve gameplay evidence
         if: always()
         uses: actions/upload-artifact@v7

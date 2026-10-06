@@ -6,7 +6,7 @@ Updated 6 October 2026. This is the plan for the expanded update, not a claim th
 
 The current foundation includes three Master schools with consent-based trials, finite Aura, readable attack commitments, shared cast-punish pursuit, and an Ember, Gale and Stone signature. Party protection, first-clear records, the 100-crystal absorption cap and progression through Circle XX are implemented. Mana Skin now rebates a bounded fraction of actual nonlethal health damage rather than damage before armor.
 
-Three shared player arts and seventeen existing style forms have authored body/hand timelines in this source checkpoint, now including Crimson Moon. Only part of that catalog has the articulated body backend and complete native visual evidence. Thirty-three of the fifty existing style arts still lack their new body choreography. Crimson Moon's Final-input and released-lifetime suites have passed on published checkpoints, and one funded owner-first-person release passes on dff8c58f. The four-view genuine observer slice and complete visual catalog remain unverified. New choreography is not counted as a new gameplay ability.
+Three shared player arts and seventeen existing style forms have authored body/hand timelines in this source checkpoint, now including Crimson Moon. Only part of that catalog has the articulated body backend and complete native visual evidence. Thirty-three of the fifty existing style arts still lack their new body choreography. Crimson Moon's Final-input and released-lifetime suites have passed on published checkpoints, and one funded owner-first-person release passes on dff8c58f. Four genuine wide/slim front/reverse observer release views pass on `17dd0598` with exact clock, image and causal damage receipts. This covers one selected funded-netherite right-hand release, while the complete visual catalog and final polish remain open. New choreography is not counted as a new gameplay ability.
 
 The branch also contains opt-in articulated combat, supported armor and funded Aura-shell presentation, staged in-game presentation preferences, and a bounded operator-approved pavilion upgrade for existing worlds. Each has its own remaining compatibility and runtime checks. The pavilion does not yet retrofit the full dungeon, boss or encounter catalog.
 
@@ -41,6 +41,8 @@ The catalog expansion will be delivered in tested packs, with new abilities, upg
 
 Reweave's whole native field-feasibility class passes on `6c750309` and `5cea20d1`. The reviewed Circle XII player slice is now implemented: an old-save-accessible Ebb Ledger lesson for a Low Tide holder, one 40-base-mana Harm field with shared rest, and one warned disc-to-lane conversion that preserves expiry, remaining beats and the original target budget. Its complete native player class passes on `3f8b54e1`, including real lesson/editor/rebound-key use and reconnect/respawn checks. Full restart, broader multiplayer and visual acceptance remain required; this counts as one new capability.
 
+The next isolated mage slice is **Excise at Circle XVI**: a retrievable Rootbound lesson and a paid, interruptible commitment to remove one hostile deployed Zone emitter. The planned contract preserves sibling fields and previously inflicted poison or other aftereffects. It is being authored and reviewed separately; it is not yet integrated or usable in this checkpoint.
+
 ## Priority 4: expand Aura movement and sword expression
 
 - Add learned footwork, evasion, gap closing, stance choices, parry follow-ups, spell-cut counters and aerial options connected to sword styles.
@@ -50,7 +52,7 @@ Reweave's whole native field-feasibility class passes on `6c750309` and `5cea20d
 
 New movements must change positioning decisions without replacing every dodge, cover choice or punish window with unlimited mobility.
 
-Stone Hinge's native damage/impulse precursor passes on `5cea20d1`. Its proposed melee knockback redirect must preserve actual damage, vertical physics and ordinary knockback on refusal. Independent review rejects the first server-move/velocity-packet approach because it cannot synchronize the already-moved position to the owning client. A bounded native negative control and a revised movement protocol are next; it remains unavailable as an ordinary form.
+Stone Hinge's native damage/impulse precursor passes on `5cea20d1`. Its proposed melee knockback redirect must preserve actual damage, vertical physics and ordinary knockback on refusal. Independent review rejects the first server-move/velocity-packet approach because it cannot synchronize the already-moved position to the owning client. A genuine-owner negative control on `0aed34e6` confirms zero owner lateral movement and loss of the server-only offset. A separate, reviewed velocity-deflection comparison preserves the native impulse magnitude, Y and packet dispatch; its owner, peer, latency and ordinary paid-form acceptance remain separate gates. It remains unavailable as an ordinary form.
 
 ## Priority 5: bosses with large, distinct repertoires
 
