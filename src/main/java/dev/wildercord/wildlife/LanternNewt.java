@@ -31,7 +31,14 @@ public final class LanternNewt extends PathfinderMob {
  public boolean resting() {return entityData.get(RESTING);}
  public long refugeReady() {return refugeReady;}
 	public LanternNewt(EntityType<? extends LanternNewt> type,Level level) {
-		super(type,level);moveControl=new SmoothSwimmingMoveControl<>(this,85,10,.7F,.65F,true);
+		super(type,level);moveControl=new SmoothSwimmingMoveControl<>(this,85,10,.7F,.65F,false) {
+			@Override public void tick() {
+				// Preserve vanilla buoyancy outside a live refuge route. During refuge
+				// turns its upward impulse can overpower native downward steering.
+				if(isInWater() && !(getNavigation() instanceof NewtPathNavigation n && n.followingRefuge()))setDeltaMovement(getDeltaMovement().add(0,.005,0));
+				super.tick();
+			}
+		};
 		lookControl=new net.minecraft.world.entity.ai.control.LookControl(this) {
 			private boolean swimmingToRefuge() {return getNavigation() instanceof NewtPathNavigation n && n.followingRefuge();}
 			// Move control builds its swimming pitch over several ticks. The ordinary

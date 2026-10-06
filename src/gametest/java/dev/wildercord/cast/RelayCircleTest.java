@@ -48,7 +48,9 @@ public final class RelayCircleTest implements FabricClientGameTest {
 	}
 
 	@Override public void runTest(ClientGameTestContext context) {
+		dev.wildercord.gametest.NativeSingleplayerCloseChecks.verify(context);
 		RelayLessonChecks.run(context);
+		System.out.println("WILDERCORD_NATIVE_SINGLEPLAYER_CLOSE relayLessonAndSocketReconnect=true");
 		RelayInheritedChecks.run(context);
 		RelayMasteryChecks.run(context);
 		RelayWorldContextChecks.run(context);

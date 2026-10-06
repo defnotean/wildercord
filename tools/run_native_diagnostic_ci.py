@@ -86,7 +86,13 @@ SEEDS = {
 CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_catalog.json",
                 "src/gametest/resources/fabric.mod.json", "build.gradle", "gradle.properties",
                 "gradle/wrapper/gradle-wrapper.properties", "tools/run_native_diagnostic_ci.py",
-                "tools/run_client_ci.py", "tools/client_suites.py", "tools/native_ci_diagnostics.py")
+                "tools/run_client_ci.py", "tools/client_suites.py", "tools/native_ci_diagnostics.py",
+                "src/gametest/java/dev/wildercord/gametest/NativeHaltHandshake.java",
+                "src/gametest/java/dev/wildercord/gametest/NativeSingleplayerClose.java",
+                "src/gametest/java/dev/wildercord/gametest/mixin/NativeClientPhaseAccess.java",
+                "src/gametest/java/dev/wildercord/gametest/mixin/NativeIntegratedServerHaltMixin.java",
+                "src/gametest/java/dev/wildercord/gametest/mixin/NativeSingleplayerCloseScopeMixin.java",
+                "src/gametest/resources/native-singleplayer-close-gametest.mixins.json")
 
 
 # Include every new proof helper and exact test-only instrumentation used by this case.

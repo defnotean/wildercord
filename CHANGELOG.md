@@ -4,9 +4,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Keep Fabric's client test phase pump participating while a real singleplayer close awaits its native server shutdown task. The repair is confined to the GameTest mod; paused/unpaused save-close-reopen and Relay reconnect remain required native acceptance gates.
+
 - Add the Archive’s Relay Circle lesson at active Heart Circle VIII: one paid remote focus, a fresh second cast-key press, a warned ray, and persistent three-page lore/practice guidance. The initial shape accepts only Relay with Harm, Frost or Shock.
 
 ### Masters of Tomorrow, development foundation
+
+- Keep native neutral buoyancy only while a Lantern Newt follows a waterlogged refuge route, preventing upward drift during tight turns; ordinary swimming, speed, steering and real collisions remain unchanged. Native arrival and transition regression execution is pending.
 
 - Add isolated Stone Fault March candidate ID 10: three fixed advancing ground bands, one attempted hit per participant, permanent cover/support truncation, lateral and inward spent-ground counters, and original Classic/articulated sword choreography. Its three native suites and manual visual acceptance remain pending; the established attack count remains nine.
 

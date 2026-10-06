@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.level.GameType;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -98,6 +100,7 @@ public final class RimehareHopChecks {
 		world.getServer().runOnServer(server -> {
 			route(hare, new Vec3(.5, 100.5, -12.5));
 			Path path = hare.getNavigation().getPath();
+			hare.observeCompletion(path);
 			check(hare.getNavigation().getClass() == GroundPathNavigation.class,
 				"Rimehare must retain unmodified vanilla ground navigation");
 			boolean detoursAroundPillar = false;
@@ -120,6 +123,7 @@ public final class RimehareHopChecks {
 		}
 		context.waitTicks(20);
 		world.getServer().runOnServer(server -> {
+			hare.printCompletionReceipt();
 			check(hare.getNavigation().isDone() && hare.position().distanceTo(new Vec3(.5, 100.5, -12.5)) < 1.5,
 				"Native path must finish around the wall, hazard and half-height footing: " + hare.receipt());
 			check(hare.onGround() && Math.abs(hare.getY() - 100.5) < .001
@@ -250,6 +254,13 @@ public final class RimehareHopChecks {
 		private int observedStoppedTicks, acceleratedStoppedTicks;
 		private boolean boundInFlight, airborne;
 		private float previousYaw;
+		private Path observedRoute, pathBeforeAi;
+		private boolean pathDoneBeforeAi;
+		private int completionTick = -1, completionDropped, completionErrors;
+		private String admittedRoute, completionError;
+		private java.lang.reflect.Field moveOperation;
+		private final ArrayDeque<String> completionLeadIn = new ArrayDeque<>();
+		private final List<String> completionRows = new ArrayList<>();
 
 		private ObservedHare(ServerLevel level) {
 			super(Wildlife.RIMEHARE, level);
@@ -262,6 +273,11 @@ public final class RimehareHopChecks {
 
 		@Override
 		public void aiStep() {
+			if (observedRoute != null) {
+				pathBeforeAi = getNavigation().getPath();
+				pathDoneBeforeAi = pathBeforeAi == null || pathBeforeAi.isDone();
+				completionSample("before-ai-step");
+			}
 			boolean wasGrounded = onGround();
 			Vec3 positionBefore = position();
 			double speedBefore = getDeltaMovement().horizontalDistanceSqr();
@@ -289,6 +305,83 @@ public final class RimehareHopChecks {
 				boundInFlight = false;
 				airborne = false;
 			}
+			completionSample("after-ai-step");
+		}
+
+		@Override
+		protected void customServerAiStep(ServerLevel level) {
+			// Vanilla calls this after navigation and before move/jump controls and travel.
+			// Observe the retained path's first actual consumption at that exact boundary.
+			if (observedRoute != null) {
+				Path path = getNavigation().getPath();
+				if (completionTick < 0 && path == observedRoute && path == pathBeforeAi && !pathDoneBeforeAi && path.isDone()) {
+					completionTick = tickCount;
+					completionRows.addAll(completionLeadIn);
+					completionLeadIn.clear();
+				}
+				completionSample("after-navigation-before-controls");
+			}
+			super.customServerAiStep(level);
+		}
+
+		private void observeCompletion(Path path) {
+			observedRoute = path;
+			try {
+				moveOperation = MoveControl.class.getDeclaredField("operation");
+				moveOperation.setAccessible(true);
+			} catch (ReflectiveOperationException | RuntimeException failure) {
+				moveOperation = null;
+				completionErrors++;
+				completionError = failure.toString();
+			}
+			var nodes = new ArrayList<String>();
+			for (int i = 0; i < Math.min(path.getNodeCount(), 64); i++) {
+				var node = path.getNode(i);
+				nodes.add(node + "/" + node.type);
+			}
+			admittedRoute = "canReach=" + path.canReach() + ", target=" + path.getTarget() + ", end=" + path.getEndNode()
+				+ ", nodes=" + nodes + ", omittedNodes=" + Math.max(0, path.getNodeCount() - nodes.size());
+			completionSample("route-admitted");
+		}
+
+		/** Bounded reads only: retain 36 lead-in rows and at most 132 rows once completion occurs. */
+		private void completionSample(String phase) {
+			if (observedRoute == null) return;
+			try {
+				Path path = getNavigation().getPath();
+				var control = getMoveControl();
+				String row = "phase=" + phase + ", tick=" + tickCount + ", position=" + position()
+					+ ", velocity=" + getDeltaMovement() + ", grounded=" + onGround() + ", yaw=" + getYRot()
+					+ ", speed=" + getSpeed() + ", input=" + xxa + "/" + zza + ", operation="
+					+ (moveOperation == null ? "unavailable" : moveOperation.get(control))
+					+ ", wanted=" + control.getWantedX() + "/" + control.getWantedY() + "/" + control.getWantedZ()
+					+ ", modifier=" + control.getSpeedModifier() + ", hops=" + hops.size()
+					+ ", sameRoute=" + (path == observedRoute) + ", path=" + path
+					+ (path == null ? "" : ", node=" + path.getNextNodeIndex() + "/" + path.getNodeCount()
+						+ ", done=" + path.isDone() + ", canReach=" + path.canReach()
+						+ ", next=" + (path.isDone() ? "none" : path.getNextNodePos())
+						+ ", target=" + path.getTarget() + ", end=" + path.getEndNode())
+					+ ", tolerance=" + getNavigation().getMaxDistanceToWaypoint() + "/" + getNavigation().getMaxVerticalDistanceToWaypoint();
+				if (completionTick < 0) {
+					if (completionLeadIn.size() == 36) completionLeadIn.removeFirst();
+					completionLeadIn.addLast(row);
+				} else if (completionRows.size() < 132) {
+					completionRows.add(row);
+				} else {
+					completionDropped++;
+				}
+			} catch (ReflectiveOperationException | RuntimeException failure) {
+				completionErrors++;
+				completionError = failure.toString();
+			}
+		}
+
+		private void printCompletionReceipt() {
+			completionSample("settle-assertion");
+			System.out.println("RIMEHARE_COMPLETION firstCompletionTick=" + completionTick + ", " + admittedRoute
+				+ ", dropped=" + completionDropped + ", observationErrors=" + completionErrors + ", lastError=" + completionError);
+			for (String row : completionTick < 0 ? completionLeadIn : completionRows)
+				System.out.println("RIMEHARE_COMPLETION " + row);
 		}
 
 		@Override

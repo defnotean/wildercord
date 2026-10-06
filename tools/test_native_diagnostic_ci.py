@@ -409,6 +409,13 @@ class EvidenceTests(unittest.TestCase):
         for source in (suites.select_entries(), masters):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
+    def test_native_close_handshake_is_bound_for_every_diagnostic(self):
+        for name in ("NativeHaltHandshake.java", "NativeSingleplayerClose.java",
+                     "mixin/NativeClientPhaseAccess.java", "mixin/NativeIntegratedServerHaltMixin.java",
+                     "mixin/NativeSingleplayerCloseScopeMixin.java"):
+            self.assertIn("src/gametest/java/dev/wildercord/gametest/" + name, diagnostic.CONFIG_FILES)
+        self.assertIn("src/gametest/resources/native-singleplayer-close-gametest.mixins.json", diagnostic.CONFIG_FILES)
+
     def test_excise_cut_boundary_instrumentation_is_bound_to_source(self):
         for path in ("src/gametest/java/dev/wildercord/gametest/mixin/ExciseCutProbeMixin.java",
                      "src/gametest/resources/excise-cut-gametest.mixins.json"):

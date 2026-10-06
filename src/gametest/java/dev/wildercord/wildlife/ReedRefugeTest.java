@@ -22,7 +22,7 @@ import java.util.*;
 /** Actual client construction, amphibian routes, finite rests, wake conditions and saved habitat. */
 public final class ReedRefugeTest implements FabricClientGameTest {
  private static final BlockPos ROOF=new BlockPos(3,101,3),DRY=new BlockPos(-4,102,-1);
- private static LanternNewt first,second,third,surfaceVisitor,routeVisitor,walker,stuckVisitor;private static UUID saved;private static long firstRest,secondRest,savedRest;
+ private static LanternNewt first,second,third,surfaceVisitor,ordinarySwimmer,routeVisitor,walker,stuckVisitor;private static UUID saved;private static long firstRest,secondRest,savedRest;
  @Override public void runTest(ClientGameTestContext c) {
   EcologyReturnProbeChecks.verify();
   TestWorldSave save;
@@ -120,10 +120,21 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    // Separate native control contract: this actor is discarded before the real
    // approach witness. No controller calls are injected into natural arrival.
    check(surfaceVisitor.getNavigation().moveTo(path,.7),"Native surface path is accepted for the look-control contract");
+   surfaceVisitor.getNavigation().tick();
+   check(((NewtPathNavigation)surfaceVisitor.getNavigation()).followingRefuge(),"Actual surface-refuge route owns swimming control");
+   checkNativeSwimControl(surfaceVisitor,false,"active surface-refuge route");
    surfaceVisitor.setXRot(30);surfaceVisitor.getLookControl().setLookAt(surfaceVisitor.getX()+2,surfaceVisitor.getEyeY()+1,surfaceVisitor.getZ()+2,10,20);surfaceVisitor.getLookControl().tick();
    check(surfaceVisitor.getXRot()==30,"Active refuge navigation retains swimming pitch despite an old look target");
-   surfaceVisitor.getNavigation().stop();checkOrdinaryLook(surfaceVisitor,"explicit refuge cancellation");
-   surfaceVisitor.discard();routeVisitor=spawn(s,.5,3.5);
+   surfaceVisitor.getNavigation().stop();checkOrdinaryLook(surfaceVisitor,"explicit refuge cancellation");checkNativeSwimControl(surfaceVisitor,true,"cancelled surface-refuge route");
+   surfaceVisitor.discard();ordinarySwimmer=spawn(s,.5,3.5);
+  });c.waitTicks(1);
+  w.getServer().runOnServer(s -> {
+   var ordinaryPath=ordinarySwimmer.getNavigation().createPath(new BlockPos(1,101,3),0);
+   check(ordinarySwimmer.isInWater() && ordinaryPath!=null && ordinaryPath.canReach() && ordinarySwimmer.getNavigation().moveTo(ordinaryPath,.7),"Native ordinary-water route starts in the original pool");
+   ordinarySwimmer.getNavigation().tick();
+   check(!ordinarySwimmer.getNavigation().isDone() && !((NewtPathNavigation)ordinarySwimmer.getNavigation()).followingRefuge(),"Ordinary swimming remains outside refuge control");
+   checkNativeSwimControl(ordinarySwimmer,true,"ordinary active swimming");
+   ordinarySwimmer.discard();routeVisitor=spawn(s,.5,3.5);
   });
   boolean approaching=false;
   for(int i=0;i<500;i++) {c.waitTicks(1);if(w.getServer().computeOnServer(s -> {var path=routeVisitor.getNavigation().getPath();return path!=null && path.getTarget().equals(ROOF) && path.getNextNodeIndex()==path.getNodeCount()-1 && !routeVisitor.beneathRefuge(ROOF);})) {approaching=true;break;}}
@@ -148,14 +159,14 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    // The bounded vanilla search also returns a partial route here. Compare its
    // complete result, then prove actual dry walking separately with TemptGoal.
    check(sameNativeRoute(expected,actual,dry),"After a refuge query, native and custom dry searches return identical target, nodes, costs, cursor and reachability, including partial paths");
-   routeVisitor.setNoAi(true);checkOrdinaryLook(routeVisitor,"removed refuge");
+   routeVisitor.setNoAi(true);checkOrdinaryLook(routeVisitor,"removed refuge");checkNativeSwimControl(routeVisitor,true,"removed refuge");
    walker=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);walker.snapTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
    p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<Relative>of(),180,0,false);
   });
   boolean tempted=false;
   for(int i=0;i<100;i++) {c.waitTicks(2);if(w.getServer().computeOnServer(s -> walker.getZ()>3.5 && !walker.isInWater() && walker.getGoalSelector().getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal() instanceof net.minecraft.world.entity.ai.goal.TemptGoal))) {tempted=true;break;}}
   check(tempted,"An ordinary TemptGoal still walks the newt across dry land using native amphibious navigation");
-  w.getServer().runOnServer(s -> p(s).setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY));
+  w.getServer().runOnServer(s -> {walker.setNoAi(true);checkNativeSwimControl(walker,true,"actual dry-land TemptGoal");p(s).setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);});
   verifyStuckLookRestoration(c,w);
  }
 
@@ -210,6 +221,22 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   check(n.getXRot()==expected,"Default pitch reset and target-looking behavior resume after "+after);
  }
 
+ /** Compares one control tick only on disposable/retired actors, restoring all inputs afterward. */
+ private static void checkNativeSwimControl(LanternNewt n,boolean buoyancy,String scenario) {
+  var actual=n.getMoveControl();var reference=new net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl<>(n,85,10,.7F,.65F,buoyancy);
+  if(actual.hasWanted())reference.setWantedPosition(actual.getWantedX(),actual.getWantedY(),actual.getWantedZ(),actual.getSpeedModifier());
+  var initial=SwimControlState.capture(n);
+  try {
+   reference.tick();var expected=SwimControlState.capture(n);initial.restore(n);
+   actual.tick();var observed=SwimControlState.capture(n);
+   check(observed.equals(expected),"Swim control matches native buoyancy="+buoyancy+" for "+scenario+": expected="+expected+", actual="+observed);
+  }finally{initial.restore(n);}
+ }
+ private record SwimControlState(Vec3 position,Vec3 velocity,float speed,float sideways,float vertical,float forward,float pitch,float yaw,float headYaw,float bodyYaw) {
+  static SwimControlState capture(LanternNewt n) {return new SwimControlState(n.position(),n.getDeltaMovement(),n.getSpeed(),n.xxa,n.yya,n.zza,n.getXRot(),n.getYRot(),n.yHeadRot,n.yBodyRot);}
+  void restore(LanternNewt n) {n.setDeltaMovement(velocity);n.setSpeed(speed);n.xxa=sideways;n.yya=vertical;n.zza=forward;n.setXRot(pitch);n.setYRot(yaw);n.yHeadRot=headYaw;n.yBodyRot=bodyYaw;}
+ }
+
  private static boolean shelterRunning(LanternNewt n) {return n.getGoalSelector().getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter"));}
  private static int shelterTicksLeft(LanternNewt n) {
   var goal=n.getGoalSelector().getAvailableGoals().stream().filter(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter")).findFirst().orElseThrow().getGoal();
@@ -241,7 +268,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    check(state[2]>=journey[1] && state[2]<=journey[1]+2,"Blocked Shelter first stops when its original journey counter expires: remaining="+journey[1]+", observed age="+state[2]);expired=true;break;
   }}
   check(stuck && expired,"Native stuck detection and the unchanged finite Shelter journey both end the blocked approach");
-  w.getServer().runOnServer(s -> {check(!stuckVisitor.resting() && stuckVisitor.refugeReady()==0,"Blocked approach never counts as arrival");stuckVisitor.setNoAi(true);checkOrdinaryLook(stuckVisitor,"native stuck detection and journey expiry");});
+  w.getServer().runOnServer(s -> {check(!stuckVisitor.resting() && stuckVisitor.refugeReady()==0,"Blocked approach never counts as arrival");stuckVisitor.setNoAi(true);checkOrdinaryLook(stuckVisitor,"native stuck detection and journey expiry");checkNativeSwimControl(stuckVisitor,true,"native stuck detection and journey expiry");});
  }
 
  private static void feed(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> n) {int id=w.getServer().computeOnServer(s -> n.get().getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);});}

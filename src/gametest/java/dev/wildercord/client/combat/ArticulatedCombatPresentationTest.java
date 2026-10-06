@@ -298,7 +298,7 @@ public final class ArticulatedCombatPresentationTest implements FabricClientGame
 			masterFallback(model, masterState(renderer, master, move, tell + 1 + recovery, tell, recovery, left),
 				"Expired accepted school timeline cannot leave the segmented body visible");
 			model.setupAnim(masterState(renderer, master, move, tell, tell, recovery, left));
-			masterFallback(model, masterState(renderer, master, 10, tell, tell, recovery, left),
+			masterFallback(model, masterState(renderer, master, dev.wildercord.aura.world.MastersRules.Move.values().length + 1, tell, tell, recovery, left),
 				"An unsupported future Master form keeps the complete original renderer");
 			if (move == 7) galeLanding(renderer, master, left);
 		}

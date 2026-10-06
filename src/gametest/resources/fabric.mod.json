@@ -324,6 +324,7 @@
     "masters-capture-gametest.mixins.json",
     "masters-lifecycle-gametest.mixins.json",
     "native-diagnostics-gametest.mixins.json",
+    "native-singleplayer-close-gametest.mixins.json",
     "bolt-step-gametest.mixins.json",
     "moonreed-source-gametest.mixins.json",
     "wetland-generation-gametest.mixins.json",
