@@ -165,11 +165,11 @@
   },
   "diagnostic-movement-foundations": {
     "purpose": "diagnostic",
-    "description": "Diagnostic only: complete native newt refuge lifecycle then the fifteen-case connected-owner velocity comparison. Stone Hinge teaching, payment, peer and latency remain unproven; no release acceptance.",
+    "description": "Diagnostic only: the complete fifteen-case connected-owner velocity comparison followed by the whole native newt refuge lifecycle. Both must return successfully; Stone Hinge teaching, payment, peer and latency remain unproven. No release acceptance.",
     "expectedCount": 2,
     "entries": [
-      "dev.wildercord.wildlife.ReedRefugeTest",
-      "dev.wildercord.aura.StoneHingeVelocityComparisonTest"
+      "dev.wildercord.aura.StoneHingeVelocityComparisonTest",
+      "dev.wildercord.wildlife.ReedRefugeTest"
     ]
   }
 }

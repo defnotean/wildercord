@@ -135,8 +135,12 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   });}
   w.getServer().runOnServer(s -> {
    var dry=new BlockPos(-8,102,3);
-   var expected=new net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation(routeVisitor,s.overworld()).createPath(dry,0);
+   var reference=new net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation(routeVisitor,s.overworld());
+   dryRouteReceipt("before",routeVisitor,dry,reference,null,null);
+   var expected=reference.createPath(dry,0);
+   dryRouteReceipt("after_reference",routeVisitor,dry,reference,expected,null);
    var actual=routeVisitor.getNavigation().createPath(dry,0);
+   dryRouteReceipt("after_actual",routeVisitor,dry,reference,expected,actual);
    check(expected!=null && expected.canReach() && actual!=null && actual.canReach() && actual.sameAs(expected),"After a refuge query, an ordinary dry destination retains the native amphibious route");
    routeVisitor.setNoAi(true);checkOrdinaryLook(routeVisitor,"removed refuge");
    walker=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);walker.snapTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
@@ -147,6 +151,32 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   check(tempted,"An ordinary TemptGoal still walks the newt across dry land using native amphibious navigation");
   w.getServer().runOnServer(s -> p(s).setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY));
   verifyStuckLookRestoration(c,w);
+ }
+
+ /** Reads the two existing query results and their original configuration; never requests another path. */
+ private static void dryRouteReceipt(String phase,LanternNewt n,BlockPos target,net.minecraft.world.entity.ai.navigation.PathNavigation reference,net.minecraft.world.level.pathfinder.Path expected,net.minecraft.world.level.pathfinder.Path actual) {
+  try {
+  var box=n.getBoundingBox();var rounded=BlockPos.containing(box.minX,box.minY+.5,box.minZ);var feet=BlockPos.containing(box.minX,box.minY,box.minZ);
+  System.out.println("NEWT_DRY_ROUTE_QUERY phase="+phase+" "+EcologyReturnProbe.body(n)
+   +" target="+target+" targetState="+n.level().getBlockState(target)+" targetFluid="+n.level().getFluidState(target)+" targetBelow="+n.level().getBlockState(target.below())
+   +" targetLoaded="+n.level().hasChunkAt(target)+" roundedStart="+rounded+" roundedState="+n.level().getBlockState(rounded)+" roundedFluid="+n.level().getFluidState(rounded)
+   +" feetStart="+feet+" feetState="+n.level().getBlockState(feet)+" feetFluid="+n.level().getFluidState(feet)
+   +" followRange="+n.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.FOLLOW_RANGE)
+   +" waterMalus="+n.getPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER)+" borderMalus="+n.getPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER_BORDER)+" walkableMalus="+n.getPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WALKABLE)
+   +" referenceNavigation="+navigationReceipt(reference)+" actualNavigation="+navigationReceipt(n.getNavigation())
+   +" aquaticSearch="+observedField(n.getNavigation(),"aquaticSearch")+" refugeRoute="+observedField(n.getNavigation(),"refugeRoute")
+   +" expected="+EcologyReturnProbe.path(expected)+" actual="+EcologyReturnProbe.path(actual)
+   +" decisions={expectedPresent="+(expected!=null)+",expectedReachable="+(expected!=null&&expected.canReach())+",actualPresent="+(actual!=null)+",actualReachable="+(actual!=null&&actual.canReach())+",sameNodes="+(expected!=null&&actual!=null&&actual.sameAs(expected))+"}");
+  }catch(Throwable failure){System.out.println("NEWT_DRY_ROUTE_QUERY phase="+phase+" observationError="+failure);}
+ }
+ private static String navigationReceipt(net.minecraft.world.entity.ai.navigation.PathNavigation navigation) {
+  var evaluator=navigation.getNodeEvaluator();var finder=observedField(navigation,"pathFinder");
+  return "{type="+navigation.getClass().getName()+",target="+navigation.getTargetPos()+",requiredPathLength="+observedField(navigation,"requiredPathLength")+",maxVisitedMultiplier="+observedField(navigation,"maxVisitedNodesMultiplier")+",maxVisitedNodes="+observedField(finder,"maxVisitedNodes")
+   +",evaluator="+evaluator.getClass().getName()+",canFloat="+evaluator.canFloat()+",canPassDoors="+evaluator.canPassDoors()+",canOpenDoors="+evaluator.canOpenDoors()+",canWalkOverFences="+evaluator.canWalkOverFences()+",contextReleased="+(observedField(evaluator,"currentContext")==null)+",path="+EcologyReturnProbe.path(navigation.getPath())+"}";
+ }
+ private static Object observedField(Object target,String name) {
+  for(Class<?> type=target.getClass();type!=null;type=type.getSuperclass())try{var field=type.getDeclaredField(name);field.setAccessible(true);return field.get(target);}catch(NoSuchFieldException ignored){}catch(ReflectiveOperationException failure){throw new AssertionError("Cannot read native query field "+name,failure);}
+  throw new AssertionError("Missing native query field "+name);
  }
 
  /** Compares the real restored controller to vanilla on an actor retired from its movement case. */

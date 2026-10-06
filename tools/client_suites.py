@@ -21,8 +21,9 @@ STONE_OWNER_NEGATIVE_PREFIX = "STONE_HINGE_OWNER_NEGATIVE "
 STONE_OWNER_NEGATIVE_RESULT = ("expected_incompatibility=observed movement_gate=NOT_PROVEN "
                                "gameplay_enabled=false conditional_shared_rest_ticks=120")
 
-MOVEMENT_FOUNDATION_ENTRIES = ("dev.wildercord.wildlife.ReedRefugeTest",
-                               "dev.wildercord.aura.StoneHingeVelocityComparisonTest")
+STONE_VELOCITY_ENTRY = "dev.wildercord.aura.StoneHingeVelocityComparisonTest"
+REED_REFUGE_ENTRY = "dev.wildercord.wildlife.ReedRefugeTest"
+MOVEMENT_FOUNDATION_ENTRIES = (STONE_VELOCITY_ENTRY, REED_REFUGE_ENTRY)
 STONE_VELOCITY_PREFIX = "STONE_HINGE_VELOCITY_COMPARISON "
 STONE_VELOCITY_RESULT = ("owner_cases=15 owner_gate=observed peer_gate=NOT_PROVEN latency_gate=NOT_PROVEN "
                          "admission_gate=NOT_PROVEN movement_gate=NOT_PROVEN gameplay_enabled=false "

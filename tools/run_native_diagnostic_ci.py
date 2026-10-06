@@ -19,7 +19,8 @@ import sys
 from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIES,
                            progression_completion, reweave_player_completion, REWEAVE_PLAYER_ENTRIES,
                            stone_owner_negative_completion, STONE_OWNER_NEGATIVE_ENTRIES,
-                           movement_foundations_completion, MOVEMENT_FOUNDATION_ENTRIES, select_entries, selection_issues)
+                           movement_foundations_completion, MOVEMENT_FOUNDATION_ENTRIES, STONE_VELOCITY_ENTRY, REED_REFUGE_ENTRY,
+                           select_entries, selection_issues)
 import run_client_ci
 from native_ci_diagnostics import SCENE_PREFIX
 
@@ -47,8 +48,8 @@ FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_D
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
-    "movement-foundations": {MOVEMENT_FOUNDATION_ENTRIES[0]: None,
-                             MOVEMENT_FOUNDATION_ENTRIES[0] + "#reopen": None, MOVEMENT_FOUNDATION_ENTRIES[1]: None},
+    "movement-foundations": {STONE_VELOCITY_ENTRY: None, REED_REFUGE_ENTRY: None,
+                             REED_REFUGE_ENTRY + "#reopen": None},
     "stone-hinge-owner-negative": {STONE_OWNER_NEGATIVE_ENTRIES[0] + "#" + name: None for name in
                                    ("ordinary-native-hit-control", "server-step-plus-motion-negative")},
     "reweave-player": {"dev.wildercord.cast.ReweavePlayableTest#lesson": None,

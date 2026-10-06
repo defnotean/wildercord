@@ -468,9 +468,9 @@ class EvidenceTests(unittest.TestCase):
     def test_movement_foundations_requires_both_whole_classes_and_fifteen_case_owner_result(self):
         group = "diagnostic-movement-foundations"; entries = list(diagnostic.MOVEMENT_FOUNDATION_ENTRIES)
         self.assertEqual(suites.select_entries(suite=group), {"kind": "diagnostic", "name": group, "count": 2, "entries": entries})
-        self.assertEqual(set(diagnostic.SEEDS["movement-foundations"]), {entries[0], entries[0] + "#reopen", entries[1]})
+        self.assertEqual(set(diagnostic.SEEDS["movement-foundations"]), {diagnostic.STONE_VELOCITY_ENTRY, diagnostic.REED_REFUGE_ENTRY, diagnostic.REED_REFUGE_ENTRY + "#reopen"})
         for release in ("masters", "articulated"):
-            self.assertNotIn(entries[1], suites.select_entries(suite=release)["entries"])
+            self.assertNotIn(diagnostic.STONE_VELOCITY_ENTRY, suites.select_entries(suite=release)["entries"])
         data = self.fixture("movement-foundations"); good = self.log(data)
         result = self.collect(data, good)
         self.assertEqual(result["completedEntries"], entries)
@@ -478,6 +478,8 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(result[key], "NOT_PROVEN")
         self.assertIs(result["gameplayEnabled"], False)
         self.assert_invalid_evidence_never_passes("movement-foundations")
+        old_order = copy.deepcopy(data); old_order["selection"]["entries"].reverse()
+        self.assertEqual(self.collect(data, self.log(old_order))["diagnosticOutcome"], "unverified")
         for invalid in (good.replace("owner_cases=15", "owner_cases=14"),
                         good.replace("movement_gate=NOT_PROVEN", "movement_gate=PROVEN"),
                         good.replace("peer_gate=NOT_PROVEN", "peer_gate=observed"),
@@ -563,7 +565,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(diagnostic.CASES["progression-feasibility"], "diagnostic-progression-feasibility")
         self.assertEqual(suites.select_entries(suite="diagnostic-progression-feasibility"), {
             "kind": "diagnostic", "name": "diagnostic-progression-feasibility", "count": 2, "entries": entries})
-        self.assertEqual(suites.select_entries()["entries"][-5:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES, diagnostic.MOVEMENT_FOUNDATION_ENTRIES[1]])
+        self.assertEqual(suites.select_entries()["entries"][-5:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES, diagnostic.STONE_VELOCITY_ENTRY])
         for name, count in (("masters", 39), ("articulated", 6)):
             selection = suites.select_entries(suite=name)
             self.assertEqual(selection["count"], count)
