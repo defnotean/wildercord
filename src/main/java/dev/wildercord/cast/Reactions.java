@@ -101,6 +101,8 @@ public final class Reactions {
 		boolean fresh = !has(target, mark);
 		long until = target.level().getGameTime() + ticks;
 		MARKS.computeIfAbsent(target.getUUID(), k -> new EnumMap<>(Mark.class)).merge(mark, until, Math::max);
+		if ((mark == Mark.FROZEN || mark == Mark.AIRBORNE) && has(target, mark) && target instanceof net.minecraft.server.level.ServerPlayer player)
+			dev.wildercord.aura.MasterForms.cancel(player);
 		// Marks are seen: a halo in the mark's colour while it lasts (see MarkHalos).
 		dev.wildercord.cast.feel.MarkHalos.marked(target, mark, fresh);
 		// Whatever is pulled (Pull, Gravity Well, a vortex, a rift...) is dragged out of the sky: a soaring player loses the wind.

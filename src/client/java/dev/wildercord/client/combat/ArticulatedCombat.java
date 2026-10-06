@@ -78,6 +78,8 @@ public final class ArticulatedCombat {
 	public static void extract(Avatar avatar, AvatarRenderState state, float partial) {
 		state.setData(FRAME, null);
 		if (!enabled()) return;
+		var movement = state.getData(dev.wildercord.client.MastersArtPose.FRAME);
+		if (movement != null && movement.move() <= -2) return;
 		var timeline = MastersArtsClient.timeline(avatar);
 		boolean left = avatar.getMainArm() == HumanoidArm.LEFT;
 		if (timeline == null) {

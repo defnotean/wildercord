@@ -191,7 +191,20 @@ public final class RelayLessonChecks {
 			context.waitTicks(3);
 			retrieve(context);
 			send(context, second, 1);
+			long expired = nonce(context);
+			world.getServer().runOnServer(server -> {
+				var level = server.overworld();
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(level.getGameTime() + MasterStudyRules.READING_TICKS + 1);
+			});
+			context.waitTicks(3);
+			checkNotReading(context, "A real timed-out reading retires without crashing its server tick");
+			send(context, expired, 1); send(context, expired, 2); send(context, expired, 3);
+			world.getServer().runOnServer(server -> check(MasterStudies.hasRelayLesson(player(server))
+				&& !MasterStudies.knowsRelay(player(server)) && !Spellbooks.knows(player(server), Runes.RELAY.id()),
+				"Expiry retains the copied receipt, and stale page packets cannot learn from a retired session"));
+			retrieve(context);
 			long completed = nonce(context);
+			check(completed != expired, "After expiry, real Grimoire input opens a fresh reading nonce");
 			context.takeScreenshot(TestScreenshotOptions.of("relay_archive_history").disableCounterPrefix());
 			advance(context);
 			assertPage(context, 1, true);

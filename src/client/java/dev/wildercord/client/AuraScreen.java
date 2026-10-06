@@ -45,6 +45,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 
 	private final Screen parent;
  @Override public Screen cordEditorParent(){return parent;}
+	private net.minecraft.client.gui.components.Button masterFormsEntry;
 	/** Whether the list shows the sword strings' arts instead of the techniques (kept while the game runs). */
 	private static boolean arts;
 	/** Whether it shows the Way tree instead (kept while the game runs; wins over {@link #arts}). */
@@ -94,6 +95,13 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		page = new TechniquePage(minecraft, font);
 		bladePage = new BladePage(minecraft, font);
 		lineagePage = new LineagePage(minecraft, font);
+		float s = scale();
+		Component forms = Component.translatable("screen.wildercord.master_forms.title");
+		// Register the existing label as a native control. Its established painting remains below.
+		masterFormsEntry = addWidget(net.minecraft.client.gui.components.Button.builder(forms.copy().append(". ")
+			.append(Component.translatable("screen.wildercord.master_forms.open", MasterFormsClient.binding())),
+			ignored -> minecraft.gui.setScreen(new MasterFormsScreen(this)))
+			.bounds(left() + Math.round(13 * s), top() + Math.round(21 * s), Math.round((font.width(forms) + 4) * s), Math.max(1, Math.round(12 * s))).build());
 		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here (and the blade's).
 		minecraft.textInputManager().startTextInput(this);
 	}
@@ -111,6 +119,9 @@ public class AuraScreen extends Screen implements CordEditorParent {
 
 	@Override
 	public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {
+		if (masterFormsEntry != null && masterFormsEntry.isFocused()
+				&& (event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_RETURN || event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_NUMPADENTER
+					|| event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_SPACE)) return super.keyPressed(event);
 		if (bladeOpen() && bladePage.keyPressed(event)) {
 			return true;
 		}
@@ -122,6 +133,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 
 	@Override
 	public boolean charTyped(net.minecraft.client.input.CharacterEvent event) {
+		setFocused(null);
 		if (bladeOpen() && bladePage.charTyped(event)) {
 			return true;
 		}
@@ -189,6 +201,13 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		boolean mastersHover = inside(mx, my, mastersX - 2, 8, mastersWidth + 4, 12);
 		g.text(font, masters, mastersX, 10, mastersHover ? GOLD : DIM, true);
 		if (mastersHover) tooltip = MastersArtsClient.help();
+		Component forms = Component.translatable("screen.wildercord.master_forms.title");
+		g.text(font, forms, 15, 23, GOLD, true);
+		if (masterFormsEntry != null && masterFormsEntry.isFocused()) {
+			g.fill(13, 21, 17 + font.width(forms), 22, GOLD); g.fill(13, 32, 17 + font.width(forms), 33, GOLD);
+		}
+		if (inside(mx, my, 13, 21, font.width(forms) + 4, 12) || masterFormsEntry != null && masterFormsEntry.isFocused())
+			tooltip = List.of(Component.translatable("screen.wildercord.master_forms.open", MasterFormsClient.binding()));
 		g.pose().popMatrix();
 		if (tooltip != null) {
 			g.setTooltipForNextFrame(font, Tooltips.fit(font, tooltip, width, height), mouseX, mouseY);
@@ -201,6 +220,8 @@ public class AuraScreen extends Screen implements CordEditorParent {
 
 	@Override
 	public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+		if (masterFormsEntry != null && masterFormsEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event, doubleClick);
+		setFocused(null);
 		if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && tabsY >= 0) {
 			float s = scale();
 			int mx = (int) Math.floor((event.x() - left()) / s);

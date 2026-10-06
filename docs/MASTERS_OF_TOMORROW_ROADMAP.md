@@ -28,7 +28,7 @@ This is the next gameplay vertical slice alongside the stability work. Circle VI
 - Add bounded high-tier options with costs, limited preparation or equipment slots, commitment and recovery. Avoid filling later circles with only mana, regeneration and damage multipliers.
 - Test old-save progression, already-qualified players, respec/reset behavior where supported, party interactions and the lowest legitimate access route.
 
-The first authored player capabilities are **Relay Circle** and **Wall Turn**. Relay is integrated in this source checkpoint after independent review; its actual native acceptance remains pending. Wall Turn remains isolated in implementation and review. Relay gives an eligible Circle VIII Archivist a paid focus and a second deliberate cast input, with restricted spell grammar and two sightlines. Wall Turn gives a Sovereign with a recorded Gale clear one equipped movement form: an exposed wall brace, outward kick and real landing recovery. Each has an original retrievable lesson and must work for already-qualified characters without repeated progression. Neither has completed native gameplay acceptance. Relay source review has closed its paid ownership, inherited-effect budget and interrupted lesson-access findings. Wall Turn review continues on accessibility and combined movement/casting interactions.
+The first authored player capabilities are **Relay Circle** and **Wall Turn**. Both are integrated in this source checkpoint after independent source review; complete native acceptance remains pending. Relay gives an eligible Circle VIII Archivist a paid focus and a second deliberate cast input, with restricted spell grammar and two sightlines. Wall Turn gives a Sovereign with a recorded Gale clear one equipped movement form: an exposed wall brace, outward kick and real landing recovery. Each has an original retrievable lesson and must work for already-qualified characters without repeated progression. Source review covers their paid ownership, callback cancellation, rejected switching, accessibility and combined movement/casting boundaries. Wall Turn currently uses authored Classic body/hand poses with whole articulated fallback; its segmented joint palette and live presentation remain unfinished.
 
 ## Priority 3: expand magic through distinct uses
 
@@ -53,12 +53,12 @@ New movements must change positioning decisions without replacing every dodge, c
 The requested long-range goal is hundreds of genuinely different fighting moves and many legal combinations. It is not met. The current three-school union has eight named attack actions; each school can use six. School tuning variants, individual sub-hits and permutations do not increase that unique-action count.
 
 - Build an immutable attack catalog with stable IDs and explicit school, timing, resource, warning and animation contracts. The first passive catalog and compatibility layer are implemented with parity tests; live selection and execution do not use them yet.
-- Add bounded school-specific transition graphs, encounter-seeded variation and recent-move avoidance. Record accepted observations for deterministic replays; a seed alone cannot reproduce player behavior.
+- The first bounded school-specific graph and seeded planner are implemented and tested as inert helpers, including recent-move avoidance and accepted-action records. They have no live AI caller yet. Activate them only after native transition/recovery proof; a seed alone cannot reproduce player behavior.
 - Preserve complete recovery and punish windows between attacks. No graph may bypass a due guard, Aura cost, cooldown, terrain check or committed aim, and no boss reads a future player input.
 - Expand with small original packs whose attacks differ mechanically and visually, then broaden the repertoire after native counterplay and animation review.
 - Track unique authored attacks, variants, transition edges and observed combinations separately. Finite catalogs cannot guarantee that no long fight ever repeats a sequence.
 
-The first pack is being designed around the identities of Ember, Gale and Stone. Increasing health or recoloring the same swing is not a substitute for this goal.
+The first pack is being authored around the identities of Ember, Gale and Stone. An isolated Ember Kiln Ring candidate is under development, but it is not included in the eight-action count or accepted as a finished attack. Increasing health or recoloring the same swing is not a substitute for this goal.
 
 ## Priority 6: lore that changes what players discover and do
 

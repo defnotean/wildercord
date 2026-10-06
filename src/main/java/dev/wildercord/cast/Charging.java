@@ -126,9 +126,9 @@ public final class Charging {
 	}
 
 	public static void request(ServerPlayer player, int requested, boolean start) {
+		if (ActionAdmission.busy(player)) return;
 		if (RelayCircles.committed(player) || RelayCircles.contains(player, requested)
 			&& (start || !player.hasAttached(WildercordAttachments.CHARGE))) return;
-		if (RelayCircles.pending(player)) RelayCircles.cancel(player);
 		if (dev.wildercord.aura.MastersArts.committed(player)) return;
 		if (start) {
 			begin(player, requested);
@@ -251,8 +251,9 @@ public final class Charging {
 	public static boolean interrupt(ServerPlayer player) {
 		boolean relayInterrupted = RelayCircles.interrupt(player);
 		boolean artInterrupted = dev.wildercord.aura.MastersArts.cancel(player);
+		boolean formInterrupted = dev.wildercord.aura.MasterForms.cancel(player);
 		if (!player.hasAttached(WildercordAttachments.CHARGE)) {
-			return artInterrupted || relayInterrupted;
+			return artInterrupted || relayInterrupted || formInterrupted;
 		}
 		stop(player);
 		FIZZLED.add(player.getUUID());
@@ -262,6 +263,11 @@ public final class Charging {
 	}
 
 	private static void begin(ServerPlayer player, int requested) {
+		try (var admission = ActionAdmission.begin(player)) {
+			if (admission != null) begin(player, requested, admission);
+		}
+	}
+	private static void begin(ServerPlayer player, int requested, ActionAdmission admission) {
 		FIZZLED.remove(player.getUUID());
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null || !player.isAlive() || player.isSpectator() || player.hasAttached(WildercordAttachments.CHARGE) || CastLock.locked(player)) {
@@ -301,6 +307,9 @@ public final class Charging {
 		int full = fullTicks(player);
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		double cost = compiled.isEmpty() ? 0 : Heart.manaCost(player, compiled, Heart.secretCost(player, runes));
+		if (!admission.valid()) return;
+		if (RelayCircles.pending(player)) RelayCircles.cancel(player);
+		dev.wildercord.aura.MasterForms.cancel(player);
 		CHANNELS.put(player.getUUID(), new Channel(now, cost));
 		player.setAttached(WildercordAttachments.CHARGE,
 			new WildercordAttachments.Charge(spell, now, List.copyOf(ids), full, stages, 0, now + full, tuning.tracing()));

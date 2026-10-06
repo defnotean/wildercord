@@ -104,8 +104,12 @@ public class Rimehare extends Animal {
 			// Air time no longer spends the landing recovery. Ground navigation needs real ticks to
 			// advance its waypoint and turn before the next takeoff, including after a long fall.
 			boolean recovered = boundCooldown.tick(groundedBeforeTravel, onGround());
-			if (recovered && groundedMove && getNavigation().isInProgress() && getSpeed() > 0
-				&& getDeltaMovement().y <= 0) {
+			var navigation = getNavigation();
+			// Navigation follows before travel. Let it consume a final waypoint reached by this ground
+			// step next tick, instead of launching a new bound after the route has effectively ended.
+			if (recovered && groundedMove && navigation.isInProgress() && getSpeed() > 0
+				&& getDeltaMovement().y <= 0 && !RimehareBoundArrival.isAtFinalWaypoint(navigation.getPath(),
+					getX(), getY(), getZ(), navigation.getMaxDistanceToWaypoint(), navigation.getMaxVerticalDistanceToWaypoint())) {
 				jumpFromGround();
 				boundCooldown.launched(3 + random.nextInt(4));
 			}

@@ -21,6 +21,17 @@ public abstract class SwordStringsSeenMixin {
 	@Shadow
 	public ServerPlayer player;
 
+	/** Only a swing actually accepted by vanilla releases a held form; a rejected/repeated animation packet cannot. */
+	@com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation(method = "handlePunch", at = @At(value = "INVOKE",
+		target = "Lnet/minecraft/server/level/ServerPlayer;swing(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/component/SwingAnimation;Z)Z"))
+	private boolean wildercord$formSwing(ServerPlayer actor, net.minecraft.world.InteractionHand hand,
+			net.minecraft.world.item.component.SwingAnimation animation, boolean sendToSource,
+			com.llamalad7.mixinextras.injector.wrapoperation.Operation<Boolean> original) {
+		boolean accepted = original.call(actor, hand, animation, sendToSource);
+		if (accepted && actor.isAlive() && !actor.isSpectator()) dev.wildercord.aura.MasterForms.cancel(actor);
+		return accepted;
+	}
+
 	@Inject(method = "handlePunch", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/server/level/ServerLevel;)V",
 		shift = At.Shift.AFTER))

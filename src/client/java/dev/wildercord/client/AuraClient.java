@@ -37,6 +37,7 @@ public final class AuraClient {
 
 	public static void init() {
 		AuraSocialClient.init();
+		MasterFormsClient.init();
 		// A bonded blade's tooltip tells its story; one lying on the ground lets motes drift up.
 		BladeTooltip.init();
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.BondGlow::motes);

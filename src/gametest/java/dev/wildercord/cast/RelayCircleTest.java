@@ -195,6 +195,15 @@ public final class RelayCircleTest implements FabricClientGameTest {
 			mc.gui.screen().onClose(); mc.gui.screen().onClose();
 			check(mc.gui.screen()==retained[0], "Returning through children keeps the reconciled editor instance");
 		});
+		c.runOnClient(mc -> {
+			retained[0].searchFor("Amplify"); clickNow(retained[0], retained[0].codexPoint(Runes.AMPLIFY.id()));
+			mc.gui.setScreen(new dev.wildercord.client.MasterFormsScreen(new dev.wildercord.client.AuraScreen(retained[0])));
+		}); c.waitTicks(5);
+		c.runOnClient(mc -> {
+			check(retained[0].rowRunes(0).equals(List.of(RelayRules.ID, Runes.HARM.id())), "A real rejected editor reply traverses the retained Master form and Aura parents");
+			mc.gui.screen().onClose(); mc.gui.screen().onClose();
+			check(mc.gui.screen() == retained[0], "Leaving Wall Turn lore preserves the exact reconciled Cord editor session");
+		});
 		onServer.accept(server -> probe.owner.setAttached(WildercordAttachments.CIRCLES,8)); c.waitTicks(3);
 		dev.wildercord.net.RelayEditorReply[] stale = new dev.wildercord.net.RelayEditorReply[1];
 		c.runOnClient(mc -> {

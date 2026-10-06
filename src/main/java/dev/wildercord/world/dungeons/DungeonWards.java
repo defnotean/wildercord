@@ -127,6 +127,51 @@ public final class DungeonWards extends SavedData {
 		return false;
 	}
 
+	/** Immutable room identity keeps adjacent or overlapping warded rooms from becoming one traversable region. */
+	public record MovementRoom(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+		static MovementRoom of(BoundingBox box) { return new MovementRoom(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ()); }
+	}
+	/** Unknown means refusal, never an alternative spelling of clear or warded. */
+	public record MovementWard(boolean known, java.util.Set<MovementRoom> rooms) {
+		public static final MovementWard UNKNOWN = new MovementWard(false, java.util.Set.of());
+		public static final MovementWard CLEAR = new MovementWard(true, java.util.Set.of());
+		public MovementWard { rooms = java.util.Set.copyOf(rooms); }
+		public boolean warded() { return !rooms.isEmpty(); }
+	}
+
+	/**
+	 * Movement admission must never request a structure-start chunk. StructureManager's convenient ward lookup can do
+	 * that even when the body cells are loaded. Read only FULL chunks already present, and refuse unresolved references.
+	 * Existing world/block rules retain their original lookup and behavior.
+	 */
+	public static MovementWard movementWard(ServerLevel level, BlockPos pos) {
+		var chunk = level.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+		if (chunk == null) return MovementWard.UNKNOWN;
+		java.util.Set<MovementRoom> found = new java.util.HashSet<>();
+		DungeonWards wards = level.getDataStorage().get(TYPE);
+		if (wards != null) for (BoundingBox room : wards.rooms) if (room.isInside(pos)) found.add(MovementRoom.of(room));
+		for (StructureStart start : chunk.getAllStarts().values()) movementRooms(start, pos, found);
+		int references = 0;
+		for (var entry : chunk.getAllReferences().entrySet()) {
+			for (long packed : entry.getValue()) {
+				if (++references > 64) return MovementWard.UNKNOWN;
+				ChunkPos reference = ChunkPos.unpack(packed);
+				var startChunk = level.getChunkSource().getChunkNow(reference.x(), reference.z());
+				if (startChunk == null) return MovementWard.UNKNOWN;
+				StructureStart start = startChunk.getStartForStructure(entry.getKey());
+				if (start == null || !start.isValid()) return MovementWard.UNKNOWN;
+				movementRooms(start, pos, found);
+			}
+		}
+		return new MovementWard(true, found);
+	}
+
+	private static void movementRooms(StructureStart start, BlockPos pos, java.util.Set<MovementRoom> found) {
+		if (start == null || !start.isValid()) return;
+		for (StructurePiece piece : start.getPieces()) if (piece instanceof WardedPiece warded)
+			for (BoundingBox room : warded.wardedBoxes()) if (room.isInside(pos)) found.add(MovementRoom.of(room));
+	}
+
 	/**
 	 * Every warded room of the dungeons whose pieces reach the chunk at {@code pos}, or the chunks within
 	 * {@code chunkRadius} of it (an explosion asks once for the whole blast).

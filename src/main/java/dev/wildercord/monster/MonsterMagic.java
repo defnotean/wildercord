@@ -48,6 +48,7 @@ public final class MonsterMagic {
 	 * spells push them).
 	 */
 	public static void shove(LivingEntity target, Vec3 impulse) {
+		if (target instanceof ServerPlayer player && impulse.lengthSqr() > 0) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		double resist = target instanceof net.minecraft.world.entity.player.Player ? 0 : target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 		target.setDeltaMovement(target.getDeltaMovement().add(impulse.scale(Math.max(0, 1 - resist))));
 		sync(target);

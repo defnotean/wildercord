@@ -36,6 +36,7 @@ public abstract class PlayerAuraMixin {
 	@WrapOperation(method = "attack", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private boolean wildercord$auraBlow(Entity target, DamageSource source, float damage, Operation<Boolean> original) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		return AuraCombat.blow((Player) (Object) this, target, source, damage, true, amount -> original.call(target, source, amount));
 	}
 
@@ -49,6 +50,7 @@ public abstract class PlayerAuraMixin {
 	@WrapOperation(method = "stabAttack", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private boolean wildercord$auraThrust(Entity target, DamageSource source, float damage, Operation<Boolean> original) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		return AuraCombat.blow((Player) (Object) this, target, source, damage, true, amount -> original.call(target, source, amount));
 	}
 

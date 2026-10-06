@@ -7,6 +7,7 @@ from contextlib import redirect_stderr, redirect_stdout
 import io
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 from unittest.mock import Mock, patch
@@ -24,20 +25,57 @@ def launcher_log(selection, *, result=0, build="BUILD SUCCESSFUL"):
 
 
 class SelectionTests(unittest.TestCase):
-    def test_masters_update_is_twenty_seven_registered_unique_entries(self):
+    def test_masters_update_preserves_twenty_seven_and_appends_three_wall_turn_entries(self):
         selected = client_suites.select_entries(suite="masters")
         full = client_suites.select_entries()
-        self.assertEqual(selected["count"], 27)
-        self.assertEqual(len(set(selected["entries"])), 27)
+        self.assertEqual(selected["count"], 30)
+        self.assertEqual(len(set(selected["entries"])), 30)
         self.assertTrue(set(selected["entries"]).issubset(full["entries"]))
-        self.assertEqual(selected["entries"][:4], [
-            "dev.wildercord.cast.RelayCircleTest", "dev.wildercord.cast.RelayLifetimeTest",
-            "dev.wildercord.cast.RelayDefenceTest", "dev.wildercord.party.RelayImpactTest"])
-        self.assertEqual(selected["entries"][-1],
-                         "dev.wildercord.gametest.WildercordMastersArtsPresentationTest")
-        for lifecycle in ("dev.wildercord.aura.HailfallReleasedOwnerTest",
-                          "dev.wildercord.aura.GroundFieldReleasedOwnerTest"):
-            self.assertLess(selected["entries"].index(lifecycle), len(selected["entries"]) - 1)
+        self.assertEqual(selected["entries"][:27], [
+            "dev.wildercord.cast.RelayCircleTest",
+            "dev.wildercord.cast.RelayLifetimeTest",
+            "dev.wildercord.cast.RelayDefenceTest",
+            "dev.wildercord.party.RelayImpactTest",
+            "dev.wildercord.party.PartyMutationSafetyTest",
+            "dev.wildercord.party.ArtFieldMutationSafetyTest",
+            "dev.wildercord.gametest.WildercordHeartCirclesTest",
+            "dev.wildercord.aura.world.ManaSkinSustainChecks",
+            "dev.wildercord.gametest.WildercordMastersArtsTest",
+            "dev.wildercord.aura.world.SwordMasterTrialTest",
+            "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
+            "dev.wildercord.party.PartyOfflineProjectileTest",
+            "dev.wildercord.aura.MastersStyleTimelineTest",
+            "dev.wildercord.party.MastersSecondFormTimelineTest",
+            "dev.wildercord.aura.HailfallReleasedOwnerTest",
+            "dev.wildercord.aura.HailSkyAcceptanceTest",
+            "dev.wildercord.party.MastersGroundFieldTimelineTest",
+            "dev.wildercord.aura.GroundFieldReleasedOwnerTest",
+            "dev.wildercord.aura.world.DuelistMasterAccessTest",
+            "dev.wildercord.monster.WildMonsterPressureTest",
+            "dev.wildercord.aura.world.MasterVictoriesTest",
+            "dev.wildercord.aura.world.MasterAntiAirTest",
+            "dev.wildercord.client.auraworld.MasterModelPresentationTest",
+            "dev.wildercord.aura.SwordStringAuthorityTest",
+            "dev.wildercord.aura.CrescentCoverTest",
+            "dev.wildercord.aura.CrescentAudienceTest",
+            "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",
+        ])
+        self.assertEqual(selected["entries"][27:], [
+            "dev.wildercord.aura.WallTurnLessonTest",
+            "dev.wildercord.aura.WallTurnSafetyTest",
+            "dev.wildercord.aura.WallTurnCommitmentTest",
+        ])
+
+    def test_existing_masters_job_labels_match_expanded_catalog(self):
+        workflow = (client_suites.ROOT / ".github/workflows/build.yml").read_text()
+        self.assertEqual(workflow.count("\n  masters-native:\n"), 1)
+        section = workflow.split("\n  masters-native:\n", 1)[1]
+        section = re.split(r"\n  [a-z][a-z-]*:\n", section, maxsplit=1)[0]
+        count = client_suites.select_entries(suite="masters")["count"]
+        self.assertIn(f"name: Masters update ({count} focused suites)", section)
+        self.assertIn(f"name: Run the {count} focused update suites", section)
+        self.assertIn("python tools/run_client_ci.py --suite masters --log masters-native.log", section)
+        self.assertIn("python tools/test_manifest.py --suite masters --log masters-native.log", section)
 
     def test_articulated_is_five_registered_acceptance_slices(self):
         selected = client_suites.select_entries(suite="articulated")
@@ -86,7 +124,7 @@ class SelectionTests(unittest.TestCase):
             -1, group["entries"][0]), "duplicate")
 
     def test_missing_catalog_entry_is_rejected(self):
-        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 27")
+        self.assert_bad_catalog(lambda group: group["entries"].pop(), "exactly 30")
 
     def test_unregistered_catalog_entry_is_rejected(self):
         self.assert_bad_catalog(lambda group: group["entries"].__setitem__(
@@ -98,7 +136,7 @@ class SelectionTests(unittest.TestCase):
                 self.assert_bad_catalog(lambda group: group.update(entries=entries), "nonempty")
 
     def test_invalid_expected_count_is_rejected(self):
-        for count in (26, 28, 27.0, True, "27"):
+        for count in (27, 29, 31, 30.0, True, "30"):
             with self.subTest(count=count):
                 self.assert_bad_catalog(lambda group: group.update(expectedCount=count), "exactly")
 
@@ -189,14 +227,14 @@ class ManifestTests(unittest.TestCase):
             self.assertEqual(status, 1 if manifest.get("focusedClientGate") == "unverified" else 0)
             return manifest
 
-    def test_focused_success_is_exactly_twenty_three_and_never_a_full_pass(self):
+    def test_focused_success_is_exactly_thirty_and_never_a_full_pass(self):
         selection = client_suites.select_entries(suite="masters")
         manifest = self.manifest(launcher_log(selection), "--suite", "masters")
         self.assertEqual(manifest["selection"], selection)
         self.assertEqual([s["suite"] for s in manifest["clientSuites"]], selection["entries"])
         self.assertEqual(manifest["focusedClientGate"], "passed")
         self.assertEqual(manifest["fullClientGate"], "unverified")
-        self.assertEqual(manifest["counts"], {"passed": 27, "skipped": 0, "unverified": 0})
+        self.assertEqual(manifest["counts"], {"passed": 30, "skipped": 0, "unverified": 0})
         self.assertEqual(manifest["verificationIssues"], [])
         self.assertIn("full client gate and animation gallery are not established", manifest["basis"])
 
@@ -212,7 +250,17 @@ class ManifestTests(unittest.TestCase):
                 manifest = self.manifest(log, "--suite", "masters")
                 self.assertEqual(manifest["fullClientGate"], "unverified")
                 self.assertEqual(manifest["focusedClientGate"], "unverified")
-                self.assertEqual(manifest["counts"]["unverified"], 27)
+                self.assertEqual(manifest["counts"]["unverified"], 30)
+
+    def test_pre_wall_turn_twenty_seven_suite_evidence_cannot_pass_expanded_gate(self):
+        selection = client_suites.select_entries(suite="masters")
+        previous = {**selection, "count": 27, "entries": selection["entries"][:27]}
+        manifest = self.manifest(launcher_log(previous), "--suite", "masters")
+        self.assertEqual(manifest["selection"], selection)
+        self.assertEqual(manifest["focusedClientGate"], "unverified")
+        self.assertEqual(manifest["fullClientGate"], "unverified")
+        self.assertEqual(manifest["counts"], {"passed": 0, "skipped": 0, "unverified": 30})
+        self.assertEqual(len(manifest["verificationIssues"]), 2)
 
     def test_mismatched_stale_duplicate_or_invalid_selection_cannot_pass(self):
         selection = client_suites.select_entries(suite="masters")

@@ -8,6 +8,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
+- Added the isolated Wall Turn lesson: a Sovereign with a recorded Gale clear can learn from a wandering teacher, retain its original three-page story, and equip one separate Master form. Fresh C inputs brace and kick through a bounded, paid server movement with real collision, fall risk and safe-landing recovery. Classic body/hand presentation and native acceptance suites accompany the source; final combined native acceptance is pending.
+
+- Prevent an extra rimehare bound when its last grounded step has already reached the final native waypoint.
+
 - Let rimehares shed excess horizontal momentum during fast grounded recovery so bounds can follow native waypoints and settle at the end of a route. Native escape, terrain and arrival checks remain release gates.
 
 - Extended the default-off original articulated player preview to Rising Break and Driving Cut, with separate low-to-high and point/recoil body forms and HUD-safe hand compositions. Existing gameplay windows, inputs and full unsupported-state fallback remain; accepted-input native visual review is pending.

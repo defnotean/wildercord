@@ -318,7 +318,7 @@ public final class SwordStrings {
 	 * is won ({@link #release}) and is lost, still paid for, if not ({@link #forfeit}).
 	 */
 	public static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
-		if (MastersArts.committed(player)) return false;
+		if (MastersArts.committed(player) || MasterForms.committed(player)) return false;
 		if (!releasing && Clashes.meets(player, art, marks)) return true;
 		long now = player.level().getGameTime();
 		MastersStyleRules.Style style = MastersStyleRules.of(art.id());

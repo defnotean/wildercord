@@ -27,7 +27,19 @@ public final class MastersArtPose {
 		MastersArtAnimation.Pose pose = MastersArtsClient.pose(avatar, partial);
 		var timeline = MastersArtsClient.timeline(avatar);
 		state.setData(FRAME, null);
-		if (pose.weight() <= 0 || timeline == null || !eligible(state)) return;
+		if (!eligible(state)) return;
+		var form = MasterFormsClient.timeline(avatar);
+		if (form != null && timeline == null) {
+			var event = form.event();
+			var movement = dev.wildercord.aura.WallTurnAnimation.sample(event.phase(), event.ticks(), avatar.level().getGameTime() - form.received() + partial);
+			if (movement.weight() > 0) {
+				var facing = MastersArtAnimation.facing(state.bodyRot, state.yRot, state.xRot, event.yaw(), 0, movement.weight());
+				state.bodyRot = facing.bodyYaw(); state.yRot = facing.headYaw();
+				state.setData(FRAME, new Frame(movement, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), 0, 0, event.serial(), -2 - event.phase()));
+				return;
+			}
+		}
+		if (pose.weight() <= 0 || timeline == null) return;
 		var facing = MastersArtAnimation.facing(state.bodyRot, state.yRot, state.xRot, timeline.yaw(), timeline.pitch(), pose.weight());
 		state.bodyRot = facing.bodyYaw();
 		state.yRot = facing.headYaw();

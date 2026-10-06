@@ -77,6 +77,8 @@ public final class AuraStep {
 
 	/** The technique: step. */
 	public static boolean step(ServerPlayer player) {
+		if (dev.wildercord.cast.ActionAdmission.busy(player)) return false;
+		if (MasterForms.committed(player)) return false;
 		long now = player.level().getGameTime();
 		if (!Aura.holdsWeapon(player)) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8));
@@ -103,6 +105,7 @@ public final class AuraStep {
 			// Spent past empty: the step never forms.
 			return false;
 		}
+		MasterFormMovement.begin(player, Math.max(AuraRules.STEP_TICKS, AuraRules.STEP_GUARD_TICKS) + 1);
 		go(player, path, dir);
 		BondedBlades.stepped(player);
 		return true;

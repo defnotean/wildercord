@@ -533,7 +533,8 @@ public final class Effects {
 				}
 			});
 			case "root" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(3, duration), 6, false, false));
+				boolean rooted = t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(3, duration), 6, false, false));
+				if (rooted && t instanceof ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 				t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
 				Vfx.root(level, t, ticks(3, duration));
 				StormEarthFx.rootHold(level, t, ticks(3, duration));
@@ -928,6 +929,7 @@ public final class Effects {
 		impulse = DefensiveFoci.resist(target, impulse);
 		if(target instanceof Player) impulse=impulse.scale(1-.10*dev.wildercord.gear.ElementalArmor.count(target,dev.wildercord.gear.ElementalArmor.Kind.STONEBOUND));
 		Vec3 scaled = target instanceof Player ? impulse : impulse.scale(Math.max(0.0, 1.0 - resist));
+		if (target instanceof ServerPlayer player && scaled.lengthSqr() > 0) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		target.setDeltaMovement(target.getDeltaMovement().add(scaled));
 		target.needsSync = true;
 		if (target instanceof ServerPlayer player) {
@@ -1429,6 +1431,7 @@ public final class Effects {
 		if (distance < 1.0 || distance > 48) {
 			return;
 		}
+		if (caster instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 31);
 		Vec3 pull = to.normalize().scale(Math.min(3.2, 0.8 + distance * 0.12) * Math.sqrt(power)).add(0, 0.35, 0);
 		caster.setDeltaMovement(pull);
 		caster.needsSync = true;
@@ -1972,6 +1975,7 @@ public final class Effects {
 	}
 
 	private static void setMotion(LivingEntity target, Vec3 motion) {
+		if (target instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		target.setDeltaMovement(motion);
 		target.needsSync = true;
 		if (target instanceof ServerPlayer player) {
@@ -2101,6 +2105,7 @@ public final class Effects {
 
 	/** Dash on yourself: held level at speed for five ticks, then braked, so it goes about ten blocks and never up or off anything. */
 	private static void dashSelf(Cast cast, LivingEntity caster, Vec3 flat, double power) {
+		if (caster instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, DASH_TICKS + 1);
 		double speed = DASH_SPEED * Math.sqrt(Math.max(0.25, power));
 		caster.resetFallDistance();
 		for (int i = 0; i < DASH_TICKS; i++) {
@@ -2127,6 +2132,7 @@ public final class Effects {
 
 	/** Levitate: the lifted creature hangs where it is, its drift stopped, for {@code ticks}. */
 	private static void suspend(Cast cast, LivingEntity t, int ticks) {
+		if (t instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, ticks + 1);
 		for (int i = 2; i < ticks; i += 2) {
 			Scheduler.later(i, () -> {
 				if (t.isAlive() && t.level() == cast.level && !t.onGround()) {

@@ -457,6 +457,7 @@ public final class ArtKit {
 			return;
 		}
 		Vec3 v = foe.getDeltaMovement();
+		if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterFormMovement.begin(moving, 2);
 		foe.setDeltaMovement(v.x * 0.5, Math.max(v.y, power), v.z * 0.5);
 		foe.needsSync = true;
 		MonsterMagic.sync(foe);
@@ -509,6 +510,7 @@ public final class ArtKit {
 		}
 		Vec3 v = foe.getDeltaMovement();
 		Vec3 pull = toward.scale(Math.min(allowed, length * 0.5) / length);
+		if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterFormMovement.begin(moving, 2);
 		foe.setDeltaMovement(pull.x, Math.max(v.y, 0.02), pull.z);
 		MonsterMagic.sync(foe);
 	}
@@ -671,6 +673,7 @@ public final class ArtKit {
 			slow(player, foe, ticks, 1);
 			return false;
 		}
+		if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterForms.cancel(moving);
 		foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, t, 6, false, false, true), player);
 		foe.setDeltaMovement(0, Math.min(0, foe.getDeltaMovement().y), 0);
 		MonsterMagic.sync(foe);
@@ -700,6 +703,7 @@ public final class ArtKit {
 		Vec3 pull = toward.scale(Math.min(allowed, (length - stop) * 0.5) / length);
 		if (foe instanceof Player) {
 			// A player keeps their own motion and is only leaned on: they can always walk out of it.
+			if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterFormMovement.begin(moving, 2);
 			foe.setDeltaMovement(v.add(pull.scale(0.5)));
 		} else {
 			foe.setDeltaMovement(pull.x, Math.max(v.y, foe.onGround() ? 0.0 : v.y), pull.z);
@@ -858,6 +862,7 @@ public final class ArtKit {
 	 * {@code stretch} after each; it stops if they die, change world or mount up. Fall distance is forgotten on the way.
 	 */
 	public static void dash(ServerPlayer player, List<Vec3> path, int ticks, Stretch stretch) {
+		dev.wildercord.aura.MasterFormMovement.begin(player, ticks + 1);
 		ServerLevel level = player.level();
 		int n = Math.max(1, ticks);
 		for (int i = 1; i <= n; i++) {
@@ -928,6 +933,7 @@ public final class ArtKit {
 
 	/** Moves the swordsman to {@code spot} at once (the view stays theirs). */
 	public static void blink(ServerPlayer player, Vec3 spot) {
+		dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		player.teleportTo(player.level(), spot.x, spot.y, spot.z, Relative.ROTATION, 0.0F, 0.0F, false);
 		player.resetFallDistance();
 		player.setDeltaMovement(Vec3.ZERO);
@@ -935,6 +941,7 @@ public final class ArtKit {
 
 	/** Sets the swordsman's own motion (a leap, a dive), told to their client at once. */
 	public static void launch(ServerPlayer player, Vec3 velocity) {
+		dev.wildercord.aura.MasterFormMovement.begin(player, 40);
 		player.setDeltaMovement(velocity);
 		player.needsSync = true;
 		MonsterMagic.sync(player);

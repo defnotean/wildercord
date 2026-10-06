@@ -87,6 +87,11 @@ public final class SpellCaster {
 	 * inside the bonus cap against players), and its surge chance is rolled as the spell leaves.
 	 */
 	public static void cast(ServerPlayer player, int requested, double charge, Charging.Performance performance) {
+		try (var admission = ActionAdmission.begin(player)) {
+			if (admission != null) cast(player, requested, charge, performance, admission);
+		}
+	}
+	private static void cast(ServerPlayer player, int requested, double charge, Charging.Performance performance, ActionAdmission admission) {
 		if (dev.wildercord.aura.MastersArts.committed(player) || RelayCircles.committed(player)) return;
 		if (RelayCircles.contains(player, requested)) {
 			int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
@@ -94,7 +99,6 @@ public final class SpellCaster {
 			fail(player, Component.literal(problem == null ? "Relay Circle uses fresh cast-key presses: place, release the key, then press again." : problem));
 			return;
 		}
-		if (RelayCircles.pending(player)) RelayCircles.cancel(player);
 		if (!player.isAlive() || player.isSpectator()) {
 			return;
 		}
@@ -176,9 +180,25 @@ public final class SpellCaster {
 			}
 		}
 		// Add-ons may stop a cast here, before anything is spent (once per cast: an overcast's first press never gets this far).
+		var cord = Spellbooks.cord(player);
+		int circles = Heart.active(player);
 		if (!dev.wildercord.api.WildercordEvents.BEFORE_CAST.invoker().allow(player, spell, List.copyOf(runes), cost)) {
 			return;
 		}
+		// Callback changes cannot turn a rejected switch into cancellation of a paid focus or wall brace.
+		if (!admission.valid() || dev.wildercord.aura.MastersArts.committed(player) || RelayCircles.committed(player)
+			|| Spellbooks.cord(player) != cord || Spellbooks.tier(player) != tier || Heart.active(player) != circles
+			|| !dev.wildercord.gear.Gear.spellOpen(player, tier, spell) || !activeRunes(Spellbooks.get(player), spell, tier).equals(runes)
+			|| !Spellbooks.get(player).spells().get(spell).equals(book.spells().get(spell))
+			|| requested < 0 && Spellbooks.get(player).selected() != book.selected()
+			|| CastLock.locked(player) || VoidTime.hushed(player) || FusedFrostWards.sealed(player)
+			|| !free && Spellbooks.readyAt(player, spell) > now
+			|| !player.isCreative() && !free && (compiled.paysInHealth() ? !Float.isFinite(player.getHealth()) || player.getHealth() <= blood
+				: !Float.isFinite(Spellbooks.mana(player)) || !overcast && Spellbooks.mana(player) < cost)) return;
+		mana = Spellbooks.mana(player);
+		// A valid ordinary cast replaces physical form motion; descent/recovery never forbids spellcasting.
+		if (RelayCircles.pending(player)) RelayCircles.cancel(player);
+		dev.wildercord.aura.MasterForms.cancel(player);
 		boolean overflow = mana >= Mana.max(player) - 0.5F;
 		Heart.Bonuses bonuses = Heart.bonuses(player, overflow);
 		int spent;

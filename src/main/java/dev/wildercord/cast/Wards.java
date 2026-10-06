@@ -330,6 +330,7 @@ public final class Wards {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.rewind_unsafe"));
 			return;
 		}
+		dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		player.teleportTo(player.level(), pick.pos().x, pick.pos().y, pick.pos().z, Set.<Relative>of(), pick.yRot(), pick.xRot(), false);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
@@ -591,6 +592,7 @@ public final class Wards {
 
 	/** Stops gravity for something a spell holds, remembering (in a saved attachment) what it was. */
 	private static void hold(Entity e) {
+		if (e instanceof ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		if (!e.hasAttached(WildercordAttachments.HELD_GRAVITY)) {
 			e.setAttached(WildercordAttachments.HELD_GRAVITY, e.isNoGravity());
 		}

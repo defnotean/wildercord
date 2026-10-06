@@ -212,6 +212,7 @@ public final class Soar {
 		if (lift != SoarRules.Lift.LIFT) {
 			return lift;
 		}
+		dev.wildercord.aura.MasterForms.cancel(player);
 		player.removeAttached(WildercordAttachments.SOAR_REST);
 		player.setAttached(WildercordAttachments.SOARING, new Soaring(now + ticks, SoarRules.priorSpeed(abilities.getFlyingSpeed()), false));
 		abilities.mayfly = true;
@@ -246,6 +247,7 @@ public final class Soar {
 	 * flight.
 	 */
 	public static void ground(LivingEntity target) {
+		if (target instanceof ServerPlayer moving) dev.wildercord.aura.MasterForms.cancel(moving);
 		if (!(target instanceof ServerPlayer player)) {
 			return;
 		}

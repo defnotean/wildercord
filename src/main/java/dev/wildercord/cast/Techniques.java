@@ -96,6 +96,7 @@ final class Techniques {
 	}
 
 	private static void setMotion(LivingEntity target, Vec3 motion) {
+		if (target instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		target.setDeltaMovement(motion);
 		target.needsSync = true;
 		if (target instanceof ServerPlayer player) {
@@ -108,6 +109,7 @@ final class Techniques {
 	}
 
 	private static void teleport(Entity entity, ServerLevel level, Vec3 to, float yRot, float xRot) {
+		if (entity instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		entity.teleportTo(level, to.x, to.y, to.z, Set.<Relative>of(), yRot, xRot, false);
 		entity.resetFallDistance();
 	}

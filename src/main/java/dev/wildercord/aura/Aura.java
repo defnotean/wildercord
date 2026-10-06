@@ -207,11 +207,15 @@ public final class Aura {
 		if ((float) spend.left() != data.aura()) {
 			set(player, data.withAura((float) spend.left()));
 		}
-		for (AuraApi.SpendHook hook : AuraApi.spendHooks()) {
-			try {
-				hook.spent(player, spend.paid(), reason, spend.backlash());
-			} catch (RuntimeException e) {
-				Wildercord.LOGGER.warn("An aura spend hook threw; skipping it", e);
+		// Existing Aura actions also own their payment callback boundary: a hook cannot start a new
+		// Wall Turn/Relay before the paying action has installed its ordinary movement/art receipt.
+		try (var admission = dev.wildercord.cast.ActionAdmission.busy(player) ? null : dev.wildercord.cast.ActionAdmission.begin(player)) {
+			for (AuraApi.SpendHook hook : AuraApi.spendHooks()) {
+				try {
+					hook.spent(player, spend.paid(), reason, spend.backlash());
+				} catch (RuntimeException e) {
+					Wildercord.LOGGER.warn("An aura spend hook threw; skipping it", e);
+				}
 			}
 		}
 		if (spend.backlash()) {
@@ -461,7 +465,8 @@ public final class Aura {
 
 	/** Sets off the technique a trigger gives the player's stage; says why not when there's none. */
 	public static boolean press(ServerPlayer player, AuraApi.Trigger trigger) {
-		if (MastersArts.committed(player)) return false;
+		if (dev.wildercord.cast.ActionAdmission.busy(player)) return false;
+		if (MastersArts.committed(player) || MasterForms.committed(player)) return false;
 		if (!player.isAlive() || player.isSpectator()) {
 			return false;
 		}
@@ -529,6 +534,8 @@ public final class Aura {
 		// Aura's feel: trails, impacts, banners, bursts and the body's aura, drawn by each client as it sees them.
 		AuraFx.init();
 		MastersArts.init();
+		MasterForms.init();
+		MasterFormLessons.init();
 		// Momentum (a clean fight fills it; the Final Art waits on its peak) and stance (worn by blade and aura, broken into an opening
 		// and a finisher).
 		Momentum.init();

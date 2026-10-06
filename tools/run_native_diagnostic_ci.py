@@ -30,7 +30,8 @@ SNAPSHOTS = "build/run/clientGameTest/logs/ci-diagnostics"
 CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "battlefields-generation": "diagnostic-battlefields-generation",
          "siltcrest-presentation": "diagnostic-siltcrest-presentation",
-         "fungal-nursery": "diagnostic-fungal-nursery"}
+         "fungal-nursery": "diagnostic-fungal-nursery",
+         "wall-turn": "diagnostic-wall-turn"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
@@ -45,6 +46,10 @@ SEEDS = {
     "fungal-nursery": {"dev.wildercord.wildlife.FungalNurseryTest": None},
     "siltcrest-presentation": {"dev.wildercord.wildlife.SiltcrestPresentationTest#full": None,
                               "dev.wildercord.wildlife.SiltcrestPresentationTest#minimal": None},
+    "wall-turn": {"dev.wildercord.aura.WallTurnLessonTest": None,
+                  "dev.wildercord.aura.WallTurnSafetyTest": None,
+                  "dev.wildercord.aura.WallTurnCommitmentTest": None,
+                  "dev.wildercord.aura.WallTurnCommitmentTest#relay": None},
 }
 CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_catalog.json",
                 "src/gametest/resources/fabric.mod.json", "build.gradle", "gradle.properties",
@@ -158,6 +163,8 @@ def current(env, *, observed_head=None):
     paths = list(CONFIG_FILES)
     if selection:
         paths += ["src/gametest/java/" + entry.replace(".", "/") + ".java" for entry in selection["entries"]]
+    if request["case"] == "wall-turn":
+        paths.append("src/gametest/java/dev/wildercord/aura/WallRelayChecks.java")
     return {"schemaVersion": 1, "scope": "diagnostic", "fullClientGate": "unverified",
             "focusedClientGate": "unverified", "request": request, "state": state,
             "provenance": provenance, "selection": selection,
@@ -221,6 +228,8 @@ def observed_seeds(log, case):
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
+            if case == "wall-turn" and entry in found:
+                issues.append("Repeated native world seed marker for " + entry)
             found.setdefault(entry, set()).add(seed)
         except (ValueError, KeyError, TypeError):
             issues.append("Invalid native world seed marker")

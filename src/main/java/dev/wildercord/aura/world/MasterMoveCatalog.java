@@ -11,7 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Passive inventory of existing authored Master attacks. No entity, planner, renderer, loader or damage path reads it yet.
+ * Passive inventory of existing authored Master attacks. Only unconnected helpers read it; no live entity, renderer,
+ * loader or damage path uses it yet.
  * School references, parameter variants and combinations do not create additional authored attack IDs.
  */
 public final class MasterMoveCatalog {

@@ -142,6 +142,11 @@ public final class RelayCircles {
 	}
 
 	public static void input(ServerPlayer player, int action, int requested, long nonce) {
+		try (var admission = ActionAdmission.begin(player)) {
+			if (admission != null) input(player, action, requested, nonce, admission);
+		}
+	}
+	private static void input(ServerPlayer player, int action, int requested, long nonce, ActionAdmission admission) {
 		if (requested < -1 || requested >= dev.wildercord.gear.SpellSlots.ALL) return;
 		if (!INPUT.computeIfAbsent(player, ignored -> new RelayInputRules.Edges()).accept(action, nonce, now(player))) return;
 		if (action == RelayInputRules.CANCEL) { cancel(player); return; }
@@ -150,11 +155,12 @@ public final class RelayCircles {
 		if (player.isShiftKeyDown()) { cancel(player); return; }
 		int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
 		if (focus != null) {
-			if (slot != focus.slot || !focus.valid()) { cancel(player); return; }
+			if (slot != focus.slot) return;
+			if (!focus.valid()) { cancel(player); return; }
 			if (focus.end == null) commit(focus);
 			return;
 		}
-		place(player, slot);
+		place(player, slot, admission);
 	}
 
 	private static boolean available(ServerPlayer player) {
@@ -167,7 +173,7 @@ public final class RelayCircles {
 			&& !player.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE);
 	}
 
-	private static void place(ServerPlayer player, int slot) {
+	private static void place(ServerPlayer player, int slot, ActionAdmission admission) {
 		String problem = problem(player, slot);
 		if (problem != null) { fail(player, problem); return; }
 		if (!available(player) || recovering(player)) return;
@@ -187,31 +193,33 @@ public final class RelayCircles {
 		if (compiled.isEmpty()) return;
 		int cost = Heart.manaCost(player, compiled, Mastery.costFactor(player, runes));
 		if (WildSurge.freeRecast(player, player.level().getGameTime())) { fail(player, "Relay Circle cannot use a free recast. Spend it with another spell first."); return; }
-		if (!player.isCreative() && Spellbooks.mana(player) < cost) { fail(player, "Relay Circle needs " + cost + " mana. It cannot overcast."); return; }
+		if (!player.isCreative() && (!Float.isFinite(Spellbooks.mana(player)) || Spellbooks.mana(player) < cost)) { fail(player, "Relay Circle needs " + cost + " mana. It cannot overcast."); return; }
 		Focus focus = new Focus(player, slot, runes, compiled, at, hit.getBlockPos());
 		if (!dev.wildercord.api.WildercordEvents.BEFORE_CAST.invoker().allow(player, slot, runes, cost)) return;
 		// An add-on callback may change body, loadout, mana, position or progression. No receipt survives that change.
-		if (!focus.valid() || !clear(player.level(), player, player.getEyePosition(), at)
+		if (!admission.valid() || !focus.valid() || !clear(player.level(), player, player.getEyePosition(), at)
 			|| player.getEyePosition().distanceTo(at) > RelayRules.PLACE_RANGE + .13
-			|| !player.isCreative() && Spellbooks.mana(player) < cost || FOCI.containsKey(player)
+			|| !player.isCreative() && (!Float.isFinite(Spellbooks.mana(player)) || Spellbooks.mana(player) < cost) || FOCI.containsKey(player)
 			|| now < player.getAttachedOrElse(RelayState.REST, 0L)) return;
 		float mana = Spellbooks.mana(player);
-		if (!player.isCreative()) {
-			Spellbooks.setMana(player, mana - cost);
-			dev.wildercord.aura.Unity.manaSpent(player, cost);
-		}
-		player.setAttached(RelayState.REST, now + RelayRules.REST_TICKS);
-		Spellbooks.setReadyAt(player, slot, player.level().getGameTime() + RelayRules.REST_TICKS);
 		Heart.Bonuses bonuses = Heart.bonuses(player, mana >= dev.wildercord.player.Mana.max(player) - .5F);
 		bonuses = bonuses.withPower(bonuses.power() * Mastery.powerFactor(player, runes));
 		focus.cast = new Cast(player, 1, bonuses, false, focus::valid, new Cast.Info(compiled.root(), runes.size(), Heart.leaning(player), runes))
 			.weigh(compiled.cost()).damagePrice(cost).gear(dev.wildercord.gear.Gear.of(player)).withAffinity()
 			.admission(focus::admits).blockAdmission(focus::admitsBlock).lifetime(focus::valid).incoming(at);
+		// Reserve payment, rest and the exact receipt before any payment/progression callback can run.
+		if (!player.isCreative()) Spellbooks.setMana(player, mana - cost);
+		player.setAttached(RelayState.REST, now + RelayRules.REST_TICKS);
+		Spellbooks.setReadyAt(player, slot, player.level().getGameTime() + RelayRules.REST_TICKS);
 		FOCI.put(player, focus);
+		dev.wildercord.aura.MasterForms.cancel(player);
+		if (!player.isCreative()) dev.wildercord.aura.Unity.manaSpent(player, cost);
+		if (!focus.valid()) { cancel(player); return; }
 		Mastery.onCast(player, slot, runes, focus.cast, cost);
 		HeartCircles.condense(player, cost);
 		PlayerAffinities.onCast(player, compiled.root(), cost, 0);
 		HeartCircles.onCast(player);
+		if (!focus.valid()) { cancel(player); return; }
 		player.setAttached(RelayState.VIEW, new RelayState(RelayState.PLACED, slot, focus.created, focus.expires, at, at, focus.color));
 		Fx.sound(player.level(), at, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME, .55F, 1.1F);
 		dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(player, slot, runes, cost);
@@ -221,7 +229,7 @@ public final class RelayCircles {
 	private static void commit(Focus focus) {
 		Vec3 eye = focus.player.getEyePosition(), look = focus.player.getLookAngle();
 		Vec3 to = eye.add(look.scale(RelayRules.MAX_PATH));
-		if (!loaded(focus.level, eye, to)) { cancel(focus.player); return; }
+		if (!loaded(focus.level, eye, to)) return;
 		var hit = focus.level.clip(new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, focus.player));
 		Vec3 aim = hit.getType() == HitResult.Type.MISS ? to : hit.getLocation();
 		// The crosshair's first visible living body is a server-observed aim point, not a homing target.
@@ -230,7 +238,7 @@ public final class RelayCircles {
 		Vec3 limit = aim;
 		focus.level.getEntities(net.minecraft.world.level.entity.EntityTypeTest.forClass(LivingEntity.class), new AABB(eye, limit).inflate(.15),
 			e -> e != focus.player && e.isAlive() && e.getBoundingBox().inflate(.15).clip(eye, limit).isPresent(), observed, Cast.MAX_ENTITIES + 1);
-		if (observed.size() > Cast.MAX_ENTITIES) { cancel(focus.player); return; }
+		if (observed.size() > Cast.MAX_ENTITIES) return;
 		double nearest = eye.distanceToSqr(aim);
 		for (LivingEntity target : observed) {
 			Vec3 point = target.getBoundingBox().inflate(.15).clip(eye, limit).orElse(limit);
@@ -239,10 +247,14 @@ public final class RelayCircles {
 		}
 		Vec3 direction = aim.subtract(focus.pos);
 		double remaining = RelayRules.MAX_PATH - eye.distanceTo(focus.pos);
-		if (!finite(direction) || remaining <= .25 || direction.lengthSqr() < .01) { cancel(focus.player); return; }
-		focus.end = focus.pos.add(direction.normalize().scale(Math.min(remaining, direction.length()) - .02));
+		if (!finite(direction) || remaining <= .25 || direction.lengthSqr() < .01) return;
+		Vec3 end = focus.pos.add(direction.normalize().scale(Math.min(remaining, direction.length()) - .02));
+		if (!clear(focus.level, focus.player, focus.pos, end)
+			|| eye.distanceTo(focus.pos) + focus.pos.distanceTo(end) > RelayRules.MAX_PATH + 1.0e-5) return;
 		if (!focus.valid()) { cancel(focus.player); return; }
+		focus.end = end;
 		focus.releaseAt = now(focus.player) + RelayRules.WARN_TICKS;
+		dev.wildercord.aura.MasterForms.cancel(focus.player);
 		focus.player.setAttached(RelayState.VIEW, new RelayState(RelayState.WARNING, focus.slot, now(focus.player), focus.releaseAt, focus.pos, focus.end, focus.color));
 	}
 

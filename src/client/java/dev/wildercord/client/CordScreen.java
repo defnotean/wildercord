@@ -181,6 +181,7 @@ public class CordScreen extends Screen {
 	private final LoadoutPanel loadouts = new LoadoutPanel();
 	/** The mastery panel, opened from a spell's rank badge (or Ctrl+M), and by itself when a trait is waiting. */
 	private final MasteryPanel mastery = new MasteryPanel();
+	private net.minecraft.client.gui.components.Button auraEntry;
 
 	public CordScreen() {
 		super(Component.translatable("screen.wildercord.cord"));
@@ -220,6 +221,19 @@ public class CordScreen extends Screen {
 			readBook();
 			offerWaitingTrait();
 		}
+		// Native focus and narration for the existing Aura badge, including when no Cord is equipped.
+		auraEntry = addWidget(net.minecraft.client.gui.components.Button.builder(Component.translatable("screen.wildercord.aura.badge")
+			.append(". ").append(Component.translatable("screen.wildercord.master_forms.title")), ignored -> openAura()).bounds(0, 0, 1, 1).build());
+		updateAuraEntry();
+	}
+
+	private void updateAuraEntry() {
+		if (auraEntry == null) return;
+		float s = scale();
+		auraEntry.setRectangle(Math.max(1, Math.round(14 * s)), Math.max(1, Math.round(14 * s)),
+			left() + Math.round(auraX() * s), top() + Math.round(7 * s));
+		auraEntry.active = !loadouts.isOpen() && !mastery.isOpen();
+		if (!auraEntry.active && auraEntry.isFocused()) setFocused(null);
 	}
 
 	/**
@@ -319,6 +333,7 @@ public class CordScreen extends Screen {
 	@Override
 	public void tick() {
 		super.tick();
+		updateAuraEntry();
 		// A loadout loaded from the panel: once its spellbook arrives, edit that one.
 		if (minecraft.player != null && loadouts.loaded(book())) {
 			readBook();
@@ -452,7 +467,6 @@ public class CordScreen extends Screen {
 
 	/** Opens the Aura page, coming back here when it closes. */
 	private void openAura() {
-		click();
 		minecraft.gui.setScreen(new AuraScreen(this));
 	}
 
@@ -478,7 +492,9 @@ public class CordScreen extends Screen {
 		if (dev.wildercord.aura.AuraBreakthroughs.ready(minecraft.player) && (System.currentTimeMillis() / 400) % 2 == 0) {
 			g.fill(x + 11, y + 1, x + 13, y + 3, 0xFFF5C46A);
 		}
-		if (!inside(mx, my, x, y, 14, 14)) {
+		boolean focused = auraEntry != null && auraEntry.active && auraEntry.isFocused();
+		if (focused) { g.fill(x, y, x + 14, y + 1, GOLD); g.fill(x, y + 13, x + 14, y + 14, GOLD); }
+		if (!focused && !inside(mx, my, x, y, 14, 14)) {
 			return null;
 		}
 		List<Component> tip = new ArrayList<>();
@@ -821,6 +837,7 @@ public class CordScreen extends Screen {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
 		layout();
+		updateAuraEntry();
 		super.extractRenderState(g, mouseX, mouseY, a);
 		drawSideCircle(g, a);
 		float s = scale();
@@ -2033,6 +2050,7 @@ public class CordScreen extends Screen {
 
 	@Override
 	public boolean charTyped(CharacterEvent event) {
+		setFocused(null);
 		if (tier() == null || !event.isAllowedChatCharacter()) {
 			return super.charTyped(event);
 		}
@@ -2063,6 +2081,7 @@ public class CordScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
+		updateAuraEntry();
 		if (loadouts.isOpen()) {
 			loadouts.key(event);
 			return true;
@@ -2101,6 +2120,7 @@ public class CordScreen extends Screen {
 			return true;
 		}
 		if (event.hasControlDown() && event.key() == InputConstants.KEY_F) {
+			setFocused(null);
 			searchFocused = true;
 			return true;
 		}
@@ -2130,12 +2150,11 @@ public class CordScreen extends Screen {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		updateAuraEntry();
 		double mx = localX(event.x());
 		double my = localY(event.y());
-		if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && inside(mx, my, auraX(), 7, 14, 14) && !loadouts.isOpen() && !mastery.isOpen()) {
-			openAura();
-			return true;
-		}
+		if (auraEntry != null && auraEntry.active && auraEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event, doubleClick);
+		setFocused(null);
 		if (tier() == null) {
 			if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && dev.wildercord.player.MasterStudies.hasRelayLesson(minecraft.player)
 				&& inside(mx, my, 14, H / 2 + 22, W - 28, 16)) {
@@ -2896,6 +2915,12 @@ public class CordScreen extends Screen {
 		}
 		// The breathing methods' arts played so far, and the swordsman's own method's still to play.
 		addArts(lines, found, player);
+		if (dev.wildercord.aura.MasterForms.data(player).learned()) {
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.master_forms.book_title"), 0, GOLD,
+				List.of(Component.translatable("screen.wildercord.master_forms.readback"))));
+			for (int page = 1; page <= 3; page++) lines.add(new GrimoireLine(Component.translatable("screen.wildercord.master_forms.chapter", page), 8, TEXT,
+				List.of(Component.translatable("book.wildercord.wall_turn." + page))));
+		}
 		// This world's own magic: its resonances and quirks, and the runes still being read.
 		addWorldMagic(lines);
 		addReading(lines);

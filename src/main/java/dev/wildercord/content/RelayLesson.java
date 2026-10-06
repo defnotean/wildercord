@@ -81,15 +81,7 @@ public final class RelayLesson {
 				if (reading != null && reading.request() == packet.request()) READINGS.remove(context.player());
 			} else openSaved(context.player(), packet.request());
 		});
-		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			var readings = READINGS.entrySet().iterator();
-			while (readings.hasNext()) {
-				var entry = readings.next();
-				if (valid(entry.getKey(), entry.getValue())) continue;
-				readings.remove();
-				interrupted(entry.getKey(), entry.getValue());
-			}
-		});
+		ServerTickEvents.END_SERVER_TICK.register(server -> removeInvalid(READINGS, RelayLesson::valid, RelayLesson::interrupted));
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> READINGS.remove(handler.player));
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, from, to) -> retire(player));
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> READINGS.remove(oldPlayer));
@@ -97,6 +89,20 @@ public final class RelayLesson {
 			if (entity instanceof ServerPlayer player) retire(player);
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> READINGS.clear());
+	}
+
+	/** Remove before notifying; IdentityHashMap invalidates its Entry as soon as the iterator removes it. */
+	static <K, V> void removeInvalid(Map<K, V> sessions, java.util.function.BiPredicate<K, V> valid,
+			java.util.function.BiConsumer<K, V> interrupted) {
+		var readings = sessions.entrySet().iterator();
+		while (readings.hasNext()) {
+			var entry = readings.next();
+			K body = entry.getKey();
+			V reading = entry.getValue();
+			if (valid.test(body, reading)) continue;
+			readings.remove();
+			interrupted.accept(body, reading);
+		}
 	}
 
 	/** Used only by actual block interaction; already eligible Archmages do not need a second boss victory. */

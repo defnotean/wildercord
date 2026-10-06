@@ -41,6 +41,7 @@ public abstract class AuraSelectionMixin {
 	private void wildercord$equipmentChanged() {
 		if (player instanceof ServerPlayer server) {
 			MastersArts.cancel(server);
+			dev.wildercord.aura.MasterForms.cancel(server);
 			SwordStrings.weaponChanged(server);
 		}
 	}

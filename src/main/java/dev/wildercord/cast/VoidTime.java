@@ -62,6 +62,7 @@ public final class VoidTime {
 
 	/** Anchor: nothing a spell does can move {@code t} for {@code ticks}. */
 	static void anchor(LivingEntity t, int ticks) {
+		if (t instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		long now = t.level().getGameTime();
 		ANCHORED.merge(t.getUUID(), now + ticks, Math::max);
 		if (ANCHORED.size() > 256) {

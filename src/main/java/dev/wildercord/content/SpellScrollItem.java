@@ -145,27 +145,31 @@ public class SpellScrollItem extends Item {
 			return InteractionResult.SUCCESS;
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
-			if (!dev.wildercord.cast.RelayCircles.beforeOtherSpell(serverPlayer)) return InteractionResult.FAIL;
-			List<RuneDef> runes = runesOf(scroll);
-			SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
-			if (runes.isEmpty() || compiled.isEmpty()) {
-				return InteractionResult.FAIL;
+			try (var admission = dev.wildercord.cast.ActionAdmission.begin(serverPlayer)) {
+				if (admission == null) return InteractionResult.FAIL;
+				List<RuneDef> runes = runesOf(scroll);
+				SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+				if (runes.isEmpty() || compiled.isEmpty()) {
+					return InteractionResult.FAIL;
+				}
+				if (!dev.wildercord.cast.RelayCircles.beforeOtherSpell(serverPlayer)) return InteractionResult.FAIL;
+				dev.wildercord.aura.MasterForms.cancel(serverPlayer);
+				Optional<Secrets.Secret> secret = Secrets.match(runes);
+				// Against a Shield a secret weighs its full price, as it does cast from a Cord.
+				Cast cast = new Cast(serverPlayer, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), runes.size(), "", List.copyOf(runes)))
+					.weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
+				dev.wildercord.cast.Inscriptions.onRead(serverPlayer, stack, runes, cast);
+				if(secret.isPresent())Vfx.castCircle(serverPlayer,Vfx.themeOf(secret.get().color()),runes);
+				else dev.wildercord.cast.FormationVfx.send(cast,runes);
+				dev.wildercord.cast.Scheduler.later(3, () -> {
+					if (!cast.alive()) return;
+					if (secret.isPresent()) SecretSpells.cast(cast, secret.get());
+					else CastEngine.cast(cast, compiled.root());
+				});
+				level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.4F);
+				stack.consume(1, player);
+				player.getCooldowns().addCooldown(stack, 20);
 			}
-			Optional<Secrets.Secret> secret = Secrets.match(runes);
-			// Against a Shield a secret weighs its full price, as it does cast from a Cord.
-			Cast cast = new Cast(serverPlayer, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), runes.size(), "", List.copyOf(runes)))
-				.weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
-			dev.wildercord.cast.Inscriptions.onRead(serverPlayer, stack, runes, cast);
-			if(secret.isPresent())Vfx.castCircle(serverPlayer,Vfx.themeOf(secret.get().color()),runes);
-			else dev.wildercord.cast.FormationVfx.send(cast,runes);
-			dev.wildercord.cast.Scheduler.later(3, () -> {
-				if (!cast.alive()) return;
-				if (secret.isPresent()) SecretSpells.cast(cast, secret.get());
-				else CastEngine.cast(cast, compiled.root());
-			});
-			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.4F);
-			stack.consume(1, player);
-			player.getCooldowns().addCooldown(stack, 20);
 		}
 		return InteractionResult.SUCCESS;
 	}

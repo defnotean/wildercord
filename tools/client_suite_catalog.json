@@ -1,7 +1,7 @@
 {
   "masters": {
-    "description": "Masters update combat, progression, presentation and bounded existing-world upgrade safety.",
-    "expectedCount": 27,
+    "description": "Masters update combat, progression, presentation, bounded existing-world upgrade safety and Wall Turn lesson, safety and commitment acceptance.",
+    "expectedCount": 30,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
@@ -29,7 +29,10 @@
       "dev.wildercord.aura.SwordStringAuthorityTest",
       "dev.wildercord.aura.CrescentCoverTest",
       "dev.wildercord.aura.CrescentAudienceTest",
-      "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
+      "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",
+      "dev.wildercord.aura.WallTurnLessonTest",
+      "dev.wildercord.aura.WallTurnSafetyTest",
+      "dev.wildercord.aura.WallTurnCommitmentTest"
     ]
   },
   "articulated": {
@@ -85,6 +88,16 @@
     "expectedCount": 1,
     "entries": [
       "dev.wildercord.wildlife.FungalNurseryTest"
+    ]
+  },
+  "diagnostic-wall-turn": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original Wall Turn lesson, safety and commitment classes, retaining all native assertions and original world settings. Never release acceptance.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.aura.WallTurnLessonTest",
+      "dev.wildercord.aura.WallTurnSafetyTest",
+      "dev.wildercord.aura.WallTurnCommitmentTest"
     ]
   }
 }

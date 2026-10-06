@@ -29,7 +29,8 @@ class RequestTests(unittest.TestCase):
         self.assertNotIn("cancel-in-progress: true", diagnostic_job)
 
     def test_request_accepts_only_fixed_cases_or_disabled(self):
-        for data in (self.request(), self.request(case="aura-fx"), self.request(case="battlefields-generation"), self.request(case=None, sourceSha=None)):
+        for case in (*diagnostic.CASES, None):
+            data = self.request(case=case, sourceSha="a" * 40 if case else None)
             self.assertEqual(diagnostic.parse_request(json.dumps(data)), data)
 
     def test_schema_types_unknowns_commands_paths_seeds_and_duplicates_rejected(self):
@@ -37,6 +38,9 @@ class RequestTests(unittest.TestCase):
                    self.request(case=[]), self.request(case=""), self.request(case="masters"),
                    self.request(case="../../wetland"), self.request(case="wetland; touch /tmp/injected"),
                    self.request(case="dev.wildercord.wildlife.WetlandTerrainTest"),
+                   self.request(case="diagnostic-wall-turn"), self.request(case="wall-turn#relay"),
+                   self.request(case="dev.wildercord.aura.WallTurnLessonTest"),
+                   self.request(case="wall-turn; touch /tmp/injected"),
                    self.request(sourceSha="a" * 39), self.request(sourceSha="A" * 40),
                    self.request(sourceSha="HEAD"), self.request(sourceSha=True),
                    self.request(case=None), self.request(sourceSha=None)]
@@ -148,12 +152,19 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(set(result["observedWorldSeeds"]), set(diagnostic.SEEDS[case]))
 
     def test_failed_missing_mixed_truncated_and_replayed_evidence_never_pass(self):
-        data = self.fixture(); good = self.log(data)
+        for case in ("aura-fx", "wall-turn"):
+            self.assert_invalid_evidence_never_passes(case)
+
+    def assert_invalid_evidence_never_passes(self, case):
+        data = self.fixture(case); good = self.log(data)
         stale = copy.deepcopy(data); stale["provenance"]["runAttempt"] = "2"
+        wrong_selection = copy.deepcopy(data); wrong_selection["selection"]["entries"] = []
+        wrong_source = copy.deepcopy(data); wrong_source["sourceFilesSha256"]["fixture.java"] = "d" * 64
         logs = [None, "", "BUILD SUCCESSFUL\n", good.replace("BUILD SUCCESSFUL", "BUILD FAILED"),
                 good.replace(suites.EXIT_PREFIX + "0", suites.EXIT_PREFIX + "1"),
                 good.replace(suites.DESCRIPTOR_PREFIX, "missing "), good + suites.EXIT_PREFIX + "0\n",
-                self.log(stale), good.replace(diagnostic.SEED_PREFIX, "missing "),
+                self.log(stale), self.log(wrong_selection), self.log(wrong_source),
+                good.replace(diagnostic.SEED_PREFIX, "missing "),
                 good + diagnostic.SEED_PREFIX + '{"suite":[],"seed":"1"}\n']
         for log in logs:
             with self.subTest(log=log):
@@ -179,6 +190,30 @@ class EvidenceTests(unittest.TestCase):
         conflicting = distinct + diagnostic.SEED_PREFIX + json.dumps({"suite": key, "seed": "3"}) + "\n"
         self.assertEqual(self.collect(data, conflicting)["diagnosticOutcome"], "unverified")
 
+    def test_wall_turn_requires_exactly_one_receipt_for_each_original_world(self):
+        data = self.fixture("wall-turn")
+        expected = {entry: None for entry in (
+            "dev.wildercord.aura.WallTurnLessonTest",
+            "dev.wildercord.aura.WallTurnSafetyTest",
+            "dev.wildercord.aura.WallTurnCommitmentTest",
+            "dev.wildercord.aura.WallTurnCommitmentTest#relay",
+        )}
+        self.assertEqual(diagnostic.SEEDS["wall-turn"], expected)
+        good = self.log(data)
+        for index, entry in enumerate(expected):
+            good = good.replace(json.dumps({"suite": entry, "seed": "1"}),
+                                json.dumps({"suite": entry, "seed": str(index + 10)}))
+        self.assertEqual(self.collect(data, good)["diagnosticOutcome"], "passed")
+        for index, entry in enumerate(expected):
+            marker = diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": str(index + 10)})
+            invalid = (good.replace(marker, ""), good + marker + "\n",
+                       good + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": "99"}) + "\n")
+            for log in invalid:
+                with self.subTest(entry=entry, log=log):
+                    self.assertEqual(self.collect(data, log)["diagnosticOutcome"], "unverified")
+        foreign = good + diagnostic.SEED_PREFIX + json.dumps({"suite": "dev.wildercord.aura.WallRelayChecks", "seed": "1"}) + "\n"
+        self.assertEqual(self.collect(data, foreign)["diagnosticOutcome"], "unverified")
+
     def test_launcher_is_called_once_and_only_for_prepared_fixed_suite(self):
         data = self.fixture()
         with tempfile.TemporaryDirectory() as temp, patch.object(diagnostic, "ROOT", Path(temp)), patch.object(diagnostic, "prepared", return_value=data), patch.object(run_client_ci, "main", return_value=7) as launch:
@@ -202,11 +237,26 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(suites.select_entries(suite="diagnostic-fungal-nursery")["entries"], ["dev.wildercord.wildlife.FungalNurseryTest"])
         self.assertEqual(suites.select_entries(suite="diagnostic-wetland")["entries"][-3:], ["dev.wildercord.wildlife.WetlandGardenTest", "dev.wildercord.wildlife.WetlandTerrainAbsenceTest", "dev.wildercord.wildlife.WetlandTerrainTest"])
 
+    def test_wall_turn_selects_only_three_whole_classes_in_original_order(self):
+        self.assertEqual(diagnostic.CASES["wall-turn"], "diagnostic-wall-turn")
+        entries = ["dev.wildercord.aura.WallTurnLessonTest",
+                   "dev.wildercord.aura.WallTurnSafetyTest",
+                   "dev.wildercord.aura.WallTurnCommitmentTest"]
+        selection = suites.select_entries(suite="diagnostic-wall-turn")
+        self.assertEqual(selection, {"kind": "diagnostic", "name": "diagnostic-wall-turn",
+                                     "count": 3, "entries": entries})
+        for source in (suites.select_entries(), suites.select_entries(suite="masters")):
+            self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
+
     def test_general_manifest_cannot_relabel_diagnostic_as_focused_or_full(self):
-        data = self.fixture()
+        for case in ("aura-fx", "wall-turn"):
+            self.assert_manifest_cannot_relabel_diagnostic(case)
+
+    def assert_manifest_cannot_relabel_diagnostic(self, case):
+        data = self.fixture(case)
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp); log=root/"native.log"; out=root/"manifest.json"; log.write_text(self.log(data))
-            for selector in ([], ["--suite", "masters"], ["--suite", "articulated"], ["--shard", "4/4"], ["--suite", "diagnostic-aura-fx"]):
+            for selector in ([], ["--suite", "masters"], ["--suite", "articulated"], ["--shard", "4/4"], ["--suite", diagnostic.CASES[case]]):
                 with patch.object(test_manifest, "ROOT", root), redirect_stdout(io.StringIO()):
                     test_manifest.main(["--log", str(log), "--output", str(out), *selector])
                 manifest=json.loads(out.read_text())
@@ -214,11 +264,17 @@ class EvidenceTests(unittest.TestCase):
                 self.assertNotEqual(manifest.get("focusedClientGate"), "passed")
 
     def test_collect_preserves_evidence_after_head_advances_or_origin_fails(self):
+        for case in ("aura-fx", "wall-turn"):
+            self.assert_collect_preserves_evidence(case)
+
+    def assert_collect_preserves_evidence(self, case):
         original_root = diagnostic.ROOT
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            selection = suites.select_entries(suite="diagnostic-aura-fx")
+            selection = suites.select_entries(suite=diagnostic.CASES[case])
             paths = [*diagnostic.CONFIG_FILES, ".gitignore", *["src/gametest/java/" + name.replace(".", "/") + ".java" for name in selection["entries"]]]
+            if case == "wall-turn":
+                paths.append("src/gametest/java/dev/wildercord/aura/WallRelayChecks.java")
             for name in paths:
                 target = root / name; target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(original_root / name, target)
@@ -227,7 +283,7 @@ class EvidenceTests(unittest.TestCase):
             git("init"); git("config", "user.name", "Fixture"); git("config", "user.email", "fixture@example.invalid")
             git("add", "."); git("commit", "-m", "source")
             source = git("rev-parse", "HEAD")
-            (root / diagnostic.REQUEST).write_text(json.dumps({"schemaVersion": 1, "case": "aura-fx", "sourceSha": source}))
+            (root / diagnostic.REQUEST).write_text(json.dumps({"schemaVersion": 1, "case": case, "sourceSha": source}))
             git("add", "."); git("commit", "-m", "request")
             head = git("rev-parse", "HEAD")
             env = {"NATIVE_DIAGNOSTIC_HEAD_SHA": head, "GITHUB_EVENT_NAME": "pull_request", "GITHUB_JOB": "native-diagnostic",
@@ -235,6 +291,10 @@ class EvidenceTests(unittest.TestCase):
             with patch.object(diagnostic, "ROOT", root), patch.object(diagnostic, "live_head", return_value=head), redirect_stdout(io.StringIO()):
                 diagnostic.prepare(env)
                 data = diagnostic.prepared(env)
+            self.assertEqual(data["selection"], selection)
+            self.assertEqual(data["configuration"]["declaredWorldSeeds"], diagnostic.SEEDS[case])
+            self.assertEqual(data["sourceFilesSha256"], {path: diagnostic.digest(root / path)
+                                                       for path in paths if path != ".gitignore"})
             (root / diagnostic.LOG).write_text(self.log(data))
             (root / diagnostic.OUTPUT / "launch.json").write_text("{}")
             with patch.object(diagnostic, "ROOT", root), patch.object(diagnostic, "live_head", return_value="d" * 40), redirect_stdout(io.StringIO()):

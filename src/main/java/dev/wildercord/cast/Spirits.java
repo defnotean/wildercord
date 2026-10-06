@@ -219,6 +219,7 @@ public final class Spirits {
 	/** Stops a mob's AI for {@code ticks}; players and bosses are slowed to a crawl instead. */
 	public static void hold(LivingEntity target, int ticks) {
 		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
+		if (target instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 6, false, false));
 		target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, 4, false, false));
 		if (!isBoss(target) && target instanceof Mob mob && (!mob.isNoAi() || mob.hasAttached(WildercordAttachments.FROZEN_UNTIL))) {
