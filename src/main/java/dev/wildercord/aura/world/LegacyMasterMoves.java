@@ -30,6 +30,7 @@ public final class LegacyMasterMoves {
 			case CROSSWIND_REPRISE -> GaleRepriseRules.COST;
 			case STONE_FRACTURE -> StoneFractureRules.COST;
 			case KILN_RING -> EmberKilnRules.COST;
+			case STONE_FAULT_MARCH -> StoneMarchRules.COST;
 			case SWEEP, THRUST, CRESCENT, BREAK_CAST -> MastersRules.ATTACK_COST;
 		};
 	}

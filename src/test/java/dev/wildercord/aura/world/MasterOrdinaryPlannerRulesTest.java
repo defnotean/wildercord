@@ -133,7 +133,7 @@ class MasterOrdinaryPlannerRulesTest {
 			for (var edge : graph.edges()) routes.add(school + ":" + edge.from() + ":" + edge.to());
 		}
 		assertEquals(9, profiles); assertEquals(81, edges); assertEquals(27, routes.size());
-		assertEquals(9, MasterMoveCatalog.legacy().authoredAttackCount());
+		assertEquals(10, MasterMoveCatalog.legacy().authoredAttackCount());
 	}
 
 	@Test void seedUsesOnlyFixedEncounterIdentity() {

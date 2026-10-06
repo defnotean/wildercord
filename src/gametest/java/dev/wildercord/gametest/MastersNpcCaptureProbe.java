@@ -202,7 +202,7 @@ public final class MastersNpcCaptureProbe {
 	}
 	/** Native LightParticle ray extraction; its world position/color identifies the actual floor warning. */
 	public static void ray(int color, Vec3 from, Vec3 delta, float width, int age, int lifetime, float partial) {
-		if (subject == null || color != subject.auraColor() && !(subject.attackAnimation() == 9 && color == 0x73E2CB)
+		if (subject == null || color != subject.auraColor() && !((subject.attackAnimation() == 9 || subject.attackAnimation() == 10) && color == 0x73E2CB)
 			|| Math.abs(from.y - origin.y - .12) > .01
 			|| from.distanceToSqr(origin) > 64 || Math.abs(delta.y) > .001 || age + partial >= lifetime) return;
 		rays.add(new Ray(from, from.add(delta), from.add(delta.scale(Math.min(1, (age + partial) / 2))), width, age, lifetime, partial, color));
@@ -393,6 +393,21 @@ public final class MastersNpcCaptureProbe {
 	}
 
 	private static List<Vec3[]> expectedRays(int age, int attack, Vec3 origin) {
+		if (attack == 10) {
+			var bands = new ArrayList<Vec3[]>();
+			for (int band = 0; band < dev.wildercord.aura.world.StoneMarchRules.BANDS; band++) {
+				double low = dev.wildercord.aura.world.StoneMarchRules.start(band), high = dev.wildercord.aura.world.StoneMarchRules.end(band);
+				double width = dev.wildercord.aura.world.StoneMarchRules.HALF_WIDTH;
+				Vec3 a = origin.add(width, .12, low), b = origin.add(-width, .12, low);
+				Vec3 c = origin.add(width, .12, high), d = origin.add(-width, .12, high);
+				bands.add(new Vec3[] {a, b}); bands.add(new Vec3[] {a, c}); bands.add(new Vec3[] {b, d}); bands.add(new Vec3[] {c, d});
+				if (age < dev.wildercord.aura.world.StoneMarchRules.pulseAge(band)) for (int mark = 1; mark <= band + 1; mark++) {
+					double at = low + dev.wildercord.aura.world.StoneMarchRules.LENGTH * mark / (band + 2);
+					bands.add(new Vec3[] {origin.add(.45, .12, at), origin.add(-.45, .12, at)});
+				}
+			}
+			return bands;
+		}
 		// The last real particle may fade through release; these beats require no warning segments.
 		if (attack == 9) {
 			if (age >= EmberKilnRules.TELL) return List.of();
@@ -497,7 +512,7 @@ public final class MastersNpcCaptureProbe {
 			for (int y = Math.max(0, cy - 3); y <= Math.min(height - 1, cy + 3); y++)
 				for (int x = Math.max(0, cx - 3); x <= Math.min(width - 1, cx + 3); x++) {
 					int rgb = pixels[y * width + x], r = rgb >> 16 & 255, g = rgb >> 8 & 255, b = rgb & 255;
-					if (attack == 7 || attack == 9 && ray.color == 0x73E2CB ? g > 130 && g > r + 3 && b > r : r > 130 && r > g + 3 && g > b + 3) found = true;
+					if (attack == 7 || (attack == 9 || attack == 10) && ray.color == 0x73E2CB ? g > 130 && g > r + 3 && b > r : r > 130 && r > g + 3 && g > b + 3) found = true;
 				}
 			if (found) visible++;
 		}

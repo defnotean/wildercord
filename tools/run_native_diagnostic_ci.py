@@ -21,7 +21,7 @@ from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIE
                            stone_owner_negative_completion, STONE_OWNER_NEGATIVE_ENTRIES,
                            movement_foundations_completion, MOVEMENT_FOUNDATION_ENTRIES, STONE_VELOCITY_ENTRY, REED_REFUGE_ENTRY,
                            excise_completion, EXCISE_ENTRIES, life_excise_completion, LIFE_EXCISE_ENTRIES,
-                           select_entries, selection_issues)
+                           stone_march_completion, STONE_MARCH_ENTRIES, select_entries, selection_issues)
 import run_client_ci
 from native_ci_diagnostics import SCENE_PREFIX
 
@@ -44,11 +44,13 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "progression-feasibility": "diagnostic-progression-feasibility",
          "reweave-player": "diagnostic-reweave-player",
          "stone-hinge-owner-negative": "diagnostic-stone-hinge-owner-negative",
-         "movement-foundations": "diagnostic-movement-foundations", "excise": "diagnostic-life-excise"}
+         "movement-foundations": "diagnostic-movement-foundations", "excise": "diagnostic-life-excise",
+         "stone-fault-march": "stone-fault-march"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
+    "stone-fault-march": dict.fromkeys(STONE_MARCH_ENTRIES),
     "excise": {LIFE_EXCISE_ENTRIES[1]: None, LIFE_EXCISE_ENTRIES[2]: None,
                EXCISE_ENTRIES[0] + "#lesson": None, EXCISE_ENTRIES[0]: None},
     "movement-foundations": {STONE_VELOCITY_ENTRY: None, REED_REFUGE_ENTRY: None,
@@ -130,6 +132,19 @@ CASE_FILES = {"stone-hinge-owner-negative": (
     "tools/check_stone_hinge_native_contract.py",
 )}
 
+CASE_FILES["stone-fault-march"] = (
+    'src/main/java/dev/wildercord/aura/world/StoneMarch.java',
+    'src/main/java/dev/wildercord/aura/world/StoneMarchRules.java',
+    'src/main/java/dev/wildercord/aura/world/SwordMaster.java',
+    'src/main/java/dev/wildercord/aura/world/MasterMoveCatalog.java',
+    'src/main/java/dev/wildercord/aura/world/MasterAnimationRules.java',
+    'src/main/java/dev/wildercord/aura/ArticulatedCombatPose.java',
+    'src/gametest/java/dev/wildercord/aura/world/StoneMarchFixture.java',
+    'src/gametest/java/dev/wildercord/gametest/MastersNpcCaptureProbe.java',
+    'src/gametest/java/dev/wildercord/gametest/mixin/NativeSceneTraceMixin.java',
+    'src/gametest/resources/native-diagnostics-gametest.mixins.json',
+)
+
 CASE_FILES["movement-foundations"] = (*CASE_FILES["stone-hinge-owner-negative"],
     "src/main/java/dev/wildercord/wildlife/LanternNewt.java",
     "src/main/java/dev/wildercord/wildlife/NewtPathNavigation.java",
@@ -140,6 +155,8 @@ CASE_FILES["movement-foundations"] = (*CASE_FILES["stone-hinge-owner-negative"],
 
 # Fixed authored slice paths, bound to the exact source commit; no request-provided paths.
 CASE_FILES["excise"] = (
+    'src/gametest/java/dev/wildercord/gametest/mixin/ExciseCutProbeMixin.java',
+    'src/gametest/resources/excise-cut-gametest.mixins.json',
     'src/client/java/dev/wildercord/client/CordScreen.java',
     'src/client/java/dev/wildercord/client/ExciseClient.java',
     'src/client/java/dev/wildercord/client/ExciseLessonScreen.java',
@@ -416,7 +433,7 @@ def observed_seeds(log, case):
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
-            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") and entry in found:
+            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise", "stone-fault-march") and entry in found:
                 issues.append("Repeated native world seed marker for " + entry)
             if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") and not -(2 ** 63) <= int(seed) < 2 ** 63:
                 raise ValueError()
@@ -504,6 +521,8 @@ def collect(env):
                     latencyGate="NOT_PROVEN", admissionGate="NOT_PROVEN")
     if data["request"]["case"] == "excise":
         data["completedEntries"], _ = life_excise_completion(log)
+    if data["request"]["case"] == "stone-fault-march":
+        data["completedEntries"], _ = stone_march_completion(log)
     successful = "BUILD SUCCESSFUL" in log and "BUILD FAILED" not in log and not issues
     data.update(diagnosticOutcome="passed" if successful else "unverified",
                 observedWorldSeeds=seeds, verificationIssues=issues,

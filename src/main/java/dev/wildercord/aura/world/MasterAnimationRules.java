@@ -8,7 +8,7 @@ package dev.wildercord.aura.world;
 public final class MasterAnimationRules {
 	private MasterAnimationRules() {}
 
-	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7, STONE_FRACTURE = 8, KILN_RING = 9;
+	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7, STONE_FRACTURE = 8, KILN_RING = 9, STONE_FAULT_MARCH = 10;
 	public record Joint(float x, float y, float z) {
 		Joint toward(Joint other, float t) {
 			return new Joint(lerp(x, other.x, t), lerp(y, other.y, t), lerp(z, other.z, t));
@@ -109,6 +109,22 @@ public final class MasterAnimationRules {
 		p(j(.28F, -.46F, .025F), j(-.13F, .22F, -.01F), j(-.12F, -.88F, -.60F), j(-.54F, .28F, .48F), .24F, 24.677765F),
 		p(j(.20F, -.74F, .02F), j(-.09F, .32F, -.01F), j(.12F, -1.15F, -.42F), j(-.38F, .18F, .35F), .24F, 5.301068F));
 
+	// Fault March raises a long overhead lever, drives it into the accepted ground lane, and
+	// braces against two transmitted shocks. The later beats never depict another sword hit.
+	// A slow extraction leaves the chest open until the shared recovery clock expires.
+	private static final Pose MARCH_GATHER = p(j(-.04F, 0, 0), j(.02F, 0, 0),
+		j(-1.45F, .08F, -.16F), j(-1.30F, -.10F, .28F), .32F, 38);
+	private static final Pose MARCH_OVERHEAD = p(j(-.18F, 0, 0), j(.08F, 0, 0),
+		j(-2.85F, 0, -.10F), j(-2.32F, .05F, .22F), .32F, 63.293F);
+	private static final Pose MARCH_STRIKE = p(j(.52F, 0, 0), j(-.24F, 0, 0),
+		j(-.38F, 0, -.08F), j(-.48F, -.12F, .62F), .32F, 101.772F);
+	private static final Pose MARCH_BRACE = p(j(.37F, 0, 0), j(-.16F, 0, 0),
+		j(-.50F, 0, -.08F), j(-.72F, -.10F, .45F), .32F, 108.648F);
+	private static final Pose MARCH_RECOIL = p(j(.46F, 0, 0), j(-.22F, 0, 0),
+		j(-.44F, 0, -.08F), j(-.60F, -.16F, .56F), .32F, 105.210F);
+	private static final Pose MARCH_EXTRACT = p(j(.24F, 0, 0), j(-.08F, 0, 0),
+		j(-1.06F, 0, -.24F), j(-.25F, -.08F, .62F), .32F, 75);
+
 	private static final Pose GUARD = p(j(.10F, .10F, 0), j(-.04F, 0, 0), j(-1.42F, -.55F, -.25F), j(-1.05F, .40F, -.25F), .14F, 0);
 	private static final Pose DODGE = p(j(.34F, -.18F, -.08F), j(-.18F, 0, .04F), j(-1.05F, .20F, -.35F), j(-.68F, -.18F, -.38F), .28F, 0);
 	private static final Pose STAGGER = p(j(-.15F, .06F, .03F), j(.12F, 0, 0), j(-.45F, .16F, .30F), j(-.35F, -.12F, -.40F), .12F, 0);
@@ -118,6 +134,12 @@ public final class MasterAnimationRules {
 	 * active is the hit's occupied tick count, followed by recovery. Both ends ease to vanilla.
 	 */
 	public static Pose sample(int attack, float age, int tell, int active, int recovery) {
+		// This committed multi-pulse form uses its executor clock, not a rescaled single hit.
+		if (attack == STONE_FAULT_MARCH) {
+			if (!Float.isFinite(age) || age < 0 || age >= StoneMarchRules.END || tell < 1 || tell > 80
+				|| active < 1 || active > 10 || recovery < 1 || recovery > 120) return NONE;
+			return march(age);
+		}
 		Motion motion = switch (attack) {
 			case SWEEP -> SWEEP_MOTION;
 			case THRUST -> THRUST_MOTION;
@@ -147,6 +169,24 @@ public final class MasterAnimationRules {
 		float enter = smooth(age / Math.max(1, chamberAt));
 		float leave = 1 - smooth((age - followAt) / (tell + active + recovery - followAt));
 		return pose.weight(enter * leave);
+	}
+
+	private static Pose march(float age) {
+		float gather = StoneMarchRules.TELL * .375F, overhead = StoneMarchRules.TELL * .75F;
+		float firstBrace = (StoneMarchRules.TELL + StoneMarchRules.SECOND) * .5F;
+		float secondBrace = (StoneMarchRules.SECOND + StoneMarchRules.THIRD) * .5F;
+		float settle = StoneMarchRules.THIRD + (StoneMarchRules.THIRD - StoneMarchRules.SECOND);
+		float extract = StoneMarchRules.THIRD + StoneMarchRules.RECOVERY * .5F;
+		Pose pose = age < gather ? MARCH_GATHER
+			: age < overhead ? MARCH_GATHER.toward(MARCH_OVERHEAD, smooth((age - gather) / (overhead - gather)))
+			: age < StoneMarchRules.TELL ? MARCH_OVERHEAD.toward(MARCH_STRIKE, smooth((age - overhead) / (StoneMarchRules.TELL - overhead)))
+			: age < firstBrace ? MARCH_STRIKE.toward(MARCH_BRACE, smooth((age - StoneMarchRules.TELL) / (firstBrace - StoneMarchRules.TELL)))
+			: age < StoneMarchRules.SECOND ? MARCH_BRACE.toward(MARCH_RECOIL, smooth((age - firstBrace) / (StoneMarchRules.SECOND - firstBrace)))
+			: age < secondBrace ? MARCH_RECOIL.toward(MARCH_BRACE, smooth((age - StoneMarchRules.SECOND) / (secondBrace - StoneMarchRules.SECOND)))
+			: age < StoneMarchRules.THIRD ? MARCH_BRACE.toward(MARCH_RECOIL, smooth((age - secondBrace) / (StoneMarchRules.THIRD - secondBrace)))
+			: age < settle ? MARCH_RECOIL.toward(MARCH_BRACE, smooth((age - StoneMarchRules.THIRD) / (settle - StoneMarchRules.THIRD)))
+			: age < extract ? MARCH_BRACE.toward(MARCH_EXTRACT, smooth((age - settle) / (extract - settle))) : MARCH_EXTRACT;
+		return pose.weight(smooth(age / gather) * (1 - smooth((age - extract) / (StoneMarchRules.END - extract))));
 	}
 
 	/** Already eased model-root yaw. Never multiply this angle by pose weight during recovery. */

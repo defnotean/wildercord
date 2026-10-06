@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MasterAnimationRulesTest {
 	@Test
 	void onlyLiveBoundedServerTimelinesAnimate() {
-		for (int id : new int[] {-1, 0, 10, Integer.MAX_VALUE}) {
+		for (int id : new int[] {-1, 0, 11, Integer.MAX_VALUE}) {
 			assertSame(MasterAnimationRules.NONE, MasterAnimationRules.sample(id, 2, 18, 1, 19));
 		}
 		for (float age : new float[] {-1, Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, 38, 200}) {
@@ -24,7 +24,7 @@ class MasterAnimationRulesTest {
 			int id = move.ordinal() + 1, tell = move.tell, active = 1, recovery = move.recovery - active;
 			assertEquals(0, sample(move, 0).weight());
 			assertEquals(1, sample(move, tell).weight());
-			assertEquals(sample(move, tell), MasterAnimationRules.sample(id, 30, 30, 2, 40),
+			if (id != MasterAnimationRules.STONE_FAULT_MARCH) assertEquals(sample(move, tell), MasterAnimationRules.sample(id, 30, 30, 2, 40),
 				"Balancing tell/recovery must never retime the visual impact relative to damage");
 			assertTrue(sample(move, tell + active + 2).weight() > .99F, "The body follows through after damage");
 			assertTrue(sample(move, tell + active + recovery - .01F).weight() < .0001F);

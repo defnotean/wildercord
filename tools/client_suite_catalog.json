@@ -1,7 +1,7 @@
 {
   "masters": {
-    "description": "Masters update combat, progression including learned Circle XII Reweave, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln counterplay and Crimson Moon release/lifetime acceptance.",
-    "expectedCount": 40,
+    "description": "Masters update combat, progression including learned Circle XII Reweave, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln and Stone Fault March counterplay and Crimson Moon release/lifetime acceptance.",
+    "expectedCount": 43,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
@@ -40,6 +40,9 @@
       "dev.wildercord.aura.world.EmberKilnTest",
       "dev.wildercord.aura.world.EmberKilnPresentationTest",
       "dev.wildercord.aura.world.EmberKilnOpponentViewTest",
+      "dev.wildercord.aura.world.StoneMarchTest",
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest",
       "dev.wildercord.cast.LifeOwnerCameraTest",
       "dev.wildercord.cast.LifeOutcomeTransportTest",
       "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
@@ -192,5 +195,15 @@
       "dev.wildercord.cast.LifeOutcomeRecipeTest",
       "dev.wildercord.cast.ExcisePlayableTest"
     ]
+  },
+  "stone-fault-march": {
+    "description": "Isolated Stone Fault March: natural admission, fixed-band counterplay and callback safety; original Classic/articulated front/side captures and real opponent FOV/reduced-effects trials. Native execution and manual visual acceptance are required.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchTest",
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+    ],
+    "purpose": "diagnostic"
   }
 }

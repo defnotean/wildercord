@@ -86,6 +86,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private EmberAfterburn afterburn;
 	private EmberKiln kiln;
 	private long kilnReadyAt;
+	private StoneMarch march;
+	private long marchReadyAt;
 	private MasterPursuit pursuit;
 	private long pursuitReadyAt;
 	private GaleReprise reprise;
@@ -376,6 +378,14 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	public Set<UUID> challengers() { return Set.copyOf(participants); }
 	public double auraRemaining() { return aura; }
 
+	boolean marchPending() { return march != null; }
+	boolean canBeginMarch(long now) {
+		return canBeginKiln(now) && now >= breathingUntil && !state(DASH);
+	}
+	boolean canMaintainMarch(StoneMarch instance) {
+		return march == instance && attack == MastersRules.Move.STONE_FAULT_MARCH && canMaintainAfterburn() && !isNoAi();
+	}
+
 	boolean kilnPending() { return kiln != null; }
 	boolean canBeginKiln(long now) { return canBeginReprise(now) && !guardNext && afterburn == null; }
 	boolean canMaintainKiln(EmberKiln instance) {
@@ -650,6 +660,12 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				return;
 			}
 		}
+		if (!MastersRules.needsCrescent(distanceTo(target), targetHeight)
+			&& !(target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4)
+			&& next != MastersRules.Move.CINDER_WAKE && target instanceof ServerPlayer player) {
+			StoneMarch opening = StoneMarch.prepare(this, player, discipline, sequence, aura, now, marchReadyAt);
+			if (opening != null && tryBeginMarch(level, player, now, opening)) return;
+		}
 		// Only the ordinary pattern fallback varies. Every earlier executor and priority retains its native admission.
 		if (ordinaryPlanner != null && ordinaryPlanner.state().successfulDecisions() > 0
 			&& !MastersRules.needsCrescent(distanceTo(target), targetHeight)
@@ -686,8 +702,25 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			&& MasterPursuit.prepare(this, player, discipline, aura, now, pursuitReadyAt) != null) return Set.of();
 		if (target instanceof ServerPlayer player
 			&& (GaleReprise.prepare(this, player, discipline, sequence, aura, now, repriseReadyAt) != null
-			|| EmberKiln.prepare(this, player, discipline, sequence, aura, now, kilnReadyAt) != null)) return Set.of();
+			|| EmberKiln.prepare(this, player, discipline, sequence, aura, now, kilnReadyAt) != null
+			|| StoneMarch.prepare(this, player, discipline, sequence, aura, now, marchReadyAt) != null)) return Set.of();
 		return MasterOrdinaryPlanner.spatialCandidates(distance, height);
+	}
+
+	/** An accepted proposal is paid exactly once on the server thread after all priority and geometry rechecks. */
+	private boolean tryBeginMarch(ServerLevel level, ServerPlayer target, long now, StoneMarch opening) {
+		if (discipline != MastersRules.STONE || target != getTarget() || !opening.ready(target, sequence, aura, now, marchReadyAt)
+			|| MastersRules.needsCrescent(distanceTo(target), target.getBoundingBox().getCenter().y - slashOrigin().y)
+			|| target.hasAttached(WildercordAttachments.CHARGE) && distanceTo(target) <= 4) return false;
+		for (UUID id : participants) if (level.getPlayerByUUID(id) instanceof ServerPlayer player
+			&& MasterPursuit.prepare(this, player, discipline, aura, now, pursuitReadyAt) != null) return false;
+		beginAttack(level, target, MastersRules.Move.STONE_FAULT_MARCH, now);
+		march = opening;
+		marchReadyAt = now + StoneMarchRules.COOLDOWN;
+		recoverUntil = Math.max(recoverUntil, opening.endsAt());
+		guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+		if (!opening.tick(now)) cancelAttack();
+		return true;
 	}
 
 	private boolean tryBeginOrdinary(ServerLevel level, LivingEntity target, long now, MasterOrdinaryPlanner.Proposal proposal) {
@@ -720,7 +753,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			: move == MastersRules.Move.PURSUIT_BREAK ? MasterPursuitRules.school(discipline).cost()
 			: move == MastersRules.Move.CROSSWIND_REPRISE ? GaleRepriseRules.COST
 			: move == MastersRules.Move.STONE_FRACTURE ? StoneFractureRules.COST
-			: move == MastersRules.Move.KILN_RING ? EmberKilnRules.COST : MastersRules.ATTACK_COST;
+			: move == MastersRules.Move.KILN_RING ? EmberKilnRules.COST
+			: move == MastersRules.Move.STONE_FAULT_MARCH ? StoneMarchRules.COST : MastersRules.ATTACK_COST;
 		attackAt = now + move.tell;
 		if (ordinaryPlanner != null) {
 			if (proposal == null) ordinaryPlanner.admittedExternal(move);
@@ -745,7 +779,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		getNavigation().stop();
 		Feels.sound(level, position(), "duelist_knight_windup", 1, move == MastersRules.Move.BREAK_CAST ? 1.3F : 0.9F);
 		AuraFx.banner(this, Component.translatable("boss.wildercord.master." + move.name().toLowerCase(java.util.Locale.ROOT)),
-			move == MastersRules.Move.KILN_RING ? Component.translatable("message.wildercord.master.kiln_hint") : Component.empty(), auraColor(), AuraFxRules.BannerKind.ART);
+			move == MastersRules.Move.KILN_RING ? Component.translatable("message.wildercord.master.kiln_hint")
+				: move == MastersRules.Move.STONE_FAULT_MARCH ? Component.translatable("message.wildercord.master.march_hint") : Component.empty(), auraColor(), AuraFxRules.BannerKind.ART);
 	}
 
 	private void tickAttack(ServerLevel level, long now, LivingEntity target) {
@@ -759,6 +794,22 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			recoverUntil = Math.max(recoverUntil, now + recovery);
 			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
 			return; // A missed ordinary release expires harmlessly instead of delivering a late, stale warning.
+		}
+		if (attack == MastersRules.Move.STONE_FAULT_MARCH) {
+			StoneMarch running = march;
+			if (running != null && running.tick(now)) return;
+			if (attack != MastersRules.Move.STONE_FAULT_MARCH || march != running) return;
+			if (running == null || !running.released()) cancelAttack();
+			else {
+				march = null; attack = null;
+				setState(WINDUP, false);
+				guardNext = MastersRules.guardAfter(discipline, ++sequence);
+				retargetBetweenAttacks(level);
+			}
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+			recoverUntil = Math.max(recoverUntil, now + StoneMarchRules.RECOVERY);
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+			return;
 		}
 		if (attack == MastersRules.Move.KILN_RING) {
 			EmberKiln running = kiln;
@@ -1009,6 +1060,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	private void cancelAttack() {
 		endOrdinaryPhrase();
+		if (march != null) {
+			march.stop();
+			recoverUntil = Math.max(recoverUntil, Math.max(march.endsAt(), level().getGameTime() + StoneMarchRules.RECOVERY));
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+		}
+		march = null;
 		if (kiln != null) {
 			kiln.stop();
 			recoverUntil = Math.max(recoverUntil, Math.max(kiln.endsAt(), level().getGameTime() + EmberKilnRules.RECOVERY));

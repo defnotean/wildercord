@@ -1,10 +1,10 @@
 # Master move catalog and bounded transition proposal
 
-Status (2026-10-06): the current catalog contains nine authored attack IDs, including Kiln Ring after its separate native acceptance. This isolated patch connects bounded ordinary-pattern selection to the existing pure planner. The live adapter itself is a source candidate independently source-reviewed and pending fresh integrated native gates; it adds zero attacks. Historical foundation/candidate sections below describe the earlier gates, not current delivery claims.
+Status (2026-10-06): nine attacks are established, including Kiln Ring after its separate native acceptance. This isolated Stone Fault March slice appends candidate ID 10 after base `2f182b303d0422c18cb3b666492dcd14947f4bae`. Its physical catalog has ten definitions and 20 school/action references; the accepted attack count remains **nine** until independent review and actual native counterplay/choreography acceptance. The existing ordinary planner still adds zero attacks. Historical foundation/candidate sections below describe earlier gates, not current delivery claims.
 
 ## What exists
 
-`MastersRules.Move` contains **nine named attack actions across all schools**. Five are shared: Sweep, Thrust, Crescent, Break Cast, and Pursuit Break. Ember adds Cinder Wake and Kiln Ring; Gale adds Crosswind Reprise; Stone adds Stone Fracture. Ember exposes seven actions, Gale and Stone six each: 19 school/action references, nine distinct action IDs. Pursuit's three school tuning profiles are variants of one authored attack, not three new moves. Guard, bolt cutting/redirection, evasion, breathing, individual hits, party lanes, phase reordering, and attack combinations are not additional authored attacks.
+Before this candidate, `MastersRules.Move` contains **nine established named attack actions across all schools**. Five are shared: Sweep, Thrust, Crescent, Break Cast, and Pursuit Break. Ember adds Cinder Wake and Kiln Ring; Gale adds Crosswind Reprise; Stone adds Stone Fracture. Ember exposes seven actions, Gale and Stone six each: 19 school/action references, nine distinct action IDs. Pursuit's three school tuning profiles are variants of one authored attack, not three new moves. Guard, bolt cutting/redirection, evasion, breathing, individual hits, party lanes, phase reordering, and attack combinations are not additional authored attacks.
 
 | Wire ID | Action | Availability | Tell / recovery ticks | Aura |
 | --- | --- | --- | --- | --- |
@@ -17,6 +17,7 @@ Status (2026-10-06): the current catalog contains nine authored attack IDs, incl
 | 7 | Crosswind Reprise | Gale | 22 / 32 | 24 |
 | 8 | Stone Fracture | Stone | 32 / 40 | 28 including brace |
 | 9 | Kiln Ring | Ember | 40 / 48 | 28 |
+| 10 (candidate) | Stone Fault March | Stone | 32 / 64 (pulses 32, 40, 48; end 96) | 30 |
 
 Recovery values are the server's existing values. The rendered active hit occupies one of those ticks: the client currently receives active = 1 and visual recovery = recovery - 1. Cinder Wake's separately warned second hit occurs 26 ticks into its 56-tick recovery; it is a single two-beat action, not a second graph node. A new attack cannot begin merely because that first cut finished.
 
@@ -28,7 +29,7 @@ Offensive enrollment is narrower than ownership: `participant`, `canHarmParticip
 
 Ordinary attacks lock aim six ticks before release; Cinder Wake and the movement signatures accept fixed geometry before their first warning. Pursuit uses a server-authored charge aged at least six ticks and never reads private input, a future action, or a client's requested move. Its same-charge token is checked through impact. Movement uses native collision and safe supported paths; displacement, missed ticks, invalid roster or lifecycle changes cancel. Cover can shorten a warned lane but its removal cannot expand accepted reach. Existing `projected`, spell defenses, guard/parry callbacks, `MasterHitReceipt`, `CastHitRules`, and `Statuses.interrupt` own resolved damage and interruption immunity.
 
-Presentation currently syncs integer attack ID, start tick, and aim pitch. IDs derive from enum ordinal + 1 and are duplicated explicitly in `MasterAnimationRules`. The rigid body/weapon sampler supports all eight; the articulated master sampler supports IDs 1, 7, and 8, with explicit rigid fallback elsewhere. `MasterRenderer` reads accepted server state and clears vanilla swings on cancellation. A catalog cannot quietly replace this with client move choice or equate a renderer stub with authored choreography.
+Presentation currently syncs integer attack ID, start tick, and aim pitch. IDs derive from enum ordinal + 1 and are duplicated explicitly in `MasterAnimationRules`. The established rigid body/weapon sampler supports IDs 1–9; the established articulated Master sampler supports IDs 1, 7, 8, and 9 (including Kiln Ring), with explicit rigid fallback elsewhere. This candidate appends original Classic and articulated ID 10 clips on the same authoritative 32/40/48/96 timeline. `MasterRenderer` reads accepted server state and clears vanilla swings on cancellation. A catalog cannot quietly replace this with client move choice or equate a renderer stub with authored choreography.
 
 ## Distinct-attack acceptance bar and honest counts
 
@@ -187,3 +188,7 @@ New `MasterOrdinaryPlannerTest` source drives ordinary AI through the real openi
 Only deliberately variable fallback assertions changed in `GaleRepriseChecks` and `StoneFractureChecks`: later fixed Thrust/Sweep/Crescent IDs become assertions that the admitted ID is one of the three ordinary actions, and exhaustion waits use that actual action's tell/recovery. Exact authored first openers, mandatory successful signature admission, native signature movement/hits, full special recovery, paid cooldown, guard and Aura remainders remain asserted. The old fallback ordering is no longer the contract; no signature check is skipped or replaced by a permissive wait. `MasterAntiAirTest` also replaces its old 21-tick post-interruption retry expectation with a negative assertion at that boundary and a fresh admitted Crescent only at the original 20 + 24 window. It samples aim lock and release at exact accepted server ticks; its elevation, actual projectile damage, cover and synchronized-pitch assertions remain intact.
 
 No new assets, renderer poses or attack IDs are added. Existing presentation/native suites must be rerun on the integrated source. Local focused compilation is not Loom, package, rendered-play acceptance or native execution. This worktree performs no remote writes, publication, merge or release.
+
+## Isolated Stone Fault March candidate (2026-10-06)
+
+See [the complete accepted-policy contract and native gates](stone-fault-march.md). The three ordinary graph candidates, graphs and phrase caps remain unchanged. March is a lower-priority, paid external admission and enters the same signature history once. Its fixed ground bands, advancing front, body-sized lateral exits and spent-ground inward route are a new proposed gameplay/choreography decision, pending native acceptance.

@@ -71,6 +71,8 @@ LANG = {
     "message.wildercord.master.fracture_hint": "Reply in 0.6s: sidestep, backstep, use cover or face the blade and parry.",
     "message.wildercord.master.stone_lesson": "Stone master: I plant for 0.4s, brace for 0.6s, then warn a narrow reply for 0.6s. Hit my back during the brace, break my stance or axe the guard. Leave the reply lane or parry, then counter for 2s. Each attempt costs 28 Aura, with at least 9s between attempts.",
     "boss.wildercord.master.kiln_ring": "Kiln Ring",
+    "boss.wildercord.master.stone_fault_march": "Stone Fault March",
+    "message.wildercord.master.march_hint": "Three ground bands strike outward. Step sideways, jump the low pulse, or move inward onto spent ground.",
     "message.wildercord.master.kiln_hint": "Step inside the blue rim, escape the outer edge, or jump over the low ring.",
     "boss.wildercord.master.cinder_wake": "Cinder Wake: leave the broad cut",
     "boss.wildercord.master.afterburn": "Afterburn: leave the marked lanes",

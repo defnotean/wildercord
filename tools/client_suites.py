@@ -29,6 +29,11 @@ STONE_VELOCITY_PREFIX = "STONE_HINGE_VELOCITY_COMPARISON "
 STONE_VELOCITY_RESULT = ("owner_cases=15 owner_gate=observed peer_gate=NOT_PROVEN latency_gate=NOT_PROVEN "
                          "admission_gate=NOT_PROVEN movement_gate=NOT_PROVEN gameplay_enabled=false "
                          "conditional_aura=20 conditional_shared_rest_ticks=120 conditional_brace_ticks=6 conditional_catch_ticks=12")
+STONE_MARCH_ENTRIES = (
+    'dev.wildercord.aura.world.StoneMarchTest',
+    'dev.wildercord.aura.world.StoneMarchPresentationTest',
+    'dev.wildercord.aura.world.StoneMarchOpponentViewTest',
+)
 LIFE_EXCISE_ENTRIES = (
     "dev.wildercord.client.fx.LifeRecipeTest",
     "dev.wildercord.client.fx.LifeFormationTest",
@@ -93,6 +98,8 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
             raise ValueError("Movement foundations requires exactly both whole diagnostic classes in order")
         if suite == "diagnostic-excise" and (purpose != "diagnostic" or selected != list(EXCISE_ENTRIES)):
             raise ValueError("Excise diagnostic requires its exact complete registered class")
+        if suite == "stone-fault-march" and (purpose != "diagnostic" or selected != list(STONE_MARCH_ENTRIES)):
+            raise ValueError("Stone Fault March requires exactly three complete diagnostic classes in order")
         return {"kind": "diagnostic" if purpose == "diagnostic" else "suite",
                 "name": suite, "count": len(selected), "entries": selected}
     if shard is not None:
@@ -145,6 +152,9 @@ def selection_issues(log, selection):
     if selection.get("name") == "diagnostic-life-excise":
         _, completion_issues = life_excise_completion(log)
         issues.extend(completion_issues)
+    if selection.get("name") == "stone-fault-march":
+        _, completion_issues = stone_march_completion(log)
+        issues.extend(completion_issues)
     return issues
 
 
@@ -195,6 +205,10 @@ def excise_completion(log):
 def life_excise_completion(log):
     """Generic Life coverage and the custom held route must all cleanly return."""
     return _whole_class_completion(log, LIFE_EXCISE_ENTRIES, "Life and Excise")
+
+
+def stone_march_completion(log):
+    return _whole_class_completion(log, STONE_MARCH_ENTRIES, "Stone Fault March")
 
 
 def _whole_class_completion(log, entries, label):

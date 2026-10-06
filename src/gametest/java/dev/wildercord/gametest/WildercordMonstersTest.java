@@ -87,6 +87,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		if (System.getenv("WILDERCORD_TOUR_ONLY") != null || System.getenv("WILDERCORD_CORDS_ONLY") != null || System.getenv("WILDERCORD_SHOWCASE") != null) {
 			return;
 		}
+		BrambleFireProbeChecks.verify();
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
 			context.waitTicks(40);
 			context.runOnClient(mc -> {
@@ -449,26 +450,37 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		check(hurt < 20, "the lash should sting (health " + hurt + ")");
 
 		// Fire: it panics and runs.
-		double near = world.getServer().computeOnServer(server -> {
-			ServerPlayer player = player(server);
-			player.setGameMode(GameType.CREATIVE);
-			Bramblewalker walker = (Bramblewalker) player.level().getEntity(id);
-			walker.setTarget(null);
-			walker.igniteForSeconds(5);
-			return walker.distanceTo(player);
-		});
-		context.waitTicks(40);
-		String running = world.getServer().computeOnServer(server -> {
-			Bramblewalker walker = (Bramblewalker) player(server).level().getEntity(id);
-			if (walker == null || !walker.isAlive()) {
-				return null;
-			}
-			if (!walker.fleeing()) {
-				return "a burning Bramblewalker should be fleeing";
-			}
-			double far = walker.distanceTo(player(server));
-			return far > near + 1.5 ? null : "a burning Bramblewalker should run away (from " + String.format("%.1f", near) + " to " + String.format("%.1f", far) + ")";
-		});
+		BrambleFireProbe.Session[] trace = new BrambleFireProbe.Session[1];
+		String running;
+		try {
+			double near = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = player(server);
+				player.setGameMode(GameType.CREATIVE);
+				Bramblewalker walker = (Bramblewalker) player.level().getEntity(id);
+				walker.setTarget(null);
+				walker.igniteForSeconds(5);
+				trace[0] = BrambleFireProbe.begin(player.level(), walker, player);
+				return walker.distanceTo(player);
+			});
+			context.waitTicks(40);
+			running = world.getServer().computeOnServer(server -> {
+				try {
+					Bramblewalker walker = (Bramblewalker) player(server).level().getEntity(id);
+					if (walker == null || !walker.isAlive()) {
+						return null;
+					}
+					if (!walker.fleeing()) {
+						return "a burning Bramblewalker should be fleeing";
+					}
+					double far = walker.distanceTo(player(server));
+					return far > near + 1.5 ? null : "a burning Bramblewalker should run away (from " + String.format("%.1f", near) + " to " + String.format("%.1f", far) + ")";
+				} finally {
+					BrambleFireProbe.finish(trace[0]);
+				}
+			});
+		} finally {
+			BrambleFireProbe.close(trace[0]);
+		}
 		director(context, world, at.add(-8, 5, -4), at.add(0, 0.5, 4));
 		shot(context, "bramblewalker_burning");
 		check(running == null, running);

@@ -3,6 +3,7 @@ package dev.wildercord.aura;
 import dev.wildercord.aura.world.GaleRepriseRules;
 import dev.wildercord.aura.world.MasterAnimationRules;
 import dev.wildercord.aura.world.StoneFractureRules;
+import dev.wildercord.aura.world.StoneMarchRules;
 
 /**
  * Original, Minecraft-independent articulated shared-player arts and selected sword-master choreography.
@@ -19,7 +20,7 @@ public final class ArticulatedCombatPose {
 	public static final int HAILFALL = 15, SKYFALL = 16;
 	public static final int COLLAPSE = 17, RED_RAIN = 18;
 	public static final int CRIMSON_MOON = 19;
-	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9;
+	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
 	public record Vec3(float x, float y, float z) {
@@ -315,6 +316,29 @@ public final class ArticulatedCombatPose {
 			arm(r(0, .05F, .025F), r(-.34F, .18F, .35F), -.82F, r(.08F, -.10F, .10F)), VIEW_BIND),
 		v(-2.6F, 22, 1.1F), v(2.6F, 22, -1.1F));
 
+	// Fault March keeps a fixed horizontal heading and both feet planted. Its overhead lever
+	// becomes a sunk blade, followed by two small braced shocks and an exposed extraction.
+	// Every arm has its own shoulder/elbow/wrist; the item uses the existing child hand socket.
+	private static final Key MARCH_GATHER = new Key(v(0, 1.25F, .12F), r(.02F, 0, 0), r(-.015F, 0, 0), r(-.035F, 0, 0), r(.03F, 0, 0),
+		arm(r(.02F, 0, -.03F), r(-1.28F, .06F, -.16F), -.82F, r(.88F, -.06F, .13F)),
+		arm(r(0, .04F, .025F), r(-1.06F, -.15F, .22F), -.90F, r(.10F, -.08F, .10F)), VIEW_BIND);
+	private static final Key MARCH_OVERHEAD = new Key(v(0, 1.20F, .22F), r(-.065F, 0, 0), r(-.045F, 0, 0), r(-.08F, 0, 0), r(.10F, 0, 0),
+		arm(r(.02F, 0, -.025F), r(-2.52F, 0, -.12F), -.48F, r(1.42F, 0, 0)),
+		arm(r(0, .035F, .025F), r(-2.12F, .08F, .20F), -.62F, r(.18F, -.10F, .12F)), VIEW_BIND);
+	private static final Key MARCH_STRIKE = new Key(v(0, .85F, -.90F), r(.09F, 0, 0), r(.18F, 0, 0), r(.25F, 0, 0), r(-.28F, 0, 0),
+		arm(r(.02F, 0, -.025F), r(-.50F, 0, -.10F), -.30F, r(1.6563F, 0, .10F)),
+		arm(r(0, -.04F, .035F), r(-.32F, -.12F, .62F), -.52F, r(.10F, -.10F, .14F)), VIEW_BIND);
+	private static final Key MARCH_BRACE = new Key(v(0, .75F, -.64F), r(.075F, 0, 0), r(.12F, 0, 0), r(.175F, 0, 0), r(-.20F, 0, 0),
+		arm(r(.015F, 0, -.025F), r(-.60F, 0, -.10F), -.40F, r(2.0113F, 0, .10F)),
+		arm(r(0, -.035F, .03F), r(-.58F, -.10F, .45F), -.68F, r(.10F, -.10F, .12F)), VIEW_BIND);
+	private static final Key MARCH_RECOIL = new Key(v(0, 1.02F, -.76F), r(.085F, 0, 0), r(.15F, 0, 0), r(.225F, 0, 0), r(-.25F, 0, 0),
+		arm(r(.02F, 0, -.025F), r(-.54F, 0, -.10F), -.36F, r(1.8163F, 0, .10F)),
+		arm(r(0, -.04F, .035F), r(-.45F, -.16F, .56F), -.60F, r(.10F, -.10F, .14F)), VIEW_BIND);
+	private static final Key MARCH_EXTRACT = new Key(v(0, .90F, -.36F), r(.085F, 0, 0), r(.07F, 0, 0), r(.085F, 0, 0), r(-.10F, 0, 0),
+		arm(r(.025F, 0, -.035F), r(-.92F, 0, -.22F), -.78F, r(1.76F, 0, .18F)),
+		arm(r(0, -.03F, .025F), r(-.16F, -.08F, .62F), -.54F, r(.08F, -.10F, .12F)), VIEW_BIND);
+	private static final Vec3 MARCH_RIGHT_PLANT = v(-2.65F, 22, 1.70F), MARCH_LEFT_PLANT = v(2.65F, 22, -1.70F);
+
 	// Kindling gathers the hilt beside the rear hip, opens the elbow into a low draw-cut,
 	// then lets the blade and free arm travel outward. The separate ground fire line is
 	// the existing performer's effect; neither this planted motion nor its view moves the player.
@@ -498,7 +522,7 @@ public final class ArticulatedCombatPose {
 
 	/** Only these original NPC clips own the segmented backend; every other ID keeps its fallback. */
 	public static boolean supportsMaster(int attack) {
-		return attack == MASTER_SWEEP || attack == MASTER_CROSSWIND_REPRISE || attack == MASTER_STONE_FRACTURE || attack == MASTER_EMBER_KILN_RING;
+		return attack == MASTER_SWEEP || attack == MASTER_CROSSWIND_REPRISE || attack == MASTER_STONE_FRACTURE || attack == MASTER_EMBER_KILN_RING || attack == MASTER_STONE_FAULT_MARCH;
 	}
 
 	/** The sole locomotion exception: Gale's four accepted step ticks, never ordinary walking. */
@@ -510,7 +534,9 @@ public final class ArticulatedCombatPose {
 
 	/** Accepted tell/active/recovery windows are shared with the server, including school-form beats. */
 	public static Pose sampleMaster(int attack, float age, int tell, int active, int recovery, boolean leftHanded) {
-		if (!supportsMaster(attack) || !valid(age, tell, 80, recovery) || active < 1 || active > 10 || age >= tell + active + recovery) return NONE;
+		if (!supportsMaster(attack) || !valid(age, tell, 80, recovery) || active < 1 || active > 10) return NONE;
+		if (attack == MASTER_STONE_FAULT_MARCH) return age < StoneMarchRules.END ? march(age, leftHanded) : NONE;
+		if (age >= tell + active + recovery) return NONE;
 		if (attack == MASTER_EMBER_KILN_RING) return kiln(age, tell, active, recovery, leftHanded);
 		if (attack == MASTER_CROSSWIND_REPRISE) return reprise(age, tell, active, recovery, leftHanded);
 		if (attack == MASTER_STONE_FRACTURE) return fracture(age, tell, active, recovery, leftHanded);
@@ -616,6 +642,29 @@ public final class ArticulatedCombatPose {
 			plant(local, left, v(left ? 1.9F : -1.9F, 22, 0).toward(target, weight), pole, footTurn);
 		}
 		return new Pose(weight, posed.phase, leftHanded ? reflect(local) : local, VIEW_BIND);
+	}
+
+	private static Pose march(float age, boolean leftHanded) {
+		float gather = StoneMarchRules.TELL * .375F, overhead = StoneMarchRules.TELL * .75F;
+		float firstBrace = (StoneMarchRules.TELL + StoneMarchRules.SECOND) * .5F;
+		float secondBrace = (StoneMarchRules.SECOND + StoneMarchRules.THIRD) * .5F;
+		float settle = StoneMarchRules.THIRD + (StoneMarchRules.THIRD - StoneMarchRules.SECOND);
+		float extract = StoneMarchRules.THIRD + StoneMarchRules.RECOVERY * .5F;
+		Key key = age < gather ? MARCH_GATHER
+			: age < overhead ? MARCH_GATHER.toward(MARCH_OVERHEAD, smooth((age - gather) / (overhead - gather)))
+			: age < StoneMarchRules.TELL ? MARCH_OVERHEAD.toward(MARCH_STRIKE, smooth((age - overhead) / (StoneMarchRules.TELL - overhead)))
+			: age < firstBrace ? MARCH_STRIKE.toward(MARCH_BRACE, smooth((age - StoneMarchRules.TELL) / (firstBrace - StoneMarchRules.TELL)))
+			: age < StoneMarchRules.SECOND ? MARCH_BRACE.toward(MARCH_RECOIL, smooth((age - firstBrace) / (StoneMarchRules.SECOND - firstBrace)))
+			: age < secondBrace ? MARCH_RECOIL.toward(MARCH_BRACE, smooth((age - StoneMarchRules.SECOND) / (secondBrace - StoneMarchRules.SECOND)))
+			: age < StoneMarchRules.THIRD ? MARCH_BRACE.toward(MARCH_RECOIL, smooth((age - secondBrace) / (StoneMarchRules.THIRD - secondBrace)))
+			: age < settle ? MARCH_RECOIL.toward(MARCH_BRACE, smooth((age - StoneMarchRules.THIRD) / (settle - StoneMarchRules.THIRD)))
+			: age < extract ? MARCH_BRACE.toward(MARCH_EXTRACT, smooth((age - settle) / (extract - settle))) : MARCH_EXTRACT;
+		float weight = smooth(age / gather) * (1 - smooth((age - extract) / (StoneMarchRules.END - extract)));
+		Pose posed = assemble(key, weight, age, StoneMarchRules.TELL, 1, MARCH_RIGHT_PLANT, MARCH_LEFT_PLANT, leftHanded);
+		boolean pulse = age >= StoneMarchRules.TELL && age < StoneMarchRules.TELL + 1
+			|| age >= StoneMarchRules.SECOND && age < StoneMarchRules.SECOND + 1
+			|| age >= StoneMarchRules.THIRD && age < StoneMarchRules.THIRD + 1;
+		return new Pose(weight, pulse ? Phase.ACTIVE : posed.phase, posed.local, VIEW_BIND);
 	}
 
 	private static Pose fracture(float age, int tell, int active, int recovery, boolean leftHanded) {

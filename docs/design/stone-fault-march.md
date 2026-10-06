@@ -1,0 +1,39 @@
+# Stone Fault March — isolated candidate
+
+This branch starts at `2f182b303d0422c18cb3b666492dcd14947f4bae`, independently of pending Excise work. The accepted attack count is **nine**. This appends stable ID 10 / `wildercord:master/stone_fault_march` after checking that Kiln Ring is the highest existing ID, 9. Source implementation, tests and pose sampling do not establish human balance or native visuals. Acceptance requires independent exact-source review and actual native counterplay/choreography evidence.
+
+## Authoritative contract
+
+Stone only. An ordinary fallback with `sequence % 4 == 3` may propose March after the existing pursuit, due guard/Fracture, evasion, approach, line-of-sight, range/height and casting responses have declined. Preparation is read-only. The exact proposal is revalidated on the server thread before its one 30-Aura debit and 220-tick rest from acceptance. A failed proposal does not pay, warn, move, consume a planner decision or alter the cooldown. Existing finite Aura and mandatory guards can leave only 28 Aura at sequence 3; that slot then declines normally, without free funding or skipping breathing.
+
+The three ordinary graph candidates and graph topology remain unchanged. `admittedExternal` records March once and ends the phrase. Revalidation of a stale ordinary proposal checks the new priority before payment.
+
+The accepted feet origin and horizontal direction never move or retarget. Three width-3.5 ground bands occupy forward [1.5, 3.5), [3.5, 5.5), [5.5, 7.5], with feet-height interval −0.05 through 0.65. They pulse only at ages 32, 40 and 48. The first two far edges are exclusive; the last edge is inclusive. Every enrolled player gets at most one **attempt** across the entire action, including full defense or a native damage veto. Base damage 24 uses the existing Stone multiplier (26.4 before defenses), projected source and normal Aura/armor/ward/absorption sinks. There is no additional launch, hold, slow, cast interruption or terrain write.
+
+Payment reserves the original end at age 96. Cancellation retains payment, rest and at least max(original end, cancellation tick + 48). Every remaining band becomes harmless. Duplicate ticks are inert; skipped, reversed or mismatched ticks cancel without catch-up damage. Native downward contact is preserved while horizontal travel is braked.
+
+## Geometry and counterplay
+
+Admission captures the longest flat, resident, safe and uncovered prefix. A missing support block, low collision shape (including thin cover) or arena boundary discards its band and every farther band. The first prefix also checks propagation between the origin and the near edge. Conservative oriented-rectangle/box overlap tests the entire collision shape, not a handful of rays. Removing the original obstacle can never restore unwarned harm. New cover/support loss shrinks that same prefix or cancels; geometry never moves into another player.
+
+Every currently threatened participant needs a body-sized lateral route outside the lane. Whole swept body volumes, including the actual native collision-query chunk halo, are checked for residency, arena/world bounds, fluids, collision, hazardous blocks and living nonspectator bodies. Hazards include collision-free wither roses as well as fire, berries, magma, campfires, cactus, powder snow and pointed dripstone. Current safety is checked through the tell and at every pulse and damage callback. A jump above the feet-height band or a side step escapes; moving inward after the first pulse reaches permanently spent ground and the exposed blade.
+
+The exact enrolled UUID roster and its original ServerPlayer body identities (maximum eight) are retained. Respawn or same-UUID replacement retires the pending action; a new body cannot inherit a snapshot hit. Outsiders, spectators and companions never become outgoing victims. Each pulse snapshots initially eligible victims in UUID order before any callback. A callback may remove a victim or cancel the action, never add a previously safe victim to the resolving pulse. A defeat caused by that pulse does not shield later snapshot victims; unrelated departure/invalidation cancels. Reentrant cancellation also stops later victims even while the installed executor has not yet unwound. All existing source ownership and permission/party/ward sinks remain authoritative.
+
+One/two/three crossbars identify the forward band order. Boundary lines stay at the accepted geometry, and spent/withdrawn bands become cyan. Each actual impact has a separate short accent. Final spent boundaries remain visible during exposed recovery. Reduced-effects first-person legibility must be judged from native pixels; this text is not a visual certificate.
+
+## Original choreography
+
+Classic and articulated clips share `StoneMarchRules` ages. The sword gathers overhead, drives down for the first strike at 32, then remains braced for short transmitted recoils at 40 and 48. Extraction and reset occupy the exposed remainder through 96. The model root stays planted at its accepted heading. This is an independently authored blade/body sequence, not Thrust under another name.
+
+Articulated support admits ID 10 through the existing hand socket, armor, funded Aura shell and whole-model fallback routes. Focused tests scan the entire timeline for continuity, finite transforms, planted soles, sword direction, handedness and shell/armor winding. Previous samplers are preserved; an independent exact-base frame comparison accompanies the review evidence. Actual native front/side and opponent footage remains required.
+
+## Verification and native acceptance
+
+Three registered native classes are selectable with `python tools/run_client_ci.py --suite stone-fault-march`:
+
+- `StoneMarchTest`: natural admission/payment/rest/phrase, solo and eight participants, held/side/inward/spent routes, a one-attempt zero-damage veto, real guard/parry/armor/absorption/Foresight, permanent initial thin-cover/gap clipping, new obstruction/support loss/body congestion/hazards, roster/spectator/owner changes, same-pulse death, callback entry/exit/cancellation, duplicate and bad-clock callbacks, and the full recovery reservation.
+- `StoneMarchPresentationTest`: fresh natural acceptance for every original Classic/articulated front and side beat, plus whole-lane warning and spent-ground frames. Native socket/model and geometry receipts remain enforced.
+- `StoneMarchOpponentViewTest`: real enrolled-client movement/jump input, FOV 70/90/110, both body backends, normal/reduced presentation, every harmful beat and recovery; additional side-step, early/late jump and cancellation trials. These native images explicitly retain `manual_review_pending` until reviewed.
+
+The three classes are intentionally isolated in their own focused suite and appended to the full Fabric registration. Existing 39-suite integration selection is unchanged until this candidate is accepted for integration. No source fixture or pure sampler result substitutes for execution. Native CI, packaged artifact and human counterplay/visual acceptance must use the immutable final source fingerprint. This slice contains no remote push, deployment, new dependency or live-world edit.

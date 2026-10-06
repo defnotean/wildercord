@@ -44,7 +44,8 @@ public final class MastersRules {
 		PURSUIT_BREAK(MasterPursuitRules.TELL, MasterPursuitRules.RECOVERY, MasterPursuitRules.DAMAGE),
 		CROSSWIND_REPRISE(GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY, GaleRepriseRules.DAMAGE),
 		STONE_FRACTURE(StoneFractureRules.TELL, StoneFractureRules.RECOVERY, StoneFractureRules.DAMAGE),
-		KILN_RING(EmberKilnRules.TELL, EmberKilnRules.RECOVERY, EmberKilnRules.DAMAGE);
+		KILN_RING(EmberKilnRules.TELL, EmberKilnRules.RECOVERY, EmberKilnRules.DAMAGE),
+		STONE_FAULT_MARCH(StoneMarchRules.TELL, StoneMarchRules.END - StoneMarchRules.TELL, StoneMarchRules.DAMAGE);
 
 		public final int tell, recovery;
 		public final double damage;
@@ -145,6 +146,7 @@ public final class MastersRules {
 			case CROSSWIND_REPRISE -> GaleRepriseRules.hits(forward, side, height);
 			case STONE_FRACTURE -> StoneFractureRules.hits(forward, side, height);
 			case KILN_RING -> EmberKilnRules.hits(forward, side, height);
+			case STONE_FAULT_MARCH -> StoneMarchRules.band(forward, side, height) >= 0;
 			case CRESCENT -> false; // The shared Crescents flight owns collision.
 		};
 	}

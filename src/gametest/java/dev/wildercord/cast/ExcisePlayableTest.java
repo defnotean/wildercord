@@ -49,11 +49,14 @@ import java.util.Set;
 
 /** Connected ordinary study/equip/rebound hold; real Witch native Zones are the counterproof. */
 public final class ExcisePlayableTest implements FabricClientGameTest {
+    private record Pulse(long tick, boolean excised, int remaining) {}
+    private record Cut(long tick, long began, int pulses, int remaining) {}
     private static final class Probe {
         ServerPlayer player; Witch witch; TrainingDummy target;
         List<NativeZoneEmitters.Emitter> emitters = List.of();
         NativeZoneEmitters.Emitter selected;
-        final Map<Long, Integer> pulses = new HashMap<>();
+        final Map<Long, List<Pulse>> pulses = new HashMap<>();
+        Cut cut;
         int payments, cost; float before, after;
         long rest, poisonHits, recovery, cancelledAt;
         double masteryBefore;
@@ -122,6 +125,10 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                 context.waitTicks(16);
                 server.runOnServer(s -> {
                     check(probe.selected.excised && !probe.selected.allowsPulse() && probe.selected.cast.alive(), "Only the selected local emitter is cut; its shared Cast remains alive");
+                    check(probe.cut != null && probe.cut.tick() - probe.cut.began() == 16,
+                        "The actual native cut callback occurs at the paid sixteen-tick deadline");
+                    check(probe.cut.pulses() >= 1 && probe.cut.pulses() < 6 && probe.cut.remaining() == 6 - probe.cut.pulses(),
+                        "The cut preserves completed pulses and owns only the original remaining pulses");
                     check(MasterStudies.practicedExcise(probe.player), "Only the real completed cut records practice");
                     Mastery.flush(probe.player);
                     check(mastery() > probe.masteryBefore && mastery() - probe.masteryBefore <= dev.wildercord.spell.MasteryRules.MAX_PER_CAST,
@@ -134,7 +141,12 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                 });
                 context.getInput().releaseKey(key[0]); context.waitTicks(104);
                 server.runOnServer(s -> {
-                    check(count(probe.selected) == 1, "The selected emitter emits no later pulse");
+                    pulseReceipt("expired");
+                    check(probe.emitters.stream().allMatch(e -> ExciseCasting.now(probe.player) >= e.expires),
+                        "The post-cut observation covers every original emitter's expiry");
+                    check(count(probe.selected) == probe.cut.pulses() && probe.selected.remaining == probe.cut.remaining()
+                        && probe.pulses.get(probe.selected.id).stream().noneMatch(Pulse::excised),
+                        "The selected emitter emits no pulse after the actual cut; its count and remaining work stay fixed");
                     check(probe.emitters.stream().filter(e -> e != probe.selected).allMatch(e -> count(e) == 6), "Both Split siblings finish all six original pulses");
                     check(probe.target.hitSequence() > probe.poisonHits, "Previously applied venom continues its own real damage after the cut");
                     check(probe.emitters.stream().noneMatch(e -> NativeZoneEmitters.snapshot().contains(e)), "Expiry cleans the bounded target registry");
@@ -315,6 +327,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
     }
     private static void newField(boolean split) {
         var p = probe.player;
+        probe.cut = null;
         if (probe.witch != null) probe.witch.discard(); if (probe.target != null) probe.target.discard();
         ExciseCasting.cancel(p); p.setGameMode(GameType.SURVIVAL); p.setHealth(p.getMaxHealth());
         for (int y = 150; y <= 152; y++) p.level().setBlock(new BlockPos(0,y,3), Blocks.AIR.defaultBlockState(), 2);
@@ -377,7 +390,25 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
     private static double mastery() { return MasteryAttachments.book(probe.player).entry(Mastery.keyOf(ExciseRules.RUNES)).map(MasteryBook.Entry::xp).orElse(0.0); }
     private static void directDown() { ExciseCasting.input(probe.player,RelayInputRules.UP,0,++nonce); ExciseCasting.input(probe.player,RelayInputRules.DOWN,0,++nonce); }
     private static ExciseState state() { return probe.player.getAttached(ExciseState.VIEW); }
-    private static int count(NativeZoneEmitters.Emitter emitter) { return probe.pulses.getOrDefault(emitter.id,0); }
+    private static int count(NativeZoneEmitters.Emitter emitter) { return probe.pulses.getOrDefault(emitter.id,List.of()).size(); }
+    /** Called only by the test mod's read-only injection at NativeZoneEmitters.cut's successful return. */
+    public static void observeNativeCut(ServerPlayer player, Object value) {
+        if (probe == null || player != probe.player || value != probe.selected) return;
+        var held = state();
+        check(probe.cut == null && held != null && held.phase() == ExciseState.HOLDING && held.emitter() == probe.selected.id,
+            "A native cut is observed once for the exact paid held emitter");
+        probe.cut = new Cut(ExciseCasting.now(player), held.began(), count(probe.selected), probe.selected.remaining);
+        pulseReceipt("cut");
+    }
+    private static void pulseReceipt(String phase) {
+        var emitters = probe.emitters.stream().map(e -> Map.of(
+            "id", e.id, "selected", e == probe.selected, "created", e.created, "expires", e.expires,
+            "excised", e.excised, "remaining", e.remaining, "sharedCast", e.cast == probe.selected.cast,
+            "count", count(e), "center", List.of(e.center.x, e.center.y, e.center.z),
+            "pulses", probe.pulses.getOrDefault(e.id,List.of()))).toList();
+        dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_EXCISE_PULSES {}", new com.google.gson.Gson().toJson(Map.of(
+            "phase", phase, "tick", ExciseCasting.now(probe.player), "cut", probe.cut, "emitters", emitters)));
+    }
     private static void listen() {
         if (listening) return; listening = true;
         WildercordEvents.BEFORE_CAST.register((p,slot,runes,cost) -> {
@@ -387,7 +418,15 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
         WildercordEvents.AFTER_CAST.register((p,slot,runes,cost) -> { if (probe != null && p == probe.player && ExciseRules.valid(runes)) { probe.payments++; probe.cost = cost; probe.after = Spellbooks.mana(p); } });
         WildercordEvents.SPELL_HIT.register((caster,entities,point,runes) -> {
             if (probe == null || caster != probe.witch || !runes.contains(Runes.VENOM) || point == null) return;
-            for (var emitter : probe.emitters) if (emitter.center.distanceToSqr(point) < .0001) probe.pulses.merge(emitter.id,1,Integer::sum);
+            for (var emitter : probe.emitters) if (emitter.center.distanceToSqr(point) < .0001) {
+                probe.pulses.computeIfAbsent(emitter.id, ignored -> new ArrayList<>())
+                    .add(new Pulse(ExciseCasting.now(probe.player), emitter.excised, emitter.remaining));
+                // This also rejects a forbidden same-clock pulse after cut; clock comparisons alone cannot.
+                if (emitter == probe.selected && emitter.excised) {
+                    pulseReceipt("post-cut-pulse");
+                    check(false, "The selected native emitter produced SPELL_HIT after its cut");
+                }
+            }
         });
     }
     private static void equip(ClientGameTestContext c) {

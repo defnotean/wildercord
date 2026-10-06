@@ -23,7 +23,7 @@ class ArticulatedEmberKilnPoseTest {
 		assertTrue(supportsMaster(9));
 		assertFalse(supportsPlayer(9));
 		assertSame(NONE, samplePlayer(9, 10, TELL, RECOVERY, false));
-		for (int move : new int[] {-1, 0, 2, 3, 4, 5, 6, 10, Integer.MAX_VALUE}) {
+		for (int move : new int[] {-1, 0, 2, 3, 4, 5, 6, 11, Integer.MAX_VALUE}) {
 			assertFalse(supportsMaster(move));
 			assertSame(NONE, sampleMaster(move, 20, TELL, ACTIVE, RECOVERY, false));
 		}

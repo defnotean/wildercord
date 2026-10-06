@@ -340,7 +340,7 @@ class MasterMovePlannerTest {
 		nodes.removeLast();
 		edges.add(edge("too_many", "node_14", "node_14", 1));
 		assertThrows(IllegalArgumentException.class, () -> new MasterMoveGraph(graphId(0), 0, nodes, edges));
-		assertEquals(9, MasterMoveCatalog.legacy().authoredAttackCount(), "Nodes, edges and combinations do not add attacks");
+		assertEquals(10, MasterMoveCatalog.legacy().authoredAttackCount(), "Nodes, edges and combinations do not add attacks");
 	}
 
 	private static String replay(MasterMoveGraph graph, long seed, int proposals) {

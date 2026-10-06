@@ -172,12 +172,13 @@ class EvidenceTests(unittest.TestCase):
     def log(self, data):
         selection = data["selection"]
         completion = ""
-        if data["request"]["case"] in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise"):
+        if data["request"]["case"] in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise", "stone-fault-march"):
             entries = {"progression-feasibility": diagnostic.PROGRESSION_ENTRIES,
                        "reweave-player": diagnostic.REWEAVE_PLAYER_ENTRIES,
                        "stone-hinge-owner-negative": diagnostic.STONE_OWNER_NEGATIVE_ENTRIES,
                        "movement-foundations": diagnostic.MOVEMENT_FOUNDATION_ENTRIES,
-                       "excise": diagnostic.LIFE_EXCISE_ENTRIES}[data["request"]["case"]]
+                       "excise": diagnostic.LIFE_EXCISE_ENTRIES,
+                       "stone-fault-march": diagnostic.STONE_MARCH_ENTRIES}[data["request"]["case"]]
             completion = "".join(diagnostic.SCENE_PREFIX + json.dumps({
                 "suite": entry, "event": event, "phase": phase,
                 "elapsedSeconds": 1.0, "sceneElapsedSeconds": 0.5}) + "\n"
@@ -218,7 +219,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(set(result["observedWorldSeeds"]), set(diagnostic.SEEDS[case]))
 
     def test_failed_missing_mixed_truncated_and_replayed_evidence_never_pass(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise", "stone-fault-march"):
             self.assert_invalid_evidence_never_passes(case)
 
     def assert_invalid_evidence_never_passes(self, case):
@@ -341,7 +342,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
 
     def test_unique_seed_receipt_rule_does_not_change_other_cases(self):
-        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise"}:
+        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise", "stone-fault-march"}:
             data = self.fixture(case)
             entry, seed = next(iter(diagnostic.SEEDS[case].items()))
             repeated = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) + "\n"
@@ -404,9 +405,43 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(selection, {"kind": "diagnostic", "name": "diagnostic-kiln-ring",
                                      "count": 3, "entries": entries})
         masters = suites.select_entries(suite="masters")
-        self.assertEqual(masters["count"], 40)
+        self.assertEqual(masters["count"], 43)
         for source in (suites.select_entries(), masters):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
+
+    def test_excise_cut_boundary_instrumentation_is_bound_to_source(self):
+        for path in ("src/gametest/java/dev/wildercord/gametest/mixin/ExciseCutProbeMixin.java",
+                     "src/gametest/resources/excise-cut-gametest.mixins.json"):
+            self.assertIn(path, diagnostic.CASE_FILES["excise"])
+            self.assertTrue((suites.ROOT / path).is_file())
+
+    def test_stone_march_requires_three_whole_classes_and_exact_seeds(self):
+        entries = ["dev.wildercord.aura.world.StoneMarchTest",
+                   "dev.wildercord.aura.world.StoneMarchPresentationTest",
+                   "dev.wildercord.aura.world.StoneMarchOpponentViewTest"]
+        self.assertEqual(diagnostic.CASES["stone-fault-march"], "stone-fault-march")
+        self.assertEqual(diagnostic.STONE_MARCH_ENTRIES, tuple(entries))
+        self.assertEqual(diagnostic.SEEDS["stone-fault-march"], dict.fromkeys(entries))
+        for selection in (suites.select_entries(), suites.select_entries(suite="masters")):
+            self.assertEqual([e for e in selection["entries"] if e in entries], entries)
+        data = self.fixture("stone-fault-march")
+        good = self.log(data)
+        self.assertEqual(self.collect(data, good)["completedEntries"], entries)
+        for entry in entries:
+            seed = diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": "1"})
+            returned = diagnostic.SCENE_PREFIX + json.dumps({
+                "suite": entry, "event": "end", "phase": "returned",
+                "elapsedSeconds": 1.0, "sceneElapsedSeconds": 0.5})
+            cleanup = returned.replace('"event": "end", "phase": "returned"',
+                                       '"event": "phase", "phase": "cleanup"')
+            for bad in (good.replace(seed, ""), good + seed + "\n",
+                        good.replace(returned, ""), good + returned + "\n",
+                        good.replace(cleanup, "")):
+                with self.subTest(entry=entry):
+                    self.assertEqual(self.collect(data, bad)["diagnosticOutcome"], "unverified")
+        reordered = good.replace(entries[0], "TEMP_ENTRY").replace(entries[1], entries[0]).replace("TEMP_ENTRY", entries[1])
+        self.assertEqual(self.collect(data, reordered)["diagnosticOutcome"], "unverified")
+        self.assert_manifest_cannot_relabel_diagnostic("stone-fault-march")
 
     def assert_manifest_cannot_relabel_diagnostic(self, case):
         data = self.fixture(case)
@@ -597,7 +632,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(suites.select_entries(suite="diagnostic-progression-feasibility"), {
             "kind": "diagnostic", "name": "diagnostic-progression-feasibility", "count": 2, "entries": entries})
         self.assertEqual(suites.select_entries()["entries"][-6:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES, diagnostic.STONE_VELOCITY_ENTRY, *diagnostic.EXCISE_ENTRIES])
-        for name, count in (("masters", 40), ("articulated", 6)):
+        for name, count in (("masters", 43), ("articulated", 6)):
             selection = suites.select_entries(suite=name)
             self.assertEqual(selection["count"], count)
             self.assertTrue(set(entries).isdisjoint(selection["entries"]))

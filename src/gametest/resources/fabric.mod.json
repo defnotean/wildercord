@@ -275,6 +275,9 @@
       "dev.wildercord.aura.world.EmberKilnTest",
       "dev.wildercord.aura.world.EmberKilnPresentationTest",
       "dev.wildercord.aura.world.EmberKilnOpponentViewTest",
+      "dev.wildercord.aura.world.StoneMarchTest",
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest",
       "dev.wildercord.gametest.WildercordMastersArtsPresentationTest",
       "dev.wildercord.party.PartyOfflineProjectileTest",
       "dev.wildercord.aura.MastersStyleTimelineTest",
@@ -313,6 +316,7 @@
     ]
   },
   "mixins": [
+    "bramble-fire-gametest.mixins.json",
     "wildercord.mossveil-gametest.mixins.json",
     "rainshield-gametest.mixins.json",
     "ward-payment-gametest.mixins.json",
@@ -331,7 +335,8 @@
     "ecology-return-gametest.mixins.json",
     "crimson-moon-owner-gametest.mixins.json",
     "archive-placement-gametest.mixins.json",
-    "stone-hinge-proof-gametest.mixins.json"
+    "stone-hinge-proof-gametest.mixins.json",
+    "excise-cut-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

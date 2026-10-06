@@ -8,6 +8,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
+- Add isolated Stone Fault March candidate ID 10: three fixed advancing ground bands, one attempted hit per participant, permanent cover/support truncation, lateral and inward spent-ground counters, and original Classic/articulated sword choreography. Its three native suites and manual visual acceptance remain pending; the established attack count remains nine.
+
 - Added seeded, bounded ordinary Master attack selection with accepted-action history and recent-move avoidance. Existing priority signatures and full punish windows remain; ordinary releases now resist callback reentry. This adds combinations, not new attack IDs, and native planner acceptance remains pending.
 
 - Corrected Red Rain's first-person chamber so steep opposite-hand looks retain a visible blade face and clear aim corridor. Server timing, grip and native pixel thresholds are unchanged; fresh shaded capture acceptance remains pending.
