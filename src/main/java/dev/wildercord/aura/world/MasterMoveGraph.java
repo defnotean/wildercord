@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Bounded, immutable planning data. No live Master reads this graph. Nodes do not add authored attacks. */
+/** Bounded, immutable planning data. The ordinary adapter uses only server-approved candidates. Nodes do not add attacks. */
 public final class MasterMoveGraph {
 	public static final int MAX_NODES = 16, MAX_EDGES = 64, MAX_WEIGHT = 100;
 

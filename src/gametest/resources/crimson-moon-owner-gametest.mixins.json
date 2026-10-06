@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "CrimsonMoonBodyBaselineMixin",
+    "CrimsonMoonClassicExtractionMixin",
+    "CrimsonMoonClassicViewMixin",
+    "CrimsonMoonCopyMixin",
+    "CrimsonMoonDeferredMixin",
+    "CrimsonMoonExtractionMixin",
+    "CrimsonMoonFallbackMixin",
+    "CrimsonMoonPlayerPaletteMixin",
+    "CrimsonMoonScreenshotMixin",
+    "CrimsonMoonViewMixin",
+    "CrimsonMoonShellAccess"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

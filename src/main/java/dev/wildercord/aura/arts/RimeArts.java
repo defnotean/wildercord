@@ -229,12 +229,17 @@ public final class RimeArts {
 		ice(level, p.add(0, 0.2, 0), 0.5, 3);
 		Feels.sound(level, p, "frost_hail", 0.55F, 0.9F + level.getRandom().nextFloat() * 0.3F);
 		for (LivingEntity foe : ArtKit.around(player, p, ArtRules.HAIL_STONE_REACH, 1.0, 3.0, 4)) {
+			if (!owner.valid()) return;
+			if (!foe.isAlive() || foe.isRemoved() || foe.level() != level) continue;
 			int n = struckBy.getOrDefault(foe.getUUID(), 0);
 			if (n >= ArtRules.HAIL_PER_FOE) {
 				continue;
 			}
 			struckBy.put(foe.getUUID(), n + 1);
 			hits.strike(foe, ArtRules.HAIL_STONE_FACTOR, AuraFxRules.Weight.LIGHT);
+			// Native damage callbacks may retire the owner or move a victim after this stone collected its targets.
+			if (!owner.valid()) return;
+			if (!foe.isAlive() || foe.isRemoved() || foe.level() != level) continue;
 			ArtKit.chill(player, foe, ArtRules.HAIL_SLOW, 0);
 		}
 	}

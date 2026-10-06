@@ -48,7 +48,11 @@ gradle.projectsEvaluated {
         'NONPLAYER',
         'COUNTER_QUIETUS_PAID_BOLT',
         'COUNTER_QUIETUS_THIRTEEN_EXISTING',
-        'COUNTER_REFLECTED_RESPAWN_NULLCATCH'
+        'COUNTER_REFLECTED_RESPAWN_NULLCATCH',
+        'SPECTATOR_BOLT_VENOM',
+        'SPECTATOR_SPARK_VENOM',
+        'SPECTATOR_RAY_VENOM',
+        'SPECTATOR_TOUCH_VENOM'
     ]
     def git = { List<String> arguments ->
         def process = new ProcessBuilder(['git', '-C', root.absolutePath] + arguments).redirectErrorStream(true).start()
@@ -110,7 +114,7 @@ gradle.projectsEvaluated {
             if (!p.sourceSets.gametest.output.classesDirs.files.any { new File(it, classPath).isFile() }) throw new GradleException('Supervised entrypoint class is missing from compiled gametest output')
             def contractFile = new File(root, contractPath)
             def contract = new JsonSlurper().parse(contractFile)
-            if (contract.schemaVersion != 1 || contract.suite != 'cast-receipt' || contract.entrypoint != expectedEntry || contract.expectedCount != expectedCases.size() || contract.cases != expectedCases) throw new GradleException('Unexpected ordered 38-case cast receipt source contract')
+            if (contract.schemaVersion != 1 || contract.suite != 'cast-receipt' || contract.entrypoint != expectedEntry || contract.expectedCount != expectedCases.size() || contract.cases != expectedCases) throw new GradleException('Unexpected ordered 42-case cast receipt source contract')
             if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: expectedCases.size(), maxTimeoutSeconds: 900]) throw new GradleException('Unexpected cast receipt resource limits')
             if (digest(new File(descriptor.parentFile, contractFile.name)) != digest(contractFile)) throw new GradleException('Processed contract differs from source contract')
             def taskBase = Class.forName('net.fabricmc.loom.task.AbstractRunTask', true, run.class.classLoader)

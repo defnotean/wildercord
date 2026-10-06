@@ -4,13 +4,15 @@ The action-admission contract requires the exact current `PlayerList` body. Leve
 
 ## Preserved cases
 
-The ordinary `SwordMasterTrialTest` retains the published receipt-seam matrix and all 15 connected-recipient `BREAK_CAST` cases. The mandatory `connected-combat-native` job runs the complete 35-case matrix on two genuine JVM/TCP profiles. The exact ordered contract is `src/gametest/resources/cast-receipt-native-contract.json`:
+The ordinary `SwordMasterTrialTest` retains the published receipt-seam matrix and all 15 connected-recipient `BREAK_CAST` cases. The mandatory `connected-combat-native` job runs the complete 42-case matrix on two genuine JVM/TCP profiles. The exact ordered contract is `src/gametest/resources/cast-receipt-native-contract.json`:
 
 - Both `BREAK_CAST` and `DRIVING_CUT`: `HEALTH`, `FULL_ABSORPTION`, `MANA_SKIN`, `REVERSAL`, `TOTEM`, `GUARD`, `STEP`, `WARD`, `RESISTANCE`, `REJECTED`, `REPLACED`, `EQUAL_TOKEN`, `NEW_CHARGE`, `IDLE`, `WINDUP_REPLACEMENT` (30 cases).
 - `SHARED_BREAK_CAST_TO_DRIVING_CUT` and `SHARED_DRIVING_CUT_TO_BREAK_CAST`: retained interruption protection on tick 159 and admission on tick 160.
 - `IDLE_SEAL_RECOVERY`: seal present on tick 19, expired on tick 20, with its existing recovery retained.
 - `CHARGED_SEAL_RECOVERY`: a damaging hit during seal recovery preserves the protected charge and does not consume shared immunity.
 - `NONPLAYER`: genuine damage and the existing lock against an ordinary, unpromoted Husk.
+- Three connected counter cases preserve paid Quietus taxation, the twelve-existing-bolt capture boundary and reflected-bolt exclusion after genuine owner death/respawn.
+- Four `SPECTATOR_*_VENOM` cases preserve Bolt, Spark, Ray and Touch delivery through a genuine near spectator to the exact hostile victim, including paid admission, victim damage/Poison, spectator immunity and live peer receipts. The old single-client entry requiring a fake owner is retired from that descriptor only with this mandatory replacement wired; its source remains available.
 
 The recipient keeps its real UUID. Separate cases wait actual 160-tick spacing and native ward expiry; repeated Reversal respects `DeathsDoor` recovery. Equipment reconciliation precedes charging. Permanent invulnerability is used only for the rejection case and is restored. The exact pre-impact charge token is checked at each strike. Cross-route probes end the completed held-spell probe and begin a fresh real charge near tick 154 for the 159/160 boundary; normal overchannel remains enabled.
 

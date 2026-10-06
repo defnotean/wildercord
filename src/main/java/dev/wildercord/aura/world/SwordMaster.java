@@ -92,6 +92,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private StoneFracture fracture;
 	private long fractureReadyAt;
 	private long repriseReadyAt;
+	private MasterOrdinaryPlanner ordinaryPlanner;
+	private boolean ordinaryReleaseConsumed;
 
 	public SwordMaster(EntityType<? extends SwordMaster> type, Level level) {
 		super(type, level);
@@ -453,7 +455,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			if (waitingUntil > 0 && now >= waitingUntil) discard();
 			return;
 		}
-		participants.removeIf(id -> !(level.getPlayerByUUID(id) instanceof ServerPlayer player) || !participant(player));
+		if (participants.removeIf(id -> !(level.getPlayerByUUID(id) instanceof ServerPlayer player) || !participant(player))) endOrdinaryPhrase();
 		// Braking belongs before every interruption/abandonment early return, including losing the current target.
 		if (state(DASH) && (now >= dodgeUntil || participants.isEmpty() || staggered() || Stance.opened(this)
 			|| getTarget() == null || !participant(getTarget()))) stopDodge(now);
@@ -490,6 +492,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			removeAllEffects(); // Staging buffs cannot be smuggled into the locked encounter.
 			started = true;
 			partySize = MastersRules.participants(participants.size());
+			ordinaryPlanner = new MasterOrdinaryPlanner(discipline, MasterOrdinaryPlanner.encounterSeed(getUUID(), challenger));
 			getAttribute(Attributes.MAX_HEALTH).setBaseValue(MastersRules.health(partySize));
 			setHealth(getMaxHealth());
 			if (discipline == MastersRules.EMBER) for (ServerPlayer player : level.players()) {
@@ -522,12 +525,17 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			target = level.players().stream().filter(this::participant).min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
 			setTarget(target);
 		}
+		if (ordinaryPlanner != null) {
+			ordinaryPlanner.observe(target == null ? null : target.getUUID(), Set.copyOf(participants));
+			if (target != null && !hasLineOfSight(target)) endOrdinaryPhrase();
+		}
 		if (target == null) return;
 		if (attack != null) {
 			tickAttack(level, now, target);
 			return;
 		}
 		if (now < dodgeUntil) {
+			endOrdinaryPhrase();
 			getNavigation().stop();
 			// Ground or obstacles may have changed since the initial probe.
 			if (safeMotion(level, dodgeDirection.scale(0.65))) {
@@ -545,16 +553,22 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		}
 		if (now < recoverUntil) {
 			getNavigation().stop();
-			if (now < breathingUntil) aura = Math.min(MastersRules.AURA_MAX, aura + MastersRules.AURA_MAX / MastersRules.BREATH_TICKS);
+			if (now < breathingUntil) {
+				endOrdinaryPhrase();
+				aura = Math.min(MastersRules.AURA_MAX, aura + MastersRules.AURA_MAX / MastersRules.BREATH_TICKS);
+			}
 			return;
 		}
+		if (!Double.isFinite(aura) || aura < 0 || aura > MastersRules.AURA_MAX) { endOrdinaryPhrase(); return; }
 		if (aura < MastersRules.ATTACK_COST + MastersRules.GUARD_COST) {
+			endOrdinaryPhrase();
 			dropGuard();
 			recoverUntil = breathingUntil = now + MastersRules.BREATH_TICKS;
 			Feels.sound(level, position(), "aura_breath", 1, 0.8F);
 			return;
 		}
 		if (guarding()) {
+			endOrdinaryPhrase();
 			getNavigation().stop();
 			// A committed guard does not spin to negate flanking.
 			cutBolt(level, now);
@@ -575,6 +589,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			}
 		}
 		if (guardNext) {
+			endOrdinaryPhrase();
 			if (target instanceof ServerPlayer player) {
 				StoneFracture opening = StoneFracture.prepare(this, player, discipline, sequence, aura, now, fractureReadyAt);
 				if (opening != null) {
@@ -605,11 +620,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		if (Math.abs(targetHeight) <= 2.5 && distanceTo(target) > 6 && sequence % 3 != 0) {
 			if (approachStarted == 0) approachStarted = now;
 			if (now - approachStarted < 40) {
+				endOrdinaryPhrase();
 				getNavigation().moveTo(target, discipline == MastersRules.GALE ? 1.3 : 1.1);
 				return;
 			}
 		}
 		if (!hasLineOfSight(target)) {
+			endOrdinaryPhrase();
 			getNavigation().moveTo(target, discipline == MastersRules.GALE ? 1.25 : 1.0);
 			return;
 		}
@@ -633,12 +650,68 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				return;
 			}
 		}
+		// Only the ordinary pattern fallback varies. Every earlier executor and priority retains its native admission.
+		if (ordinaryPlanner != null && ordinaryPlanner.state().successfulDecisions() > 0
+			&& !MastersRules.needsCrescent(distanceTo(target), targetHeight)
+			&& (next == MastersRules.Move.SWEEP || next == MastersRules.Move.THRUST || next == MastersRules.Move.CRESCENT)) {
+			var eligible = ordinaryEligibility(level, target, now);
+			if (eligible.isEmpty()) return;
+			var proposal = ordinaryPlanner.propose(next, eligible, aura);
+			if (proposal.move() != null) {
+				tryBeginOrdinary(level, target, now, proposal);
+				return; // A declined/stale proposal never pays or recursively redraws.
+			}
+			ordinaryPlanner.neutral(proposal);
+			if (!eligible.contains(next)) return;
+		}
 		beginAttack(level, target, next, now);
 	}
 
+	/** This is the server's allowlist, not graph-authored eligibility. Recomputed immediately before the one payment. */
+	private Set<MastersRules.Move> ordinaryEligibility(ServerLevel level, LivingEntity target, long now) {
+		if (ordinaryPlanner == null || ordinaryPlanner.school() != discipline || now != level.getGameTime()
+			|| !canMaintainAfterburn() || isNoAi() || target == null || target != getTarget() || !participant(target)
+			|| attack != null || afterburn != null || now < recoverUntil || now < breathingUntil || now < dodgeUntil
+			|| state(DASH) || guarding() || guardNext || !Double.isFinite(aura)
+			|| aura < MastersRules.ATTACK_COST + MastersRules.GUARD_COST || aura > MastersRules.AURA_MAX
+			|| !hasLineOfSight(target)) return Set.of();
+		Set<UUID> valid = participants.stream().filter(id -> level.getPlayerByUUID(id) instanceof LivingEntity living && participant(living))
+			.collect(java.util.stream.Collectors.toUnmodifiableSet());
+		if (!ordinaryPlanner.contextMatches(target.getUUID(), valid) || !valid.equals(participants)) return Set.of();
+		double distance = distanceTo(target), height = target.getBoundingBox().getCenter().y - slashOrigin().y;
+		if (target.hasAttached(WildercordAttachments.CHARGE) && distance <= 4
+			|| EmberWakeRules.next(discipline, sequence, MastersRules.phase(getHealth(), getMaxHealth()), distance)) return Set.of();
+		// Preparing these candidates is read-only. A stale graph ticket cannot steal a newly legal priority opening.
+		for (UUID id : valid) if (level.getPlayerByUUID(id) instanceof ServerPlayer player
+			&& MasterPursuit.prepare(this, player, discipline, aura, now, pursuitReadyAt) != null) return Set.of();
+		if (target instanceof ServerPlayer player
+			&& (GaleReprise.prepare(this, player, discipline, sequence, aura, now, repriseReadyAt) != null
+			|| EmberKiln.prepare(this, player, discipline, sequence, aura, now, kilnReadyAt) != null)) return Set.of();
+		return MasterOrdinaryPlanner.spatialCandidates(distance, height);
+	}
+
+	private boolean tryBeginOrdinary(ServerLevel level, LivingEntity target, long now, MasterOrdinaryPlanner.Proposal proposal) {
+		if (ordinaryPlanner == null || !ordinaryPlanner.current(proposal) || proposal.move() == null
+			|| !ordinaryEligibility(level, target, now).contains(proposal.move())) return false;
+		beginAttack(level, target, proposal.move(), now, proposal);
+		return true;
+	}
+
+	private void endOrdinaryPhrase() { if (ordinaryPlanner != null) ordinaryPlanner.endPhrase(); }
+
+	@Override public void setTarget(LivingEntity target) {
+		if (getTarget() != target) endOrdinaryPhrase();
+		super.setTarget(target);
+	}
+
 	private void beginAttack(ServerLevel level, LivingEntity target, MastersRules.Move move, long now) {
+		beginAttack(level, target, move, now, null);
+	}
+
+	private void beginAttack(ServerLevel level, LivingEntity target, MastersRules.Move move, long now, MasterOrdinaryPlanner.Proposal proposal) {
 		dropGuard();
 		attack = move;
+		ordinaryReleaseConsumed = false;
 		entityData.set(DATA_ATTACK, move.ordinal() + 1);
 		entityData.set(DATA_ATTACK_BEGIN, now);
 		approachStarted = 0;
@@ -649,6 +722,15 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			: move == MastersRules.Move.STONE_FRACTURE ? StoneFractureRules.COST
 			: move == MastersRules.Move.KILN_RING ? EmberKilnRules.COST : MastersRules.ATTACK_COST;
 		attackAt = now + move.tell;
+		if (ordinaryPlanner != null) {
+			if (proposal == null) ordinaryPlanner.admittedExternal(move);
+			else if (!ordinaryPlanner.admitted(proposal)) throw new IllegalStateException("Checked ordinary proposal expired during admission");
+			if (move == MastersRules.Move.SWEEP || move == MastersRules.Move.THRUST || move == MastersRules.Move.CRESCENT) {
+				// A paid ordinary warning reserves its whole punish window, including cancellation or a skipped release.
+				recoverUntil = Math.max(recoverUntil, attackAt + move.recovery);
+				guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+			}
+		}
 		lockedAim = null;
 		lockedOrigin = null;
 		faceTarget(target);
@@ -668,6 +750,16 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	private void tickAttack(ServerLevel level, long now, LivingEntity target) {
 		getNavigation().stop();
+		boolean ordinary = ordinaryPlanner != null
+			&& (attack == MastersRules.Move.SWEEP || attack == MastersRules.Move.THRUST || attack == MastersRules.Move.CRESCENT);
+		if (ordinary && ordinaryReleaseConsumed && now == attackAt) return;
+		if (ordinary && now > attackAt) {
+			int recovery = attack.recovery;
+			cancelAttack();
+			recoverUntil = Math.max(recoverUntil, now + recovery);
+			guardReadyAt = Math.max(guardReadyAt, recoverUntil);
+			return; // A missed ordinary release expires harmlessly instead of delivering a late, stale warning.
+		}
 		if (attack == MastersRules.Move.KILN_RING) {
 			EmberKiln running = kiln;
 			if (running != null && running.tick(now)) return;
@@ -767,6 +859,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			return;
 		}
 		MastersRules.Move released = attack;
+		if (ordinary) ordinaryReleaseConsumed = true; // Consume before native damage callbacks can re-enter AI.
 		Vec3 aim = lockedAim == null ? flatLook() : lockedAim;
 		Vec3 origin = released == MastersRules.Move.CINDER_WAKE && lockedOrigin != null ? lockedOrigin : position();
 		setState(WINDUP, false);
@@ -786,7 +879,11 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			Vec3 side = new Vec3(-aim.z, 0, aim.x);
 			AuraFx.trail(this, (released == MastersRules.Move.SWEEP || released == MastersRules.Move.CINDER_WAKE) ? AuraFxRules.Stroke.SWEEP : AuraFxRules.Stroke.THRUST, false, auraColor(), stage(), 1.2F);
 			Feels.sound(level, position(), "aura_slash", 1, 0.9F);
-			for (ServerPlayer player : level.players()) {
+			for (ServerPlayer player : ordinary ? new ArrayList<>(level.players()) : level.players()) {
+				if (ordinary && (attack != released || !canMaintainAfterburn())) {
+					if (attack == released) cancelAttack();
+					return;
+				}
 				if (!participant(player)) continue;
 				Vec3 delta = player.position().subtract(origin);
 				if (MastersRules.hits(released, delta.dot(aim), delta.dot(side), delta.y)
@@ -802,6 +899,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				}
 			}
 		}
+		if (ordinary && attack != released) return; // Preserve cancellation recovery and do not hit later roster entries.
 		if (released == MastersRules.Move.CINDER_WAKE && canMaintainAfterburn()) {
 			afterburn = new EmberAfterburn(this, origin, aim, partySize, now);
 			afterburn.tick(now);
@@ -869,6 +967,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			for (int sign : new int[] {sequence % 2 == 0 ? 1 : -1, sequence % 2 == 0 ? -1 : 1}) {
 				Vec3 side = new Vec3(-flight.z * sign, 0, flight.x * sign);
 				if (!safeStep(level, side)) continue;
+				endOrdinaryPhrase();
 				dodgeDirection = side;
 				dodgeUntil = now + MastersRules.DODGE_TICKS;
 				dodgeReadyAt = now + MastersRules.DODGE_REST;
@@ -909,6 +1008,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	private void cancelAttack() {
+		endOrdinaryPhrase();
 		if (kiln != null) {
 			kiln.stop();
 			recoverUntil = Math.max(recoverUntil, Math.max(kiln.endsAt(), level().getGameTime() + EmberKilnRules.RECOVERY));

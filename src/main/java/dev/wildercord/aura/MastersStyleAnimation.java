@@ -160,9 +160,11 @@ public final class MastersStyleAnimation {
 
 	// Red Rain coils above the outside shoulder and rakes diagonally into an open, low finish.
 	// Crimson's pool persists after this one release while the blade recovers along the far side.
+	// Open the first-person chamber face and carry the whole grip outward. The old narrow wrist
+	// turn exposed only the dark sprite extrusion during a steep, opposite-handed free look.
 	private static final Motion RED_RAIN = new Motion(
 		pose(j(.14F, .48F, -.16F), j(-.08F, -.18F, .05F), j(-2.08F, .72F, -.66F), j(-.82F, -.28F, -.46F),
-			j(-.54F, -.16F, -.12F), j(.34F, .12F, .10F), .64F, .14F, h(.06F, .38F, -.14F, -62, 30, -38)),
+			j(-.54F, -.16F, -.12F), j(.34F, .12F, .10F), .64F, .14F, h(.22F, .38F, -.14F, -62, 48, -20)),
 		pose(j(.34F, -.46F, .20F), j(-.17F, .18F, -.06F), j(-.66F, -.82F, -.38F), j(-.16F, -.12F, -.88F),
 			j(-.78F, .14F, -.14F), j(.44F, -.10F, .12F), .98F, -.80F, h(-.28F, .28F, -.40F, 42, -32, 46)),
 		pose(j(.23F, -.62F, .14F), j(-.11F, .22F, -.04F), j(-.34F, -1.02F, -.12F), j(-.30F, -.16F, -.68F),

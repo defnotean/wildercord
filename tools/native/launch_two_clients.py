@@ -73,6 +73,10 @@ CASES = (
     "COUNTER_QUIETUS_PAID_BOLT",
     "COUNTER_QUIETUS_THIRTEEN_EXISTING",
     "COUNTER_REFLECTED_RESPAWN_NULLCATCH",
+    "SPECTATOR_BOLT_VENOM",
+    "SPECTATOR_SPARK_VENOM",
+    "SPECTATOR_RAY_VENOM",
+    "SPECTATOR_TOUCH_VENOM",
 )
 PATH_PROPERTIES = {"fabric.dli.config", "fabric.remapClasspathFile", "fabric.addMods", "fabric.classPathGroups",
                    "java.library.path", "org.lwjgl.librarypath", "log4j.configurationFile",
@@ -237,7 +241,7 @@ def load_contract(root):
             "Unexpected source-controlled suite contract")
     cases = contract.get("cases")
     require(cases == list(CASES) and contract.get("expectedCount") == len(CASES),
-            "Cast contract requires the exact ordered 38-case roster")
+            "Cast contract requires the exact ordered 42-case roster")
     require(contract.get("limits") == {"maxJvms": 2, "maxHeapMiBPerJvm": 2048, "maxCases": len(CASES), "maxTimeoutSeconds": MAX_TIMEOUT},
             "Unexpected cast contract resource limits")
     require(contract.get("terminalWitnesses") == list(TERMINALS), "Unexpected terminal paths")

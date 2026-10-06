@@ -28,6 +28,19 @@ class RequestTests(unittest.TestCase):
         self.assertIn("    concurrency:\n      group: native-diagnostic-${{ github.repository }}-${{ github.event.pull_request.number }}\n      cancel-in-progress: false\n", diagnostic_job)
         self.assertNotIn("cancel-in-progress: true", diagnostic_job)
 
+    def test_stasis_diagnostic_selects_complete_original_gallery_and_requires_seed(self):
+        selected = suites.select_entries(suite="diagnostic-stasis-gallery")
+        self.assertEqual(selected["count"], 1)
+        self.assertEqual(selected["entries"], ["dev.wildercord.gametest.WildercordScreenshots"])
+        self.assertEqual(selected["kind"], "diagnostic")
+        self.assertEqual(diagnostic.CASES["stasis-gallery"], "diagnostic-stasis-gallery")
+        self.assertEqual(diagnostic.SEEDS["stasis-gallery"],
+                         {"dev.wildercord.gametest.WildercordScreenshots": None})
+        source = (suites.ROOT / "src/gametest/java/dev/wildercord/gametest/WildercordScreenshots.java").read_text()
+        self.assertIn("server.overworld().getSeed()", source)
+        self.assertIn("castEverything(context, world)", source)
+        self.assertIn("mechanicsChecks(context, world)", source)
+
     def test_request_accepts_only_fixed_cases_or_disabled(self):
         for case in (*diagnostic.CASES, None):
             data = self.request(case=case, sourceSha="a" * 40 if case else None)
@@ -183,7 +196,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(set(result["observedWorldSeeds"]), set(diagnostic.SEEDS[case]))
 
     def test_failed_missing_mixed_truncated_and_replayed_evidence_never_pass(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery"):
             self.assert_invalid_evidence_never_passes(case)
 
     def assert_invalid_evidence_never_passes(self, case):
@@ -295,8 +308,18 @@ class EvidenceTests(unittest.TestCase):
         duplicate = self.log(data) + suites.REQUEST_PREFIX + json.dumps(diagnostic.receipt(data)) + "\n"
         self.assertEqual(self.collect(data, duplicate)["diagnosticOutcome"], "unverified")
 
+    def test_stasis_requires_exactly_one_matching_seed_and_current_provenance(self):
+        data = self.fixture("stasis-gallery")
+        duplicate = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({
+            "suite": "dev.wildercord.gametest.WildercordScreenshots", "seed": "1"}) + "\n"
+        self.assertEqual(self.collect(data, duplicate)["diagnosticOutcome"], "unverified")
+        for key, value in (("headSha", "e" * 40), ("runId", "999"), ("runAttempt", "2")):
+            changed = copy.deepcopy(data)
+            changed["provenance"][key] = value
+            self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
+
     def test_unique_seed_receipt_rule_does_not_change_other_cases(self):
-        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return"}:
+        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery"}:
             data = self.fixture(case)
             entry, seed = next(iter(diagnostic.SEEDS[case].items()))
             repeated = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) + "\n"
@@ -326,7 +349,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
     def test_general_manifest_cannot_relabel_diagnostic_as_focused_or_full(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery"):
             self.assert_manifest_cannot_relabel_diagnostic(case)
 
     def test_ecology_return_selects_only_three_whole_classes_and_observes_reopen(self):
@@ -356,7 +379,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(selection, {"kind": "diagnostic", "name": "diagnostic-kiln-ring",
                                      "count": 3, "entries": entries})
         masters = suites.select_entries(suite="masters")
-        self.assertEqual(masters["count"], 35)
+        self.assertEqual(masters["count"], 36)
         for source in (suites.select_entries(), masters):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
@@ -372,7 +395,7 @@ class EvidenceTests(unittest.TestCase):
                 self.assertNotEqual(manifest.get("focusedClientGate"), "passed")
 
     def test_collect_preserves_evidence_after_head_advances_or_origin_fails(self):
-        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return"):
+        for case in ("aura-fx", "wall-turn", "kiln-ring", "ecology-return", "stasis-gallery"):
             self.assert_collect_preserves_evidence(case)
 
     def assert_collect_preserves_evidence(self, case):

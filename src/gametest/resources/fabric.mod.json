@@ -66,7 +66,6 @@
       "dev.wildercord.cast.LifeOutcomeSurfaceTest",
       "dev.wildercord.client.fx.LifeOutcomeQualityTest",
       "dev.wildercord.cast.LifeOutcomeSourceTest",
-      "dev.wildercord.cast.SpectatorDeliveryTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.cast.BloomstepArrivalCaptureTest",
       "dev.wildercord.cast.SporebloomSupportTest",
@@ -300,7 +299,9 @@
       "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
       "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
       "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
-      "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest"
+      "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
+      "dev.wildercord.client.combat.CrimsonMoonCaptureTest",
+      "dev.wildercord.aura.world.MasterOrdinaryPlannerTest"
     ]
   },
   "mixins": [
@@ -319,7 +320,8 @@
     "memorial-generation-gametest.mixins.json",
     "sleeping-blade-generation-gametest.mixins.json",
     "siltcrest-presentation-gametest.mixins.json",
-    "ecology-return-gametest.mixins.json"
+    "ecology-return-gametest.mixins.json",
+    "crimson-moon-owner-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

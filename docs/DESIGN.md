@@ -1473,7 +1473,7 @@ restart's leftovers are cleared as their chunk loads). The one real block change
 | Ember | **Wildfire Rush** | IV | a second dash 7 blocks over 4 ticks, 1.4 wide, up to 5, 0.85, alight 3 s; the trail burns 4 s |
 | Ember | **Sunfall** | V | a leap (0.95 up, 9 ticks), a dive (1.6), the blast 4.5 round: 2.2 at the heart to 1.5 at the edge, up to 10, alight 5 s, thrown 0.9; a ring of fire 5 out, 1 wide, 5 s, 0.15 every half second |
 | Rime | **Frostbite** | I | a cut 3.3 out, 120°, up to 4, 0.6, slow 3 s; a crust each, kept 8 s; the third freezes 1.5 s |
-| Rime | **Hailfall** | II | a cut 3 out, 0.5; a cloud 2.6 round over the foe struck (or 3.6 ahead): 7 stones over 18 ticks, 0.28 each, at most 3 on one, slowing |
+| Rime | **Hailfall** | II | a cut 3 out, 0.5; a cloud 2.6 round over the foe struck (or 3.6 ahead): 7 stones over 18 ticks, 0.28 each, at most 3 on one, slowing; each stone stops when its original owner dies, leaves the world or disconnects, including inside a hit callback, and only chills victims still alive in its release world |
 | Rime | **Glacier Mirror** | III | the attacker 0.9, frozen 2.5 s; others within 3 chilled 2 s; a mirror 2.5 s turning projectiles from in front back |
 | Rime | **Skate** | IV | a glide 8 blocks over 4 ticks, 1.4 wide, up to 5, 0.7 and a crust; a frozen foe shatters (1.5, shards 0.3 within 2); the path 5 s: allies faster, foes slowed |
 | Rime | **Winter's Hush** | V | a cone 7.5 long, 100°, up to 10, 0.8, frozen 2.5 s; 30 ticks later the still-frozen shatter, 1.7, shards 0.35 within 2.2 (a foe cut by shards once an art) |

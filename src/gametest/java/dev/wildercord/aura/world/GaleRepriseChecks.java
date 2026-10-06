@@ -214,7 +214,7 @@ final class GaleRepriseChecks {
 				else place(target, 0, kind == 2 ? 2.4 : 4.9);
 			});
 			at(world, MastersRules.Move.CRESCENT.tell + MastersRules.Move.CRESCENT.recovery, () -> {
-				check(!master.reprisePending() && master.attackAnimation() == MastersRules.Move.THRUST.ordinal() + 1
+				check(!master.reprisePending() && ordinaryMove(master) != null
 					&& close(master.auraRemaining(), 68) && master.position().distanceToSqr(origin) < .003,
 					"A blocked complete path or out-of-band target declines Reprise before payment or sideways movement: " + kind);
 				cleanup();
@@ -248,25 +248,31 @@ final class GaleRepriseChecks {
 			check(!master.state(AuraFighter.WINDUP) && close(master.auraRemaining(), 60), "Cancelled Reprise retains its full paid recovery through the last frame");
 		});
 		at(world, GaleRepriseRules.GATHER + 1 + GaleRepriseRules.RECOVERY, () -> {
-			check(master.attackAnimation() == MastersRules.Move.THRUST.ordinal() + 1 && master.attackElapsed(0) == 0
+			check(ordinaryMove(master) != null && master.attackElapsed(0) == 0
 				&& !master.reprisePending() && close(master.auraRemaining(), 44),
-				"The next still-eligible sequence uses ordinary Thrust because the paid Reprise's 140-tick cooldown survives cancellation");
+				"The next still-eligible sequence uses an admitted ordinary attack because the paid Reprise's 140-tick cooldown survives cancellation");
 		});
 		world.getServer().waitFor(server -> {
 			if (master.auraRemaining() >= GaleRepriseRules.COST) return false;
-			check(close(master.auraRemaining(), 16) && master.attackAnimation() == MastersRules.Move.CRESCENT.ordinal() + 1,
-				"Ordinary Thrust, the scheduled guard, and Crescent spend the remaining finite Aura");
+			check(close(master.auraRemaining(), 16) && ordinaryMove(master) != null,
+				"Two admitted ordinary moves and the scheduled guard spend the remaining finite Aura");
 			began = level.getGameTime() - (long) master.attackElapsed(0);
 			return true;
 		}, 120);
-		at(world, MastersRules.Move.CRESCENT.tell + MastersRules.Move.CRESCENT.recovery, () -> {
+		MastersRules.Move exhaustedMove = ordinaryMove(master);
+		at(world, exhaustedMove.tell + exhaustedMove.recovery, () -> {
 			check(close(master.auraRemaining(), 16) && !master.state(AuraFighter.WINDUP) && !master.guarding() && !master.reprisePending(),
 				"Exhausted ordinary AI enters exposed breathing instead of borrowing Aura for another form");
 		});
-		at(world, MastersRules.Move.CRESCENT.tell + MastersRules.Move.CRESCENT.recovery + 10, () -> {
+		at(world, exhaustedMove.tell + exhaustedMove.recovery + 10, () -> {
 			check(master.auraRemaining() > 16 && !master.state(AuraFighter.WINDUP) && !master.guarding(), "Native breathing gradually restores the exhausted resource");
 			cleanup();
 		});
+	}
+
+	private static MastersRules.Move ordinaryMove(SwordMaster master) {
+		return MasterMoveCatalog.legacy().byWireId(master.attackAnimation()).map(MasterMoveCatalog.Definition::legacyMove)
+			.filter(move -> move == MastersRules.Move.SWEEP || move == MastersRules.Move.THRUST || move == MastersRules.Move.CRESCENT).orElse(null);
 	}
 
 	private void setup(int count) {

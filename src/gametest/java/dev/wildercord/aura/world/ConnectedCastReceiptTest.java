@@ -2,6 +2,7 @@ package dev.wildercord.aura.world;
 
 import com.google.gson.JsonParser;
 import dev.wildercord.cast.NextCounterPairedCases;
+import dev.wildercord.cast.SpectatorPairedCases;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -13,6 +14,9 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.GameType;
 
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -98,12 +102,18 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			new NextCounterPairedCases().runConnectedPair(context, server, hostId, peerId,
 				() -> respawnPeer(context, server),
 				(id, proof) -> observeCase(context, server, id, proof, !id.equals(NextCounterPairedCases.CASES.get(2))), this::passCase);
+			new SpectatorPairedCases().runConnectedPair(context, server, hostId, peerId,
+				(id, proof) -> observeCase(context, server, id, proof, true), this::passCase);
 			check(completed.equals(expected), "All preserved native scenarios passed in declared order");
-			write("disconnect-peer", Map.of("cases", String.join(",", completed)));
+			GameType hostMode = server.computeOnServer(s -> s.getPlayerList().getPlayer(hostId).gameMode.getGameModeForPlayer());
+			GameType peerMode = server.computeOnServer(s -> s.getPlayerList().getPlayer(peerId).gameMode.getGameModeForPlayer());
+			context.waitTicks(1);
+			context.waitFor(mc -> mc.gameMode != null && mc.gameMode.getPlayerMode() == hostMode, 60);
+			write("disconnect-peer", Map.of("cases", String.join(",", completed), "hostMode", hostMode.getName(), "peerMode", peerMode.getName()));
 			await(context, () -> exists("peer-disconnected") && exists("peer-cast-receipt-passed")
 				&& server.computeOnServer(s -> s.getPlayerList().getPlayer(peerId) == null), "Real peer departs", false);
 			check(read("peer-cast-receipt-passed", "peer").getProperty("cases").equals(String.join(",", completed)), "Peer witnessed the complete native case ledger");
-			read("peer-disconnected", "peer");
+			check("true".equals(read("peer-disconnected", "peer").getProperty("modesRestored")), "Peer independently observes both restored modes before departure");
 			write("host-cast-receipt-passed", Map.of("cases", String.join(",", completed)));
 		}
 	}
@@ -129,8 +139,19 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 				"chargeStart", Long.toString(charge == null ? -1 : charge.start()), "recipientEntity", Integer.toString(peer.getId()),
 				"actorEntity", Integer.toString(host.getId()), "serverTick", Long.toString(peer.level().getGameTime())));
 			if (!proof.isEmpty()) {
-				check(proof.keySet().stream().noneMatch(sample::containsKey), "Counter proof cannot replace shared outcome identity");
-				sample.putAll(proof); sample.put("mana", Float.toString(Spellbooks.mana(peer)));
+				check(proof.keySet().stream().noneMatch(sample::containsKey), "Case proof cannot replace shared outcome identity");
+				sample.putAll(proof);
+				if (proof.containsKey("projectileUuid")) sample.put("mana", Float.toString(Spellbooks.mana(peer)));
+				if (proof.containsKey("victimUuid")) {
+					var entity = host.level().getEntity(UUID.fromString(proof.get("victimUuid")));
+					check(entity instanceof LivingEntity && entity.getId() == Integer.parseInt(proof.get("victimEntity")), "Exact hostile victim survives until the live witness");
+					var victim = (LivingEntity) entity;
+					check(victim.isAlive() && victim.getHealth() < Float.parseFloat(proof.get("victimHealthBefore"))
+						&& victim.hasEffect(MobEffects.POISON) && SpectatorPairedCases.hasPoisonParticles(victim), "Server observes exact victim damage and native synchronized poison metadata");
+					check(host.gameMode.getGameModeForPlayer() == GameType.SURVIVAL && peer.isSpectator()
+						&& peer.getHealth() == Float.parseFloat(proof.get("spectatorHealthBefore")) && !peer.hasEffect(MobEffects.POISON), "Real spectator remains untouched when its witness is published");
+					sample.put("victimHealth", Float.toString(victim.getHealth())); sample.put("victimPoisonParticles", "true");
+				}
 			}
 			return Map.copyOf(sample);
 		});
@@ -141,10 +162,14 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 		await(context, () -> exists(stem + "-seen"), "Peer receives " + id, true);
 		Properties seen = read(stem + "-seen", "peer");
 		check(id.equals(seen.getProperty("case")) && Long.parseLong(seen.getProperty("pid")) == otherPid, "Expected peer acknowledges this exact case");
-		if (!proof.isEmpty()) {
+		if (proof.containsKey("projectileUuid")) {
 			for (String key : List.of("projectileUuid", "projectilePresent", "mana"))
 				check(snapshot.get(key).equals(seen.getProperty(key)), "Peer acknowledges the exact native counter outcome: " + key);
 			if (Boolean.parseBoolean(proof.get("projectilePresent"))) check("true".equals(seen.getProperty("replacementBody")), "Peer separately proves its new live body differs from the dead one");
+		}
+		if (proof.containsKey("victimUuid")) {
+			for (String key : List.of("victimUuid", "victimEntity", "victimHealth", "victimPoisonParticles", "casterMode", "spectatorMode"))
+				check(snapshot.get(key).equals(seen.getProperty(key)), "Live spectator acknowledges its exact native delivery outcome: " + key);
 		}
 		observed.add(id);
 	}
@@ -220,6 +245,16 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 						}
 						return bolt == null;
 					}
+					if (sample.containsKey("victimUuid")) {
+						var victim = mc.level.getEntity(Integer.parseInt(sample.getProperty("victimEntity")));
+						var caster = mc.getConnection().getPlayerInfo(hostId);
+						return mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SPECTATOR && mc.player.isSpectator()
+							&& caster != null && caster.getGameMode() == GameType.SURVIVAL && !mc.player.hasEffect(MobEffects.POISON)
+							&& mc.player.getHealth() == Float.parseFloat(sample.getProperty("spectatorHealthBefore"))
+							&& victim instanceof LivingEntity living && living.isAlive() && living.getUUID().equals(UUID.fromString(sample.getProperty("victimUuid")))
+							&& Math.abs(living.getHealth() - Float.parseFloat(sample.getProperty("victimHealth"))) < .001F
+							&& SpectatorPairedCases.hasPoisonParticles(living);
+					}
 					return true;
 				}, 240);
 				var seen = new HashMap<>(Map.of("case", id, "recipientEntity", Integer.toString(recipient), "actorEntity", Integer.toString(actor)));
@@ -228,16 +263,24 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 					seen.put("mana", sample.getProperty("mana"));
 					if (Boolean.parseBoolean(sample.getProperty("projectilePresent"))) seen.put("replacementBody", "true");
 				}
+				if (sample.containsKey("victimUuid")) {
+					for (String key : List.of("victimUuid", "victimEntity", "victimHealth", "victimPoisonParticles", "casterMode", "spectatorMode"))
+						seen.put(key, sample.getProperty(key));
+				}
 				write(stem + "-seen", seen);
 				await(context, () -> exists(stem + "-passed"), "Remaining server assertions pass for " + id, false);
 				check(id.equals(read(stem + "-passed", "host").getProperty("case")), "Host confirms this exact case after all strict probes");
 				completed.add(id);
 			}
 			await(context, () -> exists("disconnect-peer"), "Native assertions complete before departure", false);
-			check(read("disconnect-peer", "host").getProperty("cases").equals(String.join(",", completed)), "Both roles finish the same complete 38-case ledger");
+			Properties departure = read("disconnect-peer", "host");
+			check(departure.getProperty("cases").equals(String.join(",", completed)), "Both roles finish the same complete 42-case ledger");
+			context.waitFor(mc -> mc.gameMode != null && mc.gameMode.getPlayerMode().getName().equals(departure.getProperty("peerMode"))
+				&& mc.getConnection() != null && mc.getConnection().getPlayerInfo(hostId) != null
+				&& mc.getConnection().getPlayerInfo(hostId).getGameMode().getName().equals(departure.getProperty("hostMode")), 60);
 			context.runOnClient(mc -> mc.disconnect(new TitleScreen(), false));
 			context.waitFor(mc -> mc.player == null && mc.level == null, 300);
-			write("peer-disconnected", Map.of("cases", String.join(",", completed)));
+			write("peer-disconnected", Map.of("cases", String.join(",", completed), "modesRestored", "true"));
 			write("peer-cast-receipt-passed", Map.of("cases", String.join(",", completed)));
 			await(context, () -> exists("host-cast-receipt-passed"), "Host observes connection removal", false);
 			read("host-cast-receipt-passed", "host");
@@ -295,8 +338,8 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			check(input != null, "Source-controlled native case contract is packaged");
 			var json = JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonObject();
 			var cases = new ArrayList<String>(); json.getAsJsonArray("cases").forEach(value -> cases.add(value.getAsString()));
-			var compiled = new ArrayList<>(CastHitReceiptConsistencyChecks.expectedCases()); compiled.addAll(NextCounterPairedCases.CASES);
-			check(json.get("expectedCount").getAsInt() == 38 && cases.equals(compiled), "Contract preserves all 35 compiled combat scenarios plus exactly three paired counters");
+			var compiled = new ArrayList<>(CastHitReceiptConsistencyChecks.expectedCases()); compiled.addAll(NextCounterPairedCases.CASES); compiled.addAll(SpectatorPairedCases.CASES);
+			check(json.get("expectedCount").getAsInt() == 42 && cases.equals(compiled), "Contract preserves all 38 compiled scenarios plus exactly four paid spectator deliveries");
 			return List.copyOf(cases);
 		} catch (java.io.IOException failure) { throw new AssertionError(failure); }
 	}

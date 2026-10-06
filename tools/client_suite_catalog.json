@@ -1,7 +1,7 @@
 {
   "masters": {
     "description": "Masters update combat, progression, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln counterplay and Crimson Moon release/lifetime acceptance.",
-    "expectedCount": 35,
+    "expectedCount": 36,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
@@ -14,6 +14,7 @@
       "dev.wildercord.gametest.WildercordMastersArtsTest",
       "dev.wildercord.aura.CrimsonMoonReleasedOwnerTest",
       "dev.wildercord.aura.CrimsonMoonTimelineTest",
+      "dev.wildercord.aura.world.MasterOrdinaryPlannerTest",
       "dev.wildercord.aura.world.SwordMasterTrialTest",
       "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
       "dev.wildercord.party.PartyOfflineProjectileTest",
@@ -41,14 +42,15 @@
     ]
   },
   "articulated": {
-    "description": "Staged local combat preferences, opt-in segmented body, first-person hand sockets and HUD composition, gated netherite armor, and normally funded Aura Armour shell acceptance.",
-    "expectedCount": 5,
+    "description": "Staged local combat preferences, opt-in segmented body, first-person hand sockets and HUD composition, gated netherite armor, and normally funded Aura Armour shell acceptance. One bounded Crimson Moon owner first-person funded release, with numeric renderer/image association; no remote observer or exact server-release/frame proof.",
+    "expectedCount": 6,
     "entries": [
       "dev.wildercord.client.CombatPresentationSettingsTest",
       "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
       "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
       "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
-      "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest"
+      "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
+      "dev.wildercord.client.combat.CrimsonMoonCaptureTest"
     ]
   },
   "diagnostic-wetland": {
@@ -123,6 +125,14 @@
       "dev.wildercord.wildlife.RootmoltCounterTest",
       "dev.wildercord.wildlife.ReedRefugeTest",
       "dev.wildercord.wildlife.SiltcrestBankReturnTest"
+    ]
+  },
+  "diagnostic-stasis-gallery": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the complete original WildercordScreenshots gallery and six unchanged Stasis cases, with bounded passive payment/hit/held-damage observations. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.gametest.WildercordScreenshots"
     ]
   }
 }

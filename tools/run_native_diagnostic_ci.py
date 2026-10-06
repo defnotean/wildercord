@@ -33,11 +33,13 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "fungal-nursery": "diagnostic-fungal-nursery",
          "wall-turn": "diagnostic-wall-turn",
          "kiln-ring": "diagnostic-kiln-ring",
-         "ecology-return": "diagnostic-ecology-return"}
+         "ecology-return": "diagnostic-ecology-return",
+         "stasis-gallery": "diagnostic-stasis-gallery"}
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
+    "stasis-gallery": {"dev.wildercord.gametest.WildercordScreenshots": None},
     "ecology-return": {"dev.wildercord.wildlife.RootmoltCounterTest": None,
                        "dev.wildercord.wildlife.ReedRefugeTest": None,
                        "dev.wildercord.wildlife.ReedRefugeTest#reopen": None,
@@ -237,7 +239,7 @@ def observed_seeds(log, case):
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
-            if case in ("wall-turn", "kiln-ring", "ecology-return") and entry in found:
+            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery") and entry in found:
                 issues.append("Repeated native world seed marker for " + entry)
             found.setdefault(entry, set()).add(seed)
         except (ValueError, KeyError, TypeError):

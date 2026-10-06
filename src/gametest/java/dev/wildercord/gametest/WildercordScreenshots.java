@@ -34,6 +34,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
 			context.waitTicks(40);
 			world.getServer().runOnServer(server -> {
+				dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.gametest.WildercordScreenshots\",\"seed\":\"{}\"}", server.overworld().getSeed());
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				player.setGameMode(GameType.SURVIVAL);
 				ItemStack cord = new ItemStack(WildercordItems.ECHO_CORD);
@@ -519,17 +520,26 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			{Runes.BEAM, Runes.METEOR}, {Runes.BEAM, Runes.PRIMER}, {Runes.BEAM, Runes.DISMANTLE}};
 		for (RuneDef[] attack : attacks) {
 			huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
-			context.waitTicks(3);
-			server.runOnServer(s -> castAs(s, 2, Runes.BEAM, Runes.STASIS));
-			context.waitTicks(2);
-			float before = server.computeOnServer(s -> health(s, huskId[0]));
-			server.runOnServer(s -> castAs(s, 1, attack));
-			context.waitTicks(45);
-			float during = server.computeOnServer(s -> health(s, huskId[0]));
-			check(during == before, attack[1].name() + " should be held by Stasis, but health went " + before + " -> " + during);
-			context.waitTicks(70);
-			float after = server.computeOnServer(s -> health(s, huskId[0]));
-			check(after < before, attack[1].name() + " held by Stasis should land when it ends, but health is " + after);
+			var observation = server.computeOnServer(s -> dev.wildercord.cast.StasisMechanicsProbe.open(
+				s.getPlayerList().getPlayers().getFirst(), husk(s, huskId[0]), attack[1]));
+			try {
+				context.waitTicks(3);
+				server.runOnServer(s -> castAs(s, 2, Runes.BEAM, Runes.STASIS));
+				context.waitTicks(2);
+				float before = server.computeOnServer(s -> health(s, huskId[0]));
+				server.runOnServer(s -> observation.checkpoint("before_attack"));
+				server.runOnServer(s -> castAs(s, 1, attack));
+				context.waitTicks(45);
+				float during = server.computeOnServer(s -> health(s, huskId[0]));
+				server.runOnServer(s -> observation.checkpoint("during_hold"));
+				check(during == before, attack[1].name() + " should be held by Stasis, but health went " + before + " -> " + during);
+				context.waitTicks(70);
+				float after = server.computeOnServer(s -> health(s, huskId[0]));
+				server.runOnServer(s -> observation.checkpoint("after_release_wait"));
+				check(after < before, attack[1].name() + " held by Stasis should land when it ends, but health is " + after);
+			} finally {
+				server.runOnServer(s -> observation.close());
+			}
 		}
 		// Threaded after the damage, Stasis still goes first.
 		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
@@ -765,12 +775,12 @@ public class WildercordScreenshots implements FabricClientGameTest {
 	/** Threads a spell into a slot and casts it right away, with the cooldown cleared and mana topped up. */
 	private static void castAs(net.minecraft.server.MinecraftServer server, int spell, RuneDef... runes) {
 		ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
-		SpellCaster.edit(player, spell, ids(runes));
+		var editProblem = SpellCaster.edit(player, spell, ids(runes));
 		Spellbooks.setReadyAt(player, spell, 0);
 		if (!java.util.Arrays.asList(runes).contains(Runes.BLOOD_PRICE_MOD)) {
 			Spellbooks.setMana(player, 380);
 		}
-		SpellCaster.cast(player, spell);
+		dev.wildercord.cast.StasisMechanicsProbe.cast(player, spell, List.of(runes), editProblem, () -> SpellCaster.cast(player, spell));
 	}
 
 	/** Clears any husks and spawns a fresh one 6 blocks in front of the stage; returns its id. */

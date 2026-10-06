@@ -8,7 +8,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Masters of Tomorrow, development foundation
 
-- Added a committed release and original Classic/articulated body and first-person motion to the existing Crimson Moon Final. Its ten-tick warning uses accepted facing and release-time feet with visible-cone admission; the existing price, rest, release-only health toll, outward arcs, wounds and healing caps remain. Native Final/lifetime and stronger visual verification remain pending.
+- Added seeded, bounded ordinary Master attack selection with accepted-action history and recent-move avoidance. Existing priority signatures and full punish windows remain; ordinary releases now resist callback reentry. This adds combinations, not new attack IDs, and native planner acceptance remains pending.
+
+- Corrected Red Rain's first-person chamber so steep opposite-hand looks retain a visible blade face and clear aim corridor. Server timing, grip and native pixel thresholds are unchanged; fresh shaded capture acceptance remains pending.
+
+- Revalidate Hailfall's released owner and source-world victims after synchronous damage callbacks, preventing further stone victims or chill after retirement. Ordinary weapon changes and physical interruption still preserve a live owner's released cloud; native callback acceptance remains pending.
+
+- Added a committed release and original Classic/articulated body and first-person motion to the existing Crimson Moon Final. Its ten-tick warning uses accepted facing and release-time feet with visible-cone admission; the existing price, rest, release-only health toll, outward arcs, wounds and healing caps remain. The Final and released-owner classes pass on `d3612e11`; stronger native visual verification remains pending.
 
 - Added Ember Kiln Ring: a stationary warned annulus with an inner pocket, outer escape, cover and timed-jump counters, original body/weapon motion, finite Aura and full recovery. Its three dedicated native mechanics, presentation and opponent-view suites pass on `160ff125`; final-candidate and continuous gameplay acceptance remain open.
 

@@ -11,10 +11,33 @@ import signal
 import subprocess
 import sys
 import threading
+import uuid
 
 from native_ci_diagnostics import DIAGNOSTIC_PREFIX, NativeDiagnostics
 
 from client_suites import EXIT_PREFIX, REQUEST_PREFIX, SELECTION_PREFIX, select_entries
+
+MOON_ENTRY = "dev.wildercord.client.combat.CrimsonMoonCaptureTest"
+MOON_NONCE = "WILDERCORD_MOON_RECEIPT_NONCE"
+MOON_LAUNCH = Path("artifacts/review/moon-owner-launch.json")
+
+
+def moon_launch_environment(selection, environment, nonce_factory=uuid.uuid4):
+    """One fresh owned-launch nonce; inherited values never certify this capture."""
+    if MOON_ENTRY not in selection["entries"]:
+        return None, None
+    child = dict(environment)
+    nonce = str(nonce_factory())
+    if str(uuid.UUID(nonce)) != nonce:
+        raise ValueError("Moon launch nonce must be a canonical UUID")
+    child[MOON_NONCE] = nonce
+    receipt = {"schemaVersion": 1, "purpose": "owner-fp-native-diagnostic",
+               "nonce": nonce, "selection": selection,
+               "checkoutSha": environment.get("GITHUB_SHA"),
+               "runId": environment.get("GITHUB_RUN_ID"),
+               "runAttempt": environment.get("GITHUB_RUN_ATTEMPT"),
+               "remoteObserverCoverage": False, "serverReleaseFrameCorrespondenceVerified": False}
+    return child, receipt
 
 
 class BackendFailures:
@@ -85,9 +108,16 @@ def main(argv=None, *, diagnostic_provenance=None):
             if selection["kind"] != "diagnostic":
                 parser.error("Request provenance is only supported for diagnostic selections")
             record(REQUEST_PREFIX + json.dumps(diagnostic_provenance, sort_keys=True))
+        environment, moon_receipt = moon_launch_environment(selection, os.environ)
+        launch_options = {}
+        if moon_receipt is not None:
+            MOON_LAUNCH.parent.mkdir(parents=True, exist_ok=True)
+            MOON_LAUNCH.write_text(json.dumps(moon_receipt, indent=2) + "\n", encoding="utf-8")
+            record("WILDERCORD_MOON_OWNER_LAUNCH " + json.dumps(moon_receipt, sort_keys=True))
+            launch_options["env"] = environment
         process = subprocess.Popen(
             launch_command(selection), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
-            encoding="utf-8", errors="replace", start_new_session=True)
+            encoding="utf-8", errors="replace", start_new_session=True, **launch_options)
         diagnostics = None
         observe_progress = True
 

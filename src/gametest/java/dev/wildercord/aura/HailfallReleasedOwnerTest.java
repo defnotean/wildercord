@@ -6,6 +6,7 @@ import dev.wildercord.aura.arts.ReleasedArtOwner;
 import dev.wildercord.aura.arts.RimeArts;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.Statuses;
+import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerConnection;
@@ -139,6 +140,7 @@ public final class HailfallReleasedOwnerTest implements FabricClientGameTest {
 					current.target.discard();
 					current.destinationTarget.discard();
 				});
+				HailfallDamageCallbacks.run(context, server);
 			} finally {
 				server.runOnServer(s -> AuraApi.stringHooks().remove(hook));
 				if (context.computeOnClient(mc -> mc.level != null)) connection.close();
@@ -299,7 +301,7 @@ public final class HailfallReleasedOwnerTest implements FabricClientGameTest {
 		probe.destinationTarget.discard();
 	}
 
-	private static ServerPlayer respawn(MinecraftServer server, ServerPlayer dead) {
+	static ServerPlayer respawn(MinecraftServer server, ServerPlayer dead) {
 		dead.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
 		ServerPlayer replacement = server.getPlayerList().getPlayer(dead.getUUID());
 		check(replacement != null && replacement != dead && replacement.isAlive() && dead.isRemoved(),
@@ -308,7 +310,7 @@ public final class HailfallReleasedOwnerTest implements FabricClientGameTest {
 		return replacement;
 	}
 
-	private static void prepare(ServerPlayer player, ServerLevel level) {
+	static void prepare(ServerPlayer player, ServerLevel level) {
 		player.setGameMode(GameType.SURVIVAL);
 		player.teleportTo(level, FEET.x, FEET.y, FEET.z, Set.of(), 0, 0, false);
 		player.setNoGravity(true);
@@ -326,9 +328,11 @@ public final class HailfallReleasedOwnerTest implements FabricClientGameTest {
 		player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
 	}
 
-	private static LivingEntity target(ServerLevel level) {
+	static LivingEntity target(ServerLevel level) {
 		var target = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
 		check(target != null, "A native Hailfall target exists");
+		// Native admission may otherwise roll this fixture Runebound and raise its health above the fixed baseline.
+		target.addTag("wildercord.rolled");
 		target.setNoAi(true);
 		target.setNoGravity(true);
 		target.setPersistenceRequired();
@@ -336,7 +340,10 @@ public final class HailfallReleasedOwnerTest implements FabricClientGameTest {
 		target.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
 		target.setHealth(HEALTH);
 		target.snapTo(FEET.x, FEET.y, FEET.z + ArtRules.HAIL_AHEAD, 180, 0);
-		level.addFreshEntity(target);
+		check(level.addFreshEntity(target), "The native Hailfall target is admitted to " + level.dimension());
+		untouched(target, "Native admission preserves an ordinary Hailfall victim");
+		check(target.getMaxHealth() == HEALTH && !target.hasAttached(WildercordAttachments.RUNEBOUND),
+			"Native admission preserves the ordinary maximum health and unbound fixture: " + state(target));
 		// The first stone's maximum random offset is only HAIL_RADIUS * .2, so the central target is guaranteed
 		// inside HAIL_STONE_REACH without seeding world RNG or making later random stones part of the assertion.
 		check(ArtRules.HAIL_RADIUS * .2 < ArtRules.HAIL_STONE_REACH, "The first native stone necessarily reaches the target");
@@ -356,7 +363,14 @@ public final class HailfallReleasedOwnerTest implements FabricClientGameTest {
 
 	private static void untouched(LivingEntity target, String reason) {
 		check(target.isAlive() && target.getHealth() == HEALTH && !target.hasEffect(MobEffects.SLOWNESS)
-			&& target.getTicksFrozen() == 0, reason);
+			&& target.getTicksFrozen() == 0, reason + ": " + state(target));
+	}
+
+	private static String state(LivingEntity target) {
+		return "id=" + target.getId() + " uuid=" + target.getUUID() + " level=" + target.level().dimension()
+			+ " alive=" + target.isAlive() + " removed=" + target.isRemoved() + " health=" + target.getHealth()
+			+ " maxHealth=" + target.getMaxHealth() + " slowness=" + target.hasEffect(MobEffects.SLOWNESS)
+			+ " frozen=" + target.getTicksFrozen() + " runebound=" + target.hasAttached(WildercordAttachments.RUNEBOUND);
 	}
 
 	private static void checked(Probe probe, Runnable action) {

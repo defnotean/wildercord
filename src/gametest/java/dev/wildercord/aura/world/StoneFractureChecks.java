@@ -252,9 +252,9 @@ final class StoneFractureChecks {
 		int recoveryEnd = cancelled(answer) ? (int) (cancelledAt - began) + StoneFractureRules.RECOVERY : StoneFractureRules.TELL + StoneFractureRules.RECOVERY;
 		observeRecovery(world, recoveryEnd - 1, answer);
 		if (answer == Answer.HOLD) at(world, recoveryEnd, () -> {
-			check(master.attackAnimation() == MastersRules.Move.THRUST.ordinal() + 1 && master.attackElapsed(0) == 0
+			check(ordinaryMove(master) != null && master.attackElapsed(0) == 0
 				&& !master.guarding() && close(master.auraRemaining(), 40),
-				"A completed Fracture advances sequence to the next Thrust without buying a redundant guard after its paid brace");
+				"A completed Fracture advances sequence to the next admitted ordinary attack without buying a redundant guard after its paid brace");
 		});
 		world.getServer().runOnServer(server -> cleanup());
 	}
@@ -321,24 +321,30 @@ final class StoneFractureChecks {
 			() -> check(master.interruptWindup(), "The resource probe cancels a naturally paid Fracture")));
 		at(world, StoneFractureRules.PLANT + StoneFractureRules.RECOVERY - 1, () -> check(!master.state(AuraFighter.WINDUP) && !master.guarding() && close(master.auraRemaining(), 56), "Cancellation retains all forty paid recovery frames"));
 		at(world, StoneFractureRules.PLANT + StoneFractureRules.RECOVERY, () -> {
-			check(master.attackAnimation() == MastersRules.Move.SWEEP.ordinal() + 1 && master.attackElapsed(0) == 0
+			check(ordinaryMove(master) != null && master.attackElapsed(0) == 0
 				&& !master.fracturePending() && !master.guarding() && close(master.auraRemaining(), 40),
-				"Cancellation leaves sequence one intact and clears the redundant guard, so native AI selects ordinary Sweep");
+				"Cancellation leaves sequence one intact and clears the redundant guard, so native AI selects a legal ordinary attack");
 		});
 		world.getServer().waitFor(server -> {
 			if (master.auraRemaining() >= StoneFractureRules.COST) return false;
-			check(close(master.auraRemaining(), 12) && master.attackAnimation() == MastersRules.Move.THRUST.ordinal() + 1,
-				"The fallback Sweep, one normal guard and next Thrust spend the finite remainder without a refund");
+			check(close(master.auraRemaining(), 12) && ordinaryMove(master) != null,
+				"Two admitted ordinary moves and one normal guard spend the finite remainder without a refund");
 			began = level.getGameTime() - (long) master.attackElapsed(0);
 			return true;
 		}, 120);
-		at(world, MastersRules.Move.THRUST.tell + MastersRules.Move.THRUST.recovery, () -> {
+		MastersRules.Move exhaustedMove = ordinaryMove(master);
+		at(world, exhaustedMove.tell + exhaustedMove.recovery, () -> {
 			check(close(master.auraRemaining(), 12) && !master.state(AuraFighter.WINDUP) && !master.guarding() && !master.fracturePending(), "Exhausted native AI breathes exposed instead of borrowing Aura for another form");
 		});
-		at(world, MastersRules.Move.THRUST.tell + MastersRules.Move.THRUST.recovery + 10, () -> {
+		at(world, exhaustedMove.tell + exhaustedMove.recovery + 10, () -> {
 			check(master.auraRemaining() > 12 && !master.state(AuraFighter.WINDUP) && !master.guarding(), "Ordinary breathing gradually restores the exhausted resource");
 			cleanup();
 		});
+	}
+
+	private static MastersRules.Move ordinaryMove(SwordMaster master) {
+		return MasterMoveCatalog.legacy().byWireId(master.attackAnimation()).map(MasterMoveCatalog.Definition::legacyMove)
+			.filter(move -> move == MastersRules.Move.SWEEP || move == MastersRules.Move.THRUST || move == MastersRules.Move.CRESCENT).orElse(null);
 	}
 
 	private void setup(int count) {

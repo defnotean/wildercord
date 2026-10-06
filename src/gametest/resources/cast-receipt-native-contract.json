@@ -40,9 +40,13 @@
     "NONPLAYER",
     "COUNTER_QUIETUS_PAID_BOLT",
     "COUNTER_QUIETUS_THIRTEEN_EXISTING",
-    "COUNTER_REFLECTED_RESPAWN_NULLCATCH"
+    "COUNTER_REFLECTED_RESPAWN_NULLCATCH",
+    "SPECTATOR_BOLT_VENOM",
+    "SPECTATOR_SPARK_VENOM",
+    "SPECTATOR_RAY_VENOM",
+    "SPECTATOR_TOUCH_VENOM"
   ],
-  "expectedCount": 38,
+  "expectedCount": 42,
   "profiles": {
     "aura": {
       "username": "WCAuraHost",
@@ -75,7 +79,7 @@
   "limits": {
     "maxJvms": 2,
     "maxHeapMiBPerJvm": 2048,
-    "maxCases": 38,
+    "maxCases": 42,
     "maxTimeoutSeconds": 900
   },
   "routing": "Supervised-only; never registered in the ordinary single-client descriptor."

@@ -113,13 +113,20 @@ public final class CheckCrimsonMoonPose {
     private static void close(Matrix a,Matrix b,float epsilon) { for(int r=0;r<4;r++) for(int c=0;c<4;c++)near(a.get(r,c),b.get(r,c),epsilon,"Matrix continuity/rigidity"); }
     private static void near(float a,float b,float e,String reason) { require(Math.abs(a-b)<=e,reason+": "+a+" vs "+b); }
     private static void require(boolean value,String reason) { checks++; if(!value)throw new AssertionError(reason); }
-    static String legacyFingerprint() throws Exception {
+    static String legacyFingerprint() throws Exception { return legacyFingerprint(false); }
+    /** Exclude only the revised Red Rain windup hand x/yaw/roll; keep every other component. */
+    static String legacyFingerprint(boolean excludeRedRainWindupHand) throws Exception {
         MessageDigest digest=MessageDigest.getInstance("SHA-256");
         for(int move=0;move<=18;move++) {
             var style=MastersStyleRules.animation(move); int tell=style==null?MastersArtRules.move(move).windup():style.windup();
             int recovery=style==null?MastersArtRules.move(move).recovery():style.recovery();
             for(int step=0;step<=(tell+recovery)*8;step++) {
-                float age=step/8F;digest.update(MastersArtAnimation.sample(move,age,tell,recovery).toString().getBytes(StandardCharsets.UTF_8));
+                float age=step/8F;
+                var classic=MastersArtAnimation.sample(move,age,tell,recovery);
+                if(excludeRedRainWindupHand && move==18 && age<tell) classic=new MastersArtAnimation.Pose(classic.weight(),classic.body(),
+                    classic.head(),classic.sword(),classic.guard(),classic.frontLeg(),classic.rearLeg(),classic.lower(),classic.forward(),
+                    new MastersArtAnimation.Hand(0,classic.hand().y(),classic.hand().z(),classic.hand().pitch(),0,0));
+                digest.update(classic.toString().getBytes(StandardCharsets.UTF_8));
                 for(boolean left:new boolean[]{false,true}) {
                     Pose pose=samplePlayer(move,age,tell,recovery,left);ViewPose v=view(pose,left);
                     digest.update((pose.phase()+":"+Float.toHexString(pose.weight())).getBytes(StandardCharsets.UTF_8));

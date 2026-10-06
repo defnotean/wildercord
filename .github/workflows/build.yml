@@ -158,7 +158,7 @@ jobs:
 
   # Additional focused evidence for the Masters foundation; never replaces the four full shards.
   masters-native:
-    name: Masters update (35 focused suites)
+    name: Masters update (36 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -186,7 +186,7 @@ jobs:
         id: void-cut-start
         continue-on-error: true
         run: python tools/collect_void_cut_diagnostics.py --prepare --job-group masters-native --marker artifacts/review/void-cut-masters-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the 35 focused update suites
+      - name: Run the 36 focused update suites
         env:
           CI_MINECRAFT_EULA_ACCEPTED: "true"
           LIBGL_ALWAYS_SOFTWARE: "1"
@@ -274,7 +274,7 @@ jobs:
 
   # Mandatory replacement for charge-owning fake PvP recipients: two actual TCP clients.
   connected-combat-native:
-    name: Connected cast receipts (38 cases)
+    name: Connected cast receipts (42 cases)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -291,7 +291,7 @@ jobs:
         run: python -m unittest discover -s tools -p 'test_two_client_supervisor.py' -v
       - name: Install existing virtual-display dependencies
         run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
-      - name: Run all 38 connected cast cases
+      - name: Run all 42 connected cast cases
         timeout-minutes: 24
         env:
           CI_MINECRAFT_EULA_ACCEPTED: "true"
@@ -316,7 +316,7 @@ jobs:
 
   # Opt-in renderer acceptance only; all existing Masters and full-descriptor gates remain.
   articulated-native:
-    name: articulated-native (5 focused suites)
+    name: articulated-native (6 focused suites)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -342,7 +342,7 @@ jobs:
       - name: Mark fresh articulated screenshot inputs
         continue-on-error: true
         run: python tools/curate_masters_frames.py --suite articulated --prepare --marker artifacts/review/articulated-frames-${{ github.run_id }}-${{ github.run_attempt }}.json
-      - name: Run the five articulated native suites
+      - name: Run the six articulated native suites
         env:
           CI_MINECRAFT_EULA_ACCEPTED: "true"
           LIBGL_ALWAYS_SOFTWARE: "1"
@@ -367,6 +367,18 @@ jobs:
             build/run/clientGameTest/screenshots/combat_settings_640.png
             build/run/clientGameTest/screenshots/combat_settings_854.png
             build/run/clientGameTest/screenshots/combat_settings_1920.png
+          if-no-files-found: warn
+      - name: Preserve original Moon owner FP diagnostic frame
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: crimson-moon-owner-fp-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/run/clientGameTest/screenshots/crimson_moon_owner_fp_slim_articulated_netherite_funded_right_release.png
+            build/run/clientGameTest/screenshots/crimson_moon_owner_fp_wide_articulated_netherite_funded_right_release.png
+            build/run/clientGameTest/screenshots/crimson-moon-owner-receipts/*/000001.json
+            artifacts/review/moon-owner-launch.json
+            artifacts/review/articulated-native-manifest.json
           if-no-files-found: warn
       - name: Curate bounded native articulated frames
         id: curated-articulated

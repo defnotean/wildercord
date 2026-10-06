@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Pure, unconnected proposal engine. It neither admits attacks nor owns clocks, cooldowns, recovery, Aura or damage.
- * The future executor must recheck every live precondition and only commit a proposal after one successful start.
+ * Pure proposal engine. It neither admits attacks nor owns clocks, cooldowns, recovery, Aura or damage.
+ * The live ordinary adapter rechecks every executor precondition and commits a proposal only after one successful start.
  */
 public final class MasterMovePlanner {
 	public static final int HISTORY_LIMIT = 4;
