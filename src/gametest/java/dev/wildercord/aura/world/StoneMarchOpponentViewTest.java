@@ -20,12 +20,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Input;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -48,6 +51,21 @@ public final class StoneMarchOpponentViewTest implements FabricClientGameTest {
 	};
 	private record Observation(long gameTick, long acceptedTick, int attackId, float age, boolean pending,
 		boolean windup, boolean guarding, double aura, int participants, Vec3 masterPosition, Vec3 playerPosition, float playerHealth) {}
+	private record MovementEffect(String id, int amplifier, int remainingTicks) {}
+	private record MovementBody(long gameTick, long acceptedAge, Vec3 position, Vec3 relativePosition, Vec3 velocity,
+		float yaw, float pitch, boolean onGround, boolean horizontalCollision, boolean verticalCollision, boolean verticalCollisionBelow,
+		boolean sprinting, boolean crouching, boolean usingItem, float health, float absorption, float speed,
+		double movementAttribute, double frictionAttribute, double airDragAttribute, double sneakingAttribute, List<MovementEffect> effects) {}
+	private record MovementClient(MovementBody body, Input nativeInput, float inputX, float inputY,
+		boolean upKey, boolean downKey, boolean leftKey, boolean rightKey, boolean jumpKey, boolean sneakKey, boolean sprintKey,
+		boolean paused, String screen, String camera, int fov) {}
+	private record MovementGeometry(Vec3 origin, Vec3 aim, Vec3 side) {}
+	private record MovementServer(MovementBody body, Input receivedInput, int currentBand, boolean pending,
+		int consumedMask, int supportedPrefix, int resolvingPulse, long lastMarchTick, int attackId, float attackAge,
+		MovementGeometry acceptedGeometry) {}
+	private record MovementSample(String phase, int iteration, MovementServer server, MovementClient client) {}
+	private record MovementTrace(String answer, long acceptedTick, Vec3 acceptedOrigin, Vec3 acceptedAim, Vec3 acceptedSide,
+		String failure, List<MovementSample> samples) {}
 	private record Receipt(String name, String captureKind, String pixelReview, boolean realEnrolledClient, boolean spectator,
 		String answer, String phase, int requestedTick, long clientGameTick, long acceptedTick, float clientAge,
 		int width, int height, int fov, float lookYaw, float lookPitch, String camera, String requestedBackend,
@@ -151,20 +169,89 @@ public final class StoneMarchOpponentViewTest implements FabricClientGameTest {
 	}
 
 	private void moveUntil(ClientGameTestContext context, TestSingleplayerContext world, boolean inward) {
-		if (inward) context.getInput().holdKey(o -> o.keyUp); else context.getInput().holdKey(o -> o.keyLeft);
+		// At most 17 snapshots: before input, the original 15 loop observations, and the unchanged assertion.
+		// These reads never advance a tick or invoke the live geometry/admission methods.
+		var samples = new ArrayList<MovementSample>(17);
+		Throwable failure = null;
+		MovementGeometry geometry = null;
 		try {
-			for (int tick = 0; tick < 15; tick++) {
-				Vec3 relative = world.getServer().computeOnServer(server -> player.position().subtract(origin));
-				if (inward ? relative.z < 3.3 : Math.abs(relative.x) > 2.1) break;
-				context.waitTick();
-			}
-		} finally { context.getInput().releaseKey(o -> o.keyUp); context.getInput().releaseKey(o -> o.keyLeft); }
-		world.getServer().runOnServer(server -> {
-			Vec3 relative = player.position().subtract(origin);
-			check(level.getGameTime() < began + (inward ? StoneMarchRules.SECOND : StoneMarchRules.TELL)
-				&& (inward ? relative.z < 3.5 && relative.z >= 1.5 : Math.abs(relative.x) > StoneMarchRules.HALF_WIDTH),
-				"Real input reaches " + (inward ? "the already spent first band" : "the lateral escape") + " before the advancing front");
-		});
+			MovementServer before = world.getServer().computeOnServer(server -> movementServer());
+			geometry = before.acceptedGeometry;
+			samples.add(new MovementSample("before_key", -1, before, context.computeOnClient(this::movementClient)));
+			if (inward) context.getInput().holdKey(o -> o.keyUp); else context.getInput().holdKey(o -> o.keyLeft);
+			try {
+				for (int tick = 0; tick < 15; tick++) {
+					MovementServer observed = world.getServer().computeOnServer(server -> movementServer());
+					Vec3 relative = observed.body.relativePosition;
+					samples.add(new MovementSample("iteration", tick, observed, context.computeOnClient(this::movementClient)));
+					if (inward ? relative.z < 3.3 : Math.abs(relative.x) > 2.1) break;
+					context.waitTick();
+				}
+			} finally { context.getInput().releaseKey(o -> o.keyUp); context.getInput().releaseKey(o -> o.keyLeft); }
+			MovementClient endpoint = context.computeOnClient(this::movementClient);
+			world.getServer().runOnServer(server -> {
+				samples.add(new MovementSample("endpoint", -1, movementServer(), endpoint));
+				Vec3 relative = player.position().subtract(origin);
+				check(level.getGameTime() < began + (inward ? StoneMarchRules.SECOND : StoneMarchRules.TELL)
+					&& (inward ? relative.z < 3.5 && relative.z >= 1.5 : Math.abs(relative.x) > StoneMarchRules.HALF_WIDTH),
+					"Real input reaches " + (inward ? "the already spent first band" : "the lateral escape") + " before the advancing front");
+			});
+		} catch (RuntimeException | Error problem) {
+			failure = problem;
+			throw problem;
+		} finally {
+			// Emit before trial cleanup can discard the source, including when the original assertion throws.
+			Throwable original = failure;
+			MovementGeometry accepted = geometry;
+			reportMovement(original, () -> {
+				var trace = new MovementTrace(inward ? "inward" : "side", began,
+					accepted == null ? null : accepted.origin, accepted == null ? null : accepted.aim,
+					accepted == null ? null : accepted.side,
+					original == null ? null : original.getClass().getName() + ": " + original.getMessage(), List.copyOf(samples));
+				dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_MARCH_INPUT {}",
+					new com.google.gson.GsonBuilder().serializeSpecialFloatingPointValues().create().toJson(trace));
+			});
+		}
+	}
+
+	static void reportMovement(Throwable original, Runnable report) {
+		try { report.run(); }
+		catch (RuntimeException | Error reporting) {
+			if (original == null) throw reporting;
+			if (reporting != original) original.addSuppressed(reporting);
+		}
+	}
+
+	private MovementBody movementBody(Player body) {
+		return new MovementBody(body.level().getGameTime(), body.level().getGameTime() - began,
+			body.position(), body.position().subtract(origin), body.getDeltaMovement(), body.getYRot(), body.getXRot(),
+			body.onGround(), body.horizontalCollision, body.verticalCollision, body.verticalCollisionBelow,
+			body.isSprinting(), body.isCrouching(), body.isUsingItem(), body.getHealth(), body.getAbsorptionAmount(), body.getSpeed(),
+			body.getAttributeValue(Attributes.MOVEMENT_SPEED), body.getAttributeValue(Attributes.FRICTION_MODIFIER),
+			body.getAttributeValue(Attributes.AIR_DRAG_MODIFIER), body.getAttributeValue(Attributes.SNEAKING_SPEED),
+			body.getActiveEffects().stream().map(effect -> new MovementEffect(effect.getEffect().unwrapKey()
+				.map(key -> key.identifier().toString()).orElse("unregistered"), effect.getAmplifier(), effect.getDuration())).toList());
+	}
+
+	private MovementClient movementClient(Minecraft mc) {
+		var input = mc.player.input;
+		return new MovementClient(movementBody(mc.player), input.keyPresses, input.getMoveVector().x, input.getMoveVector().y,
+			mc.options.keyUp.isDown(), mc.options.keyDown.isDown(), mc.options.keyLeft.isDown(), mc.options.keyRight.isDown(),
+			mc.options.keyJump.isDown(), mc.options.keyShift.isDown(), mc.options.keySprint.isDown(),
+			mc.isPaused(), mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName(),
+			mc.options.getCameraType().name(), mc.options.fov().get());
+	}
+
+	private MovementServer movementServer() {
+		StoneMarch accepted = fixture.accepted;
+		Vec3 acceptedOrigin = (Vec3) StoneMarchFixture.field(accepted, "origin");
+		Vec3 relative = player.position().subtract(acceptedOrigin);
+		Vec3 aim = (Vec3) StoneMarchFixture.field(accepted, "aim"), side = (Vec3) StoneMarchFixture.field(accepted, "side");
+		return new MovementServer(movementBody(player), player.getLastClientInput(),
+			StoneMarchRules.band(relative.dot(aim), relative.dot(side), relative.y), master.marchPending(),
+			(int) StoneMarchFixture.field(accepted, "consumed"), (int) StoneMarchFixture.field(accepted, "prefix"),
+			(int) StoneMarchFixture.field(accepted, "resolvingPulse"), (long) StoneMarchFixture.field(accepted, "lastTick"),
+			master.attackAnimation(), master.attackElapsed(0), new MovementGeometry(acceptedOrigin, aim, side));
 	}
 
 	private void jumpAt(ClientGameTestContext context, TestSingleplayerContext world, int age) {

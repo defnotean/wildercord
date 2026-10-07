@@ -20,6 +20,22 @@ checkout is the exact PR head, whose code is identical to the requested source.
 
 The fixed case allowlist is defined in `tools/run_native_diagnostic_ci.py` and includes:
 
+- `gale-vault-ballistic`: exactly the complete registered
+  `GaleVaultBallisticTest` through `diagnostic-gale-vault-ballistic`. This test-only
+  physics experiment retains every case, original world settings, trajectory,
+  assertion and wait. One actual native signed-long world seed, exact ordered
+  setup/run/cleanup/returned evidence and its final `GALE_VAULT_BALLISTIC_COMPLETE`
+  marker are required. That marker is emitted only after all assertions, owned
+  entity cleanup, world close and the idle assertion; Fabric's runner cleanup and
+  return must then finish. The class, helper, all four test mixins/config and
+  native tracing dependencies are hashed with the current source/request/head/run/
+  attempt and configuration. Missing, stale, duplicate, malformed or partial
+  evidence cannot pass. `ordinaryAttack=false` always; `physicsNativePending=true`
+  until this exact native evidence passes. A tooling/compile pass is not physics
+  evidence. No payment, damage, production selector or ordinary attack is enabled.
+  This reuses the existing diagnostic job and artifact, unchanged limits and zero
+  automatic retries; it adds no workflow or active request. Masters 44 (41/1/2),
+  articulated six, paired 46 plus Moon four, and all four full shards remain required.
 - `stone-fault-march-presentation`: exactly the one complete original
   `StoneMarchPresentationTest` class.
 - `stone-fault-march-opponent`: exactly the one complete original

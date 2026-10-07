@@ -313,7 +313,8 @@
       "dev.wildercord.cast.ReweavePlayableTest",
       "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest",
       "dev.wildercord.aura.StoneHingeVelocityComparisonTest",
-      "dev.wildercord.cast.ExcisePlayableTest"
+      "dev.wildercord.cast.ExcisePlayableTest",
+      "dev.wildercord.aura.world.GaleVaultBallisticTest"
     ]
   },
   "mixins": [
@@ -339,7 +340,8 @@
     "crimson-moon-owner-gametest.mixins.json",
     "archive-placement-gametest.mixins.json",
     "stone-hinge-proof-gametest.mixins.json",
-    "excise-cut-gametest.mixins.json"
+    "excise-cut-gametest.mixins.json",
+    "gale-vault-ballistic-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

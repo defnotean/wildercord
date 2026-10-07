@@ -21,6 +21,11 @@ STONE_OWNER_NEGATIVE_ENTRIES = ("dev.wildercord.aura.StoneHingeStationaryOwnerNe
 STONE_OWNER_NEGATIVE_PREFIX = "STONE_HINGE_OWNER_NEGATIVE "
 STONE_OWNER_NEGATIVE_RESULT = ("expected_incompatibility=observed movement_gate=NOT_PROVEN "
                                "gameplay_enabled=false conditional_shared_rest_ticks=120")
+GALE_BALLISTIC_ENTRY = "dev.wildercord.aura.world.GaleVaultBallisticTest"
+GALE_BALLISTIC_SUITE = "diagnostic-gale-vault-ballistic"
+GALE_BALLISTIC_PREFIX = "GALE_VAULT_BALLISTIC_COMPLETE "
+GALE_BALLISTIC_RESULT = ("native_physics=true ordinary_attack=false selector_integration=false "
+                         "payment=false damage=false accepted_attack_count_unchanged=true cleanup=complete")
 
 STONE_VELOCITY_ENTRY = "dev.wildercord.aura.StoneHingeVelocityComparisonTest"
 REED_REFUGE_ENTRY = "dev.wildercord.wildlife.ReedRefugeTest"
@@ -129,6 +134,9 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         if suite == "diagnostic-stone-hinge-owner-negative" and (
                 purpose != "diagnostic" or selected != list(STONE_OWNER_NEGATIVE_ENTRIES)):
             raise ValueError("Stone owner negative control requires its exact complete diagnostic class")
+        if suite == GALE_BALLISTIC_SUITE and (
+                purpose != "diagnostic" or selected != [GALE_BALLISTIC_ENTRY]):
+            raise ValueError("Gale Vault ballistic requires its exact complete diagnostic class")
         if suite == "diagnostic-movement-foundations" and (
                 purpose != "diagnostic" or selected != list(MOVEMENT_FOUNDATION_ENTRIES)):
             raise ValueError("Movement foundations requires exactly both whole diagnostic classes in order")
@@ -164,7 +172,7 @@ def selection_issues(log, selection):
             try:
                 matches = len(markers) == 1 and (
                     exact_json_marker(markers[0], selection)
-                    if selection.get("name") in STONE_MARCH_DIAGNOSTICS or selection["kind"] == "required-part"
+                    if selection.get("name") in (*STONE_MARCH_DIAGNOSTICS, GALE_BALLISTIC_SUITE) or selection["kind"] == "required-part"
                     else json.loads(markers[0]) == selection)
             except ValueError:
                 matches = False
@@ -185,6 +193,11 @@ def selection_issues(log, selection):
     if selection.get("name") == "diagnostic-stone-hinge-owner-negative":
         _, completion_issues = stone_owner_negative_completion(log)
         issues.extend(completion_issues)
+    if selection.get("name") == GALE_BALLISTIC_SUITE:
+        _, completion_issues = gale_ballistic_completion(log)
+        issues.extend(completion_issues)
+        _, seed_issues = whole_class_seeds(log, [GALE_BALLISTIC_ENTRY], "Gale Vault ballistic")
+        issues.extend(seed_issues)
     if selection.get("name") == "diagnostic-movement-foundations":
         _, completion_issues = movement_foundations_completion(log)
         issues.extend(completion_issues)
@@ -257,6 +270,38 @@ def movement_foundations_completion(log):
     return completed, issues
 
 
+def gale_ballistic_completion(log):
+    """Native feasibility needs the final marker after the class's own cleanup.
+
+    Fabric's separate cleanup/return must still follow; an earlier physics summary
+    or a successful process exit cannot stand in for either completion boundary.
+    """
+    completed, issues = _whole_class_completion(log, [GALE_BALLISTIC_ENTRY], "Gale Vault ballistic")
+    markers = [line.split(GALE_BALLISTIC_PREFIX, 1)[1].strip()
+               for line in log.splitlines() if GALE_BALLISTIC_PREFIX in line]
+    if markers != [GALE_BALLISTIC_RESULT]:
+        issues.append("Gale Vault ballistic requires exactly its final physics-only cleanup result")
+    boundaries = []
+    for line in log.splitlines():
+        if line.startswith(SELECTION_PREFIX):
+            boundaries.append("selection")
+        if line.startswith(DESCRIPTOR_PREFIX):
+            boundaries.append("descriptor")
+        if SCENE_PREFIX in line:
+            boundaries.append("scene")
+        if "WILDERCORD_NATIVE_WORLD " in line:
+            boundaries.append("seed")
+        if GALE_BALLISTIC_PREFIX in line:
+            boundaries.append("terminal")
+        if line.startswith("BUILD SUCCESSFUL"):
+            boundaries.append("build")
+        if line.startswith(EXIT_PREFIX):
+            boundaries.append("exit")
+    if boundaries != ["selection", "descriptor", "scene", "scene", "seed", "terminal", "scene", "scene", "build", "exit"]:
+        issues.append("Gale Vault ballistic requires ordered selection, native run/seed/terminal, runner cleanup/return and successful process completion")
+    return completed, issues
+
+
 def excise_completion(log):
     """Require ordinary study/input/lifecycle cleanup and full return; no partial pass."""
     return _whole_class_completion(log, EXCISE_ENTRIES, "Excise player")
@@ -302,6 +347,11 @@ def _whole_class_completion(log, entries, label):
 
 def stone_march_seeds(log, entries):
     """Each selected whole March class owns exactly one original signed-long seed."""
+    return whole_class_seeds(log, entries, "March scope")
+
+
+def whole_class_seeds(log, entries, label):
+    """Observe exact original world identities, never override the fixture RNG."""
     found, issues = {}, []
     prefix = "WILDERCORD_NATIVE_WORLD "
     for line in log.splitlines():
@@ -318,7 +368,7 @@ def stone_march_seeds(log, entries):
                 raise ValueError()
             found[entry] = [seed]
         except (ValueError, KeyError, TypeError):
-            issues.append("Invalid or duplicate scoped March world seed")
+            issues.append(f"Invalid or duplicate {label.lower()} world seed")
     if list(found) != list(entries):
-        issues.append("March scope requires exactly its original world seeds in class order")
+        issues.append(f"{label} requires exactly its original world seeds in class order")
     return found, issues

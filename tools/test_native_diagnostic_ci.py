@@ -22,6 +22,13 @@ import run_native_diagnostic_ci as diagnostic
 import test_manifest
 
 
+def fixture_launch_receipt(data):
+    if data["request"]["case"] != "gale-vault-ballistic":
+        return "{}"
+    return json.dumps({"startedAt": "2026-10-07T00:00:00+00:00", "provenance": data["provenance"],
+                       "command": run_client_ci.launch_command(data["selection"])})
+
+
 class RequestTests(unittest.TestCase):
     def request(self, **changes):
         return {"schemaVersion": 1, "case": "wetland", "sourceSha": "a" * 40, **changes}
@@ -194,10 +201,20 @@ class EvidenceTests(unittest.TestCase):
             completion += suites.STONE_OWNER_NEGATIVE_PREFIX + suites.STONE_OWNER_NEGATIVE_RESULT + "\n"
         if data["request"]["case"] == "movement-foundations":
             completion += suites.STONE_VELOCITY_PREFIX + suites.STONE_VELOCITY_RESULT + "\n"
-        return (suites.SELECTION_PREFIX + json.dumps(selection) + "\n" + suites.DESCRIPTOR_PREFIX + json.dumps(selection) + "\n"
+        log = (suites.SELECTION_PREFIX + json.dumps(selection) + "\n" + suites.DESCRIPTOR_PREFIX + json.dumps(selection) + "\n"
                 + suites.REQUEST_PREFIX + json.dumps(diagnostic.receipt(data)) + "\n"
                 + "\n".join(diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) for entry, seed in diagnostic.SEEDS[data["request"]["case"]].items())
                 + "\n" + completion + "BUILD SUCCESSFUL\n" + suites.EXIT_PREFIX + "0\n")
+        if data["request"]["case"] == "gale-vault-ballistic":
+            def scene(event, phase):
+                return diagnostic.SCENE_PREFIX + json.dumps({
+                    "suite": suites.GALE_BALLISTIC_ENTRY, "event": event, "phase": phase,
+                    "elapsedSeconds": 1.0, "sceneElapsedSeconds": 0.5}) + "\n"
+            seed = diagnostic.SEED_PREFIX + json.dumps({"suite": suites.GALE_BALLISTIC_ENTRY, "seed": "1"}) + "\n"
+            log = log.replace(seed, scene("start", "setup") + scene("phase", "run") + seed
+                              + suites.GALE_BALLISTIC_PREFIX + suites.GALE_BALLISTIC_RESULT + "\n"
+                              + scene("phase", "cleanup") + scene("end", "returned"))
+        return log
 
     def collect(self, data, log, *, launch=True, budget=diagnostic.MAX_LOG_BYTES):
         with tempfile.TemporaryDirectory() as temp:
@@ -206,7 +223,7 @@ class EvidenceTests(unittest.TestCase):
             if log is not None:
                 (root / diagnostic.LOG).write_text(log)
             if launch:
-                (root / diagnostic.OUTPUT / "launch.json").write_text("{}")
+                (root / diagnostic.OUTPUT / "launch.json").write_text(fixture_launch_receipt(data))
             with patch.object(diagnostic, "ROOT", root), patch.object(diagnostic, "prepared", return_value=copy.deepcopy(data)), patch.object(diagnostic, "MAX_LOG_BYTES", budget), redirect_stdout(io.StringIO()):
                 status = diagnostic.collect({})
             result = json.loads((root / diagnostic.OUTPUT / "diagnostic-result.json").read_text())
@@ -347,7 +364,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
 
     def test_unique_seed_receipt_rule_does_not_change_other_cases(self):
-        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise", "stone-fault-march", *diagnostic.STONE_MARCH_DIAGNOSTICS, diagnostic.PEER_CASE}:
+        for case in set(diagnostic.CASES) - {"wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise", "stone-fault-march", "gale-vault-ballistic", *diagnostic.STONE_MARCH_DIAGNOSTICS, diagnostic.PEER_CASE}:
             data = self.fixture(case)
             entry, seed = next(iter(diagnostic.SEEDS[case].items()))
             repeated = self.log(data) + diagnostic.SEED_PREFIX + json.dumps({"suite": entry, "seed": seed or "1"}) + "\n"
@@ -501,7 +518,7 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(data["sourceFilesSha256"], {path: diagnostic.digest(root / path)
                                                        for path in paths if path != ".gitignore"})
             (root / diagnostic.LOG).write_text(self.log(data))
-            (root / diagnostic.OUTPUT / "launch.json").write_text("{}")
+            (root / diagnostic.OUTPUT / "launch.json").write_text(fixture_launch_receipt(data))
             with patch.object(diagnostic, "ROOT", root), patch.object(diagnostic, "live_head", return_value="d" * 40), redirect_stdout(io.StringIO()):
                 with self.assertRaises(ValueError):
                     diagnostic.prepared(env)
@@ -645,7 +662,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(diagnostic.CASES["progression-feasibility"], "diagnostic-progression-feasibility")
         self.assertEqual(suites.select_entries(suite="diagnostic-progression-feasibility"), {
             "kind": "diagnostic", "name": "diagnostic-progression-feasibility", "count": 2, "entries": entries})
-        self.assertEqual(suites.select_entries()["entries"][-6:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES, diagnostic.STONE_VELOCITY_ENTRY, *diagnostic.EXCISE_ENTRIES])
+        self.assertEqual(suites.select_entries()["entries"][-7:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES, diagnostic.STONE_VELOCITY_ENTRY, *diagnostic.EXCISE_ENTRIES, diagnostic.GALE_BALLISTIC_ENTRY])
         for name, count in (("masters", 44), ("articulated", 6)):
             selection = suites.select_entries(suite=name)
             self.assertEqual(selection["count"], count)

@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.galevault.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": ["GaleVaultLivingMixin", "GaleVaultMobMixin", "GaleVaultEntityMixin", "GaleVaultMasterMixin"],
+  "injectors": {"defaultRequire": 1}
+}

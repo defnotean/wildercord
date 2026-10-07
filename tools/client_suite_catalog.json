@@ -69,6 +69,14 @@
       "dev.wildercord.aura.EarnedCounterAcceptanceTest"
     ]
   },
+  "diagnostic-gale-vault-ballistic": {
+    "purpose": "diagnostic",
+    "description": "Test-only native physics feasibility: the complete registered GaleVaultBallisticTest, preserving every original trial and cleanup. No ordinary attack, payment, damage, selector integration or release acceptance. Physics remains native-pending until complete current-source evidence passes.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.world.GaleVaultBallisticTest"
+    ]
+  },
   "diagnostic-wetland": {
     "purpose": "diagnostic",
     "description": "Diagnostic only: registration/rarity, real Garden prerequisite, original absence receipts, and fixed natural-bank candidate. Never release acceptance.",

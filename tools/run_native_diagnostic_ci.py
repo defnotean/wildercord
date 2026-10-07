@@ -21,11 +21,12 @@ import sys
 from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIES,
                            progression_completion, reweave_player_completion, REWEAVE_PLAYER_ENTRIES,
                            stone_owner_negative_completion, STONE_OWNER_NEGATIVE_ENTRIES,
+                           gale_ballistic_completion, GALE_BALLISTIC_ENTRY, GALE_BALLISTIC_SUITE,
                            movement_foundations_completion, MOVEMENT_FOUNDATION_ENTRIES, STONE_VELOCITY_ENTRY, REED_REFUGE_ENTRY,
                            excise_completion, EXCISE_ENTRIES, life_excise_completion, LIFE_EXCISE_ENTRIES,
                            stone_march_completion, STONE_MARCH_ENTRIES,
                            stone_march_visual_completion, STONE_MARCH_VISUAL_ENTRIES, STONE_MARCH_DIAGNOSTICS,
-                           _whole_class_completion, stone_march_seeds,
+                           _whole_class_completion, stone_march_seeds, whole_class_seeds,
                            exact_json_marker, select_entries, selection_issues)
 import run_client_ci
 from native_ci_diagnostics import SCENE_PREFIX
@@ -50,6 +51,7 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "progression-feasibility": "diagnostic-progression-feasibility",
          "reweave-player": "diagnostic-reweave-player",
          "stone-hinge-owner-negative": "diagnostic-stone-hinge-owner-negative",
+         "gale-vault-ballistic": GALE_BALLISTIC_SUITE,
          "movement-foundations": "diagnostic-movement-foundations", "excise": "diagnostic-life-excise",
          "stone-fault-march": "stone-fault-march",
          "stone-fault-march-visuals": "stone-fault-march-visuals",
@@ -63,6 +65,7 @@ FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_D
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
+    "gale-vault-ballistic": {GALE_BALLISTIC_ENTRY: None},
     "stone-fault-march": dict.fromkeys(STONE_MARCH_ENTRIES),
     **{name: dict.fromkeys(entries) for name, entries in STONE_MARCH_DIAGNOSTICS.items()},
     "excise": {LIFE_EXCISE_ENTRIES[1]: None, LIFE_EXCISE_ENTRIES[2]: None,
@@ -163,6 +166,19 @@ CASE_FILES["stone-fault-march"] = (
     'src/gametest/java/dev/wildercord/gametest/MastersNpcCaptureProbe.java',
     'src/gametest/java/dev/wildercord/gametest/mixin/NativeSceneTraceMixin.java',
     'src/gametest/resources/native-diagnostics-gametest.mixins.json',
+)
+
+CASE_FILES["gale-vault-ballistic"] = (
+    "src/gametest/java/dev/wildercord/gametest/galevault/GaleVaultProbe.java",
+    *("src/gametest/java/dev/wildercord/gametest/galevault/mixin/" + name + ".java" for name in (
+        "GaleVaultLivingMixin", "GaleVaultMobMixin", "GaleVaultEntityMixin", "GaleVaultMasterMixin")),
+    "src/gametest/resources/gale-vault-ballistic-gametest.mixins.json",
+    "src/gametest/java/dev/wildercord/gametest/mixin/NativeSceneTraceMixin.java",
+    "src/gametest/java/dev/wildercord/gametest/NativeJvmDiagnostics.java",
+    "src/gametest/resources/native-diagnostics-gametest.mixins.json",
+    "src/main/java/dev/wildercord/aura/world/SwordMaster.java",
+    "src/main/java/dev/wildercord/aura/world/AuraWorld.java",
+    "src/main/java/dev/wildercord/aura/world/MastersRules.java",
 )
 
 # Reuse the same gameplay/capture sources and bind the visual render instrumentation.
@@ -429,6 +445,10 @@ def current(env, *, observed_head=None):
             "kind": "diagnostic", "name": CASES["stone-hinge-owner-negative"],
             "count": 1, "entries": list(STONE_OWNER_NEGATIVE_ENTRIES)}:
         raise ValueError("Stone owner negative control must retain its whole registered class")
+    if request["case"] == "gale-vault-ballistic" and not exact_json_marker(json.dumps(selection), {
+            "kind": "diagnostic", "name": GALE_BALLISTIC_SUITE,
+            "count": 1, "entries": [GALE_BALLISTIC_ENTRY]}):
+        raise ValueError("Gale Vault ballistic must retain exactly its whole registered diagnostic class")
     if request["case"] == "movement-foundations" and selection != {
             "kind": "diagnostic", "name": CASES["movement-foundations"],
             "count": 2, "entries": list(MOVEMENT_FOUNDATION_ENTRIES)}:
@@ -448,6 +468,8 @@ def current(env, *, observed_head=None):
         paths.append("src/gametest/java/dev/wildercord/aura/WallRelayChecks.java")
     return {"schemaVersion": 1, "scope": "diagnostic", "fullClientGate": "unverified",
             "focusedClientGate": "unverified", "request": request, "state": state,
+            **({"ordinaryAttack": False, "physicsNativePending": True}
+               if request["case"] == "gale-vault-ballistic" else {}),
             "provenance": provenance, "selection": selection,
             "sourceFilesSha256": {path: digest(ROOT / path) for path in paths},
             "configuration": {"environment": FIXED_ENV, "nativeStepTimeoutMinutes": 50,
@@ -762,6 +784,8 @@ def collect_peer(data, env):
 
 
 def observed_seeds(log, case):
+    if case == "gale-vault-ballistic":
+        return whole_class_seeds(log, [GALE_BALLISTIC_ENTRY], "Gale Vault ballistic")
     if case in STONE_MARCH_DIAGNOSTICS:
         return stone_march_seeds(log, STONE_MARCH_DIAGNOSTICS[case])
     found, issues = {}, []
@@ -848,12 +872,29 @@ def collect(env):
         issues.append("Native log missing; native execution unverified")
     if not (ROOT / OUTPUT / "launch.json").is_file():
         issues.append("Native launch receipt missing")
+    if data["request"]["case"] == "gale-vault-ballistic":
+        try:
+            launch_path = ROOT / OUTPUT / "launch.json"
+            if launch_path.is_symlink():
+                raise ValueError("Linked launch receipt")
+            with launch_path.open("rb") as stream:
+                raw_launch = stream.read(64 * 1024 + 1)
+            if len(raw_launch) > 64 * 1024:
+                raise ValueError("Oversized launch receipt")
+            launch = json.loads(raw_launch, object_pairs_hook=unique_object)
+            expected = {"startedAt": launch["startedAt"], "provenance": data["provenance"],
+                        "command": run_client_ci.launch_command(data["selection"])}
+            if (not exact_json_marker(raw_launch, expected)
+                    or datetime.fromisoformat(launch["startedAt"]).tzinfo is None):
+                raise ValueError("Stale or malformed launch receipt")
+        except (ValueError, OSError, KeyError, TypeError):
+            issues.append("Gale Vault ballistic launch receipt must match this run and its fixed command")
     issues.extend(selection_issues(log, data["selection"]))
     markers = [line[len(REQUEST_PREFIX):] for line in log.splitlines() if line.startswith(REQUEST_PREFIX)]
     try:
         matches = len(markers) == 1 and (
             exact_json_marker(markers[0], receipt(data))
-            if data["request"]["case"] in STONE_MARCH_DIAGNOSTICS
+            if data["request"]["case"] in (*STONE_MARCH_DIAGNOSTICS, "gale-vault-ballistic")
             else json.loads(markers[0]) == receipt(data))
         if not matches:
             issues.append("Native log request/head/run/config provenance does not match this invocation")
@@ -868,6 +909,8 @@ def collect(env):
     if data["request"]["case"] == "stone-hinge-owner-negative":
         data["completedEntries"], _ = stone_owner_negative_completion(log)
         data.update(movementGate="NOT_PROVEN", gameplayEnabled=False)
+    if data["request"]["case"] == "gale-vault-ballistic":
+        data["completedEntries"], _ = gale_ballistic_completion(log)
     if data["request"]["case"] == "movement-foundations":
         data["completedEntries"], _ = movement_foundations_completion(log)
         data.update(movementGate="NOT_PROVEN", gameplayEnabled=False, peerGate="NOT_PROVEN",
@@ -880,6 +923,8 @@ def collect(env):
         data["completedEntries"], _ = _whole_class_completion(
             log, STONE_MARCH_DIAGNOSTICS[data["request"]["case"]], "Stone Fault March diagnostic")
     successful = "BUILD SUCCESSFUL" in log and "BUILD FAILED" not in log and not issues
+    if data["request"]["case"] == "gale-vault-ballistic":
+        data.update(ordinaryAttack=False, physicsNativePending=not successful)
     data.update(diagnosticOutcome="passed" if successful else "unverified",
                 observedWorldSeeds=seeds, verificationIssues=issues,
                 snapshots=preserve_snapshots(),
