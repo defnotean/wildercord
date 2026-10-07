@@ -28,12 +28,13 @@ public final class ProbeAdversary {
 		for (int move : new int[] {24, 25}) for (boolean left : new boolean[] {false, true})
 			for (String phase : new String[] {"windup", "active", "recovery"}) {
 				body(move, left, phase, "control"); controls++;
+                for (String auxiliary : new String[] {"shell_before_control", "shell_after_control", "same_model_auxiliary_control", "outline_control"}) { body(move, left, phase, auxiliary); controls++; }
 				hand(move, left, phase, "control"); controls++;
 				hand(move, left, phase, "no_swing_control"); controls++;
-				for (String mutation : new String[] {"all999", "noop", "idle", "one_joint", "missing_baseline", "missing_deferred", "missing_world", "world_idle", "world_wrong_hand", "world_wrong_stack", "world_wrong_item", "world_wrong_model", "world_missing_draw", "world_wrong_display", "world_empty_quads", "world_duplicate", "world_detached", "world_swallowed_duplicate"})
+				for (String mutation : new String[] {"all999", "noop", "idle", "one_joint", "missing_baseline", "missing_deferred", "wrong_native_submit", "missing_native_draw", "shell_only", "duplicate_native_prepare", "changed_owner_replay", "changed_owner_before_prepare", "changed_owner_before_draw", "missing_world", "world_idle", "world_wrong_hand", "world_wrong_stack", "world_wrong_item", "world_wrong_model", "world_missing_draw", "world_wrong_display", "world_empty_quads", "world_duplicate", "world_detached", "world_swallowed_duplicate"})
 					reject(() -> body(move, left, phase, mutation), "body " + mutation);
 				if (move == 24) for (String mutation : new String[] {"world_no_hilt", "world_reverse_hilt"}) reject(() -> body(move, left, phase, mutation), mutation);
-				for (String mutation : new String[] {"noop", "idle", "identity", "offset", "wrong_hand", "missing_entry", "borrowed_stack", "missing_draw", "wrong_display", "empty_quads", "duplicate_draw", "detached_draw", "swallowed_duplicate"})
+				for (String mutation : new String[] {"noop", "idle", "identity", "offset", "wrong_hand", "missing_entry", "borrowed_stack", "missing_draw", "wrong_display", "empty_quads", "duplicate_draw", "detached_draw", "swallowed_duplicate", "passive_body_observer_fault"})
 					reject(() -> hand(move, left, phase, mutation), "hand " + mutation);
 			}
 		for (String legacy : new String[] {"masters_style_glacier_mirror_first_active", "masters_style_static_riposte_third_back_active", "masters_style_unmoved_cancelled_neutral"}) {
@@ -71,7 +72,15 @@ public final class ProbeAdversary {
 			for (float value : new float[] {p.x,p.y,p.z,p.xRot,p.yRot,p.zRot}) vanilla[index++] = value;
 		}
 		var root = new PoseStack(); root.translate(.13F, -.04F, .07F);
-		BraceNullCaptureProbe.submitted(model, state, root);
+		var nativeRoot = root.last().pose().get(new float[16]);
+        var material = new Object(); var node = new Object();
+        var submission = BraceNullCaptureProbe.submissionBegin(model, state, root, material);
+        BraceNullCaptureProbe.nativeSubmitted(node, model, state, material, nativeRoot, false);
+        BraceNullCaptureProbe.submitted(model, state, root);
+        BraceNullCaptureProbe.submissionEnd(submission, true);
+        if (mutation.equals("shell_before_control") || mutation.equals("shell_only")) auxiliary(state, new ShellModel(), material, nativeRoot, false);
+        if (mutation.equals("outline_control")) auxiliary(state, model, material, nativeRoot, true);
+        if (mutation.equals("shell_only")) { try { BraceNullCaptureProbe.finish(name(move, left, phase, false)); } finally { BraceNullCaptureProbe.end(); } return; }
 		try {
 			if (!mutation.equals("missing_world")) {
 				BraceNullCaptureProbe.bodyBefore(model, state); referenceBody(model, state.frame.pose(), left);
@@ -88,18 +97,38 @@ public final class ProbeAdversary {
 				} catch (AssertionError failure) { throw failure; }
 			}
 			index = 0; for (var p : parts) { p.x=vanilla[index++]; p.y=vanilla[index++]; p.z=vanilla[index++]; p.xRot=vanilla[index++]; p.yRot=vanilla[index++]; p.zRot=vanilla[index++]; }
-			var deferred = mutation.equals("missing_deferred") ? null : BraceNullCaptureProbe.deferredEnter(model, state);
+			if (mutation.equals("changed_owner_before_prepare")) state.id++;
+			var deferred = mutation.equals("missing_deferred") ? null : BraceNullCaptureProbe.deferredEnter(mutation.equals("wrong_native_submit") ? new Object() : node, model, state, material, nativeRoot);
 			try {
 				if (!mutation.equals("missing_baseline")) BraceNullCaptureProbe.bodyBefore(model, state);
 				if (!mutation.equals("noop")) referenceBody(model, mutation.equals("idle") ? MastersArtAnimation.NONE : state.frame.pose(), left);
 				if (mutation.equals("all999")) for (var p : parts) p.x = p.y = p.z = p.xRot = p.yRot = p.zRot = 999;
 				if (mutation.equals("one_joint")) model.leftArm.zRot += .25F;
 				BraceNullCaptureProbe.bodyConsumed(model, state);
+                if (mutation.equals("changed_owner_before_draw")) state.id++;
+                if (!mutation.equals("missing_native_draw")) BraceNullCaptureProbe.bodyDrawn(node, model, state, nativeRoot);
+                BraceNullCaptureProbe.deferredLeave(deferred, true); deferred = null;
+                if (mutation.equals("duplicate_native_prepare")) BraceNullCaptureProbe.deferredEnter(node, model, state, material, nativeRoot);
+                if (mutation.equals("changed_owner_replay")) {
+                    state.id++;
+                    BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.deferredEnter(node, model, state, material, nativeRoot), null);
+                }
+                if (mutation.equals("shell_after_control")) auxiliary(state, new ShellModel(), material, nativeRoot, false);
+                if (mutation.equals("same_model_auxiliary_control")) auxiliary(state, model, material, nativeRoot, false);
 				var report = BraceNullCaptureProbe.finish(name(move, left, phase, false));
 				if (report.expectedRigidPalette().size()!=36 || report.itemDraw().actualDisplayed().size()!=16 || report.itemDraw().actualHilt().size()!=3) throw new AssertionError("Incomplete world item evidence");
-			} finally { BraceNullCaptureProbe.deferredLeave(deferred); }
+			} finally { if (deferred != null) BraceNullCaptureProbe.deferredLeave(deferred, false); }
 		} finally { BraceNullCaptureProbe.end(); }
 	}
+    private static final class ShellModel extends PlayerModel {}
+    private static void auxiliary(AvatarRenderState state, PlayerModel model, Object material, float[] root, boolean outline) {
+        var node = new Object(); BraceNullCaptureProbe.nativeSubmitted(node, model, state, material, root, outline);
+        var call = BraceNullCaptureProbe.deferredEnter(node, model, state, material, root);
+        boolean completed = false;
+        try { BraceNullCaptureProbe.bodyBefore(model, state); BraceNullCaptureProbe.bodyConsumed(model, state);
+            BraceNullCaptureProbe.bodyDrawn(node, model, state, root); completed = true;
+        } finally { BraceNullCaptureProbe.deferredLeave(call, completed); }
+    }
 	private static void referenceWorld(PoseStack stack, PlayerModel model, boolean left, float tilt) {
 		var arm = left ? model.leftArm : model.rightArm; float side = left ? -1 : 1;
 		stack.translate((arm.x + side * (model.slim ? .5F : 0)) / 16, arm.y / 16, arm.z / 16);
@@ -144,6 +173,7 @@ public final class ProbeAdversary {
 			if (mutation.equals("borrowed_stack")) { var other = new PoseStack(); other.last().pose().set(stack.last().pose()); stack = other; }
 			BraceNullCaptureProbe.handConsumed(state, hands, hands.mainHandRenderState, stack, .5833333F, .35F, COLLECTOR);
 			deep(hands.mainHandRenderState, stack, left, true, mutation); BraceNullItemDrawProbe.end(call,true);
+			if (mutation.equals("passive_body_observer_fault")) BraceNullCaptureProbe.passive(() -> { throw new AssertionError("Injected observer-only failure"); });
 			var report = BraceNullCaptureProbe.finish(name(move, left, phase, true));
 			if (report.expectedHandMatrix().size() != 16 || report.consumedHandMatrix().size() != 16 || report.consumedGrip().size() != 3) throw new AssertionError("Incomplete hand evidence");
 		} finally { BraceNullCaptureProbe.end(); }

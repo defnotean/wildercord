@@ -106,5 +106,13 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 			backLeft.xRot = backRight.xRot = 1.3F;
 			tail.yRot = -.8F; tail.y = 18;
 		}
+		if (state.exhausted) {
+			// Tired but still walking after her owner, never the curled-up sleeping pose.
+			head.xRot = 0.28F + Mth.sin(state.ageInTicks * 0.06F) * 0.025F;
+			head.zRot = 0;
+			tail.yRot = Mth.sin(state.ageInTicks * 0.08F) * 0.06F;
+			tail.xRot = -0.25F;
+			tongue.visible = true;
+		}
 	}
 }

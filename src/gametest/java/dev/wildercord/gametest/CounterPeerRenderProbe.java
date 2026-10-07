@@ -82,7 +82,7 @@ public final class CounterPeerRenderProbe {
         ArticulatedCombatPose.ViewPose expectedView,PlayerSkin originalSkin){}
     private record View(AvatarRenderState avatar,ArticulatedViewModel model,ArticulatedViewModel.Frame frame,ArticulatedCombatPose.ViewPose expectedPose,Matrix4f root,RenderType material){}
     public record ViewCall(AvatarRenderState avatar,InteractionHand hand,Matrix4f before,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector,ViewCall previous){}
-    public record DeferredCall(Model<?> model,Object state,DeferredCall previous){}
+    public record DeferredCall(Object node,Model<?> model,Object state,NativeBodySubmission.Visit body,DeferredCall previous){}
     private record World(AvatarRenderState avatar,PlayerModel model,Matrix4f root,Matrix4f modelRoot,boolean modelRootVisible,RenderType material){}
     public record WorldItem(AvatarRenderState avatar,PlayerModel model,ItemStackRenderState item,Matrix4f expected,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector,WorldItem previous){}
     public static final class FallbackView {
@@ -109,6 +109,7 @@ public final class CounterPeerRenderProbe {
     public static final class Scope {
         final Token token;final Scope previous;boolean extracting,rendering;RenderTarget target;GpuTexture texture;
         PlayerSkin originalSkin;PlayerModel originalModel;
+        final NativeBodySubmission nativeBody=new NativeBodySubmission();
         final IdentityHashMap<Object,Long> ids=new IdentityHashMap<>();
         final IdentityHashMap<AvatarRenderState,Extracted> sources=new IdentityHashMap<>();
         final IdentityHashMap<PlayerModel,Map<String,Part>> baselines=new IdentityHashMap<>();
@@ -238,6 +239,9 @@ public final class CounterPeerRenderProbe {
         if(e.phase().equals("NONE")){if(timeline!=null)token.reject("neutral_timeline_present");}
         else if(timeline==null||timeline.entity()!=e.owner()||timeline.move()!=e.move()||timeline.startTick()!=e.activation()||timeline.windup()!=e.windup()||timeline.recovery()!=e.recovery())token.reject("wrong_accepted_timeline");
         token.observe("acceptedSourceIdentity",requireSource(timeline,e.activation()));
+        CounterPeerAdmissionProbe.sourceFields(timeline,"receivedSource").forEach(token::observe);
+        token.observe("receivedOwnerUuid",actor.getUUID());token.observe("receivedOwnerEntity",actor.getId());token.observe("receivedLevel",mc.level.dimension().identifier());
+        token.observe("receivedConnectionIdentity",Integer.toUnsignedString(System.identityHashCode(mc.getConnection())));
         token.observe("timeline",timeline);token.observe("camera",mc.options.getCameraType());token.observe("observerCoverage",remote);
         token.observe("tick",mc.level.getGameTime());token.observe("partial",options.deltaTicks);token.observe("owner",actor.getUUID());
         token.observe("observerUuid",mc.player.getUUID());token.observe("observerEntity",mc.player.getId());
@@ -250,6 +254,7 @@ public final class CounterPeerRenderProbe {
             if(proof.accepted()!=e.activation())token.reject("accepted_action_changed");
             token.releaseRead=SEQ.incrementAndGet();token.observe("acceptedReceiptSha256",proof.sha256());
             token.observe("acceptedReadSequence",token.releaseRead);token.observe("pairedRole",token.paired.role());
+            token.observe("admissionReceiptSha256",token.paired.acceptedIdentity().get("admissionReceiptSha256"));token.observe("admissionGeneration",token.paired.acceptedIdentity().get("admissionGeneration"));
             token.observe("sourceHead",System.getProperty("wildercord.mp.sourceHead"));token.observe("runIdentity",System.getProperty("wildercord.mp.runIdentity"));
         }
         token.observe("viewport",mc.getWindow().getWidth()+"x"+mc.getWindow().getHeight());
@@ -258,11 +263,11 @@ public final class CounterPeerRenderProbe {
     public static void leave(Scope s){if(s==null)return;
         try{clearScope(s);}finally{CrimsonMoonScopeGuard.restore(CURRENT,s.previous);}
         if(s.token!=null){s.token.scopeCleanupVerified=CURRENT.get()==s.previous&&s.sources.isEmpty()&&s.views.isEmpty()&&s.worlds.isEmpty()
-            &&s.baselines.isEmpty()&&s.layerBaselines.isEmpty()&&s.ids.isEmpty()&&s.view==null&&s.worldItem==null&&s.deferred==null&&s.fallback==null
+            &&s.nativeBody.empty()&&s.baselines.isEmpty()&&s.layerBaselines.isEmpty()&&s.ids.isEmpty()&&s.view==null&&s.worldItem==null&&s.deferred==null&&s.fallback==null
             &&s.target==null&&s.texture==null&&s.originalSkin==null&&s.originalModel==null;
             if(!s.token.scopeCleanupVerified)s.token.reject("failed_scope_cleanup");}
     }
-    private static void clearScope(Scope s){s.sources.clear();s.views.clear();s.worlds.clear();s.layerBaselines.clear();s.baselines.clear();s.ids.clear();s.view=null;s.worldItem=null;s.deferred=null;s.fallback=null;s.target=null;s.texture=null;s.originalSkin=null;s.originalModel=null;}
+    private static void clearScope(Scope s){s.nativeBody.clear();s.sources.clear();s.views.clear();s.worlds.clear();s.layerBaselines.clear();s.baselines.clear();s.ids.clear();s.view=null;s.worldItem=null;s.deferred=null;s.fallback=null;s.target=null;s.texture=null;s.originalSkin=null;s.originalModel=null;}
     public static void extractBegin(DeltaTracker delta){var s=CURRENT.get();if(s!=null){s.extracting=true;s.token.observe("renderPartial",delta.getGameTimeDeltaPartialTick(false));}}
     public static void extractEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.extracting=false;if(completed)s.token.extracted=SEQ.incrementAndGet();}}
     public static void extracted(Entity entity,float partial,EntityRenderState state){
@@ -319,18 +324,47 @@ public final class CounterPeerRenderProbe {
         s.token.observe("shellAdapter",ArticulatedAuraShellRenderer.enabled());s.token.observe("originalTexture",source.texture());
     }
     public static void renderBegin(){var s=CURRENT.get();if(s!=null){s.rendering=true;s.target=Minecraft.getInstance().gameRenderer.mainRenderTarget();s.texture=s.target.getColorTexture();}}
-    public static void renderEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.rendering=false;if(completed)s.token.rendered=SEQ.incrementAndGet();}}
+    public static void renderEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.rendering=false;if(completed){try{s.nativeBody.requireHealthy();if(s.token.expected.view().equals("remote")){s.nativeBody.requireComplete();s.token.observe("exactPrimaryBodySubmitVerified",true);}}catch(Throwable failure){s.token.reject("native_body_observer:"+failure);}s.token.rendered=SEQ.incrementAndGet();}}}
+    public static <T> T passive(java.util.function.Supplier<T> observer,T fallback){var s=CURRENT.get();return s==null?fallback:s.nativeBody.observe(observer,fallback);}
+    public static void passive(Runnable observer){var s=CURRENT.get();if(s!=null)s.nativeBody.observe(observer);}
     private static Scope rendering(){var s=CURRENT.get();return s!=null&&s.rendering?s:null;}
-    public static DeferredCall deferredEnter(Model<?> model,Object state){var s=rendering();if(s==null)return null;var call=new DeferredCall(model,state,s.deferred);s.deferred=call;return call;}
-    public static void deferredLeave(DeferredCall call){var s=rendering();if(s!=null&&call!=null)s.deferred=call.previous();}
+    private static NativeBodySubmission.Frames bodyFrames(AvatarRenderState a){return new NativeBodySubmission.Frames(a.getData(MastersArtPose.FRAME),a.getData(ArticulatedCombat.FRAME));}
+    public static NativeBodySubmission.Origin worldSubmissionBegin(Model<?> model,Object state,Matrix4fc root,RenderType material){
+        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof AvatarRenderState a)||a.id!=s.token.expected.owner())return null;
+        return s.nativeBody.begin(model,state,bodyFrames(a),material,root.get(new float[16]));
+    }
+    public static void worldSubmissionEnd(NativeBodySubmission.Origin call,boolean completed){var s=rendering();if(s!=null&&call!=null)s.nativeBody.submittedEnd(call,completed);}
+    public static void nativeSubmitted(Object node,Model<?> model,Object state,Object material,float[] root,boolean outline){
+        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof AvatarRenderState a)||a.id!=s.token.expected.owner())return;
+        s.nativeBody.submitted(node,model,state,bodyFrames(a),material,root,outline);
+    }
+    public static DeferredCall deferredEnter(Object node,Model<?> model,Object state,Object material,float[] root){
+        var s=rendering();if(s==null)return null;NativeBodySubmission.Visit body=null;
+        if(s.token.expected.view().equals("remote")&&(s.nativeBody.tracked(node)||state instanceof AvatarRenderState a&&a.id==s.token.expected.owner())){
+            if(!(state instanceof AvatarRenderState a))throw new AssertionError("Tracked counter native Submit changed state type");
+            body=s.nativeBody.enter(node,model,state,bodyFrames(a),material,root);
+        }
+        var call=new DeferredCall(node,model,state,body,s.deferred);s.deferred=call;return call;
+    }
+    public static void bodyDrawn(Object node,Model<?> model,Object state,float[] root){
+        var s=rendering();if(s==null||s.deferred==null||s.deferred.body()==null)return;
+        if(!(state instanceof AvatarRenderState a))throw new AssertionError("Counter native body draw changed state type");
+        var source=s.sources.get(a);if(a.id!=s.token.expected.owner()||source==null||!matches(s,source,a))throw new AssertionError("Counter native body draw changed original owner/source");
+        s.nativeBody.drawn(s.deferred.body(),node,model,state,bodyFrames(a),root);
+    }
+    public static void deferredLeave(DeferredCall call,boolean completed){
+        var s=rendering();if(s==null||call==null)return;
+        try{if(call.body()!=null)s.nativeBody.leave(call.body(),completed);}finally{s.deferred=call.previous();}
+    }
     public static void bodyBaseline(PlayerModel model,AvatarRenderState a){
         var s=rendering();if(s==null||a.id!=s.token.expected.owner())return;
         if(s.deferred==null){if(s.token.expected.view().equals("remote")&&s.sources.containsKey(a)&&s.sources.get(a).model()==model)s.layerBaselines.put(a,rigid(model));return;}
-        if(s.deferred.model()!=model||s.deferred.state()!=a)return;
+        if(s.deferred.body()==null||!s.deferred.body().primary())return;
+        s.nativeBody.baseline(s.deferred.body(),model,a,bodyFrames(a));
         if(s.baselines.put(model,rigid(model))!=null)s.token.reject("duplicate_vanilla_baseline");
     }
     public static void bodyPalette(PlayerModel model,AvatarRenderState a){
-        var s=rendering();if(s==null||a.id!=s.token.expected.owner()||s.deferred==null||s.deferred.model()!=model||s.deferred.state()!=a)return;
+        var s=rendering();if(s==null||a.id!=s.token.expected.owner()||s.deferred==null||s.deferred.body()==null||!s.deferred.body().primary())return;
         var source=s.sources.get(a);var baseline=s.baselines.remove(model);Comparison proof=null;
         var access=model instanceof ArticulatedModelAccess x&&x.wildercord$bodyOwned()?x:null;
         boolean segmented=access!=null&&bodyVisible(access.wildercord$rig()),rigid=rigidVisible(model)&&(access==null||!access.wildercord$rig().root.visible);
@@ -353,6 +387,7 @@ public final class CounterPeerRenderProbe {
             }
         }
         pass(s,"body",a,model,null,proof,segmented,rigid);
+        s.nativeBody.palette(s.deferred.body(),model,a,bodyFrames(a));
     }
     /** Captures the actual body submission and its material, before any deferred model reuse. */
     public static void worldSubmitted(Model<?> model,Object state,Matrix4fc root,RenderType material){
@@ -626,6 +661,7 @@ public final class CounterPeerRenderProbe {
         if(fp&&(!"true".equals(c.observations().get("ordinaryHandAdmission"))||!"true".equals(c.observations().get("handEquipKnown"))
             ||!"false".equals(c.observations().get("handEquipping"))||!"true".equals(c.observations().get("handSameItem"))))t.reject("missing_eligible_ordinary_hand_witness");
         if(remote&&!"true".equals(c.observations().get("worldHandEligible")))t.reject("missing_ordinary_world_hand_witness");
+        if(remote&&!"true".equals(c.observations().get("exactPrimaryBodySubmitVerified")))t.reject("missing_exact_primary_body_submit");
         List<String> allowed=!fp?List.of("body_submit","body","world_item"):art?List.of("view_submit","view_deferred","view_item"):List.of("classic_transform","native_item");
         for(String kind:allowed)if(c.passes().stream().filter(p->p.kind().equals(kind)).count()!=1)t.reject("missing_or_duplicate_"+kind);
         Binding first=c.passes().isEmpty()?null:c.passes().getFirst().binding();

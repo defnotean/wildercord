@@ -196,12 +196,12 @@ CASE_FILES["gale-vault-ballistic"] = (
 # Bind their helpers and direct pose/transport dependencies even when a diagnostic arms NPC captures.
 BRACE_NULL_CAPTURE_FILES = (
     *("src/gametest/java/dev/wildercord/gametest/" + name + ".java" for name in (
-        "MastersCaptureProbe", "BraceNullCaptureProbe", "BraceNullPhaseContract",
+        "NativeBodySubmission", "MastersCaptureProbe", "BraceNullCaptureProbe", "BraceNullPhaseContract",
         "BraceNullTransformOracle", "BraceNullPlayerWidth", "BraceNullItemDrawProbe")),
     *("src/gametest/java/dev/wildercord/gametest/mixin/" + name + ".java" for name in (
         "BraceNullPlayerWidthMixin", "BraceNullWorldItemMixin", "BraceNullItemSubmitMixin",
         "BraceNullItemDrawMixin", "BraceNullBodyBaselineMixin", "BraceNullHandEntryMixin",
-        "BraceNullDeferredPaletteMixin", "BraceNullPlayerPaletteMixin")),
+        "BraceNullDeferredPaletteMixin", "BraceNullNativeSubmitMixin", "BraceNullPlayerPaletteMixin")),
     *("src/client/java/dev/wildercord/client/" + name + ".java" for name in (
         "MastersArtPose", "MastersArtsClient", "MastersHandMotionState")),
     *("src/main/java/dev/wildercord/aura/" + name + ".java" for name in (

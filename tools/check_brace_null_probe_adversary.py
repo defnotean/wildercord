@@ -12,7 +12,7 @@ def main():
     if any(out.iterdir()): raise ValueError('Use a fresh evidence directory')
     classes = out / 'classes'; classes.mkdir(); java = java_bin(args.verification); jars, hashes = dependencies(args.verification)
     files = [ROOT / p for p in SOURCES] + [ROOT / 'src/main/java/dev/wildercord/aura/MastersViewMotion.java', ROOT / 'src/client/java/dev/wildercord/client/MastersHandMotionState.java']
-    files += [ROOT / f'src/gametest/java/dev/wildercord/gametest/{n}.java' for n in ['BraceNullCaptureProbe', 'BraceNullPhaseContract', 'BraceNullTransformOracle', 'BraceNullPlayerWidth', 'BraceNullItemDrawProbe']]
+    files += [ROOT / f'src/gametest/java/dev/wildercord/gametest/{n}.java' for n in ['NativeBodySubmission', 'BraceNullCaptureProbe', 'BraceNullPhaseContract', 'BraceNullTransformOracle', 'BraceNullPlayerWidth', 'BraceNullItemDrawProbe']]
     files += sorted((ROOT / 'tools/tests/brace_null_probe').rglob('*.java'))
     sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
     before = {str(p.relative_to(ROOT)): sha(p) for p in files}; cp = os.pathsep.join(map(str, jars))

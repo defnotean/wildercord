@@ -66,9 +66,13 @@ public final class CounterPeerPairedCases {
                         for(int t=0;t<4&&!server.computeOnServer(s->AuraGuard.perfectNow(body(s,host)));t++)c.waitTicks(1);
                         server.runOnServer(s->audit.catchBlow());
                         c.waitFor(mc->SwordString.Token.COUNTER.fits(SwordStringsClient.cueMarks(mc.level.getGameTime())),8);
+                        server.runOnServer(s->audit.armAdmission());
+                        c.runOnClient(mc->audit.admission.bindClient(mc));
                         int requests=c.computeOnClient(mc->SwordStringsClient.counts()[0]);
                         c.getInput().pressKey(o->o.keyAttack);c.getInput().releaseKey(o->o.keyShift);
                         c.runOnClient(mc->check(SwordStringsClient.counts()[0]==requests+1&&session.art.equals(SwordStringsClient.lastAsked()),"One genuine ordinary attack requests the earned counter"));
+                        try{session.waitInitial(()->server.computeOnServer(s->audit.admission.ready()));}
+                        finally{server.runOnServer(s->audit.publishAdmission());}
                         server.runOnServer(s->audit.publishAccepted());
                         session.captureAll();
                         for(String phase:CounterPeerPhaseContract.PHASES){session.await(()->session.existsRole("peer",phase),"Peer captures actual "+phase);session.verifyObserved(session.readRole("peer",phase),phase);}
@@ -106,6 +110,7 @@ public final class CounterPeerPairedCases {
 
     private static final class Audit implements AutoCloseable {
         final Session session;final ServerPlayer actor;final Mob attacker;final AuraApi.SpendHook spend;final AuraApi.StringHook complete;
+        CounterPeerAdmissionProbe.Watch admission;
         AuraGuard.Caught caught;int payments,completions,hits;long paidTick,released,hitTick;double paid;long rest;Object hitAction;
         final class Foe extends net.minecraft.world.entity.monster.zombie.Husk {
             Foe(net.minecraft.server.level.ServerLevel level){super(EntityTypes.HUSK,level);}
@@ -137,15 +142,17 @@ public final class CounterPeerPairedCases {
             check(caught!=null&&caught.attacker()==attacker&&caught.damage()>0&&actor.getHealth()==health,"Native damage path earns the original catch");
             // Deliberately retain natural stagger, position and velocity. No correction after gameplay starts.
         }
-        void publishAccepted(){check(payments==1&&MastersArts.committed(actor)&&session.armedSha!=null,"Actual paid commitment follows peer readiness");
-            session.accepted=paidTick;var fields=session.fields();fields.put("acceptedTick",Long.toString(paidTick));fields.put("caughtTick",Long.toString(caught.at()));
-            fields.put("caughtAttackerUuid",attacker.getUUID().toString());fields.put("paid",Double.toString(paid));fields.put("payments","1");fields.put("clockReadySha256",session.readySha);fields.put("clockRendezvousTick",Long.toString(session.rendezvous));fields.put("armedSha256",session.armedSha);session.write("accepted",fields);
+        void armAdmission(){admission=CounterPeerAdmissionProbe.arm(session.identity.getProperty("nonce")+":"+session.stem,session.armedSha,actor,session.art,caught,session.move,session.windup,session.recovery);}
+        void publishAdmission(){var fields=session.fields();fields.putAll(admission.fields());session.write("admission",fields);}
+        void publishAccepted(){admission.requireAccepted();check(actor.level().getGameTime()>=paidTick&&actor.level().getGameTime()-paidTick<session.windup,"Original WINDUP cannot be missed while awaiting native admission");check(payments==1&&MastersArts.committed(actor)&&session.armedSha!=null,"Actual paid commitment follows peer readiness");
+            session.accepted=paidTick;var fields=session.fields();fields.putAll(admission.fields());fields.put("admissionReceiptSha256",session.sha("admission"));fields.put("acceptedTick",Long.toString(paidTick));fields.put("caughtTick",Long.toString(caught.at()));
+            fields.put("caughtAttackerUuid",attacker.getUUID().toString());fields.put("paid",Double.toString(paid));fields.put("payments","1");fields.put("restUntil",Long.toString(rest));fields.put("clockReadySha256",session.readySha);fields.put("clockRendezvousTick",Long.toString(session.rendezvous));fields.put("armedSha256",session.armedSha);session.write("accepted",fields);
         }
-        void verify(){CounterHitCapture.assertIdle();check(hits==1&&hitTick==released,"One real primary counter hit uses the fixed release tick");check(payments==1&&completions==1&&!MastersArts.committed(actor)&&SwordStrings.readyAt(actor,session.art)==rest,"Original paid rest and natural recovery are unchanged");
+        void verify(){admission.requireAccepted();CounterHitCapture.assertIdle();check(hits==1&&hitTick==released,"One real primary counter hit uses the fixed release tick");check(payments==1&&completions==1&&!MastersArts.committed(actor)&&SwordStrings.readyAt(actor,session.art)==rest,"Original paid rest and natural recovery are unchanged");
             check(actor.connection.player==actor&&body(actor.level().getServer(),session.host)==actor&&attacker.isAlive()&&attacker.getHealth()<200,"Original connected owner and caught hostile survive a genuine damaging release");}
-        Map<String,String> outcome(){return Map.of("directPrimaryHits",Integer.toString(hits),"primaryHitTick",Long.toString(hitTick),"releaseTick",Long.toString(released),"payments",Integer.toString(payments),"completions",Integer.toString(completions),
-            "counterTargetUuid",attacker.getUUID().toString(),"counterTargetEntity",Integer.toString(attacker.getId()),"counterTargetHealthBefore","200.0","counterTargetHealth",Float.toString(attacker.getHealth()));}
-        public void close(){AuraApi.spendHooks().remove(spend);AuraApi.stringHooks().remove(complete);attacker.discard();}
+        Map<String,String> outcome(){var fields=new HashMap<>(Map.of("directPrimaryHits",Integer.toString(hits),"primaryHitTick",Long.toString(hitTick),"releaseTick",Long.toString(released),"payments",Integer.toString(payments),"completions",Integer.toString(completions),
+            "counterTargetUuid",attacker.getUUID().toString(),"counterTargetEntity",Integer.toString(attacker.getId()),"counterTargetHealthBefore","200.0","counterTargetHealth",Float.toString(attacker.getHealth())));fields.put("restUntil",Long.toString(SwordStrings.readyAt(actor,session.art)));return Map.copyOf(fields);}
+        public void close(){if(admission!=null)admission.close();AuraApi.spendHooks().remove(spend);AuraApi.stringHooks().remove(complete);attacker.discard();}
     }
 
     private static final class Session implements AutoCloseable {
@@ -153,7 +160,7 @@ public final class CounterPeerPairedCases {
         final UUID host,peer;final Path directory;final long deadline,otherPid;final Properties identity=new Properties();
         final String[] prior=Arrays.stream(SETTINGS).map(System::getProperty).toArray(String[]::new);
         final CameraType camera;final HumanoidArm previousHand;final boolean toggle;final CrimsonMoonClockPacing.Series clocks=new CrimsonMoonClockPacing.Series();
-        int actorEntity,observerEntity;String skin,armedSha,readySha;long accepted=Long.MIN_VALUE,rendezvous=-1,clockSequence,lastClock=-1;boolean pacing;
+        int initialSourceSteps;int actorEntity,observerEntity;String skin,armedSha,readySha;long accepted=Long.MIN_VALUE,rendezvous=-1,clockSequence,lastClock=-1;boolean pacing;
         MinecraftServer server;
         Session(ClientGameTestContext c,String id,int index,boolean owner){this.c=c;this.id=id;this.owner=owner;role=owner?"host":"peer";
             check(index>=46&&index<54&&CASES.get(index-46).equals(id),"Only the eight appended counter cases");stem=String.format(Locale.ROOT,"case-%02d",index);
@@ -199,9 +206,14 @@ public final class CounterPeerPairedCases {
                 try{var sample=clocks.observe(CrimsonMoonClockPacing.read(Files.readAllBytes(path("clock-latest")),expected));return now<sample.serverTick();}
                 catch(java.io.IOException failure){throw new AssertionError("Original atomic server clock receipt",failure);}},"Actual server clock permits one ordinary peer tick");c.waitTicks(1);}
         void waitSource(BooleanSupplier predicate,int budget){CrimsonMoonClockPacing.waitFor(()->{healthy();return predicate.getAsBoolean();},budget,this::tick);}
+        // Admission and first source share the original 12 native ticks; this never refreshes a phase/case budget.
+        void waitInitial(BooleanSupplier ready){while(!ready.getAsBoolean()){healthy();check(initialSourceSteps<12,"Original admission/source native-tick budget exhausted");tick();initialSourceSteps++;}healthy();}
         void captureAll(){
-            waitSource(()->c.computeOnClient(mc->{var actor=mc.level.getPlayerByUUID(host);var timeline=MastersArtsClient.timeline(actor);if(timeline==null)return false;
-                check(timeline.entity()==actorEntity&&timeline.move()==move&&timeline.startTick()==accepted&&timeline.windup()==windup&&timeline.recovery()==recovery,"First accepted source must be this exact action; no later-packet search");CounterPeerRenderProbe.requireSource(timeline,accepted);return true;}),12);
+            var admissionReceipt=read("admission","host");requireFields(admissionReceipt,fields());
+            var acceptedReceipt=read("accepted","host");String admissionSha=sha("admission");check(admissionSha.equals(acceptedReceipt.getProperty("admissionReceiptSha256")),"Immutable original native admission receipt");
+            for(String key:admissionReceipt.stringPropertyNames())check(admissionReceipt.getProperty(key).equals(acceptedReceipt.getProperty(key)),"Accepted retains original admission field "+key);
+            waitInitial(()->c.computeOnClient(mc->{var actor=mc.level.getPlayerByUUID(host);var timeline=MastersArtsClient.timeline(actor);if(timeline==null)return false;
+                check(timeline.entity()==actorEntity&&timeline.move()==move&&timeline.startTick()==accepted&&timeline.windup()==windup&&timeline.recovery()==recovery,"First accepted source must be this exact action; no later-packet search");CounterPeerRenderProbe.requireSource(timeline,accepted);CounterPeerAdmissionProbe.requireSource(admissionReceipt,timeline);check(CounterPeerPhaseContract.phase(move,mc.level.getGameTime()-accepted).equals("WINDUP"),"Original WINDUP remains available after native admission/source");return true;}));
             var captures=new LinkedHashMap<String,java.util.concurrent.CompletableFuture<CounterPeerRenderProbe.Artifact>>();
             for(String phase:CounterPeerPhaseContract.PHASES){int threshold=switch(phase){case "WINDUP"->Math.max(1,windup/2);case "ACTIVE"->windup;case "FOLLOW"->windup+2;default->windup+recovery/2;};
                 waitSource(()->c.computeOnClient(mc->{CounterPeerRenderProbe.requireSource(MastersArtsClient.timeline(mc.level.getPlayerByUUID(host)),accepted);long age=mc.level.getGameTime()-accepted;check(!CounterPeerPhaseContract.phase(move,age).equals("NONE"),"Action cannot expire before native phases");return age>=threshold;}),30);
@@ -209,6 +221,7 @@ public final class CounterPeerPairedCases {
                 String name="counter_peer_"+art+"_"+mode+"_"+hand.toLowerCase(Locale.ROOT)+"_"+role+"_"+phase.toLowerCase(Locale.ROOT);
                 var acceptance=read("accepted","host");requireFields(acceptance,fields());check(Long.toString(accepted).equals(acceptance.getProperty("acceptedTick")),"Single accepted action throughout capture");
                 var receiptIdentity=new HashMap<String,String>();for(String key:identity.stringPropertyNames())receiptIdentity.put(key,identity.getProperty(key));receiptIdentity.putAll(fields());receiptIdentity.put("role","host");receiptIdentity.put("pid",Long.toString(owner?ProcessHandle.current().pid():otherPid));receiptIdentity.put("acceptedTick",Long.toString(accepted));receiptIdentity.put("armedSha256",armedSha);
+                for(String key:admissionReceipt.stringPropertyNames())if(key.startsWith("admission"))receiptIdentity.put(key,admissionReceipt.getProperty(key));receiptIdentity.put("admissionReceiptSha256",admissionSha);
                 c.runOnClient(mc->{OpeningCaptureWait.requireReady(snapshot,new OpeningCaptureWait.Identity(host,actorEntity,actorEntity,move,accepted,mc.level.getGameTime()),HitStop.holding());
                     check(CounterPeerPhaseContract.phase(move,mc.level.getGameTime()-accepted).equals(phase),"No requested-phase substitution or late capture");
                     CounterPeerRenderProbe.armPaired(new CounterPeerRenderProbe.Expected(name,actorEntity,host.toString(),accepted,mode,owner?"fp":"remote",hand,skin,false,false,phase,move,windup,recovery),
@@ -224,6 +237,7 @@ public final class CounterPeerPairedCases {
             for(String phase:CounterPeerPhaseContract.PHASES){
                 var artifact=captures.get(phase).join();String name=artifact.report().expected().name();
                 var report=artifact.report();var f=fields();f.put("acceptedTick",Long.toString(accepted));f.put("acceptedReceiptSha256",sha("accepted"));f.put("phase",phase);f.put("view",owner?"fp":"remote");f.put("screenshotName",name);
+                f.put("admissionReceiptSha256",admissionSha);f.put("admissionGeneration",admissionReceipt.getProperty("admissionGeneration"));
                 f.put("actualSourceAge",report.copy().observations().get("actualSourceAge"));f.put("pngSha256",report.image().pngSha256());f.put("callbackPixelSha256",report.callbackPixels().sha256());f.put("receiptSha256",artifact.sha256());
                 Path game=FabricLoader.getInstance().getGameDir().toAbsolutePath().normalize();check(artifact.receipt().toAbsolutePath().normalize().startsWith(game),"Receipt belongs to this native process game directory");
                 f.put("receiptRelativePath",game.relativize(artifact.receipt().toAbsolutePath().normalize()).toString());f.put("pngRelativePath",report.image().relativeImagePath());f.put("scopeCleanupVerified",Boolean.toString(report.scopeCleanupVerified()));

@@ -14,6 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class BraceNullBodyBaselineMixin {
 	@Inject(method = "apply", at = @At("HEAD"), require = 1)
 	private static void wildercord$braceNullBaseline(PlayerModel model, AvatarRenderState state, CallbackInfoReturnable<Boolean> ci) {
-		BraceNullCaptureProbe.bodyBefore(model, state);
+		BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.bodyBefore(model, state));
 	}
 }

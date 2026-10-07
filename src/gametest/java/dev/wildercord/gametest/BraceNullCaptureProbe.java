@@ -31,8 +31,9 @@ public final class BraceNullCaptureProbe {
 	private static int entityTick;
 	private static boolean rendering;
 	private static String rejected;
+	private static final NativeBodySubmission NATIVE_BODY = new NativeBodySubmission();
 	private static final ThreadLocal<Deferred> DEFERRED = new ThreadLocal<>();
-	public record Deferred(Model<?> model, Object state, Deferred previous) {}
+	public record Deferred(Object node, Model<?> model, Object state, NativeBodySubmission.Visit visit, Deferred previous) {}
 	private BraceNullCaptureProbe() {}
 	public record Report(BraceNullPhaseContract.Identity identity, BraceNullPhaseContract.Sample consumed,
 		String path, List<Float> consumedRigidPalette, List<Float> expectedRigidPalette, List<Float> nativeBodyBaseline, List<Float> nativeBodyBind,
@@ -50,6 +51,8 @@ public final class BraceNullCaptureProbe {
 			accepted.windup(), accepted.recovery(), name.substring(name.lastIndexOf('_') + 1));
 		gameTick = mc.level.getGameTime(); entityTick = mc.player.tickCount;
 	}
+	public static <T> T passive(java.util.function.Supplier<T> observer, T fallback) { return NATIVE_BODY.observe(observer, fallback); }
+	public static void passive(Runnable observer) { NATIVE_BODY.observe(observer); }
 	public static void rendering(boolean value) { rendering = value; }
 	public static void submitted(Model<?> model, Object state, com.mojang.blaze3d.vertex.PoseStack stack) {
 		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof AvatarRenderState avatar) || avatar.id != expected.owner()) return;
@@ -57,11 +60,36 @@ public final class BraceNullCaptureProbe {
 		check(!SUBMITTED.containsKey(avatar), "Duplicate body submission");
 		requireRoot((PlayerModel) model); SUBMITTED.put(avatar, model); ROOTS.put(avatar, stack.last().pose().get(new float[16]));
 	}
-	public static Deferred deferredEnter(Model<?> model, Object state) {
-		if (expected == null || !rendering) return null;
-		var call = new Deferred(model, state, DEFERRED.get()); DEFERRED.set(call); return call;
+	private static NativeBodySubmission.Frames frames(AvatarRenderState state) { return new NativeBodySubmission.Frames(state.getData(MastersArtPose.FRAME), null); }
+	public static NativeBodySubmission.Origin submissionBegin(Model<?> model, Object state, com.mojang.blaze3d.vertex.PoseStack stack, Object material) {
+		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof AvatarRenderState avatar) || avatar.id != expected.owner()) return null;
+		return NATIVE_BODY.begin(model, state, frames(avatar), material, stack.last().pose().get(new float[16]));
 	}
-	public static void deferredLeave(Deferred call) { if (call != null) { if (call.previous() == null) DEFERRED.remove(); else DEFERRED.set(call.previous()); } }
+	public static void submissionEnd(NativeBodySubmission.Origin call, boolean completed) { if (call != null) NATIVE_BODY.submittedEnd(call, completed); }
+	public static void nativeSubmitted(Object node, Model<?> model, Object state, Object material, float[] root, boolean outline) {
+		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof AvatarRenderState avatar) || avatar.id != expected.owner()) return;
+		NATIVE_BODY.submitted(node, model, state, frames(avatar), material, root, outline);
+	}
+	public static Deferred deferredEnter(Object node, Model<?> model, Object state, Object material, float[] root) {
+		if (expected == null || !rendering || expected.firstPerson()) return null;
+		boolean tracked = NATIVE_BODY.tracked(node);
+		if (!tracked && (!(state instanceof AvatarRenderState avatar) || avatar.id != expected.owner())) return null;
+		check(state instanceof AvatarRenderState, "Tracked native Submit changed state type");
+		var avatar = (AvatarRenderState) state;
+		var visit = NATIVE_BODY.enter(node, model, state, frames(avatar), material, root);
+		var call = new Deferred(node, model, state, visit, DEFERRED.get()); DEFERRED.set(call); return call;
+	}
+	public static void bodyDrawn(Object node, Model<?> model, Object state, float[] root) {
+		var call = DEFERRED.get(); if (call == null) return;
+		check(state instanceof AvatarRenderState, "Native body draw changed state type");
+		observe((AvatarRenderState) state);
+		NATIVE_BODY.drawn(call.visit(), node, model, state, frames((AvatarRenderState) state), root);
+	}
+	public static void deferredLeave(Deferred call, boolean completed) {
+		if (call == null) return;
+		try { NATIVE_BODY.leave(call.visit(), completed); }
+		finally { if (call.previous() == null) DEFERRED.remove(); else DEFERRED.set(call.previous()); }
+	}
 	/** Observes untouched vanilla output at the production adapter entry, only in the real deferred call. */
 	public static void bodyBefore(PlayerModel model, AvatarRenderState state) {
 		if (expected == null || !rendering || expected.firstPerson() || state.id != expected.owner()) return;
@@ -70,7 +98,8 @@ public final class BraceNullCaptureProbe {
 			check(SUBMITTED.get(state) == model, "Layer baseline is not from the submitted model/state");
 			observe(state); LAYER_BASES.put(state, new BodyBasis(model, state.getData(MastersArtPose.FRAME), palette(model, false), palette(model, true))); return;
 		}
-		if (deferred.model() != model || deferred.state() != state) return;
+		if (!deferred.visit().primary()) return;
+		NATIVE_BODY.baseline(deferred.visit(), model, state, frames(state));
 		check(SUBMITTED.get(state) == model, "Body baseline is not from the submitted deferred model/state");
 		observe(state);
 		BODY_BASES.put(state, new BodyBasis(model, state.getData(MastersArtPose.FRAME), palette(model, false), palette(model, true)));
@@ -79,7 +108,7 @@ public final class BraceNullCaptureProbe {
 	public static void bodyConsumed(PlayerModel model, AvatarRenderState state) {
 		if (expected == null || !rendering || expected.firstPerson() || state.id != expected.owner()) return;
 		var deferred = DEFERRED.get();
-		if (deferred == null || deferred.model() != model || deferred.state() != state) return;
+		if (deferred == null || !deferred.visit().primary()) return;
 		check(SUBMITTED.get(state) == model, "Deferred body did not consume its submitted model/state pair");
 		check(model.head.visible && model.body.visible && model.rightArm.visible && model.leftArm.visible && model.rightLeg.visible && model.leftLeg.visible,
 			"Classic receipt requires the complete rigid backend");
@@ -90,6 +119,7 @@ public final class BraceNullCaptureProbe {
 		float[] wanted = BraceNullTransformOracle.body(consumed.pose(), expected.left(), basis.baseline(), basis.bind());
 		validate(() -> BraceNullTransformOracle.requireBody(wanted, actual));
 		bodyPalette = list(actual); expectedBody = list(wanted); bodyBaseline = list(basis.baseline()); bodyBind = list(basis.bind());
+		NATIVE_BODY.palette(deferred.visit(), model, state, frames(state));
 	}
 	/** The outer native submitArmWithItem wrapper runs before any production HEAD injection. */
 	public static BraceNullItemDrawProbe.Call handBefore(AvatarRenderState state, net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands,
@@ -175,10 +205,12 @@ public final class BraceNullCaptureProbe {
 	}
 	public static Report finish(String name) {
 		if (expected == null) return null;
+		NATIVE_BODY.requireHealthy();
+		if (!expected.firstPerson()) NATIVE_BODY.requireComplete();
 		check(rejected == null && name.equals(expected.screenshot()) && consumed != null && (expected.firstPerson() ? handMatrix != null && expectedHand != null : bodyPalette != null && expectedBody != null), "Missing actual renderer-consumed phase receipt");
 		return new Report(expected, consumed, expected.firstPerson() ? "native main-hand item submit" : "native deferred PlayerModel.setupAnim", bodyPalette, expectedBody, bodyBaseline, bodyBind, handMatrix, expectedHand, handEntry, handGrip, expectedGrip, BraceNullItemDrawProbe.require());
 	}
-	public static void end() { rejected = null; expected = null; consumed = null; bodyPalette = expectedBody = bodyBaseline = bodyBind = handMatrix = expectedHand = handEntry = handGrip = expectedGrip = null; rendering = false; SUBMITTED.clear(); ROOTS.clear(); LAYER_BASES.clear(); STATES.clear(); BODY_BASES.clear(); HAND_BASES.clear(); DEFERRED.remove(); BraceNullItemDrawProbe.clear(); }
+	public static void end() { rejected = null; expected = null; consumed = null; bodyPalette = expectedBody = bodyBaseline = bodyBind = handMatrix = expectedHand = handEntry = handGrip = expectedGrip = null; rendering = false; SUBMITTED.clear(); ROOTS.clear(); LAYER_BASES.clear(); STATES.clear(); BODY_BASES.clear(); HAND_BASES.clear(); DEFERRED.remove(); NATIVE_BODY.clear(); BraceNullItemDrawProbe.clear(); }
 	private static void validate(Runnable assertion) {
 		try { assertion.run(); } catch (AssertionError failure) { if (rejected == null) rejected = failure.getMessage(); throw failure; }
 	}

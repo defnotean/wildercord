@@ -120,6 +120,8 @@ public final class MirrorRiposteReleasedOwnerTest implements FabricClientGameTes
 		java.util.function.BooleanSupplier physical;
 		long accepted, released;
 		int releases, addonAfter;
+		int gainCallbacks;
+		double offeredGain;
 		Object action;
 		CounterSpellCapture.Session spells;
 		Arrow reflected, lastReflection;
@@ -151,7 +153,8 @@ public final class MirrorRiposteReleasedOwnerTest implements FabricClientGameTes
 		};
 		AuraApi.MomentumHook momentumHook = (player, amount, source) -> {
 			Probe p = active;
-			if (p != null && p.scenario.equals("momentum_hook") && ArtHitScope.released(player) != null) {
+			if (p != null && p.scenario.equals("momentum_hook") && nativeGain(p, player, source, p.line.get(1), p.action, p.released + 1)) {
+				checkGain(p, player, amount, source);
 				p.callback = true; p.momentum = Momentum.state(player); p.line.getFirst().discard();
 			}
 			return amount;
@@ -159,7 +162,8 @@ public final class MirrorRiposteReleasedOwnerTest implements FabricClientGameTes
 		AuraApi.BladeHook bladeHook = new AuraApi.BladeHook() {
 			@Override public double resonance(ServerPlayer player, double amount, String source) {
 				Probe p = active;
-				if (p != null && p.scenario.equals("blade_hook") && ArtHitScope.released(player) != null) {
+				if (p != null && p.scenario.equals("blade_hook") && nativeGain(p, player, source, p.line.get(1), p.action, p.released + 1)) {
+					checkGain(p, player, amount, source);
 					p.callback = true; BondedBlades.flush(player); p.blade = BondedBlades.bond(player.getMainHandItem()); p.line.getFirst().discard();
 				}
 				return amount;
@@ -230,6 +234,16 @@ public final class MirrorRiposteReleasedOwnerTest implements FabricClientGameTes
 		check(player.connection.getRemoteAddress() instanceof InetSocketAddress address && address.getAddress().isLoopbackAddress(), "Real loopback TCP owner");
 		for (int i = 0; i < 6; i++) p.line.add(foe(player.level(), .5, 2.1 + i * 4));
 		p.foreign = foe(server.getLevel(Level.NETHER), .5, 6.1);
+		if (scenario.equals("momentum_hook") || scenario.equals("blade_hook")) {
+			Foe firstHop = p.line.get(1);
+			check(firstHop.isNoAi() && Momentum.helpless(firstHop) && !Momentum.worthy(player, firstHop),
+				"The original NoAI fixture genuinely refuses native momentum and blade rewards");
+			// As in WildercordArtsTest: a stationary hostile keeps its real AI and native reward eligibility.
+			firstHop.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0);
+			firstHop.getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(0);
+			firstHop.setNoAi(false);
+			check(Momentum.worthy(player, firstHop), "The original first-hop body is worthy before gameplay input");
+		}
 		if (scenario.equals("mirror_chill_cover")) {
 			p.line.get(1).teleportTo(2.3, 100, 2.3);
 			for (int y = 100; y <= 103; y++) p.level.setBlockAndUpdate(new BlockPos(1, y, 1), Blocks.STONE.defaultBlockState());
@@ -314,7 +328,10 @@ public final class MirrorRiposteReleasedOwnerTest implements FabricClientGameTes
 			p.spells = CounterSpellCapture.begin(p.owner, p.action, firstHop, p.released, rune);
 		}
 		switch (p.scenario) {
-			case "four_hops", "stance_hook", "momentum_hook", "blade_hook" -> { }
+			case "four_hops", "stance_hook" -> { }
+			case "momentum_hook", "blade_hook" -> check(p.level.getEntity(firstHop.getUUID()) == firstHop
+				&& firstHop.isAlive() && !firstHop.isNoAi() && Momentum.worthy(p.owner, firstHop),
+				"The same loaded, worthy first-hop body awaits the original release+1 callback");
 			case "strict_range" -> firstHop.teleportTo(.5, 100, primary.getZ() + ArtRules.RIPOSTE_REACH);
 			case "no_los" -> { for (int y = 100; y <= 104; y++) p.level.setBlockAndUpdate(new BlockPos(0, y, 4), Blocks.STONE.defaultBlockState());
 				check(!primary.hasLineOfSight(firstHop), "Opaque native wall genuinely blocks the link's LOS"); }
@@ -505,11 +522,41 @@ public final class MirrorRiposteReleasedOwnerTest implements FabricClientGameTes
 			for (int hop = 2; hop < p.line.size(); hop++) check(p.line.get(hop).hits.isEmpty(), "No later hop after callback retirement");
 			if (p.scenario.equals("rune_addon")) check(p.addonAfter == 0 && !p.line.get(1).spellTicks.contains(p.released + 1), "Retiring addon reaction stops later callbacks and pending spell damage");
 			if (p.scenario.equals("stance_hook")) check(java.util.Objects.equals(p.stance, Stance.state(p.line.get(1))), "Stance hook retirement precedes committing its wear");
+			if (p.scenario.equals("momentum_hook") || p.scenario.equals("blade_hook")) check(p.gainCallbacks == 1 && p.offeredGain > 0
+				&& p.line.get(1).hits.getFirst().tick() == p.released + 1,
+				"Exactly one positive native art gain follows the original first-hop damage at release+1");
 			if (p.scenario.equals("momentum_hook")) check(p.momentum.equals(Momentum.state(p.owner)), "Momentum hook retirement precedes committing its gain");
 			if (p.scenario.equals("blade_hook")) { BondedBlades.flush(p.owner); check(p.blade.equals(BondedBlades.bond(p.owner.getMainHandItem())), "Blade hook retirement precedes pending resonance/history mutation"); }
 		} else for (int hop = 1; hop < p.line.size(); hop++) check(p.line.get(hop).hits.isEmpty(), "Invalid original conductor/owner or exact strict-five boundary stops the chain");
 		check(p.line.get(5).hits.isEmpty() && p.foreign.hits.isEmpty(), "Never a fifth hop or foreign-world retarget");
 		check(ArtHitScope.boundary(p.owner) == null, "Released-hit authority is restored after every callback");
+	}
+
+	/** A gain must follow this action's actual direct damage, excluding earlier incidental or differently sourced rewards. */
+	private boolean nativeGain(Probe p, ServerPlayer player, String source, Foe target, Object action, long tick) {
+		return player == p.owner && "art".equals(source) && action != null && p.level.getGameTime() == tick
+			&& target.hits.size() == 1 && target.hits.getFirst().tick() == tick
+			&& ArtHitScope.released(player) != null && ArtHitScope.released(player).valid()
+			&& CounterHitCapture.direct(player, p.art, target)
+			&& CounterHitCapture.action(player, p.art, target, null) == action;
+	}
+
+	private void checkGain(Probe p, ServerPlayer player, double amount, String source) {
+		Foe firstHop = p.line.get(1);
+		check(amount > 0 && p.lifetime.valid() && p.level.getEntity(firstHop.getUUID()) == firstHop
+			&& !firstHop.isNoAi() && Momentum.worthy(player, firstHop),
+			"The actual native gain callback still has its original worthy body and live owner");
+		check(!nativeGain(p, player, source, p.line.get(2), p.action, p.released + 1)
+			&& !nativeGain(p, player, source, firstHop, new Object(), p.released + 1)
+			&& !nativeGain(p, player, source, firstHop, p.action, p.released)
+			&& !nativeGain(p, player, source, firstHop, p.action, p.released + 2)
+			&& !nativeGain(p, player, "guard", firstHop, p.action, p.released + 1),
+			"Wrong target, action, tick and unrelated gain source cannot borrow the native callback receipt");
+		check(++p.gainCallbacks == 1, "Only one original first-hop art gain reaches the retirement callback");
+		p.offeredGain = amount;
+		Wildercord.LOGGER.info("MIRROR_RIPOSTE_GAIN scenario={} owner={} target={} action={} source={} released={} tick={} amount={} worthy={}",
+			p.scenario, player.getUUID(), firstHop.getUUID(), System.identityHashCode(p.action), source, p.released,
+			p.level.getGameTime(), amount, Momentum.worthy(player, firstHop));
 	}
 
 	private void finish(Probe p) {

@@ -16,9 +16,9 @@ from freeze_brace_null_baseline import SOURCES as PURE_SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
 JAVA = [f'src/gametest/java/dev/wildercord/gametest/{name}.java' for name in [
-    'BraceNullPhaseContract', 'BraceNullTransformOracle', 'BraceNullPlayerWidth', 'BraceNullItemDrawProbe', 'BraceNullCaptureProbe', 'MastersCaptureProbe', 'WildercordMastersArtsPresentationTest']]
+    'NativeBodySubmission', 'NativeBodySubmissionChecks', 'BraceNullPhaseContract', 'BraceNullTransformOracle', 'BraceNullPlayerWidth', 'BraceNullItemDrawProbe', 'BraceNullCaptureProbe', 'MastersCaptureProbe', 'WildercordMastersArtsPresentationTest']]
 JAVA += [f'src/gametest/java/dev/wildercord/gametest/mixin/{name}.java' for name in [
-    'BraceNullPlayerWidthMixin', 'BraceNullWorldItemMixin', 'BraceNullItemSubmitMixin', 'BraceNullItemDrawMixin', 'BraceNullBodyBaselineMixin', 'BraceNullHandEntryMixin', 'BraceNullPlayerPaletteMixin', 'BraceNullDeferredPaletteMixin', 'MastersBodyRenderProbeMixin', 'MastersHandRenderProbeMixin']]
+    'BraceNullPlayerWidthMixin', 'BraceNullWorldItemMixin', 'BraceNullItemSubmitMixin', 'BraceNullItemDrawMixin', 'BraceNullBodyBaselineMixin', 'BraceNullHandEntryMixin', 'BraceNullPlayerPaletteMixin', 'BraceNullDeferredPaletteMixin', 'BraceNullNativeSubmitMixin', 'MastersBodyRenderProbeMixin', 'MastersHandRenderProbeMixin']]
 JAVA += ['tools/CheckMastersCaptureProbe.java', 'tools/CheckBraceNullPhaseContract.java', 'tools/CheckBraceNullWorldItemOracle.java', *PURE_SOURCES]
 SOURCES = JAVA + ['src/gametest/resources/masters-capture-gametest.mixins.json',
     'src/client/java/dev/wildercord/client/fx/HitStop.java',
@@ -59,6 +59,7 @@ def main():
     commands = [
         [str(java / 'javac'), '--release', '25', '-proc:none', '-sourcepath', '', '-cp', str(fixture) + os.pathsep + runtime,
          '-d', str(classes), *[str(ROOT / p) for p in JAVA]],
+        [str(java / 'java'), '-XX:-UsePerfData', '-cp', str(classes) + os.pathsep + runtime, 'dev.wildercord.gametest.NativeBodySubmissionChecks'],
         [str(java / 'java'), '-XX:-UsePerfData', '-cp', str(classes) + os.pathsep + runtime, 'CheckMastersCaptureProbe'],
         [str(java / 'java'), '-XX:-UsePerfData', '-cp', str(classes) + os.pathsep + runtime, 'dev.wildercord.aura.CheckBraceNullPhaseContract'],
         [str(java / 'java'), '-XX:-UsePerfData', '-cp', str(classes) + os.pathsep + runtime, 'CheckBraceNullWorldItemOracle'],
@@ -68,7 +69,7 @@ def main():
         'compileOnlyFixtureSha256': sha(fixture), 'supportingReceiptSha256': sha(receipt),
         'commands': commands, 'stages': [], 'limits': ['No GPU, client launch, mixin application, actual screenshot or observer acceptance.']}
     try:
-        for name, command in zip(['compile', 'pixel-policy', 'phase-contract', 'world-item-oracle', 'official-age-clock'], commands):
+        for name, command in zip(['compile', 'native-submit-provenance', 'pixel-policy', 'phase-contract', 'world-item-oracle', 'official-age-clock'], commands):
             with (out / (name + '.log')).open('w') as log:
                 code = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT).returncode
             report['stages'].append({'stage': name, 'exitCode': code})

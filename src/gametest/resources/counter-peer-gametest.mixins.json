@@ -7,7 +7,7 @@
     "CounterPeerClassicExtractionMixin",
     "CounterPeerClassicViewMixin",
     "CounterPeerCopyMixin",
-    "CounterPeerDeferredMixin",
+    "CounterPeerDeferredMixin", "CounterPeerNativeSubmitMixin",
     "CounterPeerExtractionMixin",
     "CounterPeerFallbackMixin",
     "CounterPeerPlayerPaletteMixin",
@@ -17,7 +17,11 @@
     "CounterPeerWorldBodyMixin",
     "CounterPeerWorldItemMixin",
     "CounterPeerItemDrawMixin",
-    "CounterPeerAcceptedSourceMixin"
+    "CounterPeerAcceptedSourceMixin",
+    "CounterPeerAdmissionSendMixin",
+    "CounterPeerAdmissionMixin",
+    "CounterPeerAdmissionSourceMixin",
+    "CounterPeerPendingAccess"
   ],
   "injectors": {
     "defaultRequire": 1

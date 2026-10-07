@@ -13,6 +13,6 @@ public abstract class BraceNullPlayerPaletteMixin {
 	@WrapMethod(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)V", require = 1, expect = 1, allow = 1)
 	private void wildercord$braceNullConsumed(AvatarRenderState state, Operation<Void> original) {
 		original.call(state);
-		BraceNullCaptureProbe.bodyConsumed((PlayerModel) (Object) this, state);
+		BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.bodyConsumed((PlayerModel) (Object) this, state));
 	}
 }

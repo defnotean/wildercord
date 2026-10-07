@@ -10,5 +10,5 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(value=ArticulatedCombat.class,remap=false)
 public abstract class CounterPeerBodyBaselineMixin {
  @WrapMethod(method="applyPlayer",require=1,expect=1,allow=1)
- private static boolean counter$baseline(PlayerModel model,AvatarRenderState state,Operation<Boolean> original){CounterPeerRenderProbe.bodyBaseline(model,state);return original.call(model,state);}
+ private static boolean counter$baseline(PlayerModel model,AvatarRenderState state,Operation<Boolean> original){CounterPeerRenderProbe.passive(()->CounterPeerRenderProbe.bodyBaseline(model,state));return original.call(model,state);}
 }

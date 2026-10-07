@@ -180,7 +180,7 @@ class MarchVisualDiagnosticTests(unittest.TestCase):
 
     def test_shared_counter_capture_inventory_is_additive_and_applies_to_all_visual_aliases(self):
         added = diagnostic.BRACE_NULL_CAPTURE_FILES
-        self.assertEqual(len(added), 21)
+        self.assertEqual(len(added), 23)
         self.assertEqual(len(set(added)), len(added))
         for case in suites.STONE_MARCH_DIAGNOSTICS:
             files = diagnostic.CASE_FILES[case]
@@ -191,7 +191,7 @@ class MarchVisualDiagnosticTests(unittest.TestCase):
                              "54949e1cf41f480f26dd532a4f8f20b643e4b86da7c232e24757538611d2c66a")
             for path in added:
                 self.assertTrue((suites.ROOT / path).is_file(), path)
-        for name in ("BraceNullCaptureProbe", "BraceNullPhaseContract", "BraceNullTransformOracle",
+        for name in ("NativeBodySubmission", "BraceNullCaptureProbe", "BraceNullPhaseContract", "BraceNullTransformOracle",
                      "BraceNullPlayerWidth", "BraceNullItemDrawProbe"):
             self.assertIn("src/gametest/java/dev/wildercord/gametest/" + name + ".java", added)
 

@@ -109,7 +109,20 @@ jobs:
           java-version: 25
       - uses: gradle/actions/setup-gradle@v6
       - name: Install virtual display
-        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          sudo -n timeout --kill-after=15s 300s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 --error-on=any update
+          sudo -n timeout --kill-after=15s 180s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+          for native_package in xvfb libgl1-mesa-dri libegl1 mesa-utils; do
+            native_status="$(dpkg-query --show --showformat='${db:Status-Status}' "$native_package")"
+            test "$native_status" = installed
+            native_version="$(dpkg-query --show --showformat='${Version}' "$native_package")"
+            test -n "$native_version"
+            printf '%s=%s\n' "$native_package" "$native_version"
+          done
+          command -v Xvfb
+          command -v glxinfo
       - name: Mark fresh Void Cut diagnostic inputs
         id: void-cut-start
         continue-on-error: true
@@ -248,7 +261,20 @@ jobs:
       - name: Check bounded native screenshot packaging
         run: python -m unittest discover -s tools -p 'test_curate_masters_frames.py' -v
       - name: Install virtual display
-        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          sudo -n timeout --kill-after=15s 300s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 --error-on=any update
+          sudo -n timeout --kill-after=15s 180s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+          for native_package in xvfb libgl1-mesa-dri libegl1 mesa-utils; do
+            native_status="$(dpkg-query --show --showformat='${db:Status-Status}' "$native_package")"
+            test "$native_status" = installed
+            native_version="$(dpkg-query --show --showformat='${Version}' "$native_package")"
+            test -n "$native_version"
+            printf '%s=%s\n' "$native_package" "$native_version"
+          done
+          command -v Xvfb
+          command -v glxinfo
       - name: Mark fresh Masters screenshot inputs
         continue-on-error: true
         run: python tools/curate_masters_frames.py --prepare --marker artifacts/review/masters-frames-${{ github.run_id }}-${{ github.run_attempt }}.json
@@ -410,7 +436,20 @@ jobs:
           python -m unittest discover -s tools -p 'test_paired_moon_matrix.py' -v
           python -m unittest discover -s tools -p 'test_curate_moon_frames.py' -v
       - name: Install existing virtual-display dependencies
-        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          sudo -n timeout --kill-after=15s 300s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 --error-on=any update
+          sudo -n timeout --kill-after=15s 180s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+          for native_package in xvfb libgl1-mesa-dri libegl1 mesa-utils; do
+            native_status="$(dpkg-query --show --showformat='${db:Status-Status}' "$native_package")"
+            test "$native_status" = installed
+            native_version="$(dpkg-query --show --showformat='${Version}' "$native_package")"
+            test -n "$native_version"
+            printf '%s=%s\n' "$native_package" "$native_version"
+          done
+          command -v Xvfb
+          command -v glxinfo
       - name: Run both 54-case widths then four sequential Moon views
         timeout-minutes: 51
         env:
@@ -472,7 +511,20 @@ jobs:
       - name: Check bounded native screenshot packaging
         run: python -m unittest discover -s tools -p 'test_curate_masters_frames.py' -v
       - name: Install virtual display
-        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          sudo -n timeout --kill-after=15s 300s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 --error-on=any update
+          sudo -n timeout --kill-after=15s 180s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+          for native_package in xvfb libgl1-mesa-dri libegl1 mesa-utils; do
+            native_status="$(dpkg-query --show --showformat='${db:Status-Status}' "$native_package")"
+            test "$native_status" = installed
+            native_version="$(dpkg-query --show --showformat='${Version}' "$native_package")"
+            test -n "$native_version"
+            printf '%s=%s\n' "$native_package" "$native_version"
+          done
+          command -v Xvfb
+          command -v glxinfo
       - name: Mark fresh articulated screenshot inputs
         continue-on-error: true
         run: python tools/curate_masters_frames.py --suite articulated --prepare --marker artifacts/review/articulated-frames-${{ github.run_id }}-${{ github.run_attempt }}.json
@@ -574,6 +626,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
+      - uses: actions/setup-python@v7
+        if: steps.request.outputs.enabled == 'true'
+        with:
+          python-version: "3.12"
+      - name: Install existing image-verification dependency
+        if: steps.request.outputs.enabled == 'true'
+        run: pip install pillow
       - uses: gradle/actions/setup-gradle@v6
         if: steps.request.outputs.enabled == 'true'
       - name: Check diagnostic request, scope and provenance tooling
@@ -581,7 +640,20 @@ jobs:
         run: python -m unittest discover -s tools -p 'test_*ci*.py' -v
       - name: Install virtual display for requested diagnostic
         if: steps.request.outputs.enabled == 'true'
-        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          sudo -n timeout --kill-after=15s 300s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 --error-on=any update
+          sudo -n timeout --kill-after=15s 180s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri libegl1 mesa-utils
+          for native_package in xvfb libgl1-mesa-dri libegl1 mesa-utils; do
+            native_status="$(dpkg-query --show --showformat='${db:Status-Status}' "$native_package")"
+            test "$native_status" = installed
+            native_version="$(dpkg-query --show --showformat='${Version}' "$native_package")"
+            test -n "$native_version"
+            printf '%s=%s\n' "$native_package" "$native_version"
+          done
+          command -v Xvfb
+          command -v glxinfo
       - name: Run one allowlisted native diagnostic, without retries
         if: steps.request.outputs.enabled == 'true'
         timeout-minutes: 50

@@ -4,6 +4,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Add Cinnamon's fixed-window feeding growth, mobile damage recovery and owner-only summoning whistle. Preserve one saved identity across ordinary unload/restart and owner travel, with bounded temporary chunk recovery and no replacement on an unknown lookup. Native growth, movement, persistence and retirement assertions are included; fresh in-game verification remains pending.
+
 - Pin the full-client gate to explicit 80/84/77/71 groups, including the two new counter-lifetime classes with exact roster, dependency-block and plan identities shared by the launcher and Gradle. Only four matching completed shard proofs can accept the full gate; relocated runtime acceptance and the unchanged 180-minute budget remain unverified.
 
 - Preserve an accepted Crimson Moon through natural Momentum decay during a clash while keeping cold Final requests gated and earned-counter admission checks intact. Native request, clash and released-owner regressions accompany the correction; fresh native execution remains pending.

@@ -155,7 +155,13 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				reset(context, world);
 				traceBoltStep = scene.id.equals(dev.wildercord.aura.arts.ThunderArts.BOLT_STEP);
 				try {
-					run(failures, scene.id, () -> play(context, world, scene));
+					NullSilenceAudit audit = scene.id.equals(HollowArts.NULL_PARRY)
+						? on(world, NullSilenceAudit::new) : null;
+					try {
+						run(failures, scene.id, () -> play(context, world, scene, audit));
+					} finally {
+						if (audit != null) on(world, player -> { audit.close(); return null; });
+					}
 				} finally {
 					traceBoltStep = false;
 					BoltStepArrivalProbe.clear();
@@ -647,17 +653,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (!ArtWards.silenced(a) || !dev.wildercord.cast.Statuses.silenced(a)) {
 				return "and silenced (art " + ArtWards.silenced(a) + ", cast lock " + dev.wildercord.cast.Statuses.silenced(a) + ")";
 			}
-			// A player silenced: no arts, no Aura key but the guard, and not silenced again at once.
-			int held = ArtWards.silence(p, ArtRules.NULL_SILENCE);
-			AuraApi.StringArt art = AuraApi.string(HollowArts.VOID_CUT).orElseThrow();
-			String why = SwordStrings.check(p, art, marks(art)).map(Enum::name).orElse("none");
-			boolean slash = Aura.press(p, AuraApi.Trigger.TAP);
-			boolean again = ArtWards.silence(p, ArtRules.NULL_SILENCE) > 0;
-			dev.wildercord.aura.arts.MethodArts.forget(p.getUUID());
-			if (held != ArtRules.SILENCE_PLAYER_TICKS || !why.equals("SILENCED") || slash || again) {
-				return "a silenced player should be held to " + ArtRules.SILENCE_PLAYER_TICKS + " ticks (" + held + "), refused arts (" + why + ") and the slash ("
-					+ slash + "), and not silenced again at once (" + again + ")";
-			}
+			// Player refusal is checked separately across this original paid action's recovery.
+
 			return null;
 		}));
 		out.add(new Scene(HollowArts.RIFT_STEP, "hollow", AuraApi.ArtSlot.FOURTH, List.of(foe(0, 9.4), foe(1.8, 7.6)), 3, 6, (p, b) -> {
@@ -880,7 +877,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ playing a scene
 
-	private static void play(ClientGameTestContext context, TestSingleplayerContext world, Scene scene) {
+	private static void play(ClientGameTestContext context, TestSingleplayerContext world, Scene scene, NullSilenceAudit nullAudit) {
 		// Night for the Final Arts' third-person picture, where their light reads best; everything else by day.
 		set(world, scene);
 		context.waitTicks(20);
@@ -989,6 +986,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		Before b = before;
 		String verified = on(world, player -> scene.check.verify(player, b));
 		check(verified == null, scene.id + ": " + verified);
+		if (nullAudit != null) nullPlayerSilence(context, world, nullAudit);
 		if (scene.id.equals(RimeArts.GLACIER_MIRROR) || scene.id.equals(GaleArts.EYE_OF_THE_STORM)) {
 			String turned = arrowTurned(context, world, scene.id.equals(RimeArts.GLACIER_MIRROR));
 			check(turned == null, scene.id + ": " + turned);
@@ -1089,6 +1087,145 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				mc.gui.hud.toggle();
 			}
 		});
+	}
+
+	/** Read-only receipts for the one genuine first-person Null action; callbacks never assert through gameplay. */
+	private static final class NullSilenceAudit implements AutoCloseable {
+		final ServerPlayer owner;
+		final ServerLevel level;
+		final int entity;
+		final AuraApi.StringArt art = AuraApi.string(HollowArts.NULL_PARRY).orElseThrow();
+		final dev.wildercord.aura.MastersStyleRules.Style timing = dev.wildercord.aura.MastersStyleRules.of(HollowArts.NULL_PARRY);
+		final AuraApi.SpendHook spend;
+		final AuraApi.StringHook complete;
+		int payments, completions, allSpends;
+		long paidTick, releaseTick, end, rest, lastObserved = Long.MIN_VALUE;
+		double paid;
+		AuraGuard.Caught caught;
+		ItemStack blade;
+		AuraApi.StringContext context;
+		dev.wildercord.aura.EarnedCounters.Release action;
+		String failure;
+		boolean closed;
+		NullSilenceAudit(ServerPlayer owner) {
+			this.owner = owner; level = owner.level(); entity = owner.getId();
+			spend = (player, amount, reason, backlash) -> {
+				if (closed || !player.getUUID().equals(owner.getUUID())) return;
+				try {
+					observe(player == owner && resident(), "Spend keeps the original player body/world/connection");
+					allSpends++;
+					if (!reason.equals("art:" + HollowArts.NULL_PARRY)) return;
+					if (++payments != 1) { observe(false, "Exactly one ordinary Null payment"); return; }
+					observe(!backlash, "Ordinary Null payment has no backlash");
+					caught = AuraGuard.caught(owner); blade = owner.getMainHandItem();
+					paidTick = level.getGameTime(); paid = amount;
+					end = paidTick + timing.windup() + timing.recovery();
+					rest = paidTick + SwordStrings.rest(owner, art);
+					observe(caught != null && caught.attacker() != null && caught.damage() > 0
+						&& Math.abs(amount - SwordStrings.price(owner, art)) < 1.0E-4
+						&& dev.wildercord.aura.MastersArts.committed(owner), "Payment belongs to the live earned counter and original commitment");
+				} catch (RuntimeException | AssertionError problem) { failure = "Spend observer: " + problem; }
+			};
+			complete = (player, performed, receipt) -> {
+				if (closed || !player.getUUID().equals(owner.getUUID()) || !performed.id().equals(HollowArts.NULL_PARRY)) return;
+				try {
+					if (++completions != 1) { observe(false, "One original Null completion"); return; }
+					observe(player == owner && resident() && performed == art,
+						"Completion belongs to the original registered art and player body");
+					context = receipt; action = dev.wildercord.aura.MastersArts.earnedCounter(owner);
+					releaseTick = level.getGameTime();
+					observe(payments == 1 && receipt.art() == art && receipt.at() == paidTick
+						&& receipt.marks().size() == 1 && SwordString.Token.COUNTER.fits(receipt.marks().getFirst())
+						&& action != null && action.target() == caught.attacker() && action.caughtDamage() == caught.damage()
+						&& releaseTick == paidTick + timing.windup(), "The original paid counter releases once on its fixed active tick");
+				} catch (RuntimeException | AssertionError problem) { failure = "Completion observer: " + problem; }
+			};
+			AuraApi.onSpend(spend); AuraApi.onString(complete);
+		}
+		boolean resident() {
+			return owner.isAlive() && !owner.isRemoved() && owner.level() == level && owner.getId() == entity
+				&& owner.connection.player == owner && level.getEntity(owner.getUUID()) == owner
+				&& level.getServer().getPlayerList().getPlayer(owner.getUUID()) == owner;
+		}
+		void observe(boolean condition, String message) { if (!condition && failure == null) failure = message; }
+		void verify(ServerPlayer current) {
+			long now = level.getGameTime();
+			check(now >= lastObserved && failure == null && current == owner && resident() && owner.getMainHandItem() == blade
+				&& payments == 1 && completions == 1 && context != null && action != null
+				&& SwordStrings.readyAt(owner, HollowArts.NULL_PARRY) == rest
+				&& dev.wildercord.aura.MastersArts.committed(owner) == (now < end),
+				"Null's original paid body/action, rest and recovery remain exact: " + diagnostic());
+			lastObserved = now;
+		}
+		String diagnostic() {
+			return "owner=" + owner.getUUID() + "/" + entity + ", now=" + level.getGameTime() + ", paidAt=" + paidTick
+				+ ", paid=" + paid + ", payments=" + payments + ", completions=" + completions + ", release=" + releaseTick
+				+ ", recoveryEnd=" + end + ", rest=" + rest + ", world=" + level.dimension()
+				+ ", action=" + (action == null ? "none" : action.art() + "/" + action.route() + "/" + System.identityHashCode(action))
+				+ ", target=" + (action == null || action.target() == null ? "none" : action.target().getUUID() + "/" + action.target().getId())
+				+ ", receiptAt=" + (context == null ? "none" : context.at()) + ", failure=" + failure;
+		}
+		@Override public void close() {
+			if (closed) return;
+			closed = true; AuraApi.spendHooks().remove(spend); AuraApi.stringHooks().remove(complete);
+		}
+	}
+
+	/** Preserve impact checks, then isolate silence from the same action's still-reserved recovery. */
+	private static void nullPlayerSilence(ClientGameTestContext context, TestSingleplayerContext world, NullSilenceAudit audit) {
+		long until = on(world, player -> {
+			audit.verify(player);
+			long now = player.level().getGameTime();
+			check(now >= audit.releaseTick && now < audit.end && !ArtWards.silenced(player)
+				&& !dev.wildercord.cast.Statuses.silenced(player) && dev.wildercord.cast.CastLock.canLock(player),
+				"Unmasked original Null recovery precedes the player-silence control");
+			int held = ArtWards.silence(player, ArtRules.NULL_SILENCE);
+			check(held == ArtRules.SILENCE_PLAYER_TICKS && audit.end < now + held, "Player silence keeps its original finite thirty-tick limit");
+			checkNullRefusal(player, audit, "NOT_READY");
+			return now + held;
+		});
+		for (int ticks = 0; on(world, player -> player.level().getGameTime() < audit.end); ticks++) {
+			check(ticks < audit.timing.windup() + audit.timing.recovery(), "Recovery observation never receives a refreshed wait budget");
+			on(world, player -> { audit.verify(player); check(ArtWards.silenced(player) && dev.wildercord.cast.Statuses.silenced(player),
+				"Original silence remains active through genuine recovery"); return null; });
+			context.waitTicks(1);
+		}
+		on(world, player -> {
+			audit.verify(player);
+			check(player.level().getGameTime() == audit.end && audit.end < until, "No reset or shortcut of the original recovery deadline");
+			checkNullRefusal(player, audit, "SILENCED");
+			return null;
+		});
+		for (int ticks = 0; on(world, player -> player.level().getGameTime() < until); ticks++) {
+			check(ticks < ArtRules.SILENCE_PLAYER_TICKS, "Silence observation stays within its original finite budget");
+			on(world, player -> { audit.verify(player); check(ArtWards.silenced(player) && dev.wildercord.cast.Statuses.silenced(player),
+				"No premature player-silence expiry"); return null; });
+			context.waitTicks(1);
+		}
+		on(world, player -> {
+			audit.verify(player);
+			check(player.level().getGameTime() == until && !ArtWards.silenced(player) && !dev.wildercord.cast.Statuses.silenced(player),
+				"Repeated refusal cannot extend the original silence deadline");
+			check(ArtWards.silence(player, ArtRules.NULL_SILENCE) == 0, "Original repeat-silence rest still refuses after the short lock expires");
+			audit.verify(player); audit.close();
+			dev.wildercord.aura.arts.MethodArts.forget(player.getUUID());
+			return null;
+		});
+	}
+
+	private static void checkNullRefusal(ServerPlayer player, NullSilenceAudit audit, String expected) {
+		audit.verify(player);
+		int spends = audit.allSpends;
+		AuraApi.StringArt other = AuraApi.string(HollowArts.VOID_CUT).orElseThrow();
+		String why = SwordStrings.check(player, other, marks(other)).map(Enum::name).orElse("none");
+		boolean slash = Aura.press(player, AuraApi.Trigger.TAP);
+		boolean again = ArtWards.silence(player, ArtRules.NULL_SILENCE) > 0;
+		check(why.equals(expected) && !slash && !again && audit.allSpends == spends
+			&& ArtWards.silenced(player) && dev.wildercord.cast.Statuses.silenced(player),
+			"The real silenced player is refused without payment/refresh: expected=" + expected + ", actual=" + why
+				+ ", slash=" + slash + ", repeated=" + again + ", " + audit.diagnostic());
+		audit.verify(player);
+		dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NULL_SILENCE_CONTROL expected={} actual={} {}", expected, why, audit.diagnostic());
 	}
 
 	/** Preserve the three legacy health thresholds at actual paid releases, with real physical recovery. */

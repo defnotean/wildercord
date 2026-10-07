@@ -81,29 +81,52 @@ class SyntheticCounterEvidence:
         self.ipc, self.identity, self.pids = ipc, identity, pids
         self.values, self.records = {}, {}
         for index, case in enumerate(COUNTER_VISUAL_CASES, 46):
+            tick = 100 + (index - 46) * 200
             action = {**supervisor.counter_case(case), "actorEntity": "11", "observerEntity": "22",
                       "actorUuid": identity["hostUuid"], "observerUuid": identity["peerUuid"]}
             action = {key: str(value) for key, value in action.items()}
-            common = {**action, "case": case}
+            common = {**action, "case": case, "skin": skin, "cameraNative": "true"}
             self.write(f"case-{index:02d}-prepare", "host", {**common, "skin": skin, "cameraNative": "true"})
             self.write(f"case-{index:02d}-armed", "peer", {**common, "skin": skin, "cameraNative": "true"})
-            self.write(f"case-{index:02d}-clock-initial", "peer", {**common, "clockClientTick": "90"})
-            clock = {**common, "clockRendezvousTick": "95", "clockInitialServerTick": "95", "clockInitialSha256": supervisor.digest(ipc / f"case-{index:02d}-clock-initial.properties")}
-            self.write(f"case-{index:02d}-clock-rendezvous", "host", {**clock, "clockServerTick": "95"})
+            self.write(f"case-{index:02d}-clock-initial", "peer", {**common, "clockClientTick": str(tick - 10)})
+            clock = {**common, "clockRendezvousTick": str(tick - 5), "clockInitialServerTick": str(tick - 5), "clockInitialSha256": supervisor.digest(ipc / f"case-{index:02d}-clock-initial.properties")}
+            self.write(f"case-{index:02d}-clock-rendezvous", "host", {**clock, "clockServerTick": str(tick - 5)})
             clock["clockRendezvousSha256"] = supervisor.digest(ipc / f"case-{index:02d}-clock-rendezvous.properties")
-            self.write(f"case-{index:02d}-clock-ack", "peer", {**clock, "clockClientTick": "95"})
-            self.write(f"case-{index:02d}-clock-ready", "host", {**clock, "clockServerTick": "95", "clockClientTick": "95",
+            self.write(f"case-{index:02d}-clock-ack", "peer", {**clock, "clockClientTick": str(tick - 5)})
+            self.write(f"case-{index:02d}-clock-ready", "host", {**clock, "clockServerTick": str(tick - 5), "clockClientTick": str(tick - 5),
                        "clockAckSha256": supervisor.digest(ipc / f"case-{index:02d}-clock-ack.properties")})
             self.values[f"case-{index:02d}-armed"]["clockReadySha256"] = supervisor.digest(ipc / f"case-{index:02d}-clock-ready.properties")
             self.flush(f"case-{index:02d}-armed")
-            self.write(f"case-{index:02d}-accepted", "host", {**common, "acceptedTick": "100", "caughtTick": "99", "payments": "1", "paid": "8.0",
-                       "clockRendezvousTick": "95", "clockReadySha256": supervisor.digest(ipc / f"case-{index:02d}-clock-ready.properties"),
+            generation = identity["nonce"] + f":case-{index:02d}"
+            admission = {
+                "admissionSchemaVersion": "1", "admissionGeneration": generation,
+                "admissionPeerArmedSha256": supervisor.digest(ipc / f"case-{index:02d}-armed.properties"),
+                "admissionArt": "unmoved" if action["move"] == "24" else "null_parry",
+                "admissionSentMarks": "[35]", "admissionRequestMarks": "[35]", "admissionPerformMarks": "[39]",
+                "admissionServerBodyUuid": identity["hostUuid"], "admissionServerBodyEntity": "11", "admissionServerLevel": "minecraft:overworld",
+                "admissionServerConnectionIdentity": "1111", "admissionClientBodyUuid": identity["hostUuid"],
+                "admissionClientBodyEntity": "11", "admissionClientLevel": "minecraft:overworld", "admissionClientConnectionIdentity": "2222",
+                "admissionBusy": "false", "admissionExciseBlocking": "false", "admissionPerformed": "true", "admissionCheck": "ACCEPTED",
+                "admissionRefusal": "NONE", "admissionObserverFailure": "NONE", "admissionNativeFailure": "NONE",
+                "admissionTrace": f"generation={generation}, sends=1, requests=1, check=ACCEPTED, refusal=NONE, payments=1, sources=1, returns=1, committed=true",
+                "admissionArmedTick": str(tick - 1), "admissionSentTick": str(tick), "admissionRequestTick": str(tick), "admissionReturnTick": str(tick),
+                "admissionPaidTick": str(tick), "admissionPaid": "8.0", "admissionCost": "8.0", "admissionAuraBefore": "19.0",
+                "admissionAuraAfter": "11.0", "admissionSpendLeft": "11.0", "admissionRest": str(tick + 80), "admissionBacklash": "false",
+                "admissionOriginalBody": "true", "admissionPendingAtEntry": "NONE", "admissionReturnCommitted": "true",
+                "admissionActionIdentity": str(1000+index), "admissionSourceActionIdentity": str(1000+index), "admissionReturnActionIdentity": str(1000+index),
+                "admissionSourceEntity": "11", "admissionSourceMove": action["move"], "admissionSourceStartTick": str(tick),
+                "admissionSourceWindup": action["windup"], "admissionSourceRecovery": action["recovery"], "admissionSourceYaw": "0.0", "admissionSourcePitch": "0.0",
+            }
+            self.write(f"case-{index:02d}-admission", "host", {**common, **admission})
+            admission_sha = supervisor.digest(ipc / f"case-{index:02d}-admission.properties")
+            self.write(f"case-{index:02d}-accepted", "host", {**common, **admission, "admissionReceiptSha256": admission_sha, "acceptedTick": str(tick), "caughtTick": str(tick - 1), "payments": "1", "paid": "8.0", "restUntil": str(tick + 80),
+                       "clockRendezvousTick": str(tick - 5), "clockReadySha256": supervisor.digest(ipc / f"case-{index:02d}-clock-ready.properties"),
                        "caughtAttackerUuid": "00000000-0000-4000-8000-000000000003", "armedSha256": supervisor.digest(ipc / f"case-{index:02d}-armed.properties")})
             for phase, role in (("ready", "host"), ("seen", "peer"), ("passed", "host")):
-                self.write(f"case-{index:02d}-{phase}", role, {**common, "releaseTick": str(100 + int(action["windup"])),
-                           "payments": "1", "completions": "1", "counterTargetUuid": "00000000-0000-4000-8000-000000000003",
+                self.write(f"case-{index:02d}-{phase}", role, {**common, "releaseTick": str(tick + int(action["windup"])),
+                           "payments": "1", "completions": "1", "restUntil": str(tick + 80), "counterTargetUuid": "00000000-0000-4000-8000-000000000003",
                            "counterTargetEntity": "33", "counterTargetHealthBefore": "200.0", "counterTargetHealth": "185.0",
-                           "directPrimaryHits": "1", "primaryHitTick": str(100 + int(action["windup"]))})
+                           "directPrimaryHits": "1", "primaryHitTick": str(tick + int(action["windup"]))})
             accepted_sha = supervisor.digest(ipc / f"case-{index:02d}-accepted.properties")
             w, r, move = (int(action[key]) for key in ("windup", "recovery", "move"))
             ages = (w / 2, w + .25, w + 1.25, w + r / 2 + .25)
@@ -115,10 +138,10 @@ class SyntheticCounterEvidence:
                     png = game / (name + ".png")
                     Image.new("RGBA", (2, 2), (index * 4, int(age * 8), 100 if role == "host" else 200, 255)).save(png)
                     data = png.read_bytes(); pixels = image_evidence(data)
-                    frame = {"activation": 100, "move": move, "left": action["hand"] == "LEFT", "master": False, "yaw": 0., "pitch": 0., "tilt": 0.,
+                    frame = {"activation": tick, "move": move, "left": action["hand"] == "LEFT", "master": False, "yaw": 0., "pitch": 0., "tilt": 0.,
                              "footwork": False, "velocity": "n/a", "pose": "a" * 64}
                     art = action["mode"] == "articulated"
-                    palette = {"activation": 100, "move": move, "phase": phase, "age": age, "classic": frame}
+                    palette = {"activation": tick, "move": move, "phase": phase, "age": age, "classic": frame}
                     if art:
                         palette["articulated"] = {**frame, "velocity": "NaN", "pose": ("RECOVERY" if phase == "FOLLOW" else phase) + ":" + "b" * 64 + ":" + "c" * 64}
                     material = 5 if art or role == "peer" else 0
@@ -149,15 +172,19 @@ class SyntheticCounterEvidence:
                                    "acceptedSourceIdentity":str(index*100+5), "acceptedReadSequence": str(index*100+6), "sourceFrameSequence": str(index*100+7), "actualSourceAge": str(age), "connectedSkinTexture": "minecraft:skin", "connectedSkinModel": skin.upper(),
                                    "originalSkinMaterialIdentity": str(material), "submittedSkinMaterialIdentity": str(material), "ordinaryHandAdmission": "true", "handEquipKnown": "true",
                                    "handSameItem": "true", "handEquipping": "false", "worldHandEligible": "true"}
+                    observation.update({"receivedSource" + key: admission["admissionSource" + key] for key in supervisor.COUNTER_SOURCE_FIELDS})
+                    observation.update(admissionReceiptSha256=admission_sha, admissionGeneration=generation,
+                                       receivedOwnerUuid=identity["hostUuid"], receivedOwnerEntity="11", receivedLevel="minecraft:overworld",
+                                       receivedConnectionIdentity="2222" if role == "host" else "3333", tick=str(tick + int(age)))
                     record = {"schemaVersion": 1, "launchNonce": identity["nonce"], "verified": True, "failures": [], "scopeCleanupVerified": True,
                               "acceptanceObservedBeforeSource": True, "phaseBasis": supervisor.COUNTER_PHASE_BASIS, "pixelQualityReviewed": False, "serverReleaseFrameCorrespondenceVerified": False,
-                              "expected": {"name": name, "view": "fp" if role == "host" else "remote", "owner": 11, "uuid": identity["hostUuid"], "activation": 100,
+                              "expected": {"name": name, "view": "fp" if role == "host" else "remote", "owner": 11, "uuid": identity["hostUuid"], "activation": tick,
                                            "mode": action["mode"], "hand": action["hand"], "skin": skin, "armor": False, "shell": False, "phase": phase, "move": move, "windup": w, "recovery": r},
                               "copy": {"observations": observation, "passes": passes, "draws": [draw], "extractSequence": index*100+8, "renderSequence": index*100+9, "copySequence": index*100+10, "width": 2, "height": 2},
                               "image": {"relativeImagePath": png.name, "pngBytes": len(data), "pngSha256": hashlib.sha256(data).hexdigest(), "decodedPixels": pixels}, "callbackPixels": pixels}
                     self.records[key] = record
-                    self.write(f"{role}-case-{index:02d}-{phase}-rendered", role, {**common, "acceptedTick": "100", "phase": phase, "renderedBeforeReadback": "true"})
-                    self.write(key, role, {**common, "acceptedTick": "100", "acceptedReceiptSha256": accepted_sha, "phase": phase, "view": record["expected"]["view"], "skin": skin,
+                    self.write(f"{role}-case-{index:02d}-{phase}-rendered", role, {**common, "acceptedTick": str(tick), "phase": phase, "renderedBeforeReadback": "true"})
+                    self.write(key, role, {**common, "admissionReceiptSha256": admission_sha, "admissionGeneration": generation, "acceptedTick": str(tick), "acceptedReceiptSha256": accepted_sha, "phase": phase, "view": record["expected"]["view"], "skin": skin,
                                           "screenshotName": name, "actualSourceAge": str(age), "receiptRelativePath": name + ".json", "pngRelativePath": png.name,
                                           "pngSha256": record["image"]["pngSha256"], "callbackPixelSha256": pixels["sha256"], "receiptSha256": "pending",
                                           "scopeCleanupVerified": "true", "acceptanceObservedBeforeSource": "true", "pixelQualityReviewed": "false"})
@@ -168,7 +195,9 @@ class SyntheticCounterEvidence:
         self.flush(name)
 
     def flush(self, name):
-        (self.ipc / (name + ".properties")).write_text("".join(key + "=" + str(value) + "\n" for key, value in self.values[name].items()), encoding="iso-8859-1")
+        def escape(value):
+            return str(value).replace("\\", "\\\\").replace(":", "\\:").replace("=", "\\=").replace("\n", "\\n").replace("\r", "\\r")
+        (self.ipc / (name + ".properties")).write_text("".join(key + "=" + escape(value) + "\n" for key, value in self.values[name].items()), encoding="iso-8859-1")
 
     def rebind(self, key):
         values = self.values[key]
@@ -176,6 +205,32 @@ class SyntheticCounterEvidence:
         write_json(path, self.records[key])
         values["receiptSha256"] = supervisor.digest(path)
         self.flush(key)
+
+
+class PropertiesReaderTests(unittest.TestCase):
+    def test_java_physical_boundaries_and_store_escapes_are_preserved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "native.properties"
+            for separator in (b"\n", b"\r", b"\r\n"):
+                path.write_bytes(separator.join((b"# Java Properties.store", b"plain=ACCEPTED", b"empty=",
+                    b"escaped=\\ leading\\:value\\=\\\\\\t\\n\\r\\f\\#\\!\\u0085\\u000B\\u000C\\u001C\\u001D\\u001E", b"")))
+                properties = supervisor.read_properties(path)
+                self.assertEqual(set(properties), {"plain", "empty", "escaped"})
+                self.assertEqual(properties["plain"], "ACCEPTED")
+                self.assertEqual(properties["empty"], "")
+                self.assertEqual(supervisor.counter_property(properties["escaped"]),
+                                 " leading:value=\\\t\n\r\f#!\x85\x0b\x0c\x1c\x1d\x1e")
+
+    def test_raw_controls_noncanonical_keys_and_continuations_are_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "native.properties"
+            controls = [code for code in range(32) if code not in (10, 13)] + list(range(127, 160))
+            mutations = [b"first=good" + bytes([code]) + b"second=bad\n" for code in controls]
+            mutations += [b" first=bad\n", b"first =bad\n", b"first:ignored=bad\n", b"fi\\u0072st=bad\n",
+                          b"first=\\\nsecond=bad\n", b"first= unescaped leading space\n", b"first=\\q\n", b"first=\\uBAD\n"]
+            for raw in mutations:
+                path.write_bytes(raw)
+                with self.subTest(raw=raw), self.assertRaises(ValueError): supervisor.read_properties(path)
 
 
 class Fixture(unittest.TestCase):
@@ -659,6 +714,15 @@ class CounterSelectionTests(Fixture):
         with self.assertRaisesRegex(ValueError, "passive hooks"):
             supervisor.load_contract(self.root)
 
+    def test_contract_requires_complete_admission_schema_and_original_budget(self):
+        for field, value in (("schemaVersion", 2), ("exactWitnessCount", 7), ("requiredProperties", []),
+                             ("acceptedDigestProperty", "optional"), ("receivedSourceProperties", ["receivedSourceMove"]),
+                             ("sharedInitialNativeTickBudget", 13), ("nativeStatus", "verified")):
+            contract = copy.deepcopy(CONTRACT); contract["counterVisuals"]["admission"][field] = value
+            write_json(self.root / supervisor.CONTRACT, contract)
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "admission proof closure"):
+                supervisor.load_contract(self.root)
+
     def test_counter_nonce_is_fresh_generated_input_and_does_not_activate_moon(self):
         nonce = "00000000-0000-4000-8000-000000000001"
         with patch.dict(os.environ, {"WILDERCORD_COUNTER_RECEIPT_NONCE": "stale", "WILDERCORD_MOON_RECEIPT_NONCE": "foreign"}):
@@ -699,7 +763,153 @@ class CounterEvidenceTests(unittest.TestCase):
     def test_complete_synthetic_geometry_and_pixel_bindings_pass_without_native_claim(self):
         self.verify()
         self.assertEqual(len(self.synthetic.records), 64)
+        self.assertEqual(len(list(self.ipc.glob("*-admission.properties"))), 8)
+        # Exercise the exact escaping emitted by Properties.store, including trace '=' and generation ':'.
+        data = (self.ipc / "case-46-admission.properties").read_text()
+        self.assertIn("generation\\=", data)
+        self.assertIn("\\:case-46", data)
         self.assertTrue(all(record["pixelQualityReviewed"] is False for record in self.synthetic.records.values()))
+
+    def rehash_counter_accepted(self, index=46):
+        accepted_sha = supervisor.digest(self.ipc / f"case-{index:02d}-accepted.properties")
+        for role in ("host", "peer"):
+            for phase in supervisor.COUNTER_PHASES:
+                key = f"{role}-case-{index:02d}-{phase}-observed"
+                self.synthetic.values[key]["acceptedReceiptSha256"] = accepted_sha
+                self.synthetic.records[key]["copy"]["observations"]["acceptedReceiptSha256"] = accepted_sha
+                self.synthetic.rebind(key)
+
+    def rehash_counter_admission(self, index=46, copy_fields=False):
+        prefix = f"case-{index:02d}-"
+        admission, accepted = (self.synthetic.values[prefix + name] for name in ("admission", "accepted"))
+        self.synthetic.flush(prefix + "admission")
+        if copy_fields:
+            accepted.update({key: value for key, value in admission.items() if key.startswith("admission")})
+        admission_sha = supervisor.digest(self.ipc / (prefix + "admission.properties"))
+        accepted["admissionReceiptSha256"] = admission_sha; self.synthetic.flush(prefix + "accepted")
+        for role in ("host", "peer"):
+            for phase in supervisor.COUNTER_PHASES:
+                key = f"{role}-case-{index:02d}-{phase}-observed"
+                binding = {"admissionReceiptSha256": admission_sha, "admissionGeneration": accepted["admissionGeneration"]}
+                self.synthetic.values[key].update(binding)
+                self.synthetic.records[key]["copy"]["observations"].update(binding)
+        self.rehash_counter_accepted(index)
+
+    def rehash_raw_admission(self, raw, index=46):
+        """Keep deliberately mutated physical bytes; refresh every downstream digest."""
+        path = self.ipc / f"case-{index:02d}-admission.properties"; path.write_bytes(raw)
+        sha = supervisor.digest(path); key = f"case-{index:02d}-accepted"
+        self.synthetic.values[key]["admissionReceiptSha256"] = sha; self.synthetic.flush(key)
+        for role in ("host", "peer"):
+            for phase in supervisor.COUNTER_PHASES:
+                key = f"{role}-case-{index:02d}-{phase}-observed"
+                self.synthetic.values[key]["admissionReceiptSha256"] = sha
+                self.synthetic.records[key]["copy"]["observations"]["admissionReceiptSha256"] = sha
+        self.rehash_counter_accepted(index)
+
+    def test_rehashed_java_parser_boundary_and_key_divergence_fails_closed(self):
+        original = (self.ipc / "case-46-admission.properties").read_bytes()
+        needle = b"admissionCheck=ACCEPTED\n"
+        self.assertEqual(original.count(needle), 1)
+        mutations = [original.replace(needle, b"admissionCheck=ACCEPTED" + bytes([code]))
+                     for code in (0x85, 0x0b, 0x0c, 0x1c, 0x1d, 0x1e)]
+        # Java would normalize these keys or continue the preceding logical value.
+        mutations += [original + extra for extra in (b"admission\\u0043heck=NO_AURA\n", b" admissionCheck=NO_AURA\n",
+                      b"admissionCheck:ignored=NO_AURA\n", b"ignored=continued\\\nadmissionCheck=NO_AURA\n")]
+        for raw in mutations:
+            self.rehash_raw_admission(raw)
+            with self.subTest(mutant=raw[-100:]), self.assertRaises(ValueError): self.verify()
+        for separator in (b"\n", b"\r", b"\r\n"):
+            self.rehash_raw_admission(original.replace(b"\n", separator)); self.verify()
+        self.rehash_raw_admission(original); self.verify()
+
+    def test_every_native_admission_field_is_required_even_after_rehashing(self):
+        original = self.synthetic.values["case-46-admission"].copy()
+        for field in supervisor.COUNTER_ADMISSION_FIELDS:
+            del self.synthetic.values["case-46-admission"][field]
+            self.rehash_counter_admission()
+            with self.subTest(field=field), self.assertRaises(ValueError): self.verify()
+            self.synthetic.values["case-46-admission"] = original.copy()
+        self.rehash_counter_admission(); self.verify()
+
+    def test_rehashed_failed_native_admission_cannot_be_rescued_by_accepted_or_images(self):
+        original = self.synthetic.values["case-46-admission"].copy()
+        mutations = {
+            "SchemaVersion": "2", "Generation": self.identity["nonce"] + ":case-47", "PeerArmedSha256": "f"*64,
+            "Art": "null_parry", "SentMarks": "[3]", "RequestMarks": "[39]", "PerformMarks": "[3]",
+            "ServerBodyUuid": self.identity["peerUuid"], "ServerBodyEntity": "22", "ServerLevel": "minecraft:the_nether",
+            "ClientBodyUuid": self.identity["peerUuid"], "ClientBodyEntity": "22", "ClientLevel": "minecraft:the_nether",
+            "ServerConnectionIdentity": "0", "ClientConnectionIdentity": "9999", "Busy": "true", "ExciseBlocking": "true",
+            "Performed": "false", "Check": "NO_AURA", "Refusal": "NO_AURA", "ObserverFailure": "failed", "NativeFailure": "thrown",
+            "Trace": original["admissionTrace"].replace("sends=1", "sends=2"), "ArmedTick": "101", "SentTick": "1000",
+            "RequestTick": "101", "ReturnTick": "101", "PaidTick": "99", "Paid": "7.0", "Cost": "9.0",
+            "AuraBefore": "18.0", "AuraAfter": "12.0", "SpendLeft": "12.0", "Rest": "100", "Backlash": "true",
+            "OriginalBody": "false", "PendingAtEntry": "1234", "ActionIdentity": "0", "SourceActionIdentity": "9999",
+            "ReturnActionIdentity": "9999", "ReturnCommitted": "false", "SourceEntity": "22", "SourceMove": "25",
+            "SourceStartTick": "99", "SourceWindup": "7", "SourceRecovery": "17", "SourceYaw": "30.0", "SourcePitch": "10.0",
+        }
+        self.assertEqual({"admission" + key for key in mutations}, set(supervisor.COUNTER_ADMISSION_FIELDS))
+        for suffix, bad in mutations.items():
+            self.synthetic.values["case-46-admission"]["admission" + suffix] = bad
+            self.rehash_counter_admission(copy_fields=True)
+            with self.subTest(field=suffix), self.assertRaises(ValueError): self.verify()
+            self.synthetic.values["case-46-admission"] = original.copy()
+        self.rehash_counter_admission(copy_fields=True); self.verify()
+
+    def test_accepted_only_contradictions_and_bogus_admission_digest_fail_after_downstream_rehash(self):
+        key = "case-46-accepted"; original = self.synthetic.values[key].copy()
+        for field, bad in (("admissionReceiptSha256", "f"*64), ("admissionCheck", "NO_AURA"),
+                           ("admissionPerformed", "false"), ("admissionRefusal", "NO_AURA"),
+                           ("admissionSourceYaw", "90.0"), ("admissionReturnActionIdentity", "9999")):
+            self.synthetic.values[key][field] = bad; self.synthetic.flush(key); self.rehash_counter_accepted()
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "contradicts immutable"): self.verify()
+            self.synthetic.values[key] = original.copy()
+        self.synthetic.flush(key); self.rehash_counter_accepted(); self.verify()
+
+    def test_missing_extra_foreign_dangling_and_linked_admission_records_fail(self):
+        path = self.ipc / "case-46-admission.properties"; original = path.read_bytes()
+        path.unlink()
+        with self.assertRaises(ValueError): self.verify()
+        path.symlink_to(self.base / "missing-admission")
+        with self.assertRaises(ValueError): self.verify()
+        path.unlink(); path.write_bytes(original)
+        alias = self.base / "linked-witness"; os.link(path, alias)
+        with self.assertRaisesRegex(ValueError, "Hard-linked"): self.verify()
+        alias.unlink()
+        for name in ("case-45-admission.properties", "case-54-admission.properties", "peer-case-46-admission.properties",
+                     "case-46-admission.tmp", "case-46-admission.properties.backup"):
+            extra = self.ipc / name; extra.write_bytes(original)
+            with self.subTest(name=name), self.assertRaisesRegex(ValueError, "extra counter admission"): self.verify()
+            extra.unlink()
+        for field, value in (("nonce", "stale"), ("pid", "222"), ("role", "peer"), ("case", supervisor.COUNTER_CASES[1])):
+            old = self.synthetic.values["case-46-admission"][field]
+            self.synthetic.values["case-46-admission"][field] = value; self.rehash_counter_admission(copy_fields=True)
+            with self.subTest(field=field), self.assertRaises(ValueError): self.verify()
+            self.synthetic.values["case-46-admission"][field] = old
+        self.rehash_counter_admission(copy_fields=True); self.verify()
+
+    def test_rehashed_actual_owner_peer_sources_must_match_every_native_admission_field(self):
+        for role in ("host", "peer"):
+            key = role + "-case-46-ACTIVE-observed"
+            changes = {"Entity": "22", "Move": "25", "StartTick": "99", "Windup": "7", "Recovery": "17", "Yaw": "30.0", "Pitch": "10.0"}
+            for field, value in changes.items():
+                self.mutate_record(key, ("copy", "observations", "receivedSource" + field), value)
+            for field, value in (("admissionReceiptSha256", "f"*64), ("admissionGeneration", "stale"),
+                                 ("receivedOwnerUuid", self.identity["peerUuid"]), ("receivedOwnerEntity", "22"),
+                                 ("receivedLevel", "minecraft:the_nether"), ("receivedConnectionIdentity", "9999")):
+                self.mutate_record(key, ("copy", "observations", field), value)
+        self.verify()
+
+    def test_replayed_case_action_and_malformed_admission_properties_fail(self):
+        key = "case-47-accepted"; old = self.synthetic.values[key]["acceptedTick"]
+        self.synthetic.values[key]["acceptedTick"] = "100"; self.synthetic.flush(key); self.rehash_counter_accepted(47)
+        with self.assertRaisesRegex(ValueError, "replays or overlaps"): self.verify()
+        self.synthetic.values[key]["acceptedTick"] = old; self.synthetic.flush(key); self.rehash_counter_accepted(47)
+        path = self.ipc / "case-46-admission.properties"; original = path.read_bytes()
+        for extra in (b"admissionCheck=NO_AURA\n", b"foreignAdmission=true\n", b"bad=trailing\\\n", b"bad=\\uNOTA\n"):
+            path.write_bytes(original + extra)
+            with self.subTest(extra=extra), self.assertRaises(ValueError): self.verify()
+        path.write_bytes(original); self.verify()
 
     def test_missing_or_forged_deep_displayed_item_draw_fails_before_acceptance(self):
         for key in ("host-case-46-ACTIVE-observed", "peer-case-46-ACTIVE-observed", "host-case-48-ACTIVE-observed"):
@@ -775,12 +985,8 @@ class CounterEvidenceTests(unittest.TestCase):
         values[prefix + "armed"]["clockReadySha256"] = sha("clock-ready"); self.synthetic.flush(prefix + "armed")
         accepted = values[prefix + "accepted"]
         accepted["clockReadySha256"] = sha("clock-ready"); accepted["armedSha256"] = sha("armed"); self.synthetic.flush(prefix + "accepted")
-        for role in ("host", "peer"):
-            for phase in supervisor.COUNTER_PHASES:
-                key = f"{role}-case-{index:02d}-{phase}-observed"
-                values[key]["acceptedReceiptSha256"] = sha("accepted")
-                self.synthetic.records[key]["copy"]["observations"]["acceptedReceiptSha256"] = sha("accepted")
-                self.synthetic.rebind(key)
+        values[prefix + "admission"]["admissionPeerArmedSha256"] = sha("armed")
+        self.rehash_counter_admission(index, copy_fields=True)
 
     def test_clock_chain_and_render_barriers_reject_stale_or_rehashed_contradictions(self):
         mutations = [("clock-initial", "clockClientTick", "96"), ("clock-rendezvous", "clockInitialServerTick", "96"),
@@ -824,7 +1030,7 @@ class CounterEvidenceTests(unittest.TestCase):
         self.verify()
 
     def test_each_real_release_target_outcome_field_must_agree_across_three_roles(self):
-        changes = {"releaseTick": "107", "payments": "2", "completions": "2", "counterTargetUuid": "00000000-0000-4000-8000-000000000004",
+        changes = {"releaseTick": "107", "payments": "2", "completions": "2", "restUntil": "181", "counterTargetUuid": "00000000-0000-4000-8000-000000000004",
                    "counterTargetEntity": "34", "counterTargetHealthBefore": "199.0", "counterTargetHealth": "184.0", "directPrimaryHits": "2", "primaryHitTick": "105"}
         for phase in ("ready", "seen", "passed"):
             key = "case-46-" + phase

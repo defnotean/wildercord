@@ -119,3 +119,13 @@ bow_draw.rectangle((7, 6, 8, 9), fill=deep, outline=edge)
 bow_draw.point((7, 6), fill=pink)
 bow.save(OUT.parents[1]/"item/cinnamon_bow.png")
 print(OUT)
+
+# A little warm copper whistle with the familiar red cord, made by the same pixel-art generator.
+whistle = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+w = ImageDraw.Draw(whistle)
+w.line((3, 4, 5, 2, 8, 2, 10, 4), fill=(155, 48, 43, 255), width=2)
+w.polygon([(3, 7), (7, 4), (11, 6), (11, 10), (7, 13), (3, 10)], fill=(185, 94, 57, 255), outline=(83, 48, 39, 255))
+w.line((4, 7, 7, 5, 10, 6), fill=(255, 186, 119, 255))
+w.rectangle((9, 7, 14, 9), fill=(198, 112, 66, 255), outline=(83, 48, 39, 255))
+w.rectangle((7, 7, 8, 8), fill=(55, 40, 36, 255))
+whistle.save(OUT.parents[1]/"item/cinnamon_whistle.png")

@@ -311,6 +311,11 @@ def main():
     write_json(DATA / "recipe/cinnamon_bow.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
         "ingredients": ["minecraft:string", "minecraft:string", "minecraft:pink_dye"], "result": {"id": "wildercord:cinnamon_bow"}})
     unlock_advancement("wildercord:cinnamon_bow", "minecraft:pink_dye")
+    item_model("cinnamon_whistle", "cinnamon_whistle")
+    write_json(ASSETS / "items/cinnamon_whistle.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/cinnamon_whistle"}})
+    write_json(DATA / "recipe/cinnamon_whistle.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+        "ingredients": ["minecraft:copper_ingot", "minecraft:bone", "minecraft:string"], "result": {"id": "wildercord:cinnamon_whistle"}})
+    unlock_advancement("wildercord:cinnamon_whistle", "minecraft:copper_ingot")
     runes = read_runes()
     tex = ASSETS / "textures/item"
 
@@ -479,6 +484,21 @@ def write_lang(runes):
         "entity.wildercord.cinnamon": "Cinnamon",
         "item.wildercord.cinnamon_toy": "Cinnamon's Red Bone",
         "item.wildercord.cinnamon_bow": "Cinnamon's Bow",
+        "item.wildercord.cinnamon_whistle": "Cinnamon's Summoning Whistle",
+        "message.wildercord.cinnamon.grow": "Cinnamon grows! Her first treat starts one 60-second growth window.",
+        "message.wildercord.cinnamon.growth_full": "Cinnamon is at her safe size limit. No treat was used.",
+        "message.wildercord.cinnamon.growth_blocked": "Cinnamon needs clear space and solid ground to grow. No treat was used.",
+        "message.wildercord.cinnamon.exhausted": "Cinnamon needs 30 seconds to recover. She'll follow you without attacking.",
+        "message.wildercord.cinnamon.recovered": "Cinnamon has recovered and can defend you again.",
+        "message.wildercord.cinnamon.rest_follow": "Cinnamon is recovering. She'll keep following until she feels better.",
+        "message.wildercord.cinnamon.recall_owner": "This whistle answers only to Cinnamon's configured owner.",
+        "message.wildercord.cinnamon.recall_wait": "Calling Cinnamon. If her saved chunk is unloaded, recovery can take up to 10 seconds.",
+        "message.wildercord.cinnamon.recall_ok": "Cinnamon is here and following you.",
+        "message.wildercord.cinnamon.recall_blocked": "Cinnamon needs a clear, permitted landing near you. Leave combat, wards or cramped spaces and try again.",
+        "message.wildercord.cinnamon.recall_missing": "Cinnamon's saved body wasn't recovered. No copy was created. Try again near her last location or ask your server admin.",
+        "message.wildercord.cinnamon.recall_retired": "Cinnamon was removed by an administrator. The whistle won't recreate her.",
+        "message.wildercord.cinnamon.recall_cooldown": "The whistle is resting. Wait up to 10 seconds before calling again.",
+        "message.wildercord.cinnamon.recall_identity": "Cinnamon's saved identity needs repair. Recovery is paused without replacing her. Ask an admin to restore the matching companion records from backup.",
         "message.wildercord.cinnamon.bow_on": "Cinnamon wears her bow. Shears take it off again.",
         "message.wildercord.cinnamon.bow_off": "You untie Cinnamon's bow.",
         "message.wildercord.cinnamon.toy": "Cinnamon wiggles with her favourite red bone.",

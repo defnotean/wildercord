@@ -46,6 +46,25 @@ attacker retains natural guard knockback and stagger; it is never repositioned
 once gameplay begins. Payment, exact original caught attacker, completion, fixed
 release tick and original rest are checked on the server.
 
+The original client Perform send and the first decoded server request are linked by
+the exact art and payload marks. A passive request observer records the native busy,
+excise, check, performer, refusal and return paths, actual full-price payment, and the
+same private pending-action token at payment, broadcast and return. Performer marks
+come from the server's observed stroke and must carry COUNTER; they are not assumed
+to equal the client's hint marks. Observer failures remain sticky without changing
+the original native invocation or throwable. Admission and first-source waiting
+share the existing twelve native ticks; this does not refresh a case or phase budget.
+
+Post-exit validation requires exactly eight versioned immutable admission witnesses.
+Each accepted record must retain every admission field and its recomputed byte
+digest. Both clients' four phase witnesses and numeric receipts bind that digest,
+the exact nonce/case generation, and all seven fields of the actual received
+Performed object, including yaw and pitch. The owner also retains the original
+client connection identity. Missing, extra, foreign, stale, replayed, linked,
+dangling and contradictory evidence fails even when downstream hashes are updated.
+Native Properties.store escaping is decoded before semantic comparisons. The
+source contract lists the required schema and retains nativeStatus=unverified.
+
 The peer consumes actual END_SERVER_TICK observations to permit ordinary local
 ticks. There is no clock assignment, pause/freeze setting or animation-age rewrite.
 A fixture-only observer at the actual performed-action receiver latches the first
@@ -121,3 +140,21 @@ run for each real width, all 54 outcomes within each 900-second cap, retained Mo
 views, owner/peer pixel review, funded armor/shell coverage, continuous live motion,
 resource-pack/material/lighting behavior, and full Loom/client verification. No
 publication, workflow run/cancellation, or deferred feature enablement is implied.
+
+
+### Exact primary native Submit provenance
+
+The body observer now binds the actual ModelFeatureRenderer.Submit object created
+inside the primary LivingEntityRenderer submission, then requires that exact
+object, model, state, original classic/articulated frames, material and outer root
+through the deferred preparation and completed renderToBuffer call. Shell,
+outline and same-model auxiliary submissions retain distinct native identities;
+they cannot supply or overwrite the primary baseline/palette/draw receipt.
+Missing, duplicated, substituted or cross-capture primary submissions fail closed.
+
+The observed native regression was in the separate Brace/Null Masters capture:
+its authentic Form aura shell reached inherited PlayerModel observers and was
+mistaken for the primary body. The corresponding CounterPeer change is a latent
+observer correction. Its existing no-armor/no-shell request scope and appearance
+rejections remain unchanged. CPU checks are not native acceptance, and the new
+mixin application and rendered evidence still require an authorized native run.

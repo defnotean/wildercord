@@ -12,6 +12,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 
 import java.nio.charset.StandardCharsets;
@@ -58,7 +60,6 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 				CinnamonDog dog = dogs.getFirst();
 				check(dog.isTame() && dog.isOwnedBy(player), "Cinnamon must arrive pre-tamed to the configured player");
 				check("Cinnamon".equals(dog.getCustomName().getString()), "Cinnamon must show her name");
-				check(!dog.hurtServer(player.level(), player.damageSources().generic(), 1000) && dog.isAlive(), "damage must not kill Cinnamon");
 				check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS && dog.isOrderedToSit(), "owner click should make her sit");
 				check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS && !dog.isOrderedToSit(), "second click should make her follow");
 				dog.setNoAi(true);
@@ -67,6 +68,8 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 				dog.setCustomNameVisible(false);
 				return dog.getId();
 			});
+			java.util.UUID initialUuid = world.getServer().computeOnServer(server ->
+				server.overworld().getEntity(initial).getUUID());
 			context.waitTicks(10);
 			context.takeScreenshot(TestScreenshotOptions.of("cinnamon_front").disableCounterPrefix());
 			world.getServer().runOnServer(server -> {
@@ -88,12 +91,12 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				var dogs = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48));
-				check(dogs.size() == 1, "direct summon should replace the old body, found " + dogs.size());
+				check(dogs.size() == 1, "unregistered duplicate summon must be rejected, found " + dogs.size());
 				CinnamonDog dog = dogs.getFirst();
-				check(dog.getId() != initial && dog.isTame() && dog.isOwnedBy(player), "/summon must produce an owned, tame Cinnamon");
-				check(dog.isOrderedToSit(), "direct summon must restore the owner's sitting choice");
-				check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS && !dog.isOrderedToSit(), "directly summoned Cinnamon must follow");
-				check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS && dog.isOrderedToSit(), "directly summoned Cinnamon must sit");
+				check(dog.getId() == initial && dog.getUUID().equals(initialUuid) && dog.isTame() && dog.isOwnedBy(player), "duplicate summon must preserve the exact canonical Cinnamon");
+				check(dog.isOrderedToSit(), "duplicate summon must preserve the owner's sitting choice");
+				check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS && !dog.isOrderedToSit(), "canonical Cinnamon must still follow");
+				check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS && dog.isOrderedToSit(), "canonical Cinnamon must still sit");
 				dog.setNoAi(true);
 				dog.teleportTo(0.5, 99, 3.5);
 				dog.setYRot(180); dog.setYBodyRot(180); dog.setYHeadRot(180);
@@ -123,7 +126,7 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 			});
 			context.takeScreenshot(TestScreenshotOptions.of("cinnamon_toy_play").disableCounterPrefix());
 
-			// Her bow: put on with the item, kept when her body is replaced, and untied with shears.
+			// Her bow survives rejected duplicate summons and can be untied with shears.
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				CinnamonDog dog = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48)).getFirst();
@@ -149,7 +152,9 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				var dogs = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48));
-				check(dogs.size() == 1 && (dogs.getFirst().mood() & CinnamonDog.BOW) != 0, "a new body should still wear her bow");
+				check(dogs.size() == 1 && dogs.getFirst().getUUID().equals(initialUuid)
+					&& dogs.getFirst().getId() == initial && (dogs.getFirst().mood() & CinnamonDog.BOW) != 0,
+					"rejected duplicate must preserve the original body and bow");
 				CinnamonDog dog = dogs.getFirst();
 				player.getInventory().clearContent();
 				player.setItemInHand(InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SHEARS));
@@ -207,12 +212,150 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 				if (attacker != null) attacker.discard();
 				player.setGameMode(GameType.CREATIVE);
 			});
+			growthAndRecovery(context, world, initialUuid);
 		} finally {
 			try {
 				if (previous == null) Files.deleteIfExists(config);
 				else Files.writeString(config, previous, StandardCharsets.UTF_8);
 			} catch (Exception e) { throw new AssertionError("Cannot restore Cinnamon config", e); }
 		}
+		dev.wildercord.pet.CinnamonLifecycleChecks.run(context);
+		dev.wildercord.pet.CinnamonIdentityChecks.run(context);
+	}
+
+	private static CinnamonDog cinnamon(net.minecraft.server.MinecraftServer server, java.util.UUID uuid) {
+		var entity = server.overworld().getEntity(uuid);
+		check(entity instanceof CinnamonDog && entity.isAlive(), "the exact canonical Cinnamon must remain alive");
+		return (CinnamonDog) entity;
+	}
+
+	/** Bounded native assertions use the real item interaction, dimensions, damage hook, goals, and game clock. */
+	private static void growthAndRecovery(ClientGameTestContext context, TestSingleplayerContext world, java.util.UUID uuid) {
+		world.getServer().runCommand("fill -24 98 -24 24 98 24 minecraft:stone");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			player.setGameMode(GameType.SURVIVAL);
+			player.teleportTo(player.level(), 0.5, 99, 0.5, Set.<Relative>of(), 0, 18, false);
+			CinnamonDog dog = cinnamon(server, uuid);
+			dog.setNoAi(true);
+			dog.setOrderedToSit(false);
+			dog.teleportTo(0.5, 99, 3.5);
+			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.BEEF, 10));
+			double width = dog.getBoundingBox().getXsize();
+			check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS, "owner feeding must succeed");
+			check(Math.abs(dog.getScale() - 1.5) < 1e-5 && Math.abs(dog.getBoundingBox().getXsize() - width * 1.5) < 1e-5,
+				"feeding must grow the actual attribute and collision footprint together");
+			check(player.getMainHandItem().getCount() == 9, "survival feeding must consume exactly one food");
+		});
+		long growthDeadline = world.getServer().computeOnServer(server -> cinnamon(server, uuid).growthExpiresAt());
+		context.waitTicks(25);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			CinnamonDog dog = cinnamon(server, uuid);
+			for (int i = 0; i < 3; i++) dog.mobInteract(player, InteractionHand.MAIN_HAND);
+			check(dog.growthScale() == 3 && Math.abs(dog.getScale() - 3) < 1e-5, "four feedings must reach the 3x cap");
+			check(dog.growthExpiresAt() == growthDeadline, "extra feeding must not extend the original sixty-second window");
+			check(player.getMainHandItem().getCount() == 6, "four feedings must consume four food");
+			dog.mobInteract(player, InteractionHand.MAIN_HAND);
+			check(player.getMainHandItem().getCount() == 6 && dog.growthExpiresAt() == growthDeadline, "feeding at the cap must consume nothing and preserve the deadline");
+		});
+		context.waitTicks(3);
+		context.takeScreenshot(TestScreenshotOptions.of("cinnamon_temporary_giant").disableCounterPrefix());
+		world.getServer().runCommand("setblock 0 100 3 minecraft:stone");
+		context.waitTicks(2);
+		world.getServer().runOnServer(server -> {
+			CinnamonDog dog = cinnamon(server, uuid);
+			check(dog.growthScale() == 1 && dog.growthExpiresAt() == growthDeadline,
+				"new obstruction must safely shrink her without restarting or deleting the growth window");
+		});
+		world.getServer().runCommand("setblock 0 100 3 minecraft:air");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			CinnamonDog dog = cinnamon(server, uuid);
+			dog.mobInteract(player, InteractionHand.MAIN_HAND);
+			check(dog.growthScale() == 1.5 && dog.growthExpiresAt() == growthDeadline,
+				"feeding after safety shrink must retain the original deadline");
+		});
+		int growthRemaining = world.getServer().computeOnServer(server ->
+			(int) Math.max(1, growthDeadline - server.overworld().getGameTime() + 2));
+		context.waitTicks(growthRemaining);
+		world.getServer().runOnServer(server -> {
+			CinnamonDog dog = cinnamon(server, uuid);
+			check(dog.growthScale() == 1 && dog.getScale() == 1 && dog.growthExpiresAt() == 0,
+				"the fixed growth window must expire back to the original size");
+		});
+		world.getServer().runCommand("setblock 0 100 3 minecraft:stone");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			CinnamonDog dog = cinnamon(server, uuid);
+			int food = player.getMainHandItem().getCount();
+			dog.mobInteract(player, InteractionHand.MAIN_HAND);
+			check(dog.growthScale() == 1 && dog.growthExpiresAt() == 0 && player.getMainHandItem().getCount() == food,
+				"a low ceiling must reject physical growth without consuming food");
+		});
+		world.getServer().runCommand("setblock 0 100 3 minecraft:air");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			CinnamonDog dog = cinnamon(server, uuid);
+			check(dog.hurtServer(player.level(), player.damageSources().generic(), 1), "an eligible hit must count toward fatigue");
+			check(!dog.hurtServer(player.level(), player.damageSources().generic(), 1000), "same-tick hazards must respect the damage immunity window");
+			check(dog.accumulatedDamage() == 1 && !dog.isExhausted(), "the immunity interval must prevent instant budget drain");
+		});
+		context.waitTicks(CinnamonDog.DAMAGE_QUIET_TICKS + 2);
+		world.getServer().runOnServer(server -> {
+			CinnamonDog dog = cinnamon(server, uuid);
+			check(dog.accumulatedDamage() == 0, "isolated chip damage must reset after ten quiet seconds");
+		});
+		long recoveryDeadline = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			CinnamonDog dog = cinnamon(server, uuid);
+			dog.setOrderedToSit(true);
+			dog.setInSittingPose(true);
+			dog.setNoAi(false);
+			float health = dog.getHealth();
+			check(dog.hurtServer(player.level(), player.damageSources().generic(), 1000) && dog.isAlive() && dog.getHealth() == health,
+				"even lethal ordinary damage must leave Cinnamon alive with unchanged health");
+			check(dog.isExhausted() && dog.savedSitting() && !dog.isOrderedToSit() && !dog.isInSittingPose(),
+				"exhaustion must temporarily override both sitting flags without losing the owner's preference");
+			var target = net.minecraft.world.entity.EntityTypes.HUSK.create(player.level(), net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+			check(target != null, "create a real bite target");
+			target.snapTo(dog.getX() + 1, dog.getY(), dog.getZ(), 0, 0);
+			target.setNoAi(true);
+			player.level().addFreshEntity(target);
+			float targetHealth = target.getHealth();
+			dog.setTarget(target);
+			check(dog.getTarget() == null && !dog.canAttack(target) && !dog.doHurtTarget(player.level(), target)
+				&& target.getHealth() == targetHealth, "exhaustion must guard target selection and the final bite sink");
+			target.discard();
+			player.teleportTo(player.level(), -9.5, 99, 0.5, Set.<Relative>of(), 0, 18, false);
+			return dog.recoveryExpiresAt();
+		});
+		context.waitTicks(85);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			CinnamonDog dog = cinnamon(server, uuid);
+			check(dog.isExhausted() && !dog.isOrderedToSit() && dog.distanceToSqr(player) < 8 * 8,
+				"recovering Cinnamon must actually follow her owner despite the saved sit preference");
+			dog.setNoAi(true);
+			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.BEEF, 2));
+			dog.mobInteract(player, InteractionHand.MAIN_HAND);
+			check(dog.growthScale() == 1.5 && dog.recoveryExpiresAt() == recoveryDeadline, "feeding may grow her but must never shorten or restart recovery");
+			check(!dog.hurtServer(player.level(), player.damageSources().generic(), 1000)
+				&& dog.recoveryExpiresAt() == recoveryDeadline, "damage during recovery must not extend it");
+		});
+		context.waitTicks(2);
+		context.takeScreenshot(TestScreenshotOptions.of("cinnamon_recovery_following").disableCounterPrefix());
+		int recoveryRemaining = world.getServer().computeOnServer(server ->
+			(int) Math.max(1, recoveryDeadline - server.overworld().getGameTime() + 2));
+		context.waitTicks(recoveryRemaining);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			CinnamonDog dog = cinnamon(server, uuid);
+			check(!dog.isExhausted() && dog.accumulatedDamage() == 0 && dog.isOrderedToSit() && dog.savedSitting(),
+				"recovery must end on time, clear fatigue, and restore the saved sitting preference");
+			player.getInventory().clearContent();
+			player.setGameMode(GameType.CREATIVE);
+		});
 	}
 
 	private static void check(boolean condition, String message) {

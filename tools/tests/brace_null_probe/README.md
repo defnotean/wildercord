@@ -26,3 +26,12 @@ separate. No signed dependency JAR is patched or rewritten.
 
 The separate original-runtime world-item oracle harness uses the actual vanilla
 PlayerModel and ItemTransform implementations without these caller stubs.
+
+The exact-native-Submit extension keeps a primary submission separate from shell,
+outline and same-model auxiliary draws. Caller controls place an auxiliary shell
+before and after the primary. Negatives reject a replaced or duplicated native
+Submit, an auxiliary-only draw and a missing primary draw. The shared
+NativeBodySubmissionChecks additionally checks reference identity rather than
+record equality, unchanged state/frame/material/root, cross-capture reuse,
+swallowed failures, nested auxiliary callbacks and complete scope cleanup.
+These remain CPU caller-shape checks; they do not apply mixins or render pixels.

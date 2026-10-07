@@ -19,8 +19,10 @@ public abstract class CounterPeerWorldBodyMixin {
         at=@At(value="INVOKE",target="Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/UvMapping;I)V"),require=1,expect=1,allow=1)
     private void counter$body(SubmitNodeCollector collector,Model<?> model,Object state,PoseStack pose,RenderType material,
         int light,int overlay,int color,UvMapping uv,int outline,Operation<Void> original){
-        var root=new org.joml.Matrix4f(pose.last().pose());
-        original.call(collector,model,state,pose,material,light,overlay,color,uv,outline);
-        CounterPeerRenderProbe.worldSubmitted(model,state,root,material);
+        var root=CounterPeerRenderProbe.passive(()->new org.joml.Matrix4f(pose.last().pose()),null);
+        var call=CounterPeerRenderProbe.passive(()->CounterPeerRenderProbe.worldSubmissionBegin(model,state,root,material),null);boolean completed=false;
+        try{original.call(collector,model,state,pose,material,light,overlay,color,uv,outline);
+            CounterPeerRenderProbe.passive(()->CounterPeerRenderProbe.worldSubmitted(model,state,root,material));completed=true;
+        }finally{boolean done=completed;CounterPeerRenderProbe.passive(()->CounterPeerRenderProbe.worldSubmissionEnd(call,done));}
     }
 }

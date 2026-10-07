@@ -370,7 +370,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 				if (!counterProof.isEmpty()) {
 					for (var field : counterProof.entrySet()) check(field.getValue().equals(sample.getProperty(field.getKey())), "Counter outcome retains the exact independently captured action");
 					seen.putAll(counterProof);
-					for (String field : List.of("directPrimaryHits", "primaryHitTick", "releaseTick", "payments", "completions", "counterTargetUuid", "counterTargetEntity", "counterTargetHealthBefore", "counterTargetHealth")) seen.put(field, sample.getProperty(field));
+					for (String field : List.of("directPrimaryHits", "primaryHitTick", "releaseTick", "payments", "completions", "restUntil", "counterTargetUuid", "counterTargetEntity", "counterTargetHealthBefore", "counterTargetHealth")) seen.put(field, sample.getProperty(field));
 				}
 				write(stem + "-seen", seen);
 				await(context, () -> exists(stem + "-passed"), "Remaining server assertions pass for " + id, false);

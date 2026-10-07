@@ -97,6 +97,21 @@ COUNTER_CASES = CASES[46:]
 COUNTER_PHASES = ("WINDUP", "ACTIVE", "FOLLOW", "RECOVERY")
 COUNTER_MIXINS = ("counter-peer-gametest.mixins.json",)
 COUNTER_PHASE_BASIS = "actual_post_hitstop_source_palette"
+COUNTER_SOURCE_FIELDS = ("Entity", "Move", "StartTick", "Windup", "Recovery", "Yaw", "Pitch")
+COUNTER_ADMISSION_FIELDS = tuple("admission" + key for key in (
+    "SchemaVersion", "Generation", "PeerArmedSha256", "Art", "SentMarks", "RequestMarks", "PerformMarks",
+    "ServerBodyUuid", "ServerBodyEntity", "ServerLevel", "ServerConnectionIdentity",
+    "ClientBodyUuid", "ClientBodyEntity", "ClientLevel", "ClientConnectionIdentity",
+    "Busy", "ExciseBlocking", "Performed", "Trace", "Check", "Refusal", "ObserverFailure", "NativeFailure",
+    "ArmedTick", "SentTick", "RequestTick", "ReturnTick", "PaidTick", "Paid", "AuraBefore", "AuraAfter", "Rest",
+    "Cost", "SpendLeft", "Backlash", "OriginalBody", "PendingAtEntry", "ActionIdentity",
+    "SourceActionIdentity", "ReturnActionIdentity", "ReturnCommitted", *("Source" + key for key in COUNTER_SOURCE_FIELDS)))
+COUNTER_ADMISSION_CONTRACT = {
+    "schemaVersion": 1, "witnessPattern": "case-{46..53}-admission.properties", "exactWitnessCount": 8,
+    "requiredProperties": list(COUNTER_ADMISSION_FIELDS), "acceptedDigestProperty": "admissionReceiptSha256",
+    "receivedSourceProperties": ["receivedSource" + key for key in COUNTER_SOURCE_FIELDS],
+    "sharedInitialNativeTickBudget": 12, "nativeStatus": "unverified",
+}
 COUNTER_PROFILES = {
     "aura-wide": ("WCMoonWide2", "efc39378-3f97-37a3-bf28-b62b82f0bafa", "wide"),
     "aura-slim": ("WCMoonSlim", "0167ff94-ec08-3235-8727-7c1376ad1e7b", "slim"),
@@ -317,6 +332,7 @@ def load_contract(root, selected=None):
         visuals = contract.get("counterVisuals", {})
         require(visuals.get("casePrefixCount") == 46 and visuals.get("phases") == list(COUNTER_PHASES)
                 and visuals.get("requiredProfiles") == list(COUNTER_PROFILES), "Counter contract must bind the complete additive phase/profile union")
+        require(visuals.get("admission") == COUNTER_ADMISSION_CONTRACT, "Counter contract requires the exact native admission proof closure")
     if selected["suite"] == MOON_SUITE:
         require(contract.get("observerAngles") == list(MOON_ANGLES) and contract.get("requiredMixins") == list(MOON_MIXINS),
                 "Unexpected Moon angle or passive-hook contract")
@@ -415,12 +431,21 @@ def command(launch, role, game, ipc, identity, timeout, selected=None):
 def read_properties(path):
     require(path.is_file() and not path.is_symlink(), "Missing or symlink terminal witness: " + str(path))
     require(path.stat().st_size <= 65536, "Oversized terminal witness")
+    raw = path.read_bytes().decode("iso-8859-1")
+    # Properties.load recognizes only CR/LF physical boundaries. Python splitlines()
+    # also splits NEL, VT, FF and information separators, which can hide a Java value.
+    # Native Properties.store escapes controls and never emits continued physical lines.
+    require(not any((ord(char) < 32 and char not in "\r\n") or 127 <= ord(char) <= 159 for char in raw),
+            "Unsupported raw control in native witness")
     result = {}
-    for line in path.read_text(encoding="iso-8859-1").splitlines():
-        if not line.strip() or line.lstrip().startswith(("#", "!")):
+    for line in re.split(r"\r\n|\r|\n", raw):
+        if not line.strip(" ") or line.lstrip(" ").startswith(("#", "!")):
             continue
         key, separator, value = line.partition("=")
-        require(separator and key not in result, "Malformed or duplicate witness property")
+        require(separator and re.fullmatch(r"[A-Za-z][A-Za-z0-9_.-]*", key) and key not in result,
+                "Malformed, noncanonical or duplicate witness property")
+        require(not value.startswith(" ") and re.fullmatch(r"(?:[^\\]|\\(?:[tnrf\\:= #!]|u[0-9a-fA-F]{4}))*", value),
+                "Noncanonical or continued native witness value")
         result[key] = value
     return result
 
@@ -926,28 +951,101 @@ def counter_image(game, role, values, identity, action, accepted_sha):
     return record
 
 
+def counter_property(value):
+    """Decode the escapes emitted by Java Properties.store, never accept dangling escapes."""
+    result, index = [], 0
+    escapes = {"t": "\t", "n": "\n", "r": "\r", "f": "\f", "\\": "\\", ":": ":", "=": "=", " ": " ", "#": "#", "!": "!"}
+    while index < len(value):
+        char = value[index]; index += 1
+        if char == "\\":
+            require(index < len(value), "Dangling counter property escape")
+            char = value[index]; index += 1
+            if char == "u":
+                code = value[index:index + 4]
+                require(re.fullmatch(r"[0-9a-fA-F]{4}", code), "Malformed counter Unicode escape")
+                char = chr(int(code, 16)); index += 4
+            else:
+                require(char in escapes, "Unknown counter property escape")
+                char = escapes[char]
+        result.append(char)
+    return "".join(result)
+
+
+def counter_admission(admission, accepted, action, identity, index, armed_sha, ready_tick, admission_sha):
+    common_fields = set(IDENTITY) | {"role", "pid", "case", "actorEntity", "observerEntity", "actorUuid", "observerUuid",
+                                     "move", "windup", "recovery", "mode", "hand", "skin", "cameraNative"}
+    require(set(admission) == common_fields | set(COUNTER_ADMISSION_FIELDS), "Missing or extra counter admission properties")
+    accepted_fields = {"admissionReceiptSha256", "acceptedTick", "caughtTick", "caughtAttackerUuid", "paid", "payments", "restUntil",
+                       "clockReadySha256", "clockRendezvousTick", "armedSha256"}
+    require(set(accepted) == set(admission) | accepted_fields, "Missing or extra accepted admission properties")
+    require(all(accepted.get(key) == value for key, value in admission.items())
+            and accepted.get("admissionReceiptSha256") == admission_sha, "Accepted contradicts immutable counter admission receipt")
+    generation = identity["nonce"] + f":case-{index:02d}"
+    expected = {"SchemaVersion": "1", "Generation": generation, "PeerArmedSha256": armed_sha,
+                "Art": "unmoved" if action["move"] == 24 else "null_parry", "Check": "ACCEPTED", "Refusal": "NONE",
+                "Busy": "false", "ExciseBlocking": "false", "Performed": "true", "OriginalBody": "true",
+                "ObserverFailure": "NONE", "NativeFailure": "NONE", "PendingAtEntry": "NONE", "ReturnCommitted": "true", "Backlash": "false"}
+    expected["Trace"] = f"generation={generation}, sends=1, requests=1, check=ACCEPTED, refusal=NONE, payments=1, sources=1, returns=1, committed=true"
+    for side in ("Server", "Client"):
+        expected.update({side + "BodyUuid": identity["hostUuid"], side + "BodyEntity": str(action["actorEntity"]), side + "Level": "minecraft:overworld"})
+        connection = decimal(admission.get("admission" + side + "ConnectionIdentity"), "counter native connection identity", True)
+        require(connection <= 2**32 - 1, "Invalid counter native connection identity")
+    require(all(admission.get("admission" + key) == value for key, value in expected.items()), "Counter native admission failed or changed original generation/body/session")
+    marks = admission["admissionSentMarks"]
+    match = re.fullmatch(r"\[([1-9][0-9]{0,2})\]", marks)
+    require(match and 0 < int(match[1]) < 128 and int(match[1]) & 32
+            and admission["admissionRequestMarks"] == marks, "Counter admission request differs from original earned-counter send")
+    # Native performer consumes server-observed marks; they need not equal the client hint bit-for-bit.
+    performed = re.fullmatch(r"\[([1-9][0-9]{0,2})\]", admission["admissionPerformMarks"])
+    require(performed and 0 < int(performed[1]) < 128 and int(performed[1]) & 32, "Counter native performer lacks the actual earned-counter mark")
+    paid_tick = action["acceptedTick"]
+    ticks = {key: decimal(admission["admission" + key], "counter admission " + key) for key in ("ArmedTick", "SentTick", "RequestTick", "ReturnTick", "PaidTick", "Rest")}
+    require(ready_tick <= ticks["ArmedTick"] <= ticks["RequestTick"] == ticks["ReturnTick"] == ticks["PaidTick"] == paid_tick
+            and decimal(accepted["caughtTick"], "counter original caught tick") <= ticks["ArmedTick"]
+            and ticks["Rest"] > paid_tick and admission["admissionRest"] == accepted["restUntil"],
+            "Counter admission must retain original pre-input readiness and synchronous native payment/return")
+    paid, cost, before, after, left = (finite(admission["admission" + key], "counter admission " + key) for key in ("Paid", "Cost", "AuraBefore", "AuraAfter", "SpendLeft"))
+    require(paid > 0 and cost > 0 and before >= cost and after >= 0 and abs(cost - paid) < .0001
+            and abs(before - after - cost) < .001 and abs(left - after) < .001
+            and abs(paid - finite(accepted["paid"], "counter actual payment")) < .0001,
+            "Counter admission changed the actual native full-price payment")
+    action_id = decimal(admission["admissionActionIdentity"], "counter pending action identity", True)
+    require(action_id <= 2**32 - 1 and admission["admissionActionIdentity"] == admission["admissionSourceActionIdentity"] == admission["admissionReturnActionIdentity"],
+            "Counter admission lost the original paid pending token at source/return")
+    source = {"Entity": action["actorEntity"], "Move": action["move"], "StartTick": paid_tick, "Windup": action["windup"], "Recovery": action["recovery"]}
+    require(all(admission["admissionSource" + key] == str(value) for key, value in source.items()), "Counter admission broadcast differs from original paid action")
+    for key in ("Yaw", "Pitch"):
+        finite(admission["admissionSource" + key], "counter admission source " + key)
+
+
 def validate_counter_witnesses(ipc, identity, pids, selected=None):
     selected = selected or selection()
     require(identity["hostUuid"] == selected["profiles"]["host"][1] and identity["peerUuid"] == PROFILES["peer"][1],
             "Counter witness roles differ from the fixed selected profiles")
     # Reopen after both owned JVMs exit. Even malformed, linked, foreign or post-terminal rejection artifacts forbid success.
     require(not any(ipc.glob("*counter-render-failure*")), "Sticky counter render rejection artifact is present")
+    admission_files = {f"case-{index:02d}-admission.properties" for index in range(46, 54)}
+    require({path.name for path in ipc.iterdir() if "admission" in path.name.lower()} == admission_files,
+            "Missing or extra counter admission artifacts")
     used = set()
     received_sources = {"host": set(), "peer": set()}
+    previous_end = -1
     for index, case in enumerate(COUNTER_CASES, 46):
         def read(suffix, role):
             filename = f"case-{index:02d}-{suffix}.properties"
             if suffix.endswith(("-observed", "-rendered")):
                 filename = role + "-" + filename
-            values = read_properties(ipc / filename)
+            values = {key: counter_property(value) for key, value in read_properties(ipc / filename).items()}
             require((ipc / filename).stat().st_nlink == 1, "Hard-linked counter witness is forbidden")
             for key, value in {**identity, "role": role, "pid": str(pids[role]), "case": case}.items():
                 require(values.get(key) == value, filename + " has mismatched " + key)
             return values
-        prepare, armed, accepted = read("prepare", "host"), read("armed", "peer"), read("accepted", "host")
+        prepare, armed, admission, accepted = read("prepare", "host"), read("armed", "peer"), read("admission", "host"), read("accepted", "host")
         action = {**counter_case(case), "actorEntity": decimal(prepare.get("actorEntity"), "counter actor entity", True),
                   "observerEntity": decimal(prepare.get("observerEntity"), "counter observer entity", True),
                   "acceptedTick": decimal(accepted.get("acceptedTick"), "counter accepted tick")}
+        require(action["acceptedTick"] > previous_end, "Counter admission replays or overlaps a previous case action")
+        previous_end = action["acceptedTick"] + action["windup"] + action["recovery"]
         require(action["actorEntity"] != action["observerEntity"], "Counter source and observer must be distinct connected bodies")
         common = {key: str(value) for key, value in action.items() if key != "acceptedTick"}
         common.update(actorUuid=identity["hostUuid"], observerUuid=identity["peerUuid"])
@@ -987,9 +1085,12 @@ def validate_counter_witnesses(ipc, identity, pids, selected=None):
                 and accepted.get("clockRendezvousTick") == str(target),
                 "Counter pre-input clocks or immutable clock receipt chain changed")
         accepted_sha = digest(ipc / f"case-{index:02d}-accepted.properties")
+        admission_sha = digest(ipc / f"case-{index:02d}-admission.properties")
+        counter_admission(admission, accepted, action, identity, index, digest(ipc / f"case-{index:02d}-armed.properties"), target, admission_sha)
+        require(admission["skin"].lower() == skin and admission["cameraNative"] == "true", "Counter admission changed native appearance/camera")
         outcomes = [read("ready", "host"), read("seen", "peer"), read("passed", "host")]
         outcome = outcomes[0]
-        outcome_fields = ("releaseTick", "payments", "completions", "counterTargetUuid", "counterTargetEntity",
+        outcome_fields = ("releaseTick", "payments", "completions", "restUntil", "counterTargetUuid", "counterTargetEntity",
                           "counterTargetHealthBefore", "counterTargetHealth", "directPrimaryHits", "primaryHitTick")
         require(all(all(value.get(key) == outcome.get(key) for key in outcome_fields) for value in outcomes[1:]),
                 "Counter owner, actual peer and final outcome disagree")
@@ -998,12 +1099,13 @@ def validate_counter_witnesses(ipc, identity, pids, selected=None):
                 and outcome.get("counterTargetUuid") == attacker
                 and decimal(outcome.get("releaseTick"), "counter release tick") == action["acceptedTick"] + action["windup"]
                 and outcome.get("payments") == outcome.get("completions") == outcome.get("directPrimaryHits") == "1"
+                and outcome.get("restUntil") == admission["admissionRest"]
                 and outcome.get("primaryHitTick") == outcome.get("releaseTick")
                 and finite(outcome.get("counterTargetHealthBefore"), "counter target original health") == 200
                 and 0 < finite(outcome.get("counterTargetHealth"), "counter target actual health") < 200,
                 "Counter outcome must preserve one original paid release and actual surviving damaged target")
-        all_values = [prepare, armed, accepted, initial, rendezvous, ack, clock_ready, *outcomes]
-        source_identities = {}
+        all_values = [prepare, armed, admission, accepted, initial, rendezvous, ack, clock_ready, *outcomes]
+        source_identities, source_connections = {}, {}
         for role in ("host", "peer"):
             for phase in COUNTER_PHASES:
                 rendered = read(phase + "-rendered", role)
@@ -1021,6 +1123,25 @@ def validate_counter_witnesses(ipc, identity, pids, selected=None):
                     require(key not in used, "Counter phases cannot reuse the same evidence file")
                     used.add(key)
                 record = counter_image(ipc.parent / role, role, values, identity, action, accepted_sha)
+                observation = record["copy"]["observations"]
+                admission_binding = {"admissionReceiptSha256": admission_sha, "admissionGeneration": admission["admissionGeneration"]}
+                require(all(values.get(key) == value and observation.get(key) == value for key, value in admission_binding.items()),
+                        "Counter owner/peer phase lost the immutable native admission binding")
+                require(all(observation.get("receivedSource" + key) == admission["admissionSource" + key] for key in COUNTER_SOURCE_FIELDS)
+                        and observation.get("receivedOwnerUuid") == identity["hostUuid"]
+                        and observation.get("receivedOwnerEntity") == str(action["actorEntity"])
+                        and observation.get("receivedLevel") == admission["admissionServerLevel"],
+                        "Counter owner/peer actual received full source differs from native admission")
+                connection = decimal(observation.get("receivedConnectionIdentity"), "counter actual receiving connection identity", True)
+                require(connection <= 2**32 - 1 and (role != "host" or str(connection) == admission["admissionClientConnectionIdentity"]),
+                        "Counter owner received source on a different original connection")
+                if role == "host":
+                    # These are the original owner's clock readings; never compare the client's send clock to the server clock.
+                    require(decimal(observation.get("tick"), "counter owner capture tick") >= decimal(admission["admissionSentTick"], "counter owner send tick"),
+                            "Counter owner capture predates its original client send")
+                require(role not in source_connections or source_connections[role] == connection,
+                        "Counter receiving connection changed between phases")
+                source_connections[role] = connection
                 source_id = decimal(record["copy"]["observations"].get("acceptedSourceIdentity"), "first native received source identity", True)
                 require(source_id < decimal(record["copy"]["observations"].get("acceptedReadSequence"), "source acceptance read", True),
                         "First native source must precede capture admission")

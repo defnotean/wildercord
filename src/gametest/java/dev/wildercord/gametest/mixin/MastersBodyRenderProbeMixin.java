@@ -24,9 +24,14 @@ public abstract class MastersBodyRenderProbeMixin {
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/UvMapping;I)V"), require = 1, expect = 1, allow = 1)
 	private void wildercord$sharedBody(SubmitNodeCollector collector, Model<?> model, Object state, PoseStack pose,
 			RenderType type, int light, int overlay, int color, UvMapping uv, int outline, Operation<Void> original) {
-		original.call(collector, model, state, pose, type, light, overlay, color, uv, outline);
-		ArticulatedSharedRenderProbe.bodySubmitted(model, state);
-		dev.wildercord.gametest.BraceNullCaptureProbe.submitted(model, state, pose);
+		var call = dev.wildercord.gametest.BraceNullCaptureProbe.passive(() -> dev.wildercord.gametest.BraceNullCaptureProbe.submissionBegin(model, state, pose, type), null);
+		boolean completed = false;
+		try {
+			original.call(collector, model, state, pose, type, light, overlay, color, uv, outline);
+			ArticulatedSharedRenderProbe.bodySubmitted(model, state);
+			dev.wildercord.gametest.BraceNullCaptureProbe.passive(() -> dev.wildercord.gametest.BraceNullCaptureProbe.submitted(model, state, pose));
+			completed = true;
+		} finally { boolean done = completed; dev.wildercord.gametest.BraceNullCaptureProbe.passive(() -> dev.wildercord.gametest.BraceNullCaptureProbe.submissionEnd(call, done)); }
 	}
 
 	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/UvMapping;I)V"))
