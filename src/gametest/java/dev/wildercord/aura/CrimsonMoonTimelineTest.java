@@ -38,8 +38,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Native server-observed full/full/full/low requests of the actual registered Final. Peak momentum is
- * explicit scenario setup; observations, charge intervals, payment, release, targets and wounds are real.
+ * Native server-observed full/full/full/low requests of the actual registered Final. Momentum is
+ * explicit scenario setup, including a cold request and a peak that naturally ebbs during a real clash;
+ * observations, charge intervals, payment, release, targets and wounds are real.
  * No direct performer, synthetic ledger stroke, cooldown reset or physical-lock clearing is used.
  * Original body/world/callback/party retirement is separately exercised by CrimsonMoonReleasedOwnerTest.
  */
@@ -49,7 +50,7 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
     private static final List<Integer> MARKS = List.of(SwordString.Token.marks(SwordString.Token.FULL),
         SwordString.Token.marks(SwordString.Token.FULL), SwordString.Token.marks(SwordString.Token.FULL),
         SwordString.Token.marks(SwordString.Token.LOW));
-    private enum Case { EMPTY_GATE_CLOSED, CANCELLED, FIVE_BANDS, MOVING_WOUNDS, MOVED_FEET_STALE_STRUCK,
+    private enum Case { COLD_REQUEST, CLASH_GATE_DECAY, EMPTY_GATE_CLOSED, CANCELLED, FIVE_BANDS, MOVING_WOUNDS, MOVED_FEET_STALE_STRUCK,
         VISIBLE_BEFORE_CAP, RELEASE_SNAPSHOT, LETHAL_DIRECT, LETHAL_WOUND, SHARED_MENDING, PVP_DAMAGE_AND_SINGLE_HIT_STANCE }
     private record Hit(LivingEntity target, long tick, float amount, float loss) {}
     private static final class Probe {
@@ -60,9 +61,10 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
         final List<LivingEntity> selected = new ArrayList<>(), excluded = new ArrayList<>();
         final List<Hit> hits = new ArrayList<>();
         Foe input;
-        long accepted = -1, released = -1, cooldown, bucketAt, clientTurnReceived = -1;
+        Momentum.State heldMomentum;
+        long accepted = -1, released = -1, held = -1, cooldown, bucketAt, clientTurnReceived = -1;
         int spends, releases, processed;
-        double cost, paid, bucket, drunk, releaseMomentum, peakStance;
+        double cost, paid, bucket, drunk, releaseMomentum, peakStance, admittedCost, winningMomentum;
         float beforeHealth, releaseHealth;
         Throwable failure;
         boolean beforeObserved, recoveryObserved, ended, measuring;
@@ -97,6 +99,27 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
             Probe p = current;
             if (p != null && owner == p.owner && reason.equals("art:" + ID)) checked(p, () -> {
                 check(!backlash, "The Final is fully funded"); p.spends++; p.paid += amount;
+                if (p.scenario == Case.CLASH_GATE_DECAY) {
+                    var art = AuraApi.artOf(owner, ID).orElseThrow();
+                    p.accepted = p.level.getGameTime(); p.cost = SwordStrings.price(owner, art);
+                    p.cooldown = p.accepted + SwordStrings.rest(owner, art);
+                    check(p.accepted == p.held + ClashRules.serverLength() && !Clashes.holding(owner),
+                        "The winning native clash begins its paid windup at its actual resolution tick");
+                    check(!art.condition().met(owner) && Momentum.value(owner) < MomentumRules.PEAK,
+                        "Natural ebb closes the Final gate before payment and before the clash winner's Momentum award");
+                    check(p.cost > p.admittedCost, "Resolution uses the existing current-tier price after peak decays");
+                    near(amount, p.cost, "The held Final pays exactly the existing resolution price once");
+                    observePaidWindup(p);
+                    Scheduler.later(1, () -> checked(p, () -> {
+                        p.winningMomentum = Momentum.value(owner);
+                        check(p.spends == 1 && MastersArts.committed(owner) && SwordStrings.readyAt(owner, ID) == p.cooldown,
+                            "Clash resolution commits full individual rest and the ordinary physical timeline");
+                        float aura = Aura.aura(owner);
+                        SwordStrings.request(owner, new SwordStrings.Perform(ID, MARKS));
+                        check(p.spends == 1 && Aura.aura(owner) == aura && SwordStrings.readyAt(owner, ID) == p.cooldown,
+                            "The consumed held suffix cannot pay or schedule again after resolution");
+                    }));
+                }
             });
         };
         ServerTickEvents.END_SERVER_TICK.register(server -> {
@@ -130,7 +153,7 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
                         holder[0] = current = p; prepare(p); beginInput(p);
                     });
                     if (scenario == Case.MOVED_FEET_STALE_STRUCK) turnConnectedClient(context, world, holder[0]);
-                    context.waitTicks(125);
+                    context.waitTicks(125 + (scenario == Case.CLASH_GATE_DECAY ? ClashRules.serverLength() : 0));
                     world.getServer().runOnServer(server -> {
                         Probe p = holder[0]; rethrow(p); verify(p); cleanup(p); current = null;
                     });
@@ -191,8 +214,14 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
         for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.OFFHAND}) owner.setItemSlot(slot, ItemStack.EMPTY);
         owner.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
         owner.setAttached(AuraAttachments.AURA, new AuraAttachments.Data("crimson", AuraRules.SOVEREIGN, 4500, 160, 0));
-        // Approved peak-momentum fixture setup, not a fabricated input or Final-condition bypass.
-        owner.setAttached(Momentum.MOMENTUM, new Momentum.State(100, p.level.getGameTime() + 200, 0, 0, 0));
+        // Keep the cold request cold; the clash uses production grace/ebb without changing its meter after acceptance.
+        if (p.scenario == Case.COLD_REQUEST || p.scenario == Case.CLASH_GATE_DECAY) {
+            Momentum.reset(owner);
+            if (p.scenario == Case.CLASH_GATE_DECAY) {
+                Momentum.add(owner, 100, "moon_clash_fixture", MomentumRules.MAX);
+                check(Momentum.peak(owner) && Momentum.state(owner).ebbPerTick() > 0, "The clash fixture starts at a real naturally ebbing peak");
+            }
+        } else owner.setAttached(Momentum.MOMENTUM, new Momentum.State(100, p.level.getGameTime() + 200, 0, 0, 0));
         SwordStrings.forget(owner.getUUID());
         var art = AuraApi.artOf(owner, ID).orElseThrow();
         check(art.stage() == AuraRules.SOVEREIGN && art.cost() == 40 && art.cooldownTicks() == 600,
@@ -217,6 +246,12 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
             setupTargets(p);
             p.beforeHealth = owner.getHealth(); p.accepted = p.level.getGameTime();
             p.cost = SwordStrings.price(owner, art); p.cooldown = p.accepted + SwordStrings.rest(owner, art);
+            if (p.scenario == Case.COLD_REQUEST) {
+                refuseColdRequest(p, art); return;
+            }
+            if (p.scenario == Case.CLASH_GATE_DECAY) {
+                holdInClash(p, art); return;
+            }
             float aura = Aura.aura(owner);
             SwordStrings.request(owner, new SwordStrings.Perform(ID, MARKS));
             check(MastersArts.committed(owner) && p.spends == 1, "One checked Final request enters one paid windup");
@@ -228,14 +263,57 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
             SwordStrings.request(owner, new SwordStrings.Perform(ID, MARKS));
             check(p.spends == 1 && SwordStrings.readyAt(owner, ID) == p.cooldown, "A duplicate request cannot spend or schedule twice");
             afterAcceptance(p);
-            Scheduler.later(9, () -> checked(p, () -> {
-                p.beforeObserved = true;
-                check(p.releases == 0 && p.hits.isEmpty() && owner.getHealth() == p.beforeHealth, "No toll, completion or direct hit before release");
-                check(MastersArts.committed(owner), "Paid windup still owns physical recovery");
-            }));
-            Scheduler.later(11, () -> checked(p, () -> { p.recoveryObserved = MastersArts.committed(owner); }));
-            Scheduler.later(31, () -> checked(p, () -> { p.ended = !MastersArts.committed(owner); }));
+            observePaidWindup(p);
         }));
+    }
+
+    private static void refuseColdRequest(Probe p, AuraApi.StringArt art) {
+        var owner = p.owner;
+        float aura = Aura.aura(owner); p.cooldown = SwordStrings.readyAt(owner, ID);
+        check(Momentum.value(owner) == 0 && !art.condition().met(owner)
+            && SwordStrings.check(owner, art, MARKS).orElseThrow() == SwordStrings.Refusal.CONDITION,
+            "An authentic observed Final string still refuses a cold ordinary request at the public condition gate");
+        SwordStrings.request(owner, new SwordStrings.Perform(ID, MARKS));
+        check(p.spends == 0 && !MastersArts.committed(owner) && !Clashes.holding(owner) && Aura.aura(owner) == aura
+            && SwordStrings.readyAt(owner, ID) == p.cooldown && SwordStrings.saw(owner, art),
+            "A cold request cannot reserve its observed suffix, pay, rest, clash or start a trusted continuation");
+    }
+
+    private static void holdInClash(Probe p, AuraApi.StringArt art) {
+        var owner = p.owner;
+        check(art.condition().met(owner) && SwordStrings.check(owner, art, MARKS).isEmpty(),
+            "The observed Final legitimately meets every ordinary request check before its clash");
+        var guest = new Guest(p); p.fixtures.add(guest); p.excluded.add(guest);
+        guest.setGameMode(GameType.SURVIVAL); guest.setNoGravity(true); move(guest, .5, -4.5);
+        p.level.addNewPlayer(guest);
+        Crescents.launch(guest, owner.getEyePosition().add(0, 0, 2), new Vec3(0, 0, -1), 0x88CCFF,
+            6, 0, .7, 12, 2, 6, false, entity -> false, (flight, target) -> 0);
+        p.held = p.level.getGameTime(); p.admittedCost = p.cost; p.heldMomentum = Momentum.state(owner);
+        float aura = Aura.aura(owner); long ready = SwordStrings.readyAt(owner, ID);
+        SwordStrings.request(owner, new SwordStrings.Perform(ID, MARKS));
+        check(Clashes.holding(owner) && !MastersArts.committed(owner) && p.spends == 0 && Aura.aura(owner) == aura
+            && SwordStrings.readyAt(owner, ID) == ready && !SwordStrings.saw(owner, art),
+            "The real oncoming crescent holds one accepted consumed Final, unpaid until resolution");
+        SwordStrings.request(owner, new SwordStrings.Perform(ID, MARKS));
+        check(p.spends == 0 && Aura.aura(owner) == aura && SwordStrings.readyAt(owner, ID) == ready,
+            "A duplicate request cannot pay or replace the held Final");
+        for (int beat = 0; beat < ClashRules.BEATS; beat++) Scheduler.later(ClashRules.beat(beat), () -> checked(p, () -> Clashes.pressFor(owner)));
+        Scheduler.later(ClashRules.serverLength() - 1, () -> checked(p, () -> {
+            check(Clashes.holding(owner) && p.spends == 0 && p.releases == 0 && !art.condition().met(owner),
+                "The genuine Final gate naturally closes while its accepted clash entitlement remains held");
+            check(Momentum.state(owner).equals(p.heldMomentum), "Only real elapsed ticks closed the held gate; its Momentum state was never rewritten");
+            check(Clashes.score(owner) > Clashes.score(guest), "Actual timed native presses earn the winning clash score");
+        }));
+    }
+
+    private static void observePaidWindup(Probe p) {
+        Scheduler.later(9, () -> checked(p, () -> {
+            p.beforeObserved = true;
+            check(p.releases == 0 && p.hits.isEmpty() && p.owner.getHealth() == p.beforeHealth, "No toll, completion or direct hit before release");
+            check(MastersArts.committed(p.owner), "Paid windup still owns physical recovery");
+        }));
+        Scheduler.later(11, () -> checked(p, () -> { p.recoveryObserved = MastersArts.committed(p.owner); }));
+        Scheduler.later(31, () -> checked(p, () -> { p.ended = !MastersArts.committed(p.owner); }));
     }
     private static void attack(Probe p, boolean low) {
         var owner = p.owner;
@@ -251,7 +329,7 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
 
     private static void setupTargets(Probe p) {
         switch (p.scenario) {
-            case EMPTY_GATE_CLOSED, CANCELLED -> { }
+            case COLD_REQUEST, CLASH_GATE_DECAY, EMPTY_GATE_CLOSED, CANCELLED -> { }
             case FIVE_BANDS -> { for (double distance : new double[] {.7, 1.8, 3, 4.2, 5.4}) p.selected.add(foe(p, .5, .5 + distance)); }
             case MOVING_WOUNDS -> { p.selected.add(foe(p, -.5, 3.5)); p.selected.add(foe(p, 1.5, 3.5)); }
             case MOVED_FEET_STALE_STRUCK -> { p.selected.add(foe(p, 4.5, 5.6)); p.excluded.add(foe(p, .5, 6.3)); }
@@ -315,6 +393,8 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
                 near(owner.getXRot(), 70, "The actual received client pitch remains in effect at release");
             }
             if (p.scenario == Case.EMPTY_GATE_CLOSED) near(p.releaseMomentum, 0, "Closed Final condition is not rechecked after payment");
+            else if (p.scenario == Case.CLASH_GATE_DECAY) near(p.releaseMomentum, p.winningMomentum - MomentumRules.FINAL_SPEND,
+                "The clash winner spends Final Momentum only once on its actual release");
             else near(p.releaseMomentum, 100 - MomentumRules.FINAL_SPEND, "Final completion consumes momentum once at release");
             if (p.bucketAt == 0) p.bucketAt = p.released;
             p.measuring = true;
@@ -366,6 +446,12 @@ public final class CrimsonMoonTimelineTest implements FabricClientGameTest {
     }
     private static void verify(Probe p) {
         rethrow(p);
+        if (p.scenario == Case.COLD_REQUEST) {
+            check(p.spends == 0 && p.releases == 0 && p.hits.isEmpty() && !MastersArts.committed(p.owner)
+                && SwordStrings.readyAt(p.owner, ID) == p.cooldown && p.owner.getHealth() == p.beforeHealth,
+                "The cold public request remains wholly refused after all possible release frames");
+            return;
+        }
         check(p.accepted >= 0 && p.beforeObserved && p.recoveryObserved && p.ended, "Windup, release/recovery and actual motion expiry were observed");
         check(p.spends == 1 && SwordStrings.readyAt(p.owner, ID) == p.cooldown, "All late work leaves original payment/rest untouched");
         if (p.scenario == Case.CANCELLED) {

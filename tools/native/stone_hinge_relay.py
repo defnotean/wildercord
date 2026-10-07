@@ -152,6 +152,7 @@ class _Direction:
     event_hash: object = field(default_factory=hashlib.sha256)
     eof: bool = False
     shutdown: bool = False
+    terminal_reason: str | None = None
     blocked_since: float | None = None
     backpressure_events: int = 0
     backpressure_max: float = 0.0
@@ -481,7 +482,22 @@ class StoneHingeRelay:
                     if not blocked:
                         direction.blocked_since = None
                 if pair.connected and direction.eof and not direction.queue and not direction.shutdown:
-                    direction.sink.shutdown(socket.SHUT_WR)
+                    try:
+                        direction.sink.shutdown(socket.SHUT_WR)
+                    except OSError as error:
+                        # A connected peer can finish closing before SHUT_WR.
+                        # Only actual EOF and complete byte proof in BOTH
+                        # directions of this same pair establish a clean drain.
+                        if error.errno != errno.ENOTCONN or not all(
+                                d.eof and not d.queue and d.queued_bytes == 0
+                                and d.buffered_bytes == 0 and d.read_bytes > 0
+                                and d.read_bytes == d.written_bytes
+                                and d.read_hash.digest() == d.write_hash.digest()
+                                for d in directions):
+                            raise
+                        direction.terminal_reason = "already_closed_after_drain"
+                    else:
+                        direction.terminal_reason = "shutdown_wr"
                     direction.shutdown = True
         if self.complete:
             for direction in self._directions.values():
@@ -571,6 +587,7 @@ class StoneHingeRelay:
                 "queueHighBytes": direction.queue_high_bytes,
                 "queueHighChunks": direction.queue_high_chunks,
                 "eof": direction.eof, "writeHalfClosed": direction.shutdown,
+                "terminalReason": direction.terminal_reason,
                 "backpressureEvents": direction.backpressure_events,
                 "backpressureMaxSeconds": direction.backpressure_max,
                 "residenceMinSeconds": direction.residence_min,

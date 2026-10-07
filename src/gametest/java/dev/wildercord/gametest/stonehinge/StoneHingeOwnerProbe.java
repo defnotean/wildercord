@@ -42,6 +42,7 @@ public final class StoneHingeOwnerProbe {
     public record PositionEvidence(int sendOrdinal, int sentIndex, int acceptanceIndex, int motionOrdinal,
         Vec3 requested, Vec3 sentPosition, Vec3 acceptedPosition, long ownerTick, long serverTick, boolean completed) {}
     public record ChainEvidence(MotionEvidence motion, List<PositionEvidence> positions, List<Event> events) {}
+    public record MotionDiagnostic(Vec3 expected, Vec3 firstOriginalRaw, Vec3 firstOriginalWire, int ordinal, boolean completed) {}
 	private record PositionKey(String type, double x, double y, double z, boolean rotation, float yaw, float pitch, boolean ground, boolean collision) {
 		static PositionKey of(ServerboundMovePlayerPacket packet) {
 			return new PositionKey(packet.getClass().getSimpleName(), packet.getX(Double.NaN), packet.getY(Double.NaN), packet.getZ(Double.NaN),
@@ -90,6 +91,7 @@ public final class StoneHingeOwnerProbe {
 		private volatile Vec3 expectedMotion;
 		private volatile MotionReceipt provenMotion;
 		private volatile Throwable observationFailure;
+		private MotionSend firstOriginalMotion;
 		private int motionSerial, positionSerial;
 		private Trace(String name, ServerPlayer server, LocalPlayer owner, Body ownerBefore, Vec3 side) {
 			this.name = name; this.server = server; this.owner = owner; this.ownerBefore = ownerBefore;
@@ -117,6 +119,7 @@ public final class StoneHingeOwnerProbe {
 			MotionSend sent = new MotionSend(++motionSerial, packet, expectedMotion != null && expectedMotion.equals(packet.movement())
 				&& (manual == null || manual == packet), manual == packet, dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.originalTracker(server));
 			motionQueue.add(sent);
+            if (sent.originalTracker && firstOriginalMotion == null) firstOriginalMotion = sent;
             Event started = record("server-motion-start", "ordinal=" + sent.ordinal + " manual=" + sent.manual + " raw=" + sent.raw + " wire=" + sent.wire, null, snapshot(server));
             sent.sendStartIndex = started == null ? -1 : started.index;
             return sent;
@@ -137,6 +140,12 @@ public final class StoneHingeOwnerProbe {
 		public Event first(String kind) { return events().stream().filter(event -> event.kind.equals(kind)).findFirst().orElse(null); }
 		public long count(String kind) { return events().stream().filter(event -> event.kind.equals(kind)).count(); }
 		public Event expectedOwnerMotion() { MotionReceipt receipt = provenMotion; return receipt != null && receipt.sent.completed ? receipt.processed : null; }
+        /** Failure-only snapshot, including an unqualified packet; never grants motion acceptance. */
+        public synchronized MotionDiagnostic diagnosticMotion() {
+            MotionSend first = firstOriginalMotion;
+            return new MotionDiagnostic(expectedMotion, first == null ? null : first.raw, first == null ? null : first.wire,
+                first == null ? 0 : first.ordinal, first != null && first.completed);
+        }
 		public synchronized List<Event> provenOwnerPositions() {
 			return positions.stream().filter(receipt -> receipt.sent.qualified()
 				// The post-impulse rise differs from every stable pre-experiment position; an older in-flight ground packet cannot alias it.

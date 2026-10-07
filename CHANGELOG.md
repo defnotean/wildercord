@@ -4,6 +4,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Preserve an accepted Crimson Moon through natural Momentum decay during a clash while keeping cold Final requests gated and earned-counter admission checks intact. Native request, clash and released-owner regressions accompany the correction; fresh native execution remains pending.
+
 - Keep Fabric's client test phase pump participating while a real singleplayer close awaits its native server shutdown task. The repair is confined to the GameTest mod; paused/unpaused save-close-reopen and Relay reconnect remain required native acceptance gates.
 
 - Add the Archive’s Relay Circle lesson at active Heart Circle VIII: one paid remote focus, a fresh second cast-key press, a warned ray, and persistent three-page lore/practice guidance. The initial shape accepts only Relay with Harm, Frost or Shock.

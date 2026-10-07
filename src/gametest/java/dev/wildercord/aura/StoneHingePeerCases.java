@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe;
 import dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.Identity;
 import dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.Report;
+import dev.wildercord.gametest.stonehinge.peer.StoneHingePeerFailure;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -63,10 +64,12 @@ public final class StoneHingePeerCases {
     public interface Witness {
         void arm(Identity identity);
         void finish(Report report, boolean moved);
+        void failure(Case which, String phase, Throwable failure, Map<String, String> details);
     }
     private String nonce, profile;
     private ServerPlayer observer;
     private Witness witness;
+    private Case activeCase;
     public static List<Case> roster(String profile) {
         return profile.equals("transparent") ? List.of(Case.values())
             : List.of(Case.ORDINARY, Case.RIGHT, Case.LEFT, Case.WALL_CLIPPED, Case.FALLING_ORDINARY, Case.FALLING_REFUSAL);
@@ -76,11 +79,15 @@ public final class StoneHingePeerCases {
         this.nonce = nonce; this.profile = profile; this.witness = witness;
         StoneHingeOwnerProbe.register(); StoneHingePeerProbe.register(); neutral(context);
         Map<Case, Result> results = new LinkedHashMap<>();
+        Throwable original = null;
         try {
             context.waitTicks(40);
             for (String command : List.of("difficulty normal", "time set midnight", "gamerule spawn_mobs false", "gamerule natural_health_regeneration false")) world.runCommand(command);
             world.runOnServer(server -> { player = server.getPlayerList().getPlayer(ownerId); observer = server.getPlayerList().getPlayer(peerId); });
-            for (Case which : roster(profile)) results.put(which, scenario(context, world, which));
+            for (Case which : roster(profile)) {
+                activeCase = which;
+                results.put(which, scenario(context, world, which));
+            }
             if (profile.equals("transparent")) {
                 Result ordinary = results.get(Case.ORDINARY);
                 check(close(results.get(Case.PARTIAL_RESISTANCE).nativeOutcome.motion().horizontalDistance(), ordinary.nativeOutcome.motion().horizontalDistance() * .5),
@@ -93,15 +100,20 @@ public final class StoneHingePeerCases {
                 }
                 check(results.get(Case.WALL_CLIPPED).trace.maximumUncorrectedOwnerLateral() < results.get(Case.RIGHT).trace.maximumUncorrectedOwnerLateral(), "Native wall reduces actual travel");
             }
+        } catch (Throwable failure) {
+            original = failure;
+            reportFailure(activeCase, "cases", failure);
+            throw failure;
         } finally {
-            world.runOnServer(server -> {
-                try { if (running != null) StoneHingeOwnerProbe.stop(running); }
-                finally { running = null; StoneHingeOwnerProbe.clear(); StoneHingePeerProbe.clear(); dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalRelease.clear();
-                    try { StoneHingeImpulseProbe.assertIdle(); }
-                    finally { StoneHingeImpulseProbe.clear(); if (attacker != null) attacker.discard(); attacker = null; }
-                }
-            });
-            player = null; observer = null;
+            try {
+                StoneHingePeerFailure.cleanup(original, () -> world.runOnServer(server -> {
+                    try { if (running != null) StoneHingeOwnerProbe.stop(running); }
+                    finally { running = null; StoneHingeOwnerProbe.clear(); StoneHingePeerProbe.clear(); dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalRelease.clear();
+                        try { StoneHingeImpulseProbe.assertIdle(); }
+                        finally { StoneHingeImpulseProbe.clear(); if (attacker != null) attacker.discard(); attacker = null; }
+                    }
+                }), failure -> reportFailure(activeCase, "cases-cleanup", failure));
+            } finally { player = null; observer = null; activeCase = null; }
         }
     }
 
@@ -229,10 +241,12 @@ public final class StoneHingePeerCases {
 	}
 
     private Result naturalMaster(ClientGameTestContext context, TestServerContext world) {
-        neutral(context);
         var master = new dev.wildercord.aura.world.SwordMaster[1];
         Result[] result = new Result[1];
+        Throwable original = null;
+        String phase = "prepare";
         try {
+            neutral(context);
             world.runOnServer(server -> {
                 prepare(Case.NATURAL_MASTER); attacker.discard(); attacker = null;
                 master[0] = dev.wildercord.aura.world.AuraWorld.SWORD_MASTER.create(player.level(), EntitySpawnReason.COMMAND);
@@ -240,12 +254,15 @@ public final class StoneHingePeerCases {
                 master[0].setDiscipline(dev.wildercord.aura.world.MastersRules.STONE);
                 master[0].snapTo(.5, 181, 3.5, 180, 0); player.level().addFreshEntity(master[0]);
             });
+            phase = "settle";
             context.waitTicks(20);
             context.waitFor(mc -> mc.player.onGround() && mc.player.getDeltaMovement().horizontalDistanceSqr() == 0, 80);
             world.waitFor(server -> player.onGround() && !((StoneHingeOwnerProbe.ConnectionState) player.connection).stoneHinge$awaitingTeleport(), 80);
+            phase = "peer-arm";
             witness.arm(world.computeOnServer(server -> identity(Case.NATURAL_MASTER)));
             var owner = context.computeOnClient(mc -> mc.player);
             Body ownerBefore = context.computeOnClient(mc -> Body.of(mc.player));
+            phase = "natural-release-arm";
             world.runOnServer(server -> {
                 running = StoneHingeOwnerProbe.start(nonce + "/" + profile + "/NATURAL_MASTER", player, owner, ownerBefore, new Vec3(-1, 0, 0));
                 StoneHingePeerProbe.startHost(identity(Case.NATURAL_MASTER), player, observer, running);
@@ -260,30 +277,69 @@ public final class StoneHingePeerCases {
                 master[0].interact(player, net.minecraft.world.InteractionHand.MAIN_HAND, Vec3.ZERO);
                 check(dev.wildercord.aura.world.SwordMaster.ready(player) == 1, "Actual challenger opts into the ordinary encounter");
             });
+            phase = "natural-windup";
             world.waitFor(server -> master[0].started() && master[0].state(dev.wildercord.aura.world.AuraFighter.WINDUP), 80);
             world.runOnServer(server -> {
                 var selected = dev.wildercord.aura.world.MasterMoveCatalog.legacy().byWireId(master[0].attackAnimation()).orElseThrow().legacyMove();
                 check(selected == dev.wildercord.aura.world.MastersRules.Move.THRUST && result[0] == null && player.getHealth() == 200,
                     "Unmodified Master planner gives the full warning before its natural THRUST");
             });
+            phase = "natural-release";
             world.waitFor(server -> { dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalRelease.assertHealthy(); return result[0] != null; }, 80);
+            phase = "natural-release-complete";
+            logNaturalPhase(phase);
             world.runOnServer(server -> master[0].setNoAi(true));
+            phase = "owner-motion-wait";
+            logNaturalPhase(phase);
             context.waitFor(mc -> running.expectedOwnerMotion() != null, 80);
+            phase = "owner-position-wait";
+            logNaturalPhase(phase);
             world.waitFor(server -> running.hasOwnerPositionAfterMotion(), 80);
+            phase = "owner-settle";
             context.waitTicks(30);
             context.waitFor(mc -> mc.player.onGround() && mc.player.getDeltaMovement().horizontalDistanceSqr() < 1E-10, 100);
             context.waitTicks(10);
+            phase = "host-report";
+            logNaturalPhase(phase);
             Report report = world.computeOnServer(server -> StoneHingePeerProbe.hostReport());
+            phase = "peer-report";
             witness.finish(report, true);
+            phase = "owner-verification";
             world.runOnServer(server -> {
                 running.assertHealthy(); check(!running.correction() && running.hasOwnerPositionAfterMotion(), "Natural Master movement passes original owner packet and server acceptance without correction");
                 check(running.events().stream().filter(e -> e.kind().equals("server-motion-sent")).allMatch(e -> e.data().contains("manual=false")), "Master delivery uses native original tracker");
                 StoneHingeOwnerProbe.stop(running); running = null; StoneHingePeerProbe.clear(); StoneHingeImpulseProbe.assertIdle();
             });
             return result[0];
+        } catch (Throwable failure) {
+            original = failure;
+            reportFailure(Case.NATURAL_MASTER, phase, failure);
+            throw failure;
         } finally {
-            world.runOnServer(server -> { dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalRelease.clear(); if (master[0] != null) master[0].discard(); });
+            StoneHingePeerFailure.cleanup(original, () -> world.runOnServer(server -> {
+                dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalRelease.clear();
+                if (master[0] != null) master[0].discard();
+            }), failure -> reportFailure(Case.NATURAL_MASTER, "natural-cleanup", failure));
         }
+    }
+
+    private void logNaturalPhase(String phase) {
+        Wildercord.LOGGER.info("STONE_HINGE_PEER_PHASE nonce={} profile={} case=NATURAL_MASTER phase={}", nonce, profile, phase);
+    }
+
+    private void reportFailure(Case which, String phase, Throwable failure) {
+        StoneHingePeerFailure.report(failure, () -> {
+            var fields = new LinkedHashMap<String, String>();
+            Trace trace = running;
+            var motion = trace == null ? null : trace.diagnosticMotion();
+            fields.put("expectedMotion", motion == null ? "unobserved" : String.valueOf(motion.expected()));
+            fields.put("actualOriginalTrackerRaw", motion == null ? "unobserved" : String.valueOf(motion.firstOriginalRaw()));
+            fields.put("actualOriginalTrackerWire", motion == null ? "unobserved" : String.valueOf(motion.firstOriginalWire()));
+            fields.put("originalTrackerOrdinal", motion == null ? "0" : Integer.toString(motion.ordinal()));
+            fields.put("originalTrackerCompleted", Boolean.toString(motion != null && motion.completed()));
+            fields.put("ownerMotionQualified", Boolean.toString(trace != null && trace.expectedOwnerMotion() != null));
+            witness.failure(which, phase, failure, fields);
+        });
     }
 
 	private Identity identity(Case which) { return new Identity(nonce, profile, which.name(), player.getUUID().toString(), player.getId(), 1, observer.getUUID().toString(), observer.getId(), 1); }

@@ -24,6 +24,7 @@ import java.util.*;
 /** Real spell resistance, attack openings, acquisition/persistence, tools and rendered custom animals. */
 public final class AuraBeastsTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext c) {
+		ScavengerFoodProbeChecks.verify();
 		try(var w=c.worldBuilder().create()) {
 			c.waitTicks(40);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("gamerule fall_damage false");w.getServer().runCommand("time set 6000");
 			var ids=w.getServer().computeOnServer(s->{
@@ -87,8 +88,11 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s->{var stone=(Stonehorn)s.overworld().getEntity(ids[0]);check(!stone.isNoAi(),"Support hold thaws after its actual deadline");stone.setNoAi(true);});
 			// These independent encounter fixtures need hungry animals; earlier feeding now correctly leaves satiety.
 			w.getServer().runOnServer(server -> freshHunter(server,ids));
-			var scraps=w.getServer().computeOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.pose(BeastRules.IDLE,0);gale.setTarget(null);gale.setNoAi(false);gale.calm=200;var food=new ItemEntity(s.overworld(),gale.getX()+.5,101,gale.getZ(),new ItemStack(Items.CHICKEN));s.overworld().addFreshEntity(food);return food.getUUID();});c.waitTicks(45);
-			check(w.getServer().computeOnServer(s->s.overworld().getEntity(scraps)==null),"Scavenger actually consumes nearby dropped food");
+			var foodProbe=new ScavengerFoodProbe.Session[1];
+			try {
+			var scraps=w.getServer().computeOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.pose(BeastRules.IDLE,0);gale.setTarget(null);gale.setNoAi(false);gale.calm=200;var food=new ItemEntity(s.overworld(),gale.getX()+.5,101,gale.getZ(),new ItemStack(Items.CHICKEN));s.overworld().addFreshEntity(food);foodProbe[0]=ScavengerFoodProbe.begin(gale,food);return food.getUUID();});c.waitTicks(45);
+			check(w.getServer().computeOnServer(s->{try{return s.overworld().getEntity(scraps)==null;}finally{foodProbe[0].close();}}),"Scavenger actually consumes nearby dropped food");
+			} finally {if(foodProbe[0]!=null&&!foodProbe[0].closed)w.getServer().runOnServer(s->foodProbe[0].close());}
 			w.getServer().runOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.pose(BeastRules.IDLE,0);gale.calm=0;var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),gale.getX()+12,101,gale.getZ(),Set.<Relative>of(),0,0,false);dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(p,0,List.of(),10);});c.waitTicks(25);
 			check(w.getServer().computeOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);return gale.getTarget()==s.getPlayerList().getPlayers().getFirst();}),"Recent casting really draws the ridge runner's attention");
 			w.getServer().runOnServer(server -> freshHunter(server,ids));

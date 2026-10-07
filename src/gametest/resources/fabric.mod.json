@@ -317,6 +317,7 @@
     ]
   },
   "mixins": [
+    "scavenger-food-gametest.mixins.json",
     "bramble-fire-gametest.mixins.json",
     "wildercord.mossveil-gametest.mixins.json",
     "rainshield-gametest.mixins.json",

@@ -267,8 +267,12 @@ public final class CrimsonMoonReleasedOwnerTest implements FabricClientGameTest 
 		check(art.string().fits(MARKS.stream().mapToInt(Integer::intValue).toArray()), "The real registered Final art retains its full/full/full/low string");
 		p.accepted = p.level.getGameTime();
 		float aura = Aura.aura(p.owner);
+		double price = SwordStrings.price(p.owner, art);
+		long ready = p.accepted + SwordStrings.rest(p.owner, art);
+		check(Momentum.value(p.owner) == 0 && !art.condition().met(p.owner), "Trusted release coverage deliberately starts with the ordinary Final gate closed");
 		check(SwordStrings.perform(p.owner, art, MARKS), "The actual registered Moon is admitted through SwordStrings.perform");
-		check(Aura.aura(p.owner) < aura && SwordStrings.readyAt(p.owner, art.id()) > p.accepted, "The admitted Moon pays and rests normally");
+		check(Math.abs(Aura.aura(p.owner) - (aura - price)) < .001 && SwordStrings.readyAt(p.owner, art.id()) == ready,
+			"The trusted admitted Moon pays its exact normal price and commits its full individual rest");
 	}
 
 	private void released(ServerPlayer owner, AuraApi.StringArt art, AuraApi.StringContext move) {

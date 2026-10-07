@@ -10,7 +10,7 @@ Three shared player arts and nineteen existing style forms have authored body/ha
 
 The branch also contains opt-in articulated combat, supported armor and funded Aura-shell presentation, staged in-game presentation preferences, and a bounded operator-approved pavilion upgrade for existing worlds. Each has its own remaining compatibility and runtime checks. The pavilion does not yet retrofit the full dungeon, boss or encounter catalog.
 
-Earlier focused native checkpoints have passed. Recent published checkpoints still expose native failures, and the expanded local candidate remains unrun. The normal build and unit tests do not make the whole release green. These limits are tracked openly in the release checklist.
+Earlier focused native checkpoints have passed. On `ac1711`, build, articulated, connected combat, aggregate shard 1 and March mechanics pass, but core and aggregate shard 3 expose a Moon continuation regression and the March opponent escape check fails. The normal build and unit tests do not make the whole release green. These limits are tracked openly in the release checklist.
 
 ## Priority 1: a dependable playable foundation
 
@@ -52,7 +52,7 @@ The source now implements **Excise at Circle XVI**: a retrievable Rootbound less
 
 New movements must change positioning decisions without replacing every dodge, cover choice or punish window with unlimited mobility.
 
-Stone Hinge's native damage/impulse precursor passes on `5cea20d1`. Its proposed melee knockback redirect must preserve actual damage, vertical physics and ordinary knockback on refusal. Independent review rejects the first server-move/velocity-packet approach because it cannot synchronize the already-moved position to the owning client. A genuine-owner negative control on `0aed34e6` confirms zero owner lateral movement and loss of the server-only offset. A separate, reviewed velocity-deflection comparison preserves the native impulse magnitude, Y and packet dispatch. All fifteen connected-owner cases return on `6d2a7ce8`. The first genuine peer diagnostic on `10ec6cc2` produces five independently verified owner/server/tracker/peer case chains before an atomic evidence-scanning race aborts the run. The reviewed harness correction still needs a complete rerun; delayed profiles and ordinary paid-form acceptance remain open. It remains unavailable as an ordinary form.
+Stone Hinge's native damage/impulse precursor passes on `5cea20d1`. Its proposed melee knockback redirect must preserve actual damage, vertical physics and ordinary knockback on refusal. Independent review rejects the first server-move/velocity-packet approach because it cannot synchronize the already-moved position to the owning client. A genuine-owner negative control on `0aed34e6` confirms zero owner lateral movement and loss of the server-only offset. A separate, reviewed velocity-deflection comparison preserves the native impulse magnitude, Y and packet dispatch. All fifteen connected-owner cases return on `6d2a7ce8`. The corrected peer diagnostic on `ac1711` preserves sixteen complete owner/server/tracker/peer case chains; the natural-Master case fails before completion and the later delay profiles remain unexecuted. The next reviewed diagnostics retain the original motion assertions and preserve the first failure before teardown. Ordinary paid input, teaching and full peer/latency acceptance remain open, so Stone Hinge remains unavailable as an ordinary form.
 
 ## Priority 5: bosses with large, distinct repertoires
 

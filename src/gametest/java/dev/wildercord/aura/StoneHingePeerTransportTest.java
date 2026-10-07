@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe;
 import dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.Identity;
 import dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.Report;
+import dev.wildercord.gametest.stonehinge.peer.StoneHingePeerFailure;
 import dev.wildercord.gametest.stonehinge.mixin.StoneHingeConnectionAccess;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -26,15 +27,16 @@ public final class StoneHingePeerTransportTest implements FabricClientGameTest {
     private final Properties identity = new Properties();
     private final List<String> completed = new ArrayList<>();
     private Path directory;
-    private String role, profile;
+    private String role, profile, currentCase = "not-armed";
     private UUID hostId, peerId;
     private long deadline, hostPid, peerPid;
     private int caseIndex;
     @Override public void runTest(ClientGameTestContext context) {
         configure(); StoneHingePeerProbe.register();
+        Throwable original = null;
         try { if (role.equals("host")) host(context); else peer(context); }
-        catch (Throwable failure) { if (!exists(role + "-failure.properties")) write(role + "-failure", Map.of("error", failure.toString())); throw failure; }
-        finally { StoneHingePeerProbe.clear(); }
+        catch (Throwable failure) { original = failure; failure("role", failure, Map.of()); throw failure; }
+        finally { StoneHingePeerFailure.cleanup(original, StoneHingePeerProbe::clear, failure -> failure("role-cleanup", failure, Map.of())); }
     }
     private void configure() {
         role = required("role"); check(role.equals("host") || role.equals("peer"), "Explicit supervised native role");
@@ -61,60 +63,81 @@ public final class StoneHingePeerTransportTest implements FabricClientGameTest {
         settings.setProperty("online-mode", "false"); settings.setProperty("enforce-secure-profile", "false");
         settings.setProperty("view-distance", "5"); settings.setProperty("simulation-distance", "5");
         try (var server = c.worldBuilder().createServer(settings)) {
-            // No bind-close port guess and no direct server.connect(): both real clients use their owned relay.
-            int port = server.computeOnServer(s -> {
-                var channels = ((dev.wildercord.gametest.stonehinge.mixin.StoneHingeServerConnectionAccess) s.getConnection()).stoneHinge$channels();
-                synchronized (channels) {
-                    check(channels.size() == 1 && channels.getFirst().isSuccess() && channels.getFirst().channel().isActive(), "One actual retained native server listener");
-                    var fields = new LinkedHashMap<String, String>(); endpoint(fields, "server", channels.getFirst().channel().localAddress());
-                    return Integer.parseInt(fields.get("serverPort"));
-                }
-            });
-            write("server-ready", Map.of("port", Integer.toString(port)));
-            Properties relay = relayReady(c); connect(c, relay, "ownerPort", hostId);
-            await(c, () -> exists("peer-connected.properties") && server.computeOnServer(s -> s.getPlayerList().getPlayers().size() == 2
-                && s.getPlayerList().getPlayers().stream().allMatch(p -> p.connection.hasClientLoaded())), "Both actual relay clients join");
-            read("peer-connected", "peer");
-            server.runOnServer(s -> {
-                ServerPlayer owner = s.getPlayerList().getPlayer(hostId), observer = s.getPlayerList().getPlayer(peerId);
-                check(owner != null && observer != null && owner.connection.player == owner && observer.connection.player == observer, "Both exact current server bodies");
-                var values = new LinkedHashMap<String, String>();
-                endpoint(values, "ownerBackendRemote", owner.connection.getRemoteAddress());
-                endpoint(values, "observerBackendRemote", observer.connection.getRemoteAddress());
-                values.put("ownerEntity", Integer.toString(owner.getId())); values.put("observerEntity", Integer.toString(observer.getId()));
-                write("server-connected", values);
-            });
-            new StoneHingePeerCases().run(c, server, hostId, peerId, identity.getProperty("nonce"), profile, new StoneHingePeerCases.Witness() {
-                public void arm(Identity id) {
-                    check(caseIndex < StoneHingePeerCases.roster(profile).size() && id.name().equals(StoneHingePeerCases.roster(profile).get(caseIndex).name()), "Exact ordered case roster");
-                    writeJson(stem() + "-identity.json", id);
-                    write(stem() + "-arm", Map.of("case", id.name(), "identitySha256", sha(stem() + "-identity.json")));
-                    await(c, () -> exists(stem() + "-armed.properties"), "Peer arms exact live body before native attack");
-                    Properties armed = read(stem() + "-armed", "peer");
-                    check(id.name().equals(armed.getProperty("case")) && sha(stem() + "-identity.json").equals(armed.getProperty("identitySha256")), "Peer arm binds nonce/case/body generation");
-                }
-                public void finish(Report report, boolean moved) {
-                    writeJson(stem() + "-host.json", report);
-                    write(stem() + "-ready", Map.of("case", report.identity().name(), "reportSha256", sha(stem() + "-host.json"), "moved", Boolean.toString(moved)));
-                    await(c, () -> exists(stem() + "-seen.properties"), "Peer receives exact original tracker payload and converges");
-                    Properties seen = read(stem() + "-seen", "peer");
-                    check(report.identity().name().equals(seen.getProperty("case")) && sha(stem() + "-peer.json").equals(seen.getProperty("reportSha256")), "Peer receipt binds exact report bytes");
-                    Report peer = readJson(stem() + "-peer.json", Report.class); StoneHingePeerProbe.verifyReports(report, peer, moved);
-                    completed.add(report.identity().name()); write(stem() + "-passed", Map.of("case", report.identity().name(), "hostReportSha256", sha(stem() + "-host.json"), "peerReportSha256", sha(stem() + "-peer.json")));
-                    caseIndex++;
-                }
-            });
-            check(completed.equals(roster()), "Complete exact profile roster");
-            write("disconnect-peer", Map.of("cases", String.join(",", completed)));
-            await(c, () -> exists("peer-disconnected.properties") && exists("peer-stone-hinge-passed.properties")
-                && server.computeOnServer(s -> s.getPlayerList().getPlayer(peerId) == null), "Peer cleanly disconnects");
-            check(read("peer-stone-hinge-passed", "peer").getProperty("cases").equals(String.join(",", completed)), "Peer independently completed exact profile roster");
-            disconnect(c); write("host-stone-hinge-passed", Map.of("cases", String.join(",", completed)));
+            String phase = "server-listener";
+            try {
+                // No bind-close port guess and no direct server.connect(): both real clients use their owned relay.
+                int port = server.computeOnServer(s -> {
+                    var channels = ((dev.wildercord.gametest.stonehinge.mixin.StoneHingeServerConnectionAccess) s.getConnection()).stoneHinge$channels();
+                    synchronized (channels) {
+                        check(channels.size() == 1 && channels.getFirst().isSuccess() && channels.getFirst().channel().isActive(), "One actual retained native server listener");
+                        var fields = new LinkedHashMap<String, String>(); endpoint(fields, "server", channels.getFirst().channel().localAddress());
+                        return Integer.parseInt(fields.get("serverPort"));
+                    }
+                });
+                write("server-ready", Map.of("port", Integer.toString(port)));
+                phase = "clients-connect";
+                Properties relay = relayReady(c); connect(c, relay, "ownerPort", hostId);
+                await(c, () -> exists("peer-connected.properties") && server.computeOnServer(s -> s.getPlayerList().getPlayers().size() == 2
+                    && s.getPlayerList().getPlayers().stream().allMatch(p -> p.connection.hasClientLoaded())), "Both actual relay clients join");
+                read("peer-connected", "peer");
+                server.runOnServer(s -> {
+                    ServerPlayer owner = s.getPlayerList().getPlayer(hostId), observer = s.getPlayerList().getPlayer(peerId);
+                    check(owner != null && observer != null && owner.connection.player == owner && observer.connection.player == observer, "Both exact current server bodies");
+                    var values = new LinkedHashMap<String, String>();
+                    endpoint(values, "ownerBackendRemote", owner.connection.getRemoteAddress());
+                    endpoint(values, "observerBackendRemote", observer.connection.getRemoteAddress());
+                    values.put("ownerEntity", Integer.toString(owner.getId())); values.put("observerEntity", Integer.toString(observer.getId()));
+                    write("server-connected", values);
+                });
+                phase = "cases";
+                new StoneHingePeerCases().run(c, server, hostId, peerId, identity.getProperty("nonce"), profile, new StoneHingePeerCases.Witness() {
+                    public void arm(Identity id) {
+                        check(caseIndex < StoneHingePeerCases.roster(profile).size() && id.name().equals(StoneHingePeerCases.roster(profile).get(caseIndex).name()), "Exact ordered case roster");
+                        currentCase = id.name();
+                        writeJson(stem() + "-identity.json", id);
+                        write(stem() + "-arm", Map.of("case", id.name(), "identitySha256", sha(stem() + "-identity.json")));
+                        await(c, () -> exists(stem() + "-armed.properties"), "Peer arms exact live body before native attack");
+                        Properties armed = read(stem() + "-armed", "peer");
+                        check(id.name().equals(armed.getProperty("case")) && sha(stem() + "-identity.json").equals(armed.getProperty("identitySha256")), "Peer arm binds nonce/case/body generation");
+                    }
+                    public void finish(Report report, boolean moved) {
+                        writeJson(stem() + "-host.json", report);
+                        write(stem() + "-ready", Map.of("case", report.identity().name(), "reportSha256", sha(stem() + "-host.json"), "moved", Boolean.toString(moved)));
+                        await(c, () -> exists(stem() + "-seen.properties"), "Peer receives exact original tracker payload and converges");
+                        Properties seen = read(stem() + "-seen", "peer");
+                        check(report.identity().name().equals(seen.getProperty("case")) && sha(stem() + "-peer.json").equals(seen.getProperty("reportSha256")), "Peer receipt binds exact report bytes");
+                        Report peer = readJson(stem() + "-peer.json", Report.class); StoneHingePeerProbe.verifyReports(report, peer, moved);
+                        completed.add(report.identity().name()); write(stem() + "-passed", Map.of("case", report.identity().name(), "hostReportSha256", sha(stem() + "-host.json"), "peerReportSha256", sha(stem() + "-peer.json")));
+                        caseIndex++;
+                    }
+                    public void failure(StoneHingePeerCases.Case which, String phase, Throwable failure, Map<String, String> details) {
+                        var fields = new LinkedHashMap<>(details);
+                        if (which != null) {
+                            fields.put("case", which.name());
+                            fields.put("caseIndex", Integer.toString(StoneHingePeerCases.roster(profile).indexOf(which)));
+                        }
+                        StoneHingePeerTransportTest.this.failure(phase, failure, fields);
+                    }
+                });
+                phase = "roster-complete";
+                check(completed.equals(roster()), "Complete exact profile roster");
+                write("disconnect-peer", Map.of("cases", String.join(",", completed)));
+                await(c, () -> exists("peer-disconnected.properties") && exists("peer-stone-hinge-passed.properties")
+                    && server.computeOnServer(s -> s.getPlayerList().getPlayer(peerId) == null), "Peer cleanly disconnects");
+                check(read("peer-stone-hinge-passed", "peer").getProperty("cases").equals(String.join(",", completed)), "Peer independently completed exact profile roster");
+                phase = "host-disconnect";
+                disconnect(c); write("host-stone-hinge-passed", Map.of("cases", String.join(",", completed)));
+            } catch (Throwable failure) {
+                // Publish while the server is still owned and live: close() may block or trigger relay EOF.
+                failure(phase, failure, Map.of());
+                throw failure;
+            }
         }
     }
     private void peer(ClientGameTestContext c) {
         Properties relay = relayReady(c); connect(c, relay, "observerPort", peerId);
         for (String name : roster()) {
+            currentCase = name;
             await(c, () -> exists(stem() + "-arm.properties"), "Host arms next fixed case");
             Properties arm = read(stem() + "-arm", "host");
             check(name.equals(arm.getProperty("case")) && sha(stem() + "-identity.json").equals(arm.getProperty("identitySha256")), "Exact case identity artifact");
@@ -172,6 +195,15 @@ public final class StoneHingePeerTransportTest implements FabricClientGameTest {
     }
     private List<String> roster() { return StoneHingePeerCases.roster(profile).stream().map(Enum::name).toList(); }
     private String stem() { return String.format(Locale.ROOT, "case-%02d", caseIndex); }
+    private void failure(String phase, Throwable original, Map<String, String> details) {
+        StoneHingePeerFailure.report(original, () -> {
+            if (exists(role + "-failure.properties")) return; // Keep the earliest pre-cleanup witness.
+            var fields = new LinkedHashMap<>(StoneHingePeerFailure.describe(original));
+            fields.put("phase", phase); fields.put("case", currentCase); fields.put("caseIndex", Integer.toString(caseIndex));
+            fields.putAll(details);
+            write(role + "-failure", fields);
+        });
+    }
     private void await(ClientGameTestContext c, BooleanSupplier condition, String why) {
         while (System.nanoTime() < deadline) {
             check(!exists("host-failure.properties") && !exists("peer-failure.properties"), "Both native roles remain healthy: " + why);
@@ -200,8 +232,7 @@ public final class StoneHingePeerTransportTest implements FabricClientGameTest {
         Properties value = new Properties(); value.putAll(identity); value.putAll(fields); value.setProperty("role", role); value.setProperty("pid", Long.toString(ProcessHandle.current().pid()));
         Path destination = path(name + ".properties"), temporary = path(name + ".tmp");
         check(!Files.exists(destination) && !Files.exists(temporary), "Write-once native witness");
-        try { try (var stream = Files.newOutputStream(temporary, StandardOpenOption.CREATE_NEW)) { value.store(stream, "Bounded Stone Hinge diagnostic witness"); }
-            Files.move(temporary, destination, StandardCopyOption.ATOMIC_MOVE);
+        try { StoneHingePeerFailure.writeAtomic(destination, temporary, value);
         } catch (java.io.IOException failure) { throw new AssertionError(failure); }
     }
     private void writeJson(String name, Object value) {

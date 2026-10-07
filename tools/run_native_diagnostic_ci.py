@@ -210,6 +210,7 @@ for _case in ("stone-hinge-owner-negative", "movement-foundations", "progression
 CASE_FILES[PEER_CASE] = (
     *CASE_FILES["stone-hinge-owner-negative"],
     "src/gametest/java/dev/wildercord/aura/StoneHingePeerCases.java",
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingePeerFailure.java",
     *("src/gametest/java/dev/wildercord/gametest/stonehinge/mixin/" + name + ".java" for name in (
         "StoneHingePeerTrackerMixin", "StoneHingePeerSendMixin", "StoneHingePeerClientMixin",
         "StoneHingeConnectionAccess", "StoneHingeServerConnectionAccess")),

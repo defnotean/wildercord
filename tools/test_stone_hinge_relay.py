@@ -53,6 +53,7 @@ class FakeSocket:
         self.connect_error = 0
         self.closed = 0
         self.shutdowns = []
+        self.shutdown_attempts = 0
         self.read_sizes = []
         self.send_times = []
         self.blocking = None
@@ -121,6 +122,7 @@ class FakeSocket:
 
     def shutdown(self, how):
         assert how == socket.SHUT_WR
+        self.shutdown_attempts += 1
         if self.shutdown_error:
             raise self.shutdown_error
         self.shutdowns.append((self.clock(), bytes(self.written)))
@@ -465,6 +467,188 @@ class RelayTests(unittest.TestCase):
         h.clock.advance(5)
         with self.assertRaisesRegex(RelayError, "drain_timeout"):
             h.relay.pump(0)
+
+    def _assert_failed_closed_without_reentry(self, h, code="io"):
+        evidence = h.relay.report()
+        self.assertEqual(evidence["status"], "failed")
+        self.assertEqual(evidence["failure"]["code"], code)
+        self.assertFalse(h.relay.complete)
+        attempts = [sock.shutdown_attempts for sock in h.relay._owned]
+        with self.assertRaisesRegex(RelayError, code):
+            h.relay.pump(0)
+        with self.assertRaises(RelayError):
+            h.relay.assert_complete()
+        h.relay.close()
+        h.relay.close()
+        self.assertEqual(h.relay.report(), evidence)
+        self.assertEqual([sock.shutdown_attempts for sock in h.relay._owned], attempts)
+        self.assertTrue(all(sock.closed == 1 for sock in h.relay._owned))
+        self.assertEqual(h.selector.closed, 1)
+
+    def test_drained_enotconn_is_recorded_for_either_or_both_halves(self):
+        for role in ("owner", "observer"):
+            for closed_halves in (("up",), ("down",), ("up", "down")):
+                with self.subTest(role=role, closed_halves=closed_halves):
+                    h = Harness()
+                    self.addCleanup(h.relay.close)
+                    for suffix in closed_halves:
+                        h.relay._directions[role + "_" + suffix].sink.shutdown_error = OSError(
+                            errno.ENOTCONN, "already closed")
+                    h.fill()
+                    evidence = h.finish()
+                    for name, direction in h.relay._directions.items():
+                        accepted = name in {role + "_" + suffix for suffix in closed_halves}
+                        self.assertEqual(evidence["directions"][name]["terminalReason"],
+                                         "already_closed_after_drain" if accepted else "shutdown_wr")
+                        self.assertTrue(evidence["directions"][name]["writeHalfClosed"])
+                        self.assertEqual(direction.sink.shutdown_attempts, 1)
+                        self.assertEqual(len(direction.sink.shutdowns), 0 if accepted else 1)
+                    self.assertTrue(h.relay.pump(0))
+                    h.relay.close()
+                    closed_evidence = h.relay.assert_complete()
+                    self.assertEqual(closed_evidence["directions"], evidence["directions"])
+                    self.assertTrue(h.relay.pump(0))
+                    h.relay.close()
+                    self.assertTrue(all(sock.closed == 1 for sock in h.relay._owned))
+                    self.assertTrue(all(d.sink.shutdown_attempts == 1 for d in h.relay._directions.values()))
+                    self.assertEqual(h.selector.closed, 1)
+
+    def test_drained_enotconn_accepts_either_eof_order_independently_per_pair(self):
+        for role in ("owner", "observer"):
+            for first_suffix, last_suffix in (("up", "down"), ("down", "up")):
+                with self.subTest(role=role, first_eof=first_suffix):
+                    h = Harness()
+                    self.addCleanup(h.relay.close)
+                    h.fill(eof=False)
+                    h.relay.pump(0)
+                    h.relay.pump(0)
+                    first = h.relay._directions[role + "_" + first_suffix]
+                    last = h.relay._directions[role + "_" + last_suffix]
+                    first.source.incoming.append(b"")
+                    self.assertFalse(h.relay.pump(0))
+                    self.assertTrue(first.eof and first.shutdown)
+                    self.assertFalse(last.eof)
+                    last.sink.shutdown_error = OSError(errno.ENOTCONN, "already closed")
+                    last.source.incoming.append(b"")
+                    self.assertFalse(h.relay.pump(0))
+                    self.assertEqual(last.terminal_reason, "already_closed_after_drain")
+                    self.assertEqual(first.terminal_reason, "shutdown_wr")
+                    other = "observer" if role == "owner" else "owner"
+                    self.assertFalse(h.relay._directions[other + "_up"].eof)
+                    h.clients[other].incoming.append(b"")
+                    h.backends[other].incoming.append(b"")
+                    self.assertEqual(h.finish()["status"], "passed")
+
+    def test_enotconn_rejects_pending_bytes_in_reverse_half(self):
+        for suffix, reverse in (("up", "down"), ("down", "up")):
+            with self.subTest(half=suffix):
+                h = Harness()
+                target = h.relay._directions["owner_" + suffix]
+                pending = h.relay._directions["owner_" + reverse]
+                target.sink.shutdown_error = OSError(errno.ENOTCONN, "pending reverse bytes")
+                h.fill()
+                h.relay.pump(0)
+                pending.sink.writable = False
+                with self.assertRaisesRegex(RelayError, "io"):
+                    h.relay.pump(0)
+                self.assertTrue(target.eof and pending.eof)
+                self.assertTrue(pending.queue)
+                self.assertGreater(pending.queued_bytes, 0)
+                self.assertFalse(target.shutdown)
+                self.assertIsNone(target.terminal_reason)
+                self._assert_failed_closed_without_reentry(h)
+
+    def test_enotconn_requires_reverse_eof_from_the_same_pair(self):
+        for role in ("owner", "observer"):
+            for suffix in ("up", "down"):
+                with self.subTest(role=role, half=suffix):
+                    h = Harness()
+                    h.fill(eof=False)
+                    h.relay.pump(0)
+                    h.relay.pump(0)
+                    target = h.relay._directions[role + "_" + suffix]
+                    other = "observer" if role == "owner" else "owner"
+                    h.clients[other].incoming.append(b"")
+                    h.backends[other].incoming.append(b"")
+                    target.source.incoming.append(b"")
+                    target.sink.shutdown_error = OSError(errno.ENOTCONN, "missing reverse EOF")
+                    with self.assertRaisesRegex(RelayError, "io"):
+                        h.relay.pump(0)
+                    self.assertTrue(h.relay._directions[other + "_up"].eof)
+                    self.assertTrue(h.relay._directions[other + "_down"].eof)
+                    self.assertIsNone(target.terminal_reason)
+                    self._assert_failed_closed_without_reentry(h)
+
+    def test_enotconn_rejects_incomplete_stream_proof_in_either_half(self):
+        for suffix in ("up", "down"):
+            for bad_suffix in ("up", "down"):
+                for fault in ("queued_bytes", "buffered_bytes", "byte_count", "hash", "empty"):
+                    with self.subTest(half=suffix, bad_half=bad_suffix, fault=fault):
+                        h = Harness()
+                        h.fill(eof=False)
+                        h.relay.pump(0)
+                        h.relay.pump(0)
+                        target = h.relay._directions["owner_" + suffix]
+                        bad = h.relay._directions["owner_" + bad_suffix]
+                        if fault in ("queued_bytes", "buffered_bytes"):
+                            setattr(bad, fault, 1)
+                        elif fault == "byte_count":
+                            bad.written_bytes -= 1
+                        elif fault == "hash":
+                            bad.write_hash.update(b"mismatch")
+                        else:
+                            bad.read_bytes = bad.written_bytes = 0
+                            bad.read_hash = hashlib.sha256()
+                            bad.write_hash = hashlib.sha256()
+                        target.sink.shutdown_error = OSError(errno.ENOTCONN, "incomplete byte proof")
+                        for sock in (*h.clients.values(), *h.backends.values()):
+                            sock.incoming.append(b"")
+                        with self.assertRaisesRegex(RelayError, "io"):
+                            h.relay.pump(0)
+                        self.assertTrue(target.eof and bad.eof)
+                        self.assertFalse(target.shutdown)
+                        self.assertIsNone(target.terminal_reason)
+                        self._assert_failed_closed_without_reentry(h)
+
+    def test_other_shutdown_errors_fail_even_after_verified_drain(self):
+        for error in (errno.ECONNRESET, errno.EPIPE, errno.EINVAL, errno.EBADF, None):
+            for suffix in ("up", "down"):
+                with self.subTest(error=error, half=suffix):
+                    h = Harness()
+                    target = h.relay._directions["owner_" + suffix]
+                    target.sink.shutdown_error = OSError(error, "shutdown failed")
+                    h.fill()
+                    with self.assertRaisesRegex(RelayError, "io"):
+                        h.finish()
+                    for direction in h.relay._directions.values():
+                        self.assertTrue(direction.eof)
+                        self.assertFalse(direction.queue)
+                        self.assertEqual(direction.read_bytes, direction.written_bytes)
+                        self.assertEqual(direction.read_hash.digest(), direction.write_hash.digest())
+                    self.assertIsNone(target.terminal_reason)
+                    self._assert_failed_closed_without_reentry(h)
+
+    def test_enotconn_during_read_write_or_connect_still_fails(self):
+        for stage in ("read", "write", "connect"):
+            with self.subTest(stage=stage):
+                h = Harness(connect_result=errno.EINPROGRESS if stage == "connect" else 0)
+                h.fill()
+                if stage == "read":
+                    h.clients["owner"].incoming.appendleft(OSError(errno.ENOTCONN, "recv failed"))
+                elif stage == "write":
+                    h.backends["owner"].send_sizes.append(OSError(errno.ENOTCONN, "send failed"))
+                else:
+                    h.backends["owner"].connect_error = errno.ENOTCONN
+                    h.backends["owner"].writable = True
+                    h.backends["owner"].shutdown_error = OSError(errno.ENOTCONN, "never connected")
+                code = "connect" if stage == "connect" else "io"
+                with self.assertRaisesRegex(RelayError, code):
+                    h.finish()
+                if stage == "connect":
+                    self.assertFalse(h.relay.report()["connections"]["owner"]["connected"])
+                    self.assertEqual(h.clients["owner"].read_sizes, [])
+                self.assertTrue(all(d.terminal_reason is None for d in h.relay._directions.values()))
+                self._assert_failed_closed_without_reentry(h, code)
 
     def test_reset_read_write_and_shutdown_fail_closed(self):
         for stage in ("read", "write", "shutdown"):

@@ -189,7 +189,9 @@ public final class MastersArts {
 			|| style.targets() == MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT;
 		var accepted = targetBearing ? dev.wildercord.aura.arts.ArtReleaseTargets.accept(player, context, aim, view) : null;
 		if (targetBearing && accepted == null) return false;
-		if (!art.condition().met(player) || !admission.valid() || !SwordStrings.rested(player, art)
+		// Ordinary styles arrive already checked, including a Final held while its momentum ebbs in a clash.
+		// Earned counters still revalidate their own live condition alongside the original catch receipt.
+		if (counter != null && !art.condition().met(player) || !admission.valid() || !SwordStrings.rested(player, art)
 			|| !eligible(player, counter != null && counter.canLowerGuard(player))
 			|| counter != null && !counter.ownerValid(player) || Aura.aura(player) < cost - 1.0E-4) return false;
 		long now = player.level().getServer().overworld().getGameTime();
