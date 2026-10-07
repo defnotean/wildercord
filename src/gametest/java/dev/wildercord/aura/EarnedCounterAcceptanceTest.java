@@ -50,13 +50,15 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return false; }
 	}
 	private record Hit(long tick, float amount) {}
-	private static final class Foe extends Husk {
+	private final class Foe extends Husk {
 		final List<Hit> hits = new ArrayList<>();
 		Consumer<Foe> after, afterLinked;
 		Foe(ServerLevel level) { super(EntityTypes.HUSK, level); }
 		@Override public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
 			boolean result = super.hurtServer(level, source, amount);
-			if (source.is(Aura.DAMAGE) && SwordStrings.performing() != null && EarnedCounters.handles(SwordStrings.performing().id())) {
+			if (source.is(Aura.DAMAGE) && active != null && source.getEntity() == active.owner
+				&& CounterHitCapture.direct(active.owner, active.art, this)) {
+				active.action = CounterHitCapture.action(active.owner, active.art, this, active.action);
 				hits.add(new Hit(level.getGameTime(), amount));
 				if (after != null) { var callback = after; after = null; callback.accept(this); }
 			}
@@ -67,6 +69,8 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 	}
 	private static final class Probe {
 		final String art;
+		ServerPlayer owner;
+		Object action;
 		Foe target, splash;
 		long accepted, hookAt, ready;
 		float caught, health;
@@ -113,8 +117,9 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 				check(EarnedCounterHelp.controls("backdraft").getString().contains(WildercordKeys.auraMapping().getTranslatedKeyMessage().getString()),
 					"Counter help displays the real rebound Aura key");
 			});
-			for (String art : List.of("backdraft", "rooted_parry")) {
+			for (String art : List.of("backdraft", "rooted_parry", "glacier_mirror", "static_riposte")) {
 				realKeys(context, world, art);
+				routes(context, world, art);
 				for (String cause : List.of("removed", "uuid", "replacement", "target_world", "owner_world", "range", "cover", "team", "weapon", "interrupt")) loss(context, world, art, cause);
 				for (String cause : List.of("no_aura", "unearned", "stale")) refusal(context, world, art, cause);
 				empty(context, world, art);
@@ -187,6 +192,39 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 		});
 	}
 
+	private void routes(ClientGameTestContext context, TestSingleplayerContext world, String art) {
+		for (String route : List.of("struck", "caught", "nearest", "bound", "outside", "covered")) {
+			double bound = art.equals("static_riposte") ? 7 : art.equals("backdraft") ? 6.5 : 6;
+			Probe p = request(context, world, art, route.equals("struck"), player -> {
+				if (route.equals("struck")) active.target = foe(player.level(), -.5, 2.5);
+				if (route.equals("nearest")) active.target.teleportTo(20.5, 100, .5);
+				if (route.equals("bound") || route.equals("outside")) {
+					active.target.teleportTo(.5, 100, .5 + bound + (route.equals("outside") ? .01 : 0));
+					active.splash.teleportTo(20.5, 100, 3.5);
+				}
+				if (route.equals("covered")) {
+					active.splash.teleportTo(20.5, 100, 3.5);
+					for (int y = 100; y <= 103; y++) player.level().setBlockAndUpdate(new BlockPos(0, y, 1), Blocks.STONE.defaultBlockState());
+				}
+			}, player -> {});
+			context.waitTicks(25);
+			on(world, player -> {
+				verify(p, player, true);
+				var expected = switch (route) {
+					case "struck" -> EarnedCounters.Route.STRUCK;
+					case "caught", "bound" -> EarnedCounters.Route.CAUGHT;
+					case "nearest" -> EarnedCounters.Route.NEAREST;
+					default -> EarnedCounters.Route.EMPTY;
+				};
+				check(p.route == expected, "Actual admission order and range/LOS boundary: " + art + "/" + route);
+				if (route.equals("nearest")) check(p.target.hits.isEmpty(), "Nearest route cannot revive the out-of-range original caught body");
+				if (route.equals("bound")) check(p.target.hits.size() == 1, "Inclusive documented primary range admits the exact original body");
+				if (route.equals("outside") || route.equals("covered")) check(p.target.hits.isEmpty(), "Unadmitted original body cannot receive primary harm");
+				return null;
+			});
+		}
+	}
+
 	private void loss(ClientGameTestContext context, TestSingleplayerContext world, String art, String cause) {
 		Probe p = request(context, world, art, true, player -> {}, player -> {
 			var q = active;
@@ -257,7 +295,11 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 		context.waitTicks(25);
 		on(world, player -> {
 			verify(p, player, true);
-			check(p.route == EarnedCounters.Route.EMPTY && p.target.hits.isEmpty() && !p.splash.hits.isEmpty(), "Accepted empty route retains its original untargeted cone/pulse without selecting a new primary");
+			check(p.route == EarnedCounters.Route.EMPTY && p.target.hits.isEmpty(), "An explicit empty route never selects a new primary");
+			if (art.equals("glacier_mirror")) check(p.splash.hits.isEmpty() && p.splash.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS)
+				&& dev.wildercord.aura.arts.ArtWards.mirrored(player), "Empty Mirror retains only its original chill cone and ward");
+			else if (art.equals("static_riposte")) check(p.splash.hits.isEmpty(), "Empty Riposte cannot begin a chain from a newly nearby foe");
+			else check(!p.splash.hits.isEmpty(), "Accepted empty Backdraft/Rooted retains the original untargeted pulse");
 			if (art.equals("rooted_parry")) check(player.getHealth() > p.health, "Explicitly empty Rooted Parry retains original bounded self-heal");
 			return null;
 		});
@@ -265,7 +307,7 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 
 	private void callback(ClientGameTestContext context, TestSingleplayerContext world, String art, boolean retire) {
 		Probe p = request(context, world, art, true, player -> {}, player -> {
-			Foe first = art.equals("backdraft") ? active.target : active.splash;
+			Foe first = art.equals("rooted_parry") ? active.splash : active.target;
 			first.after = foe -> {
 				if (retire) active.target.teleportTo(10.5, 100, .5);
 				else { player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY); dev.wildercord.cast.Charging.interrupt(player); }
@@ -275,10 +317,13 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 		on(world, player -> {
 			check(p.spends == 1 && p.hooks == (retire ? 0 : 1), "The released frame completes only while its original boundaries remain valid");
 			if (retire) {
-				check((art.equals("backdraft") ? p.splash : p.target).hits.isEmpty() && player.getHealth() == p.health,
+				check((art.equals("rooted_parry") ? p.target : p.splash).hits.isEmpty() && player.getHealth() == p.health,
 					"A callback losing original target suppresses later damage/status/heal");
 			} else {
-				check(!p.target.hits.isEmpty() && !p.splash.hits.isEmpty(), "A post-release weapon/interruption does not undo the released pulse");
+				check(!p.target.hits.isEmpty(), "A post-release weapon/interruption does not undo the primary release");
+				if (art.equals("glacier_mirror")) check(p.splash.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS)
+					&& dev.wildercord.aura.arts.ArtWards.mirrored(player), "Released Mirror chill and ward survive ordinary gear/interruption");
+				else check(!p.splash.hits.isEmpty(), "Already released pulse or chain survives ordinary gear/interruption");
 				if (art.equals("rooted_parry")) check(player.getHealth() > p.health, "Already released healing survives ordinary weapon changes");
 			}
 			return null;
@@ -345,7 +390,7 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 	private void linkedCallback(ClientGameTestContext context, TestSingleplayerContext world, String art, boolean etched) {
 		boolean[] nested = {false};
 		Probe p = request(context, world, art, etched, player -> {}, player -> {
-			Foe first = art.equals("backdraft") ? active.target : active.splash;
+			Foe first = art.equals("rooted_parry") ? active.splash : active.target;
 			first.afterLinked = foe -> { nested[0] = true; active.health = player.getHealth(); active.target.teleportTo(10.5, 100, .5); };
 			if (etched) {
 				dev.wildercord.player.Spellbooks.setCord(player, new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
@@ -364,7 +409,7 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 			check(nested[0], "The real counter reaches its nested " + (etched ? "etched rune" : "resonant") + " damage callback");
 			check(p.spends == 1 && p.hooks == 0 && player.getHealth() == p.health,
 				"Nested damage losing the selected target cannot resume counter healing or completion hooks");
-			check((art.equals("backdraft") ? p.splash : p.target).hits.isEmpty(), "No later counter recipient mutates after nested callback invalidation");
+			check((art.equals("rooted_parry") ? p.target : p.splash).hits.isEmpty(), "No later counter recipient mutates after nested callback invalidation");
 			return null;
 		});
 	}
@@ -377,7 +422,11 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 		p.caught = AuraGuard.caught(player).damage();
 		p.target.teleportTo(.5, 100, 2.1); p.target.setDeltaMovement(Vec3.ZERO);
 		p.expected = (p.art.equals("backdraft") ? ArtRules.backdraft(ArtKit.weapon(player), p.caught)
-			: ArtKit.weapon(player) * ArtRules.ROOTED_FACTOR) * ArtKit.scale()
+			: ArtKit.weapon(player) * switch (p.art) {
+				case "glacier_mirror" -> ArtRules.MIRROR_FACTOR;
+				case "static_riposte" -> ArtRules.RIPOSTE_FACTOR;
+				default -> ArtRules.ROOTED_FACTOR;
+			}) * ArtKit.scale()
 			* dev.wildercord.cast.AuraElements.bonus(player, p.target,
 				player.level().damageSources().source(Aura.DAMAGE, player, player), Aura.element(player));
 	}
@@ -389,11 +438,11 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 		player.setGameMode(GameType.SURVIVAL);
 		player.teleportTo(player.level(), FEET.x, FEET.y, FEET.z, Set.<Relative>of(), 0, 8, false);
 		player.setDeltaMovement(Vec3.ZERO); player.removeAllEffects(); Effects.readyToHurt(player); player.setHealth(10); player.getFoodData().setFoodLevel(20);
-		player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data(art.equals("backdraft") ? "ember" : "verdant", AuraRules.EDGE, AuraRules.threshold(AuraRules.EDGE), AuraRules.capacity(AuraRules.EDGE), 0));
+		player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data(ArtRules.art(art).method(), AuraRules.EDGE, AuraRules.threshold(AuraRules.EDGE), AuraRules.capacity(AuraRules.EDGE), 0));
 		player.removeAttached(AuraAttachments.STATE); player.removeAttached(SwordStrings.COOLDOWNS);
 		player.removeAttached(Momentum.MOMENTUM);
 		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD)); player.inventoryMenu.broadcastChanges();
-		var p = new Probe(art); p.target = foe(player.level(), .5, 2.1); p.splash = foe(player.level(), 1.1, 2.7); p.health = player.getHealth();
+		var p = new Probe(art); p.owner = player; p.target = foe(player.level(), .5, 2.1); p.splash = foe(player.level(), 1.1, 2.7); p.health = player.getHealth();
 		active = p; return p;
 	}
 	private Foe foe(ServerLevel level, double x, double z) {
@@ -402,6 +451,7 @@ public final class EarnedCounterAcceptanceTest implements FabricClientGameTest {
 		level.addFreshEntity(foe); fixtures.add(foe); return foe;
 	}
 	private void verify(Probe p, ServerPlayer player, boolean hits) {
+		CounterHitCapture.assertIdle();
 		check(p.spends == 1 && p.hooks == (hits ? 1 : 0), "Exactly one payment and only a valid release completes");
 		check(p.beforeFrame && p.exposed && p.recovery && p.ended, "Windup has no early harm and the exact fixed exposed recovery ends on time");
 		check(SwordStrings.readyAt(player, p.art) == p.ready, "No delayed frame changes the single accepted art rest");

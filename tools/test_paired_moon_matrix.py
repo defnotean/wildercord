@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shutil
 import tempfile
 import types
 import unittest
@@ -19,7 +20,7 @@ class MatrixTests(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory(); self.addCleanup(temp.cleanup)
         self.root = Path(temp.name)
-        self.options = types.SimpleNamespace(output=self.root / 'build/native/matrix', total_timeout=1380, accepted_eula=None)
+        self.options = types.SimpleNamespace(output=self.root / 'build/native/matrix', total_timeout=m.MAX_TOTAL_SECONDS, accepted_eula=None)
         self.identity = {'sourceHead': 'a'*40, 'checkoutSha': 'a'*40, 'prHeadSha': '',
                          'runId': '123', 'runAttempt': '1', 'job': 'connected-combat-native', 'repository': 'test/repo', 'eventName': 'push'}
         self.events = []
@@ -54,12 +55,23 @@ class MatrixTests(unittest.TestCase):
         nonce = str(uuid.uuid4()); nonces.add(nonce)
         return {'nonce': nonce, 'runIdentity': '123-1-'+nonce}
 
+    def union(self, paths):
+        self.assertTrue(self.locked)
+        self.assertEqual(paths, [self.options.output / "cast-receipt-wide", self.options.output / "cast-receipt-slim"])
+        self.assertEqual(len([event for event in self.events if event[0] == "child"]), 6)
+        self.events.append(("counter-union",))
+        return {"profiles": list(s.COUNTER_PROFILES), "sourceHead": self.identity["sourceHead"], "cases": list(s.CASES),
+                "counterPhaseCaptures": 128, "counterOwnerPeerGeometryVerified": True,
+                "phaseBasis": s.COUNTER_PHASE_BASIS, "pixelQualityReviewed": False,
+                "serverReleaseFrameCorrespondenceVerified": False}
+
     @contextlib.contextmanager
     def mocks(self):
         with patch.object(s, 'ignored_output'), patch.object(s, 'accepted_eula'), patch.object(s, 'validate_launch'), \
              patch.object(s, 'supervisor_lock', self.lock), patch.object(s, 'run', side_effect=self.child) as child, \
              patch.object(m, 'provenance', return_value=self.identity), patch.object(m, 'export', side_effect=self.export), \
              patch.object(m, 'validate_group', side_effect=self.verified), patch.object(m, 'elapsed_guard', contextlib.nullcontext), \
+             patch.object(s, 'validate_counter_profile_union', side_effect=self.union), \
              patch.object(m.time, 'monotonic', side_effect=lambda: self.clock), \
              patch.object(m, 'remaining', side_effect=lambda deadline: self.remaining(deadline)):
             yield child
@@ -71,32 +83,110 @@ class MatrixTests(unittest.TestCase):
     def report(self):
         return json.loads((self.options.output / 'matrix-result.json').read_text())
 
-    def test_all_cast_cases_precede_four_exact_views_without_summing_maxima(self):
-        # 900 + 4*180 exceeds 1380, but actual elapsed execution fits.
-        self.assertGreater(900 + 4*180, self.options.total_timeout)
+    def test_both_full_cast_profiles_precede_four_exact_views_and_strict_union(self):
+        # Every launch receives its full independent cap and is checked against actual remaining time.
+        self.assertGreaterEqual(self.options.total_timeout, 2*900 + 4*180)
         with self.mocks(): result = m.run(self.options, self.root)
         self.assertEqual(result['status'], 'passed')
-        self.assertEqual(self.events, [('export','cast-receipt'), ('child','cast-receipt','aura',None,900),
+        self.assertEqual(self.events, [('export','cast-receipt'), ('child','cast-receipt','aura-wide',None,900), ('child','cast-receipt','aura-slim',None,900),
             ('export','moon'), ('child','moon','moon-wide','front_oblique',180),
             ('child','moon','moon-wide','reverse_oblique',180), ('child','moon','moon-slim','front_oblique',180),
-            ('child','moon','moon-slim','reverse_oblique',180)])
-        self.assertEqual(len(result['groups']),5)
+            ('child','moon','moon-slim','reverse_oblique',180), ('counter-union',)])
+        self.assertEqual(len(result['groups']),6)
+        self.assertTrue(result['counterOwnerPeerGeometryVerified'])
+        self.assertEqual(result['counterProfileUnion']['counterPhaseCaptures'],128)
+        self.assertEqual(result['counterProfileUnion']['cases'],list(s.CASES))
         self.assertTrue(result['releaseImageDamageOrderVerified'])
         self.assertFalse(result['serverReleaseFrameCorrespondenceVerified'])
         self.assertFalse(self.locked)
 
-    def test_actual_remaining_budget_clips_later_ceiling(self):
-        self.options.total_timeout = 680
-        with self.mocks(), self.assertRaisesRegex(ValueError, 'elapsed budget'): m.run(self.options,self.root)
-        self.assertEqual(self.events[-1], ('child','moon','moon-slim','reverse_oblique',80))
+    def test_fixed_six_group_contract_and_approved_aggregate_budget(self):
+        self.assertEqual(m.MAX_TOTAL_SECONDS, 3000)
+        self.assertEqual(m.parse_args([]).total_timeout, 3000)
+        self.assertEqual(m.parse_args(["--total-timeout", "3000"]).total_timeout, 3000)
+        self.assertEqual([g["id"] for g in m.GROUPS], ["cast-receipt-wide", "cast-receipt-slim",
+                         "moon-wide-front_oblique", "moon-wide-reverse_oblique", "moon-slim-front_oblique", "moon-slim-reverse_oblique"])
+        for group in m.GROUPS[:2]:
+            selected = m.selected(group)
+            self.assertEqual(selected["cases"], list(s.CASES)); self.assertEqual(len(selected["cases"]), 54)
+            self.assertEqual(selected["maxTimeoutSeconds"], 900)
+        for group in m.GROUPS[2:]:
+            self.assertEqual(m.selected(group)["cases"], [s.MOON_CASE])
+            self.assertEqual(m.selected(group)["maxTimeoutSeconds"], 180)
+
+    def test_union_failure_or_wrong_source_never_produces_final_matrix_success(self):
+        for error in (ValueError("missing slim geometry"), InterruptedError("SIGTERM during union")):
+            self.options.output = self.root / "build/native" / str(uuid.uuid4()); self.clock = 0; self.events = []
+            with self.mocks(), patch.object(s, "validate_counter_profile_union", side_effect=error) as union, self.assertRaises(type(error)):
+                m.run(self.options, self.root)
+            union.assert_called_once_with([self.options.output / "cast-receipt-wide", self.options.output / "cast-receipt-slim"])
+            report = self.report()
+            self.assertEqual(report["status"], "failed")
+            self.assertFalse(report["counterOwnerPeerGeometryVerified"])
+            self.assertFalse(report["releaseImageDamageOrderVerified"])
+            self.assertTrue(all(group["status"] == "passed" for group in report["groups"]))
+        self.options.output = self.root / "build/native" / str(uuid.uuid4()); self.clock = 0; self.events = []
+        with self.mocks(), patch.object(s, "validate_counter_profile_union", return_value={"sourceHead": "b" * 40}), self.assertRaisesRegex(ValueError, "union source"):
+            m.run(self.options, self.root)
+        self.assertEqual(self.report()["status"], "failed")
+
+    def test_real_union_reader_runs_on_actual_child_directories_before_success(self):
+        # These are explicitly synthetic file fixtures; this test never starts JVMs or Gradle.
+        from test_two_client_supervisor import CounterProfileUnionTests
+        fixture = CounterProfileUnionTests(); fixture.setUp(); self.addCleanup(fixture.doCleanups)
+        actual_union = s.validate_counter_profile_union
+        def synthetic_child(options, root, **kwargs):
+            result = self.child(options, root, **kwargs)
+            if options.suite == s.SUITE:
+                shutil.rmtree(options.output)
+                shutil.copytree(fixture.paths[0 if options.profile == "aura-wide" else 1], options.output)
+            return result
+        with self.mocks() as child, patch.object(s, "validate_counter_profile_union", wraps=actual_union) as union:
+            child.side_effect = synthetic_child
+            result = m.run(self.options, self.root)
+        union.assert_called_once_with([self.options.output / "cast-receipt-wide", self.options.output / "cast-receipt-slim"])
+        self.assertTrue(result["counterOwnerPeerGeometryVerified"])
+        self.assertEqual(result["counterProfileUnion"]["counterPhaseCaptures"], 128)
+        self.assertEqual(result["counterProfileUnion"]["cases"], list(s.CASES))
+
+    def test_real_union_rejects_passed_groups_whose_native_evidence_is_missing(self):
+        actual_union = s.validate_counter_profile_union
+        with self.mocks(), patch.object(s, "validate_counter_profile_union", wraps=actual_union) as union, self.assertRaises(ValueError):
+            m.run(self.options, self.root)
+        union.assert_called_once()
+        self.assertEqual(self.report()["status"], "failed")
+        self.assertFalse(self.report()["counterOwnerPeerGeometryVerified"])
+        self.assertFalse(self.report()["releaseImageDamageOrderVerified"])
+
+    def test_insufficient_remaining_budget_never_clips_later_counter_ceiling(self):
+        self.options.total_timeout = 1000
+        with self.mocks(), self.assertRaisesRegex(ValueError, 'full 900-second'): m.run(self.options,self.root)
+        self.assertEqual(self.events, [('export','cast-receipt'), ('child','cast-receipt','aura-wide',None,900),
+                         ('export','moon'), ('child','moon','moon-wide','front_oblique',180),
+                         ('child','moon','moon-wide','reverse_oblique',180), ('child','moon','moon-slim','front_oblique',180),
+                         ('child','moon','moon-slim','reverse_oblique',180)])
         self.assertEqual(self.report()['status'],'failed')
+        self.assertEqual([g['status'] for g in self.report()['groups']], ['passed','unverified']+['passed']*4)
+
+    def test_insufficient_remaining_budget_never_clips_later_moon_ceiling(self):
+        self.options.total_timeout = 1200
+        def slow_second(options, root, **kwargs):
+            result = self.child(options, root, **kwargs)
+            if options.profile == "aura-slim": self.clock += 500
+            return result
+        with self.mocks() as child:
+            child.side_effect = slow_second
+            with self.assertRaisesRegex(ValueError, 'full 180-second'): m.run(self.options,self.root)
+        self.assertEqual(self.events[-1], ('child','moon','moon-wide','reverse_oblique',180))
+        self.assertEqual(self.report()['status'],'failed')
+        self.assertTrue(all(event[-1] in (900,180) for event in self.events if event[0]=='child'))
 
     def test_cast_failure_stops_before_any_moon_and_preserves_missing_ledger(self):
         with self.mocks() as child:
             child.side_effect = RuntimeError('cast failure')
             with self.assertRaisesRegex(RuntimeError,'cast failure'): m.run(self.options,self.root)
         self.assertEqual(self.events,[('export','cast-receipt')])
-        report=self.report(); self.assertEqual([g['status'] for g in report['groups']], ['failed']+['not_started']*4)
+        report=self.report(); self.assertEqual([g['status'] for g in report['groups']], ['failed']+['unverified']*5)
         self.assertIn('cast failure',report['error'])
         self.assertFalse(self.locked)
 
@@ -110,7 +200,45 @@ class MatrixTests(unittest.TestCase):
                 return self.child(options,root,**kw)
             child.side_effect=fail
             with self.assertRaisesRegex(TimeoutError,'Moon deadline'):m.run(self.options,self.root)
-        self.assertEqual([g['status'] for g in self.report()['groups']], ['passed','passed','failed','not_started','not_started'])
+        self.assertEqual([g['status'] for g in self.report()['groups']], ['passed','passed','failed','unverified','unverified','unverified'])
+
+    def test_failed_cleaned_group_preserves_failure_and_runs_all_other_safe_groups(self):
+        with self.mocks() as child:
+            calls = 0
+            def fail_once(options, root, **kwargs):
+                nonlocal calls
+                calls += 1
+                self.child(options, root, **kwargs)
+                if calls == 1:
+                    (options.output / "launch-proof.json").write_text("{}")
+                    (options.output / "result.json").write_text(json.dumps({"status":"failed", "launcherPid":os.getpid(),
+                        "suite":options.suite,"profile":options.profile,"stage":"clients","processes":{
+                        "host":{"pid":111,"exit":1},"peer":{"pid":222,"exit":-15}}}))
+                    raise RuntimeError("native primary failed after verified cleanup")
+            child.side_effect = fail_once
+            with self.assertRaisesRegex(RuntimeError, "native primary failed"): m.run(self.options, self.root)
+        report = self.report()
+        self.assertEqual(calls,6)
+        self.assertEqual([g["status"] for g in report["groups"]],["failed"]+["passed"]*5)
+        self.assertTrue(report["groups"][0]["cleanupVerified"])
+        self.assertTrue(report["groups"][0]["executed"])
+        self.assertEqual(report["status"],"failed")
+        self.assertNotIn(("counter-union",),self.events)
+        self.assertFalse(report["counterOwnerPeerGeometryVerified"])
+
+    def test_failed_group_unreaped_pid_prevents_all_further_launches(self):
+        with self.mocks() as child:
+            def unsafe(options,root,**kwargs):
+                self.child(options,root,**kwargs)
+                (options.output/"result.json").write_text(json.dumps({"launcherPid":os.getpid(),"suite":options.suite,
+                    "profile":options.profile,"stage":"clients","processes":{"host":{"pid":111,"exit":None}}}))
+                raise RuntimeError("cleanup pending")
+            child.side_effect=unsafe
+            with self.assertRaises(RuntimeError):m.run(self.options,self.root)
+        report=self.report()
+        self.assertFalse(report["groups"][0]["cleanupVerified"])
+        self.assertEqual([g["status"] for g in report["groups"]],["failed"]+["unverified"]*5)
+        self.assertEqual(len([e for e in self.events if e[0]=="child"]),1)
 
     def test_validation_failure_and_sigterm_do_not_advance_or_claim_success(self):
         for error in (ValueError('missing receipt'), InterruptedError('SIGTERM')):
@@ -129,7 +257,7 @@ class MatrixTests(unittest.TestCase):
         self.assertEqual(self.report()['status'],'failed')
 
     def test_cli_has_no_arbitrary_selectors_or_extended_timeout(self):
-        for args in (['--suite','moon'],['--case','other'],['--total-timeout','1381'],['--command','sh']):
+        for args in (['--suite','moon'],['--case','other'],['--total-timeout',str(m.MAX_TOTAL_SECONDS+1)],['--command','sh']):
             with self.subTest(args=args),patch('sys.stderr'),self.assertRaises(SystemExit):m.parse_args(args)
 
     def test_export_timeout_terminates_owned_process_group(self):
@@ -173,7 +301,7 @@ class GroupValidationTests(unittest.TestCase):
     def setUp(self):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup);self.base=Path(temp.name)
         self.identity={'sourceHead':'a'*40,'checkoutSha':'a'*40,'prHeadSha':'','runId':'123','runAttempt':'1','job':'connected-combat-native'}
-        self.group=m.GROUPS[1];selected=m.selected(self.group)
+        self.group=m.GROUPS[2];selected=m.selected(self.group)
         self.result={**self.identity,**{k:selected[k] for k in ('suite','profile','cases','case','expectedSkin','observerAngle')},
             'status':'passed','nonce':'00000000-0000-4000-8000-000000000001','runIdentity':'123-1-00000000-0000-4000-8000-000000000001',
             'descriptorSha256':'b'*64,'launchSha256':'c'*64,'heapMiBPerJvm':2048,'timeoutSeconds':180,
@@ -188,7 +316,7 @@ class GroupValidationTests(unittest.TestCase):
     def test_missing_cases_provenance_nonce_process_or_false_proof_rejected(self):
         original=copy.deepcopy(self.result)
         changes=[('cases',[]),('observerAngle','wrong'),('expectedSkin','slim'),('nonce','stale'),('checkoutSha','b'*40),
-                 ('timeoutSeconds',181),('heapMiBPerJvm',4096),('serverReleaseFrameCorrespondenceVerified',True),
+                 ('timeoutSeconds',179),('timeoutSeconds',181),('heapMiBPerJvm',4096),('serverReleaseFrameCorrespondenceVerified',True),
                  ('pixelQualityReviewed',True),('releaseImageDamageOrderVerified',False),('witnesses',[]),
                  ('processes',{'host':{'pid':111,'exit':0}}),('ci',{})]
         with patch.object(s,'validate_witnesses',return_value=list(s.MOON_TERMINALS)):
@@ -209,6 +337,47 @@ class GroupValidationTests(unittest.TestCase):
     def test_launch_proof_missing_nonce_rejected_even_if_result_passed(self):
         proof={**self.result,'status':'started'};proof.pop('nonce');(self.base/'launch-proof.json').write_text(json.dumps(proof))
         with self.assertRaisesRegex(ValueError,'Launch proof'):m.validate_group(self.base,self.group,self.identity,set())
+
+
+class CounterGroupValidationTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory(); self.addCleanup(temp.cleanup); self.base = Path(temp.name)
+        self.identity = {"sourceHead": "a" * 40, "checkoutSha": "a" * 40, "prHeadSha": "", "runId": "123", "runAttempt": "1", "job": "connected-combat-native"}
+        self.group = m.GROUPS[0]; selected = m.selected(self.group)
+        self.result = {**self.identity, **{key: selected[key] for key in ("suite", "profile", "cases", "expectedSkin")},
+                       "status": "passed", "nonce": "00000000-0000-4000-8000-000000000001", "runIdentity": "123-1-00000000-0000-4000-8000-000000000001",
+                       "descriptorSha256": "b" * 64, "launchSha256": "c" * 64, "heapMiBPerJvm": 2048, "timeoutSeconds": 900,
+                       "hostUuid": selected["profiles"]["host"][1], "peerUuid": selected["profiles"]["peer"][1],
+                       "ci": {"GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "1", "GITHUB_JOB": "connected-combat-native"},
+                       "processes": {"host": {"pid": 111, "exit": 0}, "peer": {"pid": 222, "exit": 0}}, "witnesses": list(s.TERMINALS),
+                       "counterOwnerPeerGeometryVerified": True, "counterPhaseCaptures": 64, "phaseBasis": s.COUNTER_PHASE_BASIS,
+                       "serverReleaseFrameCorrespondenceVerified": False, "pixelQualityReviewed": False}
+        self.flush()
+
+    def flush(self):
+        (self.base / "result.json").write_text(json.dumps(self.result))
+        (self.base / "launch-proof.json").write_text(json.dumps({**self.result, "status": "started"}))
+
+    def test_counter_group_binds_original_width_full_roster_and_full_cap(self):
+        with patch.object(s, "validate_witnesses", return_value=list(s.TERMINALS)) as witness:
+            result = m.validate_group(self.base, self.group, self.identity, set())
+        self.assertEqual(result["cases"], list(s.CASES))
+        self.assertEqual(witness.call_args.args[2], list(s.CASES))
+        self.assertEqual(witness.call_args.args[-1]["profile"], "aura-wide")
+        original = copy.deepcopy(self.result)
+        for field, value in (("profile", "aura"), ("cases", list(s.CASES[:46])), ("expectedSkin", "slim"),
+                             ("timeoutSeconds", 899), ("timeoutSeconds", 901), ("counterOwnerPeerGeometryVerified", False),
+                             ("counterPhaseCaptures", 63), ("phaseBasis", "requested_age"),
+                             ("pixelQualityReviewed", True), ("serverReleaseFrameCorrespondenceVerified", True)):
+            self.result = {**original, field: value}; self.flush()
+            with self.subTest(field=field, value=value), patch.object(s, "validate_witnesses", return_value=list(s.TERMINALS)), self.assertRaises(ValueError):
+                m.validate_group(self.base, self.group, self.identity, set())
+
+    def test_started_counter_proof_must_bind_fixed_original_skin_before_launch(self):
+        proof = {**self.result, "status": "started"}; proof.pop("expectedSkin")
+        (self.base / "launch-proof.json").write_text(json.dumps(proof))
+        with self.assertRaisesRegex(ValueError, "Counter selection provenance"):
+            m.validate_group(self.base, self.group, self.identity, set())
 
 
 class CleanupDeadlineTests(unittest.TestCase):

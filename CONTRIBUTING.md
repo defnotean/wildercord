@@ -8,7 +8,8 @@ request merged. If anything here is unclear, open an issue and ask.
 You need:
 
 - **JDK 25** (Temurin works well)
-- **Python 3.11+** with **Pillow** (`pip install pillow`) for the asset generator
+- **Python 3.11+**, available as `python3` on macOS/Linux or `python` on Windows for full/sharded client test resource processing
+- **Pillow** (`pip install pillow`) for the asset generator
 - Git, and an IDE with Gradle support (IntelliJ IDEA recommended)
 
 ```bash
@@ -20,6 +21,9 @@ cd wildercord
 
 In IntelliJ, open the folder as a Gradle project; Loom sets up run configurations for the client
 and server.
+The owned CI launcher runs on Linux. Full/sharded Gradle plan selection uses a portable
+bounded configuration reader. See [the explicit plan contract](docs/FULL_CLIENT_SHARD_PLAN.md).
+Focused selectors keep their existing platform behavior.
 
 ## Where things live
 

@@ -201,6 +201,47 @@ public final class MastersStyleAnimation {
 		pose(j(.14F, -.12F, .03F), j(-.06F, .05F, -.01F), j(-1.45F, -.20F, -.24F), j(-1.12F, -.24F, .18F),
 			j(-.56F, -.16F, -.16F), j(.36F, .14F, .14F), .76F, -.12F, h(-.02F, .24F, -.22F, -34, -6, 12)));
 
+	// Glacier Mirror receives behind an upright oblique edge, then opens the blade outward
+	// in one level answer. The square guard closes again without replaying the caught attack.
+	private static final Motion GLACIER_MIRROR = new Motion(
+		pose(j(.03F, .22F, -.10F), j(-.02F, -.10F, .04F), j(-1.50F, .46F, -.72F), j(-1.30F, -.24F, .18F),
+			j(-.32F, -.09F, -.08F), j(.23F, .08F, .08F), .38F, .04F, h(.10F, .24F, -.22F, -28, 26, -32)),
+		pose(j(.06F, -.28F, .08F), j(-.03F, .12F, -.03F), j(-1.18F, -.64F, -.54F), j(-1.18F, -.16F, .24F),
+			j(-.38F, .08F, -.09F), j(.25F, -.07F, .08F), .42F, -.26F, h(-.20F, .22F, -.32F, -14, -2, 24)),
+		pose(j(.03F, -.08F, .02F), j(-.02F, .04F, 0), j(-1.42F, -.20F, -.54F), j(-1.28F, -.22F, .20F),
+			j(-.29F, .05F, -.08F), j(.21F, -.04F, .07F), .34F, -.06F, h(-.04F, .22F, -.22F, -24, -4, 8)));
+
+	// Static Riposte folds beside the outside shoulder, snaps a short diagonal edge across
+	// the opening, then recoils high. Its asymmetry is all model-local; there is no dash.
+	private static final Motion STATIC_RIPOSTE = new Motion(
+		pose(j(.18F, .38F, -.16F), j(-.10F, -.16F, .06F), j(-1.92F, .68F, -.46F), j(-.86F, -.28F, -.48F),
+			j(-.46F, -.12F, -.11F), j(.34F, .10F, .10F), .62F, .08F, h(.16F, .28F, -.18F, -50, 30, -26)),
+		pose(j(.24F, -.34F, .12F), j(-.12F, .14F, -.05F), j(-.96F, -.58F, -.36F), j(-.58F, -.16F, -.64F),
+			j(-.53F, .11F, -.11F), j(.34F, -.09F, .10F), .66F, -.40F, h(-.14F, .20F, -.38F, 24, -24, 34)),
+		pose(j(.10F, -.18F, .05F), j(-.05F, .08F, -.02F), j(-1.65F, -.32F, -.40F), j(-.82F, -.24F, -.42F),
+			j(-.38F, .09F, -.10F), j(.28F, -.08F, .09F), .48F, -.12F, h(.02F, .26F, -.22F, -34, -12, 16)));
+
+
+	// Unmoved takes the load on a broad, lowered base. The level point drives a short
+	// distance from the ribs before withdrawing; the brace never implies a second hit.
+	private static final Motion UNMOVED = new Motion(
+		pose(j(.27F, .10F, -.025F), j(-.14F, -.04F, .01F), j(-.94F, .12F, -.32F), j(-1.16F, -.42F, .30F),
+			j(-.74F, -.23F, -.19F), j(.49F, .20F, .17F), 1.14F, .03F, h(.17F, .25F, -.14F, -78, 12, -18)),
+		pose(j(.34F, -.035F, .025F), j(-.18F, .01F, -.01F), j(-1.56F, -.035F, -.18F), j(-1.24F, -.34F, .24F),
+			j(-.80F, -.21F, -.19F), j(.52F, .18F, .17F), 1.16F, -.32F, h(.08F, .27F, -.44F, -96, 4, 10)),
+		pose(j(.23F, -.02F, .01F), j(-.12F, .015F, 0), j(-1.10F, -.06F, -.28F), j(-1.18F, -.40F, .28F),
+			j(-.71F, -.20F, -.18F), j(.47F, .18F, .16F), 1.08F, -.06F, h(.14F, .25F, -.20F, -72, 8, -6)));
+
+	// Null Parry receives on an outside slant, draws the edge inward through a narrow
+	// horizontal pocket and closes beside the sternum. Its void pulse has no extra swing.
+	private static final Motion NULL_PARRY = new Motion(
+		pose(j(.16F, .31F, .09F), j(-.08F, -.13F, -.03F), j(-1.18F, .66F, -.46F), j(-1.05F, -.38F, .34F),
+			j(-.48F, -.11F, -.095F), j(.32F, .09F, .085F), .65F, .07F, h(.12F, .25F, -.23F, -24, 32, -30)),
+		pose(j(.12F, -.21F, -.045F), j(-.065F, .085F, .02F), j(-1.32F, -.44F, -.31F), j(-1.20F, -.22F, .28F),
+			j(-.52F, .075F, -.10F), j(.34F, -.06F, .09F), .68F, -.18F, h(-.17F, .25F, -.34F, -8, 14, 30)),
+		pose(j(.20F, -.055F, .025F), j(-.10F, .025F, -.01F), j(-1.12F, -.16F, -.38F), j(-1.28F, -.30F, .31F),
+			j(-.46F, .04F, -.09F), j(.31F, -.03F, .08F), .72F, .02F, h(-.02F, .24F, -.18F, -18, 4, 6)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -222,6 +263,10 @@ public final class MastersStyleAnimation {
 			case 19 -> CRIMSON_MOON;
 			case 20 -> BACKDRAFT;
 			case 21 -> ROOTED_PARRY;
+			case 22 -> GLACIER_MIRROR;
+			case 23 -> STATIC_RIPOSTE;
+			case 24 -> UNMOVED;
+			case 25 -> NULL_PARRY;
 			default -> null;
 		};
 	}

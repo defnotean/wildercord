@@ -4,6 +4,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- Pin the full-client gate to explicit 80/84/77/71 groups, including the two new counter-lifetime classes with exact roster, dependency-block and plan identities shared by the launcher and Gradle. Only four matching completed shard proofs can accept the full gate; relocated runtime acceptance and the unchanged 180-minute budget remain unverified.
+
 - Preserve an accepted Crimson Moon through natural Momentum decay during a clash while keeping cold Final requests gated and earned-counter admission checks intact. Native request, clash and released-owner regressions accompany the correction; fresh native execution remains pending.
 
 - Keep Fabric's client test phase pump participating while a real singleplayer close awaits its native server shutdown task. The repair is confined to the GameTest mod; paused/unpaused save-close-reopen and Relay reconnect remain required native acceptance gates.
@@ -11,6 +13,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Add the Archive’s Relay Circle lesson at active Heart Circle VIII: one paid remote focus, a fresh second cast-key press, a warned ray, and persistent three-page lore/practice guidance. The initial shape accepts only Relay with Harm, Frost or Shock.
 
 ### Masters of Tomorrow, development foundation
+
+- Extend the connected fixture from its original 46 cases to 54 unique cases in both actual wide/slim profiles, with all four Moon views retained. Genuine counter input, first native source identity, both-view phase/draw/hilt receipts and durable late-failure rejection precede unchanged image evidence. Full per-group caps are reserved sequentially; native execution, image quality and runtime fit remain unverified.
+
+- Give the existing Unmoved and Null Parry counters original Classic/articulated body and first-person choreography with six/four-tick windups and sixteen/fourteen-tick recovery. Unmoved's paid defence starts once at admission, retains its original expiry, and coexists with Mountain through independent exact-body leases without removing unrelated Resistance. Null keeps its independent pulse before the captured primary strike, including EMPTY/lost-primary release. Original price, rest, target routes and PvP limits remain; native acceptance is pending.
+
+- Retire released-art authority at the original body/world/lifetime boundary, including reentrant world changes and equal-ID respawn replacement. Stale cleanup cannot retire a newer destination grant. Whole Unmoved/Null and hardening lifetime suites expand the required Masters gate to 47 classes and the full descriptor to 312; old ordered rosters are retained.
 
 - Keep native neutral buoyancy only while a Lantern Newt follows a waterlogged refuge route, preventing upward drift during tight turns; ordinary swimming, speed, steering and real collisions remain unchanged. Native arrival and transition regression execution is pending.
 

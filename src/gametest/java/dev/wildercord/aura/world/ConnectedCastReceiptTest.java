@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import dev.wildercord.cast.NextCounterPairedCases;
 import dev.wildercord.cast.SpectatorPairedCases;
 import dev.wildercord.cast.LifeOwnerPairedCases;
+import dev.wildercord.cast.CounterPeerPairedCases;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -48,6 +49,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 	private UUID hostId, peerId;
 	private net.minecraft.client.player.LocalPlayer counterDeadBody;
 	private long deadline, otherPid;
+	private Map<String,String> counterCompletion;
 
 	@Override public void runTest(ClientGameTestContext context) {
 		role = required("role");
@@ -108,6 +110,8 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			new LifeOwnerPairedCases().runConnectedPair(context, server, hostId, peerId,
 				(id, proof) -> prepareLifePeer(context, server, id, proof),
 				(id, proof) -> observeCase(context, server, id, proof, true), this::passCase);
+			new CounterPeerPairedCases().runConnectedPair(context, server, hostId, peerId,
+				(id, proof) -> observeCase(context, server, id, proof, true), this::passCase);
 			check(completed.equals(expected), "All preserved native scenarios passed in declared order");
 			GameType hostMode = server.computeOnServer(s -> s.getPlayerList().getPlayer(hostId).gameMode.getGameModeForPlayer());
 			GameType peerMode = server.computeOnServer(s -> s.getPlayerList().getPlayer(peerId).gameMode.getGameModeForPlayer());
@@ -118,6 +122,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 				&& server.computeOnServer(s -> s.getPlayerList().getPlayer(peerId) == null), "Real peer departs", false);
 			check(read("peer-cast-receipt-passed", "peer").getProperty("cases").equals(String.join(",", completed)), "Peer witnessed the complete native case ledger");
 			check("true".equals(read("peer-disconnected", "peer").getProperty("modesRestored")), "Peer independently observes both restored modes before departure");
+			dev.wildercord.gametest.CounterPeerRenderProbe.assertHealthy();
 			write("host-cast-receipt-passed", Map.of("cases", String.join(",", completed)));
 		}
 	}
@@ -184,6 +189,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 		if (LifeOwnerPairedCases.CASES.contains(id)) {
 			verifyLifeMeasurements(id, snapshot, seen);
 		}
+		if (CounterPeerPairedCases.CASES.contains(id)) counterCompletion = snapshot;
 		observed.add(id);
 	}
 
@@ -268,7 +274,8 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 		check(index < expected.size() && expected.get(index).equals(id) && observed.size() == index + 1
 			&& observed.get(index).equals(id), "Exactly one live peer observation precedes final case success");
 		completed.add(id);
-		write(String.format(java.util.Locale.ROOT, "case-%02d-passed", index), Map.of("case", id));
+		write(String.format(java.util.Locale.ROOT, "case-%02d-passed", index), CounterPeerPairedCases.CASES.contains(id) ? counterCompletion : Map.of("case", id));
+		counterCompletion = null;
 	}
 
 	private void peer(ClientGameTestContext context) {
@@ -285,6 +292,7 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			write("peer-connected", Map.of());
 			for (int i = 0; i < expected.size(); i++) {
 				String stem = String.format(java.util.Locale.ROOT, "case-%02d", i), id = expected.get(i);
+				Map<String,String> counterProof = CounterPeerPairedCases.CASES.contains(id) ? CounterPeerPairedCases.capturePeer(context, id, i) : Map.of();
 				if (id.equals(NextCounterPairedCases.CASES.get(2))) respawnAsPeer(context);
 				if (LifeOwnerPairedCases.CASES.contains(id)) {
 					await(context, () -> exists(stem + "-prepare"), "Life owner prepares " + id, false);
@@ -316,6 +324,11 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 					var charge = mc.player.getAttached(WildercordAttachments.CHARGE);
 					if (Math.abs(mc.player.getHealth() - health) >= .001F || Math.abs(mc.player.getAbsorptionAmount() - absorption) >= .001F
 						|| !(charge == null ? chargeStart == -1 : charge.start() == chargeStart)) return false;
+					if (CounterPeerPairedCases.CASES.contains(id)) {
+						var target = mc.level.getEntity(Integer.parseInt(sample.getProperty("counterTargetEntity")));
+						if (!(target instanceof LivingEntity living) || !target.getUUID().toString().equals(sample.getProperty("counterTargetUuid"))
+							|| !living.isAlive() || Math.abs(living.getHealth() - Float.parseFloat(sample.getProperty("counterTargetHealth"))) >= .001F) return false;
+					}
 					if (sample.containsKey("projectileUuid")) {
 						if (Math.abs(Spellbooks.mana(mc.player) - Float.parseFloat(sample.getProperty("mana"))) >= .001F) return false;
 						var bolt = mc.level.getEntity(Integer.parseInt(sample.getProperty("projectileEntity")));
@@ -354,20 +367,27 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 					var proof = new HashMap<String, String>(); for (String key : sample.stringPropertyNames()) proof.put(key, sample.getProperty(key));
 					seen.putAll(LifeOwnerPairedCases.finishPeer(context, id, proof));
 				}
+				if (!counterProof.isEmpty()) {
+					for (var field : counterProof.entrySet()) check(field.getValue().equals(sample.getProperty(field.getKey())), "Counter outcome retains the exact independently captured action");
+					seen.putAll(counterProof);
+					for (String field : List.of("directPrimaryHits", "primaryHitTick", "releaseTick", "payments", "completions", "counterTargetUuid", "counterTargetEntity", "counterTargetHealthBefore", "counterTargetHealth")) seen.put(field, sample.getProperty(field));
+				}
 				write(stem + "-seen", seen);
 				await(context, () -> exists(stem + "-passed"), "Remaining server assertions pass for " + id, false);
 				check(id.equals(read(stem + "-passed", "host").getProperty("case")), "Host confirms this exact case after all strict probes");
+				if (CounterPeerPairedCases.CASES.contains(id)) CounterPeerPairedCases.finishPeerSource();
 				completed.add(id);
 			}
 			await(context, () -> exists("disconnect-peer"), "Native assertions complete before departure", false);
 			Properties departure = read("disconnect-peer", "host");
-			check(departure.getProperty("cases").equals(String.join(",", completed)), "Both roles finish the same complete 46-case ledger");
+			check(departure.getProperty("cases").equals(String.join(",", completed)), "Both roles finish the same complete 54-case ledger");
 			context.waitFor(mc -> mc.gameMode != null && mc.gameMode.getPlayerMode().getName().equals(departure.getProperty("peerMode"))
 				&& mc.getConnection() != null && mc.getConnection().getPlayerInfo(hostId) != null
 				&& mc.getConnection().getPlayerInfo(hostId).getGameMode().getName().equals(departure.getProperty("hostMode")), 60);
 			context.runOnClient(mc -> mc.disconnect(new TitleScreen(), false));
 			context.waitFor(mc -> mc.player == null && mc.level == null, 300);
 			write("peer-disconnected", Map.of("cases", String.join(",", completed), "modesRestored", "true"));
+			dev.wildercord.gametest.CounterPeerRenderProbe.assertHealthy();
 			write("peer-cast-receipt-passed", Map.of("cases", String.join(",", completed)));
 			await(context, () -> exists("host-cast-receipt-passed"), "Host observes connection removal", false);
 			read("host-cast-receipt-passed", "host");
@@ -425,8 +445,8 @@ public final class ConnectedCastReceiptTest implements FabricClientGameTest {
 			check(input != null, "Source-controlled native case contract is packaged");
 			var json = JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonObject();
 			var cases = new ArrayList<String>(); json.getAsJsonArray("cases").forEach(value -> cases.add(value.getAsString()));
-			var compiled = new ArrayList<>(CastHitReceiptConsistencyChecks.expectedCases()); compiled.addAll(NextCounterPairedCases.CASES); compiled.addAll(SpectatorPairedCases.CASES); compiled.addAll(LifeOwnerPairedCases.CASES);
-			check(json.get("expectedCount").getAsInt() == 46 && cases.equals(compiled), "Contract preserves all 42 compiled scenarios plus exactly four explicit Life comparisons");
+			var compiled = new ArrayList<>(CastHitReceiptConsistencyChecks.expectedCases()); compiled.addAll(NextCounterPairedCases.CASES); compiled.addAll(SpectatorPairedCases.CASES); compiled.addAll(LifeOwnerPairedCases.CASES); compiled.addAll(CounterPeerPairedCases.CASES);
+			check(json.get("expectedCount").getAsInt() == 54 && cases.equals(compiled), "Contract preserves the original 46-case prefix plus exactly eight counter visual comparisons");
 			return List.copyOf(cases);
 		} catch (java.io.IOException failure) { throw new AssertionError(failure); }
 	}

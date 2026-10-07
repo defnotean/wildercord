@@ -19,6 +19,8 @@ import run_native_diagnostic_ci as diagnostic
 import test_native_diagnostic_ci as existing
 
 
+COUNTER_ADDITIONS = ('dev.wildercord.aura.UnmovedNullAcceptanceTest', 'dev.wildercord.aura.arts.ArtWardsHardeningTest')
+
 IDENTITY = {"headSha": "a" * 40, "checkoutSha": "b" * 40, "workflowSha": "b" * 40,
             "runId": "123", "runAttempt": "1", "job": "masters-native"}
 
@@ -61,19 +63,19 @@ class RequiredPartTests(unittest.TestCase):
     def test_exact_partition_preserves_original_order_and_all_other_rosters(self):
         full = suites.select_entries(suite="masters")["entries"]
         parts = [suites.select_entries(suite=name) for name in suites.MASTERS_PART_NAMES]
-        self.assertEqual([p["count"] for p in parts], [41, 1, 2])
+        self.assertEqual([p["count"] for p in parts], [44, 1, 2])
         self.assertEqual(parts[0]["entries"], [entry for entry in full if entry not in suites.STONE_MARCH_ENTRIES])
         self.assertEqual(parts[0]["entries"][-1], full[-1])
         self.assertEqual(parts[1]["entries"] + parts[2]["entries"], list(suites.STONE_MARCH_ENTRIES))
         combined = [entry for part in parts for entry in part["entries"]]
-        self.assertEqual(len(set(combined)), 44)
+        self.assertEqual(len(set(combined)), 47)
         self.assertEqual(set(combined), set(full))
         for selected in parts:
             self.assertEqual(selected["kind"], "required-part")
             self.assertEqual(run_client_ci.launch_command(selected)[-1], "-PciSuite=" + selected["name"])
             self.assertEqual(diagnostics.snapshot_thresholds(selected), (1800, 2700, 4500))
         self.assertEqual(suites.select_entries(suite="articulated")["count"], 6)
-        self.assertEqual([e for i in range(1, 5) for e in suites.select_entries(shard=f"{i}/4")["entries"]],
+        self.assertCountEqual([e for i in range(1, 5) for e in suites.select_entries(shard=f"{i}/4")["entries"]],
                          suites.select_entries()["entries"])
 
     def test_catalog_rejects_missing_duplicate_reordered_foreign_or_relabelled_parts(self):
@@ -96,7 +98,7 @@ class RequiredPartTests(unittest.TestCase):
     def test_counter_addition_preserves_every_prior_class_and_rejects_old_core_evidence(self):
         counter = "dev.wildercord.aura.EarnedCounterAcceptanceTest"
         full = suites.select_entries(suite="masters")
-        previous_entries = [entry for entry in full["entries"] if entry != counter]
+        previous_entries = [entry for entry in full["entries"] if entry not in (counter, "dev.wildercord.aura.MirrorRiposteReleasedOwnerTest", *COUNTER_ADDITIONS)]
         self.assertEqual(len(previous_entries), 43)
         # Golden of the independently reviewed 43-class partition at aeb32089.
         self.assertEqual(hashlib.sha256(json.dumps(previous_entries, separators=(",", ":")).encode()).hexdigest(),
@@ -104,7 +106,7 @@ class RequiredPartTests(unittest.TestCase):
         self.assertEqual(full["entries"].count(counter), 1)
         self.assertEqual(full["entries"].index(counter), full["entries"].index("dev.wildercord.aura.MastersStyleTimelineTest") + 1)
         current = suites.select_entries(suite="masters-core")
-        previous = {**current, "entries": [entry for entry in current["entries"] if entry != counter], "count": 40}
+        previous = {**current, "entries": [entry for entry in current["entries"] if entry not in (counter, "dev.wildercord.aura.MirrorRiposteReleasedOwnerTest", *COUNTER_ADDITIONS)], "count": 40}
         old_provenance = gate.provenance(current, IDENTITY)
         old_provenance["selectionSha256"] = gate.selection_hash(previous)
         old_provenance["mastersSelectionSha256"] = gate.selection_hash({**full, "entries": previous_entries, "count": 43})
@@ -112,15 +114,81 @@ class RequiredPartTests(unittest.TestCase):
             old_log = log_for(previous)
         old_core = self.manifest("masters-core", old_log)
         self.assertEqual(old_core["requiredPartOutcome"], "unverified")
-        self.assertEqual(old_core["selection"]["count"], 41)
+        self.assertEqual(old_core["selection"]["count"], 44)
         self.assertEqual(self.aggregate([old_core, *(self.manifest(name) for name in suites.MASTERS_PART_NAMES[1:])])["focusedClientGate"], "unverified")
+
+    def test_mirror_riposte_preserves_prior_forty_four_and_rejects_old_core_evidence(self):
+        added = "dev.wildercord.aura.MirrorRiposteReleasedOwnerTest"
+        full = suites.select_entries(suite="masters")
+        previous_entries = [entry for entry in full["entries"] if entry != added and entry not in COUNTER_ADDITIONS]
+        self.assertEqual(len(previous_entries), 44)
+        self.assertEqual(hashlib.sha256(json.dumps(previous_entries, separators=(",", ":")).encode()).hexdigest(),
+                         "f70b63005dc0ad64c6c5068d5adc5950c4c0617041bcff595552f31aae0cfccc")
+        self.assertEqual(full["entries"].count(added), 1)
+        self.assertEqual(full["entries"].index(added), full["entries"].index("dev.wildercord.aura.EarnedCounterAcceptanceTest") + 1)
+        current = suites.select_entries(suite="masters-core")
+        previous = {**current, "entries": [entry for entry in current["entries"] if entry != added and entry not in COUNTER_ADDITIONS], "count": 41}
+        old_provenance = gate.provenance(current, IDENTITY)
+        old_provenance["selectionSha256"] = gate.selection_hash(previous)
+        old_provenance["mastersSelectionSha256"] = gate.selection_hash({**full, "entries": previous_entries, "count": 44})
+        with patch.object(gate, "provenance", return_value=old_provenance):
+            old_log = log_for(previous)
+        old_core = self.manifest("masters-core", old_log)
+        self.assertEqual(old_core["requiredPartOutcome"], "unverified")
+        self.assertEqual(old_core["selection"]["count"], 44)
+        self.assertEqual(self.aggregate([old_core, *(self.manifest(name) for name in suites.MASTERS_PART_NAMES[1:])])["focusedClientGate"], "unverified")
+        descriptor = json.loads(suites.DESCRIPTOR.read_text())
+        observer = "counter-hit-capture-gametest.mixins.json"
+        self.assertEqual(descriptor["mixins"].count(observer), 1)
+        self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(added), 1)
+        config = json.loads((suites.ROOT / "src/gametest/resources" / observer).read_text())
+        self.assertEqual(config["mixins"], ["CounterHitCaptureMixin", "CounterRuneCaptureMixin",
+                                          "CounterResonanceCaptureMixin", "CounterSpellDamageCaptureMixin", "CounterEffectCaptureMixin",
+                                          "CounterAddonCaptureMixin"])
+        self.assertNotIn(observer, (suites.ROOT / "src/main/resources/fabric.mod.json").read_text())
+
+    def test_unmoved_null_preserves_frozen_forty_five_and_rejects_stale_core(self):
+        full = suites.select_entries(suite="masters")
+        prior = [entry for entry in full["entries"] if entry not in COUNTER_ADDITIONS]
+        self.assertEqual(len(prior), 45)
+        # Exact ordered roster from the separately frozen dcf242d9 checkpoint.
+        self.assertEqual(hashlib.sha256(json.dumps(prior, separators=(",", ":")).encode()).hexdigest(),
+                         "f32e8f75454d4a9ab57f6da093758f4c48a6ea43205dab20a4c403ec4e1c48da")
+        anchor = full["entries"].index("dev.wildercord.aura.MirrorRiposteReleasedOwnerTest") + 1
+        self.assertEqual(full["entries"][anchor:anchor + 2], list(COUNTER_ADDITIONS))
+        descriptor = json.loads(suites.DESCRIPTOR.read_text())
+        previous_full = [entry for entry in descriptor["entrypoints"]["fabric-client-gametest"] if entry not in COUNTER_ADDITIONS]
+        self.assertEqual(len(previous_full), 310)
+        self.assertEqual(hashlib.sha256(json.dumps(previous_full, separators=(",", ":")).encode()).hexdigest(),
+                         "4cbbad85c756e671b0ef2907034ac81288fffa94ceb7990b91eba1f208a26941")
+        for entry in COUNTER_ADDITIONS:
+            self.assertEqual(full["entries"].count(entry), 1)
+            self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(entry), 1)
+        observers = "masters-lifecycle-gametest.mixins.json"
+        self.assertEqual(descriptor["mixins"].count(observers), 1)
+        config = json.loads((suites.ROOT / "src/gametest/resources" / observers).read_text())
+        self.assertEqual(config["mixins"].count("ReleasedOwnerSetterProbeMixin"), 1)
+        self.assertNotIn(observers, (suites.ROOT / "src/main/resources/fabric.mod.json").read_text())
+        current = suites.select_entries(suite="masters-core")
+        for omitted in (COUNTER_ADDITIONS, COUNTER_ADDITIONS[:1], COUNTER_ADDITIONS[1:]):
+            with self.subTest(omitted=omitted):
+                entries = [entry for entry in current["entries"] if entry not in omitted]
+                stale = {**current, "entries": entries, "count": len(entries)}
+                old = gate.provenance(current, IDENTITY)
+                old["selectionSha256"] = gate.selection_hash(stale)
+                old["mastersSelectionSha256"] = gate.selection_hash({**full, "entries": prior, "count": 45})
+                with patch.object(gate, "provenance", return_value=old):
+                    old_log = log_for(stale)
+                old_core = self.manifest("masters-core", old_log)
+                self.assertEqual(old_core["requiredPartOutcome"], "unverified")
+                self.assertEqual(self.aggregate([old_core, *(self.manifest(name) for name in suites.MASTERS_PART_NAMES[1:])])["focusedClientGate"], "unverified")
 
     def test_all_three_complete_parts_are_required_to_pass_the_focused_aggregate(self):
         manifests = [self.manifest(name) for name in suites.MASTERS_PART_NAMES]
         result = self.aggregate(manifests[::-1])
         self.assertEqual(result["focusedClientGate"], "passed")
         self.assertEqual(result["fullClientGate"], "unverified")
-        self.assertEqual(result["selection"]["count"], 44)
+        self.assertEqual(result["selection"]["count"], 47)
         for missing in range(3):
             for inputs in (manifests[:missing] + manifests[missing + 1:],
                            manifests + [manifests[missing]], [manifests[missing]] * 3):

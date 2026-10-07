@@ -21,12 +21,18 @@ public final class AuraElements {
 			return 1.0;
 		}
 		Cast cast = new Cast(striker);
+		if (striker instanceof net.minecraft.server.level.ServerPlayer player) {
+			var released = dev.wildercord.aura.ArtHitScope.released(player);
+			if (released != null) cast.lifetime(released::linkedAlive).consequence(released::linkedAdmits, targetBody -> !dev.wildercord.aura.ArtHitScope.contains(player, released)
+				? released.linkedAlive() : released.afterDamage(targetBody));
+		}
 		double multiplier = Reactions.hit(cast, target, element);
 		multiplier *= switch (element) {
 			case "fire" -> Reactions.fire(cast, target);
 			case "storm" -> Reactions.storm(cast, target);
 			default -> 1.0;
 		};
+		if (!cast.consequencesValid(target)) return 1;
 		multiplier *= Affinities.multiplier(cast, target, source, element);
 		return multiplier;
 	}

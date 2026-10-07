@@ -1,4 +1,4 @@
-"""Exact, bounded evidence for the three mandatory parts of Masters 44.
+"""Exact, bounded evidence for the three mandatory parts of Masters 47.
 
 Part manifests never establish focused/full success alone. This offline validator
 requires all three passed parts of one head, workflow run and attempt. It does not
@@ -123,8 +123,8 @@ def validate_aggregate(manifests, *, head_sha, workflow_sha, run_id, run_attempt
         except (ValueError, KeyError, TypeError) as exc:
             issues.append(str(exc))
     full = select_entries(suite="masters")
-    if seen != set(MASTERS_PART_NAMES) or len(all_entries) != 44 or len(set(all_entries)) != 44 or set(all_entries) != set(full["entries"]):
-        issues.append("Required parts do not prove the exact disjoint 44-class union")
+    if seen != set(MASTERS_PART_NAMES) or len(all_entries) != 47 or len(set(all_entries)) != 47 or set(all_entries) != set(full["entries"]):
+        issues.append("Required parts do not prove the exact disjoint 47-class union")
     return {"schemaVersion": 1, "scope": "required-masters-aggregate", "fullClientGate": "unverified",
             "focusedClientGate": "unverified" if issues else "passed", "selection": full,
             "headSha": head_sha, "workflowSha": workflow_sha, "runId": run_id, "runAttempt": run_attempt,

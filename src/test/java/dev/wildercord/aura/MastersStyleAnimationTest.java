@@ -13,7 +13,7 @@ class MastersStyleAnimationTest {
 	void everyAuthoredFormHasItsOwnBodyAndWeaponPoseWithoutOpeningANewInputOrdinal() {
 		var bodies = new HashSet<MastersArtAnimation.Pose>();
 		var hands = new HashSet<MastersArtAnimation.Hand>();
-		assertEquals(19, MastersStyleRules.STYLES.size());
+		assertEquals(23, MastersStyleRules.STYLES.size());
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(MastersArtAnimation.supports(style.animation()));
 			assertNull(MastersArtRules.move(style.animation()), "Style poses are not trusted client action IDs");
@@ -22,7 +22,7 @@ class MastersStyleAnimationTest {
 			assertTrue(bodies.add(pose), "Distinct body choreography for " + style.art());
 			assertTrue(hands.add(pose.hand()), "Distinct weapon choreography for " + style.art());
 		}
-		for (int id : new int[] {-1, 22, Integer.MAX_VALUE}) assertFalse(MastersArtAnimation.supports(id));
+		for (int id : new int[] {-1, MastersStyleRules.STYLES.stream().mapToInt(MastersStyleRules.Style::animation).max().orElseThrow() + 1, Integer.MAX_VALUE}) assertFalse(MastersArtAnimation.supports(id));
 	}
 
 	@Test

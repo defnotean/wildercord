@@ -89,6 +89,9 @@ public abstract class NativeSceneTraceMixin {
 			marker.addProperty("event", event);
 			marker.addProperty("phase", phase);
 			marker.addProperty("suite", currentlyRunningGameTest.getDefinition());
+			// Full/shard proof owns this fresh launcher nonce. Focused/diagnostic schemas stay unchanged.
+			String launchId = System.getenv("WILDERCORD_FULL_CLIENT_LAUNCH_ID");
+			if (launchId != null) marker.addProperty("launchId", launchId);
 			marker.addProperty("elapsedSeconds", (now - wildercord$traceStarted) / 1_000_000_000.0);
 			marker.addProperty("sceneElapsedSeconds", (now - wildercord$sceneStarted) / 1_000_000_000.0);
 			System.out.println("WILDERCORD_NATIVE_SCENE " + marker);

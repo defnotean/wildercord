@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 
 from native_ci_diagnostics import SCENE_PREFIX
+from client_shard_plan import selection as full_selection, read_json
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "tools/client_suite_catalog.json"
@@ -52,14 +53,14 @@ STONE_MARCH_DIAGNOSTICS = {
 
 
 def masters_parts(groups):
-    """Validate the exact disjoint 41/1/2 partition of the expanded 44-class roster."""
+    """Validate the exact disjoint 44/1/2 partition of the expanded 47-class roster."""
     full = validate_entries(groups["masters"]["entries"], "Masters roster")
     if (groups["masters"].get("purpose", "release") != "release"
             or type(groups["masters"]["expectedCount"]) is not int
-            or groups["masters"]["expectedCount"] != 44 or len(full) != 44
+            or groups["masters"]["expectedCount"] != 47 or len(full) != 47
             or [entry for entry in full if entry in STONE_MARCH_ENTRIES] != list(STONE_MARCH_ENTRIES)
             or full[-1] != "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"):
-        raise ValueError("Required Masters parts require the ordered 44-class release roster")
+        raise ValueError("Required Masters parts require the ordered 47-class release roster")
     expected = dict(zip(MASTERS_PART_NAMES, (
         [entry for entry in full if entry not in STONE_MARCH_ENTRIES],
         list(STONE_MARCH_ENTRIES[:1]), list(STONE_MARCH_VISUAL_ENTRIES))))
@@ -67,7 +68,7 @@ def masters_parts(groups):
         group = groups[name]
         if (group.get("purpose") != "required-part" or group["entries"] != entries
                 or type(group["expectedCount"]) is not int or group["expectedCount"] != len(entries)):
-            raise ValueError("Required Masters parts must retain the exact disjoint ordered 41/1/2 partition")
+            raise ValueError("Required Masters parts must retain the exact disjoint ordered 44/1/2 partition")
     return expected
 
 
@@ -102,8 +103,8 @@ def validate_entries(entries, label):
 def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CATALOG):
     if suite is not None and shard is not None:
         raise ValueError("--suite and --shard cannot be combined")
-    entries = validate_entries(json.loads(descriptor.read_text(encoding="utf-8"))
-                               ["entrypoints"]["fabric-client-gametest"], "Full descriptor")
+    data = (json.loads(descriptor.read_text(encoding="utf-8")) if suite is not None else read_json(descriptor))
+    entries = validate_entries(data["entrypoints"]["fabric-client-gametest"], "Full descriptor")
     if any(entry in entries for entry in LIFE_EXCISE_ENTRIES[:-1]) and LIFE_EXCISE_ENTRIES[-1] not in entries:
         raise ValueError("Life32 requires its separate Excise ordinary class in the full descriptor; generic31 is not complete coverage")
     if suite is not None:
@@ -150,19 +151,15 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         return {"kind": purpose if purpose in ("diagnostic", "required-part") else "suite",
                 "name": suite, "count": len(selected), "entries": selected}
     if shard is not None:
-        index, total = parse_shard(shard)
-        # Same contiguous split as build.gradle's ciShard selector.
-        selected = entries[len(entries) * (index - 1) // total:len(entries) * index // total]
-        return {"kind": "shard", "shard": f"{index}/{total}",
-                "count": len(selected), "entries": selected}
-    return {"kind": "full", "count": len(entries), "entries": entries}
+        parse_shard(shard)
+    return full_selection(entries, shard=shard)
 
 
 def selection_issues(log, selection):
     """Focused evidence must come from this launcher's matching, completed invocation.
 
-    Legacy full/shard logs remain supported, but a focused log can never be relabeled
-    as a full/shard pass. Catalog changes also invalidate stale focused evidence.
+    Full/shard evidence is also fail-closed. Catalog changes invalidate stale evidence;
+    whole-client acceptance additionally requires the separate all-four aggregate.
     """
     issues = []
     for prefix, label in ((SELECTION_PREFIX, "Launcher selection"),
@@ -172,18 +169,18 @@ def selection_issues(log, selection):
             try:
                 matches = len(markers) == 1 and (
                     exact_json_marker(markers[0], selection)
-                    if selection.get("name") in (*STONE_MARCH_DIAGNOSTICS, GALE_BALLISTIC_SUITE) or selection["kind"] == "required-part"
+                    if selection.get("name") in (*STONE_MARCH_DIAGNOSTICS, GALE_BALLISTIC_SUITE) or selection["kind"] in ("required-part", "full", "shard")
                     else json.loads(markers[0]) == selection)
             except ValueError:
                 matches = False
             if not matches:
                 issues.append(f"{label} evidence does not match the requested selection")
-        elif selection["kind"] in ("suite", "diagnostic", "required-part"):
-            issues.append(f"Focused run is missing {label.lower()} evidence")
-    if selection["kind"] in ("suite", "diagnostic", "required-part"):
+        else:
+            issues.append(f"Run is missing {label.lower()} evidence")
+    if selection["kind"] in ("suite", "diagnostic", "required-part", "full", "shard"):
         exits = [line[len(EXIT_PREFIX):] for line in log.splitlines() if line.startswith(EXIT_PREFIX)]
         if exits != ["0"]:
-            issues.append("Focused run has no single successful launcher exit")
+            issues.append("Run has no single successful launcher exit")
     if selection.get("name") == "diagnostic-progression-feasibility":
         _, completion_issues = progression_completion(log)
         issues.extend(completion_issues)
@@ -287,8 +284,11 @@ def gale_ballistic_completion(log):
             boundaries.append("selection")
         if line.startswith(DESCRIPTOR_PREFIX):
             boundaries.append("descriptor")
-        if SCENE_PREFIX in line:
-            boundaries.append("scene")
+        try:
+            if scene_marker(line) is not None:
+                boundaries.append("scene")
+        except (ValueError, KeyError, TypeError, OverflowError):
+            boundaries.append("invalid-scene")
         if "WILDERCORD_NATIVE_WORLD " in line:
             boundaries.append("seed")
         if GALE_BALLISTIC_PREFIX in line:
@@ -321,20 +321,43 @@ def stone_march_visual_completion(log):
     return _whole_class_completion(log, STONE_MARCH_VISUAL_ENTRIES, "Stone Fault March visuals")
 
 
-def _whole_class_completion(log, entries, label):
+def scene_marker(line, *, launch_id=None):
+    """Parse only native Test-thread stdout or the explicit plain fixture form.
+
+    The reserved token without its required space/envelope is malformed evidence,
+    never unrelated output. A copied/quoted historical line cannot become native
+    completion just because it contains a correctly shaped JSON suffix.
+    """
+    token = SCENE_PREFIX.rstrip()
+    if token not in line:
+        return None
+    envelope = r"(?:\[(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\] \[Test thread/INFO\] \(Minecraft\) \[STDOUT\]: )?"
+    match = re.fullmatch(envelope + re.escape(SCENE_PREFIX) + r"(\{.*\})", line)
+    if match is None:
+        raise ValueError("Malformed native lifecycle envelope")
+    marker = json.loads(match.group(1), object_pairs_hook=_unique_completion_object)
+    fields = {"suite", "event", "phase", "elapsedSeconds", "sceneElapsedSeconds"}
+    if launch_id is not None:
+        fields.add("launchId")
+    if not isinstance(marker, dict) or set(marker) != fields:
+        raise ValueError("Malformed native lifecycle fields")
+    if launch_id is not None and marker["launchId"] != launch_id:
+        raise ValueError("Native lifecycle belongs to another owned launch")
+    if any(not isinstance(marker[key], str) or not marker[key] for key in ("suite", "event", "phase")):
+        raise ValueError("Malformed native lifecycle identity")
+    if any(type(marker[key]) not in (float, int) or not math.isfinite(marker[key]) or marker[key] < 0
+           for key in ("elapsedSeconds", "sceneElapsedSeconds")):
+        raise ValueError("Malformed native lifecycle timing")
+    return marker
+
+
+def _whole_class_completion(log, entries, label, *, launch_id=None):
     events, issues = [], []
     for line in log.splitlines():
-        if SCENE_PREFIX not in line:
-            continue
         try:
-            marker = json.loads(line.split(SCENE_PREFIX, 1)[1], object_pairs_hook=_unique_completion_object)
-            if not isinstance(marker, dict) or set(marker) != {
-                    "suite", "event", "phase", "elapsedSeconds", "sceneElapsedSeconds"}:
-                raise ValueError()
-            if any(type(marker[key]) not in (float, int) or not math.isfinite(marker[key]) or marker[key] < 0
-                   for key in ("elapsedSeconds", "sceneElapsedSeconds")):
-                raise ValueError()
-            events.append((marker["suite"], marker["event"], marker["phase"]))
+            marker = scene_marker(line, launch_id=launch_id)
+            if marker is not None:
+                events.append((marker["suite"], marker["event"], marker["phase"]))
         except (ValueError, KeyError, TypeError, OverflowError):
             issues.append(f"Malformed {label.lower()} completion evidence")
     expected = [(entry, event, phase) for entry in entries

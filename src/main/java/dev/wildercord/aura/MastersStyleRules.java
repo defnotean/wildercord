@@ -49,7 +49,11 @@ public final class MastersStyleRules {
 		new Style(18, "red_rain", 8, 16, TargetPolicy.GROUND_AHEAD),
 		new Style(19, "crimson_moon", 10, 20, TargetPolicy.ACTIVE_CONE),
 		new Style(20, "backdraft", 4, 14, TargetPolicy.EARNED_COUNTER),
-		new Style(21, "rooted_parry", 6, 16, TargetPolicy.EARNED_COUNTER)
+		new Style(21, "rooted_parry", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(22, "glacier_mirror", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(23, "static_riposte", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(24, "unmoved", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(25, "null_parry", 4, 14, TargetPolicy.EARNED_COUNTER)
 	);
 
 	public static Style of(String art) {

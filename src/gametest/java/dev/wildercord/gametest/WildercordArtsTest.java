@@ -1040,7 +1040,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				}
 			}
 			int[] spectacle = context.computeOnClient(mc -> AuraFxClient.spectacle());
-			boolean earnedCounter = scene.id.equals(EmberArts.BACKDRAFT) || scene.id.equals(VerdantArts.ROOTED_PARRY);
+			var profile = dev.wildercord.aura.MastersStyleRules.of(scene.id);
+			boolean earnedCounter = profile != null && profile.targets() == dev.wildercord.aura.MastersStyleRules.TargetPolicy.EARNED_COUNTER;
 			if (earnedCounter) {
 				context.getInput().holdKey(o -> o.keyShift); context.waitTicks(2);
 				context.getInput().pressKey(WildercordKeys.auraMapping());

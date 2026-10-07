@@ -12,6 +12,8 @@ import argparse
 from contextlib import contextmanager
 from dataclasses import asdict
 import json
+import hashlib
+import struct
 import math
 import os
 from pathlib import Path
@@ -92,7 +94,9 @@ def read_json(path, maximum=MAX_JSON):
     with path.open("rb") as stream:
         data = stream.read(maximum + 1)
     s.require(len(data) <= maximum, "JSON evidence grew beyond its bound")
-    return json.loads(data, object_pairs_hook=unique, parse_constant=bad_constant)
+    # JSON permits the integer spelling -0; retain its IEEE sign before structural comparisons.
+    return json.loads(data, object_pairs_hook=unique, parse_constant=bad_constant,
+                      parse_int=lambda token: -0.0 if token == "-0" else int(token))
 
 
 def validate_launch(launch, path, root):
@@ -143,6 +147,17 @@ def vector(value, label):
     return tuple(number(value[key], label + "." + key) for key in ("x", "y", "z"))
 
 
+def exact(left, right):
+    """JSON numeric equality matching finite Java record values, including IEEE signed zero."""
+    if isinstance(left, dict) and isinstance(right, dict):
+        return left.keys() == right.keys() and all(exact(left[key], right[key]) for key in left)
+    if isinstance(left, (list, tuple)) and type(left) is type(right):
+        return len(left) == len(right) and all(exact(a, b) for a, b in zip(left, right))
+    if type(left) in (int, float) and type(right) in (int, float):
+        return left == right and (left != 0 or math.copysign(1, left) == math.copysign(1, right))
+    return type(left) is type(right) and left == right
+
+
 def distance(left, right):
     return sum((a - b)**2 for a, b in zip(vector(left, "left"), vector(right, "right")))
 
@@ -162,11 +177,20 @@ def clock_proof(value):
     integer(value.get("maximumGapNanos"), "native clock maximum gap", 1, 2_000_000_000)
 
 
+def pose(value):
+    s.require(isinstance(value, dict) and set(value) == {"yaw", "pitch", "headYaw", "bodyYaw", "stance"},
+              "Missing or invalid immutable native pose snapshot")
+    for key in ("yaw", "pitch", "headYaw", "bodyYaw"):
+        number(value[key], "native pose " + key)
+    s.require(isinstance(value["stance"], str) and re.fullmatch(r"[A-Z][A-Z_]*", value["stance"]), "Invalid native Pose value")
+
+
 def body(value, entity):
     s.require(isinstance(value, dict) and value.get("entity") == entity, "Owner event belongs to a different body")
     vector(value.get("position"), "owner position"); vector(value.get("motion"), "owner motion")
     number(value.get("fall"), "owner fall"); number(value.get("health"), "owner health")
     integer(value.get("tick"), "owner tick")
+    pose(value.get("pose"))
     s.require(all(type(value.get(k)) is bool for k in ("grounded", "neutral", "horizontalCollision")), "Invalid owner body flags")
 
 
@@ -178,14 +202,21 @@ def validate_natural_dispatch(identity, chain, events, motion):
     s.require(isinstance(proof, dict) and isinstance(motion, dict), "Natural Master lacks its original native-step dispatch proof")
     s.require(proof.get("completed") is True and all(type(proof.get(k)) is int and proof[k] == 1
               for k in ("stepCount", "trackerCount", "motionOrdinal")), "Natural dispatch is not one step, next tracker and first motion")
+    receipt = proof.get("ownerReceipt")
+    s.require(receipt is None or isinstance(receipt, dict), "Invalid queued owner receipt")
+    frames = dict(proof)
+    if receipt is not None:
+        frames.update(handlerEntry=receipt.get("handlerEntry"), handlerReturn=receipt.get("handlerReturn"))
     stages = (("release", "natural-release"), ("beforeStep", "natural-step-start"),
-              ("afterStep", "natural-step-end"), ("listenerExit", "natural-listener-end"),
-              ("trackerEntry", "natural-tracker-start"), ("send", "natural-motion-start"),
+              ("afterStep", "natural-step-end"), ("listenerExit", "natural-listener-end"))
+    if receipt is not None:
+        stages += (("handlerEntry", "natural-owner-packet-start"), ("handlerReturn", "natural-owner-packet-end"))
+    stages += (("trackerEntry", "natural-tracker-start"), ("send", "natural-motion-start"),
               ("sendExit", "natural-motion-end"), ("trackerExit", "natural-tracker-end"))
     previous = -1
     source = None
     for name, kind in stages:
-        frame = proof.get(name)
+        frame = frames.get(name)
         s.require(isinstance(frame, dict) and frame.get("valid") is True and frame.get("awaitingTeleport") is False,
                   "Natural dispatch has replaced or corrected native identity")
         s.require(frame.get("ownerEntity") == identity["ownerEntity"] and frame.get("ownerUuid") == identity["ownerUuid"],
@@ -199,6 +230,7 @@ def validate_natural_dispatch(identity, chain, events, motion):
         tick = integer(frame.get("gameTick"), "natural game tick")
         server_tick = integer(frame.get("serverTick"), "natural server tick")
         index = integer(frame.get("eventIndex"), "natural event index", previous + 1, len(events) - 1)
+        pose(frame.get("pose"))
         snapshot = frame.get("body")
         s.require(isinstance(snapshot, dict), "Missing natural body snapshot")
         for key in ("position", "motion"):
@@ -211,11 +243,12 @@ def validate_natural_dispatch(identity, chain, events, motion):
         s.require(event["kind"] == kind and event["data"] == f"source={source[1]} serverTick={server_tick}",
                   "Natural snapshot does not identify its original operation event")
         expected_body = {k: snapshot[k] for k in ("position", "motion", "fall", "grounded", "neutral", "health")}
-        expected_body.update(entity=identity["ownerEntity"], tick=tick, horizontalCollision=snapshot["collision"])
-        s.require(event.get("after") == expected_body and sum(e["kind"] == kind for e in events) == 1,
+        expected_body.update(entity=identity["ownerEntity"], tick=tick, horizontalCollision=snapshot["collision"], pose=frame["pose"])
+        s.require(exact(event.get("after"), expected_body) and sum(e["kind"] == kind for e in events) == 1,
                   "Natural snapshot body or single-operation count differs from ledger")
         previous = index
-    release, before, after, listener, tracker, sent, sent_exit, tracker_exit = (proof[name] for name, _ in stages)
+    release, before, after, listener, tracker, sent, sent_exit, tracker_exit = (proof[name] for name in
+        ("release", "beforeStep", "afterStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit"))
     tracker_index = integer(proof.get("trackerWitnessIndex"), "retained tracker event index", 0, release["eventIndex"] - 1)
     tracker_id = proof.get("trackerIdentity")
     s.require(isinstance(tracker_id, str) and re.fullmatch(r"[0-9]{1,10}", tracker_id), "Missing retained original tracker identity")
@@ -232,22 +265,25 @@ def validate_natural_dispatch(identity, chain, events, motion):
     for frame in (tracker, sent, sent_exit, tracker_exit):
         s.require((frame["gameTick"], frame["serverTick"]) == (release["gameTick"] + 1, release["serverTick"] + 1),
                   "Natural motion is not in the very next native tracker tick")
-    s.require(before["body"] == release["body"], "Immediate strike state changed before original physics")
-    s.require(all(after["body"][k] == release["body"][k] for k in ("health", "absorption")), "Intervening native wound during physics")
-    s.require(listener["body"] == {**after["body"], "position": before["body"]["position"]},
+    s.require(exact(before["body"], release["body"]) and exact(before["pose"], release["pose"]), "Immediate strike state changed before original physics")
+    s.require(all(exact(after["body"][k], release["body"][k]) for k in ("health", "absorption")), "Intervening native wound during physics")
+    s.require(exact(listener["body"], {**after["body"], "position": before["body"]["position"]}) and exact(listener["pose"], after["pose"]),
               "Native listener exit changed more than its position restoration")
-    s.require(tracker["body"] == listener["body"] and tracker["body"]["syncVelocity"] is True,
+    expected_tracker = validate_owner_receipt(identity, receipt, events, release, listener, tracker)
+    expected_pose = listener["pose"] if receipt is None else receipt["handlerReturn"]["pose"]
+    s.require(exact(tracker["body"], expected_tracker) and exact(tracker["pose"], expected_pose) and tracker["body"]["syncVelocity"] is True,
               "Native physics state did not reach its original tracker intact")
-    s.require(sent["body"] == {**tracker["body"], "needsSync": False, "syncVelocity": False},
+    s.require(exact(sent["body"], {**tracker["body"], "needsSync": False, "syncVelocity": False}) and exact(sent["pose"], tracker["pose"]),
               "Original tracker changed more than native synchronization flags")
-    s.require(sent_exit["body"] == tracker_exit["body"] == sent["body"], "Owner state changed while original send/tracker completed")
-    s.require(motion["sendOrdinal"] == proof["motionOrdinal"] and motion["raw"] == sent["body"]["motion"]
+    s.require(exact(sent_exit["body"], tracker_exit["body"]) and exact(sent_exit["body"], sent["body"])
+              and exact(sent_exit["pose"], tracker_exit["pose"]) and exact(sent_exit["pose"], sent["pose"]), "Owner state changed while original send/tracker completed")
+    s.require(motion["sendOrdinal"] == proof["motionOrdinal"] and exact(motion["raw"], sent["body"]["motion"])
               and sent["eventIndex"] < motion["sendStartIndex"], "One native physics step is not bound to this exact owner motion")
     entries = [e for e in events if e["kind"] == "natural-listener-start"]
     s.require(len(entries) == 1, "Missing or repeated original listener scope")
     entry, end = entries[0], events[tracker_exit["eventIndex"]]
     s.require(release["eventIndex"] < entry["index"] < before["eventIndex"]
-              and entry.get("after") == events[release["eventIndex"]]["after"]
+              and exact(entry.get("after"), events[release["eventIndex"]]["after"])
               and entry["data"] == events[release["eventIndex"]]["data"], "Original listener did not begin at the retained release state")
     sends = [e for e in events if e["kind"] in ("server-motion-start", "server-motion-sent")
              and e["index"] < end["index"]]
@@ -255,8 +291,80 @@ def validate_natural_dispatch(identity, chain, events, motion):
               and sends[0]["index"] == motion["sendStartIndex"] and sends[1]["index"] > sends[0]["index"]
               and sends[0]["index"] < sent_exit["eventIndex"] < sends[1]["index"]
               and all(e["data"].startswith("ordinal=1 manual=false ") for e in sends)
-              and end.get("after") == events[sent["eventIndex"]]["after"]
+              and exact(end.get("after"), events[sent["eventIndex"]]["after"])
               and end["data"] == events[sent["eventIndex"]]["data"], "The selected original tracker did not complete exactly one bound motion send")
+
+
+def validate_owner_receipt(identity, receipt, events, release, listener, tracker):
+    """The optional receipt explains one exact native ground-bit update; it never masks a body field."""
+    handler_events = [event for event in events if event["kind"] in
+                      ("natural-owner-packet-start", "natural-owner-packet-end")]
+    incoming = [event for event in events if event["kind"] == "server-owner-packet-received"
+                and release["eventIndex"] < event["index"] < tracker["eventIndex"]]
+    if receipt is None:
+        s.require(not handler_events and not incoming, "Unattested owner packet before native tracker")
+        return listener["body"]
+    entry, returned = receipt["handlerEntry"], receipt["handlerReturn"]
+    s.require([event["kind"] for event in handler_events] == ["natural-owner-packet-start", "natural-owner-packet-end"]
+              and len(incoming) == 1 and listener["eventIndex"] < incoming[0]["index"] < entry["eventIndex"]
+              < returned["eventIndex"] < tracker["eventIndex"], "Not exactly one READY owner handler before tracker")
+    for frame in (entry, returned):
+        s.require((frame["gameTick"], frame["serverTick"]) == (release["gameTick"] + 1, release["serverTick"] + 1),
+                  "Queued owner handler has the wrong native clock")
+    original, received = receipt.get("originalSend"), receipt.get("received")
+    s.require(isinstance(original, dict) and isinstance(received, dict), "Missing original FIFO send or decoded receipt")
+    ordinal = integer(original.get("ordinal"), "queued owner ordinal", 1)
+    start = integer(original.get("sentIndex"), "queued owner send index", 0, release["eventIndex"] - 1)
+    completed = integer(original.get("completedIndex"), "queued owner send completion", start + 1, release["eventIndex"] - 1)
+    s.require(original.get("sameSenderAndConnection") is True and original.get("ownerEntity") == identity["ownerEntity"]
+              and original.get("ownerUuid") == identity["ownerUuid"], "Queued packet changed sender or connection")
+    snapshot, packet = original.get("body"), original.get("packet")
+    body(snapshot, identity["ownerEntity"])
+    s.require(isinstance(packet, dict) and exact(packet, received) and packet.get("type") == "Pos"
+              and packet.get("rotation") is False and exact(packet.get("yaw"), 0.0) and exact(packet.get("pitch"), 0.0)
+              and packet.get("grounded") is True and packet.get("collision") is False,
+              "Queued receipt is not the exact original rotation-free grounded Pos")
+    s.require(snapshot["neutral"] is True and snapshot["grounded"] is True and snapshot["horizontalCollision"] is False
+              and exact(snapshot["position"], packet.get("position")) and exact(snapshot["position"], release["body"]["position"])
+              and snapshot["tick"] <= release["gameTick"], "Queued owner snapshot or original coordinates changed")
+    sha(packet.get("sha256"), "queued Pos native codec")
+    for key in ("yaw", "pitch"):
+        number(packet.get(key), "queued Pos " + key)
+        s.require(math.copysign(1, packet[key]) == 1, "Absent packet rotation retains positive zero")
+    # The pinned native Pos codec writes three network-order doubles and its packed flags byte.
+    expected_digest = hashlib.sha256(struct.pack(">dddB", *(packet["position"][axis] for axis in ("x", "y", "z")), 1)).hexdigest()
+    s.require(packet["sha256"] == expected_digest, "Queued Pos digest differs from its decoded native payload")
+    sent_event, completed_event = events[start], events[completed]
+    s.require(sent_event["kind"] == "client-owner-position-sent" and exact(sent_event.get("after"), snapshot)
+              and completed_event["kind"] == "client-owner-position-send-complete"
+              and completed_event["data"] == f"ordinal={ordinal}" and exact(completed_event.get("after"), snapshot),
+              "Original send lacks its exact completed pre-release ledger witness")
+    for event in (sent_event, incoming[0]):
+        match = re.fullmatch(r"ordinal=(\d+) PositionKey\[type=Pos, x=([^,]+), y=([^,]+), z=([^,]+), "
+                             r"rotation=false, yaw=NaN, pitch=NaN, ground=true, collision=false\] sha256=([0-9a-f]{64})", event["data"])
+        s.require(match is not None and int(match[1]) == ordinal and match[5] == packet["sha256"],
+                  "Queued Pos sender/receiver key or digest differs from original ledger")
+        decoded = {axis: float(match[i + 2]) for i, axis in enumerate(("x", "y", "z"))}
+        s.require(exact(decoded, packet["position"]), "Decoded original queued coordinates differ from ledger")
+    queue = []
+    last_send = 0
+    for event in events[:entry["eventIndex"]]:
+        if event["kind"] not in ("client-owner-position-sent", "server-owner-packet-received"):
+            continue
+        match = re.match(r"ordinal=(\d+) ", event["data"])
+        s.require(match is not None, "Missing FIFO owner packet ordinal")
+        value = int(match[1])
+        if event["kind"] == "client-owner-position-sent":
+            s.require(value == last_send + 1, "Noncontiguous original owner send")
+            last_send = value
+            queue.append(value)
+        elif value:
+            s.require(queue and queue[0] == value, "Owner receipt searched past the original FIFO head")
+            queue.pop(0)
+    s.require(exact(entry["body"], listener["body"]) and exact(entry["pose"], listener["pose"]), "Whole saved native body changed before queued handler")
+    s.require(exact(returned["body"], {**entry["body"], "grounded": packet["grounded"]}) and exact(returned["pose"], entry["pose"]),
+              "Queued handler changed more than its exact packet ground bit")
+    return returned["body"]
 
 
 def validate_reports(case_identity, host, peer, moved):
@@ -299,10 +407,10 @@ def validate_reports(case_identity, host, peer, moved):
         applied = integer(motion.get("appliedIndex"), "motion applied index", 0, len(events) - 1)
         started = integer(motion.get("sendStartIndex"), "motion dispatch start index", 0, applied - 1)
         vector(motion.get("raw"), "raw motion"); vector(motion.get("wire"), "encoded motion"); vector(motion.get("applied"), "applied motion")
-        s.require(motion["wire"] == motion["applied"], "Owner did not apply exact encoded native motion")
+        s.require(exact(motion["wire"], motion["applied"]), "Owner did not apply exact encoded native motion")
         event = events[applied]
         s.require(event["kind"] == "client-motion-processed" and event["data"].startswith(f"sendOrdinal={ordinal} ")
-                  and event.get("after", {}).get("motion") == motion["applied"], "Motion application does not match retained owner event")
+                  and exact(event.get("after", {}).get("motion"), motion["applied"]), "Motion application does not match retained owner event")
         s.require(events[started]["kind"] == "server-motion-start"
                   and events[started]["data"].startswith(f"ordinal={ordinal} manual=false "), "Native motion dispatch did not precede owner application")
         # send() completion is recorded on the server thread after the native
@@ -320,13 +428,13 @@ def validate_reports(case_identity, host, peer, moved):
         accepted = integer(position.get("acceptanceIndex"), "position acceptance index", max(sent + 1, previous_accept + 1), len(events) - 1)
         for name in ("requested", "sentPosition", "acceptedPosition"):
             vector(position.get(name), name)
-        s.require(position["requested"] == position["sentPosition"] == position["acceptedPosition"], "Native server did not accept exact genuine owner position")
+        s.require(exact(position["requested"], position["sentPosition"]) and exact(position["requested"], position["acceptedPosition"]), "Native server did not accept exact genuine owner position")
         sent_event, accepted_event = events[sent], events[accepted]
         s.require(sent_event["kind"] == "client-owner-position-sent" and sent_event["data"].startswith(f"ordinal={send} ")
                   and accepted_event["kind"] == "server-owner-position-processed" and accepted_event["data"].startswith(f"sendOrdinal={send} "),
                   "Position chain indexes do not identify its original send/accept events")
-        s.require(sent_event.get("after", {}).get("position") == position["sentPosition"]
-                  and accepted_event.get("after", {}).get("position") == position["acceptedPosition"], "Position event bodies differ from structured chain")
+        s.require(exact(sent_event.get("after", {}).get("position"), position["sentPosition"])
+                  and exact(accepted_event.get("after", {}).get("position"), position["acceptedPosition"]), "Position event bodies differ from structured chain")
         for name, event in (("ownerTick", sent_event), ("serverTick", accepted_event)):
             integer(position.get(name), name)
             s.require(event["after"]["tick"] == position[name], "Position chain native tick mismatch")
@@ -344,7 +452,7 @@ def validate_reports(case_identity, host, peer, moved):
         # Delayed native time-sync packets may move client game time backwards.
         # Causality is carried by the retained packet ordinal, not wall time.
         integer(step.get("tick"), "interpolation native tick")
-        s.require(packet["interpolating"] is True and step.get("target") == packet["target"], "Interpolation is not tied to its native packet target")
+        s.require(packet["interpolating"] is True and exact(step.get("target"), packet["target"]), "Interpolation is not tied to its native packet target")
         s.require(distance(step.get("before"), step.get("after")) > 1E-12
                   and distance(step["after"], step["target"]) < distance(step["before"], step["target"]), "Peer did not move toward its native interpolation target")
     next_peer, matched, previous_accept = 0, [], -1
@@ -355,7 +463,7 @@ def validate_reports(case_identity, host, peer, moved):
         position = linked.get((accepted, send))
         s.require(position is not None and packet["tick"] >= position["serverTick"], "Tracker packet does not follow its linked native owner acceptance")
         s.require(distance(packet["target"], position["acceptedPosition"]) <= QUANTIZATION_SQUARED
-                  and packet["body"] == position["acceptedPosition"], "Original tracker target/body differs from accepted owner position")
+                  and exact(packet["body"], position["acceptedPosition"]), "Original tracker target/body differs from accepted owner position")
         while next_peer < len(peer["packets"]):
             candidate = peer["packets"][next_peer]; next_peer += 1
             if packet["kind"] == candidate["kind"] and packet["sha256"] == candidate["sha256"] and distance(packet["target"], candidate["target"]) <= QUANTIZATION_SQUARED:

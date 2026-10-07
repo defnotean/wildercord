@@ -193,6 +193,7 @@ public final class Stance {
 			} catch (RuntimeException e) {
 				Wildercord.LOGGER.warn("A stance hook threw; skipping it", e);
 			}
+			if (!ArtHitScope.releasedAfter(attacker, target)) return 0;
 		}
 		if (w <= 0) {
 			return 0;
@@ -297,6 +298,7 @@ public final class Stance {
 		AuraFx.burst(level, attacker, target.position().add(0, 0.1, 0), new Vec3(0, 1, 0), OPENED_COLOR, 1.6F + target.getBbWidth() * 1.5F,
 			AuraFx.Burst.RING | AuraFx.Burst.ECHO | AuraFx.Burst.SPARKS);
 		Momentum.broke(attacker, target);
+		if (!ArtHitScope.releasedAfter(attacker, target)) return;
 		Grimoire.unlock(attacker, "aura:stance_break");
 		if (target instanceof ServerPlayer struck) {
 			struck.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.aura.opened").withColor(0xFFE08A60));
@@ -307,6 +309,7 @@ public final class Stance {
 			} catch (RuntimeException e) {
 				Wildercord.LOGGER.warn("A stance break hook threw; skipping it", e);
 			}
+			if (!ArtHitScope.releasedAfter(attacker, target)) return;
 		}
 	}
 

@@ -25,6 +25,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
  private static LanternNewt first,second,third,surfaceVisitor,ordinarySwimmer,routeVisitor,walker,stuckVisitor;private static UUID saved;private static long firstRest,secondRest,savedRest;
  @Override public void runTest(ClientGameTestContext c) {
   EcologyReturnProbeChecks.verify();
+  NewtBlockedTimeoutProbeChecks.verify();
   TestWorldSave save;
   try(var w=c.worldBuilder().create()) {
    c.waitTicks(30);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 6000");w.getServer().runCommand("weather clear");
@@ -245,10 +246,14 @@ public final class ReedRefugeTest implements FabricClientGameTest {
  }
  private static void verifyStuckLookRestoration(ClientGameTestContext c,TestSingleplayerContext w) {
   var witness=new BlockedJourneyWitness();
+  NewtBlockedTimeoutProbe.Session[] probe={null};
   try {
   w.getServer().runOnServer(s -> {s.overworld().setBlock(ROOF,WetlandShelters.REFUGE.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,true),2);stuckVisitor=spawn(s,.5,3.5);});
   boolean started=false;
-  for(int i=0;i<500;i++) {c.waitTicks(1);if(w.getServer().computeOnServer(s -> shelterRunning(stuckVisitor) && ((NewtPathNavigation)stuckVisitor.getNavigation()).followingRefuge())) {started=true;break;}}
+  for(int i=0;i<500;i++) {c.waitTicks(1);if(w.getServer().computeOnServer(s -> {
+   if(!shelterRunning(stuckVisitor) || !((NewtPathNavigation)stuckVisitor.getNavigation()).followingRefuge())return false;
+   probe[0]=NewtBlockedTimeoutProbe.begin(stuckVisitor,ROOF,()->pearls(s));return true;
+  })) {started=true;break;}}
   check(started,"Ordinary Shelter starts before the separate blocked-journey case");
   var journey=w.getServer().computeOnServer(s -> {
    var at=stuckVisitor.blockPosition();
@@ -263,23 +268,26 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    s.overworld().setBlock(at.above(),Blocks.GLASS.defaultBlockState(),2);
    witness.observe("after_glass_above",stuckVisitor);
    check(s.overworld().noCollision(stuckVisitor,stuckVisitor.getBoundingBox()),"Stuck case leaves the actual body clear inside its water cell");
-   return new int[]{stuckVisitor.tickCount,shelterTicksLeft(stuckVisitor)};
+   probe[0].arm(at);
+   return new int[]{probe[0].originalTick,probe[0].originalRemaining};
   });
   boolean stuck=false,expired=false;
   for(int i=0;i<260;i++) {c.waitTicks(1);var state=w.getServer().computeOnServer(s -> {
    witness.observe("sample",stuckVisitor);
    var navigation=(NewtPathNavigation)stuckVisitor.getNavigation();
    if(navigation.isStuck())check(!navigation.followingRefuge() && stuckVisitor.getXRot()==0,"Native stuck termination immediately restores ordinary pitch reset");
-   return new int[]{navigation.isStuck()?1:0,shelterRunning(stuckVisitor)?1:0,stuckVisitor.tickCount-journey[0]};
+   if(probe[0].timeoutCount()>0 && navigation.isDone())check(!navigation.followingRefuge() && stuckVisitor.getXRot()==0,"Native waypoint timeout restores ordinary pitch reset without requiring displacement-stuck");
+   boolean originalExpired=probe[0].sample();
+   return new int[]{navigation.isStuck()?1:0,originalExpired?0:1,stuckVisitor.tickCount-journey[0]};
   });stuck|=state[0]!=0;if(state[1]==0) {
    // Record the first stop, including an early water/availability exit, against
    // the actual remaining counter; selectors check every other tick.
    check(state[2]>=journey[1] && state[2]<=journey[1]+2,"Blocked Shelter first stops when its original journey counter expires: remaining="+journey[1]+", observed age="+state[2]);expired=true;break;
   }}
   witness.result(stuck,expired,journey);
-  check(stuck && expired,"Native stuck detection and the unchanged finite Shelter journey both end the blocked approach: stuck="+stuck+", expired="+expired);
-  w.getServer().runOnServer(s -> {check(!stuckVisitor.resting() && stuckVisitor.refugeReady()==0,"Blocked approach never counts as arrival");stuckVisitor.setNoAi(true);checkOrdinaryLook(stuckVisitor,"native stuck detection and journey expiry");checkNativeSwimControl(stuckVisitor,true,"native stuck detection and journey expiry");});
-  }finally{witness.close();}
+  w.getServer().runOnServer(s -> probe[0].verify());
+  w.getServer().runOnServer(s -> {check(!stuckVisitor.resting() && stuckVisitor.refugeReady()==0,"Blocked approach never counts as arrival");stuckVisitor.setNoAi(true);checkOrdinaryLook(stuckVisitor,"native blocked termination and journey expiry");checkNativeSwimControl(stuckVisitor,true,"native blocked termination and journey expiry");});
+  }finally{if(probe[0]!=null)probe[0].close();witness.close();}
  }
 
  /** Local bounded reads of this actor's existing route and clocks; never requests a path. */

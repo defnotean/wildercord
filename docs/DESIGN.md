@@ -1448,6 +1448,20 @@ drink is a share of what an art dealt (a quarter to a half), held to a cap an ar
 damage: no armour, no totem, no death message), and never past a heart: a swordsman at a heart or less pays nothing more, so it
 can never kill (`ArtRules.moonToll`).
 
+**Unmoved and Null Parry commitments (local source; native acceptance pending).** These existing Third Arts still
+require the authentic perfect-guard counter, base eight Aura and eighty ticks of individual rest. Unmoved pays once and
+starts its original-body defensive lease at finalized admission, then strikes after six ticks and recovers for sixteen.
+Its inclusive acceptance+80 ward/knockback deadline cannot be refreshed by release or cancellation. Mountain's separate
+refresh lease shares one effective knockback modifier without shortening the other source. Vanilla Resistance keeps native
+merging/duration and is never blanket-removed by lease cleanup; another legitimate effect can remain after the ward ends.
+Null waits four ticks and recovers for fourteen, retaining its pulse-before-primary order. EMPTY admission and loss of the
+captured primary still allow the independent pulse when the owner's release is valid; they never choose a replacement primary.
+Both retain original target priority: the live harmable struck body without an explicit range/LOS cap, caught attacker within
+six blocks inclusive without LOS, then the existing nearest four-block/120-degree cone. The primary body is captured once
+at admission and its original route is revalidated at release. No restriction is imported merely from another counter's helper.
+Damage, landing hold, pulse query cap/exclusion order and player/boss limits remain as below. See
+[the complete contract](features/unmoved-null-parry-contract.md) for payment, cancellation, party and lifetime boundaries.
+
 **Fair to players.** One art deals one player at most `PVP_ART_CAP` 8 in all (after the PvP scale, before armour and defences);
 holds (a freeze, a stun, a root, a moment stopped) a player at most 15 ticks and no art's hold takes the same player again for
 80; sets a player alight at most 60 ticks; throws, lifts or pulls a player at most 0.6 a tick, and a steady drag (a well, a

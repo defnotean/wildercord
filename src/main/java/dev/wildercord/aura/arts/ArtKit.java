@@ -63,9 +63,16 @@ public final class ArtKit {
 
 	/** Whether an art of {@code player}'s may harm {@code entity}: alive, not them, a foe by the mod's rules, and the game's team rule too. */
 	public static boolean harmable(ServerPlayer player, Entity entity) {
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		return harmableWithoutAim(player, entity)
+			&& (dev.wildercord.aura.MastersArts.committedAim(player) == null || counter != null && counter.originalGeometry()
+				|| player.hasLineOfSight(entity));
+	}
+
+	/** Original instant-art permission, with no implicit LOS introduced by an authored pose. */
+	public static boolean harmableWithoutAim(ServerPlayer player, Entity entity) {
 		return !ArtFields.blocksRetiredHarm(player, entity)
 			&& entity instanceof LivingEntity living && living.isAlive() && entity != player && !entity.isSpectator() && Targets.canHarm(player, entity)
-			&& (dev.wildercord.aura.MastersArts.committedAim(player) == null || player.hasLineOfSight(entity))
 			&& (!(entity instanceof Player other) || player.canHarmPlayer(other));
 	}
 
@@ -387,7 +394,7 @@ public final class ArtKit {
 
 		/** A strike of {@code damage} (already scaled), landing with {@code weight} ({@code null} for no impact). */
 		public float raw(LivingEntity foe, double damage, AuraFxRules.Weight weight) {
-			var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+			var counter = dev.wildercord.aura.ArtHitScope.boundary(player);
 			if (counter != null && !counter.permits(foe)) return 0;
 			if (foe == null || !foe.isAlive() || damage <= 0 || !harmable(player, foe)) {
 				return 0;
@@ -551,11 +558,18 @@ public final class ArtKit {
 	/** Slows {@code foe} ({@code amplifier} 0 is Slowness I), and frost creeps over it to see (never enough to hurt). */
 	public static void chill(ServerPlayer player, LivingEntity foe, int ticks, int amplifier) {
 		if (!harmable(player, foe)) return;
+		chillAdmitted(player, foe, ticks, amplifier, null);
+	}
+
+	/** A caller with its own explicit permission may preserve its original collateral selection. */
+	static void chillAdmitted(ServerPlayer player, LivingEntity foe, int ticks, int amplifier, java.util.function.BooleanSupplier permission) {
+		if (permission != null && !permission.getAsBoolean()) return;
 		if (!foe.isAlive()) {
 			return;
 		}
 		int amp = foe instanceof Player ? Math.min(amplifier, 1) : amplifier;
 		foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, amp, false, true), player);
+		if (permission != null && !permission.getAsBoolean()) return;
 		int frost = Math.min(foe.getTicksRequiredToFreeze() - 1, foe.getTicksFrozen() + 60);
 		foe.setTicksFrozen(Math.max(foe.getTicksFrozen(), frost));
 	}
@@ -611,6 +625,10 @@ public final class ArtKit {
 	/** Shakes {@code foe}'s footing: it can't act for {@code ticks} (a player is slowed to a crawl that long; a boss only slowed). */
 	public static boolean hold(ServerPlayer player, LivingEntity foe, int ticks) {
 		if (!harmable(player, foe)) return false;
+		return holdAdmitted(player, foe, ticks);
+	}
+
+	private static boolean holdAdmitted(ServerPlayer player, LivingEntity foe, int ticks) {
 		if (!foe.isAlive()) {
 			return false;
 		}
@@ -641,6 +659,23 @@ public final class ArtKit {
 			waited[0]++;
 			if (waited[0] >= delay && (foe.onGround() || foe.isInWater()) || waited[0] >= 40) {
 				hold(player, foe, ticks);
+				return;
+			}
+			Scheduler.later(1, step[0]);
+		};
+		Scheduler.later(1, step[0]);
+	}
+
+	/** Same landing timing, with an independently released exact-body permission rather than the physical pose. */
+	public static void holdLater(ServerPlayer player, LivingEntity foe, int delay, int ticks, java.util.function.BooleanSupplier permission) {
+		if (!permission.getAsBoolean()) return;
+		int[] waited = {0};
+		Runnable[] step = new Runnable[1];
+		step[0] = () -> {
+			if (!permission.getAsBoolean()) return;
+			waited[0]++;
+			if (waited[0] >= delay && (foe.onGround() || foe.isInWater()) || waited[0] >= 40) {
+				holdAdmitted(player, foe, ticks);
 				return;
 			}
 			Scheduler.later(1, step[0]);

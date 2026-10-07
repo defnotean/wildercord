@@ -20,9 +20,13 @@ def vec(x=0, y=1, z=0):
     return {"x": x, "y": y, "z": z}
 
 
+def pose():
+    return dict(yaw=0.0, pitch=0.0, headYaw=0.0, bodyYaw=0.0, stance="STANDING")
+
+
 def body(position=None, motion=None, tick=10):
     return {"position": position or vec(), "motion": motion or vec(0, .4, .2), "tick": tick,
-            "entity": 10, "fall": 0, "grounded": False, "neutral": True, "health": 192, "horizontalCollision": False}
+            "entity": 10, "fall": 0, "grounded": False, "neutral": True, "health": 192, "horizontalCollision": False, "pose": pose()}
 
 
 def case_identity(identity, name):
@@ -44,13 +48,13 @@ def natural_dispatch_chain(chain, identity):
         return {"body": copy.deepcopy(value), "gameTick": 9 + next_tick, "serverTick": 19 + next_tick,
                 "ownerEntity": identity["ownerEntity"], "ownerUuid": identity["ownerUuid"],
                 "sourceEntity": 30, "sourceUuid": "00000000-0000-0000-0000-000000000093",
-                "valid": True, "awaitingTeleport": False, "eventIndex": index + 1}
+                "valid": True, "awaitingTeleport": False, "eventIndex": index + 1, "pose": pose()}
 
     def event(frame, kind):
         value = frame["body"]
         observed = {key: copy.deepcopy(value[key]) for key in
                     ("position", "motion", "fall", "grounded", "neutral", "health")}
-        observed.update(entity=frame["ownerEntity"], tick=frame["gameTick"], horizontalCollision=value["collision"])
+        observed.update(entity=frame["ownerEntity"], tick=frame["gameTick"], horizontalCollision=value["collision"], pose=copy.deepcopy(frame["pose"]))
         return {"index": frame["eventIndex"], "kind": kind,
                 "data": f"source={frame['sourceUuid']} serverTick={frame['serverTick']}", "after": observed}
 
@@ -298,7 +302,7 @@ class NaturalDispatchTests(EvidenceFixture):
         value = frame["body"]
         event["after"] = {key: copy.deepcopy(value[key]) for key in
                           ("position", "motion", "fall", "grounded", "neutral", "health")}
-        event["after"].update(entity=frame["ownerEntity"], tick=frame["gameTick"], horizontalCollision=value["collision"])
+        event["after"].update(entity=frame["ownerEntity"], tick=frame["gameTick"], horizontalCollision=value["collision"], pose=copy.deepcopy(frame["pose"]))
         event["data"] = f"source={frame['sourceUuid']} serverTick={frame['serverTick']}"
 
     def insert_event(self, host, index, event):
@@ -477,6 +481,374 @@ class NaturalDispatchTests(EvidenceFixture):
                               ("data", "tracker=12345 owner=" + self.identity["peerUuid"])):
             with self.subTest(field=field, value=value):
                 self.assert_rejected(("ownerChain", "events", 0, field, value))
+
+
+
+class OwnerReceiptTests(EvidenceFixture):
+    """Synthetic receipt/ledger adversaries. These never run Minecraft or grant gameplay approval."""
+    snapshots = NaturalDispatchTests.snapshots
+    insert_event = NaturalDispatchTests.insert_event
+    synchronize_snapshot_event = NaturalDispatchTests.synchronize_snapshot_event
+
+    def natural(self):
+        import hashlib
+        import struct
+        identity = case_identity(self.identity, "NATURAL_MASTER")
+        host, peer = native_reports(identity)
+        chain = host["ownerChain"]
+        proof = chain["naturalDispatch"]
+        snapshot = body(position=copy.deepcopy(proof["release"]["body"]["position"]), motion=vec(0, 0, 0), tick=9)
+        snapshot["grounded"] = True
+        packet = dict(type="Pos", position=copy.deepcopy(snapshot["position"]), rotation=False, yaw=0.0, pitch=0.0,
+                      grounded=True, collision=False, sha256=hashlib.sha256(struct.pack(">dddB", 0, 2, 3, 1)).hexdigest())
+        key = "ordinal=1 PositionKey[type=Pos, x=0.0, y=2.0, z=3.0, rotation=false, yaw=NaN, pitch=NaN, ground=true, collision=false] sha256=" + packet["sha256"]
+        self.insert_event(host, 1, {"kind": "client-owner-position-sent", "data": key, "after": copy.deepcopy(snapshot)})
+        self.insert_event(host, 2, {"kind": "client-owner-position-send-complete", "data": "ordinal=1", "after": copy.deepcopy(snapshot)})
+        start = proof["trackerEntry"]["eventIndex"]
+        entry = copy.deepcopy(proof["trackerEntry"])
+        returned = copy.deepcopy(entry)
+        entry["eventIndex"], returned["eventIndex"] = start + 1, start + 2
+        returned["body"]["grounded"] = True
+        self.insert_event(host, start, {"kind": "server-owner-packet-received", "data": key})
+        self.insert_event(host, start + 1, {"kind": "natural-owner-packet-start", "data": "pending"})
+        self.insert_event(host, start + 2, {"kind": "natural-owner-packet-end", "data": "pending"})
+        receipt = {"originalSend": dict(ordinal=1, sentIndex=1, completedIndex=2, ownerEntity=identity["ownerEntity"],
+                                       ownerUuid=identity["ownerUuid"], sameSenderAndConnection=True,
+                                       body=copy.deepcopy(snapshot), packet=copy.deepcopy(packet)),
+                   "received": copy.deepcopy(packet), "handlerEntry": entry, "handlerReturn": returned}
+        proof["ownerReceipt"] = receipt
+        for key in ("handlerEntry", "handlerReturn"):
+            self.sync_receipt_event(host, key)
+        for key in ("trackerEntry", "send", "sendExit", "trackerExit"):
+            proof[key]["body"]["grounded"] = True
+            self.synchronize_snapshot_event(host, key)
+        for event in chain["events"]:
+            if event["kind"] in ("server-motion-start", "server-motion-sent"):
+                event["after"]["grounded"] = True
+        return identity, host, peer
+
+    def sync_receipt_event(self, host, name):
+        proof = host["ownerChain"]["naturalDispatch"]
+        proof[name] = proof["ownerReceipt"][name]
+        self.synchronize_snapshot_event(host, name)
+        del proof[name]
+
+    def rejected(self, path, value, sync=False):
+        identity, host, peer = self.natural()
+        target = host["ownerChain"]["naturalDispatch"]["ownerReceipt"]
+        for key in path[:-1]: target = target[key]
+        target[path[-1]] = value
+        if sync: self.sync_receipt_event(host, path[0])
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_one_exact_pre_release_fifo_receipt_passes(self):
+        identity, host, peer = self.natural()
+        gate.validate_reports(identity, host, peer, True)
+        receipt = host["ownerChain"]["naturalDispatch"]["ownerReceipt"]
+        self.assertFalse(receipt["handlerEntry"]["body"]["grounded"])
+        self.assertTrue(receipt["handlerReturn"]["body"]["grounded"])
+
+    def test_every_handler_body_field_stays_strict(self):
+        for stage in ("handlerEntry", "handlerReturn"):
+            baseline = self.natural()[1]["ownerChain"]["naturalDispatch"]["ownerReceipt"][stage]["body"]
+            for key, value in baseline.items():
+                altered = (not value if type(value) is bool else (value + 1 if isinstance(value, (int, float)) else vec(99, 99, 99)))
+                with self.subTest(stage=stage, key=key): self.rejected((stage, "body", key), altered, sync=True)
+
+    def test_handler_identity_clock_and_event_order(self):
+        for stage in ("handlerEntry", "handlerReturn"):
+            for field, value in (("valid", False), ("awaitingTeleport", True), ("ownerEntity", 11),
+                                 ("ownerUuid", self.identity["peerUuid"]), ("sourceEntity", 31),
+                                 ("sourceUuid", "00000000-0000-0000-0000-000000000094"),
+                                 ("gameTick", 11), ("serverTick", 21)):
+                with self.subTest(stage=stage, field=field): self.rejected((stage, field), value, sync=True)
+            for index in (0, 2, 999):
+                with self.subTest(stage=stage, index=index): self.rejected((stage, "eventIndex"), index)
+
+    def test_send_requires_identity_completed_before_release_and_exact_snapshot(self):
+        for field, value in (("ordinal", 2), ("sentIndex", 2), ("completedIndex", 1), ("completedIndex", 3),
+                             ("ownerEntity", 11), ("ownerUuid", self.identity["peerUuid"]),
+                             ("sameSenderAndConnection", False)):
+            with self.subTest(field=field): self.rejected(("originalSend", field), value)
+        for field, value in (("grounded", False), ("neutral", False), ("horizontalCollision", True),
+                             ("position", vec(0, 2.0000000000000004, 3)), ("tick", 10)):
+            with self.subTest(field=field): self.rejected(("originalSend", "body", field), value)
+        identity, host, peer = self.natural()
+        host["ownerChain"]["events"][2]["kind"] = "client-owner-position-send-failed"
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_packet_keys_digest_and_native_codec_are_exact(self):
+        for field, value in (("type", "PosRot"), ("position", vec(0, 2.0000000000000004, 3)),
+                             ("rotation", True), ("yaw", 1), ("pitch", 1), ("grounded", False),
+                             ("collision", True), ("sha256", "f" * 64)):
+            with self.subTest(field=field): self.rejected(("received", field), value)
+        identity, host, peer = self.natural()
+        receipt = host["ownerChain"]["naturalDispatch"]["ownerReceipt"]
+        original_digest = receipt["received"]["sha256"]
+        receipt["received"]["sha256"] = receipt["originalSend"]["packet"]["sha256"] = "f" * 64
+        for event in host["ownerChain"]["events"]: event["data"] = event["data"].replace(original_digest, "f" * 64)
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_fifo_does_not_search_for_later_matching_packet(self):
+        identity, host, peer = self.natural()
+        proof = host["ownerChain"]["naturalDispatch"]
+        # Reuse an existing earlier ledger slot: the apparent matching packet is no longer the queue head.
+        host["ownerChain"]["events"][0] = dict(index=0, kind="client-owner-position-sent", data="ordinal=99 earlier", after=body())
+        with self.assertRaises(ValueError): gate.validate_owner_receipt(identity, proof["ownerReceipt"], host["ownerChain"]["events"],
+                                                                      proof["release"], proof["listenerExit"], proof["trackerEntry"])
+
+    def test_second_packet_missing_receipt_and_hidden_packet_are_rejected(self):
+        for scenario in ("second packet", "missing receipt", "unattested packet"):
+            identity, host, peer = self.natural()
+            chain, proof = host["ownerChain"], host["ownerChain"]["naturalDispatch"]
+            if scenario == "second packet":
+                chain["events"][proof["ownerReceipt"]["handlerReturn"]["eventIndex"]]["kind"] = "server-owner-packet-received"
+            elif scenario == "missing receipt": del proof["ownerReceipt"]
+            else:
+                receipt = proof.pop("ownerReceipt")
+                for key in ("handlerEntry", "handlerReturn"):
+                    chain["events"][receipt[key]["eventIndex"]]["kind"] = "unrelated"
+                for key in ("trackerEntry", "send", "sendExit", "trackerExit"):
+                    proof[key]["body"]["grounded"] = False
+                    self.synchronize_snapshot_event(host, key)
+            with self.subTest(scenario=scenario), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+
+
+    def test_exact_json_equality_preserves_ieee_zero_and_numeric_types(self):
+        import math
+        for zero in (0, 0.0):
+            self.assertTrue(gate.exact(zero, 0.0))
+            self.assertFalse(gate.exact(zero, -0.0))
+            self.assertFalse(gate.exact({"motion": [zero]}, {"motion": [-0.0]}))
+        self.assertTrue(gate.exact(-0.0, -0.0))
+        self.assertTrue(gate.exact({"v": [20, -0.0]}, {"v": [20.0, -0.0]}))
+        self.assertFalse(gate.exact(1.0, math.nextafter(1.0, 2.0)))
+        self.assertFalse(gate.exact(False, 0))
+        self.assertFalse(gate.exact(True, 1.0))
+        self.assertFalse(gate.exact({"v": 0}, {"v": 0, "extra": 0}))
+
+    def test_raw_json_signed_zero_spellings_cannot_bypass_exact_body_checks(self):
+        identity, host, peer = self.natural()
+        host["ownerChain"]["naturalDispatch"]["ownerReceipt"]["handlerEntry"]["body"]["motion"]["x"] = -0.0
+        self.sync_receipt_event(host, "handlerEntry")
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "host.json"
+            for token in ("-0", "-0.0", "-0e0"):
+                path.write_text(json.dumps(host).replace("-0.0", token))
+                decoded = gate.read_json(path)
+                value = decoded["ownerChain"]["naturalDispatch"]["ownerReceipt"]["handlerEntry"]["body"]["motion"]["x"]
+                self.assertFalse(gate.exact(value, 0.0))
+                with self.subTest(token=token), self.assertRaises(ValueError): gate.validate_reports(identity, decoded, peer, True)
+            path.write_text('{"index": -0, "normal": 0, "count": 10}')
+            decoded = gate.read_json(path)
+            self.assertIs(type(decoded["normal"]), int)
+            self.assertEqual(decoded["count"], 10)
+            with self.assertRaises(ValueError): gate.integer(decoded["index"], "signed-zero event index")
+
+    def test_unchanged_negative_zero_native_motion_remains_valid(self):
+        identity, host, peer = self.natural()
+        chain = host["ownerChain"]
+        proof = chain["naturalDispatch"]
+        for stage in self.snapshots:
+            proof[stage]["body"]["motion"]["x"] = -0.0
+            self.synchronize_snapshot_event(host, stage)
+        for stage in ("handlerEntry", "handlerReturn"):
+            proof["ownerReceipt"][stage]["body"]["motion"]["x"] = -0.0
+            self.sync_receipt_event(host, stage)
+        for event in chain["events"]:
+            if event["kind"] in ("natural-listener-start", "server-motion-start", "server-motion-sent"):
+                event["after"]["motion"]["x"] = -0.0
+        chain["motion"]["raw"] = {**chain["motion"]["raw"], "x": -0.0}
+        # The independently retained encoded/applied values may still be +0.0 after native quantization.
+        gate.validate_reports(identity, host, peer, True)
+
+    def test_signed_zero_rejected_at_every_immutable_body_boundary(self):
+        for receipt_enabled in (False, True):
+            stages = ("beforeStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit")
+            if receipt_enabled: stages += ("handlerEntry", "handlerReturn")
+            for stage in stages:
+                for field in (("position", "x"), ("motion", "x"), ("fall",), ("absorption",)):
+                    if receipt_enabled: identity, host, peer = self.natural()
+                    else:
+                        identity = case_identity(self.identity, "NATURAL_MASTER")
+                        host, peer = native_reports(identity)
+                    proof = host["ownerChain"]["naturalDispatch"]
+                    owner = proof["ownerReceipt"] if stage.startswith("handler") else proof
+                    snapshot = owner[stage]["body"]
+                    target = snapshot if len(field) == 1 else snapshot[field[0]]
+                    self.assertEqual(target[field[-1]], 0)
+                    target[field[-1]] = -0.0
+                    if stage.startswith("handler"): self.sync_receipt_event(host, stage)
+                    else: self.synchronize_snapshot_event(host, stage)
+                    with self.subTest(receipt=receipt_enabled, stage=stage, field=field), self.assertRaises(ValueError):
+                        gate.validate_reports(identity, host, peer, True)
+
+    def test_signed_zero_cannot_hide_in_snapshot_ledger_copies(self):
+        for location in ("send body", "completion body", "decoded receive text", "sender coordinates"):
+            identity, host, peer = self.natural()
+            chain = host["ownerChain"]
+            receipt = chain["naturalDispatch"]["ownerReceipt"]
+            original = receipt["originalSend"]
+            if location == "decoded receive text":
+                event = next(event for event in chain["events"] if event["kind"] == "server-owner-packet-received")
+                event["data"] = event["data"].replace("x=0.0", "x=-0.0")
+            elif location == "sender coordinates":
+                original["body"]["position"]["x"] = -0.0
+                for index in (original["sentIndex"], original["completedIndex"]):
+                    chain["events"][index]["after"]["position"]["x"] = -0.0
+            else:
+                index = original["sentIndex" if location == "send body" else "completedIndex"]
+                chain["events"][index]["after"]["motion"]["x"] = -0.0
+            with self.subTest(location=location), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_signed_zero_in_received_packet_and_consistent_reencoded_key_is_rejected(self):
+        import hashlib
+        import struct
+        for field in ("position", "yaw", "pitch", "reencoded position"):
+            identity, host, peer = self.natural()
+            chain = host["ownerChain"]
+            receipt = chain["naturalDispatch"]["ownerReceipt"]
+            if field == "position": receipt["received"]["position"]["x"] = -0.0
+            elif field != "reencoded position": receipt["received"][field] = -0.0
+            else:
+                old = receipt["received"]["sha256"]
+                new = hashlib.sha256(struct.pack(">dddB", -0.0, 2, 3, 1)).hexdigest()
+                for packet in (receipt["received"], receipt["originalSend"]["packet"]):
+                    packet["position"]["x"] = -0.0
+                    packet["sha256"] = new
+                for event in chain["events"]:
+                    event["data"] = event["data"].replace(old, new).replace("x=0.0", "x=-0.0")
+            with self.subTest(field=field), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_signed_zero_in_bound_motion_and_exact_transport_fields_is_rejected(self):
+        for location in ("raw", "wire", "applied", "applied body"):
+            identity, host, peer = self.natural()
+            chain = host["ownerChain"]
+            if location == "applied body":
+                event = chain["events"][chain["motion"]["appliedIndex"]]
+                event["after"]["motion"] = {**event["after"]["motion"], "x": -0.0}
+            else: chain["motion"][location] = {**chain["motion"][location], "x": -0.0}
+            with self.subTest(location=location), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+        for location in ("requested", "sentPosition", "acceptedPosition", "sent body", "accepted body", "tracker body", "interpolation target"):
+            identity = case_identity(self.identity, "RIGHT")
+            host, peer = native_reports(identity)
+            # Break shared fixture references and put the unchanged z axis exactly at +0.0.
+            host, peer = json.loads(json.dumps([host, peer]))
+            def zero_z(value):
+                if isinstance(value, dict):
+                    if set(value) == {"x", "y", "z"} and value["z"] == 3: value["z"] = 0.0
+                    for child in value.values(): zero_z(child)
+                elif isinstance(value, list):
+                    for child in value: zero_z(child)
+            zero_z(host); zero_z(peer)
+            gate.validate_reports(identity, host, peer, True)
+            chain = host["ownerChain"]
+            position = chain["positions"][0]
+            if location in ("requested", "sentPosition", "acceptedPosition"): position[location]["z"] = -0.0
+            elif location == "tracker body": host["packets"][0]["body"]["z"] = -0.0
+            elif location == "interpolation target": peer["interpolation"][0]["target"]["z"] = -0.0
+            else: chain["events"][position["sentIndex" if location == "sent body" else "acceptanceIndex"]]["after"]["position"]["z"] = -0.0
+            with self.subTest(location=location), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+
+    def test_pose_components_are_exact_across_receipt_and_no_packet_boundaries(self):
+        for receipt_enabled in (False, True):
+            stages = ("beforeStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit")
+            if receipt_enabled: stages += ("handlerEntry", "handlerReturn")
+            for stage in stages:
+                for component in ("yaw", "pitch", "headYaw", "bodyYaw", "stance"):
+                    mutations = ("CROUCHING", "SWIMMING", "") if component == "stance" else (1.0, -0.0, float("nan"), float("inf"))
+                    for mutation in mutations:
+                        if receipt_enabled: identity, host, peer = self.natural()
+                        else:
+                            identity = case_identity(self.identity, "NATURAL_MASTER")
+                            host, peer = native_reports(identity)
+                        proof = host["ownerChain"]["naturalDispatch"]
+                        owner = proof["ownerReceipt"] if stage.startswith("handler") else proof
+                        owner[stage]["pose"][component] = mutation
+                        if stage.startswith("handler"): self.sync_receipt_event(host, stage)
+                        else: self.synchronize_snapshot_event(host, stage)
+                        with self.subTest(receipt=receipt_enabled, stage=stage, component=component, mutation=mutation), self.assertRaises(ValueError):
+                            gate.validate_reports(identity, host, peer, True)
+
+    def test_pose_ledger_and_saved_sender_snapshot_binding_are_exact(self):
+        for location in ("handlerEntry", "handlerReturn", "trackerEntry", "sender", "send completion"):
+            for component in ("yaw", "pitch", "headYaw", "bodyYaw", "stance"):
+                mutations = ("CROUCHING",) if component == "stance" else (1.0, -0.0)
+                for mutation in mutations:
+                    identity, host, peer = self.natural()
+                    chain = host["ownerChain"]
+                    proof = chain["naturalDispatch"]
+                    receipt = proof["ownerReceipt"]
+                    if location in ("sender", "send completion"):
+                        index = receipt["originalSend"]["sentIndex" if location == "sender" else "completedIndex"]
+                    else:
+                        owner = receipt if location.startswith("handler") else proof
+                        index = owner[location]["eventIndex"]
+                    chain["events"][index]["after"]["pose"][component] = mutation
+                    with self.subTest(location=location, component=component, mutation=mutation), self.assertRaises(ValueError):
+                        gate.validate_reports(identity, host, peer, True)
+
+    def test_coherent_downstream_pose_cannot_replace_raw_step_pose(self):
+        for component in ("yaw", "pitch", "headYaw", "bodyYaw", "stance"):
+            mutations = ("CROUCHING",) if component == "stance" else (1.0, -0.0)
+            for mutation in mutations:
+                identity, host, peer = self.natural()
+                chain = host["ownerChain"]
+                proof = chain["naturalDispatch"]
+                for stage in ("listenerExit", "trackerEntry", "send", "sendExit", "trackerExit"):
+                    proof[stage]["pose"][component] = mutation
+                    self.synchronize_snapshot_event(host, stage)
+                for stage in ("handlerEntry", "handlerReturn"):
+                    proof["ownerReceipt"][stage]["pose"][component] = mutation
+                    self.sync_receipt_event(host, stage)
+                for event in chain["events"]:
+                    if event["kind"] in ("server-motion-start", "server-motion-sent"):
+                        event["after"]["pose"][component] = mutation
+                with self.subTest(component=component, mutation=mutation), self.assertRaisesRegex(
+                        ValueError, "Native listener exit changed more than its position restoration"):
+                    gate.validate_reports(identity, host, peer, True)
+
+    def test_pose_snapshots_and_each_component_are_required(self):
+        for location in ("listenerExit", "handlerEntry", "handlerReturn", "trackerEntry", "sender"):
+            for missing in ("snapshot", "yaw", "pitch", "headYaw", "bodyYaw", "stance"):
+                identity, host, peer = self.natural()
+                proof = host["ownerChain"]["naturalDispatch"]
+                receipt = proof["ownerReceipt"]
+                owner = receipt if location.startswith("handler") else proof
+                snapshot = receipt["originalSend"]["body"] if location == "sender" else owner[location]
+                if missing == "snapshot": del snapshot["pose"]
+                else: del snapshot["pose"][missing]
+                with self.subTest(location=location, missing=missing), self.assertRaises(ValueError):
+                    gate.validate_reports(identity, host, peer, True)
+
+    def test_native_pose_is_retained_without_normalization(self):
+        identity, host, peer = self.natural()
+        proof = host["ownerChain"]["naturalDispatch"]
+        retained = dict(yaw=-0.0, pitch=14.0, headYaw=-37.0, bodyYaw=82.0, stance="CROUCHING")
+        for stage in ("afterStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit"):
+            proof[stage]["pose"] = copy.deepcopy(retained)
+            self.synchronize_snapshot_event(host, stage)
+        for stage in ("handlerEntry", "handlerReturn"):
+            proof["ownerReceipt"][stage]["pose"] = copy.deepcopy(retained)
+            self.sync_receipt_event(host, stage)
+        for event in host["ownerChain"]["events"]:
+            if event["kind"] in ("server-motion-start", "server-motion-sent"):
+                event["after"]["pose"] = copy.deepcopy(retained)
+        gate.validate_reports(identity, host, peer, True)
+
+    def test_pose_raw_json_negative_zero_keeps_its_sign(self):
+        for component in ("yaw", "pitch", "headYaw", "bodyYaw"):
+            identity, host, peer = self.natural()
+            host["ownerChain"]["naturalDispatch"]["ownerReceipt"]["handlerEntry"]["pose"][component] = -0.0
+            self.sync_receipt_event(host, "handlerEntry")
+            with tempfile.TemporaryDirectory() as temp:
+                path = Path(temp) / "host.json"
+                for token in ("-0", "-0.0", "-0e0"):
+                    path.write_text(json.dumps(host).replace("-0.0", token))
+                    with self.subTest(component=component, token=token), self.assertRaises(ValueError):
+                        gate.validate_reports(identity, gate.read_json(path), peer, True)
 
 
 class WitnessTests(EvidenceFixture):

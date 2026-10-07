@@ -16,6 +16,8 @@ import types
 import unittest
 from unittest.mock import patch
 import uuid
+from PIL import Image
+from verify_articulated_render_receipts import image_evidence
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("supervisor", ROOT / "tools/native/launch_two_clients.py")
@@ -34,7 +36,14 @@ PRESERVED_CASES = ORIGINAL_CASES + COUNTER_CASES
 SPECTATOR_CASES = ["SPECTATOR_BOLT_VENOM", "SPECTATOR_SPARK_VENOM", "SPECTATOR_RAY_VENOM", "SPECTATOR_TOUCH_VENOM"]
 PRIOR_CASES = PRESERVED_CASES + SPECTATOR_CASES
 LIFE_CASES = ["LIFE_SELF_HEAL_FIRST_PERSON", "LIFE_SELF_HEAL_THIRD_PERSON", "LIFE_SELF_HEAL_CAMERA_TRANSITIONS", "LIFE_SELF_SECOND_WIND_REDUCED_FLASH"]
-EXPECTED_CASES = PRIOR_CASES + LIFE_CASES
+ORIGINAL_46_CASES = PRIOR_CASES + LIFE_CASES
+COUNTER_VISUAL_CASES = [
+    "COUNTER_UNMOVED_CLASSIC_RIGHT", "COUNTER_UNMOVED_CLASSIC_LEFT",
+    "COUNTER_UNMOVED_ARTICULATED_RIGHT", "COUNTER_UNMOVED_ARTICULATED_LEFT",
+    "COUNTER_NULL_PARRY_CLASSIC_RIGHT", "COUNTER_NULL_PARRY_CLASSIC_LEFT",
+    "COUNTER_NULL_PARRY_ARTICULATED_RIGHT", "COUNTER_NULL_PARRY_ARTICULATED_LEFT",
+]
+EXPECTED_CASES = ORIGINAL_46_CASES + COUNTER_VISUAL_CASES
 
 
 def write_json(path, data):
@@ -66,6 +75,109 @@ def write_life_witnesses(ipc, identity, pids):
             (ipc / f"case-{index:02d}-{phase}.properties").write_text("\n".join(key + "=" + value for key, value in values.items()) + "\n")
 
 
+class SyntheticCounterEvidence:
+    """Tiny generated validator inputs, not screenshots from native JVMs or visual acceptance."""
+    def __init__(self, ipc, identity, pids, skin="wide"):
+        self.ipc, self.identity, self.pids = ipc, identity, pids
+        self.values, self.records = {}, {}
+        for index, case in enumerate(COUNTER_VISUAL_CASES, 46):
+            action = {**supervisor.counter_case(case), "actorEntity": "11", "observerEntity": "22",
+                      "actorUuid": identity["hostUuid"], "observerUuid": identity["peerUuid"]}
+            action = {key: str(value) for key, value in action.items()}
+            common = {**action, "case": case}
+            self.write(f"case-{index:02d}-prepare", "host", {**common, "skin": skin, "cameraNative": "true"})
+            self.write(f"case-{index:02d}-armed", "peer", {**common, "skin": skin, "cameraNative": "true"})
+            self.write(f"case-{index:02d}-clock-initial", "peer", {**common, "clockClientTick": "90"})
+            clock = {**common, "clockRendezvousTick": "95", "clockInitialServerTick": "95", "clockInitialSha256": supervisor.digest(ipc / f"case-{index:02d}-clock-initial.properties")}
+            self.write(f"case-{index:02d}-clock-rendezvous", "host", {**clock, "clockServerTick": "95"})
+            clock["clockRendezvousSha256"] = supervisor.digest(ipc / f"case-{index:02d}-clock-rendezvous.properties")
+            self.write(f"case-{index:02d}-clock-ack", "peer", {**clock, "clockClientTick": "95"})
+            self.write(f"case-{index:02d}-clock-ready", "host", {**clock, "clockServerTick": "95", "clockClientTick": "95",
+                       "clockAckSha256": supervisor.digest(ipc / f"case-{index:02d}-clock-ack.properties")})
+            self.values[f"case-{index:02d}-armed"]["clockReadySha256"] = supervisor.digest(ipc / f"case-{index:02d}-clock-ready.properties")
+            self.flush(f"case-{index:02d}-armed")
+            self.write(f"case-{index:02d}-accepted", "host", {**common, "acceptedTick": "100", "caughtTick": "99", "payments": "1", "paid": "8.0",
+                       "clockRendezvousTick": "95", "clockReadySha256": supervisor.digest(ipc / f"case-{index:02d}-clock-ready.properties"),
+                       "caughtAttackerUuid": "00000000-0000-4000-8000-000000000003", "armedSha256": supervisor.digest(ipc / f"case-{index:02d}-armed.properties")})
+            for phase, role in (("ready", "host"), ("seen", "peer"), ("passed", "host")):
+                self.write(f"case-{index:02d}-{phase}", role, {**common, "releaseTick": str(100 + int(action["windup"])),
+                           "payments": "1", "completions": "1", "counterTargetUuid": "00000000-0000-4000-8000-000000000003",
+                           "counterTargetEntity": "33", "counterTargetHealthBefore": "200.0", "counterTargetHealth": "185.0",
+                           "directPrimaryHits": "1", "primaryHitTick": str(100 + int(action["windup"]))})
+            accepted_sha = supervisor.digest(ipc / f"case-{index:02d}-accepted.properties")
+            w, r, move = (int(action[key]) for key in ("windup", "recovery", "move"))
+            ages = (w / 2, w + .25, w + 1.25, w + r / 2 + .25)
+            for role in ("host", "peer"):
+                game = ipc.parent / role; game.mkdir(exist_ok=True)
+                for phase, age in zip(supervisor.COUNTER_PHASES, ages):
+                    key = f"{role}-case-{index:02d}-{phase}-observed"
+                    name = "counter_peer_" + ("unmoved" if move == 24 else "null_parry") + "_" + action["mode"] + "_" + action["hand"].lower() + "_" + role + "_" + phase.lower()
+                    png = game / (name + ".png")
+                    Image.new("RGBA", (2, 2), (index * 4, int(age * 8), 100 if role == "host" else 200, 255)).save(png)
+                    data = png.read_bytes(); pixels = image_evidence(data)
+                    frame = {"activation": 100, "move": move, "left": action["hand"] == "LEFT", "master": False, "yaw": 0., "pitch": 0., "tilt": 0.,
+                             "footwork": False, "velocity": "n/a", "pose": "a" * 64}
+                    art = action["mode"] == "articulated"
+                    palette = {"activation": 100, "move": move, "phase": phase, "age": age, "classic": frame}
+                    if art:
+                        palette["articulated"] = {**frame, "velocity": "NaN", "pose": ("RECOVERY" if phase == "FOLLOW" else phase) + ":" + "b" * 64 + ":" + "c" * 64}
+                    material = 5 if art or role == "peer" else 0
+                    binding = {"source": 1, "state": 2, "model": 3, "item": 4, "skinMaterial": material, "owner": 11, "uuid": identity["hostUuid"],
+                               "skin": skin.upper(), "texture": "minecraft:skin", "hand": action["hand"], "palette": palette, "matched": True}
+                    kinds = (["body_submit", "body", "world_item"] if role == "peer" else ["view_submit", "view_deferred", "view_item"] if art else ["classic_transform", "native_item"])
+                    shapes = {"classic_transform": ("observed_classic_before_after", 16), "native_item": ("actual_native_item_matrix", 16),
+                              "view_submit": ("view_root_matrix", 16), "view_deferred": ("deferred_view_locals", 180), "view_item": ("actual_socket_item_matrix", 16),
+                              "body_submit": ("world_root_identity", 17), "body": ("deferred_body_locals_and_retained_outer_root", 197 if art else 71),
+                              "world_item": ("actual_world_socket_item_matrix", 16)}
+                    passes = []
+                    for kind in kinds:
+                        operation, count = shapes[kind]
+                        passes.append({"kind": kind, "binding": {**copy.deepcopy(binding), "item": 4 if role == "peer" or "item" in kind else 0},
+                                       "geometry": {"operation": operation, "expected": [0.] * count, "actual": [0.] * count, "maxError": 0., "matched": True}, "segmented": art, "rigid": not art})
+                    side = -1 if action["hand"] == "LEFT" else 1
+                    draw = {"binding": copy.deepcopy(passes[-1]["binding"]), "geometry": {"operation":"actual_displayed_item_matrix", "expected":[0.]*16, "actual":[0.]*16, "maxError":0., "matched":True},
+                            "displayContext": ("FIRST_PERSON_" if role == "host" else "THIRD_PERSON_") + action["hand"] + "_HAND", "quads": 12,
+                            "anchorKind":"stock_diamond_hilt", "anchorExpected":[0.,0.,0.], "anchorActual":[0.,0.,0.],
+                            "displayRotation":[0.,-90.*side,(25. if role=="host" else 55.)*side],
+                            "displayTranslation":[1.13/16,3.2/16,1.13/16] if role=="host" else [0.,4./16,.5/16],
+                            "displayScale":[.68 if role=="host" else .85]*3,
+                            "displayLocal":[1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.],
+                            "emittedQuadPositions":[0.] * 144,"emittedQuadSha256":hashlib.sha256(bytes(144*4)).hexdigest(),"stackIdentity":6,"collectorIdentity":7,"entryStackIdentity":6,"entryCollectorIdentity":7}
+                    observation = {"owner": identity["hostUuid"], "observerUuid": identity["hostUuid"] if role == "host" else identity["peerUuid"],
+                                   "observerEntity": "11" if role == "host" else "22", "observerCoverage": "false" if role == "host" else "true", "pairedRole": role,
+                                   "sourceHead": identity["sourceHead"], "runIdentity": identity["runIdentity"], "acceptedReceiptSha256": accepted_sha,
+                                   "acceptedSourceIdentity":str(index*100+5), "acceptedReadSequence": str(index*100+6), "sourceFrameSequence": str(index*100+7), "actualSourceAge": str(age), "connectedSkinTexture": "minecraft:skin", "connectedSkinModel": skin.upper(),
+                                   "originalSkinMaterialIdentity": str(material), "submittedSkinMaterialIdentity": str(material), "ordinaryHandAdmission": "true", "handEquipKnown": "true",
+                                   "handSameItem": "true", "handEquipping": "false", "worldHandEligible": "true"}
+                    record = {"schemaVersion": 1, "launchNonce": identity["nonce"], "verified": True, "failures": [], "scopeCleanupVerified": True,
+                              "acceptanceObservedBeforeSource": True, "phaseBasis": supervisor.COUNTER_PHASE_BASIS, "pixelQualityReviewed": False, "serverReleaseFrameCorrespondenceVerified": False,
+                              "expected": {"name": name, "view": "fp" if role == "host" else "remote", "owner": 11, "uuid": identity["hostUuid"], "activation": 100,
+                                           "mode": action["mode"], "hand": action["hand"], "skin": skin, "armor": False, "shell": False, "phase": phase, "move": move, "windup": w, "recovery": r},
+                              "copy": {"observations": observation, "passes": passes, "draws": [draw], "extractSequence": index*100+8, "renderSequence": index*100+9, "copySequence": index*100+10, "width": 2, "height": 2},
+                              "image": {"relativeImagePath": png.name, "pngBytes": len(data), "pngSha256": hashlib.sha256(data).hexdigest(), "decodedPixels": pixels}, "callbackPixels": pixels}
+                    self.records[key] = record
+                    self.write(f"{role}-case-{index:02d}-{phase}-rendered", role, {**common, "acceptedTick": "100", "phase": phase, "renderedBeforeReadback": "true"})
+                    self.write(key, role, {**common, "acceptedTick": "100", "acceptedReceiptSha256": accepted_sha, "phase": phase, "view": record["expected"]["view"], "skin": skin,
+                                          "screenshotName": name, "actualSourceAge": str(age), "receiptRelativePath": name + ".json", "pngRelativePath": png.name,
+                                          "pngSha256": record["image"]["pngSha256"], "callbackPixelSha256": pixels["sha256"], "receiptSha256": "pending",
+                                          "scopeCleanupVerified": "true", "acceptanceObservedBeforeSource": "true", "pixelQualityReviewed": "false"})
+                    self.rebind(key)
+
+    def write(self, name, role, fields):
+        self.values[name] = {**self.identity, "role": role, "pid": str(self.pids[role]), **fields}
+        self.flush(name)
+
+    def flush(self, name):
+        (self.ipc / (name + ".properties")).write_text("".join(key + "=" + str(value) + "\n" for key, value in self.values[name].items()), encoding="iso-8859-1")
+
+    def rebind(self, key):
+        values = self.values[key]
+        path = self.ipc.parent / values["role"] / values["receiptRelativePath"]
+        write_json(path, self.records[key])
+        values["receiptSha256"] = supervisor.digest(path)
+        self.flush(key)
+
+
 class Fixture(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
@@ -73,13 +185,17 @@ class Fixture(unittest.TestCase):
         self.root = Path(temp.name).resolve()
         (self.root / ".gitignore").write_text("build/\nbuild-alt/\n.gradle/\n")
         write_json(self.root / supervisor.CONTRACT, CONTRACT)
+        for mixin in supervisor.COUNTER_MIXINS:
+            write_json(self.root / "src/gametest/resources" / mixin, {"required": True, "client": ["SyntheticCounterHook"]})
         (self.root / "source.txt").write_text("reviewed source")
         subprocess.run(["git", "init", "-q", str(self.root)], check=True)
         for args in (("add", "."), ("-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "fixture")):
             subprocess.run(["git", "-C", str(self.root), *args], check=True)
         self.head = supervisor.source_head(self.root)
         self.descriptor = self.root / "build/resources/gametest/fabric.mod.json"
-        write_json(self.descriptor, {"entrypoints": {"fabric-client-gametest": [supervisor.ENTRYPOINT]}})
+        write_json(self.descriptor, {"entrypoints": {"fabric-client-gametest": [supervisor.ENTRYPOINT]}, "mixins": list(supervisor.COUNTER_MIXINS)})
+        for mixin in supervisor.COUNTER_MIXINS:
+            shutil.copyfile(self.root / "src/gametest/resources" / mixin, self.descriptor.parent / mixin)
         shutil.copyfile(self.root / supervisor.CONTRACT, self.descriptor.parent / Path(supervisor.CONTRACT).name)
         self.java = self.root / "build/toolchain/bin/java"
         self.java.parent.mkdir(parents=True)
@@ -120,19 +236,22 @@ class Fixture(unittest.TestCase):
 
 
 class ContractTests(Fixture):
-    def test_exact_46_case_roster_retains_all_42_and_offline_profiles(self):
+    def test_exact_54_case_roster_retains_original_46_and_offline_profiles(self):
         contract = supervisor.load_contract(self.root)
         cases = contract["cases"]
-        self.assertEqual(len(cases), 46)
+        self.assertEqual(len(cases), 54)
         self.assertEqual(cases, EXPECTED_CASES)
         self.assertEqual(cases[:35], ORIGINAL_CASES)
         self.assertEqual(cases[:38], PRESERVED_CASES)
         self.assertEqual(cases[35:38], COUNTER_CASES)
         self.assertEqual(cases[38:42], SPECTATOR_CASES)
         self.assertEqual(cases[:42], PRIOR_CASES)
-        self.assertEqual(cases[42:], LIFE_CASES)
-        self.assertEqual(contract["expectedCount"], 46)
-        self.assertEqual(contract["limits"], {"maxJvms": 2, "maxHeapMiBPerJvm": 2048, "maxCases": 46, "maxTimeoutSeconds": 900})
+        self.assertEqual(cases[42:46], LIFE_CASES)
+        self.assertEqual(cases[:46], ORIGINAL_46_CASES)
+        self.assertEqual(cases[46:], COUNTER_VISUAL_CASES)
+        self.assertEqual(supervisor.LIFE_CASES, tuple(LIFE_CASES))
+        self.assertEqual(contract["expectedCount"], 54)
+        self.assertEqual(contract["limits"], {"maxJvms": 2, "maxHeapMiBPerJvm": 2048, "maxCases": 54, "maxTimeoutSeconds": 900})
         for name, expected in supervisor.PROFILES.values():
             raw = bytearray(hashlib.md5(("OfflinePlayer:" + name).encode()).digest())
             raw[6] = raw[6] & 15 | 48; raw[8] = raw[8] & 63 | 128
@@ -155,27 +274,27 @@ class ContractTests(Fixture):
                 value["expectedCount"] = len(value["cases"])
                 value["limits"]["maxCases"] = len(value["cases"])
                 write_json(self.root / supervisor.CONTRACT, value)
-                with self.subTest(case=case, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 46-case roster"):
+                with self.subTest(case=case, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 54-case roster"):
                     supervisor.load_contract(self.root)
 
     def test_original_counter_spectator_and_boundary_order_cannot_change(self):
-        for first, second in ((0, 1), (34, 35), (35, 36), (36, 37), (37, 38), (38, 39), (40, 41), (41, 42), (42, 43), (44, 45)):
+        for first, second in ((0, 1), (34, 35), (35, 36), (36, 37), (37, 38), (38, 39), (40, 41), (41, 42), (42, 43), (44, 45), (45, 46), (46, 47), (49, 50), (52, 53)):
             value = copy.deepcopy(CONTRACT)
             value["cases"][first], value["cases"][second] = value["cases"][second], value["cases"][first]
             write_json(self.root / supervisor.CONTRACT, value)
-            with self.subTest(first=first, second=second), self.assertRaisesRegex(ValueError, "exact ordered 46-case roster"):
+            with self.subTest(first=first, second=second), self.assertRaisesRegex(ValueError, "exact ordered 54-case roster"):
                 supervisor.load_contract(self.root)
 
     def test_legacy_count_invalid_rosters_and_relaxed_limits_are_rejected(self):
-        mutations = [("expectedCount", 35), ("expectedCount", 38), ("expectedCount", 42), ("cases", PRIOR_CASES), ("cases", ORIGINAL_CASES), ("cases", PRESERVED_CASES), ("cases", None),
+        mutations = [("expectedCount", 46), ("cases", ORIGINAL_46_CASES), ("expectedCount", 35), ("expectedCount", 38), ("expectedCount", 42), ("cases", PRIOR_CASES), ("cases", ORIGINAL_CASES), ("cases", PRESERVED_CASES), ("cases", None),
                      ("cases", [None] + EXPECTED_CASES[1:]), ("cases", [{}] + EXPECTED_CASES[1:])]
         for field, replacement in mutations:
             value = copy.deepcopy(CONTRACT)
             value[field] = replacement
             write_json(self.root / supervisor.CONTRACT, value)
-            with self.subTest(field=field, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 46-case roster"):
+            with self.subTest(field=field, replacement=replacement), self.assertRaisesRegex(ValueError, "exact ordered 54-case roster"):
                 supervisor.load_contract(self.root)
-        for field, replacement in (("maxJvms", 3), ("maxHeapMiBPerJvm", 4096), ("maxCases", 35), ("maxCases", 38), ("maxCases", 42), ("maxTimeoutSeconds", 901)):
+        for field, replacement in (("maxJvms", 3), ("maxHeapMiBPerJvm", 4096), ("maxCases", 35), ("maxCases", 38), ("maxCases", 42), ("maxCases", 46), ("maxTimeoutSeconds", 901)):
             value = copy.deepcopy(CONTRACT)
             value["limits"][field] = replacement
             write_json(self.root / supervisor.CONTRACT, value)
@@ -402,6 +521,7 @@ class WitnessTests(Fixture):
             (self.ipc / filename).write_text("# Java properties\n" + "\n".join(key + "=" + value for key, value in values.items()) + "\n")
 
         write_life_witnesses(self.ipc, self.identity, {role: process.pid for role, process in self.jobs})
+        self.counter = SyntheticCounterEvidence(self.ipc, self.identity, {role: process.pid for role, process in self.jobs})
 
     def validate_witnesses(self):
         return supervisor.validate_witnesses(self.ipc, self.identity, CONTRACT["cases"], self.jobs)
@@ -424,10 +544,10 @@ class WitnessTests(Fixture):
             self.validate_witnesses()
 
     def test_every_terminal_rejects_legacy_missing_replaced_or_reordered_added_cases(self):
-        bad_rosters = [ORIGINAL_CASES, PRESERVED_CASES, PRIOR_CASES, EXPECTED_CASES + ["EXTRA_CASE"],
+        bad_rosters = [ORIGINAL_46_CASES, ORIGINAL_CASES, PRESERVED_CASES, PRIOR_CASES, EXPECTED_CASES + ["EXTRA_CASE"],
                        ORIGINAL_CASES + list(reversed(COUNTER_CASES)) + SPECTATOR_CASES,
                        PRESERVED_CASES + list(reversed(SPECTATOR_CASES))]
-        for index in range(35, 46):
+        for index in range(35, 54):
             bad_rosters.append(EXPECTED_CASES[:index] + EXPECTED_CASES[index + 1:])
             bad_rosters.append(EXPECTED_CASES[:index] + ["FOREIGN_CASE"] + EXPECTED_CASES[index + 1:])
         for filename in supervisor.TERMINALS:
@@ -488,6 +608,402 @@ class WitnessTests(Fixture):
                 target.write_text(original)
 
 
+class CounterSelectionTests(Fixture):
+    def test_fixed_counter_profiles_preserve_aura_and_bound_full_roster(self):
+        self.assertEqual(supervisor.selection()["profiles"], supervisor.PROFILES)
+        for profile, (name, offline, skin) in supervisor.COUNTER_PROFILES.items():
+            selected = supervisor.selection(supervisor.SUITE, profile)
+            self.assertEqual(selected["cases"], EXPECTED_CASES)
+            self.assertEqual(selected["maxTimeoutSeconds"], 900)
+            self.assertEqual(selected["expectedSkin"], skin)
+            self.assertEqual(selected["profiles"]["peer"], supervisor.PROFILES["peer"])
+            raw = bytearray(hashlib.md5(("OfflinePlayer:" + name).encode()).digest())
+            raw[6] = raw[6] & 15 | 48; raw[8] = raw[8] & 63 | 128
+            self.assertEqual(str(uuid.UUID(bytes=bytes(raw))), offline)
+            args = supervisor.command(self.launch, "host", self.root / "build/game", self.root / "build/ipc", self.identity, 900, selected)
+            self.assertEqual(args[args.index("--username") + 1], name)
+            self.assertEqual(args[args.index("--uuid") + 1], offline)
+            self.assertIn("-Dwildercord.counter.expectedSkin=" + skin, args)
+            self.assertEqual([arg for arg in args if arg.startswith("-Xmx")], ["-Xmx2G"])
+            cli = ["build/launch.json", "--output", "build/run", "--suite", "cast-receipt", "--profile", profile]
+            self.assertEqual(supervisor.parse_args(cli).timeout, 900)
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                supervisor.parse_args(cli + ["--timeout", "901"])
+            with self.assertRaises(ValueError):
+                supervisor.selection("moon", profile, supervisor.MOON_CASE, "front_oblique")
+        with self.assertRaises(ValueError):
+            supervisor.selection(supervisor.SUITE, "arbitrary")
+
+    def test_counter_hooks_must_exist_once_and_match_exported_bytes(self):
+        self.validate()
+        original = json.loads(self.descriptor.read_text())
+        for mixins in ([], list(supervisor.COUNTER_MIXINS) * 2):
+            write_json(self.descriptor, {**original, "mixins": mixins})
+            self.launch["descriptorSha256"] = supervisor.digest(self.descriptor)
+            with self.assertRaisesRegex(ValueError, "registered exactly once"):
+                self.validate()
+        write_json(self.descriptor, original)
+        self.launch["descriptorSha256"] = supervisor.digest(self.descriptor)
+        (self.descriptor.parent / supervisor.COUNTER_MIXINS[0]).write_text("changed")
+        with self.assertRaisesRegex(ValueError, "hook descriptor changed"):
+            self.validate()
+
+    def test_contract_cannot_drop_counter_phase_profile_union_or_hooks(self):
+        for field, value in (("casePrefixCount", 45), ("phases", ["ACTIVE"]), ("requiredProfiles", ["aura-wide"])):
+            contract = copy.deepcopy(CONTRACT); contract["counterVisuals"][field] = value
+            write_json(self.root / supervisor.CONTRACT, contract)
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "phase/profile union"):
+                supervisor.load_contract(self.root)
+        contract = copy.deepcopy(CONTRACT); contract["requiredMixins"] = []
+        write_json(self.root / supervisor.CONTRACT, contract)
+        with self.assertRaisesRegex(ValueError, "passive hooks"):
+            supervisor.load_contract(self.root)
+
+    def test_counter_nonce_is_fresh_generated_input_and_does_not_activate_moon(self):
+        nonce = "00000000-0000-4000-8000-000000000001"
+        with patch.dict(os.environ, {"WILDERCORD_COUNTER_RECEIPT_NONCE": "stale", "WILDERCORD_MOON_RECEIPT_NONCE": "foreign"}):
+            self.assertNotIn("WILDERCORD_COUNTER_RECEIPT_NONCE", supervisor.environment(self.launch, self.root))
+            env = supervisor.environment(self.launch, self.root, counter_nonce=nonce)
+            self.assertEqual(env["WILDERCORD_COUNTER_RECEIPT_NONCE"], nonce)
+            self.assertNotIn("WILDERCORD_MOON_RECEIPT_NONCE", env)
+        with self.assertRaises(ValueError):
+            supervisor.environment(self.launch, self.root, counter_nonce="not-a-nonce")
+
+
+class CounterEvidenceTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory(); self.addCleanup(temp.cleanup)
+        self.base = Path(temp.name).resolve(); self.ipc = self.base / "ipc"; self.ipc.mkdir()
+        self.identity = {"nonce": "00000000-0000-4000-8000-000000000001", "suite": supervisor.SUITE,
+                         "sourceHead": "a" * 40, "checkoutSha": "a" * 40, "prHeadSha": "", "descriptorSha256": "b" * 64,
+                         "hostUuid": supervisor.PROFILES["host"][1], "peerUuid": supervisor.PROFILES["peer"][1], "runIdentity": "synthetic-only-1"}
+        self.pids = {"host": 111, "peer": 222}
+        self.synthetic = SyntheticCounterEvidence(self.ipc, self.identity, self.pids)
+
+    def verify(self):
+        supervisor.validate_counter_witnesses(self.ipc, self.identity, self.pids)
+
+    def mutate_record(self, key, path, value):
+        original = copy.deepcopy(self.synthetic.records[key])
+        target = self.synthetic.records[key]
+        for component in path[:-1]:
+            target = target[component]
+        target[path[-1]] = value
+        self.synthetic.rebind(key)
+        try:
+            with self.subTest(key=key, path=path, value=value), self.assertRaises(ValueError):
+                self.verify()
+        finally:
+            self.synthetic.records[key] = original; self.synthetic.rebind(key)
+
+    def test_complete_synthetic_geometry_and_pixel_bindings_pass_without_native_claim(self):
+        self.verify()
+        self.assertEqual(len(self.synthetic.records), 64)
+        self.assertTrue(all(record["pixelQualityReviewed"] is False for record in self.synthetic.records.values()))
+
+    def test_missing_or_forged_deep_displayed_item_draw_fails_before_acceptance(self):
+        for key in ("host-case-46-ACTIVE-observed", "peer-case-46-ACTIVE-observed", "host-case-48-ACTIVE-observed"):
+            self.mutate_record(key, ("copy","draws"), [])
+            for path, value in [(("binding","item"),999),(("binding","source"),999),(("binding","palette","activation"),101),
+                                (("displayContext",),"FIXED"),(("quads",),0),(("anchorKind",),"guessed"),
+                                (("geometry","actual",0),1.),(("geometry","actual"),[]),(("geometry","matched"),False),
+                                (("anchorActual",0),1.),(("anchorActual",),[0.,0.]),(("displayRotation",1),0.),
+                                (("displayScale",0),1.),(("displayLocal",12),1.),(("emittedQuadPositions",0),1.),
+                                (("emittedQuadSha256",),"a"*64),(("emittedQuadPositions",),[]),(("stackIdentity",),0),(("collectorIdentity",),0),(("stackIdentity",),999),(("collectorIdentity",),999)]:
+                self.mutate_record(key,("copy","draws",0,*path),value)
+
+    def test_counter_png_receipt_and_witness_hardlinks_are_rejected(self):
+        key="host-case-46-ACTIVE-observed"; values=self.synthetic.values[key]
+        targets=[self.base/"host"/values[field] for field in ("pngRelativePath","receiptRelativePath")]
+        targets.append(self.ipc/"case-46-armed.properties")
+        for target in targets:
+            alias=target.with_name(target.name+".hardlink")
+            os.link(target,alias)
+            self.assertEqual(target.stat().st_nlink,2)
+            with self.subTest(target=target),self.assertRaisesRegex(ValueError,"Hard-linked"):self.verify()
+            alias.unlink()
+        self.verify()
+
+    def test_any_post_success_rejection_artifact_invalidates_prior_good_images(self):
+        self.verify()
+        for name in ("host-counter-render-failure.properties","peer-counter-render-failure.properties",
+                     "foreign-counter-render-failure.properties","host-counter-render-failure-partial.tmp"):
+            marker=self.ipc/name
+            for content in ("", "rejected=true\n", "nonce=foreign\nrejected=false\n"):
+                marker.write_text(content)
+                with self.subTest(name=name,content=content),self.assertRaisesRegex(ValueError,"rejection artifact"):self.verify()
+                marker.unlink()
+            marker.symlink_to(self.ipc/"missing-rejection-target")
+            with self.assertRaisesRegex(ValueError,"rejection artifact"):self.verify()
+            marker.unlink()
+            marker.mkdir()
+            with self.assertRaisesRegex(ValueError,"rejection artifact"):self.verify()
+            marker.rmdir()
+        self.verify()
+
+    def test_equal_valued_source_replacement_or_case_reuse_is_rejected(self):
+        for role in ("host","peer"):
+            key=f"{role}-case-46-ACTIVE-observed"
+            old=int(self.synthetic.records[key]["copy"]["observations"]["acceptedSourceIdentity"])
+            self.mutate_record(key,("copy","observations","acceptedSourceIdentity"),str(old-1))
+        # Whole later-case reuse cannot evade the within-case comparison.
+        for phase in supervisor.COUNTER_PHASES:
+            key=f"host-case-47-{phase}-observed"
+            self.synthetic.records[key]["copy"]["observations"]["acceptedSourceIdentity"]="4605";self.synthetic.rebind(key)
+        with self.assertRaisesRegex(ValueError,"reused by another case"):self.verify()
+
+    def test_every_counter_handshake_and_owner_peer_phase_is_required(self):
+        for key in self.synthetic.values:
+            target = self.ipc / (key + ".properties"); original = target.read_bytes(); target.unlink()
+            with self.subTest(witness=key), self.assertRaisesRegex(ValueError, "Missing"):
+                self.verify()
+            target.write_bytes(original)
+        self.verify()
+
+    def rehash_counter_clock_chain(self, index=46):
+        prefix = f"case-{index:02d}-"
+        values = self.synthetic.values
+        sha = lambda phase: supervisor.digest(self.ipc / (prefix + phase + ".properties"))
+        for phase in ("clock-rendezvous", "clock-ack", "clock-ready"):
+            current = values[prefix + phase]
+            current["clockInitialSha256"] = sha("clock-initial")
+            if phase in ("clock-ack", "clock-ready"):
+                current["clockRendezvousSha256"] = sha("clock-rendezvous")
+            if phase == "clock-ready":
+                current["clockAckSha256"] = sha("clock-ack")
+            self.synthetic.flush(prefix + phase)
+        values[prefix + "armed"]["clockReadySha256"] = sha("clock-ready"); self.synthetic.flush(prefix + "armed")
+        accepted = values[prefix + "accepted"]
+        accepted["clockReadySha256"] = sha("clock-ready"); accepted["armedSha256"] = sha("armed"); self.synthetic.flush(prefix + "accepted")
+        for role in ("host", "peer"):
+            for phase in supervisor.COUNTER_PHASES:
+                key = f"{role}-case-{index:02d}-{phase}-observed"
+                values[key]["acceptedReceiptSha256"] = sha("accepted")
+                self.synthetic.records[key]["copy"]["observations"]["acceptedReceiptSha256"] = sha("accepted")
+                self.synthetic.rebind(key)
+
+    def test_clock_chain_and_render_barriers_reject_stale_or_rehashed_contradictions(self):
+        mutations = [("clock-initial", "clockClientTick", "96"), ("clock-rendezvous", "clockInitialServerTick", "96"),
+                     ("clock-rendezvous", "clockServerTick", "94"), ("clock-rendezvous", "clockRendezvousTick", "94"),
+                     ("clock-ack", "clockClientTick", "96"), ("clock-ack", "clockRendezvousTick", "96"),
+                     ("clock-ack", "clockInitialServerTick", "94"), ("clock-ready", "clockServerTick", "96"),
+                     ("clock-ready", "clockClientTick", "94"), ("clock-ready", "clockInitialServerTick", "94")]
+        for phase, field, bad in mutations:
+            key = "case-46-" + phase; old = self.synthetic.values[key][field]
+            self.synthetic.values[key][field] = bad; self.synthetic.flush(key); self.rehash_counter_clock_chain()
+            with self.subTest(phase=phase, field=field), self.assertRaises(ValueError): self.verify()
+            self.synthetic.values[key][field] = old; self.synthetic.flush(key); self.rehash_counter_clock_chain()
+        for phase in ("clock-initial", "clock-rendezvous", "clock-ack", "clock-ready"):
+            path = self.ipc / ("case-46-" + phase + ".properties"); data = path.read_bytes(); path.write_bytes(data + b"# changed immutable bytes\n")
+            with self.subTest(phase=phase), self.assertRaises(ValueError): self.verify()
+            path.write_bytes(data)
+        for role in ("host", "peer"):
+            for phase in supervisor.COUNTER_PHASES:
+                key = f"{role}-case-46-{phase}-rendered"
+                self.synthetic.values[key]["renderedBeforeReadback"] = "false"; self.synthetic.flush(key)
+                with self.subTest(role=role, phase=phase), self.assertRaisesRegex(ValueError, "render barrier"): self.verify()
+                self.synthetic.values[key]["renderedBeforeReadback"] = "true"; self.synthetic.flush(key)
+        # Latest mutable pacing samples are not substitutes for the immutable chain.
+        (self.ipc / "case-46-clock-latest.properties").write_text("clockServerTick=999999\n")
+        self.verify()
+
+    def test_handshake_identity_actions_admission_and_cameras_fail_closed(self):
+        mutations = [("case-46-prepare", key, "wrong") for key in (*self.identity, "role", "pid", "case", "actorUuid", "actorEntity", "observerUuid", "observerEntity", "move", "windup", "recovery", "mode", "hand", "skin", "cameraNative")]
+        mutations += [("case-46-armed", "cameraNative", "false"), ("case-46-armed", "skin", "slim"),
+                      ("case-46-accepted", "payments", "2"), ("case-46-accepted", "paid", "0"), ("case-46-accepted", "paid", "NaN"),
+                      ("case-46-accepted", "caughtTick", "101"), ("case-46-accepted", "caughtTick", "83"),
+                      ("case-46-accepted", "caughtAttackerUuid", self.identity["hostUuid"]), ("case-46-accepted", "armedSha256", "f" * 64),
+                      ("case-46-ready", "observerUuid", self.identity["hostUuid"]), ("case-46-seen", "mode", "articulated"),
+                      ("case-46-passed", "hand", "LEFT"), ("host-case-46-WINDUP-observed", "acceptedReceiptSha256", "f" * 64),
+                      ("peer-case-46-WINDUP-observed", "view", "fp"), ("host-case-46-WINDUP-observed", "pixelQualityReviewed", "true")]
+        for key, field, bad in mutations:
+            original = self.synthetic.values[key].copy(); self.synthetic.values[key][field] = bad; self.synthetic.flush(key)
+            with self.subTest(witness=key, field=field, value=bad), self.assertRaises(ValueError):
+                self.verify()
+            self.synthetic.values[key] = original; self.synthetic.flush(key)
+        self.verify()
+
+    def test_each_real_release_target_outcome_field_must_agree_across_three_roles(self):
+        changes = {"releaseTick": "107", "payments": "2", "completions": "2", "counterTargetUuid": "00000000-0000-4000-8000-000000000004",
+                   "counterTargetEntity": "34", "counterTargetHealthBefore": "199.0", "counterTargetHealth": "184.0", "directPrimaryHits": "2", "primaryHitTick": "105"}
+        for phase in ("ready", "seen", "passed"):
+            key = "case-46-" + phase
+            for field, bad in changes.items():
+                old = self.synthetic.values[key][field]; self.synthetic.values[key][field] = bad; self.synthetic.flush(key)
+                with self.subTest(phase=phase, field=field), self.assertRaisesRegex(ValueError, "outcome disagree"): self.verify()
+                self.synthetic.values[key][field] = old; self.synthetic.flush(key)
+        # Even a consistently rewritten three-role ledger cannot replace gameplay measurements.
+        for field, bad in (("releaseTick", "105"), ("payments", "0"), ("completions", "2"), ("directPrimaryHits", "0"), ("primaryHitTick", "105"),
+                           ("counterTargetUuid", self.identity["peerUuid"]), ("counterTargetEntity", "11"), ("counterTargetEntity", "0"),
+                           ("counterTargetHealthBefore", "201.0"), ("counterTargetHealth", "0"), ("counterTargetHealth", "200"), ("counterTargetHealth", "NaN")):
+            old = self.synthetic.values["case-46-ready"][field]
+            for phase in ("ready", "seen", "passed"):
+                key = "case-46-" + phase; self.synthetic.values[key][field] = bad; self.synthetic.flush(key)
+            with self.subTest(field=field, bad=bad), self.assertRaises(ValueError): self.verify()
+            for phase in ("ready", "seen", "passed"):
+                key = "case-46-" + phase; self.synthetic.values[key][field] = old; self.synthetic.flush(key)
+        self.verify()
+
+    def test_rehashed_metadata_and_actual_source_sequences_are_not_proof(self):
+        key = "host-case-48-ACTIVE-observed"
+        mutations = [(('schemaVersion',), 3), (('verified',), False), (('failures',), ["rejected"]), (('launchNonce',), "old"),
+                     (('scopeCleanupVerified',), False), (('acceptanceObservedBeforeSource',), False), (('phaseBasis',), "requested_age"),
+                     (('pixelQualityReviewed',), True), (('serverReleaseFrameCorrespondenceVerified',), True),
+                     (('expected', 'armor'), True), (('expected', 'shell'), True), (('expected', 'owner'), 22),
+                     (('expected', 'activation'), 99), (('expected', 'phase'), "RECOVERY"), (('expected', 'hand'), "LEFT"),
+                     (('expected', 'skin'), "slim"), (('expected', 'name'), "foreign_capture"),
+                     (('copy', 'observations', 'sourceHead'), "c" * 40), (('copy', 'observations', 'runIdentity'), "other-run"),
+                     (('copy', 'observations', 'owner'), self.identity['peerUuid']), (('copy', 'observations', 'observerUuid'), self.identity['peerUuid']),
+                     (('copy', 'observations', 'acceptedReceiptSha256'), "f" * 64), (('copy', 'observations', 'acceptedReadSequence'), "7"),
+                     (('copy', 'observations', 'sourceFrameSequence'), "8"), (('copy', 'observations', 'actualSourceAge'), "7.0"),
+                     (('copy', 'extractSequence'), 9), (('copy', 'renderSequence'), 10), (('copy', 'copySequence'), 9),
+                     (('copy', 'observations', 'ordinaryHandAdmission'), "false"), (('copy', 'observations', 'handEquipping'), "true"),
+                     (('copy', 'observations', 'connectedSkinTexture'), "foreign:skin"), (('copy', 'observations', 'submittedSkinMaterialIdentity'), "7")]
+        for path, value in mutations:
+            self.mutate_record(key, path, value)
+        self.verify()
+
+    def test_all_role_backend_passes_require_exact_union_and_full_numeric_geometry(self):
+        for key in ("host-case-46-ACTIVE-observed", "peer-case-46-ACTIVE-observed", "host-case-48-ACTIVE-observed", "peer-case-48-ACTIVE-observed"):
+            passes = self.synthetic.records[key]["copy"]["passes"]
+            for malformed in ([], passes[:-1], passes + [passes[0]], [passes[0]] * len(passes)):
+                self.mutate_record(key, ("copy", "passes"), malformed)
+            for path, value in [(('kind',), 'label_only'), (('segmented',), not passes[0]['segmented']),
+                                (('binding', 'source'), 99), (('binding', 'state'), 99), (('binding', 'model'), 99),
+                                (('binding', 'skinMaterial'), 99), (('binding', 'hand'), 'LEFT'), (('binding', 'uuid'), self.identity['peerUuid']),
+                                (('binding', 'palette', 'activation'), 99), (('binding', 'palette', 'move'), 19),
+                                (('binding', 'palette', 'age'), 9), (('binding', 'palette', 'classic', 'left'), True),
+                                (('binding', 'palette', 'classic', 'pose'), 'phase-label'), (('binding', 'palette', 'classic', 'master'), True),
+                                (('geometry', 'operation'), 'label_only'), (('geometry', 'expected'), [0]), (('geometry', 'matched'), False),
+                                (('geometry', 'actual', 0), .5), (('geometry', 'actual', 0), float('nan')), (('geometry', 'actual', 0), '0'),
+                                (('geometry', 'maxError'), .1)]:
+                self.mutate_record(key, ('copy', 'passes', 0, *path), value)
+        self.mutate_record("host-case-46-ACTIVE-observed", ('copy','passes',0,'binding','palette','articulated'), {})
+        self.mutate_record("peer-case-48-ACTIVE-observed", ('copy','passes',0,'binding','palette','articulated','pose'), 'WINDUP:'+'b'*64+':'+'c'*64)
+        self.mutate_record("peer-case-48-FOLLOW-observed", ('copy','passes',0,'binding','palette','articulated','pose'), 'FOLLOW:'+'b'*64+':'+'c'*64)
+
+    def test_rehashed_json_requires_typed_objects_and_no_duplicate_properties(self):
+        key = "host-case-48-ACTIVE-observed"
+        for path, value in [(('schemaVersion',), True), (('expected',), None), (('copy',), []),
+                            (('copy', 'observations'), None), (('copy', 'passes', 0, 'binding'), []),
+                            (('copy', 'passes', 0, 'binding', 'palette'), None),
+                            (('copy', 'passes', 0, 'geometry'), None), (('image',), [])]:
+            self.mutate_record(key, path, value)
+        values = self.synthetic.values[key]
+        path = self.base / values['role'] / values['receiptRelativePath']
+        original = path.read_text()
+        for text in ('[]', original[:-1] + ',"verified":true}'):
+            path.write_text(text); values['receiptSha256'] = supervisor.digest(path); self.synthetic.flush(key)
+            with self.assertRaises(ValueError): self.verify()
+        self.synthetic.rebind(key)
+        self.verify()
+
+    def test_actual_phase_windows_have_exact_boundaries_for_both_counters(self):
+        for move, windup, recovery in ((24, 6, 16), (25, 4, 14)):
+            for age, phase in ((-1, "NONE"), (0, "WINDUP"), (windup - .001, "WINDUP"), (windup, "ACTIVE"),
+                               (windup + .999, "ACTIVE"), (windup + 1, "FOLLOW"), (windup + recovery / 2 - .001, "FOLLOW"),
+                               (windup + recovery / 2, "RECOVERY"), (windup + recovery - .001, "RECOVERY"), (windup + recovery, "NONE")):
+                self.assertEqual(supervisor.counter_phase(move, age), phase)
+            for age in ("NaN", "Infinity", True):
+                with self.assertRaises(ValueError):
+                    supervisor.counter_phase(move, age)
+        key = "host-case-46-ACTIVE-observed"
+        original = self.synthetic.values[key].copy()
+        for age in ("5.999", "7", "22", "NaN"):
+            self.synthetic.values[key]["actualSourceAge"] = age; self.synthetic.flush(key)
+            with self.assertRaises(ValueError): self.verify()
+        self.synthetic.values[key] = original; self.synthetic.flush(key)
+
+    def test_image_bytes_callback_pixels_dimensions_and_evidence_paths_fail_closed(self):
+        key = "host-case-46-WINDUP-observed"
+        for path, value in [(('callbackPixels','sha256'), 'f'*64), (('image','decodedPixels','sha256'), 'f'*64),
+                            (('image','pngSha256'), 'f'*64), (('image','pngBytes'), 1), (('copy','width'), 3)]:
+            self.mutate_record(key, path, value)
+        values = self.synthetic.values[key]; png = self.base/'host'/values['pngRelativePath']; original = png.read_bytes()
+        png.write_bytes(original+b'changed')
+        with self.assertRaisesRegex(ValueError, 'PNG bytes changed'): self.verify()
+        png.write_bytes(original)
+        receipt = self.base/'host'/values['receiptRelativePath']; data = receipt.read_bytes(); receipt.write_bytes(data+b' ')
+        with self.assertRaisesRegex(ValueError, 'receipt bytes changed'): self.verify()
+        receipt.write_bytes(data)
+        for field in ('receiptRelativePath','pngRelativePath'):
+            old = values[field]
+            for bad in ('../host/'+old, '/tmp/foreign', ''):
+                values[field] = bad; self.synthetic.flush(key)
+                with self.assertRaises(ValueError): self.verify()
+            values[field] = old; self.synthetic.flush(key)
+        saved = png.with_suffix('.saved'); png.rename(saved); png.symlink_to(saved)
+        with self.assertRaisesRegex(ValueError, 'Symlink'): self.verify()
+
+
+class CounterProfileUnionTests(unittest.TestCase):
+    """Aggregate acceptance is exercised only against explicitly synthetic local fixtures."""
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory(); self.addCleanup(temp.cleanup)
+        self.base = Path(temp.name).resolve(); self.paths = []; self.reports = []
+        for index, (profile, (_, owner, skin)) in enumerate(supervisor.COUNTER_PROFILES.items(), 1):
+            base = self.base/profile; ipc = base/'ipc'; ipc.mkdir(parents=True)
+            identity = {'nonce': f'00000000-0000-4000-8000-{index:012d}', 'suite': supervisor.SUITE,
+                        'sourceHead':'a'*40,'checkoutSha':'a'*40,'prHeadSha':'','descriptorSha256':'b'*64,
+                        'hostUuid':owner,'peerUuid':supervisor.PROFILES['peer'][1],'runIdentity':f'synthetic-only-{index}'}
+            pids = {'host':100+index*2,'peer':101+index*2}
+            for filename, role in supervisor.TERMINALS.items():
+                values={**identity,'role':role,'pid':str(pids[role]),'cases':','.join(EXPECTED_CASES)}
+                (ipc/filename).write_text(''.join(key+'='+value+'\n' for key,value in values.items()))
+            write_life_witnesses(ipc, identity, pids)
+            SyntheticCounterEvidence(ipc, identity, pids, skin)
+            report={**identity,'suite':supervisor.SUITE,'profile':profile,'status':'passed','cases':EXPECTED_CASES,'expectedSkin':skin,
+                    'counterOwnerPeerGeometryVerified':True,'phaseBasis':supervisor.COUNTER_PHASE_BASIS,'counterPhaseCaptures':64,
+                    'pixelQualityReviewed':False,'serverReleaseFrameCorrespondenceVerified':False,'timeoutSeconds':900,
+                    'heapMiBPerJvm':2048,'seconds':1.,'processes':{role:{'pid':pid,'exit':0} for role,pid in pids.items()}}
+            write_json(base/'result.json',report); self.paths.append(base); self.reports.append(report)
+
+    def test_exact_original_width_union_reopens_both_full_runs(self):
+        value=supervisor.validate_counter_profile_union(self.paths)
+        self.assertEqual(value['cases'],EXPECTED_CASES)
+        self.assertEqual(value['counterPhaseCaptures'],128)
+        self.assertEqual(value['profiles'],['aura-wide','aura-slim'])
+        self.assertFalse(value['pixelQualityReviewed'])
+        self.assertFalse(value['serverReleaseFrameCorrespondenceVerified'])
+        supervisor.validate_counter_profile_union(list(reversed(self.paths)))
+
+    def test_union_refuses_shortened_full_profile_caps_and_late_rejection(self):
+        for seconds in (1,60,899,901):
+            old=self.reports[0]["timeoutSeconds"];self.reports[0]["timeoutSeconds"]=seconds
+            write_json(self.paths[0]/"result.json",self.reports[0])
+            with self.subTest(seconds=seconds),self.assertRaisesRegex(ValueError,"resource limits"):
+                supervisor.validate_counter_profile_union(self.paths)
+            self.reports[0]["timeoutSeconds"]=old;write_json(self.paths[0]/"result.json",self.reports[0])
+        supervisor.validate_counter_profile_union(self.paths)
+        marker=self.paths[1]/"ipc"/"peer-counter-render-failure.properties";marker.write_text("late swallowed duplicate")
+        with self.assertRaisesRegex(ValueError,"rejection artifact"):supervisor.validate_counter_profile_union(self.paths)
+
+    def test_missing_duplicate_foreign_and_partial_union_is_rejected(self):
+        for paths in ([],self.paths[:1],self.paths+self.paths[:1],[self.paths[0]]*2):
+            with self.subTest(paths=paths),self.assertRaises(ValueError): supervisor.validate_counter_profile_union(paths)
+        for field,bad in [('profile','aura'),('status','failed'),('cases',ORIGINAL_46_CASES),('cases',EXPECTED_CASES+['EXTRA']),
+                          ('expectedSkin','wide'),('sourceHead','c'*40),('checkoutSha','c'*40),('descriptorSha256','c'*64),
+                          ('prHeadSha','d'*40),('nonce',self.reports[0]['nonce']),('runIdentity',self.reports[0]['runIdentity']),
+                          ('counterOwnerPeerGeometryVerified',False),('counterPhaseCaptures',63),('pixelQualityReviewed',True),
+                          ('serverReleaseFrameCorrespondenceVerified',True),('phaseBasis','requested_age'),('heapMiBPerJvm',4096),
+                          ('timeoutSeconds',901),('seconds',901),('cleanupErrors',['failed']),('processes',{'host':{'pid':102,'exit':0}})]:
+            report=copy.deepcopy(self.reports[1]);report[field]=bad;write_json(self.paths[1]/'result.json',report)
+            with self.subTest(field=field,bad=bad),self.assertRaises(ValueError):supervisor.validate_counter_profile_union(self.paths)
+        write_json(self.paths[1]/'result.json',self.reports[1])
+        supervisor.validate_counter_profile_union(self.paths)
+
+    def test_passed_manifest_cannot_replace_any_terminal_life_counter_or_png_evidence(self):
+        base=self.paths[1]
+        targets=[base/'ipc'/next(iter(supervisor.TERMINALS)),base/'ipc/case-42-armed.properties',
+                 base/'ipc/case-46-accepted.properties',base/'ipc/peer-case-53-RECOVERY-observed.properties',
+                 next((base/'peer').glob('*.png'))]
+        for target in targets:
+            original=target.read_bytes();target.unlink()
+            with self.subTest(target=target),self.assertRaises(ValueError):supervisor.validate_counter_profile_union(self.paths)
+            target.write_bytes(original)
+        supervisor.validate_counter_profile_union(self.paths)
+
+
 class FakeProcess:
     def __init__(self, pid, code=None, ignore_terminate=False):
         self.pid, self.returncode = pid, code
@@ -520,6 +1036,9 @@ class LifecycleTests(Fixture):
             self.assertEqual(argv[0], str(self.java)); self.assertEqual(len(argv), 2)
             self.assertEqual(kwargs["stdin"], subprocess.DEVNULL)
             kwargs["stdout"].write(b"owned diagnostic\n")
+            proof = json.loads((options.output / "launch-proof.json").read_text())
+            self.assertEqual(kwargs["env"]["WILDERCORD_COUNTER_RECEIPT_NONCE"], proof["nonce"])
+            self.assertNotIn("WILDERCORD_MOON_RECEIPT_NONCE", kwargs["env"])
             if failure is not None and len(launched) == 1:
                 raise failure
             process = processes[len(launched)]; launched.append(process)
@@ -530,6 +1049,7 @@ class LifecycleTests(Fixture):
                     values = {**identity, "role": role, "pid": str(processes[0 if role == "host" else 1].pid), "cases": ",".join(CONTRACT["cases"])}
                     (options.output / "ipc" / filename).write_text("\n".join(key + "=" + value for key, value in values.items()))
                 write_life_witnesses(options.output / "ipc", identity, {"host": processes[0].pid, "peer": processes[1].pid})
+                SyntheticCounterEvidence(options.output / "ipc", identity, {"host": processes[0].pid, "peer": processes[1].pid})
             return process
         with patch.dict(os.environ, {"GITHUB_ACTIONS": "true", "CI_MINECRAFT_EULA_ACCEPTED": "true", "GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "2"}), patch.object(supervisor, "ignored_output"), patch.object(supervisor, "source_head", return_value=self.head), patch.object(supervisor, "validate_launch", return_value="a" * 64), patch.object(supervisor.subprocess, "Popen", side_effect=spawn):
             return supervisor.run(options, self.root)
@@ -540,6 +1060,11 @@ class LifecycleTests(Fixture):
         self.assertEqual(report["status"], "passed")
         self.assertEqual(report["cases"], EXPECTED_CASES)
         self.assertTrue(report["runIdentity"].startswith("123-2-"))
+        self.assertTrue(report["counterOwnerPeerGeometryVerified"])
+        self.assertEqual(report["counterPhaseCaptures"], 64)
+        self.assertEqual(report["phaseBasis"], supervisor.COUNTER_PHASE_BASIS)
+        self.assertFalse(report["pixelQualityReviewed"])
+        self.assertFalse(report["serverReleaseFrameCorrespondenceVerified"])
         self.assertEqual(len(report["processes"]), 2)
         for role in ("host", "peer"):
             self.assertEqual((self.options().output / (role + ".log")).read_text(), "owned diagnostic\n")
@@ -563,7 +1088,7 @@ class LifecycleTests(Fixture):
         self.assertEqual(report["status"], "failed")
 
     def test_legacy_roster_fails_preflight_before_starting_java(self):
-        for roster in (ORIGINAL_CASES, PRESERVED_CASES, PRIOR_CASES):
+        for roster in (ORIGINAL_CASES, PRESERVED_CASES, PRIOR_CASES, ORIGINAL_46_CASES):
             with self.subTest(legacy_count=len(roster)):
                 value = copy.deepcopy(CONTRACT)
                 value["cases"] = roster
@@ -571,7 +1096,7 @@ class LifecycleTests(Fixture):
                 write_json(self.root / supervisor.CONTRACT, value)
                 options = self.options()
                 options.output = self.root / "build/native" / ("legacy-" + str(len(roster)))
-                with patch.object(supervisor, "ignored_output"), patch.object(supervisor.subprocess, "Popen") as spawn, self.assertRaisesRegex(ValueError, "exact ordered 46-case roster"):
+                with patch.object(supervisor, "ignored_output"), patch.object(supervisor.subprocess, "Popen") as spawn, self.assertRaisesRegex(ValueError, "exact ordered 54-case roster"):
                     supervisor.run(options, self.root)
                 spawn.assert_not_called()
                 report = json.loads((options.output / "result.json").read_text())

@@ -249,10 +249,12 @@ public final class HollowArts {
 	// ------------------------------------------------------------------ III. Null Parry
 
 	static boolean nullParry(ServerPlayer player, AuraApi.StringContext context) {
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(NULL_PARRY) || !counter.valid()) return false;
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
-		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
+		LivingEntity foe = counter.target();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SWEEP, false, 1.3F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_null_parry", 1.0F, 1.0F);
@@ -275,18 +277,24 @@ public final class HollowArts {
 		world.bare().groundRing(feet, ABYSS, 0.4, ArtRules.NULL_PULSE * 1.2, 0.2, 8);
 		world.groundRing(feet, color, 0.3, ArtRules.NULL_PULSE, 0.06, 8);
 		for (LivingEntity other : ArtKit.around(player, feet, ArtRules.NULL_PULSE, 1.0, 2.5, 6)) {
-			if (other != foe) {
+			if (other != foe && counter.permits(other)) {
 				hits.strike(other, ArtRules.NULL_PULSE_FACTOR, AuraFxRules.Weight.LIGHT);
+				if (!counter.afterDamage(other)) {
+					if (!counter.valid()) return true;
+					continue;
+				}
 				ArtKit.knock(other, feet, ArtRules.NULL_SHOVE, 0.15);
 			}
 		}
-		if (foe != null) {
+		if (foe != null && counter.primaryValid()) {
 			hits.strike(foe, ArtRules.NULL_FACTOR);
-			if (foe.isAlive()) {
+			if (foe.isAlive() && counter.afterDamage(foe)) {
 				shadow(player, foe, 0.9);
+				if (!counter.afterDamage(foe)) return true;
 				ArtKit.hold(player, foe, ArtRules.NULL_HOLD);
-				int silenced = ArtWards.silence(foe, ArtRules.NULL_SILENCE);
-				silencedLook(player, foe, Math.max(10, silenced));
+				if (!counter.afterDamage(foe)) return true;
+				int silenced = ArtWards.silence(foe, ArtRules.NULL_SILENCE, () -> counter.afterDamage(foe));
+				if (counter.afterDamage(foe)) silencedLook(player, foe, Math.max(10, silenced));
 			}
 		}
 		return true;

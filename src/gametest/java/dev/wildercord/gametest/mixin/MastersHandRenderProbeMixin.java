@@ -20,6 +20,6 @@ public abstract class MastersHandRenderProbeMixin {
 	private void wildercord$submittedSword(PlayerRenderState player, FirstPersonHandsAndItemsRenderState state, float partial, float xRot,
 			InteractionHand hand, float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector, int light, CallbackInfo ci) {
 		if (hand == InteractionHand.MAIN_HAND && stack.is(Items.DIAMOND_SWORD) && !state.mainHandRenderState.isEmpty())
-			MastersCaptureProbe.hand(player.avatarRenderState.id, state.mainHandRenderState, pose, player.avatarRenderState, state, attack, inverseArmHeight);
+			MastersCaptureProbe.hand(player.avatarRenderState.id, state.mainHandRenderState, pose, player.avatarRenderState, state, attack, inverseArmHeight, collector);
 	}
 }

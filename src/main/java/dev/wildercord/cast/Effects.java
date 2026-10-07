@@ -154,7 +154,7 @@ public final class Effects {
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
-		if (cast.guardedImpact() && !cast.alive()) return;
+		if ((cast.guardedImpact() || cast.hasConsequences()) && !cast.alive()) return;
 		if(Runes.innate(node.effect) && cast.caster instanceof ServerPlayer owner && !owner.isCreative()
 			&& !dev.wildercord.player.Heart.innate(owner).equals(node.effect.id()))return;
 		if(PhysicalMagic.interact(cast,node.effect,hit))return;
@@ -193,24 +193,29 @@ public final class Effects {
 		if (!cast.guardedImpact()) afterEffect(cast, node, hit, groupPower);
 	}
 
+	private static boolean lostConsequence(Cast cast, Cast.Hit hit) {
+		return cast.hasConsequences() && (!cast.alive() || hit.entities().stream()
+			.anyMatch(entity -> entity instanceof LivingEntity living && !cast.consequencesValid(living)));
+	}
+
 	private static void afterEffect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
-		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		RuneSeals.onSpell(cast, hit, node.effect.element());
-		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		WorldQuirks.after(cast, node, hit, groupPower);
-		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		WorldMagic.onSpell(cast, node, hit, groupPower);
 		// Strong magic leaves a lasting mark of its element where it lands.
-		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		Residues.onSpell(cast, node, hit);
-		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.cast.events.WorldEvents.onSpell(cast, hit, node.effect.element());
-		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.familiar.Familiars.onSpell(cast, hit, node.effect.element());
-		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		Dungeons.onSpell(cast, hit, node.effect.element());
 		// Monsters that answer magic: a Gloomstalker shown by light, a harpy dragged down by earth.
-		if (cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.monster.Monsters.onSpell(cast, hit, node.effect);
 	}
 
@@ -407,8 +412,10 @@ public final class Effects {
     dev.wildercord.wildlife.EmberContent.affectFern(cast,targetBlock(hit),"fire");
     harmed.forEach(t -> {
 				double react = Reactions.fire(cast, t);
+				if (!cast.admitsConsequence(t)) return;
 				t.igniteForSeconds((float) (6 * duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 5 * power * react);
+				if (!cast.consequencesValid(t)) return;
 				FireBloodVfx.fire(level, t);
 			});
    }
@@ -1034,6 +1041,7 @@ public final class Effects {
 		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
 		// Before the affinity, so a reaction this hit sets off breaks through a resistance, as Shatter's does.
 		bonus *= Reactions.hit(cast, target, currentElement);
+		if (!cast.consequencesValid(target)) return;
 		bonus *= Affinities.multiplier(cast, target, source, currentElement);
 		// Fire is weaker on the wet (unless the spell has grown Undying Flame).
 		if (!soulBurn && !Mastery.wetFire(cast)) {
@@ -1042,6 +1050,7 @@ public final class Effects {
 		// The damage traits its caster chose for it as it grew (see Mastery): held to their own cap, and to the one below.
 		bonus *= Mastery.damageBonus(cast, target);
 		bonus *= AddonRunes.react(cast, target, currentElement);
+		if (!cast.consequencesValid(target)) return;
 		bonus *= ExplorerEffects.bonus(cast, target, currentElement);
 		// Trial Key: the opening blow on a target still at full health.
 		if (openingBonus > 1.0 && target.getHealth() >= target.getMaxHealth() - 0.01F) {
@@ -1074,7 +1083,7 @@ public final class Effects {
 		// A player's defences against spells (armour, Warding, Warded, the spellguard) are met there.
 		DamageSource admittedSource = cast.guardedImpact() ? new RelayDamageSource(source, cast) : source;
 		Dungeons.spellHit(() -> SpellDefence.hurtAdmitted(cast.level, target, admittedSource, dealt, cast));
-		if (cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
+		if (!cast.consequencesValid(target) || cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
 		// A heavy hit lands with a punch for whoever cast it.
 		if (damage >= 8) {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));
@@ -1085,12 +1094,15 @@ public final class Effects {
 		if (thirst > 0 && taken > 0 && cast.caster.isAlive() && cast.caster != target
 				&& !(target instanceof TrainingDummy) && target.level().dimension() != PracticeRoom.DIMENSION) {
 			cast.caster.heal((float) (taken * thirst));
+			if (!cast.consequencesValid(target)) return;
 			CraftedVfx.thirst(cast.level, target, cast.caster);
 		}
 		// Spellbrand: a brand this caster left on the target bursts.
 		CraftedRunes.afterSpellHit(cast, target);
+		if (!cast.consequencesValid(target)) return;
 		// What the spell learns from the blow, and the traits that answer one (see Mastery).
 		Mastery.afterDamage(cast, target, dealt, taken);
+		if (!cast.consequencesValid(target)) return;
 		dev.wildercord.aura.ResonantStrikes.spell(cast, target, currentElement, taken);
 	}
 
@@ -1628,7 +1640,7 @@ public final class Effects {
 		ServerLevel level = cast.level;
 		Vfx.shockArc(level, target.getBoundingBox().getCenter().add(0, 1.2, 0), target.getBoundingBox().getCenter());
 		hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4 * power * Reactions.storm(cast, target));
-		if (cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
+		if (!cast.consequencesValid(target) || cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
 		// The arc looks for a conductor first (a wet enemy, or one in metal armour) within 5; else the nearest within 4.
 		LivingEntity next = null;
 		boolean conductor = false;

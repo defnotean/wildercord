@@ -4,7 +4,38 @@ This is a release gate, not a declaration of readiness. Keep the pull request in
 
 The [player-facing development roadmap](../MASTERS_OF_TOMORROW_ROADMAP.md) records the expanded requested content scope and priorities. Planned spells, movement, lore and hundreds of distinct boss attacks are not completed by the current foundation.
 
-## Current native findings and repair checkpoint (2026-10-07, 01:47 UTC)
+## Local Unmoved/Null source checkpoint (2026-10-07)
+
+The prior verified `dcf242d9` checkpoint remains frozen. The separate local slice adds original choreography to two existing
+counter abilities, not two new gameplay capabilities: Unmoved ID 24 (6/16) and Null Parry ID 25 (4/14). Lifecycle, shared
+hardening/retirement boundaries, presentation and exact roster/tooling changes have independent source review. The
+[ability contract](../features/unmoved-null-parry-contract.md) preserves original target routes, one paid admission,
+Unmoved's original-body defence deadline, independent protection sources and Null's pulse-before-primary/EMPTY/lost-primary rules.
+The source now has 23/50 style body/hand timelines and 13/50 articulated forms; 27 still lack the new choreography.
+Final combined-source tests and native execution remain separate requirements.
+
+Required Masters acceptance is now 47 classes in 44/1/2 parts. Every previous 45 class remains in its original relative order.
+The full descriptor is 312 classes, explicitly planned as 80/84/77/71. All previously reviewed 310 class assignments and
+relative order remain unchanged; the two new counter-lifetime classes extend only group 4. Strict source/run/attempt/profile,
+owned-launch and complete lifecycle receipts are required. A single shard or unsharded report cannot declare the full gate
+passed; only the exact disjoint all-four aggregate can. The 180-minute shard caps remain. Runtime fit is unverified.
+
+The additive connected fixture is independently source-reviewed and integrated: 54 unique cases retain the original 46 prefix in
+each real wide/slim profile, alongside all four original Moon views. Its proposed sequential resource capacity is not a runtime
+pass. Final native acceptance requires both complete width variants and the retained Moon views with actual source/body/action,
+phase, draw and image receipts. The fixture passively latches the first native performed object and rejects replacement,
+records late callback failures durably, and rejects hard-linked evidence or shortened per-profile caps. A persistence failure
+forces a nonzero exit in the isolated test JVM rather than leaving old success evidence valid. Source/CPU or offline pixel
+evidence cannot replace native/mixin/GPU/peer execution.
+
+The latest historical public run `37566562110` on `cf1d3e66` ended in failure: eight jobs passed, two failed and one was
+cancelled. Full shard 3 exposed the old Reed blocked-journey fixture; the diagnostic exposed the old Stone natural-owner
+receipt gap. Shard 4 was cancelled at its existing 180-minute deadline while CrimsonMoonTimelineTest was active; earlier
+March returns and CrimsonMoonReleasedOwnerTest do not establish completion of that shard. These are older-source results,
+not execution of the newer local repairs. Stone Hinge, Gale ordinary attack and Witness remain native-unverified and unavailable.
+The broader spells, world content, lore and hundreds-of-distinct-attacks roadmap remains unfinished.
+
+## Historical native findings and repair checkpoint (2026-10-07, 01:47 UTC)
 
 On published `ac1711`, the normal build, all six articulated classes, the 46 connected cases plus four Moon views, aggregate shard 1 and the required March mechanics part pass. The March presentation class also returns in 1,927.21 seconds. Its subsequent opponent class fails the real-input attempt to enter the spent first band before the advancing front, so the visual part remains failed. Whole required acceptance still needs all three matching parts; individual class returns cannot satisfy a failed part.
 
@@ -16,7 +47,7 @@ The same local checkpoint adds bounded passive observations of the original Scav
 
 ## Earned counters and required parts (2026-10-07, 00:34 UTC)
 
-Backdraft and Rooted Parry now have independently reviewed committed timelines, original Classic/articulated body and first-person poses, immutable earned-guard receipts and bounded clash ownership. The original eight-Aura/eighty-tick economy stays. Admission must be earned within sixteen ticks; a receipt may survive only its original bounded clash, never a refreshed or indefinite window. The newly documented release checks retain the selected body, current LOS and finite route bounds; loss becomes a paid whiff. Nested damage, resonance, etched-rune and delayed cosmetic callbacks retain the correct active or released owner boundary. Rebound-key help and the language generator agree. Nineteen of fifty style forms have authored body timelines, nine have an articulated backend, and thirty-one still lack the new choreography. This is presentation of existing abilities, with native owner/observer and pixel acceptance pending.
+Backdraft and Rooted Parry now have independently reviewed committed timelines, original Classic/articulated body and first-person poses, immutable earned-guard receipts and bounded clash ownership. The original eight-Aura/eighty-tick economy stays. Admission must be earned within sixteen ticks; a receipt may survive only its original bounded clash, never a refreshed or indefinite window. The newly documented release checks retain the selected body, current LOS and finite route bounds; loss becomes a paid whiff. Nested damage, resonance, etched-rune and delayed cosmetic callbacks retain the correct active or released owner boundary. Rebound-key help and the language generator agree. Glacier Mirror and Static Riposte now append IDs22/23 with six/four-tick windups and sixteen/fourteen-tick recovery. Their original eight-Aura/eighty-tick economy remains; exact selected primary bodies require owner range/LOS at admission and release (six/seven blocks), while released lightning keeps its original strict five-block/no-LOS hop rule and Mirror keeps fifty ticks of live-facing reflection. Twenty-one of fifty style forms have authored body timelines, eleven have an articulated backend, and twenty-nine still lack the new choreography. This is presentation of existing abilities. Mirror/Riposte source review and native owner/observer/pixel acceptance remain pending; offline geometry does not establish them.
 
 The update gate now requires three disjoint parts: forty-one core classes, one March mechanics class, and two March visual classes. Every prior forty-three class remains in order; the counter acceptance class is the only addition. Each part retains the ninety-minute job/eighty-five-minute native cap and the matrix runs at most two parts concurrently. Only all three passed manifests with the exact same PR head, workflow checkout, run and attempt can establish focused acceptance. Four aggregate shards, articulated and connected gates remain separate requirements. Earlier unpartitioned or forty-core evidence cannot satisfy this expanded scope.
 

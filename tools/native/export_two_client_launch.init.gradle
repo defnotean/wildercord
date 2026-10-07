@@ -11,7 +11,7 @@ gradle.projectsEvaluated {
     def root = p.projectDir.canonicalFile
     def expectedEntry = suite == 'stone-hinge-peer' ? 'dev.wildercord.aura.StoneHingePeerTransportTest' : suite == 'moon' ? 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest' : 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
     def contractPath = suite == 'stone-hinge-peer' ? 'src/gametest/resources/stone-hinge-peer-native-contract.json' : suite == 'moon' ? 'src/gametest/resources/crimson-moon-native-contract.json' : 'src/gametest/resources/cast-receipt-native-contract.json'
-    def expectedMixins = suite == 'stone-hinge-peer' ? ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json'] : suite == 'moon' ? ['crimson-moon-multiplayer-gametest.mixins.json'] : []
+    def expectedMixins = suite == 'stone-hinge-peer' ? ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json'] : suite == 'moon' ? ['crimson-moon-multiplayer-gametest.mixins.json'] : ['counter-peer-gametest.mixins.json']
     // Match the supervisor's ordered roster, including every original case.
     def expectedCases = [
         'BREAK_CAST_HEALTH',
@@ -59,7 +59,15 @@ gradle.projectsEvaluated {
         'LIFE_SELF_HEAL_FIRST_PERSON',
         'LIFE_SELF_HEAL_THIRD_PERSON',
         'LIFE_SELF_HEAL_CAMERA_TRANSITIONS',
-        'LIFE_SELF_SECOND_WIND_REDUCED_FLASH'
+        'LIFE_SELF_SECOND_WIND_REDUCED_FLASH',
+        'COUNTER_UNMOVED_CLASSIC_RIGHT',
+        'COUNTER_UNMOVED_CLASSIC_LEFT',
+        'COUNTER_UNMOVED_ARTICULATED_RIGHT',
+        'COUNTER_UNMOVED_ARTICULATED_LEFT',
+        'COUNTER_NULL_PARRY_CLASSIC_RIGHT',
+        'COUNTER_NULL_PARRY_CLASSIC_LEFT',
+        'COUNTER_NULL_PARRY_ARTICULATED_RIGHT',
+        'COUNTER_NULL_PARRY_ARTICULATED_LEFT'
     ]
     if (suite == 'moon') expectedCases = ['articulated_netherite_funded_right_release']
     def stoneTransparent = ['ORDINARY', 'RIGHT', 'LEFT', 'PARTIAL_RESISTANCE', 'ABSORPTION', 'WALL_CLIPPED',

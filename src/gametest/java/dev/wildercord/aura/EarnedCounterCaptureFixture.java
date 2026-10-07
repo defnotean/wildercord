@@ -23,6 +23,7 @@ public final class EarnedCounterCaptureFixture implements AutoCloseable {
 	private AuraGuard.Caught caught;
 	private long accepted, ready, released, hitAt;
 	private int payments, completions, hits;
+	private Object action;
 	private double paid;
 	private boolean exposed, quietWindup, recovery, ended;
 
@@ -32,8 +33,10 @@ public final class EarnedCounterCaptureFixture implements AutoCloseable {
 			float health = getHealth();
 			boolean result = super.hurtServer(level, source, amount);
 			var art = SwordStrings.performing();
-			if (source.is(Aura.DAMAGE) && source.getEntity() == owner && art != null && art.id().equals(style.art())) {
+			if (source.is(Aura.DAMAGE) && source.getEntity() == owner && art != null && art.id().equals(style.art())
+				&& CounterHitCapture.direct(owner, style.art(), this)) {
 				check(result && getHealth() < health, "The original attacker actually takes the primary counter hit");
+				action = CounterHitCapture.action(owner, style.art(), this, action);
 				hits++; hitAt = level.getGameTime();
 			}
 			return result;
@@ -42,7 +45,7 @@ public final class EarnedCounterCaptureFixture implements AutoCloseable {
 
 	/** Fixture setup never creates a guard or a cue; both must subsequently arrive through gameplay. */
 	public EarnedCounterCaptureFixture(ServerPlayer player, MastersStyleRules.Style style) {
-		check(style.art().equals("backdraft") || style.art().equals("rooted_parry"), "Only the two published earned counters use this fixture");
+		check(style.targets() == MastersStyleRules.TargetPolicy.EARNED_COUNTER && EarnedCounters.handles(style.art()), "Only registered authentic earned counters use this fixture");
 		check(ArtRules.art(style.art()).cost() == 8 && ArtRules.art(style.art()).cooldown() == 80
 			&& StringRules.COUNTER_TICKS == 16, "The existing eight-Aura, eighty-tick counter and finite earning window remain unchanged");
 		owner = player; this.style = style;
@@ -105,13 +108,20 @@ public final class EarnedCounterCaptureFixture implements AutoCloseable {
 	}
 
 	public void verify() {
-		checkOwner();
+		checkOwner(); CounterHitCapture.assertIdle();
 		check(payments == 1 && completions == 1 && hits == 1, "Exactly one paid counter and one primary release completed");
 		check(released == accepted + style.windup() && hitAt == released, "The primary hit and completion use the fixed server release tick");
 		check(exposed && quietWindup && recovery && ended, "The genuine guard lowers for the full exposed windup and recovery, with no early art damage");
 		check(SwordStrings.readyAt(owner, style.art()) == ready, "Recovery did not restart or repay the ordinary art rest");
 		Wildercord.LOGGER.info("MASTERS_EARNED_COUNTER_CAPTURE art={} owner={} attacker={} caught={} accepted={} released={} paid={} ready={} hits={}",
 			style.art(), owner.getUUID(), attacker.getUUID(), caught.at(), accepted, released, paid, ready, hits);
+	}
+
+	public void verifyCancelled() {
+		checkOwner(); CounterHitCapture.assertIdle();
+		check(payments == 1 && completions == 0 && hits == 0, "Cancellation keeps one payment and suppresses the entire pending release");
+		check(exposed && quietWindup && recovery && ended, "Cancelled counter still owns its full paid exposed recovery");
+		check(SwordStrings.readyAt(owner, style.art()) == ready, "Cancellation never refunds or restarts the art rest");
 	}
 
 	private void checkOwner() {

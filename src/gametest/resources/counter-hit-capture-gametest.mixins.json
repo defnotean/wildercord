@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "CounterHitCaptureMixin",
+    "CounterRuneCaptureMixin",
+    "CounterResonanceCaptureMixin",
+    "CounterSpellDamageCaptureMixin",
+    "CounterEffectCaptureMixin",
+    "CounterAddonCaptureMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

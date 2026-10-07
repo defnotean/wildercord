@@ -1,7 +1,7 @@
 {
   "masters": {
-    "description": "Masters update combat, progression including learned Circle XII Reweave, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln and Stone Fault March counterplay and Crimson Moon release/lifetime acceptance.",
-    "expectedCount": 44,
+    "description": "Masters update combat, progression including learned Circle XII Reweave, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln and Stone Fault March counterplay and Crimson Moon release/lifetime acceptance. Includes Unmoved/Null paid admission, independent hardening and released-owner lifetime boundaries.",
+    "expectedCount": 47,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
@@ -22,6 +22,9 @@
       "dev.wildercord.party.PartyOfflineProjectileTest",
       "dev.wildercord.aura.MastersStyleTimelineTest",
       "dev.wildercord.aura.EarnedCounterAcceptanceTest",
+      "dev.wildercord.aura.MirrorRiposteReleasedOwnerTest",
+      "dev.wildercord.aura.UnmovedNullAcceptanceTest",
+      "dev.wildercord.aura.arts.ArtWardsHardeningTest",
       "dev.wildercord.party.MastersSecondFormTimelineTest",
       "dev.wildercord.aura.HailfallReleasedOwnerTest",
       "dev.wildercord.aura.HailSkyAcceptanceTest",
@@ -234,8 +237,8 @@
   },
   "masters-core": {
     "purpose": "required-part",
-    "description": "Mandatory disjoint part of the Masters 44 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
-    "expectedCount": 41,
+    "description": "Mandatory disjoint part of the Masters 47 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "expectedCount": 44,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
@@ -256,6 +259,9 @@
       "dev.wildercord.party.PartyOfflineProjectileTest",
       "dev.wildercord.aura.MastersStyleTimelineTest",
       "dev.wildercord.aura.EarnedCounterAcceptanceTest",
+      "dev.wildercord.aura.MirrorRiposteReleasedOwnerTest",
+      "dev.wildercord.aura.UnmovedNullAcceptanceTest",
+      "dev.wildercord.aura.arts.ArtWardsHardeningTest",
       "dev.wildercord.party.MastersSecondFormTimelineTest",
       "dev.wildercord.aura.HailfallReleasedOwnerTest",
       "dev.wildercord.aura.HailSkyAcceptanceTest",
@@ -282,7 +288,7 @@
   },
   "masters-march-mechanics": {
     "purpose": "required-part",
-    "description": "Mandatory disjoint part of the Masters 44 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "description": "Mandatory disjoint part of the Masters 47 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
     "expectedCount": 1,
     "entries": [
       "dev.wildercord.aura.world.StoneMarchTest"
@@ -290,7 +296,7 @@
   },
   "masters-march-visuals": {
     "purpose": "required-part",
-    "description": "Mandatory disjoint part of the Masters 44 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "description": "Mandatory disjoint part of the Masters 47 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
     "expectedCount": 2,
     "entries": [
       "dev.wildercord.aura.world.StoneMarchPresentationTest",

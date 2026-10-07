@@ -1,6 +1,7 @@
 """Reject arbitrary requests, stale revisions, mixed logs and release-gate relabeling."""
 from contextlib import redirect_stderr, redirect_stdout
 import copy
+import hashlib
 import io
 import json
 import os
@@ -402,7 +403,14 @@ class EvidenceTests(unittest.TestCase):
     def test_ecology_return_selects_only_three_whole_classes_and_observes_reopen(self):
         self.assertEqual(diagnostic.CASE_FILES["ecology-return"], (
             "src/main/java/dev/wildercord/wildlife/LanternNewt.java",
-            "src/main/java/dev/wildercord/wildlife/NewtPathNavigation.java"))
+            "src/main/java/dev/wildercord/wildlife/NewtPathNavigation.java",
+            *diagnostic.NEWT_BLOCKED_TIMEOUT_FILES))
+        self.assertTrue(set(diagnostic.NEWT_BLOCKED_TIMEOUT_FILES) <= set(diagnostic.CASE_FILES["movement-foundations"]))
+        self.assertEqual(len(diagnostic.NEWT_BLOCKED_TIMEOUT_FILES), 4)
+        mixins = json.loads((suites.ROOT / "src/gametest/resources/ecology-return-gametest.mixins.json").read_text())
+        self.assertIn("NewtBlockedTimeoutProbeMixin", mixins["mixins"])
+        production = (suites.ROOT / "src/main/resources/wildercord.mixins.json").read_text()
+        self.assertNotIn("NewtBlockedTimeoutProbeMixin", production)
         entries = ["dev.wildercord.wildlife.RootmoltCounterTest",
                    "dev.wildercord.wildlife.ReedRefugeTest",
                    "dev.wildercord.wildlife.SiltcrestBankReturnTest"]
@@ -429,7 +437,7 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(selection, {"kind": "diagnostic", "name": "diagnostic-kiln-ring",
                                      "count": 3, "entries": entries})
         masters = suites.select_entries(suite="masters")
-        self.assertEqual(masters["count"], 44)
+        self.assertEqual(masters["count"], 47)
         for source in (suites.select_entries(), masters):
             self.assertEqual([entry for entry in source["entries"] if entry in entries], entries)
 
@@ -663,12 +671,14 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(suites.select_entries(suite="diagnostic-progression-feasibility"), {
             "kind": "diagnostic", "name": "diagnostic-progression-feasibility", "count": 2, "entries": entries})
         self.assertEqual(suites.select_entries()["entries"][-7:], entries + ["dev.wildercord.cast.ReweavePlayableTest", *diagnostic.STONE_OWNER_NEGATIVE_ENTRIES, diagnostic.STONE_VELOCITY_ENTRY, *diagnostic.EXCISE_ENTRIES, diagnostic.GALE_BALLISTIC_ENTRY])
-        for name, count in (("masters", 44), ("articulated", 6)):
+        for name, count in (("masters", 47), ("articulated", 6)):
             selection = suites.select_entries(suite=name)
             self.assertEqual(selection["count"], count)
             self.assertTrue(set(entries).isdisjoint(selection["entries"]))
         contract = json.loads((suites.ROOT / "src/gametest/resources/cast-receipt-native-contract.json").read_text())
-        self.assertEqual(contract["expectedCount"], 46)
+        self.assertEqual(contract["expectedCount"], 54)
+        self.assertEqual(hashlib.sha256(json.dumps(contract["cases"][:46], separators=(",", ":")).encode()).hexdigest(),
+                         "a82c794e514d23cb26c34dddebc0e51390b4931787ca7d8a996967d853ad0ba4")
         self.assertTrue(set(entries).isdisjoint(contract["cases"]))
         self.assertEqual(diagnostic.SEEDS["progression-feasibility"], dict.fromkeys(entries))
         descriptor = json.loads(suites.DESCRIPTOR.read_text())
@@ -1073,7 +1083,7 @@ class PeerDiagnosticTests(PeerLaunchFixture):
         self.assertNotIn(entry, suites.select_entries()["entries"])
         for name in (diagnostic.PEER_CASE, "diagnostic-stone-hinge-peer"):
             with self.assertRaises(ValueError): suites.select_entries(suite=name)
-        for name, count in (("masters", 44), ("articulated", 6)):
+        for name, count in (("masters", 47), ("articulated", 6)):
             selection = suites.select_entries(suite=name)
             self.assertEqual(selection["count"], count)
             self.assertNotIn(entry, selection["entries"])
@@ -1081,8 +1091,12 @@ class PeerDiagnosticTests(PeerLaunchFixture):
         self.assertEqual(sum(map(len, shards)), len(suites.select_entries()["entries"]))
         self.assertTrue(all(entry not in shard for shard in shards))
         contract = json.loads((suites.ROOT / "src/gametest/resources/cast-receipt-native-contract.json").read_text())
-        self.assertEqual(contract["expectedCount"], 46)
-        self.assertEqual(len(self.gate.matrix.GROUPS), 5)
+        self.assertEqual(contract["expectedCount"], 54)
+        self.assertEqual(hashlib.sha256(json.dumps(contract["cases"][:46], separators=(",", ":")).encode()).hexdigest(),
+                         "a82c794e514d23cb26c34dddebc0e51390b4931787ca7d8a996967d853ad0ba4")
+        self.assertEqual(len(self.gate.matrix.GROUPS), 6)
+        self.assertEqual([group["profile"] for group in self.gate.matrix.GROUPS if group["suite"] == "cast-receipt"],
+                         ["aura-wide", "aura-slim"])
         self.assertEqual(sum(group["suite"] == "moon" for group in self.gate.matrix.GROUPS), 4)
 
     def test_fixed_source_inventory_covers_all_peer_helpers_and_affected_prior_diagnostics(self):

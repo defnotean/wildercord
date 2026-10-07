@@ -280,8 +280,12 @@ Commands (operators, permission level 2):
 
 ## Building from source
 
-Requirements: **JDK 25** and Python 3.11+ with **Pillow** (only for regenerating art and data).
+Requirements: **JDK 25** and Python 3.11+. **Pillow** is needed only for regenerating art and data.
 Gradle comes with the wrapper.
+Full/sharded client test resources and launch preflight also require Python on PATH
+as `python3` on macOS/Linux or `python` on Windows. The owned CI launcher runs on Linux;
+focused selectors retain their existing platform behavior. See
+[the explicit full-client plan](docs/FULL_CLIENT_SHARD_PLAN.md) for its fail-closed contract.
 
 ```bash
 git clone https://github.com/defnotean/wildercord.git

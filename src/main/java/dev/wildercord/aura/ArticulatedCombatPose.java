@@ -21,6 +21,8 @@ public final class ArticulatedCombatPose {
 	public static final int COLLAPSE = 17, RED_RAIN = 18;
 	public static final int CRIMSON_MOON = 19;
 	public static final int BACKDRAFT = 20, ROOTED_PARRY = 21;
+	public static final int GLACIER_MIRROR = 22, STATIC_RIPOSTE = 23;
+	public static final int UNMOVED = 24, NULL_PARRY = 25;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -528,6 +530,89 @@ public final class ArticulatedCombatPose {
 				v(7.1F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.03F, .08F, .25F), -.98F, r(.10F, -.10F, .08F)))),
 		v(-2.70F, 22, 1.15F), v(2.70F, 22, -1.30F));
 
+	// Glacier Mirror frames a compact upright receiving plane, opens a level outside reply,
+	// and refolds the same guard. A quiet chest counter-turn distinguishes its square stance.
+	private static final Motion GLACIER_MIRROR_MOTION = new Motion(
+		new Key(v(-.10F, .78F, .08F), r(.02F, .08F, -.025F), r(.025F, .045F, -.015F), r(.02F, .12F, -.04F), r(-.04F, -.20F, .03F),
+			arm(r(.02F, .04F, -.045F), r(-1.38F, .28F, -.54F), -.98F, r(.44F, -.26F, -.48F)),
+			arm(r(0, -.035F, .035F), r(-1.12F, -.20F, .12F), -1.00F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.1F, -4.95F, 3.4F), arm(r(.02F, .035F, -.035F), r(-1.23F, .16F, -.34F), -.88F, r(.46F, -.18F, -.38F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.025F, .03F), r(-1.06F, .08F, .24F), -.96F, r(.10F, -.10F, .08F)))),
+		new Key(v(.16F, .78F, -.22F), r(.03F, -.10F, .025F), r(.03F, -.06F, .015F), r(.025F, -.15F, .04F), r(-.045F, .24F, -.03F),
+			arm(r(.025F, -.04F, -.035F), r(-1.18F, -.50F, -.44F), -.56F, r(.62F, .18F, .40F)),
+			arm(r(0, .025F, .03F), r(-1.05F, -.18F, .16F), -.98F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-8.5F, -5.25F, 2.7F), arm(r(.02F, -.035F, -.035F), r(-1.16F, -.32F, -.32F), -.58F, r(.30F, .18F, .36F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .025F, .03F), r(-1.04F, .10F, .25F), -.94F, r(.10F, -.10F, .10F)))),
+		new Key(v(.025F, .76F, -.04F), r(.02F, -.035F, .01F), r(.02F, -.02F, .01F), r(.02F, -.055F, .015F), r(-.04F, .085F, -.01F),
+			arm(r(.02F, -.02F, -.03F), r(-1.34F, -.12F, -.48F), -.90F, r(.44F, .05F, .12F)),
+			arm(r(0, .02F, .03F), r(-1.10F, -.20F, .12F), -.98F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.3F, -5.0F, 3.3F), arm(r(.015F, -.02F, -.03F), r(-1.22F, -.10F, -.32F), -.86F, r(.48F, .04F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.06F, .08F, .24F), -.96F, r(.10F, -.10F, .08F)))),
+		v(-2.35F, 22, 1.10F), v(2.35F, 22, -1.20F));
+
+	// Static Riposte compresses beside the outside shoulder and snaps a descending diagonal.
+	// The free elbow opens in counterbalance before the blade recoils high; both feet stay set.
+	private static final Motion STATIC_RIPOSTE_MOTION = new Motion(
+		new Key(v(-.18F, 1.00F, .14F), r(.06F, .16F, -.035F), r(.045F, .08F, -.025F), r(.06F, .14F, -.045F), r(-.10F, -.30F, .035F),
+			arm(r(.025F, .065F, -.045F), r(-1.78F, .38F, -.32F), -.96F, r(.28F, -.22F, -.34F)),
+			arm(r(0, -.045F, .04F), r(-.82F, -.26F, -.38F), -.94F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -4.65F, 3.3F), arm(r(.02F, .04F, -.035F), r(-1.35F, .18F, -.25F), -.84F, r(-.05F, -.18F, -.65F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, -.03F, .03F), r(-1.00F, .10F, .28F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.18F, 1.00F, -.34F), r(.09F, -.14F, .03F), r(.06F, -.08F, .02F), r(.08F, -.16F, .045F), r(-.12F, .28F, -.035F),
+			arm(r(.025F, -.045F, -.035F), r(-.94F, -.38F, -.28F), -.50F, r(1.06F, .14F, .38F)),
+			arm(r(0, .03F, .035F), r(-.64F, -.18F, -.50F), -.90F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-8.0F, -5.55F, 2.4F), arm(r(.02F, -.035F, -.035F), r(-1.03F, -.24F, -.24F), -.54F, r(-.40F, .40F, -.40F)),
+				v(7.5F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.98F, .12F, .30F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.04F, .92F, -.08F), r(.045F, -.07F, .015F), r(.03F, -.04F, .01F), r(.04F, -.09F, .02F), r(-.06F, .15F, -.015F),
+			arm(r(.02F, -.025F, -.03F), r(-1.58F, -.18F, -.30F), -.86F, r(.30F, .07F, .18F)),
+			arm(r(0, .025F, .03F), r(-.84F, -.24F, -.34F), -.94F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.1F, -4.85F, 3.2F), arm(r(.015F, -.025F, -.03F), r(-1.30F, -.12F, -.24F), -.80F, r(.36F, .06F, .15F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .02F, .03F), r(-1.00F, .10F, .28F), -.94F, r(.10F, -.10F, .08F)))),
+		v(-2.50F, 22, 1.35F), v(2.50F, 22, -1.50F));
+
+
+	// Unmoved settles behind a low, wide brace and drives the point from its ribs.
+	// The hips stay loaded, the chest opens only slightly, and the elbow supplies the thrust.
+	// Camera-space arms retain a visible side-on blade face and a separate supporting hand.
+	private static final Motion UNMOVED_MOTION = new Motion(
+		new Key(v(-.055F, 1.22F, .055F), r(.09F, .055F, -.018F), r(.045F, -.02F, -.012F), r(.065F, .08F, -.026F), r(-.13F, -.12F, .025F),
+			arm(r(.035F, .045F, -.065F), r(-.91F, .16F, -.33F), -1.08F, r(1.56F, -.18F, -.24F)),
+			arm(r(.025F, -.065F, .055F), r(-1.17F, -.38F, .27F), -1.12F, r(.13F, -.12F, .14F)),
+			new ViewKey(v(-8.05F, -5.15F, 3.55F), arm(r(.03F, .025F, -.045F), r(-1.14F, .09F, -.28F), -1.07F, r(1.34F, -.12F, -.25F)),
+				v(7.55F, -6.25F, 3.45F), arm(r(.015F, -.035F, .04F), r(-1.10F, .13F, .31F), -1.01F, r(.13F, -.12F, .11F)))),
+		new Key(v(.075F, 1.22F, -.30F), r(.105F, -.025F, .014F), r(.06F, .015F, .009F), r(.095F, -.025F, .025F), r(-.16F, .035F, -.022F),
+			arm(r(.045F, -.025F, -.045F), r(-1.45F, -.025F, -.19F), -.24F, r(1.18F, .075F, .16F)),
+			arm(r(.025F, .035F, .045F), r(-1.22F, -.31F, .25F), -1.04F, r(.13F, -.10F, .12F)),
+			new ViewKey(v(-8.25F, -5.55F, 2.0F), arm(r(.035F, -.025F, -.045F), r(-1.31F, -.055F, -.26F), -.31F, r(.73F, .09F, .13F)),
+				v(7.45F, -6.25F, 3.4F), arm(r(.015F, .025F, .035F), r(-1.12F, .15F, .30F), -.97F, r(.12F, -.10F, .12F)))),
+		new Key(v(.025F, 1.18F, -.065F), r(.075F, -.015F, .008F), r(.04F, .01F, .006F), r(.06F, -.035F, .014F), r(-.105F, .05F, -.012F),
+			arm(r(.03F, -.015F, -.045F), r(-1.02F, -.075F, -.29F), -1.02F, r(1.48F, .045F, .07F)),
+			arm(r(.02F, .02F, .04F), r(-1.19F, -.36F, .26F), -1.10F, r(.12F, -.11F, .12F)),
+			new ViewKey(v(-8.15F, -5.2F, 3.35F), arm(r(.025F, -.015F, -.04F), r(-1.18F, -.08F, -.27F), -.98F, r(1.29F, .04F, .09F)),
+				v(7.5F, -6.25F, 3.45F), arm(r(.015F, .015F, .035F), r(-1.11F, .13F, .31F), -1.00F, r(.12F, -.11F, .11F)))),
+		v(-3.05F, 22, .85F), v(3.05F, 22, -.95F));
+
+	// Null Parry receives wide of the blade shoulder, sweeps inward across a small pocket,
+	// then folds the elbow to close. The opposite hand tracks beneath its own shoulder.
+	// This is one release: the pulse-before-primary ordering belongs to the server performer.
+	private static final Motion NULL_PARRY_MOTION = new Motion(
+		new Key(v(-.16F, .94F, .095F), r(.04F, .14F, .035F), r(.035F, .06F, .02F), r(.025F, .17F, .035F), r(-.055F, -.30F, -.025F),
+			arm(r(.03F, .075F, -.055F), r(-1.13F, .57F, -.39F), -.82F, r(.81F, -.34F, -.53F)),
+			arm(r(.01F, -.06F, .04F), r(-.96F, -.32F, .28F), -1.08F, r(.12F, -.14F, .13F)),
+			new ViewKey(v(-8.8F, -5.0F, 3.25F), arm(r(.025F, .06F, -.04F), r(-1.17F, .35F, -.31F), -.79F, r(.76F, -.26F, -.47F)),
+				v(7.6F, -6.15F, 3.55F), arm(r(.01F, -.04F, .035F), r(-1.07F, .09F, .28F), -1.04F, r(.11F, -.12F, .10F)))),
+		new Key(v(.11F, .96F, -.15F), r(.055F, -.095F, -.018F), r(.04F, -.045F, -.012F), r(.055F, -.14F, -.02F), r(-.085F, .23F, .015F),
+			arm(r(.035F, -.045F, -.04F), r(-1.27F, -.36F, -.31F), -.66F, r(.99F, .21F, .36F)),
+			arm(r(.015F, .025F, .045F), r(-1.14F, -.21F, .29F), -1.15F, r(.12F, -.10F, .12F)),
+			new ViewKey(v(-8.65F, -5.3F, 2.75F), arm(r(.03F, -.035F, -.04F), r(-1.22F, -.24F, -.29F), -.65F, r(.58F, .20F, .32F)),
+				v(7.55F, -6.2F, 3.5F), arm(r(.015F, .025F, .035F), r(-1.12F, .12F, .29F), -1.08F, r(.12F, -.10F, .11F)))),
+		new Key(v(.035F, 1.02F, .015F), r(.055F, -.025F, .012F), r(.04F, -.015F, .01F), r(.045F, -.035F, .018F), r(-.075F, .055F, -.01F),
+			arm(r(.025F, -.02F, -.045F), r(-1.07F, -.12F, -.35F), -1.10F, r(.93F, .06F, .12F)),
+			arm(r(.015F, .015F, .04F), r(-1.20F, -.27F, .30F), -1.13F, r(.12F, -.11F, .12F)),
+			new ViewKey(v(-8.45F, -5.15F, 3.4F), arm(r(.02F, -.015F, -.035F), r(-1.14F, -.075F, -.30F), -1.06F, r(.84F, .055F, .11F)),
+				v(7.6F, -6.2F, 3.5F), arm(r(.015F, .015F, .035F), r(-1.11F, .10F, .28F), -1.05F, r(.11F, -.11F, .10F)))),
+		v(-2.6F, 22, 1.0F), v(2.6F, 22, -1.15F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -539,7 +624,7 @@ public final class ArticulatedCombatPose {
 	/** Only authored player presentation IDs are admitted here; NPC IDs use supportsMaster. */
 	public static boolean supportsPlayer(int move) {
 		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
-			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY;
+			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY || move == GLACIER_MIRROR || move == STATIC_RIPOSTE || move == UNMOVED || move == NULL_PARRY;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -558,6 +643,10 @@ public final class ArticulatedCombatPose {
 			case CRIMSON_MOON -> CRIMSON_MOON_MOTION;
 			case BACKDRAFT -> BACKDRAFT_MOTION;
 			case ROOTED_PARRY -> ROOTED_PARRY_MOTION;
+			case GLACIER_MIRROR -> GLACIER_MIRROR_MOTION;
+			case STATIC_RIPOSTE -> STATIC_RIPOSTE_MOTION;
+			case UNMOVED -> UNMOVED_MOTION;
+			case NULL_PARRY -> NULL_PARRY_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);

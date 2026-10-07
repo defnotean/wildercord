@@ -72,6 +72,9 @@ public final class Cast {
 		/** Whether it was paid for by cracking a Heart Circle (an overcast always leaves a residue). */
 		boolean overcast;
 		java.util.function.Predicate<Entity> admission;
+		/** Opt-in synchronous consequences, without Relay LOS or paid collateral budgets. */
+		java.util.function.Predicate<Entity> consequence;
+		java.util.function.Predicate<LivingEntity> consequenceResult;
 		java.util.function.Predicate<BlockPos> blockAdmission;
 		java.util.function.BooleanSupplier lifetime;
 		Vec3 incoming;
@@ -96,6 +99,8 @@ public final class Cast {
 			copy.performance = performance;
 			copy.overcast = overcast;
 			copy.admission = admission;
+			copy.consequence = consequence;
+			copy.consequenceResult = consequenceResult;
 			copy.blockAdmission = blockAdmission;
 			copy.lifetime = lifetime;
 			copy.incoming = incoming;
@@ -371,7 +376,23 @@ public final class Cast {
 	public Cast blockAdmission(java.util.function.Predicate<BlockPos> admission) { budget.shared.blockAdmission = admission; return this; }
 	public boolean admitsBlock(BlockPos pos) { return budget.shared.blockAdmission == null || alive() && budget.shared.blockAdmission.test(pos); }
 	public boolean guardedImpact() { return budget.shared.admission != null; }
-	public boolean admits(Entity target) { return budget.shared.admission == null || alive() && budget.shared.admission.test(target); }
+	/** Consequence scope has no implication for Relay collateral selection, LOS or paid budgets. */
+	public boolean hasConsequences() { return budget.shared.consequence != null; }
+	public boolean admitsConsequence(Entity target) {
+		return budget.shared.consequence == null || alive() && budget.shared.consequence.test(target);
+	}
+	/** A released art may guard nested reactions without changing their ordinary collateral policy. */
+	public Cast consequence(java.util.function.Predicate<Entity> consequence, java.util.function.Predicate<LivingEntity> afterDamage) {
+		budget.shared.consequence = consequence; budget.shared.consequenceResult = afterDamage; return this;
+	}
+	/** Post-damage identity/lifetime check also admits a legitimate lethal-but-still-loaded recipient. */
+	public boolean consequencesValid(LivingEntity target) {
+		return budget.shared.consequenceResult == null || alive() && budget.shared.consequenceResult.test(target);
+	}
+	public boolean admits(Entity target) {
+		return admitsConsequence(target)
+			&& (budget.shared.admission == null || alive() && budget.shared.admission.test(target));
+	}
 	public Cast incoming(Vec3 from) { budget.shared.incoming = from; return this; }
 	public Vec3 incoming() { return budget.shared.incoming == null ? caster.getEyePosition() : budget.shared.incoming; }
 

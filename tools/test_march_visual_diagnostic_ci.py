@@ -1,5 +1,6 @@
 """Scoped March visuals must never borrow mechanics, partial or release evidence."""
 import copy
+import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -32,7 +33,7 @@ class MarchVisualDiagnosticTests(unittest.TestCase):
         all_three = ["dev.wildercord.aura.world.StoneMarchTest", *ENTRIES]
         for selected in (suites.select_entries(suite="masters"), suites.select_entries()):
             self.assertEqual([entry for entry in selected["entries"] if entry in all_three], all_three)
-        self.assertEqual(suites.select_entries(suite="masters")["count"], 44)
+        self.assertEqual(suites.select_entries(suite="masters")["count"], 47)
         self.assertEqual(suites.select_entries(suite="stone-fault-march")["entries"], all_three)
 
     def test_catalog_rejects_old_three_partial_reordered_foreign_and_release_scope(self):
@@ -176,6 +177,23 @@ class MarchVisualDiagnosticTests(unittest.TestCase):
         mixins = json.loads((suites.ROOT / config).read_text())
         for name in mixins["client"]:
             self.assertIn("src/gametest/java/dev/wildercord/gametest/mixin/" + name + ".java", files)
+
+    def test_shared_counter_capture_inventory_is_additive_and_applies_to_all_visual_aliases(self):
+        added = diagnostic.BRACE_NULL_CAPTURE_FILES
+        self.assertEqual(len(added), 21)
+        self.assertEqual(len(set(added)), len(added))
+        for case in suites.STONE_MARCH_DIAGNOSTICS:
+            files = diagnostic.CASE_FILES[case]
+            self.assertEqual(len(set(files)), len(files))
+            self.assertTrue(set(added).issubset(files))
+            previous = [path for path in files if path not in added]
+            self.assertEqual(hashlib.sha256(json.dumps(previous, separators=(",", ":")).encode()).hexdigest(),
+                             "54949e1cf41f480f26dd532a4f8f20b643e4b86da7c232e24757538611d2c66a")
+            for path in added:
+                self.assertTrue((suites.ROOT / path).is_file(), path)
+        for name in ("BraceNullCaptureProbe", "BraceNullPhaseContract", "BraceNullTransformOracle",
+                     "BraceNullPlayerWidth", "BraceNullItemDrawProbe"):
+            self.assertIn("src/gametest/java/dev/wildercord/gametest/" + name + ".java", added)
 
     def test_existing_nine_frame_upload_works_without_case_specific_guard_or_new_paths(self):
         workflow = (suites.ROOT / ".github/workflows/build.yml").read_text()

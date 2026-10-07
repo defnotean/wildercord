@@ -201,16 +201,17 @@ public final class StoneArts {
 	// ------------------------------------------------------------------ III. Unmoved
 
 	static boolean unmoved(ServerPlayer player, AuraApi.StringContext context) {
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(UNMOVED) || !counter.valid()) return false;
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
-		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
+		LivingEntity foe = counter.target();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.THRUST, false, 1.5F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_unmoved", 1.2F, 1.0F);
 		BlockState earth = ArtBlocks.ground(level, feet);
 		// Stone gathering round the swordsman's feet as they harden, the ground cracking under them.
-		ArtWards.harden(player, ArtRules.UNMOVED_TICKS);
 		crackUnder(player, feet, 1.4, 30, earth);
 		for (int i = 0; i < 6; i++) {
 			double a = Math.PI * 2 * i / 6;
@@ -218,11 +219,14 @@ public final class StoneArts {
 		}
 		ArtLight.world(player).groundRing(feet, color, 1.6, 0.4, 0.14, 10);
 		AuraFx.burst(level, player, feet.add(0, 1.0, 0), Vec3.ZERO, color, 2.2F, AuraFx.Burst.RING | AuraFx.Burst.FLASH);
-		if (foe != null) {
+		if (foe != null && counter.primaryValid()) {
 			hits.strike(foe, ArtRules.UNMOVED_FACTOR);
+			if (!counter.afterDamage(foe)) return true;
+			var landing = counter.landingPermission(foe);
 			ArtKit.knock(foe, feet, ArtRules.UNMOVED_THROW, 0.4);
+			if (!landing.getAsBoolean()) return true;
 			// Stunned once it comes down (held in the air it would hang there).
-			ArtKit.holdLater(player, foe, 10, 20);
+			ArtKit.holdLater(player, foe, 10, 20, landing);
 			Vec3 at = foe.position();
 			AuraPhysicalFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.1);
 			ArtLight.world(player).ground(at, SigilOption.CRACKED, SAND, 1.4, 30, 0);

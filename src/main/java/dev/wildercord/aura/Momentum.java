@@ -172,6 +172,7 @@ public final class Momentum {
 			} catch (RuntimeException e) {
 				Wildercord.LOGGER.warn("A momentum hook threw; skipping it", e);
 			}
+			if (!ArtHitScope.releasedValid(player)) return 0;
 		}
 		long now = player.level().getGameTime();
 		double before = state(player).at(now);

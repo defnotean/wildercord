@@ -198,7 +198,7 @@ class WorkflowTests(unittest.TestCase):
     def test_existing_job_caps_full_artifact_and_exact_owner_collector_are_retained(self):
         text=(Path(__file__).resolve().parents[1]/'.github/workflows/build.yml').read_text()
         job=text.split('  connected-combat-native:',1)[1].split('\n  articulated-native:',1)[0]
-        self.assertIn('timeout-minutes: 30',job);self.assertIn('timeout-minutes: 24',job)
+        self.assertIn('timeout-minutes: 60',job);self.assertIn('timeout-minutes: 51',job)
         self.assertIn('run_paired_matrix.py',job);self.assertIn('build/native/**/screenshots/**',job)
         self.assertIn("if: always()",job);self.assertIn('curate_moon_frames.py',job)
         self.assertNotIn('crimson-moon-owner-receipts/*/000001.json',text)

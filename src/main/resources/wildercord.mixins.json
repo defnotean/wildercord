@@ -38,6 +38,7 @@
 		"ServerExplosionMixin",
 		"ShulkerBoxBlockEntityMixin",
 		"PlayerAuraMixin",
+		"ReleasedArtOwnerLevelMixin",
 		"AuraSelectionMixin",
 		"LivingEntityAuraMixin",
 		"EntityAuraDeflectMixin",

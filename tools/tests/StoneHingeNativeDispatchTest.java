@@ -7,6 +7,7 @@ import java.util.function.UnaryOperator;
 
 import dev.wildercord.gametest.stonehinge.peer.StoneHingeNativeDispatch.Body;
 import dev.wildercord.gametest.stonehinge.peer.StoneHingeNativeDispatch.Frame;
+import dev.wildercord.gametest.stonehinge.peer.StoneHingeNativeDispatch.Pose;
 import dev.wildercord.gametest.stonehinge.peer.StoneHingeNativeDispatch.Vector;
 
 /** Pure-JDK observer contract tests. These do not run Minecraft or prove native gameplay. */
@@ -38,22 +39,22 @@ public final class StoneHingeNativeDispatchTest {
 
     private static Frame frame(Body body, long gameTick, int serverTick, int eventIndex) {
         return new Frame(body, gameTick, serverTick, 71, "owner-generation-1", 93, "master-generation-1",
-            true, false, eventIndex + 1); // Index zero is the retained pre-release tracker identity witness.
+            true, false, eventIndex + 1, new Pose(0, 0, 0, 0, "STANDING")); // Index zero is the retained pre-release tracker identity witness.
     }
 
     private static Frame body(Frame source, Body body) {
         return new Frame(body, source.gameTick(), source.serverTick(), source.ownerEntity(), source.ownerUuid(),
-            source.sourceEntity(), source.sourceUuid(), source.valid(), source.awaitingTeleport(), source.eventIndex());
+            source.sourceEntity(), source.sourceUuid(), source.valid(), source.awaitingTeleport(), source.eventIndex(), source.pose());
     }
 
     private static Frame clock(Frame source, long gameTick, int serverTick) {
         return new Frame(source.body(), gameTick, serverTick, source.ownerEntity(), source.ownerUuid(),
-            source.sourceEntity(), source.sourceUuid(), source.valid(), source.awaitingTeleport(), source.eventIndex());
+            source.sourceEntity(), source.sourceUuid(), source.valid(), source.awaitingTeleport(), source.eventIndex(), source.pose());
     }
 
     private static Frame index(Frame source, int eventIndex) {
         return new Frame(source.body(), source.gameTick(), source.serverTick(), source.ownerEntity(), source.ownerUuid(),
-            source.sourceEntity(), source.sourceUuid(), source.valid(), source.awaitingTeleport(), eventIndex);
+            source.sourceEntity(), source.sourceUuid(), source.valid(), source.awaitingTeleport(), eventIndex, source.pose());
     }
 
     private static Frame invalid(Frame source, String field) {
@@ -63,7 +64,7 @@ public final class StoneHingeNativeDispatchTest {
             source.sourceEntity() + (field.equals("source entity") ? 1 : 0),
             field.equals("source UUID") ? "other-master-generation" : source.sourceUuid(),
             !field.equals("valid false") && source.valid(),
-            field.equals("correction pending") || source.awaitingTeleport(), source.eventIndex());
+            field.equals("correction pending") || source.awaitingTeleport(), source.eventIndex(), source.pose());
     }
 
     private static Body withPosition(Body source, Vector position) {

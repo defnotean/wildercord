@@ -43,7 +43,7 @@ public final class RuneEtchings {
 			|| !foe.isAlive() || foe.isDeadOrDying() || p.level()!=foe.level() || p.distanceToSqr(foe)>32*32
 			|| !Aura.enabled(p) || Aura.stage(p)<AuraRules.GLOW || Awakening.spent(p)
 			|| !Aura.holdsWeapon(p) || !Targets.canHarm(p,foe) || Spars.partners(p,foe)) return false;
-		var counter = MastersArts.earnedCounter(p);
+		var counter = ArtHitScope.boundary(p);
 		if (counter != null && !counter.permits(foe)) return false;
 		ItemStack blade=p.getMainHandItem();
 		if (BondedBlades.foreign(p,blade)) return false;
@@ -68,7 +68,12 @@ public final class RuneEtchings {
 		try {
 			Cast cast=new Cast(p,1,dev.wildercord.player.Heart.Bonuses.NONE,false,null,
 				new Cast.Info(plan.root(),2,rune.element(),List.of(Runes.TOUCH,rune))).weigh(price);
-			if (counter != null) cast.lifetime(counter::linkedAlive).admission(counter::linkedAdmits);
+			if (counter != null) {
+				cast.lifetime(counter::linkedAlive);
+				if (ArtHitScope.released(p) == counter) cast.consequence(counter::linkedAdmits, target -> !ArtHitScope.contains(p, counter)
+					? counter.linkedAlive() : target == p ? counter.valid() : counter.afterDamage(target));
+				else cast.admission(counter::linkedAdmits); // Existing earned-counter admission stays unchanged.
+			}
 			// An inscription is already an answer to a blade hit: it cannot buy a second resonant answer itself.
 			cast.once("resonant:"+foe.getUUID());
 			LivingEntity recipient=rune.kind()==EffectKind.HELPFUL || rune.kind()==EffectKind.MOVEMENT ? p : foe;

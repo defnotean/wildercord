@@ -48,13 +48,31 @@
     "LIFE_SELF_HEAL_FIRST_PERSON",
     "LIFE_SELF_HEAL_THIRD_PERSON",
     "LIFE_SELF_HEAL_CAMERA_TRANSITIONS",
-    "LIFE_SELF_SECOND_WIND_REDUCED_FLASH"
+    "LIFE_SELF_SECOND_WIND_REDUCED_FLASH",
+    "COUNTER_UNMOVED_CLASSIC_RIGHT",
+    "COUNTER_UNMOVED_CLASSIC_LEFT",
+    "COUNTER_UNMOVED_ARTICULATED_RIGHT",
+    "COUNTER_UNMOVED_ARTICULATED_LEFT",
+    "COUNTER_NULL_PARRY_CLASSIC_RIGHT",
+    "COUNTER_NULL_PARRY_CLASSIC_LEFT",
+    "COUNTER_NULL_PARRY_ARTICULATED_RIGHT",
+    "COUNTER_NULL_PARRY_ARTICULATED_LEFT"
   ],
-  "expectedCount": 46,
+  "expectedCount": 54,
   "profiles": {
     "aura": {
       "username": "WCAuraHost",
       "offlineUuid": "de9c2fe8-3188-30b6-a721-9ed8940474eb"
+    },
+    "aura-wide": {
+      "username": "WCMoonWide2",
+      "offlineUuid": "efc39378-3f97-37a3-bf28-b62b82f0bafa",
+      "expectedSkin": "wide"
+    },
+    "aura-slim": {
+      "username": "WCMoonSlim",
+      "offlineUuid": "0167ff94-ec08-3235-8727-7c1376ad1e7b",
+      "expectedSkin": "slim"
     }
   },
   "peerProfile": {
@@ -83,8 +101,26 @@
   "limits": {
     "maxJvms": 2,
     "maxHeapMiBPerJvm": 2048,
-    "maxCases": 46,
+    "maxCases": 54,
     "maxTimeoutSeconds": 900
   },
-  "routing": "Supervised-only; never registered in the ordinary single-client descriptor."
+  "routing": "Supervised-only; never registered in the ordinary single-client descriptor.",
+  "requiredMixins": [
+    "counter-peer-gametest.mixins.json"
+  ],
+  "counterVisuals": {
+    "casePrefixCount": 46,
+    "phases": [
+      "WINDUP",
+      "ACTIVE",
+      "FOLLOW",
+      "RECOVERY"
+    ],
+    "requiredProfiles": [
+      "aura-wide",
+      "aura-slim"
+    ],
+    "appearance": "original connected skin, no equipped armor, real Aura below passive shell threshold",
+    "nativeStatus": "unverified"
+  }
 }

@@ -259,7 +259,7 @@ public final class AuraCombat {
 	 * armour and spell defences): an art's share of what it may deal one player ({@code aura.ArtRules#PVP_ART_CAP}).
 	 */
 	public static float projected(ServerPlayer player, LivingEntity target, double damage, double extra, boolean answer, double playerCap) {
-		var counter = MastersArts.earnedCounter(player);
+		var counter = ArtHitScope.boundary(player);
 		// Delayed slashes must not use the friendship decision made when the art began.
 		if (!Targets.canHarm(player, target) || counter != null && !counter.permits(target)) {
 			lastAmount = 0;
@@ -312,6 +312,8 @@ public final class AuraCombat {
 	 * and the trials.
 	 */
 	static void landed(ServerPlayer player, LivingEntity target, float taken, float swing, boolean coated, boolean projected) {
+		var released = ArtHitScope.released(player);
+		if (released != null && !released.afterDamage(target)) return;
 		Aura.fighting(player);
 		boolean killed = !target.isAlive() || target.isDeadOrDying();
 		boolean practice = target instanceof TrainingDummy || player.level().dimension() == PracticeRoom.DIMENSION;
@@ -341,19 +343,24 @@ public final class AuraCombat {
 				xp *= moment(player, now);
 			}
 			AuraExperience.earn(player, Math.min(AuraRules.MAX_PER_STRIKE, xp), practice);
+			if (released != null && !released.afterDamage(target)) return;
 		}
 		if (coated && !practice || coated && target instanceof TrainingDummy) {
 			flavour(player, target, taken, now);
+			if (released != null && !released.afterDamage(target)) return;
 			// An elemental strike may leave its element's reaction mark, for a mage's spell to set off.
 			AuraMarks.strike(player, target);
+			if (released != null && !released.afterDamage(target)) return;
 		}
 		if (!projected && !practice) {
 			// In the striker's Dominion a blow chains once to another foe inside.
 			AuraDominion.chain(player, target, taken);
+			if (released != null && !released.afterDamage(target)) return;
 		}
 		if (killed) {
 			// A worthy foe felled by the blade: its bonded blade remembers it.
 			BondedBlades.killed(player, target, worth, repetition, practice);
+			if (released != null && !released.afterDamage(target)) return;
 		}
 		AuraBreakthroughs.struck(player, target, killed, practice);
 	}
@@ -448,6 +455,8 @@ public final class AuraCombat {
 				double drink = Math.min(AuraRules.CRIMSON_MAX, taken * AuraRules.crimsonLeech(stage));
 				if (drink > 0 && Aura.aura(player) >= AuraRules.CRIMSON_COST) {
 					Aura.spend(player, AuraRules.CRIMSON_COST, "leech");
+					var released = ArtHitScope.released(player);
+					if (released != null && !released.afterDamage(target)) return;
 					player.heal((float) drink);
 				}
 			}
@@ -478,6 +487,8 @@ public final class AuraCombat {
 		Light.ray(level, from.getBoundingBox().getCenter(), next.getBoundingBox().getCenter(), 0xFFFBE0, 0.03, 4);
 		dev.wildercord.cast.feel.Feels.sound(level, next.getBoundingBox().getCenter(), "tell_zap", 0.6F, 1.2F);
 		if (projected(player, next, Math.max(1.0, taken * AuraRules.THUNDER_SHARE) * Config.get().aura().damageScale(), false) > 0) {
+			var released = ArtHitScope.released(player);
+			if (released != null && !released.afterDamage(next)) return;
 			AuraFx.impact(player, next, AuraFxRules.Weight.LIGHT);
 		}
 	}

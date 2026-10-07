@@ -1,8 +1,8 @@
-"""One bounded job: all 46 cast cases, then the four fixed paired Moon views.
+"""One bounded job: both fixed 54-case counter profiles, then four paired Moon views.
 
 No retries, parallel groups, arbitrary selections or runnable command input.
 Success must finish both exports, validation and client cleanup inside the elapsed
-budget. Expiry permits only bounded cleanup/reporting grace inside the 24m step.
+budget. Expiry permits only bounded cleanup/reporting grace inside the 51m step.
 """
 from __future__ import annotations
 
@@ -26,10 +26,12 @@ except ImportError:
     import launch_two_clients as s
 
 ROOT = s.ROOT
-# Leave a minute for interrupted cleanup/reporting inside the existing 24m step.
-MAX_TOTAL_SECONDS = 23 * 60
+# Six sequential full ceilings total 2520 seconds. Keep 480 seconds for both
+# exports/validation, plus one minute of cleanup grace inside the 51m CI step.
+MAX_TOTAL_SECONDS = 50 * 60
 GROUPS = (
-    {"id": "cast-receipt", "suite": s.SUITE, "profile": "aura", "case": None, "observerAngle": None},
+    *({"id": f"cast-receipt-{skin}", "suite": s.SUITE, "profile": f"aura-{skin}", "case": None, "observerAngle": None}
+      for skin in ("wide", "slim")),
     *({"id": f"moon-{skin}-{angle}", "suite": s.MOON_SUITE, "profile": f"moon-{skin}",
        "case": s.MOON_CASE, "observerAngle": angle}
       for skin in ("wide", "slim") for angle in s.MOON_ANGLES),
@@ -167,7 +169,7 @@ def validate_group(base, group, identity, seen_nonces):
               "Group run/nonce binding differs")
     for key in ("suite", "profile", "cases"):
         s.require(result.get(key) == selection[key], "Group changed fixed " + key)
-    s.require(type(result.get("timeoutSeconds")) is int and 1 <= result["timeoutSeconds"] <= selection["maxTimeoutSeconds"]
+    s.require(type(result.get("timeoutSeconds")) is int and result["timeoutSeconds"] == selection["maxTimeoutSeconds"]
               and result.get("heapMiBPerJvm") == 2048, "Group resource limits changed")
     for key in ("descriptorSha256", "launchSha256"):
         s.require(re.fullmatch(r"[a-f0-9]{64}", result.get(key, "")), "Missing group export/descriptor hash")
@@ -187,11 +189,34 @@ def validate_group(base, group, identity, seen_nonces):
         s.require(result.get("serverReleaseFrameCorrespondenceVerified") is False
                   and result.get("releaseImageDamageOrderVerified") is True and result.get("pixelQualityReviewed") is False,
                   "Moon result overstates its proof")
+    else:
+        s.require(result.get("expectedSkin") == proof.get("expectedSkin") == selection["expectedSkin"],
+                  "Counter selection provenance differs")
+        s.require(result.get("counterOwnerPeerGeometryVerified") is True and result.get("counterPhaseCaptures") == 64
+                  and result.get("phaseBasis") == s.COUNTER_PHASE_BASIS
+                  and result.get("pixelQualityReviewed") is False and result.get("serverReleaseFrameCorrespondenceVerified") is False,
+                  "Counter result overstates or lacks its full geometric proof")
     jobs = [(role, types.SimpleNamespace(pid=value["pid"])) for role, value in processes.items()]
     witnesses = s.validate_witnesses(base / "ipc", witness_identity, selection["cases"], jobs, selection)
     s.require(result.get("witnesses") == witnesses, "Missing exact completed witness ledger")
     seen_nonces.add(nonce)
     return result
+
+
+def failed_group_cleanup(base, group):
+    """Only a fresh report from this in-process supervisor can prove all owned JVMs reaped."""
+    try:
+        result = read_json(base / "result.json")
+        if result.get("launcherPid") != os.getpid() or result.get("suite") != group["suite"] or result.get("profile") != group["profile"] or result.get("cleanupErrors"):
+            return False
+        processes = result.get("processes")
+        if not isinstance(processes, dict) or not set(processes) <= {"host", "peer"}:
+            return False
+        if not processes:
+            return result.get("stage") == "preflight"
+        return all(isinstance(p, dict) and type(p.get("pid")) is int and p["pid"] > 0 and type(p.get("exit")) is int for p in processes.values())
+    except (ValueError, OSError, TypeError):
+        return False
 
 
 def run(options, root=ROOT):
@@ -207,7 +232,7 @@ def run(options, root=ROOT):
     report = {"schemaVersion": 1, "status": "failed", "totalTimeoutSeconds": options.total_timeout,
               "maxConcurrentJvms": 2, "heapMiBPerJvm": 2048, "groups": [{**g, "status": "not_started"} for g in GROUPS],
               "serverReleaseFrameCorrespondenceVerified": False, "pixelQualityReviewed": False,
-              "releaseImageDamageOrderVerified": False}
+              "releaseImageDamageOrderVerified": False, "counterOwnerPeerGeometryVerified": False}
     write_report(path, report)
     old_handlers = {}
     try:
@@ -220,8 +245,27 @@ def run(options, root=ROOT):
             s.accepted_eula(options.accepted_eula, root)
             write_report(path, report)
             launches, nonces = {}, set()
+            failures = []
+            blocked = None
             for entry, group in zip(report["groups"], GROUPS):
-                entry.update(status="running", startedSeconds=round(time.monotonic() - started, 3))
+                if blocked is not None:
+                    entry.update(status="unverified", executed=False, error=blocked)
+                    write_report(path, report)
+                    continue
+                try:
+                    remaining(deadline)
+                except ValueError as error:
+                    blocked = str(error)
+                    entry.update(status="unverified", executed=False, error=blocked)
+                    failures.append(error); write_report(path, report)
+                    continue
+                timeout = selected(group)["maxTimeoutSeconds"]
+                if remaining(deadline) < timeout:
+                    reason = "Insufficient remaining budget for the full " + str(timeout) + "-second group ceiling"
+                    entry.update(status="unverified", executed=False, error=reason)
+                    failures.append(ValueError(reason)); write_report(path, report)
+                    continue
+                entry.update(status="running", executed=False, startedSeconds=round(time.monotonic() - started, 3))
                 write_report(path, report)
                 suite = group["suite"]
                 if suite not in launches:
@@ -234,25 +278,60 @@ def run(options, root=ROOT):
                     descriptor.write_bytes(Path(launch["descriptor"]).read_bytes())
                     launches[suite] = launch_path
                 launch_path = launches[suite]
-                timeout = min(selected(group)["maxTimeoutSeconds"], math.floor(remaining(deadline)))
+                timeout = selected(group)["maxTimeoutSeconds"]
+                if remaining(deadline) < timeout:
+                    reason = "Insufficient remaining budget for the full " + str(timeout) + "-second group ceiling"
+                    entry.update(status="unverified", executed=False, error=reason)
+                    failures.append(ValueError(reason)); write_report(path, report)
+                    continue
                 child_options = types.SimpleNamespace(launch=launch_path, output=base / group["id"], suite=suite,
                     profile=group["profile"], case=group["case"], observer_angle=group["observerAngle"],
                     timeout=timeout, accepted_eula=options.accepted_eula)
-                s.run(child_options, root, already_locked=True)
-                remaining(deadline)
-                result = validate_group(child_options.output, group, report["provenance"], nonces)
-                entry.update(status="passed", nonce=result["nonce"], runIdentity=result["runIdentity"],
-                             resultSha256=s.digest(child_options.output / "result.json"), finishedSeconds=round(time.monotonic() - started, 3))
+                try:
+                    s.run(child_options, root, already_locked=True)
+                    remaining(deadline)
+                    result = validate_group(child_options.output, group, report["provenance"], nonces)
+                    entry.update(status="passed", executed=True, nonce=result["nonce"], runIdentity=result["runIdentity"],
+                                 resultSha256=s.digest(child_options.output / "result.json"), finishedSeconds=round(time.monotonic() - started, 3))
+                except Exception as error:
+                    cleanup = failed_group_cleanup(child_options.output, group)
+                    try:
+                        native_result = read_json(child_options.output / "result.json")
+                        executed = bool(native_result.get("processes")) and native_result.get("launcherPid") == os.getpid()
+                    except (ValueError, OSError, TypeError):
+                        executed = False
+                    entry.update(status="failed", executed=executed,
+                                 error=type(error).__name__ + ": " + str(error), cleanupVerified=cleanup,
+                                 finishedSeconds=round(time.monotonic() - started, 3))
+                    if (child_options.output / "result.json").is_file():
+                        entry["resultSha256"] = s.digest(child_options.output / "result.json")
+                    failures.append(error)
+                    if isinstance(error, InterruptedError) or not cleanup:
+                        blocked = "Prior group was interrupted or owned JVM cleanup is unverified: " + group["id"]
+                    elif provenance(root) != report["provenance"]:
+                        blocked = "Source/run provenance changed after failed group: " + group["id"]
+                    # Continue safe, independently bounded groups only after this supervisor proves cleanup.
                 write_report(path, report)
+            if failures:
+                report["groupFailures"] = [entry["id"] for entry in report["groups"] if entry["status"] != "passed"]
+                raise failures[0]
             remaining(deadline)
+            counter_paths = [base / group["id"] for group in GROUPS if group["suite"] == s.SUITE]
+            report["counterProfileUnion"] = s.validate_counter_profile_union(counter_paths)
+            remaining(deadline)
+            s.require(report["counterProfileUnion"]["sourceHead"] == report["provenance"]["sourceHead"],
+                      "Counter union source differs from matrix provenance")
             s.require(provenance(root) == report["provenance"], "Matrix provenance changed during execution")
             s.require(len(nonces) == len(GROUPS) and all(g["status"] == "passed" for g in report["groups"]), "Matrix is incomplete")
-            report.update(status="passed", releaseImageDamageOrderVerified=True)
+            remaining(deadline)
+            report.update(status="passed", releaseImageDamageOrderVerified=True, counterOwnerPeerGeometryVerified=True)
     except BaseException as error:
         report["error"] = type(error).__name__ + ": " + str(error)
         for entry in report["groups"]:
             if entry["status"] == "running":
-                entry["status"] = "failed"
+                entry.update(status="failed" if entry.get("executed") else "unverified", error="Matrix stopped before verified completion: " + type(error).__name__)
+            elif entry["status"] == "not_started":
+                entry.update(status="unverified", executed=False, error="Matrix stopped before safe launch: " + type(error).__name__)
         raise
     finally:
         for signum in old_handlers:
@@ -271,7 +350,7 @@ def parse_args(argv=None):
     parser.add_argument("--accepted-eula", type=Path)
     options = parser.parse_args(argv)
     if not 1 <= options.total_timeout <= MAX_TOTAL_SECONDS:
-        parser.error("Total elapsed budget must be 1..1380 seconds")
+        parser.error("Total elapsed budget must be 1.." + str(MAX_TOTAL_SECONDS) + " seconds")
     return options
 
 

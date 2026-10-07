@@ -41,7 +41,7 @@ public final class MastersCaptureProbe {
 	private record HandMotion(float attackPhase, float inverseArmHeight, float previousHeight, float currentHeight, float modelSwapScale,
 		boolean genuineEquip, float artOwnership, dev.wildercord.client.MastersArtPose.Frame renderedArt) {}
 	private record CaptureEvidence(String name, int width, int height, boolean first, int swordSubmits, int bodySubmits,
-		BladeBounds bladeBounds, HudLayout hud, List<HudSprite> hudSprites, float[] handProjection, HandMotion handMotion, PixelStats pixels) {}
+		BladeBounds bladeBounds, HudLayout hud, List<HudSprite> hudSprites, float[] handProjection, HandMotion handMotion, PixelStats pixels, BraceNullCaptureProbe.Report counterPhase, String counterImageSha256) {}
 
 	private static int owner, hands, bodies;
 	private MastersCaptureProbe() {}
@@ -72,9 +72,10 @@ public final class MastersCaptureProbe {
 
 	public static void hand(int id, ItemStackRenderState item, PoseStack pose,
 			net.minecraft.client.renderer.entity.state.AvatarRenderState avatar,
-			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands, float attack, float inverseHeight) {
+			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands, float attack, float inverseHeight, net.minecraft.client.renderer.SubmitNodeCollector collector) {
 		if (!armed || id != owner) return;
 		MastersCaptureProbe.hands++;
+		BraceNullCaptureProbe.handConsumed(avatar, hands, item, pose, attack, inverseHeight, collector);
 		handMotion = new HandMotion(attack, inverseHeight, hands.oldMainHandHeight, hands.mainHandHeight, hands.mainHandSwapScale,
 			((dev.wildercord.client.MastersHandMotionState) hands).wildercord$mainHandEquipping(),
 			dev.wildercord.client.MastersArtPose.firstPersonOwnership(net.minecraft.world.InteractionHand.MAIN_HAND, avatar, hands),
@@ -138,11 +139,14 @@ public final class MastersCaptureProbe {
 		var result = new CompletableFuture<Void>();
 		begin(mc);
 		try {
+			BraceNullCaptureProbe.begin(mc, name);
 			mc.gameRenderer.update(DELTA);
 			mc.gameRenderer.extract(DELTA, true);
-			mc.gameRenderer.render();
+			BraceNullCaptureProbe.rendering(true);
+			try { mc.gameRenderer.render(); } finally { BraceNullCaptureProbe.rendering(false); }
 			RenderSystem.getDevice().createCommandEncoder().submit();
 			verifyRender(mc, name);
+			var counterPhase = BraceNullCaptureProbe.finish(name);
 			boolean first = mc.options.getCameraType().isFirstPerson();
 			BladeBounds capturedBlade = blade;
 			HudLayout capturedHud = hud;
@@ -157,7 +161,8 @@ public final class MastersCaptureProbe {
 					image.writeToFile(path); // Persist the exact native buffer, including rejected evidence.
 					PixelStats pixels = measurePixels(image.getWidth(), image.getHeight(), image.getPixels(), capturedBlade, capturedHud);
 					var evidence = new CaptureEvidence(name, image.getWidth(), image.getHeight(), first, capturedHands, capturedBodies,
-						capturedBlade, capturedHud, capturedHudSprites, capturedProjection, capturedMotion, pixels);
+						capturedBlade, capturedHud, capturedHudSprites, capturedProjection, capturedMotion, pixels, counterPhase,
+						counterPhase == null ? null : java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(path))));
 					Files.writeString(path.resolveSibling(name + ".json"), new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(evidence));
 					Wildercord.LOGGER.info("MASTERS_NATIVE_PIXELS name={} hud={} bounds={} cyan={} spanGui={} fireFraction={}",
 						name, capturedHud, capturedBlade, pixels.cyan, pixels.largestSpanGui, pixels.fireFraction);
@@ -165,7 +170,7 @@ public final class MastersCaptureProbe {
 					result.complete(null);
 				} catch (Throwable failure) { result.completeExceptionally(failure); }
 			});
-		} finally { end(); }
+		} finally { BraceNullCaptureProbe.end(); end(); }
 		return result;
 	}
 

@@ -3,6 +3,7 @@ package dev.wildercord.gametest.stonehinge.peer;
 import dev.wildercord.gametest.stonehinge.StoneHingeOwnerProbe;
 import dev.wildercord.gametest.stonehinge.StoneHingeVelocityExperiment;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,7 +42,7 @@ public final class StoneHingeNaturalMotion {
             return new StoneHingeNativeDispatch.Frame(new StoneHingeNativeDispatch.Body(vector(body.position()), vector(body.motion()),
                 body.fall(), body.grounded(), body.neutral(), body.health(), state.absorption(), state.needsSync(), state.syncVelocity(), body.horizontalCollision()),
                 body.tick(), level.getServer().getTickCount(), owner.getId(), owner.getUUID().toString(), source.getId(), source.getUUID().toString(),
-                valid, ((StoneHingeOwnerProbe.ConnectionState) connection).stoneHinge$awaitingTeleport(), event == null ? -1 : event.index());
+                valid, ((StoneHingeOwnerProbe.ConnectionState) connection).stoneHinge$awaitingTeleport(), event == null ? -1 : event.index(), body.pose());
         }
     }
     public static void arm(StoneHingeOwnerProbe.Trace trace, LivingEntity source, StoneHingeVelocityExperiment.Strike strike) {
@@ -97,6 +98,15 @@ public final class StoneHingeNaturalMotion {
     public static void sent(ServerPlayer player, ClientboundSetEntityMotionPacket packet) {
         Observation value = pending(player);
         if (value != null) value.proof.observe(() -> value.proof.sendExit(value.frame("natural-motion-end"), packet));
+    }
+    public static void ownerPacket(ServerGamePacketListenerImpl connection, ServerboundMovePlayerPacket packet,
+                                   Supplier<StoneHingeNativeDispatch.OwnerSend> sent,
+                                   Supplier<StoneHingeNativeDispatch.OwnerPacket> received, Runnable original) {
+        Observation value = pending(connection.player); if (value == null) { original.run(); return; }
+        connection(connection);
+        value.proof.observe(() -> value.proof.ownerPacketEnter(value.frame("natural-owner-packet-start"), sent.get(), received.get(), packet));
+        value.proof.original(() -> { original.run(); return null; });
+        value.proof.observe(() -> value.proof.ownerPacketExit(value.frame("natural-owner-packet-end"), packet));
     }
     public static void otherMotion(ServerPlayer player, ClientboundSetEntityMotionPacket packet) {
         Observation value = pending(player);

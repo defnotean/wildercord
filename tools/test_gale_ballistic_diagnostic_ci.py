@@ -1,5 +1,6 @@
 """Fixed whole-class Gale physics evidence must never become ordinary-attack acceptance."""
 import copy
+import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -30,17 +31,22 @@ class GaleBallisticDiagnosticTests(unittest.TestCase):
             "kind": "diagnostic", "name": SUITE, "count": 1, "entries": [ENTRY]})
         self.assertEqual(diagnostic.SEEDS[CASE], {ENTRY: None})
         self.assertEqual(suites.select_entries()["entries"].count(ENTRY), 1)
-        for name, count in (("masters", 44), ("masters-core", 41), ("masters-march-mechanics", 1),
+        for name, count in (("masters", 47), ("masters-core", 44), ("masters-march-mechanics", 1),
                             ("masters-march-visuals", 2), ("articulated", 6)):
             selected = suites.select_entries(suite=name)
             self.assertEqual(selected["count"], count)
             self.assertNotIn(ENTRY, selected["entries"])
-        for filename, count in (("cast-receipt-native-contract.json", 46), ("crimson-moon-native-contract.json", 1)):
+        for filename, count in (("cast-receipt-native-contract.json", 54), ("crimson-moon-native-contract.json", 1)):
             contract = json.loads((suites.ROOT / "src/gametest/resources" / filename).read_text())
             self.assertEqual(contract["expectedCount"], count)
+            if filename == "cast-receipt-native-contract.json":
+                self.assertEqual(hashlib.sha256(json.dumps(contract["cases"][:46], separators=(",", ":")).encode()).hexdigest(),
+                                 "a82c794e514d23cb26c34dddebc0e51390b4931787ca7d8a996967d853ad0ba4")
         self.assertEqual(len(contract["profiles"]) * len(contract["observerAngles"]), 4)
         parts = [suites.select_entries(shard=f"{i}/4")["entries"] for i in range(1, 5)]
-        self.assertEqual([entry for part in parts for entry in part], suites.select_entries()["entries"])
+        self.assertCountEqual([entry for part in parts for entry in part], suites.select_entries()["entries"])
+        for part in parts:
+            self.assertEqual(part, [entry for entry in suites.select_entries()["entries"] if entry in part])
 
     def test_catalog_cannot_choose_a_subset_another_class_or_release_scope(self):
         for update in ({"entries": []}, {"entries": [ENTRY + "#flat"]}, {"entries": [ENTRY, ENTRY], "expectedCount": 2},

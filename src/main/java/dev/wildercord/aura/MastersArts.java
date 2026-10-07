@@ -208,13 +208,13 @@ public final class MastersArts {
 				try {
 					var release = accepted == null ? null : accepted.release(player);
 					var counterRelease = counter == null ? null : counter.release(player);
-					// A lost selected target is a paid whiff: keep the readable accepted motion/recovery, with no effects or hooks.
+					// A lost required target is a paid whiff. Null returns its independent radial release even when its primary is lost.
 					if (targetBearing && release == null || counter != null && counterRelease == null) return;
 					activeTargets = release == null ? null : new Targets(player, release);
 					activeCounter = counterRelease;
 					impact.run();
 				} finally { activeAim = outer; activeTargets = outerTargets; activeCounter = outerCounter; }
-			}, payment, counter);
+			}, payment, counter, admission);
 		return true;
 	}
 
@@ -248,12 +248,13 @@ public final class MastersArts {
 	/** One shared cancellation and recovery contract for both the new keys and the authored fixed-release style forms. */
 	private static void schedule(ServerPlayer player, int animation, int windup, int recovery,
 			java.util.function.BooleanSupplier stillEligible, Runnable impact) {
-		schedule(player, animation, windup, recovery, stillEligible, impact, null, null);
+		schedule(player, animation, windup, recovery, stillEligible, impact, null, null, null);
 	}
 
 	private static void schedule(ServerPlayer player, int animation, int windup, int recovery,
-			java.util.function.BooleanSupplier stillEligible, Runnable impact, Runnable payment, EarnedCounters.Attempt counter) {
+			java.util.function.BooleanSupplier stillEligible, Runnable impact, Runnable payment, EarnedCounters.Attempt counter, dev.wildercord.cast.ActionAdmission admission) {
 		var level = player.level();
+		long acceptedAt = level.getGameTime();
 		var blade = player.getMainHandItem();
 		String method = Aura.data(player).method();
 		dev.wildercord.cast.Charging.interrupt(player);
@@ -268,6 +269,10 @@ public final class MastersArts {
 		if (PENDING.get(player.getUUID()) != token) return;
 		if (counter != null && (!counter.ownerValid(player) || !counter.canLowerGuard(player))) { cancel(player); return; }
 		if (!valid(token)) { cancel(player); return; }
+		// Eligibility hooks may cancel and even reinstall state; check the exact paid transaction after every callback.
+		if (!ownsAdmission(player, token, counter, admission)) return;
+		if (counter != null && counter.finalizePaid(player, acceptedAt) && !valid(token)) { cancel(player); return; }
+		if (!ownsAdmission(player, token, counter, admission)) return;
 		broadcast(player, new Performed(player.getId(), animation, level.getGameTime(), windup, recovery,
 			net.minecraft.util.Mth.wrapDegrees(player.getYRot()), MastersStyleRules.attackPitch(animation, player.getXRot())));
 		AuraFx.bodyAuraFlare(player, windup, 0.45F);
@@ -278,6 +283,7 @@ public final class MastersArts {
 				cancel(player);
 				return;
 			}
+			if (PENDING.get(player.getUUID()) != token) return;
 			PENDING.remove(player.getUUID(), token);
 			Continuation sequence = new Continuation(player, recovery);
 			CONTINUATIONS.put(player.getUUID(), sequence);
@@ -286,6 +292,15 @@ public final class MastersArts {
 			performingContinuation = sequence;
 			try { impact.run(); } finally { performingContinuation = outer; }
 		}));
+	}
+
+	private static boolean ownsAdmission(ServerPlayer player, Pending token, EarnedCounters.Attempt counter,
+			dev.wildercord.cast.ActionAdmission admission) {
+		if (PENDING.get(player.getUUID()) != token) return false;
+		if (admission != null && !admission.valid() || counter != null && (!counter.ownerValid(player) || !counter.canLowerGuard(player))) {
+			cancel(player); return false;
+		}
+		return true;
 	}
 
 	private static boolean valid(Pending pending) {

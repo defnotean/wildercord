@@ -288,6 +288,9 @@
       "dev.wildercord.aura.HailfallReleasedOwnerTest",
       "dev.wildercord.aura.HailSkyAcceptanceTest",
       "dev.wildercord.aura.EarnedCounterAcceptanceTest",
+      "dev.wildercord.aura.MirrorRiposteReleasedOwnerTest",
+      "dev.wildercord.aura.UnmovedNullAcceptanceTest",
+      "dev.wildercord.aura.arts.ArtWardsHardeningTest",
       "dev.wildercord.party.MastersGroundFieldTimelineTest",
       "dev.wildercord.aura.GroundFieldReleasedOwnerTest",
       "dev.wildercord.aura.CrimsonMoonReleasedOwnerTest",
@@ -342,7 +345,8 @@
     "stone-hinge-proof-gametest.mixins.json",
     "stone-march-pulse-gametest.mixins.json",
     "excise-cut-gametest.mixins.json",
-    "gale-vault-ballistic-gametest.mixins.json"
+    "gale-vault-ballistic-gametest.mixins.json",
+    "counter-hit-capture-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

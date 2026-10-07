@@ -96,7 +96,8 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			for (var style : MastersStyleRules.STYLES) {
 				captureStyle(context, world, style, CameraType.THIRD_PERSON_BACK, "third_back");
 				captureStyle(context, world, style, CameraType.FIRST_PERSON, "first");
-				if (ArtRules.art(style.art()).slot() == 1 || ArtRules.art(style.art()).slot() == 4) {
+				if (ArtRules.art(style.art()).slot() == 1 || ArtRules.art(style.art()).slot() == 4
+					|| style.targets() == MastersStyleRules.TargetPolicy.EARNED_COUNTER) {
 					captureStyle(context, world, style, CameraType.THIRD_PERSON_BACK, "left_turn_third_back", true, false);
 					captureStyle(context, world, style, CameraType.FIRST_PERSON, "left_turn_first", true, false);
 					captureStyle(context, world, style, CameraType.FIRST_PERSON, "cancelled", false, true);
@@ -357,11 +358,10 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			CameraType camera, String view, boolean leftHanded, boolean cancel) {
 		int slot = ArtRules.art(style.art()).slot();
 		boolean second = slot == 1, finalArt = slot == 4;
-		boolean counter = slot == 2 && (style.art().equals("backdraft") || style.art().equals("rooted_parry"));
+		boolean counter = slot == 2 && style.targets() == MastersStyleRules.TargetPolicy.EARNED_COUNTER;
 		check(slot == 0 || second || finalArt || counter, "The capture declares its supported input family");
 		if (counter) {
-			check(!leftHanded && !cancel, "Earned-counter captures use the registered first/third-person views");
-			captureEarnedCounterStyle(context, world, style, camera, view);
+			captureEarnedCounterStyle(context, world, style, camera, view, leftHanded, cancel);
 			return;
 		}
 		context.getInput().releaseKey(o -> o.keyShift);
@@ -455,7 +455,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 	}
 
 	private static void captureEarnedCounterStyle(ClientGameTestContext context, TestSingleplayerContext world,
-			MastersStyleRules.Style style, CameraType camera, String view) {
+			MastersStyleRules.Style style, CameraType camera, String view, boolean leftHanded, boolean cancel) {
 		context.getInput().releaseKey(o -> o.keyShift);
 		context.waitTicks(105);
 		boolean toggleCrouch = context.computeOnClient(mc -> mc.options.toggleCrouch().get());
@@ -471,7 +471,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			context.runOnClient(mc -> {
 				mc.options.toggleCrouch().set(false);
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
-				mc.options.mainHand().set(HumanoidArm.RIGHT); mc.options.broadcastOptions();
+				mc.options.mainHand().set(leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT); mc.options.broadcastOptions();
 				mc.gui.toastManager().clear(); mc.gui.hud.getChat().clearMessages(false);
 			});
 			context.waitTicks(15);
@@ -493,6 +493,16 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null
 				&& MastersArtsClient.timeline(mc.player).move() == style.animation(), 30);
 			String prefix = "masters_style_" + style.art() + "_" + view;
+			context.runOnClient(mc -> {
+				check(mc.player.getMainArm() == (leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT), "The earned counter uses the actual selected main hand");
+				if (leftHanded) { mc.player.setYRot(90); mc.player.setYHeadRot(90); mc.player.setXRot(camera.isFirstPerson() ? 75 : 12); }
+			});
+			if (cancel) {
+				world.getServer().runOnServer(server -> MastersArts.cancel(server.getPlayerList().getPlayers().getFirst()));
+				context.waitFor(mc -> MastersArtsClient.timeline(mc.player) == null, 20);
+				waitForCancelledNeutral(context, prefix); shot(context, prefix + "_neutral"); context.waitTicks(30);
+				world.getServer().runOnServer(server -> fixture.verifyCancelled()); return;
+			}
 			captureBeats(context, prefix);
 			context.waitTicks(30);
 			world.getServer().runOnServer(server -> fixture.verify());
@@ -587,6 +597,31 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 	}
 
 	private static CompletableFuture<Void> phaseShot(ClientGameTestContext context, String prefix, String phase) {
+		boolean pair = prefix.startsWith("masters_style_unmoved_") || prefix.startsWith("masters_style_null_parry_");
+		if (!pair) return phaseShotReady(context, prefix, phase);
+		var result = new java.util.concurrent.atomic.AtomicReference<CompletableFuture<Void>>();
+		OpeningCaptureWait.withCleanup(() -> {
+			var snapshot = context.computeOnClient(mc -> {
+				boolean held = dev.wildercord.client.fx.HitStop.holding();
+				long bound = java.util.Arrays.stream(dev.wildercord.aura.AuraFxRules.Weight.values())
+					.mapToInt(weight -> dev.wildercord.aura.AuraFxRules.hitStop(weight, 1)).max().orElseThrow() * 1_000_000L;
+				return new OpeningCaptureWait.Snapshot(pairCaptureIdentity(mc), held, System.nanoTime() + (held ? bound : 0));
+			});
+			// Let the real wall-clock hold expire without advancing game time or replacing a pose.
+			OpeningCaptureWait.await(snapshot);
+			context.runOnClient(mc -> OpeningCaptureWait.requireReady(snapshot, pairCaptureIdentity(mc), dev.wildercord.client.fx.HitStop.holding()));
+			result.set(phaseShotReady(context, prefix, phase));
+		});
+		return result.get();
+	}
+
+	private static OpeningCaptureWait.Identity pairCaptureIdentity(net.minecraft.client.Minecraft mc) {
+		var accepted = MastersArtsClient.timeline(mc.player);
+		check(accepted != null, "Pair phase requires the same authentic accepted timeline");
+		return new OpeningCaptureWait.Identity(mc.player.getUUID(), mc.player.getId(), accepted.entity(), accepted.move(), accepted.startTick(), mc.level.getGameTime());
+	}
+
+	private static CompletableFuture<Void> phaseShotReady(ClientGameTestContext context, String prefix, String phase) {
 		context.runOnClient(mc -> {
 			var move = MastersArtsClient.timeline(mc.player);
 			check(move != null, "A live accepted timeline owns " + prefix + "_" + phase);

@@ -112,6 +112,14 @@ CONFIG_FILES = (REQUEST, ".github/workflows/build.yml", "tools/client_suite_cata
                 "src/gametest/resources/native-singleplayer-close-gametest.mixins.json")
 
 
+NEWT_BLOCKED_TIMEOUT_FILES = (
+    "src/gametest/java/dev/wildercord/wildlife/NewtBlockedTimeoutProbe.java",
+    "src/gametest/java/dev/wildercord/wildlife/NewtBlockedTimeoutProbeChecks.java",
+    "src/gametest/java/dev/wildercord/gametest/mixin/NewtBlockedTimeoutProbeMixin.java",
+    "src/gametest/resources/ecology-return-gametest.mixins.json",
+)
+
+
 # Include every new proof helper and exact test-only instrumentation used by this case.
 CASE_FILES = {"stone-hinge-owner-negative": (
     "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeOwnerProbe.java",
@@ -126,6 +134,7 @@ CASE_FILES = {"stone-hinge-owner-negative": (
 ), "ecology-return": (
     "src/main/java/dev/wildercord/wildlife/LanternNewt.java",
     "src/main/java/dev/wildercord/wildlife/NewtPathNavigation.java",
+    *NEWT_BLOCKED_TIMEOUT_FILES,
 ), "reweave-player": (
     "src/main/java/dev/wildercord/cast/ReweaveFields.java",
     "src/main/java/dev/wildercord/cast/ReweaveState.java",
@@ -183,6 +192,22 @@ CASE_FILES["gale-vault-ballistic"] = (
     "src/main/java/dev/wildercord/aura/world/MastersRules.java",
 )
 
+# The existing shared capture configuration now loads the independently reviewed counter hooks.
+# Bind their helpers and direct pose/transport dependencies even when a diagnostic arms NPC captures.
+BRACE_NULL_CAPTURE_FILES = (
+    *("src/gametest/java/dev/wildercord/gametest/" + name + ".java" for name in (
+        "MastersCaptureProbe", "BraceNullCaptureProbe", "BraceNullPhaseContract",
+        "BraceNullTransformOracle", "BraceNullPlayerWidth", "BraceNullItemDrawProbe")),
+    *("src/gametest/java/dev/wildercord/gametest/mixin/" + name + ".java" for name in (
+        "BraceNullPlayerWidthMixin", "BraceNullWorldItemMixin", "BraceNullItemSubmitMixin",
+        "BraceNullItemDrawMixin", "BraceNullBodyBaselineMixin", "BraceNullHandEntryMixin",
+        "BraceNullDeferredPaletteMixin", "BraceNullPlayerPaletteMixin")),
+    *("src/client/java/dev/wildercord/client/" + name + ".java" for name in (
+        "MastersArtPose", "MastersArtsClient", "MastersHandMotionState")),
+    *("src/main/java/dev/wildercord/aura/" + name + ".java" for name in (
+        "MastersArtAnimation", "MastersStyleAnimation", "MastersStyleRules", "MastersViewMotion")),
+)
+
 # Reuse the same gameplay/capture sources and bind the visual render instrumentation.
 # The two selected whole-class sources are added by current(), as for other cases.
 CASE_FILES["stone-fault-march-visuals"] = (*CASE_FILES["stone-fault-march"],
@@ -195,6 +220,7 @@ CASE_FILES["stone-fault-march-visuals"] = (*CASE_FILES["stone-fault-march"],
     'src/client/java/dev/wildercord/client/fx/MagicQuality.java',
     'src/client/java/dev/wildercord/client/fx/ScreenEffects.java',
     'src/gametest/resources/masters-capture-gametest.mixins.json',
+    *BRACE_NULL_CAPTURE_FILES,
     *("src/gametest/java/dev/wildercord/gametest/mixin/" + name + ".java" for name in (
         "MastersHandRenderProbeMixin", "MastersBodyRenderProbeMixin", "MastersHudRenderProbeMixin",
         "MastersNpcRenderProbeMixin", "MastersNpcModelProbeMixin", "MastersNpcWarningProbeMixin")),
@@ -206,6 +232,7 @@ for march_case in STONE_MARCH_DIAGNOSTICS:
 CASE_FILES["movement-foundations"] = (*CASE_FILES["stone-hinge-owner-negative"],
     "src/main/java/dev/wildercord/wildlife/LanternNewt.java",
     "src/main/java/dev/wildercord/wildlife/NewtPathNavigation.java",
+    *NEWT_BLOCKED_TIMEOUT_FILES,
     "src/gametest/java/dev/wildercord/wildlife/EcologyReturnProbe.java",
     "src/gametest/java/dev/wildercord/wildlife/EcologyReturnProbeChecks.java",
     "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeVelocityExperiment.java",

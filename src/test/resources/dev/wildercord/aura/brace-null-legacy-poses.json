@@ -1,0 +1,400 @@
+{
+  "baselineCommit": "dcf242d9cd1fd8a65226f28545ab353506dc3696",
+  "baselineTree": "7e2fad898e6d35a2a95e31eabcff16b095ed5519",
+  "encoder": {
+    "path": "src/test/java/dev/wildercord/aura/MastersBraceNullPreservationTest.java",
+    "sha256": "fa8840221830167013bec2968f66d59611f3a95365d87574677ed27879472e6d"
+  },
+  "encoding": "Each palette SHA-256 covers DataOutputStream big-endian IEEE-754 floatToIntBits values, booleans, ints and modified UTF-8 strings. Matrices are all 16 column-major float entries. Signed zero is preserved; NaNs use Java canonical float bits.",
+  "fixture": {
+    "bytes": 1593774,
+    "hashScope": "Decoded original gzip bytes",
+    "path": "src/test/resources/dev/wildercord/aura/brace-null-legacy-poses.tsv.gz.base64",
+    "sha256": "57fe71c19d79e02c1faf7a36aaad16bfccfd032994c55b8424fa526b969b2226",
+    "uncompressedBytes": 5239773,
+    "uncompressedSha256": "89d7669ea689c5a381c4fd612d16026e340b95b5b4f445db154b1b775214a8b1"
+  },
+  "javaRuntime": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+  "loader": {
+    "path": "src/test/java/dev/wildercord/aura/FrozenPoseTextFixture.java",
+    "sha256": "8b281149fee14c09bc828d43151f4889376d631bcec76833a8a31b1d6b1841ba"
+  },
+  "palettes": {
+    "articulatedView": "Weight/phase/origin; every joint local transform and world matrix; cameraPoint at (0,0,0) and (1,2,-3); both explicit socket matrices.",
+    "articulatedWorld": "Support and neutral identity; weight/phase; all joint names, parents, bind/local transforms and world matrices; both explicit socket matrices.",
+    "classicBody": "Support and neutral identity; immutable canonical timing; weight, lower, forward, all six body joints; body/shoulder pivots for each hand; blade tilt and bounded head.",
+    "classicView": "Raw hand plus weighted transform/grip for (inverseArmHeight,yawDelta,pitchDelta) inputs (0,0,0),(.35,27,-17),(1,-71,62),(-.5,0,0),(1.5,0,0)."
+  },
+  "productionSources": [
+    {
+      "bytes": 58395,
+      "path": "src/main/java/dev/wildercord/aura/ArtRules.java",
+      "sha256": "53fdbd6405f2cbf80d5bb9e99ecacd2462123e2a47a0c08c97f2cf366287a06e"
+    },
+    {
+      "bytes": 66768,
+      "path": "src/main/java/dev/wildercord/aura/ArticulatedCombatPose.java",
+      "sha256": "51b99dc250b4a19ad20be51224103aa93cb65e6a413e40bbfecfeceafe33ab67"
+    },
+    {
+      "bytes": 26619,
+      "path": "src/main/java/dev/wildercord/aura/AuraRules.java",
+      "sha256": "b842c7fe5c28dd723e5df33d35bbe18dc139c0fbcaaf2d44940782d9ae9e4682"
+    },
+    {
+      "bytes": 12201,
+      "path": "src/main/java/dev/wildercord/aura/MastersArtAnimation.java",
+      "sha256": "b0bbccfc881f20db1ce9e1ca448f7c7dc9557ee559d234021a690e4c8e67688a"
+    },
+    {
+      "bytes": 1627,
+      "path": "src/main/java/dev/wildercord/aura/MastersArtRules.java",
+      "sha256": "f42e3c7a045f67448bdc34259d0b7d3b268b4eb228caa0b0e7ad4e4dea8c8158"
+    },
+    {
+      "bytes": 20379,
+      "path": "src/main/java/dev/wildercord/aura/MastersStyleAnimation.java",
+      "sha256": "4775e03b1639addd2c0b9f13198499cb35f3187aeb0d774c5d9a991f818b13cb"
+    },
+    {
+      "bytes": 3862,
+      "path": "src/main/java/dev/wildercord/aura/MastersStyleRules.java",
+      "sha256": "4700d28f3abe52f0e4a0d0359267dfc500d1bce65bc72bc770336a37a6688db6"
+    },
+    {
+      "bytes": 7722,
+      "path": "src/main/java/dev/wildercord/aura/StringRules.java",
+      "sha256": "f75a3e011db569b3c2bed1047ddb0303ca22825cde3073f9e9288cf23cd85a0f"
+    },
+    {
+      "bytes": 7675,
+      "path": "src/main/java/dev/wildercord/aura/SwordString.java",
+      "sha256": "9cc6288b9c5540e3b5bfc0b5619419d547fc626aad9d109d026b75edf38e2651"
+    },
+    {
+      "bytes": 3404,
+      "path": "src/main/java/dev/wildercord/aura/world/EmberKilnRules.java",
+      "sha256": "4bb854f626ca5b1e19fec0072b29a777c4a574e4ebf6ea8222a09584fc90ef37"
+    },
+    {
+      "bytes": 1670,
+      "path": "src/main/java/dev/wildercord/aura/world/EmberWakeRules.java",
+      "sha256": "fe4de5988f6f40ae4ebc1030a099ce5c09f6e235b8a85fa10eeee5390c9da1cc"
+    },
+    {
+      "bytes": 2240,
+      "path": "src/main/java/dev/wildercord/aura/world/GaleRepriseRules.java",
+      "sha256": "eec97c27a7ea77ad8d242dbf830bc49cd9f0ce2253b93a8b76867884ac4b2d49"
+    },
+    {
+      "bytes": 21675,
+      "path": "src/main/java/dev/wildercord/aura/world/MasterAnimationRules.java",
+      "sha256": "06d5f596db6a9c69e9e782b76af64d2c218b85182cefed5a80d7453bb67de920"
+    },
+    {
+      "bytes": 3880,
+      "path": "src/main/java/dev/wildercord/aura/world/MasterPursuitRules.java",
+      "sha256": "7c95dc52b78900e84a124bebc034a3e4a847da8203065c395b0dfaa26771d43a"
+    },
+    {
+      "bytes": 6970,
+      "path": "src/main/java/dev/wildercord/aura/world/MastersRules.java",
+      "sha256": "d4c801dfa1c55c64851dbe4e91f89218efa0151b0a30b684a3a25f342497b0e8"
+    },
+    {
+      "bytes": 1806,
+      "path": "src/main/java/dev/wildercord/aura/world/StoneFractureRules.java",
+      "sha256": "f6790dd32550198826a6257a0142e9256855f2f2fde537e1d8ffa2ae9889b552"
+    },
+    {
+      "bytes": 3578,
+      "path": "src/main/java/dev/wildercord/aura/world/StoneMarchRules.java",
+      "sha256": "a31d3334d6af9d2dd44f4689fdc9a70d74b5bc383a6e4adaffc2f2da12c28da7"
+    },
+    {
+      "bytes": 7196,
+      "path": "src/main/java/dev/wildercord/cast/SpellDefenceRules.java",
+      "sha256": "b3c6a6f9c47e80ec6b6a67df39610da57d00c5aedd815f45dbbe156777eb1de2"
+    },
+    {
+      "bytes": 11709,
+      "path": "src/main/java/dev/wildercord/spell/MasteryRules.java",
+      "sha256": "a701c7ec45f5548e2a9acff2898952d2584f389e2c24d3e61480f161b89b28e2"
+    },
+    {
+      "bytes": 2609,
+      "path": "src/main/java/dev/wildercord/spell/Parry.java",
+      "sha256": "cda79f42dbdf2af617ea3c1aa776efcd4ed6f73399d5a4046a68083e21d6e5d3"
+    }
+  ],
+  "provenance": "Every production source was read with git show <baselineCommit>:<path>, then compiled in isolation. No edited production source or cached project class was used.",
+  "sampling": {
+    "alternateAges": "Every 1/16 of the full duration plus the same boundary and invalid-age sets.",
+    "alternateTimings": [
+      [
+        1,
+        1
+      ],
+      [
+        20,
+        30
+      ],
+      [
+        60,
+        120
+      ]
+    ],
+    "boundaries": "0, .65*windup, windup, windup+1, windup+min(4,.25*recovery), expiry. Crackle adds both gap beats and settle; Echo adds follow/return/second release/settle; Skyfall adds hold/answer/follow.",
+    "boundaryNeighborhood": "Exact edge, Math.nextDown(edge), Math.nextUp(edge), edge-.001F, edge+.001F. TreeSet<Float> removes duplicates without merging signed zero.",
+    "canonical": "Timings read from immutable MastersArtRules/MastersStyleRules. Every 1/8 tick from zero through expiry inclusive, plus every 1/16 of the full duration.",
+    "invalidAndExpiryAges": "-1, -.001F, -Float.MIN_VALUE, -0.0F, 0, Float.MIN_VALUE, NaN, -Infinity, +Infinity, expiry, expiry+1, 200.",
+    "invalidTimingAges": [
+      "0",
+      "1",
+      "NaN"
+    ],
+    "invalidTimings": [
+      [
+        0,
+        12
+      ],
+      [
+        -1,
+        12
+      ],
+      [
+        61,
+        12
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        4,
+        -1
+      ],
+      [
+        4,
+        121
+      ],
+      [
+        2147483647,
+        12
+      ],
+      [
+        4,
+        2147483647
+      ],
+      [
+        -2147483648,
+        -2147483648
+      ]
+    ],
+    "rows": 18482,
+    "rowsPerClip": {
+      "0": 674,
+      "1": 834,
+      "10": 642,
+      "11": 986,
+      "12": 706,
+      "13": 802,
+      "14": 834,
+      "15": 802,
+      "16": 884,
+      "17": 834,
+      "18": 802,
+      "19": 896,
+      "2": 738,
+      "20": 706,
+      "21": 770,
+      "22": 770,
+      "23": 706,
+      "3": 706,
+      "4": 706,
+      "5": 766,
+      "6": 642,
+      "7": 864,
+      "8": 706,
+      "9": 706
+    }
+  },
+  "schema": "brace-null-preservation-v1",
+  "scope": "Old player IDs 0 through 23 inclusive; Classic body/view and articulated world/view; right and left hands. Unsupported articulated IDs preserve neutral fallback.",
+  "storage": {
+    "decodedFixturePath": "src/test/resources/dev/wildercord/aura/brace-null-legacy-poses.tsv.gz",
+    "description": "Concatenate the ordered parts, then decode canonical RFC 4648 base64. ASCII UTF-8, no whitespace or line terminators. Every non-final part is exactly 65536 bytes. The decoded gzip bytes are identical to the original binary fixture.",
+    "encodedBytes": 2125032,
+    "encodedSha256": "4b0ad054d008cf7af23d6f0ef1687de23dfc33bfd7b8783fcaef9a93ee160331",
+    "format": "canonical-base64-parts-v1",
+    "partBytes": 65536,
+    "parts": [
+      {
+        "bytes": 65536,
+        "path": "part-0000.b64",
+        "sha256": "b2b9483ea09ab97f18283c963f72594bfc5cf626df783ab7f4e3c9dd8da78f91"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0001.b64",
+        "sha256": "d69934d4fe22144fd2e2c2cfb06627672725fbfb6cebb6c53b10e6d7e1924f96"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0002.b64",
+        "sha256": "41817fa7abb7e193fe73f9fb540da8ad38f209fe0f4d8a5ab4b58cf335595582"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0003.b64",
+        "sha256": "280c5f67ca3a595d5a6b5b661b7eb4e2689e5adf5bda901fa0e66027d9ced85a"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0004.b64",
+        "sha256": "21223e621170e043882589382fa4ee7f6d025fcda70afa04f8ad0b5128f684bb"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0005.b64",
+        "sha256": "ad2d26d53e1cabb37b987c1ed3644b7582d1fcbec6f0407983f981747c8ecb72"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0006.b64",
+        "sha256": "60f3c15f1f930a836645e5ccebfd9a02f84b13e3766c02f705fe30a6c65d0cbe"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0007.b64",
+        "sha256": "f0f1961305c1e32605e2e657749a64f5cb6cdaf4072696ac325d582c39d75781"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0008.b64",
+        "sha256": "f61dcfda64adca690142d9f993abef41cf25e40b7d28eff0319c2336ee36a3b2"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0009.b64",
+        "sha256": "2bc5654ccdd46279002d1ddc89b2eca7676c01c12d4f0c667c506c1c329b7249"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0010.b64",
+        "sha256": "c47ddbe047a8446afa125309b255ea546fdd269eb935c40432eba3fb4b0fd7ac"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0011.b64",
+        "sha256": "5fff6fddd511fd163235eb6a2431c8ee9c450665482cbb26c5e922882a61b528"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0012.b64",
+        "sha256": "ef223580a97c56214855a672575694cbe537a966bab6573d04e6b0edfc79ee27"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0013.b64",
+        "sha256": "1cce7d9a275a16bef392263a93f7b727a11320af83655f3e98907cc04c75b31e"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0014.b64",
+        "sha256": "327042fb3b9d599458db66a9d04e3010c9314d666c2f6a62ceba770b262e8db8"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0015.b64",
+        "sha256": "a078cde945b6f6a98038642e4c8ecdd3f29fa8602c4b1a35cb4a9a7e48a57458"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0016.b64",
+        "sha256": "b7d10282005aba753751babc9574a66adf6aff0d97f9e3e8e75dbd48d20c6feb"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0017.b64",
+        "sha256": "5d130a8d899ba7122b3f24a7bc409a5336373681d3c73a6b5bdfbc9dcb41fa46"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0018.b64",
+        "sha256": "27d35c5e1cef3bc1bd81494a98a512388b4dd9dcdbd5ea13ca7f5855d89f45d2"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0019.b64",
+        "sha256": "736b655076d5a393770ca6cf1bbce467a6aeb5b71109fc6e8d2b8151b1ded5e0"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0020.b64",
+        "sha256": "bc1174d6b5bdd4d5c22da585368263f589f3627c29b94b6ed36c3191fc429a7d"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0021.b64",
+        "sha256": "3413fe3b407f0ce87ac0048b79b4c2f6ec25285a23c61faa3171bae75d92cebe"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0022.b64",
+        "sha256": "b6bec18c96930c81aba9c2853f1d41614d949f03c7c5c19fd5199a7a11aa2dce"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0023.b64",
+        "sha256": "def9ebda609c6fa34d3227cd35d82f3f387fac7fd38d3e2efa253178a3696aaf"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0024.b64",
+        "sha256": "b3516866d1a644a5d41c834a66dd6afdc093cf750b975d52ea020d80f3edb8b4"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0025.b64",
+        "sha256": "913aa2e0ceeddafbfe5a46f8da1fba2dde5bea53db233273cf559b3a2a5e5235"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0026.b64",
+        "sha256": "a51fa723a51940b85d9e69a42bb0bb656610eff0e5656359080e982e7fdeb2f3"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0027.b64",
+        "sha256": "eb3df9037f3be6b29abdb126d3e2319f113048bc877d9c777d70d928ea434ac2"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0028.b64",
+        "sha256": "cfa621b09693244cbf2260e42ec7ce660938fdb545d848804b7dcefdd2786b4e"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0029.b64",
+        "sha256": "9f14232855028af8f843f8eb61637d91d5cfb2ff09c25a2d10e80ab83b3df632"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0030.b64",
+        "sha256": "d7b6bd28eaf1bcc63b63e0e74e01520850fee2d27dfca32e55786cb0d87b9d04"
+      },
+      {
+        "bytes": 65536,
+        "path": "part-0031.b64",
+        "sha256": "22cd054aad55af7580edc79c6a069bd639a230f8287cf4b39eddbd0fac775175"
+      },
+      {
+        "bytes": 27880,
+        "path": "part-0032.b64",
+        "sha256": "0f599da8e144270c3abcc2887ee69def34ea6806573011ba20dc37c7cfe041b4"
+      }
+    ]
+  },
+  "verificationLimits": "Pure standalone geometry/pose sampling only. No Minecraft renderer, native client, Gradle build or pixel capture is implied. Exact-bit references were generated with the recorded Java runtime."
+}

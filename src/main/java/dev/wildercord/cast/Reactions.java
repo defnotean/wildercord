@@ -166,6 +166,7 @@ public final class Reactions {
 
 	/** Called for fire-element damage: returns the damage multiplier after Shatter / Wildfire. */
 	public static double fire(Cast cast, LivingEntity target) {
+		if (!cast.admitsConsequence(target)) return 1;
 		double multiplier = 1.0;
 		ServerLevel level = cast.level;
 		if (has(target, Mark.FROZEN)) {
@@ -173,6 +174,7 @@ public final class Reactions {
 			target.setTicksFrozen(0);
 			// The ice bursts: a Freeze, Glacier or Black Ice hold ends with it.
 			Spirits.thawNow(target);
+			if (!cast.consequencesValid(target)) return 1;
 			multiplier *= 1.6;
 			reacted(target);
 			Vec3 c = target.getBoundingBox().getCenter();
@@ -186,11 +188,14 @@ public final class Reactions {
 			reacted(target);
 			for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(3.0), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity other = (LivingEntity) e;
+				if (!cast.admitsConsequence(other)) continue;
 				reacted(other);
 				other.igniteForSeconds(4);
 				Effects.hurt(cast, other, level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3);
+				if (!cast.consequencesValid(other)) return 1;
 				ReactionVfx.wildfireLeap(level, target, other);
 			}
+			if (!cast.consequencesValid(target)) return 1;
 			ReactionVfx.wildfire(level, target);
 			callout(cast, "wildfire", 0xF06E32);
 			Residues.reaction(cast, "fire", target);
@@ -222,6 +227,7 @@ public final class Reactions {
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), other.getBoundingBox().getCenter());
 			reactionHurt(cast, target, other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4);
 		}
+		if (!cast.consequencesValid(target)) return 1.0;
 		ReactionVfx.conduct(level, target);
 		callout(cast, "conduct", 0xFFE650);
 		Residues.reaction(cast, "storm", target);
@@ -259,6 +265,7 @@ public final class Reactions {
 				Effects.push(other, away.scale(1.1).add(0, 0.45, 0));
 			}
 		}
+		if (!cast.consequencesValid(target)) return 1.0;
 		callout(cast, ReactionRules.OVERLOAD, ReactionRules.color(ReactionRules.OVERLOAD));
 		Residues.reaction(cast, "storm", target);
 		return ReactionRules.OVERLOAD_BONUS;
@@ -370,6 +377,7 @@ public final class Reactions {
 		target.setTicksFrozen(0);
 		// The ice cracks through: a Freeze, Glacier or Black Ice hold ends with it.
 		Spirits.thawNow(target);
+		if (!cast.consequencesValid(target)) return 1;
 		mark(target, Mark.CRACKED);
 		reacted(target);
 		ReactionVfx.fracture(cast.level, target);
@@ -400,12 +408,18 @@ public final class Reactions {
 			}
 		}
 		ReactionVfx.blight(level, target, rotting, cast.caster);
+		int affected = 0;
 		for (LivingEntity t : rotting) {
+			if (!cast.admitsConsequence(t)) continue;
+			affected++;
 			reacted(t);
 			t.addEffect(new MobEffectInstance(MobEffects.POISON, ReactionRules.BLIGHT_POISON_TICKS, 0, false, true), cast.caster);
 			Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.BLIGHT_DAMAGE);
+			if (!cast.consequencesValid(t)) return 1;
 		}
-		heal(cast, ReactionRules.BLIGHT, ReactionRules.BLIGHT_HEAL * rotting.size());
+		if (!cast.consequencesValid(target)) return 1;
+		heal(cast, ReactionRules.BLIGHT, ReactionRules.BLIGHT_HEAL * affected);
+		if (!cast.consequencesValid(target)) return 1;
 		callout(cast, ReactionRules.BLIGHT, ReactionRules.color(ReactionRules.BLIGHT));
 		Residues.reaction(cast, "life", target);
 		return 1.0;
@@ -434,7 +448,9 @@ public final class Reactions {
 		reacted(target);
 		ReactionVfx.rupture(level, target, cast.caster);
 		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.RUPTURE_DAMAGE);
+		if (!cast.consequencesValid(target)) return 1;
 		heal(cast, ReactionRules.RUPTURE, ReactionRules.RUPTURE_HEAL);
+		if (!cast.consequencesValid(target)) return 1;
 		callout(cast, ReactionRules.RUPTURE, ReactionRules.color(ReactionRules.RUPTURE));
 		Residues.reaction(cast, "wind", target);
 		return ReactionRules.RUPTURE_BONUS;
@@ -467,6 +483,7 @@ public final class Reactions {
 		reacted(target);
 		ReactionVfx.elapse(level, target, fire > 0, poison != null, wither != null);
 		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), damage);
+		if (!cast.consequencesValid(target)) return 1;
 		callout(cast, ReactionRules.ELAPSE, ReactionRules.color(ReactionRules.ELAPSE));
 		Residues.reaction(cast, "time", target);
 		return 1.0;

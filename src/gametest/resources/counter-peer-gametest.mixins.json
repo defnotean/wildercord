@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "CounterPeerBodyBaselineMixin",
+    "CounterPeerClassicExtractionMixin",
+    "CounterPeerClassicViewMixin",
+    "CounterPeerCopyMixin",
+    "CounterPeerDeferredMixin",
+    "CounterPeerExtractionMixin",
+    "CounterPeerFallbackMixin",
+    "CounterPeerPlayerPaletteMixin",
+    "CounterPeerScreenshotMixin",
+    "CounterPeerViewMixin",
+    "CounterPeerShellAccess",
+    "CounterPeerWorldBodyMixin",
+    "CounterPeerWorldItemMixin",
+    "CounterPeerItemDrawMixin",
+    "CounterPeerAcceptedSourceMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

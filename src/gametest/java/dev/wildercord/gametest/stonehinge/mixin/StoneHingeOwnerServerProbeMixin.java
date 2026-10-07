@@ -27,7 +27,7 @@ public abstract class StoneHingeOwnerServerProbeMixin implements StoneHingeOwner
     }
 	@WrapMethod(method = "handleMovePlayer")
 	private void stoneHinge$packet(ServerboundMovePlayerPacket packet, Operation<Void> original) {
-		StoneHingeOwnerProbe.ownerMovePacket(((ServerGamePacketListenerImpl) (Object) this).player, packet, () -> original.call(packet));
+		StoneHingeOwnerProbe.ownerMovePacket((ServerGamePacketListenerImpl) (Object) this, packet, () -> original.call(packet));
 	}
 	@WrapMethod(method = "handlePlayerPositionChange")
 	private void stoneHinge$position(double x, double y, double z, float yaw, float pitch, boolean ground, boolean horizontalCollision, Operation<Void> original) {

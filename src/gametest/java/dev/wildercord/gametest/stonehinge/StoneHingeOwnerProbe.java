@@ -5,6 +5,12 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import dev.wildercord.gametest.stonehinge.peer.StoneHingeNativeDispatch;
+import java.security.MessageDigest;
+import java.util.HexFormat;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
@@ -29,12 +35,13 @@ public final class StoneHingeOwnerProbe {
 	private static final ThreadLocal<PositionSend> MOVEMENT = new ThreadLocal<>();
 	public interface ConnectionState { boolean stoneHinge$awaitingTeleport(); }
 
-	public record Body(Vec3 position, Vec3 motion, double fall, boolean grounded, boolean neutral, float health, int entity, long tick, boolean horizontalCollision) {
+	public record Body(Vec3 position, Vec3 motion, double fall, boolean grounded, boolean neutral, float health, int entity, long tick, boolean horizontalCollision, StoneHingeNativeDispatch.Pose pose) {
 		public static Body of(Player player) {
 			boolean neutral = player instanceof ServerPlayer server ? server.getLastClientInput().equals(Input.EMPTY)
 				: player instanceof LocalPlayer client && client.input.keyPresses.equals(Input.EMPTY);
 			return new Body(player.position(), player.getDeltaMovement(), player.fallDistance, player.onGround(), neutral,
-				player.getHealth(), player.getId(), player.level().getGameTime(), player.horizontalCollision);
+				player.getHealth(), player.getId(), player.level().getGameTime(), player.horizontalCollision,
+                new StoneHingeNativeDispatch.Pose(player.getYRot(), player.getXRot(), player.yHeadRot, player.yBodyRot, player.getPose().name()));
 		}
 	}
 	public record Event(int index, String kind, String data, Body before, Body after) {}
@@ -70,10 +77,28 @@ public final class StoneHingeOwnerProbe {
 		final PositionKey key;
 		final MotionReceipt afterMotion;
 		final Event event;
+        final LocalPlayer sender;
+        final int senderEntity;
+        final String senderUuid;
+        final ClientPacketListener senderConnection;
+        final ServerGamePacketListenerImpl serverConnection;
+        final StoneHingeNativeDispatch.OwnerPacket nativePacket;
+        volatile int completedIndex = -1;
 		volatile boolean completed;
-		PositionSend(int ordinal, PositionKey key, MotionReceipt afterMotion, Event event) {
+		PositionSend(int ordinal, PositionKey key, MotionReceipt afterMotion, Event event, LocalPlayer sender,
+                     ClientPacketListener senderConnection, ServerGamePacketListenerImpl serverConnection, ServerboundMovePlayerPacket packet) {
 			this.ordinal = ordinal; this.key = key; this.afterMotion = afterMotion; this.event = event;
+            this.sender = sender; senderEntity = sender.getId(); senderUuid = sender.getUUID().toString(); this.senderConnection = senderConnection; this.serverConnection = serverConnection;
+            nativePacket = ownerPacket(packet);
 		}
+        StoneHingeNativeDispatch.OwnerSend receipt(Trace trace, ServerGamePacketListenerImpl connection) {
+            Body body = event.after;
+            return new StoneHingeNativeDispatch.OwnerSend(ordinal, event.index, completedIndex, senderEntity, senderUuid,
+                sender == trace.owner && sender.getId() == senderEntity && sender.getUUID().toString().equals(senderUuid) && senderConnection == sender.connection && serverConnection == connection
+                    && connection == trace.server.connection && connection.player == trace.server && completed,
+                new StoneHingeNativeDispatch.OwnerBody(vector(body.position), vector(body.motion), body.fall, body.grounded,
+                    body.neutral, body.health, body.entity, body.tick, body.horizontalCollision, body.pose), nativePacket);
+        }
 		boolean qualified() { return completed && afterMotion != null && afterMotion.sent.completed && event != null && event.index > afterMotion.processed.index; }
 	}
 	private record PositionReceipt(PositionSend sent, Event processed) {}
@@ -136,10 +161,10 @@ public final class StoneHingeOwnerProbe {
 			MotionSend first = motionQueue.peek();
 			return first != null && first.matches(vector) ? motionQueue.remove() : null;
 		}
-		private synchronized PositionSend sendingPosition(ServerboundMovePlayerPacket packet, Body snapshot) {
+		private synchronized PositionSend sendingPosition(ClientPacketListener connection, ServerboundMovePlayerPacket packet, Body snapshot) {
 			PositionKey key = PositionKey.of(packet);
-			Event event = record("client-owner-position-sent", "ordinal=" + (positionSerial + 1) + " " + key, null, snapshot);
-			PositionSend sent = new PositionSend(++positionSerial, key, provenMotion, event); positionQueue.add(sent); return sent;
+			Event event = record("client-owner-position-sent", "ordinal=" + (positionSerial + 1) + " " + key + " sha256=" + ownerPacket(packet).sha256(), null, snapshot);
+			PositionSend sent = new PositionSend(++positionSerial, key, provenMotion, event, owner, connection, server.connection, packet); positionQueue.add(sent); return sent;
 		}
 		private synchronized PositionSend matchingPosition(ServerboundMovePlayerPacket packet) {
 			PositionSend first = positionQueue.peek();
@@ -253,20 +278,43 @@ public final class StoneHingeOwnerProbe {
 		original.run(); trace.observe(() -> trace.record("client-correction-processed", packet.toString(), before, trace.snapshot(client.player)));
 	}
 	/** Called only at LocalPlayer.sendPosition's real send invocation; never fabricates or changes a packet. */
-	public static void clientPositionSend(LocalPlayer player, Packet<?> packet, Runnable original) {
+	public static void clientPositionSend(LocalPlayer player, ClientPacketListener connection, Packet<?> packet, Runnable original) {
 		Trace trace = clientTrace(Minecraft.getInstance());
 		if (trace == null || trace.owner != player || !(packet instanceof ServerboundMovePlayerPacket position) || !position.hasPosition()) { original.run(); return; }
-		PositionSend sent = trace.observe(() -> trace.sendingPosition(position, trace.snapshot(player)));
-		original.run(); if (sent != null) sent.completed = true;
+		PositionSend sent = trace.observe(() -> trace.sendingPosition(connection, position, trace.snapshot(player)));
+		original.run(); if (sent != null) {
+            Event completed = trace.record("client-owner-position-send-complete", "ordinal=" + sent.ordinal, null, trace.snapshot(player));
+            sent.completedIndex = completed == null ? -1 : completed.index; sent.completed = true;
+        }
 	}
-	public static void ownerMovePacket(ServerPlayer player, ServerboundMovePlayerPacket packet, Runnable original) {
-		Trace trace = serverTrace(player); if (trace == null || !packet.hasPosition()) { original.run(); return; }
-		PositionSend previous = MOVEMENT.get(); MOVEMENT.set(trace.observe(() -> trace.matchingPosition(packet)));
+	public static void ownerMovePacket(ServerGamePacketListenerImpl connection, ServerboundMovePlayerPacket packet, Runnable original) {
+        ServerPlayer player = connection.player;
+		Trace trace = serverTrace(player); if (trace == null) { original.run(); return; }
+        // Only the queue head can qualify. A mismatch is never recovered by searching a later send.
+        PositionSend sent = packet.hasPosition() ? trace.observe(() -> trace.matchingPosition(packet)) : null;
+		PositionSend previous = MOVEMENT.get(); MOVEMENT.set(sent);
 		try {
-			trace.observe(() -> trace.record("server-owner-packet-received", PositionKey.of(packet).toString(), trace.snapshot(player), null));
-			original.run();
+			trace.observe(() -> trace.record("server-owner-packet-received", "ordinal=" + (sent == null ? 0 : sent.ordinal) + " " + PositionKey.of(packet) + " sha256=" + ownerPacket(packet).sha256(), trace.snapshot(player), null));
+            dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.ownerPacket(connection, packet,
+                () -> sent == null ? null : sent.receipt(trace, connection), () -> ownerPacket(packet), original);
 		} finally { if (previous == null) MOVEMENT.remove(); else MOVEMENT.set(previous); }
 	}
+    private static StoneHingeNativeDispatch.Vector vector(Vec3 value) { return new StoneHingeNativeDispatch.Vector(value.x, value.y, value.z); }
+    private static StoneHingeNativeDispatch.OwnerPacket ownerPacket(ServerboundMovePlayerPacket packet) {
+        String digest = null;
+        if (packet.getClass() == ServerboundMovePlayerPacket.Pos.class) {
+            FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+            try {
+                ServerboundMovePlayerPacket.Pos.STREAM_CODEC.encode(buffer, (ServerboundMovePlayerPacket.Pos) packet);
+                byte[] bytes = new byte[buffer.readableBytes()]; buffer.getBytes(buffer.readerIndex(), bytes);
+                digest = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
+            } catch (java.security.NoSuchAlgorithmException failure) { throw new AssertionError(failure); }
+            finally { buffer.release(); }
+        }
+        return new StoneHingeNativeDispatch.OwnerPacket(packet.getClass().getSimpleName(),
+            new StoneHingeNativeDispatch.Vector(packet.getX(0), packet.getY(0), packet.getZ(0)), packet.hasRotation(),
+            packet.getYRot(0), packet.getXRot(0), packet.isOnGround(), packet.horizontalCollision(), digest);
+    }
 	public static void ownerPosition(ServerPlayer player, double x, double y, double z, Runnable original) {
 		Trace trace = serverTrace(player); PositionSend sent = MOVEMENT.get();
 		if (trace == null || sent == null) { original.run(); return; }

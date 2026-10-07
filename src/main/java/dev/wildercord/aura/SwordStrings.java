@@ -332,7 +332,7 @@ public final class SwordStrings {
 	 * is won ({@link #release}) and is lost, still paid for, if not ({@link #forfeit}).
 	 */
 	public static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
-		// These two forms require a real consumed stroke receipt; claimed COUNTER marks cannot create one.
+		// These earned forms require a real consumed stroke receipt; claimed COUNTER marks cannot create one.
 		if (EarnedCounters.handles(art.id())) return false;
 		return perform(player, art, marks, null, false);
 	}

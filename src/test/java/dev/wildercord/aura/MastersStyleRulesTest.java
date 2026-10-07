@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(19, MastersStyleRules.STYLES.size());
+		assertEquals(23, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
@@ -137,7 +137,23 @@ class MastersStyleRulesTest {
 			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
 		}
 		assertEquals(50, ArtRules.ARTS.size());
-		assertEquals(31, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
+		assertEquals(27, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
+	}
+
+	@Test void nextCountersKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
+		for (String id : new String[] {"unmoved", "null_parry"}) {
+			var style = MastersStyleRules.of(id); var art = ArtRules.art(id);
+			assertEquals(id.equals("unmoved") ? 24 : 25, style.animation());
+			assertEquals(id.equals("unmoved") ? 6 : 4, style.windup());
+			assertEquals(id.equals("unmoved") ? 16 : 14, style.recovery());
+			assertEquals(8, art.cost()); assertEquals(80, art.cooldown()); assertEquals(2, art.slot());
+			assertEquals(MastersStyleRules.TargetPolicy.EARNED_COUNTER, style.targets());
+			assertNull(MastersArtRules.move(style.animation()));
+		}
+		assertEquals(1, ArtRules.UNMOVED_FACTOR); assertEquals(1.6, ArtRules.UNMOVED_THROW); assertEquals(80, ArtRules.UNMOVED_TICKS);
+		assertEquals(1, ArtRules.NULL_FACTOR); assertEquals(.25, ArtRules.NULL_PULSE_FACTOR); assertEquals(3, ArtRules.NULL_PULSE);
+		assertEquals(.5, ArtRules.NULL_SHOVE); assertEquals(8, ArtRules.NULL_HOLD); assertEquals(60, ArtRules.NULL_SILENCE);
+		assertEquals(30, ArtRules.SILENCE_PLAYER_TICKS); assertEquals(100, ArtRules.SILENCE_REST);
 	}
 
 }

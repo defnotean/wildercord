@@ -21,15 +21,17 @@ class NativeDispatchTests(unittest.TestCase):
             compile_result = subprocess.run(
                 [javac, "--release", "25", "-d", temp,
                  str(ROOT / "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingeNativeDispatch.java"),
-                 str(ROOT / "tools/tests/StoneHingeNativeDispatchTest.java")],
+                 str(ROOT / "tools/tests/StoneHingeNativeDispatchTest.java"),
+                 str(ROOT / "tools/tests/StoneHingeOwnerReceiptTest.java")],
                 text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=60)
             self.assertEqual(compile_result.returncode, 0, compile_result.stdout)
-            result = subprocess.run(
-                [java, "-cp", temp, "dev.wildercord.gametest.stonehinge.peer.StoneHingeNativeDispatchTest"],
-                text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
-            self.assertEqual(result.returncode, 0, result.stdout)
-            self.assertRegex(result.stdout, r"\d+ checks passed; \d+ rejected scenarios")
-            self.assertIn("pure-JDK sequencing only; no Minecraft gameplay claim", result.stdout)
+            for test in ("StoneHingeNativeDispatchTest", "StoneHingeOwnerReceiptTest"):
+                result = subprocess.run(
+                    [java, "-cp", temp, "dev.wildercord.gametest.stonehinge.peer." + test],
+                    text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stdout)
+                self.assertRegex(result.stdout, r"\d+ checks passed; \d+ rejected scenarios")
+                self.assertIn("pure-JDK sequencing only; no Minecraft gameplay claim", result.stdout)
 
 
 if __name__ == "__main__":

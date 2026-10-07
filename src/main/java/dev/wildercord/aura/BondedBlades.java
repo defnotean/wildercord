@@ -383,6 +383,7 @@ public final class BondedBlades {
 			} catch (RuntimeException e) {
 				Wildercord.LOGGER.warn("A bonded blade hook threw; skipping it", e);
 			}
+			if (!ArtHitScope.releasedValid(player)) return 0;
 		}
 		if (capped && foe != null) {
 			long now = player.level().getGameTime();
@@ -404,10 +405,12 @@ public final class BondedBlades {
 	}
 
 	private static void count(ServerPlayer player, String id, int n) {
+		if (!ArtHitScope.releasedValid(player)) return;
 		pending(player).counts.merge(id, n, Integer::sum);
 	}
 
 	private static void deed(ServerPlayer player, String kind, String arg) {
+		if (!ArtHitScope.releasedValid(player)) return;
 		pending(player).deeds.add(new BladeBond.Deed(kind, arg, day(player.level())));
 	}
 
@@ -473,6 +476,7 @@ public final class BondedBlades {
 		boolean technique = TechniqueRules.slotOf(art.id()) >= 0;
 		int slot = technique ? Techniques.momentumSlot(player, art) : AuraApi.ArtSlot.of(art).map(Enum::ordinal).orElse(0);
 		gain(player, BladeRules.art(Math.max(0, slot), n), technique ? "technique" : "art", foe, true);
+		if (!ArtHitScope.releasedAfter(player, foe)) return;
 		if (n == 1) {
 			if (technique) {
 				count(player, BladeRules.TECHNIQUES, 1);

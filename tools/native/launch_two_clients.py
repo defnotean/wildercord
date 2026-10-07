@@ -21,6 +21,7 @@ import signal
 import subprocess
 import sys
 import time
+import types
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -34,7 +35,7 @@ TERMINALS = {"host-cast-receipt-passed.properties": "host",
              "peer-cast-receipt-passed.properties": "peer", "peer-disconnected.properties": "peer"}
 IDENTITY = ("nonce", "suite", "sourceHead", "checkoutSha", "prHeadSha", "descriptorSha256", "hostUuid", "peerUuid", "runIdentity")
 MAX_TIMEOUT = 900
-# Keep all original 42 identities in place; four Life additions are mandatory and ordered.
+# Keep the original 46 identities in place; eight counter visual cases are additive.
 CASES = (
     "BREAK_CAST_HEALTH",
     "BREAK_CAST_FULL_ABSORPTION",
@@ -82,8 +83,24 @@ CASES = (
     "LIFE_SELF_HEAL_THIRD_PERSON",
     "LIFE_SELF_HEAL_CAMERA_TRANSITIONS",
     "LIFE_SELF_SECOND_WIND_REDUCED_FLASH",
+    "COUNTER_UNMOVED_CLASSIC_RIGHT",
+    "COUNTER_UNMOVED_CLASSIC_LEFT",
+    "COUNTER_UNMOVED_ARTICULATED_RIGHT",
+    "COUNTER_UNMOVED_ARTICULATED_LEFT",
+    "COUNTER_NULL_PARRY_CLASSIC_RIGHT",
+    "COUNTER_NULL_PARRY_CLASSIC_LEFT",
+    "COUNTER_NULL_PARRY_ARTICULATED_RIGHT",
+    "COUNTER_NULL_PARRY_ARTICULATED_LEFT",
 )
-LIFE_CASES = CASES[42:]
+LIFE_CASES = CASES[42:46]
+COUNTER_CASES = CASES[46:]
+COUNTER_PHASES = ("WINDUP", "ACTIVE", "FOLLOW", "RECOVERY")
+COUNTER_MIXINS = ("counter-peer-gametest.mixins.json",)
+COUNTER_PHASE_BASIS = "actual_post_hitstop_source_palette"
+COUNTER_PROFILES = {
+    "aura-wide": ("WCMoonWide2", "efc39378-3f97-37a3-bf28-b62b82f0bafa", "wide"),
+    "aura-slim": ("WCMoonSlim", "0167ff94-ec08-3235-8727-7c1376ad1e7b", "slim"),
+}
 MOON_SUITE = "moon"
 MOON_MAX_TIMEOUT = 180
 MOON_CONTRACT = "src/gametest/resources/crimson-moon-native-contract.json"
@@ -105,10 +122,12 @@ MOON_CASE_WITNESSES = ("case-00-ready.properties", *MOON_CLOCK_WITNESSES, "case-
 
 def selection(suite=SUITE, profile="aura", case=None, observer_angle=None):
     if suite == SUITE:
-        require(profile == "aura" and case is None and observer_angle is None,
-                "Cast receipts use only the unchanged aura profile and 46-case roster")
-        return {"suite": SUITE, "profile": "aura", "contract": CONTRACT, "entrypoint": ENTRYPOINT,
-                "cases": list(CASES), "profiles": PROFILES, "terminals": TERMINALS, "mixins": (), "maxTimeoutSeconds": MAX_TIMEOUT}
+        require(profile in ("aura", *COUNTER_PROFILES) and case is None and observer_angle is None,
+                "Cast receipts require a fixed aura profile and the complete 54-case roster")
+        profiles = PROFILES if profile == "aura" else {"host": COUNTER_PROFILES[profile][:2], "peer": PROFILES["peer"]}
+        return {"suite": SUITE, "profile": profile, "contract": CONTRACT, "entrypoint": ENTRYPOINT,
+                "cases": list(CASES), "profiles": profiles, "terminals": TERMINALS, "mixins": COUNTER_MIXINS,
+                "maxTimeoutSeconds": MAX_TIMEOUT, "expectedSkin": None if profile == "aura" else COUNTER_PROFILES[profile][2]}
     require(suite == MOON_SUITE and profile in MOON_PROFILES and case == MOON_CASE and observer_angle in MOON_ANGLES,
             "Moon requires its one fixed release case, an original wide/slim profile and a declared observer angle")
     username, owner_uuid, skin = MOON_PROFILES[profile]
@@ -282,16 +301,22 @@ def load_contract(root, selected=None):
             and contract.get("entrypoint") == selected["entrypoint"], "Unexpected source-controlled suite contract")
     cases = contract.get("cases")
     require(cases == selected["cases"] and contract.get("expectedCount") == len(cases),
-            "Cast contract requires the exact ordered 46-case roster" if selected["suite"] == SUITE
+            "Cast contract requires the exact ordered 54-case roster" if selected["suite"] == SUITE
             else "Moon contract requires the one exact fixed release case")
     require(contract.get("limits") == {"maxJvms": 2, "maxHeapMiBPerJvm": 2048, "maxCases": len(cases), "maxTimeoutSeconds": selected["maxTimeoutSeconds"]},
             "Unexpected contract resource limits")
     require(contract.get("terminalWitnesses") == list(selected["terminals"]), "Unexpected terminal paths")
-    profiles = ({"aura": {"username": PROFILES["host"][0], "offlineUuid": PROFILES["host"][1]}}
+    profiles = ({"aura": {"username": PROFILES["host"][0], "offlineUuid": PROFILES["host"][1]},
+                 **{key: {"username": value[0], "offlineUuid": value[1], "expectedSkin": value[2]} for key, value in COUNTER_PROFILES.items()}}
                 if selected["suite"] == SUITE else
                 {key: {"username": value[0], "offlineUuid": value[1], "skin": value[2]} for key, value in MOON_PROFILES.items()})
     require(contract.get("profiles") == profiles, "Invalid fixed host profiles")
     require(contract.get("peerProfile") == {"username": PROFILES["peer"][0], "offlineUuid": PROFILES["peer"][1]}, "Invalid fixed peer profile")
+    if selected["suite"] == SUITE:
+        require(contract.get("requiredMixins") == list(COUNTER_MIXINS), "Counter passive hooks must be mandatory")
+        visuals = contract.get("counterVisuals", {})
+        require(visuals.get("casePrefixCount") == 46 and visuals.get("phases") == list(COUNTER_PHASES)
+                and visuals.get("requiredProfiles") == list(COUNTER_PROFILES), "Counter contract must bind the complete additive phase/profile union")
     if selected["suite"] == MOON_SUITE:
         require(contract.get("observerAngles") == list(MOON_ANGLES) and contract.get("requiredMixins") == list(MOON_MIXINS),
                 "Unexpected Moon angle or passive-hook contract")
@@ -325,8 +350,8 @@ def validate_launch(launch, path, root, selected=None):
         require(launch.get("maxTimeoutSeconds") == MOON_MAX_TIMEOUT, "Moon export must bind the 180-second ceiling")
         require("crimson-moon-owner-gametest.mixins.json" not in descriptor_data.get("mixins", []), "Paired Moon hooks must not be injected twice")
     for name in selected["mixins"]:
-        require(descriptor_data.get("mixins", []).count(name) == 1, "Moon passive hooks must be registered exactly once")
-        require(digest(descriptor.parent / name) == digest(root / "src/gametest/resources" / name), "Moon passive hook descriptor changed")
+        require(descriptor_data.get("mixins", []).count(name) == 1, "Selected passive hooks must be registered exactly once")
+        require(digest(descriptor.parent / name) == digest(root / "src/gametest/resources" / name), "Selected passive hook descriptor changed")
     contract = selected["contract"]
     require(launch.get("contract") == contract and launch.get("contractSha256") == digest(root / contract), "Source contract changed after export")
     require(digest(descriptor.parent / Path(contract).name) == digest(root / contract), "Processed contract differs from source contract")
@@ -382,6 +407,8 @@ def command(launch, role, game, ipc, identity, timeout, selected=None):
     if selected["suite"] == MOON_SUITE:
         for key in ("case", "expectedSkin", "observerAngle"):
             jvm.append("-Dwildercord.moon." + key + "=" + selected[key])
+    elif selected.get("expectedSkin"):
+        jvm.append("-Dwildercord.counter.expectedSkin=" + selected["expectedSkin"])
     return [*jvm, "-cp", os.pathsep.join(launch["classpath"]), MAIN, *args]
 
 
@@ -410,8 +437,9 @@ def validate_witnesses(ipc, identity, cases, jobs, selected=None):
     if selected["suite"] == MOON_SUITE:
         validate_moon_evidence(ipc, identity, pids)
     else:
-        require(cases == list(CASES), "Terminal evidence must cover the exact ordered 46-case roster")
+        require(cases == list(CASES), "Terminal evidence must cover the exact ordered 54-case roster")
         validate_life_witnesses(ipc, identity, pids)
+        validate_counter_witnesses(ipc, identity, pids, selected)
     return list(selected["terminals"])
 
 
@@ -666,6 +694,390 @@ def validate_moon_evidence(ipc, identity, pids):
             "Owner and observer cannot reuse the same image evidence")
 
 
+def counter_case(case):
+    require(case in COUNTER_CASES, "Unknown fixed counter case")
+    move = 24 if case.startswith("COUNTER_UNMOVED_") else 25
+    return {"move": move, "windup": 6 if move == 24 else 4, "recovery": 16 if move == 24 else 14,
+            "mode": "articulated" if "_ARTICULATED_" in case else "classic", "hand": case.rsplit("_", 1)[1]}
+
+
+def counter_phase(move, age):
+    age = finite(age, "counter actual source age")
+    require(move in (24, 25), "Unknown counter action")
+    windup, recovery = (6, 16) if move == 24 else (4, 14)
+    return ("NONE" if age < 0 or age >= windup + recovery else "WINDUP" if age < windup else
+            "ACTIVE" if age < windup + 1 else "FOLLOW" if age < windup + recovery / 2 else "RECOVERY")
+
+
+def counter_frame(value, kind, action, phase):
+    fields = {"activation", "move", "left", "master", "yaw", "pitch", "tilt", "footwork", "velocity", "pose"}
+    require(isinstance(value, dict) and set(value) == fields, "Missing complete counter " + kind + " frame")
+    require(type(value["activation"]) is int and value["activation"] == action["acceptedTick"]
+            and type(value["move"]) is int and value["move"] == action["move"]
+            and value["left"] is (action["hand"] == "LEFT") and value["master"] is False
+            and value["footwork"] is False, "Wrong nested counter action or hand")
+    for key in ("yaw", "pitch", "tilt"):
+        require(type(value[key]) in (int, float), "Invalid counter numeric frame " + key)
+        finite(value[key], "counter frame " + key)
+    require(isinstance(value["pose"], str), "Missing concrete counter pose")
+    if kind == "classic":
+        require(value["velocity"] == "n/a" and re.fullmatch(r"[a-f0-9]{64}", value["pose"]), "Invalid counter Classic frame")
+    else:
+        # FOLLOW is the early recovery subdivision of the actual articulated RECOVERY palette.
+        native_phase = "RECOVERY" if phase == "FOLLOW" else phase
+        require(value["tilt"] == 0 and value["velocity"] == "NaN"
+                and re.fullmatch(native_phase + r":[a-f0-9]{64}:[a-f0-9]{64}", value["pose"]),
+                "Wrong counter articulated source palette phase")
+
+
+def counter_json(path):
+    def object_pairs(pairs):
+        value = {}
+        for key, item in pairs:
+            require(key not in value, "Duplicate counter JSON property: " + key)
+            value[key] = item
+        return value
+    def invalid_constant(value):
+        raise ValueError("Nonfinite counter JSON constant: " + value)
+    value = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=object_pairs, parse_constant=invalid_constant)
+    require(isinstance(value, dict), "Counter JSON must be an object")
+    return value
+
+
+def counter_evidence_file(game, relative, maximum, label):
+    require(isinstance(relative, str) and relative and not Path(relative).is_absolute()
+            and ".." not in Path(relative).parts, "Invalid counter evidence path")
+    raw = game / relative
+    require(not any(path.is_symlink() for path in (raw, *raw.parents)), "Symlink counter evidence path")
+    path = evidence_file(game, relative, maximum, label)
+    require(path.stat().st_nlink == 1, "Hard-linked counter evidence is forbidden")
+    return path
+
+
+def counter_image(game, role, values, identity, action, accepted_sha):
+    """Recompute source/geometry/pixel associations; this is never human silhouette review."""
+    receipt = counter_evidence_file(game, values.get("receiptRelativePath"), 8 * 1024 * 1024, "counter receipt")
+    require(digest(receipt) == values.get("receiptSha256"), "Counter receipt bytes changed")
+    record = counter_json(receipt)
+    require(type(record.get("schemaVersion")) is int and record["schemaVersion"] == 1 and record.get("verified") is True and record.get("failures") == [],
+            "Missing verified counter numeric receipt")
+    require(record.get("launchNonce") == identity["nonce"] and record.get("scopeCleanupVerified") is True
+            and record.get("acceptanceObservedBeforeSource") is True, "Stale counter nonce or incomplete source scope")
+    require(record.get("phaseBasis") == COUNTER_PHASE_BASIS and record.get("pixelQualityReviewed") is False
+            and record.get("serverReleaseFrameCorrespondenceVerified") is False, "Counter receipt overstates phase or pixel proof")
+    expected, phase = record.get("expected", {}), values["phase"]
+    require(isinstance(expected, dict), "Missing counter expected identity")
+    view, skin = ("fp" if role == "host" else "remote"), values["skin"].lower()
+    name = "counter_peer_" + ("unmoved" if action["move"] == 24 else "null_parry") + "_" + action["mode"] + "_" + action["hand"].lower() + "_" + role + "_" + phase.lower()
+    fields = {"name": name, "view": view, "owner": action["actorEntity"], "uuid": identity["hostUuid"],
+              "activation": action["acceptedTick"], "mode": action["mode"], "hand": action["hand"],
+              "phase": phase, **{key: action[key] for key in ("move", "windup", "recovery")}}
+    require(all(expected.get(key) == value for key, value in fields.items()) and values.get("screenshotName") == name
+            and str(expected.get("skin", "")).lower() == skin and expected.get("armor") is False and expected.get("shell") is False
+            and all(type(expected.get(key)) is int for key in ("owner", "activation", "move", "windup", "recovery")),
+            "Counter screenshot changed actor, action, phase, camera or original appearance")
+    copy = record.get("copy", {})
+    require(isinstance(copy, dict), "Missing render copy object")
+    observation = copy.get("observations", {})
+    require(isinstance(observation, dict), "Missing render observation object")
+    sequences = [copy.get(key) for key in ("extractSequence", "renderSequence", "copySequence")]
+    require(all(type(value) is int and value > 0 for value in sequences) and sequences[0] < sequences[1] < sequences[2],
+            "Counter extraction, render and GPU-copy order is incomplete")
+    observer = identity["hostUuid"] if role == "host" else identity["peerUuid"]
+    observer_entity = action["actorEntity"] if role == "host" else action["observerEntity"]
+    required = {"owner": identity["hostUuid"], "observerUuid": observer, "observerEntity": str(observer_entity),
+                "pairedRole": role, "observerCoverage": "false" if role == "host" else "true",
+                "sourceHead": identity["sourceHead"], "runIdentity": identity["runIdentity"], "acceptedReceiptSha256": accepted_sha}
+    require(all(observation.get(key) == value for key, value in required.items()), "Counter render provenance or accepted receipt changed")
+    read_sequence = decimal(observation.get("acceptedReadSequence"), "counter acceptance-read sequence", True)
+    source_sequence = decimal(observation.get("sourceFrameSequence"), "counter source-frame sequence", True)
+    require(read_sequence < source_sequence < sequences[0], "Counter acceptance must precede actual source extraction")
+    age = finite(values.get("actualSourceAge"), "counter witness source age")
+    require(counter_phase(action["move"], age) == phase
+            and abs(finite(observation.get("actualSourceAge"), "counter observed age") - age) <= .0001,
+            "Counter capture is outside its actual post-HitStop source window")
+    texture = observation.get("connectedSkinTexture")
+    require(isinstance(texture, str) and re.fullmatch(r"[a-z0-9_.-]+:[a-z0-9/._-]+", texture)
+            and str(observation.get("connectedSkinModel", "")).lower() == skin, "Missing original connected counter skin")
+    material = 0
+    if role == "peer" or action["mode"] == "articulated":
+        material = decimal(observation.get("originalSkinMaterialIdentity"), "counter original skin material", True)
+        require(observation.get("submittedSkinMaterialIdentity") == str(material), "Counter submitted material changed")
+    if role == "host":
+        require(all(observation.get(key) == "true" for key in ("ordinaryHandAdmission", "handEquipKnown", "handSameItem"))
+                and observation.get("handEquipping") == "false", "Counter lacks eligible ordinary native hand")
+    else:
+        require(observation.get("worldHandEligible") == "true", "Counter lacks ordinary world item")
+    passes = copy.get("passes")
+    required_kinds = ({"body_submit", "body", "world_item"} if role == "peer" else
+                      {"view_submit", "view_deferred", "view_item"} if action["mode"] == "articulated" else
+                      {"classic_transform", "native_item"})
+    require(isinstance(passes, list) and len(passes) == len(required_kinds) and all(isinstance(p, dict) for p in passes)
+            and {p.get("kind") for p in passes} == required_kinds, "Counter requires exact geometry and item pass union")
+    geometry_shapes = {"classic_transform": ("observed_classic_before_after", 16), "native_item": ("actual_native_item_matrix", 16),
+                       "view_submit": ("view_root_matrix", 16), "view_deferred": ("deferred_view_locals", 180),
+                       "view_item": ("actual_socket_item_matrix", 16), "body_submit": ("world_root_identity", 17),
+                       "body": ("deferred_body_locals_and_retained_outer_root", 197 if action["mode"] == "articulated" else 71),
+                       "world_item": ("actual_world_socket_item_matrix", 16)}
+    first = None
+    for render in passes:
+        binding, geometry = render.get("binding", {}), render.get("geometry", {})
+        require(isinstance(binding, dict) and isinstance(geometry, dict), "Missing counter binding/geometry objects")
+        palette = binding.get("palette", {})
+        require(isinstance(palette, dict), "Missing counter source palette")
+        articulated = action["mode"] == "articulated"
+        require(render.get("segmented") is articulated and render.get("rigid") is (not articulated), "Counter backend changed")
+        counter_frame(palette.get("classic"), "classic", action, phase)
+        if articulated:
+            counter_frame(palette.get("articulated"), "articulated", action, phase)
+        else:
+            require(palette.get("articulated") is None, "Classic counter retained a stale articulated frame")
+        require(binding.get("matched") is True and type(binding.get("owner")) is int and binding["owner"] == action["actorEntity"]
+                and binding.get("uuid") == identity["hostUuid"] and binding.get("hand") == action["hand"]
+                and str(binding.get("skin", "")).lower() == skin and binding.get("texture") == texture
+                and type(binding.get("skinMaterial")) is int and binding["skinMaterial"] == material
+                and type(palette.get("activation")) is int and palette["activation"] == action["acceptedTick"]
+                and type(palette.get("move")) is int and palette["move"] == action["move"] and palette.get("phase") == phase
+                and type(palette.get("age")) in (int, float) and abs(finite(palette["age"], "counter palette age") - age) <= .0001,
+                "Counter pass changed source action, appearance or actual phase")
+        stable = {key: binding.get(key) for key in ("source", "state", "model", "skinMaterial", "palette", "texture", "skin", "hand")}
+        if role == "peer":
+            stable["item"] = binding.get("item")
+        if first is None:
+            first = stable
+        require(stable == first and all(type(binding.get(key)) is int and binding[key] > 0 for key in ("source", "state", "model")),
+                "Counter pass identity changed after extraction")
+        item_expected = role == "peer" or "item" in render["kind"]
+        require(type(binding.get("item")) is int and (binding["item"] > 0 if item_expected else binding["item"] == 0),
+                "Counter held-item identity changed")
+        operation, count = geometry_shapes[render["kind"]]
+        expected_values, actual_values = geometry.get("expected"), geometry.get("actual")
+        require(geometry.get("operation") == operation and isinstance(expected_values, list) and isinstance(actual_values, list)
+                and len(expected_values) == len(actual_values) == count
+                and all(type(x) in (int, float) for x in expected_values + actual_values), "Counter lacks complete actual geometry")
+        error = max(abs(finite(a, "counter expected geometry") - finite(b, "counter actual geometry")) for a, b in zip(expected_values, actual_values))
+        require(geometry.get("matched") is True and error <= .00025 and type(geometry.get("maxError")) in (int, float)
+                and abs(finite(geometry["maxError"], "counter geometry error") - error) <= .000001,
+                "Actual counter geometry does not match its independent source oracle")
+    draws = copy.get("draws")
+    require(isinstance(draws, list) and len(draws) == 1 and isinstance(draws[0], dict), "Counter requires exactly one actual deep item draw")
+    draw = draws[0]
+    item_pass = next(p for p in passes if p["kind"].endswith("item"))
+    require(draw.get("binding") == item_pass["binding"] and type(draw.get("quads")) is int and 0 < draw["quads"] <= 512,
+            "Counter deep item draw changed original source or has no geometry")
+    expected_context = ("FIRST_PERSON_" if role == "host" else "THIRD_PERSON_") + action["hand"] + "_HAND"
+    require(draw.get("displayContext") == expected_context and draw.get("anchorKind") == "stock_diamond_hilt",
+            "Counter deep item draw changed hand, camera or actual hilt basis")
+    side = -1 if action["hand"] == "LEFT" else 1
+    remote = role == "peer"
+    display = {"displayRotation": [0., -90. * side, (55. if remote else 25.) * side],
+               "displayTranslation": [0., 4./16, .5/16] if remote else [1.13/16, 3.2/16, 1.13/16],
+               "displayScale": [.85 if remote else .68] * 3,
+               "displayLocal": [1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.]}
+    for key, wanted in display.items():
+        actual = draw.get(key)
+        require(isinstance(actual, list) and len(actual) == len(wanted)
+                and all(type(x) in (int, float) for x in actual)
+                and max(abs(finite(x, "counter native display") - y) for x, y in zip(actual, wanted)) <= .00025,
+                "Counter original diamond display changed")
+    geometry = draw.get("geometry", {})
+    wanted, actual = geometry.get("expected"), geometry.get("actual")
+    require(geometry.get("operation") == "actual_displayed_item_matrix" and isinstance(wanted, list) and isinstance(actual, list)
+            and len(wanted) == len(actual) == 16 and all(type(x) in (int,float) for x in wanted + actual),
+            "Counter deep item draw lacks actual displayed matrix")
+    error = max(abs(finite(x, "counter deep matrix")-finite(y, "counter deep matrix")) for x,y in zip(wanted,actual))
+    require(geometry.get("matched") is True and error <= .00025
+            and abs(finite(geometry.get("maxError"), "counter deep error")-error) <= .000001, "Counter displayed item matrix differs")
+    hilt = []
+    for key in ("anchorExpected", "anchorActual"):
+        points = draw.get(key)
+        require(isinstance(points, list) and len(points) == 3 and all(type(x) in (int,float) for x in points), "Counter displayed hilt missing")
+        hilt.append([finite(x, "counter displayed hilt") for x in points])
+    require(max(abs(x-y) for x,y in zip(*hilt)) <= .00025, "Counter actual displayed hilt differs")
+    positions = draw.get("emittedQuadPositions")
+    require(isinstance(positions, list) and len(positions) == draw["quads"] * 12
+            and all(type(x) in (int,float) for x in positions), "Counter emitted item vertices missing")
+    import struct
+    try:
+        raw_positions = b"".join(struct.pack(">f", finite(x, "counter emitted item vertex")) for x in positions)
+    except (OverflowError, struct.error) as error:
+        raise ValueError("Counter emitted item vertex overflows") from error
+    require(hashlib.sha256(raw_positions).hexdigest() == draw.get("emittedQuadSha256"), "Counter emitted item vertices changed")
+    require(all(type(draw.get(k)) is int and draw[k] > 0 for k in ("stackIdentity", "collectorIdentity", "entryStackIdentity", "entryCollectorIdentity"))
+            and draw["stackIdentity"] == draw["entryStackIdentity"] and draw["collectorIdentity"] == draw["entryCollectorIdentity"],
+            "Counter deep item draw lost original stack or collector identity")
+    image = record.get("image", {})
+    require(isinstance(image, dict), "Missing counter image object")
+    require(image.get("relativeImagePath") == values.get("pngRelativePath"), "Counter PNG path changed")
+    png = counter_evidence_file(game, values.get("pngRelativePath"), 64 * 1024 * 1024, "counter PNG")
+    data = png.read_bytes()
+    require(type(image.get("pngBytes")) is int and len(data) == image["pngBytes"]
+            and hashlib.sha256(data).hexdigest() == image.get("pngSha256") == values.get("pngSha256"), "Counter PNG bytes changed")
+    import importlib.util
+    path = Path(__file__).resolve().parents[1] / "verify_articulated_render_receipts.py"
+    spec = importlib.util.spec_from_file_location("wildercord_counter_image_decoder", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    pixels = module.image_evidence(data)
+    require(pixels == image.get("decodedPixels") == record.get("callbackPixels")
+            and pixels["sha256"] == values.get("callbackPixelSha256"), "Counter callback pixels differ from decoded unchanged PNG")
+    require(type(copy.get("width")) is int and type(copy.get("height")) is int
+            and copy["width"] == pixels["width"] and copy["height"] == pixels["height"], "Counter copy target changed")
+    return record
+
+
+def validate_counter_witnesses(ipc, identity, pids, selected=None):
+    selected = selected or selection()
+    require(identity["hostUuid"] == selected["profiles"]["host"][1] and identity["peerUuid"] == PROFILES["peer"][1],
+            "Counter witness roles differ from the fixed selected profiles")
+    # Reopen after both owned JVMs exit. Even malformed, linked, foreign or post-terminal rejection artifacts forbid success.
+    require(not any(ipc.glob("*counter-render-failure*")), "Sticky counter render rejection artifact is present")
+    used = set()
+    received_sources = {"host": set(), "peer": set()}
+    for index, case in enumerate(COUNTER_CASES, 46):
+        def read(suffix, role):
+            filename = f"case-{index:02d}-{suffix}.properties"
+            if suffix.endswith(("-observed", "-rendered")):
+                filename = role + "-" + filename
+            values = read_properties(ipc / filename)
+            require((ipc / filename).stat().st_nlink == 1, "Hard-linked counter witness is forbidden")
+            for key, value in {**identity, "role": role, "pid": str(pids[role]), "case": case}.items():
+                require(values.get(key) == value, filename + " has mismatched " + key)
+            return values
+        prepare, armed, accepted = read("prepare", "host"), read("armed", "peer"), read("accepted", "host")
+        action = {**counter_case(case), "actorEntity": decimal(prepare.get("actorEntity"), "counter actor entity", True),
+                  "observerEntity": decimal(prepare.get("observerEntity"), "counter observer entity", True),
+                  "acceptedTick": decimal(accepted.get("acceptedTick"), "counter accepted tick")}
+        require(action["actorEntity"] != action["observerEntity"], "Counter source and observer must be distinct connected bodies")
+        common = {key: str(value) for key, value in action.items() if key != "acceptedTick"}
+        common.update(actorUuid=identity["hostUuid"], observerUuid=identity["peerUuid"])
+        skin = prepare.get("skin", "").lower()
+        require(skin in ("wide", "slim") and (not selected.get("expectedSkin") or skin == selected["expectedSkin"]),
+                "Counter original skin differs from fixed selected profile")
+        require(armed.get("skin", "").lower() == skin and prepare.get("cameraNative") == armed.get("cameraNative") == "true",
+                "Counter handshake needs unchanged original skin and native cameras")
+        caught = decimal(accepted.get("caughtTick"), "counter caught tick")
+        attacker = accepted.get("caughtAttackerUuid")
+        require(isinstance(attacker, str) and re.fullmatch(r"[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}", attacker)
+                and attacker not in (identity["hostUuid"], identity["peerUuid"]), "Counter must bind the concrete hostile caught attacker")
+        require(0 <= action["acceptedTick"] - caught <= 16 and accepted.get("payments") == "1"
+                and finite(accepted.get("paid"), "counter paid amount") > 0
+                and accepted.get("armedSha256") == digest(ipc / f"case-{index:02d}-armed.properties"),
+                "Counter requires one real paid acceptance after peer arming")
+        initial = read("clock-initial", "peer")
+        rendezvous = read("clock-rendezvous", "host")
+        ack = read("clock-ack", "peer")
+        clock_ready = read("clock-ready", "host")
+        target = decimal(rendezvous.get("clockRendezvousTick"), "counter clock rendezvous")
+        initial_tick = decimal(initial.get("clockClientTick"), "counter initial client clock")
+        initial_server = decimal(rendezvous.get("clockInitialServerTick"), "counter initial server clock")
+        require(target == max(initial_tick, initial_server) and action["acceptedTick"] >= target,
+                "Counter acceptance must follow a natural pre-input rendezvous")
+        initial_sha = digest(ipc / f"case-{index:02d}-clock-initial.properties")
+        rendezvous_sha = digest(ipc / f"case-{index:02d}-clock-rendezvous.properties")
+        ack_sha = digest(ipc / f"case-{index:02d}-clock-ack.properties")
+        ready_sha = digest(ipc / f"case-{index:02d}-clock-ready.properties")
+        require(all(value.get("clockRendezvousTick") == str(target) and value.get("clockInitialSha256") == initial_sha
+                    and value.get("clockInitialServerTick") == str(initial_server) for value in (rendezvous, ack, clock_ready))
+                and ack.get("clockRendezvousSha256") == clock_ready.get("clockRendezvousSha256") == rendezvous_sha
+                and rendezvous.get("clockServerTick") == clock_ready.get("clockServerTick") == str(target)
+                and ack.get("clockClientTick") == clock_ready.get("clockClientTick") == str(target)
+                and clock_ready.get("clockAckSha256") == ack_sha
+                and armed.get("clockReadySha256") == accepted.get("clockReadySha256") == ready_sha
+                and accepted.get("clockRendezvousTick") == str(target),
+                "Counter pre-input clocks or immutable clock receipt chain changed")
+        accepted_sha = digest(ipc / f"case-{index:02d}-accepted.properties")
+        outcomes = [read("ready", "host"), read("seen", "peer"), read("passed", "host")]
+        outcome = outcomes[0]
+        outcome_fields = ("releaseTick", "payments", "completions", "counterTargetUuid", "counterTargetEntity",
+                          "counterTargetHealthBefore", "counterTargetHealth", "directPrimaryHits", "primaryHitTick")
+        require(all(all(value.get(key) == outcome.get(key) for key in outcome_fields) for value in outcomes[1:]),
+                "Counter owner, actual peer and final outcome disagree")
+        target_entity = decimal(outcome.get("counterTargetEntity"), "counter caught target entity", True)
+        require(target_entity not in (action["actorEntity"], action["observerEntity"])
+                and outcome.get("counterTargetUuid") == attacker
+                and decimal(outcome.get("releaseTick"), "counter release tick") == action["acceptedTick"] + action["windup"]
+                and outcome.get("payments") == outcome.get("completions") == outcome.get("directPrimaryHits") == "1"
+                and outcome.get("primaryHitTick") == outcome.get("releaseTick")
+                and finite(outcome.get("counterTargetHealthBefore"), "counter target original health") == 200
+                and 0 < finite(outcome.get("counterTargetHealth"), "counter target actual health") < 200,
+                "Counter outcome must preserve one original paid release and actual surviving damaged target")
+        all_values = [prepare, armed, accepted, initial, rendezvous, ack, clock_ready, *outcomes]
+        source_identities = {}
+        for role in ("host", "peer"):
+            for phase in COUNTER_PHASES:
+                rendered = read(phase + "-rendered", role)
+                require(rendered.get("acceptedTick") == str(action["acceptedTick"]) and rendered.get("phase") == phase
+                        and rendered.get("renderedBeforeReadback") == "true", "Counter phase requires its same-action native render barrier")
+                values = read(phase + "-observed", role)
+                all_values.extend((rendered, values))
+                require(values.get("acceptedTick") == str(action["acceptedTick"]) and values.get("acceptedReceiptSha256") == accepted_sha
+                        and values.get("phase") == phase and values.get("view") == ("fp" if role == "host" else "remote")
+                        and values.get("skin", "").lower() == skin, "Counter observed phase changed accepted action or appearance")
+                require(values.get("scopeCleanupVerified") == values.get("acceptanceObservedBeforeSource") == "true"
+                        and values.get("pixelQualityReviewed") == "false", "Counter observed phase lacks cleanup or overstates review")
+                for field in ("receiptRelativePath", "pngRelativePath"):
+                    key = (role, field, str(Path(values.get(field, ""))))
+                    require(key not in used, "Counter phases cannot reuse the same evidence file")
+                    used.add(key)
+                record = counter_image(ipc.parent / role, role, values, identity, action, accepted_sha)
+                source_id = decimal(record["copy"]["observations"].get("acceptedSourceIdentity"), "first native received source identity", True)
+                require(source_id < decimal(record["copy"]["observations"].get("acceptedReadSequence"), "source acceptance read", True),
+                        "First native source must precede capture admission")
+                require(source_id not in received_sources[role], "Native received source identity reused by another case")
+                require(role not in source_identities or source_identities[role] == source_id, "Native received source object replaced between phases")
+                source_identities[role] = source_id
+        for role, source_id in source_identities.items():
+            received_sources[role].add(source_id)
+        for values in all_values:
+            require(all(values.get(key) == value for key, value in common.items()), "Counter handshake or evidence changed actual actors/action")
+
+
+def validate_counter_profile_union(run_paths):
+    """Reopen both complete native runs, never count repeated variants as extra mechanics cases."""
+    require(isinstance(run_paths, (list, tuple)) and len(run_paths) == 2, "Counter union requires exactly wide and slim runs")
+    profiles, nonces, runs, provenance = set(), set(), set(), None
+    for run_path in run_paths:
+        base = Path(run_path).resolve()
+        path = base / "result.json"
+        require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 2 * 1024 * 1024, "Missing bounded counter result")
+        report = counter_json(path)
+        profile = report.get("profile")
+        require(profile in COUNTER_PROFILES and profile not in profiles, "Counter union requires distinct fixed wide and slim profiles")
+        selected = selection(SUITE, profile)
+        require(report.get("suite") == SUITE and report.get("status") == "passed" and report.get("cases") == list(CASES)
+                and report.get("expectedSkin") == selected["expectedSkin"], "Counter union needs every exact 54-case native run")
+        require(report.get("counterOwnerPeerGeometryVerified") is True and report.get("phaseBasis") == COUNTER_PHASE_BASIS
+                and report.get("counterPhaseCaptures") == 64 and report.get("pixelQualityReviewed") is False
+                and report.get("serverReleaseFrameCorrespondenceVerified") is False, "Counter union requires accurately scoped geometric proof")
+        require(type(report.get("timeoutSeconds")) is int and report["timeoutSeconds"] == MAX_TIMEOUT
+                and report.get("heapMiBPerJvm") == 2048 and not report.get("cleanupErrors")
+                and 0 <= finite(report.get("seconds"), "counter elapsed time") <= report["timeoutSeconds"], "Counter union exceeded resource limits")
+        identity = {key: report.get(key) for key in IDENTITY}
+        require(all(isinstance(value, str) for value in identity.values()) and re.fullmatch(r"[a-f0-9]{40}", identity["sourceHead"])
+                and identity["checkoutSha"] == identity["sourceHead"] and re.fullmatch(r"[a-f0-9]{64}", identity["descriptorSha256"])
+                and (not identity["prHeadSha"] or re.fullmatch(r"[a-f0-9]{40}", identity["prHeadSha"])),
+                "Counter union lacks exact source provenance")
+        require(str(uuid.UUID(identity["nonce"])) == identity["nonce"] and identity["nonce"] not in nonces
+                and identity["runIdentity"] and identity["runIdentity"] not in runs, "Counter union reused a launch identity")
+        source = tuple(identity[key] for key in ("sourceHead", "checkoutSha", "prHeadSha", "descriptorSha256"))
+        if provenance is None:
+            provenance = source
+        require(source == provenance, "Counter variants must share the exact source and descriptor")
+        processes = report.get("processes")
+        require(isinstance(processes, dict) and set(processes) == {"host", "peer"}
+                and all(isinstance(p, dict) and type(p.get("pid")) is int and p["pid"] > 0
+                        and type(p.get("exit")) is int and p["exit"] == 0 for p in processes.values()), "Counter union requires two successful owned JVMs")
+        jobs = [(role, types.SimpleNamespace(pid=value["pid"])) for role, value in processes.items()]
+        validate_witnesses(base / "ipc", identity, list(CASES), jobs, selected)
+        profiles.add(profile); nonces.add(identity["nonce"]); runs.add(identity["runIdentity"])
+    require(profiles == set(COUNTER_PROFILES), "Counter union requires both original skin widths")
+    return {"profiles": list(COUNTER_PROFILES), "sourceHead": provenance[0], "cases": list(CASES),
+            "counterPhaseCaptures": 128, "counterOwnerPeerGeometryVerified": True,
+            "phaseBasis": COUNTER_PHASE_BASIS, "pixelQualityReviewed": False,
+            "serverReleaseFrameCorrespondenceVerified": False}
+
+
 def life_count(values, key):
     value = values.get(key)
     require(isinstance(value, str) and re.fullmatch(r"0|[1-9][0-9]{0,2}", value)
@@ -778,7 +1190,7 @@ def accepted_eula(path, root):
     return b"# Owner-authorized disposable GitHub Actions run\neula=true\n", "owner-authorized-disposable-ci"
 
 
-def environment(launch, game, receipt_nonce=None):
+def environment(launch, game, receipt_nonce=None, counter_nonce=None):
     env = os.environ.copy()
     for key in list(env):
         if key in {"JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "CLASSPATH", "LD_PRELOAD", "LD_LIBRARY_PATH"} or key.startswith(("WILDERCORD_", "DYLD_")):
@@ -789,6 +1201,9 @@ def environment(launch, game, receipt_nonce=None):
     if receipt_nonce is not None:
         require(str(uuid.UUID(receipt_nonce)) == receipt_nonce, "Receipt nonce must be canonical")
         env["WILDERCORD_MOON_RECEIPT_NONCE"] = receipt_nonce
+    if counter_nonce is not None:
+        require(str(uuid.UUID(counter_nonce)) == counter_nonce, "Counter receipt nonce must be canonical")
+        env["WILDERCORD_COUNTER_RECEIPT_NONCE"] = counter_nonce
     return env
 
 
@@ -800,7 +1215,7 @@ def run(options, root=ROOT, *, already_locked=False):
     launch_path, base = output_path(options.launch, root), output_path(options.output, root)
     require(not base.exists(), "Output must be fresh")
     ignored_output(base, root)
-    # The fixed matrix runner retains this same lock across exports and all five
+    # The fixed matrix runner retains this same lock across exports and all six
     # sequential groups. This internal parameter has no command-line equivalent.
     with nullcontext() if already_locked else supervisor_lock(root):
         base.mkdir(parents=True, exist_ok=False)
@@ -828,6 +1243,8 @@ def run(options, root=ROOT, *, already_locked=False):
             if selected["suite"] == MOON_SUITE:
                 identity.update({key: selected[key] for key in ("case", "expectedSkin", "observerAngle")})
             report.update({**identity, "cases": contract["cases"], "ci": ci, "stage": "clients"})
+            if selected["suite"] == SUITE and selected.get("expectedSkin"):
+                report["expectedSkin"] = selected["expectedSkin"]
             ipc = base / "ipc"; ipc.mkdir()
             (base / "launch-proof.json").write_text(json.dumps({**report, "status": "started"}, indent=2) + "\n")
             def interrupted(signum, frame):
@@ -843,7 +1260,8 @@ def run(options, root=ROOT, *, already_locked=False):
                 log = (base / (role + ".log")).open("wb"); logs.append(log)
                 if time.monotonic() - started >= options.timeout:
                     raise TimeoutError("Supervisor deadline expired before client launch")
-                process = subprocess.Popen([launch["java"], "@" + str(argfile)], cwd=game, env=environment(launch, game, nonce if selected["suite"] == MOON_SUITE else None),
+                process = subprocess.Popen([launch["java"], "@" + str(argfile)], cwd=game, env=environment(launch, game, nonce if selected["suite"] == MOON_SUITE else None,
+                                               nonce if selected["suite"] == SUITE else None),
                                            stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, shell=False)
                 jobs.append((role, process))
             while True:
@@ -851,6 +1269,8 @@ def run(options, root=ROOT, *, already_locked=False):
                 failures = {role: code for role, code in states.items() if code not in (None, 0)}
                 require(not failures, "Actual client process failed: " + str(failures))
                 require(not any((ipc / (role + "-failure.properties")).exists() for role in PROFILES), "Client published a failure witness")
+                if selected["suite"] == SUITE:
+                    require(not any(ipc.glob("*counter-render-failure*")), "Client published a sticky counter rejection")
                 if time.monotonic() - started >= options.timeout:
                     raise TimeoutError("Two clients exceeded the finite supervisor deadline")
                 if all(code == 0 for code in states.values()):
@@ -860,6 +1280,12 @@ def run(options, root=ROOT, *, already_locked=False):
             if selected["suite"] == MOON_SUITE:
                 report.update(releaseImageDamageOrderVerified=True, serverReleaseFrameCorrespondenceVerified=False,
                               pixelQualityReviewed=False, proofScope="rendered ACTIVE and causal release/image/damage interval")
+            else:
+                report.update(counterOwnerPeerGeometryVerified=True, phaseBasis=COUNTER_PHASE_BASIS,
+                              counterPhaseCaptures=len(COUNTER_CASES) * len(COUNTER_PHASES) * 2,
+                              serverReleaseFrameCorrespondenceVerified=False, pixelQualityReviewed=False)
+                if selected.get("expectedSkin"):
+                    report["expectedSkin"] = selected["expectedSkin"]
             require(source_head(root) == identity["sourceHead"], "Source changed during execution")
             require(digest(Path(launch["descriptor"])) == identity["descriptorSha256"], "Descriptor changed during execution")
             report["status"] = "passed"
@@ -894,7 +1320,7 @@ def parse_args(argv=None):
     parser.add_argument("launch", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--suite", choices=(SUITE, MOON_SUITE), required=True)
-    parser.add_argument("--profile", choices=("aura", *MOON_PROFILES), required=True)
+    parser.add_argument("--profile", choices=("aura", *COUNTER_PROFILES, *MOON_PROFILES), required=True)
     parser.add_argument("--case", choices=(MOON_CASE,))
     parser.add_argument("--observer-angle", choices=MOON_ANGLES)
     parser.add_argument("--timeout", type=int, help="Seconds; default and ceiling: cast-receipt 900, moon 180")
