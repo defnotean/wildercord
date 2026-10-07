@@ -27,6 +27,7 @@ public abstract class StoneHingeKnockbackProbeMixin {
 
 	@WrapMethod(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V")
 	private void stoneHinge$invocation(double strength, double x, double z, DamageSource source, float damage, boolean force, Operation<Void> original) {
+        dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.contaminate((LivingEntity) (Object) this, "Intervening knockback during natural dispatch");
 		StoneHingeImpulseProbe.knockbackInvocation((LivingEntity) (Object) this, source,
 			() -> original.call(strength, x, z, source, damage, force));
 	}

@@ -31,6 +31,58 @@ def case_identity(identity, name):
             "peerUuid": identity["peerUuid"], "peerEntity": 20, "peerGeneration": 1}
 
 
+def natural_dispatch_chain(chain, identity):
+    """Synthetic serialized observer evidence, deliberately not a native gameplay run."""
+    release_body = {"position": vec(0, 2, 3), "motion": vec(0, .5, .3), "fall": 0,
+                    "grounded": False, "neutral": True, "health": 192, "absorption": 0,
+                    "needsSync": True, "syncVelocity": True, "collision": False}
+    after_body = release_body | {"position": vec(0, 2.5, 3.3), "motion": copy.deepcopy(chain["motion"]["raw"])}
+    listener_body = after_body | {"position": copy.deepcopy(release_body["position"])}
+    send_body = listener_body | {"needsSync": False, "syncVelocity": False}
+
+    def snapshot(value, index, next_tick=False):
+        return {"body": copy.deepcopy(value), "gameTick": 9 + next_tick, "serverTick": 19 + next_tick,
+                "ownerEntity": identity["ownerEntity"], "ownerUuid": identity["ownerUuid"],
+                "sourceEntity": 30, "sourceUuid": "00000000-0000-0000-0000-000000000093",
+                "valid": True, "awaitingTeleport": False, "eventIndex": index + 1}
+
+    def event(frame, kind):
+        value = frame["body"]
+        observed = {key: copy.deepcopy(value[key]) for key in
+                    ("position", "motion", "fall", "grounded", "neutral", "health")}
+        observed.update(entity=frame["ownerEntity"], tick=frame["gameTick"], horizontalCollision=value["collision"])
+        return {"index": frame["eventIndex"], "kind": kind,
+                "data": f"source={frame['sourceUuid']} serverTick={frame['serverTick']}", "after": observed}
+
+    proof = {"release": snapshot(release_body, 0), "beforeStep": snapshot(release_body, 2),
+             "afterStep": snapshot(after_body, 3), "listenerExit": snapshot(listener_body, 4),
+             "trackerEntry": snapshot(listener_body, 5, True), "send": snapshot(send_body, 6, True),
+             "sendExit": snapshot(send_body, 8, True), "trackerExit": snapshot(send_body, 10, True),
+             "motionOrdinal": 1, "stepCount": 1, "trackerCount": 1, "completed": True,
+             "trackerWitnessIndex": 0, "trackerIdentity": "12345"}
+    tracker_witness = event(snapshot(release_body, -1), "natural-tracker-identity")
+    tracker_witness["data"] = "tracker=12345 owner=" + identity["ownerUuid"]
+    prefix = [tracker_witness, event(proof["release"], "natural-release"),
+              event(snapshot(release_body, 1), "natural-listener-start"),
+              event(proof["beforeStep"], "natural-step-start"),
+              event(proof["afterStep"], "natural-step-end"),
+              event(proof["listenerExit"], "natural-listener-end"),
+              event(proof["trackerEntry"], "natural-tracker-start"),
+              event(proof["send"], "natural-motion-start")]
+    events = chain["events"]
+    for observed in events:
+        observed["index"] += 8 if observed["index"] == 0 else 9 if observed["index"] == 1 else 10
+    for observed in events[:2]:
+        observed["after"] = copy.deepcopy(prefix[-1]["after"])
+    send_end = event(proof["sendExit"], "natural-motion-end")
+    tracker_end = event(proof["trackerExit"], "natural-tracker-end")
+    chain["events"] = prefix + [events[0], send_end, events[1], tracker_end] + events[2:]
+    chain["motion"]["sendStartIndex"] = 8
+    chain["motion"]["appliedIndex"] = 12
+    chain["positions"][0].update(sentIndex=13, acceptanceIndex=14)
+    chain["naturalDispatch"] = proof
+
+
 def native_reports(identity, moved=True):
     position, motion = vec(1, 2, 3), vec(0, .4, .2)
     events = [
@@ -48,6 +100,9 @@ def native_reports(identity, moved=True):
                             "ownerTick": 10, "serverTick": 10, "completed": True}], "events": events}
     packet = {"ordinal": 1, "kind": "Pos", "sha256": "a" * 64, "target": position, "body": position,
               "tick": 10, "ownerAcceptanceIndex": 4, "ownerSendOrdinal": 1, "originalTracker": True, "interpolating": False}
+    if identity["name"] == "NATURAL_MASTER":
+        natural_dispatch_chain(chain, identity)
+        packet["ownerAcceptanceIndex"] = 14
     clock = {"observations": 20, "firstTick": 10, "lastTick": 29, "tickTransitions": 19,
              "nativeTimeResyncs": 0, "maximumGapNanos": 50_000_000}
     host = {"identity": identity, "packets": [packet], "clock": clock, "finalPosition": position,
@@ -213,6 +268,215 @@ class NativeChainTests(EvidenceFixture):
         gate.validate_reports(identity, host, peer, True)
         peer["packets"][0]["sha256"], peer["packets"][1]["sha256"] = peer["packets"][1]["sha256"], peer["packets"][0]["sha256"]
         with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+
+class NaturalDispatchTests(EvidenceFixture):
+    """Hostile serialized proof edits, independent of Java or a Minecraft process."""
+    snapshots = ("release", "beforeStep", "afterStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit")
+
+    def natural(self):
+        identity = case_identity(self.identity, "NATURAL_MASTER")
+        return identity, *native_reports(identity)
+
+    def assert_rejected(self, change):
+        identity, host, peer = self.natural()
+        value = host
+        for key in change[:-2]:
+            value = value[key]
+        value[change[-2]] = change[-1]
+        if (change[:2] == ("ownerChain", "naturalDispatch") and len(change) >= 5
+                and change[2] in self.snapshots and change[3] != "eventIndex"):
+            self.synchronize_snapshot_event(host, change[2])
+        with self.assertRaises(ValueError):
+            gate.validate_reports(identity, host, peer, True)
+
+    def synchronize_snapshot_event(self, host, name):
+        """Keep ledger data consistent to isolate native proof checks from duplicate-field checks."""
+        chain = host["ownerChain"]
+        frame = chain["naturalDispatch"][name]
+        event = chain["events"][frame["eventIndex"]]
+        value = frame["body"]
+        event["after"] = {key: copy.deepcopy(value[key]) for key in
+                          ("position", "motion", "fall", "grounded", "neutral", "health")}
+        event["after"].update(entity=frame["ownerEntity"], tick=frame["gameTick"], horizontalCollision=value["collision"])
+        event["data"] = f"source={frame['sourceUuid']} serverTick={frame['serverTick']}"
+
+    def insert_event(self, host, index, event):
+        """Keep every reference coherent so a hostile insertion tests scope, not stale indexes."""
+        chain = host["ownerChain"]
+        chain["events"].insert(index, copy.deepcopy(event))
+        for offset, observed in enumerate(chain["events"]): observed["index"] = offset
+        for frame in (chain["naturalDispatch"][key] for key in self.snapshots):
+            if frame["eventIndex"] >= index: frame["eventIndex"] += 1
+        if chain["naturalDispatch"]["trackerWitnessIndex"] >= index:
+            chain["naturalDispatch"]["trackerWitnessIndex"] += 1
+        for key in ("sendStartIndex", "appliedIndex"):
+            if chain["motion"][key] >= index: chain["motion"][key] += 1
+        for position in chain["positions"]:
+            for key in ("sentIndex", "acceptanceIndex"):
+                if position[key] >= index: position[key] += 1
+        for packet in host["packets"]:
+            if packet["ownerAcceptanceIndex"] >= index: packet["ownerAcceptanceIndex"] += 1
+
+    def test_complete_native_step_tracker_and_packet_proof_is_accepted(self):
+        identity, host, peer = self.natural()
+        gate.validate_reports(identity, host, peer, True)
+        proof = host["ownerChain"]["naturalDispatch"]
+        self.assertNotEqual(proof["release"]["body"]["motion"], proof["afterStep"]["body"]["motion"])
+        self.assertEqual(proof["afterStep"]["body"]["motion"], host["ownerChain"]["motion"]["raw"])
+        self.assertEqual(proof["release"]["body"]["position"], proof["listenerExit"]["body"]["position"])
+        self.assertNotEqual(proof["afterStep"]["body"]["position"], proof["listenerExit"]["body"]["position"])
+        self.assertEqual([event["kind"] for event in host["ownerChain"]["events"][7:12]],
+                         ["natural-motion-start", "server-motion-start", "natural-motion-end",
+                          "server-motion-sent", "natural-tracker-end"])
+
+    def test_natural_proof_is_required_only_for_natural_master(self):
+        identity, host, peer = self.natural()
+        del host["ownerChain"]["naturalDispatch"]
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+        for value in (None, {}, [], "completed"):
+            with self.subTest(value=value): self.assert_rejected(("ownerChain", "naturalDispatch", value))
+        other = case_identity(self.identity, "RIGHT")
+        host, peer = native_reports(other)
+        self.assertNotIn("naturalDispatch", host["ownerChain"])
+        gate.validate_reports(other, host, peer, True)
+        host["ownerChain"]["naturalDispatch"] = self.natural()[1]["ownerChain"]["naturalDispatch"]
+        with self.assertRaises(ValueError): gate.validate_reports(other, host, peer, True)
+
+    def test_completion_counts_and_first_owner_ordinal_cannot_be_forged(self):
+        for field, values in (("completed", (False, 1, None)), ("stepCount", (0, 2, True)),
+                              ("trackerCount", (0, 2, True)), ("motionOrdinal", (0, 2, True))):
+            for value in values:
+                with self.subTest(field=field, value=value):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", field, value))
+
+    def test_snapshot_identity_validity_and_native_clocks_are_bound(self):
+        for snapshot in self.snapshots:
+            for field, value in (("valid", False), ("awaitingTeleport", True), ("ownerEntity", 999),
+                                 ("ownerUuid", self.identity["peerUuid"]), ("sourceEntity", 31),
+                                 ("sourceUuid", "00000000-0000-0000-0000-000000000094")):
+                with self.subTest(snapshot=snapshot, field=field):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, field, value))
+            for field in ("gameTick", "serverTick"):
+                baseline = self.natural()[1]["ownerChain"]["naturalDispatch"][snapshot][field]
+                for offset in (-1, 1, 2):
+                    with self.subTest(snapshot=snapshot, field=field, offset=offset):
+                        self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, field, baseline + offset))
+            for field, value in (("neutral", False), ("position", vec(float("nan"), 0, 0)),
+                                 ("motion", vec(0, float("inf"), 0))):
+                with self.subTest(snapshot=snapshot, field=field):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, "body", field, value))
+            with self.subTest(snapshot=snapshot, missing=True):
+                identity, host, peer = self.natural()
+                del host["ownerChain"]["naturalDispatch"][snapshot]
+                with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_exact_pre_step_restore_tracker_and_send_body_are_bound(self):
+        changes = (("beforeStep", "position", vec(9, 9, 9)), ("beforeStep", "motion", vec(9, 9, 9)),
+                   ("beforeStep", "fall", 99), ("beforeStep", "grounded", True),
+                   ("beforeStep", "health", 191), ("beforeStep", "absorption", 1),
+                   ("beforeStep", "needsSync", False), ("beforeStep", "syncVelocity", False),
+                   ("beforeStep", "collision", True), ("afterStep", "health", 191),
+                   ("afterStep", "absorption", 1), ("listenerExit", "position", vec(0, 2.5, 3.3)),
+                   ("listenerExit", "motion", vec(0, .5, .3)), ("listenerExit", "fall", 99),
+                   ("listenerExit", "health", 191), ("listenerExit", "absorption", 1),
+                   ("listenerExit", "collision", True), ("trackerEntry", "position", vec(9, 9, 9)),
+                   ("trackerEntry", "motion", vec(0, .5, .3)), ("trackerEntry", "health", 191),
+                   ("trackerEntry", "syncVelocity", False), ("send", "position", vec(9, 9, 9)),
+                   ("send", "motion", vec(0, .5, .3)), ("send", "health", 191),
+                   ("send", "absorption", 1), ("send", "needsSync", True), ("send", "syncVelocity", True))
+        for snapshot, field, value in changes:
+            with self.subTest(snapshot=snapshot, field=field):
+                self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, "body", field, value))
+        for snapshot in ("sendExit", "trackerExit"):
+            for field, value in (("position", vec(9, 9, 9)), ("motion", vec(9, 9, 9)), ("fall", 99),
+                                 ("health", 191), ("absorption", 1), ("grounded", True),
+                                 ("collision", True), ("needsSync", True), ("syncVelocity", True)):
+                with self.subTest(snapshot=snapshot, field=field):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, "body", field, value))
+
+    def test_native_motion_raw_and_ordinal_must_match_observed_post_step(self):
+        for value in (vec(0, .5, .3), vec(0, .4000000000000001, .2), vec(0, .4, .20000000000000004)):
+            with self.subTest(raw=value): self.assert_rejected(("ownerChain", "motion", "raw", value))
+        # Keep the generic owner-chain ordinal consistent while falsifying the native proof's first motion.
+        identity, host, peer = self.natural()
+        chain = host["ownerChain"]
+        chain["motion"]["sendOrdinal"] = 2
+        chain["positions"][0]["motionOrdinal"] = 2
+        for event in chain["events"]:
+            if event["kind"] in {"server-motion-start", "server-motion-sent"}:
+                event["data"] = event["data"].replace("ordinal=1 ", "ordinal=2 ")
+            if event["kind"] == "client-motion-processed":
+                event["data"] = event["data"].replace("sendOrdinal=1 ", "sendOrdinal=2 ")
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_snapshot_indexes_must_identify_exact_original_event_and_order(self):
+        for snapshot in self.snapshots:
+            baseline = self.natural()[1]["ownerChain"]["naturalDispatch"][snapshot]["eventIndex"]
+            for value in (-1, baseline - 1, baseline + 1, 1000, True):
+                with self.subTest(snapshot=snapshot, value=value):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, "eventIndex", value))
+            identity, host, peer = self.natural()
+            host["ownerChain"]["events"][baseline]["kind"] = "unrelated-native-stage"
+            with self.subTest(snapshot=snapshot, wrong_stage=True), self.assertRaises(ValueError):
+                gate.validate_reports(identity, host, peer, True)
+
+    def test_matching_proof_without_matching_retained_event_body_fails(self):
+        for event_index in (1, 3, 4, 5, 6, 7, 9, 11):
+            for field, value in (("position", vec(9, 9, 9)), ("motion", vec(9, 9, 9)), ("tick", 99),
+                                 ("fall", 99), ("health", 191), ("grounded", True), ("horizontalCollision", True)):
+                with self.subTest(index=event_index, field=field):
+                    self.assert_rejected(("ownerChain", "events", event_index, "after", field, value))
+
+    def test_extra_missing_or_reordered_native_events_cannot_find_later_success(self):
+        kinds = ("natural-tracker-identity", "natural-release", "natural-step-start", "natural-step-end", "natural-listener-start",
+                 "natural-listener-end", "natural-tracker-start", "natural-motion-start", "natural-motion-end", "natural-tracker-end")
+        for kind in kinds:
+            identity, host, peer = self.natural()
+            events = host["ownerChain"]["events"]
+            original = next(event for event in events if event["kind"] == kind)
+            events.append(copy.deepcopy(original) | {"index": len(events)})
+            with self.subTest(extra=kind), self.assertRaises(ValueError):
+                gate.validate_reports(identity, host, peer, True)
+        for kind in ("server-motion-start", "server-motion-sent"):
+            identity, host, peer = self.natural()
+            original = next(event for event in host["ownerChain"]["events"] if event["kind"] == kind)
+            self.insert_event(host, 10, original)
+            with self.subTest(extra=kind), self.assertRaises(ValueError):
+                gate.validate_reports(identity, host, peer, True)
+        self.assert_rejected(("ownerChain", "events", 11, "kind", "missing-tracker-return"))
+        identity, host, peer = self.natural()
+        events = host["ownerChain"]["events"]
+        events[9], events[11] = events[11] | {"index": 9}, events[9] | {"index": 11}
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_natural_tracker_requires_sync_flag_and_unchanged_native_bodies(self):
+        # Keep every linked body and ledger snapshot consistent so only the missing native sync trigger differs.
+        identity, host, peer = self.natural()
+        proof = host["ownerChain"]["naturalDispatch"]
+        for snapshot in ("release", "beforeStep", "afterStep", "listenerExit", "trackerEntry"):
+            proof[snapshot]["body"]["syncVelocity"] = False
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_send_completion_snapshot_must_precede_original_send_receipt(self):
+        identity, host, peer = self.natural()
+        chain = host["ownerChain"]
+        events = chain["events"]
+        events[9], events[10] = events[10] | {"index": 9}, events[9] | {"index": 10}
+        chain["naturalDispatch"]["sendExit"]["eventIndex"] = 10
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_pre_release_tracker_identity_cannot_be_replaced_or_chosen_late(self):
+        for field, value in (("trackerWitnessIndex", -1), ("trackerWitnessIndex", 1),
+                              ("trackerWitnessIndex", True), ("trackerIdentity", "54321"),
+                              ("trackerIdentity", None)):
+            with self.subTest(field=field, value=value):
+                self.assert_rejected(("ownerChain", "naturalDispatch", field, value))
+        for field, value in (("kind", "missing-native-tracker-identity"),
+                              ("data", "tracker=54321 owner=" + self.identity["hostUuid"]),
+                              ("data", "tracker=12345 owner=" + self.identity["peerUuid"])):
+            with self.subTest(field=field, value=value):
+                self.assert_rejected(("ownerChain", "events", 0, field, value))
 
 
 class WitnessTests(EvidenceFixture):

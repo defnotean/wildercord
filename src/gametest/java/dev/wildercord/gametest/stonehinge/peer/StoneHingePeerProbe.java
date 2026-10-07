@@ -71,6 +71,8 @@ public final class StoneHingePeerProbe {
     private static final class Host extends Observation {
         final ServerPlayer owner, observer;
         final StoneHingeOwnerProbe.Trace ownerTrace;
+        ServerEntity originalOwnerTracker;
+        int trackerWitnessIndex = -1;
         Host(Identity identity, ServerPlayer owner, ServerPlayer observer, StoneHingeOwnerProbe.Trace trace) {
             super(identity); this.owner = owner; this.observer = observer; ownerTrace = trace;
         }
@@ -137,11 +139,28 @@ public final class StoneHingePeerProbe {
     /** The scope is only the original ServerEntity.sendChanges invocation, never a manually broadcast packet. */
     public static void tracker(ServerEntity tracker, Entity entity, Runnable original) {
         Host h = host;
-        if (h == null || h.owner != entity || !entity.level().getServer().isSameThread()) { original.run(); return; }
+        if (h == null || h.owner != entity || !entity.level().getServer().isSameThread()) {
+            ServerEntity previous = TRACKER.get(); TRACKER.remove();
+            try { original.run(); } finally { if (previous != null) TRACKER.set(previous); }
+            return;
+        }
+        if (h.identity.name.equals("NATURAL_MASTER")) h.observe(() -> {
+            if (h.originalOwnerTracker == null) {
+                h.originalOwnerTracker = tracker;
+                var event = h.ownerTrace.record("natural-tracker-identity", "tracker=" + Integer.toUnsignedString(System.identityHashCode(tracker))
+                    + " owner=" + h.owner.getUUID(), null, StoneHingeOwnerProbe.Body.of(h.owner));
+                h.trackerWitnessIndex = event == null ? -1 : event.index();
+            }
+            check(h.originalOwnerTracker == tracker, "Same original owner tracker throughout this observation");
+            return null;
+        });
         ServerEntity previous = TRACKER.get(); TRACKER.set(tracker);
-        try { original.run(); } finally { if (previous == null) TRACKER.remove(); else TRACKER.set(previous); }
+        try { StoneHingeNaturalMotion.tracker(h.owner, tracker, original); } finally { if (previous == null) TRACKER.remove(); else TRACKER.set(previous); }
     }
     public static boolean originalTracker(ServerPlayer owner) { Host h = host; return h != null && h.owner == owner && TRACKER.get() != null && owner.level().getServer().isSameThread(); }
+    public static ServerEntity currentTracker(ServerPlayer owner) { return originalTracker(owner) ? TRACKER.get() : null; }
+    public static ServerEntity retainedTracker(ServerPlayer owner) { Host h = host; return h != null && h.owner == owner ? h.originalOwnerTracker : null; }
+    public static int trackerWitnessIndex(ServerPlayer owner) { Host h = host; return h != null && h.owner == owner ? h.trackerWitnessIndex : -1; }
     public static void serverSend(ServerPlayer recipient, Packet<?> packet, Runnable original) {
         Host h = host;
         if (h == null || recipient != h.observer || !recipient.level().getServer().isSameThread()) { original.run(); return; }
@@ -207,6 +226,14 @@ public final class StoneHingePeerProbe {
         check(server.identity.equals(client.identity) && !server.correction && !client.correction, "Exact profile/case/bodies with no experiment correction or teleport");
         verifyClock(server.clock); verifyClock(client.clock);
         var chain = server.ownerChain; check(chain != null && client.ownerChain == null, "Only host owns native owner/server chain evidence");
+        check(server.identity.name.equals("NATURAL_MASTER") == (chain.naturalDispatch() != null), "Only natural Master requires the native physics dispatch proof");
+        if (chain.naturalDispatch() != null) {
+            var nativeStep = chain.naturalDispatch();
+            check(nativeStep.completed() && nativeStep.stepCount() == 1 && nativeStep.trackerCount() == 1
+                && chain.motion() != null && nativeStep.motionOrdinal() == chain.motion().sendOrdinal()
+                && nativeStep.send().body().motion().equals(new StoneHingeNativeDispatch.Vector(chain.motion().raw().x, chain.motion().raw().y, chain.motion().raw().z)),
+                "Natural release and one native step bind this original owner motion");
+        }
         if (moved) {
             var motion = chain.motion();
             check(motion != null && motion.completed() && !motion.manual() && motion.originalTracker() && motion.sendStartIndex() >= 0 && motion.sendStartIndex() < motion.appliedIndex() && motion.applied().equals(motion.wire()), "Genuine owner applied exact original encoded native motion");

@@ -271,6 +271,7 @@ public final class StoneHingePeerCases {
                     check(strike.receipt().eligibleReceipt() && strike.receipt().onlyHit().source().getEntity() == master[0], "Actual Master melee has one exact eligible native wound and impulse");
                     State outcome = State.of(player); check(outcome.equals(strike.nativeOutcome()), "Master control never rewrites native movement");
                     running.expectMotion(outcome.motion());
+                    dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.arm(running, master[0], strike);
                     result[0] = new Result(running, strike.before(), strike.nativeOutcome(), outcome, outcome, null);
                 });
                 master[0].interact(player, net.minecraft.world.InteractionHand.MAIN_HAND, Vec3.ZERO);
@@ -291,7 +292,7 @@ public final class StoneHingePeerCases {
             world.runOnServer(server -> master[0].setNoAi(true));
             phase = "owner-motion-wait";
             logNaturalPhase(phase);
-            context.waitFor(mc -> running.expectedOwnerMotion() != null, 80);
+            context.waitFor(mc -> { running.assertHealthy(); return running.expectedOwnerMotion() != null; }, 80);
             phase = "owner-position-wait";
             logNaturalPhase(phase);
             world.waitFor(server -> running.hasOwnerPositionAfterMotion(), 80);
@@ -338,6 +339,7 @@ public final class StoneHingePeerCases {
             fields.put("originalTrackerOrdinal", motion == null ? "0" : Integer.toString(motion.ordinal()));
             fields.put("originalTrackerCompleted", Boolean.toString(motion != null && motion.completed()));
             fields.put("ownerMotionQualified", Boolean.toString(trace != null && trace.expectedOwnerMotion() != null));
+            fields.put("naturalDispatch", trace == null ? "unarmed" : dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.diagnostic(trace));
             witness.failure(which, phase, failure, fields);
         });
     }

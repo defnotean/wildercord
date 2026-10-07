@@ -41,7 +41,8 @@ public final class StoneHingeOwnerProbe {
     public record MotionEvidence(int sendOrdinal, Vec3 raw, Vec3 wire, Vec3 applied, int sendStartIndex, int appliedIndex, boolean manual, boolean originalTracker, boolean completed) {}
     public record PositionEvidence(int sendOrdinal, int sentIndex, int acceptanceIndex, int motionOrdinal,
         Vec3 requested, Vec3 sentPosition, Vec3 acceptedPosition, long ownerTick, long serverTick, boolean completed) {}
-    public record ChainEvidence(MotionEvidence motion, List<PositionEvidence> positions, List<Event> events) {}
+    public record ChainEvidence(MotionEvidence motion, List<PositionEvidence> positions, List<Event> events,
+                                dev.wildercord.gametest.stonehinge.peer.StoneHingeNativeDispatch.Evidence naturalDispatch) {}
     public record MotionDiagnostic(Vec3 expected, Vec3 firstOriginalRaw, Vec3 firstOriginalWire, int ordinal, boolean completed) {}
 	private record PositionKey(String type, double x, double y, double z, boolean rotation, float yaw, float pitch, boolean ground, boolean collision) {
 		static PositionKey of(ServerboundMovePlayerPacket packet) {
@@ -98,7 +99,11 @@ public final class StoneHingeOwnerProbe {
 			this.serverBefore = Body.of(server); this.side = side;
 		}
 		private synchronized void failed(Throwable failure) { if (observationFailure == null) observationFailure = failure; }
-		public void assertHealthy() { if (observationFailure != null) throw new AssertionError("Owner observation failed: " + name, observationFailure); }
+		public void assertHealthy() {
+            if (observationFailure != null) throw new AssertionError("Owner observation failed: " + name, observationFailure);
+            dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.healthy(this);
+        }
+        public boolean current() { return active == this; }
 		private <T> T observe(Supplier<T> observation) {
 			if (observationFailure != null) return null;
 			try { return observation.get(); } catch (Throwable failure) { failed(failure); return null; }
@@ -116,7 +121,10 @@ public final class StoneHingeOwnerProbe {
 		public void expectMotion(Vec3 vector) { expectedMotion = vector; }
 		public void manual(ClientboundSetEntityMotionPacket packet) { manual = packet; expectedMotion = packet.movement(); }
 		private synchronized MotionSend sendingMotion(ClientboundSetEntityMotionPacket packet) {
-			MotionSend sent = new MotionSend(++motionSerial, packet, expectedMotion != null && expectedMotion.equals(packet.movement())
+            int ordinal = ++motionSerial;
+            Boolean natural = dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.expected(this,
+                dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.currentTracker(server), packet, ordinal, manual == packet);
+			MotionSend sent = new MotionSend(ordinal, packet, natural != null ? natural : expectedMotion != null && expectedMotion.equals(packet.movement())
 				&& (manual == null || manual == packet), manual == packet, dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.originalTracker(server));
 			motionQueue.add(sent);
             if (sent.originalTracker && firstOriginalMotion == null) firstOriginalMotion = sent;
@@ -161,7 +169,7 @@ public final class StoneHingeOwnerProbe {
                     p.sent.event.index, p.processed.index, p.sent.afterMotion.sent.ordinal,
                     new Vec3(p.sent.key.x, p.sent.key.y, p.sent.key.z), p.sent.event.after.position, p.processed.after.position,
                     p.sent.event.after.tick, p.processed.after.tick, p.sent.completed)).toList();
-            return new ChainEvidence(evidence, accepted, List.copyOf(events));
+            return new ChainEvidence(evidence, accepted, List.copyOf(events), dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.evidence(this));
         }
 		public boolean hasOwnerPositionAfterMotion() { return expectedOwnerMotion() != null && !provenOwnerPositions().isEmpty(); }
 		public boolean correction() { return count("server-correction-sent") > 0 || count("client-correction-start") > 0; }
@@ -209,10 +217,17 @@ public final class StoneHingeOwnerProbe {
 
 	public static void serverSend(ServerPlayer player, Packet<?> packet, Runnable original) {
 		Trace trace = serverTrace(player); if (trace == null) { original.run(); return; }
+        if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.id() == player.getId())
+            dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.contaminate(player, "Correction or teleport during natural dispatch");
+        if (packet instanceof ClientboundSetEntityMotionPacket motion)
+            dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.otherMotion(player, motion);
 		MotionSend sent = packet instanceof ClientboundSetEntityMotionPacket motion && motion.id() == player.getId()
 			? trace.observe(() -> trace.sendingMotion(motion)) : null;
-		original.run();
-		if (sent != null) { sent.completed = true; trace.record("server-motion-sent", "ordinal=" + sent.ordinal + " manual=" + sent.manual + " raw=" + sent.raw + " wire=" + sent.wire, null, trace.snapshot(player)); }
+		dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.originalSend(player, original);
+		if (sent != null) {
+            dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.sent(player, (ClientboundSetEntityMotionPacket) packet);
+            sent.completed = true; trace.record("server-motion-sent", "ordinal=" + sent.ordinal + " manual=" + sent.manual + " raw=" + sent.raw + " wire=" + sent.wire, null, trace.snapshot(player));
+        }
 		else trace.observe(() -> {
 			if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.id() == player.getId())
 				trace.record("server-correction-sent", packet.toString(), null, trace.snapshot(player));
@@ -233,6 +248,7 @@ public final class StoneHingeOwnerProbe {
 	public static void clientCorrection(Packet<?> packet, Runnable original) {
 		Minecraft client = Minecraft.getInstance(); Trace trace = clientTrace(client);
 		if (trace == null || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.id() != trace.owner.getId()) { original.run(); return; }
+        dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.contaminate(trace.server, "Owner correction during natural dispatch");
 		Body before = trace.snapshot(client.player); trace.observe(() -> trace.record("client-correction-start", packet.toString(), before, null));
 		original.run(); trace.observe(() -> trace.record("client-correction-processed", packet.toString(), before, trace.snapshot(client.player)));
 	}

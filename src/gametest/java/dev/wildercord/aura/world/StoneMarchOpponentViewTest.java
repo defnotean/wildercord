@@ -77,8 +77,10 @@ public final class StoneMarchOpponentViewTest implements FabricClientGameTest {
 	private Vec3 origin;
 	private long began;
 	private StoneMarchFixture fixture;
+	private StoneMarchPulseProbe.Session pulseSession;
 
 	@Override public void runTest(ClientGameTestContext context) {
+		StoneMarchPulseProbeChecks.run();
 		var saved = context.computeOnClient(MastersNpcCaptureProbe.Options::save);
 		MagicQuality.Level own = MagicQuality.own, others = MagicQuality.others;
 		MagicQuality.Impact impact = MagicQuality.impact;
@@ -137,6 +139,7 @@ public final class StoneMarchOpponentViewTest implements FabricClientGameTest {
 	private void trial(ClientGameTestContext context, TestSingleplayerContext world, boolean articulated, int fov, boolean reduced, Counter counter) {
 		String prefix = "stone_fault_march_opponent_" + (articulated ? "segmented" : "rigid") + "_fov" + fov
 			+ (reduced ? "_reduced_" : "_normal_") + counter.name().toLowerCase(java.util.Locale.ROOT);
+		Throwable failure = null;
 		try {
 			beginNaturally(world);
 			if (counter == Counter.EARLY_JUMP) jumpAt(context, world, 5);
@@ -153,17 +156,35 @@ public final class StoneMarchOpponentViewTest implements FabricClientGameTest {
 				"An early real jump lands before this player's second-band pulse"));
 			var second = shotAt(context, world, prefix, "second_band", 40, articulated, counter);
 			world.getServer().runOnServer(server -> {
+				if (counter == Counter.INWARD) pulseSession.requireInward();
+				if (counter == Counter.HOLD) pulseSession.requireHold();
 				check(Math.abs(player.getHealth() - (counter.escapes() ? HEALTH : HEALTH - 26.4)) < .02,
 					"Actual enrolled-client input answers the authoritative second-band pulse: " + counter);
 				if (counter == Counter.TIMED_JUMP) check(player.getY() - origin.y > StoneMarchRules.HIGH, "Real jump physics clears the low pulse");
 			});
 			var third = shotAt(context, world, prefix, "third_band", 48, articulated, counter);
+			if (counter == Counter.INWARD) world.getServer().runOnServer(server ->
+				check(Math.abs(player.getHealth() - HEALTH) < .02, "The actual inward escape keeps its health through the third pulse"));
 			var recovery = shotAt(context, world, prefix, "recovery", 72, articulated, counter);
+			if (counter == Counter.INWARD) world.getServer().runOnServer(server ->
+				check(Math.abs(player.getHealth() - HEALTH) < .02, "The actual inward escape keeps its health through recovery"));
 			var all = CompletableFuture.allOf(warning, first, second, third, recovery);
 			context.waitFor(mc -> all.isDone(), 50); all.join();
+		} catch (RuntimeException | Error problem) {
+			failure = problem; throw problem;
 		} finally {
-			context.getInput().releaseKey(o -> o.keyUp); context.getInput().releaseKey(o -> o.keyLeft); context.getInput().releaseKey(o -> o.keyJump);
-			world.getServer().runOnServer(server -> { if (master != null) { master.discard(); master = null; } });
+			Throwable original = failure;
+			try {
+				context.getInput().releaseKey(o -> o.keyUp); context.getInput().releaseKey(o -> o.keyLeft); context.getInput().releaseKey(o -> o.keyJump);
+			} finally {
+				world.getServer().runOnServer(server -> {
+					try { reportMovement(original, () -> StoneMarchPulseProbe.report(pulseSession)); }
+					finally {
+						StoneMarchPulseProbe.close(pulseSession); pulseSession = null;
+						if (master != null) { master.discard(); master = null; }
+					}
+				});
+			}
 		}
 		context.waitTicks(5);
 	}
@@ -192,9 +213,10 @@ public final class StoneMarchOpponentViewTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				samples.add(new MovementSample("endpoint", -1, movementServer(), endpoint));
 				Vec3 relative = player.position().subtract(origin);
-				check(level.getGameTime() < began + (inward ? StoneMarchRules.SECOND : StoneMarchRules.TELL)
+				// Inward timing is certified by the original pulse decision after the existing second-band capture.
+				check((inward || level.getGameTime() < began + StoneMarchRules.TELL)
 					&& (inward ? relative.z < 3.5 && relative.z >= 1.5 : Math.abs(relative.x) > StoneMarchRules.HALF_WIDTH),
-					"Real input reaches " + (inward ? "the already spent first band" : "the lateral escape") + " before the advancing front");
+					"Real input reaches " + (inward ? "the already spent first band" : "the lateral escape before the advancing front"));
 			});
 		} catch (RuntimeException | Error problem) {
 			failure = problem;
@@ -331,6 +353,7 @@ public final class StoneMarchOpponentViewTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			Vec3 relative = player.position().subtract(origin);
 			check(StoneMarchRules.band(relative.z, -relative.x, relative.y) == 1, "The accepted real client starts in the second band before any counter input");
+			pulseSession = StoneMarchPulseProbe.open(fixture.accepted, player, began);
 		});
 	}
 	private Observation observation() {

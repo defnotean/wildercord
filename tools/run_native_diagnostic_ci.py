@@ -217,6 +217,8 @@ STONE_SHARED_FILES = (
     "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeVelocityExperiment.java",
     "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingePeerProbe.java",
     "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingeNaturalRelease.java",
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingeNaturalMotion.java",
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingeNativeDispatch.java",
     *("src/gametest/java/dev/wildercord/gametest/stonehinge/mixin/" + name + ".java" for name in (
         "StoneHingeOwnerClientProbeMixin", "StoneHingeOwnerSendProbeMixin",
         "StoneHingeOwnerServerProbeMixin", "StoneHingeOwnerPositionSendProbeMixin")),
@@ -229,6 +231,7 @@ CASE_FILES[PEER_CASE] = (
     "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingePeerFailure.java",
     *("src/gametest/java/dev/wildercord/gametest/stonehinge/mixin/" + name + ".java" for name in (
         "StoneHingePeerTrackerMixin", "StoneHingePeerSendMixin", "StoneHingePeerClientMixin",
+        "StoneHingeNaturalStepMixin",
         "StoneHingeConnectionAccess", "StoneHingeServerConnectionAccess")),
     "src/gametest/resources/stone-hinge-peer-gametest.mixins.json",
     stone_peer.CONTRACT,

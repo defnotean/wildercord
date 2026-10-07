@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class StoneHingePlayerProbeMixin {
 	@WrapMethod(method = "hurtServer")
 	private boolean stoneHinge$hit(ServerLevel level, DamageSource source, float amount, Operation<Boolean> original) {
+        dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.contaminate((Player) (Object) this, "Intervening hurt during natural dispatch");
 		var hit = StoneHingeImpulseProbe.begin((Player) (Object) this, source);
 		boolean returned = false, success = false;
 		try { returned = original.call(level, source, amount); success = true; return returned; }

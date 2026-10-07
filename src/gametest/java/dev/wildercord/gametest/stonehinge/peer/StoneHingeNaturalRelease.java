@@ -26,5 +26,5 @@ public final class StoneHingeNaturalRelease {
         return returned[0];
     }
     public static void assertHealthy() { if (observationFailure != null) throw new AssertionError("Natural release observer failed", observationFailure); }
-    public static void clear() { armed = null; observationFailure = null; }
+    public static void clear() { armed = null; observationFailure = null; StoneHingeNaturalMotion.clear(); }
 }

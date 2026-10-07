@@ -6,6 +6,9 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.ArtRules;
 import dev.wildercord.aura.AuraRules;
+import dev.wildercord.aura.AuraGuard;
+import dev.wildercord.aura.EarnedCounterCaptureFixture;
+import dev.wildercord.aura.SwordString;
 import dev.wildercord.aura.Momentum;
 import dev.wildercord.aura.MastersArts;
 import dev.wildercord.aura.MastersStyleRules;
@@ -13,6 +16,8 @@ import dev.wildercord.client.AuraScreen;
 import dev.wildercord.client.MastersArtsClient;
 import dev.wildercord.client.MastersArtPose;
 import dev.wildercord.client.MastersHandMotionState;
+import dev.wildercord.client.SwordStringsClient;
+import dev.wildercord.client.WildercordKeys;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -342,7 +347,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.waitTicks(30);
 	}
 
-	/** Uses real first-form, leap/low, or full/full/full/low Final input for the registered family. */
+	/** Uses each registered family's real ordinary input, including a genuinely earned low counter. */
 	private static void captureStyle(ClientGameTestContext context, TestSingleplayerContext world, MastersStyleRules.Style style,
 			CameraType camera, String view) {
 		captureStyle(context, world, style, camera, view, false, false);
@@ -352,7 +357,13 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			CameraType camera, String view, boolean leftHanded, boolean cancel) {
 		int slot = ArtRules.art(style.art()).slot();
 		boolean second = slot == 1, finalArt = slot == 4;
-		check(slot == 0 || second || finalArt, "The capture declares its supported input family");
+		boolean counter = slot == 2 && (style.art().equals("backdraft") || style.art().equals("rooted_parry"));
+		check(slot == 0 || second || finalArt || counter, "The capture declares its supported input family");
+		if (counter) {
+			check(!leftHanded && !cancel, "Earned-counter captures use the registered first/third-person views");
+			captureEarnedCounterStyle(context, world, style, camera, view);
+			return;
+		}
 		context.getInput().releaseKey(o -> o.keyShift);
 		context.waitTicks(finalArt ? ArtRules.art(style.art()).cooldown() + 5 : 105);
 		Mob[] target = new Mob[1];
@@ -441,6 +452,58 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Style returns to vanilla after its real recovery");
 		shot(context, prefix + "_settled");
 		world.getServer().runOnServer(server -> target[0].discard());
+	}
+
+	private static void captureEarnedCounterStyle(ClientGameTestContext context, TestSingleplayerContext world,
+			MastersStyleRules.Style style, CameraType camera, String view) {
+		context.getInput().releaseKey(o -> o.keyShift);
+		context.waitTicks(105);
+		boolean toggleCrouch = context.computeOnClient(mc -> mc.options.toggleCrouch().get());
+		EarnedCounterCaptureFixture fixture = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			prepare(player);
+			player.teleportTo(server.overworld(), .5, 100, .5, Set.<Relative>of(), 0, 8, false);
+			player.setDeltaMovement(Vec3.ZERO);
+			player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data(ArtRules.art(style.art()).method(), 4, 1800, 100, 0));
+			return new EarnedCounterCaptureFixture(player, style);
+		});
+		try {
+			context.runOnClient(mc -> {
+				mc.options.toggleCrouch().set(false);
+				mc.options.setCameraType(CameraType.FIRST_PERSON);
+				mc.options.mainHand().set(HumanoidArm.RIGHT); mc.options.broadcastOptions();
+				mc.gui.toastManager().clear(); mc.gui.hud.getChat().clearMessages(false);
+			});
+			context.waitTicks(15);
+			context.getInput().holdKey(o -> o.keyShift);
+			context.waitTicks(2);
+			context.getInput().pressKey(WildercordKeys.auraMapping());
+			for (int t = 0; t < 4 && !world.getServer().computeOnServer(server -> AuraGuard.perfectNow(server.getPlayerList().getPlayers().getFirst())); t++) {
+				context.waitTicks(1);
+			}
+			world.getServer().runOnServer(server -> fixture.catchBlow());
+			context.waitFor(mc -> SwordString.Token.COUNTER.fits(SwordStringsClient.cueMarks(mc.level.getGameTime())), 8);
+			int asked = context.computeOnClient(mc -> SwordStringsClient.counts()[0]);
+			context.getInput().pressKey(o -> o.keyAttack);
+			context.runOnClient(mc -> {
+				check(SwordStringsClient.counts()[0] == asked + 1 && style.art().equals(SwordStringsClient.lastAsked()),
+					"Actual ordinary attack input asks for the earned counter exactly once");
+				mc.options.setCameraType(camera);
+			});
+			context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null
+				&& MastersArtsClient.timeline(mc.player).move() == style.animation(), 30);
+			String prefix = "masters_style_" + style.art() + "_" + view;
+			captureBeats(context, prefix);
+			context.waitTicks(30);
+			world.getServer().runOnServer(server -> fixture.verify());
+			check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Earned counter returns to vanilla after its real recovery");
+			context.getInput().releaseKey(o -> o.keyShift);
+			shot(context, prefix + "_settled");
+		} finally {
+			context.getInput().releaseKey(o -> o.keyShift);
+			context.runOnClient(mc -> mc.options.toggleCrouch().set(toggleCrouch));
+			world.getServer().runOnServer(server -> fixture.close());
+		}
 	}
 
 	/** Cancellation clears only the art; let the triggering vanilla swing and item dip finish naturally. */

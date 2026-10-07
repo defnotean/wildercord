@@ -13,8 +13,9 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class StoneHingeOwnerSendProbeMixin {
 	@WrapMethod(method = "send(Lnet/minecraft/network/protocol/Packet;Lio/netty/channel/ChannelFutureListener;)V")
 	private void stoneHinge$sent(Packet<?> packet, ChannelFutureListener listener, Operation<Void> original) {
-		if ((Object) this instanceof ServerGamePacketListenerImpl handler)
+		if ((Object) this instanceof ServerGamePacketListenerImpl handler) {
+            dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.connection(handler);
 			StoneHingeOwnerProbe.serverSend(handler.player, packet, () -> original.call(packet, listener));
-		else original.call(packet, listener);
+		} else original.call(packet, listener);
 	}
 }

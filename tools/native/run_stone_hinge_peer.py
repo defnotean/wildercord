@@ -170,6 +170,95 @@ def body(value, entity):
     s.require(all(type(value.get(k)) is bool for k in ("grounded", "neutral", "horizontalCollision")), "Invalid owner body flags")
 
 
+def validate_natural_dispatch(identity, chain, events, motion):
+    proof = chain.get("naturalDispatch")
+    if identity["name"] != "NATURAL_MASTER":
+        s.require(proof is None, "Only natural Master may use native-step qualification")
+        return
+    s.require(isinstance(proof, dict) and isinstance(motion, dict), "Natural Master lacks its original native-step dispatch proof")
+    s.require(proof.get("completed") is True and all(type(proof.get(k)) is int and proof[k] == 1
+              for k in ("stepCount", "trackerCount", "motionOrdinal")), "Natural dispatch is not one step, next tracker and first motion")
+    stages = (("release", "natural-release"), ("beforeStep", "natural-step-start"),
+              ("afterStep", "natural-step-end"), ("listenerExit", "natural-listener-end"),
+              ("trackerEntry", "natural-tracker-start"), ("send", "natural-motion-start"),
+              ("sendExit", "natural-motion-end"), ("trackerExit", "natural-tracker-end"))
+    previous = -1
+    source = None
+    for name, kind in stages:
+        frame = proof.get(name)
+        s.require(isinstance(frame, dict) and frame.get("valid") is True and frame.get("awaitingTeleport") is False,
+                  "Natural dispatch has replaced or corrected native identity")
+        s.require(frame.get("ownerEntity") == identity["ownerEntity"] and frame.get("ownerUuid") == identity["ownerUuid"],
+                  "Natural dispatch changed owner generation")
+        current_source = (integer(frame.get("sourceEntity"), "natural source entity", 1), frame.get("sourceUuid"))
+        s.require(isinstance(current_source[1], str) and str(uuid.UUID(current_source[1])) == current_source[1]
+                  and current_source[0] not in (identity["ownerEntity"], identity["peerEntity"])
+                  and current_source[1] not in (identity["ownerUuid"], identity["peerUuid"]), "Invalid natural Master source")
+        s.require(source is None or source == current_source, "Natural Master source changed during dispatch")
+        source = current_source
+        tick = integer(frame.get("gameTick"), "natural game tick")
+        server_tick = integer(frame.get("serverTick"), "natural server tick")
+        index = integer(frame.get("eventIndex"), "natural event index", previous + 1, len(events) - 1)
+        snapshot = frame.get("body")
+        s.require(isinstance(snapshot, dict), "Missing natural body snapshot")
+        for key in ("position", "motion"):
+            vector(snapshot.get(key), "natural " + key)
+        for key in ("fall", "health", "absorption"):
+            number(snapshot.get(key), "natural " + key)
+        s.require(snapshot.get("neutral") is True and all(type(snapshot.get(k)) is bool
+                  for k in ("grounded", "needsSync", "syncVelocity", "collision")), "Invalid natural native state")
+        event = events[index]
+        s.require(event["kind"] == kind and event["data"] == f"source={source[1]} serverTick={server_tick}",
+                  "Natural snapshot does not identify its original operation event")
+        expected_body = {k: snapshot[k] for k in ("position", "motion", "fall", "grounded", "neutral", "health")}
+        expected_body.update(entity=identity["ownerEntity"], tick=tick, horizontalCollision=snapshot["collision"])
+        s.require(event.get("after") == expected_body and sum(e["kind"] == kind for e in events) == 1,
+                  "Natural snapshot body or single-operation count differs from ledger")
+        previous = index
+    release, before, after, listener, tracker, sent, sent_exit, tracker_exit = (proof[name] for name, _ in stages)
+    tracker_index = integer(proof.get("trackerWitnessIndex"), "retained tracker event index", 0, release["eventIndex"] - 1)
+    tracker_id = proof.get("trackerIdentity")
+    s.require(isinstance(tracker_id, str) and re.fullmatch(r"[0-9]{1,10}", tracker_id), "Missing retained original tracker identity")
+    tracker_event = events[tracker_index]
+    s.require(tracker_event["kind"] == "natural-tracker-identity"
+              and tracker_event["data"] == f"tracker={tracker_id} owner={identity['ownerUuid']}"
+              and tracker_event.get("after", {}).get("entity") == identity["ownerEntity"]
+              and tracker_event["after"]["tick"] <= release["gameTick"]
+              and sum(e["kind"] == "natural-tracker-identity" for e in events) == 1,
+              "Original owner tracker identity was not retained before release")
+    for frame in (before, after, listener):
+        s.require((frame["gameTick"], frame["serverTick"]) == (release["gameTick"], release["serverTick"]),
+                  "Native release and its one physics step have different clocks")
+    for frame in (tracker, sent, sent_exit, tracker_exit):
+        s.require((frame["gameTick"], frame["serverTick"]) == (release["gameTick"] + 1, release["serverTick"] + 1),
+                  "Natural motion is not in the very next native tracker tick")
+    s.require(before["body"] == release["body"], "Immediate strike state changed before original physics")
+    s.require(all(after["body"][k] == release["body"][k] for k in ("health", "absorption")), "Intervening native wound during physics")
+    s.require(listener["body"] == {**after["body"], "position": before["body"]["position"]},
+              "Native listener exit changed more than its position restoration")
+    s.require(tracker["body"] == listener["body"] and tracker["body"]["syncVelocity"] is True,
+              "Native physics state did not reach its original tracker intact")
+    s.require(sent["body"] == {**tracker["body"], "needsSync": False, "syncVelocity": False},
+              "Original tracker changed more than native synchronization flags")
+    s.require(sent_exit["body"] == tracker_exit["body"] == sent["body"], "Owner state changed while original send/tracker completed")
+    s.require(motion["sendOrdinal"] == proof["motionOrdinal"] and motion["raw"] == sent["body"]["motion"]
+              and sent["eventIndex"] < motion["sendStartIndex"], "One native physics step is not bound to this exact owner motion")
+    entries = [e for e in events if e["kind"] == "natural-listener-start"]
+    s.require(len(entries) == 1, "Missing or repeated original listener scope")
+    entry, end = entries[0], events[tracker_exit["eventIndex"]]
+    s.require(release["eventIndex"] < entry["index"] < before["eventIndex"]
+              and entry.get("after") == events[release["eventIndex"]]["after"]
+              and entry["data"] == events[release["eventIndex"]]["data"], "Original listener did not begin at the retained release state")
+    sends = [e for e in events if e["kind"] in ("server-motion-start", "server-motion-sent")
+             and e["index"] < end["index"]]
+    s.require([e["kind"] for e in sends] == ["server-motion-start", "server-motion-sent"]
+              and sends[0]["index"] == motion["sendStartIndex"] and sends[1]["index"] > sends[0]["index"]
+              and sends[0]["index"] < sent_exit["eventIndex"] < sends[1]["index"]
+              and all(e["data"].startswith("ordinal=1 manual=false ") for e in sends)
+              and end.get("after") == events[sent["eventIndex"]]["after"]
+              and end["data"] == events[sent["eventIndex"]]["data"], "The selected original tracker did not complete exactly one bound motion send")
+
+
 def validate_reports(case_identity, host, peer, moved):
     """Recheck every native chain link without trusting Java's passed witness."""
     s.require(type(moved) is bool, "Missing explicit movement expectation")
@@ -220,6 +309,7 @@ def validate_reports(case_identity, host, peer, moved):
         # call returns; a fast client can apply its bytes before that log event.
         s.require(any(e["kind"] == "server-motion-sent" and e["data"].startswith(f"ordinal={ordinal} manual=false ")
                       for e in events), "Native motion dispatch lacks its completed send event")
+    validate_natural_dispatch(case_identity, chain, events, motion)
     linked = {}
     previous_send, previous_accept = 0, -1
     for position in positions:

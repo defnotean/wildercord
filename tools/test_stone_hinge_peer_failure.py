@@ -34,7 +34,7 @@ class PeerFailureTests(unittest.TestCase):
         self.assertLess(natural.index("reportFailure(Case.NATURAL_MASTER, phase, failure)"),
                         natural.index("} finally {"))
         self.assertIn("running.expectMotion(outcome.motion());", natural)
-        self.assertIn("context.waitFor(mc -> running.expectedOwnerMotion() != null, 80);", natural)
+        self.assertIn("context.waitFor(mc -> { running.assertHealthy(); return running.expectedOwnerMotion() != null; }, 80);", natural)
         self.assertIn("world.waitFor(server -> running.hasOwnerPositionAfterMotion(), 80);", natural)
         owner = (ROOT / "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeOwnerProbe.java").read_text()
         self.assertIn("expectedMotion.equals(packet.movement())", owner)
