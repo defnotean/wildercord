@@ -32,6 +32,7 @@ public final class StasisMechanicsProbe implements AutoCloseable {
 	private String previousState;
 	private Field stasis;
 	private String reflectionProblem;
+	private StasisDeliveryProbe delivery;
 
 	private StasisMechanicsProbe(ServerPlayer owner, LivingEntity target, RuneDef attack) {
 		this.owner = owner;
@@ -52,10 +53,12 @@ public final class StasisMechanicsProbe implements AutoCloseable {
 		StasisMechanicsProbe probe = new StasisMechanicsProbe(owner, target, attack);
 		active = probe;
 		try {
+			probe.delivery = StasisDeliveryProbe.open(owner, target, attack);
 			probe.checkpoint("opened");
 			return probe;
 		} catch (RuntimeException | Error failure) {
 			if (active == probe) active = null;
+			if (probe.delivery != null) probe.delivery.close();
 			throw failure;
 		}
 	}
@@ -119,6 +122,14 @@ public final class StasisMechanicsProbe implements AutoCloseable {
 			} finally {
 				probe.pendingSlot = -1;
 			}
+		}
+	}
+
+	/** GameTest mixin callback: bind only a Cast made inside this exact fixture attempt. */
+	public static void observePaidCast(ServerPlayer player, int slot, List<RuneDef> runes, Cast cast) {
+		StasisMechanicsProbe probe = active;
+		if (probe != null && probe.delivery != null && probe.attempt(player, slot)) {
+			try { probe.delivery.paid(player, runes, cast); } catch (Throwable ignored) { /* Observation only. */ }
 		}
 	}
 
@@ -209,6 +220,7 @@ public final class StasisMechanicsProbe implements AutoCloseable {
 		} finally {
 			if (active == this) active = null;
 			pendingSlot = -1;
+			if (delivery != null) delivery.close();
 		}
 	}
 }

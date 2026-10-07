@@ -1,10 +1,12 @@
 package dev.wildercord.wildlife;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -134,6 +137,14 @@ public class Rimehare extends Animal {
 					mob.setXxa(0);
 					return;
 				}
+				if (mob.canCoastToFinalWaypoint(wantedY)) {
+					// Existing momentum can already settle at the native endpoint. Consume this input
+					// without changing speed or velocity; navigation and real collision still run.
+					operation = Operation.WAIT;
+					mob.setZza(0);
+					mob.setXxa(0);
+					return;
+				}
 				double requestedSpeed = speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
 				if (mob.boundCooldown.shouldBrake(mob.getDeltaMovement().horizontalDistance(), requestedSpeed)) {
 					operation = Operation.WAIT;
@@ -149,6 +160,29 @@ public class Rimehare extends Animal {
 			// This also retains the native JUMPING operation for steps, and FloatGoal in water.
 			super.tick();
 		}
+	}
+
+	private boolean canCoastToFinalWaypoint(double wantedY) {
+		var navigation = getNavigation();
+		var path = navigation.getPath();
+		if (path == null || path.isDone() || path.getNextNodeIndex() != path.getNodeCount() - 1
+			|| !onGround() || isInLiquid() || isNoAi() || !Double.isFinite(getDeltaMovement().y)
+			|| !Double.isFinite(wantedY) || getDeltaMovement().y > 0 || wantedY > getY()
+			|| shouldDiscardFriction() || onClimbable() || isPassenger() || isFallFlying() || isInPowderSnow
+			|| hasEffect(MobEffects.LEVITATION) || stuckSpeedMultiplier.lengthSqr() > 0 || getBlockSpeedFactor() != 1F) return false;
+		BlockPos feet = blockPosition();
+		BlockState feetState = level().getBlockState(feet);
+		var collision = feetState.getCollisionShape(level(), feet);
+		// Preserve both native obstacle-jump triggers, including a shape enclosing the feet.
+		if (!collision.isEmpty() && getY() < feet.getY() + collision.max(Direction.Axis.Y)) return false;
+		BlockState support = level().getBlockState(getBlockPosBelowThatAffectsMyMovement());
+		// Slime's step callback adds damping beyond its friction coefficient.
+		if (feetState.is(Blocks.SLIME_BLOCK) || support.is(Blocks.SLIME_BLOCK)) return false;
+		float drag = RimehareBoundArrival.groundDrag(support.getBlock().getFriction(),
+			getAttributeValue(Attributes.FRICTION_MODIFIER), getAttributeValue(Attributes.AIR_DRAG_MODIFIER));
+		return RimehareBoundArrival.canCoastToFinalWaypoint(path, getX(), getY(), getZ(),
+			getDeltaMovement().x, getDeltaMovement().z, navigation.getMaxDistanceToWaypoint(),
+			navigation.getMaxVerticalDistanceToWaypoint(), drag);
 	}
 
 	/** Low, quick bounds rather than leaps. */

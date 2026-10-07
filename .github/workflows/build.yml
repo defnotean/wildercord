@@ -623,6 +623,26 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: native-diagnostic-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: artifacts/review/native-diagnostic/
+          path: |
+            artifacts/review/native-diagnostic/request-provenance.json
+            artifacts/review/native-diagnostic/launch.json
+            artifacts/review/native-diagnostic/diagnostic-result.json
+            artifacts/review/native-diagnostic/native.log
+            artifacts/review/native-diagnostic/snapshots/**/*.txt
+            artifacts/review/native-diagnostic/stone-hinge-peer/*.json
+            artifacts/review/native-diagnostic/stone-hinge-peer/export.log
+            artifacts/review/native-diagnostic/stone-hinge-peer/transparent/*.json
+            artifacts/review/native-diagnostic/stone-hinge-peer/transparent/*.log
+            artifacts/review/native-diagnostic/stone-hinge-peer/transparent/ipc/*.json
+            artifacts/review/native-diagnostic/stone-hinge-peer/transparent/ipc/*.properties
+            artifacts/review/native-diagnostic/stone-hinge-peer/symmetric/*.json
+            artifacts/review/native-diagnostic/stone-hinge-peer/symmetric/*.log
+            artifacts/review/native-diagnostic/stone-hinge-peer/symmetric/ipc/*.json
+            artifacts/review/native-diagnostic/stone-hinge-peer/symmetric/ipc/*.properties
+            artifacts/review/native-diagnostic/stone-hinge-peer/asymmetric/*.json
+            artifacts/review/native-diagnostic/stone-hinge-peer/asymmetric/*.log
+            artifacts/review/native-diagnostic/stone-hinge-peer/asymmetric/ipc/*.json
+            artifacts/review/native-diagnostic/stone-hinge-peer/asymmetric/ipc/*.properties
+            !**/work/**
           if-no-files-found: error
           retention-days: 7

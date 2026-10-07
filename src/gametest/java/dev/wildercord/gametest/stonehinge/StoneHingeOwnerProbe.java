@@ -38,6 +38,10 @@ public final class StoneHingeOwnerProbe {
 		}
 	}
 	public record Event(int index, String kind, String data, Body before, Body after) {}
+    public record MotionEvidence(int sendOrdinal, Vec3 raw, Vec3 wire, Vec3 applied, int sendStartIndex, int appliedIndex, boolean manual, boolean originalTracker, boolean completed) {}
+    public record PositionEvidence(int sendOrdinal, int sentIndex, int acceptanceIndex, int motionOrdinal,
+        Vec3 requested, Vec3 sentPosition, Vec3 acceptedPosition, long ownerTick, long serverTick, boolean completed) {}
+    public record ChainEvidence(MotionEvidence motion, List<PositionEvidence> positions, List<Event> events) {}
 	private record PositionKey(String type, double x, double y, double z, boolean rotation, float yaw, float pitch, boolean ground, boolean collision) {
 		static PositionKey of(ServerboundMovePlayerPacket packet) {
 			return new PositionKey(packet.getClass().getSimpleName(), packet.getX(Double.NaN), packet.getY(Double.NaN), packet.getZ(Double.NaN),
@@ -46,11 +50,12 @@ public final class StoneHingeOwnerProbe {
 	}
 	private static final class MotionSend {
 		final int ordinal;
+        int sendStartIndex;
 		final Vec3 raw, wire;
-		final boolean expected, manual;
+		final boolean expected, manual, originalTracker;
 		volatile boolean completed;
-		MotionSend(int ordinal, ClientboundSetEntityMotionPacket packet, boolean expected, boolean manual) {
-			this.ordinal = ordinal; this.raw = packet.movement(); this.expected = expected; this.manual = manual;
+		MotionSend(int ordinal, ClientboundSetEntityMotionPacket packet, boolean expected, boolean manual, boolean originalTracker) {
+			this.ordinal = ordinal; this.raw = packet.movement(); this.expected = expected; this.manual = manual; this.originalTracker = originalTracker;
 			var buffer = Unpooled.buffer();
 			try { ClientboundSetEntityMotionPacket.STREAM_CODEC.encode(buffer, packet); wire = ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(buffer).movement(); }
 			finally { buffer.release(); }
@@ -110,8 +115,11 @@ public final class StoneHingeOwnerProbe {
 		public void manual(ClientboundSetEntityMotionPacket packet) { manual = packet; expectedMotion = packet.movement(); }
 		private synchronized MotionSend sendingMotion(ClientboundSetEntityMotionPacket packet) {
 			MotionSend sent = new MotionSend(++motionSerial, packet, expectedMotion != null && expectedMotion.equals(packet.movement())
-				&& (manual == null || manual == packet), manual == packet);
-			motionQueue.add(sent); return sent;
+				&& (manual == null || manual == packet), manual == packet, dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.originalTracker(server));
+			motionQueue.add(sent);
+            Event started = record("server-motion-start", "ordinal=" + sent.ordinal + " manual=" + sent.manual + " raw=" + sent.raw + " wire=" + sent.wire, null, snapshot(server));
+            sent.sendStartIndex = started == null ? -1 : started.index;
+            return sent;
 		}
 		private synchronized MotionSend matchingMotion(Vec3 vector) {
 			MotionSend first = motionQueue.peek();
@@ -134,6 +142,18 @@ public final class StoneHingeOwnerProbe {
 				// The post-impulse rise differs from every stable pre-experiment position; an older in-flight ground packet cannot alias it.
 				&& Math.abs(receipt.sent.key.y - ownerBefore.position.y) > 1.0E-4).map(PositionReceipt::processed).toList();
 		}
+        /** Structured read-only evidence for the independent two-JVM verifier; no additional packet is emitted. */
+        public synchronized ChainEvidence chainEvidence() {
+            MotionReceipt motion = provenMotion;
+            MotionEvidence evidence = motion == null ? null : new MotionEvidence(motion.sent.ordinal, motion.sent.raw, motion.sent.wire,
+                motion.processed.after.motion, motion.sent.sendStartIndex, motion.processed.index, motion.sent.manual, motion.sent.originalTracker, motion.sent.completed);
+            List<PositionEvidence> accepted = positions.stream().filter(p -> p.sent.qualified()
+                && Math.abs(p.sent.key.y - ownerBefore.position.y) > 1.0E-4).map(p -> new PositionEvidence(p.sent.ordinal,
+                    p.sent.event.index, p.processed.index, p.sent.afterMotion.sent.ordinal,
+                    new Vec3(p.sent.key.x, p.sent.key.y, p.sent.key.z), p.sent.event.after.position, p.processed.after.position,
+                    p.sent.event.after.tick, p.processed.after.tick, p.sent.completed)).toList();
+            return new ChainEvidence(evidence, accepted, List.copyOf(events));
+        }
 		public boolean hasOwnerPositionAfterMotion() { return expectedOwnerMotion() != null && !provenOwnerPositions().isEmpty(); }
 		public boolean correction() { return count("server-correction-sent") > 0 || count("client-correction-start") > 0; }
 		public double lateral(Vec3 position) { return position.subtract(serverBefore.position).dot(side); }

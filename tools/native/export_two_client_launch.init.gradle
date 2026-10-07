@@ -6,12 +6,12 @@ import java.security.MessageDigest
 gradle.projectsEvaluated {
     def p = gradle.rootProject
     def suite = p.findProperty('twoClientSuite')?.toString()
-    if (!(suite in ['cast-receipt', 'moon'])) throw new GradleException('Bounded export requires -PtwoClientSuite=cast-receipt or moon')
-    def maxTimeoutSeconds = suite == 'moon' ? 180 : 900
+    if (!(suite in ['cast-receipt', 'moon', 'stone-hinge-peer'])) throw new GradleException('Bounded export requires -PtwoClientSuite=cast-receipt, moon or stone-hinge-peer')
+    def maxTimeoutSeconds = suite == 'stone-hinge-peer' ? 300 : suite == 'moon' ? 180 : 900
     def root = p.projectDir.canonicalFile
-    def expectedEntry = suite == 'moon' ? 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest' : 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
-    def contractPath = suite == 'moon' ? 'src/gametest/resources/crimson-moon-native-contract.json' : 'src/gametest/resources/cast-receipt-native-contract.json'
-    def expectedMixins = suite == 'moon' ? ['crimson-moon-multiplayer-gametest.mixins.json'] : []
+    def expectedEntry = suite == 'stone-hinge-peer' ? 'dev.wildercord.aura.StoneHingePeerTransportTest' : suite == 'moon' ? 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest' : 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
+    def contractPath = suite == 'stone-hinge-peer' ? 'src/gametest/resources/stone-hinge-peer-native-contract.json' : suite == 'moon' ? 'src/gametest/resources/crimson-moon-native-contract.json' : 'src/gametest/resources/cast-receipt-native-contract.json'
+    def expectedMixins = suite == 'stone-hinge-peer' ? ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json'] : suite == 'moon' ? ['crimson-moon-multiplayer-gametest.mixins.json'] : []
     // Match the supervisor's ordered roster, including every original case.
     def expectedCases = [
         'BREAK_CAST_HEALTH',
@@ -62,6 +62,14 @@ gradle.projectsEvaluated {
         'LIFE_SELF_SECOND_WIND_REDUCED_FLASH'
     ]
     if (suite == 'moon') expectedCases = ['articulated_netherite_funded_right_release']
+    def stoneTransparent = ['ORDINARY', 'RIGHT', 'LEFT', 'PARTIAL_RESISTANCE', 'ABSORPTION', 'WALL_CLIPPED',
+        'REAR', 'FULL_RESISTANCE', 'ZERO_WOUND', 'INVULNERABLE', 'CALLER_KNOCKBACK', 'CLOSE_AURA',
+        'INTERVENING_IMPULSE', 'FALLING_ORDINARY', 'FALLING_REFUSAL', 'NONZERO_RETENTION', 'NATURAL_MASTER']
+    def stoneDelayed = ['ORDINARY', 'RIGHT', 'LEFT', 'WALL_CLIPPED', 'FALLING_ORDINARY', 'FALLING_REFUSAL']
+    def stoneProfiles = [[id: 'transparent', delayMs: [0, 0, 0, 0], cases: stoneTransparent],
+        [id: 'symmetric', delayMs: [50, 50, 50, 50], cases: stoneDelayed],
+        [id: 'asymmetric', delayMs: [100, 25, 25, 100], cases: stoneDelayed]]
+
     def git = { List<String> arguments ->
         def process = new ProcessBuilder(['git', '-C', root.absolutePath] + arguments).redirectErrorStream(true).start()
         def output = new StringBuffer()
@@ -127,8 +135,18 @@ gradle.projectsEvaluated {
             if (!p.sourceSets.gametest.output.classesDirs.files.any { new File(it, classPath).isFile() }) throw new GradleException('Supervised entrypoint class is missing from compiled gametest output')
             def contractFile = new File(root, contractPath)
             def contract = new JsonSlurper().parse(contractFile)
-            if (contract.schemaVersion != 1 || contract.suite != suite || contract.entrypoint != expectedEntry || contract.expectedCount != expectedCases.size() || contract.cases != expectedCases) throw new GradleException('Unexpected exact ordered source contract for ' + suite)
-            if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: expectedCases.size(), maxTimeoutSeconds: maxTimeoutSeconds]) throw new GradleException('Unexpected supervised resource limits')
+            if (suite == 'stone-hinge-peer') {
+                if (contract.schemaVersion != 1 || contract.suite != suite || contract.entrypoint != expectedEntry || contract.expectedCount != 29 || contract.profiles != stoneProfiles)
+                    throw new GradleException('Stone Hinge requires the exact 17/6/6 roster and fixed connection-lifetime delay profiles')
+                if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: 29, maxTimeoutSeconds: 1200, maxProfileSeconds: 300, maxProfileEvidenceBytes: 16777216])
+                    throw new GradleException('Stone Hinge diagnostic resource limits changed')
+                if ([contract.gameplayEnabled, contract.ordinaryInputProven, contract.admissionProven, contract.paidInputProven, contract.wholeJvmEgressIsolationProven].any { it != false })
+                    throw new GradleException('Transport diagnostic must not claim gameplay admission or whole-JVM egress isolation')
+                if (run.javaLauncher.get().metadata.languageVersion.asInt() != 25) throw new GradleException('Stone Hinge requires the configured Java 25 launcher')
+            } else {
+                if (contract.schemaVersion != 1 || contract.suite != suite || contract.entrypoint != expectedEntry || contract.expectedCount != expectedCases.size() || contract.cases != expectedCases) throw new GradleException('Unexpected exact ordered source contract for ' + suite)
+                if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: expectedCases.size(), maxTimeoutSeconds: maxTimeoutSeconds]) throw new GradleException('Unexpected supervised resource limits')
+            }
             if (digest(new File(descriptor.parentFile, contractFile.name)) != digest(contractFile)) throw new GradleException('Processed contract differs from source contract')
             def taskBase = Class.forName('net.fabricmc.loom.task.AbstractRunTask', true, run.class.classLoader)
             def useArgs = taskBase.getDeclaredMethod('getUseArgFile')
@@ -197,7 +215,7 @@ gradle.projectsEvaluated {
                 java: javaFile.absolutePath, main: run.mainClass.get(), classpath: classpath,
                 jvm: jvm, args: args, environment: environment, runtimeSha256: fingerprints,
                 loomVersion: p.property('loom_version').toString()
-            ])), 'UTF-8')
+            ] + (suite == 'stone-hinge-peer' ? [javaVersion: run.javaLauncher.get().metadata.languageVersion.asInt()] : [:]))), 'UTF-8')
             logger.lifecycle('Exported bounded ' + suite + ' launch for ' + sourceHead + ' to ' + output)
         }
     }

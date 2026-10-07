@@ -6,6 +6,7 @@ rerun of that same request is allowed and records its new run attempt.
 No request-supplied classes, paths, commands, environment, seeds or retry counts.
 """
 import argparse
+from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
 from itertools import islice
@@ -13,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import re
+import stat
 import subprocess
 import sys
 
@@ -24,6 +26,7 @@ from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIE
                            stone_march_completion, STONE_MARCH_ENTRIES, select_entries, selection_issues)
 import run_client_ci
 from native_ci_diagnostics import SCENE_PREFIX
+from native import run_stone_hinge_peer as stone_peer
 
 REQUEST = ".github/native-diagnostic-request.json"
 OUTPUT = "artifacts/review/native-diagnostic"
@@ -45,7 +48,12 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "reweave-player": "diagnostic-reweave-player",
          "stone-hinge-owner-negative": "diagnostic-stone-hinge-owner-negative",
          "movement-foundations": "diagnostic-movement-foundations", "excise": "diagnostic-life-excise",
-         "stone-fault-march": "stone-fault-march"}
+         "stone-fault-march": "stone-fault-march",
+         "stone-hinge-peer": "stone-hinge-peer"}
+PEER_CASE = "stone-hinge-peer"
+# Disposable game worlds/caches never live beneath the upload directory.
+PEER_OUTPUT = "build/native/stone-hinge-peer"
+PEER_EVIDENCE = "stone-hinge-peer"
 FIXED_ENV = {"LIBGL_ALWAYS_SOFTWARE": "1", "SDL_VIDEO_FORCE_EGL": "1", "ALSOFT_DRIVERS": "null"}
 DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRADLE_OPTS", "JAVA_OPTS")
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
@@ -157,6 +165,36 @@ CASE_FILES["movement-foundations"] = (*CASE_FILES["stone-hinge-owner-negative"],
     "src/gametest/java/dev/wildercord/wildlife/EcologyReturnProbe.java",
     "src/gametest/java/dev/wildercord/wildlife/EcologyReturnProbeChecks.java",
     "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeVelocityExperiment.java",
+)
+
+# Existing owner/master instrumentation now references these peer helpers even
+# when the paired entrypoint is not selected. Record the complete dependency
+# closure for each affected diagnostic without changing its selection.
+STONE_SHARED_FILES = (
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeOwnerProbe.java",
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/StoneHingeVelocityExperiment.java",
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingePeerProbe.java",
+    "src/gametest/java/dev/wildercord/gametest/stonehinge/peer/StoneHingeNaturalRelease.java",
+    *("src/gametest/java/dev/wildercord/gametest/stonehinge/mixin/" + name + ".java" for name in (
+        "StoneHingeOwnerClientProbeMixin", "StoneHingeOwnerSendProbeMixin",
+        "StoneHingeOwnerServerProbeMixin", "StoneHingeOwnerPositionSendProbeMixin")),
+)
+for _case in ("stone-hinge-owner-negative", "movement-foundations", "progression-feasibility"):
+    CASE_FILES[_case] = tuple(dict.fromkeys((*CASE_FILES[_case], *STONE_SHARED_FILES)))
+CASE_FILES[PEER_CASE] = (
+    *CASE_FILES["stone-hinge-owner-negative"],
+    "src/gametest/java/dev/wildercord/aura/StoneHingePeerCases.java",
+    *("src/gametest/java/dev/wildercord/gametest/stonehinge/mixin/" + name + ".java" for name in (
+        "StoneHingePeerTrackerMixin", "StoneHingePeerSendMixin", "StoneHingePeerClientMixin",
+        "StoneHingeConnectionAccess", "StoneHingeServerConnectionAccess")),
+    "src/gametest/resources/stone-hinge-peer-gametest.mixins.json",
+    stone_peer.CONTRACT,
+    "tools/native/run_stone_hinge_peer.py",
+    "tools/native/stone_hinge_relay.py",
+    "tools/native/launch_two_clients.py",
+    "tools/native/run_paired_matrix.py",
+    "tools/native/export_two_client_launch.init.gradle",
+    "tools/check_stone_hinge_native_contract.py",
 )
 
 # Fixed authored slice paths, bound to the exact source commit; no request-provided paths.
@@ -346,7 +384,10 @@ def current(env, *, observed_head=None):
     parents = git("rev-list", "--parents", "-n", "1", "HEAD").split()[1:]
     changed = git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD").splitlines()
     state = request_state(request, provenance, parents, changed)
-    selection = select_entries(suite=CASES[request["case"]]) if request["case"] else None
+    selection = (peer_selection() if request["case"] == PEER_CASE else
+                 select_entries(suite=CASES[request["case"]]) if request["case"] else None)
+    if request["case"] == PEER_CASE:
+        stone_peer.load_contract(ROOT)
     if selection is not None and selection["kind"] != "diagnostic":
         raise ValueError("Allowlisted case must remain explicitly diagnostic in the catalog")
     if request["case"] == "progression-feasibility" and selection != {
@@ -413,6 +454,8 @@ def prepared(env, *, for_collection=False):
 def run(env):
     data = prepared(env)
     check_environment(env)
+    if data["request"]["case"] == PEER_CASE:
+        return run_peer(data, env)
     marker = ROOT / OUTPUT / "launch.json"
     # Exclusive creation prevents an accidental second invocation in the same job.
     with marker.open("x", encoding="utf-8") as output:
@@ -424,6 +467,266 @@ def run(env):
 
 def receipt(data):
     return {key: data[key] for key in ("request", "provenance", "sourceFilesSha256", "configuration")}
+
+
+def peer_selection():
+    """An explicit supervised case, never an exception to the single-client roster."""
+    return {"kind": "diagnostic", "name": PEER_CASE, "count": 1,
+            "entries": [stone_peer.ENTRYPOINT], "supervisor": "tools/native/run_stone_hinge_peer.py",
+            "caseCount": 29, "profiles": list(stone_peer.PROFILES), "totalTimeoutSeconds": 1200,
+            "maxConcurrentJvms": 2, "heapMiBPerJvm": 2048}
+
+
+def peer_command():
+    return ["xvfb-run", "-a", "-s", "-screen 0 1280x720x24 +extension GLX +render -noreset",
+            sys.executable, "tools/native/run_stone_hinge_peer.py", "--output", PEER_OUTPUT,
+            "--total-timeout", "1200"]
+
+
+def peer_environment(data, env):
+    check_environment(env)
+    provenance = data["provenance"]
+    if (data["selection"] != peer_selection() or env.get("GITHUB_ACTIONS") != "true"
+            or env.get("NATIVE_DIAGNOSTIC_HEAD_SHA") != provenance["headSha"]):
+        raise ValueError("Supervised diagnostic requires the exact fixed selection and validated CI head")
+    # Do not rewrite GITHUB_SHA: GitHub's workflow merge and actual checkout are
+    # distinct identities. No user/request supplied WILDERCORD_* value is allowed.
+    return {**env, "WILDERCORD_PR_HEAD_SHA": provenance["headSha"]}
+
+
+@contextmanager
+def peer_validation_environment(env):
+    """The shared exported-command validator reads the explicit PR association."""
+    previous = os.environ.get("WILDERCORD_PR_HEAD_SHA")
+    os.environ["WILDERCORD_PR_HEAD_SHA"] = env["WILDERCORD_PR_HEAD_SHA"]
+    try:
+        yield
+    finally:
+        if previous is None:
+            os.environ.pop("WILDERCORD_PR_HEAD_SHA", None)
+        else:
+            os.environ["WILDERCORD_PR_HEAD_SHA"] = previous
+
+
+def safe_evidence_path(root, relative):
+    """Never resolve through a symlink, device, pipe, or caller-provided path."""
+    relative = Path(relative)
+    if relative.is_absolute() or ".." in relative.parts or not relative.parts:
+        raise ValueError("Unsafe evidence path")
+    path = root
+    if root.is_symlink():
+        raise ValueError("Linked evidence root")
+    for part in relative.parts:
+        path = path / part
+        if path.is_symlink():
+            raise ValueError("Linked evidence path: " + relative.as_posix())
+    if path.exists() and not stat.S_ISREG(path.stat().st_mode):
+        raise ValueError("Non-regular evidence path: " + relative.as_posix())
+    return path
+
+
+def run_peer(data, env):
+    launch_env = peer_environment(data, env)
+    source = stone_peer.provenance(ROOT, launch_env)
+    marker = safe_evidence_path(ROOT, OUTPUT + "/launch.json")
+    with marker.open("x", encoding="utf-8") as output:
+        json.dump({"startedAt": datetime.now(timezone.utc).isoformat(), "requestReceipt": receipt(data),
+                   "provenance": source, "command": peer_command()}, output)
+    # A fresh supervisor output plus an exclusive launch receipt prevents replay
+    # or a second native invocation in this job. The supervisor owns its deadline
+    # and teardown; xvfb only supplies the existing virtual display.
+    log_path = safe_evidence_path(ROOT, LOG)
+    with log_path.open("x", encoding="utf-8") as log:
+        log.write(REQUEST_PREFIX + json.dumps(receipt(data), sort_keys=True) + "\n")
+        log.flush()
+        process = subprocess.run(peer_command(), cwd=ROOT, env=launch_env, stdin=subprocess.DEVNULL,
+                                 stdout=log, stderr=subprocess.STDOUT, check=False)
+        log.write(EXIT_PREFIX + str(process.returncode) + "\n")
+    return process.returncode
+
+
+def peer_evidence_names(profile=None):
+    if profile is None:
+        return {"matrix-result.json", "matrix-result.partial.json", "stone-hinge-peer-launch.json",
+                "stone-hinge-peer-descriptor.json", "export.log"}
+    names = {"result.json", "result.partial.json", "launch-proof.json", "launch-proof.partial.json",
+             "relay.json", "relay.partial.json", "host.log", "peer.log"}
+    ipc = set(stone_peer.TERMINALS) | {"server-ready.properties", "relay-ready.properties",
+           "host-connected.properties", "peer-connected.properties", "server-connected.properties",
+           "host-failure.properties", "peer-failure.properties"}
+    for index in range(len(stone_peer.roster(profile))):
+        ipc.update(f"case-{index:02d}-{suffix}" for suffix in (
+            "identity.json", "host.json", "peer.json", "arm.properties", "armed.properties",
+            "ready.properties", "seen.properties", "passed.properties"))
+    return names | {"ipc/" + name for name in ipc}
+
+
+def preserve_peer_evidence():
+    """Copy only fixed bounded text artifacts; never enumerate or upload work/."""
+    result = {"files": [], "issues": [], "excluded": ["work/**"],
+              "maxProfileBytes": stone_peer.MAX_EVIDENCE, "maxRootBytes": 24 * 1024 * 1024}
+    groups = [("", peer_evidence_names(), result["maxRootBytes"]),
+              *((profile + "/", peer_evidence_names(profile), stone_peer.MAX_EVIDENCE)
+                for profile in stone_peer.PROFILES)]
+    for prefix, names, remaining in groups:
+        # Small failure reports are retained before potentially oversized logs.
+        for name in sorted(names, key=lambda value: (value.endswith(".log"), value)):
+            relative = prefix + name
+            try:
+                path = safe_evidence_path(ROOT, PEER_OUTPUT + "/" + relative)
+                if not path.exists():
+                    continue
+                size = path.stat().st_size
+                maximum = (MAX_LOG_BYTES if name.endswith(".log") else
+                           MAX_SNAPSHOT_BYTES if name.endswith(".properties") else 2 * 1024 * 1024)
+                with path.open("rb") as source:
+                    raw = source.read(min(maximum, remaining) + 1)
+                raw = raw[:min(maximum, remaining)]
+                destination = safe_evidence_path(ROOT, OUTPUT + "/" + PEER_EVIDENCE + "/" + relative)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(raw)
+                remaining -= len(raw)
+                truncated = size != len(raw)
+                result["files"].append({"path": PEER_EVIDENCE + "/" + relative, "bytes": size,
+                                        "retainedBytes": len(raw), "truncated": truncated,
+                                        "retainedSha256": hashlib.sha256(raw).hexdigest()})
+                if truncated:
+                    result["issues"].append("Truncated supervised evidence: " + relative)
+            except (ValueError, OSError) as error:
+                result["issues"].append(str(error))
+    return result
+
+
+def verify_peer_retention(evidence):
+    """A pass must be reproducible from the exact bounded files being uploaded."""
+    required = peer_evidence_names() - {"matrix-result.partial.json"}
+    for profile in stone_peer.PROFILES:
+        required |= {profile + "/" + name for name in peer_evidence_names(profile)
+                     if not name.endswith((".partial.json", "-failure.properties"))}
+    files = {item["path"].removeprefix(PEER_EVIDENCE + "/"): item for item in evidence["files"]}
+    if set(files) != required:
+        raise ValueError("Retained evidence is incomplete or includes a failure/unfinished receipt")
+    # Recollection must not upload stale files left by an earlier failed attempt.
+    # Inspect only the seven fixed evidence directories, with bounded entry counts.
+    directories = {}
+    for relative in required:
+        parts = Path(relative).parts
+        for end in range(len(parts)):
+            directories.setdefault("/".join(parts[:end]), set()).add(parts[end])
+    for relative, expected in directories.items():
+        path = ROOT / OUTPUT / PEER_EVIDENCE / relative
+        if path.is_symlink():
+            raise ValueError("Linked retained evidence directory")
+        with os.scandir(path) as entries:
+            actual = {entry.name for entry in islice(entries, len(expected) + 1)}
+        if actual != expected:
+            raise ValueError("Unexpected or missing retained evidence path: " + relative)
+    for relative, item in files.items():
+        for prefix in (PEER_OUTPUT, OUTPUT + "/" + PEER_EVIDENCE):
+            path = safe_evidence_path(ROOT, prefix + "/" + relative)
+            # Each retained file was already capped at 16 MiB (2 MiB for JSON,
+            # 256 KiB for properties); never hash an unbounded changed source.
+            with path.open("rb") as stream:
+                raw = stream.read(item["retainedBytes"] + 1)
+            if (len(raw) != item["bytes"] or item["truncated"]
+                    or hashlib.sha256(raw).hexdigest() != item["retainedSha256"]):
+                raise ValueError("Supervised evidence changed during retention: " + relative)
+
+
+def validate_peer_result(data, env):
+    """Recheck the exact export and all 29 native chains after owned cleanup."""
+    launch_env = peer_environment(data, env)
+    source = stone_peer.provenance(ROOT, launch_env)
+    launch_receipt = stone_peer.read_json(safe_evidence_path(ROOT, OUTPUT + "/launch.json"))
+    if (set(launch_receipt) != {"startedAt", "requestReceipt", "provenance", "command"}
+            or launch_receipt["requestReceipt"] != receipt(data) or launch_receipt["provenance"] != source
+            or launch_receipt["command"] != peer_command()):
+        raise ValueError("Supervised launch request/source/run/command receipt differs")
+    datetime.fromisoformat(launch_receipt["startedAt"])
+    base = ROOT / PEER_OUTPUT
+    launch_path = safe_evidence_path(ROOT, PEER_OUTPUT + "/stone-hinge-peer-launch.json")
+    launch = stone_peer.read_json(launch_path, 2 * 1024 * 1024)
+    with peer_validation_environment(launch_env):
+        launch_hash = stone_peer.validate_launch(launch, launch_path, ROOT)
+    descriptor_path = safe_evidence_path(ROOT, PEER_OUTPUT + "/stone-hinge-peer-descriptor.json")
+    descriptor = stone_peer.read_json(descriptor_path)
+    if (digest(descriptor_path) != launch["descriptorSha256"]
+            or descriptor.get("entrypoints", {}).get("fabric-client-gametest") != [stone_peer.ENTRYPOINT]):
+        raise ValueError("Retained descriptor must contain exactly the exported peer entrypoint")
+    report = stone_peer.read_json(safe_evidence_path(ROOT, PEER_OUTPUT + "/matrix-result.json"), 2 * 1024 * 1024)
+    if report.get("error") is not None:
+        raise ValueError("Supervised matrix retained an error")
+    expected = {"schemaVersion": 1, "suite": PEER_CASE, "status": "passed", **stone_peer.FLAGS,
+                "totalTimeoutSeconds": 1200, "exportCeilingSeconds": 180, "profileCeilingSeconds": 300,
+                "finalValidationCeilingSeconds": 60, "reservedCleanupSeconds": 60,
+                "maxConcurrentJvms": 2, "heapMiBPerJvm": 2048, "provenance": source,
+                "launchSha256": launch_hash, "descriptorSha256": launch["descriptorSha256"],
+                "runtimeSha256": launch["runtimeSha256"]}
+    for key, value in expected.items():
+        if report.get(key) != value or type(report.get(key)) is not type(value):
+            raise ValueError("Supervised result changed or failed: " + key)
+    for field, maximum in (("seconds", 1200), ("exportSeconds", 180), ("finalValidationSeconds", 60)):
+        if not 0 <= stone_peer.number(report.get(field), field) <= maximum:
+            raise ValueError("Supervised result exceeded " + field)
+    profiles = report.get("profiles")
+    if (not isinstance(profiles, list) or len(profiles) != 3
+            or [item.get("profile") for item in profiles] != list(stone_peer.PROFILES)):
+        raise ValueError("All three exact ordered supervised profiles are required")
+    seen = set()
+    for item in profiles:
+        profile = item["profile"]
+        result_path = safe_evidence_path(ROOT, PEER_OUTPUT + "/" + profile + "/result.json")
+        result = stone_peer.read_json(result_path, 2 * 1024 * 1024)
+        if (result.get("hostUuid") != stone_peer.s.PROFILES["host"][1]
+                or result.get("peerUuid") != stone_peer.s.PROFILES["peer"][1]):
+            raise ValueError("Supervised profile changed its fixed native player identities")
+        if item != {"profile": profile, "status": "passed", "nonce": result.get("nonce"), "resultSha256": digest(result_path)}:
+            raise ValueError("Completed supervised profile hash/status/nonce changed")
+        profile_base = base / profile
+        _, files = stone_peer.evidence_files(profile_base)
+        if not set(files) <= peer_evidence_names(profile):
+            raise ValueError("Unexpected supervised evidence path")
+        # Validator binds source, descriptor, roles, UUIDs, nonces, PIDs, exits,
+        # cleanup, all case witnesses/packet chains, and all four FIFO hashes.
+        stone_peer.validate_profile(profile_base, result, launch, launch_hash, source, seen)
+        if result.get("nativeCompleted") is not True:
+            raise ValueError("Native profile never completed")
+    if len(seen) != 3:
+        raise ValueError("Every supervised profile requires a fresh nonce")
+    return report
+
+
+def collect_peer(data, env):
+    evidence = preserve_peer_evidence()
+    issues = list(evidence["issues"])
+    log = ""
+    try:
+        path = safe_evidence_path(ROOT, LOG)
+        with path.open("rb") as source:
+            raw = source.read(MAX_LOG_BYTES + 1)
+        if len(raw) > MAX_LOG_BYTES:
+            issues.append("Supervised launcher log exceeds the bounded evidence size")
+        raw = raw[:MAX_LOG_BYTES]
+        safe_evidence_path(ROOT, OUTPUT + "/native.log").write_bytes(raw)
+        log = raw.decode("utf-8-sig", errors="replace")
+        markers = [line[len(REQUEST_PREFIX):] for line in log.splitlines() if line.startswith(REQUEST_PREFIX)]
+        if len(markers) != 1 or json.loads(markers[0], object_pairs_hook=unique_object) != receipt(data):
+            raise ValueError("Supervised launcher request/source/run receipt differs")
+        if [line[len(EXIT_PREFIX):] for line in log.splitlines() if line.startswith(EXIT_PREFIX)] != ["0"]:
+            raise ValueError("Supervised launcher did not complete exactly once with exit zero")
+    except (ValueError, OSError, TypeError) as error:
+        issues.append(str(error))
+    try:
+        data["supervisedResult"] = validate_peer_result(data, env)
+        verify_peer_retention(evidence)
+    except (ValueError, OSError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as error:
+        issues.append("Supervised evidence unverified: " + str(error))
+    data.update(diagnosticOutcome="unverified" if issues else "passed", verificationIssues=issues,
+                evidence=evidence, **stone_peer.FLAGS, admissionGate="NOT_PROVEN", paidFormGate="NOT_PROVEN",
+                collectedAt=datetime.now(timezone.utc).isoformat())
+    write_json("diagnostic-result.json", data)
+    print("Diagnostic outcome: " + data["diagnosticOutcome"] + "; full and focused release gates remain unverified")
+    return 1 if issues else 0
 
 
 def observed_seeds(log, case):
@@ -487,6 +790,8 @@ def preserve_snapshots():
 
 def collect(env):
     data = prepared(env, for_collection=True)
+    if data["request"]["case"] == PEER_CASE:
+        return collect_peer(data, env)
     path = ROOT / LOG
     issues, log = [], ""
     if path.is_file() and not path.is_symlink():

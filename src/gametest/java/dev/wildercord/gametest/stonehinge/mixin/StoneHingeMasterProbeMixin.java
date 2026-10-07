@@ -18,6 +18,7 @@ public abstract class StoneHingeMasterProbeMixin {
 		target = "Ldev/wildercord/aura/world/SwordMaster;projected(Lnet/minecraft/world/entity/LivingEntity;D)F"))
 	private float stoneHinge$exactMelee(SwordMaster master, LivingEntity target, double damage, Operation<Float> original) {
 		if (attack != MastersRules.Move.SWEEP && attack != MastersRules.Move.THRUST) return original.call(master, target, damage);
-		return StoneHingeImpulseProbe.masterMelee(master, target, () -> original.call(master, target, damage));
+		return dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalRelease.observe(master, target,
+            () -> StoneHingeImpulseProbe.masterMelee(master, target, () -> original.call(master, target, damage)));
 	}
 }

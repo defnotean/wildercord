@@ -121,6 +121,7 @@ tasks.named('processGametestResources') {
 	inputs.property('twoClientSuitePresent', project.hasProperty('twoClientSuite'))
 	if (project.findProperty('twoClientSuite') == 'cast-receipt') inputs.file('src/gametest/resources/cast-receipt-native-contract.json')
 	if (project.findProperty('twoClientSuite') == 'moon') inputs.file('src/gametest/resources/crimson-moon-native-contract.json')
+    if (project.findProperty('twoClientSuite') == 'stone-hinge-peer') inputs.file('src/gametest/resources/stone-hinge-peer-native-contract.json')
 	inputs.property('twoClientUnitySuite', project.hasProperty('twoClientUnitySuite'))
 	inputs.property('twoClientRainshieldSuite', project.hasProperty('twoClientRainshieldSuite'))
 	inputs.property('twoClientCampSuite', project.hasProperty('twoClientCampSuite'))
@@ -152,7 +153,7 @@ tasks.named('processGametestResources') {
 		def multiplayer = ['twoClientUnitySuite', 'twoClientRainshieldSuite', 'twoClientCampSuite'].findAll { project.hasProperty(it) }
 		if (multiplayer.size() > 1 || (!multiplayer.isEmpty() && !project.hasProperty('twoClientSuite'))) throw new GradleException('Select one supervised multiplayer suite together with twoClientSuite')
 		def supervisedName = project.findProperty('twoClientSuite')?.toString() ?: ''
-		if (supervisedName && !(supervisedName in ['cast-receipt', 'moon'])) throw new GradleException('twoClientSuite must be empty (legacy), cast-receipt or moon')
+		if (supervisedName && !(supervisedName in ['cast-receipt', 'moon', 'stone-hinge-peer'])) throw new GradleException('twoClientSuite must be empty (legacy), cast-receipt, moon or stone-hinge-peer')
 		if (supervisedName && !multiplayer.isEmpty()) throw new GradleException('Named twoClientSuite cannot be combined with legacy companion flags')
 		if (project.hasProperty('tailFrom') && !project.hasProperty('tailSuite')) throw new GradleException('tailFrom requires tailSuite')
 		// CI runs the full descriptor as contiguous shards (`-PciShard=2 -PciShards=4`), keeping the
@@ -208,8 +209,15 @@ tasks.named('processGametestResources') {
 				if (contract.suite != 'moon' || contract.entrypoint != expected || contract.requiredMixins != hooks) throw new GradleException('Supervised Moon contract does not match its fixed entrypoint and passive hooks')
 				data.entrypoints['fabric-client-gametest'] = [expected]
 				data.mixins = ((data.mixins ?: []).findAll { it != 'crimson-moon-owner-gametest.mixins.json' } + hooks).unique()
-			} else {
-				data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientRainshieldSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsRainshieldTest' : project.hasProperty('twoClientCampSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsCampTest' : project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
+            } else if (supervisedName == 'stone-hinge-peer') {
+                def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/stone-hinge-peer-native-contract.json'))
+                def expected = 'dev.wildercord.aura.StoneHingePeerTransportTest'
+                if (contract.suite != 'stone-hinge-peer' || contract.entrypoint != expected || contract.expectedCount != 29)
+                    throw new GradleException('Stone Hinge requires its fixed 29-case supervised diagnostic contract')
+                data.entrypoints['fabric-client-gametest'] = [expected]
+                data.mixins = ((data.mixins ?: []) + ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json']).unique()
+            } else {
+                data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientRainshieldSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsRainshieldTest' : project.hasProperty('twoClientCampSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsCampTest' : project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
 			}
 			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
@@ -257,7 +265,7 @@ tasks.named('processGametestResources') {
 // resource processing is UP-TO-DATE. The manifest checks this evidence against the launcher.
 tasks.named('runClientGameTest') {
 	doFirst {
-		if (project.findProperty('twoClientSuite') in ['cast-receipt', 'moon']) throw new GradleException('Named two-client suites require exportTwoClientLaunch and tools/native/launch_two_clients.py; direct single-client execution is forbidden')
+		if (project.findProperty('twoClientSuite') in ['cast-receipt', 'moon', 'stone-hinge-peer']) throw new GradleException('Named two-client suites require exportTwoClientLaunch and tools/native/launch_two_clients.py; direct single-client execution is forbidden')
 		if (project.hasProperty('ciSuite')) {
 			def name = project.property('ciSuite').toString()
 			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))

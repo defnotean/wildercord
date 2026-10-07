@@ -4,6 +4,8 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.cast.Effects;
 import dev.wildercord.gametest.stonehinge.StoneHingeImpulseProbe;
+import dev.wildercord.player.Spellbooks;
+import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,12 +21,15 @@ public final class StoneHingeMasterReleaseChecks {
 	private StoneHingeMasterReleaseChecks() {}
 	public static void run(ClientGameTestContext context, TestSingleplayerContext world, ServerPlayer player, Vec3 origin) {
 		SwordMaster[] master = new SwordMaster[1];
+		StoneHingeImpulseProbe.Trial[] warning = new StoneHingeImpulseProbe.Trial[1];
 		StoneHingeImpulseProbe.Trial[] trial = new StoneHingeImpulseProbe.Trial[1];
 		try {
 			world.getServer().runOnServer(server -> {
 				player.setAttached(AuraAttachments.AURA, AuraAttachments.Data.NONE);
 				player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);
 				player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200); player.setHealth(200);
+				warning[0] = StoneHingeImpulseProbe.start(player);
+				warningReceipt("setup-reset", player, master[0], warning[0]);
 				player.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
 				player.teleportTo(player.level(), origin.x, origin.y, origin.z + 3, Set.of(), 180, 0, false);
 				player.setDeltaMovement(Vec3.ZERO); Effects.readyToHurt(player);
@@ -35,12 +40,18 @@ public final class StoneHingeMasterReleaseChecks {
 				master[0].mobInteract(player, InteractionHand.MAIN_HAND); master[0].mobInteract(player, InteractionHand.MAIN_HAND);
 				check(SwordMaster.ready(player) == 1, "The actual connected Survival challenger enrolls and closes the real trial");
 			});
-			world.getServer().waitFor(server -> master[0].started() && master[0].state(AuraFighter.WINDUP), 80);
+			world.getServer().waitFor(server -> {
+				boolean ready = master[0].started() && master[0].state(AuraFighter.WINDUP);
+				if (ready) warningReceipt("windup-observed", player, master[0], warning[0]);
+				return ready;
+			}, 80);
 			world.getServer().runOnServer(server -> {
 				check(master[0].canHarmParticipant(player) && master[0].challengerCount() == 1,
 					"The source is an active opted-in encounter with this real connected body");
 				MastersRules.Move selected = MasterMoveCatalog.legacy().byWireId(master[0].attackAnimation()).orElseThrow().legacyMove();
 				check(selected == MastersRules.Move.THRUST, "Unmodified Stone opening chooses its existing native THRUST: " + selected);
+				warningReceipt("before-health-assertion", player, master[0], warning[0]);
+				StoneHingeImpulseProbe.stop(warning[0]); warning[0] = null;
 				check(player.getHealth() == 200, "The real full warning has not dealt an early wound");
 				trial[0] = StoneHingeImpulseProbe.start(player);
 			});
@@ -67,13 +78,27 @@ public final class StoneHingeMasterReleaseChecks {
 		} finally {
 			world.getServer().runOnServer(server -> {
 				try {
+					if (warning[0] != null) {
+						try { warningReceipt("incomplete-warning-cleanup", player, master[0], warning[0]); }
+						finally { StoneHingeImpulseProbe.stop(warning[0]); }
+					}
 					if (trial[0] != null) StoneHingeImpulseProbe.stop(trial[0]);
 				} finally {
+					warning[0] = null;
 					trial[0] = null;
 					if (master[0] != null) master[0].discard();
 				}
 			});
 		}
+	}
+	/** Read-only snapshots; the last damage source can predate this interval, whose exact hits are logged separately. */
+	private static void warningReceipt(String phase, ServerPlayer player, SwordMaster master, StoneHingeImpulseProbe.Trial warning) {
+		Wildercord.LOGGER.info("STONE_HINGE_WARNING phase={} tick={} player={} health={} maxHealth={} absorption={} position={} velocity={} fallDistance={} grounded={} fireTicks={} frozenTicks={} air={} effects={} food={} saturation={} aura={} auraState={} mana={} circles={} cracks={} chargePresent={} master={} lastDamageAtSnapshot={} interval={}",
+			phase, player.level().getGameTime(), StoneHingeImpulseProbe.entityIdentity(player), player.getHealth(), player.getMaxHealth(), player.getAbsorptionAmount(),
+			player.position(), player.getDeltaMovement(), player.fallDistance, player.onGround(), player.getRemainingFireTicks(), player.getTicksFrozen(), player.getAirSupply(), player.getActiveEffects(),
+			player.getFoodData().getFoodLevel(), player.getFoodData().getSaturationLevel(), player.getAttached(AuraAttachments.AURA), player.getAttached(AuraAttachments.STATE),
+			Spellbooks.mana(player), player.getAttached(WildercordAttachments.CIRCLES), player.getAttached(WildercordAttachments.CRACKS), player.hasAttached(WildercordAttachments.CHARGE),
+			StoneHingeImpulseProbe.entityIdentity(master), StoneHingeImpulseProbe.sourceIdentity(player.getLastDamageSource()), warning.warningSummary());
 	}
 	private static void check(boolean value, String reason) { if (!value) throw new AssertionError(reason); }
 }

@@ -2,13 +2,17 @@ package dev.wildercord.gametest.stonehinge;
 
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraGuard;
+import dev.wildercord.aura.world.AuraFighter;
+import dev.wildercord.aura.world.SwordMaster;
 import dev.wildercord.cast.Targets;
 import dev.wildercord.cast.VoidTime;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -122,6 +126,10 @@ public final class StoneHingeImpulseProbe {
 		public String summary() {
 			return "hits=" + hits.stream().map(Hit::summary).toList() + ", impulses=" + impulses;
 		}
+		/** Extra admission diagnostics are opt-in; existing receipt and peer output keeps its original shape. */
+		public String warningSummary() {
+			return "hits=" + hits.stream().map(Hit::warningSummary).toList() + ", impulses=" + impulses;
+		}
 	}
 
 	/** Assert before clearing, so teardown cannot turn an unbalanced proof into a pass. */
@@ -154,6 +162,12 @@ public final class StoneHingeImpulseProbe {
 		final Hit previous;
 		final DamageSource source;
 		final net.minecraft.server.level.ServerLevel level;
+		final long tick;
+		final String sourceIdentity;
+		final float healthBefore, maxHealthBefore, absorptionBefore;
+		final double fallDistanceBefore;
+		final boolean groundedBefore;
+		final Vec3 velocityBefore;
 		final Vec3 position, look, attackerPosition, sourcePosition;
 		final float bodyYaw, headYaw, pitch;
 		final double facingDot;
@@ -163,6 +177,9 @@ public final class StoneHingeImpulseProbe {
 		private Hit(Trial trial, DamageSource source, Hit previous) {
 			this.trial = trial; this.source = source; this.previous = previous;
 			ServerPlayer player = trial.player; level = player.level(); position = player.position();
+			tick = level.getGameTime(); sourceIdentity = sourceIdentity(source);
+			healthBefore = player.getHealth(); maxHealthBefore = player.getMaxHealth(); absorptionBefore = player.getAbsorptionAmount();
+			fallDistanceBefore = player.fallDistance; groundedBefore = player.onGround(); velocityBefore = player.getDeltaMovement();
 			LivingEntity attacker = source.getEntity() instanceof LivingEntity living ? living : null;
 			look = player.getViewVector(1.0F); bodyYaw = player.getYRot(); headYaw = player.getYHeadRot(); pitch = player.getXRot();
 			attackerPosition = attacker == null ? null : attacker.position(); sourcePosition = source.getSourcePosition();
@@ -196,6 +213,24 @@ public final class StoneHingeImpulseProbe {
 			+ ", frontal=" + frontal + ", hostile=" + hostile + ", nested=" + contaminated
 			+ ", target=" + position + ", attacker=" + attackerPosition + ", sourcePosition=" + sourcePosition + ", look=" + look
 			+ ", bodyYaw=" + bodyYaw + ", headYaw=" + headYaw + ", pitch=" + pitch + ", facingDot=" + facingDot + "}"; }
+		private String warningSummary() { return "{tick=" + tick + ", sourceIdentity=" + sourceIdentity
+			+ ", healthBefore=" + healthBefore + ", maxHealthBefore=" + maxHealthBefore + ", absorptionBefore=" + absorptionBefore
+			+ ", fallDistanceBefore=" + fallDistanceBefore + ", groundedBefore=" + groundedBefore + ", velocityBefore=" + velocityBefore
+			+ ", nativeReceipt=" + summary() + "}"; }
+	}
+
+	/** Snapshot identity and any naturally running Master warning; never infer timing from a later live entity. */
+	public static String entityIdentity(Entity entity) {
+		if (entity == null) return "null";
+		return "{type=" + BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()) + ", id=" + entity.getId() + ", uuid=" + entity.getUUID()
+			+ ", dimension=" + entity.level().dimension().identifier() + ", fireTicks=" + entity.getRemainingFireTicks() + ", removed=" + entity.isRemoved()
+			+ (entity instanceof SwordMaster master ? ", started=" + master.started() + ", windup=" + master.state(AuraFighter.WINDUP)
+				+ ", attack=" + master.attackAnimation() + ", elapsed=" + master.attackElapsed(0) + ", tell=" + master.attackTellTicks() : "") + "}";
+	}
+	public static String sourceIdentity(DamageSource source) {
+		if (source == null) return "null";
+		return "{type=" + source.typeHolder().unwrapKey().map(key -> key.identifier().toString()).orElse(source.getMsgId())
+			+ ", owner=" + entityIdentity(source.getEntity()) + ", direct=" + entityIdentity(source.getDirectEntity()) + "}";
 	}
 
 	public static Hit begin(Player player, DamageSource source) {
