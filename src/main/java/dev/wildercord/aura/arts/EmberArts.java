@@ -243,9 +243,10 @@ public final class EmberArts {
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
-		LivingEntity foe = ArtKit.attacker(player, context, ArtRules.BACKDRAFT_REACH);
-		AuraGuard.Caught caught = AuraGuard.caught(player);
-		double blow = caught == null ? 0 : caught.damage();
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(BACKDRAFT) || !counter.valid()) return false;
+		LivingEntity foe = counter.target();
+		double blow = counter.caughtDamage();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.THRUST, false, 1.6F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		// The breath drawn in: a little flame pulled into the blade, then the gout.
@@ -281,17 +282,20 @@ public final class EmberArts {
 		double main = ArtRules.backdraft(ArtKit.weapon(player), blow) * ArtKit.scale();
 		if (foe != null) {
 			hits.raw(foe, main, AuraFxRules.Weight.HEAVY);
-			ArtKit.ignite(foe, ArtRules.BACKDRAFT_IGNITE);
-			ArtKit.knock(foe, feet, ArtRules.BACKDRAFT_THROW, 0.25);
+			if (!counter.afterDamage(foe)) return true;
+			if (counter.permits(foe)) ArtKit.ignite(foe, ArtRules.BACKDRAFT_IGNITE);
+			if (counter.permits(foe)) ArtKit.knock(foe, feet, ArtRules.BACKDRAFT_THROW, 0.25);
 			AuraPhysicalFx.fireImpact(level, foe.getBoundingBox().getCenter(), 1.0);
 		}
 		for (LivingEntity other : ArtKit.arc(player, null, ArtRules.BACKDRAFT_REACH, ArtRules.BACKDRAFT_DEGREES, ArtRules.BACKDRAFT_TARGETS)) {
-			if (other == foe) {
+			if (!counter.valid()) return true;
+			if (other == foe || !counter.permits(other)) {
 				continue;
 			}
 			hits.raw(other, main * ArtRules.BACKDRAFT_SPLASH, AuraFxRules.Weight.FULL);
-			ArtKit.ignite(other, ArtRules.BACKDRAFT_IGNITE);
-			ArtKit.knock(other, feet, ArtRules.BACKDRAFT_THROW * 0.7, 0.2);
+			if (!counter.afterDamage(other)) return true;
+			if (counter.permits(other)) ArtKit.ignite(other, ArtRules.BACKDRAFT_IGNITE);
+			if (counter.permits(other)) ArtKit.knock(other, feet, ArtRules.BACKDRAFT_THROW * 0.7, 0.2);
 		}
 		return true;
 	}

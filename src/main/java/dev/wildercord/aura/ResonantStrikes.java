@@ -67,9 +67,12 @@ public final class ResonantStrikes {
 		ServerPlayer mage=player(level,pair.spell().player()), striker=player(level,pair.blade().player());
 		Cast scoped = SCOPED.remove(new Receipt(target.getUUID(), pair.spell()));
 		if (pair.spell().scoped() && (scoped == null || !scoped.alive() || !scoped.admits(target))) return false;
+		var counter = MastersArts.earnedCounter(striker);
+		if (counter != null && !counter.permits(target)) return false;
 		answering=true;
 		try {
 			Aura.spend(striker,ResonantRules.COST,"resonant_strike");
+			if (counter != null && !counter.permits(target)) return false;
 			String name=ResonantRules.name(pair.spell().element(),pair.blade().element());
 			// Do not run Effects.hurt recursively: this bonus earns no hit resources or extra rune triggers.
 			float extra=ResonantRules.damage(pair.spell().taken(),pair.blade().taken(),target instanceof Player);
@@ -78,8 +81,10 @@ public final class ResonantStrikes {
 			extra=Math.min(extra,target instanceof Player?.75F:3F);
 			Cast identity=scoped!=null?scoped:cast!=null?cast:new Cast(mage);
 			SpellDefence.resonantHurt(identity,target,extra);
+			if (counter != null && !counter.afterDamage(target)) return false;
 			if (identity.guardedImpact() && (!identity.alive() || !identity.admits(target) || Shields.blocked(identity, target))) return false;
 			utility(striker,mage,target,pair);
+			if (counter != null && !counter.afterDamage(target)) return false;
 			ResonantVfx.play(level,striker,target,pair.spell().element(),pair.blade().element(),name);
 			Component message=Component.translatable("reaction.wildercord.resonant",Component.translatable("reaction.wildercord.resonant."+name));
 			striker.sendOverlayMessage(message); if(mage!=striker) mage.sendOverlayMessage(message);

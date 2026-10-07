@@ -9,16 +9,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(17, MastersStyleRules.STYLES.size());
+		assertEquals(19, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(ids.add(style.animation()));
 			assertTrue(names.add(style.art()));
-			assertEquals(style.animation() <= 12 ? 0 : style.animation() == 19 ? 4 : 1, ArtRules.art(style.art()).slot());
+			assertEquals(style.animation() <= 12 ? 0 : style.animation() == 19 ? 4 : style.animation() >= 20 ? 2 : 1, ArtRules.art(style.art()).slot());
 			assertEquals(style.animation() == 15 ? MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
 				: style.animation() == 16 ? MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT
 				: style.animation() == 17 || style.animation() == 18 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
+				: style.animation() >= 20 ? MastersStyleRules.TargetPolicy.EARNED_COUNTER
 				: MastersStyleRules.TargetPolicy.ACTIVE_CONE, style.targets());
 			assertSame(style, MastersStyleRules.of(style.art()));
 			assertSame(style, MastersStyleRules.animation(style.animation()));
@@ -123,6 +124,20 @@ class MastersStyleRulesTest {
 		assertEquals(90, MastersStyleRules.attackPitch(6, 90), .00001);
 		assertEquals(-90, MastersStyleRules.attackPitch(10, -90), .00001);
 		assertEquals(0, MastersStyleRules.attackPitch(10, Float.NaN));
+	}
+
+	@Test void earnedCountersAppendWithoutChangingTheirOriginalArtOrInput() {
+		for (String id : new String[] {"backdraft", "rooted_parry"}) {
+			var style = MastersStyleRules.of(id); var art = ArtRules.art(id);
+			assertEquals(id.equals("backdraft") ? 20 : 21, style.animation());
+			assertEquals(id.equals("backdraft") ? 4 : 6, style.windup());
+			assertEquals(id.equals("backdraft") ? 14 : 16, style.recovery());
+			assertEquals(8, art.cost()); assertEquals(80, art.cooldown()); assertEquals(2, art.slot());
+			assertEquals(MastersStyleRules.TargetPolicy.EARNED_COUNTER, style.targets());
+			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
+		}
+		assertEquals(50, ArtRules.ARTS.size());
+		assertEquals(31, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
 	}
 
 }

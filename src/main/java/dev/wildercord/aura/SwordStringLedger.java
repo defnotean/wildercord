@@ -35,13 +35,13 @@ final class SwordStringLedger {
 		boolean sameAttack(Context other) { return sameBodyAndLevel(other) && weapon == other.weapon; }
 	}
 
-	record Stroke(long serial, long tick, int marks, int recover) {}
+	record Stroke(long serial, long tick, int marks, int recover, Object guardReceipt) {}
 	record Proof(Object ledger, List<Stroke> strokes) {
 		Proof { strokes = List.copyOf(strokes); }
 		long terminalSerial() { return strokes.getLast().serial(); }
 		List<Integer> marks() { return strokes.stream().map(Stroke::marks).toList(); }
 	}
-	private record Snapshot(long tick, int marks, int recover, Context context, long guard, long step) {}
+	private record Snapshot(long tick, int marks, int recover, Context context, long guard, long step, Object guardReceipt) {}
 
 	private final Deque<Stroke> strokes = new ArrayDeque<>();
 	private Context context;
@@ -52,10 +52,15 @@ final class SwordStringLedger {
 	private long consumedSerial;
 	private long guardAt = NEVER;
 	private long stepAt = NEVER;
+	private Object guardReceipt;
+	private Context guardOwner;
 
-	void cue(long now, boolean guard, Context owner) {
+	void cue(long now, boolean guard, Context owner) { cue(now, guard, owner, null); }
+
+	/** Opaque immutable evidence from the real guard, captured with its owner before any callbacks. */
+	void cue(long now, boolean guard, Context owner, Object receipt) {
 		observe(now, owner);
-		if (guard) guardAt = now;
+		if (guard) { guardAt = now; guardReceipt = receipt; guardOwner = owner; }
 		else stepAt = now;
 	}
 
@@ -139,14 +144,17 @@ final class SwordStringLedger {
 
 	private Snapshot snapshot(long now, int observedMarks, int recover, Context owner) {
 		return new Snapshot(now, (observedMarks & BASE_MARKS) | SwordString.Token.SWING.bit() | cues(now),
-			Math.clamp(recover, 0, StringRules.MAX_RECOVER), owner, guardAt, stepAt);
+			Math.clamp(recover, 0, StringRules.MAX_RECOVER), owner, guardAt, stepAt,
+			fresh(guardAt, now, StringRules.COUNTER_TICKS) && guardOwner != null && guardOwner.sameAttack(owner) ? guardReceipt : null);
 	}
 
 	private boolean append(long now, Snapshot observation) {
-		strokes.addLast(new Stroke(++nextSerial, now, observation.marks(), observation.recover()));
+		strokes.addLast(new Stroke(++nextSerial, now, observation.marks(), observation.recover(), observation.guardReceipt()));
 		while (strokes.size() > SwordString.MAX_LENGTH + 2) strokes.removeFirst();
 		lastStroke = now;
-		if (SwordString.Token.COUNTER.fits(observation.marks()) && guardAt == observation.guard()) guardAt = NEVER;
+		if (SwordString.Token.COUNTER.fits(observation.marks()) && guardAt == observation.guard()) {
+			guardAt = NEVER; guardReceipt = null; guardOwner = null;
+		}
 		if (SwordString.Token.STEP.fits(observation.marks()) && stepAt == observation.step()) stepAt = NEVER;
 		return true;
 	}
@@ -169,6 +177,7 @@ final class SwordStringLedger {
 		context = null;
 		pending = null;
 		clock = lastStroke = guardAt = stepAt = NEVER;
+		guardReceipt = null; guardOwner = null;
 		// Serials remain monotonic across body/level/clock changes, so a stale proof cannot
 		// accidentally equal a later body that happens to make the same marks at the same tick.
 		consumedSerial = nextSerial;

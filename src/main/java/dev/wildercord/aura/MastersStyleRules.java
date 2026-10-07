@@ -12,6 +12,8 @@ public final class MastersStyleRules {
 		ACTIVE_CONE,
 		/** Keep the server-observed last-swing victim for a target/counter performer to validate itself. */
 		STRING_TARGET,
+		/** A real guard receipt and original struck/caught/cone/empty route, carried through one bounded clash. */
+		EARNED_COUNTER,
 		/** Capture Hailfall's observed cloud anchor and independent direct-priority right before its windup. */
 		HAILFALL_RECEIPT,
 		/** Capture Skyfall's observed-victim, nearest-cone or explicit-ground route before its windup. */
@@ -45,7 +47,9 @@ public final class MastersStyleRules {
 		new Style(16, "skyfall", 6, 16, TargetPolicy.SKYFALL_RECEIPT),
 		new Style(17, "collapse", 8, 18, TargetPolicy.GROUND_AHEAD),
 		new Style(18, "red_rain", 8, 16, TargetPolicy.GROUND_AHEAD),
-		new Style(19, "crimson_moon", 10, 20, TargetPolicy.ACTIVE_CONE)
+		new Style(19, "crimson_moon", 10, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(20, "backdraft", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(21, "rooted_parry", 6, 16, TargetPolicy.EARNED_COUNTER)
 	);
 
 	public static Style of(String art) {

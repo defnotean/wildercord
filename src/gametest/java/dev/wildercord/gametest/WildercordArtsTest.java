@@ -1040,7 +1040,16 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				}
 			}
 			int[] spectacle = context.computeOnClient(mc -> AuraFxClient.spectacle());
-			String done = on(world, player -> {
+			boolean earnedCounter = scene.id.equals(EmberArts.BACKDRAFT) || scene.id.equals(VerdantArts.ROOTED_PARRY);
+			if (earnedCounter) {
+				context.getInput().holdKey(o -> o.keyShift); context.waitTicks(2);
+				context.getInput().pressKey(WildercordKeys.auraMapping());
+				for (int t = 0; t < 4 && !on(world, AuraGuard::perfectNow); t++) context.waitTicks(1);
+				on(world, player -> { check(AuraGuard.perfectNow(player), "Repeated counter presentation earns its real guard");
+					foes(player).getFirst().doHurtTarget(player.level(), player); return null; });
+				context.waitTicks(2); swing(context);
+			}
+			String done = earnedCounter ? null : on(world, player -> {
 				AuraApi.StringArt art = AuraApi.string(scene.id).orElseThrow();
 				if (step) {
 					// A rush or a blink starts where a step ended: move the swordsman there first.

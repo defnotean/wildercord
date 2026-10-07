@@ -244,6 +244,8 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   catch(ReflectiveOperationException failure){throw new AssertionError("Cannot observe the actual Shelter journey counter",failure);}
  }
  private static void verifyStuckLookRestoration(ClientGameTestContext c,TestSingleplayerContext w) {
+  var witness=new BlockedJourneyWitness();
+  try {
   w.getServer().runOnServer(s -> {s.overworld().setBlock(ROOF,WetlandShelters.REFUGE.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,true),2);stuckVisitor=spawn(s,.5,3.5);});
   boolean started=false;
   for(int i=0;i<500;i++) {c.waitTicks(1);if(w.getServer().computeOnServer(s -> shelterRunning(stuckVisitor) && ((NewtPathNavigation)stuckVisitor.getNavigation()).followingRefuge())) {started=true;break;}}
@@ -252,13 +254,20 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    var at=stuckVisitor.blockPosition();
    // Enclose this later test actor after admission without overlapping its body.
    // The original glass-detour fixture and arrival proof have already completed.
-   for(var d:Direction.Plane.HORIZONTAL)s.overworld().setBlock(at.relative(d),Blocks.GLASS.defaultBlockState(),2);
+   for(var d:Direction.Plane.HORIZONTAL) {
+    witness.observe("before_glass_"+d,stuckVisitor);
+    s.overworld().setBlock(at.relative(d),Blocks.GLASS.defaultBlockState(),2);
+    witness.observe("after_glass_"+d,stuckVisitor);
+   }
+   witness.observe("before_glass_above",stuckVisitor);
    s.overworld().setBlock(at.above(),Blocks.GLASS.defaultBlockState(),2);
+   witness.observe("after_glass_above",stuckVisitor);
    check(s.overworld().noCollision(stuckVisitor,stuckVisitor.getBoundingBox()),"Stuck case leaves the actual body clear inside its water cell");
    return new int[]{stuckVisitor.tickCount,shelterTicksLeft(stuckVisitor)};
   });
   boolean stuck=false,expired=false;
   for(int i=0;i<260;i++) {c.waitTicks(1);var state=w.getServer().computeOnServer(s -> {
+   witness.observe("sample",stuckVisitor);
    var navigation=(NewtPathNavigation)stuckVisitor.getNavigation();
    if(navigation.isStuck())check(!navigation.followingRefuge() && stuckVisitor.getXRot()==0,"Native stuck termination immediately restores ordinary pitch reset");
    return new int[]{navigation.isStuck()?1:0,shelterRunning(stuckVisitor)?1:0,stuckVisitor.tickCount-journey[0]};
@@ -267,8 +276,45 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    // the actual remaining counter; selectors check every other tick.
    check(state[2]>=journey[1] && state[2]<=journey[1]+2,"Blocked Shelter first stops when its original journey counter expires: remaining="+journey[1]+", observed age="+state[2]);expired=true;break;
   }}
-  check(stuck && expired,"Native stuck detection and the unchanged finite Shelter journey both end the blocked approach");
+  witness.result(stuck,expired,journey);
+  check(stuck && expired,"Native stuck detection and the unchanged finite Shelter journey both end the blocked approach: stuck="+stuck+", expired="+expired);
   w.getServer().runOnServer(s -> {check(!stuckVisitor.resting() && stuckVisitor.refugeReady()==0,"Blocked approach never counts as arrival");stuckVisitor.setNoAi(true);checkOrdinaryLook(stuckVisitor,"native stuck detection and journey expiry");checkNativeSwimControl(stuckVisitor,true,"native stuck detection and journey expiry");});
+  }finally{witness.close();}
+ }
+
+ /** Local bounded reads of this actor's existing route and clocks; never requests a path. */
+ private static final class BlockedJourneyWitness implements AutoCloseable {
+  private static final int LIMIT=32;
+  private final List<String> first=new ArrayList<>(),milestones=new ArrayList<>();
+  private final ArrayDeque<String> last=new ArrayDeque<>();
+  private int observed,changed,errors,sinkFailures;private String previous="",result="event=result reached=false";
+  void observe(String phase,LanternNewt n) {
+   try {
+    var navigation=(NewtPathNavigation)n.getNavigation();var path=navigation.getPath();
+    var shelter=n.getGoalSelector().getAvailableGoals().stream().filter(g -> g.getGoal().getClass().getSimpleName().equals("Shelter")).findFirst().orElseThrow();var goal=shelter.getGoal();
+    var nativeTick=observedField(navigation,"tick");var stuckCheck=observedField(navigation,"lastStuckCheck");var recompute=observedField(navigation,"timeLastRecompute");
+    String route=EcologyReturnProbe.path(path);
+    String key=route+" "+navigation.isStuck()+" "+navigation.followingRefuge()+" "+shelter.isRunning()+" "+stuckCheck+" "+recompute;
+    var move=n.getMoveControl();
+    String row="event="+phase+" now="+n.level().getGameTime()+" tick="+n.tickCount+" actor="+n.getUUID()+" body="+n.position()+" box="+n.getBoundingBox()+" delta="+n.getDeltaMovement()
+     +" ground="+n.onGround()+" water="+n.isInWater()+" horizontalCollision="+n.horizontalCollision+" verticalCollision="+n.verticalCollision+" resting="+n.resting()+" refugeReady="+n.refugeReady()+" pitch="+n.getXRot()
+     +" movementInputs={x="+n.xxa+",y="+n.yya+",z="+n.zza+",speed="+n.getSpeed()+"} moveControl={operation="+observedField(move,"operation")+",wanted="+move.hasWanted()+",x="+move.getWantedX()+",y="+move.getWantedY()+",z="+move.getWantedZ()+",speed="+move.getSpeedModifier()+"}"
+     +" navigationDone="+navigation.isDone()+" nativePath="+route+" routePartial="+(path!=null&&!path.canReach())
+     +" isStuck="+navigation.isStuck()+" followingRefuge="+navigation.followingRefuge()+" refugeRoute="+observedField(navigation,"refugeRoute")
+     +" shelterRunning="+shelter.isRunning()+" travelLeft="+observedField(goal,"travelLeft")+" settled="+observedField(goal,"settled")+" retries="+observedField(goal,"retries")+" roof="+observedField(goal,"roof")
+     +" nativeClocks={tick="+nativeTick+",lastStuckCheck="+stuckCheck+",lastStuckCheckPos="+observedField(navigation,"lastStuckCheckPos")
+     +",timeoutCachedNode="+observedField(navigation,"timeoutCachedNode")+",timeoutTimer="+observedField(navigation,"timeoutTimer")+",timeoutLimit="+observedField(navigation,"timeoutLimit")
+     +",lastTimeoutCheck="+observedField(navigation,"lastTimeoutCheck")+",timeLastRecompute="+recompute+",hasDelayedRecomputation="+observedField(navigation,"hasDelayedRecomputation")+"}";
+    if(!phase.equals("sample")||!key.equals(previous)){changed++;if(milestones.size()<LIMIT)milestones.add(row);}
+    previous=key;observed++;if(first.size()<LIMIT)first.add(row);else{if(last.size()==LIMIT)last.removeFirst();last.addLast(row);}
+   }catch(Throwable failure){errors++;if(milestones.size()<LIMIT)milestones.add("event="+phase+" observationError="+failure);}
+  }
+  void result(boolean stuck,boolean expired,int[] journey) {result="event=result reached=true stuck="+stuck+" expired="+expired+" enclosureTick="+journey[0]+" originalRemaining="+journey[1];}
+  private void send(String row) {try{System.out.println("NEWT_BLOCKED_JOURNEY "+row);}catch(Throwable ignored){sinkFailures++;}}
+  @Override public void close() {
+   try{milestones.forEach(this::send);first.forEach(this::send);last.forEach(this::send);send(result);send("event=summary observed="+observed+" retained="+(first.size()+last.size())+" omitted="+Math.max(0,observed-first.size()-last.size())+" milestones="+changed+" retainedMilestones="+milestones.size()+" observationErrors="+errors+" sinkFailures="+sinkFailures);}
+   finally{first.clear();last.clear();milestones.clear();}
+  }
  }
 
  private static void feed(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> n) {int id=w.getServer().computeOnServer(s -> n.get().getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);});}

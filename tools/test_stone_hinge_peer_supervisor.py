@@ -1,5 +1,6 @@
 """Synthetic/fake-process Stone Hinge supervisor tests. Never open sockets or run Java."""
 import copy
+from contextlib import contextmanager
 from dataclasses import asdict
 import json
 import os
@@ -281,6 +282,236 @@ class WitnessTests(EvidenceFixture):
         with self.assertRaises(ValueError): gate.evidence_files(self.base)
 
 
+class EvidenceScanTests(EvidenceFixture):
+    @contextmanager
+    def after_enumeration(self, action):
+        """Run a real filesystem mutation after a walk captured IPC names."""
+        walk, fwalk = os.walk, os.fwalk
+        def scan(*args, **kwargs):
+            for directory, children, names in walk(*args, **kwargs):
+                if Path(directory) == self.ipc:
+                    action(names)
+                yield directory, children, names
+        def pinned_scan(*args, **kwargs):
+            for directory, children, names, descriptor in fwalk(*args, **kwargs):
+                if self.base / directory == self.ipc:
+                    action(names)
+                yield directory, children, names, descriptor
+        with patch.object(gate.os, "walk", scan), patch.object(gate.os, "fwalk", pinned_scan):
+            yield
+
+    def test_live_atomic_publication_is_counted_even_if_destination_was_not_enumerated(self):
+        for filename in ("case-04-passed.properties", "case-00-host.json", "host-failure.properties"):
+            with self.subTest(filename=filename):
+                destination = self.ipc / filename; temporary = destination.with_suffix(".tmp")
+                temporary.write_bytes(b"receipt")
+                def publish(names):
+                    self.assertIn(temporary.name, names)
+                    self.assertNotIn(destination.name, names)
+                    temporary.replace(destination)
+                with self.after_enumeration(publish):
+                    total, files = gate.evidence_files(self.base, active_profile="transparent")
+                self.assertEqual(total, 7)
+                self.assertEqual(files, {"ipc/" + filename: destination})
+                self.assertEqual(gate.artifact_hashes(self.base), {"ipc/" + filename: gate.s.digest(destination)})
+                destination.unlink()
+
+    def test_snapshot_containing_both_rename_names_counts_published_bytes_once(self):
+        destination = self.ipc / "case-00-host.json"; temporary = destination.with_suffix(".tmp")
+        temporary.write_bytes(b"receipt")
+        def publish(names):
+            temporary.replace(destination)
+            names.append(destination.name)
+        with self.after_enumeration(publish), patch.object(gate, "MAX_EVIDENCE", 7):
+            total, files = gate.evidence_files(self.base, active_profile="transparent")
+        self.assertEqual((total, len(files)), (7, 1))
+
+    def test_live_metadata_uses_one_nofollow_stat_even_if_publication_follows_it(self):
+        destination = self.ipc / "case-00-host.json"; temporary = destination.with_suffix(".tmp")
+        temporary.write_bytes(b"receipt")
+        native_stat = os.stat
+        def publish(path, *args, **kwargs):
+            info = native_stat(path, *args, **kwargs)
+            if path == temporary.name and kwargs.get("dir_fd") is not None:
+                self.assertIs(kwargs.get("follow_symlinks"), False)
+                temporary.replace(destination)
+            return info
+        with patch.object(gate.os, "stat", publish):
+            self.assertEqual(gate.evidence_files(self.base, active_profile="transparent")[0], 7)
+        self.assertEqual(gate.evidence_files(self.base)[1], {"ipc/case-00-host.json": destination})
+
+    def test_live_parent_swaps_never_follow_outside_metadata_and_close_owned_descriptors(self):
+        for parent_kind in ("ipc", "base"):
+            for missing in (False, True):
+                with self.subTest(parent=parent_kind, missing=missing), tempfile.TemporaryDirectory() as outside_name:
+                    outside = Path(outside_name)
+                    (outside / "case-00-host.json").write_bytes(b"outside must not be inspected")
+                    temporary = self.ipc / "case-00-host.tmp"; temporary.write_bytes(b"receipt")
+                    parent = self.ipc if parent_kind == "ipc" else self.base
+                    parked = parent.with_name(parent.name + "-retired")
+                    native_stat, native_open = os.stat, os.open
+                    opened, swapped, outside_reads = [], [], []
+                    outside_identity = (outside.stat().st_dev, outside.stat().st_ino)
+                    def retain_open(*args, **kwargs):
+                        descriptor = native_open(*args, **kwargs); opened.append(descriptor); return descriptor
+                    def swap(path, *args, **kwargs):
+                        descriptor = kwargs.get("dir_fd")
+                        if descriptor is not None:
+                            info = os.fstat(descriptor)
+                            if (info.st_dev, info.st_ino) == outside_identity: outside_reads.append(path)
+                        if path == temporary.name and descriptor is not None and not swapped:
+                            info = native_stat(path, *args, **kwargs)
+                            parent.rename(parked); parent.symlink_to(outside, target_is_directory=True); swapped.append(True)
+                            if missing: raise FileNotFoundError(2, "published while parent changed", str(temporary))
+                            return info
+                        return native_stat(path, *args, **kwargs)
+                    try:
+                        with patch.object(gate.os, "stat", swap), patch.object(gate.os, "open", retain_open):
+                            with self.assertRaisesRegex(ValueError, "Changed or linked live evidence directory"):
+                                gate.evidence_files(self.base, active_profile="transparent")
+                        self.assertTrue(swapped); self.assertEqual(outside_reads, [])
+                        self.assertGreaterEqual(len(opened), 2)
+                        self.assertLessEqual(len(opened), 4)
+                        for descriptor in opened:
+                            with self.assertRaises(OSError): os.fstat(descriptor)
+                    finally:
+                        if swapped: parent.unlink(); parked.rename(parent)
+                        temporary.unlink()
+
+    def test_live_walk_uses_retained_root_before_enumerating_names(self):
+        with tempfile.TemporaryDirectory() as outside_name:
+            outside = Path(outside_name); (outside / "foreign").write_bytes(b"outside")
+            parked = self.base.with_name(self.base.name + "-retired")
+            native_scandir = os.scandir; swapped, listed = [], []
+            def swap_before_enumeration(directory):
+                if not swapped:
+                    self.assertIsInstance(directory, int)
+                    self.base.rename(parked); self.base.symlink_to(outside, target_is_directory=True); swapped.append(True)
+                stream = native_scandir(directory)
+                class ObservedEntries:
+                    def __iter__(self): return self
+                    def __next__(self):
+                        entry = next(stream); listed.append(entry.name); return entry
+                    def __enter__(self): return self
+                    def __exit__(self, *args): stream.close()
+                    def close(self): stream.close()
+                return ObservedEntries()
+            try:
+                with patch.object(gate.os, "scandir", swap_before_enumeration):
+                    with self.assertRaisesRegex(ValueError, "Changed or linked live evidence directory"):
+                        gate.evidence_files(self.base, active_profile="transparent")
+                self.assertTrue(swapped); self.assertNotIn("foreign", listed)
+            finally:
+                if swapped: self.base.unlink(); parked.rename(self.base)
+
+    def test_final_scan_rejects_even_a_recognized_atomic_publication(self):
+        destination = self.ipc / "case-00-host.json"; temporary = destination.with_suffix(".tmp")
+        temporary.write_bytes(b"receipt")
+        with self.after_enumeration(lambda names: temporary.replace(destination)):
+            with self.assertRaisesRegex(ValueError, "final evidence path .*case-00-host.tmp"):
+                gate.artifact_hashes(self.base)
+
+    def test_live_scan_requires_recognized_temporary_and_present_destination(self):
+        for filename in ("case-00-host.tmp", "case-00-host.json", "unrecognized.tmp", "case-06-host.tmp"):
+            with self.subTest(filename=filename):
+                path = self.ipc / filename; path.write_bytes(b"receipt")
+                with self.after_enumeration(lambda names: path.unlink()):
+                    with self.assertRaisesRegex(ValueError, "live evidence path .*" + filename):
+                        gate.evidence_files(self.base, active_profile="symmetric")
+
+    def test_non_ipc_temporary_and_disappearing_log_are_never_ignored(self):
+        fwalk = os.fwalk
+        for filename in ("case-00-host.tmp", "host.log"):
+            with self.subTest(filename=filename):
+                path = self.base / filename; path.write_bytes(b"receipt")
+                destination = path.with_suffix(".json")
+                def scan(*args, **kwargs):
+                    for row in fwalk(*args, **kwargs):
+                        if self.base / row[0] == self.base:
+                            path.replace(destination)
+                        yield row
+                with patch.object(gate.os, "fwalk", scan):
+                    with self.assertRaisesRegex(ValueError, "live evidence path .*" + filename):
+                        gate.evidence_files(self.base, active_profile="transparent")
+                destination.unlink()
+
+    def test_symlink_fifo_and_directory_replacements_fail_in_both_phases(self):
+        for active_profile in (None, "transparent"):
+            for kind in ("symlink", "fifo", "directory"):
+                with self.subTest(active_profile=active_profile, kind=kind):
+                    path = self.ipc / "case-00-host.tmp"; path.write_bytes(b"receipt")
+                    def replace(names):
+                        path.unlink()
+                        if kind == "symlink": path.symlink_to(self.base / "absent")
+                        elif kind == "fifo": os.mkfifo(path)
+                        else: path.mkdir()
+                    with self.after_enumeration(replace):
+                        with self.assertRaisesRegex(ValueError, "(Linked|Non-regular) .* evidence path: .*case-00-host.tmp"):
+                            gate.evidence_files(self.base, active_profile=active_profile)
+                    if path.is_dir(): path.rmdir()
+                    else: path.unlink()
+
+    def test_renamed_destination_must_itself_be_regular_and_unlinked(self):
+        destination = self.ipc / "case-00-host.json"; temporary = destination.with_suffix(".tmp")
+        for kind in ("symlink", "fifo", "directory"):
+            with self.subTest(kind=kind):
+                temporary.write_bytes(b"receipt")
+                def replace(names):
+                    temporary.unlink()
+                    if kind == "symlink": destination.symlink_to(self.base / "absent")
+                    elif kind == "fifo": os.mkfifo(destination)
+                    else: destination.mkdir()
+                with self.after_enumeration(replace):
+                    with self.assertRaisesRegex(ValueError, "(Linked|Non-regular) live evidence path: .*case-00-host.json"):
+                        gate.evidence_files(self.base, active_profile="transparent")
+                if destination.is_dir(): destination.rmdir()
+                else: destination.unlink()
+
+    def test_missing_or_linked_root_and_subdirectories_fail_in_both_phases(self):
+        for active_profile in (None, "transparent"):
+            with self.subTest(active_profile=active_profile):
+                with self.assertRaisesRegex(ValueError, "evidence path .*absent"):
+                    gate.evidence_files(self.base / "absent", active_profile=active_profile)
+                linked = self.base / "linked"; linked.symlink_to(self.ipc, target_is_directory=True)
+                with self.assertRaisesRegex(ValueError, "Linked .* evidence path: .*linked"):
+                    gate.evidence_files(linked, active_profile=active_profile)
+                with self.assertRaisesRegex(ValueError, "Linked .* evidence path: .*linked"):
+                    gate.evidence_files(self.base, active_profile=active_profile)
+                linked.unlink()
+
+    def test_walk_errors_are_not_silently_ignored(self):
+        def fail(base, *, followlinks, onerror):
+            onerror(PermissionError(13, "denied", str(self.ipc)))
+            return iter(())
+        with patch.object(gate.os, "walk", fail):
+            with self.assertRaisesRegex(ValueError, "Cannot walk final evidence path .*ipc"):
+                gate.evidence_files(self.base)
+
+    def test_temporary_and_published_bytes_keep_the_exact_16_mib_cap(self):
+        path = self.ipc / "case-00-host.tmp"
+        for active_profile in (None, "transparent"):
+            with self.subTest(active_profile=active_profile):
+                with path.open("wb") as stream: stream.truncate(16 * 1024 * 1024)
+                self.assertEqual(gate.evidence_files(self.base, active_profile=active_profile)[0], 16 * 1024 * 1024)
+                with path.open("ab") as stream: stream.write(b"x")
+                with self.assertRaisesRegex(ValueError, "exceeded 16 MiB: .*case-00-host.tmp"):
+                    gate.evidence_files(self.base, active_profile=active_profile)
+        destination = path.with_suffix(".json")
+        with self.after_enumeration(lambda names: path.replace(destination)):
+            with self.assertRaisesRegex(ValueError, "exceeded 16 MiB: .*case-00-host.json"):
+                gate.evidence_files(self.base, active_profile="transparent")
+
+    def test_live_and_final_file_counts_remain_bounded(self):
+        for index in range(1024): (self.ipc / str(index)).touch()
+        for active_profile in (None, "transparent"):
+            with self.subTest(active_profile=active_profile):
+                self.assertEqual(len(gate.evidence_files(self.base, active_profile=active_profile)[1]), 1024)
+                extra = self.ipc / "extra"; extra.touch()
+                with self.assertRaisesRegex(ValueError, "Unbounded .* evidence file count: "):
+                    gate.evidence_files(self.base, active_profile=active_profile)
+                extra.unlink()
+
+
 class FakeClock:
     def __init__(self): self.now = 0.0
     def __call__(self): return self.now
@@ -317,6 +548,18 @@ class LifecycleTests(EvidenceFixture):
         factory = unittest.mock.Mock()
         with self.assertRaisesRegex(ValueError, "deadline"): self.drive([FakeProcess(100), FakeProcess(200)], factory)
         factory.assert_not_called()
+
+    def test_supervision_survives_atomic_publication_but_still_enforces_deadline(self):
+        temporary = self.ipc / "case-00-host.tmp"; temporary.write_bytes(b"receipt")
+        fwalk = os.fwalk
+        def publish(*args, **kwargs):
+            for row in fwalk(*args, **kwargs):
+                if self.base / row[0] == self.ipc and temporary.name in row[2]:
+                    temporary.replace(temporary.with_suffix(".json"))
+                yield row
+        with patch.object(gate.os, "fwalk", publish):
+            with self.assertRaisesRegex(ValueError, "elapsed deadline expired"):
+                self.drive([FakeProcess(100), FakeProcess(200)])
 
     def test_host_must_remain_owned_and_alive_at_ready(self):
         self.properties("server-ready.properties", "host", {"port": "33003"})
@@ -438,6 +681,12 @@ class FinalResultTests(EvidenceFixture):
     def test_late_log_or_native_witness_mutation_cannot_preserve_success(self):
         for path in (self.base / "host.log", self.ipc / "case-00-host.json"):
             original = path.read_bytes(); path.write_bytes(original + b" ")
+            with self.subTest(path=path.name), self.assertRaises(ValueError): self.validate()
+            path.write_bytes(original)
+
+    def test_final_missing_log_or_native_witness_cannot_preserve_success(self):
+        for path in (self.base / "host.log", self.ipc / "case-00-host.json"):
+            original = path.read_bytes(); path.unlink()
             with self.subTest(path=path.name), self.assertRaises(ValueError): self.validate()
             path.write_bytes(original)
 

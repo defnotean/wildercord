@@ -6,22 +6,22 @@ import static dev.wildercord.aura.ArticulatedCombatPose.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /** Pure body/view geometry and accepted-clock contracts; native silhouette and HUD pixels need captures. */
-class ArticulatedGroundFieldPoseTest {
+class ArticulatedEarnedCounterPoseTest {
 	private static final float EPS = .0008F;
-	private static final int[] MOVES = {COLLAPSE, RED_RAIN};
+	private static final int[] MOVES = {BACKDRAFT, ROOTED_PARRY};
 	private static final Joint[] FEET = {Joint.RIGHT_FOOT, Joint.LEFT_FOOT};
 	private static final Joint[] HANDS = {Joint.RIGHT_HAND, Joint.LEFT_HAND};
 
 	@Test
-	void groundFieldsUsePresentationIdsWithoutCreatingSharedInputsOrNpcAttacks() {
-		assertEquals(17, COLLAPSE);
-		assertEquals(18, RED_RAIN);
+	void earnedCountersUsePresentationIdsWithoutCreatingSharedInputsOrNpcAttacks() {
+		assertEquals(20, BACKDRAFT);
+		assertEquals(21, ROOTED_PARRY);
 		for (int move : MOVES) {
 			assertTrue(supportsPlayer(move));
 			assertTrue(MastersArtAnimation.supports(move));
 			assertNull(MastersArtRules.move(move), "Style forms do not add shared activation ordinals");
 			assertFalse(supportsMaster(move));
-			assertEquals(move == COLLAPSE ? "collapse" : "red_rain", MastersStyleRules.animation(move).art());
+			assertEquals(move == BACKDRAFT ? "backdraft" : "rooted_parry", MastersStyleRules.animation(move).art());
 		}
 		for (int move : new int[] {-1, 5, 14, 22, Integer.MAX_VALUE}) {
 			assertFalse(supportsPlayer(move));
@@ -33,13 +33,13 @@ class ArticulatedGroundFieldPoseTest {
 	void acceptedWindowsHaveOneReleaseTickAndEndAtTheExistingExpiry() {
 		for (int move : MOVES) {
 			var rule = MastersStyleRules.animation(move);
-			assertEquals(8, rule.windup());
-			assertEquals(move == COLLAPSE ? 18 : 16, rule.recovery());
+			assertEquals(move == BACKDRAFT ? 4 : 6, rule.windup());
+			assertEquals(move == BACKDRAFT ? 14 : 16, rule.recovery());
 			for (boolean left : new boolean[] {false, true}) {
 				for (float age = 0; age < rule.windup() + rule.recovery(); age += .125F) {
 					Pose pose = sample(move, age, left);
 					Phase expected = age < rule.windup() ? Phase.WINDUP : age < rule.windup() + 1 ? Phase.ACTIVE : Phase.RECOVERY;
-					assertEquals(expected, pose.phase(), "One physical release only, including the field's lingering ticks");
+					assertEquals(expected, pose.phase(), "One physical release only, without replaying the earned opening");
 					assertEquals(expected, view(pose, left).phase());
 					assertTrue(pose.weight() >= 0 && pose.weight() <= 1);
 				}
@@ -59,27 +59,25 @@ class ArticulatedGroundFieldPoseTest {
 	}
 
 	@Test
-	void collapseCommitsGroundwardWhileRedRainDescendsAcrossTheBody() {
-		Pose collapseChamber = sample(COLLAPSE, 5.2F, false), collapseRelease = sample(COLLAPSE, 8, false);
-		Pose rainChamber = sample(RED_RAIN, 5.2F, false), rainRelease = sample(RED_RAIN, 8, false);
-		Vec3 collapseStart = collapseChamber.socket(false).transform(0, 0, 0);
-		Vec3 collapseEnd = collapseRelease.socket(false).transform(0, 0, 0);
-		Vec3 rainStart = rainChamber.socket(false).transform(0, 0, 0);
-		Vec3 rainEnd = rainRelease.socket(false).transform(0, 0, 0);
-		assertTrue(collapseEnd.y() > collapseStart.y() + 4, "Collapse lowers its grip into a groundward commitment");
-		assertTrue(collapseEnd.y() - collapseStart.y() > Math.abs(collapseEnd.x() - collapseStart.x()),
-			"Collapse reads primarily downward rather than as a lateral sweep");
-		assertTrue(rainEnd.y() > rainStart.y() + 4, "Red Rain descends from its high chamber");
-		assertTrue(rainEnd.x() > rainStart.x() + 4, "Red Rain carries the descending cut across the body");
-		assertTrue(rainStart.x() < 0 && rainEnd.x() > 0, "Red Rain crosses the body's centre line");
-		assertNotEquals(collapseRelease.local(Joint.RIGHT_UPPER_ARM), rainRelease.local(Joint.RIGHT_UPPER_ARM));
-		assertNotEquals(collapseRelease.local(Joint.RIGHT_SOCKET), rainRelease.local(Joint.RIGHT_SOCKET));
-		assertNotEquals(view(collapseRelease, false).local(Joint.RIGHT_SOCKET), view(rainRelease, false).local(Joint.RIGHT_SOCKET));
+	void shortPointAndRootedRisingReplyHaveDistinctBodyAndViewPaths() {
+		Pose backBrace = sample(BACKDRAFT, 2.6F, false), backRelease = sample(BACKDRAFT, 4, false);
+		Pose rootBrace = sample(ROOTED_PARRY, 3.9F, false), rootRelease = sample(ROOTED_PARRY, 6, false);
+		Vec3 backStart = backBrace.socket(false).transform(0, 0, 0), backEnd = backRelease.socket(false).transform(0, 0, 0);
+		Vec3 rootStart = rootBrace.socket(false).transform(0, 0, 0), rootEnd = rootRelease.socket(false).transform(0, 0, 0);
+		assertTrue(backEnd.z() < backStart.z() - 1, "Backdraft extends its point from the braced ribs");
+		assertTrue(Math.abs(backEnd.x() - backStart.x()) < 3, "Backdraft remains a narrow reply");
+		assertTrue(rootEnd.y() < rootStart.y() - 3, "Rooted Parry lifts its grip from the low brace");
+		assertTrue(rootRelease.local(Joint.PELVIS).y() < rootBrace.local(Joint.PELVIS).y(), "Rooted knees open without jumping");
 		for (int move : MOVES) {
-			Pose release = sample(move, 8, false);
+			var rule = MastersStyleRules.animation(move);
+			Pose release = sample(move, rule.windup(), false);
 			assertNotEquals(release.local(Joint.RIGHT_UPPER_ARM), view(release, false).local(Joint.RIGHT_UPPER_ARM),
 				"First-person framing is authored independently of the world body");
+			assertNotEquals(release.local(Joint.RIGHT_UPPER_ARM), samplePlayer(DRIVING_CUT, 6, 6, 18, false).local(Joint.RIGHT_UPPER_ARM));
 		}
+		assertNotEquals(backRelease.local(Joint.RIGHT_SOCKET), rootRelease.local(Joint.RIGHT_SOCKET));
+		assertNotEquals(view(backRelease, false).local(Joint.RIGHT_SOCKET), view(rootRelease, false).local(Joint.RIGHT_SOCKET));
+		assertEquals(9, MastersStyleRules.STYLES.stream().filter(style -> supportsPlayer(style.animation())).count());
 	}
 
 	@Test
@@ -129,7 +127,7 @@ class ArticulatedGroundFieldPoseTest {
 
 	@Test
 	void bodyAndViewMirrorEveryJointAndSocketThroughoutTheAcceptedClock() {
-		for (int move : MOVES) for (float age = 0; age <= 27; age += .125F) {
+		for (int move : MOVES) for (float age = 0; age <= 22; age += .125F) {
 			Pose right = sample(move, age, false), left = sample(move, age, true);
 			ViewPose rv = view(right, false), lv = view(left, true);
 			assertEquals(right.phase(), left.phase());
@@ -162,7 +160,7 @@ class ArticulatedGroundFieldPoseTest {
 
 	@Test
 	void firstPersonGripAndGuardRemainBeyondNearPlaneBelowAimAndAboveTheHud() {
-		for (int move : MOVES) for (boolean left : new boolean[] {false, true}) for (float age = 0; age <= 27; age += .0625F) {
+		for (int move : MOVES) for (boolean left : new boolean[] {false, true}) for (float age = 0; age <= 22; age += .0625F) {
 			ViewPose camera = view(sample(move, age, left), left);
 			assertEquals(new Vec3(0, -.7F, -.9F), camera.origin());
 			for (Joint joint : new Joint[] {Joint.RIGHT_SHOULDER, Joint.RIGHT_FOREARM, Joint.RIGHT_HAND, Joint.RIGHT_SOCKET,

@@ -66,7 +66,8 @@ public final class CheckArticulatedArmorGeometry {
 		boolean openingStyles = args.length == 1 && args[0].equals("--opening-styles");
 		boolean hailSky = args.length == 1 && args[0].equals("--hail-sky");
 		boolean groundFields = args.length == 1 && args[0].equals("--ground-fields");
-		boolean styles = openingStyles || hailSky || groundFields;
+		boolean earnedCounters = args.length == 1 && args[0].equals("--earned-counters");
+		boolean styles = openingStyles || hailSky || groundFields || earnedCounters;
 		var roots = EntityModelSet.vanilla();
 		Metrics total = new Metrics();
 		StringBuilder variants = new StringBuilder();
@@ -81,7 +82,7 @@ public final class CheckArticulatedArmorGeometry {
 			}
 			var viewModel = new ArticulatedArmorGeometry(roots.bakeLayer(layers.chest()), EquipmentSlot.CHEST, true);
 			if (viewModel.mesh().controlPoints().stream().anyMatch(point -> !point.region().arm())) throw new AssertionError("Non-arm first-person armor");
-			for (boolean left : new boolean[] {false, true}) for (int move : groundFields ? new int[] {17, 18} : hailSky ? new int[] {15, 16} : openingStyles ? new int[] {3, 4} : shared ? new int[] {1, 2} : new int[] {0}) {
+			for (boolean left : new boolean[] {false, true}) for (int move : earnedCounters ? new int[] {20, 21} : groundFields ? new int[] {17, 18} : hailSky ? new int[] {15, 16} : openingStyles ? new int[] {3, 4} : shared ? new int[] {1, 2} : new int[] {0}) {
 				Metrics metrics = new Metrics();
 				var rig = new ArticulatedRig(slim, false);
 				var style = styles ? MastersStyleRules.animation(move) : null;
@@ -91,6 +92,8 @@ public final class CheckArticulatedArmorGeometry {
 					throw new AssertionError("Hail/Sky audit requires accepted 8/16 and 6/16 windows");
 				if (groundFields && (style == null || style.windup() != 8 || style.recovery() != (move == 17 ? 18 : 16)))
 					throw new AssertionError("Ground field audit requires accepted 8/18 and 8/16 windows");
+				if (earnedCounters && (style == null || style.windup() != (move == 20 ? 4 : 6) || style.recovery() != (move == 20 ? 14 : 16)))
+					throw new AssertionError("Earned-counter audit requires accepted 4/14 and 6/16 windows");
 				var rule = styles ? null : MastersArtRules.move(move);
 				int windup = styles ? style.windup() : rule.windup();
 				int recovery = styles ? style.recovery() : rule.recovery();

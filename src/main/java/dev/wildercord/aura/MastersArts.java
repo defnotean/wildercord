@@ -78,6 +78,7 @@ public final class MastersArts {
 	private static Aim activeAim;
 	private record Targets(ServerPlayer player, dev.wildercord.aura.arts.ArtReleaseTargets.Release receipt) {}
 	private static Targets activeTargets;
+	private static EarnedCounters.Release activeCounter;
 	private record Pending(ServerPlayer player, java.util.function.BooleanSupplier valid) {}
 	private static final Map<UUID, Pending> PENDING = new HashMap<>();
 	/** A short physical continuation, separate from already-launched fields, wounds and afterimages. */
@@ -119,7 +120,7 @@ public final class MastersArts {
 			forget(handler.player.getUUID());
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			REQUESTS.clear(); PENDING.clear(); activeAim = null; activeTargets = null; performingContinuation = null;
+			REQUESTS.clear(); PENDING.clear(); activeAim = null; activeTargets = null; activeCounter = null; performingContinuation = null;
 			CONTINUATIONS.values().forEach(sequence -> sequence.cancelled = true);
 			CONTINUATIONS.clear();
 		});
@@ -168,34 +169,50 @@ public final class MastersArts {
 	 * Starts one selected style's physical windup. SwordStrings commits its own price and individual rest once this accepts;
 	 * the performer and its success hooks run only at the active frame. Other arts keep their existing timing.
 	 */
-	static boolean beginStyle(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context, Runnable impact) {
+	static boolean beginStyle(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context,
+			EarnedCounters.Attempt counter, double cost, Runnable payment, Runnable impact) {
+		try (var admission = dev.wildercord.cast.ActionAdmission.begin(player)) {
+			return admission != null && beginStyle(player, art, context, counter, cost, payment, impact, admission);
+		}
+	}
+
+	private static boolean beginStyle(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context,
+			EarnedCounters.Attempt counter, double cost, Runnable payment, Runnable impact, dev.wildercord.cast.ActionAdmission admission) {
 		MastersStyleRules.Style style = MastersStyleRules.of(art.id());
-		if (dev.wildercord.cast.ExciseCasting.blocking(player) || MasterForms.committed(player) || style == null || committed(player) || !eligible(player) || Aura.stage(player) < art.stage()
+		if (dev.wildercord.cast.ExciseCasting.blocking(player) || MasterForms.committed(player) || style == null || committed(player) || !eligible(player, counter != null && counter.canLowerGuard(player)) || Aura.stage(player) < art.stage()
 			|| !art.available().test(player) || !dev.wildercord.config.Config.get().aura().strings().enabled()) return false;
+		if ((style.targets() == MastersStyleRules.TargetPolicy.EARNED_COUNTER) != (counter != null)
+			|| counter != null && !counter.ownerValid(player)) return false;
 		Vec3 aim = ArtKit.flat(player);
 		Vec3 view = player.getViewVector(1.0F);
 		boolean targetBearing = style.targets() == MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
 			|| style.targets() == MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT;
 		var accepted = targetBearing ? dev.wildercord.aura.arts.ArtReleaseTargets.accept(player, context, aim, view) : null;
 		if (targetBearing && accepted == null) return false;
+		if (!art.condition().met(player) || !admission.valid() || !SwordStrings.rested(player, art)
+			|| !eligible(player, counter != null && counter.canLowerGuard(player))
+			|| counter != null && !counter.ownerValid(player) || Aura.aura(player) < cost - 1.0E-4) return false;
 		long now = player.level().getServer().overworld().getGameTime();
 		Rest rest = player.getAttachedOrElse(REST, Rest.NONE);
 		player.setAttached(REST, new Rest(rest.spellcut(), rest.rising(), rest.driving(), now + style.windup() + style.recovery()));
 		schedule(player, style.animation(), style.windup(), style.recovery(),
 			() -> Aura.stage(player) >= art.stage() && art.available().test(player)
 				&& dev.wildercord.config.Config.get().aura().strings().enabled()
-				&& (accepted == null || accepted.ownerValid(player)), () -> {
+				&& (accepted == null || accepted.ownerValid(player)) && (counter == null || counter.ownerValid(player)), () -> {
 				Aim outer = activeAim;
 				Targets outerTargets = activeTargets;
+				EarnedCounters.Release outerCounter = activeCounter;
 				activeAim = new Aim(player, aim, view);
 				try {
 					var release = accepted == null ? null : accepted.release(player);
+					var counterRelease = counter == null ? null : counter.release(player);
 					// A lost selected target is a paid whiff: keep the readable accepted motion/recovery, with no effects or hooks.
-					if (targetBearing && release == null) return;
+					if (targetBearing && release == null || counter != null && counterRelease == null) return;
 					activeTargets = release == null ? null : new Targets(player, release);
+					activeCounter = counterRelease;
 					impact.run();
-				} finally { activeAim = outer; activeTargets = outerTargets; }
-			});
+				} finally { activeAim = outer; activeTargets = outerTargets; activeCounter = outerCounter; }
+			}, payment, counter);
 		return true;
 	}
 
@@ -215,15 +232,25 @@ public final class MastersArts {
 			? activeTargets.receipt() : null;
 	}
 
-	private static boolean eligible(ServerPlayer player) {
+	public static EarnedCounters.Release earnedCounter(ServerPlayer player) {
+		return activeAim != null && activeAim.player() == player ? activeCounter : null;
+	}
+
+	private static boolean eligible(ServerPlayer player) { return eligible(player, false); }
+	private static boolean eligible(ServerPlayer player, boolean earnedGuard) {
 		return Float.isFinite(player.getYRot()) && Float.isFinite(player.getXRot()) && player.isAlive() && !player.isRemoved() && !player.isSpectator() && Aura.enabled(player) && Aura.holdsWeapon(player)
-			&& !Awakening.spent(player) && !player.isPassenger() && !player.isSleeping() && !AuraGuard.guarding(player)
+			&& !Awakening.spent(player) && !player.isPassenger() && !player.isSleeping() && (earnedGuard || !AuraGuard.guarding(player))
 			&& !Clashes.holding(player) && !dev.wildercord.aura.arts.ArtWards.silenced(player) && !CastLock.locked(player) && !Stance.opened(player);
 	}
 
 	/** One shared cancellation and recovery contract for both the new keys and the authored fixed-release style forms. */
 	private static void schedule(ServerPlayer player, int animation, int windup, int recovery,
 			java.util.function.BooleanSupplier stillEligible, Runnable impact) {
+		schedule(player, animation, windup, recovery, stillEligible, impact, null, null);
+	}
+
+	private static void schedule(ServerPlayer player, int animation, int windup, int recovery,
+			java.util.function.BooleanSupplier stillEligible, Runnable impact, Runnable payment, EarnedCounters.Attempt counter) {
 		var level = player.level();
 		var blade = player.getMainHandItem();
 		String method = Aura.data(player).method();
@@ -232,6 +259,13 @@ public final class MastersArts {
 			&& level.getServer().getPlayerList().getPlayer(player.getUUID()) == player
 			&& method.equals(Aura.data(player).method()) && stillEligible.getAsBoolean());
 		PENDING.put(player.getUUID(), token);
+		// Install the cancellation token before the payment hook. A callback cannot erase and then revive this windup.
+		if (payment != null) payment.run();
+		// Payment is final even when its callback cancels the hit: the original guard still lowers for exposed recovery.
+		if (counter != null) counter.lowerAfterPaid(player);
+		if (PENDING.get(player.getUUID()) != token) return;
+		if (counter != null && (!counter.ownerValid(player) || !counter.canLowerGuard(player))) { cancel(player); return; }
+		if (!valid(token)) { cancel(player); return; }
 		broadcast(player, new Performed(player.getId(), animation, level.getGameTime(), windup, recovery,
 			net.minecraft.util.Mth.wrapDegrees(player.getYRot()), MastersStyleRules.attackPitch(animation, player.getXRot())));
 		AuraFx.bodyAuraFlare(player, windup, 0.45F);

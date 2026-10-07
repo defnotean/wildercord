@@ -25,12 +25,28 @@ def main(argv=None):
     except (ValueError, KeyError, OSError) as exc:
         parser.error(str(exc))
     issues = []
+    required_part = selection["kind"] == "required-part"
+    part = {}
     try:
-        log = args.log.read_text(encoding="utf-8-sig", errors="replace")
-    except FileNotFoundError:
+        if required_part:
+            from masters_required_ci import MAX_LOG_BYTES
+            if args.log.is_symlink() or not args.log.is_file():
+                raise ValueError("Required part log must be a regular non-symlink file")
+            with args.log.open("rb") as source:
+                raw = source.read(MAX_LOG_BYTES + 1)
+            if len(raw) > MAX_LOG_BYTES:
+                raise ValueError("Required part log exceeds bounded evidence size")
+            log = raw.decode("utf-8-sig", errors="replace")
+        else:
+            log = args.log.read_text(encoding="utf-8-sig", errors="replace")
+    except (FileNotFoundError, ValueError) as exc:
         log = ""
-        issues.append("Log was not created; native execution is unverified")
+        issues.append("Native execution is unverified: " + str(exc))
     issues.extend(selection_issues(log, selection))
+    if required_part:
+        from masters_required_ci import part_evidence
+        part, part_issues = part_evidence(log, selection)
+        issues.extend(part_issues)
     successful = "BUILD SUCCESSFUL" in log and "BUILD FAILED" not in log and not issues
     optional = {
         "RunicAnimationGalleryTest": (args.gallery, "WILDERCORD_ANIMATION_GALLERY=1"),
@@ -52,13 +68,15 @@ def main(argv=None):
             units[key] += int(root.get(key, "0"))
     focused = selection["kind"] == "suite"
     diagnostic = selection["kind"] == "diagnostic"
-    manifest = {"fullClientGate": "passed" if successful and not (focused or diagnostic) else "unverified", "log": str(args.log.resolve()),
+    manifest = {"fullClientGate": "passed" if successful and not (focused or diagnostic or required_part) else "unverified", "log": str(args.log.resolve()),
                 **({"shard": selection["shard"]} if selection["kind"] == "shard" else {}),
                 **({"focusedClientGate": "passed" if successful else "unverified"} if focused else {}),
                 **({"focusedClientGate": "unverified", "diagnosticOutcome": "passed" if successful else "unverified"} if diagnostic else {}),
+                **({**part, "focusedClientGate": "unverified", "requiredPartOutcome": "passed" if successful else "unverified"} if required_part else {}),
                 "selection": selection,
                 "verificationIssues": issues,
-                "basis": ("Diagnostic selection only. Neither full nor focused release acceptance is established by this run."
+                "basis": ("One required Masters part only. All three matching passed parts are required for the 44-class focused gate; full client and manual visual acceptance remain unverified."
+                          if required_part else "Diagnostic selection only. Neither full nor focused release acceptance is established by this run."
                           if diagnostic else "Named focused selection only, verified against the launcher's selection/exit and Gradle's processed descriptor evidence. "
                           "The full client gate and animation gallery are not established by this run. "
                           "Suite counts are not individual assertion counts." if focused else
@@ -74,7 +92,7 @@ def main(argv=None):
                       "client": manifest["counts"], "unit": units}))
     # The focused job must not turn green if execution or scope evidence is missing.
     # Keep the existing full/shard report-only exit behavior unchanged.
-    return 1 if (focused or diagnostic) and not successful else 0
+    return 1 if (focused or diagnostic or required_part) and not successful else 0
 
 
 if __name__ == "__main__":

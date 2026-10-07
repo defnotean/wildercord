@@ -224,6 +224,13 @@ public final class SwordStrings {
 		if (ServerPlayNetworking.canSend(player, Cue.TYPE)) ServerPlayNetworking.send(player, new Cue(cue.ordinal()));
 	}
 
+	/** The exact receipt is recorded at guard earning, before any guard consequence can re-enter combat. */
+	static void guardCaught(ServerPlayer player, AuraGuard.Caught caught) {
+		SEEN.computeIfAbsent(player.getUUID(), key -> new SwordStringLedger()).cue(observedTick(player), true,
+			observationContext(player), EarnedCounters.Guard.capture(player, caught));
+		if (ServerPlayNetworking.canSend(player, Cue.TYPE)) ServerPlayNetworking.send(player, new Cue(StringReader.Cue.GUARD.ordinal()));
+	}
+
 	/** Cosmetic trail marks include the stroke just recorded; they do not make its consumed cue reusable as evidence. */
 	static int cues(ServerPlayer player) {
 		SwordStringLedger seen = SEEN.get(player.getUUID());
@@ -288,6 +295,7 @@ public final class SwordStrings {
 
 	/** A request from the player's client: checked, then performed or refused. */
 	static void request(ServerPlayer player, Perform payload) {
+		if (dev.wildercord.cast.ActionAdmission.busy(player)) return;
         if (dev.wildercord.cast.ExciseCasting.blocking(player)) return;
 		Optional<AuraApi.StringArt> art = AuraApi.artOf(player, payload.art());
 		if (art.isEmpty()) {
@@ -306,11 +314,16 @@ public final class SwordStrings {
 			return;
 		}
 		// Reserve before the performer/clash: neither re-entrant hooks nor another request may reuse this suffix.
-		perform(player, art.get(), observed.get().marks());
+		var context = new AuraApi.StringContext(art.get(), observed.get().marks(), struck(player), player.level().getGameTime());
+		EarnedCounters.Attempt counter = EarnedCounters.handles(art.get().id())
+			? EarnedCounters.accept(player, context, observed.get().strokes().getLast().guardReceipt(),
+				() -> SEEN.get(player.getUUID()) == seen) : null;
+		if (EarnedCounters.handles(art.get().id()) && counter == null) {
+			refuse(player, payload.art(), art.get(), Refusal.UNSEEN);
+			return;
+		}
+		perform(player, art.get(), observed.get().marks(), counter, false);
 	}
-
-	/** Whether an art held in a clash is being let go now (it goes as it was loosed, and meets nothing more). */
-	private static boolean releasing;
 
 	/**
 	 * Performs {@code art} (already checked). The authored fixed-release style forms commit price/rest before their windup and run on their active frame;
@@ -319,22 +332,29 @@ public final class SwordStrings {
 	 * is won ({@link #release}) and is lost, still paid for, if not ({@link #forfeit}).
 	 */
 	public static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
-		if (dev.wildercord.cast.ExciseCasting.blocking(player) || MastersArts.committed(player) || MasterForms.committed(player)) return false;
-		if (!releasing && Clashes.meets(player, art, marks)) return true;
+		// These two forms require a real consumed stroke receipt; claimed COUNTER marks cannot create one.
+		if (EarnedCounters.handles(art.id())) return false;
+		return perform(player, art, marks, null, false);
+	}
+
+	private static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks,
+			EarnedCounters.Attempt counter, boolean fromClash) {
+		if (dev.wildercord.cast.ActionAdmission.busy(player) || dev.wildercord.cast.ExciseCasting.blocking(player)
+			|| MastersArts.committed(player) || MasterForms.committed(player)) return false;
+		if (!fromClash && Clashes.meets(player, art, marks, counter)) return true;
+		if (counter != null && !fromClash && counter.take(null, observedTick(player)) != EarnedCounterReservation.Take.VALID) return false;
 		long now = player.level().getGameTime();
 		MastersStyleRules.Style style = MastersStyleRules.of(art.id());
 		// Target/counter forms must opt into their own validation rather than losing the observed victim
 		// just because they acquire a timeline. Cone releases deliberately re-query on the active frame.
-		AuraApi.StringContext context = new AuraApi.StringContext(art, marks,
+		AuraApi.StringContext context = counter != null ? counter.context() : new AuraApi.StringContext(art, marks,
 			style == null || style.targets() != MastersStyleRules.TargetPolicy.ACTIVE_CONE ? struck(player) : null, now);
 		// Price is fixed before either the windup or the art can change momentum.
 		double cost = price(player, art);
 		if (style != null) {
-			if (!MastersArts.beginStyle(player, art, context, () -> {
+			if (!MastersArts.beginStyle(player, art, context, counter, cost, () -> payAndRest(player, art, cost, now), () -> {
 				if (runPerformer(player, art, context)) completed(player, art, context);
 			})) return false;
-			// The accepted tell commits payment once. Interrupted or whiffed forms keep this price and rest.
-			payAndRest(player, art, cost, now);
 			return true;
 		}
 		if (!runPerformer(player, art, context)) return false;
@@ -370,13 +390,16 @@ public final class SwordStrings {
 	}
 
 	private static void completed(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context) {
+		var counter = MastersArts.earnedCounter(player);
 		for (AuraApi.StringHook hook : AuraApi.stringHooks()) {
+			if (counter != null && !counter.valid()) return;
 			try {
 				hook.performed(player, art, context);
 			} catch (RuntimeException e) {
 				Wildercord.LOGGER.warn("A sword string hook threw; skipping it", e);
 			}
 		}
+		if (counter != null && !counter.valid()) return;
 		Grimoire.unlock(player, "aura:sword_string");
 		if (!AuraApi.artMethod(art.id()).isEmpty()) Grimoire.unlock(player, grimoireKey(art.id()));
 	}
@@ -386,18 +409,25 @@ public final class SwordStrings {
 	 * aura for it; otherwise it's lost after all). Returns whether it went.
 	 */
 	static boolean release(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
+		if (EarnedCounters.handles(art.id())) return false;
+		return release(player, art, marks, null, null);
+	}
+
+	static boolean release(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks, EarnedCounters.Attempt counter, Object clash) {
+		if (counter != null) {
+			EarnedCounterReservation.Take take = counter.take(clash, observedTick(player));
+			if (take == EarnedCounterReservation.Take.UNAVAILABLE) return false;
+			if (take == EarnedCounterReservation.Take.STALE || !counter.ownerValid(player)) { forfeit(player, art); return false; }
+		}
 		if (!player.isAlive() || !Aura.holdsWeapon(player) || dev.wildercord.aura.arts.ArtWards.silenced(player)
 				|| Aura.aura(player) < price(player, art) - 1.0E-4) {
 			forfeit(player, art);
 			return false;
 		}
-		boolean outer = releasing;
-		releasing = true;
-		try {
-			return perform(player, art, marks);
-		} finally {
-			releasing = outer;
-		}
+		boolean performed = perform(player, art, marks, counter, true);
+		// A held counter which fails its final admission follows the existing lost-art payment contract.
+		if (!performed && counter != null) forfeit(player, art);
+		return performed;
 	}
 
 	/** An art held in a clash that was lost: it doesn't go, but it's paid for and rests as if it had. */

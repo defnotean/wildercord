@@ -20,7 +20,8 @@ public final class CheckCrimsonMoonPose {
         require(rule.targets() == MastersStyleRules.TargetPolicy.ACTIVE_CONE && MastersArtRules.move(19) == null, "Cone policy without a shared input");
         require(ArtRules.art(rule.art()).slot() == 4 && ArtRules.art(rule.art()).cost() == 40 && ArtRules.art(rule.art()).cooldown() == 600, "Existing Final economy");
         require(supportsPlayer(19) && !supportsMaster(19) && MastersArtAnimation.supports(19), "Player-only presentation ID");
-        require(!supportsPlayer(20) && !MastersArtAnimation.supports(20), "New invalid sentinel");
+        int unassignedPlayerId = MastersStyleRules.STYLES.stream().mapToInt(MastersStyleRules.Style::animation).max().orElse(2) + 1;
+        require(!supportsPlayer(unassignedPlayerId) && !MastersArtAnimation.supports(unassignedPlayerId), "New invalid sentinel");
         require(Joint.values().length == 20, "Original twenty-joint topology");
         for (float age = 0; age <= 30; age += .125F) {
             Pose right = sample(age, false), left = sample(age, true);

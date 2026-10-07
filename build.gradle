@@ -110,6 +110,26 @@ def validateLifeExciseSelection = { name, group ->
         throw new GradleException('Life32 requires all four generic suites and the separate Excise ordinary class, without release relabeling')
 }
 
+def validateMastersParts = { name, catalog ->
+    def partNames = ['masters-core', 'masters-march-mechanics', 'masters-march-visuals']
+    if (!(name in partNames)) return
+    def march = ['dev.wildercord.aura.world.StoneMarchTest',
+                 'dev.wildercord.aura.world.StoneMarchPresentationTest',
+                 'dev.wildercord.aura.world.StoneMarchOpponentViewTest']
+    def full = catalog.masters.entries
+    if (catalog.masters.get('purpose', 'release') != 'release' || catalog.masters.expectedCount != 44
+            || full.size() != 44 || full.toSet().size() != 44 || full.findAll { it in march } != march
+            || full.last() != 'dev.wildercord.gametest.WildercordMastersArtsPresentationTest')
+        throw new GradleException('Required Masters parts need the ordered 44-class roster')
+    def expected = [full.findAll { !(it in march) }, march.take(1), march.drop(1)]
+    partNames.eachWithIndex { part, i ->
+        def group = catalog[part]
+        if (group == null || group.purpose != 'required-part' || !(group.expectedCount instanceof Integer)
+                || group.expectedCount != expected[i].size() || group.entries != expected[i])
+            throw new GradleException('Required Masters parts must retain the exact disjoint ordered 41/1/2 partition')
+    }
+}
+
 // Focused in-world screenshot suites keep iteration fast while the full descriptor remains available.
 tasks.named('processGametestResources') {
 	inputs.file('tools/client_suite_catalog.json')
@@ -178,7 +198,8 @@ tasks.named('processGametestResources') {
 			if (!catalog.containsKey(name)) throw new GradleException("Unknown ciSuite '${name}'; choose from ${catalog.keySet().join(', ')}")
 			def group = catalog[name]
             validateLifeExciseSelection(name, group)
-			if (!(group.get('purpose', 'release') in ['release', 'diagnostic'])) throw new GradleException("ciSuite '${name}' has an unknown purpose")
+            validateMastersParts(name, catalog)
+			if (!(group.get('purpose', 'release') in ['release', 'diagnostic', 'required-part'])) throw new GradleException("ciSuite '${name}' has an unknown purpose")
 			def selected = group.entries
 			if (!(selected instanceof List) || selected.isEmpty() || !selected.every { it instanceof String && !it.trim().isEmpty() }) throw new GradleException("ciSuite '${name}' must contain a nonempty list of entrypoint names")
 			if (selected.toSet().size() != selected.size()) throw new GradleException("ciSuite '${name}' contains duplicate entrypoints")
@@ -274,8 +295,9 @@ tasks.named('runClientGameTest') {
 			def entries = descriptor.entrypoints['fabric-client-gametest']
 			if (!catalog.containsKey(name) || entries != catalog[name].entries) throw new GradleException('Processed client descriptor does not match ciSuite catalog selection')
             validateLifeExciseSelection(name, catalog[name])
+            validateMastersParts(name, catalog)
 			logger.lifecycle('WILDERCORD_CLIENT_DESCRIPTOR ' + groovy.json.JsonOutput.toJson(
-				[kind: catalog[name].purpose == 'diagnostic' ? 'diagnostic' : 'suite', name: name, count: entries.size(), entries: entries]))
+				[kind: catalog[name].purpose in ['diagnostic', 'required-part'] ? catalog[name].purpose : 'suite', name: name, count: entries.size(), entries: entries]))
 		}
 	}
 }

@@ -142,7 +142,13 @@ public final class Clashes {
 	// ------------------------------------------------------------------ the clashes
 
 	/** An art held back while its clash runs: whose, which, and the swings it was played with. */
-	private record Held(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {}
+	private record Held(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks, EarnedCounters.Attempt counter, Object key) {
+		static Held capture(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks, EarnedCounters.Attempt counter) {
+			Object key = new Object();
+			if (counter != null) counter.hold(key, player.level().getServer().getTickCount());
+			return new Held(player, art, List.copyOf(marks), counter, key);
+		}
+	}
 
 	/** One side of a clash. */
 	private static final class Side {
@@ -343,6 +349,11 @@ public final class Clashes {
 	 * struck, the two lock and the art is held back until the clash says whether it goes. Returns whether it was held.
 	 */
 	static boolean meets(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
+		// Legacy callers cannot manufacture earned evidence from a string's claimed marks.
+		return !EarnedCounters.handles(art.id()) && meets(player, art, marks, null);
+	}
+
+	static boolean meets(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks, EarnedCounters.Attempt counter) {
 		if (!on() || clashing(player)) {
 			return false;
 		}
@@ -375,7 +386,7 @@ public final class Clashes {
 			Vec3 axis = best.front.subtract(eye);
 			axis = axis.lengthSqr() < 1.0E-4 ? player.getViewVector(1.0F) : axis.normalize();
 			Vec3 at = best.front.subtract(axis.scale(0.4));
-			lock(ClashRules.Kind.ART_CRESCENT, side(player, false, Spars.colour(player), null, new Held(player, art, List.copyOf(marks))),
+			lock(ClashRules.Kind.ART_CRESCENT, side(player, false, Spars.colour(player), null, Held.capture(player, art, marks, counter)),
 				side(best.caster, best.pierce, best.color, best, null), player.level(), at, axis, 0, 0);
 			return true;
 		}
@@ -397,7 +408,7 @@ public final class Clashes {
 		Vec3 mid = player.getEyePosition().add(first.getEyePosition()).scale(0.5).subtract(0, 0.35, 0);
 		Vec3 axis = first.getEyePosition().subtract(player.getEyePosition());
 		axis = axis.lengthSqr() < 1.0E-4 ? player.getViewVector(1.0F) : axis.normalize();
-		lock(ClashRules.Kind.ARTS, side(player, false, Spars.colour(player), null, new Held(player, art, List.copyOf(marks))),
+		lock(ClashRules.Kind.ARTS, side(player, false, Spars.colour(player), null, Held.capture(player, art, marks, counter)),
 			side(first, false, Spars.colour(first), null, null), player.level(), mid, axis, struck.taken(), struck.amount());
 		return true;
 	}
@@ -613,9 +624,10 @@ public final class Clashes {
 			}
 			if (s.art != null) {
 				if (wins) {
-					SwordStrings.release(s.art.player(), s.art.art(), s.art.marks());
+					SwordStrings.release(s.art.player(), s.art.art(), s.art.marks(), s.art.counter(), s.art.key());
 				} else {
-					SwordStrings.forfeit(s.art.player(), s.art.art());
+					if (s.art.counter() == null || s.art.counter().take(s.art.key(), c.level.getServer().getTickCount()) != EarnedCounterReservation.Take.UNAVAILABLE)
+						SwordStrings.forfeit(s.art.player(), s.art.art());
 				}
 			}
 		}

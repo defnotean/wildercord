@@ -387,6 +387,8 @@ public final class ArtKit {
 
 		/** A strike of {@code damage} (already scaled), landing with {@code weight} ({@code null} for no impact). */
 		public float raw(LivingEntity foe, double damage, AuraFxRules.Weight weight) {
+			var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+			if (counter != null && !counter.permits(foe)) return 0;
 			if (foe == null || !foe.isAlive() || damage <= 0 || !harmable(player, foe)) {
 				return 0;
 			}
@@ -405,7 +407,7 @@ public final class ArtKit {
 				pvp.merge(foe.getUUID(), dealt, Double::sum);
 			}
 			// Damage callbacks can retire this field. Keep the resolved receipt/cap, but no later stance or hit side effects.
-			if (ArtFields.blocksRetiredHarm(player, foe)) return taken;
+			if (ArtFields.blocksRetiredHarm(player, foe) || counter != null && !counter.afterDamage(foe)) return taken;
 			if (taken > 0 && !answer && (!foe.isAlive() || foe.isDeadOrDying())) {
 				dev.wildercord.aura.BondedBlades.artFelled(player, foe);
 			}
@@ -425,10 +427,13 @@ public final class ArtKit {
 				if (foe instanceof Player && wore > 0) {
 					pvpStance.merge(foe.getUUID(), wore, Double::sum);
 				}
+				if (counter != null && !counter.afterDamage(foe)) return taken;
 				if (first) {
 					Momentum.artLanded(player, art, hurt.size(), foe);
+					if (counter != null && !counter.afterDamage(foe)) return taken;
 					// The bonded blade in hand gathers resonance from an art that lands (and remembers which).
 					dev.wildercord.aura.BondedBlades.artLanded(player, art, hurt.size(), foe);
+					if (counter != null && !counter.afterDamage(foe)) return taken;
 					if (hurt.size() == 1 && player.getMainHandItem() == startingBlade)
 						dev.wildercord.aura.RuneEtchings.wake(player, foe, taken);
 				}

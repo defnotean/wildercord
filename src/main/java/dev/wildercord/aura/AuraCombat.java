@@ -259,8 +259,9 @@ public final class AuraCombat {
 	 * armour and spell defences): an art's share of what it may deal one player ({@code aura.ArtRules#PVP_ART_CAP}).
 	 */
 	public static float projected(ServerPlayer player, LivingEntity target, double damage, double extra, boolean answer, double playerCap) {
+		var counter = MastersArts.earnedCounter(player);
 		// Delayed slashes must not use the friendship decision made when the art began.
-		if (!Targets.canHarm(player, target)) {
+		if (!Targets.canHarm(player, target) || counter != null && !counter.permits(target)) {
 			lastAmount = 0;
 			return 0;
 		}
@@ -268,6 +269,7 @@ public final class AuraCombat {
 		DamageSource source = level.damageSources().source(Aura.DAMAGE, player, player);
 		dev.wildercord.aura.world.MasterHitReceipt.source(player, target, source);
 		double bonus = AuraElements.bonus(player, target, source, Aura.element(player)) * Math.max(0, extra);
+		if (counter != null && !counter.permits(target)) { lastAmount = 0; return 0; }
 		double amount = damage;
 		if (target instanceof Player) {
 			amount *= AuraRules.capBonus(bonus, Config.get().defence().maxBonus()) * Config.get().aura().pvpScale();
@@ -287,14 +289,16 @@ public final class AuraCombat {
 		boolean hurt = target instanceof Player ? SpellDefence.hurt(level, target, source, dealt) : target.hurtServer(level, source, dealt);
 		float taken = target instanceof TrainingDummy dummy ? dummy.lastDamage() : Math.max(0, before - Math.max(0, target.getHealth()));
 		// A field removed inside the damage callback cannot resume passives or resonance after that hit.
-		if (dev.wildercord.aura.arts.ArtFields.blocksRetiredHarm(player, target)) return taken;
+		if (dev.wildercord.aura.arts.ArtFields.blocksRetiredHarm(player, target) || counter != null && !counter.afterDamage(target)) return taken;
 		if (hurt && answer) {
 			landed(player, target, taken, 1.0F, true, true);
 		}
+		if (counter != null && !counter.afterDamage(target)) return taken;
 		if (hurt && !artStrike) {
 			// Aura off the blade that isn't an art (a slash, a spark) wears a foe's stance a little.
 			Stance.slash(player, target, amount);
 		}
+		if (counter != null && !counter.afterDamage(target)) return taken;
 		if (hurt && answer) {
 			ResonantStrikes.blade(player, target, taken);
 		}

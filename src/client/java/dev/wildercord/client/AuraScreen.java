@@ -1140,6 +1140,8 @@ public class AuraScreen extends Screen implements CordEditorParent {
 						Component.translatable(dev.wildercord.aura.AuraFxRules.ordinalKey(art.stage()))).withStyle(ChatFormatting.DARK_GRAY));
 				}
 				tip.add(Component.translatable(art.nameKey() + ".desc").withStyle(ChatFormatting.GRAY));
+				Component counterControls = EarnedCounterHelp.controls(art.id());
+				if (!counterControls.getString().isEmpty()) tip.add(counterControls.copy().withStyle(ChatFormatting.GRAY));
 				List<Component> words = new ArrayList<>();
 				for (dev.wildercord.aura.SwordString.Token token : art.string().tokens()) {
 					words.add(Component.translatable("aura.wildercord.token." + token.id));

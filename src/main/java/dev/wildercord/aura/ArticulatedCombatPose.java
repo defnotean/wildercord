@@ -20,6 +20,7 @@ public final class ArticulatedCombatPose {
 	public static final int HAILFALL = 15, SKYFALL = 16;
 	public static final int COLLAPSE = 17, RED_RAIN = 18;
 	public static final int CRIMSON_MOON = 19;
+	public static final int BACKDRAFT = 20, ROOTED_PARRY = 21;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -487,6 +488,46 @@ public final class ArticulatedCombatPose {
 				v(7.8F, -6.1F, 3.8F), arm(r(0, .035F, .03F), r(-.94F, .10F, .30F), -.90F, r(.10F, -.10F, .10F)))),
 		v(-2.75F, 22, 1.55F), v(2.75F, 22, -1.75F));
 
+	// Backdraft keeps a braced rib-height guard and uses elbow extension for one short point.
+	// Its shallow hip shift stays inside the planted base; it never animates a dash or step.
+	private static final Motion BACKDRAFT_MOTION = new Motion(
+		new Key(v(-.12F, 1.10F, .18F), r(.045F, .08F, -.02F), r(.035F, .04F, -.015F), r(.04F, .06F, -.025F), r(-.075F, -.22F, .02F),
+			arm(r(.02F, .05F, -.045F), r(-.90F, .10F, -.25F), -1.05F, r(1.68F, -.42F, -.62F)),
+			arm(r(0, -.05F, .04F), r(-1.00F, -.25F, -.17F), -.98F, r(.12F, -.10F, .08F)),
+			new ViewKey(v(-7.7F, -5.05F, 3.7F), arm(r(.02F, .04F, -.035F), r(-1.08F, .12F, -.24F), -.96F, r(1.43F, -.25F, -.34F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, -.035F, .03F), r(-1.04F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.08F, 1.08F, -.38F), r(.085F, .04F, .015F), r(.055F, .02F, .01F), r(.065F, .03F, .02F), r(-.11F, -.08F, -.015F),
+			arm(r(.025F, .02F, -.035F), r(-1.24F, .05F, -.14F), -.38F, r(1.16F, .16F, .18F)),
+			arm(r(0, .035F, .035F), r(-.91F, -.23F, -.20F), -.94F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.4F, -5.4F, 2.2F), arm(r(.02F, -.03F, -.035F), r(-1.23F, -.10F, -.19F), -.40F, r(1.06F, .05F, .06F)),
+				v(7.2F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.99F, .10F, .27F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.02F, 1.06F, -.06F), r(.05F, -.035F, .01F), r(.035F, -.025F, .01F), r(.035F, -.04F, .015F), r(-.07F, .08F, -.01F),
+			arm(r(.02F, -.025F, -.03F), r(-.88F, -.08F, -.22F), -.94F, r(1.49F, .09F, .15F)),
+			arm(r(0, .025F, .03F), r(-1.04F, -.25F, -.18F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.9F, -5.15F, 3.5F), arm(r(.015F, -.025F, -.03F), r(-1.06F, -.12F, -.23F), -.92F, r(1.39F, .07F, .08F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.04F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.30F), v(2.45F, 22, -1.45F));
+
+	// Rooted Parry absorbs into a wide, low brace then lifts one short rising reply.
+	// Independent knees and elbow open together while both ankle targets remain level.
+	private static final Motion ROOTED_PARRY_MOTION = new Motion(
+		new Key(v(-.08F, 1.10F, .10F), r(.075F, .10F, -.025F), r(.045F, .06F, -.015F), r(.055F, .09F, -.025F), r(-.10F, -.18F, .02F),
+			arm(r(.02F, .04F, -.045F), r(-.48F, .22F, -.26F), -1.02F, r(1.03F, -.26F, -.32F)),
+			arm(r(0, -.04F, .04F), r(-1.04F, -.22F, -.18F), -1.04F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.8F, -5.45F, 3.4F), arm(r(.02F, .035F, -.035F), r(-1.00F, .12F, -.24F), -.94F, r(.98F, -.18F, -.26F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, -.025F, .03F), r(-1.04F, .08F, .24F), -.98F, r(.10F, -.10F, .08F)))),
+		new Key(v(.07F, .76F, -.22F), r(.01F, -.08F, .015F), r(-.015F, -.055F, .01F), r(-.02F, -.095F, .02F), r(.025F, .17F, -.015F),
+			arm(r(.025F, -.035F, -.035F), r(-1.65F, -.17F, -.29F), -.48F, r(.68F, .10F, .28F)),
+			arm(r(0, .03F, .03F), r(-.87F, -.20F, -.22F), -.96F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-8.1F, -4.75F, 2.7F), arm(r(.02F, -.03F, -.03F), r(-1.43F, -.17F, -.25F), -.48F, r(.58F, .06F, .27F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, .025F, .03F), r(-.98F, .10F, .27F), -.96F, r(.10F, -.10F, .10F)))),
+		new Key(v(.025F, .96F, -.10F), r(.035F, -.065F, .01F), r(.015F, -.04F, .01F), r(.02F, -.07F, .015F), r(-.035F, .13F, -.01F),
+			arm(r(.02F, -.025F, -.03F), r(-1.36F, -.18F, -.24F), -.83F, r(.76F, .08F, .24F)),
+			arm(r(0, .02F, .03F), r(-1.00F, -.22F, -.20F), -1.00F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.3F, -4.95F, 3.3F), arm(r(.015F, -.025F, -.03F), r(-1.24F, -.18F, -.23F), -.84F, r(.80F, .04F, .21F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.03F, .08F, .25F), -.98F, r(.10F, -.10F, .08F)))),
+		v(-2.70F, 22, 1.15F), v(2.70F, 22, -1.30F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -498,7 +539,7 @@ public final class ArticulatedCombatPose {
 	/** Only authored player presentation IDs are admitted here; NPC IDs use supportsMaster. */
 	public static boolean supportsPlayer(int move) {
 		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
-			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON;
+			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -515,6 +556,8 @@ public final class ArticulatedCombatPose {
 			case COLLAPSE -> COLLAPSE_MOTION;
 			case RED_RAIN -> RED_RAIN_MOTION;
 			case CRIMSON_MOON -> CRIMSON_MOON_MOTION;
+			case BACKDRAFT -> BACKDRAFT_MOTION;
+			case ROOTED_PARRY -> ROOTED_PARRY_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);

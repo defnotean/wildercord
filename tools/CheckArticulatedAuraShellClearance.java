@@ -27,8 +27,9 @@ public final class CheckArticulatedAuraShellClearance {
 		boolean openingStyles = args.length == 1 && args[0].equals("--opening-styles");
 		boolean hailSky = args.length == 1 && args[0].equals("--hail-sky");
 		boolean groundFields = args.length == 1 && args[0].equals("--ground-fields");
-		boolean styles = openingStyles || hailSky || groundFields;
-		for (boolean slim : new boolean[] {false, true}) for (boolean left : new boolean[] {false, true}) for (int move : groundFields ? new int[] {17, 18} : hailSky ? new int[] {15, 16} : openingStyles ? new int[] {3, 4} : new int[] {0, 1, 2}) {
+		boolean earnedCounters = args.length == 1 && args[0].equals("--earned-counters");
+		boolean styles = openingStyles || hailSky || groundFields || earnedCounters;
+		for (boolean slim : new boolean[] {false, true}) for (boolean left : new boolean[] {false, true}) for (int move : earnedCounters ? new int[] {20, 21} : groundFields ? new int[] {17, 18} : hailSky ? new int[] {15, 16} : openingStyles ? new int[] {3, 4} : new int[] {0, 1, 2}) {
 			var source = (slim ? AuraShellLayer.createSlimShell() : AuraShellLayer.createShell()).bakeRoot();
 			var world = new ArticulatedAuraShellGeometry(source, slim, false);
 			var view = new ArticulatedAuraShellGeometry(source, slim, true);
@@ -40,6 +41,8 @@ public final class CheckArticulatedAuraShellClearance {
 				throw new AssertionError("Hail/Sky audit requires accepted 8/16 and 6/16 windows");
 				if (groundFields && (style == null || style.windup() != 8 || style.recovery() != (move == 17 ? 18 : 16)))
 					throw new AssertionError("Ground field audit requires accepted 8/18 and 8/16 windows");
+			if (earnedCounters && (style == null || style.windup() != (move == 20 ? 4 : 6) || style.recovery() != (move == 20 ? 14 : 16)))
+				throw new AssertionError("Earned-counter audit requires accepted 4/14 and 6/16 windows");
 			var rule = styles ? null : MastersArtRules.move(move);
 			int windup = styles ? style.windup() : rule.windup();
 			int recovery = styles ? style.recovery() : rule.recovery();
@@ -54,7 +57,7 @@ public final class CheckArticulatedAuraShellClearance {
 				}
 			}
 		}
-		String scope = groundFields ? ",\"clips\":[\"collapse\",\"red_rain\"],\"timeStepTicks\":0.125,\"windows\":[[8,18],[8,16]],\"variants\":8,\"passes\":" + (outside == 0 && reversed == 0) : hailSky ? ",\"clips\":[\"hailfall\",\"skyfall\"],\"timeStepTicks\":0.125,\"windows\":[[8,16],[6,16]],\"variants\":8,\"passes\":" + (outside == 0 && reversed == 0) : openingStyles ? ",\"clips\":[\"" + MastersStyleRules.animation(3).art() + "\",\"" + MastersStyleRules.animation(4).art()
+		String scope = earnedCounters ? ",\"clips\":[\"backdraft\",\"rooted_parry\"],\"timeStepTicks\":0.125,\"windows\":[[4,14],[6,16]],\"variants\":8,\"passes\":" + (outside == 0 && reversed == 0) : groundFields ? ",\"clips\":[\"collapse\",\"red_rain\"],\"timeStepTicks\":0.125,\"windows\":[[8,18],[8,16]],\"variants\":8,\"passes\":" + (outside == 0 && reversed == 0) : hailSky ? ",\"clips\":[\"hailfall\",\"skyfall\"],\"timeStepTicks\":0.125,\"windows\":[[8,16],[6,16]],\"variants\":8,\"passes\":" + (outside == 0 && reversed == 0) : openingStyles ? ",\"clips\":[\"" + MastersStyleRules.animation(3).art() + "\",\"" + MastersStyleRules.animation(4).art()
 			+ "\"],\"timeStepTicks\":0.125,\"windup\":6,\"recovery\":12,\"variants\":8,\"passes\":" + (outside == 0 && reversed == 0)
 			+ ",\"limits\":[\"Finite pure-pose samples, including all skin overlays; not continuous-pose or arbitrary-palette proof.\","
 			+ "\"Shell-to-skin containment and outward triangles only; armor, materials, native lighting and cross-client acceptance remain separate.\"]" : "";

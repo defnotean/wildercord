@@ -206,4 +206,45 @@ class SwordStringLedgerTest {
 		assertEquals(0, ledger.last().recover());
 		assertFalse(FULL.fits(ledger.last().marks()));
 	}
+	@Test void earnedReceiptStaysWithItsAttackSnapshotWhenANewerGuardArrives() {
+		Object old = new Object(), fresh = new Object();
+		ledger.cue(10, true, owner, old);
+		ledger.attack(11, LOW.bit(), 11, owner);
+		ledger.cue(12, true, owner, fresh);
+		ledger.punch(12, 0, 11, owner);
+		assertSame(old, ledger.last().guardReceipt());
+		var proof = ledger.proof(SwordString.of(COUNTER), 12, 10, owner).orElseThrow();
+		assertTrue(ledger.consume(proof));
+		assertSame(old, proof.strokes().getLast().guardReceipt());
+		ledger.punch(13, 0, 11, owner);
+		assertSame(fresh, ledger.last().guardReceipt());
+		ledger.punch(14, 0, 11, owner);
+		assertNull(ledger.last().guardReceipt());
+	}
+
+	@Test void receiptExpiresAtSixteenTicksAndCannotFollowWeaponOrBodyChanges() {
+		Object earned = new Object();
+		ledger.cue(10, true, owner, earned);
+		ledger.punch(26, LOW.bit(), 11, owner);
+		assertSame(earned, ledger.last().guardReceipt());
+		ledger.cue(30, true, owner, earned);
+		ledger.punch(47, LOW.bit(), 11, owner);
+		assertNull(ledger.last().guardReceipt());
+		ledger.cue(50, true, owner, earned);
+		ledger.punch(51, LOW.bit(), 11, new SwordStringLedger.Context(body, level, new Object()));
+		assertNull(ledger.last().guardReceipt());
+		ledger.cue(60, true, owner, earned);
+		ledger.punch(61, LOW.bit(), 11, new SwordStringLedger.Context(new Object(), level, weapon));
+		assertNull(ledger.last().guardReceipt());
+	}
+
+	@Test void claimedCounterAndBareCueCannotInventARealCatch() {
+		ledger.punch(10, COUNTER.bit(), 11, owner);
+		assertNull(ledger.last().guardReceipt());
+		ledger.cue(20, true, owner);
+		ledger.punch(21, LOW.bit(), 11, owner);
+		assertTrue(COUNTER.fits(ledger.last().marks()));
+		assertNull(ledger.last().guardReceipt());
+	}
+
 }

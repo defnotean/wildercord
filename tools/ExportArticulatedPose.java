@@ -31,14 +31,15 @@ public final class ExportArticulatedPose {
 		boolean opening = args.length == 1 && args[0].equals("--opening-styles");
 		boolean shared = args.length == 1 && args[0].equals("--shared-player");
 		boolean groundFields = args.length == 1 && args[0].equals("--ground-fields");
+		boolean earnedCounters = args.length == 1 && args[0].equals("--earned-counters");
 		boolean hailSky = args.length == 1 && args[0].equals("--hail-sky");
 		boolean moon = args.length == 1 && args[0].equals("--crimson-moon");
-		for (int move : moon ? new int[] {19} : groundFields ? new int[] {17, 18} : hailSky ? new int[] {15, 16} : opening ? new int[] {3, 4} : shared ? new int[] {1, 2} : schools ? new int[] {7, 8} : new int[] {0, 1}) for (boolean left : new boolean[] {false, true}) {
-			boolean master = !moon && !groundFields && !hailSky && !opening && !shared && move != 0;
+		for (int move : moon ? new int[] {19} : earnedCounters ? new int[] {20, 21} : groundFields ? new int[] {17, 18} : hailSky ? new int[] {15, 16} : opening ? new int[] {3, 4} : shared ? new int[] {1, 2} : schools ? new int[] {7, 8} : new int[] {0, 1}) for (boolean left : new boolean[] {false, true}) {
+			boolean master = !earnedCounters && !moon && !groundFields && !hailSky && !opening && !shared && move != 0;
 			if (!first) json.append(','); first = false;
-			int tell = opening || hailSky || groundFields || moon ? dev.wildercord.aura.MastersStyleRules.animation(move).windup() : shared ? dev.wildercord.aura.MastersArtRules.move(move).windup() : switch (move) { case 7 -> dev.wildercord.aura.world.GaleRepriseRules.TELL; case 8 -> dev.wildercord.aura.world.StoneFractureRules.TELL; case 1 -> 18; default -> 4; };
-			int active = 1, recovery = opening || hailSky || groundFields || moon ? dev.wildercord.aura.MastersStyleRules.animation(move).recovery() : shared ? dev.wildercord.aura.MastersArtRules.move(move).recovery() : switch (move) { case 7 -> dev.wildercord.aura.world.GaleRepriseRules.RECOVERY - 1; case 8 -> dev.wildercord.aura.world.StoneFractureRules.RECOVERY - 1; case 1 -> 19; default -> 12; };
-			String id = opening || hailSky || groundFields || moon ? dev.wildercord.aura.MastersStyleRules.animation(move).art() : shared ? dev.wildercord.aura.MastersArtRules.move(move).id() : switch (move) { case 7 -> "gale_crosswind"; case 8 -> "stone_fracture"; case 1 -> "master_sweep"; default -> "spellcut"; };
+			int tell = opening || hailSky || groundFields || moon || earnedCounters ? dev.wildercord.aura.MastersStyleRules.animation(move).windup() : shared ? dev.wildercord.aura.MastersArtRules.move(move).windup() : switch (move) { case 7 -> dev.wildercord.aura.world.GaleRepriseRules.TELL; case 8 -> dev.wildercord.aura.world.StoneFractureRules.TELL; case 1 -> 18; default -> 4; };
+			int active = 1, recovery = opening || hailSky || groundFields || moon || earnedCounters ? dev.wildercord.aura.MastersStyleRules.animation(move).recovery() : shared ? dev.wildercord.aura.MastersArtRules.move(move).recovery() : switch (move) { case 7 -> dev.wildercord.aura.world.GaleRepriseRules.RECOVERY - 1; case 8 -> dev.wildercord.aura.world.StoneFractureRules.RECOVERY - 1; case 1 -> 19; default -> 12; };
+			String id = opening || hailSky || groundFields || moon || earnedCounters ? dev.wildercord.aura.MastersStyleRules.animation(move).art() : shared ? dev.wildercord.aura.MastersArtRules.move(move).id() : switch (move) { case 7 -> "gale_crosswind"; case 8 -> "stone_fracture"; case 1 -> "master_sweep"; default -> "spellcut"; };
 			int end = tell + recovery + (master ? active : 0);
 			json.append("{\"id\":\"").append(id).append("\",\"leftHanded\":").append(left)
 				.append(",\"tell\":").append(tell).append(",\"active\":").append(active).append(",\"recovery\":").append(recovery).append(",\"frames\":[");

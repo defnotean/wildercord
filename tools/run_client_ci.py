@@ -65,7 +65,7 @@ def launch_command(selection):
     if selection["kind"] == "shard":
         shard, shards = selection["shard"].split("/")
         gradle += [f"-PciShard={shard}", f"-PciShards={shards}"]
-    elif selection["kind"] in ("suite", "diagnostic"):
+    elif selection["kind"] in ("suite", "diagnostic", "required-part"):
         gradle += [f"-PciSuite={selection['name']}"]
     return ["xvfb-run", "-a", "-s",
             "-screen 0 1280x720x24 +extension GLX +render -noreset", *gradle]
@@ -104,6 +104,13 @@ def main(argv=None, *, diagnostic_provenance=None):
                 log.flush()
 
         record(SELECTION_PREFIX + json.dumps(selection, sort_keys=True))
+        if selection["kind"] == "required-part":
+            from masters_required_ci import PART_PREFIX, launch_provenance
+            try:
+                provenance = launch_provenance(selection, os.environ)
+            except (ValueError, OSError, subprocess.CalledProcessError) as exc:
+                parser.error(str(exc))
+            record(PART_PREFIX + json.dumps(provenance, sort_keys=True))
         if diagnostic_provenance is not None:
             if selection["kind"] != "diagnostic":
                 parser.error("Request provenance is only supported for diagnostic selections")

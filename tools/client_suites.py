@@ -34,6 +34,38 @@ STONE_MARCH_ENTRIES = (
     'dev.wildercord.aura.world.StoneMarchPresentationTest',
     'dev.wildercord.aura.world.StoneMarchOpponentViewTest',
 )
+MASTERS_PART_NAMES = ("masters-core", "masters-march-mechanics", "masters-march-visuals")
+STONE_MARCH_VISUAL_ENTRIES = (
+    'dev.wildercord.aura.world.StoneMarchPresentationTest',
+    'dev.wildercord.aura.world.StoneMarchOpponentViewTest',
+)
+STONE_MARCH_DIAGNOSTICS = {
+    "stone-fault-march-visuals": STONE_MARCH_VISUAL_ENTRIES,
+    "stone-fault-march-presentation": STONE_MARCH_VISUAL_ENTRIES[:1],
+    "stone-fault-march-opponent": STONE_MARCH_VISUAL_ENTRIES[1:],
+}
+
+
+def masters_parts(groups):
+    """Validate the exact disjoint 41/1/2 partition of the expanded 44-class roster."""
+    full = validate_entries(groups["masters"]["entries"], "Masters roster")
+    if (groups["masters"].get("purpose", "release") != "release"
+            or type(groups["masters"]["expectedCount"]) is not int
+            or groups["masters"]["expectedCount"] != 44 or len(full) != 44
+            or [entry for entry in full if entry in STONE_MARCH_ENTRIES] != list(STONE_MARCH_ENTRIES)
+            or full[-1] != "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"):
+        raise ValueError("Required Masters parts require the ordered 44-class release roster")
+    expected = dict(zip(MASTERS_PART_NAMES, (
+        [entry for entry in full if entry not in STONE_MARCH_ENTRIES],
+        list(STONE_MARCH_ENTRIES[:1]), list(STONE_MARCH_VISUAL_ENTRIES))))
+    for name, entries in expected.items():
+        group = groups[name]
+        if (group.get("purpose") != "required-part" or group["entries"] != entries
+                or type(group["expectedCount"]) is not int or group["expectedCount"] != len(entries)):
+            raise ValueError("Required Masters parts must retain the exact disjoint ordered 41/1/2 partition")
+    return expected
+
+
 LIFE_EXCISE_ENTRIES = (
     "dev.wildercord.client.fx.LifeRecipeTest",
     "dev.wildercord.client.fx.LifeFormationTest",
@@ -82,8 +114,12 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         if missing:
             raise ValueError(f"Suite {suite} has unregistered entrypoints: {', '.join(missing)}")
         purpose = group.get("purpose", "release")
-        if purpose not in ("release", "diagnostic"):
+        if purpose not in ("release", "diagnostic", "required-part"):
             raise ValueError(f"Suite {suite} has an unknown purpose")
+        if purpose == "required-part" and suite not in MASTERS_PART_NAMES:
+            raise ValueError("Unknown required Masters part")
+        if suite in MASTERS_PART_NAMES:
+            masters_parts(groups)
         if suite == "diagnostic-life-excise" and (
                 purpose != "diagnostic" or selected != list(LIFE_EXCISE_ENTRIES)):
             raise ValueError("Life32 requires all four unchanged generic suites and the separate Excise ordinary class in order")
@@ -100,7 +136,10 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
             raise ValueError("Excise diagnostic requires its exact complete registered class")
         if suite == "stone-fault-march" and (purpose != "diagnostic" or selected != list(STONE_MARCH_ENTRIES)):
             raise ValueError("Stone Fault March requires exactly three complete diagnostic classes in order")
-        return {"kind": "diagnostic" if purpose == "diagnostic" else "suite",
+        if suite in STONE_MARCH_DIAGNOSTICS and (
+                purpose != "diagnostic" or selected != list(STONE_MARCH_DIAGNOSTICS[suite])):
+            raise ValueError("Stone Fault March diagnostic requires exactly its complete selected classes in order")
+        return {"kind": purpose if purpose in ("diagnostic", "required-part") else "suite",
                 "name": suite, "count": len(selected), "entries": selected}
     if shard is not None:
         index, total = parse_shard(shard)
@@ -123,14 +162,17 @@ def selection_issues(log, selection):
         markers = [line[len(prefix):] for line in log.splitlines() if line.startswith(prefix)]
         if markers:
             try:
-                matches = len(markers) == 1 and json.loads(markers[0]) == selection
-            except json.JSONDecodeError:
+                matches = len(markers) == 1 and (
+                    exact_json_marker(markers[0], selection)
+                    if selection.get("name") in STONE_MARCH_DIAGNOSTICS or selection["kind"] == "required-part"
+                    else json.loads(markers[0]) == selection)
+            except ValueError:
                 matches = False
             if not matches:
                 issues.append(f"{label} evidence does not match the requested selection")
-        elif selection["kind"] in ("suite", "diagnostic"):
+        elif selection["kind"] in ("suite", "diagnostic", "required-part"):
             issues.append(f"Focused run is missing {label.lower()} evidence")
-    if selection["kind"] in ("suite", "diagnostic"):
+    if selection["kind"] in ("suite", "diagnostic", "required-part"):
         exits = [line[len(EXIT_PREFIX):] for line in log.splitlines() if line.startswith(EXIT_PREFIX)]
         if exits != ["0"]:
             issues.append("Focused run has no single successful launcher exit")
@@ -155,6 +197,17 @@ def selection_issues(log, selection):
     if selection.get("name") == "stone-fault-march":
         _, completion_issues = stone_march_completion(log)
         issues.extend(completion_issues)
+    if selection.get("name") in STONE_MARCH_DIAGNOSTICS:
+        _, completion_issues = _whole_class_completion(log, selection["entries"], "Stone Fault March diagnostic")
+        issues.extend(completion_issues)
+        _, seed_issues = stone_march_seeds(log, selection["entries"])
+        issues.extend(seed_issues)
+    if selection["kind"] == "required-part":
+        _, completion_issues = _whole_class_completion(log, selection["entries"], "Required Masters part")
+        issues.extend(completion_issues)
+        if selection["name"] != "masters-core":
+            _, seed_issues = stone_march_seeds(log, selection["entries"])
+            issues.extend(seed_issues)
     return issues
 
 
@@ -165,6 +218,13 @@ def _unique_completion_object(pairs):
             raise ValueError("Duplicate completion field")
         marker[key] = value
     return marker
+
+
+def exact_json_marker(raw, expected):
+    """Reject duplicate fields, non-finite numbers and bool/number type coercion."""
+    observed = json.loads(raw, object_pairs_hook=_unique_completion_object)
+    return (json.dumps(observed, sort_keys=True, allow_nan=False)
+            == json.dumps(expected, sort_keys=True, allow_nan=False))
 
 
 def progression_completion(log):
@@ -211,6 +271,11 @@ def stone_march_completion(log):
     return _whole_class_completion(log, STONE_MARCH_ENTRIES, "Stone Fault March")
 
 
+def stone_march_visual_completion(log):
+    """Two whole visual classes only; never certify mechanics or release acceptance."""
+    return _whole_class_completion(log, STONE_MARCH_VISUAL_ENTRIES, "Stone Fault March visuals")
+
+
 def _whole_class_completion(log, entries, label):
     events, issues = [], []
     for line in log.splitlines():
@@ -233,3 +298,27 @@ def _whole_class_completion(log, entries, label):
     if events != expected:
         issues.append(f"{label} requires exactly its completed whole classes in order")
     return [entry for entry in entries if (entry, "end", "returned") in events], issues
+
+
+def stone_march_seeds(log, entries):
+    """Each selected whole March class owns exactly one original signed-long seed."""
+    found, issues = {}, []
+    prefix = "WILDERCORD_NATIVE_WORLD "
+    for line in log.splitlines():
+        if prefix not in line:
+            continue
+        try:
+            marker = json.loads(line.split(prefix, 1)[1], object_pairs_hook=_unique_completion_object)
+            if not isinstance(marker, dict) or set(marker) != {"suite", "seed"}:
+                raise ValueError()
+            entry, seed = marker["suite"], marker["seed"]
+            if (not isinstance(entry, str) or entry not in entries or entry in found
+                    or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed)
+                    or not -(2 ** 63) <= int(seed) < 2 ** 63):
+                raise ValueError()
+            found[entry] = [seed]
+        except (ValueError, KeyError, TypeError):
+            issues.append("Invalid or duplicate scoped March world seed")
+    if list(found) != list(entries):
+        issues.append("March scope requires exactly its original world seeds in class order")
+    return found, issues

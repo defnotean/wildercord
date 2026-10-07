@@ -181,6 +181,26 @@ public final class MastersStyleAnimation {
 		pose(j(.08F, -.82F, .10F), j(-.04F, .34F, -.03F), j(-1.36F, -1.32F, -.08F), j(.06F, .18F, -.88F),
 			j(-.56F, .20F, -.18F), j(.36F, -.16F, .16F), .80F, -.28F, h(-.34F, .30F, -.22F, -24, -56, 48)));
 
+	// Backdraft braces at the ribs, punches a short point and withdraws into the same guard.
+	// All displacement is model-local: the paid counter never adds a dash or a second release.
+	private static final Motion BACKDRAFT = new Motion(
+		pose(j(.12F, .18F, -.04F), j(-.06F, -.08F, .02F), j(-1.22F, .28F, -.22F), j(-1.10F, -.32F, .12F),
+			j(-.48F, -.10F, -.12F), j(.32F, .10F, .10F), .62F, .12F, h(.12F, .18F, -.18F, -72, 20, -14)),
+		pose(j(.20F, -.08F, .02F), j(-.10F, .04F, -.01F), j(-1.52F, -.06F, -.12F), j(-1.02F, -.24F, .14F),
+			j(-.54F, -.08F, -.12F), j(.34F, .08F, .10F), .68F, -.42F, h(.02F, .22F, -.38F, -94, 6, 6)),
+		pose(j(.13F, -.04F, .01F), j(-.06F, .02F, 0), j(-1.18F, -.10F, -.22F), j(-1.12F, -.28F, .12F),
+			j(-.45F, -.08F, -.10F), j(.30F, .08F, .09F), .58F, -.10F, h(.08F, .18F, -.16F, -66, 10, -8)));
+
+	// Rooted Parry receives over a broad low base, then lifts the edge in one compact reply.
+	// The return-to-guard follows the one accepted release; its brace has no invulnerability authority.
+	private static final Motion ROOTED_PARRY = new Motion(
+		pose(j(.24F, .14F, -.06F), j(-.12F, -.06F, .02F), j(-.52F, .32F, -.28F), j(-1.18F, -.32F, .20F),
+			j(-.65F, -.18F, -.18F), j(.42F, .16F, .16F), .96F, .06F, h(.04F, .38F, -.24F, 16, 18, -18)),
+		pose(j(.06F, -.16F, .04F), j(-.02F, .07F, -.02F), j(-1.76F, -.24F, -.30F), j(-.96F, -.20F, .22F),
+			j(-.44F, -.16F, -.16F), j(.30F, .14F, .14F), .54F, -.28F, h(-.08F, .30F, -.34F, -52, -10, 20)),
+		pose(j(.14F, -.12F, .03F), j(-.06F, .05F, -.01F), j(-1.45F, -.20F, -.24F), j(-1.12F, -.24F, .18F),
+			j(-.56F, -.16F, -.16F), j(.36F, .14F, .14F), .76F, -.12F, h(-.02F, .24F, -.22F, -34, -6, 12)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -200,6 +220,8 @@ public final class MastersStyleAnimation {
 			case 17 -> COLLAPSE;
 			case 18 -> RED_RAIN;
 			case 19 -> CRIMSON_MOON;
+			case 20 -> BACKDRAFT;
+			case 21 -> ROOTED_PARRY;
 			default -> null;
 		};
 	}

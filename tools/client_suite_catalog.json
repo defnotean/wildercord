@@ -1,7 +1,7 @@
 {
   "masters": {
     "description": "Masters update combat, progression including learned Circle XII Reweave, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln and Stone Fault March counterplay and Crimson Moon release/lifetime acceptance.",
-    "expectedCount": 43,
+    "expectedCount": 44,
     "entries": [
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.RelayLifetimeTest",
@@ -21,6 +21,7 @@
       "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
       "dev.wildercord.party.PartyOfflineProjectileTest",
       "dev.wildercord.aura.MastersStyleTimelineTest",
+      "dev.wildercord.aura.EarnedCounterAcceptanceTest",
       "dev.wildercord.party.MastersSecondFormTimelineTest",
       "dev.wildercord.aura.HailfallReleasedOwnerTest",
       "dev.wildercord.aura.HailSkyAcceptanceTest",
@@ -58,6 +59,14 @@
       "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
       "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
       "dev.wildercord.client.combat.CrimsonMoonCaptureTest"
+    ]
+  },
+  "diagnostic-earned-counters": {
+    "purpose": "diagnostic",
+    "description": "Bounded Backdraft and Rooted Parry: real rebound Aura guard and attack/Perform input, paid fixed timelines, immutable catch and selected-body whiffs, actual party changes, callback boundaries and finite clash transport. Owner/observer render acceptance remains a separate unrun gate; existing paired rosters are unchanged.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.EarnedCounterAcceptanceTest"
     ]
   },
   "diagnostic-wetland": {
@@ -205,5 +214,95 @@
       "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
     ],
     "purpose": "diagnostic"
+  },
+  "stone-fault-march-visuals": {
+    "description": "Scoped Stone Fault March visual diagnostic: both complete original presentation and opponent-view classes in order. Does not rerun or certify the separate mechanics class, replace Masters/full gates, or establish manual visual acceptance.",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+    ],
+    "purpose": "diagnostic"
+  },
+  "masters-core": {
+    "purpose": "required-part",
+    "description": "Mandatory disjoint part of the Masters 44 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "expectedCount": 41,
+    "entries": [
+      "dev.wildercord.cast.RelayCircleTest",
+      "dev.wildercord.cast.RelayLifetimeTest",
+      "dev.wildercord.cast.RelayDefenceTest",
+      "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.cast.ReweavePlayableTest",
+      "dev.wildercord.cast.ExcisePlayableTest",
+      "dev.wildercord.party.PartyMutationSafetyTest",
+      "dev.wildercord.party.ArtFieldMutationSafetyTest",
+      "dev.wildercord.gametest.WildercordHeartCirclesTest",
+      "dev.wildercord.aura.world.ManaSkinSustainChecks",
+      "dev.wildercord.gametest.WildercordMastersArtsTest",
+      "dev.wildercord.aura.CrimsonMoonReleasedOwnerTest",
+      "dev.wildercord.aura.CrimsonMoonTimelineTest",
+      "dev.wildercord.aura.world.MasterOrdinaryPlannerTest",
+      "dev.wildercord.aura.world.SwordMasterTrialTest",
+      "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
+      "dev.wildercord.party.PartyOfflineProjectileTest",
+      "dev.wildercord.aura.MastersStyleTimelineTest",
+      "dev.wildercord.aura.EarnedCounterAcceptanceTest",
+      "dev.wildercord.party.MastersSecondFormTimelineTest",
+      "dev.wildercord.aura.HailfallReleasedOwnerTest",
+      "dev.wildercord.aura.HailSkyAcceptanceTest",
+      "dev.wildercord.party.MastersGroundFieldTimelineTest",
+      "dev.wildercord.aura.GroundFieldReleasedOwnerTest",
+      "dev.wildercord.aura.world.DuelistMasterAccessTest",
+      "dev.wildercord.monster.WildMonsterPressureTest",
+      "dev.wildercord.aura.world.MasterVictoriesTest",
+      "dev.wildercord.aura.world.MasterAntiAirTest",
+      "dev.wildercord.client.auraworld.MasterModelPresentationTest",
+      "dev.wildercord.aura.SwordStringAuthorityTest",
+      "dev.wildercord.aura.CrescentCoverTest",
+      "dev.wildercord.aura.CrescentAudienceTest",
+      "dev.wildercord.aura.WallTurnLessonTest",
+      "dev.wildercord.aura.WallTurnSafetyTest",
+      "dev.wildercord.aura.WallTurnCommitmentTest",
+      "dev.wildercord.aura.world.EmberKilnTest",
+      "dev.wildercord.aura.world.EmberKilnPresentationTest",
+      "dev.wildercord.aura.world.EmberKilnOpponentViewTest",
+      "dev.wildercord.cast.LifeOwnerCameraTest",
+      "dev.wildercord.cast.LifeOutcomeTransportTest",
+      "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
+    ]
+  },
+  "masters-march-mechanics": {
+    "purpose": "required-part",
+    "description": "Mandatory disjoint part of the Masters 44 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchTest"
+    ]
+  },
+  "masters-march-visuals": {
+    "purpose": "required-part",
+    "description": "Mandatory disjoint part of the Masters 44 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+    ]
+  },
+  "stone-fault-march-presentation": {
+    "purpose": "diagnostic",
+    "description": "One complete original Stone Fault March class for bounded diagnostics only. Cannot replace required Masters parts or establish manual visual acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchPresentationTest"
+    ]
+  },
+  "stone-fault-march-opponent": {
+    "purpose": "diagnostic",
+    "description": "One complete original Stone Fault March class for bounded diagnostics only. Cannot replace required Masters parts or establish manual visual acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+    ]
   }
 }

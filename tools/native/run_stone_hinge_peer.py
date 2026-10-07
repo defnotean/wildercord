@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 import re
 import signal
+import stat
 import subprocess
 import sys
 import time
@@ -391,21 +392,121 @@ def validate_witnesses(ipc, identity, pids, relay_report):
     return {name: s.digest(ipc / name) for name in sorted(names)}
 
 
-def evidence_files(base):
-    """Bound all published evidence, including raw logs, without reading payloads."""
-    total, files = 0, {}
-    for directory, children, names in os.walk(base, followlinks=False):
-        for name in (*children, *names):
-            path = Path(directory) / name
-            s.require(not path.is_symlink(), "Linked evidence path: " + str(path))
-        for name in names:
-            path = Path(directory) / name
-            s.require(path.is_file(), "Non-regular evidence path")
-            total += path.stat().st_size
-            s.require(total <= MAX_EVIDENCE, "Aggregate profile evidence (including logs) exceeded 16 MiB")
-            files[path.relative_to(base).as_posix()] = path
-            s.require(len(files) <= 1024, "Unbounded evidence file count")
-    return total, files
+def evidence_files(base, *, active_profile=None):
+    """Bound live writes or strictly enumerate quiescent evidence for hashing.
+
+    Java publishes write-once IPC files by moving a sibling .tmp atomically.
+    A live walk can enumerate that temporary name just before it disappears.
+    Accept only this known publication, with its regular destination present;
+    final scans must never forgive a missing entry. No payloads are read here.
+    """
+    phase = "live" if active_profile is not None else "final"
+    publications = {}
+    if active_profile is not None:
+        names = set(TERMINALS) | {"server-ready.properties", "server-connected.properties",
+                "host-connected.properties", "peer-connected.properties", "host-failure.properties", "peer-failure.properties"}
+        for index in range(len(roster(active_profile))):
+            names.update(f"case-{index:02d}-{suffix}" for suffix in (
+                "identity.json", "host.json", "peer.json", "arm.properties", "armed.properties",
+                "ready.properties", "seen.properties", "passed.properties"))
+        publications = {(base / "ipc" / name).with_suffix(".tmp"): base / "ipc" / name for name in names}
+
+    root_fd, ipc_fd, walk_stream = None, None, None
+
+    def same_directory(named, retained, path):
+        s.require(stat.S_ISDIR(named.st_mode) and not stat.S_ISLNK(named.st_mode)
+                  and (named.st_dev, named.st_ino) == (retained.st_dev, retained.st_ino),
+                  f"Changed or linked {phase} evidence directory: {path}")
+
+    def check_pinned_directories():
+        if root_fd is not None:
+            same_directory(base.lstat(), os.fstat(root_fd), base)
+        if ipc_fd is not None:
+            same_directory(os.stat("ipc", dir_fd=root_fd, follow_symlinks=False), os.fstat(ipc_fd), base / "ipc")
+
+    def metadata(path, entry_fd=None):
+        if entry_fd is not None:
+            check_pinned_directories()
+            try:
+                return os.stat(path.name, dir_fd=entry_fd, follow_symlinks=False)
+            finally:
+                check_pinned_directories()
+        return path.lstat()
+
+    def inspect(path, *, directory=False, entry_fd=None):
+        original = path
+        try:
+            try:
+                info = metadata(path, entry_fd)
+            except FileNotFoundError:
+                if directory or path not in publications:
+                    raise
+                path = publications[path]
+                info = metadata(path, entry_fd)
+        except OSError as error:
+            raise ValueError(f"Cannot inspect {phase} evidence path {original} (checking {path}): {error}") from error
+        label = f"{phase} evidence path: {path}"
+        s.require(not stat.S_ISLNK(info.st_mode), "Linked " + label)
+        s.require(stat.S_ISDIR(info.st_mode) if directory else stat.S_ISREG(info.st_mode),
+                  ("Non-directory " if directory else "Non-regular ") + label)
+        return path, info
+
+    def walk_error(error):
+        raise ValueError(f"Cannot walk {phase} evidence path {error.filename}: {error}") from error
+
+    total, files, sizes = 0, {}, {}
+    _, root_info = inspect(base, directory=True)
+    try:
+        if active_profile is not None:
+            flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC
+            root_fd = os.open(base, flags)
+            same_directory(root_info, os.fstat(root_fd), base)
+            check_pinned_directories()
+            ipc_info = os.stat("ipc", dir_fd=root_fd, follow_symlinks=False)
+            s.require(not stat.S_ISLNK(ipc_info.st_mode), f"Linked {phase} evidence path: {base / 'ipc'}")
+            ipc_fd = os.open("ipc", flags, dir_fd=root_fd)
+            same_directory(ipc_info, os.fstat(ipc_fd), base / "ipc")
+            check_pinned_directories()
+        if active_profile is not None:
+            walk_stream = os.fwalk(".", dir_fd=root_fd, follow_symlinks=False, onerror=walk_error)
+            rows = ((base / directory, children, names, descriptor)
+                    for directory, children, names, descriptor in walk_stream)
+        else:
+            rows = ((Path(directory), children, names, None)
+                    for directory, children, names in os.walk(base, followlinks=False, onerror=walk_error))
+        for directory, children, names, entry_fd in rows:
+            check_pinned_directories()
+            if entry_fd is None:
+                inspect(directory, directory=True)
+            else:
+                s.require(stat.S_ISDIR(os.fstat(entry_fd).st_mode), f"Non-directory {phase} evidence path: {directory}")
+            for name in children:
+                inspect(directory / name, directory=True, entry_fd=entry_fd)
+            for name in names:
+                path, info = inspect(directory / name, entry_fd=entry_fd)
+                relative = path.relative_to(base).as_posix()
+                # A directory snapshot can contain both sides of a rename. Count
+                # the published file once, including when it was not in that snapshot.
+                total += info.st_size - sizes.get(relative, 0)
+                sizes[relative] = info.st_size
+                s.require(total <= MAX_EVIDENCE, f"Aggregate {phase} profile evidence (including logs) exceeded 16 MiB: {path}")
+                files[relative] = path
+                s.require(len(files) <= 1024, f"Unbounded {phase} evidence file count: {path}")
+        check_pinned_directories()
+        return total, files
+    except OSError as error:
+        raise ValueError(f"Cannot inspect {phase} evidence path {base}: {error}") from error
+    finally:
+        try:
+            if walk_stream is not None:
+                walk_stream.close()
+        finally:
+            try:
+                if ipc_fd is not None:
+                    os.close(ipc_fd)
+            finally:
+                if root_fd is not None:
+                    os.close(root_fd)
 
 
 def artifact_hashes(base):
@@ -433,7 +534,7 @@ def supervise(base, ipc, identity, jobs, listeners, deadline, *, clock=time.mono
         while True:
             now = clock()
             s.require(math.isfinite(now) and now < deadline, "Stone Hinge profile elapsed deadline expired")
-            evidence_files(base)
+            evidence_files(base, active_profile=identity["profile"])
             states = {role: process.poll() for role, process in jobs}
             s.require(not any((ipc / (role + "-failure.properties")).exists() for role in pids), "Native client published a failure witness")
             for role, state in states.items():

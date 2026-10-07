@@ -2890,7 +2890,8 @@ public class CordScreen extends Screen {
 					lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.art", Component.translatable(art.nameKey()).withColor(m.color()),
 						ordinal), 8, TEXT, List.of(Component.translatable(art.nameKey()).withColor(m.color()),
 						Component.translatable("aura.wildercord.banner.kicker", method, ordinal).withStyle(ChatFormatting.DARK_GRAY),
-						Component.translatable(art.nameKey() + ".desc").withStyle(ChatFormatting.GRAY))));
+						Component.translatable(art.nameKey() + ".desc").withStyle(ChatFormatting.GRAY),
+						EarnedCounterHelp.controls(art.id()).copy().withStyle(ChatFormatting.GRAY))));
 				} else {
 					lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.art", Component.literal("???"), ordinal), 8, FAINT,
 						List.of(Component.translatable("screen.wildercord.grimoire.art_unknown", method, ordinal).withStyle(ChatFormatting.GRAY))));

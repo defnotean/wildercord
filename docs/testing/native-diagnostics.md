@@ -2,8 +2,8 @@
 
 The `native-diagnostic` job in the existing Build PR workflow is diagnostic only.
 Its result never supplies `fullClientGate` or `focusedClientGate` acceptance.
-All four full-descriptor shards and both focused release jobs remain enabled and
-required independently. No production feature, assertion, native sequence, seed,
+All four full-descriptor shards, all three required Masters parts, articulated
+and connected release checks remain enabled and required independently. No production feature, assertion, native sequence, seed,
 or release roster is removed by this runner.
 
 The default `.github/native-diagnostic-request.json` is disabled:
@@ -20,6 +20,39 @@ checkout is the exact PR head, whose code is identical to the requested source.
 
 The fixed case allowlist is defined in `tools/run_native_diagnostic_ci.py` and includes:
 
+- `stone-fault-march-presentation`: exactly the one complete original
+  `StoneMarchPresentationTest` class.
+- `stone-fault-march-opponent`: exactly the one complete original
+  `StoneMarchOpponentViewTest` class. These single-class diagnostic selectors keep
+  all original trials, captures and waits. Each requires exactly its one seed and
+  setup/run/cleanup/returned sequence, strict source/head/run/attempt/configuration
+  provenance and unchanged 50-minute native/60-minute job caps. Neither can borrow
+  the old two- or three-class scope, replace a required Masters part, or establish
+  manual visual acceptance. Their source inventory and nine fixed March artifact
+  paths are identical to the existing visual diagnostic. Adding these selectors
+  does not activate or alter the committed diagnostic request.
+- `stone-fault-march-visuals`: exactly the complete
+  `dev.wildercord.aura.world.StoneMarchPresentationTest`, then the complete
+  `dev.wildercord.aura.world.StoneMarchOpponentViewTest`. This scoped visual
+  diagnostic skips the separate mechanics class only in this diagnostic selection.
+  The original `stone-fault-march` diagnostic still requires all three classes;
+  all three remain mandatory in the current 43-class Masters and full-descriptor
+  release gates. Both visual classes retain every original trial, capture and wait.
+  Each original world seed must be observed exactly once in class order, with
+  matching source/request/head/run/attempt and source/configuration hashes. Both
+  classes must complete setup/run/cleanup/returned exactly once in order.
+  Three-class, partial, foreign, repeated, malformed or stale evidence cannot be
+  relabelled as this two-class result. The existing registered-class rule remains.
+  The shared March fixture, capture helper, visual render sources and capture
+  mixins/config are hashed alongside both selected class sources. The existing
+  `stone-march-native-diagnostic-<head>-<run>-<attempt>` artifact keeps the same nine
+  fixed PNG/JSON pairs plus request/result provenance. Its guard already supports
+  this case; no new artifact paths or jobs are added. The unchanged 50-minute
+  native step and 60-minute job caps still apply, with no automatic retry or
+  runtime guarantee. Missing or timed-out evidence remains unverified. A pass
+  covers these two native classes only; mechanics, full/focused release acceptance
+  and manual visual review remain separate requirements. Python tooling checks
+  do not establish a native run or approve the images.
 - `progression-feasibility`: exactly the complete `ReweaveFeasibilityTest`, then
   `StoneHingeFeasibilityTest`. Both are appended to the full descriptor without
   changing existing order; the 38-class Masters, six-class articulated and 46-case

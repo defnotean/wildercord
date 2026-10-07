@@ -23,7 +23,10 @@ from client_suites import (ROOT, EXIT_PREFIX, REQUEST_PREFIX, PROGRESSION_ENTRIE
                            stone_owner_negative_completion, STONE_OWNER_NEGATIVE_ENTRIES,
                            movement_foundations_completion, MOVEMENT_FOUNDATION_ENTRIES, STONE_VELOCITY_ENTRY, REED_REFUGE_ENTRY,
                            excise_completion, EXCISE_ENTRIES, life_excise_completion, LIFE_EXCISE_ENTRIES,
-                           stone_march_completion, STONE_MARCH_ENTRIES, select_entries, selection_issues)
+                           stone_march_completion, STONE_MARCH_ENTRIES,
+                           stone_march_visual_completion, STONE_MARCH_VISUAL_ENTRIES, STONE_MARCH_DIAGNOSTICS,
+                           _whole_class_completion, stone_march_seeds,
+                           exact_json_marker, select_entries, selection_issues)
 import run_client_ci
 from native_ci_diagnostics import SCENE_PREFIX
 from native import run_stone_hinge_peer as stone_peer
@@ -49,7 +52,9 @@ CASES = {"wetland": "diagnostic-wetland", "aura-fx": "diagnostic-aura-fx",
          "stone-hinge-owner-negative": "diagnostic-stone-hinge-owner-negative",
          "movement-foundations": "diagnostic-movement-foundations", "excise": "diagnostic-life-excise",
          "stone-fault-march": "stone-fault-march",
-         "stone-hinge-peer": "stone-hinge-peer"}
+         "stone-fault-march-visuals": "stone-fault-march-visuals",
+         "stone-hinge-peer": "stone-hinge-peer",
+         **{name: name for name in STONE_MARCH_DIAGNOSTICS}}
 PEER_CASE = "stone-hinge-peer"
 # Disposable game worlds/caches never live beneath the upload directory.
 PEER_OUTPUT = "build/native/stone-hinge-peer"
@@ -59,6 +64,7 @@ DISALLOWED_ENV = ("JAVA_TOOL_OPTIONS", "JDK_JAVA_OPTIONS", "_JAVA_OPTIONS", "GRA
 SEED_PREFIX = "WILDERCORD_NATIVE_WORLD "
 SEEDS = {
     "stone-fault-march": dict.fromkeys(STONE_MARCH_ENTRIES),
+    **{name: dict.fromkeys(entries) for name, entries in STONE_MARCH_DIAGNOSTICS.items()},
     "excise": {LIFE_EXCISE_ENTRIES[1]: None, LIFE_EXCISE_ENTRIES[2]: None,
                EXCISE_ENTRIES[0] + "#lesson": None, EXCISE_ENTRIES[0]: None},
     "movement-foundations": {STONE_VELOCITY_ENTRY: None, REED_REFUGE_ENTRY: None,
@@ -158,6 +164,26 @@ CASE_FILES["stone-fault-march"] = (
     'src/gametest/java/dev/wildercord/gametest/mixin/NativeSceneTraceMixin.java',
     'src/gametest/resources/native-diagnostics-gametest.mixins.json',
 )
+
+# Reuse the same gameplay/capture sources and bind the visual render instrumentation.
+# The two selected whole-class sources are added by current(), as for other cases.
+CASE_FILES["stone-fault-march-visuals"] = (*CASE_FILES["stone-fault-march"],
+    'src/client/java/dev/wildercord/client/auraworld/MasterModel.java',
+    'src/client/java/dev/wildercord/client/auraworld/MasterRenderer.java',
+    'src/client/java/dev/wildercord/client/auraworld/AuraFighterRenderState.java',
+    'src/client/java/dev/wildercord/client/combat/ArticulatedCombat.java',
+    'src/client/java/dev/wildercord/client/combat/ArticulatedRig.java',
+    'src/client/java/dev/wildercord/client/fx/HitStop.java',
+    'src/client/java/dev/wildercord/client/fx/MagicQuality.java',
+    'src/client/java/dev/wildercord/client/fx/ScreenEffects.java',
+    'src/gametest/resources/masters-capture-gametest.mixins.json',
+    *("src/gametest/java/dev/wildercord/gametest/mixin/" + name + ".java" for name in (
+        "MastersHandRenderProbeMixin", "MastersBodyRenderProbeMixin", "MastersHudRenderProbeMixin",
+        "MastersNpcRenderProbeMixin", "MastersNpcModelProbeMixin", "MastersNpcWarningProbeMixin")),
+)
+
+for march_case in STONE_MARCH_DIAGNOSTICS:
+    CASE_FILES[march_case] = CASE_FILES["stone-fault-march-visuals"]
 
 CASE_FILES["movement-foundations"] = (*CASE_FILES["stone-hinge-owner-negative"],
     "src/main/java/dev/wildercord/wildlife/LanternNewt.java",
@@ -409,6 +435,11 @@ def current(env, *, observed_head=None):
     if request["case"] == "excise" and selection != {
             "kind": "diagnostic", "name": CASES["excise"], "count": 5, "entries": list(LIFE_EXCISE_ENTRIES)}:
         raise ValueError("Life and Excise diagnostic must retain all five whole registered classes")
+    if request["case"] in STONE_MARCH_DIAGNOSTICS and not exact_json_marker(json.dumps(selection), {
+            "kind": "diagnostic", "name": request["case"],
+            "count": len(STONE_MARCH_DIAGNOSTICS[request["case"]]),
+            "entries": list(STONE_MARCH_DIAGNOSTICS[request["case"]])}):
+        raise ValueError("Stone Fault March diagnostic must retain exactly its whole registered classes in order")
     paths = [*CONFIG_FILES, *CASE_FILES.get(request["case"], ())]
     if selection:
         paths += ["src/gametest/java/" + entry.replace(".", "/") + ".java" for entry in selection["entries"]]
@@ -422,7 +453,7 @@ def current(env, *, observed_head=None):
                               "jobTimeoutMinutes": 60, "automaticRetries": 0,
                               "seedPolicy": "Original fixtures and Fabric settings, no overrides",
                               "declaredWorldSeeds": SEEDS.get(request["case"], {})},
-            "basis": "Diagnostic evidence only. All four aggregate and both focused release gates remain required."}
+            "basis": "Diagnostic evidence only. All four aggregate shards, all three required Masters parts, articulated and connected release gates remain required."}
 
 
 def write_json(name, value):
@@ -730,21 +761,25 @@ def collect_peer(data, env):
 
 
 def observed_seeds(log, case):
+    if case in STONE_MARCH_DIAGNOSTICS:
+        return stone_march_seeds(log, STONE_MARCH_DIAGNOSTICS[case])
     found, issues = {}, []
+    strict = case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative",
+                      "movement-foundations", "excise", "stone-fault-march-visuals")
     for line in log.splitlines():
         if SEED_PREFIX not in line:
             continue
         try:
             marker = json.loads(line.split(SEED_PREFIX, 1)[1],
-                                object_pairs_hook=unique_object if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") else dict)
-            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
+                                object_pairs_hook=unique_object if strict else dict)
+            if strict and (not isinstance(marker, dict) or set(marker) != {"suite", "seed"}):
                 raise ValueError()
             entry, seed = marker["suite"], marker["seed"]
             if entry not in SEEDS[case] or not isinstance(seed, str) or not re.fullmatch(r"-?[0-9]{1,19}", seed):
                 raise ValueError()
-            if case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise", "stone-fault-march") and entry in found:
+            if (strict or case in ("wall-turn", "kiln-ring", "ecology-return", "stasis-gallery", "stone-fault-march")) and entry in found:
                 issues.append("Repeated native world seed marker for " + entry)
-            if case in ("progression-feasibility", "reweave-player", "stone-hinge-owner-negative", "movement-foundations", "excise") and not -(2 ** 63) <= int(seed) < 2 ** 63:
+            if strict and not -(2 ** 63) <= int(seed) < 2 ** 63:
                 raise ValueError()
             found.setdefault(entry, set()).add(seed)
         except (ValueError, KeyError, TypeError):
@@ -753,6 +788,8 @@ def observed_seeds(log, case):
         values = found.get(entry, set())
         if len(values) != 1 or expected is not None and values != {expected}:
             issues.append("Missing or inconsistent observed world seed for " + entry)
+    if case == "stone-fault-march-visuals" and list(found) != list(STONE_MARCH_VISUAL_ENTRIES):
+        issues.append("Stone Fault March visuals requires exactly both original world seeds in class order")
     return {entry: sorted(values) for entry, values in found.items()}, issues
 
 
@@ -813,7 +850,11 @@ def collect(env):
     issues.extend(selection_issues(log, data["selection"]))
     markers = [line[len(REQUEST_PREFIX):] for line in log.splitlines() if line.startswith(REQUEST_PREFIX)]
     try:
-        if len(markers) != 1 or json.loads(markers[0]) != receipt(data):
+        matches = len(markers) == 1 and (
+            exact_json_marker(markers[0], receipt(data))
+            if data["request"]["case"] in STONE_MARCH_DIAGNOSTICS
+            else json.loads(markers[0]) == receipt(data))
+        if not matches:
             issues.append("Native log request/head/run/config provenance does not match this invocation")
     except ValueError:
         issues.append("Native log request provenance is invalid")
@@ -834,6 +875,9 @@ def collect(env):
         data["completedEntries"], _ = life_excise_completion(log)
     if data["request"]["case"] == "stone-fault-march":
         data["completedEntries"], _ = stone_march_completion(log)
+    if data["request"]["case"] in STONE_MARCH_DIAGNOSTICS:
+        data["completedEntries"], _ = _whole_class_completion(
+            log, STONE_MARCH_DIAGNOSTICS[data["request"]["case"]], "Stone Fault March diagnostic")
     successful = "BUILD SUCCESSFUL" in log and "BUILD FAILED" not in log and not issues
     data.update(diagnosticOutcome="passed" if successful else "unverified",
                 observedWorldSeeds=seeds, verificationIssues=issues,

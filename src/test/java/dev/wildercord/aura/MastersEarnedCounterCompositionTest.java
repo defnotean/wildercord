@@ -1,0 +1,96 @@
+package dev.wildercord.aura;
+
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
+import org.junit.jupiter.api.Test;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/** Geometry regressions only. Actual lighting, aura, submitted frames and pixels remain native gates. */
+class MastersEarnedCounterCompositionTest {
+	@Test
+	void earnedRepliesKeepOriginalClassicStancesAndOneReleaseAtPaidWindup() {
+		var back = MastersStyleRules.animation(20);
+		var root = MastersStyleRules.animation(21);
+		var chamber = MastersArtAnimation.sample(20, back.windup() * .65F, back.windup(), back.recovery());
+		var reply = MastersArtAnimation.sample(20, back.windup(), back.windup(), back.recovery());
+		assertTrue(reply.hand().z() < chamber.hand().z() - .15F, "Backdraft is a short point from its braced guard");
+		assertEquals(-80, MastersArtAnimation.bladeTilt(20, back.windup(), back.windup(), 1));
+		var low = MastersArtAnimation.sample(21, root.windup() * .65F, root.windup(), root.recovery());
+		var rising = MastersArtAnimation.sample(21, root.windup(), root.windup(), root.recovery());
+		assertTrue(rising.sword().x() < low.sword().x() - 1, "Rooted lifts from the low receiving brace");
+		assertTrue(rising.lower() < low.lower(), "Both planted knees absorb and rise with the reply");
+		assertEquals(0, MastersArtAnimation.bladeTilt(21, root.windup(), root.windup(), 1), .0001F);
+		assertNotEquals(reply, rising);
+	}
+
+	@Test
+	void bothFallbackFormsKeepTheOpaqueBladeReadableAcrossPhasesHandsAndLayouts() throws Exception {
+		try (var source = Objects.requireNonNull(getClass().getResourceAsStream("/assets/minecraft/textures/item/diamond_sword.png"))) {
+			BufferedImage sword = ImageIO.read(source);
+			for (int move : new int[] {20, 21}) {
+				var style = MastersStyleRules.animation(move);
+				for (float age = 0; age <= style.windup() + style.recovery(); age += .25F) {
+					var pose = MastersArtAnimation.sample(move, age, style.windup(), style.recovery());
+					for (boolean left : new boolean[] {false, true}) for (int[] viewport : VIEWPORTS)
+						checkEdge(sword, pose, left, 0, 0, 0, 0, viewport, "move=" + move + " age=" + age);
+				}
+				for (float age : new float[] {style.windup() * .65F, style.windup(), style.windup() + 3,
+					style.windup() + 4, style.windup() + 8, style.windup() + 12}) {
+					var pose = MastersArtAnimation.sample(move, age, style.windup(), style.recovery());
+					for (boolean left : new boolean[] {false, true}) for (float yaw : new float[] {-180, 0, 180})
+						for (float pitch : new float[] {-90, 0, 90}) for (int[] viewport : VIEWPORTS)
+							checkEdge(sword, pose, left, yaw, pitch, .7F, .5F, viewport,
+								"move=" + move + " age=" + age + " yaw=" + yaw + " pitch=" + pitch);
+				}
+			}
+		}
+	}
+
+	private static final int[][] VIEWPORTS = {{854, 480, 2}, {1280, 720, 3}, {1280, 960, 4}, {1920, 810, 3}};
+
+	private static void checkEdge(BufferedImage sword, MastersArtAnimation.Pose pose, boolean left, float yaw, float pitch,
+			float attack, float inverseHeight, int[] viewport, String label) {
+		var view = MastersArtAnimation.view(pose, left, inverseHeight, yaw, pitch);
+		var h = view.transform(); var grip = view.grip();
+		int width = viewport[0], height = viewport[1], hudTop = height - 42 * viewport[2];
+		var camera = new Matrix4f()
+			.translate(0, MastersViewMotion.heightCompensation(inverseHeight, pose.weight()), 0)
+			.translate(h.x(), h.y(), h.z()).translate(grip.x(), grip.y(), grip.z())
+			.rotateY((float) Math.toRadians(h.yaw())).rotateX((float) Math.toRadians(h.pitch())).rotateZ((float) Math.toRadians(h.roll()))
+			.mul(MastersViewMotion.fadeSwing(vanillaSwing(attack, left ? -1 : 1), pose.weight()))
+			.translate((left ? -1.13F : 1.13F) / 16, 3.2F / 16, 1.13F / 16)
+			.rotateY((float) -Math.PI / 2).rotateZ((float) Math.toRadians(25)).scale(.68F).translate(-.5F, -.5F, -.5F);
+		var matrix = new Matrix4f().perspective((float) Math.toRadians(70), width / (float) height, .05F, 2048).mul(camera);
+		int visible = 0;
+		float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY, maxX = Float.NEGATIVE_INFINITY, maxY = Float.NEGATIVE_INFINITY;
+		// Sample actual opaque cutting-edge texels, not the transparent sprite rectangle.
+		for (int y = 0; y < 8; y++) for (int x = 6; x < 16; x++) {
+			int argb = sword.getRGB(x, y), r = argb >> 16 & 255, g = argb >> 8 & 255, b = argb & 255;
+			if ((argb >>> 24) == 0 || !(g > 75 && r < g * .7 && b > g * .65 && b < g * 1.3)) continue;
+			for (float z : new float[] {7.5F / 16, 8.5F / 16}) for (float dy : new float[] {.2F, .5F, .8F}) for (float dx : new float[] {.2F, .5F, .8F}) {
+				var vertex = new Vector4f((x + dx) / 16, 1 - (y + dy) / 16, z, 1);
+				var eye = camera.transform(new Vector4f(vertex));
+				assertTrue(eye.z < -.05F, "Opaque blade crosses camera near plane: " + label + " left=" + left);
+				var point = matrix.transform(vertex);
+				float sx = (point.x / point.w + 1) * width / 2, sy = (1 - point.y / point.w) * height / 2;
+				if (sx < 0 || sx >= width || sy < 0 || sy >= hudTop) continue;
+				visible++; minX = Math.min(minX, sx); maxX = Math.max(maxX, sx); minY = Math.min(minY, sy); maxY = Math.max(maxY, sy);
+			}
+		}
+		assertTrue(visible >= 8 && Math.max(maxX - minX, maxY - minY) >= height * .04F,
+			"Readable opaque edge above HUD: " + label + " left=" + left + " viewport=" + width + "x" + height + " visible=" + visible);
+	}
+	private static Matrix4f vanillaSwing(float attack, float side) {
+		float root = (float) Math.sqrt(attack);
+		float swing = (float) Math.sin(root * Math.PI), squared = (float) Math.sin(attack * attack * Math.PI);
+		return new Matrix4f().translate(side * -.4F * swing, .2F * (float) Math.sin(root * 2 * Math.PI), -.2F * (float) Math.sin(attack * Math.PI))
+			.rotateY((float) Math.toRadians(side * (45 - 20 * squared))).rotateZ((float) Math.toRadians(side * -20 * swing))
+			.rotateX((float) Math.toRadians(-80 * swing)).rotateY((float) Math.toRadians(side * -45));
+	}
+
+}
