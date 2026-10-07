@@ -8,6 +8,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -30,6 +32,32 @@ public final class GaleVaultProbe {
     public record Step(long tick, Vec3 before, Vec3 requested, Vec3 after, Vec3 velocity,
                        boolean ground, boolean below, boolean ceiling, boolean wall,
                        double fallBefore, double fallAfter) {}
+    /** One receipt per original native callback, separate from the unchanged move-boundary maximum. */
+    public static final class FallOnReceipt {
+        private final long event, invocation, tick;
+        private final Entity owner;
+        private final Level sourceLevel;
+        private final Block block;
+        private final BlockState state;
+        private final BlockPos pos;
+        private final int movement;
+        private final double argument, beforeCallback;
+        private double afterCallback = Double.NaN, afterCheck = Double.NaN, checkMovementY = Double.NaN;
+        private boolean returned, checked;
+        private FallOnReceipt(long event, long invocation, Trial trial, Block block, Level sourceLevel, BlockState state, BlockPos pos, Entity owner, double argument) {
+            this.event = event; this.invocation = invocation; this.tick = trial.level.getGameTime(); this.owner = owner; this.sourceLevel = sourceLevel;
+            this.block = block; this.state = state; this.pos = pos.immutable(); this.argument = argument;
+            movement = trial.steps.size() + 1; beforeCallback = owner.fallDistance;
+        }
+        @Override public String toString() {
+            return "event=" + event + " invocation=" + invocation + " tick=" + tick + " movement=" + movement
+                + " source=Entity.checkFallDamage->Block.fallOn ownerUuid=" + owner.getUUID()
+                + " ownerId=" + owner.getId() + " ownerIdentity=" + System.identityHashCode(owner)
+                + " level=" + sourceLevel.dimension().identifier() + " block=" + block + " state=" + state + " pos=" + pos
+                + " argument=" + argument + " beforeCallback=" + beforeCallback + " afterCallback=" + afterCallback
+                + " afterCheck=" + afterCheck + " checkMovementY=" + checkMovementY + " returned=" + returned + " checked=" + checked;
+        }
+    }
     private static Trial owned;
     private GaleVaultProbe() {}
 
@@ -49,6 +77,8 @@ public final class GaleVaultProbe {
         public final ServerLevel level;
         public final Vec3 origin, direction, predictedContact, predictedSettled;
         public final List<Step> steps = new ArrayList<>();
+        public final List<FallOnReceipt> nativeFallReceipts = new ArrayList<>();
+        public final GaleVaultFallTrace<FallOnReceipt> fallTrace = new GaleVaultFallTrace<>();
         public final List<Vec3> predicted;
         public final double auraBefore;
         public Phase phase = Phase.GROUND_TELL;
@@ -57,6 +87,9 @@ public final class GaleVaultProbe {
         public int impulses, travelCalls, dryReleases, nativeKnockbacks, fallCalls, rejectedFallCalls;
         public boolean airborneObserved, cancelled, ceilingObserved, wallObserved, suspendedObserved, flightTimedOut;
         public double apex, maximumFallDistance;
+        public double maximumNativeFallOnArgument;
+        private long fallEvent;
+        private boolean fallReceiptOverflow;
         private long lastTick = -1;
         private Vec3 priorTickVelocity, postTravelVelocity, moveStart, requested;
         private double moveFall;
@@ -108,6 +141,29 @@ public final class GaleVaultProbe {
             }
         }
         public void afterTravel() { postTravelVelocity = master.getDeltaMovement(); }
+        /** Observation only: decline foreign owners, mismatched native block identity, and non-move calls. */
+        public FallOnReceipt beforeOriginalFallOn(long invocation, Block block, Level sourceLevel, BlockState state, BlockPos pos, Entity entity, double argument) {
+            if (entity != master || sourceLevel != level || block != state.getBlock() || !moveInFlight || launchedAt < 0) return null;
+            if (nativeFallReceipts.size() >= 256) { fallReceiptOverflow = true; return null; }
+            var receipt = new FallOnReceipt(++fallEvent, invocation, this, block, sourceLevel, state, pos, entity, argument);
+            nativeFallReceipts.add(receipt);
+            maximumNativeFallOnArgument = Math.max(maximumNativeFallOnArgument, argument);
+            Wildercord.LOGGER.info("GALE_VAULT_NATIVE_FALL stage=before_original {}", receipt);
+            return receipt;
+        }
+        public void afterOriginalFallOn(FallOnReceipt receipt, boolean returned) {
+            if (receipt == null) return;
+            receipt.returned = returned; receipt.afterCallback = master.fallDistance;
+            Wildercord.LOGGER.info("GALE_VAULT_NATIVE_FALL stage=after_original {}", receipt);
+        }
+        /** Entity.checkFallDamage returns only after its own native landing reset; never calls or replaces that reset. */
+        public void afterOriginalFallCheck(FallOnReceipt receipt, double actualY, boolean ground, BlockState state, BlockPos pos) {
+            if (!moveInFlight || !ground || receipt == null) return;
+            if (receipt.checked || !receipt.returned || receipt.tick != level.getGameTime() || receipt.owner != master
+                || receipt.sourceLevel != level || receipt.state != state || !receipt.pos.equals(pos)) return;
+            receipt.checkMovementY = actualY; receipt.afterCheck = master.fallDistance; receipt.checked = true;
+            Wildercord.LOGGER.info("GALE_VAULT_NATIVE_FALL stage=check_return {}", receipt);
+        }
         public void beforeMove(MoverType type, Vec3 delta) {
             moveInFlight = launchedAt >= 0 && type == MoverType.SELF;
             if (!moveInFlight) return;
@@ -240,6 +296,9 @@ public final class GaleVaultProbe {
                 scenario, result, phase, impulses, travelCalls, landedAt < 0 ? -1 : landedAt - launchedAt + 1,
                 apex, landedAt < 0 ? "none" : steps.stream().filter(s -> s.tick == landedAt).findFirst().map(Step::after).orElse(null),
                 master.position(), maximumFallDistance, fallCalls, rejectedFallCalls, dryReleases, cancelled, suspendedObserved);
+            Wildercord.LOGGER.info("GALE_VAULT_FALL_DIAGNOSTIC scenario={} apex={} sampledMoveBoundaryMax={} nativeFallOnArgumentMax={} nativeFallOnCount={} receiptOverflow={} measuredValuesOnly=true",
+                scenario, apex, maximumFallDistance, maximumNativeFallOnArgument, nativeFallReceipts.size(), fallReceiptOverflow);
+            for (FallOnReceipt receipt : nativeFallReceipts) Wildercord.LOGGER.info("GALE_VAULT_NATIVE_FALL scenario={} stage=retained {}", scenario, receipt);
             for (Step step : steps) Wildercord.LOGGER.info("GALE_VAULT_NATIVE_STEP scenario={} sample={}", scenario, step);
         }
     }

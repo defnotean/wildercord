@@ -29,6 +29,7 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
  private record NeighborReceipt(UUID id,long lastSampleTick,Vec3 body,double distanceSqr,boolean overlaps,boolean alive,boolean follower,boolean hasFollowers){}
  private record PathReceipt(int sequence,RouteReceipt route,List<BlockPos> nodes,boolean truncated,Vec3 nextWaypoint){}
  private record MotionReceipt(long tick,Vec3 before,Vec3 body,Vec3 velocityBefore,Vec3 velocityAfter,float speed,double movementAttribute,float yaw,boolean onGround,boolean horizontalCollision,boolean verticalCollision,boolean follower,boolean hasFollowers,int noActionTicks,boolean wantsMove,Vec3 wanted,double controllerSpeed,List<String> goals,PathReceipt path,List<NeighborReceipt> nearby){}
+ private record LongRouteWindow(long predicateTick,SwimSample first,SwimSample last,RouteReceipt route,double progressSqr,double remainingSqr,double headingDot,boolean freshEightTickHistory,boolean allNavigating,boolean consecutiveTicks,boolean monotonic,List<Double> stepDots){}
  private static final class Observation {
   final Cod quarry;final Vec3 committed;final int epoch;Sample first,last,max,escape;
   Observation(Cod quarry,Vec3 committed,int epoch){this.quarry=quarry;this.committed=committed;this.epoch=epoch;}
@@ -46,6 +47,7 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
   // Read-only histories are capped independently and reset with each world's fish.
   private final ArrayDeque<MotionReceipt> recentMotion=new ArrayDeque<>(),routeOrRoleChanges=new ArrayDeque<>(),coilMotion=new ArrayDeque<>();
   private List<MotionReceipt> bestSwimMotion=List.of(),admissionMotion=List.of();private double bestTraceProgressSqr=-1;
+  private List<MotionReceipt> bestLongRouteMotion=List.of();private LongRouteWindow bestLongRouteWindow;
   private Path diagnosticPath;private boolean diagnosticDone=true,diagnosticFollower,diagnosticHasFollowers;private int pathSequence,routeOrRoleChangeCount;
   WitnessCod(ServerLevel l){super(EntityTypes.COD,l);}
   @Override public void tick(){
@@ -92,8 +94,9 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
   }
   private void diagnoseMotion(int trial){
    var rows=new TreeMap<Long,MotionReceipt>();
-   for(var group:List.of(recentMotion,bestSwimMotion,admissionMotion,routeOrRoleChanges,coilMotion))for(var sample:group)rows.put(sample.tick(),sample);
+   for(var group:List.of(recentMotion,bestSwimMotion,admissionMotion,routeOrRoleChanges,coilMotion,bestLongRouteMotion))for(var sample:group)rows.put(sample.tick(),sample);
    System.out.println("SILTCREST_DODGE_MOTION_HISTORY trial="+trial+" fish="+getUUID()+" maxEightTickProgressSqr="+bestTraceProgressSqr+" recent="+recentMotion.stream().map(MotionReceipt::tick).toList()+" peakWindow="+bestSwimMotion.stream().map(MotionReceipt::tick).toList()+" admissionWindow="+admissionMotion.stream().map(MotionReceipt::tick).toList()+" routeOrRoleChangeCount="+routeOrRoleChangeCount+" retainedChanges="+routeOrRoleChanges.stream().map(MotionReceipt::tick).toList()+" coil="+coilMotion.stream().map(MotionReceipt::tick).toList()+" rows="+rows.size());
+   System.out.println("SILTCREST_DODGE_LONG_ROUTE_WINDOW trial="+trial+" fish="+getUUID()+" selection=highestProgressSqrAtPredicateWithCurrentRouteActiveWaterAndRemainingSqr>=4 ties=firstObserved window="+bestLongRouteMotion.stream().map(MotionReceipt::tick).toList()+" receipt="+bestLongRouteWindow);
    for(var sample:rows.values())System.out.println("SILTCREST_DODGE_MOTION trial="+trial+" fish="+getUUID()+" sample="+sample);
   }
   private RouteReceipt routeReceipt(){
@@ -111,6 +114,21 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
    return new RouteReceipt(l.getGameTime(),navigation.isDone(),true,path.isDone(),path.canReach(),next,nodes,path.getTarget(),end,water,end==null?Double.NaN:horizontal(end.subtract(getBoundingBox().getCenter())).lengthSqr());
   }
   private double progressSqr(){return swimming.size()<2?0:horizontal(swimming.getLast().center().subtract(swimming.getFirst().center())).lengthSqr();}
+  private void retainLongRouteWindow(long predicateTick,SwimSample first,SwimSample last,Vec3 progress,RouteReceipt route){
+   // Observe the predicate's original current route, including windows rejected for low
+   // progress. Copy at most nine existing motion receipts; never re-query or supply a path.
+   if(!route.activeWater())return;
+   var remaining=horizontal(route.end().subtract(last.center()));double progressSquared=progress.lengthSqr(),remainingSquared=remaining.lengthSqr();
+   if(!(remainingSquared>=4)||bestLongRouteWindow!=null&&progressSquared<=bestLongRouteWindow.progressSqr())return;
+   boolean allNavigating=true,consecutiveTicks=true,monotonic=true;var stepDots=new ArrayList<Double>();SwimSample previous=null;
+   for(var sample:swimming){
+    allNavigating&=sample.navigating();
+    if(previous!=null){double dot=horizontal(sample.center().subtract(previous.center())).dot(progress);stepDots.add(dot);consecutiveTicks&=sample.tick()==previous.tick()+1;monotonic&=dot>0;}
+    previous=sample;
+   }
+   bestLongRouteWindow=new LongRouteWindow(predicateTick,first,last,route,progressSquared,remainingSquared,progress.dot(remaining),last.tick()>=predicateTick-1&&last.tick()-first.tick()==8,allNavigating,consecutiveTicks,monotonic,List.copyOf(stepDots));
+   bestLongRouteMotion=List.copyOf(recentMotion);
+  }
   private boolean reject(Gate gate){
    rejections.merge(gate,1,Integer::sum);rejected.merge(gate,1,Integer::sum);
    lastRejected=new Rejection(gate,level().getGameTime(),position(),progressSqr(),routeReceipt());
@@ -120,7 +138,8 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
   private boolean sustainedSwim(ServerLevel l){
    if(swimming.size()!=9)return reject(Gate.HISTORY);
    var first=swimming.getFirst();var last=swimming.getLast();var progress=horizontal(last.center().subtract(first.center()));var route=routeReceipt();
-   if(last.tick()<l.getGameTime()-1||last.tick()-first.tick()!=8)return reject(Gate.STALE_HISTORY);
+   long predicateTick=l.getGameTime();retainLongRouteWindow(predicateTick,first,last,progress,route);
+   if(last.tick()<predicateTick-1||last.tick()-first.tick()!=8)return reject(Gate.STALE_HISTORY);
    if(progress.lengthSqr()<.16)return reject(Gate.PROGRESS);
    if(!route.activeWater())return reject(Gate.WATER_ROUTE);
    var remaining=horizontal(route.end().subtract(last.center()));if(remaining.lengthSqr()<4)return reject(Gate.REMAINING_ROUTE);

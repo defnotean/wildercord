@@ -170,6 +170,8 @@ CASE_FILES["stone-fault-march"] = (
 
 CASE_FILES["gale-vault-ballistic"] = (
     "src/gametest/java/dev/wildercord/gametest/galevault/GaleVaultProbe.java",
+    "src/gametest/java/dev/wildercord/gametest/galevault/GaleVaultFallTrace.java",
+    "src/gametest/java/dev/wildercord/gametest/galevault/GaleVaultFallTraceChecks.java",
     *("src/gametest/java/dev/wildercord/gametest/galevault/mixin/" + name + ".java" for name in (
         "GaleVaultLivingMixin", "GaleVaultMobMixin", "GaleVaultEntityMixin", "GaleVaultMasterMixin")),
     "src/gametest/resources/gale-vault-ballistic-gametest.mixins.json",

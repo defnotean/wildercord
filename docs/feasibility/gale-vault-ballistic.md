@@ -91,3 +91,51 @@ Independent Java compilation, JUnit isolation guards and vanilla bytecode checks
 are separate from native runtime proof. The existing Loom Unix-socket host
 restriction is unchanged and must not be bypassed. A source/compile pass alone
 must never be presented as a successful ballistic experiment.
+
+
+## Passive fall-boundary diagnostic
+
+Native run 37562766153 at 98264c1f reached the valid-contact and exact 17-movement-
+tick assertions, then failed the combined apex/fall-history assertion before its
+measurements were logged. The preserved complete artifact contains no apex,
+fall-distance or per-step values, so it does not establish the failed half.
+
+Pinned `Entity.checkFallDamage` accumulates the final downward movement, passes
+that value to the original `Block.fallOn`, then resets fall distance before
+`Entity.move` returns. The existing HEAD/RETURN sampler cannot see that temporary
+within-call maximum. This ordering identifies a sampling hypothesis, not the
+measured cause of that native failure.
+
+The diagnostic observer wraps only the existing original `Block.fallOn` callsite
+and calls its original operation once with all receiver/arguments unchanged.
+Receipts retain exact owner/body, level, block receiver/state/position and event
+identity, the native argument, the field around the callback, and the field at
+`checkFallDamage` return after native reset. Foreign-owner and out-of-move
+observation-only negative controls cannot seed receipts and invoke no callback.
+This adds no fall reset or virtual block/entity callback call.
+
+Summary, callback receipts and retained movement steps are printed before the
+success assertions and before cleanup, including when an assertion throws.
+The apex checks remain strictly 2.7–2.9, the original move-boundary maximum still
+must exceed 2.5, and the 17-tick, impulse, deadline, recovery and counterplay
+conditions are unchanged. Native callback measurements are separate diagnostics;
+they do not replace that maximum or relax the assertion. A new native run is
+required to obtain actual values before any measurement correction is considered.
+
+The observation boundary catches and latches failures from before/after/reset
+observers. It still invokes each original operation exactly once and preserves
+its return value or the identical thrown object. A latched observer stops
+recording; the GameTest driver checks the latch between physics invocations.
+Unconditional failure cleanup does not replace an existing native exception with
+a diagnostic exception. Original `checkFallDamage` invocations own separate
+frames, including exceptional exits; each reset receipt belongs to that exact
+frame rather than the latest globally retained callback. Nested same-owner calls
+with and without an inner callback therefore cannot borrow the outer receipt.
+
+Twelve Minecraft-free controls run against that same helper: observer failures
+before/after a succeeding/failing native operation, reset-observer failure,
+nested calls with/without a callback, nested native failure, unscoped observation,
+duplicate callback observation, disabled observation after failure and a refused
+receipt. They verify exact original call counts, result/Throwable identity and
+frame cleanup. These controls neither invoke native physics nor fabricate a
+block/entity fall callback.

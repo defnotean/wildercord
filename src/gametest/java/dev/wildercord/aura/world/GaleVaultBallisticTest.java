@@ -27,6 +27,7 @@ public final class GaleVaultBallisticTest implements FabricClientGameTest {
     private float targetHealth, masterHealth;
 
     @Override public void runTest(ClientGameTestContext context) {
+        dev.wildercord.gametest.galevault.GaleVaultFallTraceChecks.verify();
         try (var world = context.worldBuilder().create()) {
             try {
                 context.waitTicks(40);
@@ -54,7 +55,7 @@ public final class GaleVaultBallisticTest implements FabricClientGameTest {
                 removed(world);
                 Wildercord.LOGGER.info("GALE_VAULT_FEASIBILITY native_physics=true ordinary_attack=false selector_integration=false payment=false damage=false accepted_attack_count_unchanged=true");
             } finally {
-                world.getServer().runOnServer(server -> clean());
+                world.getServer().runOnServer(server -> clean(false));
             }
         } finally { origin = null; GaleVaultProbe.assertIdle(); }
         Wildercord.LOGGER.info("GALE_VAULT_BALLISTIC_COMPLETE native_physics=true ordinary_attack=false selector_integration=false payment=false damage=false accepted_attack_count_unchanged=true cleanup=complete");
@@ -77,6 +78,14 @@ public final class GaleVaultBallisticTest implements FabricClientGameTest {
             level.addFreshEntity(master); level.addFreshEntity(target);
             master.setTarget(target);
             trial = GaleVaultProbe.own(master, target);
+            var support = level.getBlockState(at(0, -1, 0));
+            check(GaleVaultProbe.current(target) == null, "An unrelated body has no fall-observer owner");
+            check(trial.beforeOriginalFallOn(-1, support.getBlock(), level, support, at(0, -1, 0), target, 999) == null,
+                "A foreign callback body cannot seed the passive receipt");
+            check(trial.beforeOriginalFallOn(-1, support.getBlock(), level, support, at(0, -1, 0), master, 999) == null,
+                "An owned observation outside its original native move cannot seed the receipt");
+            check(trial.nativeFallReceipts.isEmpty() && trial.maximumNativeFallOnArgument == 0 && trial.maximumFallDistance == 0,
+                "Negative observation-only controls cannot inject fall data or invoke a native callback");
             targetHealth = target.getHealth(); masterHealth = master.getHealth();
         });
         world.getServer().waitFor(server -> master.onGround() && master.verticalCollisionBelow, 30);
@@ -105,10 +114,14 @@ public final class GaleVaultBallisticTest implements FabricClientGameTest {
         });
         complete(world);
         world.getServer().runOnServer(server -> {
+            trial.report(movingTarget ? "target_moved_no_homing_before_assertions" : "flat_native_contact_before_assertions");
+            trial.fallTrace.checkOutsidePhysics();
             check(trial.result == GaleVaultProbe.Result.VALID_GROUND_CONTACT && !trial.cancelled, "Only a real supported landing qualifies");
             check(trial.impulses == 1 && trial.airborneObserved && trial.landedAt - trial.launchedAt + 1 == 17,
                 "One bounded impulse traverses seventeen native movement ticks");
-            check(trial.apex > 2.7 && trial.apex < 2.9 && trial.maximumFallDistance > 2.5, "Real vertical position and fall history describe the arc");
+            check(trial.apex > 2.7 && trial.apex < 2.9, "Native apex must be strictly between 2.7 and 2.9; actual=" + trial.apex);
+            check(trial.maximumFallDistance > 2.5, "Move-boundary fall maximum must exceed 2.5; actual=" + trial.maximumFallDistance
+                + ", separately observed original fallOn argument maximum=" + trial.maximumNativeFallOnArgument);
             check(trial.dryReleases == 1 && trial.dryReleaseAt == trial.landedAt + 6, "Six full landing ticks precede one harmless future-phase marker");
             check(trial.recoveryUntil >= trial.armedAt + 80 && trial.recoveryUntil >= trial.dryReleaseAt + 36, "Reservation and post-release recovery have independent floors");
             var landing = trial.steps.stream().filter(s -> s.tick() == trial.landedAt).findFirst().orElseThrow();
@@ -297,14 +310,26 @@ public final class GaleVaultBallisticTest implements FabricClientGameTest {
         });
     }
     private void unchanged() {
+        trial.fallTrace.checkOutsidePhysics();
         check(target.getHealth() == targetHealth && master.getHealth() == masterHealth, "The proof never grants aerial or landing damage");
         check(master.auraRemaining() == trial.auraBefore && master.attackAnimation() == 0, "No payment or ordinary move ID is claimed");
     }
     private BlockPos at(int x, int y, int z) { return BlockPos.containing(origin).offset(x, y, z); }
-    private void clean() {
-        GaleVaultProbe.close();
-        if (master != null) master.discard(); if (target != null) target.discard();
-        master = null; target = null; trial = null;
+    private void clean() { clean(true); }
+    private void clean(boolean checkDiagnostics) {
+        var completed = trial;
+        try {
+            if (completed != null) {
+                try { completed.report("before_cleanup"); }
+                catch (Throwable failure) { completed.fallTrace.recordFailure(failure); }
+            }
+        }
+        finally {
+            GaleVaultProbe.close();
+            if (master != null) master.discard(); if (target != null) target.discard();
+            master = null; target = null; trial = null;
+        }
+        if (checkDiagnostics && completed != null) completed.fallTrace.checkOutsidePhysics();
     }
     private static void check(boolean value, String message) { if (!value) throw new AssertionError(message); }
 }

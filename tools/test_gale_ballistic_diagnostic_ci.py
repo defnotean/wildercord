@@ -172,6 +172,8 @@ class GaleBallisticDiagnosticTests(unittest.TestCase):
         for path in files:
             self.assertTrue((suites.ROOT / path).is_file(), path)
         self.assertIn("src/gametest/java/dev/wildercord/gametest/galevault/GaleVaultProbe.java", files)
+        for helper in ("GaleVaultFallTrace", "GaleVaultFallTraceChecks"):
+            self.assertIn("src/gametest/java/dev/wildercord/gametest/galevault/" + helper + ".java", files)
         config = "src/gametest/resources/gale-vault-ballistic-gametest.mixins.json"
         self.assertIn(config, files)
         mixins = json.loads((suites.ROOT / config).read_text())
@@ -183,7 +185,9 @@ class GaleBallisticDiagnosticTests(unittest.TestCase):
         self.assertEqual(source.count(suites.GALE_BALLISTIC_PREFIX), 1)
         terminal = source.index(suites.GALE_BALLISTIC_PREFIX + suites.GALE_BALLISTIC_RESULT)
         self.assertGreater(terminal, source.index("} finally { origin = null; GaleVaultProbe.assertIdle(); }"))
-        self.assertGreater(terminal, source.index("world.getServer().runOnServer(server -> clean());"))
+        self.assertGreater(terminal, source.index("world.getServer().runOnServer(server -> clean(false));"))
+        self.assertIn("private void clean() { clean(true); }", source)
+        self.assertIn("if (checkDiagnostics && completed != null) completed.fallTrace.checkOutsidePhysics();", source)
         with patch.object(diagnostic, "identity", return_value={"headSha": "b" * 40, "observedLiveHeadSha": "b" * 40}), \
                 patch.object(diagnostic, "parse_request", return_value=self.fixture(CASE)["request"]), \
                 patch.object(diagnostic, "git", side_effect=["b" * 40 + " " + "a" * 40, diagnostic.REQUEST]):
