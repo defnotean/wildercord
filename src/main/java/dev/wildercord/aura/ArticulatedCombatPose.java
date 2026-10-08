@@ -27,6 +27,8 @@ public final class ArticulatedCombatPose {
 	public static final int CONSTELLATION_GUARD = 28, STOPPED_MOMENT = 29;
 	public static final int UPDRAFT = 30, AVALANCHE = 31;
 	public static final int METEOR_SHOWER = 32, REWIND_LEAP = 33;
+	public static final int WILDFIRE_RUSH = 34, SKATE = 35;
+	public static final int TAILWIND = 36, LANDSLIDE = 37, WILD_GROWTH = 38;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -769,6 +771,101 @@ public final class ArticulatedCombatPose {
 				v(7.4F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.98F, .08F, .27F), -.92F, r(.10F, -.10F, .08F)))),
 		v(-2.50F, 22, 1.25F), v(2.50F, 22, -1.40F));
 
+	// Wildfire Rush lowers into a sprinter's chamber, charges through the center line in a piercing streak, then slides to a low brace.
+	private static final Motion WILDFIRE_RUSH_MOTION = new Motion(
+		new Key(v(-.16F, 1.08F, .18F), r(.08F, .20F, -.02F), r(.05F, .12F, -.015F), r(.06F, .16F, -.025F), r(-.10F, -.28F, .02F),
+			arm(r(.025F, .06F, -.05F), r(-.82F, .24F, -.26F), -.95F, r(1.45F, -.42F, -.55F)),
+			arm(r(0, -.05F, .04F), r(-.85F, -.22F, -.18F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.6F, -5.0F, 3.8F), arm(r(.02F, .05F, -.03F), r(-.95F, .18F, -.24F), -.94F, r(1.35F, -.25F, -.35F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.20F, 1.05F, -.65F), r(.12F, -.10F, -.01F), r(.07F, -.06F, -.01F), r(.08F, -.11F, -.015F), r(-.15F, .20F, .01F),
+			arm(r(.03F, -.05F, -.035F), r(-1.42F, -.06F, -.12F), -.28F, r(1.08F, .24F, .22F)),
+			arm(r(0, .06F, .04F), r(-.52F, -.22F, -.28F), -.80F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.4F, -5.35F, 1.8F), arm(r(.02F, -.035F, -.035F), r(-1.26F, -.10F, -.16F), -.32F, r(.98F, .12F, .16F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.15F, 1.02F, -.30F), r(.08F, -.14F, .01F), r(.05F, -.08F, .01F), r(.06F, -.12F, .015F), r(-.10F, .24F, -.01F),
+			arm(r(.025F, -.04F, -.03F), r(-1.30F, -.12F, -.14F), -.62F, r(1.15F, .18F, .26F)),
+			arm(r(0, .04F, .03F), r(-.65F, -.20F, -.25F), -.88F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -5.15F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.18F, -.10F, -.18F), -.68F, r(.92F, .10F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.20F), v(2.45F, 22, -1.35F));
+
+	// Skate carves low along the frost line with an aerodynamic tilt, shatters through impact, and slides to an upright finish.
+	private static final Motion SKATE_MOTION = new Motion(
+		new Key(v(-.10F, 1.04F, .15F), r(.04F, -.14F, .02F), r(.03F, -.10F, .015F), r(.035F, -.12F, .02F), r(-.05F, .22F, -.015F),
+			arm(r(.025F, .05F, -.04F), r(-1.15F, .22F, -.22F), -.88F, r(.65F, -.16F, -.24F)),
+			arm(r(0, -.04F, .035F), r(-.98F, -.20F, -.15F), -.95F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.9F, -4.9F, 3.4F), arm(r(.02F, .035F, -.03F), r(-1.22F, .14F, -.20F), -.86F, r(.52F, -.12F, -.18F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.14F, 1.08F, -.65F), r(.06F, .16F, -.02F), r(.045F, .10F, -.015F), r(.05F, .14F, -.02F), r(-.08F, -.24F, .02F),
+			arm(r(.03F, -.04F, -.035F), r(-1.52F, -.16F, -.18F), -.34F, r(.94F, .14F, .20F)),
+			arm(r(0, .04F, .035F), r(-.62F, -.18F, -.28F), -.82F, r(.11F, -.09F, .10F)),
+			new ViewKey(v(-7.7F, -5.25F, 2.0F), arm(r(.02F, -.03F, -.03F), r(-1.32F, -.12F, -.16F), -.36F, r(.82F, .10F, .14F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.08F, 1.05F, -.30F), r(.04F, .10F, -.01F), r(.03F, .06F, -.01F), r(.035F, .08F, -.01F), r(-.05F, -.16F, .01F),
+			arm(r(.02F, -.03F, -.03F), r(-1.36F, -.10F, -.15F), -.68F, r(.88F, .10F, .16F)),
+			arm(r(0, .03F, .03F), r(-.74F, -.18F, -.24F), -.88F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-8.0F, -5.05F, 2.9F), arm(r(.015F, -.02F, -.03F), r(-1.22F, -.08F, -.16F), -.70F, r(.78F, .06F, .10F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.25F), v(2.45F, 22, -1.35F));
+
+	// Tailwind throws weight forward into the slipstream with trailing wings, pierces the gale, and spirals into circular deceleration.
+	private static final Motion TAILWIND_MOTION = new Motion(
+		new Key(v(-.15F, 1.08F, .20F), r(.07F, .14F, -.02F), r(.045F, .08F, -.015F), r(.055F, .12F, -.02F), r(-.08F, -.22F, .02F),
+			arm(r(.025F, .05F, -.04F), r(-.72F, .26F, -.28F), -.90F, r(1.22F, -.34F, -.42F)),
+			arm(r(0, -.05F, .04F), r(-.92F, -.22F, -.18F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -4.8F, 3.4F), arm(r(.02F, .04F, -.03F), r(-1.15F, .14F, -.22F), -.88F, r(.35F, -.12F, -.20F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.20F, 1.20F, -.90F), r(.10F, -.08F, -.01F), r(.06F, -.05F, -.01F), r(.07F, -.09F, -.01F), r(-.12F, .16F, .01F),
+			arm(r(.03F, -.045F, -.035F), r(-1.58F, -.08F, -.10F), -.24F, r(1.18F, .22F, .18F)),
+			arm(r(0, .05F, .04F), r(-.55F, -.20F, -.26F), -.78F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.5F, -4.9F, 2.0F), arm(r(.02F, -.035F, -.035F), r(-1.32F, -.10F, -.14F), -.32F, r(.42F, .10F, .16F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.12F, 1.12F, -.40F), r(.06F, -.12F, .01F), r(.04F, -.07F, .01F), r(.05F, -.10F, .01F), r(-.08F, .20F, -.01F),
+			arm(r(.02F, -.035F, -.03F), r(-1.38F, -.14F, -.12F), -.58F, r(1.10F, .16F, .22F)),
+			arm(r(0, .035F, .03F), r(-.68F, -.18F, -.24F), -.86F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -4.85F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.20F, -.08F, -.16F), -.66F, r(.38F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.50F, 22, 1.25F), v(2.50F, 22, -1.40F));
+
+	// Landslide tucks heavily behind the shoulder guard, explodes forward in a crushing trample, and plants firm to halt.
+	private static final Motion LANDSLIDE_MOTION = new Motion(
+		new Key(v(-.12F, 1.08F, .14F), r(.05F, -.12F, .02F), r(.035F, -.08F, .015F), r(.04F, -.10F, .02F), r(-.06F, .18F, -.015F),
+			arm(r(.025F, .06F, -.05F), r(-1.05F, .28F, -.26F), -.92F, r(.85F, -.22F, -.28F)),
+			arm(r(0, -.05F, .04F), r(-.96F, -.24F, -.18F), -.98F, r(.11F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -4.95F, 3.5F), arm(r(.02F, .04F, -.03F), r(-1.10F, .18F, -.22F), -.88F, r(.72F, -.16F, -.22F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.16F, 1.15F, -.60F), r(.14F, -.06F, -.01F), r(.08F, -.04F, -.01F), r(.09F, -.07F, -.01F), r(-.16F, .14F, .01F),
+			arm(r(.035F, -.04F, -.035F), r(-1.18F, -.04F, -.08F), -.30F, r(1.24F, .16F, .25F)),
+			arm(r(0, .06F, .04F), r(-.45F, -.18F, -.30F), -.76F, r(.12F, -.08F, .11F)),
+			new ViewKey(v(-7.5F, -5.20F, 1.9F), arm(r(.02F, -.035F, -.035F), r(-1.12F, -.10F, -.14F), -.34F, r(.92F, .08F, .18F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .035F, .03F), r(-.96F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.12F, 1.10F, -.30F), r(.09F, -.08F, .01F), r(.05F, -.05F, .01F), r(.06F, -.07F, .01F), r(-.11F, .18F, -.01F),
+			arm(r(.025F, -.035F, -.03F), r(-1.12F, -.08F, -.12F), -.65F, r(1.18F, .14F, .28F)),
+			arm(r(0, .04F, .03F), r(-.55F, -.18F, -.26F), -.84F, r(.10F, -.09F, .10F)),
+			new ViewKey(v(-7.8F, -5.05F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.08F, -.08F, -.16F), -.66F, r(.88F, .06F, .14F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.98F, .08F, .27F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.55F, 22, 1.15F), v(2.55F, 22, -1.30F));
+
+	// Wild Growth coils low with torqued hips, lunges through with sweeping diagonal reach, and stabilizes as brambles erupt.
+	private static final Motion WILD_GROWTH_MOTION = new Motion(
+		new Key(v(-.14F, 1.06F, .16F), r(.06F, .18F, -.025F), r(.04F, .11F, -.015F), r(.05F, .15F, -.025F), r(-.08F, -.26F, .025F),
+			arm(r(.025F, .06F, -.05F), r(-.90F, .28F, -.30F), -.94F, r(.92F, -.28F, -.35F)),
+			arm(r(0, -.05F, .04F), r(-.88F, -.22F, -.18F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.05F, 3.5F), arm(r(.02F, .04F, -.03F), r(-1.02F, .16F, -.24F), -.92F, r(.82F, -.18F, -.25F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.16F, 1.15F, -.75F), r(.08F, -.12F, .02F), r(.05F, -.08F, .01F), r(.06F, -.13F, .02F), r(-.11F, .22F, -.015F),
+			arm(r(.03F, -.045F, -.035F), r(-1.48F, -.14F, -.14F), -.32F, r(1.05F, .18F, .24F)),
+			arm(r(0, .05F, .04F), r(-.58F, -.20F, -.28F), -.80F, r(.11F, -.09F, .10F)),
+			new ViewKey(v(-7.5F, -5.30F, 1.9F), arm(r(.02F, -.035F, -.035F), r(-1.28F, -.10F, -.16F), -.34F, r(.95F, .12F, .16F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.10F, 1.10F, -.35F), r(.05F, -.14F, .015F), r(.035F, -.09F, .01F), r(.04F, -.12F, .015F), r(-.07F, .22F, -.01F),
+			arm(r(.02F, -.03F, -.03F), r(-1.34F, -.16F, -.14F), -.64F, r(1.02F, .14F, .26F)),
+			arm(r(0, .035F, .03F), r(-.70F, -.18F, -.25F), -.86F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.7F, -5.10F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.18F, -.08F, -.16F), -.65F, r(.88F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.50F, 22, 1.25F), v(2.50F, 22, -1.38F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -782,7 +879,8 @@ public final class ArticulatedCombatPose {
 		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
 			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY || move == GLACIER_MIRROR || move == STATIC_RIPOSTE || move == UNMOVED || move == NULL_PARRY
 			|| move == EYE_OF_THE_STORM || move == SANGUINE_PARRY || move == CONSTELLATION_GUARD || move == STOPPED_MOMENT
-			|| move == UPDRAFT || move == AVALANCHE || move == METEOR_SHOWER || move == REWIND_LEAP;
+			|| move == UPDRAFT || move == AVALANCHE || move == METEOR_SHOWER || move == REWIND_LEAP
+			|| move == WILDFIRE_RUSH || move == SKATE || move == TAILWIND || move == LANDSLIDE || move == WILD_GROWTH;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -813,6 +911,11 @@ public final class ArticulatedCombatPose {
 			case AVALANCHE -> AVALANCHE_MOTION;
 			case METEOR_SHOWER -> METEOR_SHOWER_MOTION;
 			case REWIND_LEAP -> REWIND_LEAP_MOTION;
+			case WILDFIRE_RUSH -> WILDFIRE_RUSH_MOTION;
+			case SKATE -> SKATE_MOTION;
+			case TAILWIND -> TAILWIND_MOTION;
+			case LANDSLIDE -> LANDSLIDE_MOTION;
+			case WILD_GROWTH -> WILD_GROWTH_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);

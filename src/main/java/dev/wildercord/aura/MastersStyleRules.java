@@ -61,7 +61,12 @@ public final class MastersStyleRules {
 		new Style(30, "updraft", 8, 18, TargetPolicy.ACTIVE_CONE),
 		new Style(31, "avalanche", 8, 18, TargetPolicy.GROUND_AHEAD),
 		new Style(32, "meteor_shower", 8, 16, TargetPolicy.GROUND_AHEAD),
-		new Style(33, "rewind_leap", 8, 18, TargetPolicy.ACTIVE_CONE)
+		new Style(33, "rewind_leap", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(34, "wildfire_rush", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(35, "skate", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(36, "tailwind", 4, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(37, "landslide", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(38, "wild_growth", 6, 16, TargetPolicy.ACTIVE_CONE)
 	);
 
 	public static Style of(String art) {

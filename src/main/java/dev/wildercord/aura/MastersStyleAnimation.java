@@ -314,6 +314,51 @@ public final class MastersStyleAnimation {
 		pose(j(.20F, -.54F, .15F), j(-.10F, .20F, -.04F), j(-.55F, -.88F, -.12F), j(-.10F, .10F, -.72F),
 			j(-.50F, .12F, -.10F), j(.30F, -.08F, .08F), .55F, -.42F, h(-.30F, .22F, -.26F, 44, -40, 52)));
 
+	// Wildfire Rush lowers into a sprinter's chamber, charges through the center line in a piercing streak, then slides to a low brace.
+	private static final Motion WILDFIRE_RUSH = new Motion(
+		pose(j(.35F, .42F, -.12F), j(-.18F, -.16F, .04F), j(-.85F, .52F, -.35F), j(-1.10F, -.30F, .22F),
+			j(-.75F, -.18F, -.16F), j(.55F, .16F, .16F), .85F, .45F, h(.14F, .16F, .18F, -45, 24, -28)),
+		pose(j(.52F, -.32F, .10F), j(-.22F, .12F, -.04F), j(-1.65F, -.15F, -.18F), j(-.45F, .22F, -.45F),
+			j(-.95F, .16F, -.14F), j(.72F, -.14F, .14F), 1.05F, -1.65F, h(-.18F, -.05F, -.55F, -105, -12, 16)),
+		pose(j(.38F, -.38F, .08F), j(-.15F, .18F, -.02F), j(-1.42F, -.24F, -.16F), j(-.35F, .18F, -.35F),
+			j(-.70F, .14F, -.12F), j(.58F, -.12F, .12F), .75F, -.85F, h(-.22F, -.02F, -.40F, -95, -16, 20)));
+
+	// Skate carves low along the frost line with an aerodynamic tilt, shatters through impact, and slides to an upright finish.
+	private static final Motion SKATE = new Motion(
+		pose(j(.20F, -.24F, .15F), j(-.08F, .10F, -.05F), j(-1.25F, .34F, -.28F), j(-.85F, .22F, .30F),
+			j(-.55F, .12F, -.10F), j(.42F, -.10F, .10F), .45F, .20F, h(.12F, .18F, -.15F, -30, -18, 22)),
+		pose(j(.28F, .32F, -.16F), j(-.12F, -.14F, .06F), j(-1.58F, -.42F, -.22F), j(-.65F, -.28F, -.25F),
+			j(-.85F, -.18F, -.12F), j(.65F, .16F, .12F), .60F, -1.20F, h(-.16F, .12F, -.45F, -85, 20, -14)),
+		pose(j(.18F, .18F, -.08F), j(-.06F, -.08F, .03F), j(-1.35F, -.28F, -.20F), j(-.72F, -.18F, -.18F),
+			j(-.50F, -.12F, -.08F), j(.38F, .10F, .08F), .35F, -.50F, h(-.08F, .16F, -.32F, -65, 12, -8)));
+
+	// Tailwind throws weight forward into the slipstream with trailing wings, pierces the gale, and spirals into circular deceleration.
+	private static final Motion TAILWIND = new Motion(
+		pose(j(.42F, .20F, -.10F), j(-.20F, -.10F, .03F), j(-.75F, .44F, -.30F), j(-1.25F, -.35F, -.20F),
+			j(-.80F, -.16F, -.15F), j(.62F, .14F, .15F), .70F, .35F, h(.16F, .22F, .10F, -55, 16, -22)),
+		pose(j(.48F, -.28F, .12F), j(-.18F, .12F, -.04F), j(-1.75F, -.25F, -.15F), j(-.55F, .20F, -.55F),
+			j(-.92F, .14F, -.12F), j(.70F, -.12F, .12F), .95F, -1.80F, h(-.15F, .02F, -.58F, -112, -10, 14)),
+		pose(j(.25F, -.35F, .08F), j(-.10F, .16F, -.02F), j(-1.45F, -.35F, -.20F), j(-.42F, .15F, -.40F),
+			j(-.65F, .12F, -.10F), j(.48F, -.10F, .10F), .60F, -.75F, h(-.18F, .08F, -.38F, -90, -15, 18)));
+
+	// Landslide tucks heavily behind the shoulder guard, explodes forward in a crushing trample, and plants firm to halt.
+	private static final Motion LANDSLIDE = new Motion(
+		pose(j(.30F, -.15F, .08F), j(-.14F, .08F, -.03F), j(-1.10F, .25F, -.22F), j(-1.35F, .30F, .18F),
+			j(-.60F, .18F, -.12F), j(.48F, -.15F, .12F), .95F, .30F, h(.15F, .26F, -.12F, -65, -12, 16)),
+		pose(j(.55F, -.08F, .04F), j(-.25F, .04F, -.02F), j(-1.62F, -.10F, -.12F), j(-.10F, -.20F, -.30F),
+			j(-.98F, .08F, -.12F), j(.75F, -.08F, .12F), 1.25F, -1.60F, h(-.12F, .10F, -.52F, -100, 2, 8)),
+		pose(j(.40F, -.12F, .05F), j(-.18F, .06F, -.02F), j(-1.38F, -.18F, -.16F), j(-.18F, -.25F, -.15F),
+			j(-.78F, .10F, -.10F), j(.58F, -.08F, .10F), .90F, -.80F, h(-.16F, .14F, -.36F, -85, -4, 10)));
+
+	// Wild Growth coils low with torqued hips, lunges through with sweeping diagonal reach, and stabilizes as brambles erupt.
+	private static final Motion WILD_GROWTH = new Motion(
+		pose(j(.18F, .48F, -.12F), j(-.08F, -.22F, .04F), j(-1.20F, .55F, -.36F), j(-.92F, -.32F, .20F),
+			j(-.65F, -.15F, -.12F), j(.48F, .12F, .12F), .70F, .25F, h(.10F, .24F, -.20F, -38, 28, -26)),
+		pose(j(.36F, -.36F, .12F), j(-.15F, .15F, -.05F), j(-1.68F, -.30F, -.22F), j(-.62F, .18F, -.48F),
+			j(-.88F, .14F, -.12F), j(.66F, -.12F, .12F), .85F, -1.45F, h(-.18F, .06F, -.50F, -98, -14, 22)),
+		pose(j(.22F, -.32F, .08F), j(-.10F, .14F, -.02F), j(-1.42F, -.32F, -.25F), j(-.50F, .15F, -.35F),
+			j(-.62F, .12F, -.10F), j(.46F, -.10F, .10F), .55F, -.65F, h(-.16F, .12F, -.34F, -78, -18, 16)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -347,6 +392,11 @@ public final class MastersStyleAnimation {
 			case 31 -> AVALANCHE;
 			case 32 -> METEOR_SHOWER;
 			case 33 -> REWIND_LEAP;
+			case 34 -> WILDFIRE_RUSH;
+			case 35 -> SKATE;
+			case 36 -> TAILWIND;
+			case 37 -> LANDSLIDE;
+			case 38 -> WILD_GROWTH;
 			default -> null;
 		};
 	}
