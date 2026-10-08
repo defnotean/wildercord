@@ -25,6 +25,8 @@ public final class ArticulatedCombatPose {
 	public static final int UNMOVED = 24, NULL_PARRY = 25;
 	public static final int EYE_OF_THE_STORM = 26, SANGUINE_PARRY = 27;
 	public static final int CONSTELLATION_GUARD = 28, STOPPED_MOMENT = 29;
+	public static final int UPDRAFT = 30, AVALANCHE = 31;
+	public static final int METEOR_SHOWER = 32, REWIND_LEAP = 33;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -691,6 +693,82 @@ public final class ArticulatedCombatPose {
 				v(7.2F, -6.1F, 3.5F), arm(r(0, -.02F, .03F), r(-1.02F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
 		v(-2.45F, 22, 1.25F), v(2.45F, 22, -1.35F));
 
+	// Updraft loads low across the back hip, then lifts in an explosive rising spiral that throws foes upward.
+	private static final Motion UPDRAFT_MOTION = new Motion(
+		new Key(v(-.16F, 1.10F, .18F), r(.06F, .22F, -.03F), r(.04F, .14F, -.02F), r(.05F, .20F, -.035F), r(-.09F, -.32F, .03F),
+			arm(r(.025F, .07F, -.06F), r(-.45F, .28F, -.30F), -.92F, r(.55F, -.18F, -.32F)),
+			arm(r(0, -.06F, .05F), r(-.90F, -.24F, -.20F), -.95F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.9F, -5.2F, 3.4F), arm(r(.02F, .04F, -.035F), r(-1.12F, .16F, -.24F), -.94F, r(.42F, -.16F, -.28F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.18F, .82F, -.28F), r(-.08F, -.22F, .03F), r(-.05F, -.14F, .02F), r(-.06F, -.20F, .035F), r(.11F, .34F, -.03F),
+			arm(r(.035F, -.05F, -.04F), r(-1.62F, -.48F, -.18F), -.46F, r(.72F, .14F, .36F)),
+			arm(r(.015F, .045F, .04F), r(-.78F, -.22F, -.32F), -.82F, r(.11F, -.09F, .10F)),
+			new ViewKey(v(-8.2F, -5.4F, 2.5F), arm(r(.025F, -.045F, -.035F), r(-1.28F, -.28F, -.22F), -.42F, r(.15F, .46F, .38F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .035F, .03F), r(-.96F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.08F, .86F, -.12F), r(-.04F, -.28F, .02F), r(-.03F, -.18F, .015F), r(-.035F, -.24F, .025F), r(.06F, .40F, -.02F),
+			arm(r(.025F, -.07F, -.03F), r(-1.42F, -.62F, -.12F), -.75F, r(.82F, .18F, .42F)),
+			arm(r(.01F, .035F, .035F), r(-.82F, -.20F, -.26F), -.88F, r(.09F, -.10F, .09F)),
+			new ViewKey(v(-8.5F, -5.2F, 3.1F), arm(r(.015F, -.055F, -.03F), r(-1.18F, -.42F, -.20F), -.72F, r(.22F, .42F, .46F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.98F, .08F, .27F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.55F, 22, 1.25F), v(2.55F, 22, -1.40F));
+
+	// Avalanche hoists the heavy stone edge high over the right shoulder, drives down into a grounded cleave, and absorbs the shock.
+	private static final Motion AVALANCHE_MOTION = new Motion(
+		new Key(v(-.10F, 1.02F, .12F), r(.04F, .12F, -.02F), r(.03F, .08F, -.015F), r(.035F, .14F, -.025F), r(-.06F, -.20F, .02F),
+			arm(r(.025F, .06F, -.05F), r(-1.75F, .25F, -.28F), -.86F, r(.45F, -.15F, -.25F)),
+			arm(r(0, -.05F, .04F), r(-1.08F, -.20F, -.16F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.1F, -4.6F, 3.1F), arm(r(.02F, .035F, -.03F), r(-1.38F, .12F, -.20F), -.82F, r(.32F, -.12F, -.20F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.16F, 1.22F, -.38F), r(.12F, -.16F, .025F), r(.08F, -.10F, .015F), r(.09F, -.18F, .03F), r(-.15F, .28F, -.02F),
+			arm(r(.035F, -.04F, -.035F), r(-.74F, -.38F, -.16F), -.48F, r(1.22F, .14F, .42F)),
+			arm(r(.015F, .04F, .035F), r(-.62F, -.18F, -.32F), -.80F, r(.12F, -.08F, .11F)),
+			new ViewKey(v(-8.0F, -5.35F, 2.4F), arm(r(.02F, -.035F, -.035F), r(-1.14F, -.22F, -.24F), -.44F, r(.12F, .48F, .36F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .035F, .03F), r(-.96F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.09F, 1.15F, -.18F), r(.08F, -.18F, .02F), r(.05F, -.12F, .01F), r(.06F, -.18F, .02F), r(-.10F, .30F, -.015F),
+			arm(r(.025F, -.06F, -.03F), r(-.66F, -.52F, -.12F), -.72F, r(1.15F, .16F, .44F)),
+			arm(r(.01F, .03F, .03F), r(-.68F, -.18F, -.28F), -.86F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-8.3F, -5.2F, 2.9F), arm(r(.015F, -.05F, -.03F), r(-1.10F, -.34F, -.20F), -.70F, r(.22F, .42F, .44F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.98F, .08F, .27F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.65F, 22, 1.15F), v(2.65F, 22, -1.35F));
+
+	// Meteor Shower salutes skyward to channel falling stars, snaps forward to direct the barrage, and settles into an astral line.
+	private static final Motion METEOR_SHOWER_MOTION = new Motion(
+		new Key(v(-.06F, .98F, .08F), r(.03F, .10F, -.015F), r(.025F, .06F, -.01F), r(.03F, .12F, -.02F), r(-.05F, -.18F, .015F),
+			arm(r(.025F, .05F, -.04F), r(-1.86F, .22F, -.20F), -.90F, r(.32F, -.12F, -.22F)),
+			arm(r(0, -.04F, .035F), r(-1.02F, -.22F, -.15F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.0F, -4.6F, 3.2F), arm(r(.02F, .035F, -.03F), r(-1.40F, .12F, -.20F), -.84F, r(.26F, -.10F, -.16F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.08F, 1.02F, -.30F), r(.05F, -.06F, .01F), r(.035F, -.04F, .01F), r(.04F, -.07F, .015F), r(-.07F, .14F, -.01F),
+			arm(r(.03F, -.035F, -.035F), r(-1.46F, -.12F, -.24F), -.38F, r(.88F, .06F, .18F)),
+			arm(r(.012F, .032F, .035F), r(-.76F, -.18F, -.26F), -.85F, r(.10F, -.09F, .10F)),
+			new ViewKey(v(-7.9F, -5.25F, 2.4F), arm(r(.02F, -.025F, -.03F), r(-1.22F, -.10F, -.20F), -.40F, r(.72F, .04F, .14F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.02F, 1.00F, -.06F), r(.03F, -.04F, .01F), r(.02F, -.025F, .005F), r(.025F, -.05F, .01F), r(-.04F, .10F, -.01F),
+			arm(r(.02F, -.02F, -.03F), r(-1.32F, -.08F, -.18F), -.82F, r(.80F, .04F, .12F)),
+			arm(r(.01F, .02F, .03F), r(-.86F, -.20F, -.22F), -.92F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-8.1F, -4.95F, 3.1F), arm(r(.015F, -.02F, -.03F), r(-1.20F, -.08F, -.18F), -.78F, r(.75F, .02F, .10F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.25F), v(2.45F, 22, -1.35F));
+
+	// Rewind Leap springs forward with a twisting cross-slash, locks briefly in temporal stillness, and snaps back along the jump vector.
+	private static final Motion REWIND_LEAP_MOTION = new Motion(
+		new Key(v(-.12F, 1.06F, .14F), r(.05F, .16F, -.02F), r(.035F, .10F, -.015F), r(.04F, .18F, -.025F), r(-.07F, -.26F, .02F),
+			arm(r(.025F, .06F, -.05F), r(-1.25F, .30F, -.36F), -.96F, r(.58F, -.20F, -.35F)),
+			arm(r(0, -.05F, .04F), r(-.96F, -.24F, -.18F), -.98F, r(.11F, -.10F, .08F)),
+			new ViewKey(v(-8.0F, -5.0F, 3.4F), arm(r(.02F, .035F, -.035F), r(-1.18F, .16F, -.22F), -.92F, r(.48F, -.14F, -.24F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.15F, 1.10F, -.30F), r(.09F, -.20F, .03F), r(.06F, -.12F, .02F), r(.07F, -.22F, .035F), r(-.12F, .36F, -.025F),
+			arm(r(.035F, -.055F, -.035F), r(-1.06F, -.58F, -.28F), -.52F, r(1.08F, .22F, .46F)),
+			arm(r(.015F, .04F, .035F), r(-.65F, -.20F, -.34F), -.82F, r(.11F, -.09F, .11F)),
+			new ViewKey(v(-8.3F, -5.35F, 2.5F), arm(r(.02F, -.04F, -.035F), r(-1.18F, -.36F, -.24F), -.50F, r(.16F, .50F, .42F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .035F, .03F), r(-.94F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.06F, 1.04F, -.12F), r(.05F, -.25F, .02F), r(.035F, -.16F, .015F), r(.04F, -.24F, .025F), r(-.07F, .40F, -.02F),
+			arm(r(.025F, -.07F, -.03F), r(-.88F, -.74F, -.16F), -.76F, r(1.12F, .20F, .48F)),
+			arm(r(.01F, .03F, .03F), r(-.72F, -.20F, -.28F), -.88F, r(.09F, -.10F, .09F)),
+			new ViewKey(v(-8.6F, -5.15F, 3.0F), arm(r(.015F, -.055F, -.03F), r(-1.14F, -.48F, -.20F), -.74F, r(.24F, .44F, .48F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.98F, .08F, .27F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.50F, 22, 1.25F), v(2.50F, 22, -1.40F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -703,7 +781,8 @@ public final class ArticulatedCombatPose {
 	public static boolean supportsPlayer(int move) {
 		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
 			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY || move == GLACIER_MIRROR || move == STATIC_RIPOSTE || move == UNMOVED || move == NULL_PARRY
-			|| move == EYE_OF_THE_STORM || move == SANGUINE_PARRY || move == CONSTELLATION_GUARD || move == STOPPED_MOMENT;
+			|| move == EYE_OF_THE_STORM || move == SANGUINE_PARRY || move == CONSTELLATION_GUARD || move == STOPPED_MOMENT
+			|| move == UPDRAFT || move == AVALANCHE || move == METEOR_SHOWER || move == REWIND_LEAP;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -730,6 +809,10 @@ public final class ArticulatedCombatPose {
 			case SANGUINE_PARRY -> SANGUINE_PARRY_MOTION;
 			case CONSTELLATION_GUARD -> CONSTELLATION_GUARD_MOTION;
 			case STOPPED_MOMENT -> STOPPED_MOMENT_MOTION;
+			case UPDRAFT -> UPDRAFT_MOTION;
+			case AVALANCHE -> AVALANCHE_MOTION;
+			case METEOR_SHOWER -> METEOR_SHOWER_MOTION;
+			case REWIND_LEAP -> REWIND_LEAP_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);

@@ -78,9 +78,9 @@ public final class MastersArtAnimation {
 		if (move == 14) return -100 * smooth((age - windup * .65F) / (windup * .35F)) * Math.max(0, Math.min(1, weight));
 		// Ground-field releases keep their falling edge on the hilt while the forearm absorbs
 		// the stop. Their persistent fields do not contribute additional blade motion.
-		if (move == 17 || move == 18) return (move == 17 ? -105 : -80)
+		if (move == 17 || move == 18 || move == 31) return (move == 17 ? -105 : move == 31 ? -95 : -80)
 			* smooth((age - windup * .65F) / (windup * .35F)) * Math.max(0, Math.min(1, weight));
-		float thrust = move == 2 || move == 3 || move == 6 || move == 10 || move == 12 || move == 20 || move == 24 || move == 27 || move == 28 || move == 29 ? 1
+		float thrust = move == 2 || move == 3 || move == 6 || move == 10 || move == 12 || move == 20 || move == 24 || move == 27 || move == 28 || move == 29 || move == 32 ? 1
 			: move == 5 ? smooth((age - windup - ArtRules.CRACKLE_GAP) / ArtRules.CRACKLE_GAP) : 0;
 		return -80 * thrust * Math.max(0, Math.min(1, weight));
 	}

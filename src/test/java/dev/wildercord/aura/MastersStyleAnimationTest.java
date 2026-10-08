@@ -13,7 +13,7 @@ class MastersStyleAnimationTest {
 	void everyAuthoredFormHasItsOwnBodyAndWeaponPoseWithoutOpeningANewInputOrdinal() {
 		var bodies = new HashSet<MastersArtAnimation.Pose>();
 		var hands = new HashSet<MastersArtAnimation.Hand>();
-		assertEquals(27, MastersStyleRules.STYLES.size());
+		assertEquals(31, MastersStyleRules.STYLES.size());
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(MastersArtAnimation.supports(style.animation()));
 			assertNull(MastersArtRules.move(style.animation()), "Style poses are not trusted client action IDs");
@@ -297,6 +297,29 @@ class MastersStyleAnimationTest {
 		assertEquals(-80, MastersArtAnimation.bladeTilt(29, 6, 6, 1), .0001F);
 		assertEquals(-40, MastersArtAnimation.bladeTilt(27, 11, 4, .5F), .0001F);
 		assertEquals(0, MastersArtAnimation.bladeTilt(27, 18, 4, 0), .0001F);
+	}
+
+	@Test
+	void batch2SecondFormsKeepUniqueBladeTiltsAndFollowThroughWithoutSnapping() {
+		for (String art : new String[] {"updraft", "avalanche", "meteor_shower", "rewind_leap"}) {
+			var style = MastersStyleRules.of(art);
+			var plant = sample(style, style.windup());
+			assertEquals(1, plant.weight());
+			assertTrue(Float.isFinite(plant.sword().x()) && Float.isFinite(plant.body().y()));
+			for (float age = 0; age <= style.windup() + style.recovery(); age += .25F) {
+				var p = sample(style, age);
+				assertTrue(p.weight() >= 0 && p.weight() <= 1);
+			}
+		}
+		assertEquals(0, MastersArtAnimation.bladeTilt(30, 8, 8, 1), .0001F);
+		assertEquals(-95, MastersArtAnimation.bladeTilt(31, 8, 8, 1), .0001F);
+		assertEquals(0, MastersArtAnimation.bladeTilt(31, 8 * .65F, 8, 1), .0001F);
+		assertEquals(-47.5F, MastersArtAnimation.bladeTilt(31, 20, 8, .5F), .0001F);
+		assertEquals(0, MastersArtAnimation.bladeTilt(31, 26, 8, 0), .0001F);
+		assertEquals(-80, MastersArtAnimation.bladeTilt(32, 8, 8, 1), .0001F);
+		assertEquals(-40, MastersArtAnimation.bladeTilt(32, 16, 8, .5F), .0001F);
+		assertEquals(0, MastersArtAnimation.bladeTilt(32, 24, 8, 0), .0001F);
+		assertEquals(0, MastersArtAnimation.bladeTilt(33, 8, 8, 1), .0001F);
 	}
 
 	private static MastersArtAnimation.Pose sample(MastersStyleRules.Style style, float age) {

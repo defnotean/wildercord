@@ -9,17 +9,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(27, MastersStyleRules.STYLES.size());
+		assertEquals(31, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(ids.add(style.animation()));
 			assertTrue(names.add(style.art()));
-			assertEquals(style.animation() <= 12 ? 0 : style.animation() == 19 ? 4 : style.animation() >= 20 ? 2 : 1, ArtRules.art(style.art()).slot());
+			assertEquals(style.animation() <= 12 ? 0 : style.animation() == 19 ? 4 : (style.animation() >= 20 && style.animation() <= 29) ? 2 : 1, ArtRules.art(style.art()).slot());
 			assertEquals(style.animation() == 15 ? MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
 				: style.animation() == 16 ? MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT
-				: style.animation() == 17 || style.animation() == 18 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
-				: style.animation() >= 20 ? MastersStyleRules.TargetPolicy.EARNED_COUNTER
+				: style.animation() == 17 || style.animation() == 18 || style.animation() == 31 || style.animation() == 32 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
+				: style.animation() >= 20 && style.animation() <= 29 ? MastersStyleRules.TargetPolicy.EARNED_COUNTER
 				: MastersStyleRules.TargetPolicy.ACTIVE_CONE, style.targets());
 			assertSame(style, MastersStyleRules.of(style.art()));
 			assertSame(style, MastersStyleRules.animation(style.animation()));
@@ -137,7 +137,7 @@ class MastersStyleRulesTest {
 			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
 		}
 		assertEquals(50, ArtRules.ARTS.size());
-		assertEquals(23, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
+		assertEquals(19, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
 	}
 
 	@Test void nextCountersKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
@@ -173,6 +173,27 @@ class MastersStyleRulesTest {
 			assertEquals(expectedRecovery, style.recovery());
 			assertEquals(8, art.cost()); assertEquals(80, art.cooldown()); assertEquals(2, art.slot());
 			assertEquals(MastersStyleRules.TargetPolicy.EARNED_COUNTER, style.targets());
+			assertNull(MastersArtRules.move(style.animation()));
+			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
+		}
+	}
+
+	@Test void batch2SecondFormsKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
+		for (String id : new String[] {"updraft", "avalanche", "meteor_shower", "rewind_leap"}) {
+			var style = MastersStyleRules.of(id); var art = ArtRules.art(id);
+			int expectedAnimation = switch (id) {
+				case "updraft" -> 30;
+				case "avalanche" -> 31;
+				case "meteor_shower" -> 32;
+				case "rewind_leap" -> 33;
+				default -> -1;
+			};
+			int expectedWindup = 8;
+			int expectedRecovery = id.equals("meteor_shower") ? 16 : 18;
+			assertEquals(expectedAnimation, style.animation());
+			assertEquals(expectedWindup, style.windup());
+			assertEquals(expectedRecovery, style.recovery());
+			assertEquals(1, art.slot());
 			assertNull(MastersArtRules.move(style.animation()));
 			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
 		}

@@ -57,7 +57,11 @@ public final class MastersStyleRules {
 		new Style(26, "eye_of_the_storm", 4, 14, TargetPolicy.EARNED_COUNTER),
 		new Style(27, "sanguine_parry", 4, 14, TargetPolicy.EARNED_COUNTER),
 		new Style(28, "constellation_guard", 4, 14, TargetPolicy.EARNED_COUNTER),
-		new Style(29, "stopped_moment", 6, 16, TargetPolicy.EARNED_COUNTER)
+		new Style(29, "stopped_moment", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(30, "updraft", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(31, "avalanche", 8, 18, TargetPolicy.GROUND_AHEAD),
+		new Style(32, "meteor_shower", 8, 16, TargetPolicy.GROUND_AHEAD),
+		new Style(33, "rewind_leap", 8, 18, TargetPolicy.ACTIVE_CONE)
 	);
 
 	public static Style of(String art) {

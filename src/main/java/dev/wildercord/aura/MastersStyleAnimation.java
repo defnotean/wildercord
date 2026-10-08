@@ -278,6 +278,42 @@ public final class MastersStyleAnimation {
 		pose(j(.10F, -.22F, .03F), j(-.04F, .09F, 0), j(-1.35F, -.22F, -.14F), j(-.65F, -.14F, -.38F),
 			j(-.40F, .08F, -.07F), j(.28F, -.06F, .07F), .28F, -.35F, h(-.10F, .04F, -.32F, -78, -12, 14)));
 
+	// Updraft loads low across the back hip, then lifts in an explosive rising spiral that throws foes upward.
+	private static final Motion UPDRAFT = new Motion(
+		pose(j(.30F, .42F, .14F), j(-.14F, -.16F, -.05F), j(.22F, .58F, .48F), j(-.72F, -.22F, -.65F),
+			j(-.68F, -.16F, -.10F), j(.42F, .14F, .12F), .80F, .14F, h(.06F, .08F, -.28F, 52, 24, -38)),
+		pose(j(-.18F, -.52F, -.14F), j(.06F, .20F, .05F), j(-2.42F, -.68F, -.42F), j(-.42F, .14F, -1.05F),
+			j(-.32F, .18F, -.08F), j(.22F, -.12F, .09F), -.12F, -.68F, h(-.20F, .32F, -.38F, -86, -22, 28)),
+		pose(j(-.12F, -.66F, -.10F), j(.04F, .24F, .03F), j(-2.78F, -.50F, -.58F), j(.04F, .16F, -.78F),
+			j(-.28F, .15F, -.07F), j(.19F, -.10F, .08F), -.06F, -.32F, h(-.28F, .40F, -.22F, -104, -30, 42)));
+
+	// Avalanche hoists the heavy stone edge high over the right shoulder, drives down into a grounded cleave, and absorbs the shock.
+	private static final Motion AVALANCHE = new Motion(
+		pose(j(-.12F, .36F, -.10F), j(.05F, -.14F, .03F), j(-2.35F, .28F, -.42F), j(-1.32F, -.16F, -.52F),
+			j(-.35F, -.14F, -.12F), j(.30F, .12F, .10F), .30F, .20F, h(-.06F, .60F, -.15F, -92, 16, -20)),
+		pose(j(.42F, -.28F, .16F), j(-.20F, .14F, -.05F), j(-.70F, -.20F, -.18F), j(-.25F, .12F, -.82F),
+			j(-.84F, .14F, -.14F), j(.48F, -.12F, .12F), 1.05F, -.92F, h(-.14F, .18F, -.48F, 68, -10, 18)),
+		pose(j(.30F, -.24F, .12F), j(-.14F, .12F, -.03F), j(-.52F, -.18F, -.15F), j(-.38F, -.06F, -.58F),
+			j(-.62F, .12F, -.11F), j(.35F, -.10F, .09F), .72F, -.48F, h(-.10F, .24F, -.42F, 52, -26, 14)));
+
+	// Meteor Shower salutes skyward to channel falling stars, snaps forward to direct the barrage, and settles into an astral line.
+	private static final Motion METEOR_SHOWER = new Motion(
+		pose(j(.12F, .18F, -.06F), j(-.06F, -.06F, 0), j(-1.18F, .38F, -.22F), j(-1.12F, -.22F, .15F),
+			j(-.38F, -.10F, -.08F), j(.26F, .10F, .07F), .42F, .10F, h(.04F, .14F, -.20F, 12, 18, -18)),
+		pose(j(-.10F, -.22F, .06F), j(.04F, .10F, -.03F), j(-2.15F, -.36F, -.34F), j(-.78F, -.10F, .28F),
+			j(-.28F, .10F, -.07F), j(.20F, -.08F, .07F), .16F, -.36F, h(-.14F, .34F, -.32F, -68, -16, 24)),
+		pose(j(-.06F, -.26F, .04F), j(.03F, .12F, -.02F), j(-2.45F, -.32F, -.38F), j(-.96F, -.15F, .18F),
+			j(-.26F, .08F, -.07F), j(.18F, -.06F, .06F), .18F, -.22F, h(-.18F, .40F, -.24F, -84, -22, 30)));
+
+	// Rewind Leap springs forward with a twisting cross-slash, locks briefly in temporal stillness, and snaps back along the jump vector.
+	private static final Motion REWIND_LEAP = new Motion(
+		pose(j(-.14F, .38F, -.16F), j(.06F, -.15F, .05F), j(-1.85F, .52F, -.55F), j(-.95F, -.20F, -.48F),
+			j(-.40F, -.15F, -.12F), j(.32F, .12F, .10F), .35F, .22F, h(-.05F, .45F, -.18F, -70, 22, -28)),
+		pose(j(.36F, -.44F, .20F), j(-.16F, .16F, -.06F), j(-.85F, -.78F, -.38F), j(-.28F, .12F, -.92F),
+			j(-.72F, .15F, -.12F), j(.40F, -.10F, .10F), .85F, -.82F, h(-.26F, .16F, -.42F, 56, -32, 44)),
+		pose(j(.20F, -.54F, .15F), j(-.10F, .20F, -.04F), j(-.55F, -.88F, -.12F), j(-.10F, .10F, -.72F),
+			j(-.50F, .12F, -.10F), j(.30F, -.08F, .08F), .55F, -.42F, h(-.30F, .22F, -.26F, 44, -40, 52)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -307,6 +343,10 @@ public final class MastersStyleAnimation {
 			case 27 -> SANGUINE_PARRY;
 			case 28 -> CONSTELLATION_GUARD;
 			case 29 -> STOPPED_MOMENT;
+			case 30 -> UPDRAFT;
+			case 31 -> AVALANCHE;
+			case 32 -> METEOR_SHOWER;
+			case 33 -> REWIND_LEAP;
 			default -> null;
 		};
 	}
