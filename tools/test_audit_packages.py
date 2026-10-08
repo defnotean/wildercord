@@ -328,7 +328,10 @@ class ArchiveBoundaryTests(unittest.TestCase):
             warnings.simplefilter("ignore", UserWarning)
             with zipfile.ZipFile(self.path, "w", compression=compression) as archive:
                 for name in names:
-                    archive.writestr(name, data)
+                    info = zipfile.ZipInfo()
+                    info.filename = name
+                    info.compress_type = compression
+                    archive.writestr(info, data)
 
     def check(self):
         with audit.checked_archive(self.path) as archive:
