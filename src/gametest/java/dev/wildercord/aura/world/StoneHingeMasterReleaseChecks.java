@@ -27,7 +27,7 @@ public final class StoneHingeMasterReleaseChecks {
 			world.getServer().runOnServer(server -> {
 				player.setAttached(AuraAttachments.AURA, AuraAttachments.Data.NONE);
 				player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);
-				player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200); player.setHealth(200);
+				player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200); player.setHealth(200); player.clearFire();
 				warning[0] = StoneHingeImpulseProbe.start(player);
 				warningReceipt("setup-reset", player, master[0], warning[0]);
 				player.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);

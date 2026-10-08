@@ -77,6 +77,7 @@ public final class StoneHingeFeasibilityTest implements FabricClientGameTest {
 					attacker.setNoAi(true); attacker.setNoGravity(true); attacker.setPersistenceRequired(); attacker.setPermanentlyInvulnerable(true);
 					attacker.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(8);
 					if (attacker.getAttribute(Attributes.ATTACK_KNOCKBACK) != null) attacker.getAttribute(Attributes.ATTACK_KNOCKBACK).setBaseValue(0);
+					attacker.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
 					attacker.snapTo(origin.x, origin.y, origin.z + 1.5, 180, 0); player.level().addFreshEntity(attacker);
 				});
 				context.waitTicks(5);
@@ -295,8 +296,12 @@ public final class StoneHingeFeasibilityTest implements FabricClientGameTest {
 		player.setAttached(AuraAttachments.AURA, AuraAttachments.Data.NONE); player.setAttached(AuraAttachments.STATE, AuraAttachments.State.NONE);
 		player.setAttached(WildercordAttachments.CIRCLES, 0); player.setAttached(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE);
 		Spellbooks.setCord(player, ItemStack.EMPTY); player.setNoGravity(false); player.setYRot(0); player.setXRot(0);
-		player.setDeltaMovement(new Vec3(.12, 0, .06)); Effects.readyToHurt(player);
-		if (attacker != null) attacker.snapTo(player.getX(), player.getY(), player.getZ() + 1.5, 180, 0);
+		player.setDeltaMovement(new Vec3(.12, 0, .06)); Effects.readyToHurt(player); player.clearFire();
+		if (attacker != null) {
+			attacker.clearFire();
+			attacker.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+			attacker.snapTo(player.getX(), player.getY(), player.getZ() + 1.5, 180, 0);
+		}
 	}
 	/** Rear is measured against the connected body's actual view; changing body yaw alone does not turn head yaw. */
 	private void placeRearAttacker() {
