@@ -439,27 +439,34 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null
 			&& MastersArtsClient.timeline(mc.player).move() == style.animation(), 30);
 		String prefix = "masters_style_" + style.art() + "_" + view;
-		if (cancel) {
-			world.getServer().runOnServer(server -> MastersArts.cancel(server.getPlayerList().getPlayers().getFirst()));
-			context.waitFor(mc -> MastersArtsClient.timeline(mc.player) == null, 20);
-			check(context.computeOnClient(mc -> MastersArtsClient.pose(mc.player, .5F).weight() == 0), "Cancelled authored body and hand poses clear together");
-			waitForCancelledNeutral(context, prefix);
-			shot(context, prefix + "_neutral");
-			world.getServer().runOnServer(server -> target[0].discard());
-			return;
-		}
-		context.runOnClient(mc -> {
-			check(mc.player.getMainArm() == (leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT), "The real player's selected hand is in effect");
-			if (leftHanded) {
-				mc.player.setYRot(90); mc.player.setYHeadRot(90);
-				mc.player.setXRot(camera.isFirstPerson() ? 75 : 12);
+		try {
+			if (cancel) {
+				world.getServer().runOnServer(server -> MastersArts.cancel(server.getPlayerList().getPlayers().getFirst()));
+				context.waitFor(mc -> MastersArtsClient.timeline(mc.player) == null, 20);
+				check(context.computeOnClient(mc -> MastersArtsClient.pose(mc.player, .5F).weight() == 0), "Cancelled authored body and hand poses clear together");
+				waitForCancelledNeutral(context, prefix);
+				shot(context, prefix + "_neutral");
+				return;
 			}
-		});
-		captureBeats(context, prefix);
-		context.waitTicks(30);
-		check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Style returns to vanilla after its real recovery");
-		shot(context, prefix + "_settled");
-		world.getServer().runOnServer(server -> target[0].discard());
+			context.runOnClient(mc -> {
+				check(mc.player.getMainArm() == (leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT), "The real player's selected hand is in effect");
+				if (leftHanded) {
+					mc.player.setYRot(90); mc.player.setYHeadRot(90);
+					mc.player.setXRot(camera.isFirstPerson() ? 75 : 12);
+				}
+			});
+			captureBeats(context, prefix);
+			world.getServer().runOnServer(server -> {
+				if (target[0] != null && !target[0].isRemoved()) target[0].discard();
+			});
+			context.waitTicks(30);
+			check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Style returns to vanilla after its real recovery");
+			shot(context, prefix + "_settled");
+		} finally {
+			world.getServer().runOnServer(server -> {
+				if (target[0] != null && !target[0].isRemoved()) target[0].discard();
+			});
+		}
 	}
 
 	private static void captureEarnedCounterStyle(ClientGameTestContext context, TestSingleplayerContext world,
