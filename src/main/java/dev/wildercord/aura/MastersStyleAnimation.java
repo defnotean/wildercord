@@ -317,7 +317,7 @@ public final class MastersStyleAnimation {
 	// Wildfire Rush lowers into a sprinter's chamber, charges through the center line in a piercing streak, then slides to a low brace.
 	private static final Motion WILDFIRE_RUSH = new Motion(
 		pose(j(.35F, .42F, -.12F), j(-.18F, -.16F, .04F), j(-.85F, .52F, -.35F), j(-1.10F, -.30F, .22F),
-			j(-.75F, -.18F, -.16F), j(.55F, .16F, .16F), .85F, .45F, h(.14F, .16F, .18F, -45, 24, -28)),
+			j(-.75F, -.18F, -.16F), j(.55F, .16F, .16F), .85F, .45F, h(.12F, .26F, -.14F, -55, 20, -22)),
 		pose(j(.52F, -.32F, .10F), j(-.22F, .12F, -.04F), j(-1.65F, -.15F, -.18F), j(-.45F, .22F, -.45F),
 			j(-.95F, .16F, -.14F), j(.72F, -.14F, .14F), 1.05F, -1.65F, h(-.18F, -.05F, -.55F, -105, -12, 16)),
 		pose(j(.38F, -.38F, .08F), j(-.15F, .18F, -.02F), j(-1.42F, -.24F, -.16F), j(-.35F, .18F, -.35F),
@@ -389,7 +389,7 @@ public final class MastersStyleAnimation {
 	// Blur compresses low into dilated time, carves a razor-sharp arc through slowed space, and recovers into quickened momentum.
 	private static final Motion BLUR = new Motion(
 		pose(j(.24F, -.18F, .10F), j(-.10F, .08F, -.03F), j(-1.28F, .26F, -.28F), j(-.88F, .16F, .22F),
-			j(-.55F, .12F, -.10F), j(.42F, -.10F, .10F), .50F, .15F, h(.14F, .14F, -.16F, -48, -12, 16)),
+			j(-.55F, .12F, -.10F), j(.42F, -.10F, .10F), .50F, .15F, h(.14F, .22F, -.16F, -48, -12, 16)),
 		pose(j(.42F, .22F, -.12F), j(-.16F, -.10F, .02F), j(-1.60F, -.30F, -.14F), j(-.46F, -.20F, -.32F),
 			j(-.86F, -.12F, -.12F), j(.65F, .10F, .12F), .85F, -1.30F, h(-.15F, .08F, -.50F, -98, 18, -14)),
 		pose(j(.22F, .12F, -.06F), j(-.08F, -.06F, .01F), j(-1.34F, -.16F, -.16F), j(-.62F, -.14F, -.22F),
