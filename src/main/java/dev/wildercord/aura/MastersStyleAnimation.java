@@ -326,7 +326,7 @@ public final class MastersStyleAnimation {
 	// Skate carves low along the frost line with an aerodynamic tilt, shatters through impact, and slides to an upright finish.
 	private static final Motion SKATE = new Motion(
 		pose(j(.20F, -.24F, .15F), j(-.08F, .10F, -.05F), j(-1.25F, .34F, -.28F), j(-.85F, .22F, .30F),
-			j(-.55F, .12F, -.10F), j(.42F, -.10F, .10F), .45F, .20F, h(.12F, .18F, -.15F, -30, -18, 22)),
+			j(-.55F, .12F, -.10F), j(.42F, -.10F, .10F), .45F, .20F, h(.12F, .24F, -.15F, -30, -18, 22)),
 		pose(j(.28F, .32F, -.16F), j(-.12F, -.14F, .06F), j(-1.58F, -.42F, -.22F), j(-.65F, -.28F, -.25F),
 			j(-.85F, -.18F, -.12F), j(.65F, .16F, .12F), .60F, -1.20F, h(-.16F, .12F, -.45F, -85, 20, -14)),
 		pose(j(.18F, .18F, -.08F), j(-.06F, -.08F, .03F), j(-1.35F, -.28F, -.20F), j(-.72F, -.18F, -.18F),
@@ -335,7 +335,7 @@ public final class MastersStyleAnimation {
 	// Tailwind throws weight forward into the slipstream with trailing wings, pierces the gale, and spirals into circular deceleration.
 	private static final Motion TAILWIND = new Motion(
 		pose(j(.42F, .20F, -.10F), j(-.20F, -.10F, .03F), j(-.75F, .44F, -.30F), j(-1.25F, -.35F, -.20F),
-			j(-.80F, -.16F, -.15F), j(.62F, .14F, .15F), .70F, .35F, h(.16F, .22F, .10F, -55, 16, -22)),
+			j(-.80F, -.16F, -.15F), j(.62F, .14F, .15F), .70F, .35F, h(.16F, .24F, -.12F, -55, 16, -22)),
 		pose(j(.48F, -.28F, .12F), j(-.18F, .12F, -.04F), j(-1.75F, -.25F, -.15F), j(-.55F, .20F, -.55F),
 			j(-.92F, .14F, -.12F), j(.70F, -.12F, .12F), .95F, -1.80F, h(-.15F, .02F, -.58F, -112, -10, 14)),
 		pose(j(.25F, -.35F, .08F), j(-.10F, .16F, -.02F), j(-1.45F, -.35F, -.20F), j(-.42F, .15F, -.40F),
@@ -362,7 +362,7 @@ public final class MastersStyleAnimation {
 	// Bolt Step gathers electrostatic charge in a low ready coil, flashes forward in an instantaneous blink strike, and locks into static ready.
 	private static final Motion BOLT_STEP = new Motion(
 		pose(j(.22F, -.28F, .10F), j(-.10F, .14F, -.04F), j(-1.42F, .32F, -.32F), j(-.92F, -.22F, .16F),
-			j(-.66F, .12F, -.10F), j(.48F, -.10F, .10F), .68F, .22F, h(.14F, .18F, -.16F, -40, -18, 20)),
+			j(-.66F, .12F, -.10F), j(.48F, -.10F, .10F), .68F, .22F, h(.14F, .24F, -.16F, -40, -18, 20)),
 		pose(j(.44F, .16F, -.10F), j(-.18F, -.10F, .02F), j(-1.62F, -.20F, -.18F), j(-.42F, .22F, -.46F),
 			j(-.90F, -.16F, -.12F), j(.68F, .14F, .12F), .85F, -1.35F, h(-.16F, .08F, -.48F, -102, 16, -18)),
 		pose(j(.26F, .10F, -.06F), j(-.10F, -.06F, .01F), j(-1.38F, -.16F, -.16F), j(-.65F, .14F, -.30F),
@@ -398,7 +398,7 @@ public final class MastersStyleAnimation {
 	// Frenzy crouches low in a blood-drunk hunt, explodes through the line with a savage downward cross-cleave, and coils for the next strike.
 	private static final Motion FRENZY = new Motion(
 		pose(j(.36F, .34F, -.14F), j(-.16F, -.14F, .04F), j(-1.02F, .46F, -.36F), j(-1.08F, -.30F, .16F),
-			j(-.70F, -.16F, -.12F), j(.50F, .14F, .12F), .75F, .35F, h(.15F, .20F, -.16F, -42, 26, -24)),
+			j(-.70F, -.16F, -.12F), j(.50F, .14F, .12F), .75F, .35F, h(.15F, .24F, -.16F, -42, 26, -24)),
 		pose(j(.52F, -.24F, .08F), j(-.22F, .10F, -.02F), j(-1.70F, -.18F, -.20F), j(-.58F, .18F, -.48F),
 			j(-.94F, .14F, -.14F), j(.72F, -.10F, .14F), 1.08F, -1.55F, h(-.20F, -.02F, -.52F, -108, -16, 20)),
 		pose(j(.32F, -.18F, .04F), j(-.12F, .08F, -.01F), j(-1.42F, -.20F, -.18F), j(-.72F, .14F, -.32F),
@@ -479,7 +479,7 @@ public final class MastersStyleAnimation {
 	// Thousand Moments suspends all motion in stopped time, blade carving unseen incisions that strike all at once upon release.
 	private static final Motion THOUSAND_MOMENTS = new Motion(
 		pose(j(.22F, -.22F, .10F), j(-.08F, .10F, -.03F), j(-1.32F, .24F, -.26F), j(-.92F, .14F, .20F),
-			j(-.52F, .10F, -.10F), j(.40F, -.08F, .10F), .55F, .12F, h(.12F, .16F, -.16F, -42, -10, 14)),
+			j(-.52F, .10F, -.10F), j(.40F, -.08F, .10F), .55F, .12F, h(.12F, .22F, -.16F, -42, -10, 14)),
 		pose(j(.38F, .24F, -.12F), j(-.14F, -.10F, .02F), j(-1.58F, -.34F, -.16F), j(-.44F, -.18F, -.34F),
 			j(-.82F, -.12F, -.12F), j(.62F, .10F, .12F), .80F, -1.25F, h(-.16F, .10F, -.48F, -94, 16, -12)),
 		pose(j(.20F, .14F, -.06F), j(-.06F, -.06F, .01F), j(-1.32F, -.18F, -.18F), j(-.60F, -.12F, -.22F),
