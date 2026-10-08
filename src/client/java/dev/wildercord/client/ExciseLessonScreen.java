@@ -6,6 +6,7 @@ import dev.wildercord.player.MasterStudies;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
@@ -159,6 +160,11 @@ public final class ExciseLessonScreen extends Screen implements CordEditorParent
 		if (maximum > 0) graphics.centeredText(font, Component.translatable("screen.wildercord.excise_lesson.scroll", scroll + 1, maximum + 1),
 			width / 2, bodyBottom + 4, 0xFFA7B8B6);
 		next.active = !requesting && !waiting && (studying || page < 2) && (!studying || scroll >= maximum);
+		if (studying && scroll < maximum) {
+			next.setTooltip(Tooltip.create(Component.translatable("screen.wildercord.lesson.scroll_to_read")));
+		} else {
+			next.setTooltip(null);
+		}
 		super.extractRenderState(graphics, mouseX, mouseY, partial);
 	}
 

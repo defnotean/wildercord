@@ -28,10 +28,11 @@ public final class MasterFormsScreen extends Screen implements CordEditorParent 
 	private float scale() {
 		double fit = Math.min(1, Math.min((width - 8) / (double) W, (height - 8) / (double) H));
 		int gui = Math.max(1, minecraft.getWindow().getGuiScale());
-		return Math.max(1, (int) Math.floor(gui * fit)) / (float) gui;
+		int physical = (int) Math.floor(gui * fit);
+		return physical >= 1 ? physical / (float) gui : (float) fit;
 	}
-	private int left() { return Math.round((width - W * scale()) / 2); }
-	private int top() { return Math.round((height - H * scale()) / 2); }
+	private int left() { return Math.max(4, Math.round((width - W * scale()) / 2)); }
+	private int top() { return Math.max(4, Math.round((height - H * scale()) / 2)); }
 	private boolean learned() { return minecraft.player != null && MasterForms.data(minecraft.player).learned(); }
 	private Component text(String suffix, Object... args) { return Component.translatable("screen.wildercord.master_forms." + suffix, args); }
 	@Override protected void init() {

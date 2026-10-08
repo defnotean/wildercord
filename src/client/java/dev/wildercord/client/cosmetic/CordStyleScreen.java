@@ -106,16 +106,16 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 			return 1.0F;
 		}
 		int guiScale = Math.max(1, minecraft.getWindow().getGuiScale());
-		int physical = Math.max(1, (int) Math.floor(guiScale * fit));
-		return physical / (float) guiScale;
+		int physical = (int) Math.floor(guiScale * fit);
+		return physical >= 1 ? physical / (float) guiScale : (float) fit;
 	}
 
 	private int left() {
-		return Math.round((width - W * scale()) / 2);
+		return Math.max(4, Math.round((width - W * scale()) / 2));
 	}
 
 	private int top() {
-		return Math.round((height - H * scale()) / 2);
+		return Math.max(4, Math.round((height - H * scale()) / 2));
 	}
 
 	private double localX(double screenX) {

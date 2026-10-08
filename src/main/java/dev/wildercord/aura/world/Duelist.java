@@ -171,7 +171,15 @@ public class Duelist extends AuraFighter {
 			if(tournament!=null) {
 				if(server.level().hasChunkAt(tournament) && server.level().getBlockEntity(tournament) instanceof TournamentBoardEntity board)board.describe(server);
 			} else if (server.isShiftKeyDown()) {
-				if (!dev.wildercord.aura.MasterFormLessons.offer(server, this)) SwordMaster.introduce(server, this);
+				if (server.getMainHandItem().isEmpty() && !dev.wildercord.aura.MasterForms.data(server).learned() && !dev.wildercord.aura.MasterForms.eligibleLesson(server)) {
+					if (dev.wildercord.aura.Aura.stage(server) < 5) {
+						server.sendSystemMessage(Component.translatable("message.wildercord.wall_turn.need_sovereign"));
+					} else if (!MasterVictories.progress(server).cleared(MastersRules.GALE)) {
+						server.sendSystemMessage(Component.translatable("message.wildercord.wall_turn.need_gale"));
+					}
+				} else if (!dev.wildercord.aura.MasterFormLessons.offer(server, this)) {
+					SwordMaster.introduce(server, this);
+				}
 			} else {
 				DuelistDuels.use(server, this);
 				if (!inDuel() && !leaving() && SwordMaster.readyForTrial(server)) {

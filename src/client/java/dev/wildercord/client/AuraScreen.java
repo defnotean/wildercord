@@ -171,16 +171,16 @@ public class AuraScreen extends Screen implements CordEditorParent {
 			return 1.0F;
 		}
 		int guiScale = Math.max(1, minecraft.getWindow().getGuiScale());
-		int physical = Math.max(1, (int) Math.floor(guiScale * fit));
-		return physical / (float) guiScale;
+		int physical = (int) Math.floor(guiScale * fit);
+		return physical >= 1 ? physical / (float) guiScale : (float) fit;
 	}
 
 	private int left() {
-		return Math.round((width - W * scale()) / 2);
+		return Math.max(4, Math.round((width - W * scale()) / 2));
 	}
 
 	private int top() {
-		return Math.round((height - H * scale()) / 2);
+		return Math.max(4, Math.round((height - H * scale()) / 2));
 	}
 
 	@Override
@@ -696,19 +696,27 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		boolean onWrite = writing && writes && !onBlade && !lineage;
 		boolean onWay = way && ways && !onWrite && !onBlade && !lineage;
 		boolean onArts = arts && !onWay && !onWrite && !onBlade && !lineage;
+		Component lineageTab = Component.translatable("screen.wildercord.aura.lineage.tab");
+		int totalTabWidth = font.width(tech) + font.width(strings)
+			+ (ways ? font.width(wayTab) : 0)
+			+ (writes ? font.width(writeTab) : 0)
+			+ (blades ? font.width(bladeTab) : 0)
+			+ font.width(lineageTab);
+		int tabCount = 2 + (ways ? 1 : 0) + (writes ? 1 : 0) + (blades ? 1 : 0) + 1;
+		int gap = tabCount > 1 ? Math.max(4, Math.min(14, ((W - 28) - totalTabWidth) / (tabCount - 1))) : 14;
+		int divOffset = gap / 2;
 		tabsY = y;
 		techLeft = 14;
 		techRight = techLeft + font.width(tech);
-		artsLeft = techRight + 14;
+		artsLeft = techRight + gap;
 		artsRight = artsLeft + font.width(strings);
-		wayLeft = artsRight + 14;
+		wayLeft = artsRight + gap;
 		wayRight = ways ? wayLeft + font.width(wayTab) : wayLeft;
-		writeLeft = (ways ? wayRight : artsRight) + 14;
+		writeLeft = (ways ? wayRight : artsRight) + gap;
 		writeRight = writes ? writeLeft + font.width(writeTab) : writeLeft;
-		bladeLeft = (writes ? writeRight : ways ? wayRight : artsRight) + 14;
+		bladeLeft = (writes ? writeRight : ways ? wayRight : artsRight) + gap;
 		bladeRight = blades ? bladeLeft + font.width(bladeTab) : bladeLeft;
-		Component lineageTab = Component.translatable("screen.wildercord.aura.lineage.tab");
-		lineageLeft = (blades ? bladeRight : writes ? writeRight : ways ? wayRight : artsRight) + 14;
+		lineageLeft = (blades ? bladeRight : writes ? writeRight : ways ? wayRight : artsRight) + gap;
 		lineageRight = lineageLeft + font.width(lineageTab);
 		g.text(font, lineageTab, lineageLeft, y, lineage ? GOLD : DIM, true);
 		boolean overTech = inside(mx, my, techLeft, y - 2, techRight - techLeft, 12);
@@ -718,7 +726,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		boolean overBlade = blades && inside(mx, my, bladeLeft, y - 2, bladeRight - bladeLeft, 12);
 		g.text(font, tech, techLeft, y, !onArts && !onWay && !onWrite && !onBlade && !lineage ? GOLD : overTech ? TEXT : DIM, true);
 		g.text(font, strings, artsLeft, y, onArts ? GOLD : overArts ? TEXT : DIM, true);
-		g.fill(techRight + 6, y + 1, techRight + 7, y + 8, FAINT);
+		g.fill(techRight + divOffset - 1, y + 1, techRight + divOffset, y + 8, FAINT);
 		if (ways) {
 			int wayColor = onWay ? GOLD : overWay ? TEXT : DIM;
 			if (!onWay && dev.wildercord.aura.Ways.wayless(minecraft.player)) {
@@ -727,7 +735,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 				wayColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
 			}
 			g.text(font, wayTab, wayLeft, y, wayColor, true);
-			g.fill(artsRight + 6, y + 1, artsRight + 7, y + 8, FAINT);
+			g.fill(artsRight + divOffset - 1, y + 1, artsRight + divOffset, y + 8, FAINT);
 		}
 		if (writes) {
 			int writeColor = onWrite ? GOLD : overWrite ? TEXT : DIM;
@@ -737,7 +745,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 				writeColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
 			}
 			g.text(font, writeTab, writeLeft, y, writeColor, true);
-			g.fill(writeLeft - 8, y + 1, writeLeft - 7, y + 8, FAINT);
+			g.fill(writeLeft - divOffset - 1, y + 1, writeLeft - divOffset, y + 8, FAINT);
 		}
 		if (blades) {
 			int bladeColor = onBlade ? GOLD : overBlade ? TEXT : DIM;
@@ -747,8 +755,9 @@ public class AuraScreen extends Screen implements CordEditorParent {
 				bladeColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
 			}
 			g.text(font, bladeTab, bladeLeft, y, bladeColor, true);
-			g.fill(bladeLeft - 8, y + 1, bladeLeft - 7, y + 8, FAINT);
+			g.fill(bladeLeft - divOffset - 1, y + 1, bladeLeft - divOffset, y + 8, FAINT);
 		}
+		g.fill(lineageLeft - divOffset - 1, y + 1, lineageLeft - divOffset, y + 8, FAINT);
 		int under = lineage ? lineageLeft : onBlade ? bladeLeft : onWrite ? writeLeft : onWay ? wayLeft : onArts ? artsLeft : techLeft;
 		int underRight = lineage ? lineageRight : onBlade ? bladeRight : onWrite ? writeRight : onWay ? wayRight : onArts ? artsRight : techRight;
 		g.fill(under, y + 9, underRight, y + 10, 0xFF000000 | (GOLD & 0xFFFFFF));

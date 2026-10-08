@@ -190,11 +190,12 @@ public final class HeartCircles {
 		if (perk != null) {
 			player.sendSystemMessage(perk.copy().withColor(0xB8A8FF));
 		}
-		if (n == Circles.MANA_SKIN || n == Circles.FLOW || n == Circles.OVERFLOW || n == Circles.ARCHMAGE) {
+		if (n == 2 || n == Circles.MANA_SKIN || n == 4 || n == Circles.FLOW || n == Circles.OVERFLOW || n == Circles.ARCHMAGE) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.perk." + n).withColor(0xF5C46A));
 		}
 		if (n == Circles.ARCHMAGE) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.relay_lesson.invitation").withColor(0x7FDAD4));
+			player.sendSystemMessage(Component.translatable("message.wildercord.masters_trials.invitation").withColor(0xE8C46A));
 		}
 		if (n == 1) {
 			// The heart's first ring wakes something only this caster has.

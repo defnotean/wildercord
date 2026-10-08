@@ -370,16 +370,16 @@ public class CordScreen extends Screen {
 			return 1.0F;
 		}
 		int guiScale = Math.max(1, minecraft.getWindow().getGuiScale());
-		int physical = Math.max(1, (int) Math.floor(guiScale * fit));
-		return physical / (float) guiScale;
+		int physical = (int) Math.floor(guiScale * fit);
+		return physical >= 1 ? physical / (float) guiScale : (float) fit;
 	}
 
 	private int left() {
-		return Math.round((width - W * scale()) / 2);
+		return Math.max(4, Math.round((width - W * scale()) / 2));
 	}
 
 	private int top() {
-		return Math.round((height - H * scale()) / 2);
+		return Math.max(4, Math.round((height - H * scale()) / 2));
 	}
 
 	// ------------------------------------------------------------------ for the game tests (read-only, or as typing would)
@@ -1535,7 +1535,13 @@ public class CordScreen extends Screen {
 		g.enableScissor(12, READOUT_TOP - 1, W - 12, READOUT_BOTTOM);
 		for (int i = 0; i < visible && readoutScroll + i < lines.size(); i++) {
 			ReadoutLine line = lines.get(readoutScroll + i);
-			g.text(font, line.text(), line.x(), READOUT_TOP + i * LINE, line.color(), false);
+			if (i == 0 && !passivePage && !grimoirePage && spellCount() > 0) {
+				g.enableScissor(12, READOUT_TOP - 1, W - 16 - TOOLS_W - 2, READOUT_TOP + LINE);
+				g.text(font, line.text(), line.x(), READOUT_TOP + i * LINE, line.color(), false);
+				g.enableScissor(12, READOUT_TOP + LINE - 1, W - 12, READOUT_BOTTOM);
+			} else {
+				g.text(font, line.text(), line.x(), READOUT_TOP + i * LINE, line.color(), false);
+			}
 		}
 		g.disableScissor();
 		int ax = W - 18;
@@ -2253,6 +2259,20 @@ public class CordScreen extends Screen {
 			return true;
 		}
 		if (grimoirePage) {
+			if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+				int gTop = SPELL_TOP - 4;
+				int gBottom = H - 12;
+				if (inside(mx, my, W - 22, gTop - 2, 12, 10)) {
+					grimoireScroll = Math.max(0, grimoireScroll - LINE * 3);
+					click();
+					return true;
+				}
+				if (inside(mx, my, W - 22, gBottom - 8, 12, 10)) {
+					grimoireScroll += LINE * 3;
+					click();
+					return true;
+				}
+			}
             if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && exciseLessonY >= 0
                 && dev.wildercord.player.MasterStudies.hasExciseLesson(minecraft.player)
                 && inside(mx, my, TEXT_X + 8, exciseLessonY - 1, W - 32 - TEXT_X, LINE)) {
@@ -2276,6 +2296,18 @@ public class CordScreen extends Screen {
     return true;
    }
 			return true;
+		}
+		if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+			if (inside(mx, my, W - 22, READOUT_TOP - 2, 12, 10)) {
+				readoutScroll = Math.max(0, readoutScroll - 3);
+				click();
+				return true;
+			}
+			if (inside(mx, my, W - 22, READOUT_BOTTOM - 8, 12, 10)) {
+				readoutScroll += 3;
+				click();
+				return true;
+			}
 		}
 		if (!passivePage && clickSpellTools(mx, my)) {
 			return true;
@@ -3057,6 +3089,13 @@ public class CordScreen extends Screen {
             if (first + i == reweaveLessonIndex && y >= top && y + LINE <= bottom) reweaveLessonY = y;
             if (first + i == exciseLessonIndex && y >= top && y + LINE <= bottom) exciseLessonY = y;
    String lifeLink=lifeJournalLinks.get(first+i);if(lifeLink!=null && y>=top && y+LINE<=bottom)visibleLifeJournalLinks.add(new LifeJournalLink(y,lifeLink));
+			boolean clickableLesson = (first + i == relayLessonIndex && dev.wildercord.player.MasterStudies.hasRelayLesson(player))
+				|| (first + i == reweaveLessonIndex && dev.wildercord.player.MasterStudies.hasReweaveLesson(player))
+				|| (first + i == exciseLessonIndex && dev.wildercord.player.MasterStudies.hasExciseLesson(player))
+				|| lifeLink != null;
+			if (clickableLesson && inside(mx, my, TEXT_X + 6, y - 1, W - 28 - TEXT_X, LINE)) {
+				g.fill(TEXT_X + 6, y - 1, W - 22, y + LINE - 1, 0x24E8C46A);
+			}
 			int x = TEXT_X + line.x();
 			if (line.x() == 0) {
 				g.fill(TEXT_X - 2, y + 9, W - 20, y + 10, 0x40E8C46A);
