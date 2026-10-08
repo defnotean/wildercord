@@ -9,16 +9,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(41, MastersStyleRules.STYLES.size());
+		assertEquals(46, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(ids.add(style.animation()));
 			assertTrue(names.add(style.art()));
-			assertEquals(style.animation() <= 12 ? 0 : style.animation() == 19 ? 4 : (style.animation() >= 20 && style.animation() <= 29) ? 2 : (style.animation() >= 34 && style.animation() <= 43) ? 3 : 1, ArtRules.art(style.art()).slot());
+			assertEquals(style.animation() <= 12 ? 0 : (style.animation() == 19 || (style.animation() >= 44 && style.animation() <= 48)) ? 4 : (style.animation() >= 20 && style.animation() <= 29) ? 2 : (style.animation() >= 34 && style.animation() <= 43) ? 3 : 1, ArtRules.art(style.art()).slot());
 			assertEquals(style.animation() == 15 ? MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
 				: style.animation() == 16 ? MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT
-				: style.animation() == 17 || style.animation() == 18 || style.animation() == 31 || style.animation() == 32 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
+				: style.animation() == 17 || style.animation() == 18 || style.animation() == 31 || style.animation() == 32 || style.animation() == 44 || style.animation() == 48 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
 				: style.animation() >= 20 && style.animation() <= 29 ? MastersStyleRules.TargetPolicy.EARNED_COUNTER
 				: MastersStyleRules.TargetPolicy.ACTIVE_CONE, style.targets());
 			assertSame(style, MastersStyleRules.of(style.art()));
@@ -27,7 +27,7 @@ class MastersStyleRulesTest {
 			assertTrue(style.windup() >= 4 && style.windup() <= 10);
 			assertTrue(style.recovery() >= 10 && style.recovery() <= 20);
 		}
-		assertNull(MastersStyleRules.of("sunfall"));
+		assertNull(MastersStyleRules.of("event_horizon"));
 		assertNull(MastersStyleRules.animation(Integer.MAX_VALUE));
 	}
 
@@ -137,7 +137,7 @@ class MastersStyleRulesTest {
 			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
 		}
 		assertEquals(50, ArtRules.ARTS.size());
-		assertEquals(9, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
+		assertEquals(4, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
 	}
 
 	@Test void nextCountersKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
@@ -240,6 +240,29 @@ class MastersStyleRulesTest {
 			assertEquals(expectedRecovery, style.recovery());
 			assertEquals(3, art.slot());
 			assertEquals(MastersStyleRules.TargetPolicy.ACTIVE_CONE, style.targets());
+			assertNull(MastersArtRules.move(style.animation()));
+			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
+		}
+	}
+
+	@Test void batch4aPinnaclesKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
+		for (String id : new String[] {"sunfall", "winters_hush", "heavens_spear", "hundred_winds", "mountain_splitter"}) {
+			var style = MastersStyleRules.of(id); var art = ArtRules.art(id);
+			int expectedAnimation = switch (id) {
+				case "sunfall" -> 44;
+				case "winters_hush" -> 45;
+				case "heavens_spear" -> 46;
+				case "hundred_winds" -> 47;
+				case "mountain_splitter" -> 48;
+				default -> -1;
+			};
+			int expectedWindup = id.equals("sunfall") || id.equals("mountain_splitter") ? 10 : id.equals("hundred_winds") ? 6 : 8;
+			int expectedRecovery = id.equals("winters_hush") || id.equals("heavens_spear") ? 18 : 20;
+			assertEquals(expectedAnimation, style.animation());
+			assertEquals(expectedWindup, style.windup());
+			assertEquals(expectedRecovery, style.recovery());
+			assertEquals(4, art.slot());
+			assertEquals(id.equals("sunfall") || id.equals("mountain_splitter") ? MastersStyleRules.TargetPolicy.GROUND_AHEAD : MastersStyleRules.TargetPolicy.ACTIVE_CONE, style.targets());
 			assertNull(MastersArtRules.move(style.animation()));
 			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
 		}

@@ -13,7 +13,7 @@ class MastersStyleAnimationTest {
 	void everyAuthoredFormHasItsOwnBodyAndWeaponPoseWithoutOpeningANewInputOrdinal() {
 		var bodies = new HashSet<MastersArtAnimation.Pose>();
 		var hands = new HashSet<MastersArtAnimation.Hand>();
-		assertEquals(41, MastersStyleRules.STYLES.size());
+		assertEquals(46, MastersStyleRules.STYLES.size());
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(MastersArtAnimation.supports(style.animation()));
 			assertNull(MastersArtRules.move(style.animation()), "Style poses are not trusted client action IDs");
@@ -352,6 +352,24 @@ class MastersStyleAnimationTest {
 			}
 			assertEquals(-80, MastersArtAnimation.bladeTilt(style.animation(), style.windup(), style.windup(), 1), .0001F);
 			assertEquals(-40, MastersArtAnimation.bladeTilt(style.animation(), style.windup() + 2, style.windup(), .5F), .0001F);
+			assertEquals(0, MastersArtAnimation.bladeTilt(style.animation(), style.windup() + style.recovery(), style.windup(), 0), .0001F);
+		}
+	}
+
+	@Test
+	void batch4aPinnaclesKeepUniqueBladeTiltsAndFollowThroughWithoutSnapping() {
+		for (String art : new String[] {"sunfall", "winters_hush", "heavens_spear", "hundred_winds", "mountain_splitter"}) {
+			var style = MastersStyleRules.of(art);
+			var plant = sample(style, style.windup());
+			assertEquals(1, plant.weight());
+			assertTrue(Float.isFinite(plant.sword().x()) && Float.isFinite(plant.body().y()));
+			for (float age = 0; age <= style.windup() + style.recovery(); age += .25F) {
+				var p = sample(style, age);
+				assertTrue(p.weight() >= 0 && p.weight() <= 1);
+			}
+			float expectedReleaseTilt = art.equals("sunfall") ? -80 : art.equals("mountain_splitter") ? -95 : art.equals("heavens_spear") ? -80 : 0;
+			assertEquals(expectedReleaseTilt, MastersArtAnimation.bladeTilt(style.animation(), style.windup(), style.windup(), 1), .0001F);
+			assertEquals(expectedReleaseTilt * .5F, MastersArtAnimation.bladeTilt(style.animation(), style.windup() + 2, style.windup(), .5F), .0001F);
 			assertEquals(0, MastersArtAnimation.bladeTilt(style.animation(), style.windup() + style.recovery(), style.windup(), 0), .0001F);
 		}
 	}

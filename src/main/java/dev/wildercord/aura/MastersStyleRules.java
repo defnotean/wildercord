@@ -71,7 +71,12 @@ public final class MastersStyleRules {
 		new Style(40, "rift_step", 4, 14, TargetPolicy.ACTIVE_CONE),
 		new Style(41, "comet_dash", 4, 14, TargetPolicy.ACTIVE_CONE),
 		new Style(42, "blur", 4, 16, TargetPolicy.ACTIVE_CONE),
-		new Style(43, "frenzy", 6, 16, TargetPolicy.ACTIVE_CONE)
+		new Style(43, "frenzy", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(44, "sunfall", 10, 20, TargetPolicy.GROUND_AHEAD),
+		new Style(45, "winters_hush", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(46, "heavens_spear", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(47, "hundred_winds", 6, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(48, "mountain_splitter", 10, 20, TargetPolicy.GROUND_AHEAD)
 	);
 
 	public static Style of(String art) {
