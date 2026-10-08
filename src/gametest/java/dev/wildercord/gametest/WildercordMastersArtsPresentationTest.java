@@ -96,7 +96,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			for (var style : MastersStyleRules.STYLES) {
 				captureStyle(context, world, style, CameraType.THIRD_PERSON_BACK, "third_back");
 				captureStyle(context, world, style, CameraType.FIRST_PERSON, "first");
-				if (ArtRules.art(style.art()).slot() == 1 || ArtRules.art(style.art()).slot() == 4
+				if (ArtRules.art(style.art()).slot() == 1 || ArtRules.art(style.art()).slot() == 3 || ArtRules.art(style.art()).slot() == 4
 					|| style.targets() == MastersStyleRules.TargetPolicy.EARNED_COUNTER) {
 					captureStyle(context, world, style, CameraType.THIRD_PERSON_BACK, "left_turn_third_back", true, false);
 					captureStyle(context, world, style, CameraType.FIRST_PERSON, "left_turn_first", true, false);
@@ -357,9 +357,9 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 	private static void captureStyle(ClientGameTestContext context, TestSingleplayerContext world, MastersStyleRules.Style style,
 			CameraType camera, String view, boolean leftHanded, boolean cancel) {
 		int slot = ArtRules.art(style.art()).slot();
-		boolean second = slot == 1, finalArt = slot == 4;
+		boolean second = slot == 1, fourth = slot == 3, finalArt = slot == 4;
 		boolean counter = slot == 2 && style.targets() == MastersStyleRules.TargetPolicy.EARNED_COUNTER;
-		check(slot == 0 || second || finalArt || counter, "The capture declares its supported input family");
+		check(slot == 0 || second || fourth || finalArt || counter, "The capture declares its supported input family");
 		if (counter) {
 			captureEarnedCounterStyle(context, world, style, camera, view, leftHanded, cancel);
 			return;
@@ -387,7 +387,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			foe.setNoGravity(true);
 			foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);
 			foe.setHealth(200);
-			foe.snapTo(.5, 100, 3.1, 180, 0);
+			foe.snapTo(.5, 100, fourth ? 8.0 : 3.1, 180, 0);
 			player.level().addFreshEntity(foe);
 			target[0] = foe;
 		});
@@ -397,36 +397,44 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			mc.options.broadcastOptions();
 		});
 		context.waitTicks(15);
-		if (second) {
-			context.runOnClient(mc -> mc.player.setXRot(25));
-			String beforeJump = jumpState(context);
-			// Fabric pressKey releases before its waitTick; jump needs a held key during input polling.
-			context.getInput().holdKey(o -> o.keyJump);
-			try {
-				context.waitTicks(1); // Preserve the tick previously spent inside pressKey.
-				context.waitFor(mc -> !mc.player.onGround(), 20);
-			} catch (AssertionError failure) {
-				throw new AssertionError("Actual " + style.art() + " leap did not leave the stage (view=" + view
-					+ ", leftHanded=" + leftHanded + "): before={" + beforeJump + "}, after={" + jumpState(context) + "}", failure);
-			} finally {
-				context.getInput().releaseKey(o -> o.keyJump);
-			}
-			context.waitTicks(1);
-		}
-		for (int swing = 0; swing < (second ? 1 : finalArt ? 3 : 2); swing++) {
-			if (finalArt) context.waitFor(mc -> mc.player.getAttackStrengthScale(0) >= .999F, 40);
-			context.getInput().pressKey(o -> o.keyAttack);
+		if (fourth) {
+			context.getInput().pressKey(WildercordKeys.auraMapping());
 			context.waitTicks(2);
-			world.getServer().runOnServer(server -> {
-				target[0].snapTo(.5, 100, 3.1, 180, 0);
-				target[0].setDeltaMovement(Vec3.ZERO);
-			});
-			context.waitTicks(12);
+			context.getInput().pressKey(WildercordKeys.auraMapping());
+			context.waitTicks(5);
+			context.getInput().pressKey(o -> o.keyAttack);
+		} else {
+			if (second) {
+				context.runOnClient(mc -> mc.player.setXRot(25));
+				String beforeJump = jumpState(context);
+				// Fabric pressKey releases before its waitTick; jump needs a held key during input polling.
+				context.getInput().holdKey(o -> o.keyJump);
+				try {
+					context.waitTicks(1); // Preserve the tick previously spent inside pressKey.
+					context.waitFor(mc -> !mc.player.onGround(), 20);
+				} catch (AssertionError failure) {
+					throw new AssertionError("Actual " + style.art() + " leap did not leave the stage (view=" + view
+						+ ", leftHanded=" + leftHanded + "): before={" + beforeJump + "}, after={" + jumpState(context) + "}", failure);
+				} finally {
+					context.getInput().releaseKey(o -> o.keyJump);
+				}
+				context.waitTicks(1);
+			}
+			for (int swing = 0; swing < (second ? 1 : finalArt ? 3 : 2); swing++) {
+				if (finalArt) context.waitFor(mc -> mc.player.getAttackStrengthScale(0) >= .999F, 40);
+				context.getInput().pressKey(o -> o.keyAttack);
+				context.waitTicks(2);
+				world.getServer().runOnServer(server -> {
+					target[0].snapTo(.5, 100, 3.1, 180, 0);
+					target[0].setDeltaMovement(Vec3.ZERO);
+				});
+				context.waitTicks(12);
+			}
+			context.getInput().holdKey(o -> o.keyShift);
+			context.waitTicks(2);
+			context.getInput().pressKey(o -> o.keyAttack);
+			context.getInput().releaseKey(o -> o.keyShift);
 		}
-		context.getInput().holdKey(o -> o.keyShift);
-		context.waitTicks(2);
-		context.getInput().pressKey(o -> o.keyAttack);
-		context.getInput().releaseKey(o -> o.keyShift);
 		context.runOnClient(mc -> mc.options.setCameraType(camera));
 		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null
 			&& MastersArtsClient.timeline(mc.player).move() == style.animation(), 30);
