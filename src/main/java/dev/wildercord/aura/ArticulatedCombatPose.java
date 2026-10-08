@@ -33,6 +33,8 @@ public final class ArticulatedCombatPose {
 	public static final int COMET_DASH = 41, BLUR = 42, FRENZY = 43;
 	public static final int SUNFALL = 44, WINTERS_HUSH = 45;
 	public static final int HEAVENS_SPEAR = 46, HUNDRED_WINDS = 47, MOUNTAIN_SPLITTER = 48;
+	public static final int GROVES_HEART = 49, EVENT_HORIZON = 50;
+	public static final int NOVA = 51, THOUSAND_MOMENTS = 52;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -1060,6 +1062,82 @@ public final class ArticulatedCombatPose {
 				v(7.4F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.98F, .08F, .27F), -.92F, r(.10F, -.10F, .08F)))),
 		v(-2.55F, 22, 1.20F), v(2.55F, 22, -1.35F));
 
+	// Grove's Heart draws power from the earth, plunges the blade deep into the ground ahead, and anchors through living roots.
+	private static final Motion GROVES_HEART_MOTION = new Motion(
+		new Key(v(-.14F, 1.08F, .16F), r(.08F, .12F, -.02F), r(.05F, .08F, -.015F), r(.06F, .10F, -.02F), r(-.10F, -.16F, .015F),
+			arm(r(.025F, .06F, -.05F), r(-1.22F, .26F, -.26F), -.94F, r(.85F, -.22F, -.28F)),
+			arm(r(0, -.05F, .04F), r(-.96F, -.22F, -.18F), -.96F, r(.11F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.05F, 3.5F), arm(r(.02F, .04F, -.03F), r(-1.14F, .16F, -.22F), -.90F, r(.75F, -.14F, -.20F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.18F, 1.14F, -.70F), r(.12F, -.04F, -.01F), r(.07F, -.03F, -.01F), r(.08F, -.04F, -.01F), r(-.14F, .08F, .01F),
+			arm(r(.035F, -.045F, -.035F), r(-1.66F, .02F, -.08F), -.24F, r(.88F, .18F, .22F)),
+			arm(r(0, .06F, .04F), r(-.46F, -.18F, -.30F), -.76F, r(.12F, -.08F, .11F)),
+			new ViewKey(v(-7.5F, -5.15F, 1.9F), arm(r(.02F, -.035F, -.035F), r(-1.32F, -.08F, -.14F), -.32F, r(.78F, .12F, .16F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .035F, .03F), r(-.96F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.12F, 1.10F, -.36F), r(.07F, -.06F, .01F), r(.045F, -.04F, .01F), r(.05F, -.05F, .01F), r(-.09F, .12F, -.01F),
+			arm(r(.025F, -.035F, -.03F), r(-1.50F, -.06F, -.12F), -.60F, r(.92F, .14F, .20F)),
+			arm(r(0, .04F, .03F), r(-.56F, -.18F, -.26F), -.84F, r(.10F, -.09F, .10F)),
+			new ViewKey(v(-7.8F, -5.05F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.20F, -.06F, -.16F), -.66F, r(.76F, .10F, .14F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.98F, .08F, .27F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.55F, 22, 1.25F), v(2.55F, 22, -1.35F));
+
+	// Event Horizon curls into an inward singularity, sweeps a sweeping void arc across the horizon, and settles into gravitational equilibrium.
+	private static final Motion EVENT_HORIZON_MOTION = new Motion(
+		new Key(v(-.12F, 1.05F, .15F), r(.04F, .22F, -.02F), r(.03F, .14F, -.015F), r(.035F, .16F, -.02F), r(-.05F, -.26F, .02F),
+			arm(r(.025F, .05F, -.04F), r(-1.12F, .30F, -.26F), -.90F, r(.76F, -.20F, -.26F)),
+			arm(r(0, -.04F, .035F), r(-.92F, -.22F, -.16F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.0F, 3.4F), arm(r(.02F, .035F, -.03F), r(-1.14F, .16F, -.20F), -.86F, r(.62F, -.12F, -.18F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.15F, 1.07F, -.64F), r(.07F, -.24F, .02F), r(.045F, -.15F, .015F), r(.055F, -.19F, .02F), r(-.09F, .30F, -.015F),
+			arm(r(.03F, -.045F, -.035F), r(-1.40F, -.34F, -.26F), -.30F, r(.72F, .18F, .20F)),
+			arm(r(0, .05F, .04F), r(-.52F, -.18F, -.28F), -.78F, r(.11F, -.09F, .10F)),
+			new ViewKey(v(-7.6F, -5.20F, 2.0F), arm(r(.02F, -.035F, -.035F), r(-1.24F, -.14F, -.16F), -.32F, r(.68F, .14F, .16F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(-.06F, 1.07F, -.30F), r(-.05F, -.16F, .015F), r(-.035F, -.10F, .01F), r(-.04F, -.12F, .01F), r(.06F, .20F, -.01F),
+			arm(r(.02F, -.035F, -.03F), r(-1.46F, -.22F, -.20F), -.62F, r(.80F, .14F, .18F)),
+			arm(r(0, .035F, .03F), r(-.64F, -.18F, -.24F), -.88F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -5.05F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.18F, -.08F, -.16F), -.66F, r(.66F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.25F), v(2.45F, 22, -1.35F));
+
+	// Nova elevates the blade toward the heavens in cosmic ascension, cleaves a blinding starlit nova slash, and absorbs the celestial flash.
+	private static final Motion NOVA_MOTION = new Motion(
+		new Key(v(-.10F, 1.04F, .14F), r(.06F, -.14F, .02F), r(.04F, -.09F, .015F), r(.045F, -.11F, .015F), r(-.07F, .18F, -.015F),
+			arm(r(.025F, .05F, -.04F), r(-1.24F, .22F, -.22F), -.88F, r(.84F, -.18F, -.24F)),
+			arm(r(0, -.04F, .035F), r(-.95F, -.20F, -.16F), -.95F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.0F, 3.4F), arm(r(.02F, .035F, -.03F), r(-1.18F, .14F, -.20F), -.86F, r(.68F, -.12F, -.18F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.14F, 1.10F, -.66F), r(.09F, -.16F, .015F), r(.055F, -.10F, .01F), r(.065F, -.13F, .015F), r(-.11F, .22F, -.01F),
+			arm(r(.03F, -.045F, -.035F), r(-1.54F, .16F, -.16F), -.26F, r(.96F, .10F, .14F)),
+			arm(r(0, .05F, .04F), r(-.50F, -.18F, -.28F), -.78F, r(.11F, -.09F, .10F)),
+			new ViewKey(v(-7.6F, -5.15F, 1.9F), arm(r(.02F, -.035F, -.035F), r(-1.28F, -.06F, -.14F), -.30F, r(.82F, .12F, .14F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.08F, 1.06F, -.32F), r(.05F, -.12F, .01F), r(.035F, -.08F, .01F), r(.04F, -.10F, .01F), r(-.07F, .16F, -.01F),
+			arm(r(.02F, -.035F, -.03F), r(-1.42F, .08F, -.14F), -.62F, r(.90F, .12F, .16F)),
+			arm(r(0, .035F, .03F), r(-.66F, -.18F, -.24F), -.88F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -5.05F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.20F, -.04F, -.16F), -.66F, r(.74F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.50F, 22, 1.25F), v(2.50F, 22, -1.35F));
+
+	// Thousand Moments condenses the flow of time into a poised stance, releases a rapid chrono-fracture flurry, and dissolves the lingering echoes.
+	private static final Motion THOUSAND_MOMENTS_MOTION = new Motion(
+		new Key(v(-.12F, 1.05F, .14F), r(.04F, .16F, -.02F), r(.03F, .10F, -.015F), r(.035F, .12F, -.02F), r(-.05F, -.20F, .015F),
+			arm(r(.025F, .05F, -.04F), r(-1.14F, .28F, -.26F), -.90F, r(.80F, -.20F, -.26F)),
+			arm(r(0, -.04F, .035F), r(-.92F, -.22F, -.16F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.0F, 3.4F), arm(r(.02F, .035F, -.03F), r(-1.15F, .16F, -.20F), -.86F, r(.64F, -.12F, -.18F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.16F, 1.08F, -.65F), r(.07F, -.22F, .02F), r(.045F, -.14F, .015F), r(.055F, -.17F, .02F), r(-.09F, .28F, -.015F),
+			arm(r(.03F, -.045F, -.035F), r(-1.60F, -.46F, -.18F), -.28F, r(.68F, .12F, .16F)),
+			arm(r(0, .05F, .04F), r(-.52F, -.18F, -.28F), -.78F, r(.11F, -.09F, .10F)),
+			new ViewKey(v(-7.6F, -5.15F, 1.9F), arm(r(.02F, -.035F, -.035F), r(-1.26F, -.10F, -.16F), -.30F, r(.70F, .10F, .14F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(-.06F, 1.07F, -.30F), r(-.05F, -.14F, .015F), r(-.035F, -.09F, .01F), r(-.04F, -.11F, .01F), r(.06F, .18F, -.01F),
+			arm(r(.02F, -.035F, -.03F), r(-1.46F, -.24F, -.18F), -.62F, r(.78F, .12F, .16F)),
+			arm(r(0, .035F, .03F), r(-.64F, -.18F, -.24F), -.88F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -5.05F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.18F, -.06F, -.16F), -.66F, r(.64F, .06F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.25F), v(2.45F, 22, -1.35F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -1076,7 +1154,8 @@ public final class ArticulatedCombatPose {
 			|| move == UPDRAFT || move == AVALANCHE || move == METEOR_SHOWER || move == REWIND_LEAP
 			|| move == WILDFIRE_RUSH || move == SKATE || move == TAILWIND || move == LANDSLIDE || move == WILD_GROWTH
 			|| move == BOLT_STEP || move == RIFT_STEP || move == COMET_DASH || move == BLUR || move == FRENZY
-			|| move == SUNFALL || move == WINTERS_HUSH || move == HEAVENS_SPEAR || move == HUNDRED_WINDS || move == MOUNTAIN_SPLITTER;
+			|| move == SUNFALL || move == WINTERS_HUSH || move == HEAVENS_SPEAR || move == HUNDRED_WINDS || move == MOUNTAIN_SPLITTER
+			|| move == GROVES_HEART || move == EVENT_HORIZON || move == NOVA || move == THOUSAND_MOMENTS;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -1122,6 +1201,10 @@ public final class ArticulatedCombatPose {
 			case HEAVENS_SPEAR -> HEAVENS_SPEAR_MOTION;
 			case HUNDRED_WINDS -> HUNDRED_WINDS_MOTION;
 			case MOUNTAIN_SPLITTER -> MOUNTAIN_SPLITTER_MOTION;
+			case GROVES_HEART -> GROVES_HEART_MOTION;
+			case EVENT_HORIZON -> EVENT_HORIZON_MOTION;
+			case NOVA -> NOVA_MOTION;
+			case THOUSAND_MOMENTS -> THOUSAND_MOMENTS_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);

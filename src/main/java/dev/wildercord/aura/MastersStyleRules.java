@@ -76,7 +76,11 @@ public final class MastersStyleRules {
 		new Style(45, "winters_hush", 8, 18, TargetPolicy.ACTIVE_CONE),
 		new Style(46, "heavens_spear", 8, 18, TargetPolicy.ACTIVE_CONE),
 		new Style(47, "hundred_winds", 6, 20, TargetPolicy.ACTIVE_CONE),
-		new Style(48, "mountain_splitter", 10, 20, TargetPolicy.GROUND_AHEAD)
+		new Style(48, "mountain_splitter", 10, 20, TargetPolicy.GROUND_AHEAD),
+		new Style(49, "groves_heart", 10, 20, TargetPolicy.GROUND_AHEAD),
+		new Style(50, "event_horizon", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(51, "nova", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(52, "thousand_moments", 6, 20, TargetPolicy.ACTIVE_CONE)
 	);
 
 	public static Style of(String art) {

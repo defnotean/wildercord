@@ -449,6 +449,42 @@ public final class MastersStyleAnimation {
 		pose(j(.42F, -.08F, .03F), j(-.18F, .04F, -.01F), j(-1.52F, -.12F, -.14F), j(-.22F, -.22F, -.18F),
 			j(-.82F, .08F, -.10F), j(.62F, -.06F, .10F), .95F, -.95F, h(-.18F, .12F, -.38F, -88, -4, 8)));
 
+	// Grove's Heart plants the blade vertically into the earth, roots surging outward from the soil to ensnare and restore.
+	private static final Motion GROVES_HEART = new Motion(
+		pose(j(.24F, -.08F, .05F), j(-.10F, .04F, -.02F), j(-1.30F, .22F, -.22F), j(-1.38F, .20F, .18F),
+			j(-.62F, .14F, -.10F), j(.48F, -.12F, .10F), .95F, .30F, h(.14F, .26F, -.12F, -62, -8, 12)),
+		pose(j(.52F, -.02F, .03F), j(-.22F, .01F, -.01F), j(-1.82F, -.04F, -.10F), j(-.18F, -.16F, -.26F),
+			j(-.95F, .06F, -.12F), j(.72F, -.06F, .12F), 1.25F, -1.80F, h(-.12F, .06F, -.52F, -98, 2, 8)),
+		pose(j(.38F, -.05F, .02F), j(-.15F, .02F, 0), j(-1.48F, -.10F, -.12F), j(-.28F, -.20F, -.16F),
+			j(-.75F, .06F, -.10F), j(.58F, -.05F, .10F), .90F, -.85F, h(-.16F, .10F, -.36F, -82, -2, 10)));
+
+	// Event Horizon carves an ominous void sphere in the air ahead, dragging in space before crushing with singularity force.
+	private static final Motion EVENT_HORIZON = new Motion(
+		pose(j(.12F, .42F, -.14F), j(-.05F, -.18F, .03F), j(-1.25F, .64F, -.36F), j(-.85F, -.26F, .22F),
+			j(-.55F, -.12F, -.10F), j(.40F, .10F, .10F), .55F, .18F, h(.08F, .24F, -.20F, -28, 30, -24)),
+		pose(j(.28F, -.42F, .12F), j(-.10F, .16F, -.03F), j(-1.42F, -.42F, -.18F), j(-.50F, .18F, -.40F),
+			j(-.80F, .14F, -.12F), j(.62F, -.12F, .12F), .78F, -1.20F, h(-.22F, .06F, -.48F, -90, -22, 28)),
+		pose(j(.18F, -.22F, .06F), j(-.06F, .08F, -.01F), j(-1.28F, -.24F, -.20F), j(-.65F, .12F, -.28F),
+			j(-.50F, .08F, -.08F), j(.38F, -.06F, .08F), .45F, -.52F, h(-.18F, .12F, -.32F, -72, -14, 18)));
+
+	// Nova gathers brilliant cosmic energy at the chest, then detonates outward in an omnidirectional starburst shockwave.
+	private static final Motion NOVA = new Motion(
+		pose(j(-.12F, .16F, -.06F), j(.05F, -.06F, .02F), j(-1.65F, .36F, -.38F), j(-1.18F, -.20F, -.18F),
+			j(-.58F, -.10F, -.08F), j(.42F, .08F, .08F), .60F, .22F, h(.10F, .26F, -.16F, -52, 16, -18)),
+		pose(j(.42F, -.12F, .08F), j(-.16F, .05F, -.01F), j(-1.65F, -.12F, -.10F), j(-.35F, .20F, -.55F),
+			j(-.88F, .12F, -.12F), j(.66F, -.10F, .12F), 1.05F, -1.60F, h(-.16F, .06F, -.56F, -110, -6, 12)),
+		pose(j(.22F, -.15F, .04F), j(-.08F, .06F, -.01F), j(-1.38F, -.16F, -.14F), j(-.55F, .14F, -.38F),
+			j(-.58F, .08F, -.08F), j(.44F, -.06F, .08F), .60F, -.68F, h(-.18F, .10F, -.38F, -86, -10, 14)));
+
+	// Thousand Moments suspends all motion in stopped time, blade carving unseen incisions that strike all at once upon release.
+	private static final Motion THOUSAND_MOMENTS = new Motion(
+		pose(j(.22F, -.22F, .10F), j(-.08F, .10F, -.03F), j(-1.32F, .24F, -.26F), j(-.92F, .14F, .20F),
+			j(-.52F, .10F, -.10F), j(.40F, -.08F, .10F), .55F, .12F, h(.12F, .16F, -.16F, -42, -10, 14)),
+		pose(j(.38F, .24F, -.12F), j(-.14F, -.10F, .02F), j(-1.58F, -.34F, -.16F), j(-.44F, -.18F, -.34F),
+			j(-.82F, -.12F, -.12F), j(.62F, .10F, .12F), .80F, -1.25F, h(-.16F, .10F, -.48F, -94, 16, -12)),
+		pose(j(.20F, .14F, -.06F), j(-.06F, -.06F, .01F), j(-1.32F, -.18F, -.18F), j(-.60F, -.12F, -.22F),
+			j(-.48F, -.08F, -.08F), j(.38F, .06F, .08F), .45F, -.48F, h(-.16F, .14F, -.32F, -76, 10, -8)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -497,6 +533,10 @@ public final class MastersStyleAnimation {
 			case 46 -> HEAVENS_SPEAR;
 			case 47 -> HUNDRED_WINDS;
 			case 48 -> MOUNTAIN_SPLITTER;
+			case 49 -> GROVES_HEART;
+			case 50 -> EVENT_HORIZON;
+			case 51 -> NOVA;
+			case 52 -> THOUSAND_MOMENTS;
 			default -> null;
 		};
 	}
