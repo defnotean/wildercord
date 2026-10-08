@@ -63,8 +63,8 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			world.getServer().runCommand("gamerule advance_time false");
 			world.getServer().runCommand("time set 3000");
 			world.getServer().runCommand("weather clear");
-			world.getServer().runCommand("fill -10 99 -10 10 99 10 minecraft:stone_bricks");
-			world.getServer().runCommand("fill -10 100 -10 10 108 10 minecraft:air");
+			world.getServer().runCommand("fill -10 99 -10 10 99 40 minecraft:stone_bricks");
+			world.getServer().runCommand("fill -10 100 -10 10 108 40 minecraft:air");
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				player.setGameMode(GameType.SURVIVAL);
@@ -387,7 +387,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			foe.setNoGravity(true);
 			foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);
 			foe.setHealth(200);
-			foe.snapTo(.5, 100, fourth ? 8.0 : 3.1, 180, 0);
+			foe.snapTo(fourth ? 2.5 : .5, 100, fourth ? 28.0 : 3.1, 180, 0);
 			player.level().addFreshEntity(foe);
 			target[0] = foe;
 		});
