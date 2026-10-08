@@ -335,7 +335,7 @@ public final class MastersStyleAnimation {
 	// Tailwind throws weight forward into the slipstream with trailing wings, pierces the gale, and spirals into circular deceleration.
 	private static final Motion TAILWIND = new Motion(
 		pose(j(.42F, .20F, -.10F), j(-.20F, -.10F, .03F), j(-.75F, .44F, -.30F), j(-1.25F, -.35F, -.20F),
-			j(-.80F, -.16F, -.15F), j(.62F, .14F, .15F), .70F, .35F, h(.16F, .24F, -.12F, -55, 16, -22)),
+			j(-.80F, -.16F, -.15F), j(.62F, .14F, .15F), .70F, .35F, h(.18F, .34F, -.14F, -55, 45, -22)),
 		pose(j(.48F, -.28F, .12F), j(-.18F, .12F, -.04F), j(-1.75F, -.25F, -.15F), j(-.55F, .20F, -.55F),
 			j(-.92F, .14F, -.12F), j(.70F, -.12F, .12F), .95F, -1.80F, h(-.15F, .02F, -.58F, -112, -10, 14)),
 		pose(j(.25F, -.35F, .08F), j(-.10F, .16F, -.02F), j(-1.45F, -.35F, -.20F), j(-.42F, .15F, -.40F),
@@ -344,7 +344,7 @@ public final class MastersStyleAnimation {
 	// Landslide tucks heavily behind the shoulder guard, explodes forward in a crushing trample, and plants firm to halt.
 	private static final Motion LANDSLIDE = new Motion(
 		pose(j(.30F, -.15F, .08F), j(-.14F, .08F, -.03F), j(-1.10F, .25F, -.22F), j(-1.35F, .30F, .18F),
-			j(-.60F, .18F, -.12F), j(.48F, -.15F, .12F), .95F, .30F, h(.15F, .26F, -.12F, -65, -12, 16)),
+			j(-.60F, .18F, -.12F), j(.48F, -.15F, .12F), .95F, .30F, h(.18F, .34F, -.12F, -65, 44, -18)),
 		pose(j(.55F, -.08F, .04F), j(-.25F, .04F, -.02F), j(-1.62F, -.10F, -.12F), j(-.10F, -.20F, -.30F),
 			j(-.98F, .08F, -.12F), j(.75F, -.08F, .12F), 1.25F, -1.60F, h(-.12F, .10F, -.52F, -100, 2, 8)),
 		pose(j(.40F, -.12F, .05F), j(-.18F, .06F, -.02F), j(-1.38F, -.18F, -.16F), j(-.18F, -.25F, -.15F),
@@ -353,7 +353,7 @@ public final class MastersStyleAnimation {
 	// Wild Growth coils low with torqued hips, lunges through with sweeping diagonal reach, and stabilizes as brambles erupt.
 	private static final Motion WILD_GROWTH = new Motion(
 		pose(j(.18F, .48F, -.12F), j(-.08F, -.22F, .04F), j(-1.20F, .55F, -.36F), j(-.92F, -.32F, .20F),
-			j(-.65F, -.15F, -.12F), j(.48F, .12F, .12F), .70F, .25F, h(.10F, .24F, -.20F, -38, 28, -26)),
+			j(-.65F, -.15F, -.12F), j(.48F, .12F, .12F), .70F, .25F, h(.16F, .32F, -.16F, -48, 44, -22)),
 		pose(j(.36F, -.36F, .12F), j(-.15F, .15F, -.05F), j(-1.68F, -.30F, -.22F), j(-.62F, .18F, -.48F),
 			j(-.88F, .14F, -.12F), j(.66F, -.12F, .12F), .85F, -1.45F, h(-.18F, .06F, -.50F, -98, -14, 22)),
 		pose(j(.22F, -.32F, .08F), j(-.10F, .14F, -.02F), j(-1.42F, -.32F, -.25F), j(-.50F, .15F, -.35F),
@@ -362,7 +362,7 @@ public final class MastersStyleAnimation {
 	// Bolt Step gathers electrostatic charge in a low ready coil, flashes forward in an instantaneous blink strike, and locks into static ready.
 	private static final Motion BOLT_STEP = new Motion(
 		pose(j(.22F, -.28F, .10F), j(-.10F, .14F, -.04F), j(-1.42F, .32F, -.32F), j(-.92F, -.22F, .16F),
-			j(-.66F, .12F, -.10F), j(.48F, -.10F, .10F), .68F, .22F, h(.14F, .24F, -.16F, -40, -18, 20)),
+			j(-.66F, .12F, -.10F), j(.48F, -.10F, .10F), .68F, .22F, h(.16F, .32F, -.16F, -46, 45, -20)),
 		pose(j(.44F, .16F, -.10F), j(-.18F, -.10F, .02F), j(-1.62F, -.20F, -.18F), j(-.42F, .22F, -.46F),
 			j(-.90F, -.16F, -.12F), j(.68F, .14F, .12F), .85F, -1.35F, h(-.16F, .08F, -.48F, -102, 16, -18)),
 		pose(j(.26F, .10F, -.06F), j(-.10F, -.06F, .01F), j(-1.38F, -.16F, -.16F), j(-.65F, .14F, -.30F),
@@ -371,7 +371,7 @@ public final class MastersStyleAnimation {
 	// Rift Step slips into a dimensional tear with leading shoulder, phases out past the foe with a shearing cross-slash, and settles in void stillness.
 	private static final Motion RIFT_STEP = new Motion(
 		pose(j(.16F, .48F, -.15F), j(-.06F, -.20F, .03F), j(-1.18F, .58F, -.38F), j(-1.02F, -.26F, .20F),
-			j(-.58F, -.14F, -.10F), j(.42F, .12F, .10F), .60F, .18F, h(.10F, .26F, -.20F, -32, 34, -28)),
+			j(-.58F, -.14F, -.10F), j(.42F, .12F, .10F), .60F, .18F, h(.14F, .32F, -.18F, -42, 44, -24)),
 		pose(j(.30F, -.44F, .14F), j(-.12F, .18F, -.03F), j(-1.52F, -.45F, -.16F), j(-.48F, .14F, -.38F),
 			j(-.82F, .14F, -.12F), j(.60F, -.12F, .12F), .75F, -1.25F, h(-.22F, .05F, -.46F, -92, -24, 26)),
 		pose(j(.18F, -.24F, .08F), j(-.06F, .10F, -.01F), j(-1.32F, -.28F, -.20F), j(-.70F, .10F, -.25F),
@@ -380,7 +380,7 @@ public final class MastersStyleAnimation {
 	// Comet Dash arches back into a high celestial windup, pierces straight through space on a trailing star path, and glides to a balanced stop.
 	private static final Motion COMET_DASH = new Motion(
 		pose(j(-.10F, .20F, -.08F), j(.04F, -.08F, .02F), j(-1.72F, .40F, -.40F), j(-1.15F, -.22F, -.16F),
-			j(-.62F, -.12F, -.08F), j(.46F, .10F, .08F), .55F, .28F, h(.12F, .28F, -.14F, -60, 18, -20)),
+			j(-.62F, -.12F, -.08F), j(.46F, .10F, .08F), .55F, .28F, h(.16F, .34F, -.14F, -58, 47, -20)),
 		pose(j(.48F, -.10F, .06F), j(-.18F, .05F, -.01F), j(-1.72F, -.06F, -.10F), j(-.32F, .16F, -.58F),
 			j(-.92F, .10F, -.12F), j(.68F, -.08F, .12F), 1.05F, -1.75F, h(-.14F, .02F, -.58F, -115, -6, 10)),
 		pose(j(.24F, -.14F, .04F), j(-.08F, .06F, -.01F), j(-1.40F, -.14F, -.14F), j(-.55F, .12F, -.40F),
@@ -389,7 +389,7 @@ public final class MastersStyleAnimation {
 	// Blur compresses low into dilated time, carves a razor-sharp arc through slowed space, and recovers into quickened momentum.
 	private static final Motion BLUR = new Motion(
 		pose(j(.24F, -.18F, .10F), j(-.10F, .08F, -.03F), j(-1.28F, .26F, -.28F), j(-.88F, .16F, .22F),
-			j(-.55F, .12F, -.10F), j(.42F, -.10F, .10F), .50F, .15F, h(.14F, .22F, -.16F, -48, -12, 16)),
+			j(-.55F, .12F, -.10F), j(.42F, -.10F, .10F), .50F, .15F, h(.16F, .32F, -.16F, -50, 43, -22)),
 		pose(j(.42F, .22F, -.12F), j(-.16F, -.10F, .02F), j(-1.60F, -.30F, -.14F), j(-.46F, -.20F, -.32F),
 			j(-.86F, -.12F, -.12F), j(.65F, .10F, .12F), .85F, -1.30F, h(-.15F, .08F, -.50F, -98, 18, -14)),
 		pose(j(.22F, .12F, -.06F), j(-.08F, -.06F, .01F), j(-1.34F, -.16F, -.16F), j(-.62F, -.14F, -.22F),
@@ -398,7 +398,7 @@ public final class MastersStyleAnimation {
 	// Frenzy crouches low in a blood-drunk hunt, explodes through the line with a savage downward cross-cleave, and coils for the next strike.
 	private static final Motion FRENZY = new Motion(
 		pose(j(.36F, .34F, -.14F), j(-.16F, -.14F, .04F), j(-1.02F, .46F, -.36F), j(-1.08F, -.30F, .16F),
-			j(-.70F, -.16F, -.12F), j(.50F, .14F, .12F), .75F, .35F, h(.15F, .24F, -.16F, -42, 26, -24)),
+			j(-.70F, -.16F, -.12F), j(.50F, .14F, .12F), .75F, .35F, h(.15F, .32F, -.16F, -44, 46, -24)),
 		pose(j(.52F, -.24F, .08F), j(-.22F, .10F, -.02F), j(-1.70F, -.18F, -.20F), j(-.58F, .18F, -.48F),
 			j(-.94F, .14F, -.14F), j(.72F, -.10F, .14F), 1.08F, -1.55F, h(-.20F, -.02F, -.52F, -108, -16, 20)),
 		pose(j(.32F, -.18F, .04F), j(-.12F, .08F, -.01F), j(-1.42F, -.20F, -.18F), j(-.72F, .14F, -.32F),
@@ -407,7 +407,7 @@ public final class MastersStyleAnimation {
 	// Sunfall leaps high while solar energy gathers on the blade, dives down in a blazing impact crater, and recovers in the rising heat ring.
 	private static final Motion SUNFALL = new Motion(
 		pose(j(-.18F, .32F, -.14F), j(.08F, -.15F, .04F), j(-1.85F, .44F, -.42F), j(-1.22F, -.24F, -.20F),
-			j(-.52F, -.14F, -.10F), j(.40F, .10F, .08F), .85F, .55F, h(.10F, .32F, -.12F, -70, 20, -22)),
+			j(-.52F, -.14F, -.10F), j(.40F, .10F, .08F), .85F, .55F, h(.14F, .34F, -.14F, -62, 46, -20)),
 		pose(j(.55F, -.15F, .08F), j(-.22F, .08F, -.02F), j(-1.82F, -.08F, -.12F), j(-.45F, .20F, -.52F),
 			j(-.95F, .14F, -.14F), j(.72F, -.10F, .14F), 1.20F, -1.85F, h(-.18F, -.06F, -.56F, -112, -8, 14)),
 		pose(j(.35F, -.18F, .05F), j(-.14F, .06F, -.01F), j(-1.50F, -.16F, -.16F), j(-.38F, .16F, -.38F),
@@ -416,7 +416,7 @@ public final class MastersStyleAnimation {
 	// Winter's Hush settles into deliberate freezing poise, sweeps a wide frost wave across the front cone, and pauses in absolute zero silence.
 	private static final Motion WINTERS_HUSH = new Motion(
 		pose(j(.10F, .25F, -.08F), j(-.04F, -.10F, .02F), j(-1.35F, .36F, -.32F), j(-1.08F, -.24F, .18F),
-			j(-.48F, -.10F, -.08F), j(.35F, .08F, .08F), .50F, .10F, h(.12F, .22F, -.18F, -45, 18, -20)),
+			j(-.48F, -.10F, -.08F), j(.35F, .08F, .08F), .50F, .10F, h(.14F, .32F, -.16F, -48, 45, -22)),
 		pose(j(.26F, -.38F, .12F), j(-.10F, .16F, -.03F), j(-1.48F, -.50F, -.18F), j(-.55F, .16F, -.42F),
 			j(-.76F, .14F, -.12F), j(.58F, -.12F, .12F), .70F, -1.15F, h(-.24F, .08F, -.48F, -86, -28, 30)),
 		pose(j(.16F, -.20F, .06F), j(-.05F, .08F, -.01F), j(-1.30F, -.26F, -.22F), j(-.68F, .12F, -.28F),
@@ -425,7 +425,7 @@ public final class MastersStyleAnimation {
 	// Heaven's Spear braces as thunder arcs to the blade, drives a straight piercing lightning lance forward, and recoils into grounded electrical guard.
 	private static final Motion HEAVENS_SPEAR = new Motion(
 		pose(j(.20F, .18F, -.08F), j(-.08F, -.08F, .02F), j(-1.45F, .32F, -.28F), j(-1.12F, -.26F, .20F),
-			j(-.56F, -.12F, -.10F), j(.42F, .10F, .10F), .65F, .20F, h(.14F, .24F, -.16F, -55, 14, -18)),
+			j(-.56F, -.12F, -.10F), j(.42F, .10F, .10F), .65F, .20F, h(.16F, .34F, -.14F, -56, 46, -18)),
 		pose(j(.45F, -.12F, .06F), j(-.16F, .06F, -.01F), j(-1.78F, -.04F, -.06F), j(-.38F, .18F, -.55F),
 			j(-.90F, .12F, -.12F), j(.66F, -.10F, .12F), 1.02F, -1.65F, h(-.14F, .04F, -.56F, -118, -4, 8)),
 		pose(j(.24F, -.14F, .04F), j(-.08F, .06F, -.01F), j(-1.44F, -.12F, -.14F), j(-.52F, .14F, -.38F),
@@ -434,7 +434,7 @@ public final class MastersStyleAnimation {
 	// Hundred Winds coils through a tightening gale, erupts into an omnidirectional whirlwind of slices, and finishes with an upward vortex heave.
 	private static final Motion HUNDRED_WINDS = new Motion(
 		pose(j(.08F, .55F, -.12F), j(-.03F, -.24F, .03F), j(-1.38F, .72F, -.34F), j(-.65F, -.30F, -.55F),
-			j(-.52F, -.18F, -.10F), j(.38F, .15F, .10F), .45F, .15F, h(.10F, .20F, -.22F, 10, 38, -26)),
+			j(-.52F, -.18F, -.10F), j(.38F, .15F, .10F), .45F, .15F, h(.12F, .32F, -.20F, 12, 45, -26)),
 		pose(j(.14F, -.75F, .14F), j(-.06F, .28F, -.04F), j(-1.34F, -1.15F, -.14F), j(-.25F, .25F, -.85F),
 			j(-.68F, .18F, -.12F), j(.48F, -.15F, .10F), .35F, -.75F, h(-.38F, .02F, -.34F, 22, -52, 34)),
 		pose(j(-.12F, -.45F, .10F), j(.04F, .18F, -.02F), j(-1.80F, -.48F, -.28F), j(-.42F, .15F, -.60F),
@@ -443,7 +443,7 @@ public final class MastersStyleAnimation {
 	// Mountain Splitter raises the blade in a massive two-handed overhead stance, cleaves the earth in a titanic downward smash, and absorbs the tremor.
 	private static final Motion MOUNTAIN_SPLITTER = new Motion(
 		pose(j(.28F, -.10F, .06F), j(-.12F, .05F, -.02F), j(-1.25F, .20F, -.20F), j(-1.42F, .25F, .16F),
-			j(-.68F, .16F, -.12F), j(.52F, -.14F, .12F), 1.05F, .35F, h(.16F, .28F, -.10F, -68, -10, 14)),
+			j(-.68F, .16F, -.12F), j(.52F, -.14F, .12F), 1.05F, .35F, h(.18F, .34F, -.14F, -60, 46, -20)),
 		pose(j(.58F, -.05F, .04F), j(-.26F, .02F, -.01F), j(-1.88F, -.06F, -.10F), j(-.12F, -.18F, -.28F),
 			j(-1.02F, .08F, -.14F), j(.78F, -.08F, .14F), 1.30F, -1.90F, h(-.14F, .08F, -.54F, -104, 0, 6)),
 		pose(j(.42F, -.08F, .03F), j(-.18F, .04F, -.01F), j(-1.52F, -.12F, -.14F), j(-.22F, -.22F, -.18F),
@@ -452,7 +452,7 @@ public final class MastersStyleAnimation {
 	// Grove's Heart plants the blade vertically into the earth, roots surging outward from the soil to ensnare and restore.
 	private static final Motion GROVES_HEART = new Motion(
 		pose(j(.24F, -.08F, .05F), j(-.10F, .04F, -.02F), j(-1.30F, .22F, -.22F), j(-1.38F, .20F, .18F),
-			j(-.62F, .14F, -.10F), j(.48F, -.12F, .10F), .95F, .30F, h(.14F, .26F, -.12F, -62, -8, 12)),
+			j(-.62F, .14F, -.10F), j(.48F, -.12F, .10F), .95F, .30F, h(.16F, .34F, -.14F, -58, 44, -20)),
 		pose(j(.52F, -.02F, .03F), j(-.22F, .01F, -.01F), j(-1.82F, -.04F, -.10F), j(-.18F, -.16F, -.26F),
 			j(-.95F, .06F, -.12F), j(.72F, -.06F, .12F), 1.25F, -1.80F, h(-.12F, .06F, -.52F, -98, 2, 8)),
 		pose(j(.38F, -.05F, .02F), j(-.15F, .02F, 0), j(-1.48F, -.10F, -.12F), j(-.28F, -.20F, -.16F),
@@ -461,7 +461,7 @@ public final class MastersStyleAnimation {
 	// Event Horizon carves an ominous void sphere in the air ahead, dragging in space before crushing with singularity force.
 	private static final Motion EVENT_HORIZON = new Motion(
 		pose(j(.12F, .42F, -.14F), j(-.05F, -.18F, .03F), j(-1.25F, .64F, -.36F), j(-.85F, -.26F, .22F),
-			j(-.55F, -.12F, -.10F), j(.40F, .10F, .10F), .55F, .18F, h(.08F, .24F, -.20F, -28, 30, -24)),
+			j(-.55F, -.12F, -.10F), j(.40F, .10F, .10F), .55F, .18F, h(.12F, .32F, -.18F, -32, 44, -24)),
 		pose(j(.28F, -.42F, .12F), j(-.10F, .16F, -.03F), j(-1.42F, -.42F, -.18F), j(-.50F, .18F, -.40F),
 			j(-.80F, .14F, -.12F), j(.62F, -.12F, .12F), .78F, -1.20F, h(-.22F, .06F, -.48F, -90, -22, 28)),
 		pose(j(.18F, -.22F, .06F), j(-.06F, .08F, -.01F), j(-1.28F, -.24F, -.20F), j(-.65F, .12F, -.28F),
@@ -470,7 +470,7 @@ public final class MastersStyleAnimation {
 	// Nova gathers brilliant cosmic energy at the chest, then detonates outward in an omnidirectional starburst shockwave.
 	private static final Motion NOVA = new Motion(
 		pose(j(-.12F, .16F, -.06F), j(.05F, -.06F, .02F), j(-1.65F, .36F, -.38F), j(-1.18F, -.20F, -.18F),
-			j(-.58F, -.10F, -.08F), j(.42F, .08F, .08F), .60F, .22F, h(.10F, .26F, -.16F, -52, 16, -18)),
+			j(-.58F, -.10F, -.08F), j(.42F, .08F, .08F), .60F, .22F, h(.14F, .34F, -.14F, -54, 46, -20)),
 		pose(j(.42F, -.12F, .08F), j(-.16F, .05F, -.01F), j(-1.65F, -.12F, -.10F), j(-.35F, .20F, -.55F),
 			j(-.88F, .12F, -.12F), j(.66F, -.10F, .12F), 1.05F, -1.60F, h(-.16F, .06F, -.56F, -110, -6, 12)),
 		pose(j(.22F, -.15F, .04F), j(-.08F, .06F, -.01F), j(-1.38F, -.16F, -.14F), j(-.55F, .14F, -.38F),
@@ -479,7 +479,7 @@ public final class MastersStyleAnimation {
 	// Thousand Moments suspends all motion in stopped time, blade carving unseen incisions that strike all at once upon release.
 	private static final Motion THOUSAND_MOMENTS = new Motion(
 		pose(j(.22F, -.22F, .10F), j(-.08F, .10F, -.03F), j(-1.32F, .24F, -.26F), j(-.92F, .14F, .20F),
-			j(-.52F, .10F, -.10F), j(.40F, -.08F, .10F), .55F, .12F, h(.12F, .22F, -.16F, -42, -10, 14)),
+			j(-.52F, .10F, -.10F), j(.40F, -.08F, .10F), .55F, .12F, h(.14F, .32F, -.16F, -46, 43, -22)),
 		pose(j(.38F, .24F, -.12F), j(-.14F, -.10F, .02F), j(-1.58F, -.34F, -.16F), j(-.44F, -.18F, -.34F),
 			j(-.82F, -.12F, -.12F), j(.62F, .10F, .12F), .80F, -1.25F, h(-.16F, .10F, -.48F, -94, 16, -12)),
 		pose(j(.20F, .14F, -.06F), j(-.06F, -.06F, .01F), j(-1.32F, -.18F, -.18F), j(-.60F, -.12F, -.22F),
