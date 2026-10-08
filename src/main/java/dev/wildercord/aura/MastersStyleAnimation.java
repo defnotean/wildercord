@@ -359,6 +359,51 @@ public final class MastersStyleAnimation {
 		pose(j(.22F, -.32F, .08F), j(-.10F, .14F, -.02F), j(-1.42F, -.32F, -.25F), j(-.50F, .15F, -.35F),
 			j(-.62F, .12F, -.10F), j(.46F, -.10F, .10F), .55F, -.65F, h(-.16F, .12F, -.34F, -78, -18, 16)));
 
+	// Bolt Step gathers electrostatic charge in a low ready coil, flashes forward in an instantaneous blink strike, and locks into static ready.
+	private static final Motion BOLT_STEP = new Motion(
+		pose(j(.22F, -.28F, .10F), j(-.10F, .14F, -.04F), j(-1.42F, .32F, -.32F), j(-.92F, -.22F, .16F),
+			j(-.66F, .12F, -.10F), j(.48F, -.10F, .10F), .68F, .22F, h(.14F, .18F, -.16F, -40, -18, 20)),
+		pose(j(.44F, .16F, -.10F), j(-.18F, -.10F, .02F), j(-1.62F, -.20F, -.18F), j(-.42F, .22F, -.46F),
+			j(-.90F, -.16F, -.12F), j(.68F, .14F, .12F), .85F, -1.35F, h(-.16F, .08F, -.48F, -102, 16, -18)),
+		pose(j(.26F, .10F, -.06F), j(-.10F, -.06F, .01F), j(-1.38F, -.16F, -.16F), j(-.65F, .14F, -.30F),
+			j(-.56F, -.10F, -.08F), j(.42F, .08F, .08F), .50F, -.60F, h(-.18F, .12F, -.34F, -82, 10, -12)));
+
+	// Rift Step slips into a dimensional tear with leading shoulder, phases out past the foe with a shearing cross-slash, and settles in void stillness.
+	private static final Motion RIFT_STEP = new Motion(
+		pose(j(.16F, .48F, -.15F), j(-.06F, -.20F, .03F), j(-1.18F, .58F, -.38F), j(-1.02F, -.26F, .20F),
+			j(-.58F, -.14F, -.10F), j(.42F, .12F, .10F), .60F, .18F, h(.10F, .26F, -.20F, -32, 34, -28)),
+		pose(j(.30F, -.44F, .14F), j(-.12F, .18F, -.03F), j(-1.52F, -.45F, -.16F), j(-.48F, .14F, -.38F),
+			j(-.82F, .14F, -.12F), j(.60F, -.12F, .12F), .75F, -1.25F, h(-.22F, .05F, -.46F, -92, -24, 26)),
+		pose(j(.18F, -.24F, .08F), j(-.06F, .10F, -.01F), j(-1.32F, -.28F, -.20F), j(-.70F, .10F, -.25F),
+			j(-.48F, .10F, -.08F), j(.36F, -.08F, .08F), .42F, -.55F, h(-.18F, .12F, -.32F, -74, -16, 18)));
+
+	// Comet Dash arches back into a high celestial windup, pierces straight through space on a trailing star path, and glides to a balanced stop.
+	private static final Motion COMET_DASH = new Motion(
+		pose(j(-.10F, .20F, -.08F), j(.04F, -.08F, .02F), j(-1.72F, .40F, -.40F), j(-1.15F, -.22F, -.16F),
+			j(-.62F, -.12F, -.08F), j(.46F, .10F, .08F), .55F, .28F, h(.12F, .28F, -.14F, -60, 18, -20)),
+		pose(j(.48F, -.10F, .06F), j(-.18F, .05F, -.01F), j(-1.72F, -.06F, -.10F), j(-.32F, .16F, -.58F),
+			j(-.92F, .10F, -.12F), j(.68F, -.08F, .12F), 1.05F, -1.75F, h(-.14F, .02F, -.58F, -115, -6, 10)),
+		pose(j(.24F, -.14F, .04F), j(-.08F, .06F, -.01F), j(-1.40F, -.14F, -.14F), j(-.55F, .12F, -.40F),
+			j(-.58F, .08F, -.08F), j(.44F, -.06F, .08F), .60F, -.70F, h(-.18F, .10F, -.38F, -92, -10, 14)));
+
+	// Blur compresses low into dilated time, carves a razor-sharp arc through slowed space, and recovers into quickened momentum.
+	private static final Motion BLUR = new Motion(
+		pose(j(.24F, -.18F, .10F), j(-.10F, .08F, -.03F), j(-1.28F, .26F, -.28F), j(-.88F, .16F, .22F),
+			j(-.55F, .12F, -.10F), j(.42F, -.10F, .10F), .50F, .15F, h(.14F, .14F, -.16F, -48, -12, 16)),
+		pose(j(.42F, .22F, -.12F), j(-.16F, -.10F, .02F), j(-1.60F, -.30F, -.14F), j(-.46F, -.20F, -.32F),
+			j(-.86F, -.12F, -.12F), j(.65F, .10F, .12F), .85F, -1.30F, h(-.15F, .08F, -.50F, -98, 18, -14)),
+		pose(j(.22F, .12F, -.06F), j(-.08F, -.06F, .01F), j(-1.34F, -.16F, -.16F), j(-.62F, -.14F, -.22F),
+			j(-.52F, -.08F, -.08F), j(.40F, .06F, .08F), .48F, -.50F, h(-.16F, .12F, -.34F, -78, 12, -8)));
+
+	// Frenzy crouches low in a blood-drunk hunt, explodes through the line with a savage downward cross-cleave, and coils for the next strike.
+	private static final Motion FRENZY = new Motion(
+		pose(j(.36F, .34F, -.14F), j(-.16F, -.14F, .04F), j(-1.02F, .46F, -.36F), j(-1.08F, -.30F, .16F),
+			j(-.70F, -.16F, -.12F), j(.50F, .14F, .12F), .75F, .35F, h(.15F, .20F, -.16F, -42, 26, -24)),
+		pose(j(.52F, -.24F, .08F), j(-.22F, .10F, -.02F), j(-1.70F, -.18F, -.20F), j(-.58F, .18F, -.48F),
+			j(-.94F, .14F, -.14F), j(.72F, -.10F, .14F), 1.08F, -1.55F, h(-.20F, -.02F, -.52F, -108, -16, 20)),
+		pose(j(.32F, -.18F, .04F), j(-.12F, .08F, -.01F), j(-1.42F, -.20F, -.18F), j(-.72F, .14F, -.32F),
+			j(-.64F, .10F, -.10F), j(.50F, -.08F, .10F), .65F, -.70F, h(-.22F, .08F, -.36F, -88, -12, 16)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -397,6 +442,11 @@ public final class MastersStyleAnimation {
 			case 36 -> TAILWIND;
 			case 37 -> LANDSLIDE;
 			case 38 -> WILD_GROWTH;
+			case 39 -> BOLT_STEP;
+			case 40 -> RIFT_STEP;
+			case 41 -> COMET_DASH;
+			case 42 -> BLUR;
+			case 43 -> FRENZY;
 			default -> null;
 		};
 	}

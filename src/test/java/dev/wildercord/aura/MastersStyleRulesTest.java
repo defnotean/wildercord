@@ -9,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(36, MastersStyleRules.STYLES.size());
+		assertEquals(41, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(ids.add(style.animation()));
 			assertTrue(names.add(style.art()));
-			assertEquals(style.animation() <= 12 ? 0 : style.animation() == 19 ? 4 : (style.animation() >= 20 && style.animation() <= 29) ? 2 : (style.animation() >= 34 && style.animation() <= 38) ? 3 : 1, ArtRules.art(style.art()).slot());
+			assertEquals(style.animation() <= 12 ? 0 : style.animation() == 19 ? 4 : (style.animation() >= 20 && style.animation() <= 29) ? 2 : (style.animation() >= 34 && style.animation() <= 43) ? 3 : 1, ArtRules.art(style.art()).slot());
 			assertEquals(style.animation() == 15 ? MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
 				: style.animation() == 16 ? MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT
 				: style.animation() == 17 || style.animation() == 18 || style.animation() == 31 || style.animation() == 32 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
@@ -137,7 +137,7 @@ class MastersStyleRulesTest {
 			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
 		}
 		assertEquals(50, ArtRules.ARTS.size());
-		assertEquals(14, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
+		assertEquals(9, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
 	}
 
 	@Test void nextCountersKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
@@ -212,6 +212,29 @@ class MastersStyleRulesTest {
 			};
 			int expectedWindup = id.equals("skate") || id.equals("tailwind") ? 4 : id.equals("landslide") ? 8 : 6;
 			int expectedRecovery = id.equals("skate") ? 14 : id.equals("landslide") ? 18 : 16;
+			assertEquals(expectedAnimation, style.animation());
+			assertEquals(expectedWindup, style.windup());
+			assertEquals(expectedRecovery, style.recovery());
+			assertEquals(3, art.slot());
+			assertEquals(MastersStyleRules.TargetPolicy.ACTIVE_CONE, style.targets());
+			assertNull(MastersArtRules.move(style.animation()));
+			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
+		}
+	}
+
+	@Test void batch3bChargesKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
+		for (String id : new String[] {"bolt_step", "rift_step", "comet_dash", "blur", "frenzy"}) {
+			var style = MastersStyleRules.of(id); var art = ArtRules.art(id);
+			int expectedAnimation = switch (id) {
+				case "bolt_step" -> 39;
+				case "rift_step" -> 40;
+				case "comet_dash" -> 41;
+				case "blur" -> 42;
+				case "frenzy" -> 43;
+				default -> -1;
+			};
+			int expectedWindup = id.equals("frenzy") ? 6 : 4;
+			int expectedRecovery = id.equals("bolt_step") || id.equals("rift_step") || id.equals("comet_dash") ? 14 : 16;
 			assertEquals(expectedAnimation, style.animation());
 			assertEquals(expectedWindup, style.windup());
 			assertEquals(expectedRecovery, style.recovery());

@@ -29,6 +29,8 @@ public final class ArticulatedCombatPose {
 	public static final int METEOR_SHOWER = 32, REWIND_LEAP = 33;
 	public static final int WILDFIRE_RUSH = 34, SKATE = 35;
 	public static final int TAILWIND = 36, LANDSLIDE = 37, WILD_GROWTH = 38;
+	public static final int BOLT_STEP = 39, RIFT_STEP = 40;
+	public static final int COMET_DASH = 41, BLUR = 42, FRENZY = 43;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -866,6 +868,101 @@ public final class ArticulatedCombatPose {
 				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
 		v(-2.50F, 22, 1.25F), v(2.50F, 22, -1.38F));
 
+	// Bolt Step gathers electrostatic charge in a low ready coil, flashes forward in an instantaneous blink strike, and locks into static ready.
+	private static final Motion BOLT_STEP_MOTION = new Motion(
+		new Key(v(-.12F, 1.05F, .16F), r(.06F, -.15F, .02F), r(.04F, -.10F, .015F), r(.045F, -.12F, .02F), r(-.06F, .20F, -.015F),
+			arm(r(.025F, .05F, -.04F), r(-1.20F, .25F, -.24F), -.90F, r(.82F, -.20F, -.26F)),
+			arm(r(0, -.04F, .035F), r(-.92F, -.22F, -.16F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -4.95F, 3.4F), arm(r(.02F, .035F, -.03F), r(-1.18F, .15F, -.20F), -.88F, r(.68F, -.14F, -.20F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.18F, 1.08F, -.68F), r(.10F, -.10F, .01F), r(.06F, -.06F, .01F), r(.07F, -.08F, .01F), r(-.12F, .16F, -.01F),
+			arm(r(.03F, -.045F, -.035F), r(-1.64F, -.12F, -.22F), -.28F, r(1.02F, .16F, .20F)),
+			arm(r(0, .05F, .04F), r(-.52F, -.18F, -.26F), -.80F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.5F, -5.20F, 1.9F), arm(r(.02F, -.035F, -.035F), r(-1.30F, -.10F, -.16F), -.34F, r(.89F, .11F, .15F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.12F, 1.04F, -.32F), r(.06F, -.12F, .01F), r(.04F, -.07F, .01F), r(.045F, -.09F, .01F), r(-.08F, .18F, -.01F),
+			arm(r(.02F, -.035F, -.03F), r(-1.36F, -.12F, -.16F), -.62F, r(.96F, .12F, .18F)),
+			arm(r(0, .035F, .03F), r(-.66F, -.18F, -.24F), -.88F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -5.05F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.20F, -.08F, -.16F), -.68F, r(.82F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.20F), v(2.45F, 22, -1.35F));
+
+	// Rift Step slips into a dimensional tear with leading shoulder, phases out past the foe with a shearing cross-slash, and settles in void stillness.
+	private static final Motion RIFT_STEP_MOTION = new Motion(
+		new Key(v(-.14F, 1.06F, .15F), r(.05F, .22F, -.02F), r(.035F, .14F, -.015F), r(.04F, .18F, -.02F), r(-.06F, -.26F, .02F),
+			arm(r(.025F, .06F, -.05F), r(-.95F, .28F, -.28F), -.92F, r(.75F, -.24F, -.30F)),
+			arm(r(0, -.05F, .04F), r(-.90F, -.22F, -.18F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.0F, 3.5F), arm(r(.02F, .04F, -.03F), r(-1.08F, .18F, -.22F), -.88F, r(.62F, -.16F, -.24F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.14F, 1.12F, -.62F), r(.08F, -.18F, .02F), r(.05F, -.11F, .015F), r(.06F, -.15F, .02F), r(-.10F, .24F, -.015F),
+			arm(r(.03F, -.04F, -.035F), r(-1.28F, -.36F, -.16F), -.32F, r(.92F, .18F, .24F)),
+			arm(r(0, .05F, .04F), r(-.56F, -.18F, -.28F), -.82F, r(.11F, -.09F, .10F)),
+			new ViewKey(v(-7.6F, -5.15F, 2.0F), arm(r(.02F, -.03F, -.03F), r(-1.22F, -.12F, -.16F), -.36F, r(.76F, .14F, .18F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.10F, 1.06F, -.30F), r(.05F, -.12F, .01F), r(.035F, -.08F, .01F), r(.04F, -.10F, .01F), r(-.07F, .18F, -.01F),
+			arm(r(.02F, -.03F, -.03F), r(-1.22F, -.22F, -.16F), -.66F, r(.86F, .12F, .20F)),
+			arm(r(0, .035F, .03F), r(-.68F, -.18F, -.25F), -.88F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -5.05F, 2.8F), arm(r(.015F, -.02F, -.03F), r(-1.16F, -.08F, -.16F), -.68F, r(.75F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.50F, 22, 1.25F), v(2.50F, 22, -1.40F));
+
+	// Comet Dash arches back into a high celestial windup, pierces straight through space on a trailing star path, and glides to a balanced stop.
+	private static final Motion COMET_DASH_MOTION = new Motion(
+		new Key(v(-.10F, 1.04F, .18F), r(-.04F, .12F, -.02F), r(-.03F, .08F, -.015F), r(-.03F, .10F, -.015F), r(.05F, -.16F, .015F),
+			arm(r(.025F, .05F, -.04F), r(-1.32F, .30F, -.30F), -.92F, r(1.15F, -.30F, -.38F)),
+			arm(r(0, -.04F, .035F), r(-.96F, -.20F, -.16F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -4.85F, 3.4F), arm(r(.02F, .035F, -.03F), r(-1.24F, .16F, -.22F), -.88F, r(.48F, -.14F, -.20F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.18F, 1.14F, -.72F), r(.12F, -.06F, -.01F), r(.07F, -.04F, -.01F), r(.08F, -.06F, -.01F), r(-.14F, .12F, .01F),
+			arm(r(.03F, -.045F, -.035F), r(-1.74F, -.06F, -.08F), -.22F, r(1.12F, .18F, .16F)),
+			arm(r(0, .05F, .04F), r(-.50F, -.18F, -.28F), -.76F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.5F, -5.10F, 1.9F), arm(r(.02F, -.035F, -.035F), r(-1.35F, -.08F, -.14F), -.30F, r(.86F, .08F, .12F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.12F, 1.08F, -.36F), r(.07F, -.08F, .01F), r(.045F, -.05F, .01F), r(.055F, -.07F, .01F), r(-.09F, .14F, -.01F),
+			arm(r(.02F, -.035F, -.03F), r(-1.42F, -.10F, -.12F), -.60F, r(1.04F, .14F, .18F)),
+			arm(r(0, .035F, .03F), r(-.64F, -.18F, -.24F), -.86F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -4.95F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.24F, -.08F, -.16F), -.65F, r(.78F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.25F), v(2.45F, 22, -1.35F));
+
+	// Blur compresses low into dilated time, carves a razor-sharp arc through slowed space, and recovers into quickened momentum.
+	private static final Motion BLUR_MOTION = new Motion(
+		new Key(v(-.12F, 1.05F, .14F), r(.06F, -.14F, .02F), r(.04F, -.09F, .015F), r(.045F, -.11F, .015F), r(-.06F, .18F, -.015F),
+			arm(r(.025F, .05F, -.04F), r(-1.12F, .22F, -.24F), -.88F, r(.85F, -.18F, -.24F)),
+			arm(r(0, -.04F, .035F), r(-.94F, -.20F, -.16F), -.95F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.0F, 3.4F), arm(r(.02F, .035F, -.03F), r(-1.15F, .14F, -.20F), -.86F, r(.65F, -.12F, -.18F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.16F, 1.06F, -.65F), r(.10F, .12F, -.02F), r(.06F, .08F, -.015F), r(.07F, .10F, -.015F), r(-.12F, -.18F, .015F),
+			arm(r(.03F, -.045F, -.035F), r(-1.46F, -.24F, -.20F), -.30F, r(.98F, .14F, .22F)),
+			arm(r(0, .05F, .04F), r(-.54F, -.18F, -.28F), -.80F, r(.11F, -.09F, .10F)),
+			new ViewKey(v(-7.6F, -5.20F, 2.0F), arm(r(.02F, -.035F, -.035F), r(-1.28F, -.10F, -.16F), -.34F, r(.80F, .12F, .16F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.10F, 1.04F, -.30F), r(.06F, .08F, -.01F), r(.04F, .05F, -.01F), r(.045F, .06F, -.01F), r(-.08F, -.12F, .01F),
+			arm(r(.02F, -.035F, -.03F), r(-1.32F, -.14F, -.16F), -.64F, r(.90F, .10F, .18F)),
+			arm(r(0, .035F, .03F), r(-.66F, -.18F, -.24F), -.88F, r(.09F, -.09F, .09F)),
+			new ViewKey(v(-7.8F, -5.05F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.18F, -.08F, -.16F), -.66F, r(.76F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.50F, 22, 1.20F), v(2.50F, 22, -1.35F));
+
+	// Frenzy crouches low in a blood-drunk hunt, explodes through the line with a savage downward cross-cleave, and coils for the next strike.
+	private static final Motion FRENZY_MOTION = new Motion(
+		new Key(v(-.16F, 1.08F, .16F), r(.08F, .18F, -.02F), r(.05F, .11F, -.015F), r(.06F, .14F, -.02F), r(-.10F, -.24F, .02F),
+			arm(r(.025F, .06F, -.05F), r(-.88F, .28F, -.28F), -.94F, r(.95F, -.26F, -.32F)),
+			arm(r(0, -.05F, .04F), r(-.88F, -.22F, -.18F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.8F, -5.05F, 3.5F), arm(r(.02F, .04F, -.03F), r(-1.05F, .16F, -.24F), -.90F, r(.85F, -.16F, -.22F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.22F, 1.15F, -.70F), r(.12F, -.14F, .02F), r(.07F, -.09F, .015F), r(.08F, -.12F, .015F), r(-.15F, .22F, -.015F),
+			arm(r(.035F, -.045F, -.035F), r(-1.68F, -.22F, -.14F), -.28F, r(1.10F, .20F, .22F)),
+			arm(r(0, .05F, .04F), r(-.52F, -.18F, -.28F), -.78F, r(.12F, -.08F, .11F)),
+			new ViewKey(v(-7.5F, -5.25F, 1.9F), arm(r(.02F, -.035F, -.035F), r(-1.26F, -.10F, -.16F), -.32F, r(.94F, .14F, .18F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .035F, .03F), r(-.96F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.15F, 1.10F, -.35F), r(.07F, -.12F, .01F), r(.045F, -.08F, .01F), r(.05F, -.10F, .01F), r(-.10F, .18F, -.01F),
+			arm(r(.025F, -.035F, -.03F), r(-1.38F, -.16F, -.14F), -.62F, r(1.02F, .14F, .24F)),
+			arm(r(0, .04F, .03F), r(-.62F, -.18F, -.25F), -.86F, r(.10F, -.09F, .10F)),
+			new ViewKey(v(-7.8F, -5.10F, 2.8F), arm(r(.015F, -.025F, -.03F), r(-1.18F, -.08F, -.16F), -.65F, r(.86F, .08F, .12F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.55F, 22, 1.20F), v(2.55F, 22, -1.35F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -880,7 +977,8 @@ public final class ArticulatedCombatPose {
 			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY || move == GLACIER_MIRROR || move == STATIC_RIPOSTE || move == UNMOVED || move == NULL_PARRY
 			|| move == EYE_OF_THE_STORM || move == SANGUINE_PARRY || move == CONSTELLATION_GUARD || move == STOPPED_MOMENT
 			|| move == UPDRAFT || move == AVALANCHE || move == METEOR_SHOWER || move == REWIND_LEAP
-			|| move == WILDFIRE_RUSH || move == SKATE || move == TAILWIND || move == LANDSLIDE || move == WILD_GROWTH;
+			|| move == WILDFIRE_RUSH || move == SKATE || move == TAILWIND || move == LANDSLIDE || move == WILD_GROWTH
+			|| move == BOLT_STEP || move == RIFT_STEP || move == COMET_DASH || move == BLUR || move == FRENZY;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -916,6 +1014,11 @@ public final class ArticulatedCombatPose {
 			case TAILWIND -> TAILWIND_MOTION;
 			case LANDSLIDE -> LANDSLIDE_MOTION;
 			case WILD_GROWTH -> WILD_GROWTH_MOTION;
+			case BOLT_STEP -> BOLT_STEP_MOTION;
+			case RIFT_STEP -> RIFT_STEP_MOTION;
+			case COMET_DASH -> COMET_DASH_MOTION;
+			case BLUR -> BLUR_MOTION;
+			case FRENZY -> FRENZY_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
