@@ -703,7 +703,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 			+ (blades ? font.width(bladeTab) : 0)
 			+ font.width(lineageTab);
 		int tabCount = 2 + (ways ? 1 : 0) + (writes ? 1 : 0) + (blades ? 1 : 0) + 1;
-		int gap = tabCount > 1 ? Math.max(4, Math.min(14, ((W - 28) - totalTabWidth) / (tabCount - 1))) : 14;
+		int gap = tabCount > 1 ? Math.max(2, Math.min(14, ((W - 28) - totalTabWidth) / (tabCount - 1))) : 14;
 		int divOffset = gap / 2;
 		tabsY = y;
 		techLeft = 14;

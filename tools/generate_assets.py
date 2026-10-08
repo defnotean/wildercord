@@ -1638,6 +1638,7 @@ MASTERY_LANG = {
     # The magic settings
     "screen.wildercord.spell_titles.on": "Spell titles: shown",
     "screen.wildercord.spell_titles.off": "Spell titles: hidden",
+    "screen.wildercord.spell_titles.tip": "Briefly show the title and rank badge when a mastered spell is cast.",
     # The Cord screen: the rank badge, the readout and the mastery panel
     "screen.wildercord.mastery.badge": "Mastery: %s",
     "screen.wildercord.mastery.badge.waiting": "A trait is waiting to be chosen",
@@ -2312,8 +2313,11 @@ DUNGEON_LANG = {
     "item.wildercord.living_seedpod.desc": "Off-hand: mana cost -10%, spell power -15%, cooldown +10%.",
     "item.wildercord.sky_feather": "Sky Feather",
     "item.wildercord.sky_feather.desc": "Off-hand: cooldown -15%, mana cost +15%.",
+    "screen.wildercord.magic_settings.title": "Magic visuals",
     "screen.wildercord.profile.tip": "Presets change spell detail, Reduced flash, Camera motion, trails, body aura and Impact. Combat animation and Stable camera choices stay as saved.",
+    "screen.wildercord.profile.benchmark.tip": "Run a 30-second benchmark in the current scene to measure frame performance.",
     "screen.wildercord.combat.title": "Combat presentation...",
+    "screen.wildercord.combat.tip": "Configure combat animations, camera stabilization, and visual impact.",
     "screen.wildercord.combat.animation": "Combat animations: %s",
     "screen.wildercord.combat.camera": "Camera: %s",
     "screen.wildercord.combat.classic": "Classic",

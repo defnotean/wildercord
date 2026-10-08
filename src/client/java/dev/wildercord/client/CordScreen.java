@@ -809,6 +809,14 @@ public class CordScreen extends Screen {
 		return n;
 	}
 
+	private int codexMaxScroll() {
+		int total = 0;
+		for (CodexRow row : codexRows()) {
+			total += row.height();
+		}
+		return Math.max(0, total - CODEX_HEIGHT);
+	}
+
 	private static int familyColor(RuneFamily family) {
 		return switch (family) {
 			case SHAPE -> RuneColors.SHAPE;
@@ -1142,6 +1150,12 @@ public class CordScreen extends Screen {
 			int thumb = Math.max(10, CODEX_HEIGHT * CODEX_HEIGHT / total);
 			int ty = CODEX_TOP + (CODEX_HEIGHT - thumb) * codexScroll / maxScroll;
 			sprite(g, SPR_SCROLLER, W - 16, ty, 4, thumb);
+			if (codexScroll > 0) {
+				arrow(g, W - 18, CODEX_TOP + 1, true);
+			}
+			if (codexScroll < maxScroll) {
+				arrow(g, W - 18, CODEX_BOTTOM - 4, false);
+			}
 		}
 
 		drawReadout(g, tier);
@@ -1533,14 +1547,16 @@ public class CordScreen extends Screen {
 		int visible = Math.max(1, (READOUT_BOTTOM - READOUT_TOP) / LINE);
 		readoutScroll = Math.max(0, Math.min(readoutScroll, lines.size() - visible));
 		g.enableScissor(12, READOUT_TOP - 1, W - 12, READOUT_BOTTOM);
+		int toolsBottom = toolY() + TOOL;
 		for (int i = 0; i < visible && readoutScroll + i < lines.size(); i++) {
 			ReadoutLine line = lines.get(readoutScroll + i);
-			if (i == 0 && !passivePage && !grimoirePage && spellCount() > 0) {
-				g.enableScissor(12, READOUT_TOP - 1, W - 16 - TOOLS_W - 2, READOUT_TOP + LINE);
-				g.text(font, line.text(), line.x(), READOUT_TOP + i * LINE, line.color(), false);
-				g.enableScissor(12, READOUT_TOP + LINE - 1, W - 12, READOUT_BOTTOM);
+			int lineY = READOUT_TOP + i * LINE;
+			if (!passivePage && !grimoirePage && spellCount() > 0 && lineY < toolsBottom) {
+				g.enableScissor(12, lineY - 1, W - 16 - TOOLS_W - 4, lineY + LINE);
+				g.text(font, line.text(), line.x(), lineY, line.color(), false);
+				g.enableScissor(12, READOUT_TOP - 1, W - 12, READOUT_BOTTOM);
 			} else {
-				g.text(font, line.text(), line.x(), READOUT_TOP + i * LINE, line.color(), false);
+				g.text(font, line.text(), line.x(), lineY, line.color(), false);
 			}
 		}
 		g.disableScissor();
@@ -2348,6 +2364,30 @@ public class CordScreen extends Screen {
 				x += chip.width() + CHIP_GAP;
 			}
 		}
+		if (!grimoirePage && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+			int maxScroll = codexMaxScroll();
+			if (maxScroll > 0) {
+				if (inside(mx, my, W - 22, CODEX_TOP - 2, 12, 10)) {
+					codexScroll = Math.max(0, codexScroll - CELL);
+					click();
+					return true;
+				}
+				if (inside(mx, my, W - 22, CODEX_BOTTOM - 8, 12, 10)) {
+					codexScroll = Math.min(maxScroll, codexScroll + CELL);
+					click();
+					return true;
+				}
+				if (inside(mx, my, W - 18, CODEX_TOP, 8, CODEX_HEIGHT)) {
+					if (my < CODEX_TOP + CODEX_HEIGHT / 2) {
+						codexScroll = Math.max(0, codexScroll - CELL * 2);
+					} else {
+						codexScroll = Math.min(maxScroll, codexScroll + CELL * 2);
+					}
+					click();
+					return true;
+				}
+			}
+		}
 		RuneDef rune = codexAt(mx, my);
 		if (rune != null) {
 			if (!fitsPage(rune)) {
@@ -3088,13 +3128,18 @@ public class CordScreen extends Screen {
 			if (first + i == relayLessonIndex && y >= top && y + LINE <= bottom) relayLessonY = y;
             if (first + i == reweaveLessonIndex && y >= top && y + LINE <= bottom) reweaveLessonY = y;
             if (first + i == exciseLessonIndex && y >= top && y + LINE <= bottom) exciseLessonY = y;
-   String lifeLink=lifeJournalLinks.get(first+i);if(lifeLink!=null && y>=top && y+LINE<=bottom)visibleLifeJournalLinks.add(new LifeJournalLink(y,lifeLink));
-			boolean clickableLesson = (first + i == relayLessonIndex && dev.wildercord.player.MasterStudies.hasRelayLesson(player))
+            String lifeLink = lifeJournalLinks.get(first + i);
+            if (lifeLink != null && y >= top && y + LINE <= bottom) visibleLifeJournalLinks.add(new LifeJournalLink(y, lifeLink));
+			boolean isStudyLesson = (first + i == relayLessonIndex && dev.wildercord.player.MasterStudies.hasRelayLesson(player))
 				|| (first + i == reweaveLessonIndex && dev.wildercord.player.MasterStudies.hasReweaveLesson(player))
-				|| (first + i == exciseLessonIndex && dev.wildercord.player.MasterStudies.hasExciseLesson(player))
-				|| lifeLink != null;
-			if (clickableLesson && inside(mx, my, TEXT_X + 6, y - 1, W - 28 - TEXT_X, LINE)) {
+				|| (first + i == exciseLessonIndex && dev.wildercord.player.MasterStudies.hasExciseLesson(player));
+			boolean clickableLesson = isStudyLesson || lifeLink != null;
+			boolean hoveredLesson = clickableLesson && inside(mx, my, TEXT_X + 6, y - 1, W - 28 - TEXT_X, LINE);
+			if (hoveredLesson) {
 				g.fill(TEXT_X + 6, y - 1, W - 22, y + LINE - 1, 0x24E8C46A);
+			}
+			if (isStudyLesson) {
+				g.text(font, "\u25B8", TEXT_X, y, hoveredLesson ? GOLD : CYAN, false);
 			}
 			int x = TEXT_X + line.x();
 			if (line.x() == 0) {

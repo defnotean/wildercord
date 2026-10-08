@@ -409,6 +409,17 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		return super.mouseClicked(event, doubleClick);
 	}
 
+	private boolean canAfford(Option option) {
+		if (minecraft.player == null) return false;
+		CordStyles.Unlock unlock = option.unlock();
+		if (unlock.kind() != CordStyles.Kind.CRAFT) return false;
+		Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(unlock.what()));
+		if (item == null) return false;
+		int have = minecraft.player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), true, 0,
+			minecraft.player.inventoryMenu.getCraftSlots());
+		return have >= unlock.amount();
+	}
+
 	/** Wears an option, or buys it first if it's bought with materials; the server checks either way. */
 	public void choose(Option option) {
 		CordStyles.Progress progress = CordCosmetics.progress(minecraft.player);
@@ -417,8 +428,13 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 			ClientPlayNetworking.send(new CordCosmetics.SetStyle(next.material(), next.glow(), next.trail()));
 			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(dev.wildercord.content.WildercordSounds.RUNE_THREAD, 1.0F, 1.0F));
 		} else if (CordStyles.buyable(option)) {
-			ClientPlayNetworking.send(new CordCosmetics.BuyStyle(option.key()));
-			click();
+			if (canAfford(option)) {
+				ClientPlayNetworking.send(new CordCosmetics.BuyStyle(option.key()));
+				click();
+			} else {
+				minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BASS, 0.6F));
+				minecraft.player.sendOverlayMessage(unlockLine(option, progress).copy().withStyle(ChatFormatting.RED));
+			}
 		} else {
 			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BASS, 0.6F));
 			minecraft.player.sendOverlayMessage(unlockLine(option, progress).copy().withStyle(ChatFormatting.GRAY));

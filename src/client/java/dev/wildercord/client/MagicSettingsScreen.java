@@ -19,7 +19,7 @@ public final class MagicSettingsScreen extends Screen implements CordEditorParen
  private final Screen returnTo;
  @Override public Screen cordEditorParent(){return returnTo;}
  public MagicSettingsScreen(){this(null);}
- public MagicSettingsScreen(Screen returnTo){super(Component.literal("Magic visuals"));this.returnTo=returnTo;}
+ public MagicSettingsScreen(Screen returnTo){super(Component.translatable("screen.wildercord.magic_settings.title"));this.returnTo=returnTo;}
  @Override public void onClose(){if(returnTo!=null)minecraft.gui.setScreen(returnTo);else super.onClose();}
 
  /** The top of the buttons, where the title sits above them. */
@@ -53,8 +53,8 @@ public final class MagicSettingsScreen extends Screen implements CordEditorParen
   }).bounds(x, y + pitch * 4, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.camera_motion.tip"))).build());
   addRenderableWidget(Button.builder(titles(), b -> {
    MagicQuality.spellTitles = !MagicQuality.spellTitles; MagicQuality.save(); b.setMessage(titles());
-  }).bounds(x, y + pitch * 5, columnWidth, 20).build());
-  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.combat.title"),b->minecraft.gui.setScreen(new CombatPresentationScreen(this))).bounds(x,y+pitch*6,columnWidth,20).build());
+  }).bounds(x, y + pitch * 5, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.spell_titles.tip"))).build());
+  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.combat.title"),b->minecraft.gui.setScreen(new CombatPresentationScreen(this))).bounds(x,y+pitch*6,columnWidth,20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.combat.tip"))).build());
   // Aura and casting share the second column at every supported GUI size.
   int cx=x+columnWidth+columnGap,cy=y;
   addRenderableWidget(Button.builder(choice("blade_trails", MagicQuality.bladeTrails), b -> {
@@ -84,7 +84,7 @@ public final class MagicSettingsScreen extends Screen implements CordEditorParen
    CastingOptions.incantations = CastingOptions.incantations.next(); CastingOptions.save(); b.setMessage(CastingOptions.incantationsLabel());
   }).bounds(cx, cy + pitch * 7, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.casting.incantations.tip"))).build());
   int footerWidth=Math.min(220,width-24),by=y+pitch*rightRows+footerGap,bx=(width-footerWidth)/2;
-  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.profile.benchmark"),b->{dev.wildercord.client.fx.FrameBenchmark.start();minecraft.gui.setScreen(null);}).bounds(bx,by,footerWidth,20).build());
+  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.profile.benchmark"),b->{dev.wildercord.client.fx.FrameBenchmark.start();minecraft.gui.setScreen(null);}).bounds(bx,by,footerWidth,20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.profile.benchmark.tip"))).build());
   addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose()).bounds(bx, by + pitch, footerWidth, 20).build());
  }
  private static Component ownSpellsLabel() {

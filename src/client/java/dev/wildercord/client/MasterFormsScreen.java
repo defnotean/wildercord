@@ -45,11 +45,17 @@ public final class MasterFormsScreen extends Screen implements CordEditorParent 
 			if (ClientPlayNetworking.canSend(MasterFormLessons.Accept.TYPE)) ClientPlayNetworking.send(new MasterFormLessons.Accept(offer));
 			page = 0; refreshControls();
 		});
-		control("previous", 16, H - 49, 89, text("previous"), () -> { page = page == 4 && !(learned() || teacher) ? 0 : Math.max(0, page - 1); refreshControls(); });
-		control("next", 115, H - 49, 89, text(page == 4 ? "overview" : learned() || teacher ? "next" : "source"), () -> {
-			page = page == 4 ? 0 : learned() || teacher ? (page + 1) % 5 : 4; refreshControls();
+		control("previous", 16, H - 49, 89, text("previous"), () -> {
+			page = page == 4 && !(learned() || teacher) ? 0 : Math.max(0, page - 1);
+			minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(net.minecraft.sounds.SoundEvents.BOOK_PAGE_TURN, 1.0F));
+			refreshControls();
 		});
-		control("back", 214, H - 49, 89, text("back"), this::onClose);
+		control("next", 115, H - 49, 89, text(page == 4 ? "overview" : learned() || teacher ? "next" : "source"), () -> {
+			page = page == 4 ? 0 : learned() || teacher ? (page + 1) % 5 : 4;
+			minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(net.minecraft.sounds.SoundEvents.BOOK_PAGE_TURN, 1.0F));
+			refreshControls();
+		});
+		control("back", 214, H - 49, 89, parent != null ? text("back") : Component.translatable("gui.done"), this::onClose);
 	}
 	/** Screen calls this after both initial construction and a rebuild; choosing in init would advance focus twice. */
 	@Override protected void setInitialFocus() {
