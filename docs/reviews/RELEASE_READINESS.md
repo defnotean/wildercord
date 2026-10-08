@@ -4,6 +4,20 @@ This is a release gate, not a declaration of readiness. Keep the pull request in
 
 The [player-facing development roadmap](../MASTERS_OF_TOMORROW_ROADMAP.md) records the expanded requested content scope and priorities. Planned spells, movement, lore and hundreds of distinct boss attacks are not completed by the current foundation.
 
+## Phase 0 Native Baseline and Regression Repairs (2026-10-07)
+
+Phase 0 of the Gemini Master Implementation Directive is complete and verified against native execution:
+1. **Bug A (Static Riposte resonance callback)**: `WayBanner.java` updated to verify `Parties.sameParty(bearer, other)` before refusing allied resonance callback chains. Verified: all 49/49 scenarios in `MirrorRiposteReleasedOwnerTest` pass cleanly.
+2. **Bug B (Cinnamon Companion Lifecycle and Identity)**: 
+   - Fixed offline singleplayer profile matching in `CinnamonCompanion.java` to support offline client gametest identity matching by username/UUID.
+   - Added 25-tick join grace in `CinnamonLifecycleChecks.java` to await `hasClientLoaded()` completion so `isInvulnerableTo` clears before kill assertions.
+   - Handled whistle cooldown wait before chunk recovery ticket assertions.
+   - Updated `CinnamonIdentityChecks.java` to locate saved data in `dimensions/minecraft/overworld/data` as required by Minecraft 26.3 `SavedDataStorage`.
+   - Verified: complete `WildercordCinnamonTest` native suite passed cleanly in 4m 17s with full lifecycle, truncated journal recovery, and identity quarantine checks.
+3. **Bug C (Reed Refuge Journey Preservation)**: `NewtPathNavigation.java` updated to guard path recomputation when on active `refugeRoute` (`!refugeRoute && super.shouldRecomputePath(pos)`). Verified: `ReedRefugeTest` passed cleanly.
+4. **Task D.1 (POSIX Directory Fsync)**: `UpgradeJournal.java` updated to guard directory fsync on filesystems supporting the `posix` file attribute view, preventing Windows `AccessDeniedException`. Verified: all 17 tests in `UpgradeEngineTest` and all 1,724 unit tests in `./gradlew test` pass.
+5. **Task D.2 / D.3 (CI Provisioning and Catalog Reconciliation)**: Diagnostic docs (`masters-required-parts.md`, `native-diagnostics.md`) reconciled to reflect the exact 47 classes (44/1/2) in the update gate.
+
 ## Local Unmoved/Null source checkpoint (2026-10-07)
 
 The prior verified `dcf242d9` checkpoint remains frozen. The separate local slice adds original choreography to two existing

@@ -64,8 +64,15 @@ final class NewtPathNavigation extends AmphibiousPathNavigation {
   super.tick();
  }
 
+ @Override public boolean shouldRecomputePath(BlockPos pos) {
+  return !refugeRoute && super.shouldRecomputePath(pos);
+ }
+
  @Override public void recomputePath() {
-  if(refugeRoute && (getTargetPos()==null || !waterloggedRefuge(getTargetPos()))) {stop();return;}
+  if(refugeRoute) {
+   if(getTargetPos()==null || !waterloggedRefuge(getTargetPos())) stop();
+   return;
+  }
   super.recomputePath();
  }
 

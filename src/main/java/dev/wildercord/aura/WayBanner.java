@@ -63,6 +63,9 @@ public final class WayBanner {
 		if (bearer.isAlliedTo(other)) {
 			return true;
 		}
+		if (dev.wildercord.party.Parties.sameParty(bearer, other)) {
+			return bearer.getTeam() == null || other.getTeam() == null || bearer.isAlliedTo(other);
+		}
 		return !bearer.canHarmPlayer(other) && !other.canHarmPlayer(bearer) && !Targets.canHarm(bearer, other) && !Targets.canHarm(other, bearer);
 	}
 

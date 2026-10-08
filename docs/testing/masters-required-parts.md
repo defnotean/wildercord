@@ -1,4 +1,4 @@
-# Required Masters 44 partition
+# Required Masters 47 partition
 
 The existing Masters focused workflow job now has three mandatory matrix parts,
 with `max-parallel: 2`, `fail-fast: false`, the existing 90-minute job limit and
@@ -6,16 +6,17 @@ with `max-parallel: 2`, `fail-fast: false`, the existing 90-minute job limit and
 
 | Required GitHub check | Whole classes | Order |
 | --- | ---: | --- |
-| `Masters update / masters-core (required part)` | 41 | The prior core roster in its existing relative order, Masters presentation last |
+| `Masters update / masters-core (required part)` | 44 | The prior core roster in its existing relative order, Masters presentation last |
 | `Masters update / masters-march-mechanics (required part)` | 1 | `StoneMarchTest` |
 | `Masters update / masters-march-visuals (required part)` | 2 | `StoneMarchPresentationTest`, then `StoneMarchOpponentViewTest` |
 
-The exact union is the expanded 44-class `masters` catalog, with no omissions or
-duplicates. The separately reviewed `EarnedCounterAcceptanceTest` is the only
-addition to the prior 43 classes. It follows `MastersStyleTimelineTest` in the core
-part; every prior class retains its relative order. The four full-descriptor shards
-also include this registered class. The articulated six-class and connected
-46-case plus four-view Moon gates remain unchanged.
+The exact union is the expanded 47-class `masters` catalog, with no omissions or
+duplicates. The core part contains 44 classes, with `EarnedCounterAcceptanceTest`,
+`MirrorRiposteReleasedOwnerTest`, `UnmovedNullAcceptanceTest`, and
+`ArtWardsHardeningTest` following `MastersStyleTimelineTest`; every prior class
+retains its relative order. The four full-descriptor shards also include these
+registered classes. The articulated six-class and connected
+54-case plus four-view Moon gates remain unchanged.
 The redundant unpartitioned workflow launch is removed; `--suite masters` remains a
 whole-roster local selector. Diagnostic selectors never replace required checks.
 Repository branch/ruleset protection must require each new matrix check name when
@@ -50,7 +51,7 @@ python tools/masters_required_ci.py \
 The validator requires exactly three regular non-symlink JSON manifests, each at
 most 1 MiB. Each must prove its complete assigned classes, status and provenance;
 all must share the exact candidate/run/attempt and workflow checkout, and the union
-must be exactly 44. Rerunning only failed jobs cannot mix new-attempt evidence with
+must be exactly 47. Rerunning only failed jobs cannot mix new-attempt evidence with
 previous-attempt passes; rerun all required parts for a new accepted attempt. Only the aggregate may report the focused gate passed. It never
 reports the full-client gate passed or establishes manual visual acceptance.
 Part native logs are bounded to 16 MiB for acceptance; oversized logs stay archived

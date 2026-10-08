@@ -30,7 +30,7 @@ public final class UpgradeJournal {
 		Files.createDirectories(directory);
 		// Persist newly created directory entries as well as testing fsync support before authorization.
 		for(Path current=directory;;current=current.getParent()) {
-			try(var channel=FileChannel.open(current,READ)){channel.force(true);}
+			syncDirectory(current);
 			if(current.equals(existing))break;
 		}
 	}
@@ -80,5 +80,13 @@ public final class UpgradeJournal {
 			return new Entry(plan,phase,operator,backup,policy,edits,intent);
 		} catch(IllegalArgumentException ex){throw new IOException("Malformed journal",ex);}
 	}
-	private void forceDirectory() throws IOException {try(var directoryChannel=FileChannel.open(directory,READ)){directoryChannel.force(true);}}
+	private void forceDirectory() throws IOException {syncDirectory(directory);}
+	private static boolean supportsDirectoryFsync(Path path) {
+		return path.getFileSystem().supportedFileAttributeViews().contains("posix");
+	}
+	private static void syncDirectory(Path path) throws IOException {
+		if(!supportsDirectoryFsync(path))return;
+		try(var channel=FileChannel.open(path,READ)){channel.force(true);}
+		catch(AccessDeniedException | UnsupportedOperationException ignored){}
+	}
 }

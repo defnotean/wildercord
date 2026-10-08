@@ -34,7 +34,7 @@ The fixed case allowlist is defined in `tools/run_native_diagnostic_ci.py` and i
   until this exact native evidence passes. A tooling/compile pass is not physics
   evidence. No payment, damage, production selector or ordinary attack is enabled.
   This reuses the existing diagnostic job and artifact, unchanged limits and zero
-  automatic retries; it adds no workflow or active request. Masters 44 (41/1/2),
+  automatic retries; it adds no workflow or active request. Masters 47 (44/1/2),
   articulated six, paired 46 plus Moon four, and all four full shards remain required.
 - `stone-fault-march-presentation`: exactly the one complete original
   `StoneMarchPresentationTest` class.

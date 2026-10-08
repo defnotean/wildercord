@@ -70,6 +70,7 @@ public final class CinnamonLifecycleChecks {
 			}
 			check(CinnamonCompanion.recoveryTickets() == 0, "Actual server close leaves no retained recovery lease");
 			try (var world = saved.open()) {
+				context.waitTicks(25);
 				await(context, world, s -> s.overworld().getEntityInAnyDimension(identity[0]) instanceof CinnamonDog, 250, "Actual restart loads the same saved UUID");
 				world.getServer().runOnServer(server -> {
 					var p = player(server); var dog = dog(server, identity[0]);
@@ -109,6 +110,9 @@ public final class CinnamonLifecycleChecks {
 					floor(p, 1536); place(p, 1536);
 				});
 				await(context, world, s -> s.overworld().getEntityInAnyDimension(identity[0]) == null, 800, "Distant sitting body really unloads before recall");
+				int whistleRemaining = world.getServer().computeOnServer(server ->
+					(int) Math.max(0, deadlines[2] - server.overworld().getGameTime() + 1));
+				if (whistleRemaining > 0) context.waitTicks(whistleRemaining);
 				world.getServer().runOnServer(server -> {
 					var p = player(server);
 					check(CinnamonCompanion.recoveryTickets() == 0, "An intentionally parked dog does not repeatedly load chunks");

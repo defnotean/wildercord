@@ -338,7 +338,7 @@ final class CinnamonCompanion {
 		if (config.owner().isBlank()) return false;
 		if (config.owner().equalsIgnoreCase("@singleplayer")) {
 			var profile = player.level().getServer().getSingleplayerProfile();
-			return profile != null && profile.id().equals(player.getUUID());
+			return profile != null && (profile.id().equals(player.getUUID()) || profile.name().equalsIgnoreCase(player.getGameProfile().name()));
 		}
 		return config.ownerId() != null ? player.getUUID().equals(config.ownerId()) : player.getGameProfile().name().equalsIgnoreCase(config.owner());
 	}

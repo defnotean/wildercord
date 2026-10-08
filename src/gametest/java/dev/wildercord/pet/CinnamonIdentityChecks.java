@@ -43,7 +43,9 @@ public final class CinnamonIdentityChecks {
 				world.getServer().runOnServer(server -> {
 					var p = player(server); id[0] = p.getAttached(CinnamonState.IDENTITY);
 					var dog = dog(server, id[0]); dog.setNoAi(true); dog.setOrderedToSit(true); CinnamonCompanion.changed(dog);
-					journalFile[0] = Wildercord.id("cinnamon_companions.dat").resolveAgainst(server.getWorldPath(LevelResource.ROOT).resolve("data"));
+					Path root = server.getWorldPath(LevelResource.ROOT);
+					Path dimData = root.resolve("dimensions").resolve("minecraft").resolve("overworld").resolve("data");
+					journalFile[0] = Wildercord.id("cinnamon_companions.dat").resolveAgainst(Files.isDirectory(dimData) ? dimData : root.resolve("data"));
 				});
 				write(config, "{\"owner\":\"00000000-0000-0000-0000-000000000042\",\"bell\":{}}");
 				context.waitTicks(110);
@@ -59,6 +61,12 @@ public final class CinnamonIdentityChecks {
 			}
 			byte[] originalJournal;
 			try {
+				if (!Files.isRegularFile(journalFile[0])) {
+					Path alt = journalFile[0].toString().contains("dimensions")
+						? Path.of(journalFile[0].toString().replace("dimensions" + java.io.File.separator + "minecraft" + java.io.File.separator + "overworld" + java.io.File.separator + "data", "data"))
+						: Path.of(journalFile[0].toString().replace(java.io.File.separator + "data" + java.io.File.separator, java.io.File.separator + "dimensions" + java.io.File.separator + "minecraft" + java.io.File.separator + "overworld" + java.io.File.separator + "data" + java.io.File.separator));
+					if (Files.isRegularFile(alt)) journalFile[0] = alt;
+				}
 				check(Files.isRegularFile(journalFile[0]), "Actual fixture journal path exists after clean close");
 				originalJournal = Files.readAllBytes(journalFile[0]);
 				// Deliberately truncate only this disposable world's journal, simulating an interrupted compressed write.
