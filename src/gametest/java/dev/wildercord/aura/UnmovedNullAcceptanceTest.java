@@ -113,6 +113,8 @@ public final class UnmovedNullAcceptanceTest implements FabricClientGameTest {
 			world.getServer().runCommand("difficulty normal");
 			world.getServer().runCommand("fill -12 99 -12 12 99 12 minecraft:stone");
 			world.getServer().runCommand("fill -12 100 -12 12 108 12 minecraft:air");
+			world.getServer().runCommand("teleport @a .5 100 .5");
+			context.waitTicks(25);
 			context.runOnClient(mc -> {
 				mc.options.toggleCrouch().set(false);
 				oldKey = KeyMappingHelper.getBoundKeyOf(WildercordKeys.auraMapping());
