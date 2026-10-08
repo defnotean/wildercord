@@ -317,7 +317,7 @@ public final class MastersStyleAnimation {
 	// Wildfire Rush lowers into a sprinter's chamber, charges through the center line in a piercing streak, then slides to a low brace.
 	private static final Motion WILDFIRE_RUSH = new Motion(
 		pose(j(.35F, .42F, -.12F), j(-.18F, -.16F, .04F), j(-.85F, .52F, -.35F), j(-1.10F, -.30F, .22F),
-			j(-.75F, -.18F, -.16F), j(.55F, .16F, .16F), .85F, .45F, h(.12F, .26F, -.14F, -55, 20, -22)),
+			j(-.75F, -.18F, -.16F), j(.55F, .16F, .16F), .85F, .45F, h(.18F, .34F, -.14F, -58, 46, -20)),
 		pose(j(.52F, -.32F, .10F), j(-.22F, .12F, -.04F), j(-1.65F, -.15F, -.18F), j(-.45F, .22F, -.45F),
 			j(-.95F, .16F, -.14F), j(.72F, -.14F, .14F), 1.05F, -1.65F, h(-.18F, -.05F, -.55F, -105, -12, 16)),
 		pose(j(.38F, -.38F, .08F), j(-.15F, .18F, -.02F), j(-1.42F, -.24F, -.16F), j(-.35F, .18F, -.35F),
