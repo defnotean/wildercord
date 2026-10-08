@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(23, MastersStyleRules.STYLES.size());
+		assertEquals(27, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
@@ -137,7 +137,7 @@ class MastersStyleRulesTest {
 			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
 		}
 		assertEquals(50, ArtRules.ARTS.size());
-		assertEquals(27, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
+		assertEquals(23, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
 	}
 
 	@Test void nextCountersKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
@@ -154,6 +154,28 @@ class MastersStyleRulesTest {
 		assertEquals(1, ArtRules.NULL_FACTOR); assertEquals(.25, ArtRules.NULL_PULSE_FACTOR); assertEquals(3, ArtRules.NULL_PULSE);
 		assertEquals(.5, ArtRules.NULL_SHOVE); assertEquals(8, ArtRules.NULL_HOLD); assertEquals(60, ArtRules.NULL_SILENCE);
 		assertEquals(30, ArtRules.SILENCE_PLAYER_TICKS); assertEquals(100, ArtRules.SILENCE_REST);
+	}
+
+	@Test void batch1CountersKeepTheirAuthoredBaseValuesAndSeparateReleaseWindows() {
+		for (String id : new String[] {"eye_of_the_storm", "sanguine_parry", "constellation_guard", "stopped_moment"}) {
+			var style = MastersStyleRules.of(id); var art = ArtRules.art(id);
+			int expectedAnimation = switch (id) {
+				case "eye_of_the_storm" -> 26;
+				case "sanguine_parry" -> 27;
+				case "constellation_guard" -> 28;
+				case "stopped_moment" -> 29;
+				default -> -1;
+			};
+			int expectedWindup = id.equals("stopped_moment") ? 6 : 4;
+			int expectedRecovery = id.equals("stopped_moment") ? 16 : 14;
+			assertEquals(expectedAnimation, style.animation());
+			assertEquals(expectedWindup, style.windup());
+			assertEquals(expectedRecovery, style.recovery());
+			assertEquals(8, art.cost()); assertEquals(80, art.cooldown()); assertEquals(2, art.slot());
+			assertEquals(MastersStyleRules.TargetPolicy.EARNED_COUNTER, style.targets());
+			assertNull(MastersArtRules.move(style.animation()));
+			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
+		}
 	}
 
 }

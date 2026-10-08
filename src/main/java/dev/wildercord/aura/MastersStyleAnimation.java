@@ -242,6 +242,42 @@ public final class MastersStyleAnimation {
 		pose(j(.20F, -.055F, .025F), j(-.10F, .025F, -.01F), j(-1.12F, -.16F, -.38F), j(-1.28F, -.30F, .31F),
 			j(-.46F, .04F, -.09F), j(.31F, -.03F, .08F), .72F, .02F, h(-.02F, .24F, -.18F, -18, 4, 6)));
 
+	// Eye of the Storm winds through a deep rotational coil, sweeps a level 360-degree perimeter slice, then settles in a wide stance.
+	private static final Motion EYE_OF_THE_STORM = new Motion(
+		pose(j(.06F, .68F, -.14F), j(-.02F, -.32F, .04F), j(-1.48F, .95F, -.30F), j(-.40F, -.35F, -.70F),
+			j(-.42F, -.22F, -.10F), j(.32F, .18F, .10F), .35F, .12F, h(.12F, .15F, -.22F, 5, 42, -28)),
+		pose(j(.10F, -.82F, .16F), j(-.04F, .32F, -.05F), j(-1.30F, -1.25F, -.10F), j(-.20F, .30F, -1.00F),
+			j(-.52F, .22F, -.12F), j(.36F, -.18F, .10F), .28F, -.55F, h(-.44F, -.08F, -.26F, 15, -58, 38)),
+		pose(j(.04F, -.92F, .10F), j(0, .38F, -.02F), j(-1.20F, -1.35F, -.08F), j(.12F, .22F, -.80F),
+			j(-.28F, .18F, -.08F), j(.22F, -.14F, .07F), .15F, -.25F, h(-.50F, -.18F, -.08F, 24, -65, 44)));
+
+	// Sanguine Parry braces across the chest in a deep crouch, snaps an aggressive rising cross-slash, and recoils high.
+	private static final Motion SANGUINE_PARRY = new Motion(
+		pose(j(.28F, .36F, -.14F), j(-.14F, -.14F, .05F), j(-1.42F, .72F, -.70F), j(-.82F, -.22F, .15F),
+			j(-.68F, -.14F, -.14F), j(.45F, .14F, .12F), .95F, .12F, h(.14F, .22F, -.20F, -45, 28, -42)),
+		pose(j(.36F, -.48F, .18F), j(-.18F, .16F, -.06F), j(-.82F, -.88F, -.42F), j(-.22F, -.14F, -.92F),
+			j(-.85F, .14F, -.14F), j(.48F, -.10F, .12F), 1.10F, -.75F, h(-.30F, .16F, -.36F, 48, -36, 48)),
+		pose(j(.22F, -.60F, .12F), j(-.10F, .20F, -.03F), j(-.42F, -1.05F, -.15F), j(-.12F, -.12F, -.75F),
+			j(-.58F, .12F, -.10F), j(.34F, -.08F, .09F), .78F, -.38F, h(-.36F, .22F, -.24F, 56, -44, 55)));
+
+	// Constellation Guard lifts high beside the temple, snaps a crisp angular forward intercept, then withdraws with crystalline poise.
+	private static final Motion CONSTELLATION_GUARD = new Motion(
+		pose(j(-.06F, .24F, -.04F), j(.03F, -.10F, .02F), j(-1.85F, .38F, -.18F), j(-.92F, -.25F, -.30F),
+			j(-.26F, -.08F, -.05F), j(.28F, .08F, .05F), .16F, .20F, h(.12F, .22F, -.16F, -85, 16, -12)),
+		pose(j(.18F, -.10F, .03F), j(-.08F, .04F, -.01F), j(-1.62F, -.12F, -.06F), j(-.30F, -.18F, -.52F),
+			j(-.58F, .06F, -.06F), j(.38F, -.05F, .06F), .30F, -.85F, h(-.04F, .14F, -.48F, -102, 2, 8)),
+		pose(j(.10F, -.08F, .02F), j(-.04F, .03F, 0), j(-1.42F, -.10F, -.08F), j(-.55F, -.16F, -.42F),
+			j(-.38F, .04F, -.05F), j(.28F, -.04F, .05F), .18F, -.35F, h(-.02F, .10F, -.26F, -88, -2, 6)));
+
+	// Stopped Moment draws to the floating ribs, drives a level suspended point through temporal stillness, and recoils along the thrust line.
+	private static final Motion STOPPED_MOMENT = new Motion(
+		pose(j(.08F, .36F, -.05F), j(-.03F, -.15F, .01F), j(-1.18F, .55F, -.22F), j(-1.08F, -.24F, -.25F),
+			j(-.35F, -.10F, -.07F), j(.26F, .10F, .07F), .30F, .14F, h(.12F, .06F, -.18F, -45, 24, -14)),
+		pose(j(.16F, -.14F, .03F), j(-.07F, .06F, -.01F), j(-1.58F, -.10F, -.08F), j(-.50F, -.14F, -.42F),
+			j(-.55F, .08F, -.08F), j(.35F, -.06F, .08F), .40F, -.70F, h(-.06F, .08F, -.52F, -98, -4, 10)),
+		pose(j(.10F, -.22F, .03F), j(-.04F, .09F, 0), j(-1.35F, -.22F, -.14F), j(-.65F, -.14F, -.38F),
+			j(-.40F, .08F, -.07F), j(.28F, -.06F, .07F), .28F, -.35F, h(-.10F, .04F, -.32F, -78, -12, 14)));
+
 	static Motion motion(int id) {
 		return switch (id) {
 			case 3 -> KINDLING;
@@ -267,6 +303,10 @@ public final class MastersStyleAnimation {
 			case 23 -> STATIC_RIPOSTE;
 			case 24 -> UNMOVED;
 			case 25 -> NULL_PARRY;
+			case 26 -> EYE_OF_THE_STORM;
+			case 27 -> SANGUINE_PARRY;
+			case 28 -> CONSTELLATION_GUARD;
+			case 29 -> STOPPED_MOMENT;
 			default -> null;
 		};
 	}

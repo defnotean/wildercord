@@ -53,7 +53,11 @@ public final class MastersStyleRules {
 		new Style(22, "glacier_mirror", 6, 16, TargetPolicy.EARNED_COUNTER),
 		new Style(23, "static_riposte", 4, 14, TargetPolicy.EARNED_COUNTER),
 		new Style(24, "unmoved", 6, 16, TargetPolicy.EARNED_COUNTER),
-		new Style(25, "null_parry", 4, 14, TargetPolicy.EARNED_COUNTER)
+		new Style(25, "null_parry", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(26, "eye_of_the_storm", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(27, "sanguine_parry", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(28, "constellation_guard", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(29, "stopped_moment", 6, 16, TargetPolicy.EARNED_COUNTER)
 	);
 
 	public static Style of(String art) {

@@ -16,7 +16,11 @@ import java.util.function.BooleanSupplier;
 public final class EarnedCounters {
 	private EarnedCounters() {}
 	public enum Route { STRUCK, CAUGHT, NEAREST, EMPTY }
-	static boolean handles(String art) { return art.equals("backdraft") || art.equals("rooted_parry") || art.equals("glacier_mirror") || art.equals("static_riposte") || originalGeometry(art); }
+	static boolean handles(String art) {
+		return art.equals("backdraft") || art.equals("rooted_parry") || art.equals("glacier_mirror") || art.equals("static_riposte")
+			|| art.equals("eye_of_the_storm") || art.equals("sanguine_parry") || art.equals("constellation_guard") || art.equals("stopped_moment")
+			|| originalGeometry(art);
+	}
 	private static boolean originalGeometry(String art) { return art.equals("unmoved") || art.equals("null_parry"); }
 
 	/** Created only at a real perfect guard, before its damage/reflection callbacks. */
@@ -106,6 +110,8 @@ public final class EarnedCounters {
 		double reach = switch (context.art().id()) {
 			case "backdraft" -> ArtRules.BACKDRAFT_REACH;
 			case "static_riposte" -> ArtRules.RIPOSTE_REACH;
+			case "eye_of_the_storm" -> ArtRules.EYE_RADIUS;
+			case "constellation_guard", "stopped_moment", "sanguine_parry" -> 3.0;
 			default -> 4;
 		};
 		// Explicit owner range/LOS admission and release: Mirror 6, Riposte 7; no chain-hop LOS change.

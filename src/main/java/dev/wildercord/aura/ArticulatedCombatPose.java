@@ -23,6 +23,8 @@ public final class ArticulatedCombatPose {
 	public static final int BACKDRAFT = 20, ROOTED_PARRY = 21;
 	public static final int GLACIER_MIRROR = 22, STATIC_RIPOSTE = 23;
 	public static final int UNMOVED = 24, NULL_PARRY = 25;
+	public static final int EYE_OF_THE_STORM = 26, SANGUINE_PARRY = 27;
+	public static final int CONSTELLATION_GUARD = 28, STOPPED_MOMENT = 29;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
@@ -613,6 +615,82 @@ public final class ArticulatedCombatPose {
 				v(7.6F, -6.2F, 3.5F), arm(r(.015F, .015F, .035F), r(-1.11F, .10F, .28F), -1.05F, r(.11F, -.11F, .10F)))),
 		v(-2.6F, 22, 1.0F), v(2.6F, 22, -1.15F));
 
+	// Eye of the Storm winds through a deep rotational coil, sweeps a level 360-degree perimeter slice, then settles in a wide stance.
+	private static final Motion EYE_OF_THE_STORM_MOTION = new Motion(
+		new Key(v(-.14F, .96F, .12F), r(.03F, .28F, -.04F), r(.02F, .16F, -.02F), r(.025F, .24F, -.05F), r(-.05F, -.38F, .04F),
+			arm(r(.025F, .08F, -.05F), r(-1.42F, .52F, -.32F), -.95F, r(.42F, -.30F, -.38F)),
+			arm(r(0, -.05F, .04F), r(-.92F, -.24F, -.20F), -.98F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.2F, -4.8F, 3.2F), arm(r(.02F, .05F, -.035F), r(-1.25F, .22F, -.26F), -.88F, r(.35F, -.20F, -.30F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.95F, r(.10F, -.10F, .08F)))),
+		new Key(v(.14F, .96F, -.26F), r(.05F, -.24F, .035F), r(.035F, -.16F, .025F), r(.04F, -.26F, .045F), r(-.08F, .42F, -.035F),
+			arm(r(.035F, -.07F, -.04F), r(-1.22F, -.68F, -.22F), -.45F, r(.85F, .18F, .44F)),
+			arm(r(0, .055F, .035F), r(-.82F, -.18F, -.35F), -.88F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-8.6F, -5.3F, 2.6F), arm(r(.025F, -.05F, -.035F), r(-1.18F, -.42F, -.28F), -.48F, r(.22F, .48F, .42F)),
+				v(7.5F, -6.1F, 3.6F), arm(r(0, .04F, .03F), r(-.95F, .12F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.04F, .90F, -.08F), r(.03F, -.32F, .02F), r(.02F, -.20F, .015F), r(.025F, -.30F, .03F), r(-.04F, .48F, -.02F),
+			arm(r(.02F, -.08F, -.03F), r(-1.14F, -.82F, -.14F), -.78F, r(.92F, .22F, .48F)),
+			arm(r(0, .04F, .03F), r(-.88F, -.20F, -.25F), -.94F, r(.08F, -.10F, .08F)),
+			new ViewKey(v(-8.9F, -5.1F, 3.0F), arm(r(.015F, -.06F, -.03F), r(-1.12F, -.55F, -.22F), -.78F, r(.28F, .44F, .52F)),
+				v(7.5F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.98F, .08F, .26F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.60F, 22, 1.35F), v(2.60F, 22, -1.45F));
+
+	// Sanguine Parry braces across the chest in a deep crouch, snaps an aggressive rising cross-slash, and recoils high.
+	private static final Motion SANGUINE_PARRY_MOTION = new Motion(
+		new Key(v(-.16F, 1.15F, .16F), r(.08F, .15F, -.03F), r(.05F, .09F, -.02F), r(.06F, .16F, -.035F), r(-.11F, -.25F, .025F),
+			arm(r(.03F, .06F, -.05F), r(-1.35F, .36F, -.42F), -.98F, r(.65F, -.24F, -.40F)),
+			arm(r(0, -.05F, .04F), r(-.95F, -.28F, -.18F), -.98F, r(.12F, -.10F, .08F)),
+			new ViewKey(v(-7.9F, -4.85F, 3.3F), arm(r(.02F, .04F, -.035F), r(-1.28F, .18F, -.25F), -.88F, r(.55F, -.18F, -.32F)),
+				v(7.2F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.16F, 1.12F, -.34F), r(.11F, -.18F, .03F), r(.07F, -.11F, .02F), r(.08F, -.20F, .035F), r(-.14F, .32F, -.025F),
+			arm(r(.035F, -.06F, -.035F), r(-.82F, -.52F, -.26F), -.44F, r(1.18F, .18F, .38F)),
+			arm(r(0, .045F, .035F), r(-.52F, -.22F, -.36F), -.84F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-8.1F, -5.35F, 2.5F), arm(r(.02F, -.045F, -.035F), r(-1.06F, -.32F, -.26F), -.46F, r(.05F, .52F, .38F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .035F, .03F), r(-.94F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.08F, 1.05F, -.14F), r(.06F, -.22F, .02F), r(.04F, -.14F, .015F), r(.045F, -.24F, .025F), r(-.08F, .38F, -.02F),
+			arm(r(.025F, -.08F, -.03F), r(-.62F, -.72F, -.14F), -.74F, r(1.22F, .18F, .48F)),
+			arm(r(0, .035F, .03F), r(-.62F, -.22F, -.30F), -.90F, r(.08F, -.10F, .08F)),
+			new ViewKey(v(-8.6F, -5.15F, 3.0F), arm(r(.015F, -.06F, -.03F), r(-1.08F, -.46F, -.20F), -.78F, r(.18F, .46F, .48F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.98F, .08F, .27F), -.92F, r(.10F, -.10F, .08F)))),
+		v(-2.55F, 22, 1.30F), v(2.55F, 22, -1.45F));
+
+	// Constellation Guard lifts high beside the temple, snaps a crisp angular forward intercept, then withdraws with crystalline poise.
+	private static final Motion CONSTELLATION_GUARD_MOTION = new Motion(
+		new Key(v(-.08F, 1.02F, .08F), r(.02F, .10F, -.015F), r(.025F, .06F, -.01F), r(.03F, .12F, -.02F), r(-.05F, -.18F, .015F),
+			arm(r(.03F, .05F, -.04F), r(-1.82F, .28F, -.22F), -.88F, r(.35F, -.14F, -.24F)),
+			arm(r(0, -.04F, .035F), r(-1.05F, -.22F, -.15F), -.98F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.0F, -4.55F, 3.2F), arm(r(.02F, .035F, -.03F), r(-1.42F, .14F, -.22F), -.82F, r(.28F, -.10F, -.18F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .24F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.10F, 1.04F, -.32F), r(.06F, -.05F, .01F), r(.04F, -.03F, .01F), r(.045F, -.06F, .015F), r(-.08F, .12F, -.01F),
+			arm(r(.03F, -.03F, -.035F), r(-1.52F, -.08F, -.12F), -.36F, r(.92F, .08F, .22F)),
+			arm(r(0, .03F, .035F), r(-.72F, -.18F, -.28F), -.88F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.9F, -5.25F, 2.3F), arm(r(.02F, -.025F, -.03F), r(-1.26F, -.08F, -.18F), -.38F, r(.75F, .04F, .16F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .10F, .26F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.03F, 1.00F, -.08F), r(.035F, -.03F, .01F), r(.025F, -.02F, .005F), r(.03F, -.04F, .01F), r(-.05F, .08F, -.01F),
+			arm(r(.02F, -.02F, -.03F), r(-1.38F, -.06F, -.15F), -.86F, r(.85F, .04F, .14F)),
+			arm(r(0, .02F, .03F), r(-.88F, -.20F, -.22F), -.94F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-8.1F, -4.95F, 3.2F), arm(r(.015F, -.02F, -.03F), r(-1.24F, -.06F, -.18F), -.80F, r(.78F, .02F, .10F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		v(-2.40F, 22, 1.25F), v(2.40F, 22, -1.35F));
+
+	// Stopped Moment draws to the floating ribs, drives a level suspended point through temporal stillness, and recoils along the thrust line.
+	private static final Motion STOPPED_MOMENT_MOTION = new Motion(
+		new Key(v(-.10F, 1.14F, .14F), r(.04F, .12F, -.015F), r(.03F, .06F, -.01F), r(.035F, .14F, -.025F), r(-.06F, -.22F, .02F),
+			arm(r(.025F, .05F, -.045F), r(-1.02F, .20F, -.26F), -1.04F, r(1.42F, -.28F, -.44F)),
+			arm(r(0, -.04F, .04F), r(-1.02F, -.24F, -.18F), -.98F, r(.12F, -.10F, .08F)),
+			new ViewKey(v(-7.7F, -5.00F, 3.6F), arm(r(.02F, .035F, -.035F), r(-1.10F, .14F, -.22F), -.98F, r(1.28F, -.20F, -.26F)),
+				v(7.2F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.02F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		new Key(v(.12F, 1.12F, -.36F), r(.075F, -.06F, .015F), r(.045F, -.03F, .01F), r(.055F, -.07F, .02F), r(-.10F, .14F, -.015F),
+			arm(r(.03F, -.03F, -.035F), r(-1.42F, -.04F, -.12F), -.30F, r(1.12F, .12F, .18F)),
+			arm(r(0, .035F, .035F), r(-.82F, -.20F, -.25F), -.92F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.6F, -5.35F, 2.1F), arm(r(.02F, -.025F, -.035F), r(-1.26F, -.08F, -.18F), -.32F, r(.96F, .06F, .08F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.98F, .10F, .27F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.04F, 1.08F, -.08F), r(.045F, -.04F, .01F), r(.03F, -.025F, .01F), r(.035F, -.05F, .015F), r(-.065F, .10F, -.01F),
+			arm(r(.02F, -.025F, -.03F), r(-1.18F, -.08F, -.18F), -.92F, r(1.35F, .06F, .12F)),
+			arm(r(0, .025F, .03F), r(-.96F, -.22F, -.20F), -.96F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.9F, -5.10F, 3.4F), arm(r(.015F, -.02F, -.03F), r(-1.14F, -.08F, -.20F), -.88F, r(1.20F, .04F, .08F)),
+				v(7.2F, -6.1F, 3.5F), arm(r(0, -.02F, .03F), r(-1.02F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		v(-2.45F, 22, 1.25F), v(2.45F, 22, -1.35F));
+
 	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
@@ -624,7 +702,8 @@ public final class ArticulatedCombatPose {
 	/** Only authored player presentation IDs are admitted here; NPC IDs use supportsMaster. */
 	public static boolean supportsPlayer(int move) {
 		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
-			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY || move == GLACIER_MIRROR || move == STATIC_RIPOSTE || move == UNMOVED || move == NULL_PARRY;
+			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY || move == GLACIER_MIRROR || move == STATIC_RIPOSTE || move == UNMOVED || move == NULL_PARRY
+			|| move == EYE_OF_THE_STORM || move == SANGUINE_PARRY || move == CONSTELLATION_GUARD || move == STOPPED_MOMENT;
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -647,6 +726,10 @@ public final class ArticulatedCombatPose {
 			case STATIC_RIPOSTE -> STATIC_RIPOSTE_MOTION;
 			case UNMOVED -> UNMOVED_MOTION;
 			case NULL_PARRY -> NULL_PARRY_MOTION;
+			case EYE_OF_THE_STORM -> EYE_OF_THE_STORM_MOTION;
+			case SANGUINE_PARRY -> SANGUINE_PARRY_MOTION;
+			case CONSTELLATION_GUARD -> CONSTELLATION_GUARD_MOTION;
+			case STOPPED_MOMENT -> STOPPED_MOMENT_MOTION;
 			default -> throw new AssertionError("Unsupported player motion passed admission");
 		};
 		return sample(motion, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
