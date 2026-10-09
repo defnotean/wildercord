@@ -229,9 +229,40 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 		return (CinnamonDog) entity;
 	}
 
+	/** A husk out of biting range: only her magic can reach it, and only while she's big. */
+	private static void spellCheck(ClientGameTestContext context, TestSingleplayerContext world, java.util.UUID uuid, boolean big) {
+		int husk = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			player.setHealth(player.getMaxHealth());
+			CinnamonDog dog = cinnamon(server, uuid);
+			check(dog.isBig() == big, "Cinnamon's size must match the spell check");
+			dog.setNoAi(true);
+			dog.setOrderedToSit(false);
+			dog.teleportTo(0.5, 99, 3.5);
+			var target = net.minecraft.world.entity.EntityTypes.HUSK.create(player.level(), net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+			target.snapTo(0.5, 99, 13.5, 180, 0);
+			target.setNoAi(true);
+			player.level().addFreshEntity(target);
+			dog.setTarget(target);
+			check(dog.getTarget() == target, "Cinnamon must accept a hostile target at either size");
+			return target.getId();
+		});
+		context.waitTicks(80);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			var target = player.level().getEntity(husk) instanceof net.minecraft.world.entity.LivingEntity living ? living : null;
+			boolean hit = target == null || !target.isAlive() || target.getHealth() < target.getMaxHealth();
+			check(hit == big, big ? "big Cinnamon must cast at a target out of biting range" : "small Cinnamon must not cast");
+			check(player.getHealth() == player.getMaxHealth(), "her spells must never hurt her owner");
+			if (target != null) target.discard();
+			cinnamon(server, uuid).setTarget(null);
+		});
+	}
+
 	/** Bounded native assertions use the real item interaction, dimensions, damage hook, goals, and game clock. */
 	private static void growthAndRecovery(ClientGameTestContext context, TestSingleplayerContext world, java.util.UUID uuid) {
 		world.getServer().runCommand("fill -24 98 -24 24 98 24 minecraft:stone");
+		spellCheck(context, world, uuid, false);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 			player.setGameMode(GameType.SURVIVAL);
@@ -258,7 +289,10 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 			check(player.getMainHandItem().getCount() == 6, "four feedings must consume four food");
 			dog.mobInteract(player, InteractionHand.MAIN_HAND);
 			check(player.getMainHandItem().getCount() == 6 && dog.growthExpiresAt() == growthDeadline, "feeding at the cap must consume nothing and preserve the deadline");
+			check(dog.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE) == 11
+				&& dog.getMaxHealth() == 40 && dog.damageBudget() == 40, "at full size she must bite harder, hold more health and tire later");
 		});
+		spellCheck(context, world, uuid, true);
 		context.waitTicks(3);
 		context.takeScreenshot(TestScreenshotOptions.of("cinnamon_temporary_giant").disableCounterPrefix());
 		world.getServer().runCommand("setblock 0 100 3 minecraft:stone");
@@ -283,6 +317,8 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 			CinnamonDog dog = cinnamon(server, uuid);
 			check(dog.growthScale() == 1 && dog.getScale() == 1 && dog.growthExpiresAt() == 0,
 				"the fixed growth window must expire back to the original size");
+			check(dog.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE) == 3
+				&& dog.getMaxHealth() == 20 && dog.damageBudget() == CinnamonDog.DAMAGE_BUDGET, "her strength must leave with her size");
 		});
 		world.getServer().runCommand("setblock 0 100 3 minecraft:stone");
 		world.getServer().runOnServer(server -> {

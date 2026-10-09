@@ -6,6 +6,7 @@ See the [complete player guide](../../wiki/companions/cinnamon.md) for owner con
 
 - Set one owner in `config/wildercord-cinnamon.json`; malformed reloads retain the complete last valid configuration.
 - Each treat adds 0.5× size, up to 3×, for one fixed 60-second window. Repeated feeding cannot extend it. Collision, support and claim checks use her real size.
+- While grown, each 0.5× step adds 2 bite damage, 5 max health, 1.5 armour, 0.1 knockback resistance and 5 damage budget. She joins her owner's fights and casts Bolt+Fire, Bolt+Frost, Bolt+Shock and Bolt+Harm in turn every 4 seconds (with a 12-tick telegraph). Below half health, her owner gets a Beam+Heal at most every 15 seconds. Her spells use her owner's friendly-fire rules and never touch Sword Masters. All of this ends when she returns to normal size.
 - Ordinary damage cannot kill her. A 20-point damage budget starts 30 seconds of following without attacking; isolated chip damage clears after ten quiet seconds.
 - Craft the reusable whistle from a copper ingot, bone and string. All copies share a 10-second owner cooldown and recall the same saved Cinnamon.
 - A source-only, nonpersistent chunk ticket can recover her original saved body for at most ten seconds. It is removed on completion, timeout, logout and server stop.

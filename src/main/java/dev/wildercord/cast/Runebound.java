@@ -423,7 +423,7 @@ public final class Runebound {
 	}
 
 	/** Turns a monster to face a point: body, head and look all agree, so the spell flies true. */
-	static void aimAt(Mob mob, LivingEntity target) {
+	public static void aimAt(Mob mob, LivingEntity target) {
 		Vec3 d = target.getBoundingBox().getCenter().subtract(mob.getEyePosition());
 		double flat = Math.sqrt(d.x * d.x + d.z * d.z);
 		float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
@@ -450,7 +450,7 @@ public final class Runebound {
 	}
 
 	/** The warning: the spell's circle opens in the caster's hand, and where an area spell will land is marked. */
-	static void telegraph(ServerLevel level, Mob mob, List<RuneDef> spell, LivingEntity target, int ticks) {
+	public static void telegraph(ServerLevel level, Mob mob, List<RuneDef> spell, LivingEntity target, int ticks) {
 		int color = elementColor(spell);
 		Vec3 look = target.getBoundingBox().getCenter().subtract(mob.getEyePosition()).normalize();
 		// The spell's own circle, readable ring by ring: learn the runes and you know what's coming.

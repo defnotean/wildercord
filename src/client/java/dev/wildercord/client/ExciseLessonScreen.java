@@ -31,6 +31,8 @@ public final class ExciseLessonScreen extends Screen implements CordEditorParent
 	private int scroll;
 	private int left, top, panelWidth, panelHeight, bodyTop, bodyBottom;
 	private Button next;
+	/** Why the server turned the Grimoire's request down, shown in place of the pages. */
+	private Component refusal;
 	private boolean waiting;
 
 	public ExciseLessonScreen(Screen parent) {
@@ -55,7 +57,8 @@ public final class ExciseLessonScreen extends Screen implements CordEditorParent
 				|| !lesson.requesting || lesson.request != shown.request())) return;
 			if (shown.nonce() != 0 && shown.nonce() == closedNonce) return;
 			if (shown.page() < 0) {
-				if (previous instanceof ExciseLessonScreen lesson && lesson.nonce == shown.nonce()) lesson.onClose();
+				if (shown.request() != 0 && previous instanceof ExciseLessonScreen lesson) lesson.refuse();
+				else if (previous instanceof ExciseLessonScreen lesson && lesson.nonce == shown.nonce()) lesson.onClose();
 				return;
 			}
 			if (shown.page() > 0 && (!(previous instanceof ExciseLessonScreen lesson) || lesson.nonce != shown.nonce())) return;
@@ -89,7 +92,7 @@ public final class ExciseLessonScreen extends Screen implements CordEditorParent
 		Button previous = addRenderableWidget(Button.builder(Component.translatable("gui.back"), button -> {
 			page = Math.max(0, page - 1); scroll = 0; rebuildWidgets();
 		}).bounds(left + 10, buttonY, buttonWidth, 20).build());
-		previous.active = !requesting && !studying && page > 0;
+		previous.active = !requesting && refusal == null && !studying && page > 0;
 		next = addRenderableWidget(Button.builder(Component.translatable(studying && page == 2
 			? "screen.wildercord.excise_lesson.learn" : "screen.wildercord.excise_lesson.next"), button -> advance())
 			.bounds(left + 20 + buttonWidth, buttonY, buttonWidth, 20).build());
@@ -108,8 +111,19 @@ public final class ExciseLessonScreen extends Screen implements CordEditorParent
 		}
 	}
 
+	/** The server turned the request down: say why here, in the window, rather than closing it on a passing action-bar line. */
+	private void refuse() {
+		requesting = false;
+		refusal = Component.translatable("message.wildercord.excise_lesson." + (MasterStudies.hasExciseLesson(minecraft.player) ? "locked" : "uncopied"));
+		rebuildWidgets();
+	}
+
 	private List<FormattedCharSequence> lines() {
 		List<FormattedCharSequence> lines = new ArrayList<>();
+		if (refusal != null) {
+			append(lines, refusal);
+			return lines;
+		}
 		if (requesting) {
 			append(lines, Component.translatable("screen.wildercord.excise_lesson.opening"));
 			return lines;
@@ -159,7 +173,7 @@ public final class ExciseLessonScreen extends Screen implements CordEditorParent
 		graphics.disableScissor();
 		if (maximum > 0) graphics.centeredText(font, Component.translatable("screen.wildercord.excise_lesson.scroll", scroll + 1, maximum + 1),
 			width / 2, bodyBottom + 4, 0xFFA7B8B6);
-		next.active = !requesting && !waiting && (studying || page < 2) && (!studying || scroll >= maximum);
+		next.active = !requesting && refusal == null && !waiting && (studying || page < 2) && (!studying || scroll >= maximum);
 		if (studying && scroll < maximum) {
 			next.setTooltip(Tooltip.create(Component.translatable("screen.wildercord.lesson.scroll_to_read")));
 		} else {

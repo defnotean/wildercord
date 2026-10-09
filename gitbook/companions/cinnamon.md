@@ -62,12 +62,25 @@ creepers, your other pets and players you aren't allowed to fight.
 ### Treats make her bigger
 
 Each treat makes her **0.5×** bigger, up to **3×** her normal size. She shrinks back **60 seconds** after the first
-treat; more treats don't extend that time. Bigger doesn't mean stronger: her bite does the same damage.
-She only grows if there is clear, solid room for her bigger body.
+treat; more treats don't extend that time. She only grows if there is clear, solid room for her bigger body.
+
+### Big Cinnamon is stronger, and casts magic
+
+While she's bigger than normal, each treat's growth also makes her stronger. At full **3×** size:
+
+- Her bite does **11** damage instead of 3. She has **40** health instead of 20, plus armour, and she's harder to knock back.
+- She tires only after **40 damage** instead of 20.
+- She joins any fight you start, not only the ones started against you.
+- She casts spells. Every few seconds she throws a fire, frost, lightning or arcane bolt at whatever she's fighting, up
+  to 20 blocks away. If your health drops below half, she casts a healing beam at you, at most once every 15 seconds.
+
+Her spells follow your own friendly-fire rules, so they never hurt you, your party or your pets. They also never hurt
+other players unless you are allowed to fight them. When she shrinks back to normal size, the extra strength and the
+magic go away.
 
 ### She can't die
 
-Damage doesn't lower her health. Instead, after **20 damage** in a short time she gets tired and rests for
+Damage doesn't lower her health. Instead, after **20 damage** (more while she's big) in a short time she gets tired and rests for
 **30 seconds**. Damage she has taken is forgotten after ten quiet seconds.
 
 While tired she walks slowly beside you, even if told to sit, and can't attack. When she recovers she goes back to

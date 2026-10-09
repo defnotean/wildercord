@@ -83,6 +83,11 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		this.parent = parent;
 	}
 
+	/** Where the Master-form link starts in the header, just right of the title. */
+	private int formsX() {
+		return 13 + font.width(title) + 12;
+	}
+
 	/** The control-help label's centre, for native accessibility and presentation tests. */
 	public double[] mastersHelpPoint() {
 		int labelWidth = font.width(Component.translatable("screen.wildercord.aura.masters_help"));
@@ -101,7 +106,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		masterFormsEntry = addWidget(net.minecraft.client.gui.components.Button.builder(forms.copy().append(". ")
 			.append(Component.translatable("screen.wildercord.master_forms.open", MasterFormsClient.binding())),
 			ignored -> minecraft.gui.setScreen(new MasterFormsScreen(this)))
-			.bounds(left() + Math.round(13 * s), top() + Math.round(21 * s), Math.round((font.width(forms) + 4) * s), Math.max(1, Math.round(12 * s))).build());
+			.bounds(left() + Math.round((formsX() - 2) * s), top() + Math.round(8 * s), Math.round((font.width(forms) + 4) * s), Math.max(1, Math.round(12 * s))).build());
 		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here (and the blade's).
 		minecraft.textInputManager().startTextInput(this);
 	}
@@ -202,11 +207,13 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		g.text(font, masters, mastersX, 10, mastersHover ? GOLD : DIM, true);
 		if (mastersHover) tooltip = MastersArtsClient.help();
 		Component forms = Component.translatable("screen.wildercord.master_forms.title");
-		g.text(font, forms, 15, 23, GOLD, true);
+		// In the header beside the title: lower down it ran across the portrait's frame and into the Method line.
+		int formsX = formsX();
+		g.text(font, forms, formsX, 10, GOLD, true);
 		if (masterFormsEntry != null && masterFormsEntry.isFocused()) {
-			g.fill(13, 21, 17 + font.width(forms), 22, GOLD); g.fill(13, 32, 17 + font.width(forms), 33, GOLD);
+			g.fill(formsX - 2, 8, formsX + 2 + font.width(forms), 9, GOLD); g.fill(formsX - 2, 19, formsX + 2 + font.width(forms), 20, GOLD);
 		}
-		if (inside(mx, my, 13, 21, font.width(forms) + 4, 12) || masterFormsEntry != null && masterFormsEntry.isFocused())
+		if (inside(mx, my, formsX - 2, 8, font.width(forms) + 4, 12) || masterFormsEntry != null && masterFormsEntry.isFocused())
 			tooltip = List.of(Component.translatable("screen.wildercord.master_forms.open", MasterFormsClient.binding()));
 		g.pose().popMatrix();
 		if (tooltip != null) {
@@ -772,17 +779,31 @@ public class AuraScreen extends Screen implements CordEditorParent {
 			&& dev.wildercord.aura.BladeRules.effective(b.tier(), Aura.stage(minecraft.player)) >= dev.wildercord.aura.BladeRules.AWAKENED;
 	}
 
+	/**
+	 * The method, stage and aura in one small line between the Master-form link and the Master's Arts help, shrunk (then cut short)
+	 * to the room left there so it never runs under either.
+	 */
+	private void compactHeader(GuiGraphicsExtractor g, Component line, int color) {
+		int x = formsX() + font.width(Component.translatable("screen.wildercord.master_forms.title")) + 8;
+		int room = W - 14 - font.width(Component.translatable("screen.wildercord.aura.masters_help")) - 8 - x;
+		float scale = Math.max(0.65F, Math.min(0.8F, room / (float) Math.max(1, font.width(line))));
+		String text = line.getString();
+		if (font.width(text) * scale > room) {
+			text = font.plainSubstrByWidth(text, (int) (room / scale) - font.width("…")) + "…";
+		}
+		g.pose().pushMatrix();
+		g.pose().translate(x, 11);
+		g.pose().scale(scale, scale);
+		g.text(font, text, 0, 0, color, false);
+		g.pose().popMatrix();
+	}
+
 	/** The blade's page: the method, stage and aura in one line by the title (as the writing page), the tabs, then the page ({@link BladePage}). */
 	private List<Component> bladeView(GuiGraphicsExtractor g, LocalPlayer player, BreathingMethod method, int stage, int mx, int my, float partial, int color) {
 		Component stageName = Component.translatable("aura.wildercord.stage." + AuraStages.id(stage));
 		Component line = Component.translatable("screen.wildercord.aura.writing.header", Component.translatable(method.nameKey()), stageName,
 			(int) Aura.aura(player), Aura.capacity(player));
-		int lw = (int) (font.width(line) * 0.8F);
-		g.pose().pushMatrix();
-		g.pose().translate(W - 14 - lw, 11);
-		g.pose().scale(0.8F, 0.8F);
-		g.text(font, line, 0, 0, color, false);
-		g.pose().popMatrix();
+		compactHeader(g, line, color);
 		tabs(g, 24, mx, my, color);
 		return lineage ? lineagePage.draw(g, player, mx, my, 38) : bladePage.draw(g, player, mx, my, partial, color & 0xFFFFFF, 38);
 	}
@@ -796,12 +817,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		Component stageName = Component.translatable("aura.wildercord.stage." + AuraStages.id(stage));
 		Component line = Component.translatable("screen.wildercord.aura.writing.header", Component.translatable(method.nameKey()), stageName,
 			(int) Aura.aura(player), Aura.capacity(player));
-		int lw = (int) (font.width(line) * 0.8F);
-		g.pose().pushMatrix();
-		g.pose().translate(W - 14 - lw, 11);
-		g.pose().scale(0.8F, 0.8F);
-		g.text(font, line, 0, 0, color, false);
-		g.pose().popMatrix();
+		compactHeader(g, line, color);
 		tabs(g, 24, mx, my, color);
 		return page.draw(g, player, mx, my, partial, color & 0xFFFFFF);
 	}

@@ -4,6 +4,20 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.11.1-alpha] — 2026-10-09
+
+Install the same build on the server and every client. No world changes; 0.11.0 worlds load as they are.
+
+### Changed
+
+- Cinnamon grows stronger while treats make her big. At full size she has a harder bite, double health, armour and a bigger fatigue budget. She also joins her owner's fights and casts fire, frost, lightning and arcane bolts at their enemies, plus a healing beam when her owner drops below half health. Her spells follow her owner's friendly-fire rules. At normal size she is unchanged.
+
+### Fixed
+
+- Tooltips in the Cord screen show again: the mana, heart, defence and help badges, spell sockets and Codex runes. A spell description beside the tool buttons left its clipping region open, which hid every tooltip drawn after it.
+- Opening a Master study you can't read yet (circle too low, or the boss victory missing) now stays open and says what it needs. Before, it closed at once and the reason only flashed behind the Cord screen.
+- The Aura screen's Master form link no longer runs across the breathing-method portrait and into the Method line; it now sits in the header beside the title. On the Writing, Blade and Lineage tabs the method, stage and aura line fits between the link and Master's Arts instead of printing over them.
+
 ## [0.11.0-alpha] — 2026-10-09
 
 Install the same build on the server and every client. New structures, items, runes, advancements and packets mean 0.10.x clients must update before joining. Back up worlds first; the 48 new sites appear only in newly generated chunks.

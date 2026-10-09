@@ -96,11 +96,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.11.0-alpha
+## Install 0.11.1-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client: a 0.11.0 server needs 0.11.0 players. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.11.1 server needs 0.11.1 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 

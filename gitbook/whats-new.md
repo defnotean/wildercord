@@ -1,3 +1,10 @@
+# What's new in 0.11.1
+
+- **Cinnamon grows stronger when she's big.** While treats keep her full size she bites harder, has double health and armour, joins her owner's fights and casts fire, frost, lightning and arcane bolts, plus a healing beam when her owner is low. At normal size she is unchanged. See [Cinnamon](companions/cinnamon.md).
+- **Screen fixes.** Tooltips in the Cord screen show again (badges, spell sockets and Codex runes). A Master study you can't read yet stays open and says what it needs. The Aura screen's header no longer prints text over the portrait or the Master's Arts help.
+
+Install `wildercord-0.11.1-alpha+mc26.3.jar` on the server and every client.
+
 # What's new in 0.11.0: Masters of Tomorrow
 
 This update adds Sword Masters, new player sword arts and movement forms, 48 places to explore, a lore journal, a bigger magic climb, everyday runes and parties. Install `wildercord-0.11.0-alpha+mc26.3.jar` on the server and every client together: **0.10 clients must update before joining**. See [Installation and Updates](installing.md).

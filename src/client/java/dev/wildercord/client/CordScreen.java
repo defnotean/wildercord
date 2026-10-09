@@ -1575,7 +1575,8 @@ public class CordScreen extends Screen {
 			if (!passivePage && !grimoirePage && spellCount() > 0 && lineY < toolsBottom) {
 				g.enableScissor(12, lineY - 1, W - 16 - TOOLS_W - 4, lineY + LINE);
 				g.text(font, line.text(), line.x(), lineY, line.color(), false);
-				g.enableScissor(12, READOUT_TOP - 1, W - 12, READOUT_BOTTOM);
+				// Back to the box's own clip: a second enable would stack another clip that outlives the frame's tooltip.
+				g.disableScissor();
 			} else {
 				g.text(font, line.text(), line.x(), lineY, line.color(), false);
 			}

@@ -48,7 +48,8 @@ import org.jspecify.annotations.Nullable;
 /**
  * An immortal little dog bound to the configured owner from the moment she appears. She goes after anyone who hurts her
  * owner, her collar bell jingles every so often so you can find her by ear, now and then she pokes the tip of her tongue
- * out, and she can wear a bow.
+ * out, and she can wear a bow. Fed until she's big, she grows stronger and remembers a little magic: she joins her
+ * owner's fights, throws fire, frost, lightning and arcane bolts at their enemies, and mends her owner when they're badly hurt.
  */
 public final class CinnamonDog extends TamableAnimal {
 	private static final net.minecraft.network.syncher.EntityDataAccessor<Integer> MOOD = net.minecraft.network.syncher.SynchedEntityData.defineId(CinnamonDog.class, net.minecraft.network.syncher.EntityDataSerializers.INT);
@@ -57,10 +58,27 @@ public final class CinnamonDog extends TamableAnimal {
 	public static final double GROWTH_STEP = 0.5, MAX_GROWTH_SCALE = 3.0;
 	public static final int GROWTH_TICKS = 1_200, RECOVERY_TICKS = 600, DAMAGE_IMMUNITY_TICKS = 10, DAMAGE_QUIET_TICKS = 200;
 	public static final float DAMAGE_BUDGET = 20;
+	/** What each growth step adds while she's big: bite, health, armour, footing and how much she takes before tiring. */
+	public static final double BIG_ATTACK = 2, BIG_HEALTH = 5, BIG_ARMOR = 1.5, BIG_FOOTING = 0.1;
+	public static final float BIG_BUDGET = 5;
+	private static final float MAX_BUDGET = DAMAGE_BUDGET + BIG_BUDGET * (float) ((MAX_GROWTH_SCALE - 1) / GROWTH_STEP);
+	/** Her spells: a short windup, then one every few seconds in a fight, and a mending beam when her owner is hurt. */
+	public static final int CAST_WINDUP = 12, CAST_INTERVAL = 80, HEAL_INTERVAL = 300;
+	private static final double SPELL_RANGE = 20, SPELL_POWER = 1.0;
+	private static final java.util.List<java.util.List<dev.wildercord.spell.RuneDef>> SPELLS = java.util.List.of(
+		java.util.List.of(dev.wildercord.spell.Runes.BOLT, dev.wildercord.spell.Runes.FIRE),
+		java.util.List.of(dev.wildercord.spell.Runes.BOLT, dev.wildercord.spell.Runes.FROST),
+		java.util.List.of(dev.wildercord.spell.Runes.BOLT, dev.wildercord.spell.Runes.SHOCK),
+		java.util.List.of(dev.wildercord.spell.Runes.BOLT, dev.wildercord.spell.Runes.HARM));
+	private static final java.util.List<dev.wildercord.spell.RuneDef> MENDING = java.util.List.of(dev.wildercord.spell.Runes.BEAM, dev.wildercord.spell.Runes.HEAL);
 	private static final Identifier GROWTH_MODIFIER = Wildercord.id("cinnamon_growth");
+	private static final Identifier STRENGTH_MODIFIER = Wildercord.id("cinnamon_strength");
 	/** How long a jingle lasts, and when in it each of its three little dings sounds. */
 	private static final int RING_TICKS = 12;
 	private int settled, playTicks, greeting, ringTicks, tongueTicks;
+	private int castCooldown = 40, healCooldown, castWindup, spellIndex;
+	private java.util.@Nullable List<dev.wildercord.spell.RuneDef> casting;
+	private @Nullable LivingEntity castTarget;
 	private int nextRing = 100 + getRandom().nextInt(300);
 	private boolean bow;
 	private boolean savedSitting, resizing, feeding, countingDamage;
@@ -106,6 +124,7 @@ public final class CinnamonDog extends TamableAnimal {
 			if (playTicks > 0) playTicks--;
 			if (greeting > 0) greeting--;
 			ring();
+			if (level() instanceof ServerLevel server) magic(server);
 			// The tip of her tongue, for a few seconds about every minute and a half (asleep too).
 			if (tongueTicks > 0) tongueTicks--;
 			else if (getRandom().nextInt(1800) == 0) tongueTicks = 60 + getRandom().nextInt(80);
@@ -127,6 +146,11 @@ public final class CinnamonDog extends TamableAnimal {
 
 	public boolean isExhausted() { return level().isClientSide() ? (mood() & EXHAUSTED) != 0 : recoveryUntil > clock(); }
 	public double growthScale() { return growthScale; }
+	/** Strength and magic belong to her grown form only. */
+	public boolean isBig() { return growthScale > 1; }
+	private double growthSteps() { return Math.max(0, (growthScale - 1) / GROWTH_STEP); }
+	/** How much damage tires her: more while she's big. */
+	public float damageBudget() { return DAMAGE_BUDGET + BIG_BUDGET * (float) growthSteps(); }
 	public long growthExpiresAt() { return growthUntil; }
 	public long recoveryExpiresAt() { return recoveryUntil; }
 	public long damageImmuneUntil() { return damageImmuneUntil; }
@@ -206,6 +230,20 @@ public final class CinnamonDog extends TamableAnimal {
 			if (factor > 1) scale.addTransientModifier(new AttributeModifier(GROWTH_MODIFIER, factor - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 			refreshDimensions();
 		} finally { resizing = false; }
+		double steps = growthSteps();
+		strengthen(Attributes.ATTACK_DAMAGE, BIG_ATTACK * steps);
+		strengthen(Attributes.MAX_HEALTH, BIG_HEALTH * steps);
+		strengthen(Attributes.ARMOR, BIG_ARMOR * steps);
+		strengthen(Attributes.KNOCKBACK_RESISTANCE, BIG_FOOTING * steps);
+		if (!isBig()) { casting = null; castTarget = null; castWindup = 0; }
+	}
+
+	private void strengthen(net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute, double amount) {
+		AttributeInstance instance = getAttribute(attribute);
+		if (instance == null) return;
+		instance.removeModifier(STRENGTH_MODIFIER);
+		if (amount > 0) instance.addTransientModifier(new AttributeModifier(STRENGTH_MODIFIER, amount, AttributeModifier.Operation.ADD_VALUE));
+		if (attribute == Attributes.MAX_HEALTH && getHealth() > getMaxHealth()) setHealth(getMaxHealth());
 	}
 
 	@Override public boolean fudgePositionAfterSizeChange(EntityDimensions previous) {
@@ -277,6 +315,52 @@ public final class CinnamonDog extends TamableAnimal {
 		}
 	}
 
+	/** One spell at a time: choose it, open its circle for {@link #CAST_WINDUP} ticks, then cast if it is still allowed. */
+	private void magic(ServerLevel level) {
+		if (healCooldown > 0) healCooldown--;
+		LivingEntity owner = getOwner();
+		if (!isBig()) return;
+		if (castWindup > 0) {
+			if (--castWindup == 0) release(level, owner);
+			return;
+		}
+		if (--castCooldown > 0) return;
+		castCooldown = 20;
+		if (!attackReady(owner)) return;
+		if (healCooldown == 0 && owner.getHealth() < owner.getMaxHealth() * 0.5F && distanceTo(owner) <= SPELL_RANGE && hasLineOfSight(owner)) {
+			begin(level, MENDING, owner);
+			return;
+		}
+		LivingEntity target = getTarget();
+		if (target != null && target.isAlive() && canAttack(target) && distanceTo(target) <= SPELL_RANGE && hasLineOfSight(target)) {
+			begin(level, SPELLS.get(spellIndex++ % SPELLS.size()), target);
+		}
+	}
+
+	private void begin(ServerLevel level, java.util.List<dev.wildercord.spell.RuneDef> spell, LivingEntity target) {
+		casting = spell;
+		castTarget = target;
+		castWindup = CAST_WINDUP;
+		dev.wildercord.cast.Runebound.aimAt(this, target);
+		dev.wildercord.cast.Runebound.telegraph(level, this, spell, target, CAST_WINDUP);
+	}
+
+	/** The target, her owner and her own state are checked again: anything may have changed during the windup. */
+	private void release(ServerLevel level, @Nullable LivingEntity owner) {
+		java.util.List<dev.wildercord.spell.RuneDef> spell = casting;
+		LivingEntity target = castTarget;
+		casting = null;
+		castTarget = null;
+		if (spell == null || target == null || !isBig() || !target.isAlive() || target.level() != level || !attackReady(owner)
+			|| distanceTo(target) > SPELL_RANGE || !hasLineOfSight(target)) return;
+		boolean mending = spell == MENDING;
+		if (mending ? target != owner : !canAttack(target)) return;
+		dev.wildercord.cast.Runebound.aimAt(this, target);
+		dev.wildercord.cast.Runebound.cast(level, this, spell, SPELL_POWER + (growthScale - 1) * 0.25);
+		if (mending) healCooldown = HEAL_INTERVAL;
+		castCooldown = CAST_INTERVAL;
+	}
+
 	@Override
 	protected void registerGoals() {
 		goalSelector.addGoal(1, new FloatGoal(this));
@@ -288,6 +372,11 @@ public final class CinnamonDog extends TamableAnimal {
 		goalSelector.addGoal(7, new RandomLookAroundGoal(this));
 		// Whoever lays a hand on her owner gets bitten (not while she's sitting, like any tame dog).
 		targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
+		// While she's big, whatever her owner fights, she joins in.
+		targetSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal(this) {
+			@Override public boolean canUse() { return isBig() && super.canUse(); }
+			@Override public boolean canContinueToUse() { return isBig() && super.canContinueToUse(); }
+		});
 	}
 
 	@Override
@@ -415,11 +504,11 @@ public final class CinnamonDog extends TamableAnimal {
 			|| !CinnamonCompanion.active(this) || level != level() || getOwner() != owner || stateRevision != revision
 			|| isExhausted() || clock() < damageImmuneUntil || !isAlive()) return false;
 		if (now - damageImmuneUntil >= DAMAGE_QUIET_TICKS - DAMAGE_IMMUNITY_TICKS) damage = 0;
-		damage = Math.min(DAMAGE_BUDGET, damage + amount);
+		damage = Math.min(damageBudget(), damage + amount);
 		damageImmuneUntil = now + DAMAGE_IMMUNITY_TICKS;
 		hurtDuration = hurtTime = 10;
 		level.broadcastDamageEvent(this, source);
-		if (damage >= DAMAGE_BUDGET) {
+		if (damage >= damageBudget()) {
 			recoveryUntil = now + RECOVERY_TICKS;
 			super.setTarget(null);
 			super.setOrderedToSit(false);
@@ -457,7 +546,7 @@ public final class CinnamonDog extends TamableAnimal {
 		this.growthUntil = boundedDeadline(growthUntil, now, GROWTH_TICKS);
 		this.recoveryUntil = boundedDeadline(recoveryUntil, now, RECOVERY_TICKS);
 		this.damageImmuneUntil = Math.clamp(damageImmuneUntil, 0, now + DAMAGE_IMMUNITY_TICKS);
-		this.damage = Float.isFinite(damage) ? Math.clamp(damage, 0, DAMAGE_BUDGET) : 0;
+		this.damage = Float.isFinite(damage) ? Math.clamp(damage, 0, MAX_BUDGET) : 0;
 		if (this.recoveryUntil == 0 && (recoveryUntil > 0 || now - this.damageImmuneUntil >= DAMAGE_QUIET_TICKS - DAMAGE_IMMUNITY_TICKS)) this.damage = 0;
 		applyGrowth(this.growthUntil > 0 && Double.isFinite(scale) ? Math.clamp(scale, 1, MAX_GROWTH_SCALE) : 1);
 		super.setOrderedToSit(savedSitting && !isExhausted());

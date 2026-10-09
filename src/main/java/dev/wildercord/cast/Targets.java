@@ -27,6 +27,10 @@ public final class Targets {
 		if (entity == caster) {
 			return true;
 		}
+		caster = castingFor(caster);
+		if (entity == caster) {
+			return true;
+		}
 		if (dev.wildercord.party.Parties.sameParty(caster, entity)) {
 			return true;
 		}
@@ -41,6 +45,11 @@ public final class Targets {
 			}
 		}
 		return caster.isAlliedTo(entity);
+	}
+
+	/** Cinnamon casts as her owner would: her spells pick allies and enemies by her owner's rules. */
+	private static LivingEntity castingFor(LivingEntity caster) {
+		return caster instanceof dev.wildercord.pet.CinnamonDog dog && dog.getOwner() instanceof Player owner ? owner : caster;
 	}
 
 	/**
@@ -75,6 +84,11 @@ public final class Targets {
 		// Bystanders cannot add uncounted damage or posture/control pressure to an opted-in fight.
 		if (entity instanceof dev.wildercord.aura.world.SwordMaster master && !master.acceptsHarmFrom(caster)) {
 			return false;
+		}
+		// Cinnamon never joins a master's trial, and her spells keep her owner's friendly-fire rules.
+		if (caster instanceof dev.wildercord.pet.CinnamonDog) {
+			LivingEntity owner = castingFor(caster);
+			return !(entity instanceof dev.wildercord.aura.world.SwordMaster) && owner != caster && canHarm(owner, entity);
 		}
 		// A duel overrides the rest: the two duellists may hurt each other, and neither may hurt another player.
 		Boolean duel = dev.wildercord.duel.Duels.canHarm(caster, entity);
