@@ -9,7 +9,7 @@ Copy the selected profile's `config/wildercord-visuals.json` into your Minecraft
 The folders can be used as configuration presets or packaged into importable Modrinth launcher packs. After `gradlew build`, run:
 
 ```text
-python tools/build_profiles.py --jar build/libs/wildercord-0.11.1-alpha+mc26.3.jar
+python tools/build_profiles.py --jar build/libs/wildercord-0.11.2-alpha+mc26.3.jar
 python tools/audit_packages.py
 ```
 

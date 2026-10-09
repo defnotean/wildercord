@@ -4,6 +4,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.11.2-alpha] — 2026-10-09
+
+Install the same build on the server and every client. No world changes; 0.11 worlds load as they are.
+
+### Fixed
+
+- Generating new chunks no longer crashes the server when a farm site, such as the walled orchard, places its sign. The sign's text is now written safely while the chunk is still being generated.
+
 ## [0.11.1-alpha] — 2026-10-09
 
 Install the same build on the server and every client. No world changes; 0.11.0 worlds load as they are.

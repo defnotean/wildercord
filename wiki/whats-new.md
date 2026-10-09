@@ -3,6 +3,12 @@ title: What's New
 nav_order: 1.1
 ---
 
+# What's new in 0.11.2
+
+- **Worldgen crash fixed.** Exploring new land no longer crashes the server when a farm site, such as the walled orchard, generates with its sign.
+
+Install `wildercord-0.11.2-alpha+mc26.3.jar` on the server and every client.
+
 # What's new in 0.11.1
 
 - **Cinnamon grows stronger when she's big.** While treats keep her full size she bites harder, has double health and armour, joins her owner's fights and casts fire, frost, lightning and arcane bolts, plus a healing beam when her owner is low. At normal size she is unchanged. See [Cinnamon]({{ '/companions/cinnamon/' | relative_url }}).

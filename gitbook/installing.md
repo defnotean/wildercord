@@ -2,7 +2,7 @@
 
 Wildercord runs on **Minecraft Java 26.3** with **Fabric**. Install the same Wildercord version on the server and on every player's game.
 
-The current version is **0.11.1-alpha**. Players still on 0.10 must update before they can join a 0.11 server, and server and players should all run the same 0.11 build.
+The current version is **0.11.2-alpha**. Players still on 0.10 must update before they can join a 0.11 server, and server and players should all run the same 0.11 build.
 
 ## What you need
 
@@ -15,7 +15,7 @@ The current version is **0.11.1-alpha**. Players still on 0.10 must update befor
 
 ## Pick your download
 
-Download from [GitHub Releases](https://github.com/defnotean/wildercord/releases). The mod file for this version is `wildercord-0.11.1-alpha+mc26.3.jar`. The `-sources` jar is for developers; don't put it in your mods folder.
+Download from [GitHub Releases](https://github.com/defnotean/wildercord/releases). The mod file for this version is `wildercord-0.11.2-alpha+mc26.3.jar`. The `-sources` jar is for developers; don't put it in your mods folder.
 
 | Download | Use it when | Also includes |
 |---|---|---|
