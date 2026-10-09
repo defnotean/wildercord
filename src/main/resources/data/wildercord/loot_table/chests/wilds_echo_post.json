@@ -1,0 +1,167 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:manual_page",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:breathing_method": "echo"
+            },
+            "type": "minecraft:set_components"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 3
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:echolocate"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:hush"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:enderhush"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:softfoot"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:glidewind"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:deepsound"
+            },
+            "type": "minecraft:set_components"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:echo_shard",
+          "weight": 2,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 2
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:amethyst_shard",
+          "weight": 3,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 6
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:aura_shard",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:blank_rune",
+          "weight": 3,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 4
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:mana_crystal",
+          "weight": 2,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 2
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:spell_scroll",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

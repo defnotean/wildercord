@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "wilds_dune_temple",
+  "biomes": "#wildercord:has_structure/wilds_dune_temple",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

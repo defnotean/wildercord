@@ -22,13 +22,19 @@ Hover the **mana badge** in the Cord screen for a full breakdown.
 | [Reservoir](enchantments.md) on your Cord | +25 per level (up to +75) |
 | Each working [Heart Circle](heart-circles.md) | +15 (up to +300) |
 | A **Focus of the Deep Well** | +50 while equipped (see [Casting Gear](../gear.md)) |
+| [Circle Vows](circle-vows.md) | Wellspring vow (IX) +30, Reservoir vow (XIX) +60; the Spring vow (XIX) takes 20 away |
 
-The most you can have is **1,725**. If your maximum drops, mana above it is lost.
+The most you can have is **1,815**. If your maximum drops, mana above it is lost.
 
 ## Regeneration
 
 **Base regeneration**: 5 / 6 / 7 / 8 a second from a Twine / Copper / Amethyst / Echo Cord, plus
-**+0.5 per working Heart Circle** (up to +10).
+**+0.5 per working Heart Circle** (up to +10), plus your
+[Circle Vows](circle-vows.md): the Quickening vow (IX) adds 1.5, the Spring
+vow (XIX) adds 2.5, and the Reservoir vow (XIX) takes 0.5 away.
+
+The vows share names with two Cord enchantments, Wellspring and Reservoir, but they are separate
+and stack with them.
 
 Boosts add together, then multiply the base:
 

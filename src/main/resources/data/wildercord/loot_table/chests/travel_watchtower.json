@@ -1,0 +1,157 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:sky_reading"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:sun_reading"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:moon_reading"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:land_reading"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 2,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:starchart"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 2,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:waymark"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:rally_light"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:lodestar"
+            },
+            "type": "minecraft:set_components"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spyglass",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:flint_and_steel",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:map",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:arrow",
+          "weight": 3,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 4,
+              "max": 10
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:torch",
+          "weight": 3,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 4,
+              "max": 8
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:compass",
+          "weight": 2
+        }
+      ]
+    }
+  ]
+}

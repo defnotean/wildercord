@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "mine_prospector_camp",
+  "biomes": "#wildercord:has_structure/mine_prospector_camp",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

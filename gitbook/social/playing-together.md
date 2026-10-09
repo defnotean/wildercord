@@ -21,9 +21,11 @@ shields, buffs) land on them.
 | `/party kick <member>` | Removes a member (leader only) |
 | `/party disband` | Ends the party (leader only) |
 
-- Only the **leader** can invite, kick and disband. If the leader leaves, someone else becomes leader.
+- Only the **leader** can invite, kick and disband. If the leader leaves, the member who joined earliest becomes leader.
 - You can send one invitation a second, with up to 8 waiting at once.
 - Your party lasts through death and logging out, but ends when the server restarts.
+
+The full rules are on the [Parties](parties.md) page.
 
 ### What a party does
 

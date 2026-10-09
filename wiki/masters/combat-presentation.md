@@ -1,7 +1,7 @@
 ---
 title: Combat Presentation
 parent: Sword Masters
-nav_order: 6
+nav_order: 20
 ---
 
 # Combat Presentation

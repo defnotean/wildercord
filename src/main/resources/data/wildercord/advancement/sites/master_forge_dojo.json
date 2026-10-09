@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "master_forge_dojo": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:master_forge_dojo"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:campfire"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.master_forge_dojo.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.master_forge_dojo.description"
+    }
+  },
+  "requirements": [
+    [
+      "master_forge_dojo"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

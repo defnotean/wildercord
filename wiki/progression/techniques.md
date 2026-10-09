@@ -105,8 +105,8 @@ it does, the more it costs and the longer it rests.
 | **Sunder** | Wears a stance **two and a half times** as hard as an art, toward an [opening and your finisher]({{ '/progression/aura/' | relative_url }}#stance-and-finishers) |
 | **Bind** | **Roots** each foe it strikes where it stands for **1.2 seconds** (a player only briefly) |
 | **Echo** | Strikes each foe **again half a second later** for half as much, wherever it has gone, if it's still near |
-| **Ward** | You take **a fifth less** from foes for **four seconds** after. Only the Way of the Bulwark lends it |
-| **Rally** | You and your allies within **eight blocks** take **a tenth less** from foes for **five seconds**, and allied swordsmen build momentum. Only the Way of the Banner lends it |
+| **Ward** | You take **a fifth less** from foes for **four seconds** after. The Way of the Bulwark lends it; the Rime and Dawn Masters teach it. No scroll or duelist carries it |
+| **Rally** | You and your allies within **eight blocks** take **a tenth less** from foes for **five seconds**, and allied swordsmen build momentum. The Way of the Banner lends it; the Verdant Master teaches it. No scroll or duelist carries it |
 | **Infuse** | Your method's element **twice as strong** (an Ember technique burns longer, a Rime one chills deeper). **Every blade knows it** |
 
 ### Your element
@@ -207,16 +207,28 @@ a pierce; a Stone one's a falling cut, a burst or a sunder).
 
 ### Sword Masters
 
-The first time you beat a [Sword Master]({{ '/masters/' | relative_url }}), it teaches you a part: the
-[Ember]({{ '/masters/ember/' | relative_url }}) Master **Echo**, the [Gale]({{ '/masters/gale/' | relative_url }}) Master
-**Afterimage**, and the [Stone]({{ '/masters/stone/' | relative_url }}) Master **Sunder**.
+The first time you beat a [Sword Master]({{ '/masters/' | relative_url }}), it teaches you a part for good:
+
+| Part | Taught by |
+|---|---|
+| **Echo** | [Ember]({{ '/masters/ember/' | relative_url }}) |
+| **Afterimage** | [Gale]({{ '/masters/gale/' | relative_url }}) |
+| **Sunder** | [Stone]({{ '/masters/stone/' | relative_url }}) |
+| **Ward** | [Rime]({{ '/masters/rime/' | relative_url }}), [Dawn]({{ '/masters/dawn/' | relative_url }}) |
+| **Pierce** | [Thunder]({{ '/masters/thunder/' | relative_url }}), [Iron]({{ '/masters/iron/' | relative_url }}) |
+| **Rally** | [Verdant]({{ '/masters/verdant/' | relative_url }}) |
+| **Bind** | [Hollow]({{ '/masters/hollow/' | relative_url }}), [Hourglass]({{ '/masters/hourglass/' | relative_url }}), [Dune]({{ '/masters/dune/' | relative_url }}), [Venom]({{ '/masters/venom/' | relative_url }}) |
+| **Burst** | [Starlit]({{ '/masters/starlit/' | relative_url }}) |
+| **Infuse** | [Crimson]({{ '/masters/crimson/' | relative_url }}) (every blade already knows it) |
+| **Wave** | [Tide]({{ '/masters/tide/' | relative_url }}), [Echo]({{ '/masters/echo/' | relative_url }}) |
+
+If you already know the part, the clear is still recorded.
 
 ### Ways
 
 Your [Way]({{ '/progression/ways/' | relative_url }}) **lends** you a part while you walk it: the Blade **Pierce**, the Bulwark
-**Ward**, the Shadowstep **Afterimage** and the Banner **Rally**. Ward and Rally are found nowhere else. Leave the Way and its part
-goes with it: a technique written with it rests until you walk that Way again (or learn the part another way, for Pierce and
-Afterimage).
+**Ward**, the Shadowstep **Afterimage** and the Banner **Rally**. No scroll or duelist carries Ward or Rally; only a Master's first clear teaches them for good. Leave the Way and its part
+goes with it: a technique written with it rests until you walk that Way again (or learn the part for good another way).
 
 <img src="{{ '/assets/images/techniques-ward-rally.jpg' | relative_url }}" alt="Left: a player seen from behind with rings of pale blue light round their body after a technique, a husk ahead. Right: a player with a gold pennant of light over their head, a gold ring at their feet and a gold thread running to an ally ringed in gold" class="shot">
 <span class="caption">A Bulwark's Ward and a Banner's Rally.</span>

@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "master_root_temple",
+  "biomes": "#wildercord:has_structure/master_root_temple",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

@@ -124,6 +124,7 @@ at any time to see every vow, what you picked and what is still open.
 
 Choosing is free. To change your mind, `/vow release <circle>` costs **5 experience levels**, and then you choose
 again for free. A vow only works while its circle is whole: a cracked circle silences its vow until you mend it.
+See [Circle Vows](circle-vows.md) for the commands and tips.
 
 ### Passive slots and your innate rune
 

@@ -5,8 +5,10 @@
 A spell is just the runes on your Cord, read from left to right. There are no fixed spells to unlock. You pick
 the runes and their order, and the Cord screen tells you what you've made before you cast it.
 
-Looking for a rune? Every rune, sorted the way the Codex sorts them, is on the
-[Rune Codex](../runes/codex.md) page.
+Looking for a rune? In game, open the [Rune Catalog](rune-catalog.md) from your
+Cord screen with `Ctrl`+`B`. Every rune, sorted the way the Codex sorts them, is on the
+[Rune Codex](../runes/codex.md) page, and the farming, fishing, mining, exploring and support
+runes are gathered on [Everyday Rune Packs](../runes/everyday-packs.md).
 
 ## The rules at a glance
 
@@ -19,7 +21,7 @@ Looking for a rune? Every rune, sorted the way the Codex sorts them, is on the
   later.
 - **Spells cost mana**, then recharge: about a second for every 20 mana, from half a second to twenty seconds.
 - **Tap `R`** to cast at once, or **hold it** to charge for up to 40% more power.
-- **Friendly fire is off.** Harmful effects never touch you, your party, your pets or your team. Helpful effects
+- **Friendly fire is off.** Harmful effects never touch you, your [party](../social/parties.md), your pets or your team. Helpful effects
   only touch you and those allies.
 - **You grow stronger** by forming [Heart Circles](../progression/heart-circles.md), now up to
   Circle XX, and by absorbing [Mana Crystals](../progression/mana.md), up to 100 of them.
@@ -32,6 +34,7 @@ Looking for a rune? Every rune, sorted the way the Codex sorts them, is on the
 |---|---|
 | [Cords](cords.md) | The four Cords, their recipes and the Cord enchantments. |
 | [The Cord Screen](cord-screen.md) | Where you build spells: the Codex, threading runes, the readout, names, codes and the Grimoire. |
+| [Rune Catalog](rune-catalog.md) | Browse every rune by family, element and use, and see what goes well with each one (`Ctrl`+`B`). |
 | [How a Spell Is Read](reading-spells.md) | Groups, modifiers, links, cost and cooldown, with worked examples. |
 | [Builds to Try](build-examples.md) | Ready-made spells to copy and learn from. |
 | [Casting](casting.md) | Tapping, charging, overchannelling, rhythm, switching spells and the HUD. |

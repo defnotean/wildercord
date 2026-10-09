@@ -1,7 +1,7 @@
 # Explicit full-client shard plan
 
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
-335-class descriptor as exactly four groups: **84 / 84 / 84 / 83**.
+341-class descriptor as exactly four groups: **86 / 86 / 85 / 84**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,
 manifest/aggregate tooling, and Gradle resource processing and launch preflight.
 There is no equal-count fallback or automatic assignment for newly added classes.
@@ -15,9 +15,9 @@ holds that reviewed plan so the tests can prove it.
 
 - Plan schema 1, ID `full-client-explicit-v2-counter-lifetimes`.
 - Ordered roster SHA-256:
-  `aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be`.
+  `af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c`.
 - Complete plan SHA-256:
-  `80a4046a84b8fccf4f753fa39f0646158bcc0c624b9689655367df7196c0942b`.
+  `d81692710775b8ce351c63ea357e6e56a643b138879962f7d97e6aa1b7fbe460`.
 - Hashes use UTF-8 JSON with sorted object keys, compact separators and no trailing
   newline. The plan digest excludes no fields and is pinned in the selector.
   These are source identities, not claims of runtime acceptance.

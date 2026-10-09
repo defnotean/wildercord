@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/travel_wayfarer_inn",
+  "criteria": {
+    "travel_broken_bridge": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:travel_broken_bridge"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:stone_bricks"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.travel_broken_bridge.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.travel_broken_bridge.description"
+    }
+  },
+  "requirements": [
+    [
+      "travel_broken_bridge"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

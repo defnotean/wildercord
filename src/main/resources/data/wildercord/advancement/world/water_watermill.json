@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_watermill": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_watermill"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:grindstone"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_watermill.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_watermill.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_watermill"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

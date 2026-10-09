@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101107,
+    "spacing": 48,
+    "separation": 16
+  },
+  "structures": [
+    {
+      "structure": "wildercord:farm_granary",
+      "weight": 1
+    }
+  ]
+}

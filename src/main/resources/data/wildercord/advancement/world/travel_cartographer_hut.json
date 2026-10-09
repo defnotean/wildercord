@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/travel_wayfarer_inn",
+  "criteria": {
+    "travel_cartographer_hut": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:travel_cartographer_hut"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:cartography_table"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.travel_cartographer_hut.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.travel_cartographer_hut.description"
+    }
+  },
+  "requirements": [
+    [
+      "travel_cartographer_hut"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

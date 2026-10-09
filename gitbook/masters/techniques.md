@@ -192,7 +192,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Rime Master
 
 
-26 techniques. Breathing method: [Rime Breath](../progression/breathing-methods.md#rime).
+26 techniques. Breathing method: [Rime Breath](../progression/breathing-methods.md#rime). More about this school: [Rime Master](rime.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.65 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Rime Lattice.
@@ -232,7 +232,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Thunder Master
 
 
-26 techniques. Breathing method: [Thunder Breath](../progression/breathing-methods.md#thunder).
+26 techniques. Breathing method: [Thunder Breath](../progression/breathing-methods.md#thunder). More about this school: [Thunder Master](thunder.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.65 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Thunder Chain.
@@ -272,7 +272,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Verdant Master
 
 
-26 techniques. Breathing method: [Verdant Breath](../progression/breathing-methods.md#verdant).
+26 techniques. Breathing method: [Verdant Breath](../progression/breathing-methods.md#verdant). More about this school: [Verdant Master](verdant.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.65 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Verdant Bloom.
@@ -312,7 +312,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Hollow Master
 
 
-26 techniques. Breathing method: [Hollow Breath](../progression/breathing-methods.md#hollow).
+26 techniques. Breathing method: [Hollow Breath](../progression/breathing-methods.md#hollow). More about this school: [Hollow Master](hollow.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.7 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Hollow Pull.
@@ -352,7 +352,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Starlit Master
 
 
-26 techniques. Breathing method: [Starlit Breath](../progression/breathing-methods.md#starlit).
+26 techniques. Breathing method: [Starlit Breath](../progression/breathing-methods.md#starlit). More about this school: [Starlit Master](starlit.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.7 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Constellation.
@@ -392,7 +392,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Hourglass Master
 
 
-26 techniques. Breathing method: [Hourglass Breath](../progression/breathing-methods.md#hourglass).
+26 techniques. Breathing method: [Hourglass Breath](../progression/breathing-methods.md#hourglass). More about this school: [Hourglass Master](hourglass.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.7 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Rewind.
@@ -432,7 +432,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Crimson Master
 
 
-26 techniques. Breathing method: [Crimson Breath](../progression/breathing-methods.md#crimson).
+26 techniques. Breathing method: [Crimson Breath](../progression/breathing-methods.md#crimson). More about this school: [Crimson Master](crimson.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.7 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Blood Frenzy.
@@ -472,7 +472,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Tide Master
 
 
-22 techniques. Breathing method: [Tide Breath](../progression/breathing-methods.md#tide).
+22 techniques. Breathing method: [Tide Breath](../progression/breathing-methods.md#tide). More about this school: [Tide Master](tide.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.7 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Undertow Ring.
@@ -508,7 +508,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Iron Master
 
 
-22 techniques. Breathing method: [Iron Breath](../progression/breathing-methods.md#iron).
+22 techniques. Breathing method: [Iron Breath](../progression/breathing-methods.md#iron). More about this school: [Iron Master](iron.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.7 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Anvil Verdict.
@@ -544,7 +544,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Dune Master
 
 
-22 techniques. Breathing method: [Dune Breath](../progression/breathing-methods.md#dune).
+22 techniques. Breathing method: [Dune Breath](../progression/breathing-methods.md#dune). More about this school: [Dune Master](dune.md).
 
 - **Pace:** each wind-up takes 0.6 to 0.7 s. After a technique it stays open for 0.7 to 0.8 s.
 - **Signature:** Shifting Sands.
@@ -580,7 +580,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Echo Master
 
 
-23 techniques. Breathing method: [Echo Breath](../progression/breathing-methods.md#echo).
+23 techniques. Breathing method: [Echo Breath](../progression/breathing-methods.md#echo). More about this school: [Echo Master](echo.md).
 
 - **Pace:** each wind-up takes 0.25 to 0.7 s. After a technique it stays open for 0.75 s.
 - **Signature:** Tolling Bell.
@@ -617,7 +617,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Dawn Master
 
 
-23 techniques. Breathing method: [Dawn Breath](../progression/breathing-methods.md#dawn).
+23 techniques. Breathing method: [Dawn Breath](../progression/breathing-methods.md#dawn). More about this school: [Dawn Master](dawn.md).
 
 - **Pace:** each wind-up takes 0.25 to 0.7 s. After a technique it stays open for 0.75 s.
 - **Signature:** Noon Glare.
@@ -654,7 +654,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 ## Venom Master
 
 
-23 techniques. Breathing method: [Venom Breath](../progression/breathing-methods.md#venom).
+23 techniques. Breathing method: [Venom Breath](../progression/breathing-methods.md#venom). More about this school: [Venom Master](venom.md).
 
 - **Pace:** each wind-up takes 0.25 to 0.7 s. After a technique it stays open for 0.75 s.
 - **Signature:** Serpent Coil.

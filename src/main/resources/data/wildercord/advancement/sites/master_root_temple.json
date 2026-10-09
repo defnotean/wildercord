@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "master_root_temple": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:master_root_temple"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:mangrove_roots"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.master_root_temple.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.master_root_temple.description"
+    }
+  },
+  "requirements": [
+    [
+      "master_root_temple"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

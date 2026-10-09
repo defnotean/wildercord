@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_ice_camp": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_ice_camp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:packed_ice"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_ice_camp.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_ice_camp.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_ice_camp"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

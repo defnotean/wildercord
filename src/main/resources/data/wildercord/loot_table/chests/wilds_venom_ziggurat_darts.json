@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 2,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:tipped_arrow",
+          "modifier": [
+            {
+              "id": "minecraft:poison",
+              "type": "minecraft:set_potion"
+            },
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 6
+              },
+              "type": "minecraft:set_count"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

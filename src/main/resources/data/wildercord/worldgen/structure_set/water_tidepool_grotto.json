@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101208,
+    "separation": 12,
+    "spacing": 36
+  },
+  "structures": [
+    {
+      "structure": "wildercord:water_tidepool_grotto",
+      "weight": 1
+    }
+  ]
+}

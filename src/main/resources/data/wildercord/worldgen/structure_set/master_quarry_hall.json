@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101003,
+    "spacing": 46,
+    "separation": 16
+  },
+  "structures": [
+    {
+      "structure": "wildercord:master_quarry_hall",
+      "weight": 1
+    }
+  ]
+}

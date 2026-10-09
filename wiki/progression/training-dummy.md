@@ -63,6 +63,9 @@ After **3 seconds** without a hit, the next hit starts a new count. After **4 se
 - **Compare spells:** cast each for five seconds and compare DPS. Test modifiers like Amplify, Split or Focus the same way.
 - **Learn reactions:** try `Bolt · Chill · Ember` and watch for Shatter. See
   [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}).
+- **Practise sword [momentum]({{ '/progression/aura/' | relative_url }}#momentum):** blows and arts on a dummy build it at a
+  bit over half the usual rate, and only up to just short of tier 3. In the [practice room]({{ '/progression/practice/' | relative_url }})
+  you can build it all the way to the peak, so you can try your Final Art.
 - **Practise [Resonant Strikes]({{ '/progression/resonant-strikes/' | relative_url }})**: the dummy shows the bonus damage.
 - **Check your gear:** hit it with and without a staff, at full mana and not, charged and tapped, on the beat and off.
 - Line up several dummies to test Chain, Burst and Wildfire.

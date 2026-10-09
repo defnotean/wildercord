@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101306,
+    "spacing": 56,
+    "separation": 20
+  },
+  "structures": [
+    {
+      "structure": "wildercord:mine_deep_vault",
+      "weight": 1
+    }
+  ]
+}

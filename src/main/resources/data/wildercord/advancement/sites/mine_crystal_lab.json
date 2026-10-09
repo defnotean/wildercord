@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:sites/mine_hillside_mine",
+  "criteria": {
+    "mine_crystal_lab": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:mine_crystal_lab"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:amethyst_cluster"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.mine_crystal_lab.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.mine_crystal_lab.description"
+    }
+  },
+  "requirements": [
+    [
+      "mine_crystal_lab"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

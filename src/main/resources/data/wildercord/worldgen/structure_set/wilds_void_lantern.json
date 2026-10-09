@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101508,
+    "separation": 14,
+    "spacing": 40
+  },
+  "structures": [
+    {
+      "structure": "wildercord:wilds_void_lantern",
+      "weight": 1
+    }
+  ]
+}

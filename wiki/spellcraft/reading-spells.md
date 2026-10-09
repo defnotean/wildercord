@@ -130,8 +130,8 @@ Extra copies past a limit show a warning and add nothing. Every rune page lists 
 
 - **Harmful effects** never touch you, your **party**, your pets or your **team**. Other players are only harmed
   if the server allows PvP, and then rune damage to players is scaled down (to 60% by default).
-- **Helpful effects** only touch you and those same allies. To heal a friend with `Burst · Heal`, join a party
-  with `/party` or share a team.
+- **Helpful effects** only touch you and those same allies. To heal a friend with `Burst · Heal`, join a
+  [party]({{ '/social/parties/' | relative_url }}) with `/party` (up to 8 players) or share a team.
 - **Movement and world effects** only work where you're allowed to build.
 
 So `Burst · Fire · Heal` burns every enemy around you and heals you and your allies at once.

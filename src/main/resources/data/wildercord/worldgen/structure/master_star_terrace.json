@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "master_star_terrace",
+  "biomes": "#wildercord:has_structure/master_star_terrace",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

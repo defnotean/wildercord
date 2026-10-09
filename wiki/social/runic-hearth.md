@@ -33,7 +33,7 @@ Use one of these items on the hearth to pick its project. The item is not used u
 - A hearth holds up to **3 charges**. It takes one charge a second at most, and spends one every 5 seconds.
 - A fused effect counts for each element inside it.
 - Boons go to players within 8 blocks.
-- The owner and their [party]({{ '/social/playing-together/' | relative_url }}#parties) or team can charge it and get
+- The owner and their [party]({{ '/social/parties/' | relative_url }}) or team can charge it and get
   its boons.
 - It only works while the owner is online in the same dimension.
 - Use a **Book** on it to open your notebook. Use it with an **empty hand** to see its project and charge.

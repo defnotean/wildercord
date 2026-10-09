@@ -90,6 +90,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.DomainClash.init();
 		dev.wildercord.cast.SpellChat.init();
 		dev.wildercord.world.WildercordWorldgen.init();
+		dev.wildercord.world.sites.Sites.init();
 		dev.wildercord.world.upgrade.WorldUpgrades.init();
 		dev.wildercord.cast.events.WorldEvents.init();
 		dev.wildercord.runesmith.Runesmith.init();

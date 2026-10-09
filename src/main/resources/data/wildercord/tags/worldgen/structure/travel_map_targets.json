@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "wildercord:travel_wayfarer_inn",
+    "wildercord:travel_watchtower",
+    "wildercord:travel_broken_bridge",
+    "wildercord:travel_rune_library",
+    "wildercord:travel_standing_stones",
+    "wildercord:travel_caravan_camp",
+    "wildercord:travel_vow_circle"
+  ]
+}

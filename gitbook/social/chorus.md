@@ -32,7 +32,7 @@ Two or three casters sing together when **all** of these are true:
 
 ### Who counts as an ally
 
-Two casters are allies if they're in the same [party](playing-together.md#parties) or
+Two casters are allies if they're in the same [party](parties.md) or
 team, or if **neither could harm the other** (with PvP off, any two players qualify). Two players duelling each other
 never sing together.
 

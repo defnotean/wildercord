@@ -31,6 +31,9 @@ passive turns on as soon as its runes make a valid passive. Your Cord's tier sti
   `Stoneskin · Empower` works, but `Swift · Orbit · Shock` has two shapes and is refused.
 - **Buffs** (Self or Orbit): Feather Fall, Swift, Night Eye, Haste, Tidebreath, Leap, Anchor, Frostward,
   Cushion, Regrowth, Stoneskin, Empower, Fireward, Overdrive, Searing Edge and Reflect.
+- **Hearth runes** (Self or Orbit): Slowburn, Warm Cloak, Softsole, Softfoot, Orbcall, Lantern Soul, Keenkeep,
+  Currentkin, Surefoot, Long Arm, Nightwatch, Luckcharm, Deepwarn and Enderhush. See
+  [Everyday Rune Packs](../runes/everyday-packs.md).
 - **Auras** (Orbit only): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember,
   Icicle, Pelt, Windcut and Umbra. Orbit's three orbs hit whatever they touch, and a new ring starts every
   8 seconds. Orbit needs an Amethyst Cord.

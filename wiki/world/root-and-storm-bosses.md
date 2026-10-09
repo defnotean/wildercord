@@ -59,7 +59,7 @@ Its spells use shock, wind cuts, thunderclaps, rain, barrages and lances.
   - Rootbound Relic: heals and roots nearby monsters, then recharges in 30 seconds.
   - Stormglass Relic: blasts monsters away and gives you speed and slow falling, then recharges in 30 seconds.
 - **Every fighter nearby** gets a Tier IV rune, picking one they don't know yet when it can, plus experience.
-- **Feat:** *Heartwood* for the Root Guardian, *Grounded* for the Storm Conductor.
+- **Feat:** *Heartwood* for the Root Guardian, *Grounded* for the Storm Conductor. The 16th Heart Circle asks for Heartwood and the 18th asks for Grounded.
 
 ### Lessons these feats unlock
 

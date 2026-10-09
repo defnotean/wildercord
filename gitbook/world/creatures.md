@@ -128,7 +128,11 @@ cloak trim, sash and mask show which.
 - **To duel:** use it with a blade in hand, then use it again within 10 seconds to accept. Beat it and it teaches you its
   method. See [Duels with a duelist](../progression/aura.md#duels-with-a-duelist).
 
-For the stronger teachers, see [Sword Masters](../masters/index.md).
+- **To call its Master:** once you've reached Aura Form or Heart Circle VIII, sneak and use the duelist, then do it
+  again within 10 seconds. You can also type `/master challenge <school>`.
+
+For the stronger teachers, see [Sword Masters](../masters/index.md). The eight
+[Master halls](masters-sites.md) are good places to train first.
 
 ## Tips and counterplay
 

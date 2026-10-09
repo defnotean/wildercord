@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101304,
+    "spacing": 40,
+    "separation": 14
+  },
+  "structures": [
+    {
+      "structure": "wildercord:mine_collapsed_delve",
+      "weight": 1
+    }
+  ]
+}

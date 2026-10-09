@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_void_lantern": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_void_lantern"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:end_rod"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_void_lantern.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_void_lantern.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_void_lantern"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

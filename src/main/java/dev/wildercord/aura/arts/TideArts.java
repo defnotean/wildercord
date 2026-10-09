@@ -130,6 +130,9 @@ public final class TideArts {
 	// ------------------------------------------------------------------ III. Whirlpool
 
 	static boolean whirlpool(ServerPlayer player, AuraApi.StringContext context) {
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(WHIRLPOOL) || !counter.valid()) return false;
+		LivingEntity caught = counter.target();
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.45F);
@@ -138,6 +141,11 @@ public final class TideArts {
 		Vec3 floor = ArtKit.floor(level, centre.add(0, 0.5, 0), 0.5, 3);
 		Vec3 heart = floor == null ? centre : floor;
 		Feels.sound(level, heart.add(0, 0.5, 0), "aura_art_whirlpool", 1.1F, 1.0F);
+		// The counter: the one who struck is cut first and pulled toward the pool's heart.
+		if (caught != null && counter.primaryValid()) {
+			hits.strike(caught, TideRules.WHIRLPOOL_FACTOR * 2, AuraFxRules.Weight.FULL);
+			if (counter.afterDamage(caught) && counter.permits(caught)) ArtKit.draw(caught, heart, TideRules.WHIRLPOOL_DRAG * 2);
+		}
 		ArtLight.world(player).ground(heart.add(0, 0.04, 0), SigilOption.RING, FOAM, TideRules.WHIRLPOOL_RADIUS, TideRules.WHIRLPOOL_TICKS, 0.08);
 		ArtFields.open(player, POOL, ArtFields.disc(() -> heart, TideRules.WHIRLPOOL_RADIUS, 2.5), TideRules.WHIRLPOOL_TICKS, 2, (field, owner, age) -> {
 			ServerLevel lv = field.level();

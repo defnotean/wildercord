@@ -4,6 +4,18 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.11.0-alpha] — 2026-10-09
+
+Install the same build on the server and every client. New structures, items, runes, advancements and packets mean 0.10.x clients must update before joining. Back up worlds first; the 48 new sites appear only in newly generated chunks.
+
+### Release fixes
+
+- Water-site villagers are marked as site residents, so they are never confused with wandering villagers.
+- The Prospector's Camp floor uses blocks that don't fall, so it holds over hollow ground.
+- The water sites look for their spot across nine places in a chunk and every facing, so they find shore and shallows more often.
+
+### Added
+
 - Add the Rune Catalog (Catalog link or Ctrl+B in the Cord screen): search runes by name and by what you can read of them, filter by family, element, use (combat, support, farming, fishing, mining, building, exploring, travel, passive) and known/all/Cord-ready/still reading, sort and page. Picking a rune shows a "goes well with" panel built from the spell compiler's own rules. Unlearned runes show only their hint, and the filter is kept for the session.
 - Add 48 hearth runes: gentle, long-lasting utility for camping, travel and survival, such as Slowburn, Camp Ward, Warm Cloak, Softsole, Hollow Pocket, Lodestar and Homeward, Waymark, Glidewind, Lantern Soul, Keenkeep and Tinker's Hum. 14 of them can be passives. None of them deals damage, and recasting refreshes instead of stacking. Only the lodestar and the 9-slot pocket are saved, so old saves load unchanged.
 - Add the Tide pack: 48 fishing, water and coast runes (none harmful). Hurry or read your fishing line, fill buckets, cauldrons and bottles, put out fires, grow kelp and mend coral, raise a diving bell, lay lily pads, call dolphins and boats, sail with a fair wind and run on water. Fishing loot is unchanged: only the wait and vanilla Luck are touched. Found from village fishers, ocean ruins, shipwrecks and fishing; Ocean's Favor is found only.
@@ -33,6 +45,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Keep Fabric's client test phase pump participating while a real singleplayer close awaits its native server shutdown task. The repair is confined to the GameTest mod; paused/unpaused save-close-reopen and Relay reconnect remain required native acceptance gates.
 
 - Add the Archive’s Relay Circle lesson at active Heart Circle VIII: one paid remote focus, a fresh second cast-key press, a warned ray, and persistent three-page lore/practice guidance. The initial shape accepts only Relay with Harm, Frost or Shock.
+
+- Add 48 explorable buildings and places in six families, each with its own loot, advancement and wiki page. They appear only in newly generated chunks:
+  - Add eight peaceful farmstead sites in new chunks: a windmill farmstead with a well to wake, an herbalist's cottage, a beekeeper's apiary, a walled orchard with a buried cache, a shepherd's hut, a sunken mushroom ring, a granary barn with a harvest shrine and an abandoned scarecrow field. Their chests hold food, seeds, saplings and farming and hearth runes.
+  - Add eight Master halls and shrines for the breathing schools (new chunks only): Forge Dojo, Wind Gate, Quarry Hall, Waterfall Shrine, Root Temple, Sundial Court, Star Terrace and the underground Resonance Chamber. Each keeps one of two schools, has practice dummies, a lectern that tells you how to challenge that school's Master, and a reward of its manual pages, manual, technique scrolls and runes behind a seal, a guarded pit or a climb.
+  - Add eight peaceful roadside sites in new chunks, a bit more common than the others: a crossroads wayfarer inn, a hilltop watchtower with a signal fire, a broken bridge over a creek, a small rune library with a shelf riddle, a ring of standing stones with a buried gift, a caravan camp with a trader and llamas, a cartographer's hut whose chest map leads to another roadside site, and a vow circle whose book explains every Circle Vow. Their chests hold travel and exploring runes, maps and books, and visiting each one adds a Places entry to the lore journal.
+  - Add eight water sites: a stilt smokehouse, a lighthouse, a watermill, an ice fishing camp, a pier and boathouse, a sunken shrine with an air pocket, mangrove net-weavers' huts and a tidepool grotto. Each has fishing gear and Tide runes, three have short books, and they appear only in new chunks. <!-- ---- sites-water pack -->
+  - Add eight mining sites in new chunks: Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry (Nether), Deepslate Vault, Prospector's Camp and Miner's Rest. They hold moderate ore, tools, forge items, delving rune scrolls and Iron and Stone breath pages. Underground ones stay out of the deep dark and away from flooded ground, and their lava and water never spread. Each one is written in the lore journal and has an advancement. <!-- ---- sites-mine pack -->
+  - Add eight wild places to find in new worlds: a Venom Ziggurat in the jungle with a dart-trap tunnel, a half-buried Dune Temple with a sand floor that drops into a hidden sanctum, a Rime Monastery ruin in the snow, an Iron Gatehouse in the badlands, a Dawn Pavilion in cherry groves with a shrine facing the sunrise, an Echo Post on the deep dark floor (no shriekers, kept away from ancient cities), an Ember Outpost in Nether forests and a Void Lantern on the End's outer islands. Each has an element rune seal, and most have Runebound guards. Their vaults hold a breathing method manual and runes of the matching element.
 
 ### Masters of Tomorrow, development foundation
 

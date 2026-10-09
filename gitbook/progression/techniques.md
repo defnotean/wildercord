@@ -96,8 +96,8 @@ it does, the more it costs and the longer it rests.
 | **Sunder** | Wears a stance **two and a half times** as hard as an art, toward an [opening and your finisher](aura.md#stance-and-finishers) |
 | **Bind** | **Roots** each foe it strikes where it stands for **1.2 seconds** (a player only briefly) |
 | **Echo** | Strikes each foe **again half a second later** for half as much, wherever it has gone, if it's still near |
-| **Ward** | You take **a fifth less** from foes for **four seconds** after. Only the Way of the Bulwark lends it |
-| **Rally** | You and your allies within **eight blocks** take **a tenth less** from foes for **five seconds**, and allied swordsmen build momentum. Only the Way of the Banner lends it |
+| **Ward** | You take **a fifth less** from foes for **four seconds** after. The Way of the Bulwark lends it; the Rime and Dawn Masters teach it. No scroll or duelist carries it |
+| **Rally** | You and your allies within **eight blocks** take **a tenth less** from foes for **five seconds**, and allied swordsmen build momentum. The Way of the Banner lends it; the Verdant Master teaches it. No scroll or duelist carries it |
 | **Infuse** | Your method's element **twice as strong** (an Ember technique burns longer, a Rime one chills deeper). **Every blade knows it** |
 
 ### Your element
@@ -198,16 +198,28 @@ a pierce; a Stone one's a falling cut, a burst or a sunder).
 
 ### Sword Masters
 
-The first time you beat a [Sword Master](../masters/index.md), it teaches you a part: the
-[Ember](../masters/ember.md) Master **Echo**, the [Gale](../masters/gale.md) Master
-**Afterimage**, and the [Stone](../masters/stone.md) Master **Sunder**.
+The first time you beat a [Sword Master](../masters/index.md), it teaches you a part for good:
+
+| Part | Taught by |
+|---|---|
+| **Echo** | [Ember](../masters/ember.md) |
+| **Afterimage** | [Gale](../masters/gale.md) |
+| **Sunder** | [Stone](../masters/stone.md) |
+| **Ward** | [Rime](../masters/rime.md), [Dawn](../masters/dawn.md) |
+| **Pierce** | [Thunder](../masters/thunder.md), [Iron](../masters/iron.md) |
+| **Rally** | [Verdant](../masters/verdant.md) |
+| **Bind** | [Hollow](../masters/hollow.md), [Hourglass](../masters/hourglass.md), [Dune](../masters/dune.md), [Venom](../masters/venom.md) |
+| **Burst** | [Starlit](../masters/starlit.md) |
+| **Infuse** | [Crimson](../masters/crimson.md) (every blade already knows it) |
+| **Wave** | [Tide](../masters/tide.md), [Echo](../masters/echo.md) |
+
+If you already know the part, the clear is still recorded.
 
 ### Ways
 
 Your [Way](ways.md) **lends** you a part while you walk it: the Blade **Pierce**, the Bulwark
-**Ward**, the Shadowstep **Afterimage** and the Banner **Rally**. Ward and Rally are found nowhere else. Leave the Way and its part
-goes with it: a technique written with it rests until you walk that Way again (or learn the part another way, for Pierce and
-Afterimage).
+**Ward**, the Shadowstep **Afterimage** and the Banner **Rally**. No scroll or duelist carries Ward or Rally; only a Master's first clear teaches them for good. Leave the Way and its part
+goes with it: a technique written with it rests until you walk that Way again (or learn the part for good another way).
 
 ![Left: a player seen from behind with rings of pale blue light round their body after a technique, a husk ahead. Right: a player with a gold pennant of light over their head, a gold ring at their feet and a gold thread running to an ally ringed in gold](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/techniques-ward-rally.jpg)
 <span>A Bulwark's Ward and a Banner's Rally.</span>

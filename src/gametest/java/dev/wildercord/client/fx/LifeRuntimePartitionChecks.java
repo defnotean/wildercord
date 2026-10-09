@@ -20,6 +20,9 @@ public final class LifeRuntimePartitionChecks {
     public static final String EXCISE_ORDINARY = "dev.wildercord.cast.ExcisePlayableTest";
     public static final String EXCISE_PRESENTATION = "dev.wildercord.client.ExciseClient";
     public static final String REQUIRED_SUITE = "diagnostic-life-excise";
+    /** The everyday packs' Life utilities: their own effect routes, outside the generic31 flights and Excise's held route. */
+    public static final Set<String> UTILITY = Set.of("checker_dye", "dew_drink", "dye_wash", "hearthbond", "luckcharm", "lullaby", "petward",
+        "potion_steep", "sign_glow", "slime_sense", "slowburn", "steedmend", "trailblaze");
 
     /** All original 31 generic preparations/flights remain mandatory; exactly Excise uses its own route. */
     public static List<String> genericIds() {
@@ -39,10 +42,12 @@ public final class LifeRuntimePartitionChecks {
         check(!generic.contains("excise"), "Excise cannot silently enter generic Bolt/formation coverage");
         var runtime = Runes.all().stream().filter(r -> r.family() == RuneFamily.EFFECT && r.element().equals("life"))
             .map(r -> r.path()).collect(java.util.stream.Collectors.toSet());
-        var complete = new HashSet<>(generic); complete.add("excise");
-        check(runtime.size() == 32 && runtime.equals(complete), "Runtime Life32 must be exactly generic31 plus dedicated Excise1");
-        var dedicated = new HashSet<>(runtime); dedicated.removeAll(generic);
+        var complete = new HashSet<>(generic); complete.add("excise"); complete.addAll(UTILITY);
+        check(runtime.size() == 45 && runtime.equals(complete), "Runtime Life45 must be exactly generic31, dedicated Excise1 and the reviewed utility13");
+        var dedicated = new HashSet<>(runtime); dedicated.removeAll(generic); dedicated.removeAll(UTILITY);
         check(dedicated.equals(Set.of("excise")), "Only the exact registered Excise takes the custom held route");
+        for (String utility : UTILITY) check(!LifeForms.supports("wildercord:" + utility) && !dev.wildercord.cast.FlightBodies.supportsLife("wildercord:" + utility),
+            "Utility Life rune " + utility + " never claims generic Life preparation/flight coverage");
         check(Runes.get(ExciseRules.ID).orElseThrow() == Runes.EXCISE, "Dedicated partition names the registered rune");
         var exact = SpellCompiler.compile(ExciseRules.RUNES);
         check(!exact.isEmpty() && exact.warnings().isEmpty() && exact.root().groups.size() == 1
@@ -73,7 +78,7 @@ public final class LifeRuntimePartitionChecks {
     /** Focused contract execution only: does not launch a native player, render a frame or prove the held action. */
     public static void main(String[] args) {
         verify();
-        System.out.println("LIFE_RUNTIME_PARTITION_CONTRACT generic=31 dedicated=1 total=32; required=" + REQUIRED_SUITE
+        System.out.println("LIFE_RUNTIME_PARTITION_CONTRACT generic=31 dedicated=1 utility=13 total=45; required=" + REQUIRED_SUITE
             + "; ordinary=" + EXCISE_ORDINARY + "; presentation=" + EXCISE_PRESENTATION + "; native_and_visual_execution=unproved");
     }
     private static void check(boolean value, String reason) { if (!value) throw new AssertionError(reason); }

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101404,
+    "spacing": 36,
+    "separation": 12
+  },
+  "structures": [
+    {
+      "structure": "wildercord:travel_standing_stones",
+      "weight": 1
+    }
+  ]
+}

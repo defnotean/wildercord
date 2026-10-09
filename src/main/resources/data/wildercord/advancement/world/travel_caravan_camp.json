@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/travel_wayfarer_inn",
+  "criteria": {
+    "travel_caravan_camp": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:travel_caravan_camp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:lead"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.travel_caravan_camp.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.travel_caravan_camp.description"
+    }
+  },
+  "requirements": [
+    [
+      "travel_caravan_camp"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

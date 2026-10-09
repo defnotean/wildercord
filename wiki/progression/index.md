@@ -19,7 +19,8 @@ teach their arts once you are strong enough.
 
 | Page | What it covers |
 |---|---|
-| [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) | Twenty rings of condensed mana: more mana, regeneration and power, four perks, and Master lessons from Circle VIII. |
+| [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) | Twenty rings of condensed mana: more mana, regeneration and power, four perks, Master lessons from Circle VIII and vows from Circle IX. |
+| [Circle Vows]({{ '/progression/circle-vows/' | relative_url }}) | From Circle IX, seven circles ask you to choose one of two vows with `/vow`. |
 | [The Grimoire and Feats]({{ '/progression/grimoire/' | relative_url }}) | Your record of discoveries. Each first discovery feeds your next circle. |
 | [Your Affinities]({{ '/progression/affinity/' | relative_url }}) | One affinity per element, grown by casting it and by everyday things. |
 | [Advancements]({{ '/progression/advancements/' | relative_url }}) | Wildercord's advancement tab and its rewards. |
@@ -37,6 +38,7 @@ teach their arts once you are strong enough.
 
 | Page | What it covers |
 |---|---|
+| [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}) | Your journal (H): leads to follow, places, people, what you learned and what was said. |
 | [Aura]({{ '/progression/aura/' | relative_url }}) | Breathing methods and the five stages from Glow to Sovereign. No Cord needed. |
 | [Breathing Methods]({{ '/progression/breathing-methods/' | relative_url }}) | Every method and what it does. |
 | [Sword Arts]({{ '/progression/sword-arts/' | relative_url }}) | Each method's five arts. |
@@ -69,6 +71,7 @@ Everything below multiplies together.
 | Each working Heart Circle | +3% (up to +60% at twenty) |
 | Potency on your Cord | +8% per level (up to +24%) |
 | Overflow (7th Circle), casting at full mana | +30% |
+| [Circle Vows]({{ '/progression/circle-vows/' | relative_url }}) | Keen Edge +6%, Overcharge +10% (Austerity -3%), Crown of Power +10% |
 | Your affinity with the effect's element | +3% per level (up to +15%) |
 | Charging a cast | up to +40% (see [Casting]({{ '/spellcraft/casting/' | relative_url }})) |
 | Rhythm | +8% per beat, up to +24% |
@@ -86,6 +89,8 @@ Everything below multiplies together.
 6. **Explore and fight bosses.** Secret spells, the Archivist and the dungeon bosses open the later circles.
 7. **Study from Circle VIII.** Master lessons such as [Relay Circle]({{ '/spellcraft/relay-circle/' | relative_url }})
    open at VIII, X, XII, XIV, XVI and XVIII.
+8. **Choose your vows from Circle IX.** The other circles from IX to XX each ask you to pick one of two
+   [vows]({{ '/progression/circle-vows/' | relative_url }}).
 
 Other ways to grow: [Cords]({{ '/spellcraft/cords/' | relative_url }}), [Casting Gear]({{ '/gear/' | relative_url }}),
 [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}) and [Familiars]({{ '/companions/familiars/' | relative_url }}).

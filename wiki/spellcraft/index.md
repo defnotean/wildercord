@@ -3,7 +3,7 @@ title: Spellcraft
 nav_order: 3
 has_children: true
 permalink: /spellcraft/
-description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, affinities, imbuing, overcasting, secret spells, loadouts, mastery and lesson spells."
+description: "How spells work in Wildercord: Cords, the Cord screen, the Rune Catalog, how runes combine, casting, magic circles, passives, shields, reactions, affinities, imbuing, overcasting, secret spells, loadouts, mastery and lesson spells."
 ---
 
 # Spellcraft
@@ -13,8 +13,10 @@ description: "How spells work in Wildercord: Cords, the Cord screen, how runes c
 A spell is just the runes on your Cord, read from left to right. There are no fixed spells to unlock. You pick
 the runes and their order, and the Cord screen tells you what you've made before you cast it.
 
-Looking for a rune? Every rune, sorted the way the Codex sorts them, is on the
-[Rune Codex]({{ '/runes/codex/' | relative_url }}) page.
+Looking for a rune? In game, open the [Rune Catalog]({{ '/spellcraft/rune-catalog/' | relative_url }}) from your
+Cord screen with `Ctrl`+`B`. Every rune, sorted the way the Codex sorts them, is on the
+[Rune Codex]({{ '/runes/codex/' | relative_url }}) page, and the farming, fishing, mining, exploring and support
+runes are gathered on [Everyday Rune Packs]({{ '/runes/everyday-packs/' | relative_url }}).
 
 ## The rules at a glance
 
@@ -27,7 +29,7 @@ Looking for a rune? Every rune, sorted the way the Codex sorts them, is on the
   later.
 - **Spells cost mana**, then recharge: about a second for every 20 mana, from half a second to twenty seconds.
 - **Tap `R`** to cast at once, or **hold it** to charge for up to 40% more power.
-- **Friendly fire is off.** Harmful effects never touch you, your party, your pets or your team. Helpful effects
+- **Friendly fire is off.** Harmful effects never touch you, your [party]({{ '/social/parties/' | relative_url }}), your pets or your team. Helpful effects
   only touch you and those allies.
 - **You grow stronger** by forming [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}), now up to
   Circle XX, and by absorbing [Mana Crystals]({{ '/progression/mana/' | relative_url }}), up to 100 of them.
@@ -40,6 +42,7 @@ Looking for a rune? Every rune, sorted the way the Codex sorts them, is on the
 |---|---|
 | [Cords]({{ '/spellcraft/cords/' | relative_url }}) | The four Cords, their recipes and the Cord enchantments. |
 | [The Cord Screen]({{ '/spellcraft/cord-screen/' | relative_url }}) | Where you build spells: the Codex, threading runes, the readout, names, codes and the Grimoire. |
+| [Rune Catalog]({{ '/spellcraft/rune-catalog/' | relative_url }}) | Browse every rune by family, element and use, and see what goes well with each one (`Ctrl`+`B`). |
 | [How a Spell Is Read]({{ '/spellcraft/reading-spells/' | relative_url }}) | Groups, modifiers, links, cost and cooldown, with worked examples. |
 | [Builds to Try]({{ '/spellcraft/build-examples/' | relative_url }}) | Ready-made spells to copy and learn from. |
 | [Casting]({{ '/spellcraft/casting/' | relative_url }}) | Tapping, charging, overchannelling, rhythm, switching spells and the HUD. |

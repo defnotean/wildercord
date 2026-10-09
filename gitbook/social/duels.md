@@ -4,7 +4,7 @@
 
 A **duel** is a fair fight between two players where **nobody dies**. When it ends, the harm you did each other is
 undone. Duels work even with PvP off, and between members of the same
-[party](playing-together.md#parties).
+[party](parties.md).
 
 ## How to get it
 

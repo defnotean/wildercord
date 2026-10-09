@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/travel_wayfarer_inn",
+  "criteria": {
+    "travel_rune_library": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:travel_rune_library"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:bookshelf"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.travel_rune_library.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.travel_rune_library.description"
+    }
+  },
+  "requirements": [
+    [
+      "travel_rune_library"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

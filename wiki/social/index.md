@@ -15,7 +15,8 @@ without anyone dying, cast one great spell together, and teleport to each other.
 
 | Page | What it covers |
 |---|---|
-| [Playing Together]({{ '/social/playing-together/' | relative_url }}) | Parties of up to 8, sharing spells, Unison, Domain clashes, spell collisions, and the friendly fire and PvP rules |
+| [Parties]({{ '/social/parties/' | relative_url }}) | Groups of up to 8 with `/party`: invites, the leader, and harm protection |
+| [Playing Together]({{ '/social/playing-together/' | relative_url }}) | Parties in brief, sharing spells, Unison, Domain clashes, spell collisions, and the friendly fire and PvP rules |
 | [Chorus Casting]({{ '/social/chorus/' | relative_url }}) | Cast the same spell with allies at the same moment for one much stronger spell |
 | [Duels]({{ '/social/duels/' | relative_url }}) | Fight another player where nobody dies, and the harm is undone afterwards |
 | [The Runesmith]({{ '/social/runesmith/' | relative_url }}) | The rune-trading villager, every trade, and rune buyback and swaps |
@@ -26,7 +27,7 @@ without anyone dying, cast one great spell together, and teleport to each other.
 ## The short version
 
 - **Form a party** with `/party invite <player>`. Up to 8 players. Party members can't hurt each other, and your
-  helpful spells land on them. See [Parties]({{ '/social/playing-together/' | relative_url }}#parties).
+  helpful spells land on them. See [Parties]({{ '/social/parties/' | relative_url }}).
 - **Harmful spells never touch you, your pets, your party or your team.** Other players are only hit when PvP is on, or
   in a duel. By default a spell hits a player for 60% of what it does to a monster.
 - **Fight a Sword Master together.** Up to 8 challengers can join one trial. See

@@ -1,6 +1,6 @@
 # Masters of Tomorrow
 
-Development build: `0.11.0-masters-dev`. Install the same development build on every client and the server. Back up a world before testing a new build.
+Released in `0.11.0-alpha`. Install the same version on every client and the server. Back up a world before testing a new build.
 
 ## What's implemented so far
 

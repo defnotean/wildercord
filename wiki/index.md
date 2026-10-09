@@ -15,9 +15,22 @@ Wear a Cord, thread runes from left to right, and cast the whole sequence with o
 
 ![The Cord editor previews a magic circle while explaining the spell.]({{ '/assets/images/circle-editor.jpg' | relative_url }})
 
-## The current update: Masters of Tomorrow
+## The current update: 0.11, Masters of Tomorrow
 
-**16 Sword Masters**, one for each breathing method, now wait to test you. Each Master fight has its own techniques to read and answer. Read [What's New]({{ '/whats-new/' | relative_url }}) for everything in the update, and [Sword Masters]({{ '/masters/' | relative_url }}) to prepare.
+- **16 Sword Masters**, one for each breathing method, wait to test you. Six new breathing methods
+  join them: Tide, Iron, Dune, Echo, Dawn and Venom. See [Sword Masters]({{ '/masters/' | relative_url }}).
+- **48 places to find** in newly explored land: [farmsteads]({{ '/world/farm-sites/' | relative_url }}),
+  [Master halls]({{ '/world/masters-sites/' | relative_url }}), [mines]({{ '/world/mine-sites/' | relative_url }}),
+  [roadside sites]({{ '/world/travel-sites/' | relative_url }}), [water sites]({{ '/world/water-sites/' | relative_url }})
+  and [wild places]({{ '/world/wilds-sites/' | relative_url }}).
+- **A lore journal** (press **H**) that keeps your leads, places, people and what they told you. See
+  [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}).
+- **Heart Circles to XX**, with a [Circle Vow]({{ '/progression/circle-vows/' | relative_url }}) to choose at seven of them.
+- **Everyday runes** for home, farm, mine and road, and a [Rune Catalog]({{ '/spellcraft/rune-catalog/' | relative_url }})
+  to browse them. See [Everyday Rune Packs]({{ '/runes/everyday-packs/' | relative_url }}).
+- **[Parties]({{ '/social/parties/' | relative_url }})** of up to 8 players who can't hurt each other.
+
+Read [What's New]({{ '/whats-new/' | relative_url }}) for everything in the update.
 
 To call a Master, first reach **Aura Form** or **Heart Circle VIII**. Then either:
 
@@ -39,6 +52,9 @@ Masters don't come on Peaceful. Friends nearby can join your trial with `/master
 | Fuse elements | [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) |
 | Survive another caster | [Defending Against Magic]({{ '/progression/defence/' | relative_url }}), [Elemental Armour]({{ '/progression/elemental-armour/' | relative_url }}) and [Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }}) |
 | Explore dungeons | [The World]({{ '/world/' | relative_url }}) and [Expeditions]({{ '/world/expeditions/' | relative_url }}) |
+| Find new places | [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}), [Water Sites]({{ '/world/water-sites/' | relative_url }}) and the other site pages under [The World]({{ '/world/' | relative_url }}) |
+| Know what to do next | [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}) |
+| Play with friends | [Parties]({{ '/social/parties/' | relative_url }}) and [Playing Together]({{ '/social/playing-together/' | relative_url }}) |
 | Test a build safely | [Practice]({{ '/progression/practice/' | relative_url }}) and [Research Notebook]({{ '/progression/research/' | relative_url }}) |
 | Meet Cinnamon | [Cinnamon]({{ '/companions/cinnamon/' | relative_url }}) |
 | Build a magical home | [Runic Hearth]({{ '/social/runic-hearth/' | relative_url }}) |

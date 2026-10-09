@@ -42,8 +42,9 @@ useful: trade it to a [Runesmith](../social/runesmith.md), or rank it up at the
 There are a lot of runes. To find the one you need, open the **Rune Catalog** from your Cord screen: click
 **Catalog** at the right of the chips row, or press `Ctrl`+`B`.
 
-- **Search**: just type. It finds a rune by its name, element and category, and by the words of its text you can
-  already read. A rune you haven't read yet is found by its name and hint only.
+- **Search**: just type (or press `Ctrl`+`F`). It finds a rune by its name, element, category, family and use.
+  Words of four letters or more also match the text you can already read. A rune you haven't read yet is found by
+  its name and hint only.
 - **Filters**: Family, Element, and **Use** (Combat, Support, Farming, Fishing, Mining, Building, Exploring,
   Travel, Passive). **Show** picks the runes you know, every rune, only those your Cord holds, or those you're
   still reading. Runes you haven't learned show only their hint.
@@ -55,10 +56,14 @@ There are a lot of runes. To find the one you need, open the **Rune Catalog** fr
 
 The Catalog keeps your search and filters until you close the game.
 
+The whole guide, with every filter and key: [Rune Catalog](../spellcraft/rune-catalog.md).
+
 ## Runes for everyday life
 
-Not every rune is for fighting. Many help with farming, fishing, mining, building and exploring. The Catalog's
-**Use** filter finds them. Some examples:
+Not every rune is for fighting. Six everyday packs (hearth, Tide, farmstead, delving, Wayfarer's and support) help
+with farming, fishing, mining, building, exploring and looking after your friends, and none of them deals damage.
+See [Everyday Rune Packs](everyday-packs.md) for what each pack does and where to find
+it. The Catalog's **Use** filter finds them too. Some examples:
 
 - **Farming:** [Berrybless](effects/earth.md#berrybless) ripens berry bushes, [Compost](effects/earth.md#compost) fills a composter from your pack,
   [Bakehouse](effects/fire.md#bakehouse) bakes bread and pie, and [Barnwarmth](effects/fire.md#barnwarmth) heals your farm animals and pets.

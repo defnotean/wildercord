@@ -13,8 +13,9 @@ description: "Every breathing method's five sword arts: what each one does, the 
 Every breathing method answers the five [sword strings]({{ '/progression/aura/' | relative_url }}#sword-strings) its
 own way. The strings are the same for everyone, so you learn them once. What your blade does depends on your method: Ember
 burns, Rime freezes and shatters, Thunder leaps from foe to foe, Gale reaches far and lifts, Stone hits hardest, Verdant roots
-and mends, Hollow draws in and silences, Starlit sets stars and gets aura back, Hourglass echoes and stops time, and Crimson
-bleeds and drinks.
+and mends, Hollow draws in and silences, Starlit sets stars and gets aura back, Hourglass echoes and stops time, Crimson
+bleeds and drinks, Tide soaks and drags, Iron cracks armour and stands firm, Dune blinds and sinks, Echo strikes twice, Dawn
+lights up and dazzles, and Venom poisons and weakens. That is 16 methods, five arts each.
 
 <img src="{{ '/assets/images/arts-sunfall.jpg' | relative_url }}" alt="A column of sunlight driven down onto a stone platform, rings of orange light and fire racing out over the ground round it, curls of flame flying, a husk thrown high in the light" class="shot">
 <span class="caption">Sunfall, Ember Breath's Final Art.</span>
@@ -251,10 +252,86 @@ already down to a heart, it costs nothing more.
 <img src="{{ '/assets/images/arts-crimson-moon.jpg' | relative_url }}" alt="Seen from behind a player wreathed in red light: a great crescent of blood-red light standing over four husks ahead, crescents of red rolling out low over the stone, rings of red round each husk" class="shot">
 <span class="caption">Crimson Moon.</span>
 
+## Tide Breath
+
+Water that soaks, drags and throws. Soaked foes have their fire put out and are slowed a moment.
+
+| Art | What it does |
+|---|---|
+| **Riptide Cut** (First) | A wide cut of water that soaks the foes in front, and the current drags them in toward you. |
+| **Breaker** (Second) | A wave rolls 7 blocks out ahead, cutting and throwing back everything in it. The ground behind stays wet for 4 s: foes in it are slowed, and fire goes out. |
+| **Whirlpool** (Third) | The counter: a whirlpool opens on the ground ahead for 3 s, drawing every foe near to its heart and cutting them each second. |
+| **Surge** (Fourth) | Straight after your step, a wave carries you 8 blocks on, cutting every foe in the way and carrying them along with you, soaked. |
+| **Maelstrom** (Final) | The sea rises round you: five waves roll over every foe near, then it crashes down and throws them all away. |
+
+## Iron Breath
+
+Heavy, armoured and hard to move. Iron's arts **crack armour** (sunder) for a while, and its counter makes you hard to hurt.
+
+| Art | What it does |
+|---|---|
+| **Sunder Cut** (First) | One heavy cut that cracks the armour of the foes in front by 4 points for 5 s. |
+| **Anvil Fall** (Second) | You rise and come down like a hammer, striking everything near where you land, holding it still a moment and cracking its armour. |
+| **Bulwark** (Third) | The counter: your guard sets like iron for 3 s. Blows land weaker and don't move you, and foes that come near are shoved back. Foes round you as it rises are cut and thrown back. |
+| **Forge Charge** (Fourth) | Straight after your step, a shoulder-first charge 7 blocks on, cutting every foe in the way and cracking its armour. |
+| **Worldforge** (Final) | A hammer of the world falls where you stand. The foe you face is struck hardest; every foe near is cut, thrown back and has its armour cracked wide for 8 s, and your guard sets like iron. |
+
+## Dune Breath
+
+Sand in the eyes and ground that gives way. Dune **blinds** (a creature loses track of you) and **sinks** (slowed hard).
+
+| Art | What it does |
+|---|---|
+| **Grit Flick** (First) | A flick of the blade throws sand in the eyes of the foes in front, blinding them a moment and slowing them. |
+| **Quicksand** (Second) | The ground ahead turns to quicksand for 4 s, swallowing the feet of every foe in it (slowed hard and drawn to its heart) and grinding at them. |
+| **Sandveil** (Third) | The counter: a burst of sand round you blinds every foe near, and for a moment you move quickly and are hard to find. |
+| **Dune Runner** (Fourth) | Straight after your step, a run 7 blocks on across shifting sand: every foe in the way is cut, slowed, sunk and turned aside. |
+| **Sea of Sand** (Final) | The desert rises round you. Gusts of sand blind and sink every foe near, then the dunes close over them. |
+
+## Echo Breath
+
+Every blow rings twice. Echo's arts strike, then strike the same foes again a moment later, and leave them **reeling**.
+
+| Art | What it does |
+|---|---|
+| **Ringing Cut** (First) | An arc of sound in front (3.6 blocks, up to 4 foes). A moment later its ring strikes the same foes again. |
+| **Resonant Chord** (Second) | A cone of sound 6 blocks ahead (up to 6 foes). Foes in it are struck, reel and slow. |
+| **Counterpoint** (Third) | The counter: a ring of sound all round you (3.5 blocks) throws foes back reeling, then rings again. |
+| **Reverb Step** (Fourth) | Straight after your step, a 7-block dash that cuts the foes in the way (up to 5), then its echo cuts them again. |
+| **Grand Resonance** (Final) | A great toll round you (7 blocks, up to 10 foes), then three echoes after it, each a ring further out. |
+
+## Dawn Breath
+
+Light that reveals and dazzles. Dawn's arts **light foes up** so they can be seen, blind them a moment, burn the undead hardest,
+and mend you a little.
+
+| Art | What it does |
+|---|---|
+| **First Light** (First) | A bright cut in front. Its foes are lit up, and the undead burn harder. |
+| **Sunrise Arc** (Second) | A rising arc of light ahead. Its foes are blinded a moment and lit up. |
+| **Halo Guard** (Third) | The counter: a halo round you. You mend, and the foes near are blinded and thrown back. |
+| **Dawnbreak Rush** (Fourth) | Straight after your step, a dash down a line of light, cutting and lighting the foes in the way. |
+| **Noon Zenith** (Final) | A sun rises overhead, then its noon falls on every foe near, blinding them. |
+
+## Venom Breath
+
+A bite that builds. Venom's **toxin stacks** with every bite, and its arts weaken foes and let you slip away.
+
+| Art | What it does |
+|---|---|
+| **Fang Strike** (First) | A quick bite in front. Its toxin stacks with the next bite. |
+| **Spitting Cobra** (Second) | A spray of venom ahead, poisoning and weakening everything it wets. |
+| **Shed Skin** (Third) | The counter: a cut and a slither back. The husk you leave behind poisons whoever stands in it. |
+| **Serpent Slither** (Fourth) | Straight after your step, a weaving dash. Every foe in the way is bitten and weakened. |
+| **Hydra Coil** (Final) | Five heads strike all round you in turn, each bite stacking the toxin higher. |
+
+These six methods use the same strings, stages, prices and rests as every other method (the table under
+[How to use it](#how-to-use-it)).
+
 ## Techniques of your own
 
 From Edge a swordsman can write techniques of their own beside these: a stroke, a release and an intent, their method's element in
-each, on a string of their choosing. Each is weighed on the same scale as the fifty arts, so it's another answer to them rather than
+each, on a string of their choosing. Each is weighed on the same scale as the methods' arts, so it's another answer to them rather than
 a better one. See [Techniques of your own]({{ '/progression/techniques/' | relative_url }}).
 
 ## The common arts

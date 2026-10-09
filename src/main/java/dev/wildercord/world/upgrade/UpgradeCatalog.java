@@ -12,7 +12,7 @@ public final class UpgradeCatalog {
 	}
 	public static final String PAVILION=UpgradeTemplates.FAMILY,SLEEPING_BLADE="wildercord:sleeping_blade_rest",
 		BATTLEFIELD="wildercord:battlefield_memorial",SWORD_TOMB="wildercord:sword_tomb_duel_ring";
-	public static final List<Family> ALL=List.of(
+	public static final List<Family> ALL=withSites(
 		new Family(PAVILION,Decision.BOUNDED_ADAPTER,null,null,0,0,"Inert 9x9x9 pavilion; no entity, loot or block entity; not a unique encounter"),
 		new Family(SLEEPING_BLADE,Decision.BOUNDED_ADAPTER,"wildercord:sleeping_blade","wildercord:sleeping_blades",92,36,
 			"7x7 rest with one authentic Sleeping Blade stone; one per sleeping_blades spread region; never spawns entities"),
@@ -41,6 +41,7 @@ public final class UpgradeCatalog {
 		runtime("wildercord:training_grounds","Detected at runtime from natural waterfalls/summits; old worlds already have them"),
 		runtime("wildercord:masters_and_duelists","Masters, Duelists and knights spawn at runtime by their own rules; no block placement"),
 		runtime("wildercord:village_tournaments","Bounded runtime visitor event at inhabited village bells"));
+	private static List<Family> withSites(Family... base){var all=new ArrayList<>(List.of(base));all.addAll(dev.wildercord.world.sites.SiteFamilies.ALL);return List.copyOf(all);}
 	private static Family worldgen(String id,String reason){return new Family(id,Decision.WORLDGEN_ONLY,null,null,0,0,reason);}
 	private static Family runtime(String id,String reason){return new Family(id,Decision.RUNTIME_ONLY,null,null,0,0,reason);}
 	public static Optional<Family> adapter(String id){return ALL.stream().filter(f->f.decision()==Decision.BOUNDED_ADAPTER && f.id().equals(id)).findFirst();}

@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "water_watermill",
+  "biomes": "#wildercord:has_structure/water_watermill",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

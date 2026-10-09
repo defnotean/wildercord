@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_ember_outpost": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_ember_outpost"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:gilded_blackstone"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_ember_outpost.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_ember_outpost.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_ember_outpost"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

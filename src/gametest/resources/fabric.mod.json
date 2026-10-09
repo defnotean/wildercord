@@ -340,7 +340,13 @@
       "dev.wildercord.aura.world.MethodsAMastersNativeTest",
       "dev.wildercord.aura.world.MethodsBMastersClientTest",
       "dev.wildercord.gametest.perf.PerformanceHarnessTest",
-      "dev.wildercord.client.HudHandednessLayoutTest"
+      "dev.wildercord.client.HudHandednessLayoutTest",
+      "dev.wildercord.world.sites.FarmSitesClientTest",
+      "dev.wildercord.world.sites.MastersSitesTest",
+      "dev.wildercord.world.sites.WildsSitesTest",
+      "dev.wildercord.world.sites.TravelSitesClientTest",
+      "dev.wildercord.world.sites.WaterSitesGameTest",
+      "dev.wildercord.world.sites.MineSitesClientTest"
     ]
   },
   "mixins": [

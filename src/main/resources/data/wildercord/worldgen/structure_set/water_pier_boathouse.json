@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101205,
+    "separation": 14,
+    "spacing": 40
+  },
+  "structures": [
+    {
+      "structure": "wildercord:water_pier_boathouse",
+      "weight": 1
+    }
+  ]
+}

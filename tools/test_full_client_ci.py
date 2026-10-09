@@ -371,8 +371,8 @@ class FullClientTests(unittest.TestCase):
         for dependency in ("tools/client_shard_plan.py", "tools/client_shard_plan.json"):
             self.assertIn(f"inputs.file('{dependency}')", build)
         self.assertIn("originalDescriptor.custom['wildercord:clientShardPlan'] = fullSelection.plan", build)
-        self.assertEqual(full["plan"]["orderedRosterSha256"], "aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be")
-        self.assertEqual([suites.select_entries(shard=s)["count"] for s in gate.SHARDS], [84, 84, 84, 83])
+        self.assertEqual(full["plan"]["orderedRosterSha256"], "af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c")
+        self.assertEqual([suites.select_entries(shard=s)["count"] for s in gate.SHARDS], [86, 86, 85, 84])
         # The two counter-lifetime classes and the later reviewed packs only extend the frozen 310 roster.
         additions = ("dev.wildercord.aura.UnmovedNullAcceptanceTest",
                      "dev.wildercord.aura.arts.ArtWardsHardeningTest")
@@ -382,7 +382,7 @@ class FullClientTests(unittest.TestCase):
         self.assertEqual(len(prior), 310)
         self.assertEqual(gate.selection_hash({"kind": "full", "entries": prior, "count": 310}),
                          "53db541e284da70c78a256a21b420566b83dfd1f30b8a6ea55daaf80d9569974")
-        self.assertEqual(gate.selection_hash({"kind": "full", "entries": full["entries"], "count": full["count"]}), "dfeb4cf55dfc5e9cba1758a16d27d1226a96eb590aa6dde36b376df58e81c937")
+        self.assertEqual(gate.selection_hash({"kind": "full", "entries": full["entries"], "count": full["count"]}), "ef87f84afd3c3239bcd32911af3fafd91d3be06671da6c1a842e384cdb1f02d8")
 
     def test_workflow_requires_all_four_same_run_uploads_without_scheduling_or_permission_expansion(self):
         text = (suites.ROOT / ".github/workflows/build.yml").read_text()

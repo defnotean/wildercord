@@ -289,7 +289,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		context.waitTicks(20);
 		PERFORMED.clear();
 		finalSwings(context, world);
-		context.waitTicks(6);
+		// Styled arts announce themselves on their active frame, after the authored windup.
+		context.waitTicks(dev.wildercord.aura.MastersStyleRules.of(EmberArts.KINDLING_DRAW).windup() + 2);
 		context.getInput().releaseKey(o -> o.keyShift);
 		check(PERFORMED.equals(List.of(EmberArts.KINDLING_DRAW)), "below the peak the Final Art's swings should fall through to the First Art (" + PERFORMED + ")");
 		String hint = context.computeOnClient(mc -> {
@@ -306,7 +307,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		context.waitTicks(30);
 		PERFORMED.clear();
 		finalSwings(context, world);
-		context.waitTicks(6);
+		context.waitTicks(dev.wildercord.aura.MastersStyleRules.of(EmberArts.SUNFALL).windup() + 2);
 		context.getInput().releaseKey(o -> o.keyShift);
 		check(PERFORMED.equals(List.of(EmberArts.SUNFALL)), "at the peak they should play the Final Art (" + PERFORMED + ")");
 		double after = on(world, Momentum::value);

@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "master_resonance_chamber": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:master_resonance_chamber"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:bell"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.master_resonance_chamber.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.master_resonance_chamber.description"
+    }
+  },
+  "requirements": [
+    [
+      "master_resonance_chamber"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

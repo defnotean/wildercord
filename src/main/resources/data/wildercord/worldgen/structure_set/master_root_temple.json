@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101005,
+    "spacing": 44,
+    "separation": 14
+  },
+  "structures": [
+    {
+      "structure": "wildercord:master_root_temple",
+      "weight": 1
+    }
+  ]
+}

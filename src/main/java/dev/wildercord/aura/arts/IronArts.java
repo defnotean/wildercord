@@ -110,6 +110,9 @@ public final class IronArts {
 	// ------------------------------------------------------------------ III. Bulwark
 
 	static boolean bulwark(ServerPlayer player, AuraApi.StringContext context) {
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(BULWARK) || !counter.valid()) return false;
+		LivingEntity caught = counter.target();
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
@@ -117,7 +120,13 @@ public final class IronArts {
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_bulwark", 1.1F, 0.9F);
 		MethodsAFlavours.bulwark(player, IronRules.BULWARK_TICKS, IronRules.BULWARK_RESIST);
+		// The counter: the one who struck is answered first, then the guard shoves the rest away.
+		if (caught != null && counter.primaryValid()) {
+			hits.strike(caught, IronRules.BULWARK_FACTOR, AuraFxRules.Weight.FULL);
+			if (counter.afterDamage(caught) && counter.permits(caught)) ArtKit.knock(caught, feet, IronRules.BULWARK_SHOVE, 0.2);
+		}
 		for (LivingEntity foe : ArtKit.around(player, feet, IronRules.BULWARK_RADIUS, 1.0, 2.5, IronRules.BULWARK_TARGETS)) {
+			if (foe == caught) continue;
 			hits.strike(foe, IronRules.BULWARK_FACTOR, AuraFxRules.Weight.FULL);
 			ArtKit.knock(foe, feet, IronRules.BULWARK_SHOVE, 0.2);
 		}

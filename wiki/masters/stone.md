@@ -55,13 +55,13 @@ The Master uses it on flat ground when you're 1.5 to 7.5 blocks in front of it, 
 ## Other moves
 
 - **Techniques:** chains of two to four strikes. Read each strike's shape. See [Reading a Master]({{ '/masters/' | relative_url }}#reading-a-master).
-- **Pursuit dash:** holding a spell too long invites a dash of up to 3.6 blocks, at most once every 8 seconds. It's Stone's shortest dash, but it hits hardest.
+- **Pursuit dash:** holding a spell too long invites a dash of up to 3.6 blocks, at most once every 8 seconds. It's the shortest dash, but it hits hardest. After its strike it stands open for 1.1 seconds.
 - **Crescent volley:** flying blades if you stay far away or high up.
 
 ## Rewards for a clear
 
 - Your first Stone clear teaches the **Sunder** [technique part]({{ '/progression/techniques/' | relative_url }}).
-- At Sovereign, a Stone duelist can then teach you **Stone Hinge**. See [Master Forms]({{ '/masters/master-forms/' | relative_url }}).
+- A wandering Stone teacher can then teach you, in order, **Stone Hinge** (at Sovereign; still in testing and off unless your server switches it on), **Stone Break** (at Form) and **Plunging Strike** (at Sovereign). See [Master Forms]({{ '/masters/master-forms/' | relative_url }}).
 
 ## Tips and counterplay
 

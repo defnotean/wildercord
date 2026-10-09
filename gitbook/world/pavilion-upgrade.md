@@ -6,7 +6,7 @@ This page is for **server owners**. Players don't need to do anything.
 
 An optional, owner-approved tool that places one small **Wayfarer Training Pavilion** in an existing Overworld. The pavilion is 7 by 7 blocks: a mossy stone brick floor, four stripped oak columns, and a stone and smooth stone roof. That is 123 plain blocks, all inside one chunk.
 
-You don't need it for most new content. Wildlife, wandering Duelists and Master introductions, wisps and world events already appear in old terrain. Large dungeons and gardens still only appear in newly generated land.
+You don't need it for most new content. Wildlife, wandering Duelists and Master introductions, wisps and world events already appear in old terrain. Large dungeons, gardens and the 48 explorable sites (farmsteads, Master halls, mines, roadside sites, water sites and wild places) still only appear in newly generated land. This tool does not add them.
 
 ## What it never does
 
@@ -41,6 +41,26 @@ All commands need owner permission (level 4). Run them from the server console o
 7. Watch progress with `/wildercord-upgrade inspect <hash>` or `status`. Building waits while players are close.
 
 To stop all building, use `/wildercord-upgrade disable`. Recovery records are kept.
+
+## Other things it can add
+
+The same steps work for three more small encounters. Use `preview_site` instead of `preview`, then approve, watch and
+undo them exactly as above.
+
+| Command | What it places |
+|---|---|
+| `/wildercord-upgrade preview_site sleeping_blade_rest <chunk_x> <floor_y> <chunk_z>` | A 7 by 7 rest with one Sleeping Blade stone. It never spawns creatures. |
+| `/wildercord-upgrade preview_site battlefield_memorial <chunk_x> <floor_y> <chunk_z>` | A 9 by 9 memorial ring with one memorial. No loot chest. |
+| `/wildercord-upgrade preview_site sword_tomb_duel_ring <chunk_x> <floor_y> <chunk_z>` | A 13 by 13 duel ring with one reliquary. The Gravekeeper only rises the usual way, through the reliquary. No gates or loot. |
+| `/wildercord-upgrade preview_site wayfarer_training_pavilion <chunk_x> <floor_y> <chunk_z>` | The same pavilion as `preview`. |
+
+The rest, the memorial and the duel ring are each limited to one per region, the same as in new land.
+
+Two more commands help you plan:
+
+- `/wildercord-upgrade catalog` lists every Wildercord structure family and whether this tool can add it. The 48
+  explorable sites (farmsteads, Master halls, mines, roadside, water and wild places) are listed as new land only.
+- `/wildercord-upgrade sites` lists the encounters this tool has placed so far.
 
 ## After a crash or restart
 

@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/farm_sites",
+  "criteria": {
+    "farm_herbalist": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_herbalist"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:brewing_stand"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_herbalist.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_herbalist.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_herbalist"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

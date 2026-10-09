@@ -27,13 +27,13 @@ class ExplicitPlanTests(unittest.TestCase):
             plan.validate_plan(self.entries, changed)
 
     def test_exact_reviewed_groups_and_independently_pinned_identity(self):
-        self.assertEqual(plan.digest(self.plan), "80a4046a84b8fccf4f753fa39f0646158bcc0c624b9689655367df7196c0942b")
-        self.assertEqual(plan.digest(self.entries), "aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be")
+        self.assertEqual(plan.digest(self.plan), "d81692710775b8ce351c63ea357e6e56a643b138879962f7d97e6aa1b7fbe460")
+        self.assertEqual(plan.digest(self.entries), "af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c")
         self.assertEqual([plan.digest(group["entries"]) for group in self.plan["groups"]], [
-            "c1a1ea79bd873793ee6dfc5bbbe0163182be71b9dad4b86c0c37be36a08759dc",
-            "8bed70fdd7eaaa64180535d1b4c8b0b722f291eec033fcb14d870c295d1c836c",
-            "2e9e6d0a3677586ac249114e5205276351b41d30e2214a3ab63003ace6abbba4",
-            "3355fa07ddea362ff4b93300dc4a46ddee55d8ec4762147b3312a751a760553d"])
+            "2271c4d3db8124db7897651d1742ad1cf0c581ef79e76c07df28584121c7b226",
+            "43a7468679c26e787c54c1c8158d263cdb5bd78265547bc75bc30d6823a79a29",
+            "5367df0a9a4eb7a7719878c42e3c457ae749fcad80a65d7e561e7cc5ddca3c48",
+            "f5f487f50798fee8cdf3a0c3a5c625a7f766b76fd57f8e4b23654c63d60fc1a2"])
         full = suites.select_entries()
         for shard, group in zip(gate.SHARDS, self.plan["groups"]):
             selected = suites.select_entries(shard=shard)
@@ -251,7 +251,7 @@ class ExplicitPlanTests(unittest.TestCase):
             link = root / "link"; link.symlink_to(path)
             fifo = root / "fifo"; os.mkfifo(fifo)
             with patch.object(plan.os, "O_NOFOLLOW", None), patch.object(plan.os, "O_NONBLOCK", None):
-                self.assertEqual(plan.selection(self.entries, shard="1/4", plan_path=path)["count"], 80)
+                self.assertEqual(plan.selection(self.entries, shard="1/4", plan_path=path)["count"], self.plan["groups"][0]["expectedCount"])
                 for bad in (link, fifo, root):
                     with self.assertRaises(ValueError): plan.selection(self.entries, plan_path=bad)
                 path.write_text(" " * (plan.MAX_CONFIG_BYTES + 1))

@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/farm_sites",
+  "criteria": {
+    "farm_scarecrow": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_scarecrow"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:carved_pumpkin"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_scarecrow.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_scarecrow.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_scarecrow"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

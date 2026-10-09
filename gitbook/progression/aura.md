@@ -186,6 +186,9 @@ Three committed sword techniques on their own keys, shared by every method. Rebi
 | **Rising Break** | `Y` | Form | 20 | 5 s | Wears extra stance and lifts ordinary foes |
 | **Driving Cut** | `J` | Form | 18 | 4 s | A committed 5-block thrust. If it damages a player holding a spell (absorption counts), it breaks the spell and seals their casting for 1 second. Held spells then can't be interrupted again for 8 seconds |
 
+Spellcut (the `U` art) is not the same as **Spell Cut**, the timed sword swing an Ember teacher can teach you after an
+Ember Master clear. See [Spell Cut](../masters/spell-cut.md).
+
 You need an aura weapon in hand. Each has a short windup and a recovery: the aura is paid at the start, and taking damage
 during the windup cancels the strike. You can't stack another swing, Aura action or spell on top of it.
 
@@ -204,9 +207,12 @@ after the fight goes quiet.
 | 3 | 75 | 20% less | 15% harder | 30% faster |
 | **Peak** | 95 | 25% less | 20% harder | 45% faster |
 
-At the **peak** the line turns gold and your **Final Art** opens; playing it spends 40 momentum. Each method builds fastest on
-foes in the state its own arts leave them in (Ember on burning foes, Rime on frozen ones, and so on). It can't be farmed: foes
-that can't fight back give nothing, and a training dummy teaches only up to tier 3.
+At the **peak** the line turns gold and your **Final Art** opens. A Final Art waits for the peak, and playing it spends 40
+momentum. (If a server switches momentum off, a Final Art waits for a full aura pool instead.) Most methods build fastest on
+foes in the state their own arts leave them in (Ember on burning foes, Rime on frozen ones, Tide on soaked ones, and so on);
+Echo, Dawn and Venom have no favoured state and build the same on any foe. It can't be farmed: foes that can't fight back give
+nothing, and a training dummy gives less and stops just short of tier 3 (74). Only the
+[practice room](practice.md) lets dummies carry you to the peak.
 
 ![Two views of the aura bar: at the second tier a thin pale orange line part way along under it, and at the peak the same line full and pale gold with a bright spark on it](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/momentum-bar.jpg)
 

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101407,
+    "spacing": 44,
+    "separation": 16
+  },
+  "structures": [
+    {
+      "structure": "wildercord:travel_vow_circle",
+      "weight": 1
+    }
+  ]
+}

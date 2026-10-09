@@ -587,7 +587,7 @@ def techniques_page():
             lines.append(f"| **{cell(name)}** | {cell(strikes)} | {cell(answers)} | {seconds(t['strikes'][-1]['at'])} | "
                          f"{seconds(t['recovery'])} | {t['base_damage']:.1f} |")
         lines.append("")
-    write(WIKI / "masters/techniques.md", {"title": "Master Techniques", "parent": "Sword Masters", "nav_order": 5}, lines)
+    write(WIKI / "masters/techniques.md", {"title": "Master Techniques", "parent": "Sword Masters", "nav_order": 19}, lines)
     return len(techniques)
 
 

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101104,
+    "spacing": 46,
+    "separation": 14
+  },
+  "structures": [
+    {
+      "structure": "wildercord:farm_orchard",
+      "weight": 1
+    }
+  ]
+}

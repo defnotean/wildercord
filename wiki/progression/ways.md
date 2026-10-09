@@ -119,8 +119,10 @@ Play it as a loop: step through a pack, strike from behind, break the stance, fi
 ### A Way's part
 
 Each Way also **lends** you a part for [techniques of your own]({{ '/progression/techniques/' | relative_url }}): the Blade
-**Pierce**, the Bulwark **Ward**, the Shadowstep **Afterimage** and the Banner **Rally**. Ward and Rally are found nowhere else.
-Leave the Way and a technique written with its part rests until you walk the Way again.
+**Pierce**, the Bulwark **Ward**, the Shadowstep **Afterimage** and the Banner **Rally**. No scroll or duelist carries Ward or
+Rally; only a [Sword Master]({{ '/masters/' | relative_url }})'s first clear teaches them for good (Ward from Rime or Dawn, Rally
+from Verdant). Leave the Way and a technique written with its part rests until you walk the Way again, unless you have learned
+that part for good.
 
 ### Who counts as an ally
 

@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "farm_granary",
+  "biomes": "#wildercord:has_structure/farm_granary",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

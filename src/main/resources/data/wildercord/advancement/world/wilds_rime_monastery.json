@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_rime_monastery": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_rime_monastery"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:bell"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_rime_monastery.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_rime_monastery.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_rime_monastery"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

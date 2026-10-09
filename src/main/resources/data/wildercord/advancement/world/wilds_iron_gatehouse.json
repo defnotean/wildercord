@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_iron_gatehouse": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_iron_gatehouse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_bars"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_iron_gatehouse.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_iron_gatehouse.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_iron_gatehouse"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

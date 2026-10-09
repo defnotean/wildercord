@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_venom_ziggurat": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_venom_ziggurat"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:mossy_stone_bricks"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_venom_ziggurat.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_venom_ziggurat.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_venom_ziggurat"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

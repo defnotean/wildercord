@@ -66,15 +66,20 @@ Runes are grouped by family and category. A rune your Cord can't fire is dimmed 
 
 | Family | Categories |
 |---|---|
-| Shapes | Personal, Direct, Projectile, Area, Lingering |
-| Effects | Damage, Control, Support, Movement, Time, World, Summon, Innate |
-| Modifiers | Power, Area, Timing, Projectile, Circle disciplines |
+| Shapes | Personal, Direct, Projectile, Area, Lingering, Field, Kin |
+| Effects | Damage, Control, Support, Movement, Time, World, Summon, Innate, Woven fusions |
+| Modifiers | Power, Area, Timing, Projectile, Circle disciplines, Gathering, Tending |
 | Links | Timing, Trigger, Reactive, Condition |
+| Knots | Your own [Knots](../fusion-altar/knots.md) |
 
 **Just start typing** to search (or press `Ctrl`+`F`). A search matches a rune's name, element, category,
 family or tier ("tier3"). Several words must all match. Words of five letters or more also match descriptions.
 `Ctrl`+`Backspace` or right-click clears the search, and `Esc` clears it, then leaves the box, then closes the
 screen. Searches are capped at 40 characters.
+
+For a bigger view, click **Catalog** at the right end of the filter row (or press `Ctrl`+`B`) to open the
+[Rune Catalog](rune-catalog.md). It filters runes by family, element and use and
+shows what goes well with each one. The Catalog link can't be clicked on the Grimoire page, but `Ctrl`+`B` still works.
 
 ### The readout
 
@@ -163,4 +168,4 @@ See [Cosmetics](../companions/cosmetics.md).
 
 - Watch the **gold lines**: they're the quickest way to check your rune order.
 - Use the magic circle beside the window to learn how each rune looks, so you can read other players' spells.
-- **Quick keys:** `K` open, `Ctrl`+`F` search, `Ctrl`+`L` loadouts, `Ctrl`+`M` mastery, `Esc` back out.
+- **Quick keys:** `K` open, `Ctrl`+`F` search, `Ctrl`+`B` Rune Catalog, `Ctrl`+`L` loadouts, `Ctrl`+`M` mastery, `Esc` back out.

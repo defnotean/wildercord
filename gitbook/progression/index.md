@@ -12,7 +12,8 @@ teach their arts once you are strong enough.
 
 | Page | What it covers |
 |---|---|
-| [Heart Circles](heart-circles.md) | Twenty rings of condensed mana: more mana, regeneration and power, four perks, and Master lessons from Circle VIII. |
+| [Heart Circles](heart-circles.md) | Twenty rings of condensed mana: more mana, regeneration and power, four perks, Master lessons from Circle VIII and vows from Circle IX. |
+| [Circle Vows](circle-vows.md) | From Circle IX, seven circles ask you to choose one of two vows with `/vow`. |
 | [The Grimoire and Feats](grimoire.md) | Your record of discoveries. Each first discovery feeds your next circle. |
 | [Your Affinities](affinity.md) | One affinity per element, grown by casting it and by everyday things. |
 | [Advancements](advancements.md) | Wildercord's advancement tab and its rewards. |
@@ -30,6 +31,7 @@ teach their arts once you are strong enough.
 
 | Page | What it covers |
 |---|---|
+| [Lore Journal](lore-journal.md) | Your journal (H): leads to follow, places, people, what you learned and what was said. |
 | [Aura](aura.md) | Breathing methods and the five stages from Glow to Sovereign. No Cord needed. |
 | [Breathing Methods](breathing-methods.md) | Every method and what it does. |
 | [Sword Arts](sword-arts.md) | Each method's five arts. |
@@ -62,6 +64,7 @@ Everything below multiplies together.
 | Each working Heart Circle | +3% (up to +60% at twenty) |
 | Potency on your Cord | +8% per level (up to +24%) |
 | Overflow (7th Circle), casting at full mana | +30% |
+| [Circle Vows](circle-vows.md) | Keen Edge +6%, Overcharge +10% (Austerity -3%), Crown of Power +10% |
 | Your affinity with the effect's element | +3% per level (up to +15%) |
 | Charging a cast | up to +40% (see [Casting](../spellcraft/casting.md)) |
 | Rhythm | +8% per beat, up to +24% |
@@ -79,6 +82,8 @@ Everything below multiplies together.
 6. **Explore and fight bosses.** Secret spells, the Archivist and the dungeon bosses open the later circles.
 7. **Study from Circle VIII.** Master lessons such as [Relay Circle](../spellcraft/relay-circle.md)
    open at VIII, X, XII, XIV, XVI and XVIII.
+8. **Choose your vows from Circle IX.** The other circles from IX to XX each ask you to pick one of two
+   [vows](circle-vows.md).
 
 Other ways to grow: [Cords](../spellcraft/cords.md), [Casting Gear](../gear.md),
 [The Fusion Altar](../fusion-altar/index.md) and [Familiars](../companions/familiars.md).

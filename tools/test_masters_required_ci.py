@@ -156,9 +156,9 @@ class RequiredPartTests(unittest.TestCase):
         self.assertEqual(full["entries"][anchor:anchor + 2], list(COUNTER_ADDITIONS))
         descriptor = json.loads(suites.DESCRIPTOR.read_text())
         previous_full = [entry for entry in descriptor["entrypoints"]["fabric-client-gametest"] if entry not in COUNTER_ADDITIONS]
-        self.assertEqual(len(previous_full), 310)
+        self.assertEqual(len(previous_full), 339)
         self.assertEqual(hashlib.sha256(json.dumps(previous_full, separators=(",", ":")).encode()).hexdigest(),
-                         "4cbbad85c756e671b0ef2907034ac81288fffa94ceb7990b91eba1f208a26941")
+                         "a9d1285c179ffb4622f973e9151502b0bc0ec4f868efb0328ece3cf134b4212d")
         for entry in COUNTER_ADDITIONS:
             self.assertEqual(full["entries"].count(entry), 1)
             self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(entry), 1)

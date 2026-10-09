@@ -122,7 +122,7 @@ No single blow skips a phase.
   rune, 3 Mana Crystals, a Torn Page, a fire or earth rune, and a 50% chance of a rune of the Sanctum.
 - 220 experience drops on the altar. Anything that doesn't fit is left on the altar, safe from fire, lava and blasts.
 - Everyone within 64 blocks earns the **Tempered** feat (1,500 mana toward your next Heart Circle) and advancement. It
-  counts as a boss for the 7th Heart Circle.
+  counts as a boss for the 7th Heart Circle, and the feat itself is one of the things the 10th Heart Circle asks for.
 
 **The Cinder Heart** is kept, not spent: hold it up for 3 minutes of Fire Resistance, then it rests for 5 minutes.
 

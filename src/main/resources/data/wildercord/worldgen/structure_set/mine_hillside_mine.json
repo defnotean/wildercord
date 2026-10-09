@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101301,
+    "spacing": 36,
+    "separation": 12
+  },
+  "structures": [
+    {
+      "structure": "wildercord:mine_hillside_mine",
+      "weight": 1
+    }
+  ]
+}

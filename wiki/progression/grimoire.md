@@ -20,6 +20,9 @@ land, creatures, affinities, your world's harmonies and quirks, and **feats**. E
 up as a toast and condenses mana toward your next [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}).
 It belongs to you, not your Cord.
 
+The Grimoire is not your [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}) (**H**). The
+journal keeps the story of your travels with the sword: leads, places, people and what they said.
+
 ## How to use it
 
 Open the Cord screen and pick the **Grimoire** tab (after Spells and Passives). Scroll to see it all and

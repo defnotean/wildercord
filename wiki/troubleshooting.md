@@ -46,9 +46,21 @@ See [Sword Masters]({{ '/masters/' | relative_url }}).
 
 The Master form key (`C`) does nothing in Creative, so the game's Save Toolbar still works there. You also need a [Master form]({{ '/masters/master-forms/' | relative_url }}) equipped. Check the key isn't clashing with another in **Options > Controls > Key Binds**.
 
-## A new dungeon or the practice arena is missing
+## A new dungeon, site or the practice arena is missing
 
-Restart after you update. New dungeons only generate in new terrain. Enter the practice arena with `/runelab practice enter` and leave with `/runelab practice leave`.
+Restart after you update. New dungeons and the new 0.11 sites (Master halls, mines, farms, roadside and water sites) only generate in new terrain, so travel somewhere you haven't been. `/wildercord-upgrade` doesn't add them to old land. Enter the practice arena with `/runelab practice enter` and leave with `/runelab practice leave`.
+
+## The lore journal won't open
+
+Press **H** with no other screen open. If nothing happens, check the key isn't clashing with another under *Wildercord: Lore* in **Options > Controls > Key Binds**. See [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}).
+
+## My Circle Vow does nothing
+
+A vow only works while its circle is whole. If you overcast and cracked that circle, the vow is silent until it mends. Type `/vow` to check what you chose. See [Circle Vows]({{ '/progression/circle-vows/' | relative_url }}).
+
+## My party ended
+
+Every party ends when the server restarts. Make it again with `/party invite <player>`. See [Parties]({{ '/social/parties/' | relative_url }}).
 
 ## Magic is overwhelming or slow
 

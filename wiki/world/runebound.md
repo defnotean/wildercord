@@ -91,7 +91,7 @@ Drops only count when you land the killing blow, whether by hit, arrow or spell.
 ### Progress
 
 - Your first kill earns the **Runebreaker** feat and advancement. Killing an Adept earns *Adept's End*.
-- The 6th [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}) needs 8 Runebound kills.
+- [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) count your Runebound kills: the 6th needs 8, the 12th needs 20, the 16th needs 40 and the 20th needs 100.
 - The Runesmith sometimes posts Runebound [contracts]({{ '/social/contracts/' | relative_url }}).
 
 ### Where you meet them

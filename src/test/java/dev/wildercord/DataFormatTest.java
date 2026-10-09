@@ -199,6 +199,9 @@ class DataFormatTest {
 			if (structure.get("type").getAsString().equals("wildercord:dungeon")) {
 				allowed(structure, file, "type", "biomes", "spawn_overrides", "step", "terrain_adaptation", "dungeon");
 				required(structure, file, "dungeon");
+			} else if (structure.get("type").getAsString().equals("wildercord:site")) {
+				allowed(structure, file, "type", "biomes", "spawn_overrides", "step", "terrain_adaptation", "site");
+				required(structure, file, "site");
 			} else {
 				allowed(structure, file, "type", "biomes", "spawn_overrides", "step", "terrain_adaptation");
 			}

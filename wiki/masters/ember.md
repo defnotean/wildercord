@@ -14,7 +14,7 @@ At the start of the trial it tells you its lesson: leave the broad cut, then ste
 
 ## How to get it
 
-Sneak and use any [wandering duelist]({{ '/world/creatures/' | relative_url }}#wandering-duelist) who breathes Ember (or a method with no Master of its own), or type `/master challenge ember`. You need Aura Form or Heart Circle VIII. See [Sword Masters]({{ '/masters/' | relative_url }}) for the full trial rules.
+Sneak and use any [wandering duelist]({{ '/world/creatures/' | relative_url }}#wandering-duelist) who breathes Ember, or type `/master challenge ember`. You need Aura Form or Heart Circle VIII. See [Sword Masters]({{ '/masters/' | relative_url }}) for the full trial rules.
 
 ## Cinder Wake
 
@@ -48,13 +48,13 @@ The Master only starts a Kiln Ring on flat ground with you inside the ring's ban
 ## Other moves
 
 - **Techniques:** chains of two to four strikes. Read each strike's shape. See [Reading a Master]({{ '/masters/' | relative_url }}#reading-a-master).
-- **Pursuit dash:** holding a spell too long invites a dash of up to 4.8 blocks, at most once every 7 seconds.
+- **Pursuit dash:** holding a spell too long invites a dash of up to 4.8 blocks, at most once every 7 seconds. After its strike it stands open for 1.1 seconds.
 - **Crescent volley:** flying blades if you stay far away or high up.
 
 ## Rewards for a clear
 
 - Your first Ember clear teaches the **Echo** [technique part]({{ '/progression/techniques/' | relative_url }}).
-- At Sovereign, an Ember duelist can then teach you **Cinder Lunge**. See [Master Forms]({{ '/masters/master-forms/' | relative_url }}).
+- A wandering Ember teacher can then teach you, in order, **Cinder Lunge** (at Sovereign), **Ember Riposte** and **Spell Cut** (at Form). See [Master Forms]({{ '/masters/master-forms/' | relative_url }}) and [Spell Cut]({{ '/masters/spell-cut/' | relative_url }}).
 
 ## Tips and counterplay
 

@@ -128,7 +128,7 @@ Arcane Spark and a skeleton with Blind Bolt; Adepts the second time). No single 
   3 Mana Crystals, a Torn Page, a void or arcane rune, and a 50% chance of a rune of the Observatory.
 - 220 experience drops on the altar. Anything that doesn't fit is left there, safe.
 - Everyone within 64 blocks earns the **Starbreaker** feat (1,500 mana toward your next Heart Circle) and advancement.
-  It counts as a boss for the 7th Heart Circle.
+  It counts as a boss for the 7th Heart Circle, and the feat itself is one of the things the 14th Heart Circle asks for.
 
 **The Astral Lens** is kept, not spent: hold it up for 3 minutes of Night Vision and 1 minute of Slow Falling, then it
 rests for 5 minutes.

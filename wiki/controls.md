@@ -14,7 +14,7 @@ description: "Every Wildercord key with its default, the controls inside the Cor
 
 ## Keys
 
-All keys are in **Options > Controls > Key Binds**, and you can change every one. They sit under three headings: **Wildercord**, **Wildercord: Master's Arts** and **Wildercord: Master forms**. The **?** badge in the Cord screen always shows your current keys.
+All keys are in **Options > Controls > Key Binds**, and you can change every one. They sit under four headings: **Wildercord**, **Wildercord: Master's Arts**, **Wildercord: Master forms** and **Wildercord: Lore**. The **?** badge in the Cord screen always shows your current keys.
 
 A press counts as a **hold** once it's down for a quarter of a second. Anything shorter is a tap.
 
@@ -50,6 +50,12 @@ These need a blade in your main hand, a breathing method, and the aura stage sho
 |---|---|---|
 | Equipped Master form | `C` | Uses the [Master form]({{ '/masters/master-forms/' | relative_url }}) you have equipped. It does nothing in Creative, so the game's Save Toolbar (`C` + a number) still works there. |
 
+### Wildercord: Lore
+
+| Key | Default | What it does |
+|---|---|---|
+| Open lore journal | `H` | Opens your [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}): leads, places, people, what you learned and what was said. Only when no other screen is open. |
+
 ## Other actions with the usual keys
 
 | Do | To |
@@ -81,7 +87,7 @@ These need a blade in your main hand, a breathing method, and the aura stage sho
 | Drag a threaded rune | Move it, put it in another spell, or drag it off to remove it |
 | Click a spell's row | Select it for editing and casting |
 | Type, or `Ctrl`+`F` | Search the Codex |
-| `Ctrl`+`B` (or **Catalog**) | Open the [Rune Catalog]({{ '/runes/' | relative_url }}#finding-runes-the-catalog) |
+| `Ctrl`+`B` (or **Catalog**) | Open the [Rune Catalog]({{ '/spellcraft/rune-catalog/' | relative_url }}) |
 | `Backspace` / `Ctrl`+`Backspace` | Delete a letter / clear the search |
 | Page tabs | Spells, Passives, Grimoire, Cosmetics |
 | `Ctrl`+`L` (or the list badge) | Open the loadouts panel |
@@ -109,9 +115,9 @@ The screen doesn't pause the game. Full details on [The Cord Screen]({{ '/spellc
 | `/master join` | Join a Master trial that's gathering near you |
 | `/master ready` | Start the trial you called |
 | `/master victories` | List the Masters you've beaten |
-| `/vow` | See your [Circle Vows]({{ '/progression/heart-circles/' | relative_url }}#circle-vows); `/vow release <circle>` frees one for 5 levels |
-| `/party invite <player>`, `accept`, `decline`, `leave`, `list`, `kick`, `disband` | Form a party of up to 8. Your spells spare party members |
-| `/duel <player>`, `/duel accept`, `/duel decline`, `/duel stats` | [Duels]({{ '/social/duels/' | relative_url }}) |
+| `/vow`, `/vow take <vow>`, `/vow release <circle>` | See and choose your [Circle Vows]({{ '/progression/circle-vows/' | relative_url }}). Releasing one costs 5 levels |
+| `/party invite <player>`, `accept <player>`, `decline <player>`, `leave`, `list`, `kick <member>`, `disband` | Form a [party]({{ '/social/parties/' | relative_url }}) of up to 8. Your spells spare party members |
+| `/duel <player>`, `/duel accept <player>`, `/duel decline <player>`, `/duel stats [player]` | [Duels]({{ '/social/duels/' | relative_url }}) |
 | `/loadout save`, `load`, `delete`, `list` | Manage [loadouts]({{ '/spellcraft/loadouts/' | relative_url }}) |
 | `/runelab practice enter` / `leave` | Enter or leave the [practice arena]({{ '/progression/practice/' | relative_url }}) |
 | `/runelab research`, `notebook`, `trial`, `familiar`, `builds` | [Research]({{ '/progression/research/' | relative_url }}) and saved builds |
@@ -140,7 +146,9 @@ These need operator permission (or cheats on in single player).
 | `/wildercord visualstats` [`reset`] | Show visual effect counters |
 | `/wildercord reset` | Forget every rune and spell (Heart Circles are kept) |
 | `/wildercord reload` | Reload the server settings and report any problems |
+| `/wildercord aura method <method>`, `stage <stage>` and more | Aura testing tools: set your breathing method, stage and the rest |
 | `/setwarp <name>`, `/delwarp <name>` | Manage public warps |
+| `/wildercord-upgrade` | Places a few small encounters, such as the training pavilion, in old terrain, with a preview first and a way back. It doesn't add the 48 sites. Server owners only. See [Pavilion Upgrade for Old Worlds]({{ '/world/pavilion-upgrade/' | relative_url }}) |
 | `/gamerule wildercord:allow_duels false` | Turn duels off |
 
 Players on the same `/team` count as allies, so your helpful spells reach them. See [friendly fire]({{ '/spellcraft/reading-spells/' | relative_url }}#friendly-fire).

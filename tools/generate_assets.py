@@ -831,6 +831,14 @@ def write_lang(runes):
     import sleeping_blade_art
     lang.update(sleeping_blade_art.LANG)
     sleeping_blade_art.write(sys.modules[__name__])
+    # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
+    import importlib
+    site_ids = []
+    for site_module in sorted(Path(__file__).resolve().parent.glob("sites_*.py")):
+        pack = importlib.import_module(site_module.stem)
+        lang.update(pack.LANG)
+        site_ids += pack.write(sys.modules[__name__])
+    write_json(DATA / "tags/worldgen/structure/site.json", {"replace": False, "values": sorted(f"wildercord:{s}" for s in site_ids)})
     import tournament_art
     lang.update(tournament_art.LANG)
     tournament_art.write(sys.modules[__name__])

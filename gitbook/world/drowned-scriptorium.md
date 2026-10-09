@@ -131,7 +131,7 @@ The tide goes out for good. Then:
   rune, 3 Mana Crystals, a Torn Page, a storm or frost rune, and a 50% chance of a rune of the Scriptorium.
 - 220 experience drops on the core. Anything that doesn't fit is left there, safe.
 - Everyone within 64 blocks earns the **Low Tide** feat (1,500 mana toward your next Heart Circle) and advancement. It
-  counts as a boss for the 7th Heart Circle.
+  counts as a boss for the 7th Heart Circle, and the feat itself is one of the things the 12th Heart Circle asks for.
 
 **The Drowned Quill** is kept, not spent: hold it up for 3 minutes of Water Breathing and Dolphin's Grace, then it
 rests for 5 minutes.

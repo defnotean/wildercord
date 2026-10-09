@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "wilds_rime_monastery",
+  "biomes": "#wildercord:has_structure/wilds_rime_monastery",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

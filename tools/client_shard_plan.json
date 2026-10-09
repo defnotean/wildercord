@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "planId": "full-client-explicit-v2-counter-lifetimes",
   "shardCount": 4,
-  "expectedCount": 335,
-  "orderedRosterSha256": "aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be",
+  "expectedCount": 341,
+  "orderedRosterSha256": "af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c",
   "executionProfile": {
     "execution": "complete",
     "animationGallery": true,
@@ -72,7 +72,7 @@
   "groups": [
     {
       "id": 1,
-      "expectedCount": 84,
+      "expectedCount": 86,
       "entries": [
         "dev.wildercord.cast.RelayCircleTest",
         "dev.wildercord.cast.RelayLifetimeTest",
@@ -157,12 +157,14 @@
         "dev.wildercord.world.upgrade.UpgradeEncounterTest",
         "dev.wildercord.cast.WayfarerPackTest",
         "dev.wildercord.aura.world.MastersPackBTrialTest",
-        "dev.wildercord.gametest.perf.PerformanceHarnessTest"
+        "dev.wildercord.gametest.perf.PerformanceHarnessTest",
+        "dev.wildercord.world.sites.FarmSitesClientTest",
+        "dev.wildercord.world.sites.WaterSitesGameTest"
       ]
     },
     {
       "id": 2,
-      "expectedCount": 84,
+      "expectedCount": 86,
       "entries": [
         "dev.wildercord.client.fx.VoidWardDeliveryTest",
         "dev.wildercord.client.fx.VoidMovementDeliveryTest",
@@ -247,12 +249,14 @@
         "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
         "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
         "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
-        "dev.wildercord.client.combat.CrimsonMoonCaptureTest"
+        "dev.wildercord.client.combat.CrimsonMoonCaptureTest",
+        "dev.wildercord.world.sites.MastersSitesTest",
+        "dev.wildercord.world.sites.MineSitesClientTest"
       ]
     },
     {
       "id": 3,
-      "expectedCount": 84,
+      "expectedCount": 85,
       "entries": [
         "dev.wildercord.gametest.WildercordPerformanceCastTest",
         "dev.wildercord.gametest.WildercordResonanceTest",
@@ -337,12 +341,13 @@
         "dev.wildercord.aura.world.ElementalMastersNativeTest",
         "dev.wildercord.cast.FxSupportPackTest",
         "dev.wildercord.aura.world.MethodsAMastersNativeTest",
-        "dev.wildercord.client.HudHandednessLayoutTest"
+        "dev.wildercord.client.HudHandednessLayoutTest",
+        "dev.wildercord.world.sites.WildsSitesTest"
       ]
     },
     {
       "id": 4,
-      "expectedCount": 83,
+      "expectedCount": 84,
       "entries": [
         "dev.wildercord.wildlife.TidewardPendingReceiverTest",
         "dev.wildercord.wildlife.MixedWetlandPerformanceTest",
@@ -426,7 +431,8 @@
         "dev.wildercord.lore.LoreJournalGameTest",
         "dev.wildercord.aura.ProgressionVowWallTurnNativeTest",
         "dev.wildercord.aura.MovesPackTest",
-        "dev.wildercord.aura.world.MethodsBMastersClientTest"
+        "dev.wildercord.aura.world.MethodsBMastersClientTest",
+        "dev.wildercord.world.sites.TravelSitesClientTest"
       ]
     }
   ]

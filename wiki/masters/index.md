@@ -14,28 +14,30 @@ The Sword Masters are the hardest swordsmen in Wildercord. There are **16 Master
 | [Ember Master]({{ '/masters/ember/' | relative_url }}) | Fire; steady pace, fire that lingers after the cut | Cinder Wake, Kiln Ring | Echo |
 | [Gale Master]({{ '/masters/gale/' | relative_url }}) | Wind; fastest, slips sideways and strikes where you stood | Crosswind Reprise | Afterimage |
 | [Stone Master]({{ '/masters/stone/' | relative_url }}) | Earth; slowest and heaviest, braces after every attack | Stone Fracture, Stone Fault March | Sunder |
-| [Rime Master]({{ '/masters/techniques/' | relative_url }}#rime) | Frost; long, even wind-ups | Rime Lattice | Ward |
-| [Thunder Master]({{ '/masters/techniques/' | relative_url }}#thunder) | Storm; long, even wind-ups | Thunder Chain | Pierce |
-| [Verdant Master]({{ '/masters/techniques/' | relative_url }}#verdant) | Life; long, even wind-ups | Verdant Bloom | Rally |
-| [Hollow Master]({{ '/masters/techniques/' | relative_url }}#hollow) | Void; long, even wind-ups | Hollow Pull | Bind |
-| [Starlit Master]({{ '/masters/techniques/' | relative_url }}#starlit) | Arcane; long, even wind-ups | Constellation | Burst |
-| [Hourglass Master]({{ '/masters/techniques/' | relative_url }}#hourglass) | Time; long, even wind-ups | Rewind | Bind |
-| [Crimson Master]({{ '/masters/techniques/' | relative_url }}#crimson) | Blood; long, even wind-ups | Blood Frenzy | Infuse |
-| [Tide Master]({{ '/masters/techniques/' | relative_url }}#tide) | Brine; long, even wind-ups | Undertow Ring | Wave |
-| [Iron Master]({{ '/masters/techniques/' | relative_url }}#iron) | Metal; long, even wind-ups | Anvil Verdict | Pierce |
-| [Dune Master]({{ '/masters/techniques/' | relative_url }}#dune) | Sand; long, even wind-ups | Shifting Sands | Bind |
-| [Echo Master]({{ '/masters/techniques/' | relative_url }}#echo) | Wind; Ember's pace | Tolling Bell (leaves you sick and dizzy) | Wave |
-| [Dawn Master]({{ '/masters/techniques/' | relative_url }}#dawn) | Arcane; Ember's pace, braces after every attack like Stone | Noon Glare (blinds you) | Ward |
-| [Venom Master]({{ '/masters/techniques/' | relative_url }}#venom) | Life; Ember's pace | Serpent Coil (poisons you) | Bind |
+| [Rime Master]({{ '/masters/rime/' | relative_url }}) | Frost; long, even wind-ups | Rime Lattice | Ward |
+| [Thunder Master]({{ '/masters/thunder/' | relative_url }}) | Storm; long, even wind-ups | Thunder Chain | Pierce |
+| [Verdant Master]({{ '/masters/verdant/' | relative_url }}) | Life; long, even wind-ups | Verdant Bloom | Rally |
+| [Hollow Master]({{ '/masters/hollow/' | relative_url }}) | Void; long, even wind-ups | Hollow Pull | Bind |
+| [Starlit Master]({{ '/masters/starlit/' | relative_url }}) | Arcane; long, even wind-ups | Constellation | Burst |
+| [Hourglass Master]({{ '/masters/hourglass/' | relative_url }}) | Time; long, even wind-ups | Rewind | Bind |
+| [Crimson Master]({{ '/masters/crimson/' | relative_url }}) | Blood; long, even wind-ups | Blood Frenzy | Infuse |
+| [Tide Master]({{ '/masters/tide/' | relative_url }}) | Brine; long, even wind-ups | Undertow Ring | Wave |
+| [Iron Master]({{ '/masters/iron/' | relative_url }}) | Metal; long, even wind-ups | Anvil Verdict | Pierce |
+| [Dune Master]({{ '/masters/dune/' | relative_url }}) | Sand; long, even wind-ups | Shifting Sands | Bind |
+| [Echo Master]({{ '/masters/echo/' | relative_url }}) | Wind; Ember's pace, blows that ring twice | Tolling Bell (leaves you sick and dizzy) | Wave |
+| [Dawn Master]({{ '/masters/dawn/' | relative_url }}) | Arcane; moves, braces after every attack and dashes like Stone | Noon Glare (blinds you) | Ward |
+| [Venom Master]({{ '/masters/venom/' | relative_url }}) | Life; moves and dashes like Gale | Serpent Coil (poisons you) | Bind |
 
 See also:
 - [Master Techniques]({{ '/masters/techniques/' | relative_url }}): all 417 named combos of all 16 Masters, with each strike's shape, answer and damage.
-- [Master Forms]({{ '/masters/master-forms/' | relative_url }}): Wall Turn, Cinder Lunge, Reed Slip and Stone Hinge, which an Ember, Gale or Stone clear lets you learn.
+- [Master Forms]({{ '/masters/master-forms/' | relative_url }}): the movement forms and guard answers that an Ember, Gale or Stone clear lets you learn.
+- [Spell Cut]({{ '/masters/spell-cut/' | relative_url }}): the Ember lesson that lets you cut a hostile spell out of the air with your sword.
+- [Master halls and shrines]({{ '/world/masters-sites/' | relative_url }}): eight training halls in the world, each with a lectern that explains how to face its school's Master.
 - [Combat Presentation]({{ '/masters/combat-presentation/' | relative_url }}): articulated combat and the look of fights.
 
 ## How to get a trial
 
-Masters don't live anywhere in the world. A [wandering duelist]({{ '/world/creatures/' | relative_url }}#wandering-duelist) calls one for you.
+Masters don't live anywhere in the world. The [Master halls and shrines]({{ '/world/masters-sites/' | relative_url }}) are where their schools train, and each hall's lectern tells you how to call its Master, but the Master itself never waits there. A [wandering duelist]({{ '/world/creatures/' | relative_url }}#wandering-duelist) calls one for you.
 
 1. Reach **Aura Form** or **Heart Circle VIII** (see [Aura]({{ '/progression/aura/' | relative_url }}#form) and [Heart Circles]({{ '/progression/heart-circles/' | relative_url }})).
 2. Play in Survival, on any difficulty except Peaceful, with no duel or spar running.
@@ -43,7 +45,7 @@ Masters don't live anywhere in the world. A [wandering duelist]({{ '/world/creat
 4. A Master appears nearby and waits **one minute** for you. Only you can accept it.
 5. Talk to the Master. It warns you the trial is lethal. Talk to it again within **10 seconds** to accept.
 
-The Master you get matches the duelist's breathing method: a Tide duelist calls the Tide Master, a Venom duelist the Venom Master, and so on. If the duelist breathes Echo, Dawn or Venom, or **you** do, that Master comes. A duelist with no matching Master calls the Ember Master.
+The Master you get matches the duelist's breathing method: a Tide duelist calls the Tide Master, a Crimson duelist the Crimson Master, and so on. Starlit, Hourglass, Crimson, Tide, Iron and Dune duelists always call their own Master. With any other duelist, if **you** breathe Echo, Dawn or Venom, your own method's Master comes instead. You can also call any Master directly with `/master challenge <school>`.
 
 You can also type `/master challenge <name>`, where the name is one of `ember`, `gale`, `stone`, `rime`, `thunder`, `verdant`, `hollow`, `starlit`, `hourglass`, `crimson`, `tide`, `iron`, `dune`, `echo`, `dawn` or `venom`. The same Form or Circle VIII requirement applies.
 
@@ -61,6 +63,12 @@ The Master needs clear, level ground around you. Only one trial can run in the s
 Use `/party invite <player>` before a group trial so your spells and arts spare each other. See [Playing together]({{ '/social/playing-together/' | relative_url }}).
 
 ## Reading a Master
+
+### The Master's instructions
+
+When the trial starts, the Master tells every challenger one short line about its school, followed by the same warning about spells: "Hold a spell too long and I will dash at you: release, sidestep or parry." For example, the Ember Master says to leave its broad cut, then step out of the burning lanes; the Stone Master says to hit its back or axe its guard while it braces. Read it: it is the key to that fight. Signature moves also flash a short hint as they start, such as "Leave the lane! It tolls twice."
+
+### The three beats
 
 Every attack follows the same three beats: a **wind-up**, a **locked aim**, and an **open recovery**.
 
@@ -80,7 +88,7 @@ Read the **shape** of each strike and answer it:
 
 ### Tempo
 
-Techniques chain one to four strikes. For Ember, Gale, Stone, Echo, Dawn and Venom, the first strike of a chain takes about **0.6 seconds** to land and each later strike about **0.4 seconds**. Heavy strikes take longer and quick ones less, but no strike lands in under **0.25 seconds**. Gale is about 15% faster than this, and Stone about 12% slower.
+Techniques chain one to four strikes. For Ember, Gale, Stone, Echo, Dawn and Venom, the first strike of a chain takes about **0.6 seconds** to land and each later strike about **0.4 seconds**. Heavy strikes take longer and quick ones less, but no strike lands in under **0.25 seconds**. Gale is about 15% faster than this, and Stone about 12% slower. Echo, Dawn and Venom chain their techniques at Ember's speed, even though Dawn moves like Stone and Venom like Gale. Stone's and Dawn's ordinary attacks also hit 10% harder.
 
 The other ten Masters (Rime to Dune) wind up every strike for **0.6 to 0.7 seconds**, so they are easier to read, and stay open for **0.7 to 0.8 seconds** afterwards.
 
@@ -97,9 +105,30 @@ To beat a guard:
 
 ### Spells and the pursuit dash
 
-If you hold a spell charge for more than a moment, a free Master may **dash at you**. It warns for 0.4 seconds, dashes along a straight line, then marks a short strike lane for another 0.4 seconds. Release your spell early, sidestep the lane, back away, take cover or parry. If it reaches you, the hit can break your held spell.
+This is the Master's punishment for slow casting. If you hold a spell charge for more than about 0.3 seconds while you stand more than about 4 blocks away, within its dash range and roughly level with it, a free Master may **dash at you**:
+
+1. **Warning (0.4 s).** The banner reads "Leave the lane or parry!"
+2. **Dash.** It rushes along a straight line toward where you stood, stopping at least 2 blocks short of you. Slowing it shortens the dash.
+3. **Strike lane (0.4 s).** It marks a short lane in front of it, then strikes along it.
+4. **Opening (1.1 s).** After the strike it stands open. This is your chance to hit back.
+
+Release your spell early, sidestep the lane, back away, take cover or parry. Only a hit that actually lands breaks your held spell.
+
+Each school dashes its own way:
+
+| Master | Dashes when you are within | Dash length | Rest between dashes |
+|---|---|---|---|
+| Gale and Venom | 9 blocks | up to 6.4 blocks | 5 s |
+| Ember, Echo and the ten long-wind-up Masters | 7.5 blocks | up to 4.8 blocks | 7 s |
+| Stone and Dawn | 6.25 blocks | up to 3.6 blocks | 8 s |
+
+Each dash also costs the Master Aura, so a Master that is low on Aura can't dash.
 
 If you stay far away or up high, the Master throws a **crescent volley** of flying blades instead. More challengers mean more blades. Sidestep them.
+
+### Combinations
+
+Between signature moves, a Master strings its ordinary attacks (sweep, thrust and crescent) into varied combinations. It avoids repeating the moves it has just used, so you can't learn one fixed loop and stand in the same spot. Every attack in a combination still has its full warning and its full open recovery, so watch each wind-up rather than guessing the next move.
 
 ### Phases
 
@@ -109,15 +138,15 @@ At two-thirds and one-third health, the Master reorders its pattern. It never sh
 
 Your **first clear** of each Master is recorded forever and teaches you a [technique part]({{ '/progression/techniques/' | relative_url }}). The table at the top of this page lists the part each Master teaches. Some parts are taught by more than one Master: **Bind** by Hollow, Hourglass, Dune and Venom; **Pierce** by Thunder and Iron; **Ward** by Rime and Dawn; **Wave** by Tide and Echo.
 
-The first three schools also open a Master form:
+The first three schools also open lessons from wandering teachers of the same school:
 
 | Master | Technique part | What it also opens |
 |---|---|---|
-| Ember | Echo | Cinder Lunge (at Sovereign) from an Ember duelist |
-| Gale | Afterimage | Reed Slip (at Form) and Wall Turn (at Sovereign) from a Gale duelist |
-| Stone | Sunder | Stone Hinge (at Sovereign) from a Stone duelist |
+| Ember | Echo | Cinder Lunge (at Sovereign), Ember Riposte and [Spell Cut]({{ '/masters/spell-cut/' | relative_url }}) (at Form) |
+| Gale | Afterimage | Wall Turn (at Sovereign), Reed Slip, Gale Shove and Air Step (at Form) |
+| Stone | Sunder | Stone Hinge and Plunging Strike (at Sovereign), Stone Break (at Form) |
 
-See [Master Forms]({{ '/masters/master-forms/' | relative_url }}) for how to learn and use those forms.
+See [Master Forms]({{ '/masters/master-forms/' | relative_url }}) for how to learn and use them. Stone Hinge is still in testing and may be switched off on your server.
 
 - Every challenger still in the arena and alive when the Master falls shares the clear.
 - If you already know the technique part, only the clear is recorded.

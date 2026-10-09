@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "wilds_iron_gatehouse",
+  "biomes": "#wildercord:has_structure/wilds_iron_gatehouse",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

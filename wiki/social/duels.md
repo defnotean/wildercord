@@ -10,7 +10,7 @@ nav_order: 3
 
 A **duel** is a fair fight between two players where **nobody dies**. When it ends, the harm you did each other is
 undone. Duels work even with PvP off, and between members of the same
-[party]({{ '/social/playing-together/' | relative_url }}#parties).
+[party]({{ '/social/parties/' | relative_url }}).
 
 ## How to get it
 

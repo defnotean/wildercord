@@ -1,0 +1,143 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "farm_windmill": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_windmill"
+            }
+          }
+        }
+      }
+    },
+    "farm_herbalist": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_herbalist"
+            }
+          }
+        }
+      }
+    },
+    "farm_apiary": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_apiary"
+            }
+          }
+        }
+      }
+    },
+    "farm_orchard": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_orchard"
+            }
+          }
+        }
+      }
+    },
+    "farm_shepherd": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_shepherd"
+            }
+          }
+        }
+      }
+    },
+    "farm_mushroom_ring": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_mushroom_ring"
+            }
+          }
+        }
+      }
+    },
+    "farm_granary": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_granary"
+            }
+          }
+        }
+      }
+    },
+    "farm_scarecrow": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_scarecrow"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:composter"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_sites.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_sites.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_windmill",
+      "farm_herbalist",
+      "farm_apiary",
+      "farm_orchard",
+      "farm_shepherd",
+      "farm_mushroom_ring",
+      "farm_granary",
+      "farm_scarecrow"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101102,
+    "spacing": 40,
+    "separation": 12
+  },
+  "structures": [
+    {
+      "structure": "wildercord:farm_herbalist",
+      "weight": 1
+    }
+  ]
+}

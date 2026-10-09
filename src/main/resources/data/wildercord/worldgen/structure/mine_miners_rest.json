@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "mine_miners_rest",
+  "biomes": "#wildercord:has_structure/mine_miners_rest",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

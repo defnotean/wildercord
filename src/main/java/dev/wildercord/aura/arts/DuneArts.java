@@ -122,13 +122,22 @@ public final class DuneArts {
 	// ------------------------------------------------------------------ III. Sandveil
 
 	static boolean sandveil(ServerPlayer player, AuraApi.StringContext context) {
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(SANDVEIL) || !counter.valid()) return false;
+		LivingEntity caught = counter.target();
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.4F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_sandveil", 1.1F, 1.0F);
+		// The counter: the one who struck takes the sand in the face first.
+		if (caught != null && counter.primaryValid()) {
+			hits.strike(caught, DuneRules.VEIL_FACTOR, AuraFxRules.Weight.FULL);
+			if (counter.afterDamage(caught) && counter.permits(caught)) MethodsAFlavours.blind(player, caught, DuneRules.VEIL_BLIND);
+		}
 		for (LivingEntity foe : ArtKit.around(player, feet, DuneRules.VEIL_RADIUS, 1.5, 3.0, DuneRules.VEIL_TARGETS)) {
+			if (foe == caught) continue;
 			hits.strike(foe, DuneRules.VEIL_FACTOR, AuraFxRules.Weight.FULL);
 			MethodsAFlavours.blind(player, foe, DuneRules.VEIL_BLIND);
 		}

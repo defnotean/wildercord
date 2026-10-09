@@ -44,6 +44,9 @@ Tier IV runes (from bosses, vaults and rare places), [runes of the world]({{ '/r
 ### Why does a new rune only show a hint?
 A rune you've just learned is **unread**. Cast it once to glimpse it, and use it a few times to understand it fully. See [Reading runes]({{ '/spellcraft/harmonies/' | relative_url }}#reading-runes).
 
+### How do I find the right rune?
+Open the **Rune Catalog** with `Ctrl`+`B` in the Cord screen, or its **Catalog** link. Search, filter by family, element and use, and see which runes go well together. Many runes are for everyday jobs like farming, mining and travel. See [Rune Catalog]({{ '/spellcraft/rune-catalog/' | relative_url }}) and [Everyday Rune Packs]({{ '/runes/everyday-packs/' | relative_url }}).
+
 ### What do I do with a spare rune?
 Fuse three into the next rank at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}), trade it to a [Runesmith]({{ '/social/runesmith/' | relative_url }}), or give it to a friend.
 
@@ -97,7 +100,7 @@ Yes: **overcast** by cracking a Heart Circle, or thread **Blood Price** to pay i
 Harmful effects never touch you, your tamed pets, your party or your team. Other players are only hurt when the server allows PvP, and then for 60% damage by default.
 
 ### Why won't my Heal reach my friend?
-Helpful spells only reach allies: players in your `/party` or on your team. See [friendly fire]({{ '/spellcraft/reading-spells/' | relative_url }}#friendly-fire).
+Helpful spells only reach allies: players in your [party]({{ '/social/parties/' | relative_url }}) or on your team. See [friendly fire]({{ '/spellcraft/reading-spells/' | relative_url }}#friendly-fire).
 
 ### Will spells grief my base?
 Spells only change blocks where you're allowed to build, and a server can turn block-changing spells off. Monsters' spells never change blocks. Fire spells can still light TNT. See [World Magic]({{ '/world/world-magic/' | relative_url }}).
@@ -108,7 +111,7 @@ That's a **residue**. Strong spells (30 mana or more) and overcasts can leave on
 ## Cords and progress
 
 ### Do I lose anything when I die?
-Your Cord, runes, spells, spell ranks and Heart Circles are all kept. Your mana starts empty and refills. Gear in your gear slots drops like the rest of your inventory.
+Your Cord, runes, spells, spell ranks, Heart Circles, Circle Vows and lore journal are all kept. Your mana starts empty and refills. Gear in your gear slots drops like the rest of your inventory.
 
 ### Do I lose spells when I change Cords?
 No. Spells live on you, not the Cord. On a smaller Cord, extra runes stay threaded but quiet until you switch back.
@@ -121,6 +124,9 @@ Your 1st Heart Circle opens the first passive slot and your 5th opens the second
 
 ### What's my innate rune?
 One of ten runes that wakes in you, at random, when you form your 1st Heart Circle. See [Innate Runes]({{ '/runes/innate/' | relative_url }}).
+
+### A Heart Circle asked me for a vow.
+From Circle IX, seven circles ask you to choose one of two vows, such as more max mana or faster regeneration. Click a side in chat, or type `/vow`. You can change your mind later for 5 levels. See [Circle Vows]({{ '/progression/circle-vows/' | relative_url }}).
 
 ### What are harmonies and secret spells?
 **Harmonies** are rune sequences only your world answers, each with a twist. **Secret spells** are exact sequences that become something grander, hinted at by Torn Pages. See [Harmonies]({{ '/spellcraft/harmonies/' | relative_url }}) and [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}).
@@ -153,6 +159,12 @@ The Master's Arts: Spellcut (from Edge), Rising Break and Driving Cut (from Form
 
 ## The world
 
+### What's the journal that opens with `H`?
+Your [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}). It records places you find, duelists and Masters you meet, what you learn and what they say. Its **leads** point you to your next discovery and give rewards.
+
+### Where are the new buildings?
+There are 48 sites in six families: farmsteads, Master halls, mines, roadside places, water places and wild places. They only appear in newly generated land, so explore away from old ground. See [Farmstead Sites]({{ '/world/farm-sites/' | relative_url }}), [Master Halls and Shrines]({{ '/world/masters-sites/' | relative_url }}), [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }}), [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}), [Water Sites]({{ '/world/water-sites/' | relative_url }}) and [Wild Places]({{ '/world/wilds-sites/' | relative_url }}).
+
 ### Some monsters glow and cast spells.
 They're **Runebound**: monsters with a Cord. Read the circle they hold out before each cast. See [Runebound]({{ '/world/runebound/' | relative_url }}) and [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}).
 
@@ -179,4 +191,4 @@ Sections include `casting`, `mana`, `world`, `loot`, `features`, `travel`, `defe
 No. Missing settings are added at their defaults when the server starts or reloads, and your own values are kept.
 
 ### Can I add a training pavilion to an old world?
-Yes, as an optional, owner-approved step. See [Pavilion Upgrade]({{ '/world/pavilion-upgrade/' | relative_url }}).
+Yes, as an optional, owner-approved step with `/wildercord-upgrade`. It doesn't add the 48 sites; those only appear in new land. See [Pavilion Upgrade]({{ '/world/pavilion-upgrade/' | relative_url }}).

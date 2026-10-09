@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "water_pier_boathouse",
+  "biomes": "#wildercord:has_structure/water_pier_boathouse",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

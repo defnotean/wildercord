@@ -4,6 +4,27 @@ This is a release gate, not a declaration of readiness. Keep the pull request in
 
 The [player-facing development roadmap](../MASTERS_OF_TOMORROW_ROADMAP.md) records the expanded requested content scope and priorities. Planned spells, movement, lore and hundreds of distinct boss attacks are not completed by the current foundation.
 
+## 0.11.0-alpha candidate: 48 sites and CI repairs (2026-10-09)
+
+The candidate adds six site families (Farmsteads, Master halls, Roadside, Water, Mining and Wild places, eight sites
+each) with loot tables, per-site and per-family advancements, wiki pages and one native suite per family. Focused native
+runs of `MastersSitesClientTest`, `WildsSitesClientTest`, `TravelSitesClientTest`, `WaterSitesClientTest`,
+`MineSitesClientTest` and `FarmSitesClientTest` passed locally. Farm's natural-terrain probe now places sites on vetted
+dry, level spots in a matching biome rather than on blind attempts.
+
+Repairs made against the failing `84db541c` CI run:
+
+- Whirlpool, Bulwark and Sandveil (earned counters) now strike the earned target as their primary hit and gate follow-ups on
+  `afterDamage`/`permits`, matching the connected cast receipts and `EarnedCounterCaptureFixture`.
+- The Life runtime partition accounts for the 13 everyday Life utility runes (45 in all: generic 31, Excise 1, utility 13);
+  none of them claims generic preparation or flight coverage.
+- The Momentum gate waits for the authored windup of each styled art (Sunfall 10 ticks) before reading what played.
+- The Masters required-parts and client shard-plan tool pins follow the regenerated catalogue (339 classes; 86/86/85/84).
+
+Known limits for this alpha: sites from different families can rarely overlap, trial pits extend below their bounding box,
+the lore journal's entries are not yet data-driven, and natural spawn frequency has only been sampled, not measured.
+The final CI run on the pushed candidate is the release evidence; this note does not replace it.
+
 ## Phase 0 Native Baseline and Regression Repairs (2026-10-07)
 
 Phase 0 of the Gemini Master Implementation Directive is complete and verified against native execution:
@@ -29,7 +50,7 @@ The source now has 23/50 style body/hand timelines and 13/50 articulated forms; 
 Final combined-source tests and native execution remain separate requirements.
 
 Required Masters acceptance is now 47 classes in 44/1/2 parts. Every previous 45 class remains in its original relative order.
-The full descriptor is 335 classes, explicitly planned as 84/84/84/83. Every class in the reviewed 317-class plan keeps its
+The full descriptor is 341 classes, explicitly planned as 86/86/85/84. Every class in the reviewed 317-class plan keeps its
 group and relative order; the 18 classes added since (new Master packs, moves, codex, performance and HUD layout tests) were
 appended to existing groups only. Strict source/run/attempt/profile,
 owned-launch and complete lifecycle receipts are required. A single shard or unsharded report cannot declare the full gate

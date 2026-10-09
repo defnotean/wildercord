@@ -37,13 +37,13 @@ The Master uses it when you're 2.5 to 4.75 blocks away: after its first attack, 
 ## Other moves
 
 - **Techniques:** chains of two to four strikes. Read each strike's shape. See [Reading a Master]({{ '/masters/' | relative_url }}#reading-a-master).
-- **Pursuit dash:** holding a spell too long invites a dash of up to 6.4 blocks, at most once every 5 seconds. Gale's dash is the longest and comes back the soonest.
+- **Pursuit dash:** holding a spell too long invites a dash of up to 6.4 blocks, at most once every 5 seconds. Gale's dash is the longest and comes back the soonest. After its strike it stands open for 1.1 seconds.
 - **Crescent volley:** flying blades if you stay far away or high up. Gale's blades fly faster than the other schools'.
 
 ## Rewards for a clear
 
 - Your first Gale clear teaches the **Afterimage** [technique part]({{ '/progression/techniques/' | relative_url }}).
-- A Gale duelist can then teach you **Reed Slip** (at Form) and **Wall Turn** (at Sovereign). See [Master Forms]({{ '/masters/master-forms/' | relative_url }}).
+- A wandering Gale teacher can then teach you, in order, **Wall Turn** (at Sovereign), **Reed Slip**, **Gale Shove** and **Air Step** (at Form). See [Master Forms]({{ '/masters/master-forms/' | relative_url }}).
 
 ## Tips and counterplay
 

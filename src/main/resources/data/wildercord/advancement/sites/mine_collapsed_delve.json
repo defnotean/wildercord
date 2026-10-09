@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:sites/mine_hillside_mine",
+  "criteria": {
+    "mine_collapsed_delve": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:mine_collapsed_delve"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:gravel"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.mine_collapsed_delve.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.mine_collapsed_delve.description"
+    }
+  },
+  "requirements": [
+    [
+      "mine_collapsed_delve"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}
