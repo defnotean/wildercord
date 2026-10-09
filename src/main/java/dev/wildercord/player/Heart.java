@@ -25,7 +25,7 @@ public final class Heart {
 	public static final ResourceKey<Enchantment> PERSISTENCE = ResourceKey.create(Registries.ENCHANTMENT, Wildercord.id("persistence"));
 
 	public static int circles(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CIRCLES, 0);
+		return Circles.count(player.getAttachedOrElse(WildercordAttachments.CIRCLES, 0));
 	}
 
 	/**
@@ -37,7 +37,7 @@ public final class Heart {
 	}
 
 	public static int cracked(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE).active(player.level().getGameTime());
+		return Math.clamp(player.getAttachedOrElse(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE).active(player.level().getGameTime()), 0, circles(player));
 	}
 
 	public static List<String> grimoire(Player player) {
@@ -77,7 +77,7 @@ public final class Heart {
 	}
 
 	public static int condensed(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CONDENSED, 0);
+		return Math.max(0, player.getAttachedOrElse(WildercordAttachments.CONDENSED, 0));
 	}
 
 	public static boolean bossSlain(Player player) {
@@ -111,6 +111,7 @@ public final class Heart {
 
 	/** Whether every breakthrough for circle {@code n} has been earned. */
 	public static boolean breakthroughMet(Player player, int n) {
+		if (n < 1 || n > Circles.MAX) return false;
 		for (Circles.Requirement requirement : Circles.requirements(n)) {
 			if (!met(player, requirement)) {
 				return false;
@@ -122,7 +123,7 @@ public final class Heart {
 	/** Ready to form the next circle: a Cord is worn, enough mana has condensed, and the breakthrough is earned. */
 	public static boolean ready(Player player) {
 		int next = circles(player) + 1;
-		return next <= Circles.MAX && Spellbooks.tier(player) != null
+		return player.isAlive() && !player.isSpectator() && next <= Circles.MAX && Spellbooks.tier(player) != null
 			&& condensed(player) >= Circles.condenseNeeded(next) && breakthroughMet(player, next);
 	}
 
@@ -144,11 +145,22 @@ public final class Heart {
 	/** @param overflow the spell is cast at full mana (7th Circle: Overflow) */
 	public static Bonuses bonuses(Player player, boolean overflow) {
 		int circles = active(player);
+		dev.wildercord.spell.CircleVows.Effect vows = vowEffect(player);
 		return dev.wildercord.content.RelicCharmItem.apply(player,new Bonuses(
-			Circles.power(Mana.enchantLevel(player, POTENCY), circles, overflow),
-			Circles.duration(Mana.enchantLevel(player, PERSISTENCE)),
-			Circles.cost(Mana.enchantLevel(player, THRIFT), circles),
-			Circles.cooldown(Mana.enchantLevel(player, CELERITY), circles)));
+			Circles.power(Mana.enchantLevel(player, POTENCY), circles, overflow) * vows.power(),
+			Circles.duration(Mana.enchantLevel(player, PERSISTENCE)) * vows.duration(),
+			Circles.cost(Mana.enchantLevel(player, THRIFT), circles) * vows.cost(),
+			Circles.cooldown(Mana.enchantLevel(player, CELERITY), circles) * vows.cooldown()));
+	}
+
+	/** The saved Circle Vows (old saves: none). */
+	public static int vows(Player player) {
+		return dev.wildercord.spell.CircleVows.clean(player.getAttachedOrElse(WildercordAttachments.CIRCLE_VOWS, 0));
+	}
+
+	/** What the vows of this heart's active circles add up to; a cracked circle's vow is silent. */
+	public static dev.wildercord.spell.CircleVows.Effect vowEffect(Player player) {
+		return dev.wildercord.spell.CircleVows.effect(vows(player), active(player));
 	}
 
 	public static int manaCost(Player player, SpellCompiler.Compiled compiled) {
@@ -221,6 +233,11 @@ public final class Heart {
 
 	/** @param factor one more factor on the cooldown, e.g. a found secret spell's ({@link #secretCooldown}) */
 	public static int cooldownTicks(Player player, SpellCompiler.Compiled compiled, double factor) {
+		if (compiled.root().groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID))) return dev.wildercord.spell.RelayRules.REST_TICKS;
+        if (compiled.root().groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.ReweaveRules.ID))) return dev.wildercord.spell.ReweaveRules.REST_TICKS;
+		if (compiled.root().groups.stream().anyMatch(g -> g.effects.stream().anyMatch(e -> e.effect.is(dev.wildercord.spell.ExciseRules.ID)))) return dev.wildercord.spell.ExciseRules.REST_TICKS;
+		for (var lesson : dev.wildercord.spell.LessonPackRules.ALL)
+			if (compiled.root().groups.stream().anyMatch(g -> g.effects.stream().anyMatch(e -> e.effect.is(lesson.id)))) return lesson.restTicks;
 		return (int) Math.max(5, Math.round(compiled.cooldownTicks() * bonuses(player).cooldown() * factor));
 	}
 

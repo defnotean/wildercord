@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/farm_sites",
+  "criteria": {
+    "farm_orchard": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_orchard"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:apple"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_orchard.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_orchard.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_orchard"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

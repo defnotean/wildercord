@@ -176,27 +176,24 @@ public final class RimeArts {
 	// ------------------------------------------------------------------ II. Hailfall
 
 	static boolean hailfall(ServerPlayer player, AuraApi.StringContext context) {
+		var release = dev.wildercord.aura.MastersArts.releaseTargets(player, HAILFALL);
+		if (release == null) return false;
 		ServerLevel level = player.level();
+		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING, true, 1.35F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_hailfall", 1.0F, 1.0F);
-		for (LivingEntity foe : ArtKit.arc(player, context.struck(), ArtRules.HAIL_CUT_REACH, 120, 4)) {
+		for (LivingEntity foe : ArtKit.arc(player, release.direct(), ArtRules.HAIL_CUT_REACH, 120, 4)) {
+			// Visible immediate cuts are intentional counterplay; already-released stones keep their ordinary area admission.
+			if (!player.hasLineOfSight(foe)) continue;
 			hits.strike(foe, ArtRules.HAIL_CUT_FACTOR, AuraFxRules.Weight.FULL);
 			ArtKit.chill(player, foe, ArtRules.HAIL_SLOW, 0);
 		}
-		// The cloud: over the foe struck, or ahead on the ground.
-		LivingEntity struck = context.struck();
-		Vec3 centre;
-		if (struck != null && struck.isAlive() && struck.distanceToSqr(player) < 7 * 7) {
-			centre = struck.position();
-		} else {
-			Vec3 ahead = feet.add(look.scale(ArtRules.HAIL_AHEAD));
-			Vec3 ground = ArtKit.floor(level, ahead, 1.5, 3);
-			centre = ground == null ? ahead : ground;
-		}
+		// The receipt samples a valid accepted body once, or keeps an explicitly accepted ground point. The cloud never tracks.
+		Vec3 centre = release.point();
 		ArtLight world = ArtLight.world(player);
 		Vec3 sky = centre.add(0, 4.6, 0);
 		world.sigil(sky, ArtKit.UP, SigilOption.BAND, color, ArtRules.HAIL_RADIUS * 1.1, ArtRules.HAIL_TICKS + 12, 0.05);
@@ -211,32 +208,38 @@ public final class RimeArts {
 			Vec3 drop = centre.add(Math.cos(a) * d, 0, Math.sin(a) * d);
 			int delay = 2 + i * ArtRules.HAIL_TICKS / ArtRules.HAIL_STONES;
 			Scheduler.later(delay, () -> {
-				if (!player.isAlive() || player.level() != level) {
+				if (!owner.valid()) {
 					return;
 				}
 				// A stone of ice streaking down, and breaking where it lands.
 				world.ray(drop.add(0, 4.4, 0), drop.add(0, 0.15, 0), WHITE, 0.09, 4);
 				world.ray(drop.add(0, 4.4, 0), drop.add(0, 0.15, 0), color, 0.2, 3);
-				Scheduler.later(2, () -> stone(player, hits, drop, color, struckBy));
+				Scheduler.later(2, () -> stone(player, owner, hits, drop, color, struckBy));
 			});
 		}
 		return true;
 	}
 
-	private static void stone(ServerPlayer player, ArtKit.Hits hits, Vec3 at, int color, Map<UUID, Integer> struckBy) {
-		ServerLevel level = player.level();
+	private static void stone(ServerPlayer player, ReleasedArtOwner owner, ArtKit.Hits hits, Vec3 at, int color, Map<UUID, Integer> struckBy) {
+		if (!owner.valid()) return;
+		ServerLevel level = owner.level();
 		Vec3 ground = ArtKit.floor(level, at.add(0, 1, 0), 1.5, 3);
 		Vec3 p = ground == null ? at : ground;
 		ArtLight.world(player).ring(p.add(0, 0.1, 0), ArtKit.UP, WHITE, 0.1, 0.9, 0.05, 6);
 		ice(level, p.add(0, 0.2, 0), 0.5, 3);
 		Feels.sound(level, p, "frost_hail", 0.55F, 0.9F + level.getRandom().nextFloat() * 0.3F);
 		for (LivingEntity foe : ArtKit.around(player, p, ArtRules.HAIL_STONE_REACH, 1.0, 3.0, 4)) {
+			if (!owner.valid()) return;
+			if (!foe.isAlive() || foe.isRemoved() || foe.level() != level) continue;
 			int n = struckBy.getOrDefault(foe.getUUID(), 0);
 			if (n >= ArtRules.HAIL_PER_FOE) {
 				continue;
 			}
 			struckBy.put(foe.getUUID(), n + 1);
 			hits.strike(foe, ArtRules.HAIL_STONE_FACTOR, AuraFxRules.Weight.LIGHT);
+			// Native damage callbacks may retire the owner or move a victim after this stone collected its targets.
+			if (!owner.valid()) return;
+			if (!foe.isAlive() || foe.isRemoved() || foe.level() != level) continue;
 			ArtKit.chill(player, foe, ArtRules.HAIL_SLOW, 0);
 		}
 	}
@@ -244,38 +247,68 @@ public final class RimeArts {
 	// ------------------------------------------------------------------ III. Glacier Mirror
 
 	static boolean glacierMirror(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(GLACIER_MIRROR) || !counter.valid()) return false;
+		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
+		ServerLevel level = owner.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
-		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
+		LivingEntity foe = counter.target();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SWEEP, false, 1.3F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_glacier_mirror", 1.0F, 1.0F);
 		if (foe != null) {
 			hits.strike(foe, ArtRules.MIRROR_FACTOR);
-			if (foe.isAlive()) {
+			if (!owner.valid() || !counter.valid()) return true;
+			if (counter.permits(foe)) {
 				freezeSolid(player, foe, ArtRules.MIRROR_FREEZE);
 			}
 		}
-		for (LivingEntity other : ArtKit.arc(player, null, ArtRules.MIRROR_CHILL_REACH, 120, 6)) {
-			if (other != foe) {
-				ArtKit.chill(player, other, ArtRules.MIRROR_CHILL, 1);
+		for (LivingEntity other : mirrorChillTargets(player, counter, look)) {
+			if (!counter.valid()) return true;
+			if (other != foe && counter.permitsMirrorCollateral(other)) {
+				ArtKit.chillAdmitted(player, other, ArtRules.MIRROR_CHILL, 1, () -> counter.permitsMirrorCollateral(other));
+				if (!counter.valid()) return true;
 				AuraPhysicalFx.frostCreep(level, other.position(), 0.7, 16);
 			}
 		}
 		// The mirror: a pane of ice held before the swordsman while it lasts (seen from outside; in your own view, a cold glint low).
-		ArtWards.mirror(player, ArtRules.MIRROR_TICKS);
+		if (!owner.valid() || !counter.valid()) return true;
+		ArtWards.Mirror mirror = ArtWards.mirror(player, owner, ArtRules.MIRROR_TICKS);
 		mirrorLook(player, color, true);
-		ArtFields.open(player, MIRROR, ArtFields.disc(player::position, 1.0, 2.0), ArtRules.MIRROR_TICKS, 5,
-			(field, owner, age) -> mirrorLook(owner, ArtKit.color(owner), false));
+		// Evicting this bounded cosmetic field never shortens the independent fifty-tick ward.
+		ArtFields.openReleased(player, owner, MIRROR, ArtFields.disc(player::position, 1.0, 2.0), ArtRules.MIRROR_TICKS, 5,
+			(field, current, age) -> {
+				if (mirror.active()) mirrorLook(current, ArtKit.color(current), false);
+				else field.end();
+			});
 		AuraPhysicalFx.frostCreep(level, feet, 1.6, 30);
 		return true;
 	}
 
+	/** The original six nearest bodies in the three-block/120-degree cone, with accepted facing and no collateral LOS. */
+	private static List<LivingEntity> mirrorChillTargets(ServerPlayer player, dev.wildercord.aura.EarnedCounters.Release counter, Vec3 look) {
+		double reach = ArtRules.MIRROR_CHILL_REACH;
+		Vec3 at = player.position();
+		List<LivingEntity> out = new ArrayList<>();
+		for (var entity : player.level().getEntities(player, player.getBoundingBox().inflate(reach + 1, 1.8, reach + 1),
+			candidate -> candidate instanceof LivingEntity living && counter.permitsMirrorCollateral(living))) {
+			Vec3 to = entity.position().subtract(at);
+			if (Math.abs(to.y) <= 2.2 && ArtRules.inCone(to.x, to.z, look.x, look.z, reach + entity.getBbWidth() / 2, 120))
+				out.add((LivingEntity) entity);
+		}
+		out.sort(java.util.Comparator.comparingDouble(entity -> entity.distanceToSqr(player)));
+		return out.size() > 6 ? new ArrayList<>(out.subList(0, 6)) : out;
+	}
+
 	/** The mirror of ice before the swordsman: a frosted pane of light facing forward, its rim white. */
 	private static void mirrorLook(ServerPlayer player, int color, boolean first) {
-		Vec3 look = ArtKit.flat(player);
+		// The ward follows the live view even while the counter's body/chill arc uses accepted facing.
+		Vec3 view = player.getViewVector(1.0F);
+		Vec3 flat = new Vec3(view.x, 0, view.z);
+		double yaw = Math.toRadians(player.getYRot());
+		Vec3 look = flat.lengthSqr() < 1.0E-4 ? new Vec3(-Math.sin(yaw), 0, Math.cos(yaw)) : flat.normalize();
 		Vec3 at = player.position().add(0, 1.1, 0).add(look.scale(1.05));
 		ArtLight show = ArtLight.spectacle(player);
 		show.ring(at, look, color, 0.95, 1.0, 0.05, 6);

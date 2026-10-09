@@ -16,7 +16,7 @@ public final class LifeOutcomeRecipeTest implements FabricClientGameTest {
   var dedicated=new HashSet<>(LifeOutcomes.RUNES);dedicated.add("root_carry");
   check(LifeOutcomes.RUNES.size()==30&&dedicated.size()==31,"Thirty observed Life owners plus one dedicated Root Carry owner");
   check(dev.wildercord.cast.feel.Signatures.get("wildercord:root_carry")!=null&&dev.wildercord.cast.feel.Signatures.get("wildercord:root_carry").ownsOutcomeBody(),"Root Carry uses its actual dedicated outcome signature");
-  check(Runes.all().stream().filter(r->r.family()==RuneFamily.EFFECT&&r.element().equals("life")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(dedicated),"Exact runtime Life31 roster; dedicated Root Carry channel acceptance remains required");
+  check(dev.wildercord.client.fx.LifeRuntimePartitionChecks.genericPaths().equals(dedicated),"Thirty observed Life owners plus Root Carry form generic31; separate Excise ordinary/presentation acceptance remains mandatory");
   var identities=new HashSet<String>();
   for(var rune:LifeOutcomes.RUNES) {
    var identity=new ArrayList<String>();

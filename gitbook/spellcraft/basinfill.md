@@ -1,32 +1,31 @@
-# Water for a little hollow
+# Basinfill
 
-**New in 0.10.0-alpha.**
+## What it is
 
-Basinfill is a rank-I frost/water utility rune. It creates permanent ordinary source water in
-an enclosed shallow hole. Craft its rune from a **Blank Rune, Clay Ball and Water Bucket**.
-The bucket follows normal crafting-container behavior.
+Basinfill is a rank-I Frost world rune. It fills a small, enclosed, shallow hole with permanent source water.
 
-![A paid Basinfill spell has filled a small enclosed stone basin with source water](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/screenshots/basinfill/filled-pool.png)
+![A Basinfill spell has filled a small enclosed stone basin with source water](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/screenshots/basinfill/filled-pool.png)
 
-This capture uses a controlled gameplay-test basin. The water is ordinary persistent water.
+## How to get it
 
-## Make a spell
+Craft a **Blank Rune, a Clay Ball and a Water Bucket** together (you get the bucket back as normal), then learn the rune.
 
-Thread **Touch → Basinfill** for a nearby basin, or **Bolt → Basinfill** to reach its floor
-from farther away. Aim at the floor inside the hole. The effect has a base cost of six mana;
-your delivery and ordinary casting modifiers determine the complete spell price.
+## How to use it
 
-The basin must be one block deep with a solid floor and watertight sides. It can contain up to
-sixteen connected cells, each within three horizontal blocks of the impact cell. A 4×4 basin
-works when aimed at a corner; smaller irregular hollows work too. Existing water can remain
-inside the same enclosed basin. Solid objects and plants are preserved.
+Thread **Touch + Basinfill** for a nearby hole, or **Bolt + Basinfill** to reach one farther away. Aim at the floor inside the hole. The effect costs 6 base mana; your shape and modifiers set the full price.
 
-Basinfill refuses open edges, deeper pits, oversized hollows, unloaded/protected ground,
-Adventure restrictions and places where water evaporates. Server block-edit settings and the
-cast's block budget apply. It fills one basin per paid cast; repeats cannot flood new basins.
-Power and radius modifiers do not enlarge this safety limit. Self is not a terrain-targeting
-recipe for this rune.
+The hole must be:
 
-Four pouring threads gather into a little vessel; projectile delivery carries a cupped water
-parcel, and descending drops splash into the filled cells. Water persists after saving and
-reopening your world and follows ordinary Minecraft fluid rules if you later alter the banks.
+- one block deep, with a solid floor and watertight sides;
+- at most **16** connected cells, each within **3** blocks (sideways) of where you aim. A 4×4 basin works if you aim at a corner.
+
+Water already in the basin is fine. Blocks and plants inside are kept.
+
+It refuses open edges, deeper pits, holes that are too big, protected or unloaded ground, and places where water evaporates, such as the Nether. One cast fills one basin. Power and radius modifiers do not make it bigger.
+
+The water is ordinary water. It stays after you save and reload, and flows normally if you later break the banks.
+
+## Tips
+
+- Dig the basin first, then fill it. Check the edges for gaps if it refuses.
+- Fuse Basinfill with Grow at the altar to make **Springbed**, which also helps nearby bank crops grow. See [Fused runes](../runes/fused.md).

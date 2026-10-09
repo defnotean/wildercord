@@ -3,6 +3,8 @@ package dev.wildercord.cast;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Mana;
+import dev.wildercord.player.ManaSkinRules;
+import dev.wildercord.player.ManaSkinDamage;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.Circles;
@@ -34,8 +36,10 @@ import java.util.UUID;
 public final class HeartCircles {
 	private HeartCircles() {}
 
-	/** Ring colours from the 1st circle (deep blue) out to the 8th (white gold). */
-	private static final int[] COLORS = {0x3F6BFF, 0x5A5BFF, 0x7E52FF, 0xA64FF0, 0xD35CD0, 0xF08A8A, 0xF5C46A, 0xFFF3D0};
+	/** The first eight colours stay intact; the outer master rings return through opal to white gold. */
+	private static final int[] COLORS = {0x3F6BFF, 0x5A5BFF, 0x7E52FF, 0xA64FF0, 0xD35CD0, 0xF08A8A, 0xF5C46A, 0xFFF3D0,
+		0xB8E5FF, 0xFFC89A, 0xDAC7FF, 0x93E8E2, 0xACBAFF, 0xE1D4FF,
+		0xF8BDE6, 0xB3EDC5, 0xD5E7FF, 0xFFF09A, 0xFFE2CE, 0xFFFBE8};
 
 	private static final Map<UUID, Integer> FORMING = new HashMap<>();
 	/** Who last hurt each creature with a spell, and when: a monster dying soon after counts as a spell kill. */
@@ -45,11 +49,13 @@ public final class HeartCircles {
 	private static final Map<UUID, Float> CONDENSING = new HashMap<>();
 	/** Players whose innate rune wakes in a moment, after the 1st Circle's title has been read. */
 	private static final java.util.Set<UUID> AWAKENING = new java.util.HashSet<>();
+	private static final java.util.Set<UUID> VOW_REMINDED = new java.util.HashSet<>();
 
 	public static void init() {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (entity instanceof ServerPlayer player && damage > 0 && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-				manaSkin(player, damage);
+				ManaSkinDamage.Wound wound = ManaSkinDamage.take(player, source);
+				if (wound != null) manaSkin(player, wound);
 				// Forming a circle takes unbroken concentration.
 				if (FORMING.remove(player.getUUID()) != null) {
 					player.sendOverlayMessage(Component.translatable("message.wildercord.circle_broken").withStyle(ChatFormatting.RED));
@@ -84,6 +90,11 @@ public final class HeartCircles {
 				}
 			}
 		});
+		// A spell kill only counts for a caster still here, so a leaver's marks on creatures go with them.
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			UUID id = handler.player.getUUID();
+			LAST_SPELL_HIT.values().removeIf(hit -> hit.caster().equals(id));
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			FORMING.clear();
 			LAST_SPELL_HIT.clear();
@@ -107,14 +118,14 @@ public final class HeartCircles {
 
 	/** Mana spent casting spells condenses toward the next circle. */
 	public static void condense(ServerPlayer player, float mana) {
-		if (mana <= 0 || player.isCreative()) {
+		if (!Float.isFinite(mana) || mana <= 0 || player.isCreative()) {
 			return;
 		}
-		float total = CONDENSING.getOrDefault(player.getUUID(), 0.0F) + mana;
-		int whole = (int) total;
-		CONDENSING.put(player.getUUID(), total - whole);
+		double total = (double) CONDENSING.getOrDefault(player.getUUID(), 0.0F) + mana;
+		int whole = (int) Math.min(Integer.MAX_VALUE, Math.floor(total));
+		CONDENSING.put(player.getUUID(), (float) (total - Math.floor(total)));
 		if (whole > 0) {
-			player.setAttached(WildercordAttachments.CONDENSED, Heart.condensed(player) + whole);
+			player.setAttached(WildercordAttachments.CONDENSED, Circles.addCondensed(Heart.condensed(player), whole));
 		}
 	}
 
@@ -132,6 +143,11 @@ public final class HeartCircles {
 		if (meditating && circles > 0 && !ready) {
 			rings(player, circles, player.level().getGameTime() * 0.05, 0.45F);
 		}
+		// A heart that already holds a vow circle (an older save, or a choice put off) is reminded once per session while meditating.
+		if (meditating && VOW_REMINDED.add(id)) {
+			java.util.List<dev.wildercord.spell.CircleVows.Vow> open = dev.wildercord.spell.CircleVows.open(Heart.vows(player), Heart.active(player));
+			if (!open.isEmpty()) CircleVowCommands.offer(player, open.getFirst().circle());
+		}
 		if (!ready || !meditating) {
 			FORMING.remove(id);
 			return;
@@ -145,9 +161,10 @@ public final class HeartCircles {
 		}
 	}
 
-	/** Forms the next circle: the breakthrough moment. */
+	/** Forms the next earned circle. Recheck at the mutation boundary, including the cap. */
 	public static void form(ServerPlayer player) {
-		int n = Math.min(Circles.MAX, Heart.circles(player) + 1);
+		if (!Heart.ready(player)) return;
+		int n = Heart.circles(player) + 1;
 		player.setAttached(WildercordAttachments.CIRCLES, n);
 		dev.wildercord.advancement.Advancements.circles(player);
 		Spellbooks.setMana(player, Mana.max(player));
@@ -160,7 +177,7 @@ public final class HeartCircles {
 		// The new circle breaks out of the heart in light, a circle opening under it: for everyone, you included.
 		Sigils.ground(level, player.position(), COLORS[n - 1], COLORS[Circles.MAX - 1], 1.6F, 40);
 		ElementFx.groundRing(level, player.position(), COLORS[n - 1], 0.3, 4.2, 0.09, 18);
-		Fx.sendOthers(level, player, ElementFx.ringOption(UP, COLORS[n - 1], 0.3 + 0.09 * (n - 1), 3.0, 0.04, 12), heart);
+		Fx.sendOthers(level, player, ElementFx.ringOption(UP, COLORS[n - 1], Circles.ringRadius(n), 3.0, 0.04, 12), heart);
 		for (int t = 0; t < 10; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -184,8 +201,13 @@ public final class HeartCircles {
 		if (perk != null) {
 			player.sendSystemMessage(perk.copy().withColor(0xB8A8FF));
 		}
-		if (n == Circles.MANA_SKIN || n == Circles.FLOW || n == Circles.OVERFLOW || n == Circles.ARCHMAGE) {
+		if (n == 2 || n == Circles.MANA_SKIN || n == 4 || n == Circles.FLOW || n == Circles.OVERFLOW || n == Circles.ARCHMAGE) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.perk." + n).withColor(0xF5C46A));
+		}
+		CircleVowCommands.offer(player, n);
+		if (n == Circles.ARCHMAGE) {
+			player.sendSystemMessage(Component.translatable("message.wildercord.relay_lesson.invitation").withColor(0x7FDAD4));
+			player.sendSystemMessage(Component.translatable("message.wildercord.masters_trials.invitation").withColor(0xE8C46A));
 		}
 		if (n == 1) {
 			// The heart's first ring wakes something only this caster has.
@@ -227,25 +249,34 @@ public final class HeartCircles {
 		Vec3 heart = heartOf(player);
 		Fx.sendOthers(level, player, SigilOption.glow(0xFFE0A0, 0.5F), heart);
 		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
-			double r = 0.3 + 0.09 * i;
+			double r = Circles.ringRadius(i + 1);
 			Fx.sendOthers(level, player, ElementFx.ringOption(ringNormal(i, spin), ringColor(player, i), r * from, r, 0.02, 8), heart);
 		}
 	}
 
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
-	/** 3rd Circle: Mana Skin. A fifth of the damage you take is paid from mana instead. */
-	private static void manaSkin(ServerPlayer player, float damage) {
-		if (Heart.active(player) < Circles.MANA_SKIN || player.isCreative() || !player.isAlive() || Spellbooks.tier(player) == null) {
+	/**
+	 * Consumes this hit's native wound once, at the original AFTER_DAMAGE callback position.
+	 * A fifth of this nonlethal health wound is restored, after armour, resistance and absorption.
+	 * A lethal wound receives no rebate: Reversal and totems own their later death-save recovery.
+	 */
+	private static void manaSkin(ServerPlayer player, ManaSkinDamage.Wound wound) {
+		if (Heart.active(player) < Circles.MANA_SKIN || player.isCreative() || !player.isAlive()
+				|| Spellbooks.tier(player) == null) {
 			return;
 		}
 		float mana = Spellbooks.mana(player);
-		float share = (float) Math.min(damage * Circles.MANA_SKIN_SHARE, mana / Circles.MANA_SKIN_COST);
-		if (share < 0.25F) {
+		float healthAfter = player.getHealth();
+		float share = ManaSkinRules.recovery(wound.healthBefore(), wound.healthAfter(), healthAfter, mana);
+		if (share <= 0) {
 			return;
 		}
-		player.heal(share);
-		Spellbooks.setMana(player, mana - share * Circles.MANA_SKIN_COST);
+		// This is the defender's passive, not healing performed by the incoming spell's caster.
+		Effects.withSource(player, () -> player.heal(share));
+		float cost = ManaSkinRules.payment(player.getHealth() - healthAfter, mana);
+		if (cost <= 0) return;
+		Spellbooks.setMana(player, mana - cost);
 		Vfx.emit(player.level(), new DustParticleOptions(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 4, 0.35, 0.0);
 		ElementFx.ring(player.level(), player.getBoundingBox().getCenter(), UP, 0x7FB0FF, 0.9, 0.45, 0.03, 7);
 	}
@@ -264,18 +295,10 @@ public final class HeartCircles {
 		Vec3 heart = heartOf(player);
 		Fx.sendOthers(level, player, new DustParticleOptions(0xFFE0A0, 0.8F), heart);
 		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
-			double r = 0.3 + 0.09 * i;
-			Vec3 normal = ringNormal(i, spin);
-			Vec3 u = normal.cross(new Vec3(0, 0, 1));
-			u = u.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : u.normalize();
-			Vec3 v = normal.cross(u).normalize();
-			int points = 12 + 3 * i;
-			double turn = spin * (i % 2 == 0 ? 1.4 : -1.4);
-			DustParticleOptions dust = new DustParticleOptions(ringColor(player, i), size);
-			for (int k = 0; k < points; k++) {
-				double a = turn + Math.PI * 2 * k / points;
-				Fx.sendOthers(level, player, dust, heart.add(u.scale(Math.cos(a) * r)).add(v.scale(Math.sin(a) * r)));
-			}
+			double r = Circles.ringRadius(i + 1);
+			// One bounded ring primitive per circle avoids quadratic per-point packet growth at twenty.
+			Fx.sendOthers(level, player, ElementFx.ringOption(ringNormal(i, spin), ringColor(player, i),
+				r, r, Math.max(0.008, size * 0.025), 6), heart);
 		}
 	}
 
@@ -306,7 +329,7 @@ public final class HeartCircles {
 		Vec3 heart = heartOf(player);
 		double t = progress / (double) Circles.FORM_TICKS;
 		rings(player, circles, level.getGameTime() * (0.05 + 0.25 * t), 0.45F);
-		double r = 0.3 + 0.09 * circles;
+		double r = Circles.ringRadius(circles + 1);
 		int points = (int) Math.round((12 + 3 * circles) * t);
 		DustParticleOptions dust = new DustParticleOptions(COLORS[Math.min(Circles.MAX - 1, circles)], 0.55F);
 		for (int k = 0; k < points; k++) {
@@ -343,5 +366,6 @@ public final class HeartCircles {
 		CONDENSING.remove(player);
 		NOTIFIED.remove(player);
 		AWAKENING.remove(player);
+		VOW_REMINDED.remove(player);
 	}
 }

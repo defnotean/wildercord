@@ -35,6 +35,7 @@ public final class AuraWorldClient {
 		ModelLayerRegistry.registerModelLayer(DUELIST, DuelistModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
 		EntityRendererRegistry.register(AuraWorld.DUELIST, AuraWorldClient::duelist);
+		EntityRendererRegistry.register(AuraWorld.SWORD_MASTER, MasterRenderer::new);
 		EntityRendererRegistry.register(AuraWorld.FALLEN_KNIGHT, AuraWorldClient::knight);
 		ModelLayerRegistry.registerModelLayer(GravekeeperRenderer.LAYER,GravekeeperModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.SwordTombs.KEEPER,GravekeeperRenderer::new);

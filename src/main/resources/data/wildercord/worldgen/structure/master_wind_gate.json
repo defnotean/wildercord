@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "master_wind_gate",
+  "biomes": "#wildercord:has_structure/master_wind_gate",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

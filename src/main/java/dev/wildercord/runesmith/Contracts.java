@@ -100,7 +100,12 @@ public final class Contracts {
 				CREDIT.values().removeIf(credit -> credit.idle(now));
 			}
 		});
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> CREDIT.remove(handler.player.getUUID()));
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			CREDIT.remove(handler.player.getUUID());
+			// A kill only counts for a caster still here, so a leaver's marks on creatures go with them.
+			UUID id = handler.player.getUUID();
+			LAST_HIT.values().removeIf(hit -> hit.caster().equals(id));
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			LAST_HIT.clear();
 			CREDIT.clear();

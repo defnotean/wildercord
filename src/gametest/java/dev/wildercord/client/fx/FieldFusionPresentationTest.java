@@ -61,6 +61,7 @@ public final class FieldFusionPresentationTest implements FabricClientGameTest {
   }finally{c.runOnClient(mc->{MagicQuality.own=previous;if(mc.gui.hud.isHidden()!=hidden)mc.gui.hud.toggle();mc.getWindow().setWindowed(window[0],window[1]);mc.resizeGui();});}
  }
  private static void recipes(){
+  ThresherwindRecipeChecks.verify();
   var unique=new HashSet<String>();
   for(var id:FieldFusionForms.RUNES)for(boolean minimal:new boolean[]{false,true}){
    var stages=new ArrayList<String>();var materials=new HashSet<Integer>();

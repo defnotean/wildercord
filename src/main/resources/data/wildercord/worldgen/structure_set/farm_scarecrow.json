@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101108,
+    "spacing": 42,
+    "separation": 12
+  },
+  "structures": [
+    {
+      "structure": "wildercord:farm_scarecrow",
+      "weight": 1
+    }
+  ]
+}

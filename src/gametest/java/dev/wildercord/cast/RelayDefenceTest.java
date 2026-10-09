@@ -1,0 +1,255 @@
+package dev.wildercord.cast;
+
+import com.mojang.authlib.GameProfile;
+import dev.wildercord.aura.Aura;
+import dev.wildercord.aura.AuraAttachments;
+import dev.wildercord.aura.AuraGuard;
+import dev.wildercord.aura.AuraRules;
+import dev.wildercord.spell.Runes;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.Set;
+import java.util.UUID;
+
+/** Caster and focus are on opposite sides: actual guard direction and normal defensive counter both matter. */
+public final class RelayDefenceTest implements FabricClientGameTest {
+	private static final class Defender extends FakePlayer {
+		Defender(ServerLevel level) {super(level,new GameProfile(UUID.randomUUID(),"RelayGuard"));}
+		@Override public boolean isInvulnerableTo(ServerLevel level,DamageSource source){return false;}
+	}
+	private ServerPlayer owner;
+	private Defender defender;
+	private Throwable failure;
+	private static boolean observing;
+	private static ServerPlayer watchedOwner;
+	private static int blocked;
+	private static boolean cancelSecond;
+	private static Defender mirrorTarget;
+	private static int mirrorMode, mirrorAdmissions, fragments;
+	private static Vec3 fragmentOrigin;
+	private static Defender reprieveTarget;
+	private static boolean retireDebt;
+	private static DebtProbe debt;
+	private static Defender directionalTarget;
+	private static int directionalMode, directionalSources;
+	private static Vec3 directionalFocus;
+
+	@Override public void runTest(ClientGameTestContext c){
+		if(!observing){observing=true;
+			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((target,source,amount)->{
+				if(target==reprieveTarget&&source instanceof RelayDamageSource relay&&debt!=null){
+					debt.admissions++;debt.reserved=reservedDamage(relay.cast());
+					// The plain defender has identity reduction; read the paid reservation without rerunning defence.
+					debt.plainDefence=plainReprieve(reprieveTarget);debt.immediate=amount;
+					debt.available=DefensiveFoci.available(reprieveTarget,debt.reserved);
+					debt.sameReceipt=relay.cast()==debt.paid&&relay.cast().payment()==debt.paid.payment()&&relay.cast().caster==watchedOwner;
+					debtEvidence("native_immediate_admission");
+				}
+				if(directionalTarget!=null&&directionalFocus!=null&&source instanceof RelayDamageSource&&(target==directionalTarget||target==watchedOwner)&&directionalSources++<8)
+					directionEvidence("damage_callback",target,source);
+				if(source instanceof RelayDamageSource && target==mirrorTarget){
+					RelayCircleTest.check(ArmorResponses.mirrorReady(mirrorTarget),"Timed native mantle fixture is active before the actual Relay damage");mirrorAdmissions++;
+					if(mirrorMode==2)dev.wildercord.player.Spellbooks.setCord(watchedOwner,new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
+				}else if(source instanceof RelayDamageSource && target==watchedOwner && mirrorTarget!=null){fragments++;fragmentOrigin=source.getSourcePosition();}
+				return true;
+			});
+			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((target,source,base,taken,blockedDamage)->{
+				if(target==reprieveTarget&&source instanceof RelayDamageSource relay&&debt!=null){
+					debt.callbacks++;debt.owedInsideCallback=reprieveTarget.getAttachedOrElse(DefensiveFoci.STATE,DefensiveFoci.State.EMPTY).owed();
+					if(retireDebt){
+						dev.wildercord.player.Spellbooks.setCord(watchedOwner,new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
+						debt.retired=!relay.cast().alive()&&!RelayCircles.pending(watchedOwner);
+					}
+					debtEvidence("native_after_damage");
+				}
+				if(target==mirrorTarget && source instanceof RelayDamageSource && mirrorMode==3)
+					dev.wildercord.player.Spellbooks.setCord(watchedOwner,new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
+			});
+			dev.wildercord.api.WildercordEvents.SPELL_BLOCKED.register((caster,target,cost,strength)->{
+			if(cancelSecond && (caster==watchedOwner || target==watchedOwner)) {
+				blocked++;
+				if(blocked==2)dev.wildercord.player.Spellbooks.setCord(watchedOwner,new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
+			}
+		});}
+		try(var world=c.worldBuilder().create()){
+			c.waitTicks(40);world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runOnServer(s->{
+				owner=RelayCircleTest.player(s);RelayCircleTest.prepare(owner,Runes.HARM);owner.level().getGameRules().set(GameRules.PVP,true,s);
+				defender=new Defender(owner.level());defender.setGameMode(GameType.SURVIVAL);defender.setNoGravity(true);owner.level().addNewPlayer(defender);
+			});c.waitTicks(3);
+			for(int mode=0;mode<4;mode++){
+				int facing=mode;failure=null;blocked=0;cancelSecond=facing==3;watchedOwner=owner;
+				world.getServer().runOnServer(s->{
+					owner.setHealth(owner.getMaxHealth());owner.removeAllEffects();Effects.readyToHurt(owner);
+					defender.setHealth(defender.getMaxHealth());defender.removeAllEffects();Effects.readyToHurt(defender);
+					defender.removeAttached(dev.wildercord.player.WildercordAttachments.SPELL_SHIELD);
+					float yaw=facing==1?0:180;
+					defender.snapTo(.5,150,6.5,yaw,0);
+					// FakePlayer.tick does not align the head read by getViewVector/AuraGuard.facing.
+					defender.setYHeadRot(yaw);defender.setYBodyRot(yaw);defender.setShiftKeyDown(true);
+					directionalTarget=defender;directionalMode=facing;directionalSources=0;
+					defender.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(Items.DIAMOND_SWORD));
+					defender.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("starlit",AuraRules.FLOW,150,100,0));
+					defender.setAttached(AuraAttachments.STATE,AuraAttachments.State.NONE);
+					RelayCircleTest.reset(owner,Runes.HARM);RelayCircleTest.directDown(owner);
+					RelayCircleTest.check(RelayCircles.pending(owner),"Directional fixture really places a paid focus");
+					directionalFocus=owner.getAttached(RelayState.VIEW).focus();
+					owner.teleportTo(owner.level(),-3.5,150,8.5,Set.of(),0,0,false);
+				});c.waitTicks(2);
+				world.getServer().runOnServer(s->{
+					RelayCircleTest.aim(owner,defender.getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);
+					RelayCircleTest.check(owner.getAttached(RelayState.VIEW).phase()==RelayState.WARNING,"Opposite-side caster retains two clear bounded legs");
+					Scheduler.later(4,()->{
+						try {
+							directionEvidence("before_defence",null,null);
+							RelayCircleTest.check(AuraGuard.facing(defender,directionalFocus)==(facing!=1)
+								&&AuraGuard.facing(defender,owner.getEyePosition())==(facing==1),"Native guard view distinguishes the real focus from the opposite-side caster");
+							if(facing>=2){
+								Shields.raise(new Cast(defender).weigh(60),defender,80);
+								if(facing==3)Shields.raise(new Cast(owner).weigh(60),owner,80);
+							}else RelayCircleTest.check(AuraGuard.raise(defender),"Defender pays to raise a real guard immediately before impact");
+						}catch(RuntimeException|AssertionError e){failure=e;}
+					});
+				});c.waitTicks(8);
+				world.getServer().runOnServer(s->{
+					directionEvidence("after_impact",null,null);
+					if(failure!=null)throw new AssertionError("Guard setup failed in mode "+facing,failure);
+					if(facing==1){
+						RelayCircleTest.check(defender.getHealth()<defender.getMaxHealth(),"Facing the caster with the focus behind does not stop the ray");
+						RelayCircleTest.check(AuraGuard.perfectNow(defender),"A rear Relay does not consume the unused perfect guard");
+						RelayCircleTest.check(owner.getHealth()==owner.getMaxHealth(),"Rear arrival creates no false defensive counter");
+					}else if(facing==3){
+						RelayCircleTest.check(blocked==2,"Both real defensive parries execute before the second callback retires the original focus");
+						RelayCircleTest.check(owner.getHealth()==owner.getMaxHealth() && defender.getHealth()==defender.getMaxHealth(),"No third counter survives cancellation through a second reflected Cast");
+						RelayCircleTest.check(!RelayCircles.pending(owner),"Second-parry callback retires the original paid focus permanently");
+					}else{
+						RelayCircleTest.check(defender.getHealth()==defender.getMaxHealth(),"Facing the real focus or raising Shield stops Relay");
+						RelayCircleTest.check(owner.getHealth()<owner.getMaxHealth(),"Ordinary defensive counter reaches the exposed original caster");
+					}
+				});c.waitTicks(12);
+			}
+			cancelSecond=false;directionalTarget=null;directionalFocus=null;
+			var original=world.getServer().computeOnServer(server->dev.wildercord.config.Config.get());
+			try {
+				for(int mode=0;mode<4;mode++){
+					mirrorMode=mode;mirrorAdmissions=0;fragments=0;fragmentOrigin=null;failure=null;
+					world.getServer().runOnServer(server->{
+						dev.wildercord.cast.CampConcordNative.config(dev.wildercord.cast.CampConcordNative.copy(original,java.util.Map.of("maxCreatures",mirrorMode==1?1:64)));
+						RelayCircleTest.prepare(owner,Runes.HARM);Effects.readyToHurt(owner);owner.removeAllEffects();owner.removeAttached(dev.wildercord.player.WildercordAttachments.SPELL_SHIELD);
+						defender.snapTo(.5,150,6.5,180,0);defender.setHealth(defender.getMaxHealth());Effects.readyToHurt(defender);defender.removeAllEffects();defender.setShiftKeyDown(false);
+						defender.removeAttached(dev.wildercord.player.WildercordAttachments.SPELL_SHIELD);defender.removeAttached(AuraAttachments.STATE);defender.removeAttached(AuraAttachments.AURA);defender.removeAttached(ArmorResponses.STATE);
+						defender.setItemSlot(EquipmentSlot.MAINHAND,ItemStack.EMPTY);
+						defender.setItemSlot(EquipmentSlot.CHEST,new ItemStack(dev.wildercord.gear.ElementalArmor.ALL.stream().filter(a->a.kind==dev.wildercord.gear.ElementalArmor.Kind.MIRROR_THREAD).findFirst().orElseThrow()));
+						mirrorTarget=defender;RelayCircleTest.directDown(owner);
+					});c.waitTicks(2);
+					world.getServer().runOnServer(server->{RelayCircleTest.aim(owner,defender.getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);Scheduler.later(4,()->defender.setAttached(ArmorResponses.STATE,new ArmorResponses.State(0,12,0,100,true)));});c.waitTicks(8);
+					world.getServer().runOnServer(server->{
+						RelayCircleTest.check(mirrorAdmissions==1,"Native damage genuinely reaches the mantle branch");
+						RelayCircleTest.check(fragments==(mirrorMode==0?1:0),"Mirror-thread retains payment, shared creature cap and original lifetime after ALLOW/AFTER_DAMAGE callbacks");
+						RelayCircleTest.check((owner.getHealth()<owner.getMaxHealth())==(mirrorMode==0),"Only live, budgeted mantle retaliation wounds the original body");
+						if(mirrorMode==0)RelayCircleTest.check(fragmentOrigin.distanceToSqr(defender.getEyePosition())<.0001,"Native mantle retaliation reports defender as actual incoming direction");
+						mirrorTarget=null;
+					});c.waitTicks(12);
+				}
+				for(boolean cancel:java.util.List.of(false,true)){
+					retireDebt=cancel;
+					world.getServer().runOnServer(server->{
+						dev.wildercord.cast.CampConcordNative.config(original);RelayCircleTest.prepare(owner,Runes.HARM);
+						defender.snapTo(.5,150,6.5,180,0);defender.setHealth(defender.getMaxHealth());Effects.readyToHurt(defender);defender.removeAllEffects();
+						defender.setItemSlot(EquipmentSlot.CHEST,ItemStack.EMPTY);defender.removeAttached(ArmorResponses.STATE);defender.removeAttached(DefensiveFoci.STATE);
+						dev.wildercord.gear.GearSlots.set(defender,dev.wildercord.gear.GearSlot.FOCUS,new ItemStack(dev.wildercord.gear.GearItems.get(dev.wildercord.gear.GearDef.REPRIEVE)));
+						// Default PvP Relay Harm is below Reprieve's six-damage gate; real casting gear qualifies it.
+						var staff=dev.wildercord.gear.GearDef.greaterStaff("arcane");
+						RelayCircleTest.check(dev.wildercord.gear.GearSlots.set(owner,dev.wildercord.gear.GearSlot.STAFF,new ItemStack(dev.wildercord.gear.GearItems.get(staff)))
+							&&dev.wildercord.gear.Gear.of(owner).pieces().contains(staff),"The caster equips a real greater arcane staff before paying for Relay");
+						RelayCircleTest.check(plainReprieve(defender)&&DefensiveFoci.available(defender,6),"Plain equipped Reprieve is ready at its unchanged native threshold");
+						reprieveTarget=defender;debt=new DebtProbe();debt.healthBefore=defender.getHealth();RelayCircleTest.directDown(owner);
+						var focus=((java.util.Map<?,?>)readField(RelayCircles.class,null,"FOCI")).get(owner);
+						RelayCircleTest.check(focus!=null,"Qualifying Reprieve fixture places a real paid Relay focus");
+						debt.paid=(Cast)readField(focus.getClass(),focus,"cast");
+						RelayCircleTest.check(debt.paid.gearPower("arcane")>=dev.wildercord.gear.GearDef.GREATER_STAFF_POWER,"The paid Relay snapshots the qualifying staff power");
+						debtEvidence("paid_focus");
+					});c.waitTicks(2);
+					world.getServer().runOnServer(server->{RelayCircleTest.aim(owner,defender.getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);
+					world.getServer().runOnServer(server->{
+						float owed=defender.getAttachedOrElse(DefensiveFoci.STATE,DefensiveFoci.State.EMPTY).owed();debtEvidence("after_release");
+						RelayCircleTest.check(debt.admissions==1&&debt.callbacks==1&&debt.sameReceipt,"The actual immediate wound uses the original paid Relay receipt once");
+						RelayCircleTest.check(debt.plainDefence&&debt.available&&debt.reserved>=6&&debt.reserved<=1024,"The actual paid hit with identity reduction qualifies for ready Reprieve");
+						RelayCircleTest.check(closeDebt(debt.immediate,debt.reserved*(1-DefensiveFoci.DELAY_SHARE))
+							&&closeDebt(debt.healthBefore-defender.getHealth(),debt.immediate),"Reprieve accepts the actual immediate share before its debt decision");
+						RelayCircleTest.check(debt.owedInsideCallback==0&&(!cancel||debt.retired),"The native callback precedes debt creation and retirement closes its original receipt");
+						RelayCircleTest.check(closeDebt(reservedDamage(debt.paid),debt.reserved),"Full incoming damage is reserved once before the partial wound and debt callback");
+						RelayCircleTest.check(defender.getHealth()<defender.getMaxHealth(),"Actual native Reprieve branch accepts the immediate partial wound");
+						RelayCircleTest.check(!RelayCircles.pending(owner),"Original focus has retired before checking accepted debt");
+						RelayCircleTest.check(cancel?owed==0:owed>0,"Callback retirement prevents new debt; a debt accepted before normal focus retirement remains an already-admitted wound");
+						RelayCircleTest.check(closeDebt(owed,cancel?0:debt.reserved*DefensiveFoci.DELAY_SHARE),"Only valid post-callback admission records the exact deferred share");
+						reprieveTarget=null;debt=null;dev.wildercord.gear.GearSlots.clear(defender,dev.wildercord.gear.GearSlot.FOCUS);
+						dev.wildercord.gear.GearSlots.clear(owner,dev.wildercord.gear.GearSlot.STAFF);
+					});c.waitTicks(12);
+				}
+			}finally{world.getServer().runOnServer(server->dev.wildercord.cast.CampConcordNative.config(original));}
+		} finally {cancelSecond=false;watchedOwner=null;mirrorTarget=null;reprieveTarget=null;debt=null;directionalTarget=null;directionalFocus=null;}
+	}
+
+	private static final class DebtProbe {
+		Cast paid;int admissions,callbacks;float healthBefore,reserved,immediate,owedInsideCallback;
+		boolean available,sameReceipt,retired,plainDefence;
+	}
+	private static boolean closeDebt(float actual,float expected){return Math.abs(actual-expected)<.001F;}
+	private static boolean plainReprieve(ServerPlayer player){
+		return player.getArmorValue()==0&&player.getAbsorptionAmount()==0&&player.getActiveEffects().isEmpty()
+			&&java.util.List.of(EquipmentSlot.HEAD,EquipmentSlot.CHEST,EquipmentSlot.LEGS,EquipmentSlot.FEET).stream().allMatch(slot->player.getItemBySlot(slot).isEmpty())
+			&&dev.wildercord.gear.Gear.of(player).pieces().equals(java.util.List.of(dev.wildercord.gear.GearDef.REPRIEVE));
+	}
+	private static float reservedDamage(Cast cast){
+		Object allowance=readField(cast.payment().getClass(),cast.payment(),"damage");
+		if(allowance==null)return 0;
+		var amount=(Number)((java.util.Map<?,?>)readField(SpellDamageAllowance.class,allowance,"used")).get(reprieveTarget.getUUID());
+		return amount==null?0:amount.floatValue();
+	}
+	private static Object readField(Class<?> type,Object target,String name){
+		try{var field=type.getDeclaredField(name);field.setAccessible(true);return field.get(target);}
+		catch(ReflectiveOperationException failure){throw new AssertionError("Read-only Reprieve receipt probe unavailable: "+name,failure);}
+	}
+	private static void debtEvidence(String phase){
+		var value=new com.google.gson.JsonObject();var state=reprieveTarget.getAttachedOrElse(DefensiveFoci.STATE,DefensiveFoci.State.EMPTY);
+		value.addProperty("phase",phase);value.addProperty("retireInCallback",retireDebt);value.addProperty("tick",watchedOwner.level().getGameTime());
+		value.addProperty("casterArcaneGearPower",debt.paid==null?0:debt.paid.gearPower("arcane"));
+		value.addProperty("reprieveEquipped",dev.wildercord.gear.Gear.of(reprieveTarget).pieces().contains(dev.wildercord.gear.GearDef.REPRIEVE));
+		value.addProperty("reservedFullHit",debt.reserved);value.addProperty("identityReductionVerified",debt.plainDefence);value.addProperty("nativeImmediate",debt.immediate);
+		value.addProperty("availableAtAdmission",debt.available);value.addProperty("samePaidReceipt",debt.sameReceipt);
+		value.addProperty("admissions",debt.admissions);value.addProperty("callbacks",debt.callbacks);value.addProperty("owedInsideCallback",debt.owedInsideCallback);
+		value.addProperty("owed",state.owed());value.addProperty("observedImmediatePlusDebt",debt.immediate+state.owed());value.addProperty("recharge",state.reprieve());value.addProperty("health",reprieveTarget.getHealth());
+		value.addProperty("retiredInsideCallback",debt.retired);value.addProperty("focusRegistered",RelayCircles.pending(watchedOwner));
+		System.out.println("WILDERCORD_RELAY_REPRIEVE "+value);
+	}
+
+	private static void directionEvidence(String phase,net.minecraft.world.entity.LivingEntity target,DamageSource source){
+		var value=new com.google.gson.JsonObject();
+		value.addProperty("phase",phase);value.addProperty("mode",directionalMode);value.addProperty("tick",watchedOwner.level().getGameTime());
+		value.addProperty("entityYaw",directionalTarget.getYRot());value.addProperty("bodyYaw",directionalTarget.yBodyRot);value.addProperty("headYaw",directionalTarget.getYHeadRot());
+		value.addProperty("view",directionalTarget.getViewVector(1).toString());value.addProperty("defender",directionalTarget.position().toString());
+		value.addProperty("caster",watchedOwner.getEyePosition().toString());value.addProperty("paidFocus",directionalFocus.toString());
+		value.addProperty("facesFocus",AuraGuard.facing(directionalTarget,directionalFocus));value.addProperty("facesCaster",AuraGuard.facing(directionalTarget,watchedOwner.getEyePosition()));
+		value.addProperty("guarding",AuraGuard.guarding(directionalTarget));value.addProperty("perfect",AuraGuard.perfectNow(directionalTarget));
+		value.addProperty("defenderHealth",directionalTarget.getHealth());value.addProperty("casterHealth",watchedOwner.getHealth());
+		value.addProperty("blockedCallbacks",blocked);value.addProperty("sourceCallbacks",directionalSources);
+		if(source!=null){
+			value.addProperty("damageType",source.getMsgId());value.addProperty("sourceClass",source.getClass().getSimpleName());
+			value.addProperty("incomingOrigin",source.getSourcePosition()==null?"none":source.getSourcePosition().toString());
+			value.addProperty("target",target==directionalTarget?"defender":"original_caster");
+		}
+		System.out.println("WILDERCORD_RELAY_DEFENCE "+value);
+	}
+}

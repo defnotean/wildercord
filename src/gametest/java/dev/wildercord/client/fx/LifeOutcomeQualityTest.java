@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,8 +18,9 @@ import net.minecraft.world.phys.Vec3;
 public final class LifeOutcomeQualityTest implements FabricClientGameTest {
  @Override public void runTest(ClientGameTestContext c){
   var oldOwn=c.computeOnClient(mc->MagicQuality.own);var oldOthers=c.computeOnClient(mc->MagicQuality.others);
+  var oldCamera=c.computeOnClient(mc->mc.options.getCameraType());
   try(var w=c.worldBuilder().create()){
-   c.waitTicks(40);w.getServer().runCommand("gamerule spawn_mobs false");
+   c.waitTicks(40);c.runOnClient(mc->{mc.setCameraEntity(mc.player);mc.options.setCameraType(CameraType.FIRST_PERSON);});w.getServer().runCommand("gamerule spawn_mobs false");
    w.getServer().runCommand("fill -10 100 -10 10 100 10 stone");
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);
     var known=new LifeOutcomePayload(p.getUUID(),s.overworld().dimension().identifier().toString(),"heal",LifeOutcomes.Moment.APPLY,new Vec3(.5,102,4.5),null,1,2,s.overworld().getGameTime(),new Vec3(0,0,-1),.38);
@@ -48,7 +51,18 @@ public final class LifeOutcomeQualityTest implements FabricClientGameTest {
    c.waitTicks(2);c.runOnClient(mc->check(particles(mc.particleEngine).stream().noneMatch(p->p.isAlive()&&p instanceof LifeParticle),"Wrong-dimension packet produces no outcome"));
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(p.getUUID(),s.overworld().dimension().identifier().toString(),"heal",LifeOutcomes.Moment.APPLY,p.getEyePosition(),null,1,2,s.overworld().getGameTime()));});
    c.waitTicks(2);c.runOnClient(mc->check(particles(mc.particleEngine).stream().noneMatch(p->p.isAlive()&&p instanceof LifeParticle),"First-person eye clearance remains enforced for every recipe point"));
-  }finally{c.runOnClient(mc->{MagicQuality.own=oldOwn;MagicQuality.others=oldOthers;});}
+   c.runOnClient(mc->{mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);mc.particleEngine.clearParticles();});c.waitTicks(2);
+   w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(new UUID(4,2),s.overworld().dimension().identifier().toString(),"heal",LifeOutcomes.Moment.APPLY,p.getEyePosition(),null,1,2,s.overworld().getGameTime()));});
+   c.waitTicks(2);c.runOnClient(mc->check(particles(mc.particleEngine).stream().noneMatch(p->p.isAlive()&&p instanceof LifeParticle),"Foreign source retains eye clearance even in local third person"));
+   w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(p.getUUID(),s.overworld().dimension().identifier().toString(),"second_wind",LifeOutcomes.Moment.APPLY,p.getBoundingBox().getCenter(),null,1,0,s.overworld().getGameTime(),new Vec3(0,0,1),.38));});
+   c.waitTicks(2);c.runOnClient(mc->{
+    var live=particles(mc.particleEngine).stream().filter(p->p.isAlive()&&(p instanceof LifeParticle||p instanceof MaterialParticle)).toList();
+    check(live.size()==3&&live.stream().anyMatch(p->p instanceof MaterialParticle),"Diagnostic owner packet keeps both Life and Time recipe ingredients in native third person");
+    for(var p:live){var state=new QuadParticleRenderState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.mainCamera(),1);check(!state.isEmpty(),"Actual native third-person extracts original recipe ingredient");}
+    mc.options.setCameraType(CameraType.FIRST_PERSON);
+    for(var p:live){var state=new QuadParticleRenderState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.mainCamera(),1);check(state.isEmpty(),"Immediate first-person switch suppresses surviving Life and Time support alike");check(p.getLifetime()==(p instanceof LifeParticle?10:8),"Mode switches retain original recipe lifetimes");}
+   });
+  }finally{c.runOnClient(mc->{MagicQuality.own=oldOwn;MagicQuality.others=oldOthers;mc.options.setCameraType(oldCamera);});}
  }
  private static List<Particle> particles(ParticleEngine e){var out=new ArrayList<Particle>();for(var group:((Map<?,?>)field(e,ParticleEngine.class,"particles")).values())for(var p:(Queue<?>)field(group,ParticleGroup.class,"particles"))out.add((Particle)p);for(var p:(Queue<?>)field(e,ParticleEngine.class,"particlesToAdd"))out.add((Particle)p);return out;}
  private static Object field(Object o,Class<?> type,String name){try{var f=type.getDeclaredField(name);f.setAccessible(true);return f.get(o);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}

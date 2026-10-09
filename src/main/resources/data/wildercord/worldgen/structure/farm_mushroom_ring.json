@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "farm_mushroom_ring",
+  "biomes": "#wildercord:has_structure/farm_mushroom_ring",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

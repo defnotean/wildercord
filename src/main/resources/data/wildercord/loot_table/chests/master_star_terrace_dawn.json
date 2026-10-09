@@ -1,0 +1,187 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:manual_page",
+          "modifier": [
+            {
+              "components": {
+                "wildercord:breathing_method": "dawn"
+              },
+              "type": "minecraft:set_components"
+            },
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "type": "minecraft:set_count"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "chance": 0.33,
+        "type": "minecraft:random_chance"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:breathing_manual",
+          "modifier": {
+            "components": {
+              "wildercord:breathing_method": "dawn"
+            },
+            "type": "minecraft:set_components"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "condition": {
+        "chance": 0.3,
+        "type": "minecraft:random_chance"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:technique_scroll",
+          "modifier": {
+            "source": "",
+            "type": "wildercord:random_technique_part"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:halo"
+            },
+            "type": "minecraft:set_components"
+          },
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:grace"
+            },
+            "type": "minecraft:set_components"
+          },
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:beacon_swell"
+            },
+            "type": "minecraft:set_components"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:experience_bottle",
+          "weight": 3,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 3
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_ingot",
+          "weight": 3,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 4
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_ingot",
+          "weight": 2,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 3
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bread",
+          "weight": 3,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 5
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:emerald",
+          "weight": 2,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 3
+            },
+            "type": "minecraft:set_count"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

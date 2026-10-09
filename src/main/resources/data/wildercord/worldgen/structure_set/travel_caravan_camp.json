@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101405,
+    "spacing": 34,
+    "separation": 12
+  },
+  "structures": [
+    {
+      "structure": "wildercord:travel_caravan_camp",
+      "weight": 1
+    }
+  ]
+}

@@ -18,6 +18,8 @@ final class StormFeels {
 	static void register() {
 		Signature.of("thunder_tide").accent(0x91DDEE).sound(Phase.CUE,"storm_dive",.4F,.84F).register();
 		Signature.of("thunder_walk").accent(0xD8FBE2).sound(Phase.CUE,"storm_dive",.35F,1.26F).register();
+		// Conduit: a rod driven into the floor, a short grounded zap.
+		Signature.of("conduit").motion(Motion.SEAL).accent(0xC8F0FF).sound(Phase.CUE,"storm_zap",.45F,.75F).register();
 		// A tether that seeks conductors: white-hot, a dry zap at the hand.
 		Signature.of("shock").accent(WHITE).sound(Phase.CUE, "storm_zap", 0.5F, 1.0F).register();
 		// The counter-spell: pale blue, a lower zap; the stun ring and clamp are its own (StormEarthFx.stunRing).
@@ -53,5 +55,7 @@ final class StormFeels {
 			Vfx.emit(ctx.level(), ParticleTypes.SNOWFLAKE, ctx.at(), 3, 0.3, 0.02);
 		}).register();
 		Signature.of("thunderstep").accent(WHITE).register();
+		// ---- fx-explore pack
+		Signature.of("sky_reading").accent(0xBFD0E8).sound(Phase.CUE, "storm_pip", 0.5F, 1.0F).register();
 	}
 }

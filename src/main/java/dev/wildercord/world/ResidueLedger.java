@@ -226,14 +226,28 @@ public final class ResidueLedger<P> {
 
 	/** The residues that were waiting on a chunk now loaded (still recorded, for the caller to fade). */
 	public List<Entry<P>> unpark(long chunk) {
-		Set<Long> waiting = parked.remove(chunk);
+		return unpark(chunk, Integer.MAX_VALUE);
+	}
+
+	/** Takes at most {@code max} waiting residues; the rest remain parked for a later sweep. */
+	public List<Entry<P>> unpark(long chunk, int max) {
+		if (max < 0) {
+			throw new IllegalArgumentException("max must not be negative");
+		}
+		Set<Long> waiting = parked.get(chunk);
 		List<Entry<P>> out = new ArrayList<>();
 		if (waiting != null) {
-			for (long pos : waiting) {
+			Iterator<Long> it = waiting.iterator();
+			while (it.hasNext() && out.size() < max) {
+				long pos = it.next();
+				it.remove();
 				Entry<P> entry = byPos.get(pos);
 				if (entry != null) {
 					out.add(entry);
 				}
+			}
+			if (waiting.isEmpty()) {
+				parked.remove(chunk);
 			}
 		}
 		return out;

@@ -204,7 +204,43 @@ public final class SpellFormations {
     case CONSTELLATION -> { polygon(5,q,t*.1); line(point(0,q,0),point(-q*.59,-q*.81,0),false); line(point(-q*.59,-q*.81,0),point(q*.95,q*.31,0),false); }
     case GLAIVE -> { line(point(-q*.6,-q*.6,0),point(q*.6,q*.6,0),false); slash(point(q*.45,q*.45,0),q*.5,Math.PI*1.3,Math.PI/4); }
     case IMPRINT -> { polygon(6,q,0); polygon(3,q*.55,Math.PI/2); }
+    case RELAY -> { ring(point(-q*.6,0,0),q*.35,false); ring(point(q*.6,0,0),q*.35*(1-.5*t),false); line(point(-q*.25,0,0),point(q*.25,0,0),false); }
+    case REWEAVE -> {
+     // A miniature floor inscription unfolds into the same four ruled marks, never a projectile or wall.
+     Vec3 along=new Vec3(forward.x,0,forward.z);
+     along=along.lengthSqr()<.0001?new Vec3(0,0,1):along.normalize();
+     Vec3 across=along.cross(UP);
+     if(beat==1) {
+      ring(focus,q*.65,true);
+      for(int i=0;i<4;i++) {
+       double a=i*Math.PI/2;
+       Vec3 spoke=across.scale(Math.cos(a)).add(along.scale(Math.sin(a)));
+       line(focus.add(spoke.scale(q*.35)),focus.add(spoke.scale(q*.55)),false);
+      }
+     } else {
+      double half=q*.16,length=q*1.8;
+      for(int side:new int[]{-1,1})line(focus.add(across.scale(side*half)),focus.add(across.scale(side*half)).add(along.scale(length)),false);
+      for(int i=0;i<4;i++) {
+       Vec3 mark=focus.add(along.scale(length*(i+.5)/4));
+       line(mark.subtract(across.scale(half)),mark.add(across.scale(half)),false);
+      }
+     }
+    }
     case LATCH -> { slash(point(-.2,0,0),q*.6,Math.PI*1.4,0); slash(point(.2,0,0),q*.6,Math.PI*1.4,Math.PI); line(point(-.2,0,0),point(.2,0,0),false); }
+    // ---- shapes pack: field shapes draw their block pattern in miniature, kin shapes a gathering of small orbs.
+    case FURROW,STEPSTONES,CAUSEWAY,CORRIDOR -> { line(point(0,-.2,-.4),point(0,-.2,q*1.4),false); for(int i=0;i<3;i++) ring(point(0,-.2,i*q*.45),.08,true); }
+    case SEAM,HEDGEROW,FACADE -> { line(point(-q,0,0),point(q,0,0),false); line(point(-q,q*.5,0),point(q,q*.5,0),false); }
+    case PLOT,SEEDBED,LATTICE,VAULT,PIT,FOOTING,CANOPY -> { polygon(4,q,Math.PI/4); polygon(4,q*.45,Math.PI/4); }
+    case SHAFT,SPIRE,STAIRWELL -> { line(point(0,-q,0),point(0,q,0),false); for(int i=-1;i<=1;i++) ring(point(0,i*q*.6,0),.12,false); }
+    case DOME,SHORELINE,LAMPLIT,BOBBER -> { ring(focus,q,false); orb(focus,.08+.04*t); }
+    case PERIMETER,CROSSWAY,ROSETTE -> { polygon(4,q,0); line(point(-q,0,0),point(q,0,0),false); line(point(0,-q,0),point(0,q,0),false); }
+    case LODESEEK -> { polygon(6,q*.6,0); orb(focus,.06); }
+    case FISSURE,COLLAPSE -> { line(point(-q,-.2,0),point(-q*.3,.1,0),true); line(point(-q*.3,.1,0),point(q,-.2,0),true); }
+    case SPIRAL -> { for(int i=0;i<3;i++) slash(focus,.12+i*.12,Math.PI*1.4,t+i*1.5); }
+    case FAN -> slash(focus,q,Math.PI*.6,0);
+    case HERD,FELLOWSHIP,PACKBOND,NURSERY,SHOAL,FLOCK,SENTINEL,REARGUARD,GRUDGE -> { for(int i=0;i<4;i++){double a=i*Math.PI/2+t*.5; orb(point(Math.cos(a)*q*.7,Math.sin(a)*q*.7,0),.06);} ring(focus,q*.35,false); }
+    case SADDLE,AUREOLE -> { ring(feet.add(0,.4+t*.4,0),.55,true); ring(feet.add(0,1.6,0),.3,true); }
+    case TETHER -> { line(point(0,0,-.5),point(0,0,q*1.2),false); ring(point(0,0,q*1.2),.15,false); }
    }
    for(String id:event.runes())if(NextSignatureForms.supports(id) && !FrostFormations.supports(id) && !VoidForms.supports(id) && !LifeForms.supports(id))
     NextSignatureForms.prepare(id,beat,event.scale(),assembly(),right,up,forward,quality==MagicQuality.Level.MINIMAL,this::emit);

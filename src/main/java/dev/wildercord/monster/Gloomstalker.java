@@ -49,9 +49,9 @@ import java.util.UUID;
  * pass, so shader packs show it as they show any spectator's ghost.</p>
  */
 public class Gloomstalker extends WildMonster {
-	static final int CROUCH = 14;
+	static final int CROUCH = MonsterPressureRules.GLOOM_CROUCH;
 	static final float POUNCE_DAMAGE = 6.0F;
-	static final int MISSED = 30;
+	static final int MISSED = MonsterPressureRules.GLOOM_MISSED;
 	private static final int VIOLET = 0xB45AF0;
 
 	private enum Phase { STALK, CROUCH, POUNCE, SPRAWL, RETREAT }
@@ -63,6 +63,7 @@ public class Gloomstalker extends WildMonster {
 	private Vec3 retreatTo;
 	private int pounceTicks;
 	private long nextSwipe;
+	private long nextPounce;
 	/** When each player was last told it was revealed, so it's said once in a while. */
 	private final Map<UUID, Long> told = new HashMap<>();
 
@@ -158,17 +159,24 @@ public class Gloomstalker extends WildMonster {
 			case CROUCH -> {
 				getNavigation().stop();
 				if (target == null || !target.isAlive()) {
-					enter(Phase.STALK, now, 20);
+					resumeStalk(now);
 				} else {
 					face(target);
 					if (now >= phaseUntil) {
-						pounce(level, target, now);
+						if (Targets.canHarm(this, target) && MonsterPressureRules.gloomCanRelease(distanceTo(target),
+							target.getY() - getY(), hasLineOfSight(target))) {
+							pounce(level, target, now);
+						} else {
+							// Cover and a high ledge beat the tell; reacquire by walking, never by teleporting.
+							resumeStalk(now);
+						}
 					}
 				}
 			}
 			case POUNCE -> {
 				pounceTicks++;
-				if (target != null && target.isAlive() && getBoundingBox().inflate(0.35).intersects(target.getBoundingBox())) {
+				if (target != null && target.isAlive() && Targets.canHarm(this, target) && hasLineOfSight(target)
+					&& getBoundingBox().inflate(0.35).intersects(target.getBoundingBox())) {
 					strike(level, target, now);
 				} else if ((onGround() && pounceTicks > 4) || pounceTicks > 30) {
 					// It missed: it lands sprawled, and for a moment it's open.
@@ -197,6 +205,15 @@ public class Gloomstalker extends WildMonster {
 		phaseUntil = now + ticks;
 	}
 
+	private void resumeStalk(long now) {
+		enter(Phase.STALK, now, 0);
+		nextPounce = now + MonsterPressureRules.GLOOM_CANCEL_RETRY;
+	}
+
+	private int delay(MonsterPressureRules.Delay interval) {
+		return interval.sample(getRandom().nextInt(interval.spread()));
+	}
+
 	/** Leaps at where the target is, low and fast. */
 	private void pounce(ServerLevel level, LivingEntity target, long now) {
 		Vec3 d = target.position().subtract(position());
@@ -222,12 +239,12 @@ public class Gloomstalker extends WildMonster {
 
 	/** Slinks away into the darkest spot it can find nearby, to hide and try again. */
 	private void startRetreat(ServerLevel level, LivingEntity target, long now) {
-		enter(Phase.RETREAT, now, 50 + getRandom().nextInt(30));
+		enter(Phase.RETREAT, now, delay(MonsterPressureRules.gloomRetreat(difficulty())));
 		retreatTo = null;
 		Vec3 away = target != null ? target.position() : position().add(getLookAngle());
 		int darkest = Integer.MAX_VALUE;
-		for (int i = 0; i < 6; i++) {
-			Vec3 to = DefaultRandomPos.getPosAway(this, 14, 6, away);
+		for (int i = 0; i < MonsterPressureRules.GLOOM_RETREAT_CANDIDATES; i++) {
+			Vec3 to = DefaultRandomPos.getPosAway(this, 14, MonsterPressureRules.GLOOM_RETREAT_HEIGHT, away);
 			if (to == null) {
 				continue;
 			}
@@ -238,7 +255,7 @@ public class Gloomstalker extends WildMonster {
 			}
 		}
 		if (retreatTo != null) {
-			getNavigation().moveTo(retreatTo.x, retreatTo.y, retreatTo.z, 1.35);
+			getNavigation().moveTo(retreatTo.x, retreatTo.y, retreatTo.z, MonsterPressureRules.GLOOM_RETREAT_SPEED);
 		}
 	}
 
@@ -264,7 +281,8 @@ public class Gloomstalker extends WildMonster {
 
 		@Override
 		public void start() {
-			stalkTime = 40 + getRandom().nextInt(40);
+			stalkTime = delay(MonsterPressureRules.gloomStalk(difficulty(), false));
+			repath = 0;
 			circle = getRandom().nextDouble() * Math.PI * 2;
 		}
 
@@ -284,14 +302,15 @@ public class Gloomstalker extends WildMonster {
 		@Override
 		public void tick() {
 			LivingEntity target = getTarget();
-			if (target == null || !(level() instanceof ServerLevel level)) {
+			if (target == null || !target.isAlive() || !Targets.canHarm(Gloomstalker.this, target)
+				|| !(level() instanceof ServerLevel level)) {
 				return;
 			}
 			long now = level.getGameTime();
 			if (phase == Phase.RETREAT) {
 				if (now >= phaseUntil || getNavigation().isDone()) {
 					phase = Phase.STALK;
-					stalkTime = 50 + getRandom().nextInt(50);
+					stalkTime = delay(MonsterPressureRules.gloomStalk(difficulty(), true));
 				}
 				return;
 			}
@@ -301,11 +320,13 @@ public class Gloomstalker extends WildMonster {
 			double d = distanceTo(target);
 			getLookControl().setLookAt(target, 30, 30);
 			// Cornered or caught close: a quick swipe.
-			if (d < 2.2 && now >= nextSwipe) {
-				nextSwipe = now + 20;
+			if (d < MonsterPressureRules.GLOOM_SWIPE_RANGE && now >= nextSwipe && hasLineOfSight(target)) {
+				nextSwipe = now + MonsterPressureRules.GLOOM_SWIPE_INTERVAL;
 				doHurtTarget(level, target);
 			}
-			if (--stalkTime <= 0 && d >= 3.2 && d <= 9.5 && hasLineOfSight(target)) {
+			boolean sight = hasLineOfSight(target);
+			if (--stalkTime <= 0 && now >= nextPounce
+				&& MonsterPressureRules.gloomCanCrouch(d, target.getY() - getY(), sight)) {
 				enter(Phase.CROUCH, now, CROUCH);
 				getNavigation().stop();
 				MonsterMagic.sound(level, position(), "monster_gloom_growl", 1.0F, 1.0F);
@@ -314,16 +335,17 @@ public class Gloomstalker extends WildMonster {
 			if (--repath > 0) {
 				return;
 			}
-			repath = 8;
-			if (d > 10) {
-				getNavigation().moveTo(target, 1.1);
+			boolean routed;
+			if (MonsterPressureRules.gloomChase(difficulty(), d, target.getY() - getY(), sight)) {
+				routed = getNavigation().moveTo(target, MonsterPressureRules.gloomChaseSpeed(difficulty()));
 			} else {
-				// Circle at a pounce's length, slowly, always facing in.
-				circle += 0.35;
-				double r = 6.0;
+				// Circle only while a pounce is a useful next move; do not orbit forever outside its reach.
+				circle += MonsterPressureRules.GLOOM_CIRCLE_STEP;
+				double r = MonsterPressureRules.GLOOM_CIRCLE_RADIUS;
 				Vec3 at = target.position().add(Math.cos(circle) * r, 0, Math.sin(circle) * r);
-				getNavigation().moveTo(at.x, at.y, at.z, 0.9);
+				routed = getNavigation().moveTo(at.x, at.y, at.z, MonsterPressureRules.GLOOM_CIRCLE_SPEED);
 			}
+			repath = MonsterPressureRules.repathDelay(routed && getNavigation().getPath() != null && getNavigation().getPath().canReach());
 		}
 	}
 

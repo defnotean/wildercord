@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "master_quarry_hall": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:master_quarry_hall"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:stonecutter"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.master_quarry_hall.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.master_quarry_hall.description"
+    }
+  },
+  "requirements": [
+    [
+      "master_quarry_hall"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

@@ -59,7 +59,8 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			return;
 		}
 		pose.pushPose();
-		getParentModel().rightArm.translateAndRotate(pose);
+		if (!dev.wildercord.client.combat.ArticulatedCombat.legacyArm(getParentModel(), state, net.minecraft.world.entity.HumanoidArm.RIGHT, pose))
+			getParentModel().rightArm.translateAndRotate(pose);
 		Identifier texture = Wildercord.id("textures/entity/cord/" + cord.tier() + ".png");
 		boolean slim = state.skin != null && state.skin.model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
 		float[][] spots = slim ? SLIM_SPOTS : SPOTS;

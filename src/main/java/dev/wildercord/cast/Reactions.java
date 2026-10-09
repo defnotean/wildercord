@@ -87,9 +87,22 @@ public final class Reactions {
 	}
 
 	public static void mark(Entity target, Mark mark, int ticks) {
+		if (Effects.applyingCast() != null && !Effects.applyingCast().admits(target)) return;
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
+		markAllowed(target, mark, ticks);
+	}
+
+	/** Tidebreath deliberately wets its recipients: only an explicitly helpful relation may bypass the hostile-mark veto. */
+	static void wetAlly(LivingEntity caster, Entity target, int ticks) {
+		if (Targets.canHelp(caster, target)) markAllowed(target, Mark.WET, ticks);
+	}
+
+	private static void markAllowed(Entity target, Mark mark, int ticks) {
 		boolean fresh = !has(target, mark);
 		long until = target.level().getGameTime() + ticks;
 		MARKS.computeIfAbsent(target.getUUID(), k -> new EnumMap<>(Mark.class)).merge(mark, until, Math::max);
+		if ((mark == Mark.FROZEN || mark == Mark.AIRBORNE) && has(target, mark) && target instanceof net.minecraft.server.level.ServerPlayer player)
+			dev.wildercord.aura.MasterForms.cancel(player);
 		// Marks are seen: a halo in the mark's colour while it lasts (see MarkHalos).
 		dev.wildercord.cast.feel.MarkHalos.marked(target, mark, fresh);
 		// Whatever is pulled (Pull, Gravity Well, a vortex, a rift...) is dragged out of the sky: a soaring player loses the wind.
@@ -153,6 +166,7 @@ public final class Reactions {
 
 	/** Called for fire-element damage: returns the damage multiplier after Shatter / Wildfire. */
 	public static double fire(Cast cast, LivingEntity target) {
+		if (!cast.admitsConsequence(target)) return 1;
 		double multiplier = 1.0;
 		ServerLevel level = cast.level;
 		if (has(target, Mark.FROZEN)) {
@@ -160,6 +174,7 @@ public final class Reactions {
 			target.setTicksFrozen(0);
 			// The ice bursts: a Freeze, Glacier or Black Ice hold ends with it.
 			Spirits.thawNow(target);
+			if (!cast.consequencesValid(target)) return 1;
 			multiplier *= 1.6;
 			reacted(target);
 			Vec3 c = target.getBoundingBox().getCenter();
@@ -173,11 +188,14 @@ public final class Reactions {
 			reacted(target);
 			for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(3.0), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity other = (LivingEntity) e;
+				if (!cast.admitsConsequence(other)) continue;
 				reacted(other);
 				other.igniteForSeconds(4);
 				Effects.hurt(cast, other, level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3);
+				if (!cast.consequencesValid(other)) return 1;
 				ReactionVfx.wildfireLeap(level, target, other);
 			}
+			if (!cast.consequencesValid(target)) return 1;
 			ReactionVfx.wildfire(level, target);
 			callout(cast, "wildfire", 0xF06E32);
 			Residues.reaction(cast, "fire", target);
@@ -187,7 +205,9 @@ public final class Reactions {
 
 	/** Called for storm-element damage: returns the damage multiplier after Conduct / Overload. */
 	public static double storm(Cast cast, LivingEntity target) {
-		return conduct(cast, target) * overload(cast, target);
+		if (!cast.admits(target)) return 1;
+		double conducted = conduct(cast, target);
+		return cast.admits(target) ? conducted * overload(cast, target) : 1;
 	}
 
 	/** Conduct: storm on a wet target arcs on to two more enemies. */
@@ -198,14 +218,16 @@ public final class Reactions {
 		ServerLevel level = cast.level;
 		reacted(target);
 		int arcs = 0;
-		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(5.0), e -> Targets.canHarm(cast.caster, e))) {
+		for (Entity e : collateral(cast, target, 5.0)) {
 			if (arcs++ >= 2) {
 				break;
 			}
 			LivingEntity other = (LivingEntity) e;
+			if (!cast.admits(other) || cast.guardedImpact() && cast.takeEntities(1) < 1) continue;
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), other.getBoundingBox().getCenter());
-			Effects.hurt(cast, other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4);
+			reactionHurt(cast, target, other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4);
 		}
+		if (!cast.consequencesValid(target)) return 1.0;
 		ReactionVfx.conduct(level, target);
 		callout(cast, "conduct", 0xFFE650);
 		Residues.reaction(cast, "storm", target);
@@ -225,7 +247,7 @@ public final class Reactions {
 		reacted(target);
 		Vec3 c = target.getBoundingBox().getCenter();
 		List<LivingEntity> struck = new ArrayList<>();
-		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(ReactionRules.OVERLOAD_RADIUS), e -> Targets.canHarm(cast.caster, e))) {
+		for (Entity e : collateral(cast, target, ReactionRules.OVERLOAD_RADIUS)) {
 			if (e.getBoundingBox().getCenter().distanceTo(c) <= ReactionRules.OVERLOAD_RADIUS + e.getBbWidth() / 2) {
 				struck.add((LivingEntity) e);
 			}
@@ -233,17 +255,40 @@ public final class Reactions {
 		ReactionVfx.overload(level, target, struck);
 		long now = level.getGameTime();
 		for (LivingEntity other : struck) {
+			if (!cast.admits(other) || cast.guardedImpact() && cast.takeEntities(1) < 1) continue;
 			reacted(other);
-			Effects.hurt(cast, other, level.damageSources().explosion(cast.caster, cast.caster), ReactionRules.OVERLOAD_DAMAGE);
+			reactionHurt(cast, target, other, level.damageSources().explosion(cast.caster, cast.caster), ReactionRules.OVERLOAD_DAMAGE);
+			if (!cast.admits(other)) continue;
 			Long thrown = THROWN.put(other.getUUID(), now);
 			if (thrown == null || thrown != now) {
 				Vec3 away = Effects.horizontal(other.position().subtract(target.position()), cast.caster.getLookAngle());
 				Effects.push(other, away.scale(1.1).add(0, 0.45, 0));
 			}
 		}
+		if (!cast.consequencesValid(target)) return 1.0;
 		callout(cast, ReactionRules.OVERLOAD, ReactionRules.color(ReactionRules.OVERLOAD));
 		Residues.reaction(cast, "storm", target);
 		return ReactionRules.OVERLOAD_BONUS;
+	}
+
+	/** Relay collateral retains ordinary reactions, bounded by its paid budget and both current sightlines. */
+	private static List<Entity> collateral(Cast cast, LivingEntity from, double radius) {
+		if (!cast.guardedImpact()) return cast.level.getEntities(from, from.getBoundingBox().inflate(radius), e -> Targets.canHarm(cast.caster, e));
+		List<Entity> found = new ArrayList<>();
+		cast.level.getEntities(net.minecraft.world.level.entity.EntityTypeTest.forClass(LivingEntity.class), from.getBoundingBox().inflate(radius),
+			e -> e != from && e != cast.caster && e.isAlive(), found, Cast.MAX_ENTITIES + 1);
+		if (found.size() > Cast.MAX_ENTITIES) return List.of();
+		found.removeIf(e -> !cast.admits(e) || cast.caster instanceof net.minecraft.server.level.ServerPlayer player
+			&& !RelayCircles.clear(cast.level, player, from.getBoundingBox().getCenter(), e.getBoundingBox().getCenter()));
+		found.sort(java.util.Comparator.comparingDouble((Entity e) -> e.distanceToSqr(from)).thenComparingInt(Entity::getId));
+		return found;
+	}
+
+	private static void reactionHurt(Cast cast, LivingEntity from, LivingEntity target, net.minecraft.world.damagesource.DamageSource source, double amount) {
+		Vec3 previous = cast.incoming();
+		if (cast.guardedImpact()) cast.incoming(from.getBoundingBox().getCenter());
+		try { Effects.hurt(cast, target, source, amount); }
+		finally { if (cast.guardedImpact()) cast.incoming(previous); }
 	}
 
 	/** Called for blasts: returns the radius multiplier after Implode (damage bonus is radius-based too). */
@@ -295,6 +340,7 @@ public final class Reactions {
 	 * multiplier.
 	 */
 	public static double hit(Cast cast, LivingEntity target, String element) {
+		if (!cast.admits(target)) return 1;
 		double multiplier = Statuses.airborneFactor(target);
 		if (multiplier > 1.0) {
 			StatusVfx.airborneBite(cast.level, target);
@@ -331,6 +377,7 @@ public final class Reactions {
 		target.setTicksFrozen(0);
 		// The ice cracks through: a Freeze, Glacier or Black Ice hold ends with it.
 		Spirits.thawNow(target);
+		if (!cast.consequencesValid(target)) return 1;
 		mark(target, Mark.CRACKED);
 		reacted(target);
 		ReactionVfx.fracture(cast.level, target);
@@ -361,12 +408,18 @@ public final class Reactions {
 			}
 		}
 		ReactionVfx.blight(level, target, rotting, cast.caster);
+		int affected = 0;
 		for (LivingEntity t : rotting) {
+			if (!cast.admitsConsequence(t)) continue;
+			affected++;
 			reacted(t);
 			t.addEffect(new MobEffectInstance(MobEffects.POISON, ReactionRules.BLIGHT_POISON_TICKS, 0, false, true), cast.caster);
 			Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.BLIGHT_DAMAGE);
+			if (!cast.consequencesValid(t)) return 1;
 		}
-		heal(cast, ReactionRules.BLIGHT, ReactionRules.BLIGHT_HEAL * rotting.size());
+		if (!cast.consequencesValid(target)) return 1;
+		heal(cast, ReactionRules.BLIGHT, ReactionRules.BLIGHT_HEAL * affected);
+		if (!cast.consequencesValid(target)) return 1;
 		callout(cast, ReactionRules.BLIGHT, ReactionRules.color(ReactionRules.BLIGHT));
 		Residues.reaction(cast, "life", target);
 		return 1.0;
@@ -395,7 +448,9 @@ public final class Reactions {
 		reacted(target);
 		ReactionVfx.rupture(level, target, cast.caster);
 		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.RUPTURE_DAMAGE);
+		if (!cast.consequencesValid(target)) return 1;
 		heal(cast, ReactionRules.RUPTURE, ReactionRules.RUPTURE_HEAL);
+		if (!cast.consequencesValid(target)) return 1;
 		callout(cast, ReactionRules.RUPTURE, ReactionRules.color(ReactionRules.RUPTURE));
 		Residues.reaction(cast, "wind", target);
 		return ReactionRules.RUPTURE_BONUS;
@@ -428,6 +483,7 @@ public final class Reactions {
 		reacted(target);
 		ReactionVfx.elapse(level, target, fire > 0, poison != null, wither != null);
 		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), damage);
+		if (!cast.consequencesValid(target)) return 1;
 		callout(cast, ReactionRules.ELAPSE, ReactionRules.color(ReactionRules.ELAPSE));
 		Residues.reaction(cast, "time", target);
 		return 1.0;

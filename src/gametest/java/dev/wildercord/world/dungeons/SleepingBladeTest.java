@@ -30,6 +30,7 @@ import java.util.Set;
 /** Actual draw packets, interruption, unique acquisition, bond ownership, defensive tradeoff and terrain generation. */
 public final class SleepingBladeTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext c) {
+		SleepingBladeGenerationProbeChecks.verify();
 		try (var world=c.worldBuilder().create()) {
 			c.waitTicks(40); world.getServer().runCommand("gamerule spawn_mobs false");
 			world.getServer().runCommand("gamerule fall_damage false"); world.getServer().runCommand("time set 6000");
@@ -106,17 +107,41 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			c.runOnClient(mc->mc.options.keyShift.setDown(false));world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var blade=p.getMainHandItem();p.setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);p.getInventory().setItem(8,blade);for(int i=0;i<p.getInventory().getContainerSize();i++){var stack=p.getInventory().getItem(i);if(stack.has(DataComponents.WRITTEN_BOOK_CONTENT)){p.setItemInHand(InteractionHand.MAIN_HAND,stack);p.getInventory().setItem(i,ItemStack.EMPTY);break;}}});
 			c.waitTicks(10);c.runOnClient(mc->mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND));c.waitTicks(10);c.runOnClient(mc->check(mc.gui.screen() instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen,"Actual awarded lore opens for reading"));shot(c,"sleeping_blade_last_oath");
 		}
-		try(var natural=c.worldBuilder().setUseConsistentSettings(false).create()) {
+		dev.wildercord.Wildercord.LOGGER.info("SLEEPING_BLADE_GENERATION PRIOR_CHECKS completed=12_rotated_variants,persisted_provenance,draw_interruptions,unique_claim,bond_ownership,guard_tradeoff,unprovenanced_socket_false,book_screen");
+		try(var natural=c.worldBuilder().setUseConsistentSettings(false).create();
+			var probe=natural.getServer().computeOnServer(s->SleepingBladeGenerationProbe.begin(s.overworld().getSeed()))) {
 			c.waitTicks(40);natural.getServer().runCommand("gamerule spawn_mobs false");natural.getServer().runCommand("time set 6000");
-			BlockPos habitat=natural.getServer().computeOnServer(s->{var cs=s.overworld().getChunkSource();var b=cs.getGenerator().getBiomeSource().findBiomeHorizontal(1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(77),true,cs.randomState());check(b!=null,"Normal world contains a dry landmark habitat");return b.getFirst();});
+			BlockPos habitat=natural.getServer().computeOnServer(s->{
+				var cs=s.overworld().getChunkSource();var b=cs.getGenerator().getBiomeSource().findBiomeHorizontal(1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(77),true,cs.randomState());
+				check(b!=null,"Normal world contains a dry landmark habitat");
+				var registered=s.overworld().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+					.get(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.Identifier.parse("wildercord:sleeping_blade")));
+				probe.habitat(b.getFirst(),b.getSecond().unwrapKey().map(key->key.identifier().toString()).orElse("unregistered"),
+					registered.map(value->value.value().getClass().getName()).orElse("unregistered"),registered.map(value->value.value().biomes().contains(b.getSecond())).orElse(false));
+				return b.getFirst();
+			});
 			BlockPos found=null;
 			for(int i=0;i<16 && found==null;i++) {
 				int x=habitat.getX()+(i%4)*48,z=habitat.getZ()+(i/4)*48;
 				natural.getServer().runOnServer(s->{for(int cx=(x>>4)-3;cx<=(x>>4)+3;cx++)for(int cz=(z>>4)-3;cz<=(z>>4)+3;cz++)s.overworld().getChunk(cx,cz);});
-				natural.getServer().runCommand("place structure wildercord:sleeping_blade "+x+" 70 "+z);
-				found=natural.getServer().computeOnServer(s->{for(int cx=(x>>4)-3;cx<=(x>>4)+3;cx++)for(int cz=(z>>4)-3;cz<=(z>>4)+3;cz++)for(var be:s.overworld().getChunk(cx,cz).getBlockEntities().values())if(be instanceof SleepingBladeEntity b && b.authentic())return b.getBlockPos();return null;});
+				int ordinal=i;
+				var command=natural.getServer().computeOnServer(s->{
+					try(var receipt=probe.command(s.overworld(),ordinal,x,z)) {
+						// Fabric runCommand uses this same source and synchronous executor; only add the callback.
+						s.getCommands().performPrefixedCommand(s.createCommandSourceStack().withCallback(receipt::callback),"place structure wildercord:sleeping_blade "+x+" 70 "+z);
+						receipt.returned();return receipt;
+					}
+				});
+				found=natural.getServer().computeOnServer(s->{
+					for(int cx=(x>>4)-3;cx<=(x>>4)+3;cx++)for(int cz=(z>>4)-3;cz<=(z>>4)+3;cz++)
+						for(var be:s.overworld().getChunk(cx,cz).getBlockEntities().values())if(be instanceof SleepingBladeEntity b) {
+							boolean authentic=b.authentic();command.marker(b.getBlockPos(),authentic);
+							if(authentic) {command.scanned(b.getBlockPos());return b.getBlockPos();}
+						}
+					command.scanned(null);return null;
+				});
 			}
-			check(found!=null,"Registered normal-terrain structure placement creates the authentic blade");BlockPos landmark=found;
+			check(found!=null,"Registered normal-terrain structure placement creates the authentic blade; "+probe.summary());BlockPos landmark=found;
 			natural.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),landmark.getX()+4,landmark.getY()+3,landmark.getZ()+5,Set.<Relative>of(),0,0,false);p.getAbilities().flying=true;p.onUpdateAbilities();});
 			c.waitTicks(30);aim(c,landmark);c.waitTicks(30);natural.getConnection().waitForChunksRender();shot(c,"sleeping_blade_natural_landmark");
 		}

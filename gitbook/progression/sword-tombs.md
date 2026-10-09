@@ -1,45 +1,67 @@
 # The Sword Tombs
 
-A broken stone arch in open highland country marks a stair into the Marchkeepers' buried blade galleries. Search meadows, windswept hills, windswept gravelly hills, plains and snowy plains. Tombs are rare; their entrances reject flooded ground.
+## What it is
 
-## The two thresholds
+A rare buried gallery of the Marchkeepers. A broken stone arch marks the stair down. At the bottom waits the **Buried Keeper**,
+a blindfolded stone effigy with a long bound sword.
 
-Use an **Intent Gate while holding an Aura weapon**. The outer gate asks for **Flow**, and the inner gate asks for **Edge**. Its horizontal band bears two or three marks to show the threshold without relying on colour. A qualified swordsman opens the whole gate for the party. Breathing in place is not required.
+## How to get it
 
-The gallery, duel chamber and inner burial room are warded against tunnelling and destruction. The entrance remains an ordinary route out. Gallery chests hold modest supplies; the technique reward belongs to the keeper encounter.
+Search **meadows, windswept hills, windswept gravelly hills, plains and snowy plains**. The inside is protected: you can't dig
+through or break the gallery, duel chamber or burial room.
 
-## Challenge the Buried Keeper
+## How to use it
 
-At the far side of the chamber, **use the Keeper Reliquary with an Edge blade**. Clear the keeper's central standing place first. Only an authentic generated reliquary can summon it, and the tomb permits one keeper at a time. Peaceful difficulty keeps it asleep.
+### The two gates
 
-The keeper is a blindfolded stone effigy with segmented arms, burial cloth and a long bound sword. Its attacks use physical sword strokes, scuffed lanes and ground gouges. It draws no magic circles.
+Use an **Intent Gate** while holding an Aura weapon. The outer gate needs **Flow**; the inner gate needs **Edge**. Each gate
+shows two or three marks for its stage. One qualified player opens it for the whole party. Gallery chests hold modest supplies.
+
+### Wake the keeper
+
+At the far end, clear the centre of the chamber and **use the Keeper Reliquary** while holding a weapon, at **Edge** or higher.
+One keeper at a time. It won't wake on Peaceful.
 
 ![The blindfolded stone keeper prepares a broad sword sweep beneath hanging lanterns; its boss bar names the attack and advises leaving the front](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/sword-tomb-keeper.png)
 
-| Action | Tell | Response |
-| --- | --- | --- |
-| Broad sweep | Blade held out to its side; a broad front threatens | Leave the front, flank, or move beyond five blocks |
-| Straight thrust | Blade aligned down a narrow lane | Step sideways; the lane is only 1.5 blocks wide |
-| Forward guard | Blade braced across the body | Flank it, wait it out, or strike from the front with an axe |
-| Recovery | Blade lowered after an attack | Attack during the opening |
-| Broken guard | Effigy reels after the axe strike | Use the longer opening |
+The keeper fights with plain sword strokes, no magic. Its boss bar names each move and the answer.
 
-Both attacks prepare for **1.8 seconds** and lock direction before they land. Walls block hits. The thrust reaches farther than the sweep. Its forward guard reduces damage, while its side and back remain vulnerable. Recovery and broken guard take 25% more damage.
+| Move | How to spot it | What to do |
+|---|---|---|
+| **Broad sweep** | Blade held out to its side | Leave its front, flank it, or get more than five blocks away |
+| **Straight thrust** | Blade lined up down a narrow lane | Step sideways; the lane is only 1.5 blocks wide, but it reaches far |
+| **Forward guard** | Blade braced across its body | Hit its side or back, wait, or break it with an axe from the front |
+| **Recovery** | Blade lowered after an attack | Attack: it takes 25% more damage |
+| **Broken guard** | Reeling after your axe hit | Attack: a longer opening, also 25% more damage |
 
-The boss bar names the current action and its answer. Different preparation sounds distinguish sweep and thrust. The keeper stays inside its chamber and returns to the centre if displaced far outside it. Leaving it without a target for ten seconds lets it recover its health.
+Both attacks wind up for **1.8 seconds** and lock their direction before they land. Walls block them. Each has its own
+wind-up sound.
 
-## Recover the testament
+The keeper stays in its chamber. If it has no target for ten seconds, it heals to full.
 
-After the keeper falls, participating survival players can **use the reliquary** to claim **two different technique scrolls**, **three Aura Shards**, and **The Keeper's Testament**, a three-page field book. Once the keeper has been hurt by a survival player, other living survival players within the encounter area can participate, including support players.
+### The reward
 
-The encounter clears once per tomb. Each recorded participant can claim once, including after a restart; repeating the interaction cannot produce another reward. Arriving after the encounter has finished does not grant participation. A tomb remembers up to 64 participants. The testament connects the memorials' histories and the keeper's deliberately imperfect defence.
+When the keeper falls, each player who took part can **use the reliquary** once to claim:
+
+- **two different technique scrolls**,
+- **three Aura Shards**,
+- **The Keeper's Testament**, a three-page book.
+
+Once the keeper is hurt by a player, any living survival player in the arena counts as taking part, healers included.
+Arriving after the fight does not count. Each tomb is cleared once.
 
 ![The awarded Keeper's Testament open on its first page, explaining the Marchkeepers' buried blades and the keeper's blindfold](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/sword-tomb-testament.png)
 
-## Server settings and existing worlds
+## Tips and counterplay
 
-`aura_world.sword_tombs` controls new tomb generation, gate opening and reliquary interactions. Existing blocks remain when disabled. The current keeper continues its encounter. New tombs appear in newly generated chunks; existing terrain is not retroactively replaced.
+- Watch the blade, not the body: sideways means sweep, lined up means thrust.
+- Bring an axe to break its guard from the front.
+- Aura Shards from the reward forge the [Bulwark Maul and Skyrend Glaive](weapons.md).
 
-The structure set uses 76-chunk spacing and 28-chunk separation. If a keeper disappears without dying, the authentic reliquary can rearm after ten seconds of observation with its arena loaded. This recovery check does not load remote chunks. A slain keeper stays slain.
+## Server settings
 
-See [the Marchkeeper battlefields](battlefields.md) for the three outdoor histories, and [Aura](aura.md) for stages and writing techniques.
+`aura_world.sword_tombs` turns new tombs, gates and the reliquary on or off. Existing blocks stay. New tombs only appear in
+newly generated land.
+
+Related: [The Marchkeeper Battlefields](battlefields.md) ·
+[The Sleeping Blade](sleeping-blade.md) · [Aura](aura.md)

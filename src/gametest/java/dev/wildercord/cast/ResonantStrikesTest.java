@@ -57,8 +57,15 @@ public final class ResonantStrikesTest implements FabricClientGameTest {
 				check(ResonantStrikes.reactions()==n+1,"Native Frost effect answers a blade already landed");
 			});c.waitTicks(12);w.getServer().runOnServer(s -> clear(s));
 			c.waitTicks(82);w.getServer().runOnServer(s -> {
-				var p=p(s);teach(p,"gale");var f=foe(s,0,2);int n=ResonantStrikes.reactions();spell(new Cast(p),f,"fire",5);
-				AuraCombat.swing(p);p.attack(f);check(ResonantStrikes.reactions()==n+1,"A real ordinary fully charged coated weapon attack resonates");
+				var p=p(s);teach(p,"gale");var f=foe(s,0,2);int n=ResonantStrikes.reactions();
+				check(Aura.coated(p) && !MastersArts.committed(p) && p.getAttackStrengthScale(.5F)>=AuraRules.FULL_SWING,
+					"Ordinary attack fixture is coated, fully charged and uncommitted: "+ordinaryState(p,f));
+				float initial=f.getHealth();spell(new Cast(p),f,"fire",5);
+				check(f.getHealth()<initial && f.damageCooldownTime>10,"Actual spell primes native damage cooldown: "+ordinaryState(p,f));
+				float before=f.getHealth();String beforeAttack=ordinaryState(p,f);
+				AuraCombat.swing(p);p.attack(f);
+				check(f.getHealth()<before,"Actual ordinary coated attack lands through the unchanged same-tick cooldown: before "+beforeAttack+"; after "+ordinaryState(p,f));
+				check(ResonantStrikes.reactions()==n+1,"A real ordinary fully charged coated weapon attack resonates: before "+beforeAttack+"; after "+ordinaryState(p,f));
 			});c.waitTicks(12);w.getServer().runOnServer(s -> clear(s));
 			// Failed spell damage, dead targets, unsupported elements and unpaid Aura cannot prime/trigger.
 			c.waitTicks(82);w.getServer().runOnServer(s -> {
@@ -99,7 +106,16 @@ public final class ResonantStrikesTest implements FabricClientGameTest {
 	private static String partner(String e) {return switch(e){case "fire"->"gale";case "frost"->"ember";case "storm"->"stone";case "wind","arcane"->"hourglass";case "earth"->"rime";case "life"->"crimson";case "void"->"starlit";case "time"->"gale";default->"hollow";};}
 	private static ServerPlayer p(MinecraftServer s){return s.getPlayerList().getPlayers().getFirst();}
 	private static void teach(ServerPlayer p,String method){p.setGameMode(GameType.SURVIVAL);p.setHealth(p.getMaxHealth());p.removeAllEffects();p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.DIAMOND_SWORD));p.setItemInHand(InteractionHand.OFF_HAND,ItemStack.EMPTY);p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data(method,AuraRules.GLOW,0,100,0));p.removeAttached(AuraAttachments.STATE);}
-	private static LivingEntity foe(MinecraftServer s,double x,double z){var f=EntityTypes.HUSK.create(s.overworld(),EntitySpawnReason.COMMAND);f.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);f.setHealth(200);f.setNoAi(true);f.addTag("resonant_foe");f.snapTo(x+.5,101,z,180,0);s.overworld().addFreshEntity(f);return f;}
+	private static LivingEntity foe(MinecraftServer s,double x,double z){
+		var f=EntityTypes.HUSK.create(s.overworld(),EntitySpawnReason.COMMAND);f.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);f.setHealth(200);f.setNoAi(true);f.addTag("resonant_foe");
+		// A supplied ordinary witness must not randomly acquire a Runebound's health and elemental resistance on load.
+		f.setCustomName(net.minecraft.network.chat.Component.literal("Resonant strike witness"));
+		f.snapTo(x+.5,101,z,180,0);s.overworld().addFreshEntity(f);
+		check(!f.hasAttached(dev.wildercord.player.WildercordAttachments.RUNEBOUND) && f.getHealth()==200 && f.getMaxHealth()==200,
+			"Supplied ordinary witness retains its declared health and has no Runebound resistance: "+ordinaryState(p(s),f));
+		return f;
+	}
+	private static String ordinaryState(ServerPlayer p,LivingEntity f){return "charge="+p.getAttackStrengthScale(.5F)+", attackDamage="+p.getAttributeValue(Attributes.ATTACK_DAMAGE)+", coated="+Aura.coated(p)+", committed="+MastersArts.committed(p)+", aura="+Aura.aura(p)+", health="+f.getHealth()+", maxHealth="+f.getMaxHealth()+", damageCooldown="+f.damageCooldownTime+", runebound="+f.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.RUNEBOUND,List.<String>of())+", reactions="+ResonantStrikes.reactions();}
 	private static LivingEntity target(MinecraftServer s){for(Entity e:s.overworld().getAllEntities())if(e instanceof LivingEntity f && e.entityTags().contains("resonant_foe"))return f;throw new AssertionError("Test foe missing");}
 	private static void clear(MinecraftServer s){var copy=new ArrayList<Entity>();s.overworld().getAllEntities().forEach(copy::add);copy.stream().filter(e->e.entityTags().contains("resonant_foe")).forEach(Entity::discard);}
 	private static void spell(Cast cast,LivingEntity f,String element,float amount){Effects.asElement(element,() -> Effects.hurt(cast,f,cast.level.damageSources().source(net.minecraft.world.damagesource.DamageTypes.MAGIC,cast.caster,cast.caster),amount));}

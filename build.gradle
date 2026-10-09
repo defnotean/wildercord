@@ -50,7 +50,10 @@ fabricApi {
 		modId = "wildercord-gametest"
 		enableGameTests = false
 		enableClientGameTests = true
-		eula = false
+		// Owner-approved Minecraft EULA acceptance applies only to the explicitly opted-in disposable CI runs.
+		// Loom writes clientGameTest/eula.txt after clearing that run directory. Locally, an owner who has accepted the
+		// EULA opts in with wildercord.eulaAccepted=true in their own ~/.gradle/gradle.properties (never committed).
+		eula = (System.getenv('GITHUB_ACTIONS') == 'true' && System.getenv('CI_MINECRAFT_EULA_ACCEPTED') == 'true') 			|| providers.gradleProperty('wildercord.eulaAccepted').getOrElse('false') == 'true'
 	}
 }
 
@@ -95,10 +98,68 @@ processResources {
 	}
 }
 
+// Life32 has an unchanged generic31 renderer plus one separately admitted held lesson.
+def lifeExciseEntries = [
+    'dev.wildercord.client.fx.LifeRecipeTest',
+    'dev.wildercord.client.fx.LifeFormationTest',
+    'dev.wildercord.client.fx.LifeFlightTest',
+    'dev.wildercord.cast.LifeOutcomeRecipeTest',
+    'dev.wildercord.cast.ExcisePlayableTest'
+]
+def validateLifeExciseSelection = { name, group ->
+    if (name == 'diagnostic-life-excise' && (group.purpose != 'diagnostic' || group.expectedCount != 5 || group.entries != lifeExciseEntries))
+        throw new GradleException('Life32 requires all four generic suites and the separate Excise ordinary class, without release relabeling')
+}
+
+def validateMastersParts = { name, catalog ->
+    def partNames = ['masters-core', 'masters-march-mechanics', 'masters-march-visuals']
+    if (!(name in partNames)) return
+    def march = ['dev.wildercord.aura.world.StoneMarchTest',
+                 'dev.wildercord.aura.world.StoneMarchPresentationTest',
+                 'dev.wildercord.aura.world.StoneMarchOpponentViewTest']
+    def full = catalog.masters.entries
+    if (catalog.masters.get('purpose', 'release') != 'release' || catalog.masters.expectedCount != 47
+            || full.size() != 47 || full.toSet().size() != 47 || full.findAll { it in march } != march
+            || full.last() != 'dev.wildercord.gametest.WildercordMastersArtsPresentationTest')
+        throw new GradleException('Required Masters parts need the ordered 47-class roster')
+    def expected = [full.findAll { !(it in march) }, march.take(1), march.drop(1)]
+    partNames.eachWithIndex { part, i ->
+        def group = catalog[part]
+        if (group == null || group.purpose != 'required-part' || !(group.expectedCount instanceof Integer)
+                || group.expectedCount != expected[i].size() || group.entries != expected[i])
+            throw new GradleException('Required Masters parts must retain the exact disjoint ordered 44/1/2 partition')
+    }
+}
+
+def clientCiContract = new GroovyClassLoader(getClass().classLoader).parseClass(file('tools/ClientCiContract.groovy'))
+// jdeps must read Java 25 class files, so take it from the build's own toolchain.
+def affectedJdeps = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(targetJavaVersion) }
+	.map { it.metadata.installationPath.file(System.getProperty('os.name').toLowerCase(Locale.ROOT).startsWith('windows') ? 'bin/jdeps.exe' : 'bin/jdeps') }
+
 // Focused in-world screenshot suites keep iteration fast while the full descriptor remains available.
 tasks.named('processGametestResources') {
+    inputs.file('tools/ClientCiContract.groovy')
+    inputs.file('tools/client_shard_plan.py')
+    inputs.file('tools/client_shard_plan.json')
+	inputs.file('tools/client_suite_catalog.json')
+	// Presence matters too: an empty -PciSuite is invalid, not the absent/full selector.
+	inputs.property('selectorPresence', ['ciSuite', 'focusedSuite', 'affectedSince', 'tailFrom', 'ciShard', 'ciShards'].findAll { project.hasProperty(it) })
+	inputs.property('ciSuite', project.findProperty('ciSuite') ?: '')
+	inputs.property('affectedSince', project.findProperty('affectedSince') ?: '')
+	// Impact selection reads compiled classes and the git working tree, so it always reruns.
+	if (project.hasProperty('affectedSince')) {
+		dependsOn 'compileJava', 'compileClientJava', 'compileGametestJava'
+		outputs.upToDateWhen { false }
+	}
 	inputs.property('focusedSuite', project.findProperty('focusedSuite') ?: '')
-	inputs.property('twoClientSuite', project.hasProperty('twoClientSuite'))
+	inputs.property('twoClientSuite', project.findProperty('twoClientSuite') ?: '')
+	inputs.property('twoClientSuitePresent', project.hasProperty('twoClientSuite'))
+	if (project.findProperty('twoClientSuite') == 'cast-receipt') {
+		inputs.file('src/gametest/resources/cast-receipt-native-contract.json')
+		inputs.file('src/gametest/resources/counter-peer-gametest.mixins.json')
+	}
+	if (project.findProperty('twoClientSuite') == 'moon') inputs.file('src/gametest/resources/crimson-moon-native-contract.json')
+    if (project.findProperty('twoClientSuite') == 'stone-hinge-peer') inputs.file('src/gametest/resources/stone-hinge-peer-native-contract.json')
 	inputs.property('twoClientUnitySuite', project.hasProperty('twoClientUnitySuite'))
 	inputs.property('twoClientRainshieldSuite', project.hasProperty('twoClientRainshieldSuite'))
 	inputs.property('twoClientCampSuite', project.hasProperty('twoClientCampSuite'))
@@ -118,18 +179,54 @@ tasks.named('processGametestResources') {
 	inputs.property('ciShard', project.findProperty('ciShard') ?: '')
 	inputs.property('ciShards', project.findProperty('ciShards') ?: '')
 	doLast {
-		// CI runs the full descriptor as contiguous shards (`-PciShard=2 -PciShards=4`), keeping the
-		// declared order inside each shard, because the whole roster does not fit one job's time limit.
-		if (project.hasProperty('ciShard') || project.hasProperty('ciShards')) {
-			if (!project.hasProperty('ciShard') || !project.hasProperty('ciShards')) throw new GradleException('ciShard and ciShards must be given together')
-			if (project.hasProperty('twoClientSuite') || project.hasProperty('focusedSuite') || project.hasProperty('tailSuite')) throw new GradleException('ciShard selects from the full descriptor; do not combine it with another suite selector')
-			def shard = project.property('ciShard').toString().toInteger()
-			def shards = project.property('ciShards').toString().toInteger()
-			if (shards < 1 || shard < 1 || shard > shards) throw new GradleException('ciShard must be between 1 and ciShards')
+        def originalDescriptor = new groovy.json.JsonSlurper().parse(file("${destinationDir}/fabric.mod.json"))
+        def fullEntries = originalDescriptor.entrypoints['fabric-client-gametest']
+        if (lifeExciseEntries.take(4).any { fullEntries.contains(it) } && !fullEntries.contains(lifeExciseEntries.last()))
+            throw new GradleException('Life32 full descriptor must retain the separate Excise ordinary class')
+		def selectors = ['ciSuite', 'ciShard', 'focusedSuite', 'affectedSince', 'twoClientSuite', 'encounterSuite',
+			'cinnamonSuite', 'defensiveSuite', 'practiceSuite', 'magicSuite', 'fusionSuite',
+			'runeSuite', 'mechanicsSuite', 'tourSuite', 'parrySuite', 'signatureSuite', 'tailSuite']
+		def active = selectors.findAll { project.hasProperty(it) }
+		if (active.size() > 1) throw new GradleException("Do not combine client suite selectors: ${active.join(', ')}")
+		def multiplayer = ['twoClientUnitySuite', 'twoClientRainshieldSuite', 'twoClientCampSuite'].findAll { project.hasProperty(it) }
+		if (multiplayer.size() > 1 || (!multiplayer.isEmpty() && !project.hasProperty('twoClientSuite'))) throw new GradleException('Select one supervised multiplayer suite together with twoClientSuite')
+		def supervisedName = project.findProperty('twoClientSuite')?.toString() ?: ''
+		if (supervisedName && !(supervisedName in ['cast-receipt', 'moon', 'stone-hinge-peer'])) throw new GradleException('twoClientSuite must be empty (legacy), cast-receipt, moon or stone-hinge-peer')
+		if (supervisedName && !multiplayer.isEmpty()) throw new GradleException('Named twoClientSuite cannot be combined with legacy companion flags')
+		if (project.hasProperty('tailFrom') && !project.hasProperty('tailSuite')) throw new GradleException('tailFrom requires tailSuite')
+        // Full/shard selection has one Python authority and a pinned explicit four-group plan.
+        def fullSelection = clientCiContract.selection(fullEntries, project.properties,
+            file('tools/client_shard_plan.py'), file('tools/client_shard_plan.json'),
+            file('src/gametest/resources/fabric.mod.json'))
+        if (fullSelection != null) {
+            originalDescriptor.entrypoints['fabric-client-gametest'] = fullSelection.entries
+            originalDescriptor.custom = originalDescriptor.custom ?: [:]
+            originalDescriptor.custom['wildercord:clientShardPlan'] = fullSelection.plan
+            file("${destinationDir}/fabric.mod.json").text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(originalDescriptor))
+            return
+        }
+
+		// The catalog is also consumed by the launcher and evidence manifest. Keep this roster
+		// explicit: appending more tests to the full descriptor must not expand the focused gate.
+		if (project.hasProperty('ciSuite')) {
+			def name = project.property('ciSuite').toString()
+			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))
+			if (!catalog.containsKey(name)) throw new GradleException("Unknown ciSuite '${name}'; choose from ${catalog.keySet().join(', ')}")
+			def group = catalog[name]
+            validateLifeExciseSelection(name, group)
+            validateMastersParts(name, catalog)
+			if (!(group.get('purpose', 'release') in ['release', 'diagnostic', 'required-part'])) throw new GradleException("ciSuite '${name}' has an unknown purpose")
+			def selected = group.entries
+			if (!(selected instanceof List) || selected.isEmpty() || !selected.every { it instanceof String && !it.trim().isEmpty() }) throw new GradleException("ciSuite '${name}' must contain a nonempty list of entrypoint names")
+			if (selected.toSet().size() != selected.size()) throw new GradleException("ciSuite '${name}' contains duplicate entrypoints")
+			if (!(group.expectedCount instanceof Integer) || group.expectedCount < 1 || selected.size() != group.expectedCount) throw new GradleException("ciSuite '${name}' must contain exactly ${group.expectedCount} entrypoints")
 			def descriptor = file("${destinationDir}/fabric.mod.json")
 			def data = new groovy.json.JsonSlurper().parse(descriptor)
 			def all = data.entrypoints['fabric-client-gametest']
-			data.entrypoints['fabric-client-gametest'] = all.subList((int) (all.size() * (shard - 1) / shards), (int) (all.size() * shard / shards))
+			if (all.toSet().size() != all.size()) throw new GradleException('Full client descriptor contains duplicate entrypoints')
+			def missing = selected.findAll { !all.contains(it) }
+			if (!missing.isEmpty()) throw new GradleException("ciSuite '${name}' has unregistered entrypoints: ${missing.join(', ')}")
+			data.entrypoints['fabric-client-gametest'] = selected
 			descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
 		}
@@ -137,9 +234,58 @@ tasks.named('processGametestResources') {
 		if (project.hasProperty('twoClientSuite')) {
 			def descriptor=file("${destinationDir}/fabric.mod.json")
 			def data=new groovy.json.JsonSlurper().parse(descriptor)
-			if(project.hasProperty('twoClientRainshieldSuite') && (project.hasProperty('twoClientUnitySuite') || project.hasProperty('twoClientCampSuite'))) throw new GradleException('Select one supervised multiplayer suite')
-			data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientRainshieldSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsRainshieldTest' : project.hasProperty('twoClientCampSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsCampTest' : project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
+			if (supervisedName == 'cast-receipt') {
+				def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/cast-receipt-native-contract.json'))
+				def expected = 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
+				if (contract.suite != 'cast-receipt' || contract.entrypoint != expected) throw new GradleException('Supervised contract does not match the fixed cast receipt entrypoint')
+				if (contract.requiredMixins != ['counter-peer-gametest.mixins.json']) throw new GradleException('Counter passive hook identity changed')
+				data.mixins = ((data.mixins ?: []) + contract.requiredMixins).unique()
+				data.entrypoints['fabric-client-gametest'] = [expected]
+			} else if (supervisedName == 'moon') {
+				def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/crimson-moon-native-contract.json'))
+				def expected = 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest'
+				def hooks = ['crimson-moon-multiplayer-gametest.mixins.json']
+				if (contract.suite != 'moon' || contract.entrypoint != expected || contract.requiredMixins != hooks) throw new GradleException('Supervised Moon contract does not match its fixed entrypoint and passive hooks')
+				data.entrypoints['fabric-client-gametest'] = [expected]
+				data.mixins = ((data.mixins ?: []).findAll { it != 'crimson-moon-owner-gametest.mixins.json' } + hooks).unique()
+            } else if (supervisedName == 'stone-hinge-peer') {
+                def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/stone-hinge-peer-native-contract.json'))
+                def expected = 'dev.wildercord.aura.StoneHingePeerTransportTest'
+                if (contract.suite != 'stone-hinge-peer' || contract.entrypoint != expected || contract.expectedCount != 29)
+                    throw new GradleException('Stone Hinge requires its fixed 29-case supervised diagnostic contract')
+                data.entrypoints['fabric-client-gametest'] = [expected]
+                data.mixins = ((data.mixins ?: []) + ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json']).unique()
+            } else {
+                data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientRainshieldSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsRainshieldTest' : project.hasProperty('twoClientCampSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsCampTest' : project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
+			}
 			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
+			return
+		}
+		// Static impact analysis (tools/affected_tests.py): a fast iteration aid, never a release gate.
+		if (project.hasProperty('affectedSince')) {
+			def ref = project.property('affectedSince').toString().trim()
+			if (!ref) throw new GradleException('affectedSince needs a git ref, e.g. -PaffectedSince=HEAD or -PaffectedSince=origin/main')
+			def jdeps = affectedJdeps.get().asFile.absolutePath
+			def command = [System.getProperty('os.name').toLowerCase(Locale.ROOT).startsWith('windows') ? 'python' : 'python3', '-I',
+				file('tools/affected_tests.py').absolutePath, '--since', ref, '--json', '--jdeps', jdeps,
+				'--build-dir', layout.buildDirectory.get().asFile.absolutePath]
+			if (project.hasProperty('affectedStrict')) command << '--strict'
+			def process = new ProcessBuilder(command).directory(projectDir).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+			def output = process.inputStream.getText('UTF-8')
+			if (process.waitFor() != 0) throw new GradleException("tools/affected_tests.py failed for affectedSince=${ref}")
+			def result = new groovy.json.JsonSlurper().parseText(output)
+			def descriptor = file("${destinationDir}/fabric.mod.json")
+			def data = new groovy.json.JsonSlurper().parse(descriptor)
+			def all = data.entrypoints['fabric-client-gametest']
+			def selected = all.findAll { it in result.selected }
+			if (selected.size() != result.selected.size()) throw new GradleException('Affected selection names unregistered client game tests')
+			logger.lifecycle("Affected client game tests since ${ref}: ${result.mode == 'all' ? 'ALL' : selected.size()} of ${all.size()}")
+			result.reasons.each { logger.lifecycle("  all because: ${it}") }
+			selected.each { logger.lifecycle("  ${it}") }
+			result.warnings.each { logger.warn("  warning: ${it}") }
+			if (selected.isEmpty()) throw new GradleException("affectedSince=${ref} selected no client game tests (changed: ${result.changes*.path.join(', ') ?: 'nothing'}); nothing to run")
+			data.entrypoints['fabric-client-gametest'] = selected
+			descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
 		}
 		if(project.hasProperty('focusedSuite')) {
@@ -181,6 +327,43 @@ tasks.named('processGametestResources') {
 	}
 }
 
+// Check the processed descriptor immediately before any CI client starts, including when
+// resource processing is UP-TO-DATE. The manifest checks this evidence against the launcher.
+tasks.named('runClientGameTest') {
+	doFirst {
+		if (project.findProperty('twoClientSuite') in ['cast-receipt', 'moon', 'stone-hinge-peer']) throw new GradleException('Named two-client suites require exportTwoClientLaunch and tools/native/launch_two_clients.py; direct single-client execution is forbidden')
+        def sourceEntries = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/fabric.mod.json')).entrypoints['fabric-client-gametest']
+        def resources = tasks.named('processGametestResources').get()
+        def expected = clientCiContract.selection(sourceEntries, project.properties,
+            file('tools/client_shard_plan.py'), file('tools/client_shard_plan.json'),
+            file('src/gametest/resources/fabric.mod.json'),
+            file("${resources.destinationDir}/fabric.mod.json"))
+        if (expected != null) {
+            // Use the actual JavaExec child environment, not manifest command-line claims.
+            def profile = clientCiContract.profile(environment, project.hasProperty('shaders'))
+            logger.lifecycle('WILDERCORD_CLIENT_DESCRIPTOR ' + groovy.json.JsonOutput.toJson(expected))
+            logger.lifecycle('WILDERCORD_CLIENT_PROFILE ' + groovy.json.JsonOutput.toJson(
+                [launchId: environment.WILDERCORD_FULL_CLIENT_LAUNCH_ID, profile: profile]))
+        }
+		if (project.hasProperty('affectedSince')) {
+			def entries = new groovy.json.JsonSlurper().parse(file("${resources.destinationDir}/fabric.mod.json")).entrypoints['fabric-client-gametest']
+			logger.lifecycle('WILDERCORD_AFFECTED_SELECTION ' + groovy.json.JsonOutput.toJson(
+				[since: project.property('affectedSince').toString(), count: entries.size(), entries: entries]))
+		}
+		if (project.hasProperty('ciSuite')) {
+			def name = project.property('ciSuite').toString()
+			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))
+			def descriptor = new groovy.json.JsonSlurper().parse(file("${resources.destinationDir}/fabric.mod.json"))
+			def entries = descriptor.entrypoints['fabric-client-gametest']
+			if (!catalog.containsKey(name) || entries != catalog[name].entries) throw new GradleException('Processed client descriptor does not match ciSuite catalog selection')
+            validateLifeExciseSelection(name, catalog[name])
+            validateMastersParts(name, catalog)
+			logger.lifecycle('WILDERCORD_CLIENT_DESCRIPTOR ' + groovy.json.JsonOutput.toJson(
+				[kind: catalog[name].purpose in ['diagnostic', 'required-part'] ? catalog[name].purpose : 'suite', name: name, count: entries.size(), entries: entries]))
+		}
+	}
+}
+
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = targetJavaVersion
 }
@@ -196,6 +379,11 @@ java {
 	withSourcesJar()
 	sourceCompatibility = JavaVersion.toVersion(targetJavaVersion)
 	targetCompatibility = JavaVersion.toVersion(targetJavaVersion)
+}
+
+// Carry the project's redistribution notice in the runtime and sources JARs.
+tasks.withType(Jar).configureEach {
+	from('LICENSE')
 }
 
 publishing {

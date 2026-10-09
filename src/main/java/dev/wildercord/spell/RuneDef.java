@@ -38,7 +38,8 @@ public record RuneDef(
 	}
 
 	public boolean has(String trait) {
-		return traits.contains(trait);
+		// ---- links-mods pack: the hearth modifiers' traits are worked out from what an effect is (see HearthLinkRules)
+		return traits.contains(trait) || HearthLinkRules.derived(this, trait);
 	}
 
 	/** The id's path, e.g. {@code fire} for {@code wildercord:fire}. */

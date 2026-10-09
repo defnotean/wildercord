@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "master_wind_gate": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:master_wind_gate"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:lightning_rod"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.master_wind_gate.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.master_wind_gate.description"
+    }
+  },
+  "requirements": [
+    [
+      "master_wind_gate"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

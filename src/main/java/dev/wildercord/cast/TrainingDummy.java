@@ -42,6 +42,9 @@ public class TrainingDummy extends LivingEntity {
 	private final Deque<Hit> hits = new ArrayDeque<>();
 	private float total;
 	private float lastDamage;
+	private long hitSequence;
+	/** A new actual wound, even though the practice body restores its health. */
+	long hitSequence() { return hitSequence; }
 	/** Actual health damage of the last hurt call, before this dummy restores itself. Zero for a rejected hit. */
 	public float lastDamage() { return lastDamage; }
 	private long lastHit;
@@ -82,6 +85,7 @@ public class TrainingDummy extends LivingEntity {
 	}
 
 	private void record(ServerLevel level, float dealt, DamageSource source) {
+		hitSequence++;
 		if(source.getEntity() instanceof ServerPlayer player&&(source.is(DamageTypes.MAGIC)||source.is(DamageTypes.INDIRECT_MAGIC)))SpellTrials.hit(player,dealt);
 		long now = level.getGameTime();
 		if (now - lastHit > 60) {

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101307,
+    "spacing": 34,
+    "separation": 12
+  },
+  "structures": [
+    {
+      "structure": "wildercord:mine_prospector_camp",
+      "weight": 1
+    }
+  ]
+}

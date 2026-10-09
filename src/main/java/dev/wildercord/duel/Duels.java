@@ -332,6 +332,13 @@ public final class Duels {
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Duels::tick);
+		// A leaver's own rests stay (a relog never skips them); everyone's that have run go once the maps grow.
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			long now = server.overworld().getGameTime();
+			dev.wildercord.spell.StatePrune.rested(LAST_HURT, now, DuelRules.HURT_TICKS);
+			dev.wildercord.spell.StatePrune.rested(LAST_PVP, now, DuelRules.PVP_TICKS);
+			dev.wildercord.spell.StatePrune.rested(LAST_DUEL, now, DuelRules.DUEL_COOLDOWN_TICKS);
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			BY_PLAYER.clear();
 			CHALLENGES.clear();
@@ -430,7 +437,7 @@ public final class Duels {
 		}
 		Active mine = BY_PLAYER.get(player.getUUID());
 		if (mine != null) {
-			if (mine.watcher != null && !mine.watcher.spells() && dev.wildercord.cast.Effects.applying() != null) {
+			if (mine.watcher != null && !mine.watcher.spells() && dev.wildercord.cast.Effects.applyingCast() != null) {
 				// On terms that keep spells out (a spar): a spell harms nobody, the opponent included.
 				return false;
 			}

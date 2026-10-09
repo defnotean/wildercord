@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "master_star_terrace": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:master_star_terrace"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:spyglass"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.master_star_terrace.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.master_star_terrace.description"
+    }
+  },
+  "requirements": [
+    [
+      "master_star_terrace"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

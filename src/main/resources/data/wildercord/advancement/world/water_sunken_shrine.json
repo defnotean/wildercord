@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_sunken_shrine": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_sunken_shrine"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:conduit"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_sunken_shrine.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_sunken_shrine.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_sunken_shrine"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

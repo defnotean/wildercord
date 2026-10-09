@@ -10,61 +10,103 @@ next_title: Familiar jobs and event echoes
 
 # Cinnamon
 
-A small companion with a big personality. Cinnamon has her own model, an immortal heart, and one player to call home.
-
 ![Cinnamon in her pink bow, with the tip of her tongue out and her bell on her collar.]({{ '/assets/images/cinnamon-front.jpg' | relative_url }})
 
-A pink bow, a gold bell and the tip of a tongue. Always by your side.
+A pink bow, a gold bell and the tip of a tongue.
 {: .caption }
 
-## Choose her owner
+## What it is
 
-Set one player's username or UUID in `config/wildercord-cinnamon.json`. Cinnamon arrives already tamed.
+Cinnamon is a small, one-of-a-kind dog with her own model. She belongs to one player, follows them everywhere, and
+cannot die from ordinary damage. There is only ever one Cinnamon in a world.
+
+## How to get it
+
+Cinnamon's owner is set in the config file `config/wildercord-cinnamon.json`. Start the game or server once to
+create it, then put a username or UUID in it:
 
 ```json
 { "owner": "PlayerName" }
 ```
 
-> Only her owner can ask her to sit or follow.
+- The file reloads about every five seconds, so you don't need to restart.
+- If the file has a mistake in it, the last good settings are kept.
+- She then appears, already tamed, at a safe spot near her owner.
+- Summoning a second Cinnamon does nothing. It can't replace her or change her owner.
 
-Start the game or server once to create the file. Its default owner is empty, so she waits until an owner is configured. The file reloads about every five seconds; a restart is unnecessary after editing it.
+## How to use it
 
-In an integrated singleplayer development session, `"owner": "@singleplayer"` follows the world's owner even when Fabric changes its temporary dev username. Use an exact username or UUID on a dedicated server.
-
-Cinnamon appears at a safe, loaded position near that player. `/summon wildercord:cinnamon` also works: with the configured owner online in the same dimension, the summoned body binds to that player and replaces her previous body. Summoning does not transfer ownership to another player.
-
-## Sit, follow and play
-
-Interact with Cinnamon in a few simple ways.
+Only her owner can command her.
 
 | Action | Result |
 |---|---|
-| Click | Switch between sitting and following |
-| Sneak-click | Pet her without changing her sit preference |
-| Use Cinnamon's Red Bone | Wake her and play |
-| Use Cinnamon's Bow | She wears it |
-| Use shears | Untie her bow and get it back |
+| Use her (empty hand) | Switch between sitting and following |
+| Sneak and use her | Pet her |
+| Use **Cinnamon's Red Bone** | Play with her |
+| Use **Cinnamon's Bow** | She wears it |
+| Use shears | Take her bow back |
+| Feed her dog food (such as beef) | She grows for a while |
 
-Her sitting preference is saved on her owner and survives replacement, rejoining, death and dimension travel. Greetings and petting bring an eager tail wag. She occasionally tilts her head, and after sitting quietly for ten seconds curls down and closes her eyes.
+Her sit or follow choice and her bow are saved. They stay through logging out, your death and dimension travel.
 
-Craft her reusable Red Bone from a **bone, red dye and slime ball**. It never changes her owner or her saved sitting preference.
+### Crafting
 
-## Her bell, her bow and her temper
+| Item | Shapeless recipe |
+|---|---|
+| Cinnamon's Red Bone | Bone, Red Dye, Slime Ball |
+| Cinnamon's Bow | 2 String, Pink Dye |
+| Cinnamon's Summoning Whistle | Copper Ingot, Bone, String |
 
-- **Her collar bell** jingles every 20 to 40 seconds, loud enough to hear from a good way off, so you can find her by ear. To quiet it, add `"bell": false` to `config/wildercord-cinnamon.json`.
-- **Now and then** she sticks the tip of her tongue out for a few seconds, even in her sleep.
-- **Cinnamon's Bow** is her armour, of a kind: craft it from **two string and pink dye** and use it on her. Like her sitting choice, it's kept on her owner, so she still wears it after rejoining, death or dimension travel.
-- **She defends you.** Anyone who hurts her owner gets bitten, the way a tame dog would. She stays put while she's sitting, and leaves creepers, her owner's other pets and players you can't fight alone.
+### Her bell and habits
+
+- Her **collar bell** jingles every 20 to 40 seconds, so you can find her by ear. To silence it, add
+  `"bell": false` to the config file.
+- She sometimes sticks the tip of her tongue out, even asleep.
+- After sitting quietly for ten seconds she curls up and closes her eyes.
+
+### She defends you
+
+Anyone who hurts you gets bitten, like with a tame wolf. She does not attack while sitting, and leaves alone
+creepers, your other pets and players you aren't allowed to fight.
+
+### Treats make her bigger
+
+Each treat makes her **0.5×** bigger, up to **3×** her normal size. She shrinks back **60 seconds** after the first
+treat; more treats don't extend that time. Bigger doesn't mean stronger: her bite does the same damage.
+She only grows if there is clear, solid room for her bigger body.
+
+### She can't die
+
+Damage doesn't lower her health. Instead, after **20 damage** in a short time she gets tired and rests for
+**30 seconds**. Damage she has taken is forgotten after ten quiet seconds.
+
+While tired she walks slowly beside you, even if told to sit, and can't attack. When she recovers she goes back to
+what you last told her.
+
+### The whistle
+
+**Cinnamon's Summoning Whistle** calls her to a safe spot beside you and tells her to follow. It works even if she
+was left in an unloaded area or another dimension. It has a **10-second cooldown**, shared by every whistle.
+
+The whistle won't bring her into protected or warded places, during a combat encounter, or into walls and cramped
+spaces. If no safe spot exists, it tells you she is blocked.
 
 ![Cinnamon curled up and resting after sitting quietly.]({{ '/assets/images/cinnamon-resting.jpg' | relative_url }})
 
 A little rest between adventures.
 {: .caption }
 
-## Keeping her safe
+## Tips and counterplay
 
-Cinnamon takes no damage from combat, fire, falls or magic. If she falls into the void or becomes trapped in a solid block, she returns to a safe nearby surface. When no safe surface exists, she waits instead of spawning inside a hazard.
+- Left far behind while following, she catches up on her own. Told to sit, she stays put until you whistle.
+- If she gets stuck in the void or inside blocks, she is moved to a safe spot nearby once you are around.
+- She has no inventory and can't be bred.
+- If she doesn't respond, check the owner name in the config file, then see
+  [Troubleshooting]({{ '/troubleshooting/' | relative_url }}).
 
-Her replaceable body returns near her owner after dimension travel, rather than staying behind. Her round tan face with its little angry brows, dark saddle, white belly, floppy ears, fluffy legs and black nub of a tail use a separate entity, model and texture from Minecraft's wolf.
+### For server admins
 
-If she spawns but does not respond to a click, check the configured owner and use the [troubleshooting guide]({{ '/troubleshooting/' | relative_url }}).
+Cinnamon is never replaced with a copy. If her body is lost (for example through `/kill` or a save edit), the whistle
+reports that recovery failed. Restore her from a world backup with matching player and world data; don't summon a new
+one. With `"owner": "@singleplayer"` she follows the owner of a singleplayer world. On a dedicated server, use an
+exact username or UUID.

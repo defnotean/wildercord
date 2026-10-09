@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "mine_collapsed_delve",
+  "biomes": "#wildercord:has_structure/mine_collapsed_delve",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

@@ -6,6 +6,19 @@ import static org.junit.jupiter.api.Assertions.*;
 final class ResonantRulesTest {
 	private static final UUID M=UUID.randomUUID(), B=UUID.randomUUID(), T=UUID.randomUUID();
 	private static ResonantRules.Hit hit(boolean blade,long time) { return new ResonantRules.Hit(blade?B:M,blade?"wind":"fire",8,time,blade); }
+	@Test void scopedCreditKeepsItsMarkerAndExactRetirementCannotEraseAnotherOpening() {
+		var ledger = new ResonantRules.Ledger();
+		var scoped = new ResonantRules.Hit(M,"frost",5,100,false,true);
+		ledger.offer(T,scoped,(a,b)->true);
+		assertNull(ledger.offer(T,hit(true,101),(spell,blade)->!spell.scoped()),"Missing original receipt refuses a scoped pair");
+		var newer = new ResonantRules.Hit(M,"fire",6,102,false);
+		ledger.offer(T,newer,(a,b)->true);
+		ledger.retire(T,scoped);
+		assertNotNull(ledger.offer(T,hit(true,103),(a,b)->true),"Retiring stale scoped credit preserves the newer ordinary opening");
+		var other = new ResonantRules.Ledger();other.offer(T,scoped,(a,b)->true);other.retire(T,scoped);
+		assertNull(other.offer(T,hit(true,101),(a,b)->true),"Closed paid credit cannot become a later fresh Cast");
+	}
+
 	@Test void eitherOrderWorksOnlyInsideWindow() {
 		for(boolean first:new boolean[]{false,true}) {
 			var l=new ResonantRules.Ledger();assertNull(l.offer(T,hit(first,100),(a,b)->true));

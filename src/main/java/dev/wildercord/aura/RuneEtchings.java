@@ -43,6 +43,8 @@ public final class RuneEtchings {
 			|| !foe.isAlive() || foe.isDeadOrDying() || p.level()!=foe.level() || p.distanceToSqr(foe)>32*32
 			|| !Aura.enabled(p) || Aura.stage(p)<AuraRules.GLOW || Awakening.spent(p)
 			|| !Aura.holdsWeapon(p) || !Targets.canHarm(p,foe) || Spars.partners(p,foe)) return false;
+		var counter = ArtHitScope.boundary(p);
+		if (counter != null && !counter.permits(foe)) return false;
 		ItemStack blade=p.getMainHandItem();
 		if (BondedBlades.foreign(p,blade)) return false;
 		var rune=Runes.get(blade.getOrDefault(RUNE,"")).orElse(null);
@@ -50,19 +52,28 @@ public final class RuneEtchings {
 		long now=p.level().getServer().overworld().getGameTime();
 		if (!RuneEtchingRules.ready(now,p.getAttachedOrElse(READY,0L))) return false;
 		int price=RuneEtchingRules.price(rune);
+        if (price <= 0) return false;
 		float mana=Spellbooks.mana(p);
 		if (Spellbooks.tier(p)==null || !Float.isFinite(mana) || mana<price) return false;
 		var plan=SpellCompiler.compile(List.of(Runes.TOUCH,rune));
+        if (plan.isEmpty() || plan.root().groups.isEmpty() || plan.root().groups.getFirst().effects.isEmpty()) return false;
 		int rest=Math.max(RuneEtchingRules.REST,plan.cooldownTicks());
 		if (now>Long.MAX_VALUE-rest) return false;
 		p.setAttached(READY,now+rest);
 		// Creative still pays the same price: the inscription has no separate free-resource mode.
 		Spellbooks.setMana(p,mana-price);
 		Unity.manaSpent(p,price);
+		if (counter != null && !counter.permits(foe)) return false;
 		waking=true;
 		try {
 			Cast cast=new Cast(p,1,dev.wildercord.player.Heart.Bonuses.NONE,false,null,
 				new Cast.Info(plan.root(),2,rune.element(),List.of(Runes.TOUCH,rune))).weigh(price);
+			if (counter != null) {
+				cast.lifetime(counter::linkedAlive);
+				if (ArtHitScope.released(p) == counter) cast.consequence(counter::linkedAdmits, target -> !ArtHitScope.contains(p, counter)
+					? counter.linkedAlive() : target == p ? counter.valid() : counter.afterDamage(target));
+				else cast.admission(counter::linkedAdmits); // Existing earned-counter admission stays unchanged.
+			}
 			// An inscription is already an answer to a blade hit: it cannot buy a second resonant answer itself.
 			cast.once("resonant:"+foe.getUUID());
 			LivingEntity recipient=rune.kind()==EffectKind.HELPFUL || rune.kind()==EffectKind.MOVEMENT ? p : foe;
@@ -71,6 +82,7 @@ public final class RuneEtchings {
 			var group=plan.root().groups.getFirst();
 			cast.prepareCircle(group);
 			Effects.apply(cast,group.effects.getFirst(),hit);
+			if (counter != null && !counter.afterDamage(foe)) return false;
 			Grimoire.unlock(p,"aura:rune_etched_blade");
 			p.sendOverlayMessage(Component.translatable("message.wildercord.blade_rune.woke",RuneItem.runeName(rune),price));
 			return true;

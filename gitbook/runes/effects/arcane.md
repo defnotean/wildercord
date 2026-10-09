@@ -4,7 +4,33 @@
 
 Pure magic. Arcane strikes, reveals, silences, summons and bends the rules.
 
-17 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
+76 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/appraise.png) Appraise
+
+
+*Tier I · Arcane · Works on the world · 1 mana · needs any Cord*
+
+Reads a villager: their trade, their level, and how many of their trades are sold out.
+
+**How to get it:** Craft: a Blank Rune, Emerald and Glass Pane. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Appraise: a Blank Rune and Emerald and Glass Pane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_appraise.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bait_blessing.png) Bait Blessing
+
+
+*Tier I · Arcane · Helps you and your allies · 4 mana · needs any Cord*
+
+Luck for 60 seconds, Luck II with Amplify. Fishing reads your luck, so better catches come a little more often.
+
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Raw Salmon. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Bait Blessing: a Blank Rune and Rabbit's Foot and Raw Salmon](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bait_blessing.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/barrier.png) Barrier
 
@@ -17,7 +43,124 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 
 ![Crafting Barrier: a Blank Rune and Glass and Amethyst Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barrier.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/beastguard.png) Beastguard
+
+
+*Tier I · Arcane · Helps you and your allies · 6 mana · needs any Cord*
+
+Your pet, mount or a farm animal gets Resistance II and Fire Resistance for 60 seconds.
+
+**How to get it:** Craft: a Blank Rune, Bone and Leather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Beastguard: a Blank Rune and Bone and Leather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_beastguard.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bobber_bell.png) Bobber Bell
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+For 60 seconds your bobber rings and splashes when a fish bites.
+
+**How to get it:** Craft: a Blank Rune, String, Gold Nugget and Feather. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Bobber Bell: a Blank Rune and String, Gold Nugget and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bobber_bell.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chalkline.png) Chalk Line
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+Draws a line from you to the point for 20 seconds and tells you its length and rise.
+
+**How to get it:** Craft: a Blank Rune, Bone Meal and String. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Chalk Line: a Blank Rune and Bone Meal and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_chalkline.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chalk_line.png) Dust Line
+
+
+*Tier I · Arcane · Works on the world · 1 mana · needs any Cord*
+
+Draws a dust line from you to the point for 10 seconds and tells its length in blocks.
+
+**How to get it:** Craft: a Blank Rune, Bone Meal, String and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Dust Line: a Blank Rune and Bone Meal, String and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_chalk_line.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fathom.png) Fathom
+
+
+*Tier I · Arcane · Works on the world · 1 mana · needs any Cord*
+
+Tells how deep the water is at the point and marks the bottom.
+
+**How to get it:** Craft: a Blank Rune, String and Iron Nugget. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Fathom: a Blank Rune and String and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fathom.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fieldsense.png) Field Sense
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+Reads the field within 6 blocks: every ripe crop glints, and you're told how many are ripe and how many are still growing.
+
+**How to get it:** Craft: a Blank Rune, Spyglass, Wheat Crops and Carrot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Field Sense: a Blank Rune and Spyglass, Wheat Crops and Carrot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fieldsense.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/folk_census.png) Folk Census
+
+
+*Tier I · Arcane · Works on the world · 1 mana · needs any Cord*
+
+Counts the villagers within 32 blocks: with a trade, without one, nitwits, children, and golems.
+
+**How to get it:** Craft: a Blank Rune, Emerald and Paper. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Folk Census: a Blank Rune and Emerald and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_folk_census.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gloomsight.png) Gloomsight
+
+
+*Tier I · Arcane · Works on the world · 3 mana · needs any Cord*
+
+Marks the pitch-dark floor near the point, where monsters spawn, for 10 seconds.
+
+**How to get it:** Craft: a Blank Rune, Spider Eye and Glow Ink Sac. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Gloomsight: a Blank Rune and Spider Eye and Glow Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gloomsight.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gravefinder.png) Gravefinder
+
+
+*Tier I · Arcane · Works on the world · 3 mana · needs any Cord*
+
+For a minute, pale motes point the way to where you last died.
+
+**How to get it:** Craft: a Blank Rune, Bone and Compass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Gravefinder: a Blank Rune and Bone and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gravefinder.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/harm.png) Harm
 
@@ -30,7 +173,7 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 
 ![Crafting Harm: a Blank Rune and Fermented Spider Eye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_harm.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/haste.png) Haste
 
@@ -43,7 +186,46 @@ Haste II for 30 seconds: mine and swing faster, and a charged cast fills 30% soo
 
 ![Crafting Haste: a Blank Rune and Golden Pickaxe](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_haste.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthpath.png) Hearthpath
+
+
+*Tier I · Arcane · Works on the world · 3 mana · needs any Cord*
+
+For a minute, warm motes point the way to your bed or spawn.
+
+**How to get it:** Craft: a Blank Rune, Compass and Red Bed. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Hearthpath: a Blank Rune and Compass and Red Bed](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthpath.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/herdsense.png) Herdsense
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+Farm animals within 12 blocks glow for 10 seconds, and you're told how many there are and how many are ready to breed.
+
+**How to get it:** Craft: a Blank Rune, Spyglass, Lead and Leather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Herdsense: a Blank Rune and Spyglass, Lead and Leather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_herdsense.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lantern_soul.png) Lantern Soul
+
+
+*Tier I · Arcane · Helps you and your allies · 4 mana · needs any Cord*
+
+An unseen light follows you for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Lantern and Soul Torch. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Lantern Soul: a Blank Rune and Lantern and Soul Torch](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lantern_soul.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/light.png) Light
 
@@ -56,7 +238,46 @@ A light source at the point for 60 seconds.
 
 ![Crafting Light: a Blank Rune and 2x Torch](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_light.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lore_reading.png) Lore Reading
+
+
+*Tier I · Arcane · Works on the world · 1 mana · needs any Cord*
+
+Reads the item in your hand: how many enchantments it holds and what an anvil will charge to work it.
+
+**How to get it:** Craft: a Blank Rune, Book and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Lore Reading: a Blank Rune and Book and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lore_reading.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lostfind.png) Lostfind
+
+
+*Tier I · Arcane · Works on the world · 3 mana · needs any Cord*
+
+For 30 seconds, gold motes point to the nearest loose items within 32 blocks.
+
+**How to get it:** Craft: a Blank Rune, Gold Nugget and Spyglass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Lostfind: a Blank Rune and Gold Nugget and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lostfind.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lux_reading.png) Lux Reading
+
+
+*Tier I · Arcane · Works on the world · 1 mana · needs any Cord*
+
+Reads the light where it lands, from blocks and from the sky, and whether monsters may spawn there.
+
+**How to get it:** Craft: a Blank Rune, Torch and Glass Pane. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Lux Reading: a Blank Rune and Torch and Glass Pane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lux_reading.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/night_eye.png) Night Eye
 
@@ -69,7 +290,20 @@ Night vision for 60 seconds.
 
 ![Crafting Night Eye: a Blank Rune and Glow Berries](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_night_eye.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/orbcall.png) Orbcall
+
+
+*Tier I · Arcane · Helps you and your allies · 3 mana · needs any Cord*
+
+Experience orbs within 10 blocks drift to you for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Bottle o' Enchanting. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Orbcall: a Blank Rune and Bottle o' Enchanting](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_orbcall.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reveal.png) Reveal
 
@@ -82,7 +316,176 @@ Makes targets glow through walls for 15 seconds, strips their invisibility and l
 
 ![Crafting Reveal: a Blank Rune and Glow Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reveal.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sentry.png) Sentry
+
+
+*Tier I · Arcane · Helps you and your allies · 4 mana · needs any Cord*
+
+Monsters within 16 blocks of the target glow for 10 seconds.
+
+**How to get it:** Craft: a Blank Rune, Spyglass and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sentry: a Blank Rune and Spyglass and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sentry.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shelf_count.png) Shelf Count
+
+
+*Tier I · Arcane · Works on the world · 1 mana · needs any Cord*
+
+At an enchanting table: how many bookshelves feed it, out of 15, and how many are blocked.
+
+**How to get it:** Craft: a Blank Rune, Book and Oak Planks. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Shelf Count: a Blank Rune and Book and Oak Planks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shelf_count.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shore_sense.png) Shore Sense
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+Points to the nearest dry land within 48 blocks.
+
+**How to get it:** Craft: a Blank Rune, Compass and Sand. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Shore Sense: a Blank Rune and Compass and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shore_sense.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stand_pose.png) Stand Pose
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+Armor stands within 6 blocks gain arms and step to their next pose.
+
+**How to get it:** Craft: a Blank Rune, Armor Stand and Stick. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Stand Pose: a Blank Rune and Armor Stand and Stick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stand_pose.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starchart.png) Starchart
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+Tells you where you are, which way you face, and how far it is to spawn.
+
+**How to get it:** Craft: a Blank Rune, Empty Map and Compass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Starchart: a Blank Rune and Empty Map and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_starchart.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stocktake.png) Stocktake
+
+
+*Tier I · Arcane · Works on the world · 3 mana · needs any Cord*
+
+Tells you the biggest stocks across the chests within 4 blocks of the point.
+
+**How to get it:** Craft: a Blank Rune, Chest and Paper. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Stocktake: a Blank Rune and Chest and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stocktake.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tackle_mend.png) Tackle Mend
+
+
+*Tier I · Arcane · Helps you and your allies · 4 mana · needs any Cord*
+
+Mends 16 durability of a held fishing rod, more with Power.
+
+**How to get it:** Craft: a Blank Rune, 2x String and Bone Meal. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Tackle Mend: a Blank Rune and 2x String and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tackle_mend.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tide_lantern.png) Tide Lantern
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+A light at the point for 60 seconds that shines under water too.
+
+**How to get it:** Craft: a Blank Rune, Sea Pickle and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Tide Lantern: a Blank Rune and Sea Pickle and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tide_lantern.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tide_marker.png) Tide Marker
+
+
+*Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
+
+Sets a glowing buoy at the point for 5 minutes and tells you where it is. One per caster.
+
+**How to get it:** Craft: a Blank Rune, Sea Pickle and String. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Tide Marker: a Blank Rune and Sea Pickle and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tide_marker.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/water_reading.png) Water Reading
+
+
+*Tier I · Arcane · Works on the world · 1 mana · needs any Cord*
+
+Tells whether your bobber sits in open water (needed for treasure) and whether rain is speeding up bites.
+
+**How to get it:** Craft: a Blank Rune, Prismarine Crystals and Paper. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Water Reading: a Blank Rune and Prismarine Crystals and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_water_reading.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/waymark.png) Waymark
+
+
+*Tier I · Arcane · Works on the world · 3 mana · needs any Cord*
+
+Raises a pillar of light only you can see, from 160 blocks, for 10 minutes. Up to 3 at once.
+
+**How to get it:** Craft: a Blank Rune, Torch, Stick and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Waymark: a Blank Rune and Torch, Stick and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_waymark.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/worst_first.png) Worst First
+
+
+*Tier I · Arcane · Helps you and your allies · 10 mana · needs any Cord*
+
+Heals the most hurt ally within 8 blocks of where it lands (you too) for 6.
+
+**How to get it:** Craft: a Blank Rune, Glistering Melon Slice and Paper. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Worst First: a Blank Rune and Glistering Melon Slice and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_worst_first.png)
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/camp_ward.png) Camp Ward
+
+
+*Tier II · Arcane · Works on the world · 12 mana · needs a Copper Cord or better*
+
+Wards an 8-block camp for 5 minutes: monsters that appear inside fade at once, and phantoms nearby lose their prey. One per caster.
+
+**How to get it:** Craft: a Blank Rune, Campfire and White Wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Camp Ward: a Blank Rune and Campfire and White Wool, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_camp_ward.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/decree.png) Decree
 
@@ -95,7 +498,7 @@ A spoken command: everything hit is stunned for 2 seconds and condemned: your ne
 
 ![Crafting Decree: a Blank Rune and Book and Quill, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_decree.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/empower.png) Empower
 
@@ -108,7 +511,137 @@ Strength II for 10 seconds, then Weakness I for 4 (a passive carries only Streng
 
 ![Crafting Empower: a Blank Rune and Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_empower.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/headlamp.png) Headlamp
+
+
+*Tier II · Arcane · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+A light follows the target for 60 seconds.
+
+**How to get it:** Craft: a Blank Rune, Lantern and Leather Cap, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Headlamp: a Blank Rune and Lantern and Leather Cap, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_headlamp.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lapis_thrift.png) Lapis Thrift
+
+
+*Tier II · Arcane · Works on the world · 6 mana · needs a Copper Cord or better*
+
+For 60 seconds, your next enchantment at a table gives one lapis back.
+
+**How to get it:** Craft: a Blank Rune, Lapis Lazuli and Book, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Lapis Thrift: a Blank Rune and Lapis Lazuli and Book, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lapis_thrift.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lodestar.png) Lodestar
+
+
+*Tier II · Arcane · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Sets your lodestar where it lands, or at your feet. Homeward takes you back to it.
+
+**How to get it:** Craft: a Blank Rune, Lodestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Lodestar: a Blank Rune and Lodestone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lodestar.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lumenpath.png) Lumen Path
+
+
+*Tier II · Arcane · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Hangs a light every 4 blocks from you to the point, 6 at most, for 120 seconds.
+
+**How to get it:** Craft: a Blank Rune, 2x Glowstone Dust and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Lumen Path: a Blank Rune and 2x Glowstone Dust and String, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lumenpath.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/manabraid.png) Manabraid
+
+
+*Tier II · Arcane · Helps you and your allies · 4 mana · needs a Copper Cord or better*
+
+Offers an allied connected caster a three-second mana gift. They must release and freshly crouch to accept. After the spell price, spends at most twenty-four extra mana to restore at most sixteen, keeping two. Donor rests thirty seconds; receiver ten.
+
+**How to get it:** Craft: a Blank Rune, Lapis Lazuli, Amethyst Shard and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Manabraid: a Blank Rune and Lapis Lazuli, Amethyst Shard and String, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_manabraid.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/managift.png) Managift
+
+
+*Tier II · Arcane · Helps you and your allies · 4 mana · needs a Copper Cord or better*
+
+Gives up to 20 of your mana to each ally player hit; they get three quarters of it. Never yourself.
+
+**How to get it:** Craft: a Blank Rune, Amethyst Shard and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Managift: a Blank Rune and Amethyst Shard and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_managift.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nightwatch.png) Nightwatch
+
+
+*Tier II · Arcane · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+For 10 minutes, a bell warns you when a monster within 16 blocks starts hunting you. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Bell and Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Nightwatch: a Blank Rune and Bell and Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nightwatch.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pacify.png) Pacify
+
+
+*Tier II · Arcane · Harms enemies · 9 mana · needs a Copper Cord or better*
+
+The creature forgets its target and picks none for 6 seconds; harming it ends this. Players get Weakness instead. Not bosses.
+
+**How to get it:** Craft: a Blank Rune, Poppy and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Pacify: a Blank Rune and Poppy and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pacify.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pearl_sight.png) Pearl Sight
+
+
+*Tier II · Arcane · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Conduit Power for 30 seconds.
+
+**How to get it:** Craft: a Blank Rune, Prismarine Crystals and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Pearl Sight: a Blank Rune and Prismarine Crystals and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pearl_sight.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/school_sight.png) School Sight
+
+
+*Tier II · Arcane · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Fish, squid, dolphins, turtles and axolotls within 16 blocks of the point glow for 12 seconds.
+
+**How to get it:** Craft: a Blank Rune, Tropical Fish and Glow Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Clockwork Crypt; Astral Observatory.
+
+![Crafting School Sight: a Blank Rune and Tropical Fish and Glow Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_school_sight.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/silence.png) Silence
 
@@ -121,7 +654,33 @@ Casters can't cast: a cast in hand is cut short and none can follow for 4 second
 
 ![Crafting Silence: a Blank Rune and any wool, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_silence.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/silklift.png) Silklift
+
+
+*Tier II · Arcane · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Mines the block hit whole, as Silk Touch would. Never a chest or anything with contents.
+
+**How to get it:** Craft: a Blank Rune, 2x String and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Silklift: a Blank Rune and 2x String and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_silklift.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soothe.png) Soothe
+
+
+*Tier II · Arcane · Harms enemies · 7 mana · needs a Copper Cord or better*
+
+A neutral creature forgets its anger and its target.
+
+**How to get it:** Craft: a Blank Rune, Honeycomb and Poppy, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Soothe: a Blank Rune and Honeycomb and Poppy, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_soothe.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/span.png) Span
 
@@ -134,7 +693,7 @@ A bridge of glass grows from your feet toward the point, up to 16 blocks, and sh
 
 ![Crafting Span: a Blank Rune and 2x Magenta Stained Glass, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_span.png)
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spellbrand.png) Spellbrand
 
@@ -147,7 +706,20 @@ Brands each target with a sigil for 8 seconds. The next time your magic hurts it
 
 ![Crafting Spellbrand: a Blank Rune and Book and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spellbrand.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stillwell.png) Stillwell
+
+
+*Tier II · Arcane · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+For 5 minutes, standing still for 3 seconds slowly refills your mana, up to 12.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Stillwell: a Blank Rune and Water Bucket and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stillwell.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/swap.png) Swap
 
@@ -160,7 +732,137 @@ You and the first creature hit trade places, instantly.
 
 ![Crafting Swap: a Blank Rune and 2x Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_swap.png)
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/toolmend.png) Tool Mend
+
+
+*Tier II · Arcane · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+Mends the tool in the target's hand with its repair material from your pack: a quarter for each, 4 at most.
+
+**How to get it:** Craft: a Blank Rune, Anvil, Iron Ingot and Grindstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Tool Mend: a Blank Rune and Anvil, Iron Ingot and Grindstone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_toolmend.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/watchweft.png) Watchweft
+
+
+*Tier II · Arcane · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Watches a visible dry floor for forty-five seconds. Gives its owner one private warning only after a visible monster targeting them crosses into three blocks in consecutive complete samples. Remain within sixteen blocks; ninety-second rest.
+
+**How to get it:** Craft: a Blank Rune, Feather, String and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Watchweft: a Blank Rune and Feather, String and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_watchweft.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wreck_sense.png) Wreck Sense
+
+
+*Tier II · Arcane · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Chests and barrels under water and suspicious sand and gravel within 20 blocks shine for 15 seconds, up to 12.
+
+**How to get it:** Craft: a Blank Rune, Prismarine Shard and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Wreck Sense: a Blank Rune and Prismarine Shard and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wreck_sense.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/beacon_swell.png) Beacon Swell
+
+
+*Tier III · Arcane · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Beacons within 16 blocks reach half again as far for 60 seconds.
+
+**How to get it:** Craft: a Blank Rune, Glowstone Dust, Iron Ingot and Prismarine Crystals, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Beacon Swell: a Blank Rune and Glowstone Dust, Iron Ingot and Prismarine Crystals, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_beacon_swell.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bellward.png) Bellward
+
+
+*Tier III · Arcane · Works on the world · 18 mana · needs an Amethyst Cord or better*
+
+For 2 minutes villagers within 12 blocks take 60% less damage from monsters, and monsters there glow.
+
+**How to get it:** Craft: a Blank Rune, Bell and Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Bellward: a Blank Rune and Bell and Emerald, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bellward.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/courtship.png) Courtship
+
+
+*Tier III · Arcane · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Up to 6 grown farm animals within 5 blocks fall in love at once, as if you'd fed them. Animals that aren't ready yet (or belong to someone else) are left alone.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops, Carrot and Poppy, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Courtship: a Blank Rune and Wheat Crops, Carrot and Poppy, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_courtship.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/faithful.png) Faithful
+
+
+*Tier III · Arcane · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+For 5 minutes, a killing blow leaves your pet at 1 health beside you. Once per 10 minutes each.
+
+**How to get it:** Craft: a Blank Rune, Bone and Golden Apple, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Faithful: a Blank Rune and Bone and Golden Apple, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_faithful.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/haggle.png) Haggle
+
+
+*Tier III · Arcane · Helps you and your allies · 12 mana · needs an Amethyst Cord or better*
+
+For 20 seconds villagers give you their Hero of the Village prices.
+
+**How to get it:** Craft: a Blank Rune, 2x Emerald and White Banner, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Haggle: a Blank Rune and 2x Emerald and White Banner, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_haggle.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/manawell.png) Manawell
+
+
+*Tier III · Arcane · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+A 3-block well for 10 seconds: allies inside regain 2 mana each second.
+
+**How to get it:** Craft: a Blank Rune, Amethyst Shard and Cauldron, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Manawell: a Blank Rune and Amethyst Shard and Cauldron, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_manawell.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rally_light.png) Rally Light
+
+
+*Tier III · Arcane · Works on the world · 18 mana · needs an Amethyst Cord or better*
+
+Raises a beacon for 3 minutes: allies within 10 blocks get Haste I and Speed I. One per caster.
+
+**How to get it:** Craft: a Blank Rune, Beacon, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Rally Light: a Blank Rune and Beacon, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rally_light.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reflect.png) Reflect
 
@@ -173,7 +875,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back as arcane
 
 ![Crafting Reflect: a Blank Rune and Shield and Glass Pane, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reflect.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/resonance.png) Resonance
 
@@ -186,7 +888,20 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back as arcane
 
 ![Crafting Resonance: a Blank Rune and Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_resonance.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sanctuary.png) Sanctuary
+
+
+*Tier III · Arcane · Works on the world · 20 mana · needs an Amethyst Cord or better*
+
+A 6-block circle for 30 seconds: no monster spawns there, and monsters inside are nudged out.
+
+**How to get it:** Craft: a Blank Rune, Candle and Glowstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Sanctuary: a Blank Rune and Candle and Glowstone Dust, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sanctuary.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/smite.png) Smite
 
@@ -199,7 +914,53 @@ A ring closes at the target's feet; 0.7 seconds later a column of light deals 13
 
 ![Crafting Smite: a Blank Rune and Glowstone and Golden Carrot, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_smite.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/truce.png) Truce
+
+
+*Tier III · Arcane · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+
+Every enemy within 8 blocks is pacified for 4 seconds. Not bosses.
+
+**How to get it:** Craft: a Blank Rune, White Wool and Poppy, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+
+![Crafting Truce: a Blank Rune and White Wool and Poppy, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_truce.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/accord.png) Accord
+
+
+*Tier IV · Arcane · Works on the world · 34 mana · needs an Echo Cord*
+
+Enemies within 16 blocks are pacified for 10 seconds and no monster spawns there meanwhile. Not bosses.
+
+**How to get it:** Never crafted. Where it comes from: Pillagers (1%); Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/aegis.png) Aegis
+
+
+*Tier IV · Arcane · Helps you and your allies · 36 mana · needs an Echo Cord*
+
+You and allies within 6 blocks take half damage and none from missiles for 6 seconds. Rests 2 minutes.
+
+**How to get it:** Never crafted. Where it comes from: Ravagers (5%); Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/grace.png) Grace
+
+
+*Tier IV · Arcane · Helps you and your allies · 30 mana · needs an Echo Cord*
+
+For 60 seconds a killing blow leaves the target at 2 health with Resistance III for 3 seconds. Once per 10 minutes each; never a boss.
+
+**How to get it:** Never crafted. Where it comes from: Pillagers (1%); Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starfall.png) Starfall
 
@@ -208,9 +969,9 @@ A ring closes at the target's feet; 0.7 seconds later a column of light deals 13
 
 Eight falling stars around the point over 2 seconds: 6 damage each. The first stars go to exposed enemies.
 
-**How to get it:** Found only, never crafted: the Elder Guardian; Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: the Elder Guardian; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/summon.png) Summon
 
@@ -219,6 +980,6 @@ Eight falling stars around the point over 2 seconds: 6 damage each. The first st
 
 Three spirit wolves fight at your side for 20 seconds. While they live, your mana regenerates a quarter slower.
 
-**How to get it:** Found only, never crafted: Evokers (15%); Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: Evokers (15%); Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

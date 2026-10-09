@@ -10,8 +10,10 @@ import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.FieldGuide;
 import dev.wildercord.wildlife.Cinderfox;
 import dev.wildercord.wildlife.Glimmerwing;
+import dev.wildercord.wildlife.GlimmerwingLanternProbe;
 import dev.wildercord.wildlife.LumenStag;
 import dev.wildercord.wildlife.MossbackTortoise;
+import dev.wildercord.wildlife.Rimehare;
 import dev.wildercord.wildlife.Skyray;
 import dev.wildercord.wildlife.Wildlife;
 import dev.wildercord.wildlife.WildlifeRules;
@@ -125,6 +127,7 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 		if (!failures.isEmpty()) {
 			throw new AssertionError("Wildlife: " + String.join("; ", failures));
 		}
+		dev.wildercord.wildlife.RimehareHopChecks.run(context);
 	}
 
 	private void check(boolean ok, String what) {
@@ -440,17 +443,28 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ the rimehare
 
 	private void rimehare(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<HareFlightSample> flight = new ArrayList<>();
 		int bolter = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			put(player, HARE.add(0, 0, 5), 180);
-			return spawn(Wildlife.RIMEHARE, player.level(), HARE, 0, false).getId();
+			Rimehare hare = spawn(Wildlife.RIMEHARE, player.level(), HARE, 0, false);
+			flight.add(hareFlightSample(player, hare.getId()));
+			return hare.getId();
 		});
-		context.waitTicks(50);
+		// Keep at most 51 snapshots, including spawn: every tick of the same 50-tick native flight.
+		// One-tick sampling includes takeoff and landing, without steering or stopping at an earlier escape.
+		for (int i = 0; i < 50; i++) {
+			context.waitTicks(1);
+			flight.add(world.getServer().computeOnServer(server -> hareFlightSample(player(server), bolter)));
+		}
 		int tempted = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			Entity hare = player.level().getEntity(bolter);
+			HareFlightSample last = hareFlightSample(player, bolter);
+			double maxDistance = flight.stream().mapToDouble(HareFlightSample::distance).filter(Double::isFinite).max().orElse(Double.NaN);
 			check(hare != null && hare.distanceTo(player) > 8, "a rimehare should bolt from a player who comes near (distance "
-				+ (hare == null ? "?" : String.format("%.1f", hare.distanceTo(player))) + ")");
+				+ (hare == null ? "?" : String.format("%.1f", hare.distanceTo(player))) + ", max sampled distance " + maxDistance
+				+ ", final state " + last.state() + ", samples every tick " + flight + ")");
 			if (hare != null) {
 				hare.discard();
 			}
@@ -479,6 +493,42 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 			clear(player.level(), HARE, 16);
 		});
+	}
+
+	private record HareFlightSample(double distance, String state) {}
+
+	/** Public, read-only snapshots: never start goals, request a path, or change the actor while diagnosing its flight. */
+	private static HareFlightSample hareFlightSample(ServerPlayer player, int id) {
+		Entity entity = player.level().getEntity(id);
+		if (!(entity instanceof Rimehare hare)) {
+			return new HareFlightSample(Double.NaN, "worldTick=" + player.level().getGameTime() + ", hare=" + entity);
+		}
+		var navigation = hare.getNavigation();
+		var path = navigation.getPath();
+		var moveControl = hare.getMoveControl();
+		String route = path == null ? "none" : "target=" + path.getTarget() + ", end=" + path.getEndNode()
+			+ ", node=" + path.getNextNodeIndex() + "/" + path.getNodeCount() + ", reaches=" + path.canReach() + ", done=" + path.isDone();
+		if (path != null && !path.isDone()) {
+			route += ", next=" + path.getNextNode() + ", type=" + path.getNextNode().type
+				+ ", waypoint=" + path.getNextEntityPos(hare)
+				+ ", afterNext=" + (path.getNextNodeIndex() + 1 < path.getNodeCount() ? path.getNode(path.getNextNodeIndex() + 1) : "none");
+		}
+		String state = "worldTick=" + player.level().getGameTime() + ", hareTick=" + hare.tickCount
+			+ ", position=" + hare.position() + ", velocity=" + hare.getDeltaMovement()
+			+ ", alive=" + hare.isAlive() + ", noAi=" + hare.isNoAi() + ", grounded=" + hare.onGround() + ", inWater=" + hare.isInWater()
+			+ ", horizontalCollision=" + hare.horizontalCollision + ", verticalCollision=" + hare.verticalCollision
+			+ ", yaw=" + hare.getYRot() + ", bodyYaw=" + hare.yBodyRot + ", headYaw=" + hare.getYHeadRot()
+			+ ", moveControl={hasWanted=" + moveControl.hasWanted() + ", wanted=(" + moveControl.getWantedX() + ", "
+				+ moveControl.getWantedY() + ", " + moveControl.getWantedZ() + "), speed=" + moveControl.getSpeedModifier() + "}"
+			+ ", health=" + hare.getHealth() + ", hurtTime=" + hare.hurtTime + ", hareEffects=" + hare.getActiveEffects()
+			+ ", cell=" + hare.level().getBlockState(hare.blockPosition()) + ", footing=" + hare.level().getBlockState(hare.blockPosition().below())
+			+ ", playerPosition=" + player.position() + ", spectator=" + player.isSpectator() + ", creative=" + player.isCreative()
+			+ ", sprinting=" + player.isSprinting() + ", berries=" + (hare.isFood(player.getMainHandItem()) || hare.isFood(player.getOffhandItem()))
+			+ ", playerEffects=" + player.getActiveEffects() + ", fearsPlayer=" + hare.boltsFrom(player) + ", seesPlayer=" + hare.hasLineOfSight(player)
+			+ ", activeGoals=" + hare.getGoalSelector().getAvailableGoals().stream().filter(g -> g.isRunning())
+				.map(g -> g.getGoal().getClass().getSimpleName()).toList()
+			+ ", navigationDone=" + navigation.isDone() + ", path={" + route + "}";
+		return new HareFlightSample(hare.distanceTo(player), state);
 	}
 
 	// ------------------------------------------------------------------ the skyray
@@ -511,20 +561,35 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 
 	private void glimmerwing(ClientGameTestContext context, TestSingleplayerContext world) {
 		world.getServer().runCommand("time set 18000");
-		int moth = world.getServer().computeOnServer(server -> {
-			ServerPlayer player = player(server);
-			put(player, MOTHS.add(0, 0, 9), 180);
-			return spawn(Wildlife.GLIMMERWING, player.level(), MOTHS.add(6, 2, 0), 0, false).getId();
-		});
-		double nearest = Double.MAX_VALUE;
-		for (int i = 0; i < 25 && nearest > 3.2; i++) {
-			context.waitTicks(20);
-			nearest = world.getServer().computeOnServer(server -> {
-				Entity found = player(server).level().getEntity(moth);
-				return found == null ? Double.MAX_VALUE : found.position().distanceTo(MOTHS.add(0, 1.5, -1));
+		GlimmerwingLanternProbe.Session[] lanternProbe = new GlimmerwingLanternProbe.Session[1];
+		try {
+			int moth = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = player(server);
+				put(player, MOTHS.add(0, 0, 9), 180);
+				Glimmerwing spawned = spawn(Wildlife.GLIMMERWING, player.level(), MOTHS.add(6, 2, 0), 0, false);
+				lanternProbe[0] = GlimmerwingLanternProbe.begin(player.level(), spawned, BlockPos.containing(MOTHS.add(0, 1.5, -1)));
+				return spawned.getId();
 			});
+			record LanternSample(double distance, boolean arrived) {}
+			double nearest = Double.MAX_VALUE;
+			boolean arrived = false;
+			for (int i = 0; i < 25 && !arrived; i++) {
+				int attempt = i + 1;
+				context.waitTicks(20);
+				LanternSample sample = world.getServer().computeOnServer(server -> {
+					Entity found = player(server).level().getEntity(moth);
+					double distance = found == null ? Double.MAX_VALUE : found.position().distanceTo(MOTHS.add(0, 1.5, -1));
+					GlimmerwingLanternProbe.sampled(lanternProbe[0], player(server).level(), found, distance, attempt);
+					return new LanternSample(distance, GlimmerwingLanternProbe.arrived(lanternProbe[0]));
+				});
+				nearest = sample.distance();
+				arrived = sample.arrived();
+			}
+			check(arrived, "a glimmerwing should acquire the lantern, select a lured flight target, then arrive naturally within 500 ticks (last distance "
+					+ String.format("%.1f", nearest) + ")");
+		} finally {
+			world.getServer().runOnServer(server -> GlimmerwingLanternProbe.finish(lanternProbe[0]));
 		}
-		check(nearest <= 3.2, "a glimmerwing should find the lantern and circle it (nearest " + String.format("%.1f", nearest) + ")");
 		world.getServer().runOnServer(server -> clear(player(server).level(), MOTHS, 12));
 
 		// Fresh magic draws them more than any lamp: a player who keeps casting has them round their head.

@@ -249,6 +249,7 @@ public final class Imbuing {
 	 * holds it is told) if its maker has imbued {@link #MAX_ITEMS} newer things since.
 	 */
 	private static boolean holds(ServerPlayer holder, ItemStack stack, Imbued imbued) {
+		if (imbued != null && (dev.wildercord.spell.RelayRules.containsIds(imbued.runes()) || dev.wildercord.spell.ReweaveRules.containsIds(imbued.runes()) || dev.wildercord.spell.ExciseRules.containsIds(imbued.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(imbued.runes()))) return false;
 		if (!imbued.counted() || Ledger.of(holder.level()).has(imbued)) {
 			return true;
 		}
@@ -425,7 +426,13 @@ public final class Imbuing {
 	}
 
 	/** Spends a charge of {@code stack} and releases its spell next tick (after whatever set it off has settled). */
-	private static void release(ServerPlayer player, ItemStack stack, Imbued imbued, Cast.Trigger at) {
+	private static boolean release(ServerPlayer player, ItemStack stack, Imbued imbued, Cast.Trigger at) {
+        if ((ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return false;
+		var stored = runesOf(imbued.runes());
+		if ((dev.wildercord.spell.RelayRules.containsIds(imbued.runes()) || dev.wildercord.spell.ReweaveRules.containsIds(imbued.runes()) || dev.wildercord.spell.ExciseRules.containsIds(imbued.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(imbued.runes()))
+			|| stored.stream().anyMatch(r -> r.is(Runes.IMBUE.id())) || SpellCompiler.compileStored(stored).isEmpty()) return false;
+		if (!RelayCircles.beforeOtherSpell(player)) return false;
+		dev.wildercord.aura.MasterForms.cancel(player);
 		spend(player, stack, imbued);
 		cool(player, imbued.runes());
 		List<String> runes = imbued.runes();
@@ -436,6 +443,7 @@ public final class Imbuing {
 				cast(player, runes, at);
 			}
 		});
+		return true;
 	}
 
 	private static void spend(ServerPlayer player, ItemStack stack, Imbued imbued) {
@@ -453,6 +461,7 @@ public final class Imbuing {
 
 	/** Casts stored runes as {@code caster}, set off at {@code at}. */
 	static void cast(ServerPlayer caster, List<String> ids, Cast.Trigger at) {
+		if (dev.wildercord.spell.RelayRules.containsIds(ids) || dev.wildercord.spell.ReweaveRules.containsIds(ids) || dev.wildercord.spell.ExciseRules.containsIds(ids) || dev.wildercord.spell.LessonPackRules.containsIds(ids)) return;
 		List<RuneDef> runes = new ArrayList<>();
 		for (String id : ids) {
 			Runes.get(id).ifPresent(runes::add);
@@ -461,6 +470,7 @@ public final class Imbuing {
 		if (compiled.isEmpty() || runes.stream().anyMatch(r -> r.is(Runes.IMBUE.id()))) {
 			return;
 		}
+		if (!RelayCircles.beforeOtherSpell(caster)) return;
 		dev.wildercord.api.WildercordEvents.IMBUE_RELEASED.invoker().onRelease(caster, List.copyOf(runes), at.pos(), at.entity());
 		// Paid for when it was imbued: it can't Siphon that mana back a second time.
 		Cast cast = new Cast(caster, 1, Heart.bonuses(caster), false, null, new Cast.Info(compiled.root(), runes.size(), Heart.leaning(caster), List.copyOf(runes)))
@@ -508,6 +518,7 @@ public final class Imbuing {
 				|| !(arrow.getOwner() instanceof ServerPlayer player) || player.distanceToSqr(arrow) > 64) {
 			return;
 		}
+		if ((ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return;
 		ItemStack fired = arrow.getWeaponItem();
 		if (fired == null || !fired.has(WildercordComponents.IMBUED) || arrow.getDeltaMovement().lengthSqr() < 0.01) {
 			return;
@@ -679,6 +690,8 @@ public final class Imbuing {
 
 	/** Using an imbued item that has no other way to let go: at what you're looking at. */
 	private static InteractionResult onUse(Player player, Level level, InteractionHand hand) {
+		if (player instanceof ServerPlayer acting && ((ExciseCasting.blocking(acting) || dev.wildercord.cast.LessonPackCasting.blocking(acting)) || dev.wildercord.aura.MastersArts.committed(acting))
+			&& player.getItemInHand(hand).has(WildercordComponents.IMBUED)) return InteractionResult.FAIL;
 		ItemStack stack = player.getItemInHand(hand);
 		Imbued imbued = stack.get(WildercordComponents.IMBUED);
 		if (imbued == null || Imbued.release(stack) != Imbued.Release.USE) {
@@ -687,22 +700,25 @@ public final class Imbuing {
 		if (!(player instanceof ServerPlayer server)) {
 			return InteractionResult.SUCCESS;
 		}
-		if (!holds(server, stack, imbued)) {
-			return InteractionResult.FAIL;
+		try (var admission = ActionAdmission.begin(server)) {
+			if (admission == null) return InteractionResult.FAIL;
+			if (!holds(server, stack, imbued)) {
+				return InteractionResult.FAIL;
+			}
+			if (!ready(server)) {
+				server.sendOverlayMessage(Component.translatable("message.wildercord.imbue_cooling",
+					String.format(java.util.Locale.ROOT, "%.1f", waiting(server) / 20.0)).withStyle(ChatFormatting.GRAY));
+				return InteractionResult.FAIL;
+			}
+			Cast.Trigger at = aim(server, imbued.runes());
+			if (at == null) {
+				server.sendOverlayMessage(Component.translatable("message.wildercord.imbue_no_aim").withStyle(ChatFormatting.GRAY));
+				return InteractionResult.FAIL;
+			}
+			if (!release(server, stack, imbued, at)) return InteractionResult.FAIL;
+			server.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+			return InteractionResult.SUCCESS;
 		}
-		if (!ready(server)) {
-			server.sendOverlayMessage(Component.translatable("message.wildercord.imbue_cooling",
-				String.format(java.util.Locale.ROOT, "%.1f", waiting(server) / 20.0)).withStyle(ChatFormatting.GRAY));
-			return InteractionResult.FAIL;
-		}
-		Cast.Trigger at = aim(server, imbued.runes());
-		if (at == null) {
-			server.sendOverlayMessage(Component.translatable("message.wildercord.imbue_no_aim").withStyle(ChatFormatting.GRAY));
-			return InteractionResult.FAIL;
-		}
-		server.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
-		release(server, stack, imbued, at);
-		return InteractionResult.SUCCESS;
 	}
 
 	/**
@@ -971,6 +987,7 @@ public final class Imbuing {
 	}
 
 	private static void fire(ServerLevel level, Glyphs glyphs, Glyph glyph, ServerPlayer owner, LivingEntity stepper) {
+		if (dev.wildercord.spell.RelayRules.containsIds(glyph.runes()) || dev.wildercord.spell.ReweaveRules.containsIds(glyph.runes()) || dev.wildercord.spell.ExciseRules.containsIds(glyph.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(glyph.runes())) return;
 		if (!ready(owner)) {
 			return;
 		}
@@ -1027,6 +1044,7 @@ public final class Imbuing {
 	}
 
 	private static List<RuneDef> runesOf(List<String> ids) {
+		if (dev.wildercord.spell.RelayRules.containsIds(ids) || dev.wildercord.spell.ReweaveRules.containsIds(ids) || dev.wildercord.spell.ExciseRules.containsIds(ids) || dev.wildercord.spell.LessonPackRules.containsIds(ids)) return List.of();
 		List<RuneDef> runes = new ArrayList<>();
 		ids.forEach(id -> Runes.get(id).ifPresent(runes::add));
 		return runes;

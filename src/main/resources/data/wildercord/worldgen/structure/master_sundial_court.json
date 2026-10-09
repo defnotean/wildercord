@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "master_sundial_court",
+  "biomes": "#wildercord:has_structure/master_sundial_court",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

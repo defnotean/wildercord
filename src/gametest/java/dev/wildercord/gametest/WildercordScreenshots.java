@@ -34,6 +34,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
 			context.waitTicks(40);
 			world.getServer().runOnServer(server -> {
+				dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.gametest.WildercordScreenshots\",\"seed\":\"{}\"}", server.overworld().getSeed());
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				player.setGameMode(GameType.SURVIVAL);
 				ItemStack cord = new ItemStack(WildercordItems.ECHO_CORD);
@@ -268,6 +269,9 @@ public class WildercordScreenshots implements FabricClientGameTest {
 	 * test instead of a play session. A handful of screenshots show the effects in flight.
 	 */
 	private static void castEverything(ClientGameTestContext context, TestSingleplayerContext world) {
+        dev.wildercord.client.fx.LifeRuntimePartitionChecks.verify();
+        dev.wildercord.Wildercord.LOGGER.info("EXCISE_PRESENTATION_REQUIRED ordinary={} presentation={}; unchanged fixed legacy cast table provides no held-cut coverage",
+            dev.wildercord.client.fx.LifeRuntimePartitionChecks.EXCISE_ORDINARY, dev.wildercord.client.fx.LifeRuntimePartitionChecks.EXCISE_PRESENTATION);
 		world.getServer().runOnServer(server -> {
 			server.setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
@@ -399,6 +403,44 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			{"fx_prospect", 12, new RuneDef[] {Runes.RAY, Runes.PROSPECT}},
 			{null, 20, new RuneDef[] {Runes.RAY, Runes.GALVANIZE}},
 			{null, 20, new RuneDef[] {Runes.SELF, Runes.SEARING_EDGE, Runes.SWIFT, Runes.PROLONG}},
+			// ---- fx-passive pack: the hearth runes, two at a time (Hollow Pocket opens a screen, so its own test covers it).
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SLOWBURN, Runes.CAMP_WARD}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.WARM_CLOAK, Runes.SOFTSOLE}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SOFTFOOT, Runes.LODESTAR}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.HOMEWARD, Runes.GRAVEFINDER}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SKYREAD, Runes.LULLABY}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.STEEDSONG, Runes.GLIDEWIND}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.WAYMARK, Runes.EMBER_REST}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.ORBCALL, Runes.TINKER_HUM}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.LANTERN_SOUL, Runes.KEENKEEP}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.LANDREAD, Runes.RALLY_LIGHT}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.DEW_DRINK, Runes.SUNBASK}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.CURRENTKIN, Runes.SUREFOOT}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.LONG_ARM, Runes.NIGHTWATCH}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.TRAILBLAZE, Runes.HEARTHPATH}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.LOSTFIND, Runes.STILLWELL}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.STARCHART, Runes.PETWARD}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.WHISTLE, Runes.LUCKCHARM}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SMOKE_SIGNAL, Runes.WAYFARER_HYMN}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.STEEDMEND, Runes.DYNAMO_STRIDE}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.TARRY, Runes.CLOT}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.HEARTSENSE, Runes.QUENCH}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.HEARTHBOND, Runes.SPRINGSEEK}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SAVOR, Runes.DEEPWARN}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.ENDERHUSH}},
+			// ---- fx-fish pack
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.ANGLER_LURE, Runes.REELING_TIDE, Runes.SCHOOL_SIGHT, Runes.BOBBER_BELL}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.WATER_READING, Runes.DOLPHIN_CALL, Runes.AXOLOTL_KINSHIP, Runes.SHOAL_HERD}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.REFLOAT, Runes.REED_CUT, Runes.WRING, Runes.SPRING_DRAW}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.BRIMMING, Runes.DIVING_BELL, Runes.TIDE_LANTERN, Runes.SLUICE}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.SOAK_THROUGH, Runes.RAIN_CLOUD, Runes.STORM_GLASS, Runes.KELPSONG}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.CORAL_MEND, Runes.NEST_TEND, Runes.LILY_PATH, Runes.SANDBAR}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.ICE_AUGER, Runes.TIDE_MARKER, Runes.SHORE_SENSE, Runes.FATHOM}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.WRECK_SENSE, Runes.DRIFT_NET, Runes.MOORING_CALL, Runes.DEWCATCH}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.BAIT_BLESSING, Runes.TACKLE_MEND, Runes.OCEANS_FAVOR, Runes.FAIR_WIND}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.UPWELL, Runes.SOUNDING, Runes.PORPOISE, Runes.SKIMSTEP}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.SKATERS_EDGE, Runes.AIR_POCKET, Runes.DROWN_WARD, Runes.PEARL_SIGHT}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.SEA_BREEZE, Runes.INKVEIL, Runes.SHELLBACK, Runes.DIVERS_HANDS}},
 		};
 		for (Object[] step : casts) {
 			String shot = (String) step[0];
@@ -418,6 +460,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 				context.waitTicks(40);
 			}
 		}
+		// ---- fx-passive pack: the hearth runes last minutes; end them so later checks start clean.
+		world.getServer().runOnServer(server -> dev.wildercord.cast.HearthEffects.reset(server.getPlayerList().getPlayers().getFirst()));
 		// Let every lingering effect (Domain, Thunderbird, Rampart) run out.
 		context.waitTicks(260);
 		context.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
@@ -519,17 +563,26 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			{Runes.BEAM, Runes.METEOR}, {Runes.BEAM, Runes.PRIMER}, {Runes.BEAM, Runes.DISMANTLE}};
 		for (RuneDef[] attack : attacks) {
 			huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
-			context.waitTicks(3);
-			server.runOnServer(s -> castAs(s, 2, Runes.BEAM, Runes.STASIS));
-			context.waitTicks(2);
-			float before = server.computeOnServer(s -> health(s, huskId[0]));
-			server.runOnServer(s -> castAs(s, 1, attack));
-			context.waitTicks(45);
-			float during = server.computeOnServer(s -> health(s, huskId[0]));
-			check(during == before, attack[1].name() + " should be held by Stasis, but health went " + before + " -> " + during);
-			context.waitTicks(70);
-			float after = server.computeOnServer(s -> health(s, huskId[0]));
-			check(after < before, attack[1].name() + " held by Stasis should land when it ends, but health is " + after);
+			var observation = server.computeOnServer(s -> dev.wildercord.cast.StasisMechanicsProbe.open(
+				s.getPlayerList().getPlayers().getFirst(), husk(s, huskId[0]), attack[1]));
+			try {
+				context.waitTicks(3);
+				server.runOnServer(s -> castAs(s, 2, Runes.BEAM, Runes.STASIS));
+				context.waitTicks(2);
+				float before = server.computeOnServer(s -> health(s, huskId[0]));
+				server.runOnServer(s -> observation.checkpoint("before_attack"));
+				server.runOnServer(s -> castAs(s, 1, attack));
+				context.waitTicks(45);
+				float during = server.computeOnServer(s -> health(s, huskId[0]));
+				server.runOnServer(s -> observation.checkpoint("during_hold"));
+				check(during == before, attack[1].name() + " should be held by Stasis, but health went " + before + " -> " + during);
+				context.waitTicks(70);
+				float after = server.computeOnServer(s -> health(s, huskId[0]));
+				server.runOnServer(s -> observation.checkpoint("after_release_wait"));
+				check(after < before, attack[1].name() + " held by Stasis should land when it ends, but health is " + after);
+			} finally {
+				server.runOnServer(s -> observation.close());
+			}
 		}
 		// Threaded after the damage, Stasis still goes first.
 		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
@@ -765,12 +818,12 @@ public class WildercordScreenshots implements FabricClientGameTest {
 	/** Threads a spell into a slot and casts it right away, with the cooldown cleared and mana topped up. */
 	private static void castAs(net.minecraft.server.MinecraftServer server, int spell, RuneDef... runes) {
 		ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
-		SpellCaster.edit(player, spell, ids(runes));
+		var editProblem = SpellCaster.edit(player, spell, ids(runes));
 		Spellbooks.setReadyAt(player, spell, 0);
 		if (!java.util.Arrays.asList(runes).contains(Runes.BLOOD_PRICE_MOD)) {
 			Spellbooks.setMana(player, 380);
 		}
-		SpellCaster.cast(player, spell);
+		dev.wildercord.cast.StasisMechanicsProbe.cast(player, spell, List.of(runes), editProblem, () -> SpellCaster.cast(player, spell));
 	}
 
 	/** Clears any husks and spawns a fresh one 6 blocks in front of the stage; returns its id. */
@@ -834,6 +887,11 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			// Jump to seven circles and form the eighth, for the ring screenshot.
 			player.setAttached(dev.wildercord.player.WildercordAttachments.CIRCLES, 7);
 			player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, 99999);
+			Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));
+			var discoveries = new java.util.ArrayList<>(dev.wildercord.player.Heart.grimoire(player));
+			discoveries.add("feat:" + dev.wildercord.spell.Feats.ARCHIVIST);
+			dev.wildercord.spell.Secrets.ALL.stream().limit(4).map(dev.wildercord.spell.Secrets.Secret::key).forEach(discoveries::add);
+			player.setAttached(dev.wildercord.player.WildercordAttachments.GRIMOIRE, discoveries.stream().distinct().toList());
 			dev.wildercord.cast.HeartCircles.form(player);
 		});
 		context.runOnClient(mc -> {

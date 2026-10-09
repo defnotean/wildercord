@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "ArticulatedSharedScreenshotMixin",
+    "ArticulatedSharedCopyMixin",
+    "ArticulatedSharedViewMixin",
+    "ArticulatedSharedPlayerPaletteMixin",
+    "ArticulatedSharedDeferredMixin",
+    "ArticulatedSharedExtractionMixin",
+    "ArticulatedOpeningFallbackMixin"
+  ],
+  "injectors": {"defaultRequire": 1}
+}

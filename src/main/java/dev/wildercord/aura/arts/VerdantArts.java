@@ -352,11 +352,13 @@ public final class VerdantArts {
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
-		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
-		AuraGuard.Caught caught = AuraGuard.caught(player);
-		double blow = caught == null ? 0 : caught.damage();
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(ROOTED_PARRY) || !counter.valid()) return false;
+		LivingEntity foe = counter.target();
+		double blow = counter.caughtDamage();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING, false, 1.35F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
+		double weapon = ArtKit.weapon(player) * hits.scaling();
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_rooted_parry", 1.0F, 1.0F);
 		// Thorns bursting up round you, short and low (block displays), leaning out; a ring of vine racing out over the ground.
 		BlockState roots = Blocks.MANGROVE_ROOTS.defaultBlockState();
@@ -375,24 +377,29 @@ public final class VerdantArts {
 		world.groundRing(feet, PINK, 0.3, ArtRules.ROOTED_THORNS * 0.9, 0.05, 8);
 		petals(level, feet.add(0, 0.6, 0), 1.0, 8);
 		for (LivingEntity other : ArtKit.around(player, feet, ArtRules.ROOTED_THORNS, 1.0, 2.5, 6)) {
-			if (other != foe) {
-				hits.strike(other, ArtRules.ROOTED_THORN_FACTOR, AuraFxRules.Weight.LIGHT);
-				ArtKit.slow(player, other, 20, 0);
-				prick(player, other);
+			if (!counter.valid()) return true;
+			if (other != foe && counter.permits(other)) {
+				hits.raw(other, weapon * ArtRules.ROOTED_THORN_FACTOR, AuraFxRules.Weight.LIGHT);
+				if (!counter.afterDamage(other)) return true;
+				if (counter.permits(other)) ArtKit.slow(player, other, 20, 0);
+				if (counter.permits(other)) prick(player, other);
 			}
 		}
-		if (foe != null) {
-			hits.strike(foe, ArtRules.ROOTED_FACTOR);
-			if (foe.isAlive()) {
+		if (!counter.valid()) return true;
+		if (foe != null && counter.permits(foe)) {
+			hits.raw(foe, weapon * ArtRules.ROOTED_FACTOR, AuraFxRules.Weight.HEAVY);
+			if (!counter.afterDamage(foe)) return true;
+			if (counter.permits(foe)) {
 				ArtKit.root(player, foe, ArtRules.ROOTED_ROOT);
 				rootsOn(player, foe, ArtRules.ROOTED_ROOT, 5, 1.25F);
 				impact(player, foe, 1.0);
 			}
 		}
 		// And you mend by what your guard caught: the blow drawn up through the roots into you.
+		if (!counter.valid()) return true;
 		float mend = ArtKit.mend(player, player, ArtRules.rootedMend(blow));
 		Scheduler.later(3, () -> {
-			if (player.isAlive()) {
+			if (counter.linkedAlive()) {
 				mended(player, player, Math.max(mend, 0.5F));
 				Feels.sound(level, player.position(), "life_mend", 0.7F, 1.15F);
 			}

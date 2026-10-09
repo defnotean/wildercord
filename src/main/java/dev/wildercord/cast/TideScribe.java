@@ -365,7 +365,9 @@ public class TideScribe extends DungeonBoss {
 
 	/** A storm or frost effect landed somewhere: if it's in a flooded arena, the water carries it or freezes. */
 	static void onSpell(Cast cast, Cast.Hit hit, String element) {
+		if (cast.guardedImpact() && AWAKE.size() > Cast.MAX_ENTITIES) return;
 		for (TideScribe scribe : new ArrayList<>(AWAKE)) {
+			if (cast.guardedImpact() && !cast.alive()) return;
 			if (scribe.isAlive() && scribe.level() == cast.level && scribe.home != null && scribe.flooded() && scribe.inPit(cast.level, hit)) {
 				if (element.equals("storm")) {
 					scribe.conduct(cast, hit.point());
@@ -419,8 +421,10 @@ public class TideScribe extends DungeonBoss {
 		DamageSource source = level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster);
 		AABB arena = new AABB(Vec3.atBottomCenterOf(home), Vec3.atBottomCenterOf(home)).inflate(PIT_RADIUS + 0.5, 0, PIT_RADIUS + 0.5)
 			.expandTowards(0, 3, 0).move(0, -0.5, 0);
-		List<LivingEntity> wading = level.getEntitiesOfClass(LivingEntity.class, arena, e -> e.isAlive() && e.isInWater() && !e.isSpectator());
+		List<LivingEntity> wading = cast.guardedImpact() ? RelayCircles.collateral(cast, at, arena, e -> e.isInWater() && !e.isSpectator())
+			: level.getEntitiesOfClass(LivingEntity.class, arena, e -> e.isAlive() && e.isInWater() && !e.isSpectator());
 		for (LivingEntity t : wading) {
+			if (!cast.admits(t) || cast.guardedImpact() && cast.takeEntities(1) < 1) continue;
 			Vec3 tc = t.getBoundingBox().getCenter();
 			ElementFx.bolt(level, at, tc, 0.04, 1, 2);
 			if (t == this) {
@@ -430,10 +434,11 @@ public class TideScribe extends DungeonBoss {
 				// The Scribe is the water's own: the shock runs straight through it, and it reels.
 				shocking = true;
 				try {
-					Effects.hurt(cast, this, source, shock * 5);
+					RelayCircles.from(cast, at, () -> Effects.hurt(cast, this, source, shock * 5));
 				} finally {
 					shocking = false;
 				}
+				if (!cast.admits(this)) continue;
 				strandedUntil = Math.max(strandedUntil, level.getGameTime() + 40);
 				interrupt();
 				continue;
@@ -442,7 +447,7 @@ public class TideScribe extends DungeonBoss {
 			if (t != cast.caster && !Targets.canHarm(cast.caster, t)) {
 				continue;
 			}
-			Effects.hurt(cast, t, source, shock);
+			RelayCircles.from(cast, at, () -> Effects.hurt(cast, t, source, shock));
 		}
 		// Sparks skitter across the whole surface.
 		Vec3 c = Vec3.atBottomCenterOf(home).add(0, 2.0, 0);
@@ -479,7 +484,8 @@ public class TideScribe extends DungeonBoss {
 				}
 				BlockPos pos = new BlockPos((int) Math.floor(at.x) + dx, top, (int) Math.floor(at.z) + dz);
 				BlockState state = level.getBlockState(pos);
-				if (state.is(Blocks.WATER) && pos.distSqr(home) <= (PIT_RADIUS + 1) * (PIT_RADIUS + 1)) {
+				if (state.is(Blocks.WATER) && pos.distSqr(home) <= (PIT_RADIUS + 1) * (PIT_RADIUS + 1)
+					&& (!cast.guardedImpact() || cast.admitsBlock(pos) && cast.takeBlock())) {
 					level.setBlock(pos, Blocks.ICE.defaultBlockState(), QUIET);
 					iced.add(pos.immutable());
 					count++;
@@ -494,7 +500,8 @@ public class TideScribe extends DungeonBoss {
 		Fx.sound(level, at, SoundEvents.GLASS_PLACE, 1.0F, 0.6F);
 		// Ice closing round the Scribe strands it (unless it has only just broken free).
 		long now = level.getGameTime();
-		if (isInWater() && new Vec3(getX() - at.x, 0, getZ() - at.z).length() < 3.5 && now >= strandImmuneUntil) {
+		if (isInWater() && new Vec3(getX() - at.x, 0, getZ() - at.z).length() < 3.5 && now >= strandImmuneUntil
+			&& (!cast.guardedImpact() || RelayCircles.admitsFrom(cast, at, this) && cast.takeEntities(1) > 0)) {
 			strandedUntil = now + STRAND_TICKS;
 			strandImmuneUntil = strandedUntil + BossRules.STRAND_IMMUNE_TICKS;
 			interrupt();

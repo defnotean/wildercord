@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:sites/mine_hillside_mine",
+  "criteria": {
+    "mine_deep_vault": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:mine_deep_vault"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:chiseled_deepslate"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.mine_deep_vault.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.mine_deep_vault.description"
+    }
+  },
+  "requirements": [
+    [
+      "mine_deep_vault"
+    ]
+  ],
+  "rewards": {
+    "experience": 35
+  }
+}

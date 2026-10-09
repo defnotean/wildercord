@@ -563,6 +563,7 @@ public final class ExplorerEffects {
 			t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, 0, false, true));
 			t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 0, false, true));
 			BLOODLUST.put(t.getUUID(), cast.level.getGameTime() + ticks);
+			dev.wildercord.spell.StatePrune.expired(BLOODLUST, cast.level.getGameTime());
 			ExplorerVfx.rallied(cast.level, t);
 		}
 	}
@@ -1542,6 +1543,7 @@ public final class ExplorerEffects {
 			return;
 		}
 		HEARTS.put(t.getUUID(), now + ticks + HEART_COOL);
+		dev.wildercord.spell.StatePrune.expired(HEARTS, now);
 		t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, 1, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, ticks, 0, false, true));
 		t.clearFire();
@@ -1774,6 +1776,7 @@ public final class ExplorerEffects {
 			return;
 		}
 		DRANK.put(player.getUUID(), now);
+		dev.wildercord.spell.StatePrune.rested(DRANK, now, MANATIDE_WAIT);
 		ExplorerVfx.manatide(cast.level, player, true);
 		// The tide follows their casting: each spell cast while it lasts returns part of its cost (see manatideRefund).
 		TIDES.put(player.getUUID(), new double[] {now + ExplorerNumbers.manatideTicks(ticks), 0});

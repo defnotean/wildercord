@@ -32,6 +32,37 @@ public final class MoonreedBlock extends Block {
  // Features run before skylight propagation. Surface height also makes a placed roof effective immediately.
  public static boolean openSky(LevelReader l,BlockPos p) {return surfaceHeight(l,p.getX(),p.getZ())<=p.getY()+1;}
  public static boolean canBloom(LevelReader l,BlockPos p,long time) {return WetlandRules.night(time) && moist(l,p) && openSky(l,p);}
+ /** A non-air open-sky bud is necessarily WORLD_SURFACE-1: one candidate per resident column.
+  * Unlike admission's ordinary moisture read, acquisition never loads a neighboring chunk for water evidence. */
+ static @org.jspecify.annotations.Nullable BlockPos findBud(ServerLevel level,BlockPos here) {
+  var found=MoonreedSearch.find(new MoonreedSearch.View(){
+   // Ticket eligibility is not FULL completion. Snapshot only immediately available chunks for this search.
+   private final java.util.Map<Long,net.minecraft.world.level.chunk.LevelChunk> resident=new java.util.HashMap<>();
+   private net.minecraft.world.level.chunk.LevelChunk chunk(int x,int z){
+    long key=ChunkPos.pack(x>>4,z>>4);
+    if(!resident.containsKey(key))resident.put(key,level.getChunkSource().getChunkNow(x>>4,z>>4));
+    return resident.get(key);
+   }
+   public boolean loaded(int x,int z){return chunk(x,z)!=null;}
+   public int surfaceHeight(int x,int z){var c=chunk(x,z);return c==null?level.getMinY():c.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE,x,z)+1;}
+   public boolean bud(int x,int y,int z){var c=chunk(x,z);if(c==null)return false;var state=c.getBlockState(new BlockPos(x,y,z));return state.is(WetlandGarden.REED)&&state.getValue(AGE)==1;}
+   public boolean water(int x,int y,int z){var c=chunk(x,z);return c!=null&&c.getFluidState(new BlockPos(x,y,z)).is(FluidTags.WATER);}
+   public boolean raining(int x,int y,int z){
+    var c=chunk(x,z);var at=new BlockPos(x,y,z);
+    if(c==null||!level.isRaining()||!level.canSeeSky(at)||c.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING,x,z)+1>y)return false;
+    // Vanilla's getBiome can join an unfinished neighboring BIOMES future even with create=false.
+    // Keep its exact zoom selection, but use completed chunks only; unavailable biome evidence defers rain.
+    boolean[] available={true};
+    var biome=level.getBiomeManager().withDifferentSource((qx,qy,qz)->{
+     var selected=chunk(QuartPos.toBlock(qx),QuartPos.toBlock(qz));
+     if(selected!=null)return selected.getNoiseBiome(qx,qy,qz);
+     available[0]=false;return level.getUncachedNoiseBiome(qx,qy,qz);
+    }).getBiome(at);
+    return available[0]&&biome.value().getPrecipitationAt(at,level.getSeaLevel())==net.minecraft.world.level.biome.Biome.Precipitation.RAIN;
+   }
+  },here.getX(),here.getY(),here.getZ(),level.getOverworldClockTime());
+  return found==null?null:new BlockPos(found.x(),found.y(),found.z());
+ }
  @Override protected BlockState updateShape(BlockState s,LevelReader l,ScheduledTickAccess t,BlockPos p,Direction d,BlockPos np,BlockState ns,RandomSource r) {return canSurvive(s,l,p)?super.updateShape(s,l,t,p,d,np,ns,r):Blocks.AIR.defaultBlockState();}
  @Override protected boolean isRandomlyTicking(BlockState s) {return s.getValue(AGE)==0;}
  @Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r) {if(s.getValue(AGE)==0 && canBloom(l,p,l.getOverworldClockTime()) && r.nextInt(8)==0)l.setBlock(p,s.setValue(AGE,1),Block.UPDATE_CLIENTS);}

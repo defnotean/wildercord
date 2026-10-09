@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/travel_wayfarer_inn",
+  "criteria": {
+    "travel_vow_circle": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:travel_vow_circle"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:quartz_pillar"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.travel_vow_circle.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.travel_vow_circle.description"
+    }
+  },
+  "requirements": [
+    [
+      "travel_vow_circle"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

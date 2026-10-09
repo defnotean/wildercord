@@ -31,7 +31,9 @@ public final class MethodArts {
 
 	/** The methods with arts of their own, in element order. */
 	public static final List<String> METHODS = List.of(EmberArts.METHOD, RimeArts.METHOD, ThunderArts.METHOD, GaleArts.METHOD, StoneArts.METHOD,
-		VerdantArts.METHOD, HollowArts.METHOD, StarlitArts.METHOD, HourglassArts.METHOD, CrimsonArts.METHOD);
+		VerdantArts.METHOD, HollowArts.METHOD, StarlitArts.METHOD, HourglassArts.METHOD, CrimsonArts.METHOD,
+		// ---- methods-a pack
+		TideArts.METHOD, IronArts.METHOD, DuneArts.METHOD);
 
 	/** Each art's own voice (tools/feel/aura_arts.py), for the tests: every one must exist. */
 	public static final List<String> SOUNDS = List.of("aura_art_kindling_draw", "aura_art_rising_cinders", "aura_art_backdraft",
@@ -45,7 +47,11 @@ public final class MethodArts {
 		"aura_art_star_needle", "aura_art_meteor_shower", "aura_art_constellation_guard", "aura_art_comet_dash", "aura_art_comet_dash_burst",
 		"aura_art_nova", "aura_art_echo_cut", "aura_art_rewind_leap", "aura_art_stopped_moment", "aura_art_blur", "aura_art_thousand_moments",
 		"aura_art_thousand_moments_release", "aura_art_bloodletting", "aura_art_red_rain", "aura_art_sanguine_parry", "aura_art_frenzy",
-		"aura_art_crimson_moon");
+		"aura_art_crimson_moon",
+		// ---- methods-a pack
+		"aura_art_riptide_cut", "aura_art_breaker", "aura_art_whirlpool", "aura_art_surge", "aura_art_maelstrom", "aura_art_sunder_cut",
+		"aura_art_anvil_fall", "aura_art_bulwark", "aura_art_forge_charge", "aura_art_worldforge", "aura_art_grit_flick", "aura_art_quicksand",
+		"aura_art_sandveil", "aura_art_dune_runner", "aura_art_sea_of_sand");
 
 	public static void init() {
 		ArtFields.init();
@@ -60,8 +66,16 @@ public final class MethodArts {
 		AuraApi.registerArts(StarlitArts.METHOD, StarlitArts.arts());
 		AuraApi.registerArts(HourglassArts.METHOD, HourglassArts.arts());
 		AuraApi.registerArts(CrimsonArts.METHOD, CrimsonArts.arts());
+		// ---- methods-a pack
+		AuraApi.registerArts(TideArts.METHOD, TideArts.arts());
+		AuraApi.registerArts(IronArts.METHOD, IronArts.arts());
+		AuraApi.registerArts(DuneArts.METHOD, DuneArts.arts());
+		// ---- methods-b pack
+		MethodsBArts.init();
 		// Each method's finisher, the strike that falls on an opened foe (and the common one for a method without its own).
 		Finishers.init();
+		// ---- methods-a pack
+		MethodsAFinishers.init();
 	}
 
 	/**

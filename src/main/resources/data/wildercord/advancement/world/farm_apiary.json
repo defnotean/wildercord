@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/farm_sites",
+  "criteria": {
+    "farm_apiary": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_apiary"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:beehive"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_apiary.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_apiary.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_apiary"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

@@ -10,149 +10,457 @@ a **Blank Rune** plus the items below, plus a cost that grows with the tier:
 Recipes appear in the crafting recipe book once you hold a Blank Rune
 (Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.
 
-## Tier I (53 runes, + nothing extra)
+## Tier I (232 runes, + nothing extra)
 
 | Rune | Family | Items |
 |---|---|---|
+| Air Pocket | Effect | Glass Bottle, Kelp |
 | Anchor | Effect | Iron Chain, Cobblestone |
+| Angler's Lure | Effect | String, Cod |
+| Appraise | Effect | Emerald, Glass Pane |
+| Bait Blessing | Effect | Rabbit Foot, Salmon |
+| Bakehouse | Effect | Furnace, Wheat, Sugar |
+| Barkstrip | Effect | Iron Axe, Oak Log, Flint |
+| Barnwarmth | Effect | Campfire, Hay Block, Oak Planks |
 | Barrier | Effect | Glass, Amethyst Shard |
 | Basinfill | Effect | Clay Ball, Water Bucket |
+| Beastguard | Effect | Bone, Leather |
+| Berrybless | Effect | Sweet Berries, Bone Meal, Oak Leaves |
 | Blind | Effect | Ink Sac |
+| Block Pack | Effect | Crafting Table, Iron Nugget |
+| Bobber Bell | Effect | String, Gold Nugget, Feather |
 | Brace | Effect | Cobblestone, Iron Ingot |
 | Bramble | Effect | Sweet Berries, Cactus |
+| Brimming | Effect | Cauldron, Kelp |
+| Button Push | Effect | Stone Button |
+| Calm Smoke | Effect | Campfire, Honeycomb, Oak Leaves |
+| Chalk Line | Effect | Bone Meal, String |
 | Chill | Effect | Ice |
 | Chisel | Effect | Stone Pickaxe |
+| Clot | Effect | Milk Bucket, Spider Eye |
 | Collect | Effect | Hopper |
+| Compost | Effect | Composter, Rotten Flesh, Wheat Seeds |
+| Concrete Set | Effect | White Concrete Powder, Water Bucket |
 | Countdown | Effect | Clock, Gunpowder |
 | Cushion | Effect | any wool, Feather |
+| Deepsound | Effect | Note Block |
+| Deepwarn | Effect | Magma Cream, Spyglass |
+| Depth Sounding | Effect | Pointed Dripstone, String, Cobbled Deepslate |
+| Dew Drink | Effect | Glass Bottle, Lily Pad |
+| Dewcatch | Effect | Glass Bottle, Fern |
+| Dewfall | Effect | Water Bucket, Dirt, Wheat Seeds |
+| Diver's Hands | Effect | Prismarine Shard, Iron Pickaxe |
+| Doorcall | Effect | Oak Door, Redstone |
+| Douse | Effect | Candle, Feather |
+| Dust Line | Effect | Bone Meal, String, Flint |
+| Dye Wash | Effect | Red Dye, Yellow Dye, Blue Dye |
 | Ember | Effect | Coal, Flint |
+| Emberguard | Effect | Magma Cream, Iron Nugget |
+| Fallow | Effect | Dirt, Bone Meal, Short Grass |
+| Fathom | Effect | String, Iron Nugget |
 | Feather Fall | Effect | 2x Feather |
+| Field Sense | Effect | Spyglass, Wheat, Carrot |
+| Fieldstride | Effect | Leather Boots, Wheat, Feather |
+| Firebreak | Effect | Snowball, Water Bucket |
+| Fleece | Effect | Shears, White Wool, Feather |
+| Fodder | Effect | Hay Block, Carrot, Wheat Seeds |
+| Folk Call | Effect | Emerald, Note Block |
+| Folk Census | Effect | Emerald, Paper |
 | Frostward | Effect | Snowball, Leather |
 | Galvanize | Effect | Lightning Rod, Redstone |
+| Gentle Hand | Effect | Apple, Wheat, Feather |
 | Glimmer | Effect | Glow Lichen |
+| Gloomsight | Effect | Spider Eye, Glow Ink Sac |
+| Glyph Carve | Effect | Oak Sign, Flint |
+| Gravefinder | Effect | Bone, Compass |
 | Grow | Effect | 2x Bone Meal |
 | Harm | Effect | Fermented Spider Eye |
 | Harvest | Effect | 2x Wheat |
 | Haste | Effect | Golden Pickaxe |
+| Hayloft | Effect | Hay Block, Slime Ball, Feather |
 | Heal | Effect | Glistering Melon Slice |
+| Hearthpath | Effect | Compass, Red Bed |
+| Herdcall | Effect | Lead, Wheat, Stick |
+| Herdsense | Effect | Spyglass, Lead, Leather |
 | Hex | Effect | Fermented Spider Eye, Ink Sac |
+| Hobble | Effect | Cobweb, String |
+| Holefill | Effect | Dirt, Cobblestone, Oak Planks |
+| Hollow Sense | Effect | Echo Shard |
+| Home Bearing | Effect | Compass, White Wool |
+| Honeydew | Effect | Honey Bottle, Sugar, Feather |
+| Ice Auger | Effect | Ice, Flint |
 | Icepath | Effect | Packed Ice |
 | Icicle | Effect | Ice, Pointed Dripstone |
+| Kelpsong | Effect | Kelp, Bone Meal |
+| Lamplighter | Effect | Candle, Flint |
+| Land Reading | Effect | Dirt, Compass |
+| Landread | Effect | Dirt, Spyglass |
+| Lantern Soul | Effect | Lantern, Soul Torch |
+| Lava Sense | Effect | Magma Cream, Spider Eye |
+| Leaffall | Effect | Oak Leaves, Shears, Feather |
 | Leap | Effect | Slime Ball |
 | Leech | Effect | Spider Eye, Redstone |
+| Lever Flip | Effect | Lever |
 | Light | Effect | 2x Torch |
+| Lily Path | Effect | 2x Lily Pad |
+| Lore Reading | Effect | Book, Feather |
+| Lostfind | Effect | Gold Nugget, Spyglass |
+| Luckcharm | Effect | Rabbit Foot, Emerald |
+| Lux Reading | Effect | Torch, Glass Pane |
+| Milkmaid | Effect | Bucket, Wheat, Snowball |
+| Millstone | Effect | Grindstone |
+| Moon Reading | Effect | Clock, Glow Ink Sac |
+| Nest Tend | Effect | Seagrass, Sand |
 | Night Eye | Effect | Glow Berries |
 | Nourish | Effect | Bread |
+| Nudge | Effect | Feather, Slime Ball |
+| Orbcall | Effect | Experience Bottle |
+| Pack Tidy | Effect | Bundle |
 | Pelt | Effect | Gravel, Cobblestone |
+| Picnic | Effect | Bread, Apple, White Carpet |
+| Plankway | Effect | 2x Oak Planks, String |
+| Plumb Line | Effect | String, Iron Nugget, Cobblestone |
+| Polish | Effect | Polished Andesite, Sand |
+| Portal Reckoning | Effect | Obsidian, Map |
 | Prospect | Effect | Stone Pickaxe, Amethyst Shard |
 | Prune | Effect | Shears, any saplings |
 | Push | Effect | Piston |
+| Quench | Effect | Water Bucket, Snowball, Ice |
+| Reed Cut | Effect | Sugar Cane, Flint |
+| Reeling Tide | Effect | String, Stick, Kelp |
+| Refloat | Effect | Kelp, Lily Pad |
+| Relic Sense | Effect | Brush, Sand |
 | Rend | Effect | Iron Nugget, Bone |
 | Reveal | Effect | Glow Ink Sac |
+| Salve | Effect | Honey Bottle, Snowball |
+| Sapling Sow | Effect | Oak Sapling, Birch Sapling, Dirt |
+| Savor | Effect | Cooked Beef, Honey Bottle |
+| Sentry | Effect | Spyglass, Glowstone Dust |
+| Shelf Count | Effect | Book, Oak Planks |
+| Shoal Herd | Effect | Kelp, Cod, Salmon |
 | Shock | Effect | Lightning Rod |
+| Shore Sense | Effect | Compass, Sand |
+| Shore Up | Effect | Oak Log, Gravel |
+| Shrug Off | Effect | Milk Bucket, Feather |
+| Siftfall | Effect | Gravel, Sand |
+| Sign Glow | Effect | Oak Sign, Glow Ink Sac |
+| Skater's Edge | Effect | Ice, Sugar |
+| Sky Reading | Effect | Feather, Glass Bottle |
+| Skyread | Effect | Feather, Clock |
+| Slime Sense | Effect | Slime Ball, Compass |
+| Slowburn | Effect | Bread, Charcoal |
+| Sluice | Effect | Kelp, Clay Ball, Charcoal |
+| Smoke Signal | Effect | Campfire, Hay Block |
+| Snuff Out | Effect | Water Bucket, Ink Sac |
+| Soak Through | Effect | Clay Ball, Sand |
+| Softsole | Effect | Feather, Wheat Seeds |
+| Sounding | Effect | Magma Block, Kelp |
+| Sow | Effect | Wheat Seeds, Beetroot Seeds, Carrot |
+| Spawn Bearing | Effect | Compass, Feather |
+| Spring Draw | Effect | Bucket, Kelp |
+| Springseek | Effect | Stick, Clay Ball, Glass Bottle |
+| Stand Pose | Effect | Armor Stand, Stick |
+| Starchart | Effect | Map, Compass |
+| Staunch | Effect | Milk Bucket, Snowball |
+| Steedmend | Effect | Golden Carrot, Hay Block |
+| Stewpot | Effect | Bowl, Red Mushroom, Brown Mushroom |
+| Stilt | Effect | Packed Mud, Scaffolding |
+| Stocktake | Effect | Chest, Paper |
+| Storm Glass | Effect | Glass Bottle, Copper Ingot |
+| Stoutheart | Effect | Iron Ingot, Apple |
+| Sun Reading | Effect | Clock, Sunflower, Paper |
+| Sunbask | Effect | Sunflower, Glowstone Dust |
+| Surefoot | Effect | Leather Boots, Cobblestone Stairs |
 | Swift | Effect | 2x Sugar |
+| Tackle Mend | Effect | 2x String, Bone Meal |
+| Taunt | Effect | Rotten Flesh, Redstone |
+| Tend | Effect | Wheat, Bone Meal |
+| Thawfield | Effect | Torch, Snowball, Dirt |
+| Tide Lantern | Effect | Sea Pickle, Glowstone Dust |
+| Tide Marker | Effect | Sea Pickle, String |
 | Tidebreath | Effect | Pufferfish |
+| Tillage | Effect | Wooden Hoe, Dirt, Wheat Seeds |
+| Tilth | Effect | Coarse Dirt, Bone Meal, Flint |
+| Trail Blaze | Effect | Torch, Stick, Flint |
+| Trailblaze | Effect | Bread, Lime Dye |
 | Umbra | Effect | Ink Sac, Flint |
+| Unpack | Effect | Crafting Table, Flint |
+| Upwell | Effect | Soul Sand, Kelp |
+| Warm Cloak | Effect | Leather, Blaze Powder |
+| Water Reading | Effect | Prismarine Crystals, Paper |
+| Waymark | Effect | Torch, Stick, Glowstone Dust |
+| Whistle | Effect | Goat Horn |
+| Wildflower | Effect | Dandelion, Poppy, Cornflower |
 | Windcut | Effect | Feather, Flint |
+| Worst First | Effect | Glistering Melon Slice, Paper |
 | Delay | Link | Clock |
+| If Day | Link | Sunflower, Clock |
+| If Holding Tool | Link | Stick, Iron Nugget |
+| If In Fields | Link | Wheat, Clock |
+| If Night | Link | Ink Sac, Clock |
+| If Raining | Link | Water Bucket, Clock |
+| If Underground | Link | Cobblestone, Clock |
+| On Harvest | Link | Wheat, Tripwire Hook |
+| On Mine | Link | Iron Pickaxe, Tripwire Hook |
 | Amplify | Modifier | Gold Ingot |
+| Cushioned | Modifier | Hay Block, Feather |
+| Damp | Modifier | Wet Sponge, Clay Ball |
 | Extend | Modifier | 2x Redstone |
+| Fetching | Modifier | Lead, Bone |
+| Fleecing | Modifier | Shears, White Wool |
 | Frugal | Modifier | Emerald |
+| Furrowing | Modifier | Iron Hoe, Dirt |
+| Gentle | Modifier | Wheat, Lead |
+| Level Ground | Modifier | Stone Slab, Compass |
+| Magnetic | Modifier | Iron Ingot, Redstone |
+| Matchmaking | Modifier | Wheat, Carrot, Poppy |
+| Nourishing | Modifier | Bread, Apple |
+| Replanting | Modifier | Wheat Seeds, Bone Meal |
 | Reservoir Circle | Modifier | Glass Bottle, Lapis Lazuli |
+| Soothing | Modifier | Honey Bottle, Note Block |
+| Sowing | Modifier | Wheat Seeds, Beetroot Seeds |
+| Sparing | Modifier | White Banner, Feather |
+| Steady | Modifier | Obsidian, Iron Nugget |
+| Tidy | Modifier | Bundle, String |
+| Torchset | Modifier | Torch, Coal |
 | Arc | Shape | 2x Snowball |
+| Aureole | Shape | Glowstone Dust, Gold Nugget, Feather |
+| Bobber | Shape | Fishing Rod, Cod |
 | Bolt | Shape | Arrow |
+| Fan | Shape | Feather, 2x Arrow |
+| Footing | Shape | Cobblestone, Leather Boots |
+| Furrow | Shape | Wooden Hoe, Wheat Seeds |
+| Hedgerow | Shape | Oak Sapling, Sweet Berries, Oak Leaves |
+| Herd | Shape | Wheat, Lead, Hay Block |
 | Imprint | Shape | Clay Ball, Gunpowder |
+| Lamplit | Shape | Lantern, Glowstone Dust |
 | Nova | Shape | Gunpowder, Glowstone Dust |
+| Nursery | Shape | Egg, Milk Bucket |
+| Packbond | Shape | Bone, Lead, Name Tag |
+| Pit | Shape | Iron Shovel, Gravel |
+| Plot | Shape | Dirt, Wheat Seeds, Stick |
 | Ray | Shape | Glass Pane, Glowstone Dust |
+| Saddle | Shape | Saddle |
+| Seam | Shape | Stone Pickaxe, Coal |
 | Self | Shape | Glass Pane |
 | Spark | Shape | Flint, Glowstone Dust |
+| Stepstones | Shape | Cobblestone, Lily Pad |
 | Touch | Shape | Leather |
 
-## Tier II (105 runes, + 2 Lapis Lazuli and a Gold Ingot)
+## Tier II (255 runes, + 2 Lapis Lazuli and a Gold Ingot)
 
 | Rune | Family | Items |
 |---|---|---|
+| Aftercare | Effect | Glistering Melon Slice, Clock |
 | Aftershock | Effect | Piston, Cobblestone |
+| Agestone | Effect | Moss Block, Cracked Stone Bricks |
+| Arrowveil | Effect | Arrow, Phantom Membrane |
+| Axolotl Kinship | Effect | Tropical Fish, Clay Ball |
 | Banish | Effect | Ender Pearl, Popped Chorus Fruit |
+| Barkhide | Effect | Oak Log, Spruce Log, Iron Ingot |
+| Beeline | Effect | Honeycomb, Feather, Sugar |
+| Blastward | Effect | Gunpowder, Obsidian |
 | Bleed | Effect | Shears, Redstone |
 | Break | Effect | Iron Pickaxe |
+| Brickwork | Effect | Stonecutter, Brick |
 | Bubble | Effect | Water Bucket, Slime Ball |
+| Camp Ward | Effect | Campfire, White Wool |
+| Checker Dye | Effect | White Dye, Black Dye |
+| Chest Sort | Effect | Chest, Comparator |
 | Cleanse | Effect | Milk Bucket |
 | Coldsnap | Effect | Packed Ice, Snow Block |
+| Coral Mend | Effect | Bone Meal, Prismarine Crystals |
+| Currentkin | Effect | Cod, Prismarine Crystals |
 | Cyclone | Effect | Wind Charge, Breeze Rod |
 | Dash | Effect | Rabbit Foot |
 | Decree | Effect | Writable Book |
 | Deflect | Effect | Shield, Wind Charge |
+| Dewkeep | Effect | Water Bucket, White Wool, Wheat Seeds |
 | Disarm | Effect | Wind Charge, Fishing Rod |
 | Dismantle | Effect | Shears |
+| Ditchwater | Effect | Iron Shovel, Water Bucket, Clay Ball |
+| Dolphin Call | Effect | Cod, Nautilus Shell |
+| Drift Net | Effect | 2x String, Kelp |
+| Drown Ward | Effect | Pufferfish, Glass Bottle |
+| Dynamo Stride | Effect | Redstone, Copper Ingot, Leather Boots |
+| Ember Rest | Effect | Campfire, Glistering Melon Slice |
 | Empower | Effect | Iron Sword |
+| Enderhush | Effect | Carved Pumpkin, Ender Pearl |
+| Evade | Effect | Rabbit Foot, Feather |
 | Excavate | Effect | Iron Shovel |
+| Fair Wind | Effect | White Wool, Feather |
 | Fell | Effect | Iron Axe, any logs |
 | Fire | Effect | Blaze Powder |
 | Fireward | Effect | Magma Cream |
 | Flash Freeze | Effect | Packed Ice, Water Bucket |
 | Flashfire | Effect | Blaze Powder, Gunpowder |
+| Floorlay | Effect | 2x Smooth Stone, Oak Planks |
+| Frame Veil | Effect | Item Frame, Glass Pane |
 | Frost | Effect | Powder Snow Bucket |
 | Gash | Effect | Flint, Rotten Flesh |
+| Gold Parley | Effect | Gold Ingot, Gold Nugget, Porkchop |
+| Gourdcall | Effect | Pumpkin Seeds, Melon Seeds, Bone Meal |
 | Grapple | Effect | Lead |
+| Grave Bearing | Effect | Compass, Bone, Soul Sand |
 | Haven | Effect | Shield, Glistering Melon Slice |
+| Headlamp | Effect | Lantern, Leather Helmet |
+| Hearthglow | Effect | Campfire, Golden Carrot |
+| Hearthguard | Effect | Emerald, Iron Ingot |
+| Hearthsong | Effect | Note Block, Glistering Melon Slice |
+| Heartsense | Effect | Fermented Spider Eye, Redstone |
+| Heel | Effect | Goat Horn, Bone |
+| Henhouse | Effect | Egg, Wheat Seeds, Hay Block |
+| Hollow Pocket | Effect | Bundle, Ender Pearl |
+| Inkveil | Effect | 2x Ink Sac |
 | Jolt | Effect | Lightning Rod, Iron Ingot |
+| Keenkeep | Effect | Grindstone, Flint |
+| Keepsafe | Effect | Iron Ingot, Tripwire Hook |
+| Kiln Bake | Effect | Furnace, Coal, Clay Ball |
+| Lapis Thrift | Effect | Lapis Lazuli, Book |
 | Launch | Effect | Wind Charge |
+| Lava Crust | Effect | Basalt, Snowball, Magma Cream |
+| Lava Seal | Effect | Water Bucket, Obsidian |
+| Leafshade | Effect | Oak Leaves, Oak Log, Vine |
+| Levelground | Effect | Iron Shovel, Iron Pickaxe |
 | Levitate | Effect | Phantom Membrane |
+| Lodepull | Effect | Lodestone, Hopper |
+| Lodestar | Effect | Lodestone |
+| Long Arm | Effect | 2x Stick, String, Iron Nugget |
+| Lullaby | Effect | White Bed, Phantom Membrane |
+| Lumen Path | Effect | 2x Glowstone Dust, String |
+| Lure | Effect | Fishing Rod, Ender Pearl |
 | Manabraid | Effect | Lapis Lazuli, Amethyst Shard, String |
+| Managift | Effect | Amethyst Shard, Lapis Lazuli |
+| Mending Mist | Effect | Glistering Melon Slice, Glass Bottle |
+| Mooring Call | Effect | Oak Boat, Lead |
+| Morale | Effect | Golden Apple, White Banner |
+| Nightwatch | Effect | Bell, Spider Eye |
+| Ore Tally | Effect | Raw Iron, Coal, Paper |
 | Overdrive | Effect | Blaze Powder, Redstone |
+| Pacify | Effect | Poppy, Lapis Lazuli |
+| Pearl Sight | Effect | Prismarine Crystals, Nautilus Shell |
+| Petward | Effect | Bone, Shield |
+| Pit Floor | Effect | 2x Packed Mud, Scaffolding |
+| Plowline | Effect | Iron Hoe, Dirt, String |
+| Pollinate | Effect | Honeycomb, Dandelion, Poppy |
+| Porpoise Leap | Effect | Cod, Feather |
+| Portal Sense | Effect | Map, Obsidian |
+| Potion Steep | Effect | Glass Bottle, Nether Wart, Redstone |
 | Pull | Effect | Fishing Rod |
+| Quickbrew | Effect | Blaze Powder, Glass Bottle, Sugar |
+| Raincloud | Effect | White Wool, Kelp |
+| Rally | Effect | White Banner, Sugar |
 | Rampart | Effect | 2x Packed Mud |
 | Regrowth | Effect | Ghast Tear |
 | Repel | Effect | 2x Wind Charge |
+| Restock | Effect | Barrel, Hopper |
+| Ripen | Effect | Bone Meal, Wheat, Clock |
 | Ripple | Effect | Sunflower, Glowstone Dust |
+| Riser | Effect | Stone Pickaxe, Ladder |
 | Root | Effect | 2x Vine |
 | Root Carry | Effect | Rooted Dirt, Bone Meal, String |
+| Ruin Sense | Effect | Map, Brush |
+| Sandbar | Effect | Sandstone, Sand |
+| Sapflow | Effect | Honey Bottle, Oak Sapling, Glistering Melon Slice |
+| School Sight | Effect | Tropical Fish, Glow Ink Sac |
+| Sea Breeze | Effect | Feather, Milk Bucket |
 | Searing Edge | Effect | Iron Sword, Blaze Powder |
 | Shackle | Effect | 2x Iron Chain |
+| Shellback | Effect | Turtle Scute, Kelp |
 | Shield | Effect | Shield |
+| Shieldwall | Effect | Shield, Cobblestone |
+| Shipwreck Sense | Effect | Map, Oak Boat |
 | Silence | Effect | any wool |
+| Silklift | Effect | 2x String, Iron Pickaxe |
+| Skimstep | Effect | Lily Pad, Feather |
 | Smelt | Effect | Furnace, Blaze Powder |
+| Softfoot | Effect | White Wool, Ender Pearl |
+| Soothe | Effect | Honeycomb, Poppy |
 | Span | Effect | 2x Magenta Stained Glass |
+| Spawner Sense | Effect | Rotten Flesh, Iron Bars |
 | Spellbrand | Effect | Book, Gunpowder |
+| Spook | Effect | Bone, Carved Pumpkin |
+| Stair Delve | Effect | Stone Pickaxe, Cobblestone Stairs |
+| Stalkrise | Effect | Sugar Cane, Cactus, Bone Meal |
+| Steady Brush | Effect | Brush, Feather, Gravel |
+| Steedsong | Effect | Saddle, Sugar |
+| Stillbind | Effect | Cobweb, Ender Pearl |
+| Stillwell | Effect | Water Bucket, Lapis Lazuli |
 | Stoneskin | Effect | Armadillo Scute |
+| Stow | Effect | Chest, Hopper |
 | Strata Rise | Effect | Stone, Packed Mud, Flint |
 | Swap | Effect | 2x Ender Pearl |
+| Tarry | Effect | Clock, Honey Bottle |
 | Thunderclap | Effect | Goat Horn |
 | Tidal Lift | Effect | Prismarine Shard, Kelp, Clay Ball |
+| Tinker's Hum | Effect | Anvil, Iron Ingot, Copper Ingot |
+| Tool Mend | Effect | Anvil, Iron Ingot, Grindstone |
+| Torchfall | Effect | 2x Torch, Coal |
+| Trot | Effect | Saddle, Carrot, Sugar |
 | Tunnel | Effect | Iron Pickaxe, Rail |
+| Unburden | Effect | Barrel, Chest |
 | Veil | Effect | Golden Carrot, Fermented Spider Eye |
 | Vein | Effect | Iron Pickaxe, Raw Iron |
 | Venom | Effect | Poisonous Potato |
+| Village Sense | Effect | Map, Emerald |
+| Void Step | Effect | End Stone, Feather, Ender Pearl |
 | Watchweft | Effect | Feather, String, Copper Ingot |
 | Weigh | Effect | Iron Block |
 | Wind Steps | Effect | Feather, Breeze Rod, String |
+| Wreck Sense | Effect | Prismarine Shard, Spyglass |
+| Wring | Effect | Sponge |
 | Zipper | Effect | 2x Iron Nugget, String |
 | If Airborne | Link | Feather, Phantom Membrane |
+| If Alone | Link | Compass, Ink Sac |
+| If Brimming | Link | Glass Bottle, Lapis Lazuli |
+| If Near Ally | Link | Compass, Bone |
 | If Sneaking | Link | Leather Boots |
+| If Unhurt | Link | Apple, Clock |
 | Imbue | Link | Experience Bottle |
+| On Catch | Link | Fishing Rod, Tripwire Hook |
 | On Hit | Link | Target |
 | On Hurt | Link | Cactus |
 | On Land | Link | Hay Block |
+| On Mount | Link | Saddle, Tripwire Hook |
+| On Splash | Link | Water Bucket, Tripwire Hook |
+| On Sprint | Link | Sugar, Tripwire Hook |
+| On Wake | Link | White Bed, Tripwire Hook |
 | On Weakness | Link | Fermented Spider Eye, Target |
 | Pulse | Link | Repeater |
 | Anchor Circle | Modifier | Iron Ingot, Stone |
 | Belated | Modifier | Clock, Cobweb |
 | Bloom Circle | Modifier | Pink Petals, Bone Meal |
 | Bounce | Modifier | Slime Block |
+| Bountiful | Modifier | Experience Bottle, Emerald |
 | Crucible Circle | Modifier | Blaze Powder, Brick |
+| Culling | Modifier | Rotten Flesh, Iron Sword |
 | Execute | Modifier | Iron Axe |
+| Fertile | Modifier | 2x Bone Meal, Moss Block |
 | Focus | Modifier | Glass Pane, Gold Nugget |
 | Gyre Circle | Modifier | Feather, Copper Ingot |
+| Hallowed | Modifier | Golden Apple, Bone |
+| Inward | Modifier | Glass Pane, Amethyst Shard |
+| Kilned | Modifier | Furnace, Coal |
 | Kindred | Modifier | Cake |
 | Linger | Modifier | Honey Bottle |
+| Mending | Modifier | Iron Ingot, Anvil |
 | Mercy Circle | Modifier | Honey Bottle, Poppy |
 | Needle Circle | Modifier | Flint, Iron Nugget |
+| Ore Sensing | Modifier | Spyglass, Raw Gold |
 | Pierce | Modifier | 2x Arrow |
 | Pilgrim Circle | Modifier | Compass, Feather |
+| Pooled | Modifier | Bowl, Glass Bottle |
+| Purifying | Modifier | Milk Bucket, Glass Bottle |
 | Quicken | Modifier | Breeze Rod |
 | Rapid | Modifier | Sugar, Redstone |
+| Selfless | Modifier | Poppy, Gold Nugget |
+| Silken | Modifier | String, White Wool |
+| Sunlit | Modifier | Sunflower, Gold Ingot |
+| Tapering | Modifier | Arrow, Flint |
 | Thirst | Modifier | Spider Eye, Glass Bottle |
+| Timbering | Modifier | Iron Axe, Oak Log |
+| Triage | Modifier | Glistering Melon Slice, Paper |
+| Veinfollow | Modifier | Raw Iron, Raw Copper |
 | Vigil Circle | Modifier | Spider Eye, Iron Nugget |
 | Volley | Modifier | Crossbow |
 | Widen | Modifier | 2x Amethyst Shard |
@@ -160,53 +468,106 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Beam | Shape | Spyglass |
 | Blitz | Shape | Rabbit Foot, Sugar |
 | Burst | Shape | 2x Gunpowder |
+| Canopy | Shape | Oak Slab, Oak Leaves, Oak Fence |
+| Causeway | Shape | Cobblestone Slab, Iron Shovel, Rail |
 | Cluster | Shape | 2x Gunpowder, Amethyst Shard |
 | Comet | Shape | Fire Charge, Gunpowder |
 | Cone | Shape | Fire Charge |
+| Corridor | Shape | Iron Pickaxe, Rail, Torch |
 | Crescent | Shape | Iron Sword, Feather |
+| Crossway | Shape | Compass, Gravel, Stick |
+| Facade | Shape | Bricks, Glass Pane, Stone Bricks |
+| Fellowship | Shape | Cake, Golden Apple, Emerald |
+| Fissure | Shape | Flint, Iron Pickaxe, TNT |
+| Flock | Shape | Feather, Phantom Membrane, Wheat Seeds |
 | Glaive | Shape | Iron Axe, String |
+| Grudge | Shape | Rotten Flesh, Iron Sword, Ink Sac |
 | Lance | Shape | Spyglass, Blaze Rod |
 | Latch | Shape | Lead, Amethyst Shard |
+| Lattice | Shape | Iron Bars, White Carpet, Black Carpet |
+| Lodeseek | Shape | Compass, Raw Iron, Raw Copper, Raw Gold |
 | Mine | Shape | Tripwire Hook |
+| Perimeter | Shape | Oak Fence, Oak Fence Gate, String |
 | Pillar | Shape | 2x Pointed Dripstone |
 | Prism | Shape | Prismarine Crystals, Glass |
+| Rearguard | Shape | Shield, Arrow, Spyglass |
 | Ricochet | Shape | Slime Ball, Snowball |
 | Ring | Shape | Bell |
+| Rosette | Shape | Pink Petals, Sunflower, Glowstone Dust |
+| Seedbed | Shape | Iron Hoe, Wheat Seeds, Beetroot Seeds, Bone Meal |
+| Shaft | Shape | Iron Pickaxe, Ladder |
+| Shoal | Shape | Tropical Fish, Salmon, Prismarine Shard |
+| Shoreline | Shape | Sand, Water Bucket, Sugar Cane |
+| Spire | Shape | Cobblestone Wall, End Rod |
+| Stairwell | Shape | Stone Stairs, Iron Pickaxe, Torch |
 | Stream | Shape | Spyglass, Redstone Torch |
 | Sweep | Shape | Spyglass, String |
+| Tether | Shape | Lead, Ender Pearl, String |
 | Trail | Shape | 2x Glowstone Dust |
 | Wave | Shape | 2x Kelp |
 | Wisp | Shape | Glow Berries, Amethyst Shard |
 
-## Tier III (45 runes, + a Mana Crystal and a Diamond)
+## Tier III (84 runes, + a Mana Crystal and a Diamond)
 
 | Rune | Family | Items |
 |---|---|---|
 | Accelerate | Effect | Clock, Sugar |
+| Beacon Swell | Effect | Glowstone Dust, Iron Ingot, Prismarine Crystals |
+| Bellward | Effect | Bell, Emerald |
 | Blackflame | Effect | Soul Campfire, Black Dye |
 | Blackspark | Effect | Black Dye, Glowstone |
 | Blink | Effect | Ender Pearl, Chorus Fruit |
+| Caveward | Effect | Turtle Helmet, Sand, Gravel |
 | Cleave | Effect | Diamond Axe |
+| Coppice | Effect | Iron Axe, Oak Sapling, Oak Log |
+| Corral | Effect | Oak Fence, Lead |
+| Courtship | Effect | Wheat, Carrot, Poppy |
+| Deepway | Effect | Diamond Pickaxe, Torch, Rail |
+| Diving Bell | Effect | 2x Glass, Heart Of The Sea |
 | Drowse | Effect | Spore Blossom, Honey Bottle |
 | Explode | Effect | TNT, Fire Charge |
+| Faithful | Effect | Bone, Golden Apple |
 | Foresight | Effect | Spyglass |
+| Fortress Sense | Effect | Map, Nether Bricks, Blaze Powder |
 | Freeze | Effect | 2x Blue Ice |
+| Gangue | Effect | Iron Pickaxe, Tuff, Raw Iron |
+| Glidewind | Effect | Phantom Membrane, Wind Charge |
 | Gravity Well | Effect | Ender Eye, Crying Obsidian |
+| Guardlink | Effect | Iron Chain, Iron Ingot |
+| Haggle | Effect | 2x Emerald, White Banner |
+| Hearthbond | Effect | Golden Apple, String |
+| Hearthcook | Effect | Smoker, Coal, Beef |
+| Hexguard | Effect | Fermented Spider Eye, Shield |
+| Hive Hum | Effect | Honeycomb, Honey Bottle, Clock |
 | Inferno | Effect | Blaze Rod, Magma Block |
+| Ironhold | Effect | Anvil, Shield |
 | Lightning | Effect | Copper Block, Glowstone |
+| Luckstrike | Effect | Iron Pickaxe, Rabbit Foot, Emerald |
+| Manawell | Effect | Amethyst Shard, Cauldron |
 | Meteor | Effect | Magma Block, Fire Charge |
+| Ore Pluck | Effect | Iron Pickaxe, Raw Copper, Raw Gold |
 | Primer | Effect | TNT, Pink Dye |
 | Prolong | Effect | Clock, 2x Redstone |
+| Rally Light | Effect | Beacon |
 | Reflect | Effect | Shield, Glass Pane |
 | Resonance | Effect | Iron Nugget, Hay Block |
 | Restore | Effect | Iron Ingot, Glistering Melon Slice |
+| Sanctuary | Effect | Candle, Glowstone Dust |
+| Sapling Rise | Effect | Oak Sapling, Bone Meal, Oak Log |
+| Scarecrow | Effect | Carved Pumpkin, Hay Block, Stick |
 | Shades | Effect | 2x Bone, Black Dye |
 | Shadowstep | Effect | Ender Pearl, Ink Sac |
 | Smite | Effect | Glowstone, Golden Carrot |
 | Soar | Effect | Phantom Membrane, Feather, Breeze Rod |
+| Spire Sense | Effect | Map, Chorus Fruit, End Stone |
+| Stronghold Compass | Effect | Compass, Ender Pearl, Blaze Powder |
 | Thunderbird | Effect | Feather, Lightning Rod |
 | Time Skip | Effect | Clock, Ender Pearl |
+| Trade Renew | Effect | Emerald, Clock, Barrel |
 | Tremor | Effect | Deepslate Bricks, TNT |
+| Truce | Effect | White Wool, Poppy |
+| Wayfarer's Hymn | Effect | Note Block, Sugar, Rabbit Hide |
+| Withdraw | Effect | Fermented Spider Eye, Sugar |
 | Combo | Link | 2x Repeater |
 | Echo | Link | 2x Echo Shard |
 | On Kill | Link | Bone Block |
@@ -216,25 +577,42 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Chain | Modifier | Iron Chain, Redstone |
 | Confluence Circle | Modifier | Amethyst Shard, Prismarine Shard |
 | Eclipse Circle | Modifier | Ender Pearl, Gold Nugget |
+| Headhunting | Modifier | Skeleton Skull, Arrow, Spyglass |
 | Homing | Modifier | Compass |
 | Overcharge | Modifier | 2x Glowstone |
 | Split | Modifier | 2x Prismarine Crystals |
 | Tempest Circle | Modifier | Breeze Rod, Copper Ingot |
 | Vow | Modifier | Paper, Gold Block |
+| Windfall | Modifier | Emerald, Rabbit Foot |
+| Collapse | Shape | Anvil, TNT, Gravel |
+| Dome | Shape | 2x Glass, Smooth Stone, Amethyst Shard |
 | Orb | Shape | Slime Block |
 | Orbit | Shape | Ender Eye |
 | Rain | Shape | Pointed Dripstone, Water Bucket |
+| Sentinel | Shape | Shield, Iron Sword, Bell, Carved Pumpkin |
+| Spiral | Shape | Nautilus Shell, Amethyst Shard, Redstone |
 | Totem | Shape | Emerald Block |
+| Vault | Shape | Iron Pickaxe, Chest, Iron Block |
 | Wall | Shape | 2x Obsidian |
 | Zone | Shape | Redstone Block |
 
-## Tier IV (11 runes, found only)
+## Tier IV (21 runes, found only)
 
 | Rune | Family | Found |
 |---|---|---|
+| Accord | Effect | Pillagers (1%), Archive vaults, the Archivist |
+| Aegis | Effect | Ravagers (5%), Archive vaults, the Archivist |
+| Citadel | Effect | Ravagers (8%), Archive vaults, the Archivist |
+| Cloche | Effect | Archive vaults, the Archivist |
+| Delvemark | Effect | Archive vaults, the Archivist |
 | Dragon Breath | Effect | the Ender Dragon, Archive vaults, the Archivist |
+| Feast Day | Effect | Archive vaults, the Archivist |
+| Grace | Effect | Pillagers (1%), Archive vaults, the Archivist |
 | Hollow | Effect | the Wither (50%), Archive vaults, the Archivist |
+| Homeward | Effect | Archive vaults, the Archivist |
 | Infinity | Effect | Ominous vaults, the Ender Dragon, Archive vaults, the Archivist |
+| Motherlode | Effect | Archive vaults, the Archivist |
+| Ocean's Favor | Effect | Archive vaults, the Archivist |
 | Reversal | Effect | Ominous vaults, Archive vaults, the Archivist |
 | Rewind | Effect | End cities, Archive vaults, the Archivist |
 | Sonic Boom | Effect | the Warden, Archive vaults, the Archivist |
@@ -356,7 +734,7 @@ Two particular effects, an amethyst shard and 3 XP levels. The pair makes its si
 
 The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
 
-## Runes of the world (53 runes, found only)
+## Runes of the world (59 runes, found only)
 
 Never crafted, whatever their tier: each is found only in its own places (vanilla structures, a biome by
 Attunement, Wildercord's dungeons and bosses, world events). Attunement: meditate with a Blank Rune in hand
@@ -384,6 +762,7 @@ in the right biome, under the right conditions, for 20 seconds.
 | Sporebloom | Effect | II | Attuned in mushroom fields |
 | Stalactite | Effect | II | Attuned in dripstone caves |
 | Tidehook | Effect | II | Fished from open water |
+| Tollgate | Effect | II | The Warden's Threshold, retrievable in Grimoire after Tempered; study with active Circle X |
 | Tusk Charge | Effect | II | Bastions |
 | Undertow | Effect | II | Shipwrecks, Runebound Adepts (8%) |
 | Vinelash | Effect | II | Jungle temples, Runebound Adepts (8%) |
@@ -391,9 +770,11 @@ in the right biome, under the right conditions, for 20 seconds.
 | Warp Step | Effect | II | Attuned in a warped forest |
 | Ashen Veil | Effect | III | The Ember Sanctum |
 | Basalt Surge | Effect | III | Attuned in the basalt deltas |
+| Conduit | Effect | III | Notes on a Grounded Storm, retrievable in Grimoire after Grounded; study with active Circle XVIII |
 | Drowning Word | Effect | III | The Drowned Scriptorium |
 | Eclipse | Effect | III | The Astral Observatory |
 | Hoarfrost | Effect | III | Attuned among ice spikes |
+| Lifeline | Effect | III | The Thread Between Stars, retrievable in Grimoire after Starbreaker; study with active Circle XIV |
 | Manatide | Effect | III | Mana storms (a surge after 10 casts) |
 | Resonant Shriek | Effect | III | Ancient cities |
 | Riftcall | Effect | III | Rift sieges |
@@ -406,6 +787,7 @@ in the right biome, under the right conditions, for 20 seconds.
 | Sunscorch | Effect | III | Attuned in the badlands |
 | Tidecall | Effect | III | Ocean monuments (Elder Guardians) |
 | Cinderheart | Effect | IV | the Cinder Warden |
+| Excise | Effect | IV | The Root That Outlived Its Gardener, retrievable in Grimoire after Heartwood; study with active Circle XVI |
 | Starmaw | Effect | IV | the Star Eater |
 | Tidewrit | Effect | IV | the Tide Scribe |
 | If Wet | Link | II | The Drowned Scriptorium |
@@ -417,6 +799,8 @@ in the right biome, under the right conditions, for 20 seconds.
 | Snare | Shape | II | Jungle temples |
 | Constellation | Shape | III | The Astral Observatory |
 | Vortex | Shape | III | Ominous vaults |
+| Relay | Shape | IV | The Margin Between Places, at an inactive Archive Lectern after Circle VIII and the Archivist |
+| Reweave | Shape | IV | Ebb Ledger, retrievable in the Grimoire after Low Tide; study with active Circle XII |
 
 ## Innate runes (10, never crafted or found)
 

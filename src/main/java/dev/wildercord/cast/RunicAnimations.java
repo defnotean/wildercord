@@ -23,6 +23,26 @@ public final class RunicAnimations {
 
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
+    /** Cosmetic-only paid Reweave inscription. No Cast is copied and its closed damage lifetime is never reopened. */
+    static void reweave(net.minecraft.server.level.ServerPlayer caster, java.util.function.BooleanSupplier releasedOwner) {
+        if (Fx.muted() || !releasedOwner.getAsBoolean()) return;
+        ServerLevel level = caster.level();
+        var sequence = RuneChoreography.of(Runes.REWEAVE);
+        var beats = List.of(sequence.opening(), sequence.middle(), sequence.finish());
+        for (int i = 0; i < beats.size(); i++) {
+            int phase = i;
+            Runnable stroke = () -> {
+                if (Fx.muted() || !releasedOwner.getAsBoolean() || caster.level() != level) return;
+                Vec3 dir = safe(caster.getLookAngle());
+                if (!Double.isFinite(dir.x) || !Double.isFinite(dir.y) || !Double.isFinite(dir.z)) return;
+                // Like ordinary rune release, the small glyph stays behind the first-person sightline.
+                Vec3 at = caster.getEyePosition().subtract(dir.scale(1.8)).add(0, -.35, 0);
+                draw(level, at, dir, RuneColors.of(Runes.REWEAVE), beats.get(phase), .46, phase, false, 3);
+            };
+            if (i == 0) stroke.run(); else Scheduler.later(i * 3, stroke);
+        }
+    }
+
 	/** A release for the shape and every effect in a group, including effects after the first. */
 	public static void release(Cast cast, SpellPlan.Group group, Cast.Trigger trigger) {
 		if (cast.passive || Fx.muted() || !cast.once("rune-release:" + System.identityHashCode(group))) {
@@ -162,6 +182,11 @@ public final class RunicAnimations {
 			case TETHER -> { c.orb(-0.73, 0.35, 0.14); c.orb(0.73, -0.35, 0.14); c.line(-0.6, 0.28, 0.6, -0.28); }
 			case CLOUD -> { c.orb(-0.47, 0.03, 0.36); c.orb(0.04, 0.36, 0.42); c.orb(0.49, 0.02, 0.34); c.line(-0.72, -0.27, 0.73, -0.27); }
 			case FOAM -> { c.orb(-0.59, -0.37, 0.15); c.orb(-0.21, 0.16, 0.27); c.orb(0.35, -0.13, 0.22); c.orb(0.67, 0.48, 0.11); }
+			case LEDGER -> {
+				// One narrow account, with the original four obligations ruled across it.
+				c.line(-0.16, -0.88, -0.16, 0.88); c.line(0.16, -0.88, 0.16, 0.88);
+				for (int i = 0; i < 4; i++) { double y = -0.66 + i * 0.44; c.line(-0.16, y, 0.16, y); }
+			}
 		}
 		if (landing && phase == 2) {
 			Vfx.emit(level, new DustParticleOptions(bright, 0.72F), at, 5, scale * 0.3, 0.02);

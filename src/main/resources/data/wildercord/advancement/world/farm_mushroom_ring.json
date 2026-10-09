@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/farm_sites",
+  "criteria": {
+    "farm_mushroom_ring": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_mushroom_ring"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:red_mushroom"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_mushroom_ring.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_mushroom_ring.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_mushroom_ring"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

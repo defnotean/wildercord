@@ -311,6 +311,11 @@ def main():
     write_json(DATA / "recipe/cinnamon_bow.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
         "ingredients": ["minecraft:string", "minecraft:string", "minecraft:pink_dye"], "result": {"id": "wildercord:cinnamon_bow"}})
     unlock_advancement("wildercord:cinnamon_bow", "minecraft:pink_dye")
+    item_model("cinnamon_whistle", "cinnamon_whistle")
+    write_json(ASSETS / "items/cinnamon_whistle.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/cinnamon_whistle"}})
+    write_json(DATA / "recipe/cinnamon_whistle.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+        "ingredients": ["minecraft:copper_ingot", "minecraft:bone", "minecraft:string"], "result": {"id": "wildercord:cinnamon_whistle"}})
+    unlock_advancement("wildercord:cinnamon_whistle", "minecraft:copper_ingot")
     runes = read_runes()
     tex = ASSETS / "textures/item"
 
@@ -479,6 +484,21 @@ def write_lang(runes):
         "entity.wildercord.cinnamon": "Cinnamon",
         "item.wildercord.cinnamon_toy": "Cinnamon's Red Bone",
         "item.wildercord.cinnamon_bow": "Cinnamon's Bow",
+        "item.wildercord.cinnamon_whistle": "Cinnamon's Summoning Whistle",
+        "message.wildercord.cinnamon.grow": "Cinnamon grows! Her first treat starts one 60-second growth window.",
+        "message.wildercord.cinnamon.growth_full": "Cinnamon is at her safe size limit. No treat was used.",
+        "message.wildercord.cinnamon.growth_blocked": "Cinnamon needs clear space and solid ground to grow. No treat was used.",
+        "message.wildercord.cinnamon.exhausted": "Cinnamon needs 30 seconds to recover. She'll follow you without attacking.",
+        "message.wildercord.cinnamon.recovered": "Cinnamon has recovered and can defend you again.",
+        "message.wildercord.cinnamon.rest_follow": "Cinnamon is recovering. She'll keep following until she feels better.",
+        "message.wildercord.cinnamon.recall_owner": "This whistle answers only to Cinnamon's configured owner.",
+        "message.wildercord.cinnamon.recall_wait": "Calling Cinnamon. If her saved chunk is unloaded, recovery can take up to 10 seconds.",
+        "message.wildercord.cinnamon.recall_ok": "Cinnamon is here and following you.",
+        "message.wildercord.cinnamon.recall_blocked": "Cinnamon needs a clear, permitted landing near you. Leave combat, wards or cramped spaces and try again.",
+        "message.wildercord.cinnamon.recall_missing": "Cinnamon's saved body wasn't recovered. No copy was created. Try again near her last location or ask your server admin.",
+        "message.wildercord.cinnamon.recall_retired": "Cinnamon was removed by an administrator. The whistle won't recreate her.",
+        "message.wildercord.cinnamon.recall_cooldown": "The whistle is resting. Wait up to 10 seconds before calling again.",
+        "message.wildercord.cinnamon.recall_identity": "Cinnamon's saved identity needs repair. Recovery is paused without replacing her. Ask an admin to restore the matching companion records from backup.",
         "message.wildercord.cinnamon.bow_on": "Cinnamon wears her bow. Shears take it off again.",
         "message.wildercord.cinnamon.bow_off": "You untie Cinnamon's bow.",
         "message.wildercord.cinnamon.toy": "Cinnamon wiggles with her favourite red bone.",
@@ -631,20 +651,22 @@ def write_lang(runes):
         "screen.wildercord.heart.perk.5": "%s Circle · Flow: cooldowns 15%% shorter",
         "screen.wildercord.heart.perk.7": "%s Circle · Overflow: spells cast at full mana hit 30%% harder",
         "screen.wildercord.heart.perk.8": "%s Circle · Archmage: spells cost 15%% less mana",
-        "screen.wildercord.heart.complete": "Your heart is complete: an Archmage's eight circles.",
+        "screen.wildercord.heart.complete": "Your heart is complete: %s circles. Master Heart.",
         "screen.wildercord.heart.next": "Next: the %s Circle",
         "screen.wildercord.heart.condense": "Mana condensed from casting: %s / %s",
         "screen.wildercord.heart.ready": "Ready! Meditate (sneak and stand still) for 10 seconds without getting hurt to form it.",
         "screen.wildercord.heart.need.runes": "Know %s runes (%s)",
         "screen.wildercord.heart.need.cord": "Wear a %s or better",
         "screen.wildercord.heart.need.kills": "Defeat %s monsters with spells (%s)",
-        "screen.wildercord.heart.need.boss": "Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon, the Archivist, the Cinder Warden, the Star-Eater or the Tide Scribe)",
+        "screen.wildercord.heart.need.boss": "Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon, a Dungeon Boss, Gravekeeper, or Sword Master)",
         "message.wildercord.circle_broken": "Your concentration broke: the circle unravels",
         "screen.wildercord.heart.how": "Mana spent casting spells condenses in your heart. Once it's ready, meditate to form the circle.",
         "message.wildercord.circle_ready": "Your heart is ready to form the %s Circle. Meditate (sneak and stand still) for 10 seconds without getting hurt to form it.",
         "message.wildercord.circle_formed": "%s Circle formed: +%s max mana, +%s mana/s and +%s%% spell power.",
         "message.wildercord.passive_slot": "Passive slots open: %s. Thread them on the Cord screen's Passives page.",
+        "message.wildercord.perk.2": "Overchannel II: hold Cast to charge spells up to 40%% stronger.",
         "message.wildercord.perk.3": "Mana Skin: a fifth of the damage you take is now paid with mana.",
+        "message.wildercord.perk.4": "Overchannel III: maximum channel capacity reached (up to 60%% stronger).",
         "message.wildercord.perk.5": "Flow: your cooldowns are 15%% shorter.",
         "message.wildercord.perk.7": "Overflow: spells cast at full mana hit 30%% harder.",
         "message.wildercord.perk.8": "Archmage: your spells cost 15%% less mana.",
@@ -664,6 +686,18 @@ def write_lang(runes):
         "title.wildercord.circle.6": "Your heart burns brighter",
         "title.wildercord.circle.7": "Overflow: mana spills from you",
         "title.wildercord.circle.8": "Archmage",
+        "title.wildercord.circle.9": "Widening Horizon",
+        "title.wildercord.circle.10": "Forged Heart",
+        "title.wildercord.circle.11": "Woven Wisdom",
+        "title.wildercord.circle.12": "Ocean Within",
+        "title.wildercord.circle.13": "Boundless Study",
+        "title.wildercord.circle.14": "Starheart",
+        "title.wildercord.circle.15": "Living Grimoire",
+        "title.wildercord.circle.16": "Rooted Heart",
+        "title.wildercord.circle.17": "Prismatic Heart",
+        "title.wildercord.circle.18": "Stormheart",
+        "title.wildercord.circle.19": "Convergence",
+        "title.wildercord.circle.20": "Master Heart",
         "command.wildercord.circles": "Heart Circles set to %s",
         "command.wildercord.condensed": "Condensed %s mana",
         "screen.wildercord.mana.title": "Mana",
@@ -721,12 +755,15 @@ def write_lang(runes):
         "message.wildercord.swap_blocked": "No room to trade places",
         "message.wildercord.light_blocked": "No room for a light there",
         "message.wildercord.silenced": "You are silenced and cannot cast",
+        "message.wildercord.hushed": "A Hush lies over you: your words make no sound",
         "message.wildercord.charge_interrupted": "Your charge is cut short",
         "message.wildercord.zipper_no_wall": "There's no wall in front of you to unzip",
         "message.wildercord.zipper_unbreakable": "That can't be unzipped",
         "message.wildercord.zipper_thick": "Too thick to unzip (6 blocks at most)",
+        "message.wildercord.zipper_claimed": "That wall or the ground past it is protected",
         "message.wildercord.too_many_birds": "You can only keep %s Thunderbirds at once",
         "message.wildercord.rewind_dimension": "Rewind can't reach into another dimension",
+        "message.wildercord.rewind_unsafe": "Rewind won't return you there: that spot isn't safe now",
         "message.wildercord.time_resumes": "Time resumes: %s damage from %s hits lands at once",
         "message.wildercord.reversal": "Reversal! Death turned back",
         "message.wildercord.deaths_door": "Death was cheated too recently: nothing turns it back again for %s s",
@@ -794,6 +831,14 @@ def write_lang(runes):
     import sleeping_blade_art
     lang.update(sleeping_blade_art.LANG)
     sleeping_blade_art.write(sys.modules[__name__])
+    # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
+    import importlib
+    site_ids = []
+    for site_module in sorted(Path(__file__).resolve().parent.glob("sites_*.py")):
+        pack = importlib.import_module(site_module.stem)
+        lang.update(pack.LANG)
+        site_ids += pack.write(sys.modules[__name__])
+    write_json(DATA / "tags/worldgen/structure/site.json", {"replace": False, "values": sorted(f"wildercord:{s}" for s in site_ids)})
     import tournament_art
     lang.update(tournament_art.LANG)
     tournament_art.write(sys.modules[__name__])
@@ -867,12 +912,124 @@ def write_lang(runes):
     refuge_art.write(sys.modules[__name__])
     import aura_world_art
     lang.update(aura_world_art.LANG)
+    import masters_art
+    lang.update(masters_art.LANG)
+    masters_art.write(sys.modules[__name__])
+    # ---- masters-a pack: Rime, Thunder, Verdant and Hollow Sword Masters
+    import masters_elemental_art
+    lang.update(masters_elemental_art.LANG)
+    masters_elemental_art.write(sys.modules[__name__])
+    import generate_relay_lesson
+    lang.update(generate_relay_lesson.LANG)
+    generate_relay_lesson.write(sys.modules[__name__])
+    import generate_excise_lesson
+    lang.update(generate_excise_lesson.LANG)
+    generate_excise_lesson.write(sys.modules[__name__])
+    import generate_lesson_pack
+    lang.update(generate_lesson_pack.LANG)
+    import generate_reweave_lesson
+    lang.update(generate_reweave_lesson.LANG)
+    generate_reweave_lesson.write(sys.modules[__name__])
+    import wall_turn_art
+    lang.update(wall_turn_art.LANG)
+    wall_turn_art.write(sys.modules[__name__])
+    import form_dash_art
+    lang.update(form_dash_art.LANG)
+    form_dash_art.write(sys.modules[__name__])
+    import stone_hinge_art
+    lang.update(stone_hinge_art.LANG)
+    stone_hinge_art.write(sys.modules[__name__])
     import way_art
     lang.update(way_art.LANG)
+    # ---- fx-explore pack
+    import wayfarer_art
+    lang.update(wayfarer_art.LANG)
     import technique_art
     lang.update(technique_art.LANG)
     import blade_art
     lang.update(blade_art.LANG)
+    # ---- shapes pack
+    import shapes_pack_art
+    lang.update(shapes_pack_art.LANG)
+    # ---- fx-passive pack
+    import hearth_rune_art
+    lang.update(hearth_rune_art.LANG)
+    # ---- fx-fish pack
+    import tide_art
+    lang.update(tide_art.LANG)
+    # ---- fx-farm pack: what Field Sense and Herdsense tell their caster.
+    lang.update({
+        "message.wildercord.fieldsense": "%s ripe, %s still growing",
+        "message.wildercord.herdsense": "%s animals nearby, %s ready to breed",
+    })
+    # ---- fx-mine pack
+    import delve_art
+    lang.update(delve_art.LANG)
+    # ---- lore pack
+    import lore_journal_text  # The lore journal, its six discovery quests and the teachers' lines.
+    lang.update(lore_journal_text.LANG)
+    # ---- prog pack
+    import circle_vow_text
+    lang.update(circle_vow_text.LANG)
+    # ---- moves pack
+    import field_moves_art
+    lang.update(field_moves_art.LANG)
+    field_moves_art.write(sys.modules[__name__])
+    # ---- masters-b pack
+    import masters_pack_b_art
+    lang.update(masters_pack_b_art.LANG)
+    masters_pack_b_art.write(sys.modules[__name__])
+    # ---- codex pack
+    c = "screen.wildercord.catalog."
+    lang.update({
+        c + "title": "Rune Catalog",
+        c + "open": "Catalog",
+        c + "back": "Back",
+        c + "any": "Any",
+        c + "family": "Family: %s",
+        c + "element": "Element: %s",
+        c + "use": "Use: %s",
+        c + "show": "Show: %s",
+        c + "sort": "Sort: %s",
+        c + "element.none": "None",
+        c + "use.combat": "Combat",
+        c + "use.support": "Support",
+        c + "use.farming": "Farming",
+        c + "use.fishing": "Fishing",
+        c + "use.mining": "Mining",
+        c + "use.building": "Building",
+        c + "use.exploring": "Exploring",
+        c + "use.travel": "Travel",
+        c + "use.passive": "Passive",
+        c + "show.known": "Known",
+        c + "show.all": "All",
+        c + "show.ready": "Cord holds",
+        c + "show.reading": "Still reading",
+        c + "sort.group": "Group",
+        c + "sort.name": "Name",
+        c + "sort.tier": "Tier",
+        c + "sort.cost": "Cost",
+        c + "page": "Page %s of %s",
+        c + "tier": "Tier %s",
+        c + "empty": "No runes match. Try fewer words or clear a filter.",
+        c + "none_known": "You know no runes yet. Set Show to All to see every rune.",
+        c + "pick": "Pick a rune to see what it does and what goes well with it.",
+        c + "keys": "Type to search. Up and Down pick a rune. Page Up and Page Down turn the page. Double-click shows it in the Cord.",
+        c + "for": "For: %s",
+        c + "general": "Fits most spells.",
+        c + "unknown": "Not learned yet.",
+        c + "goes_with": "Goes well with",
+        c + "fixed": "A lesson spell: only these runes, nothing added.",
+        c + "any_spell": "Works with any spell.",
+        c + "none_yet": "Learn more runes to see what goes with this one.",
+        c + "nothing": "None of the runes shown fit with this one.",
+        c + "more": "+%s more",
+        c + "find": "Show in Cord",
+    })
+    # ---- methods-a pack
+    import methods_a_art  # Tide, Iron and Dune Breath, and their Sword Masters.
+    lang.update(methods_a_art.LANG)
+    methods_a_art.write(sys.modules[__name__])
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -897,7 +1054,21 @@ LOOT_TABLE_NAMES = {
     "TRIAL_CHAMBERS_REWARD_RARE": "Trial vaults", "TRIAL_CHAMBERS_REWARD_OMINOUS_RARE": "Ominous vaults",
     "ANCIENT_CITY": "Ancient cities", "END_CITY_TREASURE": "End cities", "STRONGHOLD_LIBRARY": "Stronghold libraries",
     "BASTION_TREASURE": "Bastions", "WOODLAND_MANSION": "Woodland mansions", "TRAIL_RUINS_ARCHAEOLOGY_RARE": "Trail ruins (brushing)",
+    # ---- fx-fish pack
+    "UNDERWATER_RUIN_SMALL": "Ocean ruins", "UNDERWATER_RUIN_BIG": "Ocean ruins", "SHIPWRECK_SUPPLY": "Shipwrecks",
+    "VILLAGE_FISHER": "Village fishers",
 }
+# ---- fx-passive pack: where the hearth runes are found.
+LOOT_TABLE_NAMES.update({
+    "VILLAGE_PLAINS_HOUSE": "Village houses", "VILLAGE_TAIGA_HOUSE": "Village houses", "VILLAGE_SNOWY_HOUSE": "Village houses",
+    "VILLAGE_CARTOGRAPHER": "Cartographers' chests", "SHIPWRECK_MAP": "Shipwreck map chests",
+    "VILLAGE_TOOLSMITH": "Toolsmiths' chests", "VILLAGE_TEMPLE": "Village temples",
+})
+# ---- fx-farm pack: the village chests the farmstead runes turn up in.
+LOOT_TABLE_NAMES.update({
+    "VILLAGE_PLAINS_HOUSE": "Village houses", "VILLAGE_SAVANNA_HOUSE": "Village houses", "VILLAGE_TAIGA_HOUSE": "Village houses",
+    "VILLAGE_SHEPHERD": "Shepherds' houses", "VILLAGE_BUTCHER": "Butchers' shops",
+})
 
 
 ITEM_NAMES = {"minecraft:tnt": "TNT"}
@@ -1373,7 +1544,192 @@ RUNE_RECIPES.update({
     "tempest_circle": ["minecraft:breeze_rod", "minecraft:copper_ingot"],
     "eclipse_circle": ["minecraft:ender_pearl", "minecraft:gold_nugget"],
 })
+# ---- shapes pack: the field and kin shapes' themed items.
+import shapes_pack_art  # noqa: E402
 
+RUNE_RECIPES.update(shapes_pack_art.RECIPES)
+# ---- fx-passive pack: the hearth runes (tools/hearth_rune_art.py).
+import hearth_rune_art  # noqa: E402
+
+RUNE_RECIPES.update(hearth_rune_art.RECIPES)
+
+# ---- fx-fish pack
+import tide_art  # noqa: E402
+
+RUNE_RECIPES.update(tide_art.RECIPES)
+
+# ---- fx-farm pack: the farmstead runes (cloche and feastday, tier 4, are found only).
+RUNE_RECIPES.update({
+    "tillage": ["minecraft:wooden_hoe", "minecraft:dirt", "minecraft:wheat_seeds"],
+    "dewfall": ["minecraft:water_bucket", "minecraft:dirt", "minecraft:wheat_seeds"],
+    "tilth": ["minecraft:coarse_dirt", "minecraft:bone_meal", "minecraft:flint"],
+    "plowline": ["minecraft:iron_hoe", "minecraft:dirt", "minecraft:string"],
+    "sow": ["minecraft:wheat_seeds", "minecraft:beetroot_seeds", "minecraft:carrot"],
+    "ripen": ["minecraft:bone_meal", "minecraft:wheat", "minecraft:clock"],
+    "dewkeep": ["minecraft:water_bucket", "minecraft:white_wool", "minecraft:wheat_seeds"],
+    "fieldsense": ["minecraft:spyglass", "minecraft:wheat", "minecraft:carrot"],
+    "thawfield": ["minecraft:torch", "minecraft:snowball", "minecraft:dirt"],
+    "scarecrow": ["minecraft:carved_pumpkin", "minecraft:hay_block", "minecraft:stick"],
+    "fallow": ["minecraft:dirt", "minecraft:bone_meal", "minecraft:short_grass"],
+    "ditchwater": ["minecraft:iron_shovel", "minecraft:water_bucket", "minecraft:clay_ball"],
+    "compost": ["minecraft:composter", "minecraft:rotten_flesh", "minecraft:wheat_seeds"],
+    "stalkrise": ["minecraft:sugar_cane", "minecraft:cactus", "minecraft:bone_meal"],
+    "gourdcall": ["minecraft:pumpkin_seeds", "minecraft:melon_seeds", "minecraft:bone_meal"],
+    "berrybless": ["minecraft:sweet_berries", "minecraft:bone_meal", "minecraft:oak_leaves"],
+    "courtship": ["minecraft:wheat", "minecraft:carrot", "minecraft:poppy"],
+    "herdcall": ["minecraft:lead", "minecraft:wheat", "minecraft:stick"],
+    "fleece": ["minecraft:shears", "minecraft:white_wool", "minecraft:feather"],
+    "milkmaid": ["minecraft:bucket", "minecraft:wheat", "minecraft:snowball"],
+    "henhouse": ["minecraft:egg", "minecraft:wheat_seeds", "minecraft:hay_block"],
+    "gentlehand": ["minecraft:apple", "minecraft:wheat", "minecraft:feather"],
+    "fodder": ["minecraft:hay_block", "minecraft:carrot", "minecraft:wheat_seeds"],
+    "barnwarmth": ["minecraft:campfire", "minecraft:hay_block", "minecraft:oak_planks"],
+    "herdsense": ["minecraft:spyglass", "minecraft:lead", "minecraft:leather"],
+    "hearthcook": ["minecraft:smoker", "minecraft:coal", "minecraft:beef"],
+    "stewpot": ["minecraft:bowl", "minecraft:red_mushroom", "minecraft:brown_mushroom"],
+    "bakehouse": ["minecraft:furnace", "minecraft:wheat", "minecraft:sugar"],
+    "pollinate": ["minecraft:honeycomb", "minecraft:dandelion", "minecraft:poppy"],
+    "hivehum": ["minecraft:honeycomb", "minecraft:honey_bottle", "minecraft:clock"],
+    "calmsmoke": ["minecraft:campfire", "minecraft:honeycomb", "minecraft:oak_leaves"],
+    "wildflower": ["minecraft:dandelion", "minecraft:poppy", "minecraft:cornflower"],
+    "saplingrise": ["minecraft:oak_sapling", "minecraft:bone_meal", "minecraft:oak_log"],
+    "saplingsow": ["minecraft:oak_sapling", "minecraft:birch_sapling", "minecraft:dirt"],
+    "leaffall": ["minecraft:oak_leaves", "minecraft:shears", "minecraft:feather"],
+    "barkstrip": ["minecraft:iron_axe", "minecraft:oak_log", "minecraft:flint"],
+    "coppice": ["minecraft:iron_axe", "minecraft:oak_sapling", "minecraft:oak_log"],
+    "picnic": ["minecraft:bread", "minecraft:apple", "minecraft:white_carpet"],
+    "honeydew": ["minecraft:honey_bottle", "minecraft:sugar", "minecraft:feather"],
+    "leafshade": ["minecraft:oak_leaves", "minecraft:oak_log", "minecraft:vine"],
+    "barkhide": ["minecraft:oak_log", "minecraft:spruce_log", "minecraft:iron_ingot"],
+    "sapflow": ["minecraft:honey_bottle", "minecraft:oak_sapling", "minecraft:glistering_melon_slice"],
+    "trot": ["minecraft:saddle", "minecraft:carrot", "minecraft:sugar"],
+    "beeline": ["minecraft:honeycomb", "minecraft:feather", "minecraft:sugar"],
+    "fieldstride": ["minecraft:leather_boots", "minecraft:wheat", "minecraft:feather"],
+    "hayloft": ["minecraft:hay_block", "minecraft:slime_ball", "minecraft:feather"],
+})
+# ---- fx-mine pack: the delving runes' themes and the village chests their pools use (tools/delve_art.py).
+import delve_art  # noqa: E402
+
+RUNE_RECIPES.update(delve_art.RECIPES)
+LOOT_TABLE_NAMES.update(delve_art.LOOT_TABLE_NAMES)
+# ---- links-mods pack: the hearth pack (Runes.java's links-mods block): recipes, the village loot's name, and the two new
+# modifier categories. Every one of its runes is Tier I-III, so every one can be crafted.
+RUNE_RECIPES.update({
+    "tidy": ["minecraft:bundle", "minecraft:string"],
+    "replanting": ["minecraft:wheat_seeds", "minecraft:bone_meal"],
+    "kilned": ["minecraft:furnace", "minecraft:coal"],
+    "silken": ["minecraft:string", "minecraft:white_wool"],
+    "windfall": ["minecraft:emerald", "minecraft:rabbit_foot"],
+    "veinfollow": ["minecraft:raw_iron", "minecraft:raw_copper"],
+    "timbering": ["minecraft:iron_axe", "minecraft:oak_log"],
+    "level_ground": ["minecraft:stone_slab", "minecraft:compass"],
+    "steady": ["minecraft:obsidian", "minecraft:iron_nugget"],
+    "damp": ["minecraft:wet_sponge", "minecraft:clay_ball"],
+    "magnetic": ["minecraft:iron_ingot", "minecraft:redstone"],
+    "sowing": ["minecraft:wheat_seeds", "minecraft:beetroot_seeds"],
+    "furrowing": ["minecraft:iron_hoe", "minecraft:dirt"],
+    "fertile": ["minecraft:bone_meal", "minecraft:bone_meal", "minecraft:moss_block"],
+    "torchset": ["minecraft:torch", "minecraft:coal"],
+    "ore_sensing": ["minecraft:spyglass", "minecraft:raw_gold"],
+    "fetching": ["minecraft:lead", "minecraft:bone"],
+    "bountiful": ["minecraft:experience_bottle", "minecraft:emerald"],
+    "culling": ["minecraft:rotten_flesh", "minecraft:iron_sword"],
+    "headhunting": ["minecraft:skeleton_skull", "minecraft:arrow", "minecraft:spyglass"],
+    "hallowed": ["minecraft:golden_apple", "minecraft:bone"],
+    "tapering": ["minecraft:arrow", "minecraft:flint"],
+    "pooled": ["minecraft:bowl", "minecraft:glass_bottle"],
+    "sunlit": ["minecraft:sunflower", "minecraft:gold_ingot"],
+    "gentle": ["minecraft:wheat", "minecraft:lead"],
+    "sparing": ["minecraft:white_banner", "minecraft:feather"],
+    "soothing": ["minecraft:honey_bottle", "minecraft:note_block"],
+    "cushioned": ["minecraft:hay_block", "minecraft:feather"],
+    "mending": ["minecraft:iron_ingot", "minecraft:anvil"],
+    "nourishing": ["minecraft:bread", "minecraft:apple"],
+    "purifying": ["minecraft:milk_bucket", "minecraft:glass_bottle"],
+    "matchmaking": ["minecraft:wheat", "minecraft:carrot", "minecraft:poppy"],
+    "fleecing": ["minecraft:shears", "minecraft:white_wool"],
+    "inward": ["minecraft:glass_pane", "minecraft:amethyst_shard"],
+    "selfless": ["minecraft:poppy", "minecraft:gold_nugget"],
+    "triage": ["minecraft:glistering_melon_slice", "minecraft:paper"],
+    "if_night": ["minecraft:ink_sac", "minecraft:clock"],
+    "if_day": ["minecraft:sunflower", "minecraft:clock"],
+    "if_raining": ["minecraft:water_bucket", "minecraft:clock"],
+    "if_underground": ["minecraft:cobblestone", "minecraft:clock"],
+    "if_alone": ["minecraft:compass", "minecraft:ink_sac"],
+    "if_near_ally": ["minecraft:compass", "minecraft:bone"],
+    "if_unhurt": ["minecraft:apple", "minecraft:clock"],
+    "if_holding_tool": ["minecraft:stick", "minecraft:iron_nugget"],
+    "if_brimming": ["minecraft:glass_bottle", "minecraft:lapis_lazuli"],
+    "if_in_fields": ["minecraft:wheat", "minecraft:clock"],
+    "on_mine": ["minecraft:iron_pickaxe", "minecraft:tripwire_hook"],
+    "on_harvest": ["minecraft:wheat", "minecraft:tripwire_hook"],
+    "on_catch": ["minecraft:fishing_rod", "minecraft:tripwire_hook"],
+    "on_sprint": ["minecraft:sugar", "minecraft:tripwire_hook"],
+    "on_splash": ["minecraft:water_bucket", "minecraft:tripwire_hook"],
+    "on_mount": ["minecraft:saddle", "minecraft:tripwire_hook"],
+    "on_wake": ["minecraft:white_bed", "minecraft:tripwire_hook"],
+})
+LOOT_TABLE_NAMES.update({
+    "VILLAGE_PLAINS_HOUSE": "Village houses", "VILLAGE_TAIGA_HOUSE": "Village houses", "VILLAGE_SAVANNA_HOUSE": "Village houses",
+    "VILLAGE_SNOWY_HOUSE": "Village houses", "VILLAGE_DESERT_HOUSE": "Village houses",
+})
+WORLD_MAGIC_LANG.update({
+    "category.wildercord.modifier.gathering": "Gathering",
+    "category.wildercord.modifier.tending": "Tending",
+})
+# ---- fx-explore pack
+import wayfarer_art  # noqa: E402
+
+RUNE_RECIPES.update(wayfarer_art.RECIPES)
+
+
+# ---- fx-support pack
+# The support pack (healing, guards, party help, harmless crowd control, wards); its Tier IV four (Grace, Aegis,
+# Accord, Citadel) are found only.
+RUNE_RECIPES.update({
+    "worst_first": ["minecraft:glistering_melon_slice", "minecraft:paper"],
+    "salve": ["minecraft:honey_bottle", "minecraft:snowball"],
+    "mending_mist": ["minecraft:glistering_melon_slice", "minecraft:glass_bottle"],
+    "hearthglow": ["minecraft:campfire", "minecraft:golden_carrot"],
+    "aftercare": ["minecraft:glistering_melon_slice", "minecraft:clock"],
+    "hearthsong": ["minecraft:note_block", "minecraft:glistering_melon_slice"],
+    "managift": ["minecraft:amethyst_shard", "minecraft:lapis_lazuli"],
+    "manawell": ["minecraft:amethyst_shard", "minecraft:cauldron"],
+    "guardlink": ["minecraft:iron_chain", "minecraft:iron_ingot"],
+    "rally": ["minecraft:white_banner", "minecraft:sugar"],
+    "morale": ["minecraft:golden_apple", "minecraft:white_banner"],
+    "shrug_off": ["minecraft:milk_bucket", "minecraft:feather"],
+    "hexguard": ["minecraft:fermented_spider_eye", "minecraft:shield"],
+    "stoutheart": ["minecraft:iron_ingot", "minecraft:apple"],
+    "ironhold": ["minecraft:anvil", "minecraft:shield"],
+    "evade": ["minecraft:rabbit_foot", "minecraft:feather"],
+    "emberguard": ["minecraft:magma_cream", "minecraft:iron_nugget"],
+    "beastguard": ["minecraft:bone", "minecraft:leather"],
+    "hearthguard": ["minecraft:emerald", "minecraft:iron_ingot"],
+    "heel": ["minecraft:goat_horn", "minecraft:bone"],
+    "bellward": ["minecraft:bell", "minecraft:emerald"],
+    "sanctuary": ["minecraft:candle", "minecraft:glowstone_dust"],
+    "arrowveil": ["minecraft:arrow", "minecraft:phantom_membrane"],
+    "blastward": ["minecraft:gunpowder", "minecraft:obsidian"],
+    "firebreak": ["minecraft:snowball", "minecraft:water_bucket"],
+    "pacify": ["minecraft:poppy", "minecraft:lapis_lazuli"],
+    "lure": ["minecraft:fishing_rod", "minecraft:ender_pearl"],
+    "stillbind": ["minecraft:cobweb", "minecraft:ender_pearl"],
+    "taunt": ["minecraft:rotten_flesh", "minecraft:redstone"],
+    "nudge": ["minecraft:feather", "minecraft:slime_ball"],
+    "hobble": ["minecraft:cobweb", "minecraft:string"],
+    "corral": ["minecraft:oak_fence", "minecraft:lead"],
+    "truce": ["minecraft:white_wool", "minecraft:poppy"],
+    "spook": ["minecraft:bone", "minecraft:carved_pumpkin"],
+    "shieldwall": ["minecraft:shield", "minecraft:cobblestone"],
+    "staunch": ["minecraft:milk_bucket", "minecraft:snowball"],
+    "sentry": ["minecraft:spyglass", "minecraft:glowstone_dust"],
+    "tend": ["minecraft:wheat", "minecraft:bone_meal"],
+    "soothe": ["minecraft:honeycomb", "minecraft:poppy"],
+    "withdraw": ["minecraft:fermented_spider_eye", "minecraft:sugar"],
+    "keepsafe": ["minecraft:iron_ingot", "minecraft:tripwire_hook"],
+    "faithful": ["minecraft:bone", "minecraft:golden_apple"],
+})
 
 def rune_result(path):
     return {"id": "wildercord:rune", "components": {"wildercord:rune": f"wildercord:{path}"}}
@@ -1589,6 +1945,7 @@ MASTERY_LANG = {
     # The magic settings
     "screen.wildercord.spell_titles.on": "Spell titles: shown",
     "screen.wildercord.spell_titles.off": "Spell titles: hidden",
+    "screen.wildercord.spell_titles.tip": "Briefly show the title and rank badge when a mastered spell is cast.",
     # The Cord screen: the rank badge, the readout and the mastery panel
     "screen.wildercord.mastery.badge": "Mastery: %s",
     "screen.wildercord.mastery.badge.waiting": "A trait is waiting to be chosen",
@@ -2263,6 +2620,43 @@ DUNGEON_LANG = {
     "item.wildercord.living_seedpod.desc": "Off-hand: mana cost -10%, spell power -15%, cooldown +10%.",
     "item.wildercord.sky_feather": "Sky Feather",
     "item.wildercord.sky_feather.desc": "Off-hand: cooldown -15%, mana cost +15%.",
+    "screen.wildercord.magic_settings.title": "Magic visuals",
+    "screen.wildercord.profile.tip": "Presets change spell detail, Reduced flash, Camera motion, trails, body aura and Impact. Combat animation and Stable camera choices stay as saved.",
+    "screen.wildercord.profile.benchmark.tip": "Run a 30-second benchmark in the current scene to measure frame performance.",
+    "screen.wildercord.combat.title": "Combat presentation...",
+    "screen.wildercord.combat.tip": "Configure combat animations, camera stabilization, and visual impact.",
+    "screen.wildercord.combat.animation": "Combat animations: %s",
+    "screen.wildercord.combat.camera": "Camera: %s",
+    "screen.wildercord.combat.classic": "Classic",
+    "screen.wildercord.combat.articulated": "Articulated (experimental)",
+    "screen.wildercord.combat.stable": "Stable",
+    "screen.wildercord.combat.default": "Default",
+    "screen.wildercord.combat.launch_details": "Active launch overrides (saved choices are kept):",
+    "screen.wildercord.combat.no_overrides": "None. Your saved choices apply.",
+    "screen.wildercord.combat.invalid_option": "invalid (disabled)",
+    "screen.wildercord.combat.current": "Current: %s / %s",
+    "screen.wildercord.combat.draft": "Apply choices: %s / %s",
+    "screen.wildercord.combat.first_camera": "Stable is offered for your first Apply; the current camera is shown above. Opening or Back changes nothing.",
+    "screen.wildercord.combat.limited": "Limited support; compatibility is checked each frame. Unsupported situations keep the complete existing presentation.",
+    "screen.wildercord.combat.classic_status": "Classic uses existing Wildercord animations and effects. Camera choice remains independent.",
+    "screen.wildercord.combat.override": "Launch override active. Overridden controls are disabled; saved choices and Reset cannot remove launch arguments. See help.",
+    "screen.wildercord.combat.invalid_override": "Invalid launch override: affected switches are disabled. Correct the launch arguments; saved choices remain unchanged.",
+    "screen.wildercord.combat.invalid_saved": "Some saved choices were invalid. Safe defaults are active; Apply can repair this group if the file is readable.",
+    "screen.wildercord.combat.future": "Newer combat preferences are preserved. This version cannot read or replace that group. Launch overrides may still apply.",
+    "screen.wildercord.combat.save_failed": "Could not save. Previous live choices and the original file are unchanged. Your draft is still here.",
+    "screen.wildercord.combat.help": "Support, camera and accessibility",
+    "screen.wildercord.combat.reset": "Reset draft: Classic + Stable",
+    "screen.wildercord.combat.apply": "Apply choices",
+    "screen.wildercord.combat.back": "Back to Magic visuals",
+    "screen.wildercord.combat.back_choices": "Back to choices",
+    "screen.wildercord.combat.previous": "Previous",
+    "screen.wildercord.combat.next": "Next",
+    "screen.wildercord.combat.page": "Combat presentation help (%s/%s)",
+    "screen.wildercord.combat.help.0": "Classic keeps existing Wildercord motion. Articulated is an experimental, limited opt-in for selected sword arts and Master attacks. It does not add animation to every art. Damage, movement, costs and timing are unchanged; only this client sees your choice.",
+    "screen.wildercord.combat.help.1": "Supported equipment is bare skin or matching vanilla netherite, including the existing funded Aura Armour shell. Other armor, an occupied offhand, capes, extra layers or rejected poses keep the whole existing body, item, armor and shell presentation. Visual mods and shaders need separate verification.",
+    "screen.wildercord.combat.help.2": "Stable suppresses view/hurt bob and Wildercord shake, impact nudges and FOV punches. It stays selected with Classic or compatibility fallback. Mouse look, accepted aim and combat timing stay free. Default follows Minecraft options and Magic visuals Camera motion.",
+    "screen.wildercord.combat.help.3": "For less motion, try Stable, Impact Off, Calm/Off body aura and Subtle/Off trails in Magic visuals. Reduced flash removes funded shell pulsing and white hit brightening and softens selected effects. Impact Off still allows a small flash. These choices do not guarantee all effects are flash-free.",
+    "screen.wildercord.combat.help.4": "Launch options override saved choices: wildercord.articulated, .stableCamera, .armor, .armorArms and .auraShell. Explicit false wins too; missing adapters can require whole fallback. Reset saves Classic + Stable, but cannot change launch arguments. Find Magic visual settings in Controls or the Grimoire Life journal.",
     "screen.wildercord.profile.performance": "Performance",
     "screen.wildercord.profile.balanced": "Balanced",
     "screen.wildercord.profile.cinematic": "Cinematic",
@@ -2974,7 +3368,7 @@ feat_adv("leaning", "casting/first_cast", rune("ember"), description="Grow one a
 feat_adv("scroll", "casting/first_cast", item("spell_scroll"), description="Inscribe a spell onto a scroll from the Cord screen", xp=15)
 
 # ---- Heart Circles
-CIRCLE_ORDINALS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"]
+CIRCLE_ORDINALS = ["1st", "2nd", "3rd"] + [f"{n}th" for n in range(4, 21)]
 CIRCLE_ADVANCEMENTS = [  # title, icon, frame, experience, reward
     ("Heartbeat", rune("spark"), "task", 20, ()),
     ("Deeper Wells", rune("focus"), "task", 30, ()),
@@ -2984,12 +3378,26 @@ CIRCLE_ADVANCEMENTS = [  # title, icon, frame, experience, reward
     ("Brighter Still", rune("prism"), "goal", 100, ["blank_runes"]),
     ("Overflow", rune("amplify"), "goal", 150, ["mana_crystal"]),
     ("Archmage", item("mana_crystal"), "challenge", 500, ["mana_crystals"]),
+    ("Widening Horizon", rune("reveal"), "goal", 100, ()),
+    ("Forged Heart", rune("fire"), "goal", 125, ()),
+    ("Woven Wisdom", rune("prism"), "goal", 150, ()),
+    ("Ocean Within", rune("frost"), "goal", 175, ()),
+    ("Boundless Study", rune("foresight"), "goal", 200, ()),
+    ("Starheart", rune("starfall"), "goal", 225, ()),
+    ("Living Grimoire", rune("focus"), "goal", 250, ()),
+    ("Rooted Heart", rune("stoneskin"), "goal", 275, ()),
+    ("Prismatic Heart", rune("prismatic_burst"), "goal", 300, ()),
+    ("Stormheart", rune("lightning"), "goal", 325, ()),
+    ("Convergence", rune("amplify"), "goal", 350, ()),
+    ("Master Heart", item("mana_crystal"), "challenge", 1000, ["mana_crystals"]),
 ]
 for n, (title, icon, frame, xp, loot) in enumerate(CIRCLE_ADVANCEMENTS, start=1):
     parent = "casting/first_cast" if n == 1 else f"heart/circle_{n - 1}"
     description = f"Form your {CIRCLE_ORDINALS[n - 1]} Heart Circle" + (": meditate once your heart is ready" if n == 1 else "")
     if n == 8:
         description = "Form your 8th Heart Circle and become an Archmage"
+    if n == 20:
+        description = "Form your 20th Heart Circle: the Master Heart"
     adv(f"heart/circle_{n}", parent, icon, title, description, circle(n), frame=frame, xp=xp, loot=loot)
 feat_adv("innate", "heart/circle_1", rune("twin_star"), description="Awaken your innate rune at the 1st Circle", xp=25)
 feat_adv("mirror", "heart/innate", rune("mirrorfrost"), description="Turn an enemy's own spell back on them", hidden=True, xp=50)
@@ -3277,6 +3685,23 @@ BACKPACK_LANG = {
     "key.wildercord.open_backpack": "Open backpack",
     "message.wildercord.backpack.none": "You aren't wearing a backpack: put one in the Backpack slot, on the tray above your inventory (E)",
     "screen.wildercord.backpack.open_here": "Open: it stays in this slot until you close it",
+    "screen.wildercord.quality.own": "Your spells: %s",
+    "screen.wildercord.quality.others": "Other spells: %s",
+    "screen.wildercord.quality.full": "full",
+    "screen.wildercord.quality.balanced": "balanced",
+    "screen.wildercord.quality.minimal": "minimal",
+    "screen.wildercord.quality.performance": "performance",
+    "screen.wildercord.quality.off": "off",
+    "screen.wildercord.quality.own.tip": "Detail and particle density for spells you cast.",
+    "screen.wildercord.quality.others.tip": "Detail and particle density for spells cast by other players or creatures.",
+    "screen.wildercord.reduced_flash": "Reduced flash: %s",
+    "screen.wildercord.reduced_flash.tip": "Softens bright spell flashes and dampens screen-filling light effects.",
+    "screen.wildercord.camera_motion": "Camera motion: %s",
+    "screen.wildercord.camera_motion.tip": "Enables camera shake and view impulses during heavy impacts.",
+    "screen.wildercord.lesson.scroll_to_read": "Scroll to the bottom of the page before proceeding",
+    "message.wildercord.masters_trials.invitation": "The Master Trials have opened: speak with a travelling Duelist to challenge the Sword Masters.",
+    "message.wildercord.wall_turn.need_sovereign": "Wall Turn requires Aura Stage V (Sovereign). Train your breathing before attempting the step.",
+    "message.wildercord.wall_turn.need_gale": "Wall Turn requires proving yourself against the Gale Master first.",
 }
 
 

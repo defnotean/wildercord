@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:heart/circle_17",
+  "criteria": {
+    "circle_18": {
+      "trigger": "wildercord:heart_circle",
+      "conditions": {
+        "level": 18
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:lightning"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.heart.circle_18.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.heart.circle_18.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "circle_18"
+    ]
+  ],
+  "rewards": {
+    "experience": 325
+  }
+}

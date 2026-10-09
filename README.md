@@ -12,7 +12,7 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.10.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.10.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
+**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.11.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.11.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
@@ -59,7 +59,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 
 | | |
 |---|---|
-| **372 named runes** | 39 shapes, 280 effects, 36 modifiers and 17 links across four tiers. **203 are craftable**, **53 runes of the world** come from their particular places, and the remaining ordinary Tier IV runes come from bosses and rare treasure. The Fusion Altar makes **55 elemental fusions** and **40 signature fusions**; exact weaves of two to eight effects extend these further. Ten effects are **innate runes**: one wakes in each caster's heart. Each named rune has its own icon; Tier III, Tier IV and innate icons are animated. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **756 named runes** | 82 shapes, 568 effects, 72 modifiers and 34 links across four tiers. **571 are craftable**, **59 runes of the world** come from their particular places, and the remaining ordinary Tier IV runes come from bosses and rare treasure. The Fusion Altar makes **55 elemental fusions** and **40 signature fusions**; exact weaves of two to eight effects extend these further. Ten effects are **innate runes**: one wakes in each caster's heart. Each named rune has its own icon; Tier III, Tier IV and innate icons are animated. See [docs/RECIPES.md](docs/RECIPES.md). |
 | **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle assembles behind your shoulders and a shape-specific focus forms ahead, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
 | **Magic circles you can read and build around** | Twelve animated mechanisms give different shapes their own casting circles, preserving rune script and illustrated roundels. Twelve craftable [circle disciplines](docs/features/circle-disciplines.md) change coverage, flight speed, effect duration, support power, elemental fusion, movement, stance, weather or night bonuses with explicit costs. Circles follow the caster's rear plane; the outgoing spell retains its shape and materials. |
 | **Spells drawn in light** | All magic glows: light adds to what's behind it, and void magic is drawn as darkness. Beams with a white-hot core fired through a magic circle, bolts that glide as comets, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. Every element has its own visual language, from branching lightning to imploding darkness. |
@@ -70,7 +70,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Secret spells** | Ten exact rune sequences become something new (a sun that falls from the sky, a lance of ice, a black star that swallows everything). Nothing lists them: experiment, or read the riddles on Torn Pages. |
 | **The Grimoire** | Every reaction, secret, feat and riddle you discover, written into a page of the Cord screen. Each new reaction, secret and feat condenses mana toward your next Heart Circle. |
 | **Runebound and the Archive** | Some monsters carry Cords and cast real spells, glowing with rune marks in their spell's colour and telegraphed by the spell's own circle and a readable nameplate. Deep underground, the Archive holds Rune Seal doors, the Archivist (a hooded, hovering three-phase boss with a floating tome, who rewrites its Cord) and a vault of Tier IV runes. |
-| **Runes of the world** | Fifty-three runes nobody can craft: in vanilla structures' chests, on bosses, in fallen-star craters and rift sieges, or taken from the land itself by **Attunement** (meditate with a Blank Rune in the right biome at the right moment). The Grimoire lists where each is found, with a riddle for the ones you haven't learned. See [docs/features/new-runes.md](docs/features/new-runes.md). |
+| **Runes of the world** | Fifty-nine runes nobody can craft: in vanilla structures' chests, on bosses, in fallen-star craters and rift sieges, or taken from the land itself by **Attunement** (meditate with a Blank Rune in the right biome at the right moment). The Grimoire lists where each is found, with a riddle for the ones you haven't learned. See [docs/features/new-runes.md](docs/features/new-runes.md). |
 | **Dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor each have a three phase boss. The Rootbound Maze in swamps and Storm Spire on peaks add custom bosses, guarded side caches, sealed vaults and reusable relics. Clockwork Crypt, Living Greenhouse and Moving Sky Ruin each add three layouts and a distinct handling relic. See [docs/features/dungeons.md](docs/features/dungeons.md). |
 | **World events** | Mana storms over the ley lines (faster mana, cheaper spells, wild surges), fallen stars that leave a guarded crater, and rift sieges that end with the Riftcaller. See [docs/features/world-events.md](docs/features/world-events.md). |
 | **Magic that changes the world** | Fire lights the grass and boils water into blinding steam, frost freezes a pond you can walk on, storm arcs through water to everyone in it, wind knocks arrows back, earth heaves the ground and life makes flowers bloom. Real temporary walls, borrowed water attacks and wind stepping stones add terrain interactions. See [physical magic](docs/features/physical-magic.md) and [world magic](docs/features/world-magic.md). |
@@ -81,14 +81,14 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **The Runesmith, duels and chorus** | A villager who sells runes, buys your duplicates or swaps them for runes you don't know, and posts daily contracts; formal duels that put everything back afterwards; and allies casting together in a chorus. See [docs/features/runesmith-duels-chorus.md](docs/features/runesmith-duels-chorus.md). |
 | **Travel commands** | For servers: homes, public warps, personal waypoints with an arrow on screen and a beam only you can see, teleport requests with clickable answers, `/back`, `/spawn` and `/rtp`. Every teleport is a short warmup in a forming magic circle, with a cooldown and a safe landing. See [docs/features/travel.md](docs/features/travel.md). |
 | **Casting gear** | Elemental and greater staffs, the Tome of the Fifth Page (a fifth spell) and seven foci, each worn in its own inventory slot (staff, focus, tome) and shown on your character, or held as before while its slot is empty. See [docs/features/gear-config-api.md](docs/features/gear-config-api.md). |
-| **Advancements** | A Wildercord tab from your first Blank Rune to the 8th Heart Circle. See [docs/features/advancements.md](docs/features/advancements.md). |
+| **Advancements** | A Wildercord tab from your first Blank Rune to the 20th Heart Circle. See [docs/features/advancements.md](docs/features/advancements.md). |
 | **Ley lines** | Veins of world mana, visible to Cord-wearers as flowing ribbons of violet light: mana flows twice as fast on them. A Wellstone set on one becomes a well for everyone nearby. |
 | **Play together** | Paste a spell code (`wc:bolt.frost.split`) in chat and it becomes a readable spell card; inscribe spells onto scrolls anyone can cast; hit the foe another player just hit, with a different element, for **Unison**; win **domain clashes**; shoot enemy bolts out of the air. |
 | **Four Cords** | Twine → Copper → Amethyst → Echo: more sockets, more spells, higher rune tiers, more mana. |
 | **Ten elements** | Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, each with its own look and sound. |
 | **Element reactions** | Eleven of them, from Shatter and Conduct to Overload, Fracture, Blight, Unweave, Rupture and Elapse: the right element on the right mark sets off a bonus, and every element takes part. |
 | **Creature affinities and climate** | Blazes fear frost, the undead burn under life magic, golems conduct storm: creatures are weak to some elements and resist others (a datapack can change which), and your Grimoire's Bestiary records what you find. Where you fight matters too: fire burns hotter in the Nether, storm in a thunderstorm, frost in the snow. See [docs/features/affinities.md](docs/features/affinities.md). |
-| **Heart Circles** | Condense mana by casting, earn breakthroughs (mostly feats: set off five different reactions, find secret spells, defeat the Archivist), and meditate to form rings of mana around your heart, from the 1st Circle to the 8th (Archmage). In a pinch, **overcast**: crack a circle to cast beyond your mana. |
+| **Heart Circles** | Condense mana by casting, earn breakthroughs (mostly feats: set off five different reactions, find secret spells, defeat the Archivist), and meditate to form rings of mana around your heart, from the 1st Circle to the 20th (Master Heart), with Archmage at the 8th. In a pinch, **overcast**: crack a circle to cast beyond your mana. |
 | **Rhythm** | Cast again right as your last spell comes off cooldown and the chain builds power. |
 | **Your affinities** | An affinity with each of the ten elements that grows with what you do: casting it, its reactions, and everyday things that fit it (smelting for fire, fishing for frost, mining for earth, farming for life...), each with a daily allowance so nothing can be farmed. Levels I to V: +3% power a level with that element, a resistance to it from III, cheaper spells at V. Your magic leans toward your deepest one: your Heart Circles are tinted toward its colour, and a spell with no effect of its own charges in it. See [docs/features/player-affinity.md](docs/features/player-affinity.md). |
 | **Passive spells** | Up to two always-on spells (a buff, or an Orbit aura) that drain mana every second instead of having a cooldown. |
@@ -271,7 +271,7 @@ Commands (operators, permission level 2):
 | `/wildercord learn <rune>` | Learn one rune, e.g. `stasis` or `wildercord:stasis` (an add-on's runes by their full id) |
 | `/wildercord spell <1-4> <runes...>` | Thread a spell directly |
 | `/wildercord mana` | Refill your mana |
-| `/wildercord circles <0-8>` | Set your Heart Circles |
+| `/wildercord circles <0-20>` | Set your Heart Circles |
 | `/wildercord condense <mana>` | Add condensed mana toward the next circle |
 | `/wildercord innate <rune>` | Choose your innate rune |
 | `/wildercord runebound` | Bind the nearest monster to a Cord |
@@ -280,8 +280,12 @@ Commands (operators, permission level 2):
 
 ## Building from source
 
-Requirements: **JDK 25** and Python 3.11+ with **Pillow** (only for regenerating art and data).
+Requirements: **JDK 25** and Python 3.11+. **Pillow** is needed only for regenerating art and data.
 Gradle comes with the wrapper.
+Full/sharded client test resources and launch preflight also require Python on PATH
+as `python3` on macOS/Linux or `python` on Windows. The owned CI launcher runs on Linux;
+focused selectors retain their existing platform behavior. See
+[the explicit full-client plan](docs/FULL_CLIENT_SHARD_PLAN.md) for its fail-closed contract.
 
 ```bash
 git clone https://github.com/defnotean/wildercord.git
@@ -464,6 +468,8 @@ A craftable Runic Hearth supports a reading lantern, bloom planter, fall-protect
 Feature guides: [expeditions](docs/features/expeditions.md), [elemental armour](docs/features/elemental-armor.md), [defensive foci](docs/features/defensive-foci.md), [research and library](docs/features/research-library.md), [home projects](docs/features/home-projects.md), [familiar jobs, echoes and trials](docs/features/familiars-events-trials.md), [visual presets](profiles/README.md). Verification and remaining limits are recorded in the [implementation ledger](docs/audit/implementation-progress.md).
 
 ## Roadmap
+
+The expanded combat, magic, progression and lore update is tracked in the [Masters of Tomorrow development roadmap](docs/MASTERS_OF_TOMORROW_ROADMAP.md). Its [release checklist](docs/reviews/RELEASE_READINESS.md) distinguishes tested checkpoints from unfinished features and remaining runtime acceptance.
 
 - More dungeons, bosses and runes of the world.
 - More reactions and secret spells.

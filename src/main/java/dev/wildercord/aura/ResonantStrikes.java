@@ -17,13 +17,24 @@ public final class ResonantStrikes {
 	private static ResonantRules.Ledger ledger = new ResonantRules.Ledger();
 	private static boolean answering;
 	private static int reactions;
+	private record Receipt(UUID target, ResonantRules.Hit hit) {}
+	/** Scoped spell credit cannot become a fresh unbound Cast when a later blade closes the pair. */
+	private static final LinkedHashMap<Receipt, Cast> SCOPED = new LinkedHashMap<>();
 	public static int reactions() { return reactions; }
+	/** A closed paid Relay cannot leave delayed spell credit or obstruct a later ordinary blade/spell pair. */
+	public static void retire(Cast cast) {
+		var entries = SCOPED.entrySet().iterator();
+		while (entries.hasNext()) {
+			var entry = entries.next();
+			if (entry.getValue() == cast) { ledger.retire(entry.getKey().target(), entry.getKey().hit()); entries.remove(); }
+		}
+	}
 	public static void init() {
-		ServerLifecycleEvents.SERVER_STOPPED.register(s -> { ledger = new ResonantRules.Ledger(); reactions = 0; });
-		ServerPlayConnectionEvents.DISCONNECT.register((h,s) -> ledger.forget(h.player.getUUID()));
+		ServerLifecycleEvents.SERVER_STOPPED.register(s -> { ledger = new ResonantRules.Ledger(); reactions = 0; SCOPED.clear(); });
+		ServerPlayConnectionEvents.DISCONNECT.register((h,s) -> { ledger.forget(h.player.getUUID()); SCOPED.keySet().removeIf(key -> key.hit().player().equals(h.player.getUUID())); });
 	}
 	public static boolean spell(Cast cast, LivingEntity target, String element, float taken) {
-		if (answering || !(cast.caster instanceof ServerPlayer p) || !cast.alive() || !eligible(p,target,taken)
+		if (answering || !(cast.caster instanceof ServerPlayer p) || !cast.alive() || !cast.admits(target) || !eligible(p,target,taken)
 				|| !ResonantRules.ELEMENTS.contains(element) || !cast.once("resonant:" + target.getUUID())) return false;
 		return offer(p,target,element,taken,false,cast);
 	}
@@ -37,7 +48,16 @@ public final class ResonantStrikes {
 	}
 	private static boolean offer(ServerPlayer incoming, LivingEntity target, String element, float taken, boolean blade, Cast cast) {
 		ServerLevel level=incoming.level();
-		var pair=ledger.offer(target.getUUID(),new ResonantRules.Hit(incoming.getUUID(),element,taken,level.getServer().overworld().getGameTime(),blade),(spell,sword) -> {
+		long now = level.getServer().overworld().getGameTime();
+		SCOPED.keySet().removeIf(key -> !ResonantRules.within(now, key.hit().tick(), ResonantRules.WINDOW));
+		var offered = new ResonantRules.Hit(incoming.getUUID(), element, taken, now, blade, cast != null && (cast.guardedImpact() || cast.hasConsequences()));
+		if (offered.scoped()) {
+			SCOPED.put(new Receipt(target.getUUID(), offered), cast);
+			while (SCOPED.size() > ResonantRules.LIMIT) SCOPED.pollFirstEntry();
+		}
+		var pair=ledger.offer(target.getUUID(),offered,(spell,sword) -> {
+			Cast receipt = SCOPED.get(new Receipt(target.getUUID(), spell));
+			if (spell.scoped() && (receipt == null || !receipt.alive() || !receipt.admits(target))) return false;
 			ServerPlayer mage=player(level,spell.player()), striker=player(level,sword.player());
 			return mage!=null && striker!=null && eligible(mage,target,spell.taken()) && eligible(striker,target,sword.taken())
 				&& (mage==striker || WayBanner.ally(striker,mage)) && Aura.enabled(striker) && Aura.stage(striker)>=AuraRules.GLOW
@@ -45,18 +65,28 @@ public final class ResonantStrikes {
 		});
 		if(pair==null) return false;
 		ServerPlayer mage=player(level,pair.spell().player()), striker=player(level,pair.blade().player());
+		Cast scoped = SCOPED.remove(new Receipt(target.getUUID(), pair.spell()));
+		if (pair.spell().scoped() && (scoped == null || !scoped.alive() || !scoped.admits(target))) return false;
+		var counter = ArtHitScope.boundary(striker);
+		if (counter != null && !counter.permits(target)) return false;
 		answering=true;
 		try {
 			Aura.spend(striker,ResonantRules.COST,"resonant_strike");
+			if (counter != null && !counter.permits(target)) return false;
 			String name=ResonantRules.name(pair.spell().element(),pair.blade().element());
 			// Do not run Effects.hurt recursively: this bonus earns no hit resources or extra rune triggers.
 			float extra=ResonantRules.damage(pair.spell().taken(),pair.blade().taken(),target instanceof Player);
 			extra *= (float)(target instanceof Player ? Config.get().pvpDamageScale() : 1);
 			extra *= (float)Math.max(0,Config.get().aura().damageScale());
 			extra=Math.min(extra,target instanceof Player?.75F:3F);
-			Cast identity=cast!=null?cast:new Cast(mage);
+			Cast identity=scoped!=null?scoped:cast!=null?cast:new Cast(mage);
+			if (identity.hasConsequences() && (!identity.alive() || !identity.admits(target))) return false;
 			SpellDefence.resonantHurt(identity,target,extra);
-			utility(striker,mage,target,pair);
+			if (counter != null && !counter.afterDamage(target)) return false;
+			if (!identity.consequencesValid(target) || identity.guardedImpact() && (!identity.alive() || !identity.admits(target) || Shields.blocked(identity, target))) return false;
+			utilityWithConsequences(striker,mage,target,pair,identity);
+			if (!identity.consequencesValid(target)) return false;
+			if (counter != null && !counter.afterDamage(target)) return false;
 			ResonantVfx.play(level,striker,target,pair.spell().element(),pair.blade().element(),name);
 			Component message=Component.translatable("reaction.wildercord.resonant",Component.translatable("reaction.wildercord.resonant."+name));
 			striker.sendOverlayMessage(message); if(mage!=striker) mage.sendOverlayMessage(message);
@@ -66,6 +96,19 @@ public final class ResonantStrikes {
 		} finally { answering=false; }
 	}
 	private static ServerPlayer player(ServerLevel level, UUID id) { return level.players().stream().filter(p -> p.getUUID().equals(id)).findFirst().orElse(null); }
+	/** A retained spell may answer an ally's blade; its utility still belongs to that spell's consequence lifetime. */
+	private static void utilityWithConsequences(ServerPlayer striker, ServerPlayer mage, LivingEntity target, ResonantRules.Pair pair, Cast identity) {
+		if (!identity.hasConsequences()) { utility(striker, mage, target, pair); return; }
+		ArtHitScope.Boundary boundary = new ArtHitScope.Boundary() {
+			@Override public boolean valid() { return identity.alive() && identity.consequencesValid(target); }
+			@Override public boolean permits(LivingEntity recipient) { return valid() && identity.admits(recipient); }
+			@Override public boolean afterDamage(LivingEntity recipient) { return valid() && identity.consequencesValid(recipient); }
+			@Override public boolean linkedAlive() { return identity.alive(); }
+			@Override public boolean linkedAdmits(Entity recipient) { return identity.admits(recipient); }
+		};
+		ArtHitScope.within(striker, boundary, () -> utility(striker, mage, target, pair));
+	}
+
 	private static void utility(ServerPlayer striker, ServerPlayer mage, LivingEntity target, ResonantRules.Pair pair) {
 		if(!target.isAlive()) return;
 		boolean pvp=target instanceof Player;

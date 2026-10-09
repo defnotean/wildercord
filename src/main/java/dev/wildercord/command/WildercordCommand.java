@@ -25,7 +25,7 @@ import java.util.Optional;
  *   <li>{@code learn <rune>}: learn one rune</li>
  *   <li>{@code spell <1-5> <runes...>}: thread a spell, e.g. {@code spell 1 bolt fire split} (5 is the tome's)</li>
  *   <li>{@code mana}: refill mana</li>
- *   <li>{@code circles <0-8>}, {@code condense <mana>}: set Heart Circles, add condensed mana</li>
+ *   <li>{@code circles <0-20>}, {@code condense <mana>}: set Heart Circles, add condensed mana</li>
  *   <li>{@code innate <rune>}: choose your innate rune</li>
  *   <li>{@code runebound}: bind the nearest monster to a Cord</li>
  *   <li>{@code reset}: forget everything</li>
@@ -104,7 +104,7 @@ public final class WildercordCommand {
 					.executes(ctx -> {
 						ServerPlayer player = ctx.getSource().getPlayerOrException();
 						int mana = IntegerArgumentType.getInteger(ctx, "mana");
-						player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, dev.wildercord.player.Heart.condensed(player) + mana);
+						player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, dev.wildercord.spell.Circles.addCondensed(dev.wildercord.player.Heart.condensed(player), mana));
 						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.condensed", mana), false);
 						return 1;
 					})))

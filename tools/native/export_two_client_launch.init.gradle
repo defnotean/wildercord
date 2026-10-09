@@ -1,30 +1,230 @@
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import java.security.MessageDigest
 
-// Proposal: root invokes serialized AFTER promotion/compilation, never executes the game task.
+// This exports a bounded client command; it never executes runClientGameTest.
 gradle.projectsEvaluated {
- def p=gradle.rootProject
- if (!p.hasProperty('twoClientSuite')) throw new GradleException('Export requires -PtwoClientSuite to select the supervised two-process fixture')
- p.tasks.register('exportTwoClientLaunch') {
-  dependsOn p.tasks.named('gametestClasses'),p.tasks.named('configureLaunch')
-  doLast {
-   def run=p.tasks.named('runClientGameTest').get()
-   if(run.microsoftAuthenticationEnabled.get())throw new GradleException('Use offline development profiles for isolated local fixture')
-   def base=Class.forName('net.fabricmc.loom.task.AbstractRunTask',true,run.class.classLoader)
-   def useArgs=base.getDeclaredMethod('getUseArgFile');useArgs.accessible=true;useArgs.invoke(run).set(false)
-   def jvm=new ArrayList(run.jvmArgs ?: [])
-   run.systemProperties.each {k,v->jvm.add('-D'+k+'='+v)}
-   // Preserve custom JavaExec JVM providers; Loom's provider supplies getGameJvmArgs.
-   run.jvmArgumentProviders.each {provider->jvm.addAll(provider.asArguments())}
-   def args=new ArrayList(run.args ?: [])
-   run.argumentProviders.each {provider->args.addAll(provider.asArguments())}
-   def output=p.file(p.findProperty('twoClientLaunch') ?: 'artifacts/drafts/aura-closure/two-clients/launch.json')
-   output.parentFile.mkdirs()
-   output.setText(JsonOutput.prettyPrint(JsonOutput.toJson([
-    java:run.javaLauncher.get().executablePath.asFile.absolutePath,
-    main:run.mainClass.get(),classpath:run.classpath.files.collect{it.absolutePath},
-    jvm:jvm,args:args,environment:[ALSOFT_DRIVERS:run.environment['ALSOFT_DRIVERS']],
-    project:p.projectDir.absolutePath,loomVersion:'1.18.2'
-   ])),'UTF-8')
-  }
- }
+    def p = gradle.rootProject
+    def suite = p.findProperty('twoClientSuite')?.toString()
+    if (!(suite in ['cast-receipt', 'moon', 'stone-hinge-peer'])) throw new GradleException('Bounded export requires -PtwoClientSuite=cast-receipt, moon or stone-hinge-peer')
+    def maxTimeoutSeconds = suite == 'stone-hinge-peer' ? 300 : suite == 'moon' ? 180 : 900
+    def root = p.projectDir.canonicalFile
+    def expectedEntry = suite == 'stone-hinge-peer' ? 'dev.wildercord.aura.StoneHingePeerTransportTest' : suite == 'moon' ? 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest' : 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
+    def contractPath = suite == 'stone-hinge-peer' ? 'src/gametest/resources/stone-hinge-peer-native-contract.json' : suite == 'moon' ? 'src/gametest/resources/crimson-moon-native-contract.json' : 'src/gametest/resources/cast-receipt-native-contract.json'
+    def expectedMixins = suite == 'stone-hinge-peer' ? ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json'] : suite == 'moon' ? ['crimson-moon-multiplayer-gametest.mixins.json'] : ['counter-peer-gametest.mixins.json']
+    // Match the supervisor's ordered roster, including every original case.
+    def expectedCases = [
+        'BREAK_CAST_HEALTH',
+        'BREAK_CAST_FULL_ABSORPTION',
+        'BREAK_CAST_MANA_SKIN',
+        'BREAK_CAST_REVERSAL',
+        'BREAK_CAST_TOTEM',
+        'BREAK_CAST_GUARD',
+        'BREAK_CAST_STEP',
+        'BREAK_CAST_WARD',
+        'BREAK_CAST_RESISTANCE',
+        'BREAK_CAST_REJECTED',
+        'BREAK_CAST_REPLACED',
+        'BREAK_CAST_EQUAL_TOKEN',
+        'BREAK_CAST_NEW_CHARGE',
+        'BREAK_CAST_IDLE',
+        'BREAK_CAST_WINDUP_REPLACEMENT',
+        'DRIVING_CUT_HEALTH',
+        'DRIVING_CUT_FULL_ABSORPTION',
+        'DRIVING_CUT_MANA_SKIN',
+        'DRIVING_CUT_REVERSAL',
+        'DRIVING_CUT_TOTEM',
+        'DRIVING_CUT_GUARD',
+        'DRIVING_CUT_STEP',
+        'DRIVING_CUT_WARD',
+        'DRIVING_CUT_RESISTANCE',
+        'DRIVING_CUT_REJECTED',
+        'DRIVING_CUT_REPLACED',
+        'DRIVING_CUT_EQUAL_TOKEN',
+        'DRIVING_CUT_NEW_CHARGE',
+        'DRIVING_CUT_IDLE',
+        'DRIVING_CUT_WINDUP_REPLACEMENT',
+        'SHARED_BREAK_CAST_TO_DRIVING_CUT',
+        'SHARED_DRIVING_CUT_TO_BREAK_CAST',
+        'IDLE_SEAL_RECOVERY',
+        'CHARGED_SEAL_RECOVERY',
+        'NONPLAYER',
+        'COUNTER_QUIETUS_PAID_BOLT',
+        'COUNTER_QUIETUS_THIRTEEN_EXISTING',
+        'COUNTER_REFLECTED_RESPAWN_NULLCATCH',
+        'SPECTATOR_BOLT_VENOM',
+        'SPECTATOR_SPARK_VENOM',
+        'SPECTATOR_RAY_VENOM',
+        'SPECTATOR_TOUCH_VENOM',
+        'LIFE_SELF_HEAL_FIRST_PERSON',
+        'LIFE_SELF_HEAL_THIRD_PERSON',
+        'LIFE_SELF_HEAL_CAMERA_TRANSITIONS',
+        'LIFE_SELF_SECOND_WIND_REDUCED_FLASH',
+        'COUNTER_UNMOVED_CLASSIC_RIGHT',
+        'COUNTER_UNMOVED_CLASSIC_LEFT',
+        'COUNTER_UNMOVED_ARTICULATED_RIGHT',
+        'COUNTER_UNMOVED_ARTICULATED_LEFT',
+        'COUNTER_NULL_PARRY_CLASSIC_RIGHT',
+        'COUNTER_NULL_PARRY_CLASSIC_LEFT',
+        'COUNTER_NULL_PARRY_ARTICULATED_RIGHT',
+        'COUNTER_NULL_PARRY_ARTICULATED_LEFT'
+    ]
+    if (suite == 'moon') expectedCases = ['articulated_netherite_funded_right_release']
+    def stoneTransparent = ['ORDINARY', 'RIGHT', 'LEFT', 'PARTIAL_RESISTANCE', 'ABSORPTION', 'WALL_CLIPPED',
+        'REAR', 'FULL_RESISTANCE', 'ZERO_WOUND', 'INVULNERABLE', 'CALLER_KNOCKBACK', 'CLOSE_AURA',
+        'INTERVENING_IMPULSE', 'FALLING_ORDINARY', 'FALLING_REFUSAL', 'NONZERO_RETENTION', 'NATURAL_MASTER']
+    def stoneDelayed = ['ORDINARY', 'RIGHT', 'LEFT', 'WALL_CLIPPED', 'FALLING_ORDINARY', 'FALLING_REFUSAL']
+    def stoneProfiles = [[id: 'transparent', delayMs: [0, 0, 0, 0], cases: stoneTransparent],
+        [id: 'symmetric', delayMs: [50, 50, 50, 50], cases: stoneDelayed],
+        [id: 'asymmetric', delayMs: [100, 25, 25, 100], cases: stoneDelayed]]
+
+    def git = { List<String> arguments ->
+        def process = new ProcessBuilder(['git', '-C', root.absolutePath] + arguments).redirectErrorStream(true).start()
+        def output = new StringBuffer()
+        def reader = process.consumeProcessOutputStream(output)
+        if (!process.waitFor(15, java.util.concurrent.TimeUnit.SECONDS)) {
+            process.destroyForcibly()
+            throw new GradleException('Git provenance check exceeded its deadline')
+        }
+        reader.join(1000)
+        if (reader.isAlive()) throw new GradleException('Git provenance output did not finish')
+        if (process.exitValue() != 0) throw new GradleException('Git provenance check failed: ' + output)
+        output.toString().trim()
+    }
+    def inside = { File path, List<File> roots ->
+        def canonical = path.canonicalFile
+        if (!roots.any { canonical.toPath().startsWith(it.canonicalFile.toPath()) }) throw new GradleException('Path escapes allowed roots: ' + path)
+        canonical
+    }
+    Closure<String> digest
+    digest = { File path ->
+        if (java.nio.file.Files.isSymbolicLink(path.toPath())) throw new GradleException('Symlink runtime input: ' + path)
+        def md = MessageDigest.getInstance('SHA-256')
+        if (path.isDirectory()) {
+            def children = []
+            path.eachFileRecurse { child ->
+                if (java.nio.file.Files.isSymbolicLink(child.toPath())) throw new GradleException('Symlink runtime input: ' + child)
+                if (child.isFile()) children.add(child)
+            }
+            children.sort { a, b -> path.toPath().relativize(a.toPath()).toString().replace('\\', '/') <=> path.toPath().relativize(b.toPath()).toString().replace('\\', '/') }.each { child ->
+                md.update(path.toPath().relativize(child.toPath()).toString().replace('\\', '/').getBytes('UTF-8'))
+                md.update((byte) 0)
+                md.update((digest(child) + '\n').getBytes('UTF-8'))
+            }
+        } else {
+            if (!path.isFile()) throw new GradleException('Missing runtime input: ' + path)
+            path.withInputStream { input ->
+                byte[] buffer = new byte[1024 * 1024]
+                int size
+                while ((size = input.read(buffer)) != -1) md.update(buffer, 0, size)
+            }
+        }
+        md.digest().encodeHex().toString()
+    }
+    p.tasks.register('exportTwoClientLaunch') {
+        dependsOn p.tasks.named('gametestClasses'), p.tasks.named('configureLaunch')
+        outputs.upToDateWhen { false }
+        doLast {
+            if (git(['status', '--porcelain', '--untracked-files=normal'])) throw new GradleException('Commit source changes before exporting a native launch')
+            def sourceHead = git(['rev-parse', 'HEAD'])
+            def prHeadSha = System.getenv('WILDERCORD_PR_HEAD_SHA') ?: ''
+            if (prHeadSha && !(prHeadSha ==~ /[a-f0-9]{40}/)) throw new GradleException('Malformed explicit PR-head association')
+            def run = p.tasks.named('runClientGameTest').get()
+            if (run.microsoftAuthenticationEnabled.get()) throw new GradleException('The fixture requires fixed offline development profiles')
+            def descriptor = inside(new File(p.tasks.named('processGametestResources').get().destinationDir, 'fabric.mod.json'), [new File(root, 'build'), new File(root, 'build-alt')])
+            def descriptorData = new JsonSlurper().parse(descriptor)
+            if (descriptorData.entrypoints['fabric-client-gametest'] != [expectedEntry]) throw new GradleException('Generated descriptor does not match the requested supervised fixture')
+            if (suite == 'moon' && (descriptorData.mixins ?: []).contains('crimson-moon-owner-gametest.mixins.json')) throw new GradleException('Paired Moon hooks must not be injected twice')
+            expectedMixins.each { name ->
+                if ((descriptorData.mixins ?: []).count { it == name } != 1) throw new GradleException('Moon passive hooks must be registered exactly once')
+                if (digest(new File(descriptor.parentFile, name)) != digest(new File(root, 'src/gametest/resources/' + name))) throw new GradleException('Processed Moon hooks differ from reviewed source')
+            }
+            def classPath = expectedEntry.replace('.', '/') + '.class'
+            if (!p.sourceSets.gametest.output.classesDirs.files.any { new File(it, classPath).isFile() }) throw new GradleException('Supervised entrypoint class is missing from compiled gametest output')
+            def contractFile = new File(root, contractPath)
+            def contract = new JsonSlurper().parse(contractFile)
+            if (suite == 'stone-hinge-peer') {
+                if (contract.schemaVersion != 1 || contract.suite != suite || contract.entrypoint != expectedEntry || contract.expectedCount != 29 || contract.profiles != stoneProfiles)
+                    throw new GradleException('Stone Hinge requires the exact 17/6/6 roster and fixed connection-lifetime delay profiles')
+                if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: 29, maxTimeoutSeconds: 1200, maxProfileSeconds: 300, maxProfileEvidenceBytes: 16777216])
+                    throw new GradleException('Stone Hinge diagnostic resource limits changed')
+                if ([contract.gameplayEnabled, contract.ordinaryInputProven, contract.admissionProven, contract.paidInputProven, contract.wholeJvmEgressIsolationProven].any { it != false })
+                    throw new GradleException('Transport diagnostic must not claim gameplay admission or whole-JVM egress isolation')
+                if (run.javaLauncher.get().metadata.languageVersion.asInt() != 25) throw new GradleException('Stone Hinge requires the configured Java 25 launcher')
+            } else {
+                if (contract.schemaVersion != 1 || contract.suite != suite || contract.entrypoint != expectedEntry || contract.expectedCount != expectedCases.size() || contract.cases != expectedCases) throw new GradleException('Unexpected exact ordered source contract for ' + suite)
+                if (contract.limits != [maxJvms: 2, maxHeapMiBPerJvm: 2048, maxCases: expectedCases.size(), maxTimeoutSeconds: maxTimeoutSeconds]) throw new GradleException('Unexpected supervised resource limits')
+            }
+            if (digest(new File(descriptor.parentFile, contractFile.name)) != digest(contractFile)) throw new GradleException('Processed contract differs from source contract')
+            def taskBase = Class.forName('net.fabricmc.loom.task.AbstractRunTask', true, run.class.classLoader)
+            def useArgs = taskBase.getDeclaredMethod('getUseArgFile')
+            useArgs.accessible = true
+            useArgs.invoke(run).set(false)
+            def jvm = new ArrayList(run.jvmArgs ?: [])
+            run.systemProperties.each { key, value -> jvm.add('-D' + key + '=' + value) }
+            run.jvmArgumentProviders.each { provider -> jvm.addAll(provider.asArguments()) }
+            def args = new ArrayList(run.args ?: [])
+            run.argumentProviders.each { provider -> args.addAll(provider.asArguments()) }
+            def output = inside(p.file(p.findProperty('twoClientLaunch') ?: 'build/native/cast-launch.json'), [new File(root, 'build'), new File(root, 'build-alt'), new File(root, 'artifacts')])
+            // Evidence must not dirty the source it attests to.
+            git(['check-ignore', output.absolutePath])
+            def runtimeRoots = [root, new File(gradle.gradleUserHomeDir, 'caches'), new File(gradle.gradleUserHomeDir, 'jdks')]
+            def javaFile = run.javaLauncher.get().executablePath.asFile.canonicalFile
+            if (!(javaFile.name in ['java', 'java.exe']) || run.mainClass.get() != 'net.fabricmc.devlaunchinjector.Main') throw new GradleException('Only the configured Java/Fabric client launcher is exportable')
+            def classpath = run.classpath.files.collect { inside(it, runtimeRoots).absolutePath }
+            def paths = [javaFile] as Set
+            paths.addAll(classpath.collect { new File(it) })
+            def pathProperties = ['fabric.dli.config', 'fabric.remapClasspathFile', 'fabric.addMods', 'fabric.classPathGroups', 'java.library.path', 'org.lwjgl.librarypath', 'log4j.configurationFile', 'fabric.client.gametest.testModResourcesPath', 'fabric.gameJarPath', 'fabric.gameJarPath.client']
+            def multiplePaths = ['fabric.addMods', 'fabric.classPathGroups', 'java.library.path', 'org.lwjgl.librarypath']
+            def properties = [:]
+            jvm.findAll { it.startsWith('-D') }.each { argument ->
+                def parts = argument.substring(2).split('=', 2)
+                properties[parts[0]] = parts.length == 2 ? parts[1] : ''
+            }
+            def configValue = properties['fabric.dli.config']
+            if (!configValue) throw new GradleException('Missing Fabric launch config')
+            def configPath = configValue.replaceAll(/@@([0-9a-fA-F]{1,4})/) { match, hex -> ((char) Integer.parseInt(hex, 16)).toString() }
+            def configFile = inside(new File(configPath), runtimeRoots)
+            properties['fabric.dli.config'] = configPath
+            def section = ''
+            configFile.eachLine('UTF-8') { line ->
+                if (line.trim()) {
+                    if (!line.startsWith(' ') && !line.startsWith('\t')) section = line.trim()
+                    else if (section in ['commonProperties', 'clientProperties']) {
+                        def parts = line.trim().split('=', 2)
+                        properties[parts[0].trim()] = parts.length == 2 ? parts[1].trim() : ''
+                    }
+                }
+            }
+            properties.each { key, value ->
+                if (key in pathProperties) {
+                    def separator = key == 'log4j.configurationFile' ? ',' : File.pathSeparator
+                    def values = key in multiplePaths || key == 'log4j.configurationFile' ? value.split(java.util.regex.Pattern.quote(separator)) : [value]
+                    values.findAll { it }.each { paths.add(inside(new File(it), runtimeRoots)) }
+                }
+            }
+            if (properties['fabric.remapClasspathFile']) {
+                new File(properties['fabric.remapClasspathFile']).getText('UTF-8').trim().split(java.util.regex.Pattern.quote(File.pathSeparator)).findAll { it }.each {
+                    paths.add(inside(new File(it), runtimeRoots))
+                }
+            }
+            def fingerprints = [:]
+            paths.sort { it.absolutePath }.each { fingerprints[it.absolutePath] = digest(it) }
+            def environment = [:]
+            if (run.environment['ALSOFT_DRIVERS'] != null) {
+                if (run.environment['ALSOFT_DRIVERS'] != 'null') throw new GradleException('Bounded native export requires the existing null OpenAL backend')
+                environment.ALSOFT_DRIVERS = 'null'
+            }
+            output.parentFile.mkdirs()
+            output.setText(JsonOutput.prettyPrint(JsonOutput.toJson([
+                schemaVersion: 2, suite: suite, maxTimeoutSeconds: maxTimeoutSeconds, sourceHead: sourceHead, checkoutSha: sourceHead, prHeadSha: prHeadSha, project: root.absolutePath,
+                descriptor: descriptor.absolutePath, descriptorSha256: digest(descriptor),
+                contract: contractPath, contractSha256: digest(contractFile),
+                java: javaFile.absolutePath, main: run.mainClass.get(), classpath: classpath,
+                jvm: jvm, args: args, environment: environment, runtimeSha256: fingerprints,
+                loomVersion: p.property('loom_version').toString()
+            ] + (suite == 'stone-hinge-peer' ? [javaVersion: run.javaLauncher.get().metadata.languageVersion.asInt()] : [:]))), 'UTF-8')
+            logger.lifecycle('Exported bounded ' + suite + ' launch for ' + sourceHead + ' to ' + output)
+        }
+    }
 }

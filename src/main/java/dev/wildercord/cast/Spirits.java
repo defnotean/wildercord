@@ -170,11 +170,13 @@ public final class Spirits {
 		return target.getType() == EntityTypes.ENDER_DRAGON || target.getType() == EntityTypes.WITHER
 			|| target.getType() == EntityTypes.WARDEN || target.getType() == EntityTypes.ELDER_GUARDIAN
 			|| target.getType() == WildercordEntities.ARCHIVIST || target instanceof DungeonBoss
-			|| target instanceof dev.wildercord.aura.world.Gravekeeper;
+			|| target instanceof dev.wildercord.aura.world.Gravekeeper
+			|| target instanceof dev.wildercord.aura.world.SwordMaster;
 	}
 
 	/** Freeze: {@link #hold} plus ice, which sets up Shatter. */
 	public static void freeze(LivingEntity target, int ticks) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		// A Frostward makes a frost hold last a second at most.
 		if (Effects.warded(target, "frostward")) {
 			ticks = Math.min(ticks, FROSTWARD_CAP);
@@ -216,6 +218,8 @@ public final class Spirits {
 
 	/** Stops a mob's AI for {@code ticks}; players and bosses are slowed to a crawl instead. */
 	public static void hold(LivingEntity target, int ticks) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
+		if (target instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 6, false, false));
 		target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, 4, false, false));
 		if (!isBoss(target) && target instanceof Mob mob && (!mob.isNoAi() || mob.hasAttached(WildercordAttachments.FROZEN_UNTIL))) {

@@ -3,9 +3,9 @@
 
 ![The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/b-advancements.jpg)
 
-Wildercord has its own advancement tab, set on dark indigo stone with faint rune script. It leads you
-from your first Blank Rune to the 8th Heart Circle and the bosses of the four dungeons: **74
-advancements** below the root, most of them rewarding experience, some Blank Runes and Mana Crystals.
+Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
+Circle, the dungeon bosses and the 48 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
+Crystals.
 
 
 ## Reading this page
@@ -14,11 +14,9 @@ advancements** below the root, most of them rewarding experience, some Blank Run
   fanfare). *Hidden* ones stay out of sight until you earn them.
 - **Reward**: experience points, and sometimes items: **8 Blank Runes**, **a Mana Crystal** or **3 Mana
   Crystals**.
-- **After** is the advancement it branches from. You can earn an advancement before the one it
-  branches from; it still counts.
-- Most advancements come from a [feat](grimoire.md) or another entry
-  in your Grimoire. If you already did something before the advancement existed (say, an older world),
-  you're given it when you next join.
+- **After** is the advancement it branches from. You can earn them in any order.
+- Most come from a [feat](grimoire.md) or another Grimoire entry. If
+  you already did the thing in an older world, you get it when you next join.
 
 ## The root
 
@@ -84,6 +82,18 @@ See [Shields and Parrying](../spellcraft/shields.md) and
 | **Brighter Still** | goal | Flow | Form your 6th Heart Circle | 100 XP, 8 Blank Runes |
 | **Overflow** | goal | Brighter Still | Form your 7th Heart Circle | 150 XP, a Mana Crystal |
 | **Archmage** | challenge | Overflow | Form your 8th Heart Circle and become an Archmage | 500 XP, 3 Mana Crystals |
+| **Widening Horizon** | goal | Archmage | Form your 9th Heart Circle | 100 XP |
+| **Forged Heart** | goal | Widening Horizon | Form your 10th Heart Circle | 125 XP |
+| **Woven Wisdom** | goal | Forged Heart | Form your 11th Heart Circle | 150 XP |
+| **Ocean Within** | goal | Woven Wisdom | Form your 12th Heart Circle | 175 XP |
+| **Boundless Study** | goal | Ocean Within | Form your 13th Heart Circle | 200 XP |
+| **Starheart** | goal | Boundless Study | Form your 14th Heart Circle | 225 XP |
+| **Living Grimoire** | goal | Starheart | Form your 15th Heart Circle | 250 XP |
+| **Rooted Heart** | goal | Living Grimoire | Form your 16th Heart Circle | 275 XP |
+| **Prismatic Heart** | goal | Rooted Heart | Form your 17th Heart Circle | 300 XP |
+| **Stormheart** | goal | Prismatic Heart | Form your 18th Heart Circle | 325 XP |
+| **Convergence** | goal | Stormheart | Form your 19th Heart Circle | 350 XP |
+| **Master Heart** | challenge | Convergence | Form your 20th Heart Circle: the Master Heart | 1,000 XP, 3 Mana Crystals |
 | **Awakening** | task | Heartbeat | Awaken your innate rune at the 1st Circle | 25 XP |
 | **Mirrorfrost** | task, hidden | Awakening | Turn an enemy's own spell back on them | 50 XP |
 
@@ -116,9 +126,9 @@ Mirrorfrost can only be earned with the innate rune of the same name. See
 | **Every Page Filled** | challenge, hidden | Nothing Left Unsaid | Fill the Grimoire: every reaction and secret spell, and every feat any caster can earn alone | 500 XP, 3 Mana Crystals, 8 Blank Runes |
 
 - **Knowing runes** means runes learned into your Codex. Knots don't count.
-- **Every Word** wants every rune there is except the innate runes that aren't yours: every craftable
-  rune, every rune of the world and every fused rune, signature fusions included (318 in all), plus your own innate rune. Runes
-  added by other mods count too, if you have them installed.
+- **Every Word** wants every craftable rune, every rune of the world and every fused rune (signature
+  fusions included), plus your own innate rune. Other players' innate runes don't count. See the
+  [Rune Codex](../runes/codex.md).
 - **Chain Reaction** wants all eleven reactions in your Grimoire.
 - **Every Page Filled** wants all 11 reactions, all 10 secret spells and every feat except Mirrorfrost,
   Unison, Domain Clash and Chorus. See [The Grimoire and Feats](grimoire.md#a-full-grimoire).
@@ -158,6 +168,8 @@ See [The Fusion Altar](../fusion-altar/index.md) and
 | **Tempered** | challenge | The Last Page | Defeat the Cinder Warden in its Ember Sanctum | 300 XP |
 | **Starbreaker** | challenge | The Last Page | Defeat the Star-Eater in its Astral Observatory | 300 XP |
 | **Low Tide** | challenge | The Last Page | Defeat the Tide Scribe in its Drowned Scriptorium | 300 XP |
+| **Heartwood** | challenge | The Last Page | Prune the Root Guardian and defeat it in the Rootbound Maze | 300 XP |
+| **Grounded** | challenge | The Last Page | Ground the Storm Conductor and defeat it in the Storm Spire | 300 XP |
 | **Icebridge** | task | Shatter | Walk across water you froze with a spell | 15 XP |
 | **Conductor** | task | Conduct | Shock five creatures at once through the water they stand in | 25 XP |
 | **Runebreaker** | task | Wildercord | Slay a Runebound, a monster that casts spells | 15 XP |
@@ -167,19 +179,117 @@ See [The Fusion Altar](../fusion-altar/index.md) and
 | **Unison** | goal | Runebreaker | Strike a foe with another element at the same moment as another caster | 50 XP |
 
 See [Ley Lines and the Wellstone](ley-lines.md),
+[Root Guardian and Storm Conductor](../world/root-and-storm-bosses.md),
 [Familiars](../companions/familiars.md), [World Events](../world/world-events.md),
 [The Archive](../world/archive.md), [Runebound](../world/runebound.md),
 [Magic in the World](../world/world-magic.md) and
 [Playing Together](../social/playing-together.md).
 
+## Sites
+
+Every site advancement is a task. You earn it by walking into the site.
+
+### Sword Master halls
+
+| Advancement | After | Needs | Reward |
+|---|---|---|---|
+| **Forge Dojo** | Wildercord | Find a Master dojo in the badlands | 30 XP |
+| **Quarry Hall** | Wildercord | Find a Master hall among the stony hills | 30 XP |
+| **Resonance Chamber** | Wildercord | Find the deep Master chamber under the bell | 30 XP |
+| **Root Temple** | Wildercord | Find a Master temple wrapped in roots | 30 XP |
+| **Star Terrace** | Wildercord | Find the Master terrace that reads the stars | 30 XP |
+| **Sundial Court** | Wildercord | Find a Master court in the desert | 30 XP |
+| **Waterfall Shrine** | Wildercord | Find the frozen fall of a Master shrine | 30 XP |
+| **Wind Gate** | Wildercord | Find the Master gate on the windswept heights | 30 XP |
+
+See [Master Halls and Shrines](../world/masters-sites.md).
+
+### Mines
+
+| Advancement | After | Needs | Reward |
+|---|---|---|---|
+| **Hillside Mine** | Ley Walker | Find a Hillside Mine | 20 XP |
+| **Basalt Foundry** | Hillside Mine | Find a Basalt Foundry in the Nether | 20 XP |
+| **Collapsed Delve** | Hillside Mine | Find a Collapsed Delve | 20 XP |
+| **Crystal Survey Lab** | Hillside Mine | Find a Crystal Survey Lab in a buried geode | 20 XP |
+| **Deepslate Vault** | Hillside Mine | Find a Deepslate Vault far below the ground | 35 XP |
+| **Mountain Forge Hall** | Hillside Mine | Find a Mountain Forge Hall | 35 XP |
+| **Miner's Rest** | Hillside Mine | Find a Miner's Rest on a cliff edge | 20 XP |
+| **Prospector's Camp** | Hillside Mine | Find a Prospector's Camp in the badlands | 20 XP |
+
+See [Mines, Forges and Crystals](../world/mine-sites.md).
+
+### Farms
+
+| Advancement | After | Needs | Reward |
+|---|---|---|---|
+| **Country Roads** | Ley Walker | Find a farmstead, an orchard, an apiary or another working place in the wild | 10 XP |
+| **Smoke and Honey** | Country Roads | Find a beekeeper's apiary | 20 XP |
+| **Harvest Home** | Country Roads | Find a granary and its harvest shrine | 20 XP |
+| **Simples** | Country Roads | Find an herbalist's cottage | 20 XP |
+| **Down Among the Caps** | Country Roads | Find a sunken mushroom ring | 20 XP |
+| **Behind the Wall** | Country Roads | Find a walled orchard | 20 XP |
+| **Do Not Linger** | Country Roads | Find an abandoned scarecrow field | 20 XP |
+| **Count the Flock** | Country Roads | Find a shepherd's hut | 20 XP |
+| **Grist for the Mill** | Country Roads | Find a windmill farmstead | 20 XP |
+
+See [Farmstead Sites](../world/farm-sites.md).
+
+### Roadside places
+
+| Advancement | After | Needs | Reward |
+|---|---|---|---|
+| **Wayfarer Inn** | Ley Walker | Find a wayfarer inn at a crossroads | 20 XP |
+| **Broken Bridge** | Wayfarer Inn | Find a broken bridge over a creek | 20 XP |
+| **Caravan Camp** | Wayfarer Inn | Find a caravan camp on the road | 20 XP |
+| **Cartographer's Hut** | Wayfarer Inn | Find a cartographer's hut | 20 XP |
+| **Rune Library** | Wayfarer Inn | Find a roadside rune library | 20 XP |
+| **Standing Stones** | Wayfarer Inn | Find a ring of standing stones | 20 XP |
+| **Vow Circle** | Wayfarer Inn | Find a vow circle shrine | 20 XP |
+| **Watchtower** | Wayfarer Inn | Find a road watchtower | 20 XP |
+
+See [Roadside Sites](../world/travel-sites.md).
+
+### Water
+
+| Advancement | After | Needs | Reward |
+|---|---|---|---|
+| **Through the Ice** | Ley Walker | Find an ice fishing camp on frozen water | 20 XP |
+| **Keeper of the Light** | Ley Walker | Find a lighthouse on the shore | 20 XP |
+| **Cast a Wide Net** | Ley Walker | Find the net-weavers' huts in a mangrove swamp | 20 XP |
+| **Safe Harbour** | Ley Walker | Find a pier and boathouse on the shore | 20 XP |
+| **Smoke on the Water** | Ley Walker | Find a smokehouse on stilts over a swamp or river | 20 XP |
+| **Shrine of the Tide** | Ley Walker | Find the shrine on the floor of a warm sea | 20 XP |
+| **Pools Left by the Tide** | Ley Walker | Find a tidepool grotto on a stony shore | 20 XP |
+| **Run of the Mill** | Ley Walker | Find a watermill on a river bank | 20 XP |
+
+See [Water Sites](../world/water-sites.md).
+
+### The wilds
+
+| Advancement | After | Needs | Reward |
+|---|---|---|---|
+| **First Light** | The Buried Library | Find a Dawn Pavilion in a cherry grove | 20 XP |
+| **Shifting Sands** | The Buried Library | Find a Dune Temple in the desert | 20 XP |
+| **Listening In** | The Buried Library | Find an Echo Post in the deep dark | 20 XP |
+| **Fire on the Tower** | The Buried Library | Find an Ember Outpost in the Nether | 20 XP |
+| **The Last Gate** | The Buried Library | Find an Iron Gatehouse in the badlands | 20 XP |
+| **The Cold Bell** | The Buried Library | Find a Rime Monastery in the snow | 20 XP |
+| **Poison Darts** | The Buried Library | Find a Venom Ziggurat in the jungle | 20 XP |
+| **Light at the Edge** | The Buried Library | Find a Void Lantern on the End's outer islands | 20 XP |
+
+See [Wild Places](../world/wilds-sites.md).
+
 ## Totals
+
+142 advancements, counting the root.
 
 | | Count |
 |---|---|
-| Tasks | 42 |
-| Goals | 15 |
-| Challenges | 9 |
+| Tasks | 102 |
+| Goals | 28 |
+| Challenges | 12 |
 | Hidden | 4 |
-| Experience for all of them | 5,310 |
-| Blank Runes | 32 (four stacks of 8) |
-| Mana Crystals | 16 |
+| Experience for all of them | 10,825 |
+| Blank Runes | 48 (six stacks of 8) |
+| Mana Crystals | 19 |

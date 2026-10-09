@@ -39,6 +39,9 @@ public final class Passives {
 	/** Damage and control that an Orbit may carry. */
 	private static final Set<String> AURA = Set.of("harm", "shock", "fire", "frost", "chill", "venom", "dismantle", "ripple", "aftershock", "push",
 		"ember", "icicle", "pelt", "windcut", "umbra");
+	// ---- fx-passive pack: the hearth runes that may run always-on (see cast/HearthEffects).
+	private static final Set<String> HEARTH = Set.of("slowburn", "warm_cloak", "softsole", "softfoot", "orbcall", "lantern_soul", "keenkeep",
+		"currentkin", "surefoot", "long_arm", "nightwatch", "luckcharm", "deepwarn", "enderhush");
 	private static final Set<String> MODIFIERS = Set.of("amplify", "extend", "frugal", "widen", "focus", "quicken");
 
 	/** Circles needed for each passive slot: the 1st and the 5th. */
@@ -59,7 +62,7 @@ public final class Passives {
 		String path = rune.path();
 		return switch (rune.family()) {
 			case SHAPE -> SHAPES.contains(path);
-			case EFFECT -> BUFFS.contains(path) || AURA.contains(path);
+			case EFFECT -> BUFFS.contains(path) || AURA.contains(path) || HEARTH.contains(path); // ---- fx-passive pack: HEARTH
 			case MODIFIER -> MODIFIERS.contains(path);
 			case LINK, KNOT -> false;
 		};

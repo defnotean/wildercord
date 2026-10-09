@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.stonehinge.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "StoneHingePlayerProbeMixin",
+    "StoneHingeMobProbeMixin",
+    "StoneHingeKnockbackProbeMixin",
+    "StoneHingeMasterProbeMixin",
+    "StoneHingeAuraSourceProbeMixin",
+    "StoneHingeOwnerServerProbeMixin",
+    "StoneHingeOwnerSendProbeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "StoneHingeOwnerClientProbeMixin",
+    "StoneHingeOwnerPositionSendProbeMixin"
+  ]
+}

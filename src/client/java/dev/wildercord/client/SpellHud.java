@@ -53,6 +53,8 @@ public final class SpellHud {
 	private static final int MIN_BODY = 58;
 	/** How far the panel is lifted to clear an offhand slot or attack indicator (both at most 24 tall). */
 	private static final int RAISE = 24;
+	/** A tucked panel reaching over the hotbar rises past it and the health, food and air rows on it. */
+	private static final int TUCK_RAISE = 50;
 
 	private static final int GOLD = 0xFFE8C46A;
 	private static final int LAVENDER = 0xFFB8A8FF;
@@ -256,8 +258,14 @@ public final class SpellHud {
 		}
 		int width = BODY_X + bodyW + 4;
 		if (width > avail) {
-			// Very narrow window: tuck the panel into the bottom-right corner.
+			// Very narrow window: tuck the panel into the bottom-right corner, lifted clear of the hotbar (and the bars over it)
+			// wherever it reaches across them.
 			x0 = Math.max(2, g.guiWidth() - width - 2);
+			if (x0 < g.guiWidth() / 2 + 91 + 5) {
+				y0 = g.guiHeight() - HEIGHT - TUCK_RAISE;
+			} else if (x0 < g.guiWidth() / 2 + 91 + 5 + aside) {
+				y0 = g.guiHeight() - HEIGHT - RAISE;
+			}
 		}
 
 		sprite(g, FRAME, x0, y0, width, HEIGHT);

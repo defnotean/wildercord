@@ -38,6 +38,8 @@ public final class AuraGuard {
 
 	/** Raises the guard (the technique): Flow, an aura weapon in hand, rested, and its price paid. */
 	public static boolean raise(ServerPlayer player) {
+		if (MastersArts.committed(player) || MasterForms.committed(player) || dev.wildercord.cast.ActionAdmission.busy(player)) return false;
+        if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return false;
 		long now = player.level().getGameTime();
 		AuraAttachments.State state = Aura.state(player);
 		if (!Aura.holdsWeapon(player)) {
@@ -72,6 +74,11 @@ public final class AuraGuard {
 		}
 	}
 
+	/** Called only after a counter has passed its full admission and committed its price/rest. */
+	static void lowerForCounter(ServerPlayer player) {
+		if (guarding(player)) drop(player, player.level().getGameTime());
+	}
+
 	private static void drop(ServerPlayer player, long now) {
 		Aura.state(player, Aura.state(player).guard(-1, now));
 	}
@@ -99,7 +106,7 @@ public final class AuraGuard {
 		if (!projectile && !blow) {
 			return false;
 		}
-		return faces(player, direct.position());
+		return faces(player, source instanceof dev.wildercord.cast.RelayDamageSource ? source.getSourcePosition() : direct.position());
 	}
 
 	/** Whether {@code from} is in front of the player (the guard's half). */
@@ -245,8 +252,6 @@ public final class AuraGuard {
 
 	/** The guard's flash, sound and words: a parry's gold. */
 	static void feedback(ServerPlayer player) {
-		// The swing straight after it is a counter, for sword strings.
-		SwordStrings.cue(player, StringReader.Cue.GUARD);
 		AuraVfx.perfect(player, Aura.color(player));
 		Aura.sound(player, "aura_perfect_guard", 1.0F, 1.0F);
 		dev.wildercord.cast.Fx.sound(player.level(), player.position(), WildercordSounds.SHIELD_PARRY, 0.8F, 1.2F);
@@ -263,7 +268,12 @@ public final class AuraGuard {
 	private static final java.util.Map<java.util.UUID, Caught> CAUGHT = new java.util.HashMap<>();
 
 	private static void caught(ServerPlayer player, LivingEntity attacker, float damage) {
-		CAUGHT.put(player.getUUID(), new Caught(attacker, Math.max(0, damage), player.level().getGameTime()));
+		Caught caught = new Caught(attacker, Math.max(0, damage), player.level().getGameTime());
+		CAUGHT.put(player.getUUID(), caught);
+		// Bind this exact catch before stagger/reflection callbacks can earn another guard.
+		SwordStrings.guardCaught(player, caught);
+		// ---- moves pack: a learned follow-up answers on the form key for a short moment.
+		FormDash.parried(player, attacker);
 	}
 
 	/**

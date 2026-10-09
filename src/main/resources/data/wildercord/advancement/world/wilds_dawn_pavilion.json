@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_dawn_pavilion": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_dawn_pavilion"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:cherry_log"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_dawn_pavilion.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_dawn_pavilion.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_dawn_pavilion"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

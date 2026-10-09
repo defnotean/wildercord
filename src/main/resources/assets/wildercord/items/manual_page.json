@@ -73,6 +73,48 @@
           "type": "minecraft:model",
           "model": "wildercord:item/manual_page/crimson"
         }
+      },
+      {
+        "when": "tide",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/tide"
+        }
+      },
+      {
+        "when": "iron",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/iron"
+        }
+      },
+      {
+        "when": "dune",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/dune"
+        }
+      },
+      {
+        "when": "echo",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/echo"
+        }
+      },
+      {
+        "when": "dawn",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/dawn"
+        }
+      },
+      {
+        "when": "venom",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/venom"
+        }
       }
     ],
     "fallback": {

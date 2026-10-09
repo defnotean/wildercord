@@ -170,7 +170,20 @@ public class Duelist extends AuraFighter {
 		if (player instanceof ServerPlayer server) {
 			if(tournament!=null) {
 				if(server.level().hasChunkAt(tournament) && server.level().getBlockEntity(tournament) instanceof TournamentBoardEntity board)board.describe(server);
-			} else DuelistDuels.use(server, this);
+			} else if (server.isShiftKeyDown()) {
+				// A Gale teacher offers Wall Turn to a qualified Sovereign who has not learned it; otherwise sneak-use asks for a Master.
+				if (!dev.wildercord.aura.MasterFormLessons.offer(server, this)) SwordMaster.introduce(server, this);
+			} else {
+				DuelistDuels.use(server, this);
+				if (!inDuel() && !leaving()) {
+					if (SwordMaster.readyForTrial(server)) {
+						server.sendSystemMessage(Component.translatable("message.wildercord.master.teacher_hint"));
+					}
+					// Gale teachers hint Wall Turn and Stone teachers Stone Hinge, only when the player can act on it now; field forms follow.
+					dev.wildercord.aura.MasterFormLessons.hint(server, this);
+					dev.wildercord.aura.FormDashLessons.hint(server, this);
+				}
+			}
 		}
 		return InteractionResult.SUCCESS;
 	}

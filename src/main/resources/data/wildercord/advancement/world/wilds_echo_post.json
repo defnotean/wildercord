@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_echo_post": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_echo_post"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:calibrated_sculk_sensor"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_echo_post.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_echo_post.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_echo_post"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

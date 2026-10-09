@@ -4,7 +4,7 @@
 
 Air and motion. Wind throws, lifts, dashes, turns arrows aside and carries you through the sky.
 
-16 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
+48 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cushion.png) Cushion
 
@@ -17,7 +17,20 @@ For 30 seconds falls can't hurt you, and a hard landing throws out a gust that k
 
 ![Crafting Cushion: a Blank Rune and any wool and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cushion.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/snuff_out.png) Douse
+
+
+*Tier I · Wind · Works on the world · 1 mana · needs any Cord*
+
+Puts out the candles and campfires within 6 blocks.
+
+**How to get it:** Craft: a Blank Rune, Candle and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Douse: a Blank Rune and Candle and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_snuff_out.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/feather_fall.png) Feather Fall
 
@@ -30,7 +43,137 @@ Slow falling and no fall damage for 12 seconds, and you drift the way you look w
 
 ![Crafting Feather Fall: a Blank Rune and 2x Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_feather_fall.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fieldstride.png) Fieldstride
+
+
+*Tier I · Wind · Moves you · 4 mana · needs any Cord*
+
+A farmhand's long stride: Speed I and Jump Boost I for 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, Leather Boots, Wheat Crops and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Fieldstride: a Blank Rune and Leather Boots, Wheat Crops and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fieldstride.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fleece.png) Fleece
+
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+Shears every woolly sheep within 5 blocks, as shears would, and the wool falls at their feet.
+
+**How to get it:** Craft: a Blank Rune, Shears, White Wool and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Fleece: a Blank Rune and Shears, White Wool and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fleece.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/folk_call.png) Folk Call
+
+
+*Tier I · Wind · Works on the world · 2 mana · needs any Cord*
+
+Villagers within 16 blocks walk over to the point.
+
+**How to get it:** Craft: a Blank Rune, Emerald and Note Block. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Folk Call: a Blank Rune and Emerald and Note Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_folk_call.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gentlehand.png) Gentle Hand
+
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+Farm animals within 5 blocks stop panicking and stand calm for 8 seconds, easy to lead or pen.
+
+**How to get it:** Craft: a Blank Rune, Apple, Wheat Crops and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Gentle Hand: a Blank Rune and Apple, Wheat Crops and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gentlehand.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hayloft.png) Hayloft
+
+
+*Tier I · Wind · Moves you · 5 mana · needs any Cord*
+
+Tosses you up as if from a haystack, about 4 blocks, and you float down for 3 seconds without a fall.
+
+**How to get it:** Craft: a Blank Rune, Hay Bale, Slimeball and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Hayloft: a Blank Rune and Hay Bale, Slimeball and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hayloft.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/herdcall.png) Herdcall
+
+
+*Tier I · Wind · Works on the world · 4 mana · needs any Cord*
+
+Farm animals within 8 blocks walk to the spot it lands (to you, cast on yourself). Up to 12 come at once.
+
+**How to get it:** Craft: a Blank Rune, Lead, Wheat Crops and Stick. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Herdcall: a Blank Rune and Lead, Wheat Crops and Stick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_herdcall.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hollowsense.png) Hollow Sense
+
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+Points you to the nearest open cave within 12 blocks of the point.
+
+**How to get it:** Craft: a Blank Rune, Echo Shard. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Hollow Sense: a Blank Rune and Echo Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hollowsense.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/home_bearing.png) Home Bearing
+
+
+*Tier I · Wind · Works on the world · 2 mana · needs any Cord*
+
+Tells which way your bed or respawn anchor lies and roughly how far, when it is in this world.
+
+**How to get it:** Craft: a Blank Rune, Compass and White Wool. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Home Bearing: a Blank Rune and Compass and White Wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_home_bearing.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/honeydew.png) Honeydew
+
+
+*Tier I · Wind · Helps you and your allies · 4 mana · needs any Cord*
+
+Sweet as a honey bottle: cures Poison and heals 3 (more with power).
+
+**How to get it:** Craft: a Blank Rune, Honey Bottle, Sugar and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Honeydew: a Blank Rune and Honey Bottle, Sugar and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_honeydew.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leaffall.png) Leaffall
+
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+The wild leaves in a 5-by-5-by-5 block around the point drop now, as if they'd decayed, with what decay would drop. Leaves placed by hand stay.
+
+**How to get it:** Craft: a Blank Rune, Oak Leaves, Shears and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Leaffall: a Blank Rune and Oak Leaves, Shears and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leaffall.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leap.png) Leap
 
@@ -43,7 +186,20 @@ Jump Boost III for 15 seconds.
 
 ![Crafting Leap: a Blank Rune and Slimeball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leap.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nudge.png) Nudge
+
+
+*Tier I · Wind · Harms enemies · 3 mana · needs any Cord*
+
+A gentle push 3 blocks away from you. No harm.
+
+**How to get it:** Craft: a Blank Rune, Feather and Slimeball. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Nudge: a Blank Rune and Feather and Slimeball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nudge.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/prune.png) Prune
 
@@ -56,7 +212,7 @@ A gust clears leaves, grass, flowers, vines and cobwebs within 3 blocks, and the
 
 ![Crafting Prune: a Blank Rune and Shears and any saplings](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_prune.png)
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/push.png) Push
 
@@ -69,7 +225,46 @@ Hurls targets away from the spell.
 
 ![Crafting Push: a Blank Rune and Piston](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_push.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shrug_off.png) Shrug Off
+
+
+*Tier I · Wind · Helps you and your allies · 4 mana · needs any Cord*
+
+Lifts the harmful effect with the most time left.
+
+**How to get it:** Craft: a Blank Rune, Milk Bucket and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Shrug Off: a Blank Rune and Milk Bucket and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shrug_off.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/softsole.png) Softsole
+
+
+*Tier I · Wind · Helps you and your allies · 3 mana · needs any Cord*
+
+You don't trample farmland when you jump or step down onto it, for 10 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Feather and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Softsole: a Blank Rune and Feather and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_softsole.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spawn_bearing.png) Spawn Bearing
+
+
+*Tier I · Wind · Works on the world · 1 mana · needs any Cord*
+
+Tells which way the world spawn lies and roughly how far.
+
+**How to get it:** Craft: a Blank Rune, Compass and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Spawn Bearing: a Blank Rune and Compass and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spawn_bearing.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/swift.png) Swift
 
@@ -82,7 +277,20 @@ Speed III for 10 seconds, and it shakes off Slowness and frozen skin.
 
 ![Crafting Swift: a Blank Rune and 2x Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_swift.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/whistle.png) Whistle
+
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+Your pets within 48 blocks that aren't sitting or leashed come to your side.
+
+**How to get it:** Craft: a Blank Rune, Goat Horn. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Whistle: a Blank Rune and Goat Horn](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_whistle.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/windcut.png) Windcut
 
@@ -95,7 +303,33 @@ A cutting wind: 4 damage and a light shove, and it breaks what the target is win
 
 ![Crafting Windcut: a Blank Rune and Feather and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_windcut.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/arrowveil.png) Arrowveil
+
+
+*Tier II · Wind · Works on the world · 12 mana · needs a Copper Cord or better*
+
+A 4-block dome for 10 seconds: enemy missiles inside drop out of the air.
+
+**How to get it:** Craft: a Blank Rune, Arrow and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Arrowveil: a Blank Rune and Arrow and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_arrowveil.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/beeline.png) Beeline
+
+
+*Tier II · Wind · Moves you · 6 mana · needs a Copper Cord or better*
+
+You zip straight ahead like a bee to a flower, about 6 blocks, and land without a fall.
+
+**How to get it:** Craft: a Blank Rune, Honeycomb, Feather and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Beeline: a Blank Rune and Honeycomb, Feather and Sugar, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_beeline.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cyclone.png) Cyclone
 
@@ -108,7 +342,7 @@ A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, th
 
 ![Crafting Cyclone: a Blank Rune and Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cyclone.png)
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dash.png) Dash
 
@@ -121,7 +355,7 @@ Shoves targets the way you're facing. On Self it's a precise dash of about ten b
 
 ![Crafting Dash: a Blank Rune and Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dash.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/deflect.png) Deflect
 
@@ -134,7 +368,7 @@ For 8 seconds a whirl of wind sends arrows and other projectiles coming at the t
 
 ![Crafting Deflect: a Blank Rune and Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_deflect.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/disarm.png) Disarm
 
@@ -147,7 +381,46 @@ A snatching gust tears the weapon from each creature's hand for 5 seconds, then 
 
 ![Crafting Disarm: a Blank Rune and Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_disarm.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/evade.png) Evade
+
+
+*Tier II · Wind · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+For 10 seconds the next melee blow misses and the target slips aside.
+
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Evade: a Blank Rune and Rabbit's Foot and Feather, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_evade.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fair_wind.png) Fair Wind
+
+
+*Tier II · Wind · Moves you · 6 mana · needs a Copper Cord or better*
+
+In a boat: sail the way you look for 10 seconds.
+
+**How to get it:** Craft: a Blank Rune, White Wool and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Fair Wind: a Blank Rune and White Wool and Feather, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fair_wind.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/heel.png) Heel
+
+
+*Tier II · Wind · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Your pets within 32 blocks that are not sitting come to your side.
+
+**How to get it:** Craft: a Blank Rune, Goat Horn and Bone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Heel: a Blank Rune and Goat Horn and Bone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_heel.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/launch.png) Launch
 
@@ -160,7 +433,7 @@ Flings targets high into the air, where every spell hits them harder. On Self it
 
 ![Crafting Launch: a Blank Rune and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_launch.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/levitate.png) Levitate
 
@@ -173,7 +446,33 @@ Targets hang in the air for 3 seconds, their drift stopped, and every spell hits
 
 ![Crafting Levitate: a Blank Rune and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_levitate.png)
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pollinate.png) Pollinate
+
+
+*Tier II · Wind · Works on the world · 8 mana · needs a Copper Cord or better*
+
+The bees within 8 blocks dust the crops around the point: one crop in a 5-by-5 patch grows a stage for each bee, 2 per bee at double power. No bees, no help.
+
+**How to get it:** Craft: a Blank Rune, Honeycomb, Dandelion and Poppy, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Pollinate: a Blank Rune and Honeycomb, Dandelion and Poppy, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pollinate.png)
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rally.png) Rally
+
+
+*Tier II · Wind · Helps you and your allies · 10 mana · needs a Copper Cord or better*
+
+Allies within 8 blocks get Speed I and Jump Boost I for 12 seconds.
+
+**How to get it:** Craft: a Blank Rune, White Banner and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Rally: a Blank Rune and White Banner and Sugar, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rally.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/repel.png) Repel
 
@@ -186,7 +485,59 @@ A violent outward blast: 4 damage and hurls everything within 3 blocks away (lig
 
 ![Crafting Repel: a Blank Rune and 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_repel.png)
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sea_breeze.png) Sea Breeze
+
+
+*Tier II · Wind · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Clears Mining Fatigue, Nausea and Hunger.
+
+**How to get it:** Craft: a Blank Rune, Feather and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Sea Breeze: a Blank Rune and Feather and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sea_breeze.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steedsong.png) Steedsong
+
+
+*Tier II · Wind · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+Your mount, or the animal it touches, gets Speed II and Jump Boost II for 3 minutes.
+
+**How to get it:** Craft: a Blank Rune, Saddle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Steedsong: a Blank Rune and Saddle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_steedsong.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trot.png) Trot
+
+
+*Tier II · Wind · Moves you · 6 mana · needs a Copper Cord or better*
+
+Your mount (or the horse you strike) gets Speed II and Jump Boost I for 20 seconds. Cast on yourself while riding.
+
+**How to get it:** Craft: a Blank Rune, Saddle, Carrot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Trot: a Blank Rune and Saddle, Carrot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trot.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/village_sense.png) Village Sense
+
+
+*Tier II · Wind · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Senses the nearest village and tells which way and roughly how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Empty Map and Emerald, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Village Sense: a Blank Rune and Empty Map and Emerald, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_village_sense.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wind_steps.png) Wind Steps
 
@@ -199,7 +550,46 @@ Forms five real wind platforms ahead, ascending one block every two steps. Lasts
 
 ![Crafting Wind Steps: a Blank Rune and Feather, Breeze Rod and String, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wind_steps.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/corral.png) Corral
+
+
+*Tier III · Wind · Harms enemies · 14 mana · needs an Amethyst Cord or better*
+
+Enemies within 5 blocks are kept inside the ring for 6 seconds.
+
+**How to get it:** Craft: a Blank Rune, Oak Fence and Lead, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Corral: a Blank Rune and Oak Fence and Lead, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_corral.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glidewind.png) Glidewind
+
+
+*Tier III · Wind · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+For 2 minutes, a tailwind keeps your elytra glide from slowing down, up to a steady cruise.
+
+**How to get it:** Craft: a Blank Rune, Phantom Membrane and Wind Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Glidewind: a Blank Rune and Phantom Membrane and Wind Charge, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_glidewind.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/scarecrow.png) Scarecrow
+
+
+*Tier III · Wind · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Stands a ward of rustling wind on the spot for 20 seconds: rabbits, foxes and monsters within 5 blocks are shooed out of it once a second. Pets and farm animals stay put.
+
+**How to get it:** Craft: a Blank Rune, Carved Pumpkin, Hay Bale and Stick, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Scarecrow: a Blank Rune and Carved Pumpkin, Hay Bale and Stick, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_scarecrow.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soar.png) Soar
 
@@ -212,4 +602,30 @@ Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump
 
 ![Crafting Soar: a Blank Rune and Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_soar.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wayfarer_hymn.png) Wayfarer's Hymn
+
+
+*Tier III · Wind · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+You and allies within 10 blocks get Speed I and Jump Boost I for 3 minutes. It ends for anyone who strikes.
+
+**How to get it:** Craft: a Blank Rune, Note Block, Sugar and Rabbit Hide, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Wayfarer's Hymn: a Blank Rune and Note Block, Sugar and Rabbit Hide, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wayfarer_hymn.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/withdraw.png) Withdraw
+
+
+*Tier III · Wind · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+An ally below half health turns invisible with Speed II for 4 seconds, and its hunters lose track of it.
+
+**How to get it:** Craft: a Blank Rune, Fermented Spider Eye and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+![Crafting Withdraw: a Blank Rune and Fermented Spider Eye and Sugar, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_withdraw.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

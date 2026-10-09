@@ -1,12 +1,49 @@
 # Playing together
 
-Everything that happens when casters meet: sharing spells, fighting side by side, and fighting each other.
+Everything that happens when casters meet: parties, sharing spells, fighting side by side, and fighting each other.
+
+## Parties
+
+### What it is
+
+A **party** is a group of up to **8 players**. Party members can't hurt each other, and your helpful spells (heals,
+shields, buffs) land on them.
+
+### How to use it
+
+| Command | What it does |
+|---|---|
+| `/party` or `/party list` | Shows your party |
+| `/party invite <player>` | Invites a player. The invitation lasts 60 seconds. |
+| `/party accept <player>` | Joins that player's party |
+| `/party decline <player>` | Turns down an invitation |
+| `/party leave` | Leaves your party |
+| `/party kick <member>` | Removes a member (leader only) |
+| `/party disband` | Ends the party (leader only) |
+
+- Only the **leader** can invite, kick and disband. If the leader leaves, the member who joined earliest becomes leader.
+- You can send one invitation a second, with up to 8 waiting at once.
+- Your party lasts through death and logging out, but ends when the server restarts.
+
+The full rules are on the [Parties](parties.md) page.
+
+### What a party does
+
+- **No friendly fire.** Your spells, weapons, arrows and pets can't hurt party members or their pets.
+- **Helpful spells reach them.** A Heal aimed at a party member works, just as it does for a teammate.
+- **Chorus together.** Party members count as allies for a [chorus](chorus.md).
+- **Shared hearths.** Party members can charge each other's [Runic Hearths](runic-hearth.md).
+- **Duels still work.** Two party members can still agree to a [duel](duels.md).
+
+### Sword Master trials
+
+Up to **8 challengers** can fight a [Sword Master](../masters/index.md) together. Being in a party doesn't
+sign you up: each challenger joins the trial on their own. A party is still worth it, so your spells spare each other
+during the fight.
 
 ## Sharing spells
 
-There are four ways to give someone a spell:
-
-| Way | What they get | Do they need the runes? | Do they need a Cord? |
+| Way | What they get | Need the runes? | Need a Cord? |
 |---|---|---|---|
 | [A spell code](#spell-codes) | The recipe, to thread themselves | Yes: only runes they know load | Yes |
 | [A Spell Scroll](#spell-scrolls) | One cast of your spell | No | No |
@@ -15,86 +52,50 @@ There are four ways to give someone a spell:
 
 ### Spell codes
 
-Every spell can be written as a short **spell code** that starts with `wc:`, such as `wc:bolt.frost.split` (Bolt,
-Frost, Split). Codes hold up to 12 runes.
+Every spell can be written as a short code that starts with `wc:`, such as `wc:bolt.frost.split`. A code holds up to
+12 runes.
 
-**To share a spell:**
+1. Open the Cord screen (**K**), pick the spell and press **Copy spell code**.
+2. Paste it into chat. Everyone sees a **spell card** in the spell's colour.
+3. Hover the card to read the spell. Click it to copy the code.
 
-1. Open the Cord screen, pick the spell, and press **Copy spell code** (one of the small buttons by the readout). The
-   code goes to your clipboard.
-2. Paste it into chat. Everyone sees it turn into a **spell card**: *[✦ Splitting Frost Bolt]* in the spell's colour.
-3. Anyone can **hover** the card to read the spell: its name, its runes in order, its mana cost and cooldown, and the
-   readout explaining what it does (as if every rune were rank I).
-4. **Click** the card to copy the code.
+To load a code, copy it, open the Cord screen, pick the spell row to replace and press **Paste spell code**. Only runes
+you know and your Cord can hold are loaded; you're told how many were left out.
 
-**To load a spell from a code:** copy the code (from chat, a website, anywhere), open the Cord screen, pick the spell
-row you want to replace, and press **Paste spell code**. The row is replaced with the code's runes, keeping only the
-runes **you know** that **your Cord can hold**, as many as your Cord has sockets for. If anything was left out, you're
-told how many: *Loaded, but 2 rune(s) left out: not known, too strong, or no socket free*.
-
-- A code carries runes, not ranks, names or Knots. A [Knot](../fusion-altar/knots.md) doesn't
-  survive in a code: give the Knot itself instead.
-- More on the Cord screen's tools: [The Cord Screen](../spellcraft/cord-screen.md).
+A code carries runes only: no ranks, names or Knots. To share a Knot, give the Knot itself. See
+[The Cord Screen](../spellcraft/cord-screen.md).
 
 ### Spell Scrolls
 
-A **Spell Scroll** is one of your spells written on paper. **Anyone** can cast it **once**, with or without a Cord,
-whether or not they know its runes.
+A **Spell Scroll** is one of your spells on paper. **Anyone** can cast it **once**, without a Cord or the runes.
 
-**Inscribing a scroll:**
+**To inscribe one:** open the Cord screen, pick the spell and press **Inscribe a scroll**. It uses a sheet of
+**Paper**, an **Ink Sac** (or Glow Ink Sac) and **twice the spell's mana cost**. Creative mode needs nothing.
 
-1. Open the Cord screen, pick the spell, and press **Inscribe a scroll**.
-2. It takes **a sheet of Paper** and **an Ink Sac** (a Glow Ink Sac works too) from your inventory, and **twice what
-   the spell costs you to cast** (at least 2), as the Cord screen shows it: your discounts, the server's own cost
-   setting and a found secret spell's higher price all count. Creative mode needs nothing.
-3. The scroll appears in your inventory (or at your feet if it's full), named after the spell: *Scroll of Splitting
-   Frost Bolt*.
+- **To read it,** hold it and right-click. The spell goes off from you and the scroll is used up.
+- A scroll casts at plain strength. The reader's Heart Circles and gear don't add to it.
+- After reading a scroll, wait 1 second before the next.
+- Scrolls stack to 16. Your first scroll earns the **Scribe** feat.
+- Empty spells, and spells holding Reweave, Excise or Lesson Pack runes, can't be inscribed.
+- The reader is the caster, so the friendly fire rules are the reader's.
 
-The scroll holds the spell as your Cord casts it right now, leaving out any quiet runes. An empty spell, or one that
-doesn't do anything, can't be inscribed. Your first scroll earns the **Scribe** feat and advancement.
-
-**Reading a scroll:** hold it and right-click. The spell's magic circle opens and the spell goes off from you, and
-the scroll is used up.
-
-- **No mana, no Cord, no runes needed.** The scroll carries everything.
-- **Base strength.** A scroll's spell goes off at its plain strength: the reader's Heart Circles, affinities and casting
-  gear don't add to it.
-- **One at a time.** After reading a scroll you wait a second before you can read another.
-- **Its tooltip** shows the spell's readout, *Inscribed by (player)*, and *Right-click to cast it once. No Cord
-  needed*. Inscribed scrolls shimmer. Scrolls stack to 16.
-- A scroll that holds a [secret spell](../spellcraft/secret-spells.md) casts the secret spell.
-- The reader is the caster: the friendly fire rules below are the reader's.
-
-A [Runesmith](runesmith.md) sells paper (Apprentice) and ink sacs (Journeyman).
+A [Runesmith](runesmith.md) sells paper and ink sacs.
 
 ## Fighting side by side
 
 ### Unison
 
-Strike a foe with **a different element** from another player within **a second** of them, and your hit lands a
-**Unison**:
+Hit a foe with **a different element** within **1 second** of another player's hit, and your hit lands a **Unison**:
+it deals **50% more damage**, and both of you earn the **Unison** feat.
 
-- that hit deals **50% more damage**;
-- both elements' colours burst from the target together: two shells of light on crossed tilts, crescents of each
-  colour and two circles turning against each other underneath;
-- **both** of you see *Unison!*, and both earn the **Unison** feat (and advancement).
-
-The rules:
-
-- Two **different players**, each casting a spell with an element.
-- **Different elements**: Fire then Frost is a Unison; Fire then Fire isn't.
-- **The same foe**, within **one second** of the other's hit.
-- **Not on players.** A Unison never lands on a player.
-- You don't need to be on the same team.
-- After a Unison, the next one needs a fresh pair of hits.
-
-Unison is about elements; a [chorus](chorus.md) is about casting the same shape at the
-same moment. They're separate bonuses.
+- Two different players, two different elements, the same foe.
+- A Unison never lands on a player.
+- You don't need to be allies.
 
 ### Chorus casting
 
 Cast the same shape at the same target as your allies, each within a second of the one before, and the last spell
-sings for all of you: up to twice as strong. See [Chorus Casting](chorus.md).
+goes off up to twice as strong. See [Chorus Casting](chorus.md).
 
 ## Casters against casters
 
@@ -103,104 +104,74 @@ sings for all of you: up to twice as strong. See [Chorus Casting](chorus.md).
 ![A caster stands inside a dome of white light where two Domains meet, the words Domain clash! on screen and magic circles across the ground](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/domain-clash.jpg)
 <span>Two Domains meet: *Domain clash!*</span>
 
-Two casters' **Domains** can't overlap. When a Domain opens into another caster's Domain, friend or foe:
+Two **Domains** can't overlap. When one opens into another, friend or foe, they push against each other for a moment
+and the **weaker one shatters**. Its spell ends. The winner earns the **Domain Clash** feat.
 
-1. Both casters see **Domain clash!** Where the two shells meet, each Domain's circle stands against the other's and
-   lightning of both colours crackles up and down the front.
-2. For about a second and a half the two push against each other.
-3. The **weaker Domain shatters like glass**: its dome falls in on itself in light, shards rain down, and its spell
-   ends. Its caster reads *Your domain shatters*; the winner reads *Your domain holds* and earns the **Domain Clash**
-   feat (and advancement).
+What makes a Domain stronger:
 
-**Which Domain is stronger:**
+- **Its power:** everything that strengthens the cast, plus its own Focus and Vow runes.
+- **Your Heart Circles:** each uncracked circle adds 10%.
+- **Its size:** bigger is stronger, but not in proportion.
+- **A tie** goes to the Domain that was there first.
 
-- **Its power:** everything that strengthens the cast (Heart Circles, enchantments, charge) and the Domain's own
-  modifiers (each Focus adds half again, each Vow doubles it).
-- **Your working Heart Circles:** each circle that isn't cracked adds 10%. A monster's Domain counts as if it had four.
-- **Its size:** a bigger Domain is stronger, though not in proportion (four times the radius is twice the strength).
-- **A tie goes to the Domain that was there first.**
-
-See the Domain rune on [Shapes](../runes/shapes.md), and [Heart Circles](../progression/heart-circles.md).
+See [Shapes](../runes/shapes.md) and [Heart Circles](../progression/heart-circles.md).
 
 ### Shooting spells out of the air
 
-A **Bolt** or an **Arc** that meets an **enemy** caster's Bolt or Arc in flight collides with it, and **both** burst:
+When your **Bolt** or **Arc** meets an **enemy** caster's Bolt or Arc in flight, both burst:
 
-| The two bolts | What happens where they meet |
+| The two bolts | What happens |
 |---|---|
-| The same element | Both burst, harmlessly |
-| Different elements | A blast of **5 damage** to enemies within 2.5 blocks |
+| Same element | Both burst, harmlessly |
+| Different elements | **5 damage** to enemies within 2.5 blocks |
 | A reacting pair | A named reaction: **8 damage** to enemies within 4 blocks |
 
-The reacting pairs are **Fire and Frost** (Shatter), **Frost and Storm** (Conduct), **Fire and Wind** (Wildfire),
-**Void and Arcane** (Implode), **Fire and Storm** (Overload), **Earth and Frost** (Fracture), **Life and Void** (Blight),
-**Blood and Wind** (Rupture) and **Fire and Time** (Elapse). The damage is the player's (it grows with the power of their spell) and only hurts what
-they could harm anyway.
+The reacting pairs: Fire and Frost (Shatter), Frost and Storm (Conduct), Fire and Wind (Wildfire), Void and Arcane
+(Implode), Fire and Storm (Overload), Earth and Frost (Fracture), Life and Void (Blight), Blood and Wind (Rupture),
+Fire and Time (Elapse).
 
-- "Enemy" means a caster your spell could harm: a spellcasting monster such as a
-  [Runebound](../world/runebound.md), or another player when PvP is on or you're duelling. Allies'
-  bolts pass through each other.
-- You see *Collision!* above your hotbar (or the reaction's name, for a reacting pair), and earn the
-  **Spell Collision** feat (and advancement). A reacting collision also counts as setting off that reaction, for your
-  Grimoire's list of reactions.
+"Enemy" means a caster you could harm, like a [Runebound](../world/runebound.md), or a player when
+PvP is on or you're duelling. Allies' bolts pass through each other. You earn the **Spell Collision** feat.
 
-For stopping spells aimed at you with a Shield, see [Shields and Parrying](../spellcraft/shields.md).
+To stop spells aimed at you, see [Shields and Parrying](../spellcraft/shields.md).
 
 ## Friendly fire and PvP
 
-Wildercord's friendly fire is off by design. Every spell checks who it's allowed to touch.
-
 ### Who your spells can harm
 
-Harmful effects (damage, slowing, pushing and so on) **never** touch:
+Harmful effects **never** touch:
 
-- **you** (except movement effects on a Self spell, which move you on purpose),
-- **your own tamed pets**,
-- **anyone on your scoreboard team**, and their pets,
-- **players in creative or spectator mode**,
-- **armour stands**,
-- **other players at all while PvP is off** on the server, **nor their pets**.
+- **you** (except movement on a Self spell),
+- **your own pets**,
+- **your party and your scoreboard team**, and their pets,
+- **players in Creative or Spectator mode**, and armour stands,
+- **other players and their pets while PvP is off**.
 
-Everything else can be harmed: monsters, animals, and other players and their pets when PvP is on. Another player's
-pets are as safe as the player: with PvP off your spells pass by their wolves, cats, parrots, horses and summoned
-spirit wolves, even while their owner is away.
+Everything else can be harmed.
 
 ### Who your spells can help
 
-Helpful effects (healing, shields, buffs) only land on **you**, **your own pets** and **your teammates** (and their
-pets).
-
-
-To heal, shield or buff a friend with your spells, you need to be on the **same team**. On most servers an operator
-sets teams up with Minecraft's own team command. Without a team, a Heal aimed at a friend does nothing to them.
+Helpful effects only land on **you**, **your own pets**, **your party** and **your team** (and their pets). Without a
+party or team, a Heal aimed at a friend does nothing.
 
 ### Player against player
 
-- **PvP on:** your harmful spells can hit other players, and theirs can hit you.
-- **Spell damage between players is scaled down:** by default a spell hits a player for 60% of what it would do to a
-  monster. Some effects also hold players for less time (the rune descriptions say so, for example *1 second on
-  players*).
-- **Duels** override all of this for the two duellists: they can hurt each other even with PvP off, and can't harm
-  anyone else while it lasts. See [Duels](duels.md).
+- **PvP on:** your harmful spells can hit other players.
+- **Damage is scaled down:** by default a spell hits a player for 60% of what it does to a monster.
+- **Duels** override this for the two duellists, even inside a party. See [Duels](duels.md).
 
-### Monsters' spells
+### Monsters and familiars
 
-A spellcasting monster's spells hit players, their pets, golems and whatever it's hunting, but never other monsters.
-Players can't be hurt by them in creative or spectator mode.
+A spellcasting monster's spells hit players, their pets, golems and whatever it's hunting, never other monsters. Your
+[familiar](../companions/familiars.md) follows your rules: it only harms what you could harm.
 
-### Familiars
-
-Your [familiar](../companions/familiars.md) follows the same rules: it only harms what you're
-fighting and what you'd be allowed to harm, so it never attacks another player unless the two of you are fighting and
-PvP is on (or you're duelling).
-
-### Who counts as allied for what
+### Who counts as allied
 
 | | Needs |
 |---|---|
-| Helpful spells land on them | Your team (and their pets), or your own pet |
-| Harmful spells avoid them | Your team (and their pets), your own pet, or PvP off (for other players and their pets) |
-| [Chorus](chorus.md) together | Your team, or neither of you able to harm the other (PvP off), and not duelling |
-| [Unison](#unison) together | Any two players |
-| [Domain clash](#domain-clashes) | Any two casters, friend or foe |
+| Helpful spells land on them | Your party or team (and their pets), or your own pet |
+| Harmful spells avoid them | Your party or team (and their pets), your own pet, or PvP off |
+| [Chorus](chorus.md) together | Party, team, or neither able to harm the other; not duelling |
+| [Unison](#unison) | Any two players |
+| [Domain clash](#domain-clashes) | Any two casters |
 | [Spell collision](#shooting-spells-out-of-the-air) | Casters who could harm each other |

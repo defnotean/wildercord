@@ -1,0 +1,322 @@
+{
+  "masters": {
+    "description": "Masters update combat, progression including learned Circle XII Reweave, presentation, bounded existing-world upgrade safety, Wall Turn, Ember Kiln and Stone Fault March counterplay and Crimson Moon release/lifetime acceptance. Includes Unmoved/Null paid admission, independent hardening and released-owner lifetime boundaries.",
+    "expectedCount": 47,
+    "entries": [
+      "dev.wildercord.cast.RelayCircleTest",
+      "dev.wildercord.cast.RelayLifetimeTest",
+      "dev.wildercord.cast.RelayDefenceTest",
+      "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.cast.ReweavePlayableTest",
+      "dev.wildercord.cast.ExcisePlayableTest",
+      "dev.wildercord.party.PartyMutationSafetyTest",
+      "dev.wildercord.party.ArtFieldMutationSafetyTest",
+      "dev.wildercord.gametest.WildercordHeartCirclesTest",
+      "dev.wildercord.aura.world.ManaSkinSustainChecks",
+      "dev.wildercord.gametest.WildercordMastersArtsTest",
+      "dev.wildercord.aura.CrimsonMoonReleasedOwnerTest",
+      "dev.wildercord.aura.CrimsonMoonTimelineTest",
+      "dev.wildercord.aura.world.MasterOrdinaryPlannerTest",
+      "dev.wildercord.aura.world.SwordMasterTrialTest",
+      "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
+      "dev.wildercord.party.PartyOfflineProjectileTest",
+      "dev.wildercord.aura.MastersStyleTimelineTest",
+      "dev.wildercord.aura.EarnedCounterAcceptanceTest",
+      "dev.wildercord.aura.MirrorRiposteReleasedOwnerTest",
+      "dev.wildercord.aura.UnmovedNullAcceptanceTest",
+      "dev.wildercord.aura.arts.ArtWardsHardeningTest",
+      "dev.wildercord.party.MastersSecondFormTimelineTest",
+      "dev.wildercord.aura.HailfallReleasedOwnerTest",
+      "dev.wildercord.aura.HailSkyAcceptanceTest",
+      "dev.wildercord.party.MastersGroundFieldTimelineTest",
+      "dev.wildercord.aura.GroundFieldReleasedOwnerTest",
+      "dev.wildercord.aura.world.DuelistMasterAccessTest",
+      "dev.wildercord.monster.WildMonsterPressureTest",
+      "dev.wildercord.aura.world.MasterVictoriesTest",
+      "dev.wildercord.aura.world.MasterAntiAirTest",
+      "dev.wildercord.client.auraworld.MasterModelPresentationTest",
+      "dev.wildercord.aura.SwordStringAuthorityTest",
+      "dev.wildercord.aura.CrescentCoverTest",
+      "dev.wildercord.aura.CrescentAudienceTest",
+      "dev.wildercord.aura.WallTurnLessonTest",
+      "dev.wildercord.aura.WallTurnSafetyTest",
+      "dev.wildercord.aura.WallTurnCommitmentTest",
+      "dev.wildercord.aura.world.EmberKilnTest",
+      "dev.wildercord.aura.world.EmberKilnPresentationTest",
+      "dev.wildercord.aura.world.EmberKilnOpponentViewTest",
+      "dev.wildercord.aura.world.StoneMarchTest",
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest",
+      "dev.wildercord.cast.LifeOwnerCameraTest",
+      "dev.wildercord.cast.LifeOutcomeTransportTest",
+      "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
+    ]
+  },
+  "articulated": {
+    "description": "Staged local combat preferences, opt-in segmented body, first-person hand sockets and HUD composition, gated netherite armor, and normally funded Aura Armour shell acceptance. One bounded Crimson Moon owner first-person funded release, with numeric renderer/image association; no remote observer or exact server-release/frame proof.",
+    "expectedCount": 6,
+    "entries": [
+      "dev.wildercord.client.CombatPresentationSettingsTest",
+      "dev.wildercord.client.combat.ArticulatedCombatPresentationTest",
+      "dev.wildercord.client.combat.ArticulatedArmorPresentationTest",
+      "dev.wildercord.client.combat.ArticulatedFirstPersonCompositionTest",
+      "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
+      "dev.wildercord.client.combat.CrimsonMoonCaptureTest"
+    ]
+  },
+  "diagnostic-earned-counters": {
+    "purpose": "diagnostic",
+    "description": "Bounded Backdraft and Rooted Parry: real rebound Aura guard and attack/Perform input, paid fixed timelines, immutable catch and selected-body whiffs, actual party changes, callback boundaries and finite clash transport. Owner/observer render acceptance remains a separate unrun gate; existing paired rosters are unchanged.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.EarnedCounterAcceptanceTest"
+    ]
+  },
+  "diagnostic-gale-vault-ballistic": {
+    "purpose": "diagnostic",
+    "description": "Test-only native physics feasibility: the complete registered GaleVaultBallisticTest, preserving every original trial and cleanup. No ordinary attack, payment, damage, selector integration or release acceptance. Physics remains native-pending until complete current-source evidence passes.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.world.GaleVaultBallisticTest"
+    ]
+  },
+  "diagnostic-wetland": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: registration/rarity, real Garden prerequisite, original absence receipts, and fixed natural-bank candidate. Never release acceptance.",
+    "expectedCount": 5,
+    "entries": [
+      "dev.wildercord.wildlife.WetlandGenerationScopeTest",
+      "dev.wildercord.wildlife.WetlandPlacementContractTest",
+      "dev.wildercord.wildlife.WetlandGardenTest",
+      "dev.wildercord.wildlife.WetlandTerrainAbsenceTest",
+      "dev.wildercord.wildlife.WetlandTerrainTest"
+    ]
+  },
+  "diagnostic-aura-fx": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original AuraFx class, including Glow, with no filtered subcases. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.gametest.WildercordAuraFxTest"
+    ]
+  },
+  "diagnostic-battlefields-generation": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original Battlefields class, retaining registered placement and the original sixteen-candidate bound with passive terrain receipts. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.world.dungeons.BattlefieldsTest"
+    ]
+  },
+  "diagnostic-siltcrest-presentation": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: whole original Siltcrest presentation class in both qualities, retaining natural hunts and waits with passive admission/strike/cancellation receipts. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.wildlife.SiltcrestPresentationTest"
+    ]
+  },
+  "diagnostic-fungal-nursery": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original FungalNursery class, including earned crafting, real visitor rests and saved-world reopen, with bounded passive repeat-arrival receipts. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.wildlife.FungalNurseryTest"
+    ]
+  },
+  "diagnostic-wall-turn": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original Wall Turn lesson, safety and commitment classes, retaining all native assertions and original world settings. Never release acceptance.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.aura.WallTurnLessonTest",
+      "dev.wildercord.aura.WallTurnSafetyTest",
+      "dev.wildercord.aura.WallTurnCommitmentTest"
+    ]
+  },
+  "diagnostic-kiln-ring": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the whole original Ember Kiln mechanics, presentation and opponent-view classes, retaining all native assertions and original world settings. Never release acceptance.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.aura.world.EmberKilnTest",
+      "dev.wildercord.aura.world.EmberKilnPresentationTest",
+      "dev.wildercord.aura.world.EmberKilnOpponentViewTest"
+    ]
+  },
+  "diagnostic-ecology-return": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: three whole original ecology classes, with unchanged native journey/rest budgets and bounded passive path receipts. Rootmolt uses genuine client approach during its original post-spell warning wait. Never release acceptance.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.wildlife.RootmoltCounterTest",
+      "dev.wildercord.wildlife.ReedRefugeTest",
+      "dev.wildercord.wildlife.SiltcrestBankReturnTest"
+    ]
+  },
+  "diagnostic-stasis-gallery": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the complete original WildercordScreenshots gallery and six unchanged Stasis cases, with bounded passive payment/hit/held-damage observations. Never release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.gametest.WildercordScreenshots"
+    ]
+  },
+  "diagnostic-progression-feasibility": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the complete Reweave mechanism and Stone Hinge native receipt feasibility classes. Reweave ordinary player-path acceptance is separate; Stone Hinge movement remains disabled. Never release acceptance.",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.cast.ReweaveFeasibilityTest",
+      "dev.wildercord.aura.StoneHingeFeasibilityTest"
+    ]
+  },
+  "diagnostic-reweave-player": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: complete Ebb Ledger retrieval/study and ordinary Reweave learn/equip/input/paid-field/lifecycle class. Synthetic XII/Low Tide setup is declared; no broad release acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.cast.ReweavePlayableTest"
+    ]
+  },
+  "diagnostic-stone-hinge-owner-negative": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: whole stationary-owner negative control with two real connected worlds. Expected incompatibility does not prove or enable Stone Hinge movement.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest"
+    ]
+  },
+  "diagnostic-movement-foundations": {
+    "purpose": "diagnostic",
+    "description": "Diagnostic only: the complete fifteen-case connected-owner velocity comparison followed by the whole native newt refuge lifecycle. Both must return successfully; Stone Hinge teaching, payment, peer and latency remain unproven. No release acceptance.",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.aura.StoneHingeVelocityComparisonTest",
+      "dev.wildercord.wildlife.ReedRefugeTest"
+    ]
+  },
+  "diagnostic-excise": {
+    "purpose": "diagnostic",
+    "description": "Bounded Circle XVI Excise: native ordered study, ordinary rebound hold, exact Witch Zone emitter retirement, preserved sibling pulses and prior venom, paid cancellation and lifecycle. Connected paired party/PvP and actual saved-process restart remain separate gates.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.cast.ExcisePlayableTest"
+    ]
+  },
+  "diagnostic-life-excise": {
+    "purpose": "diagnostic",
+    "description": "Exact Life32 partition: retain every generic31 Full/Minimal preparation, flight and existing outcome case, then separately require the ordinary Beam-only Excise lesson/input/core suite. A generic Life pass is not Excise visual acceptance; paired observer/reduced-flash and restart gates remain separate.",
+    "expectedCount": 5,
+    "entries": [
+      "dev.wildercord.client.fx.LifeRecipeTest",
+      "dev.wildercord.client.fx.LifeFormationTest",
+      "dev.wildercord.client.fx.LifeFlightTest",
+      "dev.wildercord.cast.LifeOutcomeRecipeTest",
+      "dev.wildercord.cast.ExcisePlayableTest"
+    ]
+  },
+  "stone-fault-march": {
+    "description": "Isolated Stone Fault March: natural admission, fixed-band counterplay and callback safety; original Classic/articulated front/side captures and real opponent FOV/reduced-effects trials. Native execution and manual visual acceptance are required.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchTest",
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+    ],
+    "purpose": "diagnostic"
+  },
+  "stone-fault-march-visuals": {
+    "description": "Scoped Stone Fault March visual diagnostic: both complete original presentation and opponent-view classes in order. Does not rerun or certify the separate mechanics class, replace Masters/full gates, or establish manual visual acceptance.",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+    ],
+    "purpose": "diagnostic"
+  },
+  "masters-core": {
+    "purpose": "required-part",
+    "description": "Mandatory disjoint part of the Masters 47 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "expectedCount": 44,
+    "entries": [
+      "dev.wildercord.cast.RelayCircleTest",
+      "dev.wildercord.cast.RelayLifetimeTest",
+      "dev.wildercord.cast.RelayDefenceTest",
+      "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.cast.ReweavePlayableTest",
+      "dev.wildercord.cast.ExcisePlayableTest",
+      "dev.wildercord.party.PartyMutationSafetyTest",
+      "dev.wildercord.party.ArtFieldMutationSafetyTest",
+      "dev.wildercord.gametest.WildercordHeartCirclesTest",
+      "dev.wildercord.aura.world.ManaSkinSustainChecks",
+      "dev.wildercord.gametest.WildercordMastersArtsTest",
+      "dev.wildercord.aura.CrimsonMoonReleasedOwnerTest",
+      "dev.wildercord.aura.CrimsonMoonTimelineTest",
+      "dev.wildercord.aura.world.MasterOrdinaryPlannerTest",
+      "dev.wildercord.aura.world.SwordMasterTrialTest",
+      "dev.wildercord.world.upgrade.UpgradeRecoveryTest",
+      "dev.wildercord.party.PartyOfflineProjectileTest",
+      "dev.wildercord.aura.MastersStyleTimelineTest",
+      "dev.wildercord.aura.EarnedCounterAcceptanceTest",
+      "dev.wildercord.aura.MirrorRiposteReleasedOwnerTest",
+      "dev.wildercord.aura.UnmovedNullAcceptanceTest",
+      "dev.wildercord.aura.arts.ArtWardsHardeningTest",
+      "dev.wildercord.party.MastersSecondFormTimelineTest",
+      "dev.wildercord.aura.HailfallReleasedOwnerTest",
+      "dev.wildercord.aura.HailSkyAcceptanceTest",
+      "dev.wildercord.party.MastersGroundFieldTimelineTest",
+      "dev.wildercord.aura.GroundFieldReleasedOwnerTest",
+      "dev.wildercord.aura.world.DuelistMasterAccessTest",
+      "dev.wildercord.monster.WildMonsterPressureTest",
+      "dev.wildercord.aura.world.MasterVictoriesTest",
+      "dev.wildercord.aura.world.MasterAntiAirTest",
+      "dev.wildercord.client.auraworld.MasterModelPresentationTest",
+      "dev.wildercord.aura.SwordStringAuthorityTest",
+      "dev.wildercord.aura.CrescentCoverTest",
+      "dev.wildercord.aura.CrescentAudienceTest",
+      "dev.wildercord.aura.WallTurnLessonTest",
+      "dev.wildercord.aura.WallTurnSafetyTest",
+      "dev.wildercord.aura.WallTurnCommitmentTest",
+      "dev.wildercord.aura.world.EmberKilnTest",
+      "dev.wildercord.aura.world.EmberKilnPresentationTest",
+      "dev.wildercord.aura.world.EmberKilnOpponentViewTest",
+      "dev.wildercord.cast.LifeOwnerCameraTest",
+      "dev.wildercord.cast.LifeOutcomeTransportTest",
+      "dev.wildercord.gametest.WildercordMastersArtsPresentationTest"
+    ]
+  },
+  "masters-march-mechanics": {
+    "purpose": "required-part",
+    "description": "Mandatory disjoint part of the Masters 47 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchTest"
+    ]
+  },
+  "masters-march-visuals": {
+    "purpose": "required-part",
+    "description": "Mandatory disjoint part of the Masters 47 focused gate. Only all three matching passed parts establish focused acceptance; never full-client acceptance.",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchPresentationTest",
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+    ]
+  },
+  "stone-fault-march-presentation": {
+    "purpose": "diagnostic",
+    "description": "One complete original Stone Fault March class for bounded diagnostics only. Cannot replace required Masters parts or establish manual visual acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchPresentationTest"
+    ]
+  },
+  "stone-fault-march-opponent": {
+    "purpose": "diagnostic",
+    "description": "One complete original Stone Fault March class for bounded diagnostics only. Cannot replace required Masters parts or establish manual visual acceptance.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+    ]
+  }
+}

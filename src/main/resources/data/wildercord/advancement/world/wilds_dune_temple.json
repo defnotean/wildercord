@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_dune_temple": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_dune_temple"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:chiseled_sandstone"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_dune_temple.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_dune_temple.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_dune_temple"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

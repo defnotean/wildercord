@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101001,
+    "spacing": 44,
+    "separation": 16
+  },
+  "structures": [
+    {
+      "structure": "wildercord:master_forge_dojo",
+      "weight": 1
+    }
+  ]
+}

@@ -715,6 +715,10 @@ public final class TechniquePage {
 			case HASTE -> Component.translatable("screen.wildercord.aura.writing.element.haste", trim2(p.factor() * fl.echo() * k));
 			case LEECH -> Component.translatable("screen.wildercord.aura.writing.element.leech", Math.round(fl.drink() * k * 100));
 			case NONE -> Component.translatable("screen.wildercord.aura.writing.element.none");
+			// ---- methods-a pack
+			case CURRENT -> Component.translatable("screen.wildercord.aura.writing.element.current", trim(fl.current() * k));
+			case FORGE -> Component.translatable("screen.wildercord.aura.writing.element.forge", trim(fl.sunder() * k));
+			case GRIT -> Component.translatable("screen.wildercord.aura.writing.element.grit", trim(fl.grit() * k / 20.0));
 		};
 		return Component.translatable("screen.wildercord.aura.writing.element", method, what);
 	}

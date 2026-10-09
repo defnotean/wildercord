@@ -5,35 +5,40 @@ nav_order: 21
 permalink: /spellcraft/root-carry/
 ---
 
-**New in 0.10.0-alpha.**
-
 # Root Carry
 
-<img src="{{ '/assets/screenshots/root-carry/lift.png' | relative_url }}" alt="A real paid Root Carry spell lifts a soil clod and fine roots between two planting patches" class="shot">
+<img src="{{ '/assets/screenshots/root-carry/lift.png' | relative_url }}" alt="A Root Carry spell lifts a soil clod and fine roots between two planting patches" class="shot">
 
-A young Cinder Fern can become the beginning of a garden. Root Carry moves an existing young root between nearby soil patches without turning it into another seed or resetting its growth.
+## What it is
 
-## Craft and learn
+Root Carry moves a young Cinder Fern to nearby soil without uprooting it. The fern keeps its exact state, so you can start a garden from one wild plant. It is a rank-II Life world rune.
 
-At a crafting table, combine one Blank Rune, Rooted Dirt, Bone Meal, String, two Lapis Lazuli and one Gold Ingot. Use the resulting rune to learn Root Carry. Add it to a direct spell such as Touch. Root Carry is a rank-II Life world effect with base mana cost 8; the chosen shape, cord, mastery and admitted modifiers determine each complete spell's actual price.
+## How to get it
 
-## Two casts, one root
+Craft **one Blank Rune, Rooted Dirt, Bone Meal, String, two Lapis Lazuli and one Gold Ingot**, then learn the rune. It can also be found in the Living Greenhouse and the Rootbound Maze.
 
-1. Cast at an actual young Cinder Fern. The plant stays in the ground while the spell remembers its exact state for fifteen seconds.
-2. Cast again at the upper face of suitable empty soil. The same root moves there, then Root Carry rests for twenty seconds.
+## How to use it
 
-Each cast pays its ordinary spell price. Echo cannot turn the first payment into a free move or keep a selection alive. Both planting cells must be visible, loaded, permitted and within six blocks of your eye. The new cell can be at most eight blocks from the original. Dirt, Grass Block, Coarse Dirt, Rooted Dirt and Podzol support the fern; water and occupied planting cells refuse the move.
+Thread it with a direct shape such as **Touch + Root Carry**. The effect costs 8 base mana; your shape and modifiers set the full price.
 
-## Let living plants keep their history
+1. Cast at a young Cinder Fern. The fern stays put, and the spell remembers it for **15 seconds**.
+2. Cast again at the top of empty soil. The same fern moves there. Root Carry then rests for **20 seconds**.
 
-Only young ferns can be selected. A fern that grows, is cooled, or otherwise changes after selection invalidates that selection. Its new state remains intact. An unchanged hot young fern stays hot after relocation; an unchanged cooled one stays cooled. Mature ferns, crops and other plant species are outside this first implementation.
+Each cast pays the normal spell price.
 
-Walking out of reach, changing dimension, dying, disconnecting or waiting too long clears the selection. Successful rest survives a saved-world restart. Ordinary protection and server spell-editing settings still apply. A failed attempt does not create another root or produce fern drops.
+**Limits**
 
-## A root, carried through the air
+- Both spots must be visible, loaded, allowed to you and within **6 blocks** of your eyes.
+- The new spot can be at most **8 blocks** from the old one.
+- The fern can go on Dirt, Grass Block, Coarse Dirt, Rooted Dirt or Podzol. Water or an occupied spot refuses it.
+- Only young ferns work. If the fern grows or changes after you select it, the selection is lost.
+- Walking out of reach, changing dimension, dying, disconnecting or waiting too long clears the selection.
 
-Fine roots cup a small soil clod, with two folded fronds gathering around it. On a successful move, that carried root appears at the actual source, lifts through a short midpoint, and settles at its destination. Minimal quality retains the clod and one moving root. The lift uses three short beats: source, raised midpoint and destination. It keeps the same physical root and soil identity in both Full and Minimal quality.
+A failed move never makes an extra fern or drops. The rest timer survives reloading.
+
+## Tips
+
+- A hot fern stays hot and a cooled fern stays cooled after the move.
+- Prepare the soil first, so the second cast lands quickly.
 
 <img src="{{ '/assets/screenshots/root-carry/flight.png' | relative_url }}" alt="Root Carry travels as folded fronds, a soil clod and carrying roots" class="shot">
-
-These captures come from actual mana-paid spells in a supplied test scene.

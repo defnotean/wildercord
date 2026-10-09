@@ -4,7 +4,46 @@
 
 Burning, blasts and heat. Fire lights what it touches and boils water into steam.
 
-10 fire effects you can craft or find in the usual way. Fire also has runes of the world, fused runes and innate runes: see their own pages.
+35 fire effects you can craft or find in the usual way. Fire also has runes of the world, fused runes and innate runes: see their own pages.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bakehouse.png) Bakehouse
+
+
+*Tier I · Fire · Works on the world · 3 mana · needs any Cord*
+
+Bakes from your inventory: three wheat into bread, then a pumpkin, sugar and an egg into a pie. Up to 4 bakes (8 at double power).
+
+**How to get it:** Craft: a Blank Rune, Furnace, Wheat Crops and Sugar. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Bakehouse: a Blank Rune and Furnace, Wheat Crops and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bakehouse.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/barnwarmth.png) Barnwarmth
+
+
+*Tier I · Fire · Works on the world · 3 mana · needs any Cord*
+
+A hearth's warmth heals the farm animals and your pets within 5 blocks by 4 (more with power).
+
+**How to get it:** Craft: a Blank Rune, Campfire, Hay Bale and Oak Planks. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Barnwarmth: a Blank Rune and Campfire, Hay Bale and Oak Planks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barnwarmth.png)
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/calmsmoke.png) Calm Smoke
+
+
+*Tier I · Fire · Works on the world · 3 mana · needs any Cord*
+
+A puff of campfire smoke settles the angry bees within 6 blocks: they forget their quarrel and go back to work.
+
+**How to get it:** Craft: a Blank Rune, Campfire, Honeycomb and Oak Leaves. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Calm Smoke: a Blank Rune and Campfire, Honeycomb and Oak Leaves](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_calmsmoke.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ember.png) Ember
 
@@ -17,7 +56,137 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 
 ![Crafting Ember: a Blank Rune and Coal and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ember.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/emberguard.png) Emberguard
+
+
+*Tier I · Fire · Helps you and your allies · 5 mana · needs any Cord*
+
+Puts the target out and gives Fire Resistance for 30 seconds.
+
+**How to get it:** Craft: a Blank Rune, Magma Cream and Iron Nugget. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Emberguard: a Blank Rune and Magma Cream and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_emberguard.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lamplighter.png) Lamplighter
+
+
+*Tier I · Fire · Works on the world · 2 mana · needs any Cord*
+
+Lights the unlit candles and campfires within 6 blocks.
+
+**How to get it:** Craft: a Blank Rune, Candle and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Lamplighter: a Blank Rune and Candle and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lamplighter.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lava_sense.png) Lava Sense
+
+
+*Tier I · Fire · Works on the world · 2 mana · needs any Cord*
+
+Tells how much lava lies within 8 blocks and which way the nearest is.
+
+**How to get it:** Craft: a Blank Rune, Magma Cream and Spider Eye. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Lava Sense: a Blank Rune and Magma Cream and Spider Eye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lava_sense.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/smoke_signal.png) Smoke Signal
+
+
+*Tier I · Fire · Works on the world · 2 mana · needs any Cord*
+
+A tall column of smoke rises where it lands for 2 minutes.
+
+**How to get it:** Craft: a Blank Rune, Campfire and Hay Bale. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Smoke Signal: a Blank Rune and Campfire and Hay Bale](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_smoke_signal.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stewpot.png) Stewpot
+
+
+*Tier I · Fire · Works on the world · 3 mana · needs any Cord*
+
+Cooks bowls from your inventory into stew, as a crafting table would: a red and a brown mushroom make mushroom stew, six beetroots make beetroot soup. Up to 3 bowls.
+
+**How to get it:** Craft: a Blank Rune, Bowl, Red Mushroom and Brown Mushroom. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Stewpot: a Blank Rune and Bowl, Red Mushroom and Brown Mushroom](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stewpot.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sunbask.png) Sunbask
+
+
+*Tier I · Fire · Helps you and your allies · 4 mana · needs any Cord*
+
+For 10 minutes, open daylight heals you a point every 6 seconds while nothing hurts you.
+
+**How to get it:** Craft: a Blank Rune, Sunflower and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sunbask: a Blank Rune and Sunflower and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sunbask.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thawfield.png) Thawfield
+
+
+*Tier I · Fire · Works on the world · 3 mana · needs any Cord*
+
+A warm breath melts the snow layers in a 5-by-5 patch away from crops and soil. Snow blocks and ice are left alone.
+
+**How to get it:** Craft: a Blank Rune, Torch, Snowball and Dirt. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Thawfield: a Blank Rune and Torch, Snowball and Dirt](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_thawfield.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trail_blaze.png) Trail Blaze
+
+
+*Tier I · Fire · Works on the world · 2 mana · needs any Cord*
+
+Sets a glowing end rod on the face it hits for 5 minutes, to mark the way back. It drops nothing.
+
+**How to get it:** Craft: a Blank Rune, Torch, Stick and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Trail Blaze: a Blank Rune and Torch, Stick and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trail_blaze.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/warm_cloak.png) Warm Cloak
+
+
+*Tier I · Fire · Helps you and your allies · 4 mana · needs any Cord*
+
+You can't freeze for 10 minutes, even in powder snow. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Leather and Blaze Powder. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Warm Cloak: a Blank Rune and Leather and Blaze Powder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_warm_cloak.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ember_rest.png) Ember Rest
+
+
+*Tier II · Fire · Works on the world · 10 mana · needs a Copper Cord or better*
+
+Kindles a resting fire for 5 minutes: allies within 6 blocks regenerate and stay warm. One per caster.
+
+**How to get it:** Craft: a Blank Rune, Campfire and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Ember Rest: a Blank Rune and Campfire and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ember_rest.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fire.png) Fire
 
@@ -30,7 +199,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 
 ![Crafting Fire: a Blank Rune and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fire.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fireward.png) Fireward
 
@@ -43,7 +212,7 @@ Fire resistance for 30 seconds.
 
 ![Crafting Fireward: a Blank Rune and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fireward.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/flashfire.png) Flashfire
 
@@ -56,7 +225,111 @@ A flash of heat: 5 fire damage to every enemy within 3 blocks, setting them alig
 
 ![Crafting Flashfire: a Blank Rune and Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_flashfire.png)
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gold_parley.png) Gold Parley
+
+
+*Tier II · Fire · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Piglins within 12 blocks forget their anger at you. Brutes stay angry.
+
+**How to get it:** Craft: a Blank Rune, Gold Ingot, Gold Nugget and Raw Porkchop, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Gold Parley: a Blank Rune and Gold Ingot, Gold Nugget and Raw Porkchop, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gold_parley.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthglow.png) Hearthglow
+
+
+*Tier II · Fire · Helps you and your allies · 12 mana · needs a Copper Cord or better*
+
+A 4-block glow for 12 seconds: allies inside are thawed and kept at Regeneration I.
+
+**How to get it:** Craft: a Blank Rune, Campfire and Golden Carrot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Hearthglow: a Blank Rune and Campfire and Golden Carrot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthglow.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthsong.png) Hearthsong
+
+
+*Tier II · Fire · Helps you and your allies · 12 mana · needs a Copper Cord or better*
+
+Heals each ally within 6 blocks for 2, plus 1 for every ally there (up to 6).
+
+**How to get it:** Craft: a Blank Rune, Note Block and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Hearthsong: a Blank Rune and Note Block and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthsong.png)
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kilnbake.png) Kiln Bake
+
+
+*Tier II · Fire · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Blocks near the point bake in place when a furnace makes a block of them, like sand to glass. 9 at most.
+
+**How to get it:** Craft: a Blank Rune, Furnace, Coal and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Kiln Bake: a Blank Rune and Furnace, Coal and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_kilnbake.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lavaseal.png) Lava Seal
+
+
+*Tier II · Fire · Works on the world · 7 mana · needs a Copper Cord or better*
+
+Lava within 3 blocks of the point sets: still lava to obsidian, flowing lava to cobblestone. 16 at most.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Lava Seal: a Blank Rune and Water Bucket and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lavaseal.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/morale.png) Morale
+
+
+*Tier II · Fire · Helps you and your allies · 12 mana · needs a Copper Cord or better*
+
+Allies within 6 blocks get Absorption for 20 seconds, one level for each ally there (up to III).
+
+**How to get it:** Craft: a Blank Rune, Golden Apple and White Banner, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Morale: a Blank Rune and Golden Apple and White Banner, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_morale.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/portal_sense.png) Portal Sense
+
+
+*Tier II · Fire · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Senses the nearest ruined portal and tells which way and roughly how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Empty Map and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Portal Sense: a Blank Rune and Empty Map and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_portal_sense.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/quickbrew.png) Quickbrew
+
+
+*Tier II · Fire · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Brewing stands within 6 blocks brew twice as fast for 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, Blaze Powder, Glass Bottle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Quickbrew: a Blank Rune and Blaze Powder, Glass Bottle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_quickbrew.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/searing_edge.png) Searing Edge
 
@@ -69,7 +342,7 @@ For 15 seconds the target's weapon sears: each melee hit it lands sets the foe a
 
 ![Crafting Searing Edge: a Blank Rune and Iron Sword and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_searing_edge.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/smelt.png) Smelt
 
@@ -82,7 +355,20 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 
 ![Crafting Smelt: a Blank Rune and Furnace and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_smelt.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/torchfall.png) Torchfall
+
+
+*Tier II · Fire · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Sets up to 6 torches from your pack on the darkest floor near the point, 5 blocks apart.
+
+**How to get it:** Craft: a Blank Rune, 2x Torch and Coal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Torchfall: a Blank Rune and 2x Torch and Coal, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_torchfall.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/explode.png) Explode
 
@@ -95,7 +381,33 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 
 ![Crafting Explode: a Blank Rune and TNT and Fire Charge, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_explode.png)
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fortress_sense.png) Fortress Sense
+
+
+*Tier III · Fire · Works on the world · 10 mana · needs an Amethyst Cord or better*
+
+In the Nether, senses the nearest fortress and tells which way and roughly how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Empty Map, Nether Bricks and Blaze Powder, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Fortress Sense: a Blank Rune and Empty Map, Nether Bricks and Blaze Powder, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fortress_sense.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthcook.png) Hearthcook
+
+
+*Tier III · Fire · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Cooks the raw food in your own inventory as a smoker would: up to 8 pieces (16 at double power). Only food; the rest of your pack is left alone.
+
+**How to get it:** Craft: a Blank Rune, Smoker, Coal and Raw Beef, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+![Crafting Hearthcook: a Blank Rune and Smoker, Coal and Raw Beef, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthcook.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/inferno.png) Inferno
 
@@ -108,7 +420,7 @@ Everything within 4 blocks burns: 3 fire damage a second for 4 seconds.
 
 ![Crafting Inferno: a Blank Rune and Blaze Rod and Magma Block, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_inferno.png)
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/meteor.png) Meteor
 
@@ -121,7 +433,7 @@ A burning meteor falls on each target (two at most) 1.2 seconds later: 12 damage
 
 ![Crafting Meteor: a Blank Rune and Magma Block and Fire Charge, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_meteor.png)
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/primer.png) Primer
 
@@ -134,4 +446,15 @@ Turns each target into a bomb that goes off 2 seconds later, or the moment it di
 
 ![Crafting Primer: a Blank Rune and TNT and Pink Dye, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_primer.png)
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/feastday.png) Feast Day
+
+
+*Tier IV · Fire · Helps you and your allies · 20 mana · needs an Echo Cord*
+
+A harvest feast for everyone it reaches: 6 hunger and 6 seconds of Saturation each, and Regeneration I for 10 seconds.
+
+**How to get it:** Never crafted. Where it comes from: Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

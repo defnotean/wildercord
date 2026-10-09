@@ -57,5 +57,13 @@ final class FireFeels {
 		// Fire and its partners.
 		own("seethe").accent(0x4AA8FF).register();
 		own("skyburst").motion(Motion.CALL).scale(1.3).accent(0xFFD060).register();
+		// ---- fx-explore pack
+		Signature.of("portal_sense").accent(0xB060FF).sound(Phase.CUE, "fire_flick", 0.4F, 0.9F).register();
+		Signature.of("fortress_sense").accent(0x8A2A2A).sound(Phase.CUE, "fire_coals", 0.4F, 0.84F).register();
+		Signature.of("trail_blaze").accent(0xFFF0D8).sound(Phase.CUE, "fire_flick", 0.4F, 1.26F).register();
+		Signature.of("quickbrew").accent(0xFFB060).sound(Phase.CUE, "fire_kindly", 0.4F, 1.12F).register();
+		Signature.of("lamplighter").accent(0xFFD080).sound(Phase.CUE, "fire_flick", 0.4F, 1.0F).register();
+		Signature.of("lava_sense").accent(0xFF7A2A).sound(Phase.CUE, "fire_smoulder", 0.4F, 1.0F).register();
+		Signature.of("gold_parley").accent(0xFFD24A).sound(Phase.CUE, "fire_kindly", 0.4F, 1.26F).register();
 	}
 }

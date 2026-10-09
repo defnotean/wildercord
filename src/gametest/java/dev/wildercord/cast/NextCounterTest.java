@@ -1,5 +1,4 @@
 package dev.wildercord.cast;
-import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.*;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -14,13 +13,11 @@ import static dev.wildercord.cast.NextSignatureNative.*;
 /** Four real paid casts, actual projectile/health/mana outcomes, shared linked caps and reopen. */
 public final class NextCounterTest implements FabricClientGameTest {
  private static Mob shooter,stationary,moving,walking;
- private static ServerPlayer rival,rearAlly;
+ private static ServerPlayer rearAlly;
  private static Arrow first,second;
- private static float firstHealth,enemyAfterPayment,walkingStartHealth;
+ private static float firstHealth,walkingStartHealth;
  private static Vec3 walkingOrigin;
  private static Cast continued;
- private static RuneBolt turned;
- private static ServerPlayer parrier,reflectionReceiver;
  private static Mob cancelledDuringDamage;
  private static int cancellationMode;
  private static boolean cancellationObserved,resurrectionObserved;
@@ -80,10 +77,8 @@ public final class NextCounterTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=player(s);var displacement=walking.position().subtract(walkingOrigin);var details=" beforeHealth="+walkingStartHealth+" health="+walking.getHealth()+" max="+walking.getMaxHealth()+" absorption="+walking.getAbsorptionAmount()+" beforeBody="+walkingOrigin+" endBody="+walking.position()+" horizontalDisplacement="+displacement.multiply(1,0,1).length()+" velocity="+walking.getDeltaMovement()+" noAI="+walking.isNoAi()+" onGround="+walking.onGround()+" registered="+(p.level().getEntity(walking.getUUID())==walking)+" runebound="+Runebound.spellOf(walking)+" active="+CounterSignatures.active()+" casterBody="+p.position()+" casterVelocity="+p.getDeltaMovement()+" clientInputs="+inputs;System.out.println("LEDGER_STILLNESS"+details);check(walking.getHealth()==20,"Standing still avoids paid movement ledger"+details);});
    for(int gate=0;gate<3;gate++){w.getServer().runOnServer(s->walking.move(MoverType.SELF,new Vec3(1.1,0,0)));c.waitTicks(10);}
    w.getServer().runOnServer(s->{check(20-walking.getHealth()>0 && 20-walking.getHealth()<=6.01,"Three ordinary movement gates remain within six post-bonus damage");walking.discard();
-    var p=player(s);pose(p,.5,.5,0);rival=guest(p,"QuietusRival",false);cast(p,Runes.BEAM,Runes.QUIETUS);});c.waitTicks(12);
-   w.getServer().runOnServer(s->{cast(rival,Runes.BOLT,Runes.HARM);enemyAfterPayment=Spellbooks.mana(rival);});c.waitTicks(10);
-   w.getServer().runOnServer(s->{check(Spellbooks.mana(rival)<=enemyAfterPayment-7.9 && Spellbooks.mana(rival)>=enemyAfterPayment-8.1,"Actual newly paid enemy magic projectile has bounded eight-mana tax");
-    var p=player(s);p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(30)).forEach(Entity::discard);rival.discard();
+    // The mandatory NextCounterPairedCases suite owns the paid hostile Quietus/Bolt roles.
+    var p=player(s);pose(p,.5,.5,0);
     // Same real damage seam with absorption and linked copies: spent shield contributions are not refunded.
     var a=counterFoe(p,3,4);var b=counterFoe(p,5,4);a.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION,200,0));a.setAbsorptionAmount(4);continued=new Cast(p).damagePrice(100);Effects.hex(continued,a,200,3,false);Effects.hex(continued,b,200,3,false);
     apply(continued,Runes.SECOND_BELL,List.of(a,b),a.position());apply(continued.pulse(),Runes.SECOND_BELL,List.of(a,b),a.position());
@@ -97,7 +92,6 @@ public final class NextCounterTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{check(walking.getHealth()==20,"Actual small same-world teleport releases ledger before movement cuts");walking.move(MoverType.SELF,new Vec3(1.2,0,0));});c.waitTicks(10);
    w.getServer().runOnServer(s->{check(walking.getHealth()==20,"Released teleport ledger cannot resume after walking");walking.discard();});
    synchronousLedgerCancellation(c,w.getServer());
-   reflectedAfterQuarryDeath(c,w.getServer());
    boundedProjectilePools(c,w.getServer());
    w.getServer().runOnServer(s->{var p=player(s);rearAlly=guest(p,"RearCounterAlly",true);rearAlly.snapTo(8,101,8,0,0);rearAlly.setHealth(20);apply(new Cast(p),Runes.NULLCATCH,List.of(rearAlly),rearAlly.position());});c.waitTicks(8);
    w.getServer().runOnServer(s->{firstHealth=rearAlly.getHealth();second=arrow(rearAlly,shooter,false);});c.waitTicks(5);
@@ -116,7 +110,7 @@ public final class NextCounterTest implements FabricClientGameTest {
   return mob;
  }
  private static void boundedProjectilePools(ClientGameTestContext c,net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server){
-  var arrows=new ArrayList<Arrow>();var oldBolts=new ArrayList<RuneBolt>();
+  var arrows=new ArrayList<Arrow>();
   server.runOnServer(s->{var p=player(s);pose(p,.5,.5,0);
    for(int i=0;i<256;i++){
     var a=new Arrow(p.level(),p,new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ARROW),null);
@@ -137,24 +131,8 @@ public final class NextCounterTest implements FabricClientGameTest {
    for(int i=0;i<65;i++){var a=new Arrow(p.level(),p,new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ARROW),null);a.setPos(p.getEyePosition().add(.3,0,.3+i*.01));a.setDeltaMovement(Vec3.ZERO);a.setNoGravity(true);p.level().addFreshEntity(a);arrows.add(a);}
   });c.waitTicks(2);
   server.runOnServer(s->{check(CounterSignatures.active()==0 && arrows.stream().allMatch(Entity::isAlive),"Existing actual paid screen releases on later saturation without deleting projectiles");arrows.forEach(Entity::discard);arrows.clear();
-   var p=player(s);rival=guest(p,"CrowdQuietus",false);var group=SpellCompiler.compile(List.of(Runes.BOLT,Runes.HARM)).root().groups.getFirst();
-   for(int i=0;i<13;i++){var bolt=RuneBolt.launch(new Cast(rival),group,null,rival.getEyePosition().add((i-6)*.04,0,1.6),Vec3.ZERO,false);check(bolt!=null,"Native pre-existing magic bolt created");oldBolts.add(bolt);}
-   var batch=BoundedCounterCandidates.nearby(new Cast(p),rival);check(batch.enumerated()==13 && batch.completeSnapshot().size()==13 && batch.candidates().size()==12,"Complete13 magic provenance is separate from nearest12 handling");
-   cast(p,Runes.BEAM,Runes.QUIETUS);
-  });c.waitTicks(8);
-  server.runOnServer(s->{check(CounterSignatures.active()==1,"Actual paid Quietus opens over13 existing magic bolts");
-   var originals=oldBolts.stream().map(Entity::getUUID).collect(java.util.stream.Collectors.toSet());
-   check(screenExisting(rival.getUUID()).containsAll(originals),"Real admitted screen snapshots all13 native pre-existing bolts");
-   check(oldBolts.stream().allMatch(Entity::isAlive),"Pre-existing magic is not escrowed by paid screen");oldBolts.forEach(Entity::discard);oldBolts.clear();
-   cast(rival,Runes.BOLT,Runes.HARM);enemyAfterPayment=Spellbooks.mana(rival);
-  });c.waitTicks(10);
-  server.runOnServer(s->{check(CounterSignatures.active()==0 && Spellbooks.mana(rival)<=enemyAfterPayment-7.9 && Spellbooks.mana(rival)>=enemyAfterPayment-8.1,"Same paid screen captures genuinely later paid magic once with eight-mana tax");
-   rival.level().getEntitiesOfClass(RuneBolt.class,rival.getBoundingBox().inflate(32)).forEach(Entity::discard);rival.discard();
+   // The mandatory paired helper retains complete13/nearest12 and later real paid Quietus capture assertions.
   });
- }
- @SuppressWarnings("unchecked") private static Set<UUID> screenExisting(UUID target){
-  try{var field=CounterSignatures.class.getDeclaredField("SCREENS");field.setAccessible(true);var screen=((Map<UUID,?>)field.get(null)).get(target);check(screen!=null,"Actual screen record retained");var accessor=screen.getClass().getDeclaredMethod("existing");accessor.setAccessible(true);return (Set<UUID>)accessor.invoke(screen);}
-  catch(ReflectiveOperationException e){throw new AssertionError("Native screen provenance inspection",e);}
  }
  private static void synchronousLedgerCancellation(ClientGameTestContext c,net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server){
   try{
@@ -168,19 +146,5 @@ public final class NextCounterTest implements FabricClientGameTest {
    }
   }finally{cancellationMode=0;cancellationObserved=false;resurrectionObserved=false;cancelledDuringDamage=null;cancellationOwner=null;cancellationAfterDamage=false;cancellationAmount=0;cancellationBefore=0;cancellationAfter=0;}
  }
- private static void reflectedAfterQuarryDeath(ClientGameTestContext c,net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext server){
-  // Actual paid enemy bolt meets an actual paid Shield and uses RuneBolt's ordinary parry path.
-  server.runOnServer(s->{turned=null;var p=player(s);pose(p,.5,.5,0);p.setHealth(20);parrier=p;rival=guest(p,"ReflectionQuarry",false);rival.snapTo(.5,101,12.5,180,0);cast(rival,Runes.BOLT,Runes.HARM);});c.waitTicks(3);
-  server.runOnServer(s->cast(parrier,Runes.SELF,Runes.SHIELD));
-  for(int i=0;i<10 && turned==null;i++){c.waitTicks(1);server.runOnServer(s->{turned=parrier.level().getEntitiesOfClass(RuneBolt.class,parrier.getBoundingBox().inflate(32)).stream().filter(RuneBolt::isReflected).findFirst().orElse(null);});}
-  server.runOnServer(s->{check(turned!=null && turned.isAlive() && turned.getOwner()==parrier,"Actual paid Shield parries paid enemy magic and transfers owner");rival.setHealth(0);});c.waitTicks(1);
-  server.runOnServer(s->{check(turned.isAlive() && turned.isReflected(),"Reflection provenance survives original quarry death and ordinary hunt tick");
-   reflectionReceiver=guest(parrier,"ReflReceiver",false);reflectionReceiver.snapTo(8,101,8,180,0);cast(reflectionReceiver,Runes.SELF,Runes.NULLCATCH);});c.waitTicks(12);
-  server.runOnServer(s->{check(turned.isAlive(),"Reflected projectile is retained before capture approach");
-   // Bring that same real reflected entity into the front cone after its old quarry has died.
-   turned.setPos(reflectionReceiver.getEyePosition().add(0,0,-2.1));turned.setDeltaMovement(0,0,.15);
-   firstHealth=reflectionReceiver.getHealth();});c.waitTicks(2);
-  server.runOnServer(s->{check(turned.isAlive() && turned.isReflected() && CounterSignatures.active()==1,"An open front Nullcatch refuses the real reflected bolt after quarry death");
-   check(reflectionReceiver.getHealth()==firstHealth,"Refusal assertion occurs before projectile contact");turned.discard();rival.discard();reflectionReceiver.discard();turned=null;});c.waitTicks(2);
- }
+ // Genuine paid Shield reflection, quarry death and same-profile respawn are mandatory paired cases.
 }

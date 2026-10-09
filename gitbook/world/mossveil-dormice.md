@@ -1,143 +1,66 @@
-# A home for a quiet nose
+# Mossveil Dormice
 
-> **New in 0.10.0-alpha.** The companion and cowl have passed focused native
-> gameplay checks. The artwork below is an illustrated field plate; the separate
-> game captures are labelled below.
+## What it is
 
-Mossveil Dormice are little rounded cave companions with folded ear cups,
-cream cheeks, twitching whiskers and a curling tail. Their sounds are tiny
-sniffs, uneven bites, soft chirps and paws brushing moss. They never cast
-magic, breed or produce bonus crafting materials.
+**Mossveil Dormice** are small, round cave companions with folded ears, twitching whiskers and a curling tail. Tame
+one and, with a **Mossveil Cowl**, it helps you breathe out poison at home. They never cast magic, breed or drop
+materials.
 
-![Illustrated Mossveil Dormouse and stitched cowl field plate — authored illustration, not native game evidence](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/mossveil/illustrated-field-plate.png)
+![Illustrated Mossveil Dormouse and stitched cowl](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/mossveil/illustrated-field-plate.png)
 
-## Find a living fungal corner
+## How to get it
 
-Look in Overworld lush caves for dry moss or clay floors, low light,
-structural cover and a nearby **mature Glowcap**. A prepared bud does not
-qualify. Natural admission has a small local population cap and refuses a
-saturated region. A species switch, the master creature switch and the
-spawn multiplier control future natural admission.
+### Finding one
 
-An existing dormouse stays usable if natural spawning is later disabled.
-The companion does not require a new structure or quest reward. A real
-player-built fungal garden can provide food and a place to return to; the
-normal biome and natural-spawn rules still apply.
+Look in **lush caves**: dry moss or clay floors, low light, a roof overhead, and a **mature Glowcap** nearby. Only a few
+live in one area.
 
-## Earn her trust with food
+### Taming
 
-| Action | Actual price | Waiting and conditions |
-| --- | --- | --- |
-| First wild feeding | 1 dried Glowcap Gill | Survival, visible and within 3 blocks |
-| Second wild feeding | 1 Gill | Wait 5 seconds after the accepted feeding |
-| Third wild feeding | 1 Gill | Another 5-second rest; the original feeder becomes her owner |
-| Feed a wounded owned companion | 1 Gill | Rest 5 seconds; heal at most 2 health |
-| Feed at full health | None | Refuses without eating the Gill |
-| Owner curl or release | None | Interact with an empty hand |
+Feed it **Dried Glowcap Gills** three times, in Survival, from within 3 blocks.
 
-The first accepted feeding reserves a **five-minute claim** for that
-player. A foreign player cannot pay the later feedings or take the owner
-slot. After that claim expires, a new first feeder begins again; the old
-partial progress is not inherited. Progress, claimant, exact deadlines,
-owner UUID and curl order survive world reopening.
+| Step | Cost | Notes |
+|---|---|---|
+| First feeding | 1 Gill | Reserves her for you for **5 minutes** |
+| Second and third | 1 Gill each | Wait 5 seconds between feedings. The third makes you her owner |
+| Heal your dormouse | 1 Gill | Heals up to 2 health. She refuses if already at full health |
+| Curl up or follow | Nothing | Use her with an empty hand |
 
-Only her owner can change the curl order or feed her after taming. A
-foreign player's Gills do not lure a tamed dormouse. When released, she
-uses ordinary paths toward a live owner in the same loaded world. She
-does not teleport to catch up, cross a portal automatically or continue
-following a dead or departed owner. Bring her safely through the world
-and leave her curled beside the garden when you travel far away.
+If your 5 minutes run out, the next person to feed her starts over. Only her owner can feed her or give orders once
+tamed.
 
-## Stitch a Mossveil Cowl
+![A Mossveil Dormouse curled up](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/mossveil/native-curl.png)
 
-Combine these three existing materials in an ordinary crafting grid:
+She walks to follow you. She won't teleport or go through portals, so leave her curled up at home when you travel far.
 
-- **Moonreed Floss** from an opened Moonreed, after a real moth visit.
-- **Dried Glowcap Gills** from a mature cap, after an uninterrupted snail visit.
-- **Mycelial Dew** from the existing Sporeback gathering interaction.
+### The Mossveil Cowl
 
-The resulting cowl occupies the **helmet slot**, provides **1 armour point**
-and has **66 durability**. Moonreed Floss is its vanilla repair ingredient.
-Repairs and replacement cowls preserve the player's saved filter rest;
-they do not create an instant recharge.
+Craft **Moonreed Floss + Dried Glowcap Gills + Mycelial Dew**. It's a helmet with **1 armour** and **66** durability,
+repaired with Moonreed Floss.
 
-### A prepared breath
+![The Mossveil Cowl being worn](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/mossveil/native-worn-cowl.png)
 
-While poisoned, wear the cowl and crouch still for **2 seconds** beside
-your own living curled dormouse, within **3 blocks**. A real Fungal Nursery
-must be nearby and supported over dry clear space and a solid floor.
-Compatibility claim checks can refuse use of that home; no blocks are
-broken or edited.
+## How to use it
 
-A completed breath pays **1 durability**, then shortens the active finite
-Poison timer by the smaller of:
+While poisoned:
 
-- **3 seconds**, or
-- **one quarter of its remaining duration**.
+1. Wear the cowl.
+2. Stand within **3 blocks** of your own curled dormouse, with a placed
+   [Fungal Nursery](glowcap-nurseries.md) nearby.
+3. Crouch still for **2 seconds**.
 
-The poison amplifier, visual flags and any pending weaker hidden poison
-remain intact. The effect never becomes a full cure or immunity. Infinite
-Poison does not qualify. A successful breath also causes **1 second of
-Slowness**, with a small physical floss release and a stitched intake sound.
+Your Poison gets shorter by **3 seconds** or **a quarter of what's left**, whichever is less. It costs 1 durability and
+slows you for 1 second. You and your dormouse then rest for **10 seconds**. Moving, standing up, or changing helmets
+cancels it.
 
-Both the wearer and that companion need a saved **10-second rest** after
-commitment. Swapping helmets, repairing, changing dimensions, logging out
-or reopening the world cannot renew that rest. Preparation itself is not
-saved; after reopening, begin the stationary breath again when ready.
+It's never a full cure, and it doesn't work on endless Poison.
 
-## Protect the preparation
+## Tips and counterplay
 
-Movement—including small steps that accumulate past the planted bound—
-uncrouching, lost poison, changed equipment, an unsupported or changed
-home, a foreign companion, death or departure cancels preparation.
-Dense companion queries refuse rather than choosing a hidden eligible
-animal from a truncated list.
-
-The price and shared rests are reserved before the wear callback.
-If another mod changes the wearer, worn stack, companion or effect after
-that payment, the cowl refuses later success effects and gives no refund.
-A duration edit already admitted before a later notification callback may
-remain. It does not promise rollback of another mod's mutations or remove
-their stronger replacement poison.
-
-The offhand **Cave Breather** remains the faster emergency option: it
-removes Poison with its existing wear/rest/Slowness tradeoff. The cowl is
-the quieter, slower home-supported option and replaces a stronger helmet.
-Neither protects the companion from ordinary damage. Strong poison,
-physical attacks and being forced to move remain real vulnerabilities.
-
-## The physical details
-
-The original rig has four tiny paws, separate ear cups, a forward nose,
-paired three-strand whisker fans and three tail hinges. Curling folds the
-head and tail toward the belly. Sniffing and walking come from real
-runtime behavior. The worn cowl is an original stitched head texture;
-its filter uses small authored floss strips and no magical circle.
-
-## From the game
-
-These unchanged native captures use a supplied moss review floor. The companion's
-sniff, owner curl and following are actual runtime behavior; this scene does not
-show a naturally generated cave.
-
-![Actual Mossveil Dormouse on supplied review floor](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/mossveil/native-idle.png)
-
-![Actual owner-ordered curl and folded ears, whiskers and tail](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/mossveil/native-curl.png)
-
-![Actual worn Mossveil Cowl from behind](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/mossveil/native-worn-cowl.png)
-
-The private filter emits eight small physical floss pieces at Full quality and
-four at Minimal, then retires. Ordinary Poison particles can overlap those
-small strips; the review shots do not isolate their appearance.
-
-When several supported Nurseries are nearby, preparation selects a home within
-three blocks of both you and your companion. An earlier out-of-range Nursery
-does not prevent a later usable one from being selected.
-
-Continue with [Glowcap Nurseries](glowcap-nurseries.md),
-[Sporeback Snails](sporeback-snails.md), and
-[Moonreed Gardens](moonreed-gardens.md).
-
-Natural encounters are admitted only during ordinary server-thread spawning.
-Chunk-generation attempts refuse; the species does not query live animal
-populations through a world-generation region.
+- For emergencies, the off-hand [Cave Breather](glowcap-nurseries.md) clears Poison
+  outright. The cowl is the slow, safe-at-home option.
+- Your dormouse can still be hurt. Keep her away from fights.
+- Materials come from [Moonreed Gardens](moonreed-gardens.md),
+  [Glowcap Nurseries](glowcap-nurseries.md) and
+  [Sporeback Snails](sporeback-snails.md).
+- Server owners can switch natural spawns off. Dormice you already have stay.

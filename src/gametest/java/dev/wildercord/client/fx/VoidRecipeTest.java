@@ -13,7 +13,7 @@ import static dev.wildercord.content.MaterialOption.*;
 /** Exact runtime roster and bounded changing recipe acceptance. */
 public final class VoidRecipeTest implements FabricClientGameTest {
  @Override public void runTest(ClientGameTestContext c) {
-  check(new HashSet<>(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("void")).map(r->r.id().substring(11)).toList()).equals(new HashSet<>(VoidForms.RUNES)),"Exact runtime Void roster");
+  check(EverydayRunes.combatPaths("void").equals(new HashSet<>(VoidForms.RUNES)),"Exact runtime Void roster");
   var uniquePrep=new HashSet<String>();var uniqueFlight=new HashSet<String>();
   for(String rune:VoidForms.RUNES)for(boolean minimal:new boolean[]{false,true}) {
    var prep=new ArrayList<String>();var flight=new ArrayList<String>();

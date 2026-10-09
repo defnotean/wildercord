@@ -103,6 +103,8 @@ public final class Effects {
 	private static LivingEntity applying;
 	/** The cast being applied right now (null outside one): health it restores counts toward the spell's mastery. */
 	private static Cast applyingCast;
+	/** Opaque identity of the innermost non-spell source scope, retained only while its action is on the stack. */
+	private static Object sourceScope;
 	/** Thirst on the effect being applied: the share of the damage it deals that heals its caster (0 = none). */
 	private static double thirst;
 
@@ -121,8 +123,38 @@ public final class Effects {
 		return applyingCast;
 	}
 
+	/** Identity of the current {@link #withSource} scope, or null outside one. Callers may compare, never replace it. */
+	public static Object sourceScope() {
+		return sourceScope;
+	}
+
+	/**
+	 * Attribute non-spell actions (a sword art or a projectile's impact) without borrowing an
+	 * unrelated spell's cast. Nested calls and failures always restore their caller's context.
+	 */
+	public static <T> T withSource(LivingEntity source, java.util.function.Supplier<T> action) {
+		LivingEntity outerApplying = applying;
+		Cast outerCast = applyingCast;
+		Object outerScope = sourceScope;
+		applying = source;
+		applyingCast = null;
+		sourceScope = new Object();
+		try {
+			return action.get();
+		} finally {
+			applying = outerApplying;
+			applyingCast = outerCast;
+			sourceScope = outerScope;
+		}
+	}
+
+	public static void withSource(LivingEntity source, Runnable action) {
+		withSource(source, () -> { action.run(); return null; });
+	}
+
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
+		if ((cast.guardedImpact() || cast.hasConsequences()) && !cast.alive()) return;
 		if(Runes.innate(node.effect) && cast.caster instanceof ServerPlayer owner && !owner.isCreative()
 			&& !dev.wildercord.player.Heart.innate(owner).equals(node.effect.id()))return;
 		if(PhysicalMagic.interact(cast,node.effect,hit))return;
@@ -144,7 +176,11 @@ public final class Effects {
 		applyingCast = cast;
 		thirst = SpellNumbers.thirstShare(node);
 		try {
-			applyEffect(cast, node, hit, groupPower);
+			// ---- links-mods pack: hearth modifiers pick who it reaches, how hard, and what its breaks drop.
+			HearthModifiers.around(cast, node, hit, groupPower, (h, p) -> applyEffect(cast, node, h, p));
+			// A Relay's inherited hooks are still part of its original paid effect. Keep their
+			// mastery, damage and residue callbacks in this exact scope, including on exceptions.
+			if (cast.guardedImpact()) afterEffect(cast, node, hit, groupPower);
 		} finally {
 			executeBonus = outerBonus;
 			currentElement = outerElement;
@@ -154,15 +190,33 @@ public final class Effects {
 			applyingCast = outerCast;
 			thirst = outerThirst;
 		}
+		// Ordinary spells retain their existing post-effect outer context.
+		if (!cast.guardedImpact()) afterEffect(cast, node, hit, groupPower);
+	}
+
+	private static boolean lostConsequence(Cast cast, Cast.Hit hit) {
+		return cast.hasConsequences() && (!cast.alive() || hit.entities().stream()
+			.anyMatch(entity -> entity instanceof LivingEntity living && !cast.consequencesValid(living)));
+	}
+
+	private static void afterEffect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		RuneSeals.onSpell(cast, hit, node.effect.element());
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		WorldQuirks.after(cast, node, hit, groupPower);
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		WorldMagic.onSpell(cast, node, hit, groupPower);
 		// Strong magic leaves a lasting mark of its element where it lands.
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		Residues.onSpell(cast, node, hit);
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.cast.events.WorldEvents.onSpell(cast, hit, node.effect.element());
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.familiar.Familiars.onSpell(cast, hit, node.effect.element());
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		Dungeons.onSpell(cast, hit, node.effect.element());
 		// Monsters that answer magic: a Gloomstalker shown by light, a harpy dragged down by earth.
+		if (lostConsequence(cast, hit) || cast.guardedImpact() && (!cast.alive() || hit.entities().stream().anyMatch(e -> !cast.admits(e)))) return;
 		dev.wildercord.monster.Monsters.onSpell(cast, hit, node.effect);
 	}
 
@@ -172,22 +226,29 @@ public final class Effects {
 	 * Unison.
 	 */
 	static Runnable carryContext(Runnable task) {
-		if (executeBonus == 1.0 && openingBonus == 1.0 && currentElement.isEmpty() && thirst == 0) {
+		if (executeBonus == 1.0 && openingBonus == 1.0 && currentElement.isEmpty() && thirst == 0
+				&& applying == null && applyingCast == null) {
 			return task;
 		}
 		double bonus = executeBonus;
 		double opening = openingBonus;
 		String element = currentElement;
 		double drinks = thirst;
+		LivingEntity source = applying;
+		Cast sourceCast = applyingCast;
 		return () -> {
 			double outerBonus = executeBonus;
 			double outerOpening = openingBonus;
 			String outerElement = currentElement;
 			double outerThirst = thirst;
+			LivingEntity outerApplying = applying;
+			Cast outerCast = applyingCast;
 			executeBonus = bonus;
 			openingBonus = opening;
 			currentElement = element;
 			thirst = drinks;
+			applying = source;
+			applyingCast = sourceCast;
 			try {
 				task.run();
 			} finally {
@@ -195,6 +256,8 @@ public final class Effects {
 				openingBonus = outerOpening;
 				currentElement = outerElement;
 				thirst = outerThirst;
+				applying = outerApplying;
+				applyingCast = outerCast;
 			}
 		};
 	}
@@ -241,7 +304,7 @@ public final class Effects {
 		double duration = SpellNumbers.duration(node) * cast.duration * WorldQuirks.duration(cast, rune, hit);
 		int amplify = node.count(Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
-		List<LivingEntity> harmed = filter(hit.entities(), e -> Targets.canHarm(caster, e));
+		List<LivingEntity> harmed = filter(hit.entities(), e -> Targets.canHarm(caster, e) && cast.admits(e));
 		if (!harmed.isEmpty() && (rune.kind() == dev.wildercord.spell.EffectKind.HARMFUL || rune.kind() == dev.wildercord.spell.EffectKind.MOVEMENT && !hit.self())) {
 			// A Shield stops a spell that costs no more than the one that raised it; a costlier one breaks it and goes through.
 			harmed = Shields.screen(cast, harmed, hit);
@@ -256,6 +319,8 @@ public final class Effects {
 		if (SupportSignatures.apply(cast,node,hit,helped)) return;
 		if (CampConcordMagic.apply(cast,node,hit,helped)) return;
 		if (TrailSignatures.apply(cast,node,hit)) return;
+		// ---- fx-passive pack
+		HearthEffects.apply(cast, node, hit, helped, harmed, power, duration);
 
 		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
 		switch (builtIn(rune) ? rune.path() : "") {
@@ -298,6 +363,7 @@ public final class Effects {
 			}
 			case "harm" -> harmed.forEach(t -> {
 				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 7 * power);
+				if (!cast.admits(t)) return;
 				Exposed.mark(t, Exposed.HARM_TICKS);
 				Vfx.harm(level, t);
 			});
@@ -349,8 +415,10 @@ public final class Effects {
     dev.wildercord.wildlife.EmberContent.affectFern(cast,targetBlock(hit),"fire");
     harmed.forEach(t -> {
 				double react = Reactions.fire(cast, t);
+				if (!cast.admitsConsequence(t)) return;
 				t.igniteForSeconds((float) (6 * duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 5 * power * react);
+				if (!cast.consequencesValid(t)) return;
 				FireBloodVfx.fire(level, t);
 			});
    }
@@ -359,8 +427,11 @@ public final class Effects {
     harmed.forEach(t -> {
     int priorFrost=t.getTicksFrozen();
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 5 * power);
+				if (!cast.admits(t)) return;
 				boolean freshSlow=t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(4, duration), 2, false, true));
+				if (!cast.admits(t)) return;
 				t.setTicksFrozen(Math.max(t.getTicksFrozen(), t.getTicksRequiredToFreeze() + ticks(4, duration)));
+				if (!cast.admits(t)) return;
 				Reactions.mark(t, Reactions.Mark.FROZEN);
 				if(freshSlow || t.getTicksFrozen()>priorFrost)dev.wildercord.wildlife.EmberContent.cool(cast,t);
 				Vfx.frost(level, t);
@@ -472,7 +543,8 @@ public final class Effects {
 				}
 			});
 			case "root" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(3, duration), 6, false, false));
+				boolean rooted = t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(3, duration), 6, false, false));
+				if (rooted && t instanceof ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 				t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
 				Vfx.root(level, t, ticks(3, duration));
 				StormEarthFx.rootHold(level, t, ticks(3, duration));
@@ -797,6 +869,38 @@ public final class Effects {
 				CraftedRunes.apply(cast, node, hit, helped, harmed, power, duration);
 			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
 				Innates.apply(cast, rune, helped, harmed, power, duration);
+			// ---- fx-fish pack
+			case "angler_lure", "bait_blessing", "reeling_tide", "school_sight", "tackle_mend", "bobber_bell", "water_reading", "dolphin_call",
+				"axolotl_kinship", "shoal_herd", "refloat", "reed_cut", "wring", "spring_draw", "brimming", "oceans_favor",
+				"diving_bell", "tide_lantern", "sluice", "soak_through", "rain_cloud", "storm_glass", "kelpsong", "coral_mend",
+				"nest_tend", "lily_path", "sandbar", "ice_auger", "tide_marker", "shore_sense", "fathom", "wreck_sense",
+				"drift_net", "mooring_call", "fair_wind", "upwell", "sounding", "porpoise", "skimstep", "skaters_edge",
+				"air_pocket", "drown_ward", "pearl_sight", "sea_breeze", "inkveil", "shellback", "dewcatch", "divers_hands" ->
+				dev.wildercord.cast.packs.TideEffects.apply(cast, node, hit, helped, power, duration, amplify, passiveEffect);
+			// ---- fx-farm pack: the farmstead runes (field, herd, kitchen, hive, wood) live in cast/packs/FarmEffects.
+			case "tillage", "dewfall", "tilth", "plowline", "sow", "ripen", "dewkeep", "fieldsense", "thawfield", "cloche", "scarecrow", "fallow",
+				"ditchwater", "compost", "stalkrise", "gourdcall", "berrybless", "courtship", "herdcall", "fleece", "milkmaid", "henhouse",
+				"gentlehand", "fodder", "barnwarmth", "herdsense", "hearthcook", "stewpot", "bakehouse", "pollinate", "hivehum", "calmsmoke",
+				"wildflower", "saplingrise", "saplingsow", "leaffall", "barkstrip", "coppice", "feastday", "picnic", "honeydew", "leafshade",
+				"barkhide", "sapflow", "trot", "beeline", "fieldstride", "hayloft" ->
+				dev.wildercord.cast.packs.FarmEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
+			// ---- fx-mine pack
+			case "stairdelve", "riser", "plumbline", "siftfall", "gangue", "orepluck", "luckstrike", "silklift",
+				"deepsound", "oretally", "lavaseal", "deepway", "hollowsense", "kilnbake", "blockpack", "unpack",
+				"millstone", "toolmend", "levelground", "holefill", "shoreup", "stilt", "plankway", "polish",
+				"brickwork", "agestone", "concreteset", "chalkline", "pitfloor", "torchfall", "gloomsight", "lumenpath",
+				"snuffout", "headlamp", "leverflip", "buttonpush", "doorcall", "chestsort", "stow", "restock",
+				"stocktake", "unburden", "lodepull", "caveward", "delvemark", "motherlode", "floorlay", "packtidy" ->
+				DelveEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
+			// ---- fx-explore pack
+			case "land_reading", "depth_sounding", "spawn_bearing", "home_bearing", "grave_bearing", "portal_reckoning", "slime_sense", "sky_reading", "moon_reading", "sun_reading", "lux_reading", "chalk_line", "village_sense", "ruin_sense", "shipwreck_sense", "portal_sense", "fortress_sense", "stronghold_compass", "spire_sense", "trail_blaze", "relic_sense", "spawner_sense", "steady_brush", "appraise", "trade_renew", "haggle", "folk_call", "folk_census", "lapis_thrift", "quickbrew", "potion_steep", "lore_reading", "shelf_count", "beacon_swell", "dye_wash", "checker_dye", "glyph_carve", "lamplighter", "snuff_out", "sign_glow", "frame_veil", "stand_pose", "lava_crust", "void_step", "lava_sense", "gold_parley" ->
+				WayfarerEffects.apply(cast, node, hit, helped, harmed, power, duration);
+			// ---- fx-support pack
+			case "worst_first", "salve", "mending_mist", "hearthglow", "aftercare", "hearthsong", "grace", "managift", "manawell", "guardlink", "rally",
+				"morale", "shrug_off", "hexguard", "stoutheart", "ironhold", "evade", "emberguard", "beastguard", "hearthguard", "heel", "bellward",
+				"sanctuary", "arrowveil", "blastward", "firebreak", "pacify", "lure", "stillbind", "taunt", "nudge", "hobble", "corral", "truce",
+				"spook", "aegis", "accord", "citadel", "shieldwall", "staunch", "sentry", "tend", "soothe", "withdraw", "keepsafe", "faithful" ->
+				dev.wildercord.cast.packs.WardEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
 			default -> {
 				if (Runes.fused(rune)) {
 					// The fused effects, made only at the Fusion Altar.
@@ -854,6 +958,8 @@ public final class Effects {
 	}
 
 	static void push(LivingEntity target, Vec3 impulse) {
+		if (applyingCast != null && !applyingCast.admits(target)) return;
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		// Anchor: nothing a spell does moves it.
 		if (VoidTime.anchored(target)) {
 			if (impulse.lengthSqr() > 0.09 && target.level() instanceof ServerLevel level) {
@@ -865,6 +971,7 @@ public final class Effects {
 		impulse = DefensiveFoci.resist(target, impulse);
 		if(target instanceof Player) impulse=impulse.scale(1-.10*dev.wildercord.gear.ElementalArmor.count(target,dev.wildercord.gear.ElementalArmor.Kind.STONEBOUND));
 		Vec3 scaled = target instanceof Player ? impulse : impulse.scale(Math.max(0.0, 1.0 - resist));
+		if (target instanceof ServerPlayer player && scaled.lengthSqr() > 0) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		target.setDeltaMovement(target.getDeltaMovement().add(scaled));
 		target.needsSync = true;
 		if (target instanceof ServerPlayer player) {
@@ -944,8 +1051,10 @@ public final class Effects {
 	/** Finite effect admission runs after bonuses and before shared payment and defence. */
 	static void hurtCapped(Cast cast, LivingEntity target, DamageSource source, double amount,
 			java.util.function.DoubleUnaryOperator finalAdmission) {
+		// A delayed hit rechecks relationships before shields, reactions or shared budgets are paid.
+		if (!Targets.canHarm(cast.caster, target) || !cast.admits(target)) return;
 		// Damage that didn't come through a shape's hit (a meteor landing, a secret spell's blast) meets a Shield here.
-		if (Shields.stops(cast, target, cast.caster.getEyePosition())) {
+		if (Shields.stops(cast, target, cast.incoming())) {
 			return;
 		}
 		// What the moment adds to the hit (a setup paying off, a weakness, a reaction), multiplied together.
@@ -967,6 +1076,7 @@ public final class Effects {
 		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
 		// Before the affinity, so a reaction this hit sets off breaks through a resistance, as Shatter's does.
 		bonus *= Reactions.hit(cast, target, currentElement);
+		if (!cast.consequencesValid(target)) return;
 		bonus *= Affinities.multiplier(cast, target, source, currentElement);
 		// Fire is weaker on the wet (unless the spell has grown Undying Flame).
 		if (!soulBurn && !Mastery.wetFire(cast)) {
@@ -975,7 +1085,10 @@ public final class Effects {
 		// The damage traits its caster chose for it as it grew (see Mastery): held to their own cap, and to the one below.
 		bonus *= Mastery.damageBonus(cast, target);
 		bonus *= AddonRunes.react(cast, target, currentElement);
+		if (!cast.consequencesValid(target)) return;
 		bonus *= ExplorerEffects.bonus(cast, target, currentElement);
+		// ---- links-mods pack: Tapering and Pooled share the blow out.
+		bonus *= HearthModifiers.damageFactor(cast, target);
 		// Trial Key: the opening blow on a target still at full health.
 		if (openingBonus > 1.0 && target.getHealth() >= target.getMaxHealth() - 0.01F) {
 			bonus *= openingBonus;
@@ -988,7 +1101,7 @@ public final class Effects {
 		if (target instanceof Player && cast.caster instanceof Player) {
 			damage *= (float) dev.wildercord.config.Config.get().pvpDamageScale();
 		}
-		if (!Float.isFinite(damage) || damage<=0) return;
+		if (!Float.isFinite(damage) || damage<=0 || !cast.admits(target)) return;
 		double allowed=finalAdmission.applyAsDouble(damage);
 		if (!Double.isFinite(allowed) || allowed<=0) return;
 		damage=(float)Math.min(damage,allowed);
@@ -1000,11 +1113,14 @@ public final class Effects {
 		if (damage > 0) {
 			dev.wildercord.runesmith.Contracts.onSpellHit(cast.caster, target, currentElement);
 		}
+		if (!cast.admits(target)) return;
 		readyToHurt(target);
 		float dealt = damage;
 		float before = target.getHealth();
 		// A player's defences against spells (armour, Warding, Warded, the spellguard) are met there.
-		Dungeons.spellHit(() -> SpellDefence.hurtAdmitted(cast.level, target, source, dealt, cast));
+		DamageSource admittedSource = cast.guardedImpact() ? new RelayDamageSource(source, cast) : source;
+		Dungeons.spellHit(() -> SpellDefence.hurtAdmitted(cast.level, target, admittedSource, dealt, cast));
+		if (!cast.consequencesValid(target) || cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
 		// A heavy hit lands with a punch for whoever cast it.
 		if (damage >= 8) {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));
@@ -1015,12 +1131,15 @@ public final class Effects {
 		if (thirst > 0 && taken > 0 && cast.caster.isAlive() && cast.caster != target
 				&& !(target instanceof TrainingDummy) && target.level().dimension() != PracticeRoom.DIMENSION) {
 			cast.caster.heal((float) (taken * thirst));
+			if (!cast.consequencesValid(target)) return;
 			CraftedVfx.thirst(cast.level, target, cast.caster);
 		}
 		// Spellbrand: a brand this caster left on the target bursts.
 		CraftedRunes.afterSpellHit(cast, target);
+		if (!cast.consequencesValid(target)) return;
 		// What the spell learns from the blow, and the traits that answer one (see Mastery).
 		Mastery.afterDamage(cast, target, dealt, taken);
+		if (!cast.consequencesValid(target)) return;
 		dev.wildercord.aura.ResonantStrikes.spell(cast, target, currentElement, taken);
 	}
 
@@ -1361,6 +1480,7 @@ public final class Effects {
 		if (distance < 1.0 || distance > 48) {
 			return;
 		}
+		if (caster instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 31);
 		Vec3 pull = to.normalize().scale(Math.min(3.2, 0.8 + distance * 0.12) * Math.sqrt(power)).add(0, 0.35, 0);
 		caster.setDeltaMovement(pull);
 		caster.needsSync = true;
@@ -1553,16 +1673,29 @@ public final class Effects {
 
 	/** Shock: a small zap that arcs on to the nearest other enemy. */
 	private static void shock(Cast cast, LivingEntity target, double power) {
+		if (!cast.admits(target)) return;
 		ServerLevel level = cast.level;
 		Vfx.shockArc(level, target.getBoundingBox().getCenter().add(0, 1.2, 0), target.getBoundingBox().getCenter());
 		hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4 * power * Reactions.storm(cast, target));
+		if (!cast.consequencesValid(target) || cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
 		// The arc looks for a conductor first (a wet enemy, or one in metal armour) within 5; else the nearest within 4.
 		LivingEntity next = null;
 		boolean conductor = false;
 		double best = Double.MAX_VALUE;
-		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(5.0), e -> e instanceof LivingEntity && Targets.canHarm(cast.caster, e))) {
+		List<Entity> nearby;
+		if (cast.guardedImpact()) {
+			nearby = new ArrayList<>();
+			level.getEntities(net.minecraft.world.level.entity.EntityTypeTest.forClass(LivingEntity.class), target.getBoundingBox().inflate(5.0),
+				e -> e != target && e != cast.caster && e.isAlive(), nearby, Cast.MAX_ENTITIES + 1);
+			if (nearby.size() > Cast.MAX_ENTITIES) return;
+			nearby.sort(java.util.Comparator.comparingDouble((Entity e) -> e.distanceToSqr(target)).thenComparingInt(Entity::getId));
+		} else nearby = level.getEntities(target, target.getBoundingBox().inflate(5.0), e -> e instanceof LivingEntity && Targets.canHarm(cast.caster, e));
+		for (Entity e : nearby) {
+			if (!Targets.canHarm(cast.caster, e) || !cast.admits(e)) continue;
 			LivingEntity other = (LivingEntity) e;
 			double d = other.distanceToSqr(target);
+			if (cast.guardedImpact() && cast.caster instanceof ServerPlayer owner
+				&& !RelayCircles.clear(level, owner, target.getBoundingBox().getCenter(), other.getBoundingBox().getCenter())) continue;
 			boolean conducts = conducts(other);
 			if (d > 25 || (!conducts && d > 16) || (conducts != conductor ? !conducts : d >= best)) {
 				continue;
@@ -1574,7 +1707,14 @@ public final class Effects {
 		if (next != null) {
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
 			StormEarthFx.tether(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
-			hurt(cast, next, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), (conductor ? 4 : 3) * power * Reactions.storm(cast, next));
+			if (cast.guardedImpact() && cast.takeEntities(1) < 1) return;
+			Vec3 previousOrigin = cast.incoming();
+			if (cast.guardedImpact()) cast.incoming(target.getBoundingBox().getCenter());
+			try {
+				hurt(cast, next, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), (conductor ? 4 : 3) * power * Reactions.storm(cast, next));
+			} finally {
+				if (cast.guardedImpact()) cast.incoming(previousOrigin);
+			}
 		}
 	}
 
@@ -1699,6 +1839,8 @@ public final class Effects {
 	public static void init() {
 		SpanRules.ready();
 		LifeOwnerEvents.init();
+		// ---- fx-passive pack
+		HearthEffects.init();
 	}
 
 	private static void light(Cast cast, Cast.Hit hit, double duration) {
@@ -1884,6 +2026,7 @@ public final class Effects {
 	}
 
 	private static void setMotion(LivingEntity target, Vec3 motion) {
+		if (target instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		target.setDeltaMovement(motion);
 		target.needsSync = true;
 		if (target instanceof ServerPlayer player) {
@@ -2013,6 +2156,7 @@ public final class Effects {
 
 	/** Dash on yourself: held level at speed for five ticks, then braked, so it goes about ten blocks and never up or off anything. */
 	private static void dashSelf(Cast cast, LivingEntity caster, Vec3 flat, double power) {
+		if (caster instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, DASH_TICKS + 1);
 		double speed = DASH_SPEED * Math.sqrt(Math.max(0.25, power));
 		caster.resetFallDistance();
 		for (int i = 0; i < DASH_TICKS; i++) {
@@ -2039,6 +2183,7 @@ public final class Effects {
 
 	/** Levitate: the lifted creature hangs where it is, its drift stopped, for {@code ticks}. */
 	private static void suspend(Cast cast, LivingEntity t, int ticks) {
+		if (t instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, ticks + 1);
 		for (int i = 2; i < ticks; i += 2) {
 			Scheduler.later(i, () -> {
 				if (t.isAlive() && t.level() == cast.level && !t.onGround()) {
@@ -2054,6 +2199,7 @@ public final class Effects {
 		String key = "featherglide:" + t.getUUID();
 		Object token = new Object();
 		GLIDES.put(key, token);
+		Scheduler.later(Math.max(ticks, 2), () -> GLIDES.remove(key, token));
 		for (int i = 2; i < ticks; i += 2) {
 			Scheduler.later(i, () -> {
 				if (GLIDES.get(key) != token || !t.isAlive() || t.level() != cast.level) {
@@ -2971,7 +3117,7 @@ public final class Effects {
 			// The ring travels: the nearest are struck at once, the farthest six ticks later.
 			int delay = (int) Math.round(6 * Math.min(1.0, t.getBoundingBox().getCenter().distanceTo(point) / Math.max(0.5, radius)));
 			Runnable strike = () -> {
-				if (!t.isAlive() || t.level() != cast.level) {
+				if (!cast.alive() || !t.isAlive() || t.level() != cast.level || !Targets.canHarm(cast.caster, t)) {
 					return;
 				}
 				hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), 4 * power);

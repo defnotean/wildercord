@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_netweaver_village": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_netweaver_village"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:loom"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_netweaver_village.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_netweaver_village.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_netweaver_village"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

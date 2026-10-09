@@ -48,7 +48,7 @@ import java.util.List;
  * <p>Drawn like the rest of the Cord screen (same panel, header and page tabs, same scaling), so
  * it reads as one of its pages.</p>
  */
-public class CordStyleScreen extends Screen {
+public class CordStyleScreen extends Screen implements dev.wildercord.client.CordEditorParent {
 	private static final int W = 372;
 	private static final int H = 292;
 	private static final int CELL = 18;
@@ -79,6 +79,7 @@ public class CordStyleScreen extends Screen {
 	private static final int GLOW_ROW = 9;
 
 	private final CordScreen parent;
+	@Override public Screen cordEditorParent(){return parent;}
 	private Option hovered;
 	private final long opened = net.minecraft.util.Util.getMillis();
 
@@ -105,16 +106,16 @@ public class CordStyleScreen extends Screen {
 			return 1.0F;
 		}
 		int guiScale = Math.max(1, minecraft.getWindow().getGuiScale());
-		int physical = Math.max(1, (int) Math.floor(guiScale * fit));
-		return physical / (float) guiScale;
+		int physical = (int) Math.floor(guiScale * fit);
+		return physical >= 1 ? physical / (float) guiScale : (float) fit;
 	}
 
 	private int left() {
-		return Math.round((width - W * scale()) / 2);
+		return Math.max(4, Math.round((width - W * scale()) / 2));
 	}
 
 	private int top() {
-		return Math.round((height - H * scale()) / 2);
+		return Math.max(4, Math.round((height - H * scale()) / 2));
 	}
 
 	private double localX(double screenX) {
@@ -408,6 +409,17 @@ public class CordStyleScreen extends Screen {
 		return super.mouseClicked(event, doubleClick);
 	}
 
+	private boolean canAfford(Option option) {
+		if (minecraft.player == null) return false;
+		CordStyles.Unlock unlock = option.unlock();
+		if (unlock.kind() != CordStyles.Kind.CRAFT) return false;
+		Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(unlock.what()));
+		if (item == null) return false;
+		int have = minecraft.player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), true, 0,
+			minecraft.player.inventoryMenu.getCraftSlots());
+		return have >= unlock.amount();
+	}
+
 	/** Wears an option, or buys it first if it's bought with materials; the server checks either way. */
 	public void choose(Option option) {
 		CordStyles.Progress progress = CordCosmetics.progress(minecraft.player);
@@ -416,8 +428,13 @@ public class CordStyleScreen extends Screen {
 			ClientPlayNetworking.send(new CordCosmetics.SetStyle(next.material(), next.glow(), next.trail()));
 			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(dev.wildercord.content.WildercordSounds.RUNE_THREAD, 1.0F, 1.0F));
 		} else if (CordStyles.buyable(option)) {
-			ClientPlayNetworking.send(new CordCosmetics.BuyStyle(option.key()));
-			click();
+			if (canAfford(option)) {
+				ClientPlayNetworking.send(new CordCosmetics.BuyStyle(option.key()));
+				click();
+			} else {
+				minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BASS, 0.6F));
+				minecraft.player.sendOverlayMessage(unlockLine(option, progress).copy().withStyle(ChatFormatting.RED));
+			}
 		} else {
 			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BASS, 0.6F));
 			minecraft.player.sendOverlayMessage(unlockLine(option, progress).copy().withStyle(ChatFormatting.GRAY));

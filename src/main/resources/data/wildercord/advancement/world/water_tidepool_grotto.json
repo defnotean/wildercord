@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_tidepool_grotto": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_tidepool_grotto"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:sea_pickle"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_tidepool_grotto.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_tidepool_grotto.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_tidepool_grotto"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101402,
+    "spacing": 40,
+    "separation": 14
+  },
+  "structures": [
+    {
+      "structure": "wildercord:travel_broken_bridge",
+      "weight": 1
+    }
+  ]
+}

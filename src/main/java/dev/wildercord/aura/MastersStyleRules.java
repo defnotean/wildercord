@@ -1,0 +1,134 @@
+package dev.wildercord.aura;
+
+import java.util.List;
+
+/** Authored fixed-release style forms with a paid server windup before their existing effect choreography. */
+public final class MastersStyleRules {
+	private MastersStyleRules() {}
+
+	/** How this art chooses its target or ground anchor at its fixed active frame. Every new profile must decide explicitly. */
+	public enum TargetPolicy {
+		/** Re-query the committed cone at impact; an old last-swing victim cannot bypass its direction or reach. */
+		ACTIVE_CONE,
+		/** Keep the server-observed last-swing victim for a target/counter performer to validate itself. */
+		STRING_TARGET,
+		/** A real guard receipt and original struck/caught/cone/empty route, carried through one bounded clash. */
+		EARNED_COUNTER,
+		/** Capture Hailfall's observed cloud anchor and independent direct-priority right before its windup. */
+		HAILFALL_RECEIPT,
+		/** Capture Skyfall's observed-victim, nearest-cone or explicit-ground route before its windup. */
+		SKYFALL_RECEIPT,
+		/** Plant an untargeted field from release-time feet and accepted facing; never promote the observed victim. */
+		GROUND_AHEAD
+	}
+
+	/**
+	 * These profiles release once at {@code windup}; later physical cuts and independently released effects keep
+	 * their performer's own scheduling. Landing-driven, travelling and held/channelled arts need their actual
+	 * phase callbacks and must not be added here merely to give them a cosmetic pose.
+	 */
+	public record Style(int animation, String art, int windup, int recovery, TargetPolicy targets) {
+		public Style { java.util.Objects.requireNonNull(targets, "An art must declare its target policy"); }
+	}
+	public static final List<Style> STYLES = List.of(
+		new Style(3, "kindling_draw", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(4, "frostbite", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(5, "crackle", 4, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(6, "cutting_breeze", 4, 10, TargetPolicy.ACTIVE_CONE),
+		new Style(7, "rockbreaker", 10, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(8, "thorn_lash", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(9, "void_cut", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(10, "star_needle", 4, 10, TargetPolicy.ACTIVE_CONE),
+		new Style(11, "echo_cut", 6, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(12, "bloodletting", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(13, "rising_cinders", 8, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(14, "blossom_fall", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(15, "hailfall", 8, 16, TargetPolicy.HAILFALL_RECEIPT),
+		new Style(16, "skyfall", 6, 16, TargetPolicy.SKYFALL_RECEIPT),
+		new Style(17, "collapse", 8, 18, TargetPolicy.GROUND_AHEAD),
+		new Style(18, "red_rain", 8, 16, TargetPolicy.GROUND_AHEAD),
+		new Style(19, "crimson_moon", 10, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(20, "backdraft", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(21, "rooted_parry", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(22, "glacier_mirror", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(23, "static_riposte", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(24, "unmoved", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(25, "null_parry", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(26, "eye_of_the_storm", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(27, "sanguine_parry", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(28, "constellation_guard", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(29, "stopped_moment", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(30, "updraft", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(31, "avalanche", 8, 18, TargetPolicy.GROUND_AHEAD),
+		new Style(32, "meteor_shower", 8, 16, TargetPolicy.GROUND_AHEAD),
+		new Style(33, "rewind_leap", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(34, "wildfire_rush", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(35, "skate", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(36, "tailwind", 4, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(37, "landslide", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(38, "wild_growth", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(39, "bolt_step", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(40, "rift_step", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(41, "comet_dash", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(42, "blur", 4, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(43, "frenzy", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(44, "sunfall", 10, 20, TargetPolicy.GROUND_AHEAD),
+		new Style(45, "winters_hush", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(46, "heavens_spear", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(47, "hundred_winds", 6, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(48, "mountain_splitter", 10, 20, TargetPolicy.GROUND_AHEAD),
+		new Style(49, "groves_heart", 10, 20, TargetPolicy.GROUND_AHEAD),
+		new Style(50, "event_horizon", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(51, "nova", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(52, "thousand_moments", 6, 20, TargetPolicy.ACTIVE_CONE),
+		// ---- methods-a pack (Tide, Iron and Dune; ids from 110 so other packs' ids cannot collide)
+		new Style(110, "riptide_cut", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(111, "breaker", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(112, "whirlpool", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(113, "surge", 4, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(114, "maelstrom", 8, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(115, "sunder_cut", 8, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(116, "anvil_fall", 10, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(117, "bulwark", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(118, "forge_charge", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(119, "worldforge", 10, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(120, "grit_flick", 4, 10, TargetPolicy.ACTIVE_CONE),
+		new Style(121, "quicksand", 8, 16, TargetPolicy.GROUND_AHEAD),
+		new Style(122, "sandveil", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(123, "dune_runner", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(124, "sea_of_sand", 8, 18, TargetPolicy.ACTIVE_CONE),
+		// ---- methods-b pack (ids MethodsBStyles.FIRST onward: Echo, Dawn, Venom)
+		new Style(140, "ringing_cut", 6, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(141, "resonant_chord", 8, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(142, "counterpoint", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(143, "reverb_step", 4, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(144, "grand_resonance", 10, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(145, "first_light", 4, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(146, "sunrise_arc", 8, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(147, "halo_guard", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(148, "dawnbreak_rush", 6, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(149, "noon_zenith", 10, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(150, "fang_strike", 4, 10, TargetPolicy.ACTIVE_CONE),
+		new Style(151, "spitting_cobra", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(152, "shed_skin", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(153, "serpent_slither", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(154, "hydra_coil", 8, 20, TargetPolicy.ACTIVE_CONE)
+	);
+
+	public static Style of(String art) {
+		return STYLES.stream().filter(style -> style.art().equals(art)).findFirst().orElse(null);
+	}
+
+	public static Style animation(int id) {
+		return STYLES.stream().filter(style -> style.animation() == id).findFirst().orElse(null);
+	}
+	/** Only the two projectile first forms tilt their attack plane, retaining their original pitch scaling. */
+	public static float attackPitch(int animation, float viewPitch) {
+		if (!Float.isFinite(viewPitch)) return 0;
+		double factor = animation == 6 ? .4 : animation == 10 ? .35 : 0;
+		if (factor == 0) return 0;
+		double radians = Math.toRadians(Math.max(-90, Math.min(90, viewPitch)));
+		return (float) Math.toDegrees(Math.atan2(Math.sin(radians) * factor, Math.max(0, Math.cos(radians))));
+	}
+
+}

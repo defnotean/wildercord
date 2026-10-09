@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "travel_standing_stones",
+  "biomes": "#wildercord:has_structure/travel_standing_stones",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

@@ -1,0 +1,36 @@
+{
+  "baseline_commit": "b3ec979da3640afd99755e2f2bcab1c2e5fbd410",
+  "native_absence_run": 37380606913,
+  "native_absence_job": 112001305890,
+  "native_absence_log_sha256": "c49766b76f2e7d35213e839fc1a211281ca8ac75a5b634fd3399a8443dddb1ea",
+  "production_source_manifest": {
+    "source_commit": "b3ec979da3640afd99755e2f2bcab1c2e5fbd410",
+    "files": {
+      "src/main/java/dev/wildercord/wildlife/MoonreedFeature.java": "a93860092468bfb846279408f5bed67c2775dba52bd5670d63f27f2e79878967",
+      "src/main/java/dev/wildercord/wildlife/MoonreedBlock.java": "905ada445faa728bbce26ddc607e51182ee56dd5d1260e52ab6b5fb737c91cec",
+      "src/main/java/dev/wildercord/wildlife/WetlandGarden.java": "c2f7355f87e875002bb282021e4808f725a80ce090aeefac60fb8488c8cf6e2f",
+      "src/main/resources/data/wildercord/worldgen/feature/moonreed_patch.json": "63e5fabaab993123baf923d2833327858800a5b6cdbc6e65c0fc2f0a64473051",
+      "src/main/resources/data/wildercord/worldgen/placed_feature/moonreed_patch.json": "09edfc399b2920d215e5e46249989b0b41d3dfc4b9aad535ba568184fdf46493",
+      "src/main/resources/data/wildercord/tags/block/moonreed_ground.json": "732d5ca78f5c48c6933c5b816671ed706519287a028f1b27fc75b5c2e3d98277",
+      "src/gametest/java/dev/wildercord/wildlife/WetlandTerrainTest.java": "44686929974a541fd19ea09e3e0c6d0c93bbafd3134728de1dc929f5a3cc27d9"
+    },
+    "preregistered_plan_sha256": "fa75714cee065dbd8d890a6c577dcd2538fa713c25995f94d7122a70c3fd7df8",
+    "calculation_inputs": {
+      "/workspace/shared/wildercord_compile_verification/originals/minecraft-server-inner.jar": "a362163eec5d1612d520772bc16e5b39c09e3b234fdc045f56bf544284ee8ae6",
+      "/workspace/shared/wildercord_recovery/ci/b3-wetland-native.log": "c49766b76f2e7d35213e839fc1a211281ca8ac75a5b634fd3399a8443dddb1ea",
+      "/workspace/shared/wildercord_recovery/ci/wetland-positive-search/WetlandPositiveSearch.java": "5ccbde75099d5e3a9b97084e565fcad8996da4ba6bf2b158056e888bb773ce93",
+      "/workspace/shared/wildercord_recovery/ci/wetland-positive-search/run-model.py": "c1e65a2be1a382f1d31df5e0e7f84b61cfcb48b9a0786f983cf615cedaf93edb",
+      "/workspace/shared/wildercord_recovery/ci/wetland-positive-search/audit-results.py": "5738af0da19d427a2ce59e326567bdd7aba166ad6fd322af5dcce1150b7e8d78"
+    },
+    "java_version": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+    "native_feature_index_evidence": {
+      "path": "/workspace/shared/wildercord_recovery/ci/b3-wetland-native.log",
+      "stage": 9,
+      "index": 103,
+      "stepFeatures": 114
+    }
+  },
+  "model_archive": "wetland-model-survey.zip",
+  "model_archive_sha256": "d1ceacbcf90b017a31c2728921677418e2cdbdf22993841b6a7b86bf45846ee1",
+  "positive_native_status": "candidate pending actual native source/write correlation; model is not proof"
+}

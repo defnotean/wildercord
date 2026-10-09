@@ -32,7 +32,10 @@ public final class CinderBailiffTerritoryTest implements FabricClientGameTest {
    c.waitTicks(5); // Actual grounding before genuine injury; no pose or velocity writes.
    w.getServer().runOnServer(s->{
     var l=s.overworld();attacker=EntityTypes.ZOMBIE.create(l,EntitySpawnReason.COMMAND);attacker.setNoAi(true);
+    // Named supplied actors bypass the unrelated random Runebound load-time health bonus.
+    attacker.setCustomName(net.minecraft.network.chat.Component.literal("Cinder Bailiff withdrawal witness"));
     attacker.snapTo(mob.getX(),30,mob.getZ()+2,0,0);l.addFreshEntity(attacker);
+    check(attacker.getHealth()==20&&attacker.getMaxHealth()==20,"Actual admitted withdrawal witness starts with exactly twenty health: health="+attacker.getHealth()+" max="+attacker.getMaxHealth());
     check(mob.hurtServer(l,attacker.damageSources().mobAttack(attacker),1),"Real physical injury retains actual aggressor");
     check(mob.getTarget()==attacker&&mob.pose()==CinderBailiff.IDLE,"Actual injury starts idle target ownership, not synthetic warning");
     meal=mob.mealReady();attack=mob.attackReady();rest=mob.restUntil();
@@ -51,7 +54,7 @@ public final class CinderBailiffTerritoryTest implements FabricClientGameTest {
    check(released,"Idle unreachable target is released by the original ten-tick admission interval");
    w.getServer().runOnServer(s->{
     check(mob.pose()!=CinderBailiff.WARNING&&mob.pose()!=CinderBailiff.FANNING,"Withdrawal does not create an attack phase");
-    check(attacker.getHealth()==20,"Release deals no physical or periodic damage");
+    check(attacker.getHealth()==20,"Release deals no physical or periodic damage: health="+attacker.getHealth()+" max="+attacker.getMaxHealth());
     check(mob.mealReady()==meal&&mob.attackReady()==attack&&mob.restUntil()==rest,"Mere release creates no saved rest deadline");
     check(mob.mayBrowse(),"Target release restores genuine habitat admission");
     attacker.discard();

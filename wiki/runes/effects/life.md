@@ -11,7 +11,7 @@ nav_order: 6
 
 Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 
-14 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
+27 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
 
 Read [Reading Life Magic]({{ '/spellcraft/life-outcomes/' | relative_url }}) for the illustrated journal of actual healing, repair, gardens and living ward responses.
 
@@ -26,7 +26,33 @@ Thorns for 10 seconds: the next 4 things that hurt you from within 4 blocks take
 
 <img src="{{ '/assets/recipes/rune_bramble.png' | relative_url }}" alt="Crafting Bramble: a Blank Rune and Sweet Berries and Cactus" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/dew_drink.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dew Drink
+{: #dew_drink}
+
+*Tier I · Life · Helps you and your allies · 4 mana · needs any Cord*
+
+For 10 minutes, rain or water feeds you a hunger point every 15 seconds.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Lily Pad. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_dew_drink.png' | relative_url }}" alt="Crafting Dew Drink: a Blank Rune and Glass Bottle and Lily Pad" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/dye_wash.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dye Wash
+{: #dye_wash}
+
+*Tier I · Life · Works on the world · 3 mana · needs any Cord*
+
+Recolours up to 16 wool, glass, terracotta, concrete or candle blocks around the point to the dye in your other hand. One dye per 8 blocks.
+
+**How to get it:** Craft: a Blank Rune, Red Dye, Yellow Dye and Blue Dye. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_dye_wash.png' | relative_url }}" alt="Crafting Dye Wash: a Blank Rune and Red Dye, Yellow Dye and Blue Dye" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/glimmer.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glimmer
 {: #glimmer}
@@ -39,7 +65,7 @@ Grows glowing lichen over the block that was hit and up to 4 around it: a light 
 
 <img src="{{ '/assets/recipes/rune_glimmer.png' | relative_url }}" alt="Crafting Glimmer: a Blank Rune and Glow Lichen" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/grow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Grow
 {: #grow}
@@ -52,7 +78,7 @@ Bone-meals the block that was hit and everything around it, and young animals th
 
 <img src="{{ '/assets/recipes/rune_grow.png' | relative_url }}" alt="Crafting Grow: a Blank Rune and 2x Bone Meal" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/harvest.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Harvest
 {: #harvest}
@@ -65,7 +91,7 @@ Harvests grown crops around the block hit, and replants them.
 
 <img src="{{ '/assets/recipes/rune_harvest.png' | relative_url }}" alt="Crafting Harvest: a Blank Rune and 2x Wheat Crops" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/heal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Heal
 {: #heal}
@@ -78,7 +104,20 @@ Restores 8 health (4 hearts; repeats within one cast heal less). What the target
 
 <img src="{{ '/assets/recipes/rune_heal.png' | relative_url }}" alt="Crafting Heal: a Blank Rune and Glistering Melon Slice" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/luckcharm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Luckcharm
+{: #luckcharm}
+
+*Tier I · Life · Helps you and your allies · 4 mana · needs any Cord*
+
+Luck I for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Emerald. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_luckcharm.png' | relative_url }}" alt="Crafting Luckcharm: a Blank Rune and Rabbit's Foot and Emerald" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/nourish.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nourish
 {: #nourish}
@@ -91,7 +130,85 @@ Restores 6 hunger and some saturation, and ends Hunger. Fed pets heal 6 and are 
 
 <img src="{{ '/assets/recipes/rune_nourish.png' | relative_url }}" alt="Crafting Nourish: a Blank Rune and Bread" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/sign_glow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sign Glow
+{: #sign_glow}
+
+*Tier I · Life · Works on the world · 2 mana · needs any Cord*
+
+Makes the writing on signs within 6 blocks glow, front and back.
+
+**How to get it:** Craft: a Blank Rune, Oak Sign and Glow Ink Sac. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_sign_glow.png' | relative_url }}" alt="Crafting Sign Glow: a Blank Rune and Oak Sign and Glow Ink Sac" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/slime_sense.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Slime Sense
+{: #slime_sense}
+
+*Tier I · Life · Works on the world · 2 mana · needs any Cord*
+
+Tells whether slimes can spawn underground in this chunk.
+
+**How to get it:** Craft: a Blank Rune, Slimeball and Compass. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_slime_sense.png' | relative_url }}" alt="Crafting Slime Sense: a Blank Rune and Slimeball and Compass" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/slowburn.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Slowburn
+{: #slowburn}
+
+*Tier I · Life · Helps you and your allies · 5 mana · needs any Cord*
+
+Hunger drains half as fast for 10 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Bread and Charcoal. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_slowburn.png' | relative_url }}" alt="Crafting Slowburn: a Blank Rune and Bread and Charcoal" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/steedmend.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Steedmend
+{: #steedmend}
+
+*Tier I · Life · Helps you and your allies · 4 mana · needs any Cord*
+
+Your mount, or the animal it touches, regenerates for 3 minutes.
+
+**How to get it:** Craft: a Blank Rune, Golden Carrot and Hay Bale. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_steedmend.png' | relative_url }}" alt="Crafting Steedmend: a Blank Rune and Golden Carrot and Hay Bale" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/trailblaze.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Trailblaze
+{: #trailblaze}
+
+*Tier I · Life · Works on the world · 3 mana · needs any Cord*
+
+For 10 minutes, you leave green crumbs every 6 blocks that only you can see. Up to 40.
+
+**How to get it:** Craft: a Blank Rune, Bread and Lime Dye. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_trailblaze.png' | relative_url }}" alt="Crafting Trailblaze: a Blank Rune and Bread and Lime Dye" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/checker_dye.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Checker Dye
+{: #checker_dye}
+
+*Tier II · Life · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Like Dye Wash, but only every other block, for a checkered pattern. One dye per 8 blocks.
+
+**How to get it:** Craft: a Blank Rune, White Dye and Black Dye, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_checker_dye.png' | relative_url }}" alt="Crafting Checker Dye: a Blank Rune and White Dye and Black Dye, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/cleanse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cleanse
 {: #cleanse}
@@ -104,7 +221,7 @@ Washes away harmful effects, fire and every elemental mark.
 
 <img src="{{ '/assets/recipes/rune_cleanse.png' | relative_url }}" alt="Crafting Cleanse: a Blank Rune and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/haven.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Haven
 {: #haven}
@@ -117,7 +234,46 @@ Raises living leaf shutters across a 4-block haven for 8 seconds: enemies inside
 
 <img src="{{ '/assets/recipes/rune_haven.png' | relative_url }}" alt="Crafting Haven: a Blank Rune and Shield and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/lullaby.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lullaby
+{: #lullaby}
+
+*Tier II · Life · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+You and allies within 8 blocks count as rested, so phantoms leave you be. Tells you how many are asleep.
+
+**How to get it:** Craft: a Blank Rune, White Bed and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_lullaby.png' | relative_url }}" alt="Crafting Lullaby: a Blank Rune and White Bed and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/petward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Petward
+{: #petward}
+
+*Tier II · Life · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Your pets within 16 blocks get Resistance I for 3 minutes.
+
+**How to get it:** Craft: a Blank Rune, Bone and Shield, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_petward.png' | relative_url }}" alt="Crafting Petward: a Blank Rune and Bone and Shield, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/potion_steep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Potion Steep
+{: #potion_steep}
+
+*Tier II · Life · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Good potion effects last a quarter longer, up to 45 seconds more and 8 minutes in all.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle, Nether Wart and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_potion_steep.png' | relative_url }}" alt="Crafting Potion Steep: a Blank Rune and Glass Bottle, Nether Wart and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/regrowth.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Regrowth
 {: #regrowth}
@@ -130,7 +286,7 @@ Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 heal
 
 <img src="{{ '/assets/recipes/rune_regrowth.png' | relative_url }}" alt="Crafting Regrowth: a Blank Rune and Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/root_carry.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Root Carry
 {: #root_carry}
@@ -143,7 +299,7 @@ Two separate casts select and move one unchanged young Cinder Fern onto nearby v
 
 <img src="{{ '/assets/recipes/rune_root_carry.png' | relative_url }}" alt="Crafting Root Carry: a Blank Rune and Rooted Dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/venom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Venom
 {: #venom}
@@ -156,7 +312,7 @@ Two separate casts select and move one unchanged young Cinder Fern onto nearby v
 
 <img src="{{ '/assets/recipes/rune_venom.png' | relative_url }}" alt="Crafting Venom: a Blank Rune and Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/drowse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Drowse
 {: #drowse}
@@ -169,7 +325,20 @@ Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't 
 
 <img src="{{ '/assets/recipes/rune_drowse.png' | relative_url }}" alt="Crafting Drowse: a Blank Rune and Spore Blossom and Honey Bottle, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/hearthbond.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hearthbond
+{: #hearthbond}
+
+*Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+Bonds you and allies within 12 blocks for 3 minutes: when one drops low they regenerate, and the rest hear it. Once a minute each.
+
+**How to get it:** Craft: a Blank Rune, Golden Apple and String, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_hearthbond.png' | relative_url }}" alt="Crafting Hearthbond: a Blank Rune and Golden Apple and String, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/restore.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Restore
 {: #restore}
@@ -182,7 +351,7 @@ Puts things back: heals 4, puts out fire, and mends 8% of every worn and held it
 
 <img src="{{ '/assets/recipes/rune_restore.png' | relative_url }}" alt="Crafting Restore: a Blank Rune and Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/reversal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reversal
 {: #reversal}
@@ -191,7 +360,7 @@ Puts things back: heals 4, puts out fire, and mends 8% of every worn and held it
 
 For 30 seconds, one killing blow is reversed: back to half health instead of dying. Once death has been cheated, nothing turns it back again for a minute.
 
-**How to get it:** Found only, never crafted: Ominous vaults; Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: Ominous vaults; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

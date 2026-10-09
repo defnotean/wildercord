@@ -21,7 +21,7 @@ import java.util.Optional;
  *
  * <ul>
  *   <li><b>Cord</b>: the base max mana and regeneration (see {@link CordTier}).</li>
- *   <li><b>Mana Crystals</b>: +10 max mana each, permanently, up to 10.</li>
+ *   <li><b>Mana Crystals</b>: +10 max mana each, permanently, up to 100.</li>
  *   <li><b>Reservoir</b> (Cord enchantment): +25 max mana per level.</li>
  *   <li><b>Wellspring</b> (Cord enchantment): +25% regeneration per level.</li>
  *   <li><b>Clarity</b> (potion effect): +50% regeneration per level.</li>
@@ -34,8 +34,8 @@ import java.util.Optional;
 public final class Mana {
 	private Mana() {}
 
-	public static final int CRYSTAL_MANA = 10;
-	public static final int MAX_CRYSTALS = 10;
+	public static final int CRYSTAL_MANA = ManaCrystalRules.MANA_PER_CRYSTAL;
+	public static final int MAX_CRYSTALS = ManaCrystalRules.MAX_CRYSTALS;
 	public static final int RESERVOIR_MANA = 25;
 	public static final float WELLSPRING_BONUS = 0.25F;
 	public static final float CLARITY_BONUS = 0.5F;
@@ -75,13 +75,14 @@ public final class Mana {
 		int clarity = clarityEffect == null ? 0 : clarityEffect.getAmplifier() + 1;
 		boolean meditating = player.getAttachedOrElse(WildercordAttachments.MEDITATING, false);
 		int circles = Heart.active(player);
+		dev.wildercord.spell.CircleVows.Effect vows = Heart.vowEffect(player);
 		int max = tier.maxMana + crystals * CRYSTAL_MANA + reservoir * RESERVOIR_MANA + circles * dev.wildercord.spell.Circles.MANA_PER_CIRCLE
-			+ dev.wildercord.gear.Gear.extraMana(player);
+			+ dev.wildercord.gear.Gear.extraMana(player) + vows.mana();
 		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
 		boolean well = player.getAttachedOrElse(WildercordAttachments.WELL_UNTIL, 0L) > player.level().getGameTime();
 		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? MEDITATION_BONUS : 0)
 			+ (ley ? LEY_BONUS : 0) + (well ? WELL_BONUS : 0) + dev.wildercord.cast.events.ManaStorm.regenBonus(player);
-		float base = tier.regenPerSecond + circles * dev.wildercord.spell.Circles.REGEN_PER_CIRCLE;
+		float base = Math.max(0, tier.regenPerSecond + circles * dev.wildercord.spell.Circles.REGEN_PER_CIRCLE + vows.regen());
 		// The server's mana.regen_multiplier scales all of it (sent to clients, so the HUD matches).
 		base *= (float) dev.wildercord.config.Config.regenMultiplier(player);
 		return new Stats(tier, max, base * multiplier, multiplier, crystals, reservoir, wellspring, siphon, clarity, meditating, circles, ley, well);
@@ -92,7 +93,7 @@ public final class Mana {
 	}
 
 	public static int crystals(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CRYSTALS, 0);
+		return ManaCrystalRules.count(player.getAttachedOrElse(WildercordAttachments.CRYSTALS, 0));
 	}
 
 	/** Adds mana, capped at the player's max. */

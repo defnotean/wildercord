@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/farm_sites",
+  "criteria": {
+    "farm_granary": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_granary"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:hay_block"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_granary.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_granary.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_granary"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

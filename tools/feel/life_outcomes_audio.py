@@ -93,3 +93,24 @@ for builder in BUILDERS:
 # alternatives only for audition; the central Life part must merge ACTIVE_EVENTS, not EVENTS.
 ACTIVE_EVENTS=tuple(e for e in EVENTS if not e.name.startswith("life_auth_ashen_mercy_"))
 assert len(ACTIVE_EVENTS)==56
+
+# ---- fx-passive pack: the gentle hearth Life runes, each with its own cue and its own landing.
+def slowburn(v,r):
+ return [(0,.3*sap(330+v*12,.42)),(.18,.24*seed(520))],[(0,.3*tissue(210,.6)),(.25,.18*sap(260+v*9,.4))]
+def lullaby(v,r):
+ return [(0,.3*tissue(tone(A,0+v),.5)),(.24,.24*tissue(tone(F,0),.5))],[(0,.26*tissue(tone(D,1),.62)),(.3,.22*tissue(tone(A,0),.62)),(.5,.1*fibre(r,.3,2200,3600))]
+def dew_drink(v,r):
+ return [(0,.38*seed(1040+v*30,.09)),(.09,.3*seed(1320,.09))],[(0,.3*sap(520+v*12,.28)),(.14,.28*seed(880,.12)),(.24,.12*fibre(r,.2,3200,6000))]
+def petward(v,r):
+ return [(0,.38*root(150+v*8)),(.12,.26*tissue(300,.36))],[(0,.32*tissue(260,.44)),(.18,.3*seed(520+v*14)),(.06,.1*fibre(r,.3,900,2200))]
+def luckcharm(v,r):
+ return [(0,.38*seed(990+v*28,.1)),(.07,.3*seed(1480,.1)),(.15,.22*seed(1240,.1))],[(0,.3*seed(740)),(.09,.28*seed(1110+v*20)),(.18,.24*seed(1480))]
+def steedmend(v,r):
+ return [(0,.4*root(120+v*6)),(.1,.24*root(150))],[(0,.32*sap(280+v*10,.36)),(.2,.28*tissue(350,.4))]
+def hearthbond(v,r):
+ return [(0,.3*tissue(240+v*7,.5)),(.06,.26*tissue(360,.5)),(.2,.2*seed(480))],[(0,.34*tissue(300,.58)),(.15,.3*seed(450+v*12)),(.3,.24*seed(600))]
+def trailblaze(v,r):
+ return [(0,.32*fibre(r,.16,1500,3600)),(.07,.34*seed(560+v*20,.12))],[(0,.3*seed(620,.1)),(.12,.26*seed(700+v*15,.1)),(.24,.2*seed(780,.1))]
+HEARTH_EVENTS=[]
+for builder in [slowburn,lullaby,dew_drink,petward,luckcharm,steedmend,hearthbond,trailblaze]:
+ HEARTH_EVENTS.extend([event("life_auth_"+builder.__name__+"_cue",voice(builder,0),variants=2,role="cast",subtitle="cast"),event("life_auth_"+builder.__name__+"_outcome",voice(builder,1),variants=2,role="effect",subtitle="hit")])

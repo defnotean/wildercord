@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_pier_boathouse": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_pier_boathouse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:spruce_boat"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_pier_boathouse.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_pier_boathouse.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_pier_boathouse"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

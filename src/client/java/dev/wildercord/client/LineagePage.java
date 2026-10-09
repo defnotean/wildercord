@@ -91,8 +91,14 @@ final class LineagePage {
     private void button(GuiGraphicsExtractor g, int mx, int my, int x, int y, int width, String key, UUID other) {
         String label = "screen.wildercord.aura.lineage." + (other != null && other.equals(confirming) ? "confirm" : key);
         boolean hover = mx >= x && mx < x + width && my >= y && my < y + 14;
-        g.fill(x, y, x + width, y + 14, hover ? 0xFF53415A : 0xFF382D42);
-        g.centeredText(font, Component.translatable(label), x + width / 2, y + 3, hover ? GOLD : TEXT);
+        boolean selected = (key.equals("disciples") && !honoured) || (key.equals("honoured") && honoured);
+        int bg = selected ? (hover ? 0xFF634D6F : 0xFF543F60) : (hover ? 0xFF53415A : 0xFF382D42);
+        int textColor = selected ? GOLD : (hover ? GOLD : TEXT);
+        g.fill(x, y, x + width, y + 14, bg);
+        if (selected) {
+            g.fill(x + 2, y + 13, x + width - 2, y + 14, GOLD);
+        }
+        g.centeredText(font, Component.translatable(label), x + width / 2, y + 3, textColor);
         buttons.add(new Button(x, y, width, key, other));
         targets.put(other == null ? key : "release:" + other, new int[] {x, y, width, 14});
     }

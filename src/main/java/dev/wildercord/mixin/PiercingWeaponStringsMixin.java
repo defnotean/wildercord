@@ -19,7 +19,7 @@ public abstract class PiercingWeaponStringsMixin {
 	@Inject(method = "attack", at = @At("HEAD"))
 	private void wildercord$thrustSeen(LivingEntity attacker, EquipmentSlot hand, CallbackInfo ci) {
 		if (attacker instanceof ServerPlayer player) {
-			SwordStrings.swung(player);
+			SwordStrings.thrust(player);
 			// Everyone else sees the thrust's trail (a lance of light), if the blade has aura enough to coat a blow.
 			dev.wildercord.aura.AuraFx.swung(player, true);
 		}

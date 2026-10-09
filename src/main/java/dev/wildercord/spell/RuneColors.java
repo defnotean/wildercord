@@ -22,6 +22,10 @@ public final class RuneColors {
 			case "arcane" -> 0xE678DC;
 			case "time" -> 0xF2D98A;
 			case "blood" -> 0xD2283C;
+			// ---- methods-a pack
+			case "brine" -> 0x1E8C96;
+			case "metal" -> 0x9AA6B2;
+			case "sand" -> 0xD49A3A;
 			default -> NEUTRAL;
 		};
 	}

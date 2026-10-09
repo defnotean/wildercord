@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "master_quarry_hall",
+  "biomes": "#wildercord:has_structure/master_quarry_hall",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

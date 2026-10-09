@@ -3,43 +3,88 @@ title: What's New
 nav_order: 1.1
 ---
 
-# What's new in 0.10.0-alpha
+# What's new in 0.11.0: Masters of Tomorrow
 
-This release grows the living world underground and along the wetland banks: fungal gardens and the creatures that visit them, new field equipment, eighteen new signature fusions, four new craftable runes and authored materials for Earth, Life and Void magic. **Update the server and every client together.** New blocks, items, creatures, particles and packets mean 0.9.x clients must update before joining.
+This update adds Sword Masters, new player sword arts and movement forms, 48 places to explore, a lore journal, a bigger magic climb, everyday runes and parties. Install `wildercord-0.11.0-alpha+mc26.3.jar` on the server and every client together: **0.10 clients must update before joining**. See [Installation and Updates]({{ '/installing/' | relative_url }}).
 
-## A living cave garden
+## Sword Masters
 
-Glowcaps grow in damp, covered caves, but only an actual rested [Sporeback Snail]({{ '/world/sporeback-snails/' | relative_url }}) browse matures them. Build a Fungal Nursery, gather Mycelial Dew, craft a Fungal Poultice or the offhand Cave Breather, and follow Mara's Three Breathmarks investigation. See [Glowcap Nurseries]({{ '/world/glowcap-nurseries/' | relative_url }}).
+There are **16 Sword Masters**, one for each breathing method, and each offers an optional trial. Each Master fights with named techniques you can learn to read: clear warnings, counter windows, and a boss bar that names the move. Every school has its own signature moves, such as Ember's Cinder Wake and Kiln Ring, Gale's Crosswind Reprise, Stone's Fracture and Fault March, Echo's Tolling Bell, Dawn's Noon Glare and Venom's Serpent Coil. Your first clear of each Master teaches you a technique part.
 
-[Rootmolt Striders]({{ '/world/rootmolt-striders/' | relative_url }}) compete for mature caps and defend the patch with a warned physical rake. [Mara's Drainhouses]({{ '/world/belowkeeper-drainhouses/' | relative_url }}) appear in newly generated lush and dripstone caves; restore Mara's Empty Bell to interrupt a Rootmolt, and craft Rootbound Greaves to deny one restraint. [Mossveil Dormice]({{ '/world/mossveil-dormice/' | relative_url }}) can be tamed with Glowcap Gills and help a Mossveil Cowl filter poison at home.
+See [Sword Masters]({{ '/masters/' | relative_url }}) and the [full technique list]({{ '/masters/techniques/' | relative_url }}): all 417 techniques. Each school has its own page:
 
-![A Mossveil Cowl worn in game]({{ '/assets/mossveil/native-worn-cowl.png' | relative_url }})
+[Crimson]({{ '/masters/crimson/' | relative_url }}), [Dawn]({{ '/masters/dawn/' | relative_url }}), [Dune]({{ '/masters/dune/' | relative_url }}), [Echo]({{ '/masters/echo/' | relative_url }}), [Ember]({{ '/masters/ember/' | relative_url }}), [Gale]({{ '/masters/gale/' | relative_url }}), [Hollow]({{ '/masters/hollow/' | relative_url }}), [Hourglass]({{ '/masters/hourglass/' | relative_url }}), [Iron]({{ '/masters/iron/' | relative_url }}), [Rime]({{ '/masters/rime/' | relative_url }}), [Starlit]({{ '/masters/starlit/' | relative_url }}), [Stone]({{ '/masters/stone/' | relative_url }}), [Thunder]({{ '/masters/thunder/' | relative_url }}), [Tide]({{ '/masters/tide/' | relative_url }}), [Venom]({{ '/masters/venom/' | relative_url }}) and [Verdant]({{ '/masters/verdant/' | relative_url }}).
 
-## Banks, birds and woodland ferns
+## New breathing methods
 
-- The [Siltcrest Bittern]({{ '/world/siltcrest-bittern/' | relative_url }}) stalks wild cod and salmon from dry banks at night and shelters by day. Crouch to watch or offer it a fish.
-- The [Tideward crossing kit]({{ '/world/tideward-crossing-kit/' | relative_url }}) adds Reedwater Waders, Dewglass Spectacles that read a crab's raised claws, and a Bank Surveyor's Line that shows a short route over real footing.
-- The [Reed Rattle]({{ '/world/reed-rattle/' | relative_url }}) answers a Reedback Crab's warning, and [Rook's Rainshield]({{ '/world/rooks-rainshield/' | relative_url }}) catches one arrow for you or a teammate who accepts your cover.
-- [Cinder Bailiffs and Ferns]({{ '/world/cinder-bailiffs/' | relative_url }}) bring a woodland creature with a warned heat fan and a fern you can plant, harvest, cool or grow with real spells.
+Six new methods join the first ten, for 16 in all: **Tide**, **Iron**, **Dune**, **Echo**, **Dawn** and **Venom**. Each has its own element, gift and five arts. See [Breathing Methods]({{ '/progression/breathing-methods/' | relative_url }}).
 
-![A Siltcrest Bittern coiling at the bank]({{ '/assets/images/siltcrest/coil.png' | relative_url }})
+## New sword arts
 
-## New spells and signatures
+Three player arts: **Spellcut** (U), **Rising Break** (Y) and **Driving Cut** (J). Wandering Duelists also teach starter lessons: Echo, Afterimage and Sunder. See [Controls]({{ '/controls/' | relative_url }}) to rebind keys.
 
-- Four new craftable runes: [Basinfill]({{ '/spellcraft/basinfill/' | relative_url }}) fills a small enclosed basin with water, [Root Carry]({{ '/spellcraft/root-carry/' | relative_url }}) moves a young fern, and [Watchweft and Manabraid]({{ '/spellcraft/camp-concord/' | relative_url }}) keep a camp watch and give willing mana gifts.
-- Eighteen new signature fusions: six [field signatures]({{ '/fusion-altar/field-signatures/' | relative_url }}) such as Springbed, Cinder Sieve and Thresherwind, and twelve [expedition signatures]({{ '/fusion-altar/expedition-signatures/' | relative_url }}) such as Red Ledger, Pulse Ferry and Wayline. The altar now knows 55 elemental and 40 signature fusions.
-- Earth, Life and Void effects have their own preparations and moving bodies; Life's outcomes leave a different material mark for each kind of work. See [Living Materials]({{ '/spellcraft/living-materials/' | relative_url }}), [Life Outcomes]({{ '/spellcraft/life-outcomes/' | relative_url }}) and [Shadow Materials]({{ '/spellcraft/shadow-materials/' | relative_url }}).
+## Master forms and field forms
 
-![Root Carry lifting a young fern between two soil patches]({{ '/assets/screenshots/root-carry/lift.png' | relative_url }})
+Equip one Master form and use it with **C**. The field forms move your real body, stop at walls and ledges and end in a short recovery: **Cinder Lunge**, **Reed Slip**, **Air Step**, **Plunging Strike**, **Wall Turn** and **Stone Hinge**. Masters and their teachers teach them. See [Master Forms]({{ '/masters/master-forms/' | relative_url }}).
 
-## Useful fixes
+**Spell Cut** is a learned swing that cuts a hostile spell bolt out of the air just as it reaches you. It needs no slot and no extra key. See [Spell Cut]({{ '/masters/spell-cut/' | relative_url }}).
 
-- Repeated parts of one paid ward no longer refill spent Reflect or Foresight charges, and Reflect only answers damage that actually landed.
-- Collect leaves items reserved for other players in place; Grow checks both halves of tall plants before placing them.
-- Spectators no longer intercept projectiles, beams, Touch or Chorus aim.
-- The magic visuals screen fits Minecraft's smallest window, and Aura progression now explains real-combat XP, the practice limit and breakthrough trials.
-- Surveying, harvesting and camp checks no longer trip dungeon wards or another player's glyph trap.
+## Combat presentation
 
-## Earlier releases
+An opt-in Articulated animation style for selected arts and Master attacks, plus a Stable camera that removes shake and bob. It only changes what you see. See [Combat Presentation]({{ '/masters/combat-presentation/' | relative_url }}).
 
-The expanded Aura path, wetland creatures and fire/frost/storm/wind materials arrived in [0.9.1](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha.1). The twelve monsters/wildlife and original Aura foundation arrived in [0.9.0](https://github.com/defnotean/wildercord/releases/tag/v0.9.0-alpha). Harmonies, mastery and residues arrived in [0.8.0](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha). The living-world expansion continues; this release does not complete the roadmap.
+## 48 new places to explore
+
+Six families of buildings and places now appear in newly generated chunks, eight in each. Each has its own loot, advancement and page:
+
+- [Farmsteads]({{ '/world/farm-sites/' | relative_url }}): a windmill, an herbalist's cottage, an apiary, a walled orchard, a shepherd's hut, a mushroom ring, a granary barn and a scarecrow field.
+- [Master halls]({{ '/world/masters-sites/' | relative_url }}): eight halls and shrines for the breathing schools, each with practice dummies and a short trial.
+- [Roadside places]({{ '/world/travel-sites/' | relative_url }}): an inn, a watchtower, a broken bridge, a rune library, standing stones, a caravan camp, a cartographer's hut and a vow circle.
+- [Water places]({{ '/world/water-sites/' | relative_url }}): a stilt smokehouse, a lighthouse, a watermill, an ice fishing camp, a pier, a sunken shrine, net-weavers' huts and a tidepool grotto.
+- [Mines and forges]({{ '/world/mine-sites/' | relative_url }}): a hillside mine, a forge hall, a crystal lab, a collapsed delve, a Nether foundry, a deepslate vault, a prospector's camp and a miner's rest.
+- [Wild places]({{ '/world/wilds-sites/' | relative_url }}): a jungle ziggurat, a desert temple, a snowy monastery, a badlands gatehouse, a cherry-grove pavilion, a deep dark post, a Nether outpost and an End lantern.
+
+Existing chunks don't change, so explore new land to find them.
+
+## New weapons
+
+The Oathkeeper, Bulwark Maul and Skyrend Glaive have new 3D models. See [Weapons]({{ '/progression/weapons/' | relative_url }}).
+
+## More magic
+
+- [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) now go up to Circle XX (was VIII).
+- You can now use up to 100 [Mana Crystals]({{ '/progression/mana/' | relative_url }}#mana-crystals) (was 10).
+- New lessons: [Relay Circle]({{ '/spellcraft/relay-circle/' | relative_url }}), [Reweave]({{ '/spellcraft/reweave/' | relative_url }}) through the Ebb Ledger, [Excise]({{ '/spellcraft/excise/' | relative_url }}), and the [Tollgate, Lifeline and Conduit]({{ '/spellcraft/lesson-pack/' | relative_url }}) lessons.
+
+## Runes for everyday life and the Rune Catalog
+
+There are now 756 runes, and many are for farming, fishing, mining, building, exploring and helping others, not only fighting. To find one, open the **Rune Catalog** with `Ctrl`+`B` or the **Catalog** link on the Cord screen. You can search, filter by family, element and use, and see which runes **go well with** the one you picked. See [Rune Catalog]({{ '/spellcraft/rune-catalog/' | relative_url }}).
+
+Nearly 300 of the new runes come in everyday packs: hearth, Tide, farmstead, delving, Wayfarer's and support. None of them deals damage. See [Everyday Rune Packs]({{ '/runes/everyday-packs/' | relative_url }}).
+
+## Lore journal
+
+Press **H** to open your lore journal. It records the places you find, the duelists and Masters you meet, what you learn and what they say to you, and it gives you six **leads** to follow, each with a reward. See [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}).
+
+## Circle Vows
+
+Seven of the new Heart Circles (IX, XI, XIII, XV, XVII, XIX and XX) ask you to choose one of two vows, such as more mana or faster mana. Type `/vow` to see them and `/vow take <vow>` to choose. Changing your mind costs 5 levels. See [Circle Vows]({{ '/progression/circle-vows/' | relative_url }}).
+
+## Parties
+
+Group up with `/party invite <player>` for up to 8 players. The other player clicks **[Accept]**, or types `/party accept <your name>`. Party members can't hurt each other, and your helpful spells reach them. Invites expire after 60 seconds, and parties end when the server restarts. See [Parties]({{ '/social/parties/' | relative_url }}).
+
+## For server owners
+
+Back up worlds and the `config` folder before updating. Existing chunks don't change. Operators can place a few small encounters, such as a Wayfarer Training Pavilion, in old terrain with `/wildercord-upgrade`, which shows a preview first and can be rolled back. See [Pavilion Upgrade for Old Worlds]({{ '/world/pavilion-upgrade/' | relative_url }}).
+
+## Fixes
+
+- Delayed effects remember who cast them and check who is an ally when they land.
+- Interrupting a spell, by a Master or with Driving Cut, now needs damage that actually lands. A full guard or a dodge keeps your cast.
+- Lantern Newts no longer drift upward in tight turns, and rimehares settle at the end of a route.
+- Villagers at water sites stay home as residents, so they're never mistaken for wanderers.
+- Hailfall stops hitting and chilling once it has ended.
+- Glimmerwings find the lantern light around them and follow it.
+
+Older releases: see the [full changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md).

@@ -8,7 +8,8 @@ request merged. If anything here is unclear, open an issue and ask.
 You need:
 
 - **JDK 25** (Temurin works well)
-- **Python 3.11+** with **Pillow** (`pip install pillow`) for the asset generator
+- **Python 3.11+**, available as `python3` on macOS/Linux or `python` on Windows for full/sharded client test resource processing
+- **Pillow** (`pip install pillow`) for the asset generator
 - Git, and an IDE with Gradle support (IntelliJ IDEA recommended)
 
 ```bash
@@ -20,6 +21,9 @@ cd wildercord
 
 In IntelliJ, open the folder as a Gradle project; Loom sets up run configurations for the client
 and server.
+The owned CI launcher runs on Linux. Full/sharded Gradle plan selection uses a portable
+bounded configuration reader. See [the explicit plan contract](docs/FULL_CLIENT_SHARD_PLAN.md).
+Focused selectors keep their existing platform behavior.
 
 ## Where things live
 
@@ -46,6 +50,7 @@ The game design (what each rune does and why) is in [docs/DESIGN.md](docs/DESIGN
 |---|---|
 | `./gradlew test` | Always. Fast, headless unit tests for the spell engine. |
 | `./gradlew runClientGameTest` | Before any PR that changes runtime behaviour or UI. Starts a real client, checks mechanics and saves screenshots to `build/run/clientGameTest/screenshots/`. Set `WILDERCORD_TOUR_ONLY=1` to run only the feature tour (`tour_*.png`), which is quicker when you changed a world feature. |
+| `./gradlew runClientGameTest -PaffectedSince=origin/main` | While iterating. Runs only the client test classes your change statically reaches; never a substitute for the full suites. See [docs/testing/affected-client-tests.md](docs/testing/affected-client-tests.md). |
 
 Add tests with your change:
 

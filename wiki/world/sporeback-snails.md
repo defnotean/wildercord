@@ -7,38 +7,32 @@ permalink: /world/sporeback-snails/
 ---
 # Sporeback Snails
 
-*New in 0.10.0-alpha.*
+## What it is
 
-Pale layered spirals browse damp underground moss and clay. Their lilac feet, long antennae,
-offset shell whorls and little dew crown make them recognizable without a light show.
-They are peaceful wildlife, with no breeding or unique death loot.
+A pale, lilac-footed cave snail with a layered shell and a little dew crown. It browses living mushrooms and leaves behind a bead of Mycelial Dew. It is peaceful, does not breed and drops nothing special.
 
-<img src="{{ '/assets/images/sporeback-gathering.png' | relative_url }}" alt="A lilac-footed Sporeback Snail beside a living mushroom, showing its layered shell, antennae and dew crown" class="shot">
+<img src="{{ '/assets/images/sporeback-gathering.png' | relative_url }}" alt="A Sporeback Snail beside a living mushroom" class="shot">
 
-## Find and observe
+## How to get it
 
-Look below Y48 in lush and dripstone caves, on dark moss or clay footing. A nearby population
-limit keeps these encounters small. They slowly approach living mushrooms and browse for
-two seconds without removing the block. A successful visit prepares one saved dew bead.
-Bright conditions invite a search for cover; harm closes the shell for six seconds.
+Look for snails in lush caves and dripstone caves. They live below Y 48, on dark moss or clay with no sky above. Only a few gather in one area.
 
-## Gather without harm
+## How to use it
 
-Crouch with an empty hand and interact with a snail carrying a bead. It yields one Mycelial
-Dew and rests two minutes before another gathering. A new living-fungus visit is still needed.
-The first successful observation also gives Mara's three-page journal, **The Patient Spiral**.
-Repeat gathers do not print more journals. Life magic gives a short spore response without
-making resources; Fire frightens it. Repeated magic cannot renew its response clock immediately.
+1. Wait for a snail to browse a living mushroom. It takes 2 seconds and doesn't break the block. That gives the snail one dew bead.
+2. Crouch with an empty hand and right-click the snail to take **1 Mycelial Dew**.
+3. The snail then rests for 2 minutes. It needs another mushroom visit before you can collect again.
 
-## Borrowed sight
+Your first gather also gives you Mara's journal, ***The Patient Spiral***.
 
-Craft one dew, one paper and one brown mushroom into **Fungal Poultice**. Use it for thirty
-seconds of Night Vision, accepting six seconds of Slowness. An existing Night Vision effect
-prevents consumption and refresh. Carry ordinary light for the journey after it fades.
+### Fungal Poultice
 
-This is the first fungal habitat relationship, not a complete subterranean ecosystem. Natural
-multi-seed populations, wider ecological relationships and remote multiplayer remain review work.
+Craft 1 Mycelial Dew, 1 Paper and 1 Brown Mushroom into a **Fungal Poultice**. Using it gives 30 seconds of Night Vision and 6 seconds of Slowness. You can't use it while you already have Night Vision.
 
-## A warning near the garden
+## Tips and counterplay
 
-A nearby awake Sporeback may retract when a [Rootmolt Strider]({{ "/world/rootmolt-striders/" | relative_url }}) raises its shovel arms. This territorial mature-cap competitor uses a physical rake. Give the visitor a clear route and watch the warning before entering a defended patch; killing the rival produces no unique resource reward.
+- Bright light sends a snail looking for cover.
+- If it's hurt, it hides in its shell for 6 seconds.
+- Life magic makes a snail puff spores but gives you no dew. Fire scares it.
+- It also tucks in when a [Rootmolt Strider]({{ '/world/rootmolt-striders/' | relative_url }}) raises its arms. Give snails a clear path in your [Glowcap nursery]({{ '/world/glowcap-nurseries/' | relative_url }}).
+- Bring a light. The poultice wears off.

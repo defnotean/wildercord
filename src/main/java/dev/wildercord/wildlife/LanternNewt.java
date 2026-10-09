@@ -31,11 +31,26 @@ public final class LanternNewt extends PathfinderMob {
  public boolean resting() {return entityData.get(RESTING);}
  public long refugeReady() {return refugeReady;}
 	public LanternNewt(EntityType<? extends LanternNewt> type,Level level) {
-		super(type,level);moveControl=new SmoothSwimmingMoveControl<>(this,85,10,.7F,.65F,true);
+		super(type,level);moveControl=new SmoothSwimmingMoveControl<>(this,85,10,.7F,.65F,false) {
+			@Override public void tick() {
+				// Preserve vanilla buoyancy outside a live refuge route. During refuge
+				// turns its upward impulse can overpower native downward steering.
+				if(isInWater() && !(getNavigation() instanceof NewtPathNavigation n && n.followingRefuge()))setDeltaMovement(getDeltaMovement().add(0,.005,0));
+				super.tick();
+			}
+		};
+		lookControl=new net.minecraft.world.entity.ai.control.LookControl(this) {
+			private boolean swimmingToRefuge() {return getNavigation() instanceof NewtPathNavigation n && n.followingRefuge();}
+			// Move control builds its swimming pitch over several ticks. The ordinary
+			// look reset would erase it every tick and let buoyancy win the descent.
+			@Override protected boolean resetXRotOnTick() {return !swimmingToRefuge();}
+			@Override protected Optional<Float> getXRotD() {return swimmingToRefuge()?Optional.empty():super.getXRotD();}
+		};
 		setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER,0);xpReward=0;
 	}
 	public static AttributeSupplier.Builder attributes() {return createMobAttributes().add(Attributes.MAX_HEALTH,10).add(Attributes.MOVEMENT_SPEED,.22).add(Attributes.FOLLOW_RANGE,12).add(Attributes.TEMPT_RANGE,10).add(Attributes.STEP_HEIGHT,.6);}
-	@Override protected PathNavigation createNavigation(Level level) {return new AmphibiousPathNavigation(this,level);}
+	@Override protected PathNavigation createNavigation(Level level) {return new NewtPathNavigation(this,level);}
+	boolean beneathRefuge(BlockPos roof) {return Math.abs(getX()-(roof.getX()+.5))<.28 && Math.abs(getZ()-(roof.getZ()+.5))<.28 && getY()<roof.getY()+.3 && isInWater();}
 	@Override public boolean canBreatheUnderwater() {return true;}
 	/** Swimming control supplies scaled movement input; use aquatic travel rather than land-mob fluid drag. */
 	@Override public void travel(net.minecraft.world.phys.Vec3 input) {
@@ -125,7 +140,7 @@ public final class LanternNewt extends PathfinderMob {
   @Override public boolean canContinueToUse() {return roof!=null && travelLeft>0 && settled<WetlandRules.REFUGE_PAUSE && weather() && available(roof);}
   @Override public void tick() {
    travelLeft--;
-   boolean near=Math.abs(getX()-(roof.getX()+.5))<.28 && Math.abs(getZ()-(roof.getZ()+.5))<.28 && getY()<roof.getY()+.3 && isInWater();
+   boolean near=beneathRefuge(roof);
    entityData.set(RESTING,near);
    if(!near && distanceToSqr(roof.getX()+.5,roof.getY()+.12,roof.getZ()+.5)<1)getMoveControl().setWantedPosition(roof.getX()+.5,roof.getY()+.1,roof.getZ()+.5,.7);
    if(near) {

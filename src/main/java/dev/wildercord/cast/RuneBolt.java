@@ -73,6 +73,8 @@ public class RuneBolt extends Projectile {
 	private LivingEntity quarry;
 	/** Provenance survives the original quarry dying or unloading. */
 	private boolean reflected;
+	/** A master converts a severed payload into one bounded aura return; this boundary survives another parry. */
+	private dev.wildercord.aura.world.SwordMaster trialMaster;
 	public boolean isReflected() { return reflected; }
 
 	public RuneBolt(EntityType<? extends RuneBolt> type, Level level) {
@@ -199,7 +201,8 @@ public class RuneBolt extends Projectile {
 		if (!(level() instanceof ServerLevel server)) {
 			return;
 		}
-		if (cast == null || !cast.alive() || --lifeLeft <= 0 || !arc && travelLeft <= 1.0E-3) {
+		if (cast == null || !cast.alive() || trialMaster != null && (!trialMaster.isAlive() || trialMaster.isRemoved())
+			|| --lifeLeft <= 0 || !arc && travelLeft <= 1.0E-3) {
 			fizzle();
 			return;
 		}
@@ -228,7 +231,7 @@ public class RuneBolt extends Projectile {
 		if (collide(server, from, end)) {
 			return;
 		}
-		Shields.Interception shield = Shields.intercept(cast, from, end);
+		Shields.Interception shield = Shields.intercept(cast, from, end, this::trialTarget);
 		if (shield != null && !alreadyHit.contains(shield.target()) && Shields.harmful(group, anchored) && Shields.parries(cast, shield.target())) {
 			// Raised at the last moment, the Shield turns it: back it goes, at whoever cast it.
 			Shields.parry(cast, shield.target(), from, false);
@@ -263,6 +266,7 @@ public class RuneBolt extends Projectile {
 			}
 			setPos(block.getLocation());
 			Vfx.impact(server, block.getLocation(), theme, arc ? 1.4 : 1.0);
+			if (trialMaster != null) { fizzle(); return; }
 			// An Arc splashes: it hits everything within a couple of blocks of where it lands.
 			List<Entity> splash = arc ? CastEngine.inRadius(cast, block.getLocation(), 2.0) : List.of();
 			CastEngine.onHit(cast, group, new Cast.Hit(splash, block.getLocation(), motion.normalize(), block.getLocation(),
@@ -292,7 +296,10 @@ public class RuneBolt extends Projectile {
 			LivingEntity player = cast.caster instanceof net.minecraft.server.level.ServerPlayer ? cast.caster : other.cast.caster;
 			Cast owner = player == cast.caster ? cast : other.cast;
 			double radius = reaction != null ? 4.0 : 2.5;
-			double damage = reaction != null ? 8 : mine.equals(theirs) ? 0 : 5;
+			// Player-preferred collision credit must not erase a master's opted-in audience.
+			boolean trial = trialMaster != null || other.trialMaster != null
+				|| cast.caster instanceof dev.wildercord.aura.world.SwordMaster || other.cast.caster instanceof dev.wildercord.aura.world.SwordMaster;
+			double damage = trial ? 0 : reaction != null ? 8 : mine.equals(theirs) ? 0 : 5;
 			Sigils.flash(server, at, 0xFF000000 | color, 1.3F);
 			Vfx.radial(server, new net.minecraft.core.particles.DustParticleOptions(color, 1.3F), at, 16, 0.3);
 			Vfx.radial(server, new net.minecraft.core.particles.DustParticleOptions(other.color, 1.3F), at, 16, 0.3);
@@ -348,6 +355,18 @@ public class RuneBolt extends Projectile {
 		alreadyHit.add(target);
 		Vec3 dir = getDeltaMovement().normalize();
 		Vfx.impact((ServerLevel) level(), result.getLocation(), theme, arc ? 1.4 : 1.0);
+		if (trialMaster != null) {
+			// The original spell's arbitrary effects, chain and delayed callbacks were severed. The returned energy is one
+			// visible aura hit, still constrained by its trial even if a player's Shield sends it back at the master.
+			if (target instanceof LivingEntity living && trialTarget(target) && Targets.canHarm(cast.caster, target)
+				&& !Shields.stops(cast, living, result.getLocation())) {
+				double damage = dev.wildercord.aura.world.MastersRules.Move.CRESCENT.damage;
+				Effects.readyToHurt(living);
+				SpellDefence.hurt((ServerLevel) level(), living, level().damageSources().source(dev.wildercord.aura.Aura.DAMAGE, cast.caster, cast.caster), (float) damage, cast);
+			}
+			fizzle();
+			return;
+		}
 		List<Entity> hits = List.of(target);
 		if (arc) {
 			// An Arc bursts where it lands, on a creature as on the ground: everything within a couple of blocks.
@@ -409,6 +428,68 @@ public class RuneBolt extends Projectile {
 		}
 	}
 
+	/**
+	 * Severs this one approaching hostile bolt. A split sibling, an already running zone, and the rest of its cast survive.
+	 * Reach, direction, ownership, payload and solid cover are checked here as well as by the caller's technique rules.
+	 */
+	public boolean swordCut(LivingEntity cutter) {
+		return swordCut(cutter, cutter == null ? Vec3.ZERO : cutter.getLookAngle());
+	}
+
+	/** An already committed, server-snapshotted blade direction; never accept a client-supplied vector here. */
+	public boolean swordCut(LivingEntity cutter, Vec3 authoritativeFacing) {
+		if (!swordReach(cutter, authoritativeFacing)) return false;
+		fizzle();
+		return true;
+	}
+
+	/** Threat query for a swordsman's bounded reaction AI; helpful and currently allied magic never qualifies. */
+	public boolean hostileSpellTo(LivingEntity defender) {
+		return level() instanceof ServerLevel && defender != null && defender.level() == level() && defender.isAlive()
+			&& !isRemoved() && cast != null && cast.alive() && group != null && Targets.canHarm(cast.caster, defender)
+			&& dev.wildercord.spell.SpellCutRules.harmful(group, anchored);
+	}
+
+	/**
+	 * Redirects a simple harmful bolt once using Shield ownership/live-count transfer. A master severs the payload and
+	 * returns only bounded aura energy, so arbitrary effects cannot escape the challenge through a later parry or collision.
+	 */
+	public boolean swordRedirect(LivingEntity defender) {
+		if (!swordReach(defender, defender == null ? Vec3.ZERO : defender.getLookAngle()) || reflected || anchored != null || group.effects.isEmpty()
+			|| group.effects.stream().anyMatch(effect -> effect.effect.kind() != dev.wildercord.spell.EffectKind.HARMFUL)) return false;
+		if (defender instanceof dev.wildercord.aura.world.SwordMaster master) trialMaster = master;
+		reflect(defender, position());
+		if (trialMaster != null) {
+			pierceLeft = 0;
+			bouncesLeft = 0;
+			color = trialMaster.auraColor();
+			theme = Vfx.theme(trialMaster.element());
+			authoredFlight = false;
+			entityData.set(DATA_COLOR, color);
+			entityData.set(DATA_SECONDARY, theme.secondary());
+			entityData.set(DATA_STYLE, 0);
+			entityData.set(DATA_EFFECTS, "");
+		}
+		return true;
+	}
+
+	private boolean trialTarget(Entity entity) {
+		return trialMaster == null || trialMaster.isAlive() && !trialMaster.isRemoved()
+			&& (trialMaster.canHarmParticipant(entity) || entity == trialMaster && trialMaster.canHarmParticipant(cast.caster));
+	}
+
+	private boolean swordReach(LivingEntity cutter, Vec3 facing) {
+		if (!hostileSpellTo(cutter) || facing == null || !Double.isFinite(facing.lengthSqr()) || facing.lengthSqr() < 1.0E-6) return false;
+		ServerLevel server = (ServerLevel) level();
+		Vec3 toward = position().subtract(cutter.getBoundingBox().getCenter());
+		Vec3 incoming = getDeltaMovement();
+		if (!dev.wildercord.spell.SpellCutRules.approaching(toward.length(), facing.normalize().dot(toward.normalize()),
+			incoming.normalize().dot(toward.normalize().scale(-1)))) return false;
+		var cover = server.clip(new net.minecraft.world.level.ClipContext(cutter.getEyePosition(), position(),
+			net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, cutter));
+		return cover.getType() == HitResult.Type.MISS;
+	}
+
 	private void fizzle() {
 		if (!isRemoved()) {
 			discard();
@@ -427,7 +508,11 @@ public class RuneBolt extends Projectile {
 
 	@Override
 	protected boolean canHitEntity(Entity entity) {
-		return entity instanceof LivingEntity && !entity.isSpectator() && !entity.isRemoved() && entity.isAlive() && cast != null && entity != cast.caster && !alreadyHit.contains(entity);
+		if (!(entity instanceof LivingEntity) || entity.isSpectator() || entity.isRemoved() || !entity.isAlive() || cast == null
+			|| entity == cast.caster || alreadyHit.contains(entity) || !trialTarget(entity)) return false;
+		// A purely hostile bolt travels through allies instead of consuming pierce on a hit that cannot help or harm them.
+		boolean helpful = group != null && group.effects.stream().anyMatch(effect -> effect.effect.kind() == dev.wildercord.spell.EffectKind.HELPFUL);
+		return helpful || group == null || !dev.wildercord.spell.SpellCutRules.harmful(group, anchored) || Targets.canHarm(cast.caster, entity);
 	}
 
 	@Override

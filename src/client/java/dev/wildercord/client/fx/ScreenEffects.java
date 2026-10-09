@@ -27,8 +27,15 @@ public final class ScreenEffects {
 	private static int tintTicks;
 	private static float tintAlpha;
 
+	/** Drop only local camera effects; preserve warning/domain tint and accepted aim. */
+	public static void clearCameraMotion() {
+		shake=kick=0;shakeTicks=shakeTotal=kickTicks=kickTotal=0;
+		nudgeYaw=nudgePitch=0;nudgeAt=0;nudgeMillis=0;
+	}
+
 	public static void receive(WildercordNetworking.ScreenFx fx) {
-		if (!MagicQuality.cameraShake && fx.kind() != WildercordNetworking.ScreenFx.TINT) return;
+		if ((!MagicQuality.cameraShake || dev.wildercord.client.combat.ArticulatedCombat.stableCamera())
+			&& fx.kind() != WildercordNetworking.ScreenFx.TINT) return;
 		switch (fx.kind()) {
 			case WildercordNetworking.ScreenFx.SHAKE -> {
 				if (fx.strength() >= remaining(shake, shakeTicks, shakeTotal)) {
@@ -102,7 +109,8 @@ public final class ScreenEffects {
 	 * out with camera motion switched off, and softened by the screen effect setting.
 	 */
 	public static void nudge(float yaw, float pitch, int millis) {
-		if (!MagicQuality.cameraShake || millis <= 0 || (yaw == 0 && pitch == 0)) {
+		if (!MagicQuality.cameraShake || dev.wildercord.client.combat.ArticulatedCombat.stableCamera()
+			|| millis <= 0 || (yaw == 0 && pitch == 0)) {
 			return;
 		}
 		nudgeYaw = yaw;
@@ -131,6 +139,7 @@ public final class ScreenEffects {
 
 	/** The camera's shake right now, as a small rotation to multiply into the view (and a blow's nudge). */
 	public static void applyShake(Matrix4f pose, float partial) {
+		if (dev.wildercord.client.combat.ArticulatedCombat.stableCamera()) return;
 		// Paused, the world behind the menu holds still.
 		if (Minecraft.getInstance().isPaused()) {
 			return;
@@ -156,6 +165,7 @@ public final class ScreenEffects {
 
 	/** The field of view, multiplied by any kick or punch in progress (quick out, eased back). */
 	public static float fov(float fov, float partial) {
+		if (dev.wildercord.client.combat.ArticulatedCombat.stableCamera()) return fov;
 		if (kickTicks <= 0 || kickTotal <= 0) {
 			return fov;
 		}

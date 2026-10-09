@@ -6,27 +6,20 @@ nav_order: 8
 
 # Runes of the world and Attunement
 
-Fifty-three runes can't be crafted at all, whatever their tier: each is found only in its own places. Some wait in the
-chests of vanilla structures, some are drawn out of the land itself by **Attunement**, some are kept by Wildercord's
-dungeons and their bosses, some come with the world's events, and two come up only on a fishing line. Going out and
-exploring is how your spellbook grows.
-This page is a hunter's guide to all of them. What each rune does is on
-[Runes of the World]({{ '/runes/world/' | relative_url }}).
+## What it is
 
-## Knowing one when you see it
+Runes of the world can't be crafted. Each one is found only in its own places: structure chests, lands you attune to, dungeons and bosses, world events and fishing. A few more are taught by study. What each rune does is listed on [Runes of the World]({{ '/runes/world/' | relative_url }}). Every rune by category is on the [Rune Codex]({{ '/runes/codex/' | relative_url }}).
 
-- A rune of the world's tooltip says *"Can't be crafted: a rune of the world, found only in its own places"*, and names
-  where it's found.
-- You learn it like any other rune: hold it and use it (right-click). See [Runes]({{ '/runes/' | relative_url }}).
-- **The Grimoire** (the Cord screen's third page) has a section, *Runes of the world (12 of 53 known)*, listing every
-  place and the runes found there. Runes you've learned show by name; the rest show as a hint, like *??? (a Tier II
-  effect)*. A separate section lists the Attunements (below), with a riddle for each land you haven't attuned in yet.
-  See [The Grimoire and Feats]({{ '/progression/grimoire/' | relative_url }}).
+The tooltip on one says *"Can't be crafted: a rune of the world, found only in its own places"*, and names where it comes from. Learn it like any rune: hold it and right-click.
 
-Tier still matters: a Tier II rune needs a Copper Cord or better to cast, Tier III an Amethyst Cord, Tier IV an Echo
-Cord.
+The Grimoire has a section, *Runes of the world*, that counts how many you know. It lists every place. Runes you know show by name, and the rest show as hints. See [The Grimoire and Feats]({{ '/progression/grimoire/' | relative_url }}).
 
-## Where they come from
+Tier still matters:
+- Tier II needs a Copper Cord or better.
+- Tier III needs an Amethyst Cord.
+- Tier IV needs an Echo Cord.
+
+## How to get it
 
 | Kind of place | Runes |
 |---|---|
@@ -35,274 +28,201 @@ Cord.
 | [Wildercord's dungeons and bosses](#dungeons-and-bosses) | 10 |
 | [World events](#world-events) | 5 |
 | [Fishing](#fishing) | 2 |
+| [Lessons you study](#lesson-runes) | 6 |
 
-A few of these also turn up [elsewhere](#now-and-then-elsewhere): in Archive libraries and on Runebound Adepts.
+Servers can make rune finds more or less common. The chances below are the defaults.
 
-A server can make rune finds more or less common; the chances on this page are the normal ones.
+### Vanilla structures
 
-## Vanilla structures
-
-Each of these structures' chests has its own extra roll for one of the structure's runes, on top of its usual loot.
-Where a structure has two runes, the more common one (the lower tier) is more likely.
+Each chest gets one extra roll for the structure's rune, on top of its normal loot. When a structure has two runes, the lower-tier one is more likely.
 
 | Structure | Chance per chest | Runes |
 |---|---|---|
-| **Ancient cities** | 20% | [Echolocate]({{ '/runes/world/#echolocate' | relative_url }}) (5 in 7), [Resonant Shriek]({{ '/runes/world/#resonant_shriek' | relative_url }}) (2 in 7) |
-| **Ocean monuments** | 50% from each **Elder Guardian** (monuments have no chests) | [Tidecall]({{ '/runes/world/#tidecall' | relative_url }}) |
-| **Trial chambers** | 12% of a vault's rare rewards | [Trial Key]({{ '/runes/world/#trial_key' | relative_url }}) |
-| **Ominous trial vaults** | 25% of an ominous vault's rare rewards | [Trial Key]({{ '/runes/world/#trial_key' | relative_url }}) (5 in 7), [Vortex]({{ '/runes/world/#vortex' | relative_url }}) (2 in 7) |
-| **Stronghold libraries** | 25% | [Infest]({{ '/runes/world/#infest' | relative_url }}) or [If Wounded]({{ '/runes/world/#if_wounded' | relative_url }}), equally |
-| **Desert pyramids** | 20% | [Sandstorm]({{ '/runes/world/#sandstorm' | relative_url }}) |
-| **Jungle temples** | 30% | [Vinelash]({{ '/runes/world/#vinelash' | relative_url }}) or [Snare]({{ '/runes/world/#snare' | relative_url }}), equally |
-| **Igloo basements** | 50% | [Remedy]({{ '/runes/world/#remedy' | relative_url }}) |
-| **Pillager outposts** | 25% | [Warcry]({{ '/runes/world/#warcry' | relative_url }}) |
-| **Woodland mansions** | 25% | [Fangs]({{ '/runes/world/#fangs' | relative_url }}) (5 in 7), [If Outnumbered]({{ '/runes/world/#if_outnumbered' | relative_url }}) (2 in 7) |
-| **Trail ruins** | About 1 brush in 13 of their ordinary suspicious sand and gravel | [Ancient Seed]({{ '/runes/world/#ancient_seed' | relative_url }}) |
-| **Shipwrecks** (the treasure chest) | 20% | [Undertow]({{ '/runes/world/#undertow' | relative_url }}) |
-| **Buried treasure** | 30% | [Treasure Sense]({{ '/runes/world/#treasure_sense' | relative_url }}) |
-| **Bastion remnants** | 25% in the treasure room, 8% in most other chests | [Tusk Charge]({{ '/runes/world/#tusk_charge' | relative_url }}) |
-| **Nether fortresses** | 20% | [Blazecall]({{ '/runes/world/#blazecall' | relative_url }}) |
-| **End cities** | 20% | [Shulkershell]({{ '/runes/world/#shulkershell' | relative_url }}) |
-| **Ruined portals** | 15% | [Portalfall]({{ '/runes/world/#portalfall' | relative_url }}) |
+| **Ancient cities** | 20% | [Echolocate]({{ '/runes/world/' | relative_url }}#echolocate) (5 in 7), [Resonant Shriek]({{ '/runes/world/' | relative_url }}#resonant_shriek) (2 in 7) |
+| **Ocean monuments** | 50% from each **Elder Guardian** (monuments have no chests) | [Tidecall]({{ '/runes/world/' | relative_url }}#tidecall) |
+| **Trial chambers** | 12% of a vault's rare rewards | [Trial Key]({{ '/runes/world/' | relative_url }}#trial_key) |
+| **Ominous trial vaults** | 25% of an ominous vault's rare rewards | [Trial Key]({{ '/runes/world/' | relative_url }}#trial_key) (5 in 7), [Vortex]({{ '/runes/world/' | relative_url }}#vortex) (2 in 7) |
+| **Stronghold libraries** | 25% | [Infest]({{ '/runes/world/' | relative_url }}#infest) or [If Wounded]({{ '/runes/world/' | relative_url }}#if_wounded), equally |
+| **Desert pyramids** | 20% | [Sandstorm]({{ '/runes/world/' | relative_url }}#sandstorm) |
+| **Jungle temples** | 30% | [Vinelash]({{ '/runes/world/' | relative_url }}#vinelash) or [Snare]({{ '/runes/world/' | relative_url }}#snare), equally |
+| **Igloo basements** | 50% | [Remedy]({{ '/runes/world/' | relative_url }}#remedy) |
+| **Pillager outposts** | 25% | [Warcry]({{ '/runes/world/' | relative_url }}#warcry) |
+| **Woodland mansions** | 25% | [Fangs]({{ '/runes/world/' | relative_url }}#fangs) (5 in 7), [If Outnumbered]({{ '/runes/world/' | relative_url }}#if_outnumbered) (2 in 7) |
+| **Trail ruins** | About 1 brush in 13 of their ordinary suspicious sand and gravel | [Ancient Seed]({{ '/runes/world/' | relative_url }}#ancient_seed) |
+| **Shipwrecks** (the treasure chest) | 20% | [Undertow]({{ '/runes/world/' | relative_url }}#undertow) |
+| **Buried treasure** | 30% | [Treasure Sense]({{ '/runes/world/' | relative_url }}#treasure_sense) |
+| **Bastion remnants** | 25% in the treasure room, 8% in most other chests | [Tusk Charge]({{ '/runes/world/' | relative_url }}#tusk_charge) |
+| **Nether fortresses** | 20% | [Blazecall]({{ '/runes/world/' | relative_url }}#blazecall) |
+| **End cities** | 20% | [Shulkershell]({{ '/runes/world/' | relative_url }}#shulkershell) |
+| **Ruined portals** | 15% | [Portalfall]({{ '/runes/world/' | relative_url }}#portalfall) |
 
-## Attunement
+### Attunement
 
-<img src="{{ '/assets/images/attunement.jpg' | relative_url }}" alt="A player meditating in a meadow holding a Blank Rune, a green magic circle turning on the ground round them and motes of light rising into the blank" class="shot">
-<span class="caption">Attuning: the land's circle opens underfoot and its motes rise into the Blank Rune.</span>
+<img src="{{ '/assets/images/attunement.jpg' | relative_url }}" alt="A player meditating with a Blank Rune while a green magic circle turns around them" class="shot">
 
-Fifteen lands hold a rune of their own, and you can draw it out with a **Blank Rune**.
+Fifteen lands each hold a rune. You draw it out with a **Blank Rune**.
 
-### How to attune
+1. Wear a Cord and hold a Blank Rune in either hand.
+2. Go to the right biome at the right moment (see the table).
+3. Sneak and stand still on the ground to meditate.
+4. Keep still for **20 seconds**. The blank fills in four stages, then one Blank Rune becomes the land's rune.
 
-1. **Wear a Cord** and **hold a Blank Rune** in either hand (your main hand is checked first).
-2. Go to the right land (the biome at your feet counts), at the right moment (see the table below).
-3. **Meditate**: sneak and stand still on the ground, without using an item. After about a second you settle into
-   meditation.
-4. If the land holds a rune and the moment is right: *"The Blank Rune stirs: the land here holds a rune. Keep
-   still..."* The land's own magic circle opens under you in the rune's colour and slowly turns, and motes of its colour
-   rise off the ground and spiral into the blank.
-5. **Keep still for 20 seconds.** The blank builds through four stages, each with a chime, a flare over your hand and a
-   pulse running out from the circle, stronger each time:
+If you move, stand up or switch items, the attunement breaks and you start over. If nothing happens, the Blank Rune tells you what is still missing, such as height or weather.
 
-   | After | You read |
-   |---|---|
-   | 5 seconds | *"The blank drinks in the land"* |
-   | 10 seconds | *"A shape rises in the stone"* |
-   | 15 seconds | *"The rune brightens: almost there"* |
-   | 20 seconds | *"Attuned! The Blank Rune became Moonpetal"* (or whichever rune) |
+Each land gives you its rune **once per in-game day** (20 minutes of play). Sleeping doesn't speed this up. Each land rests on its own timer, and the Grimoire shows when each one is ready.
 
-6. At the end the circle flares, light bursts from your hand, rings race out and the rune's emblem shines over it.
-   **One** Blank Rune becomes the land's rune: it goes into your hand if that was your last blank, otherwise into your
-   pack (or onto the ground, if your pack is full). The Grimoire records the attunement, with a toast: *A rune of the
-   land*.
+| Land | When | Rune | Tier |
+|---|---|---|---|
+| **Cherry Grove** | At night, under a **full moon**, under open sky | [Moonpetal]({{ '/runes/world/' | relative_url }}#moonpetal) | II |
+| **Ice Spikes** | While **snow is falling on you** | [Hoarfrost]({{ '/runes/world/' | relative_url }}#hoarfrost) | III |
+| **Deep Dark** | Within about **4 blocks of sculk** (any sculk block: sculk, veins, sensors, shriekers or catalysts) | [Hush]({{ '/runes/world/' | relative_url }}#hush) | II |
+| **Mushroom Fields** | Any time | [Sporebloom]({{ '/runes/world/' | relative_url }}#sporebloom) | II |
+| **Badlands** (plain, eroded or wooded) | **Around noon** (from mid-morning to mid-afternoon on the day clock), under open sky | [Sunscorch]({{ '/runes/world/' | relative_url }}#sunscorch) | III |
+| **Swamp** | While **rain is falling on you** | [Mire]({{ '/runes/world/' | relative_url }}#mire) | II |
+| **Lush Caves** | Any time | [Glowvine]({{ '/runes/world/' | relative_url }}#glowvine) | I |
+| **Mangrove Swamp** | Any time | [Rootsnare]({{ '/runes/world/' | relative_url }}#rootsnare) | II |
+| **Dripstone Caves** | Any time | [Stalactite]({{ '/runes/world/' | relative_url }}#stalactite) | II |
+| **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, or **Windswept Hills / Gravelly Hills / Forests** | Standing at **height 200** or higher | [Summit Wind]({{ '/runes/world/' | relative_url }}#summit_wind) | III |
+| **Soul Sand Valley** | Any time | [Soulfire]({{ '/runes/world/' | relative_url }}#soulfire) | III |
+| **Warped Forest** | Any time | [Warp Step]({{ '/runes/world/' | relative_url }}#warp_step) | II |
+| **Crimson Forest** | Any time | [Blood Moss]({{ '/runes/world/' | relative_url }}#blood_moss) | II |
+| **Basalt Deltas** | Any time | [Basalt Surge]({{ '/runes/world/' | relative_url }}#basalt_surge) | III |
+| **The End's outer islands** (highlands, midlands, small islands and barrens) | Any time | [Starlight Tether]({{ '/runes/world/' | relative_url }}#starlight_tether) | III |
 
-**Moving, standing up or letting go of the blank** (switching to another item) breaks it off: *"The attunement breaks
-off"*, and you start again from nothing.
+Craft Blank Runes from 4 Cobblestone around 1 Lapis Lazuli. One craft makes 4. See [Items and Crafting]({{ '/items/' | relative_url }}).
 
-If nothing happens, the Blank Rune tells you why (at most once every 30 seconds):
+### Dungeons and bosses
 
-- **Rune attunement: …** gives the condition still needed in this biome, such as height 200 or higher, snowfall or a full moon.
-- **The Blank Rune stays quiet: …, height …** names your current biome and height when it has no attunement. A high tower in a plains biome does not count as a mountain.
-
-### Once a day
-
-A land gives each player its rune **once every 20 minutes of play** (an in-game day). Sleeping through the night
-doesn't hurry it. Meditate there again too soon and it tells you: *"This land gave you its rune today: it rests for
-about 12 more minutes"*.
-
-Each land rests on its own, so you can attune in several different lands in one day. The Grimoire's line for each land
-you've attuned in shows *"Resting: ready again in about 12 minutes"* or *"Ready: a land gives you its rune once a
-day"*. A Blank Rune's tooltip shows how many lands you've attuned in so far: *"Attuned so far: 4 of 15 (see the
-Grimoire)"*.
-
-### The fifteen lands
-
-| Land | When | Rune | Tier | The Grimoire's riddle |
-|---|---|---|---|---|
-| **Cherry Grove** | At night, under a **full moon**, under open sky | [Moonpetal]({{ '/runes/world/#moonpetal' | relative_url }}) | II | *"Pink boughs hold their breath beneath a moon that is whole."* |
-| **Ice Spikes** | While **snow is falling on you** | [Hoarfrost]({{ '/runes/world/#hoarfrost' | relative_url }}) | III | *"Among the frozen spears, wait while the sky lets its snow fall."* |
-| **Deep Dark** | Within about **4 blocks of sculk** (any sculk block: sculk, veins, sensors, shriekers or catalysts) | [Hush]({{ '/runes/world/#hush' | relative_url }}) | II | *"Where the listening moss grows, be quieter than it."* |
-| **Mushroom Fields** | Any time | [Sporebloom]({{ '/runes/world/#sporebloom' | relative_url }}) | II | *"On the island where the ground is fungus, and no monster walks."* |
-| **Badlands** (plain, eroded or wooded) | **Around noon** (from mid-morning to mid-afternoon on the day clock), under open sky | [Sunscorch]({{ '/runes/world/#sunscorch' | relative_url }}) | III | *"In the red canyons, when the sun stands at its highest."* |
-| **Swamp** | While **rain is falling on you** | [Mire]({{ '/runes/world/#mire' | relative_url }}) | II | *"The murky marsh speaks only while the rain beats down on it."* |
-| **Lush Caves** | Any time | [Glowvine]({{ '/runes/world/#glowvine' | relative_url }}) | I | *"Beneath the green, where berries glow on hanging vines."* |
-| **Mangrove Swamp** | Any time | [Rootsnare]({{ '/runes/world/#rootsnare' | relative_url }}) | II | *"Where the trees stand on their own tangled roots in the water."* |
-| **Dripstone Caves** | Any time | [Stalactite]({{ '/runes/world/#stalactite' | relative_url }}) | II | *"Under stone teeth that drip, slowly, forever."* |
-| **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, or **Windswept Hills / Gravelly Hills / Forests** | Standing at **height 200** or higher | [Summit Wind]({{ '/runes/world/#summit_wind' | relative_url }}) | III | *"Climb until the mountain has nothing left above you but wind."* |
-| **Soul Sand Valley** | Any time | [Soulfire]({{ '/runes/world/#soulfire' | relative_url }}) | III | *"In the valley of sighing sand, where the fires burn blue."* |
-| **Warped Forest** | Any time | [Warp Step]({{ '/runes/world/#warp_step' | relative_url }}) | II | *"Among the teal fungus, where the tall wanderers walk in peace."* |
-| **Crimson Forest** | Any time | [Blood Moss]({{ '/runes/world/#blood_moss' | relative_url }}) | II | *"In the red wood of the burning world, where the moss is the colour of blood."* |
-| **Basalt Deltas** | Any time | [Basalt Surge]({{ '/runes/world/#basalt_surge' | relative_url }}) | III | *"Where grey pillars and ash fall into lakes of fire."* |
-| **The End's outer islands** (highlands, midlands, small islands and barrens) | Any time | [Starlight Tether]({{ '/runes/world/#starlight_tether' | relative_url }}) | III | *"Far past the dragon's island, on the rocks that drift among the stars."* |
-
-### Tips for attuning
-
-- **Carry a stack of Blank Runes.** Each attunement uses one. (Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes
-  4. See [Items and Crafting]({{ '/items/' | relative_url }}).)
-- **The timed ones take planning.** A full moon comes once every eight nights. "Around noon" lasts about three and a
-  half minutes of real time. Snow and rain have to be falling **on you**, so stand under open sky while it's
-  snowing or raining.
-- **Nine lands work any time**: mushroom fields, lush caves, mangrove swamps, dripstone caves and the End's outer
-  islands, and in the Nether the soul sand valley, warped and crimson forests and basalt deltas.
-- **Meditating quickens your mana too**, so waiting out an attunement is never wasted. See
-  [Mana]({{ '/progression/mana/' | relative_url }}).
-- **Come back tomorrow.** Once a day per land means a second copy of a land's rune a day later, for trading with the
-  [Runesmith]({{ '/social/runesmith/' | relative_url }}) or ranking it up at the
-  [Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
-
-## Dungeons and bosses
-
-Each of Wildercord's three dimension dungeons keeps runes of its own in its vault, and its boss carries a Tier IV rune
-of its own. The bosses fight only once per dungeon, so their runes are rare.
+Each dimension dungeon keeps its own runes in its vault. Its boss carries a Tier IV rune.
 
 | Place | Runes | How |
 |---|---|---|
-| **[The Ember Sanctum]({{ '/world/ember-sanctum/' | relative_url }})** vault | [Cinderbrand]({{ '/runes/world/#cinderbrand' | relative_url }}) (5 in 9), [Ashen Veil]({{ '/runes/world/#ashen_veil' | relative_url }}) (2 in 9), [Kindled]({{ '/runes/world/#kindled' | relative_url }}) (2 in 9) | One in each of the two vault chests, and a 35% chance of a second |
-| **The Cinder Warden** | [Cinderheart]({{ '/runes/world/#cinderheart' | relative_url }}) (Tier IV), and 50% one of the Sanctum's three | To its killer |
-| **[The Astral Observatory]({{ '/world/astral-observatory/' | relative_url }})** vault | [Constellation]({{ '/runes/world/#constellation' | relative_url }}) or [Eclipse]({{ '/runes/world/#eclipse' | relative_url }}), equally | One in each of the two vault chests, and a 35% chance of a second |
-| **The Star-Eater** | [Starmaw]({{ '/runes/world/#starmaw' | relative_url }}) (Tier IV), and 50% Constellation or Eclipse | To its killer |
-| **[The Drowned Scriptorium]({{ '/world/drowned-scriptorium/' | relative_url }})** vault | [If Wet]({{ '/runes/world/#if_wet' | relative_url }}) (5 in 7), [Drowning Word]({{ '/runes/world/#drowning_word' | relative_url }}) (2 in 7) | One in each of the two vault chests, and a 35% chance of a second |
-| **The Tide Scribe** | [Tidewrit]({{ '/runes/world/#tidewrit' | relative_url }}) (Tier IV), and 50% If Wet or Drowning Word | To its killer |
+| **[The Ember Sanctum]({{ '/world/ember-sanctum/' | relative_url }})** vault | [Cinderbrand]({{ '/runes/world/' | relative_url }}#cinderbrand) (5 in 9), [Ashen Veil]({{ '/runes/world/' | relative_url }}#ashen_veil) (2 in 9), [Kindled]({{ '/runes/world/' | relative_url }}#kindled) (2 in 9) | One in each of the two vault chests, and a 35% chance of a second |
+| **The Cinder Warden** | [Cinderheart]({{ '/runes/world/' | relative_url }}#cinderheart) (Tier IV), and 50% one of the Sanctum's three | To its killer |
+| **[The Astral Observatory]({{ '/world/astral-observatory/' | relative_url }})** vault | [Constellation]({{ '/runes/world/' | relative_url }}#constellation) or [Eclipse]({{ '/runes/world/' | relative_url }}#eclipse), equally | One in each of the two vault chests, and a 35% chance of a second |
+| **The Star-Eater** | [Starmaw]({{ '/runes/world/' | relative_url }}#starmaw) (Tier IV), and 50% Constellation or Eclipse | To its killer |
+| **[The Drowned Scriptorium]({{ '/world/drowned-scriptorium/' | relative_url }})** vault | [If Wet]({{ '/runes/world/' | relative_url }}#if_wet) (5 in 7), [Drowning Word]({{ '/runes/world/' | relative_url }}#drowning_word) (2 in 7) | One in each of the two vault chests, and a 35% chance of a second |
+| **The Tide Scribe** | [Tidewrit]({{ '/runes/world/' | relative_url }}#tidewrit) (Tier IV), and 50% If Wet or Drowning Word | To its killer |
 
-## World events
+### World events
 
 | Event | Runes | How |
 |---|---|---|
-| **[Fallen stars]({{ '/world/world-events/' | relative_url }})** | [Starshard]({{ '/runes/world/#starshard' | relative_url }}) | A star holds a Tier III rune three times in four, and that rune is Starshard about 3 times in 4 (the rest of the time it's a Tier IV rune, or another Tier III) |
-| **[Rift sieges]({{ '/world/world-events/' | relative_url }})** | [Riftcall]({{ '/runes/world/#riftcall' | relative_url }}), [Unstable]({{ '/runes/world/#unstable' | relative_url }}) | A closed rift's runes are Tier III 35% of the time, and a Tier III rune is Riftcall or Unstable about 3 times in 4 |
-| **The Riftcaller** | [Unstable]({{ '/runes/world/#unstable' | relative_url }}), and 50% Riftcall or Unstable | When a player kills it |
-| **[Mana storms]({{ '/world/world-events/#the-storms-runes' | relative_url }})** | [Manaburn]({{ '/runes/world/#manaburn' | relative_url }}), [Manatide]({{ '/runes/world/#manatide' | relative_url }}) | From your 10th cast under a storm, each surge has a 1 in 3 chance to crystallise one straight into your pack: Manaburn 5 times in 7, Manatide 2 in 7. One per storm for each player |
+| [Fallen stars]({{ '/world/world-events/' | relative_url }}) | [Starshard]({{ '/runes/world/' | relative_url }}#starshard) | Most stars hold a Tier III rune, usually Starshard |
+| [Rift sieges]({{ '/world/world-events/' | relative_url }}) | [Riftcall]({{ '/runes/world/' | relative_url }}#riftcall), [Unstable]({{ '/runes/world/' | relative_url }}#unstable) | A closed rift's Tier III runes are usually one of these |
+| The Riftcaller | Unstable, plus 50% Riftcall or Unstable | When a player kills it |
+| [Mana storms]({{ '/world/world-events/' | relative_url }}) | [Manaburn]({{ '/runes/world/' | relative_url }}#manaburn), [Manatide]({{ '/runes/world/' | relative_url }}#manatide) | Starting with your 10th cast under a storm, a surge can drop one into your pack. You get one per storm |
 
-## Fishing
+### Fishing
 
-Cast a line into **open water** and runes come up with the fish. Two runes of the world are found nowhere else, and a
-handful of crafted runes of water, frost and storm (and a few a fisher is glad of) come up the same way, so a spare rod
-is worth carrying.
+Runes only come up in **open water**: a clear stretch at least 5 blocks across with nothing around the bobber. That's the same rule vanilla uses for treasure. A small pond or an ice hole never gives a rune.
 
-### Open water
+**In a treasure catch:** about 4 in 11 treasure catches are a rune, and about 1 in 11 is a Torn Page. Luck of the Sea and a Potion of Luck raise your treasure chance.
 
-Everything in this section needs **open water**, the same rule the game uses for its own fishing treasure: the bobber
-floats in a clear stretch of water at least 5 blocks across, with no blocks in the water round it or in the air just
-above it. A small pond, a hole in the ice or a farm's water channel never brings up treasure, and never a rune.
-
-### In a treasure catch
-
-A fish, some junk, or now and then **treasure** (a name tag, a saddle, an enchanted bow, rod or book, a nautilus
-shell). Treasure is now joined by runes and Torn Pages:
-
-| A treasure catch is | How often |
-|---|---|
-| A **rune** | about 4 in 11 |
-| A **Torn Page** | about 1 in 11 |
-| One of the game's own treasures | the rest, about 6 in 11 |
-
-**Luck of the Sea** makes treasure likelier, and so runes: about 1 catch in 55 is a rune with a plain rod, about 1 in
-24 with Luck of the Sea III. A Potion of Luck helps too.
-
-A treasure rune is one of these, lower tiers more often:
-
-| Rune | Tier | How likely, of the runes a treasure catch brings up |
+| Rune | Tier | Share of treasure runes |
 |---|---|---|
-| [Tidehook]({{ '/runes/world/#tidehook' | relative_url }}) (found only by fishing) | II | about 1 in 11 |
-| [Current]({{ '/runes/world/#current' | relative_url }}) (found only by fishing) | II | about 1 in 11 |
-| [Tidebreath]({{ '/runes/effects/frost/#tidebreath' | relative_url }}), [Chill]({{ '/runes/effects/frost/#chill' | relative_url }}), [Icicle]({{ '/runes/effects/frost/#icicle' | relative_url }}), [Icepath]({{ '/runes/effects/frost/#icepath' | relative_url }}), [Shock]({{ '/runes/effects/storm/#shock' | relative_url }}), [Feather Fall]({{ '/runes/effects/wind/#feather_fall' | relative_url }}), [Night Eye]({{ '/runes/effects/arcane/#night_eye' | relative_url }}), [Swift]({{ '/runes/effects/wind/#swift' | relative_url }}), [Heal]({{ '/runes/effects/life/#heal' | relative_url }}), [Collect]({{ '/runes/effects/void/#collect' | relative_url }}), [Leap]({{ '/runes/effects/wind/#leap' | relative_url }}) | I | about 1 in 20 each |
-| [Bubble]({{ '/runes/effects/frost/#bubble' | relative_url }}), [Frost]({{ '/runes/effects/frost/#frost' | relative_url }}), [Thunderclap]({{ '/runes/effects/storm/#thunderclap' | relative_url }}), [Jolt]({{ '/runes/effects/storm/#jolt' | relative_url }}), [Pull]({{ '/runes/effects/void/#pull' | relative_url }}), [Grapple]({{ '/runes/effects/void/#grapple' | relative_url }}), [Levitate]({{ '/runes/effects/wind/#levitate' | relative_url }}), [Wave]({{ '/runes/shapes/#wave' | relative_url }}) | II | about 1 in 32 each |
-| [Freeze]({{ '/runes/effects/frost/#freeze' | relative_url }}), [Lightning]({{ '/runes/effects/storm/#lightning' | relative_url }}) | III | about 1 in 80 each: a rare catch |
+| [Tidehook]({{ '/runes/world/' | relative_url }}#tidehook) (found only by fishing) | II | about 1 in 11 |
+| [Current]({{ '/runes/world/' | relative_url }}#current) (found only by fishing) | II | about 1 in 11 |
+| [Tidebreath]({{ '/runes/effects/frost/' | relative_url }}#tidebreath), [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill), [Icicle]({{ '/runes/effects/frost/' | relative_url }}#icicle), [Icepath]({{ '/runes/effects/frost/' | relative_url }}#icepath), [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock), [Feather Fall]({{ '/runes/effects/wind/' | relative_url }}#feather_fall), [Night Eye]({{ '/runes/effects/arcane/' | relative_url }}#night_eye), [Swift]({{ '/runes/effects/wind/' | relative_url }}#swift), [Heal]({{ '/runes/effects/life/' | relative_url }}#heal), [Collect]({{ '/runes/effects/void/' | relative_url }}#collect), [Leap]({{ '/runes/effects/wind/' | relative_url }}#leap) | I | about 1 in 20 each |
+| [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble), [Frost]({{ '/runes/effects/frost/' | relative_url }}#frost), [Thunderclap]({{ '/runes/effects/storm/' | relative_url }}#thunderclap), [Jolt]({{ '/runes/effects/storm/' | relative_url }}#jolt), [Pull]({{ '/runes/effects/void/' | relative_url }}#pull), [Grapple]({{ '/runes/effects/void/' | relative_url }}#grapple), [Levitate]({{ '/runes/effects/wind/' | relative_url }}#levitate), [Wave]({{ '/runes/shapes/' | relative_url }}#wave) | II | about 1 in 32 each |
+| [Freeze]({{ '/runes/effects/frost/' | relative_url }}#freeze), [Lightning]({{ '/runes/effects/storm/' | relative_url }}#lightning) | III | about 1 in 80 each: a rare catch |
 
-### Magic waters
+**Magic waters:** sometimes a rune comes up tangled in your line, *on top of* your catch.
+- 12% under a mana storm
+- 5% on or near a [ley line]({{ '/progression/ley-lines/' | relative_url }})
+- 5% in a thunderstorm
 
-Where magic runs strong at the bobber, a rune can come up **tangled in the line, on top of whatever you caught**:
-*"Something magical was tangled in your line!"*, with a glint and a ring of pale light on the water. It doesn't take
-the place of your fish or your treasure; it comes as well.
+These chances stack, up to 20% per catch. Luck of the Sea doesn't affect them. Tidehook and Current are more likely here, each about 1 in 6.
 
-| At the bobber | Chance of a tangled rune per catch |
+Your first fished rune earns the **Reeled In** feat.
+
+### Now and then elsewhere
+
+- **Archive libraries:** the Hall of Shelves chest in an [Archive]({{ '/world/archive/' | relative_url }}) has a small chance of Echolocate, Infest, Fangs, Treasure Sense or If Wounded.
+- **[Runebound]({{ '/world/runebound/' | relative_url }}) Adepts:** 8% to drop Vinelash, Undertow, Blazecall, Portalfall or Warcry.
+
+### Lesson runes
+
+Six runes in the Grimoire's list come from study, not from finding them. You earn the feat, collect the lesson, then study it with the right Heart Circle active.
+
+| Rune | How |
 |---|---|
-| Under a [mana storm]({{ '/world/world-events/' | relative_url }}) | 12% |
-| On or near a [ley line]({{ '/progression/ley-lines/' | relative_url }}) | 5% |
-| In a **thunderstorm**, with its rain (or snow) falling on the bobber | 5% |
+| [Relay]({{ '/spellcraft/relay-circle/' | relative_url }}) | Lectern lesson in an [Archive]({{ '/world/archive/' | relative_url }}) |
+| [Tollgate]({{ '/spellcraft/lesson-pack/' | relative_url }}) | After the Cinder Warden's *Tempered* feat |
+| [Reweave]({{ '/spellcraft/reweave/' | relative_url }}) | After the Tide Scribe's *Low Tide* feat |
+| [Lifeline]({{ '/spellcraft/lesson-pack/' | relative_url }}) | After the Star-Eater's *Starbreaker* feat |
+| [Excise]({{ '/spellcraft/excise/' | relative_url }}) | After *Heartwood* ([Root Guardian]({{ '/world/root-and-storm-bosses/' | relative_url }})) |
+| [Conduit]({{ '/spellcraft/lesson-pack/' | relative_url }}) | After *Grounded* ([Storm Conductor]({{ '/world/root-and-storm-bosses/' | relative_url }})) |
 
-They add up, to at most **20%** a catch: a thunderstorm over a ley line is 10%, a mana storm over a ley line 17%. Magic
-waters need open water too, and Luck of the Sea doesn't change them. A tangled rune comes from the same list as a
-treasure rune, but Tidehook and Current are likelier: each about 1 in 6.
+## How to use it
 
-### Tips for fishing up runes
+Learn the rune, then add it to a Cord like any other. Because these runes can't be crafted, a spare copy is valuable. Trade it to the [Runesmith]({{ '/social/runesmith/' | relative_url }}) or rank it up at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 
-- **Fish under a mana storm.** Storms roll in over ley lines: cast where the line itself runs under the storm and it's
-  17% a catch, for the few minutes the storm lasts. A boat takes you to open water quickly.
-- **Fish on a ley line** for a steady 5%, and hope for thunder: plain rain does nothing, but a thunderstorm there makes it
-  10%.
-- **Luck of the Sea III** more than doubles treasure, and so treasure runes.
-- **The first rune you fish** earns the feat and advancement **Reeled In**. See
-  [The Grimoire and Feats]({{ '/progression/grimoire/' | relative_url }}).
-- A server can make runes and Torn Pages more or less common; the chances here are the normal ones.
+## Tips and counterplay
 
-## Now and then elsewhere
+- Carry a stack of Blank Runes. Each attunement uses one.
+- Plan for the timed lands. A full moon comes once every eight nights. Snow or rain must be falling on you, so stand under open sky.
+- Nine lands work at any time: mushroom fields, lush caves, mangrove swamps, dripstone caves, the End's outer islands, and four Nether biomes.
+- Meditating also speeds up your [mana]({{ '/progression/mana/' | relative_url }}) regeneration, so the wait isn't wasted.
+- For fishing, the best spot is a ley line under a mana storm, which gives 17% per catch.
+- Hunt Runebound Adepts for the structure runes you're missing.
 
-- **Archive libraries.** The Hall of Shelves chest in an [Archive]({{ '/world/archive/' | relative_url }}) rolls 2 to 3
-  runes, and each is about 1 in 64 one of [Echolocate]({{ '/runes/world/#echolocate' | relative_url }}),
-  [Infest]({{ '/runes/world/#infest' | relative_url }}), [Fangs]({{ '/runes/world/#fangs' | relative_url }}),
-  [Treasure Sense]({{ '/runes/world/#treasure_sense' | relative_url }}) or
-  [If Wounded]({{ '/runes/world/#if_wounded' | relative_url }}).
-- **Runebound Adepts.** A [Runebound]({{ '/world/runebound/' | relative_url }}) Adept slain by a player has an 8%
-  chance to drop one of [Vinelash]({{ '/runes/world/#vinelash' | relative_url }}),
-  [Undertow]({{ '/runes/world/#undertow' | relative_url }}), [Blazecall]({{ '/runes/world/#blazecall' | relative_url }}),
-  [Portalfall]({{ '/runes/world/#portalfall' | relative_url }}) or
-  [Warcry]({{ '/runes/world/#warcry' | relative_url }}), each equally likely.
-
-## Every rune of the world
+## Every found rune of the world
 
 | | Rune | Tier | Kind | Where to find it |
 |---|---|---|---|---|
-| <img src="{{ '/assets/runes/ancient_seed.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Ancient Seed]({{ '/runes/world/#ancient_seed' | relative_url }}) | I | Life effect | Trail ruins (brushing) |
-| <img src="{{ '/assets/runes/ashen_veil.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Ashen Veil]({{ '/runes/world/#ashen_veil' | relative_url }}) | III | Fire effect | Ember Sanctum vault; the Cinder Warden |
-| <img src="{{ '/assets/runes/basalt_surge.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Basalt Surge]({{ '/runes/world/#basalt_surge' | relative_url }}) | III | Earth effect | Attunement: basalt deltas |
-| <img src="{{ '/assets/runes/blazecall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Blazecall]({{ '/runes/world/#blazecall' | relative_url }}) | II | Fire effect | Nether fortresses; Runebound Adepts |
-| <img src="{{ '/assets/runes/blood_moss.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Blood Moss]({{ '/runes/world/#blood_moss' | relative_url }}) | II | Blood effect | Attunement: crimson forest |
-| <img src="{{ '/assets/runes/cinderbrand.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Cinderbrand]({{ '/runes/world/#cinderbrand' | relative_url }}) | II | Fire effect | Ember Sanctum vault; the Cinder Warden |
-| <img src="{{ '/assets/runes/cinderheart.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Cinderheart]({{ '/runes/world/#cinderheart' | relative_url }}) | IV | Fire effect | The Cinder Warden |
-| <img src="{{ '/assets/runes/constellation.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Constellation]({{ '/runes/world/#constellation' | relative_url }}) | III | Shape | Astral Observatory vault; the Star-Eater |
-| <img src="{{ '/assets/runes/current.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Current]({{ '/runes/world/#current' | relative_url }}) | II | Frost effect | Fishing in open water |
-| <img src="{{ '/assets/runes/drowning_word.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Drowning Word]({{ '/runes/world/#drowning_word' | relative_url }}) | III | Frost effect | Drowned Scriptorium vault; the Tide Scribe |
-| <img src="{{ '/assets/runes/echolocate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Echolocate]({{ '/runes/world/#echolocate' | relative_url }}) | II | Void effect | Ancient cities; Archive libraries |
-| <img src="{{ '/assets/runes/eclipse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Eclipse]({{ '/runes/world/#eclipse' | relative_url }}) | III | Void effect | Astral Observatory vault; the Star-Eater |
-| <img src="{{ '/assets/runes/fangs.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Fangs]({{ '/runes/world/#fangs' | relative_url }}) | II | Arcane effect | Woodland mansions; Archive libraries |
-| <img src="{{ '/assets/runes/glowvine.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Glowvine]({{ '/runes/world/#glowvine' | relative_url }}) | I | Life effect | Attunement: lush caves |
-| <img src="{{ '/assets/runes/hoarfrost.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Hoarfrost]({{ '/runes/world/#hoarfrost' | relative_url }}) | III | Frost effect | Attunement: ice spikes |
-| <img src="{{ '/assets/runes/hush.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Hush]({{ '/runes/world/#hush' | relative_url }}) | II | Void effect | Attunement: deep dark |
-| <img src="{{ '/assets/runes/if_outnumbered.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [If Outnumbered]({{ '/runes/world/#if_outnumbered' | relative_url }}) | III | Link | Woodland mansions |
-| <img src="{{ '/assets/runes/if_wet.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [If Wet]({{ '/runes/world/#if_wet' | relative_url }}) | II | Link | Drowned Scriptorium vault; the Tide Scribe |
-| <img src="{{ '/assets/runes/if_wounded.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [If Wounded]({{ '/runes/world/#if_wounded' | relative_url }}) | II | Link | Stronghold libraries; Archive libraries |
-| <img src="{{ '/assets/runes/infest.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Infest]({{ '/runes/world/#infest' | relative_url }}) | II | Earth effect | Stronghold libraries; Archive libraries |
-| <img src="{{ '/assets/runes/kindled.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Kindled]({{ '/runes/world/#kindled' | relative_url }}) | III | Modifier | Ember Sanctum vault; the Cinder Warden |
-| <img src="{{ '/assets/runes/manaburn.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manaburn]({{ '/runes/world/#manaburn' | relative_url }}) | II | Arcane effect | Mana storms (a surge after 10 casts) |
-| <img src="{{ '/assets/runes/manatide.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manatide]({{ '/runes/world/#manatide' | relative_url }}) | III | Arcane effect | Mana storms (a surge after 10 casts) |
-| <img src="{{ '/assets/runes/mire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Mire]({{ '/runes/world/#mire' | relative_url }}) | II | Earth effect | Attunement: swamp |
-| <img src="{{ '/assets/runes/moonpetal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Moonpetal]({{ '/runes/world/#moonpetal' | relative_url }}) | II | Life effect | Attunement: cherry grove |
-| <img src="{{ '/assets/runes/portalfall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Portalfall]({{ '/runes/world/#portalfall' | relative_url }}) | II | Void effect | Ruined portals; Runebound Adepts |
-| <img src="{{ '/assets/runes/remedy.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Remedy]({{ '/runes/world/#remedy' | relative_url }}) | II | Life effect | Igloo basements |
-| <img src="{{ '/assets/runes/resonant_shriek.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Resonant Shriek]({{ '/runes/world/#resonant_shriek' | relative_url }}) | III | Void effect | Ancient cities |
-| <img src="{{ '/assets/runes/riftcall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Riftcall]({{ '/runes/world/#riftcall' | relative_url }}) | III | Void effect | Rift sieges; the Riftcaller |
-| <img src="{{ '/assets/runes/rootsnare.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Rootsnare]({{ '/runes/world/#rootsnare' | relative_url }}) | II | Life effect | Attunement: mangrove swamp |
-| <img src="{{ '/assets/runes/sandstorm.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Sandstorm]({{ '/runes/world/#sandstorm' | relative_url }}) | III | Earth effect | Desert pyramids |
-| <img src="{{ '/assets/runes/shulkershell.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Shulkershell]({{ '/runes/world/#shulkershell' | relative_url }}) | III | Void effect | End cities |
-| <img src="{{ '/assets/runes/snare.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Snare]({{ '/runes/world/#snare' | relative_url }}) | II | Shape | Jungle temples |
-| <img src="{{ '/assets/runes/soulfire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Soulfire]({{ '/runes/world/#soulfire' | relative_url }}) | III | Fire effect | Attunement: soul sand valley |
-| <img src="{{ '/assets/runes/sporebloom.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Sporebloom]({{ '/runes/world/#sporebloom' | relative_url }}) | II | Life effect | Attunement: mushroom fields |
-| <img src="{{ '/assets/runes/stalactite.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Stalactite]({{ '/runes/world/#stalactite' | relative_url }}) | II | Earth effect | Attunement: dripstone caves |
-| <img src="{{ '/assets/runes/starlight_tether.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starlight Tether]({{ '/runes/world/#starlight_tether' | relative_url }}) | III | Arcane effect | Attunement: the End's outer islands |
-| <img src="{{ '/assets/runes/starmaw.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starmaw]({{ '/runes/world/#starmaw' | relative_url }}) | IV | Void effect | The Star-Eater |
-| <img src="{{ '/assets/runes/starshard.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starshard]({{ '/runes/world/#starshard' | relative_url }}) | III | Arcane effect | Fallen stars |
-| <img src="{{ '/assets/runes/summit_wind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Summit Wind]({{ '/runes/world/#summit_wind' | relative_url }}) | III | Wind effect | Attunement: mountain peaks, slopes, groves or windswept hills, at height 200 or higher |
-| <img src="{{ '/assets/runes/sunscorch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Sunscorch]({{ '/runes/world/#sunscorch' | relative_url }}) | III | Fire effect | Attunement: badlands |
-| <img src="{{ '/assets/runes/tidecall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidecall]({{ '/runes/world/#tidecall' | relative_url }}) | III | Frost effect | Ocean monuments (Elder Guardians) |
-| <img src="{{ '/assets/runes/tidehook.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidehook]({{ '/runes/world/#tidehook' | relative_url }}) | II | Frost effect | Fishing in open water |
-| <img src="{{ '/assets/runes/tidewrit.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidewrit]({{ '/runes/world/#tidewrit' | relative_url }}) | IV | Frost effect | The Tide Scribe |
-| <img src="{{ '/assets/runes/treasure_sense.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Treasure Sense]({{ '/runes/world/#treasure_sense' | relative_url }}) | I | Arcane effect | Buried treasure; Archive libraries |
-| <img src="{{ '/assets/runes/trial_key.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Trial Key]({{ '/runes/world/#trial_key' | relative_url }}) | II | Modifier | Trial chamber vaults; ominous vaults |
-| <img src="{{ '/assets/runes/tusk_charge.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tusk Charge]({{ '/runes/world/#tusk_charge' | relative_url }}) | II | Earth effect | Bastion remnants |
-| <img src="{{ '/assets/runes/undertow.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Undertow]({{ '/runes/world/#undertow' | relative_url }}) | II | Frost effect | Shipwrecks; Runebound Adepts |
-| <img src="{{ '/assets/runes/unstable.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Unstable]({{ '/runes/world/#unstable' | relative_url }}) | III | Modifier | Rift sieges; the Riftcaller |
-| <img src="{{ '/assets/runes/vinelash.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Vinelash]({{ '/runes/world/#vinelash' | relative_url }}) | II | Life effect | Jungle temples; Runebound Adepts |
-| <img src="{{ '/assets/runes/vortex.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Vortex]({{ '/runes/world/#vortex' | relative_url }}) | III | Shape | Ominous vaults |
-| <img src="{{ '/assets/runes/warcry.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Warcry]({{ '/runes/world/#warcry' | relative_url }}) | II | Blood effect | Pillager outposts; Runebound Adepts |
-| <img src="{{ '/assets/runes/warp_step.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Warp Step]({{ '/runes/world/#warp_step' | relative_url }}) | II | Void effect | Attunement: warped forest |
+| | Rune | Tier | Kind | Where to find it |
+|---|---|---|---|---|
+| <img src="{{ '/assets/runes/ancient_seed.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Ancient Seed]({{ '/runes/world/' | relative_url }}#ancient_seed) | I | Life effect | Trail ruins (brushing) |
+| <img src="{{ '/assets/runes/ashen_veil.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Ashen Veil]({{ '/runes/world/' | relative_url }}#ashen_veil) | III | Fire effect | Ember Sanctum vault; the Cinder Warden |
+| <img src="{{ '/assets/runes/basalt_surge.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Basalt Surge]({{ '/runes/world/' | relative_url }}#basalt_surge) | III | Earth effect | Attunement: basalt deltas |
+| <img src="{{ '/assets/runes/blazecall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Blazecall]({{ '/runes/world/' | relative_url }}#blazecall) | II | Fire effect | Nether fortresses; Runebound Adepts |
+| <img src="{{ '/assets/runes/blood_moss.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Blood Moss]({{ '/runes/world/' | relative_url }}#blood_moss) | II | Blood effect | Attunement: crimson forest |
+| <img src="{{ '/assets/runes/cinderbrand.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Cinderbrand]({{ '/runes/world/' | relative_url }}#cinderbrand) | II | Fire effect | Ember Sanctum vault; the Cinder Warden |
+| <img src="{{ '/assets/runes/cinderheart.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Cinderheart]({{ '/runes/world/' | relative_url }}#cinderheart) | IV | Fire effect | The Cinder Warden |
+| <img src="{{ '/assets/runes/constellation.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Constellation]({{ '/runes/world/' | relative_url }}#constellation) | III | Shape | Astral Observatory vault; the Star-Eater |
+| <img src="{{ '/assets/runes/current.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Current]({{ '/runes/world/' | relative_url }}#current) | II | Frost effect | Fishing in open water |
+| <img src="{{ '/assets/runes/drowning_word.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Drowning Word]({{ '/runes/world/' | relative_url }}#drowning_word) | III | Frost effect | Drowned Scriptorium vault; the Tide Scribe |
+| <img src="{{ '/assets/runes/echolocate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Echolocate]({{ '/runes/world/' | relative_url }}#echolocate) | II | Void effect | Ancient cities; Archive libraries |
+| <img src="{{ '/assets/runes/eclipse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Eclipse]({{ '/runes/world/' | relative_url }}#eclipse) | III | Void effect | Astral Observatory vault; the Star-Eater |
+| <img src="{{ '/assets/runes/fangs.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Fangs]({{ '/runes/world/' | relative_url }}#fangs) | II | Arcane effect | Woodland mansions; Archive libraries |
+| <img src="{{ '/assets/runes/glowvine.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Glowvine]({{ '/runes/world/' | relative_url }}#glowvine) | I | Life effect | Attunement: lush caves |
+| <img src="{{ '/assets/runes/hoarfrost.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Hoarfrost]({{ '/runes/world/' | relative_url }}#hoarfrost) | III | Frost effect | Attunement: ice spikes |
+| <img src="{{ '/assets/runes/hush.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Hush]({{ '/runes/world/' | relative_url }}#hush) | II | Void effect | Attunement: deep dark |
+| <img src="{{ '/assets/runes/if_outnumbered.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [If Outnumbered]({{ '/runes/world/' | relative_url }}#if_outnumbered) | III | Link | Woodland mansions |
+| <img src="{{ '/assets/runes/if_wet.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [If Wet]({{ '/runes/world/' | relative_url }}#if_wet) | II | Link | Drowned Scriptorium vault; the Tide Scribe |
+| <img src="{{ '/assets/runes/if_wounded.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [If Wounded]({{ '/runes/world/' | relative_url }}#if_wounded) | II | Link | Stronghold libraries; Archive libraries |
+| <img src="{{ '/assets/runes/infest.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Infest]({{ '/runes/world/' | relative_url }}#infest) | II | Earth effect | Stronghold libraries; Archive libraries |
+| <img src="{{ '/assets/runes/kindled.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Kindled]({{ '/runes/world/' | relative_url }}#kindled) | III | Modifier | Ember Sanctum vault; the Cinder Warden |
+| <img src="{{ '/assets/runes/manaburn.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manaburn]({{ '/runes/world/' | relative_url }}#manaburn) | II | Arcane effect | Mana storms (a surge after 10 casts) |
+| <img src="{{ '/assets/runes/manatide.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manatide]({{ '/runes/world/' | relative_url }}#manatide) | III | Arcane effect | Mana storms (a surge after 10 casts) |
+| <img src="{{ '/assets/runes/mire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Mire]({{ '/runes/world/' | relative_url }}#mire) | II | Earth effect | Attunement: swamp |
+| <img src="{{ '/assets/runes/moonpetal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Moonpetal]({{ '/runes/world/' | relative_url }}#moonpetal) | II | Life effect | Attunement: cherry grove |
+| <img src="{{ '/assets/runes/portalfall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Portalfall]({{ '/runes/world/' | relative_url }}#portalfall) | II | Void effect | Ruined portals; Runebound Adepts |
+| <img src="{{ '/assets/runes/remedy.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Remedy]({{ '/runes/world/' | relative_url }}#remedy) | II | Life effect | Igloo basements |
+| <img src="{{ '/assets/runes/resonant_shriek.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Resonant Shriek]({{ '/runes/world/' | relative_url }}#resonant_shriek) | III | Void effect | Ancient cities |
+| <img src="{{ '/assets/runes/riftcall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Riftcall]({{ '/runes/world/' | relative_url }}#riftcall) | III | Void effect | Rift sieges; the Riftcaller |
+| <img src="{{ '/assets/runes/rootsnare.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Rootsnare]({{ '/runes/world/' | relative_url }}#rootsnare) | II | Life effect | Attunement: mangrove swamp |
+| <img src="{{ '/assets/runes/sandstorm.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Sandstorm]({{ '/runes/world/' | relative_url }}#sandstorm) | III | Earth effect | Desert pyramids |
+| <img src="{{ '/assets/runes/shulkershell.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Shulkershell]({{ '/runes/world/' | relative_url }}#shulkershell) | III | Void effect | End cities |
+| <img src="{{ '/assets/runes/snare.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Snare]({{ '/runes/world/' | relative_url }}#snare) | II | Shape | Jungle temples |
+| <img src="{{ '/assets/runes/soulfire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Soulfire]({{ '/runes/world/' | relative_url }}#soulfire) | III | Fire effect | Attunement: soul sand valley |
+| <img src="{{ '/assets/runes/sporebloom.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Sporebloom]({{ '/runes/world/' | relative_url }}#sporebloom) | II | Life effect | Attunement: mushroom fields |
+| <img src="{{ '/assets/runes/stalactite.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Stalactite]({{ '/runes/world/' | relative_url }}#stalactite) | II | Earth effect | Attunement: dripstone caves |
+| <img src="{{ '/assets/runes/starlight_tether.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starlight Tether]({{ '/runes/world/' | relative_url }}#starlight_tether) | III | Arcane effect | Attunement: the End's outer islands |
+| <img src="{{ '/assets/runes/starmaw.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starmaw]({{ '/runes/world/' | relative_url }}#starmaw) | IV | Void effect | The Star-Eater |
+| <img src="{{ '/assets/runes/starshard.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starshard]({{ '/runes/world/' | relative_url }}#starshard) | III | Arcane effect | Fallen stars |
+| <img src="{{ '/assets/runes/summit_wind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Summit Wind]({{ '/runes/world/' | relative_url }}#summit_wind) | III | Wind effect | Attunement: mountain peaks, slopes, groves or windswept hills, at height 200 or higher |
+| <img src="{{ '/assets/runes/sunscorch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Sunscorch]({{ '/runes/world/' | relative_url }}#sunscorch) | III | Fire effect | Attunement: badlands |
+| <img src="{{ '/assets/runes/tidecall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidecall]({{ '/runes/world/' | relative_url }}#tidecall) | III | Frost effect | Ocean monuments (Elder Guardians) |
+| <img src="{{ '/assets/runes/tidehook.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidehook]({{ '/runes/world/' | relative_url }}#tidehook) | II | Frost effect | Fishing in open water |
+| <img src="{{ '/assets/runes/tidewrit.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidewrit]({{ '/runes/world/' | relative_url }}#tidewrit) | IV | Frost effect | The Tide Scribe |
+| <img src="{{ '/assets/runes/treasure_sense.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Treasure Sense]({{ '/runes/world/' | relative_url }}#treasure_sense) | I | Arcane effect | Buried treasure; Archive libraries |
+| <img src="{{ '/assets/runes/trial_key.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Trial Key]({{ '/runes/world/' | relative_url }}#trial_key) | II | Modifier | Trial chamber vaults; ominous vaults |
+| <img src="{{ '/assets/runes/tusk_charge.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tusk Charge]({{ '/runes/world/' | relative_url }}#tusk_charge) | II | Earth effect | Bastion remnants |
+| <img src="{{ '/assets/runes/undertow.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Undertow]({{ '/runes/world/' | relative_url }}#undertow) | II | Frost effect | Shipwrecks; Runebound Adepts |
+| <img src="{{ '/assets/runes/unstable.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Unstable]({{ '/runes/world/' | relative_url }}#unstable) | III | Modifier | Rift sieges; the Riftcaller |
+| <img src="{{ '/assets/runes/vinelash.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Vinelash]({{ '/runes/world/' | relative_url }}#vinelash) | II | Life effect | Jungle temples; Runebound Adepts |
+| <img src="{{ '/assets/runes/vortex.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Vortex]({{ '/runes/world/' | relative_url }}#vortex) | III | Shape | Ominous vaults |
+| <img src="{{ '/assets/runes/warcry.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Warcry]({{ '/runes/world/' | relative_url }}#warcry) | II | Blood effect | Pillager outposts; Runebound Adepts |
+| <img src="{{ '/assets/runes/warp_step.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Warp Step]({{ '/runes/world/' | relative_url }}#warp_step) | II | Void effect | Attunement: warped forest |

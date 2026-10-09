@@ -66,5 +66,10 @@ final class FrostFeels {
 		frost("frostward", 0.85, 0xCFEFFF, "frost_ward", 0.35F, 1.2F).register();
 		frost("frostbloom", 1.0, 0xFFE0F4, "frost_lotus", 0.3F, 1.0F).register();
 		frost("mirrorfrost", 1.0, 0xE8F4FF, "frost_mirror", 0.4F, 1.0F).register();
+		// ---- fx-fish pack
+		dev.wildercord.cast.packs.TideFeels.register();
+		// ---- fx-explore pack
+		Signature.of("shipwreck_sense").accent(WATER).sound(Phase.CUE, "frost_glint", 0.35F, 0.9F).register();
+		Signature.of("lava_crust").accent(0x6A6A78).sound(Phase.CUE, "frost_crust", 0.4F, 0.84F).register();
 	}
 }

@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "wilds_echo_post",
+  "biomes": "#wildercord:has_structure/wilds_echo_post",
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none"
+}

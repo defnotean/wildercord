@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101406,
+    "spacing": 36,
+    "separation": 12
+  },
+  "structures": [
+    {
+      "structure": "wildercord:travel_cartographer_hut",
+      "weight": 1
+    }
+  ]
+}

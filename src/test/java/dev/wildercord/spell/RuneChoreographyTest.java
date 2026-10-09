@@ -21,8 +21,16 @@ class RuneChoreographyTest {
 				"/assets/wildercord/textures/particle/circle/" + rune.path() + "_mark.png"),
 				rune.id() + " needs its own illustrated emblem");
 		}
-		assertEquals(319, roster.size());
+		assertEquals(650, roster.size());
 		assertEquals(roster, RuneChoreography.all().keySet(), "scripts must be kept in sync with the rune roster");
+	}
+
+	@Test
+	void reweaveUnfoldsItsInscriptionIntoOneRuledAccount() {
+		assertEquals(new RuneChoreography.Sequence(RuneChoreography.Gesture.SEAL,
+			RuneChoreography.Gesture.TETHER, RuneChoreography.Gesture.LEDGER), RuneChoreography.of(Runes.REWEAVE));
+		assertEquals(1, RuneChoreography.all().values().stream()
+			.filter(sequence -> sequence.finish() == RuneChoreography.Gesture.LEDGER).count());
 	}
 
 	@Test

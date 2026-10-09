@@ -26,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -46,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -124,7 +127,7 @@ public final class Residues {
 
 	/** When each caster last left a residue (game time), so a fight leaves marks rather than a carpet. */
 	private static final Map<UUID, Long> RESTED = new HashMap<>();
-	/** Chunks that loaded with a residue waiting on them, per dimension: their residues fade at the next sweep. */
+	/** Accessibility wake-ups, in arrival order; incomplete full-chunk futures wait for a later sweep. */
 	private static final Map<ResourceKey<Level>, Set<Long>> LOADED = new HashMap<>();
 	/** Residue blocks that went some other way (an explosion, a piston, water) this tick: their records go at its end. */
 	private static final Map<ResourceKey<Level>, Set<BlockPos>> GONE = new HashMap<>();
@@ -133,11 +136,17 @@ public final class Residues {
 
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(Residues::tick);
-		ServerChunkEvents.CHUNK_LOAD.register((level, chunk, generated) -> {
+		ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.register((level, chunk, oldStatus, newStatus) -> {
+			// A resident chunk can become accessible again without another CHUNK_LOAD event.
+			// Its full-chunk future may still be incomplete here: only queue, never read blocks.
+			if (oldStatus != FullChunkStatus.INACCESSIBLE || !newStatus.isOrAfter(FullChunkStatus.FULL)) {
+				return;
+			}
 			Record record = level.getDataStorage().get(Record.TYPE);
 			long key = chunk.getPos().pack();
-			if (record != null && record.ledger.hasParked(key)) {
-				LOADED.computeIfAbsent(level.dimension(), k -> new HashSet<>()).add(key);
+			if (record != null && record.ledger.inChunk(key) > 0) {
+				// Include scheduled records: one may become due before this future completes.
+				LOADED.computeIfAbsent(level.dimension(), k -> new LinkedHashSet<>()).add(key);
 			}
 		});
 		// Harvested by a player: its reagent drops (the block's loot table), and the ground it took comes back.
@@ -146,6 +155,7 @@ public final class Residues {
 				harvested(level, pos, state, player instanceof ServerPlayer sp ? sp : null);
 			}
 		});
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> RESTED.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			RESTED.clear();
 			LOADED.clear();
@@ -174,8 +184,9 @@ public final class Residues {
 			return;
 		}
 		BlockPos impact = hit.block() != null ? hit.block() : BlockPos.containing(hit.point());
-		if (leave(cast.level, kind.get(), impact, strength, cast.caster, source) > 0) {
+		if (leave(cast.level, kind.get(), impact, strength, cast.caster, source, cast) > 0) {
 			RESTED.put(cast.caster.getUUID(), cast.level.getGameTime());
+			dev.wildercord.spell.StatePrune.rested(RESTED, cast.level.getGameTime(), ResidueRules.BOSS_REST);
 		}
 	}
 
@@ -194,8 +205,9 @@ public final class Residues {
 		if (kind.isEmpty() || cast.level.getRandom().nextDouble() >= reactionChance || !rested(cast.caster, Source.REACTION, now)) {
 			return;
 		}
-		if (leave(cast.level, kind.get(), BlockPos.containing(at), ResidueRules.REACTION_STRENGTH, cast.caster, Source.REACTION) > 0) {
+		if (leave(cast.level, kind.get(), BlockPos.containing(at), ResidueRules.REACTION_STRENGTH, cast.caster, Source.REACTION, cast) > 0) {
 			RESTED.put(cast.caster.getUUID(), now);
+			dev.wildercord.spell.StatePrune.rested(RESTED, now, ResidueRules.BOSS_REST);
 		}
 	}
 
@@ -231,10 +243,11 @@ public final class Residues {
 			return 0;
 		}
 		return leave(level, kind.get(), BlockPos.containing(at), Math.min(strength, ResidueRules.MAX_STRENGTH), by,
-			by instanceof ServerPlayer || by == null ? Source.SPELL : Source.BOSS);
+			by instanceof ServerPlayer || by == null ? Source.SPELL : Source.BOSS,
+			Effects.applyingCast() != null && Effects.applyingCast().caster == by && Effects.applyingCast().level == level ? Effects.applyingCast() : null);
 	}
 
-	private static int leave(ServerLevel level, Kind kind, BlockPos impact, double strength, @Nullable LivingEntity by, Source source) {
+	private static int leave(ServerLevel level, Kind kind, BlockPos impact, double strength, @Nullable LivingEntity by, Source source, @Nullable Cast cast) {
 		dev.wildercord.config.WildercordConfig.ResidueSettings cfg = Config.get().residues();
 		if (!cfg.enabled()) {
 			return 0;
@@ -267,6 +280,7 @@ public final class Residues {
 			if (spot == null || judge(level, kind, spot, by) != null || record.ledger.admit(spot.getX(), spot.getY(), spot.getZ(), owner, caps) != null) {
 				continue;
 			}
+			if (cast != null && cast.guardedImpact() && (!cast.admitsBlock(spot) || !cast.takeBlock())) continue;
 			put(level, record, kind, spot, now, due, 0, owner);
 			left++;
 		}
@@ -505,24 +519,50 @@ public final class Residues {
 	/** Fades every residue whose time has come in loaded ground (a few dozen at most); those in unloaded ground wait for it. */
 	private static void sweep(ServerLevel level, Record record) {
 		long now = level.getGameTime();
-		Set<Long> loaded = LOADED.remove(level.dimension());
+		int remaining = PER_SWEEP;
+		Set<Long> loaded = LOADED.get(level.dimension());
 		if (loaded != null) {
-			for (long chunk : loaded) {
-				for (ResidueLedger.Entry<Blocks> entry : record.ledger.unpark(chunk)) {
+			int toCheck = Math.min(loaded.size(), PER_SWEEP);
+			for (int checked = 0; checked < toCheck && !loaded.isEmpty() && remaining > 0; checked++) {
+				// Remove before fading: block updates can enqueue more chunks without invalidating an iterator.
+				Iterator<Long> chunks = loaded.iterator();
+				long chunk = chunks.next();
+				chunks.remove();
+				if (record.ledger.inChunk(chunk) == 0) {
+					continue;
+				}
+				if (!accessible(level, chunk)) {
+					// Loading may still be pending, or it became inaccessible again. Keep the records.
+					loaded.add(chunk);
+					continue;
+				}
+				for (ResidueLedger.Entry<Blocks> entry : record.ledger.unpark(chunk, remaining)) {
 					fade(level, record, entry);
+					remaining--;
+				}
+				if (record.ledger.hasParked(chunk)) {
+					loaded.add(chunk);
 				}
 			}
+			if (loaded.isEmpty()) {
+				LOADED.remove(level.dimension());
+			}
 		}
-		if (record.ledger.nextDue() > now) {
+		if (remaining == 0 || record.ledger.nextDue() > now) {
 			return;
 		}
-		for (ResidueLedger.Entry<Blocks> entry : record.ledger.takeDue(now, PER_SWEEP)) {
-			if (level.isLoaded(new BlockPos(entry.x(), entry.y(), entry.z()))) {
+		for (ResidueLedger.Entry<Blocks> entry : record.ledger.takeDue(now, remaining)) {
+			if (accessible(level, entry.chunk())) {
 				fade(level, record, entry);
 			} else {
 				record.ledger.park(entry);
 			}
 		}
+	}
+
+	/** Checks the completed full-chunk future without loading or generating a chunk. */
+	private static boolean accessible(ServerLevel level, long chunk) {
+		return level.getChunkSource().getChunkNow((int) chunk, (int) (chunk >> 32)) != null;
 	}
 
 	/** One residue fades: the ground it took (or the air) comes back, if the residue is still what stands there. */

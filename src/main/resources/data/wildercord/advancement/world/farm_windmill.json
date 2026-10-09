@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/farm_sites",
+  "criteria": {
+    "farm_windmill": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_windmill"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:wheat"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_windmill.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_windmill.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_windmill"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

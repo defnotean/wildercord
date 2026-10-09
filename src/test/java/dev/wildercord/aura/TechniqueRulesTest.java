@@ -195,7 +195,7 @@ class TechniqueRulesTest {
 			TechniqueRules.Flavour fl = TechniqueRules.flavour(f);
 			String kind = fl.ignite() > 0 ? "ignite" : fl.chill() > 0 ? "chill" : fl.spark() > 0 ? "spark" : fl.knock() > 0 ? "knock"
 				: fl.stance() > 1 ? "stance" : fl.mend() > 0 ? "mend" : fl.pull() > 0 ? "pull" : fl.aura() > 0 ? "aura" : fl.echo() > 0 ? "echo"
-				: fl.bleed() > 0 ? "bleed" : "plain";
+				: fl.bleed() > 0 ? "bleed" : fl.current() > 0 ? "current" : fl.sunder() > 0 ? "sunder" : fl.grit() > 0 ? "grit" : "plain";
 			assertTrue(kinds.add(kind), f + " has its own element (" + kind + ")");
 		}
 	}

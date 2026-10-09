@@ -52,7 +52,8 @@ public final class RuneSeals {
 				level.setBlock(pos, state.setValue(CampfireBlock.LIT, true), Block.UPDATE_ALL);
 				Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.FIRECHARGE_USE, 0.8F, 1.0F);
 			}
-			if (wanted != null && state.is(WildercordBlocks.RUNE_SEAL) && state.getValue(RuneSealBlock.ELEMENT) == wanted) {
+			if (wanted != null && state.is(WildercordBlocks.RUNE_SEAL) && state.getValue(RuneSealBlock.ELEMENT) == wanted
+				&& cast.admitsBlock(pos)) {
 				light(level, pos.immutable(), wanted, player);
 				return;
 			}

@@ -32,7 +32,7 @@ import java.util.Locale;
  * and the stage it opens at, with the marks' meanings at the foot. Opened from the Cord screen's Aura badge (with or without a
  * Cord), drawn in the Cord screen's stone and gold.
  */
-public class AuraScreen extends Screen {
+public class AuraScreen extends Screen implements CordEditorParent {
 	private static final int W = 320;
 	private static final int H = 340;
 	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
@@ -44,6 +44,8 @@ public class AuraScreen extends Screen {
 	private static final int FAINT = 0xFF5A5470;
 
 	private final Screen parent;
+ @Override public Screen cordEditorParent(){return parent;}
+	private net.minecraft.client.gui.components.Button masterFormsEntry;
 	/** Whether the list shows the sword strings' arts instead of the techniques (kept while the game runs). */
 	private static boolean arts;
 	/** Whether it shows the Way tree instead (kept while the game runs; wins over {@link #arts}). */
@@ -81,12 +83,25 @@ public class AuraScreen extends Screen {
 		this.parent = parent;
 	}
 
+	/** The control-help label's centre, for native accessibility and presentation tests. */
+	public double[] mastersHelpPoint() {
+		int labelWidth = font.width(Component.translatable("screen.wildercord.aura.masters_help"));
+		return new double[] {left() + (W - 14 - labelWidth / 2.0) * scale(), top() + 14 * scale()};
+	}
+
 	@Override
 	protected void init() {
 		super.init();
 		page = new TechniquePage(minecraft, font);
 		bladePage = new BladePage(minecraft, font);
 		lineagePage = new LineagePage(minecraft, font);
+		float s = scale();
+		Component forms = Component.translatable("screen.wildercord.master_forms.title");
+		// Register the existing label as a native control. Its established painting remains below.
+		masterFormsEntry = addWidget(net.minecraft.client.gui.components.Button.builder(forms.copy().append(". ")
+			.append(Component.translatable("screen.wildercord.master_forms.open", MasterFormsClient.binding())),
+			ignored -> minecraft.gui.setScreen(new MasterFormsScreen(this)))
+			.bounds(left() + Math.round(13 * s), top() + Math.round(21 * s), Math.round((font.width(forms) + 4) * s), Math.max(1, Math.round(12 * s))).build());
 		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here (and the blade's).
 		minecraft.textInputManager().startTextInput(this);
 	}
@@ -104,6 +119,9 @@ public class AuraScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {
+		if (masterFormsEntry != null && masterFormsEntry.isFocused()
+				&& (event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_RETURN || event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_NUMPADENTER
+					|| event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_SPACE)) return super.keyPressed(event);
 		if (bladeOpen() && bladePage.keyPressed(event)) {
 			return true;
 		}
@@ -115,6 +133,7 @@ public class AuraScreen extends Screen {
 
 	@Override
 	public boolean charTyped(net.minecraft.client.input.CharacterEvent event) {
+		setFocused(null);
 		if (bladeOpen() && bladePage.charTyped(event)) {
 			return true;
 		}
@@ -152,16 +171,16 @@ public class AuraScreen extends Screen {
 			return 1.0F;
 		}
 		int guiScale = Math.max(1, minecraft.getWindow().getGuiScale());
-		int physical = Math.max(1, (int) Math.floor(guiScale * fit));
-		return physical / (float) guiScale;
+		int physical = (int) Math.floor(guiScale * fit);
+		return physical >= 1 ? physical / (float) guiScale : (float) fit;
 	}
 
 	private int left() {
-		return Math.round((width - W * scale()) / 2);
+		return Math.max(4, Math.round((width - W * scale()) / 2));
 	}
 
 	private int top() {
-		return Math.round((height - H * scale()) / 2);
+		return Math.max(4, Math.round((height - H * scale()) / 2));
 	}
 
 	@Override
@@ -174,6 +193,21 @@ public class AuraScreen extends Screen {
 		g.pose().translate(left(), top());
 		g.pose().scale(s, s);
 		List<Component> tooltip = draw(g, mx, my, partial);
+		// A fixed, rebinding-aware help label remains visible on every Aura tab, without squeezing
+		// three more rows into the stage-dependent technique list.
+		Component masters = Component.translatable("screen.wildercord.aura.masters_help");
+		int mastersWidth = font.width(masters);
+		int mastersX = W - 14 - mastersWidth;
+		boolean mastersHover = inside(mx, my, mastersX - 2, 8, mastersWidth + 4, 12);
+		g.text(font, masters, mastersX, 10, mastersHover ? GOLD : DIM, true);
+		if (mastersHover) tooltip = MastersArtsClient.help();
+		Component forms = Component.translatable("screen.wildercord.master_forms.title");
+		g.text(font, forms, 15, 23, GOLD, true);
+		if (masterFormsEntry != null && masterFormsEntry.isFocused()) {
+			g.fill(13, 21, 17 + font.width(forms), 22, GOLD); g.fill(13, 32, 17 + font.width(forms), 33, GOLD);
+		}
+		if (inside(mx, my, 13, 21, font.width(forms) + 4, 12) || masterFormsEntry != null && masterFormsEntry.isFocused())
+			tooltip = List.of(Component.translatable("screen.wildercord.master_forms.open", MasterFormsClient.binding()));
 		g.pose().popMatrix();
 		if (tooltip != null) {
 			g.setTooltipForNextFrame(font, Tooltips.fit(font, tooltip, width, height), mouseX, mouseY);
@@ -186,6 +220,8 @@ public class AuraScreen extends Screen {
 
 	@Override
 	public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+		if (masterFormsEntry != null && masterFormsEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event, doubleClick);
+		setFocused(null);
 		if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && tabsY >= 0) {
 			float s = scale();
 			int mx = (int) Math.floor((event.x() - left()) / s);
@@ -660,19 +696,27 @@ public class AuraScreen extends Screen {
 		boolean onWrite = writing && writes && !onBlade && !lineage;
 		boolean onWay = way && ways && !onWrite && !onBlade && !lineage;
 		boolean onArts = arts && !onWay && !onWrite && !onBlade && !lineage;
+		Component lineageTab = Component.translatable("screen.wildercord.aura.lineage.tab");
+		int totalTabWidth = font.width(tech) + font.width(strings)
+			+ (ways ? font.width(wayTab) : 0)
+			+ (writes ? font.width(writeTab) : 0)
+			+ (blades ? font.width(bladeTab) : 0)
+			+ font.width(lineageTab);
+		int tabCount = 2 + (ways ? 1 : 0) + (writes ? 1 : 0) + (blades ? 1 : 0) + 1;
+		int gap = tabCount > 1 ? Math.max(2, Math.min(14, ((W - 28) - totalTabWidth) / (tabCount - 1))) : 14;
+		int divOffset = gap / 2;
 		tabsY = y;
 		techLeft = 14;
 		techRight = techLeft + font.width(tech);
-		artsLeft = techRight + 14;
+		artsLeft = techRight + gap;
 		artsRight = artsLeft + font.width(strings);
-		wayLeft = artsRight + 14;
+		wayLeft = artsRight + gap;
 		wayRight = ways ? wayLeft + font.width(wayTab) : wayLeft;
-		writeLeft = (ways ? wayRight : artsRight) + 14;
+		writeLeft = (ways ? wayRight : artsRight) + gap;
 		writeRight = writes ? writeLeft + font.width(writeTab) : writeLeft;
-		bladeLeft = (writes ? writeRight : ways ? wayRight : artsRight) + 14;
+		bladeLeft = (writes ? writeRight : ways ? wayRight : artsRight) + gap;
 		bladeRight = blades ? bladeLeft + font.width(bladeTab) : bladeLeft;
-		Component lineageTab = Component.translatable("screen.wildercord.aura.lineage.tab");
-		lineageLeft = (blades ? bladeRight : writes ? writeRight : ways ? wayRight : artsRight) + 14;
+		lineageLeft = (blades ? bladeRight : writes ? writeRight : ways ? wayRight : artsRight) + gap;
 		lineageRight = lineageLeft + font.width(lineageTab);
 		g.text(font, lineageTab, lineageLeft, y, lineage ? GOLD : DIM, true);
 		boolean overTech = inside(mx, my, techLeft, y - 2, techRight - techLeft, 12);
@@ -682,7 +726,7 @@ public class AuraScreen extends Screen {
 		boolean overBlade = blades && inside(mx, my, bladeLeft, y - 2, bladeRight - bladeLeft, 12);
 		g.text(font, tech, techLeft, y, !onArts && !onWay && !onWrite && !onBlade && !lineage ? GOLD : overTech ? TEXT : DIM, true);
 		g.text(font, strings, artsLeft, y, onArts ? GOLD : overArts ? TEXT : DIM, true);
-		g.fill(techRight + 6, y + 1, techRight + 7, y + 8, FAINT);
+		g.fill(techRight + divOffset - 1, y + 1, techRight + divOffset, y + 8, FAINT);
 		if (ways) {
 			int wayColor = onWay ? GOLD : overWay ? TEXT : DIM;
 			if (!onWay && dev.wildercord.aura.Ways.wayless(minecraft.player)) {
@@ -691,7 +735,7 @@ public class AuraScreen extends Screen {
 				wayColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
 			}
 			g.text(font, wayTab, wayLeft, y, wayColor, true);
-			g.fill(artsRight + 6, y + 1, artsRight + 7, y + 8, FAINT);
+			g.fill(artsRight + divOffset - 1, y + 1, artsRight + divOffset, y + 8, FAINT);
 		}
 		if (writes) {
 			int writeColor = onWrite ? GOLD : overWrite ? TEXT : DIM;
@@ -701,7 +745,7 @@ public class AuraScreen extends Screen {
 				writeColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
 			}
 			g.text(font, writeTab, writeLeft, y, writeColor, true);
-			g.fill(writeLeft - 8, y + 1, writeLeft - 7, y + 8, FAINT);
+			g.fill(writeLeft - divOffset - 1, y + 1, writeLeft - divOffset, y + 8, FAINT);
 		}
 		if (blades) {
 			int bladeColor = onBlade ? GOLD : overBlade ? TEXT : DIM;
@@ -711,8 +755,9 @@ public class AuraScreen extends Screen {
 				bladeColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
 			}
 			g.text(font, bladeTab, bladeLeft, y, bladeColor, true);
-			g.fill(bladeLeft - 8, y + 1, bladeLeft - 7, y + 8, FAINT);
+			g.fill(bladeLeft - divOffset - 1, y + 1, bladeLeft - divOffset, y + 8, FAINT);
 		}
+		g.fill(lineageLeft - divOffset - 1, y + 1, lineageLeft - divOffset, y + 8, FAINT);
 		int under = lineage ? lineageLeft : onBlade ? bladeLeft : onWrite ? writeLeft : onWay ? wayLeft : onArts ? artsLeft : techLeft;
 		int underRight = lineage ? lineageRight : onBlade ? bladeRight : onWrite ? writeRight : onWay ? wayRight : onArts ? artsRight : techRight;
 		g.fill(under, y + 9, underRight, y + 10, 0xFF000000 | (GOLD & 0xFFFFFF));
@@ -1104,6 +1149,8 @@ public class AuraScreen extends Screen {
 						Component.translatable(dev.wildercord.aura.AuraFxRules.ordinalKey(art.stage()))).withStyle(ChatFormatting.DARK_GRAY));
 				}
 				tip.add(Component.translatable(art.nameKey() + ".desc").withStyle(ChatFormatting.GRAY));
+				Component counterControls = EarnedCounterHelp.controls(art.id());
+				if (!counterControls.getString().isEmpty()) tip.add(counterControls.copy().withStyle(ChatFormatting.GRAY));
 				List<Component> words = new ArrayList<>();
 				for (dev.wildercord.aura.SwordString.Token token : art.string().tokens()) {
 					words.add(Component.translatable("aura.wildercord.token." + token.id));

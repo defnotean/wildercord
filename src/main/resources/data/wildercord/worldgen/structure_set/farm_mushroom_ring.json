@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101106,
+    "spacing": 36,
+    "separation": 10
+  },
+  "structures": [
+    {
+      "structure": "wildercord:farm_mushroom_ring",
+      "weight": 1
+    }
+  ]
+}

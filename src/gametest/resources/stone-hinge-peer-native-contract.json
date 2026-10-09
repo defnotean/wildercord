@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "suite": "stone-hinge-peer",
+  "entrypoint": "dev.wildercord.aura.StoneHingePeerTransportTest",
+  "expectedCount": 29,
+  "profiles": [
+    {
+      "id": "transparent",
+      "delayMs": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "cases": [
+        "ORDINARY",
+        "RIGHT",
+        "LEFT",
+        "PARTIAL_RESISTANCE",
+        "ABSORPTION",
+        "WALL_CLIPPED",
+        "REAR",
+        "FULL_RESISTANCE",
+        "ZERO_WOUND",
+        "INVULNERABLE",
+        "CALLER_KNOCKBACK",
+        "CLOSE_AURA",
+        "INTERVENING_IMPULSE",
+        "FALLING_ORDINARY",
+        "FALLING_REFUSAL",
+        "NONZERO_RETENTION",
+        "NATURAL_MASTER"
+      ]
+    },
+    {
+      "id": "symmetric",
+      "delayMs": [
+        50,
+        50,
+        50,
+        50
+      ],
+      "cases": [
+        "ORDINARY",
+        "RIGHT",
+        "LEFT",
+        "WALL_CLIPPED",
+        "FALLING_ORDINARY",
+        "FALLING_REFUSAL"
+      ]
+    },
+    {
+      "id": "asymmetric",
+      "delayMs": [
+        100,
+        25,
+        25,
+        100
+      ],
+      "cases": [
+        "ORDINARY",
+        "RIGHT",
+        "LEFT",
+        "WALL_CLIPPED",
+        "FALLING_ORDINARY",
+        "FALLING_REFUSAL"
+      ]
+    }
+  ],
+  "limits": {
+    "maxJvms": 2,
+    "maxHeapMiBPerJvm": 2048,
+    "maxCases": 29,
+    "maxTimeoutSeconds": 1200,
+    "maxProfileSeconds": 300,
+    "maxProfileEvidenceBytes": 16777216
+  },
+  "gameplayEnabled": false,
+  "ordinaryInputProven": false,
+  "admissionProven": false,
+  "paidInputProven": false,
+  "wholeJvmEgressIsolationProven": false
+}

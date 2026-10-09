@@ -1,9 +1,11 @@
 {
   "textures": {
     "steel": "wildercord:block/oathkeeper_steel",
+    "fuller": "wildercord:block/oathkeeper_fuller",
     "edge": "wildercord:block/oathkeeper_edge",
     "brass": "wildercord:block/oathkeeper_brass",
     "wrap": "wildercord:block/oathkeeper_wrap",
+    "gem": "wildercord:block/oathkeeper_gem",
     "dark": "wildercord:block/oathkeeper_dark",
     "stone": "wildercord:block/oathkeeper_stone",
     "particle": "wildercord:block/oathkeeper_stone"

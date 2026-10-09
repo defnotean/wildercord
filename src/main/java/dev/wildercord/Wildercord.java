@@ -46,6 +46,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.gear.GearLoot.init();
 		WildercordEntities.init();
 		WildercordAttachments.init();
+		dev.wildercord.party.Parties.init();
 		dev.wildercord.advancement.Advancements.init();
 		WildercordNetworking.init();
 		dev.wildercord.net.VersionCheck.init();
@@ -89,6 +90,8 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.DomainClash.init();
 		dev.wildercord.cast.SpellChat.init();
 		dev.wildercord.world.WildercordWorldgen.init();
+		dev.wildercord.world.sites.Sites.init();
+		dev.wildercord.world.upgrade.WorldUpgrades.init();
 		dev.wildercord.cast.events.WorldEvents.init();
 		dev.wildercord.runesmith.Runesmith.init();
 		dev.wildercord.duel.Duels.init();
@@ -123,6 +126,14 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.Dungeons.init();
 		dev.wildercord.world.dungeons.DungeonWards.init();
 		SpellCaster.init();
+		dev.wildercord.cast.RelayCircles.init();
+		dev.wildercord.content.RelayLesson.init();
+        dev.wildercord.cast.ReweaveFields.init();
+        dev.wildercord.cast.ExciseCasting.init();
+        dev.wildercord.content.ExciseLesson.init();
+        dev.wildercord.cast.LessonPackCasting.init();
+        dev.wildercord.content.PackLesson.init();
+        dev.wildercord.content.ReweaveLesson.init();
 		WildercordCommand.init();
 		dev.wildercord.travel.Travel.init();
 		dev.wildercord.loadout.Loadouts.init();
@@ -142,6 +153,14 @@ public final class Wildercord implements ModInitializer {
         dev.wildercord.cast.SupportSignatures.init();
         dev.wildercord.cast.TrailSignatures.init();
         dev.wildercord.cast.NextSignatureFeels.register();
+		// ---- lore pack: the lore journal, discovery quests and teachers' lines.
+		dev.wildercord.lore.LoreJournal.init();
+		// ---- prog pack
+		dev.wildercord.cast.CircleVowCommands.init();
+        // ---- fx-support pack
+        dev.wildercord.cast.packs.WardState.init();
+		// ---- perf pack
+		dev.wildercord.cast.PerfHygiene.init();
 		LOGGER.info("Wildercord initialized");
 	}
 }

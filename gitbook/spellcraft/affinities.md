@@ -1,171 +1,122 @@
-# Creature affinities and climate
+# Creature Affinities and Climate
 
+## What it is
 
-A fire bolt doesn't hit a blaze the way it hits a zombie. Many creatures are **weak** to an element and take more
-from it, or **resist** one and take less. And **where** you fight matters too: fire burns hotter in the Nether, storm
-crackles in a thunderstorm, frost bites harder in the snow. Pick the right element and a cheap spell hits like a
-dear one; pick the wrong one and you'll see it shrug.
+Many creatures are **weak** to an element and take more from it, or **resist** one and take less. Where you
+fight matters too: fire burns hotter in the Nether, storm cracks harder in a thunderstorm.
 
-
-## Weak, resisted, immune
-
-| Affinity | That element's damage | What you see over the creature |
+| Affinity | Damage from that element | What you see |
 |---|---|---|
-| **Weak** | **+50%** | **Weak!** in bold, in the element's colour, and a crack of sparks |
-| **Resists** | **half** | **Resisted** in grey, and a dull puff |
-| **Immune** | **nothing** (it doesn't even flinch) | **Immune** in grey, and a dull puff |
-
-The words float up over the creature for a moment (everyone nearby sees them), at most once a second however many
-creatures your spell strikes, each with a quiet sound. The first time you find a weakness or a resistance on a kind of
-creature, it's written into your [Bestiary](#the-bestiary).
+| **Weak** | **+50%** | **Weak!** in the element's colour |
+| **Resists** | **Half** | **Resisted** in grey |
+| **Immune** | **None**, and it doesn't flinch | **Immune** in grey |
 
 - **Only damage changes.** Slows, freezes, knockback, marks and heals work the same on everything.
-- **A reaction breaks through a resistance.** A hit that sets off a [reaction](reactions.md)
-  on a creature ignores what it resists (though not an immunity). Fire on a hoglin is halved; a **Shatter** on a
-  frozen hoglin lands in full.
-- **Runebound resist their own element.** A [Runebound](../world/runebound.md) resists the element
-  of the spell on its Cord, on top of what its kind resists: a skeleton with *Frost Bolt* takes half from your frost.
-  If its kind is weak to that element, the two cancel out.
-- **Players grow their own.** A player isn't born weak or resistant to anything, but their
-  [affinities](../progression/affinity.md) grow with what they do, and from level III they resist
-  that element a little: 10% at III, 15% at IV, 20% at V, against anyone's spells (a Runebound's, another player's in
-  a duel). A reaction breaks through it as through a creature's, and no callout floats over a player for it.
-- **Monsters' spells feel it too.** A Runebound's storm hits an iron golem 50% harder, just as yours would.
+- **Reactions break resistances.** A hit that sets off a [reaction](reactions.md)
+  ignores a resistance, but not an immunity. So does a target torn open by **Rend**.
+- **Runebound resist their own element**, the one on their Cord. See [Runebound](../world/runebound.md).
+- **Players** start with no affinities. From [affinity](../progression/affinity.md) level III you
+  resist that element yourself: 10% at III, 15% at IV, 20% at V.
 
-## Who's weak to what
+## How to get it
 
-Grouped by kind. A creature can belong to more than one group: a wither skeleton is a creature of the Nether, a
-skeleton and undead, all at once.
+Your [Grimoire](../progression/grimoire.md) keeps a **Bestiary** of every creature with an
+affinity that your spells have hit.
+
+- **Hitting a creature** adds it: "Blaze · weak: ? · resists: ?".
+- **Finding a weakness** fills it in and gives **25 mana** toward your next
+  [Heart Circle](../progression/heart-circles.md) and 25 points of affinity with that element.
+- Each **?** is something still to find. Try other elements on it.
+
+### Who's weak to what
 
 | Creatures | Weak to | Resists |
 |---|---|---|
-| **The Nether's creatures**: blazes, magma cubes, ghasts, striders, wither skeletons, hoglins, zoglins, piglins, piglin brutes, zombified piglins | **Frost** | **Fire** |
-| **The cold's creatures**: strays, polar bears | **Fire** | **Frost** |
-| **Snow golems** | **Fire** | **Frost** (immune: they're made of it), **Blood** |
-| **The undead**: zombies, husks, drowned, zombie villagers, skeletons, strays, bogged, wither skeletons, phantoms, zombified piglins, zoglins, the wither, skeleton and zombie horses | **Life** | |
-| **Skeletons of every kind**, and the wither | | **Blood** (there's no blood in them to draw on) |
-| **Water creatures**: fish, squid and glow squid, dolphins, turtles, axolotls, guardians, elder guardians, tadpoles, nautiluses, and the drowned | | **Fire** |
-| **Arthropods**: spiders, cave spiders, bees, silverfish, endermites | **Wind** | **Life** (venomous things shrug off venom) |
-| **The End's creatures**: endermen, endermites, shulkers | **Time** | **Void** |
-| **Iron golems** and **copper golems** | **Storm** (metal conducts) | **Earth**, **Blood** |
-| **Slimes** | **Frost** | **Earth** (they bounce) |
-| **Magma cubes** (as well as the Nether's) | | **Earth** |
-| **Breezes** | **Earth** | **Wind**, **Blood** |
-| **Creakings** | **Fire** | |
-| **Creepers** | | **Storm** (lightning only charges them up) |
-| **Phantoms** (as well as undead) | **Wind** | |
-| **Witches** | | **Life** |
-| **Evokers** and **illusioners** | | **Arcane** |
-| **Vexes** | **Arcane** | **Blood** |
-| **The wither** (as well as undead) | | **Void** |
-| **The warden** and **the ender dragon** | | **Void** |
+| **Nether creatures**: blazes, magma cubes, ghasts, striders, wither skeletons, hoglins, zoglins, piglins, piglin brutes, zombified piglins | Frost | Fire |
+| **Cold creatures**: strays, polar bears | Fire | Frost |
+| **Snow golems** | Fire | Immune to Frost; resist Blood |
+| **The undead** | Life | |
+| **Skeletons of every kind**, and the wither | | Blood |
+| **Water creatures**, and the drowned | | Fire |
+| **Arthropods**: spiders, bees, silverfish, endermites | Wind | Life |
+| **End creatures**: endermen, endermites, shulkers | Time | Void |
+| **Iron and copper golems** | Storm | Earth, Blood |
+| **Slimes** | Frost | Earth |
+| **Magma cubes** (as well as Nether) | | Earth |
+| **Breezes** | Earth | Wind, Blood |
+| **Creakings** | Fire | |
+| **Creepers** | | Storm |
+| **Phantoms** (as well as undead) | Wind | |
+| **Witches** | | Life |
+| **Evokers, illusioners** | | Arcane |
+| **Vexes** | Arcane | Blood |
+| **The wither, the warden, the ender dragon** | | Void |
 
-Everything else, from pigs to villagers to pillagers, takes every element alike.
+Wildercord's own creatures:
 
-A few things worth knowing:
-
-- **Fireproof creatures take nothing from flames.** Blazes, magma cubes, ghasts, striders, wither skeletons, zoglins
-  and zombified piglins can't be burnt at all (nor can shulkers, vexes, the warden, the wither, the ender dragon, the
-  Star-Eater or the Archivist), so a burning spell (Fire, Ember, Flashfire...) shows **Immune**. Fire's blasts
-  (Explode, Meteor) don't burn, and those get half through a resistance to fire.
-- **Frost used to hit blazes, striders and magma cubes five times as hard** (a rule of the game's, meant for powder
-  snow). Now it's +50%, like every weakness.
-- **Water creatures aren't weak to storm, because they don't need to be.** In water they're wet, so every storm hit
-  already sets off **Conduct**: +50%, arcing to two more. Being wet also softens fire by a quarter, but that doesn't
-  stack with a creature resisting fire: it takes half either way.
-
-### The bosses
-
-| Boss | Weak to | Resists | How it plays |
-|---|---|---|---|
-| [The Cinder Warden](../world/ember-sanctum.md) | **Frost** | **Fire** | Its armour only yields to reactions, and a reaction breaks through its fire resistance, so a **Shatter** still lands in full. Frost follows up hard while its plates are cracked open. |
-| [The Star-Eater](../world/astral-observatory.md) | **Life** | **Void** | Burning does nothing to it either. Once its shield is down, Vinelash, Moonpetal or Venom hit 50% harder. |
-| [The Tide Scribe](../world/drowned-scriptorium.md) | **Life** (it's a drowned sorcerer) | **Frost** | Storm through its flood is still its real weakness (five times the shock). Frost still freezes its water; the frost itself only does half. |
-| [The Archivist](../world/archive.md) | **Void** (what's written can be unwritten) | **Arcane** | It's immune to burning too. Harm, Smite and the other arcane runes do half; Sonic Boom, Hollow, Blackspark and the other void runes do half as much again. |
-
-## The Bestiary
-
-Your [Grimoire](../progression/grimoire.md) keeps a **Bestiary**: every kind of creature your spells
-have struck that has an affinity, and what you've learned about it.
-
-- **Meeting a creature** writes it in, quietly: *"Blaze · weak: ? · resists: ?"*.
-- **Finding a weakness** fills it in with a toast (*"New in your Grimoire: Blaze: weak to Frost"*) and condenses
-  **25 mana** toward your next [Heart Circle](../progression/heart-circles.md), and **25 points** of your own
-  [affinity](../progression/affinity.md) with that element.
-- **Finding a resistance or immunity** fills it in quietly: the callout over the creature already told you.
-- Each **?** is one still to find: hit it with other elements. A column reading *none* has nothing to find.
-- Hover a creature for what each affinity does. A line turns green once everything about it is known.
-
-A Runebound's resistance comes from its Cord, not its kind, so that one isn't written down.
-
-## Elemental climate
-
-Where you cast nudges how hard each element hits. It's modest on purpose (10 to 25%), and your HUD shows it.
-
-| Where | Favoured | Hindered |
+| Creature | Weak to | Resists |
 |---|---|---|
-| **The Nether** | Fire **+20%** | Frost **-25%** |
-| **The End** | Void **+20%** | |
-| **A thunderstorm** over you (under the open sky) | Storm **+25%** | |
-| **Rain** falling on you | Frost **+10%** | Fire **-10%** |
-| **Snow and frost**: snowy and frozen lands, and high peaks where it's cold enough to snow | Frost **+20%** | Fire **-10%** |
-| **Hot, dry land**: deserts, badlands, savannas | Fire **+15%** | Frost **-10%** |
-| **Night**, under the open sky | Void **+10%** | |
-| **Sunlight**: day, under the open sky, not raining | Life **+10%** | |
-| **Deep underground**: below y 0 in the Overworld | Earth **+15%** | |
-| **On a ley line**, or under a mana storm | Arcane **+15%** | |
-| **A ley crossing**, where two ley lines meet | Every element **+10%**, and spells cost 10% less | |
-| **A full moon**, on a clear night under the open sky | Arcane **+15%**, Void **+15%** | |
-| **A new moon**, on a clear night under the open sky | Blood **+15%**, Void **+10%** | |
-| **The noon sun**, around midday, not raining | Fire **+15%** | |
-| **Dawn** and **dusk**, under the open sky | Time **+15%** | |
+| Cinderfox | Frost | Fire |
+| Rimehare | Fire | Frost |
+| Mossback Tortoise | Frost | Earth, Wind |
+| Bramblewalker | Fire | Earth, Life |
+| Geode Crawler | Storm | Earth, Arcane |
+| Skyray | Storm | Wind |
+| Thunderwing Harpy | Earth, Frost | Storm, Wind |
+| Glimmerwing | Fire, Wind | Arcane |
+| Gloomstalker | Arcane | Void |
+| Lumen Stag | Void | Arcane |
+| Mana Ooze | Fire | |
+| Bog Witch-Frog | Frost | Life |
 
-The last five are places and times of power: see [Places and Times of Power](../world/places-of-power.md)
-for how to find a ley crossing and when the moon is full.
+Bosses:
 
-- **They stack.** A thunderstorm at night in the rain: storm +25%, void +10%, fire -10%. However they stack, no
-  element goes past +50% or below half.
-- **The Nether and the End are their own climate.** No weather, days, depth or lands there (a mana storm still counts).
-- **It's about where you stand**, not where the spell lands, and only **your** spells feel it (monsters' spells and
-  bosses don't), so no fight changes with the weather. It counts in duels too, the same for both of you.
-- **Only damage changes**, as with affinities.
-- It stacks with a target's affinity: frost on a blaze in the Nether is +50% for the weakness and -25% for the
-  climate, still a little better than plain.
+| Boss | Weak to | Resists |
+|---|---|---|
+| [The Cinder Warden](../world/ember-sanctum.md) | Frost | Fire |
+| [The Star-Eater](../world/astral-observatory.md) | Life | Void |
+| [The Tide Scribe](../world/drowned-scriptorium.md) | Life | Frost |
+| [The Archivist](../world/archive.md) | Void | Arcane |
 
-### On the HUD
+Everything else takes every element alike. Creatures that can't burn (blazes, the warden, the Star-Eater, the
+Archivist and others) show **Immune** to burning spells.
 
-After your spell's name, beside the hotbar, a small mark appears for each element the climate changes where you
-stand, with a green **▲** (it hits harder here) or a red **▼** (softer). The marks:
+## How to use it
 
-| Element | Mark | Element | Mark |
-|---|---|---|---|
-| Fire | a flame | Life | a leaf |
-| Frost | a snowflake | Void | a crescent |
-| Storm | a lightning bolt | Arcane | a diamond |
-| Wind | gusts | Time | an hourglass |
-| Earth | a mountain | Blood | a drop |
+### Elemental climate
 
-For a few seconds after something new comes into force where you stand (the moon rising, rain starting, a ley crossing
-underfoot), lines over the spell panel say why, one for each thing holding there: *"Full moon: Arcane +15%, Void +15%"*.
-The Grimoire page says the same under **Where you stand**, for as long as it holds: *"The Nether: Fire +20%, Frost -25%"*.
+Where **you** stand changes how hard each element hits. The spell panel shows a green **▲** or red **▼** mark for
+each changed element, and the Grimoire lists it under **Where you stand**.
 
-## Tips
+| Where | Stronger | Weaker |
+|---|---|---|
+| The Nether | Fire +20% | Frost -25% |
+| The End | Void +20% | |
+| A thunderstorm over you | Storm +25% | |
+| Rain on you | Frost +10% | Fire -10% |
+| Snowy lands and cold peaks | Frost +20% | Fire -10% |
+| Deserts, badlands, savannas | Fire +15% | Frost -10% |
+| Night, under open sky | Void +10% | |
+| Sunlight, under open sky | Life +10% | |
+| Below y 0 in the Overworld | Earth +15% | |
+| A ley line or mana storm | Arcane +15% | |
+| A ley crossing | Every element +10%, spells cost 10% less | |
+| Full moon, clear night | Arcane +15%, Void +15% | |
+| New moon, clear night | Blood +15%, Void +10% | |
+| Noon, not raining | Fire +15% | |
+| Dawn and dusk | Time +15% | |
 
-- **Take frost to the Nether.** Nearly everything there is weak to it, and even with the Nether's -25% it comes out
-  ahead. Fire, which the Nether loves, is the one thing its creatures shrug off.
-- **Life magic for the undead.** Venom's poison does nothing to zombies and skeletons, but its hit, Vinelash's lash,
-  Moonpetal's petals and Rootsnare's roots all land 50% harder on them.
-- **Resisted? React.** A resistance doesn't hold against a reaction. Freeze a piglin, then burn it: the Shatter lands in full.
-- **Fight in the storm.** Storm +25% under a thunderstorm, and everything out in the rain is wet, so every storm hit
-  Conducts too.
-- **Earth for the deep, void for the night.** Mining below y 0, earth hits 15% harder; out under the night sky, void 10%.
-- **Watch your Runebound.** A Runebound resists its own element: read its nameplate and answer with another.
-- **Fill in the Bestiary.** Each weakness is 25 mana toward your next Heart Circle and 25 points of your affinity with
-  that element, and the **?**s tell you where to look.
+- **They stack**, but no element goes above +50% or below half.
+- **Only your spells** feel the climate, not monsters'. It counts in duels for both sides.
+- Find ley crossings and moon phases on [Places and Times of Power](../world/places-of-power.md).
+
+## Tips and counterplay
+
+- **Take frost to the Nether.** Almost everything there is weak to it, even with the -25%.
+- **Life for the undead.** Life hits land 50% harder on zombies and skeletons.
+- **Resisted? React.** Freeze a piglin, then burn it: the Shatter lands in full.
+- **Fight storm in the storm.** Storm is +25%, and everything in the rain is wet, so storm hits Conduct too.
+- **Read a Runebound's nameplate** and answer with a different element.
 
 
-A server can switch either system off (`creature_affinities` and `elemental_climate` in the `features` section of its
-settings file). With affinities off, every creature takes every element alike (and frost hits blazes, striders and
-magma cubes five times as hard again, the game's own rule); with climate off, every element hits the same everywhere
-and the HUD shows no climate marks. A settings file from an older Wildercord gains both switches by itself, switched
-on, the next time the server starts or reloads its settings.
+A server can turn off creature affinities or climate in its settings.

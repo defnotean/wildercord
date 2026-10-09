@@ -1,0 +1,15 @@
+# Three counter cases in the existing connected gate
+
+The existing supervised `cast-receipt` job now declares 38 cases: its original 35 in their original order, followed by exactly three counters. The exporter, supervisor, source contract and native entrypoint each require that ordered roster. The two actual JVMs, fixed profiles, 2 GiB per-process limit, 900-second launch ceiling, nonce, role, PID, source/checkout/PR association, runtime hashes and owned-process cleanup remain in force.
+
+`NextCounterPairedCases` owns the three scenarios previously calling the paid dispatcher on level-only fake players:
+
+1. `COUNTER_QUIETUS_PAID_BOLT`: the actual connected host pays for Quietus against the actual peer, which pays for Harm Bolt. A scheduled observation identifies the newly emitted native UUID before the real screen callback. The next observation checks that entity's removal, screen consumption and exactly eight mana of tax before the next passive regeneration tick.
+2. `COUNTER_QUIETUS_THIRTEEN_EXISTING`: all 13 actual pre-existing bolt UUIDs must appear in the complete snapshot, while only 12 appear in the handling list. All originals must remain alive until deliberate fixture cleanup. The same admitted screen must then capture a genuinely later paid Bolt, consume itself and tax exactly eight mana once.
+3. `COUNTER_REFLECTED_RESPAWN_NULLCATCH`: a paid hostile Bolt meets a paid Shield through ordinary projectile collision and reflection. Vanilla damage kills the shooter. The existing peer loop sends its real respawn packet and both processes verify replacement body identity with the same profile UUID. Vanilla reuses numeric entity IDs, so object identity is the replacement proof. The replacement pays for Nullcatch ahead of that same reflected projectile's unmodified flight. A callback following screen dispatch proves that a live, hostile, loaded, unwarded, front-cone candidate and its retained UUID survive with reflection provenance and the screen's unspent allowance intact. The old body stays dead, and health is checked before projectile contact.
+
+Every new case obtains the independent peer's actual client outcome before fixture cleanup and final case acknowledgment. Respawn and case acknowledgments use the existing strict run/role/PID identity checks. The reflected projectile's position, velocity, collision handling, range and finite lifetime are never reset or replaced.
+
+`NextCounterTest` retains its connected owner's ordinary front-arrow/spent-screen, stationary/moving Bell, movement/teleport/cancellation Ledger, shared damage/absorption caps, crowded Nullcatch and reopen scenes. Only the three paired-dependent segments move. Production spell admission, player registration, charge state and counter mechanics are unchanged.
+
+Verification scope: focused Java 25 compilation and supervisor regression tests are local checks. The expanded 38-case native two-client runtime must run afresh in CI; the earlier 35-case result does not establish these three additional outcomes. No native runtime pass is claimed by this migration document.

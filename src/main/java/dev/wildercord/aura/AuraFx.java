@@ -620,4 +620,11 @@ public final class AuraFx {
 			return this;
 		}
 	}
+
+	// ---- methods-b pack
+	static {
+		for (String method : MethodsBPack.METHODS) {
+			FAMILIES.put(method, SoundFamily.named(method));
+		}
+	}
 }

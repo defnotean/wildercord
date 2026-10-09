@@ -3,6 +3,7 @@ package dev.wildercord.cast.feel;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneFamily;
 import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.ReweaveRules;
 import dev.wildercord.spell.SpellCompiler;
 import dev.wildercord.spell.SpellPlan;
 import org.junit.jupiter.api.Test;
@@ -79,12 +80,48 @@ class FeelTest {
 				if (effect.family() != RuneFamily.EFFECT) {
 					continue;
 				}
-				SpellPlan.Group g = SpellCompiler.compile(List.of(shape, effect)).root().groups.getFirst();
+				var compiled = SpellCompiler.compile(List.of(shape, effect));
+				if (shape.equals(Runes.RELAY) && !dev.wildercord.spell.RelayRules.valid(List.of(shape, effect))) {
+					assertTrue(compiled.isEmpty()); assertEquals(0, compiled.cost()); assertFalse(compiled.warnings().isEmpty());
+					continue;
+				}
+				if (shape.equals(Runes.REWEAVE) && !effect.equals(Runes.HARM)) {
+					assertTrue(compiled.isEmpty(), "Reweave refuses " + effect.name());
+					assertEquals(0, compiled.cost());
+					assertTrue(compiled.warnings().contains(ReweaveRules.GRAMMAR_PROBLEM));
+					continue;
+				}
+                var pack = dev.wildercord.spell.LessonPackRules.byRune(effect.id());
+                if (pack != null && !pack.shape.equals(shape)) {
+                    assertTrue(compiled.isEmpty(), pack.name + " refuses " + shape.name());
+                    assertEquals(0, compiled.cost());
+                    assertTrue(compiled.warnings().contains(pack.grammarProblem));
+                    continue;
+                }
+                if (effect.equals(Runes.EXCISE) && !shape.equals(Runes.BEAM)) {
+                    assertTrue(compiled.isEmpty(), "Excise refuses " + shape.name());
+                    assertEquals(0, compiled.cost());
+                    assertTrue(compiled.warnings().contains(dev.wildercord.spell.ExciseRules.GRAMMAR_PROBLEM));
+                    continue;
+                }
+				assertFalse(compiled.isEmpty(), shape.name() + " / " + effect.name());
+				SpellPlan.Group g = compiled.root().groups.getFirst();
 				Feel f = Feel.of(g, 30, 0.5);
 				assertNotNull(f.role());
 				assertNotNull(f.motion());
 			}
 		}
+	}
+
+	@Test
+	void reweavesExactHarmFieldUsesTheGroundInscriptionGesture() {
+		var compiled = SpellCompiler.compile(List.of(Runes.REWEAVE, Runes.HARM));
+		assertTrue(compiled.warnings().isEmpty());
+		assertEquals(1, compiled.root().groups.size());
+		Feel feel = Feel.of(compiled.root().groups.getFirst(), compiled.cost(), 0);
+		assertEquals(Motion.SEAL, feel.motion());
+		assertEquals(Role.STRIKE, feel.role());
+		assertTrue(ShapeFeels.hasGesture(Runes.REWEAVE.path()));
 	}
 
 	@Test
@@ -152,7 +189,11 @@ class FeelTest {
 		// Check dynamically assembled Life names and keep signature voices single.
 		for (RuneDef rune : Runes.all()) {
 			if (rune.family() != RuneFamily.EFFECT || !rune.element().equals("life")) continue;
-			if (rune.path().equals("root_carry")) {
+			if (rune.path().equals("excise")) {
+                assertTrue(kit.contains("life_stinger_thorn"), "The dedicated held cut uses its explicit dry root cue");
+                assertFalse(kit.contains("life_auth_excise_cue"), "A field-cut must not duplicate generic Life hit voices");
+                assertFalse(kit.contains("life_auth_excise_outcome"), "A field-cut has no generic Life hit outcome");
+            } else if (rune.path().equals("root_carry")) {
 				for (String voice : java.util.List.of("cue", "select", "settle")) assertTrue(kit.contains("root_carry_" + voice), "Dedicated root owner voice missing: " + voice);
 				assertFalse(kit.contains("life_auth_root_carry_cue"), "Dedicated owner must not duplicate a Life cue");
 				assertFalse(kit.contains("life_auth_root_carry_outcome"), "Dedicated owner must not invent a Life delta voice");

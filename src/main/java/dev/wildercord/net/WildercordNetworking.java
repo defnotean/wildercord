@@ -38,11 +38,13 @@ public final class WildercordNetworking {
 		}
 	}
 
-	public record EditSpell(int spell, List<String> runes) implements CustomPacketPayload {
+	public record EditSpell(int spell, List<String> runes, long editorSession, long editorRevision) implements CustomPacketPayload {
+		public EditSpell(int spell, List<String> runes) { this(spell, runes, 0, 0); }
 		public static final Type<EditSpell> TYPE = new Type<>(Wildercord.id("edit_spell"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, EditSpell> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, EditSpell::spell,
 			ByteBufCodecs.stringUtf8(dev.wildercord.spell.Knots.MAX_ID_LENGTH).apply(ByteBufCodecs.list(32)), EditSpell::runes,
+			ByteBufCodecs.LONG, EditSpell::editorSession, ByteBufCodecs.LONG, EditSpell::editorRevision,
 			EditSpell::new).cast();
 
 		@Override
@@ -310,7 +312,10 @@ public final class WildercordNetworking {
 			if (!allowed(context)) {
 				return;
 			}
+			boolean relayEdit = dev.wildercord.spell.RelayRules.containsIds(payload.runes()) || dev.wildercord.cast.RelayCircles.contains(context.player(), payload.spell())
+                || dev.wildercord.spell.ReweaveRules.containsIds(payload.runes()) || dev.wildercord.spell.ExciseRules.containsIds(payload.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(payload.runes()) || dev.wildercord.cast.LessonPackCasting.contains(context.player(), payload.spell()) || dev.wildercord.cast.ReweaveFields.contains(context.player(), payload.spell()) || dev.wildercord.cast.ExciseCasting.contains(context.player(), payload.spell());
 			net.minecraft.network.chat.Component problem = SpellCaster.edit(context.player(), payload.spell(), payload.runes());
+			if (relayEdit) RelayEditorReply.reply(context.player(), payload, problem);
 			if (problem != null) {
 				context.player().sendOverlayMessage(problem.copy().withStyle(net.minecraft.ChatFormatting.RED));
 			}

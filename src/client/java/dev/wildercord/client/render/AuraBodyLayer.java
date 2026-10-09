@@ -155,7 +155,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		if (body.stage() >= AuraRules.SOVEREIGN && !body.spent() || body.awakened()) {
 			// The eyes (Sovereign's, and anyone's awakened), in the head's own frame so they turn with it.
 			pose.pushPose();
-			getParentModel().head.translateAndRotate(pose);
+			if (!dev.wildercord.client.combat.ArticulatedCombat.head(getParentModel(), state, pose)) getParentModel().head.translateAndRotate(pose);
 			for (Ink ink : inks) {
 				nodes.order(2).submitCustomGeometry(pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, buffer) -> eyes(p, buffer, body, ink));
 			}

@@ -250,6 +250,10 @@ public final class MomentumRules {
 	public static final int STARRED = 1 << 8;
 	public static final int STOPPED = 1 << 9;
 	public static final int BLEEDING = 1 << 10;
+	// ---- methods-a pack
+	public static final int SOAKED = 1 << 11;
+	public static final int SUNDERED = 1 << 12;
+	public static final int BLINDED = 1 << 13;
 
 	/** What a blow on a foe in a state the temper favours builds: this much more. */
 	public static final double FAVOURED = 1.4;
@@ -300,6 +304,21 @@ public final class MomentumRules {
 
 	/** A method's temper ({@link Temper#PLAIN} for one without). */
 	public static Temper temper(String methodId) {
-		return methodId == null ? Temper.PLAIN : TEMPERS.getOrDefault(methodId, Temper.PLAIN);
+		if (methodId == null) {
+			return Temper.PLAIN;
+		}
+		Temper own = TEMPERS.get(methodId);
+		// ---- methods-a pack
+		return own != null ? own : METHODS_A_TEMPERS.getOrDefault(methodId, Temper.PLAIN);
 	}
+
+	// ---- methods-a pack
+	/**
+	 * Tide, Iron and Dune's tempers, kept apart from the ten. Tide flows (more from steps, feeds on soaked foes); Iron is heavy (a hit
+	 * knocks off little, a guard builds well, feeds on sundered foes); Dune waits in the sand (holds long, feeds on blinded foes).
+	 */
+	public static final Map<String, Temper> METHODS_A_TEMPERS = Map.of(
+		"tide", new Temper(1.0, 1.05, 1.0, 1.2, 1.2, 1.0, 80, 1.0, SOAKED, false, false, false),
+		"iron", new Temper(1.05, 1.0, 1.25, 0.85, 1.0, 0.7, 80, 0.9, SUNDERED, false, false, false),
+		"dune", new Temper(1.0, 1.1, 1.0, 1.1, 1.0, 1.0, 120, 0.8, BLINDED, false, false, false));
 }

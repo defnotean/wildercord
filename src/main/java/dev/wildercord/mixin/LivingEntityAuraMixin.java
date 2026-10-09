@@ -30,6 +30,7 @@ public abstract class LivingEntityAuraMixin {
 	@WrapMethod(method = "hurtServer")
 	private boolean wildercord$auraGuard(ServerLevel level, DamageSource source, float damage, Operation<Boolean> original) {
 		LivingEntity self = (LivingEntity) (Object) this;
+		if (dev.wildercord.party.Parties.blocksDamage(self, source)) return false;
 		if (AuraStep.untouchable(self, source)) {
 			return false;
 		}

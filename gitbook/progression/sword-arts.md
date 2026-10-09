@@ -1,18 +1,36 @@
 # Sword arts
 
 
-Every breathing method answers the five [sword strings](aura.md#sword-strings) its own
-way. The strings are the same for everyone, so you learn them once; what your blade does when you play one depends on your
-method. Ember sets the field alight, Rime slows, freezes and shatters, Thunder leaps from foe to foe faster than the eye,
-Gale reaches far and takes the ground from under your foes, Stone hits hardest of all and stands unmoved, Verdant roots its
-foes and mends its allies, Hollow draws foes in and silences them, Starlit sets stars that burst and gets its aura back,
-Hourglass echoes, rewinds and holds foes still in time, and Crimson bleeds its foes and drinks from them.
+## What it is
+
+Every breathing method answers the five [sword strings](aura.md#sword-strings) its
+own way. The strings are the same for everyone, so you learn them once. What your blade does depends on your method: Ember
+burns, Rime freezes and shatters, Thunder leaps from foe to foe, Gale reaches far and lifts, Stone hits hardest, Verdant roots
+and mends, Hollow draws in and silences, Starlit sets stars and gets aura back, Hourglass echoes and stops time, Crimson
+bleeds and drinks, Tide soaks and drags, Iron cracks armour and stands firm, Dune blinds and sinks, Echo strikes twice, Dawn
+lights up and dazzles, and Venom poisons and weakens. That is 16 methods, five arts each.
 
 ![A column of sunlight driven down onto a stone platform, rings of orange light and fire racing out over the ground round it, curls of flame flying, a husk thrown high in the light](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/arts-sunfall.jpg)
 <span>Sunfall, Ember Breath's Final Art.</span>
 
 
-## The five strings
+## How to use it
+
+Swing as you always do, in time: each swing must come within about half a second of your blade being ready again. A row of
+marks under your crosshair shows the string as you play it.
+
+| Mark | Swing | How |
+|---|---|---|
+| a small diamond | **a swing** | any swing |
+| a full diamond | **a full swing** | wait for the attack indicator to fill |
+| pointing down | **a low swing** | while sneaking |
+| pointing up | **a leaping swing** | in the air |
+| pointing ahead | **a running swing** | while sprinting |
+| a gold ring | **a counter** | your first swing after a perfect Aura Guard |
+| two chevrons | **a step cut** | your first swing after an Aura Step |
+
+Only swings at a creature, or at the air during a fight, count, so building and digging never set off an art. When the same
+swings spell more than one art, the most demanding one that can go goes. If none can, you're told why above the hotbar.
 
 | Art | Opens at | String | Aura | Rests |
 |---|---|---|---|---|
@@ -22,32 +40,25 @@ Hourglass echoes, rewinds and holds foes still in time, and Crimson bleeds its f
 | **Fourth Art** | Form | a **step cut** (your first swing after an Aura Step) | 10 | 5 s |
 | **Final Art** | Sovereign | **full**, **full**, **full**, **low**, at the peak of your momentum | 40 | 30 s |
 
-Every method's art in a slot costs and rests the same and is worth about as much: a method is a different answer, never a
-better one. (Thunder's Crackle rests a little less, 2.5 s, for being lighter.) All fifty were weighed against each other on one
-scale, damage, the foes they reach, how long they hold, how far they go, what they mend and the aura they give back, so no
-method's five outweigh another's.
+Every method's art in a slot costs and rests the same and is weighed to be worth about as much: a method is a different
+answer, never a better one. (Thunder's Crackle rests a little less, 2.5 s.)
 
 ## How arts work
 
 - **Damage is a share of your weapon's own**, written below as "×": an art at 1× strikes as hard as your blade does (an iron
   sword's 6, a netherite one's 8), so a better blade carries every art with it. Arts are aura off the blade in your method's
   element, like the slash: they meet weaknesses and resistances, set off reactions, and can leave aura marks.
-- **Each art names itself** in a banner as it goes off, makes your aura surge, cuts its own trail and plays its own sound over
-  your method's.
-- **Your first time playing an art** writes it into your [Grimoire](grimoire.md) (and
-  condenses a little mana toward your next Heart Circle). The Grimoire page lists every art you've played, by method, and your
-  own method's still to play.
-- **The Aura page** shows your arts on its **Sword strings** tab, and a row of every method's colour above them: click one to
-  read another method's arts (an add-on's method playing the common arts is dimmed).
-- **Your own view stays clear.** The big shapes (a lance of lightning, a mirror of ice, a gout of flame) are drawn for
-  everyone watching you and for you in third person; in first person you see a thin, low version, never a wall of light across
-  the middle of your view.
-- **An art with nowhere to go** (a rush against a wall, a blink with nobody near) doesn't go and costs nothing; you're told
-  why above the hotbar.
-- **Momentum makes every art cheaper and stronger**: up to a quarter off its price and a fifth harder at the peak, where the
-  Final Art opens (see [Momentum](aura.md#momentum)). An art that lands builds momentum, and
-  its strikes wear a foe's stance twice as fast as a blow (Stone's quakes faster still), toward an opening and your method's
-  [finisher](aura.md#finishers).
+- **Every art has a windup.** Your body commits for a short moment before the strike, then recovers after it. The price and
+  rest are paid when the art starts and your aim is locked then. If you take damage during the windup, the strike is lost but
+  stays paid. See [Combat presentation](../masters/combat-presentation.md).
+- **An art with nowhere to go** when you play it (a rush against a wall, a blink with nobody near) doesn't start and costs
+  nothing. But once it has started, a target that's gone by the time it strikes is a paid miss.
+- **Each art names itself** in a banner, and your first time playing one writes it into your
+  [Grimoire](grimoire.md).
+- **The Aura page's Sword strings tab** lists your arts. Click another method's colour to read its arts.
+- **Momentum makes every art cheaper and stronger**: up to a quarter off and a fifth harder at the peak, where the Final Art
+  opens (see [Momentum](aura.md#momentum)). Arts wear a foe's stance twice as fast as a
+  blow, toward your method's [finisher](aura.md#stance-and-finishers).
 
 ## Ember Breath
 
@@ -232,10 +243,86 @@ already down to a heart, it costs nothing more.
 ![Seen from behind a player wreathed in red light: a great crescent of blood-red light standing over four husks ahead, crescents of red rolling out low over the stone, rings of red round each husk](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/arts-crimson-moon.jpg)
 <span>Crimson Moon.</span>
 
+## Tide Breath
+
+Water that soaks, drags and throws. Soaked foes have their fire put out and are slowed a moment.
+
+| Art | What it does |
+|---|---|
+| **Riptide Cut** (First) | A wide cut of water that soaks the foes in front, and the current drags them in toward you. |
+| **Breaker** (Second) | A wave rolls 7 blocks out ahead, cutting and throwing back everything in it. The ground behind stays wet for 4 s: foes in it are slowed, and fire goes out. |
+| **Whirlpool** (Third) | The counter: a whirlpool opens on the ground ahead for 3 s, drawing every foe near to its heart and cutting them each second. |
+| **Surge** (Fourth) | Straight after your step, a wave carries you 8 blocks on, cutting every foe in the way and carrying them along with you, soaked. |
+| **Maelstrom** (Final) | The sea rises round you: five waves roll over every foe near, then it crashes down and throws them all away. |
+
+## Iron Breath
+
+Heavy, armoured and hard to move. Iron's arts **crack armour** (sunder) for a while, and its counter makes you hard to hurt.
+
+| Art | What it does |
+|---|---|
+| **Sunder Cut** (First) | One heavy cut that cracks the armour of the foes in front by 4 points for 5 s. |
+| **Anvil Fall** (Second) | You rise and come down like a hammer, striking everything near where you land, holding it still a moment and cracking its armour. |
+| **Bulwark** (Third) | The counter: your guard sets like iron for 3 s. Blows land weaker and don't move you, and foes that come near are shoved back. Foes round you as it rises are cut and thrown back. |
+| **Forge Charge** (Fourth) | Straight after your step, a shoulder-first charge 7 blocks on, cutting every foe in the way and cracking its armour. |
+| **Worldforge** (Final) | A hammer of the world falls where you stand. The foe you face is struck hardest; every foe near is cut, thrown back and has its armour cracked wide for 8 s, and your guard sets like iron. |
+
+## Dune Breath
+
+Sand in the eyes and ground that gives way. Dune **blinds** (a creature loses track of you) and **sinks** (slowed hard).
+
+| Art | What it does |
+|---|---|
+| **Grit Flick** (First) | A flick of the blade throws sand in the eyes of the foes in front, blinding them a moment and slowing them. |
+| **Quicksand** (Second) | The ground ahead turns to quicksand for 4 s, swallowing the feet of every foe in it (slowed hard and drawn to its heart) and grinding at them. |
+| **Sandveil** (Third) | The counter: a burst of sand round you blinds every foe near, and for a moment you move quickly and are hard to find. |
+| **Dune Runner** (Fourth) | Straight after your step, a run 7 blocks on across shifting sand: every foe in the way is cut, slowed, sunk and turned aside. |
+| **Sea of Sand** (Final) | The desert rises round you. Gusts of sand blind and sink every foe near, then the dunes close over them. |
+
+## Echo Breath
+
+Every blow rings twice. Echo's arts strike, then strike the same foes again a moment later, and leave them **reeling**.
+
+| Art | What it does |
+|---|---|
+| **Ringing Cut** (First) | An arc of sound in front (3.6 blocks, up to 4 foes). A moment later its ring strikes the same foes again. |
+| **Resonant Chord** (Second) | A cone of sound 6 blocks ahead (up to 6 foes). Foes in it are struck, reel and slow. |
+| **Counterpoint** (Third) | The counter: a ring of sound all round you (3.5 blocks) throws foes back reeling, then rings again. |
+| **Reverb Step** (Fourth) | Straight after your step, a 7-block dash that cuts the foes in the way (up to 5), then its echo cuts them again. |
+| **Grand Resonance** (Final) | A great toll round you (7 blocks, up to 10 foes), then three echoes after it, each a ring further out. |
+
+## Dawn Breath
+
+Light that reveals and dazzles. Dawn's arts **light foes up** so they can be seen, blind them a moment, burn the undead hardest,
+and mend you a little.
+
+| Art | What it does |
+|---|---|
+| **First Light** (First) | A bright cut in front. Its foes are lit up, and the undead burn harder. |
+| **Sunrise Arc** (Second) | A rising arc of light ahead. Its foes are blinded a moment and lit up. |
+| **Halo Guard** (Third) | The counter: a halo round you. You mend, and the foes near are blinded and thrown back. |
+| **Dawnbreak Rush** (Fourth) | Straight after your step, a dash down a line of light, cutting and lighting the foes in the way. |
+| **Noon Zenith** (Final) | A sun rises overhead, then its noon falls on every foe near, blinding them. |
+
+## Venom Breath
+
+A bite that builds. Venom's **toxin stacks** with every bite, and its arts weaken foes and let you slip away.
+
+| Art | What it does |
+|---|---|
+| **Fang Strike** (First) | A quick bite in front. Its toxin stacks with the next bite. |
+| **Spitting Cobra** (Second) | A spray of venom ahead, poisoning and weakening everything it wets. |
+| **Shed Skin** (Third) | The counter: a cut and a slither back. The husk you leave behind poisons whoever stands in it. |
+| **Serpent Slither** (Fourth) | Straight after your step, a weaving dash. Every foe in the way is bitten and weakened. |
+| **Hydra Coil** (Final) | Five heads strike all round you in turn, each bite stacking the toxin higher. |
+
+These six methods use the same strings, stages, prices and rests as every other method (the table under
+[How to use it](#how-to-use-it)).
+
 ## Techniques of your own
 
 From Edge a swordsman can write techniques of their own beside these: a stroke, a release and an intent, their method's element in
-each, on a string of their choosing. Each is weighed on the same scale as the fifty arts, so it's another answer to them rather than
+each, on a string of their choosing. Each is weighed on the same scale as the methods' arts, so it's another answer to them rather than
 a better one. See [Techniques of your own](techniques.md).
 
 ## The common arts
@@ -243,16 +330,16 @@ a better one. See [Techniques of your own](techniques.md).
 A breathing method without arts of its own (an add-on's) plays the five **common arts** on the same strings: an arc of aura in
 front of you (First), a rising arc that throws foes up (Second), a cut that staggers the foe you countered (Third), a line of
 aura five blocks ahead (Fourth), and a ring of aura that throws every foe near back (Final). See
-[the arts](aura.md#the-arts).
+[Aura](aura.md#sword-strings).
 
 ![The Aura page's Sword strings tab of an Ember swordsman, the yellow swatch chosen in the row of ten: Thunder Breath's five arts, Crackle to Heaven's Spear, each with its string in small marks, the stage that opens it and its price](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/arts-page.jpg)
 <span>The Sword strings tab: an Ember swordsman reading Thunder Breath's arts.</span>
 
-## Arts, other players and the world
+## Tips and counterplay
 
 - **Never a one-shot.** An art deals one player at most 8 damage in all (after the PvP scale, before their armour and spell
   defences), even at the peak of momentum, and every art meets armour, Warding and the spellguard like a spell. A totem still
-  saves. An art wears at most half of a player's stance (see [Duels](aura.md#duels)).
+  saves. An art wears at most half of a player's stance (see [Stance](aura.md#stance-and-finishers)).
 - **Holds are short.** An art freezes, stuns, roots or holds a player still in time for at most three quarters of a second,
   and no art can hold the same player again for 4 seconds; it sets a player alight for at most 3 s and throws a player only so
   hard. A steady pull (Collapse's well, Event Horizon) drags a player slower than they can sprint. Bosses are only ever slowed:
@@ -265,6 +352,6 @@ aura five blocks ahead (Fourth), and a ring of aura that throws every foe near b
 - **Nothing is griefed.** Fire, ice, stone, roots, brambles, flowers and trees left by an art are light and shapes; only Skate's
   ice over water is real, it thaws, and it never forms where you couldn't build (claims, warded ground, or with world-changing
   magic switched off).
+- **Watch the windup.** Hitting a swordsman as they wind up an art cancels it, and they've still paid for it.
 
-Server owners can scale every art's damage (`aura.art_damage`), stop Skate freezing water (`aura.art_terrain`), or switch
-strings off altogether (`aura.strings`).
+Server owners can scale art damage, stop Skate freezing water, or switch strings off.

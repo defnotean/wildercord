@@ -2607,6 +2607,2694 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/soar"
         }
+      },
+      {
+        "when": "wildercord:relay",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/relay"
+        }
+      },
+      {
+        "when": "wildercord:excise",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/excise"
+        }
+      },
+      {
+        "when": "wildercord:reweave",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/reweave"
+        }
+      },
+      {
+        "when": "wildercord:tollgate",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tollgate"
+        }
+      },
+      {
+        "when": "wildercord:lifeline",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lifeline"
+        }
+      },
+      {
+        "when": "wildercord:conduit",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/conduit"
+        }
+      },
+      {
+        "when": "wildercord:slowburn",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/slowburn"
+        }
+      },
+      {
+        "when": "wildercord:camp_ward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/camp_ward"
+        }
+      },
+      {
+        "when": "wildercord:warm_cloak",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/warm_cloak"
+        }
+      },
+      {
+        "when": "wildercord:softsole",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/softsole"
+        }
+      },
+      {
+        "when": "wildercord:softfoot",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/softfoot"
+        }
+      },
+      {
+        "when": "wildercord:hollow_pocket",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hollow_pocket"
+        }
+      },
+      {
+        "when": "wildercord:lodestar",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lodestar"
+        }
+      },
+      {
+        "when": "wildercord:homeward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/homeward"
+        }
+      },
+      {
+        "when": "wildercord:gravefinder",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gravefinder"
+        }
+      },
+      {
+        "when": "wildercord:skyread",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/skyread"
+        }
+      },
+      {
+        "when": "wildercord:lullaby",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lullaby"
+        }
+      },
+      {
+        "when": "wildercord:steedsong",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/steedsong"
+        }
+      },
+      {
+        "when": "wildercord:glidewind",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/glidewind"
+        }
+      },
+      {
+        "when": "wildercord:waymark",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/waymark"
+        }
+      },
+      {
+        "when": "wildercord:ember_rest",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ember_rest"
+        }
+      },
+      {
+        "when": "wildercord:orbcall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/orbcall"
+        }
+      },
+      {
+        "when": "wildercord:tinker_hum",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tinker_hum"
+        }
+      },
+      {
+        "when": "wildercord:lantern_soul",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lantern_soul"
+        }
+      },
+      {
+        "when": "wildercord:keenkeep",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/keenkeep"
+        }
+      },
+      {
+        "when": "wildercord:landread",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/landread"
+        }
+      },
+      {
+        "when": "wildercord:rally_light",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/rally_light"
+        }
+      },
+      {
+        "when": "wildercord:dew_drink",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dew_drink"
+        }
+      },
+      {
+        "when": "wildercord:sunbask",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sunbask"
+        }
+      },
+      {
+        "when": "wildercord:currentkin",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/currentkin"
+        }
+      },
+      {
+        "when": "wildercord:surefoot",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/surefoot"
+        }
+      },
+      {
+        "when": "wildercord:long_arm",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/long_arm"
+        }
+      },
+      {
+        "when": "wildercord:nightwatch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/nightwatch"
+        }
+      },
+      {
+        "when": "wildercord:trailblaze",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/trailblaze"
+        }
+      },
+      {
+        "when": "wildercord:hearthpath",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hearthpath"
+        }
+      },
+      {
+        "when": "wildercord:lostfind",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lostfind"
+        }
+      },
+      {
+        "when": "wildercord:stillwell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stillwell"
+        }
+      },
+      {
+        "when": "wildercord:starchart",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/starchart"
+        }
+      },
+      {
+        "when": "wildercord:petward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/petward"
+        }
+      },
+      {
+        "when": "wildercord:whistle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/whistle"
+        }
+      },
+      {
+        "when": "wildercord:luckcharm",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/luckcharm"
+        }
+      },
+      {
+        "when": "wildercord:smoke_signal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/smoke_signal"
+        }
+      },
+      {
+        "when": "wildercord:wayfarer_hymn",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/wayfarer_hymn"
+        }
+      },
+      {
+        "when": "wildercord:steedmend",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/steedmend"
+        }
+      },
+      {
+        "when": "wildercord:dynamo_stride",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dynamo_stride"
+        }
+      },
+      {
+        "when": "wildercord:tarry",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tarry"
+        }
+      },
+      {
+        "when": "wildercord:clot",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/clot"
+        }
+      },
+      {
+        "when": "wildercord:heartsense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/heartsense"
+        }
+      },
+      {
+        "when": "wildercord:quench",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/quench"
+        }
+      },
+      {
+        "when": "wildercord:hearthbond",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hearthbond"
+        }
+      },
+      {
+        "when": "wildercord:springseek",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/springseek"
+        }
+      },
+      {
+        "when": "wildercord:savor",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/savor"
+        }
+      },
+      {
+        "when": "wildercord:deepwarn",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/deepwarn"
+        }
+      },
+      {
+        "when": "wildercord:enderhush",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/enderhush"
+        }
+      },
+      {
+        "when": "wildercord:furrow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/furrow"
+        }
+      },
+      {
+        "when": "wildercord:plot",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/plot"
+        }
+      },
+      {
+        "when": "wildercord:seedbed",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/seedbed"
+        }
+      },
+      {
+        "when": "wildercord:shaft",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shaft"
+        }
+      },
+      {
+        "when": "wildercord:stairwell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stairwell"
+        }
+      },
+      {
+        "when": "wildercord:corridor",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/corridor"
+        }
+      },
+      {
+        "when": "wildercord:seam",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/seam"
+        }
+      },
+      {
+        "when": "wildercord:facade",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/facade"
+        }
+      },
+      {
+        "when": "wildercord:dome",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dome"
+        }
+      },
+      {
+        "when": "wildercord:footing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/footing"
+        }
+      },
+      {
+        "when": "wildercord:canopy",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/canopy"
+        }
+      },
+      {
+        "when": "wildercord:shoreline",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shoreline"
+        }
+      },
+      {
+        "when": "wildercord:perimeter",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/perimeter"
+        }
+      },
+      {
+        "when": "wildercord:spire",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spire"
+        }
+      },
+      {
+        "when": "wildercord:pit",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pit"
+        }
+      },
+      {
+        "when": "wildercord:crossway",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/crossway"
+        }
+      },
+      {
+        "when": "wildercord:lodeseek",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lodeseek"
+        }
+      },
+      {
+        "when": "wildercord:vault",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/vault"
+        }
+      },
+      {
+        "when": "wildercord:lamplit",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lamplit"
+        }
+      },
+      {
+        "when": "wildercord:fissure",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fissure"
+        }
+      },
+      {
+        "when": "wildercord:spiral",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spiral"
+        }
+      },
+      {
+        "when": "wildercord:rosette",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/rosette"
+        }
+      },
+      {
+        "when": "wildercord:stepstones",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stepstones"
+        }
+      },
+      {
+        "when": "wildercord:causeway",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/causeway"
+        }
+      },
+      {
+        "when": "wildercord:hedgerow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hedgerow"
+        }
+      },
+      {
+        "when": "wildercord:lattice",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lattice"
+        }
+      },
+      {
+        "when": "wildercord:collapse",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/collapse"
+        }
+      },
+      {
+        "when": "wildercord:fan",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fan"
+        }
+      },
+      {
+        "when": "wildercord:bobber",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bobber"
+        }
+      },
+      {
+        "when": "wildercord:herd",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/herd"
+        }
+      },
+      {
+        "when": "wildercord:fellowship",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fellowship"
+        }
+      },
+      {
+        "when": "wildercord:saddle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/saddle"
+        }
+      },
+      {
+        "when": "wildercord:packbond",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/packbond"
+        }
+      },
+      {
+        "when": "wildercord:nursery",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/nursery"
+        }
+      },
+      {
+        "when": "wildercord:shoal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shoal"
+        }
+      },
+      {
+        "when": "wildercord:rearguard",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/rearguard"
+        }
+      },
+      {
+        "when": "wildercord:grudge",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/grudge"
+        }
+      },
+      {
+        "when": "wildercord:sentinel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sentinel"
+        }
+      },
+      {
+        "when": "wildercord:aureole",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/aureole"
+        }
+      },
+      {
+        "when": "wildercord:tether",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tether"
+        }
+      },
+      {
+        "when": "wildercord:flock",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/flock"
+        }
+      },
+      {
+        "when": "wildercord:angler_lure",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/angler_lure"
+        }
+      },
+      {
+        "when": "wildercord:bait_blessing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bait_blessing"
+        }
+      },
+      {
+        "when": "wildercord:reeling_tide",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/reeling_tide"
+        }
+      },
+      {
+        "when": "wildercord:school_sight",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/school_sight"
+        }
+      },
+      {
+        "when": "wildercord:tackle_mend",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tackle_mend"
+        }
+      },
+      {
+        "when": "wildercord:bobber_bell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bobber_bell"
+        }
+      },
+      {
+        "when": "wildercord:water_reading",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/water_reading"
+        }
+      },
+      {
+        "when": "wildercord:dolphin_call",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dolphin_call"
+        }
+      },
+      {
+        "when": "wildercord:axolotl_kinship",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/axolotl_kinship"
+        }
+      },
+      {
+        "when": "wildercord:shoal_herd",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shoal_herd"
+        }
+      },
+      {
+        "when": "wildercord:refloat",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/refloat"
+        }
+      },
+      {
+        "when": "wildercord:reed_cut",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/reed_cut"
+        }
+      },
+      {
+        "when": "wildercord:wring",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/wring"
+        }
+      },
+      {
+        "when": "wildercord:spring_draw",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spring_draw"
+        }
+      },
+      {
+        "when": "wildercord:brimming",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/brimming"
+        }
+      },
+      {
+        "when": "wildercord:oceans_favor",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/oceans_favor"
+        }
+      },
+      {
+        "when": "wildercord:diving_bell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/diving_bell"
+        }
+      },
+      {
+        "when": "wildercord:tide_lantern",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tide_lantern"
+        }
+      },
+      {
+        "when": "wildercord:sluice",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sluice"
+        }
+      },
+      {
+        "when": "wildercord:soak_through",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/soak_through"
+        }
+      },
+      {
+        "when": "wildercord:rain_cloud",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/rain_cloud"
+        }
+      },
+      {
+        "when": "wildercord:storm_glass",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/storm_glass"
+        }
+      },
+      {
+        "when": "wildercord:kelpsong",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/kelpsong"
+        }
+      },
+      {
+        "when": "wildercord:coral_mend",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/coral_mend"
+        }
+      },
+      {
+        "when": "wildercord:nest_tend",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/nest_tend"
+        }
+      },
+      {
+        "when": "wildercord:lily_path",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lily_path"
+        }
+      },
+      {
+        "when": "wildercord:sandbar",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sandbar"
+        }
+      },
+      {
+        "when": "wildercord:ice_auger",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ice_auger"
+        }
+      },
+      {
+        "when": "wildercord:tide_marker",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tide_marker"
+        }
+      },
+      {
+        "when": "wildercord:shore_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shore_sense"
+        }
+      },
+      {
+        "when": "wildercord:fathom",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fathom"
+        }
+      },
+      {
+        "when": "wildercord:wreck_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/wreck_sense"
+        }
+      },
+      {
+        "when": "wildercord:drift_net",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/drift_net"
+        }
+      },
+      {
+        "when": "wildercord:mooring_call",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/mooring_call"
+        }
+      },
+      {
+        "when": "wildercord:fair_wind",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fair_wind"
+        }
+      },
+      {
+        "when": "wildercord:upwell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/upwell"
+        }
+      },
+      {
+        "when": "wildercord:sounding",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sounding"
+        }
+      },
+      {
+        "when": "wildercord:porpoise",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/porpoise"
+        }
+      },
+      {
+        "when": "wildercord:skimstep",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/skimstep"
+        }
+      },
+      {
+        "when": "wildercord:skaters_edge",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/skaters_edge"
+        }
+      },
+      {
+        "when": "wildercord:air_pocket",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/air_pocket"
+        }
+      },
+      {
+        "when": "wildercord:drown_ward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/drown_ward"
+        }
+      },
+      {
+        "when": "wildercord:pearl_sight",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pearl_sight"
+        }
+      },
+      {
+        "when": "wildercord:sea_breeze",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sea_breeze"
+        }
+      },
+      {
+        "when": "wildercord:inkveil",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/inkveil"
+        }
+      },
+      {
+        "when": "wildercord:shellback",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shellback"
+        }
+      },
+      {
+        "when": "wildercord:dewcatch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dewcatch"
+        }
+      },
+      {
+        "when": "wildercord:divers_hands",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/divers_hands"
+        }
+      },
+      {
+        "when": "wildercord:tillage",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tillage"
+        }
+      },
+      {
+        "when": "wildercord:dewfall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dewfall"
+        }
+      },
+      {
+        "when": "wildercord:tilth",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tilth"
+        }
+      },
+      {
+        "when": "wildercord:plowline",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/plowline"
+        }
+      },
+      {
+        "when": "wildercord:sow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sow"
+        }
+      },
+      {
+        "when": "wildercord:ripen",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ripen"
+        }
+      },
+      {
+        "when": "wildercord:dewkeep",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dewkeep"
+        }
+      },
+      {
+        "when": "wildercord:fieldsense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fieldsense"
+        }
+      },
+      {
+        "when": "wildercord:thawfield",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/thawfield"
+        }
+      },
+      {
+        "when": "wildercord:cloche",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cloche"
+        }
+      },
+      {
+        "when": "wildercord:scarecrow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/scarecrow"
+        }
+      },
+      {
+        "when": "wildercord:fallow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fallow"
+        }
+      },
+      {
+        "when": "wildercord:ditchwater",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ditchwater"
+        }
+      },
+      {
+        "when": "wildercord:compost",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/compost"
+        }
+      },
+      {
+        "when": "wildercord:stalkrise",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stalkrise"
+        }
+      },
+      {
+        "when": "wildercord:gourdcall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gourdcall"
+        }
+      },
+      {
+        "when": "wildercord:berrybless",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/berrybless"
+        }
+      },
+      {
+        "when": "wildercord:courtship",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/courtship"
+        }
+      },
+      {
+        "when": "wildercord:herdcall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/herdcall"
+        }
+      },
+      {
+        "when": "wildercord:fleece",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fleece"
+        }
+      },
+      {
+        "when": "wildercord:milkmaid",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/milkmaid"
+        }
+      },
+      {
+        "when": "wildercord:henhouse",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/henhouse"
+        }
+      },
+      {
+        "when": "wildercord:gentlehand",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gentlehand"
+        }
+      },
+      {
+        "when": "wildercord:fodder",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fodder"
+        }
+      },
+      {
+        "when": "wildercord:barnwarmth",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/barnwarmth"
+        }
+      },
+      {
+        "when": "wildercord:herdsense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/herdsense"
+        }
+      },
+      {
+        "when": "wildercord:hearthcook",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hearthcook"
+        }
+      },
+      {
+        "when": "wildercord:stewpot",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stewpot"
+        }
+      },
+      {
+        "when": "wildercord:bakehouse",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bakehouse"
+        }
+      },
+      {
+        "when": "wildercord:pollinate",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pollinate"
+        }
+      },
+      {
+        "when": "wildercord:hivehum",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hivehum"
+        }
+      },
+      {
+        "when": "wildercord:calmsmoke",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/calmsmoke"
+        }
+      },
+      {
+        "when": "wildercord:wildflower",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/wildflower"
+        }
+      },
+      {
+        "when": "wildercord:saplingrise",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/saplingrise"
+        }
+      },
+      {
+        "when": "wildercord:saplingsow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/saplingsow"
+        }
+      },
+      {
+        "when": "wildercord:leaffall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/leaffall"
+        }
+      },
+      {
+        "when": "wildercord:barkstrip",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/barkstrip"
+        }
+      },
+      {
+        "when": "wildercord:coppice",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/coppice"
+        }
+      },
+      {
+        "when": "wildercord:feastday",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/feastday"
+        }
+      },
+      {
+        "when": "wildercord:picnic",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/picnic"
+        }
+      },
+      {
+        "when": "wildercord:honeydew",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/honeydew"
+        }
+      },
+      {
+        "when": "wildercord:leafshade",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/leafshade"
+        }
+      },
+      {
+        "when": "wildercord:barkhide",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/barkhide"
+        }
+      },
+      {
+        "when": "wildercord:sapflow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sapflow"
+        }
+      },
+      {
+        "when": "wildercord:trot",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/trot"
+        }
+      },
+      {
+        "when": "wildercord:beeline",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/beeline"
+        }
+      },
+      {
+        "when": "wildercord:fieldstride",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fieldstride"
+        }
+      },
+      {
+        "when": "wildercord:hayloft",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hayloft"
+        }
+      },
+      {
+        "when": "wildercord:stairdelve",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stairdelve"
+        }
+      },
+      {
+        "when": "wildercord:riser",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/riser"
+        }
+      },
+      {
+        "when": "wildercord:plumbline",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/plumbline"
+        }
+      },
+      {
+        "when": "wildercord:siftfall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/siftfall"
+        }
+      },
+      {
+        "when": "wildercord:gangue",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gangue"
+        }
+      },
+      {
+        "when": "wildercord:orepluck",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/orepluck"
+        }
+      },
+      {
+        "when": "wildercord:luckstrike",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/luckstrike"
+        }
+      },
+      {
+        "when": "wildercord:silklift",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/silklift"
+        }
+      },
+      {
+        "when": "wildercord:deepsound",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/deepsound"
+        }
+      },
+      {
+        "when": "wildercord:oretally",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/oretally"
+        }
+      },
+      {
+        "when": "wildercord:lavaseal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lavaseal"
+        }
+      },
+      {
+        "when": "wildercord:deepway",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/deepway"
+        }
+      },
+      {
+        "when": "wildercord:hollowsense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hollowsense"
+        }
+      },
+      {
+        "when": "wildercord:kilnbake",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/kilnbake"
+        }
+      },
+      {
+        "when": "wildercord:blockpack",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/blockpack"
+        }
+      },
+      {
+        "when": "wildercord:unpack",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/unpack"
+        }
+      },
+      {
+        "when": "wildercord:millstone",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/millstone"
+        }
+      },
+      {
+        "when": "wildercord:toolmend",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/toolmend"
+        }
+      },
+      {
+        "when": "wildercord:levelground",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/levelground"
+        }
+      },
+      {
+        "when": "wildercord:holefill",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/holefill"
+        }
+      },
+      {
+        "when": "wildercord:shoreup",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shoreup"
+        }
+      },
+      {
+        "when": "wildercord:stilt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stilt"
+        }
+      },
+      {
+        "when": "wildercord:plankway",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/plankway"
+        }
+      },
+      {
+        "when": "wildercord:polish",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/polish"
+        }
+      },
+      {
+        "when": "wildercord:brickwork",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/brickwork"
+        }
+      },
+      {
+        "when": "wildercord:agestone",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/agestone"
+        }
+      },
+      {
+        "when": "wildercord:concreteset",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/concreteset"
+        }
+      },
+      {
+        "when": "wildercord:chalkline",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/chalkline"
+        }
+      },
+      {
+        "when": "wildercord:pitfloor",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pitfloor"
+        }
+      },
+      {
+        "when": "wildercord:torchfall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/torchfall"
+        }
+      },
+      {
+        "when": "wildercord:gloomsight",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gloomsight"
+        }
+      },
+      {
+        "when": "wildercord:lumenpath",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lumenpath"
+        }
+      },
+      {
+        "when": "wildercord:snuffout",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/snuffout"
+        }
+      },
+      {
+        "when": "wildercord:headlamp",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/headlamp"
+        }
+      },
+      {
+        "when": "wildercord:leverflip",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/leverflip"
+        }
+      },
+      {
+        "when": "wildercord:buttonpush",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/buttonpush"
+        }
+      },
+      {
+        "when": "wildercord:doorcall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/doorcall"
+        }
+      },
+      {
+        "when": "wildercord:chestsort",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/chestsort"
+        }
+      },
+      {
+        "when": "wildercord:stow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stow"
+        }
+      },
+      {
+        "when": "wildercord:restock",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/restock"
+        }
+      },
+      {
+        "when": "wildercord:stocktake",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stocktake"
+        }
+      },
+      {
+        "when": "wildercord:unburden",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/unburden"
+        }
+      },
+      {
+        "when": "wildercord:lodepull",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lodepull"
+        }
+      },
+      {
+        "when": "wildercord:caveward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/caveward"
+        }
+      },
+      {
+        "when": "wildercord:delvemark",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/delvemark"
+        }
+      },
+      {
+        "when": "wildercord:motherlode",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/motherlode"
+        }
+      },
+      {
+        "when": "wildercord:floorlay",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/floorlay"
+        }
+      },
+      {
+        "when": "wildercord:packtidy",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/packtidy"
+        }
+      },
+      {
+        "when": "wildercord:tidy",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tidy"
+        }
+      },
+      {
+        "when": "wildercord:replanting",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/replanting"
+        }
+      },
+      {
+        "when": "wildercord:kilned",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/kilned"
+        }
+      },
+      {
+        "when": "wildercord:silken",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/silken"
+        }
+      },
+      {
+        "when": "wildercord:windfall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/windfall"
+        }
+      },
+      {
+        "when": "wildercord:veinfollow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/veinfollow"
+        }
+      },
+      {
+        "when": "wildercord:timbering",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/timbering"
+        }
+      },
+      {
+        "when": "wildercord:level_ground",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/level_ground"
+        }
+      },
+      {
+        "when": "wildercord:steady",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/steady"
+        }
+      },
+      {
+        "when": "wildercord:damp",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/damp"
+        }
+      },
+      {
+        "when": "wildercord:magnetic",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/magnetic"
+        }
+      },
+      {
+        "when": "wildercord:sowing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sowing"
+        }
+      },
+      {
+        "when": "wildercord:furrowing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/furrowing"
+        }
+      },
+      {
+        "when": "wildercord:fertile",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fertile"
+        }
+      },
+      {
+        "when": "wildercord:torchset",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/torchset"
+        }
+      },
+      {
+        "when": "wildercord:ore_sensing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ore_sensing"
+        }
+      },
+      {
+        "when": "wildercord:fetching",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fetching"
+        }
+      },
+      {
+        "when": "wildercord:bountiful",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bountiful"
+        }
+      },
+      {
+        "when": "wildercord:culling",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/culling"
+        }
+      },
+      {
+        "when": "wildercord:headhunting",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/headhunting"
+        }
+      },
+      {
+        "when": "wildercord:hallowed",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hallowed"
+        }
+      },
+      {
+        "when": "wildercord:tapering",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tapering"
+        }
+      },
+      {
+        "when": "wildercord:pooled",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pooled"
+        }
+      },
+      {
+        "when": "wildercord:sunlit",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sunlit"
+        }
+      },
+      {
+        "when": "wildercord:gentle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gentle"
+        }
+      },
+      {
+        "when": "wildercord:sparing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sparing"
+        }
+      },
+      {
+        "when": "wildercord:soothing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/soothing"
+        }
+      },
+      {
+        "when": "wildercord:cushioned",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cushioned"
+        }
+      },
+      {
+        "when": "wildercord:mending",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/mending"
+        }
+      },
+      {
+        "when": "wildercord:nourishing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/nourishing"
+        }
+      },
+      {
+        "when": "wildercord:purifying",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/purifying"
+        }
+      },
+      {
+        "when": "wildercord:matchmaking",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/matchmaking"
+        }
+      },
+      {
+        "when": "wildercord:fleecing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fleecing"
+        }
+      },
+      {
+        "when": "wildercord:inward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/inward"
+        }
+      },
+      {
+        "when": "wildercord:selfless",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/selfless"
+        }
+      },
+      {
+        "when": "wildercord:triage",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/triage"
+        }
+      },
+      {
+        "when": "wildercord:if_night",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_night"
+        }
+      },
+      {
+        "when": "wildercord:if_day",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_day"
+        }
+      },
+      {
+        "when": "wildercord:if_raining",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_raining"
+        }
+      },
+      {
+        "when": "wildercord:if_underground",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_underground"
+        }
+      },
+      {
+        "when": "wildercord:if_alone",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_alone"
+        }
+      },
+      {
+        "when": "wildercord:if_near_ally",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_near_ally"
+        }
+      },
+      {
+        "when": "wildercord:if_unhurt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_unhurt"
+        }
+      },
+      {
+        "when": "wildercord:if_holding_tool",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_holding_tool"
+        }
+      },
+      {
+        "when": "wildercord:if_brimming",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_brimming"
+        }
+      },
+      {
+        "when": "wildercord:if_in_fields",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/if_in_fields"
+        }
+      },
+      {
+        "when": "wildercord:on_mine",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_mine"
+        }
+      },
+      {
+        "when": "wildercord:on_harvest",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_harvest"
+        }
+      },
+      {
+        "when": "wildercord:on_catch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_catch"
+        }
+      },
+      {
+        "when": "wildercord:on_sprint",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_sprint"
+        }
+      },
+      {
+        "when": "wildercord:on_splash",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_splash"
+        }
+      },
+      {
+        "when": "wildercord:on_mount",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_mount"
+        }
+      },
+      {
+        "when": "wildercord:on_wake",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_wake"
+        }
+      },
+      {
+        "when": "wildercord:land_reading",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/land_reading"
+        }
+      },
+      {
+        "when": "wildercord:depth_sounding",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/depth_sounding"
+        }
+      },
+      {
+        "when": "wildercord:spawn_bearing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spawn_bearing"
+        }
+      },
+      {
+        "when": "wildercord:home_bearing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/home_bearing"
+        }
+      },
+      {
+        "when": "wildercord:grave_bearing",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/grave_bearing"
+        }
+      },
+      {
+        "when": "wildercord:portal_reckoning",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/portal_reckoning"
+        }
+      },
+      {
+        "when": "wildercord:slime_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/slime_sense"
+        }
+      },
+      {
+        "when": "wildercord:sky_reading",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sky_reading"
+        }
+      },
+      {
+        "when": "wildercord:moon_reading",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/moon_reading"
+        }
+      },
+      {
+        "when": "wildercord:sun_reading",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sun_reading"
+        }
+      },
+      {
+        "when": "wildercord:lux_reading",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lux_reading"
+        }
+      },
+      {
+        "when": "wildercord:chalk_line",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/chalk_line"
+        }
+      },
+      {
+        "when": "wildercord:village_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/village_sense"
+        }
+      },
+      {
+        "when": "wildercord:ruin_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ruin_sense"
+        }
+      },
+      {
+        "when": "wildercord:shipwreck_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shipwreck_sense"
+        }
+      },
+      {
+        "when": "wildercord:portal_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/portal_sense"
+        }
+      },
+      {
+        "when": "wildercord:fortress_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fortress_sense"
+        }
+      },
+      {
+        "when": "wildercord:stronghold_compass",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stronghold_compass"
+        }
+      },
+      {
+        "when": "wildercord:spire_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spire_sense"
+        }
+      },
+      {
+        "when": "wildercord:trail_blaze",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/trail_blaze"
+        }
+      },
+      {
+        "when": "wildercord:relic_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/relic_sense"
+        }
+      },
+      {
+        "when": "wildercord:spawner_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spawner_sense"
+        }
+      },
+      {
+        "when": "wildercord:steady_brush",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/steady_brush"
+        }
+      },
+      {
+        "when": "wildercord:appraise",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/appraise"
+        }
+      },
+      {
+        "when": "wildercord:trade_renew",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/trade_renew"
+        }
+      },
+      {
+        "when": "wildercord:haggle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/haggle"
+        }
+      },
+      {
+        "when": "wildercord:folk_call",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/folk_call"
+        }
+      },
+      {
+        "when": "wildercord:folk_census",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/folk_census"
+        }
+      },
+      {
+        "when": "wildercord:lapis_thrift",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lapis_thrift"
+        }
+      },
+      {
+        "when": "wildercord:quickbrew",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/quickbrew"
+        }
+      },
+      {
+        "when": "wildercord:potion_steep",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/potion_steep"
+        }
+      },
+      {
+        "when": "wildercord:lore_reading",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lore_reading"
+        }
+      },
+      {
+        "when": "wildercord:shelf_count",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shelf_count"
+        }
+      },
+      {
+        "when": "wildercord:beacon_swell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/beacon_swell"
+        }
+      },
+      {
+        "when": "wildercord:dye_wash",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dye_wash"
+        }
+      },
+      {
+        "when": "wildercord:checker_dye",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/checker_dye"
+        }
+      },
+      {
+        "when": "wildercord:glyph_carve",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/glyph_carve"
+        }
+      },
+      {
+        "when": "wildercord:lamplighter",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lamplighter"
+        }
+      },
+      {
+        "when": "wildercord:snuff_out",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/snuff_out"
+        }
+      },
+      {
+        "when": "wildercord:sign_glow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sign_glow"
+        }
+      },
+      {
+        "when": "wildercord:frame_veil",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/frame_veil"
+        }
+      },
+      {
+        "when": "wildercord:stand_pose",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stand_pose"
+        }
+      },
+      {
+        "when": "wildercord:lava_crust",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lava_crust"
+        }
+      },
+      {
+        "when": "wildercord:void_step",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/void_step"
+        }
+      },
+      {
+        "when": "wildercord:lava_sense",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lava_sense"
+        }
+      },
+      {
+        "when": "wildercord:gold_parley",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gold_parley"
+        }
+      },
+      {
+        "when": "wildercord:worst_first",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/worst_first"
+        }
+      },
+      {
+        "when": "wildercord:salve",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/salve"
+        }
+      },
+      {
+        "when": "wildercord:mending_mist",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/mending_mist"
+        }
+      },
+      {
+        "when": "wildercord:hearthglow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hearthglow"
+        }
+      },
+      {
+        "when": "wildercord:aftercare",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/aftercare"
+        }
+      },
+      {
+        "when": "wildercord:hearthsong",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hearthsong"
+        }
+      },
+      {
+        "when": "wildercord:grace",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/grace"
+        }
+      },
+      {
+        "when": "wildercord:managift",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/managift"
+        }
+      },
+      {
+        "when": "wildercord:manawell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/manawell"
+        }
+      },
+      {
+        "when": "wildercord:guardlink",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/guardlink"
+        }
+      },
+      {
+        "when": "wildercord:rally",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/rally"
+        }
+      },
+      {
+        "when": "wildercord:morale",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/morale"
+        }
+      },
+      {
+        "when": "wildercord:shrug_off",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shrug_off"
+        }
+      },
+      {
+        "when": "wildercord:hexguard",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hexguard"
+        }
+      },
+      {
+        "when": "wildercord:stoutheart",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stoutheart"
+        }
+      },
+      {
+        "when": "wildercord:ironhold",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ironhold"
+        }
+      },
+      {
+        "when": "wildercord:evade",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/evade"
+        }
+      },
+      {
+        "when": "wildercord:emberguard",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/emberguard"
+        }
+      },
+      {
+        "when": "wildercord:beastguard",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/beastguard"
+        }
+      },
+      {
+        "when": "wildercord:hearthguard",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hearthguard"
+        }
+      },
+      {
+        "when": "wildercord:heel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/heel"
+        }
+      },
+      {
+        "when": "wildercord:bellward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bellward"
+        }
+      },
+      {
+        "when": "wildercord:sanctuary",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sanctuary"
+        }
+      },
+      {
+        "when": "wildercord:arrowveil",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/arrowveil"
+        }
+      },
+      {
+        "when": "wildercord:blastward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/blastward"
+        }
+      },
+      {
+        "when": "wildercord:firebreak",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/firebreak"
+        }
+      },
+      {
+        "when": "wildercord:pacify",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pacify"
+        }
+      },
+      {
+        "when": "wildercord:lure",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lure"
+        }
+      },
+      {
+        "when": "wildercord:stillbind",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stillbind"
+        }
+      },
+      {
+        "when": "wildercord:taunt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/taunt"
+        }
+      },
+      {
+        "when": "wildercord:nudge",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/nudge"
+        }
+      },
+      {
+        "when": "wildercord:hobble",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hobble"
+        }
+      },
+      {
+        "when": "wildercord:corral",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/corral"
+        }
+      },
+      {
+        "when": "wildercord:truce",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/truce"
+        }
+      },
+      {
+        "when": "wildercord:spook",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spook"
+        }
+      },
+      {
+        "when": "wildercord:aegis",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/aegis"
+        }
+      },
+      {
+        "when": "wildercord:accord",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/accord"
+        }
+      },
+      {
+        "when": "wildercord:citadel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/citadel"
+        }
+      },
+      {
+        "when": "wildercord:shieldwall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/shieldwall"
+        }
+      },
+      {
+        "when": "wildercord:staunch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/staunch"
+        }
+      },
+      {
+        "when": "wildercord:sentry",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sentry"
+        }
+      },
+      {
+        "when": "wildercord:tend",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tend"
+        }
+      },
+      {
+        "when": "wildercord:soothe",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/soothe"
+        }
+      },
+      {
+        "when": "wildercord:withdraw",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/withdraw"
+        }
+      },
+      {
+        "when": "wildercord:keepsafe",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/keepsafe"
+        }
+      },
+      {
+        "when": "wildercord:faithful",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/faithful"
+        }
       }
     ],
     "fallback": {

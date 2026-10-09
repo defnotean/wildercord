@@ -890,7 +890,31 @@ public final class ArtRules {
 		/** Leaves something on the ground a while. */
 		FIELD,
 		/** Turns or slows projectiles. */
-		WARD
+		WARD,
+		// ---- methods-a pack
+		/** Tide: a current that pushes or drags. */
+		CURRENT,
+		/** Tide: soaks a foe (its fire out, a moment slowed). */
+		SOAK,
+		/** Iron: sunders a foe's armour for a while. */
+		SUNDER,
+		/** Iron: the heavy guard (its swordsman hard to hurt and unmoved). */
+		BULWARK,
+		/** Dune: grit in the eyes (blinded, a creature loses its target). */
+		BLIND,
+		/** Dune: the ground swallows feet (slowed deep). */
+		SINK,
+		// ---- methods-b pack
+		/** Echo: struck again by its own sound a moment later, and left reeling. */
+		RESOUND,
+		/** Dawn: lights foes up to be seen, burning the undead. */
+		RADIANT,
+		/** Dawn: dazzles a foe blind a moment (named apart from methods-a's Dune BLIND). */
+		DAZZLE,
+		/** Venom: a toxin that stacks with every bite. */
+		TOXIN,
+		/** Venom: weakens a foe's blows. */
+		WEAKEN
 	}
 
 	/**
@@ -1021,7 +1045,50 @@ public final class ArtRules {
 			.mends(0.6),
 		art("frenzy", "crimson", 3, FRENZY_FACTOR + 0.6, 0.5, 0.0, FRENZY_DISTANCE + 3, Kind.MOVE, Kind.FRENZY),
 		art("crimson_moon", "crimson", 4, MOON_FACTOR + MOON_BLEEDS * MOON_BLEED, 1.6, 0.0, MOON_RADIUS, Kind.BLEED, Kind.DRINK, Kind.TOLL)
-			.mends(health(8.0)).costs(health(5.0)));
+			.mends(health(8.0)).costs(health(5.0)),
+		// ---- methods-a pack
+		// Tide: the current, pushing and dragging, and soaking.
+		art("riptide_cut", "tide", 0, TideRules.RIPTIDE_FACTOR, 0.3, 1.2, TideRules.RIPTIDE_REACH, Kind.CURRENT, Kind.SOAK),
+		art("breaker", "tide", 1, TideRules.BREAKER_FACTOR, 0.6, 1.4, TideRules.BREAKER_LENGTH, Kind.CURRENT, Kind.THROW, Kind.FIELD),
+		art("whirlpool", "tide", 2, TideRules.WHIRLPOOL_TICKS / TideRules.WHIRLPOOL_PERIOD * TideRules.WHIRLPOOL_FACTOR, 0.7, 2.0,
+			TideRules.WHIRLPOOL_AHEAD + TideRules.WHIRLPOOL_RADIUS, Kind.CURRENT, Kind.PULL, Kind.FIELD),
+		art("surge", "tide", 3, TideRules.SURGE_FACTOR, 0.6, 1.2, TideRules.SURGE_DISTANCE + 3, Kind.MOVE, Kind.CURRENT),
+		art("maelstrom", "tide", 4, TideRules.MAELSTROM_WAVES * TideRules.MAELSTROM_FACTOR + TideRules.MAELSTROM_CRASH, 1.6, 2.2,
+			TideRules.MAELSTROM_RADIUS, Kind.CURRENT, Kind.SOAK, Kind.THROW, Kind.FIELD),
+		// Iron: heavy blows through armour, and the heavy guard.
+		art("sunder_cut", "iron", 0, IronRules.SUNDER_CUT_FACTOR, 0.2, 0.4, IronRules.SUNDER_CUT_REACH, Kind.SUNDER),
+		art("anvil_fall", "iron", 1, IronRules.ANVIL_FACTOR, 0.6, IronRules.ANVIL_HOLD / 20.0, IronRules.ANVIL_REACH, Kind.SUNDER, Kind.HOLD),
+		art("bulwark", "iron", 2, IronRules.BULWARK_FACTOR, 0.3, IronRules.BULWARK_TICKS / 20.0 + 0.2, 3.0, Kind.BULWARK, Kind.THROW),
+		art("forge_charge", "iron", 3, IronRules.CHARGE_FACTOR, 0.5, 0.6, IronRules.CHARGE_DISTANCE + 3, Kind.MOVE, Kind.SUNDER),
+		art("worldforge", "iron", 4, IronRules.WORLDFORGE_FACTOR + IronRules.WORLDFORGE_RING, 1.6, 1.6, IronRules.WORLDFORGE_RADIUS, Kind.SUNDER,
+			Kind.BULWARK, Kind.THROW),
+		// Dune: grit in the eyes, and ground that swallows feet.
+		art("grit_flick", "dune", 0, DuneRules.FLICK_FACTOR, 0.35, 1.2, DuneRules.FLICK_REACH, Kind.BLIND, Kind.SLOW),
+		art("quicksand", "dune", 1, DuneRules.QUICKSAND_FACTOR, 0.6, 2.2, DuneRules.QUICKSAND_AHEAD + DuneRules.QUICKSAND_RADIUS, Kind.SINK, Kind.SLOW,
+			Kind.FIELD),
+		art("sandveil", "dune", 2, DuneRules.VEIL_FACTOR, 0.4, 2.2, DuneRules.VEIL_RADIUS, Kind.BLIND, Kind.WARD),
+		art("dune_runner", "dune", 3, DuneRules.RUNNER_FACTOR, 0.5, 1.2, DuneRules.RUNNER_DISTANCE + 3, Kind.MOVE, Kind.SINK),
+		art("sea_of_sand", "dune", 4, DuneRules.SEA_GUSTS * DuneRules.SEA_FACTOR + DuneRules.SEA_CRUSH, 1.6, 3.0, DuneRules.SEA_RADIUS, Kind.BLIND,
+			Kind.SINK, Kind.FIELD),
+		// ---- methods-b pack
+		// Echo: struck twice, the second by the sound; foes left reeling.
+		art("ringing_cut", "echo", 0, MethodsBArtRules.RING_FACTOR + MethodsBArtRules.RING_REPEAT, 0.2, MethodsBArtRules.RING_REEL / 100.0, MethodsBArtRules.RING_REACH, Kind.RESOUND),
+		art("resonant_chord", "echo", 1, MethodsBArtRules.CHORD_FACTOR, 0.5, MethodsBArtRules.CHORD_REEL / 50.0 + 0.2, MethodsBArtRules.CHORD_REACH, Kind.RESOUND, Kind.SLOW),
+		art("counterpoint", "echo", 2, MethodsBArtRules.COUNTER_FACTOR + MethodsBArtRules.COUNTER_REPEAT, 0.4, 1.6, 3.0, Kind.RESOUND, Kind.THROW, Kind.WARD),
+		art("reverb_step", "echo", 3, MethodsBArtRules.REVERB_FACTOR + MethodsBArtRules.REVERB_ECHO, 0.5, 0.5, MethodsBArtRules.REVERB_DISTANCE + 3, Kind.RESOUND, Kind.MOVE),
+		art("grand_resonance", "echo", 4, MethodsBArtRules.GRAND_FACTOR + MethodsBArtRules.GRAND_ECHOES * MethodsBArtRules.GRAND_ECHO, 1.6, 2.0, MethodsBArtRules.GRAND_RADIUS, Kind.RESOUND, Kind.SLOW),
+		// Dawn: foes lit and blinded, the undead burned, a glint of mending.
+		art("first_light", "dawn", 0, MethodsBArtRules.LIGHT_FACTOR + 0.1, 0.25, 0.4, MethodsBArtRules.LIGHT_REACH, Kind.RADIANT),
+		art("sunrise_arc", "dawn", 1, MethodsBArtRules.SUNRISE_FACTOR, 0.5, 1.2, MethodsBArtRules.SUNRISE_REACH, Kind.RADIANT, Kind.DAZZLE),
+		art("halo_guard", "dawn", 2, MethodsBArtRules.HALO_FACTOR, 0.4, 1.5, 3.0, Kind.RADIANT, Kind.DAZZLE, Kind.MEND, Kind.WARD).mends(health(MethodsBArtRules.HALO_MEND)),
+		art("dawnbreak_rush", "dawn", 3, MethodsBArtRules.DAWNBREAK_FACTOR, 0.5, 0.6, MethodsBArtRules.DAWNBREAK_DISTANCE + 3, Kind.RADIANT, Kind.MOVE),
+		art("noon_zenith", "dawn", 4, MethodsBArtRules.ZENITH_FACTOR, 1.7, 2.2, MethodsBArtRules.ZENITH_RADIUS, Kind.RADIANT, Kind.DAZZLE),
+		// Venom: a toxin stacking with every bite, weakness, and a body that slips away.
+		art("fang_strike", "venom", 0, MethodsBArtRules.FANG_FACTOR + MethodsBArtRules.FANG_TOXIN, 0.2, 0.3, MethodsBArtRules.FANG_REACH, Kind.TOXIN),
+		art("spitting_cobra", "venom", 1, MethodsBArtRules.COBRA_FACTOR + MethodsBArtRules.COBRA_TOXIN, 0.5, 1.0, MethodsBArtRules.COBRA_REACH, Kind.TOXIN, Kind.WEAKEN),
+		art("shed_skin", "venom", 2, MethodsBArtRules.SHED_FACTOR + MethodsBArtRules.SHED_TOXIN, 0.6, 1.4, 3.0 + MethodsBArtRules.SHED_BACK, Kind.TOXIN, Kind.MOVE, Kind.FIELD),
+		art("serpent_slither", "venom", 3, MethodsBArtRules.SLITHER_FACTOR + MethodsBArtRules.SLITHER_TOXIN, 0.55, 0.6, MethodsBArtRules.SLITHER_DISTANCE + 3, Kind.TOXIN, Kind.WEAKEN, Kind.MOVE),
+		art("hydra_coil", "venom", 4, MethodsBArtRules.HYDRA_FACTOR + MethodsBArtRules.HYDRA_TOXIN, 1.6, 2.0, MethodsBArtRules.HYDRA_RADIUS, Kind.TOXIN, Kind.WEAKEN, Kind.SLOW));
 
 	private static final Map<String, Art> BY_ID = ARTS.stream().collect(Collectors.toUnmodifiableMap(Art::id, Function.identity()));
 

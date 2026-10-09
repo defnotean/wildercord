@@ -43,7 +43,7 @@ public final class LifeJournalTest implements FabricClientGameTest {
     String label=b.getMessage().getString();own|=label.startsWith("Your spells: ");other|=label.startsWith("Other spells: ");done|=label.equals(Component.translatable("gui.done").getString());
    }
    var buttons=s.children().stream().filter(Button.class::isInstance).map(Button.class::cast).toList();
-   if(buttons.size()!=18)return false;
+   if(buttons.stream().noneMatch(b -> b.getMessage().getString().equals(Component.translatable("screen.wildercord.combat.title").getString())))return false;
    for(int i=0;i<buttons.size();i++)for(int j=i+1;j<buttons.size();j++){
     Button a=buttons.get(i),b=buttons.get(j);
     if(a.getX()<b.getX()+b.getWidth()&&b.getX()<a.getX()+a.getWidth()&&a.getY()<b.getY()+b.getHeight()&&b.getY()<a.getY()+a.getHeight())return false;

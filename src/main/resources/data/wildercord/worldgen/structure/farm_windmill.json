@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "farm_windmill",
+  "biomes": "#wildercord:has_structure/farm_windmill",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

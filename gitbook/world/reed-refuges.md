@@ -1,32 +1,38 @@
-# Under the reed roof
+# Reed Refuges
 
-A small woven canopy gives Lantern Newts somewhere to curl up. Build it into a shallow bank beside your Moonreed garden: four open sides let a visitor swim in and leave freely.
+## What it is
+
+A small woven canopy where a Lantern Newt can curl up and rest. It is habitat to watch, not a farm.
 
 ![A Lantern Newt resting beneath the woven Reed Refuge](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/reed-refuge-sleeping-newt.png)
 
-## Weave a shelter
+## How to get it
 
-| Craft | Ingredients, in any arrangement | Result |
+| Craft (any arrangement) | Ingredients | Result |
 |---|---|---|
-| Reed Refuge | 3 Bamboo + Moonreed Floss + String + Seagrass | One placeable canopy |
-| Under the Reed Roof | Book + Moonreed Floss + Seagrass | Tamsin's three-page field journal |
+| Reed Refuge | 3 Bamboo + Moonreed Floss + String + Seagrass | One canopy |
+| Under the Reed Roof | Book + Moonreed Floss + Seagrass | Tamsin's 3-page field journal |
 
-Place the refuge into water to retain its water source. A dry placement is decorative; it does not attract a resting visitor. Keep shallow water and open approaches around the posts. The roof is a normal breakable block, with no ticking block entity.
+## How to use it
 
-## Watch a visitor settle
+Place the refuge in shallow water so it keeps its water. A dry refuge is only decoration.
 
-Newts seek a nearby waterlogged refuge in daylight or rainy weather. A visitor follows a reachable route, closes its eyes, quiets its gills and curls its tail beneath the roof. One resting newt occupies each refuge. Build several for a larger bank.
+Newts look for a nearby wet refuge by day or in rain. A newt swims in, closes its eyes and curls its tail. Each refuge holds one newt, so build several for a busy bank.
 
-A rest lasts up to six seconds. After settling, the same newt waits one minute before another refuge visit. These deadlines survive world reloads. Clear nights are for active newts; rain can bring them back under cover even at night.
+A rest lasts up to 6 seconds. Then that newt waits 1 minute before visiting a refuge again.
 
-Feeding seagrass, answering Tidebreath or Life magic, danger, or removing the roof interrupts the rest. A frightened newt needs time before accepting another visit.
+These things end a rest early:
+- feeding it seagrass
+- Tidebreath or Life magic
+- danger
+- breaking the roof
 
-## Respect the gathering rhythm
+A newt that was hurt stays frightened for 10 seconds.
 
-Shelter grants no healing or extra pearl. Feeding still follows the ordinary Dusk Pearl gathering rules and its existing two-minute rest. Magic can wake a visitor without producing resources. A roof is useful habitat and a place to observe an animal, with no additional harvest loop.
+## Tips and counterplay
 
-## Tamsin's notes
+- Leave all four sides open so newts can come and go.
+- Resting gives no healing and no extra Dusk Pearl. Pearls still follow the normal 2-minute rest.
+- Read Tamsin's journal for her notes on giving shelter without trapping wildlife.
 
-The Tideward apprentice learned from Iona to weave shelter with open sides. Her journal explains the material recipe, resting behavior and the distinction between offering refuge and confining wildlife. Craft the journal and use it to open Minecraft's native book reader.
-
-Continue with [Luminous Wetlands](luminous-wetlands.md) and [Moonreed Gardens](moonreed-gardens.md).
+See also [Luminous Wetlands](luminous-wetlands.md) and [Moonreed Gardens](moonreed-gardens.md).

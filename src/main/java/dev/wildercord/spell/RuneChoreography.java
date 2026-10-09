@@ -19,7 +19,7 @@ public final class RuneChoreography {
 		DROPLET, SHARD, SPIRAL, VINE, PETAL, ROOTS, WING, FLAME, RAIN, GEAR,
 		CLOCK, GATE, MIRROR, CHAIN, CROWN, SHELL, STAR, WAVE, PILLAR, SWARM,
 		MIST, FLARE, NEEDLE, DIAMOND, TIDE, CLAW, HEART, EYE, STEP, TETHER,
-		CLOUD, FOAM
+		CLOUD, FOAM, LEDGER
 	}
 
 	public record Sequence(Gesture opening, Gesture middle, Gesture finish) {

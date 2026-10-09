@@ -3,6 +3,7 @@ import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.client.CameraType;
 import java.util.*;
 import static dev.wildercord.cast.NextSignatureNative.*;
 
@@ -14,14 +15,16 @@ public final class LifePulseFerryOutcomeTest implements FabricClientGameTest {
   for(String scenario:List.of("two_recipients","one_eligible","removed_second","moved_first")){
    try(var gallery=new LifeOutcomeGallery(c,"life_outcome_ferry_"+scenario);var world=c.worldBuilder().create()){
     gallery.waitTicks(30);var server=world.getServer();server.runCommand("gamerule spawn_mobs false");server.runCommand("gamerule natural_health_regeneration false");
+    server.runCommand("fill -12 100 -12 20 100 20 stone_bricks");
+    gallery.prepare(CameraType.FIRST_PERSON,-45,10);
     server.runOnServer(s->{
-     var observer=player(s);floor(observer);var p=gallery.actor(s);p.setHealth(p.getMaxHealth());events.clear();LifeOwnerEvents.observe(e->{events.add(e);gallery.observe(e);});
-     first=guest(observer,"LifeFerryFirst",true);first.snapTo(.5,101,2.5,0,0);first.setHealth(10);
-     second=guest(observer,"LifeFerrySecond",true);second.snapTo(2,101,.5,0,0);second.setHealth(10);
-     refusing=guest(observer,"LifeFerryCrouch",true);refusing.snapTo(-1,101,1.5,0,0);refusing.setHealth(8);refusing.setShiftKeyDown(true);
+     var p=gallery.actor(s);p.setHealth(p.getMaxHealth());events.clear();LifeOwnerEvents.observe(e->{events.add(e);gallery.observe(e);});
+     first=guest(p,"LifeFerryFirst",true);first.snapTo(.5,101,2.5,0,0);first.setHealth(10);
+     second=guest(p,"LifeFerrySecond",true);second.snapTo(2,101,.5,0,0);second.setHealth(10);
+     refusing=guest(p,"LifeFerryCrouch",true);refusing.snapTo(-1,101,1.5,0,0);refusing.setHealth(8);refusing.setShiftKeyDown(true);
      p.level().getScoreboard().addPlayerToTeam(p.getScoreboardName(),first.getTeam());
      if(scenario.equals("one_eligible"))second.setHealth(second.getMaxHealth());
-     cast(p,Runes.SELF,Runes.PULSE_FERRY);
+     gallery.beforePayment(p);cast(p,Runes.SELF,Runes.PULSE_FERRY);
     });
     if(scenario.equals("moved_first")){
      net.minecraft.world.phys.Vec3[] previous={null};gallery.waitTicks(30);

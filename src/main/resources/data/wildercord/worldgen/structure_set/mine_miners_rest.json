@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101308,
+    "spacing": 30,
+    "separation": 10
+  },
+  "structures": [
+    {
+      "structure": "wildercord:mine_miners_rest",
+      "weight": 1
+    }
+  ]
+}

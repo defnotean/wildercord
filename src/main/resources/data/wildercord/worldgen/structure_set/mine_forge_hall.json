@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101302,
+    "spacing": 52,
+    "separation": 18
+  },
+  "structures": [
+    {
+      "structure": "wildercord:mine_forge_hall",
+      "weight": 1
+    }
+  ]
+}

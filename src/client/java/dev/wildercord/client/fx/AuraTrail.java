@@ -79,14 +79,16 @@ public class AuraTrail extends SingleQuadParticle implements SigilGroup.Extent {
 		this.color = color & 0xFFFFFF;
 		this.stage = stage;
 		this.power = Math.max(0.2F, power);
-		double yaw = Math.toRadians(anchor.getYHeadRot());
+		var committed = anchor instanceof net.minecraft.world.entity.Avatar avatar
+			? dev.wildercord.client.MastersArtsClient.timeline(avatar) : null;
+		double yaw = Math.toRadians(committed == null ? anchor.getYHeadRot() : committed.yaw());
 		this.fx = -Math.sin(yaw);
 		this.fz = Math.cos(yaw);
 		double side = (anchor.getMainArm() == HumanoidArm.RIGHT ? 1 : -1) * (mirror ? -1 : 1);
 		// The player's right, as they face: (-forward.z, 0, forward.x).
 		this.sx = -fz * side;
 		this.sz = fx * side;
-		this.pitch = Math.toRadians(anchor.getXRot());
+		this.pitch = Math.toRadians(committed == null ? anchor.getXRot() : committed.pitch());
 		this.delay = Math.max(0, delay);
 		this.plain = plain;
 		this.lifetime = stroke.life + this.delay;

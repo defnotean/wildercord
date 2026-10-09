@@ -45,7 +45,7 @@ public record Imbued(List<String> runes, int charges, int color, boolean glint, 
 		Imbued::new);
 
 	public Imbued {
-		runes = List.copyOf(runes.size() > MAX_RUNES ? runes.subList(0, MAX_RUNES) : runes);
+		runes = dev.wildercord.spell.LessonPackRules.boundedIds(runes, MAX_RUNES);
 		charges = Math.max(0, Math.min(99, charges));
 	}
 

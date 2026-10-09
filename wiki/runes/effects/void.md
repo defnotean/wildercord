@@ -11,7 +11,7 @@ nav_order: 7
 
 Darkness, gravity and space. Void pulls, blinks, withers and swallows light.
 
-21 void effects you can craft or find in the usual way. Void also has runes of the world, fused runes and innate runes: see their own pages.
+44 void effects you can craft or find in the usual way. Void also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/anchor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Anchor
 {: #anchor}
@@ -24,7 +24,7 @@ Holds you fast for 15 seconds: blows and blasts can't knock you back, no spell c
 
 <img src="{{ '/assets/recipes/rune_anchor.png' | relative_url }}" alt="Crafting Anchor: a Blank Rune and Iron Chain and Cobblestone" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/blind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blind
 {: #blind}
@@ -37,7 +37,7 @@ Blindness and darkness for 5 seconds (3 on players). A blinded monster lashes ou
 
 <img src="{{ '/assets/recipes/rune_blind.png' | relative_url }}" alt="Crafting Blind: a Blank Rune and Ink Sac" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/collect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Collect
 {: #collect}
@@ -50,7 +50,7 @@ Pulls up to 48 items and experience within 8 blocks from ground you can edit. Ot
 
 <img src="{{ '/assets/recipes/rune_collect.png' | relative_url }}" alt="Crafting Collect: a Blank Rune and Hopper" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/hex.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hex
 {: #hex}
@@ -63,7 +63,46 @@ Hexes targets for 6 seconds: your spells hit them 25% harder, and they fix on yo
 
 <img src="{{ '/assets/recipes/rune_hex.png' | relative_url }}" alt="Crafting Hex: a Blank Rune and Fermented Spider Eye and Ink Sac" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/hobble.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hobble
+{: #hobble}
+
+*Tier I · Void · Harms enemies · 4 mana · needs any Cord*
+
+Slowness III for 4 seconds. No harm.
+
+**How to get it:** Craft: a Blank Rune, Cobweb and String. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_hobble.png' | relative_url }}" alt="Crafting Hobble: a Blank Rune and Cobweb and String" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/packtidy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pack Tidy
+{: #packtidy}
+
+*Tier I · Void · Works on the world · 2 mana · needs any Cord*
+
+Joins like stacks in your pack. Your hotbar is left alone.
+
+**How to get it:** Craft: a Blank Rune, Bundle. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_packtidy.png' | relative_url }}" alt="Crafting Pack Tidy: a Blank Rune and Bundle" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/portal_reckoning.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Portal Reckoning
+{: #portal_reckoning}
+
+*Tier I · Void · Works on the world · 1 mana · needs any Cord*
+
+Tells where this spot lies in the other realm: one Nether block is eight in the Overworld.
+
+**How to get it:** Craft: a Blank Rune, Obsidian and Empty Map. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_portal_reckoning.png' | relative_url }}" alt="Crafting Portal Reckoning: a Blank Rune and Obsidian and Empty Map" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/umbra.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Umbra
 {: #umbra}
@@ -76,7 +115,7 @@ The dark bites: 4 damage, doubled where the light is dim (level 7 or less, or un
 
 <img src="{{ '/assets/recipes/rune_umbra.png' | relative_url }}" alt="Crafting Umbra: a Blank Rune and Ink Sac and Flint" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/banish.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Banish
 {: #banish}
@@ -89,7 +128,46 @@ Banishes targets: they vanish and reappear up to 8 blocks further away from you,
 
 <img src="{{ '/assets/recipes/rune_banish.png' | relative_url }}" alt="Crafting Banish: a Blank Rune and Ender Pearl and Popped Chorus Fruit, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/chestsort.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chest Sort
+{: #chestsort}
+
+*Tier II · Void · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Joins like items in the chest, barrel or shulker box hit and lays them out in order.
+
+**How to get it:** Craft: a Blank Rune, Chest and Redstone Comparator, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_chestsort.png' | relative_url }}" alt="Crafting Chest Sort: a Blank Rune and Chest and Redstone Comparator, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/enderhush.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Enderhush
+{: #enderhush}
+
+*Tier II · Void · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+For 10 minutes, endermen you haven't hurt forget their anger at you. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Carved Pumpkin and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_enderhush.png' | relative_url }}" alt="Crafting Enderhush: a Blank Rune and Carved Pumpkin and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/frame_veil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frame Veil
+{: #frame_veil}
+
+*Tier II · Void · Works on the world · 4 mana · needs a Copper Cord or better*
+
+Item frames holding an item within 6 blocks turn invisible. Cast again to show them.
+
+**How to get it:** Craft: a Blank Rune, Item Frame and Glass Pane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_frame_veil.png' | relative_url }}" alt="Crafting Frame Veil: a Blank Rune and Item Frame and Glass Pane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/grapple.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Grapple
 {: #grapple}
@@ -102,7 +180,59 @@ Pulls you to where the spell hit, and stops you there.
 
 <img src="{{ '/assets/recipes/rune_grapple.png' | relative_url }}" alt="Crafting Grapple: a Blank Rune and Lead, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/grave_bearing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Grave Bearing
+{: #grave_bearing}
+
+*Tier II · Void · Works on the world · 4 mana · needs a Copper Cord or better*
+
+Tells which way you last died and roughly how far, when it was in this world.
+
+**How to get it:** Craft: a Blank Rune, Compass, Bone and Soul Sand, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_grave_bearing.png' | relative_url }}" alt="Crafting Grave Bearing: a Blank Rune and Compass, Bone and Soul Sand, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/hollow_pocket.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hollow Pocket
+{: #hollow_pocket}
+
+*Tier II · Void · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Opens your own 9-slot pocket. What you keep there stays yours, through death too.
+
+**How to get it:** Craft: a Blank Rune, Bundle and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_hollow_pocket.png' | relative_url }}" alt="Crafting Hollow Pocket: a Blank Rune and Bundle and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/lodepull.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lodepull
+{: #lodepull}
+
+*Tier II · Void · Helps you and your allies · 7 mana · needs a Copper Cord or better*
+
+Loose drops within 6 blocks drift to the target for 30 seconds. Never someone else's drops.
+
+**How to get it:** Craft: a Blank Rune, Lodestone and Hopper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_lodepull.png' | relative_url }}" alt="Crafting Lodepull: a Blank Rune and Lodestone and Hopper, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/lure.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lure
+{: #lure}
+
+*Tier II · Void · Harms enemies · 9 mana · needs a Copper Cord or better*
+
+Enemies drop their target and walk to where it lands for 4 seconds.
+
+**How to get it:** Craft: a Blank Rune, Fishing Rod and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_lure.png' | relative_url }}" alt="Crafting Lure: a Blank Rune and Fishing Rod and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/pull.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pull
 {: #pull}
@@ -115,7 +245,98 @@ Pulls targets toward the spell, leaving them staggered and marked as pulled for 
 
 <img src="{{ '/assets/recipes/rune_pull.png' | relative_url }}" alt="Crafting Pull: a Blank Rune and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/restock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Restock
+{: #restock}
+
+*Tier II · Void · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Tops up your hotbar stacks from the chest hit.
+
+**How to get it:** Craft: a Blank Rune, Barrel and Hopper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_restock.png' | relative_url }}" alt="Crafting Restock: a Blank Rune and Barrel and Hopper, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/softfoot.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Softfoot
+{: #softfoot}
+
+*Tier II · Void · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+For 5 minutes, monsters more than 8 blocks away lose track of you, unless you struck them in the last 10 seconds. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, White Wool and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_softfoot.png' | relative_url }}" alt="Crafting Softfoot: a Blank Rune and White Wool and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/spawner_sense.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spawner Sense
+{: #spawner_sense}
+
+*Tier II · Void · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Counts the monster and trial spawners within 32 blocks and points to the nearest.
+
+**How to get it:** Craft: a Blank Rune, Rotten Flesh and Iron Bars, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_spawner_sense.png' | relative_url }}" alt="Crafting Spawner Sense: a Blank Rune and Rotten Flesh and Iron Bars, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/spook.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spook
+{: #spook}
+
+*Tier II · Void · Harms enemies · 8 mana · needs a Copper Cord or better*
+
+Enemies flee from you for 3 seconds. Bosses and players are only slowed.
+
+**How to get it:** Craft: a Blank Rune, Bone and Carved Pumpkin, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_spook.png' | relative_url }}" alt="Crafting Spook: a Blank Rune and Bone and Carved Pumpkin, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/stillbind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stillbind
+{: #stillbind}
+
+*Tier II · Void · Harms enemies · 10 mana · needs a Copper Cord or better*
+
+Holds the target in place for 3 seconds without harm. Bosses are only slowed.
+
+**How to get it:** Craft: a Blank Rune, Cobweb and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_stillbind.png' | relative_url }}" alt="Crafting Stillbind: a Blank Rune and Cobweb and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/stow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stow
+{: #stow}
+
+*Tier II · Void · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Moves pack items the chest hit already holds into it. Your hotbar stays.
+
+**How to get it:** Craft: a Blank Rune, Chest and Hopper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_stow.png' | relative_url }}" alt="Crafting Stow: a Blank Rune and Chest and Hopper, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/unburden.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Unburden
+{: #unburden}
+
+*Tier II · Void · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Moves your whole pack into the chest hit, as far as it has room. Your hotbar stays.
+
+**How to get it:** Craft: a Blank Rune, Barrel and Chest, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_unburden.png' | relative_url }}" alt="Crafting Unburden: a Blank Rune and Barrel and Chest, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/veil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Veil
 {: #veil}
@@ -128,7 +349,20 @@ Invisibility for 12 seconds, and nearby monsters lose track of you. The first da
 
 <img src="{{ '/assets/recipes/rune_veil.png' | relative_url }}" alt="Crafting Veil: a Blank Rune and Golden Carrot and Fermented Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/void_step.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Void Step
+{: #void_step}
+
+*Tier II · Void · Works on the world · 6 mana · needs a Copper Cord or better*
+
+A platform of end stone forms under your feet and crumbles from the edge after 6 seconds.
+
+**How to get it:** Craft: a Blank Rune, End Stone, Feather and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_void_step.png' | relative_url }}" alt="Crafting Void Step: a Blank Rune and End Stone, Feather and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/zipper.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Zipper
 {: #zipper}
@@ -141,7 +375,7 @@ Unzips the wall in front of you and steps you through up to 6 blocks of solid wa
 
 <img src="{{ '/assets/recipes/rune_zipper.png' | relative_url }}" alt="Crafting Zipper: a Blank Rune and 2x Iron Nugget and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/blackflame.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blackflame
 {: #blackflame}
@@ -154,7 +388,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 
 <img src="{{ '/assets/recipes/rune_blackflame.png' | relative_url }}" alt="Crafting Blackflame: a Blank Rune and Soul Campfire and Black Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/blackspark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blackspark
 {: #blackspark}
@@ -167,7 +401,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 
 <img src="{{ '/assets/recipes/rune_blackspark.png' | relative_url }}" alt="Crafting Blackspark: a Blank Rune and Black Dye and Glowstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/blink.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blink
 {: #blink}
@@ -180,7 +414,7 @@ Teleports you to where the spell landed (max 40 blocks).
 
 <img src="{{ '/assets/recipes/rune_blink.png' | relative_url }}" alt="Crafting Blink: a Blank Rune and Ender Pearl and Chorus Fruit, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/gravity_well.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gravity Well
 {: #gravity_well}
@@ -193,7 +427,20 @@ Drags every enemy within 7 blocks into the point for 2 seconds and pulls what ho
 
 <img src="{{ '/assets/recipes/rune_gravity_well.png' | relative_url }}" alt="Crafting Gravity Well: a Blank Rune and Eye of Ender and Crying Obsidian, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/hexguard.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hexguard
+{: #hexguard}
+
+*Tier III · Void · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+For 20 seconds, the next harmful effect that would land is refused.
+
+**How to get it:** Craft: a Blank Rune, Fermented Spider Eye and Shield, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_hexguard.png' | relative_url }}" alt="Crafting Hexguard: a Blank Rune and Fermented Spider Eye and Shield, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/shades.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shades
 {: #shades}
@@ -206,7 +453,7 @@ Two shadow hounds rise from your shadow and hunt at your side for 15 seconds. Th
 
 <img src="{{ '/assets/recipes/rune_shades.png' | relative_url }}" alt="Crafting Shades: a Blank Rune and 2x Bone and Black Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/shadowstep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shadowstep
 {: #shadowstep}
@@ -219,7 +466,44 @@ You vanish and reappear right behind the first creature hit, facing its back. Yo
 
 <img src="{{ '/assets/recipes/rune_shadowstep.png' | relative_url }}" alt="Crafting Shadowstep: a Blank Rune and Ender Pearl and Ink Sac, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/spire_sense.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spire Sense
+{: #spire_sense}
+
+*Tier III · Void · Works on the world · 10 mana · needs an Amethyst Cord or better*
+
+In the End, senses the nearest End city and tells which way and roughly how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Empty Map, Chorus Fruit and End Stone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_spire_sense.png' | relative_url }}" alt="Crafting Spire Sense: a Blank Rune and Empty Map, Chorus Fruit and End Stone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/stronghold_compass.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stronghold Compass
+{: #stronghold_compass}
+
+*Tier III · Void · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+In the Overworld, tells which way the nearest stronghold lies, but never how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Compass, Ender Pearl and Blaze Powder, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_stronghold_compass.png' | relative_url }}" alt="Crafting Stronghold Compass: a Blank Rune and Compass, Ender Pearl and Blaze Powder, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/delvemark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Delvemark
+{: #delvemark}
+
+*Tier IV · Void · Works on the world · 22 mana · needs an Echo Cord*
+
+Marks your spot for 10 minutes. Cast again within 128 blocks and hold still 2 seconds to go back to it.
+
+**How to get it:** Never crafted. Where it comes from: Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/dragon_breath.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dragon Breath
 {: #dragon_breath}
@@ -228,9 +512,9 @@ You vanish and reappear right behind the first creature hit, facing its back. Yo
 
 A 3-block cloud that rolls on along the way you blew it: 5 damage per second for 5 seconds.
 
-**How to get it:** Found only, never crafted: the Ender Dragon; Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: the Ender Dragon; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/hollow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hollow
 {: #hollow}
@@ -239,9 +523,20 @@ A 3-block cloud that rolls on along the way you blew it: 5 damage per second for
 
 Erases what it hits: it vanishes for a moment and returns for 20 damage, and everything within 4 blocks is dragged into the gap for 8 more.
 
-**How to get it:** Found only, never crafted: the Wither (50%); Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: the Wither (50%); Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/homeward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Homeward
+{: #homeward}
+
+*Tier IV · Void · Moves you · 22 mana · needs an Echo Cord*
+
+Hold still for 3 seconds to return to your lodestar, in this world and within 2000 blocks. Moving or getting hurt breaks it. 2-minute rest.
+
+**How to get it:** Never crafted. Where it comes from: Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/infinity.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Infinity
 {: #infinity}
@@ -250,9 +545,9 @@ Erases what it hits: it vanishes for a moment and returns for 20 damage, and eve
 
 For 6 seconds the closer a hostile thing comes the slower it moves: enemies within 5 blocks are slowed harder the nearer they are, and projectiles slow to a stop in the air.
 
-**How to get it:** Found only, never crafted: Ominous vaults; the Ender Dragon; Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: Ominous vaults; the Ender Dragon; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/sonic_boom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sonic Boom
 {: #sonic_boom}
@@ -261,9 +556,9 @@ For 6 seconds the closer a hostile thing comes the slower it moves: enemies with
 
 16 damage that ignores armour, and everything else on the line between you and the target takes 8, through walls.
 
-**How to get it:** Found only, never crafted: the Warden; Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: the Warden; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/wither.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wither
 {: #wither}
@@ -272,7 +567,7 @@ For 6 seconds the closer a hostile thing comes the slower it moves: enemies with
 
 Wither IV for 6 seconds: it spreads to whoever strikes it in melee, and the withered can't heal.
 
-**How to get it:** Found only, never crafted: the Wither; Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: the Wither; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

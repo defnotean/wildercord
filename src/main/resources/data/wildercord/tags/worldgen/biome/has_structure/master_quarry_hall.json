@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:stony_peaks",
+    "minecraft:meadow"
+  ]
+}

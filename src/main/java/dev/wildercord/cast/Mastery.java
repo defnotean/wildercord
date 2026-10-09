@@ -292,6 +292,18 @@ public final class Mastery {
 		}
 	}
 
+    /** A verified field cut earns utility once, without hit procs, refund traits or environment reads. */
+    static void onExcise(ServerPlayer player) {
+        if (!Config.get().mastery().enabled() || player.isCreative() || player.isSpectator()) return;
+        var runes = dev.wildercord.spell.ExciseRules.RUNES;
+        String key = keyOf(runes);
+        Tally tally = new Tally(player.getUUID(), key, runes, List.of(), true, 1, false, 0,
+            Set.of(), place(player.blockPosition()));
+        earn(player, tally, MasteryRules.UTILITY, "", player.level().dimension() == PracticeRoom.DIMENSION, false);
+        MasteryBook.Entry entry = MasteryAttachments.book(player).entry(key).orElse(null);
+        show(player, key, entry == null ? MasteryRules.FIRST : entry.rank(), entry == null ? MasterySigil.seed(player.getUUID(), key) : entry.seed(), List.of());
+    }
+
 	/** Gives a scroll's cast the traits inscribed on it (it learns nothing), and the reader the scroll's look while it goes off. */
 	public static void onScrollCast(ServerPlayer player, List<RuneDef> runes, Cast cast, List<String> traits, int rank, long seed) {
 		if (!Config.get().mastery().traits()) {
@@ -574,6 +586,7 @@ public final class Mastery {
 	 * a real foe (or practice), and the traits that answer a strike (a drink of it, mana from a kill, a mark, a leap).
 	 */
 	static void afterDamage(Cast cast, LivingEntity target, float dealt, float taken) {
+		if (cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
 		Tally tally = cast.mastery();
 		if (tally == null || !(cast.caster instanceof ServerPlayer player) || target == player) {
 			return;
@@ -600,7 +613,7 @@ public final class Mastery {
 			}
 			earn(player, tally, xp, kind, practice, Spirits.isBoss(target));
 		}
-		if (tally.traits.isEmpty()) {
+		if (tally.traits.isEmpty() || cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) {
 			return;
 		}
 		// What a strike sets off: only for a foe that can be harmed (not an ally caught by a side effect).
@@ -626,6 +639,7 @@ public final class Mastery {
 		for (MasteryTraits.Trait t : MasteryTraits.withHook(tally.traits, Hook.ON_STRIKE)) {
 			strikeEffect(cast, target, t);
 		}
+		if (cast.guardedImpact() && (!cast.alive() || target.isAlive() && !cast.admits(target))) return;
 		if (!tally.chaining && !killed) {
 			for (MasteryTraits.Trait t : MasteryTraits.withHook(tally.traits, Hook.CHAIN)) {
 				if (cast.level.getRandom().nextDouble() < t.amount()) {
@@ -644,33 +658,38 @@ public final class Mastery {
 	private static void leap(Cast cast, Tally tally, LivingEntity from, float dealt) {
 		LivingEntity next = null;
 		double best = LEAP_RANGE * LEAP_RANGE;
-		for (LivingEntity e : cast.level.getEntitiesOfClass(LivingEntity.class, from.getBoundingBox().inflate(LEAP_RANGE),
-				e -> e != from && e.isAlive() && Targets.canHarm(cast.caster, e))) {
+		Vec3 origin = from.getBoundingBox().getCenter();
+		var candidates = cast.guardedImpact() ? RelayCircles.collateral(cast, origin, from.getBoundingBox().inflate(LEAP_RANGE), e -> e != from)
+			: cast.level.getEntitiesOfClass(LivingEntity.class, from.getBoundingBox().inflate(LEAP_RANGE),
+				e -> e != from && e.isAlive() && Targets.canHarm(cast.caster, e));
+		for (LivingEntity e : candidates) {
 			double d = e.distanceToSqr(from);
 			if (d < best) {
 				best = d;
 				next = e;
 			}
 		}
-		if (next == null) {
+		if (next == null || cast.guardedImpact() && (!RelayCircles.admitsFrom(cast, origin, next) || cast.takeEntities(1) < 1)) {
 			return;
 		}
+		LivingEntity target = next;
 		Light.ray(cast.level, from.getBoundingBox().getCenter(), next.getBoundingBox().getCenter(), 0xBFE8FF, 0.05, 6);
 		tally.chaining = true;
 		try {
-			Effects.hurt(cast, next, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), dealt * LEAP_SHARE);
+			RelayCircles.from(cast, origin, () -> Effects.hurt(cast, target, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), dealt * LEAP_SHARE));
 		} finally {
 			tally.chaining = false;
 		}
 	}
 
 	private static void strikeEffect(Cast cast, LivingEntity target, MasteryTraits.Trait t) {
+		if (!cast.admits(target)) return;
 		switch (t.param()) {
 			case "slow" -> target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, (int) Math.round(20 * t.amount()), 0, false, true), cast.caster);
 			case "glow" -> target.addEffect(new MobEffectInstance(MobEffects.GLOWING, 60, 0, false, false), cast.caster);
 			case "ignite" -> Effects.feedOrIgnite(target, 40);
 			case "push" -> {
-				Vec3 away = target.position().subtract(cast.caster.position());
+				Vec3 away = target.position().subtract(cast.guardedImpact() ? cast.incoming() : cast.caster.position());
 				Vec3 flat = new Vec3(away.x, 0, away.z);
 				if (flat.lengthSqr() > 1.0E-4) {
 					Effects.push(target, flat.normalize().scale(0.35).add(0, 0.1, 0));
@@ -685,7 +704,7 @@ public final class Mastery {
 
 	/** A Lingering Mark trait: the cast's magic left where it first lands, through the residue hook. */
 	private static void residue(Cast cast, Tally tally, Vec3 at) {
-		if (tally.residue || !(cast.caster instanceof ServerPlayer player)) {
+		if (tally.residue || cast.guardedImpact() && !cast.alive() || !(cast.caster instanceof ServerPlayer player)) {
 			return;
 		}
 		for (MasteryTraits.Trait t : MasteryTraits.withHook(tally.traits, Hook.RESIDUE)) {

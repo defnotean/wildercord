@@ -20,6 +20,7 @@ import java.util.*;
 /** Actual client investigation, native crafting result pickups, physical fertilization and full restart. */
 public final class FungalNurseryTest implements FabricClientGameTest {
  private static SporebackSnail snail;private static BlockPos rootMark,airMark,plant=new BlockPos(4,30,0),roof=new BlockPos(4,31,2);private static UUID saved;private static long filterRest,nurseryRest,forageRest;
+ private static final BlockPos GARDEN_MIN=new BlockPos(0,30,-4),GARDEN_MAX=new BlockPos(8,32,4);
  private static volatile boolean traceGather;
  private static boolean traceInstalled;
  public static boolean tracingGather(){return traceGather;}
@@ -37,9 +38,11 @@ public final class FungalNurseryTest implements FabricClientGameTest {
   TestWorldSave save;
   try(var w=c.worldBuilder().create()) {
    c.waitTicks(30);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("gamerule random_tick_speed 0");w.getServer().runCommand("time set 18000");
-   w.getServer().runOnServer(s -> {var l=s.overworld();for(int x=-20;x<=20;x++)for(int z=-12;z<=12;z++) {l.setBlock(new BlockPos(x,29,z),Blocks.MOSS_BLOCK.defaultBlockState(),2);for(int y=30;y<=32;y++)l.setBlock(new BlockPos(x,y,z),Blocks.AIR.defaultBlockState(),2);l.setBlock(new BlockPos(x,33,z),Blocks.STONE.defaultBlockState(),2);}l.setBlock(new BlockPos(-2,30,0),Blocks.BROWN_MUSHROOM.defaultBlockState(),2);l.setBlock(plant.below().east(),Blocks.WATER.defaultBlockState(),2);p(s).setGameMode(GameType.SURVIVAL);p(s).addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,3000));move(s,-4.5,-2.5);
+   w.getServer().runOnServer(s -> {var l=s.overworld();dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.FungalNurseryTest\",\"seed\":\"{}\"}",l.getSeed());for(int x=-20;x<=20;x++)for(int z=-12;z<=12;z++) {l.setBlock(new BlockPos(x,29,z),Blocks.MOSS_BLOCK.defaultBlockState(),2);for(int y=30;y<=32;y++)l.setBlock(new BlockPos(x,y,z),Blocks.AIR.defaultBlockState(),2);l.setBlock(new BlockPos(x,33,z),Blocks.STONE.defaultBlockState(),2);}l.setBlock(new BlockPos(-2,30,0),Blocks.BROWN_MUSHROOM.defaultBlockState(),2);l.setBlock(plant.below().east(),Blocks.WATER.defaultBlockState(),2);p(s).setGameMode(GameType.SURVIVAL);p(s).addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,3000));move(s,-4.5,-2.5);
     for(int i=0;i<20 && (rootMark==null || airMark==null);i++) {var origin=new BlockPos(i<10?-12:12,30,(i%4)*2-4);new BreathmarkFeature().place(l,l.getChunkSource().getGenerator(),net.minecraft.util.RandomSource.create(1300L+i*99194853094755497L),origin);for(var at:BlockPos.betweenClosed(origin.offset(-4,-6,-4),origin.offset(4,6,4)))if(l.getBlockState(at).is(FungalGarden.BREATHMARK)) {int k=l.getBlockState(at).getValue(BreathmarkBlock.KIND);if(k==0 && rootMark==null)rootMark=at.immutable();if(k==1 && airMark==null)airMark=at.immutable();}}
-    for(int x=0;x<=7;x++)for(int z=-2;z<=4;z++)if(x==0 || x==7 || z==-2 || z==4)l.setBlock(new BlockPos(x,30,z),Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState(),3);
+    // Keep ordinary wandering inside the local search even when native Grow supplies climbable shrubs.
+    for(var at:BlockPos.betweenClosed(GARDEN_MIN,GARDEN_MAX))if(gardenEdge(at))l.setBlock(at,Blocks.MOSSY_STONE_BRICKS.defaultBlockState(),3);
+    l.setBlock(plant.below(2).east(),Blocks.MOSS_BLOCK.defaultBlockState(),2); // A closed basin for the existing moisture cell.
     check(rootMark!=null && airMark!=null,"Real registered feature creates both provenance-bearing clue kinds");check(((BreathmarkEntity)l.getBlockEntity(rootMark)).authentic(),"Generated clue provenance");snail=SporebackContent.SNAIL.create(l,EntitySpawnReason.COMMAND);snail.snapTo(-3.5,30,.5,0,0);l.addFreshEntity(snail);});
    clickBlock(c,w,rootMark,ItemStack.EMPTY);check(w.getServer().computeOnServer(s -> !FungalInvestigation.knows(p(s),FungalInvestigation.ROOT)),"Clue before living observation does not advance chain");
    await(c,w,()->snail.dew(),"Snail physically browses first mushroom");gatherVisitor(c,w);check(w.getServer().computeOnServer(s -> FungalInvestigation.knows(p(s),FungalInvestigation.FIRST)),"Actual observation starts investigation");
@@ -49,18 +52,23 @@ public final class FungalNurseryTest implements FabricClientGameTest {
    // An actual player planting packet, supported damp/dark conditions and native Life preparation.
    w.getServer().runOnServer(s -> {s.overworld().setBlock(plant,Blocks.AIR.defaultBlockState(),2);});clickBlock(c,w,plant.below(),new ItemStack(FungalGarden.CUTTING));c.waitTicks(5);
    w.getServer().runOnServer(s -> {check(s.overworld().getBlockState(plant).is(FungalGarden.GLOWCAP),"Native cutting placement");check(GlowcapBlock.conditions(s.overworld(),plant),"Actual planted damp covered habitat");s.overworld().setBlock(plant.below().east(),Blocks.AIR.defaultBlockState(),2);impact(s,plant,Runes.HEAL);check(s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==0 && !GlowcapBlock.conditions(s.overworld(),plant),"Life cannot prepare a dry planting");s.overworld().setBlock(plant.below().east(),Blocks.WATER.defaultBlockState(),2);impact(s,plant,Runes.GROW);for(var at:BlockPos.betweenClosed(plant.offset(-1,0,-1),plant.offset(1,0,1)))dev.wildercord.Wildercord.LOGGER.info("FUNGAL_GROW_GEOMETRY "+at+" state="+s.overworld().getBlockState(at)+" collision="+s.overworld().getBlockState(at).getCollisionShape(s.overworld(),at).toAabbs());check(s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==1,"Native Life prepares bud");impact(s,plant,Runes.HEAL);check(s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==1,"Repeated Life never replaces snail fertilization");s.overworld().setBlock(new BlockPos(-2,30,0),Blocks.AIR.defaultBlockState(),2);snail.discard();snail=SporebackContent.SNAIL.create(s.overworld(),EntitySpawnReason.COMMAND);snail.snapTo(1.5,30,.5,0,0);s.overworld().addFreshEntity(snail);move(s,7.5,-2.5);});
+   w.getServer().runOnServer(s -> gardenReceipt(s,"after native Grow and garden visitor spawn"));
    await(c,w,()->snail.level().getBlockState(plant).getValue(GlowcapBlock.AGE)==2,"A real uninterrupted snail approach matures cap");w.getServer().runOnServer(s -> {check(snail.dew(),"Visit produces only the usual saved dew reserve");forageRest=snail.forageReady();view(s,Vec3.atCenterOf(plant).add(0,.2,0),plant.getX()+1.8,plant.getZ()-1.5);hand(p(s),ItemStack.EMPTY);});c.waitTicks(8);shot(c,"fungal_glowcap_snail_visit");
-   w.getServer().runOnServer(s -> p(s).setGameMode(GameType.ADVENTURE));clickBlock(c,w,plant,ItemStack.EMPTY);check(w.getServer().computeOnServer(s -> s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==2 && !FungalInvestigation.knows(p(s),FungalInvestigation.HARVEST)),"Adventure/permission refusal preserves mature plant and progress");w.getServer().runOnServer(s -> p(s).setGameMode(GameType.SURVIVAL));clickBlock(c,w,plant,ItemStack.EMPTY);c.waitTicks(8);check(w.getServer().computeOnServer(s -> FungalInvestigation.knows(p(s),FungalInvestigation.HARVEST) && s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==0 && snail.forageReady()==forageRest),"Actual mature harvest resets plant without shortening visitor rest");
-   // Pick up and spend actual harvested gills; only ordinary vanilla supplies are fixture-provided.
-   w.getServer().runOnServer(s -> {move(s,plant.getX()+.5,plant.getZ()+.5);hand(p(s),ItemStack.EMPTY);});c.waitTicks(20);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(FungalGarden.GILLS)==1),"Real harvested gill drop reaches Survival inventory");
+   w.getServer().runOnServer(s -> p(s).setGameMode(GameType.ADVENTURE));clickBlock(c,w,plant,ItemStack.EMPTY);check(w.getServer().computeOnServer(s -> s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==2 && !FungalInvestigation.knows(p(s),FungalInvestigation.HARVEST)),"Adventure/permission refusal preserves mature plant and progress");w.getServer().runOnServer(s -> p(s).setGameMode(GameType.SURVIVAL));
+   try {
+    w.getServer().runOnServer(s -> FungalGillProbe.begin(s.overworld(),p(s),plant));
+    clickBlock(c,w,plant,ItemStack.EMPTY);c.waitTicks(8);check(w.getServer().computeOnServer(s -> FungalInvestigation.knows(p(s),FungalInvestigation.HARVEST) && s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==0 && snail.forageReady()==forageRest),"Actual mature harvest resets plant without shortening visitor rest");
+    // Pick up and spend actual harvested gills; only ordinary vanilla supplies are fixture-provided.
+    w.getServer().runOnServer(s -> {move(s,plant.getX()+.5,plant.getZ()+.5);hand(p(s),ItemStack.EMPTY);FungalGillProbe.collectorStarted();});c.waitTicks(20);check(w.getServer().computeOnServer(s -> {FungalGillProbe.terminal();return p(s).getInventory().countItem(FungalGarden.GILLS)==1;}),"Real harvested gill drop reaches Survival inventory");
+   } finally {w.getServer().runOnServer(s -> FungalGillProbe.finish());}
    craft(c,w,w.getServer().computeOnServer(s -> List.of(new ItemStack(Items.STICK),new ItemStack(Items.STICK),new ItemStack(Items.PAPER),ingredient(p(s),FungalGarden.GILLS))),FungalGarden.NURSERY_ITEM);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(FungalGarden.GILLS)==0),"First native craft spends the earned gill");
    pruneNurseryApproach(c,w); // Actual Survival garden work; keep the same visitor and real rests.
-   w.getServer().runOnServer(s -> s.overworld().setBlock(roof.below(),Blocks.STONE.defaultBlockState(),2));clickEarned(c,w,roof.below(),FungalGarden.NURSERY_ITEM);w.getServer().runOnServer(s -> {check(s.overworld().getBlockState(roof).is(FungalGarden.NURSERY),"Native canopy placement above temporary support");check(s.overworld().getBlockState(roof).getCollisionShape(s.overworld(),roof).bounds().minY==-1,"Real canopy corner collision reaches walking floor");s.overworld().setBlock(roof.below(),Blocks.AIR.defaultBlockState(),2);});check(w.getServer().computeOnServer(s -> FungalInvestigation.knows(p(s),FungalInvestigation.ROOF)),"Own real nursery placement advances chain");
+   w.getServer().runOnServer(s -> s.overworld().setBlock(roof.below(),Blocks.STONE.defaultBlockState(),2));clickEarned(c,w,roof.below(),FungalGarden.NURSERY_ITEM);w.getServer().runOnServer(s -> {check(s.overworld().getBlockState(roof).is(FungalGarden.NURSERY),"Native canopy placement above temporary support");check(s.overworld().getBlockState(roof).getCollisionShape(s.overworld(),roof).bounds().minY==-1,"Real canopy corner collision reaches walking floor");s.overworld().setBlock(roof.below(),Blocks.AIR.defaultBlockState(),2);FungalNurseryProbe.placed(s.overworld(),snail,roof);});check(w.getServer().computeOnServer(s -> FungalInvestigation.knows(p(s),FungalInvestigation.ROOF)),"Own real nursery placement advances chain");
    // Clear the same visitor's reserve, prepare the perennial again and wait its real saved rest.
-   await(c,w,()->snail.pose()==2 && snail.nurseryReady()>0 && snail.blockPosition().equals(roof.below()),"Visitor physically enters grounded Nursery before its first finite rest");
+   await(c,w,()->snail.pose()==2 && snail.nurseryReady()>0 && snail.blockPosition().equals(roof.below()),"Visitor physically enters grounded Nursery before its first finite rest",false,new FungalNurseryProbe());
    await(c,w,()->snail.pose()!=2,"Nursery visitor opens after its finite first rest");
    gatherVisitor(c,w);w.getServer().runOnServer(s -> {check(!snail.dew(),"Actual admitted native gather spends the same visitor reserve");check(snail.forageReady()==forageRest,"Gathering the same visitor preserves its exact real forage rest");impact(s,plant,Runes.HEAL);});waitSavedForage(c,w);
-   await(c,w,()->snail.level().getBlockState(plant).getValue(GlowcapBlock.AGE)==2,"Same living visitor completes second real rested browse");w.getServer().runOnServer(s -> {check(snail.forageReady()>forageRest,"Second cycle spends a new finite forage rest");forageRest=snail.forageReady();dev.wildercord.Wildercord.LOGGER.info("FUNGAL_REPEAT_BROWSE now={} actualForageReady={} nurseryReady={} pose={} position={}",s.overworld().getGameTime(),forageRest,snail.nurseryReady(),snail.pose(),snail.position());});await(c,w,()->snail.pose()==2 && snail.nurseryReady()>0 && snail.blockPosition().equals(roof.below()),"Rested repeat visitor finds actual nursery");w.getServer().runOnServer(s -> {nurseryRest=snail.nurseryReady();check(nurseryRest>s.overworld().getGameTime() && nurseryRest<=s.overworld().getGameTime()+1200,"The observed real repeat nursery admission establishes its independent unrenewed future rest");dev.wildercord.Wildercord.LOGGER.info("FUNGAL_REPEAT_NURSERY now={} nurseryReady={} forageReady={} pose={} position={}",s.overworld().getGameTime(),nurseryRest,snail.forageReady(),snail.pose(),snail.position());view(s,Vec3.atCenterOf(roof).add(0,-.7,0),6,-.8);});c.waitTicks(14);shot(c,"fungal_open_nursery_rest");clickBlock(c,w,plant,ItemStack.EMPTY);w.getServer().runOnServer(s -> {move(s,plant.getX()+.5,plant.getZ()+.5);hand(p(s),ItemStack.EMPTY);});c.waitTicks(20);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(FungalGarden.GILLS)==1),"Second actual mature harvest reaches inventory");
+   await(c,w,()->snail.level().getBlockState(plant).getValue(GlowcapBlock.AGE)==2,"Same living visitor completes second real rested browse",true);w.getServer().runOnServer(s -> {check(snail.forageReady()>forageRest,"Second cycle spends a new finite forage rest");forageRest=snail.forageReady();dev.wildercord.Wildercord.LOGGER.info("FUNGAL_REPEAT_BROWSE now={} actualForageReady={} nurseryReady={} pose={} position={}",s.overworld().getGameTime(),forageRest,snail.nurseryReady(),snail.pose(),snail.position());});await(c,w,()->snail.pose()==2 && snail.nurseryReady()>0 && snail.blockPosition().equals(roof.below()),"Rested repeat visitor finds actual nursery",false,new FungalNurseryProbe());w.getServer().runOnServer(s -> {nurseryRest=snail.nurseryReady();check(nurseryRest>s.overworld().getGameTime() && nurseryRest<=s.overworld().getGameTime()+1200,"The observed real repeat nursery admission establishes its independent unrenewed future rest");dev.wildercord.Wildercord.LOGGER.info("FUNGAL_REPEAT_NURSERY now={} nurseryReady={} forageReady={} pose={} position={}",s.overworld().getGameTime(),nurseryRest,snail.forageReady(),snail.pose(),snail.position());view(s,Vec3.atCenterOf(roof).add(0,-.7,0),6,-.8);});c.waitTicks(14);shot(c,"fungal_open_nursery_rest");clickBlock(c,w,plant,ItemStack.EMPTY);w.getServer().runOnServer(s -> {move(s,plant.getX()+.5,plant.getZ()+.5);hand(p(s),ItemStack.EMPTY);});c.waitTicks(20);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(FungalGarden.GILLS)==1),"Second actual mature harvest reaches inventory");
    craft(c,w,w.getServer().computeOnServer(s -> List.of(ingredient(p(s),SporebackContent.DEW),ingredient(p(s),FungalGarden.GILLS),new ItemStack(Items.LEATHER),new ItemStack(Items.COPPER_INGOT))),FungalGarden.BREATHER);check(w.getServer().computeOnServer(s -> FungalInvestigation.next(p(s)).equals("return")),"Real crafted filter admits return step");
    clickEarned(c,w,roof,FungalGarden.BREATHER);clickEarned(c,w,roof,FungalGarden.BREATHER);w.getServer().runOnServer(s -> {check(FungalInvestigation.knows(p(s),FungalInvestigation.DONE),"Actual nursery return completes connected investigation");check(p(s).getInventory().countItem(FungalGarden.CONCLUSION)==1 && p(s).getInventory().countItem(dev.wildercord.content.WildercordItems.BLANK_RUNE)==3,"Completion reward exactly once");move(s,6.5,-1.5);});
    w.getServer().runOnServer(s -> check(snail.forageReady()==forageRest && snail.nurseryReady()==nurseryRest,"Nursery does not shorten forage rest or renew its independent admission clock"));
@@ -73,7 +81,32 @@ public final class FungalNurseryTest implements FabricClientGameTest {
   }
   } finally {c.runOnClient(mc -> mc.options.keyShift.setDown(priorShift));}
  }
- /** Grow may place colliding azalea beside the garden; physically prune that supplied approach before erecting the canopy. */
+ private static boolean gardenEdge(BlockPos at) {return at.getX()==GARDEN_MIN.getX() || at.getX()==GARDEN_MAX.getX() || at.getZ()==GARDEN_MIN.getZ() || at.getZ()==GARDEN_MAX.getZ();}
+ /** Read only: verify the actual enclosing collision after Grow and throughout the existing waits. */
+ private static void gardenReceipt(MinecraftServer s,String phase) {
+  var l=s.overworld();var gaps=new ArrayList<String>();int cells=0,missing=0;
+  for(var at:BlockPos.betweenClosed(GARDEN_MIN.below(),GARDEN_MAX.above())) {
+   boolean moisture=at.equals(plant.below().east());
+   if(moisture || (!gardenEdge(at) && at.getY()!=GARDEN_MIN.getY()-1 && at.getY()!=GARDEN_MAX.getY()+1))continue;
+   cells++;var state=l.getBlockState(at);
+   if(!Block.isShapeFullBlock(state.getCollisionShape(l,at))) {missing++;if(gaps.size()<4)gaps.add(at.immutable()+"="+state);}
+  }
+  var basin=plant.below(2).east();cells++;
+  if(!Block.isShapeFullBlock(l.getBlockState(basin).getCollisionShape(l,basin))) {missing++;if(gaps.size()<4)gaps.add(basin+"="+l.getBlockState(basin));}
+  var body=snail.getBoundingBox();boolean inside=body.minX>=GARDEN_MIN.getX()+1 && body.maxX<=GARDEN_MAX.getX() && body.minZ>=GARDEN_MIN.getZ()+1 && body.maxZ<=GARDEN_MAX.getZ() && body.minY>=GARDEN_MIN.getY()-1 && body.maxY<=GARDEN_MAX.getY()+1;
+  var clip=l.clip(new net.minecraft.world.level.ClipContext(snail.getEyePosition(),Vec3.atCenterOf(plant),net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,snail));
+  dev.wildercord.Wildercord.LOGGER.info("FUNGAL_CONTAINMENT phase={} now={} visitor={} position={} body={} inside={} shellCells={} missing={} gaps={} pose={} dew={} forageReady={} nurseryReady={} capConditions={} path={} clipType={} clipBlock={}",phase,l.getGameTime(),snail.getUUID(),snail.position(),body,inside,cells,missing,gaps,snail.pose(),snail.dew(),snail.forageReady(),snail.nurseryReady(),GlowcapBlock.conditions(l,plant),snail.getNavigation().getPath()==null?"none":snail.getNavigation().getPath().getEndNode(),clip.getType(),clip.getBlockPos());
+  check(missing==0,"The supplied garden retains full enclosing collision, its original ceiling and the moisture basin floor");
+  check(inside,"The same living visitor remains physically within the local garden throughout its ordinary rest and browse");
+ }
+ /** Preserve the original plant approach and include each open side of the actual canopy. */
+ static List<BlockPos> nurseryApproachCells(BlockPos plant,BlockPos floor){
+  var cells=new LinkedHashSet<BlockPos>();
+  for(var at:BlockPos.betweenClosed(plant.offset(-1,0,-1),plant.offset(1,0,1)))cells.add(at.immutable());
+  for(var direction:Direction.Plane.HORIZONTAL)cells.add(floor.relative(direction));
+  return List.copyOf(cells);
+ }
+ /** Grow may place colliding azalea at the canopy entrances as well as beside the plant. */
  private static void pruneNurseryApproach(ClientGameTestContext c,TestSingleplayerContext w){
   UUID visitor=w.getServer().computeOnServer(s -> snail.getUUID());
   Map<Integer,ItemStack> earnedNursery=w.getServer().computeOnServer(s -> {
@@ -83,8 +116,10 @@ public final class FungalNurseryTest implements FabricClientGameTest {
   long rest=w.getServer().computeOnServer(s -> snail.forageReady()),nursery=w.getServer().computeOnServer(s -> snail.nurseryReady());
   List<BlockPos> shrubs=w.getServer().computeOnServer(s -> {
    var l=s.overworld();var result=new ArrayList<BlockPos>();
-   for(var at:BlockPos.betweenClosed(plant.offset(-1,0,-1),plant.offset(1,0,1))) {
-    var state=l.getBlockState(at);
+   for(var at:nurseryApproachCells(plant,roof.below())) {
+    var chunk=l.getChunkSource().getChunkNow(at.getX()>>4,at.getZ()>>4);
+    check(chunk!=null,"Pruning inspects only an already resident garden entrance");
+    var state=chunk.getBlockState(at);
     if((state.is(Blocks.AZALEA)||state.is(Blocks.FLOWERING_AZALEA))&&!state.getCollisionShape(l,at).isEmpty())result.add(at.immutable());
    }
    dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PRUNE_BEFORE body={} box={} ground={} nurseryFoot={} footCollision={} nurseryAirCollisionFree={} shrubs={} forageReady={} nurseryReady={}",snail.position(),snail.getBoundingBox(),snail.onGround(),l.getBlockState(roof.below()),l.getBlockState(roof.below()).getCollisionShape(l,roof.below()).toAabbs(),l.noCollision(snail,new AABB(roof.below()).deflate(.15)),result,snail.forageReady(),snail.nurseryReady());return List.copyOf(result);
@@ -96,7 +131,24 @@ public final class FungalNurseryTest implements FabricClientGameTest {
    c.runOnClient(mc -> mc.gameMode.stopDestroyBlock());
    check(w.getServer().computeOnServer(s -> s.overworld().getBlockState(at).isAir()),"Actual native Survival mining removes only a Grow-produced colliding azalea");
   }
-  w.getServer().runOnServer(s -> {for(var entry:earnedNursery.entrySet()){check(p(s).getInventory().getItem(entry.getKey())==entry.getValue()&&entry.getValue().getCount()==1,"Native pruning preserves the exact actual crafted Nursery in its original inventory slot");}check(snail.getUUID().equals(visitor)&&snail.isAlive()&&snail.forageReady()==rest&&snail.nurseryReady()==nursery&&snail.dew(),"Real garden pruning preserves the exact living visitor, reserve and independent deadlines");check(s.overworld().getBlockState(plant).is(FungalGarden.GLOWCAP)&&s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==0,"Pruning preserves the actually harvested perennial");dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PRUNE_AFTER body={} ground={} forageReady={} nurseryReady={} removedShrubs={}",snail.position(),snail.onGround(),snail.forageReady(),snail.nurseryReady(),shrubs.size());});
+  w.getServer().runOnServer(s -> {checkNurseryEntrances(s.overworld());for(var entry:earnedNursery.entrySet()){check(p(s).getInventory().getItem(entry.getKey())==entry.getValue()&&entry.getValue().getCount()==1,"Native pruning preserves the exact actual crafted Nursery in its original inventory slot");}check(snail.getUUID().equals(visitor)&&snail.isAlive()&&snail.forageReady()==rest&&snail.nurseryReady()==nursery&&snail.dew(),"Real garden pruning preserves the exact living visitor, reserve and independent deadlines");check(s.overworld().getBlockState(plant).is(FungalGarden.GLOWCAP)&&s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==0,"Pruning preserves the actually harvested perennial");dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PRUNE_AFTER body={} ground={} forageReady={} nurseryReady={} removedShrubs={}",snail.position(),snail.onGround(),snail.forageReady(),snail.nurseryReady(),shrubs.size());});
+ }
+ /** A real standing body fits every entrance after pruning; thin ground cover remains in place. */
+ private static void checkNurseryEntrances(ServerLevel level){
+  for(var direction:Direction.Plane.HORIZONTAL){
+   var at=roof.below().relative(direction);
+   // Include neighboring chunks reached by vanilla's block-collision scan; never request one.
+   for(int x=at.getX()-2;x<=at.getX()+2;x++)for(int z=at.getZ()-2;z<=at.getZ()+2;z++)
+    check(level.getChunkSource().getChunkNow(x>>4,z>>4)!=null,"Actual nursery entrance collision is already resident");
+   var state=level.getBlockState(at);var shape=state.getCollisionShape(level,at);
+   double top=shape.isEmpty()?0:shape.max(Direction.Axis.Y);
+   check(top<=1.0/16,"Actual nursery entrance retains only passable ground cover: "+at+"="+state);
+   double half=snail.getBbWidth()/2.0;
+   var body=new AABB(at.getX()+.5-half,at.getY()+top,at.getZ()+.5-half,at.getX()+.5+half,at.getY()+top+snail.getBbHeight(),at.getZ()+.5+half);
+   boolean clear=!level.getBlockCollisions(snail,body.deflate(1.0E-7)).iterator().hasNext();
+   dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PRUNE_ENTRANCE at={} state={} floorTop={} body={} blockClear={}",at,state,top,body,clear);
+   check(clear,"The actual visitor body fits the physically pruned nursery entrance: "+at);
+  }
  }
  private static void craft(ClientGameTestContext c,TestSingleplayerContext w,List<ItemStack> ingredients,Item expected) {
   w.getServer().runOnServer(s -> {for(int i=0;i<4;i++)p(s).inventoryMenu.getSlot(i+1).set(ingredients.get(i));p(s).inventoryMenu.broadcastChanges();});c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).inventoryMenu.getSlot(0).getItem().is(expected)),"Native crafting result is "+expected);c.runOnClient(mc -> mc.gameMode.handleContainerInput(mc.player.inventoryMenu.containerId,0,0,ContainerInput.QUICK_MOVE,mc.player));c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(expected)>0 && p(s).inventoryMenu.getSlot(1).getItem().isEmpty()),"Actual result pickup consumes inputs");
@@ -116,7 +168,7 @@ public final class FungalNurseryTest implements FabricClientGameTest {
   Set<UUID> existingDrops=w.getServer().computeOnServer(s -> s.overworld().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,snail.getBoundingBox().inflate(4),e -> e.getItem().is(SporebackContent.DEW)).stream().map(Entity::getUUID).collect(java.util.stream.Collectors.toSet()));
   try {
    traceGather=true;
-   w.getServer().runOnServer(s -> hand(p(s),ItemStack.EMPTY));c.waitTicks(5);c.runOnClient(mc -> mc.options.keyShift.setDown(true));c.waitTicks(5);
+   c.runOnClient(mc -> mc.options.keyShift.setDown(true));c.waitTicks(5);
    for(int attempt=0;attempt<4;attempt++) {
     w.getServer().runOnServer(s -> {
      var player=p(s);var l=s.overworld();boolean clear=false;
@@ -129,11 +181,22 @@ public final class FungalNurseryTest implements FabricClientGameTest {
      check(clear,"A real collision-free covered-garden approach has line of sight to the visitor");
      dev.wildercord.Wildercord.LOGGER.info("FUNGAL_GATHER admission player="+player.position()+" snail="+snail.position()+" shift="+player.isShiftKeyDown()+" visible="+player.hasLineOfSight(snail)+" pose="+snail.pose()+" dew="+snail.dew()+" gather="+snail.gatherReady()+" forage="+snail.forageReady()+" now="+l.getGameTime());
     });
-    c.waitTicks(5);interact(c,w);
+    c.waitTicks(5);selectEmptyGatherHand(c,w);interact(c,w);
     if(w.getServer().computeOnServer(s -> !snail.dew())) {collectEarnedDew(c,w,dewBefore,existingDrops);return;}
    }
    throw new AssertionError("Four real native crouch interactions did not spend the visitor reserve; inspect FUNGAL_GATHER admissions");
   }finally {traceGather=false;c.runOnClient(mc -> mc.options.keyShift.setDown(shift));}
+ }
+ /** Leave earlier pickup space for pruned shrubs; vanilla fills the first empty slot, even when it is selected. */
+ private static void selectEmptyGatherHand(ClientGameTestContext c,TestSingleplayerContext w) {
+  int slot=w.getServer().computeOnServer(s -> {
+   var inventory=p(s).getInventory();int firstEmpty=inventory.getFreeSlot();
+   for(int candidate=8;candidate>firstEmpty && firstEmpty>=0;candidate--)if(inventory.getItem(candidate).isEmpty())return candidate;
+   throw new AssertionError("Gathering needs an actually empty hotbar slot after earlier free pickup space");
+  });
+  c.getInput().pressKey(o -> o.keyHotbarSlots[slot]);c.waitTicks(3);
+  check(c.computeOnClient(mc -> mc.player.getInventory().getSelectedSlot()==slot && mc.player.getMainHandItem().isEmpty()),"Native hotbar selection leaves the client gather hand empty");
+  check(w.getServer().computeOnServer(s -> p(s).getInventory().getSelectedSlot()==slot && p(s).getMainHandItem().isEmpty()),"Native hotbar selection reaches the server with an empty gather hand");
  }
  // Follow the actual emitted item using client movement. A random drop may land beyond a stationary pickup box.
  private static void collectEarnedDew(ClientGameTestContext c,TestSingleplayerContext w,int before,Set<UUID> oldDrops) {
@@ -178,13 +241,16 @@ public final class FungalNurseryTest implements FabricClientGameTest {
   w.getServer().runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("FUNGAL_REPEAT_WAIT_START now={} forageReady={} nurseryReady={} dew={} pose={}",s.overworld().getGameTime(),forageRest,snail.nurseryReady(),snail.dew(),snail.pose()));
   // At most the same1200-tick forage rest, not a new or extended ecological clock.
   for(int i=0;i<=240;i++){
+   if(i%40==0)w.getServer().runOnServer(s -> gardenReceipt(s,"saved forage wait"));
    boolean reached=w.getServer().computeOnServer(s -> {long now=s.overworld().getGameTime();if(now>=forageRest)return true;check(snail.forageReady()==forageRest,"Before its saved deadline the visitor preserves the exact actual forage rest");check(!snail.dew() && s.overworld().getBlockState(plant).getValue(GlowcapBlock.AGE)==1,"Before its exact real rest expires the gathered visitor cannot mint dew or mature the prepared cap");return false;});
-   if(reached){w.getServer().runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("FUNGAL_REPEAT_WAIT_REACHED now={} forageReady={} nurseryReady={} dew={} pose={}",s.overworld().getGameTime(),forageRest,snail.nurseryReady(),snail.dew(),snail.pose()));return;}
+   if(reached){w.getServer().runOnServer(s -> {gardenReceipt(s,"saved forage deadline reached");dev.wildercord.Wildercord.LOGGER.info("FUNGAL_REPEAT_WAIT_REACHED now={} forageReady={} nurseryReady={} dew={} pose={}",s.overworld().getGameTime(),forageRest,snail.nurseryReady(),snail.dew(),snail.pose());});return;}
    if(i<240)c.waitTicks(5);
   }
   throw new AssertionError("The existing saved forage deadline must be reached within its unchanged1200-tick maximum");
  }
- private static void await(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.BooleanSupplier yes,String why) {for(int i=0;i<150;i++) {c.waitTicks(5);if(w.getServer().computeOnServer(s -> yes.getAsBoolean()))return;}w.getServer().runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("FUNGAL_AWAIT "+why+" snail="+snail.position()+" pose="+snail.pose()+" dew="+snail.dew()+" forage="+snail.forageReady()+" now="+s.overworld().getGameTime()+" nurseryReady="+snail.nurseryReady()+" hiddenUntil="+snail.hiddenUntil()+" nurseryBlock="+s.overworld().getBlockState(roof)+" cap="+s.overworld().getBlockState(plant)+" foot="+s.overworld().getBlockState(snail.blockPosition().below())+" path="+(snail.getNavigation().getPath()==null?"none":snail.getNavigation().getPath().getEndNode())+" clip="+s.overworld().clip(new net.minecraft.world.level.ClipContext(snail.getEyePosition(),Vec3.atCenterOf(plant),net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,snail))));throw new AssertionError(why);}
+ private static void await(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.BooleanSupplier yes,String why) {await(c,w,yes,why,false);}
+ private static void await(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.BooleanSupplier yes,String why,boolean garden) {await(c,w,yes,why,garden,null);}
+ private static void await(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.BooleanSupplier yes,String why,boolean garden,FungalNurseryProbe probe) {for(int i=0;i<150;i++) {c.waitTicks(5);if(garden && i%40==0)w.getServer().runOnServer(s -> gardenReceipt(s,why));final int observation=i;if(w.getServer().computeOnServer(s -> {boolean accepted=yes.getAsBoolean();if(probe!=null)probe.sample(snail,s,observation,accepted);return accepted;}))return;}w.getServer().runOnServer(s -> {if(probe!=null){probe.sample(snail,s,150,true);return;}if(garden)gardenReceipt(s,"browse timeout");dev.wildercord.Wildercord.LOGGER.info("FUNGAL_AWAIT "+why+" snail="+snail.position()+" pose="+snail.pose()+" dew="+snail.dew()+" forage="+snail.forageReady()+" now="+s.overworld().getGameTime()+" nurseryReady="+snail.nurseryReady()+" hiddenUntil="+snail.hiddenUntil()+" nurseryBlock="+s.overworld().getBlockState(roof)+" cap="+s.overworld().getBlockState(plant)+" foot="+s.overworld().getBlockState(snail.blockPosition().below())+" path="+(snail.getNavigation().getPath()==null?"none":snail.getNavigation().getPath().getEndNode())+" clip="+s.overworld().clip(new net.minecraft.world.level.ClipContext(snail.getEyePosition(),Vec3.atCenterOf(plant),net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,snail)));});throw new AssertionError(why);}
  private static ServerPlayer p(MinecraftServer s) {return s.getPlayerList().getPlayers().getFirst();}
  private static void move(MinecraftServer s,double x,double z) {p(s).teleportTo(s.overworld(),x,30,z,Set.<Relative>of(),0,30,false);}
  private static void view(MinecraftServer s,Vec3 focus,double x,double z) {var eye=new Vec3(x,30+p(s).getEyeHeight(),z);var d=focus.subtract(eye);p(s).teleportTo(s.overworld(),x,30,z,Set.<Relative>of(),(float)Math.toDegrees(Math.atan2(-d.x,d.z)),(float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())),false);}

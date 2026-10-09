@@ -4,6 +4,122 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.11.0-alpha] — 2026-10-09
+
+Install the same build on the server and every client. New structures, items, runes, advancements and packets mean 0.10.x clients must update before joining. Back up worlds first; the 48 new sites appear only in newly generated chunks.
+
+### Release fixes
+
+- Water-site villagers are marked as site residents, so they are never confused with wandering villagers.
+- The Prospector's Camp floor uses blocks that don't fall, so it holds over hollow ground.
+- The water sites look for their spot across nine places in a chunk and every facing, so they find shore and shallows more often.
+
+### Added
+
+- Add the Rune Catalog (Catalog link or Ctrl+B in the Cord screen): search runes by name and by what you can read of them, filter by family, element, use (combat, support, farming, fishing, mining, building, exploring, travel, passive) and known/all/Cord-ready/still reading, sort and page. Picking a rune shows a "goes well with" panel built from the spell compiler's own rules. Unlearned runes show only their hint, and the filter is kept for the session.
+- Add 48 hearth runes: gentle, long-lasting utility for camping, travel and survival, such as Slowburn, Camp Ward, Warm Cloak, Softsole, Hollow Pocket, Lodestar and Homeward, Waymark, Glidewind, Lantern Soul, Keenkeep and Tinker's Hum. 14 of them can be passives. None of them deals damage, and recasting refreshes instead of stacking. Only the lodestar and the 9-slot pocket are saved, so old saves load unchanged.
+- Add the Tide pack: 48 fishing, water and coast runes (none harmful). Hurry or read your fishing line, fill buckets, cauldrons and bottles, put out fires, grow kelp and mend coral, raise a diving bell, lay lily pads, call dolphins and boats, sail with a fair wind and run on water. Fishing loot is unchanged: only the wait and vanilla Luck are touched. Found from village fishers, ocean ruins, shipwrecks and fishing; Ocean's Favor is found only.
+- Add 48 farmstead runes (fx-farm pack): field runes (Furrow, Dewfall, Tilth, Plowline, Sow, Ripen, Dewkeep, Field Sense, Thawfield, Cloche, Scarecrow, Fallow, Ditchwater, Compost, Stalkrise, Gourdcall, Berrybless), husbandry (Courtship, Herdcall, Fleece, Milkmaid, Henhouse, Gentle Hand, Fodder, Barnwarmth, Herdsense), kitchen (Hearthcook, Stewpot, Bakehouse), hive (Pollinate, Hive Hum, Calm Smoke), forestry (Wildflower, Sapling Rise, Sapling Sow, Leaffall, Barkstrip, Coppice), the table (Feast Day, Picnic, Honeydew, Canopy, Barkhide, Sapflow) and the lane (Trot, Beeline, Fieldstride, Hayloft). None does harm; every block change asks the claim and stays within the cast's block budget, and item-using runes spend the caster's own items. Tier I-III ones are crafted; all turn up in village chests.
+- Add the delving pack: 48 non-offensive working runes for mining, caves, smelting and crafting, masonry, light, levers and doors, and chests. They break and place blocks through the same claim, protection and block-budget gates as the other world runes, drop what a pickaxe would, and move items without copying them. Tiers I-III are crafted and found in village toolsmith, mason and temple chests; Motherlode and Delvemark (Tier IV) come from the Archives.
+- Add the hearth pack: 17 links and 36 modifiers for everyday play. Ten conditions (If Night, If Day, If Raining, If Underground, If Alone, If Near Ally, If Unhurt, If Holding Tool, If Brimming, If In Fields) let a spell fire now or refund its mana. Seven watchers (On Mine, On Harvest, On Catch, On Sprint, On Splash, On Mount, On Wake) wait for something you do and fire from there. Each modifier changes a rule rather than a number. Gathering: Tidy, Replanting, Kilned, Silken, Windfall, Veinfollow, Timbering, Level Ground, Magnetic, Fetching, Fleecing, Ore Sensing, Torchset. Tending: Sowing, Furrowing, Fertile, Mending, Nourishing, Purifying, Matchmaking, Cushioned, Damp. Who a blow lands on: Culling, Headhunting, Hallowed, Tapering, Pooled, Sunlit, Bountiful, Soothing, Steady, Inward, Selfless, Triage, Gentle, Sparing. Each modifier appears at most once per effect. Modifiers on an effect they can't work on, and clashing pairs, are refused with a clear message. All 53 are craftable and turn up in village houses' chests.
+- Add the Wayfarer's pack: 46 helper runes for exploring, mapping, digging up relics, trading, brewing, enchanting, decorating, and finding your footing in the Nether and the End. They read the land, sky, moon and light; point to spawn, home, where you fell, or a nearby structure (vanilla's own search, bounded, with a shared 30 s rest); brush, restock, haggle, quicken brewing, steep potions, dye, light candles, pose stands and veil frames. They never hurt anything or make free loot. Every block edit respects protection and claims, and passing blocks drop nothing and revert on time. Tier I-III recipes, plus finds in cartographer, temple, shepherd, shipwreck-map, ruined-portal, fortress and stronghold-corridor chests and in desert pyramid brushing. <!-- ---- fx-explore pack -->
+- Added 46 support runes, from Worst First to Faithful. They heal, guard allies, help a party, calm or hold foes without harming them, and keep villages, pets and blocks safe. Each Tier I to III rune has a recipe. The four Tier IV runes (Grace, Aegis, Accord, Citadel) are found only, in village chests and outposts or from raiders.
+
+- Add thirteen new Sword Masters, so every breathing method now has one (16 in all). Rime, Thunder, Verdant and Hollow, then Starlit, Hourglass and Crimson, then Tide, Iron and Dune, then Echo, Dawn and Venom. Each has its own named techniques (417 across all Masters), its own signature attack with a clear warning and a way to answer it, and a first clear that teaches a technique part.
+- Add six breathing methods with five arts each: Tide (soaks), Iron (sunders), Dune (blinds and sinks), Echo (resounds), Dawn (dazzles) and Venom (poisons and weakens).
+- Add four field forms for the Master-form slot: Cinder Lunge (Ember teacher) and Reed Slip (Gale teacher) on the ground, Air Step and Plunging Strike in the air. Each sweeps your real body, stops at walls, ledges, hazards and wards, ends in a recovery and never clears fall damage.
+- Add Spell Cut: a learned swing that cuts a hostile spell flying at you. Helpful spells are never cut.
+- Add the lore journal (H): it records places, Masters, duelists, methods and lines people said to you, with small discovery quests. It only watches and never changes a fight.
+- Add Circle Vows (/vow): the later Heart Circles each offer a choice between two vows. Taking one is free; releasing it to choose again costs experience levels. A cracked circle silences its vow.
+- Add more structure families to the operator-only safe world upgrades (/wildercord-upgrade): one encounter per region, never beside a natural one, with preview and rollback.
+- Add field and kin shapes: spells that strike a pattern of blocks (and what stands on them) or a kind of creature, landing as one hit.
+
+- Add Stone Hinge as a learnable Master form. A wandering Stone teacher teaches it at Sovereign after a recorded Stone Master clear; it shares the Master-form slot with Wall Turn. On firm ground, hold one strafe key and press the form key: 20 Aura buys a short plant and catch, and the first frontal melee blow in the catch is turned toward that side with its strength unchanged. Damage still lands, and refused turns keep ordinary knockback. Old saves load without the form. Peer, latency and dedicated-server acceptance remain pending.
+
+- Add Cinnamon's fixed-window feeding growth, mobile damage recovery and owner-only summoning whistle. Preserve one saved identity across ordinary unload/restart and owner travel, with bounded temporary chunk recovery and no replacement on an unknown lookup. Native growth, movement, persistence and retirement assertions are included; fresh in-game verification remains pending.
+
+- Pin the full-client gate to explicit 80/84/77/71 groups, including the two new counter-lifetime classes with exact roster, dependency-block and plan identities shared by the launcher and Gradle. Only four matching completed shard proofs can accept the full gate; relocated runtime acceptance and the unchanged 180-minute budget remain unverified.
+
+- Preserve an accepted Crimson Moon through natural Momentum decay during a clash while keeping cold Final requests gated and earned-counter admission checks intact. Native request, clash and released-owner regressions accompany the correction; fresh native execution remains pending.
+
+- Keep Fabric's client test phase pump participating while a real singleplayer close awaits its native server shutdown task. The repair is confined to the GameTest mod; paused/unpaused save-close-reopen and Relay reconnect remain required native acceptance gates.
+
+- Add the Archive’s Relay Circle lesson at active Heart Circle VIII: one paid remote focus, a fresh second cast-key press, a warned ray, and persistent three-page lore/practice guidance. The initial shape accepts only Relay with Harm, Frost or Shock.
+
+- Add 48 explorable buildings and places in six families, each with its own loot, advancement and wiki page. They appear only in newly generated chunks:
+  - Add eight peaceful farmstead sites in new chunks: a windmill farmstead with a well to wake, an herbalist's cottage, a beekeeper's apiary, a walled orchard with a buried cache, a shepherd's hut, a sunken mushroom ring, a granary barn with a harvest shrine and an abandoned scarecrow field. Their chests hold food, seeds, saplings and farming and hearth runes.
+  - Add eight Master halls and shrines for the breathing schools (new chunks only): Forge Dojo, Wind Gate, Quarry Hall, Waterfall Shrine, Root Temple, Sundial Court, Star Terrace and the underground Resonance Chamber. Each keeps one of two schools, has practice dummies, a lectern that tells you how to challenge that school's Master, and a reward of its manual pages, manual, technique scrolls and runes behind a seal, a guarded pit or a climb.
+  - Add eight peaceful roadside sites in new chunks, a bit more common than the others: a crossroads wayfarer inn, a hilltop watchtower with a signal fire, a broken bridge over a creek, a small rune library with a shelf riddle, a ring of standing stones with a buried gift, a caravan camp with a trader and llamas, a cartographer's hut whose chest map leads to another roadside site, and a vow circle whose book explains every Circle Vow. Their chests hold travel and exploring runes, maps and books, and visiting each one adds a Places entry to the lore journal.
+  - Add eight water sites: a stilt smokehouse, a lighthouse, a watermill, an ice fishing camp, a pier and boathouse, a sunken shrine with an air pocket, mangrove net-weavers' huts and a tidepool grotto. Each has fishing gear and Tide runes, three have short books, and they appear only in new chunks. <!-- ---- sites-water pack -->
+  - Add eight mining sites in new chunks: Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry (Nether), Deepslate Vault, Prospector's Camp and Miner's Rest. They hold moderate ore, tools, forge items, delving rune scrolls and Iron and Stone breath pages. Underground ones stay out of the deep dark and away from flooded ground, and their lava and water never spread. Each one is written in the lore journal and has an advancement. <!-- ---- sites-mine pack -->
+  - Add eight wild places to find in new worlds: a Venom Ziggurat in the jungle with a dart-trap tunnel, a half-buried Dune Temple with a sand floor that drops into a hidden sanctum, a Rime Monastery ruin in the snow, an Iron Gatehouse in the badlands, a Dawn Pavilion in cherry groves with a shrine facing the sunrise, an Echo Post on the deep dark floor (no shriekers, kept away from ancient cities), an Ember Outpost in Nether forests and a Void Lantern on the End's outer islands. Each has an element rune seal, and most have Runebound guards. Their vaults hold a breathing method manual and runes of the matching element.
+
+### Masters of Tomorrow, development foundation
+
+- Gave the Sword Masters a hundred named techniques: one- to four-strike combos built from authored motions (mirrored backhands, whirls, lunges, quick and heavy cuts), each with its own chamber, locked aim, readable hit shape (broad, low, high, lane or circle) and open recovery. A chain's damage is capped at 1.75 technique hits. Masters move faster, breathe sooner between attacks and raise their guard after every third attack instead of every second; Stone still braces after each one. The boss bar names each technique as it is performed.
+
+- Shortened the Master challenge, lobby and teacher messages to one clear instruction each, so a challenger can read what to do mid-approach.
+
+- Rebuilt Oathkeeper, the Bulwark Maul and the Skyrend Glaive as true 3D weapons in hand (a fullered longsword with gilt quillons and green oath-stones; an iron-bound riven-stone maul with glowing geodes; a storm-lacquered glaive with a crescent blade and a lightning-lit edge), each with a matching 32-pixel inventory sprite drawn from the same build. The Sleeping Blade's stone holds the same Oathkeeper.
+
+- Extend the connected fixture from its original 46 cases to 54 unique cases in both actual wide/slim profiles, with all four Moon views retained. Genuine counter input, first native source identity, both-view phase/draw/hilt receipts and durable late-failure rejection precede unchanged image evidence. Full per-group caps are reserved sequentially; native execution, image quality and runtime fit remain unverified.
+
+- Give the existing Unmoved and Null Parry counters original Classic/articulated body and first-person choreography with six/four-tick windups and sixteen/fourteen-tick recovery. Unmoved's paid defence starts once at admission, retains its original expiry, and coexists with Mountain through independent exact-body leases without removing unrelated Resistance. Null keeps its independent pulse before the captured primary strike, including EMPTY/lost-primary release. Original price, rest, target routes and PvP limits remain; native acceptance is pending.
+
+- Retire released-art authority at the original body/world/lifetime boundary, including reentrant world changes and equal-ID respawn replacement. Stale cleanup cannot retire a newer destination grant. Whole Unmoved/Null and hardening lifetime suites expand the required Masters gate to 47 classes and the full descriptor to 312; old ordered rosters are retained.
+
+- Keep native neutral buoyancy only while a Lantern Newt follows a waterlogged refuge route, preventing upward drift during tight turns; ordinary swimming, speed, steering and real collisions remain unchanged. Native arrival and transition regression execution is pending.
+
+- Add Stone Fault March, Stone attack ID 10: three fixed advancing ground bands, one attempted hit per participant, permanent cover/support truncation, lateral and inward spent-ground counters, and original Classic/articulated sword choreography. Its three native suites and manual visual check are still to run.
+
+- Added seeded, bounded ordinary Master attack selection with accepted-action history and recent-move avoidance. Existing priority signatures and full punish windows remain; ordinary releases now resist callback reentry. This adds combinations, not new attack IDs, and native planner acceptance remains pending.
+
+- Corrected Red Rain's first-person chamber so steep opposite-hand looks retain a visible blade face and clear aim corridor. Server timing, grip and native pixel thresholds are unchanged; fresh shaded capture acceptance remains pending.
+
+- Revalidate Hailfall's released owner and source-world victims after synchronous damage callbacks, preventing further stone victims or chill after retirement. Ordinary weapon changes and physical interruption still preserve a live owner's released cloud; native callback acceptance remains pending.
+
+- Added a committed release and original Classic/articulated body and first-person motion to the existing Crimson Moon Final. Its ten-tick warning uses accepted facing and release-time feet with visible-cone admission; the existing price, rest, release-only health toll, outward arcs, wounds and healing caps remain. The Final and released-owner classes pass on `d3612e11`; stronger native visual verification remains pending.
+
+- Added Ember Kiln Ring: a stationary warned annulus with an inner pocket, outer escape, cover and timed-jump counters, original body/weapon motion, finite Aura and full recovery. Its three dedicated native mechanics, presentation and opponent-view suites pass on `160ff125`; final-candidate and continuous gameplay acceptance remain open.
+
+- Let Glimmerwings sense the lantern light already around them and follow a bounded brighter-air gradient, preserving their existing natural flight and exploratory searches. The strengthened native check requires actual light acquisition and lured flight before arrival; candidate runtime acceptance remains pending.
+
+- Added the isolated Wall Turn lesson: a Sovereign with a recorded Gale clear can learn from a wandering teacher, retain its original three-page story, and equip one separate Master form. Fresh C inputs brace and kick through a bounded, paid server movement with real collision, fall risk and safe-landing recovery. Classic body/hand presentation and native acceptance suites accompany the source; final combined native acceptance is pending.
+
+- Prevent an extra rimehare bound when its last grounded step has already reached the final native waypoint.
+
+- Let rimehares shed excess horizontal momentum during fast grounded recovery so bounds can follow native waypoints and settle at the end of a route. Native escape, terrain and arrival checks remain release gates.
+
+- Extended the default-off original articulated player preview to Rising Break and Driving Cut, with separate low-to-high and point/recoil body forms and HUD-safe hand compositions. Existing gameplay windows, inputs and full unsupported-state fallback remain; accepted-input native visual review is pending.
+
+- Added Stone Fracture: a fixed-facing paid brace with rear/axe/stance counters, a separate narrow reply warning, original body/weapon motion and a guaranteed two-second recovery. This isolated slice still requires its native gameplay and visual gate.
+
+- Retuned cast pursuit to 8 warning ticks, 6 native movement steps and 8 final-warning ticks, allowing an early free opening to reach a normal 30-tick charge. Both visible tells, committed aim, all Aura/cooldowns and the 30-tick exposed recovery remain; fast casts and early release can still win.
+
+- Defined pursuit spell interruption by resolved health or absorption damage before Mana Skin restoration; full guards, dodges and rejected hits preserve the cast. Damage amounts and the shared eight-second interruption protection remain unchanged.
+- Applied the same landed-damage rule to close-range Master spellbreaks and Driving Cut. Driving Cut now respects shared eight-second interruption protection for held spells, while retaining its one-second idle-player seal; hit callbacks cannot transfer interruption to a replacement charge.
+
+- Added a school-tuned, server-owned cast-punish dash for all three Masters: visibly committed native movement, a separate short strike warning, actual-damage-only interruption, finite Aura/cooldowns and a guaranteed exposed recovery. One-tick feints, bystanders, cover, unsafe terrain and interruption cannot create free or homing dash chains; native counterplay fixtures accompany the new fallback body motion.
+- Authored a separately default-off articulated netherite armor preview: primary-body-only ownership, runtime vanilla slot geometry with welded joint bands, stock enchantment/trim materials and optional chestplate arms in first person. This remains an isolated, native-unaccepted slice; unsupported equipment uses the complete fallback.
+- Added a default-off, operator-reviewed existing-world pavilion adapter with exact-region previews, fail-closed claim-provider checks, durable recovery manifests and conflict-aware rollback. The first template is limited to 123 inert blocks in one already loaded, uninhabited chunk; it does not retrofit dungeons or spawn bosses. Native recovery validation remains a release gate. See [Safe world upgrades](docs/SAFE_WORLD_UPGRADES.md).
+
+- Added a default-off original segmented Spellcut/Master SWEEP renderer proof, with visible elbow/knee/wrist joints, skin-sliced limbs, independently composed first-person arms and stable-camera preview. Existing rig remains the whole-body fallback for armor and unsupported states; native validation and enchanted-netherite support are still required.
+
+- Raised the permanent Mana Crystal absorption cap from 10 to 100. Each crystal still adds 10 mana; existing absorbed crystals are preserved.
+- Extended Heart Circles from 8 to 20 with twelve additional, solo-achievable breakthrough gates, titles, advancements, bounded visuals and saved-progress validation. The original eight milestones and their perks retain their meaning.
+- Added voluntary parties of up to eight players, invitations and leader controls. Shared spell and Aura targeting, direct impacts, owned summons, delayed harmful effects, and status/fire/movement mutations now check current membership. Explicit agreed duels retain their existing exception.
+- Added opt-in Sword Master trials in the Ember, Gale and Stone disciplines, separate from progression-teaching duelists. A staged roster locks health, stance and attack coverage; telegraphed attacks, counter windows, finite Aura, directional spell cutting, simple-bolt redirection and pressure responses provide counterplay.
+- Gave the Ember Master a distinctive Cinder Wake: a fully committed broad cut, a separately warned delayed narrow afterburn, original two-beat body motion, school-specific guidance, finite Aura cost and a guaranteed counter window. Group lanes add coverage without repeated hits or bystander damage.
+- Added Spellcut, Rising Break and Driving Cut on rebindable U/Y/J controls, with server-owned payment, windup/active/recovery timelines, interruption, bounded target queries, and original first- and third-person animations.
+- Extended the bounded native screenshot artifact to include requested Rising Break/Driving Cut captures with explicit omissions and unknown rendered phases; full evidence and native verdicts remain separate.
+- Added paid, server-timed body and first-person releases to the existing Rising Cinders and Blossom Fall second forms, preserving their independently released rain and field effects.
+- Gave all ten existing first-form style arts committed windups and original body/weapon motion, preserving prices and inputs; physical multi-cuts are interruptible while launched afterimages and fields retain their own lifetimes.
+- Added Survival introductions through travelling Duelists and permanent first-clear technique lessons (Echo, Afterimage and Sunder) without repeatable item/XP farming.
+- Improved Normal/Hard Gloomstalker and Bog Witch-Frog pursuit and attack cadence while preserving Easy, damage, health, tells and guaranteed miss recovery.
+- Fixed delayed effect source attribution and impact-time alliance checks, preserving helpful and self effects. Added regression suites for party mutations, projected attacks, twenty-circle progression and native combat presentation.
+
+This is a development build, not a measured balance release. The larger style roster, ordinary-encounter retuning, and complete animation review remain in progress. See [Masters of Tomorrow](docs/features/masters-of-tomorrow.md).
+
 ## [0.10.0-alpha] — 2026-10-04
 
 Install the same build on the server and every client. New blocks, items, entities, particles and packets mean 0.9.x clients must update before joining.
@@ -2442,6 +2558,3 @@ The first public version.
 - Server-authoritative casting with per-cast budgets, friendly fire off, and PvP damage scaling.
 - A generated asset pipeline (`tools/`) driven by the rune roster.
 - Unit tests for the spell engine and client game tests for mechanics and layout.
-
-
-

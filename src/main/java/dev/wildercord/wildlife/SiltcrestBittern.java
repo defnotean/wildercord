@@ -24,7 +24,7 @@ public final class SiltcrestBittern extends PathfinderMob {
  private static final EntityDataAccessor<Integer> POSE=SynchedEntityData.defineId(SiltcrestBittern.class,EntityDataSerializers.INT);
  private static final EntityDataAccessor<Integer> PHASE=SynchedEntityData.defineId(SiltcrestBittern.class,EntityDataSerializers.INT);
  private long huntReady,controlReady,frightenedUntil,shelterReady;private int epoch,left;private AbstractFish quarry;private Vec3 committed;
- private boolean pendingPreen;private BlockPos shelter;private long shelterUntil;private net.minecraft.resources.ResourceKey<Level> knownWorld;
+ private boolean pendingPreen,holdQuarry;private BlockPos shelter;private long shelterUntil;private net.minecraft.resources.ResourceKey<Level> knownWorld;
  public float coil,coilO,strike,strikeO,preen,preenO,rest,restO;
  public SiltcrestBittern(EntityType<? extends SiltcrestBittern> t,Level l){super(t,l);xpReward=0;setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER,4);}
  public static AttributeSupplier.Builder attributes(){return createMobAttributes().add(Attributes.MAX_HEALTH,12).add(Attributes.MOVEMENT_SPEED,.23).add(Attributes.FOLLOW_RANGE,8).add(Attributes.STEP_HEIGHT,.6);}
@@ -44,7 +44,9 @@ public final class SiltcrestBittern extends PathfinderMob {
  /** Complete raw pool first; a ninth fish refuses rather than biasing a truncated eligible prefix. */
  List<AbstractFish> preyPool(ServerLevel l){var all=new ArrayList<AbstractFish>(PREY_CAP+1);l.getEntities(EntityTypeTest.<Entity,AbstractFish>forClass(AbstractFish.class),getBoundingBox().inflate(6),f->true,all,PREY_CAP+1);if(all.size()>PREY_CAP)return List.of();all.removeIf(f->!wildFish(f,l));all.sort(Comparator.<AbstractFish>comparingDouble(this::distanceToSqr).thenComparing(f->f.getUUID().toString()));return List.copyOf(all);}
  boolean disturbed(ServerLevel l){var players=new ArrayList<Player>(13);l.getEntities(EntityTypeTest.<Entity,Player>forClass(Player.class),getBoundingBox().inflate(4),p->true,players,13);if(players.size()>12)return true;return players.stream().anyMatch(p->p.isAlive()&&!p.isRemoved()&&!p.isCreative()&&!p.isSpectator()&&!p.isShiftKeyDown()&&distanceToSqr(p)<16&&hasLineOfSight(p));}
- boolean beginCoil(ServerLevel l,AbstractFish f){if(level()!=l||pose()!=STALKING||clock(l)<huntReady||!onGround()||disturbed(l)||!wildFish(f,l)||distanceToSqr(f)>3.24||!loadedSight(f)||preyPool(l).size()<3)return false;quarry=f;committed=f.getBoundingBox().getCenter();epoch++;pose(COILING,COIL);getLookControl().setLookAt(f,30,30);return true;}
+ boolean beginCoil(ServerLevel l,AbstractFish f){if(level()!=l||pose()!=STALKING||clock(l)<huntReady||!onGround()||disturbed(l)||!wildFish(f,l)||distanceToSqr(f)>3.24||!loadedSight(f)||preyPool(l).size()<3)return false;quarry=f;committed=f.getBoundingBox().getCenter();holdQuarry=settled(f);epoch++;pose(COILING,COIL);getLookControl().setLookAt(f,30,30);return true;}
+ /** A resting fish under the coiling bird's shadow freezes; one already swimming keeps its own course and may still dodge. */
+ static boolean settled(AbstractFish f){return f.getNavigation().isDone()&&f.getDeltaMovement().horizontalDistanceSqr()<1e-4;}
  boolean loadedSight(Entity e){var a=blockPosition();var b=e.blockPosition();for(int x=Math.min(a.getX(),b.getX())>>4;x<=Math.max(a.getX(),b.getX())>>4;x++)for(int z=Math.min(a.getZ(),b.getZ())>>4;z<=Math.max(a.getZ(),b.getZ())>>4;z++)if(!level().hasChunkAt(new BlockPos(x<<4,a.getY(),z<<4)))return false;return hasLineOfSight(e);}
  private boolean action(ServerLevel l,int token,AbstractFish f){return level()==l&&isAlive()&&!isRemoved()&&epoch==token&&pose()==STRIKING&&quarry==f;}
  /** One committed real hurt; admitted death and current source own appetite/preen, never an arbitrary nearby drop. */
@@ -56,7 +58,7 @@ public final class SiltcrestBittern extends PathfinderMob {
   huntReady=clock(l)+APPETITE;quarry=null;committed=null;pendingPreen=true;Feels.sound(l,position(),"bittern_catch",.4F,1);
   l.sendParticles(net.minecraft.core.particles.ParticleTypes.SPLASH,getX(),getY()+.15,getZ(),3,.13,.02,.13,.01);
  }
- private void cancel(int pause){epoch++;pendingPreen=false;quarry=null;committed=null;getNavigation().stop();huntReady=Math.max(huntReady,clock(level())+pause);if(pose()!=RETREATING)pose(IDLE,0);}
+ private void cancel(int pause){epoch++;pendingPreen=false;holdQuarry=false;quarry=null;committed=null;getNavigation().stop();huntReady=Math.max(huntReady,clock(level())+pause);if(pose()!=RETREATING)pose(IDLE,0);}
  void retreat(){cancel(200);frightenedUntil=Math.max(frightenedUntil,clock(level())+200);pose(RETREATING,40);Feels.sound((ServerLevel)level(),position(),"bittern_rustle",.35F,1);}
  boolean settle(ServerLevel l,BlockPos at){if(l!=level()||!isAlive()||isRemoved()||pose()!=IDLE||!onGround()||!wantsShelter()||!BitternHabitat.shelter(l,at)||distanceToSqr(at.getX()+.5,at.getY(),at.getZ()+.5)>.36)return false;shelter=at.immutable();shelterUntil=clock(l)+160;shelterReady=clock(l)+1200;epoch++;pose(SHELTERING,160);return true;}
  /** Called only after a real Tidebreath owner changes this actual recipient, not a generic hit appearance. */
@@ -66,7 +68,7 @@ public final class SiltcrestBittern extends PathfinderMob {
  @Override public boolean hurtServer(ServerLevel l,DamageSource source,float amount){float before=getHealth();boolean hit=super.hurtServer(l,source,amount);if(hit&&getHealth()<before&&isAlive()&&!isRemoved()&&level()==l)retreat();return hit;}
  @Override public void tick(){super.tick();if(level().isClientSide()){coilO=coil;strikeO=strike;preenO=preen;restO=rest;coil=WildlifeRules.approach(coil,pose()==COILING?1:0,.12F);strike=WildlifeRules.approach(strike,pose()==STRIKING?1:0,.65F);preen=WildlifeRules.approach(preen,pose()==PREENING?1:0,.1F);rest=WildlifeRules.approach(rest,pose()==SHELTERING?1:0,.1F);}}
  @Override protected void customServerAiStep(ServerLevel l){super.customServerAiStep(l);if(knownWorld==null)knownWorld=l.dimension();else if(!knownWorld.equals(l.dimension())){knownWorld=l.dimension();epoch++;quarry=null;committed=null;pendingPreen=false;shelter=null;shelterUntil=0;pose(IDLE,0);}
-  if(pose()==COILING){if(quarry==null||!wildFish(quarry,l)||disturbed(l)||!onGround()||!WetlandRules.night(l.getOverworldClockTime())||l.isRaining()){cancel(200);return;}getLookControl().setLookAt(committed.x,committed.y,committed.z,30,30);entityData.set(PHASE,COIL-left);if(--left<=0){pose(STRIKING,6);strike(l);}return;}
+  if(pose()==COILING){if(quarry==null||!wildFish(quarry,l)||disturbed(l)||!onGround()||!WetlandRules.night(l.getOverworldClockTime())||l.isRaining()){cancel(200);return;}getLookControl().setLookAt(committed.x,committed.y,committed.z,30,30);if(holdQuarry){quarry.getNavigation().stop();quarry.setDeltaMovement(0,quarry.getDeltaMovement().y,0);}entityData.set(PHASE,COIL-left);if(left==1)holdQuarry=false;if(--left<=0){pose(STRIKING,6);strike(l);}return;}
   if(pose()==STRIKING||pose()==PREENING){entityData.set(PHASE,(pose()==PREENING?PREEN:6)-left);if(--left<=0){if(pose()==STRIKING&&pendingPreen){pendingPreen=false;pose(PREENING,PREEN);}else pose(IDLE,0);}return;}
   if(pose()==SHELTERING){if(shelter==null||!BitternHabitat.shelter(l,shelter)||!onGround()||distanceToSqr(shelter.getX()+.5,shelter.getY(),shelter.getZ()+.5)>.64||clock(l)>=shelterUntil){shelter=null;shelterUntil=0;pose(IDLE,0);}return;}
   if(pose()==RETREATING){if(--left<=0)pose(IDLE,0);return;}

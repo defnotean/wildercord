@@ -209,7 +209,11 @@ public final class Awakenings {
 				show.groundRing(feet, ElementFx.BLOOD.accent() | ArtLight.DARK, 0.4, 3.0, 0.16, 14);
 				CrimsonArts.drops(level, heart, 0.7, 14);
 			}
+			// ---- methods-a pack
+			case TIDE, IRON, DUNE -> MethodsAAwakenings.flourish(player, AwakeningRules.Flavour.of(Aura.data(player).method()));
 			case PLAIN -> {
+				// ---- methods-b pack
+				if (MethodsBAwakening.flourish(player, show, world, feet, heart)) return;
 				show.groundRing(feet, color, 0.4, 3.4, 0.12, 14);
 				world.bare().ground(feet, SigilOption.BAND, ArtKit.hot(color, 0.4), 2.4, 40, 0.02);
 				show.tongues(feet, 0.7, 2.4, 8, color, WHITE, 14);
@@ -294,6 +298,8 @@ public final class Awakenings {
 					}
 				}
 				case CRIMSON -> world.ring(centre.add(0, 0.1, 0), ArtKit.UP, ElementFx.BLOOD.secondary(), 0.3, radius, 0.1, 12);
+				// ---- methods-a pack
+				case TIDE, IRON, DUNE -> MethodsAAwakenings.raised(owner, flavour, foes, centre, radius, color);
 				default -> {
 					// Thunder, Gale, Starlit and the plain one: their ground is all they raise.
 				}
@@ -351,6 +357,8 @@ public final class Awakenings {
 					world.ground(at, SigilOption.CRACKED, color, radius * 1.0, ticks, 0);
 					world.ground(at, SigilOption.BAND, ElementFx.BLOOD.accent() | ArtLight.DARK, radius * 1.02, ticks, 0.01);
 				}
+				// ---- methods-a pack
+				case TIDE, IRON, DUNE -> MethodsAAwakenings.ground(owner, flavour, at, radius, color, ticks);
 				case PLAIN -> {
 					// The ordinary pressure boundary, drawn by AuraDominion.
 				}
@@ -473,6 +481,8 @@ public final class Awakenings {
 						}
 					}
 				}
+				// ---- methods-a pack
+				case TIDE, IRON, DUNE -> MethodsAAwakenings.tick(owner, flavour, foes, age, ownerInside, centre, radius, color, hits);
 				case PLAIN -> {
 					// Only stronger: nothing of its own.
 				}

@@ -696,8 +696,13 @@ public class WildercordResidueTest implements FabricClientGameTest {
 			return "couldn't leave everfrost far off (test setup)";
 		}
 		world.getServer().runOnServer(server -> teleport(player(server), 0.5, 4, 0.5, 0, 30));
-		context.waitTicks(200);
-		boolean unloaded = world.getServer().computeOnServer(server -> !player(server).level().isLoaded(distant));
+		try {
+			world.getServer().waitFor(server -> player(server).level().getChunkSource()
+				.getChunkNow(distant.getX() >> 4, distant.getZ() >> 4) == null);
+		} catch (AssertionError timeout) {
+			return world.getServer().computeOnServer(server -> "the far chunk should become inaccessible before expiry (test setup; "
+				+ residueState(server, distant) + ")");
+		}
 		world.getServer().runOnServer(server -> Residues.fastForward(player(server).level(), 200_000));
 		context.waitTicks(45);
 		String faded = world.getServer().computeOnServer(server -> {
@@ -714,7 +719,7 @@ public class WildercordResidueTest implements FabricClientGameTest {
 					return "a faded residue's record should go";
 				}
 			}
-			if (unloaded && !Residues.isResidue(level, distant)) {
+			if (!Residues.isResidue(level, distant)) {
 				return "the far residue, its chunk unloaded, should wait for it rather than go unseen";
 			}
 			return null;
@@ -732,14 +737,38 @@ public class WildercordResidueTest implements FabricClientGameTest {
 			return grass;
 		}
 		world.getServer().runOnServer(server -> teleport(player(server), distant.getX() + 0.5, 4, distant.getZ() - 4.5, 0, 30));
-		context.waitTicks(60);
+		try {
+			// A block-state read could itself load the chunk. Establish readiness without doing so first.
+			world.getServer().waitFor(server -> player(server).level().getChunkSource()
+				.getChunkNow(distant.getX() >> 4, distant.getZ() >> 4) != null);
+			int accessibleAt = world.getServer().computeOnServer(MinecraftServer::getTickCount);
+			// Give the decay schedule one actual server sweep after the full-chunk future completes.
+			world.getServer().waitFor(server -> server.getTickCount() >= accessibleAt + 20);
+		} catch (AssertionError timeout) {
+			return world.getServer().computeOnServer(server -> "the far chunk should become accessible and reach a decay sweep ("
+				+ residueState(server, distant) + ")");
+		}
 		return world.getServer().computeOnServer(server -> {
 			ServerLevel level = player(server).level();
-			if (ResidueBlocks.is(level.getBlockState(distant)) || Residues.isResidue(level, distant)) {
-				return "the far everfrost should fade once its chunk loads";
+			var chunk = level.getChunkSource().getChunkNow(distant.getX() >> 4, distant.getZ() >> 4);
+			if (chunk == null) {
+				return "the far chunk became inaccessible before the decay check (" + residueState(server, distant) + ")";
 			}
-			return level.getBlockState(distant).is(Blocks.GRASS_BLOCK) ? null : "and give its grass back (" + level.getBlockState(distant) + ")";
+			BlockState now = chunk.getBlockState(distant);
+			if (ResidueBlocks.is(now) || Residues.isResidue(level, distant)) {
+				return "the far everfrost should fade once its chunk loads (" + residueState(server, distant) + ")";
+			}
+			return now.is(Blocks.GRASS_BLOCK) ? null : "and give its grass back (" + residueState(server, distant) + ")";
 		});
+	}
+
+	/** Failure detail that never loads the chunk it describes. */
+	private static String residueState(MinecraftServer server, BlockPos pos) {
+		ServerLevel level = player(server).level();
+		var chunk = level.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+		return "pos=" + pos.toShortString() + ", serverTick=" + server.getTickCount() + ", gameTime=" + level.getGameTime()
+			+ ", accessible=" + (chunk != null) + ", isLoaded=" + level.isLoaded(pos) + ", record=" + Residues.isResidue(level, pos)
+			+ ", block=" + (chunk == null ? "unavailable" : chunk.getBlockState(pos));
 	}
 
 	// ------------------------------------------------------------------ helpers

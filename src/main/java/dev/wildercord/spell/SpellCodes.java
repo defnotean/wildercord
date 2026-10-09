@@ -16,7 +16,8 @@ public final class SpellCodes {
 
 	public static final String PREFIX = "wc:";
 	/** A code inside other text. */
-	public static final Pattern PATTERN = Pattern.compile("\\bwc:([a-z0-9_]+(?:~[a-z0-9_]+)?(?:\\.[a-z0-9_]+(?:~[a-z0-9_]+)?){0,11})");
+	public static final Pattern PATTERN = Pattern.compile("\\bwc:([a-z0-9_~:/.-]+)");
+	private static final int MAX_CODE_LENGTH = 32 * (Knots.MAX_ID_LENGTH + 1);
 
 	public static String encode(List<String> runeIds) {
 		StringBuilder out = new StringBuilder(PREFIX);
@@ -32,21 +33,15 @@ public final class SpellCodes {
 
 	/** The rune ids in a code (with or without its {@code wc:} prefix); unknown runes are kept as ids. */
 	public static List<String> decode(String code) {
+		if (code.length() > MAX_CODE_LENGTH) return List.of(RelayRules.ID);
 		String body = code.trim();
-		if (body.startsWith(PREFIX)) {
-			body = body.substring(PREFIX.length());
-		}
+		if (body.startsWith(PREFIX)) body = body.substring(PREFIX.length());
 		List<String> ids = new ArrayList<>();
-		if (body.isEmpty()) {
-			return ids;
-		}
+		if (body.isEmpty()) return ids;
 		for (String part : body.split("\\.")) {
-			if (part.isEmpty() || ids.size() >= 12) {
-				continue;
-			}
-			ids.add(part.contains("~") ? part.replace('~', ':') : "wildercord:" + part);
+			if (!part.isEmpty()) ids.add(part.contains("~") ? part.replace('~', ':') : "wildercord:" + part);
 		}
-		return ids;
+		return LessonPackRules.boundedIds(ids, 12);
 	}
 
 	/** The first code in a piece of text, or null. */

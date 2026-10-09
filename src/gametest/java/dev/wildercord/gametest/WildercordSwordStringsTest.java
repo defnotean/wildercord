@@ -6,6 +6,8 @@ import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.AuraGuard;
 import dev.wildercord.aura.AuraPresence;
 import dev.wildercord.aura.AuraRules;
+import dev.wildercord.aura.MastersArts;
+import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.aura.PlaceholderArts;
 import dev.wildercord.aura.StringRules;
 import dev.wildercord.aura.SwordString;
@@ -284,6 +286,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 				: "a Verdant swordsman's strings should be read against Thorn Lash, not the common First Art (" + ids + ")";
 		});
 		check(offered == null, offered);
+		int[] before = context.computeOnClient(mc -> SwordStringsClient.counts());
 		PERFORMED.clear();
 		swing(context);
 		context.waitTicks(FULL);
@@ -292,8 +295,18 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		lowSwing(context);
 		context.waitTicks(4);
 		context.getInput().releaseKey(o -> o.keyShift);
+		// Preserve the real input/low-hold timing, then observe the configured release and its completion hook.
+		context.waitTicks(Math.max(0, MastersStyleRules.of(dev.wildercord.aura.arts.VerdantArts.THORN_LASH).windup() + 2 - 4));
+		String client = context.computeOnClient(mc -> {
+			int[] after = SwordStringsClient.counts();
+			return "asked " + SwordStringsClient.lastAsked() + " (" + (after[0] - before[0]) + " new requests), refused "
+				+ SwordStringsClient.lastRefused() + " (" + (after[2] - before[2]) + " new refusals)";
+		});
+		String server = on(world, player -> "method " + Aura.data(player).method() + ", ready at "
+			+ SwordStrings.readyAt(player, dev.wildercord.aura.arts.VerdantArts.THORN_LASH) + ", now " + player.level().getGameTime()
+			+ ", committed " + MastersArts.committed(player));
 		check(PERFORMED.equals(List.of(dev.wildercord.aura.arts.VerdantArts.THORN_LASH)),
-			"swing, swing, low swing should play Verdant's own First Art (" + PERFORMED + ")");
+			"swing, swing, low swing should play Verdant's own First Art (" + PERFORMED + "; client " + client + "; server " + server + ")");
 	}
 
 	// ------------------------------------------------------------------ fumbles and swings that don't count

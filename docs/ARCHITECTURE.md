@@ -755,8 +755,11 @@ formed.
   the heart is ready, then, while they meditate, counts up to `Circles.FORM_TICKS` (twice as fast on
   a ley line); taking damage resets it. `HeartCircles.form` adds the circle, refills mana and plays
   the breakthrough; at the 1st it also schedules the innate rune's awakening.
-- **Perks**: Mana Skin is an `AFTER_DAMAGE` hook; Flow, Overflow and Archmage are folded into
-  `Heart.bonuses`.
+- **Perks**: Mana Skin retains its `AFTER_DAMAGE` callback ordering, but consumes a one-shot
+  native health wound from a player/source-bound `Player.hurtServer` scope. `actuallyHurt` captures
+  it after defences and before death saves. Recovery is capped at 20% of nonlethal health loss,
+  available mana and this hit's still-unhealed wound; payment uses actual restoration. It does not
+  reuse the Master interruption receipt. Flow, Overflow and Archmage are folded into `Heart.bonuses`.
 - **Spell kills**: `Effects.hurt` records the last spell hit on each creature (and the spell's
   rune count); an `AFTER_DEATH` hook counts a hostile mob that dies within 5 seconds of it, and a
   kill with six or more runes earns *Long Incantation*. A second hook gives every player within 96

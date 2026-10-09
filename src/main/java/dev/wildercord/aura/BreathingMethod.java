@@ -38,7 +38,14 @@ public record BreathingMethod(String id, String element, int color, int highligh
 		/** Crimson: coated blows drink a little, for more aura. */
 		LEECH,
 		/** An add-on's method with a passive of its own (or none). */
-		NONE
+		NONE,
+		// ---- methods-a pack
+		/** Tide: coated blows push the foe back and soak it. */
+		CURRENT,
+		/** Iron: coated blows crack armour for a moment. */
+		FORGE,
+		/** Dune: coated blows may throw grit in the eyes. */
+		GRIT
 	}
 
 	public BreathingMethod {

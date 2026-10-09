@@ -1,64 +1,41 @@
 # Living materials
 
-A Life spell gathers something recognizable before it leaves your hands: a seed about to open,
-a leaf canopy, a medicinal blossom or a thorn with a poison sac. Watch the material assemble in
-front of you while the casting circle stays behind your shoulders. The outgoing shape still
-determines where the spell acts.
+## What it is
 
-These illustrations are original frames from Minecraft. This presentation is new in 0.10.0-alpha.
-
-## A seed has a beginning
+Every Life spell gathers a recognizable material in front of your hands before it leaves: a seed, a leaf canopy, a blossom, a thorn. The casting circle stays behind your shoulders. Learn the materials and you can tell Life spells apart in a busy fight. The shape you thread still decides where the spell acts.
 
 ![Ancient Seed gathers a large seed, an unequal shoot and leaves in front of the caster](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/life-materials/ancient-seed-prepare.png)
 
-**Ancient Seed** gathers a large seed with an asymmetric shoot. **Grow** germinates its seed;
-**Regrowth** branches a stem; **Harvest** binds a sheaf. Each has its own preparation and moving
-body. A green tint alone does not tell you which one you are watching.
+**Ancient Seed** gathers a large seed with a lopsided shoot. **Grow** opens a seed, **Regrowth** branches a stem and **Harvest** binds a sheaf. Green alone does not tell you which one you are seeing.
 
 ## Read the material
 
-| What you see | Life effects to recognize |
+| What you see | Life effects |
 |---|---|
 | Closing tissue, seams and sap | Heal, Restore, Reversal, Stitchtime, Ashen Mercy |
 | Seeds, shoots, grain and branches | Grow, Regrowth, Nourish, Harvest, Ancient Seed, Fortune |
 | Thorns, sacs and gripping fibres | Venom, Bramble, Vinelash, Rootsnare |
 | Sheltering leaves and upright trunks | Haven, Root Bulwark |
-| Petals, medicinal blossoms and living bulbs | Cleanse, Remedy, Bloom, Lifebloom, Moonpetal |
+| Petals, blossoms and living bulbs | Cleanse, Remedy, Bloom, Lifebloom, Moonpetal |
 | Paired tissue, lifted seeds and opening paths | Soulbond, Second Wind, Bloomstep |
-| Lichen, berries, spores and descending pollen | Glimmer, Glowvine, Sporebloom, Drowse |
+| Lichen, berries, spores and falling pollen | Glimmer, Glowvine, Sporebloom, Drowse |
 
-This is a visual reading aid. Runes in the same row retain separate arrangements, timing and
-motion; their actual effects and costs are listed in the [Life rune reference](../runes/effects/life.md).
+Runes in the same row still look and move differently. For effects and costs, see the [Life runes](../runes/effects/life.md).
 
-## A vine travels like a vine
+## Moving spells
 
-![Vinelash travels toward its target with living fibres trailing along the outgoing direction](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/life-materials/vinelash-travel.png)
+![Vinelash travels toward its target with living fibres trailing behind](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/life-materials/vinelash-travel.png)
 
-**Vinelash** snakes along the direction of travel. **Drowse** carries a curled petal with descending
-pollen, while **Venom** leads with a puncturing thorn. These moving bodies are useful cues when
-several different Life spells are flying through a fight.
+**Vinelash** snakes along its path. **Drowse** carries a curled petal with falling pollen. **Venom** leads with a thorn.
 
-Choose the delivery for the task. A **Bolt** visibly forms and launches; **Self** applies a suitable
-effect to you; **Touch** reaches nearby terrain or a target. An impressive projectile does not make
-a helpful rune harm an enemy or remove a world effect's terrain requirements. The Cord screen's
-readout explains the actual spell you have built.
+Pick the shape for the job. **Bolt** forms and launches, **Self** applies the effect to you, and **Touch** reaches something close. A flashy projectile does not make a helpful rune hurt enemies. The Cord screen tells you what your spell will actually do.
 
-## Fusion keeps its ingredients
+## Fused spells keep their ingredients
 
-Life fusions retain their supporting element in the moving material. **Root Bulwark** carries Earth
-alongside its living wood. **Second Wind** combines Life with Time; its lifted seed retains that temporal ingredient. **Stitchtime** carries Time beside
-its tissue seams. **Ashen Mercy** preserves a small residual heat seam while closing scorched leaves.
+**Root Bulwark** carries Earth with its living wood. **Second Wind** carries a Time piece in its lifted seed. **Stitchtime** carries Time beside its tissue seams. **Ashen Mercy** keeps a small heat seam while closing scorched leaves. See [Field Signatures](../magic/field-signatures.md) and [the expedition field journal](../magic/expedition-signatures.md) for altar pairings and limits.
 
-For exact altar pairings and the new spells' practical limits, read
-[Field Signatures](../magic/field-signatures.md).
+## Tips
 
-## Keep the view clear
-
-Minimal visual quality reduces decoration while retaining the spell's material identity and fused
-ingredients. Set **Other casters' formations** separately when a group is fighting. Camera motion and
-Reduced Flash are also adjustable in [visual settings](../performance.md).
-
-The current review covers the preparation and moving projectile bodies of all twenty-nine Life
-effects. The broader work on individually authored impacts, aftermath and voices is continuing.
-
-[The expedition field journal](../magic/expedition-signatures.md) explains the mirror pocket, unequal chimes, blood gates, frost stitches, sap cradles and other material interactions, alongside each spell's practical tradeoffs. Its labeled illustrated plate is separate from native gameplay evidence; the chapter identifies focused acceptance and development-build scope, with the broader lifecycle work still open.
+- Minimal visual quality trims decoration but keeps each spell's material and ingredients.
+- In a group, set **Other casters' formations** separately. Camera motion and Reduced Flash are in [visual settings](../performance.md).
+- To read what a Life spell actually did, see [Reading Life Magic](life-outcomes.md).

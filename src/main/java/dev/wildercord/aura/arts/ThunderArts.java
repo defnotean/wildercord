@@ -68,6 +68,8 @@ public final class ThunderArts {
 
 	static boolean crackle(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
+		var continuation = dev.wildercord.aura.MastersArts.continuation(player);
+		Vec3 committedFacing = ArtKit.flat(player);
 		int color = ArtKit.color(player);
 		LivingEntity foe = ArtKit.primary(player, context, ArtRules.CRACKLE_REACH, 120);
 		AuraFx.Art fx = AuraFx.art(player);
@@ -77,12 +79,12 @@ public final class ThunderArts {
 		for (int i = 0; i < ArtRules.CRACKLE_CUTS; i++) {
 			int cut = i;
 			Runnable go = () -> {
-				if (!player.isAlive() || player.level() != level) {
+				if (!continuation.getAsBoolean() || !player.isAlive() || player.level() != level) {
 					return;
 				}
 				fx.trail(strokes[cut], cut == 1, 1.15F + 0.1F * cut);
 				Vec3 at = foe != null && foe.isAlive() ? foe.getBoundingBox().getCenter()
-					: player.getEyePosition().add(ArtKit.flat(player).scale(2.2)).subtract(0, 0.5, 0);
+					: player.getEyePosition().add(committedFacing.scale(2.2)).subtract(0, 0.5, 0);
 				// A cut of white lightning across it, on its own tilt each time.
 				RandomSource r = level.getRandom();
 				Vec3 normal = new Vec3(r.nextDouble() - 0.5, 0.6 + r.nextDouble() * 0.4, r.nextDouble() - 0.5).normalize();
@@ -91,7 +93,8 @@ public final class ThunderArts {
 				world.slash(at, normal, ElementFx.perp(normal), color, 0.8, 2.3, 0.18, 1, 5);
 				world.flash(at, WHITE, 0.9F);
 				ElementFx.sparks(level, at, 5, 0.25);
-				if (foe == null || !foe.isAlive()) {
+				if (foe == null || !foe.isAlive() || !ArtKit.harmable(player, foe) || !player.hasLineOfSight(foe)
+					|| foe.distanceToSqr(player) > Math.pow(ArtRules.CRACKLE_REACH + foe.getBbWidth() / 2, 2)) {
 					return;
 				}
 				hits.strike(foe, ArtRules.CRACKLE_FACTOR, cut == 2 ? AuraFxRules.Weight.HEAVY : AuraFxRules.Weight.FULL);
@@ -119,21 +122,16 @@ public final class ThunderArts {
 	// ------------------------------------------------------------------ II. Skyfall
 
 	static boolean skyfall(ServerPlayer player, AuraApi.StringContext context) {
+		var release = dev.wildercord.aura.MastersArts.releaseTargets(player, SKYFALL);
+		if (release == null) return false;
 		ServerLevel level = player.level();
+		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING, false, 1.35F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
-		// What the bolt is called down on: the foe struck, or the nearest in front, or the ground ahead.
-		LivingEntity target = ArtKit.primary(player, context, 6.0, 90);
-		Vec3 point;
-		if (target != null) {
-			point = target.position();
-		} else {
-			Vec3 ahead = player.position().add(look.scale(ArtRules.SKYFALL_AHEAD));
-			Vec3 ground = ArtKit.floor(level, ahead, 1.5, 3);
-			point = ground == null ? ahead : ground;
-		}
+		// Selection happened at acceptance; this is the one authorized release sample, never a fresh primary search.
+		Vec3 point = release.point();
 		ArtLight world = ArtLight.world(player);
 		world.ground(point, SigilOption.TARGET, color, ArtRules.SKYFALL_RADIUS * 1.1, ArtRules.SKYFALL_DELAY + 6, 0.12);
 		world.groundRing(point, WHITE, ArtRules.SKYFALL_RADIUS * 1.6, 0.3, 0.05, ArtRules.SKYFALL_DELAY);
@@ -141,10 +139,10 @@ public final class ThunderArts {
 		world.arc(point.add(0, 9, 0), point.add(0.6, 11.5, -0.4), color, 0.06, 2, false, ArtRules.SKYFALL_DELAY);
 		Feels.sound(level, point.add(0, 1, 0), "aura_art_skyfall", 1.2F, 1.0F);
 		Scheduler.later(ArtRules.SKYFALL_DELAY, () -> {
-			if (!player.isAlive() || player.level() != level) {
+			if (!owner.valid()) {
 				return;
 			}
-			Vec3 at = target != null && target.isAlive() && target.distanceToSqr(point) < 16 ? target.position() : point;
+			Vec3 at = release.skyfallPoint(player);
 			strike(player, at, color, 1.0F);
 			Set<LivingEntity> struck = new HashSet<>();
 			for (LivingEntity foe : ArtKit.around(player, at, ArtRules.SKYFALL_RADIUS, 1.0, 3.0, 6)) {
@@ -187,9 +185,12 @@ public final class ThunderArts {
 	// ------------------------------------------------------------------ III. Static Riposte
 
 	static boolean staticRiposte(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(STATIC_RIPOSTE) || !counter.valid()) return false;
+		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
+		ServerLevel level = owner.level();
 		int color = ArtKit.color(player);
-		LivingEntity foe = ArtKit.attacker(player, context, ArtRules.RIPOSTE_REACH);
+		LivingEntity foe = counter.target();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.THRUST, false, 1.4F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, player.position().add(0, 1, 0), "aura_art_static_riposte", 1.0F, 1.0F);
@@ -204,33 +205,41 @@ public final class ThunderArts {
 		if (foe == null) {
 			return true;
 		}
+		ReleasedCounterBody primary = ReleasedCounterBody.capture(foe);
 		hits.strike(foe, ArtRules.RIPOSTE_FACTOR);
+		if (!counter.valid() || !primary.conducts(player, owner)) return true;
 		ArtKit.shock(player, foe, ArtRules.RIPOSTE_SHOCK);
 		AuraPhysicalFx.stormImpact(level, foe.getBoundingBox().getCenter(), 0.8);
-		// The chain: a tick a jump, to the nearest not yet struck.
-		List<LivingEntity> chain = new ArrayList<>();
-		chain.add(foe);
+		// Four original one-tick hops. No LOS or owner-range check is introduced between conductors.
+		List<ReleasedCounterBody> chain = new ArrayList<>();
+		chain.add(primary);
+		boolean[] retired = {false};
 		for (int n = 1; n <= ArtRules.RIPOSTE_JUMPS; n++) {
 			int jump = n;
 			Scheduler.later(n, () -> {
-				if (!player.isAlive() || player.level() != level || chain.size() < jump) {
-					return;
-				}
-				LivingEntity from = chain.getLast();
-				Vec3 a = from.getBoundingBox().getCenter();
-				LivingEntity next = ArtKit.nearest(player, a, ArtRules.RIPOSTE_REACH, chain);
-				if (next == null) {
-					return;
-				}
+				if (retired[0] || !owner.valid() || chain.size() != jump) return;
+				ReleasedCounterBody from = chain.getLast();
+				if (!from.conducts(player, owner)) { retired[0] = true; return; }
+				Vec3 a = from.entity().getBoundingBox().getCenter();
+				LivingEntity candidate = ArtKit.nearest(player, a, ArtRules.RIPOSTE_REACH,
+					chain.stream().map(ReleasedCounterBody::entity).toList());
+				if (candidate == null) { retired[0] = true; return; }
+				ReleasedCounterBody next = ReleasedCounterBody.capture(candidate);
+				if (!next.targetFrom(player, owner, from, ArtRules.RIPOSTE_REACH)) { retired[0] = true; return; }
 				chain.add(next);
-				Vec3 b = next.getBoundingBox().getCenter();
+				Vec3 b = candidate.getBoundingBox().getCenter();
 				ArtLight w = ArtLight.world(player);
 				w.arc(a, b, color, 0.09, 2, false, 6);
 				w.arc(a, b, WHITE, 0.035, 0, false, 4);
 				w.flash(b, WHITE, 1.1F);
 				ElementFx.sparks(level, b, 6, 0.3);
-				hits.strike(next, ArtRules.chain(ArtRules.RIPOSTE_FACTOR, ArtRules.RIPOSTE_KEEP, jump), AuraFxRules.Weight.FULL);
-				ArtKit.shock(player, next, ArtRules.RIPOSTE_SHOCK);
+				RiposteHit boundary = new RiposteHit(player, owner, from, next);
+				dev.wildercord.aura.ArtHitScope.within(player, boundary,
+					() -> hits.strike(candidate, ArtRules.chain(ArtRules.RIPOSTE_FACTOR, ArtRules.RIPOSTE_KEEP, jump), AuraFxRules.Weight.FULL));
+				// The same envelope guards nested passive/resonance/rune callbacks before they can resume.
+				if (!boundary.valid()) { retired[0] = true; return; }
+				if (candidate.isAlive() && next.targetFrom(player, owner, from, ArtRules.RIPOSTE_REACH))
+					ArtKit.shock(player, candidate, ArtRules.RIPOSTE_SHOCK);
 				Feels.sound(level, b, "storm_zap", 0.7F, 1.0F + 0.12F * jump);
 			});
 		}

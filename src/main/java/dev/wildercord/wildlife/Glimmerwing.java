@@ -196,24 +196,27 @@ public class Glimmerwing extends AmbientCreature {
 			lureLeft = 80;
 			return;
 		}
-		// A damp moonlit flower takes one bounded 147-cell look every two seconds.
+		// Open-sky flowers are column tops: at most 49 resident cells every two seconds.
         flower=null;
         if(WetlandRules.night(level.getOverworldClockTime())) {
-            for(var at:BlockPos.betweenClosed(blockPosition().offset(-3,-1,-3),blockPosition().offset(3,1,3))) {
-                if(!level.hasChunkAt(at))continue;var state=level.getBlockState(at);
-                if(state.is(WetlandGarden.REED) && state.getValue(MoonreedBlock.AGE)==1 && MoonreedBlock.canBloom(level,at,level.getOverworldClockTime())) {
-                    flower=at.immutable();lure=Vec3.atCenterOf(at).add(0,.4,0);lureLeft=100;target=null;return;
-                }
-            }
+            flower=MoonreedBlock.findBud(level,blockPosition());
+            if(flower!=null){lure=Vec3.atCenterOf(flower).add(0,.4,0);lureLeft=100;target=null;return;}
         }
-        // A few looks around for light, keeping the brightest: over a few tries the swarm finds the lamp.
+		// Sense the light already falling here, then keep a few exploratory looks farther away.
+		// The local gradient takes at most 49 resident-air reads, never a scan of the whole box.
 		BlockPos here = blockPosition();
-		int brightest = lure == null ? WildlifeRules.LIGHT_LURE - 1 : level.getBrightness(LightLayer.BLOCK, BlockPos.containing(lure));
+		int brightest = Math.max(WildlifeRules.LIGHT_LURE - 1, lure == null ? -1 : lightAt(level, BlockPos.containing(lure)));
 		Vec3 found = null;
+		var sensed = LightLureSearch.find((x, y, z) -> lightAt(level, new BlockPos(x, y, z)),
+			here.getX(), here.getY(), here.getZ(), WildlifeRules.LIGHT_LURE);
+		if (sensed != null && sensed.light() > brightest) {
+			brightest = sensed.light();
+			found = Vec3.atCenterOf(new BlockPos(sensed.x(), sensed.y(), sensed.z()));
+		}
 		for (int i = 0; i < 5; i++) {
 			BlockPos look = here.offset(random.nextInt(17) - 8, random.nextInt(9) - 4, random.nextInt(17) - 8);
-			int light = level.getBrightness(LightLayer.BLOCK, look);
-			if (light > brightest && level.getBlockState(look).isAir()) {
+			int light = lightAt(level, look);
+			if (light > brightest) {
 				brightest = light;
 				found = Vec3.atCenterOf(look);
 			}
@@ -222,6 +225,13 @@ public class Glimmerwing extends AmbientCreature {
 			lure = found;
 			lureLeft = 200;
 		}
+	}
+
+	/** No chunk request or join, including for the exploratory samples and a previous lure. */
+	private int lightAt(ServerLevel level, BlockPos at) {
+		var chunk = level.getChunkSource().getChunkNow(at.getX() >> 4, at.getZ() >> 4);
+		if (chunk == null || !chunk.getBlockState(at).isAir()) return -1;
+		return level.getBrightness(LightLayer.BLOCK, at);
 	}
 
 	private Vec3 pickTarget(ServerLevel level) {

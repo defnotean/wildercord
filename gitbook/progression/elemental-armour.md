@@ -1,16 +1,49 @@
-# Elemental armour and the Mirror-thread mantle
+# Elemental armour
 
-These occupy normal armour slots. Each complete set has a helmet, chestplate, leggings and boots; the mantle occupies the chest slot. Base protection is 2 / 4 / 3 / 1, below iron, with leather repairs and durability multiplier 15. All pieces have custom item art and equipment textures.
 
-| Choice | Spell response | Tradeoff and limit |
+## What it is
+
+Three light armour sets and a mantle that each answer spells their own way. They're weaker than iron
+against blades (2 / 4 / 3 / 1 armour for helmet, chestplate, leggings and boots) and repair with leather.
+They take ordinary armour enchantments.
+
+| Armour | Against spells | The catch |
 |---|---|---|
-| Emberweave | 3% less spell damage per piece while sprinting and actually moving | Stationary sprinting gives no bonus; at most 12% from four pieces |
-| Rimebound | Starting a crouch opens a 12-tick guard; each piece adds 4% spell protection | Four-second recharge; holding crouch does not renew it |
-| Stonebound | Each piece gives 4% spell protection and 10% less spell impulse | Each piece multiplies movement speed by 0.97; four give 16% protection and 40% less impulse |
-| Mirror-thread mantle | A 12-tick crouch window halves one spell hit and returns 20% of its reduced damage, capped at 2 health | Five-second recharge; one hit consumes the window; fragments cannot recursively reflect; respects friendly fire and 24-block range |
+| **Emberweave** | 3% less spell damage per piece while you sprint and actually move | Up to 12% with four pieces; nothing standing still |
+| **Rimebound** | Starting a crouch opens a short guard (0.6 s): 4% spell protection per piece | 4 s recharge; holding the crouch doesn't renew it |
+| **Stonebound** | 4% spell protection and 10% less spell knockback per piece, always | Each piece slows you 3% (four: 16% protection, 40% less knockback) |
+| **Mirror-thread mantle** (chest) | Crouch to open a 0.6 s window: one spell hit is halved and 20% of what's left goes back at the caster (up to 2 health, within 24 blocks) | 5 s recharge; one hit uses it up |
 
-The ordinary armour sidegrade contribution is capped at 20% and multiplied with existing spell defences. Mantle and Rimebound timing are independent. Recharge persists across logout; removing equipment does not reset it. Non-spell hits do not receive the spell response.
+## How to get it
 
-Repeated casting seals also have a general player counterplay rule: at most two seconds of silence, without refresh from subsequent hits, followed by two seconds in which another seal cannot apply. This rule covers the shared casting-lock helper used by Silence and Manaburn. It does not promise immunity to every movement slow or every independent world hazard.
+Each piece is shapeless: the matching **leather piece**, a **Mana Crystal** and one material.
 
-Craft a piece with the corresponding leather piece, Mana Crystal and one material: blaze powder, packed ice or mossy cobblestone. The mantle uses a leather chestplate, Mana Crystal and echo shard. Armour tags allow ordinary armour enchantments.
+| Set | Material |
+|---|---|
+| Emberweave | Blaze Powder |
+| Rimebound | Packed Ice, or Rime Fur |
+| Stonebound | Mossy Cobblestone |
+| Mirror-thread mantle | Leather Chestplate, Mana Crystal and an Echo Shard |
+
+<div>
+![Emberweave Chestplate](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/emberweave_chestplate.png)
+![Rimebound Chestplate](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rimebound_chestplate.png)
+![Stonebound Chestplate](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/stonebound_chestplate.png)
+![Mirror-thread Mantle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/mirror_thread_mantle.png)
+</div>
+
+## How to use it
+
+- Wear it like any armour. The bonus only applies to spell hits.
+- All armour of this kind together takes at most **20%** off a spell. That multiplies with your other
+  [defences](defence.md).
+- The mantle and Rimebound have separate timers, so one crouch can trigger both.
+- Recharges carry over if you log out or take the armour off.
+
+## Tips and counterplay
+
+- **Emberweave** suits casters who kite; **Stonebound** suits those who hold ground; **Rimebound** and
+  the **mantle** reward timing a crouch just before a spell lands.
+- Against a mantle wearer, cast after they crouch, while it recharges.
+- **Silence and Manaburn** can lock you out of casting for at most **2 seconds**; then you can't be
+  sealed again for 2 seconds.

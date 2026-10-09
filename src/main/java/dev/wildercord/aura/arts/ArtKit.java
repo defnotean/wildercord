@@ -63,7 +63,16 @@ public final class ArtKit {
 
 	/** Whether an art of {@code player}'s may harm {@code entity}: alive, not them, a foe by the mod's rules, and the game's team rule too. */
 	public static boolean harmable(ServerPlayer player, Entity entity) {
-		return entity instanceof LivingEntity living && living.isAlive() && entity != player && !entity.isSpectator() && Targets.canHarm(player, entity)
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		return harmableWithoutAim(player, entity)
+			&& (dev.wildercord.aura.MastersArts.committedAim(player) == null || counter != null && counter.originalGeometry()
+				|| player.hasLineOfSight(entity));
+	}
+
+	/** Original instant-art permission, with no implicit LOS introduced by an authored pose. */
+	public static boolean harmableWithoutAim(ServerPlayer player, Entity entity) {
+		return !ArtFields.blocksRetiredHarm(player, entity)
+			&& entity instanceof LivingEntity living && living.isAlive() && entity != player && !entity.isSpectator() && Targets.canHarm(player, entity)
 			&& (!(entity instanceof Player other) || player.canHarmPlayer(other));
 	}
 
@@ -80,9 +89,20 @@ public final class ArtKit {
 
 	/** The way the swordsman faces, level. */
 	public static Vec3 flat(Entity player) {
+		Vec3 committed = dev.wildercord.aura.MastersArts.committedAim(player);
+		if (committed != null) return committed;
 		Vec3 look = player.getViewVector(1.0F);
 		Vec3 flat = new Vec3(look.x, 0, look.z);
-		return flat.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flat.normalize();
+		if (flat.lengthSqr() >= 1.0E-4) return flat.normalize();
+		// Looking vertically still has a meaningful horizontal facing; never snap a committed cut to world south.
+		double yaw = Math.toRadians(player.getYRot());
+		return new Vec3(-Math.sin(yaw), 0, Math.cos(yaw));
+	}
+
+	/** A style's locked three-dimensional view, or the ordinary view outside a committed active frame. */
+	public static Vec3 view(Entity player) {
+		Vec3 committed = dev.wildercord.aura.MastersArts.committedView(player);
+		return committed == null ? player.getViewVector(1.0F) : committed;
 	}
 
 	/** Square to {@code flat}, toward the swordsman's right hand. */
@@ -131,9 +151,18 @@ public final class ArtKit {
 
 	/** The foes within {@code radius} of {@code centre} (level), from {@code below} under it to {@code above} over it, nearest first. */
 	public static List<LivingEntity> around(ServerPlayer player, Vec3 centre, double radius, double below, double above, int max) {
+		return around(player, centre, radius, below, above, max, false);
+	}
+
+	/** The same area query, with owner LOS applied before the target cap; used only by Red Rain's immediate burst. */
+	public static List<LivingEntity> aroundVisible(ServerPlayer player, Vec3 centre, double radius, double below, double above, int max) {
+		return around(player, centre, radius, below, above, max, true);
+	}
+
+	private static List<LivingEntity> around(ServerPlayer player, Vec3 centre, double radius, double below, double above, int max, boolean visible) {
 		List<LivingEntity> out = new ArrayList<>();
 		AABB box = new AABB(centre.x - radius - 1, centre.y - below, centre.z - radius - 1, centre.x + radius + 1, centre.y + above, centre.z + radius + 1);
-		for (Entity e : player.level().getEntities(player, box, e -> harmable(player, e))) {
+		for (Entity e : player.level().getEntities(player, box, e -> harmable(player, e) && (!visible || player.hasLineOfSight(e)))) {
 			double dx = e.getX() - centre.x;
 			double dz = e.getZ() - centre.z;
 			double reach = radius + e.getBbWidth() / 2;
@@ -365,6 +394,8 @@ public final class ArtKit {
 
 		/** A strike of {@code damage} (already scaled), landing with {@code weight} ({@code null} for no impact). */
 		public float raw(LivingEntity foe, double damage, AuraFxRules.Weight weight) {
+			var counter = dev.wildercord.aura.ArtHitScope.boundary(player);
+			if (counter != null && !counter.permits(foe)) return 0;
 			if (foe == null || !foe.isAlive() || damage <= 0 || !harmable(player, foe)) {
 				return 0;
 			}
@@ -382,6 +413,8 @@ public final class ArtKit {
 			if (foe instanceof Player) {
 				pvp.merge(foe.getUUID(), dealt, Double::sum);
 			}
+			// Damage callbacks can retire this field. Keep the resolved receipt/cap, but no later stance or hit side effects.
+			if (ArtFields.blocksRetiredHarm(player, foe) || counter != null && !counter.afterDamage(foe)) return taken;
 			if (taken > 0 && !answer && (!foe.isAlive() || foe.isDeadOrDying())) {
 				dev.wildercord.aura.BondedBlades.artFelled(player, foe);
 			}
@@ -401,10 +434,13 @@ public final class ArtKit {
 				if (foe instanceof Player && wore > 0) {
 					pvpStance.merge(foe.getUUID(), wore, Double::sum);
 				}
+				if (counter != null && !counter.afterDamage(foe)) return taken;
 				if (first) {
 					Momentum.artLanded(player, art, hurt.size(), foe);
+					if (counter != null && !counter.afterDamage(foe)) return taken;
 					// The bonded blade in hand gathers resonance from an art that lands (and remembers which).
 					dev.wildercord.aura.BondedBlades.artLanded(player, art, hurt.size(), foe);
+					if (counter != null && !counter.afterDamage(foe)) return taken;
 					if (hurt.size() == 1 && player.getMainHandItem() == startingBlade)
 						dev.wildercord.aura.RuneEtchings.wake(player, foe, taken);
 				}
@@ -427,11 +463,13 @@ public final class ArtKit {
 
 	/** Throws {@code foe} upward by {@code up} (never a boss; a player at most {@link ArtRules#PVP_THROW}) and marks it airborne. */
 	public static void lift(LivingEntity foe, double up, int airborneTicks) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(foe)) return;
 		double power = ArtRules.thrown(up, foe instanceof Player, boss(foe));
 		if (power <= 0 || !foe.isAlive()) {
 			return;
 		}
 		Vec3 v = foe.getDeltaMovement();
+		if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterFormMovement.begin(moving, 2);
 		foe.setDeltaMovement(v.x * 0.5, Math.max(v.y, power), v.z * 0.5);
 		foe.needsSync = true;
 		MonsterMagic.sync(foe);
@@ -450,6 +488,7 @@ public final class ArtKit {
 
 	/** Pushes {@code foe} by {@code impulse}, its strength held to the rules for players and bosses (and its knockback resistance). */
 	public static void shove(LivingEntity foe, Vec3 impulse) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(foe)) return;
 		double length = impulse.length();
 		double allowed = ArtRules.thrown(length, foe instanceof Player, boss(foe));
 		if (allowed <= 0 || !foe.isAlive()) {
@@ -473,6 +512,7 @@ public final class ArtKit {
 	 * knockback a moment before doesn't carry it away): a whirlwind's pull. Never a boss; a player only gently.
 	 */
 	public static void draw(LivingEntity foe, Vec3 to, double speed) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(foe)) return;
 		Vec3 toward = to.subtract(foe.position());
 		toward = new Vec3(toward.x, 0, toward.z);
 		double length = toward.length();
@@ -482,6 +522,7 @@ public final class ArtKit {
 		}
 		Vec3 v = foe.getDeltaMovement();
 		Vec3 pull = toward.scale(Math.min(allowed, length * 0.5) / length);
+		if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterFormMovement.begin(moving, 2);
 		foe.setDeltaMovement(pull.x, Math.max(v.y, 0.02), pull.z);
 		MonsterMagic.sync(foe);
 	}
@@ -492,6 +533,7 @@ public final class ArtKit {
 	 * theirs, and left alone.
 	 */
 	public static void steady(LivingEntity foe) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(foe)) return;
 		if (foe.isAlive() && !(foe instanceof Player)) {
 			Vec3 v = foe.getDeltaMovement();
 			foe.setDeltaMovement(v.x * 0.15, Math.min(v.y, 0.1), v.z * 0.15);
@@ -503,6 +545,7 @@ public final class ArtKit {
 
 	/** Sets {@code foe} alight for {@code ticks} (a player at most {@link ArtRules#PVP_IGNITE_TICKS}); nothing for one fire can't touch. */
 	public static void ignite(LivingEntity foe, int ticks) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(foe)) return;
 		if (!foe.isAlive() || foe.fireImmune() || foe.isInWaterOrRain() && foe.isInWater()) {
 			return;
 		}
@@ -514,17 +557,26 @@ public final class ArtKit {
 
 	/** Slows {@code foe} ({@code amplifier} 0 is Slowness I), and frost creeps over it to see (never enough to hurt). */
 	public static void chill(ServerPlayer player, LivingEntity foe, int ticks, int amplifier) {
+		if (!harmable(player, foe)) return;
+		chillAdmitted(player, foe, ticks, amplifier, null);
+	}
+
+	/** A caller with its own explicit permission may preserve its original collateral selection. */
+	static void chillAdmitted(ServerPlayer player, LivingEntity foe, int ticks, int amplifier, java.util.function.BooleanSupplier permission) {
+		if (permission != null && !permission.getAsBoolean()) return;
 		if (!foe.isAlive()) {
 			return;
 		}
 		int amp = foe instanceof Player ? Math.min(amplifier, 1) : amplifier;
 		foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, amp, false, true), player);
+		if (permission != null && !permission.getAsBoolean()) return;
 		int frost = Math.min(foe.getTicksRequiredToFreeze() - 1, foe.getTicksFrozen() + 60);
 		foe.setTicksFrozen(Math.max(foe.getTicksFrozen(), frost));
 	}
 
 	/** A plain slow. */
 	public static void slow(ServerPlayer player, LivingEntity foe, int ticks, int amplifier) {
+		if (!harmable(player, foe)) return;
 		if (foe.isAlive()) {
 			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, foe instanceof Player ? Math.min(1, amplifier) : amplifier, false, true), player);
 		}
@@ -552,6 +604,7 @@ public final class ArtKit {
 	 * player briefly, a boss only slowed hard. Returns whether it froze.
 	 */
 	public static boolean freeze(ServerPlayer player, LivingEntity foe, int ticks) {
+		if (!harmable(player, foe)) return false;
 		if (!foe.isAlive()) {
 			return false;
 		}
@@ -571,6 +624,11 @@ public final class ArtKit {
 
 	/** Shakes {@code foe}'s footing: it can't act for {@code ticks} (a player is slowed to a crawl that long; a boss only slowed). */
 	public static boolean hold(ServerPlayer player, LivingEntity foe, int ticks) {
+		if (!harmable(player, foe)) return false;
+		return holdAdmitted(player, foe, ticks);
+	}
+
+	private static boolean holdAdmitted(ServerPlayer player, LivingEntity foe, int ticks) {
 		if (!foe.isAlive()) {
 			return false;
 		}
@@ -591,10 +649,11 @@ public final class ArtKit {
 	 * hold at once would leave it hanging in the air (a held creature doesn't move), then stuns it where it lands.
 	 */
 	public static void holdLater(ServerPlayer player, LivingEntity foe, int delay, int ticks) {
+		if (!harmable(player, foe)) return;
 		int[] waited = {0};
 		Runnable[] step = new Runnable[1];
 		step[0] = () -> {
-			if (!foe.isAlive() || !player.isAlive() || foe.level() != player.level()) {
+			if (!foe.isAlive() || !player.isAlive() || foe.level() != player.level() || !harmable(player, foe)) {
 				return;
 			}
 			waited[0]++;
@@ -607,8 +666,26 @@ public final class ArtKit {
 		Scheduler.later(1, step[0]);
 	}
 
+	/** Same landing timing, with an independently released exact-body permission rather than the physical pose. */
+	public static void holdLater(ServerPlayer player, LivingEntity foe, int delay, int ticks, java.util.function.BooleanSupplier permission) {
+		if (!permission.getAsBoolean()) return;
+		int[] waited = {0};
+		Runnable[] step = new Runnable[1];
+		step[0] = () -> {
+			if (!permission.getAsBoolean()) return;
+			waited[0]++;
+			if (waited[0] >= delay && (foe.onGround() || foe.isInWater()) || waited[0] >= 40) {
+				holdAdmitted(player, foe, ticks);
+				return;
+			}
+			Scheduler.later(1, step[0]);
+		};
+		Scheduler.later(1, step[0]);
+	}
+
 	/** Lightning through {@code foe}: what it was winding up breaks, it twitches still for {@code ticks}, and it's left ionised for a storm spell. */
 	public static void shock(ServerPlayer player, LivingEntity foe, int ticks) {
+		if (!harmable(player, foe)) return;
 		if (!foe.isAlive()) {
 			return;
 		}
@@ -623,6 +700,7 @@ public final class ArtKit {
 	 * {@link ArtRules#PVP_HOLD_REST} (a player held lately is only slowed); a boss is only slowed. Returns whether it rooted.
 	 */
 	public static boolean root(ServerPlayer player, LivingEntity foe, int ticks) {
+		if (!harmable(player, foe)) return false;
 		if (!foe.isAlive()) {
 			return false;
 		}
@@ -635,6 +713,7 @@ public final class ArtKit {
 			slow(player, foe, ticks, 1);
 			return false;
 		}
+		if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterForms.cancel(moving);
 		foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, t, 6, false, false, true), player);
 		foe.setDeltaMovement(0, Math.min(0, foe.getDeltaMovement().y), 0);
 		MonsterMagic.sync(foe);
@@ -652,6 +731,7 @@ public final class ArtKit {
 	 * a sprint, so they can always run out of it; never a boss. Within {@code stop} of the point it's let be.
 	 */
 	public static void drag(LivingEntity foe, Vec3 to, double speed, double stop) {
+		if (dev.wildercord.party.Parties.blocksCurrentHarm(foe)) return;
 		Vec3 toward = to.subtract(foe.position());
 		toward = new Vec3(toward.x, 0, toward.z);
 		double length = toward.length();
@@ -663,6 +743,7 @@ public final class ArtKit {
 		Vec3 pull = toward.scale(Math.min(allowed, (length - stop) * 0.5) / length);
 		if (foe instanceof Player) {
 			// A player keeps their own motion and is only leaned on: they can always walk out of it.
+			if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterFormMovement.begin(moving, 2);
 			foe.setDeltaMovement(v.add(pull.scale(0.5)));
 		} else {
 			foe.setDeltaMovement(pull.x, Math.max(v.y, foe.onGround() ? 0.0 : v.y), pull.z);
@@ -779,7 +860,7 @@ public final class ArtKit {
 	 */
 	public static void wound(Hits hits, LivingEntity foe, double factor, int times, Drink drink, java.util.function.Consumer<LivingEntity> drip) {
 		ServerPlayer player = hits.player();
-		if (foe == null || !foe.isAlive() || times <= 0 || factor <= 0) {
+		if (foe == null || !foe.isAlive() || times <= 0 || factor <= 0 || !harmable(player, foe)) {
 			return;
 		}
 		Reactions.mark(foe, Reactions.Mark.BLEEDING, times * ArtRules.BLEED_PERIOD + 10);
@@ -787,7 +868,7 @@ public final class ArtKit {
 		ServerLevel level = player.level();
 		for (int i = 1; i <= times; i++) {
 			Scheduler.later(i * ArtRules.BLEED_PERIOD, () -> {
-				if (!foe.isAlive() || !player.isAlive() || foe.level() != level) {
+				if (!foe.isAlive() || !player.isAlive() || foe.level() != level || !harmable(player, foe)) {
 					return;
 				}
 				boolean moving = foe.position().distanceToSqr(last[0]) > 0.04;
@@ -799,6 +880,34 @@ public final class ArtKit {
 				if (drink != null) {
 					drink.from(foe, taken);
 				}
+			});
+		}
+	}
+
+	/**
+	 * An opt-in wound owned by an already released original body. Moon's wounds outlive weapon changes and
+	 * physical recovery, but never a death, disconnect or world departure. Other wound callers retain the
+	 * original helper above. Each hit still evaluates the ordinary live party/team/duel/trial admission.
+	 */
+	public static void wound(Hits hits, LivingEntity foe, double factor, int times, Drink drink,
+			java.util.function.Consumer<LivingEntity> drip, ReleasedArtOwner released) {
+		ServerPlayer player = hits.player();
+		ServerLevel level = released.level();
+		if (!released.owns(player) || !released.valid() || foe == null || !foe.isAlive() || foe.isRemoved()
+			|| foe.level() != level || times <= 0 || factor <= 0 || !harmable(player, foe)) return;
+		Reactions.mark(foe, Reactions.Mark.BLEEDING, times * ArtRules.BLEED_PERIOD + 10);
+		Vec3[] last = {foe.position()};
+		for (int i = 1; i <= times; i++) {
+			Scheduler.later(i * ArtRules.BLEED_PERIOD, () -> {
+				if (!released.valid() || !foe.isAlive() || foe.isRemoved() || foe.level() != level || !harmable(player, foe)) return;
+				boolean moving = foe.position().distanceToSqr(last[0]) > 0.04;
+				last[0] = foe.position();
+				float taken = hits.raw(foe, weapon(player) * factor * hits.scaling() * (moving ? ArtRules.BLEED_MOVING : 1.0), null);
+				// Do not require survival: an admitted lethal wound still drinks its actual health loss.
+				if (!released.valid() || foe.isRemoved() || foe.level() != level) return;
+				if (drip != null) drip.accept(foe);
+				if (!released.valid() || foe.isRemoved() || foe.level() != level) return;
+				if (drink != null) drink.from(foe, taken);
 			});
 		}
 	}
@@ -821,6 +930,7 @@ public final class ArtKit {
 	 * {@code stretch} after each; it stops if they die, change world or mount up. Fall distance is forgotten on the way.
 	 */
 	public static void dash(ServerPlayer player, List<Vec3> path, int ticks, Stretch stretch) {
+		dev.wildercord.aura.MasterFormMovement.begin(player, ticks + 1);
 		ServerLevel level = player.level();
 		int n = Math.max(1, ticks);
 		for (int i = 1; i <= n; i++) {
@@ -891,6 +1001,7 @@ public final class ArtKit {
 
 	/** Moves the swordsman to {@code spot} at once (the view stays theirs). */
 	public static void blink(ServerPlayer player, Vec3 spot) {
+		dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		player.teleportTo(player.level(), spot.x, spot.y, spot.z, Relative.ROTATION, 0.0F, 0.0F, false);
 		player.resetFallDistance();
 		player.setDeltaMovement(Vec3.ZERO);
@@ -898,6 +1009,7 @@ public final class ArtKit {
 
 	/** Sets the swordsman's own motion (a leap, a dive), told to their client at once. */
 	public static void launch(ServerPlayer player, Vec3 velocity) {
+		dev.wildercord.aura.MasterFormMovement.begin(player, 40);
 		player.setDeltaMovement(velocity);
 		player.needsSync = true;
 		MonsterMagic.sync(player);

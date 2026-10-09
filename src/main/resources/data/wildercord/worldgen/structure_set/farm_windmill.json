@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101101,
+    "spacing": 44,
+    "separation": 14
+  },
+  "structures": [
+    {
+      "structure": "wildercord:farm_windmill",
+      "weight": 1
+    }
+  ]
+}

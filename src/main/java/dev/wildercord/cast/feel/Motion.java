@@ -12,7 +12,7 @@ public enum Motion {
 	SLASH,
 	/** Radiating from a point: Burst, Nova, Ring, Pillar. */
 	BLAST,
-	/** A seal on the ground that lingers: Zone, Totem, Wall, Vortex, Domain, Imprint, Mine, Snare, Trail. */
+	/** A seal on the ground that lingers: Zone, Totem, Wall, Vortex, Domain, Imprint, Mine, Snare, Trail, Relay, Reweave. */
 	SEAL,
 	/** Called from above: Rain, Constellation. */
 	CALL,
@@ -27,9 +27,17 @@ public enum Motion {
 			case "beam", "lance", "prism", "stream", "latch", "sweep" -> BEAM;
 			case "cone", "crescent", "glaive", "barrage", "wave", "blitz" -> SLASH;
 			case "burst", "nova", "ring", "pillar" -> BLAST;
-			case "zone", "totem", "wall", "vortex", "domain", "imprint", "mine", "snare", "trail" -> SEAL;
+			case "zone", "totem", "wall", "vortex", "domain", "imprint", "mine", "snare", "trail", "relay", "reweave" -> SEAL;
 			case "rain", "constellation" -> CALL;
 			case "self", "orbit", "trigger" -> AURA;
+			// ---- shapes pack
+			case "furrow", "seam", "hedgerow", "fissure", "fan", "stepstones", "causeway", "corridor", "stairwell" -> SLASH;
+			case "plot", "seedbed", "lattice", "perimeter", "rosette", "spiral", "crossway", "lamplit", "shoreline" -> SEAL;
+			case "shaft", "spire", "pit", "collapse", "vault", "dome", "facade", "canopy", "lodeseek" -> BLAST;
+			case "footing", "aureole", "saddle", "fellowship", "packbond" -> AURA;
+			case "herd", "nursery", "shoal", "flock", "sentinel", "grudge", "rearguard" -> CALL;
+			case "tether" -> BEAM;
+			case "bobber" -> FLICK;
 			default -> HURL;
 		};
 	}

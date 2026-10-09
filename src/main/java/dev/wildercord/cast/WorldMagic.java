@@ -141,7 +141,8 @@ public final class WorldMagic {
 
 	/** Whether this cast may change the block at {@code pos}: building rights there, and room in its budgets. Takes the block if so. */
 	private static boolean edit(Cast cast, BlockPos pos) {
-		if (left(cast, EDITS) <= 0 || !Casters.mayEdit(cast.caster, cast.level, pos) || !cast.takeBlock()) {
+		if (!cast.admitsBlock(pos) || left(cast, EDITS) <= 0 || !Casters.mayEdit(cast.caster, cast.level, pos)
+			|| !cast.admitsBlock(pos) || !cast.takeBlock()) {
 			return false;
 		}
 		spend(cast, EDITS, 1);
@@ -164,12 +165,13 @@ public final class WorldMagic {
 
 	/** After an effect lands: whatever its element does to the world there. */
 	static void onSpell(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
+		if (cast.guardedImpact() && !cast.alive()) return;
 		RuneDef rune = node.effect;
 		LivingEntity caster = cast.caster;
 		if (WorldRules.wets(rune)) {
 			for (Entity e : hit.entities()) {
 				if (Targets.canHelp(caster, e)) {
-					Reactions.mark(e, Reactions.Mark.WET, WorldRules.WET_TICKS);
+					Reactions.wetAlly(caster, e, WorldRules.WET_TICKS);
 				}
 			}
 		}
@@ -195,7 +197,7 @@ public final class WorldMagic {
 			case FREEZE -> freeze(cast, at, Math.min(2.0, SpellNumbers.effectRadius(node)), edits);
 			case CONDUCT -> {
 				conduct(cast, hit, power);
-				strike(cast, rune, hit, edits, lasting);
+				if (!cast.guardedImpact() || cast.alive()) strike(cast, rune, hit, edits, lasting);
 			}
 			case GUST -> gust(cast, hit, edits);
 			case HEAVE -> heave(cast, at, power);
@@ -228,7 +230,7 @@ public final class WorldMagic {
 			return;
 		}
 		for (Entity e : hit.entities()) {
-			if (!(e instanceof LivingEntity t) || !Targets.canHarm(cast.caster, e)) {
+			if (!(e instanceof LivingEntity t) || !Targets.canHarm(cast.caster, e) || !cast.admits(t)) {
 				continue;
 			}
 			if (interaction == WorldRules.Interaction.IGNITE) {
@@ -844,7 +846,9 @@ public final class WorldMagic {
 		int r = WorldRules.CONDUCT_RADIUS;
 		Vec3 origin = Vec3.atCenterOf(seed);
 		List<LivingEntity> struck = new ArrayList<>();
-		for (Entity e : level.getEntities((Entity) null, new AABB(seed).inflate(r, 4, r), e -> Targets.canHarm(cast.caster, e) && e.isInWater())) {
+		List<? extends Entity> nearby = cast.guardedImpact() ? RelayCircles.collateral(cast, origin, new AABB(seed).inflate(r, 4, r), e -> e.isInWater())
+			: level.getEntities((Entity) null, new AABB(seed).inflate(r, 4, r), e -> Targets.canHarm(cast.caster, e) && e.isInWater());
+		for (Entity e : nearby) {
 			if (hit.entities().contains(e)) {
 				continue;
 			}
@@ -861,16 +865,19 @@ public final class WorldMagic {
 		double waterY = surface.getY() + level.getFluidState(surface).getHeight(level, surface);
 		Vec3 strike = new Vec3(landed.x, waterY + 0.1, landed.z);
 		conductFlash(level, strike, water);
+		int admitted = 0;
 		for (int i = 0; i < struck.size(); i++) {
 			LivingEntity t = struck.get(i);
+			if (!cast.admits(t) || cast.guardedImpact() && cast.takeEntities(1) < 1) continue;
+			admitted++;
 			shockThrough(level, strike, t, waterY, i);
 			double amount = WorldRules.conductDamage(Math.sqrt(t.distanceToSqr(origin))) * power;
-			Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), amount);
+			RelayCircles.from(cast, strike, () -> Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), amount));
 		}
-		if (!struck.isEmpty()) {
+		if (admitted > 0) {
 			Reactions.callout(cast, "conduct", 0xFFE650);
 		}
-		if (struck.size() >= WorldRules.CONDUCTOR_FEAT) {
+		if ((cast.guardedImpact() ? admitted : struck.size()) >= WorldRules.CONDUCTOR_FEAT) {
 			Grimoire.feat(cast.caster, Feats.CONDUCTOR);
 		}
 	}
@@ -967,8 +974,9 @@ public final class WorldMagic {
 		ServerLevel level = cast.level;
 		if (lasting) {
 			for (Entity e : hit.entities()) {
-				if (e instanceof Creeper creeper && creeper.isAlive() && !creeper.isPowered() && Targets.canHarm(cast.caster, e)
+				if (e instanceof Creeper creeper && creeper.isAlive() && !creeper.isPowered() && Targets.canHarm(cast.caster, e) && cast.admits(creeper)
 						&& level.getRandom().nextDouble() < WorldRules.CREEPER_CHARGE_CHANCE) {
+					if (!cast.admits(creeper)) continue;
 					charge(level, creeper);
 				}
 			}
@@ -1481,11 +1489,14 @@ public final class WorldMagic {
 		ServerLevel level = cast.level;
 		int shown = 0;
 		AABB near = new AABB(at, at).inflate(WorldRules.REVEAL_RADIUS);
-		for (Entity e : level.getEntities((Entity) null, near, e -> e instanceof LivingEntity living && living.isInvisible() && Targets.canHarm(cast.caster, e))) {
+		List<? extends Entity> hidden = cast.guardedImpact() ? RelayCircles.collateral(cast, at, near, LivingEntity::isInvisible)
+			: level.getEntities((Entity) null, near, e -> e instanceof LivingEntity living && living.isInvisible() && Targets.canHarm(cast.caster, e));
+		for (Entity e : hidden) {
 			if (shown >= WorldRules.REVEAL_MAX) {
 				break;
 			}
 			LivingEntity living = (LivingEntity) e;
+			if (cast.guardedImpact() && (!RelayCircles.admitsFrom(cast, at, living) || cast.takeEntities(1) < 1)) continue;
 			living.addEffect(new MobEffectInstance(MobEffects.GLOWING, WorldRules.REVEAL_TICKS, 0, false, false));
 			ElementFx.shimmer(level, living.getBoundingBox().getCenter(), 0.4, 8);
 			shown++;

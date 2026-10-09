@@ -29,8 +29,13 @@ public final class BreathingMethods {
 	public static final BreathingMethod HOURGLASS = register(new BreathingMethod("hourglass", "time", 0xF2D98A, 0xFFF8E0, BreathingMethod.Flavour.HASTE));
 	public static final BreathingMethod CRIMSON = register(new BreathingMethod("crimson", "blood", 0xD2283C, 0xFF6474, BreathingMethod.Flavour.LEECH));
 
+	// ---- methods-a pack
+	public static final BreathingMethod TIDE = register(new BreathingMethod("tide", "brine", 0x1E8C96, 0xD8FFF6, BreathingMethod.Flavour.CURRENT));
+	public static final BreathingMethod IRON = register(new BreathingMethod("iron", "metal", 0x9AA6B2, 0xFF9A3C, BreathingMethod.Flavour.FORGE));
+	public static final BreathingMethod DUNE = register(new BreathingMethod("dune", "sand", 0xD49A3A, 0xF6E3A0, BreathingMethod.Flavour.GRIT));
+
 	/** The built-in methods, in element order. */
-	public static final List<BreathingMethod> BUILT_IN = List.of(EMBER, RIME, THUNDER, GALE, STONE, VERDANT, HOLLOW, STARLIT, HOURGLASS, CRIMSON);
+	public static final List<BreathingMethod> BUILT_IN = List.of(EMBER, RIME, THUNDER, GALE, STONE, VERDANT, HOLLOW, STARLIT, HOURGLASS, CRIMSON, TIDE, IRON, DUNE);
 
 	/**
 	 * Adds a method (an add-on's: give it a namespaced id). Registering an id again replaces it, so a reload of an add-on's
@@ -61,4 +66,11 @@ public final class BreathingMethods {
 		}
 		return Optional.empty();
 	}
+
+	// ---- methods-b pack
+	/** Echo, Dawn and Venom Breath: registered beside the built-in ten (not in {@link #BUILT_IN}), their passives worked by
+	 * {@code MethodsBCoating}. */
+	public static final BreathingMethod ECHO = register(new BreathingMethod(MethodsBArtRules.ECHO, "wind", 0x9A7CE8, 0xE4E0F4, BreathingMethod.Flavour.NONE));
+	public static final BreathingMethod DAWN = register(new BreathingMethod(MethodsBArtRules.DAWN, "arcane", 0xFFD98C, 0xFFE0EA, BreathingMethod.Flavour.NONE));
+	public static final BreathingMethod VENOM = register(new BreathingMethod(MethodsBArtRules.VENOM, "life", 0x8EE03C, 0xD8FF8A, BreathingMethod.Flavour.NONE));
 }

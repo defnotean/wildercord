@@ -4,33 +4,56 @@ nav_order: 9.1
 parent: Growing Stronger
 ---
 
-# Spell practice and visual diagnostics
+# Practice and trials
+{: .no_toc }
 
-Players can use `/runelab practice enter` and `/runelab practice leave` to visit and leave the dedicated practice dimension. Operators can also use `/wildercord practice enter` and `/wildercord practice leave`, with the additional target and diagnostic commands below. The arena uses ordinary spell, mana, loadout, and defence rules. Entering does not replace your equipment, teach runes, or change your game mode. Leaving restores your saved departure point, including after a logout in the arena.
+1. TOC
+{:toc}
 
-- `reset`: replace practice targets with three stationary dummies.
-- `moving`: use three dummies that move from side to side.
-- `stress <1-24>`: create up to 24 moving dummies.
-- `benchmark`: reset server visual counters, then report them after ten seconds of casting.
-- `/wildercord visualstats`: inspect particle packet construction, delivery counts, limited decorations, waiting scheduled parts, and compiled plan cache activity.
-- `/wildercord visualstats reset`: clear the visual counters.
+## What it is
 
-Dummy nameplates display the existing five-second damage rate and burst total. These are damage measurements against the dummy, rather than estimates of damage against an equipped player. The benchmark counters cover the server as a whole; other players casting during the sample also contribute. They do not measure GPU frame time or promise a frame-rate improvement.
+A **practice room** in its own small dimension, with training dummies to cast at, and three optional
+**spell trials** that each reward a Torn Page the first time.
 
-The room loads eight chunks in its own dimension. It does not build over your normal world. Fallen players are returned to the platform. Practice target replacement is disabled outside this dimension. The first launch after installing the feature must load its new dimension; an already running server needs a restart.
+## How to get it
 
-In Minecraft Controls, assign a key to **Magic visual settings**. Your own formation effects and other casters' formations each have Full, Balanced, and Minimal options. Reduced flash dims shaped light, while Camera motion controls Wildercord shake and field-of-view punches. Combat geometry and warning circles remain present. Settings are local in `config/wildercord-visuals.json`.
+- `/runelab practice enter` takes you to the room. `/runelab practice leave` returns you to where you
+  were, even after logging out there.
+- Your gear, runes and game mode stay the same, and normal spell, mana and defence rules apply.
+- If you fall, you're put back on the platform. Nothing is built in your own world.
 
-The compiler retains at most 256 recent plans. Rune ranks are part of the key, each caller receives a separate mutable graph, and `/wildercord reload` and server shutdown clear the cache.
+## How to use it
 
-## Optional Survival trials
+### The dummies
 
+Each dummy's nameplate shows its damage over the last five seconds and its burst total. That's damage
+to the dummy, not to an armoured player.
 
+### Trials
 
-Enter and leave with `/runelab practice enter` and `/runelab practice leave`. In Survival, `/runelab trial precision`, `variety` or `fusion` begins a ninety-second attempt with a total spell budget of 100 mana.
+In Survival or Adventure, start one with `/runelab trial precision`, `variety` or `fusion`. You get
+**90 seconds** and a total budget of **100 mana**.
 
-* **Precision:** make five casts and land five spell hits on practice dummies, with each hit at most six damage.
-* **Variety:** cast four different shapes and land five dummy spell hits.
-* **Fusion:** cast three different named or woven fusions and land five dummy spell hits.
+| Trial | Goal |
+|---|---|
+| **Precision** | 5 casts and 5 spell hits on dummies, each hit **6 damage or less** |
+| **Variety** | 4 different shapes and 5 spell hits |
+| **Fusion** | 3 different fusions (named or woven) and 5 spell hits |
 
-Actual magic/indirect-magic damage on dummies counts; melee punches do not. Leaving the practice dimension, death, Creative/Spectator mode, time expiry or exceeding the budget ends an attempt. The first completion of each trial awards one Torn Page; repeat runs still announce success but cannot farm rewards. These trials never gate ordinary rune progression.
+- Only spell damage counts; punches don't.
+- Leaving the room, dying, switching to Creative or Spectator, running out of time or going over the
+  budget ends the attempt.
+- The **first** clear of each trial gives **one Torn Page**. Repeats announce success but give nothing.
+- Trials never block your normal progress.
+
+### Visual settings
+
+Bind a key to **Magic visual settings** in Controls (it has none by default). You can set your own and
+other casters' spell effects to Full, Balanced or Minimal, dim flashes, and turn camera shake down.
+Warning circles always stay.
+
+## Tips and counterplay
+
+- **Precision** rewards cheap, light spells: big hits over 6 damage don't count.
+- Plan your mana: 100 must cover every cast.
+- Test a new build on the dummies before taking it into a fight.

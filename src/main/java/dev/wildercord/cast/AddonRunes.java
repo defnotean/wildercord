@@ -109,6 +109,7 @@ public final class AddonRunes {
 				} catch (RuntimeException e) {
 					failed("reaction of " + element, e);
 				}
+				if (!cast.consequencesValid(target)) return 1.0;
 			}
 		}
 		return multiplier;

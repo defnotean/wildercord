@@ -122,11 +122,16 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	/** Its breathing method (one of the ten built in). */
 	public BreathingMethod method() {
 		int i = entityData.get(DATA_METHOD);
+		// ---- methods-b pack
+		String pack = dev.wildercord.aura.MethodsBPack.fighterMethod(i);
+		if (pack != null) return BreathingMethods.byId(pack).orElse(BreathingMethods.EMBER);
 		return BreathingMethods.BUILT_IN.get(Math.floorMod(i, BreathingMethods.BUILT_IN.size()));
 	}
 
 	public void setMethod(BreathingMethod method) {
 		int i = BreathingMethods.BUILT_IN.indexOf(method);
+		// ---- methods-b pack
+		if (i < 0 && method != null) i = dev.wildercord.aura.MethodsBPack.fighterIndex(method.id());
 		entityData.set(DATA_METHOD, (byte) Math.max(0, i));
 	}
 
@@ -299,7 +304,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 			return damage;
 		}
 		Entity direct = source.getDirectEntity();
-		Vec3 from = direct != null ? direct.position() : source.getSourcePosition();
+		Vec3 from = source instanceof dev.wildercord.cast.RelayDamageSource ? source.getSourcePosition() : direct != null ? direct.position() : source.getSourcePosition();
 		if (from == null || !facing(from)) {
 			return damage;
 		}
@@ -483,6 +488,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 			return 0;
 		}
 		DamageSource source = level.damageSources().source(Aura.DAMAGE, this, this);
+		MasterHitReceipt.source(this, target, source);
 		double bonus = AuraElements.bonus(this, target, source, element());
 		double amount = target instanceof Player ? damage * SpellDefenceRules.capBonus(bonus, Config.get().defence().maxBonus()) : damage * bonus;
 		float before = target.getHealth();

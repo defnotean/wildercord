@@ -27,6 +27,14 @@ final class ArcaneFeels {
 		cue("arcane_stinger_glass", 0xB8D8FF, "barrier", "reflect", "span", "haste", "empower", "halo");
 		cue("arcane_stinger_step", 0xFFD8FA, "swap", "light", "night_eye", "treasure_sense", "starlight_tether");
 		Signature.of("summon").sound(Phase.CUE, "arcane_stinger_summon", 0.8F, 1.0F).motion(Motion.CALL).scale(1.5).accent(0xB8C8FF).register();
+		// Lifeline: one pale strand from the hand to a friend.
+		Signature.of("lifeline").motion(Motion.BEAM).accent(0x9FE8FF).sound(Phase.CUE, "arcane_stinger_step", 0.5F, 1.12F).register();
 		cue("arcane_stinger_summon", 0xFFE8FF, "twin_star", "manatide");
+		// ---- fx-explore pack
+		cue("arcane_stinger_mark", 0xE8D0FF, "lux_reading", "appraise", "folk_census", "lore_reading", "shelf_count");
+		cue("arcane_stinger_step", 0xFFE8C0, "chalk_line", "stand_pose");
+		cue("arcane_stinger_glass", 0x9FD8FF, "haggle", "lapis_thrift", "beacon_swell");
+		// ---- fx-support pack
+		dev.wildercord.cast.packs.WardFeels.register();
 	}
 }

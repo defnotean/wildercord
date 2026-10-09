@@ -94,6 +94,14 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());
 		ImbuedTooltip.init();
 		MasteryClient.init();
+		RelayClient.init();
+		RelayLessonScreen.register();
+        ReweaveClient.init();
+        ReweaveLessonScreen.register();
+        ExciseLessonScreen.register();
+        ExciseClient.init();
+        PackLessonScreen.register();
+        LessonPackClient.init();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.BACKPACK, BackpackScreen::new);
 		BlankRuneTooltip.init();
@@ -169,6 +177,7 @@ public final class WildercordClient implements ClientModInitializer {
 		net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents.COLLECT_SUBMITS.register(dev.wildercord.client.fx.Incantations::submit);
 		CastingOptions.load();
 		WildercordKeys.init();
+		MastersArtsClient.init();
 		SpellHud.init();
 		// Aura: what aura sense outlines (the bar is SpellHud's, the blade's glow AuraBlade's).
 		AuraClient.init();
@@ -178,6 +187,8 @@ public final class WildercordClient implements ClientModInitializer {
 		AuraFxClient.init();
 		dev.wildercord.client.fx.FrameBenchmark.init();
 		WaypointHud.init();
+		// ---- lore pack: the lore journal key and screen.
+		dev.wildercord.client.lore.LoreJournalClient.init();
 		Wildercord.LOGGER.info("Wildercord client initialized");
 	}
 }

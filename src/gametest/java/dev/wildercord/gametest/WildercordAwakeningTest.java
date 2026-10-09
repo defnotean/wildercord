@@ -376,6 +376,8 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 			return went && Math.abs(left - 30) < 1.0E-3 ? null : "an art played awakened should spend nothing (" + went + ", " + left + " left of 30)";
 		});
 		check(paid == null, paid);
+		var firstTiming = dev.wildercord.aura.MastersStyleRules.of(EmberArts.KINDLING_DRAW);
+		context.waitTicks(firstTiming.windup() + firstTiming.recovery());
 		// Momentum holds at its peak, even through a hit taken.
 		String held = on(world, player -> {
 			double before = Momentum.value(player);
@@ -630,7 +632,8 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 		check(price == 0, "awakened, the Final Art should cost nothing (" + price + ")");
 		PERFORMED.clear();
 		finalSwings(context, world);
-		context.waitTicks(6);
+		// Styled arts announce themselves on their active frame, after the authored windup.
+		context.waitTicks(dev.wildercord.aura.MastersStyleRules.of(EmberArts.SUNFALL).windup() + 2);
 		context.getInput().releaseKey(o -> o.keyShift);
 		check(PERFORMED.contains(EmberArts.SUNFALL), "the Final Art's string should play the Final Art awakened (" + PERFORMED + ")");
 		String after = on(world, player -> {
@@ -962,6 +965,11 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 			case CRIMSON -> foes(player).stream().anyMatch(m -> Reactions.has(m, Reactions.Mark.BLEEDING)) ? null : "the husks inside should bleed";
 			case RIME -> foes(player).stream().allMatch(m -> m.hasEffect(MobEffects.SLOWNESS) || RimeArts.frozen(m)) ? null : "the husks inside should be chilled";
 			case HOLLOW, PLAIN -> null;
+			// ---- methods-a pack
+			case TIDE -> foes(player).stream().allMatch(m -> Reactions.has(m, Reactions.Mark.WET)) ? null : "the husks inside should be soaked";
+			case IRON -> foes(player).stream().anyMatch(m -> dev.wildercord.aura.arts.MethodsAFlavours.sundered(m) > 0) ? null
+				: "the husks inside should have their armour cracked";
+			case DUNE -> foes(player).stream().allMatch(m -> m.hasEffect(MobEffects.SLOWNESS)) ? null : "the husks inside should sink";
 		});
 		check(beat == null, beat);
 		on(world, player -> {

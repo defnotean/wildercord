@@ -54,6 +54,7 @@ public final class Inscriptions {
 	 * @return whether it was added
 	 */
 	public static boolean inscribe(ServerPlayer player, List<RuneDef> runes, ItemStack scroll) {
+        if (dev.wildercord.spell.ExciseRules.contains(runes) || dev.wildercord.spell.LessonPackRules.contains(runes)) return false;
 		var settings = Config.get().mastery();
 		if (!settings.enabled() || !settings.inscription() || runes.isEmpty()) {
 			return false;

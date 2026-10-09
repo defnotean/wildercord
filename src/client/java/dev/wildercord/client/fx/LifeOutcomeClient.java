@@ -57,11 +57,13 @@ public final class LifeOutcomeClient {
    int count=pieces.size(),spent=own?ownSpent:otherSpent;
    if(invalid[0]||total+count>512||spent+count>cap(quality)){dropped++;continue;}
    total+=count;if(own)ownSpent+=count;else otherSpent+=count;
-   Vec3 eye=mc.player.getEyePosition(),camera=mc.gameRenderer.mainCamera().position();
+   var camera=mc.gameRenderer.mainCamera();
    for(var piece:pieces){var at=piece.at();
     if(!mc.level.hasChunkAt(BlockPos.containing(at))||mc.player.blockPosition().distToCenterSqr(at.x,at.y,at.z)>=32*32
-     ||at.distanceToSqr(eye)<1.1*1.1||at.distanceToSqr(camera)<1.1*1.1)continue;
-    mc.level.addParticle(piece.option(),at.x,at.y,at.z,0,0,0);
+     ||!LifeOwnerClearance.clear(mc,camera,at,own))continue;
+    // ClientLevel calls the registered provider synchronously. Keep vanilla settings/limiting,
+    // and tag only these outcome particles for camera checks throughout their existing lifetime.
+    LifeOwnerClearance.emit(event.source(),own,()->mc.level.addParticle(piece.option(),at.x,at.y,at.z,0,0,0));
    }
   }
  }

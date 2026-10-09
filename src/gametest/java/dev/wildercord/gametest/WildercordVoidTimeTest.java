@@ -63,6 +63,8 @@ public class WildercordVoidTimeTest implements FabricClientGameTest {
 			context.waitTicks(40);
 			world.getServer().runCommand("gamerule spawn_mobs false");
 			world.getServer().runCommand("gamerule advance_time false");
+			// Health assertions should measure spell healing without vanilla hunger-based regeneration.
+			world.getServer().runCommand("gamerule natural_health_regeneration false");
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");
 			stage(world);

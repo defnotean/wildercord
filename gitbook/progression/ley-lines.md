@@ -1,107 +1,67 @@
 # Ley lines and the Wellstone
 
 
-**Ley lines** are thin, winding veins where the world's mana runs close to the surface. Stand on one
-and your mana flows twice as fast and Heart Circles form twice as quickly. Set a **Wellstone** on one
-and it becomes a well of mana for everyone nearby.
+## What it is
 
+**Ley lines** are winding veins where the world's mana runs close to the surface. On one, your mana flows
+twice as fast and Heart Circles form in half the time. A **Wellstone** set on a line becomes a well of
+mana for everyone nearby.
 
-## Ley lines
+## How to get it
 
-### Seeing them
+### Finding a ley line
 
-While you wear a Cord, you see ley lines as **ribbons of pale violet light** flowing along the ground
-just above it, following each line's bends over hills, under trees and along the forest floor, with
-now and then a mote of light lifting off. Ribbons show within about 30 blocks of you, and a whole line
-flows the same way (roughly east-north-east). Without a Cord you see nothing.
+- Wear a Cord: you see ley lines as **ribbons of pale violet light** along the ground. Without a Cord you
+  see nothing.
+- They exist only in the **Overworld**, come from the world's seed and never move. There are no blocks to
+  find or break.
+- They wind and branch. Some areas are full of them, others have none for a long way.
+- Stepping onto one shows *"A ley line runs beneath you"* above your hotbar. The first time earns the
+  **Ley Walker** feat.
 
-Under a **mana storm** the lines surge: more ribbons, brighter, wider and quicker.
+### Crossings
 
-### Where they run
-
-- Only in the **Overworld**.
-- They're part of the world itself, worked out from the world's seed, so every world has its own
-  pattern and they never move. There are no blocks to find or break.
-- They wind and branch rather than forming a grid, and they come and go: some areas are laced with
-  them, others have none for a long way. A line is several blocks across, and you count as standing on
-  it near its middle.
-
-### Standing on one
-
-When you step onto a line while wearing a Cord, *"A ley line runs beneath you"* shows above your hotbar,
-with a soft chime. The first time, you're told what it means and earn the **Ley Walker** feat.
-
-| On a ley line | |
-|---|---|
-| **Mana regeneration** | **+100%** (it adds to your other boosts: see [Mana](mana.md)) |
-| **Forming a Heart Circle** | **5 seconds** of meditation instead of 10 (see [Heart Circles](heart-circles.md)) |
-
-The mana badge in the Cord screen shows *"+100% on a ley line"* while you're on one, and the HUD's mana
-bar shows a violet up-chevron.
-
-### Where two lines cross
-
-Ley lines run in two weaves, and every few hundred blocks a line of one crosses a line of the other. A **ley crossing**
-is a place of power: every spell you cast there is **10% stronger** and costs **10% less**, on top of everything a ley
-line gives. A crossing shimmers with turning rings of pale light on the ground and a faint column of light over it,
-seen from further than the ribbons, so follow a line until another crosses it. Stepping onto one says so above your
-hotbar, and the first time earns the **Crossroads** feat. See
+Every few hundred blocks two lines cross. A **ley crossing** shimmers with turning rings and a faint
+column of light that you can see from further away. The first visit earns the **Crossroads** feat. See
 [Places and Times of Power](../world/places-of-power.md).
 
-### What else gathers there
-
-- **Mana storms** gather over ley lines. See [World Events](../world/world-events.md).
-- **Runes in the water.** Fish in open water on or near a ley line and 1 catch in 20 brings up a rune tangled in the
-  line, on top of the catch. See [Fishing](../world/runes-of-the-world.md#fishing).
-- **Wild wisps** rise from ley lines at night. See [Familiars](../companions/familiars.md).
-- The Runesmith's [contracts](../social/contracts.md) sometimes ask you to cast
-  spells on a ley line.
-
-## The Wellstone
+### Crafting a Wellstone
 
 ![A dark block with glowing violet inlays stands on grass, a wide pale circle drawn on the ground around it](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/wellstone.jpg)
 <span>An awake Wellstone on a ley line.</span>
 
-### Crafting
-
 ![Crafting grid: top row Polished Deepslate · Block of Amethyst · Polished Deepslate; middle row Block of Amethyst · Mana Crystal · Block of Amethyst; bottom row Deepslate Tiles · Deepslate Tiles · Deepslate Tiles](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/wellstone.png)
 
-2 Polished Deepslate, 3 Blocks of Amethyst, a Mana Crystal and 3 Deepslate Tiles make one Wellstone.
+## How to use it
 
-### Placing it
+| Where | What you get |
+|---|---|
+| **On a ley line** | Mana regeneration **+100%**; a Heart Circle forms in **5 seconds** instead of 10 |
+| **At a crossing** | All that, plus spells **10% stronger** and **10% cheaper** |
+| **Within 12 blocks of an awake Wellstone** | Mana regeneration **+50%** |
 
-Set it down **on a ley line in the Overworld** and within a second it **wakes**: a beacon hums into
-life, a circle of light opens on the ground around it, and the nearest player within 10 blocks earns
-the **Wellkeeper** feat. It doesn't need to sit on the line's very middle: it wakes a little further
-out from the middle than you'd count as standing on the line.
+These add to your other [regeneration boosts](mana.md#regeneration).
 
-Off a ley line (or in another dimension) it stays asleep, glowing faintly. Pick it up and set it on a
-line and it wakes.
+### The Wellstone
 
-| | Asleep | Awake |
-|---|---|---|
-| **Light** | 3 | 12 |
-| **Look** | dark stone, faint glow | circles of light turning on the ground around it, a halo over it, mana streaming up out of the ground into it |
-| **Sound** | | a soft chime now and then |
+- Place it **on a ley line in the Overworld** and it **wakes**: light 12, turning circles of light and a
+  soft chime. The nearest player within 10 blocks earns the **Wellkeeper** feat.
+- Off a line, or in another dimension, it sleeps with a faint glow (light 3).
+- Its boost works for **everyone** nearby. Two Wellstones don't stack.
+- Mine it with any pickaxe.
 
-Mine it with any pickaxe to pick it up.
+### What else gathers on ley lines
 
-### What it does
+- **Mana storms**. See [World Events](../world/world-events.md).
+- **Runes in the water:** fishing in open water on a line, 1 catch in 20 also brings up a rune. See
+  [Fishing](../world/runes-of-the-world.md#fishing).
+- **Wild wisps** rise from lines at night, and from an awake Wellstone at any hour. See
+  [Familiars](../companions/familiars.md).
 
-While awake, everyone within **12 blocks** of it regenerates mana **+50%** faster. This adds to every
-other boost, a ley line's included: standing on the line next to your Wellstone gives **+150%**.
+## Tips and counterplay
 
-- It works for **everyone** nearby, friends and strangers alike.
-- Wellstones don't stack: standing near two gives +50%, not +100%.
-- Wild wisps can rise from the mana around an awake Wellstone at any hour, not just at night (see
-  [Familiars](../companions/familiars.md)).
-
-The mana badge shows *"+50% from a Wellstone nearby"*.
-
-## Tips
-
-- **Find a line early.** Wear a Cord and look for the violet ribbons. Build your base, or at least your
-  spell-testing ground, on one.
-- **Meditate on a line near your Wellstone**: +100% for meditating, +100% for the line, +50% for the
-  Wellstone.
-- **Form your circles there**: half the time, and your mana refills anyway when the circle forms.
+- **Build your base on a line.** Meditate there beside your Wellstone: +100% meditating, +100% line,
+  +50% Wellstone.
+- **Form circles on a line**, somewhere safe: half the time.
+- Under a mana storm the ribbons surge brighter and wider, which makes lines easier to find.
+- A Wellstone helps your enemies too. Fight away from theirs.

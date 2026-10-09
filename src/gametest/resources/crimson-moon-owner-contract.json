@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 2,
+  "entrypoint": "dev.wildercord.client.combat.CrimsonMoonCaptureTest",
+  "mixinConfiguration": "crimson-moon-owner-gametest.mixins.json",
+  "baseCommit": "51c9ac9d6a2267a426abc8b2096c57bee375b815",
+  "status": "source_compiled_and_negative_checks_passed; native_execution_not_run",
+  "defaultCase": "articulated_netherite_funded_right_release",
+  "properties": {
+    "wildercord.moon.case": "exact appearance_hand_beat ID, appearance ID, or all",
+    "wildercord.moon.ownerView": "fp only; world selector and verified world receipt status fail closed until world held-item proof is added",
+    "wildercord.moon.expectedSkin": "wide, slim, or any (default); actual original skin is always recorded"
+  },
+  "requiredEnvironment": {
+    "WILDERCORD_MOON_RECEIPT_NONCE": "fresh canonical UUID; unbound native capture is rejected"
+  },
+  "appearanceIds": [
+    "classic_bare_shell_down",
+    "classic_netherite_funded",
+    "articulated_bare_shell_down",
+    "articulated_netherite_funded",
+    "whole_fallback_netherite_funded"
+  ],
+  "hands": [
+    "left",
+    "right"
+  ],
+  "beats": {
+    "chamber": {
+      "requestAge": 6.5,
+      "renderedSourceWindow": [
+        6,
+        8
+      ],
+      "phase": "WINDUP"
+    },
+    "release": {
+      "requestAge": 10,
+      "renderedSourceWindow": [
+        10,
+        11
+      ],
+      "phase": "ACTIVE",
+      "meaning": "Authored post-HitStop source pose in [10,11); actual server-release instant correspondence is unverified"
+    },
+    "follow": {
+      "requestAge": 14,
+      "renderedSourceWindow": [
+        14,
+        18
+      ],
+      "phase": "RECOVERY",
+      "meaning": "follow-through only; not delayed-damage-frame proof"
+    },
+    "late_recovery": {
+      "requestAge": 27,
+      "renderedSourceWindow": [
+        27,
+        30
+      ],
+      "phase": "RECOVERY"
+    },
+    "neutral": {
+      "requestAge": 30,
+      "renderedSourceWindow": [
+        30,
+        40
+      ],
+      "phase": "NONE"
+    },
+    "cancelled_neutral": {
+      "requestAge": 30,
+      "renderedSourceWindow": [
+        30,
+        40
+      ],
+      "phase": "NONE",
+      "cause": "actual incoming damage during accepted windup"
+    }
+  },
+  "timeline": {
+    "move": 19,
+    "windup": 10,
+    "recovery": 20,
+    "physicalActiveHalfOpen": [
+      10,
+      11
+    ],
+    "directDamageAgesInclusive": [
+      11,
+      15
+    ],
+    "delayedDamageEvidenceHalfOpen": [
+      11,
+      16
+    ],
+    "directDamagePixelEvidence": false,
+    "schedulerTickTolerance": 0,
+    "requiredServerCompletionOffsetTicks": 10,
+    "serverReleaseFrameCorrespondenceVerified": false
+  },
+  "fixture": {
+    "input": "actual three fully charged attack keys, then crouched LOW attack key; normal client reader and server admission",
+    "gate": "declared fixture peak100 on Crimson Sovereign slotV; not evidence of earning momentum and no custom Final opener",
+    "rest": "original 600-tick rest retained between actual activations",
+    "target": "real visible NoAI husk; moved off axis before LOW only",
+    "skin": "original connected profile; never replaced, synthesized or relabeled",
+    "hitStop": "natural monotonic expiry, no acquisition clear/freeze/retime"
+  },
+  "receipt": {
+    "prefix": "crimson_moon_owner_",
+    "directory": "screenshots/crimson-moon-owner-receipts/<run UUID>",
+    "proof": "actual post-HitStop immutable source identities through every pass; numeric expected/actual geometry comparisons; GPU copy callback pixels equal decoded returned PNG",
+    "body": "Deferred-body comparison code and pure negative checks are present, but world capture is blocked pending world held-item matrix proof.",
+    "articulatedFP": "actual submitted view root, deferred view locals and actual sword submission matrix including mirrored wide/slim socket",
+    "classicFP": "required observed before/after Classic transform, height compensation and actual native sword submission matrix including ordinary faded swing",
+    "identity": "Connected owner UUID/entity/profile skin/model, source/extraction/state/model/item/material identities, activation/move/hand/master/aim, world and independent camera palettes, and unchanged equipment.",
+    "fallback": "Classic requires effective articulation/armor/shell adapters off. Whole fallback requires articulation and armor adapters on, a funded matching-width shell owned by the original primary PlayerModel, shell adapter off, all other compatibility conditions satisfied, and a recorded ordinary known/non-equipping/same-item hand admission.",
+    "pixelQualityReviewed": false,
+    "phaseBasis": "authored_post_hitstop_source_palette",
+    "serverReleaseFrameCorrespondenceVerified": false,
+    "independentViewAuthority": "Expected active body/view comes from samplePlayer(19, observed source age, 10, 20, expected hand). Source camera-key output, submitted view, deferred locals and item matrix are compared to that independently retained sample.",
+    "neutralSource": "Neutral/cancelled articulated frames must use the authoritative ArticulatedCombatPose.NONE singleton, exact NONE locals, zero weight and aim, MIN_VALUE activation, move -1, player ownership/hand, no scripted footwork and the default NaN velocity sentinel. Expected idle ViewPose is derived from NONE.",
+    "originalSkinMaterial": "The screenshot-entry connected-player PlayerSkin and primary PlayerModel are retained independently. Extracted skin must equal that original profile; articulated skin submission must use the canonical entityTranslucent RenderType for the original texture, and its material identity remains bound across view/deferred/item passes.",
+    "handAdmission": "Known provenance and non-equipping status are mandatory. Active same-item attack lowering remains eligible; neutral requires settled native height. Unknown/equipping/mismatched-item/nonfinite-height states fail closed.",
+    "entryFailureCleanup": "Scope entry is transactional: initialization failure clears partial captured state, restores the exact previous thread-local scope, and preserves the original failure. A cleanup failure is attached as suppressed diagnostic context."
+  },
+  "coverageLimits": [
+    "Only owner FP can return verified=true. Owner world view is disabled and is never real-observer evidence.",
+    "World held-item submission matrices are not verified by this slice; world proof covers deferred body geometry",
+    "No native rendering, original-skin pixels, silhouette review, TCP observer or gameplay acceptance run has occurred",
+    "No Moon adapter is installed in the shared cast-only two-client supervisor; a future adapter requires separate integration and review",
+    "Bare/shell-down and enchanted-netherite/funded combinations are representative, not an exhaustive cross-product",
+    "Exact server completion+10 is required, but screenshot/readback has no server clock/order association; verified rendered pose does not prove an actual server-release frame."
+  ],
+  "historicalProfileContractToFreshlyVerify": {
+    "moon-wide": {
+      "username": "WCMoonWide2",
+      "uuid": "efc39378-3f97-37a3-bf28-b62b82f0bafa"
+    },
+    "moon-slim": {
+      "username": "WCMoonSlim",
+      "uuid": "0167ff94-ec08-3235-8727-7c1376ad1e7b"
+    }
+  },
+  "sharedGates": "shared/opening192 source, descriptors and acceptance are unchanged",
+  "sourceNegativeChecks": 280,
+  "sourceNegativeControls": {
+    "viewAuthority": "Detached source pose with identical world locals/weight/phase but a wrong independent ViewKey is rejected.",
+    "neutralAuthority": "Stale non-neutral locals labeled NONE, copied NONE with a foreign ViewKey, and wrong idle metadata are rejected.",
+    "originalSkinMaterial": "Same-width replacement texture, wrong submitted material, and wrong original profile width are rejected.",
+    "isolatedFallback": "Custom/unowned/wrong-width model, missing view ownership, other-model shell, unknown/equipping hand, mismatched item, unsettled neutral height, and nonfinite height are rejected.",
+    "releaseTiming": "Exact completion+10 passes; +9 and +11 are rejected. No rendered-source receipt claims an actual server-release instant.",
+    "scopeEntry": "Missing-owner and changed-renderer exceptions, an initializer Error, absent prior scope, cleanup failure, and successful initialization exercise the pure scope guard without constructing a client."
+  }
+}

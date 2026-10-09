@@ -40,6 +40,7 @@ public final class SpellNumbers {
 
 	/** Power per hit for shapes that hit many times (Barrage, Stream), and for the cheap Spark. */
 	public static double shapeStrength(RuneDef shape) {
+		if (shape.is(RelayRules.ID)) return RelayRules.STRENGTH;
 		if (shape.is(Runes.BARRAGE.id()) || shape.is(Runes.STREAM.id())) {
 			return 0.35;
 		}
@@ -49,6 +50,9 @@ public final class SpellNumbers {
 		if (shape.is(Runes.LATCH.id())) {
 			return LATCH_STRENGTH;
 		}
+		// ---- shapes pack
+		Double field = FieldShapeGeometry.strength(FieldShapeGeometry.path(shape.id()));
+		if (field != null) return field;
 		return 1.0;
 	}
 

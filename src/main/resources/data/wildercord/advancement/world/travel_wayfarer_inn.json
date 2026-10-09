@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "travel_wayfarer_inn": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:travel_wayfarer_inn"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:campfire"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.travel_wayfarer_inn.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.travel_wayfarer_inn.description"
+    }
+  },
+  "requirements": [
+    [
+      "travel_wayfarer_inn"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

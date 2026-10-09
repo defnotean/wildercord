@@ -7,192 +7,143 @@ nav_order: 7.7
 # Creatures
 {: .no_toc }
 
-The world has more in it than monsters. Six magical creatures live in its forests, swamps, deserts, mountains and
-snowfields. None of them will attack you; each belongs to an element and a land, and each leaves something behind
-that's worth having. Some are common, two are rare, and one should never be harmed. And now and then you'll meet a
-**wandering duelist**, a sword master who teaches its way of breathing to anyone who can beat it.
+## What it is
 
-Every creature you see up close for the first time goes into your **Grimoire** (open your Cord and press the Grimoire
-switch): you get a toast, a little mana toward your next Heart Circle, and a short entry about it. Creatures you haven't
-met yet are listed too, as a hint of where to look.
+Six magical creatures live in the world's forests, swamps, deserts, mountains and snowfields. None of them attack you.
+Each leaves behind something useful. You'll also meet the odd **wandering duelist**, who teaches its breathing method
+to anyone who beats it.
+
+The first time you see a creature up close, it goes into your **Grimoire** with a short entry and a little mana toward
+your next Heart Circle. Creatures you haven't met are listed too, as a hint.
+
+For wetland, cave and highland wildlife, see [Lights Along the Bank]({{ '/world/luminous-wetlands/' | relative_url }}),
+[Mossveil Dormice]({{ '/world/mossveil-dormice/' | relative_url }}),
+[Reedback Crabs]({{ '/world/reedback-crabs/' | relative_url }}),
+[Rootmolt Striders]({{ '/world/rootmolt-striders/' | relative_url }}),
+[Siltcrest Bittern]({{ '/world/siltcrest-bittern/' | relative_url }}) and
+[Sporeback Snails]({{ '/world/sporeback-snails/' | relative_url }}).
 
 1. TOC
 {:toc}
 
 ## At a glance
 
-| Creature | Where | When | How common | Leaves | Good for |
-|---|---|---|---|---|---|
-| [Glimmerwing](#glimmerwing) | Forests, flower forests, birch and dark forests, meadows, sunflower plains, cherry groves | Night | Small swarms | Glimmer Dust | Night Vision potions, glow ink sacs |
-| [Lumen Stag](#lumen-stag) | Old-growth birch, pine and spruce forests, taigas, cherry groves | Any time | Rare, always alone | Lumen Antler (shed for you, never dropped) | Mana Crystals |
-| [Mossback Tortoise](#mossback-tortoise) | Swamps, mangrove swamps, jungles | Any time | One or two | Mossback Scute | Potions of the Turtle Master, mending turtle shells |
-| [Cinderfox](#cinderfox) | Deserts and badlands | Any time | One to three | Ember Tuft | Fire Resistance potions, furnace fuel |
-| [Skyray](#skyray) | Windswept hills and forests, meadows, peaks and snowy slopes | Any time | Rare, high overhead | Skyray Membrane | Slow Falling potions, mending elytra |
-| [Rimehare](#rimehare) | Snowy plains and taigas, ice spikes, snowy slopes, groves | Any time | Two or three | Rime Fur | Rimebound armour, leather |
-| [Wandering Duelist](#wandering-duelist) | Near villages, on roads, by small campfires | Day | Rare, one at a time | Its breathing method, if you beat it | Learning aura |
+| Creature | Where | How common | Leaves | Good for |
+|---|---|---|---|---|
+| [Glimmerwing](#glimmerwing) | Forests, flower and birch forests, dark forests, meadows, sunflower plains, cherry groves, swamps (at night) | Swarms of 3 to 5 | Glimmer Dust | Night Vision potions, glow ink sacs |
+| [Lumen Stag](#lumen-stag) | Old-growth birch, pine and spruce forests, taigas, cherry groves | Rare, alone | Lumen Antler | Mana Crystals |
+| [Mossback Tortoise](#mossback-tortoise) | Swamps, mangrove swamps, jungles | 1 or 2 | Mossback Scute | Turtle Master potions, mending turtle shells |
+| [Cinderfox](#cinderfox) | Deserts and badlands | 1 to 3 | Ember Tuft | Fire Resistance potions, furnace fuel |
+| [Skyray](#skyray) | Windswept hills and forests, meadows, peaks, snowy slopes | Very rare, high up | Skyray Membrane | Slow Falling potions, mending elytra |
+| [Rimehare](#rimehare) | Snowy plains and taigas, ice spikes, snowy slopes, groves | 2 or 3 | Rime Fur | Rimebound armour, leather |
+| [Wandering Duelist](#wandering-duelist) | Near villages and roads, by day | Rare | Its breathing method | Learning aura |
+
+Glimmer Dust, Mossback Scutes, Ember Tufts and Skyray Membranes each brew their potion from an Awkward Potion.
 
 ## Glimmerwing
 
 <img src="{{ '/assets/images/creature-glimmerwing-night.jpg' | relative_url }}" alt="Glimmerwings, pale blue, pink and amber, fluttering round a lantern on a fence post at night" class="shot">
 <span class="caption">Glimmerwings circling a lantern at night.</span>
 
-Soft-glowing moths the size of your hand. They come out at night in forests and flower fields, in little swarms of three
-to five that keep together, and fade away one by one when the sun comes up.
+Glowing moths that come out at night and fade away at dawn.
 
-- **They go to light.** A lantern, torch or campfire draws a swarm to circle it. So does magic: cast a spell near them
-  and they'll come and flutter round your head for a while.
-- **Each swarm has a colour**: pale moonlit blue in most woods, rose in flower forests and cherry groves, amber in
-  meadows. Now and then a swarm strays from its colour.
-- **They leave a faint trail** of glittering dust as they fly.
-- **Harmless and fragile.** One hit and a glimmerwing is gone, leaving **Glimmer Dust**.
+- **They go to light.** Lanterns, torches and campfires draw them. So does casting a spell near them.
+- **Each swarm has a colour:** blue in most woods, rose in flower forests and cherry groves, amber in meadows.
+- **One hit** and a glimmerwing is gone, leaving **Glimmer Dust**.
 
-**Glimmer Dust** brews a **Potion of Night Vision** from an Awkward Potion, and with an ink sac makes a **glow ink
-sac** (shapeless crafting).
+**Glimmer Dust** brews **Night Vision**. With an ink sac it makes a **glow ink sac**.
 
 ## Lumen Stag
 
 <img src="{{ '/assets/images/creature-lumen-stag-night.jpg' | relative_url }}" alt="A pale spotted stag with tall branching crystal antlers glowing white in the dark" class="shot">
-<span class="caption">A lumen stag under a full moon: its antlers burn brightest then.</span>
+<span class="caption">A lumen stag's antlers glow brightest under a full moon.</span>
 
-A rare, shy deer of old forests, taigas and cherry groves, always found alone. Its antlers are crystal, and they glow
-with the moon: brightest under a full moon, faint at a new moon, and barely at all by day.
+A rare, shy deer with crystal antlers that glow with the moon.
 
-- **It bolts.** Walk up to a lumen stag, or run at it, and it turns and flees, faster than you can follow.
-- **Sneak, and it lets you near.** Come toward it slowly while sneaking and it stands and watches you, head up and ears
-  forward. Get right beside it and stay still for a few seconds, and it trusts you: it bows its head and sheds an
-  antler at your feet.
-- **Once a day.** A stag sheds one antler a day: for the first person it trusts, or, if nobody comes, on its own while
-  someone is near enough to find it. One that has shed today shows a stump where the antler was until the next day.
-- **Never harm one.** A lumen stag that dies leaves nothing at all, and whoever killed it is followed by **Bad Luck**
-  for five minutes. Every stag nearby takes fright and won't trust anyone for a long while after.
+- **It bolts** if you walk or run at it.
+- **Sneak up slowly** and it watches you. Stand still beside it for a few seconds and it trusts you, shedding a
+  **Lumen Antler** at your feet. A stag sheds one antler a day.
+- **Never harm one.** A slain stag drops nothing, and its killer gets **Bad Luck** for 5 minutes. Nearby stags stop
+  trusting anyone for a long while.
 
-A **Lumen Antler** can take the place of the diamond at the heart of a **Mana Crystal**: lapis lazuli in the corners,
-amethyst shards at the sides and the antler in the middle.
-
-<img src="{{ '/assets/images/creature-lumen-stag-day.jpg' | relative_url }}" alt="The same pale spotted stag by day on a grassy lawn, its crystal antlers a cool translucent blue" class="shot">
-<span class="caption">By day the antlers are clear blue crystal.</span>
+A **Lumen Antler** can replace the diamond in a **Mana Crystal** recipe.
 
 ## Mossback Tortoise
 
 <img src="{{ '/assets/images/creature-mossback-tortoise.jpg' | relative_url }}" alt="A huge tortoise with a domed, moss-covered shell, blue orchids and a brown mushroom growing on top" class="shot">
-<span class="caption">A mossback tortoise from a swamp, its garden in bloom.</span>
+<span class="caption">A mossback tortoise with its swamp garden.</span>
 
-A huge, slow, patient tortoise of swamps, mangroves and jungles, with a little garden growing on its shell. What grows
-there depends on where it lives:
+A huge, slow tortoise with a little garden on its shell that matches where it lives (swamp, mangrove or jungle).
 
-| Land | Its garden |
-|---|---|
-| Swamp | Blue orchids and a brown mushroom in thick moss |
-| Mangrove swamp | A mangrove propagule, a lily pad and a red mushroom |
-| Jungle | Ferns and a dandelion |
+- **It hides when struck,** taking much less damage for a few seconds.
+- **It loves melon.** Hold a melon slice and it follows you. Feed two to breed them.
+- **It sheds a Mossback Scute** every 10 to 20 minutes. A baby leaves one as it grows up.
 
-A tortoise that wanders into another of those lands and stays a while grows that land's garden instead.
-
-- **It hides when struck.** It pulls its head and legs into its shell and settles on the ground for a few seconds,
-  taking much less from any blow while it hides. At night, tiny specks of glowing lichen show in its moss.
-- **It loves melon.** Hold a melon slice and it plods after you; feed two of them and they'll raise a baby, which has a
-  big head and a bare shell until it grows up.
-- **It sheds scutes.** Every so often (every ten to twenty minutes) an adult lets a **Mossback Scute** fall, and a baby
-  leaves one behind as it grows up.
-
-A **Mossback Scute** brews a **Potion of the Turtle Master** from an Awkward Potion, and mends a turtle shell at an
-anvil, as a turtle's own scute does.
-
-<img src="{{ '/assets/images/creature-mossback-tortoise-hidden.jpg' | relative_url }}" alt="The same tortoise at night, drawn into its shell, with pale green specks glowing in its moss" class="shot">
-<span class="caption">In its shell, with lichen glowing in the moss.</span>
+A **Mossback Scute** brews **the Turtle Master** and mends a turtle shell at an anvil.
 
 ## Cinderfox
 
 <img src="{{ '/assets/images/creature-cinderfox.jpg' | relative_url }}" alt="A slim sandy fox with very tall ears, amber eyes and a tail ending in a glowing orange ember, standing on sand" class="shot">
 <span class="caption">A cinderfox in the desert.</span>
 
-A slight, big-eared fox of deserts and badlands whose tail ends in a living ember. It glows by day and burns bright at
-night, throwing off sparks.
+A big-eared desert fox whose tail ends in a living ember.
 
-- **Wild ones keep their distance**, unless you sneak or hold out rabbit or fish. They hunt rabbits and chickens.
-- **Taming.** Feed one rabbit or safe fish, raw or cooked. One try in three it's yours: hearts appear and it sits.
-- **A tame cinderfox** follows you, sits or stands when you use it with an empty hand, and fights whatever hurts you or
-  whatever you attack. Heal it with rabbit, chicken or fish; two tame ones fed those foods raise a kit.
-- **Its bite carries embers.** Against anything weak to fire (strays, polar bears, snow golems and more) it sets the
-  creature alight and hurts it half again as much.
-- **It can't burn.** Fire and lava don't harm a cinderfox.
-- **Brushing.** Use a brush on your tame cinderfox and it leaves an **Ember Tuft**, once a day.
+- **Taming:** feed it rabbit or fish. Each try has a 1 in 3 chance.
+- **A tame cinderfox** follows you, sits when you use it with an empty hand, and fights what you fight. Heal it with
+  rabbit, chicken or fish. Feed two tame ones to breed them.
+- **Its bite** sets fire-weak creatures alight and hurts them extra. Fire and lava can't harm it.
+- **Brush it** once a day for an **Ember Tuft**.
 
-An **Ember Tuft** brews a **Potion of Fire Resistance** from an Awkward Potion, and burns in a furnace long enough to
-smelt eight items. A wild cinderfox may drop one too.
-
-<img src="{{ '/assets/images/creature-cinderfox-sitting-night.jpg' | relative_url }}" alt="A cinderfox sitting up on its haunches at night, its tail curled round beside it with the ember glowing" class="shot">
-<span class="caption">A tame cinderfox sitting at night.</span>
+An **Ember Tuft** brews **Fire Resistance** and smelts eight items as furnace fuel.
 
 ## Skyray
 
 <img src="{{ '/assets/images/creature-skyray-night.jpg' | relative_url }}" alt="A great manta-shaped creature seen from above at night, deep blue, its wings spread wide and spotted with glowing stars" class="shot">
-<span class="caption">A skyray's back at night: its stars come out with the dark.</span>
+<span class="caption">A skyray's back at night.</span>
 
-A manta of the open sky, three and a half blocks from wingtip to wingtip. It glides in slow, wide loops high over
-mountains, windswept hills and meadows, leaning into its turns, and drifts across the land as it goes. Its back is the
-deep blue of twilight, spotted with stars that glow at night.
+A great sky manta that glides in wide loops high over mountains and meadows. You'll often hear its song before you see
+it.
 
-- **Rare.** You won't see more than two in one sky. Look up when you're on a peak or a high meadow.
-- **Its song carries.** You'll often hear a skyray before you see it.
-- **It sheds membranes.** Every so often a **Skyray Membrane** comes loose and drifts down from it, while someone is
-  near enough to find it.
-- **Harm one and it climbs away.** A skyray shot drops one or two membranes when it dies, but it's high up and quick to
-  leave.
+- **It sheds membranes** now and then, which drift down while someone is nearby.
+- **Harm one** and it climbs away. A slain skyray drops a membrane or two.
 
-A **Skyray Membrane** brews a **Potion of Slow Falling** from an Awkward Potion, and mends an **elytra** at an anvil
-just as a phantom membrane does.
-
-<img src="{{ '/assets/images/creature-skyray-below.jpg' | relative_url }}" alt="A skyray seen from below against a blue sky, its pale underside and long whip-like tail" class="shot">
-<span class="caption">How you'll usually see one: from below, against the sky.</span>
+A **Skyray Membrane** brews **Slow Falling** and mends an **elytra** like a phantom membrane.
 
 ## Rimehare
 
 <img src="{{ '/assets/images/creature-rimehare.jpg' | relative_url }}" alt="A white hare with long dark-tipped ears and big dark eyes, sitting on snow" class="shot">
 <span class="caption">A rimehare on the snow.</span>
 
-A quick white hare of the snowy lands, with long dark-tipped ears and frost glinting in its fur.
+A fast white hare that leaves fading frost prints.
 
-- **It goes in bounds**, and every landing leaves a pair of **frost prints** that fade in a few seconds.
-- **Hard to catch.** It bolts from anyone who comes near, faster than you can sprint. Hold out **sweet berries** and
-  stand still, and it'll hop up to you. Move, or even turn your head, once it's close and it takes fright for a while.
-- **Breeding.** Feed two rimehares sweet berries and they'll raise a leveret.
+- **Hard to catch.** It flees faster than you can sprint. Hold **sweet berries** and stand still, and it hops up to you.
+  Move or turn your head and it bolts.
+- **Breed** two with sweet berries.
 
-**Rime Fur** can be woven into **Rimebound armour** in place of packed ice (the leather piece, a Rime Fur and a Mana
-Crystal), and four Rime Fur in a square make a piece of **leather**.
+**Rime Fur** can replace packed ice in **Rimebound armour**. Four Rime Fur make a piece of **leather**.
 
 ## Wandering Duelist
 
 <img src="{{ '/assets/images/creature-duelist.jpg' | relative_url }}" alt="A wandering duelist in a hooded travelling cloak trimmed in orange, a cloth mask over its mouth and a scabbard slung at its hip" class="shot">
 <span class="caption">A duelist who breathes Ember Breath.</span>
 
-A sword master in a hooded travelling cloak, a scabbard slung at the hip. Each breathes one of the ten
-[breathing methods]({{ '/progression/aura/' | relative_url }}), and you can tell which at a glance: its cloak's trim,
-its sash, its mask and the tassel on its scabbard are in that method's colours.
+A hooded sword master who breathes one [breathing method]({{ '/progression/breathing-methods/' | relative_url }}). Its
+cloak trim, sash and mask show which.
 
-- **Where:** by day, a duelist now and then wanders in near a village's bell, along a road, or out in the open, where it
-  lights a small campfire and sits by it. They're rare, never two near each other, and each moves on after a while (its
-  fire goes with it).
-- **It's no threat.** It harms nobody, and nothing harms it unless you're duelling it: it turns a blow aside with its
-  sheathed blade and tells you to speak to it first.
-- **A duel.** Use it (with a blade in hand) and it offers you a duel, naming its method; use it again within ten seconds
-  to accept. See [Duels with a duelist]({{ '/progression/aura/#duels-with-a-duelist' | relative_url }}). Beat it and it
-  teaches you its breathing method.
+- **Where:** by day, near a village bell, along a road, or out in the open by a small campfire. It moves on after a
+  while.
+- **It's harmless,** and turns aside any blow unless you're duelling it.
+- **To duel:** use it with a blade in hand, then use it again within 10 seconds to accept. Beat it and it teaches you its
+  method. See [Duels with a duelist]({{ '/progression/aura/' | relative_url }}#duels-with-a-duelist).
 
-<img src="{{ '/assets/images/creature-duelist-camp.jpg' | relative_url }}" alt="A duelist sitting on the ground beside a lit campfire, forearms on its knees" class="shot">
-<span class="caption">A duelist resting by its campfire.</span>
+- **To call its Master:** once you've reached Aura Form or Heart Circle VIII, sneak and use the duelist, then do it
+  again within 10 seconds. You can also type `/master challenge <school>`.
 
-## Spawn eggs
+For the stronger teachers, see [Sword Masters]({{ '/masters/' | relative_url }}). The eight
+[Master halls]({{ '/world/masters-sites/' | relative_url }}) are good places to train first.
 
-Every creature has a spawn egg, in the creative inventory's Spawn Eggs tab and the Wildercord tab. A creature hatched
-from an egg behaves just like a wild one.
+## Tips and counterplay
 
-## How many there are
-
-Each creature spawns on its own in its lands, alongside the vanilla animals and bats, so the usual limits on how many
-creatures can be around at once still hold, and the rare ones keep their distance from each other. A server's owner can
-switch the creatures off, make them rarer or more common, or switch any one of them off on its own.
-
-## Lantern Newt
-
-Open shallows in swamps and mangrove swamps shelter the Lantern Newt. It visits seagrass without destroying plants, answers Tidebreath and Life magic, and offers one Dusk Pearl when fed while wet and undisturbed, with a saved two-minute rest. See [Lights Along the Bank]({{ '/world/luminous-wetlands/' | relative_url }}) for its recipes and behavior.
+- Every creature has a spawn egg in creative mode.
+- Natural spawns follow the usual animal limits, and rare creatures keep apart.
+- Server owners can switch creatures off, or make them rarer or more common.

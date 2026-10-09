@@ -1,37 +1,38 @@
 # Unity
 
-Bring the blade and the heart into one breath. **Form and five working Heart Circles** open a short hybrid technique: paid spellcasting feeds some Aura, and paid Aura techniques return some mana.
 
-![The actual Aura page with Unity's woven control and activation price](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/unity-page.png)
+## What it is
 
-## Begin the shared breath
+A short window where blade and heart share one breath: mana you pay for spells feeds your Aura, and Aura
+you pay for techniques returns some mana.
 
-Open your Cord screen, go to **Aura**, and click the **Unity** row below your method and Aura bar. You need a working Cord, an Aura weapon in hand, enabled Aura and **12 mana plus 12 Aura**. Activation is available in Survival and Adventure.
+![The Aura page with Unity's woven control and activation price](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/unity-page.png)
 
-Unity lasts **12 seconds**. Its next activation waits **120 seconds from the start**, including if you end the window early. The page shows remaining time or rest; the ordinary Aura HUD gains a small woven marker inside its existing strip.
+## How to get it
 
-| What you pay during Unity | What it returns | Limit for the whole activation |
-| --- | --- | --- |
-| Actual mana paid by a Cord spell | 25% as Aura | 12 Aura |
-| Actual mana paid by a rune-etched blade | 25% as Aura | Shares the same 12 Aura |
-| Actual Aura paid without backlash | 50% as mana | 24 mana |
+You need **Form** on the [Aura](aura.md) path and **five working
+[Heart Circles](heart-circles.md)**.
 
-The activation price does not refund itself. Restoration does not count as payment. Blood Price, creative casting, unpaid echoes, passive effects, ordinary resource gains and cast announcements do not feed the exchange.
+## How to use it
 
-Only what fits in the receiving pool uses its allowance. There is no stored surplus. Switching weapons, dimensions or spells never grants a fresh budget, and both limits belong to you for this activation.
+1. Wear a Cord and hold an Aura weapon.
+2. Open the Cord screen, go to **Aura**, and click the **Unity** row.
+3. Pay **12 mana and 12 Aura**. Unity lasts **12 seconds**, then rests for **120 seconds** from when it
+   started, even if it ends early.
 
-## Keep the two paths working
+| While Unity is active | You get back | Limit per activation |
+|---|---|---|
+| Mana paid for a Cord spell or a [rune-etched blade](rune-etched-blades.md) | 25% as Aura | 12 Aura |
+| Aura paid for a technique (without backlash) | 50% as mana | 24 mana |
 
-Putting your weapon away, losing the Cord, dropping below Form or five working Circles, becoming spent or silenced, or entering an Aura lesson/spar ends the window. Disconnecting or dying also ends it; its rest remains. A dimension change carries the same window and consumed allowances.
+- Only what you actually pay counts. The activation price, Blood Price, passives and healing don't.
+- Anything that won't fit in a full pool is lost.
+- It ends if you put the weapon away, lose your Cord, drop below Form or five circles, are silenced or
+  spent, die, disconnect, or start an Aura lesson or spar. Changing dimension doesn't end it.
+- Two strands of light at your back, one warm and one blue, show it working.
 
-Unity is unavailable during Aura lessons and sparring, where pure blade skill is being tested. Awakening's spent state receives neither side of the exchange. Overdrawing Aura into backlash returns no mana.
+## Tips and counterplay
 
-## Read the weave
-
-Two open strands form at your back: one warm strand tinted by your Aura school, one blue strand for mana. Short side strokes show a transfer, with three quiet voices for joining, exchanging and parting. There are no magic circles, and the formation stays behind the first-person view.
-
-## Choose the moment
-
-Use Unity before a brief sequence that needs both pools: pay for a control spell to recover some Aura, then spend Aura on positioning or a blade art to recover some mana. It gives a hybrid build flexibility without extending the window or circulating resources indefinitely. A dedicated spellcaster or swordsman still has a simpler progression path.
-
-Rest and consumed allowances are saved together. An ordinary save during play keeps the same deadlines and budgets. Leaving the world or shutting down the server ends the window; joining again preserves its rest and used allowances. A saved active window from an interrupted shutdown is also closed at join.
+- Open with a paid control spell to gain Aura, then spend Aura on a blade art to win back mana.
+- It works in Survival and Adventure, but not in Aura lessons or spars.
+- Overdrawing Aura into backlash returns nothing.

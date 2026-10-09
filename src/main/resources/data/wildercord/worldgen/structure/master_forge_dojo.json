@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "master_forge_dojo",
+  "biomes": "#wildercord:has_structure/master_forge_dojo",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

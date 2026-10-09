@@ -1,67 +1,77 @@
-# Physical magic and expanded weaving
+# Physical Magic
 
-These spells create temporary blocks with server collision, not just pictures of terrain. Their item icons, circle emblems, release scripts and impact scripts are individually authored.
+## What it is
 
-## Three new craftable runes
+![Tidal Lift lifting real water and sending it along an attack arc](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/tidal-lift.jpg)
 
-| Rune | Tier / base mana | What it does |
-|---|---|---|
-| Strata Rise | II / 9 | Raises a five-block-wide, three-block-high wall in three stages. |
-| Tidal Lift | II / 12 | Borrows up to three nearby water sources and carries them along an arcing attack, then returns the source water. Each enemy takes at most one hit from that cast and gains Soaked. |
-| Wind Steps | II / 8 | Assembles five thin collision platforms ahead of the caster, rising as they extend. |
+Physical magic makes real, solid things for a short time: walls you can hide behind, steps you can climb and
+water you can throw. You can stand on them, and so can everyone else.
 
-Crafting uses a Blank Rune and the normal Tier II cost (two lapis and one gold ingot), plus stone/packed mud/flint for Strata Rise; prismarine shard/kelp/clay ball for Tidal Lift; feather/breeze rod/string for Wind Steps. The recipe book and [complete recipes](../items/rune-recipes.md) show exact entries.
+| Rune | Tier | Mana | What it does |
+|---|---|---:|---|
+| **Strata Rise** | II | 9 | Raises a stone wall five blocks wide and three high. |
+| **Tidal Lift** | II | 12 | Lifts up to three nearby water sources and throws them along an arc. Each enemy is hit once and left Soaked. |
+| **Wind Steps** | II | 8 | Builds five thin wind platforms ahead of you, rising as they go. |
 
-Walls and steps normally last eight seconds, with duration scaling capped at twenty seconds. Steps grant nearby allies a short slow fall as they approach expiry. Each cast has a block budget; active physical terrain is additionally limited to 64 cells per owner and 512 globally. This bounds how much terrain a group can maintain.
+Each one has two fusions, all Tier III:
 
-Water needs source blocks in the surrounding four-block horizontal search area, within two blocks vertically. It travels at most ten blocks and stops at an obstruction. The visible traveling water uses a custom translucent block model; it is not a spreading fluid flood. The original vanilla source water is reserved while borrowed and restored afterward, preventing infinite-water refill from duplicating it.
+| Fuse | Makes | Mana | What it does |
+|---|---|---:|---|
+| Strata Rise + Fire | **Cinder Bulwark** | 16 | A glowing wall. Enemies who brush it take 2 damage, once per cast. |
+| Strata Rise + Grow | **Root Bulwark** | 16 | A living wall that gives nearby allies Regeneration. |
+| Tidal Lift + Fire | **Boiling Surge** | 19 | Scalding water: 5 damage once per enemy and 2 seconds of Weakness. |
+| Tidal Lift + Shock | **Thunder Tide** | 19 | Charged water: 5 damage once per enemy, Soaked and 1 second of Slowness. |
+| Wind Steps + Frost | **Rime Causeway** | 16 | A wider, three-block ice path. |
+| Wind Steps + Shock | **Thunder Walk** | 16 | Charged steps. Enemies who touch one take 2 damage, once per cast. |
 
-## Six new signature fusions
+## How to get it
 
-Put the specified two runes and an amethyst shard into the Fusion Altar. Each costs three XP levels to fuse.
+Each base rune is a Tier II rune: a Blank Rune, 2 Lapis Lazuli and a Gold Ingot, plus:
 
-| Pair | Result | Gameplay |
-|---|---|---|
-| Strata Rise + Fire | Cinder Bulwark | Glowing wall; a bounded contact hit against enemies. |
-| Strata Rise + Grow | Root Bulwark | Living wall that gives nearby allies regeneration. |
-| Tidal Lift + Fire | Boiling Surge | Hot water attack with custom rising vapour and brief Weakness. |
-| Tidal Lift + Shock | Thunder Tide | Conductive water attack, electric rings and brief Slowness. |
-| Wind Steps + Frost | Rime Causeway | A wider, three-block-wide ice platform route. |
-| Wind Steps + Shock | Thunder Walk | Charged platforms with a bounded enemy contact hit. |
+- **Strata Rise:** Stone, Packed Mud and Flint.
+- **Tidal Lift:** a Prismarine Shard, Kelp and a Clay Ball.
+- **Wind Steps:** a Feather, a Breeze Rod and String.
 
-All six are Tier III. Their base mana costs are 16, 16, 19, 19, 16 and 16 respectively. Walls and platforms never overwrite valuable terrain, block entities or occupied living-entity spaces. Placement respects build permissions, the world border, build height and loaded chunks. Cancelling the cast restores its terrain. Saved undo records cover expiry after unload or a restart; cleanup does not force chunks to load.
+For a fusion, put both runes and an **Amethyst Shard** on the [Fusion Altar](../fusion-altar/combining.md).
+It costs 3 XP levels. Full recipes are on [Rune Recipes](../items/rune-recipes.md).
 
-## Change terrain with another spell
+## How to use it
 
-Allied magic can frost a Wind Step into rime, charge it with storm, or solidify it with earth. Fire turns a strata wall into cinder; life turns it into a root wall. Frost condenses traveling water into a temporary rime platform. These changes keep the original expiry instead of renewing it indefinitely.
+- **Walls and steps last 8 seconds.** Longer-lasting spells can stretch that to 20 seconds at most.
+- **Steps give slow fall** to nearby allies just before they vanish.
+- **There's a limit.** You can have 64 blocks of this terrain at once, and the whole world 512.
+- **Tidal Lift needs water**: source blocks within 4 blocks of you sideways and 2 up or down. The water
+  travels up to 10 blocks and stops at walls. The water goes back afterwards, so you can't use it to copy water.
+- **It never breaks your build.** Walls and steps won't replace valuable blocks, chests and the like, or a space
+  a creature is standing in. They respect claims, the world border and build height. Cancelling the cast
+  takes the terrain away.
 
-Hostile wind can dispel steps, and hostile fire can melt rime. Fire evaporates traveling water. Ordinary targets, shields, team rules and defensive damage handling still apply to attacks.
+**Change it with another spell.** Your side's magic can turn Wind Steps into rime (Frost), charge them (Storm)
+or harden them (Earth). Fire turns a stone wall to cinder, Life turns it to roots, and Frost freezes flying
+water into a short ice platform. Changed terrain keeps its original timer.
 
-## Exact weaves of two to eight effects
+### Weaving many effects
 
-An **amethyst block** combines exact effects rather than the named element-grid fusion. An existing weave can be combined with another effect or another weave, up to eight total registered effect leaves. Input order and grouping produce the same canonical result; duplicates remain duplicates, and no component is silently discarded.
+An **Amethyst Block** on the Fusion Altar weaves effects together exactly, instead of making a named fusion. You
+can keep adding effects or other weaves, up to **eight effects**.
 
-- Two effects need at least the highest component tier.
-- Three or four need at least Tier III; five to eight need Tier IV.
-- The fusion fee is three XP levels per extra leaf: 3, 6, 9, 12, 15, 18 or 21 levels.
-- Mana is the full sum of the component costs; socket compression does not grant free effects.
-- An amethyst shard cannot collapse an existing exact weave into an element-grid result.
-- Shapes, modifiers and links keep their normal sequence roles. Use **Knots** to store a valid sequence in one socket.
+| Effects in the weave | Tier needed | XP levels |
+|---|---|---:|
+| 2 | The highest tier among them | 3 |
+| 3 or 4 | At least III | 6 or 9 |
+| 5 to 8 | IV | 12 to 21 |
 
-Every elemental effect has a weaving route, including the ten innate effects. A soul weave may contain only one distinct innate identity and always requires Tier IV. Innate growth follows the caster's Heart Circles, not rune ranks. Survival players can learn and cast only soul weaves containing their own awakened innate; refusal occurs before mana or cooldown is paid.
+- A weave costs the **full mana** of every effect in it. Saving sockets doesn't save mana.
+- Only effects go in a weave. Use a [Knot](../fusion-altar/knots.md) to save a whole sequence
+  of shapes, modifiers and links in one socket.
+- A weave with an [innate rune](../runes/innate.md) is a **soul weave**: always Tier IV, one
+  innate only, and you can only cast it if that innate is your own.
+- **Copy your innate:** sneak and use a Blank Rune on the Fusion Altar. It costs the blank and 3 XP levels and
+  gives you a rune of your own innate to weave with.
 
-**Imprint your innate:** crouch and use a Blank Rune on a Fusion Altar. It consumes one blank and three XP levels and gives a physical copy of your own awakened innate. Then weave that item with an elemental effect and an amethyst block. Insufficient XP consumes nothing. Creative testing bypasses ownership and payment restrictions.
+## Tips and counterplay
 
-## Original material effects
-
-Spell decoration now uses Wildercord's own sprites and motion for ember, frost, storm, wind, stone, petal, void, arcane, time, blood, water and vapour. These retain the authored per-rune geometry and timing. Fused ingredients contribute their material motion as well as colour. Normal Minecraft world feedback, such as a burning creature or flowing source water, remains native world behaviour.
-
-Caster release strokes follow the live rear pose for their short animation beats, avoiding a fixed old circle appearing in front of the player after a rapid turn. The shape still determines the outgoing projectile, beam, ring, rain or self effect.
-
-Spellguard also snapshots a target's starting health for hits from the same cast in one server tick. A multi-effect burst can no longer bypass the full-health survival threshold merely by splitting its lethal damage into smaller hits. Its existing recharge and short protection against the remainder of that cast still apply.
-
-## In game
-
-![Tidal Lift borrows real source water and sends it along an attack arc.](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/tidal-lift.jpg)
-
-Tidal Lift borrows real source water and sends it along an attack arc.
+- **Break their steps.** Hostile wind magic blows Wind Steps away, and hostile fire melts rime.
+- **Fire boils away** a Tidal Lift while it's in the air.
+- **Raise a wall** to block a beam or a charging enemy, then fire round it.
+- Try `Self · Strata Rise` or `Self · Wind Steps` in an open space first, to see where they land.

@@ -8,48 +8,58 @@ permalink: /world/glowcap-nurseries/
 
 # Belowkeeper Glowcap Nurseries
 
-*New in 0.10.0-alpha.*
+## What it is
 
-Deep under damp moss banks, the Belowkeepers left two kinds of Breathmarks: branching roots and an open breath. Mara's field notes describe tending a living cave, rather than harvesting its residents.
+**Glowcaps** are cave mushrooms that only open when a [Sporeback Snail]({{ '/world/sporeback-snails/' | relative_url }})
+browses them. Grow them, shelter snails, craft cave gear, and follow Mara's notes in the optional investigation
+**Mara's Three Breathmarks**.
 
-## Grow a nursery
+<img src="{{ '/assets/images/glowcap-natural-bank.png' | relative_url }}" alt="A Glowcap on a covered clay bank beside cave water and hanging vines" class="shot">
 
-Find Glowcaps in newly generated lush or dripstone caves below Y48. Break a cap to take its cutting home. Plant it on moss or clay beside water at floor level, with solid cover within eight blocks and light at most eight. A dry or brightly lit planting stays dormant.
+## How to get it
 
-A bud slowly prepares itself. Life spells can prepare a bud immediately; repeated Life casts do not mature it. A Sporeback Snail must actually approach and browse for forty uninterrupted ticks. The cap opens its layered gills and the snail keeps its usual single dew reserve and forage rest.
+Find Glowcaps in newly generated **lush or dripstone caves**, on damp moss or clay. Break one to take a cutting.
 
-Sporebacks also wander during their forage rest. A covered garden with accessible walking space and low walls keeps the visitor near your caps without changing its saved rest or reserve. A nursery canopy is a resting place, not a tether. Hungry visitors crawl purposefully toward food; they wander more slowly during their resting clocks.
+## How to use it
 
-Ordinary mushrooms also attract hungry Sporebacks. Keep prepared caps beside an accessible snail path and consider where competing mushrooms grow. A visit to another fungus can leave the snail carrying dew without opening your cap; gather that bead and let the visitor recover before trying again.
+### Growing a nursery
 
-Use an empty hand on a mature cap to gather one Dried Glowcap Gills. The plant resets to a bud and survives. Breaking it only returns the cutting. Each new harvest requires another prepared bud and a rested living visitor.
+1. Plant the cutting on **moss or clay beside water**, with a solid roof within 8 blocks above and light level 8 or
+   less. Dry or bright plantings stay dormant.
+2. The bud slowly prepares itself. A **Life** spell prepares it at once.
+3. A Sporeback Snail must browse the prepared cap for **2 seconds** to open it.
+4. Use a mature cap with an empty hand for **Dried Glowcap Gills**. The plant goes back to a bud. Breaking it only gives
+   back the cutting.
 
-<img src="{{ '/assets/images/glowcap-natural-bank.png' | relative_url }}" alt="An actual naturally generated Glowcap on a covered clay bank beside cave water and hanging vines" class="shot">
+Hungry snails head for any mushroom, so keep other mushrooms away from your caps.
+[Rootmolt Striders]({{ '/world/rootmolt-striders/' | relative_url }}) also eat mature caps and then guard the patch.
 
-## Shelter and field equipment
+### Fungal Nursery
 
-Craft a **Fungal Nursery** from two sticks, paper and gills. Place its open woven canopy above an accessible snail walking cell. Temporary scaffolding can support placement; remove the scaffold afterward. The four corner posts then reach the floor below the roof block, leaving a narrow clear central passage for a snail. A dew-bearing snail may rest under it for eighty ticks, with a separate sixty-second rest between admissions. Shelter does not produce dew or shorten harvesting clocks.
+<img src="{{ '/assets/images/glowcap-grounded-nursery.png' | relative_url }}" alt="A Sporeback resting beneath a woven canopy on four posts, beside a cap it opened" class="shot">
 
-Craft a **Cave Breather** from Mycelial Dew, gills, leather and a copper ingot. Hold it in your offhand and use while poisoned to clear the current Poison effect. Each successful use costs one of thirty-two filter uses and gives three seconds of Slowness. There is a shared ten-second rest across filters, retained through death and reconnects. Attacks can poison you again; the filter does not interrupt an ongoing magical damage budget.
+Craft **2 sticks + paper + Dried Glowcap Gills**. Place the canopy over a spot snails can walk to. Its posts reach the
+floor and leave a gap in the middle. A snail carrying dew can rest under it for a short while, giving you time to
+gather. It doesn't make dew faster.
 
-<img src="{{ '/assets/images/glowcap-grounded-nursery.png' | relative_url }}" alt="A real resting Sporeback beneath four grounded woven canopy posts, beside a cap it browsed into maturity" class="shot">
+### Cave Breather
 
-*Native presentation habitat; actual earned-resource crafting and investigation are verified separately.*
+Craft **Mycelial Dew + Dried Glowcap Gills + leather + copper ingot**. Hold it in your off hand and use it while
+poisoned to clear the Poison. Each use costs 1 of **32** uses, slows you for 3 seconds, and starts a **10-second** rest.
 
-## Mara's Three Breathmarks
+### Mara's Three Breathmarks
 
-1. Kneel with an empty hand to gather a patient Sporeback's dew and make your first living observation.
-2. Find and read an authentic root-glyph Breathmark, then a different open-air Breathmark. Both kinds occur on covered moss or clay in newly generated caves. Each grants one original field journal; repeated or hand-placed copies add no reward.
-3. After reading both clues, personally harvest a snail-matured cap.
+1. Crouch with an empty hand to gather a Sporeback's dew.
+2. Find and read a **root Breathmark**, then an **open-air Breathmark**, on moss or clay in caves. Each gives a journal
+   once.
+3. Harvest a cap that a snail opened.
 4. Craft and place your own Nursery, then craft a Cave Breather.
-5. Show the Breather to a Nursery to receive Mara's conclusion, **Three Breathmarks**, and three Blank Runes once.
+5. Show the Breather to your Nursery. You get Mara's last journal, **Three Breathmarks**, and **3 Blank Runes**, once.
 
-Use a Breathmark or Nursery to see a hint for your next unfinished step. Investigation progress and claimed rewards survive world restarts and death. This is an optional field investigation, not a dungeon, boss encounter or new spell.
+Using a Breathmark or Nursery shows a hint for your next step. Progress survives death.
 
-## Release verification
+## Tips and counterplay
 
-Focused native client suites passed actual harvested-resource pickup and crafting, grounded canopy passage/rest, full investigation and world restart, finite equipment wear and visitor clocks. Normal cave generation passed the original previously failing seed: six caps and both authentic marker kinds in an 81-chunk sample. Separate distant-path and blocked-path tests confirm finite approach deadlines and occupied-canopy admission refusal. Broader multi-seed population balance and a complete fungal threat/ruin ecosystem remain open.
-
-## A rival at the mature cap
-
-[Rootmolt Striders]({{ "/world/rootmolt-striders/" | relative_url }}) can compete for mature caps in eligible Overworld cave gardens. A successful meal resets the plant to a bud without producing player materials, then the creature defends that patch. Watch its physical warning and keep the snail's visitor route accessible. Nursery shelter does not guarantee that a particular opening excludes this wider creature.
+- Keep a covered garden with low walls so visiting snails stay near your caps.
+- Each harvest needs a fresh prepared bud and a rested snail.
+- Next, try [Mara's Drainhouses]({{ '/world/belowkeeper-drainhouses/' | relative_url }}).

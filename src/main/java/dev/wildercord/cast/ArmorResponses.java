@@ -54,10 +54,15 @@ public final class ArmorResponses {
 	}
 	public static boolean mirrorReady(Player p) { return !reflecting && p.getAttachedOrElse(STATE,State.EMPTY).mirrorWindow>0 && ElementalArmor.count(p,ElementalArmor.Kind.MIRROR_THREAD)>0; }
 	public static void fragment(net.minecraft.server.level.ServerLevel level,Player p,DamageSource source,float damage) {
+		if (source instanceof RelayDamageSource relay && !relay.admits(p)) return;
 		var s=p.getAttachedOrElse(STATE,State.EMPTY);p.setAttached(STATE,new State(s.rimeWindow,0,s.rimeCooldown,s.mirrorCooldown,s.sneaking));
 		if(!(source.getEntity() instanceof LivingEntity attacker)||attacker.level()!=level||attacker.distanceTo(p)>24||!Targets.canHarm(p,attacker))return;
+		Cast scoped = source instanceof RelayDamageSource relay ? RelayCircles.reflected(relay.cast(), p, attacker, p.getEyePosition()) : null;
+		if (scoped != null && (!scoped.admits(attacker) || scoped.takeEntities(1) < 1)) return;
 		reflecting=true;
-		try { SpellDefence.hurt(level,attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F));
+		try {
+			if (scoped == null) SpellDefence.hurt(level,attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F));
+			else SpellDefence.hurt(level,attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F),scoped);
 			Light.ray(level,p.getEyePosition(),attacker.getEyePosition(),0xEED5FF,.045F,8);
 		} finally { reflecting=false; }
 	}

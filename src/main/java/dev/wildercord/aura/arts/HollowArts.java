@@ -183,7 +183,8 @@ public final class HollowArts {
 	// ------------------------------------------------------------------ II. Collapse
 
 	static boolean collapse(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
+		ServerLevel level = released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -198,7 +199,7 @@ public final class HollowArts {
 		// A seal of darkness spinning fast on the ground round the well, a violet ring round it turning the other way.
 		world.bare().ground(well, SigilOption.BAND, ABYSS, ArtRules.COLLAPSE_PULL * 0.75, ArtRules.COLLAPSE_TICKS + 8, 0.25);
 		world.ground(well, SigilOption.BAND, color, ArtRules.COLLAPSE_PULL, ArtRules.COLLAPSE_TICKS + 8, -0.18);
-		ArtFields.open(player, WELL, ArtFields.disc(() -> well, ArtRules.COLLAPSE_PULL, 2.5), ArtRules.COLLAPSE_TICKS, 1, (field, owner, age) -> {
+		ArtFields.openReleased(player, released, WELL, ArtFields.disc(() -> well, ArtRules.COLLAPSE_PULL, 2.5), ArtRules.COLLAPSE_TICKS, 1, (field, owner, age) -> {
 			ServerLevel lv = field.level();
 			ArtLight w = ArtLight.world(owner);
 			int c = ArtKit.color(owner);
@@ -233,6 +234,7 @@ public final class HollowArts {
 				for (LivingEntity foe : ArtKit.around(owner, well, ArtRules.COLLAPSE_RADIUS, 1.5, 3.0, ArtRules.COLLAPSE_TARGETS)) {
 					double d = foe.position().subtract(well).horizontalDistance();
 					hits.strike(foe, ArtRules.falloff(ArtRules.COLLAPSE_CENTRE, ArtRules.COLLAPSE_EDGE, d, ArtRules.COLLAPSE_RADIUS), AuraFxRules.Weight.HEAVY);
+					if (!field.active()) break;
 					if (foe.isAlive()) {
 						shadow(owner, foe, 0.6);
 						// The collapse leaves them where it gathered them, for the next cut.
@@ -247,10 +249,12 @@ public final class HollowArts {
 	// ------------------------------------------------------------------ III. Null Parry
 
 	static boolean nullParry(ServerPlayer player, AuraApi.StringContext context) {
+		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
+		if (counter == null || !counter.art().equals(NULL_PARRY) || !counter.valid()) return false;
 		ServerLevel level = player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
-		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
+		LivingEntity foe = counter.target();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SWEEP, false, 1.3F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_null_parry", 1.0F, 1.0F);
@@ -273,18 +277,24 @@ public final class HollowArts {
 		world.bare().groundRing(feet, ABYSS, 0.4, ArtRules.NULL_PULSE * 1.2, 0.2, 8);
 		world.groundRing(feet, color, 0.3, ArtRules.NULL_PULSE, 0.06, 8);
 		for (LivingEntity other : ArtKit.around(player, feet, ArtRules.NULL_PULSE, 1.0, 2.5, 6)) {
-			if (other != foe) {
+			if (other != foe && counter.permits(other)) {
 				hits.strike(other, ArtRules.NULL_PULSE_FACTOR, AuraFxRules.Weight.LIGHT);
+				if (!counter.afterDamage(other)) {
+					if (!counter.valid()) return true;
+					continue;
+				}
 				ArtKit.knock(other, feet, ArtRules.NULL_SHOVE, 0.15);
 			}
 		}
-		if (foe != null) {
+		if (foe != null && counter.primaryValid()) {
 			hits.strike(foe, ArtRules.NULL_FACTOR);
-			if (foe.isAlive()) {
+			if (foe.isAlive() && counter.afterDamage(foe)) {
 				shadow(player, foe, 0.9);
+				if (!counter.afterDamage(foe)) return true;
 				ArtKit.hold(player, foe, ArtRules.NULL_HOLD);
-				int silenced = ArtWards.silence(foe, ArtRules.NULL_SILENCE);
-				silencedLook(player, foe, Math.max(10, silenced));
+				if (!counter.afterDamage(foe)) return true;
+				int silenced = ArtWards.silence(foe, ArtRules.NULL_SILENCE, () -> counter.afterDamage(foe));
+				if (counter.afterDamage(foe)) silencedLook(player, foe, Math.max(10, silenced));
 			}
 		}
 		return true;

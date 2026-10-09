@@ -171,7 +171,8 @@ public final class CrimsonArts {
 	// ------------------------------------------------------------------ II. Red Rain
 
 	static boolean redRain(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
+		ServerLevel level = released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -190,8 +191,12 @@ public final class CrimsonArts {
 		world.ground(centre, SigilOption.CRACKED, DEEP, ArtRules.RAIN_RADIUS * 0.8, ArtRules.RAIN_TICKS + 10, 0);
 		splash(player, centre.add(0, 0.5, 0), 1.3);
 		ScreenFx.shake(level, centre, 0.12F, 8);
-		for (LivingEntity foe : ArtKit.around(player, centre, ArtRules.RAIN_RADIUS, 1.5, 3.0, ArtRules.RAIN_TARGETS)) {
+		for (LivingEntity foe : ArtKit.aroundVisible(player, centre, ArtRules.RAIN_RADIUS, 1.5, 3.0, ArtRules.RAIN_TARGETS)) {
+			// Only this immediate burst gains owner LOS counterplay; delayed rain keeps its existing cover behavior.
+			if (!released.valid()) break;
+			if (!player.hasLineOfSight(foe)) continue;
 			float took = hits.strike(foe, ArtRules.RAIN_FACTOR);
+			if (!released.valid()) break;
 			drink.from(foe, took);
 			if (foe.isAlive()) {
 				// Held where the rain falls (the strike's knock would carry it out from under it).
@@ -199,10 +204,11 @@ public final class CrimsonArts {
 				gash(player, foe, foe.getId() % 2 == 0);
 			}
 		}
+		if (!released.valid()) return true;
 		// The rain: a red mist overhead, drops falling, a heartbeat over the ground; every foe under it bleeds, and you drink.
 		Vec3 sky = centre.add(0, 3.2, 0);
 		Motes.clouds(level, sky, 7, ArtRules.RAIN_RADIUS * 0.6, 0x7A1424, 1.0, ArtRules.RAIN_TICKS + 8, Vec3.ZERO, 0.01, 0.5);
-		ArtFields.open(player, RAIN, ArtFields.disc(() -> centre, ArtRules.RAIN_RADIUS, 2.5), ArtRules.RAIN_TICKS, 2, (field, owner, age) -> {
+		ArtFields.openReleased(player, released, RAIN, ArtFields.disc(() -> centre, ArtRules.RAIN_RADIUS, 2.5), ArtRules.RAIN_TICKS, 2, (field, owner, age) -> {
 			ServerLevel lv = field.level();
 			RandomSource r = lv.getRandom();
 			ArtLight rain = ArtLight.world(owner);
@@ -225,6 +231,7 @@ public final class CrimsonArts {
 				AuraPhysicalFx.pulse(lv, centre.add(0, 0.1, 0), ArtKit.UP, ArtRules.RAIN_RADIUS * 0.9);
 				for (LivingEntity foe : field.foes(owner)) {
 					float took = hits.strike(foe, ArtRules.RAIN_BLEED, null);
+					if (!field.active()) break;
 					dev.wildercord.cast.Reactions.mark(foe, dev.wildercord.cast.Reactions.Mark.BLEEDING, 30);
 					drip(foe);
 					drink.from(foe, took);
@@ -335,7 +342,8 @@ public final class CrimsonArts {
 	// ------------------------------------------------------------------ V. Crimson Moon
 
 	static boolean crimsonMoon(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
+		ServerLevel level = released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -367,6 +375,7 @@ public final class CrimsonArts {
 			double d = 1.2 + k * 1.2;
 			int delay = k;
 			Scheduler.later(1 + delay, () -> {
+				if (!released.valid()) return;
 				Vec3 c = feet.add(0, 0.35, 0);
 				world.slash(c, ArtKit.UP, look, color, d, span, 0.42, 1, 12);
 				world.bare().slash(c.add(0, 0.02, 0), ArtKit.UP, look, PALE, d * 0.97, span * 0.94, 0.1, 1, 10);
@@ -379,15 +388,17 @@ public final class CrimsonArts {
 		for (LivingEntity foe : ArtKit.arc(player, context.struck(), ArtRules.MOON_RADIUS, ArtRules.MOON_DEGREES, ArtRules.MOON_TARGETS)) {
 			int index = n++;
 			Scheduler.later(1 + Math.min(4, (int) (foe.distanceTo(player) / 1.2)), () -> {
-				if (!foe.isAlive() || !player.isAlive()) {
+				if (!released.valid() || !foe.isAlive() || foe.isRemoved() || foe.level() != level) {
 					return;
 				}
 				float took = hits.strike(foe, ArtRules.MOON_FACTOR, AuraFxRules.Weight.GRAND);
+				// The common hit may finish after an event retires its owner; Moon-specific work must not resume.
+				if (!released.valid() || foe.isRemoved() || foe.level() != level) return;
 				drink.from(foe, took);
 				if (foe.isAlive()) {
 					gash(player, foe, index % 2 == 0);
 					splash(player, foe.getBoundingBox().getCenter(), 1.2);
-					ArtKit.wound(hits, foe, ArtRules.MOON_BLEED, ArtRules.MOON_BLEEDS, drink, CrimsonArts::drip);
+					ArtKit.wound(hits, foe, ArtRules.MOON_BLEED, ArtRules.MOON_BLEEDS, drink, CrimsonArts::drip, released);
 				}
 			});
 		}

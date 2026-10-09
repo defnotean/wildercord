@@ -11,7 +11,7 @@ nav_order: 4
 
 Air and motion. Wind throws, lifts, dashes, turns arrows aside and carries you through the sky.
 
-16 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
+48 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/cushion.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cushion
 {: #cushion}
@@ -24,7 +24,20 @@ For 30 seconds falls can't hurt you, and a hard landing throws out a gust that k
 
 <img src="{{ '/assets/recipes/rune_cushion.png' | relative_url }}" alt="Crafting Cushion: a Blank Rune and any wool and Feather" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/snuff_out.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Douse
+{: #snuff_out}
+
+*Tier I · Wind · Works on the world · 1 mana · needs any Cord*
+
+Puts out the candles and campfires within 6 blocks.
+
+**How to get it:** Craft: a Blank Rune, Candle and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_snuff_out.png' | relative_url }}" alt="Crafting Douse: a Blank Rune and Candle and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/feather_fall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Feather Fall
 {: #feather_fall}
@@ -37,7 +50,137 @@ Slow falling and no fall damage for 12 seconds, and you drift the way you look w
 
 <img src="{{ '/assets/recipes/rune_feather_fall.png' | relative_url }}" alt="Crafting Feather Fall: a Blank Rune and 2x Feather" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/fieldstride.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fieldstride
+{: #fieldstride}
+
+*Tier I · Wind · Moves you · 4 mana · needs any Cord*
+
+A farmhand's long stride: Speed I and Jump Boost I for 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, Leather Boots, Wheat Crops and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fieldstride.png' | relative_url }}" alt="Crafting Fieldstride: a Blank Rune and Leather Boots, Wheat Crops and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/fleece.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fleece
+{: #fleece}
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+Shears every woolly sheep within 5 blocks, as shears would, and the wool falls at their feet.
+
+**How to get it:** Craft: a Blank Rune, Shears, White Wool and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fleece.png' | relative_url }}" alt="Crafting Fleece: a Blank Rune and Shears, White Wool and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/folk_call.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Folk Call
+{: #folk_call}
+
+*Tier I · Wind · Works on the world · 2 mana · needs any Cord*
+
+Villagers within 16 blocks walk over to the point.
+
+**How to get it:** Craft: a Blank Rune, Emerald and Note Block. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_folk_call.png' | relative_url }}" alt="Crafting Folk Call: a Blank Rune and Emerald and Note Block" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/gentlehand.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gentle Hand
+{: #gentlehand}
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+Farm animals within 5 blocks stop panicking and stand calm for 8 seconds, easy to lead or pen.
+
+**How to get it:** Craft: a Blank Rune, Apple, Wheat Crops and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_gentlehand.png' | relative_url }}" alt="Crafting Gentle Hand: a Blank Rune and Apple, Wheat Crops and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/hayloft.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hayloft
+{: #hayloft}
+
+*Tier I · Wind · Moves you · 5 mana · needs any Cord*
+
+Tosses you up as if from a haystack, about 4 blocks, and you float down for 3 seconds without a fall.
+
+**How to get it:** Craft: a Blank Rune, Hay Bale, Slimeball and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_hayloft.png' | relative_url }}" alt="Crafting Hayloft: a Blank Rune and Hay Bale, Slimeball and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/herdcall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Herdcall
+{: #herdcall}
+
+*Tier I · Wind · Works on the world · 4 mana · needs any Cord*
+
+Farm animals within 8 blocks walk to the spot it lands (to you, cast on yourself). Up to 12 come at once.
+
+**How to get it:** Craft: a Blank Rune, Lead, Wheat Crops and Stick. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_herdcall.png' | relative_url }}" alt="Crafting Herdcall: a Blank Rune and Lead, Wheat Crops and Stick" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/hollowsense.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hollow Sense
+{: #hollowsense}
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+Points you to the nearest open cave within 12 blocks of the point.
+
+**How to get it:** Craft: a Blank Rune, Echo Shard. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_hollowsense.png' | relative_url }}" alt="Crafting Hollow Sense: a Blank Rune and Echo Shard" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/home_bearing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Home Bearing
+{: #home_bearing}
+
+*Tier I · Wind · Works on the world · 2 mana · needs any Cord*
+
+Tells which way your bed or respawn anchor lies and roughly how far, when it is in this world.
+
+**How to get it:** Craft: a Blank Rune, Compass and White Wool. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_home_bearing.png' | relative_url }}" alt="Crafting Home Bearing: a Blank Rune and Compass and White Wool" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/honeydew.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Honeydew
+{: #honeydew}
+
+*Tier I · Wind · Helps you and your allies · 4 mana · needs any Cord*
+
+Sweet as a honey bottle: cures Poison and heals 3 (more with power).
+
+**How to get it:** Craft: a Blank Rune, Honey Bottle, Sugar and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_honeydew.png' | relative_url }}" alt="Crafting Honeydew: a Blank Rune and Honey Bottle, Sugar and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/leaffall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Leaffall
+{: #leaffall}
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+The wild leaves in a 5-by-5-by-5 block around the point drop now, as if they'd decayed, with what decay would drop. Leaves placed by hand stay.
+
+**How to get it:** Craft: a Blank Rune, Oak Leaves, Shears and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_leaffall.png' | relative_url }}" alt="Crafting Leaffall: a Blank Rune and Oak Leaves, Shears and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/leap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Leap
 {: #leap}
@@ -50,7 +193,20 @@ Jump Boost III for 15 seconds.
 
 <img src="{{ '/assets/recipes/rune_leap.png' | relative_url }}" alt="Crafting Leap: a Blank Rune and Slimeball" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/nudge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nudge
+{: #nudge}
+
+*Tier I · Wind · Harms enemies · 3 mana · needs any Cord*
+
+A gentle push 3 blocks away from you. No harm.
+
+**How to get it:** Craft: a Blank Rune, Feather and Slimeball. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_nudge.png' | relative_url }}" alt="Crafting Nudge: a Blank Rune and Feather and Slimeball" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/prune.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prune
 {: #prune}
@@ -63,7 +219,7 @@ A gust clears leaves, grass, flowers, vines and cobwebs within 3 blocks, and the
 
 <img src="{{ '/assets/recipes/rune_prune.png' | relative_url }}" alt="Crafting Prune: a Blank Rune and Shears and any saplings" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/push.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Push
 {: #push}
@@ -76,7 +232,46 @@ Hurls targets away from the spell.
 
 <img src="{{ '/assets/recipes/rune_push.png' | relative_url }}" alt="Crafting Push: a Blank Rune and Piston" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/shrug_off.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shrug Off
+{: #shrug_off}
+
+*Tier I · Wind · Helps you and your allies · 4 mana · needs any Cord*
+
+Lifts the harmful effect with the most time left.
+
+**How to get it:** Craft: a Blank Rune, Milk Bucket and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_shrug_off.png' | relative_url }}" alt="Crafting Shrug Off: a Blank Rune and Milk Bucket and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/softsole.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Softsole
+{: #softsole}
+
+*Tier I · Wind · Helps you and your allies · 3 mana · needs any Cord*
+
+You don't trample farmland when you jump or step down onto it, for 10 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Feather and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_softsole.png' | relative_url }}" alt="Crafting Softsole: a Blank Rune and Feather and Wheat Seeds" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/spawn_bearing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spawn Bearing
+{: #spawn_bearing}
+
+*Tier I · Wind · Works on the world · 1 mana · needs any Cord*
+
+Tells which way the world spawn lies and roughly how far.
+
+**How to get it:** Craft: a Blank Rune, Compass and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_spawn_bearing.png' | relative_url }}" alt="Crafting Spawn Bearing: a Blank Rune and Compass and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/swift.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Swift
 {: #swift}
@@ -89,7 +284,20 @@ Speed III for 10 seconds, and it shakes off Slowness and frozen skin.
 
 <img src="{{ '/assets/recipes/rune_swift.png' | relative_url }}" alt="Crafting Swift: a Blank Rune and 2x Sugar" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/whistle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Whistle
+{: #whistle}
+
+*Tier I · Wind · Works on the world · 3 mana · needs any Cord*
+
+Your pets within 48 blocks that aren't sitting or leashed come to your side.
+
+**How to get it:** Craft: a Blank Rune, Goat Horn. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_whistle.png' | relative_url }}" alt="Crafting Whistle: a Blank Rune and Goat Horn" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/windcut.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Windcut
 {: #windcut}
@@ -102,7 +310,33 @@ A cutting wind: 4 damage and a light shove, and it breaks what the target is win
 
 <img src="{{ '/assets/recipes/rune_windcut.png' | relative_url }}" alt="Crafting Windcut: a Blank Rune and Feather and Flint" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/arrowveil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Arrowveil
+{: #arrowveil}
+
+*Tier II · Wind · Works on the world · 12 mana · needs a Copper Cord or better*
+
+A 4-block dome for 10 seconds: enemy missiles inside drop out of the air.
+
+**How to get it:** Craft: a Blank Rune, Arrow and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_arrowveil.png' | relative_url }}" alt="Crafting Arrowveil: a Blank Rune and Arrow and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/beeline.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Beeline
+{: #beeline}
+
+*Tier II · Wind · Moves you · 6 mana · needs a Copper Cord or better*
+
+You zip straight ahead like a bee to a flower, about 6 blocks, and land without a fall.
+
+**How to get it:** Craft: a Blank Rune, Honeycomb, Feather and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_beeline.png' | relative_url }}" alt="Crafting Beeline: a Blank Rune and Honeycomb, Feather and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/cyclone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cyclone
 {: #cyclone}
@@ -115,7 +349,7 @@ A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, th
 
 <img src="{{ '/assets/recipes/rune_cyclone.png' | relative_url }}" alt="Crafting Cyclone: a Blank Rune and Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/dash.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dash
 {: #dash}
@@ -128,7 +362,7 @@ Shoves targets the way you're facing. On Self it's a precise dash of about ten b
 
 <img src="{{ '/assets/recipes/rune_dash.png' | relative_url }}" alt="Crafting Dash: a Blank Rune and Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/deflect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Deflect
 {: #deflect}
@@ -141,7 +375,7 @@ For 8 seconds a whirl of wind sends arrows and other projectiles coming at the t
 
 <img src="{{ '/assets/recipes/rune_deflect.png' | relative_url }}" alt="Crafting Deflect: a Blank Rune and Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/disarm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Disarm
 {: #disarm}
@@ -154,7 +388,46 @@ A snatching gust tears the weapon from each creature's hand for 5 seconds, then 
 
 <img src="{{ '/assets/recipes/rune_disarm.png' | relative_url }}" alt="Crafting Disarm: a Blank Rune and Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/evade.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Evade
+{: #evade}
+
+*Tier II · Wind · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+For 10 seconds the next melee blow misses and the target slips aside.
+
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_evade.png' | relative_url }}" alt="Crafting Evade: a Blank Rune and Rabbit's Foot and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/fair_wind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fair Wind
+{: #fair_wind}
+
+*Tier II · Wind · Moves you · 6 mana · needs a Copper Cord or better*
+
+In a boat: sail the way you look for 10 seconds.
+
+**How to get it:** Craft: a Blank Rune, White Wool and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_fair_wind.png' | relative_url }}" alt="Crafting Fair Wind: a Blank Rune and White Wool and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/heel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Heel
+{: #heel}
+
+*Tier II · Wind · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Your pets within 32 blocks that are not sitting come to your side.
+
+**How to get it:** Craft: a Blank Rune, Goat Horn and Bone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_heel.png' | relative_url }}" alt="Crafting Heel: a Blank Rune and Goat Horn and Bone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/launch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Launch
 {: #launch}
@@ -167,7 +440,7 @@ Flings targets high into the air, where every spell hits them harder. On Self it
 
 <img src="{{ '/assets/recipes/rune_launch.png' | relative_url }}" alt="Crafting Launch: a Blank Rune and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/levitate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Levitate
 {: #levitate}
@@ -180,7 +453,33 @@ Targets hang in the air for 3 seconds, their drift stopped, and every spell hits
 
 <img src="{{ '/assets/recipes/rune_levitate.png' | relative_url }}" alt="Crafting Levitate: a Blank Rune and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/pollinate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pollinate
+{: #pollinate}
+
+*Tier II · Wind · Works on the world · 8 mana · needs a Copper Cord or better*
+
+The bees within 8 blocks dust the crops around the point: one crop in a 5-by-5 patch grows a stage for each bee, 2 per bee at double power. No bees, no help.
+
+**How to get it:** Craft: a Blank Rune, Honeycomb, Dandelion and Poppy, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_pollinate.png' | relative_url }}" alt="Crafting Pollinate: a Blank Rune and Honeycomb, Dandelion and Poppy, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/rally.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rally
+{: #rally}
+
+*Tier II · Wind · Helps you and your allies · 10 mana · needs a Copper Cord or better*
+
+Allies within 8 blocks get Speed I and Jump Boost I for 12 seconds.
+
+**How to get it:** Craft: a Blank Rune, White Banner and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_rally.png' | relative_url }}" alt="Crafting Rally: a Blank Rune and White Banner and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/repel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Repel
 {: #repel}
@@ -193,7 +492,59 @@ A violent outward blast: 4 damage and hurls everything within 3 blocks away (lig
 
 <img src="{{ '/assets/recipes/rune_repel.png' | relative_url }}" alt="Crafting Repel: a Blank Rune and 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/sea_breeze.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sea Breeze
+{: #sea_breeze}
+
+*Tier II · Wind · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Clears Mining Fatigue, Nausea and Hunger.
+
+**How to get it:** Craft: a Blank Rune, Feather and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_sea_breeze.png' | relative_url }}" alt="Crafting Sea Breeze: a Blank Rune and Feather and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/steedsong.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Steedsong
+{: #steedsong}
+
+*Tier II · Wind · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+Your mount, or the animal it touches, gets Speed II and Jump Boost II for 3 minutes.
+
+**How to get it:** Craft: a Blank Rune, Saddle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_steedsong.png' | relative_url }}" alt="Crafting Steedsong: a Blank Rune and Saddle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/trot.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Trot
+{: #trot}
+
+*Tier II · Wind · Moves you · 6 mana · needs a Copper Cord or better*
+
+Your mount (or the horse you strike) gets Speed II and Jump Boost I for 20 seconds. Cast on yourself while riding.
+
+**How to get it:** Craft: a Blank Rune, Saddle, Carrot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_trot.png' | relative_url }}" alt="Crafting Trot: a Blank Rune and Saddle, Carrot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/village_sense.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Village Sense
+{: #village_sense}
+
+*Tier II · Wind · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Senses the nearest village and tells which way and roughly how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Empty Map and Emerald, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_village_sense.png' | relative_url }}" alt="Crafting Village Sense: a Blank Rune and Empty Map and Emerald, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/wind_steps.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wind Steps
 {: #wind_steps}
@@ -206,7 +557,46 @@ Forms five real wind platforms ahead, ascending one block every two steps. Lasts
 
 <img src="{{ '/assets/recipes/rune_wind_steps.png' | relative_url }}" alt="Crafting Wind Steps: a Blank Rune and Feather, Breeze Rod and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/corral.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Corral
+{: #corral}
+
+*Tier III · Wind · Harms enemies · 14 mana · needs an Amethyst Cord or better*
+
+Enemies within 5 blocks are kept inside the ring for 6 seconds.
+
+**How to get it:** Craft: a Blank Rune, Oak Fence and Lead, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_corral.png' | relative_url }}" alt="Crafting Corral: a Blank Rune and Oak Fence and Lead, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/glidewind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glidewind
+{: #glidewind}
+
+*Tier III · Wind · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+For 2 minutes, a tailwind keeps your elytra glide from slowing down, up to a steady cruise.
+
+**How to get it:** Craft: a Blank Rune, Phantom Membrane and Wind Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_glidewind.png' | relative_url }}" alt="Crafting Glidewind: a Blank Rune and Phantom Membrane and Wind Charge, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/scarecrow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Scarecrow
+{: #scarecrow}
+
+*Tier III · Wind · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Stands a ward of rustling wind on the spot for 20 seconds: rabbits, foxes and monsters within 5 blocks are shooed out of it once a second. Pets and farm animals stay put.
+
+**How to get it:** Craft: a Blank Rune, Carved Pumpkin, Hay Bale and Stick, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_scarecrow.png' | relative_url }}" alt="Crafting Scarecrow: a Blank Rune and Carved Pumpkin, Hay Bale and Stick, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/soar.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Soar
 {: #soar}
@@ -219,5 +609,31 @@ Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump
 
 <img src="{{ '/assets/recipes/rune_soar.png' | relative_url }}" alt="Crafting Soar: a Blank Rune and Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/wayfarer_hymn.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wayfarer's Hymn
+{: #wayfarer_hymn}
+
+*Tier III · Wind · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+You and allies within 10 blocks get Speed I and Jump Boost I for 3 minutes. It ends for anyone who strikes.
+
+**How to get it:** Craft: a Blank Rune, Note Block, Sugar and Rabbit Hide, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_wayfarer_hymn.png' | relative_url }}" alt="Crafting Wayfarer's Hymn: a Blank Rune and Note Block, Sugar and Rabbit Hide, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/withdraw.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Withdraw
+{: #withdraw}
+
+*Tier III · Wind · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
+
+An ally below half health turns invisible with Speed II for 4 seconds, and its hunters lose track of it.
+
+**How to get it:** Craft: a Blank Rune, Fermented Spider Eye and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_withdraw.png' | relative_url }}" alt="Crafting Withdraw: a Blank Rune and Fermented Spider Eye and Sugar, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

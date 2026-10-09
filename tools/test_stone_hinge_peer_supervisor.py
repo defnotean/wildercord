@@ -1,0 +1,1415 @@
+"""Synthetic/fake-process Stone Hinge supervisor tests. Never open sockets or run Java."""
+import copy
+from contextlib import contextmanager
+from dataclasses import asdict
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import tempfile
+import types
+import unittest
+from unittest.mock import patch
+
+from native import run_stone_hinge_peer as gate
+from test_two_client_supervisor import Fixture as LaunchFixture
+
+
+def vec(x=0, y=1, z=0):
+    return {"x": x, "y": y, "z": z}
+
+
+def pose():
+    return dict(yaw=0.0, pitch=0.0, headYaw=0.0, bodyYaw=0.0, stance="STANDING")
+
+
+def body(position=None, motion=None, tick=10):
+    return {"position": position or vec(), "motion": motion or vec(0, .4, .2), "tick": tick,
+            "entity": 10, "fall": 0, "grounded": False, "neutral": True, "health": 192, "horizontalCollision": False, "pose": pose()}
+
+
+def case_identity(identity, name):
+    return {"nonce": identity["nonce"], "profile": identity["profile"], "name": name,
+            "ownerUuid": identity["hostUuid"], "ownerEntity": 10, "ownerGeneration": 1,
+            "peerUuid": identity["peerUuid"], "peerEntity": 20, "peerGeneration": 1}
+
+
+def natural_dispatch_chain(chain, identity):
+    """Synthetic serialized observer evidence, deliberately not a native gameplay run."""
+    release_body = {"position": vec(0, 2, 3), "motion": vec(0, .5, .3), "fall": 0,
+                    "grounded": False, "neutral": True, "health": 192, "absorption": 0,
+                    "needsSync": True, "syncVelocity": True, "collision": False}
+    after_body = release_body | {"position": vec(0, 2.5, 3.3), "motion": copy.deepcopy(chain["motion"]["raw"])}
+    listener_body = after_body | {"position": copy.deepcopy(release_body["position"])}
+    send_body = listener_body | {"needsSync": False, "syncVelocity": False}
+
+    def snapshot(value, index, next_tick=False):
+        return {"body": copy.deepcopy(value), "gameTick": 9 + next_tick, "serverTick": 19 + next_tick,
+                "ownerEntity": identity["ownerEntity"], "ownerUuid": identity["ownerUuid"],
+                "sourceEntity": 30, "sourceUuid": "00000000-0000-0000-0000-000000000093",
+                "valid": True, "awaitingTeleport": False, "eventIndex": index + 1, "pose": pose()}
+
+    def event(frame, kind):
+        value = frame["body"]
+        observed = {key: copy.deepcopy(value[key]) for key in
+                    ("position", "motion", "fall", "grounded", "neutral", "health")}
+        observed.update(entity=frame["ownerEntity"], tick=frame["gameTick"], horizontalCollision=value["collision"], pose=copy.deepcopy(frame["pose"]))
+        return {"index": frame["eventIndex"], "kind": kind,
+                "data": f"source={frame['sourceUuid']} serverTick={frame['serverTick']}", "after": observed}
+
+    proof = {"release": snapshot(release_body, 0), "beforeStep": snapshot(release_body, 2),
+             "afterStep": snapshot(after_body, 3), "listenerExit": snapshot(listener_body, 4),
+             "trackerEntry": snapshot(listener_body, 5, True), "send": snapshot(send_body, 6, True),
+             "sendExit": snapshot(send_body, 8, True), "trackerExit": snapshot(send_body, 10, True),
+             "motionOrdinal": 1, "stepCount": 1, "trackerCount": 1, "completed": True,
+             "trackerWitnessIndex": 0, "trackerIdentity": "12345"}
+    tracker_witness = event(snapshot(release_body, -1), "natural-tracker-identity")
+    tracker_witness["data"] = "tracker=12345 owner=" + identity["ownerUuid"]
+    prefix = [tracker_witness, event(proof["release"], "natural-release"),
+              event(snapshot(release_body, 1), "natural-listener-start"),
+              event(proof["beforeStep"], "natural-step-start"),
+              event(proof["afterStep"], "natural-step-end"),
+              event(proof["listenerExit"], "natural-listener-end"),
+              event(proof["trackerEntry"], "natural-tracker-start"),
+              event(proof["send"], "natural-motion-start")]
+    events = chain["events"]
+    for observed in events:
+        observed["index"] += 8 if observed["index"] == 0 else 9 if observed["index"] == 1 else 10
+    for observed in events[:2]:
+        observed["after"] = copy.deepcopy(prefix[-1]["after"])
+    send_end = event(proof["sendExit"], "natural-motion-end")
+    tracker_end = event(proof["trackerExit"], "natural-tracker-end")
+    chain["events"] = prefix + [events[0], send_end, events[1], tracker_end] + events[2:]
+    chain["motion"]["sendStartIndex"] = 8
+    chain["motion"]["appliedIndex"] = 12
+    chain["positions"][0].update(sentIndex=13, acceptanceIndex=14)
+    chain["naturalDispatch"] = proof
+
+
+def native_reports(identity, moved=True):
+    position, motion = vec(1, 2, 3), vec(0, .4, .2)
+    events = [
+        {"index": 0, "kind": "server-motion-start", "data": "ordinal=1 manual=false raw=example wire=example", "after": body()},
+        {"index": 1, "kind": "server-motion-sent", "data": "ordinal=1 manual=false raw=example wire=example", "after": body()},
+        {"index": 2, "kind": "client-motion-processed", "data": "sendOrdinal=1 payload=example", "after": body(motion=motion)},
+        {"index": 3, "kind": "client-owner-position-sent", "data": "ordinal=1 example", "after": body(position)},
+        {"index": 4, "kind": "server-owner-position-processed", "data": "sendOrdinal=1 requested=example", "after": body(position)},
+        {"index": 5, "kind": "client-tick", "data": "", "after": body(position)},
+    ]
+    chain = {"motion": {"sendOrdinal": 1, "raw": motion, "wire": motion, "applied": motion, "sendStartIndex": 0, "appliedIndex": 2,
+                        "manual": False, "originalTracker": True, "completed": True},
+             "positions": [{"sendOrdinal": 1, "sentIndex": 3, "acceptanceIndex": 4, "motionOrdinal": 1,
+                            "requested": position, "sentPosition": position, "acceptedPosition": position,
+                            "ownerTick": 10, "serverTick": 10, "completed": True}], "events": events}
+    packet = {"ordinal": 1, "kind": "Pos", "sha256": "a" * 64, "target": position, "body": position,
+              "tick": 10, "ownerAcceptanceIndex": 4, "ownerSendOrdinal": 1, "originalTracker": True, "interpolating": False}
+    if identity["name"] == "NATURAL_MASTER":
+        natural_dispatch_chain(chain, identity)
+        packet["ownerAcceptanceIndex"] = 14
+    clock = {"observations": 20, "firstTick": 10, "lastTick": 29, "tickTransitions": 19,
+             "nativeTimeResyncs": 0, "maximumGapNanos": 50_000_000}
+    host = {"identity": identity, "packets": [packet], "clock": clock, "finalPosition": position,
+            "correction": False, "ownerChain": chain}
+    peer = {"identity": copy.deepcopy(identity), "packets": [{**packet, "ownerAcceptanceIndex": -1,
+            "ownerSendOrdinal": -1, "originalTracker": False, "interpolating": True}],
+            "clock": copy.deepcopy(clock), "finalPosition": position, "correction": False,
+            "interpolation": [{"packetOrdinal": 1, "tick": 11, "before": vec(0, 2, 3), "after": vec(.5, 2, 3), "target": position}]}
+    if not moved:
+        host["packets"] = []; host["ownerChain"] = {"events": [events[5] | {"index": 0}], "positions": []}
+        peer["packets"] = []; peer["interpolation"] = []
+    return copy.deepcopy(host), copy.deepcopy(peer)
+
+
+def relay_report(identity, pids):
+    streams = {}
+    for name, delay in zip(gate.relay.DIRECTION_NAMES, gate.relay.PROFILES[identity["profile"]]):
+        streams[name] = {"connected": True, "delayMs": delay, "readBytes": 10, "writtenBytes": 10,
+                         "readOffsetRange": [0, 10], "writeOffsetRange": [0, 10], "offsetsContiguous": True,
+                         "readSha256": "b" * 64, "writeSha256": "b" * 64, "eventsSha256": "c" * 64,
+                         "readChunks": 1, "writeCalls": 1, "queuedBytes": 0, "bufferedBytes": 0,
+                         "queueHighBytes": 10, "queueHighChunks": 1, "eof": True, "writeHalfClosed": True,
+                         "backpressureEvents": 0, "backpressureMaxSeconds": 0,
+                         "residenceMinSeconds": delay / 1000, "residenceMaxSeconds": delay / 1000,
+                         "residenceByteMeanSeconds": delay / 1000, "releaseLatenessMaxSeconds": 0}
+    return {"schemaVersion": 1, "status": "passed", "identity": {"nonce": identity["nonce"], "host_pid": pids["host"], "backend_port": 33003},
+            "profile": identity["profile"], "delaysMs": dict(zip(gate.relay.DIRECTION_NAMES, gate.relay.PROFILES[identity["profile"]])),
+            "ownerPort": 33001, "observerPort": 33002, "backendAddress": "127.0.0.1", "limits": asdict(gate.relay.Limits()),
+            "totalReadBytes": 40, "totalQueuedBytes": 0, "totalBufferedBytes": 0, "queueHighBytes": 40,
+            "ownedSocketsHigh": 6, "closed": True, "failure": None, "cleanupErrors": [], "directions": streams,
+            "connections": {role: {"connected": True, "clientLocal": ["127.0.0.1", listen], "clientRemote": ["127.0.0.1", client],
+                                    "backendLocal": ["127.0.0.1", back], "backendRemote": ["127.0.0.1", 33003]}
+                            for role, listen, client, back in (("owner", 33001, 33004, 33006), ("observer", 33002, 33005, 33007))}}
+
+
+class EvidenceFixture(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory(); self.addCleanup(temp.cleanup)
+        self.base = Path(temp.name); self.ipc = self.base / "ipc"; self.ipc.mkdir()
+        self.identity = {"nonce": "ed43d7c7-f1a4-4ac1-a48e-7e9853d78141", "suite": gate.SUITE, "sourceHead": "1" * 40,
+                         "checkoutSha": "1" * 40, "prHeadSha": "", "descriptorSha256": "2" * 64,
+                         "hostUuid": gate.s.PROFILES["host"][1], "peerUuid": gate.s.PROFILES["peer"][1],
+                         "runIdentity": "local-0-ed43d7c7-f1a4-4ac1-a48e-7e9853d78141", "profile": "transparent"}
+        self.pids = {"host": 100, "peer": 200, "supervisor": os.getpid()}
+
+    def properties(self, filename, role, fields=None):
+        values = {**self.identity, "role": role, "pid": str(self.pids[role]), **(fields or {})}
+        (self.ipc / filename).write_text("".join(key + "=" + str(value) + "\n" for key, value in values.items()))
+
+    def write_witnesses(self):
+        report = relay_report(self.identity, self.pids)
+        self.properties("server-ready.properties", "host", {"port": "33003"})
+        self.properties("relay-ready.properties", "supervisor", {"ownerPort": "33001", "observerPort": "33002", "hostPid": "100", "peerPid": "200"})
+        for role, port, remote, entity in (("host", "33004", "33001", "10"), ("peer", "33005", "33002", "20")):
+            self.properties(role + "-connected.properties", role, {"clientLocalHost": "127.0.0.1", "clientLocalPort": port,
+                "clientRemoteHost": "127.0.0.1", "clientRemotePort": remote, "entity": entity})
+        self.properties("server-connected.properties", "host", {"ownerBackendRemoteHost": "127.0.0.1", "ownerBackendRemotePort": "33006",
+            "observerBackendRemoteHost": "127.0.0.1", "observerBackendRemotePort": "33007", "ownerEntity": "10", "observerEntity": "20"})
+        for filename, role in gate.TERMINALS.items():
+            self.properties(filename, role, {"cases": ",".join(gate.roster(self.identity["profile"]))})
+        for index, name in enumerate(gate.roster(self.identity["profile"])):
+            stem = f"case-{index:02d}"
+            ident = case_identity(self.identity, name)
+            moved = name not in {"FULL_RESISTANCE", "INVULNERABLE"}
+            host, peer = native_reports(ident, moved)
+            hashes = {}
+            for kind, value in (("identity", ident), ("host", host), ("peer", peer)):
+                path = self.ipc / (stem + "-" + kind + ".json")
+                path.write_text(json.dumps(value)); hashes[kind] = gate.s.digest(path)
+            for phase, role, fields in (
+                    ("arm", "host", {"identitySha256": hashes["identity"]}),
+                    ("armed", "peer", {"identitySha256": hashes["identity"]}),
+                    ("ready", "host", {"reportSha256": hashes["host"], "moved": str(moved).lower()}),
+                    ("seen", "peer", {"reportSha256": hashes["peer"]}),
+                    ("passed", "host", {"hostReportSha256": hashes["host"], "peerReportSha256": hashes["peer"]})):
+                self.properties(stem + "-" + phase + ".properties", role, {"case": name, **fields})
+        return report
+
+
+class NativeChainTests(EvidenceFixture):
+    def test_complete_chain_and_native_interpolation_are_independently_accepted(self):
+        identity = case_identity(self.identity, "RIGHT")
+        gate.validate_reports(identity, *native_reports(identity), True)
+
+    def test_no_motion_invulnerability_control_is_valid(self):
+        identity = case_identity(self.identity, "INVULNERABLE")
+        gate.validate_reports(identity, *native_reports(identity, False), False)
+
+    def test_chain_falsifications_fail_even_with_well_formed_json(self):
+        changes = (
+            ("ownerChain", "motion", "manual", True), ("ownerChain", "motion", "originalTracker", False),
+            ("ownerChain", "motion", "completed", False), ("ownerChain", "motion", "applied", vec(4, 5, 6)),
+            ("ownerChain", "motion", "sendStartIndex", 3), ("ownerChain", "motion", "sendStartIndex", 1),
+            ("ownerChain", "motion", "appliedIndex", 0), ("ownerChain", "positions", 0, "completed", False),
+            ("ownerChain", "positions", 0, "motionOrdinal", 2), ("ownerChain", "positions", 0, "sentIndex", 0),
+            ("ownerChain", "positions", 0, "acceptanceIndex", 2), ("ownerChain", "positions", 0, "acceptedPosition", vec(9, 9, 9)),
+            ("ownerChain", "positions", 0, "ownerTick", 99), ("ownerChain", "events", 3, "kind", "server-correction-sent"),
+            ("ownerChain", "events", 5, "after", "neutral", False), ("ownerChain", "events", 2, "after", "entity", 999),
+            ("ownerChain", "events", 0, "data", "ordinal=2 manual=false forged"),
+            ("ownerChain", "events", 1, "kind", "uncompleted-motion"),
+            ("ownerChain", "events", 2, "data", "ordinal=99 forged"), ("packets", 0, "originalTracker", False),
+            ("packets", 0, "ownerAcceptanceIndex", 2), ("packets", 0, "target", vec(99, 99, 99)),
+            ("packets", 0, "body", vec(99, 99, 99)), ("packets", 0, "sha256", "f" * 64),
+            ("clock", "observations", 3), ("clock", "tickTransitions", 2), ("clock", "maximumGapNanos", 2_000_000_001),
+            ("correction", True), ("error", "passive failure"), ("identity", "ownerGeneration", 2),
+            ("finalPosition", "x", float("nan")), ("packets", 0, "ordinal", True),
+        )
+        identity = case_identity(self.identity, "RIGHT")
+        for change in changes:
+            with self.subTest(change=change):
+                host, peer = native_reports(identity)
+                value = host
+                for key in change[:-2]: value = value[key]
+                value[change[-2]] = change[-1]
+                with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_peer_interpolation_and_encoded_packet_falsifications_fail(self):
+        changes = (("interpolation", []), ("interpolation", 0, "packetOrdinal", 2),
+                   ("interpolation", 0, "target", vec(99, 99, 99)), ("interpolation", 0, "after", vec(-1, 2, 3)),
+                   ("packets", 0, "interpolating", False), ("packets", 0, "sha256", "f" * 64),
+                   ("packets", 0, "target", vec(9, 9, 9)), ("packets", 0, "originalTracker", True),
+                   ("finalPosition", vec(1.003, 2, 3)))
+        identity = case_identity(self.identity, "RIGHT")
+        for change in changes:
+            with self.subTest(change=change):
+                host, peer = native_reports(identity)
+                value = peer
+                for key in change[:-2]: value = value[key]
+                value[change[-2]] = change[-1]
+                with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_peer_quantization_tolerance_is_bounded(self):
+        identity = case_identity(self.identity, "RIGHT")
+        host, peer = native_reports(identity)
+        peer["packets"][0]["target"]["x"] += 1 / 4096
+        peer["interpolation"][0]["target"] = peer["packets"][0]["target"]
+        gate.validate_reports(identity, host, peer, True)
+        peer["packets"][0]["target"]["x"] += .001
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_native_time_resync_does_not_replace_packet_causality(self):
+        identity = case_identity(self.identity, "RIGHT")
+        host, peer = native_reports(identity)
+        peer["clock"].update(lastTick=5, nativeTimeResyncs=1)
+        peer["interpolation"][0]["tick"] = 5
+        gate.validate_reports(identity, host, peer, True)
+
+    def test_transparent_owner_may_apply_before_server_logs_send_completion(self):
+        identity = case_identity(self.identity, "RIGHT")
+        host, peer = native_reports(identity)
+        events = host["ownerChain"]["events"]
+        events[1], events[2] = events[2] | {"index": 1}, events[1] | {"index": 2}
+        host["ownerChain"]["motion"]["appliedIndex"] = 1
+        gate.validate_reports(identity, host, peer, True)
+        self.assertEqual([event["kind"] for event in events[:3]],
+                         ["server-motion-start", "client-motion-processed", "server-motion-sent"])
+
+    def test_same_encoded_packets_in_wrong_order_are_rejected(self):
+        identity = case_identity(self.identity, "RIGHT")
+        host, peer = native_reports(identity)
+        host["packets"].append(host["packets"][0] | {"ordinal": 2, "sha256": "d" * 64})
+        peer["packets"].append(peer["packets"][0] | {"ordinal": 2, "sha256": "d" * 64})
+        gate.validate_reports(identity, host, peer, True)
+        peer["packets"][0]["sha256"], peer["packets"][1]["sha256"] = peer["packets"][1]["sha256"], peer["packets"][0]["sha256"]
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+
+class NaturalDispatchTests(EvidenceFixture):
+    """Hostile serialized proof edits, independent of Java or a Minecraft process."""
+    snapshots = ("release", "beforeStep", "afterStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit")
+
+    def natural(self):
+        identity = case_identity(self.identity, "NATURAL_MASTER")
+        return identity, *native_reports(identity)
+
+    def assert_rejected(self, change):
+        identity, host, peer = self.natural()
+        value = host
+        for key in change[:-2]:
+            value = value[key]
+        value[change[-2]] = change[-1]
+        if (change[:2] == ("ownerChain", "naturalDispatch") and len(change) >= 5
+                and change[2] in self.snapshots and change[3] != "eventIndex"):
+            self.synchronize_snapshot_event(host, change[2])
+        with self.assertRaises(ValueError):
+            gate.validate_reports(identity, host, peer, True)
+
+    def synchronize_snapshot_event(self, host, name):
+        """Keep ledger data consistent to isolate native proof checks from duplicate-field checks."""
+        chain = host["ownerChain"]
+        frame = chain["naturalDispatch"][name]
+        event = chain["events"][frame["eventIndex"]]
+        value = frame["body"]
+        event["after"] = {key: copy.deepcopy(value[key]) for key in
+                          ("position", "motion", "fall", "grounded", "neutral", "health")}
+        event["after"].update(entity=frame["ownerEntity"], tick=frame["gameTick"], horizontalCollision=value["collision"], pose=copy.deepcopy(frame["pose"]))
+        event["data"] = f"source={frame['sourceUuid']} serverTick={frame['serverTick']}"
+
+    def insert_event(self, host, index, event):
+        """Keep every reference coherent so a hostile insertion tests scope, not stale indexes."""
+        chain = host["ownerChain"]
+        chain["events"].insert(index, copy.deepcopy(event))
+        for offset, observed in enumerate(chain["events"]): observed["index"] = offset
+        for frame in (chain["naturalDispatch"][key] for key in self.snapshots):
+            if frame["eventIndex"] >= index: frame["eventIndex"] += 1
+        if chain["naturalDispatch"]["trackerWitnessIndex"] >= index:
+            chain["naturalDispatch"]["trackerWitnessIndex"] += 1
+        for key in ("sendStartIndex", "appliedIndex"):
+            if chain["motion"][key] >= index: chain["motion"][key] += 1
+        for position in chain["positions"]:
+            for key in ("sentIndex", "acceptanceIndex"):
+                if position[key] >= index: position[key] += 1
+        for packet in host["packets"]:
+            if packet["ownerAcceptanceIndex"] >= index: packet["ownerAcceptanceIndex"] += 1
+
+    def test_complete_native_step_tracker_and_packet_proof_is_accepted(self):
+        identity, host, peer = self.natural()
+        gate.validate_reports(identity, host, peer, True)
+        proof = host["ownerChain"]["naturalDispatch"]
+        self.assertNotEqual(proof["release"]["body"]["motion"], proof["afterStep"]["body"]["motion"])
+        self.assertEqual(proof["afterStep"]["body"]["motion"], host["ownerChain"]["motion"]["raw"])
+        self.assertEqual(proof["release"]["body"]["position"], proof["listenerExit"]["body"]["position"])
+        self.assertNotEqual(proof["afterStep"]["body"]["position"], proof["listenerExit"]["body"]["position"])
+        self.assertEqual([event["kind"] for event in host["ownerChain"]["events"][7:12]],
+                         ["natural-motion-start", "server-motion-start", "natural-motion-end",
+                          "server-motion-sent", "natural-tracker-end"])
+
+    def test_natural_proof_is_required_only_for_natural_master(self):
+        identity, host, peer = self.natural()
+        del host["ownerChain"]["naturalDispatch"]
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+        for value in (None, {}, [], "completed"):
+            with self.subTest(value=value): self.assert_rejected(("ownerChain", "naturalDispatch", value))
+        other = case_identity(self.identity, "RIGHT")
+        host, peer = native_reports(other)
+        self.assertNotIn("naturalDispatch", host["ownerChain"])
+        gate.validate_reports(other, host, peer, True)
+        host["ownerChain"]["naturalDispatch"] = self.natural()[1]["ownerChain"]["naturalDispatch"]
+        with self.assertRaises(ValueError): gate.validate_reports(other, host, peer, True)
+
+    def test_completion_counts_and_first_owner_ordinal_cannot_be_forged(self):
+        for field, values in (("completed", (False, 1, None)), ("stepCount", (0, 2, True)),
+                              ("trackerCount", (0, 2, True)), ("motionOrdinal", (0, 2, True))):
+            for value in values:
+                with self.subTest(field=field, value=value):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", field, value))
+
+    def test_snapshot_identity_validity_and_native_clocks_are_bound(self):
+        for snapshot in self.snapshots:
+            for field, value in (("valid", False), ("awaitingTeleport", True), ("ownerEntity", 999),
+                                 ("ownerUuid", self.identity["peerUuid"]), ("sourceEntity", 31),
+                                 ("sourceUuid", "00000000-0000-0000-0000-000000000094")):
+                with self.subTest(snapshot=snapshot, field=field):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, field, value))
+            for field in ("gameTick", "serverTick"):
+                baseline = self.natural()[1]["ownerChain"]["naturalDispatch"][snapshot][field]
+                for offset in (-1, 1, 2):
+                    with self.subTest(snapshot=snapshot, field=field, offset=offset):
+                        self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, field, baseline + offset))
+            for field, value in (("neutral", False), ("position", vec(float("nan"), 0, 0)),
+                                 ("motion", vec(0, float("inf"), 0))):
+                with self.subTest(snapshot=snapshot, field=field):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, "body", field, value))
+            with self.subTest(snapshot=snapshot, missing=True):
+                identity, host, peer = self.natural()
+                del host["ownerChain"]["naturalDispatch"][snapshot]
+                with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_exact_pre_step_restore_tracker_and_send_body_are_bound(self):
+        changes = (("beforeStep", "position", vec(9, 9, 9)), ("beforeStep", "motion", vec(9, 9, 9)),
+                   ("beforeStep", "fall", 99), ("beforeStep", "grounded", True),
+                   ("beforeStep", "health", 191), ("beforeStep", "absorption", 1),
+                   ("beforeStep", "needsSync", False), ("beforeStep", "syncVelocity", False),
+                   ("beforeStep", "collision", True), ("afterStep", "health", 191),
+                   ("afterStep", "absorption", 1), ("listenerExit", "position", vec(0, 2.5, 3.3)),
+                   ("listenerExit", "motion", vec(0, .5, .3)), ("listenerExit", "fall", 99),
+                   ("listenerExit", "health", 191), ("listenerExit", "absorption", 1),
+                   ("listenerExit", "collision", True), ("trackerEntry", "position", vec(9, 9, 9)),
+                   ("trackerEntry", "motion", vec(0, .5, .3)), ("trackerEntry", "health", 191),
+                   ("trackerEntry", "syncVelocity", False), ("send", "position", vec(9, 9, 9)),
+                   ("send", "motion", vec(0, .5, .3)), ("send", "health", 191),
+                   ("send", "absorption", 1), ("send", "needsSync", True), ("send", "syncVelocity", True))
+        for snapshot, field, value in changes:
+            with self.subTest(snapshot=snapshot, field=field):
+                self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, "body", field, value))
+        for snapshot in ("sendExit", "trackerExit"):
+            for field, value in (("position", vec(9, 9, 9)), ("motion", vec(9, 9, 9)), ("fall", 99),
+                                 ("health", 191), ("absorption", 1), ("grounded", True),
+                                 ("collision", True), ("needsSync", True), ("syncVelocity", True)):
+                with self.subTest(snapshot=snapshot, field=field):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, "body", field, value))
+
+    def test_native_motion_raw_and_ordinal_must_match_observed_post_step(self):
+        for value in (vec(0, .5, .3), vec(0, .4000000000000001, .2), vec(0, .4, .20000000000000004)):
+            with self.subTest(raw=value): self.assert_rejected(("ownerChain", "motion", "raw", value))
+        # Keep the generic owner-chain ordinal consistent while falsifying the native proof's first motion.
+        identity, host, peer = self.natural()
+        chain = host["ownerChain"]
+        chain["motion"]["sendOrdinal"] = 2
+        chain["positions"][0]["motionOrdinal"] = 2
+        for event in chain["events"]:
+            if event["kind"] in {"server-motion-start", "server-motion-sent"}:
+                event["data"] = event["data"].replace("ordinal=1 ", "ordinal=2 ")
+            if event["kind"] == "client-motion-processed":
+                event["data"] = event["data"].replace("sendOrdinal=1 ", "sendOrdinal=2 ")
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_snapshot_indexes_must_identify_exact_original_event_and_order(self):
+        for snapshot in self.snapshots:
+            baseline = self.natural()[1]["ownerChain"]["naturalDispatch"][snapshot]["eventIndex"]
+            for value in (-1, baseline - 1, baseline + 1, 1000, True):
+                with self.subTest(snapshot=snapshot, value=value):
+                    self.assert_rejected(("ownerChain", "naturalDispatch", snapshot, "eventIndex", value))
+            identity, host, peer = self.natural()
+            host["ownerChain"]["events"][baseline]["kind"] = "unrelated-native-stage"
+            with self.subTest(snapshot=snapshot, wrong_stage=True), self.assertRaises(ValueError):
+                gate.validate_reports(identity, host, peer, True)
+
+    def test_matching_proof_without_matching_retained_event_body_fails(self):
+        for event_index in (1, 3, 4, 5, 6, 7, 9, 11):
+            for field, value in (("position", vec(9, 9, 9)), ("motion", vec(9, 9, 9)), ("tick", 99),
+                                 ("fall", 99), ("health", 191), ("grounded", True), ("horizontalCollision", True)):
+                with self.subTest(index=event_index, field=field):
+                    self.assert_rejected(("ownerChain", "events", event_index, "after", field, value))
+
+    def test_extra_missing_or_reordered_native_events_cannot_find_later_success(self):
+        kinds = ("natural-tracker-identity", "natural-release", "natural-step-start", "natural-step-end", "natural-listener-start",
+                 "natural-listener-end", "natural-tracker-start", "natural-motion-start", "natural-motion-end", "natural-tracker-end")
+        for kind in kinds:
+            identity, host, peer = self.natural()
+            events = host["ownerChain"]["events"]
+            original = next(event for event in events if event["kind"] == kind)
+            events.append(copy.deepcopy(original) | {"index": len(events)})
+            with self.subTest(extra=kind), self.assertRaises(ValueError):
+                gate.validate_reports(identity, host, peer, True)
+        for kind in ("server-motion-start", "server-motion-sent"):
+            identity, host, peer = self.natural()
+            original = next(event for event in host["ownerChain"]["events"] if event["kind"] == kind)
+            self.insert_event(host, 10, original)
+            with self.subTest(extra=kind), self.assertRaises(ValueError):
+                gate.validate_reports(identity, host, peer, True)
+        self.assert_rejected(("ownerChain", "events", 11, "kind", "missing-tracker-return"))
+        identity, host, peer = self.natural()
+        events = host["ownerChain"]["events"]
+        events[9], events[11] = events[11] | {"index": 9}, events[9] | {"index": 11}
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_natural_tracker_requires_sync_flag_and_unchanged_native_bodies(self):
+        # Keep every linked body and ledger snapshot consistent so only the missing native sync trigger differs.
+        identity, host, peer = self.natural()
+        proof = host["ownerChain"]["naturalDispatch"]
+        for snapshot in ("release", "beforeStep", "afterStep", "listenerExit", "trackerEntry"):
+            proof[snapshot]["body"]["syncVelocity"] = False
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_send_completion_snapshot_must_precede_original_send_receipt(self):
+        identity, host, peer = self.natural()
+        chain = host["ownerChain"]
+        events = chain["events"]
+        events[9], events[10] = events[10] | {"index": 9}, events[9] | {"index": 10}
+        chain["naturalDispatch"]["sendExit"]["eventIndex"] = 10
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_pre_release_tracker_identity_cannot_be_replaced_or_chosen_late(self):
+        for field, value in (("trackerWitnessIndex", -1), ("trackerWitnessIndex", 1),
+                              ("trackerWitnessIndex", True), ("trackerIdentity", "54321"),
+                              ("trackerIdentity", None)):
+            with self.subTest(field=field, value=value):
+                self.assert_rejected(("ownerChain", "naturalDispatch", field, value))
+        for field, value in (("kind", "missing-native-tracker-identity"),
+                              ("data", "tracker=54321 owner=" + self.identity["hostUuid"]),
+                              ("data", "tracker=12345 owner=" + self.identity["peerUuid"])):
+            with self.subTest(field=field, value=value):
+                self.assert_rejected(("ownerChain", "events", 0, field, value))
+
+
+
+class OwnerReceiptTests(EvidenceFixture):
+    """Synthetic receipt/ledger adversaries. These never run Minecraft or grant gameplay approval."""
+    snapshots = NaturalDispatchTests.snapshots
+    insert_event = NaturalDispatchTests.insert_event
+    synchronize_snapshot_event = NaturalDispatchTests.synchronize_snapshot_event
+
+    def natural(self):
+        import hashlib
+        import struct
+        identity = case_identity(self.identity, "NATURAL_MASTER")
+        host, peer = native_reports(identity)
+        chain = host["ownerChain"]
+        proof = chain["naturalDispatch"]
+        snapshot = body(position=copy.deepcopy(proof["release"]["body"]["position"]), motion=vec(0, 0, 0), tick=9)
+        snapshot["grounded"] = True
+        packet = dict(type="Pos", position=copy.deepcopy(snapshot["position"]), rotation=False, yaw=0.0, pitch=0.0,
+                      grounded=True, collision=False, sha256=hashlib.sha256(struct.pack(">dddB", 0, 2, 3, 1)).hexdigest())
+        key = "ordinal=1 PositionKey[type=Pos, x=0.0, y=2.0, z=3.0, rotation=false, yaw=NaN, pitch=NaN, ground=true, collision=false] sha256=" + packet["sha256"]
+        self.insert_event(host, 1, {"kind": "client-owner-position-sent", "data": key, "after": copy.deepcopy(snapshot)})
+        self.insert_event(host, 2, {"kind": "client-owner-position-send-complete", "data": "ordinal=1", "after": copy.deepcopy(snapshot)})
+        start = proof["trackerEntry"]["eventIndex"]
+        entry = copy.deepcopy(proof["trackerEntry"])
+        returned = copy.deepcopy(entry)
+        entry["eventIndex"], returned["eventIndex"] = start + 1, start + 2
+        returned["body"]["grounded"] = True
+        self.insert_event(host, start, {"kind": "server-owner-packet-received", "data": key})
+        self.insert_event(host, start + 1, {"kind": "natural-owner-packet-start", "data": "pending"})
+        self.insert_event(host, start + 2, {"kind": "natural-owner-packet-end", "data": "pending"})
+        receipt = {"originalSend": dict(ordinal=1, sentIndex=1, completedIndex=2, ownerEntity=identity["ownerEntity"],
+                                       ownerUuid=identity["ownerUuid"], sameSenderAndConnection=True,
+                                       body=copy.deepcopy(snapshot), packet=copy.deepcopy(packet)),
+                   "received": copy.deepcopy(packet), "handlerEntry": entry, "handlerReturn": returned}
+        proof["ownerReceipt"] = receipt
+        for key in ("handlerEntry", "handlerReturn"):
+            self.sync_receipt_event(host, key)
+        for key in ("trackerEntry", "send", "sendExit", "trackerExit"):
+            proof[key]["body"]["grounded"] = True
+            self.synchronize_snapshot_event(host, key)
+        for event in chain["events"]:
+            if event["kind"] in ("server-motion-start", "server-motion-sent"):
+                event["after"]["grounded"] = True
+        return identity, host, peer
+
+    def sync_receipt_event(self, host, name):
+        proof = host["ownerChain"]["naturalDispatch"]
+        proof[name] = proof["ownerReceipt"][name]
+        self.synchronize_snapshot_event(host, name)
+        del proof[name]
+
+    def rejected(self, path, value, sync=False):
+        identity, host, peer = self.natural()
+        target = host["ownerChain"]["naturalDispatch"]["ownerReceipt"]
+        for key in path[:-1]: target = target[key]
+        target[path[-1]] = value
+        if sync: self.sync_receipt_event(host, path[0])
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_one_exact_pre_release_fifo_receipt_passes(self):
+        identity, host, peer = self.natural()
+        gate.validate_reports(identity, host, peer, True)
+        receipt = host["ownerChain"]["naturalDispatch"]["ownerReceipt"]
+        self.assertFalse(receipt["handlerEntry"]["body"]["grounded"])
+        self.assertTrue(receipt["handlerReturn"]["body"]["grounded"])
+
+    def test_every_handler_body_field_stays_strict(self):
+        for stage in ("handlerEntry", "handlerReturn"):
+            baseline = self.natural()[1]["ownerChain"]["naturalDispatch"]["ownerReceipt"][stage]["body"]
+            for key, value in baseline.items():
+                altered = (not value if type(value) is bool else (value + 1 if isinstance(value, (int, float)) else vec(99, 99, 99)))
+                with self.subTest(stage=stage, key=key): self.rejected((stage, "body", key), altered, sync=True)
+
+    def test_handler_identity_clock_and_event_order(self):
+        for stage in ("handlerEntry", "handlerReturn"):
+            for field, value in (("valid", False), ("awaitingTeleport", True), ("ownerEntity", 11),
+                                 ("ownerUuid", self.identity["peerUuid"]), ("sourceEntity", 31),
+                                 ("sourceUuid", "00000000-0000-0000-0000-000000000094"),
+                                 ("gameTick", 11), ("serverTick", 21)):
+                with self.subTest(stage=stage, field=field): self.rejected((stage, field), value, sync=True)
+            for index in (0, 2, 999):
+                with self.subTest(stage=stage, index=index): self.rejected((stage, "eventIndex"), index)
+
+    def test_send_requires_identity_completed_before_release_and_exact_snapshot(self):
+        for field, value in (("ordinal", 2), ("sentIndex", 2), ("completedIndex", 1), ("completedIndex", 3),
+                             ("ownerEntity", 11), ("ownerUuid", self.identity["peerUuid"]),
+                             ("sameSenderAndConnection", False)):
+            with self.subTest(field=field): self.rejected(("originalSend", field), value)
+        for field, value in (("grounded", False), ("neutral", False), ("horizontalCollision", True),
+                             ("position", vec(0, 2.0000000000000004, 3)), ("tick", 10)):
+            with self.subTest(field=field): self.rejected(("originalSend", "body", field), value)
+        identity, host, peer = self.natural()
+        host["ownerChain"]["events"][2]["kind"] = "client-owner-position-send-failed"
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_packet_keys_digest_and_native_codec_are_exact(self):
+        for field, value in (("type", "PosRot"), ("position", vec(0, 2.0000000000000004, 3)),
+                             ("rotation", True), ("yaw", 1), ("pitch", 1), ("grounded", False),
+                             ("collision", True), ("sha256", "f" * 64)):
+            with self.subTest(field=field): self.rejected(("received", field), value)
+        identity, host, peer = self.natural()
+        receipt = host["ownerChain"]["naturalDispatch"]["ownerReceipt"]
+        original_digest = receipt["received"]["sha256"]
+        receipt["received"]["sha256"] = receipt["originalSend"]["packet"]["sha256"] = "f" * 64
+        for event in host["ownerChain"]["events"]: event["data"] = event["data"].replace(original_digest, "f" * 64)
+        with self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_fifo_does_not_search_for_later_matching_packet(self):
+        identity, host, peer = self.natural()
+        proof = host["ownerChain"]["naturalDispatch"]
+        # Reuse an existing earlier ledger slot: the apparent matching packet is no longer the queue head.
+        host["ownerChain"]["events"][0] = dict(index=0, kind="client-owner-position-sent", data="ordinal=99 earlier", after=body())
+        with self.assertRaises(ValueError): gate.validate_owner_receipt(identity, proof["ownerReceipt"], host["ownerChain"]["events"],
+                                                                      proof["release"], proof["listenerExit"], proof["trackerEntry"])
+
+    def test_second_packet_missing_receipt_and_hidden_packet_are_rejected(self):
+        for scenario in ("second packet", "missing receipt", "unattested packet"):
+            identity, host, peer = self.natural()
+            chain, proof = host["ownerChain"], host["ownerChain"]["naturalDispatch"]
+            if scenario == "second packet":
+                chain["events"][proof["ownerReceipt"]["handlerReturn"]["eventIndex"]]["kind"] = "server-owner-packet-received"
+            elif scenario == "missing receipt": del proof["ownerReceipt"]
+            else:
+                receipt = proof.pop("ownerReceipt")
+                for key in ("handlerEntry", "handlerReturn"):
+                    chain["events"][receipt[key]["eventIndex"]]["kind"] = "unrelated"
+                for key in ("trackerEntry", "send", "sendExit", "trackerExit"):
+                    proof[key]["body"]["grounded"] = False
+                    self.synchronize_snapshot_event(host, key)
+            with self.subTest(scenario=scenario), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+
+
+    def test_exact_json_equality_preserves_ieee_zero_and_numeric_types(self):
+        import math
+        for zero in (0, 0.0):
+            self.assertTrue(gate.exact(zero, 0.0))
+            self.assertFalse(gate.exact(zero, -0.0))
+            self.assertFalse(gate.exact({"motion": [zero]}, {"motion": [-0.0]}))
+        self.assertTrue(gate.exact(-0.0, -0.0))
+        self.assertTrue(gate.exact({"v": [20, -0.0]}, {"v": [20.0, -0.0]}))
+        self.assertFalse(gate.exact(1.0, math.nextafter(1.0, 2.0)))
+        self.assertFalse(gate.exact(False, 0))
+        self.assertFalse(gate.exact(True, 1.0))
+        self.assertFalse(gate.exact({"v": 0}, {"v": 0, "extra": 0}))
+
+    def test_raw_json_signed_zero_spellings_cannot_bypass_exact_body_checks(self):
+        identity, host, peer = self.natural()
+        host["ownerChain"]["naturalDispatch"]["ownerReceipt"]["handlerEntry"]["body"]["motion"]["x"] = -0.0
+        self.sync_receipt_event(host, "handlerEntry")
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "host.json"
+            for token in ("-0", "-0.0", "-0e0"):
+                path.write_text(json.dumps(host).replace("-0.0", token))
+                decoded = gate.read_json(path)
+                value = decoded["ownerChain"]["naturalDispatch"]["ownerReceipt"]["handlerEntry"]["body"]["motion"]["x"]
+                self.assertFalse(gate.exact(value, 0.0))
+                with self.subTest(token=token), self.assertRaises(ValueError): gate.validate_reports(identity, decoded, peer, True)
+            path.write_text('{"index": -0, "normal": 0, "count": 10}')
+            decoded = gate.read_json(path)
+            self.assertIs(type(decoded["normal"]), int)
+            self.assertEqual(decoded["count"], 10)
+            with self.assertRaises(ValueError): gate.integer(decoded["index"], "signed-zero event index")
+
+    def test_unchanged_negative_zero_native_motion_remains_valid(self):
+        identity, host, peer = self.natural()
+        chain = host["ownerChain"]
+        proof = chain["naturalDispatch"]
+        for stage in self.snapshots:
+            proof[stage]["body"]["motion"]["x"] = -0.0
+            self.synchronize_snapshot_event(host, stage)
+        for stage in ("handlerEntry", "handlerReturn"):
+            proof["ownerReceipt"][stage]["body"]["motion"]["x"] = -0.0
+            self.sync_receipt_event(host, stage)
+        for event in chain["events"]:
+            if event["kind"] in ("natural-listener-start", "server-motion-start", "server-motion-sent"):
+                event["after"]["motion"]["x"] = -0.0
+        chain["motion"]["raw"] = {**chain["motion"]["raw"], "x": -0.0}
+        # The independently retained encoded/applied values may still be +0.0 after native quantization.
+        gate.validate_reports(identity, host, peer, True)
+
+    def test_signed_zero_rejected_at_every_immutable_body_boundary(self):
+        for receipt_enabled in (False, True):
+            stages = ("beforeStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit")
+            if receipt_enabled: stages += ("handlerEntry", "handlerReturn")
+            for stage in stages:
+                for field in (("position", "x"), ("motion", "x"), ("fall",), ("absorption",)):
+                    if receipt_enabled: identity, host, peer = self.natural()
+                    else:
+                        identity = case_identity(self.identity, "NATURAL_MASTER")
+                        host, peer = native_reports(identity)
+                    proof = host["ownerChain"]["naturalDispatch"]
+                    owner = proof["ownerReceipt"] if stage.startswith("handler") else proof
+                    snapshot = owner[stage]["body"]
+                    target = snapshot if len(field) == 1 else snapshot[field[0]]
+                    self.assertEqual(target[field[-1]], 0)
+                    target[field[-1]] = -0.0
+                    if stage.startswith("handler"): self.sync_receipt_event(host, stage)
+                    else: self.synchronize_snapshot_event(host, stage)
+                    with self.subTest(receipt=receipt_enabled, stage=stage, field=field), self.assertRaises(ValueError):
+                        gate.validate_reports(identity, host, peer, True)
+
+    def test_signed_zero_cannot_hide_in_snapshot_ledger_copies(self):
+        for location in ("send body", "completion body", "decoded receive text", "sender coordinates"):
+            identity, host, peer = self.natural()
+            chain = host["ownerChain"]
+            receipt = chain["naturalDispatch"]["ownerReceipt"]
+            original = receipt["originalSend"]
+            if location == "decoded receive text":
+                event = next(event for event in chain["events"] if event["kind"] == "server-owner-packet-received")
+                event["data"] = event["data"].replace("x=0.0", "x=-0.0")
+            elif location == "sender coordinates":
+                original["body"]["position"]["x"] = -0.0
+                for index in (original["sentIndex"], original["completedIndex"]):
+                    chain["events"][index]["after"]["position"]["x"] = -0.0
+            else:
+                index = original["sentIndex" if location == "send body" else "completedIndex"]
+                chain["events"][index]["after"]["motion"]["x"] = -0.0
+            with self.subTest(location=location), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_signed_zero_in_received_packet_and_consistent_reencoded_key_is_rejected(self):
+        import hashlib
+        import struct
+        for field in ("position", "yaw", "pitch", "reencoded position"):
+            identity, host, peer = self.natural()
+            chain = host["ownerChain"]
+            receipt = chain["naturalDispatch"]["ownerReceipt"]
+            if field == "position": receipt["received"]["position"]["x"] = -0.0
+            elif field != "reencoded position": receipt["received"][field] = -0.0
+            else:
+                old = receipt["received"]["sha256"]
+                new = hashlib.sha256(struct.pack(">dddB", -0.0, 2, 3, 1)).hexdigest()
+                for packet in (receipt["received"], receipt["originalSend"]["packet"]):
+                    packet["position"]["x"] = -0.0
+                    packet["sha256"] = new
+                for event in chain["events"]:
+                    event["data"] = event["data"].replace(old, new).replace("x=0.0", "x=-0.0")
+            with self.subTest(field=field), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+    def test_signed_zero_in_bound_motion_and_exact_transport_fields_is_rejected(self):
+        for location in ("raw", "wire", "applied", "applied body"):
+            identity, host, peer = self.natural()
+            chain = host["ownerChain"]
+            if location == "applied body":
+                event = chain["events"][chain["motion"]["appliedIndex"]]
+                event["after"]["motion"] = {**event["after"]["motion"], "x": -0.0}
+            else: chain["motion"][location] = {**chain["motion"][location], "x": -0.0}
+            with self.subTest(location=location), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+        for location in ("requested", "sentPosition", "acceptedPosition", "sent body", "accepted body", "tracker body", "interpolation target"):
+            identity = case_identity(self.identity, "RIGHT")
+            host, peer = native_reports(identity)
+            # Break shared fixture references and put the unchanged z axis exactly at +0.0.
+            host, peer = json.loads(json.dumps([host, peer]))
+            def zero_z(value):
+                if isinstance(value, dict):
+                    if set(value) == {"x", "y", "z"} and value["z"] == 3: value["z"] = 0.0
+                    for child in value.values(): zero_z(child)
+                elif isinstance(value, list):
+                    for child in value: zero_z(child)
+            zero_z(host); zero_z(peer)
+            gate.validate_reports(identity, host, peer, True)
+            chain = host["ownerChain"]
+            position = chain["positions"][0]
+            if location in ("requested", "sentPosition", "acceptedPosition"): position[location]["z"] = -0.0
+            elif location == "tracker body": host["packets"][0]["body"]["z"] = -0.0
+            elif location == "interpolation target": peer["interpolation"][0]["target"]["z"] = -0.0
+            else: chain["events"][position["sentIndex" if location == "sent body" else "acceptanceIndex"]]["after"]["position"]["z"] = -0.0
+            with self.subTest(location=location), self.assertRaises(ValueError): gate.validate_reports(identity, host, peer, True)
+
+
+    def test_pose_components_are_exact_across_receipt_and_no_packet_boundaries(self):
+        for receipt_enabled in (False, True):
+            stages = ("beforeStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit")
+            if receipt_enabled: stages += ("handlerEntry", "handlerReturn")
+            for stage in stages:
+                for component in ("yaw", "pitch", "headYaw", "bodyYaw", "stance"):
+                    mutations = ("CROUCHING", "SWIMMING", "") if component == "stance" else (1.0, -0.0, float("nan"), float("inf"))
+                    for mutation in mutations:
+                        if receipt_enabled: identity, host, peer = self.natural()
+                        else:
+                            identity = case_identity(self.identity, "NATURAL_MASTER")
+                            host, peer = native_reports(identity)
+                        proof = host["ownerChain"]["naturalDispatch"]
+                        owner = proof["ownerReceipt"] if stage.startswith("handler") else proof
+                        owner[stage]["pose"][component] = mutation
+                        if stage.startswith("handler"): self.sync_receipt_event(host, stage)
+                        else: self.synchronize_snapshot_event(host, stage)
+                        with self.subTest(receipt=receipt_enabled, stage=stage, component=component, mutation=mutation), self.assertRaises(ValueError):
+                            gate.validate_reports(identity, host, peer, True)
+
+    def test_pose_ledger_and_saved_sender_snapshot_binding_are_exact(self):
+        for location in ("handlerEntry", "handlerReturn", "trackerEntry", "sender", "send completion"):
+            for component in ("yaw", "pitch", "headYaw", "bodyYaw", "stance"):
+                mutations = ("CROUCHING",) if component == "stance" else (1.0, -0.0)
+                for mutation in mutations:
+                    identity, host, peer = self.natural()
+                    chain = host["ownerChain"]
+                    proof = chain["naturalDispatch"]
+                    receipt = proof["ownerReceipt"]
+                    if location in ("sender", "send completion"):
+                        index = receipt["originalSend"]["sentIndex" if location == "sender" else "completedIndex"]
+                    else:
+                        owner = receipt if location.startswith("handler") else proof
+                        index = owner[location]["eventIndex"]
+                    chain["events"][index]["after"]["pose"][component] = mutation
+                    with self.subTest(location=location, component=component, mutation=mutation), self.assertRaises(ValueError):
+                        gate.validate_reports(identity, host, peer, True)
+
+    def test_coherent_downstream_pose_cannot_replace_raw_step_pose(self):
+        for component in ("yaw", "pitch", "headYaw", "bodyYaw", "stance"):
+            mutations = ("CROUCHING",) if component == "stance" else (1.0, -0.0)
+            for mutation in mutations:
+                identity, host, peer = self.natural()
+                chain = host["ownerChain"]
+                proof = chain["naturalDispatch"]
+                for stage in ("listenerExit", "trackerEntry", "send", "sendExit", "trackerExit"):
+                    proof[stage]["pose"][component] = mutation
+                    self.synchronize_snapshot_event(host, stage)
+                for stage in ("handlerEntry", "handlerReturn"):
+                    proof["ownerReceipt"][stage]["pose"][component] = mutation
+                    self.sync_receipt_event(host, stage)
+                for event in chain["events"]:
+                    if event["kind"] in ("server-motion-start", "server-motion-sent"):
+                        event["after"]["pose"][component] = mutation
+                with self.subTest(component=component, mutation=mutation), self.assertRaisesRegex(
+                        ValueError, "Native listener exit changed more than its position restoration"):
+                    gate.validate_reports(identity, host, peer, True)
+
+    def test_pose_snapshots_and_each_component_are_required(self):
+        for location in ("listenerExit", "handlerEntry", "handlerReturn", "trackerEntry", "sender"):
+            for missing in ("snapshot", "yaw", "pitch", "headYaw", "bodyYaw", "stance"):
+                identity, host, peer = self.natural()
+                proof = host["ownerChain"]["naturalDispatch"]
+                receipt = proof["ownerReceipt"]
+                owner = receipt if location.startswith("handler") else proof
+                snapshot = receipt["originalSend"]["body"] if location == "sender" else owner[location]
+                if missing == "snapshot": del snapshot["pose"]
+                else: del snapshot["pose"][missing]
+                with self.subTest(location=location, missing=missing), self.assertRaises(ValueError):
+                    gate.validate_reports(identity, host, peer, True)
+
+    def test_native_pose_is_retained_without_normalization(self):
+        identity, host, peer = self.natural()
+        proof = host["ownerChain"]["naturalDispatch"]
+        retained = dict(yaw=-0.0, pitch=14.0, headYaw=-37.0, bodyYaw=82.0, stance="CROUCHING")
+        for stage in ("afterStep", "listenerExit", "trackerEntry", "send", "sendExit", "trackerExit"):
+            proof[stage]["pose"] = copy.deepcopy(retained)
+            self.synchronize_snapshot_event(host, stage)
+        for stage in ("handlerEntry", "handlerReturn"):
+            proof["ownerReceipt"][stage]["pose"] = copy.deepcopy(retained)
+            self.sync_receipt_event(host, stage)
+        for event in host["ownerChain"]["events"]:
+            if event["kind"] in ("server-motion-start", "server-motion-sent"):
+                event["after"]["pose"] = copy.deepcopy(retained)
+        gate.validate_reports(identity, host, peer, True)
+
+    def test_pose_raw_json_negative_zero_keeps_its_sign(self):
+        for component in ("yaw", "pitch", "headYaw", "bodyYaw"):
+            identity, host, peer = self.natural()
+            host["ownerChain"]["naturalDispatch"]["ownerReceipt"]["handlerEntry"]["pose"][component] = -0.0
+            self.sync_receipt_event(host, "handlerEntry")
+            with tempfile.TemporaryDirectory() as temp:
+                path = Path(temp) / "host.json"
+                for token in ("-0", "-0.0", "-0e0"):
+                    path.write_text(json.dumps(host).replace("-0.0", token))
+                    with self.subTest(component=component, token=token), self.assertRaises(ValueError):
+                        gate.validate_reports(identity, gate.read_json(path), peer, True)
+
+
+class WitnessTests(EvidenceFixture):
+    def test_all_three_exact_case_rosters_and_sha_ledgers(self):
+        for profile, count in (("transparent", 17), ("symmetric", 6), ("asymmetric", 6)):
+            with self.subTest(profile=profile):
+                for path in self.ipc.iterdir(): path.unlink()
+                self.identity["profile"] = profile
+                report = self.write_witnesses()
+                ledger = gate.validate_witnesses(self.ipc, self.identity, self.pids, report)
+                self.assertEqual(len(ledger), 9 + count * 8)
+
+    def test_every_case_stage_is_mandatory_and_exact(self):
+        report = self.write_witnesses()
+        for suffix in ("arm.properties", "armed.properties", "ready.properties", "seen.properties", "passed.properties", "identity.json", "host.json", "peer.json"):
+            path = self.ipc / ("case-00-" + suffix); saved = path.read_bytes(); path.unlink()
+            with self.subTest(suffix=suffix), self.assertRaises(ValueError): gate.validate_witnesses(self.ipc, self.identity, self.pids, report)
+            path.write_bytes(saved)
+
+    def test_identity_pid_profile_role_and_hash_changes_are_rejected(self):
+        report = self.write_witnesses()
+        path = self.ipc / "case-00-armed.properties"; saved = path.read_text()
+        for key, value in (("nonce", "stale"), ("profile", "asymmetric"), ("pid", "101"), ("role", "host"), ("identitySha256", "9" * 64), ("case", "LEFT")):
+            with self.subTest(key=key):
+                path.write_text("\n".join(key + "=" + value if line.startswith(key + "=") else line for line in saved.splitlines()))
+                with self.assertRaises(ValueError): gate.validate_witnesses(self.ipc, self.identity, self.pids, report)
+        path.write_text(saved)
+
+    def test_extra_stale_case_and_unfinished_tmp_are_rejected(self):
+        report = self.write_witnesses()
+        for name in ("case-17-passed.properties", "case-00-host.tmp"):
+            path = self.ipc / name; path.write_text("stale")
+            with self.assertRaises(ValueError): gate.validate_witnesses(self.ipc, self.identity, self.pids, report)
+            path.unlink()
+
+    def test_native_connection_tuple_falsifications_are_rejected(self):
+        original = self.write_witnesses()
+        for key in ("clientLocal", "clientRemote", "backendLocal", "backendRemote"):
+            for role in ("owner", "observer"):
+                value = copy.deepcopy(original); value["connections"][role][key][1] += 100
+                with self.subTest(key=key, role=role), self.assertRaises(ValueError): gate.validate_connections(self.ipc, self.identity, self.pids, value)
+
+    def test_four_streams_cannot_be_empty_unfinished_corrupted_or_early(self):
+        original = relay_report(self.identity, self.pids)
+        for name in gate.relay.DIRECTION_NAMES:
+            for key, value in (("readBytes", 0), ("writtenBytes", 9), ("writeSha256", "e" * 64), ("eof", False),
+                               ("writeHalfClosed", False), ("queuedBytes", 1), ("offsetsContiguous", False), ("releaseLatenessMaxSeconds", .251)):
+                report = copy.deepcopy(original); report["directions"][name][key] = value
+                with self.subTest(name=name, key=key), self.assertRaises(ValueError): gate.validate_relay(report, self.identity, self.pids)
+        for key, value in (("closed", False), ("failure", {"code": "reset"}), ("cleanupErrors", ["close"]), ("profile", "symmetric"), ("ownedSocketsHigh", 7)):
+            report = copy.deepcopy(original); report[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError): gate.validate_relay(report, self.identity, self.pids)
+
+    def test_all_evidence_and_logs_are_size_bounded_before_hashing(self):
+        (self.base / "host.log").write_bytes(b"log")
+        (self.base / "peer.log").write_bytes(b"log")
+        with patch.object(gate, "MAX_EVIDENCE", 5), self.assertRaises(ValueError): gate.evidence_files(self.base)
+        with patch.object(gate, "MAX_EVIDENCE", 6): self.assertEqual(gate.evidence_files(self.base)[0], 6)
+
+    def test_json_duplicate_keys_nonfinite_values_oversize_and_links_fail(self):
+        path = self.ipc / "input.json"
+        for value in ('{"x":1,"x":2}', '{"x":NaN}', " " * (gate.MAX_JSON + 1)):
+            path.write_text(value)
+            with self.assertRaises(ValueError): gate.read_json(path)
+        path.unlink(); path.symlink_to(self.base / "host.log")
+        with self.assertRaises(ValueError): gate.read_json(path)
+        with self.assertRaises(ValueError): gate.evidence_files(self.base)
+
+
+class EvidenceScanTests(EvidenceFixture):
+    @contextmanager
+    def after_enumeration(self, action):
+        """Run a real filesystem mutation after a walk captured IPC names."""
+        walk, fwalk = os.walk, os.fwalk
+        def scan(*args, **kwargs):
+            for directory, children, names in walk(*args, **kwargs):
+                if Path(directory) == self.ipc:
+                    action(names)
+                yield directory, children, names
+        def pinned_scan(*args, **kwargs):
+            for directory, children, names, descriptor in fwalk(*args, **kwargs):
+                if self.base / directory == self.ipc:
+                    action(names)
+                yield directory, children, names, descriptor
+        with patch.object(gate.os, "walk", scan), patch.object(gate.os, "fwalk", pinned_scan):
+            yield
+
+    def test_live_atomic_publication_is_counted_even_if_destination_was_not_enumerated(self):
+        for filename in ("case-04-passed.properties", "case-00-host.json", "host-failure.properties"):
+            with self.subTest(filename=filename):
+                destination = self.ipc / filename; temporary = destination.with_suffix(".tmp")
+                temporary.write_bytes(b"receipt")
+                def publish(names):
+                    self.assertIn(temporary.name, names)
+                    self.assertNotIn(destination.name, names)
+                    temporary.replace(destination)
+                with self.after_enumeration(publish):
+                    total, files = gate.evidence_files(self.base, active_profile="transparent")
+                self.assertEqual(total, 7)
+                self.assertEqual(files, {"ipc/" + filename: destination})
+                self.assertEqual(gate.artifact_hashes(self.base), {"ipc/" + filename: gate.s.digest(destination)})
+                destination.unlink()
+
+    def test_snapshot_containing_both_rename_names_counts_published_bytes_once(self):
+        destination = self.ipc / "case-00-host.json"; temporary = destination.with_suffix(".tmp")
+        temporary.write_bytes(b"receipt")
+        def publish(names):
+            temporary.replace(destination)
+            names.append(destination.name)
+        with self.after_enumeration(publish), patch.object(gate, "MAX_EVIDENCE", 7):
+            total, files = gate.evidence_files(self.base, active_profile="transparent")
+        self.assertEqual((total, len(files)), (7, 1))
+
+    def test_live_metadata_uses_one_nofollow_stat_even_if_publication_follows_it(self):
+        destination = self.ipc / "case-00-host.json"; temporary = destination.with_suffix(".tmp")
+        temporary.write_bytes(b"receipt")
+        native_stat = os.stat
+        def publish(path, *args, **kwargs):
+            info = native_stat(path, *args, **kwargs)
+            if path == temporary.name and kwargs.get("dir_fd") is not None:
+                self.assertIs(kwargs.get("follow_symlinks"), False)
+                temporary.replace(destination)
+            return info
+        with patch.object(gate.os, "stat", publish):
+            self.assertEqual(gate.evidence_files(self.base, active_profile="transparent")[0], 7)
+        self.assertEqual(gate.evidence_files(self.base)[1], {"ipc/case-00-host.json": destination})
+
+    def test_live_parent_swaps_never_follow_outside_metadata_and_close_owned_descriptors(self):
+        for parent_kind in ("ipc", "base"):
+            for missing in (False, True):
+                with self.subTest(parent=parent_kind, missing=missing), tempfile.TemporaryDirectory() as outside_name:
+                    outside = Path(outside_name)
+                    (outside / "case-00-host.json").write_bytes(b"outside must not be inspected")
+                    temporary = self.ipc / "case-00-host.tmp"; temporary.write_bytes(b"receipt")
+                    parent = self.ipc if parent_kind == "ipc" else self.base
+                    parked = parent.with_name(parent.name + "-retired")
+                    native_stat, native_open = os.stat, os.open
+                    opened, swapped, outside_reads = [], [], []
+                    outside_identity = (outside.stat().st_dev, outside.stat().st_ino)
+                    def retain_open(*args, **kwargs):
+                        descriptor = native_open(*args, **kwargs); opened.append(descriptor); return descriptor
+                    def swap(path, *args, **kwargs):
+                        descriptor = kwargs.get("dir_fd")
+                        if descriptor is not None:
+                            info = os.fstat(descriptor)
+                            if (info.st_dev, info.st_ino) == outside_identity: outside_reads.append(path)
+                        if path == temporary.name and descriptor is not None and not swapped:
+                            info = native_stat(path, *args, **kwargs)
+                            parent.rename(parked); parent.symlink_to(outside, target_is_directory=True); swapped.append(True)
+                            if missing: raise FileNotFoundError(2, "published while parent changed", str(temporary))
+                            return info
+                        return native_stat(path, *args, **kwargs)
+                    try:
+                        with patch.object(gate.os, "stat", swap), patch.object(gate.os, "open", retain_open):
+                            with self.assertRaisesRegex(ValueError, "Changed or linked live evidence directory"):
+                                gate.evidence_files(self.base, active_profile="transparent")
+                        self.assertTrue(swapped); self.assertEqual(outside_reads, [])
+                        self.assertGreaterEqual(len(opened), 2)
+                        self.assertLessEqual(len(opened), 4)
+                        for descriptor in opened:
+                            with self.assertRaises(OSError): os.fstat(descriptor)
+                    finally:
+                        if swapped: parent.unlink(); parked.rename(parent)
+                        temporary.unlink()
+
+    def test_live_walk_uses_retained_root_before_enumerating_names(self):
+        with tempfile.TemporaryDirectory() as outside_name:
+            outside = Path(outside_name); (outside / "foreign").write_bytes(b"outside")
+            parked = self.base.with_name(self.base.name + "-retired")
+            native_scandir = os.scandir; swapped, listed = [], []
+            def swap_before_enumeration(directory):
+                if not swapped:
+                    self.assertIsInstance(directory, int)
+                    self.base.rename(parked); self.base.symlink_to(outside, target_is_directory=True); swapped.append(True)
+                stream = native_scandir(directory)
+                class ObservedEntries:
+                    def __iter__(self): return self
+                    def __next__(self):
+                        entry = next(stream); listed.append(entry.name); return entry
+                    def __enter__(self): return self
+                    def __exit__(self, *args): stream.close()
+                    def close(self): stream.close()
+                return ObservedEntries()
+            try:
+                with patch.object(gate.os, "scandir", swap_before_enumeration):
+                    with self.assertRaisesRegex(ValueError, "Changed or linked live evidence directory"):
+                        gate.evidence_files(self.base, active_profile="transparent")
+                self.assertTrue(swapped); self.assertNotIn("foreign", listed)
+            finally:
+                if swapped: self.base.unlink(); parked.rename(self.base)
+
+    def test_final_scan_rejects_even_a_recognized_atomic_publication(self):
+        destination = self.ipc / "case-00-host.json"; temporary = destination.with_suffix(".tmp")
+        temporary.write_bytes(b"receipt")
+        with self.after_enumeration(lambda names: temporary.replace(destination)):
+            with self.assertRaisesRegex(ValueError, "final evidence path .*case-00-host.tmp"):
+                gate.artifact_hashes(self.base)
+
+    def test_live_scan_requires_recognized_temporary_and_present_destination(self):
+        for filename in ("case-00-host.tmp", "case-00-host.json", "unrecognized.tmp", "case-06-host.tmp"):
+            with self.subTest(filename=filename):
+                path = self.ipc / filename; path.write_bytes(b"receipt")
+                with self.after_enumeration(lambda names: path.unlink()):
+                    with self.assertRaisesRegex(ValueError, "live evidence path .*" + filename):
+                        gate.evidence_files(self.base, active_profile="symmetric")
+
+    def test_non_ipc_temporary_and_disappearing_log_are_never_ignored(self):
+        fwalk = os.fwalk
+        for filename in ("case-00-host.tmp", "host.log"):
+            with self.subTest(filename=filename):
+                path = self.base / filename; path.write_bytes(b"receipt")
+                destination = path.with_suffix(".json")
+                def scan(*args, **kwargs):
+                    for row in fwalk(*args, **kwargs):
+                        if self.base / row[0] == self.base:
+                            path.replace(destination)
+                        yield row
+                with patch.object(gate.os, "fwalk", scan):
+                    with self.assertRaisesRegex(ValueError, "live evidence path .*" + filename):
+                        gate.evidence_files(self.base, active_profile="transparent")
+                destination.unlink()
+
+    def test_symlink_fifo_and_directory_replacements_fail_in_both_phases(self):
+        for active_profile in (None, "transparent"):
+            for kind in ("symlink", "fifo", "directory"):
+                with self.subTest(active_profile=active_profile, kind=kind):
+                    path = self.ipc / "case-00-host.tmp"; path.write_bytes(b"receipt")
+                    def replace(names):
+                        path.unlink()
+                        if kind == "symlink": path.symlink_to(self.base / "absent")
+                        elif kind == "fifo": os.mkfifo(path)
+                        else: path.mkdir()
+                    with self.after_enumeration(replace):
+                        with self.assertRaisesRegex(ValueError, "(Linked|Non-regular) .* evidence path: .*case-00-host.tmp"):
+                            gate.evidence_files(self.base, active_profile=active_profile)
+                    if path.is_dir(): path.rmdir()
+                    else: path.unlink()
+
+    def test_renamed_destination_must_itself_be_regular_and_unlinked(self):
+        destination = self.ipc / "case-00-host.json"; temporary = destination.with_suffix(".tmp")
+        for kind in ("symlink", "fifo", "directory"):
+            with self.subTest(kind=kind):
+                temporary.write_bytes(b"receipt")
+                def replace(names):
+                    temporary.unlink()
+                    if kind == "symlink": destination.symlink_to(self.base / "absent")
+                    elif kind == "fifo": os.mkfifo(destination)
+                    else: destination.mkdir()
+                with self.after_enumeration(replace):
+                    with self.assertRaisesRegex(ValueError, "(Linked|Non-regular) live evidence path: .*case-00-host.json"):
+                        gate.evidence_files(self.base, active_profile="transparent")
+                if destination.is_dir(): destination.rmdir()
+                else: destination.unlink()
+
+    def test_missing_or_linked_root_and_subdirectories_fail_in_both_phases(self):
+        for active_profile in (None, "transparent"):
+            with self.subTest(active_profile=active_profile):
+                with self.assertRaisesRegex(ValueError, "evidence path .*absent"):
+                    gate.evidence_files(self.base / "absent", active_profile=active_profile)
+                linked = self.base / "linked"; linked.symlink_to(self.ipc, target_is_directory=True)
+                with self.assertRaisesRegex(ValueError, "Linked .* evidence path: .*linked"):
+                    gate.evidence_files(linked, active_profile=active_profile)
+                with self.assertRaisesRegex(ValueError, "Linked .* evidence path: .*linked"):
+                    gate.evidence_files(self.base, active_profile=active_profile)
+                linked.unlink()
+
+    def test_walk_errors_are_not_silently_ignored(self):
+        def fail(base, *, followlinks, onerror):
+            onerror(PermissionError(13, "denied", str(self.ipc)))
+            return iter(())
+        with patch.object(gate.os, "walk", fail):
+            with self.assertRaisesRegex(ValueError, "Cannot walk final evidence path .*ipc"):
+                gate.evidence_files(self.base)
+
+    def test_temporary_and_published_bytes_keep_the_exact_16_mib_cap(self):
+        path = self.ipc / "case-00-host.tmp"
+        for active_profile in (None, "transparent"):
+            with self.subTest(active_profile=active_profile):
+                with path.open("wb") as stream: stream.truncate(16 * 1024 * 1024)
+                self.assertEqual(gate.evidence_files(self.base, active_profile=active_profile)[0], 16 * 1024 * 1024)
+                with path.open("ab") as stream: stream.write(b"x")
+                with self.assertRaisesRegex(ValueError, "exceeded 16 MiB: .*case-00-host.tmp"):
+                    gate.evidence_files(self.base, active_profile=active_profile)
+        destination = path.with_suffix(".json")
+        with self.after_enumeration(lambda names: path.replace(destination)):
+            with self.assertRaisesRegex(ValueError, "exceeded 16 MiB: .*case-00-host.json"):
+                gate.evidence_files(self.base, active_profile="transparent")
+
+    def test_live_and_final_file_counts_remain_bounded(self):
+        for index in range(1024): (self.ipc / str(index)).touch()
+        for active_profile in (None, "transparent"):
+            with self.subTest(active_profile=active_profile):
+                self.assertEqual(len(gate.evidence_files(self.base, active_profile=active_profile)[1]), 1024)
+                extra = self.ipc / "extra"; extra.touch()
+                with self.assertRaisesRegex(ValueError, "Unbounded .* evidence file count: "):
+                    gate.evidence_files(self.base, active_profile=active_profile)
+                extra.unlink()
+
+
+class FakeClock:
+    def __init__(self): self.now = 0.0
+    def __call__(self): return self.now
+    def sleep(self, seconds): self.now += seconds
+
+
+class FakeProcess:
+    def __init__(self, pid, status=None): self.pid, self.returncode, self.terminated, self.killed = pid, status, False, False
+    def poll(self): return self.returncode
+    def terminate(self): self.terminated = True; self.returncode = -15
+    def kill(self): self.killed = True; self.returncode = -9
+    def wait(self, timeout): return self.returncode
+
+
+class FakeRelay:
+    def __init__(self, identity, profile, *, listeners):
+        self.identity, self.profile, self.listeners = identity, profile, listeners
+        self.endpoints = {"owner": ("127.0.0.1", 33001), "observer": ("127.0.0.1", 33002)}
+        self.complete, self.closed, self.calls = False, False, []
+    def pump(self, timeout): self.calls.append(timeout); return self.complete
+    def close(self): self.closed = True
+    def assert_complete(self):
+        if not self.complete: raise ValueError("not drained")
+    def report(self): return {"closed": self.closed, "status": "failed"}
+
+
+class LifecycleTests(EvidenceFixture):
+    def drive(self, processes, factory=FakeRelay, seconds=.1):
+        clock = FakeClock()
+        return gate.supervise(self.base, self.ipc, self.identity, list(zip(("host", "peer"), processes)), {}, seconds,
+                              clock=clock, sleeper=clock.sleep, relay_factory=factory)
+
+    def test_deadline_before_ready_fails_without_creating_backend(self):
+        factory = unittest.mock.Mock()
+        with self.assertRaisesRegex(ValueError, "deadline"): self.drive([FakeProcess(100), FakeProcess(200)], factory)
+        factory.assert_not_called()
+
+    def test_supervision_survives_atomic_publication_but_still_enforces_deadline(self):
+        temporary = self.ipc / "case-00-host.tmp"; temporary.write_bytes(b"receipt")
+        fwalk = os.fwalk
+        def publish(*args, **kwargs):
+            for row in fwalk(*args, **kwargs):
+                if self.base / row[0] == self.ipc and temporary.name in row[2]:
+                    temporary.replace(temporary.with_suffix(".json"))
+                yield row
+        with patch.object(gate.os, "fwalk", publish):
+            with self.assertRaisesRegex(ValueError, "elapsed deadline expired"):
+                self.drive([FakeProcess(100), FakeProcess(200)])
+
+    def test_host_must_remain_owned_and_alive_at_ready(self):
+        self.properties("server-ready.properties", "host", {"port": "33003"})
+        for process in (FakeProcess(100, 0), FakeProcess(100, 2)):
+            factory = unittest.mock.Mock()
+            with self.assertRaises(ValueError): self.drive([process, FakeProcess(200)], factory)
+            factory.assert_not_called()
+
+    def test_wrong_ready_identity_cannot_create_backend(self):
+        self.properties("server-ready.properties", "host", {"port": "33003", "nonce": "foreign"})
+        factory = unittest.mock.Mock()
+        with self.assertRaises(ValueError): self.drive([FakeProcess(100), FakeProcess(200)], factory)
+        factory.assert_not_called()
+
+    def test_normal_exit_needs_complete_witnesses_and_drained_relay(self):
+        self.properties("server-ready.properties", "host", {"port": "33003"})
+        processes = [FakeProcess(100), FakeProcess(200)]; made = []
+        def factory(*args, **kwargs):
+            current = FakeRelay(*args, **kwargs); made.append(current)
+            def pump(timeout):
+                current.calls.append(timeout)
+                for role, process in zip(("host", "peer"), processes):
+                    process.returncode = 0; self.properties(role + "-stone-hinge-passed.properties", role)
+                current.complete = True
+            current.pump = pump
+            return current
+        result = self.drive(processes, factory)
+        self.assertIs(result, made[0]); self.assertTrue(result.complete)
+        self.assertTrue(all(0 <= timeout <= .01 for timeout in result.calls))
+        witness = gate.s.read_properties(self.ipc / "relay-ready.properties")
+        self.assertEqual(witness["pid"], str(os.getpid())); self.assertEqual(witness["hostPid"], "100")
+
+    def test_failure_after_relay_start_closes_and_retains_failed_report(self):
+        self.properties("server-ready.properties", "host", {"port": "33003"})
+        processes = [FakeProcess(100), FakeProcess(200)]; made = []
+        def factory(*args, **kwargs):
+            current = FakeRelay(*args, **kwargs); made.append(current)
+            def pump(timeout): processes[1].returncode = 7
+            current.pump = pump; return current
+        with self.assertRaisesRegex(ValueError, "exit=7"): self.drive(processes, factory)
+        self.assertTrue(made[0].closed)
+        self.assertEqual(gate.read_json(self.base / "relay.json")["status"], "failed")
+
+    def test_failure_witness_stops_process_loop(self):
+        self.properties("peer-failure.properties", "peer", {"error": "failure"})
+        with self.assertRaisesRegex(ValueError, "failure witness"): self.drive([FakeProcess(100), FakeProcess(200)])
+
+    def test_second_spawn_failure_cleans_only_owned_first_process(self):
+        process = FakeProcess(100)
+        sockets = [types.SimpleNamespace(getsockname=lambda: ("127.0.0.1", port), close=unittest.mock.Mock()) for port in (33001, 33002)]
+        # Bind lambda values explicitly so the two retained fake endpoints stay distinct.
+        sockets[0].getsockname = lambda: ("127.0.0.1", 33001)
+        source = {"runId": None, "runAttempt": None}
+        launch = {key: self.identity[key] for key in ("sourceHead", "checkoutSha", "prHeadSha", "descriptorSha256")}
+        launch.update(java="/never/java", runtimeSha256={})
+        target = self.base / "transparent"
+        with patch.object(gate.relay, "reserve_listeners", return_value=dict(zip(("owner", "observer"), sockets))), \
+             patch.object(gate.s, "command", return_value=["fixture"]), patch.object(gate.s, "environment", return_value={}), \
+             patch.object(gate.subprocess, "Popen", side_effect=[process, OSError("fake spawn failure")]):
+            with self.assertRaisesRegex(OSError, "fake spawn"):
+                gate.run_profile(self.base, target, self.base / "work", launch, "a" * 64, "transparent", source, b"eula=true", gate.time.monotonic() + 300, set())
+        self.assertTrue(process.terminated)
+        self.assertTrue(all(sock.close.called for sock in sockets))
+        result = gate.read_json(target / "result.json")
+        self.assertEqual(result["status"], "failed"); self.assertEqual(set(result["processes"]), {"host"})
+
+    def test_signal_cleanup_restores_previous_handlers(self):
+        before = {sig: signal.getsignal(sig) for sig in (signal.SIGALRM, signal.SIGINT, signal.SIGTERM)}
+        with gate.cleanup_signals():
+            self.assertTrue(all(signal.getsignal(sig) == signal.SIG_IGN for sig in before))
+        self.assertEqual(before, {sig: signal.getsignal(sig) for sig in before})
+
+    def test_nested_deadline_restores_remaining_outer_budget_after_exception(self):
+        with patch.object(gate.signal, "getitimer", return_value=(100, 0)), \
+             patch.object(gate.signal, "setitimer") as timer, patch.object(gate.time, "monotonic", side_effect=[10, 15]):
+            with self.assertRaisesRegex(RuntimeError, "stage failed"):
+                with gate.stage_guard(30): raise RuntimeError("stage failed")
+        self.assertEqual(timer.call_args_list, [unittest.mock.call(signal.ITIMER_REAL, 20), unittest.mock.call(signal.ITIMER_REAL, 95)])
+
+    def test_expired_outer_deadline_is_rearmed_after_masked_cleanup(self):
+        with patch.object(gate.signal, "getitimer", return_value=(5, 0)), \
+             patch.object(gate.signal, "setitimer") as timer, patch.object(gate.time, "monotonic", side_effect=[10, 20]):
+            with gate.stage_guard(30): pass
+        self.assertEqual(timer.call_args_list[-1], unittest.mock.call(signal.ITIMER_REAL, .000001))
+
+
+class FinalResultTests(EvidenceFixture):
+    def setUp(self):
+        super().setUp()
+        profile = self.base / "transparent"; profile.mkdir()
+        self.ipc.rmdir(); self.base = profile; self.ipc = profile / "ipc"; self.ipc.mkdir()
+        self.source = {"sourceHead": self.identity["sourceHead"], "checkoutSha": self.identity["checkoutSha"], "prHeadSha": "",
+                       "runId": None, "runAttempt": None, "job": None, "repository": None, "eventName": None}
+        self.launch = {key: self.identity[key] for key in ("sourceHead", "checkoutSha", "prHeadSha", "descriptorSha256")}
+        self.launch["runtimeSha256"] = {"/fixture/java": "9" * 64}
+        self.launch_hash = "8" * 64
+        relay_value = self.write_witnesses()
+        gate.matrix.write_report(self.base / "relay.json", relay_value)
+        (self.base / "host.log").write_text("retained host log\n")
+        (self.base / "peer.log").write_text("retained peer log\n")
+        self.result = {"schemaVersion": 1, "status": "passed", **self.identity, **gate.FLAGS,
+                       "cases": gate.roster("transparent"), "timeoutSeconds": 300, "heapMiBPerJvm": 2048, "javaVersion": 25,
+                       "launcherPid": os.getpid(), "launchSha256": self.launch_hash, "runtimeSha256": self.launch["runtimeSha256"],
+                       "provenance": self.source, "cleanupErrors": [], "seconds": 2,
+                       "processes": {role: {"pid": self.pids[role], "exit": 0} for role in ("host", "peer")}}
+        gate.matrix.write_report(self.base / "launch-proof.json", self.result | {"status": "started"})
+        self.result["witnesses"] = gate.validate_witnesses(self.ipc, self.identity, self.pids, relay_value)
+        self.result["artifacts"] = gate.artifact_hashes(self.base)
+        gate.matrix.write_report(self.base / "result.json", self.result)
+
+    def validate(self, seen=None):
+        gate.validate_profile(self.base, self.result, self.launch, self.launch_hash, self.source, set() if seen is None else seen)
+
+    def test_full_frozen_profile_validates_and_reused_nonce_fails(self):
+        seen = set(); self.validate(seen)
+        self.assertEqual(seen, {self.identity["nonce"]})
+        with self.assertRaises(ValueError): self.validate(seen)
+
+    def test_late_log_or_native_witness_mutation_cannot_preserve_success(self):
+        for path in (self.base / "host.log", self.ipc / "case-00-host.json"):
+            original = path.read_bytes(); path.write_bytes(original + b" ")
+            with self.subTest(path=path.name), self.assertRaises(ValueError): self.validate()
+            path.write_bytes(original)
+
+    def test_final_missing_log_or_native_witness_cannot_preserve_success(self):
+        for path in (self.base / "host.log", self.ipc / "case-00-host.json"):
+            original = path.read_bytes(); path.unlink()
+            with self.subTest(path=path.name), self.assertRaises(ValueError): self.validate()
+            path.write_bytes(original)
+
+    def test_passing_report_cannot_claim_failed_cleanup_or_nonzero_exit(self):
+        original = copy.deepcopy(self.result)
+        mutations = (("cleanupErrors", ["unreaped peer"]), ("processes", "peer", "exit", 1),
+                     ("gameplayEnabled", True), ("heapMiBPerJvm", 4096), ("seconds", 301),
+                     ("descriptorSha256", "7" * 64), ("runtimeSha256", {"/fixture/java": "7" * 64}))
+        for mutation in mutations:
+            self.result = copy.deepcopy(original)
+            value = self.result
+            for key in mutation[:-2]: value = value[key]
+            value[mutation[-2]] = mutation[-1]
+            gate.matrix.write_report(self.base / "result.json", self.result)
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError): self.validate()
+
+
+class LaunchTests(LaunchFixture):
+    def setUp(self):
+        super().setUp()
+        self.contract = json.loads((gate.ROOT / gate.CONTRACT).read_text())
+        (self.root / gate.CONTRACT).write_text(json.dumps(self.contract))
+        self.descriptor.write_text(json.dumps({"entrypoints": {"fabric-client-gametest": [gate.ENTRYPOINT]}, "mixins": list(gate.MIXINS)}))
+        (self.descriptor.parent / Path(gate.CONTRACT).name).write_text(json.dumps(self.contract))
+        for name in gate.MIXINS:
+            value = (gate.ROOT / "src/gametest/resources" / name).read_bytes()
+            (self.root / "src/gametest/resources" / name).write_bytes(value)
+            (self.descriptor.parent / name).write_bytes(value)
+        subprocess.run(["git", "-C", str(self.root), "add", "src"], check=True)
+        subprocess.run(["git", "-C", str(self.root), "-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "stone fixture"], check=True)
+        head = gate.s.source_head(self.root)
+        self.launch.update(suite=gate.SUITE, sourceHead=head, checkoutSha=head, javaVersion=25, maxTimeoutSeconds=300,
+                           descriptorSha256=gate.s.digest(self.descriptor), contract=gate.CONTRACT, contractSha256=gate.s.digest(self.root / gate.CONTRACT))
+        self.launch["runtimeSha256"] = {name: gate.s.digest(name) for name in self.launch["runtimeSha256"]}
+        self.launch_path.write_text(json.dumps(self.launch))
+        java_patch = patch.object(gate.s, "configured_java", return_value=self.java)
+        java_patch.start(); self.addCleanup(java_patch.stop)
+
+    def test_exact_stone_launch_reuses_runtime_command_validator(self):
+        self.assertEqual(gate.validate_launch(self.launch, self.launch_path, self.root), gate.s.digest(self.launch_path))
+
+    def test_java_version_timeout_mixin_and_runtime_tampering_fail(self):
+        for key, value in (("javaVersion", 24), ("maxTimeoutSeconds", 301), ("suite", "moon"), ("main", "OtherMain")):
+            launch = copy.deepcopy(self.launch); launch[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError): gate.validate_launch(launch, self.launch_path, self.root)
+        self.java.write_text("changed executable")
+        with self.assertRaises(ValueError): gate.validate_launch(self.launch, self.launch_path, self.root)
+
+    def test_command_forces_two_gib_offline_identity_and_explicit_profile(self):
+        identity = {"profile": "asymmetric", "nonce": "abc"}
+        result = gate.s.command(self.launch, "host", self.root / "build/game", self.root / "build/ipc", identity, 300, gate.selection("asymmetric"))
+        self.assertIn("-Xmx2G", result); self.assertNotIn("-Xmx8G", result)
+        self.assertIn("-Dwildercord.mp.profile=asymmetric", result)
+        self.assertEqual(result[result.index("--accessToken") + 1], "0")
+
+    def test_only_existing_diagnostic_ci_job_and_exact_checkout_are_accepted(self):
+        event = self.root / "build/event.json"
+        event.write_text(json.dumps({"number": 42, "pull_request": {"head": {"sha": self.launch["sourceHead"]}}}))
+        env = {"GITHUB_ACTIONS": "true", "GITHUB_SHA": "a" * 40, "GITHUB_RUN_ID": "12", "GITHUB_RUN_ATTEMPT": "2",
+               "GITHUB_JOB": "native-diagnostic", "GITHUB_REPOSITORY": "owner/repo", "GITHUB_EVENT_NAME": "pull_request",
+               "NATIVE_DIAGNOSTIC_HEAD_SHA": self.launch["sourceHead"], "WILDERCORD_PR_HEAD_SHA": self.launch["sourceHead"],
+               "NATIVE_DIAGNOSTIC_PR": "42", "GITHUB_EVENT_PATH": str(event)}
+        result = gate.provenance(self.root, env)
+        self.assertEqual(result["job"], "native-diagnostic")
+        self.assertEqual(result["workflowSha"], "a" * 40)
+        self.assertNotEqual(result["workflowSha"], result["checkoutSha"])
+        for key, value in (("GITHUB_JOB", "new-job"), ("NATIVE_DIAGNOSTIC_HEAD_SHA", "a" * 40),
+                           ("WILDERCORD_PR_HEAD_SHA", ""), ("GITHUB_SHA", "malformed"), ("GITHUB_EVENT_NAME", "workflow_dispatch"),
+                           ("NATIVE_DIAGNOSTIC_PR", "43"), ("GITHUB_RUN_ATTEMPT", "0")):
+            with self.subTest(key=key), self.assertRaises(ValueError): gate.provenance(self.root, env | {key: value})
+        event.write_text(json.dumps({"number": 42, "pull_request": {"head": {"sha": "f" * 40}}}))
+        with self.assertRaises(ValueError): gate.provenance(self.root, env)
+
+    def test_changed_contract_cannot_drop_cases_or_change_delays(self):
+        for key in ("profiles", "limits", "gameplayEnabled"):
+            value = copy.deepcopy(self.contract)
+            if key == "profiles": value[key][0]["cases"].pop()
+            elif key == "limits": value[key]["maxProfileSeconds"] = 301
+            else: value[key] = True
+            (self.root / gate.CONTRACT).write_text(json.dumps(value))
+            with self.subTest(key=key), self.assertRaises(ValueError): gate.load_contract(self.root)
+
+    def test_cli_has_no_arbitrary_command_profile_case_or_suite_selection(self):
+        for args in (("--profile", "transparent"), ("--suite", "moon"), ("--case", "RIGHT"), ("--command", "anything"), ("--total-timeout", "1201")):
+            with self.subTest(args=args), patch("sys.stderr"), self.assertRaises(SystemExit): gate.parse_args(args)
+        self.assertEqual(gate.parse_args([]).total_timeout, 1200)
+
+
+if __name__ == "__main__":
+    unittest.main()

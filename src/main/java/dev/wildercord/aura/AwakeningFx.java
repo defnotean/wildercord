@@ -35,7 +35,9 @@ public final class AwakeningFx {
 	/** Every sound an awakening plays (the tests check they're all in the feel kit). */
 	public static final List<String> SOUNDS = List.of("aura_awaken", "aura_awaken_fed", "aura_spent", "aura_recovered", "aura_awaken_ember",
 		"aura_awaken_rime", "aura_awaken_thunder", "aura_awaken_gale", "aura_awaken_stone", "aura_awaken_verdant", "aura_awaken_hollow",
-		"aura_awaken_starlit", "aura_awaken_hourglass", "aura_awaken_crimson", "aura_awaken_steel");
+		"aura_awaken_starlit", "aura_awaken_hourglass", "aura_awaken_crimson", "aura_awaken_steel",
+		// ---- methods-a pack
+		"aura_awaken_tide", "aura_awaken_iron", "aura_awaken_dune");
 
 	private static final int WHITE = 0xFFFFFF;
 	private static final Vec3 UP = new Vec3(0, 1, 0);

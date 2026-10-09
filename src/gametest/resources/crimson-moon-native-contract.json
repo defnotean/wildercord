@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "suite": "moon",
+  "entrypoint": "dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest",
+  "cases": [
+    "articulated_netherite_funded_right_release"
+  ],
+  "expectedCount": 1,
+  "profiles": {
+    "moon-wide": {
+      "username": "WCMoonWide2",
+      "offlineUuid": "efc39378-3f97-37a3-bf28-b62b82f0bafa",
+      "skin": "wide"
+    },
+    "moon-slim": {
+      "username": "WCMoonSlim",
+      "offlineUuid": "0167ff94-ec08-3235-8727-7c1376ad1e7b",
+      "skin": "slim"
+    }
+  },
+  "peerProfile": {
+    "username": "WCAuraPeer",
+    "offlineUuid": "315e5fc2-3894-3190-83b4-ab47825b72ac"
+  },
+  "observerAngles": [
+    "front_oblique",
+    "reverse_oblique"
+  ],
+  "requiredMixins": [
+    "crimson-moon-multiplayer-gametest.mixins.json"
+  ],
+  "terminalWitnesses": [
+    "host-moon-passed.properties",
+    "peer-moon-passed.properties",
+    "peer-disconnected.properties"
+  ],
+  "requiredWitnessProperties": [
+    "nonce",
+    "suite",
+    "sourceHead",
+    "checkoutSha",
+    "prHeadSha",
+    "descriptorSha256",
+    "hostUuid",
+    "peerUuid",
+    "runIdentity",
+    "case",
+    "expectedSkin",
+    "observerAngle",
+    "role",
+    "pid",
+    "cases"
+  ],
+  "caseWitnesses": [
+    "case-00-ready.properties",
+    "case-00-clock-initial.properties",
+    "case-00-clock-rendezvous.properties",
+    "case-00-clock-ack.properties",
+    "case-00-clock-ready.properties",
+    "case-00-accepted.properties",
+    "case-00-release.properties",
+    "host-case-00-observed.properties",
+    "peer-case-00-observed.properties",
+    "case-00-passed.properties"
+  ],
+  "limits": {
+    "maxJvms": 2,
+    "maxHeapMiBPerJvm": 2048,
+    "maxCases": 1,
+    "maxTimeoutSeconds": 180
+  },
+  "routing": "Supervised-only; never part of the ordinary one-client descriptor. Existing cast-receipt 42-case route remains mandatory and unchanged.",
+  "coverage": "One real owner FP plus one actual connected observer world image of the same accepted action, per original skin and observer angle. Four separately supervised shards are required for the complete bounded wide/slim by front/reverse set.",
+  "proof": "Strict rendered source ACTIVE [10,11); exact server completion at acceptance+10. Each image is causally after the persisted release receipt, and both immutable image witnesses must already exist at the first real damage callback. No cross-JVM clock or filesystem timestamp inference.",
+  "limitsOfProof": [
+    "Native runs and pixel-quality review remain separate from source checks.",
+    "The bounded release case does not prove the 60-case owner phase/hand/fallback matrix.",
+    "No substituted skin, synthetic pose, admission bypass, rest reset, frozen time or owner-third observer is permitted.",
+    "Causal release-before-image-before-damage evidence is not exact server-release-frame correspondence. That exact-frame flag remains false even on paired success."
+  ],
+  "proofFlags": {
+    "releaseImageDamageOrderVerified": "required true on final case and terminals",
+    "serverReleaseFrameCorrespondenceVerified": false,
+    "pixelQualityReviewed": false
+  }
+}

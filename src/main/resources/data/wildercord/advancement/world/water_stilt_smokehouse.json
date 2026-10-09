@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_stilt_smokehouse": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_stilt_smokehouse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:smoker"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_stilt_smokehouse.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_stilt_smokehouse.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_stilt_smokehouse"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

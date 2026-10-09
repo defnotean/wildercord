@@ -6,14 +6,42 @@ Craftable runes up to Tier III use a **Blank Rune** plus a few items that suit t
 
 **Blank Rune:** 4 Cobblestone around 1 Lapis Lazuli, makes 4.
 
-## Tier I (53 runes)
+## Tier I (232 runes)
 
 Each needs a Blank Rune and its own items, plus **nothing else**.
 
 <div>
 <figure>
+![Crafting Air Pocket: a Blank Rune and Glass Bottle and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_air_pocket.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/air_pocket.png) <a href="../runes/effects/frost.md#air_pocket">Air Pocket</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
 ![Crafting Anchor: a Blank Rune and Iron Chain and Cobblestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_anchor.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/anchor.png) <a href="../runes/effects/void.md#anchor">Anchor</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Angler's Lure: a Blank Rune and String and Raw Cod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_angler_lure.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/angler_lure.png) <a href="../runes/effects/frost.md#angler_lure">Angler's Lure</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Appraise: a Blank Rune and Emerald and Glass Pane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_appraise.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/appraise.png) <a href="../runes/effects/arcane.md#appraise">Appraise</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Bait Blessing: a Blank Rune and Rabbit's Foot and Raw Salmon](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bait_blessing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bait_blessing.png) <a href="../runes/effects/arcane.md#bait_blessing">Bait Blessing</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Bakehouse: a Blank Rune and Furnace, Wheat Crops and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bakehouse.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bakehouse.png) <a href="../runes/effects/fire.md#bakehouse">Bakehouse</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Barkstrip: a Blank Rune and Iron Axe, Oak Log and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barkstrip.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/barkstrip.png) <a href="../runes/effects/earth.md#barkstrip">Barkstrip</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Barnwarmth: a Blank Rune and Campfire, Hay Bale and Oak Planks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barnwarmth.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/barnwarmth.png) <a href="../runes/effects/fire.md#barnwarmth">Barnwarmth</a><br><span>Effect, Fire</span></figcaption>
 </figure>
 <figure>
 ![Crafting Barrier: a Blank Rune and Glass and Amethyst Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barrier.png)
@@ -24,8 +52,24 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/basinfill.png) <a href="../runes/effects/frost.md#basinfill">Basinfill</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
+![Crafting Beastguard: a Blank Rune and Bone and Leather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_beastguard.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/beastguard.png) <a href="../runes/effects/arcane.md#beastguard">Beastguard</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Berrybless: a Blank Rune and Sweet Berries, Bone Meal and Oak Leaves](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_berrybless.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/berrybless.png) <a href="../runes/effects/earth.md#berrybless">Berrybless</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Blind: a Blank Rune and Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_blind.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blind.png) <a href="../runes/effects/void.md#blind">Blind</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Block Pack: a Blank Rune and Crafting Table and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_blockpack.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blockpack.png) <a href="../runes/effects/earth.md#blockpack">Block Pack</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Bobber Bell: a Blank Rune and String, Gold Nugget and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bobber_bell.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bobber_bell.png) <a href="../runes/effects/arcane.md#bobber_bell">Bobber Bell</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Brace: a Blank Rune and Cobblestone and Iron Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_brace.png)
@@ -36,6 +80,22 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bramble.png) <a href="../runes/effects/life.md#bramble">Bramble</a><br><span>Effect, Life</span></figcaption>
 </figure>
 <figure>
+![Crafting Brimming: a Blank Rune and Cauldron and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_brimming.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/brimming.png) <a href="../runes/effects/frost.md#brimming">Brimming</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Button Push: a Blank Rune and Stone Button](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_buttonpush.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/buttonpush.png) <a href="../runes/effects/storm.md#buttonpush">Button Push</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Calm Smoke: a Blank Rune and Campfire, Honeycomb and Oak Leaves](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_calmsmoke.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/calmsmoke.png) <a href="../runes/effects/fire.md#calmsmoke">Calm Smoke</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Chalk Line: a Blank Rune and Bone Meal and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_chalkline.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chalkline.png) <a href="../runes/effects/arcane.md#chalkline">Chalk Line</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Chill: a Blank Rune and Ice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_chill.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chill.png) <a href="../runes/effects/frost.md#chill">Chill</a><br><span>Effect, Frost</span></figcaption>
 </figure>
@@ -44,8 +104,20 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chisel.png) <a href="../runes/effects/earth.md#chisel">Chisel</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
+![Crafting Clot: a Blank Rune and Milk Bucket and Spider Eye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_clot.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/clot.png) <a href="../runes/effects/blood.md#clot">Clot</a><br><span>Effect, Blood</span></figcaption>
+</figure>
+<figure>
 ![Crafting Collect: a Blank Rune and Hopper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_collect.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/collect.png) <a href="../runes/effects/void.md#collect">Collect</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Compost: a Blank Rune and Composter, Rotten Flesh and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_compost.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/compost.png) <a href="../runes/effects/earth.md#compost">Compost</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Concrete Set: a Blank Rune and White Concrete Powder and Water Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_concreteset.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/concreteset.png) <a href="../runes/effects/earth.md#concreteset">Concrete Set</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
 ![Crafting Countdown: a Blank Rune and Clock and Gunpowder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_countdown.png)
@@ -56,12 +128,96 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cushion.png) <a href="../runes/effects/wind.md#cushion">Cushion</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
+![Crafting Deepsound: a Blank Rune and Note Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_deepsound.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/deepsound.png) <a href="../runes/effects/earth.md#deepsound">Deepsound</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Deepwarn: a Blank Rune and Magma Cream and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_deepwarn.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/deepwarn.png) <a href="../runes/effects/earth.md#deepwarn">Deepwarn</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Depth Sounding: a Blank Rune and Pointed Dripstone, String and Cobbled Deepslate](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_depth_sounding.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/depth_sounding.png) <a href="../runes/effects/earth.md#depth_sounding">Depth Sounding</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Dew Drink: a Blank Rune and Glass Bottle and Lily Pad](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dew_drink.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dew_drink.png) <a href="../runes/effects/life.md#dew_drink">Dew Drink</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Dewcatch: a Blank Rune and Glass Bottle and Fern](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewcatch.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dewcatch.png) <a href="../runes/effects/frost.md#dewcatch">Dewcatch</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Dewfall: a Blank Rune and Water Bucket, Dirt and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewfall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dewfall.png) <a href="../runes/effects/storm.md#dewfall">Dewfall</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Diver's Hands: a Blank Rune and Prismarine Shard and Iron Pickaxe](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_divers_hands.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/divers_hands.png) <a href="../runes/effects/frost.md#divers_hands">Diver's Hands</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Doorcall: a Blank Rune and Oak Door and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_doorcall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/doorcall.png) <a href="../runes/effects/storm.md#doorcall">Doorcall</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Douse: a Blank Rune and Candle and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_snuff_out.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/snuff_out.png) <a href="../runes/effects/wind.md#snuff_out">Douse</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Dust Line: a Blank Rune and Bone Meal, String and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_chalk_line.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chalk_line.png) <a href="../runes/effects/arcane.md#chalk_line">Dust Line</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Dye Wash: a Blank Rune and Red Dye, Yellow Dye and Blue Dye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dye_wash.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dye_wash.png) <a href="../runes/effects/life.md#dye_wash">Dye Wash</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
 ![Crafting Ember: a Blank Rune and Coal and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ember.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ember.png) <a href="../runes/effects/fire.md#ember">Ember</a><br><span>Effect, Fire</span></figcaption>
 </figure>
 <figure>
+![Crafting Emberguard: a Blank Rune and Magma Cream and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_emberguard.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/emberguard.png) <a href="../runes/effects/fire.md#emberguard">Emberguard</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Fallow: a Blank Rune and Dirt, Bone Meal and Short Grass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fallow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fallow.png) <a href="../runes/effects/earth.md#fallow">Fallow</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Fathom: a Blank Rune and String and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fathom.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fathom.png) <a href="../runes/effects/arcane.md#fathom">Fathom</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Feather Fall: a Blank Rune and 2x Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_feather_fall.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/feather_fall.png) <a href="../runes/effects/wind.md#feather_fall">Feather Fall</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Field Sense: a Blank Rune and Spyglass, Wheat Crops and Carrot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fieldsense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fieldsense.png) <a href="../runes/effects/arcane.md#fieldsense">Field Sense</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Fieldstride: a Blank Rune and Leather Boots, Wheat Crops and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fieldstride.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fieldstride.png) <a href="../runes/effects/wind.md#fieldstride">Fieldstride</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Firebreak: a Blank Rune and Snowball and Water Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_firebreak.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/firebreak.png) <a href="../runes/effects/frost.md#firebreak">Firebreak</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Fleece: a Blank Rune and Shears, White Wool and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fleece.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fleece.png) <a href="../runes/effects/wind.md#fleece">Fleece</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Fodder: a Blank Rune and Hay Bale, Carrot and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fodder.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fodder.png) <a href="../runes/effects/earth.md#fodder">Fodder</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Folk Call: a Blank Rune and Emerald and Note Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_folk_call.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/folk_call.png) <a href="../runes/effects/wind.md#folk_call">Folk Call</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Folk Census: a Blank Rune and Emerald and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_folk_census.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/folk_census.png) <a href="../runes/effects/arcane.md#folk_census">Folk Census</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Frostward: a Blank Rune and Snowball and Leather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_frostward.png)
@@ -72,8 +228,24 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/galvanize.png) <a href="../runes/effects/storm.md#galvanize">Galvanize</a><br><span>Effect, Storm</span></figcaption>
 </figure>
 <figure>
+![Crafting Gentle Hand: a Blank Rune and Apple, Wheat Crops and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gentlehand.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gentlehand.png) <a href="../runes/effects/wind.md#gentlehand">Gentle Hand</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
 ![Crafting Glimmer: a Blank Rune and Glow Lichen](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_glimmer.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glimmer.png) <a href="../runes/effects/life.md#glimmer">Glimmer</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Gloomsight: a Blank Rune and Spider Eye and Glow Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gloomsight.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gloomsight.png) <a href="../runes/effects/arcane.md#gloomsight">Gloomsight</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Glyph Carve: a Blank Rune and Oak Sign and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_glyph_carve.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glyph_carve.png) <a href="../runes/effects/earth.md#glyph_carve">Glyph Carve</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Gravefinder: a Blank Rune and Bone and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gravefinder.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gravefinder.png) <a href="../runes/effects/arcane.md#gravefinder">Gravefinder</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Grow: a Blank Rune and 2x Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_grow.png)
@@ -92,12 +264,52 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/haste.png) <a href="../runes/effects/arcane.md#haste">Haste</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
+![Crafting Hayloft: a Blank Rune and Hay Bale, Slimeball and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hayloft.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hayloft.png) <a href="../runes/effects/wind.md#hayloft">Hayloft</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
 ![Crafting Heal: a Blank Rune and Glistering Melon Slice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_heal.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/heal.png) <a href="../runes/effects/life.md#heal">Heal</a><br><span>Effect, Life</span></figcaption>
 </figure>
 <figure>
+![Crafting Hearthpath: a Blank Rune and Compass and Red Bed](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthpath.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthpath.png) <a href="../runes/effects/arcane.md#hearthpath">Hearthpath</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Herdcall: a Blank Rune and Lead, Wheat Crops and Stick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_herdcall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/herdcall.png) <a href="../runes/effects/wind.md#herdcall">Herdcall</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Herdsense: a Blank Rune and Spyglass, Lead and Leather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_herdsense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/herdsense.png) <a href="../runes/effects/arcane.md#herdsense">Herdsense</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Hex: a Blank Rune and Fermented Spider Eye and Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hex.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hex.png) <a href="../runes/effects/void.md#hex">Hex</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Hobble: a Blank Rune and Cobweb and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hobble.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hobble.png) <a href="../runes/effects/void.md#hobble">Hobble</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Holefill: a Blank Rune and Dirt, Cobblestone and Oak Planks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_holefill.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/holefill.png) <a href="../runes/effects/earth.md#holefill">Holefill</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Hollow Sense: a Blank Rune and Echo Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hollowsense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hollowsense.png) <a href="../runes/effects/wind.md#hollowsense">Hollow Sense</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Home Bearing: a Blank Rune and Compass and White Wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_home_bearing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/home_bearing.png) <a href="../runes/effects/wind.md#home_bearing">Home Bearing</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Honeydew: a Blank Rune and Honey Bottle, Sugar and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_honeydew.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/honeydew.png) <a href="../runes/effects/wind.md#honeydew">Honeydew</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Ice Auger: a Blank Rune and Ice and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ice_auger.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ice_auger.png) <a href="../runes/effects/frost.md#ice_auger">Ice Auger</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
 ![Crafting Icepath: a Blank Rune and Packed Ice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_icepath.png)
@@ -108,6 +320,34 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/icicle.png) <a href="../runes/effects/frost.md#icicle">Icicle</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
+![Crafting Kelpsong: a Blank Rune and Kelp and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_kelpsong.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kelpsong.png) <a href="../runes/effects/frost.md#kelpsong">Kelpsong</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Lamplighter: a Blank Rune and Candle and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lamplighter.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lamplighter.png) <a href="../runes/effects/fire.md#lamplighter">Lamplighter</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Land Reading: a Blank Rune and Dirt and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_land_reading.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/land_reading.png) <a href="../runes/effects/earth.md#land_reading">Land Reading</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Landread: a Blank Rune and Dirt and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_landread.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/landread.png) <a href="../runes/effects/earth.md#landread">Landread</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Lantern Soul: a Blank Rune and Lantern and Soul Torch](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lantern_soul.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lantern_soul.png) <a href="../runes/effects/arcane.md#lantern_soul">Lantern Soul</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Lava Sense: a Blank Rune and Magma Cream and Spider Eye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lava_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lava_sense.png) <a href="../runes/effects/fire.md#lava_sense">Lava Sense</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Leaffall: a Blank Rune and Oak Leaves, Shears and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leaffall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leaffall.png) <a href="../runes/effects/wind.md#leaffall">Leaffall</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
 ![Crafting Leap: a Blank Rune and Slimeball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leap.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leap.png) <a href="../runes/effects/wind.md#leap">Leap</a><br><span>Effect, Wind</span></figcaption>
 </figure>
@@ -116,8 +356,48 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leech.png) <a href="../runes/effects/blood.md#leech">Leech</a><br><span>Effect, Blood</span></figcaption>
 </figure>
 <figure>
+![Crafting Lever Flip: a Blank Rune and Lever](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leverflip.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leverflip.png) <a href="../runes/effects/storm.md#leverflip">Lever Flip</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
 ![Crafting Light: a Blank Rune and 2x Torch](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_light.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/light.png) <a href="../runes/effects/arcane.md#light">Light</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Lily Path: a Blank Rune and 2x Lily Pad](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lily_path.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lily_path.png) <a href="../runes/effects/frost.md#lily_path">Lily Path</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Lore Reading: a Blank Rune and Book and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lore_reading.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lore_reading.png) <a href="../runes/effects/arcane.md#lore_reading">Lore Reading</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Lostfind: a Blank Rune and Gold Nugget and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lostfind.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lostfind.png) <a href="../runes/effects/arcane.md#lostfind">Lostfind</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Luckcharm: a Blank Rune and Rabbit's Foot and Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_luckcharm.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/luckcharm.png) <a href="../runes/effects/life.md#luckcharm">Luckcharm</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Lux Reading: a Blank Rune and Torch and Glass Pane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lux_reading.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lux_reading.png) <a href="../runes/effects/arcane.md#lux_reading">Lux Reading</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Milkmaid: a Blank Rune and Bucket, Wheat Crops and Snowball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_milkmaid.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/milkmaid.png) <a href="../runes/effects/frost.md#milkmaid">Milkmaid</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Millstone: a Blank Rune and Grindstone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_millstone.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/millstone.png) <a href="../runes/effects/earth.md#millstone">Millstone</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Moon Reading: a Blank Rune and Clock and Glow Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_moon_reading.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/moon_reading.png) <a href="../runes/effects/time.md#moon_reading">Moon Reading</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
+![Crafting Nest Tend: a Blank Rune and Seagrass and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nest_tend.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nest_tend.png) <a href="../runes/effects/earth.md#nest_tend">Nest Tend</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
 ![Crafting Night Eye: a Blank Rune and Glow Berries](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_night_eye.png)
@@ -128,8 +408,40 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nourish.png) <a href="../runes/effects/life.md#nourish">Nourish</a><br><span>Effect, Life</span></figcaption>
 </figure>
 <figure>
+![Crafting Nudge: a Blank Rune and Feather and Slimeball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nudge.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nudge.png) <a href="../runes/effects/wind.md#nudge">Nudge</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Orbcall: a Blank Rune and Bottle o' Enchanting](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_orbcall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/orbcall.png) <a href="../runes/effects/arcane.md#orbcall">Orbcall</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Pack Tidy: a Blank Rune and Bundle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_packtidy.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/packtidy.png) <a href="../runes/effects/void.md#packtidy">Pack Tidy</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
 ![Crafting Pelt: a Blank Rune and Gravel and Cobblestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pelt.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pelt.png) <a href="../runes/effects/earth.md#pelt">Pelt</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Picnic: a Blank Rune and Bread, Apple and White Carpet](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_picnic.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/picnic.png) <a href="../runes/effects/earth.md#picnic">Picnic</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Plankway: a Blank Rune and 2x Oak Planks and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_plankway.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/plankway.png) <a href="../runes/effects/earth.md#plankway">Plankway</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Plumb Line: a Blank Rune and String, Iron Nugget and Cobblestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_plumbline.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/plumbline.png) <a href="../runes/effects/earth.md#plumbline">Plumb Line</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Polish: a Blank Rune and Polished Andesite and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_polish.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/polish.png) <a href="../runes/effects/earth.md#polish">Polish</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Portal Reckoning: a Blank Rune and Obsidian and Empty Map](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_portal_reckoning.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/portal_reckoning.png) <a href="../runes/effects/void.md#portal_reckoning">Portal Reckoning</a><br><span>Effect, Void</span></figcaption>
 </figure>
 <figure>
 ![Crafting Prospect: a Blank Rune and Stone Pickaxe and Amethyst Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_prospect.png)
@@ -144,6 +456,26 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/push.png) <a href="../runes/effects/wind.md#push">Push</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
+![Crafting Quench: a Blank Rune and Water Bucket, Snowball and Ice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_quench.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/quench.png) <a href="../runes/effects/frost.md#quench">Quench</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Reed Cut: a Blank Rune and Sugar Cane and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reed_cut.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reed_cut.png) <a href="../runes/effects/earth.md#reed_cut">Reed Cut</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Reeling Tide: a Blank Rune and String, Stick and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reeling_tide.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reeling_tide.png) <a href="../runes/effects/frost.md#reeling_tide">Reeling Tide</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Refloat: a Blank Rune and Kelp and Lily Pad](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_refloat.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/refloat.png) <a href="../runes/effects/frost.md#refloat">Refloat</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Relic Sense: a Blank Rune and Brush and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_relic_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/relic_sense.png) <a href="../runes/effects/earth.md#relic_sense">Relic Sense</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Rend: a Blank Rune and Iron Nugget and Bone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rend.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rend.png) <a href="../runes/effects/blood.md#rend">Rend</a><br><span>Effect, Blood</span></figcaption>
 </figure>
@@ -152,64 +484,444 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reveal.png) <a href="../runes/effects/arcane.md#reveal">Reveal</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
+![Crafting Salve: a Blank Rune and Honey Bottle and Snowball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_salve.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/salve.png) <a href="../runes/effects/frost.md#salve">Salve</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Sapling Sow: a Blank Rune and Oak Sapling, Birch Sapling and Dirt](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_saplingsow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/saplingsow.png) <a href="../runes/effects/earth.md#saplingsow">Sapling Sow</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Savor: a Blank Rune and Steak and Honey Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_savor.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/savor.png) <a href="../runes/effects/time.md#savor">Savor</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
+![Crafting Sentry: a Blank Rune and Spyglass and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sentry.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sentry.png) <a href="../runes/effects/arcane.md#sentry">Sentry</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Shelf Count: a Blank Rune and Book and Oak Planks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shelf_count.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shelf_count.png) <a href="../runes/effects/arcane.md#shelf_count">Shelf Count</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Shoal Herd: a Blank Rune and Kelp, Raw Cod and Raw Salmon](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shoal_herd.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shoal_herd.png) <a href="../runes/effects/frost.md#shoal_herd">Shoal Herd</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
 ![Crafting Shock: a Blank Rune and Lightning Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shock.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shock.png) <a href="../runes/effects/storm.md#shock">Shock</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Shore Sense: a Blank Rune and Compass and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shore_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shore_sense.png) <a href="../runes/effects/arcane.md#shore_sense">Shore Sense</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Shore Up: a Blank Rune and Oak Log and Gravel](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shoreup.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shoreup.png) <a href="../runes/effects/earth.md#shoreup">Shore Up</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Shrug Off: a Blank Rune and Milk Bucket and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shrug_off.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shrug_off.png) <a href="../runes/effects/wind.md#shrug_off">Shrug Off</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Siftfall: a Blank Rune and Gravel and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_siftfall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/siftfall.png) <a href="../runes/effects/earth.md#siftfall">Siftfall</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Sign Glow: a Blank Rune and Oak Sign and Glow Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sign_glow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sign_glow.png) <a href="../runes/effects/life.md#sign_glow">Sign Glow</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Skater's Edge: a Blank Rune and Ice and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_skaters_edge.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skaters_edge.png) <a href="../runes/effects/frost.md#skaters_edge">Skater's Edge</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Sky Reading: a Blank Rune and Feather and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sky_reading.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sky_reading.png) <a href="../runes/effects/storm.md#sky_reading">Sky Reading</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Skyread: a Blank Rune and Feather and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_skyread.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skyread.png) <a href="../runes/effects/storm.md#skyread">Skyread</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Slime Sense: a Blank Rune and Slimeball and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_slime_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/slime_sense.png) <a href="../runes/effects/life.md#slime_sense">Slime Sense</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Slowburn: a Blank Rune and Bread and Charcoal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_slowburn.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/slowburn.png) <a href="../runes/effects/life.md#slowburn">Slowburn</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Sluice: a Blank Rune and Kelp, Clay Ball and Charcoal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sluice.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sluice.png) <a href="../runes/effects/frost.md#sluice">Sluice</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Smoke Signal: a Blank Rune and Campfire and Hay Bale](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_smoke_signal.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/smoke_signal.png) <a href="../runes/effects/fire.md#smoke_signal">Smoke Signal</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Snuff Out: a Blank Rune and Water Bucket and Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_snuffout.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/snuffout.png) <a href="../runes/effects/frost.md#snuffout">Snuff Out</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Soak Through: a Blank Rune and Clay Ball and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_soak_through.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soak_through.png) <a href="../runes/effects/frost.md#soak_through">Soak Through</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Softsole: a Blank Rune and Feather and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_softsole.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/softsole.png) <a href="../runes/effects/wind.md#softsole">Softsole</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Sounding: a Blank Rune and Magma Block and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sounding.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sounding.png) <a href="../runes/effects/frost.md#sounding">Sounding</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Sow: a Blank Rune and Wheat Seeds, Beetroot Seeds and Carrot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sow.png) <a href="../runes/effects/earth.md#sow">Sow</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Spawn Bearing: a Blank Rune and Compass and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spawn_bearing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spawn_bearing.png) <a href="../runes/effects/wind.md#spawn_bearing">Spawn Bearing</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Spring Draw: a Blank Rune and Bucket and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spring_draw.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spring_draw.png) <a href="../runes/effects/frost.md#spring_draw">Spring Draw</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Springseek: a Blank Rune and Stick, Clay Ball and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_springseek.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/springseek.png) <a href="../runes/effects/frost.md#springseek">Springseek</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Stand Pose: a Blank Rune and Armor Stand and Stick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stand_pose.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stand_pose.png) <a href="../runes/effects/arcane.md#stand_pose">Stand Pose</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Starchart: a Blank Rune and Empty Map and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_starchart.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starchart.png) <a href="../runes/effects/arcane.md#starchart">Starchart</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Staunch: a Blank Rune and Milk Bucket and Snowball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_staunch.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/staunch.png) <a href="../runes/effects/frost.md#staunch">Staunch</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Steedmend: a Blank Rune and Golden Carrot and Hay Bale](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_steedmend.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steedmend.png) <a href="../runes/effects/life.md#steedmend">Steedmend</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Stewpot: a Blank Rune and Bowl, Red Mushroom and Brown Mushroom](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stewpot.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stewpot.png) <a href="../runes/effects/fire.md#stewpot">Stewpot</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Stilt: a Blank Rune and Packed Mud and Scaffolding](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stilt.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stilt.png) <a href="../runes/effects/earth.md#stilt">Stilt</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Stocktake: a Blank Rune and Chest and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stocktake.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stocktake.png) <a href="../runes/effects/arcane.md#stocktake">Stocktake</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Storm Glass: a Blank Rune and Glass Bottle and Copper Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_storm_glass.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/storm_glass.png) <a href="../runes/effects/storm.md#storm_glass">Storm Glass</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Stoutheart: a Blank Rune and Iron Ingot and Apple](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stoutheart.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stoutheart.png) <a href="../runes/effects/earth.md#stoutheart">Stoutheart</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Sun Reading: a Blank Rune and Clock, Sunflower and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sun_reading.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sun_reading.png) <a href="../runes/effects/time.md#sun_reading">Sun Reading</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
+![Crafting Sunbask: a Blank Rune and Sunflower and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sunbask.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sunbask.png) <a href="../runes/effects/fire.md#sunbask">Sunbask</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Surefoot: a Blank Rune and Leather Boots and Cobblestone Stairs](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_surefoot.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/surefoot.png) <a href="../runes/effects/earth.md#surefoot">Surefoot</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
 ![Crafting Swift: a Blank Rune and 2x Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_swift.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/swift.png) <a href="../runes/effects/wind.md#swift">Swift</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
+![Crafting Tackle Mend: a Blank Rune and 2x String and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tackle_mend.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tackle_mend.png) <a href="../runes/effects/arcane.md#tackle_mend">Tackle Mend</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Taunt: a Blank Rune and Rotten Flesh and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_taunt.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/taunt.png) <a href="../runes/effects/blood.md#taunt">Taunt</a><br><span>Effect, Blood</span></figcaption>
+</figure>
+<figure>
+![Crafting Tend: a Blank Rune and Wheat Crops and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tend.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tend.png) <a href="../runes/effects/earth.md#tend">Tend</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Thawfield: a Blank Rune and Torch, Snowball and Dirt](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_thawfield.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thawfield.png) <a href="../runes/effects/fire.md#thawfield">Thawfield</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Tide Lantern: a Blank Rune and Sea Pickle and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tide_lantern.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tide_lantern.png) <a href="../runes/effects/arcane.md#tide_lantern">Tide Lantern</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Tide Marker: a Blank Rune and Sea Pickle and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tide_marker.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tide_marker.png) <a href="../runes/effects/arcane.md#tide_marker">Tide Marker</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Tidebreath: a Blank Rune and Pufferfish](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tidebreath.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidebreath.png) <a href="../runes/effects/frost.md#tidebreath">Tidebreath</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Tillage: a Blank Rune and Wooden Hoe, Dirt and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tillage.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tillage.png) <a href="../runes/effects/earth.md#tillage">Tillage</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Tilth: a Blank Rune and Coarse Dirt, Bone Meal and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tilth.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tilth.png) <a href="../runes/effects/earth.md#tilth">Tilth</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Trail Blaze: a Blank Rune and Torch, Stick and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trail_blaze.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trail_blaze.png) <a href="../runes/effects/fire.md#trail_blaze">Trail Blaze</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Trailblaze: a Blank Rune and Bread and Lime Dye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trailblaze.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trailblaze.png) <a href="../runes/effects/life.md#trailblaze">Trailblaze</a><br><span>Effect, Life</span></figcaption>
 </figure>
 <figure>
 ![Crafting Umbra: a Blank Rune and Ink Sac and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_umbra.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/umbra.png) <a href="../runes/effects/void.md#umbra">Umbra</a><br><span>Effect, Void</span></figcaption>
 </figure>
 <figure>
+![Crafting Unpack: a Blank Rune and Crafting Table and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_unpack.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/unpack.png) <a href="../runes/effects/earth.md#unpack">Unpack</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Upwell: a Blank Rune and Soul Sand and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_upwell.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/upwell.png) <a href="../runes/effects/frost.md#upwell">Upwell</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Warm Cloak: a Blank Rune and Leather and Blaze Powder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_warm_cloak.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/warm_cloak.png) <a href="../runes/effects/fire.md#warm_cloak">Warm Cloak</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Water Reading: a Blank Rune and Prismarine Crystals and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_water_reading.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/water_reading.png) <a href="../runes/effects/arcane.md#water_reading">Water Reading</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Waymark: a Blank Rune and Torch, Stick and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_waymark.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/waymark.png) <a href="../runes/effects/arcane.md#waymark">Waymark</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Whistle: a Blank Rune and Goat Horn](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_whistle.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/whistle.png) <a href="../runes/effects/wind.md#whistle">Whistle</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Wildflower: a Blank Rune and Dandelion, Poppy and Cornflower](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wildflower.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wildflower.png) <a href="../runes/effects/earth.md#wildflower">Wildflower</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Windcut: a Blank Rune and Feather and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_windcut.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/windcut.png) <a href="../runes/effects/wind.md#windcut">Windcut</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Worst First: a Blank Rune and Glistering Melon Slice and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_worst_first.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/worst_first.png) <a href="../runes/effects/arcane.md#worst_first">Worst First</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Delay: a Blank Rune and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_delay.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/delay.png) <a href="../runes/links.md#delay">Delay</a><br><span>Link</span></figcaption>
 </figure>
 <figure>
+![Crafting If Day: a Blank Rune and Sunflower and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_day.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_day.png) <a href="../runes/links.md#if_day">If Day</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting If Holding Tool: a Blank Rune and Stick and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_holding_tool.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_holding_tool.png) <a href="../runes/links.md#if_holding_tool">If Holding Tool</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting If In Fields: a Blank Rune and Wheat Crops and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_in_fields.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_in_fields.png) <a href="../runes/links.md#if_in_fields">If In Fields</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting If Night: a Blank Rune and Ink Sac and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_night.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_night.png) <a href="../runes/links.md#if_night">If Night</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting If Raining: a Blank Rune and Water Bucket and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_raining.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_raining.png) <a href="../runes/links.md#if_raining">If Raining</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting If Underground: a Blank Rune and Cobblestone and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_underground.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_underground.png) <a href="../runes/links.md#if_underground">If Underground</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting On Harvest: a Blank Rune and Wheat Crops and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_harvest.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_harvest.png) <a href="../runes/links.md#on_harvest">On Harvest</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting On Mine: a Blank Rune and Iron Pickaxe and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_mine.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_mine.png) <a href="../runes/links.md#on_mine">On Mine</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
 ![Crafting Amplify: a Blank Rune and Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_amplify.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/amplify.png) <a href="../runes/modifiers.md#amplify">Amplify</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Cushioned: a Blank Rune and Hay Bale and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cushioned.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cushioned.png) <a href="../runes/modifiers.md#cushioned">Cushioned</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Damp: a Blank Rune and Wet Sponge and Clay Ball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_damp.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/damp.png) <a href="../runes/modifiers.md#damp">Damp</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
 ![Crafting Extend: a Blank Rune and 2x Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_extend.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/extend.png) <a href="../runes/modifiers.md#extend">Extend</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Fetching: a Blank Rune and Lead and Bone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fetching.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fetching.png) <a href="../runes/modifiers.md#fetching">Fetching</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Fleecing: a Blank Rune and Shears and White Wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fleecing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fleecing.png) <a href="../runes/modifiers.md#fleecing">Fleecing</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
 ![Crafting Frugal: a Blank Rune and Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_frugal.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frugal.png) <a href="../runes/modifiers.md#frugal">Frugal</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Furrowing: a Blank Rune and Iron Hoe and Dirt](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_furrowing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/furrowing.png) <a href="../runes/modifiers.md#furrowing">Furrowing</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Gentle: a Blank Rune and Wheat Crops and Lead](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gentle.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gentle.png) <a href="../runes/modifiers.md#gentle">Gentle</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Level Ground: a Blank Rune and Stone Slab and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_level_ground.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/level_ground.png) <a href="../runes/modifiers.md#level_ground">Level Ground</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Magnetic: a Blank Rune and Iron Ingot and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_magnetic.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/magnetic.png) <a href="../runes/modifiers.md#magnetic">Magnetic</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Matchmaking: a Blank Rune and Wheat Crops, Carrot and Poppy](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_matchmaking.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/matchmaking.png) <a href="../runes/modifiers.md#matchmaking">Matchmaking</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Nourishing: a Blank Rune and Bread and Apple](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nourishing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nourishing.png) <a href="../runes/modifiers.md#nourishing">Nourishing</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Replanting: a Blank Rune and Wheat Seeds and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_replanting.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/replanting.png) <a href="../runes/modifiers.md#replanting">Replanting</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
 ![Crafting Reservoir Circle: a Blank Rune and Glass Bottle and Lapis Lazuli](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reservoir_circle.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reservoir_circle.png) <a href="../runes/modifiers.md#reservoir_circle">Reservoir Circle</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Soothing: a Blank Rune and Honey Bottle and Note Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_soothing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soothing.png) <a href="../runes/modifiers.md#soothing">Soothing</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Sowing: a Blank Rune and Wheat Seeds and Beetroot Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sowing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sowing.png) <a href="../runes/modifiers.md#sowing">Sowing</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Sparing: a Blank Rune and White Banner and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sparing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sparing.png) <a href="../runes/modifiers.md#sparing">Sparing</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Steady: a Blank Rune and Obsidian and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_steady.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steady.png) <a href="../runes/modifiers.md#steady">Steady</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Tidy: a Blank Rune and Bundle and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tidy.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidy.png) <a href="../runes/modifiers.md#tidy">Tidy</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Torchset: a Blank Rune and Torch and Coal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_torchset.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/torchset.png) <a href="../runes/modifiers.md#torchset">Torchset</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
 ![Crafting Arc: a Blank Rune and 2x Snowball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_arc.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/arc.png) <a href="../runes/shapes.md#arc">Arc</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Aureole: a Blank Rune and Glowstone Dust, Gold Nugget and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_aureole.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/aureole.png) <a href="../runes/shapes.md#aureole">Aureole</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Bobber: a Blank Rune and Fishing Rod and Raw Cod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bobber.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bobber.png) <a href="../runes/shapes.md#bobber">Bobber</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
 ![Crafting Bolt: a Blank Rune and Arrow](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bolt.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bolt.png) <a href="../runes/shapes.md#bolt">Bolt</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Fan: a Blank Rune and Feather and 2x Arrow](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fan.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fan.png) <a href="../runes/shapes.md#fan">Fan</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Footing: a Blank Rune and Cobblestone and Leather Boots](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_footing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/footing.png) <a href="../runes/shapes.md#footing">Footing</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Furrow: a Blank Rune and Wooden Hoe and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_furrow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/furrow.png) <a href="../runes/shapes.md#furrow">Furrow</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Hedgerow: a Blank Rune and Oak Sapling, Sweet Berries and Oak Leaves](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hedgerow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hedgerow.png) <a href="../runes/shapes.md#hedgerow">Hedgerow</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Herd: a Blank Rune and Wheat Crops, Lead and Hay Bale](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_herd.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/herd.png) <a href="../runes/shapes.md#herd">Herd</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Imprint: a Blank Rune and Clay Ball and Gunpowder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_imprint.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/imprint.png) <a href="../runes/shapes.md#imprint">Imprint</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Lamplit: a Blank Rune and Lantern and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lamplit.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lamplit.png) <a href="../runes/shapes.md#lamplit">Lamplit</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
 ![Crafting Nova: a Blank Rune and Gunpowder and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nova.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nova.png) <a href="../runes/shapes.md#nova">Nova</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Nursery: a Blank Rune and Egg and Milk Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nursery.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nursery.png) <a href="../runes/shapes.md#nursery">Nursery</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Packbond: a Blank Rune and Bone, Lead and Name Tag](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_packbond.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/packbond.png) <a href="../runes/shapes.md#packbond">Packbond</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Pit: a Blank Rune and Iron Shovel and Gravel](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pit.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pit.png) <a href="../runes/shapes.md#pit">Pit</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Plot: a Blank Rune and Dirt, Wheat Seeds and Stick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_plot.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/plot.png) <a href="../runes/shapes.md#plot">Plot</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Ray: a Blank Rune and Glass Pane and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ray.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ray.png) <a href="../runes/shapes.md#ray">Ray</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Saddle: a Blank Rune and Saddle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_saddle.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/saddle.png) <a href="../runes/shapes.md#saddle">Saddle</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Seam: a Blank Rune and Stone Pickaxe and Coal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_seam.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/seam.png) <a href="../runes/shapes.md#seam">Seam</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
 ![Crafting Self: a Blank Rune and Glass Pane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_self.png)
@@ -220,23 +932,55 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spark.png) <a href="../runes/shapes.md#spark">Spark</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Stepstones: a Blank Rune and Cobblestone and Lily Pad](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stepstones.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stepstones.png) <a href="../runes/shapes.md#stepstones">Stepstones</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Touch: a Blank Rune and Leather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_touch.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/touch.png) <a href="../runes/shapes.md#touch">Touch</a><br><span>Shape</span></figcaption>
 </figure>
 </div>
 
-## Tier II (103 runes)
+## Tier II (255 runes)
 
 Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingot**.
 
 <div>
 <figure>
+![Crafting Aftercare: a Blank Rune and Glistering Melon Slice and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_aftercare.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/aftercare.png) <a href="../runes/effects/earth.md#aftercare">Aftercare</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Aftershock: a Blank Rune and Piston and Cobblestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_aftershock.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/aftershock.png) <a href="../runes/effects/earth.md#aftershock">Aftershock</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
+![Crafting Agestone: a Blank Rune and Moss Block and Cracked Stone Bricks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_agestone.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/agestone.png) <a href="../runes/effects/earth.md#agestone">Agestone</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Arrowveil: a Blank Rune and Arrow and Phantom Membrane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_arrowveil.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/arrowveil.png) <a href="../runes/effects/wind.md#arrowveil">Arrowveil</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Axolotl Kinship: a Blank Rune and Tropical Fish and Clay Ball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_axolotl_kinship.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/axolotl_kinship.png) <a href="../runes/effects/frost.md#axolotl_kinship">Axolotl Kinship</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
 ![Crafting Banish: a Blank Rune and Ender Pearl and Popped Chorus Fruit](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_banish.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/banish.png) <a href="../runes/effects/void.md#banish">Banish</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Barkhide: a Blank Rune and Oak Log, Spruce Log and Iron Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barkhide.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/barkhide.png) <a href="../runes/effects/earth.md#barkhide">Barkhide</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Beeline: a Blank Rune and Honeycomb, Feather and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_beeline.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/beeline.png) <a href="../runes/effects/wind.md#beeline">Beeline</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Blastward: a Blank Rune and Gunpowder and Obsidian](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_blastward.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blastward.png) <a href="../runes/effects/earth.md#blastward">Blastward</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
 ![Crafting Bleed: a Blank Rune and Shears and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bleed.png)
@@ -247,8 +991,24 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/break.png) <a href="../runes/effects/earth.md#break">Break</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
+![Crafting Brickwork: a Blank Rune and Stonecutter and Brick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_brickwork.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/brickwork.png) <a href="../runes/effects/earth.md#brickwork">Brickwork</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Bubble: a Blank Rune and Water Bucket and Slimeball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bubble.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bubble.png) <a href="../runes/effects/frost.md#bubble">Bubble</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Camp Ward: a Blank Rune and Campfire and White Wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_camp_ward.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/camp_ward.png) <a href="../runes/effects/arcane.md#camp_ward">Camp Ward</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Checker Dye: a Blank Rune and White Dye and Black Dye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_checker_dye.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/checker_dye.png) <a href="../runes/effects/life.md#checker_dye">Checker Dye</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Chest Sort: a Blank Rune and Chest and Redstone Comparator](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_chestsort.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chestsort.png) <a href="../runes/effects/void.md#chestsort">Chest Sort</a><br><span>Effect, Void</span></figcaption>
 </figure>
 <figure>
 ![Crafting Cleanse: a Blank Rune and Milk Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cleanse.png)
@@ -257,6 +1017,14 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure>
 ![Crafting Coldsnap: a Blank Rune and Packed Ice and Snow Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_coldsnap.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/coldsnap.png) <a href="../runes/effects/frost.md#coldsnap">Coldsnap</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Coral Mend: a Blank Rune and Bone Meal and Prismarine Crystals](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_coral_mend.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/coral_mend.png) <a href="../runes/effects/frost.md#coral_mend">Coral Mend</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Currentkin: a Blank Rune and Raw Cod and Prismarine Crystals](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_currentkin.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/currentkin.png) <a href="../runes/effects/frost.md#currentkin">Currentkin</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
 ![Crafting Cyclone: a Blank Rune and Wind Charge and Breeze Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cyclone.png)
@@ -275,6 +1043,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/deflect.png) <a href="../runes/effects/wind.md#deflect">Deflect</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
+![Crafting Dewkeep: a Blank Rune and Water Bucket, White Wool and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewkeep.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dewkeep.png) <a href="../runes/effects/storm.md#dewkeep">Dewkeep</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
 ![Crafting Disarm: a Blank Rune and Wind Charge and Fishing Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_disarm.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/disarm.png) <a href="../runes/effects/wind.md#disarm">Disarm</a><br><span>Effect, Wind</span></figcaption>
 </figure>
@@ -283,12 +1055,48 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dismantle.png) <a href="../runes/effects/blood.md#dismantle">Dismantle</a><br><span>Effect, Blood</span></figcaption>
 </figure>
 <figure>
+![Crafting Ditchwater: a Blank Rune and Iron Shovel, Water Bucket and Clay Ball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ditchwater.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ditchwater.png) <a href="../runes/effects/storm.md#ditchwater">Ditchwater</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Dolphin Call: a Blank Rune and Raw Cod and Nautilus Shell](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dolphin_call.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dolphin_call.png) <a href="../runes/effects/frost.md#dolphin_call">Dolphin Call</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Drift Net: a Blank Rune and 2x String and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_drift_net.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/drift_net.png) <a href="../runes/effects/frost.md#drift_net">Drift Net</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Drown Ward: a Blank Rune and Pufferfish and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_drown_ward.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/drown_ward.png) <a href="../runes/effects/frost.md#drown_ward">Drown Ward</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Dynamo Stride: a Blank Rune and Redstone Dust, Copper Ingot and Leather Boots](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dynamo_stride.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dynamo_stride.png) <a href="../runes/effects/storm.md#dynamo_stride">Dynamo Stride</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Ember Rest: a Blank Rune and Campfire and Glistering Melon Slice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ember_rest.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ember_rest.png) <a href="../runes/effects/fire.md#ember_rest">Ember Rest</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
 ![Crafting Empower: a Blank Rune and Iron Sword](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_empower.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/empower.png) <a href="../runes/effects/arcane.md#empower">Empower</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
+![Crafting Enderhush: a Blank Rune and Carved Pumpkin and Ender Pearl](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_enderhush.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/enderhush.png) <a href="../runes/effects/void.md#enderhush">Enderhush</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Evade: a Blank Rune and Rabbit's Foot and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_evade.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/evade.png) <a href="../runes/effects/wind.md#evade">Evade</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
 ![Crafting Excavate: a Blank Rune and Iron Shovel](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_excavate.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/excavate.png) <a href="../runes/effects/earth.md#excavate">Excavate</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Fair Wind: a Blank Rune and White Wool and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fair_wind.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fair_wind.png) <a href="../runes/effects/wind.md#fair_wind">Fair Wind</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
 ![Crafting Fell: a Blank Rune and Iron Axe and any logs](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fell.png)
@@ -311,6 +1119,14 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/flashfire.png) <a href="../runes/effects/fire.md#flashfire">Flashfire</a><br><span>Effect, Fire</span></figcaption>
 </figure>
 <figure>
+![Crafting Floorlay: a Blank Rune and 2x Smooth Stone and Oak Planks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_floorlay.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/floorlay.png) <a href="../runes/effects/earth.md#floorlay">Floorlay</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Frame Veil: a Blank Rune and Item Frame and Glass Pane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_frame_veil.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frame_veil.png) <a href="../runes/effects/void.md#frame_veil">Frame Veil</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
 ![Crafting Frost: a Blank Rune and Powder Snow Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_frost.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frost.png) <a href="../runes/effects/frost.md#frost">Frost</a><br><span>Effect, Frost</span></figcaption>
 </figure>
@@ -319,32 +1135,212 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gash.png) <a href="../runes/effects/blood.md#gash">Gash</a><br><span>Effect, Blood</span></figcaption>
 </figure>
 <figure>
+![Crafting Gold Parley: a Blank Rune and Gold Ingot, Gold Nugget and Raw Porkchop](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gold_parley.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gold_parley.png) <a href="../runes/effects/fire.md#gold_parley">Gold Parley</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Gourdcall: a Blank Rune and Pumpkin Seeds, Melon Seeds and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gourdcall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gourdcall.png) <a href="../runes/effects/earth.md#gourdcall">Gourdcall</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Grapple: a Blank Rune and Lead](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_grapple.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/grapple.png) <a href="../runes/effects/void.md#grapple">Grapple</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Grave Bearing: a Blank Rune and Compass, Bone and Soul Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_grave_bearing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/grave_bearing.png) <a href="../runes/effects/void.md#grave_bearing">Grave Bearing</a><br><span>Effect, Void</span></figcaption>
 </figure>
 <figure>
 ![Crafting Haven: a Blank Rune and Shield and Glistering Melon Slice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_haven.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/haven.png) <a href="../runes/effects/life.md#haven">Haven</a><br><span>Effect, Life</span></figcaption>
 </figure>
 <figure>
+![Crafting Headlamp: a Blank Rune and Lantern and Leather Cap](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_headlamp.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/headlamp.png) <a href="../runes/effects/arcane.md#headlamp">Headlamp</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Hearthglow: a Blank Rune and Campfire and Golden Carrot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthglow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthglow.png) <a href="../runes/effects/fire.md#hearthglow">Hearthglow</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Hearthguard: a Blank Rune and Emerald and Iron Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthguard.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthguard.png) <a href="../runes/effects/earth.md#hearthguard">Hearthguard</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Hearthsong: a Blank Rune and Note Block and Glistering Melon Slice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthsong.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthsong.png) <a href="../runes/effects/fire.md#hearthsong">Hearthsong</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Heartsense: a Blank Rune and Fermented Spider Eye and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_heartsense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/heartsense.png) <a href="../runes/effects/blood.md#heartsense">Heartsense</a><br><span>Effect, Blood</span></figcaption>
+</figure>
+<figure>
+![Crafting Heel: a Blank Rune and Goat Horn and Bone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_heel.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/heel.png) <a href="../runes/effects/wind.md#heel">Heel</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Henhouse: a Blank Rune and Egg, Wheat Seeds and Hay Bale](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_henhouse.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/henhouse.png) <a href="../runes/effects/time.md#henhouse">Henhouse</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
+![Crafting Hollow Pocket: a Blank Rune and Bundle and Ender Pearl](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hollow_pocket.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hollow_pocket.png) <a href="../runes/effects/void.md#hollow_pocket">Hollow Pocket</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Inkveil: a Blank Rune and 2x Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_inkveil.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/inkveil.png) <a href="../runes/effects/frost.md#inkveil">Inkveil</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
 ![Crafting Jolt: a Blank Rune and Lightning Rod and Iron Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_jolt.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/jolt.png) <a href="../runes/effects/storm.md#jolt">Jolt</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Keenkeep: a Blank Rune and Grindstone and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_keenkeep.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/keenkeep.png) <a href="../runes/effects/earth.md#keenkeep">Keenkeep</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Keepsafe: a Blank Rune and Iron Ingot and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_keepsafe.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/keepsafe.png) <a href="../runes/effects/earth.md#keepsafe">Keepsafe</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Kiln Bake: a Blank Rune and Furnace, Coal and Clay Ball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_kilnbake.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kilnbake.png) <a href="../runes/effects/fire.md#kilnbake">Kiln Bake</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Lapis Thrift: a Blank Rune and Lapis Lazuli and Book](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lapis_thrift.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lapis_thrift.png) <a href="../runes/effects/arcane.md#lapis_thrift">Lapis Thrift</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Launch: a Blank Rune and Wind Charge](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_launch.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/launch.png) <a href="../runes/effects/wind.md#launch">Launch</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
+![Crafting Lava Crust: a Blank Rune and Basalt, Snowball and Magma Cream](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lava_crust.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lava_crust.png) <a href="../runes/effects/frost.md#lava_crust">Lava Crust</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Lava Seal: a Blank Rune and Water Bucket and Obsidian](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lavaseal.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lavaseal.png) <a href="../runes/effects/fire.md#lavaseal">Lava Seal</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Leafshade: a Blank Rune and Oak Leaves, Oak Log and Vines](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leafshade.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leafshade.png) <a href="../runes/effects/earth.md#leafshade">Leafshade</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Levelground: a Blank Rune and Iron Shovel and Iron Pickaxe](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_levelground.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/levelground.png) <a href="../runes/effects/earth.md#levelground">Levelground</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Levitate: a Blank Rune and Phantom Membrane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_levitate.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/levitate.png) <a href="../runes/effects/wind.md#levitate">Levitate</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Lodepull: a Blank Rune and Lodestone and Hopper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lodepull.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lodepull.png) <a href="../runes/effects/void.md#lodepull">Lodepull</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Lodestar: a Blank Rune and Lodestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lodestar.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lodestar.png) <a href="../runes/effects/arcane.md#lodestar">Lodestar</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Long Arm: a Blank Rune and 2x Stick, String and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_long_arm.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/long_arm.png) <a href="../runes/effects/earth.md#long_arm">Long Arm</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Lullaby: a Blank Rune and White Bed and Phantom Membrane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lullaby.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lullaby.png) <a href="../runes/effects/life.md#lullaby">Lullaby</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Lumen Path: a Blank Rune and 2x Glowstone Dust and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lumenpath.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lumenpath.png) <a href="../runes/effects/arcane.md#lumenpath">Lumen Path</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Lure: a Blank Rune and Fishing Rod and Ender Pearl](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lure.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lure.png) <a href="../runes/effects/void.md#lure">Lure</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Manabraid: a Blank Rune and Lapis Lazuli, Amethyst Shard and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_manabraid.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/manabraid.png) <a href="../runes/effects/arcane.md#manabraid">Manabraid</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Managift: a Blank Rune and Amethyst Shard and Lapis Lazuli](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_managift.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/managift.png) <a href="../runes/effects/arcane.md#managift">Managift</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Mending Mist: a Blank Rune and Glistering Melon Slice and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mending_mist.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mending_mist.png) <a href="../runes/effects/frost.md#mending_mist">Mending Mist</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Mooring Call: a Blank Rune and Oak Boat and Lead](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mooring_call.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mooring_call.png) <a href="../runes/effects/frost.md#mooring_call">Mooring Call</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Morale: a Blank Rune and Golden Apple and White Banner](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_morale.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/morale.png) <a href="../runes/effects/fire.md#morale">Morale</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Nightwatch: a Blank Rune and Bell and Spider Eye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nightwatch.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nightwatch.png) <a href="../runes/effects/arcane.md#nightwatch">Nightwatch</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Ore Tally: a Blank Rune and Raw Iron, Coal and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_oretally.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/oretally.png) <a href="../runes/effects/earth.md#oretally">Ore Tally</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
 ![Crafting Overdrive: a Blank Rune and Blaze Powder and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_overdrive.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/overdrive.png) <a href="../runes/effects/blood.md#overdrive">Overdrive</a><br><span>Effect, Blood</span></figcaption>
 </figure>
 <figure>
+![Crafting Pacify: a Blank Rune and Poppy and Lapis Lazuli](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pacify.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pacify.png) <a href="../runes/effects/arcane.md#pacify">Pacify</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Pearl Sight: a Blank Rune and Prismarine Crystals and Nautilus Shell](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pearl_sight.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pearl_sight.png) <a href="../runes/effects/arcane.md#pearl_sight">Pearl Sight</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Petward: a Blank Rune and Bone and Shield](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_petward.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/petward.png) <a href="../runes/effects/life.md#petward">Petward</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Pit Floor: a Blank Rune and 2x Packed Mud and Scaffolding](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pitfloor.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pitfloor.png) <a href="../runes/effects/earth.md#pitfloor">Pit Floor</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Plowline: a Blank Rune and Iron Hoe, Dirt and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_plowline.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/plowline.png) <a href="../runes/effects/earth.md#plowline">Plowline</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Pollinate: a Blank Rune and Honeycomb, Dandelion and Poppy](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pollinate.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pollinate.png) <a href="../runes/effects/wind.md#pollinate">Pollinate</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Porpoise Leap: a Blank Rune and Raw Cod and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_porpoise.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/porpoise.png) <a href="../runes/effects/frost.md#porpoise">Porpoise Leap</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
+![Crafting Portal Sense: a Blank Rune and Empty Map and Obsidian](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_portal_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/portal_sense.png) <a href="../runes/effects/fire.md#portal_sense">Portal Sense</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Potion Steep: a Blank Rune and Glass Bottle, Nether Wart and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_potion_steep.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/potion_steep.png) <a href="../runes/effects/life.md#potion_steep">Potion Steep</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
 ![Crafting Pull: a Blank Rune and Fishing Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pull.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pull.png) <a href="../runes/effects/void.md#pull">Pull</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Quickbrew: a Blank Rune and Blaze Powder, Glass Bottle and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_quickbrew.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/quickbrew.png) <a href="../runes/effects/fire.md#quickbrew">Quickbrew</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Raincloud: a Blank Rune and White Wool and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rain_cloud.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rain_cloud.png) <a href="../runes/effects/storm.md#rain_cloud">Raincloud</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Rally: a Blank Rune and White Banner and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rally.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rally.png) <a href="../runes/effects/wind.md#rally">Rally</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
 ![Crafting Rampart: a Blank Rune and 2x Packed Mud](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rampart.png)
@@ -359,8 +1355,20 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/repel.png) <a href="../runes/effects/wind.md#repel">Repel</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
+![Crafting Restock: a Blank Rune and Barrel and Hopper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_restock.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/restock.png) <a href="../runes/effects/void.md#restock">Restock</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Ripen: a Blank Rune and Bone Meal, Wheat Crops and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ripen.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ripen.png) <a href="../runes/effects/time.md#ripen">Ripen</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
 ![Crafting Ripple: a Blank Rune and Sunflower and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ripple.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ripple.png) <a href="../runes/effects/storm.md#ripple">Ripple</a><br><span>Effect, Storm</span></figcaption>
+</figure>
+<figure>
+![Crafting Riser: a Blank Rune and Stone Pickaxe and Ladder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_riser.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/riser.png) <a href="../runes/effects/earth.md#riser">Riser</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
 ![Crafting Root: a Blank Rune and 2x Vines](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_root.png)
@@ -371,6 +1379,26 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/root_carry.png) <a href="../runes/effects/life.md#root_carry">Root Carry</a><br><span>Effect, Life</span></figcaption>
 </figure>
 <figure>
+![Crafting Ruin Sense: a Blank Rune and Empty Map and Brush](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ruin_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ruin_sense.png) <a href="../runes/effects/earth.md#ruin_sense">Ruin Sense</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Sandbar: a Blank Rune and Sandstone and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sandbar.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sandbar.png) <a href="../runes/effects/earth.md#sandbar">Sandbar</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Sapflow: a Blank Rune and Honey Bottle, Oak Sapling and Glistering Melon Slice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sapflow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sapflow.png) <a href="../runes/effects/earth.md#sapflow">Sapflow</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting School Sight: a Blank Rune and Tropical Fish and Glow Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_school_sight.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/school_sight.png) <a href="../runes/effects/arcane.md#school_sight">School Sight</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Sea Breeze: a Blank Rune and Feather and Milk Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sea_breeze.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sea_breeze.png) <a href="../runes/effects/wind.md#sea_breeze">Sea Breeze</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
 ![Crafting Searing Edge: a Blank Rune and Iron Sword and Blaze Powder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_searing_edge.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/searing_edge.png) <a href="../runes/effects/fire.md#searing_edge">Searing Edge</a><br><span>Effect, Fire</span></figcaption>
 </figure>
@@ -379,28 +1407,92 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shackle.png) <a href="../runes/effects/earth.md#shackle">Shackle</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
+![Crafting Shellback: a Blank Rune and Turtle Scute and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shellback.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shellback.png) <a href="../runes/effects/earth.md#shellback">Shellback</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Shield: a Blank Rune and Shield](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shield.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shield.png) <a href="../runes/effects/earth.md#shield">Shield</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Shieldwall: a Blank Rune and Shield and Cobblestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shieldwall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shieldwall.png) <a href="../runes/effects/earth.md#shieldwall">Shieldwall</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Shipwreck Sense: a Blank Rune and Empty Map and Oak Boat](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shipwreck_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shipwreck_sense.png) <a href="../runes/effects/frost.md#shipwreck_sense">Shipwreck Sense</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
 ![Crafting Silence: a Blank Rune and any wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_silence.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/silence.png) <a href="../runes/effects/arcane.md#silence">Silence</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
+![Crafting Silklift: a Blank Rune and 2x String and Iron Pickaxe](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_silklift.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/silklift.png) <a href="../runes/effects/arcane.md#silklift">Silklift</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Skimstep: a Blank Rune and Lily Pad and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_skimstep.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skimstep.png) <a href="../runes/effects/frost.md#skimstep">Skimstep</a><br><span>Effect, Frost</span></figcaption>
+</figure>
+<figure>
 ![Crafting Smelt: a Blank Rune and Furnace and Blaze Powder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_smelt.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/smelt.png) <a href="../runes/effects/fire.md#smelt">Smelt</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Softfoot: a Blank Rune and White Wool and Ender Pearl](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_softfoot.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/softfoot.png) <a href="../runes/effects/void.md#softfoot">Softfoot</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Soothe: a Blank Rune and Honeycomb and Poppy](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_soothe.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soothe.png) <a href="../runes/effects/arcane.md#soothe">Soothe</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Span: a Blank Rune and 2x Magenta Stained Glass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_span.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/span.png) <a href="../runes/effects/arcane.md#span">Span</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
+![Crafting Spawner Sense: a Blank Rune and Rotten Flesh and Iron Bars](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spawner_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spawner_sense.png) <a href="../runes/effects/void.md#spawner_sense">Spawner Sense</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
 ![Crafting Spellbrand: a Blank Rune and Book and Gunpowder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spellbrand.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spellbrand.png) <a href="../runes/effects/arcane.md#spellbrand">Spellbrand</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
+![Crafting Spook: a Blank Rune and Bone and Carved Pumpkin](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spook.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spook.png) <a href="../runes/effects/void.md#spook">Spook</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Stair Delve: a Blank Rune and Stone Pickaxe and Cobblestone Stairs](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stairdelve.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stairdelve.png) <a href="../runes/effects/earth.md#stairdelve">Stair Delve</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Stalkrise: a Blank Rune and Sugar Cane, Cactus and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stalkrise.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stalkrise.png) <a href="../runes/effects/earth.md#stalkrise">Stalkrise</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Steady Brush: a Blank Rune and Brush, Feather and Gravel](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_steady_brush.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steady_brush.png) <a href="../runes/effects/earth.md#steady_brush">Steady Brush</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Steedsong: a Blank Rune and Saddle and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_steedsong.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steedsong.png) <a href="../runes/effects/wind.md#steedsong">Steedsong</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Stillbind: a Blank Rune and Cobweb and Ender Pearl](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stillbind.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stillbind.png) <a href="../runes/effects/void.md#stillbind">Stillbind</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Stillwell: a Blank Rune and Water Bucket and Lapis Lazuli](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stillwell.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stillwell.png) <a href="../runes/effects/arcane.md#stillwell">Stillwell</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Stoneskin: a Blank Rune and Armadillo Scute](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stoneskin.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stoneskin.png) <a href="../runes/effects/earth.md#stoneskin">Stoneskin</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Stow: a Blank Rune and Chest and Hopper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stow.png) <a href="../runes/effects/void.md#stow">Stow</a><br><span>Effect, Void</span></figcaption>
 </figure>
 <figure>
 ![Crafting Strata Rise: a Blank Rune and Stone, Packed Mud and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_strata_rise.png)
@@ -411,6 +1503,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/swap.png) <a href="../runes/effects/arcane.md#swap">Swap</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
+![Crafting Tarry: a Blank Rune and Clock and Honey Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tarry.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tarry.png) <a href="../runes/effects/time.md#tarry">Tarry</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
 ![Crafting Thunderclap: a Blank Rune and Goat Horn](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_thunderclap.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunderclap.png) <a href="../runes/effects/storm.md#thunderclap">Thunderclap</a><br><span>Effect, Storm</span></figcaption>
 </figure>
@@ -419,8 +1515,28 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidal_lift.png) <a href="../runes/effects/frost.md#tidal_lift">Tidal Lift</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
+![Crafting Tinker's Hum: a Blank Rune and Anvil, Iron Ingot and Copper Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tinker_hum.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tinker_hum.png) <a href="../runes/effects/earth.md#tinker_hum">Tinker's Hum</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Tool Mend: a Blank Rune and Anvil, Iron Ingot and Grindstone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_toolmend.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/toolmend.png) <a href="../runes/effects/arcane.md#toolmend">Tool Mend</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Torchfall: a Blank Rune and 2x Torch and Coal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_torchfall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/torchfall.png) <a href="../runes/effects/fire.md#torchfall">Torchfall</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Trot: a Blank Rune and Saddle, Carrot and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trot.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trot.png) <a href="../runes/effects/wind.md#trot">Trot</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
 ![Crafting Tunnel: a Blank Rune and Iron Pickaxe and Rail](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tunnel.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tunnel.png) <a href="../runes/effects/earth.md#tunnel">Tunnel</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Unburden: a Blank Rune and Barrel and Chest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_unburden.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/unburden.png) <a href="../runes/effects/void.md#unburden">Unburden</a><br><span>Effect, Void</span></figcaption>
 </figure>
 <figure>
 ![Crafting Veil: a Blank Rune and Golden Carrot and Fermented Spider Eye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_veil.png)
@@ -435,12 +1551,32 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/venom.png) <a href="../runes/effects/life.md#venom">Venom</a><br><span>Effect, Life</span></figcaption>
 </figure>
 <figure>
+![Crafting Village Sense: a Blank Rune and Empty Map and Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_village_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/village_sense.png) <a href="../runes/effects/wind.md#village_sense">Village Sense</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Void Step: a Blank Rune and End Stone, Feather and Ender Pearl](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_void_step.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/void_step.png) <a href="../runes/effects/void.md#void_step">Void Step</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Watchweft: a Blank Rune and Feather, String and Copper Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_watchweft.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/watchweft.png) <a href="../runes/effects/arcane.md#watchweft">Watchweft</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Weigh: a Blank Rune and Block of Iron](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_weigh.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/weigh.png) <a href="../runes/effects/earth.md#weigh">Weigh</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
 ![Crafting Wind Steps: a Blank Rune and Feather, Breeze Rod and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wind_steps.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wind_steps.png) <a href="../runes/effects/wind.md#wind_steps">Wind Steps</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Wreck Sense: a Blank Rune and Prismarine Shard and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wreck_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wreck_sense.png) <a href="../runes/effects/arcane.md#wreck_sense">Wreck Sense</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Wring: a Blank Rune and Sponge](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wring.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wring.png) <a href="../runes/effects/frost.md#wring">Wring</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
 ![Crafting Zipper: a Blank Rune and 2x Iron Nugget and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_zipper.png)
@@ -451,12 +1587,32 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_airborne.png) <a href="../runes/links.md#if_airborne">If Airborne</a><br><span>Link</span></figcaption>
 </figure>
 <figure>
+![Crafting If Alone: a Blank Rune and Compass and Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_alone.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_alone.png) <a href="../runes/links.md#if_alone">If Alone</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting If Brimming: a Blank Rune and Glass Bottle and Lapis Lazuli](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_brimming.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_brimming.png) <a href="../runes/links.md#if_brimming">If Brimming</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting If Near Ally: a Blank Rune and Compass and Bone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_near_ally.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_near_ally.png) <a href="../runes/links.md#if_near_ally">If Near Ally</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
 ![Crafting If Sneaking: a Blank Rune and Leather Boots](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_sneaking.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_sneaking.png) <a href="../runes/links.md#if_sneaking">If Sneaking</a><br><span>Link</span></figcaption>
 </figure>
 <figure>
+![Crafting If Unhurt: a Blank Rune and Apple and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_unhurt.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_unhurt.png) <a href="../runes/links.md#if_unhurt">If Unhurt</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
 ![Crafting Imbue: a Blank Rune and Bottle o' Enchanting](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_imbue.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/imbue.png) <a href="../runes/links.md#imbue">Imbue</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting On Catch: a Blank Rune and Fishing Rod and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_catch.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_catch.png) <a href="../runes/links.md#on_catch">On Catch</a><br><span>Link</span></figcaption>
 </figure>
 <figure>
 ![Crafting On Hit: a Blank Rune and Target](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_hit.png)
@@ -469,6 +1625,22 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure>
 ![Crafting On Land: a Blank Rune and Hay Bale](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_land.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_land.png) <a href="../runes/links.md#on_land">On Land</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting On Mount: a Blank Rune and Saddle and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_mount.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_mount.png) <a href="../runes/links.md#on_mount">On Mount</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting On Splash: a Blank Rune and Water Bucket and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_splash.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_splash.png) <a href="../runes/links.md#on_splash">On Splash</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting On Sprint: a Blank Rune and Sugar and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_sprint.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_sprint.png) <a href="../runes/links.md#on_sprint">On Sprint</a><br><span>Link</span></figcaption>
+</figure>
+<figure>
+![Crafting On Wake: a Blank Rune and White Bed and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_wake.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_wake.png) <a href="../runes/links.md#on_wake">On Wake</a><br><span>Link</span></figcaption>
 </figure>
 <figure>
 ![Crafting On Weakness: a Blank Rune and Fermented Spider Eye and Target](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_weakness.png)
@@ -495,12 +1667,24 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bounce.png) <a href="../runes/modifiers.md#bounce">Bounce</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Bountiful: a Blank Rune and Bottle o' Enchanting and Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bountiful.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bountiful.png) <a href="../runes/modifiers.md#bountiful">Bountiful</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
 ![Crafting Crucible Circle: a Blank Rune and Blaze Powder and Brick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_crucible_circle.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/crucible_circle.png) <a href="../runes/modifiers.md#crucible_circle">Crucible Circle</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Culling: a Blank Rune and Rotten Flesh and Iron Sword](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_culling.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/culling.png) <a href="../runes/modifiers.md#culling">Culling</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
 ![Crafting Execute: a Blank Rune and Iron Axe](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_execute.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/execute.png) <a href="../runes/modifiers.md#execute">Execute</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Fertile: a Blank Rune and 2x Bone Meal and Moss Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fertile.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fertile.png) <a href="../runes/modifiers.md#fertile">Fertile</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
 ![Crafting Focus: a Blank Rune and Glass Pane and Gold Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_focus.png)
@@ -511,12 +1695,28 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gyre_circle.png) <a href="../runes/modifiers.md#gyre_circle">Gyre Circle</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Hallowed: a Blank Rune and Golden Apple and Bone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hallowed.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hallowed.png) <a href="../runes/modifiers.md#hallowed">Hallowed</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Inward: a Blank Rune and Glass Pane and Amethyst Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_inward.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/inward.png) <a href="../runes/modifiers.md#inward">Inward</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Kilned: a Blank Rune and Furnace and Coal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_kilned.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kilned.png) <a href="../runes/modifiers.md#kilned">Kilned</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
 ![Crafting Kindred: a Blank Rune and Cake](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_kindred.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kindred.png) <a href="../runes/modifiers.md#kindred">Kindred</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
 ![Crafting Linger: a Blank Rune and Honey Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_linger.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/linger.png) <a href="../runes/modifiers.md#linger">Linger</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Mending: a Blank Rune and Iron Ingot and Anvil](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mending.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mending.png) <a href="../runes/modifiers.md#mending">Mending</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
 ![Crafting Mercy Circle: a Blank Rune and Honey Bottle and Poppy](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mercy_circle.png)
@@ -527,12 +1727,24 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/needle_circle.png) <a href="../runes/modifiers.md#needle_circle">Needle Circle</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Ore Sensing: a Blank Rune and Spyglass and Raw Gold](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ore_sensing.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ore_sensing.png) <a href="../runes/modifiers.md#ore_sensing">Ore Sensing</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
 ![Crafting Pierce: a Blank Rune and 2x Arrow](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pierce.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pierce.png) <a href="../runes/modifiers.md#pierce">Pierce</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
 ![Crafting Pilgrim Circle: a Blank Rune and Compass and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pilgrim_circle.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pilgrim_circle.png) <a href="../runes/modifiers.md#pilgrim_circle">Pilgrim Circle</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Pooled: a Blank Rune and Bowl and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pooled.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pooled.png) <a href="../runes/modifiers.md#pooled">Pooled</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Purifying: a Blank Rune and Milk Bucket and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_purifying.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/purifying.png) <a href="../runes/modifiers.md#purifying">Purifying</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
 ![Crafting Quicken: a Blank Rune and Breeze Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_quicken.png)
@@ -543,8 +1755,36 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rapid.png) <a href="../runes/modifiers.md#rapid">Rapid</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Selfless: a Blank Rune and Poppy and Gold Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_selfless.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/selfless.png) <a href="../runes/modifiers.md#selfless">Selfless</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Silken: a Blank Rune and String and White Wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_silken.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/silken.png) <a href="../runes/modifiers.md#silken">Silken</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Sunlit: a Blank Rune and Sunflower and Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sunlit.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sunlit.png) <a href="../runes/modifiers.md#sunlit">Sunlit</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Tapering: a Blank Rune and Arrow and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tapering.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tapering.png) <a href="../runes/modifiers.md#tapering">Tapering</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
 ![Crafting Thirst: a Blank Rune and Spider Eye and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_thirst.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thirst.png) <a href="../runes/modifiers.md#thirst">Thirst</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Timbering: a Blank Rune and Iron Axe and Oak Log](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_timbering.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/timbering.png) <a href="../runes/modifiers.md#timbering">Timbering</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Triage: a Blank Rune and Glistering Melon Slice and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_triage.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/triage.png) <a href="../runes/modifiers.md#triage">Triage</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Veinfollow: a Blank Rune and Raw Iron and Raw Copper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_veinfollow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/veinfollow.png) <a href="../runes/modifiers.md#veinfollow">Veinfollow</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
 ![Crafting Vigil Circle: a Blank Rune and Spider Eye and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_vigil_circle.png)
@@ -575,6 +1815,14 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/burst.png) <a href="../runes/shapes.md#burst">Burst</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Canopy: a Blank Rune and Oak Slab, Oak Leaves and Oak Fence](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_canopy.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/canopy.png) <a href="../runes/shapes.md#canopy">Canopy</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Causeway: a Blank Rune and Cobblestone Slab, Iron Shovel and Rail](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_causeway.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/causeway.png) <a href="../runes/shapes.md#causeway">Causeway</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Cluster: a Blank Rune and 2x Gunpowder and Amethyst Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cluster.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cluster.png) <a href="../runes/shapes.md#cluster">Cluster</a><br><span>Shape</span></figcaption>
 </figure>
@@ -587,12 +1835,40 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cone.png) <a href="../runes/shapes.md#cone">Cone</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Corridor: a Blank Rune and Iron Pickaxe, Rail and Torch](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_corridor.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/corridor.png) <a href="../runes/shapes.md#corridor">Corridor</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Crescent: a Blank Rune and Iron Sword and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_crescent.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/crescent.png) <a href="../runes/shapes.md#crescent">Crescent</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Crossway: a Blank Rune and Compass, Gravel and Stick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_crossway.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/crossway.png) <a href="../runes/shapes.md#crossway">Crossway</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Facade: a Blank Rune and Bricks, Glass Pane and Stone Bricks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_facade.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/facade.png) <a href="../runes/shapes.md#facade">Facade</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Fellowship: a Blank Rune and Cake, Golden Apple and Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fellowship.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fellowship.png) <a href="../runes/shapes.md#fellowship">Fellowship</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Fissure: a Blank Rune and Flint, Iron Pickaxe and TNT](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fissure.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fissure.png) <a href="../runes/shapes.md#fissure">Fissure</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Flock: a Blank Rune and Feather, Phantom Membrane and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_flock.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/flock.png) <a href="../runes/shapes.md#flock">Flock</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Glaive: a Blank Rune and Iron Axe and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_glaive.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glaive.png) <a href="../runes/shapes.md#glaive">Glaive</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Grudge: a Blank Rune and Rotten Flesh, Iron Sword and Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_grudge.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/grudge.png) <a href="../runes/shapes.md#grudge">Grudge</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
 ![Crafting Lance: a Blank Rune and Spyglass and Blaze Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lance.png)
@@ -603,8 +1879,20 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/latch.png) <a href="../runes/shapes.md#latch">Latch</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Lattice: a Blank Rune and Iron Bars, White Carpet and Black Carpet](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lattice.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lattice.png) <a href="../runes/shapes.md#lattice">Lattice</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Lodeseek: a Blank Rune and Compass, Raw Iron, Raw Copper and Raw Gold](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lodeseek.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lodeseek.png) <a href="../runes/shapes.md#lodeseek">Lodeseek</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Mine: a Blank Rune and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mine.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mine.png) <a href="../runes/shapes.md#mine">Mine</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Perimeter: a Blank Rune and Oak Fence, Oak Fence Gate and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_perimeter.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/perimeter.png) <a href="../runes/shapes.md#perimeter">Perimeter</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
 ![Crafting Pillar: a Blank Rune and 2x Pointed Dripstone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pillar.png)
@@ -615,6 +1903,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/prism.png) <a href="../runes/shapes.md#prism">Prism</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Rearguard: a Blank Rune and Shield, Arrow and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rearguard.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rearguard.png) <a href="../runes/shapes.md#rearguard">Rearguard</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Ricochet: a Blank Rune and Slimeball and Snowball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ricochet.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ricochet.png) <a href="../runes/shapes.md#ricochet">Ricochet</a><br><span>Shape</span></figcaption>
 </figure>
@@ -623,12 +1915,44 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ring.png) <a href="../runes/shapes.md#ring">Ring</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Rosette: a Blank Rune and Pink Petals, Sunflower and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rosette.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rosette.png) <a href="../runes/shapes.md#rosette">Rosette</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Seedbed: a Blank Rune and Iron Hoe, Wheat Seeds, Beetroot Seeds and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_seedbed.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/seedbed.png) <a href="../runes/shapes.md#seedbed">Seedbed</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Shaft: a Blank Rune and Iron Pickaxe and Ladder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shaft.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shaft.png) <a href="../runes/shapes.md#shaft">Shaft</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Shoal: a Blank Rune and Tropical Fish, Raw Salmon and Prismarine Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shoal.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shoal.png) <a href="../runes/shapes.md#shoal">Shoal</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Shoreline: a Blank Rune and Sand, Water Bucket and Sugar Cane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shoreline.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shoreline.png) <a href="../runes/shapes.md#shoreline">Shoreline</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Spire: a Blank Rune and Cobblestone Wall and End Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spire.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spire.png) <a href="../runes/shapes.md#spire">Spire</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Stairwell: a Blank Rune and Stone Stairs, Iron Pickaxe and Torch](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stairwell.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stairwell.png) <a href="../runes/shapes.md#stairwell">Stairwell</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Stream: a Blank Rune and Spyglass and Redstone Torch](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stream.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stream.png) <a href="../runes/shapes.md#stream">Stream</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
 ![Crafting Sweep: a Blank Rune and Spyglass and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sweep.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sweep.png) <a href="../runes/shapes.md#sweep">Sweep</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Tether: a Blank Rune and Lead, Ender Pearl and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tether.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tether.png) <a href="../runes/shapes.md#tether">Tether</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
 ![Crafting Trail: a Blank Rune and 2x Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trail.png)
@@ -644,7 +1968,7 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 </figure>
 </div>
 
-## Tier III (45 runes)
+## Tier III (84 runes)
 
 Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**.
 
@@ -652,6 +1976,14 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figure>
 ![Crafting Accelerate: a Blank Rune and Clock and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_accelerate.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/accelerate.png) <a href="../runes/effects/time.md#accelerate">Accelerate</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
+![Crafting Beacon Swell: a Blank Rune and Glowstone Dust, Iron Ingot and Prismarine Crystals](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_beacon_swell.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/beacon_swell.png) <a href="../runes/effects/arcane.md#beacon_swell">Beacon Swell</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Bellward: a Blank Rune and Bell and Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bellward.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bellward.png) <a href="../runes/effects/arcane.md#bellward">Bellward</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Blackflame: a Blank Rune and Soul Campfire and Black Dye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_blackflame.png)
@@ -666,8 +1998,32 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blink.png) <a href="../runes/effects/void.md#blink">Blink</a><br><span>Effect, Void</span></figcaption>
 </figure>
 <figure>
+![Crafting Caveward: a Blank Rune and Turtle Shell, Sand and Gravel](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_caveward.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/caveward.png) <a href="../runes/effects/earth.md#caveward">Caveward</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Cleave: a Blank Rune and Diamond Axe](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cleave.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cleave.png) <a href="../runes/effects/blood.md#cleave">Cleave</a><br><span>Effect, Blood</span></figcaption>
+</figure>
+<figure>
+![Crafting Coppice: a Blank Rune and Iron Axe, Oak Sapling and Oak Log](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_coppice.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/coppice.png) <a href="../runes/effects/earth.md#coppice">Coppice</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Corral: a Blank Rune and Oak Fence and Lead](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_corral.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/corral.png) <a href="../runes/effects/wind.md#corral">Corral</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Courtship: a Blank Rune and Wheat Crops, Carrot and Poppy](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_courtship.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/courtship.png) <a href="../runes/effects/arcane.md#courtship">Courtship</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Deepway: a Blank Rune and Diamond Pickaxe, Torch and Rail](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_deepway.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/deepway.png) <a href="../runes/effects/earth.md#deepway">Deepway</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Diving Bell: a Blank Rune and 2x Glass and Heart of the Sea](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_diving_bell.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/diving_bell.png) <a href="../runes/effects/frost.md#diving_bell">Diving Bell</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
 ![Crafting Drowse: a Blank Rune and Spore Blossom and Honey Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_drowse.png)
@@ -678,28 +2034,84 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/explode.png) <a href="../runes/effects/fire.md#explode">Explode</a><br><span>Effect, Fire</span></figcaption>
 </figure>
 <figure>
+![Crafting Faithful: a Blank Rune and Bone and Golden Apple](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_faithful.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/faithful.png) <a href="../runes/effects/arcane.md#faithful">Faithful</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Foresight: a Blank Rune and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_foresight.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/foresight.png) <a href="../runes/effects/time.md#foresight">Foresight</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
+![Crafting Fortress Sense: a Blank Rune and Empty Map, Nether Bricks and Blaze Powder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fortress_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fortress_sense.png) <a href="../runes/effects/fire.md#fortress_sense">Fortress Sense</a><br><span>Effect, Fire</span></figcaption>
 </figure>
 <figure>
 ![Crafting Freeze: a Blank Rune and 2x Blue Ice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_freeze.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/freeze.png) <a href="../runes/effects/frost.md#freeze">Freeze</a><br><span>Effect, Frost</span></figcaption>
 </figure>
 <figure>
+![Crafting Gangue: a Blank Rune and Iron Pickaxe, Tuff and Raw Iron](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gangue.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gangue.png) <a href="../runes/effects/earth.md#gangue">Gangue</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Glidewind: a Blank Rune and Phantom Membrane and Wind Charge](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_glidewind.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glidewind.png) <a href="../runes/effects/wind.md#glidewind">Glidewind</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
 ![Crafting Gravity Well: a Blank Rune and Eye of Ender and Crying Obsidian](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gravity_well.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gravity_well.png) <a href="../runes/effects/void.md#gravity_well">Gravity Well</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Guardlink: a Blank Rune and Iron Chain and Iron Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_guardlink.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/guardlink.png) <a href="../runes/effects/earth.md#guardlink">Guardlink</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Haggle: a Blank Rune and 2x Emerald and White Banner](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_haggle.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/haggle.png) <a href="../runes/effects/arcane.md#haggle">Haggle</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Hearthbond: a Blank Rune and Golden Apple and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthbond.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthbond.png) <a href="../runes/effects/life.md#hearthbond">Hearthbond</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Hearthcook: a Blank Rune and Smoker, Coal and Raw Beef](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthcook.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthcook.png) <a href="../runes/effects/fire.md#hearthcook">Hearthcook</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Hexguard: a Blank Rune and Fermented Spider Eye and Shield](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hexguard.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hexguard.png) <a href="../runes/effects/void.md#hexguard">Hexguard</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Hive Hum: a Blank Rune and Honeycomb, Honey Bottle and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hivehum.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hivehum.png) <a href="../runes/effects/time.md#hivehum">Hive Hum</a><br><span>Effect, Time</span></figcaption>
 </figure>
 <figure>
 ![Crafting Inferno: a Blank Rune and Blaze Rod and Magma Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_inferno.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/inferno.png) <a href="../runes/effects/fire.md#inferno">Inferno</a><br><span>Effect, Fire</span></figcaption>
 </figure>
 <figure>
+![Crafting Ironhold: a Blank Rune and Anvil and Shield](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ironhold.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ironhold.png) <a href="../runes/effects/earth.md#ironhold">Ironhold</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
 ![Crafting Lightning: a Blank Rune and Block of Copper and Glowstone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lightning.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lightning.png) <a href="../runes/effects/storm.md#lightning">Lightning</a><br><span>Effect, Storm</span></figcaption>
 </figure>
 <figure>
+![Crafting Luckstrike: a Blank Rune and Iron Pickaxe, Rabbit's Foot and Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_luckstrike.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/luckstrike.png) <a href="../runes/effects/earth.md#luckstrike">Luckstrike</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Manawell: a Blank Rune and Amethyst Shard and Cauldron](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_manawell.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/manawell.png) <a href="../runes/effects/arcane.md#manawell">Manawell</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
 ![Crafting Meteor: a Blank Rune and Magma Block and Fire Charge](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_meteor.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/meteor.png) <a href="../runes/effects/fire.md#meteor">Meteor</a><br><span>Effect, Fire</span></figcaption>
+</figure>
+<figure>
+![Crafting Ore Pluck: a Blank Rune and Iron Pickaxe, Raw Copper and Raw Gold](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_orepluck.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/orepluck.png) <a href="../runes/effects/earth.md#orepluck">Ore Pluck</a><br><span>Effect, Earth</span></figcaption>
 </figure>
 <figure>
 ![Crafting Primer: a Blank Rune and TNT and Pink Dye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_primer.png)
@@ -708,6 +2120,10 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figure>
 ![Crafting Prolong: a Blank Rune and Clock and 2x Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_prolong.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/prolong.png) <a href="../runes/effects/time.md#prolong">Prolong</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
+![Crafting Rally Light: a Blank Rune and Beacon](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rally_light.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rally_light.png) <a href="../runes/effects/arcane.md#rally_light">Rally Light</a><br><span>Effect, Arcane</span></figcaption>
 </figure>
 <figure>
 ![Crafting Reflect: a Blank Rune and Shield and Glass Pane](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reflect.png)
@@ -720,6 +2136,18 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figure>
 ![Crafting Restore: a Blank Rune and Iron Ingot and Glistering Melon Slice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_restore.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/restore.png) <a href="../runes/effects/life.md#restore">Restore</a><br><span>Effect, Life</span></figcaption>
+</figure>
+<figure>
+![Crafting Sanctuary: a Blank Rune and Candle and Glowstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sanctuary.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sanctuary.png) <a href="../runes/effects/arcane.md#sanctuary">Sanctuary</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Sapling Rise: a Blank Rune and Oak Sapling, Bone Meal and Oak Log](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_saplingrise.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/saplingrise.png) <a href="../runes/effects/earth.md#saplingrise">Sapling Rise</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Scarecrow: a Blank Rune and Carved Pumpkin, Hay Bale and Stick](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_scarecrow.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/scarecrow.png) <a href="../runes/effects/wind.md#scarecrow">Scarecrow</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
 ![Crafting Shades: a Blank Rune and 2x Bone and Black Dye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shades.png)
@@ -738,6 +2166,14 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soar.png) <a href="../runes/effects/wind.md#soar">Soar</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
+![Crafting Spire Sense: a Blank Rune and Empty Map, Chorus Fruit and End Stone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spire_sense.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spire_sense.png) <a href="../runes/effects/void.md#spire_sense">Spire Sense</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
+![Crafting Stronghold Compass: a Blank Rune and Compass, Ender Pearl and Blaze Powder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stronghold_compass.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stronghold_compass.png) <a href="../runes/effects/void.md#stronghold_compass">Stronghold Compass</a><br><span>Effect, Void</span></figcaption>
+</figure>
+<figure>
 ![Crafting Thunderbird: a Blank Rune and Feather and Lightning Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_thunderbird.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunderbird.png) <a href="../runes/effects/storm.md#thunderbird">Thunderbird</a><br><span>Effect, Storm</span></figcaption>
 </figure>
@@ -746,8 +2182,24 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/time_skip.png) <a href="../runes/effects/time.md#time_skip">Time Skip</a><br><span>Effect, Time</span></figcaption>
 </figure>
 <figure>
+![Crafting Trade Renew: a Blank Rune and Emerald, Clock and Barrel](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trade_renew.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trade_renew.png) <a href="../runes/effects/time.md#trade_renew">Trade Renew</a><br><span>Effect, Time</span></figcaption>
+</figure>
+<figure>
 ![Crafting Tremor: a Blank Rune and Deepslate Bricks and TNT](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tremor.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tremor.png) <a href="../runes/effects/earth.md#tremor">Tremor</a><br><span>Effect, Earth</span></figcaption>
+</figure>
+<figure>
+![Crafting Truce: a Blank Rune and White Wool and Poppy](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_truce.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/truce.png) <a href="../runes/effects/arcane.md#truce">Truce</a><br><span>Effect, Arcane</span></figcaption>
+</figure>
+<figure>
+![Crafting Wayfarer's Hymn: a Blank Rune and Note Block, Sugar and Rabbit Hide](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wayfarer_hymn.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wayfarer_hymn.png) <a href="../runes/effects/wind.md#wayfarer_hymn">Wayfarer's Hymn</a><br><span>Effect, Wind</span></figcaption>
+</figure>
+<figure>
+![Crafting Withdraw: a Blank Rune and Fermented Spider Eye and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_withdraw.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/withdraw.png) <a href="../runes/effects/wind.md#withdraw">Withdraw</a><br><span>Effect, Wind</span></figcaption>
 </figure>
 <figure>
 ![Crafting Combo: a Blank Rune and 2x Redstone Repeater](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_combo.png)
@@ -786,6 +2238,10 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/eclipse_circle.png) <a href="../runes/modifiers.md#eclipse_circle">Eclipse Circle</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Headhunting: a Blank Rune and Skeleton Skull, Arrow and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_headhunting.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/headhunting.png) <a href="../runes/modifiers.md#headhunting">Headhunting</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
 ![Crafting Homing: a Blank Rune and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_homing.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/homing.png) <a href="../runes/modifiers.md#homing">Homing</a><br><span>Modifier</span></figcaption>
 </figure>
@@ -806,6 +2262,18 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/vow.png) <a href="../runes/modifiers.md#vow">Vow</a><br><span>Modifier</span></figcaption>
 </figure>
 <figure>
+![Crafting Windfall: a Blank Rune and Emerald and Rabbit's Foot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_windfall.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/windfall.png) <a href="../runes/modifiers.md#windfall">Windfall</a><br><span>Modifier</span></figcaption>
+</figure>
+<figure>
+![Crafting Collapse: a Blank Rune and Anvil, TNT and Gravel](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_collapse.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/collapse.png) <a href="../runes/shapes.md#collapse">Collapse</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Dome: a Blank Rune and 2x Glass, Smooth Stone and Amethyst Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dome.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dome.png) <a href="../runes/shapes.md#dome">Dome</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Orb: a Blank Rune and Slime Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_orb.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/orb.png) <a href="../runes/shapes.md#orb">Orb</a><br><span>Shape</span></figcaption>
 </figure>
@@ -818,8 +2286,20 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rain.png) <a href="../runes/shapes.md#rain">Rain</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
+![Crafting Sentinel: a Blank Rune and Shield, Iron Sword, Bell and Carved Pumpkin](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sentinel.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sentinel.png) <a href="../runes/shapes.md#sentinel">Sentinel</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Spiral: a Blank Rune and Nautilus Shell, Amethyst Shard and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spiral.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spiral.png) <a href="../runes/shapes.md#spiral">Spiral</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
 ![Crafting Totem: a Blank Rune and Block of Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_totem.png)
 <figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/totem.png) <a href="../runes/shapes.md#totem">Totem</a><br><span>Shape</span></figcaption>
+</figure>
+<figure>
+![Crafting Vault: a Blank Rune and Iron Pickaxe, Chest and Block of Iron](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_vault.png)
+<figcaption>![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/vault.png) <a href="../runes/shapes.md#vault">Vault</a><br><span>Shape</span></figcaption>
 </figure>
 <figure>
 ![Crafting Wall: a Blank Rune and 2x Obsidian](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wall.png)

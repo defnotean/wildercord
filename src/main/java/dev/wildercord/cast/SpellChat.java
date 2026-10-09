@@ -27,38 +27,38 @@ public final class SpellChat {
 	private SpellChat() {}
 
 	public static void init() {
-		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (player, message) -> {
-			String text = message.getString();
-			if (!text.contains(SpellCodes.PREFIX)) {
-				return message;
-			}
-			Matcher m = SpellCodes.PATTERN.matcher(text);
-			MutableComponent out = Component.empty().withStyle(message.getStyle());
-			int last = 0;
-			boolean any = false;
-			while (m.find()) {
-				List<RuneDef> runes = runes(m.group());
-				if (runes.isEmpty()) {
-					continue;
-				}
-				out.append(Component.literal(text.substring(last, m.start())));
-				out.append(card(m.group(), runes));
-				last = m.end();
-				any = true;
-			}
-			if (!any) {
-				return message;
-			}
-			out.append(Component.literal(text.substring(last)));
-			return out;
-		});
+		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (player, message) -> decorate(message));
+	}
+
+	/** Chat cards and editor paste use the same complete token, including composite ids and refused overlong rows. */
+	static Component decorate(Component message) {
+		String text = message.getString();
+		if (!text.contains(SpellCodes.PREFIX)) return message;
+		Matcher m = SpellCodes.PATTERN.matcher(text);
+		MutableComponent out = Component.empty().withStyle(message.getStyle());
+		int last = 0;
+		boolean any = false;
+		while (m.find()) {
+			String code = m.group();
+			List<RuneDef> runes = runes(code);
+			if (runes.isEmpty()) continue;
+			out.append(Component.literal(text.substring(last, m.start())));
+			out.append(card(code, runes));
+			last = m.end(); any = true;
+		}
+		if (!any) return message;
+		out.append(Component.literal(text.substring(last)));
+		return out;
 	}
 
 	private static List<RuneDef> runes(String code) {
 		List<RuneDef> runes = new ArrayList<>();
-		for (String id : SpellCodes.decode(code)) {
-			Runes.get(id).ifPresent(runes::add);
-		}
+		List<String> ids = SpellCodes.decode(code);
+		for (String id : ids) Runes.get(id).ifPresent(runes::add);
+		if (dev.wildercord.spell.RelayRules.containsIds(ids) && (runes.size() != ids.size() || !dev.wildercord.spell.RelayRules.valid(runes))) return List.of(Runes.RELAY);
+		if (dev.wildercord.spell.ExciseRules.containsIds(ids) && (runes.size() != ids.size() || !dev.wildercord.spell.ExciseRules.valid(runes))) return List.of(Runes.EXCISE);
+		if (dev.wildercord.spell.LessonPackRules.containsIds(ids) && (runes.size() != ids.size() || !dev.wildercord.spell.LessonPackRules.valid(runes))) return List.of(dev.wildercord.spell.LessonPackRules.lessonOfIds(ids).rune);
+		if (dev.wildercord.spell.ReweaveRules.containsIds(ids) && (runes.size() != ids.size() || !dev.wildercord.spell.ReweaveRules.valid(runes))) return List.of(Runes.REWEAVE);
 		return runes;
 	}
 

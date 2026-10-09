@@ -14,10 +14,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * A render layer only ever sees the state, never the entity, and there is no event for this step.
  */
 @Mixin(LivingEntityRenderer.class)
-public abstract class LivingEntityRendererMixin {
+public abstract class LivingEntityRendererMixin implements dev.wildercord.client.combat.ArticulatedRendererAccess {
+	@org.spongepowered.asm.mixin.Shadow @org.spongepowered.asm.mixin.Final
+	protected java.util.List<net.minecraft.client.renderer.entity.layers.RenderLayer<?, ?>> layers;
+	@org.spongepowered.asm.mixin.Shadow
+	protected net.minecraft.client.model.EntityModel<?> model;
+	@Override public java.util.List<net.minecraft.client.renderer.entity.layers.RenderLayer<?, ?>> wildercord$layers() { return layers; }
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
 		at = @At("TAIL"))
 	private void wildercord$runeMarks(LivingEntity entity, LivingEntityRenderState state, float partial, CallbackInfo ci) {
 		RuneMarksLayer.extract(entity, state, partial);
+		boolean known = (!(state instanceof net.minecraft.client.renderer.entity.state.AvatarRenderState)
+			|| model.getClass() == net.minecraft.client.model.player.PlayerModel.class
+				&& model instanceof dev.wildercord.client.combat.ArticulatedModelAccess owner && owner.wildercord$bodyOwned()) && layers.stream().allMatch(dev.wildercord.client.combat.ArticulatedCombat::knownLayer);
+		state.setData(dev.wildercord.client.combat.ArticulatedCombat.KNOWN_LAYERS, known);
+		state.setData(dev.wildercord.client.combat.ArticulatedArmorRenderer.READY,
+			model instanceof dev.wildercord.client.combat.ArticulatedModelAccess access && access.wildercord$bodyOwned() && access.wildercord$armor() != null && access.wildercord$armor().supportsAssets()
+				&& layers.stream().filter(layer -> layer.getClass() == dev.wildercord.client.combat.ArticulatedArmorLayer.class).count() == 1
+				&& layers.stream().noneMatch(layer -> layer instanceof net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer<?, ?, ?>));
+		var shellLayers = layers.stream().filter(layer -> layer.getClass() == dev.wildercord.client.render.AuraShellLayer.class).toList();
+		var shell = shellLayers.size() == 1 ? ((dev.wildercord.client.render.AuraShellLayer) shellLayers.getFirst()).articulated() : null;
+		state.setData(dev.wildercord.client.combat.ArticulatedAuraShellRenderer.READY, shell != null && shell.owner() == model ? shell : null);
 	}
 }

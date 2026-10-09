@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "wilds_ember_outpost",
+  "biomes": "#wildercord:has_structure/wilds_ember_outpost",
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none"
+}

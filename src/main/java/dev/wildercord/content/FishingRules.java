@@ -69,10 +69,11 @@ public final class FishingRules {
 
 	/**
 	 * How much likelier each of the runes found only by fishing is than a rune of the sea list of its tier: in a treasure
-	 * catch, and (likelier still) in a rune tangled in the line in magic waters.
+	 * catch, and (likelier still) in a rune tangled in the line in magic waters. Against the sea list's weight they make
+	 * about 2 in 11 of treasure runes and 1 in 3 of tangled ones.
 	 */
-	public static final int WORLD_WEIGHT_TREASURE = 3;
-	public static final int WORLD_WEIGHT_MAGIC = 6;
+	public static final int WORLD_WEIGHT_TREASURE = 5;
+	public static final int WORLD_WEIGHT_MAGIC = 11;
 
 	/** How close to a ley line's heart (0 to 1) the bobber counts as near it: a little wider than standing on one. */
 	public static final double NEAR_LEY = 0.2;

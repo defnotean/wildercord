@@ -23,12 +23,18 @@ public final class CastLock {
 	/** Players get a two-second maximum cast lock followed by two seconds to respond. */
 	public static final int PLAYER_LOCK_CAP = 40, PLAYER_RECOVERY = 40;
 
+	/** Read-only admission, including the response window after a seal. Does not spend or clear it. */
+	public static boolean canLock(ServerPlayer player) {
+		var previous = PLAYER_WINDOWS.get(player);
+		return previous == null || player.level().getGameTime() >= previous.readyAt;
+	}
+
 	/** Locks {@code who} out of casting for {@code ticks}, and cuts whatever they were casting short. */
 	public static void lock(LivingEntity who, int ticks) {
+		if (who instanceof dev.wildercord.aura.world.SwordMaster master && !master.acceptsInfluence(Effects.applying())) return;
 		if (who instanceof ServerPlayer player) {
+			if (!canLock(player)) return;
 			long now = who.level().getGameTime();
-			var previous = PLAYER_WINDOWS.get(player);
-			if (previous != null && now < previous.readyAt) return;
 			int duration = Math.clamp(ticks, 1, PLAYER_LOCK_CAP);
 			PLAYER_WINDOWS.put(player, new PlayerWindow(now + duration, now + duration + PLAYER_RECOVERY));
 			interrupt(who, duration);
@@ -82,6 +88,11 @@ public final class CastLock {
 	public static void interrupt(LivingEntity who, int delay) {
 		if (who instanceof ServerPlayer player) {
 			Charging.interrupt(player);
+            ExciseCasting.cancel(player);
+            LessonPackCasting.cancelSpark(player);
+			RelayCircles.cancel(player);
+		} else if (who instanceof dev.wildercord.aura.world.SwordMaster) {
+			Statuses.interrupt(who);
 		} else if (who instanceof Mob mob) {
 			Runebound.interrupt(mob, delay);
 		}

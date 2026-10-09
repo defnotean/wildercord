@@ -1,85 +1,69 @@
 # Places and times of power
 
 
-Where you stand and when you cast change how strong your magic is. Where two ley lines cross, every spell is a little
-stronger and a little cheaper. Under the open sky, the moon, the hour and the weather each favour some elements. None
-of it is a lot (10 to 25% at most), but a caster who knows when and where to fight hits harder.
+## What it is
+
+Where you stand and when you cast change how hard your spells hit. Where two ley lines cross, every spell is stronger
+and cheaper. Under the open sky, the moon, the hour and the weather each favour some elements. Each bonus is small
+(10 to 25%), but they add up.
 
 
 ## Ley crossings
 
-[Ley lines](../progression/ley-lines.md) run in **two weaves** across the Overworld, and where a
-line of one meets a line of the other is a **ley crossing**: a place of power.
+[Ley lines](../progression/ley-lines.md) run in two weaves across the Overworld. Where a line of one
+meets a line of the other is a **ley crossing**.
 
 | At a ley crossing | |
 |---|---|
-| **Every element** | **+10%** to every spell's damage |
-| **Every spell's price** | **10% cheaper** in mana (or health, for Blood Price) |
-| **Mana and Heart Circles** | As on any ley line: mana twice as fast, circles twice as quick to form |
-| **Harmonies** | Some of your world's [harmonies](../spellcraft/harmonies.md#finding-one) wake for the first time only here |
+| **Damage** | Every spell **+10%** |
+| **Price** | Every spell **10% cheaper** (mana, or health for Blood Price) |
+| **Mana and Heart Circles** | As on any ley line |
+| **Harmonies** | Some [harmonies](../spellcraft/harmonies.md#finding-one) wake for the first time only here |
 
-### Finding one
+**Finding one.** While you wear a Cord, a crossing shimmers: pale rings turning on the ground, a faint column of light
+and rising motes. The easiest way to find one is to follow a ley line until another crosses it. Crossings never move.
 
-While you wear a Cord, a crossing **shimmers**: rings of pale light turning flat on the ground round its heart, crossed
-by two lines, a faint column of light rising over it and motes of mana lifting off. You can see the shimmer from about
-50 blocks, further than the ribbons of the lines themselves, so the surest way to find one is to **follow a ley line**
-until another crosses it.
-
-Crossings lie a few hundred blocks apart, wherever the two weaves happen to meet, and like the lines they're part of the
-world itself: they never move, and every world has its own.
-
-A crossing is small: you count as standing on it within a few blocks of its heart. Step onto one and
-*"A ley crossing: every spell is stronger and cheaper here"* shows above your hotbar, with a resonant chord. The first
-time, you're told what it means and earn the **Crossroads** feat.
-
-The HUD's mana cost and the Cord screen's prices show the cheaper price while you stand on one.
+A crossing is small: you need to stand near its heart. When you do, *"A ley crossing: every spell is stronger and
+cheaper here"* shows above your hotbar. The first time earns the **Crossroads** advancement. Your HUD and Cord screen
+show the cheaper prices while you stand there.
 
 ## The moon, the hour and the weather
 
-These hold only **under the open sky** in the Overworld (not under a roof, and not in the Nether or the End, which have
-no sky of their own). They add to the rest of the [elemental climate](../spellcraft/affinities.md#elemental-climate).
+These only count **under the open sky** in the Overworld, not under a roof.
 
 | When | Favours |
 |---|---|
-| **Full moon** (a clear night, the first of every eight) | Arcane **+15%**, Void **+15%** |
-| **New moon** (a clear night, four nights after a full moon) | Blood **+15%**, Void **+10%** |
-| **Noon sun** (around midday, not raining) | Fire **+15%** |
-| **Dawn** and **dusk** (as the sun rises and sets) | Time **+15%** |
-| **Rain** | Frost **+10%** (and Fire still -10%) |
-| **A thunderstorm overhead** | Storm **+25%** |
+| **Full moon** (clear night) | Arcane **+15%**, Void **+15%** |
+| **New moon** (clear night) | Blood **+15%**, Void **+10%** |
+| **Noon** (not raining) | Fire **+15%** |
+| **Dawn** and **dusk** | Time **+15%** |
+| **Rain** | Frost **+10%**, Fire **-10%** |
+| **Thunderstorm overhead** | Storm **+25%** |
 
-Clouds hide the moon: a full or new moon counts only on a clear night. Night itself still favours void a little
-(+10%), so a clear full-moon night is a void caster's best: +26% in all.
+Clouds hide the moon. Night itself also gives Void +10%, so a clear full-moon night gives void about +26% in all.
 
-And elsewhere:
+Elsewhere:
 
 | Where | Favours |
 |---|---|
-| **The Nether** | Fire **+20%** (Frost -25%) |
+| **The Nether** | Fire **+20%**, Frost **-25%** |
 | **The End** | Void **+20%** |
+
+More climate effects (snow, heat, deep underground) are on
+[Creature Affinities](../spellcraft/affinities.md#elemental-climate). However they stack, an element
+never drops below half strength or goes above +50%.
 
 ## Seeing what's favoured
 
-The small marks after your spell's name on the HUD show which elements are favoured (green ▲) or hindered (red ▼) where
-you stand. For a few seconds after something new comes into force (the moon rising, rain starting, a ley crossing
-underfoot), lines over the spell panel say **why**:
+Small marks after your spell's name on the HUD show favoured (green ▲) or hindered (red ▼) elements. When something new
+starts (the moon rises, rain begins, you step onto a crossing), a line over the spell panel says why for a few seconds.
+The Grimoire keeps the same lines under **Where you stand**.
 
-> Full moon: Arcane +15%, Void +15%
-> Night, under the sky: Void +10%
+## Tips and counterplay
 
-The Grimoire's page (open the Cord screen and switch to the Grimoire) keeps the same lines under **Where you stand**, for
-as long as they hold.
-
-## Fair in a fight
-
-All of these go through the same path as every other bonus a spell carries, so against another player they count
-toward the same cap as reactions and setups: a full moon never turns a spell into a one-shot. Server owners can turn
-ley crossings or the sky's bonuses off, or make them stronger or weaker.
-
-## Tips
-
-- **Duel at a crossing.** Every spell is cheaper and stronger there, for both of you.
-- **Wait for the moon.** A void or arcane spell cast on a clear full-moon night hits noticeably harder; a blood caster
-  waits for the new moon.
-- **Fire at noon, frost in the rain.** Fight a fire-weak foe at midday, or a frost one in a downpour.
-- **Time casters love the edges of the day.** Dawn lasts about two minutes of real time, dusk a little over one.
+- **Duel at a crossing.** It helps both of you equally.
+- **Wait for the moon.** Void and arcane hit harder on a clear full-moon night. Blood waits for the new moon.
+- **Fire at noon, frost in the rain.**
+- **Time casters love dawn and dusk.** Dawn lasts about two minutes, dusk a little over one.
+- Against other players, these bonuses share the same cap as reactions, so they never make a one-shot.
+- Server owners can turn these bonuses off or change their strength.

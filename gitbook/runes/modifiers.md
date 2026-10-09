@@ -4,7 +4,7 @@
 
 A **modifier** changes the closest rune on its *left* that it can change. Amplify needs something with power, so in `Bolt · Fire · Amplify` it strengthens Fire; Split needs something that can split, so in `Bolt · Fire · Split` it skips Fire and doubles the Bolt. A modifier never reaches back past a link. Modifiers multiply the cost of what they change.
 
-33 modifiers, by tier.
+69 modifiers, by tier.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/amplify.png) Amplify
 
@@ -19,6 +19,28 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cushioned.png) Cushioned
+
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Whoever it moves takes no fall damage on their next landing (10 seconds).
+
+**How to get it:** Craft: a Blank Rune, Hay Bale and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Cushioned: a Blank Rune and Hay Bale and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cushioned.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/damp.png) Damp
+
+
+*Tier I · cost x1 · needs any Cord*
+
+Fire it starts on blocks goes straight out; creatures still burn.
+
+**How to get it:** Craft: a Blank Rune, Wet Sponge and Clay Ball. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Damp: a Blank Rune and Wet Sponge and Clay Ball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_damp.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/extend.png) Extend
 
 
@@ -31,6 +53,30 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 ![Crafting Extend: a Blank Rune and 2x Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_extend.png)
 
 **Attaches to:** the closest rune on its left that is anything that lasts.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fetching.png) Fetching
+
+
+*Tier I · cost x1.1 · needs any Cord*
+
+The loot of creatures it kills lands at your feet.
+
+**How to get it:** Craft: a Blank Rune, Lead and Bone. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Fetching: a Blank Rune and Lead and Bone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fetching.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fleecing.png) Fleecing
+
+
+*Tier I · cost x1 · needs any Cord*
+
+Sheep it reaches are shorn; the wool lands at your feet.
+
+**How to get it:** Craft: a Blank Rune, Shears and White Wool. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Fleecing: a Blank Rune and Shears and White Wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fleecing.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frugal.png) Frugal
 
@@ -45,6 +91,87 @@ Half the mana, but 40% weaker and shorter.
 
 **Attaches to:** the closest rune on its left that is any effect.
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/furrowing.png) Furrowing
+
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Tills grass and dirt within 2 blocks of where it lands into farmland.
+
+**How to get it:** Craft: a Blank Rune, Iron Hoe and Dirt. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Furrowing: a Blank Rune and Iron Hoe and Dirt](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_furrowing.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gentle.png) Gentle
+
+
+*Tier I · cost x1 · needs any Cord*
+
+Passes over farm animals, pets and villagers.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops and Lead. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Gentle: a Blank Rune and Wheat Crops and Lead](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gentle.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/level_ground.png) Level Ground
+
+
+*Tier I · cost x1 · needs any Cord*
+
+Never breaks a block below your feet, so you can't dig yourself a pit.
+
+**How to get it:** Craft: a Blank Rune, Stone Slab and Compass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Level Ground: a Blank Rune and Stone Slab and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_level_ground.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/magnetic.png) Magnetic
+
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Items within 6 blocks of where it lands fly to you.
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Magnetic: a Blank Rune and Iron Ingot and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_magnetic.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/matchmaking.png) Matchmaking
+
+
+*Tier I · cost x1 · needs any Cord*
+
+Grown animals it lands on fall in love.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops, Carrot and Poppy. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Matchmaking: a Blank Rune and Wheat Crops, Carrot and Poppy](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_matchmaking.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nourishing.png) Nourishing
+
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Also feeds each player it lands on 3 hunger.
+
+**How to get it:** Craft: a Blank Rune, Bread and Apple. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Nourishing: a Blank Rune and Bread and Apple](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nourishing.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/replanting.png) Replanting
+
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Ripe crops it breaks are replanted from their own seeds.
+
+**How to get it:** Craft: a Blank Rune, Wheat Seeds and Bone Meal. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Replanting: a Blank Rune and Wheat Seeds and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_replanting.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reservoir_circle.png) Reservoir Circle
 
 
@@ -56,6 +183,80 @@ Filling concentric basins: 25% less mana, 20% less power and 15% shorter effect 
 
 ![Crafting Reservoir Circle: a Blank Rune and Glass Bottle and Lapis Lazuli](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reservoir_circle.png)
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soothing.png) Soothing
+
+
+*Tier I · cost x1 · needs any Cord*
+
+Creatures it lands on forget their anger at you; 30% weaker.
+
+**How to get it:** Craft: a Blank Rune, Honey Bottle and Note Block. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Soothing: a Blank Rune and Honey Bottle and Note Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_soothing.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sowing.png) Sowing
+
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Plants seeds from your pack on bare farmland within 3 blocks of where it lands.
+
+**How to get it:** Craft: a Blank Rune, Wheat Seeds and Beetroot Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sowing: a Blank Rune and Wheat Seeds and Beetroot Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sowing.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sparing.png) Sparing
+
+
+*Tier I · cost x1 · needs any Cord*
+
+Passes over other players and their pets.
+
+**How to get it:** Craft: a Blank Rune, White Banner and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sparing: a Blank Rune and White Banner and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sparing.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steady.png) Steady
+
+
+*Tier I · cost x0.9 · needs any Cord*
+
+The effect can't break any block, and costs 10% less. Not with block modifiers.
+
+**How to get it:** Craft: a Blank Rune, Obsidian and Iron Nugget. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Steady: a Blank Rune and Obsidian and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_steady.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidy.png) Tidy
+
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Blocks it breaks drop straight into your pack; what doesn't fit lands at your feet.
+
+**How to get it:** Craft: a Blank Rune, Bundle and String. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Tidy: a Blank Rune and Bundle and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tidy.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/torchset.png) Torchset
+
+
+*Tier I · cost x1 · needs any Cord*
+
+If it lands somewhere dark, sets a torch there from your pack.
+
+**How to get it:** Craft: a Blank Rune, Torch and Coal. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Torchset: a Blank Rune and Torch and Coal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_torchset.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/anchor_circle.png) Anchor Circle
 
 
@@ -66,6 +267,8 @@ A locked square lattice: effect durations last 40% longer at 15% less power. Cos
 **How to get it:** Craft: a Blank Rune, Iron Ingot and Stone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ![Crafting Anchor Circle: a Blank Rune and Iron Ingot and Stone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_anchor_circle.png)
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/belated.png) Belated
 
@@ -91,6 +294,8 @@ Six unfolding petals: 35% larger shape radius, 20% less power. Costs 15% more ma
 
 ![Crafting Bloom Circle: a Blank Rune and Pink Petals and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bloom_circle.png)
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bounce.png) Bounce
 
 
@@ -104,6 +309,17 @@ Bounces off blocks up to 3 times.
 
 **Attaches to:** the closest rune on its left that is projectiles.
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bountiful.png) Bountiful
+
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Creatures it kills drop twice the experience, even untouched by your hand.
+
+**How to get it:** Craft: a Blank Rune, Bottle o' Enchanting and Emerald, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Bountiful: a Blank Rune and Bottle o' Enchanting and Emerald, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bountiful.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/crucible_circle.png) Crucible Circle
 
 
@@ -114,6 +330,19 @@ A breathing furnace hexagon: 15% more power and 25% shorter effect durations. Co
 **How to get it:** Craft: a Blank Rune, Blaze Powder and Brick, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ![Crafting Crucible Circle: a Blank Rune and Blaze Powder and Brick, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_crucible_circle.png)
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/culling.png) Culling
+
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+Lands only on monsters, 20% stronger; everything else is passed over.
+
+**How to get it:** Craft: a Blank Rune, Rotten Flesh and Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Culling: a Blank Rune and Rotten Flesh and Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_culling.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/execute.png) Execute
 
@@ -127,6 +356,19 @@ Double power against targets under half health. One per effect.
 ![Crafting Execute: a Blank Rune and Iron Axe, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_execute.png)
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fertile.png) Fertile
+
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Crops and saplings within 3 blocks of where it lands grow a stage.
+
+**How to get it:** Craft: a Blank Rune, 2x Bone Meal and Moss Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Fertile: a Blank Rune and 2x Bone Meal and Moss Block, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fertile.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/focus.png) Focus
 
@@ -151,6 +393,41 @@ Counter-turning turbines: flying shapes travel 30% faster at 15% less power. Cos
 **How to get it:** Craft: a Blank Rune, Feather and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ![Crafting Gyre Circle: a Blank Rune and Feather and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gyre_circle.png)
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hallowed.png) Hallowed
+
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Twice as strong on the undead; the living are passed over.
+
+**How to get it:** Craft: a Blank Rune, Golden Apple and Bone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Hallowed: a Blank Rune and Golden Apple and Bone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hallowed.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/inward.png) Inward
+
+
+*Tier II · cost x1 · needs a Copper Cord or better*
+
+Lands on you alone, 40% stronger. Not with Selfless.
+
+**How to get it:** Craft: a Blank Rune, Glass Pane and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Inward: a Blank Rune and Glass Pane and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_inward.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kilned.png) Kilned
+
+
+*Tier II · cost x1.25 · needs a Copper Cord or better*
+
+What it breaks drops already smelted, with no fuel. Only one drop rule per effect.
+
+**How to get it:** Craft: a Blank Rune, Furnace and Coal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Kilned: a Blank Rune and Furnace and Coal, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_kilned.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kindred.png) Kindred
 
@@ -178,6 +455,17 @@ The effect lands twice more, a second apart.
 
 **Attaches to:** the closest rune on its left that is effects that can land again over time.
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mending.png) Mending
+
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Also mends 10 durability on each target's held item and armour.
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Anvil, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Mending: a Blank Rune and Iron Ingot and Anvil, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mending.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mercy_circle.png) Mercy Circle
 
 
@@ -189,6 +477,8 @@ Paired sheltering crescents: helpful effects gain 20% power; other effects lose 
 
 ![Crafting Mercy Circle: a Blank Rune and Honey Bottle and Poppy, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mercy_circle.png)
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/needle_circle.png) Needle Circle
 
 
@@ -199,6 +489,21 @@ A closing iris: 35% smaller shape radius, 20% more power. Costs 20% more mana. O
 **How to get it:** Craft: a Blank Rune, Flint and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ![Crafting Needle Circle: a Blank Rune and Flint and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_needle_circle.png)
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ore_sensing.png) Ore Sensing
+
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Ores within 8 blocks of where it lands glimmer for 10 seconds.
+
+**How to get it:** Craft: a Blank Rune, Spyglass and Raw Gold, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Ore Sensing: a Blank Rune and Spyglass and Raw Gold, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ore_sensing.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pierce.png) Pierce
 
@@ -224,6 +529,30 @@ A rolling compass: 15% more power when released while moving horizontally, other
 
 ![Crafting Pilgrim Circle: a Blank Rune and Compass and Feather, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pilgrim_circle.png)
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pooled.png) Pooled
+
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+Double power, shared evenly between every creature it reaches.
+
+**How to get it:** Craft: a Blank Rune, Bowl and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Pooled: a Blank Rune and Bowl and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pooled.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/purifying.png) Purifying
+
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Also lifts one harmful effect from each target.
+
+**How to get it:** Craft: a Blank Rune, Milk Bucket and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Purifying: a Blank Rune and Milk Bucket and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_purifying.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/quicken.png) Quicken
 
 
@@ -248,6 +577,54 @@ Halves the whole spell's cooldown.
 
 ![Crafting Rapid: a Blank Rune and Sugar and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rapid.png)
 
+**Attaches to:** the closest rune on its left that is any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/selfless.png) Selfless
+
+
+*Tier II · cost x1 · needs a Copper Cord or better*
+
+Skips you and lands on the others 30% stronger. Not with Inward.
+
+**How to get it:** Craft: a Blank Rune, Poppy and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Selfless: a Blank Rune and Poppy and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_selfless.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/silken.png) Silken
+
+
+*Tier II · cost x1.3 · needs a Copper Cord or better*
+
+Blocks it breaks drop themselves, as with Silk Touch. Only one drop rule per effect.
+
+**How to get it:** Craft: a Blank Rune, String and White Wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Silken: a Blank Rune and String and White Wool, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_silken.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sunlit.png) Sunlit
+
+
+*Tier II · cost x1 · needs a Copper Cord or better*
+
+Twice as strong under open daylight sky; half as strong anywhere else.
+
+**How to get it:** Craft: a Blank Rune, Sunflower and Gold Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sunlit: a Blank Rune and Sunflower and Gold Ingot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sunlit.png)
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tapering.png) Tapering
+
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+The first creature takes 50% more; each after takes a quarter less than the one before.
+
+**How to get it:** Craft: a Blank Rune, Arrow and Flint, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Tapering: a Blank Rune and Arrow and Flint, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tapering.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thirst.png) Thirst
 
 
@@ -261,6 +638,39 @@ You heal for a quarter of the damage the effect deals.
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/timbering.png) Timbering
+
+
+*Tier II · cost x1.3 · needs a Copper Cord or better*
+
+Breaking a log fells up to 24 more logs of the tree above it.
+
+**How to get it:** Craft: a Blank Rune, Iron Axe and Oak Log, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Timbering: a Blank Rune and Iron Axe and Oak Log, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_timbering.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/triage.png) Triage
+
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+Lands only on the most hurt creature it reaches, 60% stronger.
+
+**How to get it:** Craft: a Blank Rune, Glistering Melon Slice and Paper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Triage: a Blank Rune and Glistering Melon Slice and Paper, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_triage.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/veinfollow.png) Veinfollow
+
+
+*Tier II · cost x1.3 · needs a Copper Cord or better*
+
+Breaking an ore also breaks up to 8 more touching blocks of the same ore.
+
+**How to get it:** Craft: a Blank Rune, Raw Iron and Raw Copper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Veinfollow: a Blank Rune and Raw Iron and Raw Copper, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_veinfollow.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/vigil_circle.png) Vigil Circle
 
 
@@ -271,6 +681,8 @@ An opening watchful eye: 20% more power if crouching on release, otherwise 10% l
 **How to get it:** Craft: a Blank Rune, Spider Eye and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ![Crafting Vigil Circle: a Blank Rune and Spider Eye and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_vigil_circle.png)
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/volley.png) Volley
 
@@ -309,6 +721,8 @@ Pay for the whole spell in health instead of mana: 1 health per 4 mana. Never le
 
 ![Crafting Blood Price: a Blank Rune and Ghast Tear and Redstone Dust, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_blood_price.png)
 
+**Attaches to:** the closest rune on its left that is any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits).
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chain.png) Chain
 
 
@@ -333,6 +747,8 @@ Braided elemental satellites: power starts at 90%, gaining 8% per distinct visua
 
 ![Crafting Confluence Circle: a Blank Rune and Amethyst Shard and Prismarine Shard, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_confluence_circle.png)
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/eclipse_circle.png) Eclipse Circle
 
 
@@ -343,6 +759,19 @@ A moon passing its sun: 20% more power at night on release, otherwise 10% less. 
 **How to get it:** Craft: a Blank Rune, Ender Pearl and Gold Nugget, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 ![Crafting Eclipse Circle: a Blank Rune and Ender Pearl and Gold Nugget, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_eclipse_circle.png)
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/headhunting.png) Headhunting
+
+
+*Tier III · cost x1.2 · needs an Amethyst Cord or better*
+
+Lands only on the healthiest creature it reaches, 60% stronger.
+
+**How to get it:** Craft: a Blank Rune, Skeleton Skull, Arrow and Spyglass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Headhunting: a Blank Rune and Skeleton Skull, Arrow and Spyglass, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_headhunting.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/homing.png) Homing
 
@@ -394,6 +823,8 @@ Forked storm spokes: 20% more power when wet or exposed to rain on release, othe
 
 ![Crafting Tempest Circle: a Blank Rune and Breeze Rod and Copper Ingot, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tempest_circle.png)
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/vow.png) Vow
 
 
@@ -404,3 +835,16 @@ A binding vow: the shape's effects hit twice as hard, but the whole spell's cool
 **How to get it:** Craft: a Blank Rune, Paper and Block of Gold, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Ancient cities.
 
 ![Crafting Vow: a Blank Rune and Paper and Block of Gold, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_vow.png)
+
+**Attaches to:** the closest rune on its left that is any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/windfall.png) Windfall
+
+
+*Tier III · cost x1.4 · needs an Amethyst Cord or better*
+
+Blocks it breaks drop as if mined with Fortune III. Only one drop rule per effect.
+
+**How to get it:** Craft: a Blank Rune, Emerald and Rabbit's Foot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Windfall: a Blank Rune and Emerald and Rabbit's Foot, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_windfall.png)

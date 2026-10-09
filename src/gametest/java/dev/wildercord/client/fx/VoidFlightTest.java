@@ -26,7 +26,7 @@ public final class VoidFlightTest implements FabricClientGameTest {
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"void_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
    check(VoidForms.RUNES.size()==38,"Explicit complete void roster");
-   check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("void")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(VoidForms.RUNES)),"Authored runtime void roster matches");
+   check(EverydayRunes.combatPaths("void").equals(new HashSet<>(VoidForms.RUNES)),"Authored runtime void roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:VoidForms.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
     c.runOnClient(mc->{mc.particleEngine.clearParticles();MagicQuality.own=q;});

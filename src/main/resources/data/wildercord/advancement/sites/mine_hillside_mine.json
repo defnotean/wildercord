@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "mine_hillside_mine": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:mine_hillside_mine"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:rail"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.mine_hillside_mine.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.mine_hillside_mine.description"
+    }
+  },
+  "requirements": [
+    [
+      "mine_hillside_mine"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

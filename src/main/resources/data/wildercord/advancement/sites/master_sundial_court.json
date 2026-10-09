@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "master_sundial_court": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:master_sundial_court"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:chiseled_sandstone"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.master_sundial_court.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.master_sundial_court.description"
+    }
+  },
+  "requirements": [
+    [
+      "master_sundial_court"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

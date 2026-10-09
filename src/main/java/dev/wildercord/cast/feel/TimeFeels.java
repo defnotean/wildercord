@@ -31,5 +31,11 @@ final class TimeFeels {
 		rune("doomclock", 0, 1.2).register();
 		rune("rewind", 0, 1.2).register();
 		rune("stasis", 0, 1.3).register();
+		// ---- fx-farm pack: the farmstead runes' signatures (the time ones among them take time_cue, as above).
+		dev.wildercord.cast.packs.FarmFeels.register();
+		// ---- fx-explore pack
+		rune("moon_reading", 2, 0.75).register();
+		rune("sun_reading", 4, 0.75).register();
+		rune("trade_renew", 1, 0.9).register();
 	}
 }

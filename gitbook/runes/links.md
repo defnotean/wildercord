@@ -4,7 +4,7 @@
 
 A **link** ends a segment of the spell: everything after it happens *later*, or somewhere else. `On Hit` fires the rest where the spell struck, `Delay` fires it from you a moment later, `Echo` repeats everything before it, and the conditions (If Sneaking, If Airborne...) let one spell do two different things.
 
-14 links, by tier.
+31 links, by tier.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/delay.png) Delay
 
@@ -19,6 +19,94 @@ The rest fires 1 second later, from you.
 
 **Modifiers that work on it:** Extend, Quicken
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_day.png) If Day
+
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only by day.
+
+**How to get it:** Craft: a Blank Rune, Sunflower and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Day: a Blank Rune and Sunflower and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_day.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_holding_tool.png) If Holding Tool
+
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only with a pickaxe, axe, shovel, hoe or shears in hand.
+
+**How to get it:** Craft: a Blank Rune, Stick and Iron Nugget. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Holding Tool: a Blank Rune and Stick and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_holding_tool.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_in_fields.png) If In Fields
+
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only with farmland within 4 blocks of your feet.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If In Fields: a Blank Rune and Wheat Crops and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_in_fields.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_night.png) If Night
+
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only at night.
+
+**How to get it:** Craft: a Blank Rune, Ink Sac and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Night: a Blank Rune and Ink Sac and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_night.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_raining.png) If Raining
+
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only while rain or snow falls on you.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Raining: a Blank Rune and Water Bucket and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_raining.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_underground.png) If Underground
+
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only with no open sky above you.
+
+**How to get it:** Craft: a Blank Rune, Cobblestone and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Underground: a Blank Rune and Cobblestone and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_underground.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_harvest.png) On Harvest
+
+
+*Tier I · 2 mana · needs any Cord*
+
+The rest waits up to a minute for the next ripe crop you pick, then fires there.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops and Tripwire Hook. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting On Harvest: a Blank Rune and Wheat Crops and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_harvest.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_mine.png) On Mine
+
+
+*Tier I · 2 mana · needs any Cord*
+
+The rest waits up to 30 seconds for the next block you mine, then fires there.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe and Tripwire Hook. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting On Mine: a Blank Rune and Iron Pickaxe and Tripwire Hook](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_mine.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_airborne.png) If Airborne
 
 
@@ -29,6 +117,39 @@ The rest fires only if you're in the air. Build aerial finishers.
 **How to get it:** Craft: a Blank Rune, Feather and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Phantoms (5%).
 
 ![Crafting If Airborne: a Blank Rune and Feather and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_airborne.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_alone.png) If Alone
+
+
+*Tier II · 1 mana · needs a Copper Cord or better*
+
+The rest fires only with no other player or monster within 16 blocks.
+
+**How to get it:** Craft: a Blank Rune, Compass and Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Alone: a Blank Rune and Compass and Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_alone.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_brimming.png) If Brimming
+
+
+*Tier II · 1 mana · needs a Copper Cord or better*
+
+The rest fires only with more than half your mana left.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Brimming: a Blank Rune and Glass Bottle and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_brimming.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_near_ally.png) If Near Ally
+
+
+*Tier II · 1 mana · needs a Copper Cord or better*
+
+The rest fires only with a friendly player or your pet within 8 blocks.
+
+**How to get it:** Craft: a Blank Rune, Compass and Bone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Near Ally: a Blank Rune and Compass and Bone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_near_ally.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_sneaking.png) If Sneaking
 
@@ -41,6 +162,17 @@ The rest fires only if you're sneaking. Build two spells in one.
 
 ![Crafting If Sneaking: a Blank Rune and Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_sneaking.png)
 
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_unhurt.png) If Unhurt
+
+
+*Tier II · 1 mana · needs a Copper Cord or better*
+
+The rest fires only at full health.
+
+**How to get it:** Craft: a Blank Rune, Apple and Clock, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting If Unhurt: a Blank Rune and Apple and Clock, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_unhurt.png)
+
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/imbue.png) Imbue
 
 
@@ -51,6 +183,17 @@ The rest isn't cast: it's stored, with 3 charges, in what the shape before it to
 **How to get it:** Craft: a Blank Rune, Bottle o' Enchanting, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ![Crafting Imbue: a Blank Rune and Bottle o' Enchanting, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_imbue.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_catch.png) On Catch
+
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 2 minutes for your next catch with a rod, then fires where you reeled it in.
+
+**How to get it:** Craft: a Blank Rune, Fishing Rod and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting On Catch: a Blank Rune and Fishing Rod and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_catch.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_hit.png) On Hit
 
@@ -84,6 +227,50 @@ The rest fires when you next touch the ground.
 **How to get it:** Craft: a Blank Rune, Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 ![Crafting On Land: a Blank Rune and Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_land.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_mount.png) On Mount
+
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 30 seconds for you to ride something, then fires at your mount.
+
+**How to get it:** Craft: a Blank Rune, Saddle and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting On Mount: a Blank Rune and Saddle and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_mount.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_splash.png) On Splash
+
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 30 seconds for you to enter water, then fires there.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting On Splash: a Blank Rune and Water Bucket and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_splash.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_sprint.png) On Sprint
+
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 15 seconds for you to start sprinting, then fires from you.
+
+**How to get it:** Craft: a Blank Rune, Sugar and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting On Sprint: a Blank Rune and Sugar and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_sprint.png)
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_wake.png) On Wake
+
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 10 minutes for you to wake from a bed, then fires from you.
+
+**How to get it:** Craft: a Blank Rune, White Bed and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting On Wake: a Blank Rune and White Bed and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_wake.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_weakness.png) On Weakness
 

@@ -45,6 +45,7 @@ public final class RuneReadings {
 			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> RECENT.clear());
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> RECENT.remove(handler.player.getUUID()));
 	}
 
 	/** Whether newly learned runes start unread on this server. */

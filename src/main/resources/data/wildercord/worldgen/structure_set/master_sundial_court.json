@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101006,
+    "spacing": 48,
+    "separation": 16
+  },
+  "structures": [
+    {
+      "structure": "wildercord:master_sundial_court",
+      "weight": 1
+    }
+  ]
+}

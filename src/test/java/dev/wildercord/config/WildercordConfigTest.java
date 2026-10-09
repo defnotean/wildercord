@@ -28,6 +28,22 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void stoneHingeStaysGatedUntilAnOperatorEnablesIt() {
+		assertFalse(D.aura().sparring().experimentalStoneHinge());
+		assertEquals(0, Config.Sync.DEFAULT.combat() & Config.Sync.STONE_HINGE);
+		var older = WildercordConfig.parse(WildercordConfig.addMissing("{\"aura\": {\"clashes\": true}}").orElseThrow());
+		assertTrue(older.warnings().isEmpty(), older.warnings().toString());
+		assertFalse(older.config().aura().sparring().experimentalStoneHinge());
+		var on = WildercordConfig.parse(D.toJson().replace("\"experimental_stone_hinge\": false", "\"experimental_stone_hinge\": true"));
+		assertTrue(on.warnings().isEmpty(), on.warnings().toString());
+		assertTrue(on.config().aura().sparring().experimentalStoneHinge());
+		assertTrue(WildercordConfig.parse(on.config().toJson()).config().aura().sparring().experimentalStoneHinge());
+		Config.Sync sync = Config.Sync.of(on.config());
+		assertNotEquals(0, sync.combat() & Config.Sync.STONE_HINGE);
+		assertEquals(Config.Sync.of(D).awakeningMomentum(), sync.awakeningMomentum());
+	}
+
+	@Test
 	void defaultsAreTheNumbersFromBeforeTheConfig() {
 		assertEquals(64, D.maxCreatures());
 		assertEquals(32, D.maxBlocks());

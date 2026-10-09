@@ -7,37 +7,51 @@ nav_order: 19
 
 # Rune-Etched Blades
 
-An effect rune can live in a blade's steel. A landed art or finisher wakes it, spending your mana for the rune's actual effect. Your weapon and its Aura remain physical; the inscription is the separate magic it carries.
+## What it is
+
+You can etch one **effect rune** into a weapon at an anvil. When an art or finisher lands, the rune wakes and casts its effect,
+paid for with your mana. The blade still fights normally; the rune is extra magic on top.
 
 ![Native anvil preview with a Fire effect rune, named weapon and five-level result]({{ '/assets/images/rune-etched-anvil.png' | relative_url }})
 
-## At the anvil
+## How to get it
 
-Place one eligible sword, axe, spear or mace in the left slot and **one rank I effect rune** in the right. Taking the result consumes one rune and costs **five experience levels**. Its existing damage, name, enchantments and bonded history remain on the weapon.
+1. Put a **sword, axe, spear or mace** in the anvil's left slot.
+2. Put **one rank I effect rune** in the right slot.
+3. Take the result for **5 experience levels**. The rune is used up.
 
-There is one inscription per blade. A different effect replaces the old inscription, which is lost; the same effect produces no result. Shape, modifier, link and innate runes cannot be etched. Ranked runes are refused so the anvil cannot discard their extra value. A blade bonded to another player cannot be etched by you.
+The weapon keeps its damage, name, enchantments and bond.
 
-Repair an etched blade in the left slot normally. An etched weapon cannot be used as a right-slot repair sacrifice, which would silently destroy its inscription.
+- One rune per weapon. Etching a different effect replaces the old one; it's lost.
+- Shape, modifier, link and innate runes can't be etched. Neither can ranked runes, the
+  [Excise]({{ '/spellcraft/excise/' | relative_url }}) rune, or the [Lesson Pack]({{ '/spellcraft/lesson-pack/' | relative_url }})
+  runes.
+- You can't etch a blade bonded to someone else.
+- Repair an etched weapon in the left slot as normal. It can't be used as the sacrifice in the right slot.
 
-## Wake the inscription
+## How to use it
 
-Have a working Cord, at least Glow and enabled Aura. On the first successful health damage of an art or written technique, the inscription spends the mana of **Touch + its effect**, then applies that effect. A landed finisher also attempts to wake it. Ordinary swings alone do not.
+You need a working Cord, **Glow** or higher, and Aura switched on.
 
-| Inscription | Where it acts | Example |
-| --- | --- | --- |
-| Harmful effect | The living foe struck | Harm deals its normal arcane damage and exposure, through spell defenses |
-| Helpful effect | You | Heal restores you; Swift accelerates you |
-| Movement effect | You | Blink or Launch follows its usual self behavior |
-| World effect | The point and floor beneath the struck foe | Light illuminates the contact; terrain effects retain their ordinary world rules |
+When an **art** or **written technique** first deals damage, or a **finisher** lands, the rune spends the mana of
+**Touch + its effect** and casts. Normal swings don't wake it.
 
-Effects keep their normal conditions and protections. An unsuitable environment can make a rune fizzle. Shields can stop a harmful inscription. Missing mana leaves the inscription dormant, with no charge and no new rest.
+| Kind of effect | Where it lands | Example |
+|---|---|---|
+| Harmful | The foe you hit | Harm deals its normal damage, through spell defences |
+| Helpful | You | Heal restores you; Swift speeds you up |
+| Movement | You | Blink or Launch work as usual on yourself |
+| World | The spot under the foe | Light lights it up; terrain effects follow their usual rules |
 
-The swordsman rests **at least five seconds**, or the effect's compiled cooldown if longer. Rest is saved on the player, including through death, and shared by every etched weapon they carry. Switching weapons or dimensions cannot reset it. An art already in flight cannot borrow a replacement weapon's inscription. An inscription does not independently buy a resonant-strike bonus on its primary target.
+Afterwards the rune rests for **at least 5 seconds** (longer if the effect's own cooldown is longer). This rest is shared by
+every etched weapon you carry and isn't reset by swapping weapons, dying or changing dimension.
 
-Your known rune rank still applies, following the normal same-cost rune-rank rules. Heart power, casting gear discounts and ordinary cast mastery are not added by this inscription path. It pays the effect's basic Touch price. A killing blow has no living target for this activation, and a protected sparring partner cannot trigger it.
+If you don't have the mana, nothing happens and no rest starts.
 
-The weapon tooltip names its inscription, mana price and minimum rest. Unknown rune IDs remain stored and dormant so an absent add-on does not erase the weapon's inscription.
+## Tips and counterplay
 
-## Choose a second role
-
-Harm is straightforward extra pressure, but a utility inscription can change the reason to commit to an art: a healing edge for recovery, a movement edge for repositioning, or light to reveal the place where a fight unfolds. You still pay for the magic. The inscription does not replace your Cord or its full spell combinations.
+- Effects keep their normal rules: shields can stop a harmful rune, and a rune can fizzle in the wrong place.
+- Your rune rank still counts. Heart power, casting-gear discounts and cast mastery don't.
+- A killing blow has nothing left to affect, and a sparring partner can't trigger it.
+- The tooltip shows the rune, its mana cost and its rest.
+- Harm adds pressure. Heal, a movement rune or Light gives your arts a second job instead.

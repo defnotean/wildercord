@@ -4,21 +4,17 @@ parent: The World
 nav_order: 20
 permalink: /world/reed-rattle/
 ---
-# A quiet answer for raised claws
+# Reed Rattle
 
-**New in 0.10.0-alpha.**
+## What it is
 
-A Reed Rattle is a handmade clay chamber of pebbles on a bamboo handle, tied with Moonreed Floss.
-It gives explorers without magic a way past a territorial **Reedback Crab**.
+A handmade clay rattle on a bamboo handle. It lets you calm a warning [Reedback Crab]({{ '/world/reedback-crabs/' | relative_url }}) without magic.
 
-<img src="{{ '/assets/images/reed-rattle-settled.png' | relative_url }}" alt="A Reedback Crab lowering its claws after a crouched Reed Rattle answer, with the small clay instrument held in view" class="shot">
+<img src="{{ '/assets/images/reed-rattle-settled.png' | relative_url }}" alt="A Reedback Crab lowering its claws after a Reed Rattle answer" class="shot">
 
-## Craft it
+## How to get it
 
-Gather **one Moonreed Floss, two Clay Balls, two Bamboo and one String**. No crab needs to be killed.
-Harvest floss from a Moonreed opened by a visiting Glimmerwing; leave the root intact for later flowers.
-
-Use this arrangement in a crafting table:
+Craft it from 1 Moonreed Floss, 2 Clay Balls, 2 Bamboo and 1 String. Floss comes from a [Moonreed]({{ '/world/moonreed-gardens/' | relative_url }}) opened by a Glimmerwing.
 
 | | | |
 |---|---|---|
@@ -26,22 +22,20 @@ Use this arrangement in a crafting table:
 | String | Bamboo | Clay Ball |
 | Empty | Bamboo | Empty |
 
-## Answer the warning
+## How to use it
 
-When the crab raises its claws, **crouch and right-click it with the rattle**. Stay within three blocks
-with an unobstructed view. The claws lower and the crab settles for **six seconds**, giving you time
-to cross its bank. The quiet reed rustle and pebble knocks are physical sounds; no mana or magic
-circles are involved. The crab remains wild.
+1. Wait until the crab raises its claws.
+2. Crouch within 3 blocks, with a clear view of the crab.
+3. Right-click the crab with the rattle.
 
-The rattle has **48 successful Survival uses**. Each success puts every rattle carried by that player
-on a **20-second rest**. Switching hands or replacing the instrument cannot bypass the rest. Both
-wear and the rest survive a world restart.
+The crab lowers its claws and stays calm for 6 seconds. That gives you time to cross its bank.
 
-<img src="{{ '/assets/images/reed-rattle-inventory.png' | relative_url }}" alt="The handmade Reed Rattle in the player's inventory and hand" class="shot">
+The rattle has 48 uses. After each success, every rattle you carry rests for 20 seconds. Swapping rattles does not skip the rest.
 
-The crab also remembers a shared ten-second response rest. Another player or a water spell cannot
-keep renewing the calm while that rest runs. Striking the crab wakes it immediately.
+Failed attempts cost nothing. That includes standing, too far, blocked, wrong timing or resting.
 
-Once its sweep has committed, the instrument cannot stop it: step sideways to evade the claws.
-Idle, recovering or already calm crabs do not need another answer. Standing, distant, obstructed,
-mistimed or resting attempts cost no durability and do not start or extend either rest.
+## Tips and counterplay
+
+- Once the sweep starts, the rattle can't stop it. Step sideways out of the lane.
+- The crab has its own 10-second rest after any answer. Another player's rattle or a water spell can't keep it calm in a chain.
+- Hitting the crab wakes it at once.

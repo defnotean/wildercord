@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * Heart Circles: rings of condensed mana a caster builds around their heart, from the 1st to
- * the 8th (the Archmage). Every point of mana spent on spells condenses toward the next circle;
+ * the 20th (the Master Heart). Every point of mana spent on spells condenses toward the next circle;
  * once enough has gathered (and, for some circles, a breakthrough has been earned), the caster
  * meditates to form it. Each circle deepens the heart; some bring a perk.
  *
@@ -14,10 +14,11 @@ import java.util.List;
 public final class Circles {
 	private Circles() {}
 
-	public static final int MAX = 8;
+	public static final int MAX = 20;
 
 	/** Mana condensed (spent casting spells, in total) needed before circle {@code n} can form. Index 0 unused. */
-	private static final int[] CONDENSE = {0, 600, 2000, 5000, 10000, 18000, 30000, 50000, 80000};
+	private static final int[] CONDENSE = {0, 600, 2000, 5000, 10000, 18000, 30000, 50000, 80000,
+		120000, 170000, 230000, 300000, 380000, 470000, 570000, 680000, 800000, 930000, 1070000, 1220000};
 
 	/** Per circle. */
 	public static final int MANA_PER_CIRCLE = 15;
@@ -82,12 +83,42 @@ public final class Circles {
 			case 6 -> List.of(new Requirement(Need.KILLS, 150), new Requirement(Need.RUNEBOUND, 8), new Requirement(Need.REACTIONS, 5));
 			case 7 -> List.of(new Requirement(Need.BOSS, 1), new Requirement(Need.SECRETS, 2), Requirement.feat(Feats.RHYTHM));
 			case 8 -> List.of(new Requirement(Need.CORD, 3), new Requirement(Need.SECRETS, 4), Requirement.feat(Feats.ARCHIVIST));
+			// The Archmage remains the original eighth-circle milestone. Beyond it, the same saved
+			// counters and solo-achievable discoveries lead through all five later dungeon bosses.
+			case 9 -> List.of(new Requirement(Need.RUNES, 60), new Requirement(Need.REACTIONS, 6));
+			case 10 -> List.of(new Requirement(Need.KILLS, 250), Requirement.feat(Feats.CINDER_WARDEN));
+			case 11 -> List.of(new Requirement(Need.SECRETS, 5), Requirement.feat(Feats.COMBINE));
+			case 12 -> List.of(new Requirement(Need.RUNEBOUND, 20), Requirement.feat(Feats.TIDE_SCRIBE));
+			case 13 -> List.of(new Requirement(Need.RUNES, 90), new Requirement(Need.REACTIONS, 8));
+			case 14 -> List.of(new Requirement(Need.KILLS, 400), Requirement.feat(Feats.STAR_EATER));
+			case 15 -> List.of(new Requirement(Need.SECRETS, 7), Requirement.feat(Feats.KNOT));
+			case 16 -> List.of(new Requirement(Need.RUNEBOUND, 40), Requirement.feat(Feats.ROOT_GUARDIAN));
+			case 17 -> List.of(new Requirement(Need.RUNES, 120), new Requirement(Need.REACTIONS, 10));
+			case 18 -> List.of(new Requirement(Need.KILLS, 650), Requirement.feat(Feats.STORM_CONDUCTOR));
+			case 19 -> List.of(new Requirement(Need.SECRETS, 9), new Requirement(Need.REACTIONS, 11));
+			case 20 -> List.of(new Requirement(Need.KILLS, 1000), new Requirement(Need.RUNEBOUND, 100), new Requirement(Need.SECRETS, 10));
 			default -> List.of();
 		};
 	}
 
 	public static int condenseNeeded(int circle) {
 		return circle <= 0 ? 0 : CONDENSE[Math.min(MAX, circle)];
+	}
+
+	/** Read old integer saves without migration; malformed values cannot grant out-of-range bonuses. */
+	public static int count(int saved) {
+		return Math.clamp(saved, 0, MAX);
+	}
+
+	/** Lifetime progress is never spent or wrapped back to a negative number. */
+	public static int addCondensed(int saved, int earned) {
+		return (int) Math.min(Integer.MAX_VALUE, (long) Math.max(0, saved) + Math.max(0, earned));
+	}
+
+	/** Keep the original eight rings' sizes, then fit the later rings close around the heart. */
+	public static double ringRadius(int circle) {
+		int ring = Math.max(0, count(circle) - 1);
+		return 0.3 + 0.09 * Math.min(7, ring) + 0.035 * Math.max(0, ring - 7);
 	}
 
 	/** "1st", "2nd", "3rd", "4th"... */
@@ -110,7 +141,7 @@ public final class Circles {
 	public static final double PERSISTENCE_PER_LEVEL = 0.2;
 
 	public static double power(int potency, int circles, boolean overflow) {
-		double p = (1 + POTENCY_PER_LEVEL * potency) * (1 + POWER_PER_CIRCLE * Math.min(MAX, circles));
+		double p = (1 + POTENCY_PER_LEVEL * potency) * (1 + POWER_PER_CIRCLE * count(circles));
 		return overflow && circles >= OVERFLOW ? p * OVERFLOW_POWER : p;
 	}
 

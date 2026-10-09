@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "water_tidepool_grotto",
+  "biomes": "#wildercord:has_structure/water_tidepool_grotto",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

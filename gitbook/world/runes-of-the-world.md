@@ -1,26 +1,19 @@
 # Runes of the world and Attunement
 
-Fifty-three runes can't be crafted at all, whatever their tier: each is found only in its own places. Some wait in the
-chests of vanilla structures, some are drawn out of the land itself by **Attunement**, some are kept by Wildercord's
-dungeons and their bosses, some come with the world's events, and two come up only on a fishing line. Going out and
-exploring is how your spellbook grows.
-This page is a hunter's guide to all of them. What each rune does is on
-[Runes of the World](../runes/world.md).
+## What it is
 
-## Knowing one when you see it
+Runes of the world can't be crafted. Each one is found only in its own places: structure chests, lands you attune to, dungeons and bosses, world events and fishing. A few more are taught by study. What each rune does is listed on [Runes of the World](../runes/world.md). Every rune by category is on the [Rune Codex](../runes/codex.md).
 
-- A rune of the world's tooltip says *"Can't be crafted: a rune of the world, found only in its own places"*, and names
-  where it's found.
-- You learn it like any other rune: hold it and use it (right-click). See [Runes](../runes/index.md).
-- **The Grimoire** (the Cord screen's third page) has a section, *Runes of the world (12 of 53 known)*, listing every
-  place and the runes found there. Runes you've learned show by name; the rest show as a hint, like *??? (a Tier II
-  effect)*. A separate section lists the Attunements (below), with a riddle for each land you haven't attuned in yet.
-  See [The Grimoire and Feats](../progression/grimoire.md).
+The tooltip on one says *"Can't be crafted: a rune of the world, found only in its own places"*, and names where it comes from. Learn it like any rune: hold it and right-click.
 
-Tier still matters: a Tier II rune needs a Copper Cord or better to cast, Tier III an Amethyst Cord, Tier IV an Echo
-Cord.
+The Grimoire has a section, *Runes of the world*, that counts how many you know. It lists every place. Runes you know show by name, and the rest show as hints. See [The Grimoire and Feats](../progression/grimoire.md).
 
-## Where they come from
+Tier still matters:
+- Tier II needs a Copper Cord or better.
+- Tier III needs an Amethyst Cord.
+- Tier IV needs an Echo Cord.
+
+## How to get it
 
 | Kind of place | Runes |
 |---|---|
@@ -29,15 +22,13 @@ Cord.
 | [Wildercord's dungeons and bosses](#dungeons-and-bosses) | 10 |
 | [World events](#world-events) | 5 |
 | [Fishing](#fishing) | 2 |
+| [Lessons you study](#lesson-runes) | 6 |
 
-A few of these also turn up [elsewhere](#now-and-then-elsewhere): in Archive libraries and on Runebound Adepts.
+Servers can make rune finds more or less common. The chances below are the defaults.
 
-A server can make rune finds more or less common; the chances on this page are the normal ones.
+### Vanilla structures
 
-## Vanilla structures
-
-Each of these structures' chests has its own extra roll for one of the structure's runes, on top of its usual loot.
-Where a structure has two runes, the more common one (the lower tier) is more likely.
+Each chest gets one extra roll for the structure's rune, on top of its normal loot. When a structure has two runes, the lower-tier one is more likely.
 
 | Structure | Chance per chest | Runes |
 |---|---|---|
@@ -59,95 +50,44 @@ Where a structure has two runes, the more common one (the lower tier) is more li
 | **End cities** | 20% | [Shulkershell](../runes/world.md#shulkershell) |
 | **Ruined portals** | 15% | [Portalfall](../runes/world.md#portalfall) |
 
-## Attunement
+### Attunement
 
-![A player meditating in a meadow holding a Blank Rune, a green magic circle turning on the ground round them and motes of light rising into the blank](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/attunement.jpg)
-<span>Attuning: the land's circle opens underfoot and its motes rise into the Blank Rune.</span>
+![A player meditating with a Blank Rune while a green magic circle turns around them](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/attunement.jpg)
 
-Fifteen lands hold a rune of their own, and you can draw it out with a **Blank Rune**.
+Fifteen lands each hold a rune. You draw it out with a **Blank Rune**.
 
-### How to attune
+1. Wear a Cord and hold a Blank Rune in either hand.
+2. Go to the right biome at the right moment (see the table).
+3. Sneak and stand still on the ground to meditate.
+4. Keep still for **20 seconds**. The blank fills in four stages, then one Blank Rune becomes the land's rune.
 
-1. **Wear a Cord** and **hold a Blank Rune** in either hand (your main hand is checked first).
-2. Go to the right land (the biome at your feet counts), at the right moment (see the table below).
-3. **Meditate**: sneak and stand still on the ground, without using an item. After about a second you settle into
-   meditation.
-4. If the land holds a rune and the moment is right: *"The Blank Rune stirs: the land here holds a rune. Keep
-   still..."* The land's own magic circle opens under you in the rune's colour and slowly turns, and motes of its colour
-   rise off the ground and spiral into the blank.
-5. **Keep still for 20 seconds.** The blank builds through four stages, each with a chime, a flare over your hand and a
-   pulse running out from the circle, stronger each time:
+If you move, stand up or switch items, the attunement breaks and you start over. If nothing happens, the Blank Rune tells you what is still missing, such as height or weather.
 
-   | After | You read |
-   |---|---|
-   | 5 seconds | *"The blank drinks in the land"* |
-   | 10 seconds | *"A shape rises in the stone"* |
-   | 15 seconds | *"The rune brightens: almost there"* |
-   | 20 seconds | *"Attuned! The Blank Rune became Moonpetal"* (or whichever rune) |
+Each land gives you its rune **once per in-game day** (20 minutes of play). Sleeping doesn't speed this up. Each land rests on its own timer, and the Grimoire shows when each one is ready.
 
-6. At the end the circle flares, light bursts from your hand, rings race out and the rune's emblem shines over it.
-   **One** Blank Rune becomes the land's rune: it goes into your hand if that was your last blank, otherwise into your
-   pack (or onto the ground, if your pack is full). The Grimoire records the attunement, with a toast: *A rune of the
-   land*.
+| Land | When | Rune | Tier |
+|---|---|---|---|
+| **Cherry Grove** | At night, under a **full moon**, under open sky | [Moonpetal](../runes/world.md#moonpetal) | II |
+| **Ice Spikes** | While **snow is falling on you** | [Hoarfrost](../runes/world.md#hoarfrost) | III |
+| **Deep Dark** | Within about **4 blocks of sculk** (any sculk block: sculk, veins, sensors, shriekers or catalysts) | [Hush](../runes/world.md#hush) | II |
+| **Mushroom Fields** | Any time | [Sporebloom](../runes/world.md#sporebloom) | II |
+| **Badlands** (plain, eroded or wooded) | **Around noon** (from mid-morning to mid-afternoon on the day clock), under open sky | [Sunscorch](../runes/world.md#sunscorch) | III |
+| **Swamp** | While **rain is falling on you** | [Mire](../runes/world.md#mire) | II |
+| **Lush Caves** | Any time | [Glowvine](../runes/world.md#glowvine) | I |
+| **Mangrove Swamp** | Any time | [Rootsnare](../runes/world.md#rootsnare) | II |
+| **Dripstone Caves** | Any time | [Stalactite](../runes/world.md#stalactite) | II |
+| **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, or **Windswept Hills / Gravelly Hills / Forests** | Standing at **height 200** or higher | [Summit Wind](../runes/world.md#summit_wind) | III |
+| **Soul Sand Valley** | Any time | [Soulfire](../runes/world.md#soulfire) | III |
+| **Warped Forest** | Any time | [Warp Step](../runes/world.md#warp_step) | II |
+| **Crimson Forest** | Any time | [Blood Moss](../runes/world.md#blood_moss) | II |
+| **Basalt Deltas** | Any time | [Basalt Surge](../runes/world.md#basalt_surge) | III |
+| **The End's outer islands** (highlands, midlands, small islands and barrens) | Any time | [Starlight Tether](../runes/world.md#starlight_tether) | III |
 
-**Moving, standing up or letting go of the blank** (switching to another item) breaks it off: *"The attunement breaks
-off"*, and you start again from nothing.
+Craft Blank Runes from 4 Cobblestone around 1 Lapis Lazuli. One craft makes 4. See [Items and Crafting](../items/index.md).
 
-If nothing happens, the Blank Rune tells you why (at most once every 30 seconds):
+### Dungeons and bosses
 
-- **Rune attunement: …** gives the condition still needed in this biome, such as height 200 or higher, snowfall or a full moon.
-- **The Blank Rune stays quiet: …, height …** names your current biome and height when it has no attunement. A high tower in a plains biome does not count as a mountain.
-
-### Once a day
-
-A land gives each player its rune **once every 20 minutes of play** (an in-game day). Sleeping through the night
-doesn't hurry it. Meditate there again too soon and it tells you: *"This land gave you its rune today: it rests for
-about 12 more minutes"*.
-
-Each land rests on its own, so you can attune in several different lands in one day. The Grimoire's line for each land
-you've attuned in shows *"Resting: ready again in about 12 minutes"* or *"Ready: a land gives you its rune once a
-day"*. A Blank Rune's tooltip shows how many lands you've attuned in so far: *"Attuned so far: 4 of 15 (see the
-Grimoire)"*.
-
-### The fifteen lands
-
-| Land | When | Rune | Tier | The Grimoire's riddle |
-|---|---|---|---|---|
-| **Cherry Grove** | At night, under a **full moon**, under open sky | [Moonpetal](../runes/world.md#moonpetal) | II | *"Pink boughs hold their breath beneath a moon that is whole."* |
-| **Ice Spikes** | While **snow is falling on you** | [Hoarfrost](../runes/world.md#hoarfrost) | III | *"Among the frozen spears, wait while the sky lets its snow fall."* |
-| **Deep Dark** | Within about **4 blocks of sculk** (any sculk block: sculk, veins, sensors, shriekers or catalysts) | [Hush](../runes/world.md#hush) | II | *"Where the listening moss grows, be quieter than it."* |
-| **Mushroom Fields** | Any time | [Sporebloom](../runes/world.md#sporebloom) | II | *"On the island where the ground is fungus, and no monster walks."* |
-| **Badlands** (plain, eroded or wooded) | **Around noon** (from mid-morning to mid-afternoon on the day clock), under open sky | [Sunscorch](../runes/world.md#sunscorch) | III | *"In the red canyons, when the sun stands at its highest."* |
-| **Swamp** | While **rain is falling on you** | [Mire](../runes/world.md#mire) | II | *"The murky marsh speaks only while the rain beats down on it."* |
-| **Lush Caves** | Any time | [Glowvine](../runes/world.md#glowvine) | I | *"Beneath the green, where berries glow on hanging vines."* |
-| **Mangrove Swamp** | Any time | [Rootsnare](../runes/world.md#rootsnare) | II | *"Where the trees stand on their own tangled roots in the water."* |
-| **Dripstone Caves** | Any time | [Stalactite](../runes/world.md#stalactite) | II | *"Under stone teeth that drip, slowly, forever."* |
-| **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, or **Windswept Hills / Gravelly Hills / Forests** | Standing at **height 200** or higher | [Summit Wind](../runes/world.md#summit_wind) | III | *"Climb until the mountain has nothing left above you but wind."* |
-| **Soul Sand Valley** | Any time | [Soulfire](../runes/world.md#soulfire) | III | *"In the valley of sighing sand, where the fires burn blue."* |
-| **Warped Forest** | Any time | [Warp Step](../runes/world.md#warp_step) | II | *"Among the teal fungus, where the tall wanderers walk in peace."* |
-| **Crimson Forest** | Any time | [Blood Moss](../runes/world.md#blood_moss) | II | *"In the red wood of the burning world, where the moss is the colour of blood."* |
-| **Basalt Deltas** | Any time | [Basalt Surge](../runes/world.md#basalt_surge) | III | *"Where grey pillars and ash fall into lakes of fire."* |
-| **The End's outer islands** (highlands, midlands, small islands and barrens) | Any time | [Starlight Tether](../runes/world.md#starlight_tether) | III | *"Far past the dragon's island, on the rocks that drift among the stars."* |
-
-### Tips for attuning
-
-- **Carry a stack of Blank Runes.** Each attunement uses one. (Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes
-  4. See [Items and Crafting](../items/index.md).)
-- **The timed ones take planning.** A full moon comes once every eight nights. "Around noon" lasts about three and a
-  half minutes of real time. Snow and rain have to be falling **on you**, so stand under open sky while it's
-  snowing or raining.
-- **Nine lands work any time**: mushroom fields, lush caves, mangrove swamps, dripstone caves and the End's outer
-  islands, and in the Nether the soul sand valley, warped and crimson forests and basalt deltas.
-- **Meditating quickens your mana too**, so waiting out an attunement is never wasted. See
-  [Mana](../progression/mana.md).
-- **Come back tomorrow.** Once a day per land means a second copy of a land's rune a day later, for trading with the
-  [Runesmith](../social/runesmith.md) or ranking it up at the
-  [Fusion Altar](../fusion-altar/index.md).
-
-## Dungeons and bosses
-
-Each of Wildercord's three dimension dungeons keeps runes of its own in its vault, and its boss carries a Tier IV rune
-of its own. The bosses fight only once per dungeon, so their runes are rare.
+Each dimension dungeon keeps its own runes in its vault. Its boss carries a Tier IV rune.
 
 | Place | Runes | How |
 |---|---|---|
@@ -158,44 +98,22 @@ of its own. The bosses fight only once per dungeon, so their runes are rare.
 | **[The Drowned Scriptorium](drowned-scriptorium.md)** vault | [If Wet](../runes/world.md#if_wet) (5 in 7), [Drowning Word](../runes/world.md#drowning_word) (2 in 7) | One in each of the two vault chests, and a 35% chance of a second |
 | **The Tide Scribe** | [Tidewrit](../runes/world.md#tidewrit) (Tier IV), and 50% If Wet or Drowning Word | To its killer |
 
-## World events
+### World events
 
 | Event | Runes | How |
 |---|---|---|
-| **[Fallen stars](world-events.md)** | [Starshard](../runes/world.md#starshard) | A star holds a Tier III rune three times in four, and that rune is Starshard about 3 times in 4 (the rest of the time it's a Tier IV rune, or another Tier III) |
-| **[Rift sieges](world-events.md)** | [Riftcall](../runes/world.md#riftcall), [Unstable](../runes/world.md#unstable) | A closed rift's runes are Tier III 35% of the time, and a Tier III rune is Riftcall or Unstable about 3 times in 4 |
-| **The Riftcaller** | [Unstable](../runes/world.md#unstable), and 50% Riftcall or Unstable | When a player kills it |
-| **[Mana storms](world-events.md#the-storms-runes)** | [Manaburn](../runes/world.md#manaburn), [Manatide](../runes/world.md#manatide) | From your 10th cast under a storm, each surge has a 1 in 3 chance to crystallise one straight into your pack: Manaburn 5 times in 7, Manatide 2 in 7. One per storm for each player |
+| [Fallen stars](world-events.md) | [Starshard](../runes/world.md#starshard) | Most stars hold a Tier III rune, usually Starshard |
+| [Rift sieges](world-events.md) | [Riftcall](../runes/world.md#riftcall), [Unstable](../runes/world.md#unstable) | A closed rift's Tier III runes are usually one of these |
+| The Riftcaller | Unstable, plus 50% Riftcall or Unstable | When a player kills it |
+| [Mana storms](world-events.md) | [Manaburn](../runes/world.md#manaburn), [Manatide](../runes/world.md#manatide) | Starting with your 10th cast under a storm, a surge can drop one into your pack. You get one per storm |
 
-## Fishing
+### Fishing
 
-Cast a line into **open water** and runes come up with the fish. Two runes of the world are found nowhere else, and a
-handful of crafted runes of water, frost and storm (and a few a fisher is glad of) come up the same way, so a spare rod
-is worth carrying.
+Runes only come up in **open water**: a clear stretch at least 5 blocks across with nothing around the bobber. That's the same rule vanilla uses for treasure. A small pond or an ice hole never gives a rune.
 
-### Open water
+**In a treasure catch:** about 4 in 11 treasure catches are a rune, and about 1 in 11 is a Torn Page. Luck of the Sea and a Potion of Luck raise your treasure chance.
 
-Everything in this section needs **open water**, the same rule the game uses for its own fishing treasure: the bobber
-floats in a clear stretch of water at least 5 blocks across, with no blocks in the water round it or in the air just
-above it. A small pond, a hole in the ice or a farm's water channel never brings up treasure, and never a rune.
-
-### In a treasure catch
-
-A fish, some junk, or now and then **treasure** (a name tag, a saddle, an enchanted bow, rod or book, a nautilus
-shell). Treasure is now joined by runes and Torn Pages:
-
-| A treasure catch is | How often |
-|---|---|
-| A **rune** | about 4 in 11 |
-| A **Torn Page** | about 1 in 11 |
-| One of the game's own treasures | the rest, about 6 in 11 |
-
-**Luck of the Sea** makes treasure likelier, and so runes: about 1 catch in 55 is a rune with a plain rod, about 1 in
-24 with Luck of the Sea III. A Potion of Luck helps too.
-
-A treasure rune is one of these, lower tiers more often:
-
-| Rune | Tier | How likely, of the runes a treasure catch brings up |
+| Rune | Tier | Share of treasure runes |
 |---|---|---|
 | [Tidehook](../runes/world.md#tidehook) (found only by fishing) | II | about 1 in 11 |
 | [Current](../runes/world.md#current) (found only by fishing) | II | about 1 in 11 |
@@ -203,48 +121,50 @@ A treasure rune is one of these, lower tiers more often:
 | [Bubble](../runes/effects/frost.md#bubble), [Frost](../runes/effects/frost.md#frost), [Thunderclap](../runes/effects/storm.md#thunderclap), [Jolt](../runes/effects/storm.md#jolt), [Pull](../runes/effects/void.md#pull), [Grapple](../runes/effects/void.md#grapple), [Levitate](../runes/effects/wind.md#levitate), [Wave](../runes/shapes.md#wave) | II | about 1 in 32 each |
 | [Freeze](../runes/effects/frost.md#freeze), [Lightning](../runes/effects/storm.md#lightning) | III | about 1 in 80 each: a rare catch |
 
-### Magic waters
+**Magic waters:** sometimes a rune comes up tangled in your line, *on top of* your catch.
+- 12% under a mana storm
+- 5% on or near a [ley line](../progression/ley-lines.md)
+- 5% in a thunderstorm
 
-Where magic runs strong at the bobber, a rune can come up **tangled in the line, on top of whatever you caught**:
-*"Something magical was tangled in your line!"*, with a glint and a ring of pale light on the water. It doesn't take
-the place of your fish or your treasure; it comes as well.
+These chances stack, up to 20% per catch. Luck of the Sea doesn't affect them. Tidehook and Current are more likely here, each about 1 in 6.
 
-| At the bobber | Chance of a tangled rune per catch |
+Your first fished rune earns the **Reeled In** feat.
+
+### Now and then elsewhere
+
+- **Archive libraries:** the Hall of Shelves chest in an [Archive](archive.md) has a small chance of Echolocate, Infest, Fangs, Treasure Sense or If Wounded.
+- **[Runebound](runebound.md) Adepts:** 8% to drop Vinelash, Undertow, Blazecall, Portalfall or Warcry.
+
+### Lesson runes
+
+Six runes in the Grimoire's list come from study, not from finding them. You earn the feat, collect the lesson, then study it with the right Heart Circle active.
+
+| Rune | How |
 |---|---|
-| Under a [mana storm](world-events.md) | 12% |
-| On or near a [ley line](../progression/ley-lines.md) | 5% |
-| In a **thunderstorm**, with its rain (or snow) falling on the bobber | 5% |
+| [Relay](../spellcraft/relay-circle.md) | Lectern lesson in an [Archive](archive.md) |
+| [Tollgate](../spellcraft/lesson-pack.md) | After the Cinder Warden's *Tempered* feat |
+| [Reweave](../spellcraft/reweave.md) | After the Tide Scribe's *Low Tide* feat |
+| [Lifeline](../spellcraft/lesson-pack.md) | After the Star-Eater's *Starbreaker* feat |
+| [Excise](../spellcraft/excise.md) | After *Heartwood* ([Root Guardian](root-and-storm-bosses.md)) |
+| [Conduit](../spellcraft/lesson-pack.md) | After *Grounded* ([Storm Conductor](root-and-storm-bosses.md)) |
 
-They add up, to at most **20%** a catch: a thunderstorm over a ley line is 10%, a mana storm over a ley line 17%. Magic
-waters need open water too, and Luck of the Sea doesn't change them. A tangled rune comes from the same list as a
-treasure rune, but Tidehook and Current are likelier: each about 1 in 6.
+## How to use it
 
-### Tips for fishing up runes
+Learn the rune, then add it to a Cord like any other. Because these runes can't be crafted, a spare copy is valuable. Trade it to the [Runesmith](../social/runesmith.md) or rank it up at the [Fusion Altar](../fusion-altar/index.md).
 
-- **Fish under a mana storm.** Storms roll in over ley lines: cast where the line itself runs under the storm and it's
-  17% a catch, for the few minutes the storm lasts. A boat takes you to open water quickly.
-- **Fish on a ley line** for a steady 5%, and hope for thunder: plain rain does nothing, but a thunderstorm there makes it
-  10%.
-- **Luck of the Sea III** more than doubles treasure, and so treasure runes.
-- **The first rune you fish** earns the feat and advancement **Reeled In**. See
-  [The Grimoire and Feats](../progression/grimoire.md).
-- A server can make runes and Torn Pages more or less common; the chances here are the normal ones.
+## Tips and counterplay
 
-## Now and then elsewhere
+- Carry a stack of Blank Runes. Each attunement uses one.
+- Plan for the timed lands. A full moon comes once every eight nights. Snow or rain must be falling on you, so stand under open sky.
+- Nine lands work at any time: mushroom fields, lush caves, mangrove swamps, dripstone caves, the End's outer islands, and four Nether biomes.
+- Meditating also speeds up your [mana](../progression/mana.md) regeneration, so the wait isn't wasted.
+- For fishing, the best spot is a ley line under a mana storm, which gives 17% per catch.
+- Hunt Runebound Adepts for the structure runes you're missing.
 
-- **Archive libraries.** The Hall of Shelves chest in an [Archive](archive.md) rolls 2 to 3
-  runes, and each is about 1 in 64 one of [Echolocate](../runes/world.md#echolocate),
-  [Infest](../runes/world.md#infest), [Fangs](../runes/world.md#fangs),
-  [Treasure Sense](../runes/world.md#treasure_sense) or
-  [If Wounded](../runes/world.md#if_wounded).
-- **Runebound Adepts.** A [Runebound](runebound.md) Adept slain by a player has an 8%
-  chance to drop one of [Vinelash](../runes/world.md#vinelash),
-  [Undertow](../runes/world.md#undertow), [Blazecall](../runes/world.md#blazecall),
-  [Portalfall](../runes/world.md#portalfall) or
-  [Warcry](../runes/world.md#warcry), each equally likely.
+## Every found rune of the world
 
-## Every rune of the world
-
+| | Rune | Tier | Kind | Where to find it |
+|---|---|---|---|---|
 | | Rune | Tier | Kind | Where to find it |
 |---|---|---|---|---|
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ancient_seed.png) | [Ancient Seed](../runes/world.md#ancient_seed) | I | Life effect | Trail ruins (brushing) |

@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/farm_sites",
+  "criteria": {
+    "farm_shepherd": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:farm_shepherd"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:white_wool"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.farm_shepherd.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.farm_shepherd.description"
+    }
+  },
+  "requirements": [
+    [
+      "farm_shepherd"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

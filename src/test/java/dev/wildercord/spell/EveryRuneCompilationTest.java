@@ -17,7 +17,7 @@ class EveryRuneCompilationTest {
 				assertSame(rune, Runes.get(rune.id()).orElseThrow());
 				List<RuneDef> spell = switch (rune.family()) {
 					case SHAPE -> List.of(rune, Runes.HARM);
-					case EFFECT -> List.of(Runes.SELF, rune);
+					case EFFECT -> rune.equals(Runes.EXCISE) ? ExciseRules.RUNES : LessonPackRules.byRune(rune.id()) != null ? LessonPackRules.byRune(rune.id()).runes : List.of(Runes.SELF, rune);
 					case LINK -> List.of(Runes.SELF, Runes.HEAL, rune, Runes.SELF, Runes.HARM);
 					case MODIFIER -> modifierSpell(rune);
 					case KNOT -> throw new AssertionError("A dynamic Knot should not be in the static roster");

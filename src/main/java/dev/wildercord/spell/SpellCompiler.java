@@ -65,6 +65,7 @@ public final class SpellCompiler {
 
 	/** The runes an Imbue in {@code spell} would store: everything after the first Imbue (empty if there's none). */
 	public static List<RuneDef> stored(List<RuneDef> spell) {
+		if (RelayRules.contains(spell) || ReweaveRules.contains(spell) || ExciseRules.contains(spell) || LessonPackRules.contains(spell)) return List.of();
 		for (int i = 0; i < spell.size(); i++) {
 			if (spell.get(i).is(Runes.IMBUE.id())) {
 				return List.copyOf(spell.subList(i + 1, spell.size()));
@@ -78,11 +79,51 @@ public final class SpellCompiler {
 	}
 
 	private static Compiled compileFresh(List<RuneDef> runes, RuneDef implicitShape, Ranks.Lookup ranks) {
+		String relayProblem = RelayRules.problem(runes);
+		if (RelayRules.contains(runes) && implicitShape.is(Runes.TRIGGER.id())) relayProblem = RelayRules.STORAGE_PROBLEM;
+		String reweaveProblem = ReweaveRules.problem(runes);
+		if (ReweaveRules.contains(runes) && implicitShape.is(Runes.TRIGGER.id())) reweaveProblem = ReweaveRules.STORAGE_PROBLEM;
+		String exciseProblem = ExciseRules.problem(runes);
+        if (ExciseRules.contains(runes) && implicitShape.is(Runes.TRIGGER.id())) exciseProblem = ExciseRules.STORAGE_PROBLEM;
+        String packProblem = LessonPackRules.problem(runes);
+        if (packProblem == null && LessonPackRules.contains(runes) && implicitShape.is(Runes.TRIGGER.id())) packProblem = LessonPackRules.lesson(runes).storageProblem;
+        String problem = relayProblem != null ? relayProblem : reweaveProblem != null ? reweaveProblem : exciseProblem != null ? exciseProblem : packProblem;
+		if (problem != null) {
+			int[] attached = new int[runes.size()];
+			Arrays.fill(attached, NOT_A_MODIFIER);
+			return new Compiled(new SpellPlan.Segment(implicitShape), 0, 0,
+				List.of(problem), List.of(problem), attached, 0);
+		}
 		Reader reader = new Reader(expand(runes), runes.size(), true, implicitShape, ranks);
 		SpellPlan.Segment root = reader.segment(0, implicitShape, List.of(), false);
 		double cost = cost(root);
 		List<String> lines = new ArrayList<>();
 		describe(root, "", "", lines);
+		if (RelayRules.valid(runes)) {
+			lines.add("Relay costs " + RelayRules.BASE_MANA + " mana plus the effect (" + trim(cost) + " before normal discounts), paid once when placed.");
+			lines.add("90% normal effect strength; " + seconds(RelayRules.REST_TICKS) + " shared rest across all slots; no second payment or refund.");
+			lines.add("Release within " + seconds(RelayRules.FOCUS_TICKS) + "; " + RelayRules.WARN_TICKS + "-tick warning and " + RelayRules.RECOVERY_TICKS + "-tick recovery.");
+		}
+		if (ReweaveRules.valid(runes)) {
+			lines.add("Reweave costs " + ReweaveRules.BASE_MANA + " mana plus Harm (" + trim(cost) + " before normal discounts), paid once when placed.");
+			lines.add("Four pulses on the original schedule at 50% normal Harm strength; " + seconds(ReweaveRules.REST_TICKS) + " shared rest across all slots.");
+			lines.add("Rewrite the disc into a lane once, with an " + ReweaveRules.WARNING + "-tick warning; no extra payment, refund, extended lifetime or replayed pulses.");
+		}
+        if (ExciseRules.valid(runes)) {
+            lines.add("Excise costs 36 base mana, paid once; 12-second shared rest across slots.");
+            lines.add("Hold Cast for 16 ticks on one hostile Zone core within 12 blocks; 12-tick recovery on success or cancellation.");
+            lines.add("Cuts only future pulses from that core. Sibling fields and existing poison or fire remain. No refund or overcast.");
+        }
+        LessonPackRules.Lesson pack = LessonPackRules.lesson(runes);
+        if (pack != null && pack.valid(runes)) {
+            lines.add(pack.name + " costs " + pack.baseMana + " base mana, paid once; " + seconds(pack.restTicks) + " shared rest across slots. No refund or overcast.");
+            lines.add(switch (pack) {
+                case TOLLGATE -> "A 5-block gate for 6 seconds: stops each hostile crosser once, 3 tolls. Allies pass; a jump clears it.";
+                case LIFELINE -> "Thread an ally in sight within 16 blocks; press again within 8 seconds to pull them beside you.";
+                case CONDUIT -> "Plant a rod for 20 seconds; press again to spark for 0.4 seconds and arrive. Damage or a hostile at the rod stops it.";
+            });
+            lines.add("Sneak and press to cancel. Only " + pack.shape.name() + " then " + pack.name + "; no modifiers, links or storage.");
+        }
 		for (RuneDef rune : runes) {
 			if (Knots.isKnot(rune)) {
 				lines.add(rune.name() + " is a Knot: " + Knots.flatten(List.of(rune)).size() + " runes in one socket, "
@@ -97,7 +138,7 @@ public final class SpellCompiler {
 		if (healthCost > 0) {
 			lines.add("Costs " + healthCost + " health instead of mana.");
 		}
-		return new Compiled(root, cost, SpellNumbers.cooldownTicks(cost, rapid, vows), List.copyOf(lines), List.copyOf(reader.warnings), reader.attachedTo,
+		return new Compiled(root, cost, RelayRules.valid(runes) ? RelayRules.REST_TICKS : ReweaveRules.valid(runes) ? ReweaveRules.REST_TICKS : ExciseRules.valid(runes) ? ExciseRules.REST_TICKS : LessonPackRules.valid(runes) ? LessonPackRules.lesson(runes).restTicks : SpellNumbers.cooldownTicks(cost, rapid, vows), List.copyOf(lines), List.copyOf(reader.warnings), reader.attachedTo,
 			healthCost);
 	}
 
@@ -212,7 +253,14 @@ public final class SpellCompiler {
 								break;
 							}
 						}
-						if (target == null) {
+						// ---- links-mods pack: a hearth modifier says what it needs, and refuses one it can't share an effect with
+						String hearthRefusal = HearthLinkRules.refusal(rune, target == null ? null : target.mods());
+						if (hearthRefusal != null) {
+							warn(hearthRefusal);
+							if (entry.scope() == 0) {
+								mark(entry.outer(), UNATTACHED);
+							}
+						} else if (target == null) {
 							warn(rune.name() + " does nothing here: nothing on its left that it can change.");
 							if (entry.scope() == 0) {
 								mark(entry.outer(), UNATTACHED);
@@ -256,6 +304,9 @@ public final class SpellCompiler {
 							nextShape = Runes.SELF;
 						} else if (rune.is(Runes.ECHO.id()) || rune.is(Runes.IF_SNEAKING.id()) || rune.is(Runes.IF_AIRBORNE.id())
 								|| rune.is(Runes.COMBO.id()) || rune.is(Runes.IF_WOUNDED.id()) || rune.is(Runes.IF_OUTNUMBERED.id()) || rune.is(Runes.IF_WET.id())) {
+							nextShape = implicitShape;
+						} else if (HearthLinkRules.keepsShape(rune)) {
+							// ---- links-mods pack: a hearth condition keeps the shape the spell already has
 							nextShape = implicitShape;
 						} else {
 							nextShape = Runes.TRIGGER;
@@ -582,6 +633,9 @@ public final class SpellCompiler {
 			header = "On a reaction:";
 		} else if (id.equals(Runes.ON_WEAKNESS.id())) {
 			header = "On a weakness struck:";
+		} else if (HearthLinkRules.header(id) != null) {
+			// ---- links-mods pack: the hearth links' readout lines
+			header = HearthLinkRules.header(id);
 		} else {
 			header = link.link.name() + ":";
 		}
@@ -706,6 +760,12 @@ public final class SpellCompiler {
 		if (id.equals(Runes.STREAM.id())) {
 			return "A stream of " + SpellNumbers.streamStrikes(g) + " strikes (35% power each)";
 		}
+		if (id.equals(ReweaveRules.ID)) {
+			return "A Reweave field (place within " + blocks(ReweaveRules.PLACE_RANGE) + ", a disc of radius " + blocks(ReweaveRules.DISC_RADIUS) + " for " + seconds(ReweaveRules.LIFETIME) + ", rewrite once into a " + blocks(ReweaveRules.LANE_LENGTH) + " lane)";
+		}
+		if (id.equals(RelayRules.ID)) {
+			return "A Relay focus (place within " + blocks(RelayRules.PLACE_RANGE) + ", aim and press cast again, " + blocks(RelayRules.MAX_PATH) + " total path)";
+		}
 		if (id.equals(Runes.VORTEX.id())) {
 			return "A vortex's eye (" + blocks(SpellNumbers.vortexEye(g)) + ", drags in from " + blocks(SpellNumbers.vortexRadius(g)) + ", "
 				+ SpellNumbers.vortexSeconds(g) + "s)";
@@ -728,6 +788,9 @@ public final class SpellCompiler {
 			return "A latch (" + SpellNumbers.latchStrikes(g) + " strikes, every " + seconds(SpellNumbers.latchInterval(g)) + ", "
 				+ Math.round(SpellNumbers.LATCH_STRENGTH * 100) + "% power each)";
 		}
+		// ---- shapes pack
+		String field = FieldShapeGeometry.phrase(FieldShapeGeometry.path(g.shape.id()), SpellNumbers.shapeRadius(g));
+		if (field != null) return Character.toUpperCase(field.charAt(0)) + field.substring(1);
 		return g.shape.name();
 	}
 
@@ -760,6 +823,7 @@ public final class SpellCompiler {
 			if (e.count(Runes.THIRST) > 0) mods.add("heals you " + Math.round(SpellNumbers.thirstShare(e) * 100) + "% of its damage");
 			if (SpellNumbers.lingerHits(e) > 0) mods.add("+" + SpellNumbers.lingerHits(e) + " hits");
 			if (e.effect.is(Runes.SHIELD.id())) mods.add(seconds(SpellNumbers.shieldTicks(e)));
+			HearthLinkRules.phrases(e).forEach(mods::add); // ---- links-mods pack: what the hearth modifiers change
 			joiner.add(e.effect.name() + Ranks.suffix(e.rank) + mods);
 		}
 		return joiner.toString();

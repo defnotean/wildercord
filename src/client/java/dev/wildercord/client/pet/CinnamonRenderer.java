@@ -20,6 +20,9 @@ public final class CinnamonRenderer extends MobRenderer<CinnamonDog, CinnamonRen
 	@Override public CinnamonRenderState createRenderState() { return new CinnamonRenderState(); }
 	@Override public void extractRenderState(CinnamonDog dog, CinnamonRenderState state, float partial) {
 		super.extractRenderState(dog, state, partial);
+		// The base renderer uses this actual attribute scale once for both the body and its shadow.
+		// Do not multiply the pose stack again: the collision box already uses the same attribute.
+		state.scale = dog.getScale();
 		state.sitting = dog.isOrderedToSit();
 		int mood = dog.mood();
 		state.sleeping = (mood & CinnamonDog.SLEEPING) != 0;
@@ -28,5 +31,6 @@ public final class CinnamonRenderer extends MobRenderer<CinnamonDog, CinnamonRen
 		state.ringing = (mood & CinnamonDog.RINGING) != 0;
 		state.tongue = (mood & CinnamonDog.TONGUE) != 0;
 		state.wearingBow = (mood & CinnamonDog.BOW) != 0;
+		state.exhausted = (mood & CinnamonDog.EXHAUSTED) != 0;
 	}
 }

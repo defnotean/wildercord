@@ -27,6 +27,7 @@ public record ScrollSpell(List<String> runes, String name, String author) {
 
 	public ScrollSpell {
 		// A scroll made by command with more runes would disconnect everyone it was sent to.
-		runes = List.copyOf(runes.size() > MAX_RUNES ? runes.subList(0, MAX_RUNES) : runes);
+		// Keep a refusing marker if truncation would hide a restricted lesson and leave a different, castable spell.
+		runes = dev.wildercord.spell.LessonPackRules.boundedIds(runes, MAX_RUNES);
 	}
 }

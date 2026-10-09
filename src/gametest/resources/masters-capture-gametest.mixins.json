@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": ["BraceNullPlayerWidthMixin", "BraceNullWorldItemMixin", "BraceNullItemSubmitMixin", "BraceNullItemDrawMixin", "BraceNullBodyBaselineMixin", "BraceNullHandEntryMixin", "BraceNullDeferredPaletteMixin", "BraceNullNativeSubmitMixin", "BraceNullPlayerPaletteMixin", "MastersHandRenderProbeMixin", "MastersBodyRenderProbeMixin", "MastersHudRenderProbeMixin",
+    "MastersNpcRenderProbeMixin", "MastersNpcModelProbeMixin", "MastersNpcWarningProbeMixin"],
+  "injectors": {"defaultRequire": 1}
+}

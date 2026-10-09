@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/travel_wayfarer_inn",
+  "criteria": {
+    "travel_standing_stones": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:travel_standing_stones"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:mossy_cobblestone"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.travel_standing_stones.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.travel_standing_stones.description"
+    }
+  },
+  "requirements": [
+    [
+      "travel_standing_stones"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

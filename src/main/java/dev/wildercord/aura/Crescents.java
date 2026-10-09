@@ -1,10 +1,13 @@
 package dev.wildercord.aura;
 
 import dev.wildercord.aura.world.AuraWorldRules;
+import dev.wildercord.aura.world.SwordMaster;
 import dev.wildercord.cast.Grimoire;
 import dev.wildercord.cast.ScreenFx;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.WildercordSounds;
+import dev.wildercord.duel.Duels;
+import dev.wildercord.party.Parties;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
@@ -13,7 +16,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -62,6 +67,8 @@ public final class Crescents {
 	/** One crescent in flight. */
 	public static final class Flight {
 		final LivingEntity caster;
+		/** The original opt-in encounter survives ownership changes, including repeated perfect guards. */
+		final SwordMaster trialMaster;
 		final ServerLevel level;
 		final Vec3 origin;
 		final Vec3 aim;
@@ -98,7 +105,14 @@ public final class Crescents {
 
 		Flight(LivingEntity caster, Vec3 origin, Vec3 aim, int color, double damage, double bonus, double speed, double range, double width, int targets,
 				boolean weak, Predicate<Entity> mayCut, Cut cut) {
+			this(caster, origin, aim, color, damage, bonus, speed, range, width, targets, weak, mayCut, cut,
+				caster instanceof SwordMaster master ? master : null);
+		}
+
+		private Flight(LivingEntity caster, Vec3 origin, Vec3 aim, int color, double damage, double bonus, double speed, double range, double width,
+				int targets, boolean weak, Predicate<Entity> mayCut, Cut cut, SwordMaster trialMaster) {
 			this.caster = caster;
+			this.trialMaster = trialMaster;
 			this.level = (ServerLevel) caster.level();
 			this.origin = origin;
 			this.aim = aim;
@@ -117,6 +131,29 @@ public final class Crescents {
 			this.launched = level.getServer().getTickCount();
 			this.front = origin.add(aim.scale(0.8));
 			this.prev = front;
+		}
+
+		/** A returned strike ends with its encounter, or when its new owner leaves that encounter. */
+		boolean trialActive() {
+			if (trialMaster == null) return true;
+			if (!trialMaster.started() || !trialMaster.isAlive() || trialMaster.isRemoved() || trialMaster.level() != level
+					|| caster != trialMaster && !trialMaster.canHarmParticipant(caster)) return false;
+			for (UUID id : trialMaster.challengers()) {
+				if (trialMaster.canHarmParticipant(level.getPlayerByUUID(id))) return true;
+			}
+			return false;
+		}
+
+		/** The trial's audience, also used before a guard or another attack may intercept this strike. */
+		boolean trialTarget(Entity entity) {
+			return trialMaster == null || trialActive() && (trialMaster.canHarmParticipant(entity)
+				|| entity == trialMaster && trialMaster.canHarmParticipant(caster));
+		}
+
+		/** Admission is checked before spending a target slot or applying any cut/guard side effects. */
+		boolean mayAffect(Entity entity) {
+			Boolean duel = Duels.canHarm(caster, entity);
+			return trialTarget(entity) && (duel != null ? duel : !Parties.blocksHarm(caster, entity));
 		}
 
 		/** Who loosed it (for a crescent sent back, the guard who sent it). */
@@ -219,7 +256,7 @@ public final class Crescents {
 	 *
 	 * @param bonus   a multiplier on its harm counted with its element (1 for none)
 	 * @param targets the most creatures it cuts
-	 * @param mayCut  what it may harm (it passes through anything else, still counting it as met)
+	 * @param mayCut  what it may harm (anything else passes through without spending a target slot)
 	 */
 	public static Flight launch(LivingEntity caster, Vec3 origin, Vec3 aim, int color, double damage, double bonus, double speed, double range, double width,
 			int targets, boolean weak, Predicate<Entity> mayCut, Cut cut) {
@@ -249,7 +286,8 @@ public final class Crescents {
 			if (flight.done) {
 				continue;
 			}
-			if (!flight.caster.isAlive() || flight.caster.level() != flight.level || flight.step >= flight.steps) {
+			if (!flight.caster.isAlive() || flight.caster.isRemoved() || flight.caster.level() != flight.level
+					|| !flight.trialActive() || flight.step >= flight.steps) {
 				flight.done = true;
 				continue;
 			}
@@ -316,19 +354,22 @@ public final class Crescents {
 	}
 
 	/** One step: on along its line, stopped by a solid block. */
-	private static void move(Flight flight) {
+	static void move(Flight flight) {
 		int t = flight.step++;
 		double d = 0.8 + flight.speed * (t + 1);
-		flight.prev = flight.front;
-		flight.front = flight.origin.add(flight.aim.scale(d));
-		BlockPos pos = BlockPos.containing(flight.front);
-		if (!flight.level.getBlockState(pos).getCollisionShape(flight.level, pos).isEmpty()) {
+		// Include the initial muzzle offset: a wall between the origin and first front cannot be skipped either.
+		flight.prev = t == 0 ? flight.origin : flight.front;
+		Vec3 next = flight.origin.add(flight.aim.scale(d));
+		var block = flight.level.clip(new ClipContext(flight.prev, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, flight.caster));
+		if (block.getType() != HitResult.Type.MISS) {
+			flight.front = block.getLocation();
 			flight.done = true;
-			flight.endAt = flight.front.subtract(flight.aim.scale(0.4));
-			flight.blockedAt = pos;
+			flight.endAt = flight.front;
+			flight.blockedAt = block.getBlockPos();
 			AuraVfx.slashEnd(flight.level, flight.endAt, flight.aim, flight.color);
 			return;
 		}
+		flight.front = next;
 		AuraVfx.slashStep(flight.level, flight.front, flight.aim, flight.side, flight.color, t, flight.weak);
 		if (flight.onStep != null) {
 			flight.onStep.accept(flight);
@@ -336,7 +377,11 @@ public final class Crescents {
 	}
 
 	/** Cuts each creature it reached this step once, the most it may. */
-	private static void cutFrom(Flight flight) {
+	static void cutFrom(Flight flight) {
+		if (flight.done || !flight.trialActive()) {
+			flight.done = true;
+			return;
+		}
 		Vec3 front = flight.front;
 		double width = flight.width;
 		for (Entity e : flight.level.getEntities(flight.caster, new AABB(front, front).inflate(width / 2 + 1, 2.0, width / 2 + 1),
@@ -349,10 +394,14 @@ public final class Crescents {
 				|| Math.abs(rel.y) > 1.6) {
 				continue;
 			}
-			flight.hit.add(e.getUUID());
-			if (!flight.mayCut.test(e)) {
+			if (!flight.mayAffect(e) || !flight.mayCut.test(e)) {
 				continue;
 			}
+			// The edge reaches ahead and sideways of its front; that reach must not cut through cover.
+			var cover = flight.level.clip(new ClipContext(front, e.getBoundingBox().getCenter(),
+				ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, flight.caster));
+			if (cover.getType() != HitResult.Type.MISS) continue;
+			flight.hit.add(e.getUUID());
 			LivingEntity target = (LivingEntity) e;
 			boolean catches = caught(target, flight);
 			Flight before = cutting;
@@ -390,6 +439,7 @@ public final class Crescents {
 	 * ({@link ClashRules#EDGE}), never an automatic win here.
 	 */
 	static void clash(Flight a, Flight b) {
+		if (!Clashes.mayMeet(a, b)) return;
 		a.done = true;
 		b.done = true;
 		ServerLevel level = a.level;
@@ -400,7 +450,9 @@ public final class Crescents {
 		ScreenFx.shake(level, at, 0.2F, 10);
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(AuraWorldRules.CLASH_RADIUS),
 				e -> e instanceof LivingEntity && e.isAlive() && !e.isSpectator())) {
-			dev.wildercord.monster.MonsterMagic.knock((LivingEntity) e, at, AuraWorldRules.CLASH_PUSH);
+			if (Clashes.mayPush(a.caster, a, b.caster, b, (LivingEntity) e)) {
+				dev.wildercord.monster.MonsterMagic.knock((LivingEntity) e, at, AuraWorldRules.CLASH_PUSH);
+			}
 		}
 		for (Flight f : List.of(a, b)) {
 			if (f.caster instanceof ServerPlayer player) {
@@ -415,7 +467,7 @@ public final class Crescents {
 	 */
 	public static boolean reflect(LivingEntity by, int color, Predicate<Entity> mayCut, Cut cut) {
 		Flight flight = cutting;
-		if (flight == null || flight.done || flight.caster == by) {
+		if (flight == null || flight.done || flight.caster == by || !flight.mayAffect(by)) {
 			return false;
 		}
 		flight.done = true;
@@ -426,8 +478,10 @@ public final class Crescents {
 		if (aim.lengthSqr() < 1.0E-4) {
 			aim = by.getViewVector(1.0F);
 		}
-		launch(by, origin, aim, color, flight.damage(), flight.bonus, Math.min(2.4, flight.speed * 1.15), flight.range(), flight.width, flight.targets, false,
-			mayCut, cut);
+		Flight returned = new Flight(by, origin, aim.normalize(), color, flight.damage(), flight.bonus, Math.min(2.4, flight.speed * 1.15),
+			flight.range(), flight.width, flight.targets, false, mayCut, cut,
+			flight.trialMaster != null ? flight.trialMaster : by instanceof SwordMaster master ? master : null);
+		FLIGHTS.add(returned);
 		AuraVfx.slashStart(flight.level, origin, aim.normalize(), color);
 		return true;
 	}

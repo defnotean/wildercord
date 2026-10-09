@@ -1,29 +1,25 @@
 # Cinnamon
 
-Cinnamon is a custom small dog inspired by the supplied photographs: a dark, rounded body, tan face and legs, long floppy ears, and shaggy paws. Her entity, model and texture are separate from Minecraft's wolf. Her in-game name is **Cinnamon**.
+Cinnamon is a custom small dog with her own model, texture, owner and saved identity.
 
-## Choose her owner
+See the [complete player guide](../../wiki/companions/cinnamon.md) for owner configuration, her bow and toy, temporary feeding growth, mobile recovery, whistle recipe and bounded chunk recovery.
 
-Start the game or server once to create `config/wildercord-cinnamon.json`, then set `owner` to the one player's exact Minecraft username or UUID:
-
-```json
-{ "owner": "PlayerName" }
-```
-
-The default value is empty, so Cinnamon waits for an owner. On an integrated singleplayer dev session, `"owner": "@singleplayer"` follows that world's owner even if Fabric changes its temporary dev username between launches. A dedicated server should use a username or UUID. The file is checked again about every five seconds, so a restart is unnecessary after editing it.
-
-Cinnamon appears at a safe, loaded position near her owner already tamed. `/summon wildercord:cinnamon` also works: when the configured owner is online in that dimension, the summoned Cinnamon is bound to that player and replaces her previous body. Only her owner can click her to switch between sitting and following. That choice is saved on her owner and survives direct replacement, rejoining, death, and dimension travel. Her replaceable body returns near her owner after travel; it does not stay behind in another dimension.
-
-She takes no damage from combat, fire, falls or magic. A companion that falls into the void or gets trapped in a solid block is moved back to a safe nearby surface. If there is no safe surface, she waits for one instead of appearing inside a hazard.
-
-Sneak-click to pet her without changing her sit setting. Her greeting and petting have an eager tail wag, and she occasionally tilts her head while idle. After sitting quietly for ten seconds she curls down and closes her eyes. Click her with Cinnamon's Red Bone to wake her and play; the toy is reusable and does not change ownership or her sitting preference. Craft it from a bone, red dye, and a slime ball.
+- Set one owner in `config/wildercord-cinnamon.json`; malformed reloads retain the complete last valid configuration.
+- Each treat adds 0.5× size, up to 3×, for one fixed 60-second window. Repeated feeding cannot extend it. Collision, support and claim checks use her real size.
+- Ordinary damage cannot kill her. A 20-point damage budget starts 30 seconds of following without attacking; isolated chip damage clears after ten quiet seconds.
+- Craft the reusable whistle from a copper ingot, bone and string. All copies share a 10-second owner cooldown and recall the same saved Cinnamon.
+- A source-only, nonpersistent chunk ticket can recover her original saved body for at most ten seconds. It is removed on completion, timeout, logout and server stop.
+- Extra `/summon wildercord:cinnamon` bodies cannot take over her owner or bow. Unknown saved identities are preserved and quarantined, not silently replaced. An explicit administrator removal stays retired.
+- A separately saved owner UUID marker prevents missing or conflicting journal data from silently creating another dog. Follow the server's identity-repair diagnostic and restore consistent backup records when required.
 
 ## Check the feature
 
-Run the focused client suite from the project root. In PowerShell:
+On an authorized Minecraft development environment, the existing focused suite remains:
 
 ```powershell
 .\gradlew.bat -PcinnamonSuite runClientGameTest
 ```
 
-It starts a real client, checks automatic and direct spawning, owner binding, remembered sitting, damage immunity, resting, toy play, and void rescue. It writes front, summoned, resting, and toy screenshots to `build/run/clientGameTest/screenshots/`. Cinnamon also runs in the normal game suite; no environment flag is required.
+It includes real growth/collision and exhaustion assertions, original-UUID whistle recovery, chunk unload, owner respawn, cross-dimension travel, full saved-world close/reopen, interrupted journal writes, conflicting identity markers, administrative retirement and bounded timeout. Giant and tired-following screenshots accompany the earlier companion captures.
+
+The expanded native gameplay and visual checks have not yet been run on this source. Standalone Java compilation and pure unit tests do not establish native acceptance.

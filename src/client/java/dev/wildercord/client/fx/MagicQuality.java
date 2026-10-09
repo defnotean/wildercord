@@ -1,15 +1,15 @@
 package dev.wildercord.client.fx;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
+import dev.wildercord.client.CombatPresentation;
+import dev.wildercord.presentation.CombatPresentationOptions;
+import dev.wildercord.presentation.VisualPreferencesFile;
 import net.fabricmc.loader.api.FabricLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /** Local visual preferences; gameplay and hostile warnings never depend on these. */
 public final class MagicQuality {
 	public enum Level { FULL, BALANCED, MINIMAL; public Level next() { return values()[(ordinal() + 1) % values().length]; } }
-	private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("wildercord-visuals.json");
+	private static final VisualPreferencesFile FILE = new VisualPreferencesFile(FabricLoader.getInstance().getConfigDir().resolve("wildercord-visuals.json"));
 	public static Level own = Level.BALANCED, others = Level.BALANCED;
 	public static boolean reducedFlash, cameraShake = true;
 	/** Whether the names of mastered spells others cast nearby (and your own) show as a brief title by the caster. */
@@ -47,27 +47,35 @@ public final class MagicQuality {
 				bladeTrails=Trails.FULL;bodyAura=BodyAura.FULL;impact=Impact.FULL;banners=Banners.ALL;}
 			default -> {own=Level.BALANCED;others=Level.BALANCED;reducedFlash=false;cameraShake=true;
 				bladeTrails=Trails.FULL;bodyAura=BodyAura.FULL;impact=Impact.FULL;banners=Banners.ALL;}
-		}save();
+		}HitStop.clear();ScreenEffects.clearCameraMotion();save();
 	}
 	public static void load() {
 		try {
-			if (!Files.exists(FILE)) { save(); return; }
-			var json = JsonParser.parseString(Files.readString(FILE)).getAsJsonObject();
-			if (json.has("own")) own = Level.valueOf(json.get("own").getAsString());
-			if (json.has("others")) others = Level.valueOf(json.get("others").getAsString());
-			if (json.has("reduced_flash")) reducedFlash = json.get("reduced_flash").getAsBoolean();
-			if (json.has("camera_shake")) cameraShake = json.get("camera_shake").getAsBoolean();
-			if (json.has("spell_titles")) spellTitles = json.get("spell_titles").getAsBoolean();
-			if (json.has("string_indicator")) stringIndicator = StringIndicator.valueOf(upper(json.get("string_indicator").getAsString()));
-			if (json.has("blade_trails")) bladeTrails = Trails.valueOf(upper(json.get("blade_trails").getAsString()));
-			if (json.has("body_aura")) bodyAura = BodyAura.valueOf(upper(json.get("body_aura").getAsString()));
-			if (json.has("impact")) impact = Impact.valueOf(upper(json.get("impact").getAsString()));
-			if (json.has("banners")) banners = Banners.valueOf(upper(json.get("banners").getAsString()));
-		} catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Invalid local magic preferences: {}", e.toString()); }
+			var json = FILE.read();
+			CombatPresentation.loaded(CombatPresentationOptions.parse(json.get(CombatPresentationOptions.GROUP)));
+			// Parse each legacy preference separately: one invalid field cannot hide the new group.
+			read(json,"own",()->own=Level.valueOf(upper(json.get("own").getAsString())));
+			read(json,"others",()->others=Level.valueOf(upper(json.get("others").getAsString())));
+			read(json,"reduced_flash",()->reducedFlash=json.get("reduced_flash").getAsBoolean());
+			read(json,"camera_shake",()->cameraShake=json.get("camera_shake").getAsBoolean());
+			read(json,"spell_titles",()->spellTitles=json.get("spell_titles").getAsBoolean());
+			read(json,"string_indicator",()->stringIndicator=StringIndicator.valueOf(upper(json.get("string_indicator").getAsString())));
+			read(json,"blade_trails",()->bladeTrails=Trails.valueOf(upper(json.get("blade_trails").getAsString())));
+			read(json,"body_aura",()->bodyAura=BodyAura.valueOf(upper(json.get("body_aura").getAsString())));
+			read(json,"impact",()->impact=Impact.valueOf(upper(json.get("impact").getAsString())));
+			read(json,"banners",()->banners=Banners.valueOf(upper(json.get("banners").getAsString())));
+		} catch (Exception e) {
+			CombatPresentation.loaded(new CombatPresentationOptions.Parsed(CombatPresentationOptions.Saved.LEGACY,CombatPresentationOptions.Warning.INVALID_SAVED));
+			dev.wildercord.Wildercord.LOGGER.warn("Cannot read local magic preferences; original file preserved");
+		}
+	}
+	private static void read(JsonObject json,String key,Runnable apply) {
+		if(!json.has(key))return;
+		try{apply.run();}catch(RuntimeException invalid){dev.wildercord.Wildercord.LOGGER.warn("Invalid local magic preference: {}",key);}
 	}
 	private static String upper(String s) { return s.toUpperCase(java.util.Locale.ROOT); }
 	private static String lower(Enum<?> e) { return e.name().toLowerCase(java.util.Locale.ROOT); }
-	public static void save() {
+	private static JsonObject legacyValues() {
 		var json = new com.google.gson.JsonObject();
 		json.addProperty("own", own.name()); json.addProperty("others", others.name());
 		json.addProperty("reduced_flash", reducedFlash); json.addProperty("camera_shake", cameraShake);
@@ -77,7 +85,17 @@ public final class MagicQuality {
 		json.addProperty("body_aura", lower(bodyAura));
 		json.addProperty("impact", lower(impact));
 		json.addProperty("banners", lower(banners));
-		try { Files.createDirectories(FILE.getParent()); Files.writeString(FILE, new GsonBuilder().setPrettyPrinting().create().toJson(json)); }
-		catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Cannot save local magic preferences: {}", e.toString()); }
+		return json;
+	}
+	public static void save() {
+		try { FILE.write(legacyValues(),null); }
+		catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Cannot save local magic preferences; original file preserved"); }
+	}
+	/** Transactional combat Apply: persist first, then change live choices. No session-only success. */
+	public static boolean saveCombat(CombatPresentationOptions.Saved selection) {
+		try { FILE.write(new JsonObject(),selection); }
+		catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Cannot save combat presentation preferences; original file preserved"); return false; }
+		CombatPresentation.applied(selection);
+		return true;
 	}
 }

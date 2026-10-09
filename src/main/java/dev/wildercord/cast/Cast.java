@@ -36,6 +36,8 @@ public final class Cast {
 	 */
 	private static final class Paid {
 		int siphon = dev.wildercord.player.Mana.SIPHON_CAP_PER_CAST;
+		int guardedEntities = -1;
+		int guardedBlocks = -1;
 		int siphonLevel = -1;
         SpellDamageAllowance damage;
         boolean playerSpell;
@@ -69,6 +71,13 @@ public final class Cast {
 		double performance = 1.0;
 		/** Whether it was paid for by cracking a Heart Circle (an overcast always leaves a residue). */
 		boolean overcast;
+		java.util.function.Predicate<Entity> admission;
+		/** Opt-in synchronous consequences, without Relay LOS or paid collateral budgets. */
+		java.util.function.Predicate<Entity> consequence;
+		java.util.function.Predicate<LivingEntity> consequenceResult;
+		java.util.function.Predicate<BlockPos> blockAdmission;
+		java.util.function.BooleanSupplier lifetime;
+		Vec3 incoming;
 
 		Shared() {
 			this(new Paid());
@@ -89,6 +98,12 @@ public final class Cast {
 			copy.mastery = mastery;
 			copy.performance = performance;
 			copy.overcast = overcast;
+			copy.admission = admission;
+			copy.consequence = consequence;
+			copy.consequenceResult = consequenceResult;
+			copy.blockAdmission = blockAdmission;
+			copy.lifetime = lifetime;
+			copy.incoming = incoming;
 			return copy;
 		}
 	}
@@ -348,6 +363,39 @@ public final class Cast {
 		return budget.shared.origin;
 	}
 
+	/** Opt-in impact admission for a remote paid origin; copied without changing any payment allowance. */
+	public Cast admission(java.util.function.Predicate<Entity> admission) {
+		budget.shared.admission = admission;
+		if (admission != null && budget.shared.paid.guardedEntities < 0) {
+			budget.shared.paid.guardedEntities = budget.entities; budget.shared.paid.guardedBlocks = budget.blocks;
+		}
+		return this;
+	}
+	/** Original paid lifetime survives target/caster rebinding in every defensive reflection. */
+	public Cast lifetime(java.util.function.BooleanSupplier lifetime) { budget.shared.lifetime = lifetime; return this; }
+	public Cast blockAdmission(java.util.function.Predicate<BlockPos> admission) { budget.shared.blockAdmission = admission; return this; }
+	public boolean admitsBlock(BlockPos pos) { return budget.shared.blockAdmission == null || alive() && budget.shared.blockAdmission.test(pos); }
+	public boolean guardedImpact() { return budget.shared.admission != null; }
+	/** Consequence scope has no implication for Relay collateral selection, LOS or paid budgets. */
+	public boolean hasConsequences() { return budget.shared.consequence != null; }
+	public boolean admitsConsequence(Entity target) {
+		return budget.shared.consequence == null || alive() && budget.shared.consequence.test(target);
+	}
+	/** A released art may guard nested reactions without changing their ordinary collateral policy. */
+	public Cast consequence(java.util.function.Predicate<Entity> consequence, java.util.function.Predicate<LivingEntity> afterDamage) {
+		budget.shared.consequence = consequence; budget.shared.consequenceResult = afterDamage; return this;
+	}
+	/** Post-damage identity/lifetime check also admits a legitimate lethal-but-still-loaded recipient. */
+	public boolean consequencesValid(LivingEntity target) {
+		return budget.shared.consequenceResult == null || alive() && budget.shared.consequenceResult.test(target);
+	}
+	public boolean admits(Entity target) {
+		return admitsConsequence(target)
+			&& (budget.shared.admission == null || alive() && budget.shared.admission.test(target));
+	}
+	public Cast incoming(Vec3 from) { budget.shared.incoming = from; return this; }
+	public Vec3 incoming() { return budget.shared.incoming == null ? caster.getEyePosition() : budget.shared.incoming; }
+
 	/** No Siphon for this cast: for one that was paid for earlier (an imbued release), so it can't earn its mana back again. */
 	public Cast noSiphon() {
 		budget.shared.paid.siphon = 0;
@@ -403,7 +451,8 @@ public final class Cast {
 	/** False once the caster has left, died or changed dimension: pending parts then fizzle. */
 	public boolean alive() {
 		return !caster.isRemoved() && caster.isAlive() && caster.level() == level && depth <= MAX_DEPTH && !budget.shared.cancelled
-			&& (wanted == null || wanted.getAsBoolean());
+			&& (wanted == null || wanted.getAsBoolean())
+			&& (budget.shared.lifetime == null || budget.shared.lifetime.getAsBoolean());
 	}
 
 	/** Cuts the whole cast short: every pending part of it fizzles. */
@@ -444,6 +493,11 @@ public final class Cast {
 
 	/** Takes up to {@code wanted} creatures from the budget and returns how many may be touched. */
 	public int takeEntities(int wanted) {
+		if (guardedImpact()) {
+			int granted = Math.min(Math.max(0, wanted), Math.max(0, budget.shared.paid.guardedEntities));
+			budget.shared.paid.guardedEntities -= granted;
+			return granted;
+		}
 		int granted = Math.min(wanted, budget.entities);
 		budget.entities -= granted;
 		return granted;
@@ -472,12 +526,17 @@ public final class Cast {
 
 	/** Reserve an entire bounded structure without partially consuming the block budget. */
 	public boolean takeBlocks(int count) {
+		if (guardedImpact()) {
+			if (count < 0 || budget.shared.paid.guardedBlocks < count) return false;
+			budget.shared.paid.guardedBlocks -= count; return true;
+		}
 		if (count < 0 || budget.blocks < count) return false;
 		budget.blocks -= count;
 		return true;
 	}
 
 	public boolean takeBlock() {
+		if (guardedImpact()) return takeBlocks(1);
 		if (budget.blocks <= 0) {
 			return false;
 		}

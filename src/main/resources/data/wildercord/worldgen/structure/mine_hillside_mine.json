@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "mine_hillside_mine",
+  "biomes": "#wildercord:has_structure/mine_hillside_mine",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

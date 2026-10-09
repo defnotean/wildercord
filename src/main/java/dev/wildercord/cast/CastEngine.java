@@ -49,8 +49,17 @@ public final class CastEngine {
 		runSegment(cast, root, Cast.Trigger.self(cast.caster));
 	}
 
+	/** Restricted lesson shapes use their paid runtime receipt, never a copy, stored cast or monster fallback. */
+	private static boolean containsRestrictedLesson(SpellPlan.Segment segment) {
+		for (int depth = 0; segment != null && depth <= Cast.MAX_DEPTH; depth++) {
+			if (segment.groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID) || g.shape.is(dev.wildercord.spell.ReweaveRules.ID) || g.effects.stream().anyMatch(e -> e.effect.is(dev.wildercord.spell.ExciseRules.ID) || dev.wildercord.spell.LessonPackRules.byRune(e.effect.id()) != null))) return true;
+			segment = segment.link == null ? null : segment.link.next;
+		}
+		return segment != null;
+	}
+
 	static void runSegment(Cast cast, SpellPlan.Segment seg, Cast.Trigger at) {
-		if (seg == null || !cast.alive() || !cast.takeSegment()) {
+		if (seg == null || !cast.alive() || containsRestrictedLesson(seg) || !cast.takeSegment()) {
 			return;
 		}
 		if(seg != cast.info.root() || cast.depth>0)FormationVfx.continuation(cast,seg,at);
@@ -186,6 +195,20 @@ public final class CastEngine {
 				});
 			}
 			runSegment(cast, link.next, at);
+		} else if (HearthLinks.handles(id)) {
+			// ---- links-mods pack: the hearth conditions fire now or give their mana back; its watchers wait (see HearthLinks)
+			if (!HearthLinks.watch(cast, link)) {
+				boolean met = HearthLinks.met(cast, id);
+				if (met) {
+					HearthLinks.passed(cast, id);
+				}
+				dev.wildercord.cast.feel.Tells.gate(cast, met);
+				if (met) {
+					runSegment(cast, link.next, at);
+				} else {
+					refund(cast, link);
+				}
+			}
 		} else {
 			// A link from an add-on (dev.wildercord.api) decides when the rest fires.
 			AddonRunes.link(cast, link, at);
@@ -361,7 +384,9 @@ public final class CastEngine {
 			int interval = SpellNumbers.zoneInterval(g);
 			for (Vec3 center : spread(aimPoint(cast, at), copies, radius)) {
 				Vfx.zoneOpen(cast.level, center, radius, theme, pulses * interval + 12);
+                NativeZoneEmitters.Emitter emitter = NativeZoneEmitters.register(cast, g, anchored, center, (pulses - 1) * interval + 1, pulses);
 				ShapeRunners.steps(cast, 1, interval, (pulses - 1) * interval, t -> {
+                    if (emitter != null && !emitter.beginPulse()) return;
 					Cast child = cast.pulse();
 					if (!child.alive()) {
 						return;
@@ -405,6 +430,9 @@ public final class CastEngine {
 		} else if (CraftedShapes.handles(shape)) {
 			// New runes (batch 2): Glaive, Imprint and Latch.
 			CraftedShapes.deliver(cast, g, at, anchored, theme);
+		} else if (FieldShapes.handles(shape)) {
+			// ---- shapes pack: the field and kin shapes (FieldShapes).
+			FieldShapes.deliver(cast, g, at, anchored, theme);
 		} else {
 			// A shape from an add-on (dev.wildercord.api) finds its own hits; otherwise the shapes of the world: Vortex, Snare and Constellation.
 			if (!AddonRunes.shape(cast, g, at, anchored)) {
@@ -499,6 +527,7 @@ public final class CastEngine {
 
 	/** Applies a group's effects to a hit, then fires any On Hit / On Kill link watching it. */
 	public static void onHit(Cast cast, SpellPlan.Group g, Cast.Hit hit, SpellPlan.Link anchored) {
+        if (g.effects.stream().anyMatch(e -> e.effect.is(dev.wildercord.spell.ExciseRules.ID) || dev.wildercord.spell.LessonPackRules.byRune(e.effect.id()) != null)) return;
 		if (!cast.alive()) {
 			return;
 		}
@@ -547,6 +576,7 @@ public final class CastEngine {
 				});
 			}
 		}
+		if (cast.guardedImpact() && !cast.alive()) return;
 		// A world's resonance riding this cast may add its twist to the hit (see TwistMagic).
 		TwistMagic.onHit(cast, g, hit);
 		cast.siphon(aliveBefore.stream().filter(e -> Targets.canHarm(cast.caster, e) || !e.isAlive()).count());

@@ -108,7 +108,7 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
-	/** Heart Circles formed (0 to 8). Kept through death. */
+	/** Heart Circles formed (0 to 20; the original integer save format is unchanged). Kept through death. */
 	public static final AttachmentType<Integer> CIRCLES = AttachmentRegistry.create(
 		Wildercord.id("circles"),
 		builder -> builder
@@ -128,7 +128,7 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
-	/** Monsters defeated with spells, in total (a breakthrough for the 4th, 6th, 7th and 8th Circles). Kept through death. */
+	/** Monsters defeated with spells, in total (a breakthrough for several Heart Circles). Kept through death. */
 	public static final AttachmentType<Integer> SPELL_KILLS = AttachmentRegistry.create(
 		Wildercord.id("spell_kills"),
 		builder -> builder
@@ -560,6 +560,17 @@ public final class WildercordAttachments {
 		builder -> builder
 			.initializer(() -> WorldLore.NONE)
 			.syncWith(WorldLore.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+	);
+
+	// ---- prog pack
+	/** Circle Vows taken (two bits per vow, see {@link dev.wildercord.spell.CircleVows}); absent in old saves, which means none. Kept through death. */
+	public static final AttachmentType<Integer> CIRCLE_VOWS = AttachmentRegistry.create(
+		Wildercord.id("circle_vows"),
+		builder -> builder
+			.initializer(() -> 0)
+			.persistent(Codec.INT)
+			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
 	);
 
 	public static void init() {}

@@ -6,7 +6,9 @@ import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.cast.Statuses;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.monster.Creeper;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 
 /**
  * What an art leaves on a creature for a while, and what the rest of aura asks about it:
@@ -51,9 +54,25 @@ import java.util.UUID;
 public final class ArtWards {
 	private ArtWards() {}
 
-	private static final Map<UUID, Long> MIRROR = new HashMap<>();
+	/** Glacier Mirror's exact original-body lifetime, independent of the other wards. */
+	public static final class Mirror {
+		private final ServerPlayer player;
+		private final UUID id;
+		private final ReleasedArtOwner owner;
+		private final long until;
+		private Mirror(ServerPlayer player, ReleasedArtOwner owner, int ticks) {
+			this.player = player; this.id = player.getUUID(); this.owner = owner; this.until = owner.level().getGameTime() + ticks;
+		}
+		/** Expiry and replacement end this pane, without retiring a reflection already released by it. */
+		public boolean active() {
+			boolean active = owner.valid() && owner.level().getGameTime() <= until && MIRROR.get(id) == this;
+			if (!active) MIRROR.remove(id, this);
+			return active;
+		}
+	}
+	private static final Map<UUID, Mirror> MIRROR = new HashMap<>();
 	private static final Map<UUID, Long> EYE = new HashMap<>();
-	private static final Map<UUID, Long> HARDENED = new HashMap<>();
+	private static final HardeningLeases<ServerPlayer> HARDENED = new HardeningLeases<>();
 	/** A foe Updraft threw: by the foe, its thrower and until when. */
 	private record Juggle(UUID owner, long until) {}
 
@@ -103,6 +122,14 @@ public final class ArtWards {
 
 	static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(ArtWards::tick);
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (entity instanceof ServerPlayer player) retireHardening(player, null);
+		});
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			retireHardening(oldPlayer, null);
+			syncHardening(newPlayer);
+		});
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> retireHardening(handler.player, null));
 		// A frenzied swordsman's blows feed the frenzy; a blow on a foe Thousand Moments stopped is stored to land again.
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
 			if (taken > 0 && source.getEntity() instanceof ServerPlayer player && source.getDirectEntity() == player
@@ -115,7 +142,14 @@ public final class ArtWards {
 	// ------------------------------------------------------------------ projectiles
 
 	public static void mirror(ServerPlayer player, int ticks) {
-		MIRROR.put(player.getUUID(), player.level().getGameTime() + ticks);
+		mirror(player, ReleasedArtOwner.capture(player), ticks);
+	}
+
+	static Mirror mirror(ServerPlayer player, ReleasedArtOwner owner, int ticks) {
+		if (!owner.owns(player)) throw new IllegalArgumentException("A mirror belongs to its original body");
+		Mirror mirror = new Mirror(player, owner, ticks);
+		if (owner.valid()) MIRROR.put(player.getUUID(), mirror);
+		return mirror;
 	}
 
 	public static void eye(ServerPlayer player, int ticks) {
@@ -123,8 +157,8 @@ public final class ArtWards {
 	}
 
 	public static boolean mirrored(Player player) {
-		Long until = MIRROR.get(player.getUUID());
-		return until != null && player.level().getGameTime() <= until;
+		Mirror mirror = MIRROR.get(player.getUUID());
+		return mirror != null && mirror.player == player && mirror.active();
 	}
 
 	public static boolean inEye(Player player) {
@@ -138,16 +172,21 @@ public final class ArtWards {
 	 * from any side aside, slowed, past them.
 	 */
 	public static ProjectileDeflection deflection(ServerPlayer player, Projectile projectile) {
-		if (mirrored(player) && dev.wildercord.aura.AuraGuard.facing(player, projectile.position())) {
+		Mirror mirror = MIRROR.get(player.getUUID());
+		if (mirror != null && mirror.player == player && mirror.active()
+			&& projectile.level() == mirror.owner.level() && dev.wildercord.aura.AuraGuard.facing(player, projectile.position())) {
 			Entity shooter = projectile.getOwner();
 			double speed = Math.min(3.0, Math.max(0.6, projectile.getDeltaMovement().length()) * 1.25);
 			RimeArts.mirrorTurns(player, projectile.position());
 			Scheduler.later(1, () -> {
-				if (!projectile.isRemoved()) {
+				// A legitimate last-tick reflection still transfers ownership after the ward expires.
+				if (mirror.owner.valid() && !projectile.isRemoved() && projectile.level() == mirror.owner.level()
+					&& mirror.owner.level().getEntity(projectile.getUUID()) == projectile) {
 					projectile.setOwner(player);
 				}
 			});
 			return (turned, by, random, power) -> {
+				if (!mirror.owner.valid() || turned != projectile || turned.isRemoved() || turned.level() != mirror.owner.level()) return;
 				Vec3 at = turned.position();
 				Vec3 aim = shooter != null && shooter.isAlive() && shooter.level() == turned.level() && shooter.distanceTo(player) < 32
 					? shooter.getBoundingBox().getCenter().subtract(at) : player.getViewVector(1.0F);
@@ -197,26 +236,79 @@ public final class ArtWards {
 
 	// ------------------------------------------------------------------ hardened
 
-	/** {@code player} hardened like stone for {@code ticks}: Resistance I, and nothing knocks them back. */
-	public static void harden(ServerPlayer player, int ticks) {
-		HARDENED.put(player.getUUID(), player.level().getGameTime() + ticks);
-		player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true, true));
-		AttributeInstance resist = player.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
-		if (resist != null) {
-			resist.addOrUpdateTransientModifier(new AttributeModifier(UNMOVED, 1.0, AttributeModifier.Operation.ADD_VALUE));
+	/** A prepared Unmoved grant, owned by the admitted original body and consumed only after payment finalizes. */
+	public static final class Hardened {
+		private final ServerPlayer player;
+		private final HardeningLeases.Lease<ServerPlayer> lease;
+		private final int ticks;
+
+		private Hardened(ServerPlayer player, ReleasedArtOwner owner, long acceptedAt, int ticks) {
+			if (!owner.owns(player)) throw new IllegalArgumentException("Hardening belongs to its original body");
+			this.player = player; this.ticks = ticks;
+			lease = HARDENED.receipt(player, owner.level(), HardeningLeases.Source.UNMOVED,
+				acceptedAt, ticks, owner::valid, owner.level()::getGameTime);
 		}
+
+		/** One finalized paid dispatch grants one native Resistance effect and one nonrefreshable knockback lease. */
+		public boolean grant() {
+			if (!HARDENED.grant(lease)) { syncHardening(player); return false; }
+			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true, true));
+			syncHardening(player);
+			return HARDENED.active(lease);
+		}
+
+		public boolean active() {
+			boolean active = HARDENED.active(lease);
+			syncHardening(player);
+			return active;
+		}
+
+		/** Retiring this grant leaves another grant or Unmoving Mountain's refresh alone. */
+		public void retire() {
+			HARDENED.retire(lease);
+			syncHardening(player);
+		}
+	}
+
+	/** Captures a receipt without granting a ward, through {@code acceptedAt + ticks} inclusive in the original world's game time. */
+	public static Hardened unmoved(ServerPlayer player, ReleasedArtOwner owner, long acceptedAt, int ticks) {
+		return new Hardened(player, owner, acceptedAt, ticks);
+	}
+
+	/** Unmoving Mountain's existing refresh: Resistance I and knockback immunity for {@code ticks}. */
+	public static void harden(ServerPlayer player, int ticks) {
+		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
+		var lease = HARDENED.receipt(player, owner.level(), HardeningLeases.Source.MOUNTAIN,
+			owner.level().getGameTime(), ticks, owner::valid, owner.level()::getGameTime);
+		if (!HARDENED.grant(lease)) { syncHardening(player); return; }
+		player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true, true));
+		syncHardening(player);
 	}
 
 	public static boolean hardened(Player player) {
-		Long until = HARDENED.get(player.getUUID());
-		return until != null && player.level().getGameTime() <= until;
+		return player instanceof ServerPlayer original && syncHardening(original);
 	}
 
-	private static void soften(ServerPlayer player) {
+	/** Reconciles the single modifier on this exact body, never on a UUID-resolved replacement. */
+	private static boolean syncHardening(ServerPlayer player) {
+		boolean active = HARDENED.active(player);
 		AttributeInstance resist = player.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
-		if (resist != null && resist.getModifier(UNMOVED) != null) {
-			resist.removeModifier(UNMOVED);
+		if (resist != null) {
+			if (active) {
+				if (resist.getModifier(UNMOVED) == null)
+					resist.addOrUpdateTransientModifier(new AttributeModifier(UNMOVED, 1.0, AttributeModifier.Operation.ADD_VALUE));
+			} else if (resist.getModifier(UNMOVED) != null) resist.removeModifier(UNMOVED);
 		}
+		return active;
+	}
+
+	/** World cleanup shares the actual departure boundary; delayed outer callbacks must never retire a fresh return grant. */
+	static void worldChanging(ServerPlayer player) { retireHardening(player, null); }
+	static void worldChanged(ServerPlayer player) { syncHardening(player); }
+
+	private static void retireHardening(ServerPlayer player, Object level) {
+		HARDENED.retire(player, level);
+		syncHardening(player);
 	}
 
 	// ------------------------------------------------------------------ crusts
@@ -253,7 +345,12 @@ public final class ArtWards {
 	 * Returns how long it holds (0 for none).
 	 */
 	public static int silence(LivingEntity foe, int ticks) {
-		if (!foe.isAlive()) {
+		return silence(foe, ticks, () -> true);
+	}
+
+	/** A counter may retire during an interruption callback, before any subsequent silence mutation. */
+	public static int silence(LivingEntity foe, int ticks, BooleanSupplier permission) {
+		if (!permission.getAsBoolean() || !foe.isAlive()) {
 			return 0;
 		}
 		boolean player = foe instanceof Player;
@@ -268,12 +365,13 @@ public final class ArtWards {
 			}
 		}
 		Statuses.interrupt(foe);
-		if (t <= 0) {
+		if (!permission.getAsBoolean() || t <= 0) {
 			return 0;
 		}
 		Statuses.silence(foe, t);
+		if (!permission.getAsBoolean()) return 0;
 		SILENCED.put(foe.getUUID(), new Silenced(foe, now + t));
-		quiet(foe);
+		quiet(foe, permission);
 		return t;
 	}
 
@@ -285,8 +383,14 @@ public final class ArtWards {
 
 	/** A silenced creature kept quiet: its fuse put out, its bow or crossbow lowered. */
 	private static void quiet(LivingEntity foe) {
+		quiet(foe, () -> true);
+	}
+
+	private static void quiet(LivingEntity foe, BooleanSupplier permission) {
+		if (!permission.getAsBoolean()) return;
 		if (foe instanceof Creeper creeper && creeper.getSwellDir() > 0) {
 			creeper.setSwellDir(-1);
+			if (!permission.getAsBoolean()) return;
 		}
 		if (!(foe instanceof Player) && foe.isUsingItem()) {
 			foe.stopUsingItem();
@@ -464,28 +568,19 @@ public final class ArtWards {
 		if (!STOPPED.isEmpty() && tickCount % 20 == 0) {
 			STOPPED.values().removeIf(s -> s.until < server.overworld().getGameTime() - 100);
 		}
-		if (HARDENED.isEmpty() && (server.getTickCount() % 100 != 0)) {
-			return;
-		}
-		for (Iterator<Map.Entry<UUID, Long>> it = HARDENED.entrySet().iterator(); it.hasNext(); ) {
-			Map.Entry<UUID, Long> e = it.next();
-			ServerPlayer player = server.getPlayerList().getPlayer(e.getKey());
-			if (player == null) {
-				it.remove();
-				continue;
-			}
-			long now = player.level().getGameTime();
-			if (now > e.getValue() || !player.isAlive()) {
-				soften(player);
-				it.remove();
-				Feels.sound(player.level(), player.position(), "earth_creak", 0.4F, 1.2F);
-			} else if ((now + player.getId()) % 10 == 0) {
+		for (ServerPlayer player : HARDENED.bodies()) {
+			if (!syncHardening(player)) {
+				if (player.isAlive() && !player.isRemoved()
+					&& server.getPlayerList().getPlayer(player.getUUID()) == player)
+					Feels.sound(player.level(), player.position(), "earth_creak", 0.4F, 1.2F);
+			} else if ((player.level().getGameTime() + player.getId()) % 10 == 0) {
 				StoneArts.hardenedLook(player);
 			}
 		}
 		if (server.getTickCount() % 100 == 0) {
 			long now = server.overworld().getGameTime();
-			MIRROR.values().removeIf(until -> until < now - 200);
+			// Snapshot: an expired old mirror may only remove its own identity.
+			for (Mirror mirror : java.util.List.copyOf(MIRROR.values())) mirror.active();
 			EYE.values().removeIf(until -> until < now - 200);
 			JUGGLED.values().removeIf(j -> j.until() < now - 200);
 		}
@@ -494,7 +589,9 @@ public final class ArtWards {
 	static void forget(UUID id) {
 		MIRROR.remove(id);
 		EYE.remove(id);
-		HARDENED.remove(id);
+		// UUID-only legacy cleanup must not revoke a replacement body's fresh lease.
+		// Exact-body lifecycle callbacks synchronously retire the departing body's leases.
+		for (ServerPlayer player : HARDENED.bodies()) if (player.getUUID().equals(id)) syncHardening(player);
 		JUGGLED.values().removeIf(j -> j.owner().equals(id));
 		SILENCED.remove(id);
 		SILENCED_AT.remove(id);
@@ -508,7 +605,7 @@ public final class ArtWards {
 	static void clear() {
 		MIRROR.clear();
 		EYE.clear();
-		HARDENED.clear();
+		for (ServerPlayer player : HARDENED.bodies()) retireHardening(player, null);
 		JUGGLED.clear();
 		CRUSTS.clear();
 		SILENCED.clear();

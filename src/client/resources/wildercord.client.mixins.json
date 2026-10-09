@@ -13,6 +13,8 @@
 		"CameraMixin",
 		"AvatarRenderStateMixin",
 		"PlayerModelMixin",
+		"ModelPartChildrenAccessor",
+		"ArticulatedPlayerModelMixin",
 		"LivingEntityRendererMixin",
 		"ClientLevelMixin",
 		"AvatarRendererStyleMixin",
@@ -24,11 +26,14 @@
 		"MouseHandlerMixin",
 		"ItemInHandLayerAuraMixin",
 		"FirstPersonAuraMixin",
+		"MastersHandEquipMixin",
+		"MastersHandMotionStateMixin",
 		"ItemLayerAuraMixin",
 		"EntityRendererAuraSenseMixin",
 		"MinecraftStringsMixin",
 		"EntityRenderDispatcherHitStopMixin",
-		"ItemEntityRendererBondMixin"
+		"ItemEntityRendererBondMixin",
+		"MinecraftSpellCutMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

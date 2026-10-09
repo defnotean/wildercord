@@ -28,7 +28,7 @@ Slowness IV for 3 seconds. A target showing signs of cold (slowed, brittle, froz
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Frost effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/black_ice.png) Black Ice
 
@@ -39,7 +39,7 @@ Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Frost effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blizzard.png) Blizzard
 
@@ -50,7 +50,7 @@ A blizzard howls 3 blocks around where it lands for 4 seconds, walking 6 blocks 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Frost effect and any Wind effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bloodboil.png) Bloodboil
 
@@ -61,7 +61,7 @@ A blizzard howls 3 blocks around where it lands for 4 seconds, walking 6 blocks 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Fire effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bloom.png) Bloom
 
@@ -72,7 +72,7 @@ Regeneration II for 6 seconds, plants grow around the first 3 allies it touches,
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Life effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bonespur.png) Bonespur
 
@@ -83,7 +83,7 @@ Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 dam
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Earth effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chronoshift.png) Chronoshift
 
@@ -94,7 +94,7 @@ Turns an ally's clock forward: their other spells come off cooldown 3 seconds so
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Time effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/conflagration.png) Conflagration
 
@@ -105,7 +105,7 @@ Sets targets alight for 6 seconds, and every burning enemy within 6 blocks flare
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Fire effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/crimson_mist.png) Crimson Mist
 
@@ -116,7 +116,7 @@ A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Wind effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cryostasis.png) Cryostasis
 
@@ -127,7 +127,7 @@ Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can'
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Frost effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/devour.png) Devour
 
@@ -138,7 +138,7 @@ Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can'
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Void effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/downdraft.png) Downdraft
 
@@ -149,7 +149,7 @@ Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more f
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Wind effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/entropy.png) Entropy
 
@@ -160,7 +160,7 @@ The target unravels: 1, 1.5, 2, 2.5 and 3 damage over 5 seconds, straight throug
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Void effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/everburn.png) Everburn
 
@@ -171,7 +171,7 @@ Sets targets alight for 5 seconds with a fire that burns two and a half times as
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Fire effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/firestorm.png) Firestorm
 
@@ -182,7 +182,7 @@ Sets targets alight for 6 seconds and deals 5 damage, and the fire leaps to ever
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Fire effect and any Wind effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fossilize.png) Fossilize
 
@@ -193,7 +193,7 @@ The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Earth effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frostbite.png) Frostbite
 
@@ -204,7 +204,7 @@ The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Frost effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frostbloom.png) Frostbloom
 
@@ -215,7 +215,7 @@ Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Frost effect and any Life effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/geode.png) Geode
 
@@ -226,7 +226,7 @@ Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Earth effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glacier.png) Glacier
 
@@ -237,7 +237,7 @@ Freezes targets in place for 2 seconds (1 second on players). The ice spreads: u
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Frost effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hail.png) Hail
 
@@ -248,7 +248,7 @@ Five hailstones of 2 damage each, each staggering the target, and Slowness II fo
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Storm effect and any Frost effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/heartstopper.png) Heartstopper
 
@@ -259,7 +259,7 @@ Five hailstones of 2 damage each, each staggering the target, and Slowness II fo
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Storm effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hellmouth.png) Hellmouth
 
@@ -270,7 +270,7 @@ Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks towar
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Fire effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hemomancy.png) Hemomancy
 
@@ -281,7 +281,7 @@ Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks towar
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Arcane effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lifebloom.png) Lifebloom
 
@@ -292,7 +292,7 @@ Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every a
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Life effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lifesteal.png) Lifesteal
 
@@ -303,7 +303,7 @@ Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every a
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Life effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/magma.png) Magma
 
@@ -314,7 +314,7 @@ The ground under the target turns to magma for 4 seconds: 2 damage a second to e
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Fire effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/magnetize.png) Magnetize
 
@@ -325,7 +325,7 @@ Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Storm effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/monolith.png) Monolith
 
@@ -336,7 +336,7 @@ A pillar of stone bursts up under the target: 8 damage, and it's thrown 3 blocks
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Earth effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nullify.png) Nullify
 
@@ -347,7 +347,7 @@ Strips an enemy's good effects, or an ally's bad effects. Vexes, and spirit wolv
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Arcane effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/phoenix_pyre.png) Phoenix Pyre
 
@@ -358,7 +358,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Fire effect and any Life effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/plasma.png) Plasma
 
@@ -369,7 +369,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Storm effect and any Fire effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/prismatic_burst.png) Prismatic Burst
 
@@ -380,7 +380,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Arcane effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reckoning.png) Reckoning
 
@@ -391,7 +391,7 @@ For 4 seconds, every wound the target takes is counted; then half of it comes du
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Time effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/recoil.png) Recoil
 
@@ -402,7 +402,7 @@ Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where t
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Wind effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/riftbolt.png) Riftbolt
 
@@ -413,7 +413,7 @@ A black bolt for 7 damage that tears the target through a rift up to 5 blocks aw
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Storm effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rime_seal.png) Rime Seal
 
@@ -424,7 +424,7 @@ Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that s
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Frost effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sanguine_rite.png) Sanguine Rite
 
@@ -435,7 +435,7 @@ You pay 3 of your own health (never your last; more with Amplify, Overcharge and
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Blood effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/second_wind.png) Second Wind
 
@@ -446,7 +446,7 @@ For 20 seconds, the first blow that would kill the ally leaves them at 4 health 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Life effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/singularity.png) Singularity
 
@@ -457,7 +457,7 @@ A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 b
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Void effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sinkhole.png) Sinkhole
 
@@ -468,7 +468,7 @@ The ground gives way: enemies within 3 blocks are dragged to its middle and pinn
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Earth effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skyglyph.png) Skyglyph
 
@@ -479,7 +479,7 @@ Writes a wind glyph where it lands for 10 seconds: an ally who steps on it is la
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Wind effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soulbond.png) Soulbond
 
@@ -490,7 +490,7 @@ Binds you and an ally for 10 seconds: any damage either of you takes is split be
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Life effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starfire.png) Starfire
 
@@ -501,7 +501,7 @@ Five motes of starfire seek up to five enemies within 6 blocks: 2 damage each, a
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Fire effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steam.png) Steam
 
@@ -512,7 +512,7 @@ A scalding burst of steam: 5 damage and Blindness for 3 seconds, and a cloud han
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Fire effect and any Frost effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stormclock.png) Stormclock
 
@@ -523,7 +523,7 @@ A scalding burst of steam: 5 damage and Blindness for 3 seconds, and a cloud han
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Storm effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stormweave.png) Stormweave
 
@@ -534,7 +534,7 @@ Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between t
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Storm effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/surge.png) Surge
 
@@ -545,7 +545,7 @@ Speed I and Strength I for 8 seconds; the blows you land in that time arc on to 
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Life effect and any Storm effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tempest.png) Tempest
 
@@ -556,7 +556,7 @@ A lightning strike for 8 damage, and a gale that hurls targets far away; where t
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Storm effect and any Wind effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunderhead.png) Thunderhead
 
@@ -567,7 +567,7 @@ A thundercloud gathers over the target for 4 seconds and strikes an enemy within
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Storm effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/timesteal.png) Timesteal
 
@@ -578,7 +578,7 @@ Steals up to 2 of the target's good effects, with the time they had left (at mos
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Arcane effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/transfusion.png) Transfusion
 
@@ -589,7 +589,7 @@ You give up to 4 of your own health (never below 2), and the ally heals three ti
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Life effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/updraft.png) Updraft
 
@@ -600,7 +600,7 @@ Hurls enemies within 2.5 blocks high into the air, where every spell hits them h
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any two Wind effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/warp.png) Warp
 
@@ -611,7 +611,7 @@ You and the first creature hit swap places through the void, and you come out un
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Wind effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/zephyr.png) Zephyr
 
@@ -622,7 +622,7 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 
 **How to get it:** Fused at the [Fusion Altar](../fusion-altar/index.md) from any Wind effect and any Life effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ## Signature fusions
 
@@ -680,7 +680,7 @@ Extinguishes an ally and removes harmful conditions, converting only actual cond
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Fireward](effects/fire.md#fireward) and [Cleanse](effects/life.md#cleanse) themselves, with an amethyst shard (3 XP levels). Any other Fire and Life effects make Phoenix Pyre instead.
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/avalanche.png) Avalanche
 
@@ -691,7 +691,7 @@ Snow and ice crash down round where it lands: 6 damage to every enemy within 3 b
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Coldsnap](effects/frost.md#coldsnap) and [Stalactite](world.md#stalactite) themselves, with an amethyst shard (3 XP levels). Any other Frost and Earth effects make Glacier instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blood_escrow.png) Blood Escrow
 
@@ -702,7 +702,7 @@ Spend up to three actual health, never below four, to buy one ally a six-second 
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Leech](effects/blood.md#leech) and [Barrier](effects/arcane.md#barrier) themselves, with an amethyst shard (3 XP levels). Any other Blood and Arcane effects make Hemomancy instead.
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bloomstep.png) Bloomstep
 
@@ -713,7 +713,7 @@ Steps you through a door of blossoms to where the spell landed (up to 32 blocks)
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Grow](effects/life.md#grow) and [Blink](effects/void.md#blink) themselves, with an amethyst shard (3 XP levels). Any other Life and Void effects make Lifesteal instead.
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/boiling_surge.png) Boiling Surge
 
@@ -724,7 +724,7 @@ Lifts nearby real water through a scalding arc, returning each source afterwards
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Tidal Lift](effects/frost.md#tidal_lift) and [Fire](effects/fire.md#fire) themselves, with an amethyst shard (3 XP levels). Any other Frost and Fire effects make Steam instead.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cinder_bulwark.png) Cinder Bulwark
 
@@ -735,7 +735,7 @@ Raises a cracked, glowing wall. Enemies brushing against it take 2 magic damage 
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Strata Rise](effects/earth.md#strata_rise) and [Fire](effects/fire.md#fire) themselves, with an amethyst shard (3 XP levels). Any other Earth and Fire effects make Magma instead.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cinder_sieve.png) Cinder Sieve
 
@@ -746,7 +746,7 @@ Consumes one carried coal or charcoal to furnace-process up to sixteen visible l
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Ember](effects/fire.md#ember) and [Collect](effects/void.md#collect) themselves, with an amethyst shard (3 XP levels). Any other Fire and Void effects make Hellmouth instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/clockroot.png) Clockroot
 
@@ -757,7 +757,7 @@ Roots remember safe ground for four seconds. A foe fleeing more than two blocks 
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Root](effects/earth.md#root) and [Foresight](effects/time.md#foresight) themselves, with an amethyst shard (3 XP levels). Any other Earth and Time effects make Fossilize instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frost_molt.png) Frost Molt
 
@@ -768,7 +768,7 @@ Peel an actual frozen condition into one three-second ice plate. It stops one or
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Frostward](effects/frost.md#frostward) and [Cleanse](effects/life.md#cleanse) themselves, with an amethyst shard (3 XP levels). Any other Frost and Life effects make Frostbloom instead.
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frostwire.png) Frostwire
 
@@ -779,7 +779,7 @@ Chills each target (Slowness II for 4 seconds); a moment later a current races t
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Chill](effects/frost.md#chill) and [Shock](effects/storm.md#shock) themselves, with an amethyst shard (3 XP levels). Any other Frost and Storm effects make Hail instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/halo.png) Halo
 
@@ -790,7 +790,7 @@ A halo crowns the ally for 8 seconds: every 1.5 seconds it smites an enemy withi
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Smite](effects/arcane.md#smite) and [Regrowth](effects/life.md#regrowth) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Life effects make Soulbond instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/last_lantern.png) Last Lantern
 
@@ -801,7 +801,7 @@ Record one allied player's safe ground for six seconds. Their next fresh crouch 
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Light](effects/arcane.md#light) and [Rewind](effects/time.md#rewind) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/malison.png) Malison
 
@@ -812,7 +812,7 @@ Record one allied player's safe ground for six seconds. Their next fresh crouch 
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Hex](effects/void.md#hex) and [Resonance](effects/arcane.md#resonance) themselves, with an amethyst shard (3 XP levels). Any other Void and Arcane effects make Nullify instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/night_seam.png) Night Seam
 
@@ -823,7 +823,7 @@ Inspect beyond at most three owned ordinary stone cells for one open-ground and 
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Light](effects/arcane.md#light) and [Zipper](effects/void.md#zipper) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nullcatch.png) Nullcatch
 
@@ -834,7 +834,7 @@ An open mirror pocket catches one hostile front projectile over three seconds. O
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Reflect](effects/arcane.md#reflect) and [Collect](effects/void.md#collect) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/parasite.png) Parasite
 
@@ -845,7 +845,7 @@ Plants a parasite in each target for 6 seconds: Poison I, and every second it dr
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Venom](effects/life.md#venom) and [Leech](effects/blood.md#leech) themselves, with an amethyst shard (3 XP levels). Any other Life and Blood effects make Transfusion instead.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pocket_current.png) Pocket Current
 
@@ -856,7 +856,7 @@ Water envelopes carry up to sixteen ready, permitted loose items into your own t
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Bubble](effects/frost.md#bubble) and [Collect](effects/void.md#collect) themselves, with an amethyst shard (3 XP levels). Any other Frost and Void effects make Black Ice instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pulse_ferry.png) Pulse Ferry
 
@@ -867,7 +867,7 @@ One sap parcel visits two different wounded eligible allies within four blocks o
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Regrowth](effects/life.md#regrowth) and [Time Skip](effects/time.md#time_skip) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/quietus.png) Quietus
 
@@ -878,7 +878,7 @@ A visible short escrow waits for one newly cast hostile magic projectile, closes
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Manaburn](world.md#manaburn) and [Stasis](effects/time.md#stasis) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/razorgale.png) Razorgale
 
@@ -889,7 +889,7 @@ A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Windcut](effects/wind.md#windcut) and [Bleed](effects/blood.md#bleed) themselves, with an amethyst shard (3 XP levels). Any other Wind and Blood effects make Crimson Mist instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/red_ledger.png) Red Ledger
 
@@ -900,7 +900,7 @@ Three visible blood gates measure ordinary movement over three seconds. Moving o
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Bleed](effects/blood.md#bleed) and [Reveal](effects/arcane.md#reveal) themselves, with an amethyst shard (3 XP levels). Any other Blood and Arcane effects make Hemomancy instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rime_causeway.png) Rime Causeway
 
@@ -911,7 +911,7 @@ Condenses wind into an ascending three-wide ice causeway. Lasts eight seconds, l
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Wind Steps](effects/wind.md#wind_steps) and [Frost](effects/frost.md#frost) themselves, with an amethyst shard (3 XP levels). Any other Wind and Frost effects make Blizzard instead.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/riposte.png) Riposte
 
@@ -922,7 +922,7 @@ For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and a
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Reflect](effects/arcane.md#reflect) and [Foresight](effects/time.md#foresight) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/root_bulwark.png) Root Bulwark
 
@@ -933,7 +933,7 @@ Raises a living root wall that gives nearby allies brief Regeneration I. Lasts e
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Strata Rise](effects/earth.md#strata_rise) and [Grow](effects/life.md#grow) themselves, with an amethyst shard (3 XP levels). Any other Earth and Life effects make Bloom instead.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/second_bell.png) Second Bell
 
@@ -944,7 +944,7 @@ Two visible electrodes ring after one and two seconds. Leaving the marked spot e
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Shock](effects/storm.md#shock) and [Countdown](effects/time.md#countdown) themselves, with an amethyst shard (3 XP levels). Any other Storm and Time effects make Stormclock instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/seethe.png) Seethe
 
@@ -955,7 +955,7 @@ Traps each target in a bubble of boiling water for 2 seconds (1 fire damage ever
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Bubble](effects/frost.md#bubble) and [Fire](effects/fire.md#fire) themselves, with an amethyst shard (3 XP levels). Any other Frost and Fire effects make Steam instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shard_compass.png) Shard Compass
 
@@ -966,7 +966,7 @@ Offer one carried raw iron, copper or gold sample to locate a nearby matching lo
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Prospect](effects/earth.md#prospect) and [Treasure Sense](world.md#treasure_sense) themselves, with an amethyst shard (3 XP levels). Any other Earth and Arcane effects make Geode instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skyburst.png) Skyburst
 
@@ -977,7 +977,7 @@ Flings each target high into the air (3 at most); at the top of its flight it ex
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Launch](effects/wind.md#launch) and [Explode](effects/fire.md#explode) themselves, with an amethyst shard (3 XP levels). Any other Wind and Fire effects make Firestorm instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skylatch.png) Skylatch
 
@@ -988,7 +988,7 @@ Lifts an ally about one block and holds vertical height for four seconds while l
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Levitate](effects/wind.md#levitate) and [Anchor](effects/void.md#anchor) themselves, with an amethyst shard (3 XP levels). Any other Wind and Void effects make Warp instead.
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/springbed.png) Springbed
 
@@ -999,7 +999,7 @@ Pours one safe Basinfill vessel, then grows up to eight existing bank crops or m
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Basinfill](effects/frost.md#basinfill) and [Grow](effects/life.md#grow) themselves, with an amethyst shard (3 XP levels). Any other Frost and Life effects make Frostbloom instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stitchtime.png) Stitchtime
 
@@ -1010,7 +1010,7 @@ Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhil
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Heal](effects/life.md#heal) and [Countdown](effects/time.md#countdown) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thresherwind.png) Thresherwind
 
@@ -1021,7 +1021,7 @@ Three travelling shear lanes harvest up to nine mature crops ahead of the impact
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Harvest](effects/life.md#harvest) and [Windcut](effects/wind.md#windcut) themselves, with an amethyst shard (3 XP levels). Any other Life and Wind effects make Zephyr instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunder_tide.png) Thunder Tide
 
@@ -1032,7 +1032,7 @@ Suspends real borrowed water inside electrical rings and drives it forward. Each
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Tidal Lift](effects/frost.md#tidal_lift) and [Shock](effects/storm.md#shock) themselves, with an amethyst shard (3 XP levels). Any other Frost and Storm effects make Hail instead.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunder_walk.png) Thunder Walk
 
@@ -1043,7 +1043,7 @@ Builds five copper-lit wind stepping stones. Each enemy touching a stone takes 2
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Wind Steps](effects/wind.md#wind_steps) and [Shock](effects/storm.md#shock) themselves, with an amethyst shard (3 XP levels). Any other Wind and Storm effects make Tempest instead.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunderquake.png) Thunderquake
 
@@ -1054,7 +1054,7 @@ The ground booms like thunder: three shockwaves roll out from where it lands ove
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Thunderclap](effects/storm.md#thunderclap) and [Tremor](effects/earth.md#tremor) themselves, with an amethyst shard (3 XP levels). Any other Storm and Earth effects make Magnetize instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunderstep.png) Thunderstep
 
@@ -1065,7 +1065,7 @@ You come down as a bolt of lightning where the spell landed (up to 24 blocks), r
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Shadowstep](effects/void.md#shadowstep) and [Lightning](effects/storm.md#lightning) themselves, with an amethyst shard (3 XP levels). Any other Void and Storm effects make Riftbolt instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wayline.png) Wayline
 
@@ -1076,7 +1076,7 @@ Latch a short line to owned safe ground within six blocks. Hold forward for a bo
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Span](effects/arcane.md#span) and [Grapple](effects/void.md#grapple) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Void effects make Nullify instead.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cometfall.png) Cometfall
 
@@ -1087,7 +1087,7 @@ A comet streaks down on the point a second later: 16 damage to every enemy withi
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Starfall](effects/arcane.md#starfall) and [Meteor](effects/fire.md#meteor) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Fire effects make Starfire instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/doomclock.png) Doomclock
 
@@ -1098,7 +1098,7 @@ Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it tak
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Primer](effects/fire.md#primer) and [Stasis](effects/time.md#stasis) themselves, with an amethyst shard (3 XP levels). Any other Fire and Time effects make Everburn instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dust_devil.png) Dust Devil
 
@@ -1109,4 +1109,4 @@ A dust devil touches down where it lands and chases the nearest enemy for 5 seco
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar](../fusion-altar/index.md) from [Summit Wind](world.md#summit_wind) and [Sandstorm](world.md#sandstorm) themselves, with an amethyst shard (3 XP levels). Any other Wind and Earth effects make Downdraft instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

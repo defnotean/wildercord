@@ -26,26 +26,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Player.class)
 public abstract class PlayerAuraMixin {
-	@Inject(method = "attack", at = @At("HEAD"))
+	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraSwing(Entity target, CallbackInfo ci) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player)) || dev.wildercord.aura.MastersArts.committed(player))) { ci.cancel(); return; }
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.SwordStrings.attackBegins(player);
 		AuraCombat.swing((Player) (Object) this);
 	}
 
 	@WrapOperation(method = "attack", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private boolean wildercord$auraBlow(Entity target, DamageSource source, float damage, Operation<Boolean> original) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		return AuraCombat.blow((Player) (Object) this, target, source, damage, true, amount -> original.call(target, source, amount));
 	}
 
-	@Inject(method = "stabAttack", at = @At("HEAD"))
+	@Inject(method = "stabAttack", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraThrustBegins(EquipmentSlot slot, Entity target, float baseDamage, boolean dealsDamage, boolean dealsKnockback,
 			boolean dismounts, CallbackInfoReturnable<Boolean> cir) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player)) || dev.wildercord.aura.MastersArts.committed(player))) { cir.setReturnValue(false); return; }
 		AuraCombat.swing((Player) (Object) this);
 	}
 
 	@WrapOperation(method = "stabAttack", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private boolean wildercord$auraThrust(Entity target, DamageSource source, float damage, Operation<Boolean> original) {
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		return AuraCombat.blow((Player) (Object) this, target, source, damage, true, amount -> original.call(target, source, amount));
 	}
 

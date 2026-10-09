@@ -158,6 +158,7 @@ public final class HourglassArts {
 
 	static boolean echoCut(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
+		var continuation = dev.wildercord.aura.MastersArts.continuation(player);
 		int color = gold(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -180,7 +181,8 @@ public final class HourglassArts {
 			if (!player.isAlive() || player.level() != level) {
 				return;
 			}
-			hits.fx().trail(AuraFxRules.Stroke.CUT, true, 1.2F);
+			// The released afterimage still strikes; a stopped physical performance does not swing the live body again.
+			if (continuation.getAsBoolean()) hits.fx().trail(AuraFxRules.Stroke.CUT, true, 1.2F);
 			goldCut(player, feet, look, ArtKit.mix(color, SAND, 0.35), true, ArtRules.ECHO_REACH, 0.8F);
 			Feels.sound(level, feet.add(0, 1, 0), "time_reecho", 0.8F, 1.1F);
 			for (LivingEntity foe : ArtKit.arcFrom(player, feet, look, ArtRules.ECHO_REPEAT_REACH, ArtRules.ECHO_DEGREES, ArtRules.ECHO_TARGETS)) {

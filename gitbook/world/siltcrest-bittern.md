@@ -1,31 +1,47 @@
-# The bird at the reed edge
+# Siltcrest Bittern
 
-Look along exposed shallow banks in swamps and mangrove swamps. The Siltcrest Bittern has a streaked rounded body, layered folded wings, long articulated legs and a neck that folds before its bill snaps forward. Its low throat call carries across a quiet bank.
+## What it is
 
-## Watch the neck
+A streaked marsh bird with long legs and a coiling neck. It hunts fish from the bank in swamps and mangrove swamps. It is peaceful wildlife to watch and feed.
 
-In clear nighttime weather, a hungry bird approaches a dry supported bank beside wild cod or salmon. Three eligible fish must remain nearby. Watch the slow approach, the coiling neck, one committed bill strike and the short pause before successful preening. A missed or interrupted attempt has a finite rest.
+![A Siltcrest Bittern coiling beside a shallow pond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/siltcrest/coil.png)
 
-A genuine caught fish gives the bird a five-minute appetite rest. Normal fish drops remain ordinary prey drops. Named fish, fish from buckets and persistent fish are protected. Crowded ponds are declined as a complete group; the bird does not choose an arbitrary handful from a dense population. It does not hunt tropical fish or pufferfish.
+## How to get it
 
-## Give her room
+Look along shallow, open banks in swamps and mangrove swamps.
 
-Crouch to observe nearby. A noisy close approach or actual injury can provoke retreat. Her bill commits toward the fish she selected; moving fish can make that attempt miss. During daylight or rain she looks for a dry covered bank and rests only after walking there and becoming grounded. Cover changes and departure end stale shelter.
+## How to use it
 
-You can crouch close and offer one raw cod or salmon through ordinary entity interaction. A successful offer consumes one fish and starts the same saved appetite rest as a caught meal. Repeated use, changing food and reopening the world do not renew or bypass that deadline. This gives you a calm opportunity to observe her wing and throat movements.
+### Watch it hunt
 
-## Water and wildlife
+On clear nights, a hungry bittern walks to a dry bank next to wild cod or salmon. At least three fish must be close by. The hunt goes like this:
 
-Tidebreath follows the usual helpful-target rules. An admitted fresh benefit on an allied Bittern can briefly interrupt her hunt and trigger preening. A wild stranger receives no helpful benefit or successful response from that spell. The interaction does not catch a fish or award a feeding deadline.
+1. It coils its neck.
+2. It strikes once with its bill.
+3. If it catches the fish, it preens.
 
-Keep exposed wet banks, ordinary fish ponds and nearby cover together when observing the wetland. The Bittern joins Moonreed, Glimmerwings, Newts and Reedback Crabs as another living relationship to learn. Each has its own weather, food and warning behavior.
+A caught fish keeps the bittern full for 5 minutes. The fish drops what it normally would.
 
-## At the bank
+It leaves these fish alone:
+- named fish
+- fish from buckets
+- tropical fish and pufferfish
+- fish in crowded ponds
 
-![Actual coiling Siltcrest Bittern beside a supplied shallow pond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/siltcrest/coil.png)
+![The bill strike](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/siltcrest/strike.png)
 
-![Actual brief strike with the divided bill open](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/siltcrest/strike.png)
+### Feed it
 
-![Actual daytime shelter beneath a supplied persistent canopy](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/siltcrest/shelter.png)
+Crouch close and right-click it with raw cod or salmon. It eats one fish, and that starts the same 5-minute rest as a catch. You can't skip the rest by feeding it again or reloading the world.
 
-These original game captures show a supplied review pond, real placed lighting and ordinary creature AI. They are examples of the model and behavior, rather than a naturally generated location.
+### Shelter
+
+In daylight or rain, it walks to a dry, covered spot on the bank and rests there.
+
+![Resting under cover in daytime](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/siltcrest/shelter.png)
+
+## Tips and counterplay
+
+- Crouch to watch from close by. A noisy approach or getting hurt makes it back away.
+- Fish that move can make its strike miss.
+- Tidebreath on an allied bittern can interrupt its hunt and make it preen. A wild bittern doesn't react.

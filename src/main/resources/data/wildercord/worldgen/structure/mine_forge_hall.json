@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "mine_forge_hall",
+  "biomes": "#wildercord:has_structure/mine_forge_hall",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

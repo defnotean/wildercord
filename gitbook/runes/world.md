@@ -2,7 +2,7 @@
 
 # Runes of the world
 
-53 runes that can't be crafted at all: each is found only in its own places. Some wait in the chests of vanilla structures, some are carried by bosses and dungeon guards, some fall with stars or come out of rifts, and some are drawn out of the land itself by **Attunement**: hold a Blank Rune and meditate in the right biome at the right moment. See [Runes of the World and Attunement](../world/runes-of-the-world.md) for how to hunt them.
+59 runes that can't be crafted at all: each is found only in its own places. Some wait in the chests of vanilla structures, some are carried by bosses and dungeon guards, some fall with stars or come out of rifts, and some are drawn out of the land itself by **Attunement**: hold a Blank Rune and meditate in the right biome at the right moment. See [Runes of the World and Attunement](../world/runes-of-the-world.md) for how to hunt them.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ancient_seed.png) Ancient Seed
 
@@ -11,9 +11,9 @@
 
 Plants an ancient seed at the point: a torchflower or pitcher plant blooms, and crops within 4 blocks grow a stage now and every 3 seconds for 12 seconds more.
 
-**How to get it:** Found only, never crafted: Trail ruins (brushing).
+**How to get it:** Never crafted. Where it comes from: Trail ruins (brushing).
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glowvine.png) Glowvine
 
@@ -22,9 +22,9 @@ Plants an ancient seed at the point: a torchflower or pitcher plant blooms, and 
 
 Glowing cave vines heavy with glow berries grow down from the ceiling around the point: a light that stays. Vines already there bear berries again.
 
-**How to get it:** Found only, never crafted: Attuned in lush caves.
+**How to get it:** Never crafted. Where it comes from: Attuned in lush caves.
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/treasure_sense.png) Treasure Sense
 
@@ -33,9 +33,9 @@ Glowing cave vines heavy with glow berries grow down from the ceiling around the
 
 For 60 seconds, Luck II, and the nearest unopened treasure chests and suspicious blocks within 24 blocks sparkle now and then.
 
-**How to get it:** Found only, never crafted: Buried treasure; Archive libraries.
+**How to get it:** Never crafted. Where it comes from: Buried treasure; Archive libraries.
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blazecall.png) Blazecall
 
@@ -44,9 +44,9 @@ For 60 seconds, Luck II, and the nearest unopened treasure chests and suspicious
 
 Three blaze fireballs fall on each target over a second: 3 fire damage each, setting it alight and staggering it.
 
-**How to get it:** Found only, never crafted: Nether fortresses; Runebound Adepts (8%).
+**How to get it:** Never crafted. Where it comes from: Nether fortresses; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blood_moss.png) Blood Moss
 
@@ -55,9 +55,9 @@ Three blaze fireballs fall on each target over a second: 3 fire damage each, set
 
 Crimson moss spreads over each target: 1 damage a second for 6 seconds, and the most wounded of you and your allies nearby heals for all of it.
 
-**How to get it:** Found only, never crafted: Attuned in a crimson forest.
+**How to get it:** Never crafted. Where it comes from: Attuned in a crimson forest.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cinderbrand.png) Cinderbrand
 
@@ -66,9 +66,9 @@ Crimson moss spreads over each target: 1 damage a second for 6 seconds, and the 
 
 Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50% hotter and its burning hurts a little more.
 
-**How to get it:** Found only, never crafted: The Ember Sanctum.
+**How to get it:** Never crafted. Where it comes from: The Ember Sanctum.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/current.png) Current
 
@@ -77,9 +77,9 @@ Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50
 
 Only in water or rain: a current sweeps you and the allies within 2 blocks about 15 blocks the way you look, and you land without fall damage. On dry land it fizzles.
 
-**How to get it:** Found only, never crafted: Fished from open water.
+**How to get it:** Never crafted. Where it comes from: Fished from open water.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/echolocate.png) Echolocate
 
@@ -88,9 +88,9 @@ Only in water or rain: a current sweeps you and the allies within 2 blocks about
 
 A sonar pulse from the point: every enemy within 16 blocks glows through walls for 10 seconds, and those it hits are dazed (Slowness II) for 3.
 
-**How to get it:** Found only, never crafted: Ancient cities; Archive libraries.
+**How to get it:** Never crafted. Where it comes from: Ancient cities; Archive libraries.
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fangs.png) Fangs
 
@@ -99,9 +99,9 @@ A sonar pulse from the point: every enemy within 16 blocks glows through walls f
 
 A ring of evoker fangs snaps up around each target: 6 damage from below.
 
-**How to get it:** Found only, never crafted: Woodland mansions; Archive libraries.
+**How to get it:** Never crafted. Where it comes from: Woodland mansions; Archive libraries.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hush.png) Hush
 
@@ -110,9 +110,9 @@ A ring of evoker fangs snaps up around each target: 6 damage from below.
 
 A pocket of silence at the point for 6 seconds (4 blocks): monsters inside lose their targets and are weakened, and enemy casters can't cast.
 
-**How to get it:** Found only, never crafted: Attuned in the deep dark.
+**How to get it:** Never crafted. Where it comes from: Attuned in the deep dark.
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_wet.png) If Wet
 
@@ -121,7 +121,7 @@ A pocket of silence at the point for 6 seconds (4 blocks): monsters inside lose 
 
 The rest fires only if you're in water or rain.
 
-**How to get it:** Found only, never crafted: The Drowned Scriptorium.
+**How to get it:** Never crafted. Where it comes from: The Drowned Scriptorium.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_wounded.png) If Wounded
 
@@ -130,7 +130,7 @@ The rest fires only if you're in water or rain.
 
 The rest fires only if you're below half health. Build a last stand into any spell.
 
-**How to get it:** Found only, never crafted: Stronghold libraries; Archive libraries.
+**How to get it:** Never crafted. Where it comes from: Stronghold libraries; Archive libraries.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/infest.png) Infest
 
@@ -139,9 +139,9 @@ The rest fires only if you're below half health. Build a last stand into any spe
 
 Silverfish burrow out of the stone around each target: 1 damage every half second for 4 seconds, and Slowness I.
 
-**How to get it:** Found only, never crafted: Stronghold libraries; Archive libraries.
+**How to get it:** Never crafted. Where it comes from: Stronghold libraries; Archive libraries.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/manaburn.png) Manaburn
 
@@ -150,9 +150,9 @@ Silverfish burrow out of the stone around each target: 1 damage every half secon
 
 Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, a player loses up to 20 mana (less from a weaker hit), and a charge or telegraphed cast in hand is cut short.
 
-**How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
+**How to get it:** Never crafted. Where it comes from: Mana storms (a surge after 10 casts).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mire.png) Mire
 
@@ -161,9 +161,9 @@ Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) a
 
 The ground turns to mire under each target for 5 seconds: it sinks (Slowness IV, no jumping) and is soaked.
 
-**How to get it:** Found only, never crafted: Attuned in a swamp.
+**How to get it:** Never crafted. Where it comes from: Attuned in a swamp.
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/moonpetal.png) Moonpetal
 
@@ -172,9 +172,9 @@ The ground turns to mire under each target for 5 seconds: it sinks (Slowness IV,
 
 A storm of moonlit petals at the point: 5 damage to every enemy within 3 blocks, and 4 health to you and your allies there. Stronger under a full moon and at night, weaker under a new moon.
 
-**How to get it:** Found only, never crafted: Attuned in a cherry grove.
+**How to get it:** Never crafted. Where it comes from: Attuned in a cherry grove.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/portalfall.png) Portalfall
 
@@ -183,9 +183,9 @@ A storm of moonlit petals at the point: 5 damage to every enemy within 3 blocks,
 
 A portal opens under each target and drops it from up to 7 blocks up, with 2 damage on the way through; where it lands, enemies within 2 blocks take 3 and stagger.
 
-**How to get it:** Found only, never crafted: Ruined portals; Runebound Adepts (8%).
+**How to get it:** Never crafted. Where it comes from: Ruined portals; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/remedy.png) Remedy
 
@@ -194,9 +194,9 @@ A portal opens under each target and drops it from up to 7 blocks up, with 2 dam
 
 Cures what ails and turns it to good (poison to Regeneration, slowness to Speed, weakness to Strength...) for half its time; heals 4 and gives Regeneration I for 6 seconds. A zombie villager it touches is weakened, ready for a golden apple.
 
-**How to get it:** Found only, never crafted: Igloo basements.
+**How to get it:** Never crafted. Where it comes from: Igloo basements.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rootsnare.png) Rootsnare
 
@@ -205,9 +205,9 @@ Cures what ails and turns it to good (poison to Regeneration, slowness to Speed,
 
 Mangrove roots burst up around the point: every enemy within 3 blocks is held for 1.5 seconds and takes 3 damage, then slowed for 4 seconds and cut by 1 damage for every 1.5 blocks it moves (5 at most).
 
-**How to get it:** Found only, never crafted: Attuned in a mangrove swamp.
+**How to get it:** Never crafted. Where it comes from: Attuned in a mangrove swamp.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/snare.png) Snare
 
@@ -216,7 +216,7 @@ Mangrove roots burst up around the point: every enemy within 3 blocks is held fo
 
 Strings an unseen tripwire from your feet to where you look (up to 12 blocks). The first enemy to cross it within 30 seconds springs it on everything within 2.5 blocks, and whoever it catches stumbles for a second.
 
-**How to get it:** Found only, never crafted: Jungle temples.
+**How to get it:** Never crafted. Where it comes from: Jungle temples.
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -227,9 +227,9 @@ Strings an unseen tripwire from your feet to where you look (up to 12 blocks). T
 
 Spores burst from a giant mushroom at the point: enemies within 3 blocks take Poison I and spore damage, and monsters among them turn on each other for 5 seconds (players get Nausea). Your allies there get 4 hunger back.
 
-**How to get it:** Found only, never crafted: Attuned in mushroom fields.
+**How to get it:** Never crafted. Where it comes from: Attuned in mushroom fields.
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stalactite.png) Stalactite
 
@@ -238,9 +238,9 @@ Spores burst from a giant mushroom at the point: enemies within 3 blocks take Po
 
 A stalactite drops on the spot each target stands on: 7 damage, 30% more against a bare head. Step aside and it misses.
 
-**How to get it:** Found only, never crafted: Attuned in dripstone caves.
+**How to get it:** Never crafted. Where it comes from: Attuned in dripstone caves.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidehook.png) Tidehook
 
@@ -249,9 +249,20 @@ A stalactite drops on the spot each target stands on: 7 damage, 30% more against
 
 A hook of water snags each target and reels it in to your feet in three tugs (a flyer is reeled down): 4 damage, it's left soaked and gasping for half a second when it lands.
 
-**How to get it:** Found only, never crafted: Fished from open water.
+**How to get it:** Never crafted. Where it comes from: Fished from open water.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tollgate.png) Tollgate
+
+
+*Tier II · Earth · Harms enemies · 6.77 mana · needs a Copper Cord or better*
+
+The Warden's Threshold teaches active Circle X: set a 5-block gate on visible floor within 10 blocks for 6 seconds. A hostile walking into it is stopped once and slowed; 3 tolls in all. Allies pass and a jump clears it. 30 mana once, 10-second shared rest. Wall then Tollgate only.
+
+**How to get it:** Never crafted. Where it comes from: The Warden's Threshold, retrievable in Grimoire after Tempered; study with active Circle X.
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trial_key.png) Trial Key
 
@@ -260,7 +271,7 @@ A hook of water snags each target and reels it in to your feet in three tugs (a 
 
 Opens a fight: +60% power against targets at full health. One per effect.
 
-**How to get it:** Found only, never crafted: Trial vaults; Ominous vaults.
+**How to get it:** Never crafted. Where it comes from: Trial vaults; Ominous vaults.
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
@@ -271,9 +282,9 @@ Opens a fight: +60% power against targets at full health. One per effect.
 
 You charge like a hoglin, up to 8 blocks the way you look, tossing everything in your path into the air: 3 damage, and 0.8 more for every block you ran up (9 at most).
 
-**How to get it:** Found only, never crafted: Bastions.
+**How to get it:** Never crafted. Where it comes from: Bastions.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/undertow.png) Undertow
 
@@ -282,9 +293,9 @@ You charge like a hoglin, up to 8 blocks the way you look, tossing everything in
 
 Drags each target down: Slowness III for 3 seconds and soaked. Out of the water it hauls the target toward the nearest water within 6 blocks (with none near, the ground turns to slurry for 3 damage); in water it's pulled under and takes 5.
 
-**How to get it:** Found only, never crafted: Shipwrecks; Runebound Adepts (8%).
+**How to get it:** Never crafted. Where it comes from: Shipwrecks; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/vinelash.png) Vinelash
 
@@ -293,9 +304,9 @@ Drags each target down: Slowness III for 3 seconds and soaked. Out of the water 
 
 A thorned vine lashes each target: 5 damage, and it's yanked 4 blocks toward you and tripped (Slowness II for 2 seconds).
 
-**How to get it:** Found only, never crafted: Jungle temples; Runebound Adepts (8%).
+**How to get it:** Never crafted. Where it comes from: Jungle temples; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/warcry.png) Warcry
 
@@ -304,9 +315,9 @@ A thorned vine lashes each target: 5 damage, and it's yanked 4 blocks toward you
 
 A war horn sounds: you and your allies within 8 blocks of the target gain Strength I and Speed I for 12 seconds, and each kill one of you makes meanwhile heals that one for 1.
 
-**How to get it:** Found only, never crafted: Pillager outposts; Runebound Adepts (8%).
+**How to get it:** Never crafted. Where it comes from: Pillager outposts; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/warp_step.png) Warp Step
 
@@ -315,9 +326,9 @@ A war horn sounds: you and your allies within 8 blocks of the target gain Streng
 
 Steps you to where the spell landed (up to 24 blocks). 3 seconds later you're pulled back, unless you're sneaking.
 
-**How to get it:** Found only, never crafted: Attuned in a warped forest.
+**How to get it:** Never crafted. Where it comes from: Attuned in a warped forest.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ashen_veil.png) Ashen Veil
 
@@ -326,9 +337,9 @@ Steps you to where the spell landed (up to 24 blocks). 3 seconds later you're pu
 
 Wreathes the target in ash for 10 seconds: fire can't hurt it, and whatever strikes it up close is set alight for 4 seconds and blinded by the ash for a second.
 
-**How to get it:** Found only, never crafted: The Ember Sanctum.
+**How to get it:** Never crafted. Where it comes from: The Ember Sanctum.
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/basalt_surge.png) Basalt Surge
 
@@ -337,9 +348,20 @@ Wreathes the target in ash for 10 seconds: fire can't hurt it, and whatever stri
 
 Basalt columns burst up in a line from you to the point: 7 damage and a toss into the air for everything along it.
 
-**How to get it:** Found only, never crafted: Attuned in the basalt deltas.
+**How to get it:** Never crafted. Where it comes from: Attuned in the basalt deltas.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/conduit.png) Conduit
+
+
+*Tier III · Storm · Moves you · 19.28 mana · needs an Amethyst Cord or better*
+
+Notes on a Grounded Storm teach active Circle XVIII: plant a rod on visible floor within 20 blocks for 20 seconds, then press again to spark for 0.4 seconds and arrive on it. Damage, a blocked line or a hostile beside the rod stops you. 32 mana once, 15-second shared rest. Pillar then Conduit only.
+
+**How to get it:** Never crafted. Where it comes from: Notes on a Grounded Storm, retrievable in Grimoire after Grounded; study with active Circle XVIII.
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/constellation.png) Constellation
 
@@ -348,7 +370,7 @@ Basalt columns burst up in a line from you to the point: 7 damage and a toss int
 
 Joins up to 5 enemies within 12 blocks of you in a constellation of light and strikes them all at once.
 
-**How to get it:** Found only, never crafted: The Astral Observatory.
+**How to get it:** Never crafted. Where it comes from: The Astral Observatory.
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -359,9 +381,9 @@ Joins up to 5 enemies within 12 blocks of you in a constellation of light and st
 
 A drowning word: for 5 seconds the target's lungs fill with water (it loses its air, takes 2 damage a second and can't cast), and it's soaked.
 
-**How to get it:** Found only, never crafted: The Drowned Scriptorium.
+**How to get it:** Never crafted. Where it comes from: The Drowned Scriptorium.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/eclipse.png) Eclipse
 
@@ -370,9 +392,9 @@ A drowning word: for 5 seconds the target's lungs fill with water (it loses its 
 
 A dark disc eclipses the point for 5 seconds: enemies beneath it (4 blocks) are blinded, take 2 damage a second, and your spells hit them 20% harder. Under it the light counts as dim.
 
-**How to get it:** Found only, never crafted: The Astral Observatory.
+**How to get it:** Never crafted. Where it comes from: The Astral Observatory.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hoarfrost.png) Hoarfrost
 
@@ -381,9 +403,9 @@ A dark disc eclipses the point for 5 seconds: enemies beneath it (4 blocks) are 
 
 Rime creeps over each target for 3 seconds, slowing it more every second; then it freezes solid for 2 seconds and takes 6 damage, and the frost blooms: enemies within 2 blocks take 3 and are slowed. Cast again on a creeping target, it starts nothing new.
 
-**How to get it:** Found only, never crafted: Attuned among ice spikes.
+**How to get it:** Never crafted. Where it comes from: Attuned among ice spikes.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/if_outnumbered.png) If Outnumbered
 
@@ -392,7 +414,7 @@ Rime creeps over each target for 3 seconds, slowing it more every second; then i
 
 The rest fires only if 3 or more enemies are within 8 blocks of you.
 
-**How to get it:** Found only, never crafted: Woodland mansions.
+**How to get it:** Never crafted. Where it comes from: Woodland mansions.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kindled.png) Kindled
 
@@ -401,9 +423,20 @@ The rest fires only if 3 or more enemies are within 8 blocks of you.
 
 +30% power, and the effect sets what it hits alight for 4 seconds.
 
-**How to get it:** Found only, never crafted: The Ember Sanctum.
+**How to get it:** Never crafted. Where it comes from: The Ember Sanctum.
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lifeline.png) Lifeline
+
+
+*Tier III · Arcane · Helps you and your allies · 20.83 mana · needs an Amethyst Cord or better*
+
+The Thread Between Stars teaches active Circle XIV: thread one ally, pet or summon you can see within 16 blocks, then press again within 8 seconds to pull them to a safe spot beside you. A crouching ally refuses. 28 mana once, 10-second shared rest. Beam then Lifeline only.
+
+**How to get it:** Never crafted. Where it comes from: The Thread Between Stars, retrievable in Grimoire after Starbreaker; study with active Circle XIV.
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/manatide.png) Manatide
 
@@ -412,9 +445,9 @@ The rest fires only if 3 or more enemies are within 8 blocks of you.
 
 Drinks in the storm: for 10 seconds, every spell you and your allies hit cast gives back a quarter of its mana (30 at most, however extended). Each player can drink only once a minute.
 
-**How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
+**How to get it:** Never crafted. Where it comes from: Mana storms (a surge after 10 casts).
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/resonant_shriek.png) Resonant Shriek
 
@@ -423,9 +456,9 @@ Drinks in the storm: for 10 seconds, every spell you and your allies hit cast gi
 
 A sculk shriek: 8 damage that ignores armour, a stagger, and Darkness for 6 seconds. A second later it echoes for half as much.
 
-**How to get it:** Found only, never crafted: Ancient cities.
+**How to get it:** Never crafted. Where it comes from: Ancient cities.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/riftcall.png) Riftcall
 
@@ -434,9 +467,9 @@ A sculk shriek: 8 damage that ignores armour, a stagger, and Darkness for 6 seco
 
 Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6. It gapes wider for every creature it holds (up to 5): half a block of reach and 1 more damage each.
 
-**How to get it:** Found only, never crafted: Rift sieges.
+**How to get it:** Never crafted. Where it comes from: Rift sieges.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sandstorm.png) Sandstorm
 
@@ -445,9 +478,9 @@ Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward
 
 A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks takes 2 damage a second, can't see and is slowed.
 
-**How to get it:** Found only, never crafted: Desert pyramids.
+**How to get it:** Never crafted. Where it comes from: Desert pyramids.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shulkershell.png) Shulkershell
 
@@ -456,9 +489,9 @@ A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks tak
 
 Shuts the target in a shulker's shell for 4 seconds: 80% less damage and no knockback, but it can't move. When it opens, what it turned aside leaves as up to 3 bullets that seek the nearest enemies (6 damage each at most, and they float), and enemies within 3 blocks float up for 2 seconds.
 
-**How to get it:** Found only, never crafted: End cities.
+**How to get it:** Never crafted. Where it comes from: End cities.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soulfire.png) Soulfire
 
@@ -467,9 +500,9 @@ Shuts the target in a shulker's shell for 4 seconds: 80% less damage and no knoc
 
 Blue soul flames: 3 fire damage a second for 5 seconds that water can't dull and the fire-proof can't shrug off, and the damage they deal gives you back a little mana (up to 5 a cast).
 
-**How to get it:** Found only, never crafted: Attuned in a soul sand valley.
+**How to get it:** Never crafted. Where it comes from: Attuned in a soul sand valley.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starlight_tether.png) Starlight Tether
 
@@ -478,9 +511,9 @@ Blue soul flames: 3 fire damage a second for 5 seconds that water can't dull and
 
 Tethers each target to the point with a thread of starlight for 5 seconds: it's dragged back if it strays 3 blocks, taking 1 damage each time (once a second at most).
 
-**How to get it:** Found only, never crafted: Attuned on the End's outer islands.
+**How to get it:** Never crafted. Where it comes from: Attuned on the End's outer islands.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starshard.png) Starshard
 
@@ -489,9 +522,9 @@ Tethers each target to the point with a thread of starlight for 5 seconds: it's 
 
 A shard of the fallen star: 11 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks for 4.
 
-**How to get it:** Found only, never crafted: Fallen Star craters.
+**How to get it:** Never crafted. Where it comes from: Fallen Star craters.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/summit_wind.png) Summit Wind
 
@@ -500,9 +533,9 @@ A shard of the fallen star: 11 damage, then it splinters into 3 sparks that stri
 
 A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and away, holding them aloft so they glide down out of the fight (a fifth stronger above y=120). On Self it carries you 12 blocks up and lets you glide down.
 
-**How to get it:** Found only, never crafted: Attuned on a mountain peak.
+**How to get it:** Never crafted. Where it comes from: Attuned on a mountain peak.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sunscorch.png) Sunscorch
 
@@ -511,9 +544,9 @@ A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and a
 
 The noon sun, focused: 8 fire damage and alight for 5 seconds, and the target glows for 6. Under open sky by day it burns 50% hotter and blinds; bright light of its own counts as dusk (25% hotter).
 
-**How to get it:** Found only, never crafted: Attuned in the badlands.
+**How to get it:** Never crafted. Where it comes from: Attuned in the badlands.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidecall.png) Tidecall
 
@@ -522,9 +555,9 @@ The noon sun, focused: 8 fire damage and alight for 5 seconds, and the target gl
 
 The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle (as a Pull does) and leaving them soaked. A crowd it bunches takes 1 more for each neighbour (4 at most).
 
-**How to get it:** Found only, never crafted: Ocean monuments (Elder Guardians).
+**How to get it:** Never crafted. Where it comes from: Ocean monuments (Elder Guardians).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/unstable.png) Unstable
 
@@ -533,7 +566,7 @@ The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dra
 
 Rift-touched: the effect's power swings anywhere from 50% to 200% each time it lands.
 
-**How to get it:** Found only, never crafted: Rift sieges; the Riftcaller.
+**How to get it:** Never crafted. Where it comes from: Rift sieges; the Riftcaller.
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
@@ -544,7 +577,7 @@ Rift-touched: the effect's power swings anywhere from 50% to 200% each time it l
 
 A whirling vortex opens where you look for 3 seconds, dragging creatures within 5 blocks into its eye and striking everything in the eye twice a second.
 
-**How to get it:** Found only, never crafted: Ominous vaults.
+**How to get it:** Never crafted. Where it comes from: Ominous vaults.
 
 **Modifiers that work on it:** Extend, Widen, Focus
 
@@ -555,9 +588,38 @@ A whirling vortex opens where you look for 3 seconds, dragging creatures within 
 
 Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks takes 3 fire damage a second. It can't be lit again until 24 seconds after it goes out.
 
-**How to get it:** Found only, never crafted: the Cinder Warden.
+**How to get it:** Never crafted. Where it comes from: the Cinder Warden.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/excise.png) Excise
+
+
+*Tier IV · Life · Harms enemies · 27.5 mana · needs an Echo Cord*
+
+Rootbound study teaches active Circle XVI to cut one visible hostile native Zone core within 12 blocks. Hold Cast for 16 ticks; 36 base mana once, 12-second shared rest and 12-tick recovery. Only Beam then Excise. Damage, broken sight or more than one block of movement cancels without refund. Existing poison, fire and sibling fields survive.
+
+**How to get it:** Never crafted. Where it comes from: The Root That Outlived Its Gardener, retrievable in Grimoire after Heartwood; study with active Circle XVI.
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/relay.png) Relay
+
+
+*Tier IV · 24 mana · needs an Echo Cord*
+
+An Archive lesson for active Circle VIII and an Echo Cord: place a visible focus within 8 blocks, then press cast again within 4 seconds to release one aimed ray. Relay then Harm, Frost or Shock only; 90% normal strength, 16 blocks total path, 8-second shared rest. No modifiers, links, Knots, woven runes or storage.
+
+**How to get it:** Never crafted. Where it comes from: The Margin Between Places, at an inactive Archive Lectern after Circle VIII and the Archivist.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reweave.png) Reweave
+
+
+*Tier IV · 32 mana · needs an Echo Cord*
+
+The Ebb Ledger teaches active Circle XII to rewrite one paid Harm field once. Place a radius-2 disc within 8 blocks; its four half-Harm beats remain at 0.4, 1.4, 2.4 and 3.4 seconds, expiring at 4 seconds. A fresh cast press fixes a 7 by 1.25 block lane after a silent 0.4-second warning. Forty base mana once, eight-second shared rest. Reweave then Harm only; no modifiers, links, composites or storage.
+
+**How to get it:** Never crafted. Where it comes from: Ebb Ledger, retrievable in the Grimoire after Low Tide; study with active Circle XII.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starmaw.png) Starmaw
 
@@ -566,9 +628,9 @@ Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every ene
 
 Devours the light: 14 damage, and it swallows each of the target's good effects and wards (Foresight, Riposte, Reflect, Reversal, Infinity, Anchor) for 4 more damage apiece, and its absorption for 1 per heart.
 
-**How to get it:** Found only, never crafted: the Star Eater.
+**How to get it:** Never crafted. Where it comes from: the Star Eater.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidewrit.png) Tidewrit
 
@@ -577,6 +639,6 @@ Devours the light: 14 damage, and it swallows each of the target's good effects 
 
 Writes the tide: a 7-wide wall of water rolls from you through the point, 10 damage to everything in it, sweeping it about 11 blocks on, soaked.
 
-**How to get it:** Found only, never crafted: the Tide Scribe.
+**How to get it:** Never crafted. Where it comes from: the Tide Scribe.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

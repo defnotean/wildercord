@@ -1,15 +1,19 @@
 package dev.wildercord.wildlife;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.BreedGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -23,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -33,8 +38,9 @@ import org.jspecify.annotations.Nullable;
  * berries raise a leveret.
  */
 public class Rimehare extends Animal {
-	/** Ticks until its next bound may start. */
-	private int boundCooldown;
+	private final RimehareBoundCooldown boundCooldown = new RimehareBoundCooldown();
+	/** A grounded move-control tick must orient this bound before travel starts. */
+	private boolean groundedMove;
 	/** Client: in the air, and sitting up on alert, eased (this tick's and last tick's). */
 	public float air, airO, alert, alertO;
 	/** Client: the tick it last landed from a bound, and the last landing its frost prints were drawn for. */
@@ -43,6 +49,7 @@ public class Rimehare extends Animal {
 
 	public Rimehare(EntityType<? extends Rimehare> type, Level level) {
 		super(type, level);
+		moveControl = new BoundMoveControl(this);
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -78,6 +85,8 @@ public class Rimehare extends Animal {
 
 	@Override
 	public void aiStep() {
+		boolean groundedBeforeTravel = onGround();
+		groundedMove = false;
 		super.aiStep();
 		if (level().isClientSide()) {
 			airO = air;
@@ -94,17 +103,86 @@ public class Rimehare extends Animal {
 			boolean still = getDeltaMovement().horizontalDistanceSqr() < 0.001;
 			alert = WildlifeRules.approach(alert, near != null && !near.isSpectator() && still ? 1 : 0, 0.12F);
 		}
-		if (!level().isClientSide()) {
-			if (boundCooldown > 0) {
-				boundCooldown--;
-			}
-			// It doesn't walk, it bounds: whenever it's going somewhere and its feet are down, it springs.
-			boolean going = getNavigation().isInProgress() || getDeltaMovement().horizontalDistanceSqr() > 0.004;
-			if (onGround() && going && boundCooldown == 0 && !isInWater()) {
+		if (!level().isClientSide() && !isNoAi() && !isInWater()) {
+			// Air time no longer spends the landing recovery. Ground navigation needs real ticks to
+			// advance its waypoint and turn before the next takeoff, including after a long fall.
+			boolean recovered = boundCooldown.tick(groundedBeforeTravel, onGround());
+			var navigation = getNavigation();
+			// Navigation follows before travel. Let it consume a final waypoint reached by this ground
+			// step next tick, instead of launching a new bound after the route has effectively ended.
+			if (recovered && groundedMove && navigation.isInProgress() && getSpeed() > 0
+				&& getDeltaMovement().y <= 0 && !RimehareBoundArrival.isAtFinalWaypoint(navigation.getPath(),
+					getX(), getY(), getZ(), navigation.getMaxDistanceToWaypoint(), navigation.getMaxVerticalDistanceToWaypoint())) {
 				jumpFromGround();
-				boundCooldown = 3 + random.nextInt(4);
+				boundCooldown.launched(3 + random.nextInt(4));
 			}
 		}
+	}
+
+	/** Keep vanilla path following and obstacle jumps, but never accelerate through an unfinished ground turn. */
+	private static final class BoundMoveControl extends MoveControl<Rimehare> {
+		private BoundMoveControl(Rimehare hare) {
+			super(hare);
+		}
+
+		@Override
+		public void tick() {
+			if (mob.onGround() && !mob.isInWater() && !mob.isNoAi() && operation == Operation.MOVE_TO) {
+				double dx = wantedX - mob.getX(), dz = wantedZ - mob.getZ();
+				float heading = (float) (Mth.atan2(dz, dx) * (180 / Math.PI)) - 90;
+				if (dx * dx + dz * dz > MIN_SPEED_SQR && Math.abs(Mth.wrapDegrees(heading - mob.getYRot())) > MAX_TURN) {
+					mob.setYRot(rotlerp(mob.getYRot(), heading, MAX_TURN));
+					mob.setSpeed(0);
+					mob.setZza(0);
+					mob.setXxa(0);
+					return;
+				}
+				if (mob.canCoastToFinalWaypoint(wantedY)) {
+					// Existing momentum can already settle at the native endpoint. Consume this input
+					// without changing speed or velocity; navigation and real collision still run.
+					operation = Operation.WAIT;
+					mob.setZza(0);
+					mob.setXxa(0);
+					return;
+				}
+				double requestedSpeed = speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
+				if (mob.boundCooldown.shouldBrake(mob.getDeltaMovement().horizontalDistance(), requestedSpeed)) {
+					operation = Operation.WAIT;
+					// Shed excess momentum during recovery before a full-speed input could skip a
+					// waypoint cell. Slower steps keep their requested movement input.
+					mob.setSpeed(0);
+					mob.setZza(0);
+					mob.setXxa(0);
+					return;
+				}
+				mob.groundedMove = true;
+			}
+			// This also retains the native JUMPING operation for steps, and FloatGoal in water.
+			super.tick();
+		}
+	}
+
+	private boolean canCoastToFinalWaypoint(double wantedY) {
+		var navigation = getNavigation();
+		var path = navigation.getPath();
+		if (path == null || path.isDone() || path.getNextNodeIndex() != path.getNodeCount() - 1
+			|| !onGround() || isInLiquid() || isNoAi() || !Double.isFinite(getDeltaMovement().y)
+			|| !Double.isFinite(wantedY) || getDeltaMovement().y > 0 || wantedY > getY()
+			|| shouldDiscardFriction() || onClimbable() || isPassenger() || isFallFlying() || isInPowderSnow
+			|| hasEffect(MobEffects.LEVITATION) || stuckSpeedMultiplier.lengthSqr() > 0 || getBlockSpeedFactor() != 1F) return false;
+		BlockPos feet = blockPosition();
+		BlockState feetState = level().getBlockState(feet);
+		var collision = feetState.getCollisionShape(level(), feet);
+		// Preserve both native obstacle-jump triggers, including a shape enclosing the feet.
+		if (!collision.isEmpty() && getY() < feet.getY() + collision.max(Direction.Axis.Y)) return false;
+		BlockState support = level().getBlockState(getBlockPosBelowThatAffectsMyMovement());
+		// Slime's step callback adds damping beyond its friction coefficient.
+		if (feetState.is(Blocks.SLIME_BLOCK) || support.is(Blocks.SLIME_BLOCK)) return false;
+		float drag = RimehareBoundArrival.groundDrag(support.getBlock().getFriction(),
+			getAttributeValue(Attributes.FRICTION_MODIFIER), getAttributeValue(Attributes.AIR_DRAG_MODIFIER));
+		return RimehareBoundArrival.canCoastToFinalWaypoint(path, getX(), getY(), getZ(),
+			getDeltaMovement().x, getDeltaMovement().z, navigation.getMaxDistanceToWaypoint(),
+			navigation.getMaxVerticalDistanceToWaypoint(), drag);
 	}
 
 	/** Low, quick bounds rather than leaps. */

@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:sites/mine_hillside_mine",
+  "criteria": {
+    "mine_prospector_camp": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:mine_prospector_camp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:gold_nugget"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.mine_prospector_camp.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.mine_prospector_camp.description"
+    }
+  },
+  "requirements": [
+    [
+      "mine_prospector_camp"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

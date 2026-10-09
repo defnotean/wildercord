@@ -31,6 +31,7 @@ public final class WetlandGardenTest implements FabricClientGameTest {
   try(var w=c.worldBuilder().create()) {
    c.waitTicks(30);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("gamerule random_tick_speed 0");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
    w.getServer().runOnServer(s -> {
+    dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.WetlandGardenTest\",\"seed\":\""+s.overworld().getSeed()+"\"}");
     var l=s.overworld();for(int x=-20;x<=20;x++)for(int z=-15;z<=15;z++) {l.setBlock(new BlockPos(x,100,z),Blocks.DIRT.defaultBlockState(),2);l.setBlock(new BlockPos(x,101,z),x>=1&&x<=6?Blocks.WATER.defaultBlockState():Blocks.GRASS_BLOCK.defaultBlockState(),2);l.setBlock(new BlockPos(x,102,z),Blocks.AIR.defaultBlockState(),2);}
     p(s).setGameMode(GameType.CREATIVE);aim(s,new Vec3(.5,102.7,.5),3);
     l.setBlock(ROOT,WetlandGarden.REED.defaultBlockState(),2);

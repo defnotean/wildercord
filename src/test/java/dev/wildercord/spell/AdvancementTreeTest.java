@@ -62,6 +62,18 @@ class AdvancementTreeTest {
 	}
 
 	@Test
+	void everyCircleHasItsAdvancementAndFormationTitle() {
+		for (int n = 1; n <= Circles.MAX; n++) {
+			String id = "wildercord:heart/circle_" + n;
+			assertTrue(tree.containsKey(id), id);
+			assertTrue(lang.has("title.wildercord.circle." + n), "formation title " + n);
+			assertEquals(n, criteria(tree.get(id)).getFirst().getAsJsonObject("conditions").get("level").getAsInt());
+			if (n > 1) assertEquals("wildercord:heart/circle_" + (n - 1), tree.get(id).get("parent").getAsString());
+		}
+		assertTrue(lang.get("screen.wildercord.heart.complete").getAsString().contains("%s"));
+	}
+
+	@Test
 	void everyFeatHasAnAdvancement() {
 		Set<String> granted = new HashSet<>();
 		for (JsonObject advancement : tree.values()) {

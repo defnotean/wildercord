@@ -562,3 +562,17 @@ The native client gate never completed within a single 90-minute CI job; it now 
 ordered shards. A hosted run of all four shards on the release commit is required before tagging.
 Public upload and server deployment still require an explicit request. The broad living-world goal
 remains active; no new content count is claimed.
+
+## 0.11.0 release preparation: buildings to explore (2026-10-09)
+
+Version 0.11.0-alpha adds 48 sites in six families under one `wildercord:site` structure type:
+farmsteads, Master halls, roadside places, water places, mines and forges, and wild places in
+every dimension. Each family has eight sites, its own loot tables, advancements, wiki page, JUnit
+data test and native client suite that builds each site chunk by chunk in every facing. Sites
+appear only in newly generated chunks. Old worlds use the bounded `/wildercord-upgrade` adapters.
+
+Known open items:
+- Natural generation frequency has been sampled for only some families.
+- Two sites from different sets can rarely overlap.
+- The lore journal is not data-driven, so sites record visits but do not add new lore pages.
+- The full native gate grew to 341 classes in four planned shards (86/86/85/84).

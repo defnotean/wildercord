@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "package": "dev.wildercord.gametest.perf.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": ["PerfServerSendMixin", "PerfFakeSendMixin"],
+  "client": ["PerfGuiCaptureMixin"],
+  "injectors": {"defaultRequire": 1}
+}

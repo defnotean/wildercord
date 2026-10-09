@@ -56,5 +56,11 @@ final class WindFeels {
 		wind("deflect", 0.95, GUST, "wind_deflect", 0.3F, 0.9F).register();
 		wind("zephyr", 1.05, 0xFFE6A8, "wind_feather", 0.3F, 0.9F).register();
 		wind("prune", 0.7, GUST, "wind_slash", 0.3F, 1.4F).register();
+		// ---- fx-explore pack
+		Signature.of("spawn_bearing").accent(SKY).sound(Phase.CUE, "wind_glyph", 0.35F, 1.0F).register();
+		Signature.of("home_bearing").accent(0xFFE6C8).sound(Phase.CUE, "wind_glyph", 0.35F, 0.9F).register();
+		Signature.of("village_sense").accent(GUST).sound(Phase.CUE, "wind_eddy", 0.35F, 1.1F).register();
+		Signature.of("folk_call").accent(SAND).sound(Phase.CUE, "wind_feather", 0.3F, 1.2F).register();
+		Signature.of("snuff_out").accent(HEAVY).sound(Phase.CUE, "wind_muffle", 0.35F, 1.0F).register();
 	}
 }

@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:sites/mine_hillside_mine",
+  "criteria": {
+    "mine_miners_rest": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:mine_miners_rest"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:lantern"
+    },
+    "title": {
+      "translate": "advancements.wildercord.sites.mine_miners_rest.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.sites.mine_miners_rest.description"
+    }
+  },
+  "requirements": [
+    [
+      "mine_miners_rest"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

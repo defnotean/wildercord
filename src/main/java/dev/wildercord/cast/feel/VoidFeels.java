@@ -62,5 +62,29 @@ final class VoidFeels {
 		rune("sonic_boom", 1.0F, 1.2).register();
 		rune("starmaw", 0.55F, 1.2).register();
 		rune("wither", 0.75F, 1.1).register();
+		// ---- fx-passive pack: the hearth runes (all elements; void's first, so every signature table gets them).
+		dev.wildercord.cast.HearthFeels.register();
+		// ---- fx-mine pack: the delving pack's void runes (DelveEffects), on the void cue.
+		Signature.of("chestsort").accent(0xE0B0FF).sound(Phase.CUE, "void_cue", 0.6F, 1.12F).register();
+		Signature.of("stow").accent(0xC090F0).sound(Phase.CUE, "void_cue", 0.6F, 1.0F).register();
+		Signature.of("restock").accent(0xD0A0FF).sound(Phase.CUE, "void_cue", 0.6F, 1.12F).register();
+		Signature.of("unburden").accent(0xB080E0).sound(Phase.CUE, "void_cue", 0.6F, 0.84F).register();
+		Signature.of("lodepull").accent(0x9A9AA0).sound(Phase.CUE, "void_cue", 0.6F, 1.0F).register();
+		Signature.of("delvemark").accent(0xB45AF0).sound(Phase.CUE, "void_cue", 0.6F, 0.84F).register();
+		Signature.of("packtidy").accent(0xE0C0FF).sound(Phase.CUE, "void_cue", 0.6F, 1.26F).register();
+		// ---- fx-explore pack
+		rune("grave_bearing", 0.75F, 0.8).register();
+		rune("portal_reckoning", 1.1F, 0.75).register();
+		rune("stronghold_compass", 0.6F, 0.9).register();
+		rune("spire_sense", 1.25F, 0.9).register();
+		rune("spawner_sense", 0.9F, 0.85).register();
+		rune("frame_veil", 1.35F, 0.75).register();
+		rune("void_step", 0.7F, 0.9).accent(0xE8E0B0).register();
+		// ---- fx-support pack: its void runes (guards and harmless holds), read small.
+		rune("hexguard", 1.15F, 0.85).register();
+		rune("lure", 1.3F, 0.85).register();
+		rune("stillbind", 0.75F, 0.9).register();
+		rune("hobble", 0.85F, 0.8).register();
+		rune("spook", 0.65F, 0.85).register();
 	}
 }

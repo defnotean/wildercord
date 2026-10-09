@@ -1180,6 +1180,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			player.setAttached(WildercordAttachments.INNATE, "");
 			player.setAttached(WildercordAttachments.CIRCLES, 0);
+			player.setAttached(WildercordAttachments.CONDENSED, 600);
+			Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));
 			dev.wildercord.cast.HeartCircles.form(player);
 		});
 		context.waitTicks(70);
@@ -1291,7 +1293,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 
 	private static void archive(ClientGameTestContext context, TestSingleplayerContext world) {
 		// Go there first: /place only builds in loaded chunks.
-		BlockPos origin = world.getServer().computeOnServer(server -> {
+		ArchivePlacementProbe.Session observation = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.getAbilities().flying = true;
 			player.onUpdateAbilities();
@@ -1310,49 +1312,53 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			}
 			int y = level.getChunk(to).getHeight(Heightmap.Types.MOTION_BLOCKING, to.getX() & 15, to.getZ() & 15);
 			place(player, new Vec3(to.getX() + 0.5, y + 30, to.getZ() + 0.5), 0, 60);
-			return new BlockPos(to.getX(), y, to.getZ());
+			return ArchivePlacementProbe.begin(level, new BlockPos(to.getX(), y, to.getZ()));
 		});
-		context.waitTicks(100);
-		world.getServer().runCommand("place structure wildercord:archive " + origin.getX() + " " + origin.getY() + " " + origin.getZ());
-		context.waitTicks(20);
-		// Over the mouth of the stairway: its highest step.
-		world.getServer().runOnServer(server -> {
-			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
-			BlockPos mouth = null;
-			for (BlockPos pos : BlockPos.betweenClosed(origin.offset(-100, -30, -100), origin.offset(100, 12, 100))) {
-				if (level.isLoaded(pos) && level.getBlockState(pos).is(net.minecraft.world.level.block.Blocks.DEEPSLATE_BRICK_STAIRS)
-						&& (mouth == null || pos.getY() > mouth.getY())) {
-					mouth = pos.immutable();
+		BlockPos origin = observation.origin();
+		BlockPos lectern;
+		try (observation) {
+			context.waitTicks(100);
+			world.getServer().runOnServer(observation::runCommand);
+			context.waitTicks(20);
+			// Over the mouth of the stairway: its highest step.
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
+				ServerLevel level = player.level();
+				BlockPos mouth = null;
+				for (BlockPos pos : BlockPos.betweenClosed(origin.offset(-100, -30, -100), origin.offset(100, 12, 100))) {
+					if (level.isLoaded(pos) && level.getBlockState(pos).is(net.minecraft.world.level.block.Blocks.DEEPSLATE_BRICK_STAIRS)
+							&& (mouth == null || pos.getY() > mouth.getY())) {
+						mouth = pos.immutable();
+					}
 				}
-			}
-			if (mouth != null) {
-				Vec3 look = Vec3.atCenterOf(mouth);
-				Vec3 eye = look.add(13, 15, -13);
-				Vec3 d = look.subtract(eye);
-				float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
-				float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
-				place(player, eye.subtract(0, player.getEyeHeight(), 0), yaw, pitch);
-			}
-		});
-		context.waitTicks(40);
-		shot(context, "archive_from_above");
-		// Find its heart: the lectern.
-		BlockPos lectern = world.getServer().computeOnServer(server -> {
-			ServerLevel level = player(server).level();
-			for (int dx = -100; dx <= 100; dx++) {
-				for (int dz = -100; dz <= 100; dz++) {
-					for (int y = level.getMinY() + 1; y < origin.getY() + 10; y++) {
-						BlockPos pos = new BlockPos(origin.getX() + dx, y, origin.getZ() + dz);
-						if (level.isLoaded(pos) && level.getBlockState(pos).is(WildercordBlocks.ARCHIVE_LECTERN)) {
-							return pos;
+				if (mouth != null) {
+					Vec3 look = Vec3.atCenterOf(mouth);
+					Vec3 eye = look.add(13, 15, -13);
+					Vec3 d = look.subtract(eye);
+					float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
+					float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
+					place(player, eye.subtract(0, player.getEyeHeight(), 0), yaw, pitch);
+				}
+			});
+			context.waitTicks(40);
+			shot(context, "archive_from_above");
+			// Find its heart: the lectern.
+			lectern = world.getServer().computeOnServer(server -> {
+				ServerLevel level = player(server).level();
+				for (int dx = -100; dx <= 100; dx++) {
+					for (int dz = -100; dz <= 100; dz++) {
+						for (int y = level.getMinY() + 1; y < origin.getY() + 10; y++) {
+							BlockPos pos = new BlockPos(origin.getX() + dx, y, origin.getZ() + dz);
+							if (level.isLoaded(pos) && level.getBlockState(pos).is(WildercordBlocks.ARCHIVE_LECTERN)) {
+								return observation.scanned(level, pos);
+							}
 						}
 					}
 				}
-			}
-			return null;
-		});
-		check(lectern != null, "the Archive should generate, with its lectern");
+				return observation.scanned(level, null);
+			});
+			check(lectern != null, "the Archive should generate, with its lectern");
+		}
 		// All three seal doors are there (the first two were once walled over by their rooms).
 		int seals = world.getServer().computeOnServer(server -> {
 			ServerLevel level = player(server).level();
