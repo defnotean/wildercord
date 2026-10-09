@@ -16,7 +16,7 @@ final class MethodsBStyleAnimation {
 		pose(j(.10F, -.46F, .08F), j(-.04F, .16F, 0), j(-1.48F, -.82F, -.16F), j(-.92F, -.12F, .22F),
 			j(-.40F, .08F, -.06F), j(.26F, -.06F, .06F), .24F, -.52F, h(-.30F, .04F, -.30F, -4, -40, 22)),
 		pose(j(.06F, -.36F, .05F), j(-.02F, .12F, 0), j(-1.44F, -.70F, -.12F), j(-.98F, -.16F, .18F),
-			j(-.30F, .06F, -.05F), j(.22F, -.05F, .05F), .18F, -.34F, h(-.26F, .06F, -.24F, -6, -34, 18)));
+			j(-.30F, .06F, -.05F), j(.22F, -.05F, .05F), .18F, -.34F, h(-.26F, .06F, -.24F, -36, -34, 18)));
 
 	// Resonant Chord: both hands strike the blade flat across the chest, a wave pushed out ahead.
 	private static final Motion RESONANT_CHORD = new Motion(
@@ -39,25 +39,25 @@ final class MethodsBStyleAnimation {
 	// Reverb Step: a long low lunge, the blade trailing level behind the step.
 	private static final Motion REVERB_STEP = new Motion(
 		pose(j(.30F, .50F, -.10F), j(-.12F, -.22F, 0), j(-.95F, .90F, -.40F), j(-.40F, -.30F, -.70F),
-			j(-.70F, -.14F, -.10F), j(.50F, .14F, .10F), .75F, .40F, h(.20F, -.04F, .08F, 18, 50, -30)),
+			j(-.70F, -.14F, -.10F), j(.50F, .14F, .10F), .75F, .40F, h(.12F, .06F, .08F, -10, 40, -24)),
 		pose(j(.52F, -.30F, .08F), j(-.22F, .12F, 0), j(-1.55F, -.45F, -.20F), j(.05F, -.20F, -.60F),
-			j(-1.05F, .10F, -.10F), j(.72F, -.10F, .10F), 1.00F, -1.45F, h(-.20F, -.06F, -.52F, -40, -24, 14)),
+			j(-1.05F, .10F, -.10F), j(.72F, -.10F, .10F), 1.00F, -1.45F, h(-.28F, .04F, -.34F, -8, -38, 20)),
 		pose(j(.36F, -.36F, .06F), j(-.14F, .14F, 0), j(-1.40F, -.60F, -.18F), j(-.10F, -.18F, -.55F),
-			j(-.80F, .08F, -.08F), j(.56F, -.08F, .08F), .78F, -.95F, h(-.24F, -.04F, -.40F, -30, -32, 18)));
+			j(-.80F, .08F, -.08F), j(.56F, -.08F, .08F), .78F, -.95F, h(-.28F, .04F, -.34F, -8, -38, 20)));
 
 	// Grand Resonance: the blade raised high and brought down onto the ground point-first, rings going out.
 	private static final Motion GRAND_RESONANCE = new Motion(
 		pose(j(-.16F, .10F, -.02F), j(.08F, -.04F, 0), j(-2.85F, .30F, -.10F), j(-2.40F, -.30F, .10F),
 			j(-.38F, -.10F, -.10F), j(.34F, .10F, .10F), .36F, .22F, h(.04F, .42F, .14F, -120, 10, -4)),
 		pose(j(.60F, .06F, .02F), j(-.26F, -.02F, 0), j(-.70F, .05F, -.05F), j(-.80F, -.10F, .08F),
-			j(-.98F, -.10F, -.14F), j(.60F, .10F, .14F), 1.42F, -1.05F, h(.02F, .06F, -.36F, 96, 4, -2)),
+			j(-.98F, -.10F, -.14F), j(.60F, .10F, .14F), 1.42F, -1.05F, h(.02F, .08F, -.36F, 40, 4, -2)),
 		pose(j(.44F, .04F, .01F), j(-.18F, -.02F, 0), j(-.55F, .04F, -.04F), j(-.70F, -.08F, .06F),
-			j(-.74F, -.08F, -.10F), j(.46F, .08F, .10F), 1.10F, -.70F, h(.01F, .10F, -.22F, 86, 2, -1)));
+			j(-.74F, -.08F, -.10F), j(.46F, .08F, .10F), 1.10F, -.70F, h(.01F, .10F, -.22F, 36, 2, -1)));
 
 	// First Light: a bright upward flick from the low guard, the free hand opening beside it.
 	private static final Motion FIRST_LIGHT = new Motion(
 		pose(j(.20F, .36F, -.08F), j(-.08F, -.14F, 0), j(-.30F, .55F, .30F), j(-.50F, -.40F, -.20F),
-			j(-.50F, -.10F, -.08F), j(.34F, .10F, .08F), .66F, .12F, h(.14F, -.14F, .02F, 50, 30, -24)),
+			j(-.50F, -.10F, -.08F), j(.34F, .10F, .08F), .66F, .12F, h(.12F, .06F, .06F, -10, 30, -20)),
 		pose(j(-.12F, -.28F, .06F), j(.06F, .10F, 0), j(-2.40F, -.40F, -.30F), j(-1.30F, .30F, -.60F),
 			j(-.24F, .08F, -.05F), j(.18F, -.06F, .05F), .10F, -.40F, h(-.14F, .40F, -.24F, -100, -26, 20)),
 		pose(j(-.06F, -.20F, .04F), j(.03F, .08F, 0), j(-2.10F, -.30F, -.24F), j(-1.10F, .22F, -.50F),
@@ -66,7 +66,7 @@ final class MethodsBStyleAnimation {
 	// Sunrise Arc: a wide rising arc from the far hip to high over the lead shoulder.
 	private static final Motion SUNRISE_ARC = new Motion(
 		pose(j(.26F, .70F, -.16F), j(-.10F, -.30F, .04F), j(-.45F, 1.15F, .55F), j(-.70F, -.30F, -.45F),
-			j(-.62F, -.16F, -.10F), j(.42F, .16F, .10F), .82F, .16F, h(.24F, -.10F, .02F, 40, 58, -46)),
+			j(-.62F, -.16F, -.10F), j(.42F, .16F, .10F), .82F, .16F, h(.16F, .06F, .06F, -10, 48, -30)),
 		pose(j(-.08F, -.70F, .16F), j(.04F, .30F, -.04F), j(-2.55F, -1.05F, -.50F), j(-.60F, .30F, -.95F),
 			j(-.30F, .16F, -.08F), j(.22F, -.14F, .08F), .18F, -.62F, h(-.44F, .36F, -.10F, -86, -60, 46)),
 		pose(j(-.04F, -.80F, .12F), j(.02F, .34F, -.03F), j(-2.40F, -1.20F, -.40F), j(-.45F, .26F, -.85F),
@@ -129,7 +129,7 @@ final class MethodsBStyleAnimation {
 	// Serpent Slither: body almost flat to the ground, a weaving dash with the blade held low and level.
 	private static final Motion SERPENT_SLITHER = new Motion(
 		pose(j(.70F, .28F, -.20F), j(-.30F, -.12F, .06F), j(-.50F, .60F, -.70F), j(-.20F, -.20F, -.90F),
-			j(-.95F, -.10F, -.14F), j(.70F, .10F, .14F), 1.35F, .20F, h(.20F, -.26F, .06F, 12, 40, -70)),
+			j(-.95F, -.10F, -.14F), j(.70F, .10F, .14F), 1.35F, .20F, h(.14F, .04F, .06F, -8, 38, -36)),
 		pose(j(.82F, -.34F, .20F), j(-.36F, .16F, -.06F), j(-.70F, -.70F, -.55F), j(-.10F, .20F, -.80F),
 			j(-1.20F, .12F, -.14F), j(.86F, -.12F, .14F), 1.48F, -1.60F, h(-.26F, -.28F, -.40F, 8, -44, 66)),
 		pose(j(.66F, -.20F, .14F), j(-.28F, .10F, -.04F), j(-.66F, -.50F, -.50F), j(-.16F, .16F, -.72F),

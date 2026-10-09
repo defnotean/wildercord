@@ -359,9 +359,14 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 		int slot = ArtRules.art(style.art()).slot();
 		boolean second = slot == 1, fourth = slot == 3, finalArt = slot == 4;
 		boolean counter = slot == 2 && style.targets() == MastersStyleRules.TargetPolicy.EARNED_COUNTER;
-		check(slot == 0 || second || fourth || finalArt || counter, "The capture declares its supported input family");
+		boolean guardedCone = slot == 2 && style.targets() == MastersStyleRules.TargetPolicy.ACTIVE_CONE;
+		check(slot == 0 || second || fourth || finalArt || counter || guardedCone, "The capture declares its supported input family");
 		if (counter) {
 			captureEarnedCounterStyle(context, world, style, camera, view, leftHanded, cancel);
+			return;
+		}
+		if (guardedCone) {
+			captureGuardedConeStyle(context, world, style, camera, view, leftHanded, cancel);
 			return;
 		}
 		context.getInput().releaseKey(o -> o.keyShift);
@@ -528,6 +533,95 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			context.getInput().releaseKey(o -> o.keyShift);
 			context.runOnClient(mc -> mc.options.toggleCrouch().set(toggleCrouch));
 			world.getServer().runOnServer(server -> fixture.close());
+		}
+	}
+
+	/**
+	 * A third-slot cone art (Echo, Dawn, Venom) keeps the counter string, a swing after a perfect guard, but is no earned counter:
+	 * a real hostile blow lands inside the real Aura-key guard's perfect window, then an ordinary attack asks for the art.
+	 */
+	private static void captureGuardedConeStyle(ClientGameTestContext context, TestSingleplayerContext world,
+			MastersStyleRules.Style style, CameraType camera, String view, boolean leftHanded, boolean cancel) {
+		context.getInput().releaseKey(o -> o.keyShift);
+		rest(context, world, 105);
+		boolean toggleCrouch = context.computeOnClient(mc -> mc.options.toggleCrouch().get());
+		Mob[] target = new Mob[1];
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			prepare(player);
+			player.teleportTo(server.overworld(), .5, 100, .5, Set.<Relative>of(), 0, 8, false);
+			player.setDeltaMovement(Vec3.ZERO);
+			player.setAttached(AuraAttachments.AURA, new AuraAttachments.Data(ArtRules.art(style.art()).method(), 4, 1800, 100, 0));
+			player.setHealth(player.getMaxHealth());
+			Mob foe = EntityTypes.HUSK.create(player.level(), EntitySpawnReason.COMMAND);
+			check(foe != null, "Actual guarded style attacker exists");
+			foe.addTag("wildercord.rolled");
+			foe.setNoAi(true);
+			foe.setNoGravity(true);
+			foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);
+			foe.setHealth(200);
+			foe.snapTo(.5, 100, 2.1, 180, 0);
+			player.level().addFreshEntity(foe);
+			target[0] = foe;
+		});
+		try {
+			context.runOnClient(mc -> {
+				mc.options.toggleCrouch().set(false);
+				mc.options.setCameraType(CameraType.FIRST_PERSON);
+				mc.options.mainHand().set(leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT); mc.options.broadcastOptions();
+			});
+			context.waitTicks(15);
+			context.getInput().holdKey(o -> o.keyShift);
+			context.waitTicks(2);
+			context.getInput().pressKey(WildercordKeys.auraMapping());
+			for (int t = 0; t < 4 && !world.getServer().computeOnServer(server -> AuraGuard.perfectNow(server.getPlayerList().getPlayers().getFirst())); t++) {
+				context.waitTicks(1);
+			}
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				check(AuraGuard.perfectNow(player), "The real Aura-key guard is in its perfect window before the hostile blow");
+				target[0].doHurtTarget(player.level(), player);
+				check(AuraGuard.caught(player) != null, "Actual hostile melee lands in the perfect guard");
+				target[0].teleportTo(.5, 100, 2.1); target[0].setDeltaMovement(Vec3.ZERO);
+			});
+			context.waitFor(mc -> SwordString.Token.COUNTER.fits(SwordStringsClient.cueMarks(mc.level.getGameTime())), 8);
+			// Not an earned counter: like a player, let sneak go so the guard drops, then swing inside the counter window.
+			context.getInput().releaseKey(o -> o.keyShift);
+			for (int t = 0; t < 4 && world.getServer().computeOnServer(server -> AuraGuard.guarding(server.getPlayerList().getPlayers().getFirst())); t++) {
+				context.waitTicks(1);
+			}
+			check(context.computeOnClient(mc -> SwordString.Token.COUNTER.fits(SwordStringsClient.cueMarks(mc.level.getGameTime()))),
+				"The lowered guard still leaves the counter window open");
+			context.getInput().pressKey(o -> o.keyAttack);
+			context.runOnClient(mc -> mc.options.setCameraType(camera));
+			context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null
+				&& MastersArtsClient.timeline(mc.player).move() == style.animation(), 30);
+			String prefix = "masters_style_" + style.art() + "_" + view;
+			context.runOnClient(mc -> {
+				check(mc.player.getMainArm() == (leftHanded ? HumanoidArm.LEFT : HumanoidArm.RIGHT), "The guarded style uses the actual selected main hand");
+				if (leftHanded) { mc.player.setYRot(90); mc.player.setYHeadRot(90); mc.player.setXRot(camera.isFirstPerson() ? 75 : 12); }
+			});
+			if (cancel) {
+				world.getServer().runOnServer(server -> MastersArts.cancel(server.getPlayerList().getPlayers().getFirst()));
+				context.waitFor(mc -> MastersArtsClient.timeline(mc.player) == null, 20);
+				check(context.computeOnClient(mc -> MastersArtsClient.pose(mc.player, .5F).weight() == 0), "Cancelled authored body and hand poses clear together");
+				waitForCancelledNeutral(context, prefix);
+				shot(context, prefix + "_neutral");
+				return;
+			}
+			captureBeats(context, prefix);
+			world.getServer().runOnServer(server -> {
+				if (target[0] != null && !target[0].isRemoved()) target[0].discard();
+			});
+			context.waitTicks(30);
+			check(context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null), "Guarded style returns to vanilla after its real recovery");
+			shot(context, prefix + "_settled");
+		} finally {
+			context.getInput().releaseKey(o -> o.keyShift);
+			context.runOnClient(mc -> mc.options.toggleCrouch().set(toggleCrouch));
+			world.getServer().runOnServer(server -> {
+				if (target[0] != null && !target[0].isRemoved()) target[0].discard();
+			});
 		}
 	}
 

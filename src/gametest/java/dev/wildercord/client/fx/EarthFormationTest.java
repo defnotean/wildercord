@@ -39,7 +39,7 @@ public final class EarthFormationTest implements FabricClientGameTest {
     }}finally{buffer.release();}
    });
    var baseline=c.computeOnClient(mc -> snapshot(mc,"earth_formation_background"));c.waitFor(mc -> baseline.isDone());baseline.join();
-   var earth=Runes.all().stream().filter(r -> r.family()==RuneFamily.EFFECT && r.element().equals("earth")).map(r -> r.id()).sorted().toList();
+   var earth=EverydayRunes.combatIds("earth");
    check(earth.size()==33,"Reviewed earth roster changes require explicit expansion of this suite");
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL)) {
     c.runOnClient(mc -> MagicQuality.own=quality);
@@ -107,7 +107,7 @@ public final class EarthFormationTest implements FabricClientGameTest {
    "bonespur",dev.wildercord.content.MaterialOption.BLOOD,"thunderquake",dev.wildercord.content.MaterialOption.STORM,
    "mire",dev.wildercord.content.MaterialOption.WATER);
   for(var entry:ingredients.entrySet()){var styles=new HashSet<Integer>();EarthForms.prepare("wildercord:"+entry.getKey(),2,1,Vec3.ZERO,new Vec3(1,0,0),new Vec3(0,1,0),new Vec3(0,0,1),true,(option,at)->{if(option instanceof dev.wildercord.content.MaterialOption m)styles.add(m.style());});check(styles.contains(entry.getValue()),"Supporting materials remain in Minimal: "+entry.getKey());}
-  check(Runes.all().stream().filter(r->r.family()==RuneFamily.EFFECT && r.element().equals("earth")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(EarthForms.RUNES)),"Exact runtime earth roster includes fusions and innate");
+  check(EverydayRunes.combatPaths("earth").equals(new HashSet<>(EarthForms.RUNES)),"Exact runtime earth roster includes fusions and innate");
 
 
  }

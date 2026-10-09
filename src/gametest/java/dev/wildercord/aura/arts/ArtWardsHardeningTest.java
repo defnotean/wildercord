@@ -313,37 +313,49 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 			ReleasedArtOwner oldA = ReleasedArtOwner.capture(plan.player);
 			ArtWards.Hardened oldWard = grant(plan.player);
 			ArtWards.Mirror oldMirror = ArtWards.mirror(plan.player, oldA, 80);
-			ReleasedArtOwner[] middleB = {null}, freshA = {null}; ArtWards.Hardened[] freshWard = {null};
-			ArtWards.Mirror[] freshMirror = {null}; boolean[] returning = {false}; int[] late = {0};
+			ReleasedArtOwner[] middleB = {null}, freshA = {null}, followB = {null}; ArtWards.Hardened[] freshWard = {null};
+			ArtWards.Mirror[] freshMirror = {null}; int[] early = {0}, late = {0};
 			ServerLevel next = plan.level.getServer().getLevel(Level.NETHER);
 			earlyTransition = transition -> {
-				if (!returning[0]) {
+				early[0]++;
+				if (early[0] == 1) {
 					check(transition.origin() == plan.level && transition.destination() == next, "Outer native transition is A to B");
-					returning[0] = true;
 					if (captureIntermediate) middleB[0] = ReleasedArtOwner.capture(plan.player);
 					// The false case intentionally never captures or polls ANY receipt in B before returning to A.
 					check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0, false), "Early outer listener performs actual nested B to A transition");
-				} else {
+				} else if (early[0] == 2) {
 					check(transition.origin() == next && transition.destination() == plan.level, "Inner native transition returns B to A");
 					freshA[0] = ReleasedArtOwner.capture(plan.player); freshWard[0] = grant(plan.player);
 					freshMirror[0] = ArtWards.mirror(plan.player, freshA[0], 80);
+				} else {
+					// Vanilla then moves the outer teleport's spectators: it walks A's players for any whose camera is the
+					// mover, and the returned body is back in A watching itself, so it is carried to B a second time.
+					check(early[0] == 3 && transition.origin() == plan.level && transition.destination() == next, "Vanilla's spectator follow is one more real A to B transition");
+					followB[0] = ReleasedArtOwner.capture(plan.player);
 				}
 			};
 			lateTransition = transition -> {
 				late[0]++;
 				check(!oldA.valid() && !oldWard.active() && !oldMirror.active(), "Old A releases never revive after an unobserved B round trip");
-				check(freshA[0] != null && freshA[0].valid() && freshWard[0].active() && freshMirror[0].active(),
-					"A fresh inner-A generation survives both default and stale outer-A AFTER listeners");
+				if (late[0] <= 2) {
+					check(freshA[0] != null && freshA[0].valid() && freshWard[0].active() && freshMirror[0].active(),
+						"A fresh inner-A generation survives both default and stale outer-A AFTER listeners");
+				} else {
+					check(!freshA[0].valid() && !freshWard[0].active() && !freshMirror[0].active() && followB[0].valid(),
+						"The follow's real departure retires the inner-A generation and keeps its own");
+				}
 			};
 			plan.at(1, () -> {
 				check(plan.player.teleportTo(next, .5, 120, .5, Set.of(), 0, 0, false), "Native outer teleport dispatches the adversarial listener order");
-				check(plan.player.level() == plan.level && late[0] == 2, "Both nested and stale outer callbacks actually ran on the returned A body");
-				check(!oldA.valid() && freshA[0].valid() && freshWard[0].active(), "Actual assignment generation, not world equality, owns the surviving release");
+				check(plan.player.level() == next && early[0] == 3 && late[0] == 3, "Nested, stale outer and follow callbacks all actually ran");
+				check(!oldA.valid() && !freshA[0].valid() && followB[0].valid(), "Actual assignment generation, not world equality, owns the surviving release");
 				if (captureIntermediate) check(!middleB[0].valid(), "The captured intermediate B release is retired too");
 				earlyTransition = null; lateTransition = null;
 			});
 			plan.at(2, () -> {
-				check(!oldA.valid() && freshA[0].valid() && freshMirror[0].active(), "Already-released Mirror and delayed-owner validity keep the correct generation on the next native tick");
+				check(!oldA.valid() && !freshA[0].valid() && !freshMirror[0].active() && followB[0].valid(), "Already-released Mirror and delayed-owner validity keep the correct generation on the next native tick");
+				check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0, false), "Body returns to A");
+				check(!followB[0].valid(), "The return retires the follow's generation");
 			});
 		});
 	}

@@ -24,7 +24,7 @@ public final class FireFlightTest implements FabricClientGameTest {
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"fire_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
    check(FireFlights.RUNES.size()==29,"Explicit complete fire roster");
-   check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("fire")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(FireFlights.RUNES)),"Authored runtime fire roster matches");
+   check(EverydayRunes.combatPaths("fire").equals(new HashSet<>(FireFlights.RUNES)),"Authored runtime fire roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:FireFlights.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
     c.runOnClient(mc->{mc.particleEngine.clearParticles();MagicQuality.own=q;});

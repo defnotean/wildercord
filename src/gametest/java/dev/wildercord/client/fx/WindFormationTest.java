@@ -41,7 +41,7 @@ public final class WindFormationTest implements FabricClientGameTest {
     } finally {buffer.release();}
    });
    var baseline=c.computeOnClient(mc -> snapshot(mc,"wind_formation_background"));c.waitFor(mc -> baseline.isDone());baseline.join();
-   var wind=Runes.all().stream().filter(r -> r.family()==RuneFamily.EFFECT && r.element().equals("wind")).map(r -> r.id()).sorted().toList();
+   var wind=EverydayRunes.combatIds("wind");
    check(wind.size()==27,"Reviewed wind roster changes require explicit expansion of this suite");
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL)) {
     c.runOnClient(mc -> MagicQuality.own=quality);

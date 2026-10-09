@@ -632,7 +632,8 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 		check(price == 0, "awakened, the Final Art should cost nothing (" + price + ")");
 		PERFORMED.clear();
 		finalSwings(context, world);
-		context.waitTicks(6);
+		// Styled arts announce themselves on their active frame, after the authored windup.
+		context.waitTicks(dev.wildercord.aura.MastersStyleRules.of(EmberArts.SUNFALL).windup() + 2);
 		context.getInput().releaseKey(o -> o.keyShift);
 		check(PERFORMED.contains(EmberArts.SUNFALL), "the Final Art's string should play the Final Art awakened (" + PERFORMED + ")");
 		String after = on(world, player -> {

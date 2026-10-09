@@ -526,23 +526,25 @@ public final class CounterPeerRenderProbe {
     public static void itemDraw(ItemStackRenderState item,net.minecraft.client.resources.model.cuboid.ItemTransform transform,Matrix4fc local,
         ItemDisplayContext context,net.minecraft.client.resources.model.geometry.ItemQuads quads,Matrix4fc actual,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector){
         var s=rendering();if(s==null)return;AvatarRenderState a;Object model;Matrix4f entry;PoseStack entryStack;net.minecraft.client.renderer.SubmitNodeCollector entryCollector;
-        boolean remote=s.token.expected.view().equals("remote");
+        boolean remote=s.token.expected.view().equals("remote"),articulated=false;
         if(remote){var call=s.worldItem;if(call==null||call.item()!=item)return;a=call.avatar();model=call.model();entry=call.expected();entryStack=call.stack();entryCollector=call.collector();}
         else if(s.view!=null&&s.view.hand()==InteractionHand.MAIN_HAND){
             a=s.view.avatar();var source=s.sources.get(a);if(source==null||source.item()!=item)return;
             var views=s.views.values().stream().filter(v->v.avatar()==a).toList();if(views.size()!=1){s.token.reject("deep_draw_without_unique_view");return;}
-            var view=views.getFirst();model=view.model();entryStack=s.view.stack();entryCollector=s.view.collector();entry=CounterPeerRenderMath.sword(view.root(),CounterPeerRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
+            var view=views.getFirst();model=view.model();articulated=true;entryStack=s.view.stack();entryCollector=s.view.collector();entry=CounterPeerRenderMath.sword(view.root(),CounterPeerRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
         }else{var call=s.fallback;if(call==null||call.item!=item)return;a=call.avatar;model=call.renderer;entry=call.expectedItem;entryStack=call.stack;entryCollector=call.collector;}
         if(entryStack!=stack||entryCollector!=collector)s.token.reject("substituted_deep_draw_stack_or_collector");
-        var expectedContext=remote?(a.mainArm==HumanoidArm.LEFT?ItemDisplayContext.THIRD_PERSON_LEFT_HAND:ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
+        // The articulated viewmodel deliberately draws the body's resolved third-person item (ArticulatedCombat.orientItemAtSocket).
+        boolean third=remote||articulated;
+        var expectedContext=third?(a.mainArm==HumanoidArm.LEFT?ItemDisplayContext.THIRD_PERSON_LEFT_HAND:ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
             :(a.mainArm==HumanoidArm.LEFT?ItemDisplayContext.FIRST_PERSON_LEFT_HAND:ItemDisplayContext.FIRST_PERSON_RIGHT_HAND);
         if(context!=expectedContext||quads==null||quads.isEmpty())s.token.reject("wrong_or_empty_deep_item_draw");
         var rotation=List.of(transform.rotation().x(),transform.rotation().y(),transform.rotation().z());
         var translation=List.of(transform.translation().x(),transform.translation().y(),transform.translation().z());
         var scale=List.of(transform.scale().x(),transform.scale().y(),transform.scale().z());
-        var stockRotation=List.of(0F,context.leftHand()?90F:-90F,(context.leftHand()?-1:1)*(remote?55F:25F));
-        var stockTranslation=remote?List.of(0F,4F/16,.5F/16):List.of(1.13F/16,3.2F/16,1.13F/16);
-        float size=remote?.85F:.68F;
+        var stockRotation=List.of(0F,context.leftHand()?90F:-90F,(context.leftHand()?-1:1)*(third?55F:25F));
+        var stockTranslation=third?List.of(0F,4F/16,.5F/16):List.of(1.13F/16,3.2F/16,1.13F/16);
+        float size=third?.85F:.68F;
         if(!CounterPeerRenderMath.compare("stock_display_rotation",stockRotation,rotation).matched()
             ||!CounterPeerRenderMath.compare("stock_display_translation",stockTranslation,translation).matched()
             ||!CounterPeerRenderMath.compare("stock_display_scale",List.of(size,size,size),scale).matched()

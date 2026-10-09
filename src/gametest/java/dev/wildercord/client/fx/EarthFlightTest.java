@@ -28,7 +28,7 @@ public final class EarthFlightTest implements FabricClientGameTest {
     System.out.println("WILDERCORD_EARTH_FLIGHT_VIEW "+new com.google.gson.Gson().toJson(Map.of("phase","setup","incomingCameraType",previousCamera.name(),"cameraType",mc.options.getCameraType().name())));});
    var empty=c.computeOnClient(mc->snapshot(mc,"earth_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
    check(EarthForms.RUNES.size()==33,"Explicit complete earth roster");
-   check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("earth")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(EarthForms.RUNES)),"Authored runtime earth roster matches");
+   check(EverydayRunes.combatPaths("earth").equals(new HashSet<>(EarthForms.RUNES)),"Authored runtime earth roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:EarthForms.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
     c.runOnClient(mc->{mc.particleEngine.clearParticles();MagicQuality.own=q;});

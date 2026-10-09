@@ -28,7 +28,7 @@ public final class WindFlightTest implements FabricClientGameTest {
     System.out.println("WILDERCORD_WIND_FLIGHT_VIEW "+new com.google.gson.Gson().toJson(Map.of("phase","setup","incomingCameraType",previousCamera.name(),"cameraType",mc.options.getCameraType().name())));});
    var empty=c.computeOnClient(mc->snapshot(mc,"wind_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
    check(WindForms.RUNES.size()==27,"Explicit complete wind roster");
-   check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("wind")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(WindForms.RUNES)),"Authored runtime wind roster matches");
+   check(EverydayRunes.combatPaths("wind").equals(new HashSet<>(WindForms.RUNES)),"Authored runtime wind roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:WindForms.RUNES) {
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
     c.runOnClient(mc->{mc.particleEngine.clearParticles();MagicQuality.own=q;});
