@@ -70,7 +70,8 @@
         "FishingHookAccessor",
         "FxSupportLivingMixin",
         "FxSupportMobMixin",
-        "FxSupportExplosionMixin"
+        "FxSupportExplosionMixin",
+        "SignBlockEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
