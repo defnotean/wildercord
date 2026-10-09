@@ -200,13 +200,13 @@ public final class Fusions {
 
 	/** Whether a rune can go into a fusion: an effect with an element, and not an innate rune. */
 	public static boolean fusible(RuneDef rune) {
-        if (rune.is(ExciseRules.ID)) return false;
+        if (rune.is(ExciseRules.ID) || LessonPackRules.byRune(rune.id()) != null) return false;
 		return rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty() && !Runes.innate(rune)
 			&& (!WovenRunes.isWoven(rune) || !WovenRunes.contents(rune).isEmpty());
 	}
 	/** Exact weaving also supports innate magic; its heart ownership is checked when cast. */
 	public static boolean weavable(RuneDef rune) {
-        if (rune.is(ExciseRules.ID)) return false;
+        if (rune.is(ExciseRules.ID) || LessonPackRules.byRune(rune.id()) != null) return false;
 		return rune.family()==RuneFamily.EFFECT && !rune.element().isEmpty()
 			&& (!WovenRunes.isWoven(rune) || !WovenRunes.contents(rune).isEmpty());
 	}

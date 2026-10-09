@@ -10,7 +10,7 @@ permalink: /runes/
 <img src="{{ '/assets/images/rune-icons.png' | relative_url }}" alt="A grid of rune icons: round shapes, eight-sided gem effects, square modifiers and hexagonal links" class="shot">
 
 A **rune** is a small tablet you thread onto your Cord. Each one does one simple thing, and a spell is simply the
-runes in its sockets, read from left to right. There are **350** of them.
+runes in its sockets, read from left to right. There are **756** of them.
 
 ## The four families
 
@@ -44,11 +44,52 @@ Once learned, it's yours for good, and you can thread it into as many spells as 
 useful: trade it to a [Runesmith]({{ '/social/runesmith/' | relative_url }}), or rank it up at the
 [Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 
+## Finding runes: the Catalog
+
+There are a lot of runes. To find the one you need, open the **Rune Catalog** from your Cord screen: click
+**Catalog** at the right of the chips row, or press `Ctrl`+`B`.
+
+- **Search**: just type. It finds a rune by its name, element and category, and by the words of its text you can
+  already read. A rune you haven't read yet is found by its name and hint only.
+- **Filters**: Family, Element, and **Use** (Combat, Support, Farming, Fishing, Mining, Building, Exploring,
+  Travel, Passive). **Show** picks the runes you know, every rune, only those your Cord holds, or those you're
+  still reading. Runes you haven't learned show only their hint.
+- **Sort** by group, name, tier or cost. Turn pages with the arrows, the mouse wheel or `Page Up`/`Page Down`.
+- **Pick a rune** to see its text and what it's for. **Goes well with** lists shapes, effects, modifiers and links
+  from your Codex that make a spell with it, by the same rules the Cord uses: a modifier is listed only if it
+  works on that rune. Click one to look at it. **Show in Cord** (or a double-click) takes you back with the
+  Codex searched for it.
+
+The Catalog keeps your search and filters until you close the game.
+
+## Runes for everyday life
+
+Not every rune is for fighting. Many help with farming, fishing, mining, building and exploring. The Catalog's
+**Use** filter finds them. Some examples:
+
+- **Farming:** [Berrybless]({{ '/runes/effects/earth/' | relative_url }}#berrybless) ripens berry bushes, [Compost]({{ '/runes/effects/earth/' | relative_url }}#compost) fills a composter from your pack,
+  [Bakehouse]({{ '/runes/effects/fire/' | relative_url }}#bakehouse) bakes bread and pie, and [Barnwarmth]({{ '/runes/effects/fire/' | relative_url }}#barnwarmth) heals your farm animals and pets.
+- **Fishing:** [Angler's Lure]({{ '/runes/effects/frost/' | relative_url }}#angler_lure) halves the wait for a bite, [Bobber Bell]({{ '/runes/effects/arcane/' | relative_url }}#bobber_bell) rings when a
+  fish bites, and [Bait Blessing]({{ '/runes/effects/arcane/' | relative_url }}#bait_blessing) gives you Luck for better catches.
+- **Mining:** [Deepsound]({{ '/runes/effects/earth/' | relative_url }}#deepsound) tells you the nearest ore below and how deep, and [Deepwarn]({{ '/runes/effects/earth/' | relative_url }}#deepwarn)
+  warns you of lava below or a long drop ahead.
+- **Building:** [Chalk Line]({{ '/runes/effects/arcane/' | relative_url }}#chalkline) measures the length and rise from you to a point.
+- **Exploring:** [Starchart]({{ '/runes/effects/arcane/' | relative_url }}#starchart) tells you where you are and how far spawn is, and
+  [Ruin Sense]({{ '/runes/effects/earth/' | relative_url }}#ruin_sense) points you to the nearest trail ruins.
+- **Support:** [Beastguard]({{ '/runes/effects/arcane/' | relative_url }}#beastguard) protects your pet, mount or a farm animal, and [Air Pocket]({{ '/runes/effects/frost/' | relative_url }}#air_pocket)
+  refills your air.
+
+**Modifiers** can fit these runes to the job: [Magnetic]({{ '/runes/modifiers/' | relative_url }}#magnetic) pulls items to you, [Sowing]({{ '/runes/modifiers/' | relative_url }}#sowing) plants seeds
+on bare farmland, and [Ore Sensing]({{ '/runes/modifiers/' | relative_url }}#ore_sensing) makes nearby ores glimmer.
+
+**Passive** runes can sit in a [passive slot]({{ '/spellcraft/passives/' | relative_url }}) and work on their own, without casting.
+Deepwarn is one. In the Catalog, pick **Use: Passive** to see them all.
+
 ## Fishing for runes
 
 Runes come up on a fishing line too. In **open water**, about 4 treasure catches in 11 are a rune (Luck of the Sea
 makes treasure likelier), mostly runes of water, frost and storm, and now and then
-[Tidehook]({{ '/runes/world/#tidehook' | relative_url }}) or [Current]({{ '/runes/world/#current' | relative_url }}),
+[Tidehook]({{ '/runes/world/' | relative_url }}#tidehook) or [Current]({{ '/runes/world/' | relative_url }}#current),
 two runes found nowhere else. Where magic runs strong at the bobber (under a mana storm, on a ley line, in a
 thunderstorm) a rune can come up tangled in the line on top of your catch. The whole guide, with every chance:
 [Fishing]({{ '/world/runes-of-the-world/' | relative_url }}#fishing).

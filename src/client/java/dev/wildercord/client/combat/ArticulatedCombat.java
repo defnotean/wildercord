@@ -79,9 +79,22 @@ public final class ArticulatedCombat {
 		state.setData(FRAME, null);
 		if (!enabled()) return;
 		var movement = state.getData(dev.wildercord.client.MastersArtPose.FRAME);
-		if (movement != null && movement.move() <= -2) return;
 		var timeline = MastersArtsClient.timeline(avatar);
 		boolean left = avatar.getMainArm() == HumanoidArm.LEFT;
+		// Wall Turn owns its segmented palette, including the airborne carry after the Classic tail has faded.
+		// Stone Hinge and the field forms keep their whole Classic fallback.
+		var form = dev.wildercord.client.MasterFormsClient.timeline(avatar);
+		if (form != null && timeline == null && (movement == null || ArticulatedCombatPose.wallTurnMove(movement.move()))
+				&& ArticulatedCombatPose.wallTurnMove(-2 - form.event().phase())) {
+			var event = form.event();
+			var pose = ArticulatedCombatPose.sampleWallTurn(event.phase(), event.ticks(), avatar.level().getGameTime() - form.received() + partial, left);
+			if (pose.weight() > 0) {
+				state.setData(FRAME, new Frame(pose, event.serial(), -2 - event.phase(), false, left,
+					movement == null ? 0 : movement.yawDelta(), 0, true));
+				return;
+			}
+		}
+		if (movement != null && movement.move() <= -2) return;
 		if (timeline == null) {
 			// Stable first-person ownership avoids adding/removing two arms at every clip edge.
 			state.setData(FRAME, new Frame(ArticulatedCombatPose.NONE, Long.MIN_VALUE, -1, false, left, 0, 0));
@@ -97,7 +110,18 @@ public final class ArticulatedCombat {
 
 	public static void extractMaster(SwordMaster master, AuraFighterRenderState state, float partial) {
 		state.setData(FRAME, null);
+		// ---- masters-a pack: elemental signatures own a separate articulated clip on the executor clock.
+		if (enabled() && ArticulatedCombatPose.supportsMasterSignature(master.attackAnimation())
+			&& !master.state(dev.wildercord.aura.world.AuraFighter.STAGGER)) {
+			float elapsed = master.attackElapsed(partial);
+			boolean left = master.getMainArm() == HumanoidArm.LEFT;
+			var pose = ArticulatedCombatPose.sampleMasterSignature(master.attackAnimation(), elapsed, left);
+			if (pose.weight() > 0) state.setData(FRAME, new Frame(pose, master.level().getGameTime() - (long) Math.floor(elapsed),
+				master.attackAnimation(), true, left, 0, 0, false, master.getDeltaMovement().horizontalDistanceSqr()));
+			return;
+		}
 		if (!enabled() || !ArticulatedCombatPose.supportsMaster(master.attackAnimation())
+			&& !ArticulatedCombatPose.supportsMasterPackB(master.attackAnimation()) // ---- masters-b pack
 			|| master.state(dev.wildercord.aura.world.AuraFighter.STAGGER)) return;
 		float elapsed = master.attackElapsed(partial);
 		boolean left = master.getMainArm() == HumanoidArm.LEFT;
@@ -121,7 +145,7 @@ public final class ArticulatedCombat {
 		if (frame == null || !view && state.walkAnimationSpeed > .2F
 				&& !schoolFootworkCompatible(frame)
 			|| !ArticulatedArmorRenderer.compatible(humanoid) || !view && frame.pose().weight() <= 0
-			|| view && frame.move() != -1 && !ArticulatedCombatPose.supportsPlayer(frame.move())
+			|| view && frame.move() != -1 && !ArticulatedCombatPose.supportsPlayer(frame.move()) && !wallTurn(frame)
 			|| view && frame.move() == -1 && state.swingAnimation > 0) return null;
 		ItemStack off = state.mainArm == HumanoidArm.RIGHT ? state.leftHandItemStack : state.rightHandItemStack;
 		if (off != null && !off.isEmpty()) return null;
@@ -136,7 +160,13 @@ public final class ArticulatedCombat {
 		return frame;
 	}
 
+	/** The player's accepted Wall Turn clip; its root travel is the server's swept teleport path, never walking. */
+	static boolean wallTurn(Frame frame) {
+		return !frame.master() && frame.scriptedFootwork() && ArticulatedCombatPose.wallTurnMove(frame.move());
+	}
+
 	private static boolean schoolFootworkCompatible(Frame frame) {
+		if (wallTurn(frame)) return true;
 		if (!frame.master() || frame.move() != ArticulatedCombatPose.MASTER_CROSSWIND_REPRISE) return false;
 		// Vanilla's eased walk speed remains high for several frames after the accepted step.
 		// Synced velocity is distinct from the client's remaining position interpolation. Gale's

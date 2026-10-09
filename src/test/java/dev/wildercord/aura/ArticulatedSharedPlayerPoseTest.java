@@ -12,7 +12,7 @@ class ArticulatedSharedPlayerPoseTest {
 
 	@Test
 	void playerAndNpcOrdinalsStaySeparateAndSpellcutRemainsBitIdentical() {
-		for (int move : new int[] {-1, 5, 7, 8, Integer.MAX_VALUE}) {
+		for (int move : new int[] {-1, 64, Integer.MAX_VALUE}) {
 			assertFalse(supportsPlayer(move));
 			assertSame(NONE, samplePlayer(move, 5, 8, 18, false));
 		}

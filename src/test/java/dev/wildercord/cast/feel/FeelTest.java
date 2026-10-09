@@ -91,6 +91,13 @@ class FeelTest {
 					assertTrue(compiled.warnings().contains(ReweaveRules.GRAMMAR_PROBLEM));
 					continue;
 				}
+                var pack = dev.wildercord.spell.LessonPackRules.byRune(effect.id());
+                if (pack != null && !pack.shape.equals(shape)) {
+                    assertTrue(compiled.isEmpty(), pack.name + " refuses " + shape.name());
+                    assertEquals(0, compiled.cost());
+                    assertTrue(compiled.warnings().contains(pack.grammarProblem));
+                    continue;
+                }
                 if (effect.equals(Runes.EXCISE) && !shape.equals(Runes.BEAM)) {
                     assertTrue(compiled.isEmpty(), "Excise refuses " + shape.name());
                     assertEquals(0, compiled.cost());

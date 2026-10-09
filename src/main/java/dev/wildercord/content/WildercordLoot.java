@@ -105,6 +105,117 @@ public final class WildercordLoot {
 		RUNE_POOLS.put(BuiltInLootTables.WOODLAND_MANSION, new RunePool(40,
 			List.of(Runes.ON_KILL, Runes.VEIL, Runes.PULSE, Runes.ORBIT, Runes.CLEAVE, Runes.RESONANCE, Runes.SHADOWSTEP, Runes.BLOOD_PRICE_MOD)));
 		ARCHAEOLOGY_POOLS.put(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_RARE, new RunePool(20, List.of(Runes.LIGHTNING, Runes.SHOCK)));
+		// ---- shapes pack: the field and kin shapes turn up where their work is done (and are all crafted too).
+		// Merged, not put, so another pack's pool on the same chest is kept beside this one.
+		packPool(BuiltInLootTables.VILLAGE_PLAINS_HOUSE, 20, List.of(Runes.FURROW, Runes.PLOT, Runes.SEEDBED, Runes.HEDGEROW,
+			Runes.LATTICE, Runes.HERD, Runes.NURSERY, Runes.SADDLE, Runes.PACKBOND, Runes.FELLOWSHIP));
+		packPool(BuiltInLootTables.VILLAGE_TOOLSMITH, 30, List.of(Runes.SHAFT, Runes.STAIRWELL, Runes.CORRIDOR, Runes.SEAM,
+			Runes.LODESEEK, Runes.PIT, Runes.VAULT, Runes.COLLAPSE, Runes.FISSURE, Runes.SPIRE));
+		packPool(BuiltInLootTables.VILLAGE_MASON, 30, List.of(Runes.FACADE, Runes.DOME, Runes.FOOTING, Runes.CANOPY,
+			Runes.PERIMETER, Runes.CROSSWAY, Runes.LAMPLIT, Runes.SPIRAL, Runes.ROSETTE, Runes.STEPSTONES, Runes.CAUSEWAY));
+		packPool(BuiltInLootTables.SHIPWRECK_SUPPLY, 20, List.of(Runes.SHORELINE, Runes.BOBBER, Runes.SHOAL, Runes.FAN));
+		packPool(BuiltInLootTables.PILLAGER_OUTPOST, 25, List.of(Runes.REARGUARD, Runes.GRUDGE, Runes.SENTINEL, Runes.AUREOLE,
+			Runes.TETHER, Runes.FLOCK));
+	}
+
+	// ---- shapes pack (shared by every pack: merged, so packs on the same chest keep each other's runes)
+	private static void packPool(ResourceKey<LootTable> table, int chance, List<RuneDef> runes) {
+		RUNE_POOLS.merge(table, new RunePool(chance, runes), (a, b) -> new RunePool(Math.max(a.chance(), b.chance()),
+			java.util.stream.Stream.concat(a.runes().stream(), b.runes().stream()).distinct().toList()));
+	}
+
+	// ---- fx-passive pack: the hearth runes (cast/HearthEffects), found in homes, camps and travellers' chests.
+	static {
+		List<RuneDef> hearthHome = List.of(Runes.SLOWBURN, Runes.WARM_CLOAK, Runes.SOFTSOLE, Runes.LULLABY, Runes.ORBCALL, Runes.LANTERN_SOUL,
+			Runes.DEW_DRINK, Runes.SUNBASK, Runes.TRAILBLAZE, Runes.HEARTHPATH, Runes.LUCKCHARM, Runes.SAVOR, Runes.STEEDMEND, Runes.PETWARD,
+			Runes.WHISTLE, Runes.CLOT, Runes.QUENCH, Runes.EMBER_REST);
+		List<RuneDef> hearthRoad = List.of(Runes.WAYMARK, Runes.LODESTAR, Runes.STARCHART, Runes.SKYREAD, Runes.GRAVEFINDER, Runes.LOSTFIND,
+			Runes.LANDREAD, Runes.SPRINGSEEK, Runes.SMOKE_SIGNAL, Runes.STEEDSONG, Runes.CAMP_WARD, Runes.HOLLOW_POCKET, Runes.SUREFOOT,
+			Runes.NIGHTWATCH, Runes.WAYFARER_HYMN, Runes.GLIDEWIND, Runes.HOMEWARD);
+		List<RuneDef> hearthCraft = List.of(Runes.TINKER_HUM, Runes.KEENKEEP, Runes.LONG_ARM, Runes.SUREFOOT, Runes.DEEPWARN, Runes.DYNAMO_STRIDE,
+			Runes.STILLWELL, Runes.TARRY, Runes.HEARTSENSE, Runes.ENDERHUSH, Runes.SOFTFOOT, Runes.CURRENTKIN, Runes.HEARTHBOND, Runes.RALLY_LIGHT);
+		packPool(BuiltInLootTables.VILLAGE_PLAINS_HOUSE, 12, hearthHome);
+		packPool(BuiltInLootTables.VILLAGE_TAIGA_HOUSE, 12, hearthHome);
+		packPool(BuiltInLootTables.VILLAGE_SNOWY_HOUSE, 12, hearthHome);
+		packPool(BuiltInLootTables.VILLAGE_CARTOGRAPHER, 25, hearthRoad);
+		packPool(BuiltInLootTables.SHIPWRECK_MAP, 20, hearthRoad);
+		packPool(BuiltInLootTables.VILLAGE_TOOLSMITH, 15, hearthCraft);
+		packPool(BuiltInLootTables.VILLAGE_TEMPLE, 15, hearthCraft);
+	}
+
+	// ---- fx-fish pack
+	static {
+		// The runes of the coast and sea, in the chests of the sea and its fishers. Ocean's Favor is never crafted: ruins only.
+		packPool(BuiltInLootTables.UNDERWATER_RUIN_SMALL, 20, List.of(Runes.AIR_POCKET, Runes.TIDE_LANTERN, Runes.KELPSONG,
+			Runes.UPWELL, Runes.SOUNDING, Runes.REFLOAT, Runes.CORAL_MEND, Runes.PEARL_SIGHT, Runes.DROWN_WARD, Runes.DIVERS_HANDS));
+		packPool(BuiltInLootTables.UNDERWATER_RUIN_BIG, 30, List.of(Runes.CORAL_MEND, Runes.PEARL_SIGHT, Runes.DROWN_WARD,
+			Runes.INKVEIL, Runes.PORPOISE, Runes.DOLPHIN_CALL, Runes.WRECK_SENSE, Runes.DIVING_BELL, Runes.OCEANS_FAVOR));
+		packPool(BuiltInLootTables.SHIPWRECK_SUPPLY, 20, List.of(Runes.MOORING_CALL, Runes.FAIR_WIND, Runes.TIDE_MARKER,
+			Runes.SHORE_SENSE, Runes.SEA_BREEZE, Runes.SHELLBACK, Runes.SKIMSTEP, Runes.SANDBAR, Runes.LILY_PATH, Runes.DEWCATCH));
+		packPool(BuiltInLootTables.VILLAGE_FISHER, 30, List.of(Runes.ANGLER_LURE, Runes.BAIT_BLESSING, Runes.REELING_TIDE,
+			Runes.TACKLE_MEND, Runes.BOBBER_BELL, Runes.WATER_READING, Runes.REED_CUT, Runes.SPRING_DRAW, Runes.BRIMMING, Runes.WRING,
+			Runes.SLUICE, Runes.SOAK_THROUGH, Runes.RAIN_CLOUD, Runes.NEST_TEND, Runes.AXOLOTL_KINSHIP, Runes.SKATERS_EDGE));
+		// ---- fx-farm pack: the farmstead runes turn up in village houses and the shepherd's and butcher's chests
+		// (Cloche and the Feast, Tier IV, at the lowest tier weight).
+		List<RuneDef> farmstead = List.of(Runes.TILLAGE, Runes.DEWFALL, Runes.TILTH, Runes.PLOWLINE, Runes.SOW, Runes.RIPEN, Runes.DEWKEEP,
+			Runes.FIELDSENSE, Runes.THAWFIELD, Runes.CLOCHE, Runes.SCARECROW, Runes.FALLOW, Runes.DITCHWATER, Runes.COMPOST, Runes.STALKRISE,
+			Runes.GOURDCALL, Runes.BERRYBLESS, Runes.COURTSHIP, Runes.HERDCALL, Runes.FLEECE, Runes.MILKMAID, Runes.HENHOUSE, Runes.GENTLEHAND,
+			Runes.FODDER, Runes.BARNWARMTH, Runes.HERDSENSE, Runes.HEARTHCOOK, Runes.STEWPOT, Runes.BAKEHOUSE, Runes.POLLINATE, Runes.HIVEHUM,
+			Runes.CALMSMOKE, Runes.WILDFLOWER, Runes.SAPLINGRISE, Runes.SAPLINGSOW, Runes.LEAFFALL, Runes.BARKSTRIP, Runes.COPPICE,
+			Runes.FEASTDAY, Runes.PICNIC, Runes.HONEYDEW, Runes.LEAFSHADE, Runes.BARKHIDE, Runes.SAPFLOW, Runes.TROT, Runes.BEELINE,
+			Runes.FIELDSTRIDE, Runes.HAYLOFT);
+		packPool(BuiltInLootTables.VILLAGE_PLAINS_HOUSE, 20, farmstead);
+		packPool(BuiltInLootTables.VILLAGE_SAVANNA_HOUSE, 20, farmstead);
+		packPool(BuiltInLootTables.VILLAGE_TAIGA_HOUSE, 20, farmstead);
+		packPool(BuiltInLootTables.VILLAGE_SHEPHERD, 25, farmstead);
+		packPool(BuiltInLootTables.VILLAGE_BUTCHER, 25, farmstead);
+		// ---- fx-mine pack: the delving runes in the village workshops that use them (their Tier IV two come from the Archives).
+		packPool(BuiltInLootTables.VILLAGE_TOOLSMITH, 20,
+			List.of(Runes.STAIRDELVE, Runes.RISER, Runes.PLUMBLINE, Runes.SIFTFALL, Runes.GANGUE, Runes.OREPLUCK, Runes.LUCKSTRIKE,
+			Runes.SILKLIFT, Runes.DEEPSOUND, Runes.ORETALLY, Runes.LAVASEAL, Runes.DEEPWAY, Runes.HOLLOWSENSE, Runes.KILNBAKE,
+			Runes.BLOCKPACK, Runes.UNPACK, Runes.MILLSTONE, Runes.TOOLMEND, Runes.CAVEWARD));
+		packPool(BuiltInLootTables.VILLAGE_MASON, 20,
+			List.of(Runes.LEVELGROUND, Runes.HOLEFILL, Runes.SHOREUP, Runes.STILT, Runes.PLANKWAY, Runes.POLISH, Runes.BRICKWORK,
+			Runes.AGESTONE, Runes.CONCRETESET, Runes.CHALKLINE, Runes.PITFLOOR, Runes.FLOORLAY));
+		packPool(BuiltInLootTables.VILLAGE_TEMPLE, 20,
+			List.of(Runes.TORCHFALL, Runes.GLOOMSIGHT, Runes.LUMENPATH, Runes.SNUFFOUT, Runes.HEADLAMP, Runes.LEVERFLIP, Runes.BUTTONPUSH,
+			Runes.DOORCALL, Runes.CHESTSORT, Runes.STOW, Runes.RESTOCK, Runes.STOCKTAKE, Runes.UNBURDEN, Runes.LODEPULL,
+			Runes.PACKTIDY));
+	}
+
+	// ---- links-mods pack: the hearth pack's everyday runes, found in village houses' chests (one roll per chest).
+	private static final List<RuneDef> HEARTH = List.of(
+		Runes.TIDY, Runes.REPLANTING, Runes.KILNED, Runes.SILKEN, Runes.WINDFALL, Runes.VEINFOLLOW, Runes.TIMBERING, Runes.LEVEL_GROUND,
+		Runes.STEADY, Runes.DAMP, Runes.MAGNETIC, Runes.SOWING, Runes.FURROWING, Runes.FERTILE, Runes.TORCHSET, Runes.ORE_SENSING, Runes.FETCHING,
+		Runes.BOUNTIFUL, Runes.CULLING, Runes.HEADHUNTING, Runes.HALLOWED, Runes.TAPERING, Runes.POOLED, Runes.SUNLIT, Runes.GENTLE,
+		Runes.SPARING, Runes.SOOTHING, Runes.CUSHIONED, Runes.MENDING_MOD, Runes.NOURISHING, Runes.PURIFYING, Runes.MATCHMAKING, Runes.FLEECING,
+		Runes.INWARD, Runes.SELFLESS, Runes.TRIAGE, Runes.IF_NIGHT, Runes.IF_DAY, Runes.IF_RAINING, Runes.IF_UNDERGROUND, Runes.IF_ALONE,
+		Runes.IF_NEAR_ALLY, Runes.IF_UNHURT, Runes.IF_HOLDING_TOOL, Runes.IF_BRIMMING, Runes.IF_IN_FIELDS, Runes.ON_MINE, Runes.ON_HARVEST,
+		Runes.ON_CATCH, Runes.ON_SPRINT, Runes.ON_SPLASH, Runes.ON_MOUNT, Runes.ON_WAKE);
+
+	static {
+		packPool(BuiltInLootTables.VILLAGE_PLAINS_HOUSE, 20, HEARTH);
+		packPool(BuiltInLootTables.VILLAGE_TAIGA_HOUSE, 20, HEARTH);
+		packPool(BuiltInLootTables.VILLAGE_SAVANNA_HOUSE, 20, HEARTH);
+		packPool(BuiltInLootTables.VILLAGE_SNOWY_HOUSE, 20, HEARTH);
+		packPool(BuiltInLootTables.VILLAGE_DESERT_HOUSE, 20, HEARTH);
+		// ---- fx-explore pack: the wayfarer's runes, in the chests of mapmakers, temples, wrecks and far realms.
+		packPool(BuiltInLootTables.VILLAGE_CARTOGRAPHER, 40, List.of(Runes.LAND_READING, Runes.SPAWN_BEARING, Runes.HOME_BEARING,
+			Runes.VILLAGE_SENSE, Runes.CHALK_LINE, Runes.FOLK_CENSUS, Runes.GLYPH_CARVE, Runes.TRAIL_BLAZE, Runes.SKY_READING, Runes.SUN_READING,
+			Runes.MOON_READING));
+		packPool(BuiltInLootTables.SHIPWRECK_MAP, 30, List.of(Runes.SHIPWRECK_SENSE, Runes.RUIN_SENSE, Runes.PORTAL_RECKONING,
+			Runes.GRAVE_BEARING, Runes.LUX_READING, Runes.SLIME_SENSE, Runes.DEPTH_SOUNDING));
+		packPool(BuiltInLootTables.VILLAGE_TEMPLE, 30, List.of(Runes.APPRAISE, Runes.TRADE_RENEW, Runes.HAGGLE, Runes.FOLK_CALL,
+			Runes.POTION_STEEP, Runes.QUICKBREW, Runes.LORE_READING, Runes.SHELF_COUNT, Runes.LAPIS_THRIFT, Runes.SIGN_GLOW));
+		packPool(BuiltInLootTables.VILLAGE_SHEPHERD, 30, List.of(Runes.DYE_WASH, Runes.CHECKER_DYE, Runes.LAMPLIGHTER,
+			Runes.SNUFF_OUT, Runes.STAND_POSE, Runes.FRAME_VEIL));
+		packPool(BuiltInLootTables.RUINED_PORTAL, 20, List.of(Runes.PORTAL_SENSE, Runes.LAVA_CRUST, Runes.LAVA_SENSE,
+			Runes.GOLD_PARLEY));
+		packPool(BuiltInLootTables.NETHER_BRIDGE, 25, List.of(Runes.FORTRESS_SENSE, Runes.LAVA_CRUST, Runes.LAVA_SENSE,
+			Runes.SPAWNER_SENSE, Runes.GOLD_PARLEY));
+		packPool(BuiltInLootTables.STRONGHOLD_CORRIDOR, 25, List.of(Runes.STRONGHOLD_COMPASS, Runes.SPIRE_SENSE, Runes.VOID_STEP,
+			Runes.BEACON_SWELL, Runes.SPAWNER_SENSE));
+		ARCHAEOLOGY_POOLS.put(BuiltInLootTables.DESERT_PYRAMID_ARCHAEOLOGY, new RunePool(10, List.of(Runes.RELIC_SENSE, Runes.STEADY_BRUSH)));
 	}
 
 	/**
@@ -141,6 +252,30 @@ public final class WildercordLoot {
 		SOURCE_DIGS.put(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_COMMON, new SourcePool(8, RuneSources.TRAIL_RUINS));
 	}
 
+	// ---- fx-support pack
+	// The support pack: healers' and keepers' runes in village temples and houses, guards' runes with the smiths,
+	// and the crowd-calming ones in outposts and igloos. A table some other pack also fills keeps both lists.
+	private static void supportPool(ResourceKey<LootTable> table, int chance, RuneDef... runes) {
+		RUNE_POOLS.merge(table, new RunePool(chance, List.of(runes)), (had, more) -> {
+			List<RuneDef> both = new java.util.ArrayList<>(had.runes());
+			both.addAll(more.runes());
+			return new RunePool(Math.max(had.chance(), more.chance()), List.copyOf(both));
+		});
+	}
+
+	static {
+		supportPool(BuiltInLootTables.VILLAGE_TEMPLE, 35, Runes.WORST_FIRST, Runes.SALVE, Runes.MENDING_MIST, Runes.AFTERCARE, Runes.HEARTHSONG,
+			Runes.MANAGIFT, Runes.MANAWELL, Runes.HEXGUARD, Runes.STAUNCH, Runes.SANCTUARY, Runes.SOOTHE, Runes.TRUCE, Runes.GRACE);
+		supportPool(BuiltInLootTables.VILLAGE_PLAINS_HOUSE, 12, Runes.HEARTHGLOW, Runes.TEND, Runes.BEASTGUARD, Runes.HEEL, Runes.FAITHFUL,
+			Runes.KEEPSAFE, Runes.FIREBREAK, Runes.HEARTHGUARD, Runes.BELLWARD);
+		supportPool(BuiltInLootTables.VILLAGE_WEAPONSMITH, 20, Runes.GUARDLINK, Runes.RALLY, Runes.MORALE, Runes.STOUTHEART, Runes.IRONHOLD,
+			Runes.EVADE, Runes.EMBERGUARD, Runes.SHIELDWALL, Runes.SENTRY, Runes.ARROWVEIL, Runes.BLASTWARD, Runes.AEGIS);
+		supportPool(BuiltInLootTables.VILLAGE_ARMORER, 20, Runes.IRONHOLD, Runes.SHIELDWALL, Runes.ARROWVEIL, Runes.SHRUG_OFF, Runes.CITADEL);
+		supportPool(BuiltInLootTables.PILLAGER_OUTPOST, 20, Runes.PACIFY, Runes.LURE, Runes.STILLBIND, Runes.TAUNT, Runes.NUDGE, Runes.HOBBLE,
+			Runes.CORRAL, Runes.SPOOK, Runes.WITHDRAW, Runes.ACCORD);
+		supportPool(BuiltInLootTables.IGLOO_CHEST, 25, Runes.HEARTHGLOW, Runes.SALVE, Runes.SOOTHE, Runes.PACIFY);
+	}
+
 	/**
 	 * Fishing: the runes of the sea, crafted runes of water, frost and storm and a few a fisher is glad of, that a
 	 * treasure catch can be (open water only) and magic waters can tangle in the line. The runes found only by fishing
@@ -148,7 +283,10 @@ public final class WildercordLoot {
 	 */
 	private static final List<RuneDef> SEA = List.of(Runes.TIDEBREATH, Runes.CHILL, Runes.ICICLE, Runes.ICEPATH, Runes.SHOCK, Runes.FEATHER_FALL,
 		Runes.NIGHT_EYE, Runes.SWIFT, Runes.HEAL, Runes.COLLECT, Runes.LEAP, Runes.BUBBLE, Runes.FROST, Runes.THUNDERCLAP, Runes.JOLT, Runes.PULL,
-		Runes.GRAPPLE, Runes.LEVITATE, Runes.WAVE, Runes.FREEZE, Runes.LIGHTNING);
+		Runes.GRAPPLE, Runes.LEVITATE, Runes.WAVE, Runes.FREEZE, Runes.LIGHTNING,
+		// ---- fx-fish pack
+		Runes.ANGLER_LURE, Runes.BAIT_BLESSING, Runes.REELING_TIDE, Runes.BOBBER_BELL, Runes.WATER_READING, Runes.TACKLE_MEND,
+		Runes.SCHOOL_SIGHT, Runes.SHOAL_HERD, Runes.STORM_GLASS, Runes.FATHOM, Runes.ICE_AUGER, Runes.DRIFT_NET);
 
 	/** The crafted runes a fishing line brings up beside the runes found only by fishing (see {@link #SEA}). */
 	public static List<RuneDef> seaRunes() {
@@ -231,7 +369,10 @@ public final class WildercordLoot {
 		Map.entry(EntityTypes.BREEZE, List.of(Map.entry(8, Runes.REPEL))),
 		Map.entry(EntityTypes.WARDEN, List.of(Map.entry(100, Runes.SONIC_BOOM), Map.entry(35, Runes.DOMAIN))),
 		Map.entry(EntityTypes.WITHER, List.of(Map.entry(100, Runes.WITHER), Map.entry(50, Runes.HOLLOW))),
-		Map.entry(EntityTypes.ELDER_GUARDIAN, List.of(Map.entry(100, Runes.STARFALL), Map.entry(25, Runes.STASIS)))
+		Map.entry(EntityTypes.ELDER_GUARDIAN, List.of(Map.entry(100, Runes.STARFALL), Map.entry(25, Runes.STASIS))),
+		// ---- fx-support pack: raiders carry the Tier IV wards.
+		Map.entry(EntityTypes.RAVAGER, List.of(Map.entry(8, Runes.CITADEL), Map.entry(5, Runes.AEGIS))),
+		Map.entry(EntityTypes.PILLAGER, List.of(Map.entry(1, Runes.ACCORD), Map.entry(1, Runes.GRACE)))
 	);
 
 	public static void init() {

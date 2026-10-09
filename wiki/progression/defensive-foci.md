@@ -4,22 +4,50 @@ nav_order: 8.2
 parent: Growing Stronger
 ---
 
-# Defensive focus choices
+# Defensive foci
+{: .no_toc }
 
-These items work in the existing Focus inventory slot, or in the off-hand if that slot is empty. They compete with Resolve, Thrift, Haste, Deep Well, and Echoes. Equipping one copy twice does not double its bonuses.
+1. TOC
+{:toc}
 
-## Focus of Reprieve
+## What it is
 
-A spell hit worth at least six damage after Wildercord's defences can defer 35% of that hit. The immediate portion lands normally. After one second, four equal installments land at half-second intervals. The deferred portion is genuine damage and can kill; the focus opens a counterplay window. Its eight-second recharge begins when it triggers, and it reduces outgoing spell power by 10%.
+Two foci that help you survive spells. **Reprieve** spreads a big hit out over time; **Grounding** blunts
+a push or pull. Each makes your own spells **10% weaker**, and they compete with your other foci
+(Resolve, Thrift, Haste, Deep Well, Echoes) for the one focus slot.
 
-Removing the focus does not erase the debt. Debt and recharge time are saved across logout and dimension travel. The later portions do not pass through the focus or Wildercord armour contribution a second time. They retain the original damage type and available attacker attribution, so vanilla armour, applicable enchantments, Resistance and absorption still apply. Ordinary recent-hit immunity cannot erase an installment. Overlay messages show the remaining debt. A blocked initial hit does not create a debt. Respawning starts a new life without the old debt.
+## How to get it
 
-Craft with a Mana Crystal in the centre, amethyst shards above and on each side, and a clock below.
+<div class="recipe-gallery">
+{% include recipe-card.html id="focus_of_reprieve" name="Focus of Reprieve: Mana Crystal, Amethyst Shards and a Clock" %}
+{% include recipe-card.html id="focus_of_grounding" name="Focus of Grounding: Mana Crystal, Lightning Rod and Iron Ingots" %}
+</div>
 
-## Focus of Grounding
+## How to use it
 
-The first substantial spell push or pull is reduced by 70%, and releases a two-second Speed I escape gust. It then recharges for eight seconds. It also reduces outgoing spell power by 10%. It applies at the spell impulse helper; it does not grant general immunity to movement, environmental falling, or every spell that directly sets velocity. Existing Anchor immunity takes precedence and does not consume Grounding.
+Wear it in the focus slot, or hold it in your off-hand while that slot is empty. Two copies don't stack.
 
-Craft with a Mana Crystal in the centre, a lightning rod above, iron ingots on either side, and an iron ingot below.
+### Focus of Reprieve
 
-Both items have distinct hand-painted icons and generated recipes. Their in-game suite checks actual damage accounting after item removal, serialized debt, recharge, and launch resistance.
+- When a spell hits you for **6 damage or more** (after your defences), **35%** of it is deferred.
+- The rest lands now. After **1 second**, the deferred part lands in **four equal parts, half a second
+  apart**.
+- It then recharges for **8 seconds**.
+- The deferred damage is real and **can kill you**. Taking the focus off or logging out doesn't clear it;
+  respawning does. Your armour and Resistance still apply to each part.
+- A hit you block creates no debt. The remaining debt shows above your hotbar.
+
+### Focus of Grounding
+
+- The first strong spell **push or pull** on you is cut by **70%**, and you get **Speed I for 2 seconds**
+  to escape.
+- It then recharges for **8 seconds**.
+- It doesn't stop falling or every spell that moves you. Anchor goes first and doesn't use it up.
+
+## Tips and counterplay
+
+- Reprieve buys time to heal or drink a potion, not safety. Heal during the installments.
+- Grounding is for fights near cliffs, lava or the void, where one shove is deadly.
+- Against someone with Reprieve, follow up quickly: the debt is still coming.
+- Against Grounding, bait it with a weak push, then use your real one within 8 seconds.
+- See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}) for armour and Warding.

@@ -155,6 +155,7 @@ public final class Residues {
 				harvested(level, pos, state, player instanceof ServerPlayer sp ? sp : null);
 			}
 		});
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> RESTED.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			RESTED.clear();
 			LOADED.clear();
@@ -185,6 +186,7 @@ public final class Residues {
 		BlockPos impact = hit.block() != null ? hit.block() : BlockPos.containing(hit.point());
 		if (leave(cast.level, kind.get(), impact, strength, cast.caster, source, cast) > 0) {
 			RESTED.put(cast.caster.getUUID(), cast.level.getGameTime());
+			dev.wildercord.spell.StatePrune.rested(RESTED, cast.level.getGameTime(), ResidueRules.BOSS_REST);
 		}
 	}
 
@@ -205,6 +207,7 @@ public final class Residues {
 		}
 		if (leave(cast.level, kind.get(), BlockPos.containing(at), ResidueRules.REACTION_STRENGTH, cast.caster, Source.REACTION, cast) > 0) {
 			RESTED.put(cast.caster.getUUID(), now);
+			dev.wildercord.spell.StatePrune.rested(RESTED, now, ResidueRules.BOSS_REST);
 		}
 	}
 

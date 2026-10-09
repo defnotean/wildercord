@@ -5,7 +5,7 @@ public final class MasterPursuitRules {
 	private MasterPursuitRules() {}
 
 	public static final int WINDUP = 8, DASH_TICKS = 6, STRIKE_TELL = 8;
-	public static final int TELL = WINDUP + DASH_TICKS + STRIKE_TELL, RECOVERY = 30, WARNING_REFRESH = 3, MIN_CHARGE_AGE = 6, MAX_CHARGE_AGE = 200;
+	public static final int TELL = WINDUP + DASH_TICKS + STRIKE_TELL, RECOVERY = 22, WARNING_REFRESH = 3, MIN_CHARGE_AGE = 6, MAX_CHARGE_AGE = 200;
 	public static final double DAMAGE = 28, MIN_DISTANCE = 4.25, STOP_SHORT = 2.0;
 	public static final double REACH = 3.25, HALF_WIDTH = .8, HEIGHT = 1.8, PATH_SAMPLE = .2;
 	public record School(double range, double travel, double cost, int cooldown) {}

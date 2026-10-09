@@ -126,6 +126,8 @@ The first eight thresholds and milestone perks are unchanged. Later circles requ
 
 At twenty working circles, circle bonuses total +300 maximum mana, +10 mana regeneration per second and +60% spell power. Existing capstone perks are not granted repeatedly. With 100 crystals, an Echo Cord, Reservoir III and a Focus of the Deep Well, the documented maximum is 1,725 mana. Other gear/configuration may alter the breakdown.
 
+Every circle from VIII to XX now brings one new thing. VIII opens Archmage, Relay and the Masters trials; X, XII, XIV, XVI and XVIII each open one lesson (Tollgate, Ebb Ledger, Lifeline, Excise, Conduit). The remaining circles (IX, XI, XIII, XV, XVII, XIX, XX) each ask for one **Circle Vow**, a choice between two bounded sides offered in chat when the circle forms and reviewed with `/vow`. Taking is free; releasing costs 5 levels; a cracked circle silences its vow. The figures above are without vows: the strongest stack of choices adds about +28% spell power, and a Reservoir/Spring choice moves maximum mana by at most +90 or -20. See `docs/design/circle-vows.md`.
+
 ## Verification and tuning
 
 Pure rules and asset consistency checks are part of this change. Native client test suites cover the intended payment, timeline, party mutation, roster and visual behavior. Consult the development verification report for which suites actually ran; authored tests alone are not evidence that runtime behavior passed.

@@ -4,7 +4,7 @@
 
 Slowing, speeding and rewinding. Time stops foes and turns back the clock.
 
-7 time effects you can craft or find in the usual way. Time also has runes of the world, fused runes and innate runes: see their own pages.
+16 time effects you can craft or find in the usual way. Time also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/countdown.png) Countdown
 
@@ -17,7 +17,85 @@ Marks targets: 1.5 seconds later the moment catches up with them for 6 damage. I
 
 ![Crafting Countdown: a Blank Rune and Clock and Gunpowder](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_countdown.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/moon_reading.png) Moon Reading
+
+
+*Tier I · Time · Works on the world · 1 mana · needs any Cord*
+
+Reads the moon tonight and how many nights until the next full moon.
+
+**How to get it:** Craft: a Blank Rune, Clock and Glow Ink Sac. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Moon Reading: a Blank Rune and Clock and Glow Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_moon_reading.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/savor.png) Savor
+
+
+*Tier I · Time · Helps you and your allies · 4 mana · needs any Cord*
+
+For 5 minutes, food you eat fills you for longer.
+
+**How to get it:** Craft: a Blank Rune, Steak and Honey Bottle. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Savor: a Blank Rune and Steak and Honey Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_savor.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sun_reading.png) Sun Reading
+
+
+*Tier I · Time · Works on the world · 1 mana · needs any Cord*
+
+Tells the time of day and how many minutes until dusk or dawn.
+
+**How to get it:** Craft: a Blank Rune, Clock, Sunflower and Paper. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sun Reading: a Blank Rune and Clock, Sunflower and Paper](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sun_reading.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/henhouse.png) Henhouse
+
+
+*Tier II · Time · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Each chicken within 5 blocks lays its next egg now. A hen hurried along can't be hurried again for 2 minutes.
+
+**How to get it:** Craft: a Blank Rune, Egg, Wheat Seeds and Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt.
+
+![Crafting Henhouse: a Blank Rune and Egg, Wheat Seeds and Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_henhouse.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ripen.png) Ripen
+
+
+*Tier II · Time · Works on the world · 7 mana · needs a Copper Cord or better*
+
+Hurries each crop, stem, berry bush and nether wart in a 5-by-5 patch one stage on (two at 1.5 power, three at most). Ripe ones are left as they are.
+
+**How to get it:** Craft: a Blank Rune, Bone Meal, Wheat Crops and Clock, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt.
+
+![Crafting Ripen: a Blank Rune and Bone Meal, Wheat Crops and Clock, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ripen.png)
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tarry.png) Tarry
+
+
+*Tier II · Time · Helps you and your allies · 10 mana · needs a Copper Cord or better*
+
+For 5 minutes, your good effects run down at half speed.
+
+**How to get it:** Craft: a Blank Rune, Clock and Honey Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt.
+
+![Crafting Tarry: a Blank Rune and Clock and Honey Bottle, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tarry.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/accelerate.png) Accelerate
 
@@ -30,7 +108,7 @@ Time runs faster for 10 seconds: Speed II, Haste III, Jump Boost II and Regenera
 
 ![Crafting Accelerate: a Blank Rune and Clock and Sugar, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_accelerate.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/foresight.png) Foresight
 
@@ -43,7 +121,20 @@ Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 
 ![Crafting Foresight: a Blank Rune and Spyglass, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_foresight.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hivehum.png) Hive Hum
+
+
+*Tier III · Time · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Each beehive and bee nest within 5 blocks fills by one level of honey. A hive hummed into can't be hurried again for a minute.
+
+**How to get it:** Craft: a Blank Rune, Honeycomb, Honey Bottle and Clock, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt.
+
+![Crafting Hive Hum: a Blank Rune and Honeycomb, Honey Bottle and Clock, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hivehum.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/prolong.png) Prolong
 
@@ -56,7 +147,7 @@ Every good effect on the target (Speed, Strength, Regeneration, a potion's...) l
 
 ![Crafting Prolong: a Blank Rune and Clock and 2x Redstone Dust, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_prolong.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/time_skip.png) Time Skip
 
@@ -69,7 +160,31 @@ Time skips ahead: you vanish, reappear up to 8 blocks forward on safe ground, an
 
 ![Crafting Time Skip: a Blank Rune and Clock and Ender Pearl, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_time_skip.png)
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trade_renew.png) Trade Renew
+
+
+*Tier III · Time · Works on the world · 10 mana · needs an Amethyst Cord or better*
+
+A villager with a trade restocks every offer. Each villager only once a day.
+
+**How to get it:** Craft: a Blank Rune, Emerald, Clock and Barrel, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt.
+
+![Crafting Trade Renew: a Blank Rune and Emerald, Clock and Barrel, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trade_renew.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cloche.png) Cloche
+
+
+*Tier IV · Time · Works on the world · 22 mana · needs an Echo Cord*
+
+Sets a glass of quickened time over a 5-by-5 patch for 30 seconds: once a second, every plant under it gets the growing tick the world gives now and then. At most 25 plants a second.
+
+**How to get it:** Never crafted. Where it comes from: Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rewind.png) Rewind
 
@@ -78,9 +193,9 @@ Time skips ahead: you vanish, reappear up to 8 blocks forward on safe ground, an
 
 Turns back the clock: return to where you were 5 seconds ago, if it is safe, with the health you had then if it was more.
 
-**How to get it:** Found only, never crafted: End cities; Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: End cities; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stasis.png) Stasis
 
@@ -89,6 +204,6 @@ Turns back the clock: return to where you were 5 seconds ago, if it is safe, wit
 
 Time stops for everything hit for 5 seconds. Every hit meanwhile is held, then lands all at once when time moves again.
 
-**How to get it:** Found only, never crafted: End cities; the Elder Guardian (25%); Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: End cities; the Elder Guardian (25%); Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

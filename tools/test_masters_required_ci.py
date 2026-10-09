@@ -15,8 +15,6 @@ import masters_required_ci as gate
 import native_ci_diagnostics as diagnostics
 import run_client_ci
 import test_manifest
-import run_native_diagnostic_ci as diagnostic
-import test_native_diagnostic_ci as existing
 
 
 COUNTER_ADDITIONS = ('dev.wildercord.aura.UnmovedNullAcceptanceTest', 'dev.wildercord.aura.arts.ArtWardsHardeningTest')
@@ -342,86 +340,12 @@ class RequiredPartTests(unittest.TestCase):
         self.assertIn("      fail-fast: false\n", section)
         self.assertNotIn("          ref:", section)
         self.assertIn("      MASTERS_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}", section)
-        run = section.split("      - name: Run mandatory Masters part", 1)[1].split("      - name: Preserve original March", 1)[0]
+        run = section.split("      - name: Run mandatory Masters part", 1)[1].split("      - name: Curate bounded native Masters frames", 1)[0]
         self.assertNotIn("continue-on-error", run)
         self.assertIn("        if: always()", run)
         for line in section.splitlines():
             if line.startswith("          name: "):
                 self.assertIn("${{ matrix.part }}", line)
-        step = section.split("      - name: Preserve original March diagnostics (not visual acceptance)", 1)[1].split("      - name:", 1)[0]
-        paths = [line.strip() for line in step.split("          path: |\n")[1].split("          if-no-files-found:")[0].splitlines()]
-        self.assertEqual(sum(path.endswith(".png") for path in paths), 9)
-        self.assertEqual(sum(path.endswith(".json") for path in paths), 10)
-        self.assertIn("        if: always() && hashFiles(", step)
-        self.assertIn("          retention-days: 7", step)
-
-
-class SingleMarchDiagnosticTests(unittest.TestCase):
-    fixture = existing.EvidenceTests.fixture
-    log = existing.EvidenceTests.log
-    collect = existing.EvidenceTests.collect
-    assert_collect_preserves_evidence = existing.EvidenceTests.assert_collect_preserves_evidence
-    assert_manifest_cannot_relabel_diagnostic = existing.EvidenceTests.assert_manifest_cannot_relabel_diagnostic
-
-    def test_one_whole_class_strict_completion_seeds_provenance_and_old_scope_rejection(self):
-        for case in ("stone-fault-march-presentation", "stone-fault-march-opponent"):
-            data = self.fixture(case); good = self.log(data)
-            self.assertEqual(data["selection"]["count"], 1)
-            self.assertEqual(self.collect(data, good)["diagnosticOutcome"], "passed")
-            for line in good.splitlines():
-                if line.startswith((suites.SELECTION_PREFIX, suites.DESCRIPTOR_PREFIX, suites.REQUEST_PREFIX,
-                                    diagnostics.SCENE_PREFIX, diagnostic.SEED_PREFIX)):
-                    for bad in (good.replace(line + "\n", "", 1), good + line + "\n"):
-                        self.assertEqual(self.collect(data, bad)["diagnosticOutcome"], "unverified")
-                    payload = json.loads(line.split(" ", 1)[1]); key = next(iter(payload))
-                    duplicate = line[:-1] + "," + json.dumps(key) + ":" + json.dumps(payload[key]) + "}"
-                    self.assertEqual(self.collect(data, good.replace(line, duplicate))["diagnosticOutcome"], "unverified")
-            for other in ("stone-fault-march", "stone-fault-march-visuals",
-                          "stone-fault-march-opponent" if case.endswith("presentation") else "stone-fault-march-presentation"):
-                old = self.fixture(other); old_log = self.log(old)
-                forged = old_log.replace(json.dumps(old["selection"]), json.dumps(data["selection"]))
-                forged = forged.replace(json.dumps(diagnostic.receipt(old)), json.dumps(diagnostic.receipt(data)))
-                for bad in (old_log, forged):
-                    self.assertEqual(self.collect(data, bad)["diagnosticOutcome"], "unverified")
-            for section, key, value in (("provenance", "headSha", "f" * 40), ("provenance", "runId", "999"),
-                                        ("provenance", "runAttempt", "2"), ("sourceFilesSha256", "fixture.java", "d" * 64),
-                                        ("request", "schemaVersion", True)):
-                changed = copy.deepcopy(data); changed[section][key] = value
-                self.assertEqual(self.collect(data, self.log(changed))["diagnosticOutcome"], "unverified")
-            for old, new in (('"seed": "1"', '"seed": "9223372036854775808"'),
-                             ('"seed": "1"', '"seed": true'), ('"returned"', '"threw"'),
-                             ('"count": 1', '"count": true')):
-                self.assertEqual(self.collect(data, good.replace(old, new))["diagnosticOutcome"], "unverified")
-            self.assert_collect_preserves_evidence(case)
-            self.assert_manifest_cannot_relabel_diagnostic(case)
-
-    def test_single_class_preparation_refuses_forged_scope_before_hashing_sources(self):
-        for case in ("stone-fault-march-presentation", "stone-fault-march-opponent"):
-            data = self.fixture(case)
-            for change in ({"kind": "suite"}, {"name": "stone-fault-march-visuals"},
-                           {"count": True}, {"entries": list(suites.STONE_MARCH_VISUAL_ENTRIES), "count": 2}):
-                with tempfile.TemporaryDirectory() as temp:
-                    root = Path(temp); request = root / diagnostic.REQUEST
-                    request.parent.mkdir(); request.write_text(json.dumps(data["request"]))
-                    with patch.object(diagnostic, "ROOT", root), \
-                            patch.object(diagnostic, "identity", return_value={"headSha": "b" * 40, "observedLiveHeadSha": "b" * 40}), \
-                            patch.object(diagnostic, "git", side_effect=["b" * 40 + " " + "a" * 40, diagnostic.REQUEST]), \
-                            patch.object(diagnostic, "select_entries", return_value={**data["selection"], **change}), \
-                            patch.object(diagnostic, "digest") as digest, self.assertRaises(ValueError):
-                        diagnostic.current({})
-                    digest.assert_not_called()
-
-    def test_single_class_catalog_cannot_be_expanded_relabelled_or_reordered(self):
-        for case in ("stone-fault-march-presentation", "stone-fault-march-opponent"):
-            catalog = json.loads(suites.CATALOG.read_text())
-            for edit in ({"purpose": "release"}, {"purpose": "required-part"},
-                         {"entries": list(suites.STONE_MARCH_VISUAL_ENTRIES), "expectedCount": 2},
-                         {"entries": list(suites.STONE_MARCH_ENTRIES), "expectedCount": 3},
-                         {"entries": ["dev.wildercord.cast.RelayCircleTest"]}, {"expectedCount": True}):
-                with tempfile.TemporaryDirectory() as temp:
-                    changed = copy.deepcopy(catalog); changed[case].update(edit)
-                    path = Path(temp) / "catalog.json"; path.write_text(json.dumps(changed))
-                    with self.assertRaises(ValueError): suites.select_entries(suite=case, catalog=path)
 
 
 if __name__ == "__main__":

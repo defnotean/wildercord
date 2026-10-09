@@ -1,47 +1,60 @@
 # Mara's Drainhouses
 
-> **New in 0.10.0-alpha.** Focused native checks cover natural generation, ordinary entrance traversal, placement safeguards, earned gathering and acquisition, equipment interactions, saved-world restart and custom models.
+## What it is
 
-A Drainhouse is a small underground waterkeeping station with three distinct rooms: an engraved entrance, a damp living garden, and a raised copper return desk. Moss banks beside a contained gutter shelter two young Glowcaps. Cracked stone ribs, copper grates and timber braces tell a practical story about tending caves rather than conquering them.
+A **Drainhouse** is a small underground waterkeeping station with three rooms: an engraved entrance, a damp garden and
+a raised copper return desk. Each room has a ledger from Mara. Follow her notes and you can restore the desk and earn
+**Mara's Empty Bell**, a tool for answering [Rootmolt Striders](rootmolt-striders.md).
 
-## Finding a house
+![A Drainhouse with timber braces, a ribbed vault and a raised copper alcove](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/belowkeeper/drainhouse_natural_716843.png)
 
-Drainhouses belong to covered Overworld lush and dripstone caves. World generation can add them when eligible terrain chunks are first generated; an existing explored chunk is not retrofitted. Travel into newly generated cave terrain in an older world. Each placement attempt can refuse because the existing cave floor, open room, roof or write boundary is unsuitable, so a visit to one cave does not guarantee a house. Their two-high entrance aligns with an existing dry cave mouth. A rigid vault keeps the excavation small; original solid ore can remain in a wall or unused doorway, while ore blocking the entrance or interior prevents placement.
+## How to get it
 
-![A naturally generated Drainhouse with timber braces, a ribbed vault and a raised copper alcove](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/belowkeeper/drainhouse_natural_716843.png)
+**Finding a house.** Drainhouses appear in **lush caves** and **dripstone caves** in newly generated land. Their
+entrance opens off a dry cave mouth. Not every cave has one.
 
-This house was generated in seed 716843 and entered with ordinary Survival walking and jumping. The fixed three-seed check observed 243 chunks and verified one neighboring generated house's exact footprint. That small sample verifies discoverability and saved provenance; it does not establish a representative frequency across all worlds.
+**Following Mara's notes.** Read the ledgers in order, in Survival. Each gives you one of her journals, once:
 
-## Follow the borrowed breath
+1. **Entrance ledger** (*The Borrowed Third Breath*): first gather dew from a
+   [Sporeback Snail](sporeback-snails.md).
+2. **Garden ledger** (*Six Feet at the Table*): first watch a living Rootmolt eat a mature
+   [Glowcap](glowcap-nurseries.md) from close by.
+3. **Return desk** (*What the Empty Bell Keeps*): first answer a Rootmolt's warning, either with a melee hit during its
+   warning or rake, or by stepping sideways off its marked line and letting the rake miss.
 
-Mara left three original, three-page written journals with custom cover artwork. The entrance ledger responds after you have crouched with an empty hand and successfully gathered dew from a Sporeback Snail carrying a bead. Its first book, **The Borrowed Third Breath**, points you toward the cave's shared food. Read the entrance ledger first. The garden ledger offers **Six Feet at the Table** after you have watched a living Rootmolt eat a mature Glowcap from within six blocks with a clear view. Read the garden ledger next. The return desk offers **What the Empty Bell Keeps** after you have then answered a living Rootmolt's threat with a real counter. Use the ledgers in Survival mode; Creative and spectator interactions do not advance this investigation. The living warning requires Easy, Normal, or Hard difficulty. In Peaceful, Rootmolts do not threaten players. If natural Rootmolt spawning is disabled, this investigation requires a creature already present in the world.
+Rootmolts only threaten you on Easy, Normal or Hard. You don't need to finish
+[Mara's Three Breathmarks](glowcap-nurseries.md) first. Each player follows their own
+investigation, and using a ledger shows a hint for your next step.
 
-These steps form their own optional investigation; completing [Mara's Three Breathmarks](glowcap-nurseries.md) is not required. [Sporeback Snails](sporeback-snails.md) explains the first gathering, and [Rootmolt Striders](rootmolt-striders.md) explains the living warning. Observations persist in your grimoire. Each authentic ledger gives its own book once. Ordinary copies do not carry the history of an original site. Other players can follow their own investigation; discovering a previously restored house does not remove their opportunity to earn its relic.
+**Restoring the desk.** After all three journals, bring **2 Mycelial Dew, 2 Dried Glowcap Gills and 4 copper ingots**.
+Hold the dew and use the desk. It spends the materials and gives you **Mara's Empty Bell**, once per player.
 
-Rootmolts compete for mature Glowcaps. Their six feet, low feelers, breathing gills and shovel forearms make the warning readable: they brace, commit to a line, then rake. A direct melee hit during its warning, rake or hold records a counter after you have witnessed a meal. For an evasive counter, step at least one block sideways from the marked line, stay nearby in front of the creature with a clear view, and let the rake finish; running out of the encounter does not record it. The equipment below provides additional physical counterplay. Their short hold belongs to that creature and releases when its source is gone. Rootmolts do not provide a repeatable loot economy.
+## How to use it
 
-## Restore the return desk
+### Mara's Empty Bell
 
-After all three observations and books, bring **two Mycelial Dew, two Glowcap Gills and four copper ingots**. Dew comes from a real rested snail reserve; gills come from actually harvesting a mature cap. Hold Mycelial Dew and interact with the raised alcove desk. Restoring the authentic return desk spends these materials and awards **Mara's Empty Bell** once per player. Revisiting or restarting the world cannot repeat that reward.
+Stand still and hold it up for one second while a Rootmolt within 5 blocks, in view, is warning, raking or holding
+you. The ring answers that creature and frees you from its hold.
 
-Hold the damaged bell and interact with that authentic restored desk to repair it. Repairing a damaged bell costs **one dew, one gill and one copper** and repairs up to eight wear. Each player must wait one minute before another repair. A failed or early repair spends nothing and does not reset the wait.
+- Each ring uses 1 of the bell's **32** uses, slows you for 2 seconds and starts a **12-second** rest.
+- Moving, swapping items or losing sight of the Rootmolt cancels it.
+- It makes no magic and deals no damage.
 
-## Mara's Empty Bell
+**Repairing it:** hold the damaged bell and use the restored desk. Each repair costs **1 dew, 1 gill and 1 copper
+ingot**, restores up to 8 uses, and can be done once a minute. A lost or broken bell is not replaced, so repair it
+in time.
 
-This hollow copper bell has an empty throat and a leather loop. Stand still and hold it for a full second while a visible Rootmolt is warning, raking or holding within five blocks. A completed ring answers one creature and releases its hold. Movement, a changed held bell, an obstruction or a lost source stops the commitment; it cannot transfer to another creature.
+### Rootbound Greaves
 
-A successful ring spends one of the bell's 32 wear, leaves your steps and hands heavy for two seconds, and starts a twelve-second rest. Carrying another bell cannot bypass your saved rest. The restored bell is awarded once per player; repair it before it breaks. The current restoration does not replace a lost or broken bell. The bell produces a physical material sound; it does not draw a magic circle or deal damage.
+Craft **leather boots + copper ingot + Dried Glowcap Gills + Mycelial Dew** (shapeless). They're boots with a little
+armour.
 
-## Rootbound Greaves
+Crouch on the ground without moving for **1.5 seconds** to brace your feet. Moving, jumping, sprinting or entering
+water breaks it. A braced pair stops one Rootmolt hold (you still take the hit). That costs 8 durability, slows you
+for 2 seconds and starts a **10-second** rest.
 
-Craft leather boots with **one copper ingot, one Glowcap Gill and one Mycelial Dew**. These are actual feet-slot armor, with a small armor value and root-woven protection for a particular cave hazard.
+## Tips and counterplay
 
-Stay grounded and crouched without moving for one and a half seconds to prepare your feet. Moving, jumping, sprinting, entering water or changing the equipped pair breaks that preparation. A prepared pair can deny one Rootmolt hold after contact, but its physical wound still lands. This costs eight additional wear, gives ten seconds of rest, and leaves two seconds of heavy steps.
-
-They reward deliberate positioning. They do not provide general magical resistance, universal control immunity or permanent protection while walking.
-
-## Tend a garden that can be shared
-
-Keep Glowcaps along reachable snail paths under real cover, with damp supported footing. Ordinary mushrooms can draw a snail's visit elsewhere. Rootmolts need actual mature caps and consume one instead of creating another reward. A bounded covered garden can make visitors easier to observe, but it cannot accelerate their saved resource rests.
-
-Long-lived mixed populations, representative natural frequency and remote multiplayer remain broader acceptance work. Native natural generation and ordinary entry are verified separately from the supplied-habitat earned investigation. Architecture, equipment and all nine earned journal pages have been captured and reviewed. The journals have custom illustrated covers and readable text pages.
+- Plant Glowcaps along snail paths under cover, on damp footing. Ordinary mushrooms can draw a snail away.
+- Rootmolts eat mature caps and give you nothing, so guard your best ones.
+- Brace your Greaves before walking into a Rootmolt's patch.

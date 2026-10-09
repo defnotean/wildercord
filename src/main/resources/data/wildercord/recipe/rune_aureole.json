@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:glowstone_dust",
+    "minecraft:gold_nugget",
+    "minecraft:feather"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:aureole"
+    }
+  }
+}

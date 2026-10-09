@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Native spectator captures, each from a fresh naturally admitted server attack. This fixture
+ * Native spectator captures from a fresh naturally admitted server attack per backend and view. This fixture
  * does not certify first-person opponent visibility or reduced-effects/FOV coverage.
  */
 public final class StoneMarchPresentationTest implements FabricClientGameTest {
@@ -37,6 +37,8 @@ public final class StoneMarchPresentationTest implements FabricClientGameTest {
 	private static final List<Beat> BODY = List.of(new Beat("gather", "windup", 12), new Beat("overhead", "windup", 25),
 		new Beat("first_strike", "release", 32), new Beat("first_recoil", "recovery", 36), new Beat("second_strike", "release", 40),
 		new Beat("third_strike", "release", 48), new Beat("extraction", "recovery", 64), new Beat("reset", "recovery", 84));
+	private static final List<Beat> WIDE = List.of(new Beat("warning", "reply_warning", 20),
+		new Beat("spent_first", "recovery", 36), new Beat("spent_all", "recovery", 64));
 	private StoneMarchFixture fixture;
 	private ServerLevel level;
 	private Vec3 origin;
@@ -62,11 +64,8 @@ public final class StoneMarchPresentationTest implements FabricClientGameTest {
 			context.runOnClient(MastersNpcCaptureProbe::configure);
 			for (boolean articulated : new boolean[] {false, true}) {
 				System.setProperty(ArticulatedCombat.ENABLE_PROPERTY, Boolean.toString(articulated));
-				for (String view : List.of("front", "side")) for (Beat beat : BODY)
-					capture(context, world, articulated, view, beat);
-				capture(context, world, articulated, "wide", new Beat("warning", "reply_warning", 20));
-				capture(context, world, articulated, "wide", new Beat("spent_first", "recovery", 36));
-				capture(context, world, articulated, "wide", new Beat("spent_all", "recovery", 64));
+				for (String view : List.of("front", "side")) capture(context, world, articulated, view, BODY);
+				capture(context, world, articulated, "wide", WIDE);
 			}
 		} finally {
 			if (previous == null) System.clearProperty(ArticulatedCombat.ENABLE_PROPERTY); else System.setProperty(ArticulatedCombat.ENABLE_PROPERTY, previous);
@@ -74,7 +73,8 @@ public final class StoneMarchPresentationTest implements FabricClientGameTest {
 		}
 	}
 
-	private void capture(ClientGameTestContext context, TestSingleplayerContext world, boolean articulated, String view, Beat beat) {
+	/** One natural acceptance per backend and view; every ascending beat is still an exact, separately validated capture. */
+	private void capture(ClientGameTestContext context, TestSingleplayerContext world, boolean articulated, String view, List<Beat> beats) {
 		boolean close = !view.equals("wide");
 		try {
 			frameObserver(world, view);
@@ -83,38 +83,43 @@ public final class StoneMarchPresentationTest implements FabricClientGameTest {
 			world.getConnection().waitForChunksRender();
 			beginNaturally(world);
 			int id = master.getId();
-			CompletableFuture<MastersNpcCaptureProbe.Evidence> shot = null;
-			for (int tick = 0; tick < beat.age + 10; tick++) {
-				var serverFrame = world.getServer().computeOnServer(server -> observe());
-				shot = context.computeOnClient(mc -> {
-					check(!mc.isPaused() && mc.gui.screen() == null && mc.player.isSpectator(), "Native observer remains unpaused and outside the roster");
-					if (!(mc.level.getEntity(id) instanceof SwordMaster live) || live.attackAnimation() != 10) return null;
-					float age = live.attackElapsed(MastersNpcCaptureProbe.PARTIAL);
-					if (age < beat.age) return null;
-					check(age < beat.age + 1, "Capture exact requested March beat, never a neighbomarch phase");
-					check(mc.level.getGameTime() - (long) live.attackElapsed(0) == began, "Capture preserves the naturally accepted server activation");
-					String name = "stone_fault_march_" + (articulated ? "segmented_" : "rigid_") + view + "_" + beat.name;
-					return MastersNpcCaptureProbe.capture(mc, live, name, beat.phase, beat.age,
-						18 - (beat.age >= 32 ? 1 : 0) - (beat.age >= 40 ? 2 : 0) - (beat.age >= 48 ? 3 : 0), origin, serverFrame, articulated, close);
-				});
-				if (shot != null) break;
-				context.waitTick();
+			var shots = new java.util.ArrayList<CompletableFuture<MastersNpcCaptureProbe.Evidence>>();
+			for (Beat beat : beats) {
+				CompletableFuture<MastersNpcCaptureProbe.Evidence> shot = null;
+				for (int tick = 0; tick < beat.age + 10; tick++) {
+					var serverFrame = world.getServer().computeOnServer(server -> observe());
+					shot = context.computeOnClient(mc -> {
+						check(!mc.isPaused() && mc.gui.screen() == null && mc.player.isSpectator(), "Native observer remains unpaused and outside the roster");
+						if (!(mc.level.getEntity(id) instanceof SwordMaster live) || live.attackAnimation() != 10) return null;
+						float age = live.attackElapsed(MastersNpcCaptureProbe.PARTIAL);
+						if (age < beat.age) return null;
+						check(age < beat.age + 1, "Capture exact requested March beat, never a neighbomarch phase");
+						check(mc.level.getGameTime() - (long) live.attackElapsed(0) == began, "Capture preserves the naturally accepted server activation");
+						String name = "stone_fault_march_" + (articulated ? "segmented_" : "rigid_") + view + "_" + beat.name;
+						return MastersNpcCaptureProbe.capture(mc, live, name, beat.phase, beat.age,
+							18 - (beat.age >= 32 ? 1 : 0) - (beat.age >= 40 ? 2 : 0) - (beat.age >= 48 ? 3 : 0), origin, serverFrame, articulated, close);
+					});
+					if (shot != null) break;
+					context.waitTick();
+				}
+				check(shot != null, "Native client must observe the requested March frame");
+				shots.add(shot);
 			}
-			check(shot != null, "Native client must observe the requested March frame");
 			world.getServer().waitFor(server -> {
 				if (level.getGameTime() < began + StoneMarchRules.TELL) return false;
 				observe(); return true;
 			}, 70);
-			var pending = shot;
-			context.waitFor(mc -> pending.isDone(), 40);
-			var evidence = shot.join();
-			check(evidence.captureStatus().equals("passed"), "Native framebuffer, backend, socket and band receipts must pass");
-			for (var receipt : evidence.modelReceipts()) {
-				float[] root = receipt.modelRootTransform();
-				check(root.length == 6 && Math.abs(root[0]) + Math.abs(root[1]) + Math.abs(root[2]) < .0001F,
-					"The visual turn cannot translate the model root");
-				float expected = 0;
-				check(Math.abs(root[4] - expected) < .0001F, "The planted action retains a fixed model root");
+			for (var pending : shots) {
+				context.waitFor(mc -> pending.isDone(), 40);
+				var evidence = pending.join();
+				check(evidence.captureStatus().equals("passed"), "Native framebuffer, backend, socket and band receipts must pass");
+				for (var receipt : evidence.modelReceipts()) {
+					float[] root = receipt.modelRootTransform();
+					check(root.length == 6 && Math.abs(root[0]) + Math.abs(root[1]) + Math.abs(root[2]) < .0001F,
+						"The visual turn cannot translate the model root");
+					float expected = 0;
+					check(Math.abs(root[4] - expected) < .0001F, "The planted action retains a fixed model root");
+				}
 			}
 		} finally {
 			world.getServer().runOnServer(server -> {

@@ -145,11 +145,22 @@ public final class Heart {
 	/** @param overflow the spell is cast at full mana (7th Circle: Overflow) */
 	public static Bonuses bonuses(Player player, boolean overflow) {
 		int circles = active(player);
+		dev.wildercord.spell.CircleVows.Effect vows = vowEffect(player);
 		return dev.wildercord.content.RelicCharmItem.apply(player,new Bonuses(
-			Circles.power(Mana.enchantLevel(player, POTENCY), circles, overflow),
-			Circles.duration(Mana.enchantLevel(player, PERSISTENCE)),
-			Circles.cost(Mana.enchantLevel(player, THRIFT), circles),
-			Circles.cooldown(Mana.enchantLevel(player, CELERITY), circles)));
+			Circles.power(Mana.enchantLevel(player, POTENCY), circles, overflow) * vows.power(),
+			Circles.duration(Mana.enchantLevel(player, PERSISTENCE)) * vows.duration(),
+			Circles.cost(Mana.enchantLevel(player, THRIFT), circles) * vows.cost(),
+			Circles.cooldown(Mana.enchantLevel(player, CELERITY), circles) * vows.cooldown()));
+	}
+
+	/** The saved Circle Vows (old saves: none). */
+	public static int vows(Player player) {
+		return dev.wildercord.spell.CircleVows.clean(player.getAttachedOrElse(WildercordAttachments.CIRCLE_VOWS, 0));
+	}
+
+	/** What the vows of this heart's active circles add up to; a cracked circle's vow is silent. */
+	public static dev.wildercord.spell.CircleVows.Effect vowEffect(Player player) {
+		return dev.wildercord.spell.CircleVows.effect(vows(player), active(player));
 	}
 
 	public static int manaCost(Player player, SpellCompiler.Compiled compiled) {
@@ -225,6 +236,8 @@ public final class Heart {
 		if (compiled.root().groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.RelayRules.ID))) return dev.wildercord.spell.RelayRules.REST_TICKS;
         if (compiled.root().groups.stream().anyMatch(g -> g.shape.is(dev.wildercord.spell.ReweaveRules.ID))) return dev.wildercord.spell.ReweaveRules.REST_TICKS;
 		if (compiled.root().groups.stream().anyMatch(g -> g.effects.stream().anyMatch(e -> e.effect.is(dev.wildercord.spell.ExciseRules.ID)))) return dev.wildercord.spell.ExciseRules.REST_TICKS;
+		for (var lesson : dev.wildercord.spell.LessonPackRules.ALL)
+			if (compiled.root().groups.stream().anyMatch(g -> g.effects.stream().anyMatch(e -> e.effect.is(lesson.id)))) return lesson.restTicks;
 		return (int) Math.max(5, Math.round(compiled.cooldownTicks() * bonuses(player).cooldown() * factor));
 	}
 

@@ -8,9 +8,9 @@ class MastersRulesTest {
 	@Test
 	void everyAttackHasALearnedTellAndRealRecovery() {
 		for (MastersRules.Move move : MastersRules.Move.values()) {
-			assertTrue(move.tell >= 18);
+			assertTrue(move.tell >= 12, "still more than half a second to read");
 			assertTrue(move.tell > MastersRules.AIM_LOCK);
-			assertTrue(move.recovery >= 20, "one whole second for a counter or a cast");
+			assertTrue(move.recovery >= 14, "a real window for a counter or a quick cast");
 		}
 	}
 
@@ -94,7 +94,8 @@ class MastersRulesTest {
 		assertNotEquals(MastersRules.move(0, 0, 0, 3), MastersRules.move(1, 0, 0, 3));
 		assertTrue(MastersRules.guardAfter(MastersRules.STONE, 1));
 		assertFalse(MastersRules.guardAfter(MastersRules.GALE, 1));
-		assertTrue(MastersRules.guardAfter(MastersRules.GALE, 2));
+		assertFalse(MastersRules.guardAfter(MastersRules.GALE, 2));
+		assertTrue(MastersRules.guardAfter(MastersRules.GALE, 3));
 	}
 	@Test
 	void theLastReservedEncounterCanOpenWithoutAdmittingANinth() {

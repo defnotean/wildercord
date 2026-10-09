@@ -294,9 +294,11 @@ public final class WildercordKeys {
 		ReweaveClient.beginTick(client);
         ExciseClient.beginTick(client);
         boolean excise = ExciseClient.key(client, cast, -1);
+        LessonPackClient.beginTick(client);
+        boolean pack = LessonPackClient.key(client, cast, -1);
 		boolean reweave = ReweaveClient.key(client, cast, -1);
 		boolean relaySelected = RelayClient.key(client, cast, -1);
-		if (!(relaySelected || reweave || excise) || charging) {
+		if (!(relaySelected || reweave || excise || pack) || charging) {
 		// The cast key: a tap casts at once; held, the spell charges until it's let go.
 		while (cast.consumeClick()) {
 			if (castHeld < 0 && playing) {
@@ -374,9 +376,10 @@ public final class WildercordKeys {
 			boolean relay = RelayClient.key(client, CAST_N[i], i);
 			boolean rewritten = ReweaveClient.key(client, CAST_N[i], i);
             boolean excised = ExciseClient.key(client, CAST_N[i], i);
+            boolean packed = LessonPackClient.key(client, CAST_N[i], i);
 			while (CAST_N[i].consumeClick()) {
 				if (client.player != null) {
-					if (!relay && !rewritten && !excised && playing) ClientPlayNetworking.send(new WildercordNetworking.CastSpell(i));
+					if (!relay && !rewritten && !excised && !packed && playing) ClientPlayNetworking.send(new WildercordNetworking.CastSpell(i));
 				}
 			}
 		}

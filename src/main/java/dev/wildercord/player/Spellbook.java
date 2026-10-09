@@ -46,7 +46,7 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 		List<List<String>> sized = new ArrayList<>(count);
 		for (int i = 0; i < count; i++) {
 			List<String> spell = i < lists.size() ? lists.get(i) : List.of();
-			sized.add(dev.wildercord.spell.ExciseRules.boundedIds(spell, sockets));
+			sized.add(dev.wildercord.spell.LessonPackRules.boundedIds(spell, sockets));
 		}
 		return List.copyOf(sized);
 	}

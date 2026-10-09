@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:composter",
+    "minecraft:rotten_flesh",
+    "minecraft:wheat_seeds"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:compost"
+    }
+  }
+}

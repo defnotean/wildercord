@@ -332,6 +332,13 @@ public final class Duels {
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Duels::tick);
+		// A leaver's own rests stay (a relog never skips them); everyone's that have run go once the maps grow.
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			long now = server.overworld().getGameTime();
+			dev.wildercord.spell.StatePrune.rested(LAST_HURT, now, DuelRules.HURT_TICKS);
+			dev.wildercord.spell.StatePrune.rested(LAST_PVP, now, DuelRules.PVP_TICKS);
+			dev.wildercord.spell.StatePrune.rested(LAST_DUEL, now, DuelRules.DUEL_COOLDOWN_TICKS);
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			BY_PLAYER.clear();
 			CHALLENGES.clear();

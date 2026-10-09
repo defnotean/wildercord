@@ -1,30 +1,43 @@
-# Builds to try
+# Builds to Try
 
-These are starting points for experiments. You still need to learn the runes, wear a Cord with enough sockets and tier access, and pay the cost shown in the editor. A sequence containing a named fusion requires that learned fusion. The editor's final price includes your equipment and ranks.
+## What it is
 
-| Goal | Sequence | How to use it |
+Ready-made spells to copy and learn from. Each one is a rune sequence you thread on your Cord, left to right.
+
+| Goal | Spell | What it does |
 |---|---|---|
-| First knockback | `Bolt · Push` | Starter spell taught when you equip your first Cord |
-| A simple attack | `Bolt · Ember` | A cheap ranged fire effect; watch for burning targets |
-| Self healing | `Self · Heal` | Restore your own health; does not select a distant ally |
-| Fast frost | `Bolt · Gyre Circle · Frost` | Faster projectile flight, with reduced power |
-| Wider support | `Burst · Bloom Circle · Heal` | Trade healing per target for wider coverage |
-| Longer mining aid | `Self · Anchor Circle · Haste` | Extend a supported effect's duration at a higher mana cost |
-| Mixed beam | `Beam · Confluence Circle · Fire · Shock` | Two distinct materials braid together; duplicate Fire does not add another distinct element |
-| Two-stage control | `Bolt · Needle Circle · Fire · On Hit · Burst · Bloom Circle · Frost` | A focused opening shot triggers a wider, softer frost follow-up |
-| Defensive terrain | `Self · Strata Rise` | Raise a temporary collision wall; test placement in an open area |
-| A stepping route | `Self · Wind Steps` | Form temporary platforms ahead; leave before they expire |
+| First knockback | `Bolt · Push` | The spell you get with your first Cord. |
+| Cheap fire | `Bolt · Ember` | A small fire bolt that sets targets alight. |
+| Heal yourself | `Self · Heal` | Restores your own health. |
+| Fast frost | `Bolt · Gyre Circle · Frost` | A faster frost bolt with a little less power. |
+| Group healing | `Burst · Bloom Circle · Heal` | Heals a wider area, but less per ally. |
+| Longer mining | `Self · Anchor Circle · Haste` | Haste lasts longer, for more mana. |
+| Mixed beam | `Beam · Confluence Circle · Fire · Shock` | Two elements in one beam for extra power. |
+| Two-stage attack | `Bolt · Needle Circle · Fire · On Hit · Burst · Bloom Circle · Frost` | A tight fire shot, then a wide frost burst where it lands. |
+| Cover | `Self · Strata Rise` | Raises a stone wall to hide behind. |
+| Climbing | `Self · Wind Steps` | Builds platforms ahead of you. |
 
-## Read the spell in groups
+## How to get it
 
-In the linked example, **Bolt** starts the opening group. **Needle Circle** changes that group. **On Hit** waits for its impact, then **Burst** starts another group with **Bloom Circle**. The second group keeps its own discipline and opens at the trigger point.
+You need to know every rune in the spell, and wear a Cord with enough sockets and a high enough tier. See
+[Cords](cords.md). A spell with a fused rune needs that fusion too.
 
-A modifier searches for a compatible rune on its left. A link needs a shape to watch. If the readout reports a group without an effect or an incompatible modifier, fix that warning before trying to judge the animation.
+The quickest way to load one is to paste its spell code with the Cord screen's **Paste spell code** button. See
+[The Cord Screen](cord-screen.md#the-spell-tools).
 
-## Save a useful experiment
+## How to use it
 
-Use the Cord's [loadouts](loadouts.md) for complete arrangements, or the [Research Notebook](../progression/research.md) to save up to 24 named spell builds. A build stores the rune sequence; it does not grant equipment or teach missing runes.
+Read a spell in **groups**. In the two-stage attack, `Bolt` starts the first group and `Needle Circle` changes
+it. `On Hit` waits for the bolt to land, then `Burst` starts a second group with its own `Bloom Circle`.
 
-## Test before a duel
+The Cord screen's readout shows the real price with your gear and ranks. If it shows a warning, fix that
+first. Learn the rules on [How a Spell Is Read](reading-spells.md).
 
-Visit [Practice and Trials](../progression/practice.md). Compare the same target and gear while changing one rune. Dummy damage is not a prediction of damage against a player wearing armour and defensive gear. Plan an escape, support or shield spell alongside your attack.
+## Tips and counterplay
+
+- **Change one rune at a time** and test on a dummy. See [Practice and Trials](../progression/practice.md).
+  A dummy doesn't wear armour, so players will take less.
+- **Save what works.** Keep whole setups in [Loadouts](loadouts.md), or up to 24
+  named spells in the [Research Notebook](../progression/research.md). Saving a spell doesn't
+  teach its runes.
+- **Bring more than an attack.** Carry a shield, heal or escape spell too.

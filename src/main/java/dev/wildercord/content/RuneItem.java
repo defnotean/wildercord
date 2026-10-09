@@ -211,6 +211,11 @@ public class RuneItem extends Item {
                 serverPlayer.sendOverlayMessage(Component.literal("Excise is learned by studying Rootbound in your Grimoire."));
                 return InteractionResult.FAIL;
             }
+            var pack = dev.wildercord.spell.LessonPackRules.byRune(def.id());
+            if (pack != null && !dev.wildercord.player.MasterStudies.knows(serverPlayer, pack)) {
+                serverPlayer.sendOverlayMessage(Component.literal(pack.name + " is learned by studying " + pack.title + " in your Grimoire."));
+                return InteractionResult.FAIL;
+            }
 			int rank = rankOf(stack);
 			boolean known = Spellbooks.knows(serverPlayer, def.id());
 			if (known && rank <= RuneRanks.rank(serverPlayer, def.id())) {

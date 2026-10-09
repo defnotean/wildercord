@@ -1,119 +1,75 @@
-# Secret spells
+# Secret Spells
 
+## What it is
 
-Hidden among all the spells you can thread are **ten secret spells**. Each is one exact sequence of
-runes that the runes themselves recognise. Thread it and cast it, and instead of the ordinary spell
-those runes would make, something new happens: a set piece with its own name, its own look and its
-own sound, far beyond what the runes do on their own.
+Hidden among all the spells you can thread are **ten secret spells**. Each is one exact sequence of runes.
+Cast it and, instead of the ordinary spell, you get a set piece with its own name, look and sound.
 
-Nothing in the game lists them, and this wiki won't either. You find them by experimenting, or by
-following the riddles on **Torn Pages**.
-
-The ten secret spells are the same in every world. Your world also has **harmonies** of its own, which no other
-world shares: see [Harmonies and Reading Runes](harmonies.md).
-
+The ten are the same in every world. Nothing in the game lists them, and neither does this wiki. Your world
+also has its own [harmonies](harmonies.md).
 
 | ![A lance of ice pierces a line of husks and closes each one in a block of ice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/glacial-lance.jpg) | ![A line of stone spires bursts out of the ground toward a group of husks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/tectonic-rise.jpg) |
 |---|---|
-| **Glacial Lance**, a secret spell | **Tectonic Rise**, a secret spell |
+| **Glacial Lance** | **Tectonic Rise** |
 
-## The rules
+## How to get it
 
-- **Exact order, nothing else.** The runes must be threaded in exactly the right order, with nothing
-  before, between or after them. One rune out of place and it's an ordinary spell.
-- **Every secret is also an ordinary spell.** A guess that's nearly right still casts something
-  sensible, so a wrong guess never looks broken, and never tells you how close you were.
-- **Your Cord must be able to hold it**: enough sockets, and a high enough tier for every rune in it.
-- **Nothing gives it away.** Until you've found it, the Cord screen, your spell panel and the spell wheel
-  name, price and time it like any ordinary spell, and the cast that finds it costs just that.
+Experiment, or follow the riddles on **Torn Pages**.
 
-## Finding one
+- **Exact order, nothing else.** Nothing before, between or after the runes.
+- **A near guess is still a normal spell**, and never tells you how close you were.
+- **Your Cord must hold it**: enough sockets and a high enough tier. No secret is longer than four runes.
 
-The first time you cast a secret spell:
+### Torn Pages
 
-- its **name** fills your screen, with *"A secret spell"* beneath it and a triumphant chime;
-- it's written into your [Grimoire](../progression/grimoire.md): its name, its runes
-  and what it does. From then on the Grimoire page also shows its magic circle, one found secret after
-  another, like plates in a book;
-- it condenses **400 mana** toward your next [Heart Circle](../progression/heart-circles.md),
-  more than any other discovery but a boss;
-- from then on, whenever you thread it, the Cord screen, your spell panel and the spell wheel show its
-  real name and its real price and cooldown (see below); the Cord screen names it in its own colour,
-  with a line saying what it does.
-
-| Milestone | Reward |
-|---|---|
-| Your first secret | **Hidden Words** advancement (a hidden goal): 50 experience |
-| 2 secrets | Part of the **7th Heart Circle**'s breakthrough |
-| 4 secrets | Part of the **8th Heart Circle**'s breakthrough |
-| All ten | **Nothing Left Unsaid** advancement (a hidden challenge): 300 experience and 3 Mana Crystals |
-| All ten, every reaction and nearly every feat | **Every Page Filled** challenge (see [Advancements](../progression/advancements.md)) |
-
-## How they behave
-
-- **They cost more than their runes.** Once you've found it, a secret spell costs **1.1 to 1.5 times**
-  the mana of the ordinary spell its runes would make, depending on the secret, and your spell panel,
-  the spell wheel and the Cord screen show that price. (The cast that finds it costs only the ordinary
-  price.)
-- **Longer cooldown:** once found, half as long again as the ordinary spell's, and that's the cooldown
-  shown too.
-- **They weigh their full price** against a [Shield](shields.md), so
-  they break Shields their runes alone wouldn't.
-- **Scaled like any spell** by your Heart Circles, Cord enchantments, charging and rhythm.
-- **Nothing saves you from `/kill` or the void.** No secret spell, however grand, keeps you alive against an
-  operator's `/kill` or a fall out of the world.
-- **Wild magic** can surge a secret spell when you overcast it, but never into Element or Grand (a
-  secret is its exact runes): those become Twice. See
-  [Overcasting and Wild Magic](overcasting.md).
-- **On a Spell Scroll** a secret spell goes off as the secret for whoever reads the scroll, with or
-  without a Cord. Reading someone else's scroll doesn't count as finding it yourself. A scroll bears the
-  secret's name only if its writer had found it.
-
-## Riddles and Torn Pages
-
-A **Torn Page** is a scrap of an old grimoire. Hold it and use it (right-click) to read it:
-
-- You learn the **riddle** of one secret spell you haven't found yet and haven't already got the riddle
-  for, picked at random. Half the time, while your world has any left, it's instead the riddle of one of your
-  world's own [harmonies](harmonies.md#riddles), with its name. It's printed in chat (*"The page is torn, but a riddle survives:"*), a toast
-  says *"A riddle, found"*, and the riddle takes that secret's place in your Grimoire until you solve
-  it. The page is used up.
-- In the Overworld, the margin also holds **a map**: *"an Archive lies about 350 blocks to the
-  northwest"*, the way to the nearest [Archive](../world/archive.md), rounded to 50
-  blocks.
-- If you already have every riddle (or every secret and harmony), the page says *"Nothing on this page you don't
-  already know"* and you keep it. Give it to a friend.
-- Your first page earns the **Marginalia** advancement (15 experience).
-
-A riddle describes its spell's runes, in order, in a few words of verse. Read it slowly.
-
-### Where to find Torn Pages
+Use a Torn Page to read it. It gives the **riddle** of a secret you haven't found yet, or sometimes of one of
+your world's harmonies. The riddle names each rune, in order, in a line of verse, and waits in your Grimoire
+until you solve it. In the Overworld the page also points toward the nearest
+[Archive](../world/archive.md). If there's nothing new on it, you keep the page.
 
 | Where | Chance |
 |---|---|
 | Stronghold library chests | 45% |
-| Ancient city chests | 25% |
-| Woodland mansion chests | 25% |
-| Trial chamber vaults (their rare rewards) | 15% |
-| Dungeon (monster room) chests | 12% |
-| Desert pyramid chests | 12% |
-| Chests in the [Archive](../world/archive.md), [Ember Sanctum](../world/ember-sanctum.md), [Astral Observatory](../world/astral-observatory.md) and [Drowned Scriptorium](../world/drowned-scriptorium.md) | often, sometimes more than one |
+| Ancient city and woodland mansion chests | 25% |
+| Trial chamber vaults (rare rewards) | 15% |
+| Dungeon and desert pyramid chests | 12% |
+| Chests in Wildercord's dungeons, such as the Archive and the Ember Sanctum | often |
 | [Runebound](../world/runebound.md) slain by a player | 6% (Adepts 20%) |
-| The Cinder Warden, the Star-Eater and the Tide Scribe | always one |
+| The Cinder Warden, Star-Eater, Tide Scribe, [Root Guardian and Storm Conductor](../world/root-and-storm-bosses.md) | always one |
 | The Archivist | always two |
-| A [Runesmith](../social/runesmith.md) | Journeyman: 14 emeralds and a book; Expert: 16 emeralds |
+| A [Runesmith](../social/runesmith.md) | for sale at Journeyman and Expert |
 
-The chest chances are the defaults; a server can change them.
+When the **Archivist** casts his own secret spell, everyone within 40 blocks learns its riddle.
 
-There's one more way. When the **Archivist** casts his own secret spell, everyone within 40 blocks
-learns its riddle.
+## How to use it
 
-## Tips for experimenting
+The first time you cast a secret spell, its name fills your screen, it goes in your
+[Grimoire](../progression/grimoire.md), and it gives **400 mana** toward your next
+[Heart Circle](../progression/heart-circles.md). From then on the Cord screen and spell panel
+show its real name, price and cooldown.
 
-- **Think in sentences.** A secret reads like a spell with a clear idea: a shape, then what it does,
-  then how it's changed. The riddles say what the runes are, in order.
-- **Keep it short.** No secret is longer than four runes, so a Copper Cord has sockets enough for any
-  of them, though some need higher-tier runes and so a better Cord.
-- **Watch the cast.** You'll know at once when you've found one: the name fills your screen.
-- **Keep your riddles.** They wait in the Grimoire until you solve them, so there's no need to write
-  them down.
+- **It costs more:** 1.1 to 1.5 times the ordinary spell's mana, depending on the secret. The cast that finds
+  it costs only the ordinary price.
+- **Its cooldown is half as long again.**
+- **It weighs its full price** against a [Shield](shields.md).
+- It's boosted like any spell by your Heart Circles, Cord, charging and rhythm.
+- [Wild magic](overcasting.md) never turns it into Element or Grand.
+- **On a Spell Scroll** it goes off as the secret for whoever reads it, but that doesn't count as finding it.
+
+| Secrets found | Needed for |
+|---|---|
+| 2 | the 7th Heart Circle |
+| 4 | the 8th Heart Circle |
+| 5 | the 11th Heart Circle |
+| 7 | the 15th Heart Circle |
+| 9 | the 19th Heart Circle |
+| All 10 | the 20th Heart Circle |
+
+Your first secret earns the hidden **Hidden Words** advancement, and all ten earn **Nothing Left Unsaid**.
+
+## Tips and counterplay
+
+- **Think in sentences:** a shape, then what it does, then how it's changed.
+- **Keep it short.** Four runes at most.
+- **Keep your riddles.** They wait in the Grimoire, so there's no need to write them down.
+- **Give spare pages away.** A page with nothing new for you may help a friend.

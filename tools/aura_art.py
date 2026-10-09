@@ -25,6 +25,10 @@ METHODS = [
     ("starlit", "arcane", 0xE678DC, 0xFFD8FA),
     ("hourglass", "time", 0xF2D98A, 0xFFF8E0),
     ("crimson", "blood", 0xD2283C, 0xFF6474),
+    # ---- methods-a pack
+    ("tide", "brine", 0x1E8C96, 0xD8FFF6),
+    ("iron", "metal", 0x9AA6B2, 0xFF9A3C),
+    ("dune", "sand", 0xD49A3A, 0xF6E3A0),
 ]
 
 
@@ -141,6 +145,28 @@ EMBLEMS = {
         "...#..",
         "......",
         "..#...",
+    ],
+    # ---- methods-a pack
+    "tide": [
+        "......",
+        ".##...",
+        "#..#.#",
+        "....#.",
+        "#+#+#.",
+    ],
+    "iron": [
+        "#####.",
+        "#####.",
+        "..#...",
+        ".###..",
+        "#####.",
+    ],
+    "dune": [
+        "...#..",
+        "..#+#.",
+        ".#...#",
+        "#.....",
+        "+#+#+.",
     ],
 }
 
@@ -843,6 +869,20 @@ def preview():
     sheet.save(out / "aura_manuals.png")
     crystal().resize((128, 256), Image.NEAREST).save(out / "aura_crystal.png")
     print(f"wrote {out / 'aura_manuals.png'}")
+
+
+# ---- methods-b pack: Echo, Dawn and Venom (tools/methods_b_art.py) join the methods, emblems and English, and write their Masters.
+import methods_b_art as _methods_b  # noqa: E402
+
+METHODS.extend(_methods_b.METHODS)
+EMBLEMS.update(_methods_b.EMBLEMS)
+LANG.update(_methods_b.LANG)
+_aura_write = write
+
+
+def write(g):  # noqa: F811
+    _aura_write(g)
+    _methods_b.write(g)
 
 
 if __name__ == "__main__":

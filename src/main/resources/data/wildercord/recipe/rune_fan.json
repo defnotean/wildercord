@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:feather",
+    "minecraft:arrow",
+    "minecraft:arrow"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:fan"
+    }
+  }
+}

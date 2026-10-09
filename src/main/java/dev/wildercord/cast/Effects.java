@@ -176,7 +176,8 @@ public final class Effects {
 		applyingCast = cast;
 		thirst = SpellNumbers.thirstShare(node);
 		try {
-			applyEffect(cast, node, hit, groupPower);
+			// ---- links-mods pack: hearth modifiers pick who it reaches, how hard, and what its breaks drop.
+			HearthModifiers.around(cast, node, hit, groupPower, (h, p) -> applyEffect(cast, node, h, p));
 			// A Relay's inherited hooks are still part of its original paid effect. Keep their
 			// mastery, damage and residue callbacks in this exact scope, including on exceptions.
 			if (cast.guardedImpact()) afterEffect(cast, node, hit, groupPower);
@@ -318,6 +319,8 @@ public final class Effects {
 		if (SupportSignatures.apply(cast,node,hit,helped)) return;
 		if (CampConcordMagic.apply(cast,node,hit,helped)) return;
 		if (TrailSignatures.apply(cast,node,hit)) return;
+		// ---- fx-passive pack
+		HearthEffects.apply(cast, node, hit, helped, harmed, power, duration);
 
 		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
 		switch (builtIn(rune) ? rune.path() : "") {
@@ -866,6 +869,38 @@ public final class Effects {
 				CraftedRunes.apply(cast, node, hit, helped, harmed, power, duration);
 			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
 				Innates.apply(cast, rune, helped, harmed, power, duration);
+			// ---- fx-fish pack
+			case "angler_lure", "bait_blessing", "reeling_tide", "school_sight", "tackle_mend", "bobber_bell", "water_reading", "dolphin_call",
+				"axolotl_kinship", "shoal_herd", "refloat", "reed_cut", "wring", "spring_draw", "brimming", "oceans_favor",
+				"diving_bell", "tide_lantern", "sluice", "soak_through", "rain_cloud", "storm_glass", "kelpsong", "coral_mend",
+				"nest_tend", "lily_path", "sandbar", "ice_auger", "tide_marker", "shore_sense", "fathom", "wreck_sense",
+				"drift_net", "mooring_call", "fair_wind", "upwell", "sounding", "porpoise", "skimstep", "skaters_edge",
+				"air_pocket", "drown_ward", "pearl_sight", "sea_breeze", "inkveil", "shellback", "dewcatch", "divers_hands" ->
+				dev.wildercord.cast.packs.TideEffects.apply(cast, node, hit, helped, power, duration, amplify, passiveEffect);
+			// ---- fx-farm pack: the farmstead runes (field, herd, kitchen, hive, wood) live in cast/packs/FarmEffects.
+			case "tillage", "dewfall", "tilth", "plowline", "sow", "ripen", "dewkeep", "fieldsense", "thawfield", "cloche", "scarecrow", "fallow",
+				"ditchwater", "compost", "stalkrise", "gourdcall", "berrybless", "courtship", "herdcall", "fleece", "milkmaid", "henhouse",
+				"gentlehand", "fodder", "barnwarmth", "herdsense", "hearthcook", "stewpot", "bakehouse", "pollinate", "hivehum", "calmsmoke",
+				"wildflower", "saplingrise", "saplingsow", "leaffall", "barkstrip", "coppice", "feastday", "picnic", "honeydew", "leafshade",
+				"barkhide", "sapflow", "trot", "beeline", "fieldstride", "hayloft" ->
+				dev.wildercord.cast.packs.FarmEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
+			// ---- fx-mine pack
+			case "stairdelve", "riser", "plumbline", "siftfall", "gangue", "orepluck", "luckstrike", "silklift",
+				"deepsound", "oretally", "lavaseal", "deepway", "hollowsense", "kilnbake", "blockpack", "unpack",
+				"millstone", "toolmend", "levelground", "holefill", "shoreup", "stilt", "plankway", "polish",
+				"brickwork", "agestone", "concreteset", "chalkline", "pitfloor", "torchfall", "gloomsight", "lumenpath",
+				"snuffout", "headlamp", "leverflip", "buttonpush", "doorcall", "chestsort", "stow", "restock",
+				"stocktake", "unburden", "lodepull", "caveward", "delvemark", "motherlode", "floorlay", "packtidy" ->
+				DelveEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
+			// ---- fx-explore pack
+			case "land_reading", "depth_sounding", "spawn_bearing", "home_bearing", "grave_bearing", "portal_reckoning", "slime_sense", "sky_reading", "moon_reading", "sun_reading", "lux_reading", "chalk_line", "village_sense", "ruin_sense", "shipwreck_sense", "portal_sense", "fortress_sense", "stronghold_compass", "spire_sense", "trail_blaze", "relic_sense", "spawner_sense", "steady_brush", "appraise", "trade_renew", "haggle", "folk_call", "folk_census", "lapis_thrift", "quickbrew", "potion_steep", "lore_reading", "shelf_count", "beacon_swell", "dye_wash", "checker_dye", "glyph_carve", "lamplighter", "snuff_out", "sign_glow", "frame_veil", "stand_pose", "lava_crust", "void_step", "lava_sense", "gold_parley" ->
+				WayfarerEffects.apply(cast, node, hit, helped, harmed, power, duration);
+			// ---- fx-support pack
+			case "worst_first", "salve", "mending_mist", "hearthglow", "aftercare", "hearthsong", "grace", "managift", "manawell", "guardlink", "rally",
+				"morale", "shrug_off", "hexguard", "stoutheart", "ironhold", "evade", "emberguard", "beastguard", "hearthguard", "heel", "bellward",
+				"sanctuary", "arrowveil", "blastward", "firebreak", "pacify", "lure", "stillbind", "taunt", "nudge", "hobble", "corral", "truce",
+				"spook", "aegis", "accord", "citadel", "shieldwall", "staunch", "sentry", "tend", "soothe", "withdraw", "keepsafe", "faithful" ->
+				dev.wildercord.cast.packs.WardEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
 			default -> {
 				if (Runes.fused(rune)) {
 					// The fused effects, made only at the Fusion Altar.
@@ -1052,6 +1087,8 @@ public final class Effects {
 		bonus *= AddonRunes.react(cast, target, currentElement);
 		if (!cast.consequencesValid(target)) return;
 		bonus *= ExplorerEffects.bonus(cast, target, currentElement);
+		// ---- links-mods pack: Tapering and Pooled share the blow out.
+		bonus *= HearthModifiers.damageFactor(cast, target);
 		// Trial Key: the opening blow on a target still at full health.
 		if (openingBonus > 1.0 && target.getHealth() >= target.getMaxHealth() - 0.01F) {
 			bonus *= openingBonus;
@@ -1802,6 +1839,8 @@ public final class Effects {
 	public static void init() {
 		SpanRules.ready();
 		LifeOwnerEvents.init();
+		// ---- fx-passive pack
+		HearthEffects.init();
 	}
 
 	private static void light(Cast cast, Cast.Hit hit, double duration) {
@@ -2160,6 +2199,7 @@ public final class Effects {
 		String key = "featherglide:" + t.getUUID();
 		Object token = new Object();
 		GLIDES.put(key, token);
+		Scheduler.later(Math.max(ticks, 2), () -> GLIDES.remove(key, token));
 		for (int i = 2; i < ticks; i += 2) {
 			Scheduler.later(i, () -> {
 				if (GLIDES.get(key) != token || !t.isAlive() || t.level() != cast.level) {

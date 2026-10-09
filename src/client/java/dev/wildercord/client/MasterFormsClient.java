@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.MasterForms;
 import dev.wildercord.aura.MasterFormLessons;
+import dev.wildercord.aura.StoneHingeRules;
 import dev.wildercord.aura.WallTurnRules;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -34,7 +35,7 @@ public final class MasterFormsClient {
 			KeyMapping.Category.register(Wildercord.id("master_forms"))));
 		ClientPlayNetworking.registerGlobalReceiver(MasterForms.Event.TYPE, (event, context) -> receive(context.client(), event));
 		ClientPlayNetworking.registerGlobalReceiver(MasterFormLessons.Open.TYPE, (event, context) ->
-			context.client().gui.setScreen(new MasterFormsScreen(context.client().gui.screen(), event.nonce(), true)));
+			context.client().gui.setScreen(new MasterFormsScreen(context.client().gui.screen(), event.nonce(), true, event.form())));
 		net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.BEFORE_INIT.register((client, screen, width, height) -> {
 			send(WallTurnRules.CANCEL); suppressed = true;
 		});
@@ -49,15 +50,19 @@ public final class MasterFormsClient {
 			int lineY = y - (lines.size() - 1) * 10;
 			for (var part : lines) { graphics.centeredText(client.font, part, x, lineY, 0xFFD4EEE6); lineY += 10; }
 			var view = MasterForms.view(client.player);
-			if (view.phase() == WallTurnRules.BRACE) {
+			int span = view.phase() == WallTurnRules.BRACE ? WallTurnRules.BRACE_TICKS : view.phase() == StoneHingeRules.BRACE ? StoneHingeRules.BRACE_TICKS
+				: view.phase() == StoneHingeRules.CATCH ? StoneHingeRules.CATCH_TICKS : 0;
+			if (span > 0) {
 				graphics.fill(x - 35, y + 11, x + 35, y + 14, 0xCC203C38);
-				graphics.fill(x - 35, y + 11, x - 35 + 70 * view.ticks() / WallTurnRules.BRACE_TICKS, y + 14, 0xFFD4EEE6);
+				graphics.fill(x - 35, y + 11, x - 35 + 70 * Math.clamp(view.ticks(), 0, span) / span, y + 14,
+					view.phase() == StoneHingeRules.CATCH ? 0xFFE8C46A : 0xFFD4EEE6);
 			}
 		});
 	}
 	public static KeyMapping mapping() { return key; }
 	public static Component binding() { return key == null ? Component.literal("C") : key.getTranslatedKeyMessage(); }
 	public static void send(int action) {
+		if (FormDashClient.route(action)) return;
 		Minecraft client = Minecraft.getInstance();
 		if (client.player == null || !ClientPlayNetworking.canSend(MasterForms.Action.TYPE)) return;
 		long current = MasterForms.view(client.player).epoch();
@@ -88,12 +93,14 @@ public final class MasterFormsClient {
 		if (client.level != null) EVENTS.values().removeIf(play -> client.level.getGameTime() - play.received() > 30);
 	}
 	private static void receive(Minecraft client, MasterForms.Event event) {
-		if (client.level == null || !WallTurnRules.phase(event.phase()) || event.ticks() < 0 || event.ticks() > WallTurnRules.BRACE_TICKS
+		if (client.level == null || !WallTurnRules.phase(event.phase()) || event.ticks() < 0 || event.ticks() > Math.max(WallTurnRules.BRACE_TICKS, StoneHingeRules.CATCH_TICKS)
 			|| !Float.isFinite(event.yaw()) || event.epoch() <= 0 || event.serial() <= 0) return;
 		if (client.level != level) { clear(); level = client.level; }
 		Playback prior = EVENTS.get(event.entity());
 		if (prior != null && (prior.event().epoch() > event.epoch() || prior.event().epoch() == event.epoch() && prior.event().serial() >= event.serial())) return;
-		EVENTS.put(event.entity(), new Playback(event, event.at()));
+		// A re-sent kick step is stamped with the server tick, which is usually ahead of this client's clock; an event
+		// can never be received in the local future, or every step samples a negative age and shows no pose.
+		EVENTS.put(event.entity(), new Playback(event, Math.min(event.at(), client.level.getGameTime())));
 	}
 	public static Playback timeline(Avatar avatar) {
 		if (avatar == null || avatar.level() != level || !avatar.isAlive()) return null;
@@ -103,7 +110,13 @@ public final class MasterFormsClient {
 		var player = Minecraft.getInstance().player;
 		if (player == null) return Component.empty();
 		var data = MasterForms.data(player); var view = MasterForms.view(player);
-		String state = !data.learned() ? "locked" : data.equipped() == 0 ? "unequipped"
+		if (data.equipped() == MasterForms.STONE_HINGE) {
+			String hinge = !MasterForms.testedHinge(player) ? "testing" : view.phase() == StoneHingeRules.BRACE ? "brace" : view.phase() == StoneHingeRules.CATCH ? "catch"
+				: view.recovery() > 0 ? "recovery" : view.rest() > 0 ? "rest" : "ready";
+			return Component.translatable("hud.wildercord.stone_hinge." + hinge, binding(),
+				String.format(java.util.Locale.ROOT, "%.1f", view.rest() / 20.0));
+		}
+		String state = !data.learned() && !data.hingeLearned() ? "locked" : data.equipped() == 0 ? "unequipped"
 			: view.phase() == WallTurnRules.BRACE ? "brace" : view.phase() == WallTurnRules.KICK ? "kick"
 			: view.recovery() > 0 ? "recovery" : view.commitment() > 0 ? "descent" : data.airborneUsed() ? "landing" : view.rest() > 0 ? "rest" : "ready";
 		return Component.translatable("hud.wildercord.wall_turn." + state, binding(), String.format(java.util.Locale.ROOT, "%.1f", view.rest() / 20.0),

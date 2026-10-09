@@ -26,7 +26,8 @@ public final class MastersRules {
 	public static final double CUT_INCOMING = 0.6;
 
 	public static final double AURA_MAX = 100, ATTACK_COST = 16, GUARD_COST = 12, CUT_COST = 8, REDIRECT_COST = 20, DODGE_COST = 18;
-	public static final int BREATH_TICKS = 60, REDIRECT_REST = 100, DODGE_REST = 80, DODGE_TICKS = 4;
+	public static final double TECHNIQUE_DAMAGE = 30;
+	public static final int BREATH_TICKS = 40, REDIRECT_REST = 100, DODGE_REST = 80, DODGE_TICKS = 4;
 
 	/** A reservation already occupies its slot; opening its lobby must not count as a ninth encounter. */
 	public static boolean canAdmitEncounter(int activeCount, boolean alreadyRegistered) {
@@ -39,13 +40,28 @@ public final class MastersRules {
 
 	/** A complete windup always precedes harm, and every attack has a guaranteed recovery. */
 	public enum Move {
-		SWEEP(18, 20, 30), THRUST(22, 24, 42), CRESCENT(20, 24, 36), BREAK_CAST(20, 24, 28),
+		SWEEP(12, 14, 30), THRUST(14, 16, 42), CRESCENT(14, 16, 36), BREAK_CAST(12, 14, 28),
 		CINDER_WAKE(EmberWakeRules.TELL, EmberWakeRules.RECOVERY, EmberWakeRules.CUT_DAMAGE),
 		PURSUIT_BREAK(MasterPursuitRules.TELL, MasterPursuitRules.RECOVERY, MasterPursuitRules.DAMAGE),
 		CROSSWIND_REPRISE(GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY, GaleRepriseRules.DAMAGE),
 		STONE_FRACTURE(StoneFractureRules.TELL, StoneFractureRules.RECOVERY, StoneFractureRules.DAMAGE),
 		KILN_RING(EmberKilnRules.TELL, EmberKilnRules.RECOVERY, EmberKilnRules.DAMAGE),
-		STONE_FAULT_MARCH(StoneMarchRules.TELL, StoneMarchRules.END - StoneMarchRules.TELL, StoneMarchRules.DAMAGE);
+		STONE_FAULT_MARCH(StoneMarchRules.TELL, StoneMarchRules.END - StoneMarchRules.TELL, StoneMarchRules.DAMAGE),
+		/** One of the hundred named combos in {@link MasterTechniques}; its own timeline and reach replace these placeholders. */
+		TECHNIQUE(MasterTechniques.FIRST_TELL, 14, TECHNIQUE_DAMAGE),
+		// ---- masters-a pack
+		RIME_LATTICE(RimeLatticeRules.TELL, RimeLatticeRules.END - RimeLatticeRules.TELL, RimeLatticeRules.DAMAGE),
+		THUNDER_CHAIN(ThunderChainRules.TELL, ThunderChainRules.END - ThunderChainRules.TELL, ThunderChainRules.DAMAGE),
+		VERDANT_BLOOM(VerdantBloomRules.TELL, VerdantBloomRules.RECOVERY, VerdantBloomRules.DAMAGE),
+		HOLLOW_PULL(HollowPullRules.TELL, HollowPullRules.RECOVERY, HollowPullRules.DAMAGE),
+		// ---- masters-b pack: appended so every older wire id (ordinal + 1) keeps its meaning.
+		STARLIT_CONSTELLATION(StarlitConstellationRules.TELL, StarlitConstellationRules.RECOVERY, StarlitConstellationRules.DAMAGE),
+		HOURGLASS_REWIND(HourglassRewindRules.TELL, HourglassRewindRules.RECOVERY, HourglassRewindRules.DAMAGE),
+		CRIMSON_FRENZY(CrimsonFrenzyRules.TELL, CrimsonFrenzyRules.RECOVERY, CrimsonFrenzyRules.DAMAGE),
+		// ---- methods-a pack: appended so every older wire id (ordinal + 1) keeps its meaning.
+		TIDE_UNDERTOW_RING(MethodsASignatureRules.UNDERTOW, MethodsASignatureRules.RECOVERY, MethodsASignatureRules.DAMAGE),
+		IRON_ANVIL_VERDICT(MethodsASignatureRules.SHOCK, MethodsASignatureRules.RECOVERY, MethodsASignatureRules.DAMAGE),
+		DUNE_SHIFTING_SANDS(MethodsASignatureRules.STORM, MethodsASignatureRules.RECOVERY, MethodsASignatureRules.DAMAGE);
 
 		public final int tell, recovery;
 		public final double damage;
@@ -60,10 +76,18 @@ public final class MastersRules {
 	private static final Move[][] PATTERNS = {
 		{Move.SWEEP, Move.CRESCENT, Move.THRUST, Move.SWEEP},
 		{Move.CRESCENT, Move.THRUST, Move.CRESCENT, Move.SWEEP},
-		{Move.THRUST, Move.SWEEP, Move.THRUST, Move.CRESCENT}
+		{Move.THRUST, Move.SWEEP, Move.THRUST, Move.CRESCENT},
+		// ---- masters-a pack (Rime, Thunder, Verdant, Hollow)
+		{Move.THRUST, Move.SWEEP, Move.SWEEP, Move.THRUST},
+		{Move.THRUST, Move.CRESCENT, Move.THRUST, Move.SWEEP},
+		{Move.SWEEP, Move.SWEEP, Move.THRUST, Move.CRESCENT},
+		{Move.SWEEP, Move.THRUST, Move.CRESCENT, Move.THRUST}
 	};
 
 	public static int discipline(int value) {
+		if (ElementalMasters.owns(value)) return value; // ---- masters-a pack
+		if (MastersPackB.owns(value)) return value; // ---- masters-b pack
+		if (MethodsAMasters.owns(value)) return value; // ---- methods-a pack
 		return Math.max(EMBER, Math.min(STONE, value));
 	}
 
@@ -105,8 +129,20 @@ public final class MastersRules {
 		if (distance > 6) {
 			return Move.CRESCENT;
 		}
-		Move[] pattern = PATTERNS[discipline(discipline)];
+		Move[] pattern = MastersPackB.owns(discipline) ? MastersPackB.pattern(discipline) // ---- masters-b pack
+			: MethodsAMasters.owns(discipline) ? MethodsAMasters.pattern(discipline) : PATTERNS[discipline(discipline)]; // ---- methods-a pack
 		return pattern[Math.floorMod(sequence + Math.max(0, Math.min(2, phase)), pattern.length)];
+	}
+
+	// ---- masters-a pack
+	public static final int RIME = ElementalMasters.RIME, THUNDER = ElementalMasters.THUNDER, VERDANT = ElementalMasters.VERDANT,
+		HOLLOW = ElementalMasters.HOLLOW;
+	/** One past the highest school this table knows. */
+	public static final int SCHOOLS = MethodsBMasters.VENOM + 1; // ---- methods-b pack: Echo, Dawn and Venom (13-15) follow methods-a's Tide, Iron and Dune (10-12)
+	public static boolean knownSchool(int school) {
+		return school >= EMBER && school <= STONE || ElementalMasters.owns(school) || MastersPackB.owns(school) // ---- masters-b pack
+			|| MethodsAMasters.owns(school) // ---- methods-a pack
+			|| MethodsBMasters.owns(school); // ---- methods-b pack
 	}
 
 	public static int phase(double health, double maximum) {
@@ -116,9 +152,9 @@ public final class MastersRules {
 		return health / maximum <= 0.33 ? 2 : health / maximum <= 0.66 ? 1 : 0;
 	}
 
-	/** Stone braces after each attack; other schools after two. A guard is never raised during recovery. */
+	/** Stone braces after each attack; other schools after three. A guard is never raised during recovery. */
 	public static boolean guardAfter(int discipline, int attacks) {
-		return attacks > 0 && (discipline(discipline) == STONE || attacks % 2 == 0);
+		return attacks > 0 && (discipline(discipline) == STONE || attacks % 3 == 0);
 	}
 
 	/** A held frontal blade can sever one approaching bolt; motionless, departing and rear bolts cannot be cut. */
@@ -148,6 +184,15 @@ public final class MastersRules {
 			case KILN_RING -> EmberKilnRules.hits(forward, side, height);
 			case STONE_FAULT_MARCH -> StoneMarchRules.band(forward, side, height) >= 0;
 			case CRESCENT -> false; // The shared Crescents flight owns collision.
+			case TECHNIQUE -> false; // Each strike is measured by MasterTechniques.Strike.hits.
+			// ---- masters-a pack
+			case RIME_LATTICE, THUNDER_CHAIN, VERDANT_BLOOM, HOLLOW_PULL -> false; // ElementalSignature owns collision.
+			// ---- masters-b pack
+			case STARLIT_CONSTELLATION -> false; // Stars are measured from their own marked points.
+			case HOURGLASS_REWIND -> HourglassRewindRules.hits(forward, side, height);
+			case CRIMSON_FRENZY -> CrimsonFrenzyRules.hits(2, forward, side, height, false);
+			// ---- methods-a pack: the second beat, measured from the planted origin (the executor resolves both beats).
+			case TIDE_UNDERTOW_RING, IRON_ANVIL_VERDICT, DUNE_SHIFTING_SANDS -> MethodsASignatureRules.hits(move, 1, forward, side, height, true);
 		};
 	}
 }

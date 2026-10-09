@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:smooth_stone",
+    "minecraft:smooth_stone",
+    "minecraft:oak_planks",
+    "minecraft:lapis_lazuli",
+    "minecraft:lapis_lazuli",
+    "minecraft:gold_ingot"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:floorlay"
+    }
+  }
+}

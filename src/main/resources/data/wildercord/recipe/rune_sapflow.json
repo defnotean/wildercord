@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:honey_bottle",
+    "minecraft:oak_sapling",
+    "minecraft:glistering_melon_slice",
+    "minecraft:lapis_lazuli",
+    "minecraft:lapis_lazuli",
+    "minecraft:gold_ingot"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:sapflow"
+    }
+  }
+}

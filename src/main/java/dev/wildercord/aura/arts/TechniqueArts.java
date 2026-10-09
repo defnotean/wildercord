@@ -637,6 +637,8 @@ public final class TechniqueArts {
 					}
 				}
 				case NONE -> world.flash(centre, hot, 0.7F);
+				// ---- methods-a pack
+				case CURRENT, FORGE, GRIT -> MethodsAFlavours.technique(player, foe, heart, fl, k, infused);
 			}
 		}
 	}

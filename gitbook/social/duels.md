@@ -1,114 +1,72 @@
 # Duels
 
-A **duel** is a fair fight between two players where **nobody dies**. When it's over, however it ends, the harm you
-did each other is undone: each of you gets back the health the other took. Duels work even on servers with PvP turned
-off.
+## What it is
 
-## Challenging someone
+A **duel** is a fair fight between two players where **nobody dies**. When it ends, the harm you did each other is
+undone. Duels work even with PvP off, and between members of the same
+[party](playing-together.md#parties).
 
-Type **/duel** followed by the player's name, for example `/duel Alex`.
+## How to get it
 
-- **They must be close:** in the same world as you and within **40 blocks**.
-- **They hear a bell** and see your challenge in chat with two buttons: **[Accept]** and **[Decline]**.
-- **The challenge lasts 30 seconds.** After that it runs out.
-- **You can challenge again after 10 seconds.** Challenging the same player again renews the challenge (without
-  ringing the bell again).
-- You can't challenge yourself, or anyone who's already in a duel.
+Type `/duel <player>`, for example `/duel Alex`.
 
-To answer by typing instead of clicking: `/duel accept Alex` or `/duel decline Alex`.
+- They must be in the same world and within **40 blocks**.
+- They hear a bell and see **[Accept]** and **[Decline]** buttons in chat. You can also type `/duel accept <player>`
+  or `/duel decline <player>`.
+- The challenge lasts **30 seconds**. You can challenge again after **10 seconds**.
 
 ### When a duel can't start
 
-When the challenge is sent, and again when it's accepted, **both** players must be ready. A duel can't start while
-either of you:
+Neither of you may have been:
 
-| Was... | In the last | The game says |
-|---|---|---|
-| hurt by anything | 10 seconds | *(Player) was hurt too recently to start a duel* |
-| fighting another player (hitting them or being hit) | 30 seconds | *(Player) was fighting another player too recently to start a duel* |
-| in a duel that ended | 30 seconds | *(Player) duelled too recently: wait a little before the next one* |
+| Doing this | In the last |
+|---|---|
+| Hurt by anything | 10 seconds |
+| Fighting another player | 30 seconds |
+| In a duel | 30 seconds |
 
-When accepting, you must also still be in the same world, within 40 blocks of each other, and both alive (if one of
-you isn't, the game says *(Player) can't duel right now*).
+You're told why, and the challenge still stands until its 30 seconds run out. This stops anyone using a duel to
+escape a real fight or to heal.
 
-If the duel can't start yet, you're told why, and **the challenge still stands**: accept it again once you can, before
-its 30 seconds run out.
+## How to use it
 
-This stops anyone using a duel to escape a real fight, or to heal up.
+1. **Countdown.** A gold **3, 2, 1** counts down. No blow counts yet.
+2. **Fight!** Now the two of you can hurt each other with anything: spells, weapons, arrows, pets.
+3. **The end.** The winner sees **Victory!**, the loser **Defeated**, and everyone within 64 blocks reads the result.
 
-## How a duel goes
+### The rules
 
-1. **The countdown.** Both of you read *Duel with (player)! Nobody dies, and afterwards the harm you did each other is
-   undone. Stay within 40 blocks.* A gold **3, 2, 1** counts down on screen, each second with a click and a circle of
-   light around each of you. Nothing about you changes as it starts, and no blow between you counts yet.
-2. **Fight!** A bell rings, *Fight!* fills the screen and a ring of light flashes at your feet. Now the two of you can
-   hurt each other with anything (spells, weapons, arrows, pets) even if PvP or friendly fire is off.
-3. **The end.** The winner sees **Victory!** and the loser **Defeated**, each with the other's name, and everyone
-   within 64 blocks reads how it ended in chat.
-
-### The arena
-
-The arena is a circle reaching **40 blocks** out in every direction from the point halfway between you when the duel
-was accepted (only the distance across the ground counts, not height). Walk out of it, or change worlds, and you
-forfeit.
-
-## The rules
-
-- **Nobody dies.** A blow from your opponent that would kill you (or their harm in the last five seconds, like fire or
-  a fall they caused) leaves you at **1 health** instead, and you lose.
-- **Only each other.** While the duel lasts (countdown included), neither duellist can harm any other player, or any
-  other player's pets.
-- **No interference.** If anyone else strikes either duellist, the duel is **called off** and counts for nobody. That
-  blow still lands. Everyone nearby reads *The duel was called off: someone else joined the fight*.
-- **Five minutes.** A fight with no winner after five minutes is a **draw**.
-- **No singing together.** Two duellists never [chorus](chorus.md) together.
-
-### How a duel ends
+- **The arena** reaches 40 blocks out from the point halfway between you. Leave it, or change worlds, and you
+  forfeit.
+- **Nobody dies.** A blow from your opponent that would kill you leaves you at **1 health**, and you lose.
+- **Only each other.** Neither of you can harm any other player or their pets.
+- **No interference.** If anyone else hits either of you, the duel is called off and counts for nobody.
+- **Five minutes.** No winner after 5 minutes is a draw.
 
 | What happens | Result | Counts in your record? |
 |---|---|---|
-| Your opponent brings you down | You lose: *(winner) defeated (loser) in a duel* | Yes |
-| You leave the arena, or go to another world | You forfeit: *(winner) won the duel: (loser) left the arena* | Yes |
-| You log off | You forfeit: *(winner) won the duel: (loser) left the game* | Yes |
-| Something else kills you (a monster, lava, the void) | You forfeit: *(winner) won the duel: (loser) fell to something else* | Yes |
-| Five minutes pass | Draw: *The duel ended in a draw* | No |
-| Someone else joins the fight | Called off | No |
+| Your opponent brings you down | You lose | Yes |
+| You leave the arena or the world | You forfeit | Yes |
+| You log off | You forfeit | Yes |
+| Something else kills you | You forfeit | Yes |
+| 5 minutes pass | Draw | No |
+| Someone else joins in | Called off | No |
 | The server shuts down | Ends for nobody | No |
 
-## What's undone
+### What's undone
 
-When a duel ends, **however it ends**, the harm the two of you did each other is undone. A duel is never a free heal:
+When a duel ends, however it ends:
 
-- **Health:** you get back the health **your opponent** took from you (their blows, spells, arrows and pets, after
-  your armour and any absorption hearts), but never more than you had when the duel began. Health lost to anything else during the duel (a fall, a monster, your own
-  Blood Price) stays lost, and health you healed during it is kept.
-- **Mana:** not given back. Mana you spent during the duel stays spent, whatever you spent it on.
-- **Fire:** if your opponent set you alight (and you weren't burning when the duel began), the flames go out.
-- **Harmful effects** your opponent left on you (their spells' poison, slowness and so on, a tipped arrow's, that you
-  didn't have before) are removed.
-- **Helpful effects you had** when it began come back, less the time the duel took. A potion with 3 minutes left when a
-  one-minute duel began has 2 minutes left afterwards. Absorption doesn't come back, and nor does anything that isn't
-  helpful (a Bad Omen a raid used up stays used).
+- **Health** your opponent took from you comes back, but never more than you had at the start.
+- **Fire** and **harmful effects** your opponent put on you are removed.
+- **Helpful effects** you had at the start come back, minus the time the duel took. Absorption doesn't come back.
+- **Mana** you spent stays spent.
 
-Anything your opponent didn't cause is kept: a monster's poison, lava's fire and helpful effects you gained during
-the duel all stay, and nothing is taken from your inventory. Nothing is dropped, because nobody dies to the other.
+Anything your opponent didn't cause stays: a monster's poison, a fall, lava. Nothing is dropped.
 
-A player who dies to something else during a duel isn't put back. One who **logs off** mid-duel is put back as above
-before they leave, so they come back without their opponent's harm on them. If the **server shuts down** during a
-duel, it ends for nobody (no win, no loss) and both duellists are put back.
+## Tips and counterplay
 
-## Your record
-
-Every duel with a winner adds a win or a loss to both players' records.
-
-- Your **Grimoire** has a **Duels** line: *(wins) won, (losses) lost*, and says how to challenge someone. See
-  [the Grimoire](../progression/grimoire.md).
-- **/duel stats** shows your own record in chat; **/duel stats (player)** shows someone else's.
-
-Your record is kept for good, through death.
-
-## Turning duels off
-
-Server operators can turn duels off for a world with the game rule `wildercord:allow_duels`. With it off, challenges
-and answers are refused with *Duels are turned off here*. See [Controls](../controls.md) for the
-few commands a server operator uses.
+- `/duel stats` shows your record; `/duel stats <player>` shows someone else's. Your Grimoire has a **Duels** line too.
+- Your record is kept for good.
+- Duellists never [chorus](chorus.md) together.
+- Server operators can turn duels off with the game rule `wildercord:allow_duels`.

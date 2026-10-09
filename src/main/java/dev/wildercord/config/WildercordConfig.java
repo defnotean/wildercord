@@ -604,12 +604,20 @@ public record WildercordConfig(
 	 * @param masterShare  the share of each road a disciple walks that their master earns (0 none)
 	 * @param clashes      whether two strikes meeting lock into a clash (off: two crescents meeting break each other, as they always did)
 	 * @param clashCarry   the share of its harm a crescent that wins a clash flies on with
+	 * @param experimentalStoneHinge whether the Stone Duelist teaches Stone Hinge and swordsmen can equip it (off until its peer and latency
+	 *                     checks pass; a swordsman who already learned it keeps it, unequippable)
 	 */
 	public record AuraSparring(boolean sparring, double ringRadius, int sparsPerDay, double sparXp, boolean mentorship, int maxDisciples,
-			double discipleGain, double masterShare, boolean clashes, double clashCarry) {
+			double discipleGain, double masterShare, boolean clashes, double clashCarry, boolean experimentalStoneHinge) {
 		public static final AuraSparring DEFAULTS = new AuraSparring(true, dev.wildercord.aura.SparRules.RING_RADIUS, dev.wildercord.aura.SparRules.DAILY,
 			1.0, true, dev.wildercord.aura.LineageRules.MAX_DISCIPLES, dev.wildercord.aura.LineageRules.NEAR_GAIN, dev.wildercord.aura.LineageRules.SHARE,
-			true, dev.wildercord.aura.ClashRules.CARRY);
+			true, dev.wildercord.aura.ClashRules.CARRY, false);
+
+		/** Before Stone Hinge's switch: the same, with it off. */
+		public AuraSparring(boolean sparring, double ringRadius, int sparsPerDay, double sparXp, boolean mentorship, int maxDisciples,
+				double discipleGain, double masterShare, boolean clashes, double clashCarry) {
+			this(sparring, ringRadius, sparsPerDay, sparXp, mentorship, maxDisciples, discipleGain, masterShare, clashes, clashCarry, false);
+		}
 	}
 
 	/**
@@ -896,7 +904,8 @@ public record WildercordConfig(
 					r.number("aura", "disciple_gain", d.aura.sparring().discipleGain(), 1, 4),
 					r.number("aura", "master_share", d.aura.sparring().masterShare(), 0, 1),
 					r.bool("aura", "clashes", d.aura.sparring().clashes()),
-					r.number("aura", "clash_carry", d.aura.sparring().clashCarry(), 0, 1.5))),
+					r.number("aura", "clash_carry", d.aura.sparring().clashCarry(), 0, 1.5),
+					r.bool("aura", "experimental_stone_hinge", d.aura.sparring().experimentalStoneHinge()))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -966,7 +975,7 @@ public record WildercordConfig(
 			"bonded_blades", "resonance_gain", "bond_at_power", "blade_traits",
 			// Sparring, masters and disciples, and the clash.
 			"sparring", "spar_ring_radius", "spars_per_day", "spar_xp", "mentorship", "max_disciples", "disciple_gain", "master_share", "clashes",
-			"clash_carry"));
+			"clash_carry", "experimental_stone_hinge"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity", "training_grounds", "training_gain", "training_practice", "battlefields", "sword_tombs", "sleeping_blades", "aura_beasts", "tournaments"));
 	}
@@ -1317,7 +1326,8 @@ public record WildercordConfig(
 			+ "stance, the disciple kneeling before them); a disciple learns disciple_gain times as fast near their master and can break through by "
 			+ "besting them in a spar, and the master earns master_share of each road a disciple walks. Clashes (clashes): two crescents (or an art "
 			+ "and a crescent, or two arts in the same breath) meeting lock into a struggle won on timing; the winner's crescent flies on at "
-			+ "clash_carry of its harm.");
+			+ "clash_carry of its harm. experimental_stone_hinge (off by default) lets the Stone Duelist teach the Stone Hinge Master form and "
+			+ "swordsmen equip it; it stays off until the form's peer and latency checks pass, and a swordsman who learned it keeps it, unequippable.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -1392,6 +1402,7 @@ public record WildercordConfig(
 		auraSection.addProperty("master_share", sparring.masterShare());
 		auraSection.addProperty("clashes", sparring.clashes());
 		auraSection.addProperty("clash_carry", sparring.clashCarry());
+		auraSection.addProperty("experimental_stone_hinge", sparring.experimentalStoneHinge());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "

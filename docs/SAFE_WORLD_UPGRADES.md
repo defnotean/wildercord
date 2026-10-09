@@ -2,12 +2,13 @@
 
 ## Scope
 
-This first adapter adds one original open **Wayfarer Training Pavilion** to an
-explicitly reviewed location in an existing Overworld. It does not regenerate chunks,
-run dungeon post-processing, populate all old terrain, retrofit boss arenas, or spawn
-entities. Existing natural wildlife, wandering Duelists/Master introductions, wisps and
+Four individually reviewed adapters can each add one bounded site to an explicitly reviewed
+location in an existing Overworld: the inert **Wayfarer Training Pavilion** and three small
+encounter sites (Sleeping Blade rest, Battlefield memorial, Sword Tomb duel ring). None of them
+regenerates chunks, runs dungeon post-processing, populates all old terrain or spawns an
+entity. Existing natural wildlife, wandering Duelists/Master introductions, wisps and
 runtime events already work in older terrain; large dungeons and gardens remain
-world-generation-only.
+world-generation-only. See "Catalog decisions" below for every worldgen family.
 
 The pavilion is 7×7, with a 49-block mossy-stone-brick floor, four four-high stripped-oak
 columns (16 blocks), a 24-block stone-brick roof border, 25 smooth-stone roof blocks and
@@ -17,6 +18,78 @@ All write cells must be air; the full 9×9 foundation must be flat and from a na
 natural-material allowlist. Nothing is dug, cleared, replaced with loot, or given a block
 entity. Two writes maximum per tick, one active transaction per server, 128 retained sites.
 The 12-block Cairn exists only in recovery tests; it is not a player-facing building.
+
+## Catalog decisions
+
+`UpgradeCatalog` lists every structure and placed feature under
+`data/wildercord/worldgen/structure` and `feature`, plus runtime-only content. A unit test fails
+if a new worldgen file has no individual decision. `/wildercord-upgrade catalog` prints them.
+
+- **Bounded adapter**. Each has a reviewed `UpgradeBlueprints` layout that fits in one chunk,
+  with at most 256 writes and a guard of at most 1024 cells. The foundation must be natural and
+  every other guard cell must be air.
+  - `wayfarer_training_pavilion` v1: 123 writes, 9x9x9 guard, no anchor (inert).
+  - `sleeping_blade_rest` v1: 38 writes, 7x7x6 guard. The anchor is a Sleeping Blade stone.
+  - `battlefield_memorial` v1: 58 writes, 9x9x5 guard. The anchor is a battlefield memorial.
+  - `sword_tomb_duel_ring` v1: 182 writes, 13x13x6 guard (1014 cells). The anchor is a north-facing
+    tomb reliquary. Its keeper arena, 8 blocks south, sits inside the guard with three cells of
+    headroom. The Gravekeeper only rises through the existing reliquary trigger after placement.
+- **World-generation only**:
+  - the archive, ember sanctum, astral observatory, drowned scriptorium, rootbound maze, storm
+    spire, clockwork crypt, living greenhouse, moving sky ruin and belowkeeper drainhouse dungeons;
+  - the full old battlefield, sword tomb and sleeping blade structures. Their multi-chunk
+    jigsaw and post-processing is never replayed; the small adapters above stand in for them;
+  - breathmark sites and herb patches.
+
+  Their size, loot, entities or destructive post-processing cannot fit the bounded,
+  compare-and-set model.
+- **Runtime only, no adapter needed**: Master training grounds, wandering Masters/Duelists and
+  village tournaments are spawned or opened at runtime and already reach old terrain.
+
+Worldgen has no Master training-ground structure today, so there is nothing to adapt.
+
+## Encounter adapters and duplicate prevention
+
+The preview lists the anchor block, which is placed like any other compare-and-set write.
+Its block entity is marked authentic (the same flag natural generation sets) only after
+**every** write is observed. This happens through the engine's activation hook, before APPLIED
+is persisted. If the anchor is missing or the chunk unloads, activation defers and the manifest
+stays APPLYING. A resumed or repeated step re-runs activation idempotently.
+
+Sleeping Blades, Battlefields and Sword Tombs are unique encounters. Each allows at most one site
+per random-spread region of its shipped structure set, and none within the separation distance
+in a neighbouring region. The spacing/separation values are 92/36, 64/24 and 76/28 respectively,
+and a unit test checks them against the JSON. A site is refused at preview, approval,
+reauthorization and before every write when any of the following exists:
+
+- another manifest of the family in the journal that is not PREVIEW or ROLLED_BACK
+  (APPLYING, APPLIED, ROLLING_BACK and CONFLICT all count);
+- a saved `upgrade_sites` record (SavedData) of a natural or upgraded site:
+  - Natural records come from valid Wildercord structure starts and authentic generated anchors
+    seen whenever a chunk loads, and from a scan of resident chunks across the nearby regions at
+    admission.
+  - Upgrade records mirror every manifest's family, chunk, content version and phase.
+  - The record store holds 4096 entries. Once full it saturates and refuses every unique family;
+- a live Gravekeeper loaded anywhere in the nearby regions (Sword Tomb only);
+- a natural start at the region's candidate chunk in the generator's own placement, or one that
+  cannot be verified (`CHUNK_LOAD_NEEDED`). If the world's generator does not place the set at all
+  (a flat or custom preset), this check is skipped. If it places the set with a different spread,
+  the site is refused.
+
+Limits:
+
+- An old natural site is unknown when its chunk has not loaded since this version and the
+  generator check cannot see it (for example, a preset without the structure set).
+- Rollback is deferred while the encounter is live: a guardian bound to the reliquary, or a
+  Sleeping Blade draw in progress.
+- Rollback removes the anchor block together with its saved state. The mod never deletes or
+  spawns encounter entities itself.
+
+`/wildercord-upgrade sites` lists the records.
+
+Operator commands: use `/wildercord-upgrade preview_site <family> <chunk_x> <floor_y> <chunk_z>`
+for the encounter families. The pavilion also keeps `preview`. Everything after the preview
+(approve, reauthorize, resume, rollback, inspect) is unchanged.
 
 ## Important limits
 
@@ -51,7 +124,8 @@ starts a 60-second quiet period in the current session. Containers/redstone/cust
 are excluded in the guarded volume; this is not a scan of arbitrary surrounding terrain.
 Strict inhabited-time exclusion makes this intentionally conservative: use an uninhabited,
 already generated edge-of-view-distance chunk, not a visited settlement. There is no
-"force" override. The first adapter is Overworld-only.
+"force" override. All adapters are Overworld-only. The only block entity tolerated in the
+chunk is the plan's own anchor at its blueprint position, during resume and rollback.
 
 ## Operator workflow
 
@@ -116,7 +190,10 @@ and `/wildercord-upgrade resume <full_hash>`.
 
 Resume accepts only exact original/intended states and unchanged guards, with no later-edit
 fences. It reapplies only still-original cells. Anything else stops as a conflict. This also
-reconciles an APPLIED manifest whose chunk save lagged behind. There is no whole-server
+reconciles an APPLIED manifest whose chunk save lagged behind, and re-runs anchor activation
+if the anchor's saved flag lagged behind. A player edit is never overwritten and there is no
+override. The only explicit way to build over a changed region is for the operator to preview
+and approve a different site that is still clean. There is no whole-server
 forced save or pretend cross-file commit in the bounded placement loop.
 
 `/wildercord-upgrade rollback <full_hash>` reverses at most two changes per tick. On restart
@@ -152,6 +229,34 @@ intent ordering, failures, policy changes, idempotence, duplicate/version tombst
 conflicts. `UpgradeClaimsTest` covers distinct no-provider/unknown/claimed/error behavior.
 These are deterministic fault-injection tests, not actual power-loss hardware testing.
 
+`UpgradeCatalogTest` checks that:
+
+- every worldgen structure and feature has a decision;
+- unique families mirror their shipped spread;
+- blueprints fit one chunk and the budgets;
+- the region/separation duplicate model works for natural and upgraded sites;
+- admission refuses approval and reauthorization, and activation defers APPLIED until the
+  anchor is marked.
+
+`UpgradeEncounterTest` is a native test in a disposable flat world.
+
+1. It previews and approves a Sword Tomb with a test claim adapter. CLAIMED refuses approval,
+   a claim that appears after approval stops writes, and a provider revision voids the
+   approval until it is reauthorized.
+2. It interrupts placement at 100 of 182 writes and refuses a second tomb in the same region.
+3. It records a natural authentic Sleeping Blade and refuses an upgraded one against it.
+4. It applies a Battlefield memorial, which stays inert until the last write, and refuses a
+   tomb next to a live Gravekeeper.
+5. After an actual server close and reopen it:
+   - checks the saved records and the anchor flag;
+   - resumes the tomb exactly once (authentic reliquary, no keeper spawned);
+   - still refuses a second tomb;
+   - preserves a later player edit through a CONFLICT rollback;
+   - cleanly rolls back the memorial after rollback reauthorization.
+
+The test world does not place the structure sets, so the generator check is not exercised
+natively.
+
 `UpgradeRecoveryTest` is a native Fabric client fixture that creates an isolated save,
 places five real pavilion blocks with an injected interruption, closes/reopens the actual
 integrated server, reauthorizes/resumes the remaining 118, unloads the actual chunk, proves
@@ -159,6 +264,6 @@ recovery does not reload it, and checks native mixin-detected ABA-safe rollback.
 open a real user world. Compiling it is not evidence of executing it; record its actual run
 separately before declaring this feature native-verified. No new CI job variant is added.
 
-Further building/entity adapters need independent budgets, native tests and review. Bosses,
-loot, encounters, crash-safe entity UUID receipts and encounter tombstones remain outside
-this initial inert structure adapter. Never adapt destructive dungeon `postProcess` directly.
+Further building/entity adapters need independent budgets, native tests and review. Dungeons,
+loot, spawned entities and crash-safe entity UUID receipts remain outside these adapters.
+Never adapt destructive dungeon `postProcess` directly.

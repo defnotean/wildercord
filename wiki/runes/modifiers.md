@@ -10,7 +10,7 @@ nav_order: 3
 
 A **modifier** changes the closest rune on its *left* that it can change. Amplify needs something with power, so in `Bolt · Fire · Amplify` it strengthens Fire; Split needs something that can split, so in `Bolt · Fire · Split` it skips Fire and doubles the Bolt. A modifier never reaches back past a link. Modifiers multiply the cost of what they change.
 
-33 modifiers, by tier.
+69 modifiers, by tier.
 
 ### <img src="{{ '/assets/runes/amplify.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Amplify
 {: #amplify}
@@ -25,6 +25,28 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
+### <img src="{{ '/assets/runes/cushioned.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cushioned
+{: #cushioned}
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Whoever it moves takes no fall damage on their next landing (10 seconds).
+
+**How to get it:** Craft: a Blank Rune, Hay Bale and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_cushioned.png' | relative_url }}" alt="Crafting Cushioned: a Blank Rune and Hay Bale and Feather" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/damp.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Damp
+{: #damp}
+
+*Tier I · cost x1 · needs any Cord*
+
+Fire it starts on blocks goes straight out; creatures still burn.
+
+**How to get it:** Craft: a Blank Rune, Wet Sponge and Clay Ball. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_damp.png' | relative_url }}" alt="Crafting Damp: a Blank Rune and Wet Sponge and Clay Ball" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/extend.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Extend
 {: #extend}
 
@@ -37,6 +59,30 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 <img src="{{ '/assets/recipes/rune_extend.png' | relative_url }}" alt="Crafting Extend: a Blank Rune and 2x Redstone Dust" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is anything that lasts.
+
+### <img src="{{ '/assets/runes/fetching.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fetching
+{: #fetching}
+
+*Tier I · cost x1.1 · needs any Cord*
+
+The loot of creatures it kills lands at your feet.
+
+**How to get it:** Craft: a Blank Rune, Lead and Bone. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fetching.png' | relative_url }}" alt="Crafting Fetching: a Blank Rune and Lead and Bone" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/fleecing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fleecing
+{: #fleecing}
+
+*Tier I · cost x1 · needs any Cord*
+
+Sheep it reaches are shorn; the wool lands at your feet.
+
+**How to get it:** Craft: a Blank Rune, Shears and White Wool. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fleecing.png' | relative_url }}" alt="Crafting Fleecing: a Blank Rune and Shears and White Wool" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
 
 ### <img src="{{ '/assets/runes/frugal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frugal
 {: #frugal}
@@ -51,6 +97,87 @@ Half the mana, but 40% weaker and shorter.
 
 **Attaches to:** the closest rune on its left that is any effect.
 
+### <img src="{{ '/assets/runes/furrowing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Furrowing
+{: #furrowing}
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Tills grass and dirt within 2 blocks of where it lands into farmland.
+
+**How to get it:** Craft: a Blank Rune, Iron Hoe and Dirt. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_furrowing.png' | relative_url }}" alt="Crafting Furrowing: a Blank Rune and Iron Hoe and Dirt" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### <img src="{{ '/assets/runes/gentle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gentle
+{: #gentle}
+
+*Tier I · cost x1 · needs any Cord*
+
+Passes over farm animals, pets and villagers.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops and Lead. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_gentle.png' | relative_url }}" alt="Crafting Gentle: a Blank Rune and Wheat Crops and Lead" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/level_ground.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Level Ground
+{: #level_ground}
+
+*Tier I · cost x1 · needs any Cord*
+
+Never breaks a block below your feet, so you can't dig yourself a pit.
+
+**How to get it:** Craft: a Blank Rune, Stone Slab and Compass. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_level_ground.png' | relative_url }}" alt="Crafting Level Ground: a Blank Rune and Stone Slab and Compass" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/magnetic.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Magnetic
+{: #magnetic}
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Items within 6 blocks of where it lands fly to you.
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_magnetic.png' | relative_url }}" alt="Crafting Magnetic: a Blank Rune and Iron Ingot and Redstone Dust" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### <img src="{{ '/assets/runes/matchmaking.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Matchmaking
+{: #matchmaking}
+
+*Tier I · cost x1 · needs any Cord*
+
+Grown animals it lands on fall in love.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops, Carrot and Poppy. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_matchmaking.png' | relative_url }}" alt="Crafting Matchmaking: a Blank Rune and Wheat Crops, Carrot and Poppy" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/nourishing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nourishing
+{: #nourishing}
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Also feeds each player it lands on 3 hunger.
+
+**How to get it:** Craft: a Blank Rune, Bread and Apple. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_nourishing.png' | relative_url }}" alt="Crafting Nourishing: a Blank Rune and Bread and Apple" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/replanting.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Replanting
+{: #replanting}
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Ripe crops it breaks are replanted from their own seeds.
+
+**How to get it:** Craft: a Blank Rune, Wheat Seeds and Bone Meal. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_replanting.png' | relative_url }}" alt="Crafting Replanting: a Blank Rune and Wheat Seeds and Bone Meal" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/reservoir_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reservoir Circle
 {: #reservoir_circle}
 
@@ -62,6 +189,80 @@ Filling concentric basins: 25% less mana, 20% less power and 15% shorter effect 
 
 <img src="{{ '/assets/recipes/rune_reservoir_circle.png' | relative_url }}" alt="Crafting Reservoir Circle: a Blank Rune and Glass Bottle and Lapis Lazuli" class="recipe-grid" loading="lazy">
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### <img src="{{ '/assets/runes/soothing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Soothing
+{: #soothing}
+
+*Tier I · cost x1 · needs any Cord*
+
+Creatures it lands on forget their anger at you; 30% weaker.
+
+**How to get it:** Craft: a Blank Rune, Honey Bottle and Note Block. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_soothing.png' | relative_url }}" alt="Crafting Soothing: a Blank Rune and Honey Bottle and Note Block" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/sowing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sowing
+{: #sowing}
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Plants seeds from your pack on bare farmland within 3 blocks of where it lands.
+
+**How to get it:** Craft: a Blank Rune, Wheat Seeds and Beetroot Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_sowing.png' | relative_url }}" alt="Crafting Sowing: a Blank Rune and Wheat Seeds and Beetroot Seeds" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### <img src="{{ '/assets/runes/sparing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sparing
+{: #sparing}
+
+*Tier I · cost x1 · needs any Cord*
+
+Passes over other players and their pets.
+
+**How to get it:** Craft: a Blank Rune, White Banner and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_sparing.png' | relative_url }}" alt="Crafting Sparing: a Blank Rune and White Banner and Feather" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/steady.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Steady
+{: #steady}
+
+*Tier I · cost x0.9 · needs any Cord*
+
+The effect can't break any block, and costs 10% less. Not with block modifiers.
+
+**How to get it:** Craft: a Blank Rune, Obsidian and Iron Nugget. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_steady.png' | relative_url }}" alt="Crafting Steady: a Blank Rune and Obsidian and Iron Nugget" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### <img src="{{ '/assets/runes/tidy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tidy
+{: #tidy}
+
+*Tier I · cost x1.1 · needs any Cord*
+
+Blocks it breaks drop straight into your pack; what doesn't fit lands at your feet.
+
+**How to get it:** Craft: a Blank Rune, Bundle and String. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_tidy.png' | relative_url }}" alt="Crafting Tidy: a Blank Rune and Bundle and String" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/torchset.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Torchset
+{: #torchset}
+
+*Tier I · cost x1 · needs any Cord*
+
+If it lands somewhere dark, sets a torch there from your pack.
+
+**How to get it:** Craft: a Blank Rune, Torch and Coal. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_torchset.png' | relative_url }}" alt="Crafting Torchset: a Blank Rune and Torch and Coal" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
+
 ### <img src="{{ '/assets/runes/anchor_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Anchor Circle
 {: #anchor_circle}
 
@@ -72,6 +273,8 @@ A locked square lattice: effect durations last 40% longer at 15% less power. Cos
 **How to get it:** Craft: a Blank Rune, Iron Ingot and Stone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_anchor_circle.png' | relative_url }}" alt="Crafting Anchor Circle: a Blank Rune and Iron Ingot and Stone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
 
 ### <img src="{{ '/assets/runes/belated.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Belated
 {: #belated}
@@ -97,6 +300,8 @@ Six unfolding petals: 35% larger shape radius, 20% less power. Costs 15% more ma
 
 <img src="{{ '/assets/recipes/rune_bloom_circle.png' | relative_url }}" alt="Crafting Bloom Circle: a Blank Rune and Pink Petals and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
 ### <img src="{{ '/assets/runes/bounce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bounce
 {: #bounce}
 
@@ -110,6 +315,17 @@ Bounces off blocks up to 3 times.
 
 **Attaches to:** the closest rune on its left that is projectiles.
 
+### <img src="{{ '/assets/runes/bountiful.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bountiful
+{: #bountiful}
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Creatures it kills drop twice the experience, even untouched by your hand.
+
+**How to get it:** Craft: a Blank Rune, Bottle o' Enchanting and Emerald, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_bountiful.png' | relative_url }}" alt="Crafting Bountiful: a Blank Rune and Bottle o' Enchanting and Emerald, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/crucible_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Crucible Circle
 {: #crucible_circle}
 
@@ -120,6 +336,19 @@ A breathing furnace hexagon: 15% more power and 25% shorter effect durations. Co
 **How to get it:** Craft: a Blank Rune, Blaze Powder and Brick, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_crucible_circle.png' | relative_url }}" alt="Crafting Crucible Circle: a Blank Rune and Blaze Powder and Brick, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### <img src="{{ '/assets/runes/culling.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Culling
+{: #culling}
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+Lands only on monsters, 20% stronger; everything else is passed over.
+
+**How to get it:** Craft: a Blank Rune, Rotten Flesh and Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_culling.png' | relative_url }}" alt="Crafting Culling: a Blank Rune and Rotten Flesh and Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/execute.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Execute
 {: #execute}
@@ -133,6 +362,19 @@ Double power against targets under half health. One per effect.
 <img src="{{ '/assets/recipes/rune_execute.png' | relative_url }}" alt="Crafting Execute: a Blank Rune and Iron Axe, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
+
+### <img src="{{ '/assets/runes/fertile.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fertile
+{: #fertile}
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Crops and saplings within 3 blocks of where it lands grow a stage.
+
+**How to get it:** Craft: a Blank Rune, 2x Bone Meal and Moss Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fertile.png' | relative_url }}" alt="Crafting Fertile: a Blank Rune and 2x Bone Meal and Moss Block, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
 
 ### <img src="{{ '/assets/runes/focus.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Focus
 {: #focus}
@@ -157,6 +399,41 @@ Counter-turning turbines: flying shapes travel 30% faster at 15% less power. Cos
 **How to get it:** Craft: a Blank Rune, Feather and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_gyre_circle.png' | relative_url }}" alt="Crafting Gyre Circle: a Blank Rune and Feather and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### <img src="{{ '/assets/runes/hallowed.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hallowed
+{: #hallowed}
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Twice as strong on the undead; the living are passed over.
+
+**How to get it:** Craft: a Blank Rune, Golden Apple and Bone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_hallowed.png' | relative_url }}" alt="Crafting Hallowed: a Blank Rune and Golden Apple and Bone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/inward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Inward
+{: #inward}
+
+*Tier II · cost x1 · needs a Copper Cord or better*
+
+Lands on you alone, 40% stronger. Not with Selfless.
+
+**How to get it:** Craft: a Blank Rune, Glass Pane and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_inward.png' | relative_url }}" alt="Crafting Inward: a Blank Rune and Glass Pane and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/kilned.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Kilned
+{: #kilned}
+
+*Tier II · cost x1.25 · needs a Copper Cord or better*
+
+What it breaks drops already smelted, with no fuel. Only one drop rule per effect.
+
+**How to get it:** Craft: a Blank Rune, Furnace and Coal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_kilned.png' | relative_url }}" alt="Crafting Kilned: a Blank Rune and Furnace and Coal, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/kindred.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Kindred
 {: #kindred}
@@ -184,6 +461,17 @@ The effect lands twice more, a second apart.
 
 **Attaches to:** the closest rune on its left that is effects that can land again over time.
 
+### <img src="{{ '/assets/runes/mending.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mending
+{: #mending}
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Also mends 10 durability on each target's held item and armour.
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Anvil, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_mending.png' | relative_url }}" alt="Crafting Mending: a Blank Rune and Iron Ingot and Anvil, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/mercy_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mercy Circle
 {: #mercy_circle}
 
@@ -195,6 +483,8 @@ Paired sheltering crescents: helpful effects gain 20% power; other effects lose 
 
 <img src="{{ '/assets/recipes/rune_mercy_circle.png' | relative_url }}" alt="Crafting Mercy Circle: a Blank Rune and Honey Bottle and Poppy, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
 ### <img src="{{ '/assets/runes/needle_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Needle Circle
 {: #needle_circle}
 
@@ -205,6 +495,21 @@ A closing iris: 35% smaller shape radius, 20% more power. Costs 20% more mana. O
 **How to get it:** Craft: a Blank Rune, Flint and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_needle_circle.png' | relative_url }}" alt="Crafting Needle Circle: a Blank Rune and Flint and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### <img src="{{ '/assets/runes/ore_sensing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ore Sensing
+{: #ore_sensing}
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Ores within 8 blocks of where it lands glimmer for 10 seconds.
+
+**How to get it:** Craft: a Blank Rune, Spyglass and Raw Gold, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_ore_sensing.png' | relative_url }}" alt="Crafting Ore Sensing: a Blank Rune and Spyglass and Raw Gold, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
 
 ### <img src="{{ '/assets/runes/pierce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pierce
 {: #pierce}
@@ -230,6 +535,30 @@ A rolling compass: 15% more power when released while moving horizontally, other
 
 <img src="{{ '/assets/recipes/rune_pilgrim_circle.png' | relative_url }}" alt="Crafting Pilgrim Circle: a Blank Rune and Compass and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### <img src="{{ '/assets/runes/pooled.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pooled
+{: #pooled}
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+Double power, shared evenly between every creature it reaches.
+
+**How to get it:** Craft: a Blank Rune, Bowl and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_pooled.png' | relative_url }}" alt="Crafting Pooled: a Blank Rune and Bowl and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/purifying.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Purifying
+{: #purifying}
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+Also lifts one harmful effect from each target.
+
+**How to get it:** Craft: a Blank Rune, Milk Bucket and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_purifying.png' | relative_url }}" alt="Crafting Purifying: a Blank Rune and Milk Bucket and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/quicken.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Quicken
 {: #quicken}
 
@@ -254,6 +583,54 @@ Halves the whole spell's cooldown.
 
 <img src="{{ '/assets/recipes/rune_rapid.png' | relative_url }}" alt="Crafting Rapid: a Blank Rune and Sugar and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
+**Attaches to:** the closest rune on its left that is any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits).
+
+### <img src="{{ '/assets/runes/selfless.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Selfless
+{: #selfless}
+
+*Tier II · cost x1 · needs a Copper Cord or better*
+
+Skips you and lands on the others 30% stronger. Not with Inward.
+
+**How to get it:** Craft: a Blank Rune, Poppy and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_selfless.png' | relative_url }}" alt="Crafting Selfless: a Blank Rune and Poppy and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/silken.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Silken
+{: #silken}
+
+*Tier II · cost x1.3 · needs a Copper Cord or better*
+
+Blocks it breaks drop themselves, as with Silk Touch. Only one drop rule per effect.
+
+**How to get it:** Craft: a Blank Rune, String and White Wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_silken.png' | relative_url }}" alt="Crafting Silken: a Blank Rune and String and White Wool, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/sunlit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sunlit
+{: #sunlit}
+
+*Tier II · cost x1 · needs a Copper Cord or better*
+
+Twice as strong under open daylight sky; half as strong anywhere else.
+
+**How to get it:** Craft: a Blank Rune, Sunflower and Gold Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_sunlit.png' | relative_url }}" alt="Crafting Sunlit: a Blank Rune and Sunflower and Gold Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any effect.
+
+### <img src="{{ '/assets/runes/tapering.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tapering
+{: #tapering}
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+The first creature takes 50% more; each after takes a quarter less than the one before.
+
+**How to get it:** Craft: a Blank Rune, Arrow and Flint, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_tapering.png' | relative_url }}" alt="Crafting Tapering: a Blank Rune and Arrow and Flint, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/thirst.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thirst
 {: #thirst}
 
@@ -267,6 +644,39 @@ You heal for a quarter of the damage the effect deals.
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
+### <img src="{{ '/assets/runes/timbering.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Timbering
+{: #timbering}
+
+*Tier II · cost x1.3 · needs a Copper Cord or better*
+
+Breaking a log fells up to 24 more logs of the tree above it.
+
+**How to get it:** Craft: a Blank Rune, Iron Axe and Oak Log, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_timbering.png' | relative_url }}" alt="Crafting Timbering: a Blank Rune and Iron Axe and Oak Log, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/triage.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Triage
+{: #triage}
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+Lands only on the most hurt creature it reaches, 60% stronger.
+
+**How to get it:** Craft: a Blank Rune, Glistering Melon Slice and Paper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_triage.png' | relative_url }}" alt="Crafting Triage: a Blank Rune and Glistering Melon Slice and Paper, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/veinfollow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Veinfollow
+{: #veinfollow}
+
+*Tier II · cost x1.3 · needs a Copper Cord or better*
+
+Breaking an ore also breaks up to 8 more touching blocks of the same ore.
+
+**How to get it:** Craft: a Blank Rune, Raw Iron and Raw Copper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_veinfollow.png' | relative_url }}" alt="Crafting Veinfollow: a Blank Rune and Raw Iron and Raw Copper, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/vigil_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vigil Circle
 {: #vigil_circle}
 
@@ -277,6 +687,8 @@ An opening watchful eye: 20% more power if crouching on release, otherwise 10% l
 **How to get it:** Craft: a Blank Rune, Spider Eye and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_vigil_circle.png' | relative_url }}" alt="Crafting Vigil Circle: a Blank Rune and Spider Eye and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
 
 ### <img src="{{ '/assets/runes/volley.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Volley
 {: #volley}
@@ -315,6 +727,8 @@ Pay for the whole spell in health instead of mana: 1 health per 4 mana. Never le
 
 <img src="{{ '/assets/recipes/rune_blood_price.png' | relative_url }}" alt="Crafting Blood Price: a Blank Rune and Ghast Tear and Redstone Dust, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
+**Attaches to:** the closest rune on its left that is any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits).
+
 ### <img src="{{ '/assets/runes/chain.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chain
 {: #chain}
 
@@ -339,6 +753,8 @@ Braided elemental satellites: power starts at 90%, gaining 8% per distinct visua
 
 <img src="{{ '/assets/recipes/rune_confluence_circle.png' | relative_url }}" alt="Crafting Confluence Circle: a Blank Rune and Amethyst Shard and Prismarine Shard, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
 ### <img src="{{ '/assets/runes/eclipse_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Eclipse Circle
 {: #eclipse_circle}
 
@@ -349,6 +765,19 @@ A moon passing its sun: 20% more power at night on release, otherwise 10% less. 
 **How to get it:** Craft: a Blank Rune, Ender Pearl and Gold Nugget, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_eclipse_circle.png' | relative_url }}" alt="Crafting Eclipse Circle: a Blank Rune and Ender Pearl and Gold Nugget, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
+### <img src="{{ '/assets/runes/headhunting.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Headhunting
+{: #headhunting}
+
+*Tier III · cost x1.2 · needs an Amethyst Cord or better*
+
+Lands only on the healthiest creature it reaches, 60% stronger.
+
+**How to get it:** Craft: a Blank Rune, Skeleton Skull, Arrow and Spyglass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_headhunting.png' | relative_url }}" alt="Crafting Headhunting: a Blank Rune and Skeleton Skull, Arrow and Spyglass, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/homing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Homing
 {: #homing}
@@ -400,6 +829,8 @@ Forked storm spokes: 20% more power when wet or exposed to rain on release, othe
 
 <img src="{{ '/assets/recipes/rune_tempest_circle.png' | relative_url }}" alt="Crafting Tempest Circle: a Blank Rune and Breeze Rod and Copper Ingot, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
+**Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
+
 ### <img src="{{ '/assets/runes/vow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vow
 {: #vow}
 
@@ -410,4 +841,17 @@ A binding vow: the shape's effects hit twice as hard, but the whole spell's cool
 **How to get it:** Craft: a Blank Rune, Paper and Block of Gold, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Ancient cities.
 
 <img src="{{ '/assets/recipes/rune_vow.png' | relative_url }}" alt="Crafting Vow: a Blank Rune and Paper and Block of Gold, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits).
+
+### <img src="{{ '/assets/runes/windfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Windfall
+{: #windfall}
+
+*Tier III · cost x1.4 · needs an Amethyst Cord or better*
+
+Blocks it breaks drop as if mined with Fortune III. Only one drop rule per effect.
+
+**How to get it:** Craft: a Blank Rune, Emerald and Rabbit's Foot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_windfall.png' | relative_url }}" alt="Crafting Windfall: a Blank Rune and Emerald and Rabbit's Foot, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

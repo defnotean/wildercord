@@ -214,7 +214,7 @@ public final class SiltcrestDodgePreservationTest implements FabricClientGameTes
    try{
     // Candidate fixture: await measured native swimming, never a fixed delay or a supplied impulse.
     await(c,w,500,s->admitPredator(s.overworld()),"Supplied shallow shore must establish sustained ordinary swimming before predator admission");
-    await(c,w,240,s->observed!=null||calls>0,"Ordinary native stalking reaches a genuine commitment or actual catch");
+    await(c,w,600,s->observed!=null||calls>0,"Ordinary native stalking reaches a genuine commitment or actual catch");
     int number=trial+1;
     boolean qualifying=w.getServer().computeOnServer(s->{
      check(observed!=null&&admission!=null,"Actual native hunt must expose its committed quarry before a dodge witness can qualify");

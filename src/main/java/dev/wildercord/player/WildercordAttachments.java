@@ -562,6 +562,17 @@ public final class WildercordAttachments {
 			.syncWith(WorldLore.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 	);
 
+	// ---- prog pack
+	/** Circle Vows taken (two bits per vow, see {@link dev.wildercord.spell.CircleVows}); absent in old saves, which means none. Kept through death. */
+	public static final AttachmentType<Integer> CIRCLE_VOWS = AttachmentRegistry.create(
+		Wildercord.id("circle_vows"),
+		builder -> builder
+			.initializer(() -> 0)
+			.persistent(Codec.INT)
+			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	public static void init() {}
 }
 

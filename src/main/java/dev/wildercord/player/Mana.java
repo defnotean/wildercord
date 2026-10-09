@@ -75,13 +75,14 @@ public final class Mana {
 		int clarity = clarityEffect == null ? 0 : clarityEffect.getAmplifier() + 1;
 		boolean meditating = player.getAttachedOrElse(WildercordAttachments.MEDITATING, false);
 		int circles = Heart.active(player);
+		dev.wildercord.spell.CircleVows.Effect vows = Heart.vowEffect(player);
 		int max = tier.maxMana + crystals * CRYSTAL_MANA + reservoir * RESERVOIR_MANA + circles * dev.wildercord.spell.Circles.MANA_PER_CIRCLE
-			+ dev.wildercord.gear.Gear.extraMana(player);
+			+ dev.wildercord.gear.Gear.extraMana(player) + vows.mana();
 		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
 		boolean well = player.getAttachedOrElse(WildercordAttachments.WELL_UNTIL, 0L) > player.level().getGameTime();
 		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? MEDITATION_BONUS : 0)
 			+ (ley ? LEY_BONUS : 0) + (well ? WELL_BONUS : 0) + dev.wildercord.cast.events.ManaStorm.regenBonus(player);
-		float base = tier.regenPerSecond + circles * dev.wildercord.spell.Circles.REGEN_PER_CIRCLE;
+		float base = Math.max(0, tier.regenPerSecond + circles * dev.wildercord.spell.Circles.REGEN_PER_CIRCLE + vows.regen());
 		// The server's mana.regen_multiplier scales all of it (sent to clients, so the HUD matches).
 		base *= (float) dev.wildercord.config.Config.regenMultiplier(player);
 		return new Stats(tier, max, base * multiplier, multiplier, crystals, reservoir, wellspring, siphon, clarity, meditating, circles, ley, well);

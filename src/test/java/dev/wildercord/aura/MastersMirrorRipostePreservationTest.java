@@ -80,7 +80,10 @@ class MastersMirrorRipostePreservationTest {
 				boolean left = Boolean.parseBoolean(c[3]);
 				float age = Float.parseFloat(c[4]);
 				String[] actual = snapshot(selectedMove, age, windup, recovery, left);
-				for (int group = 0; group < GROUPS.length; group++)
+				// Styles 5-14 gained authored articulated forms after this fixture froze their fallback;
+				// their Classic groups stay pinned and the new forms have dedicated opening-style tests.
+				int groups = selectedMove >= ArticulatedCombatPose.CRACKLE && selectedMove <= ArticulatedCombatPose.BLOSSOM_FALL ? 2 : GROUPS.length;
+				for (int group = 0; group < groups; group++)
 					assertEquals(c[5 + group], actual[group], GROUPS[group] + " changed for clip " + selectedMove
 						+ ", age=" + c[4] + ", windup=" + windup + ", recovery=" + recovery + ", left=" + left);
 				samples++;

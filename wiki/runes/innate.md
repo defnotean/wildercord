@@ -19,7 +19,7 @@ Threads everything hit together (4 at most) for 8 seconds: 40% of any damage one
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/borrowed_time.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Borrowed Time
 {: #borrowed_time}
@@ -30,7 +30,7 @@ Heals the damage you took in the last 5 seconds, as much as you're missing. Over
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/fortune.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fortune
 {: #fortune}
@@ -41,7 +41,7 @@ For 10 seconds, every hit you deal has a 1 in 4 chance to strike for double, and
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/gale_mantle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gale Mantle
 {: #gale_mantle}
@@ -52,7 +52,7 @@ For 12 seconds, jump again in midair to dash the way you're steering (up to 3 da
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/kindling.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Kindling
 {: #kindling}
@@ -63,7 +63,7 @@ For 12 seconds, jump again in midair to dash the way you're steering (up to 3 da
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/mirrorfrost.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mirrorfrost
 {: #mirrorfrost}
@@ -74,7 +74,7 @@ Casts back the last spell that hit you in the past 30 seconds, as your own at 70
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/phantom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Phantom
 {: #phantom}
@@ -85,7 +85,7 @@ Leaves an afterimage of you that every monster within 16 blocks turns on for 4 s
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/stoneform.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stoneform
 {: #stoneform}
@@ -96,7 +96,7 @@ For 8 seconds: no knockback, 20% less damage, and every blow you take from an at
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/stormheart.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stormheart
 {: #stormheart}
@@ -107,7 +107,7 @@ For 10 seconds, whatever hurts you (a blow of 2 or more) is struck by lightning 
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/twin_star.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Twin Star
 {: #twin_star}
@@ -118,5 +118,5 @@ Your next spell within 6 seconds is cast twice.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

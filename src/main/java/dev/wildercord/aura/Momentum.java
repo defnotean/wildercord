@@ -348,6 +348,16 @@ public final class Momentum {
 		if (Reactions.has(target, Reactions.Mark.BLEEDING)) {
 			s |= MomentumRules.BLEEDING;
 		}
+		// ---- methods-a pack
+		if (Reactions.has(target, Reactions.Mark.WET) || Reactions.has(target, Reactions.Mark.SOAKED)) {
+			s |= MomentumRules.SOAKED;
+		}
+		if (dev.wildercord.aura.arts.MethodsAFlavours.sundered(target) > 0) {
+			s |= MomentumRules.SUNDERED;
+		}
+		if (target.hasEffect(net.minecraft.world.effect.MobEffects.BLINDNESS)) {
+			s |= MomentumRules.BLINDED;
+		}
 		return s;
 	}
 

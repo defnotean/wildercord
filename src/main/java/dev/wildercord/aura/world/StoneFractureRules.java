@@ -5,7 +5,7 @@ public final class StoneFractureRules {
 	private StoneFractureRules() {}
 
 	public static final int PLANT = 8, BRACE = 12, REPLY_TELL = 12;
-	public static final int TELL = PLANT + BRACE + REPLY_TELL, RECOVERY = 40, COOLDOWN = 180, WARNING_REFRESH = 3;
+	public static final int TELL = PLANT + BRACE + REPLY_TELL, RECOVERY = 30, COOLDOWN = 130, WARNING_REFRESH = 3;
 	/** Includes the brace: one payment, with no reactive guard or retaliation added to it. */
 	public static final double COST = 28, DAMAGE = 28, MIN_DISTANCE = 1.5, MAX_DISTANCE = 5.5;
 	public static final double REACH = 6, HALF_WIDTH = .7, HEIGHT = 1.8;

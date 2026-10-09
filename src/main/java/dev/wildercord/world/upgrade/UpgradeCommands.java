@@ -35,6 +35,29 @@ public final class UpgradeCommands {
 				return "PREVIEW ONLY: Wayfarer Training Pavilion, "+p.writes().size()+" inert writes, "+p.dimension()+", guarded region "+first+" to "+last
 					+". Historical provenance UNKNOWN. Review every WRITE/GUARD in data/wildercord-upgrades/"+p.siteId()+".preview.txt and make an offline whole-world backup.\nExact preview hash: "+p.hash();
 			}))))));
+		var site=Commands.literal("preview_site");
+		for(var family:UpgradeCatalog.ALL)if(family.decision()==UpgradeCatalog.Decision.BOUNDED_ADAPTER)
+			site.then(Commands.literal(family.id().substring(family.id().indexOf(':')+1)).then(Commands.argument("chunk_x",IntegerArgumentType.integer(-1874999,1874999))
+				.then(Commands.argument("floor_y",IntegerArgumentType.integer(-2032,2031)).then(Commands.argument("chunk_z",IntegerArgumentType.integer(-1874999,1874999))
+				.executes(c->run(c,ctx->{
+					var p=WorldUpgrades.preview(ctx.getSource().getLevel(),family.id(),IntegerArgumentType.getInteger(ctx,"chunk_x"),IntegerArgumentType.getInteger(ctx,"floor_y"),IntegerArgumentType.getInteger(ctx,"chunk_z"));
+					var first=p.cells().getFirst().point();var last=p.cells().getLast().point();
+					return "PREVIEW ONLY: "+family.id()+" v"+p.version()+", "+p.writes().size()+" writes, "+p.dimension()+", guarded region "+first+" to "+last
+						+(family.unique()?". Unique encounter: one per "+family.structureSet()+" spread region; no entity is spawned":"")
+						+". Historical provenance UNKNOWN. Review every WRITE/GUARD in data/wildercord-upgrades/"+p.siteId()+".preview.txt and make an offline whole-world backup.\nExact preview hash: "+p.hash();
+				}))))));
+		root.then(site);
+		root.then(Commands.literal("catalog").executes(c->run(c,ctx->{
+			var text=new StringBuilder("Reviewed worldgen catalog:");
+			for(var f:UpgradeCatalog.ALL)text.append("\n").append(f.decision()).append(" ").append(f.id()).append(": ").append(f.reason());
+			return text.toString();
+		})));
+		root.then(Commands.literal("sites").executes(c->run(c,ctx->{
+			var data=UpgradeSites.of(ctx.getSource().getServer().overworld());var all=data.sites();
+			var text=new StringBuilder("Site records: "+all.size()+(data.saturated()?" (SATURATED: unique encounters refused)":""));
+			all.stream().limit(32).forEach(s->text.append("\n").append(s.origin()).append(" ").append(s.family()).append(" v").append(s.version()).append(" ").append(s.state()).append(" chunk ").append(s.chunkX()).append(",").append(s.chunkZ()));
+			return text.toString();
+		})));
 		root.then(authorize("approve",false,false));
 		root.then(authorize("reauthorize",true,false));
 		root.then(authorize("reauthorize_rollback",true,true));
@@ -67,7 +90,7 @@ public final class UpgradeCommands {
 					else s.engine.reauthorize(hash(ctx),operator,backup,true,WorldUpgrades.world(level));
 					return "Exact manifest reauthorized under current claim/provider policy. Run "+(rollback?"rollback ":"resume ")+hash(ctx)+" explicitly.";
 				}
-				s.engine.approve(hash(ctx),operator,backup,true,WorldUpgrades.world(level));s.activeHash=hash(ctx);s.rollback=false;
+				s.engine.approve(hash(ctx),operator,backup,true,WorldUpgrades.world(level));s.activeHash=hash(ctx);s.rollback=false;UpgradeSites.mirror(level,s.engine.entries());
 				return "Exact region approved and queued, at most two writes per tick. Original history remains UNKNOWN. Use inspect/status; unloading or player approach defers work.";
 			})))));
 	}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:stick",
+    "minecraft:stick",
+    "minecraft:string",
+    "minecraft:iron_nugget",
+    "minecraft:lapis_lazuli",
+    "minecraft:lapis_lazuli",
+    "minecraft:gold_ingot"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:long_arm"
+    }
+  }
+}

@@ -1,16 +1,13 @@
 # Your affinities
 
 
-You have an **affinity** with each of the ten elements, and it grows with what you **do**. Cast fire, smelt ore and
-fight in the Nether, and fire comes easier to you; fish, wander the snow and freeze in powder snow, and frost does.
-Every affinity climbs from *none yet* to **V**, and each level makes that element's spells a little stronger. From
-**III** you shrug off some of it when others' spells hit you, and at **V** its spells cost less.
+## What it is
 
-It's gentle on purpose: a level takes real play, and even a mastered element is only 15% stronger. Nobody is locked
-out of anything, and nobody walks into a duel with an unbeatable edge.
+You have an **affinity** with each of the ten elements. It grows with what you do: cast fire, smelt ore
+and fight in the Nether, and fire comes easier. Each level makes that element's spells a little stronger.
+From **III** you resist it, and at **V** its spells cost less. Even a mastered element is only 15% stronger.
 
-
-## The levels
+## How to use it
 
 | Level | Points (in all) | That element's spells | Others' spells of it on you | Its spells cost |
 |---|---|---|---|---|
@@ -21,20 +18,14 @@ out of anything, and nobody walks into a duel with an unbeatable edge.
 | **IV** | 4,500 | **+12%** power | **15%** softer | |
 | **V** | 10,000 | **+15%** power | **20%** softer | **10% less** |
 
-- **Power means every kind of power.** Damage, but also how much a heal restores, how strong a shield is, how far a
-  push throws: whatever that element's runes do, a little more of it.
-- **It counts on your own spells**: those you cast from your Cord (and their echoes), an imbued item or glyph letting
-  go, a spell your Mirrorfrost turns back. A scroll goes off at its plain strength whoever reads it, and passives at
-  your Heart Circles' power, as before.
-- **Mixed spells.** A spell with fire and frost effects gets fire's bonus on its fire and frost's on its frost. At V,
-  the price cut goes to the element's share of the spell: a spell of fire alone costs 10% less with Fire V; one that's
-  half fire and half frost, 5% less. The Cord screen and the HUD show the price with it already taken off.
-- **Every level is announced**: a message saying what it gives, a chime, and a toast with the element's mark in its
-  colour (*"Your affinity deepens: Frost III"*). The **first level** of each element is also an entry in your
-  [Grimoire](grimoire.md), worth **100 mana** toward your next
+- **Power** means everything the element's runes do: damage, healing, shields, pushes.
+- It counts on spells you cast from your Cord, imbued items and glyphs. Scrolls and passives don't get it.
+- **Mixed spells** get each element's bonus on its own effects. At V the price cut applies to that
+  element's share: half fire, half frost costs 5% less with Fire V.
+- Every level is announced. The **first level** of each element condenses **100 mana** toward your next
   [Heart Circle](heart-circles.md).
 
-## What raises each element
+## How to get it
 
 Three things raise **every** element:
 
@@ -44,10 +35,8 @@ Three things raise **every** element:
 | **Setting off a reaction** it takes part in | 3 to each element in it (at most one reaction a second counts) | 45 |
 | **Finding a creature weak to it** (a new weakness in your Bestiary) | 25 | 100 |
 
-Casting counts **the mana you actually spent**, after discounts, and splits it between the elements by what each
-one's effects cost. So a cheap spell spammed is worth exactly what it cost you, no more than one real spell, and a
-spell of fire and frost grows both. A Blood Price spell counts the mana it stood for. Passives, imbued items letting
-go, scrolls and Creative mode count for nothing, as with [condensing](heart-circles.md).
+Casting counts the mana you actually paid, split between the spell's elements. Passives, imbued items,
+scrolls and Creative mode count for nothing.
 
 Which elements a reaction feeds:
 
@@ -151,71 +140,30 @@ In Wildercord, water magic belongs to frost.
 
 ## The daily allowance
 
-Everything above stops counting once it's given its day's worth, so nothing can be farmed: no mob grinder, stone
-generator, fishing machine or tower to jump off grows an affinity past its allowance. A few things to know:
+Each way of gaining points has its own daily cap, so nothing can be farmed. A day is one in-game day of
+play (about 20 minutes); sleeping doesn't reset it sooner. Casting never stops counting, but past 100 a day
+it slows to a tenth. Killing players, Creative mode and spectating earn nothing. Hover an element in the
+Grimoire to see every way to raise it and its cap.
 
-- **A day is an in-game day of play**, about 20 minutes, counted by the world's clock as it runs. Sleeping through the
-  night skips the dark but doesn't bring a fresh allowance any sooner.
-- **Each way has its own allowance.** Mining stone and mining ores are separate, so ores still count once stone has
-  given its 15. Casting keeps a separate allowance per element.
-- **Casting never stops counting**: past its 100 a day it slows to a tenth, since your mana already keeps it honest.
-- **Other players don't count.** Killing a player earns nothing, and neither does Creative mode or spectating.
-- The Grimoire's tooltip for each element lists every way to raise it with its allowance.
+## Leaning
 
-### How long it takes
+Your **leaning** is your deepest affinity: level I or more, with at least a quarter more points than any
+other element. Your Heart Circles and charging circles take its colour, and the first time you earn the
+**Leaning** feat.
 
-Roughly, for one element:
+## Resisting other casters
 
-- **Level I** comes in an evening of doing that thing: about 1,000 mana of its spells, or a couple of in-game days of
-  mining for earth, fishing for frost, farming for life.
-- **Level III** takes a few hours of play leaning into it.
-- **Level V** takes dedication: many days of casting that element and living its way, well past a dozen hours of
-  play. Most casters will have one or two elements there, if any.
+From level **III**, that element's spells hurt you less, whoever cast them (Runebound, bosses, players).
 
-## Where to see it
+- Only damage is reduced. Slows, freezes and knockback land as normal.
+- A **reaction** breaks through it.
+- It stacks with your other [defences](defence.md).
 
-- **The Grimoire page** has an **Affinities** section right under your heart: each element with its mark, its level
-  (or *none yet*) and a bar toward the next level with your points. Hover an element for what its level gives, what the
-  next one gives, and everything that raises it.
-- **The Cord screen's readout** says it under a spell's cost, quietly: *"Fire affinity III: +9% power"* for each of
-  the spell's elements you have an affinity with (and *"10% less mana"* at V).
-- **Toasts and messages** mark every new level.
+## Tips and counterplay
 
-## Affinities and leaning
-
-Your **leaning** is your **deepest affinity**. Once one element reaches **I** and has a quarter more points than any
-other, your magic leans toward it: your Heart Circles and your charging circles take its colour, you're told *"Your
-magic leans toward Fire..."*, and the first time you earn the **Leaning** feat.
-
-Leaning used to add 10% power of its own to the one element you cast most. That's gone: the power comes from your
-affinities now, one for every element you grow, so a caster of two elements isn't punished for it. If you cast
-before affinities arrived, your casts of each element were remembered and gave it a start (2 points a cast, never past
-level II).
-
-## Affinities and creature affinities
-
-[Creatures](../spellcraft/affinities.md) are born weak to some elements and resistant to others. A
-player grows their own instead: from level **III**, that element's spells land softer on you, whoever cast them (a
-Runebound, the Archivist, another player in a duel).
-
-- **Only damage changes**, as for creatures: slows, freezes and knockback land as they would.
-- **A reaction breaks through it**, as through a creature's resistance: a Shatter lands in full on a fire-III player.
-- **It's quiet.** No "Resisted" floats over you: at most 20% off one element, it isn't worth a word.
-- It stacks with everything else: a staff, your Heart Circles and the climate on the caster's side, and the scaling
-  of damage between players on yours.
-
-## Tips
-
-- **Live your element.** Casting is the quickest way, but a fire caster who also smelts, fights in the Nether and
-  burns their foes grows twice as fast.
-- **Spread out a little.** Each element's allowances are its own, so a day of fishing, farming and mining grows frost,
-  life and earth all at once.
-- **Find weaknesses.** Each new weakness in your Bestiary is 25 points for that element and 25 mana for your heart.
-- **Set off reactions.** Each one feeds both its elements.
-- **Resisting starts at III.** If a Runebound's element keeps hurting you, that's the affinity to grow.
-
-
-A server can switch affinities off (`player_affinity` in the `features` section of its settings file): then they
-neither grow nor give anything, and leaning shows nothing. It can also make them grow faster or slower
-(`gain_multiplier` in the `affinity` section: 2 is twice as fast). A settings file from an older Wildercord gains both
-by itself, switched on at the normal pace, the next time the server starts or reloads its settings.
+- **Live your element.** A fire caster who also smelts and fights in the Nether grows twice as fast.
+- **Spread out.** Each element has its own caps, so a day of fishing, farming and mining grows three.
+- **Find weaknesses.** Each new one in your Bestiary is 25 points and 25 mana for your heart.
+- **Set off reactions.** Each feeds both its elements.
+- **Resisting starts at III.** If one element keeps hurting you, grow that one.
+- A server can switch affinities off or change how fast they grow.

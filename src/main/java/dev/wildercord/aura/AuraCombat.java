@@ -460,8 +460,12 @@ public final class AuraCombat {
 					player.heal((float) drink);
 				}
 			}
+			// ---- methods-a pack
+			case CURRENT, FORGE, GRIT -> dev.wildercord.aura.arts.MethodsAFlavours.passive(player, target, method.flavour(), stage);
 			default -> {
 				// Gale, Stone, Starlit and Hourglass give theirs all the time (see Aura's modifiers and gain).
+				// ---- methods-b pack
+				if (MethodsBCoating.handles(method.id())) MethodsBCoating.flavour(player, method.id(), target, taken, stage, now);
 			}
 		}
 	}

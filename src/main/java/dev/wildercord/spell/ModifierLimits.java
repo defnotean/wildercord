@@ -7,6 +7,8 @@ public final class ModifierLimits {
   if(rune.is(Runes.VOW_MOD.id()) || rune.is(Runes.EXECUTE_MOD.id()) || rune.is(Runes.TRIAL_KEY.id()))return 1;
   if(rune.is(Runes.FOCUS_MOD.id()))return 2;
   if(rune.is(Runes.EXTEND.id()))return 3;
+  // ---- links-mods pack: each hearth modifier works once per rune
+  if(HearthLinkRules.ownsModifier(rune))return 1;
   return Integer.MAX_VALUE;
  }
  public static int count(java.util.List<RuneDef> modifiers,RuneDef rune) {

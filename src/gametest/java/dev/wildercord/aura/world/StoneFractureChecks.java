@@ -265,8 +265,8 @@ final class StoneFractureChecks {
 		world.getServer().waitFor(server -> {
 			if (!master.fracturePending()) return false;
 			check(master.attackAnimation() == 8 && master.attackAnimation() == MasterAnimationRules.STONE_FRACTURE
-				&& master.attackElapsed(0) <= 1 && master.attackTellTicks() == 32 && master.attackRecoveryTicks() == 39,
-				"Natural sequence one replaces Stone's due guard with synchronized ID 8 and its complete 32 + 40 timing");
+				&& master.attackElapsed(0) <= 1 && master.attackTellTicks() == StoneFractureRules.TELL && master.attackRecoveryTicks() == StoneFractureRules.RECOVERY - 1,
+				"Natural sequence one replaces Stone's due guard with synchronized ID 8 and its complete tell + recovery timing");
 			began = level.getGameTime() - (long) master.attackElapsed(0);
 			aimYaw = master.getYRot();
 			check(Math.abs(aimYaw) < .1 && master.onGround() && !master.isNoAi() && !master.getMoveControl().hasWanted(), "Admission captures the forward aim and brakes a grounded native AI body");
@@ -352,6 +352,7 @@ final class StoneFractureChecks {
 		for (int i = 1; i < count; i++) party.add(add("FractureAlly" + i, 6, -6 + i * 1.5));
 		bystander = add("FractureBystander", -6, 4);
 		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
+		if (master != null) master.plainOrdinaryOnly();
 		check(master != null, "The Stone fixture is constructible");
 		master.setDiscipline(MastersRules.STONE); master.snapTo(origin.x, origin.y, origin.z, 0, 0);
 		level.addFreshEntity(master);

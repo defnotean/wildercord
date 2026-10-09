@@ -1,231 +1,107 @@
 # Getting Around
 
-Wildercord comes with a full set of travel commands for servers: **homes** you can return to, public **warps**,
-personal **waypoints** that point the way, **teleport requests** to and from friends, and **/back**, **/spawn** and
-**/rtp**. Every teleport is a little piece of magic: a circle forms at your feet, you stand still for a moment, and
-you vanish in a pillar of light.
+## What it is
 
-- [The commands](#the-commands)
-- [How a teleport works](#how-a-teleport-works)
-- [Homes](#homes)
-- [Warps](#warps)
-- [Waypoints](#waypoints)
-- [Teleport requests](#teleport-requests)
-- [Back, spawn and random teleport](#back-spawn-and-random-teleport)
-- [For server owners](#for-server-owners)
+A full set of travel commands: **homes**, public **warps**, personal **waypoints**, **teleport requests** to and from
+friends, and **/back**, **/spawn** and **/rtp**. Every teleport starts with a magic circle at your feet and a short
+countdown.
 
-## The commands
+## How to use it
 
-Anyone can use these, unless the server has turned travel off. Words in `<angle brackets>` are needed; words in
-`[square brackets]` can be left out.
+Words in `<angle brackets>` are needed; words in `[square brackets]` can be left out.
 
 | Command | Does |
 |---|---|
-| `/sethome [name]` | Sets a home where you're standing. Without a name it's called **home**. Setting a home again by the same name moves it. |
-| `/home [name]` | Teleports you to a home. Without a name: the one called **home**, or your only one. |
-| `/delhome <name>` | Removes a home. |
-| `/homes` | Lists your homes. Click a name to go there. |
-| `/warp <name>` | Teleports you to a warp. |
-| `/warps` (or `/warp`) | Lists the warps. Click a name to go there. |
-| `/waypoint add <name>` | Marks a waypoint where you're standing. You can give coordinates after the name instead: `/waypoint add mine 120 40 -300`. |
-| `/waypoint remove <name>` | Removes a waypoint. |
-| `/waypoint list` | Lists your waypoints. Click a name to track it. |
-| `/waypoint track <name>` | Shows the way to a waypoint in the corner of your screen. |
-| `/waypoint untrack` | Stops showing it. |
-| `/waypoint share <name> <player>` | Sends a waypoint to another player, who can add it with one click. |
-| `/tpa <player>` | Asks to teleport to another player. |
-| `/tpahere <player>` | Asks another player to teleport to you. |
-| `/tpaccept [player]` | Accepts a request. Without a name: the newest one. |
-| `/tpdeny [player]` | Turns a request down. |
-| `/tpcancel` | Takes back the requests you've sent. |
-| `/tptoggle` | Stops anyone sending you requests. Type it again to allow them. |
-| `/back` | Returns you to where you were before your last teleport, or to where you died. |
-| `/spawn` | Teleports you to the world spawn. |
-| `/rtp` | Teleports you somewhere random in the Overworld, on safe ground. |
-
-Operators also have `/setwarp <name>` and `/delwarp <name>` (see [Warps](#warps)).
-
-Tab completion fills in names as you type: your homes, the warps, your waypoints, and for `/tpaccept` and
-`/tpdeny`, whoever has sent you a request.
-
-## How a teleport works
-
-Every command that teleports you (`/home`, `/warp`, `/spawn`, `/back`, `/rtp` and an accepted request) follows the
-same rules.
+| `/sethome [name]` | Sets a home where you stand. No name means **home**. The same name again moves it. |
+| `/home [name]` | Teleports you to a home |
+| `/delhome <name>` | Removes a home |
+| `/homes` | Lists your homes. Click one to go there. |
+| `/warp <name>` | Teleports you to a warp |
+| `/warps` | Lists the warps. Click one to go there. |
+| `/waypoint add <name> [x y z]` | Marks a waypoint here, or at the coordinates you give |
+| `/waypoint remove <name>` | Removes a waypoint |
+| `/waypoint list` | Lists your waypoints. Click one to track it. |
+| `/waypoint track <name>` | Shows the way to it in the top-left corner of your screen |
+| `/waypoint untrack` | Stops showing it |
+| `/waypoint share <name> <player>` | Sends a waypoint to another player |
+| `/tpa <player>` | Asks to teleport to a player |
+| `/tpahere <player>` | Asks a player to teleport to you |
+| `/tpaccept [player]` | Accepts a request (the newest, without a name) |
+| `/tpdeny [player]` | Turns a request down |
+| `/tpcancel` | Takes back the requests you've sent |
+| `/tptoggle` | Stops anyone sending you requests. Again to allow them. |
+| `/back` | Returns you to where you were before your last teleport, or where you died |
+| `/spawn` | Teleports you to the world spawn |
+| `/rtp` | Teleports you somewhere random in the Overworld |
 
 ### The warmup
 
-When you use one, a violet **magic circle** forms at your feet and a countdown appears above your hotbar:
-*Teleporting to your home in 3... stand still*. Motes of light rise from the circle's edge, and in the last second a
-star lights up inside it. When the count reaches zero you're gone.
+Stand still for **3 seconds** while the circle forms. The teleport is cancelled if you **move** more than half a block
+(looking around is fine), **take damage**, start a **duel**, die or change worlds. A cancelled teleport starts no
+cooldown.
 
-The warmup is **3 seconds** unless the server says otherwise. It's cancelled, and nothing happens, if:
-
-| You... | The game says |
-|---|---|
-| **move** more than half a block (turning to look around is fine) | *Teleport cancelled: you moved* |
-| **take damage** | *Teleport cancelled: you were hurt* |
-| **start a duel** | *Teleport cancelled: you're in a duel* |
-
-Dying or changing worlds also calls it off. A cancelled teleport's circle cracks and fizzles out. It doesn't start a
-cooldown, so you can try again straight away.
-
-**Operators and players in Creative mode** skip the warmup and teleport at once.
+Operators and players in Creative mode teleport at once.
 
 ### Cooldowns
 
-After a teleport, **that command** rests for a while before you can use it again: **30 seconds** for `/home`,
-`/warp`, `/spawn`, `/back` and `/tpa`, and **5 minutes** for `/rtp` (unless the server says otherwise). Each command
-has its own cooldown, so using `/home` doesn't stop you using `/warp`. If you try too soon you're told how long is
-left: *You can use /home again in 12 seconds*.
-
-Operators have no cooldowns.
+Each command rests after use: **30 seconds** for `/home`, `/warp`, `/spawn`, `/back` and `/tpa`, and **5 minutes**
+for `/rtp`. Each has its own cooldown. Operators have none.
 
 ### Landing safely
 
-The place you're going is checked again at the very end of the warmup. If something has changed, say someone built
-over your home or lava has flowed over it, you land on the **nearest safe ground close by** instead. If there isn't
-any, the teleport is called off and you're told why. Safe ground means something solid under your feet, room for
-your head, and no lava, fire, magma, cactus, berry bushes, powder snow or cobwebs in the way.
+If your destination has become unsafe (built over, lava, fire and so on), you land on the nearest safe ground close by.
+If there is none, the teleport is called off.
 
-(Players in Creative mode land exactly where they asked, since nothing can hurt them there.)
+### Homes
 
-### Everything else
+- Up to **3 homes**. Names use letters, numbers, `-` and `_`, up to 24 characters. Capitals don't matter.
+- Homes work across worlds and are kept when you die.
 
-- **You can't teleport during a [duel](duels.md).** Finish it first.
-- **Teleports work between worlds.** A home in the Nether takes you to the Nether.
-- **Where you left from is remembered**, so `/back` can take you there again.
-- Starting a new teleport while one is warming up replaces the old one.
-- Everyone nearby sees the light and hears the chime where you leave and where you arrive.
+### Warps
 
-## Homes
+Public places anyone can visit. Only **operators** can make them with `/setwarp <name>` and remove them with
+`/delwarp <name>`.
 
-A home is a place of your own to come back to. Stand where you'd like it and type `/sethome`. Then `/home` brings you
-back from anywhere, in any world.
+### Waypoints
 
-- You can have **up to 3 homes** (the server can change this). Give them names to tell them apart:
-  `/sethome base`, `/sethome mine`, then `/home mine`.
-- Names can use **letters, numbers, `-` and `_`**, up to 24 characters. They don't care about capitals: `Base` and
-  `base` are the same home.
-- **Setting a home again by a name you already use moves it** there. This works even when you have the most homes
-  you can have.
-- `/homes` lists them all, with how many you have out of how many you can. Hover over a name to see where it is;
-  click it to go there.
-- If you have several homes and none of them is called **home**, a plain `/home` shows you the list to pick from.
-- Your homes are yours alone, and they're kept when you die.
+Waypoints never teleport you. They point the way on foot.
 
-## Warps
+- A tracked waypoint shows an arrow, its name and its distance in the top-left corner. Within **96 blocks**, a faint
+  beam rises from it that only you can see.
+- A shared waypoint arrives in chat with an **[Add]** button. You can share with the same player once every 10 seconds.
+- Up to **50 waypoints**.
+- Minecraft's own operator `/waypoint` list is now `/waypoint locator`; `/waypoint modify` still works.
 
-Warps are **public places anyone can go to**: the spawn town, a market, an arena, the portal hub. Type `/warps` to see
-them all (click one to go there), or `/warp <name>` to go straight there.
+### Teleport requests
 
-Only **operators** can make and remove warps:
+- The other player gets **[Accept]** and **[Deny]** buttons. A request lasts **60 seconds**.
+- A new request to the same player replaces the old one.
+- When accepted, the traveller goes through the warmup and lands next to the other player.
+- You can't send a request to someone in a duel. `/tptoggle` is remembered when you log out.
 
-| Command | Does |
-|---|---|
-| `/setwarp <name>` | Sets a warp where the operator is standing. Setting one again by the same name moves it. |
-| `/delwarp <name>` | Removes a warp. |
+### /back, /spawn and /rtp
 
-Warps follow the same naming rules as homes, belong to the whole server, and can be in any world.
+- `/back` counts as a teleport, so a second `/back` undoes the first. After you die, it takes you to where you died.
+- `/spawn` goes to the world spawn, not your bed.
+- `/rtp` lands you on solid surface ground up to **5,000 blocks** from the world spawn, never in water or lava.
 
-## Waypoints
+## Tips and counterplay
 
-Waypoints are **markers that never teleport you**. They're for finding your way back on foot: to a village you
-passed, a cave entrance, the stronghold you're hunting, a friend's base.
+- You can't teleport during a [duel](duels.md).
+- Set a home right after an `/rtp`: your coordinates are shown in chat when you land.
 
-- `/waypoint add <name>` marks where you're standing, and remembers which world you're in. Give coordinates to mark
-  somewhere else: `/waypoint add village 340 70 -1200`.
-- `/waypoint track <name>` shows the waypoint as one small line in the **top-left corner** of your screen:
-  an arrow that turns as you look around and always points toward it, its name, and how many blocks away it is.
-  When it's in another world, the line says which world instead.
-- Within about **96 blocks**, a **faint beam of light** rises from a tracked waypoint so you can spot it. Only you can
-  see it.
-- `/waypoint untrack` hides the line and the beam. Tracking another waypoint switches to it. Removing the tracked
-  waypoint stops tracking it.
-- `/waypoint list` shows them all (the tracked one has a star). Hover over a name to see where it is; click it to
-  track it.
-- `/waypoint share <name> <player>` sends the waypoint to someone else. They get a message in chat with an **[Add]**
-  button that adds it to their own waypoints, in the right world. You can share with the same player once every
-  10 seconds.
-- You can keep **up to 50 waypoints**. Adding one by a name you already use moves it.
+### For server owners
 
-The corner line hides while the debug screen (`F3`) is open, since it uses the same corner.
+Change these in the `travel` section of `config/wildercord.json`, then run `/wildercord reload`:
 
-Minecraft has its own `/waypoint` command for operators, which changes how players look on the locator bar. It's
-still there for them: `/waypoint modify ...` works as before, and its list is now `/waypoint locator`.
-
-## Teleport requests
-
-To visit a friend, **ask first**: `/tpa Alex`. To bring a friend to you: `/tpahere Alex`.
-
-- They hear a chime and see your request in chat, with two buttons: **[Accept]** and **[Deny]**. They can also type
-  `/tpaccept` or `/tpdeny`.
-- A request **lasts 60 seconds** (the server can change this). After that it runs out, and you're both told.
-- **Sending another request to the same player replaces the first.** You can have requests out to several different
-  players at once.
-- `/tpcancel` takes back every request you've sent.
-- You can't send a request to yourself, or to someone who's in a duel.
-- **When a request is accepted**, whoever is travelling goes through the usual warmup (so they must stand still),
-  and lands wherever the other player is **when the warmup ends**, on safe ground near them. If the other player has
-  started a duel by then, the teleport is called off.
-- Everyone is told what happened: sent, accepted, turned down, taken back or run out. If either player leaves the
-  game, the request is dropped.
-
-**Don't want requests?** `/tptoggle` turns them all away (anyone who tries is told you aren't taking requests) and
-drops any waiting for you. Type it again to allow them. This is remembered even if you log out.
-
-## Back, spawn and random teleport
-
-### /back
-
-`/back` returns you to where you were **just before your last teleport**, so after `/home` it takes you back to where
-you were. Using `/back` counts as a teleport too, so a second `/back` undoes the first.
-
-**When you die**, `/back` remembers where it happened instead. After you respawn, a message in chat reminds you, and
-you can click it. If the spot is dangerous now (you died in lava, say), you land on the nearest safe ground close by,
-or the teleport is called off if there's none.
-
-### /spawn
-
-`/spawn` takes you to the **world spawn** (not your bed), on safe ground.
-
-### /rtp
-
-`/rtp` sends you **somewhere random in the Overworld**, up to **5,000 blocks from the world spawn** (the server can
-change this). It's a good way to find fresh land to settle.
-
-- You always land **on the surface, on solid ground**: never in the sea, a river, lava, on top of a tree or inside a
-  block.
-- It works from any world, and always takes you to the Overworld.
-- It has a longer cooldown than the other commands: **5 minutes**.
-- Very rarely it can't find anywhere safe; you're told, and can try again. It looks for a new spot at most once every
-  10 seconds: try again sooner (after moving broke the warmup, say) and it takes you to the spot it already found, or,
-  if it found none, tells you how long to wait.
-- Your coordinates are shown in chat when you land, so you can write them down (or `/sethome` right away).
-
-## For server owners
-
-Everything on this page works out of the box. Owners can change it in the **`travel`** section of the server's
-Wildercord settings file, `config/wildercord.json`, then run `/wildercord reload`:
-
-| Setting | At first | What it does |
+| Setting | Default | What it does |
 |---|---|---|
-| `enabled` | `true` | Whether the travel commands exist at all. Turned off, they stop working as soon as the settings are reloaded, and leave the command list the next time the server starts or reloads its data packs. Turned back on, they return at that same point. |
-| `max_homes` | `3` | How many homes each player may have. 0 turns homes off. |
-| `warmup_seconds` | `3` | How long the warmup lasts. 0 makes every teleport instant. |
-| `cooldown_seconds` | `30` | The cooldown for `/home`, `/warp`, `/spawn`, `/back` and `/tpa` (each has its own). |
-| `rtp_cooldown_seconds` | `300` | The cooldown for `/rtp` (5 minutes). |
-| `rtp_radius` | `5000` | How far from the world spawn `/rtp` may send players, in blocks. |
-| `tpa_timeout_seconds` | `60` | How long a teleport request waits for an answer. |
+| `enabled` | `true` | Turns the travel commands on or off |
+| `max_homes` | `3` | Homes per player. 0 turns homes off. |
+| `warmup_seconds` | `3` | Warmup length. 0 makes teleports instant. |
+| `cooldown_seconds` | `30` | Cooldown for `/home`, `/warp`, `/spawn`, `/back` and `/tpa` |
+| `rtp_cooldown_seconds` | `300` | Cooldown for `/rtp` |
+| `rtp_radius` | `5000` | How far from spawn `/rtp` may send players |
+| `tpa_timeout_seconds` | `60` | How long a request waits |
 
-A settings file written by an older Wildercord doesn't need editing by hand: when the server starts (or an operator
-reloads the settings), any setting the file lacks, the whole `travel` section included, is added to it at its default,
-and everything already set is kept.
-
-Operators always skip the warmup and cooldowns. Only operators can set and remove warps. See
-[Controls](../controls.md) for how an operator reloads the settings.
-
-## Related
-
-- [Duels](duels.md): nobody can teleport in or out of one.
-- [Controls](../controls.md): every key and command in one place.
+See [Controls](../controls.md).

@@ -10,74 +10,59 @@ nav_order: 7
 <img src="{{ '/assets/images/training-dummy.jpg' | relative_url }}" alt="A straw training dummy stands in a magic circle, a pink number 8.3 floating above it and its name reading DPS 16.5 and a running total" class="shot">
 <span class="caption">Every hit floats up as a number; the nameplate keeps score.</span>
 
-A straw **Training Dummy** to try your spells on. It never dies, it stands firm, and it shows you
-exactly what every hit did.
-
 1. TOC
 {:toc}
 
-## Crafting
+## What it is
+
+A straw dummy for testing spells and blades. It never dies, never moves, and shows exactly how much damage each hit did.
+
+## How to get it
 
 {% include recipe.html id="training_dummy" alt="Crafting grid: top row empty · White Wool · empty; middle row Stick · Hay Bale · Stick; bottom row empty · Smooth Stone Slab · empty" %}
 
-A White Wool, 2 Sticks, a Hay Bale and a Smooth Stone Slab make one. Dummies stack to 16.
+One White Wool, two Sticks, a Hay Bale and a Smooth Stone Slab. Stacks to 16.
 
-## Placing and picking up
+## How to use it
 
-- **Place it** by using it on the top or side of a block. It stands on the block beside the face you
-  clicked, turned to face you. It needs room to stand (about 2 blocks tall).
-- **Pick it up** by **sneaking and punching it**. It drops back as an item (in Creative it simply goes).
-  A spell you cast while sneaking still hits it, so you can test **If Sneaking** spells on it.
+- **Place it** on the top or side of a block. It turns to face you and needs about two blocks of headroom.
+- **Pick it up** by **sneaking and punching** it. Spells cast while sneaking still hit it, so you can test **If Sneaking**
+  spells.
 
-## What it shows
+### Damage numbers
 
-### Every hit
+Each hit pops up a number that floats for about a second. Under 10 shows one decimal (8.3); bigger numbers are rounded.
+Bigger hits show bigger numbers, and you can see them through walls.
 
-Every hit pops a **number** out of the dummy, which drifts up and fades after a second. Numbers under
-10 show one decimal (8.3); bigger ones are rounded (24). The bigger the hit, the bigger the number.
-Numbers show through walls, so you can read them from anywhere nearby.
-
-The colour says what kind of damage it was:
-
-| Colour | Damage |
+| Colour | Damage type |
 |---|---|
 | Orange | Fire |
 | Pale blue | Freezing |
 | Yellow | Lightning |
 | Amber | Explosions |
 | Pink | Magic |
-| White | Anything else (blades, arrows, fists...) |
+| White | Everything else (blades, arrows, fists) |
 
-A reaction's extra damage shows in the number: Shatter a frozen dummy and you'll see the fire hit jump
-by 60%.
+Reaction bonuses show in the number. For example, Shatter on a frozen dummy makes the fire hit 60% bigger.
 
 ### The nameplate
 
-While you're hitting it, its name reads **DPS 16.5 · 170 total**:
+While you hit it, the name reads like **DPS 16.5 · 170 total**:
 
-- **DPS** is the damage per second over the **last 5 seconds** of the current burst (over the time
-  since your first hit, if that's shorter, but never less than a second).
-- **Total** is everything dealt since the burst began.
+- **DPS**: damage per second over the **last 5 seconds** (or since your first hit, if shorter, but at least 1 second).
+- **Total**: all damage since this burst started.
 
-A burst ends when **3 seconds** pass with no hits: the next hit starts counting from zero. After **4
-seconds** of quiet the nameplate disappears.
+After **3 seconds** without a hit, the next hit starts a new count. After **4 seconds** the nameplate hides.
 
-## How it behaves
+## Tips
 
-- **It never dies.** It has 1,000 health and heals back to full after every hit.
-- **It stands firm.** Knockback and pushes don't shift it (Push, Pull, Launch and the like), and
-  walking into it doesn't shove it.
-- **It takes damage like any creature.** Your spells, blades and arrows hit it. It wears no armour.
-  Marks and reactions work on it: freeze it and burn it, wet it and shock it.
-- **It isn't a monster.** Slaying doesn't come into it, so it never counts toward Heart Circle
-  breakthroughs, feats that need a kill, or the Runesmith's [contracts]({{ '/social/contracts/' | relative_url }}).
-
-## Uses
-
-- **Compare spells.** Cast one spell for five seconds, read the DPS, then try another.
-- **Test modifiers.** See what Amplify, Split or Focus really add.
-- **Learn reactions.** Try `Bolt · Chill · Ember` and watch for the Shatter. See
+- It has 1,000 health and heals to full after every hit. Knockback, pushes and pulls don't move it.
+- It wears no armour, and marks and reactions work on it.
+- It isn't a monster, so it never counts for kills: not for Heart Circle breakthroughs, kill feats, the Runesmith's
+  [contracts]({{ '/social/contracts/' | relative_url }}), or bonded blade growth.
+- **Compare spells:** cast each for five seconds and compare DPS. Test modifiers like Amplify, Split or Focus the same way.
+- **Learn reactions:** try `Bolt · Chill · Ember` and watch for Shatter. See
   [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}).
-- **Check your gear and perks.** Hit it with and without a staff, at full mana (Overflow) and not, with
-  a charged cast and a tap, on the beat and off.
-- **Practise combos**: several dummies in a row make a fine crowd for Chain, Burst and Wildfire.
+- **Practise [Resonant Strikes]({{ '/progression/resonant-strikes/' | relative_url }})**: the dummy shows the bonus damage.
+- **Check your gear:** hit it with and without a staff, at full mana and not, charged and tapped, on the beat and off.
+- Line up several dummies to test Chain, Burst and Wildfire.

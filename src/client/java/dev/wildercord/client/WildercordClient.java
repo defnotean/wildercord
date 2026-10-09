@@ -100,6 +100,8 @@ public final class WildercordClient implements ClientModInitializer {
         ReweaveLessonScreen.register();
         ExciseLessonScreen.register();
         ExciseClient.init();
+        PackLessonScreen.register();
+        LessonPackClient.init();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.BACKPACK, BackpackScreen::new);
 		BlankRuneTooltip.init();
@@ -185,6 +187,8 @@ public final class WildercordClient implements ClientModInitializer {
 		AuraFxClient.init();
 		dev.wildercord.client.fx.FrameBenchmark.init();
 		WaypointHud.init();
+		// ---- lore pack: the lore journal key and screen.
+		dev.wildercord.client.lore.LoreJournalClient.init();
 		Wildercord.LOGGER.info("Wildercord client initialized");
 	}
 }

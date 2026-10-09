@@ -28,7 +28,7 @@ final class StoneMarchFixture {
 		staging = party.stream().map(ServerPlayer::position).toList();
 		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
 		check(master != null, "Registered Stone Master exists");
-		master.setDiscipline(MastersRules.STONE); master.snapTo(origin.x, origin.y, origin.z, 0, 0); level.addFreshEntity(master);
+		master.plainOrdinaryOnly(); master.setDiscipline(MastersRules.STONE); master.snapTo(origin.x, origin.y, origin.z, 0, 0); level.addFreshEntity(master);
 		for (ServerPlayer player : party) { master.mobInteract(player, InteractionHand.MAIN_HAND); master.mobInteract(player, InteractionHand.MAIN_HAND); }
 		check(SwordMaster.ready(party.getFirst()) == 1, "Every challenger explicitly enrolls in the actual trial");
 		master.setTarget(party.getFirst());
@@ -43,7 +43,7 @@ final class StoneMarchFixture {
 				began = level.getGameTime() - (long) master.attackElapsed(0); accepted = (StoneMarch) field(master, "march");
 				paidAura = master.auraRemaining(); admittedSequence = (int) field(master, "sequence"); priorOrdinal = ordinal[0];
 				check(close(before[0] - paidAura, StoneMarchRules.COST), "Natural admission has exactly one 30-Aura debit");
-				check(admittedSequence % 4 == 3 && readyAt() == began + StoneMarchRules.COOLDOWN, "The ordinary cadence and 220-tick rest start at acceptance");
+				check(admittedSequence % 4 == 3 && readyAt() == began + StoneMarchRules.COOLDOWN, "The ordinary cadence and full rest start at acceptance");
 				check(planner().state().successfulDecisions() == priorOrdinal + 1 && planner().state().depth() == 0
 					&& planner().state().history().getLast().equals("wildercord:master/stone_fault_march"), "External admission records one ID and ends the ordinary phrase");
 				for (ServerPlayer player : party) { player.setHealth(200); player.setAbsorptionAmount(0); }

@@ -1,18 +1,45 @@
-# Familiar jobs, event echoes and spell trials
+# Familiar Jobs and Event Echoes
 
-## Choose a familiar job
+## Familiar jobs
 
-`/runelab familiar <companion|scout|guardian|gardener>` saves the active familiar's job preference on its owner.
+### What it is
 
-* **Companion:** the familiar's existing magic for its element, including offensive or support assistance.
-* **Scout:** reveal the nearest nearby hostile mob with a short glow and a pointing ray.
-* **Guardian:** grant brief Absorption when the owner was recently attacked by a living mob. It does not refresh an existing Absorption effect.
-* **Gardener:** mark a ripe nearby crop with happy particles. It never harvests or replaces farm blocks.
+A job changes what your [familiar](familiars.md) does to help. A job replaces its
+little elemental spell; it never adds a second one.
 
-The selected utility job replaces elemental assistance. Searches run at bounded assistance intervals; the gardener visits at most a 9×3×9 set of loaded blocks. Role selection persists through logout and death. Cinnamon has her own owner, sitting and personality system; these jobs belong to bonded wisps.
+### How to use it
 
-## World event aftermath
+Type `/runelab familiar <job>`:
 
-A looted star, won/sealed rift or ended mana storm leaves a ten-minute saved echo. Nearby players see a small particle landmark; crouching within four blocks discovers its boon once per player. Star echoes give night vision and slow falling, rift echoes give brief Resistance, and storm echoes give Regeneration.
+| Job | What your familiar does |
+|---|---|
+| `companion` | The default. It casts its element's little spell. |
+| `scout` | Makes the nearest monster within 16 blocks glow for 5 seconds and points a ray at it. |
+| `guardian` | When a creature has hurt you in the last 5 seconds, gives you Absorption for 5 seconds. It won't stack on Absorption you already have. |
+| `gardener` | Marks a fully grown crop near you with green sparkles. It never harvests or changes your farm. |
 
-The ledger holds at most 32 echoes and 128 claimants per echo. Echoes do not alter terrain, force chunk loading or award repeatable items. Existing crater restoration and event-monster cleanup still run. An absent player can return and discover an unexpired echo later.
+Your choice is kept through logging out and death. Jobs are for wisp familiars only, not
+[Cinnamon](cinnamon.md).
+
+## Event echoes
+
+### What it is
+
+Some world events leave an **echo** behind for ten minutes: a looted fallen star, a rift you won or sealed, or a
+mana storm that ended. You see it as a small cloud of particles over the spot.
+
+### How to use it
+
+Crouch within four blocks of an echo to claim its boon. Each player can claim each echo once.
+
+| Echo | Boon |
+|---|---|
+| Fallen star | Night Vision (60 seconds) and Slow Falling (10 seconds) |
+| Rift | Resistance (20 seconds) |
+| Mana storm | Regeneration (10 seconds) |
+
+### Tips
+
+- You don't have to be there when the event ends. Come back within ten minutes and the echo is still waiting.
+- Echoes give no items and don't change the land.
+- See [World events](../world/world-events.md) for the events themselves.

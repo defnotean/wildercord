@@ -8,11 +8,12 @@ description: "Writing techniques of your own from Edge: a stroke, a release and 
 # Techniques of your own
 {: .no_toc }
 
-The fifty arts are every method's own answers. From **Edge** a swordsman writes their own as well. A technique is three
-**parts**: a **stroke** (how the blade moves), a **release** (how its force leaves you) and an **intent** (what it's for), with your
-method's **element** in every one. You name it, give it a **string** of swings like an art's, and it goes off when you play that
-string. The parts are found in the world, shown by duelists you beat, and lent by your Way, so no two swordsmen's techniques are
-quite the same. A technique **ranks up** as it lands on real foes, from Raw to Peerless.
+## What it is
+
+From **Edge** you can write sword techniques of your own beside the fifty [arts]({{ '/progression/sword-arts/' | relative_url }}).
+A technique is three **parts**: a **stroke** (how the blade moves), a **release** (how its force leaves you) and an **intent**
+(what it's for), with your method's **element** in all of it. You name it, give it a **string** of swings, and it goes off when
+you play that string. It **ranks up** as it lands on real foes, from Raw to Peerless.
 
 <img src="{{ '/assets/images/techniques-writing.jpg' | relative_url }}" alt="The Aura page's Writing tab: three slot cards, the first holding a technique named Ember Fang, its name inked over three round seals on a cord, Thrust, Wave and Sunder, a row of intent glyphs to pick from, a readout of its price and what it does beside a small diagram of the line it strikes, its string of three swing marks, the seven swings to compose it from, and Write and Erase buttons" class="shot">
 <span class="caption">The writing page: a technique composed, named and given its string.</span>
@@ -28,12 +29,14 @@ quite the same. A technique **ranks up** as it lands on real foes, from Raw to P
 | **What** | A **stroke**, a **release** and an **intent**, your method's **element** in all of it, a **name** and a **string** of two to five swings |
 | **Where** | The **Writing** tab on the Aura page (the Aura badge on the Cord screen, `K`) |
 | **Parts every blade knows** | The **Draw**, **On the Blade** and **Infuse**, so your first technique can be written the moment you reach Edge |
-| **More parts** | **Technique scrolls** in old places and some monsters, a **duelist** you beat, and your **Way** (each lends one) |
+| **More parts** | **Technique scrolls** in old places, a **duelist** you beat, a **Sword Master's** first defeat, and your **Way** |
 | **Price** | **3 to 13 aura**, resting **1.5 to 6.5 seconds**, from what it's worth on the scale the arts were weighed with |
 | **Ranks** | Raw, **Honed** (a temper), Tempered, **Keen** (an edge), **Peerless** (set its parts down on scrolls) |
 | **Kept** | Your techniques, their ranks and every part you've learned are kept through death |
 
-## Writing a technique
+## How to use it
+
+### Writing a technique
 
 Open the Aura page and click **Writing** (it breathes gold while you have an empty slot and nothing written in it). At the top
 are your **slots**: click one to write in it, or to read what's written there.
@@ -52,34 +55,27 @@ are your **slots**: click one to write in it, or to read what's written there.
    string; `←` (or Backspace) takes back the last one, a right click all of them. A line beside it says how demanding the string is.
 5. **Write it.** The line at the foot says whether it's ready, and **Write** writes it in. To clear a slot, click **Erase** twice.
 
-You can't write in the middle of a fight: catch your breath first.
+You can't write in the middle of a fight.
 
 ### The string
 
-A technique's string follows the same rules as the arts' [sword strings]({{ '/progression/aura/' | relative_url }}#sword-strings),
-with a few of its own:
+A technique's string follows the same rules as the arts' [sword strings]({{ '/progression/sword-arts/' | relative_url }}#how-to-use-it),
+plus a few of its own:
 
 - **Two to five swings**, with **at least one mark**: a low, leaping or running swing, a counter or a step cut. Full swings alone
   would go off by themselves in any fight.
 - **Not too plain.** Each swing asks something of the hand (an ordinary swing nothing, a full one a little, a low, leaping or running
   one more, a counter or a step cut the most), and a string has to ask enough: *full low* is fine, *swing low* is too plain.
-- **Never the same as another.** A string can't be one of your method's arts' strings or another of your techniques', and one that
-  would make either impossible to play as written is refused. When its swings would fit an art too (say, it ends the way an art's
-  does), the line says **which goes first**, by the same rule the arts follow: the one whose last swing asks the most, then the one
-  asking more in all, then the longer.
+- **Never the same as another.** It can't match one of your arts' strings or another technique's, or make either unplayable.
+  When it overlaps an art, the line says **which goes first**.
 - **A demanding string is a little cheaper**, an easy one a little dearer (two percent at most either way).
 
-### The writing page and the Cord
-
-The writing page is the swordsman's answer to the Cord's rune slots: the seals are threaded on a cord, the parts sit in sockets,
-and the name is inked as you type it. A technique's slot card shows its name, its rank (as pips), its string in the indicator's marks
-and a thread of how far it is to the next rank.
+A technique's slot card shows its name, its rank (as pips), its string and how far it is to the next rank.
 
 ## The parts
 
-Damage is a **share of your blade**, as the arts' is. A technique's numbers are its stroke's, changed by its release, its intent, your
-element and its rank. Every combination is weighed on the same scale as the fifty arts, so a technique is another answer to them,
-never a better or a worse one: the more it does, the more it costs and the longer it rests.
+Damage is a **share of your blade**, as the arts' is. Every combination is weighed on the same scale as the fifty arts: the more
+it does, the more it costs and the longer it rests.
 
 ### Strokes
 
@@ -106,7 +102,7 @@ never a better or a worse one: the more it does, the more it costs and the longe
 | Intent | What it does |
 |---|---|
 | **Pierce** | Through whatever stands in the way: **1.5 blocks further and three more foes**, a little lighter. The Way of the Blade lends it |
-| **Sunder** | Wears a stance **two and a half times** as hard as an art, toward an [opening and your finisher]({{ '/progression/aura/' | relative_url }}#stance-and-openings) |
+| **Sunder** | Wears a stance **two and a half times** as hard as an art, toward an [opening and your finisher]({{ '/progression/aura/' | relative_url }}#stance-and-finishers) |
 | **Bind** | **Roots** each foe it strikes where it stands for **1.2 seconds** (a player only briefly) |
 | **Echo** | Strikes each foe **again half a second later** for half as much, wherever it has gone, if it's still near |
 | **Ward** | You take **a fifth less** from foes for **four seconds** after. Only the Way of the Bulwark lends it |
@@ -138,15 +134,11 @@ not given free. Infuse doubles it.
 
 ## Playing a technique
 
-Play its string and it goes off, as an art does: it **names itself** in your banner (with your method and its rank), makes your aura
-surge, cuts its stroke's trail and sounds its release. Everything the arts follow, a technique follows too:
+Play its string and it goes off like an art, naming itself in your banner. Everything the arts follow, a technique follows too:
 
 - **Momentum** makes it cheaper and stronger, and a technique that lands builds momentum like the art it's most like.
 - Its strikes **wear a foe's stance** twice as fast as a blow (Sunder and the Falling Cut more), toward an opening and your finisher.
 - While you're **awakened** it costs nothing, as every art does.
-- **Your own view stays clear**: the big shapes (a falling crescent over your head, a whirl round you, a lance down your look) are
-  drawn for everyone watching you and for you in third person; in first person you see a thin, low version, never a wall of light
-  across the middle of your view. An afterimage's strike, and a wave once it's out ahead of you, are out in the world for you too.
 - If you don't know one of its parts any more (a Way's, after you've left the Way) it **rests**, and its swings play whatever art
   they'd play without it.
 
@@ -179,7 +171,10 @@ A **Peerless** technique's parts can be set down on scrolls for another swordsma
 rank strip: it takes a **paper** and an **Aura Shard** (a fallen knight's) and gives you a technique scroll of that part. The parts
 every blade knows, and those only a Way lends, can't be carried on a scroll.
 
-## Where parts come from
+## How to get it
+
+Three parts are known by every blade (**Draw**, **On the Blade** and **Infuse**), so you can write your first technique the
+moment you reach Edge. The rest come from the world.
 
 ### Technique scrolls
 
@@ -202,12 +197,19 @@ They turn up in the world's old places of fighting, each place likeliest to hold
 | Pillager outposts | 8% | Sweep, Rising Cut, Wave |
 | The [expeditions]({{ '/world/expeditions/' | relative_url }})' vaults (the Ember Sanctum, the Storm Spire, the Drowned Scriptorium, the Living Greenhouse, the Astral Observatory, the Clockwork Crypt, the Rootbound Maze, the Moving Sky Ruin and the Archive) | 20% | The parts that suit each one's element |
 | A **fallen knight** (dropped) | 6% | Any |
+| The Buried Keeper's reliquary in the [Sword Tombs]({{ '/progression/sword-tombs/' | relative_url }}) | Its reward | Spin, Burst, Afterimage, Sunder, Echo |
 
 ### Duelists
 
 Beat a [wandering duelist]({{ '/progression/aura/' | relative_url }}#duels-with-a-duelist) and, besides what it teaches you, it
 **shows you a part** you don't know yet before it goes, its own method's favourites likelier (a Thunder duelist's a thrust, a wave or
 a pierce; a Stone one's a falling cut, a burst or a sunder).
+
+### Sword Masters
+
+The first time you beat a [Sword Master]({{ '/masters/' | relative_url }}), it teaches you a part: the
+[Ember]({{ '/masters/ember/' | relative_url }}) Master **Echo**, the [Gale]({{ '/masters/gale/' | relative_url }}) Master
+**Afterimage**, and the [Stone]({{ '/masters/stone/' | relative_url }}) Master **Sunder**.
 
 ### Ways
 
@@ -219,10 +221,9 @@ Afterimage).
 <img src="{{ '/assets/images/techniques-ward-rally.jpg' | relative_url }}" alt="Left: a player seen from behind with rings of pale blue light round their body after a technique, a husk ahead. Right: a player with a gold pennant of light over their head, a gold ring at their feet and a gold thread running to an ally ringed in gold" class="shot">
 <span class="caption">A Bulwark's Ward and a Banner's Rally.</span>
 
-## Techniques and other players
+## Tips and counterplay
 
-- **Your name is yours, and safe.** A technique's name is shown to everyone who sees its banner, so it's kept to 24 characters,
-  formatting codes and invisible or direction-changing characters are taken out, and it's always shown as plain text.
+- **Names are plain text.** Everyone sees your technique's name, so formatting and invisible characters are stripped.
 - **Never a one-shot.** A technique deals one player at most 8 damage in all (after the PvP scale, before their armour and spell
   defences), like an art, and wears at most half of a player's stance.
 - **Holds are short.** A Bind roots a player for at most three quarters of a second, and nothing roots the same player again for a
@@ -230,9 +231,4 @@ Afterimage).
 - **Allies are only helped.** A Rally steadies only your allies (teammates, or players who couldn't harm you), never a rival.
 - **Nothing is griefed.** Everything a technique leaves behind is light and shapes.
 
-## For server owners
-
-Techniques are switched with `aura.techniques` in `config/wildercord.json`. `technique_damage` scales every technique's damage (as
-`art_damage` does the arts'), `technique_xp_multiplier` how fast they rank up, and `technique_scroll_chance`
-how often scrolls turn up in chests and drops (1 as above, 0 for never). Operators can teach or take away parts and set ranks with
-`/wildercord aura technique learn <part|all>`, `forget <part|all>`, `xp <slot> <amount>` and `clear`.
+Server owners can switch techniques off, or scale their damage, rank speed and scroll chance.

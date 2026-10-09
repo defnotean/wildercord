@@ -1,34 +1,51 @@
 # Relay Circle
 
-Relay separates a spell's place of departure from the caster. Place a focus on visible floor, move, then aim and release one ray from that focus. It occupies an ordinary active spell slot. An incomplete or unsupported Relay row stays visibly unfinished and cannot cast until it contains exactly one supported pair.
+## What it is
 
-This page describes the implementation candidate. Native survival, multiplayer and presentation acceptance remains required before release.
+Relay lets a spell leave from a spot other than where you stand. You place a focus on the floor, step away, then fire one ray from that focus at whatever you aim at. It is a lesson rune taught at [the Archive](../world/archive.md).
 
-## Learn it at the Archive
+## How to get it
 
-Form an active Eighth Heart Circle and earn **The Last Page**, the existing permanent Archivist victory. Interact with a nearby, visible, quiet and spent Archive Lectern to copy **The Margin Between Places**, attributed to **Ilyra Venn, Third Copyist**, into your Grimoire. Existing eligible Archmages can use an already spent legacy lectern; a second boss victory is not required.
+You need both of these:
 
-Copying saves the lesson but does not teach the shape or complete practice. Read its three pages immediately or later through **Cord → Grimoire → Master studies → Relay Circle [Study]**, then select **Learn Relay** on the practical page. Active VIII and the recorded victory remain required to finish learning. The saved copy works after leaving the Archive, losing the physical book, or the Archivist respawning. The lesson does not delay or disable ordinary boss rearming.
+- An active **Eighth Heart Circle** (see [Heart Circles](../progression/heart-circles.md)).
+- **The Last Page**, the feat for defeating the Archivist.
 
-Death, changing dimensions, disconnecting, or losing active VIII closes the current reading. Your verified copy survives; open it again in the Grimoire and begin at page one. A copied or forged physical book by itself cannot supply that verified receipt or teach the shape.
+Then:
 
-Verified copies, learned lessons and optional practice records survive death and restart. A full inventory cannot lose the saved pages or the eventual unlock. The quiet lectern keeps the original physical book until inventory space is available and can offer one replacement after a copy is lost. The Grimoire always retains the readable lesson.
+1. Use the Archive Lectern while the Archive is quiet (the Archivist is defeated). This copies **The Margin Between Places** into your Grimoire. Copying alone does not teach Relay.
+2. Read its three pages, right away or later: open your Cord, then **Grimoire → Master studies → Relay Circle**.
+3. On the last page, press **Learn Relay**. You still need active VIII and The Last Page at that moment.
 
-## Equip and cast
+If you beat the Archivist before this lesson existed, a spent lectern still works. You do not need a second fight.
 
-1. Wear the Echo Cord and thread **Relay + Harm**, **Relay + Frost**, or **Relay + Shock** in an active spell slot. These are three payload choices for one shape.
-2. Select that slot, aim at visible floor within eight blocks and tap the normal cast binding.
-3. Release the key. Move or adjust your aim.
-4. Press the cast binding again within four seconds. The outgoing lane warns for six ticks before the ray releases.
+Your copy is safe. It stays in the Grimoire if you die, leave the Archive, lose the paper book, or the Archivist comes back. Death, changing dimension, disconnecting or losing active VIII closes the reading; open it again and start from page one. With a full inventory, the lectern keeps your book until you have room. It can also give one replacement if you lose it.
 
-The lesson screen names the current Cord, selection and cast bindings, including after rebinding. The defaults are K, V and R. Holding the first press does not perform the second action. Sneak plus a fresh cast press cancels. Changing slots, editing the spell, opening a menu, taking damage or suffering a successful spell interruption also cancels. Ordinary interruption keeps its usual immunity window. Other spell casts close an uncommitted focus; the warning and recovery cannot overlap another spell.
+## How to use it
 
-The focus costs 24 base mana plus the selected effect, with normal discounts applied once. The complete cost is paid on placement, release charges no second payment, and cancellation gives no refund. Relay has one focus per caster, an eight-second rest shared by slots and ten ticks of recovery. Its payload uses 90% of ordinary effect strength.
+1. Wear an **Echo Cord** and thread **Relay + Harm**, **Relay + Frost** or **Relay + Shock** in a normal spell slot.
+2. Select the slot (Next spell, default **V**). Aim at visible floor within **8 blocks** and tap Cast (default **R**). The focus appears.
+3. Let go of the key. Move or change your aim.
+4. Tap Cast again within **4 seconds**. The lane flashes a short warning, then the ray fires from the focus.
 
-Both caster-to-focus and focus-to-target paths must remain clear, and their combined length cannot exceed 16 blocks. Keep active VIII, the learned lesson, the original Echo Cord and the accepted spell slot through release. Walls and range are real limits. The first version supports exactly one Relay and one supported effect: no modifiers, links, Knots, woven effects, passives, scroll storage, overcast, imbued weapons, copied casts or second group.
+Holding the first press does nothing extra; the second press must be a fresh tap. The lesson screen shows your current keys, even after rebinding.
 
-## Optional practice
+**Cost and limits**
 
-Place a Training Dummy on open ground. Set a Relay focus beside it, release the cast key, move at least one block, aim at the dummy and press cast again before the focus expires. An actual hit from that paid cast records the exercise. Ordinary mana and rest apply. Practice grants no XP, condensed mana or extra combat reward, and completing it is not required to use Relay.
+- You pay **24 mana plus the effect's cost** once, when you place the focus. Normal discounts apply. Firing is free. Nothing is refunded.
+- One focus at a time, then an **8-second** rest shared by every Relay slot.
+- The ray deals **90%** of the effect's normal strength.
+- Your path to the focus plus the focus's path to the target can be at most **16 blocks**. Both paths must be clear; walls block them.
+- Relay takes exactly one effect. No modifiers, links, Knots, woven runes, passives, scrolls, imbued weapons or overcasting.
 
-The exercise makes the lesson's two places visible: the caster moves, but the spell still departs from the mark left behind.
+**What cancels the focus:** sneak + a fresh Cast press, changing slots, editing the spell, opening a menu, a spell interruption, or casting another spell.
+
+## Practice (optional)
+
+Place a [Training Dummy](../progression/training-dummy.md). Set a focus beside it, let go, move at least one block, aim at the dummy and tap Cast again in time. A real hit records the exercise in your Grimoire. It gives no XP or reward, and you can use Relay without doing it.
+
+## Tips and counterplay
+
+- Set the focus around a corner, then step back into cover. The ray still leaves from the mark.
+- Against a Relay user, break either sightline: get behind cover from the focus, or block the caster's view of it.
+- The warning lane shows where the ray will go. Step out of it.

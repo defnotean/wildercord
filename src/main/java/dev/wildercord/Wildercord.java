@@ -130,6 +130,8 @@ public final class Wildercord implements ModInitializer {
         dev.wildercord.cast.ReweaveFields.init();
         dev.wildercord.cast.ExciseCasting.init();
         dev.wildercord.content.ExciseLesson.init();
+        dev.wildercord.cast.LessonPackCasting.init();
+        dev.wildercord.content.PackLesson.init();
         dev.wildercord.content.ReweaveLesson.init();
 		WildercordCommand.init();
 		dev.wildercord.travel.Travel.init();
@@ -150,6 +152,14 @@ public final class Wildercord implements ModInitializer {
         dev.wildercord.cast.SupportSignatures.init();
         dev.wildercord.cast.TrailSignatures.init();
         dev.wildercord.cast.NextSignatureFeels.register();
+		// ---- lore pack: the lore journal, discovery quests and teachers' lines.
+		dev.wildercord.lore.LoreJournal.init();
+		// ---- prog pack
+		dev.wildercord.cast.CircleVowCommands.init();
+        // ---- fx-support pack
+        dev.wildercord.cast.packs.WardState.init();
+		// ---- perf pack
+		dev.wildercord.cast.PerfHygiene.init();
 		LOGGER.info("Wildercord initialized");
 	}
 }

@@ -1,41 +1,60 @@
 # Village Tournaments
 
-A village with **at least three living residents near its bell** can host the **Three Bows**. Stewards gather at a timber registration stand, with embroidered cloth standards marking the fighting ground. Three different breathing methods make each circuit a chance to practise different counters.
+## What it is
+
+The **Three Bows**: a village tournament where you fight three stewards in a row, using only your blade and Aura. Win all
+three and you earn a technique scroll, Aura Shards and a history book.
 
 ![The timber registration stand, stitched standards and waiting stewards in game](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/village-tournament.png)
 
-## Find a gathering
+## How to get it
 
-Daytime visitors periodically look for clear, flat ground twenty to forty-four blocks from an inhabited village bell. The square must be dry, open to the sky, and seventeen blocks across. The visitors place their stand and four standards into empty space; they leave the existing ground intact. Hillside villages may have no suitable square. A nearby stand prevents duplicate gatherings.
+A village needs **at least three living villagers near its bell**. By day, visitors set up a timber **registration stand**
+and four cloth standards on flat, dry, open ground 20 to 44 blocks from the bell. Hillside villages may have no room.
 
-The first gathering opens when a player is near the stand during daylight. It lasts **one Minecraft day** in game ticks. Later gatherings can open every **three Minecraft days**, while players and residents are nearby. These are optional encounters, with no entry fee or required attendance.
+The first gathering opens when you are near the stand in daylight. It lasts **one Minecraft day**. A new one can open every
+**three days** while players and villagers are around.
 
-## Enter the Three Bows
+## How to use it
 
-Bring an Aura blade in Survival. Finish any existing duel or spar. Use the stand once to read the rules, then again within ten seconds to accept. Stand on its **arena side** before accepting: the fighting centre is six blocks north of the stand.
+1. Hold an Aura weapon, in Survival, with no duel or spar running.
+2. Stand on the **arena side** of the stand. The arena centre is six blocks north of it.
+3. **Use the stand** to read the rules, then use it again within ten seconds to accept.
 
-Each of the three stewards fights at the Aura stage you have when that bout starts. Each bout has a three-second countdown, an **eight-block arena radius**, and a two-minute limit. Knockouts are nonlethal. The duel returns health taken by your opponent and removes only their newly inflicted harmful effects. Other damage is not refunded.
+Each bout has a three-second countdown, an **8-block arena radius** and a two-minute limit. Each steward fights at your
+current Aura stage, with a different breathing method. Knockouts are not lethal: the health your opponent took from you comes
+back.
 
-After winning a bout, return to the stand within **one minute** to continue. Losing, leaving the radius, logging out, an interruption, or a draw ends the run. You can retry while the gathering remains open. A spell touching your opponent disqualifies the Aura run, even if the spell wins the bout. There is no prize for a partial circuit.
+After each win, return to the stand within **one minute** for the next bout. Losing, a draw, leaving the arena, logging out
+or an interruption ends your run. You can try again while the gathering is open.
 
-Watch prepared cuts and move around their line. An axe can break a raised guard. The stewards' methods change their Aura flavour; the next opponent is announced before the countdown.
+**Any spell that touches your opponent disqualifies you**, even if you win the bout.
 
-## Choose your prize
+### The prize
 
-Three clean knockout wins award one claim for this gathering:
+Three knockout wins in a row give you **all** of these:
 
-- **One technique scroll of your choice** from the parts allowed on scrolls. The first selection favours a part you do not know.
-- **Three Aura Shards**.
-- **The Three Bows**, a three-page village history and steward's record.
+- **a technique scroll** of your choice,
+- **three Aura Shards**,
+- **The Three Bows**, a three-page village history.
 
-At the stand, **sneak-use** to cycle the displayed scroll choice. **Use normally** to claim that choice once. The saved ledger retains an unclaimed prize across saves and later gatherings. Claiming it prevents repeated rewards. Winning also grants Aura experience, records the discovery, and completes the ordinary pure-Aura duel trial.
-
-## Server controls and limits
+At the stand, **sneak and use** to cycle the scroll choice. It starts on a part you don't know yet. **Use** normally to claim.
+An unclaimed prize stays saved for you. You also get Aura experience, and the win counts as the pure-Aura duel trial. You can
+win once per gathering.
 
 ![The awarded Three Bows history open in the game's illustrated book reader](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/three-bows-lore.png)
 
-`aura_world.tournaments` controls stand creation and hosted bouts. Creation also respects mob spawning and mob griefing game rules. Existing stands retain their ledger when the feature is disabled. No chunks are forced to load. Village checks and terrain searches are bounded, and one stand hosts only three stewards and one challenger at a time.
+## Tips and counterplay
 
-An active bracket does not resume after a reload. A missing steward cannot advance a round or earn a prize. An obstructed arena refuses to start. Each stand's current gathering and outstanding reward ledgers are capped at 128 players each.
+- Watch for prepared cuts and step off their line.
+- An axe can break a raised guard.
+- The next steward's method is announced before the countdown. Plan your counters.
+- Aura Shards forge the [Bulwark Maul and Skyrend Glaive](weapons.md).
 
-The tournament is part of the wider Aura world. See [the Highland Beasts](aura-beasts.md) for materials and field tools from the mountain passes.
+## Server settings
+
+`aura_world.tournaments` turns stand creation and bouts on or off. Creating stands also follows the mob spawning and mob
+griefing game rules. Unclaimed prizes stay saved while it's off.
+
+Related: [Resonant Strikes](resonant-strikes.md) ·
+[The Highland Beasts](aura-beasts.md)

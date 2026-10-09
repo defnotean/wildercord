@@ -4,6 +4,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.arts.CrimsonArts;
+import dev.wildercord.aura.arts.DuneArts;
+import dev.wildercord.aura.arts.IronArts;
+import dev.wildercord.aura.arts.TideArts;
 import dev.wildercord.aura.arts.EmberArts;
 import dev.wildercord.aura.arts.GaleArts;
 import dev.wildercord.aura.arts.HollowArts;
@@ -38,14 +41,17 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class ArtRulesTest {
 	private static final List<String> METHODS = List.of("ember", "rime", "thunder", "gale", "stone", "verdant", "hollow", "starlit", "hourglass",
-		"crimson");
+		"crimson", "tide", "iron", "dune");
+	/** Echo, Dawn and Venom (methods-b pack): registered beside the ten, held to the same rules. */
+	private static final List<String> PACK = List.of("echo", "dawn", "venom");
+	private static final List<String> ALL = java.util.stream.Stream.concat(METHODS.stream(), PACK.stream()).toList();
 
 	// ------------------------------------------------------------------ the arts, priced
 
 	@Test
 	void everyMethodHasFiveArtsOneASlot() {
 		Set<String> ids = new HashSet<>();
-		for (String method : METHODS) {
+		for (String method : ALL) {
 			List<ArtRules.Art> arts = ArtRules.of(method);
 			assertEquals(5, arts.size(), method);
 			for (int slot = 0; slot < 5; slot++) {
@@ -57,8 +63,9 @@ class ArtRulesTest {
 				assertSame(art, ArtRules.art(art.id()));
 			}
 		}
-		assertEquals(50, ArtRules.ARTS.size(), "ten methods, five arts each");
+		assertEquals(80, ArtRules.ARTS.size(), "thirteen methods and the methods-b pack's three, five arts each");
 		assertEquals(List.copyOf(MethodArts.METHODS), METHODS, "every built-in method has its arts");
+		assertEquals(dev.wildercord.aura.arts.MethodsBArts.METHODS, PACK, "and the pack's methods theirs");
 		assertThrows(IllegalArgumentException.class, () -> ArtRules.art("no_such_art"));
 	}
 
@@ -138,7 +145,7 @@ class ArtRulesTest {
 		leads(sums, "gale", 3, "reaches the furthest");
 		leads(sums, "verdant", 4, "mends the most");
 		leads(sums, "starlit", 5, "gives the most aura back");
-		for (String method : METHODS) {
+		for (String method : ALL) {
 			if (!method.equals("ember") && !method.equals("crimson")) {
 				assertTrue(sums.get("crimson")[0] > sums.get(method)[0], "Crimson hurts more than everyone but Ember: " + method);
 			}
@@ -159,27 +166,35 @@ class ArtRulesTest {
 	}
 
 	/** What each method's arts do that's its own: every one of its arts carries one of these, and another method borrows one at most once. */
-	private static final Map<String, Set<ArtRules.Kind>> OWN = Map.of(
-		"ember", EnumSet.of(ArtRules.Kind.FIRE),
-		"rime", EnumSet.of(ArtRules.Kind.FROST, ArtRules.Kind.FREEZE),
-		"thunder", EnumSet.of(ArtRules.Kind.SHOCK, ArtRules.Kind.CHAIN),
-		"gale", EnumSet.of(ArtRules.Kind.WIND),
-		"stone", EnumSet.of(ArtRules.Kind.QUAKE, ArtRules.Kind.HARDEN),
-		"verdant", EnumSet.of(ArtRules.Kind.ROOT, ArtRules.Kind.MEND),
-		"hollow", EnumSet.of(ArtRules.Kind.PULL, ArtRules.Kind.SILENCE),
-		"starlit", EnumSet.of(ArtRules.Kind.STAR, ArtRules.Kind.AURA),
-		"hourglass", EnumSet.of(ArtRules.Kind.ECHO, ArtRules.Kind.REWIND, ArtRules.Kind.STILL, ArtRules.Kind.DRAG),
-		"crimson", EnumSet.of(ArtRules.Kind.BLEED, ArtRules.Kind.DRINK, ArtRules.Kind.TOLL, ArtRules.Kind.FRENZY));
+	private static final Map<String, Set<ArtRules.Kind>> OWN = Map.ofEntries(
+		Map.entry("ember", EnumSet.of(ArtRules.Kind.FIRE)),
+		Map.entry("rime", EnumSet.of(ArtRules.Kind.FROST, ArtRules.Kind.FREEZE)),
+		Map.entry("thunder", EnumSet.of(ArtRules.Kind.SHOCK, ArtRules.Kind.CHAIN)),
+		Map.entry("gale", EnumSet.of(ArtRules.Kind.WIND)),
+		Map.entry("stone", EnumSet.of(ArtRules.Kind.QUAKE, ArtRules.Kind.HARDEN)),
+		Map.entry("verdant", EnumSet.of(ArtRules.Kind.ROOT, ArtRules.Kind.MEND)),
+		Map.entry("hollow", EnumSet.of(ArtRules.Kind.PULL, ArtRules.Kind.SILENCE)),
+		Map.entry("starlit", EnumSet.of(ArtRules.Kind.STAR, ArtRules.Kind.AURA)),
+		Map.entry("hourglass", EnumSet.of(ArtRules.Kind.ECHO, ArtRules.Kind.REWIND, ArtRules.Kind.STILL, ArtRules.Kind.DRAG)),
+		Map.entry("crimson", EnumSet.of(ArtRules.Kind.BLEED, ArtRules.Kind.DRINK, ArtRules.Kind.TOLL, ArtRules.Kind.FRENZY)),
+		// ---- methods-a pack
+		Map.entry("tide", EnumSet.of(ArtRules.Kind.CURRENT, ArtRules.Kind.SOAK)),
+		Map.entry("iron", EnumSet.of(ArtRules.Kind.SUNDER, ArtRules.Kind.BULWARK)),
+		Map.entry("dune", EnumSet.of(ArtRules.Kind.BLIND, ArtRules.Kind.SINK)),
+		// ---- methods-b pack
+		Map.entry("echo", EnumSet.of(ArtRules.Kind.RESOUND)),
+		Map.entry("dawn", EnumSet.of(ArtRules.Kind.RADIANT, ArtRules.Kind.DAZZLE)),
+		Map.entry("venom", EnumSet.of(ArtRules.Kind.TOXIN, ArtRules.Kind.WEAKEN)));
 
 	@Test
 	void eachMethodsArtsDoWhatsItsOwn() {
-		assertEquals(Set.copyOf(METHODS), OWN.keySet());
+		assertEquals(Set.copyOf(ALL), OWN.keySet());
 		for (ArtRules.Art art : ArtRules.ARTS) {
 			Set<ArtRules.Kind> own = OWN.get(art.method());
 			assertTrue(art.kinds().stream().anyMatch(own::contains), art.id() + " does something only " + art.method() + " does (" + art.kinds() + ")");
 		}
-		for (String method : METHODS) {
-			for (String other : METHODS) {
+		for (String method : ALL) {
+			for (String other : ALL) {
 				if (other.equals(method)) {
 					continue;
 				}
@@ -390,7 +405,15 @@ class ArtRulesTest {
 		sets.put(StarlitArts.METHOD, StarlitArts.arts());
 		sets.put(HourglassArts.METHOD, HourglassArts.arts());
 		sets.put(CrimsonArts.METHOD, CrimsonArts.arts());
+		// ---- methods-a pack
+		sets.put(TideArts.METHOD, TideArts.arts());
+		sets.put(IronArts.METHOD, IronArts.arts());
+		sets.put(DuneArts.METHOD, DuneArts.arts());
 		assertEquals(Set.copyOf(MethodArts.METHODS), sets.keySet());
+		// ---- methods-b pack
+		sets.put(dev.wildercord.aura.arts.EchoArts.METHOD, dev.wildercord.aura.arts.EchoArts.arts());
+		sets.put(dev.wildercord.aura.arts.DawnArts.METHOD, dev.wildercord.aura.arts.DawnArts.arts());
+		sets.put(dev.wildercord.aura.arts.VenomArts.METHOD, dev.wildercord.aura.arts.VenomArts.arts());
 		PlaceholderArts.register();
 		try {
 			for (Map.Entry<String, List<AuraApi.StringArt>> set : sets.entrySet()) {
@@ -467,7 +490,7 @@ class ArtRulesTest {
 		}
 		JsonObject kit = read("/assets/wildercord/kit_sounds.json").getAsJsonObject("events");
 		Set<String> voices = new HashSet<>();
-		for (String sound : MethodArts.SOUNDS) {
+		for (String sound : java.util.stream.Stream.concat(MethodArts.SOUNDS.stream(), dev.wildercord.aura.arts.MethodsBArts.SOUNDS.stream()).toList()) {
 			assertTrue(kit.has(sound), sound + " isn't in the feel kit: run python tools/feel/build.py --only aura");
 			assertTrue(voices.add(sound), sound + " twice");
 		}

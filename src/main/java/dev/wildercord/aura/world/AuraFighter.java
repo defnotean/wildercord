@@ -122,11 +122,16 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	/** Its breathing method (one of the ten built in). */
 	public BreathingMethod method() {
 		int i = entityData.get(DATA_METHOD);
+		// ---- methods-b pack
+		String pack = dev.wildercord.aura.MethodsBPack.fighterMethod(i);
+		if (pack != null) return BreathingMethods.byId(pack).orElse(BreathingMethods.EMBER);
 		return BreathingMethods.BUILT_IN.get(Math.floorMod(i, BreathingMethods.BUILT_IN.size()));
 	}
 
 	public void setMethod(BreathingMethod method) {
 		int i = BreathingMethods.BUILT_IN.indexOf(method);
+		// ---- methods-b pack
+		if (i < 0 && method != null) i = dev.wildercord.aura.MethodsBPack.fighterIndex(method.id());
 		entityData.set(DATA_METHOD, (byte) Math.max(0, i));
 	}
 

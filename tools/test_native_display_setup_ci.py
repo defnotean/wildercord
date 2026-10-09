@@ -78,15 +78,12 @@ class NativeDisplaySetupTests(unittest.TestCase):
     def script(self):
         steps = display_steps()
         self.assertEqual(set(steps), {"game-tests", "masters-native", "connected-combat-native",
-                                     "articulated-native", "native-diagnostic"})
+                                     "articulated-native"})
         scripts = []
-        for job, step in steps.items():
+        for step in steps.values():
             self.assertIn("\n        timeout-minutes: 10\n", step)
             self.assertNotIn("continue-on-error", step)
-            if job == "native-diagnostic":
-                self.assertIn("\n        if: steps.request.outputs.enabled == 'true'\n", step)
-            else:
-                self.assertNotIn("\n        if:", step)
+            self.assertNotIn("\n        if:", step)
             body = step.split("\n        run: |\n", 1)[1]
             scripts.append(textwrap.dedent(body))
         self.assertTrue(all(script == scripts[0] for script in scripts))

@@ -403,6 +403,44 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			{"fx_prospect", 12, new RuneDef[] {Runes.RAY, Runes.PROSPECT}},
 			{null, 20, new RuneDef[] {Runes.RAY, Runes.GALVANIZE}},
 			{null, 20, new RuneDef[] {Runes.SELF, Runes.SEARING_EDGE, Runes.SWIFT, Runes.PROLONG}},
+			// ---- fx-passive pack: the hearth runes, two at a time (Hollow Pocket opens a screen, so its own test covers it).
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SLOWBURN, Runes.CAMP_WARD}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.WARM_CLOAK, Runes.SOFTSOLE}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SOFTFOOT, Runes.LODESTAR}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.HOMEWARD, Runes.GRAVEFINDER}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SKYREAD, Runes.LULLABY}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.STEEDSONG, Runes.GLIDEWIND}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.WAYMARK, Runes.EMBER_REST}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.ORBCALL, Runes.TINKER_HUM}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.LANTERN_SOUL, Runes.KEENKEEP}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.LANDREAD, Runes.RALLY_LIGHT}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.DEW_DRINK, Runes.SUNBASK}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.CURRENTKIN, Runes.SUREFOOT}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.LONG_ARM, Runes.NIGHTWATCH}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.TRAILBLAZE, Runes.HEARTHPATH}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.LOSTFIND, Runes.STILLWELL}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.STARCHART, Runes.PETWARD}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.WHISTLE, Runes.LUCKCHARM}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SMOKE_SIGNAL, Runes.WAYFARER_HYMN}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.STEEDMEND, Runes.DYNAMO_STRIDE}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.TARRY, Runes.CLOT}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.HEARTSENSE, Runes.QUENCH}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.HEARTHBOND, Runes.SPRINGSEEK}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.SAVOR, Runes.DEEPWARN}},
+			{null, 8, new RuneDef[] {Runes.SELF, Runes.ENDERHUSH}},
+			// ---- fx-fish pack
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.ANGLER_LURE, Runes.REELING_TIDE, Runes.SCHOOL_SIGHT, Runes.BOBBER_BELL}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.WATER_READING, Runes.DOLPHIN_CALL, Runes.AXOLOTL_KINSHIP, Runes.SHOAL_HERD}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.REFLOAT, Runes.REED_CUT, Runes.WRING, Runes.SPRING_DRAW}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.BRIMMING, Runes.DIVING_BELL, Runes.TIDE_LANTERN, Runes.SLUICE}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.SOAK_THROUGH, Runes.RAIN_CLOUD, Runes.STORM_GLASS, Runes.KELPSONG}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.CORAL_MEND, Runes.NEST_TEND, Runes.LILY_PATH, Runes.SANDBAR}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.ICE_AUGER, Runes.TIDE_MARKER, Runes.SHORE_SENSE, Runes.FATHOM}},
+			{null, 12, new RuneDef[] {Runes.RAY, Runes.WRECK_SENSE, Runes.DRIFT_NET, Runes.MOORING_CALL, Runes.DEWCATCH}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.BAIT_BLESSING, Runes.TACKLE_MEND, Runes.OCEANS_FAVOR, Runes.FAIR_WIND}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.UPWELL, Runes.SOUNDING, Runes.PORPOISE, Runes.SKIMSTEP}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.SKATERS_EDGE, Runes.AIR_POCKET, Runes.DROWN_WARD, Runes.PEARL_SIGHT}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.SEA_BREEZE, Runes.INKVEIL, Runes.SHELLBACK, Runes.DIVERS_HANDS}},
 		};
 		for (Object[] step : casts) {
 			String shot = (String) step[0];
@@ -422,6 +460,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 				context.waitTicks(40);
 			}
 		}
+		// ---- fx-passive pack: the hearth runes last minutes; end them so later checks start clean.
+		world.getServer().runOnServer(server -> dev.wildercord.cast.HearthEffects.reset(server.getPlayerList().getPlayers().getFirst()));
 		// Let every lingering effect (Domain, Thunderbird, Rampart) run out.
 		context.waitTicks(260);
 		context.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));

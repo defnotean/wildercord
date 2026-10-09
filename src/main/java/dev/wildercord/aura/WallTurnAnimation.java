@@ -23,7 +23,8 @@ public final class WallTurnAnimation {
 			case WallTurnRules.KICK -> age > 3 ? MastersArtAnimation.NONE : BRACE.toward(KICK,
 				Math.clamp((WallTurnRules.KICK_TICKS - remaining + Math.min(1, age)) / WallTurnRules.KICK_TICKS, 0, 1));
 			case WallTurnRules.LAND -> age >= remaining ? MastersArtAnimation.NONE : LAND.weight(1 - age / Math.max(1, remaining));
-			case WallTurnRules.FALL -> age >= 5 ? MastersArtAnimation.NONE : KICK.weight((1 - age / 5) * .6F);
+			// Begins exactly at the final push (full weight), so the kick-to-fall handoff never pops.
+			case WallTurnRules.FALL -> age >= 5 ? MastersArtAnimation.NONE : KICK.weight(1 - age / 5);
 			case WallTurnRules.ABORT -> age >= 3 ? MastersArtAnimation.NONE : BRACE.weight((1 - age / 3) * .3F);
 			default -> MastersArtAnimation.NONE;
 		};

@@ -284,3 +284,10 @@ EVENTS = [
     event("aura_stance_break", aura_stance_break, role="impact", subtitle="hit", attenuation=32),
     event("aura_finisher", aura_finisher, role="grand", subtitle="hit", attenuation=40),
 ] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS + BOND_EVENTS + SOCIAL_EVENTS + BATTLEFIELD_EVENTS + TOMB_EVENTS + SLEEPING_BLADE_EVENTS + BEAST_EVENTS + TOURNAMENT_EVENTS + RESONANT_EVENTS + UNITY_EVENTS
+
+# ---- methods-a pack
+from feel.aura_methods_a import METHODS_A_EVENTS  # noqa: E402  (Tide, Iron and Dune)
+EVENTS = EVENTS + METHODS_A_EVENTS
+# ---- methods-b pack
+from feel.methods_b import EVENTS as _METHODS_B_EVENTS  # noqa: E402
+EVENTS += _METHODS_B_EVENTS

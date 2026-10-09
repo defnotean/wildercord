@@ -25,6 +25,7 @@ public final class MasterHitReceipt {
 
 	/** Bind the exact projected source before element reactions can trigger other nested damage. */
 	public static void source(LivingEntity attacker, LivingEntity target, DamageSource source) {
+		dev.wildercord.aura.StoneHingeReceipt.masterSource(attacker, target, source);
 		Pending pending = CURRENT.get();
 		if (pending != null && pending.attacker == attacker && pending.target == target && pending.source == null) pending.source = source;
 	}

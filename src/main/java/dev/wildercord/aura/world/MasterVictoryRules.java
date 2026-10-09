@@ -10,7 +10,11 @@ import java.util.UUID;
 public final class MasterVictoryRules {
 	private MasterVictoryRules() {}
 
-	public static final int ALL = 0b111;
+	public static final int ALL = 0b111
+		| ElementalMasters.VICTORY_MASK // ---- masters-a pack
+		| 1 << MastersPackB.STARLIT | 1 << MastersPackB.HOURGLASS | 1 << MastersPackB.CRIMSON // ---- masters-b pack
+		| 1 << MethodsAMasters.TIDE | 1 << MethodsAMasters.IRON | 1 << MethodsAMasters.DUNE // ---- methods-a pack
+		| 1 << MethodsBMasters.ECHO | 1 << MethodsBMasters.DAWN | 1 << MethodsBMasters.VENOM; // ---- methods-b pack
 
 	/** Only three known clear bits are stored, so corrupt or future bits cannot grant an existing school's reward. */
 	public record Progress(int schools) {
@@ -29,7 +33,7 @@ public final class MasterVictoryRules {
 	}
 
 	private static int bit(int school) {
-		return school >= MastersRules.EMBER && school <= MastersRules.STONE ? 1 << school : 0;
+		return MastersRules.knownSchool(school) ? 1 << school : 0; // ---- masters-a pack
 	}
 
 	/** Existing horizontal technique parts; learning one never advances an Aura stage or unlocks a foundational art. */
@@ -38,6 +42,16 @@ public final class MasterVictoryRules {
 			case MastersRules.EMBER -> TechniqueRules.ECHO;
 			case MastersRules.GALE -> TechniqueRules.AFTERIMAGE;
 			case MastersRules.STONE -> TechniqueRules.SUNDER;
+			// ---- masters-a pack
+			case MastersRules.RIME, MastersRules.THUNDER, MastersRules.VERDANT, MastersRules.HOLLOW -> ElementalMasters.reward(school);
+			// ---- masters-b pack
+			case MastersPackB.STARLIT -> TechniqueRules.BURST;
+			case MastersPackB.HOURGLASS -> TechniqueRules.BIND;
+			case MastersPackB.CRIMSON -> TechniqueRules.INFUSE;
+			// ---- methods-a pack
+			case MethodsAMasters.TIDE, MethodsAMasters.IRON, MethodsAMasters.DUNE -> MethodsAMasters.reward(school);
+			// ---- methods-b pack
+			case MethodsBMasters.ECHO, MethodsBMasters.DAWN, MethodsBMasters.VENOM -> MethodsBMasters.reward(school);
 			default -> "";
 		};
 	}

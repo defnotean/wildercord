@@ -371,16 +371,18 @@ class FullClientTests(unittest.TestCase):
         for dependency in ("tools/client_shard_plan.py", "tools/client_shard_plan.json"):
             self.assertIn(f"inputs.file('{dependency}')", build)
         self.assertIn("originalDescriptor.custom['wildercord:clientShardPlan'] = fullSelection.plan", build)
-        self.assertEqual(full["plan"]["orderedRosterSha256"], "7b390799007708004706af9340e92b6c1ec35fa6031b388820b4341ed6dc7543")
-        self.assertEqual([suites.select_entries(shard=s)["count"] for s in gate.SHARDS], [80, 84, 77, 71])
-        # Only the two explicitly registered counter-lifetime classes extend the frozen roster.
+        self.assertEqual(full["plan"]["orderedRosterSha256"], "aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be")
+        self.assertEqual([suites.select_entries(shard=s)["count"] for s in gate.SHARDS], [84, 84, 84, 83])
+        # The two counter-lifetime classes and the later reviewed packs only extend the frozen 310 roster.
         additions = ("dev.wildercord.aura.UnmovedNullAcceptanceTest",
                      "dev.wildercord.aura.arts.ArtWardsHardeningTest")
-        prior = [entry for entry in full["entries"] if entry not in additions]
+        legacy = json.loads((suites.ROOT / "tools/tests/full-client-plan-v1-310.json").read_text(encoding="utf-8"))
+        frozen = {entry for group in legacy["groups"] for entry in group["entries"]}
+        prior = [entry for entry in full["entries"] if entry not in additions and entry in frozen]
         self.assertEqual(len(prior), 310)
         self.assertEqual(gate.selection_hash({"kind": "full", "entries": prior, "count": 310}),
                          "53db541e284da70c78a256a21b420566b83dfd1f30b8a6ea55daaf80d9569974")
-        self.assertEqual(gate.selection_hash({"kind": "full", "entries": full["entries"], "count": full["count"]}), "a972b0bc4a51762cdf999c27c10ff16ceae7622fb823c00a58f9933a26e3fc42")
+        self.assertEqual(gate.selection_hash({"kind": "full", "entries": full["entries"], "count": full["count"]}), "dfeb4cf55dfc5e9cba1758a16d27d1226a96eb590aa6dde36b376df58e81c937")
 
     def test_workflow_requires_all_four_same_run_uploads_without_scheduling_or_permission_expansion(self):
         text = (suites.ROOT / ".github/workflows/build.yml").read_text()

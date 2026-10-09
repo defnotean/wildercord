@@ -174,7 +174,7 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(set(flattened), set(full))
         for part in parts:
             self.assertEqual(part, [entry for entry in full if entry in part])
-        self.assertEqual([len(part) for part in parts], [80, 84, 77, 71])
+        self.assertEqual([len(part) for part in parts], [84, 84, 84, 83])
 
     def test_invalid_shards_are_rejected(self):
         for value in ("0/4", "5/4", "1/0", "1/-4", "-1/4", "1", "1/4/5",

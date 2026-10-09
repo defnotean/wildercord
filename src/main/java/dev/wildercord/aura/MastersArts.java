@@ -142,7 +142,7 @@ public final class MastersArts {
 
 	/** The same validated entrypoint is available to tests; a client cannot supply a victim or bypass payment. */
 	public static boolean activate(ServerPlayer player, int ordinal) {
-		if (dev.wildercord.cast.ActionAdmission.busy(player) || dev.wildercord.cast.ExciseCasting.blocking(player)) return false;
+		if (dev.wildercord.cast.ActionAdmission.busy(player) || (dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return false;
 		MastersArtRules.Move move = MastersArtRules.move(ordinal);
 		if (MasterForms.committed(player) || move == null || !Float.isFinite(player.getYRot()) || !Float.isFinite(player.getXRot()) || !player.isAlive() || player.isSpectator() || !Aura.enabled(player) || !Aura.holdsWeapon(player)
 			|| Awakening.spent(player) || AuraGuard.guarding(player) || Clashes.holding(player) || player.isSleeping()
@@ -179,7 +179,7 @@ public final class MastersArts {
 	private static boolean beginStyle(ServerPlayer player, AuraApi.StringArt art, AuraApi.StringContext context,
 			EarnedCounters.Attempt counter, double cost, Runnable payment, Runnable impact, dev.wildercord.cast.ActionAdmission admission) {
 		MastersStyleRules.Style style = MastersStyleRules.of(art.id());
-		if (dev.wildercord.cast.ExciseCasting.blocking(player) || MasterForms.committed(player) || style == null || committed(player) || !eligible(player, counter != null && counter.canLowerGuard(player)) || Aura.stage(player) < art.stage()
+		if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player)) || MasterForms.committed(player) || style == null || committed(player) || !eligible(player, counter != null && counter.canLowerGuard(player)) || Aura.stage(player) < art.stage()
 			|| !art.available().test(player) || !dev.wildercord.config.Config.get().aura().strings().enabled()) return false;
 		if ((style.targets() == MastersStyleRules.TargetPolicy.EARNED_COUNTER) != (counter != null)
 			|| counter != null && !counter.ownerValid(player)) return false;
@@ -314,6 +314,11 @@ public final class MastersArts {
 	/** The accepted move owns its windup and recovery; ordinary swings, other arts and casts wait. */
 	public static boolean committed(ServerPlayer player) {
 		return player.getAttachedOrElse(REST, Rest.NONE).shared() > player.level().getServer().overworld().getGameTime();
+	}
+
+	/** Lets every move's rest end now, for tests that replay idle recovery; an accepted move keeps its commitment. */
+	static void endRests(ServerPlayer player) {
+		if (!committed(player)) player.removeAttached(REST);
 	}
 
 	/** Hostile damage or a cast interruption cancels the pending active frame, retaining paid recovery. */

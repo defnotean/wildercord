@@ -22,7 +22,7 @@ class ArticulatedOpeningStylePoseTest {
 			assertEquals(MastersStyleRules.TargetPolicy.ACTIVE_CONE, rule.targets());
 			assertNull(MastersArtRules.move(move), "Style input remains the existing sword string, never a new shared key");
 		}
-		for (int move : new int[] {-1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, Integer.MAX_VALUE}) {
+		for (int move : new int[] {-1, Integer.MAX_VALUE}) {
 			assertFalse(supportsPlayer(move));
 			assertSame(NONE, samplePlayer(move, 5, 6, 12, false));
 		}

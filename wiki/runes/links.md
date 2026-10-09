@@ -10,7 +10,7 @@ nav_order: 4
 
 A **link** ends a segment of the spell: everything after it happens *later*, or somewhere else. `On Hit` fires the rest where the spell struck, `Delay` fires it from you a moment later, `Echo` repeats everything before it, and the conditions (If Sneaking, If Airborne...) let one spell do two different things.
 
-14 links, by tier.
+31 links, by tier.
 
 ### <img src="{{ '/assets/runes/delay.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Delay
 {: #delay}
@@ -25,6 +25,94 @@ The rest fires 1 second later, from you.
 
 **Modifiers that work on it:** Extend, Quicken
 
+### <img src="{{ '/assets/runes/if_day.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Day
+{: #if_day}
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only by day.
+
+**How to get it:** Craft: a Blank Rune, Sunflower and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_day.png' | relative_url }}" alt="Crafting If Day: a Blank Rune and Sunflower and Clock" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/if_holding_tool.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Holding Tool
+{: #if_holding_tool}
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only with a pickaxe, axe, shovel, hoe or shears in hand.
+
+**How to get it:** Craft: a Blank Rune, Stick and Iron Nugget. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_holding_tool.png' | relative_url }}" alt="Crafting If Holding Tool: a Blank Rune and Stick and Iron Nugget" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/if_in_fields.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If In Fields
+{: #if_in_fields}
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only with farmland within 4 blocks of your feet.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_in_fields.png' | relative_url }}" alt="Crafting If In Fields: a Blank Rune and Wheat Crops and Clock" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/if_night.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Night
+{: #if_night}
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only at night.
+
+**How to get it:** Craft: a Blank Rune, Ink Sac and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_night.png' | relative_url }}" alt="Crafting If Night: a Blank Rune and Ink Sac and Clock" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/if_raining.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Raining
+{: #if_raining}
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only while rain or snow falls on you.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_raining.png' | relative_url }}" alt="Crafting If Raining: a Blank Rune and Water Bucket and Clock" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/if_underground.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Underground
+{: #if_underground}
+
+*Tier I · 1 mana · needs any Cord*
+
+The rest fires only with no open sky above you.
+
+**How to get it:** Craft: a Blank Rune, Cobblestone and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_underground.png' | relative_url }}" alt="Crafting If Underground: a Blank Rune and Cobblestone and Clock" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/on_harvest.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Harvest
+{: #on_harvest}
+
+*Tier I · 2 mana · needs any Cord*
+
+The rest waits up to a minute for the next ripe crop you pick, then fires there.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops and Tripwire Hook. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_on_harvest.png' | relative_url }}" alt="Crafting On Harvest: a Blank Rune and Wheat Crops and Tripwire Hook" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/on_mine.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Mine
+{: #on_mine}
+
+*Tier I · 2 mana · needs any Cord*
+
+The rest waits up to 30 seconds for the next block you mine, then fires there.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe and Tripwire Hook. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_on_mine.png' | relative_url }}" alt="Crafting On Mine: a Blank Rune and Iron Pickaxe and Tripwire Hook" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/if_airborne.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Airborne
 {: #if_airborne}
 
@@ -35,6 +123,39 @@ The rest fires only if you're in the air. Build aerial finishers.
 **How to get it:** Craft: a Blank Rune, Feather and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Phantoms (5%).
 
 <img src="{{ '/assets/recipes/rune_if_airborne.png' | relative_url }}" alt="Crafting If Airborne: a Blank Rune and Feather and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/if_alone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Alone
+{: #if_alone}
+
+*Tier II · 1 mana · needs a Copper Cord or better*
+
+The rest fires only with no other player or monster within 16 blocks.
+
+**How to get it:** Craft: a Blank Rune, Compass and Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_alone.png' | relative_url }}" alt="Crafting If Alone: a Blank Rune and Compass and Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/if_brimming.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Brimming
+{: #if_brimming}
+
+*Tier II · 1 mana · needs a Copper Cord or better*
+
+The rest fires only with more than half your mana left.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_brimming.png' | relative_url }}" alt="Crafting If Brimming: a Blank Rune and Glass Bottle and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/if_near_ally.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Near Ally
+{: #if_near_ally}
+
+*Tier II · 1 mana · needs a Copper Cord or better*
+
+The rest fires only with a friendly player or your pet within 8 blocks.
+
+**How to get it:** Craft: a Blank Rune, Compass and Bone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_near_ally.png' | relative_url }}" alt="Crafting If Near Ally: a Blank Rune and Compass and Bone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/if_sneaking.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Sneaking
 {: #if_sneaking}
@@ -47,6 +168,17 @@ The rest fires only if you're sneaking. Build two spells in one.
 
 <img src="{{ '/assets/recipes/rune_if_sneaking.png' | relative_url }}" alt="Crafting If Sneaking: a Blank Rune and Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
+### <img src="{{ '/assets/runes/if_unhurt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Unhurt
+{: #if_unhurt}
+
+*Tier II · 1 mana · needs a Copper Cord or better*
+
+The rest fires only at full health.
+
+**How to get it:** Craft: a Blank Rune, Apple and Clock, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_if_unhurt.png' | relative_url }}" alt="Crafting If Unhurt: a Blank Rune and Apple and Clock, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/imbue.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Imbue
 {: #imbue}
 
@@ -57,6 +189,17 @@ The rest isn't cast: it's stored, with 3 charges, in what the shape before it to
 **How to get it:** Craft: a Blank Rune, Bottle o' Enchanting, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_imbue.png' | relative_url }}" alt="Crafting Imbue: a Blank Rune and Bottle o' Enchanting, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/on_catch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Catch
+{: #on_catch}
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 2 minutes for your next catch with a rod, then fires where you reeled it in.
+
+**How to get it:** Craft: a Blank Rune, Fishing Rod and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_on_catch.png' | relative_url }}" alt="Crafting On Catch: a Blank Rune and Fishing Rod and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/on_hit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Hit
 {: #on_hit}
@@ -90,6 +233,50 @@ The rest fires when you next touch the ground.
 **How to get it:** Craft: a Blank Rune, Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_on_land.png' | relative_url }}" alt="Crafting On Land: a Blank Rune and Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/on_mount.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Mount
+{: #on_mount}
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 30 seconds for you to ride something, then fires at your mount.
+
+**How to get it:** Craft: a Blank Rune, Saddle and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_on_mount.png' | relative_url }}" alt="Crafting On Mount: a Blank Rune and Saddle and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/on_splash.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Splash
+{: #on_splash}
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 30 seconds for you to enter water, then fires there.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_on_splash.png' | relative_url }}" alt="Crafting On Splash: a Blank Rune and Water Bucket and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/on_sprint.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Sprint
+{: #on_sprint}
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 15 seconds for you to start sprinting, then fires from you.
+
+**How to get it:** Craft: a Blank Rune, Sugar and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_on_sprint.png' | relative_url }}" alt="Crafting On Sprint: a Blank Rune and Sugar and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/on_wake.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Wake
+{: #on_wake}
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest waits up to 10 minutes for you to wake from a bed, then fires from you.
+
+**How to get it:** Craft: a Blank Rune, White Bed and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_on_wake.png' | relative_url }}" alt="Crafting On Wake: a Blank Rune and White Bed and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/on_weakness.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Weakness
 {: #on_weakness}

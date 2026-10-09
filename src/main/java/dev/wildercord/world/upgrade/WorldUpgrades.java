@@ -3,6 +3,7 @@ package dev.wildercord.world.upgrade;
 import dev.wildercord.Wildercord;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -52,6 +53,11 @@ public final class WorldUpgrades {
 		ServerTickEvents.END_SERVER_TICK.register(WorldUpgrades::tick);
 		PlayerBlockBreakEvents.AFTER.register((level,player,pos,state,entity)->{if(level instanceof ServerLevel serverLevel)UpgradeEdits.successfulPlayerEdit(serverLevel,pos);});
 		CommandRegistrationCallback.EVENT.register((dispatcher,registry,environment)->UpgradeCommands.register(dispatcher));
+		ServerChunkEvents.CHUNK_LOAD.register((level,chunk,fresh)->{
+			var s=SESSIONS.get(level.getServer());
+			try{UpgradeSites.observe(level,chunk,s==null || s.engine==null?List.of():s.engine.entries());}
+			catch(RuntimeException ex){Wildercord.LOGGER.error("Natural encounter observation failed; unique-encounter upgrades stay refused for unverified regions",ex);}
+		});
 	}
 	private static void start(MinecraftServer server) {
 		var session=new Session();SESSIONS.put(server,session);
@@ -88,19 +94,21 @@ public final class WorldUpgrades {
 		if(!manual && !UpgradeClaims.configured())throw new IllegalStateException("NO_PROVIDER_CONFIGURED: deliberate manual-no-claims mode is required on no-claims servers");
 		s.enabled=true;s.manualNoClaims=manual;s.epoch=UUID.randomUUID().toString();s.activeHash="";
 	}
-	static UpgradePlan preview(ServerLevel level,int chunkX,int y,int chunkZ) throws IOException {
-		var s=session(level.getServer());var plan=UpgradeTemplates.preview(level,chunkX,y,chunkZ);
+	static UpgradePlan preview(ServerLevel level,int chunkX,int y,int chunkZ) throws IOException {return preview(level,UpgradeTemplates.FAMILY,chunkX,y,chunkZ);}
+	static UpgradePlan preview(ServerLevel level,String family,int chunkX,int y,int chunkZ) throws IOException {
+		var s=session(level.getServer());var plan=UpgradeTemplates.preview(level,family,chunkX,y,chunkZ);
 		// Scanner works with writes off and absent claim providers, but retains all other exclusions.
 		String refusal=siteRefusal(level,plan,false);
+		if(refusal.isEmpty())refusal=UpgradeSites.admission(level,plan,s.engine.entries());
 		if(!refusal.isEmpty())throw new IllegalStateException(refusal);
-		s.engine.preview(plan,s.policy());writePreview(s,plan);return plan;
+		s.engine.preview(plan,s.policy());writePreview(s,plan);UpgradeSites.mirror(level,s.engine.entries());return plan;
 	}
 	static void writePreview(Session s,UpgradePlan plan) throws IOException {
 		StringBuilder text=new StringBuilder("Wildercord exact-region preview\nHistorical provenance: UNKNOWN. Natural-looking blocks are not proof of untouched terrain.\n");
 		text.append("Family: ").append(plan.family()).append("\nVersion: ").append(plan.version()).append("\nSite: ").append(plan.siteId())
 			.append("\nDimension: ").append(plan.dimension()).append("\nChunk: ").append(plan.chunkX()).append(", ").append(plan.chunkZ())
 			.append("\nPlan SHA-256: ").append(plan.hash()).append("\nPolicy: ").append(s.policy()).append("\nGuard cells: ").append(plan.cells().size())
-			.append("\nWrites: ").append(plan.writes().size()).append("\nNo automatic claim verification in manual-no-provider mode.\nObtain an offline whole-world backup before approval; this manifest is only a bounded affected-block snapshot.\n\n");
+			.append("\nWrites: ").append(plan.writes().size()).append("\nAnchor: ").append(UpgradeTemplates.anchor(plan)==null?"none (inert)":UpgradeTemplates.anchor(plan).toShortString()+", marked authentic only after every write is observed; no entity is spawned").append("\nNo automatic claim verification in manual-no-provider mode.\nObtain an offline whole-world backup before approval; this manifest is only a bounded affected-block snapshot.\n\n");
 		for(var c:plan.cells())text.append(c.changes()?"WRITE ":"GUARD ").append(c.point()).append(" ").append(c.before()).append(" -> ").append(c.after()).append('\n');
 		Files.writeString(s.directory.resolve(plan.siteId()+".preview.txt"),text.toString(),StandardCharsets.UTF_8);
 	}
@@ -115,9 +123,21 @@ public final class WorldUpgrades {
 				if(!s.enabled)return "Permanent writes are disabled; deliberate operator enable is required";
 				if(!modFingerprint().equals(s.mods))return "Installed mod set changed; restart and review provider configuration";
 				String refusal=siteRefusal(level,plan,rollback);if(!refusal.isEmpty())return refusal;
+				refusal=rollback?UpgradeSites.busy(level,plan):UpgradeSites.duplicate(level,plan,s.engine.entries());if(!refusal.isEmpty())return refusal;
 				var claims=UpgradeClaims.query(level,plan);
 				if(claims==UpgradeClaims.Status.CLAIMED || claims==UpgradeClaims.Status.UNKNOWN)return "Claim adapter veto: "+claims;
 				if(claims==UpgradeClaims.Status.NO_PROVIDER_CONFIGURED && !s.manualNoClaims)return "NO_PROVIDER_CONFIGURED: manual review mode is off";
+				return "";
+			}
+			public String admission(UpgradePlan plan){return UpgradeSites.admission(level,plan,s.engine.entries());}
+			public String activate(UpgradePlan plan) {
+				var at=UpgradeTemplates.anchor(plan);if(at==null)return "";
+				var chunk=level.getChunkSource().getChunkNow(plan.chunkX(),plan.chunkZ());if(chunk==null)return "Chunk unloaded before activation; deferred";
+				var be=chunk.getBlockEntity(at);
+				if(be instanceof dev.wildercord.aura.world.SleepingBladeEntity e)e.awaken();
+				else if(be instanceof dev.wildercord.aura.world.TombReliquaryEntity e)e.awaken();
+				else if(be instanceof dev.wildercord.aura.world.BattlefieldMemoryEntity e)e.awaken();
+				else return "Anchor block entity missing; deferred";
 				return "";
 			}
 			public String state(UpgradePlan.Point point) {
@@ -139,7 +159,7 @@ public final class WorldUpgrades {
 	/** The only terrain reads are from the resident full chunk; structure starts/references are inspected locally. */
 	static String siteRefusal(ServerLevel level,UpgradePlan plan,boolean rollback) {
 		if(!level.dimension().identifier().toString().equals(plan.dimension()) || level.getSeed()!=plan.seed())return "Wrong world identity";
-		if(!level.dimension().equals(Level.OVERWORLD))return "First adapter supports the Overworld only";
+		if(!level.dimension().equals(Level.OVERWORLD))return "Adapters support the Overworld only";
 		var chunk=level.getChunkSource().getChunkNow(plan.chunkX(),plan.chunkZ());
 		if(chunk==null || !chunk.getFullStatus().isOrAfter(FullChunkStatus.FULL))return "Chunk is unloaded/inaccessible; deferred without loading";
 		int x=plan.chunkX()*16+8,z=plan.chunkZ()*16+8;
@@ -154,17 +174,19 @@ public final class WorldUpgrades {
 		if(!rollback) {
 			if(chunk.getInhabitedTime()>0)return "Inhabited chunk excluded; approval does not override it";
 			if(UpgradeEdits.edited(level,plan.chunkX(),plan.chunkZ()))return "Known player-edited chunk excluded";
-			if(!chunk.getBlockEntities().isEmpty() || !chunk.getBlockEntitiesPos().isEmpty())return "Container/block entity in chunk excluded";
+			// The plan's own anchor is the only block entity tolerated, and only where its blueprint puts it.
+			var anchor=UpgradeTemplates.anchor(plan);
+			if(chunk.getBlockEntities().keySet().stream().anyMatch(p->!p.equals(anchor)) || chunk.getBlockEntitiesPos().stream().anyMatch(p->!p.equals(anchor)))return "Container/block entity in chunk excluded";
 			if(chunk.getAllStarts().values().stream().anyMatch(start->start.isValid()) || chunk.getAllReferences().values().stream().anyMatch(refs->!refs.isEmpty()))return "Existing structure start/reference excluded";
 			var spawn=level.getRespawnData();
 			if(spawn.dimension().equals(level.dimension()) && Math.abs(spawn.pos().getX()-x)<=SPAWN_DISTANCE && Math.abs(spawn.pos().getZ()-z)<=SPAWN_DISTANCE)return "Spawn buffer excluded";
 		}
-		int minY=Integer.MAX_VALUE,maxY=Integer.MIN_VALUE;
+		int minX=Integer.MAX_VALUE,minY=Integer.MAX_VALUE,minZ=Integer.MAX_VALUE,maxX=Integer.MIN_VALUE,maxY=Integer.MIN_VALUE,maxZ=Integer.MIN_VALUE;
 		for(var cell:plan.cells()) {
 			if(level.isOutsideBuildHeight(pos(cell.point())) || !level.getWorldBorder().isWithinBounds(pos(cell.point())))return "Region outside current build limits";
-			minY=Math.min(minY,cell.point().y());maxY=Math.max(maxY,cell.point().y());
+			var p=cell.point();minX=Math.min(minX,p.x());minY=Math.min(minY,p.y());minZ=Math.min(minZ,p.z());maxX=Math.max(maxX,p.x());maxY=Math.max(maxY,p.y());maxZ=Math.max(maxZ,p.z());
 		}
-		if(!level.getEntities((net.minecraft.world.entity.Entity)null,new net.minecraft.world.phys.AABB(x-4,minY,z-4,x+5,maxY+1,z+5),entity->!entity.isRemoved()).isEmpty())return "Entity in guarded volume; deferred";
+		if(!level.getEntities((net.minecraft.world.entity.Entity)null,new net.minecraft.world.phys.AABB(minX,minY,minZ,maxX+1,maxY+1,maxZ+1),entity->!entity.isRemoved()).isEmpty())return "Entity in guarded volume; deferred";
 		return "";
 	}
 	private static void tick(MinecraftServer server) {
@@ -173,7 +195,7 @@ public final class WorldUpgrades {
 			var entry=s.engine.findHash(s.activeHash).orElseThrow();var level=level(server,entry.plan());
 			if(level==null){s.lastResult="Dimension unavailable; deferred";return;}
 			var result=s.rollback?s.engine.rollback(s.activeHash,world(level),2):s.engine.step(s.activeHash,world(level),2);
-			s.lastResult=result.phase()+": "+result.reason();
+			s.lastResult=result.phase()+": "+result.reason();UpgradeSites.mirror(level,s.engine.entries());
 			if(result.complete())s.activeHash="";
 		}catch(IOException|RuntimeException ex){s.activeHash="";s.lastResult="Stopped: "+ex.getMessage();Wildercord.LOGGER.error("World upgrade stopped; recovery manifest retained",ex);}
 	}

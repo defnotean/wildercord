@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "planId": "full-client-explicit-v2-counter-lifetimes",
   "shardCount": 4,
-  "expectedCount": 312,
-  "orderedRosterSha256": "7b390799007708004706af9340e92b6c1ec35fa6031b388820b4341ed6dc7543",
+  "expectedCount": 335,
+  "orderedRosterSha256": "aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be",
   "executionProfile": {
     "execution": "complete",
     "animationGallery": true,
@@ -72,7 +72,7 @@
   "groups": [
     {
       "id": 1,
-      "expectedCount": 80,
+      "expectedCount": 84,
       "entries": [
         "dev.wildercord.cast.RelayCircleTest",
         "dev.wildercord.cast.RelayLifetimeTest",
@@ -153,7 +153,11 @@
         "dev.wildercord.client.fx.VoidWireBoundsTest",
         "dev.wildercord.aura.world.StoneMarchTest",
         "dev.wildercord.aura.world.StoneMarchPresentationTest",
-        "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
+        "dev.wildercord.aura.world.StoneMarchOpponentViewTest",
+        "dev.wildercord.world.upgrade.UpgradeEncounterTest",
+        "dev.wildercord.cast.WayfarerPackTest",
+        "dev.wildercord.aura.world.MastersPackBTrialTest",
+        "dev.wildercord.gametest.perf.PerformanceHarnessTest"
       ]
     },
     {
@@ -248,7 +252,7 @@
     },
     {
       "id": 3,
-      "expectedCount": 77,
+      "expectedCount": 84,
       "entries": [
         "dev.wildercord.gametest.WildercordPerformanceCastTest",
         "dev.wildercord.gametest.WildercordResonanceTest",
@@ -326,12 +330,19 @@
         "dev.wildercord.client.fx.RootCarryPresentationTest",
         "dev.wildercord.cast.RootCarryOutcomeOwnershipTest",
         "dev.wildercord.wildlife.MoonreedSourceTest",
-        "dev.wildercord.wildlife.MoonreedAcquisitionTest"
+        "dev.wildercord.wildlife.MoonreedAcquisitionTest",
+        "dev.wildercord.cast.HearthRunesPlayableTest",
+        "dev.wildercord.cast.packs.FarmsteadRunesTest",
+        "dev.wildercord.cast.HearthRunesGameTest",
+        "dev.wildercord.aura.world.ElementalMastersNativeTest",
+        "dev.wildercord.cast.FxSupportPackTest",
+        "dev.wildercord.aura.world.MethodsAMastersNativeTest",
+        "dev.wildercord.client.HudHandednessLayoutTest"
       ]
     },
     {
       "id": 4,
-      "expectedCount": 71,
+      "expectedCount": 83,
       "entries": [
         "dev.wildercord.wildlife.TidewardPendingReceiverTest",
         "dev.wildercord.wildlife.MixedWetlandPerformanceTest",
@@ -377,6 +388,10 @@
         "dev.wildercord.aura.WallTurnLessonTest",
         "dev.wildercord.aura.WallTurnSafetyTest",
         "dev.wildercord.aura.WallTurnCommitmentTest",
+        "dev.wildercord.aura.FormDashLessonTest",
+        "dev.wildercord.aura.FormDashSafetyTest",
+        "dev.wildercord.aura.FormDashCommitmentTest",
+        "dev.wildercord.aura.StoneHingeLessonTest",
         "dev.wildercord.party.MastersSecondFormTimelineTest",
         "dev.wildercord.aura.HailfallReleasedOwnerTest",
         "dev.wildercord.aura.HailSkyAcceptanceTest",
@@ -403,7 +418,15 @@
         "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest",
         "dev.wildercord.aura.StoneHingeVelocityComparisonTest",
         "dev.wildercord.cast.ExcisePlayableTest",
-        "dev.wildercord.aura.world.GaleVaultBallisticTest"
+        "dev.wildercord.cast.LessonPackPlayableTest",
+        "dev.wildercord.aura.world.GaleVaultBallisticTest",
+        "dev.wildercord.gametest.WildercordShapesPackTest",
+        "dev.wildercord.cast.packs.TidePackClientTest",
+        "dev.wildercord.gametest.WildercordDelveRunesTest",
+        "dev.wildercord.lore.LoreJournalGameTest",
+        "dev.wildercord.aura.ProgressionVowWallTurnNativeTest",
+        "dev.wildercord.aura.MovesPackTest",
+        "dev.wildercord.aura.world.MethodsBMastersClientTest"
       ]
     }
   ]

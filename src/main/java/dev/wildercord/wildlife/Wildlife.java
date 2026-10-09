@@ -152,6 +152,7 @@ public final class Wildlife {
 		WildercordEvents.AFTER_CAST.register((player, spell, runes, spent) -> LAST_CAST.put(player.getUUID(), player.level().getGameTime()));
 		ServerTickEvents.END_SERVER_TICK.register(Wildlife::noticeCreatures);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> LAST_CAST.clear());
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> LAST_CAST.remove(handler.player.getUUID()));
 	}
 
 	// ------------------------------------------------------------------ fresh spells

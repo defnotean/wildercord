@@ -11,9 +11,11 @@ import dev.wildercord.aura.EarnedCounterCaptureFixture;
 import dev.wildercord.aura.SwordString;
 import dev.wildercord.aura.Momentum;
 import dev.wildercord.aura.MastersArts;
+import dev.wildercord.aura.MastersCaptureRest;
 import dev.wildercord.aura.MastersStyleRules;
 import dev.wildercord.client.AuraScreen;
 import dev.wildercord.client.MastersArtsClient;
+import dev.wildercord.client.MastersCaptureClientRest;
 import dev.wildercord.client.MastersArtPose;
 import dev.wildercord.client.MastersHandMotionState;
 import dev.wildercord.client.SwordStringsClient;
@@ -174,7 +176,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 	}
 
 	private static void capture(ClientGameTestContext context, TestSingleplayerContext world, int move, CameraType camera, String view) {
-		context.waitTicks(105);
+		rest(context, world, 105);
 		world.getServer().runOnServer(server -> prepare(server.getPlayerList().getPlayers().getFirst()));
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(camera);
@@ -278,7 +280,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 	}
 
 	private static void cancelledWindup(ClientGameTestContext context, TestSingleplayerContext world) {
-		context.waitTicks(105);
+		rest(context, world, 105);
 		world.getServer().runOnServer(server -> prepare(server.getPlayerList().getPlayers().getFirst()));
 		context.getInput().pressKey(MastersArtsClient.mapping(1));
 		context.waitFor(mc -> MastersArtsClient.timeline(mc.player) != null, 30);
@@ -289,7 +291,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private static void turnDuringWindup(ClientGameTestContext context, TestSingleplayerContext world, float turn) {
-		context.waitTicks(105);
+		rest(context, world, 105);
 		world.getServer().runCommand("fill 0 99 1 0 99 6 minecraft:gold_block");
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
@@ -325,11 +327,10 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
 		});
 		shot(context, "masters_committed_turn_" + (int) turn + "_first_weapon_and_hint");
-		context.waitTicks(30);
 	}
 
 	private static void nearVerticalCommit(ClientGameTestContext context, TestSingleplayerContext world) {
-		context.waitTicks(105);
+		rest(context, world, 105);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 			prepare(player);
@@ -345,7 +346,6 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			check(timeline.pitch() == 0, "A shared melee art advertises its actual level hit plane");
 		});
 		shot(context, "masters_vertical_look_level_commit");
-		context.waitTicks(30);
 	}
 
 	/** Uses each registered family's real ordinary input, including a genuinely earned low counter. */
@@ -365,7 +365,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			return;
 		}
 		context.getInput().releaseKey(o -> o.keyShift);
-		context.waitTicks(finalArt ? ArtRules.art(style.art()).cooldown() + 5 : 105);
+		rest(context, world, finalArt ? ArtRules.art(style.art()).cooldown() + 5 : 105);
 		Mob[] target = new Mob[1];
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
@@ -472,7 +472,7 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 	private static void captureEarnedCounterStyle(ClientGameTestContext context, TestSingleplayerContext world,
 			MastersStyleRules.Style style, CameraType camera, String view, boolean leftHanded, boolean cancel) {
 		context.getInput().releaseKey(o -> o.keyShift);
-		context.waitTicks(105);
+		rest(context, world, 105);
 		boolean toggleCrouch = context.computeOnClient(mc -> mc.options.toggleCrouch().get());
 		EarnedCounterCaptureFixture fixture = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
@@ -560,6 +560,29 @@ public final class WildercordMastersArtsPresentationTest implements FabricClient
 			+ ", velocity=" + mc.player.getDeltaMovement() + ", jumpDown=" + mc.options.keyJump.isDown()
 			+ ", jumpInput=" + mc.player.input.keyPresses.jump() + ", flying=" + mc.player.getAbilities().flying
 			+ ", screen=" + mc.gui.screen());
+	}
+
+	private static final net.minecraft.world.phys.AABB STAGE = new net.minecraft.world.phys.AABB(-10, 99, -10, 11, 109, 41);
+
+	/**
+	 * Replaces the fixed idle that only let the previous art's rests run out. Waits, never longer than that old idle, until the
+	 * previous art has entirely finished on both sides, then ends the owner's rests at once and lets the client receive them.
+	 */
+	private static void rest(ClientGameTestContext context, TestSingleplayerContext world, int idle) {
+		String busy = "client";
+		int waited = 0;
+		for (; waited < idle; waited++) {
+			boolean client = context.computeOnClient(mc -> MastersArtsClient.timeline(mc.player) == null && MastersArtsClient.pose(mc.player, .5F).weight() == 0);
+			busy = world.getServer().computeOnServer(server -> MastersCaptureRest.busy(server.getPlayerList().getPlayers().getFirst(), STAGE));
+			if (client && busy == null) break;
+			if (busy == null) busy = "client";
+			context.waitTicks(1);
+		}
+		world.getServer().runOnServer(server -> MastersCaptureRest.restNow(server.getPlayerList().getPlayers().getFirst()));
+		context.runOnClient(mc -> MastersCaptureClientRest.restNow());
+		context.waitFor(mc -> mc.player.getAttachedOrElse(dev.wildercord.aura.SwordStrings.COOLDOWNS,
+			dev.wildercord.aura.SwordStrings.Cooldowns.NONE).readyAt().isEmpty(), 20);
+		Wildercord.LOGGER.info("MASTERS_CAPTURE_REST idle={} waited={} busy={}", idle, waited, waited < idle ? null : busy);
 	}
 
 	private static void prepare(ServerPlayer player) {

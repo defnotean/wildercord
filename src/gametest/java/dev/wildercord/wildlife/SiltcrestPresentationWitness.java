@@ -121,15 +121,17 @@ final class SiltcrestPresentationWitness {
  static final class Budget {
   record Limit(long serverTick,int harnessAdvances) {}
   final long deadline;private long clock;private int advances;
-  Budget(long started){clock=started;deadline=Math.addExact(started,500);}
+  /** Owner-approved allowance: one escaped coil, the full appetite rest, then a complete second hunt. */
+  static final int HUNT=1100;
+  Budget(long started){clock=started;deadline=Math.addExact(started,HUNT);}
   void observe(long now){
    require(now>=clock,"Native source clock must not run backward during the hunt: prior="+clock+" now="+now);
-   require(now<=deadline&&advances<=500,"Natural witness stays within both original absolute hunt allowances: now="+now+" serverDeadline="+deadline+" harnessAdvances="+advances);clock=now;
+   require(now<=deadline&&advances<=HUNT,"Natural witness stays within both original absolute hunt allowances: now="+now+" serverDeadline="+deadline+" harnessAdvances="+advances);clock=now;
   }
-  Limit phase(int cap){require(cap>0,"Positive original phase cap");return new Limit(phaseDeadline(deadline,clock,cap),Math.min(500,advances+cap));}
+  Limit phase(int cap){require(cap>0,"Positive original phase cap");return new Limit(phaseDeadline(deadline,clock,cap),Math.min(HUNT,advances+cap));}
   boolean within(Limit limit){return limit!=null&&clock<=limit.serverTick()&&advances<=limit.harnessAdvances();}
   void advance(Limit phase){
-   require(clock<deadline&&advances<500,"No complete natural witness before the server or controlled-harness hunt allowance expired: clock="+clock+" serverDeadline="+deadline+" harnessAdvances="+advances);
+   require(clock<deadline&&advances<HUNT,"No complete natural witness before the server or controlled-harness hunt allowance expired: clock="+clock+" serverDeadline="+deadline+" harnessAdvances="+advances);
    require(phase==null||clock<phase.serverTick()&&advances<phase.harnessAdvances(),"Original phase allowance expired before its actual witness");
    advances++;
   }

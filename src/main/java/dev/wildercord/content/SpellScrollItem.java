@@ -49,7 +49,7 @@ public class SpellScrollItem extends Item {
 	}
 
 	public static List<RuneDef> runesOf(ScrollSpell scroll) {
-		if (RelayRules.containsIds(scroll.runes()) || (ReweaveRules.containsIds(scroll.runes()) || dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()))) return List.of();
+		if (RelayRules.containsIds(scroll.runes()) || (ReweaveRules.containsIds(scroll.runes()) || dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()))) return List.of();
 		List<RuneDef> runes = new ArrayList<>();
 		for (String id : scroll.runes()) {
 			Runes.get(id).ifPresent(runes::add);
@@ -59,7 +59,7 @@ public class SpellScrollItem extends Item {
 
 	/** Inscribes one of the player's spells onto a new scroll. */
 	public static void inscribe(ServerPlayer player, int spell) {
-        if (dev.wildercord.cast.ExciseCasting.blocking(player)) return;
+        if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return;
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null || !dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
 			return;
@@ -69,8 +69,8 @@ public class SpellScrollItem extends Item {
 			player.sendOverlayMessage(Component.literal(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
 			return;
 		}
-		if (spell >= 0 && spell < book.spells().size() && (ReweaveRules.containsIds(book.spells().get(spell)) || dev.wildercord.spell.ExciseRules.containsIds(book.spells().get(spell)))) {
-			player.sendOverlayMessage(Component.literal(dev.wildercord.spell.ExciseRules.containsIds(book.spells().get(spell)) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+		if (spell >= 0 && spell < book.spells().size() && (ReweaveRules.containsIds(book.spells().get(spell)) || dev.wildercord.spell.ExciseRules.containsIds(book.spells().get(spell)) || dev.wildercord.spell.LessonPackRules.containsIds(book.spells().get(spell)))) {
+			player.sendOverlayMessage(Component.literal(dev.wildercord.spell.LessonPackRules.containsIds(book.spells().get(spell)) ? dev.wildercord.spell.LessonPackRules.lessonOfIds(book.spells().get(spell)).storageProblem : dev.wildercord.spell.ExciseRules.containsIds(book.spells().get(spell)) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
 			return;
 		}
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
@@ -131,7 +131,7 @@ public class SpellScrollItem extends Item {
 
 	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
-		if (player instanceof ServerPlayer server && (dev.wildercord.cast.ExciseCasting.blocking(server) || dev.wildercord.aura.MastersArts.committed(server))) return InteractionResult.FAIL;
+		if (player instanceof ServerPlayer server && ((dev.wildercord.cast.ExciseCasting.blocking(server) || dev.wildercord.cast.LessonPackCasting.blocking(server)) || dev.wildercord.aura.MastersArts.committed(server))) return InteractionResult.FAIL;
 		ItemStack stack = player.getItemInHand(hand);
 		ScrollSpell scroll = stack.get(WildercordComponents.SCROLL);
 		if (scroll == null) {
@@ -141,8 +141,8 @@ public class SpellScrollItem extends Item {
 			if (player instanceof ServerPlayer server) server.sendOverlayMessage(Component.literal(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
 			return InteractionResult.FAIL;
 		}
-		if ((ReweaveRules.containsIds(scroll.runes()) || dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()))) {
-			if (player instanceof ServerPlayer server) server.sendOverlayMessage(Component.literal(dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+		if ((ReweaveRules.containsIds(scroll.runes()) || dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()))) {
+			if (player instanceof ServerPlayer server) server.sendOverlayMessage(Component.literal(dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()) ? dev.wildercord.spell.LessonPackRules.lessonOfIds(scroll.runes()).storageProblem : dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
 			return InteractionResult.FAIL;
 		}
 		if (player instanceof ServerPlayer serverPlayer && player.isShiftKeyDown() && stack.has(Inscription.TYPE)) {
@@ -162,7 +162,7 @@ public class SpellScrollItem extends Item {
 				if (runes.isEmpty() || compiled.isEmpty()) {
 					return InteractionResult.FAIL;
 				}
-				if (dev.wildercord.cast.ExciseCasting.blocking(serverPlayer) || !dev.wildercord.cast.RelayCircles.beforeOtherSpell(serverPlayer)) return InteractionResult.FAIL;
+				if ((dev.wildercord.cast.ExciseCasting.blocking(serverPlayer) || dev.wildercord.cast.LessonPackCasting.blocking(serverPlayer)) || !dev.wildercord.cast.RelayCircles.beforeOtherSpell(serverPlayer)) return InteractionResult.FAIL;
 				dev.wildercord.aura.MasterForms.cancel(serverPlayer);
 				Optional<Secrets.Secret> secret = Secrets.match(runes);
 				// Against a Shield a secret weighs its full price, as it does cast from a Cord.
@@ -200,8 +200,8 @@ public class SpellScrollItem extends Item {
 			builder.accept(Component.translatable("tooltip.wildercord.scroll_blank").withStyle(ChatFormatting.GRAY));
 			return;
 		}
-		if ((ReweaveRules.containsIds(scroll.runes()) || dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()))) {
-			builder.accept(Component.literal(dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+		if ((ReweaveRules.containsIds(scroll.runes()) || dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()))) {
+			builder.accept(Component.literal(dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()) ? dev.wildercord.spell.LessonPackRules.lessonOfIds(scroll.runes()).storageProblem : dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
 		}
 		List<RuneDef> runes = runesOf(scroll);
 		if (!runes.isEmpty()) {

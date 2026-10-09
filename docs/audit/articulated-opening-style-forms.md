@@ -7,6 +7,8 @@ shared key, new art, or new damage mechanic. The other 38 style arts do not acqu
 this articulated body choreography in this change. This is not full animation or
 release acceptance.
 
+Later work gave the remaining style arts their own Classic and articulated windups; this note only records the first slice.
+
 ## Semantics and unchanged authority
 
 Kindling Draw's existing performer cuts a low 120-degree arc, ignites its victims,

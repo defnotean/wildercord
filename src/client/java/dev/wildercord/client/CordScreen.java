@@ -146,6 +146,7 @@ public class CordScreen extends Screen {
 	private int relayLessonY = -1;
     private int reweaveLessonY = -1;
     private int exciseLessonY = -1;
+    private final int[] packLessonY = {-1, -1, -1};
 	/** Where the field guide's heading falls among the Grimoire's lines, and whether to scroll there on the next draw. */
 	private int fieldGuideAt;
 	private boolean toFieldGuide;
@@ -406,6 +407,9 @@ public class CordScreen extends Screen {
 	}
 
 	/** The saved Archive lesson's readable row, or null while it is outside the Grimoire viewport. */
+    public double[] packLessonPoint(dev.wildercord.spell.LessonPackRules.Lesson lesson) {
+        int y = packLessonY[lesson.ordinal()]; return y < 0 ? null : onScreen(TEXT_X + 18, y + 4);
+    }
     public double[] exciseLessonPoint() { return exciseLessonY < 0 ? null : onScreen(TEXT_X + 18, exciseLessonY + 4); }
     public double[] reweaveLessonPoint() { return reweaveLessonY < 0 ? null : onScreen(TEXT_X + 18, reweaveLessonY + 4); }
 	public double[] relayLessonPoint() {
@@ -1202,7 +1206,7 @@ public class CordScreen extends Screen {
 	private void drawChips(GuiGraphicsExtractor g, int mx, int my) {
 		Component countText = Component.translatable("screen.wildercord.matches", knownMatching());
 		int countW = font.width(countText);
-		int right = W - 14;
+		int right = catalogLinkX() - 6;
 		int x = 12;
 		if (filter == null) {
 			int hintW = right - countW - 8 - 14;
@@ -1223,6 +1227,23 @@ public class CordScreen extends Screen {
 		if (filter == null || x + 6 + countW <= right) {
 			g.text(font, countText, right - countW, CHIPS_TOP + 2, FAINT, false);
 		}
+		// ---- codex pack: the link to the rune catalog, at the right of the chips row.
+		Component link = Component.translatable("screen.wildercord.catalog.open");
+		int lx = catalogLinkX();
+		boolean over = inside(mx, my, lx, CHIPS_TOP, W - 14 - lx, 12);
+		g.fill(lx, CHIPS_TOP + 11, W - 14, CHIPS_TOP + 12, over ? GOLD : 0xFF3A3052);
+		g.text(font, link, lx + 4, CHIPS_TOP + 2, over ? GOLD : DIM, false);
+	}
+
+	/** Where the Catalog link starts. */
+	private int catalogLinkX() {
+		return W - 14 - font.width(Component.translatable("screen.wildercord.catalog.open")) - 8;
+	}
+
+	/** Opens the rune catalog over this screen. */
+	public void openCatalog() {
+		click();
+		minecraft.gui.setScreen(new RuneCatalogScreen(this));
 	}
 
 	private static final int CHIP_GAP = 2;
@@ -1577,6 +1598,15 @@ public class CordScreen extends Screen {
 			return passiveReadout(tier, out, width);
 		}
 		List<String> spell = spells.get(editing);
+        var packLesson = dev.wildercord.spell.LessonPackRules.lessonOfIds(spell);
+        if (packLesson != null) {
+            var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (raw.size() != spell.size() || !packLesson.valid(raw)) {
+                wrap(out, Component.literal("Unfinished " + packLesson.name + " · cannot cast"), 0, width, 0xFFE06060);
+                wrap(out, Component.literal(packLesson.grammarProblem), 0, width, TEXT);
+                refusal(out, width); return out;
+            }
+        }
         if (dev.wildercord.spell.ExciseRules.containsIds(spell)) {
             var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (raw.size() != spell.size() || !dev.wildercord.spell.ExciseRules.valid(raw)) {
@@ -2165,6 +2195,11 @@ public class CordScreen extends Screen {
 			}
 			return true;
 		}
+		if (event.hasControlDown() && event.key() == InputConstants.KEY_B) {
+			// ---- codex pack: Ctrl+B opens the rune catalog.
+			openCatalog();
+			return true;
+		}
 		if (event.hasControlDown() && event.key() == InputConstants.KEY_F) {
 			setFocused(null);
 			searchFocused = true;
@@ -2289,6 +2324,11 @@ public class CordScreen extends Screen {
 					return true;
 				}
 			}
+            for (var lesson : dev.wildercord.spell.LessonPackRules.ALL) if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && packLessonY[lesson.ordinal()] >= 0
+                && dev.wildercord.player.MasterStudies.hasLesson(minecraft.player, lesson)
+                && inside(mx, my, TEXT_X + 8, packLessonY[lesson.ordinal()] - 1, W - 32 - TEXT_X, LINE)) {
+                click(); minecraft.gui.setScreen(new PackLessonScreen(this, lesson)); return true;
+            }
             if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && exciseLessonY >= 0
                 && dev.wildercord.player.MasterStudies.hasExciseLesson(minecraft.player)
                 && inside(mx, my, TEXT_X + 8, exciseLessonY - 1, W - 32 - TEXT_X, LINE)) {
@@ -2348,10 +2388,14 @@ public class CordScreen extends Screen {
 			}
 			tx += w + 2;
 		}
+		if (!grimoirePage && inside(mx, my, catalogLinkX(), CHIPS_TOP, W - 14 - catalogLinkX(), 12)) {
+			openCatalog();
+			return true;
+		}
 		if (filter != null && my >= CHIPS_TOP && my < CHIPS_TOP + 12) {
 			int x = 12;
 			for (Chip chip : chips()) {
-				if (x + chip.width() > W - 14) {
+				if (x + chip.width() > catalogLinkX() - 6) {
 					// Past the edge: not drawn, so not clickable.
 					break;
 				}
@@ -2837,6 +2881,17 @@ public class CordScreen extends Screen {
 			return;
 		}
 		List<String> decoded = dev.wildercord.spell.SpellCodes.decode(code);
+        var pastedLesson = dev.wildercord.spell.LessonPackRules.lessonOfIds(decoded);
+        if (pastedLesson != null) {
+            var raw = decoded.stream().map(Runes::get).flatMap(Optional::stream).toList();
+            if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
+                || !pastedLesson.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
+                || !dev.wildercord.player.MasterStudies.knows(minecraft.player, pastedLesson) || !dev.wildercord.player.MasterStudies.eligible(minecraft.player, pastedLesson)) {
+                minecraft.player.sendOverlayMessage(Component.literal(pastedLesson.name + " needs " + pastedLesson.title + " study, active " + pastedLesson.numeral + ", "
+                    + pastedLesson.featName + ", Echo Cord and exactly " + pastedLesson.shape.name() + " + " + pastedLesson.name + ".").withColor(0xE06060));
+                return;
+            }
+        }
         if (dev.wildercord.spell.ExciseRules.containsIds(decoded)) {
             var raw = decoded.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
@@ -3002,6 +3057,18 @@ public class CordScreen extends Screen {
             : exciseCopied ? "screen.wildercord.excise_lesson.copied" : "screen.wildercord.excise_lesson.unknown"), 8, exciseCopied ? CYAN : DIM,
             List.of(Component.translatable(exciseKnown ? "screen.wildercord.excise_lesson.retrieve" : "screen.wildercord.excise_lesson.retrieve_copied").withStyle(ChatFormatting.GRAY))));
         if (exciseCopied && !exciseKnown) lines.add(new GrimoireLine(Component.translatable("screen.wildercord.excise_lesson.study_pending"), 8, DIM, null));
+        int[] packLessonIndex = {-1, -1, -1};
+        java.util.Arrays.fill(packLessonY, -1);
+        for (var lesson : dev.wildercord.spell.LessonPackRules.ALL) {
+            boolean known = dev.wildercord.player.MasterStudies.knows(player, lesson), copied = dev.wildercord.player.MasterStudies.hasLesson(player, lesson);
+            String key = "screen.wildercord." + lesson.path + "_lesson.";
+            if (copied) packLessonIndex[lesson.ordinal()] = lines.size();
+            lines.add(new GrimoireLine(Component.translatable(key + (known ? "entry" : copied ? "copied" : "unknown")), 8, copied ? CYAN : DIM,
+                List.of(Component.translatable(known ? "screen.wildercord.lesson_pack.retrieve" : copied ? "screen.wildercord.lesson_pack.retrieve_copied"
+                    : key + "invitation").withStyle(ChatFormatting.GRAY))));
+            if (copied) lines.add(new GrimoireLine(Component.translatable(!known ? "screen.wildercord.lesson_pack.study_pending"
+                : dev.wildercord.player.MasterStudies.practiced(player, lesson) ? key + "practiced" : key + "practice_pending"), 8, DIM, null));
+        }
 		int top = SPELL_TOP - 4;
 		int bottom = H - 12;
 		sprite(g, SPR_INSET, 10, top - 3, W - 20, bottom + 3 - (top - 3));
@@ -3059,6 +3126,12 @@ public class CordScreen extends Screen {
 				List.of(Component.translatable("screen.wildercord.master_forms.readback"))));
 			for (int page = 1; page <= 3; page++) lines.add(new GrimoireLine(Component.translatable("screen.wildercord.master_forms.chapter", page), 8, TEXT,
 				List.of(Component.translatable("book.wildercord.wall_turn." + page))));
+		}
+		if (dev.wildercord.aura.MasterForms.data(player).hingeLearned()) {
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.master_forms.stone_hinge.book_title"), 0, GOLD,
+				List.of(Component.translatable("screen.wildercord.master_forms.readback"))));
+			for (int page = 1; page <= 3; page++) lines.add(new GrimoireLine(Component.translatable("screen.wildercord.master_forms.chapter", page), 8, TEXT,
+				List.of(Component.translatable("book.wildercord.stone_hinge." + page))));
 		}
 		// This world's own magic: its resonances and quirks, and the runes still being read.
 		addWorldMagic(lines);
@@ -3128,11 +3201,13 @@ public class CordScreen extends Screen {
 			if (first + i == relayLessonIndex && y >= top && y + LINE <= bottom) relayLessonY = y;
             if (first + i == reweaveLessonIndex && y >= top && y + LINE <= bottom) reweaveLessonY = y;
             if (first + i == exciseLessonIndex && y >= top && y + LINE <= bottom) exciseLessonY = y;
+            for (int k = 0; k < packLessonIndex.length; k++) if (first + i == packLessonIndex[k] && y >= top && y + LINE <= bottom) packLessonY[k] = y;
             String lifeLink = lifeJournalLinks.get(first + i);
             if (lifeLink != null && y >= top && y + LINE <= bottom) visibleLifeJournalLinks.add(new LifeJournalLink(y, lifeLink));
 			boolean isStudyLesson = (first + i == relayLessonIndex && dev.wildercord.player.MasterStudies.hasRelayLesson(player))
 				|| (first + i == reweaveLessonIndex && dev.wildercord.player.MasterStudies.hasReweaveLesson(player))
-				|| (first + i == exciseLessonIndex && dev.wildercord.player.MasterStudies.hasExciseLesson(player));
+				|| (first + i == exciseLessonIndex && dev.wildercord.player.MasterStudies.hasExciseLesson(player))
+				|| packLessonIndex[0] == first + i || packLessonIndex[1] == first + i || packLessonIndex[2] == first + i;
 			boolean clickableLesson = isStudyLesson || lifeLink != null;
 			boolean hoveredLesson = clickableLesson && inside(mx, my, TEXT_X + 6, y - 1, W - 28 - TEXT_X, LINE);
 			if (hoveredLesson) {

@@ -3156,6 +3156,40 @@ import signature_art  # noqa: E402
 
 GLYPHS.update(signature_art.GLYPHS)
 
+# ---- shapes pack: the field and kin shapes' icons.
+import shapes_pack_art  # noqa: E402
+
+GLYPHS.update(shapes_pack_art.GLYPHS)
+# ---- fx-passive pack: the hearth runes' icons.
+import hearth_rune_art  # noqa: E402
+
+GLYPHS.update(hearth_rune_art.GLYPHS)
+# ---- fx-fish pack
+import tide_art  # noqa: E402
+
+GLYPHS.update(tide_art.GLYPHS)
+# ---- fx-farm pack: the farmstead runes, drawn in their own file.
+import farm_rune_art  # noqa: E402
+
+GLYPHS.update(farm_rune_art.GLYPHS)
+# ---- fx-mine pack: the delving runes, drawn in their own file.
+import delve_art  # noqa: E402
+
+GLYPHS.update(delve_art.GLYPHS)
+# ---- links-mods pack: the hearth pack's links and modifiers, drawn in their own file.
+import hearth_link_art  # noqa: E402
+
+GLYPHS.update(hearth_link_art.GLYPHS)
+# ---- fx-explore pack
+import wayfarer_art  # noqa: E402
+
+GLYPHS.update(wayfarer_art.GLYPHS)
+# ---- fx-support pack
+# The support pack's runes (Worst First to Faithful), drawn in their own file.
+import fx_support_art  # noqa: E402
+
+GLYPHS.update(fx_support_art.GLYPHS)
+
 FALLBACK_GLYPH = """
     ...#...
     ..#+#..

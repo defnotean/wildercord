@@ -8,12 +8,13 @@ description: "Every breathing method's five sword arts: what each one does, the 
 # Sword arts
 {: .no_toc }
 
-Every breathing method answers the five [sword strings]({{ '/progression/aura/' | relative_url }}#sword-strings) its own
-way. The strings are the same for everyone, so you learn them once; what your blade does when you play one depends on your
-method. Ember sets the field alight, Rime slows, freezes and shatters, Thunder leaps from foe to foe faster than the eye,
-Gale reaches far and takes the ground from under your foes, Stone hits hardest of all and stands unmoved, Verdant roots its
-foes and mends its allies, Hollow draws foes in and silences them, Starlit sets stars that burst and gets its aura back,
-Hourglass echoes, rewinds and holds foes still in time, and Crimson bleeds its foes and drinks from them.
+## What it is
+
+Every breathing method answers the five [sword strings]({{ '/progression/aura/' | relative_url }}#sword-strings) its
+own way. The strings are the same for everyone, so you learn them once. What your blade does depends on your method: Ember
+burns, Rime freezes and shatters, Thunder leaps from foe to foe, Gale reaches far and lifts, Stone hits hardest, Verdant roots
+and mends, Hollow draws in and silences, Starlit sets stars and gets aura back, Hourglass echoes and stops time, and Crimson
+bleeds and drinks.
 
 <img src="{{ '/assets/images/arts-sunfall.jpg' | relative_url }}" alt="A column of sunlight driven down onto a stone platform, rings of orange light and fire racing out over the ground round it, curls of flame flying, a husk thrown high in the light" class="shot">
 <span class="caption">Sunfall, Ember Breath's Final Art.</span>
@@ -21,7 +22,23 @@ Hourglass echoes, rewinds and holds foes still in time, and Crimson bleeds its f
 1. TOC
 {:toc}
 
-## The five strings
+## How to use it
+
+Swing as you always do, in time: each swing must come within about half a second of your blade being ready again. A row of
+marks under your crosshair shows the string as you play it.
+
+| Mark | Swing | How |
+|---|---|---|
+| a small diamond | **a swing** | any swing |
+| a full diamond | **a full swing** | wait for the attack indicator to fill |
+| pointing down | **a low swing** | while sneaking |
+| pointing up | **a leaping swing** | in the air |
+| pointing ahead | **a running swing** | while sprinting |
+| a gold ring | **a counter** | your first swing after a perfect Aura Guard |
+| two chevrons | **a step cut** | your first swing after an Aura Step |
+
+Only swings at a creature, or at the air during a fight, count, so building and digging never set off an art. When the same
+swings spell more than one art, the most demanding one that can go goes. If none can, you're told why above the hotbar.
 
 | Art | Opens at | String | Aura | Rests |
 |---|---|---|---|---|
@@ -31,32 +48,25 @@ Hourglass echoes, rewinds and holds foes still in time, and Crimson bleeds its f
 | **Fourth Art** | Form | a **step cut** (your first swing after an Aura Step) | 10 | 5 s |
 | **Final Art** | Sovereign | **full**, **full**, **full**, **low**, at the peak of your momentum | 40 | 30 s |
 
-Every method's art in a slot costs and rests the same and is worth about as much: a method is a different answer, never a
-better one. (Thunder's Crackle rests a little less, 2.5 s, for being lighter.) All fifty were weighed against each other on one
-scale, damage, the foes they reach, how long they hold, how far they go, what they mend and the aura they give back, so no
-method's five outweigh another's.
+Every method's art in a slot costs and rests the same and is weighed to be worth about as much: a method is a different
+answer, never a better one. (Thunder's Crackle rests a little less, 2.5 s.)
 
 ## How arts work
 
 - **Damage is a share of your weapon's own**, written below as "×": an art at 1× strikes as hard as your blade does (an iron
   sword's 6, a netherite one's 8), so a better blade carries every art with it. Arts are aura off the blade in your method's
   element, like the slash: they meet weaknesses and resistances, set off reactions, and can leave aura marks.
-- **Each art names itself** in a banner as it goes off, makes your aura surge, cuts its own trail and plays its own sound over
-  your method's.
-- **Your first time playing an art** writes it into your [Grimoire]({{ '/progression/grimoire/' | relative_url }}) (and
-  condenses a little mana toward your next Heart Circle). The Grimoire page lists every art you've played, by method, and your
-  own method's still to play.
-- **The Aura page** shows your arts on its **Sword strings** tab, and a row of every method's colour above them: click one to
-  read another method's arts (an add-on's method playing the common arts is dimmed).
-- **Your own view stays clear.** The big shapes (a lance of lightning, a mirror of ice, a gout of flame) are drawn for
-  everyone watching you and for you in third person; in first person you see a thin, low version, never a wall of light across
-  the middle of your view.
-- **An art with nowhere to go** (a rush against a wall, a blink with nobody near) doesn't go and costs nothing; you're told
-  why above the hotbar.
-- **Momentum makes every art cheaper and stronger**: up to a quarter off its price and a fifth harder at the peak, where the
-  Final Art opens (see [Momentum]({{ '/progression/aura/' | relative_url }}#momentum)). An art that lands builds momentum, and
-  its strikes wear a foe's stance twice as fast as a blow (Stone's quakes faster still), toward an opening and your method's
-  [finisher]({{ '/progression/aura/' | relative_url }}#finishers).
+- **Every art has a windup.** Your body commits for a short moment before the strike, then recovers after it. The price and
+  rest are paid when the art starts and your aim is locked then. If you take damage during the windup, the strike is lost but
+  stays paid. See [Combat presentation]({{ '/masters/combat-presentation/' | relative_url }}).
+- **An art with nowhere to go** when you play it (a rush against a wall, a blink with nobody near) doesn't start and costs
+  nothing. But once it has started, a target that's gone by the time it strikes is a paid miss.
+- **Each art names itself** in a banner, and your first time playing one writes it into your
+  [Grimoire]({{ '/progression/grimoire/' | relative_url }}).
+- **The Aura page's Sword strings tab** lists your arts. Click another method's colour to read its arts.
+- **Momentum makes every art cheaper and stronger**: up to a quarter off and a fifth harder at the peak, where the Final Art
+  opens (see [Momentum]({{ '/progression/aura/' | relative_url }}#momentum)). Arts wear a foe's stance twice as fast as a
+  blow, toward your method's [finisher]({{ '/progression/aura/' | relative_url }}#stance-and-finishers).
 
 ## Ember Breath
 
@@ -252,16 +262,16 @@ a better one. See [Techniques of your own]({{ '/progression/techniques/' | relat
 A breathing method without arts of its own (an add-on's) plays the five **common arts** on the same strings: an arc of aura in
 front of you (First), a rising arc that throws foes up (Second), a cut that staggers the foe you countered (Third), a line of
 aura five blocks ahead (Fourth), and a ring of aura that throws every foe near back (Final). See
-[the arts]({{ '/progression/aura/' | relative_url }}#the-arts).
+[Aura]({{ '/progression/aura/' | relative_url }}#sword-strings).
 
 <img src="{{ '/assets/images/arts-page.jpg' | relative_url }}" alt="The Aura page's Sword strings tab of an Ember swordsman, the yellow swatch chosen in the row of ten: Thunder Breath's five arts, Crackle to Heaven's Spear, each with its string in small marks, the stage that opens it and its price" class="shot">
 <span class="caption">The Sword strings tab: an Ember swordsman reading Thunder Breath's arts.</span>
 
-## Arts, other players and the world
+## Tips and counterplay
 
 - **Never a one-shot.** An art deals one player at most 8 damage in all (after the PvP scale, before their armour and spell
   defences), even at the peak of momentum, and every art meets armour, Warding and the spellguard like a spell. A totem still
-  saves. An art wears at most half of a player's stance (see [Duels]({{ '/progression/aura/' | relative_url }}#duels)).
+  saves. An art wears at most half of a player's stance (see [Stance]({{ '/progression/aura/' | relative_url }}#stance-and-finishers)).
 - **Holds are short.** An art freezes, stuns, roots or holds a player still in time for at most three quarters of a second,
   and no art can hold the same player again for 4 seconds; it sets a player alight for at most 3 s and throws a player only so
   hard. A steady pull (Collapse's well, Event Horizon) drags a player slower than they can sprint. Bosses are only ever slowed:
@@ -274,6 +284,6 @@ aura five blocks ahead (Fourth), and a ring of aura that throws every foe near b
 - **Nothing is griefed.** Fire, ice, stone, roots, brambles, flowers and trees left by an art are light and shapes; only Skate's
   ice over water is real, it thaws, and it never forms where you couldn't build (claims, warded ground, or with world-changing
   magic switched off).
+- **Watch the windup.** Hitting a swordsman as they wind up an art cancels it, and they've still paid for it.
 
-Server owners can scale every art's damage (`aura.art_damage`), stop Skate freezing water (`aura.art_terrain`), or switch
-strings off altogether (`aura.strings`).
+Server owners can scale art damage, stop Skate freezing water, or switch strings off.

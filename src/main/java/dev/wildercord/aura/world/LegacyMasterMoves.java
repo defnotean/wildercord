@@ -31,7 +31,11 @@ public final class LegacyMasterMoves {
 			case STONE_FRACTURE -> StoneFractureRules.COST;
 			case KILN_RING -> EmberKilnRules.COST;
 			case STONE_FAULT_MARCH -> StoneMarchRules.COST;
-			case SWEEP, THRUST, CRESCENT, BREAK_CAST -> MastersRules.ATTACK_COST;
+			case SWEEP, THRUST, CRESCENT, BREAK_CAST, TECHNIQUE -> MastersRules.ATTACK_COST;
+			// ---- masters-a pack
+			case RIME_LATTICE, THUNDER_CHAIN, VERDANT_BLOOM, HOLLOW_PULL -> ElementalMasters.cost(move);
+			case STARLIT_CONSTELLATION, HOURGLASS_REWIND, CRIMSON_FRENZY -> MastersPackB.cost(move); // ---- masters-b pack
+			case TIDE_UNDERTOW_RING, IRON_ANVIL_VERDICT, DUNE_SHIFTING_SANDS -> MethodsAMasters.cost(move); // ---- methods-a pack
 		};
 	}
 

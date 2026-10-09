@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:oak_sapling",
+    "minecraft:bone_meal",
+    "minecraft:oak_log",
+    "wildercord:mana_crystal",
+    "minecraft:diamond"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:saplingrise"
+    }
+  }
+}

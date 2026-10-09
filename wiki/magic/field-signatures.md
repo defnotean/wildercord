@@ -3,125 +3,87 @@ title: Field Signatures
 parent: The Fusion Altar
 nav_order: 4
 permalink: /fusion-altar/field-signatures/
-description: Six exact altar pairings for tending banks, recovering supplies, cleansing heat and temporary control.
+description: Six signature fusions for watering and growing crops, smelting loose items, cleansing allies and short control.
 ---
 
 # Field Signatures
 
-These signatures give two familiar runes a new job. Place the exact pair in a Fusion Altar with an
-amethyst shard and pay three experience levels. Other runes of the same elements continue to make
-their ordinary elemental fusion. Each result is a tier III rune, so the spell's normal heart-circle
-requirements still apply.
+## What it is
 
-| Signature | Exact pair | Base mana | What it does |
-|---|---|---:|---|
-| **Springbed** | Basinfill + Grow | 14 | Makes a small water vessel, then gives existing bank plants one stage of growth. |
-| **Cinder Sieve** | Ember + Collect | 12 | Uses one carried coal or charcoal to process visible loose furnace inputs and recover their output. |
-| **Ashen Mercy** | Fireward + Cleanse | 16 | Turns actual harmful conditions removed from an ally into a small heal and brief heat protection. |
-| **Clockroot** | Root + Foresight | 16 | Remembers a foe's safe ground and returns it once if it flees. |
-| **Skylatch** | Levitate + Anchor | 14 | Lifts an ally slightly and holds its height briefly while leaving lateral movement free. |
-| **Thresherwind** | Harvest + Windcut | 12 | Sends three narrow harvest lanes forward, gathering crops and replanting with real seeds. |
+Six [signature fusions]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions) that give two familiar runes
+a new, practical job: farming, smelting on the go, helping allies and short control.
 
 <img src="{{ '/assets/field-signatures/inventory.png' | relative_url }}" alt="The six carved field signature runes in the inventory" class="shot" loading="lazy">
 
-The listed mana is the effect's base cost. Shapes, links, gear and modifiers still change the actual
-spell price shown by the spell editor. These signatures have fixed resource and time limits; Amplify
-cannot turn a small utility spell into an unbounded harvest or a permanent restraint.
+## How to get it
 
-## Water first, roots second
+Put the exact pair of runes in a [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) with an **Amethyst Shard** and
+pay **3 XP levels**. Other runes of the same elements still make the usual fusion. All six are **Tier III**.
 
-**Springbed** needs the same enclosed, one-block-deep vessel as Basinfill: no more than sixteen
-connected air cells, with a safe floor and closed edges. Aim Touch or Bolt at the floor. The water
-stays after the spell ends and after a world reload.
+| Signature | Runes | Counts as | Mana | Does |
+|---|---|---|---:|---|
+| **Springbed** | Basinfill + Grow | Frost | 14 | Fills a small basin with water, then grows the crops on its bank one stage |
+| **Cinder Sieve** | Ember + Collect | Fire | 12 | Burns one coal or charcoal you carry to smelt loose items nearby |
+| **Ashen Mercy** | Fireward + Cleanse | Life | 16 | Puts out and cleanses allies, healing them for what it removed |
+| **Clockroot** | Root + Foresight | Earth | 16 | Remembers where a foe stood and pulls it back once if it runs |
+| **Skylatch** | Levitate + Anchor | Wind | 14 | Lifts an ally a block and holds them there for a moment |
+| **Thresherwind** | Harvest + Windcut | Wind | 12 | Harvests three rows of ripe crops and replants them |
 
-Once the vessel fills, up to eight existing immature crops or moist Moonreed buds on its bank gain
-one growth stage. Their soil must be within the new water's hydration reach. Both the plant and its
-support need build permission. Springbed creates no plants and cannot skip Moonreed's pollinator
-requirement. It performs one pour and one growth pass per paid cast.
+The mana shown is the effect's own cost; shapes, modifiers and gear change the full price. Amplify and repeats don't
+raise these spells' limits.
 
-Its preparation gathers pouring threads above a branching seed root. The travelling parcel carries
-water inside a living fork. At the bank, water settles before thin rootlets trace the eligible plants.
+## How to use it
+
+### Springbed
 
 <img src="{{ '/assets/field-signatures/springbed-prepare.png' | relative_url }}" alt="Springbed gathers water threads around branching roots before firing" class="shot" loading="lazy">
 
-## A portable kiln with an honest inventory
+- Aim Touch or Bolt at the floor of a basin one block deep, closed on every side, up to **16 blocks** of space (the
+  same as Basinfill). The water stays.
+- Up to **8** young crops or moist Moonreed buds within the water's reach grow one stage. It never plants anything,
+  and you need permission to build there.
 
-**Cinder Sieve** uses one coal or charcoal from your carried inventory. It handles at most sixteen
-loose inputs within four blocks of the impact, using their actual furnace recipes. Processed goods
-must fit completely before the spell spends fuel or changes any input. A full inventory leaves those
-items and fuel intact.
-
-Drops belonging to someone else, items still under pickup delay, blocked sight lines and protected
-land are refused. Leftover input stays on the ground. The spell grants no furnace XP. Repeating or
-reflecting a spell does not buy another processing pass from the same payment.
-
-The ember basket closes around a hollow intake. Its hot ribs remain visible around the dark
-collection current; the spell never becomes an ordinary explosion with a different color.
+### Cinder Sieve
 
 <img src="{{ '/assets/field-signatures/cinder-sieve-prepare.png' | relative_url }}" alt="Cinder Sieve prepares its ember ribs and hollow intake" class="shot" loading="lazy">
 
-## Helpful heat
+- Uses **one coal or charcoal** from your inventory to smelt up to **16** loose items within **4 blocks** of where it
+  lands, into your inventory.
+- Nothing happens unless everything fits. A full inventory keeps your fuel and the items.
+- It skips other players' drops and items in protected land. No furnace XP.
 
-**Ashen Mercy** extinguishes eligible allies and removes their harmful status effects. Only conditions
-actually removed can supply healing: two health for each of up to two conditions, with a total cap
-of four health. Missing health remains the upper limit. A clean target gets no free healing.
+### Ashen Mercy
 
-The ally also receives five seconds of Fire Resistance. One payment can help at most eight allied
-UUIDs, once each, including repeating copies of that spell. It cannot cleanse an enemy for you.
+- Puts out burning allies and removes their harmful effects.
+- Heals **2** for each thing it removed (being on fire counts), up to **4** health. An ally with nothing to remove
+  isn't healed.
+- Gives **5 seconds** of Fire Resistance. Up to **8** allies per cast. It won't cleanse enemies.
 
-Scorched leaves fold toward living tissue around a small heat seam. At arrival, ash flakes and
-living petals separate rather than producing a large flash.
+### Clockroot
 
-## Remembered ground
+- Marks a foe standing on safe ground for **4 seconds**. If it moves more than **2 blocks** away, it's pulled back
+  **once**.
+- The pull fails if the way back is blocked, the ground is gone, or the foe got more than **8 blocks** away.
+- Doesn't work on bosses, Cinnamon, riders, anchored targets or in warded dungeon arenas. Up to **8** foes per cast;
+  each foe can't be marked again for **8 seconds**. It does no damage.
 
-**Clockroot** records the target's safe grounded position for four seconds. If the foe travels more
-than two horizontal blocks, it can be returned there **once**. The return only occurs if the target,
-recorded floor, loaded space and unobstructed route are still eligible. A wall, removed floor, unsafe
-terrain, changed dimension or escape beyond eight blocks releases the memory harmlessly.
+### Skylatch
 
-Bosses, permanently invulnerable targets, Cinnamon, mounted targets, anchored targets, creative or
-spectator players and warded arenas are refused. It stops when the caster or target leaves or dies.
-One payment can mark at most eight foes; each target then needs eight seconds before a new imprint.
-Clockroot never damages the target or keeps pulling it back repeatedly.
+- Lifts an ally about **1 block** and holds their height for **4 seconds**. They can still move sideways.
+- Sneaking lets go early, with **2 seconds** of Slow Falling. A stronger Levitation takes over.
+- Doesn't work on someone already flying or levitating, riders, anchored targets or bosses. Up to **8** allies per
+  cast; each ally can't be lifted again for **8 seconds**.
 
-Its root prongs pin a little sand hourglass. A low physical imprint stays on the original ground;
-if it fires, earth grains travel back along the escape path.
+### Thresherwind
 
-## A latch you can leave
+- Aim at a ripe crop or its ground. **3 rows**, each 3 blocks wide, sweep forward and harvest up to **9** ripe crops.
+- Each crop is replanted with a seed from its own drops. A crop that drops no seed isn't replanted.
+- The harvest goes to your inventory; what doesn't fit drops for you. You need permission to build there.
 
-**Skylatch** checks the space above an eligible ally, then lifts it about one block and holds vertical
-height for four seconds. The ally can still move sideways. Crouching releases the latch early into
-two seconds of Slow Falling. Death, logout, dimension changes, blocked space and the deadline also
-end the hold.
+## Tips and counterplay
 
-A stronger or longer Levitation effect arriving during the hold takes over immediately. Skylatch
-releases its own latch and preserves that incoming effect.
-
-The spell grants no flight abilities. Existing flight abilities or Levitation, anchors, mounted
-targets, bosses and warded arenas prevent admission. It affects at most eight allied targets per
-payment, with eight seconds of rest for each target. Repeated pulses cannot renew the hold forever.
-
-An open updraft catches a dark knot. Two travelling air brackets stay open around the target;
-the short tether loosens when the hold ends.
-
-## Three passing harvest lanes
-
-Aim **Thresherwind** at a mature crop or its ground. Three rows, each three blocks wide, pass forward
-over a short interval. At most nine mature crops can be harvested. Every row checks that the caster
-is still present, the blocks are loaded, the sight line is open and the land permits editing.
-
-The spell uses the crop's real drops. Replanting spends one matching seed from that harvest; a crop
-that drops no seed is not replanted for free. Only this harvest's goods are gathered. A full inventory
-leaves the remaining harvest as loose items reserved for you.
-
-The blades shear in separate lanes. Severed stalk fibres and grain follow the air, so the spell's
-motion describes the harvest rather than drawing another generic circle.
-
-## Trying them together
-
-Use Springbed beside a small garden, then pass Thresherwind over the mature rows later. Carry fuel
-and leave inventory room before using Cinder Sieve on expedition supplies. Keep Ashen Mercy ready
-for burning or poisoned allies. Clockroot buys a short positioning opportunity against ordinary
-foes, while Skylatch can give an ally a brief elevated view without taking away its choice to move.
-
-*These six signatures are new in 0.10.0-alpha.*
+- Springbed beside a small garden, then Thresherwind over the rows once they ripen.
+- Carry fuel and leave inventory room before using Cinder Sieve.
+- Keep Ashen Mercy ready for burning or poisoned friends.
+- Against Clockroot, break the way back or get far away fast.
+- See also [Expedition Signatures]({{ '/fusion-altar/expedition-signatures/' | relative_url }}).

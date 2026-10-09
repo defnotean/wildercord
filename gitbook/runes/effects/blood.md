@@ -4,7 +4,20 @@
 
 Life paid for power. Blood cuts, drains, bleeds and turns wounds into strength.
 
-7 blood effects you can craft or find in the usual way. Blood also has runes of the world, fused runes and innate runes: see their own pages.
+10 blood effects you can craft or find in the usual way. Blood also has runes of the world, fused runes and innate runes: see their own pages.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/clot.png) Clot
+
+
+*Tier I · Blood · Helps you and your allies · 4 mana · needs any Cord*
+
+For 3 minutes, poison and wither on you wear off twice as fast.
+
+**How to get it:** Craft: a Blank Rune, Milk Bucket and Spider Eye. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Clot: a Blank Rune and Milk Bucket and Spider Eye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_clot.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leech.png) Leech
 
@@ -17,7 +30,7 @@ Life paid for power. Blood cuts, drains, bleeds and turns wounds into strength.
 
 ![Crafting Leech: a Blank Rune and Spider Eye and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leech.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rend.png) Rend
 
@@ -30,7 +43,20 @@ Rends armour: targets lose 4 armour for 10 seconds, and what they naturally resi
 
 ![Crafting Rend: a Blank Rune and Iron Nugget and Bone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rend.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/taunt.png) Taunt
+
+
+*Tier I · Blood · Harms enemies · 5 mana · needs any Cord*
+
+Enemies hit turn on you for 6 seconds, and you get Resistance I for as long.
+
+**How to get it:** Craft: a Blank Rune, Rotten Flesh and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Taunt: a Blank Rune and Rotten Flesh and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_taunt.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bleed.png) Bleed
 
@@ -43,7 +69,7 @@ Opens a wound: 2 damage, then 1 more every half second for 4 seconds (half as mu
 
 ![Crafting Bleed: a Blank Rune and Shears and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bleed.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dismantle.png) Dismantle
 
@@ -56,7 +82,7 @@ Three unseen slashes a tenth of a second apart: 3 damage each, straight through 
 
 ![Crafting Dismantle: a Blank Rune and Shears, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dismantle.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gash.png) Gash
 
@@ -69,7 +95,20 @@ A wound that won't close: 3 damage, and for 8 seconds the target can't heal, is 
 
 ![Crafting Gash: a Blank Rune and Flint and Rotten Flesh, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gash.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/heartsense.png) Heartsense
+
+
+*Tier II · Blood · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+For 30 seconds, you see the heartbeat of every creature within 24 blocks.
+
+**How to get it:** Craft: a Blank Rune, Fermented Spider Eye and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Heartsense: a Blank Rune and Fermented Spider Eye and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_heartsense.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/overdrive.png) Overdrive
 
@@ -82,7 +121,7 @@ Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you los
 
 ![Crafting Overdrive: a Blank Rune and Blaze Powder and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_overdrive.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cleave.png) Cleave
 
@@ -95,4 +134,4 @@ Cuts in proportion to the target: 6 damage plus 10% of its max health (up to 20 
 
 ![Crafting Cleave: a Blank Rune and Diamond Axe, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cleave.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

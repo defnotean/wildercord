@@ -163,7 +163,38 @@ final class WallTurn {
 		var state = level.getBlockState(pos);
 		return !state.getFluidState().isEmpty() || state.is(BlockTags.FIRE) || state.is(Blocks.MAGMA_BLOCK) || state.is(Blocks.CACTUS)
 			|| state.is(Blocks.CAMPFIRE) || state.is(Blocks.SOUL_CAMPFIRE) || state.is(Blocks.SWEET_BERRY_BUSH) || state.is(Blocks.POWDER_SNOW)
-			|| state.is(Blocks.WITHER_ROSE) || state.is(Blocks.POINTED_DRIPSTONE) || state.is(Blocks.NETHER_PORTAL) || state.is(Blocks.END_PORTAL);
+			|| state.is(Blocks.WITHER_ROSE) || state.is(Blocks.POINTED_DRIPSTONE) || state.is(Blocks.NETHER_PORTAL) || state.is(Blocks.END_PORTAL) || state.is(Blocks.END_GATEWAY);
+	}
+	/** Grounded field forms keep real, safe support under each accepted body position: a ledge, pit or hazard ends travel. */
+	static boolean footing(ServerPlayer player, Vec3 at, DungeonWards.MovementWard warded) {
+		if (!finite(at)) return false;
+		AABB body = player.getBoundingBox().move(at.subtract(player.position()));
+		if (!clear(player, body, warded) || !loaded(player.level(), body.move(0, -.08, 0))
+			|| player.level().noCollision(player, body.move(0, -.08, 0))) return false;
+		for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(body.minX, body.minY - .08, body.minZ),
+			BlockPos.containing(body.maxX - 1.0E-6, body.minY - 1.0E-6, body.maxZ - 1.0E-6)))
+			if (dangerous(player.level(), pos)) return false;
+		return true;
+	}
+	/**
+	 * Stone Hinge's turned lane: a known ward, the border, no hazard in body or floor cells, and floor under the body at every
+	 * sub-step (no drop). Solid walls only clip travel.
+	 */
+	static boolean hingeLane(ServerPlayer player, Vec3 direction) {
+		ServerLevel level = player.level();
+		var warded = DungeonWards.movementWard(level, player.blockPosition());
+		if (!warded.known() || !finite(direction) || direction.horizontalDistanceSqr() < 1.0E-6 || !finite(player.position())) return false;
+		Vec3 step = new Vec3(direction.x, 0, direction.z).normalize().scale(StoneHingeRules.LANE);
+		AABB body = player.getBoundingBox(), lane = body.minmax(body.move(step)).expandTowards(0, -.5, 0);
+		if (!loaded(level, lane) || !level.getWorldBorder().isWithinBounds(lane.minX, lane.minZ) || !level.getWorldBorder().isWithinBounds(lane.maxX, lane.maxZ)) return false;
+		for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(lane.minX, lane.minY, lane.minZ),
+			BlockPos.containing(lane.maxX - 1.0E-6, lane.maxY - 1.0E-6, lane.maxZ - 1.0E-6)))
+			if (dangerous(level, pos) || !DungeonWards.movementWard(level, pos).equals(warded)) return false;
+		for (double d = StoneHingeRules.SUPPORT_STEP; d < StoneHingeRules.LANE + 1.0E-9; d += StoneHingeRules.SUPPORT_STEP) {
+			AABB probe = body.move(step.scale(d / StoneHingeRules.LANE)).move(0, -.08, 0);
+			if (level.noCollision(player, probe)) return false;
+		}
+		return true;
 	}
 	/** The client on-ground flag alone never refills the airborne use: solid, safe support and real body room are required. */
 	static boolean safeLanding(ServerPlayer player) {

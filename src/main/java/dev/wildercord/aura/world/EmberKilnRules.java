@@ -6,7 +6,7 @@ import java.util.List;
 /** Fixed ground annulus: inward pocket, outward escape, or a timed jump answer one warned pulse. */
 public final class EmberKilnRules {
 	private EmberKilnRules() {}
-	public static final int TELL = 40, RECOVERY = 48, COOLDOWN = 180, WARNING_REFRESH = 4, SECTORS = 32;
+	public static final int TELL = 40, RECOVERY = 48, COOLDOWN = 130, WARNING_REFRESH = 4, SECTORS = 32;
 	public static final double COST = 28, DAMAGE = 26, INNER = 2.75, OUTER = 5.5, ESCAPE = 6.25;
 	public static final double LOW = -.05, HIGH = .75;
 	public static final int MAX_COVER_BOXES = 512;

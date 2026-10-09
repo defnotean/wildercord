@@ -7,117 +7,87 @@ nav_order: 4
 # Mana
 {: .no_toc }
 
-<img src="{{ '/assets/images/hud.png' | relative_url }}" alt="The spell HUD beside the hotbar: a circle badge, a row of rune icons, and a violet mana bar reading 218/380 with an up-chevron" class="shot">
-<span class="caption">Your mana bar sits in the spell HUD. The little chevron means your regeneration is boosted.</span>
-
-Every spell costs **mana**. You have a pool of it (your **max mana**) that refills a little every
-second (your **regeneration**). You only have mana while you wear a [Cord]({{ '/spellcraft/cords/' | relative_url }}),
-and it only refills while you wear one. It belongs to **you**, not the Cord: swap Cords and your mana
-stays, up to the new Cord's maximum.
+<img src="{{ '/assets/images/hud.png' | relative_url }}" alt="The spell HUD beside the hotbar: a circle badge, a row of rune icons, and a violet mana bar with an up-chevron" class="shot">
+<span class="caption">Your mana bar sits in the spell HUD. The chevron means your regeneration is boosted.</span>
 
 1. TOC
 {:toc}
 
-## Where your numbers come from
+## What it is
 
-Hover the **mana badge** in the Cord screen for a full breakdown of your max mana and regeneration,
-line by line, and a list of every way to grow them.
+Every spell costs **mana**. You have a pool (your **max mana**) that refills every second (your
+**regeneration**). You only have mana, and it only refills, while you wear a
+[Cord]({{ '/spellcraft/cords/' | relative_url }}). It belongs to you, not the Cord.
 
-### Max mana
+Hover the **mana badge** in the Cord screen for a full breakdown.
 
-Everything adds up:
+## Max mana
 
 | Source | Max mana |
 |---|---|
-| Twine Cord | 100 |
-| Copper Cord | 150 |
-| Amethyst Cord | 225 |
-| Echo Cord | 300 |
-| Each [Mana Crystal](#mana-crystals) absorbed (up to 100) | +10 (up to +1,000) |
+| Twine / Copper / Amethyst / Echo Cord | 100 / 150 / 225 / 300 |
+| Each [Mana Crystal](#mana-crystals) absorbed | +10 (up to 100 crystals: +1,000) |
 | [Reservoir]({{ '/progression/enchantments/' | relative_url }}) on your Cord | +25 per level (up to +75) |
 | Each working [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}) | +15 (up to +300) |
-| A **Focus of the Deep Well** in your off-hand | +50 while you hold it (see [Casting Gear]({{ '/gear/' | relative_url }})) |
+| A **Focus of the Deep Well** | +50 while equipped (see [Casting Gear]({{ '/gear/' | relative_url }})) |
 
-The most you can have is **1,725**: an Echo Cord, 100 crystals, Reservoir III, twenty circles and a Focus of
-the Deep Well. If your maximum drops (you put the focus away, or a circle cracks), any mana above the
-new maximum is lost.
+The most you can have is **1,725**. If your maximum drops, mana above it is lost.
 
-### Regeneration
+## Regeneration
 
-Your **base regeneration** comes from your Cord and your circles:
+**Base regeneration**: 5 / 6 / 7 / 8 a second from a Twine / Copper / Amethyst / Echo Cord, plus
+**+0.5 per working Heart Circle** (up to +10).
 
-| Source | Mana a second |
-|---|---|
-| Twine Cord | 5 |
-| Copper Cord | 6 |
-| Amethyst Cord | 7 |
-| Echo Cord | 8 |
-| Each working Heart Circle | +0.5 (up to +4) |
+Boosts add together, then multiply the base:
 
-Then every **boost** adds a share of that base. The boosts add together, they don't multiply each
-other:
-
-| Boost | Extra regeneration | How |
+| Boost | Extra | How |
 |---|---|---|
-| [Wellspring]({{ '/progression/enchantments/' | relative_url }}) | +25% per level (up to +75%) | A Cord enchantment |
-| Clarity | +50% (Clarity II: +100%) | A [Potion of Clarity](#potions) |
+| [Wellspring]({{ '/progression/enchantments/' | relative_url }}) | +25% per level (up to +75%) | Cord enchantment |
+| Clarity | +50% (Clarity II: +100%) | [Potion of Clarity](#potions) |
 | Meditating | +100% | [Sneak and stand still](#meditating) |
-| Standing on a ley line | +100% | [Ley lines]({{ '/progression/ley-lines/' | relative_url }}) |
-| Near an awake Wellstone | +50% | Within 12 blocks of one set on a ley line |
-| Under a mana storm | +100% | A [world event]({{ '/world/world-events/' | relative_url }}) |
+| On a ley line | +100% | [Ley lines]({{ '/progression/ley-lines/' | relative_url }}) |
+| Near an awake Wellstone | +50% | Within 12 blocks |
+| Under a mana storm | +100% | [World events]({{ '/world/world-events/' | relative_url }}) |
 
-**Regeneration = base × (1 + every boost)**. A server can also scale everyone's regeneration up or
-down; the mana badge says so if it does.
-
-Example: an Echo Cord (8) with four circles (+2) is a base of 10 a second. With Wellspring II (+50%),
-meditating (+100%) on a ley line (+100%), that's 10 × 3.5 = **35 mana a second**.
-
-A **familiar** out and within 24 blocks gives a little more on top: +10%, +15% or +20% of your whole
-regeneration, as it grows. See [Familiars]({{ '/companions/familiars/' | relative_url }}).
-
-The HUD's mana bar shows a small up-chevron while any boost is on: violet on a ley line or near a
-Wellstone, cyan otherwise.
+Example: an Echo Cord (8) with four circles (+2) is a base of 10. With Wellspring II, meditating on a
+ley line: 10 × 3.5 = **35 mana a second**. A nearby [familiar]({{ '/companions/familiars/' | relative_url }})
+adds a little more.
 
 ## Mana Crystals
 
-A **Mana Crystal** raises your max mana by **10, forever**. Hold it and use it (right-click) to absorb
-it: *"Max mana +10 (3/100 crystals)"*. Up to **100** crystals count (+1,000). After that the crystal won't
-absorb (*"Your mana can't grow further with crystals"*) and stays in your hand.
+A **Mana Crystal** raises your max mana by **10, forever**. Hold it and right-click to absorb it. Up to
+**100** count. After that, it stays in your hand.
 
-Crystals belong to you, not your Cord.
+### How to get it
 
-### Crafting one
+<div class="recipe-gallery">
+{% include recipe-card.html id="mana_crystal" name="4 Lapis Lazuli, 4 Amethyst Shards and a Diamond" %}
+{% include recipe-card.html id="mana_crystal_from_lumen_antler" name="Or a Lumen Antler in place of the Diamond" %}
+</div>
 
-{% include recipe.html id="mana_crystal" alt="Crafting grid: top row Lapis Lazuli · Amethyst Shard · Lapis Lazuli; middle row Amethyst Shard · Diamond · Amethyst Shard; bottom row Lapis Lazuli · Amethyst Shard · Lapis Lazuli" %}
+A [Lumen Stag]({{ '/world/creatures/' | relative_url }}#lumen-stag) sheds Lumen Antlers for you.
 
-4 Lapis Lazuli, 4 Amethyst Shards and a Diamond make one.
-
-### Finding them
-
-| Where | Chance |
+| Where | How many |
 |---|---|
-| Ancient city chests | 30% |
-| Stronghold library chests | 30% |
-| End city chests | 25% |
-| Bastion treasure chests | 25% |
-| Trial chamber vaults (their rare rewards) | 25% |
-| Buried treasure | 20% |
-| Woodland mansion chests | 20% |
-| Chests in the Archive, Ember Sanctum, Astral Observatory and Drowned Scriptorium | often, sometimes several |
-| The Cinder Warden, the Star-Eater, the Tide Scribe and the Archivist | 3 each, every time |
-| A Fallen Star | 1 |
-| A closed rift | sometimes |
+| Ancient city and stronghold library chests | 30% chance |
+| End city, bastion treasure and trial chamber rare vault chests | 25% chance |
+| Buried treasure and woodland mansion chests | 20% chance |
+| Wildercord dungeon chests | often |
+| The Archivist, Cinder Warden, Star-Eater, Tide Scribe, Root Guardian and Storm Conductor | 3 each |
 | The Riftcaller | 1 to 3 |
+| A Fallen Star | 1 |
+| Harvesting a Living Greenhouse heart with shears ([expeditions]({{ '/world/expeditions/' | relative_url }})) | 2 |
+| The [Research Notebook]({{ '/progression/research/' | relative_url }}) greenhouse experiment | 1, once |
 | A [Runesmith]({{ '/social/runesmith/' | relative_url }}) | Expert: 22 emeralds and 4 Amethyst Shards; Master: 20 emeralds |
 | The Runesmith's Imbue [contract]({{ '/social/contracts/' | relative_url }}) | 1 |
-| [Advancements]({{ '/progression/advancements/' | relative_url }}) | 16 in all |
+| [Advancements]({{ '/progression/advancements/' | relative_url }}) | 19 in all |
 
-The chest chances are the defaults; a server can change them. Mana Crystals are also an ingredient:
-the Wellstone, Tier III runes and several pieces of casting gear need one.
+Chest chances are defaults; a server can change them. Crystals are also used in Wellstones, armour, foci
+and other gear.
 
 ## Potions
 
-Two potions, both brewed from an **Awkward Potion**:
+Both brew from an **Awkward Potion**:
 
 <div class="recipe-gallery">
 {% include recipe-card.html id="brewing_potion_awkward_amethyst_shard" name="Awkward Potion + Amethyst Shard: Potion of Clarity" %}
@@ -128,62 +98,50 @@ Two potions, both brewed from an **Awkward Potion**:
 {% include recipe-card.html id="brewing_splash_potion_clarity_dragon_breath" name="Splash + Dragon's Breath: lingering" %}
 </div>
 
-| Potion | Brew | Effect |
-|---|---|---|
-| **Potion of Clarity** | Awkward Potion + Amethyst Shard | Clarity: **+50%** mana regeneration for **3:00** |
-| Potion of Clarity (long) | + Redstone | +50% for **8:00** |
-| Potion of Clarity II | + Glowstone Dust | **+100%** for **1:30** |
-| **Potion of Mana** | Awkward Potion + Lapis Lazuli | Instantly restores **60 mana** |
-| Potion of Mana II | + Glowstone Dust | Instantly restores **120 mana** |
+| Potion | Effect |
+|---|---|
+| **Potion of Clarity** | +50% regeneration for 3:00 (long: 8:00) |
+| Potion of Clarity II | +100% for 1:30 |
+| **Potion of Mana** | Restores 60 mana at once |
+| Potion of Mana II | Restores 120 mana |
 
-Add Gunpowder for a **splash** potion and Dragon's Breath for a **lingering** one, as with any potion.
-A splash of Mana restores less the further you are from where it breaks, the way vanilla's healing
-splashes do. Mana potions only fill the mana of a player wearing a Cord.
+Mana potions only fill a player wearing a Cord.
 
-## Meditating
+## How to use it
 
-**Sneak and stand still** on the ground while wearing a Cord, without using an item. After a second
-you're meditating: soft violet lights turn round your feet and glyphs drift in toward you, and your
-regeneration gets **+100%** until you move or stand up.
+### Meditating
 
-Meditating is also how you form a [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}),
-and, with a Blank Rune in hand in the right place, how you attune one to a
-[rune of the land]({{ '/world/runes-of-the-world/' | relative_url }}).
+**Sneak and stand still** on the ground while wearing a Cord, without using an item. After a second,
+lights circle your feet and your regeneration gets **+100%** until you move. Meditating also forms
+[Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) and attunes
+[runes of the land]({{ '/world/runes-of-the-world/' | relative_url }}).
 
-## Getting mana back in a fight
+### Getting mana back in a fight
 
 | Way | How much |
 |---|---|
-| [Siphon]({{ '/progression/enchantments/' | relative_url }}) on your Cord | +2 mana per creature your spell hits, per level, up to 16 a cast |
-| **Soulfire** (a rune of the world) | The damage it deals gives back a little mana, up to 5 a cast (a mana storm's echo or Twin Star's second cast shares the same 5) |
-| **Manatide** (a rune of the world) | You and the allies it hits regain 3 mana a second for 10 seconds (30 at most: Extend doesn't make it flow longer); once a minute each |
-| **Devour** (a fused rune) | 10 mana (and 4 absorption) if it kills; twice a cast at most |
-| A Potion of Mana | 60 (II: 120), at once |
-| Forming a Heart Circle | Refills you completely |
+| [Siphon]({{ '/progression/enchantments/' | relative_url }}) | +2 per creature hit, per level, up to 16 a cast |
+| **Soulfire** | A little from its damage, up to 5 a cast |
+| **Manatide** | 3 a second for 10 seconds, for you and allies it hits; once a minute each |
+| **Devour** | 10 mana if it kills, twice a cast at most |
+| A Potion of Mana | 60 (II: 120) |
+| Forming a Heart Circle | A full refill |
 
-## Running dry
+### Spending less
 
-- **A spell you can't afford** doesn't go off, and nothing is spent: *"Not enough mana (38/46)"*. Cast
-  it again within 2 seconds to [overcast]({{ '/spellcraft/overcasting/' | relative_url }}), cracking a
-  Heart Circle to pay.
-- **Passives** cost mana every second. Without the mana for a second's upkeep, a passive stops renewing
-  until you have it again. See [Passives]({{ '/spellcraft/passives/' | relative_url }}).
-- **Mana Skin** (3rd Circle) pays a fifth of the damage you take with mana, 2 mana per point of health.
-  With no mana left, it stops.
-- **Blood Price** spells cost health instead of mana, so they still work on an empty pool (but never
-  enough to kill you).
-- A **Free Recast** from a wild surge costs nothing at all.
-- Some magic drains mana: **Manaburn** takes up to 20 from a player it hits, and a mana storm's
-  backfire spills 10.
-
-## Spending less
-
-Your mana goes further with:
-
-- **Thrift** on your Cord: spells and passives cost 7% less per level.
+- **Thrift** on your Cord: 7% less per level.
 - **Archmage** (8th Circle): 15% less.
-- A **staff** of the spell's element: 10% less. A **Focus of Thrift**: 15% less (and 10% weaker).
-- A **mana storm**: 25% less while you're under it.
-- **Frugal**: halves the cost of the rune it changes (and weakens it).
+- A **staff** of the spell's element: 10% less. A **Focus of Thrift**: 15% less, but 10% weaker spells.
+- Under a **mana storm**: 25% less.
+- **Frugal** halves the cost of the rune it changes, and weakens it.
 
-Any discount always saves at least 1 mana, even on a cheap spell.
+Any discount saves at least 1 mana.
+
+## Tips and counterplay
+
+- **A spell you can't afford** doesn't go off: *"Not enough mana"*. Cast it again within 2 seconds to
+  [overcast]({{ '/spellcraft/overcasting/' | relative_url }}).
+- **Passives** cost mana every second and stop when you can't pay.
+- **Mana Skin** (3rd Circle) stops when your mana runs out.
+- **Blood Price** spells cost health, so they work on an empty pool.
+- **Manaburn** takes up to 20 mana from a player it hits, and a mana storm's backfire spills 10.

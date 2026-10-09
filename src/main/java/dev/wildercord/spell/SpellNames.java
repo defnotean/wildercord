@@ -41,6 +41,7 @@ public final class SpellNames {
 		}
 		if (RelayRules.contains(runes) && !RelayRules.valid(runes)) return "Unfinished Relay";
 		if (ExciseRules.contains(runes) && !ExciseRules.valid(runes)) return "Unfinished Excise";
+		if (LessonPackRules.contains(runes) && !LessonPackRules.valid(runes)) return "Unfinished " + LessonPackRules.lesson(runes).name;
 		if (ReweaveRules.contains(runes) && !ReweaveRules.valid(runes)) return "Unfinished Reweave";
 		return auto(SpellCompiler.compile(runes).root());
 	}

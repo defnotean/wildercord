@@ -360,6 +360,7 @@ public final class VoidTime {
 				afterDamage(entity, source, damage);
 			}
 		});
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SPENT.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			LANDED.clear();
 			ANCHORED.clear();

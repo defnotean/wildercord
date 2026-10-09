@@ -4,6 +4,9 @@ import dev.wildercord.aura.world.GaleRepriseRules;
 import dev.wildercord.aura.world.MasterAnimationRules;
 import dev.wildercord.aura.world.StoneFractureRules;
 import dev.wildercord.aura.world.StoneMarchRules;
+import dev.wildercord.aura.world.CrimsonFrenzyRules;
+import dev.wildercord.aura.world.HourglassRewindRules;
+import dev.wildercord.aura.world.StarlitConstellationRules;
 
 /**
  * Original, Minecraft-independent articulated shared-player arts and selected sword-master choreography.
@@ -17,6 +20,8 @@ public final class ArticulatedCombatPose {
 	// Player activation ordinals and NPC attack ordinals are separate namespaces.
 	public static final int SPELLCUT = 0, RISING_BREAK = 1, DRIVING_CUT = 2;
 	public static final int KINDLING_DRAW = 3, FROSTBITE = 4;
+	public static final int CRACKLE = 5, CUTTING_BREEZE = 6, ROCKBREAKER = 7, THORN_LASH = 8, VOID_CUT = 9;
+	public static final int STAR_NEEDLE = 10, ECHO_CUT = 11, BLOODLETTING = 12, RISING_CINDERS = 13, BLOSSOM_FALL = 14;
 	public static final int HAILFALL = 15, SKYFALL = 16;
 	public static final int COLLAPSE = 17, RED_RAIN = 18;
 	public static final int CRIMSON_MOON = 19;
@@ -36,6 +41,8 @@ public final class ArticulatedCombatPose {
 	public static final int GROVES_HEART = 49, EVENT_HORIZON = 50;
 	public static final int NOVA = 51, THOUSAND_MOMENTS = 52;
 	public static final int MASTER_SWEEP = 1, MASTER_CROSSWIND_REPRISE = 7, MASTER_STONE_FRACTURE = 8, MASTER_EMBER_KILN_RING = 9, MASTER_STONE_FAULT_MARCH = 10;
+	// ---- masters-b pack
+	public static final int MASTER_STARLIT_CONSTELLATION = 16, MASTER_HOURGLASS_REWIND = 17, MASTER_CRIMSON_FRENZY = 18;
 	public enum Phase { NONE, WINDUP, ACTIVE, RECOVERY }
 
 	public record Vec3(float x, float y, float z) {
@@ -1138,7 +1145,294 @@ public final class ArticulatedCombatPose {
 				v(7.3F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.00F, .08F, .25F), -.92F, r(.10F, -.10F, .08F)))),
 		v(-2.45F, 22, 1.25F), v(2.45F, 22, -1.35F));
 
-	public static final Pose NONE = new Pose(0, Phase.NONE, bind(), VIEW_BIND);
+	// Crackle snaps a short cross cut back across the chest, then punches the point straight out
+	// on the third beat. The torso barely turns; speed reads in the elbow, not the hips.
+	private static final Motion CRACKLE_MOTION = new Motion(
+		new Key(v(-.10F, .92F, .10F), r(.03F, .18F, -.02F), r(.025F, .12F, -.015F), r(.035F, .20F, -.025F), r(-.05F, -.32F, .015F),
+			arm(r(.02F, .07F, -.04F), r(-1.02F, .58F, -.34F), -1.02F, r(1.06F, -.40F, -.52F)),
+			arm(r(0, -.05F, .03F), r(-.86F, -.28F, -.18F), -.94F, r(.10F, -.12F, .08F)),
+			new ViewKey(v(-7.4F, -5.2F, 3.4F), arm(r(.02F, .06F, -.035F), r(-1.12F, .22F, -.26F), -.94F, r(1.10F, -.30F, -.30F)),
+				v(7.2F, -6.1F, 3.6F), arm(r(0, -.035F, .03F), r(-1.00F, .09F, .26F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.06F, .96F, -.62F), r(.06F, -.06F, .01F), r(.05F, -.04F, .01F), r(.06F, -.07F, .015F), r(-.08F, .10F, -.01F),
+			arm(r(.03F, -.02F, -.035F), r(-1.48F, -.10F, -.14F), -.12F, r(1.52F, .04F, .06F)),
+			arm(r(0, .05F, .035F), r(-.58F, -.24F, -.30F), -.80F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-7.3F, -5.25F, 1.7F), arm(r(.02F, -.02F, -.035F), r(-1.31F, -.04F, -.14F), -.18F, r(1.30F, .02F, .04F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, .035F, .03F), r(-.95F, .10F, .28F), -.88F, r(.10F, -.10F, .10F)))),
+		new Key(v(.02F, .94F, -.34F), r(.035F, -.03F, .01F), r(.03F, -.02F, .005F), r(.035F, -.04F, .01F), r(-.05F, .06F, -.01F),
+			arm(r(.02F, -.015F, -.03F), r(-1.20F, -.06F, -.16F), -.48F, r(1.34F, .02F, .08F)),
+			arm(r(0, .04F, .03F), r(-.74F, -.22F, -.24F), -.88F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.6F, -5.1F, 2.7F), arm(r(.015F, -.015F, -.03F), r(-1.17F, -.02F, -.18F), -.52F, r(1.22F, .00F, .06F)),
+				v(7.2F, -6.1F, 3.6F), arm(r(0, .025F, .03F), r(-.99F, .08F, .25F), -.91F, r(.10F, -.10F, .10F)))),
+		v(-2.35F, 22, 1.30F), v(2.35F, 22, -1.40F));
+
+	// Cutting Breeze opens a wide, light stance and draws one long level cut while the
+	// free arm reaches back as counterweight. Shoulders turn; the head stays on line.
+	private static final Motion CUTTING_BREEZE_MOTION = new Motion(
+		new Key(v(-.26F, .80F, .16F), r(.04F, .34F, -.03F), r(.03F, .22F, -.02F), r(.035F, .30F, -.03F), r(-.06F, -.52F, .02F),
+			arm(r(.02F, .10F, -.05F), r(-.62F, .82F, -.30F), -.74F, r(1.02F, -.48F, -.60F)),
+			arm(r(0, -.06F, .04F), r(-.44F, -.18F, -.42F), -.70F, r(.10F, -.12F, .10F)),
+			new ViewKey(v(-7.3F, -5.4F, 3.6F), arm(r(.02F, .08F, -.04F), r(-1.04F, .30F, -.30F), -.86F, r(1.12F, -.44F, -.30F)),
+				v(7.6F, -6.1F, 3.8F), arm(r(0, -.045F, .03F), r(-.93F, .12F, .30F), -.88F, r(.10F, -.10F, .10F)))),
+		new Key(v(.30F, .84F, -.40F), r(.04F, -.36F, .03F), r(.03F, -.24F, .02F), r(.04F, -.34F, .03F), r(-.06F, .56F, -.02F),
+			arm(r(.03F, -.10F, -.04F), r(-1.18F, -.92F, -.22F), -.22F, r(1.24F, .22F, .46F)),
+			arm(r(0, .07F, .04F), r(-.32F, .26F, -.62F), -.58F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-10.2F, -5.0F, 2.2F), arm(r(.02F, -.09F, -.04F), r(-1.13F, -.74F, -.24F), -.30F, r(1.16F, -.10F, .80F)),
+				v(7.7F, -6.1F, 3.8F), arm(r(0, .06F, .03F), r(-.87F, .04F, .30F), -.85F, r(.10F, -.10F, .10F)))),
+		new Key(v(.20F, .82F, -.20F), r(.03F, -.42F, .02F), r(.025F, -.27F, .015F), r(.03F, -.38F, .025F), r(-.05F, .62F, -.02F),
+			arm(r(.025F, -.12F, -.035F), r(-.84F, -1.18F, -.04F), -.40F, r(1.16F, .28F, .54F)),
+			arm(r(0, .06F, .035F), r(-.26F, .30F, -.66F), -.62F, r(.08F, -.10F, .10F)),
+			new ViewKey(v(-10.6F, -5.0F, 2.8F), arm(r(.02F, -.11F, -.035F), r(-1.03F, -.82F, -.18F), -.58F, r(1.02F, -.06F, 1.30F)),
+				v(7.6F, -6.1F, 3.8F), arm(r(0, .055F, .03F), r(-.88F, .04F, .28F), -.85F, r(.10F, -.10F, .10F)))),
+		v(-2.75F, 22, 1.50F), v(2.75F, 22, -1.60F));
+
+	// Rockbreaker raises both arms over a broad, sunk base, drops one vertical blow,
+	// and absorbs the rebound through bent knees. The hilt never leaves the centre line.
+	private static final Motion ROCKBREAKER_MOTION = new Motion(
+		new Key(v(0, 1.10F, .26F), r(-.06F, .03F, 0), r(-.05F, .02F, 0), r(-.07F, .03F, -.01F), r(.09F, -.05F, .01F),
+			arm(r(.02F, .03F, -.03F), r(-2.40F, .08F, -.16F), -.56F, r(1.36F, -.08F, -.06F)),
+			arm(r(0, .035F, .03F), r(-2.06F, .12F, .18F), -.66F, r(.16F, -.10F, .12F)),
+			new ViewKey(v(-7.2F, -4.8F, 3.0F), arm(r(.02F, .02F, -.03F), r(-1.38F, .08F, -.20F), -.58F, r(1.32F, -.10F, -.08F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.02F, .03F), r(-1.03F, .07F, .24F), -.95F, r(.10F, -.10F, .10F)))),
+		new Key(v(0, 1.22F, -.70F), r(.10F, -.02F, .01F), r(.12F, -.01F, .005F), r(.17F, -.02F, .01F), r(-.20F, .03F, -.01F),
+			arm(r(.03F, -.015F, -.03F), r(-.66F, -.04F, -.12F), -.30F, r(1.58F, .06F, .10F)),
+			arm(r(0, -.03F, .035F), r(-.50F, -.10F, .48F), -.58F, r(.10F, -.10F, .14F)),
+			new ViewKey(v(-7.2F, -4.7F, 1.9F), arm(r(.02F, -.015F, -.035F), r(-1.24F, -.03F, -.12F), -.40F, r(1.44F, .04F, .08F)),
+				v(7.2F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.04F, .08F, .24F), -.94F, r(.10F, -.10F, .10F)))),
+		new Key(v(0, 1.18F, -.42F), r(.08F, -.01F, .01F), r(.08F, -.01F, .005F), r(.11F, -.015F, .01F), r(-.14F, .02F, -.01F),
+			arm(r(.02F, -.01F, -.03F), r(-.80F, -.04F, -.14F), -.62F, r(1.46F, .04F, .12F)),
+			arm(r(0, -.02F, .03F), r(-.62F, -.08F, .40F), -.72F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-7.5F, -4.8F, 2.6F), arm(r(.015F, -.01F, -.03F), r(-1.22F, -.02F, -.16F), -.66F, r(1.36F, .02F, .10F)),
+				v(7.2F, -6.1F, 3.5F), arm(r(0, .015F, .03F), r(-1.02F, .08F, .25F), -.93F, r(.10F, -.10F, .10F)))),
+		v(-2.65F, 22, 1.55F), v(2.65F, 22, -1.65F));
+
+	// Thorn Lash rolls the shoulders through one long whipping draw and lets the blade
+	// recoil back along the same line, like a vine snapping taut and returning.
+	private static final Motion THORN_LASH_MOTION = new Motion(
+		new Key(v(-.20F, .98F, .20F), r(.06F, .28F, -.04F), r(.05F, .19F, -.03F), r(.04F, .26F, -.05F), r(-.09F, -.44F, .025F),
+			arm(r(.02F, .11F, -.06F), r(-1.36F, .70F, -.40F), -.86F, r(.92F, -.44F, -.58F)),
+			arm(r(0, -.07F, .035F), r(-.70F, -.30F, -.26F), -.90F, r(.10F, -.12F, .10F)),
+			new ViewKey(v(-7.6F, -5.0F, 3.5F), arm(r(.02F, .08F, -.04F), r(-1.20F, .26F, -.30F), -.88F, r(1.00F, -.38F, -.34F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, -.04F, .03F), r(-.97F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.24F, 1.02F, -.48F), r(.09F, -.24F, .03F), r(.07F, -.16F, .02F), r(.08F, -.26F, .035F), r(-.11F, .40F, -.025F),
+			arm(r(.03F, -.08F, -.045F), r(-.78F, -.60F, -.44F), -.26F, r(1.04F, .32F, .44F)),
+			arm(r(0, .07F, .035F), r(-.40F, -.30F, -.42F), -.76F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-9.4F, -5.2F, 2.2F), arm(r(.02F, -.07F, -.04F), r(-1.16F, -.52F, -.32F), -.28F, r(1.20F, -.24F, -.30F)),
+				v(7.5F, -6.1F, 3.7F), arm(r(0, .055F, .03F), r(-.92F, .07F, .30F), -.87F, r(.10F, -.10F, .10F)))),
+		new Key(v(.04F, 1.00F, -.18F), r(.05F, .04F, -.01F), r(.04F, .03F, -.01F), r(.045F, .05F, -.015F), r(-.07F, -.08F, .01F),
+			arm(r(.02F, .02F, -.04F), r(-1.10F, .14F, -.34F), -.70F, r(1.00F, -.12F, -.16F)),
+			arm(r(0, -.02F, .03F), r(-.62F, -.28F, -.24F), -.88F, r(.09F, -.10F, .10F)),
+			new ViewKey(v(-7.9F, -5.0F, 3.1F), arm(r(.015F, .02F, -.03F), r(-1.14F, .06F, -.24F), -.72F, r(1.04F, -.18F, -.12F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.01F, .03F), r(-1.00F, .09F, .26F), -.91F, r(.10F, -.10F, .10F)))),
+		v(-2.40F, 22, 1.45F), v(2.40F, 22, -1.55F));
+
+	// Void Cut closes the body around the hilt, opens one narrow seam, and draws the blade
+	// inward again. The first-person wrist stays open so the blade face reads at release.
+	private static final Motion VOID_CUT_MOTION = new Motion(
+		new Key(v(-.06F, 1.12F, .18F), r(.08F, .10F, -.02F), r(.07F, .07F, -.015F), r(.09F, .11F, -.02F), r(-.12F, -.18F, .01F),
+			arm(r(.02F, .04F, -.03F), r(-.70F, .36F, -.14F), -1.20F, r(1.30F, -.26F, -.36F)),
+			arm(r(0, -.04F, .03F), r(-.92F, -.36F, -.10F), -1.06F, r(.10F, -.12F, .08F)),
+			new ViewKey(v(-7.1F, -5.2F, 3.7F), arm(r(.015F, .035F, -.03F), r(-1.08F, .16F, -.22F), -1.00F, r(1.20F, -.22F, -.20F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.03F, .07F, .24F), -.96F, r(.10F, -.10F, .08F)))),
+		new Key(v(.08F, 1.06F, -.52F), r(.07F, -.12F, .015F), r(.05F, -.08F, .01F), r(.06F, -.13F, .02F), r(-.09F, .20F, -.015F),
+			arm(r(.025F, -.04F, -.035F), r(-1.24F, -.30F, -.10F), -.20F, r(1.40F, .10F, .22F)),
+			arm(r(0, .04F, .03F), r(-.76F, -.26F, -.20F), -.86F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.4F, -5.0F, 2.0F), arm(r(.02F, -.03F, -.035F), r(-1.21F, -.18F, -.10F), -.24F, r(1.02F, .14F, .36F)),
+				v(7.2F, -6.1F, 3.5F), arm(r(0, .03F, .03F), r(-.98F, .09F, .26F), -.91F, r(.10F, -.10F, .10F)))),
+		new Key(v(.02F, 1.10F, -.12F), r(.075F, -.04F, .01F), r(.06F, -.03F, .005F), r(.08F, -.05F, .01F), r(-.11F, .07F, -.01F),
+			arm(r(.02F, -.015F, -.03F), r(-.84F, -.08F, -.16F), -1.02F, r(1.28F, -.04F, .04F)),
+			arm(r(0, .02F, .03F), r(-.88F, -.32F, -.14F), -1.00F, r(.10F, -.10F, .08F)),
+			new ViewKey(v(-7.3F, -5.1F, 3.3F), arm(r(.015F, -.01F, -.03F), r(-1.11F, -.04F, -.20F), -.92F, r(1.12F, .04F, .16F)),
+				v(7.1F, -6.1F, 3.5F), arm(r(0, .02F, .03F), r(-1.02F, .08F, .25F), -.94F, r(.10F, -.10F, .08F)))),
+		v(-2.30F, 22, 1.25F), v(2.30F, 22, -1.35F));
+
+	// Star Needle sets the point at eye height, makes one small precise lunge along the
+	// sight line, and returns to the aim. The guard hand frames the target.
+	private static final Motion STAR_NEEDLE_MOTION = new Motion(
+		new Key(v(-.04F, .76F, .22F), r(-.02F, .20F, -.01F), r(-.015F, .14F, -.01F), r(-.02F, .22F, -.015F), r(.03F, -.36F, .01F),
+			arm(r(.02F, .06F, -.04F), r(-1.54F, .30F, -.18F), -1.10F, r(.98F, -.12F, -.20F)),
+			arm(r(0, -.04F, .03F), r(-1.22F, -.30F, -.14F), -.82F, r(.12F, -.10F, .08F)),
+			new ViewKey(v(-7.0F, -4.6F, 3.4F), arm(r(.02F, .04F, -.035F), r(-1.34F, .12F, -.22F), -1.04F, r(1.04F, -.14F, -.12F)),
+				v(7.0F, -6.0F, 3.4F), arm(r(0, -.035F, .03F), r(-1.05F, .10F, .22F), -.90F, r(.10F, -.10F, .08F)))),
+		new Key(v(.04F, .82F, -.78F), r(.05F, -.04F, .01F), r(.04F, -.03F, .005F), r(.05F, -.05F, .01F), r(-.06F, .08F, -.01F),
+			arm(r(.03F, -.01F, -.035F), r(-1.62F, -.04F, -.12F), -.06F, r(1.60F, .02F, .04F)),
+			arm(r(0, .04F, .035F), r(-.66F, -.20F, -.34F), -.74F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-7.0F, -4.9F, 1.6F), arm(r(.02F, -.01F, -.035F), r(-1.40F, -.02F, -.12F), -.10F, r(1.36F, .02F, .02F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.97F, .09F, .27F), -.89F, r(.10F, -.10F, .10F)))),
+		new Key(v(0, .78F, -.40F), r(.02F, .04F, 0), r(.015F, .03F, 0), r(.02F, .05F, -.005F), r(-.03F, -.08F, .005F),
+			arm(r(.02F, .01F, -.035F), r(-1.50F, .08F, -.16F), -.62F, r(1.20F, -.04F, -.04F)),
+			arm(r(0, -.01F, .03F), r(-.96F, -.26F, -.20F), -.80F, r(.10F, -.10F, .10F)),
+			new ViewKey(v(-7.1F, -4.8F, 2.6F), arm(r(.015F, .01F, -.03F), r(-1.32F, .02F, -.18F), -.60F, r(1.18F, -.04F, -.02F)),
+				v(7.1F, -6.0F, 3.5F), arm(r(0, -.01F, .03F), r(-1.01F, .09F, .25F), -.90F, r(.10F, -.10F, .09F)))),
+		v(-2.30F, 22, 1.70F), v(2.30F, 22, -1.80F));
+
+	// Echo Cut makes one clean diagonal, holds the line long enough for its afterimage,
+	// then answers in recovery. The answer is a settle, never a second impact.
+	private static final Motion ECHO_CUT_MOTION = new Motion(
+		new Key(v(-.14F, .94F, .14F), r(.05F, .22F, -.03F), r(.04F, .15F, -.02F), r(.045F, .24F, -.03F), r(-.07F, -.38F, .02F),
+			arm(r(.02F, .08F, -.05F), r(-1.70F, .48F, -.36F), -.78F, r(.94F, -.30F, -.46F)),
+			arm(r(0, -.05F, .035F), r(-.80F, -.32F, -.20F), -.92F, r(.10F, -.12F, .10F)),
+			new ViewKey(v(-7.5F, -4.9F, 3.3F), arm(r(.02F, .06F, -.04F), r(-1.28F, .20F, -.28F), -.80F, r(.98F, -.26F, -.28F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.035F, .03F), r(-1.00F, .08F, .26F), -.92F, r(.10F, -.10F, .10F)))),
+		new Key(v(.18F, .98F, -.50F), r(.08F, -.20F, .025F), r(.06F, -.14F, .02F), r(.07F, -.22F, .03F), r(-.10F, .34F, -.02F),
+			arm(r(.03F, -.06F, -.04F), r(-.62F, -.66F, -.30F), -.30F, r(1.14F, .30F, .40F)),
+			arm(r(0, .06F, .035F), r(-.46F, -.28F, -.38F), -.78F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-8.6F, -5.3F, 2.2F), arm(r(.02F, -.06F, -.04F), r(-1.09F, -.46F, -.30F), -.34F, r(1.26F, -.22F, -.20F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, .045F, .03F), r(-.94F, .09F, .29F), -.88F, r(.10F, -.10F, .10F)))),
+		new Key(v(.10F, .96F, -.36F), r(.065F, -.16F, .02F), r(.05F, -.11F, .015F), r(.06F, -.18F, .025F), r(-.085F, .28F, -.02F),
+			arm(r(.025F, -.05F, -.035F), r(-.70F, -.58F, -.28F), -.42F, r(1.10F, .26F, .36F)),
+			arm(r(0, .05F, .03F), r(-.52F, -.28F, -.34F), -.82F, r(.10F, -.10F, .11F)),
+			new ViewKey(v(-8.4F, -5.2F, 2.6F), arm(r(.02F, -.05F, -.035F), r(-1.10F, -.40F, -.28F), -.44F, r(1.20F, -.18F, -.16F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .04F, .03F), r(-.95F, .09F, .28F), -.89F, r(.10F, -.10F, .10F)))),
+		v(-2.50F, 22, 1.40F), v(2.50F, 22, -1.50F));
+
+	// Bloodletting drops low and rakes the blade across the body while the off hand
+	// reaches out ahead of it, leaving the swordsman crouched and open on the far side.
+	private static final Motion BLOODLETTING_MOTION = new Motion(
+		new Key(v(-.24F, 1.12F, .10F), r(.09F, .30F, -.04F), r(.09F, .20F, -.03F), r(.10F, .28F, -.04F), r(-.16F, -.46F, .025F),
+			arm(r(.02F, .12F, -.06F), r(-.36F, .74F, -.42F), -.92F, r(1.16F, -.46F, -.64F)),
+			arm(r(0, -.07F, .04F), r(-1.30F, -.20F, -.24F), -.40F, r(.12F, -.10F, .10F)),
+			new ViewKey(v(-7.8F, -5.7F, 3.8F), arm(r(.02F, .09F, -.04F), r(-.96F, .24F, -.30F), -.92F, r(1.22F, -.52F, -.36F)),
+				v(7.0F, -5.9F, 3.3F), arm(r(0, -.045F, .03F), r(-1.10F, .12F, .22F), -.62F, r(.10F, -.10F, .10F)))),
+		new Key(v(.34F, 1.18F, -.44F), r(.12F, -.32F, .04F), r(.12F, -.22F, .03F), r(.13F, -.30F, .04F), r(-.20F, .50F, -.03F),
+			arm(r(.03F, -.11F, -.045F), r(-.40F, -1.02F, -.06F), -.36F, r(1.30F, .34F, .58F)),
+			arm(r(0, .07F, .04F), r(-1.12F, .30F, -.20F), -.30F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-10.4F, -5.6F, 2.4F), arm(r(.02F, -.10F, -.04F), r(-1.02F, -.78F, -.20F), -.40F, r(1.10F, -.04F, 1.10F)),
+				v(7.6F, -6.0F, 3.4F), arm(r(0, .06F, .03F), r(-1.06F, .10F, .26F), -.58F, r(.10F, -.10F, .10F)))),
+		new Key(v(.26F, 1.15F, -.26F), r(.10F, -.36F, .03F), r(.10F, -.24F, .025F), r(.11F, -.33F, .035F), r(-.17F, .54F, -.025F),
+			arm(r(.025F, -.12F, -.035F), r(-.30F, -1.16F, .04F), -.56F, r(1.24F, .30F, .62F)),
+			arm(r(0, .06F, .035F), r(-.98F, .26F, -.22F), -.44F, r(.09F, -.10F, .10F)),
+			new ViewKey(v(-10.8F, -5.4F, 3.0F), arm(r(.02F, -.12F, -.035F), r(-1.00F, -.84F, -.16F), -.62F, r(.96F, -.02F, 1.52F)),
+				v(7.5F, -6.0F, 3.5F), arm(r(0, .055F, .03F), r(-1.04F, .10F, .26F), -.70F, r(.10F, -.10F, .10F)))),
+		v(-2.55F, 22, 1.45F), v(2.55F, 22, -1.55F));
+
+	// Rising Cinders scoops from the outside hip up across the body and finishes high,
+	// lifting the chest while both soles stay grounded under the rising ash.
+	private static final Motion RISING_CINDERS_MOTION = new Motion(
+		new Key(v(-.28F, 1.02F, .20F), r(.07F, .32F, -.04F), r(.08F, .21F, -.03F), r(.07F, .30F, -.04F), r(-.14F, -.48F, .03F),
+			arm(r(.02F, .13F, -.06F), r(-.10F, .58F, -.20F), -.66F, r(1.38F, -.30F, -.54F)),
+			arm(r(0, -.08F, .04F), r(-.52F, -.32F, -.24F), -.92F, r(.10F, -.12F, .10F)),
+			new ViewKey(v(-8.0F, -5.8F, 3.9F), arm(r(.02F, .09F, -.04F), r(-.92F, .22F, -.30F), -.86F, r(1.34F, -.40F, .20F)),
+				v(7.2F, -6.1F, 3.7F), arm(r(0, -.04F, .03F), r(-.97F, .10F, .28F), -.90F, r(.10F, -.10F, .10F)))),
+		new Key(v(.20F, .90F, -.42F), r(-.06F, -.26F, .03F), r(-.05F, -.17F, .02F), r(-.07F, -.28F, .035F), r(.08F, .42F, -.025F),
+			arm(r(.03F, -.09F, -.04F), r(-2.04F, -.62F, -.30F), -.34F, r(.74F, .22F, .30F)),
+			arm(r(0, .07F, .04F), r(-.36F, -.30F, -.48F), -.72F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-8.8F, -4.3F, 2.2F), arm(r(.02F, -.08F, -.04F), r(-1.46F, -.48F, -.30F), -.38F, r(.82F, .04F, .26F)),
+				v(7.4F, -6.1F, 3.7F), arm(r(0, .05F, .03F), r(-.92F, .07F, .31F), -.87F, r(.10F, -.10F, .10F)))),
+		new Key(v(.12F, .96F, -.24F), r(-.04F, -.22F, .02F), r(-.03F, -.15F, .015F), r(-.05F, -.24F, .025F), r(.06F, .36F, -.02F),
+			arm(r(.025F, -.08F, -.035F), r(-1.84F, -.52F, -.28F), -.52F, r(.82F, .18F, .26F)),
+			arm(r(0, .06F, .035F), r(-.42F, -.28F, -.42F), -.78F, r(.09F, -.10F, .10F)),
+			new ViewKey(v(-8.6F, -4.5F, 2.7F), arm(r(.02F, -.07F, -.035F), r(-1.38F, -.42F, -.28F), -.54F, r(.86F, .02F, .22F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .045F, .03F), r(-.94F, .08F, .29F), -.88F, r(.10F, -.10F, .10F)))),
+		v(-2.55F, 22, 1.35F), v(2.55F, 22, -1.45F));
+
+	// Blossom Fall gathers the blade over the rear shoulder, lets it fall on a long diagonal
+	// into a planted stance, then lifts the hilt slightly as the petals settle.
+	private static final Motion BLOSSOM_FALL_MOTION = new Motion(
+		new Key(v(-.18F, .86F, .24F), r(-.05F, .26F, -.03F), r(-.04F, .18F, -.025F), r(-.06F, .26F, -.035F), r(.07F, -.42F, .02F),
+			arm(r(.02F, .09F, -.05F), r(-2.20F, .52F, -.40F), -.64F, r(1.18F, -.34F, -.44F)),
+			arm(r(0, -.05F, .035F), r(-1.16F, -.24F, -.16F), -.88F, r(.12F, -.10F, .10F)),
+			new ViewKey(v(-7.4F, -4.4F, 3.2F), arm(r(.02F, .07F, -.04F), r(-1.42F, .22F, -.28F), -.70F, r(1.16F, -.30F, -.26F)),
+				v(7.1F, -6.0F, 3.5F), arm(r(0, -.035F, .03F), r(-1.04F, .09F, .24F), -.91F, r(.10F, -.10F, .10F)))),
+		new Key(v(.22F, 1.24F, -.58F), r(.13F, -.24F, .03F), r(.10F, -.16F, .02F), r(.12F, -.26F, .035F), r(-.16F, .40F, -.025F),
+			arm(r(.03F, -.07F, -.04F), r(-.48F, -.76F, -.20F), -.28F, r(1.40F, .26F, .42F)),
+			arm(r(0, .06F, .035F), r(-.70F, -.18F, -.40F), -.74F, r(.10F, -.10F, .12F)),
+			new ViewKey(v(-9.6F, -5.6F, 2.1F), arm(r(.02F, -.07F, -.04F), r(-1.00F, -.58F, -.24F), -.30F, r(1.32F, -.12F, .44F)),
+				v(7.5F, -6.1F, 3.7F), arm(r(0, .05F, .03F), r(-.93F, .09F, .30F), -.87F, r(.10F, -.10F, .10F)))),
+		new Key(v(.14F, 1.14F, -.36F), r(.09F, -.20F, .02F), r(.07F, -.13F, .015F), r(.08F, -.21F, .025F), r(-.12F, .32F, -.02F),
+			arm(r(.025F, -.06F, -.035F), r(-.72F, -.66F, -.22F), -.50F, r(1.28F, .20F, .34F)),
+			arm(r(0, .05F, .03F), r(-.78F, -.20F, -.34F), -.80F, r(.10F, -.10F, .11F)),
+			new ViewKey(v(-9.2F, -5.3F, 2.6F), arm(r(.02F, -.06F, -.035F), r(-1.06F, -.50F, -.24F), -.52F, r(1.24F, -.10F, .32F)),
+				v(7.4F, -6.1F, 3.6F), arm(r(0, .04F, .03F), r(-.95F, .09F, .28F), -.89F, r(.10F, -.10F, .10F)))),
+		v(-2.60F, 22, 1.55F), v(2.60F, 22, -1.70F));
+
+	// Wall Turn: segmented brace, push-off, airborne carry and landing. Sampled only from accepted Master form
+	// events; root travel stays the server's swept path. The guard-side sole meets the wall, the sword stays low.
+	private record WallKey(Key key, Vec3 right, Vec3 left) {
+		WallKey toward(WallKey b, float t) { return new WallKey(key.toward(b.key, t), right.toward(b.right, t), left.toward(b.left, t)); }
+	}
+	private static final ViewKey WALL_VIEW_BRACE = new ViewKey(VIEW_BIND.right, VIEW_BIND.sword,
+		v(7.4F, -6.0F, 3.4F), arm(r(0, -.04F, .03F), r(-1.32F, .06F, .22F), -.42F, r(.10F, -.10F, .10F)));
+	private static final ViewKey WALL_VIEW_KICK = new ViewKey(VIEW_IMPACT.right, VIEW_IMPACT.sword,
+		v(8.6F, -6.4F, 5.4F), arm(r(0, .04F, .02F), r(-.95F, -.10F, .30F), -.70F, r(.08F, -.10F, .10F)));
+	private static final ViewKey WALL_VIEW_AIR = new ViewKey(VIEW_BIND.right, VIEW_BIND.sword,
+		v(9.0F, -6.3F, 4.6F), arm(r(0, .04F, .02F), r(-.90F, -.12F, .42F), -.60F, r(.08F, -.10F, .10F)));
+	private static final WallKey WALL_BRACE = new WallKey(new Key(v(0, .8F, .9F), r(.16F, .05F, 0), r(.08F, .04F, 0), r(.06F, .10F, -.02F), r(-.22F, -.12F, .02F),
+		arm(r(.02F, .08F, -.06F), r(-.55F, .30F, -.32F), -1.00F, r(1.20F, -.40F, -.40F)),
+		arm(r(0, -.05F, .05F), r(-1.70F, -.18F, .10F), -.38F, r(.10F, -.10F, .10F)), WALL_VIEW_BRACE),
+		v(-2.2F, 21.6F, 3.6F), v(2.2F, 20.8F, -4.8F));
+	private static final WallKey WALL_KICK = new WallKey(new Key(v(0, -.6F, -.5F), r(.14F, -.12F, 0), r(.08F, -.06F, 0), r(.10F, -.14F, .02F), r(-.14F, .24F, -.02F),
+		arm(r(.02F, -.06F, -.04F), r(-1.25F, -.30F, -.24F), -.55F, r(1.10F, .25F, .30F)),
+		arm(r(0, .06F, .04F), r(.30F, -.20F, -.50F), -.60F, r(.10F, -.10F, .10F)), WALL_VIEW_KICK),
+		v(-2.1F, 21.0F, -3.0F), v(2.0F, 21.0F, 2.2F));
+	private static final WallKey WALL_AIR = new WallKey(new Key(v(0, .2F, .1F), r(.08F, 0, 0), r(.04F, 0, 0), r(.02F, 0, -.02F), r(-.06F, 0, 0),
+		arm(r(.02F, .04F, -.06F), r(-.85F, .10F, -.42F), -.80F, r(1.05F, -.05F, -.20F)),
+		arm(r(0, -.04F, .06F), r(-.40F, -.10F, -.70F), -.50F, r(.10F, -.10F, .10F)), WALL_VIEW_AIR),
+		v(-2.2F, 21.3F, -2.2F), v(2.2F, 21.3F, 2.4F));
+	private static final WallKey WALL_LAND = new WallKey(new Key(v(0, 1.2F, .5F), r(.30F, 0, 0), r(.12F, 0, 0), r(.08F, 0, 0), r(-.38F, 0, 0),
+		arm(r(.02F, .06F, -.05F), r(-.70F, .18F, -.28F), -.95F, r(1.15F, -.25F, -.25F)),
+		arm(r(0, -.05F, .05F), r(-.50F, -.12F, -.45F), -.62F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		v(-2.4F, 22, -3.2F), v(2.4F, 22, 3.4F));
+	/** A neutral guard for a refused or cancelled form; it never implies a brace, kick or landing. */
+	private static final WallKey WALL_SETTLE = new WallKey(new Key(v(0, .9F, .2F), r(.10F, 0, 0), r(.05F, 0, 0), r(.04F, 0, 0), r(-.12F, 0, 0),
+		arm(r(.02F, .05F, -.05F), r(-.80F, .12F, -.30F), -.85F, r(1.10F, -.15F, -.20F)),
+		arm(r(0, -.05F, .05F), r(-.60F, -.15F, -.25F), -.80F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		v(-2.2F, 22, .8F), v(2.2F, 22, -.8F));
+	/** The airborne carry holds until the landing event or shortly before the client's 30-tick event retention. */
+	public static final int WALL_FALL_HOLD = 20, WALL_FALL_END = 28;
+
+	/** Wall Turn's Master form move ids ({@code -2 - phase}); Stone Hinge and field forms keep their whole fallback. */
+	public static boolean wallTurnMove(int move) { return move <= -2 - WallTurnRules.BRACE && move >= -2 - WallTurnRules.ABORT; }
+
+	/**
+	 * One continuous clip across separate accepted events: each kick step resumes the brace-to-push blend where the
+	 * previous step left it, the fall begins exactly at the final push, and the landing begins from the carry.
+	 */
+	public static Pose sampleWallTurn(int phase, int remaining, float age, boolean leftHanded) {
+		if (!Float.isFinite(age) || age < 0 || remaining < 0 || remaining > WallTurnRules.REST_TICKS) return NONE;
+		WallKey key; float weight; Phase clip;
+		switch (phase) {
+			case WallTurnRules.BRACE -> {
+				if (age >= remaining + 3) return NONE;
+				key = WALL_SETTLE.toward(WALL_BRACE, smooth(age / 2.5F));
+				weight = smooth(age / 2.5F) * (1 - smooth((age - remaining) / 3));
+				clip = Phase.WINDUP;
+			}
+			case WallTurnRules.KICK -> {
+				if (remaining > WallTurnRules.KICK_TICKS || age >= 6) return NONE;
+				key = wallPush(clamp((WallTurnRules.KICK_TICKS - remaining + Math.min(1, age)) / WallTurnRules.KICK_TICKS));
+				weight = 1 - smooth((age - 3) / 3);
+				clip = Phase.ACTIVE;
+			}
+			case WallTurnRules.FALL -> {
+				if (age >= WALL_FALL_END) return NONE;
+				key = wallPush(1).toward(WALL_AIR, smooth(age / 3));
+				weight = 1 - smooth((age - WALL_FALL_HOLD) / (WALL_FALL_END - WALL_FALL_HOLD));
+				clip = Phase.RECOVERY;
+			}
+			case WallTurnRules.LAND -> {
+				if (age >= remaining) return NONE;
+				key = WALL_AIR.toward(WALL_LAND, smooth(age / 1.5F));
+				weight = remaining <= 3 ? 1 - smooth(age / remaining) : 1 - smooth((age - 3) / (remaining - 3));
+				clip = Phase.RECOVERY;
+			}
+			case WallTurnRules.ABORT -> {
+				if (age >= 5) return NONE;
+				key = WALL_SETTLE;
+				weight = 1 - smooth(age / 5);
+				clip = Phase.RECOVERY;
+			}
+			default -> { return NONE; }
+		}
+		if (weight <= 0) return NONE;
+		Pose posed = assemble(key.key, weight, age, 1, 1, key.right, key.left, leftHanded);
+		return new Pose(weight, clip, posed.local, key.key.view);
+	}
+	/** The push extends the wall leg early, then gathers half-way toward the airborne carry. */
+	private static WallKey wallPush(float p) {
+		return p < .4F ? WALL_BRACE.toward(WALL_KICK, smooth(p / .4F)) : WALL_KICK.toward(WALL_AIR, .5F * smooth((p - .4F) / .6F));
+	}
+
+	public static final Pose NONE =new Pose(0, Phase.NONE, bind(), VIEW_BIND);
 
 	/** Impact is exactly the accepted windup tick; unsupported arts deliberately retain their existing renderer. */
 	public static Pose sampleSpellcut(int move, float age, int windup, int recovery, boolean leftHanded) {
@@ -1149,13 +1443,18 @@ public final class ArticulatedCombatPose {
 	/** Only authored player presentation IDs are admitted here; NPC IDs use supportsMaster. */
 	public static boolean supportsPlayer(int move) {
 		return move == SPELLCUT || move == RISING_BREAK || move == DRIVING_CUT || move == KINDLING_DRAW || move == FROSTBITE
+			|| move >= CRACKLE && move <= BLOSSOM_FALL
 			|| move == HAILFALL || move == SKYFALL || move == COLLAPSE || move == RED_RAIN || move == CRIMSON_MOON || move == BACKDRAFT || move == ROOTED_PARRY || move == GLACIER_MIRROR || move == STATIC_RIPOSTE || move == UNMOVED || move == NULL_PARRY
 			|| move == EYE_OF_THE_STORM || move == SANGUINE_PARRY || move == CONSTELLATION_GUARD || move == STOPPED_MOMENT
 			|| move == UPDRAFT || move == AVALANCHE || move == METEOR_SHOWER || move == REWIND_LEAP
 			|| move == WILDFIRE_RUSH || move == SKATE || move == TAILWIND || move == LANDSLIDE || move == WILD_GROWTH
 			|| move == BOLT_STEP || move == RIFT_STEP || move == COMET_DASH || move == BLUR || move == FRENZY
 			|| move == SUNFALL || move == WINTERS_HUSH || move == HEAVENS_SPEAR || move == HUNDRED_WINDS || move == MOUNTAIN_SPLITTER
-			|| move == GROVES_HEART || move == EVENT_HORIZON || move == NOVA || move == THOUSAND_MOMENTS;
+			|| move == GROVES_HEART || move == EVENT_HORIZON || move == NOVA || move == THOUSAND_MOMENTS
+			// ---- methods-a pack
+			|| methodsA(move) != null
+			// ---- methods-b pack
+			|| MethodsBStyles.owns(move);
 	}
 
 	/** Uses the existing accepted player window, whose recovery includes the one release tick. */
@@ -1163,11 +1462,26 @@ public final class ArticulatedCombatPose {
 		if (move == SPELLCUT) return sampleSpellcut(move, age, windup, recovery, leftHanded);
 		if (!supportsPlayer(move) || !valid(age, windup, 60, recovery) || age >= windup + recovery) return NONE;
 		if (move == SKYFALL) return skyfall(age, windup, recovery, leftHanded);
+		// ---- methods-a pack
+		Motion pack = methodsA(move);
+		if (pack != null) return sample(pack, age, windup, 1, windup + Math.min(4, recovery * .25F), windup + recovery, leftHanded);
+		// ---- methods-b pack
+		if (MethodsBStyles.owns(move)) return samplePlayer(MethodsBStyles.articulated(move), age, windup, recovery, leftHanded);
 		Motion motion = switch (move) {
 			case RISING_BREAK -> RISING_MOTION;
 			case DRIVING_CUT -> DRIVING_MOTION;
 			case KINDLING_DRAW -> KINDLING_MOTION;
 			case FROSTBITE -> FROSTBITE_MOTION;
+			case CRACKLE -> CRACKLE_MOTION;
+			case CUTTING_BREEZE -> CUTTING_BREEZE_MOTION;
+			case ROCKBREAKER -> ROCKBREAKER_MOTION;
+			case THORN_LASH -> THORN_LASH_MOTION;
+			case VOID_CUT -> VOID_CUT_MOTION;
+			case STAR_NEEDLE -> STAR_NEEDLE_MOTION;
+			case ECHO_CUT -> ECHO_CUT_MOTION;
+			case BLOODLETTING -> BLOODLETTING_MOTION;
+			case RISING_CINDERS -> RISING_CINDERS_MOTION;
+			case BLOSSOM_FALL -> BLOSSOM_FALL_MOTION;
 			case HAILFALL -> HAILFALL_MOTION;
 			case COLLAPSE -> COLLAPSE_MOTION;
 			case RED_RAIN -> RED_RAIN_MOTION;
@@ -1215,6 +1529,95 @@ public final class ArticulatedCombatPose {
 		return attack == MASTER_SWEEP || attack == MASTER_CROSSWIND_REPRISE || attack == MASTER_STONE_FRACTURE || attack == MASTER_EMBER_KILN_RING || attack == MASTER_STONE_FAULT_MARCH;
 	}
 
+	/** ---- masters-b pack: Starlit, Hourglass and Crimson NPC clips; kept apart from {@link #supportsMaster} so its admitted set is unchanged. */
+	public static boolean supportsMasterPackB(int attack) { return attack >= MASTER_STARLIT_CONSTELLATION && attack <= MASTER_CRIMSON_FRENZY; }
+
+	// ---- masters-a pack: Rime, Thunder, Verdant and Hollow signature clips (NPC only; VIEW_BIND is inert metadata).
+	// Rime brushes its point over the ground and flicks the blade up flat at each freeze; Thunder lifts a lightning
+	// rod and points at each conductor; Verdant plants its blade as the ring blooms; Hollow reaches out with the
+	// open off hand and closes the well with a crossing cut. Each clip re-chambers before every resolving beat.
+	public static final int MASTER_RIME_LATTICE = 12, MASTER_THUNDER_CHAIN = 13, MASTER_VERDANT_BLOOM = 14, MASTER_HOLLOW_PULL = 15;
+	private static final Motion RIME_LATTICE_MOTION = new Motion(
+		new Key(v(0, 2.10F, .20F), r(.10F, .14F, 0), r(.07F, .10F, 0), r(.08F, .12F, -.01F), r(-.14F, -.10F, 0),
+			arm(r(.015F, .06F, -.035F), r(-.42F, .40F, -.10F), -.30F, r(1.30F, .20F, -.20F)),
+			arm(r(0, -.05F, .035F), r(-.90F, -.24F, .30F), -.90F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 1.30F, -.20F), r(-.03F, -.16F, 0), r(-.02F, -.12F, 0), r(-.04F, -.18F, .01F), r(.04F, .12F, 0),
+			arm(r(.02F, -.05F, -.035F), r(-1.85F, -.35F, -.25F), -.45F, r(.20F, -.30F, .10F)),
+			arm(r(0, .05F, .03F), r(-1.10F, .18F, .26F), -.85F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 1.60F, 0), r(.04F, -.06F, 0), r(.03F, -.05F, 0), r(.03F, -.07F, 0), r(-.05F, .05F, 0),
+			arm(r(.015F, -.02F, -.03F), r(-1.20F, -.10F, -.20F), -.60F, r(.60F, -.10F, 0)),
+			arm(r(0, .04F, .03F), r(-.80F, .10F, .26F), -.88F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		v(-2.6F, 22, 1.4F), v(2.6F, 22, -1.4F));
+	private static final Motion THUNDER_CHAIN_MOTION = new Motion(
+		new Key(v(0, .90F, .25F), r(-.06F, 0, 0), r(-.05F, 0, 0), r(-.09F, 0, 0), r(.12F, 0, 0),
+			arm(r(.02F, 0, -.02F), r(-2.85F, 0, -.05F), -.10F, r(1.50F, 0, 0)),
+			arm(r(0, .04F, .03F), r(-.42F, .10F, .36F), -.70F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 1.40F, -.35F), r(.08F, .10F, 0), r(.06F, .08F, 0), r(.10F, .12F, 0), r(-.08F, -.06F, 0),
+			arm(r(.02F, .03F, -.03F), r(-1.55F, .15F, 0), -.08F, r(.05F, 0, 0)),
+			arm(r(0, -.04F, .03F), r(-.32F, -.18F, .30F), -.75F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 1.20F, -.10F), r(.04F, -.10F, 0), r(.03F, -.08F, 0), r(.05F, -.12F, 0), r(-.03F, .06F, 0),
+			arm(r(.02F, -.02F, -.03F), r(-2.10F, -.10F, -.05F), -.20F, r(.90F, 0, 0)),
+			arm(r(0, .04F, .03F), r(-.36F, .10F, .34F), -.72F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		v(-2.4F, 22, .9F), v(2.4F, 22, -.9F));
+	private static final Motion VERDANT_BLOOM_MOTION = new Motion(
+		new Key(v(0, 1.10F, .10F), r(.02F, 0, 0), r(.01F, 0, 0), r(.02F, 0, 0), r(0, 0, 0),
+			arm(r(.02F, .03F, -.03F), r(-1.30F, .20F, -.10F), -.70F, r(1.40F, 0, 0)),
+			arm(r(0, -.03F, .03F), r(-1.25F, -.25F, .10F), -.80F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 3.20F, -.60F), r(.20F, 0, 0), r(.16F, 0, 0), r(.20F, 0, 0), r(-.22F, 0, 0),
+			arm(r(.02F, 0, -.03F), r(-.55F, .10F, -.05F), -.30F, r(2.10F, 0, 0)),
+			arm(r(0, 0, .03F), r(-.60F, -.10F, .10F), -.60F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 3.00F, -.50F), r(.18F, 0, 0), r(.14F, 0, 0), r(.18F, 0, 0), r(-.18F, 0, 0),
+			arm(r(.02F, 0, -.03F), r(-.62F, .08F, -.05F), -.32F, r(2.00F, 0, 0)),
+			arm(r(0, 0, .03F), r(-.66F, -.08F, .10F), -.62F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		v(-2.8F, 22, 2.0F), v(2.8F, 22, -2.0F));
+	private static final Motion HOLLOW_PULL_MOTION = new Motion(
+		new Key(v(0, 1.90F, .10F), r(.06F, -.18F, 0), r(.05F, -.14F, 0), r(.06F, -.22F, 0), r(-.06F, .20F, 0),
+			arm(r(.02F, .06F, -.03F), r(-.90F, .70F, .30F), -.50F, r(.40F, .30F, 0)),
+			arm(r(0, -.06F, .04F), r(-1.60F, -.10F, -.20F), -.05F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 2.20F, -.30F), r(.12F, .22F, .01F), r(.09F, .16F, .01F), r(.11F, .26F, .01F), r(-.10F, -.20F, 0),
+			arm(r(.02F, -.06F, -.03F), r(-1.20F, -.80F, -.40F), -.35F, r(.50F, -.40F, .20F)),
+			arm(r(0, .06F, .03F), r(-.70F, .30F, .30F), -.90F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		new Key(v(0, 2.00F, -.20F), r(.09F, .16F, .01F), r(.07F, .12F, .01F), r(.08F, .18F, .01F), r(-.08F, -.12F, 0),
+			arm(r(.02F, -.04F, -.03F), r(-.95F, -.60F, -.30F), -.40F, r(.45F, -.30F, .15F)),
+			arm(r(0, .05F, .03F), r(-.60F, .20F, .30F), -.88F, r(.10F, -.10F, .10F)), VIEW_BIND),
+		v(-2.7F, 22, 1.6F), v(2.7F, 22, -1.6F));
+
+	/** The elemental signature IDs; kept apart from {@link #supportsMaster} so its admitted set is unchanged. */
+	public static boolean supportsMasterSignature(int attack) { return attack >= MASTER_RIME_LATTICE && attack <= MASTER_HOLLOW_PULL; }
+
+	/** Signature clips run on the executor's own clock (every resolving beat), not on the generic tell. */
+	public static Pose sampleMasterSignature(int attack, float age, boolean leftHanded) {
+		if (!supportsMasterSignature(attack) || !Float.isFinite(age) || age < 0) return NONE;
+		var move = dev.wildercord.aura.world.MastersRules.Move.values()[attack - 1];
+		int end = dev.wildercord.aura.world.ElementalMasters.end(move);
+		if (age >= end) return NONE;
+		Motion motion = switch (attack) {
+			case MASTER_RIME_LATTICE -> RIME_LATTICE_MOTION;
+			case MASTER_THUNDER_CHAIN -> THUNDER_CHAIN_MOTION;
+			case MASTER_VERDANT_BLOOM -> VERDANT_BLOOM_MOTION;
+			default -> HOLLOW_PULL_MOTION;
+		};
+		int[] beats = dev.wildercord.aura.world.ElementalMasters.beats(move);
+		Key key = motion.follow;
+		float last = -1;
+		for (int beat : beats) {
+			if (age < beat + 3) {
+				float strike = beat - Math.min(6, (beat - Math.max(0, last)) * .4F);
+				key = age >= beat ? motion.impact.toward(motion.follow, smooth((age - beat) / 3))
+					: age >= strike ? motion.chamber.toward(motion.impact, smooth((age - strike) / (beat - strike)))
+					: last < 0 ? motion.chamber
+					: motion.follow.toward(motion.chamber, smooth((age - last - 3) / Math.max(1, strike - last - 3)));
+				break;
+			}
+			last = beat;
+		}
+		int finalBeat = beats[beats.length - 1];
+		float weight = smooth(age / Math.max(1, beats[0] * .3F)) * (1 - smooth((age - (finalBeat + 3)) / Math.max(1, end - finalBeat - 3)));
+		int impact = beats[0];
+		for (int beat : beats) if (age >= beat - 6) impact = beat;
+		return assemble(key, weight, age, impact, 1, motion.rightPlant, motion.leftPlant, leftHanded);
+	}
+
 	/** The sole locomotion exception: Gale's four accepted step ticks, never ordinary walking. */
 	public static boolean masterFootwork(int attack, float age, int tell) {
 		return attack == MASTER_CROSSWIND_REPRISE && Float.isFinite(age) && tell > 0 && tell <= 80
@@ -1224,12 +1627,13 @@ public final class ArticulatedCombatPose {
 
 	/** Accepted tell/active/recovery windows are shared with the server, including school-form beats. */
 	public static Pose sampleMaster(int attack, float age, int tell, int active, int recovery, boolean leftHanded) {
-		if (!supportsMaster(attack) || !valid(age, tell, 80, recovery) || active < 1 || active > 10) return NONE;
+		if (!supportsMaster(attack) && !supportsMasterPackB(attack) /* ---- masters-b pack */ || !valid(age, tell, 80, recovery) || active < 1 || active > 10) return NONE;
 		if (attack == MASTER_STONE_FAULT_MARCH) return age < StoneMarchRules.END ? march(age, leftHanded) : NONE;
 		if (age >= tell + active + recovery) return NONE;
 		if (attack == MASTER_EMBER_KILN_RING) return kiln(age, tell, active, recovery, leftHanded);
 		if (attack == MASTER_CROSSWIND_REPRISE) return reprise(age, tell, active, recovery, leftHanded);
 		if (attack == MASTER_STONE_FRACTURE) return fracture(age, tell, active, recovery, leftHanded);
+		if (supportsMasterPackB(attack)) return packB(attack, age, tell + active + recovery, leftHanded); // ---- masters-b pack
 		return sample(SWEEP_MOTION, age, tell, active, tell + active + Math.min(3, recovery * .20F), tell + active + recovery, leftHanded);
 	}
 
@@ -1464,6 +1868,73 @@ public final class ArticulatedCombatPose {
 		Rotation socket = wristInverse.multiply(new Transform(0, 0, 0, authoredGrip).matrix()).rotation();
 		return new Arm(shoulder, upper, elbow, wrist, socket);
 	}
+	// ---- masters-b pack: Starlit, Hourglass and Crimson signatures, keyed on the executor's own beat ticks.
+	private record Beat(float at, Key key) {}
+	private static Key turnedKey(Key k, float yaw) {
+		return new Key(k.shift, r(k.pelvis.x, k.pelvis.y + yaw, k.pelvis.z), k.spine, r(k.chest.x, k.chest.y + yaw * .5F, k.chest.z),
+			r(k.head.x, k.head.y - yaw * .3F, k.head.z), k.sword, k.guard, k.view);
+	}
+	private static Key loweredKey(Key k, float drop) {
+		return new Key(v(k.shift.x, k.shift.y + drop, k.shift.z), r(k.pelvis.x + drop * .08F, k.pelvis.y, k.pelvis.z),
+			r(k.spine.x + drop * .06F, k.spine.y, k.spine.z), k.chest, k.head, k.sword, k.guard, k.view);
+	}
+	private static Beat[] packBBeats(int attack) {
+		if (attack == MASTER_STARLIT_CONSTELLATION) {
+			Key mark = FRACTURE_MOTION.chamber, point = FRACTURE_MOTION.impact, half = point.toward(mark, .45F);
+			return new Beat[] {new Beat(0, mark), new Beat(StarlitConstellationRules.FIRST - 4, mark),
+				new Beat(StarlitConstellationRules.burst(0), point), new Beat(StarlitConstellationRules.burst(0) + 3, half),
+				new Beat(StarlitConstellationRules.burst(1), turnedKey(point, -.5F)), new Beat(StarlitConstellationRules.burst(1) + 3, half),
+				new Beat(StarlitConstellationRules.burst(2), turnedKey(point, .5F)), new Beat(StarlitConstellationRules.burst(2) + 3, half),
+				new Beat(StarlitConstellationRules.burst(3), point), new Beat(StarlitConstellationRules.burst(3) + 4, FRACTURE_MOTION.follow)};
+		}
+		if (attack == MASTER_HOURGLASS_REWIND) {
+			Motion m = REPRISE_MOTION;
+			return new Beat[] {new Beat(0, m.chamber), new Beat(HourglassRewindRules.STRIKE - 4, m.chamber),
+				new Beat(HourglassRewindRules.STRIKE, m.impact), new Beat(HourglassRewindRules.STRIKE + 3, m.follow),
+				new Beat(HourglassRewindRules.REPLAY - 6, m.chamber), new Beat(HourglassRewindRules.REPLAY - 4, m.chamber),
+				new Beat(HourglassRewindRules.REPLAY, m.impact), new Beat(HourglassRewindRules.REPLAY + 3, m.follow)};
+		}
+		int[] b = CrimsonFrenzyRules.BEATS;
+		Motion sweep = SWEEP_MOTION, thrust = REPRISE_MOTION, ring = KILN_MOTION;
+		return new Beat[] {new Beat(0, loweredKey(sweep.chamber, 1.2F)), new Beat(b[0] - 6, loweredKey(sweep.chamber, 1.2F)),
+			new Beat(b[0], loweredKey(sweep.impact, 1.4F)), new Beat(b[0] + 3, loweredKey(sweep.follow, 1.0F)),
+			new Beat(b[1] - 6, loweredKey(sweep.chamber, -.3F)), new Beat(b[1], loweredKey(sweep.impact, -.3F)), new Beat(b[1] + 3, sweep.follow),
+			new Beat(b[2] - 6, thrust.chamber), new Beat(b[2], thrust.impact), new Beat(b[2] + 3, thrust.follow),
+			new Beat(b[3] - 6, ring.chamber), new Beat(b[3], ring.impact), new Beat(b[3] + 3, ring.follow)};
+	}
+	private static Pose packB(int attack, float age, int end, boolean leftHanded) {
+		Beat[] beats = packBBeats(attack);
+		Key key = beats[beats.length - 1].key;
+		for (int i = 0; i + 1 < beats.length; i++) if (age < beats[i + 1].at) {
+			key = beats[i].key.toward(beats[i + 1].key, smooth((age - beats[i].at) / Math.max(1, beats[i + 1].at - beats[i].at)));
+			break;
+		}
+		float last = beats[beats.length - 1].at;
+		float weight = smooth(age / 4) * (1 - smooth((age - last) / Math.max(1, end - last)));
+		Motion plants = attack == MASTER_STARLIT_CONSTELLATION ? FRACTURE_MOTION : attack == MASTER_HOURGLASS_REWIND ? REPRISE_MOTION : SWEEP_MOTION;
+		float[] strikes = attack == MASTER_HOURGLASS_REWIND ? new float[] {HourglassRewindRules.STRIKE, HourglassRewindRules.REPLAY}
+			: attack == MASTER_STARLIT_CONSTELLATION ? new float[] {StarlitConstellationRules.burst(0), StarlitConstellationRules.burst(1),
+				StarlitConstellationRules.burst(2), StarlitConstellationRules.burst(3)}
+			: new float[] {CrimsonFrenzyRules.BEATS[0], CrimsonFrenzyRules.BEATS[1], CrimsonFrenzyRules.BEATS[2], CrimsonFrenzyRules.BEATS[3]};
+		Pose posed = assemble(key, weight, age, (int) strikes[strikes.length - 1], 1, plants.rightPlant, plants.leftPlant, false);
+		Transform[] local = posed.local.clone();
+		if (attack == MASTER_CRIMSON_FRENZY) {
+			// The closing ring is one full turn over its six-tick tell, kept through recovery like the Kiln's.
+			float start = CrimsonFrenzyRules.BEATS[3] - 6, turn = -(float) (Math.PI * 2) * smooth((age - start) / 6);
+			if (turn != 0) {
+				Matrix root = new Transform(0, 0, 0, r(0, turn, 0)).matrix();
+				rotate(local, Joint.PELVIS, root.multiply(local[Joint.PELVIS.ordinal()].matrix()).rotation());
+				Vec3 pole = root.direction(v(0, 0, -1));
+				plant(local, false, v(-1.9F, 22, 0).toward(root.transform(plants.rightPlant), weight), pole, turn);
+				plant(local, true, v(1.9F, 22, 0).toward(root.transform(plants.leftPlant), weight), pole, turn);
+			}
+		}
+		boolean pulse = false;
+		for (float strike : strikes) pulse |= age >= strike && age < strike + 1;
+		Phase phase = pulse ? Phase.ACTIVE : age > strikes[strikes.length - 1] ? Phase.RECOVERY : Phase.WINDUP;
+		return new Pose(weight, phase, leftHanded ? reflect(local) : local, VIEW_BIND);
+	}
+
 	private static Rotation r(float x, float y, float z) { return new Rotation(x, y, z); }
 	private static Vec3 v(float x, float y, float z) { return new Vec3(x, y, z); }
 	private static float lerp(float a, float b, float t) { return a + (b - a) * t; }
@@ -1496,5 +1967,283 @@ public final class ArticulatedCombatPose {
 				v(2 * (x * y - z * w), 1 - 2 * (x * x + z * z), 2 * (y * z + x * w)),
 				v(2 * (x * z + y * w), 2 * (y * z - x * w), 1 - 2 * (x * x + y * y)));
 		}
+	}
+
+	// ---- methods-a pack: Tide, Iron and Dune Breath's fifteen arts, sampled like every player style.
+	private static final Motion RIPTIDE_CUT_MOTION = new Motion(
+		new Key(v(-.18F, .95F, .12F), r(.022F, .15F, -.02F), r(.016F, .096F, -.015F), r(.02F, .12F, -.02F), r(-.032F, -.18F, .015F),
+			arm(r(.02F, .1F, -.05F), r(-.7F, .8F, -.3F), -.78F, r(1F, -.44F, -.56F)),
+			arm(r(0, -.04F, .035F), r(-.48F, -.18F, -.4F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.4F, -5.3F, 3.5F), arm(r(.02F, .08F, -.04F), r(-1.06F, .28F, -.3F), -.86F, r(1.08F, -.4F, -.28F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, -.03F, .03F), r(-.94F, .12F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.16F, 1F, -.48F), r(.044F, -.15F, .02F), r(.032F, -.096F, .015F), r(.04F, -.12F, .02F), r(-.064F, .18F, -.015F),
+			arm(r(.03F, -.08F, -.04F), r(-1.3F, -.7F, -.22F), -.36F, r(.9F, .24F, .32F)),
+			arm(r(0, .04F, .035F), r(-.56F, -.2F, -.36F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8.6F, -4.9F, 2.2F), arm(r(.02F, -.07F, -.04F), r(-1.2F, -.46F, -.22F), -.4F, r(.92F, .06F, .3F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.94F, .08F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.04F, .98F, -.2F), r(.022F, -.05F, .02F), r(.016F, -.032F, .015F), r(.02F, -.04F, .02F), r(-.032F, .06F, -.015F),
+			arm(r(.02F, -.03F, -.03F), r(-1.1F, -.2F, -.12F), -.7F, r(.84F, .08F, .12F)),
+			arm(r(0, .04F, .035F), r(-.8F, -.18F, -.2F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.9F, -5.1F, 2.9F), arm(r(.015F, -.02F, -.03F), r(-1.1F, -.1F, -.16F), -.7F, r(.8F, .02F, .1F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.98F, .08F, .26F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.55F, 22F, 1.4F), v(2.55F, 22F, -1.5F));
+	private static final Motion BREAKER_MOTION = new Motion(
+		new Key(v(-.06F, .8F, .22F), r(-.044F, .03F, -.02F), r(-.032F, .019F, -.015F), r(-.04F, .024F, -.02F), r(.064F, -.036F, .015F),
+			arm(r(.02F, .04F, -.04F), r(-2.7F, .2F, -.24F), -.6F, r(1.2F, -.1F, -.2F)),
+			arm(r(0, -.04F, .035F), r(-1.8F, -.2F, -.1F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.6F, -4.3F, 3.4F), arm(r(.02F, .03F, -.03F), r(-1.44F, .1F, -.2F), -.7F, r(1.14F, -.08F, -.12F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.03F, .03F), r(-1.04F, .08F, .24F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.06F, 1.28F, -.7F), r(.088F, -.03F, .02F), r(.064F, -.019F, .015F), r(.08F, -.024F, .02F), r(-.128F, .036F, -.015F),
+			arm(r(.03F, -.03F, -.04F), r(-.62F, -.24F, -.12F), -.24F, r(1.46F, .1F, .12F)),
+			arm(r(0, .04F, .035F), r(-.6F, -.16F, -.36F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8.2F, -5.9F, 1.9F), arm(r(.02F, -.03F, -.035F), r(-1.1F, -.16F, -.14F), -.26F, r(1.36F, .04F, .1F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.92F, .1F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.04F, 1.18F, -.44F), r(.066F, -.02F, .02F), r(.048F, -.013F, .015F), r(.06F, -.016F, .02F), r(-.096F, .024F, -.015F),
+			arm(r(.025F, -.025F, -.035F), r(-.8F, -.2F, -.12F), -.46F, r(1.34F, .08F, .12F)),
+			arm(r(0, .04F, .035F), r(-.7F, -.18F, -.3F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8F, -5.4F, 2.5F), arm(r(.02F, -.02F, -.03F), r(-1.06F, -.12F, -.16F), -.5F, r(1.26F, .02F, .1F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.96F, .09F, .27F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.5F, 22F, 1.6F), v(2.5F, 22F, -1.7F));
+	private static final Motion WHIRLPOOL_MOTION = new Motion(
+		new Key(v(-.14F, .92F, .1F), r(0, .18F, -.02F), r(0, .115F, -.015F), r(0, .144F, -.02F), r(0, -.216F, .015F),
+			arm(r(.02F, .1F, -.05F), r(-1F, .62F, -.36F), -.86F, r(.96F, -.4F, -.46F)),
+			arm(r(0, -.04F, .035F), r(-.9F, -.24F, -.18F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.4F, -5.2F, 3.3F), arm(r(.02F, .07F, -.04F), r(-1.1F, .26F, -.28F), -.88F, r(.98F, -.32F, -.26F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.03F, .03F), r(-1F, .09F, .26F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.1F, 1.1F, -.3F), r(.044F, -.2F, .02F), r(.032F, -.128F, .015F), r(.04F, -.16F, .02F), r(-.064F, .24F, -.015F),
+			arm(r(.03F, -.1F, -.04F), r(-.86F, -.86F, -.36F), -.3F, r(1.1F, .3F, .4F)),
+			arm(r(0, .04F, .035F), r(-.4F, -.3F, -.5F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-9F, -5F, 2.4F), arm(r(.02F, -.08F, -.04F), r(-1.16F, -.52F, -.28F), -.34F, r(1.02F, .04F, .4F)),
+				v(7.3F, -6.1F, 3.8F), arm(r(0, .03F, .03F), r(-.9F, .1F, .32F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.06F, 1.04F, -.18F), r(.022F, -.12F, .02F), r(.016F, -.077F, .015F), r(.02F, -.096F, .02F), r(-.032F, .144F, -.015F),
+			arm(r(.025F, -.06F, -.035F), r(-.94F, -.6F, -.28F), -.56F, r(1F, .2F, .3F)),
+			arm(r(0, .04F, .035F), r(-.5F, -.26F, -.44F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8.6F, -5.1F, 2.8F), arm(r(.02F, -.05F, -.035F), r(-1.12F, -.4F, -.24F), -.56F, r(.96F, .02F, .28F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.94F, .09F, .29F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.6F, 22F, 1.3F), v(2.6F, 22F, -1.4F));
+	private static final Motion SURGE_MOTION = new Motion(
+		new Key(v(-.1F, .86F, .2F), r(-.022F, .09F, -.02F), r(-.016F, .058F, -.015F), r(-.02F, .072F, -.02F), r(.032F, -.108F, .015F),
+			arm(r(.02F, .06F, -.04F), r(-1.05F, .5F, -.2F), -1F, r(1.4F, -.3F, -.3F)),
+			arm(r(0, -.04F, .035F), r(-.7F, -.22F, -.3F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.3F, -5.1F, 3.6F), arm(r(.02F, .05F, -.03F), r(-1.14F, .2F, -.24F), -.96F, r(1.34F, -.26F, -.2F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.03F, .03F), r(-1F, .09F, .27F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.06F, 1.1F, -.78F), r(.099F, -.02F, .02F), r(.072F, -.013F, .015F), r(.09F, -.016F, .02F), r(-.144F, .024F, -.015F),
+			arm(r(.03F, -.02F, -.035F), r(-1.52F, -.08F, -.1F), -.08F, r(1.56F, .02F, .04F)),
+			arm(r(0, .04F, .035F), r(-.4F, -.3F, -.56F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.2F, -5.3F, 1.6F), arm(r(.02F, -.02F, -.035F), r(-1.34F, -.02F, -.12F), -.12F, r(1.4F, .02F, .02F)),
+				v(7.3F, -6.1F, 3.8F), arm(r(0, .03F, .03F), r(-.92F, .1F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.04F, 1.02F, -.44F), r(.055F, -.01F, .02F), r(.04F, -.006F, .015F), r(.05F, -.008F, .02F), r(-.08F, .012F, -.015F),
+			arm(r(.02F, -.015F, -.03F), r(-1.3F, -.04F, -.12F), -.4F, r(1.4F, .02F, .06F)),
+			arm(r(0, .04F, .035F), r(-.56F, -.26F, -.4F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.5F, -5.2F, 2.5F), arm(r(.015F, -.015F, -.03F), r(-1.22F, -.02F, -.14F), -.44F, r(1.28F, 0, .04F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.96F, .09F, .27F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.4F, 22F, 1.7F), v(2.4F, 22F, -1.8F));
+	private static final Motion MAELSTROM_MOTION = new Motion(
+		new Key(v(-.08F, .78F, .18F), r(-.055F, .13F, -.02F), r(-.04F, .083F, -.015F), r(-.05F, .104F, -.02F), r(.08F, -.156F, .015F),
+			arm(r(.02F, .08F, -.05F), r(-2.5F, .6F, -.4F), -.66F, r(1.1F, -.36F, -.42F)),
+			arm(r(0, -.04F, .035F), r(-2.1F, -.34F, .1F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.5F, -4.3F, 3.3F), arm(r(.02F, .06F, -.04F), r(-1.46F, .24F, -.3F), -.72F, r(1.1F, -.3F, -.24F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.03F, .03F), r(-1.04F, .08F, .24F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.12F, 1.22F, -.62F), r(.077F, -.14F, .02F), r(.056F, -.09F, .015F), r(.07F, -.112F, .02F), r(-.112F, .168F, -.015F),
+			arm(r(.03F, -.08F, -.04F), r(-.7F, -.7F, -.26F), -.3F, r(1.3F, .26F, .4F)),
+			arm(r(0, .04F, .035F), r(-.62F, -.24F, -.4F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-9.2F, -5.5F, 2.1F), arm(r(.02F, -.07F, -.04F), r(-1.04F, -.52F, -.24F), -.32F, r(1.26F, -.08F, .4F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.93F, .09F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.08F, 1.12F, -.38F), r(.055F, -.1F, .02F), r(.04F, -.064F, .015F), r(.05F, -.08F, .02F), r(-.08F, .12F, -.015F),
+			arm(r(.025F, -.06F, -.035F), r(-.84F, -.6F, -.24F), -.52F, r(1.22F, .2F, .32F)),
+			arm(r(0, .04F, .035F), r(-.72F, -.22F, -.34F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8.9F, -5.3F, 2.6F), arm(r(.02F, -.06F, -.035F), r(-1.08F, -.44F, -.24F), -.54F, r(1.2F, -.06F, .32F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.95F, .09F, .28F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.6F, 22F, 1.5F), v(2.6F, 22F, -1.6F));
+	private static final Motion SUNDER_CUT_MOTION = new Motion(
+		new Key(v(-.16F, .9F, .18F), r(-.033F, .11F, -.02F), r(-.024F, .07F, -.015F), r(-.03F, .088F, -.02F), r(.048F, -.132F, .015F),
+			arm(r(.02F, .08F, -.05F), r(-2.3F, .64F, -.46F), -.62F, r(1.16F, -.34F, -.48F)),
+			arm(r(0, -.04F, .035F), r(-1.3F, -.1F, -.1F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.5F, -4.4F, 3.3F), arm(r(.02F, .07F, -.04F), r(-1.4F, .24F, -.3F), -.7F, r(1.14F, -.3F, -.3F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.04F, .09F, .24F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.18F, 1.26F, -.56F), r(.088F, -.11F, .02F), r(.064F, -.07F, .015F), r(.08F, -.088F, .02F), r(-.128F, .132F, -.015F),
+			arm(r(.03F, -.07F, -.04F), r(-.56F, -.7F, -.22F), -.3F, r(1.38F, .24F, .4F)),
+			arm(r(0, .04F, .035F), r(-.72F, -.18F, -.42F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-9.4F, -5.6F, 2.1F), arm(r(.02F, -.07F, -.04F), r(-1F, -.56F, -.24F), -.3F, r(1.3F, -.12F, .42F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.93F, .09F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.12F, 1.16F, -.34F), r(.066F, -.08F, .02F), r(.048F, -.051F, .015F), r(.06F, -.064F, .02F), r(-.096F, .096F, -.015F),
+			arm(r(.025F, -.06F, -.035F), r(-.74F, -.6F, -.22F), -.52F, r(1.26F, .18F, .32F)),
+			arm(r(0, .04F, .035F), r(-.8F, -.2F, -.36F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-9F, -5.3F, 2.6F), arm(r(.02F, -.06F, -.035F), r(-1.06F, -.48F, -.24F), -.52F, r(1.22F, -.1F, .32F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.95F, .09F, .28F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.65F, 22F, 1.55F), v(2.65F, 22F, -1.7F));
+	private static final Motion ANVIL_FALL_MOTION = new Motion(
+		new Key(v(0, .7F, .24F), r(-.066F, 0, -.02F), r(-.048F, 0, -.015F), r(-.06F, 0, -.02F), r(.096F, 0, .015F),
+			arm(r(.02F, .02F, -.03F), r(-2.9F, .1F, -.1F), -.5F, r(1.26F, -.04F, -.06F)),
+			arm(r(0, -.04F, .035F), r(-2.8F, .1F, .1F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.4F, -4.3F, 3.2F), arm(r(.02F, .02F, -.03F), r(-1.46F, .06F, -.18F), -.62F, r(1.2F, -.04F, -.06F)),
+				v(7.3F, -6.1F, 3.4F), arm(r(0, -.03F, .03F), r(-1.4F, .04F, .2F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(0, 1.45F, -.62F), r(.121F, 0, -.02F), r(.088F, 0, -.015F), r(.11F, 0, -.02F), r(-.176F, 0, .015F),
+			arm(r(.03F, 0, -.03F), r(-.42F, -.06F, -.08F), -.2F, r(1.5F, 0, .04F)),
+			arm(r(0, -.04F, .035F), r(-.5F, .06F, .08F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.8F, -6.3F, 1.8F), arm(r(.02F, 0, -.03F), r(-1.12F, -.04F, -.12F), -.22F, r(1.42F, 0, .04F)),
+				v(7.3F, -6.1F, 3.4F), arm(r(0, -.03F, .03F), r(-.96F, .04F, .22F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(0, 1.32F, -.42F), r(.088F, 0, -.02F), r(.064F, 0, -.015F), r(.08F, 0, -.02F), r(-.128F, 0, .015F),
+			arm(r(.025F, 0, -.03F), r(-.56F, -.06F, -.08F), -.42F, r(1.4F, 0, .04F)),
+			arm(r(0, -.04F, .035F), r(-.62F, .06F, .08F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.8F, -5.9F, 2.4F), arm(r(.02F, 0, -.03F), r(-1.1F, -.04F, -.14F), -.44F, r(1.34F, 0, .04F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-.98F, .05F, .24F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.7F, 22F, 1.25F), v(2.7F, 22F, -1.35F));
+	private static final Motion BULWARK_MOTION = new Motion(
+		new Key(v(-.06F, 1.1F, .3F), r(-.022F, .05F, -.02F), r(-.016F, .032F, -.015F), r(-.02F, .04F, -.02F), r(.032F, -.06F, .015F),
+			arm(r(.02F, .04F, -.04F), r(-1.6F, .4F, .1F), -1.1F, r(.4F, -.1F, .9F)),
+			arm(r(0, -.04F, .035F), r(-1.5F, -.4F, -.2F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7F, -5F, 3.6F), arm(r(.02F, .03F, -.03F), r(-1.3F, .1F, -.1F), -1F, r(.36F, -.06F, .8F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, -.03F, .03F), r(-1.2F, -.1F, .2F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.04F, 1.32F, -.4F), r(.055F, -.03F, .02F), r(.04F, -.019F, .015F), r(.05F, -.024F, .02F), r(-.08F, .036F, -.015F),
+			arm(r(.03F, -.02F, -.035F), r(-1.5F, -.1F, .2F), -.7F, r(.36F, .04F, 1F)),
+			arm(r(0, .04F, .035F), r(-1.36F, .2F, -.3F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7F, -5.2F, 2.4F), arm(r(.02F, -.02F, -.035F), r(-1.32F, -.04F, -.08F), -.7F, r(.34F, .02F, .9F)),
+				v(7.3F, -6.1F, 3.4F), arm(r(0, .03F, .03F), r(-1.16F, -.08F, .2F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.02F, 1.24F, -.2F), r(.033F, -.02F, .02F), r(.024F, -.013F, .015F), r(.03F, -.016F, .02F), r(-.048F, .024F, -.015F),
+			arm(r(.025F, -.01F, -.03F), r(-1.52F, -.04F, .16F), -.86F, r(.38F, .02F, .94F)),
+			arm(r(0, .04F, .035F), r(-1.4F, .1F, -.26F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7F, -5.1F, 2.9F), arm(r(.015F, -.01F, -.03F), r(-1.3F, -.02F, -.1F), -.86F, r(.36F, .02F, .86F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .03F, .03F), r(-1.18F, -.08F, .2F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.3F, 22F, 1.7F), v(2.3F, 22F, -1.8F));
+	private static final Motion FORGE_CHARGE_MOTION = new Motion(
+		new Key(v(-.1F, 1.14F, .2F), r(.055F, .12F, -.02F), r(.04F, .077F, -.015F), r(.05F, .096F, -.02F), r(-.08F, -.144F, .015F),
+			arm(r(.02F, .08F, -.05F), r(-.4F, .54F, .1F), -.9F, r(1.2F, -.3F, -.4F)),
+			arm(r(0, -.04F, .035F), r(-.9F, -.3F, -.4F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.2F, -5.6F, 3.6F), arm(r(.02F, .06F, -.04F), r(-.96F, .22F, -.2F), -.92F, r(1.1F, -.26F, -.24F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, -.03F, .03F), r(-1F, .08F, .26F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.1F, 1.36F, -.8F), r(.132F, -.05F, .02F), r(.096F, -.032F, .015F), r(.12F, -.04F, .02F), r(-.192F, .06F, -.015F),
+			arm(r(.03F, -.03F, -.035F), r(-1.2F, -.14F, -.1F), -.2F, r(1.5F, .04F, .06F)),
+			arm(r(0, .04F, .035F), r(-1.1F, .3F, -.6F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.3F, -5.6F, 1.7F), arm(r(.02F, -.03F, -.035F), r(-1.22F, -.06F, -.12F), -.2F, r(1.4F, .02F, .04F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.94F, .1F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.06F, 1.26F, -.5F), r(.099F, -.03F, .02F), r(.072F, -.019F, .015F), r(.09F, -.024F, .02F), r(-.144F, .036F, -.015F),
+			arm(r(.025F, -.02F, -.03F), r(-1.1F, -.1F, -.1F), -.44F, r(1.42F, .02F, .06F)),
+			arm(r(0, .04F, .035F), r(-1F, .24F, -.5F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.4F, -5.5F, 2.5F), arm(r(.015F, -.02F, -.03F), r(-1.16F, -.04F, -.14F), -.46F, r(1.32F, 0, .04F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.97F, .09F, .28F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.45F, 22F, 1.75F), v(2.45F, 22F, -1.85F));
+	private static final Motion WORLDFORGE_MOTION = new Motion(
+		new Key(v(0, .66F, .26F), r(-.077F, 0, -.02F), r(-.056F, 0, -.015F), r(-.07F, 0, -.02F), r(.112F, 0, .015F),
+			arm(r(.02F, -.02F, -.03F), r(-3F, -.06F, .06F), -.46F, r(1.24F, .04F, .04F)),
+			arm(r(0, -.04F, .035F), r(-2.95F, .06F, -.06F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.3F, -4.3F, 3.1F), arm(r(.02F, -.02F, -.03F), r(-1.46F, -.04F, -.14F), -.6F, r(1.22F, .04F, .04F)),
+				v(7.3F, -6.1F, 3.3F), arm(r(0, -.03F, .03F), r(-1.42F, -.04F, .18F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(0, 1.6F, -.66F), r(.143F, 0, -.02F), r(.104F, 0, -.015F), r(.13F, 0, -.02F), r(-.208F, 0, .015F),
+			arm(r(.03F, .02F, -.03F), r(-.36F, .08F, -.04F), -.16F, r(1.54F, -.02F, -.02F)),
+			arm(r(0, -.04F, .035F), r(-.4F, -.08F, .04F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.7F, -6.3F, 1.7F), arm(r(.02F, .02F, -.03F), r(-1.12F, .04F, -.1F), -.18F, r(1.46F, -.02F, -.02F)),
+				v(7.3F, -6.1F, 3.3F), arm(r(0, -.03F, .03F), r(-.94F, .06F, .22F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(0, 1.48F, -.46F), r(.11F, 0, -.02F), r(.08F, 0, -.015F), r(.1F, 0, -.02F), r(-.16F, 0, .015F),
+			arm(r(.025F, .02F, -.03F), r(-.48F, .06F, -.04F), -.38F, r(1.46F, -.02F, -.02F)),
+			arm(r(0, -.04F, .035F), r(-.5F, -.08F, .04F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.7F, -5.9F, 2.3F), arm(r(.02F, .02F, -.03F), r(-1.1F, .04F, -.12F), -.4F, r(1.38F, -.02F, -.02F)),
+				v(7.3F, -6.1F, 3.4F), arm(r(0, -.03F, .03F), r(-.97F, .06F, .23F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.75F, 22F, 1.3F), v(2.75F, 22F, -1.4F));
+	private static final Motion GRIT_FLICK_MOTION = new Motion(
+		new Key(v(-.1F, 1.3F, .1F), r(.077F, .1F, -.02F), r(.056F, .064F, -.015F), r(.07F, .08F, -.02F), r(-.112F, -.12F, .015F),
+			arm(r(.02F, .08F, -.05F), r(.1F, .4F, .3F), -.7F, r(1.44F, -.3F, -.5F)),
+			arm(r(0, -.04F, .035F), r(-.6F, -.3F, -.4F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8F, -5.8F, 3.8F), arm(r(.02F, .08F, -.04F), r(-.9F, .22F, -.3F), -.86F, r(1.34F, -.4F, .1F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, -.03F, .03F), r(-.97F, .1F, .28F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.1F, .98F, -.36F), r(-.022F, -.1F, .02F), r(-.016F, -.064F, .015F), r(-.02F, -.08F, .02F), r(.032F, .12F, -.015F),
+			arm(r(.03F, -.06F, -.04F), r(-2F, -.5F, -.26F), -.36F, r(.76F, .2F, .28F)),
+			arm(r(0, .04F, .035F), r(-.42F, -.28F, -.5F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8.7F, -4.4F, 2.3F), arm(r(.02F, -.06F, -.04F), r(-1.44F, -.4F, -.28F), -.4F, r(.8F, .04F, .24F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.93F, .07F, .31F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.06F, 1.06F, -.22F), r(0, -.07F, .02F), r(0, -.045F, .015F), r(0, -.056F, .02F), r(0, .084F, -.015F),
+			arm(r(.025F, -.05F, -.035F), r(-1.8F, -.42F, -.24F), -.54F, r(.84F, .16F, .24F)),
+			arm(r(0, .04F, .035F), r(-.48F, -.26F, -.44F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8.5F, -4.6F, 2.7F), arm(r(.02F, -.05F, -.035F), r(-1.36F, -.34F, -.26F), -.54F, r(.84F, .02F, .2F)),
+				v(7.3F, -6.1F, 3.6F), arm(r(0, .03F, .03F), r(-.95F, .08F, .29F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.6F, 22F, 1.45F), v(2.6F, 22F, -1.55F));
+	private static final Motion QUICKSAND_MOTION = new Motion(
+		new Key(v(-.04F, .84F, .22F), r(-.044F, .04F, -.02F), r(-.032F, .026F, -.015F), r(-.04F, .032F, -.02F), r(.064F, -.048F, .015F),
+			arm(r(.02F, .04F, -.04F), r(-2.6F, .3F, -.2F), -.58F, r(1.16F, -.16F, -.24F)),
+			arm(r(0, -.04F, .035F), r(-2.3F, -.2F, .2F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.5F, -4.4F, 3.3F), arm(r(.02F, .04F, -.03F), r(-1.44F, .12F, -.22F), -.68F, r(1.12F, -.12F, -.16F)),
+				v(7.3F, -6.1F, 3.4F), arm(r(0, -.03F, .03F), r(-1.3F, .02F, .2F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.04F, 1.4F, -.6F), r(.11F, -.03F, .02F), r(.08F, -.019F, .015F), r(.1F, -.024F, .02F), r(-.16F, .036F, -.015F),
+			arm(r(.03F, -.02F, -.035F), r(-.3F, -.2F, -.1F), -.2F, r(1.58F, .06F, .08F)),
+			arm(r(0, .04F, .035F), r(-.36F, .2F, .1F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.9F, -6.3F, 1.8F), arm(r(.02F, -.02F, -.035F), r(-1.12F, -.12F, -.12F), -.22F, r(1.5F, .04F, .06F)),
+				v(7.3F, -6.1F, 3.4F), arm(r(0, .03F, .03F), r(-.94F, .05F, .22F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.02F, 1.3F, -.4F), r(.088F, -.02F, .02F), r(.064F, -.013F, .015F), r(.08F, -.016F, .02F), r(-.128F, .024F, -.015F),
+			arm(r(.025F, -.015F, -.03F), r(-.42F, -.16F, -.1F), -.42F, r(1.5F, .04F, .08F)),
+			arm(r(0, .04F, .035F), r(-.46F, .16F, .08F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.9F, -5.9F, 2.4F), arm(r(.015F, -.015F, -.03F), r(-1.1F, -.1F, -.14F), -.44F, r(1.42F, .02F, .06F)),
+				v(7.3F, -6.1F, 3.5F), arm(r(0, .03F, .03F), r(-.97F, .06F, .24F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.5F, 22F, 1.5F), v(2.5F, 22F, -1.6F));
+	private static final Motion SANDVEIL_MOTION = new Motion(
+		new Key(v(-.16F, 1.34F, .12F), r(.066F, .2F, -.02F), r(.048F, .128F, -.015F), r(.06F, .16F, -.02F), r(-.096F, -.24F, .015F),
+			arm(r(.02F, .12F, -.06F), r(-.3F, .9F, .4F), -.7F, r(1.2F, -.5F, -.66F)),
+			arm(r(0, -.04F, .035F), r(-.5F, -.6F, -.5F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.6F, -5.8F, 3.7F), arm(r(.02F, .09F, -.04F), r(-.98F, .32F, -.3F), -.84F, r(1.16F, -.46F, -.3F)),
+				v(7.3F, -6.1F, 3.8F), arm(r(0, -.03F, .03F), r(-.92F, .12F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.14F, 1.4F, -.2F), r(.066F, -.23F, .02F), r(.048F, -.147F, .015F), r(.06F, -.184F, .02F), r(-.096F, .276F, -.015F),
+			arm(r(.03F, -.12F, -.04F), r(-.4F, -1F, -.4F), -.3F, r(1.2F, .4F, .5F)),
+			arm(r(0, .04F, .035F), r(-.46F, .5F, -.6F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-9.4F, -5.8F, 2.6F), arm(r(.02F, -.09F, -.04F), r(-.96F, -.56F, -.3F), -.34F, r(1.14F, -.06F, .46F)),
+				v(7.3F, -6.1F, 3.8F), arm(r(0, .03F, .03F), r(-.9F, .11F, .33F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.1F, 1.34F, -.12F), r(.055F, -.17F, .02F), r(.04F, -.109F, .015F), r(.05F, -.136F, .02F), r(-.08F, .204F, -.015F),
+			arm(r(.025F, -.09F, -.035F), r(-.46F, -.84F, -.34F), -.52F, r(1.16F, .3F, .4F)),
+			arm(r(0, .04F, .035F), r(-.48F, .4F, -.52F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-9.1F, -5.7F, 2.9F), arm(r(.02F, -.07F, -.035F), r(-1F, -.46F, -.28F), -.54F, r(1.1F, -.04F, .38F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.92F, .1F, .31F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.65F, 22F, 1.35F), v(2.65F, 22F, -1.45F));
+	private static final Motion DUNE_RUNNER_MOTION = new Motion(
+		new Key(v(-.1F, 1.2F, .16F), r(.066F, .11F, -.02F), r(.048F, .07F, -.015F), r(.06F, .088F, -.02F), r(-.096F, -.132F, .015F),
+			arm(r(.02F, .08F, -.05F), r(-.2F, .7F, .16F), -.8F, r(1.3F, -.36F, -.44F)),
+			arm(r(0, -.04F, .035F), r(-.7F, -.24F, -.44F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.6F, -5.7F, 3.7F), arm(r(.02F, .07F, -.04F), r(-.94F, .26F, -.28F), -.9F, r(1.24F, -.34F, -.2F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, -.03F, .03F), r(-.98F, .1F, .28F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.1F, 1.34F, -.82F), r(.121F, -.09F, .02F), r(.088F, -.058F, .015F), r(.11F, -.072F, .02F), r(-.176F, .108F, -.015F),
+			arm(r(.03F, -.06F, -.04F), r(-1.3F, -.5F, -.2F), -.18F, r(1.3F, .16F, .2F)),
+			arm(r(0, .04F, .035F), r(.3F, -.3F, -.2F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8.2F, -5.5F, 1.7F), arm(r(.02F, -.06F, -.04F), r(-1.26F, -.3F, -.16F), -.2F, r(1.24F, .04F, .18F)),
+				v(7.3F, -6.1F, 3.8F), arm(r(0, .03F, .03F), r(-.92F, .11F, .32F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.06F, 1.26F, -.5F), r(.088F, -.06F, .02F), r(.064F, -.038F, .015F), r(.08F, -.048F, .02F), r(-.128F, .072F, -.015F),
+			arm(r(.025F, -.04F, -.035F), r(-1.2F, -.4F, -.18F), -.44F, r(1.26F, .12F, .16F)),
+			arm(r(0, .04F, .035F), r(.2F, -.24F, -.24F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-8F, -5.4F, 2.5F), arm(r(.02F, -.04F, -.035F), r(-1.2F, -.24F, -.16F), -.46F, r(1.2F, .02F, .14F)),
+				v(7.3F, -6.1F, 3.7F), arm(r(0, .03F, .03F), r(-.95F, .1F, .29F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.4F, 22F, 1.8F), v(2.4F, 22F, -1.9F));
+	private static final Motion SEA_OF_SAND_MOTION = new Motion(
+		new Key(v(-.2F, 1.24F, .14F), r(.055F, .22F, -.02F), r(.04F, .141F, -.015F), r(.05F, .176F, -.02F), r(-.08F, -.264F, .015F),
+			arm(r(.02F, .12F, -.06F), r(-.5F, 1F, .3F), -.66F, r(1.1F, -.5F, -.6F)),
+			arm(r(0, -.04F, .035F), r(-.4F, -.8F, -.5F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-7.4F, -5.7F, 3.8F), arm(r(.02F, .1F, -.04F), r(-1F, .36F, -.3F), -.8F, r(1.06F, -.48F, -.3F)),
+				v(7.3F, -6.1F, 3.8F), arm(r(0, -.03F, .03F), r(-.9F, .13F, .3F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.12F, .94F, -.4F), r(-.033F, -.23F, .02F), r(-.024F, -.147F, .015F), r(-.03F, -.184F, .02F), r(.048F, .276F, -.015F),
+			arm(r(.03F, -.12F, -.04F), r(-1.6F, -1F, -.1F), -.3F, r(.8F, .3F, .4F)),
+			arm(r(0, .04F, .035F), r(-1.2F, .8F, .2F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-9.6F, -4.6F, 2.2F), arm(r(.02F, -.1F, -.04F), r(-1.3F, -.56F, -.2F), -.32F, r(.84F, -.04F, .36F)),
+				v(7.3F, -6.1F, 3.9F), arm(r(0, .03F, .03F), r(-.88F, .12F, .34F), -.91F, r(.1F, -.1F, .09F)))),
+		new Key(v(.08F, .98F, -.26F), r(-.011F, -.17F, .02F), r(-.008F, -.109F, .015F), r(-.01F, -.136F, .02F), r(.016F, .204F, -.015F),
+			arm(r(.025F, -.09F, -.035F), r(-1.46F, -.84F, -.1F), -.52F, r(.84F, .24F, .32F)),
+			arm(r(0, .04F, .035F), r(-1.04F, .66F, .16F), -.88F, r(.1F, -.1F, .09F)),
+			new ViewKey(v(-9.3F, -4.8F, 2.6F), arm(r(.02F, -.08F, -.035F), r(-1.26F, -.46F, -.2F), -.54F, r(.84F, -.02F, .3F)),
+				v(7.3F, -6.1F, 3.8F), arm(r(0, .03F, .03F), r(-.9F, .12F, .32F), -.91F, r(.1F, -.1F, .09F)))),
+		v(-2.55F, 22F, 1.45F), v(2.55F, 22F, -1.55F));
+	/** The pack's motion for one of its presentation ids (110 to 124, see MethodsAStyleAnimation), or null. */
+	private static Motion methodsA(int move) {
+		return switch (move) {
+			case 110 -> RIPTIDE_CUT_MOTION;
+			case 111 -> BREAKER_MOTION;
+			case 112 -> WHIRLPOOL_MOTION;
+			case 113 -> SURGE_MOTION;
+			case 114 -> MAELSTROM_MOTION;
+			case 115 -> SUNDER_CUT_MOTION;
+			case 116 -> ANVIL_FALL_MOTION;
+			case 117 -> BULWARK_MOTION;
+			case 118 -> FORGE_CHARGE_MOTION;
+			case 119 -> WORLDFORGE_MOTION;
+			case 120 -> GRIT_FLICK_MOTION;
+			case 121 -> QUICKSAND_MOTION;
+			case 122 -> SANDVEIL_MOTION;
+			case 123 -> DUNE_RUNNER_MOTION;
+			case 124 -> SEA_OF_SAND_MOTION;
+			default -> null;
+		};
 	}
 }

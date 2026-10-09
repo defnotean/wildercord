@@ -29,8 +29,9 @@ The source now has 23/50 style body/hand timelines and 13/50 articulated forms; 
 Final combined-source tests and native execution remain separate requirements.
 
 Required Masters acceptance is now 47 classes in 44/1/2 parts. Every previous 45 class remains in its original relative order.
-The full descriptor is 312 classes, explicitly planned as 80/84/77/71. All previously reviewed 310 class assignments and
-relative order remain unchanged; the two new counter-lifetime classes extend only group 4. Strict source/run/attempt/profile,
+The full descriptor is 335 classes, explicitly planned as 84/84/84/83. Every class in the reviewed 317-class plan keeps its
+group and relative order; the 18 classes added since (new Master packs, moves, codex, performance and HUD layout tests) were
+appended to existing groups only. Strict source/run/attempt/profile,
 owned-launch and complete lifecycle receipts are required. A single shard or unsharded report cannot declare the full gate
 passed; only the exact disjoint all-four aggregate can. The 180-minute shard caps remain. Runtime fit is unverified.
 

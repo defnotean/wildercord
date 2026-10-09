@@ -28,7 +28,8 @@ class EarnedCounterPresentationPreservationTest {
 			int recovery = move < 3 ? MastersArtRules.move(move).recovery() : MastersStyleRules.animation(move).recovery();
 			for (int step = 0; step <= (windup + recovery) * 8; step++) {
 				float age = step / 8F;
-				var pose = samplePlayer(move, age, windup, recovery, left);
+				// Styles 5-14 were frozen on the fallback; their authored forms have dedicated tests.
+				var pose = move >= CRACKLE && move <= BLOSSOM_FALL ? NONE : samplePlayer(move, age, windup, recovery, left);
 				var view = view(pose, left);
 				add(digest, pose.weight(), pose.phase().ordinal(), view.origin().x(), view.origin().y(), view.origin().z());
 				for (var joint : Joint.values()) {

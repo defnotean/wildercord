@@ -31,5 +31,10 @@ final class LifeFeels {
 		cue("life_stinger_thorn", 0x86D23A, "venom", "vinelash", "rootsnare", "sporebloom", "drowse", "moonpetal");
 		// Actual effect owners provide the authored outcomes and voices.
 		LifeOutcomeSignatures.register();
+		// ---- fx-explore pack: authored cue and landing (tools/feel/wayfarer_life_audio.py).
+		for (String rune : new String[] {"slime_sense", "potion_steep", "dye_wash", "checker_dye", "sign_glow"}) {
+			Signature.of(rune).accent(0xB8E07A).sound(Phase.CUE, "life_auth_" + rune + "_cue", 0.6F, 1.0F)
+				.sound(Phase.IMPACT, "life_auth_" + rune + "_outcome", 0.5F, 1.0F).register();
+		}
 	}
 }

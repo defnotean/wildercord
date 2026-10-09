@@ -5,6 +5,17 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MasterAnimationRulesTest {
+	/** Techniques are sampled by MasterTechniques (see MasterTechniquesTest). */
+	private static MastersRules.Move[] singleStrikeMoves() {
+		return java.util.Arrays.stream(MastersRules.Move.values()).filter(move -> move != MastersRules.Move.TECHNIQUE)
+			// masters-a pack: multi-beat elemental signatures are covered by ElementalMastersRulesTest.
+			.filter(move -> !ElementalMasters.signature(move))
+			// ---- masters-b pack: multi-beat signatures are covered by ArticulatedMastersPackBPoseTest
+			.filter(move -> !MastersPackB.signature(move))
+			// ---- methods-a pack: two-beat signatures are covered by MethodsAMastersTest
+			.filter(move -> !MethodsAMasters.signature(move)).toArray(MastersRules.Move[]::new);
+	}
+
 	@Test
 	void onlyLiveBoundedServerTimelinesAnimate() {
 		for (int id : new int[] {-1, 0, 11, Integer.MAX_VALUE}) {
@@ -20,7 +31,7 @@ class MasterAnimationRulesTest {
 
 	@Test
 	void authoritativeHitIsAlwaysAtFullImpactAndRecoveryIsVisible() {
-		for (var move : MastersRules.Move.values()) {
+		for (var move : singleStrikeMoves()) {
 			int id = move.ordinal() + 1, tell = move.tell, active = 1, recovery = move.recovery - active;
 			assertEquals(0, sample(move, 0).weight());
 			assertEquals(1, sample(move, tell).weight());
@@ -48,7 +59,7 @@ class MasterAnimationRulesTest {
 
 	@Test
 	void weightedTransformsRemainContinuousAtEveryBoundary() {
-		for (var move : MastersRules.Move.values()) {
+		for (var move : singleStrikeMoves()) {
 			float follow = move.tell + 1 + Math.min(3, (move.recovery - 1) * .20F);
 			for (float at : new float[] {0, move.tell * .65F, move.tell, move.tell + 1, follow, move.tell + move.recovery}) {
 				var before = values(sample(move, at - .0001F));
@@ -60,7 +71,7 @@ class MasterAnimationRulesTest {
 
 	@Test
 	void stanceIsPlantedDuringTheStrikeAndRigidSolesDoNotEnterTheFloor() {
-		for (var move : MastersRules.Move.values()) {
+		for (var move : singleStrikeMoves()) {
 			float stance = sample(move, move.tell).stance();
 			for (float age = move.tell * .65F; age <= move.tell + 3; age += .05F) {
 				var pose = sample(move, age);
@@ -79,7 +90,7 @@ class MasterAnimationRulesTest {
 
 	@Test
 	void hipHingeKeepsTorsoAndShoulderAttachmentsConnectedAndMirrorsExactly() {
-		for (var move : MastersRules.Move.values()) {
+		for (var move : singleStrikeMoves()) {
 			for (float age = 0; age < move.tell + move.recovery; age += .1F) {
 				var pose = sample(move, age);
 				float lower = MasterAnimationRules.lower(pose.stance());
@@ -124,7 +135,7 @@ class MasterAnimationRulesTest {
 		assertTrue(step.body().z() > .25F && step.sword().x() < -1.5F, "Visible lean carries a high blade through lateral movement");
 		assertTrue(plant.body().y() > .4F && plant.stance() > step.stance(), "The planted chamber precedes the separately warned reply");
 		assertTrue(reply.bladeTilt() < -80 && reply.body().y() < 0, "The reply opens a compact point-first stroke");
-		for (var other : MastersRules.Move.values()) if (other != move) assertNotEquals(reply, sample(other, other.tell));
+		for (var other : singleStrikeMoves()) if (other != move) assertNotEquals(reply, sample(other, other.tell));
 		for (float at : new float[] {GaleRepriseRules.GATHER, GaleRepriseRules.GATHER + GaleRepriseRules.STEP_TICKS}) {
 			var before = values(sample(move, at - .0001F));
 			var after = values(sample(move, at + .0001F));
@@ -144,7 +155,7 @@ class MasterAnimationRulesTest {
 		assertTrue(brace.body().x() > .2F && brace.sword().y() < -.5F, "Low crossed blade and planted torso announce the brace");
 		assertTrue(chamber.sword().x() < -2.3F && chamber.body().x() < 0, "A distinct overhead gather accompanies the separate warning");
 		assertTrue(reply.body().x() > .4F && reply.bladeTilt() < -110, "The fracture drops its point into the warned narrow lane");
-		for (var other : MastersRules.Move.values()) if (other != move) assertNotEquals(reply, sample(other, other.tell));
+		for (var other : singleStrikeMoves()) if (other != move) assertNotEquals(reply, sample(other, other.tell));
 		for (float at : new float[] {8, 20, 24}) {
 			var before = values(sample(move, at - .0001F));
 			var after = values(sample(move, at + .0001F));

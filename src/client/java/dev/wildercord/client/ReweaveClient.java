@@ -51,14 +51,22 @@ public final class ReweaveClient {
             && ReweaveRules.containsIds(Spellbooks.get(client.player).spells().get(slot));
         boolean handles = row || HANDLED[index];
         if (!handles) return false;
+        // A tap shorter than one tick is up at both reads; its queued click still counts as one whole press.
+        boolean clicked = false;
+        while (binding.consumeClick()) clicked = true;
         if (!playing) return true;
         // A menu/focus transition clears mapped keys. Only an observed in-game release rearms this edge.
         if (!down) BLOCKED[index] = false;
         if (client.player.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE)) { BLOCKED[index] = down; return true; }
-        if (down && !previous && !BLOCKED[index]) {
+        int edge = RelayInputRules.edge(down, previous, clicked);
+        if (edge == RelayInputRules.DOWN && !BLOCKED[index]) {
             HANDLED[index] = true; lastBinding = binding;
             send(client.player.isShiftKeyDown() ? RelayInputRules.CANCEL : RelayInputRules.DOWN, requested);
-        } else if (!down && previous && HANDLED[index]) {
+        } else if (edge == RelayInputRules.TAP && !BLOCKED[index]) {
+            lastBinding = binding;
+            if (client.player.isShiftKeyDown()) send(RelayInputRules.CANCEL, requested);
+            else { send(RelayInputRules.DOWN, requested); send(RelayInputRules.UP, requested); }
+        } else if (edge == RelayInputRules.UP && HANDLED[index]) {
             send(RelayInputRules.UP, requested); HANDLED[index] = false;
         }
         return true;

@@ -21,8 +21,10 @@ class ArticulatedEmberKilnPoseTest {
 		assertEquals(RECOVERY + ACTIVE, EmberKilnRules.RECOVERY);
 		assertEquals(MasterAnimationRules.KILN_RING, MASTER_EMBER_KILN_RING);
 		assertTrue(supportsMaster(9));
-		assertFalse(supportsPlayer(9));
-		assertSame(NONE, samplePlayer(9, 10, TELL, RECOVERY, false));
+		// Player ID 9 is Void Cut; the namespaces stay separate, so the NPC clip never leaks into it.
+		assertTrue(supportsPlayer(9));
+		assertNotEquals(sampleMaster(9, TELL, TELL, ACTIVE, RECOVERY, false).local(Joint.RIGHT_UPPER_ARM),
+			samplePlayer(9, 6, 6, 12, false).local(Joint.RIGHT_UPPER_ARM));
 		for (int move : new int[] {-1, 0, 2, 3, 4, 5, 6, 11, Integer.MAX_VALUE}) {
 			assertFalse(supportsMaster(move));
 			assertSame(NONE, sampleMaster(move, 20, TELL, ACTIVE, RECOVERY, false));

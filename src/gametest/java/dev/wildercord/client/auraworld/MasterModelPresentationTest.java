@@ -53,10 +53,20 @@ public final class MasterModelPresentationTest implements FabricClientGameTest {
 					state.setData(MasterModel.FRAME, null);
 					model.setupAnim(state);
 					float[] neutral = snapshot(model);
+					var poses = new java.util.ArrayList<MasterAnimationRules.Pose>();
 					for (var move : MastersRules.Move.values()) {
+						if (move == MastersRules.Move.TECHNIQUE) continue;
 						for (float age : new float[] {0, move.tell * .4F, move.tell * .65F, move.tell, move.tell + 2,
-							move.tell + move.recovery - .1F, move.tell + move.recovery}) {
-							var pose = MasterAnimationRules.sample(move.ordinal() + 1, age, move.tell, 1, move.recovery - 1);
+							move.tell + move.recovery - .1F, move.tell + move.recovery})
+							poses.add(MasterAnimationRules.sample(move.ordinal() + 1, age, move.tell, 1, move.recovery - 1));
+					}
+					for (var technique : dev.wildercord.aura.world.MasterTechniques.all()) {
+						for (int i = 0; i < technique.strikes().size(); i++)
+							poses.add(dev.wildercord.aura.world.MasterTechniques.sample(technique.id(), technique.impact(i)));
+						poses.add(dev.wildercord.aura.world.MasterTechniques.sample(technique.id(), technique.impact(0) * .5F));
+					}
+					{
+						for (var pose : poses) {
 							state.setData(MasterModel.FRAME, new MasterModel.Frame(pose, left));
 							model.setupAnim(state);
 							near(pose.rootYaw() * (left ? -1 : 1), model.root().yRot, "Full turn belongs to the root and mirrors with the hand");

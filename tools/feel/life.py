@@ -372,3 +372,10 @@ EVENTS += [event("life_bloom", life_bloom, variants=2, role="tell", subtitle="fi
 # Original Life outcomes; Mercy and Pulse Ferry retain their signature voices.
 from feel.life_outcomes_audio import ACTIVE_EVENTS as AUTHORED_OUTCOME_EVENTS
 EVENTS += list(AUTHORED_OUTCOME_EVENTS)
+
+# ---- fx-passive pack: the hearth Life runes' cue and landing voices.
+from feel.life_outcomes_audio import HEARTH_EVENTS
+EVENTS += list(HEARTH_EVENTS)
+# ---- fx-explore pack
+from feel.wayfarer_life_audio import EVENTS as WAYFARER_EVENTS
+EVENTS += list(WAYFARER_EVENTS)

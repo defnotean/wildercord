@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class RuneEtchingRulesTest {
 	@Test void ordinaryEffectsArePricedAsTheirTouchSpell() {
 		for (RuneDef rune : Runes.all()) {
-			boolean expected=rune.family()==RuneFamily.EFFECT && !Runes.innate(rune) && !rune.equals(Runes.EXCISE) && rune.kind()!=EffectKind.NONE;
+			boolean expected=rune.family()==RuneFamily.EFFECT && !Runes.innate(rune) && !rune.equals(Runes.EXCISE) && !LessonPackRules.contains(java.util.List.of(rune)) && rune.kind()!=EffectKind.NONE;
 			assertEquals(expected,RuneEtchingRules.accepts(rune),rune.id());
 			if (expected) assertEquals(Math.max(1,SpellCompiler.compile(java.util.List.of(Runes.TOUCH,rune)).manaCost()),
 				RuneEtchingRules.price(rune),rune.id());

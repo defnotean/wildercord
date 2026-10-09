@@ -63,6 +63,8 @@ public final class Config {
 		public static final int BLADE_TRAITS = 64;
 		/** Sparring works (a salute with the blade challenges): the swordsman's own client takes the salute for itself, not for the item. */
 		public static final int SPARRING = 128;
+		/** Stone Hinge is out of testing (the experimental switch): the Masters forms page offers it rather than showing it locked. */
+		public static final int STONE_HINGE = 1 << 16;
 		private static final int AWAKENING_MOMENTUM_SHIFT = 8;
 		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true, true,
 			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost(), true, (float) WildercordConfig.AuraWorldSettings.DEFAULTS.sashCapacity(), true,
@@ -93,7 +95,8 @@ public final class Config {
 			int needed = (int) Math.round(Math.max(0, Math.min(100, aura.awakening().awakeningMomentum())));
 			return (aura.momentum().momentum() ? MOMENTUM : 0) | (aura.momentum().stance() ? STANCE : 0) | (aura.awakening().awakening() ? AWAKENING : 0)
 				| (aura.ways().ways() ? WAYS : 0) | (aura.techniques().techniques() ? TECHNIQUES : 0) | (aura.bonds().bonds() ? BONDS : 0)
-				| (aura.bonds().traits() ? BLADE_TRAITS : 0) | (aura.sparring().sparring() ? SPARRING : 0) | needed << AWAKENING_MOMENTUM_SHIFT;
+				| (aura.bonds().traits() ? BLADE_TRAITS : 0) | (aura.sparring().sparring() ? SPARRING : 0) | needed << AWAKENING_MOMENTUM_SHIFT
+				| (aura.sparring().experimentalStoneHinge() ? STONE_HINGE : 0);
 		}
 
 		/** The momentum an awakening asks for, as the bits carry it. */
@@ -279,6 +282,12 @@ public final class Config {
 	/** Whether swordsmen can spar (a salute answered opens the ring): the server's own setting, or on a client the one it was sent. */
 	public static boolean sparring(Player player) {
 		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.SPARRING) != 0 : get().aura().sparring().sparring();
+	}
+
+	/** Whether Stone Hinge is out of testing (taught and equippable): the server's own switch, or on a client the one it was sent. */
+	public static boolean stoneHinge(Player player) {
+		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.STONE_HINGE) != 0
+			: get().aura().sparring().experimentalStoneHinge();
 	}
 
 	/** The momentum an awakening asks for: the server's own setting, or on a client the one it was sent. */

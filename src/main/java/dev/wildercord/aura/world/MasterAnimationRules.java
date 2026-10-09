@@ -8,7 +8,7 @@ package dev.wildercord.aura.world;
 public final class MasterAnimationRules {
 	private MasterAnimationRules() {}
 
-	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7, STONE_FRACTURE = 8, KILN_RING = 9, STONE_FAULT_MARCH = 10;
+	public static final int SWEEP = 1, THRUST = 2, CRESCENT = 3, BREAK_CAST = 4, CINDER_WAKE = 5, PURSUIT_BREAK = 6, CROSSWIND_REPRISE = 7, STONE_FRACTURE = 8, KILN_RING = 9, STONE_FAULT_MARCH = 10, TECHNIQUE = 11;
 	public record Joint(float x, float y, float z) {
 		Joint toward(Joint other, float t) {
 			return new Joint(lerp(x, other.x, t), lerp(y, other.y, t), lerp(z, other.z, t));
@@ -134,6 +134,11 @@ public final class MasterAnimationRules {
 	 * active is the hit's occupied tick count, followed by recovery. Both ends ease to vanilla.
 	 */
 	public static Pose sample(int attack, float age, int tell, int active, int recovery) {
+		// ---- masters-a pack: the Rime, Thunder, Verdant and Hollow signatures follow their executor clocks.
+		if (ElementalMasterAnimation.owns(attack)) return tell < 1 || tell > 80 || active < 1 || active > 10 || recovery < 1 || recovery > 120
+			? NONE : ElementalMasterAnimation.sample(attack, age);
+		if (MastersPackBAnimation.owns(attack)) return MastersPackBAnimation.sample(attack, age, tell, active, recovery); // ---- masters-b pack
+		if (MethodsAMasterAnimation.owns(attack)) return MethodsAMasterAnimation.sample(attack, age, tell, active, recovery); // ---- methods-a pack
 		// This committed multi-pulse form uses its executor clock, not a rescaled single hit.
 		if (attack == STONE_FAULT_MARCH) {
 			if (!Float.isFinite(age) || age < 0 || age >= StoneMarchRules.END || tell < 1 || tell > 80
@@ -269,6 +274,24 @@ public final class MasterAnimationRules {
 		float weight = age < chamber ? lerp(initialWeight, 1, smooth((age - gather) / (chamber - gather)))
 			: 1 - smooth((age - follow) / Math.max(1, end - follow));
 		return pose.weight(weight);
+	}
+
+	/** Chamber, impact and follow keys of an authored single-strike motion, reused by the technique library. */
+	static Pose[] keys(int attack) {
+		Motion motion = switch (attack) {
+			case SWEEP -> SWEEP_MOTION;
+			case THRUST -> THRUST_MOTION;
+			case CRESCENT -> CRESCENT_MOTION;
+			case BREAK_CAST -> BREAK_MOTION;
+			case CINDER_WAKE -> CINDER_MOTION;
+			case PURSUIT_BREAK -> PURSUIT_MOTION;
+			case CROSSWIND_REPRISE -> REPRISE_MOTION;
+			case STONE_FRACTURE -> FRACTURE_MOTION;
+			case KILN_RING -> KILN_MOTION;
+			case -1 -> IGNITION_MOTION;
+			default -> throw new IllegalArgumentException("No single-strike motion: " + attack);
+		};
+		return new Pose[] {motion.chamber, motion.impact, motion.follow};
 	}
 
 	/** Defensive flags are already eased by AuraFighter. They never extend a cancelled attack. */

@@ -1,5 +1,4 @@
 """Authored Wall Turn lesson cover, form icon and complete player-facing text."""
-from PIL import Image, ImageDraw
 
 LANG = {
     "key.category.wildercord.master_forms": "Wildercord: Master forms",
@@ -57,16 +56,18 @@ LANG = {
 
 
 def write(g):
-    image = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
-    d = ImageDraw.Draw(image)
-    d.rounded_rectangle((5, 3, 27, 29), radius=2, fill="#244a46", outline="#a7c6b8", width=1)
-    d.rectangle((7, 4, 9, 28), fill="#4b7868")
-    d.rectangle((12, 9, 14, 23), fill="#c1c9b6")
-    d.line((15, 17, 20, 10, 24, 14), fill="#efd589", width=2)
-    d.line((22, 13, 24, 14, 24, 11), fill="#efd589", width=1)
-    d.line((15, 24, 24, 24), fill="#c1c9b6", width=1)
-    target = g.ASSETS / "textures/item/wall_turn_lesson.png"
-    target.parent.mkdir(parents=True, exist_ok=True)
-    image.save(target)
+    """The lesson on the shared lesson-book cover, as Relay, Reweave and Excise: Gale's sky-teal, a wall and the kick's arc."""
+    from fungal_art import book_icon
+    cover = ("#0F1E22", "#1F4247", "#3E7A72", "#2B5A57", "#173336")
+    emblem = """
+        e...hh.
+        e..h..h
+        e.h...h
+        eh.....
+        eh.....
+        e......
+        eeeeeee
+    """
+    g.save(book_icon(cover, emblem, "#C9D8C6", "#EFD589"), g.ASSETS / "textures/item/wall_turn_lesson.png")
     g.write_json(g.ASSETS / "models/item/wall_turn_lesson.json", {"parent": "minecraft:item/generated", "textures": {"layer0": "wildercord:item/wall_turn_lesson"}})
     g.write_json(g.ASSETS / "items/wall_turn_lesson.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/wall_turn_lesson"}})

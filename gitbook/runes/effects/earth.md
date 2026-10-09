@@ -4,7 +4,46 @@
 
 Stone and ground. Earth shields, roots, heaves the ground and breaks blocks.
 
-18 earth effects you can craft or find in the usual way. Earth also has runes of the world, fused runes and innate runes: see their own pages.
+89 earth effects you can craft or find in the usual way. Earth also has runes of the world, fused runes and innate runes: see their own pages.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/barkstrip.png) Barkstrip
+
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Strips the bark off the logs and wood in a 5-by-5-by-5 block around the point, as an axe would.
+
+**How to get it:** Craft: a Blank Rune, Iron Axe, Oak Log and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Barkstrip: a Blank Rune and Iron Axe, Oak Log and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barkstrip.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/berrybless.png) Berrybless
+
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Sweet berry bushes in a 5-by-5 patch ripen to full, and the glow berry vines among them come into fruit.
+
+**How to get it:** Craft: a Blank Rune, Sweet Berries, Bone Meal and Oak Leaves. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Berrybless: a Blank Rune and Sweet Berries, Bone Meal and Oak Leaves](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_berrybless.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blockpack.png) Block Pack
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Crafts nine of a kind in your pack into their block, like iron ingots into an iron block. 8 blocks at most.
+
+**How to get it:** Craft: a Blank Rune, Crafting Table and Iron Nugget. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Block Pack: a Blank Rune and Crafting Table and Iron Nugget](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_blockpack.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/brace.png) Brace
 
@@ -17,7 +56,7 @@ Braces for the blow: 80% less damage for 2 seconds. Bracing again takes 6 second
 
 ![Crafting Brace: a Blank Rune and Cobblestone and Iron Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_brace.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chisel.png) Chisel
 
@@ -30,7 +69,176 @@ Mines the block that was hit (up to stone-pickaxe hardness; Amplify for iron).
 
 ![Crafting Chisel: a Blank Rune and Stone Pickaxe](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_chisel.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/compost.png) Compost
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Feeds the composter you strike from your inventory, as if you dropped the items in yourself: up to 8 seeds, leaves or scraps (16 at double power).
+
+**How to get it:** Craft: a Blank Rune, Composter, Rotten Flesh and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Compost: a Blank Rune and Composter, Rotten Flesh and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_compost.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/concreteset.png) Concrete Set
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Concrete powder near the point sets into concrete. 16 at most.
+
+**How to get it:** Craft: a Blank Rune, White Concrete Powder and Water Bucket. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Concrete Set: a Blank Rune and White Concrete Powder and Water Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_concreteset.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/deepsound.png) Deepsound
+
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Tells you the nearest ore up to 16 blocks under the point, and how deep.
+
+**How to get it:** Craft: a Blank Rune, Note Block. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Deepsound: a Blank Rune and Note Block](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_deepsound.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/deepwarn.png) Deepwarn
+
+
+*Tier I · Earth · Helps you and your allies · 4 mana · needs any Cord*
+
+For 5 minutes, warns you of lava below or a long drop ahead. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Magma Cream and Spyglass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Deepwarn: a Blank Rune and Magma Cream and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_deepwarn.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/depth_sounding.png) Depth Sounding
+
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Sounds the rock under the point: how far down the first open cave or lava lies, up to 64 blocks.
+
+**How to get it:** Craft: a Blank Rune, Pointed Dripstone, String and Cobbled Deepslate. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Depth Sounding: a Blank Rune and Pointed Dripstone, String and Cobbled Deepslate](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_depth_sounding.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fallow.png) Fallow
+
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Rests the bare farmland in a 5-by-5 patch back into dirt. Farmland with something growing on it is left as it is.
+
+**How to get it:** Craft: a Blank Rune, Dirt, Bone Meal and Short Grass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Fallow: a Blank Rune and Dirt, Bone Meal and Short Grass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fallow.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fodder.png) Fodder
+
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Feeds the animals within 5 blocks from your inventory, each with one item of the food it eats: it heals 4 and a young one grows a tenth of the way up.
+
+**How to get it:** Craft: a Blank Rune, Hay Bale, Carrot and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Fodder: a Blank Rune and Hay Bale, Carrot and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fodder.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glyph_carve.png) Glyph Carve
+
+
+*Tier I · Earth · Works on the world · 1 mana · needs any Cord*
+
+Carves a glowing glyph of the way you face onto the first blank line of a sign.
+
+**How to get it:** Craft: a Blank Rune, Oak Sign and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Glyph Carve: a Blank Rune and Oak Sign and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_glyph_carve.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/holefill.png) Holefill
+
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Fills holes near the point up to its height with stone, dirt or planks from your pack. 16 at most.
+
+**How to get it:** Craft: a Blank Rune, Dirt, Cobblestone and Oak Planks. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Holefill: a Blank Rune and Dirt, Cobblestone and Oak Planks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_holefill.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/land_reading.png) Land Reading
+
+
+*Tier I · Earth · Works on the world · 1 mana · needs any Cord*
+
+Reads the ground where it lands: its biome, how warm it is, and its height against sea level.
+
+**How to get it:** Craft: a Blank Rune, Dirt and Compass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Land Reading: a Blank Rune and Dirt and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_land_reading.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/landread.png) Landread
+
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Tells you the biome, height and light where it lands, and whether slimes spawn there.
+
+**How to get it:** Craft: a Blank Rune, Dirt and Spyglass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Landread: a Blank Rune and Dirt and Spyglass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_landread.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/millstone.png) Millstone
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Grinds up to 16 cobblestone in your pack into gravel, or else gravel into sand.
+
+**How to get it:** Craft: a Blank Rune, Grindstone. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Millstone: a Blank Rune and Grindstone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_millstone.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nest_tend.png) Nest Tend
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Turtle eggs within 4 blocks move a stage closer to hatching, up to 4, and baby turtles grow.
+
+**How to get it:** Craft: a Blank Rune, Seagrass and Sand. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Nest Tend: a Blank Rune and Seagrass and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nest_tend.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pelt.png) Pelt
 
@@ -43,7 +251,59 @@ Pelts targets with stones: 4 damage and a hard shove.
 
 ![Crafting Pelt: a Blank Rune and Gravel and Cobblestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pelt.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/picnic.png) Picnic
+
+
+*Tier I · Earth · Helps you and your allies · 5 mana · needs any Cord*
+
+A shared basket: each target eats 3 hunger and heals 2 (more with power).
+
+**How to get it:** Craft: a Blank Rune, Bread, Apple and White Carpet. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Picnic: a Blank Rune and Bread, Apple and White Carpet](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_picnic.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/plankway.png) Plankway
+
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Lays a lasting bridge up to 12 long the way you face, from planks or stone in your pack.
+
+**How to get it:** Craft: a Blank Rune, 2x Oak Planks and String. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Plankway: a Blank Rune and 2x Oak Planks and String](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_plankway.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/plumbline.png) Plumb Line
+
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Digs a shaft up to 8 deep under the point (iron-pickaxe hardness). Stops a block above lava, water or a drop.
+
+**How to get it:** Craft: a Blank Rune, String, Iron Nugget and Cobblestone. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Plumb Line: a Blank Rune and String, Iron Nugget and Cobblestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_plumbline.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/polish.png) Polish
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Polishes stone near the point: andesite, granite, diorite, tuff, basalt and the like. 9 at most.
+
+**How to get it:** Craft: a Blank Rune, Polished Andesite and Sand. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Polish: a Blank Rune and Polished Andesite and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_polish.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/prospect.png) Prospect
 
@@ -56,7 +316,202 @@ The ground rings out: every ore within 12 blocks of where it lands glows through
 
 ![Crafting Prospect: a Blank Rune and Stone Pickaxe and Amethyst Shard](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_prospect.png)
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reed_cut.png) Reed Cut
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Cuts kelp, seagrass, sugar cane and lily pads within 3 blocks of the point, up to 12. Kelp and cane keep their base to regrow.
+
+**How to get it:** Craft: a Blank Rune, Sugar Cane and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Reed Cut: a Blank Rune and Sugar Cane and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reed_cut.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/relic_sense.png) Relic Sense
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Suspicious sand and gravel within 12 blocks glow for 20 seconds, and you hear how many there are.
+
+**How to get it:** Craft: a Blank Rune, Brush and Sand. The recipe is shapeless: any layout, any crafting grid. Also found: Desert Pyramid Archaeology.
+
+![Crafting Relic Sense: a Blank Rune and Brush and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_relic_sense.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/saplingsow.png) Sapling Sow
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Plants saplings from your own inventory onto open dirt and grass in a 5-by-5 patch, two blocks apart: up to 4.
+
+**How to get it:** Craft: a Blank Rune, Oak Sapling, Birch Sapling and Dirt. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sapling Sow: a Blank Rune and Oak Sapling, Birch Sapling and Dirt](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_saplingsow.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shoreup.png) Shore Up
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Props up hanging sand and gravel near the point with blocks from your pack. 8 at most.
+
+**How to get it:** Craft: a Blank Rune, Oak Log and Gravel. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Shore Up: a Blank Rune and Oak Log and Gravel](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shoreup.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/siftfall.png) Siftfall
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Sand and gravel hanging over air above the point fall as items, up to 4 high.
+
+**How to get it:** Craft: a Blank Rune, Gravel and Sand. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Siftfall: a Blank Rune and Gravel and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_siftfall.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sow.png) Sow
+
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Plants seeds from your own inventory into the empty farmland of a 5-by-5 patch, one seed for each block. Nothing is planted that you don't carry.
+
+**How to get it:** Craft: a Blank Rune, Wheat Seeds, Beetroot Seeds and Carrot. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sow: a Blank Rune and Wheat Seeds, Beetroot Seeds and Carrot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sow.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stilt.png) Stilt
+
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Raises you on a packed mud column up to 5 high. It crumbles after 30 seconds.
+
+**How to get it:** Craft: a Blank Rune, Packed Mud and Scaffolding. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Stilt: a Blank Rune and Packed Mud and Scaffolding](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stilt.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stoutheart.png) Stoutheart
+
+
+*Tier I · Earth · Helps you and your allies · 5 mana · needs any Cord*
+
+Resistance I for 10 seconds (Amplify makes it II).
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Apple. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Stoutheart: a Blank Rune and Iron Ingot and Apple](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stoutheart.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/surefoot.png) Surefoot
+
+
+*Tier I · Earth · Helps you and your allies · 4 mana · needs any Cord*
+
+Step up full blocks without jumping for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Leather Boots and Cobblestone Stairs. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Surefoot: a Blank Rune and Leather Boots and Cobblestone Stairs](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_surefoot.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tend.png) Tend
+
+
+*Tier I · Earth · Helps you and your allies · 6 mana · needs any Cord*
+
+Heals a villager, golem, pet or animal for 8 (an iron golem for 16).
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops and Bone Meal. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Tend: a Blank Rune and Wheat Crops and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tend.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tillage.png) Tillage
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Tills the dirt and grass in a 5-by-5 patch around the block it strikes into farmland, as a hoe would. Widen reaches further; never more than 32 blocks a cast.
+
+**How to get it:** Craft: a Blank Rune, Wooden Hoe, Dirt and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Tillage: a Blank Rune and Wooden Hoe, Dirt and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tillage.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tilth.png) Tilth
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Loosens the coarse and rooted dirt in a 5-by-5 patch into plain dirt; rooted dirt sheds its hanging roots, as a hoe would.
+
+**How to get it:** Craft: a Blank Rune, Coarse Dirt, Bone Meal and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Tilth: a Blank Rune and Coarse Dirt, Bone Meal and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tilth.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/unpack.png) Unpack
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Turns up to 4 storage blocks in your pack back into nine pieces each.
+
+**How to get it:** Craft: a Blank Rune, Crafting Table and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Unpack: a Blank Rune and Crafting Table and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_unpack.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wildflower.png) Wildflower
+
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Sows wild flowers onto the open grass in a 5-by-5 patch: up to 6 flowers, more when widened.
+
+**How to get it:** Craft: a Blank Rune, Dandelion, Poppy and Cornflower. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Wildflower: a Blank Rune and Dandelion, Poppy and Cornflower](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wildflower.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/aftercare.png) Aftercare
+
+
+*Tier II · Earth · Helps you and your allies · 9 mana · needs a Copper Cord or better*
+
+For 15 seconds, each time the target is hurt it heals 1 a second later, 6 in all.
+
+**How to get it:** Craft: a Blank Rune, Glistering Melon Slice and Clock, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Aftercare: a Blank Rune and Glistering Melon Slice and Clock, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_aftercare.png)
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/aftershock.png) Aftershock
 
@@ -69,7 +524,46 @@ The ground rings out: every ore within 12 blocks of where it lands glows through
 
 ![Crafting Aftershock: a Blank Rune and Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_aftershock.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/agestone.png) Agestone
+
+
+*Tier II · Earth · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Ages masonry near the point: moss on cobblestone and stone bricks, cracks in deep bricks. 9 at most.
+
+**How to get it:** Craft: a Blank Rune, Moss Block and Cracked Stone Bricks, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Agestone: a Blank Rune and Moss Block and Cracked Stone Bricks, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_agestone.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/barkhide.png) Barkhide
+
+
+*Tier II · Earth · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+Skin like old oak: Resistance I for 12 seconds.
+
+**How to get it:** Craft: a Blank Rune, Oak Log, Spruce Log and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Barkhide: a Blank Rune and Oak Log, Spruce Log and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_barkhide.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/blastward.png) Blastward
+
+
+*Tier II · Earth · Works on the world · 10 mana · needs a Copper Cord or better*
+
+For 60 seconds explosions within 6 blocks break no blocks.
+
+**How to get it:** Craft: a Blank Rune, Gunpowder and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Blastward: a Blank Rune and Gunpowder and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_blastward.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/break.png) Break
 
@@ -82,7 +576,20 @@ Mines the block that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 
 ![Crafting Break: a Blank Rune and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_break.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/brickwork.png) Brickwork
+
+
+*Tier II · Earth · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Cuts stone near the point into its bricks. 9 at most.
+
+**How to get it:** Craft: a Blank Rune, Stonecutter and Brick, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Brickwork: a Blank Rune and Stonecutter and Brick, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_brickwork.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/excavate.png) Excavate
 
@@ -95,7 +602,7 @@ Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).
 
 ![Crafting Excavate: a Blank Rune and Iron Shovel, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_excavate.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fell.png) Fell
 
@@ -108,7 +615,150 @@ Fells the tree that was hit: the log and every log joined to it above, up to 32.
 
 ![Crafting Fell: a Blank Rune and Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fell.png)
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/floorlay.png) Floorlay
+
+
+*Tier II · Earth · Works on the world · 7 mana · needs a Copper Cord or better*
+
+Lays a 5x5 floor at the point from stone, dirt or planks in your pack, over air only.
+
+**How to get it:** Craft: a Blank Rune, 2x Smooth Stone and Oak Planks, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Floorlay: a Blank Rune and 2x Smooth Stone and Oak Planks, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_floorlay.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gourdcall.png) Gourdcall
+
+
+*Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Grown pumpkin and melon stems in a 5-by-5 patch try at once to set their fruit, as many times as a day of waiting would give them.
+
+**How to get it:** Craft: a Blank Rune, Pumpkin Seeds, Melon Seeds and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Gourdcall: a Blank Rune and Pumpkin Seeds, Melon Seeds and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gourdcall.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthguard.png) Hearthguard
+
+
+*Tier II · Earth · Helps you and your allies · 10 mana · needs a Copper Cord or better*
+
+A villager, trader or golem takes 60% less damage from monsters for 5 minutes.
+
+**How to get it:** Craft: a Blank Rune, Emerald and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Hearthguard: a Blank Rune and Emerald and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthguard.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/keenkeep.png) Keenkeep
+
+
+*Tier II · Earth · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+Your held tool wears half as fast for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Grindstone and Flint, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Keenkeep: a Blank Rune and Grindstone and Flint, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_keenkeep.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/keepsafe.png) Keepsafe
+
+
+*Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
+
+For 10 minutes the block hit can't be broken by anyone outside your party, nor by explosions.
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Keepsafe: a Blank Rune and Iron Ingot and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_keepsafe.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leafshade.png) Leafshade
+
+
+*Tier II · Earth · Helps you and your allies · 7 mana · needs a Copper Cord or better*
+
+Cool leaf-shade: Fire Resistance for 15 seconds.
+
+**How to get it:** Craft: a Blank Rune, Oak Leaves, Oak Log and Vines, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Leafshade: a Blank Rune and Oak Leaves, Oak Log and Vines, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leafshade.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/levelground.png) Levelground
+
+
+*Tier II · Earth · Works on the world · 10 mana · needs a Copper Cord or better*
+
+Mines away what stands up to 3 blocks over the point within 2 blocks of it.
+
+**How to get it:** Craft: a Blank Rune, Iron Shovel and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Levelground: a Blank Rune and Iron Shovel and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_levelground.png)
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/long_arm.png) Long Arm
+
+
+*Tier II · Earth · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Reach 2 blocks farther to build and mine for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, 2x Stick, String and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Long Arm: a Blank Rune and 2x Stick, String and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_long_arm.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/oretally.png) Ore Tally
+
+
+*Tier II · Earth · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Counts the ores within 6 blocks of the point by kind.
+
+**How to get it:** Craft: a Blank Rune, Raw Iron, Coal and Paper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Ore Tally: a Blank Rune and Raw Iron, Coal and Paper, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_oretally.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/pitfloor.png) Pit Floor
+
+
+*Tier II · Earth · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Lays a 3x3 packed mud floor over the air at the point. It crumbles after 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, 2x Packed Mud and Scaffolding, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Pit Floor: a Blank Rune and 2x Packed Mud and Scaffolding, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_pitfloor.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/plowline.png) Plowline
+
+
+*Tier II · Earth · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Ploughs a straight furrow from the block it strikes along the way you face: up to 8 blocks of dirt or grass tilled into farmland, longer with power (16 at most).
+
+**How to get it:** Craft: a Blank Rune, Iron Hoe, Dirt and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Plowline: a Blank Rune and Iron Hoe, Dirt and String, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_plowline.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rampart.png) Rampart
 
@@ -121,7 +771,20 @@ Raises a 5-wide, 3-high wall of earth at the point for 10 seconds.
 
 ![Crafting Rampart: a Blank Rune and 2x Packed Mud, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rampart.png)
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/riser.png) Riser
+
+
+*Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Carves a stair 5 steps up the way you face (iron-pickaxe hardness; Amplify for diamond). Stops short of lava or water.
+
+**How to get it:** Craft: a Blank Rune, Stone Pickaxe and Ladder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Riser: a Blank Rune and Stone Pickaxe and Ladder, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_riser.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/root.png) Root
 
@@ -134,7 +797,46 @@ Vines hold targets in place for 3 seconds.
 
 ![Crafting Root: a Blank Rune and 2x Vines, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_root.png)
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ruin_sense.png) Ruin Sense
+
+
+*Tier II · Earth · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Senses the nearest trail ruins and tells which way and roughly how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Empty Map and Brush, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Ruin Sense: a Blank Rune and Empty Map and Brush, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ruin_sense.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sandbar.png) Sandbar
+
+
+*Tier II · Earth · Works on the world · 7 mana · needs a Copper Cord or better*
+
+Raises a 12-block sandstone path at the water's surface the way you look, for 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, Sandstone and Sand, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Sandbar: a Blank Rune and Sandstone and Sand, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sandbar.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sapflow.png) Sapflow
+
+
+*Tier II · Earth · Helps you and your allies · 7 mana · needs a Copper Cord or better*
+
+Spring sap rises in you: Regeneration I for 8 seconds.
+
+**How to get it:** Craft: a Blank Rune, Honey Bottle, Oak Sapling and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Sapflow: a Blank Rune and Honey Bottle, Oak Sapling and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sapflow.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shackle.png) Shackle
 
@@ -147,7 +849,20 @@ Chains each target to the spot for 5 seconds: it's yanked back if it strays more
 
 ![Crafting Shackle: a Blank Rune and 2x Iron Chain, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shackle.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shellback.png) Shellback
+
+
+*Tier II · Earth · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Resistance for 15 seconds, 30 in water or rain.
+
+**How to get it:** Craft: a Blank Rune, Turtle Scute and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Shellback: a Blank Rune and Turtle Scute and Kelp, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shellback.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shield.png) Shield
 
@@ -160,7 +875,59 @@ For 30 seconds, the next harmful spell cast at the target meets magic circles th
 
 ![Crafting Shield: a Blank Rune and Shield, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shield.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shieldwall.png) Shieldwall
+
+
+*Tier II · Earth · Helps you and your allies · 12 mana · needs a Copper Cord or better*
+
+You and allies within 5 blocks can't be knocked back and get Resistance I for 8 seconds.
+
+**How to get it:** Craft: a Blank Rune, Shield and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Shieldwall: a Blank Rune and Shield and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shieldwall.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stairdelve.png) Stair Delve
+
+
+*Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Carves a stair 5 steps down the way you face (iron-pickaxe hardness; Amplify for diamond). Stops short of lava, water or a drop.
+
+**How to get it:** Craft: a Blank Rune, Stone Pickaxe and Cobblestone Stairs, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Stair Delve: a Blank Rune and Stone Pickaxe and Cobblestone Stairs, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stairdelve.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stalkrise.png) Stalkrise
+
+
+*Tier II · Earth · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Sugar cane and cactus in a 5-by-5 patch grow one block taller, never past three tall; bamboo grows as bone meal would grow it.
+
+**How to get it:** Craft: a Blank Rune, Sugar Cane, Cactus and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Stalkrise: a Blank Rune and Sugar Cane, Cactus and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stalkrise.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steady_brush.png) Steady Brush
+
+
+*Tier II · Earth · Works on the world · 5 mana · needs a Copper Cord or better*
+
+With a brush in hand, brushes up to 3 suspicious blocks near the point at once, hands free. The brush wears a point for each.
+
+**How to get it:** Craft: a Blank Rune, Brush, Feather and Gravel, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Desert Pyramid Archaeology; Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Steady Brush: a Blank Rune and Brush, Feather and Gravel, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_steady_brush.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stoneskin.png) Stoneskin
 
@@ -173,7 +940,7 @@ Resistance II for 10 seconds, and Slowness I: stone is heavy.
 
 ![Crafting Stoneskin: a Blank Rune and Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_stoneskin.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/strata_rise.png) Strata Rise
 
@@ -186,7 +953,20 @@ Raises a real five-wide, three-high stone wall over seven ticks. Lasts eight sec
 
 ![Crafting Strata Rise: a Blank Rune and Stone, Packed Mud and Flint, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_strata_rise.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tinker_hum.png) Tinker's Hum
+
+
+*Tier II · Earth · Helps you and your allies · 10 mana · needs a Copper Cord or better*
+
+For 5 minutes, a worn tool or piece of armor you carry mends a point every 10 seconds, up to 30.
+
+**How to get it:** Craft: a Blank Rune, Anvil, Iron Ingot and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Tinker's Hum: a Blank Rune and Anvil, Iron Ingot and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tinker_hum.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tunnel.png) Tunnel
 
@@ -199,7 +979,7 @@ Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe 
 
 ![Crafting Tunnel: a Blank Rune and Iron Pickaxe and Rail, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tunnel.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/vein.png) Vein
 
@@ -212,7 +992,7 @@ Mines the block that was hit and, if it's an ore, every matching ore joined to i
 
 ![Crafting Vein: a Blank Rune and Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_vein.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/weigh.png) Weigh
 
@@ -225,7 +1005,124 @@ Crushingly heavy for 5 seconds: triple gravity, barely able to move or jump, and
 
 ![Crafting Weigh: a Blank Rune and Block of Iron, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_weigh.png)
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/caveward.png) Caveward
+
+
+*Tier III · Earth · Helps you and your allies · 10 mana · needs an Amethyst Cord or better*
+
+For 60 seconds, sand, gravel or powder snow that buries the target's head crumbles into items.
+
+**How to get it:** Craft: a Blank Rune, Turtle Shell, Sand and Gravel, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Caveward: a Blank Rune and Turtle Shell, Sand and Gravel, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_caveward.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/coppice.png) Coppice
+
+
+*Tier III · Earth · Works on the world · 14 mana · needs an Amethyst Cord or better*
+
+Fells the tree you strike (its logs, never more than 32, drop as an axe would cut them) and replants the stump with a sapling from your inventory. A log with no living leaves is part of a build and is left alone.
+
+**How to get it:** Craft: a Blank Rune, Iron Axe, Oak Sapling and Oak Log, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Coppice: a Blank Rune and Iron Axe, Oak Sapling and Oak Log, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_coppice.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/deepway.png) Deepway
+
+
+*Tier III · Earth · Works on the world · 16 mana · needs an Amethyst Cord or better*
+
+Bores a 3x3 road 3 deep into the wall hit (diamond-pickaxe hardness) and sets 2 torches from your pack.
+
+**How to get it:** Craft: a Blank Rune, Diamond Pickaxe, Torch and Rail, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Deepway: a Blank Rune and Diamond Pickaxe, Torch and Rail, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_deepway.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gangue.png) Gangue
+
+
+*Tier III · Earth · Works on the world · 14 mana · needs an Amethyst Cord or better*
+
+Mines plain rock within 2 blocks of the point and leaves the ores standing.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, Tuff and Raw Iron, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Gangue: a Blank Rune and Iron Pickaxe, Tuff and Raw Iron, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_gangue.png)
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/guardlink.png) Guardlink
+
+
+*Tier III · Earth · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+For 15 seconds, 40% of the ally's damage comes to you instead. Breaks past 16 blocks or at 6 health. Not on yourself.
+
+**How to get it:** Craft: a Blank Rune, Iron Chain and Iron Ingot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Guardlink: a Blank Rune and Iron Chain and Iron Ingot, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_guardlink.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ironhold.png) Ironhold
+
+
+*Tier III · Earth · Helps you and your allies · 15 mana · needs an Amethyst Cord or better*
+
+For 6 seconds no single blow deals the target more than 4.
+
+**How to get it:** Craft: a Blank Rune, Anvil and Shield, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Ironhold: a Blank Rune and Anvil and Shield, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ironhold.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/luckstrike.png) Luckstrike
+
+
+*Tier III · Earth · Works on the world · 10 mana · needs an Amethyst Cord or better*
+
+Mines the ore hit with Fortune I (II with Amplify).
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, Rabbit's Foot and Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Luckstrike: a Blank Rune and Iron Pickaxe, Rabbit's Foot and Emerald, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_luckstrike.png)
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/orepluck.png) Ore Pluck
+
+
+*Tier III · Earth · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Mines up to 8 ores with an open face within 4 blocks of the point.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, Raw Copper and Raw Gold, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Ore Pluck: a Blank Rune and Iron Pickaxe, Raw Copper and Raw Gold, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_orepluck.png)
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/saplingrise.png) Sapling Rise
+
+
+*Tier III · Earth · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Saplings and mushrooms in a 5-by-5 patch are urged to grow: up to 3 of them each get the growth of 8 bone meal.
+
+**How to get it:** Craft: a Blank Rune, Oak Sapling, Bone Meal and Oak Log, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+![Crafting Sapling Rise: a Blank Rune and Oak Sapling, Bone Meal and Oak Log, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_saplingrise.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tremor.png) Tremor
 
@@ -238,4 +1135,26 @@ The ground erupts: 8 damage to enemies within 4 blocks, throwing them up.
 
 ![Crafting Tremor: a Blank Rune and Deepslate Bricks and TNT, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tremor.png)
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/citadel.png) Citadel
+
+
+*Tier IV · Earth · Works on the world · 38 mana · needs an Echo Cord*
+
+An 8-block ward for 60 seconds: explosions break nothing, missiles from outside drop at the edge, and allies inside take 20% less damage.
+
+**How to get it:** Never crafted. Where it comes from: Ravagers (8%); Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/motherlode.png) Motherlode
+
+
+*Tier IV · Earth · Works on the world · 26 mana · needs an Echo Cord*
+
+Mines up to 16 ores within 3 blocks of the point with Fortune II (III with Amplify).
+
+**How to get it:** Never crafted. Where it comes from: Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

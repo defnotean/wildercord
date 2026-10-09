@@ -116,4 +116,13 @@ public final class MethodSources {
 		}
 		return out;
 	}
+
+	// ---- methods-b pack
+	static {
+		// Echo, Dawn and Venom's manuals, each where its kind of fighting is old: the deep city's silence, the desert's sun-lit
+		// tombs, the jungle's serpent temples.
+		for (MethodsBPack.Find find : MethodsBPack.FINDS) {
+			register(new Source(find.id(), find.lootTable(), find.chance(), Map.of(find.method(), 1)));
+		}
+	}
 }

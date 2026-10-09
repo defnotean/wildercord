@@ -10,10 +10,10 @@ class MasterPursuitRulesTest {
 		assertEquals(5, MastersRules.Move.CINDER_WAKE.ordinal() + 1);
 		assertEquals(6, MastersRules.Move.PURSUIT_BREAK.ordinal() + 1);
 		assertEquals(6, MasterAnimationRules.PURSUIT_BREAK);
-		assertEquals(18, MastersRules.Move.SWEEP.tell);
-		assertEquals(20, MastersRules.Move.BREAK_CAST.tell);
+		assertEquals(12, MastersRules.Move.SWEEP.tell);
+		assertEquals(12, MastersRules.Move.BREAK_CAST.tell);
 		assertEquals(22, MastersRules.Move.PURSUIT_BREAK.tell);
-		assertEquals(30, MastersRules.Move.PURSUIT_BREAK.recovery);
+		assertEquals(22, MastersRules.Move.PURSUIT_BREAK.recovery);
 	}
 
 	@Test
@@ -27,7 +27,7 @@ class MasterPursuitRulesTest {
 			else assertEquals(MasterPursuitRules.Beat.STRIKE, beat);
 		}
 		assertTrue(MasterPursuitRules.STRIKE_TELL >= 8);
-		assertTrue(MasterPursuitRules.RECOVERY >= 30);
+		assertTrue(MasterPursuitRules.RECOVERY >= 20, "a whole second to punish the dash");
 	}
 
 	@Test

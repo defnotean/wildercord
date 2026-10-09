@@ -8,79 +8,48 @@ description: "How armour, Warding, the Focus of Resolve, Resistance and your spe
 # Defending against magic
 {: .no_toc }
 
-Spells hit hard, and not only other players' spells: Runebound monsters and the dungeon bosses cast them too. You can
-stand up to them. Your **armour** counts against every spell, the **Warding** enchantment and the **Potion of
-Warding** take a lot more off, and your **spellguard** stops any one spell from killing you outright while your
-health is high.
-
 1. TOC
 {:toc}
 
-## At a glance
+## What it is
 
-| Defence | What it takes off every spell that hurts you | How to get it |
+Players, Runebound and bosses all cast spells. Your **armour**, the **Warding** enchantment, the
+**Potion of Warding** and your **spellguard** keep them from killing you in one blow. These rules are
+for players only: spells hit monsters as hard as ever.
+
+| Defence | What it takes off a spell | How to get it |
 |---|---|---|
-| **Armour** | Against fire, lightning and blasts, all it takes off a blade. Against pure magic, frost and sonic booms, a little over half that: full netherite takes **35 to 40%** off an everyday spell | Wear it |
-| **Warding I-IV** | **8% per level**, adding up over every piece you wear, up to **80%** | Enchanting table, anvil, librarians, loot |
-| **Potion of Warding** | **20%** (40% at Warding II) | Brew it: Awkward Potion + Tinted Glass |
-| **Focus of Resolve** | **20%**, while your spell effects are 15% weaker | Craft it and wear it in the focus slot, or hold it in your off-hand while that slot is empty |
-| **Resistance** | 20% per level, as against anything | Potion of the Turtle Master, Stoneskin, Reversal... |
-| **Protection** | 4% per level on each piece, as against anything (but nothing off a sonic boom) | Enchanting table |
-| **A Shield spell** | Stops a spell outright, or turns it back if you parry | See [Shields and Parrying]({{ '/spellcraft/shields/' | relative_url }}) |
-| **Your spellguard** | One spell can't take you from 80% of your health or more straight to dead | Everyone has it |
+| **Armour** | Full value against fire, lightning and blasts; a little over half against pure magic, frost and sonic booms | Wear it |
+| **Warding I-IV** | **8% per level**, added over every piece, up to **80%** | Enchanting table, anvil, librarians, loot |
+| **Potion of Warding** | **20%** (40% at II) | Awkward Potion + Tinted Glass |
+| **Focus of Resolve** | **20%**, but your own spells are 15% weaker | Focus slot, or off-hand while that slot is empty |
+| **Resistance** | 20% per level, as against anything | Turtle Master, Stoneskin, Reversal... |
+| **Protection** | 4% per level per piece (nothing off a sonic boom) | Enchanting table |
+| **A Shield spell** | Stops a spell, or turns it back on a parry | [Shields and Parrying]({{ '/spellcraft/shields/' | relative_url }}) |
+| **Spellguard** | One spell can't take you from 80% health or more straight to dead | Everyone has it |
 
-The layers **multiply**: full netherite (about 40% off) with Warding on every piece (80% off) and the Potion of
-Warding (20% off) leaves under a tenth of a spell. No stack of them makes you immune: a spell always hurts a little.
+The layers multiply. Nothing makes you immune: a spell always hurts a little.
 
-{: .note }
-This is for players only. Your spells hit monsters exactly as hard as before, and so do monsters' spells on each
-other.
+## How to get it
 
-## Armour
+### Warding
 
-Some spells have always met your armour in full: fire, lightning, blasts, falling stone and gusts of wind. Others
-used to go straight through it: pure magic (Harm, most arcane and void spells, a boss's shards), frost, and sonic
-booms. Now your armour counts against those too, for a little over half of what it's worth against a blade.
+An armour enchantment from **I to IV**. Each level takes **8%** off every spell, added over all your
+pieces, up to **80%**. It also works against sonic booms.
 
-As against a blade, **toughness** keeps more of armour's worth against a big hit, so diamond and netherite hold up
-far better than iron when a boss's biggest spell lands.
+It **can't share a piece with Protection** (or Fire, Blast or Projectile Protection), and both share the
+same 80% limit against spells. So:
 
-| Full set | Against a 5-heart spell of pure magic | Against a 10-heart one |
-|---|---|---|
-| Leather | 4% off | 3% off |
-| Gold | 13% off | 5% off |
-| Chainmail | 15% off | 5% off |
-| Iron | 22% off | 11% off |
-| Diamond | 39% off | 33% off |
-| Netherite | 40% off | 35% off |
+- **Protection IV everywhere:** 64% off everything, nothing off sonic booms.
+- **Warding IV everywhere:** 80% off spells, nothing off blades and arrows.
+- **Three Protection IV and one Warding IV:** the full 80% off spells and still 48% off everything else.
 
-## Warding
+Find it from an enchanting table, an anvil with a Warding book, librarian villagers, and enchanted
+books and armour in chests.
 
-**Warding** is an armour enchantment against spells, from **I to IV**. Each level takes **8%** off every spell that
-hurts you, and it adds up over all four pieces: one piece of Warding IV takes 32% off, two take 64%, and three or four
-reach **80%**, the most enchantments ever take off anything. It works against sonic booms too, which Protection
-doesn't touch.
+### The Potion of Warding
 
-Warding is a protection against one kind of harm, like Fire, Blast and Projectile Protection, so it **can't go on
-the same piece as Protection** (or as them). That's the choice to make:
-
-- **Protection IV on every piece** takes 64% off everything, spells included, but nothing off a sonic boom.
-- **Warding IV on every piece** takes 80% off every spell, sonic booms too, and nothing off blades and arrows.
-- **Mixing them**: Warding and Protection share the same 80% limit against spells, so three pieces of Protection IV
-  and one of Warding IV take the full 80% off spells and still 48% off everything else.
-
-### Getting it
-
-- **Enchanting table**: armour can come out with it, like any other armour enchantment.
-- **Anvil**: put a Warding book on a piece of armour, or combine two pieces, the usual way.
-- **Librarian villagers** can offer it as an enchanted book.
-- **Loot**: enchanted books and armour found in chests can carry it.
-
-It turns up about as often as Fire Protection, and costs about the same on an anvil.
-
-## The Potion of Warding
-
-The Potion of Warding gives you **Warded**: every spell that hurts you is **20%** weaker (40% at Warded II).
+Gives you **Warded**: spells hurt you 20% less per level.
 
 <div class="recipe-gallery">
 {% include recipe-card.html id="brewing_potion_awkward_tinted_glass" name="Awkward Potion + Tinted Glass: Potion of Warding" %}
@@ -90,80 +59,57 @@ The Potion of Warding gives you **Warded**: every spell that hurts you is **20%*
 {% include recipe-card.html id="brewing_splash_potion_warded_dragon_breath" name="Splash + Dragon's Breath: lingering" %}
 </div>
 
-| Potion | Brewed from | Effect |
-|---|---|---|
-| **Potion of Warding** | Awkward Potion + Tinted Glass | Warded: spells **20%** weaker for **3:00** |
-| Potion of Warding (long) | + Redstone | 20% for **8:00** |
-| Potion of Warding II | + Glowstone Dust | **40%** for **1:30** |
+| Potion | Effect |
+|---|---|
+| **Potion of Warding** | 20% for **3:00** |
+| Long (+ Redstone) | 20% for **8:00** |
+| Potion of Warding II (+ Glowstone) | **40%** for **1:30** |
 
-Tinted Glass is 4 Amethyst Shards around a block of Glass (it makes 2). Wildercord's magic is light written in the
-air, and tinted glass keeps light out. Splash and lingering Potions of Warding, and Arrows of Warding, work the way
-any potion's do, so you can ward your friends before a boss.
+Splash and lingering potions let you ward your friends before a boss.
 
-## Resistance and Protection
+### The Focus of Resolve
 
-Both work against spells just as they do against anything else. Resistance takes 20% off per level (a Potion of the
-Turtle Master's Resistance III takes 60%), and so do the spells that grant it: Stoneskin, Stoneform, Reversal's
-moment of safety. Protection takes 4% per level on each piece, sharing Warding's 80% limit. Neither needs anything
-new from you.
+{% include recipe.html id="focus_of_resolve" %}
 
-## The spellguard
+Takes 20% off spells that hurt you, while your own spell effects are 15% weaker.
 
-Everyone has a spellguard. If a single spell would take you **from 80% of your health or more straight to dead**,
-the spellguard breaks instead:
+## How to use it
 
-- you're left on **one heart**;
-- a ring of amber light flares round you, you hear a ward shatter, and you're told how long until it's back;
-- for the rest of that spell (its other effects land a moment later) nothing finishes you either.
+### Armour
 
-Then it takes **a minute** to come back. While it's recharging, a spell that would kill you kills you, unless a
-Totem of Undying (or Reversal, Second Wind or Rebirth) answers it.
+Armour counts fully against fire, lightning, blasts, falling stone and wind. Against pure magic, frost
+and sonic booms it counts for a little over half. As usual, **toughness** keeps more of its worth against
+a big hit, so diamond and netherite hold up far better than iron against a boss's biggest spell.
 
-- **It only guards against spells**: a sword, an arrow, lava or a fall are up to you.
-- **It only holds from high health.** If you're already hurt, a big spell can still finish you: heal up, or keep a
-  Shield ready.
-- **It goes first.** A blow the spellguard caught never killed you, so no totem, Reversal, Second Wind or Rebirth is
-  spent on it: they're still there for the next one.
-- **It never stops /kill or the void.**
-- A server can change how much health it needs and how long it takes to recharge, or switch it off. The Cord screen
-  always shows your server's numbers.
+### The spellguard
 
-## How hard things hit, and what's left
+If a single spell would take you **from 80% of your health or more straight to dead**, your spellguard
+breaks instead:
 
-The biggest single spell hits in the game, and what each leaves of a player's health (20 at full health). Bosses and
-Runebound hit half again as hard on Hard difficulty.
+- you're left on **one heart**, with a ring of amber light and the sound of a ward shattering;
+- the rest of that spell can't finish you either;
+- it comes back after **a minute**.
 
-| Spell | No armour | Full netherite | Netherite with Warding IV on every piece | ...and the Potion of Warding |
-|---|---|---|---|---|
-| The Archivist's Sunfall, Hard | 32.5 | 14.9 | 1.6 | 1.3 |
-| The Tide Scribe's lightning on a wet player, Hard | 29.7 | 13.0 | 1.5 | 1.1 |
-| The Archivist's beam of sonic boom, Hard | 26.4 | 17.9 | 3.6 | 2.9 |
-| The Cinder Warden's comet, Hard | 25.7 | 10.4 | 1.2 | 1.0 |
-| The Star-Eater's Domain, Hard | 23.1 | 15.3 | 3.1 | 2.4 |
-| A strong caster's Hollow, in PvP | 43.0 | 32.2 | 6.4 | 5.1 |
+It only guards against spells, only from high health, and never against /kill or the void. It goes
+before a Totem of Undying, Reversal, Second Wind or Rebirth, so those are saved for the next blow. A
+server can change its numbers or switch it off.
 
-With no armour, every one of these would kill a player at full health. Now the spellguard leaves them on one heart
-instead, and with armour on, the bosses' spells don't even need it. Before, the Archivist's sonic boom and the
-Star-Eater's Domain went straight through any armour.
+### Bonuses against players
 
-## A spell's bonuses against players
+Execute, reactions, hexes, backstabs and the like multiply freely against monsters. Against a
+**player**, all of them together never make a spell more than **2.5 times** as strong.
 
-Many things make a spell land harder: Execute, a reaction (Unweave, Fracture...), a hex, a backstab from the shadows,
-striking a sleeper, Decree. Against a monster they multiply without limit. Against a **player**, all of them together
-never make a spell more than **two and a half times** as strong, so a good setup still pays off, but never many times
-over.
+### On the Cord screen
 
-## Your defences on the Cord screen
+The **amber shield** beside the heart in the [Cord screen]({{ '/spellcraft/cord-screen/' | relative_url }})
+shows how much less spells hurt you and from what, and whether your spellguard is ready (a small dot
+shows while it recharges).
 
-The **amber shield** in the corner of the [Cord screen]({{ '/spellcraft/cord-screen/' | relative_url }}), next to
-the heart, shows your spell defence. Hover it for:
+## Tips and counterplay
 
-- how much less spells hurt you, and what from: your armour (weighed against a 5-heart spell), Warding and
-  Protection, Warded, Focus of Resolve, and Resistance;
-- whether your spellguard is ready, or how many seconds until it is (a small dot on the shield while it recharges);
-- every way to stand up to spells.
-
-## New in 0.7
-
-- [Elemental Armour]({{ '/progression/elemental-armour/' | relative_url }})
-- [Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }})
+- With no armour, a boss's biggest spell can kill you from full health. Wear your best set.
+- Heal up before a big fight: the spellguard only holds from 80% health or more.
+- Brew Warding for the whole party before a boss.
+- Stack Warding on one or two pieces and keep Protection on the rest for a balanced set.
+- See also [Elemental Armour]({{ '/progression/elemental-armour/' | relative_url }}) and
+  [Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }}).

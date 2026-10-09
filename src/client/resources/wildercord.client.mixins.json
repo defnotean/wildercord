@@ -32,7 +32,8 @@
 		"EntityRendererAuraSenseMixin",
 		"MinecraftStringsMixin",
 		"EntityRenderDispatcherHitStopMixin",
-		"ItemEntityRendererBondMixin"
+		"ItemEntityRendererBondMixin",
+		"MinecraftSpellCutMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

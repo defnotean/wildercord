@@ -536,6 +536,7 @@ public final class Aura {
 		MastersArts.init();
 		MasterForms.init();
 		MasterFormLessons.init();
+		FormDash.init();
 		// Momentum (a clean fight fills it; the Final Art waits on its peak) and stance (worn by blade and aura, broken into an opening
 		// and a finisher).
 		Momentum.init();

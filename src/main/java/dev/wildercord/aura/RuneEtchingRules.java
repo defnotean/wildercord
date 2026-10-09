@@ -8,7 +8,7 @@ public final class RuneEtchingRules {
 	public static final int LEVELS = 5;
 	public static final int REST = 100;
 	public static boolean accepts(RuneDef rune) {
-		return rune != null && rune.family() == RuneFamily.EFFECT && !Runes.innate(rune) && !ExciseRules.contains(java.util.List.of(rune))
+		return rune != null && rune.family() == RuneFamily.EFFECT && !Runes.innate(rune) && !ExciseRules.contains(java.util.List.of(rune)) && !dev.wildercord.spell.LessonPackRules.contains(java.util.List.of(rune))
 			&& rune.kind() != EffectKind.NONE && Double.isFinite(rune.cost()) && rune.cost() >= 0;
 	}
 	public static int price(RuneDef rune) {

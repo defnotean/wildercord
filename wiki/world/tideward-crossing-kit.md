@@ -5,41 +5,58 @@ nav_order: 26
 permalink: /world/tideward-crossing-kit/
 ---
 
-# Walking a wet bank
+# Tideward Crossing Kit
 
-The Tideward kit gives you three different jobs: moving, watching and reading a route. All three can be crafted with the wetland's existing materials. Your ordinary armour, held Dewglass Lens and Reed Rattle remain useful choices.
+## What it is
 
-## Turned reed cuffs
+Three pieces of wetland gear: boots for wading, glasses for reading crab warnings and a line for checking a route. None of them use magic.
 
-Craft **Reedwater Waders** from leather boots, Moonreed Floss, Windreed Braid and a copper ingot. They occupy your feet slot and offer only one armour point. Moonreed Floss repairs the cuffs.
+<img class="shot" src="{{ '/assets/screenshots/tideward/gear.png' | relative_url }}" alt="Reedwater Waders, Dewglass Spectacles and the Bank Surveyor's Line in game">
 
-Walk without sprinting on solid support in shallow water to gain a modest movement aid. The boots do not help in deep water, while swimming, riding or airborne, and they do not give you air or stop damage. Every second of actual qualifying movement adds one wear. Five seconds of that movement require two seconds of rest. Taking off the boots or replacing them does not reset the shared wear accounting.
+## How to get it
 
-## Read the raised claws
+Every recipe is shapeless.
 
-Craft **Dewglass Spectacles** from a glass pane, copper and Moonreed Floss. They use the head slot and provide no armour. A glass pane can repair their lenses.
+| Item | Ingredients | Slot |
+|---|---|---|
+| Reedwater Waders | Leather Boots + Moonreed Floss + Windreed Braid + Copper Ingot | Feet (1 armour), repaired with Moonreed Floss |
+| Dewglass Spectacles | Glass Pane + Copper Ingot + Moonreed Floss | Head (no armour), repaired with a Glass Pane |
+| Bank Surveyor's Line | Stick + Copper Ingot + Windreed Braid + Moonreed Floss | Held |
 
-Crouch and look at a nearby Reedback Crab for half a second while its claws are raised. Within eight blocks, a clear view produces a brief arrangement of physical reed notches above the actual warning. One lens wear and a three-second shared rest follow. You cannot observe a hidden creature through a wall or turn an already committed sweep into another warning. Dense groups are declined rather than searched without a bound.
+## How to use it
 
-The spectacles do not calm the crab. The held **Dewglass Lens** still reads Moonreed growth and Newt condition; the **Reed Rattle** still answers an actual warning through a close crouched interaction. To cross a defended bank, choose a counter or wait for its recovery.
+### Reedwater Waders
 
-## A spool that measures
+Walk, without sprinting, on solid ground in shallow water. The boots give you a small speed boost.
 
-Craft a **Bank Surveyor's Line** from a stick, copper, Windreed Braid and Moonreed Floss. Use one visible supported bank, then another within five seconds. The banks must be at most eight blocks apart and one step in height. Sneak-use cancels the selection.
+- They don't help when you are in deep water, swimming, riding or in the air.
+- Each second of wading costs 1 wear.
+- After 5 seconds of wading, they need 2 seconds of rest.
 
-The line examines a short direct route with solid footing, two clear body blocks and dry ground or shallow water. It refuses deep holes, lava, blocked body space, unloaded cells and protection denial. A valid crossing spends two wear, requires four seconds of shared rest and shows a private braided route for five seconds. Changing the footing or moving away removes stale guidance. The spool does not place blocks, fill water, command companions or award quest resources.
+### Dewglass Spectacles
 
-Adventure players may use this read-only tool even when magic block editing is disabled. Wildercord checks the world border and spawn protection and uses its existing break-based claim compatibility query. It does not perform a break. Claim plugins without a separate reading permission can conservatively refuse a survey; respecting that refusal is intentional.
+Crouch and look at a [Reedback Crab]({{ '/world/reedback-crabs/' | relative_url }}) for half a second while its claws are up. It must be within 8 blocks and in clear view. Reed notches then appear above its warning.
 
-The route is a reading of the sampled cells, not a guarantee that every creature will follow it. Check your own jump, water depth and nearby animals before moving. Use the existing **Basinfill** ability when you want to make a shallow water basin; use the spool when you want to examine what is already there.
+Each reading costs 1 wear and starts a 3-second rest. The spectacles only read the warning. To calm the crab, use a [Reed Rattle]({{ '/world/reed-rattle/' | relative_url }}).
 
+<img class="shot" src="{{ '/assets/screenshots/tideward/warning.png' | relative_url }}" alt="A crab warning with spectacle notches above it">
 
-## In-game views
+### Bank Surveyor's Line
 
-These original native captures use a supplied review bank. The route and warning are actual player actions.
+1. Use it on one bank.
+2. Within 5 seconds, use it on a second bank.
+   - The banks can be up to 8 blocks apart.
+   - They can differ by no more than 1 block in height.
+3. Sneak-use cancels.
 
-<img class="shot" src="{{ '/assets/screenshots/tideward/gear.png' | relative_url }}" alt="Reedwater Waders, Dewglass Spectacles and the forked Bank Surveyor line worn in game">
+The line checks for solid footing, room for your body and dry ground or shallow water. It fails on deep holes, lava, blocked space or protected land.
 
-<img class="shot" src="{{ '/assets/screenshots/tideward/route.png' | relative_url }}" alt="An actual privately observed crossing marked by physical braid and pegs">
+A good route shows a braided line for 5 seconds. It costs 2 wear and starts a 4-second rest. The line never places blocks or changes the water.
 
-<img class="shot" src="{{ '/assets/screenshots/tideward/warning.png' | relative_url }}" alt="The real living crab warning with physical spectacle notches">
+<img class="shot" src="{{ '/assets/screenshots/tideward/route.png' | relative_url }}" alt="A checked crossing marked by braid and pegs">
+
+## Tips and counterplay
+
+- The survey reads the ground, but animals may still get in your way. Check your jump and the water depth.
+- Server claim plugins may refuse a survey on claimed land.
+- To make a shallow basin rather than read one, use [Basinfill]({{ '/spellcraft/basinfill/' | relative_url }}).

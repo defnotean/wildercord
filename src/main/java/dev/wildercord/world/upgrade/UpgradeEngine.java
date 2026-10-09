@@ -13,6 +13,10 @@ public final class UpgradeEngine {
 		String policy();
 		String state(UpgradePlan.Point point);
 		boolean set(UpgradePlan.Point point,String expected,String replacement);
+		/** Idempotently marks written anchors authentic once every write is observed; empty on success, else a deferral. Never spawns entities. */
+		default String activate(UpgradePlan plan){return "";}
+		/** Placement-only admission (duplicate encounters, natural presence); may scan resident chunks, so not per tick. */
+		default String admission(UpgradePlan plan){return "";}
 	}
 	public record Result(Phase phase,int writes,String reason,boolean complete) {
 		public Result(Phase phase,int writes,String reason){this(phase,writes,reason,false);}
@@ -41,7 +45,7 @@ public final class UpgradeEngine {
 		Entry entry=required(hash);
 		if(entry.phase()!=Phase.PREVIEW)throw new IllegalStateException("Use reauthorize for recovery; no duplicate approval");
 		if(!entry.policy().equals(world.policy()))throw new IllegalStateException("Provider configuration changed; preview again");
-		admit(entry,world,false,false);
+		admit(entry,world,false,false);admission(entry,world);
 		return authorize(entry,operator,backup,acceptsUnknownHistory,world,entry.policy());
 	}
 	/** After restart/config changes an operator must review and explicitly reauthorize the unchanged recovery manifest. */
@@ -51,6 +55,7 @@ public final class UpgradeEngine {
 			throw new IllegalStateException("This manifest cannot be reauthorized for placement");
 		String expectedPolicy=world.policy();
 		admit(entry,world,entry.phase()==Phase.ROLLING_BACK,true);
+		if(entry.phase()!=Phase.ROLLING_BACK)admission(entry,world);
 		return authorize(entry,operator,backup,acceptsUnknownHistory,world,expectedPolicy);
 	}
 	/** Rollback-only authority may be renewed even for conflicted/tombstoned manifests; edited cells still cannot be written. */
@@ -98,6 +103,9 @@ public final class UpgradeEngine {
 			if(!entry.edits().isEmpty())return conflict(entry,"Concurrent external edit",changed);
 		}
 		if(entry.plan().writes().stream().allMatch(c->world.state(c.point()).equals(c.after()))) {
+			// Activation precedes APPLIED, so a crash in between re-activates on the explicitly reauthorized resume.
+			String activation=world.activate(entry.plan());
+			if(!activation.isEmpty())return new Result(entry.phase(),changed,activation);
 			entry=entry.withPhase(Phase.APPLIED,-1);persist(entry);
 		}
 		return new Result(entry.phase(),changed,entry.phase()==Phase.APPLIED?"Observed applied; manifest retained for disk-save reconciliation":"Progress",entry.phase()==Phase.APPLIED);
@@ -141,6 +149,7 @@ public final class UpgradeEngine {
 		if(!refusal.isEmpty())throw new IllegalStateException(refusal);
 		if(!entry.edits().isEmpty() || !matches(entry.plan(),world,mixed))throw new IllegalStateException("Preview changed or later edit recorded");
 	}
+	private static void admission(Entry entry,World world){String refusal=world.admission(entry.plan());if(!refusal.isEmpty())throw new IllegalStateException(refusal);}
 	private boolean matches(UpgradePlan plan,World world,boolean mixed) {
 		for(var c:plan.cells()) {
 			String current=world.state(c.point());

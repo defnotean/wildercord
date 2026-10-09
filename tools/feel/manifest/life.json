@@ -64,6 +64,22 @@
       ],
       "subtitle": "hit"
     },
+    "life_auth_checker_dye_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_checker_dye_cue_1",
+        "kit/life/life_auth_checker_dye_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_checker_dye_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_checker_dye_outcome_1",
+        "kit/life/life_auth_checker_dye_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
     "life_auth_cleanse_cue": {
       "attenuation": 0,
       "files": [
@@ -80,6 +96,22 @@
       ],
       "subtitle": "hit"
     },
+    "life_auth_dew_drink_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_dew_drink_cue_1",
+        "kit/life/life_auth_dew_drink_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_dew_drink_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_dew_drink_outcome_1",
+        "kit/life/life_auth_dew_drink_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
     "life_auth_drowse_cue": {
       "attenuation": 0,
       "files": [
@@ -93,6 +125,22 @@
       "files": [
         "kit/life/life_auth_drowse_outcome_1",
         "kit/life/life_auth_drowse_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_auth_dye_wash_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_dye_wash_cue_1",
+        "kit/life/life_auth_dye_wash_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_dye_wash_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_dye_wash_outcome_1",
+        "kit/life/life_auth_dye_wash_outcome_2"
       ],
       "subtitle": "hit"
     },
@@ -208,6 +256,22 @@
       ],
       "subtitle": "hit"
     },
+    "life_auth_hearthbond_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_hearthbond_cue_1",
+        "kit/life/life_auth_hearthbond_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_hearthbond_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_hearthbond_outcome_1",
+        "kit/life/life_auth_hearthbond_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
     "life_auth_lifebloom_cue": {
       "attenuation": 0,
       "files": [
@@ -221,6 +285,38 @@
       "files": [
         "kit/life/life_auth_lifebloom_outcome_1",
         "kit/life/life_auth_lifebloom_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_auth_luckcharm_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_luckcharm_cue_1",
+        "kit/life/life_auth_luckcharm_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_luckcharm_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_luckcharm_outcome_1",
+        "kit/life/life_auth_luckcharm_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_auth_lullaby_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_lullaby_cue_1",
+        "kit/life/life_auth_lullaby_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_lullaby_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_lullaby_outcome_1",
+        "kit/life/life_auth_lullaby_outcome_2"
       ],
       "subtitle": "hit"
     },
@@ -253,6 +349,38 @@
       "files": [
         "kit/life/life_auth_nourish_outcome_1",
         "kit/life/life_auth_nourish_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_auth_petward_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_petward_cue_1",
+        "kit/life/life_auth_petward_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_petward_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_petward_outcome_1",
+        "kit/life/life_auth_petward_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_auth_potion_steep_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_potion_steep_cue_1",
+        "kit/life/life_auth_potion_steep_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_potion_steep_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_potion_steep_outcome_1",
+        "kit/life/life_auth_potion_steep_outcome_2"
       ],
       "subtitle": "hit"
     },
@@ -368,6 +496,54 @@
       ],
       "subtitle": "hit"
     },
+    "life_auth_sign_glow_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_sign_glow_cue_1",
+        "kit/life/life_auth_sign_glow_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_sign_glow_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_sign_glow_outcome_1",
+        "kit/life/life_auth_sign_glow_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_auth_slime_sense_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_slime_sense_cue_1",
+        "kit/life/life_auth_slime_sense_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_slime_sense_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_slime_sense_outcome_1",
+        "kit/life/life_auth_slime_sense_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_auth_slowburn_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_slowburn_cue_1",
+        "kit/life/life_auth_slowburn_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_slowburn_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_slowburn_outcome_1",
+        "kit/life/life_auth_slowburn_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
     "life_auth_soulbond_cue": {
       "attenuation": 0,
       "files": [
@@ -400,6 +576,22 @@
       ],
       "subtitle": "hit"
     },
+    "life_auth_steedmend_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_steedmend_cue_1",
+        "kit/life/life_auth_steedmend_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_steedmend_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_steedmend_outcome_1",
+        "kit/life/life_auth_steedmend_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
     "life_auth_stitchtime_cue": {
       "attenuation": 0,
       "files": [
@@ -413,6 +605,22 @@
       "files": [
         "kit/life/life_auth_stitchtime_outcome_1",
         "kit/life/life_auth_stitchtime_outcome_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_auth_trailblaze_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_trailblaze_cue_1",
+        "kit/life/life_auth_trailblaze_cue_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_auth_trailblaze_outcome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_auth_trailblaze_outcome_1",
+        "kit/life/life_auth_trailblaze_outcome_2"
       ],
       "subtitle": "hit"
     },

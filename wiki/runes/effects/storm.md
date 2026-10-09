@@ -11,7 +11,46 @@ nav_order: 3
 
 Lightning and shock. Storm strikes hard, chains between foes and runs through water.
 
-7 storm effects you can craft or find in the usual way. Storm also has runes of the world, fused runes and innate runes: see their own pages.
+18 storm effects you can craft or find in the usual way. Storm also has runes of the world, fused runes and innate runes: see their own pages.
+
+### <img src="{{ '/assets/runes/buttonpush.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Button Push
+{: #buttonpush}
+
+*Tier I · Storm · Works on the world · 2 mana · needs any Cord*
+
+Presses up to 4 buttons near the point.
+
+**How to get it:** Craft: a Blank Rune, Stone Button. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_buttonpush.png' | relative_url }}" alt="Crafting Button Push: a Blank Rune and Stone Button" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/dewfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dewfall
+{: #dewfall}
+
+*Tier I · Storm · Works on the world · 3 mana · needs any Cord*
+
+A soft dew wets every farmland block in a 5-by-5 patch around the point to full moisture.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket, Dirt and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_dewfall.png' | relative_url }}" alt="Crafting Dewfall: a Blank Rune and Water Bucket, Dirt and Wheat Seeds" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/doorcall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Doorcall
+{: #doorcall}
+
+*Tier I · Storm · Works on the world · 2 mana · needs any Cord*
+
+Opens or shuts up to 4 doors, trapdoors and gates near the point. Iron ones stay put.
+
+**How to get it:** Craft: a Blank Rune, Oak Door and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_doorcall.png' | relative_url }}" alt="Crafting Doorcall: a Blank Rune and Oak Door and Redstone Dust" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/galvanize.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Galvanize
 {: #galvanize}
@@ -24,7 +63,20 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 <img src="{{ '/assets/recipes/rune_galvanize.png' | relative_url }}" alt="Crafting Galvanize: a Blank Rune and Lightning Rod and Redstone Dust" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/leverflip.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lever Flip
+{: #leverflip}
+
+*Tier I · Storm · Works on the world · 2 mana · needs any Cord*
+
+Flips up to 4 levers near the point.
+
+**How to get it:** Craft: a Blank Rune, Lever. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_leverflip.png' | relative_url }}" alt="Crafting Lever Flip: a Blank Rune and Lever" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/shock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shock
 {: #shock}
@@ -37,7 +89,85 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 <img src="{{ '/assets/recipes/rune_shock.png' | relative_url }}" alt="Crafting Shock: a Blank Rune and Lightning Rod" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/sky_reading.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sky Reading
+{: #sky_reading}
+
+*Tier I · Storm · Works on the world · 1 mana · needs any Cord*
+
+Reads the sky: the weather now and about how many minutes until it turns.
+
+**How to get it:** Craft: a Blank Rune, Feather and Glass Bottle. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_sky_reading.png' | relative_url }}" alt="Crafting Sky Reading: a Blank Rune and Feather and Glass Bottle" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/skyread.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Skyread
+{: #skyread}
+
+*Tier I · Storm · Works on the world · 2 mana · needs any Cord*
+
+Tells you the weather, how long it will hold, the hour and the moon.
+
+**How to get it:** Craft: a Blank Rune, Feather and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_skyread.png' | relative_url }}" alt="Crafting Skyread: a Blank Rune and Feather and Clock" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/storm_glass.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Storm Glass
+{: #storm_glass}
+
+*Tier I · Storm · Works on the world · 1 mana · needs any Cord*
+
+Tells how long until the weather turns.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Copper Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+<img src="{{ '/assets/recipes/rune_storm_glass.png' | relative_url }}" alt="Crafting Storm Glass: a Blank Rune and Glass Bottle and Copper Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/dewkeep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dewkeep
+{: #dewkeep}
+
+*Tier II · Storm · Works on the world · 7 mana · needs a Copper Cord or better*
+
+Hangs a mist over a 5-by-5 patch for 60 seconds: its farmland is wetted now and again every 5 seconds, so a field far from water never dries. Lovely from a Totem or a Zone.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket, White Wool and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_dewkeep.png' | relative_url }}" alt="Crafting Dewkeep: a Blank Rune and Water Bucket, White Wool and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Linger, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/ditchwater.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ditchwater
+{: #ditchwater}
+
+*Tier II · Storm · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Fills the hole you strike with one source of water, if it is an open hole with farmland within 4 blocks. Never in the Nether's heat.
+
+**How to get it:** Craft: a Blank Rune, Iron Shovel, Water Bucket and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_ditchwater.png' | relative_url }}" alt="Crafting Ditchwater: a Blank Rune and Iron Shovel, Water Bucket and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/dynamo_stride.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dynamo Stride
+{: #dynamo_stride}
+
+*Tier II · Storm · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+For 5 minutes, every 24 blocks you walk gives back 2 mana, up to 12.
+
+**How to get it:** Craft: a Blank Rune, Redstone Dust, Copper Ingot and Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_dynamo_stride.png' | relative_url }}" alt="Crafting Dynamo Stride: a Blank Rune and Redstone Dust, Copper Ingot and Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/jolt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Jolt
 {: #jolt}
@@ -50,7 +180,20 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 <img src="{{ '/assets/recipes/rune_jolt.png' | relative_url }}" alt="Crafting Jolt: a Blank Rune and Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/rain_cloud.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Raincloud
+{: #rain_cloud}
+
+*Tier II · Storm · Works on the world · 8 mana · needs a Copper Cord or better*
+
+A small cloud rains on the point: farmland within 4 blocks is soaked, up to 8 crops grow, fires go out and a cauldron gains water.
+
+**How to get it:** Craft: a Blank Rune, White Wool and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_rain_cloud.png' | relative_url }}" alt="Crafting Raincloud: a Blank Rune and White Wool and Kelp, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/ripple.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ripple
 {: #ripple}
@@ -63,7 +206,7 @@ Sunlight through the body: 6 damage, doubled against undead, and you heal a quar
 
 <img src="{{ '/assets/recipes/rune_ripple.png' | relative_url }}" alt="Crafting Ripple: a Blank Rune and Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/thunderclap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderclap
 {: #thunderclap}
@@ -76,7 +219,7 @@ A flash, then a crack of thunder: 5 damage within 3 blocks, and everything hit i
 
 <img src="{{ '/assets/recipes/rune_thunderclap.png' | relative_url }}" alt="Crafting Thunderclap: a Blank Rune and Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/lightning.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lightning
 {: #lightning}
@@ -89,7 +232,7 @@ A 12-damage lightning strike on each target that slows and burns. An enemy takes
 
 <img src="{{ '/assets/recipes/rune_lightning.png' | relative_url }}" alt="Crafting Lightning: a Blank Rune and Block of Copper and Glowstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/thunderbird.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderbird
 {: #thunderbird}
@@ -102,5 +245,5 @@ A storm bird circles above you for 12 seconds. Every 2 seconds it marks the enem
 
 <img src="{{ '/assets/recipes/rune_thunderbird.png' | relative_url }}" alt="Crafting Thunderbird: a Blank Rune and Feather and Lightning Rod, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

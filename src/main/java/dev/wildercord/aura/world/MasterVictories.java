@@ -20,7 +20,8 @@ public final class MasterVictories {
 		builder -> builder.initializer(() -> MasterVictoryRules.Progress.NONE).persistent(CODEC).copyOnDeath());
 
 	/** Load the attachment registration during initialization, before any entities enter the world. */
-	public static void init() {}
+	public static void init() {
+	}
 
 	public static MasterVictoryRules.Progress progress(ServerPlayer player) {
 		return player.getAttachedOrElse(RECORD, MasterVictoryRules.Progress.NONE);
@@ -35,6 +36,8 @@ public final class MasterVictories {
 		boolean learned = Techniques.teach(player, part, "master_trial");
 		player.sendSystemMessage(Component.translatable(learned ? "message.wildercord.master.first_clear" : "message.wildercord.master.first_clear_known",
 			schoolName(school)));
+		// ---- lore pack: the Master's parting line, kept in the lore journal.
+		dev.wildercord.lore.LoreJournal.masterWon(player, school);
 		return true;
 	}
 
@@ -51,9 +54,14 @@ public final class MasterVictories {
 	}
 
 	public static Component schoolName(int school) {
+		if (MethodsBMasters.owns(school)) return MethodsBMasters.schoolName(school); // ---- methods-b pack
 		return Component.translatable("master.wildercord.school." + switch (school) {
 			case MastersRules.GALE -> "gale";
 			case MastersRules.STONE -> "stone";
+			// ---- masters-a pack
+			case MastersRules.RIME, MastersRules.THUNDER, MastersRules.VERDANT, MastersRules.HOLLOW -> ElementalMasters.name(school);
+			case MastersPackB.STARLIT, MastersPackB.HOURGLASS, MastersPackB.CRIMSON -> MastersPackB.id(school); // ---- masters-b pack
+			case MethodsAMasters.TIDE, MethodsAMasters.IRON, MethodsAMasters.DUNE -> MethodsAMasters.id(school); // ---- methods-a pack
 			default -> "ember";
 		});
 	}
@@ -61,7 +69,8 @@ public final class MasterVictories {
 	/** A small, server-authored progress readout. It reveals only the requesting player's own record. */
 	public static int describe(ServerPlayer player) {
 		MasterVictoryRules.Progress progress = progress(player);
-		for (int school = MastersRules.EMBER; school <= MastersRules.STONE; school++) {
+		for (int school = MastersRules.EMBER; school < MastersRules.SCHOOLS; school++) { // ---- masters-a pack: every known school
+			if (!MastersRules.knownSchool(school)) continue; // ---- methods-b pack: a reserved school id with no Master yet
 			player.sendSystemMessage(Component.translatable(progress.cleared(school) ? "message.wildercord.master.record_clear" : "message.wildercord.master.record_open",
 				schoolName(school)));
 		}

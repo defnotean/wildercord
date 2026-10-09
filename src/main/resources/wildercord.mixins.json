@@ -10,6 +10,10 @@
 		"MossveilEffectNotice",
 		"InventoryMenuMixin",
 		"PlayerMasterHitReceiptMixin",
+		"LivingStoneHingeMixin",
+		"MobStoneHingeMixin",
+		"PlayerStoneHingeMixin",
+		"SwordMasterStoneHingeMixin",
 		"PlayerGearMixin",
 		"ServerGamePacketListenerImplMixin",
 		"LightningRodBlockMixin",
@@ -62,7 +66,11 @@
         "NextTeleportObserverMixin",
         "LifeGrowthWritesMixin",
         "UpgradeChunkWriteMixin",
-        "UpgradePlayerEditMixin"
+        "UpgradePlayerEditMixin",
+        "FishingHookAccessor",
+        "FxSupportLivingMixin",
+        "FxSupportMobMixin",
+        "FxSupportExplosionMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

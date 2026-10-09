@@ -5,41 +5,55 @@ nav_order: 14
 
 # Troubleshooting
 
-Start with the symptom below. These instructions describe 0.10.0-alpha; jars older than 0.7.0 do not include the mouse, ownership and casting fixes.
+Find your problem below. For startup and version errors, see [Installation]({{ '/installing/' | relative_url }}#if-it-wont-start).
 
 ## The Fusion Altar opens, but Fuse does nothing
 
-1. Empty the **result socket** first.
-2. Read the preview panel: it names the output, catalyst and XP requirement.
-3. For a named fusion, use two elemental **effects** and an **Amethyst Shard**. For exact weaving, use a **Block of Amethyst**.
-4. Keep the third socket empty for a two-input combine. Three identical, equally ranked effects with no catalyst are a rank upgrade.
-5. Have the displayed **XP levels**, not just XP points. Creative mode waives the cost.
-6. Update both client and server to this release. The Fuse button's native mouse handling was corrected for Minecraft 26.3.
+1. Empty the **result socket**.
+2. Read the preview panel. It names the output, the catalyst and the XP cost.
+3. For a named fusion, use two elemental **effects** and an **Amethyst Shard**. For an exact weave, use a **Block of Amethyst**.
+4. For a two-input fusion, leave the third socket empty. Three identical runes of the same rank and no catalyst make a rank upgrade.
+5. You need the shown number of **XP levels**. Creative skips the cost.
+6. Make sure your client and the server run the same Wildercord version.
 
-Weaves have at most eight effect leaves. A shard cannot flatten an existing exact weave into a named fusion. Shapes, modifiers and links use [Knots]({{ '/fusion-altar/knots/' | relative_url }}), rather than elemental weaving. An imprinted innate in Survival requires its owner and the appropriate Heart Circle access.
+A weave holds at most eight effects. Shapes, modifiers and links use [Knots]({{ '/fusion-altar/knots/' | relative_url }}) instead.
 
-## Cinnamon spawns, but I cannot make her sit
+## Cinnamon spawns, but I can't make her sit
 
-Her owner must be set in `config/wildercord-cinnamon.json`. A blank owner leaves her unassigned; a summon does not make the summoner her owner. Set the exact username or UUID of her intended owner, then have that player join her dimension. The file reloads about every five seconds.
+Her owner must be set in `config/wildercord-cinnamon.json`. Put the owner's exact username or UUID there, then have that player join her dimension. The file reloads about every five seconds. Summoning her doesn't make you her owner.
 
-Only her owner toggles sitting with an ordinary click. Sneak-click pets her instead. The Red Bone starts play without changing her saved sit preference. Read [Cinnamon]({{ '/companions/cinnamon/' | relative_url }}) for setup and rescue behaviour.
+Only her owner makes her sit with a normal click. Sneak-click pets her. See [Cinnamon]({{ '/companions/cinnamon/' | relative_url }}).
 
-## I cannot see the large casting circle in first person
+## I can't see my casting circle in first person
 
-The large caster circle sits **behind your shoulders** and follows your turns. Use third person or ask another player to look at it. A smaller shape-specific focus gathers ahead of you; a Self cast affects you, while rain, beams and projectiles keep their own delivery. Shield interception and linked impact circles appear where their actual interaction occurs.
+The large circle sits **behind your shoulders**. Switch to third person to see it. A smaller focus forms ahead of you while you charge.
 
-## A circle bonus seems absent
+## A circle bonus seems missing
 
-Only one discipline per spell group is active. Put it after an explicit shape and read the compiler explanation. Gyre changes flying speed, not an instant Beam. Bloom only expands shapes that use radius. Pilgrim, Vigil, Tempest and Eclipse check conditions **at release**; changing conditions after casting cannot improve a lingering spell. Fixed-time dimensions do not receive Eclipse's night bonus.
+Only one discipline per spell group works. Put it after a shape and read the explanation in the Cord screen. Pilgrim, Vigil, Tempest and Eclipse check conditions **when you release**, so changes afterwards don't help. See [Circle Disciplines]({{ '/spellcraft/circle-disciplines/' | relative_url }}).
 
-## My new dungeon or practice arena is missing
+## A Sword Master won't come
 
-Restart after installing the new version to register the practice dimension. New dungeons generate in new terrain; structures already present are not rebuilt. Practice entry is `/runelab practice enter`; leaving is `/runelab practice leave`.
+- You need **Aura Form** or **Heart Circle VIII** first.
+- Masters don't come on Peaceful, in Creative, or while you're in a duel or spar.
+- Only one Master at a time can be near you. Finish or leave the other trial first, or move 64 blocks away from another Master.
+- With a Wandering Duelist, sneak and use it once to hear its offer, then again within 10 seconds.
+- Or use `/master challenge <name>`, such as `ember`, `tide` or `venom`. The [Sword Masters]({{ '/masters/' | relative_url }}) page lists all 16 names.
+
+See [Sword Masters]({{ '/masters/' | relative_url }}).
+
+## The Master form key does nothing
+
+The Master form key (`C`) does nothing in Creative, so the game's Save Toolbar still works there. You also need a [Master form]({{ '/masters/master-forms/' | relative_url }}) equipped. Check the key isn't clashing with another in **Options > Controls > Key Binds**.
+
+## A new dungeon or the practice arena is missing
+
+Restart after you update. New dungeons only generate in new terrain. Enter the practice arena with `/runelab practice enter` and leave with `/runelab practice leave`.
 
 ## Magic is overwhelming or slow
 
-Assign **Magic visual settings** in Minecraft Controls. Choose Balanced or Minimal for other casters, enable reduced flash, and reduce camera motion. Keep warning circles visible. For diagnostic commands and what their numbers mean, see [Performance]({{ '/performance/' | relative_url }}).
+Open **Magic visual settings** (bind a key in Controls first). Set other spells to minimal, turn on reduced flash, and turn off camera motion. See [Performance and Visual Settings]({{ '/performance/' | relative_url }}).
 
-## What to include in a bug report
+## Reporting a bug
 
-Give the exact spell sequence, Cord tier, rune ranks, worn and held gear, game mode, dimension and steps to repeat it. For altar problems include inputs, catalyst, XP level and preview text. Attach `logs/latest.log` and a screenshot where useful. [Open an issue](https://github.com/defnotean/wildercord/issues/new/choose).
+Give the exact spell, your Cord, rune ranks, the gear you wore, game mode, dimension and the steps to repeat it. For altar problems, add the inputs, catalyst, XP level and preview text. Attach `logs/latest.log` and a screenshot if you can, then [open an issue](https://github.com/defnotean/wildercord/issues/new/choose).

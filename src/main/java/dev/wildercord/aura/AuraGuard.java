@@ -39,7 +39,7 @@ public final class AuraGuard {
 	/** Raises the guard (the technique): Flow, an aura weapon in hand, rested, and its price paid. */
 	public static boolean raise(ServerPlayer player) {
 		if (MastersArts.committed(player) || MasterForms.committed(player) || dev.wildercord.cast.ActionAdmission.busy(player)) return false;
-        if (dev.wildercord.cast.ExciseCasting.blocking(player)) return false;
+        if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return false;
 		long now = player.level().getGameTime();
 		AuraAttachments.State state = Aura.state(player);
 		if (!Aura.holdsWeapon(player)) {
@@ -272,6 +272,8 @@ public final class AuraGuard {
 		CAUGHT.put(player.getUUID(), caught);
 		// Bind this exact catch before stagger/reflection callbacks can earn another guard.
 		SwordStrings.guardCaught(player, caught);
+		// ---- moves pack: a learned follow-up answers on the form key for a short moment.
+		FormDash.parried(player, attacker);
 	}
 
 	/**

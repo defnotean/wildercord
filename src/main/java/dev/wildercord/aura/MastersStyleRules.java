@@ -80,7 +80,39 @@ public final class MastersStyleRules {
 		new Style(49, "groves_heart", 10, 20, TargetPolicy.GROUND_AHEAD),
 		new Style(50, "event_horizon", 8, 18, TargetPolicy.ACTIVE_CONE),
 		new Style(51, "nova", 8, 18, TargetPolicy.ACTIVE_CONE),
-		new Style(52, "thousand_moments", 6, 20, TargetPolicy.ACTIVE_CONE)
+		new Style(52, "thousand_moments", 6, 20, TargetPolicy.ACTIVE_CONE),
+		// ---- methods-a pack (Tide, Iron and Dune; ids from 110 so other packs' ids cannot collide)
+		new Style(110, "riptide_cut", 6, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(111, "breaker", 8, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(112, "whirlpool", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(113, "surge", 4, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(114, "maelstrom", 8, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(115, "sunder_cut", 8, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(116, "anvil_fall", 10, 18, TargetPolicy.ACTIVE_CONE),
+		new Style(117, "bulwark", 6, 16, TargetPolicy.EARNED_COUNTER),
+		new Style(118, "forge_charge", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(119, "worldforge", 10, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(120, "grit_flick", 4, 10, TargetPolicy.ACTIVE_CONE),
+		new Style(121, "quicksand", 8, 16, TargetPolicy.GROUND_AHEAD),
+		new Style(122, "sandveil", 4, 14, TargetPolicy.EARNED_COUNTER),
+		new Style(123, "dune_runner", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(124, "sea_of_sand", 8, 18, TargetPolicy.ACTIVE_CONE),
+		// ---- methods-b pack (ids MethodsBStyles.FIRST onward: Echo, Dawn, Venom)
+		new Style(140, "ringing_cut", 6, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(141, "resonant_chord", 8, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(142, "counterpoint", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(143, "reverb_step", 4, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(144, "grand_resonance", 10, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(145, "first_light", 4, 12, TargetPolicy.ACTIVE_CONE),
+		new Style(146, "sunrise_arc", 8, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(147, "halo_guard", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(148, "dawnbreak_rush", 6, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(149, "noon_zenith", 10, 20, TargetPolicy.ACTIVE_CONE),
+		new Style(150, "fang_strike", 4, 10, TargetPolicy.ACTIVE_CONE),
+		new Style(151, "spitting_cobra", 6, 16, TargetPolicy.ACTIVE_CONE),
+		new Style(152, "shed_skin", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(153, "serpent_slither", 4, 14, TargetPolicy.ACTIVE_CONE),
+		new Style(154, "hydra_coil", 8, 20, TargetPolicy.ACTIVE_CONE)
 	);
 
 	public static Style of(String art) {

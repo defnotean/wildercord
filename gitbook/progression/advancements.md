@@ -3,9 +3,9 @@
 
 ![The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/b-advancements.jpg)
 
-Wildercord has its own advancement tab, set on dark indigo stone with faint rune script. It leads you
-from your first Blank Rune to the 20th Heart Circle and the dungeon bosses. Most milestones
-reward experience; some also give Blank Runes and Mana Crystals.
+Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
+Circle and the dungeon bosses. Most advancements give experience; some also give Blank Runes and Mana
+Crystals.
 
 
 ## Reading this page
@@ -14,11 +14,9 @@ reward experience; some also give Blank Runes and Mana Crystals.
   fanfare). *Hidden* ones stay out of sight until you earn them.
 - **Reward**: experience points, and sometimes items: **8 Blank Runes**, **a Mana Crystal** or **3 Mana
   Crystals**.
-- **After** is the advancement it branches from. You can earn an advancement before the one it
-  branches from; it still counts.
-- Most advancements come from a [feat](grimoire.md) or another entry
-  in your Grimoire. If you already did something before the advancement existed (say, an older world),
-  you're given it when you next join.
+- **After** is the advancement it branches from. You can earn them in any order.
+- Most come from a [feat](grimoire.md) or another Grimoire entry. If
+  you already did the thing in an older world, you get it when you next join.
 
 ## The root
 
@@ -128,9 +126,9 @@ Mirrorfrost can only be earned with the innate rune of the same name. See
 | **Every Page Filled** | challenge, hidden | Nothing Left Unsaid | Fill the Grimoire: every reaction and secret spell, and every feat any caster can earn alone | 500 XP, 3 Mana Crystals, 8 Blank Runes |
 
 - **Knowing runes** means runes learned into your Codex. Knots don't count.
-- **Every Word** wants every rune there is except the innate runes that aren't yours: every craftable
-  rune, every rune of the world and every fused rune, signature fusions included (318 in all), plus your own innate rune. Runes
-  added by other mods count too, if you have them installed.
+- **Every Word** wants every craftable rune, every rune of the world and every fused rune (signature
+  fusions included), plus your own innate rune. Other players' innate runes don't count. See the
+  [Rune Codex](../runes/codex.md).
 - **Chain Reaction** wants all eleven reactions in your Grimoire.
 - **Every Page Filled** wants all 11 reactions, all 10 secret spells and every feat except Mirrorfrost,
   Unison, Domain Clash and Chorus. See [The Grimoire and Feats](grimoire.md#a-full-grimoire).
@@ -170,6 +168,8 @@ See [The Fusion Altar](../fusion-altar/index.md) and
 | **Tempered** | challenge | The Last Page | Defeat the Cinder Warden in its Ember Sanctum | 300 XP |
 | **Starbreaker** | challenge | The Last Page | Defeat the Star-Eater in its Astral Observatory | 300 XP |
 | **Low Tide** | challenge | The Last Page | Defeat the Tide Scribe in its Drowned Scriptorium | 300 XP |
+| **Heartwood** | challenge | The Last Page | Prune the Root Guardian and defeat it in the Rootbound Maze | 300 XP |
+| **Grounded** | challenge | The Last Page | Ground the Storm Conductor and defeat it in the Storm Spire | 300 XP |
 | **Icebridge** | task | Shatter | Walk across water you froze with a spell | 15 XP |
 | **Conductor** | task | Conduct | Shock five creatures at once through the water they stand in | 25 XP |
 | **Runebreaker** | task | Wildercord | Slay a Runebound, a monster that casts spells | 15 XP |
@@ -179,6 +179,7 @@ See [The Fusion Altar](../fusion-altar/index.md) and
 | **Unison** | goal | Runebreaker | Strike a foe with another element at the same moment as another caster | 50 XP |
 
 See [Ley Lines and the Wellstone](ley-lines.md),
+[Root Guardian and Storm Conductor](../world/root-and-storm-bosses.md),
 [Familiars](../companions/familiars.md), [World Events](../world/world-events.md),
 [The Archive](../world/archive.md), [Runebound](../world/runebound.md),
 [Magic in the World](../world/world-magic.md) and
@@ -186,12 +187,14 @@ See [Ley Lines and the Wellstone](ley-lines.md),
 
 ## Totals
 
+93 advancements, counting the root.
+
 | | Count |
 |---|---|
-| Tasks | 42 |
-| Goals | 15 |
-| Challenges | 9 |
+| Tasks | 53 |
+| Goals | 28 |
+| Challenges | 12 |
 | Hidden | 4 |
-| Experience for all of them | 5,310 |
-| Blank Runes | 32 (four stacks of 8) |
-| Mana Crystals | 16 |
+| Experience for all of them | 9,745 |
+| Blank Runes | 48 (six stacks of 8) |
+| Mana Crystals | 19 |

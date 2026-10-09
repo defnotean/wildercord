@@ -7,6 +7,13 @@
       ],
       "subtitle": "hit"
     },
+    "aura_art_anvil_fall": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_anvil_fall"
+      ],
+      "subtitle": "hit"
+    },
     "aura_art_avalanche": {
       "attenuation": 24,
       "files": [
@@ -49,6 +56,20 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_breaker": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_breaker"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_bulwark": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_bulwark"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_collapse": {
       "attenuation": 24,
       "files": [
@@ -77,6 +98,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_counterpoint": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_counterpoint"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_crackle": {
       "attenuation": 24,
       "files": [
@@ -95,6 +123,20 @@
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_cutting_breeze"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_dawnbreak_rush": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_dawnbreak_rush"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_dune_runner": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_dune_runner"
       ],
       "subtitle": "cast"
     },
@@ -126,6 +168,27 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_fang_strike": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_fang_strike"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_first_light": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_first_light"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_forge_charge": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_forge_charge"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_frenzy": {
       "attenuation": 24,
       "files": [
@@ -147,6 +210,20 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_grand_resonance": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_grand_resonance"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_grit_flick": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_grit_flick"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_groves_heart": {
       "attenuation": 40,
       "files": [
@@ -158,6 +235,13 @@
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_hailfall"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_halo_guard": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_halo_guard"
       ],
       "subtitle": "cast"
     },
@@ -175,6 +259,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_hydra_coil": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_hydra_coil"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_kindling_draw": {
       "attenuation": 24,
       "files": [
@@ -189,6 +280,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_maelstrom": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_maelstrom"
+      ],
+      "subtitle": "field"
+    },
     "aura_art_meteor_shower": {
       "attenuation": 32,
       "files": [
@@ -200,6 +298,13 @@
       "attenuation": 40,
       "files": [
         "kit/aura/aura_art_mountain_splitter"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_noon_zenith": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_noon_zenith"
       ],
       "subtitle": "cast"
     },
@@ -217,10 +322,31 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_quicksand": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_quicksand"
+      ],
+      "subtitle": "field"
+    },
     "aura_art_red_rain": {
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_red_rain"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_resonant_chord": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_resonant_chord"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_reverb_step": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_reverb_step"
       ],
       "subtitle": "cast"
     },
@@ -235,6 +361,20 @@
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_rift_step"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_ringing_cut": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_ringing_cut"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_riptide_cut": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_riptide_cut"
       ],
       "subtitle": "cast"
     },
@@ -259,10 +399,38 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_sandveil": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_sandveil"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_sanguine_parry": {
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_sanguine_parry"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_sea_of_sand": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_sea_of_sand"
+      ],
+      "subtitle": "field"
+    },
+    "aura_art_serpent_slither": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_serpent_slither"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_shed_skin": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_shed_skin"
       ],
       "subtitle": "cast"
     },
@@ -277,6 +445,13 @@
       "attenuation": 32,
       "files": [
         "kit/aura/aura_art_skyfall"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_spitting_cobra": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_spitting_cobra"
       ],
       "subtitle": "cast"
     },
@@ -301,6 +476,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_sunder_cut": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_sunder_cut"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_sunfall": {
       "attenuation": 32,
       "files": [
@@ -314,6 +496,20 @@
         "kit/aura/aura_art_sunfall_impact"
       ],
       "subtitle": "hit"
+    },
+    "aura_art_sunrise_arc": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_sunrise_arc"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_surge": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_surge"
+      ],
+      "subtitle": "cast"
     },
     "aura_art_tailwind": {
       "attenuation": 24,
@@ -364,6 +560,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_whirlpool": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_whirlpool"
+      ],
+      "subtitle": "field"
+    },
     "aura_art_wild_growth": {
       "attenuation": 24,
       "files": [
@@ -392,6 +595,13 @@
       ],
       "subtitle": "hit"
     },
+    "aura_art_worldforge": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_worldforge"
+      ],
+      "subtitle": "field"
+    },
     "aura_awaken": {
       "attenuation": 48,
       "files": [
@@ -403,6 +613,13 @@
       "attenuation": 40,
       "files": [
         "kit/aura/aura_awaken_crimson"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_dune": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_dune"
       ],
       "subtitle": "cast"
     },
@@ -441,6 +658,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_awaken_iron": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_iron"
+      ],
+      "subtitle": "cast"
+    },
     "aura_awaken_rime": {
       "attenuation": 40,
       "files": [
@@ -473,6 +697,13 @@
       "attenuation": 48,
       "files": [
         "kit/aura/aura_awaken_thunder"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_tide": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_tide"
       ],
       "subtitle": "cast"
     },
@@ -677,6 +908,31 @@
       ],
       "subtitle": "field"
     },
+    "aura_dawn_art": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_dawn_art"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_dawn_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_dawn_impact_1",
+        "kit/aura/aura_dawn_impact_2",
+        "kit/aura/aura_dawn_impact_3"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_dawn_swing": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_dawn_swing_1",
+        "kit/aura/aura_dawn_swing_2",
+        "kit/aura/aura_dawn_swing_3"
+      ],
+      "subtitle": "cast"
+    },
     "aura_dominion": {
       "attenuation": 40,
       "files": [
@@ -690,6 +946,56 @@
         "kit/aura/aura_dominion_fade"
       ],
       "subtitle": "field"
+    },
+    "aura_dune_art": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_dune_art"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_dune_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_dune_impact_1",
+        "kit/aura/aura_dune_impact_2",
+        "kit/aura/aura_dune_impact_3"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_dune_swing": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_dune_swing_1",
+        "kit/aura/aura_dune_swing_2",
+        "kit/aura/aura_dune_swing_3"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_echo_art": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_echo_art"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_echo_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_echo_impact_1",
+        "kit/aura/aura_echo_impact_2",
+        "kit/aura/aura_echo_impact_3"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_echo_swing": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_echo_swing_1",
+        "kit/aura/aura_echo_swing_2",
+        "kit/aura/aura_echo_swing_3"
+      ],
+      "subtitle": "cast"
     },
     "aura_ember_art": {
       "attenuation": 24,
@@ -730,6 +1036,13 @@
       ],
       "subtitle": "hit"
     },
+    "aura_finisher_dune": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_dune"
+      ],
+      "subtitle": "hit"
+    },
     "aura_finisher_ember": {
       "attenuation": 32,
       "files": [
@@ -758,6 +1071,13 @@
       ],
       "subtitle": "hit"
     },
+    "aura_finisher_iron": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_iron"
+      ],
+      "subtitle": "hit"
+    },
     "aura_finisher_rime": {
       "attenuation": 32,
       "files": [
@@ -783,6 +1103,13 @@
       "attenuation": 40,
       "files": [
         "kit/aura/aura_finisher_thunder"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_tide": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_tide"
       ],
       "subtitle": "hit"
     },
@@ -930,6 +1257,31 @@
         "kit/aura/aura_intent"
       ],
       "subtitle": "tell"
+    },
+    "aura_iron_art": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_iron_art"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_iron_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_iron_impact_1",
+        "kit/aura/aura_iron_impact_2",
+        "kit/aura/aura_iron_impact_3"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_iron_swing": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_iron_swing_1",
+        "kit/aura/aura_iron_swing_2",
+        "kit/aura/aura_iron_swing_3"
+      ],
+      "subtitle": "cast"
     },
     "aura_lineage_ask": {
       "attenuation": 24,
@@ -1484,6 +1836,31 @@
       ],
       "subtitle": "cast"
     },
+    "aura_tide_art": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_tide_art"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_tide_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tide_impact_1",
+        "kit/aura/aura_tide_impact_2",
+        "kit/aura/aura_tide_impact_3"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_tide_swing": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tide_swing_1",
+        "kit/aura/aura_tide_swing_2",
+        "kit/aura/aura_tide_swing_3"
+      ],
+      "subtitle": "cast"
+    },
     "aura_tomb_awake": {
       "attenuation": 0,
       "files": [
@@ -1602,6 +1979,31 @@
         "kit/aura/aura_unity_flow"
       ],
       "subtitle": "unity.flow"
+    },
+    "aura_venom_art": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_venom_art"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_venom_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_venom_impact_1",
+        "kit/aura/aura_venom_impact_2",
+        "kit/aura/aura_venom_impact_3"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_venom_swing": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_venom_swing_1",
+        "kit/aura/aura_venom_swing_2",
+        "kit/aura/aura_venom_swing_3"
+      ],
+      "subtitle": "cast"
     },
     "aura_verdant_art": {
       "attenuation": 24,

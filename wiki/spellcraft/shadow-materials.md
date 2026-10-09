@@ -8,23 +8,19 @@ description: Read Void preparations through folds, pressure, teeth, shells and r
 
 # Shadow materials
 
-Void gathers torn folds, closing shells and hungry silhouettes. Watch what forms
-in front of your hands; the casting circle remains behind your shoulders. Your
-chosen shape determines where the spell acts.
+## What it is
 
-These are original Minecraft frames. This presentation is new in 0.10.0-alpha.
+Void spells gather torn folds, closing shells and hungry silhouettes in front of your hands, while the casting circle stays behind your shoulders. Learn the shapes and you can tell Void spells apart in a fight. The shape you thread still decides where the spell acts.
 
 ## A hook has a direction
 
 <img src="{{ '/assets/void-materials/grapple-prepare.png' | relative_url }}" alt="Grapple assembles a dark hook and trailing cloth in front of the caster" class="shot" loading="lazy">
 
-**Grapple** gathers a hook with a trailing tether. **Collect** draws loose shards
-into a cloth pocket. **Gravity Well** pulls fragments toward a heavy fold. Their
-moving bodies keep their own material arrangements.
+**Grapple** gathers a hook with a trailing tether. **Collect** draws loose shards into a cloth pocket. **Gravity Well** pulls fragments toward a heavy fold.
 
 ## Read what crosses the dark
 
-| Material | Examples to recognize |
+| What you see | Runes |
 | --- | --- |
 | Paired folds and displacement | Blink, Warp, Warp Step, Riftcall |
 | Pressure pulses and sculk | Sonic Boom, Echolocate, Resonant Shriek |
@@ -34,25 +30,19 @@ moving bodies keep their own material arrangements.
 | Humanoid remnants | Phantom, Shadowstep |
 | Staggered haze and breath | Dragon Breath |
 
-This is a reading aid, not a list of interchangeable effects. See the
-[Void rune reference]({{ '/runes/effects/void/' | relative_url }}) for real effects and costs.
+Runes in the same row still do different things. See the [Void runes]({{ '/runes/effects/void/' | relative_url }}) for effects and costs.
 
-## Ingredients remain visible
+## Fused spells keep their ingredients
 
-**Blackflame** carries ember material; **Warp** carries wind; **Entropy** carries
-time; **Devour** carries blood; **Malison** carries arcane fragments. Minimal
-quality retains the supporting ingredients.
+**Blackflame** carries ember, **Warp** carries wind, **Entropy** carries time, **Devour** carries blood and **Malison** carries arcane fragments. Minimal visual quality still shows these ingredients.
 
 ## Self acts where you stand
 
-<img src="{{ '/assets/void-materials/shell-self.png' | relative_url }}" alt="Shulkershell is cast on the player in the actual Self delivery test" class="shot" loading="lazy">
+<img src="{{ '/assets/void-materials/shell-self.png' | relative_url }}" alt="Shulkershell closes around the player as a Self ward" class="shot" loading="lazy">
 
-Thread **Self** when you want a ward on yourself. Shulkershell trades movement for
-protection. Veil conceals you; Infinity slows nearby enemies; Anchor steadies you.
-Their Self delivery does not launch a projectile.
+Thread **Self** for a ward on yourself; it does not launch a projectile. **Shulkershell** trades movement for protection. **Veil** hides you, **Infinity** slows nearby enemies and **Anchor** holds you fast.
 
-## Choose whether to return
+## Tips
 
-**Warp Step** returns you after its brief displacement. Hold crouch to stay at
-the arrival. Blink and Warp use safe arrival checks; Zipper refuses protected
-walls. Keep enough clear footing for the movement you are asking for.
+- **Warp Step** pulls you back after 3 seconds. Sneak to stay where you landed.
+- **Blink** and **Warp** check for a safe arrival, and **Zipper** won't open a wall that isn't yours. Leave clear footing for the move you want.

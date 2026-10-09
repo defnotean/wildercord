@@ -325,7 +325,22 @@ public final class ResonanceForge {
 		Map.entry("comet", "a heavy comet"), Map.entry("ricochet", "an orb that rebounds"), Map.entry("cluster", "a ball that breaks in five"),
 		Map.entry("lance", "a lance of light"), Map.entry("sweep", "a sweeping line"), Map.entry("prism", "a prism that parts"),
 		Map.entry("stream", "a steady stream"), Map.entry("glaive", "a glaive that comes home"), Map.entry("imprint", "a mark where you stood"),
-		Map.entry("latch", "a thread that latches"), Map.entry("mine", "a hidden rune"));
+		Map.entry("latch", "a thread that latches"), Map.entry("mine", "a hidden rune"),
+		// ---- shapes pack
+		Map.entry("furrow", "a furrow drawn"), Map.entry("plot", "a little plot"), Map.entry("seedbed", "a bed for seed"),
+		Map.entry("shaft", "a shaft sunk down"), Map.entry("stairwell", "stairs into the deep"), Map.entry("corridor", "a hall cut through"),
+		Map.entry("seam", "a seam across stone"), Map.entry("facade", "a face of stone"), Map.entry("dome", "a vault of sky"),
+		Map.entry("footing", "the ground you stand on"), Map.entry("canopy", "a roof of leaves"), Map.entry("shoreline", "where water meets land"),
+		Map.entry("perimeter", "a bound drawn round"), Map.entry("spire", "a spire raised"), Map.entry("pit", "a pit dug"),
+		Map.entry("crossway", "where roads cross"), Map.entry("lodeseek", "a seeker of ore"), Map.entry("vault", "a cube of the deep"),
+		Map.entry("lamplit", "lamps at the corners"), Map.entry("fissure", "a crack that runs"), Map.entry("spiral", "a winding coil"),
+		Map.entry("rosette", "a flower of stone"), Map.entry("stepstones", "stones to step on"), Map.entry("causeway", "a road laid ahead"),
+		Map.entry("hedgerow", "a row of hedge"), Map.entry("lattice", "a checkered field"), Map.entry("collapse", "a falling ceiling"),
+		Map.entry("fan", "five spokes spread"), Map.entry("bobber", "a float on the water"), Map.entry("herd", "the herd at pasture"),
+		Map.entry("fellowship", "all who walk with you"), Map.entry("saddle", "you and your mount"), Map.entry("packbond", "the pack that follows"),
+		Map.entry("nursery", "the young ones"), Map.entry("shoal", "all that swim"), Map.entry("rearguard", "what is behind you"),
+		Map.entry("grudge", "those who wronged you"), Map.entry("sentinel", "those who hunt your own"), Map.entry("aureole", "a crown of light about you"),
+		Map.entry("tether", "a creature and its kin"), Map.entry("flock", "all that fly"));
 	/** How each modifier a resonance may hold is spoken of: what it does to the rune before it. */
 	static final Map<String, String> MODIFIERS = Map.ofEntries(
 		Map.entry("amplify", "made greater"), Map.entry("extend", "made to last"), Map.entry("widen", "widened"),

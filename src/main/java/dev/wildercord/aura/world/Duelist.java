@@ -171,34 +171,17 @@ public class Duelist extends AuraFighter {
 			if(tournament!=null) {
 				if(server.level().hasChunkAt(tournament) && server.level().getBlockEntity(tournament) instanceof TournamentBoardEntity board)board.describe(server);
 			} else if (server.isShiftKeyDown()) {
-				if (!dev.wildercord.aura.MasterFormLessons.offer(server, this)) {
-					if (method().equals(BreathingMethods.GALE) && !dev.wildercord.aura.MasterForms.data(server).learned() && server.getMainHandItem().isEmpty()) {
-						if (dev.wildercord.aura.Aura.stage(server) < 5) {
-							server.sendSystemMessage(Component.translatable("message.wildercord.wall_turn.need_sovereign"));
-						} else if (!MasterVictories.progress(server).cleared(MastersRules.GALE)) {
-							server.sendSystemMessage(Component.translatable("message.wildercord.wall_turn.need_gale"));
-						} else {
-							SwordMaster.introduce(server, this);
-						}
-					} else {
-						SwordMaster.introduce(server, this);
-					}
-				}
+				// A Gale teacher offers Wall Turn to a qualified Sovereign who has not learned it; otherwise sneak-use asks for a Master.
+				if (!dev.wildercord.aura.MasterFormLessons.offer(server, this)) SwordMaster.introduce(server, this);
 			} else {
 				DuelistDuels.use(server, this);
 				if (!inDuel() && !leaving()) {
 					if (SwordMaster.readyForTrial(server)) {
 						server.sendSystemMessage(Component.translatable("message.wildercord.master.teacher_hint"));
 					}
-					if (method().equals(BreathingMethods.GALE) && !dev.wildercord.aura.MasterForms.data(server).learned()) {
-						if (dev.wildercord.aura.Aura.stage(server) < 5) {
-							server.sendSystemMessage(Component.translatable("message.wildercord.wall_turn.need_sovereign"));
-						} else if (!MasterVictories.progress(server).cleared(MastersRules.GALE)) {
-							server.sendSystemMessage(Component.translatable("message.wildercord.wall_turn.need_gale"));
-						} else {
-							server.sendSystemMessage(Component.translatable("message.wildercord.wall_turn.teacher_hint"));
-						}
-					}
+					// Gale teachers hint Wall Turn and Stone teachers Stone Hinge, only when the player can act on it now; field forms follow.
+					dev.wildercord.aura.MasterFormLessons.hint(server, this);
+					dev.wildercord.aura.FormDashLessons.hint(server, this);
 				}
 			}
 		}

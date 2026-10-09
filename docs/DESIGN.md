@@ -451,6 +451,267 @@ Combos worth trying:
 - `Self · Soar · Extend`: 40 seconds in the sky for an Amethyst Cord's scouting trip.
 - Against a flier: `Bolt · Pull` or `Beam · Weigh` brings them down, and their wings need 30 seconds of rest.
 
+### Field and kin shapes (the shapes pack)
+Forty-one more shapes, so a spell can be aimed at the work as well as the fight. **Field** shapes strike a
+pattern of blocks (a crop row, a 3x3 plot, a mine shaft, a stairwell, a wall face) and whatever stands on
+those blocks; **kin** shapes strike a kind of creature wherever it stands near you (your animals, your
+pets, the young, whatever is hunting you). Their geometry lives in `FieldShapeGeometry` (pure, unit tested)
+and their delivery in `cast/FieldShapes`.
+
+How they land, the same for all 41:
+- One hit per cast through the ordinary path: every creature the shape chose, at its first block. Links,
+  On Hit and On Kill fire once, as for any area shape. At most 64 creatures (the cast's budget).
+- The rest of the pattern takes only the spell's **world** effects (Break, Grow, Harvest, Light...),
+  one block at a time: a pattern is at most 32 blocks, an effect that works many blocks at each (Excavate)
+  still shares the cast's block budget of 32, and blocks change only where the
+  caster may build. Harmful effects still only harm foes and helpful ones only help allies; Fellowship
+  chooses only allies and Sentinel only foes hunting an ally.
+- A field is turned to face the nearest cardinal direction you look. Its size grows with Widen (and shrinks
+  with Focus), from half to 2.25 times, but never past 32 blocks. Lodeseek strikes at most 8 ores; Grudge at
+  most 6 foes; Sentinel at most 8.
+- A shape that finds nothing (no ore, no water, no creature of its kind) shows a small fizzle and strikes
+  nothing.
+- Belated and Linger do not stretch over the extra blocks: those take their world effect at once.
+
+The multiplier is the rune's mana multiplier; power is the share of the effect's power each target takes.
+
+| Rune | Category | Tier | Cost | Mana | Does | Craft (with the Blank Rune and tier catalysts); found |
+|---|---|---|---|---|---|---|
+| Furrow | Field | I | 2 | ×1.0 | Strikes a row of 9 ground blocks running ahead of you, and whatever stands on them, at 70% power: a crop row to sow, grow or harvest. | Wooden Hoe, Wheat Seeds; plains village houses |
+| Plot | Field | I | 2 | ×1.1 | Strikes a 3x3 patch of ground where you look, and whatever stands on it, at 80% power. | Dirt, Wheat Seeds, Stick; plains village houses |
+| Seedbed | Field | II | 4 | ×1.4 | Strikes a 5x5 bed of ground where you look, and whatever stands on it, at 60% power: a whole field at once. | Iron Hoe, Wheat Seeds, Beetroot Seeds, Bone Meal; plains village houses |
+| Shaft | Field | II | 4 | ×1.3 | Strikes a column of 8 blocks straight down from the block you look at, at 80% power: a mine shaft or a well. | Iron Pickaxe, Ladder; toolsmith chests |
+| Stairwell | Field | II | 5 | ×1.5 | Strikes a stair of 8 steps going down ahead of you, three blocks high at each step, at 70% power: dig your way down and walk it. | Stone Stairs, Iron Pickaxe, Torch; toolsmith chests |
+| Corridor | Field | II | 4 | ×1.4 | Strikes a corridor 2 high and 8 deep into the block you look at, along your facing, at 80% power. | Iron Pickaxe, Rail, Torch; toolsmith chests |
+| Seam | Field | I | 2 | ×1.1 | Strikes a 7-block line across the block you look at, side to side, and what stands by it, at 90% power. | Stone Pickaxe, Coal; toolsmith chests |
+| Facade | Field | II | 4 | ×1.3 | Strikes a 5-wide, 3-high face of blocks where you look, and whatever stands at it, at 80% power. | Bricks, Glass Pane, Stone Bricks; mason chests |
+| Dome | Field | III | 7 | ×2.0 | Strikes the shell of a dome of radius 2 over where you look, and everything under it, at 90% power: carve a room or light a shelter. | Glass, Glass, Smooth Stone, Amethyst Shard; mason chests |
+| Footing | Field | I | 2 | ×1.0 | Strikes the 3x3 ground under your feet, and you and whatever stands on it, at 90% power. | Cobblestone, Leather Boots; mason chests |
+| Canopy | Field | II | 3 | ×1.2 | Strikes a 3x3 layer of blocks 3 above where you look (leaves, a roof), and whatever is beneath, at 90% power. | Oak Slab, Oak Leaves, Oak Fence; mason chests |
+| Shoreline | Field | II | 4 | ×1.3 | Strikes the water and the banks beside it within 4 blocks of where you look, and what wades there, at 70% power. | Sand, Water Bucket, Sugar Cane; shipwreck supply chests |
+| Perimeter | Field | II | 4 | ×1.4 | Strikes the 24-block edge of a 7x7 square where you look, and whatever stands on it, at 80% power: a fence line of light or thorns. | Oak Fence, Oak Fence Gate, String; mason chests |
+| Spire | Field | II | 3 | ×1.2 | Strikes a column 6 high rising from the block you look at, and whatever stands in it: a trunk, a pillar, a stack of cactus. | Cobblestone Wall, End Rod; toolsmith chests |
+| Pit | Field | I | 3 | ×1.2 | Strikes a 3x3 pit 2 deep where you look, and whatever stands over it, at 90% power. | Iron Shovel, Gravel; toolsmith chests |
+| Crossway | Field | II | 4 | ×1.3 | Strikes a cross of ground with arms of 4 where you look, and whatever stands on it, at 80% power: two paths at once. | Compass, Gravel, Stick; mason chests |
+| Lodeseek | Field | II | 6 | ×1.5 | Seeks up to 8 ores within 3 blocks of the block you look at and strikes each, at 60% power. No ore, no strike. | Compass, Raw Iron, Raw Copper, Raw Gold; toolsmith chests |
+| Vault | Field | III | 7 | ×2.0 | Strikes the 3x3x3 cube of blocks around the block you look at, and whatever is inside, at 90% power. | Iron Pickaxe, Chest, Iron Block; toolsmith chests |
+| Lamplit | Field | I | 2 | ×1.0 | Strikes the four corners and the middle of a 9x9 square where you look, at 80% power: lamps for a yard. | Lantern, Glowstone Dust; mason chests |
+| Fissure | Field | II | 5 | ×1.6 | Cracks a jagged line of 10 blocks of ground ahead of you and strikes whatever stands along it, at 110% power. | Flint, Iron Pickaxe, Tnt; toolsmith chests |
+| Spiral | Field | III | 7 | ×2.1 | Strikes a spiral of ground winding out 4 blocks from where you look, and whatever stands on it. | Nautilus Shell, Amethyst Shard, Redstone; mason chests |
+| Rosette | Field | II | 5 | ×1.6 | Strikes a rosette of 13 ground blocks across 9 blocks where you look, and whatever stands on them. | Pink Petals, Sunflower, Glowstone Dust; mason chests |
+| Stepstones | Field | I | 2 | ×1.0 | Strikes 5 stepping stones of ground, every second block ahead of you, at 80% power: a path across water or dark. | Cobblestone, Lily Pad; mason chests |
+| Causeway | Field | II | 4 | ×1.4 | Strikes a road of ground 3 wide and 8 long ahead of you, and whatever stands on it, at 70% power. | Cobblestone Slab, Iron Shovel, Rail; mason chests |
+| Hedgerow | Field | I | 3 | ×1.1 | Strikes a 9-block line of ground across where you look, side to side, and whatever stands on it, at 90% power. | Oak Sapling, Sweet Berries, Oak Leaves; plains village houses |
+| Lattice | Field | II | 3 | ×1.2 | Strikes every other block of a 5x5 square where you look (13 in a checkerboard), at 80% power: spacing for crops or lights. | Iron Bars, White Carpet, Black Carpet; plains village houses |
+| Collapse | Field | III | 8 | ×2.2 | Strikes a 3x3 slab two blocks thick at the block you look at, and everything up to 6 blocks beneath it, at 120% power: bring the ceiling down. | Anvil, Tnt, Gravel; toolsmith chests |
+| Fan | Field | I | 3 | ×1.2 | Strikes five spokes of ground 3 to 6 blocks ahead of you in a 90-degree fan, and whatever stands on them. | Feather, Arrow, Arrow; shipwreck supply chests |
+| Bobber | Field | I | 2 | ×1.0 | Lands on the first water within 24 blocks of your aim and strikes it and everything within 2.5 blocks: the fish, the drowned, the catch. | Fishing Rod, Cod; shipwreck supply chests |
+| Herd | Kin | I | 3 | ×1.1 | Strikes every animal within 8 blocks of you, at 90% power: feed, heal or move the herd. | Wheat, Lead; plains village houses |
+| Fellowship | Kin | II | 5 | ×1.6 | Strikes you and every ally within 12 blocks (party, pets and team), at 80% power. Only allies: it never touches a foe. | Cake, Golden Apple, Emerald; plains village houses |
+| Saddle | Kin | I | 2 | ×1.0 | Strikes you, what you ride and whoever rides with you: speed a horse, shield a boat. | Saddle; plains village houses |
+| Packbond | Kin | I | 3 | ×1.1 | Strikes every pet of yours within 24 blocks, and nothing else. | Bone, Lead, Name Tag; plains village houses |
+| Nursery | Kin | I | 2 | ×1.0 | Strikes every young animal within 8 blocks of you: grow them up, feed them. | Egg, Milk Bucket; plains village houses |
+| Shoal | Kin | II | 4 | ×1.3 | Strikes every creature in water within 10 blocks of you, at 90% power: fish, squid, drowned and swimmers. | Tropical Fish, Salmon, Prismarine Shard; shipwreck supply chests |
+| Rearguard | Kin | II | 4 | ×1.4 | Strikes everything behind you within 8 blocks, at 110% power. | Shield, Arrow, Spyglass; pillager outposts |
+| Grudge | Kin | II | 5 | ×1.5 | Strikes up to 6 creatures within 24 blocks that hurt you last or are hunting you, at 120% power. | Rotten Flesh, Iron Sword, Ink Sac; pillager outposts |
+| Sentinel | Kin | III | 8 | ×2.1 | Strikes up to 8 enemies within 16 blocks that are hunting you or an ally, at 110% power. | Shield, Iron Sword, Bell, Carved Pumpkin; pillager outposts |
+| Aureole | Kin | I | 3 | ×1.2 | Strikes you and everything within 3 blocks of you, friend and foe alike: each effect finds its own. | Glowstone Dust, Gold Nugget, Feather; pillager outposts |
+| Tether | Kin | II | 4 | ×1.4 | Strikes the creature you look at (within 24 blocks) and everything within 3 blocks of it, at 110% power. | Lead, Ender Pearl, String; pillager outposts |
+| Flock | Kin | II | 4 | ×1.3 | Strikes every flying creature within 16 blocks: bats, bees, parrots, phantoms, vexes and ghasts. | Feather, Phantom Membrane, Wheat Seeds; pillager outposts |
+
+Combos worth trying:
+- `Furrow · Harvest · Grow`: walk down a row of wheat, reaping the ripe and ripening the rest.
+- `Shaft · Break` and `Stairwell · Break`: a mine shaft or a stair down, cut in one cast.
+- `Herd · Nourish` heals your animals; `Grudge · Fire` burns only what hunts you.
+- `Lamplit · Light`: four lights and one in the middle of a square nine blocks across.
+### Farmstead magic
+Forty-eight gentle runes of the field, the herd, the kitchen, the hive and the wood (fx-farm pack; behaviour in
+`cast/packs/FarmEffects.java`, numbers in `cast/packs/FarmRules.java`). None of them hurts anything. Every block
+change asks the claim (a cast may only change what its caster could change by hand), respects the cast's 32-block
+budget and never touches a spell's own temporary blocks; animals are tended only when the caster could use them
+(not another player's pet). Runes that use up items take them from the caster's own inventory, so nothing is
+made from nothing. Village houses and the shepherd's and butcher's chests hold them.
+
+| Rune | Family · category | Tier | Cost | Does |
+|---|---|---|---|---|
+| Tillage | Effect · World (earth) | I | 3 | Tills the dirt and grass in a 5-by-5 patch around the block it strikes into farmland, as a hoe would. Widen reaches further; never more than 32 blocks a cast. Wooden hoe, Dirt, Wheat seeds; village chests |
+| Dewfall | Effect · World (storm) | I | 3 | A soft dew wets every farmland block in a 5-by-5 patch around the point to full moisture. Water bucket, Dirt, Wheat seeds; village chests |
+| Tilth | Effect · World (earth) | I | 3 | Loosens the coarse and rooted dirt in a 5-by-5 patch into plain dirt; rooted dirt sheds its hanging roots, as a hoe would. Coarse dirt, Bone meal, Flint; village chests |
+| Plowline | Effect · World (earth) | II | 6 | Ploughs a straight furrow from the block it strikes along the way you face: up to 8 blocks of dirt or grass tilled into farmland, longer with power (16 at most). Iron hoe, Dirt, String; village chests |
+| Sow | Effect · World (earth) | I | 4 | Plants seeds from your own inventory into the empty farmland of a 5-by-5 patch, one seed for each block. Nothing is planted that you don't carry. Wheat seeds, Beetroot seeds, Carrot; village chests |
+| Ripen | Effect · World (time) | II | 7 | Hurries each crop, stem, berry bush and nether wart in a 5-by-5 patch one stage on (two at 1.5 power, three at most). Ripe ones are left as they are. Bone meal, Wheat, Clock; village chests |
+| Dewkeep | Effect · World (storm) | II | 7 | Hangs a mist over a 5-by-5 patch for 60 seconds: its farmland is wetted now and again every 5 seconds, so a field far from water never dries. Lovely from a Totem or a Zone. Water bucket, White wool, Wheat seeds; village chests |
+| Field Sense | Effect · World (arcane) | I | 2 | Reads the field within 6 blocks: every ripe crop glints, and you're told how many are ripe and how many are still growing. Spyglass, Wheat, Carrot; village chests |
+| Thawfield | Effect · World (fire) | I | 3 | A warm breath melts the snow layers in a 5-by-5 patch away from crops and soil. Snow blocks and ice are left alone. Torch, Snowball, Dirt; village chests |
+| Cloche | Effect · World (time) | IV | 22 | Sets a glass of quickened time over a 5-by-5 patch for 30 seconds: once a second, every plant under it gets the growing tick the world gives now and then. At most 25 plants a second. Never crafted; village chests (rare) |
+| Scarecrow | Effect · World (wind) | III | 12 | Stands a ward of rustling wind on the spot for 20 seconds: rabbits, foxes and monsters within 5 blocks are shooed out of it once a second. Pets and farm animals stay put. Carved pumpkin, Hay block, Stick; village chests |
+| Fallow | Effect · World (earth) | I | 2 | Rests the bare farmland in a 5-by-5 patch back into dirt. Farmland with something growing on it is left as it is. Dirt, Bone meal, Short grass; village chests |
+| Ditchwater | Effect · World (storm) | II | 8 | Fills the hole you strike with one source of water, if it is an open hole with farmland within 4 blocks. Never in the Nether's heat. Iron shovel, Water bucket, Clay ball; village chests |
+| Compost | Effect · World (earth) | I | 3 | Feeds the composter you strike from your inventory, as if you dropped the items in yourself: up to 8 seeds, leaves or scraps (16 at double power). Composter, Rotten flesh, Wheat seeds; village chests |
+| Stalkrise | Effect · World (earth) | II | 6 | Sugar cane and cactus in a 5-by-5 patch grow one block taller, never past three tall; bamboo grows as bone meal would grow it. Sugar cane, Cactus, Bone meal; village chests |
+| Gourdcall | Effect · World (earth) | II | 8 | Grown pumpkin and melon stems in a 5-by-5 patch try at once to set their fruit, as many times as a day of waiting would give them. Pumpkin seeds, Melon seeds, Bone meal; village chests |
+| Berrybless | Effect · World (earth) | I | 4 | Sweet berry bushes in a 5-by-5 patch ripen to full, and the glow berry vines among them come into fruit. Sweet berries, Bone meal, Oak leaves; village chests |
+| Courtship | Effect · World (arcane) | III | 12 | Up to 6 grown farm animals within 5 blocks fall in love at once, as if you'd fed them. Animals that aren't ready yet (or belong to someone else) are left alone. Wheat, Carrot, Poppy; village chests |
+| Herdcall | Effect · World (wind) | I | 4 | Farm animals within 8 blocks walk to the spot it lands (to you, cast on yourself). Up to 12 come at once. Lead, Wheat, Stick; village chests |
+| Fleece | Effect · World (wind) | I | 3 | Shears every woolly sheep within 5 blocks, as shears would, and the wool falls at their feet. Shears, White wool, Feather; village chests |
+| Milkmaid | Effect · World (frost) | I | 3 | Fills the empty buckets in your inventory with milk, one for each grown cow or goat within 5 blocks. Bucket, Wheat, Snowball; village chests |
+| Henhouse | Effect · World (time) | II | 6 | Each chicken within 5 blocks lays its next egg now. A hen hurried along can't be hurried again for 2 minutes. Egg, Wheat seeds, Hay block; village chests |
+| Gentle Hand | Effect · World (wind) | I | 3 | Farm animals within 5 blocks stop panicking and stand calm for 8 seconds, easy to lead or pen. Apple, Wheat, Feather; village chests |
+| Fodder | Effect · World (earth) | I | 4 | Feeds the animals within 5 blocks from your inventory, each with one item of the food it eats: it heals 4 and a young one grows a tenth of the way up. Hay block, Carrot, Wheat seeds; village chests |
+| Barnwarmth | Effect · World (fire) | I | 3 | A hearth's warmth heals the farm animals and your pets within 5 blocks by 4 (more with power). Campfire, Hay block, Oak planks; village chests |
+| Herdsense | Effect · World (arcane) | I | 2 | Farm animals within 12 blocks glow for 10 seconds, and you're told how many there are and how many are ready to breed. Spyglass, Lead, Leather; village chests |
+| Hearthcook | Effect · World (fire) | III | 12 | Cooks the raw food in your own inventory as a smoker would: up to 8 pieces (16 at double power). Only food; the rest of your pack is left alone. Smoker, Coal, Beef; village chests |
+| Stewpot | Effect · World (fire) | I | 3 | Cooks bowls from your inventory into stew, as a crafting table would: a red and a brown mushroom make mushroom stew, six beetroots make beetroot soup. Up to 3 bowls. Bowl, Red mushroom, Brown mushroom; village chests |
+| Bakehouse | Effect · World (fire) | I | 3 | Bakes from your inventory: three wheat into bread, then a pumpkin, sugar and an egg into a pie. Up to 4 bakes (8 at double power). Furnace, Wheat, Sugar; village chests |
+| Pollinate | Effect · World (wind) | II | 8 | The bees within 8 blocks dust the crops around the point: one crop in a 5-by-5 patch grows a stage for each bee, 2 per bee at double power. No bees, no help. Honeycomb, Dandelion, Poppy; village chests |
+| Hive Hum | Effect · World (time) | III | 12 | Each beehive and bee nest within 5 blocks fills by one level of honey. A hive hummed into can't be hurried again for a minute. Honeycomb, Honey bottle, Clock; village chests |
+| Calm Smoke | Effect · World (fire) | I | 3 | A puff of campfire smoke settles the angry bees within 6 blocks: they forget their quarrel and go back to work. Campfire, Honeycomb, Oak leaves; village chests |
+| Wildflower | Effect · World (earth) | I | 3 | Sows wild flowers onto the open grass in a 5-by-5 patch: up to 6 flowers, more when widened. Dandelion, Poppy, Cornflower; village chests |
+| Sapling Rise | Effect · World (earth) | III | 12 | Saplings and mushrooms in a 5-by-5 patch are urged to grow: up to 3 of them each get the growth of 8 bone meal. Oak sapling, Bone meal, Oak log; village chests |
+| Sapling Sow | Effect · World (earth) | I | 3 | Plants saplings from your own inventory onto open dirt and grass in a 5-by-5 patch, two blocks apart: up to 4. Oak sapling, Birch sapling, Dirt; village chests |
+| Leaffall | Effect · World (wind) | I | 3 | The wild leaves in a 5-by-5-by-5 block around the point drop now, as if they'd decayed, with what decay would drop. Leaves placed by hand stay. Oak leaves, Shears, Feather; village chests |
+| Barkstrip | Effect · World (earth) | I | 2 | Strips the bark off the logs and wood in a 5-by-5-by-5 block around the point, as an axe would. Iron axe, Oak log, Flint; village chests |
+| Coppice | Effect · World (earth) | III | 14 | Fells the tree you strike (its logs, never more than 32, drop as an axe would cut them) and replants the stump with a sapling from your inventory. A log with no living leaves is part of a build and is left alone. Iron axe, Oak sapling, Oak log; village chests |
+| Feast Day | Effect · Support (fire) | IV | 20 | A harvest feast for everyone it reaches: 6 hunger and 6 seconds of Saturation each, and Regeneration I for 10 seconds. Never crafted; village chests (rare) |
+| Picnic | Effect · Support (earth) | I | 5 | A shared basket: each target eats 3 hunger and heals 2 (more with power). Bread, Apple, White carpet; village chests |
+| Honeydew | Effect · Support (wind) | I | 4 | Sweet as a honey bottle: cures Poison and heals 3 (more with power). Honey bottle, Sugar, Feather; village chests |
+| Leafshade | Effect · Support (earth) | II | 7 | Cool leaf-shade: Fire Resistance for 15 seconds. Oak leaves, Oak log, Vine; village chests |
+| Barkhide | Effect · Support (earth) | II | 8 | Skin like old oak: Resistance I for 12 seconds. Oak log, Spruce log, Iron ingot; village chests |
+| Sapflow | Effect · Support (earth) | II | 7 | Spring sap rises in you: Regeneration I for 8 seconds. Honey bottle, Oak sapling, Glistering melon slice; village chests |
+| Trot | Effect · Movement (wind) | II | 6 | Your mount (or the horse you strike) gets Speed II and Jump Boost I for 20 seconds. Cast on yourself while riding. Saddle, Carrot, Sugar; village chests |
+| Beeline | Effect · Movement (wind) | II | 6 | You zip straight ahead like a bee to a flower, about 6 blocks, and land without a fall. Honeycomb, Feather, Sugar; village chests |
+| Fieldstride | Effect · Movement (wind) | I | 4 | A farmhand's long stride: Speed I and Jump Boost I for 20 seconds. Leather boots, Wheat, Feather; village chests |
+| Hayloft | Effect · Movement (wind) | I | 5 | Tosses you up as if from a haystack, about 4 blocks, and you float down for 3 seconds without a fall. Hay block, Slime ball, Feather; village chests |
+
+Combos worth trying:
+- `Zone · Dewkeep` or `Zone · Cloche`: a lingering field that keeps itself wet or growing.
+- `Wave · Tillage` or `Trail · Plowline`: a whole strip of farmland in one sweep.
+- `Self · Herdcall`: the flock walks to you; `Ring · Courtship · Widen` starts a breeding season all around.
+- `Totem · Scarecrow`: a ward over the crops that keeps hungry mobs off.
+- `Self · Hayloft · if_sneaking`: only tosses you up when you mean it.
+### Hearth pack: everyday links and modifiers
+Links and modifiers for life away from a fight: farming, mining, felling, herding, fishing, travelling, and a few that change who a blow lands on. Rules live in `HearthLinkRules` (pure, unit-tested), the links in `cast.HearthLinks` and the modifiers in `cast.HearthModifiers`.
+
+- Every hearth modifier changes a rule, not a number alone, and each may appear only once on an effect (ModifierLimits). A modifier needs a fitting effect on its left: one that harms or moves (Culling, Gentle...), one that helps (Inward, Mending...), one that changes the world (Tidy, Silken...), a fire effect (Damp), or any effect at all (Magnetic, Steady...). Otherwise it is refused with "X does nothing here: it needs ... on its left." and stays unattached.
+- Clashes are refused: only one drop rule (Kilned, Silken, Windfall) per effect; Inward and Selfless pull opposite ways; Steady stops all block changes, so it refuses the block modifiers.
+- Conditions (cost 1) let the rest fire now or refund its mana, and keep the shape before them. Watchers (cost 2) wait for something you do, then fire the rest from where it happened. A caster keeps 8 waiting at most (the oldest gives way); one whose time runs out lapses. A watcher sets its seal at your feet and rings when it goes off.
+- Only what happens in the moment an effect lands is changed: a part it schedules for later (a falling star, a lingering field) lands as written.
+
+| Rune | Family · category | Tier | Cost | Does |
+|---|---|---|---|---|
+| Tidy | Modifier · Gathering | I | ×1.1 | Blocks it breaks drop straight into your pack; what doesn't fit lands at your feet. Bundle, String; village houses |
+| Replanting | Modifier · Gathering | I | ×1.1 | Ripe crops it breaks are replanted from their own seeds. Wheat Seeds, Bone Meal; village houses |
+| Kilned | Modifier · Gathering | II | ×1.25 | What it breaks drops already smelted, with no fuel. Only one drop rule per effect. Furnace, Coal; village houses |
+| Silken | Modifier · Gathering | II | ×1.3 | Blocks it breaks drop themselves, as with Silk Touch. Only one drop rule per effect. String, White Wool; village houses |
+| Windfall | Modifier · Gathering | III | ×1.4 | Blocks it breaks drop as if mined with Fortune III. Only one drop rule per effect. Emerald, Rabbit Foot; village houses |
+| Veinfollow | Modifier · Gathering | II | ×1.3 | Breaking an ore also breaks up to 8 more touching blocks of the same ore. Raw Iron, Raw Copper; village houses |
+| Timbering | Modifier · Gathering | II | ×1.3 | Breaking a log fells up to 24 more logs of the tree above it. Iron Axe, Oak Log; village houses |
+| Level Ground | Modifier · Gathering | I | ×1.0 | Never breaks a block below your feet, so you can't dig yourself a pit. Stone Slab, Compass; village houses |
+| Steady | Modifier · Power | I | ×0.9 | The effect can't break any block, and costs 10% less. Not with block modifiers. Obsidian, Iron Nugget; village houses |
+| Damp | Modifier · Tending | I | ×1.0 | Fire it starts on blocks goes straight out; creatures still burn. Wet Sponge, Clay Ball; village houses |
+| Magnetic | Modifier · Gathering | I | ×1.1 | Items within 6 blocks of where it lands fly to you. Iron Ingot, Redstone; village houses |
+| Sowing | Modifier · Tending | I | ×1.1 | Plants seeds from your pack on bare farmland within 3 blocks of where it lands. Wheat Seeds, Beetroot Seeds; village houses |
+| Furrowing | Modifier · Tending | I | ×1.1 | Tills grass and dirt within 2 blocks of where it lands into farmland. Iron Hoe, Dirt; village houses |
+| Fertile | Modifier · Tending | II | ×1.2 | Crops and saplings within 3 blocks of where it lands grow a stage. Bone Meal, Bone Meal, Moss Block; village houses |
+| Torchset | Modifier · Gathering | I | ×1.0 | If it lands somewhere dark, sets a torch there from your pack. Torch, Coal; village houses |
+| Ore Sensing | Modifier · Gathering | II | ×1.2 | Ores within 8 blocks of where it lands glimmer for 10 seconds. Spyglass, Raw Gold; village houses |
+| Fetching | Modifier · Gathering | I | ×1.1 | The loot of creatures it kills lands at your feet. Lead, Bone; village houses |
+| Bountiful | Modifier · Power | II | ×1.2 | Creatures it kills drop twice the experience, even untouched by your hand. Experience Bottle, Emerald; village houses |
+| Culling | Modifier · Power | II | ×1.1 | Lands only on monsters, 20% stronger; everything else is passed over. Rotten Flesh, Iron Sword; village houses |
+| Headhunting | Modifier · Power | III | ×1.2 | Lands only on the healthiest creature it reaches, 60% stronger. Skeleton Skull, Arrow, Spyglass; village houses |
+| Hallowed | Modifier · Power | II | ×1.2 | Twice as strong on the undead; the living are passed over. Golden Apple, Bone; village houses |
+| Tapering | Modifier · Power | II | ×1.1 | The first creature takes 50% more; each after takes a quarter less than the one before. Arrow, Flint; village houses |
+| Pooled | Modifier · Power | II | ×1.1 | Double power, shared evenly between every creature it reaches. Bowl, Glass Bottle; village houses |
+| Sunlit | Modifier · Power | II | ×1.0 | Twice as strong under open daylight sky; half as strong anywhere else. Sunflower, Gold Ingot; village houses |
+| Gentle | Modifier · Area | I | ×1.0 | Passes over farm animals, pets and villagers. Wheat, Lead; village houses |
+| Sparing | Modifier · Area | I | ×1.0 | Passes over other players and their pets. White Banner, Feather; village houses |
+| Soothing | Modifier · Power | I | ×1.0 | Creatures it lands on forget their anger at you; 30% weaker. Honey Bottle, Note Block; village houses |
+| Cushioned | Modifier · Tending | I | ×1.1 | Whoever it moves takes no fall damage on their next landing (10 seconds). Hay Block, Feather; village houses |
+| Mending | Modifier · Tending | II | ×1.2 | Also mends 10 durability on each target's held item and armour. Iron Ingot, Anvil; village houses |
+| Nourishing | Modifier · Tending | I | ×1.1 | Also feeds each player it lands on 3 hunger. Bread, Apple; village houses |
+| Purifying | Modifier · Tending | II | ×1.2 | Also lifts one harmful effect from each target. Milk Bucket, Glass Bottle; village houses |
+| Matchmaking | Modifier · Tending | I | ×1.0 | Grown animals it lands on fall in love. Wheat, Carrot, Poppy; village houses |
+| Fleecing | Modifier · Gathering | I | ×1.0 | Sheep it reaches are shorn; the wool lands at your feet. Shears, White Wool; village houses |
+| Inward | Modifier · Area | II | ×1.0 | Lands on you alone, 40% stronger. Not with Selfless. Glass Pane, Amethyst Shard; village houses |
+| Selfless | Modifier · Area | II | ×1.0 | Skips you and lands on the others 30% stronger. Not with Inward. Poppy, Gold Nugget; village houses |
+| Triage | Modifier · Area | II | ×1.1 | Lands only on the most hurt creature it reaches, 60% stronger. Glistering Melon Slice, Paper; village houses |
+| If Night | Link · Condition | I | 1 | The rest fires only at night. Ink Sac, Clock; village houses |
+| If Day | Link · Condition | I | 1 | The rest fires only by day. Sunflower, Clock; village houses |
+| If Raining | Link · Condition | I | 1 | The rest fires only while rain or snow falls on you. Water Bucket, Clock; village houses |
+| If Underground | Link · Condition | I | 1 | The rest fires only with no open sky above you. Cobblestone, Clock; village houses |
+| If Alone | Link · Condition | II | 1 | The rest fires only with no other player or monster within 16 blocks. Compass, Ink Sac; village houses |
+| If Near Ally | Link · Condition | II | 1 | The rest fires only with a friendly player or your pet within 8 blocks. Compass, Bone; village houses |
+| If Unhurt | Link · Condition | II | 1 | The rest fires only at full health. Apple, Clock; village houses |
+| If Holding Tool | Link · Condition | I | 1 | The rest fires only with a pickaxe, axe, shovel, hoe or shears in hand. Stick, Iron Nugget; village houses |
+| If Brimming | Link · Condition | II | 1 | The rest fires only with more than half your mana left. Glass Bottle, Lapis Lazuli; village houses |
+| If In Fields | Link · Condition | I | 1 | The rest fires only with farmland within 4 blocks of your feet. Wheat, Clock; village houses |
+| On Mine | Link · Trigger | I | 2 | The rest waits up to 30 seconds for the next block you mine, then fires there. Iron Pickaxe, Tripwire Hook; village houses |
+| On Harvest | Link · Trigger | I | 2 | The rest waits up to a minute for the next ripe crop you pick, then fires there. Wheat, Tripwire Hook; village houses |
+| On Catch | Link · Trigger | II | 2 | The rest waits up to 2 minutes for your next catch with a rod, then fires where you reeled it in. Fishing Rod, Tripwire Hook; village houses |
+| On Sprint | Link · Trigger | II | 2 | The rest waits up to 15 seconds for you to start sprinting, then fires from you. Sugar, Tripwire Hook; village houses |
+| On Splash | Link · Trigger | II | 2 | The rest waits up to 30 seconds for you to enter water, then fires there. Water Bucket, Tripwire Hook; village houses |
+| On Mount | Link · Trigger | II | 2 | The rest waits up to 30 seconds for you to ride something, then fires at your mount. Saddle, Tripwire Hook; village houses |
+| On Wake | Link · Trigger | II | 2 | The rest waits up to 10 minutes for you to wake from a bed, then fires from you. White Bed, Tripwire Hook; village houses |
+
+Combos worth trying:
+- `Touch · Break · Tidy · Silken`: mine glass, ice and ore blocks whole, straight into your pack.
+- `Touch · Break · Timbering · Tidy`: fell a whole tree into your pack in one cast.
+- `On Harvest · Burst · Grow · Replanting`: every ripe crop you pick is replanted and the patch around it grows.
+- `If Night · Burst · Harm · Hallowed`: a night-watch spell that only touches the undead.
+- `On Mount · Self · Swift`: a horse you mount sets off at a gallop.
+<!-- ---- fx-explore pack -->
+### Wayfarer's pack
+Forty-six helper runes for explorers, builders and traders. None of them hurt anything. They read the land, the sky and the light; point the way home, to spawn, to where you fell, or to a structure; and help with brushing, trade, brewing, enchanting and decorating. A few give footing in the Nether and the End. Structure senses use vanilla's own nearest-structure search (as `/locate` does) with a bounded reach, and all of them share a 30 s rest; the Stronghold Compass gives a direction only. None of them make loot: Steady Brush brushes through vanilla's brushing (the brush wears), and Restock works once per villager per in-game day. Every block one of them changes is first checked against protection and claims (`Casters.mayEdit`) and spends the cast's block budget. Passing blocks (Trail Blaze, Lava Crust, Void Step) are recorded as temporary blocks, drop nothing and revert on time, even across a restart. Behaviour is in `WayfarerEffects`, numbers in `WayfarerRules`.
+
+| Rune | Family · category | Tier | Cost | Does |
+|---|---|---|---|---|
+| Land Reading | Effect · World (earth) | I | 1 | Reads the ground where it lands: its biome, how warm it is, and its height against sea level. Dirt, Compass; cartographers' chests |
+| Depth Sounding | Effect · World (earth) | I | 2 | Sounds the rock under the point: how far down the first open cave or lava lies, up to 64 blocks. Pointed Dripstone, String, Cobbled Deepslate; shipwreck map chests |
+| Spawn Bearing | Effect · World (wind) | I | 1 | Tells which way the world spawn lies and roughly how far. Compass, Feather; cartographers' chests |
+| Home Bearing | Effect · World (wind) | I | 2 | Tells which way your bed or respawn anchor lies and roughly how far, when it is in this world. Compass, White Wool; cartographers' chests |
+| Grave Bearing | Effect · World (void) | II | 4 | Tells which way you last died and roughly how far, when it was in this world. Compass, Bone, Soul Sand; shipwreck map chests |
+| Portal Reckoning | Effect · World (void) | I | 1 | Tells where this spot lies in the other realm: one Nether block is eight in the Overworld. Obsidian, Map; shipwreck map chests |
+| Slime Sense | Effect · World (life) | I | 2 | Tells whether slimes can spawn underground in this chunk. Slime Ball, Compass; shipwreck map chests |
+| Sky Reading | Effect · World (storm) | I | 1 | Reads the sky: the weather now and about how many minutes until it turns. Feather, Glass Bottle; cartographers' chests |
+| Moon Reading | Effect · World (time) | I | 1 | Reads the moon tonight and how many nights until the next full moon. Clock, Glow Ink Sac; cartographers' chests |
+| Sun Reading | Effect · World (time) | I | 1 | Tells the time of day and how many minutes until dusk or dawn. Clock, Sunflower; cartographers' chests |
+| Lux Reading | Effect · World (arcane) | I | 1 | Reads the light where it lands, from blocks and from the sky, and whether monsters may spawn there. Torch, Glass Pane; shipwreck map chests |
+| Dust Line | Effect · World (arcane) | I | 1 | Draws a dust line from you to the point for 10 seconds and tells its length in blocks. Bone Meal, String; cartographers' chests |
+| Village Sense | Effect · World (wind) | II | 6 | Senses the nearest village and tells which way and roughly how far. Structure senses share a 30-second rest. Map, Emerald; cartographers' chests |
+| Ruin Sense | Effect · World (earth) | II | 6 | Senses the nearest trail ruins and tells which way and roughly how far. Structure senses share a 30-second rest. Map, Brush; shipwreck map chests |
+| Shipwreck Sense | Effect · World (frost) | II | 6 | Senses the nearest shipwreck and tells which way and roughly how far. Structure senses share a 30-second rest. Map, Oak Boat; shipwreck map chests |
+| Portal Sense | Effect · World (fire) | II | 6 | Senses the nearest ruined portal and tells which way and roughly how far. Structure senses share a 30-second rest. Map, Obsidian; ruined portals |
+| Fortress Sense | Effect · World (fire) | III | 10 | In the Nether, senses the nearest fortress and tells which way and roughly how far. Structure senses share a 30-second rest. Map, Nether Bricks, Blaze Powder; Nether fortresses |
+| Stronghold Compass | Effect · World (void) | III | 12 | In the Overworld, tells which way the nearest stronghold lies, but never how far. Structure senses share a 30-second rest. Compass, Ender Pearl, Blaze Powder; stronghold corridors |
+| Spire Sense | Effect · World (void) | III | 10 | In the End, senses the nearest End city and tells which way and roughly how far. Structure senses share a 30-second rest. Map, Chorus Fruit, End Stone; stronghold corridors |
+| Trail Blaze | Effect · World (fire) | I | 2 | Sets a glowing end rod on the face it hits for 5 minutes, to mark the way back. It drops nothing. Torch, Stick, Glowstone Dust; cartographers' chests |
+| Relic Sense | Effect · World (earth) | I | 3 | Suspicious sand and gravel within 12 blocks glow for 20 seconds, and you hear how many there are. Brush, Sand; desert pyramid brushing |
+| Spawner Sense | Effect · World (void) | II | 5 | Counts the monster and trial spawners within 32 blocks and points to the nearest. Rotten Flesh, Iron Bars; Nether fortresses, stronghold corridors |
+| Steady Brush | Effect · World (earth) | II | 5 | With a brush in hand, brushes up to 3 suspicious blocks near the point at once, hands free. The brush wears a point for each. Brush, Feather, Gravel; desert pyramid brushing |
+| Appraise | Effect · World (arcane) | I | 1 | Reads a villager: their trade, their level, and how many of their trades are sold out. Emerald, Glass Pane; village temples |
+| Trade Renew | Effect · World (time) | III | 10 | A villager with a trade restocks every offer. Each villager only once a day. Emerald, Clock, Barrel; village temples |
+| Haggle | Effect · Support (arcane) | III | 12 | For 20 seconds villagers give you their Hero of the Village prices. Emerald, Emerald, White Banner; village temples |
+| Folk Call | Effect · World (wind) | I | 2 | Villagers within 16 blocks walk over to the point. Emerald, Note Block; village temples |
+| Folk Census | Effect · World (arcane) | I | 1 | Counts the villagers within 32 blocks: with a trade, without one, nitwits, children, and golems. Emerald, Paper; cartographers' chests |
+| Lapis Thrift | Effect · Support (arcane) | II | 6 | For 60 seconds, your next enchantment at a table gives one lapis back. Lapis Lazuli, Book; village temples |
+| Quickbrew | Effect · Support (fire) | II | 6 | Brewing stands within 6 blocks brew twice as fast for 20 seconds. Blaze Powder, Glass Bottle, Sugar; village temples |
+| Potion Steep | Effect · Support (life) | II | 6 | Good potion effects last a quarter longer, up to 45 seconds more and 8 minutes in all. Glass Bottle, Nether Wart, Redstone; village temples |
+| Lore Reading | Effect · World (arcane) | I | 1 | Reads the item in your hand: how many enchantments it holds and what an anvil will charge to work it. Book, Feather; village temples |
+| Shelf Count | Effect · World (arcane) | I | 1 | At an enchanting table: how many bookshelves feed it, out of 15, and how many are blocked. Book, Oak Planks; village temples |
+| Beacon Swell | Effect · Support (arcane) | III | 12 | Beacons within 16 blocks reach half again as far for 60 seconds. Glowstone Dust, Iron Ingot, Prismarine Crystals; stronghold corridors |
+| Dye Wash | Effect · World (life) | I | 3 | Recolours up to 16 wool, glass, terracotta, concrete or candle blocks around the point to the dye in your other hand. One dye per 8 blocks. Red Dye, Yellow Dye, Blue Dye; shepherds' chests |
+| Checker Dye | Effect · World (life) | II | 5 | Like Dye Wash, but only every other block, for a checkered pattern. One dye per 8 blocks. White Dye, Black Dye; shepherds' chests |
+| Glyph Carve | Effect · World (earth) | I | 1 | Carves a glowing glyph of the way you face onto the first blank line of a sign. Oak Sign, Flint; cartographers' chests |
+| Lamplighter | Effect · World (fire) | I | 2 | Lights the unlit candles and campfires within 6 blocks. Candle, Flint; shepherds' chests |
+| Douse | Effect · World (wind) | I | 1 | Puts out the candles and campfires within 6 blocks. Candle, Feather; shepherds' chests |
+| Sign Glow | Effect · World (life) | I | 2 | Makes the writing on signs within 6 blocks glow, front and back. Oak Sign, Glow Ink Sac; village temples |
+| Frame Veil | Effect · World (void) | II | 4 | Item frames holding an item within 6 blocks turn invisible. Cast again to show them. Item Frame, Glass Pane; shepherds' chests |
+| Stand Pose | Effect · World (arcane) | I | 2 | Armor stands within 6 blocks gain arms and step to their next pose. Armor Stand, Stick; shepherds' chests |
+| Lava Crust | Effect · World (frost) | II | 6 | The lava top around the point hardens to basalt for 20 seconds, a safe place to land. Basalt, Snowball, Magma Cream; ruined portals, Nether fortresses |
+| Void Step | Effect · World (void) | II | 6 | A platform of end stone forms under your feet and crumbles from the edge after 6 seconds. End Stone, Feather, Ender Pearl; stronghold corridors |
+| Lava Sense | Effect · World (fire) | I | 2 | Tells how much lava lies within 8 blocks and which way the nearest is. Magma Cream, Spider Eye; ruined portals, Nether fortresses |
+| Gold Parley | Effect · Support (fire) | II | 5 | Piglins within 12 blocks forget their anger at you. Brutes stay angry. Gold Ingot, Gold Nugget, Porkchop; ruined portals, Nether fortresses |
+
 ## Heart Circles
 
 Casters build rings of condensed mana around their heart, from the 1st Circle to the 8th (the Archmage).
@@ -2844,3 +3105,250 @@ Relay Harm’s inherited arcane shimmer uses the bounded collateral query, curre
 incoming-leg sightlines, and the shared creature allowance before applying Glowing. Native source
 covers a visible invisible foe, exhausted allowance, intervening cover and candidate overflow.
 Ordinary arcane shimmer retains its existing reveal behavior.
+
+<!-- ---- fx-passive pack -->
+## Hearth runes (gentle, long-lasting utility)
+
+48 effect runes for camping, travel and everyday comfort (`cast/HearthEffects`, numbers in
+`spell/HearthRules`). None of them deals damage. Recasting refreshes a timer and never adds to it.
+Each caster gets one Camp Ward, one Ember Rest and one Rally Light, and up to 3 waymarks. Timers,
+places and marks are kept in memory, so they end on death, on disconnect or when the server stops.
+Only the lodestar and the Hollow Pocket's 9 slots are saved, and both are optional data, so old saves load
+as they did.
+
+Feel (`cast/HearthFeels`): soft cues borrowed from each element's kit, scaled small. The void and time runes keep
+their element's early cue. The eight Life runes have their own authored cue and landing in `tools/feel/life_outcomes_audio.py`.
+
+| Rune | Tier, cost | Lasts | Numbers and limits |
+|---|---|---|---|
+| Slowburn | I, 5 | 10 min | Half of the hunger you lose comes back as saturation, never above your food level |
+| Warm Cloak | I, 4 | 10 min | Freezing is cleared every tick |
+| Softsole | I, 3 | 10 min | Clears fall distance under 1.5 blocks above farmland, so a real fall still hurts |
+| Softfoot | II, 8 | 5 min | Monsters more than 8 blocks away drop you, unless you hit them in the last 10 s |
+| Hollow Pocket | II, 6 | - | 9 saved slots for your own items, kept through death (like an ender chest) |
+| Lodestar / Homeward | II, 6 / IV, 22 | - | Stand still for 3 s, then teleport to your lodestar, if it's in the same dimension and within 2000 blocks. Moving or taking damage breaks the channel. 2 min rest |
+| Gravefinder, Hearthpath, Springseek, Lostfind | I, 3 | 60/60/30/30 s | Private motes point the way, with the distance shown every 2 s |
+| Skyread, Starchart, Landread | I, 2 | - | One-line readouts: weather and how long it lasts, the hour and moon; position and distance to spawn; biome, height, light and slime chunk |
+| Lullaby | II, 8 | - | Resets time-since-rest for you and allies within 8 blocks |
+| Steedsong / Steedmend | II, 8 / I, 4 | 3 min | Your mount gets Speed II and Jump Boost II / Regeneration I |
+| Glidewind | III, 14 | 2 min | Pushes your elytra glide by 0.12 every 10 ticks, only while you're under 1.2 blocks/tick |
+| Waymark | I, 3 | 10 min | A pillar only you can see, from up to 160 blocks; 3 per player |
+| Camp Ward | II, 12 | 5 min | Within 8 blocks, removes monsters that spawned under 2 s ago (not named, persistent or bosses). Phantoms within 24 blocks lose their target |
+| Ember Rest | II, 10 | 5 min | Every 4 s, allies within 6 blocks get Regeneration I for 5 s and are thawed |
+| Rally Light | III, 18 | 3 min | Every 4 s, allies within 10 blocks get Haste I and Speed I for 6 s |
+| Orbcall | I, 3 | 5 min | XP orbs within 10 blocks drift to you |
+| Tinker's Hum | II, 10 | 5 min | Repairs 1 durability on a worn item every 10 s, up to 30 per cast |
+| Lantern Soul | I, 4 | 5 min | A light block (level 14) at your head, removed when you move away or it ends |
+| Keenkeep | II, 8 | 5 min | Undoes half the wear on the tool in your main hand |
+| Dew Drink | I, 4 | 10 min | 1 food point every 15 s while you're in water or rain |
+| Sunbask | I, 4 | 10 min | Heals 1 every 6 s in open daylight, if you haven't been hurt since the last heal |
+| Currentkin, Luckcharm | II, 6 / I, 4 | 3 / 5 min | Dolphin's Grace / Luck I |
+| Surefoot, Long Arm | I, 4 / II, 6 | 5 min | +0.45 step height / +2 block reach, as temporary attribute modifiers |
+| Nightwatch | II, 6 | 10 min | A bell and a message when a monster within 16 blocks targets you (at most once every 2 s) |
+| Trailblaze | I, 3 | 10 min | A private crumb every 6 blocks, 40 at most |
+| Stillwell | II, 6 | 5 min | 0.3 mana/s after you stand still for 3 s, up to 12 per cast |
+| Dynamo Stride | II, 6 | 5 min | 2 mana for every 24 blocks walked, up to 12 per cast |
+| Petward, Whistle | II, 8 / I, 3 | 3 min / - | Your pets within 16 blocks get Resistance I / pets within 48 blocks that aren't sitting or leashed teleport to you |
+| Smoke Signal | I, 2 | 2 min | A tall column of signal smoke |
+| Wayfarer's Hymn | III, 16 | 3 min | Speed I and Jump Boost I for allies within 10 blocks. It ends for anyone who deals damage |
+| Tarry | II, 10 | 5 min | Helpful effects get 20 ticks back every 2 s, so they last about twice as long. Infinite effects and effects with 2 s or less left aren't extended |
+| Clot | I, 4 | 3 min | Poison and Wither lose an extra second every second |
+| Heartsense | II, 6 | 30 s | Private heartbeat marks on creatures within 24 blocks |
+| Quench | I, 3 | 3 min | Puts you out, and burning wears off 3x as fast (not in lava) |
+| Hearthbond | III, 16 | 3 min | A bonded ally under 3 hearts gets Regeneration I for 5 s, and the others are told. Each ally once a minute |
+| Savor | I, 4 | 5 min | Food you eat also gives half its points as saturation |
+| Deepwarn | I, 4 | 5 min | Warns you about lava up to 6 blocks below, or a drop of 6+ blocks in front of you |
+| Enderhush | II, 6 | 10 min | Endermen you haven't hurt in the last 10 s stop being angry at you |
+
+Passive (`Passives.HEARTH`): Slowburn, Warm Cloak, Softsole, Softfoot, Orbcall, Lantern Soul,
+Keenkeep, Currentkin, Surefoot, Long Arm, Nightwatch, Luckcharm, Deepwarn and Enderhush. As
+passives they renew every 2 s, cost their usual upkeep (cost x 0.12 mana/s), and each renewal is
+capped at 15 s, so they stop soon after you unslot them. Where runes are found:
+village houses, cartographers' chests, shipwreck map chests, toolsmiths' chests and village temples.
+Homeward, the only Tier IV rune here, also comes from Archive vaults and dungeon bosses.
+<!-- ---- fx-fish pack -->
+## Tide pack: fishing, water and coast runes
+
+Forty-eight gentle effect runes (none deals damage). Behaviour lives in `cast/packs/TideEffects.java`, numbers in
+`cast/packs/TideRules.java`. Shared rules:
+
+- Fishing is only hurried or read, never given loot of its own. Angler's Lure halves the bobber's current wait
+  (at least 1 s, once per bobber). Reeling Tide is vanilla's own retrieve with normal rod wear. Bait Blessing is
+  vanilla Luck (I, II with Amplify), which vanilla fishing already reads.
+- Every block edit checks claims (`mayBuild`/`mayEdit`), build height, world border and blocks another spell holds,
+  and is paid from the cast's 32-block budget. Temporary blocks (Diving Bell, Tide Lantern, Lily Path, Sandbar)
+  restore through `TemporaryBlocks` and drop nothing. Creatures come out of the cast's creature budget.
+- Water is never placed where it evaporates (the Nether); Ice Auger leaves air there, as broken ice does.
+- Drift Net moves only items the caster may pick up (as Collect).
+
+| Rune | Tier | Cost | Kind | Numbers |
+|---|---|---|---|---|
+| Angler's Lure | I | 3 | World | Your fishing bobber within 32 blocks: the wait for a bite is cut in half, leaving at least 1 second. Once per bobber. |
+| Bait Blessing | I | 4 | Helpful | Luck for 60 seconds, Luck II with Amplify. Fishing reads your luck, so better catches come a little more often. |
+| Reeling Tide | I | 2 | World | Reels in your bobber with the rod in your hand. A fish that is biting is caught as usual. |
+| School Sight | II | 5 | World | Fish, squid, dolphins, turtles and axolotls within 16 blocks of the point glow for 12 seconds. |
+| Tackle Mend | I | 4 | Helpful | Mends 16 durability of a held fishing rod, more with Power. |
+| Bobber Bell | I | 2 | World | For 60 seconds your bobber rings and splashes when a fish bites. |
+| Water Reading | I | 1 | World | Tells whether your bobber sits in open water (needed for treasure) and whether rain is speeding up bites. |
+| Dolphin Call | II | 6 | World | Dolphins within 24 blocks swim to you. If any come, you get Dolphin's Grace for 20 seconds. |
+| Axolotl Kinship | II | 6 | World | Axolotls within 12 blocks are healed and follow you for 30 seconds. |
+| Shoal Herd | I | 3 | World | Fish within 10 blocks of the point swim to it for 10 seconds. |
+| Refloat | I | 3 | World | Fish, squid and dolphins stranded on land within 6 blocks are set back in water within 8 blocks. |
+| Reed Cut | I | 3 | World | Cuts kelp, seagrass, sugar cane and lily pads within 3 blocks of the point, up to 12. Kelp and cane keep their base to regrow. |
+| Wring | II | 6 | World | Soaks up water like a sponge within 2 blocks of the point, up to 24 blocks. |
+| Spring Draw | I | 2 | World | Fills an empty bucket in your hand with water. Without one, places a water source where you aim. |
+| Brimming | I | 2 | World | Fills up to 4 cauldrons within 4 blocks of the point with water. |
+| Ocean's Favor | IV | 24 | Helpful | Water Breathing, Dolphin's Grace, Conduit Power and Night Vision for 120 seconds. Found only, never crafted. |
+| Diving Bell | III | 12 | World | Under water: a 1-by-2 pocket of air at the point, walled in glass, for 15 seconds. |
+| Tide Lantern | I | 2 | World | A light at the point for 60 seconds that shines under water too. |
+| Sluice | I | 3 | World | Puts out fire within 4 blocks of the point, up to 24 blocks, campfires too, and anything burning there. |
+| Soak Through | I | 3 | World | Concrete powder within 2 blocks of the point sets and dirt turns to mud, up to 12 blocks. |
+| Raincloud | II | 8 | World | A small cloud rains on the point: farmland within 4 blocks is soaked, up to 8 crops grow, fires go out and a cauldron gains water. |
+| Storm Glass | I | 1 | World | Tells how long until the weather turns. |
+| Kelpsong | I | 3 | World | Kelp, seagrass and sea pickles within 4 blocks of the point grow as if bone mealed, up to 8. |
+| Coral Mend | II | 6 | World | Dead coral touching water within 3 blocks of the point comes back to life, up to 8. |
+| Nest Tend | I | 3 | World | Turtle eggs within 4 blocks move a stage closer to hatching, up to 4, and baby turtles grow. |
+| Lily Path | I | 3 | World | Lays up to 10 lily pads across the water the way you look, for 30 seconds. |
+| Sandbar | II | 7 | World | Raises a 12-block sandstone path at the water's surface the way you look, for 20 seconds. |
+| Ice Auger | I | 2 | World | Bores through up to 3 blocks of ice at the point, leaving water to fish in. |
+| Tide Marker | I | 2 | World | Sets a glowing buoy at the point for 5 minutes and tells you where it is. One per caster. |
+| Shore Sense | I | 2 | World | Points to the nearest dry land within 48 blocks. |
+| Fathom | I | 1 | World | Tells how deep the water is at the point and marks the bottom. |
+| Wreck Sense | II | 6 | World | Chests and barrels under water and suspicious sand and gravel within 20 blocks shine for 15 seconds, up to 12. |
+| Drift Net | II | 5 | World | Up to 16 items floating in water within 6 blocks of the point drift to you. Others' drops stay put. |
+| Mooring Call | II | 5 | World | The nearest empty boat within 24 blocks comes to your side. |
+| Fair Wind | II | 6 | Movement | In a boat: sail the way you look for 10 seconds. |
+| Upwell | I | 3 | Movement | In water: rush up toward the surface. |
+| Sounding | I | 3 | Movement | In water: dive fast for 2 seconds. |
+| Porpoise Leap | II | 5 | Movement | In water: leap forward like a dolphin, with no fall damage from the leap. |
+| Skimstep | II | 8 | Helpful | Run across water for 15 seconds. Crouch to sink. |
+| Skater's Edge | I | 4 | Helpful | Speed for 30 seconds, Speed II when standing on ice. |
+| Air Pocket | I | 2 | Helpful | Refills your air. |
+| Drown Ward | II | 6 | Helpful | For 60 seconds your air refills when it runs low, up to 3 times. |
+| Pearl Sight | II | 6 | Helpful | Conduit Power for 30 seconds. |
+| Sea Breeze | II | 6 | Helpful | Clears Mining Fatigue, Nausea and Hunger. |
+| Inkveil | II | 7 | Helpful | Invisible for 10 seconds in water, 3 on land. |
+| Shellback | II | 6 | Helpful | Resistance for 15 seconds, 30 in water or rain. |
+| Dewcatch | I | 2 | World | Up to 4 glass bottles in your pack fill with water. |
+| Diver's Hands | I | 4 | Helpful | Mine at full speed under water for 60 seconds. |
+
+Caps: Reed Cut 12, Wring 24, Sluice 24, Soak Through 12, Kelpsong 8, Coral Mend 8, Nest Tend 4 eggs,
+Brimming 4, Lily Path 10, Sandbar 12, Ice Auger 3 deep, Wreck Sense 12, Drift Net 16, Dewcatch 4, Raincloud 8 crops.
+Tackle Mend restores 16 durability per point of Power (at most 64). Drown Ward refills below 60 air, up to 3 times.
+Found: Village fishers, ocean ruins, shipwreck supply chests and fishing (twelve of them join the sea list).
+Ocean's Favor (Tier IV) is never crafted: big ocean ruins and Archive vaults.
+## Delving pack (fx-mine)
+
+Forty-eight working effect runes for mines, masonry, light, light redstone and hauling (`cast/DelveEffects`, numbers in `spell/DelveRules`). None harms a creature.
+Every block edit passes the world-rune gates (may build, claim/protection break event, never a rampart, a passing block, a fluid, a block entity or an unbreakable block) and spends the cast's 32-block budget.
+Mined blocks drop as the named pickaxe would (iron; diamond with Amplify, or diamond for Deepway, Luckstrike, Silklift and Motherlode). Item moves never create items.
+
+| Rune | Tier | Mana | Numbers |
+| --- | --- | --- | --- |
+| Stair Delve / Riser | II | 8 | 5 steps, 3 cells each (15 blocks); stops at fluid or a missing floor |
+| Plumb Line | I | 4 | shaft up to 8; stops a block above fluid or air |
+| Siftfall | I | 3 | loose blocks up to 4 above, radius 1 (Radius grows it, cap 8) |
+| Gangue | III | 14 | plain rock, radius 2; ores kept |
+| Ore Pluck | III | 12 | up to 8 exposed ores, radius 4 |
+| Luckstrike | III | 10 | one ore, Fortune I (II amplified) |
+| Motherlode | IV | 26 | up to 16 ores, radius 3, Fortune II (III amplified) |
+| Silklift | II | 6 | one block, Silk Touch, never a block entity |
+| Deepsound / Ore Tally | I / II | 2 / 5 | 16 down in a 3x3 column / radius 6, top 5 kinds |
+| Hollow Sense | I | 3 | nearest cave air within 12 (16 max) |
+| Lava Seal | II | 7 | radius 3, 16 at most; source to obsidian, flow to cobblestone |
+| Deepway | III | 16 | 3x3x3 road (27 blocks), 2 torches from the pack |
+| Kiln Bake | II | 8 | radius 1, 9 at most; only a one-for-one smelt into a plain block |
+| Block Pack / Unpack | I | 3 | 8 blocks / 4 blocks at most, plain stacks only |
+| Millstone | I | 3 | 16 cobblestone to gravel, or gravel to sand |
+| Tool Mend | II | 8 | a quarter of durability per material, 4 at most, never more than the wear |
+| Levelground | II | 10 | up to 3 above the point, radius 2 |
+| Holefill / Shore Up | I | 4 / 3 | 16 / 8 blocks from the pack |
+| Stilt | I | 4 | up to 5 high, packed mud, 30 s (Duration scales) |
+| Pit Floor | II | 6 | 3x3 packed mud, 20 s |
+| Plankway / Floorlay | I / II | 4 / 7 | 12 long / 5x5, pack blocks, lasting |
+| Polish / Brickwork / Agestone | I / II / II | 3 / 5 / 5 | 9 blocks, radius 1, in place |
+| Concrete Set | I | 3 | 16 blocks, radius 2 |
+| Chalk Line | I | 2 | line shown 20 s |
+| Torchfall | II | 6 | 6 torches, 5 apart, block light 7 or less |
+| Gloomsight | I | 3 | up to 32 dark spots, radius 8, 10 s |
+| Lumen Path | II | 6 | a light every 4 blocks, 6 at most, 120 s |
+| Headlamp | II | 6 | a following light, 60 s |
+| Snuff Out | I | 3 | fire, campfires, candles, radius 4 |
+| Lever Flip / Button Push / Doorcall | I | 2 | 4 switches, radius 3; iron doors never |
+| Chest Sort / Stow / Restock / Unburden | II | 5 / 5 / 5 / 6 | chests, barrels, shulker boxes the caster can open |
+| Stocktake | I | 3 | chests within radius 4, top 5 stocks |
+| Pack Tidy | I | 2 | joins pack stacks; hotbar untouched |
+| Lodepull | II | 7 | radius 6, 30 s, 16 items a pull, never another player's drops |
+| Caveward | III | 10 | 60 s, breaks sand, gravel or powder snow at the head |
+| Delvemark | IV | 22 | mark lasts 10 min, return within 128 after 2 still seconds |
+### Support pack: wards, mending and peace
+
+46 effect runes for healing, guarding, party help, crowd control without harm, and keeping places, pets and villagers safe.
+Limits keep support from becoming free immortality:
+
+- Grace and Faithful save a target only once per 10 minutes, never a boss, and never past Death's Door rest.
+- Aegis rests 2 minutes.
+- Guardlink sends 40% of the ally's damage to the guardian and breaks at 6 health or 16 blocks. The shared damage is magic damage that cannot chain.
+- Ironhold caps each blow at 4. Damage that ignores invulnerability (the void, `/kill`) is never changed.
+- Managift loses a quarter of what it gives.
+
+They stack with the other defences in this order:
+
+1. The ward's own cut is applied first (Evade, Aegis, Hearthguard, Bellward, Citadel, Ironhold).
+2. Guardlink moves part of the rest to the guardian.
+3. Mana Skin and Aura Armour then act on what the target still takes.
+
+Lifeline is a pull, so it doesn't interact with them.
+
+Kindred re-applies the helpful ones at half power. Places and zones are set down once per cast.
+
+Only a player can cast the runes that touch the world: zones, Keepsafe, Firebreak, and those that tend villagers or animals. Their state lives in memory and ends on a server restart.
+
+| Rune | Family · category | Tier | Cost | Does |
+|---|---|---|---|---|
+| Worst First | Effect · Support (arcane) | I | 10 | Heals the most hurt ally within 8 blocks of where it lands (you too) for 6. Recipe: Glistering Melon Slice, Paper. |
+| Salve | Effect · Support (frost) | I | 6 | Heals 2, gives Regeneration I for 8 seconds and puts out fire. Recipe: Honey Bottle, Snowball. |
+| Mending Mist | Effect · Support (frost) | II | 14 | A 4-block mist for 8 seconds: allies inside heal 1 each second. Recipe: Glistering Melon Slice, Glass Bottle. |
+| Hearthglow | Effect · Support (fire) | II | 12 | A 4-block glow for 12 seconds: allies inside are thawed and kept at Regeneration I. Recipe: Campfire, Golden Carrot. |
+| Aftercare | Effect · Support (earth) | II | 9 | For 15 seconds, each time the target is hurt it heals 1 a second later, 6 in all. Recipe: Glistering Melon Slice, Clock. |
+| Hearthsong | Effect · Support (fire) | II | 12 | Heals each ally within 6 blocks for 2, plus 1 for every ally there (up to 6). Recipe: Note Block, Glistering Melon Slice. |
+| Grace | Effect · Support (arcane) | IV | 30 | For 60 seconds a killing blow leaves the target at 2 health with Resistance III for 3 seconds. Once per 10 minutes each; never a boss. Found only: village temples; pillagers (1%). |
+| Managift | Effect · Support (arcane) | II | 4 | Gives up to 20 of your mana to each ally player hit; they get three quarters of it. Never yourself. Recipe: Amethyst Shard, Lapis Lazuli. |
+| Manawell | Effect · Support (arcane) | III | 16 | A 3-block well for 10 seconds: allies inside regain 2 mana each second. Recipe: Amethyst Shard, Cauldron. |
+| Guardlink | Effect · Support (earth) | III | 16 | For 15 seconds, 40% of the ally's damage comes to you instead. Breaks past 16 blocks or at 6 health. Not on yourself. Recipe: Iron Chain, Iron Ingot. |
+| Rally | Effect · Support (wind) | II | 10 | Allies within 8 blocks get Speed I and Jump Boost I for 12 seconds. Recipe: White Banner, Sugar. |
+| Morale | Effect · Support (fire) | II | 12 | Allies within 6 blocks get Absorption for 20 seconds, one level for each ally there (up to III). Recipe: Golden Apple, White Banner. |
+| Shrug Off | Effect · Support (wind) | I | 4 | Lifts the harmful effect with the most time left. Recipe: Milk Bucket, Feather. |
+| Hexguard | Effect · Support (void) | III | 14 | For 20 seconds, the next harmful effect that would land is refused. Recipe: Fermented Spider Eye, Shield. |
+| Stoutheart | Effect · Support (earth) | I | 5 | Resistance I for 10 seconds (Amplify makes it II). Recipe: Iron Ingot, Apple. |
+| Ironhold | Effect · Support (earth) | III | 15 | For 6 seconds no single blow deals the target more than 4. Recipe: Anvil, Shield. |
+| Evade | Effect · Support (wind) | II | 8 | For 10 seconds the next melee blow misses and the target slips aside. Recipe: Rabbit Foot, Feather. |
+| Emberguard | Effect · Support (fire) | I | 5 | Puts the target out and gives Fire Resistance for 30 seconds. Recipe: Magma Cream, Iron Nugget. |
+| Beastguard | Effect · Support (arcane) | I | 6 | Your pet, mount or a farm animal gets Resistance II and Fire Resistance for 60 seconds. Recipe: Bone, Leather. |
+| Hearthguard | Effect · Support (earth) | II | 10 | A villager, trader or golem takes 60% less damage from monsters for 5 minutes. Recipe: Emerald, Iron Ingot. |
+| Heel | Effect · Support (wind) | II | 6 | Your pets within 32 blocks that are not sitting come to your side. Recipe: Goat Horn, Bone. |
+| Bellward | Effect · World (arcane) | III | 18 | For 2 minutes villagers within 12 blocks take 60% less damage from monsters, and monsters there glow. Recipe: Bell, Emerald. |
+| Sanctuary | Effect · World (arcane) | III | 20 | A 6-block circle for 30 seconds: no monster spawns there, and monsters inside are nudged out. Recipe: Candle, Glowstone Dust. |
+| Arrowveil | Effect · World (wind) | II | 12 | A 4-block dome for 10 seconds: enemy missiles inside drop out of the air. Recipe: Arrow, Phantom Membrane. |
+| Blastward | Effect · World (earth) | II | 10 | For 60 seconds explosions within 6 blocks break no blocks. Recipe: Gunpowder, Obsidian. |
+| Firebreak | Effect · World (frost) | I | 5 | Puts out fire within 5 blocks, and the allies there. Recipe: Snowball, Water Bucket. |
+| Pacify | Effect · Control (arcane) | II | 9 | The creature forgets its target and picks none for 6 seconds; harming it ends this. Players get Weakness instead. Not bosses. Recipe: Poppy, Lapis Lazuli. |
+| Lure | Effect · Control (void) | II | 9 | Enemies drop their target and walk to where it lands for 4 seconds. Recipe: Fishing Rod, Ender Pearl. |
+| Stillbind | Effect · Control (void) | II | 10 | Holds the target in place for 3 seconds without harm. Bosses are only slowed. Recipe: Cobweb, Ender Pearl. |
+| Taunt | Effect · Control (blood) | I | 5 | Enemies hit turn on you for 6 seconds, and you get Resistance I for as long. Recipe: Rotten Flesh, Redstone. |
+| Nudge | Effect · Control (wind) | I | 3 | A gentle push 3 blocks away from you. No harm. Recipe: Feather, Slime Ball. |
+| Hobble | Effect · Control (void) | I | 4 | Slowness III for 4 seconds. No harm. Recipe: Cobweb, String. |
+| Corral | Effect · Control (wind) | III | 14 | Enemies within 5 blocks are kept inside the ring for 6 seconds. Recipe: Oak Fence, Lead. |
+| Truce | Effect · Control (arcane) | III | 16 | Every enemy within 8 blocks is pacified for 4 seconds. Not bosses. Recipe: White Wool, Poppy. |
+| Spook | Effect · Control (void) | II | 8 | Enemies flee from you for 3 seconds. Bosses and players are only slowed. Recipe: Bone, Carved Pumpkin. |
+| Aegis | Effect · Support (arcane) | IV | 36 | You and allies within 6 blocks take half damage and none from missiles for 6 seconds. Rests 2 minutes. Found only: village weaponsmiths; ravagers (5%). |
+| Accord | Effect · World (arcane) | IV | 34 | Enemies within 16 blocks are pacified for 10 seconds and no monster spawns there meanwhile. Not bosses. Found only: pillager outposts; pillagers (1%). |
+| Citadel | Effect · World (earth) | IV | 38 | An 8-block ward for 60 seconds: explosions break nothing, missiles from outside drop at the edge, and allies inside take 20% less damage. Found only: village armorers; ravagers (8%). |
+| Shieldwall | Effect · Support (earth) | II | 12 | You and allies within 5 blocks can't be knocked back and get Resistance I for 8 seconds. Recipe: Shield, Cobblestone. |
+| Staunch | Effect · Support (frost) | I | 5 | Ends poison and wither and keeps them off for 10 seconds. Recipe: Milk Bucket, Snowball. |
+| Sentry | Effect · Support (arcane) | I | 4 | Monsters within 16 blocks of the target glow for 10 seconds. Recipe: Spyglass, Glowstone Dust. |
+| Tend | Effect · Support (earth) | I | 6 | Heals a villager, golem, pet or animal for 8 (an iron golem for 16). Recipe: Wheat, Bone Meal. |
+| Soothe | Effect · Control (arcane) | II | 7 | A neutral creature forgets its anger and its target. Recipe: Honeycomb, Poppy. |
+| Withdraw | Effect · Support (wind) | III | 14 | An ally below half health turns invisible with Speed II for 4 seconds, and its hunters lose track of it. Recipe: Fermented Spider Eye, Sugar. |
+| Keepsafe | Effect · World (earth) | II | 8 | For 10 minutes the block hit can't be broken by anyone outside your party, nor by explosions. Recipe: Iron Ingot, Tripwire Hook. |
+| Faithful | Effect · Support (arcane) | III | 16 | For 5 minutes, a killing blow leaves your pet at 1 health beside you. Once per 10 minutes each. Recipe: Bone, Golden Apple. |

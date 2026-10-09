@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:compass",
+    "minecraft:ender_pearl",
+    "minecraft:blaze_powder",
+    "wildercord:mana_crystal",
+    "minecraft:diamond"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:stronghold_compass"
+    }
+  }
+}

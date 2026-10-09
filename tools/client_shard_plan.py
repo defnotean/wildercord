@@ -15,9 +15,9 @@ import sys
 PLAN = Path(__file__).resolve().with_name("client_shard_plan.json")
 MAX_CONFIG_BYTES = 128 * 1024
 PLAN_ID = "full-client-explicit-v2-counter-lifetimes"
-PLAN_SHA256 = "daa7d1a6d8537791d47e84d1aa33ad896310cc4aac6de6c37ac0d91991158943"
-ROSTER_SHA256 = "7b390799007708004706af9340e92b6c1ec35fa6031b388820b4341ed6dc7543"
-COUNTS = (80, 84, 77, 71)
+PLAN_SHA256 = "80a4046a84b8fccf4f753fa39f0646158bcc0c624b9689655367df7196c0942b"
+ROSTER_SHA256 = "aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be"
+COUNTS = (84, 84, 84, 83)
 REQUIRED_PROFILE = {"execution": "complete", "animationGallery": True,
                     "shaders": False, "showcase": False, "firebloodShots": False}
 REQUIRED_BLOCKS = {
@@ -96,7 +96,9 @@ def read_json(path):
 
 
 def file_identity(info):
-    return tuple(getattr(info, key) for key in ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns"))
+    # Windows reports creation time from lstat but change time from fstat, so st_ctime_ns never matches there.
+    keys = ("st_dev", "st_ino", "st_size", "st_mtime_ns") + (() if os.name == "nt" else ("st_ctime_ns",))
+    return tuple(getattr(info, key) for key in keys)
 
 
 def entry_list(entries, label):

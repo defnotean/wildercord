@@ -19,7 +19,9 @@ public final class EarnedCounters {
 	static boolean handles(String art) {
 		return art.equals("backdraft") || art.equals("rooted_parry") || art.equals("glacier_mirror") || art.equals("static_riposte")
 			|| art.equals("eye_of_the_storm") || art.equals("sanguine_parry") || art.equals("constellation_guard") || art.equals("stopped_moment")
-			|| originalGeometry(art);
+			|| originalGeometry(art)
+			// ---- methods-a pack: Tide, Iron and Dune's counters
+			|| art.equals("whirlpool") || art.equals("bulwark") || art.equals("sandveil");
 	}
 	private static boolean originalGeometry(String art) { return art.equals("unmoved") || art.equals("null_parry"); }
 

@@ -39,7 +39,7 @@ public final class MasterOrdinaryPlanner {
 	}
 
 	public MasterOrdinaryPlanner(int school, long encounterSeed) {
-		if (school < MastersRules.EMBER || school > MastersRules.STONE) throw new IllegalArgumentException("Unknown school");
+		if (!MastersRules.knownSchool(school)) throw new IllegalArgumentException("Unknown school"); // ---- masters-a pack
 		this.school = school;
 		state = PLANNERS[school][0].initial(encounterSeed);
 	}
@@ -123,7 +123,7 @@ public final class MasterOrdinaryPlanner {
 	}
 
 	public static MasterMoveGraph graph(int school, int preferredIndex) {
-		if (school < 0 || school > 2 || preferredIndex < 0 || preferredIndex >= ORDINARY.size())
+		if (!MastersRules.knownSchool(school) /* ---- masters-a pack */ || preferredIndex < 0 || preferredIndex >= ORDINARY.size())
 			throw new IllegalArgumentException("Invalid graph profile");
 		var nodes = new ArrayList<MasterMoveGraph.Node>(); nodes.add(MasterMoveGraph.Node.neutral("neutral"));
 		for (var move : ORDINARY) nodes.add(MasterMoveGraph.Node.action(key(move), MasterMoveCatalog.legacy().forMove(move).id()));
@@ -141,8 +141,9 @@ public final class MasterOrdinaryPlanner {
 
 	private static String key(MastersRules.Move move) { return move.name().toLowerCase(java.util.Locale.ROOT); }
 	private static MasterMovePlanner[][] buildPlanners() {
-		var result = new MasterMovePlanner[3][3];
-		for (int school = 0; school < 3; school++) for (int preferred = 0; preferred < 3; preferred++)
+		var result = new MasterMovePlanner[MastersRules.SCHOOLS][3]; // ---- masters-a pack: one row per known school
+		for (int school = 0; school < MastersRules.SCHOOLS; school++) if (MastersRules.knownSchool(school)) /* ---- methods-b pack: unknown rows stay empty */
+			for (int preferred = 0; preferred < 3; preferred++)
 			result[school][preferred] = new MasterMovePlanner(graph(school, preferred));
 		return result;
 	}

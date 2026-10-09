@@ -45,7 +45,7 @@ public final class SiltcrestEcologyTest implements FabricClientGameTest {
      // During hunting only its look angles change, so camera work cannot alter residency.
      observer(s.getPlayerList().getPlayers().getFirst(),new Vec3(.5,101.7,-.5));
      probe=new SiltcrestEcologyProbe(s,cohorts);
-     System.out.println("SILTCREST_ECOLOGY_HABITAT cohorts=3 offsets=[-20,0,20] waterCellsPerPond=16 ordinaryFishPerPond=3 sharedPostFirstCoilTicks=500 aggregateSequentialRetries=0");
+     System.out.println("SILTCREST_ECOLOGY_HABITAT cohorts=3 offsets=[-20,0,20] waterCellsPerPond=16 ordinaryFishPerPond=3 sharedPostFirstCoilTicks="+SiltcrestPresentationWitness.Budget.HUNT+" aggregateSequentialRetries=0");
      return l.getGameTime();
     });
     int selected=hunt(c,w,started);var cohort=probe.cohorts.get(selected);

@@ -52,11 +52,18 @@ public final class RelayClient {
 			&& RelayRules.containsIds(Spellbooks.get(client.player).spells().get(slot));
 		boolean handles = row || RELAY[index];
 		if (!handles) return false;
+		// A tap shorter than one tick is up at both reads; its queued click still counts as one whole press.
+		boolean clicked = false;
+		while (binding.consumeClick()) clicked = true;
 		if (!wasPlaying) return true;
-		if (down && !previous && !BLOCKED[index]) {
+		int edge = RelayInputRules.edge(down, previous, clicked);
+		if (edge == RelayInputRules.DOWN && !BLOCKED[index]) {
 			RELAY[index] = true; lastBinding = binding;
 			send(RelayInputRules.DOWN, requested);
-		} else if (!down && previous && RELAY[index]) {
+		} else if (edge == RelayInputRules.TAP && !BLOCKED[index]) {
+			lastBinding = binding;
+			send(RelayInputRules.DOWN, requested); send(RelayInputRules.UP, requested);
+		} else if (edge == RelayInputRules.UP && RELAY[index]) {
 			send(RelayInputRules.UP, requested); RELAY[index] = false;
 		}
 		return true;

@@ -49,6 +49,7 @@ public final class HeartCircles {
 	private static final Map<UUID, Float> CONDENSING = new HashMap<>();
 	/** Players whose innate rune wakes in a moment, after the 1st Circle's title has been read. */
 	private static final java.util.Set<UUID> AWAKENING = new java.util.HashSet<>();
+	private static final java.util.Set<UUID> VOW_REMINDED = new java.util.HashSet<>();
 
 	public static void init() {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
@@ -88,6 +89,11 @@ public final class HeartCircles {
 					player.sendSystemMessage(Component.translatable("message.wildercord.boss_breakthrough").withStyle(ChatFormatting.GOLD));
 				}
 			}
+		});
+		// A spell kill only counts for a caster still here, so a leaver's marks on creatures go with them.
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			UUID id = handler.player.getUUID();
+			LAST_SPELL_HIT.values().removeIf(hit -> hit.caster().equals(id));
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			FORMING.clear();
@@ -136,6 +142,11 @@ public final class HeartCircles {
 		}
 		if (meditating && circles > 0 && !ready) {
 			rings(player, circles, player.level().getGameTime() * 0.05, 0.45F);
+		}
+		// A heart that already holds a vow circle (an older save, or a choice put off) is reminded once per session while meditating.
+		if (meditating && VOW_REMINDED.add(id)) {
+			java.util.List<dev.wildercord.spell.CircleVows.Vow> open = dev.wildercord.spell.CircleVows.open(Heart.vows(player), Heart.active(player));
+			if (!open.isEmpty()) CircleVowCommands.offer(player, open.getFirst().circle());
 		}
 		if (!ready || !meditating) {
 			FORMING.remove(id);
@@ -193,6 +204,7 @@ public final class HeartCircles {
 		if (n == 2 || n == Circles.MANA_SKIN || n == 4 || n == Circles.FLOW || n == Circles.OVERFLOW || n == Circles.ARCHMAGE) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.perk." + n).withColor(0xF5C46A));
 		}
+		CircleVowCommands.offer(player, n);
 		if (n == Circles.ARCHMAGE) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.relay_lesson.invitation").withColor(0x7FDAD4));
 			player.sendSystemMessage(Component.translatable("message.wildercord.masters_trials.invitation").withColor(0xE8C46A));
@@ -354,5 +366,6 @@ public final class HeartCircles {
 		CONDENSING.remove(player);
 		NOTIFIED.remove(player);
 		AWAKENING.remove(player);
+		VOW_REMINDED.remove(player);
 	}
 }

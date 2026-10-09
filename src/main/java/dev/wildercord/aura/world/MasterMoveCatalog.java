@@ -20,7 +20,13 @@ public final class MasterMoveCatalog {
 	public static final int MAX_WIRE_ID = 32767;
 
 	/** Closed references to existing code, never class names, commands or data-driven effect programs. */
-	public enum ExecutionFamily { MELEE, CRESCENT, CINDER_WAKE, PURSUIT, REPRISE, FRACTURE, KILN, STONE_MARCH }
+	public enum ExecutionFamily { MELEE, CRESCENT, CINDER_WAKE, PURSUIT, REPRISE, FRACTURE, KILN, STONE_MARCH, TECHNIQUE,
+		// ---- masters-a pack
+		SIGNATURE,
+		// ---- masters-b pack
+		PACK_B_SIGNATURE,
+		// ---- methods-a pack
+		METHODS_A_SIGNATURE }
 
 	/** Timing, payment, warnings, counterplay and presentation remain owned by the existing implementation. */
 	public record Definition(String id, int wireId, MastersRules.Move legacyMove, Set<Integer> schools,
@@ -41,7 +47,12 @@ public final class MasterMoveCatalog {
 		public boolean availableIn(int school) { return schools.contains(school); }
 	}
 
-	private static final Set<Integer> ALL_SCHOOLS = Set.of(MastersRules.EMBER, MastersRules.GALE, MastersRules.STONE);
+	private static final Set<Integer> ALL_SCHOOLS = Set.of(MastersRules.EMBER, MastersRules.GALE, MastersRules.STONE,
+		// ---- masters-a pack
+		MastersRules.RIME, MastersRules.THUNDER, MastersRules.VERDANT, MastersRules.HOLLOW,
+		MastersPackB.STARLIT, MastersPackB.HOURGLASS, MastersPackB.CRIMSON, // ---- masters-b pack: the shared moves are theirs too
+		MethodsAMasters.TIDE, MethodsAMasters.IRON, MethodsAMasters.DUNE, // ---- methods-a pack: the shared moves are theirs too
+		MethodsBMasters.ECHO, MethodsBMasters.DAWN, MethodsBMasters.VENOM); // ---- methods-b pack
 	private static final MasterMoveCatalog LEGACY = new MasterMoveCatalog(List.of(
 		new Definition("wildercord:master/sweep", 1, MastersRules.Move.SWEEP, ALL_SCHOOLS, ExecutionFamily.MELEE),
 		new Definition("wildercord:master/thrust", 2, MastersRules.Move.THRUST, ALL_SCHOOLS, ExecutionFamily.MELEE),
@@ -52,7 +63,24 @@ public final class MasterMoveCatalog {
 		new Definition("wildercord:master/crosswind_reprise", 7, MastersRules.Move.CROSSWIND_REPRISE, Set.of(MastersRules.GALE), ExecutionFamily.REPRISE),
 		new Definition("wildercord:master/stone_fracture", 8, MastersRules.Move.STONE_FRACTURE, Set.of(MastersRules.STONE), ExecutionFamily.FRACTURE),
 		new Definition("wildercord:master/kiln_ring", 9, MastersRules.Move.KILN_RING, Set.of(MastersRules.EMBER), ExecutionFamily.KILN),
-		new Definition("wildercord:master/stone_fault_march", 10, MastersRules.Move.STONE_FAULT_MARCH, Set.of(MastersRules.STONE), ExecutionFamily.STONE_MARCH)));
+		new Definition("wildercord:master/stone_fault_march", 10, MastersRules.Move.STONE_FAULT_MARCH, Set.of(MastersRules.STONE), ExecutionFamily.STONE_MARCH),
+		new Definition("wildercord:master/technique", 11, MastersRules.Move.TECHNIQUE, ALL_SCHOOLS, ExecutionFamily.TECHNIQUE),
+		// ---- masters-a pack
+		new Definition("wildercord:master/rime_lattice", 12, MastersRules.Move.RIME_LATTICE, Set.of(MastersRules.RIME), ExecutionFamily.SIGNATURE),
+		new Definition("wildercord:master/thunder_chain", 13, MastersRules.Move.THUNDER_CHAIN, Set.of(MastersRules.THUNDER), ExecutionFamily.SIGNATURE),
+		new Definition("wildercord:master/verdant_bloom", 14, MastersRules.Move.VERDANT_BLOOM, Set.of(MastersRules.VERDANT), ExecutionFamily.SIGNATURE),
+		new Definition("wildercord:master/hollow_pull", 15, MastersRules.Move.HOLLOW_PULL, Set.of(MastersRules.HOLLOW), ExecutionFamily.SIGNATURE),
+		// ---- masters-b pack
+		new Definition("wildercord:master/starlit_constellation", 16, MastersRules.Move.STARLIT_CONSTELLATION, Set.of(MastersPackB.STARLIT), ExecutionFamily.PACK_B_SIGNATURE),
+		new Definition("wildercord:master/hourglass_rewind", 17, MastersRules.Move.HOURGLASS_REWIND, Set.of(MastersPackB.HOURGLASS), ExecutionFamily.PACK_B_SIGNATURE),
+		new Definition("wildercord:master/crimson_frenzy", 18, MastersRules.Move.CRIMSON_FRENZY, Set.of(MastersPackB.CRIMSON), ExecutionFamily.PACK_B_SIGNATURE),
+		// ---- methods-a pack: wire ids 19-21 (ordinal + 1, like every move before it).
+		new Definition("wildercord:master/tide_undertow_ring", 19, MastersRules.Move.TIDE_UNDERTOW_RING,
+			Set.of(MethodsAMasters.TIDE), ExecutionFamily.METHODS_A_SIGNATURE),
+		new Definition("wildercord:master/iron_anvil_verdict", 20, MastersRules.Move.IRON_ANVIL_VERDICT,
+			Set.of(MethodsAMasters.IRON), ExecutionFamily.METHODS_A_SIGNATURE),
+		new Definition("wildercord:master/dune_shifting_sands", 21, MastersRules.Move.DUNE_SHIFTING_SANDS,
+			Set.of(MethodsAMasters.DUNE), ExecutionFamily.METHODS_A_SIGNATURE)));
 
 	private final List<Definition> definitions;
 	private final Map<String, Definition> byId;
@@ -100,5 +128,5 @@ public final class MasterMoveCatalog {
 		return knownSchool(school) ? definitions.stream().filter(definition -> definition.availableIn(school)).toList() : List.of();
 	}
 
-	private static boolean knownSchool(int school) { return school >= MastersRules.EMBER && school <= MastersRules.STONE; }
+	private static boolean knownSchool(int school) { return MastersRules.knownSchool(school); } // ---- masters-a pack
 }

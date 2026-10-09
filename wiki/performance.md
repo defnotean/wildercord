@@ -5,48 +5,66 @@ nav_order: 12
 
 # Performance and visual settings
 
-Wildercord separates decorative effects from gameplay. Reduce presentation when many players are casting; keep delivery geometry and combat warnings readable.
+Wildercord keeps decoration separate from gameplay. Lowering effects never changes damage, timing or where a spell lands. Warning circles and combat cues stay readable.
 
-## Choose your visual settings
+## Open the settings
 
-Assign a key to **Magic visual settings** under Minecraft Controls → Wildercord.
+Bind a key to **Magic visual settings** in **Options > Controls > Key Binds > Wildercord** (it has no default key). You can also open it from the Life journal in the [Grimoire]({{ '/progression/grimoire/' | relative_url }}).
 
-| Setting | Suggested starting point | What it changes |
+Your choices are saved on your own computer and only change what you see.
+
+## Presets
+
+| Preset | What it sets |
+|---|---|
+| **Performance** | Your spells balanced, other spells minimal, reduced flash on, camera motion off |
+| **Balanced** | The default |
+| **Cinematic** | Fuller effects |
+
+Presets don't change your combat animation or camera choice (see below).
+
+## Every setting
+
+| Setting | Choices | What it changes |
 |---|---|---|
-| Your own formations | Full for solo screenshots; Balanced for ordinary play | Decorative density for your casts |
-| Other casters' formations | Balanced, or Minimal in busy fights | Decorative density from other players |
-| Reduced flash | Enable if bright releases are uncomfortable | Dims Wildercord shaped light |
-| Camera motion | Reduce if you prefer steady aiming | Wildercord shake and field-of-view punches |
+| Your spells | full, balanced, minimal | Detail and particles for spells you cast |
+| Other spells | full, balanced, minimal | Detail and particles for spells from other players and creatures |
+| Reduced flash | on, off | Softens bright flashes and screen-filling light |
+| Camera motion | on, off | Camera shake and view kicks on heavy impacts |
+| Spell titles | shown, hidden | The name and rank badge shown when a mastered spell is cast |
+| Blade trails | full, subtle, off | The ribbon of light an aura blade leaves. Techniques always show |
+| Body aura | full, calm, off | The aura around a swordsman's body |
+| Impact | full, soft, off | Hit-stop, view nudge and flash when aura blows land. Off keeps a small flash |
+| Technique banners | everyone's, yours only, off | The name of an art or Dominion as it goes off |
+| Sword strings | by the crosshair, by the hotbar, hidden | Where your [sword string]({{ '/progression/aura/' | relative_url }}#sword-strings) marks show |
+| Sigil tracing | on, off | Whether you trace a glyph while you charge. See [Sigil tracing]({{ '/spellcraft/casting/' | relative_url }}#sigil-tracing) |
+| Trace assist | none, light, strong | How much help you get while tracing |
+| Incantations | shown, hide mine, hide others', hidden | The [incantation]({{ '/spellcraft/casting/' | relative_url }}#incantations) words over casters |
 
-The settings are local in `config/wildercord-visuals.json`. The launcher profiles set defaults; you can change them later. Cinematic includes Iris but requires a separately installed and selected shader pack to enable shaders.
+The screen also has a **Benchmark this scene for 30 seconds** button that measures your frame rate where you stand.
 
-## Server limits
+## Combat presentation
 
-The spell compiler caches at most **256** plans and includes ranks in its keys. Each caller receives its own mutable plan. Server reload clears the cache. Decorative delivery is bounded to **512 packets per player per tick**; essential interactions retain their gameplay rules.
+The **Combat presentation...** button sets how sword fights look and how the camera behaves:
 
-Temporary terrain has finite lifetimes and default budgets of **32 cells per cast**, **64 active cells per owner**, and **512 globally**. Puzzle and home systems operate in loaded areas, and event echoes do not force chunks to load.
+- **Combat animations:** Classic, or Articulated (experimental).
+- **Camera:** Stable or Default. Stable stops view bob, shake and field-of-view kicks.
+
+**Reset** returns to Classic and Stable. Neither choice changes damage, movement or timing. Full details on [Combat Presentation]({{ '/masters/combat-presentation/' | relative_url }}).
+
+## Tips for busy fights
+
+- Set **Other spells** to minimal first. That usually helps most when many players cast.
+- For less motion, use Stable camera, Impact off, Body aura calm or off, and Blade trails subtle or off.
+- Turn on **Reduced flash** if bright releases bother you. Some small flashes remain.
+- The Cinematic launcher profile includes Iris, but you must install and pick a shader pack yourself.
 
 ## Measure a problem
 
-Operators can use `/wildercord visualstats` and `/wildercord visualstats reset`. In the practice arena, `/wildercord practice benchmark` samples ten seconds of server activity; moving or stress targets help repeat a scenario. Other players contribute to server-wide counters during the sample.
+Operators can test in the practice arena:
 
-Server counters are not GPU frame times. Prior measurements on a Ryzen 7800X3D / RTX 5080 at 1600×900 and a 120 FPS cap recorded roughly 8.33 ms median frame time and 8.9–9.1 ms p95 during a 24-target Firestorm beam scenario. That cap dominates the result: it does **not** establish an uncapped speedup or a promise for other hardware. The twelve new circle disciplines have focused functional and shader tests, rather than a new full hardware benchmark.
+- `/wildercord practice benchmark`: cast for 10 seconds, then read how many effects the server sent and limited.
+- `/wildercord practice moving` and `stress <1-24>`: add moving or extra targets so a test is easy to repeat.
+- `/wildercord visualstats` and `/wildercord visualstats reset`: show or clear the effect counters.
 
-For a reproducible report include hardware, render distance, shaders, visual preset, spell, target count and whether the frame rate is capped.
-
-## Mixed material review
-
-The living-world development build also has a sustained test with twenty-four moving targets and
-sixty-four paid Bolts alternating Pelt, Venom, Ember and Windcut. Each preset was measured in a
-fresh world for about thirty seconds at 1280 × 720, with VSync disabled and a 120 FPS cap.
-
-| Preset | Median frame | p95 frame | p99 frame | p95 server tick |
-|---|---:|---:|---:|---:|
-| Performance | 8.32 ms | 10.07 ms | 11.02 ms | 1.76 ms |
-| Balanced | 8.33 ms | 9.76 ms | 10.32 ms | 1.32 ms |
-| Cinematic | 8.33 ms | 9.65 ms | 10.15 ms | 1.13 ms |
-
-Every scheduled cast was admitted in all three runs. The frame cap dominates the median, so this
-comparison does not establish that one preset is faster. It also does not measure remote
-multiplayer, a populated natural ecosystem or an uncapped GPU workload. Use it as a repeatable
-development workload when reporting a regression, alongside the hardware and settings above.
+Server counters aren't frame times. When you report slowdown, include your hardware, render distance, shader pack, preset, the spell, how many targets, and whether your frame rate was capped.

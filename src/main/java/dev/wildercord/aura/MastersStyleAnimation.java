@@ -483,7 +483,7 @@ public final class MastersStyleAnimation {
 		pose(j(.38F, .24F, -.12F), j(-.14F, -.10F, .02F), j(-1.58F, -.34F, -.16F), j(-.44F, -.18F, -.34F),
 			j(-.82F, -.12F, -.12F), j(.62F, .10F, .12F), .80F, -1.25F, h(-.16F, .10F, -.48F, -94, 16, -12)),
 		pose(j(.20F, .14F, -.06F), j(-.06F, -.06F, .01F), j(-1.32F, -.18F, -.18F), j(-.60F, -.12F, -.22F),
-			j(-.48F, -.08F, -.08F), j(.38F, .06F, .08F), .45F, -.48F, h(-.16F, .14F, -.32F, -76, 10, -8)));
+			j(-.48F, -.08F, -.08F), j(.38F, .06F, .08F), .45F, -.48F, h(-.16F, .24F, -.32F, -70, 24, -14)));
 
 	static Motion motion(int id) {
 		return switch (id) {
@@ -537,7 +537,10 @@ public final class MastersStyleAnimation {
 			case 50 -> EVENT_HORIZON;
 			case 51 -> NOVA;
 			case 52 -> THOUSAND_MOMENTS;
-			default -> null;
+			// ---- methods-a pack
+			case 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124 -> MethodsAStyleAnimation.motion(id);
+			// ---- methods-b pack
+			default -> MethodsBStyleAnimation.motion(id);
 		};
 	}
 

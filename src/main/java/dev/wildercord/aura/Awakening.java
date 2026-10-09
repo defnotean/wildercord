@@ -180,7 +180,7 @@ public final class Awakening {
 
 	/** The technique (the Aura key tapped, then held): awakens {@code player}, or says why not. */
 	public static boolean awaken(ServerPlayer player) {
-        if (dev.wildercord.cast.ExciseCasting.blocking(player)) return false;
+        if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return false;
 		AwakeningRules.Refusal why = refusal(player);
 		if (why != null) {
 			refuse(player, why);

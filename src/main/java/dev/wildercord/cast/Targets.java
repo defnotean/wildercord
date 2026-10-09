@@ -64,6 +64,10 @@ public final class Targets {
 		if (!(entity instanceof LivingEntity living) || !living.isAlive() || entity instanceof ArmorStand) {
 			return false;
 		}
+		// ---- links-mods pack: Gentle, Sparing, Culling, Hallowed and Headhunting pass some creatures over.
+		if (HearthModifiers.passesOver(caster, entity)) {
+			return false;
+		}
 		// A master's redirected spell belongs to its opt-in encounter, including every linked hit.
 		if (caster instanceof dev.wildercord.aura.world.SwordMaster master && !master.canHarmParticipant(entity)) {
 			return false;

@@ -51,8 +51,9 @@ fabricApi {
 		enableGameTests = false
 		enableClientGameTests = true
 		// Owner-approved Minecraft EULA acceptance applies only to the explicitly opted-in disposable CI runs.
-		// Loom writes clientGameTest/eula.txt after clearing that run directory; local runs keep their own choice.
-		eula = System.getenv('GITHUB_ACTIONS') == 'true' && System.getenv('CI_MINECRAFT_EULA_ACCEPTED') == 'true'
+		// Loom writes clientGameTest/eula.txt after clearing that run directory. Locally, an owner who has accepted the
+		// EULA opts in with wildercord.eulaAccepted=true in their own ~/.gradle/gradle.properties (never committed).
+		eula = (System.getenv('GITHUB_ACTIONS') == 'true' && System.getenv('CI_MINECRAFT_EULA_ACCEPTED') == 'true') 			|| providers.gradleProperty('wildercord.eulaAccepted').getOrElse('false') == 'true'
 	}
 }
 
@@ -131,6 +132,9 @@ def validateMastersParts = { name, catalog ->
 }
 
 def clientCiContract = new GroovyClassLoader(getClass().classLoader).parseClass(file('tools/ClientCiContract.groovy'))
+// jdeps must read Java 25 class files, so take it from the build's own toolchain.
+def affectedJdeps = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(targetJavaVersion) }
+	.map { it.metadata.installationPath.file(System.getProperty('os.name').toLowerCase(Locale.ROOT).startsWith('windows') ? 'bin/jdeps.exe' : 'bin/jdeps') }
 
 // Focused in-world screenshot suites keep iteration fast while the full descriptor remains available.
 tasks.named('processGametestResources') {
@@ -139,8 +143,14 @@ tasks.named('processGametestResources') {
     inputs.file('tools/client_shard_plan.json')
 	inputs.file('tools/client_suite_catalog.json')
 	// Presence matters too: an empty -PciSuite is invalid, not the absent/full selector.
-	inputs.property('selectorPresence', ['ciSuite', 'focusedSuite', 'tailFrom', 'ciShard', 'ciShards'].findAll { project.hasProperty(it) })
+	inputs.property('selectorPresence', ['ciSuite', 'focusedSuite', 'affectedSince', 'tailFrom', 'ciShard', 'ciShards'].findAll { project.hasProperty(it) })
 	inputs.property('ciSuite', project.findProperty('ciSuite') ?: '')
+	inputs.property('affectedSince', project.findProperty('affectedSince') ?: '')
+	// Impact selection reads compiled classes and the git working tree, so it always reruns.
+	if (project.hasProperty('affectedSince')) {
+		dependsOn 'compileJava', 'compileClientJava', 'compileGametestJava'
+		outputs.upToDateWhen { false }
+	}
 	inputs.property('focusedSuite', project.findProperty('focusedSuite') ?: '')
 	inputs.property('twoClientSuite', project.findProperty('twoClientSuite') ?: '')
 	inputs.property('twoClientSuitePresent', project.hasProperty('twoClientSuite'))
@@ -173,7 +183,7 @@ tasks.named('processGametestResources') {
         def fullEntries = originalDescriptor.entrypoints['fabric-client-gametest']
         if (lifeExciseEntries.take(4).any { fullEntries.contains(it) } && !fullEntries.contains(lifeExciseEntries.last()))
             throw new GradleException('Life32 full descriptor must retain the separate Excise ordinary class')
-		def selectors = ['ciSuite', 'ciShard', 'focusedSuite', 'twoClientSuite', 'encounterSuite',
+		def selectors = ['ciSuite', 'ciShard', 'focusedSuite', 'affectedSince', 'twoClientSuite', 'encounterSuite',
 			'cinnamonSuite', 'defensiveSuite', 'practiceSuite', 'magicSuite', 'fusionSuite',
 			'runeSuite', 'mechanicsSuite', 'tourSuite', 'parrySuite', 'signatureSuite', 'tailSuite']
 		def active = selectors.findAll { project.hasProperty(it) }
@@ -251,6 +261,33 @@ tasks.named('processGametestResources') {
 			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
 		}
+		// Static impact analysis (tools/affected_tests.py): a fast iteration aid, never a release gate.
+		if (project.hasProperty('affectedSince')) {
+			def ref = project.property('affectedSince').toString().trim()
+			if (!ref) throw new GradleException('affectedSince needs a git ref, e.g. -PaffectedSince=HEAD or -PaffectedSince=origin/main')
+			def jdeps = affectedJdeps.get().asFile.absolutePath
+			def command = [System.getProperty('os.name').toLowerCase(Locale.ROOT).startsWith('windows') ? 'python' : 'python3', '-I',
+				file('tools/affected_tests.py').absolutePath, '--since', ref, '--json', '--jdeps', jdeps,
+				'--build-dir', layout.buildDirectory.get().asFile.absolutePath]
+			if (project.hasProperty('affectedStrict')) command << '--strict'
+			def process = new ProcessBuilder(command).directory(projectDir).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+			def output = process.inputStream.getText('UTF-8')
+			if (process.waitFor() != 0) throw new GradleException("tools/affected_tests.py failed for affectedSince=${ref}")
+			def result = new groovy.json.JsonSlurper().parseText(output)
+			def descriptor = file("${destinationDir}/fabric.mod.json")
+			def data = new groovy.json.JsonSlurper().parse(descriptor)
+			def all = data.entrypoints['fabric-client-gametest']
+			def selected = all.findAll { it in result.selected }
+			if (selected.size() != result.selected.size()) throw new GradleException('Affected selection names unregistered client game tests')
+			logger.lifecycle("Affected client game tests since ${ref}: ${result.mode == 'all' ? 'ALL' : selected.size()} of ${all.size()}")
+			result.reasons.each { logger.lifecycle("  all because: ${it}") }
+			selected.each { logger.lifecycle("  ${it}") }
+			result.warnings.each { logger.warn("  warning: ${it}") }
+			if (selected.isEmpty()) throw new GradleException("affectedSince=${ref} selected no client game tests (changed: ${result.changes*.path.join(', ') ?: 'nothing'}); nothing to run")
+			data.entrypoints['fabric-client-gametest'] = selected
+			descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
+			return
+		}
 		if(project.hasProperty('focusedSuite')) {
 			def descriptor=file("${destinationDir}/fabric.mod.json")
 			def data=new groovy.json.JsonSlurper().parse(descriptor)
@@ -308,6 +345,11 @@ tasks.named('runClientGameTest') {
             logger.lifecycle('WILDERCORD_CLIENT_PROFILE ' + groovy.json.JsonOutput.toJson(
                 [launchId: environment.WILDERCORD_FULL_CLIENT_LAUNCH_ID, profile: profile]))
         }
+		if (project.hasProperty('affectedSince')) {
+			def entries = new groovy.json.JsonSlurper().parse(file("${resources.destinationDir}/fabric.mod.json")).entrypoints['fabric-client-gametest']
+			logger.lifecycle('WILDERCORD_AFFECTED_SELECTION ' + groovy.json.JsonOutput.toJson(
+				[since: project.property('affectedSince').toString(), count: entries.size(), entries: entries]))
+		}
 		if (project.hasProperty('ciSuite')) {
 			def name = project.property('ciSuite').toString()
 			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))

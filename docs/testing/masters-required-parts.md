@@ -52,13 +52,12 @@ The validator requires exactly three regular non-symlink JSON manifests, each at
 most 1 MiB. Each must prove its complete assigned classes, status and provenance;
 all must share the exact candidate/run/attempt and workflow checkout, and the union
 must be exactly 47. Rerunning only failed jobs cannot mix new-attempt evidence with
-previous-attempt passes; rerun all required parts for a new accepted attempt. Only the aggregate may report the focused gate passed. It never
-reports the full-client gate passed or establishes manual visual acceptance.
+previous-attempt passes; rerun all required parts for a new accepted attempt. Only
+the aggregate may report the focused gate passed. It never reports the full-client
+gate passed or establishes manual visual acceptance.
 Part native logs are bounded to 16 MiB for acceptance; oversized logs stay archived
-but cannot establish a pass. The original nine fixed March PNG/JSON pairs remain
-preserved for any part that captures them. Every matrix artifact name includes its
-part to avoid upload collisions; existing failure archives and bounded diagnostic
-collectors still run under their original guards.
+but cannot establish a pass. Every matrix artifact name includes its part to avoid
+upload collisions; existing failure archives still run under their original guards.
 
 Measured March mechanics duration was 2277.26 seconds. Ten observed body frames
 arrived 60–67 seconds apart, averaging 63.1 seconds. At that observed cadence,
@@ -67,10 +66,3 @@ about 29 minutes. The combined visual part therefore estimates about 69 minutes;
 these are estimates, not a runtime guarantee. Actual native completion beneath the
 unchanged 85-minute cap remains a required acceptance check. Python tooling tests
 and fabricated unit-test receipts do not establish that runtime acceptance.
-
-The existing diagnostic job also supports `stone-fault-march-presentation` and
-`stone-fault-march-opponent`, each selecting one complete original class under the
-existing 50-minute native/60-minute job caps. Both retain every original assertion,
-trial and wait, with exact scoped seed/completion/provenance checks. The committed
-request is unchanged by this patch. The existing two-class visual diagnostic and
-three-class March diagnostic remain available without replacing required parts.

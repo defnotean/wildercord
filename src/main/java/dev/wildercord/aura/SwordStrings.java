@@ -296,7 +296,7 @@ public final class SwordStrings {
 	/** A request from the player's client: checked, then performed or refused. */
 	static void request(ServerPlayer player, Perform payload) {
 		if (dev.wildercord.cast.ActionAdmission.busy(player)) return;
-        if (dev.wildercord.cast.ExciseCasting.blocking(player)) return;
+        if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return;
 		Optional<AuraApi.StringArt> art = AuraApi.artOf(player, payload.art());
 		if (art.isEmpty()) {
 			refuse(player, payload.art(), null, Refusal.CLOSED);
@@ -339,7 +339,7 @@ public final class SwordStrings {
 
 	private static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks,
 			EarnedCounters.Attempt counter, boolean fromClash) {
-		if (dev.wildercord.cast.ActionAdmission.busy(player) || dev.wildercord.cast.ExciseCasting.blocking(player)
+		if (dev.wildercord.cast.ActionAdmission.busy(player) || (dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))
 			|| MastersArts.committed(player) || MasterForms.committed(player)) return false;
 		if (!fromClash && Clashes.meets(player, art, marks, counter)) return true;
 		if (counter != null && !fromClash && counter.take(null, observedTick(player)) != EarnedCounterReservation.Take.VALID) return false;

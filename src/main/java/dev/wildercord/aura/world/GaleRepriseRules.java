@@ -5,7 +5,7 @@ public final class GaleRepriseRules {
 	private GaleRepriseRules() {}
 
 	public static final int GATHER = 8, STEP_TICKS = 4, REPLY_TELL = 10;
-	public static final int TELL = GATHER + STEP_TICKS + REPLY_TELL, RECOVERY = 32, COOLDOWN = 140, WARNING_REFRESH = 3;
+	public static final int TELL = GATHER + STEP_TICKS + REPLY_TELL, RECOVERY = 24, COOLDOWN = 100, WARNING_REFRESH = 3;
 	public static final double COST = 24, DAMAGE = 26, MIN_DISTANCE = 2.5, MAX_DISTANCE = 4.75;
 	/** The existing shared exhaustion gate is checked before any special form is selected. */
 	public static final double READY_AURA = Math.max(COST, MastersRules.ATTACK_COST + MastersRules.GUARD_COST);

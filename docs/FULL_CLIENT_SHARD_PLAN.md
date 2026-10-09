@@ -1,18 +1,23 @@
 # Explicit full-client shard plan
 
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
-312-class descriptor as exactly four groups: **80 / 84 / 77 / 71**.
+335-class descriptor as exactly four groups: **84 / 84 / 84 / 83**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,
 manifest/aggregate tooling, and Gradle resource processing and launch preflight.
 There is no equal-count fallback or automatic assignment for newly added classes.
+
+The 18 classes added after the reviewed 317-class plan (the new Master packs, moves, codex-era
+tests, the performance harness and the HUD layout test) were appended to existing groups only:
+every reviewed group keeps its exact members and order, and `tools/tests/full-client-plan-v2-317.json`
+holds that reviewed plan so the tests can prove it.
 
 ## Identity and invariants
 
 - Plan schema 1, ID `full-client-explicit-v2-counter-lifetimes`.
 - Ordered roster SHA-256:
-  `7b390799007708004706af9340e92b6c1ec35fa6031b388820b4341ed6dc7543`.
+  `aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be`.
 - Complete plan SHA-256:
-  `daa7d1a6d8537791d47e84d1aa33ad896310cc4aac6de6c37ac0d91991158943`.
+  `80a4046a84b8fccf4f753fa39f0646158bcc0c624b9689655367df7196c0942b`.
 - Hashes use UTF-8 JSON with sorted object keys, compact separators and no trailing
   newline. The plan digest excludes no fields and is pinned in the selector.
   These are source identities, not claims of runtime acceptance.
@@ -76,8 +81,11 @@ profiles remain unchanged. Focused, articulated and connected gates stay separat
 The plan follows the reviewed historical grouping proposal: move the March trio
 to group 1 and the settings/articulated span to group 2, retain historical group 3,
 and leave the remaining final span in group 4 with Mirror in descriptor order.
-The two new counter-lifetime classes extend only that fourth group, 69 to 71;
-their runtime costs are unknown and are not assigned zero-duration estimates.
+The two new counter-lifetime classes extend only that fourth group, 69 to 71.
+The five Masters form and lesson-pack classes (Form Dash lesson, safety and
+commitment, Stone Hinge lesson, lesson pack playable) extend it again, 71 to 76.
+Stone Hinge sits after the Form Dash trio so the wall-turn block stays contiguous.
+Their runtime costs are unknown and are not assigned zero-duration estimates.
 Historical known/proxy sums were approximately 131.92, 110.12, 46.03 and 97.17
 minutes. They contain missing/censored work, use an older source for measurements,
 and exclude unknown runtime costs. They are **unverified estimates**, not bounds.

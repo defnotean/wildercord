@@ -4,7 +4,33 @@
 
 Cold, ice and water. Frost slows, freezes and shatters, and freezes water you can walk on.
 
-12 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
+52 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/air_pocket.png) Air Pocket
+
+
+*Tier I · Frost · Helps you and your allies · 2 mana · needs any Cord*
+
+Refills your air.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Kelp. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Air Pocket: a Blank Rune and Glass Bottle and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_air_pocket.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/angler_lure.png) Angler's Lure
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Your fishing bobber within 32 blocks: the wait for a bite is cut in half, leaving at least 1 second. Once per bobber.
+
+**How to get it:** Craft: a Blank Rune, String and Raw Cod. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Angler's Lure: a Blank Rune and String and Raw Cod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_angler_lure.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/basinfill.png) Basinfill
 
@@ -17,7 +43,20 @@ Fills an enclosed, one-block-deep hole with permanent source water: at most 16 c
 
 ![Crafting Basinfill: a Blank Rune and Clay Ball and Water Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_basinfill.png)
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/brimming.png) Brimming
+
+
+*Tier I · Frost · Works on the world · 2 mana · needs any Cord*
+
+Fills up to 4 cauldrons within 4 blocks of the point with water.
+
+**How to get it:** Craft: a Blank Rune, Cauldron and Kelp. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Brimming: a Blank Rune and Cauldron and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_brimming.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/chill.png) Chill
 
@@ -30,7 +69,46 @@ Slowness II for 6 seconds and 1 freeze damage. Chill again within 6 seconds and 
 
 ![Crafting Chill: a Blank Rune and Ice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_chill.png)
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dewcatch.png) Dewcatch
+
+
+*Tier I · Frost · Works on the world · 2 mana · needs any Cord*
+
+Up to 4 glass bottles in your pack fill with water.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Fern. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Dewcatch: a Blank Rune and Glass Bottle and Fern](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewcatch.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/divers_hands.png) Diver's Hands
+
+
+*Tier I · Frost · Helps you and your allies · 4 mana · needs any Cord*
+
+Mine at full speed under water for 60 seconds.
+
+**How to get it:** Craft: a Blank Rune, Prismarine Shard and Iron Pickaxe. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Diver's Hands: a Blank Rune and Prismarine Shard and Iron Pickaxe](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_divers_hands.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/firebreak.png) Firebreak
+
+
+*Tier I · Frost · Works on the world · 5 mana · needs any Cord*
+
+Puts out fire within 5 blocks, and the allies there.
+
+**How to get it:** Craft: a Blank Rune, Snowball and Water Bucket. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Firebreak: a Blank Rune and Snowball and Water Bucket](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_firebreak.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frostward.png) Frostward
 
@@ -43,7 +121,20 @@ For 60 seconds you can't freeze, not even in powder snow, and a frost hold on yo
 
 ![Crafting Frostward: a Blank Rune and Snowball and Leather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_frostward.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ice_auger.png) Ice Auger
+
+
+*Tier I · Frost · Works on the world · 2 mana · needs any Cord*
+
+Bores through up to 3 blocks of ice at the point, leaving water to fish in.
+
+**How to get it:** Craft: a Blank Rune, Ice and Flint. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Ice Auger: a Blank Rune and Ice and Flint](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ice_auger.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/icepath.png) Icepath
 
@@ -56,7 +147,7 @@ Freezes water within 3 blocks into ice you can walk on. On Self it lays a strip 
 
 ![Crafting Icepath: a Blank Rune and Packed Ice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_icepath.png)
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/icicle.png) Icicle
 
@@ -69,7 +160,215 @@ Freezes water within 3 blocks into ice you can walk on. On Self it lays a strip 
 
 ![Crafting Icicle: a Blank Rune and Ice and Pointed Dripstone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_icicle.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kelpsong.png) Kelpsong
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Kelp, seagrass and sea pickles within 4 blocks of the point grow as if bone mealed, up to 8.
+
+**How to get it:** Craft: a Blank Rune, Kelp and Bone Meal. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Kelpsong: a Blank Rune and Kelp and Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_kelpsong.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lily_path.png) Lily Path
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Lays up to 10 lily pads across the water the way you look, for 30 seconds.
+
+**How to get it:** Craft: a Blank Rune, 2x Lily Pad. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Lily Path: a Blank Rune and 2x Lily Pad](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lily_path.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/milkmaid.png) Milkmaid
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Fills the empty buckets in your inventory with milk, one for each grown cow or goat within 5 blocks.
+
+**How to get it:** Craft: a Blank Rune, Bucket, Wheat Crops and Snowball. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Milkmaid: a Blank Rune and Bucket, Wheat Crops and Snowball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_milkmaid.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/quench.png) Quench
+
+
+*Tier I · Frost · Helps you and your allies · 3 mana · needs any Cord*
+
+Puts you out, and for 3 minutes fire on you burns out three times as fast.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket, Snowball and Ice. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Quench: a Blank Rune and Water Bucket, Snowball and Ice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_quench.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reeling_tide.png) Reeling Tide
+
+
+*Tier I · Frost · Works on the world · 2 mana · needs any Cord*
+
+Reels in your bobber with the rod in your hand. A fish that is biting is caught as usual.
+
+**How to get it:** Craft: a Blank Rune, String, Stick and Kelp. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Reeling Tide: a Blank Rune and String, Stick and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_reeling_tide.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/refloat.png) Refloat
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Fish, squid and dolphins stranded on land within 6 blocks are set back in water within 8 blocks.
+
+**How to get it:** Craft: a Blank Rune, Kelp and Lily Pad. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Refloat: a Blank Rune and Kelp and Lily Pad](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_refloat.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/salve.png) Salve
+
+
+*Tier I · Frost · Helps you and your allies · 6 mana · needs any Cord*
+
+Heals 2, gives Regeneration I for 8 seconds and puts out fire.
+
+**How to get it:** Craft: a Blank Rune, Honey Bottle and Snowball. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Salve: a Blank Rune and Honey Bottle and Snowball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_salve.png)
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shoal_herd.png) Shoal Herd
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Fish within 10 blocks of the point swim to it for 10 seconds.
+
+**How to get it:** Craft: a Blank Rune, Kelp, Raw Cod and Raw Salmon. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Shoal Herd: a Blank Rune and Kelp, Raw Cod and Raw Salmon](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shoal_herd.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skaters_edge.png) Skater's Edge
+
+
+*Tier I · Frost · Helps you and your allies · 4 mana · needs any Cord*
+
+Speed for 30 seconds, Speed II when standing on ice.
+
+**How to get it:** Craft: a Blank Rune, Ice and Sugar. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Skater's Edge: a Blank Rune and Ice and Sugar](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_skaters_edge.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sluice.png) Sluice
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Puts out fire within 4 blocks of the point, up to 24 blocks, campfires too, and anything burning there.
+
+**How to get it:** Craft: a Blank Rune, Kelp, Clay Ball and Charcoal. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sluice: a Blank Rune and Kelp, Clay Ball and Charcoal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sluice.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/snuffout.png) Snuff Out
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Puts out fire, campfires and candles within 4 blocks of the point.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket and Ink Sac. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Snuff Out: a Blank Rune and Water Bucket and Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_snuffout.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/soak_through.png) Soak Through
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+Concrete powder within 2 blocks of the point sets and dirt turns to mud, up to 12 blocks.
+
+**How to get it:** Craft: a Blank Rune, Clay Ball and Sand. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Soak Through: a Blank Rune and Clay Ball and Sand](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_soak_through.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sounding.png) Sounding
+
+
+*Tier I · Frost · Moves you · 3 mana · needs any Cord*
+
+In water: dive fast for 2 seconds.
+
+**How to get it:** Craft: a Blank Rune, Magma Block and Kelp. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sounding: a Blank Rune and Magma Block and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sounding.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/spring_draw.png) Spring Draw
+
+
+*Tier I · Frost · Works on the world · 2 mana · needs any Cord*
+
+Fills an empty bucket in your hand with water. Without one, places a water source where you aim.
+
+**How to get it:** Craft: a Blank Rune, Bucket and Kelp. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Spring Draw: a Blank Rune and Bucket and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_spring_draw.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/springseek.png) Springseek
+
+
+*Tier I · Frost · Works on the world · 3 mana · needs any Cord*
+
+For 30 seconds, blue motes point to the nearest water source within 24 blocks.
+
+**How to get it:** Craft: a Blank Rune, Stick, Clay Ball and Glass Bottle. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Springseek: a Blank Rune and Stick, Clay Ball and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_springseek.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/staunch.png) Staunch
+
+
+*Tier I · Frost · Helps you and your allies · 5 mana · needs any Cord*
+
+Ends poison and wither and keeps them off for 10 seconds.
+
+**How to get it:** Craft: a Blank Rune, Milk Bucket and Snowball. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Staunch: a Blank Rune and Milk Bucket and Snowball](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_staunch.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidebreath.png) Tidebreath
 
@@ -82,7 +381,33 @@ Water breathing and faster swimming for 30 seconds, and it douses you: fire goes
 
 ![Crafting Tidebreath: a Blank Rune and Pufferfish](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tidebreath.png)
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/upwell.png) Upwell
+
+
+*Tier I · Frost · Moves you · 3 mana · needs any Cord*
+
+In water: rush up toward the surface.
+
+**How to get it:** Craft: a Blank Rune, Soul Sand and Kelp. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Upwell: a Blank Rune and Soul Sand and Kelp](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_upwell.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/axolotl_kinship.png) Axolotl Kinship
+
+
+*Tier II · Frost · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Axolotls within 12 blocks are healed and follow you for 30 seconds.
+
+**How to get it:** Craft: a Blank Rune, Tropical Fish and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Axolotl Kinship: a Blank Rune and Tropical Fish and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_axolotl_kinship.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/bubble.png) Bubble
 
@@ -95,7 +420,7 @@ Traps targets in a floating bubble that pops for 4 damage and leaves them soaked
 
 ![Crafting Bubble: a Blank Rune and Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bubble.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/coldsnap.png) Coldsnap
 
@@ -108,7 +433,72 @@ A cold snap racing out from the point: 4 freeze damage and Slowness II for 4 sec
 
 ![Crafting Coldsnap: a Blank Rune and Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_coldsnap.png)
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/coral_mend.png) Coral Mend
+
+
+*Tier II · Frost · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Dead coral touching water within 3 blocks of the point comes back to life, up to 8.
+
+**How to get it:** Craft: a Blank Rune, Bone Meal and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Coral Mend: a Blank Rune and Bone Meal and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_coral_mend.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/currentkin.png) Currentkin
+
+
+*Tier II · Frost · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Swim with the dolphins' grace for 3 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Raw Cod and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Currentkin: a Blank Rune and Raw Cod and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_currentkin.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dolphin_call.png) Dolphin Call
+
+
+*Tier II · Frost · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Dolphins within 24 blocks swim to you. If any come, you get Dolphin's Grace for 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, Raw Cod and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Dolphin Call: a Blank Rune and Raw Cod and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dolphin_call.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/drift_net.png) Drift Net
+
+
+*Tier II · Frost · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Up to 16 items floating in water within 6 blocks of the point drift to you. Others' drops stay put.
+
+**How to get it:** Craft: a Blank Rune, 2x String and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Drowned Scriptorium.
+
+![Crafting Drift Net: a Blank Rune and 2x String and Kelp, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_drift_net.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/drown_ward.png) Drown Ward
+
+
+*Tier II · Frost · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+For 60 seconds your air refills when it runs low, up to 3 times.
+
+**How to get it:** Craft: a Blank Rune, Pufferfish and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Drown Ward: a Blank Rune and Pufferfish and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_drown_ward.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/flash_freeze.png) Flash Freeze
 
@@ -121,7 +511,7 @@ A cold snap racing out from the point: 4 freeze damage and Slowness II for 4 sec
 
 ![Crafting Flash Freeze: a Blank Rune and Packed Ice and Water Bucket, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_flash_freeze.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/frost.png) Frost
 
@@ -134,7 +524,98 @@ A cold snap racing out from the point: 4 freeze damage and Slowness II for 4 sec
 
 ![Crafting Frost: a Blank Rune and Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_frost.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/inkveil.png) Inkveil
+
+
+*Tier II · Frost · Helps you and your allies · 7 mana · needs a Copper Cord or better*
+
+Invisible for 10 seconds in water, 3 on land.
+
+**How to get it:** Craft: a Blank Rune, 2x Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Inkveil: a Blank Rune and 2x Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_inkveil.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lava_crust.png) Lava Crust
+
+
+*Tier II · Frost · Works on the world · 6 mana · needs a Copper Cord or better*
+
+The lava top around the point hardens to basalt for 20 seconds, a safe place to land.
+
+**How to get it:** Craft: a Blank Rune, Basalt, Snowball and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Lava Crust: a Blank Rune and Basalt, Snowball and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lava_crust.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mending_mist.png) Mending Mist
+
+
+*Tier II · Frost · Helps you and your allies · 14 mana · needs a Copper Cord or better*
+
+A 4-block mist for 8 seconds: allies inside heal 1 each second.
+
+**How to get it:** Craft: a Blank Rune, Glistering Melon Slice and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Mending Mist: a Blank Rune and Glistering Melon Slice and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mending_mist.png)
+
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mooring_call.png) Mooring Call
+
+
+*Tier II · Frost · Works on the world · 5 mana · needs a Copper Cord or better*
+
+The nearest empty boat within 24 blocks comes to your side.
+
+**How to get it:** Craft: a Blank Rune, Oak Boat and Lead, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Mooring Call: a Blank Rune and Oak Boat and Lead, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_mooring_call.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/porpoise.png) Porpoise Leap
+
+
+*Tier II · Frost · Moves you · 5 mana · needs a Copper Cord or better*
+
+In water: leap forward like a dolphin, with no fall damage from the leap.
+
+**How to get it:** Craft: a Blank Rune, Raw Cod and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Porpoise Leap: a Blank Rune and Raw Cod and Feather, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_porpoise.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shipwreck_sense.png) Shipwreck Sense
+
+
+*Tier II · Frost · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Senses the nearest shipwreck and tells which way and roughly how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Empty Map and Oak Boat, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Shipwreck Sense: a Blank Rune and Empty Map and Oak Boat, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shipwreck_sense.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skimstep.png) Skimstep
+
+
+*Tier II · Frost · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+Run across water for 15 seconds. Crouch to sink.
+
+**How to get it:** Craft: a Blank Rune, Lily Pad and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Skimstep: a Blank Rune and Lily Pad and Feather, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_skimstep.png)
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidal_lift.png) Tidal Lift
 
@@ -147,7 +628,33 @@ Borrows up to three real water sources within four blocks, lifts them along a te
 
 ![Crafting Tidal Lift: a Blank Rune and Prismarine Shard, Kelp and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_tidal_lift.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/wring.png) Wring
+
+
+*Tier II · Frost · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Soaks up water like a sponge within 2 blocks of the point, up to 24 blocks.
+
+**How to get it:** Craft: a Blank Rune, Sponge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Wring: a Blank Rune and Sponge, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_wring.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/diving_bell.png) Diving Bell
+
+
+*Tier III · Frost · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Under water: a 1-by-2 pocket of air at the point, walled in glass, for 15 seconds.
+
+**How to get it:** Craft: a Blank Rune, 2x Glass and Heart of the Sea, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+![Crafting Diving Bell: a Blank Rune and 2x Glass and Heart of the Sea, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_diving_bell.png)
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/freeze.png) Freeze
 
@@ -160,4 +667,15 @@ Freezes targets solid for 2.5 seconds: they can't move or fight back.
 
 ![Crafting Freeze: a Blank Rune and 2x Blue Ice, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_freeze.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/oceans_favor.png) Ocean's Favor
+
+
+*Tier IV · Frost · Helps you and your allies · 24 mana · needs an Echo Cord*
+
+Water Breathing, Dolphin's Grace, Conduit Power and Night Vision for 120 seconds. Found only, never crafted.
+
+**How to get it:** Never crafted. Where it comes from: Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

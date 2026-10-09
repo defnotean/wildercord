@@ -309,7 +309,11 @@ public final class AwakeningRules {
 		STARLIT("starlit", "field_of_stars"),
 		HOURGLASS("hourglass", "stilled_hour"),
 		CRIMSON("crimson", "crimson_court"),
-		PLAIN("", "sovereign_ground");
+		PLAIN("", "sovereign_ground"),
+		// ---- methods-a pack
+		TIDE("tide", "drowning_tide"),
+		IRON("iron", "anvil_court"),
+		DUNE("dune", "shifting_sea");
 
 		public final String method;
 		public final String id;

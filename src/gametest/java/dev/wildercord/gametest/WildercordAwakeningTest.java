@@ -964,6 +964,11 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 			case CRIMSON -> foes(player).stream().anyMatch(m -> Reactions.has(m, Reactions.Mark.BLEEDING)) ? null : "the husks inside should bleed";
 			case RIME -> foes(player).stream().allMatch(m -> m.hasEffect(MobEffects.SLOWNESS) || RimeArts.frozen(m)) ? null : "the husks inside should be chilled";
 			case HOLLOW, PLAIN -> null;
+			// ---- methods-a pack
+			case TIDE -> foes(player).stream().allMatch(m -> Reactions.has(m, Reactions.Mark.WET)) ? null : "the husks inside should be soaked";
+			case IRON -> foes(player).stream().anyMatch(m -> dev.wildercord.aura.arts.MethodsAFlavours.sundered(m) > 0) ? null
+				: "the husks inside should have their armour cracked";
+			case DUNE -> foes(player).stream().allMatch(m -> m.hasEffect(MobEffects.SLOWNESS)) ? null : "the husks inside should sink";
 		});
 		check(beat == null, beat);
 		on(world, player -> {

@@ -1,6 +1,23 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "wildercord:item/bulwark_maul"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": [
+          "gui",
+          "fixed",
+          "on_shelf"
+        ],
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/bulwark_maul"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "wildercord:item/bulwark_maul_in_hand"
+    }
   }
 }

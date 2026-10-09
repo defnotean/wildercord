@@ -41,6 +41,8 @@ public final class AuraHud {
 	/** The strip's height, and its width when it stands alone. */
 	public static final int HEIGHT = 12;
 	private static final int ALONE_WIDTH = 90;
+	/** How far the strip rises over an offhand slot or attack indicator when there is no room past it (as the spell panel). */
+	private static final int RAISE = 24;
 	private static final int GOLD = 0xFFE8C46A;
 
 	/** Smoothed aura, so the bar glides. */
@@ -64,21 +66,30 @@ public final class AuraHud {
 			shown = -1;
 			return;
 		}
-		int aside = 0;
-		HumanoidArm offhandSide = player.getMainArm().getOpposite();
-		if (offhandSide == HumanoidArm.RIGHT && !player.getOffhandItem().isEmpty()) {
-			aside += 29;
-		}
-		if (offhandSide == HumanoidArm.LEFT && mc.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR) {
-			aside += 23;
-		}
-		int x = g.guiWidth() / 2 + 91 + 5 + aside;
+		int aside = aside(mc, player);
+		int besideHotbar = g.guiWidth() / 2 + 91 + 5;
+		int x = besideHotbar + aside;
+		int y = g.guiHeight() - HEIGHT - 1;
 		int width = Math.min(ALONE_WIDTH, g.guiWidth() - x - 2);
-		if (width < 40) {
+		if (width < 40 && aside > 0 && g.guiWidth() - besideHotbar - 2 >= 40) {
+			// Short of room past the offhand slot or attack indicator: on top of it instead, as the spell panel goes.
+			x = besideHotbar;
+			width = Math.min(ALONE_WIDTH, g.guiWidth() - x - 2);
+			y -= RAISE;
+		} else if (width < 40) {
 			x = g.guiWidth() - ALONE_WIDTH - 2;
 			width = ALONE_WIDTH;
 		}
-		draw(g, player, x, g.guiHeight() - HEIGHT - 1, width, delta.getGameTimeDeltaPartialTick(false));
+		draw(g, player, x, y, width, delta.getGameTimeDeltaPartialTick(false));
+	}
+
+	/** How far an offhand slot or attack indicator reaches out on the hotbar's right (0 if neither is there). */
+	static int aside(Minecraft mc, LocalPlayer player) {
+		HumanoidArm offhandSide = player.getMainArm().getOpposite();
+		if (offhandSide == HumanoidArm.RIGHT && !player.getOffhandItem().isEmpty()) {
+			return 29;
+		}
+		return offhandSide == HumanoidArm.LEFT && mc.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR ? 23 : 0;
 	}
 
 	/** Draws the strip at ({@code x}, {@code y}), {@code width} across. Returns the top of anything drawn above it. */

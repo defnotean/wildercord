@@ -296,7 +296,8 @@ public final class StanceHud {
 		if (!s.opened(now) && s.left(now) >= 0.995) {
 			return;
 		}
-		int x = g.guiWidth() / 2 + 91 + 8;
+		// Past an offhand slot or attack indicator on the hotbar's right.
+		int x = g.guiWidth() / 2 + 91 + 8 + AuraHud.aside(mc, player);
 		int width = Math.min(70, g.guiWidth() - x - 6);
 		if (width < 24) {
 			return;

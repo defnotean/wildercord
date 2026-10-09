@@ -16,8 +16,10 @@ class MasterVictoryRulesTest {
 		assertFalse(once.cleared(MastersRules.STONE));
 		assertEquals(once, once.withClear(99));
 		assertFalse(once.cleared(-1));
-		assertEquals(7, new MasterVictoryRules.Progress(-1).schools());
-		assertEquals(0, new MasterVictoryRules.Progress(8).schools());
+		assertEquals(MasterVictoryRules.ALL, new MasterVictoryRules.Progress(-1).schools());
+		assertEquals(0b1111111 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12 // ---- masters-b and methods-a pack bits
+			| 1 << 13 | 1 << 14 | 1 << 15, MasterVictoryRules.ALL); // ---- methods-b pack: Echo, Dawn and Venom bits
+		assertEquals(0, new MasterVictoryRules.Progress(1 << MastersRules.SCHOOLS).schools());
 	}
 
 	@Test void rewardsAreExistingHorizontalParts() {

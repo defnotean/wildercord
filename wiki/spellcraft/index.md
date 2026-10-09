@@ -3,56 +3,95 @@ title: Spellcraft
 nav_order: 3
 has_children: true
 permalink: /spellcraft/
-description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, creature affinities and climate, imbuing, overcasting, secret spells, loadouts and spell mastery."
+description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, affinities, imbuing, overcasting, secret spells, loadouts, mastery and lesson spells."
 ---
 
 # Spellcraft
 
 <img src="{{ '/assets/images/spell-circle.jpg' | relative_url }}" alt="A player holding out a charging magic circle: a frame, a band of script, a seven-pointed star with a coloured roundel on each point, and a seal in the middle" class="shot">
 
-A spell in Wildercord is nothing more than the runes on your Cord, read from left to right. There are no
-fixed spells to unlock: you choose the runes, you choose the order, and the Cord screen tells you exactly
-what you've made before you ever cast it. This section explains every part of that, from the Cord on your
-wrist to the magic circle behind your shoulders.
+A spell is just the runes on your Cord, read from left to right. There are no fixed spells to unlock. You pick
+the runes and their order, and the Cord screen tells you what you've made before you cast it.
 
-## The pages
-
-| Page | What's in it |
-|---|---|
-| [Cords]({{ '/spellcraft/cords/' | relative_url }}) | The four Cords (sockets, spells, rune tiers, mana), their recipes, upgrading, the Cord slot and the Cord on your wrist. |
-| [The Cord Screen]({{ '/spellcraft/cord-screen/' | relative_url }}) | Every part of the screen you build spells in: the Codex and its search, threading runes, the readout, naming spells, spell codes, scrolls, and the Passives, Grimoire and Cosmetics pages. |
-| [How a Spell Is Read]({{ '/spellcraft/reading-spells/' | relative_url }}) | The rules that turn a row of runes into a spell: groups, modifiers, links, cost and cooldown, with many worked examples. |
-| [Casting]({{ '/spellcraft/casting/' | relative_url }}) | Tapping and charging, the reticle, cooldowns, mana, rhythm, leaning, switching spells and the HUD. |
-| [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}) | How to read any spell from its circle, fused runes' two-coloured rings, and monsters' telegraphs. |
-| [Reading Life Magic]({{ '/spellcraft/life-outcomes/' | relative_url }}) | An illustrated field journal of thirty Life outcomes: real wound mending, changed gardens, repairs, living wards and counterplay. |
-| [Camp Concord]({{ "/spellcraft/camp-concord/" | relative_url }}) | A sampled private camp warning and a consensual, lossy mana gift. |
-| [Relay Circle]({{ "/spellcraft/relay-circle/" | relative_url }}) | The Archive’s eighth-circle lesson: place a paid focus, move, then commit a warned ray. |
-| [Passive Spells]({{ '/spellcraft/passives/' | relative_url }}) | Up to two always-on spells that cost mana every second instead of having a cooldown. |
-| [Shields and parrying]({{ '/spellcraft/shields/' | relative_url }}) | Shield's stacked magic circles, what breaks them, and turning a spell back with a parry. |
-| [Reactions]({{ '/spellcraft/reactions/' | relative_url }}) | Shatter, Overload, Blight and eight more: the right element on the right mark. |
-| [Creature Affinities and Climate]({{ '/spellcraft/affinities/' | relative_url }}) | Which creatures are weak to or resist which elements, the Bestiary, and how where you fight changes each element. |
-| [Imbuing and glyphs]({{ '/spellcraft/imbuing/' | relative_url }}) | Storing a spell in a sword, a bow, armour or any block. |
-| [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }}) | Casting past your mana by cracking a Heart Circle, and what a surge can do. |
-| [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}) | Ten exact rune sequences that become something grander, and how to find them. |
-| [Harmonies and Reading Runes]({{ '/spellcraft/harmonies/' | relative_url }}) | Your world's own harmonies and quirks, which no other world shares, and how a new rune goes from a hint to understood. |
-| [Loadouts]({{ '/spellcraft/loadouts/' | relative_url }}) | Your whole Cord saved under a name: swap between up to six setups from the Cord screen, a key or `/loadout`. |
-| [Spell Mastery]({{ '/spellcraft/mastery/' | relative_url }}) | Your spells grow with you: five ranks earned by casts that matter, a trait you choose at each, your own sigil, spoken names and inscribing a mastered spell for a friend. |
+Looking for a rune? Every rune, sorted the way the Codex sorts them, is on the
+[Rune Codex]({{ '/runes/codex/' | relative_url }}) page.
 
 ## The rules at a glance
 
-- **You wear a Cord** in its own slot, just above your offhand. Without one you can't cast.
-- **A Cord holds spells.** Each spell is a row of sockets; a better Cord has more sockets, more spells and
-  can hold stronger runes.
-- **You learn runes** by using a rune item. A learned rune can go in every spell, as often as you like.
-- **Runes come in four families.** Shapes (teal) say where the spell goes, effects (in their element's
-  colour) say what happens, modifiers (gold) change the closest rune on their left that they can change,
-  and links (violet) make the rest of the spell happen later.
-- **Spells cost mana** and then recharge: about a second for every 20 mana, between half a second and twenty.
+- **Wear a Cord** in the Cord slot, just above your offhand. Without one you can't cast.
+- **A Cord holds spells.** Each spell is a row of sockets. A better Cord has more sockets, more spells and
+  takes stronger runes.
+- **Learn runes** by using a rune item. A learned rune can go in any spell, as often as you like.
+- **Runes come in four families.** Shapes (teal) say where the spell goes. Effects (their element's colour) say
+  what happens. Modifiers (gold) change the rune to their left. Links (violet) make the rest of the spell happen
+  later.
+- **Spells cost mana**, then recharge: about a second for every 20 mana, from half a second to twenty seconds.
 - **Tap `R`** to cast at once, or **hold it** to charge for up to 40% more power.
-- **Friendly fire is off.** Harmful effects never touch you, your pets or your team. Helpful effects only
-  touch you and your allies.
+- **Friendly fire is off.** Harmful effects never touch you, your party, your pets or your team. Helpful effects
+  only touch you and those allies.
+- **You grow stronger** by forming [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}), now up to
+  Circle XX, and by absorbing [Mana Crystals]({{ '/progression/mana/' | relative_url }}), up to 100 of them.
 
-## A few words used everywhere
+## The pages
+
+### Building and casting
+
+| Page | What's in it |
+|---|---|
+| [Cords]({{ '/spellcraft/cords/' | relative_url }}) | The four Cords, their recipes and the Cord enchantments. |
+| [The Cord Screen]({{ '/spellcraft/cord-screen/' | relative_url }}) | Where you build spells: the Codex, threading runes, the readout, names, codes and the Grimoire. |
+| [How a Spell Is Read]({{ '/spellcraft/reading-spells/' | relative_url }}) | Groups, modifiers, links, cost and cooldown, with worked examples. |
+| [Builds to Try]({{ '/spellcraft/build-examples/' | relative_url }}) | Ready-made spells to copy and learn from. |
+| [Casting]({{ '/spellcraft/casting/' | relative_url }}) | Tapping, charging, overchannelling, rhythm, switching spells and the HUD. |
+| [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}) | Reading any spell, or a monster's attack, from its circle. |
+| [Passive Spells]({{ '/spellcraft/passives/' | relative_url }}) | Always-on spells that cost mana every second. |
+| [Loadouts]({{ '/spellcraft/loadouts/' | relative_url }}) | Save your whole Cord under a name and swap setups. |
+| [Spell Mastery]({{ '/spellcraft/mastery/' | relative_url }}) | Ranks, traits, sigils and spoken names for the spells you use most. |
+
+### Combat magic
+
+| Page | What's in it |
+|---|---|
+| [Shields and Parrying]({{ '/spellcraft/shields/' | relative_url }}) | Shield's layered circles, what breaks them, and parrying a spell. |
+| [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}) | The right element on the right mark. |
+| [Creature Affinities and Climate]({{ '/spellcraft/affinities/' | relative_url }}) | Weaknesses, resistances, the Bestiary and how the place you fight in changes each element. |
+| [Imbuing and Glyphs]({{ '/spellcraft/imbuing/' | relative_url }}) | Storing a spell in a weapon, armour or a block. |
+| [Overcasting and Wild Magic]({{ '/spellcraft/overcasting/' | relative_url }}) | Casting past your mana, and what a surge can do. |
+| [Circle Disciplines]({{ '/spellcraft/circle-disciplines/' | relative_url }}) | Twelve circle runes that trade radius, speed, duration or power. |
+| [Physical Magic]({{ '/spellcraft/physical-magic/' | relative_url }}) | Real walls, steps and thrown water, their fusions, and weaving many effects. |
+
+### Secrets and lore
+
+| Page | What's in it |
+|---|---|
+| [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}) | Exact rune sequences that become something grander. |
+| [Harmonies and Reading Runes]({{ '/spellcraft/harmonies/' | relative_url }}) | Your world's own harmonies and quirks, and how a rune goes from a hint to understood. |
+| [Reading Life Magic]({{ '/spellcraft/life-outcomes/' | relative_url }}) | What Life spells do to wounds, gardens and wards. |
+| [Living Materials]({{ '/spellcraft/living-materials/' | relative_url }}) | Reading Life spells through seeds, leaves, sap and thorns. |
+| [Shadow Materials]({{ '/spellcraft/shadow-materials/' | relative_url }}) | Reading Void spells through folds, shells and shades. |
+
+### Lesson spells
+
+Lesson spells are learned from a book or study, not a rune item. Each needs its lesson, an Echo Cord and a set
+number of active Heart Circles, and uses exactly the runes the lesson names. Your Grimoire keeps every lesson
+you've copied.
+
+| Page | What's in it |
+|---|---|
+| [Relay Circle]({{ '/spellcraft/relay-circle/' | relative_url }}) | The Archive's Circle VIII lesson: place a focus, move, then send a warned ray through it. |
+| [Ebb Ledger and Reweave]({{ '/spellcraft/reweave/' | relative_url }}) | Lay a small Harm field, then redraw it once into a lane. |
+| [Excise]({{ '/spellcraft/excise/' | relative_url }}) | Cut an enemy Zone at its core so it stops pulsing. |
+| [Tollgate, Lifeline and Conduit]({{ '/spellcraft/lesson-pack/' | relative_url }}) | Three lessons for Circles X, XIV and XVIII. |
+
+### Shared and world magic
+
+| Page | What's in it |
+|---|---|
+| [Camp Concord]({{ '/spellcraft/camp-concord/' | relative_url }}) | A private camp warning and a willing, lossy mana gift. |
+| [Basinfill]({{ '/spellcraft/basinfill/' | relative_url }}) | Fill a small enclosed hole with lasting water. |
+| [Root Carry]({{ '/spellcraft/root-carry/' | relative_url }}) | Move a young root between soil patches without resetting its growth. |
+
+## Words used everywhere
 
 | Word | Means |
 |---|---|
@@ -62,17 +101,8 @@ wrist to the magic circle behind your shoulders.
 | **Segment** | The part of a spell between two links. Each link starts a new segment that fires later. |
 | **Readout** | The plain-English explanation of a spell at the bottom of the Cord screen. |
 | **Tier** | How strong a rune is, I to IV. A Cord only fires runes up to its own tier. |
-| **Quiet** | A rune that's threaded but won't fire right now (too strong for your Cord, or past its last socket). It's kept, not lost. |
-| **Power** | How hard an effect lands: damage, healing, force. Amplify, charging and Heart Circles raise it. |
-| **Cooldown** | How long a spell takes to be ready again after you cast it. Every spell has its own. |
+| **Quiet** | A rune that's threaded but won't fire right now. It's kept, not lost. |
+| **Power** | How hard an effect lands. Amplify, charging and Heart Circles raise it. |
+| **Cooldown** | How long a spell takes to be ready again. Each spell has its own. |
 | **Upkeep** | What a passive spell costs in mana every second. |
-| **Loadout** | Your whole Cord (spells, names, passives and the selected spell) saved under a name, to load again later. |
-
-## New in 0.7
-
-- [Builds to Try]({{ '/spellcraft/build-examples/' | relative_url }})
-- [Circle Disciplines]({{ '/spellcraft/circle-disciplines/' | relative_url }})
-- [Physical Magic]({{ '/spellcraft/physical-magic/' | relative_url }})
-- [Living Materials]({{ '/spellcraft/living-materials/' | relative_url }}) — Read Life spells through their seeds, leaves, tissue, sap and thorns.
-
-- [Shadow Materials]({{ '/spellcraft/shadow-materials/' | relative_url }}) — Read Void folds, pressure, shells and running shades.
+| **Loadout** | Your whole Cord saved under a name, to load again later. |

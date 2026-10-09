@@ -122,7 +122,7 @@ class MasterMovePlannerTest {
 		var planner = new MasterMovePlanner(graph(0));
 		var initial = planner.initial(5);
 		var started = planner.resolve(initial, planner.propose(initial, ALL), STARTED);
-		for (var eligibility : List.of(eligibility(), new MasterMovePlanner.Eligibility(ALL.moveIds(), 15.99), eligibility(move("cinder_wake")))) {
+		for (var eligibility : List.of(eligibility(), new MasterMovePlanner.Eligibility(ALL.moveIds(), MastersRules.ATTACK_COST - .01), eligibility(move("cinder_wake")))) {
 			var proposal = planner.propose(started, eligibility);
 			assertTrue(proposal.choice().isEmpty());
 			assertSame(started, planner.resolve(started, proposal, DECLINED));
@@ -273,7 +273,7 @@ class MasterMovePlannerTest {
 		}
 		for (int weight : new int[] {Integer.MIN_VALUE, -1, 0, 101, Integer.MAX_VALUE})
 			assertThrows(IllegalArgumentException.class, () -> edge("a", "neutral", "sweep", weight));
-		for (int school : new int[] {-1, 3, Integer.MIN_VALUE, Integer.MAX_VALUE})
+		for (int school : new int[] {-1, MastersRules.SCHOOLS, Integer.MIN_VALUE, Integer.MAX_VALUE})
 			assertThrows(IllegalArgumentException.class, () -> new MasterMoveGraph(graphId(0), school, graph(0).nodes(), graph(0).edges()));
 		for (String id : List.of("", "ember", "wildercord:master_graph/Ember", "wildercord:master_graph/" + "a".repeat(100)))
 			assertThrows(IllegalArgumentException.class, () -> new MasterMoveGraph(id, 0, graph(0).nodes(), graph(0).edges()));
@@ -340,7 +340,7 @@ class MasterMovePlannerTest {
 		nodes.removeLast();
 		edges.add(edge("too_many", "node_14", "node_14", 1));
 		assertThrows(IllegalArgumentException.class, () -> new MasterMoveGraph(graphId(0), 0, nodes, edges));
-		assertEquals(10, MasterMoveCatalog.legacy().authoredAttackCount(), "Nodes, edges and combinations do not add attacks");
+		assertEquals(21, MasterMoveCatalog.legacy().authoredAttackCount(), "Nodes, edges and combinations do not add attacks");
 	}
 
 	private static String replay(MasterMoveGraph graph, long seed, int proposals) {

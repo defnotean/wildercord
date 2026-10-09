@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "wildercord:item/master_blade/crimson"
+  }
+}

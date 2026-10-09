@@ -50,6 +50,7 @@ The game design (what each rune does and why) is in [docs/DESIGN.md](docs/DESIGN
 |---|---|
 | `./gradlew test` | Always. Fast, headless unit tests for the spell engine. |
 | `./gradlew runClientGameTest` | Before any PR that changes runtime behaviour or UI. Starts a real client, checks mechanics and saves screenshots to `build/run/clientGameTest/screenshots/`. Set `WILDERCORD_TOUR_ONLY=1` to run only the feature tour (`tour_*.png`), which is quicker when you changed a world feature. |
+| `./gradlew runClientGameTest -PaffectedSince=origin/main` | While iterating. Runs only the client test classes your change statically reaches; never a substitute for the full suites. See [docs/testing/affected-client-tests.md](docs/testing/affected-client-tests.md). |
 
 Add tests with your change:
 

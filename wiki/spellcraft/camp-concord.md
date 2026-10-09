@@ -4,50 +4,60 @@ title: Camp Concord
 parent: Spellcraft
 nav_order: 19
 permalink: /spellcraft/camp-concord/
-description: "Private sampled camp warnings and consenting lossy mana gifts."
+description: "A private camp lookout and a willing mana gift between allies."
 ---
 
-# Camp watches and willing mana gifts
+# Camp Concord
 
-Two ordinary spell runes let a party prepare a camp and deliberately share its remaining magic.
+Two Arcane runes for a party at camp: **Watchweft** warns you when a monster comes close, and **Manabraid** lets you give spare mana to a friend.
 
-## Watchweft — a paper lookout
+## Watchweft: a paper lookout
 
-| Preparation | Watch | Recovery |
-|---|---|---|
-| Touch or fire a Bolt onto the **top of an exposed, dry, solid floor**, within eight blocks | Lasts **45 seconds**; one warning when an eligible hostile crosses into three blocks | **90 seconds**, saved through death and reopening |
+**What it is.** A folded-paper lookout on the floor. It warns you once, privately, when a monster closes in.
 
-Craft **one Blank Rune, one feather, one string, one copper ingot, two lapis lazuli and one gold ingot** together. Learn the result and try **Touch + Watchweft** while looking down at a suitable floor.
+**How to get it.** Craft **one Blank Rune, one Feather, one String, one Copper Ingot, two Lapis Lazuli and one Gold Ingot**, then learn the rune. It can also be found in the Clockwork Crypt and the Astral Observatory.
 
-Folded paper marks your lookout. Remain within sixteen blocks. A visible monster actively targeting you must approach from outside the watch and cross inward between consecutive observations. A monster already inside when you cast does not trigger a new arrival warning. The warning goes privately to you, and then the watch ends.
+**How to use it.** Thread **Touch + Watchweft** (or Bolt) and aim at the top of an open, dry, solid floor within **8 blocks**.
 
-Water, blocked sight, a changed floor, departure or expiry can end the watch. A crowded observation becomes obscured rather than pretending that an incomplete search is safe. This is an early warning: it does not hurt, hold or repel enemies. Plan a route to cover or prepare a defensive spell.
+- The watch lasts **45 seconds**. Stay within **16 blocks** of it.
+- You get one warning when a visible monster that is targeting you crosses into **3 blocks** of the lookout. Then the watch ends.
+- A monster already inside when you cast does not count.
+- Then Watchweft rests for **90 seconds**. The rest survives death and reloading.
 
-## Manabraid — a willing gift
+Water, blocked sight, a changed floor, walking away or running out of time ends the watch. A crowded area can leave the watch unable to see properly, and it says so rather than reporting all clear.
 
-Craft **one Blank Rune, three lapis lazuli, one amethyst shard, one string and one gold ingot** together. Learn the result and try **Touch + Manabraid** on another allied caster. Existing teams determine allies; turning off PvP does not make every stranger an ally.
+**Tips.** It only warns. It does not hurt, hold or push enemies. Use the warning to reach cover or ready a defence.
 
-The target gets a three-second offer. Release crouch if already crouching, then crouch once to accept. Both players must remain alive in the same world, within six blocks and in sight, with the same Cords. The donor can crouch to cancel. Full mana, insufficient donor reserve, departure, changed equipment or a refused claim cancels the donation.
+## Manabraid: a willing gift
 
-The ordinary spell price is paid first. Acceptance then takes at most 24 of the donor's existing mana and gives at most 16 to the recipient, at approximately 75% efficiency. The donor retains at least 2 mana. One available point cannot be donated. A successful donation rests the donor for 30 seconds and the recipient for 10 seconds; both rests survive reopening the world. Offers do not survive reopening.
+**What it is.** An offer of your mana to an ally, which they must accept.
 
-The empty comb means **offered**, not paid. The travelling knots and closed clasp mean that actual mana was transferred. No acceptance means no donation debit or credit, though the normal spell cast remains paid. Transfers do not trigger mana refunds or grant Aura. A chain of gifts loses mana rather than creating it.
+**How to get it.** Craft **one Blank Rune, three Lapis Lazuli, one Amethyst Shard, one String and one Gold Ingot**, then learn the rune. It can also be found in the Clockwork Crypt and the Astral Observatory.
 
-Both spells preserve actual delivery and rear casting circles. Minimal effects retain the meaningful paper/comb silhouettes and private messages. Their signals use motion and sound rhythms as well as color.
+**How to use it.** Thread **Touch + Manabraid** and cast it on an allied caster. Allies come from teams and parties; turning PvP off does not make strangers allies.
 
-## Actual casting views
+1. Your ally gets a **3-second** offer. To accept, they let go of crouch (if crouching) and crouch once.
+2. You pay the normal spell price first. When they accept, you give up at most **24** more mana and they gain at most **16** (about 75% gets through). You always keep at least **2** mana.
+3. After a gift, you rest **30 seconds** and they rest **10 seconds**. Both rests survive reloading.
 
-These unchanged in-game frames show ordinary paid Bolt casts in a supplied clear observation scene. Paper folds become Watchweft's travelling lookout; separated combs and fibres become Manabraid's threaded body. These images show preparation and travel, not an accepted donation or an armed warning.
+Both of you must stay alive, in the same world, within **6 blocks**, in sight of each other, wearing the same Cords. You can crouch to cancel. A full-mana ally, too little mana on your side, or walking away also cancels. If they never accept, only the spell price is spent.
 
-![Watchweft paper preparation, native game capture]({{ '/assets/camp-concord/camp_watchweft_full_paid_prepare.png' | relative_url }})
-![Watchweft travelling paper body, native game capture]({{ '/assets/camp-concord/camp_watchweft_full_paid_bolt.png' | relative_url }})
-![Manabraid comb and fibre preparation, native game capture]({{ '/assets/camp-concord/camp_manabraid_full_paid_prepare.png' | relative_url }})
-![Manabraid threaded travelling body, native game capture]({{ '/assets/camp-concord/camp_manabraid_full_paid_bolt.png' | relative_url }})
+**Tips.** An empty comb means "offered". Moving knots and a closed clasp mean mana actually moved. Passing mana down a chain loses some each time; it never creates mana.
 
-## Combine deliberately
+## Combine them
 
-With an **amethyst shard**, Watchweft and Ember make Starfire; Watchweft and Tremor make Geode. Manabraid and Heal make Soulbond; Manabraid and Jolt make Stormweave. These are the existing named elemental outcomes. Innate runes such as Stoneform do not enter shard fusion.
+With an **amethyst shard** at the altar:
 
-With an **amethyst block**, weave the exact effects instead. Manabraid + Heal can heal an ally and offer a consenting mana gift in one paid cast. Echo and duplicate Watchweft nodes share the original cast's one-offer or one-watch budget; they do not create extra transfers or renew the saved rest.
+- Watchweft + Ember → Starfire
+- Watchweft + Tremor → Geode
+- Manabraid + Heal → Soulbond
+- Manabraid + Jolt → Stormweave
 
-Development gameplay checks cover real crafting, paid casts, altar result pickup and learning, plus two genuinely connected clients for ordinary and altar-earned woven gifting. Full/Minimal native casting captures are retained. Complete server process restart, remote latency, every fusion delivery and sound listening remain broader checks.
+With an **amethyst block** you can weave the exact effects instead. For example, Manabraid + Heal heals an ally and offers a gift in one cast. Copies of the spell (Echo and similar) share the original cast's one watch or one offer; they do not add extra gifts.
+
+## What it looks like
+
+![Watchweft paper preparation]({{ '/assets/camp-concord/camp_watchweft_full_paid_prepare.png' | relative_url }})
+![Watchweft travelling paper]({{ '/assets/camp-concord/camp_watchweft_full_paid_bolt.png' | relative_url }})
+![Manabraid comb and fibre preparation]({{ '/assets/camp-concord/camp_manabraid_full_paid_prepare.png' | relative_url }})
+![Manabraid threaded travelling body]({{ '/assets/camp-concord/camp_manabraid_full_paid_bolt.png' | relative_url }})

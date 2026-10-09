@@ -497,45 +497,6 @@ FORGED_ICONS = {
         .oo.............
         ................
     """, {"o": "#1E2236", "W": "#FFFFFF", "H": "#D8EEFF", "c": "#8CB4E0", "L": "#BFE6FF", "g": "#B8862E", "G": "#F0C860"}),
-    # A long haft and a curved storm-steel blade, its edge crackling.
-    "skyrend_glaive": ("""
-        ..........oooo..
-        .........oWYYo..
-        ........oWSSYo..
-        ........oSSSSo..
-        .......oSSSSo...
-        .......oSSSo....
-        ......oySSo.....
-        ......ogyo......
-        .....ohgo.......
-        ....ohho........
-        ...ohho.........
-        ..ohho..........
-        .ohho...........
-        .oho............
-        .oo.............
-        ................
-    """, {"o": "#141A2A", "Y": "#FFF6A0", "W": "#FFFFFF", "S": "#8CA8D8", "y": "#5C78B0", "h": "#5E4228", "g": "#C29A3A"}),
-    # A heavy stone-and-steel maul's head on a short haft, geode crystal set in its face.
-    "bulwark_maul": ("""
-        ................
-        ..oooooooooooo..
-        .oSHHHHHHHHHHSo.
-        .oSHHpPPpHHHSSo.
-        .oSHHPAAPHHSSSo.
-        .oSSHpPPpHSSSSo.
-        .oDSSSSSSSSSSDo.
-        ..oooooghoooooo.
-        .......oho......
-        ......oho.......
-        .....oho........
-        ....oho.........
-        ...oho..........
-        ..oho...........
-        ..oo............
-        ................
-    """, {"o": "#16141E", "S": "#5A5E68", "H": "#8C909A", "D": "#3E424C", "p": "#6A44BC", "P": "#B996F4", "A": "#E2D2FF",
-          "h": "#5E4228", "g": "#C29A3A"}),
 }
 
 # A manual's torn page: parchment, a ragged right edge, writing, and the method's emblem in a corner.
@@ -571,38 +532,6 @@ def page_icon(method_id, color, highlight):
         cv.put(x, y, wax if (x, y) not in ((4, 4), (6, 4), (4, 6), (6, 6)) else tone(c, 0.6))
     cv.put(5, 5, hi)
     cv.put(5, 7, tone(c, 0.6))
-    return cv.image()
-
-
-def glaive_in_hand():
-    """The glaive as a hand holds it: a 32-pixel sheet laid out like the game's own spears (the point to the top left, a thin
-    haft running to the bottom right), since the spear's in-hand model scales its texture up to a long reach and the
-    16-pixel icon would come out as a broad paddle."""
-    cv = Canvas(32)
-    outline, haft, haft_dark, gold = hexc("#141A2A"), hexc("#7A5634"), hexc("#4E3420"), hexc("#C29A3A")
-    steel, spine, edge, white = hexc("#8CA8D8"), hexc("#5C78B0"), hexc("#FFF6A0"), hexc("#FFFFFF")
-    down = 2  # the whole weapon sits two pixels low, so the blade's belly has room above it
-    # The haft, two pixels thick, from the collar to the butt.
-    for i in range(11, 29):
-        cv.put(i, i + down, haft)
-        cv.put(i + 1, i + down, haft_dark)
-    for (x, y) in ((10, 10), (11, 10), (10, 9), (29, 29), (30, 29), (29, 28)):
-        cv.put(x, y + down, gold)
-    # The blade: along the haft's line, its belly curving out to the top right, widest past the middle.
-    for t in range(1, 10):
-        width = round(3.2 * math.sin(math.pi * t / 10.5)) + 1
-        for k in range(width + 1):
-            colour = edge if k == width else steel if k else spine
-            cv.put(t + k, t - k + down, colour)
-            cv.put(t + k + 1, t - k + down, edge if k == width else steel)
-    cv.put(1, 1 + down, white)
-    cv.put(2, 1 + down, white)
-    # A dark outline round everything, as the game's items have.
-    filled = {(x, y) for y in range(32) for x in range(32) if cv.get(x, y) is not None}
-    for (x, y) in filled:
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            if (x + dx, y + dy) not in filled:
-                cv.put(x + dx, y + dy, outline)
     return cv.image()
 
 
@@ -746,21 +675,13 @@ def write(g):
         g.save(icon(name), tex / f"{name}.png")
         g.item_model(name, name)
         g.write_json(g.ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}})
-    # The forged weapons' own looks (set by the forging's item_model component): a sword and an axe held like tools, the glaive
-    # held as a spear is.
-    for name in ("lumenedge", "bulwark_maul"):
-        g.save(icon(name), tex / f"{name}.png")
-        g.write_json(g.ASSETS / f"models/item/{name}.json", {"parent": "minecraft:item/handheld", "textures": {"layer0": f"wildercord:item/{name}"}})
-        g.write_json(g.ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}})
-    g.save(icon("skyrend_glaive"), tex / "skyrend_glaive.png")
-    g.item_model("skyrend_glaive", "skyrend_glaive")
-    g.save(glaive_in_hand(), tex / "skyrend_glaive_in_hand.png")
-    g.write_json(g.ASSETS / "models/item/skyrend_glaive_in_hand.json", {"parent": "minecraft:item/spear_in_hand",
-                                                                         "textures": {"layer0": "wildercord:item/skyrend_glaive_in_hand"}})
-    g.write_json(g.ASSETS / "items/skyrend_glaive.json", {"model": {
-        "type": "minecraft:select", "property": "minecraft:display_context",
-        "cases": [{"when": ["gui", "ground", "fixed", "on_shelf"], "model": {"type": "minecraft:model", "model": "wildercord:item/skyrend_glaive"}}],
-        "fallback": {"type": "minecraft:model", "model": "wildercord:item/skyrend_glaive_in_hand"}}, "swap_animation_scale": 1.95})
+    # The forged weapons' own looks (set by the forging's item_model component). Lumenedge is a drawn sword held like a tool;
+    # the Skyrend Glaive and Bulwark Maul are built in forged_weapon_art alongside Oathkeeper.
+    g.save(icon("lumenedge"), tex / "lumenedge.png")
+    g.write_json(g.ASSETS / "models/item/lumenedge.json", {"parent": "minecraft:item/handheld", "textures": {"layer0": "wildercord:item/lumenedge"}})
+    g.write_json(g.ASSETS / "items/lumenedge.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/lumenedge"}})
+    import forged_weapon_art
+    forged_weapon_art.write(g)
     for kind in EGGS:
         egg = f"{kind}_spawn_egg"
         g.save(egg_icon(kind), tex / f"{egg}.png")

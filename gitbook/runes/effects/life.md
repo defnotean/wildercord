@@ -4,7 +4,7 @@
 
 Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 
-14 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
+27 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
 
 Read [Reading Life Magic](../../spellcraft/life-outcomes.md) for the illustrated journal of actual healing, repair, gardens and living ward responses.
 
@@ -19,7 +19,33 @@ Thorns for 10 seconds: the next 4 things that hurt you from within 4 blocks take
 
 ![Crafting Bramble: a Blank Rune and Sweet Berries and Cactus](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_bramble.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dew_drink.png) Dew Drink
+
+
+*Tier I · Life · Helps you and your allies · 4 mana · needs any Cord*
+
+For 10 minutes, rain or water feeds you a hunger point every 15 seconds.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Lily Pad. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Dew Drink: a Blank Rune and Glass Bottle and Lily Pad](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dew_drink.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dye_wash.png) Dye Wash
+
+
+*Tier I · Life · Works on the world · 3 mana · needs any Cord*
+
+Recolours up to 16 wool, glass, terracotta, concrete or candle blocks around the point to the dye in your other hand. One dye per 8 blocks.
+
+**How to get it:** Craft: a Blank Rune, Red Dye, Yellow Dye and Blue Dye. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Dye Wash: a Blank Rune and Red Dye, Yellow Dye and Blue Dye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dye_wash.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/glimmer.png) Glimmer
 
@@ -32,7 +58,7 @@ Grows glowing lichen over the block that was hit and up to 4 around it: a light 
 
 ![Crafting Glimmer: a Blank Rune and Glow Lichen](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_glimmer.png)
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/grow.png) Grow
 
@@ -45,7 +71,7 @@ Bone-meals the block that was hit and everything around it, and young animals th
 
 ![Crafting Grow: a Blank Rune and 2x Bone Meal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_grow.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/harvest.png) Harvest
 
@@ -58,7 +84,7 @@ Harvests grown crops around the block hit, and replants them.
 
 ![Crafting Harvest: a Blank Rune and 2x Wheat Crops](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_harvest.png)
 
-**Modifiers that work on it:** Widen, Frugal, Focus
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/heal.png) Heal
 
@@ -71,7 +97,20 @@ Restores 8 health (4 hearts; repeats within one cast heal less). What the target
 
 ![Crafting Heal: a Blank Rune and Glistering Melon Slice](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_heal.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/luckcharm.png) Luckcharm
+
+
+*Tier I · Life · Helps you and your allies · 4 mana · needs any Cord*
+
+Luck I for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Emerald. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Luckcharm: a Blank Rune and Rabbit's Foot and Emerald](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_luckcharm.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/nourish.png) Nourish
 
@@ -84,7 +123,85 @@ Restores 6 hunger and some saturation, and ends Hunger. Fed pets heal 6 and are 
 
 ![Crafting Nourish: a Blank Rune and Bread](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_nourish.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sign_glow.png) Sign Glow
+
+
+*Tier I · Life · Works on the world · 2 mana · needs any Cord*
+
+Makes the writing on signs within 6 blocks glow, front and back.
+
+**How to get it:** Craft: a Blank Rune, Oak Sign and Glow Ink Sac. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sign Glow: a Blank Rune and Oak Sign and Glow Ink Sac](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sign_glow.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/slime_sense.png) Slime Sense
+
+
+*Tier I · Life · Works on the world · 2 mana · needs any Cord*
+
+Tells whether slimes can spawn underground in this chunk.
+
+**How to get it:** Craft: a Blank Rune, Slimeball and Compass. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Slime Sense: a Blank Rune and Slimeball and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_slime_sense.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/slowburn.png) Slowburn
+
+
+*Tier I · Life · Helps you and your allies · 5 mana · needs any Cord*
+
+Hunger drains half as fast for 10 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Bread and Charcoal. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Slowburn: a Blank Rune and Bread and Charcoal](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_slowburn.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steedmend.png) Steedmend
+
+
+*Tier I · Life · Helps you and your allies · 4 mana · needs any Cord*
+
+Your mount, or the animal it touches, regenerates for 3 minutes.
+
+**How to get it:** Craft: a Blank Rune, Golden Carrot and Hay Bale. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Steedmend: a Blank Rune and Golden Carrot and Hay Bale](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_steedmend.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/trailblaze.png) Trailblaze
+
+
+*Tier I · Life · Works on the world · 3 mana · needs any Cord*
+
+For 10 minutes, you leave green crumbs every 6 blocks that only you can see. Up to 40.
+
+**How to get it:** Craft: a Blank Rune, Bread and Lime Dye. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Trailblaze: a Blank Rune and Bread and Lime Dye](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_trailblaze.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/checker_dye.png) Checker Dye
+
+
+*Tier II · Life · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Like Dye Wash, but only every other block, for a checkered pattern. One dye per 8 blocks.
+
+**How to get it:** Craft: a Blank Rune, White Dye and Black Dye, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+![Crafting Checker Dye: a Blank Rune and White Dye and Black Dye, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_checker_dye.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/cleanse.png) Cleanse
 
@@ -97,7 +214,7 @@ Washes away harmful effects, fire and every elemental mark.
 
 ![Crafting Cleanse: a Blank Rune and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_cleanse.png)
 
-**Modifiers that work on it:** Frugal, Kindred
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/haven.png) Haven
 
@@ -110,7 +227,46 @@ Raises living leaf shutters across a 4-block haven for 8 seconds: enemies inside
 
 ![Crafting Haven: a Blank Rune and Shield and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_haven.png)
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lullaby.png) Lullaby
+
+
+*Tier II · Life · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+You and allies within 8 blocks count as rested, so phantoms leave you be. Tells you how many are asleep.
+
+**How to get it:** Craft: a Blank Rune, White Bed and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+![Crafting Lullaby: a Blank Rune and White Bed and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lullaby.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/petward.png) Petward
+
+
+*Tier II · Life · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Your pets within 16 blocks get Resistance I for 3 minutes.
+
+**How to get it:** Craft: a Blank Rune, Bone and Shield, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+![Crafting Petward: a Blank Rune and Bone and Shield, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_petward.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/potion_steep.png) Potion Steep
+
+
+*Tier II · Life · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Good potion effects last a quarter longer, up to 45 seconds more and 8 minutes in all.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle, Nether Wart and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+![Crafting Potion Steep: a Blank Rune and Glass Bottle, Nether Wart and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_potion_steep.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/regrowth.png) Regrowth
 
@@ -123,7 +279,7 @@ Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 heal
 
 ![Crafting Regrowth: a Blank Rune and Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_regrowth.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/root_carry.png) Root Carry
 
@@ -136,7 +292,7 @@ Two separate casts select and move one unchanged young Cinder Fern onto nearby v
 
 ![Crafting Root Carry: a Blank Rune and Rooted Dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_root_carry.png)
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/venom.png) Venom
 
@@ -149,7 +305,7 @@ Two separate casts select and move one unchanged young Cinder Fern onto nearby v
 
 ![Crafting Venom: a Blank Rune and Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_venom.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/drowse.png) Drowse
 
@@ -162,7 +318,20 @@ Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't 
 
 ![Crafting Drowse: a Blank Rune and Spore Blossom and Honey Bottle, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_drowse.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/hearthbond.png) Hearthbond
+
+
+*Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+Bonds you and allies within 12 blocks for 3 minutes: when one drops low they regenerate, and the rest hear it. Once a minute each.
+
+**How to get it:** Craft: a Blank Rune, Golden Apple and String, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+
+![Crafting Hearthbond: a Blank Rune and Golden Apple and String, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_hearthbond.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/restore.png) Restore
 
@@ -175,7 +344,7 @@ Puts things back: heals 4, puts out fire, and mends 8% of every worn and held it
 
 ![Crafting Restore: a Blank Rune and Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_restore.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/reversal.png) Reversal
 
@@ -184,6 +353,6 @@ Puts things back: heals 4, puts out fire, and mends 8% of every worn and held it
 
 For 30 seconds, one killing blow is reversed: back to half health instead of dying. Once death has been cheated, nothing turns it back again for a minute.
 
-**How to get it:** Found only, never crafted: Ominous vaults; Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: Ominous vaults; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

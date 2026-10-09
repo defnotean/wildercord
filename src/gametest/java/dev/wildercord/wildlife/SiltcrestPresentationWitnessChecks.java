@@ -55,15 +55,16 @@ public final class SiltcrestPresentationWitnessChecks {
   budgets();
  }
  private static void budgets() {
+  int hunt=SiltcrestPresentationWitness.Budget.HUNT;
   var stalled=new SiltcrestPresentationWitness.Budget(40);
-  for(int tick=0;tick<500;tick++){stalled.observe(40);stalled.advance(null);}
-  stalled.observe(40);check(stalled.advances()==500,"Exactly five hundred controlled advances exhaust even a stopped source clock");
-  expectFailure(()->stalled.advance(null),"stalled clock must not permit advance five hundred and one");
+  for(int tick=0;tick<hunt;tick++){stalled.observe(40);stalled.advance(null);}
+  stalled.observe(40);check(stalled.advances()==hunt,"Exactly the full hunt allowance of controlled advances exhausts even a stopped source clock");
+  expectFailure(()->stalled.advance(null),"stalled clock must not permit one advance beyond the hunt allowance");
   var backward=new SiltcrestPresentationWitness.Budget(40);backward.observe(41);
   expectFailure(()->backward.observe(40),"backward server clock cannot extend the absolute deadline");
-  var serverFirst=new SiltcrestPresentationWitness.Budget(40);serverFirst.observe(540);
+  var serverFirst=new SiltcrestPresentationWitness.Budget(40);serverFirst.observe(40+hunt);
   expectFailure(()->serverFirst.advance(null),"server allowance can expire before controlled harness allowance");
-  expectFailure(()->new SiltcrestPresentationWitness.Budget(40).observe(541),"a server jump beyond the deadline cannot qualify");
+  expectFailure(()->new SiltcrestPresentationWitness.Budget(40).observe(41+hunt),"a server jump beyond the deadline cannot qualify");
   for(int cap:new int[]{80,25}) {
    var stoppedPhase=new SiltcrestPresentationWitness.Budget(0);var limit=stoppedPhase.phase(cap);
    for(int tick=0;tick<cap;tick++){stoppedPhase.advance(limit);stoppedPhase.observe(0);}
@@ -76,9 +77,10 @@ public final class SiltcrestPresentationWitnessChecks {
    for(int tick=0;tick<16;tick++){shared.advance(phase);shared.observe(32+shared.advances());}
    if(refusal<2)for(int tick=0;tick<200;tick++){shared.advance(null);shared.observe(32+shared.advances());}
   }
-  check(shared.advances()==448&&shared.deadline==532,"Three refused commitments and two complete rests consume one unchanged allowance");
+  for(int tick=0;tick<hunt-500;tick++){shared.advance(null);shared.observe(32+shared.advances());}
+  check(shared.advances()==hunt-52&&shared.deadline==32+hunt,"Three refused commitments and two complete rests consume one unchanged allowance");
   var remainder=shared.phase(80);
-  check(remainder.serverTick()==532&&remainder.harnessAdvances()==500,"Later candidate phase is clipped to both remaining hunt allowances");
+  check(remainder.serverTick()==32+hunt&&remainder.harnessAdvances()==hunt,"Later candidate phase is clipped to both remaining hunt allowances");
   for(int tick=0;tick<52;tick++){shared.advance(remainder);shared.observe(32+shared.advances());}
   expectFailure(()->shared.advance(shared.phase(80)),"another refusal or fresh phase cannot renew either exhausted hunt budget");
  }

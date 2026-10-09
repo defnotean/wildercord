@@ -31,11 +31,23 @@ public final class MastersArtPose {
 		var form = MasterFormsClient.timeline(avatar);
 		if (form != null && timeline == null) {
 			var event = form.event();
-			var movement = dev.wildercord.aura.WallTurnAnimation.sample(event.phase(), event.ticks(), avatar.level().getGameTime() - form.received() + partial);
+			var movement = dev.wildercord.aura.StoneHingeAnimation.sampleForm(event.phase(), event.ticks(), avatar.level().getGameTime() - form.received() + partial);
 			if (movement.weight() > 0) {
 				var facing = MastersArtAnimation.facing(state.bodyRot, state.yRot, state.xRot, event.yaw(), 0, movement.weight());
 				state.bodyRot = facing.bodyYaw(); state.yRot = facing.headYaw();
 				state.setData(FRAME, new Frame(movement, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), 0, 0, event.serial(), -2 - event.phase()));
+				return;
+			}
+		}
+		var field = FormDashClient.timeline(avatar);
+		if (field != null && timeline == null) {
+			var event = field.event();
+			var movement = dev.wildercord.aura.FormDashAnimation.sample(event.form(), event.phase(), event.ticks(), avatar.level().getGameTime() - field.received() + partial);
+			if (movement.weight() > 0) {
+				var facing = MastersArtAnimation.facing(state.bodyRot, state.yRot, state.xRot, event.yaw(), 0, movement.weight());
+				state.bodyRot = facing.bodyYaw(); state.yRot = facing.headYaw();
+				// Below every Wall Turn move id, so the articulated rig keeps its whole Classic fallback here too.
+				state.setData(FRAME, new Frame(movement, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), 0, 0, event.serial(), -20 - event.phase()));
 				return;
 			}
 		}

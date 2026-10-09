@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class AwakeningRulesTest {
 	private static final List<String> METHODS = List.of("ember", "rime", "thunder", "gale", "stone", "verdant", "hollow", "starlit", "hourglass",
-		"crimson");
+		"crimson", "tide", "iron", "dune");
 
 	// ------------------------------------------------------------------ when
 
@@ -221,7 +221,7 @@ class AwakeningRulesTest {
 		}
 		assertEquals(AwakeningRules.Flavour.PLAIN, AwakeningRules.Flavour.of("someone:else"), "an add-on's method raises the plain one");
 		assertEquals(AwakeningRules.Flavour.PLAIN, AwakeningRules.Flavour.of(null));
-		assertEquals(11, AwakeningRules.Flavour.values().length);
+		assertEquals(14, AwakeningRules.Flavour.values().length);
 		// Holds under the player caps the arts already keep.
 		assertTrue(AwakeningRules.Sovereign.RIME_FREEZE >= ArtRules.PVP_HOLD_TICKS, "a player is held only as long as any art may (the kit cuts it)");
 		assertTrue(AwakeningRules.Sovereign.THUNDER_BOLT < 1 && AwakeningRules.Sovereign.STARLIT_STAR < 1 && AwakeningRules.Sovereign.CRIMSON_BLEED < 1,

@@ -5,6 +5,11 @@ the loot and the fusions), so they can never drift from the mod:
                                 what it costs and which modifiers work with it
     wiki/items/rune-recipes.md  every rune recipe, by tier
     wiki/assets/runes/*.png     every rune's icon, enlarged
+    wiki/runes/codex.md, wiki/progression/breathing-methods.md, wiki/masters/techniques.md
+                                (see tools/wiki_reference.py)
+
+New runes are picked up by themselves: any `static final RuneDef X = shape|effect|modifier|link(...)` in the spell
+package, on one line or several. A new element gets its own effects page, and a new Codex category its own section.
 
 The rest of the wiki is written by hand. Run from the project root:  python tools/wiki.py
 """
@@ -17,6 +22,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import generate_assets as g  # noqa: E402
+import wiki_reference  # noqa: E402
 import wiki_recipes  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -66,47 +72,132 @@ ELEMENT_BLURB = {
 }
 KIND = {"HELPFUL": "Helps you and your allies", "HARMFUL": "Harms enemies", "WORLD": "Works on the world",
         "MOVEMENT": "Moves you", "NONE": ""}
-TIER_NAMES = {1: "I", 2: "II", 3: "III", 4: "IV"}
+TIER_NAMES = {n: wiki_reference.roman(n) for n in range(1, 21)}
 TIER_EXTRAS = {1: "nothing extra", 2: "2 Lapis Lazuli and a Gold Ingot", 3: "a Mana Crystal and a Diamond"}
 CORD_FOR_TIER = {1: "any Cord", 2: "a Copper Cord or better", 3: "an Amethyst Cord or better", 4: "an Echo Cord"}
 # The modifier that needs each trait, as a player knows it.
 FAMILY_TITLE = {"shape": "Shapes", "modifier": "Modifiers", "link": "Links"}
+DEFINITION = re.compile(r"static\s+final\s+RuneDef\s+(\w+)\s*=\s*(shape|effect|modifier|link)\(")
+STRING = re.compile(r'"((?:[^"\\]|\\.)*)"')
+
+
+def definitions():
+    """(constant, family, argument text) for every rune made by shape/effect/modifier/link: in Runes.java first, then any
+    other file of the spell package, written on one line or many."""
+    files = [RUNES_JAVA] + sorted(p for p in RUNES_JAVA.parent.glob("*.java") if p != RUNES_JAVA)
+    for f in files:
+        src = f.read_text(encoding="utf-8")
+        for m in DEFINITION.finditer(src):
+            args = _call_args(src, m.end())
+            if args is not None:
+                yield m.group(1), m.group(2), args
+
+
+def _call_args(src, at):
+    """The text from `at` (just after an opening parenthesis) to its matching one, skipping over strings."""
+    depth, i = 1, at
+    while i < len(src):
+        c = src[i]
+        if c == '"':
+            i += 1
+            while i < len(src) and src[i] != '"':
+                i += 2 if src[i] == "\\" else 1
+        elif c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+            if depth == 0:
+                return src[at:i]
+        i += 1
+    return None
+
+
+def _split(args):
+    """The top-level arguments of a call, stripped of whitespace."""
+    out, depth, cur, i = [], 0, "", 0
+    while i < len(args):
+        c = args[i]
+        if c == '"':
+            j = i + 1
+            while j < len(args) and args[j] != '"':
+                j += 2 if args[j] == "\\" else 1
+            cur += args[i:j + 1]
+            i = j + 1
+            continue
+        if c in "([{":
+            depth += 1
+        elif c in ")]}":
+            depth -= 1
+        if c == "," and depth == 0:
+            out.append(cur.strip())
+            cur = ""
+        else:
+            cur += c
+        i += 1
+    if cur.strip():
+        out.append(cur.strip())
+    return out
+
+
+def _text(arg):
+    """A string argument's text (pieces joined with + are joined), or None when the argument is not a string."""
+    pieces = STRING.findall(arg)
+    if not pieces or re.sub(r"\s|\+", "", STRING.sub("", arg)):
+        return None
+    return "".join(pieces).replace('\\"', '"')
+
+
+def _number(expr):
+    """A numeric argument; simple arithmetic such as 20.0 / 3 is allowed."""
+    expr = re.sub(r"(?<=[\d.])[dDfF]\b", "", expr)
+    if not re.fullmatch(r"[\d.\s+\-*/()]+", expr):
+        raise ValueError(f"not a number: {expr}")
+    return float(eval(expr, {"__builtins__": {}}))  # digits and operators only, checked above
 
 
 def read():
-    """Every rune in Runes.java, in its order: family, id, name, tier, cost, element, kind, traits, description."""
+    """Every rune made in the spell package, in its order: family, id, name, tier, cost, element, kind, traits, description."""
     src = RUNES_JAVA.read_text(encoding="utf-8")
     # Helpful effects can be shared (Kindred), bar the few Runes.java lists as unshared.
-    unshared = set(re.findall(r'"(\w+)"', re.search(r"PATHS = Set\.of\((.*?)\);", src).group(1)))
-    runes = []
-    pattern = re.compile(r'public static final RuneDef (\w+) = (shape|effect|modifier|link)\((.*)\);\s*$', re.M)
-    for m in pattern.finditer(src):
-        const, family, args = m.groups()
-        strings = re.findall(r'"((?:[^"\\]|\\.)*)"', args)
-        path, name = strings[0], strings[1]
-        rest = re.sub(r'"((?:[^"\\]|\\.)*)"', '""', args)
-        parts = [p.strip() for p in rest.split(",")]
-        tier = int(parts[2])
-        r = {"const": const, "family": family, "path": path, "name": name, "tier": tier, "element": "", "kind": "NONE",
-             "desc": strings[-1].replace('\\"', '"'), "traits": set(), "needs": ""}
-        idents = [p for p in parts[3:] if re.fullmatch(r"[A-Z_]+", p)]
-        if family == "shape":
-            r["cost"], r["mult"] = float(parts[3]), float(parts[4])
-            r["traits"] = set(idents) | {"COOLDOWN"}
-        elif family == "effect":
-            r["cost"] = float(parts[3])
-            r["element"] = strings[2]
-            r["kind"] = re.search(r"EffectKind\.(\w+)", args).group(1)
-            r["traits"] = {i for i in idents if not i.startswith("EffectKind")} | {"FRUGAL"}
-            if r["kind"] == "HELPFUL" and path not in unshared:
-                r["traits"].add("SHARE")
-        elif family == "modifier":
-            r["mult"] = float(parts[3])
-            r["needs"] = idents[0] if idents else ""
-        else:
-            r["cost"] = float(parts[3])
-            r["traits"] = set(idents)
+    unshared = set(re.findall(r'"(\w+)"', re.search(r"PATHS = Set\.of\((.*?)\);", src, re.S).group(1)))
+    runes, seen = [], set()
+    for const, family, args in definitions():
+        try:
+            items = _split(args)
+            strings = [t for t in map(_text, items) if t is not None]
+            parts = ['""' if _text(a) is not None else a for a in items]
+            path, name = strings[0], strings[1]
+            tier = int(parts[2])
+            r = {"const": const, "family": family, "path": path, "name": name, "tier": tier, "element": "", "kind": "NONE",
+                 "desc": strings[-1], "traits": set(), "needs": ""}
+            idents = [p.split(".")[-1] for p in parts[3:] if re.fullmatch(r"(?:\w+\.)?[A-Z_]+", p)]
+            if family == "shape":
+                r["cost"], r["mult"] = _number(parts[3]), _number(parts[4])
+                r["traits"] = set(idents) | {"COOLDOWN", "CIRCLE"}
+            elif family == "effect":
+                r["cost"] = _number(parts[3])
+                r["element"] = strings[2]
+                kind = re.search(r"EffectKind\.(\w+)", args)
+                r["kind"] = kind.group(1) if kind and kind.group(1) in KIND else "NONE"
+                r["traits"] = {i for i in idents if i not in KIND} | {"FRUGAL"}
+                if r["kind"] == "HELPFUL" and path not in unshared:
+                    r["traits"].add("SHARE")
+            elif family == "modifier":
+                r["mult"] = _number(parts[3])
+                r["needs"] = idents[0] if idents else ""
+            else:
+                r["cost"] = _number(parts[3])
+                r["traits"] = set(idents)
+        except (IndexError, ValueError) as e:
+            print(f"wiki.py: skipped {const}, couldn't read it ({e})")
+            continue
+        if path in seen:
+            continue
+        seen.add(path)
         runes.append(r)
+    for r in runes:
+        if r["element"] and r["element"] not in ELEMENTS:
+            ELEMENTS.append(r["element"])
     return runes
 
 
@@ -114,12 +205,17 @@ def icon(path):
     """The rune's icon (its first frame), four times as big, into the wiki's assets."""
     out = WIKI / "assets/runes"
     out.mkdir(parents=True, exist_ok=True)
+    if not (TEXTURES / f"{path}.png").exists():
+        print(f"wiki.py: no icon texture for {path}")
+        return
     im = Image.open(TEXTURES / f"{path}.png").convert("RGBA")
     im = im.crop((0, 0, 16, 16)).resize((64, 64), Image.NEAREST)
     im.save(out / f"{path}.png")
 
 
 def img(path, size=32):
+    if not (WIKI / f"assets/runes/{path}.png").exists():
+        return ""
     return (f'<img src="{{{{ \'/assets/runes/{path}.png\' | relative_url }}}}" alt="" width="{size}" height="{size}" '
             f'class="rune-icon">')
 
@@ -133,11 +229,17 @@ SIGNATURES = {}
 BY_PATH = {}
 
 
+# Runes listed on a page of their own (fused, signature, innate) rather than their element's.
+SPECIAL_PAGE = {}
+
+
 def rune_link(path, world):
     """A link to a rune's entry on its own page (effects by element, the runes of the world on theirs)."""
     r = BY_PATH[path]
     if path in world:
         page_url = "/runes/world/"
+    elif path in SPECIAL_PAGE:
+        page_url = SPECIAL_PAGE[path]
     elif r["family"] == "effect":
         page_url = f"/runes/effects/{r['element']}/"
     else:
@@ -162,9 +264,9 @@ def how_to_get(r, fused, found, world):
                     "shard (3 XP levels).")
         return (f"Fused at the [Fusion Altar]({{{{ '/fusion-altar/' | relative_url }}}}) from any {a.title()} effect and any {b.title()} "
                 "effect, with an amethyst shard (3 XP levels).")
-    if path in world or r["tier"] == 4:
-        places = found.get(path, ["?"])
-        return "Found only, never crafted: " + "; ".join(places) + "."
+    if path in world or r["tier"] >= 4:
+        places = found.get(path)
+        return ("Never crafted. Where it comes from: " + "; ".join(places) + ".") if places else "Never crafted."
     extra = "" if r["tier"] == 1 else f", plus {TIER_EXTRAS[r['tier']]}"
     also = found.get(path, [])
     also_text = f" Also found: {'; '.join(also)}." if also else ""
@@ -173,6 +275,8 @@ def how_to_get(r, fused, found, world):
 
 def items_text(path):
     """A rune's own ingredients in plain words: "Coal and Flint", "2x Feather, Sugar and Redstone Dust"."""
+    if path not in g.RUNE_RECIPES:
+        return "its own items (see the recipe book in game)"
     parts = g.recipe_text(["wildercord:blank_rune", *g.RUNE_RECIPES[path]]).split(", ")
     return parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " and " + parts[-1]
 
@@ -184,8 +288,13 @@ def recipe_img(recipe_id, alt):
     return f'<img src="{src}" alt="{alt}" class="recipe-grid" loading="lazy">'
 
 
+# Traits every shape has: modifiers needing them work on any shape, so the shapes page says so once instead of on each entry.
+EVERY_SHAPE = ("COOLDOWN", "CIRCLE")
+
+
 def works_with(r, modifiers):
-    names = [m["name"] for m in modifiers if m["needs"] and m["needs"] in r["traits"]]
+    names = [m["name"] for m in modifiers if m["needs"] and m["needs"] in r["traits"]
+             and not (r["family"] == "shape" and m["needs"] in EVERY_SHAPE)]
     return ", ".join(names)
 
 
@@ -206,7 +315,7 @@ def entry(r, fused, found, world, modifiers):
         facts.append(f"cost x{number(r['mult'])}")
     else:
         facts.append(f"{number(r['cost'])} mana")
-    facts.append(f"needs {CORD_FOR_TIER[r['tier']]}")
+    facts.append(f"needs {CORD_FOR_TIER.get(r['tier'], CORD_FOR_TIER[4])}")
     lines += [f"*{' · '.join(facts)}*", "", r["desc"], "",
               f"**How to get it:** {how_to_get(r, fused, found, world)}", ""]
     if (WIKI / f"assets/recipes/rune_{r['path']}.png").exists() and r["path"] not in fused and r["path"] not in SIGNATURES and r["path"] not in world \
@@ -219,7 +328,8 @@ def entry(r, fused, found, world, modifiers):
                    "BOUNCE": "projectiles", "SPLIT": "projectiles and beams", "HOMING": "projectiles", "CHAIN": "anything that can jump to a new target",
                    "LINGER": "effects that can land again over time", "FRUGAL": "any effect", "VOLLEY": "projectiles and beams",
                    "SHARE": "a helpful effect that lands on each creature it touches (healing, a buff, a ward)",
-                   "COOLDOWN": "any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits)"}.get(r["needs"], "")
+                   "COOLDOWN": "any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits)",
+                   "CIRCLE": "any shape (one circle discipline per shape)"}.get(r["needs"], "")
         if targets:
             lines += [f"**Attaches to:** the closest rune on its left that is {targets}.", ""]
     else:
@@ -241,6 +351,8 @@ def main():
     fused = g.read_fusions()
     SIGNATURES.update(g.read_signatures())
     BY_PATH.update({r["path"]: r for r in runes})
+    SPECIAL_PAGE.update({p: "/runes/innate/" for p in g.INNATE})
+    SPECIAL_PAGE.update({p: "/runes/fused/" for p in list(fused) + list(SIGNATURES)})
     world = g.found_only()
     found = g.loot_sources()
     modifiers = [r for r in runes if r["family"] == "modifier"]
@@ -268,7 +380,9 @@ def main():
     intros = {
         "shape": ["A **shape** decides *where* a spell goes and *who* it touches: yourself, a bolt that flies, a beam, a burst around you, "
                   "a zone on the ground. Every shape starts a new group in the spell, and the effects after it act on whatever it hits. "
-                  "Its mana is added to the spell's cost, and some shapes make the effects after them cost more (or less)."],
+                  "Its mana is added to the spell's cost, and some shapes make the effects after them cost more (or less).",
+                  "", "Some modifiers work on every shape, so they aren't repeated below: "
+                  + ", ".join(m["name"] for m in runes if m["family"] == "modifier" and m["needs"] in EVERY_SHAPE) + "."],
         "modifier": ["A **modifier** changes the closest rune on its *left* that it can change. Amplify needs something with power, "
                      "so in `Bolt · Fire · Amplify` it strengthens Fire; Split needs something that can split, so in `Bolt · Fire · Split` "
                      "it skips Fire and doubles the Bolt. A modifier never reaches back past a link. Modifiers multiply the cost of what they change."],
@@ -291,12 +405,12 @@ def main():
           "Every effect belongs to one of ten **elements**, and elements matter: they set the spell's colour and sound, "
           "they set off reactions together, they decide what fuses at the Fusion Altar, and casting one grows your "
           "affinity with its element. Each element has its own page:", ""],
-         [f"- [{e.title()}]({{{{ '/runes/effects/{e}/' | relative_url }}}}): {ELEMENT_BLURB[e]}" for e in ELEMENTS])
+         [f"- [{e.title()}]({{{{ '/runes/effects/{e}/' | relative_url }}}}): {ELEMENT_BLURB.get(e, '')}" for e in ELEMENTS])
     for i, element in enumerate(ELEMENTS):
         rs = [r for r in runes if r["family"] == "effect" and r["element"] == element and r["path"] not in special]
         page(out / f"effects/{element}.md",
              {"title": element.title(), "parent": "Effects", "grand_parent": "Runes", "nav_order": i + 1},
-             [f"# {element.title()} effects", "", ELEMENT_BLURB[element], "",
+             [f"# {element.title()} effects", "", ELEMENT_BLURB.get(element, ""), "",
               f"{len(rs)} {element} effects you can craft or find in the usual way. {element.title()} also has runes of the world, "
               "fused runes and innate runes: see their own pages."] +
              (["", "Read [Reading Life Magic]({{ '/spellcraft/life-outcomes/' | relative_url }}) for the illustrated journal of actual healing, repair, gardens and living ward responses."] if element == "life" else []),
@@ -366,7 +480,8 @@ def main():
             page_url = f"/runes/effects/{r['element']}/" if r["family"] == "effect" else f"/runes/{FAMILY_TITLE[r['family']].lower()}/"
             family = r["family"].title() + (f", {r['element'].title()}" if r["element"] else "")
             rec += ['<figure class="recipe-card">',
-                    recipe_img(f"rune_{r['path']}", f"Crafting {r['name']}: a Blank Rune and {items_text(r['path'])}"),
+                    recipe_img(f"rune_{r['path']}", f"Crafting {r['name']}: a Blank Rune and {items_text(r['path'])}")
+                    if (WIKI / f"assets/recipes/rune_{r['path']}.png").exists() else "",
                     f'<figcaption>{img(r["path"], 24)} <a href="' + "{{ '" + page_url + "' | relative_url }}" + f'#{r["path"]}">{r["name"]}</a>'
                     f'<br><span class="recipe-family">{family}</span></figcaption>',
                     '</figure>']
@@ -379,7 +494,14 @@ def main():
           "can't be crafted.", "",
           "**Blank Rune:** 4 Cobblestone around 1 Lapis Lazuli, makes 4."],
          rec)
+    # The hand-written Runes overview quotes the total: keep it true.
+    overview = WIKI / "runes/index.md"
+    if overview.exists():
+        text = overview.read_text(encoding="utf-8")
+        overview.write_text(re.sub(r"There are \*\*\d+\*\* of them\.", f"There are **{len(runes)}** of them.", text),
+                            encoding="utf-8", newline="\n")
     print(f"{len(runes)} runes written to the wiki")
+    wiki_reference.main(runes, lambda path: rune_link(path, world))
 
 
 if __name__ == "__main__":

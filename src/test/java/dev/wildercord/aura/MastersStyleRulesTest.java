@@ -9,14 +9,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class MastersStyleRulesTest {
 	@Test
 	void authoredArtsHaveStableUniqueCosmeticIds() {
-		assertEquals(50, MastersStyleRules.STYLES.size());
+		assertEquals(80, MastersStyleRules.STYLES.size());
 		var ids = new HashSet<Integer>();
 		var names = new HashSet<String>();
 		for (var style : MastersStyleRules.STYLES) {
 			assertTrue(ids.add(style.animation()));
 			assertTrue(names.add(style.art()));
-			assertEquals(style.animation() <= 12 ? 0 : (style.animation() == 19 || (style.animation() >= 44 && style.animation() <= 52)) ? 4 : (style.animation() >= 20 && style.animation() <= 29) ? 2 : (style.animation() >= 34 && style.animation() <= 43) ? 3 : 1, ArtRules.art(style.art()).slot());
-			assertEquals(style.animation() == 15 ? MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
+			// The methods-a pack (ids 110 on) pins its own slots and policies in MethodsAStyleTest; methods-b's (140 on) are checked here.
+			if (style.animation() <= 52 || MethodsBStyles.owns(style.animation())) assertEquals(MethodsBStyles.owns(style.animation()) ? MethodsBStyles.slot(style.animation()) : style.animation() <= 12 ? 0 : (style.animation() == 19 || (style.animation() >= 44 && style.animation() <= 52)) ? 4 : (style.animation() >= 20 && style.animation() <= 29) ? 2 : (style.animation() >= 34 && style.animation() <= 43) ? 3 : 1, ArtRules.art(style.art()).slot());
+			if (style.animation() <= 52 || MethodsBStyles.owns(style.animation())) assertEquals(style.animation() == 15 ? MastersStyleRules.TargetPolicy.HAILFALL_RECEIPT
 				: style.animation() == 16 ? MastersStyleRules.TargetPolicy.SKYFALL_RECEIPT
 				: style.animation() == 17 || style.animation() == 18 || style.animation() == 31 || style.animation() == 32 || style.animation() == 44 || style.animation() == 48 || style.animation() == 49 ? MastersStyleRules.TargetPolicy.GROUND_AHEAD
 				: style.animation() >= 20 && style.animation() <= 29 ? MastersStyleRules.TargetPolicy.EARNED_COUNTER
@@ -136,7 +137,7 @@ class MastersStyleRulesTest {
 			assertEquals(MastersStyleRules.TargetPolicy.EARNED_COUNTER, style.targets());
 			assertEquals(0, MastersStyleRules.attackPitch(style.animation(), 90));
 		}
-		assertEquals(50, ArtRules.ARTS.size());
+		assertEquals(80, ArtRules.ARTS.size());
 		assertEquals(0, ArtRules.ARTS.size() - MastersStyleRules.STYLES.size());
 	}
 

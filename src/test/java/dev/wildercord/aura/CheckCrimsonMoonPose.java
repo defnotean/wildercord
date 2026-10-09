@@ -142,7 +142,8 @@ public final class CheckCrimsonMoonPose {
                 }
                 digest.update(classic.toString().getBytes(StandardCharsets.UTF_8));
                 for(boolean left:new boolean[]{false,true}) {
-                    Pose pose=samplePlayer(move,age,tell,recovery,left);ViewPose v=view(pose,left);
+                    // Styles 5-14 were frozen on the fallback; their authored forms have dedicated tests.
+                    Pose pose=normalizeReviewedHands && move>=CRACKLE && move<=BLOSSOM_FALL ? NONE : samplePlayer(move,age,tell,recovery,left);ViewPose v=view(pose,left);
                     digest.update((pose.phase()+":"+Float.toHexString(pose.weight())).getBytes(StandardCharsets.UTF_8));
                     for(Joint joint:Joint.values()) {
                         digest.update(pose.local(joint).toString().getBytes(StandardCharsets.UTF_8));

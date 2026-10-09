@@ -30,6 +30,14 @@ public enum Motion {
 			case "zone", "totem", "wall", "vortex", "domain", "imprint", "mine", "snare", "trail", "relay", "reweave" -> SEAL;
 			case "rain", "constellation" -> CALL;
 			case "self", "orbit", "trigger" -> AURA;
+			// ---- shapes pack
+			case "furrow", "seam", "hedgerow", "fissure", "fan", "stepstones", "causeway", "corridor", "stairwell" -> SLASH;
+			case "plot", "seedbed", "lattice", "perimeter", "rosette", "spiral", "crossway", "lamplit", "shoreline" -> SEAL;
+			case "shaft", "spire", "pit", "collapse", "vault", "dome", "facade", "canopy", "lodeseek" -> BLAST;
+			case "footing", "aureole", "saddle", "fellowship", "packbond" -> AURA;
+			case "herd", "nursery", "shoal", "flock", "sentinel", "grudge", "rearguard" -> CALL;
+			case "tether" -> BEAM;
+			case "bobber" -> FLICK;
 			default -> HURL;
 		};
 	}

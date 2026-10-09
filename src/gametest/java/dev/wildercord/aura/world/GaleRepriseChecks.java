@@ -240,6 +240,8 @@ final class GaleRepriseChecks {
 		});
 	}
 
+	private double exhausted;
+
 	private void resourceAndCooldown(TestSingleplayerContext world) {
 		beginNaturally(world, 1);
 		at(world, GaleRepriseRules.GATHER + 1, () -> Effects.withSource(target,
@@ -254,18 +256,36 @@ final class GaleRepriseChecks {
 		});
 		world.getServer().waitFor(server -> {
 			if (master.auraRemaining() >= GaleRepriseRules.COST) return false;
-			check(close(master.auraRemaining(), 16) && ordinaryMove(master) != null,
-				"Two admitted ordinary moves and the scheduled guard spend the remaining finite Aura");
-			began = level.getGameTime() - (long) master.attackElapsed(0);
+			// Gale braces every third attack, so the leftover depends on where the guard fell in the phrase.
+			check(master.auraRemaining() < GaleRepriseRules.COST && master.auraRemaining() >= 0
+					&& (ordinaryMove(master) != null || master.guarding()),
+				"Admitted ordinary moves and the scheduled guard spend the remaining finite Aura: " + master.auraRemaining());
+			exhausted = master.auraRemaining();
+			began = level.getGameTime() - (ordinaryMove(master) != null ? (long) master.attackElapsed(0) : 0);
 			return true;
 		}, 120);
 		MastersRules.Move exhaustedMove = ordinaryMove(master);
+		if (exhaustedMove == null) {
+			// The brace spent the last Aura: once it drops, the Master breathes instead of borrowing for another form.
+			world.getServer().waitFor(server -> {
+				if (master.guarding()) return false;
+				check(master.auraRemaining() < GaleRepriseRules.COST && !master.state(AuraFighter.WINDUP) && !master.reprisePending(),
+					"Exhausted ordinary AI enters exposed breathing instead of borrowing Aura for another form");
+				began = level.getGameTime();
+				return true;
+			}, AuraWorldRules.MOB_GUARD_TICKS + 5);
+			at(world, 10, () -> {
+				check(master.auraRemaining() > exhausted && !master.state(AuraFighter.WINDUP) && !master.guarding(), "Native breathing gradually restores the exhausted resource");
+				cleanup();
+			});
+			return;
+		}
 		at(world, exhaustedMove.tell + exhaustedMove.recovery, () -> {
-			check(close(master.auraRemaining(), 16) && !master.state(AuraFighter.WINDUP) && !master.guarding() && !master.reprisePending(),
+			check(close(master.auraRemaining(), exhausted) && !master.state(AuraFighter.WINDUP) && !master.guarding() && !master.reprisePending(),
 				"Exhausted ordinary AI enters exposed breathing instead of borrowing Aura for another form");
 		});
 		at(world, exhaustedMove.tell + exhaustedMove.recovery + 10, () -> {
-			check(master.auraRemaining() > 16 && !master.state(AuraFighter.WINDUP) && !master.guarding(), "Native breathing gradually restores the exhausted resource");
+			check(master.auraRemaining() > exhausted && !master.state(AuraFighter.WINDUP) && !master.guarding(), "Native breathing gradually restores the exhausted resource");
 			cleanup();
 		});
 	}
@@ -280,6 +300,7 @@ final class GaleRepriseChecks {
 		for (int i = 1; i < count; i++) party.add(add("RepriseAlly" + i, 6, -6 + i * 1.5));
 		bystander = add("RepriseBystander", -6, 4);
 		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
+		if (master != null) master.plainOrdinaryOnly();
 		check(master != null, "The Gale fixture is constructible");
 		master.setDiscipline(MastersRules.GALE); master.snapTo(origin.x, origin.y, origin.z, 0, 0);
 		level.addFreshEntity(master);

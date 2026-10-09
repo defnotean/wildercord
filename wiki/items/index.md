@@ -7,15 +7,14 @@ permalink: /items/
 
 # Items and crafting
 
-Every item and block Wildercord adds, apart from the runes themselves: what it's for, its recipe, and where to find
-it. For the recipe of every rune, see **[Rune Recipes]({{ '/items/rune-recipes/' | relative_url }})**.
+Wildercord's items and blocks: what each is for, its recipe, and where to find it. For every rune's recipe, see
+**[Rune Recipes]({{ '/items/rune-recipes/' | relative_url }})**. For the swordsman's weapons, see
+**[Swordsman's Weapons]({{ '/progression/weapons/' | relative_url }})**.
 
 <img src="{{ '/assets/images/d-creative-tab.jpg' | relative_url }}" alt="The Wildercord tab of the creative menu: four Cords, a Blank Rune, a Mana Crystal, a Torn Page, a Training Dummy, a Scribing Desk, the Tome of the Fifth Page, four foci, twenty staffs and several blocks" class="shot">
 <span class="caption">The Wildercord tab in the creative menu</span>
 
-Recipes below are for a crafting table. A grid shows a **shaped** recipe (the layout matters; an empty cell is an
-empty slot). A list is a **shapeless** recipe (put the items anywhere in the grid). All of them show up in the recipe
-book.
+A grid shows a recipe where the layout matters. A list means the items can go anywhere in the grid.
 
 ## Everything at a glance
 
@@ -36,12 +35,14 @@ book.
 | [Scribing Desk](#scribing-desk) | Makes a Runesmith; your daily contracts | Crafted |
 | [Wellstone](#wellstone) | Faster mana for everyone near it, on a ley line | Crafted |
 | [Training Dummy](#training-dummy) | Try your spells and read your damage | Crafted |
+| [Runic Hearth](#runic-hearth) | Charge it with spells for small boons and a group ritual | Crafted |
 | [Backpacks](#backpacks) | 18, 27 or 36 more slots, in hand or worn | Crafted, each from the one before |
 | [Wisp Lantern](#wisp-lantern) | Call out and send home your familiars | Crafted |
 | [Staffs](#staffs) | +20% power and 10% less mana for one element | Crafted |
 | [Greater staffs](#greater-staffs) | +35% power and 10% less mana for one element | Bosses, Archive vaults |
 | [Tome of the Fifth Page](#tome-of-the-fifth-page) | A fifth spell | Found |
 | [Foci](#foci) | Faster charging, cheaper spells, more mana, echoes, or spell protection | Crafted, found |
+| [Swordsman's weapons]({{ '/progression/weapons/' | relative_url }}) | Oathkeeper, the Bulwark Maul and the Skyrend Glaive | See their page |
 | [Trophies](#trophies) | Cinder Heart, Astral Lens, Drowned Quill | Dungeon bosses |
 | [Rune Seal, Archive Lectern, Dungeon Altar, Fallen Star](#blocks-found-only-in-the-world) | Dungeon and event blocks | Found in place, never taken |
 
@@ -140,11 +141,11 @@ Cords can be enchanted with Wildercord's Cord enchantments at an enchanting tabl
 
 {% include recipe.html id="mana_crystal" alt="Crafting grid: top row Lapis Lazuli · Amethyst Shard · Lapis Lazuli; middle row Amethyst Shard · Diamond · Amethyst Shard; bottom row Lapis Lazuli · Amethyst Shard · Lapis Lazuli" %}
 
-4 Lapis Lazuli, 4 Amethyst Shards and a Diamond make **1 Mana Crystal**. Crystals stack to 16.
+4 Lapis Lazuli, 4 Amethyst Shards and a Diamond make **1 Mana Crystal**. A
+[Lumen Antler]({{ '/progression/mana/' | relative_url }}) works in place of the Diamond. Crystals stack to 16.
 
-**Use it:** right-click to absorb it: **+10 max mana, forever**. Up to **10** crystals count (+100 max mana); after
-that the game tells you your mana can't grow further with crystals, and the crystal isn't used. See
-[Mana]({{ '/progression/mana/' | relative_url }}).
+**Use it:** right-click to absorb it: **+10 max mana, forever**. Up to **100** crystals count (+1,000 max mana); after
+that the crystal isn't used. See [Mana]({{ '/progression/mana/' | relative_url }}).
 
 **Used for:** every Tier III rune recipe (with a Diamond), the Wellstone, every staff and every focus.
 
@@ -171,8 +172,6 @@ that the game tells you your mana can't grow further with crystals, and the crys
 ### Potions
 
 Two potions, brewed in a brewing stand from an **Awkward Potion**:
-
-Brewed in a brewing stand, like any vanilla potion:
 
 <div class="recipe-gallery">
 {% include recipe-card.html id="brewing_potion_awkward_amethyst_shard" name="Awkward Potion + Amethyst Shard: Potion of Clarity" %}
@@ -273,6 +272,13 @@ A straw dummy for trying your spells. Use it on a block to set it up facing you.
 a number, and its name shows your damage per second. **Sneak and punch it** to pick it back up. Dummies stack to 16.
 Hits on a dummy don't count for contracts. See [Training Dummy]({{ '/progression/training-dummy/' | relative_url }}).
 
+### Runic Hearth
+
+{% include recipe.html id="runic_hearth" alt="Crafting grid: top row Gold Ingot · Book · Gold Ingot; middle row Stone Bricks · Mana Crystal · Stone Bricks; bottom row Stone Bricks · Stone Bricks · Stone Bricks" %}
+
+Cast spells at it to charge it, then it spends the charge on small boons for you and your party, or runs a ritual
+with friends. See [Runic Hearth]({{ '/social/runic-hearth/' | relative_url }}).
+
 ## Backpacks
 
 Extra room you carry: the **Backpack** (18 slots), the **Reinforced Backpack** (27) and the **Runewoven Backpack**
@@ -370,6 +376,9 @@ Focus slot (or off-hand). Each is a plus shape around a Mana Crystal.
 {% include recipe.html id="focus_of_resolve" alt="Crafting grid: top row empty · Iron Ingot · empty; middle row Amethyst Shard · Mana Crystal · Amethyst Shard; bottom row empty · Iron Ingot · empty" %}
 
 Foci are also found in Archive vaults and libraries, stronghold libraries, ancient cities and woodland mansions.
+
+Two more foci, the **Focus of Reprieve** and the **Focus of Grounding**, help you survive spells. See
+[Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }}).
 
 ## Trophies
 

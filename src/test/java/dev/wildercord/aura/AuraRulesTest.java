@@ -205,7 +205,7 @@ class AuraRulesTest {
 
 	@Test
 	void tenMethodsOneForEachElement() {
-		assertEquals(10, BreathingMethods.BUILT_IN.size());
+		assertEquals(13, BreathingMethods.BUILT_IN.size());
 		Set<String> elements = new HashSet<>();
 		Set<String> ids = new HashSet<>();
 		Set<BreathingMethod.Flavour> flavours = new HashSet<>();
@@ -217,7 +217,7 @@ class AuraRulesTest {
 			assertEquals(m, BreathingMethods.ofElement(m.element()).orElseThrow());
 			assertEquals("aura.wildercord.method." + m.id(), m.nameKey());
 		}
-		assertEquals(Set.of("fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood"), elements);
+		assertEquals(Set.of("fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood", "brine", "metal", "sand"), elements);
 		assertTrue(BreathingMethods.byId("").isEmpty());
 		assertTrue(BreathingMethods.byId("nonsense").isEmpty());
 		assertThrows(IllegalArgumentException.class, () -> new BreathingMethod(" ", "fire", 0, 0, null));
@@ -244,7 +244,7 @@ class AuraRulesTest {
 			counts.merge(sanctum.draw(random).orElseThrow(), 1, Integer::sum);
 		}
 		assertTrue(counts.get("ember") > 2 * counts.getOrDefault("rime", 0), counts.toString());
-		assertEquals(10, counts.size(), "the others can still turn up");
+		assertEquals(13, counts.size(), "the others can still turn up");
 		assertTrue(new MethodSources.Source("empty", "", 0, Map.of()).draw(random).isEmpty());
 	}
 

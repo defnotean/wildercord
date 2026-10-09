@@ -34,6 +34,9 @@ public final class RuneSources {
 	// ---- Permanent lessons: never included in ordinary Archive or other common loot pools.
 	public static final Source EXCISE_LESSON = source("lesson:excise", "The Root That Outlived Its Gardener, retrievable in Grimoire after Heartwood; study with active Circle XVI", Runes.EXCISE);
 	public static final Source REWEAVE_LESSON = source("lesson:reweave", "Ebb Ledger, retrievable in the Grimoire after Low Tide; study with active Circle XII", Runes.REWEAVE);
+	public static final Source TOLLGATE_LESSON = source("lesson:tollgate", "The Warden's Threshold, retrievable in Grimoire after Tempered; study with active Circle X", Runes.TOLLGATE);
+	public static final Source LIFELINE_LESSON = source("lesson:lifeline", "The Thread Between Stars, retrievable in Grimoire after Starbreaker; study with active Circle XIV", Runes.LIFELINE);
+	public static final Source CONDUIT_LESSON = source("lesson:conduit", "Notes on a Grounded Storm, retrievable in Grimoire after Grounded; study with active Circle XVIII", Runes.CONDUIT);
 	public static final Source RELAY_LESSON = source("lesson:relay", "The Margin Between Places, at an inactive Archive Lectern after Circle VIII and the Archivist", Runes.RELAY);
 
 	/** Entitlement is taught by a lesson, never supplied by common loot or crafting. */

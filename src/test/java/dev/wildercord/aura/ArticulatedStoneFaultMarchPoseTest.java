@@ -17,8 +17,10 @@ class ArticulatedStoneFaultMarchPoseTest {
 		assertEquals(10, MASTER_STONE_FAULT_MARCH);
 		assertEquals(MasterAnimationRules.STONE_FAULT_MARCH, MASTER_STONE_FAULT_MARCH);
 		assertTrue(supportsMaster(10));
-		assertFalse(supportsPlayer(10));
-		assertSame(NONE, samplePlayer(10, 32, 32, 64, false));
+		// Player ID 10 is Star Needle; its short player window never borrows the March clip.
+		assertTrue(supportsPlayer(10));
+		assertNotEquals(sample(StoneMarchRules.TELL, false).local(Joint.RIGHT_UPPER_ARM),
+			samplePlayer(10, 4, 4, 10, false).local(Joint.RIGHT_UPPER_ARM));
 		assertEquals(Phase.WINDUP, sample(StoneMarchRules.TELL - .001F, false).phase());
 		for (int pulse : new int[] {StoneMarchRules.TELL, StoneMarchRules.SECOND, StoneMarchRules.THIRD}) {
 			assertEquals(Phase.ACTIVE, sample(pulse, false).phase());

@@ -11,7 +11,46 @@ nav_order: 5
 
 Stone and ground. Earth shields, roots, heaves the ground and breaks blocks.
 
-18 earth effects you can craft or find in the usual way. Earth also has runes of the world, fused runes and innate runes: see their own pages.
+89 earth effects you can craft or find in the usual way. Earth also has runes of the world, fused runes and innate runes: see their own pages.
+
+### <img src="{{ '/assets/runes/barkstrip.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Barkstrip
+{: #barkstrip}
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Strips the bark off the logs and wood in a 5-by-5-by-5 block around the point, as an axe would.
+
+**How to get it:** Craft: a Blank Rune, Iron Axe, Oak Log and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_barkstrip.png' | relative_url }}" alt="Crafting Barkstrip: a Blank Rune and Iron Axe, Oak Log and Flint" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/berrybless.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Berrybless
+{: #berrybless}
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Sweet berry bushes in a 5-by-5 patch ripen to full, and the glow berry vines among them come into fruit.
+
+**How to get it:** Craft: a Blank Rune, Sweet Berries, Bone Meal and Oak Leaves. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_berrybless.png' | relative_url }}" alt="Crafting Berrybless: a Blank Rune and Sweet Berries, Bone Meal and Oak Leaves" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/blockpack.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Block Pack
+{: #blockpack}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Crafts nine of a kind in your pack into their block, like iron ingots into an iron block. 8 blocks at most.
+
+**How to get it:** Craft: a Blank Rune, Crafting Table and Iron Nugget. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_blockpack.png' | relative_url }}" alt="Crafting Block Pack: a Blank Rune and Crafting Table and Iron Nugget" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/brace.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Brace
 {: #brace}
@@ -24,7 +63,7 @@ Braces for the blow: 80% less damage for 2 seconds. Bracing again takes 6 second
 
 <img src="{{ '/assets/recipes/rune_brace.png' | relative_url }}" alt="Crafting Brace: a Blank Rune and Cobblestone and Iron Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Kindred
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/chisel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chisel
 {: #chisel}
@@ -37,7 +76,176 @@ Mines the block that was hit (up to stone-pickaxe hardness; Amplify for iron).
 
 <img src="{{ '/assets/recipes/rune_chisel.png' | relative_url }}" alt="Crafting Chisel: a Blank Rune and Stone Pickaxe" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/compost.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Compost
+{: #compost}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Feeds the composter you strike from your inventory, as if you dropped the items in yourself: up to 8 seeds, leaves or scraps (16 at double power).
+
+**How to get it:** Craft: a Blank Rune, Composter, Rotten Flesh and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_compost.png' | relative_url }}" alt="Crafting Compost: a Blank Rune and Composter, Rotten Flesh and Wheat Seeds" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/concreteset.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Concrete Set
+{: #concreteset}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Concrete powder near the point sets into concrete. 16 at most.
+
+**How to get it:** Craft: a Blank Rune, White Concrete Powder and Water Bucket. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_concreteset.png' | relative_url }}" alt="Crafting Concrete Set: a Blank Rune and White Concrete Powder and Water Bucket" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/deepsound.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Deepsound
+{: #deepsound}
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Tells you the nearest ore up to 16 blocks under the point, and how deep.
+
+**How to get it:** Craft: a Blank Rune, Note Block. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_deepsound.png' | relative_url }}" alt="Crafting Deepsound: a Blank Rune and Note Block" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/deepwarn.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Deepwarn
+{: #deepwarn}
+
+*Tier I · Earth · Helps you and your allies · 4 mana · needs any Cord*
+
+For 5 minutes, warns you of lava below or a long drop ahead. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Magma Cream and Spyglass. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_deepwarn.png' | relative_url }}" alt="Crafting Deepwarn: a Blank Rune and Magma Cream and Spyglass" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/depth_sounding.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Depth Sounding
+{: #depth_sounding}
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Sounds the rock under the point: how far down the first open cave or lava lies, up to 64 blocks.
+
+**How to get it:** Craft: a Blank Rune, Pointed Dripstone, String and Cobbled Deepslate. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_depth_sounding.png' | relative_url }}" alt="Crafting Depth Sounding: a Blank Rune and Pointed Dripstone, String and Cobbled Deepslate" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/fallow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fallow
+{: #fallow}
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Rests the bare farmland in a 5-by-5 patch back into dirt. Farmland with something growing on it is left as it is.
+
+**How to get it:** Craft: a Blank Rune, Dirt, Bone Meal and Short Grass. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fallow.png' | relative_url }}" alt="Crafting Fallow: a Blank Rune and Dirt, Bone Meal and Short Grass" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/fodder.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fodder
+{: #fodder}
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Feeds the animals within 5 blocks from your inventory, each with one item of the food it eats: it heals 4 and a young one grows a tenth of the way up.
+
+**How to get it:** Craft: a Blank Rune, Hay Bale, Carrot and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fodder.png' | relative_url }}" alt="Crafting Fodder: a Blank Rune and Hay Bale, Carrot and Wheat Seeds" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/glyph_carve.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glyph Carve
+{: #glyph_carve}
+
+*Tier I · Earth · Works on the world · 1 mana · needs any Cord*
+
+Carves a glowing glyph of the way you face onto the first blank line of a sign.
+
+**How to get it:** Craft: a Blank Rune, Oak Sign and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_glyph_carve.png' | relative_url }}" alt="Crafting Glyph Carve: a Blank Rune and Oak Sign and Flint" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/holefill.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Holefill
+{: #holefill}
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Fills holes near the point up to its height with stone, dirt or planks from your pack. 16 at most.
+
+**How to get it:** Craft: a Blank Rune, Dirt, Cobblestone and Oak Planks. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_holefill.png' | relative_url }}" alt="Crafting Holefill: a Blank Rune and Dirt, Cobblestone and Oak Planks" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/land_reading.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Land Reading
+{: #land_reading}
+
+*Tier I · Earth · Works on the world · 1 mana · needs any Cord*
+
+Reads the ground where it lands: its biome, how warm it is, and its height against sea level.
+
+**How to get it:** Craft: a Blank Rune, Dirt and Compass. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_land_reading.png' | relative_url }}" alt="Crafting Land Reading: a Blank Rune and Dirt and Compass" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/landread.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Landread
+{: #landread}
+
+*Tier I · Earth · Works on the world · 2 mana · needs any Cord*
+
+Tells you the biome, height and light where it lands, and whether slimes spawn there.
+
+**How to get it:** Craft: a Blank Rune, Dirt and Spyglass. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_landread.png' | relative_url }}" alt="Crafting Landread: a Blank Rune and Dirt and Spyglass" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/millstone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Millstone
+{: #millstone}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Grinds up to 16 cobblestone in your pack into gravel, or else gravel into sand.
+
+**How to get it:** Craft: a Blank Rune, Grindstone. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_millstone.png' | relative_url }}" alt="Crafting Millstone: a Blank Rune and Grindstone" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/nest_tend.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nest Tend
+{: #nest_tend}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Turtle eggs within 4 blocks move a stage closer to hatching, up to 4, and baby turtles grow.
+
+**How to get it:** Craft: a Blank Rune, Seagrass and Sand. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_nest_tend.png' | relative_url }}" alt="Crafting Nest Tend: a Blank Rune and Seagrass and Sand" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/pelt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pelt
 {: #pelt}
@@ -50,7 +258,59 @@ Pelts targets with stones: 4 damage and a hard shove.
 
 <img src="{{ '/assets/recipes/rune_pelt.png' | relative_url }}" alt="Crafting Pelt: a Blank Rune and Gravel and Cobblestone" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/picnic.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Picnic
+{: #picnic}
+
+*Tier I · Earth · Helps you and your allies · 5 mana · needs any Cord*
+
+A shared basket: each target eats 3 hunger and heals 2 (more with power).
+
+**How to get it:** Craft: a Blank Rune, Bread, Apple and White Carpet. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_picnic.png' | relative_url }}" alt="Crafting Picnic: a Blank Rune and Bread, Apple and White Carpet" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/plankway.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Plankway
+{: #plankway}
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Lays a lasting bridge up to 12 long the way you face, from planks or stone in your pack.
+
+**How to get it:** Craft: a Blank Rune, 2x Oak Planks and String. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_plankway.png' | relative_url }}" alt="Crafting Plankway: a Blank Rune and 2x Oak Planks and String" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/plumbline.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Plumb Line
+{: #plumbline}
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Digs a shaft up to 8 deep under the point (iron-pickaxe hardness). Stops a block above lava, water or a drop.
+
+**How to get it:** Craft: a Blank Rune, String, Iron Nugget and Cobblestone. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_plumbline.png' | relative_url }}" alt="Crafting Plumb Line: a Blank Rune and String, Iron Nugget and Cobblestone" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/polish.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Polish
+{: #polish}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Polishes stone near the point: andesite, granite, diorite, tuff, basalt and the like. 9 at most.
+
+**How to get it:** Craft: a Blank Rune, Polished Andesite and Sand. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_polish.png' | relative_url }}" alt="Crafting Polish: a Blank Rune and Polished Andesite and Sand" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/prospect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prospect
 {: #prospect}
@@ -63,7 +323,202 @@ The ground rings out: every ore within 12 blocks of where it lands glows through
 
 <img src="{{ '/assets/recipes/rune_prospect.png' | relative_url }}" alt="Crafting Prospect: a Blank Rune and Stone Pickaxe and Amethyst Shard" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/reed_cut.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reed Cut
+{: #reed_cut}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Cuts kelp, seagrass, sugar cane and lily pads within 3 blocks of the point, up to 12. Kelp and cane keep their base to regrow.
+
+**How to get it:** Craft: a Blank Rune, Sugar Cane and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_reed_cut.png' | relative_url }}" alt="Crafting Reed Cut: a Blank Rune and Sugar Cane and Flint" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/relic_sense.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Relic Sense
+{: #relic_sense}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Suspicious sand and gravel within 12 blocks glow for 20 seconds, and you hear how many there are.
+
+**How to get it:** Craft: a Blank Rune, Brush and Sand. The recipe is shapeless: any layout, any crafting grid. Also found: Desert Pyramid Archaeology.
+
+<img src="{{ '/assets/recipes/rune_relic_sense.png' | relative_url }}" alt="Crafting Relic Sense: a Blank Rune and Brush and Sand" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/saplingsow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sapling Sow
+{: #saplingsow}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Plants saplings from your own inventory onto open dirt and grass in a 5-by-5 patch, two blocks apart: up to 4.
+
+**How to get it:** Craft: a Blank Rune, Oak Sapling, Birch Sapling and Dirt. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_saplingsow.png' | relative_url }}" alt="Crafting Sapling Sow: a Blank Rune and Oak Sapling, Birch Sapling and Dirt" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/shoreup.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shore Up
+{: #shoreup}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Props up hanging sand and gravel near the point with blocks from your pack. 8 at most.
+
+**How to get it:** Craft: a Blank Rune, Oak Log and Gravel. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_shoreup.png' | relative_url }}" alt="Crafting Shore Up: a Blank Rune and Oak Log and Gravel" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/siftfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Siftfall
+{: #siftfall}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Sand and gravel hanging over air above the point fall as items, up to 4 high.
+
+**How to get it:** Craft: a Blank Rune, Gravel and Sand. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_siftfall.png' | relative_url }}" alt="Crafting Siftfall: a Blank Rune and Gravel and Sand" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/sow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sow
+{: #sow}
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Plants seeds from your own inventory into the empty farmland of a 5-by-5 patch, one seed for each block. Nothing is planted that you don't carry.
+
+**How to get it:** Craft: a Blank Rune, Wheat Seeds, Beetroot Seeds and Carrot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_sow.png' | relative_url }}" alt="Crafting Sow: a Blank Rune and Wheat Seeds, Beetroot Seeds and Carrot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/stilt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stilt
+{: #stilt}
+
+*Tier I · Earth · Works on the world · 4 mana · needs any Cord*
+
+Raises you on a packed mud column up to 5 high. It crumbles after 30 seconds.
+
+**How to get it:** Craft: a Blank Rune, Packed Mud and Scaffolding. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_stilt.png' | relative_url }}" alt="Crafting Stilt: a Blank Rune and Packed Mud and Scaffolding" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/stoutheart.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stoutheart
+{: #stoutheart}
+
+*Tier I · Earth · Helps you and your allies · 5 mana · needs any Cord*
+
+Resistance I for 10 seconds (Amplify makes it II).
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Apple. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_stoutheart.png' | relative_url }}" alt="Crafting Stoutheart: a Blank Rune and Iron Ingot and Apple" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/surefoot.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Surefoot
+{: #surefoot}
+
+*Tier I · Earth · Helps you and your allies · 4 mana · needs any Cord*
+
+Step up full blocks without jumping for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Leather Boots and Cobblestone Stairs. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_surefoot.png' | relative_url }}" alt="Crafting Surefoot: a Blank Rune and Leather Boots and Cobblestone Stairs" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/tend.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tend
+{: #tend}
+
+*Tier I · Earth · Helps you and your allies · 6 mana · needs any Cord*
+
+Heals a villager, golem, pet or animal for 8 (an iron golem for 16).
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops and Bone Meal. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_tend.png' | relative_url }}" alt="Crafting Tend: a Blank Rune and Wheat Crops and Bone Meal" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/tillage.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tillage
+{: #tillage}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Tills the dirt and grass in a 5-by-5 patch around the block it strikes into farmland, as a hoe would. Widen reaches further; never more than 32 blocks a cast.
+
+**How to get it:** Craft: a Blank Rune, Wooden Hoe, Dirt and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_tillage.png' | relative_url }}" alt="Crafting Tillage: a Blank Rune and Wooden Hoe, Dirt and Wheat Seeds" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/tilth.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tilth
+{: #tilth}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Loosens the coarse and rooted dirt in a 5-by-5 patch into plain dirt; rooted dirt sheds its hanging roots, as a hoe would.
+
+**How to get it:** Craft: a Blank Rune, Coarse Dirt, Bone Meal and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_tilth.png' | relative_url }}" alt="Crafting Tilth: a Blank Rune and Coarse Dirt, Bone Meal and Flint" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/unpack.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Unpack
+{: #unpack}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Turns up to 4 storage blocks in your pack back into nine pieces each.
+
+**How to get it:** Craft: a Blank Rune, Crafting Table and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_unpack.png' | relative_url }}" alt="Crafting Unpack: a Blank Rune and Crafting Table and Flint" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/wildflower.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wildflower
+{: #wildflower}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+Sows wild flowers onto the open grass in a 5-by-5 patch: up to 6 flowers, more when widened.
+
+**How to get it:** Craft: a Blank Rune, Dandelion, Poppy and Cornflower. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_wildflower.png' | relative_url }}" alt="Crafting Wildflower: a Blank Rune and Dandelion, Poppy and Cornflower" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/aftercare.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Aftercare
+{: #aftercare}
+
+*Tier II · Earth · Helps you and your allies · 9 mana · needs a Copper Cord or better*
+
+For 15 seconds, each time the target is hurt it heals 1 a second later, 6 in all.
+
+**How to get it:** Craft: a Blank Rune, Glistering Melon Slice and Clock, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_aftercare.png' | relative_url }}" alt="Crafting Aftercare: a Blank Rune and Glistering Melon Slice and Clock, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/aftershock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Aftershock
 {: #aftershock}
@@ -76,7 +531,46 @@ The ground rings out: every ore within 12 blocks of where it lands glows through
 
 <img src="{{ '/assets/recipes/rune_aftershock.png' | relative_url }}" alt="Crafting Aftershock: a Blank Rune and Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/agestone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Agestone
+{: #agestone}
+
+*Tier II · Earth · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Ages masonry near the point: moss on cobblestone and stone bricks, cracks in deep bricks. 9 at most.
+
+**How to get it:** Craft: a Blank Rune, Moss Block and Cracked Stone Bricks, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_agestone.png' | relative_url }}" alt="Crafting Agestone: a Blank Rune and Moss Block and Cracked Stone Bricks, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/barkhide.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Barkhide
+{: #barkhide}
+
+*Tier II · Earth · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+Skin like old oak: Resistance I for 12 seconds.
+
+**How to get it:** Craft: a Blank Rune, Oak Log, Spruce Log and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_barkhide.png' | relative_url }}" alt="Crafting Barkhide: a Blank Rune and Oak Log, Spruce Log and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/blastward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blastward
+{: #blastward}
+
+*Tier II · Earth · Works on the world · 10 mana · needs a Copper Cord or better*
+
+For 60 seconds explosions within 6 blocks break no blocks.
+
+**How to get it:** Craft: a Blank Rune, Gunpowder and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_blastward.png' | relative_url }}" alt="Crafting Blastward: a Blank Rune and Gunpowder and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/break.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Break
 {: #break}
@@ -89,7 +583,20 @@ Mines the block that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 
 <img src="{{ '/assets/recipes/rune_break.png' | relative_url }}" alt="Crafting Break: a Blank Rune and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/brickwork.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Brickwork
+{: #brickwork}
+
+*Tier II · Earth · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Cuts stone near the point into its bricks. 9 at most.
+
+**How to get it:** Craft: a Blank Rune, Stonecutter and Brick, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_brickwork.png' | relative_url }}" alt="Crafting Brickwork: a Blank Rune and Stonecutter and Brick, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/excavate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Excavate
 {: #excavate}
@@ -102,7 +609,7 @@ Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).
 
 <img src="{{ '/assets/recipes/rune_excavate.png' | relative_url }}" alt="Crafting Excavate: a Blank Rune and Iron Shovel, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/fell.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fell
 {: #fell}
@@ -115,7 +622,150 @@ Fells the tree that was hit: the log and every log joined to it above, up to 32.
 
 <img src="{{ '/assets/recipes/rune_fell.png' | relative_url }}" alt="Crafting Fell: a Blank Rune and Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/floorlay.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Floorlay
+{: #floorlay}
+
+*Tier II · Earth · Works on the world · 7 mana · needs a Copper Cord or better*
+
+Lays a 5x5 floor at the point from stone, dirt or planks in your pack, over air only.
+
+**How to get it:** Craft: a Blank Rune, 2x Smooth Stone and Oak Planks, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_floorlay.png' | relative_url }}" alt="Crafting Floorlay: a Blank Rune and 2x Smooth Stone and Oak Planks, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/gourdcall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gourdcall
+{: #gourdcall}
+
+*Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Grown pumpkin and melon stems in a 5-by-5 patch try at once to set their fruit, as many times as a day of waiting would give them.
+
+**How to get it:** Craft: a Blank Rune, Pumpkin Seeds, Melon Seeds and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_gourdcall.png' | relative_url }}" alt="Crafting Gourdcall: a Blank Rune and Pumpkin Seeds, Melon Seeds and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/hearthguard.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hearthguard
+{: #hearthguard}
+
+*Tier II · Earth · Helps you and your allies · 10 mana · needs a Copper Cord or better*
+
+A villager, trader or golem takes 60% less damage from monsters for 5 minutes.
+
+**How to get it:** Craft: a Blank Rune, Emerald and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_hearthguard.png' | relative_url }}" alt="Crafting Hearthguard: a Blank Rune and Emerald and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/keenkeep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Keenkeep
+{: #keenkeep}
+
+*Tier II · Earth · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+Your held tool wears half as fast for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, Grindstone and Flint, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_keenkeep.png' | relative_url }}" alt="Crafting Keenkeep: a Blank Rune and Grindstone and Flint, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/keepsafe.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Keepsafe
+{: #keepsafe}
+
+*Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
+
+For 10 minutes the block hit can't be broken by anyone outside your party, nor by explosions.
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_keepsafe.png' | relative_url }}" alt="Crafting Keepsafe: a Blank Rune and Iron Ingot and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/leafshade.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Leafshade
+{: #leafshade}
+
+*Tier II · Earth · Helps you and your allies · 7 mana · needs a Copper Cord or better*
+
+Cool leaf-shade: Fire Resistance for 15 seconds.
+
+**How to get it:** Craft: a Blank Rune, Oak Leaves, Oak Log and Vines, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_leafshade.png' | relative_url }}" alt="Crafting Leafshade: a Blank Rune and Oak Leaves, Oak Log and Vines, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/levelground.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Levelground
+{: #levelground}
+
+*Tier II · Earth · Works on the world · 10 mana · needs a Copper Cord or better*
+
+Mines away what stands up to 3 blocks over the point within 2 blocks of it.
+
+**How to get it:** Craft: a Blank Rune, Iron Shovel and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_levelground.png' | relative_url }}" alt="Crafting Levelground: a Blank Rune and Iron Shovel and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/long_arm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Long Arm
+{: #long_arm}
+
+*Tier II · Earth · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Reach 2 blocks farther to build and mine for 5 minutes. Can be a passive.
+
+**How to get it:** Craft: a Blank Rune, 2x Stick, String and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_long_arm.png' | relative_url }}" alt="Crafting Long Arm: a Blank Rune and 2x Stick, String and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/oretally.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ore Tally
+{: #oretally}
+
+*Tier II · Earth · Works on the world · 5 mana · needs a Copper Cord or better*
+
+Counts the ores within 6 blocks of the point by kind.
+
+**How to get it:** Craft: a Blank Rune, Raw Iron, Coal and Paper, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_oretally.png' | relative_url }}" alt="Crafting Ore Tally: a Blank Rune and Raw Iron, Coal and Paper, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/pitfloor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pit Floor
+{: #pitfloor}
+
+*Tier II · Earth · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Lays a 3x3 packed mud floor over the air at the point. It crumbles after 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, 2x Packed Mud and Scaffolding, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_pitfloor.png' | relative_url }}" alt="Crafting Pit Floor: a Blank Rune and 2x Packed Mud and Scaffolding, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/plowline.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Plowline
+{: #plowline}
+
+*Tier II · Earth · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Ploughs a straight furrow from the block it strikes along the way you face: up to 8 blocks of dirt or grass tilled into farmland, longer with power (16 at most).
+
+**How to get it:** Craft: a Blank Rune, Iron Hoe, Dirt and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_plowline.png' | relative_url }}" alt="Crafting Plowline: a Blank Rune and Iron Hoe, Dirt and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/rampart.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rampart
 {: #rampart}
@@ -128,7 +778,20 @@ Raises a 5-wide, 3-high wall of earth at the point for 10 seconds.
 
 <img src="{{ '/assets/recipes/rune_rampart.png' | relative_url }}" alt="Crafting Rampart: a Blank Rune and 2x Packed Mud, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/riser.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Riser
+{: #riser}
+
+*Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Carves a stair 5 steps up the way you face (iron-pickaxe hardness; Amplify for diamond). Stops short of lava or water.
+
+**How to get it:** Craft: a Blank Rune, Stone Pickaxe and Ladder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_riser.png' | relative_url }}" alt="Crafting Riser: a Blank Rune and Stone Pickaxe and Ladder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/root.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Root
 {: #root}
@@ -141,7 +804,46 @@ Vines hold targets in place for 3 seconds.
 
 <img src="{{ '/assets/recipes/rune_root.png' | relative_url }}" alt="Crafting Root: a Blank Rune and 2x Vines, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/ruin_sense.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ruin Sense
+{: #ruin_sense}
+
+*Tier II · Earth · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Senses the nearest trail ruins and tells which way and roughly how far. Structure senses share a 30-second rest.
+
+**How to get it:** Craft: a Blank Rune, Empty Map and Brush, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_ruin_sense.png' | relative_url }}" alt="Crafting Ruin Sense: a Blank Rune and Empty Map and Brush, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/sandbar.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sandbar
+{: #sandbar}
+
+*Tier II · Earth · Works on the world · 7 mana · needs a Copper Cord or better*
+
+Raises a 12-block sandstone path at the water's surface the way you look, for 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, Sandstone and Sand, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_sandbar.png' | relative_url }}" alt="Crafting Sandbar: a Blank Rune and Sandstone and Sand, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/sapflow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sapflow
+{: #sapflow}
+
+*Tier II · Earth · Helps you and your allies · 7 mana · needs a Copper Cord or better*
+
+Spring sap rises in you: Regeneration I for 8 seconds.
+
+**How to get it:** Craft: a Blank Rune, Honey Bottle, Oak Sapling and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_sapflow.png' | relative_url }}" alt="Crafting Sapflow: a Blank Rune and Honey Bottle, Oak Sapling and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/shackle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shackle
 {: #shackle}
@@ -154,7 +856,20 @@ Chains each target to the spot for 5 seconds: it's yanked back if it strays more
 
 <img src="{{ '/assets/recipes/rune_shackle.png' | relative_url }}" alt="Crafting Shackle: a Blank Rune and 2x Iron Chain, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/shellback.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shellback
+{: #shellback}
+
+*Tier II · Earth · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+Resistance for 15 seconds, 30 in water or rain.
+
+**How to get it:** Craft: a Blank Rune, Turtle Scute and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_shellback.png' | relative_url }}" alt="Crafting Shellback: a Blank Rune and Turtle Scute and Kelp, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/shield.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shield
 {: #shield}
@@ -167,7 +882,59 @@ For 30 seconds, the next harmful spell cast at the target meets magic circles th
 
 <img src="{{ '/assets/recipes/rune_shield.png' | relative_url }}" alt="Crafting Shield: a Blank Rune and Shield, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/shieldwall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shieldwall
+{: #shieldwall}
+
+*Tier II · Earth · Helps you and your allies · 12 mana · needs a Copper Cord or better*
+
+You and allies within 5 blocks can't be knocked back and get Resistance I for 8 seconds.
+
+**How to get it:** Craft: a Blank Rune, Shield and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_shieldwall.png' | relative_url }}" alt="Crafting Shieldwall: a Blank Rune and Shield and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/stairdelve.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stair Delve
+{: #stairdelve}
+
+*Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Carves a stair 5 steps down the way you face (iron-pickaxe hardness; Amplify for diamond). Stops short of lava, water or a drop.
+
+**How to get it:** Craft: a Blank Rune, Stone Pickaxe and Cobblestone Stairs, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_stairdelve.png' | relative_url }}" alt="Crafting Stair Delve: a Blank Rune and Stone Pickaxe and Cobblestone Stairs, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/stalkrise.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stalkrise
+{: #stalkrise}
+
+*Tier II · Earth · Works on the world · 6 mana · needs a Copper Cord or better*
+
+Sugar cane and cactus in a 5-by-5 patch grow one block taller, never past three tall; bamboo grows as bone meal would grow it.
+
+**How to get it:** Craft: a Blank Rune, Sugar Cane, Cactus and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_stalkrise.png' | relative_url }}" alt="Crafting Stalkrise: a Blank Rune and Sugar Cane, Cactus and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/steady_brush.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Steady Brush
+{: #steady_brush}
+
+*Tier II · Earth · Works on the world · 5 mana · needs a Copper Cord or better*
+
+With a brush in hand, brushes up to 3 suspicious blocks near the point at once, hands free. The brush wears a point for each.
+
+**How to get it:** Craft: a Blank Rune, Brush, Feather and Gravel, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Desert Pyramid Archaeology; Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_steady_brush.png' | relative_url }}" alt="Crafting Steady Brush: a Blank Rune and Brush, Feather and Gravel, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/stoneskin.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stoneskin
 {: #stoneskin}
@@ -180,7 +947,7 @@ Resistance II for 10 seconds, and Slowness I: stone is heavy.
 
 <img src="{{ '/assets/recipes/rune_stoneskin.png' | relative_url }}" alt="Crafting Stoneskin: a Blank Rune and Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/strata_rise.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Strata Rise
 {: #strata_rise}
@@ -193,7 +960,20 @@ Raises a real five-wide, three-high stone wall over seven ticks. Lasts eight sec
 
 <img src="{{ '/assets/recipes/rune_strata_rise.png' | relative_url }}" alt="Crafting Strata Rise: a Blank Rune and Stone, Packed Mud and Flint, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/tinker_hum.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tinker's Hum
+{: #tinker_hum}
+
+*Tier II · Earth · Helps you and your allies · 10 mana · needs a Copper Cord or better*
+
+For 5 minutes, a worn tool or piece of armor you carry mends a point every 10 seconds, up to 30.
+
+**How to get it:** Craft: a Blank Rune, Anvil, Iron Ingot and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_tinker_hum.png' | relative_url }}" alt="Crafting Tinker's Hum: a Blank Rune and Anvil, Iron Ingot and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/tunnel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tunnel
 {: #tunnel}
@@ -206,7 +986,7 @@ Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe 
 
 <img src="{{ '/assets/recipes/rune_tunnel.png' | relative_url }}" alt="Crafting Tunnel: a Blank Rune and Iron Pickaxe and Rail, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/vein.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vein
 {: #vein}
@@ -219,7 +999,7 @@ Mines the block that was hit and, if it's an ore, every matching ore joined to i
 
 <img src="{{ '/assets/recipes/rune_vein.png' | relative_url }}" alt="Crafting Vein: a Blank Rune and Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/weigh.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Weigh
 {: #weigh}
@@ -232,7 +1012,124 @@ Crushingly heavy for 5 seconds: triple gravity, barely able to move or jump, and
 
 <img src="{{ '/assets/recipes/rune_weigh.png' | relative_url }}" alt="Crafting Weigh: a Blank Rune and Block of Iron, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal, Linger
+**Modifiers that work on it:** Extend, Frugal, Linger, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/caveward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Caveward
+{: #caveward}
+
+*Tier III · Earth · Helps you and your allies · 10 mana · needs an Amethyst Cord or better*
+
+For 60 seconds, sand, gravel or powder snow that buries the target's head crumbles into items.
+
+**How to get it:** Craft: a Blank Rune, Turtle Shell, Sand and Gravel, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_caveward.png' | relative_url }}" alt="Crafting Caveward: a Blank Rune and Turtle Shell, Sand and Gravel, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/coppice.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Coppice
+{: #coppice}
+
+*Tier III · Earth · Works on the world · 14 mana · needs an Amethyst Cord or better*
+
+Fells the tree you strike (its logs, never more than 32, drop as an axe would cut them) and replants the stump with a sapling from your inventory. A log with no living leaves is part of a build and is left alone.
+
+**How to get it:** Craft: a Blank Rune, Iron Axe, Oak Sapling and Oak Log, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_coppice.png' | relative_url }}" alt="Crafting Coppice: a Blank Rune and Iron Axe, Oak Sapling and Oak Log, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/deepway.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Deepway
+{: #deepway}
+
+*Tier III · Earth · Works on the world · 16 mana · needs an Amethyst Cord or better*
+
+Bores a 3x3 road 3 deep into the wall hit (diamond-pickaxe hardness) and sets 2 torches from your pack.
+
+**How to get it:** Craft: a Blank Rune, Diamond Pickaxe, Torch and Rail, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_deepway.png' | relative_url }}" alt="Crafting Deepway: a Blank Rune and Diamond Pickaxe, Torch and Rail, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/gangue.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gangue
+{: #gangue}
+
+*Tier III · Earth · Works on the world · 14 mana · needs an Amethyst Cord or better*
+
+Mines plain rock within 2 blocks of the point and leaves the ores standing.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, Tuff and Raw Iron, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_gangue.png' | relative_url }}" alt="Crafting Gangue: a Blank Rune and Iron Pickaxe, Tuff and Raw Iron, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/guardlink.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Guardlink
+{: #guardlink}
+
+*Tier III · Earth · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+For 15 seconds, 40% of the ally's damage comes to you instead. Breaks past 16 blocks or at 6 health. Not on yourself.
+
+**How to get it:** Craft: a Blank Rune, Iron Chain and Iron Ingot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_guardlink.png' | relative_url }}" alt="Crafting Guardlink: a Blank Rune and Iron Chain and Iron Ingot, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/ironhold.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ironhold
+{: #ironhold}
+
+*Tier III · Earth · Helps you and your allies · 15 mana · needs an Amethyst Cord or better*
+
+For 6 seconds no single blow deals the target more than 4.
+
+**How to get it:** Craft: a Blank Rune, Anvil and Shield, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_ironhold.png' | relative_url }}" alt="Crafting Ironhold: a Blank Rune and Anvil and Shield, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/luckstrike.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Luckstrike
+{: #luckstrike}
+
+*Tier III · Earth · Works on the world · 10 mana · needs an Amethyst Cord or better*
+
+Mines the ore hit with Fortune I (II with Amplify).
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, Rabbit's Foot and Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_luckstrike.png' | relative_url }}" alt="Crafting Luckstrike: a Blank Rune and Iron Pickaxe, Rabbit's Foot and Emerald, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/orepluck.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ore Pluck
+{: #orepluck}
+
+*Tier III · Earth · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Mines up to 8 ores with an open face within 4 blocks of the point.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, Raw Copper and Raw Gold, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_orepluck.png' | relative_url }}" alt="Crafting Ore Pluck: a Blank Rune and Iron Pickaxe, Raw Copper and Raw Gold, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/saplingrise.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sapling Rise
+{: #saplingrise}
+
+*Tier III · Earth · Works on the world · 12 mana · needs an Amethyst Cord or better*
+
+Saplings and mushrooms in a 5-by-5 patch are urged to grow: up to 3 of them each get the growth of 8 bone meal.
+
+**How to get it:** Craft: a Blank Rune, Oak Sapling, Bone Meal and Oak Log, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Ember Sanctum; Rootbound Maze.
+
+<img src="{{ '/assets/recipes/rune_saplingrise.png' | relative_url }}" alt="Crafting Sapling Rise: a Blank Rune and Oak Sapling, Bone Meal and Oak Log, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/tremor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tremor
 {: #tremor}
@@ -245,5 +1142,27 @@ The ground erupts: 8 damage to enemies within 4 blocks, throwing them up.
 
 <img src="{{ '/assets/recipes/rune_tremor.png' | relative_url }}" alt="Crafting Tremor: a Blank Rune and Deepslate Bricks and TNT, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/citadel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Citadel
+{: #citadel}
+
+*Tier IV · Earth · Works on the world · 38 mana · needs an Echo Cord*
+
+An 8-block ward for 60 seconds: explosions break nothing, missiles from outside drop at the edge, and allies inside take 20% less damage.
+
+**How to get it:** Never crafted. Where it comes from: Ravagers (8%); Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/motherlode.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Motherlode
+{: #motherlode}
+
+*Tier IV · Earth · Works on the world · 26 mana · needs an Echo Cord*
+
+Mines up to 16 ores within 3 blocks of the point with Fortune II (III with Amplify).
+
+**How to get it:** Never crafted. Where it comes from: Archive vaults; the Archivist.
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

@@ -6,7 +6,7 @@ import java.util.List;
 public final class EmberWakeRules {
 	private EmberWakeRules() {}
 
-	public static final int TELL = 24, AFTERBURN_TELL = 26, RECOVERY = 56;
+	public static final int TELL = 24, AFTERBURN_TELL = 26, RECOVERY = 46;
 	public static final double COST = 24, CUT_DAMAGE = 26, AFTERBURN_DAMAGE = 26;
 	public static final double START = 1, RANGE = 7, HALF_WIDTH = .7, HEIGHT = 1.4;
 	public static final int WARNING_REFRESH = 4;

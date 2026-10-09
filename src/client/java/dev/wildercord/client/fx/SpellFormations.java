@@ -227,6 +227,20 @@ public final class SpellFormations {
      }
     }
     case LATCH -> { slash(point(-.2,0,0),q*.6,Math.PI*1.4,0); slash(point(.2,0,0),q*.6,Math.PI*1.4,Math.PI); line(point(-.2,0,0),point(.2,0,0),false); }
+    // ---- shapes pack: field shapes draw their block pattern in miniature, kin shapes a gathering of small orbs.
+    case FURROW,STEPSTONES,CAUSEWAY,CORRIDOR -> { line(point(0,-.2,-.4),point(0,-.2,q*1.4),false); for(int i=0;i<3;i++) ring(point(0,-.2,i*q*.45),.08,true); }
+    case SEAM,HEDGEROW,FACADE -> { line(point(-q,0,0),point(q,0,0),false); line(point(-q,q*.5,0),point(q,q*.5,0),false); }
+    case PLOT,SEEDBED,LATTICE,VAULT,PIT,FOOTING,CANOPY -> { polygon(4,q,Math.PI/4); polygon(4,q*.45,Math.PI/4); }
+    case SHAFT,SPIRE,STAIRWELL -> { line(point(0,-q,0),point(0,q,0),false); for(int i=-1;i<=1;i++) ring(point(0,i*q*.6,0),.12,false); }
+    case DOME,SHORELINE,LAMPLIT,BOBBER -> { ring(focus,q,false); orb(focus,.08+.04*t); }
+    case PERIMETER,CROSSWAY,ROSETTE -> { polygon(4,q,0); line(point(-q,0,0),point(q,0,0),false); line(point(0,-q,0),point(0,q,0),false); }
+    case LODESEEK -> { polygon(6,q*.6,0); orb(focus,.06); }
+    case FISSURE,COLLAPSE -> { line(point(-q,-.2,0),point(-q*.3,.1,0),true); line(point(-q*.3,.1,0),point(q,-.2,0),true); }
+    case SPIRAL -> { for(int i=0;i<3;i++) slash(focus,.12+i*.12,Math.PI*1.4,t+i*1.5); }
+    case FAN -> slash(focus,q,Math.PI*.6,0);
+    case HERD,FELLOWSHIP,PACKBOND,NURSERY,SHOAL,FLOCK,SENTINEL,REARGUARD,GRUDGE -> { for(int i=0;i<4;i++){double a=i*Math.PI/2+t*.5; orb(point(Math.cos(a)*q*.7,Math.sin(a)*q*.7,0),.06);} ring(focus,q*.35,false); }
+    case SADDLE,AUREOLE -> { ring(feet.add(0,.4+t*.4,0),.55,true); ring(feet.add(0,1.6,0),.3,true); }
+    case TETHER -> { line(point(0,0,-.5),point(0,0,q*1.2),false); ring(point(0,0,q*1.2),.15,false); }
    }
    for(String id:event.runes())if(NextSignatureForms.supports(id) && !FrostFormations.supports(id) && !VoidForms.supports(id) && !LifeForms.supports(id))
     NextSignatureForms.prepare(id,beat,event.scale(),assembly(),right,up,forward,quality==MagicQuality.Level.MINIMAL,this::emit);

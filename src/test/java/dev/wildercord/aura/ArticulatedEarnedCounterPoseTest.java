@@ -23,7 +23,7 @@ class ArticulatedEarnedCounterPoseTest {
 			assertFalse(supportsMaster(move));
 			assertEquals(move == BACKDRAFT ? "backdraft" : "rooted_parry", MastersStyleRules.animation(move).art());
 		}
-		for (int move : new int[] {-1, 5, 14, MastersStyleRules.STYLES.stream().mapToInt(MastersStyleRules.Style::animation).max().orElseThrow() + 1, Integer.MAX_VALUE}) {
+		for (int move : new int[] {-1, MastersStyleRules.STYLES.stream().mapToInt(MastersStyleRules.Style::animation).max().orElseThrow() + 1, Integer.MAX_VALUE}) {
 			assertFalse(supportsPlayer(move));
 			assertSame(NONE, samplePlayer(move, 5, 8, 18, false));
 		}

@@ -4,7 +4,46 @@
 
 Lightning and shock. Storm strikes hard, chains between foes and runs through water.
 
-7 storm effects you can craft or find in the usual way. Storm also has runes of the world, fused runes and innate runes: see their own pages.
+18 storm effects you can craft or find in the usual way. Storm also has runes of the world, fused runes and innate runes: see their own pages.
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/buttonpush.png) Button Push
+
+
+*Tier I · Storm · Works on the world · 2 mana · needs any Cord*
+
+Presses up to 4 buttons near the point.
+
+**How to get it:** Craft: a Blank Rune, Stone Button. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Button Push: a Blank Rune and Stone Button](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_buttonpush.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dewfall.png) Dewfall
+
+
+*Tier I · Storm · Works on the world · 3 mana · needs any Cord*
+
+A soft dew wets every farmland block in a 5-by-5 patch around the point to full moisture.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket, Dirt and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Dewfall: a Blank Rune and Water Bucket, Dirt and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewfall.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/doorcall.png) Doorcall
+
+
+*Tier I · Storm · Works on the world · 2 mana · needs any Cord*
+
+Opens or shuts up to 4 doors, trapdoors and gates near the point. Iron ones stay put.
+
+**How to get it:** Craft: a Blank Rune, Oak Door and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Doorcall: a Blank Rune and Oak Door and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_doorcall.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/galvanize.png) Galvanize
 
@@ -17,7 +56,20 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 ![Crafting Galvanize: a Blank Rune and Lightning Rod and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_galvanize.png)
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/leverflip.png) Lever Flip
+
+
+*Tier I · Storm · Works on the world · 2 mana · needs any Cord*
+
+Flips up to 4 levers near the point.
+
+**How to get it:** Craft: a Blank Rune, Lever. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Lever Flip: a Blank Rune and Lever](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_leverflip.png)
+
+**Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/shock.png) Shock
 
@@ -30,7 +82,85 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 ![Crafting Shock: a Blank Rune and Lightning Rod](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_shock.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sky_reading.png) Sky Reading
+
+
+*Tier I · Storm · Works on the world · 1 mana · needs any Cord*
+
+Reads the sky: the weather now and about how many minutes until it turns.
+
+**How to get it:** Craft: a Blank Rune, Feather and Glass Bottle. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Sky Reading: a Blank Rune and Feather and Glass Bottle](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sky_reading.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/skyread.png) Skyread
+
+
+*Tier I · Storm · Works on the world · 2 mana · needs any Cord*
+
+Tells you the weather, how long it will hold, the hour and the moon.
+
+**How to get it:** Craft: a Blank Rune, Feather and Clock. The recipe is shapeless: any layout, any crafting grid.
+
+![Crafting Skyread: a Blank Rune and Feather and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_skyread.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/storm_glass.png) Storm Glass
+
+
+*Tier I · Storm · Works on the world · 1 mana · needs any Cord*
+
+Tells how long until the weather turns.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Copper Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
+
+![Crafting Storm Glass: a Blank Rune and Glass Bottle and Copper Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_storm_glass.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dewkeep.png) Dewkeep
+
+
+*Tier II · Storm · Works on the world · 7 mana · needs a Copper Cord or better*
+
+Hangs a mist over a 5-by-5 patch for 60 seconds: its farmland is wetted now and again every 5 seconds, so a field far from water never dries. Lovely from a Totem or a Zone.
+
+**How to get it:** Craft: a Blank Rune, Water Bucket, White Wool and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+
+![Crafting Dewkeep: a Blank Rune and Water Bucket, White Wool and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewkeep.png)
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Linger, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ditchwater.png) Ditchwater
+
+
+*Tier II · Storm · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Fills the hole you strike with one source of water, if it is an open hole with farmland within 4 blocks. Never in the Nether's heat.
+
+**How to get it:** Craft: a Blank Rune, Iron Shovel, Water Bucket and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+
+![Crafting Ditchwater: a Blank Rune and Iron Shovel, Water Bucket and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ditchwater.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/dynamo_stride.png) Dynamo Stride
+
+
+*Tier II · Storm · Helps you and your allies · 6 mana · needs a Copper Cord or better*
+
+For 5 minutes, every 24 blocks you walk gives back 2 mana, up to 12.
+
+**How to get it:** Craft: a Blank Rune, Redstone Dust, Copper Ingot and Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+
+![Crafting Dynamo Stride: a Blank Rune and Redstone Dust, Copper Ingot and Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dynamo_stride.png)
+
+**Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/jolt.png) Jolt
 
@@ -43,7 +173,20 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 ![Crafting Jolt: a Blank Rune and Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_jolt.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/rain_cloud.png) Raincloud
+
+
+*Tier II · Storm · Works on the world · 8 mana · needs a Copper Cord or better*
+
+A small cloud rains on the point: farmland within 4 blocks is soaked, up to 8 crops grow, fires go out and a cauldron gains water.
+
+**How to get it:** Craft: a Blank Rune, White Wool and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+
+![Crafting Raincloud: a Blank Rune and White Wool and Kelp, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rain_cloud.png)
+
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/ripple.png) Ripple
 
@@ -56,7 +199,7 @@ Sunlight through the body: 6 damage, doubled against undead, and you heal a quar
 
 ![Crafting Ripple: a Blank Rune and Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_ripple.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunderclap.png) Thunderclap
 
@@ -69,7 +212,7 @@ A flash, then a crack of thunder: 5 damage within 3 blocks, and everything hit i
 
 ![Crafting Thunderclap: a Blank Rune and Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_thunderclap.png)
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/lightning.png) Lightning
 
@@ -82,7 +225,7 @@ A 12-damage lightning strike on each target that slows and burns. An enemy takes
 
 ![Crafting Lightning: a Blank Rune and Block of Copper and Glowstone, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_lightning.png)
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/thunderbird.png) Thunderbird
 
@@ -95,4 +238,4 @@ A storm bird circles above you for 12 seconds. Every 2 seconds it marks the enem
 
 ![Crafting Thunderbird: a Blank Rune and Feather and Lightning Rod, plus a Mana Crystal and a Diamond](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_thunderbird.png)
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

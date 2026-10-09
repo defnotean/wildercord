@@ -117,7 +117,7 @@ class MasterOrdinaryPlannerRulesTest {
 		for (double height : new double[] {2.501, -2.501, Double.NaN, Double.NEGATIVE_INFINITY})
 			assertTrue(MasterOrdinaryPlanner.spatialCandidates(3, height).isEmpty());
 		var adapter = new MasterOrdinaryPlanner(0, 1);
-		assertNull(adapter.propose(SWEEP, ALL, 15.99).move()); assertNull(adapter.propose(SWEEP, Set.of(), 100).move());
+		assertNull(adapter.propose(SWEEP, ALL, MastersRules.ATTACK_COST - .01).move()); assertNull(adapter.propose(SWEEP, Set.of(), 100).move());
 		for (double aura : new double[] {-1, 100.1, Double.NaN, Double.POSITIVE_INFINITY})
 			assertThrows(IllegalArgumentException.class, () -> adapter.propose(SWEEP, ALL, aura));
 		assertThrows(IllegalArgumentException.class, () -> adapter.propose(CINDER_WAKE, ALL, 100));
@@ -133,7 +133,7 @@ class MasterOrdinaryPlannerRulesTest {
 			for (var edge : graph.edges()) routes.add(school + ":" + edge.from() + ":" + edge.to());
 		}
 		assertEquals(9, profiles); assertEquals(81, edges); assertEquals(27, routes.size());
-		assertEquals(10, MasterMoveCatalog.legacy().authoredAttackCount());
+		assertEquals(21, MasterMoveCatalog.legacy().authoredAttackCount()); // methods-a pack: three appended signatures
 	}
 
 	@Test void seedUsesOnlyFixedEncounterIdentity() {

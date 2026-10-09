@@ -157,7 +157,7 @@ public final class StoneMarchTest implements FabricClientGameTest {
 				Answer.NEW_COVER, Answer.REMOVED_THIN_COVER, Answer.NEW_GAP, Answer.REMOVED_GAP, Answer.BLOCK_EXITS, Answer.BODY_BLOCK, Answer.NEW_HAZARD, Answer.UPPER_FLUID,
 				Answer.INTERRUPT, Answer.NO_AI, Answer.DISPLACE, Answer.SPECTATOR, Answer.LEAVE, Answer.OWNER_DEATH, Answer.SKIPPED).contains(chosen))
 				check(target.getHealth() == 200, "The declared route or cancellation prevents all later harm: " + chosen);
-			check(close(fixture.master.auraRemaining(), fixture.paidAura) && fixture.readyAt() == fixture.began + 220, "Cancellation/miss/defense never refunds payment or rest");
+			check(close(fixture.master.auraRemaining(), fixture.paidAura) && fixture.readyAt() == fixture.began + StoneMarchRules.COOLDOWN, "Cancellation/miss/defense never refunds payment or rest");
 			check(!fixture.accepted.tick(level.getGameTime()), "The whole action cannot restart after its final scheduled pulse");
 		});
 		fixture.at(world, 95, () -> {

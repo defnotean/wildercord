@@ -60,7 +60,7 @@ public final class Unity {
 		return null;
 	}
 	public static boolean begin(ServerPlayer p) {
-        if (dev.wildercord.cast.ExciseCasting.blocking(p)) return false;
+        if ((dev.wildercord.cast.ExciseCasting.blocking(p) || dev.wildercord.cast.LessonPackCasting.blocking(p))) return false;
 		String why=refusal(p);
 		if (why!=null) { p.sendOverlayMessage(Component.translatable("message.wildercord.unity."+why));return false; }
 		// Written after both payments: activation cannot refund itself.

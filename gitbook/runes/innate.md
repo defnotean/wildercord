@@ -13,7 +13,7 @@ Threads everything hit together (4 at most) for 8 seconds: 40% of any damage one
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/borrowed_time.png) Borrowed Time
 
@@ -24,7 +24,7 @@ Heals the damage you took in the last 5 seconds, as much as you're missing. Over
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/fortune.png) Fortune
 
@@ -35,7 +35,7 @@ For 10 seconds, every hit you deal has a 1 in 4 chance to strike for double, and
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/gale_mantle.png) Gale Mantle
 
@@ -46,7 +46,7 @@ For 12 seconds, jump again in midair to dash the way you're steering (up to 3 da
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kindling.png) Kindling
 
@@ -57,7 +57,7 @@ For 12 seconds, jump again in midair to dash the way you're steering (up to 3 da
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/mirrorfrost.png) Mirrorfrost
 
@@ -68,7 +68,7 @@ Casts back the last spell that hit you in the past 30 seconds, as your own at 70
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/phantom.png) Phantom
 
@@ -79,7 +79,7 @@ Leaves an afterimage of you that every monster within 16 blocks turns on for 4 s
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stoneform.png) Stoneform
 
@@ -90,7 +90,7 @@ For 8 seconds: no knockback, 20% less damage, and every blow you take from an at
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/stormheart.png) Stormheart
 
@@ -101,7 +101,7 @@ For 10 seconds, whatever hurts you (a blow of 2 or more) is struck by lightning 
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/twin_star.png) Twin Star
 
@@ -112,4 +112,4 @@ Your next spell within 6 seconds is cast twice.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing

@@ -3,7 +3,7 @@ package dev.wildercord.aura.world;
 /** Three adjoining, fixed ground bands. Inward spent ground is a permanent route back to the exposed swordsman. */
 public final class StoneMarchRules {
 	private StoneMarchRules() {}
-	public static final int TELL = 32, SECOND = 40, THIRD = 48, END = 96, RECOVERY = 48, COOLDOWN = 220;
+	public static final int TELL = 32, SECOND = 40, THIRD = 48, END = 96, RECOVERY = 48, COOLDOWN = 160;
 	public static final int BANDS = 3, WARNING_REFRESH = 4, MAX_COVER_BOXES = 512;
 	public static final double COST = 30, DAMAGE = 24, START = 1.5, LENGTH = 2, HALF_WIDTH = 1.75;
 	public static final double LOW = -.05, HIGH = .65, ESCAPE_MARGIN = .15;

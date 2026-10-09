@@ -24,7 +24,7 @@ public final class Spellbooks {
 		}
 		if (player instanceof net.minecraft.server.level.ServerPlayer p
 			&& (old.selected() != book.selected() || !old.spells().equals(book.spells()))) {
-            dev.wildercord.cast.RelayCircles.cancel(p); dev.wildercord.cast.ExciseCasting.cancel(p);
+            dev.wildercord.cast.RelayCircles.cancel(p); dev.wildercord.cast.ExciseCasting.cancel(p); dev.wildercord.cast.LessonPackCasting.cancelSpark(p);
         }
 		player.setAttached(WildercordAttachments.SPELLBOOK, book);
 		if (!old.learned().equals(book.learned()) && player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
@@ -45,7 +45,7 @@ public final class Spellbooks {
 	}
 
 	public static void setCord(Player player, ItemStack stack) {
-		if (player instanceof net.minecraft.server.level.ServerPlayer p) { dev.wildercord.cast.RelayCircles.cancel(p); dev.wildercord.cast.ExciseCasting.cancel(p); }
+		if (player instanceof net.minecraft.server.level.ServerPlayer p) { dev.wildercord.cast.RelayCircles.cancel(p); dev.wildercord.cast.ExciseCasting.cancel(p); dev.wildercord.cast.LessonPackCasting.cancelSpark(p); }
 		player.setAttached(WildercordAttachments.CORD, stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1));
 		if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
 			dev.wildercord.advancement.Advancements.cord(serverPlayer);
@@ -86,6 +86,11 @@ public final class Spellbooks {
             long clock = player instanceof net.minecraft.server.level.ServerPlayer p ? dev.wildercord.cast.ExciseCasting.now(p) : player.level().getGameTime();
             long left = Math.clamp(player.getAttachedOrElse(dev.wildercord.cast.ExciseState.REST, 0L) - clock, 0, dev.wildercord.spell.ExciseRules.REST_TICKS);
             readyAt = Math.max(readyAt, player.level().getGameTime() + left);
+        }
+        var pack = spell >= 0 && spell < dev.wildercord.gear.SpellSlots.ALL ? dev.wildercord.spell.LessonPackRules.lessonOfIds(get(player).spells().get(spell)) : null;
+        if (pack != null) {
+            long clock = player instanceof net.minecraft.server.level.ServerPlayer p ? dev.wildercord.cast.LessonPackCasting.now(p) : player.level().getGameTime();
+            readyAt = Math.max(readyAt, player.level().getGameTime() + dev.wildercord.spell.LessonPackRules.restLeft(pack, clock, player.getAttachedOrElse(dev.wildercord.cast.LessonPackState.rest(pack), 0L)));
         }
         return readyAt - player.level().getGameTime() > MAX_COOLDOWN ? 0L : readyAt;
 	}

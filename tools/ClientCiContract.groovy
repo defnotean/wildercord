@@ -1,6 +1,6 @@
 /** Resource processing and native preflight use the same authoritative Python plan selector. */
 class ClientCiContract {
-    static final List SELECTORS = ['ciSuite', 'ciShard', 'focusedSuite', 'twoClientSuite', 'encounterSuite',
+    static final List SELECTORS = ['ciSuite', 'ciShard', 'focusedSuite', 'affectedSince', 'twoClientSuite', 'encounterSuite',
         'cinnamonSuite', 'defensiveSuite', 'practiceSuite', 'magicSuite', 'fusionSuite', 'runeSuite',
         'mechanicsSuite', 'tourSuite', 'parrySuite', 'signatureSuite', 'tailSuite']
 

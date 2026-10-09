@@ -153,6 +153,9 @@
     "aura_armour": {
       "part": "aura"
     },
+    "aura_art_anvil_fall": {
+      "part": "aura"
+    },
     "aura_art_avalanche": {
       "part": "aura"
     },
@@ -171,6 +174,12 @@
     "aura_art_bolt_step": {
       "part": "aura"
     },
+    "aura_art_breaker": {
+      "part": "aura"
+    },
+    "aura_art_bulwark": {
+      "part": "aura"
+    },
     "aura_art_collapse": {
       "part": "aura"
     },
@@ -183,6 +192,9 @@
     "aura_art_constellation_guard": {
       "part": "aura"
     },
+    "aura_art_counterpoint": {
+      "part": "aura"
+    },
     "aura_art_crackle": {
       "part": "aura"
     },
@@ -190,6 +202,12 @@
       "part": "aura"
     },
     "aura_art_cutting_breeze": {
+      "part": "aura"
+    },
+    "aura_art_dawnbreak_rush": {
+      "part": "aura"
+    },
+    "aura_art_dune_runner": {
       "part": "aura"
     },
     "aura_art_echo_cut": {
@@ -204,6 +222,15 @@
     "aura_art_eye_of_the_storm": {
       "part": "aura"
     },
+    "aura_art_fang_strike": {
+      "part": "aura"
+    },
+    "aura_art_first_light": {
+      "part": "aura"
+    },
+    "aura_art_forge_charge": {
+      "part": "aura"
+    },
     "aura_art_frenzy": {
       "part": "aura"
     },
@@ -213,10 +240,19 @@
     "aura_art_glacier_mirror": {
       "part": "aura"
     },
+    "aura_art_grand_resonance": {
+      "part": "aura"
+    },
+    "aura_art_grit_flick": {
+      "part": "aura"
+    },
     "aura_art_groves_heart": {
       "part": "aura"
     },
     "aura_art_hailfall": {
+      "part": "aura"
+    },
+    "aura_art_halo_guard": {
       "part": "aura"
     },
     "aura_art_heavens_spear": {
@@ -225,10 +261,16 @@
     "aura_art_hundred_winds": {
       "part": "aura"
     },
+    "aura_art_hydra_coil": {
+      "part": "aura"
+    },
     "aura_art_kindling_draw": {
       "part": "aura"
     },
     "aura_art_landslide": {
+      "part": "aura"
+    },
+    "aura_art_maelstrom": {
       "part": "aura"
     },
     "aura_art_meteor_shower": {
@@ -237,19 +279,37 @@
     "aura_art_mountain_splitter": {
       "part": "aura"
     },
+    "aura_art_noon_zenith": {
+      "part": "aura"
+    },
     "aura_art_nova": {
       "part": "aura"
     },
     "aura_art_null_parry": {
       "part": "aura"
     },
+    "aura_art_quicksand": {
+      "part": "aura"
+    },
     "aura_art_red_rain": {
+      "part": "aura"
+    },
+    "aura_art_resonant_chord": {
+      "part": "aura"
+    },
+    "aura_art_reverb_step": {
       "part": "aura"
     },
     "aura_art_rewind_leap": {
       "part": "aura"
     },
     "aura_art_rift_step": {
+      "part": "aura"
+    },
+    "aura_art_ringing_cut": {
+      "part": "aura"
+    },
+    "aura_art_riptide_cut": {
       "part": "aura"
     },
     "aura_art_rising_cinders": {
@@ -261,13 +321,28 @@
     "aura_art_rooted_parry": {
       "part": "aura"
     },
+    "aura_art_sandveil": {
+      "part": "aura"
+    },
     "aura_art_sanguine_parry": {
+      "part": "aura"
+    },
+    "aura_art_sea_of_sand": {
+      "part": "aura"
+    },
+    "aura_art_serpent_slither": {
+      "part": "aura"
+    },
+    "aura_art_shed_skin": {
       "part": "aura"
     },
     "aura_art_skate": {
       "part": "aura"
     },
     "aura_art_skyfall": {
+      "part": "aura"
+    },
+    "aura_art_spitting_cobra": {
       "part": "aura"
     },
     "aura_art_star_needle": {
@@ -279,10 +354,19 @@
     "aura_art_stopped_moment": {
       "part": "aura"
     },
+    "aura_art_sunder_cut": {
+      "part": "aura"
+    },
     "aura_art_sunfall": {
       "part": "aura"
     },
     "aura_art_sunfall_impact": {
+      "part": "aura"
+    },
+    "aura_art_sunrise_arc": {
+      "part": "aura"
+    },
+    "aura_art_surge": {
       "part": "aura"
     },
     "aura_art_tailwind": {
@@ -306,6 +390,9 @@
     "aura_art_void_cut": {
       "part": "aura"
     },
+    "aura_art_whirlpool": {
+      "part": "aura"
+    },
     "aura_art_wild_growth": {
       "part": "aura"
     },
@@ -318,10 +405,16 @@
     "aura_art_winters_hush_shatter": {
       "part": "aura"
     },
+    "aura_art_worldforge": {
+      "part": "aura"
+    },
     "aura_awaken": {
       "part": "aura"
     },
     "aura_awaken_crimson": {
+      "part": "aura"
+    },
+    "aura_awaken_dune": {
       "part": "aura"
     },
     "aura_awaken_ember": {
@@ -339,6 +432,9 @@
     "aura_awaken_hourglass": {
       "part": "aura"
     },
+    "aura_awaken_iron": {
+      "part": "aura"
+    },
     "aura_awaken_rime": {
       "part": "aura"
     },
@@ -352,6 +448,9 @@
       "part": "aura"
     },
     "aura_awaken_thunder": {
+      "part": "aura"
+    },
+    "aura_awaken_tide": {
       "part": "aura"
     },
     "aura_awaken_verdant": {
@@ -438,10 +537,37 @@
     "aura_crossroads": {
       "part": "aura"
     },
+    "aura_dawn_art": {
+      "part": "aura"
+    },
+    "aura_dawn_impact": {
+      "part": "aura"
+    },
+    "aura_dawn_swing": {
+      "part": "aura"
+    },
     "aura_dominion": {
       "part": "aura"
     },
     "aura_dominion_fade": {
+      "part": "aura"
+    },
+    "aura_dune_art": {
+      "part": "aura"
+    },
+    "aura_dune_impact": {
+      "part": "aura"
+    },
+    "aura_dune_swing": {
+      "part": "aura"
+    },
+    "aura_echo_art": {
+      "part": "aura"
+    },
+    "aura_echo_impact": {
+      "part": "aura"
+    },
+    "aura_echo_swing": {
       "part": "aura"
     },
     "aura_ember_art": {
@@ -459,6 +585,9 @@
     "aura_finisher_crimson": {
       "part": "aura"
     },
+    "aura_finisher_dune": {
+      "part": "aura"
+    },
     "aura_finisher_ember": {
       "part": "aura"
     },
@@ -471,6 +600,9 @@
     "aura_finisher_hourglass": {
       "part": "aura"
     },
+    "aura_finisher_iron": {
+      "part": "aura"
+    },
     "aura_finisher_rime": {
       "part": "aura"
     },
@@ -481,6 +613,9 @@
       "part": "aura"
     },
     "aura_finisher_thunder": {
+      "part": "aura"
+    },
+    "aura_finisher_tide": {
       "part": "aura"
     },
     "aura_finisher_verdant": {
@@ -538,6 +673,15 @@
       "part": "aura"
     },
     "aura_intent": {
+      "part": "aura"
+    },
+    "aura_iron_art": {
+      "part": "aura"
+    },
+    "aura_iron_impact": {
+      "part": "aura"
+    },
+    "aura_iron_swing": {
       "part": "aura"
     },
     "aura_lineage_ask": {
@@ -765,6 +909,15 @@
     "aura_thunder_swing": {
       "part": "aura"
     },
+    "aura_tide_art": {
+      "part": "aura"
+    },
+    "aura_tide_impact": {
+      "part": "aura"
+    },
+    "aura_tide_swing": {
+      "part": "aura"
+    },
     "aura_tomb_awake": {
       "part": "aura"
     },
@@ -814,6 +967,15 @@
       "part": "aura"
     },
     "aura_unity_flow": {
+      "part": "aura"
+    },
+    "aura_venom_art": {
+      "part": "aura"
+    },
+    "aura_venom_impact": {
+      "part": "aura"
+    },
+    "aura_venom_swing": {
       "part": "aura"
     },
     "aura_verdant_art": {
@@ -1371,16 +1533,34 @@
     "life_auth_bramble_outcome": {
       "part": "life"
     },
+    "life_auth_checker_dye_cue": {
+      "part": "life"
+    },
+    "life_auth_checker_dye_outcome": {
+      "part": "life"
+    },
     "life_auth_cleanse_cue": {
       "part": "life"
     },
     "life_auth_cleanse_outcome": {
       "part": "life"
     },
+    "life_auth_dew_drink_cue": {
+      "part": "life"
+    },
+    "life_auth_dew_drink_outcome": {
+      "part": "life"
+    },
     "life_auth_drowse_cue": {
       "part": "life"
     },
     "life_auth_drowse_outcome": {
+      "part": "life"
+    },
+    "life_auth_dye_wash_cue": {
+      "part": "life"
+    },
+    "life_auth_dye_wash_outcome": {
       "part": "life"
     },
     "life_auth_fortune_cue": {
@@ -1425,10 +1605,28 @@
     "life_auth_heal_outcome": {
       "part": "life"
     },
+    "life_auth_hearthbond_cue": {
+      "part": "life"
+    },
+    "life_auth_hearthbond_outcome": {
+      "part": "life"
+    },
     "life_auth_lifebloom_cue": {
       "part": "life"
     },
     "life_auth_lifebloom_outcome": {
+      "part": "life"
+    },
+    "life_auth_luckcharm_cue": {
+      "part": "life"
+    },
+    "life_auth_luckcharm_outcome": {
+      "part": "life"
+    },
+    "life_auth_lullaby_cue": {
+      "part": "life"
+    },
+    "life_auth_lullaby_outcome": {
       "part": "life"
     },
     "life_auth_moonpetal_cue": {
@@ -1441,6 +1639,18 @@
       "part": "life"
     },
     "life_auth_nourish_outcome": {
+      "part": "life"
+    },
+    "life_auth_petward_cue": {
+      "part": "life"
+    },
+    "life_auth_petward_outcome": {
+      "part": "life"
+    },
+    "life_auth_potion_steep_cue": {
+      "part": "life"
+    },
+    "life_auth_potion_steep_outcome": {
       "part": "life"
     },
     "life_auth_regrowth_cue": {
@@ -1485,6 +1695,24 @@
     "life_auth_second_wind_outcome": {
       "part": "life"
     },
+    "life_auth_sign_glow_cue": {
+      "part": "life"
+    },
+    "life_auth_sign_glow_outcome": {
+      "part": "life"
+    },
+    "life_auth_slime_sense_cue": {
+      "part": "life"
+    },
+    "life_auth_slime_sense_outcome": {
+      "part": "life"
+    },
+    "life_auth_slowburn_cue": {
+      "part": "life"
+    },
+    "life_auth_slowburn_outcome": {
+      "part": "life"
+    },
     "life_auth_soulbond_cue": {
       "part": "life"
     },
@@ -1497,10 +1725,22 @@
     "life_auth_sporebloom_outcome": {
       "part": "life"
     },
+    "life_auth_steedmend_cue": {
+      "part": "life"
+    },
+    "life_auth_steedmend_outcome": {
+      "part": "life"
+    },
     "life_auth_stitchtime_cue": {
       "part": "life"
     },
     "life_auth_stitchtime_outcome": {
+      "part": "life"
+    },
+    "life_auth_trailblaze_cue": {
+      "part": "life"
+    },
+    "life_auth_trailblaze_outcome": {
       "part": "life"
     },
     "life_auth_venom_cue": {

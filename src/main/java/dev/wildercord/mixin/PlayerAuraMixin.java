@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PlayerAuraMixin {
 	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraSwing(Entity target, CallbackInfo ci) {
-		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && (dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.aura.MastersArts.committed(player))) { ci.cancel(); return; }
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player)) || dev.wildercord.aura.MastersArts.committed(player))) { ci.cancel(); return; }
 		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.SwordStrings.attackBegins(player);
 		AuraCombat.swing((Player) (Object) this);
 	}
@@ -43,7 +43,7 @@ public abstract class PlayerAuraMixin {
 	@Inject(method = "stabAttack", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraThrustBegins(EquipmentSlot slot, Entity target, float baseDamage, boolean dealsDamage, boolean dealsKnockback,
 			boolean dismounts, CallbackInfoReturnable<Boolean> cir) {
-		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && (dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.aura.MastersArts.committed(player))) { cir.setReturnValue(false); return; }
+		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player && ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player)) || dev.wildercord.aura.MastersArts.committed(player))) { cir.setReturnValue(false); return; }
 		AuraCombat.swing((Player) (Object) this);
 	}
 

@@ -284,6 +284,10 @@
       "dev.wildercord.aura.WallTurnLessonTest",
       "dev.wildercord.aura.WallTurnSafetyTest",
       "dev.wildercord.aura.WallTurnCommitmentTest",
+      "dev.wildercord.aura.FormDashLessonTest",
+      "dev.wildercord.aura.FormDashSafetyTest",
+      "dev.wildercord.aura.FormDashCommitmentTest",
+      "dev.wildercord.aura.StoneHingeLessonTest",
       "dev.wildercord.party.MastersSecondFormTimelineTest",
       "dev.wildercord.aura.HailfallReleasedOwnerTest",
       "dev.wildercord.aura.HailSkyAcceptanceTest",
@@ -317,7 +321,26 @@
       "dev.wildercord.aura.StoneHingeStationaryOwnerNegativeTest",
       "dev.wildercord.aura.StoneHingeVelocityComparisonTest",
       "dev.wildercord.cast.ExcisePlayableTest",
-      "dev.wildercord.aura.world.GaleVaultBallisticTest"
+      "dev.wildercord.cast.LessonPackPlayableTest",
+      "dev.wildercord.aura.world.GaleVaultBallisticTest",
+      "dev.wildercord.gametest.WildercordShapesPackTest",
+      "dev.wildercord.cast.HearthRunesPlayableTest",
+      "dev.wildercord.cast.packs.TidePackClientTest",
+      "dev.wildercord.cast.packs.FarmsteadRunesTest",
+      "dev.wildercord.gametest.WildercordDelveRunesTest",
+      "dev.wildercord.cast.HearthRunesGameTest",
+      "dev.wildercord.lore.LoreJournalGameTest",
+      "dev.wildercord.world.upgrade.UpgradeEncounterTest",
+      "dev.wildercord.aura.world.ElementalMastersNativeTest",
+      "dev.wildercord.aura.ProgressionVowWallTurnNativeTest",
+      "dev.wildercord.cast.WayfarerPackTest",
+      "dev.wildercord.cast.FxSupportPackTest",
+      "dev.wildercord.aura.MovesPackTest",
+      "dev.wildercord.aura.world.MastersPackBTrialTest",
+      "dev.wildercord.aura.world.MethodsAMastersNativeTest",
+      "dev.wildercord.aura.world.MethodsBMastersClientTest",
+      "dev.wildercord.gametest.perf.PerformanceHarnessTest",
+      "dev.wildercord.client.HudHandednessLayoutTest"
     ]
   },
   "mixins": [
@@ -346,7 +369,8 @@
     "stone-march-pulse-gametest.mixins.json",
     "excise-cut-gametest.mixins.json",
     "gale-vault-ballistic-gametest.mixins.json",
-    "counter-hit-capture-gametest.mixins.json"
+    "counter-hit-capture-gametest.mixins.json",
+    "perf-gametest.mixins.json"
   ],
   "depends": {
     "wildercord": "*"

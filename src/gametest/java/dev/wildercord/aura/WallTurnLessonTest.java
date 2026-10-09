@@ -59,7 +59,7 @@ public final class WallTurnLessonTest implements FabricClientGameTest {
 				p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY); p.setShiftKeyDown(true);
 				var teacher = AuraWorld.DUELIST.create(p.level(), EntitySpawnReason.COMMAND);
 				check(teacher != null, "The wandering-teacher fixture exists");
-				teacher.setNoAi(true); teacher.snapTo(2.5, 100, .5, 90, 0); p.level().addFreshEntity(teacher);
+				teacher.setMethod(BreathingMethods.GALE); teacher.setNoAi(true); teacher.snapTo(2.5, 100, .5, 90, 0); p.level().addFreshEntity(teacher);
 				teacher.interact(p, InteractionHand.MAIN_HAND, teacher.position());
 				check(!MasterForms.data(p).learned(), "The offer does not learn or auto-equip the form");
 				// Fill after the empty-hand invitation: acceptance still has no room for its optional physical book.

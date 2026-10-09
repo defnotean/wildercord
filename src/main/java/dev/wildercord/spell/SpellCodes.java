@@ -41,7 +41,7 @@ public final class SpellCodes {
 		for (String part : body.split("\\.")) {
 			if (!part.isEmpty()) ids.add(part.contains("~") ? part.replace('~', ':') : "wildercord:" + part);
 		}
-		return ExciseRules.boundedIds(ids, 12);
+		return LessonPackRules.boundedIds(ids, 12);
 	}
 
 	/** The first code in a piece of text, or null. */

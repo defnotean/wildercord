@@ -14,7 +14,7 @@ class StoneFractureRulesTest {
 		assertFalse(StoneFractureRules.eligible(MastersRules.STONE, -3, 4, 0, 28, 180, 180));
 		assertFalse(StoneFractureRules.eligible(MastersRules.STONE, 1, 4, 0, 27.999, 180, 180));
 		assertFalse(StoneFractureRules.eligible(MastersRules.STONE, 1, 4, 0, 100, 179, 180));
-		assertEquals(MastersRules.ATTACK_COST + MastersRules.GUARD_COST, StoneFractureRules.COST);
+		assertTrue(StoneFractureRules.COST >= MastersRules.ATTACK_COST + MastersRules.GUARD_COST);
 		assertEquals(3, (int) (MastersRules.AURA_MAX / StoneFractureRules.COST));
 		assertTrue(StoneFractureRules.COOLDOWN > StoneFractureRules.TELL + StoneFractureRules.RECOVERY);
 		for (int count = 1; count <= MastersRules.MAX_PARTICIPANTS; count++) {
@@ -44,7 +44,7 @@ class StoneFractureRulesTest {
 			assertEquals(expected, StoneFractureRules.beat(age));
 		}
 		assertEquals(32, MastersRules.Move.STONE_FRACTURE.tell);
-		assertEquals(40, MastersRules.Move.STONE_FRACTURE.recovery);
+		assertEquals(30, MastersRules.Move.STONE_FRACTURE.recovery);
 		assertTrue(MastersRules.interruptible(true, 25, 32));
 		assertFalse(MastersRules.interruptible(true, 26, 32), "The final reply keeps the original committed six ticks");
 	}

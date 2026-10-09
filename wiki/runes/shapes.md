@@ -10,7 +10,9 @@ nav_order: 1
 
 A **shape** decides *where* a spell goes and *who* it touches: yourself, a bolt that flies, a beam, a burst around you, a zone on the ground. Every shape starts a new group in the spell, and the effects after it act on whatever it hits. Its mana is added to the spell's cost, and some shapes make the effects after them cost more (or less).
 
-36 shapes, by tier.
+Some modifiers work on every shape, so they aren't repeated below: Needle Circle, Bloom Circle, Gyre Circle, Anchor Circle, Reservoir Circle, Crucible Circle, Confluence Circle, Pilgrim Circle, Vigil Circle, Mercy Circle, Tempest Circle, Eclipse Circle, Rapid, Vow, Blood Price.
+
+77 shapes, by tier.
 
 ### <img src="{{ '/assets/runes/arc.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Arc
 {: #arc}
@@ -25,6 +27,32 @@ Lobs a bolt that falls and bursts where it lands.
 
 **Modifiers that work on it:** Quicken, Bounce, Split, Volley
 
+### <img src="{{ '/assets/runes/aureole.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Aureole
+{: #aureole}
+
+*Tier I · 3 mana · its effects cost x1.2 · needs any Cord*
+
+Strikes you and everything within 3 blocks of you, friend and foe alike: each effect finds its own.
+
+**How to get it:** Craft: a Blank Rune, Glowstone Dust, Gold Nugget and Feather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_aureole.png' | relative_url }}" alt="Crafting Aureole: a Blank Rune and Glowstone Dust, Gold Nugget and Feather" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/bobber.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bobber
+{: #bobber}
+
+*Tier I · 2 mana · needs any Cord*
+
+Lands on the first water within 24 blocks of your aim and strikes it and everything within 2.5 blocks: the fish, the drowned, the catch.
+
+**How to get it:** Craft: a Blank Rune, Fishing Rod and Raw Cod. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_bobber.png' | relative_url }}" alt="Crafting Bobber: a Blank Rune and Fishing Rod and Raw Cod" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/bolt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bolt
 {: #bolt}
 
@@ -37,6 +65,71 @@ Fires a flying bolt, up to 48 blocks.
 <img src="{{ '/assets/recipes/rune_bolt.png' | relative_url }}" alt="Crafting Bolt: a Blank Rune and Arrow" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken, Pierce, Bounce, Split, Homing, Chain, Volley
+
+### <img src="{{ '/assets/runes/fan.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fan
+{: #fan}
+
+*Tier I · 3 mana · its effects cost x1.2 · needs any Cord*
+
+Strikes five spokes of ground 3 to 6 blocks ahead of you in a 90-degree fan, and whatever stands on them.
+
+**How to get it:** Craft: a Blank Rune, Feather and 2x Arrow. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fan.png' | relative_url }}" alt="Crafting Fan: a Blank Rune and Feather and 2x Arrow" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/footing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Footing
+{: #footing}
+
+*Tier I · 2 mana · needs any Cord*
+
+Strikes the 3x3 ground under your feet, and you and whatever stands on it, at 90% power.
+
+**How to get it:** Craft: a Blank Rune, Cobblestone and Leather Boots. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_footing.png' | relative_url }}" alt="Crafting Footing: a Blank Rune and Cobblestone and Leather Boots" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/furrow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Furrow
+{: #furrow}
+
+*Tier I · 2 mana · needs any Cord*
+
+Strikes a row of 9 ground blocks running ahead of you, and whatever stands on them, at 70% power: a crop row to sow, grow or harvest.
+
+**How to get it:** Craft: a Blank Rune, Wooden Hoe and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_furrow.png' | relative_url }}" alt="Crafting Furrow: a Blank Rune and Wooden Hoe and Wheat Seeds" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/hedgerow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hedgerow
+{: #hedgerow}
+
+*Tier I · 3 mana · its effects cost x1.1 · needs any Cord*
+
+Strikes a 9-block line of ground across where you look, side to side, and whatever stands on it, at 90% power.
+
+**How to get it:** Craft: a Blank Rune, Oak Sapling, Sweet Berries and Oak Leaves. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_hedgerow.png' | relative_url }}" alt="Crafting Hedgerow: a Blank Rune and Oak Sapling, Sweet Berries and Oak Leaves" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/herd.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Herd
+{: #herd}
+
+*Tier I · 3 mana · its effects cost x1.1 · needs any Cord*
+
+Strikes every animal within 8 blocks of you, at 90% power: feed, heal or move the herd.
+
+**How to get it:** Craft: a Blank Rune, Wheat Crops, Lead and Hay Bale. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_herd.png' | relative_url }}" alt="Crafting Herd: a Blank Rune and Wheat Crops, Lead and Hay Bale" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/imprint.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Imprint
 {: #imprint}
@@ -51,6 +144,19 @@ Leaves an imprint of the spell where you stand. 2 seconds later it erupts, strik
 
 **Modifiers that work on it:** Widen, Quicken, Split, Focus
 
+### <img src="{{ '/assets/runes/lamplit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lamplit
+{: #lamplit}
+
+*Tier I · 2 mana · needs any Cord*
+
+Strikes the four corners and the middle of a 9x9 square where you look, at 80% power: lamps for a yard.
+
+**How to get it:** Craft: a Blank Rune, Lantern and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_lamplit.png' | relative_url }}" alt="Crafting Lamplit: a Blank Rune and Lantern and Glowstone Dust" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/nova.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nova
 {: #nova}
 
@@ -61,6 +167,58 @@ A small nova bursts from you, hitting everything within 2.5 blocks.
 **How to get it:** Craft: a Blank Rune, Gunpowder and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_nova.png' | relative_url }}" alt="Crafting Nova: a Blank Rune and Gunpowder and Glowstone Dust" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/nursery.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nursery
+{: #nursery}
+
+*Tier I · 2 mana · needs any Cord*
+
+Strikes every young animal within 8 blocks of you: grow them up, feed them.
+
+**How to get it:** Craft: a Blank Rune, Egg and Milk Bucket. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_nursery.png' | relative_url }}" alt="Crafting Nursery: a Blank Rune and Egg and Milk Bucket" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/packbond.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Packbond
+{: #packbond}
+
+*Tier I · 3 mana · its effects cost x1.1 · needs any Cord*
+
+Strikes every pet of yours within 24 blocks, and nothing else.
+
+**How to get it:** Craft: a Blank Rune, Bone, Lead and Name Tag. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_packbond.png' | relative_url }}" alt="Crafting Packbond: a Blank Rune and Bone, Lead and Name Tag" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/pit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pit
+{: #pit}
+
+*Tier I · 3 mana · its effects cost x1.2 · needs any Cord*
+
+Strikes a 3x3 pit 2 deep where you look, and whatever stands over it, at 90% power.
+
+**How to get it:** Craft: a Blank Rune, Iron Shovel and Gravel. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_pit.png' | relative_url }}" alt="Crafting Pit: a Blank Rune and Iron Shovel and Gravel" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/plot.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Plot
+{: #plot}
+
+*Tier I · 2 mana · its effects cost x1.1 · needs any Cord*
+
+Strikes a 3x3 patch of ground where you look, and whatever stands on it, at 80% power.
+
+**How to get it:** Craft: a Blank Rune, Dirt, Wheat Seeds and Stick. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_plot.png' | relative_url }}" alt="Crafting Plot: a Blank Rune and Dirt, Wheat Seeds and Stick" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -76,6 +234,30 @@ An instant, short ray that hits the first thing within 10 blocks.
 <img src="{{ '/assets/recipes/rune_ray.png' | relative_url }}" alt="Crafting Ray: a Blank Rune and Glass Pane and Glowstone Dust" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Pierce, Chain
+
+### <img src="{{ '/assets/runes/saddle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Saddle
+{: #saddle}
+
+*Tier I · 2 mana · needs any Cord*
+
+Strikes you, what you ride and whoever rides with you: speed a horse, shield a boat.
+
+**How to get it:** Craft: a Blank Rune, Saddle. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_saddle.png' | relative_url }}" alt="Crafting Saddle: a Blank Rune and Saddle" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/seam.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Seam
+{: #seam}
+
+*Tier I · 2 mana · its effects cost x1.1 · needs any Cord*
+
+Strikes a 7-block line across the block you look at, side to side, and what stands by it, at 90% power.
+
+**How to get it:** Craft: a Blank Rune, Stone Pickaxe and Coal. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_seam.png' | relative_url }}" alt="Crafting Seam: a Blank Rune and Stone Pickaxe and Coal" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/self.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Self
 {: #self}
@@ -100,6 +282,19 @@ A quick spark darts up to 16 blocks and hits the first thing in its path, at 75%
 <img src="{{ '/assets/recipes/rune_spark.png' | relative_url }}" alt="Crafting Spark: a Blank Rune and Flint and Glowstone Dust" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken, Split, Volley
+
+### <img src="{{ '/assets/runes/stepstones.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stepstones
+{: #stepstones}
+
+*Tier I · 2 mana · needs any Cord*
+
+Strikes 5 stepping stones of ground, every second block ahead of you, at 80% power: a path across water or dark.
+
+**How to get it:** Craft: a Blank Rune, Cobblestone and Lily Pad. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_stepstones.png' | relative_url }}" alt="Crafting Stepstones: a Blank Rune and Cobblestone and Lily Pad" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/touch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Touch
 {: #touch}
@@ -166,6 +361,32 @@ Hits everything within 4 blocks.
 
 **Modifiers that work on it:** Widen, Split, Focus
 
+### <img src="{{ '/assets/runes/canopy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Canopy
+{: #canopy}
+
+*Tier II · 3 mana · its effects cost x1.2 · needs a Copper Cord or better*
+
+Strikes a 3x3 layer of blocks 3 above where you look (leaves, a roof), and whatever is beneath, at 90% power.
+
+**How to get it:** Craft: a Blank Rune, Oak Slab, Oak Leaves and Oak Fence, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_canopy.png' | relative_url }}" alt="Crafting Canopy: a Blank Rune and Oak Slab, Oak Leaves and Oak Fence, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/causeway.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Causeway
+{: #causeway}
+
+*Tier II · 4 mana · its effects cost x1.4 · needs a Copper Cord or better*
+
+Strikes a road of ground 3 wide and 8 long ahead of you, and whatever stands on it, at 70% power.
+
+**How to get it:** Craft: a Blank Rune, Cobblestone Slab, Iron Shovel and Rail, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_causeway.png' | relative_url }}" alt="Crafting Causeway: a Blank Rune and Cobblestone Slab, Iron Shovel and Rail, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/cluster.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cluster
 {: #cluster}
 
@@ -205,6 +426,19 @@ Sweeps everything in a 60-degree cone up to 6 blocks in front of you.
 
 **Modifiers that work on it:** Widen, Focus
 
+### <img src="{{ '/assets/runes/corridor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Corridor
+{: #corridor}
+
+*Tier II · 4 mana · its effects cost x1.4 · needs a Copper Cord or better*
+
+Strikes a corridor 2 high and 8 deep into the block you look at, along your facing, at 80% power.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, Rail and Torch, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_corridor.png' | relative_url }}" alt="Crafting Corridor: a Blank Rune and Iron Pickaxe, Rail and Torch, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/crescent.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Crescent
 {: #crescent}
 
@@ -218,6 +452,71 @@ A crescent slash flies 16 blocks forward, cutting everything in its 5-wide path.
 
 **Modifiers that work on it:** Widen, Quicken, Split, Volley, Focus
 
+### <img src="{{ '/assets/runes/crossway.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Crossway
+{: #crossway}
+
+*Tier II · 4 mana · its effects cost x1.3 · needs a Copper Cord or better*
+
+Strikes a cross of ground with arms of 4 where you look, and whatever stands on it, at 80% power: two paths at once.
+
+**How to get it:** Craft: a Blank Rune, Compass, Gravel and Stick, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_crossway.png' | relative_url }}" alt="Crafting Crossway: a Blank Rune and Compass, Gravel and Stick, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/facade.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Facade
+{: #facade}
+
+*Tier II · 4 mana · its effects cost x1.3 · needs a Copper Cord or better*
+
+Strikes a 5-wide, 3-high face of blocks where you look, and whatever stands at it, at 80% power.
+
+**How to get it:** Craft: a Blank Rune, Bricks, Glass Pane and Stone Bricks, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_facade.png' | relative_url }}" alt="Crafting Facade: a Blank Rune and Bricks, Glass Pane and Stone Bricks, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/fellowship.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fellowship
+{: #fellowship}
+
+*Tier II · 5 mana · its effects cost x1.6 · needs a Copper Cord or better*
+
+Strikes you and every ally within 12 blocks (party, pets and team), at 80% power. Only allies: it never touches a foe.
+
+**How to get it:** Craft: a Blank Rune, Cake, Golden Apple and Emerald, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fellowship.png' | relative_url }}" alt="Crafting Fellowship: a Blank Rune and Cake, Golden Apple and Emerald, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/fissure.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fissure
+{: #fissure}
+
+*Tier II · 5 mana · its effects cost x1.6 · needs a Copper Cord or better*
+
+Cracks a jagged line of 10 blocks of ground ahead of you and strikes whatever stands along it, at 110% power.
+
+**How to get it:** Craft: a Blank Rune, Flint, Iron Pickaxe and TNT, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_fissure.png' | relative_url }}" alt="Crafting Fissure: a Blank Rune and Flint, Iron Pickaxe and TNT, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/flock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Flock
+{: #flock}
+
+*Tier II · 4 mana · its effects cost x1.3 · needs a Copper Cord or better*
+
+Strikes every flying creature within 16 blocks: bats, bees, parrots, phantoms, vexes and ghasts.
+
+**How to get it:** Craft: a Blank Rune, Feather, Phantom Membrane and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_flock.png' | relative_url }}" alt="Crafting Flock: a Blank Rune and Feather, Phantom Membrane and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/glaive.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glaive
 {: #glaive}
 
@@ -230,6 +529,19 @@ A spinning glaive flies out up to 12 blocks and curves back to you, striking eve
 <img src="{{ '/assets/recipes/rune_glaive.png' | relative_url }}" alt="Crafting Glaive: a Blank Rune and Iron Axe and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Quicken, Split, Focus
+
+### <img src="{{ '/assets/runes/grudge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Grudge
+{: #grudge}
+
+*Tier II · 5 mana · its effects cost x1.5 · needs a Copper Cord or better*
+
+Strikes up to 6 creatures within 24 blocks that hurt you last or are hunting you, at 120% power.
+
+**How to get it:** Craft: a Blank Rune, Rotten Flesh, Iron Sword and Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_grudge.png' | relative_url }}" alt="Crafting Grudge: a Blank Rune and Rotten Flesh, Iron Sword and Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/lance.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lance
 {: #lance}
@@ -257,6 +569,32 @@ A thread of light latches onto the first creature within 16 blocks of your aim a
 
 **Modifiers that work on it:** Extend, Quicken
 
+### <img src="{{ '/assets/runes/lattice.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lattice
+{: #lattice}
+
+*Tier II · 3 mana · its effects cost x1.2 · needs a Copper Cord or better*
+
+Strikes every other block of a 5x5 square where you look (13 in a checkerboard), at 80% power: spacing for crops or lights.
+
+**How to get it:** Craft: a Blank Rune, Iron Bars, White Carpet and Black Carpet, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_lattice.png' | relative_url }}" alt="Crafting Lattice: a Blank Rune and Iron Bars, White Carpet and Black Carpet, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/lodeseek.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lodeseek
+{: #lodeseek}
+
+*Tier II · 6 mana · its effects cost x1.5 · needs a Copper Cord or better*
+
+Seeks up to 8 ores within 3 blocks of the block you look at and strikes each, at 60% power. No ore, no strike.
+
+**How to get it:** Craft: a Blank Rune, Compass, Raw Iron, Raw Copper and Raw Gold, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_lodeseek.png' | relative_url }}" alt="Crafting Lodeseek: a Blank Rune and Compass, Raw Iron, Raw Copper and Raw Gold, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/mine.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mine
 {: #mine}
 
@@ -269,6 +607,19 @@ Hides a rune where you look. It fires when an enemy steps near (lasts 30 seconds
 <img src="{{ '/assets/recipes/rune_mine.png' | relative_url }}" alt="Crafting Mine: a Blank Rune and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Split, Focus
+
+### <img src="{{ '/assets/runes/perimeter.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Perimeter
+{: #perimeter}
+
+*Tier II · 4 mana · its effects cost x1.4 · needs a Copper Cord or better*
+
+Strikes the 24-block edge of a 7x7 square where you look, and whatever stands on it, at 80% power: a fence line of light or thorns.
+
+**How to get it:** Craft: a Blank Rune, Oak Fence, Oak Fence Gate and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_perimeter.png' | relative_url }}" alt="Crafting Perimeter: a Blank Rune and Oak Fence, Oak Fence Gate and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/pillar.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pillar
 {: #pillar}
@@ -296,6 +647,19 @@ A beam that splits into three at the first thing it hits, each ray striking the 
 
 **Modifiers that work on it:** Split
 
+### <img src="{{ '/assets/runes/rearguard.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rearguard
+{: #rearguard}
+
+*Tier II · 4 mana · its effects cost x1.4 · needs a Copper Cord or better*
+
+Strikes everything behind you within 8 blocks, at 110% power.
+
+**How to get it:** Craft: a Blank Rune, Shield, Arrow and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_rearguard.png' | relative_url }}" alt="Crafting Rearguard: a Blank Rune and Shield, Arrow and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/ricochet.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ricochet
 {: #ricochet}
 
@@ -319,6 +683,97 @@ A hollow ring expands from you out to 7 blocks, hitting everything it passes but
 **How to get it:** Craft: a Blank Rune, Bell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_ring.png' | relative_url }}" alt="Crafting Ring: a Blank Rune and Bell, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/rosette.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rosette
+{: #rosette}
+
+*Tier II · 5 mana · its effects cost x1.6 · needs a Copper Cord or better*
+
+Strikes a rosette of 13 ground blocks across 9 blocks where you look, and whatever stands on them.
+
+**How to get it:** Craft: a Blank Rune, Pink Petals, Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_rosette.png' | relative_url }}" alt="Crafting Rosette: a Blank Rune and Pink Petals, Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/seedbed.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Seedbed
+{: #seedbed}
+
+*Tier II · 4 mana · its effects cost x1.4 · needs a Copper Cord or better*
+
+Strikes a 5x5 bed of ground where you look, and whatever stands on it, at 60% power: a whole field at once.
+
+**How to get it:** Craft: a Blank Rune, Iron Hoe, Wheat Seeds, Beetroot Seeds and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_seedbed.png' | relative_url }}" alt="Crafting Seedbed: a Blank Rune and Iron Hoe, Wheat Seeds, Beetroot Seeds and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/shaft.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shaft
+{: #shaft}
+
+*Tier II · 4 mana · its effects cost x1.3 · needs a Copper Cord or better*
+
+Strikes a column of 8 blocks straight down from the block you look at, at 80% power: a mine shaft or a well.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe and Ladder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_shaft.png' | relative_url }}" alt="Crafting Shaft: a Blank Rune and Iron Pickaxe and Ladder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/shoal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shoal
+{: #shoal}
+
+*Tier II · 4 mana · its effects cost x1.3 · needs a Copper Cord or better*
+
+Strikes every creature in water within 10 blocks of you, at 90% power: fish, squid, drowned and swimmers.
+
+**How to get it:** Craft: a Blank Rune, Tropical Fish, Raw Salmon and Prismarine Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_shoal.png' | relative_url }}" alt="Crafting Shoal: a Blank Rune and Tropical Fish, Raw Salmon and Prismarine Shard, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/shoreline.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shoreline
+{: #shoreline}
+
+*Tier II · 4 mana · its effects cost x1.3 · needs a Copper Cord or better*
+
+Strikes the water and the banks beside it within 4 blocks of where you look, and what wades there, at 70% power.
+
+**How to get it:** Craft: a Blank Rune, Sand, Water Bucket and Sugar Cane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_shoreline.png' | relative_url }}" alt="Crafting Shoreline: a Blank Rune and Sand, Water Bucket and Sugar Cane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/spire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spire
+{: #spire}
+
+*Tier II · 3 mana · its effects cost x1.2 · needs a Copper Cord or better*
+
+Strikes a column 6 high rising from the block you look at, and whatever stands in it: a trunk, a pillar, a stack of cactus.
+
+**How to get it:** Craft: a Blank Rune, Cobblestone Wall and End Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_spire.png' | relative_url }}" alt="Crafting Spire: a Blank Rune and Cobblestone Wall and End Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/stairwell.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stairwell
+{: #stairwell}
+
+*Tier II · 5 mana · its effects cost x1.5 · needs a Copper Cord or better*
+
+Strikes a stair of 8 steps going down ahead of you, three blocks high at each step, at 70% power: dig your way down and walk it.
+
+**How to get it:** Craft: a Blank Rune, Stone Stairs, Iron Pickaxe and Torch, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_stairwell.png' | relative_url }}" alt="Crafting Stairwell: a Blank Rune and Stone Stairs, Iron Pickaxe and Torch, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -347,6 +802,19 @@ A 10-block beam sweeps across in front of you in half a second, hitting everythi
 <img src="{{ '/assets/recipes/rune_sweep.png' | relative_url }}" alt="Crafting Sweep: a Blank Rune and Spyglass and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Quicken, Focus
+
+### <img src="{{ '/assets/runes/tether.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tether
+{: #tether}
+
+*Tier II · 4 mana · its effects cost x1.4 · needs a Copper Cord or better*
+
+Strikes the creature you look at (within 24 blocks) and everything within 3 blocks of it, at 110% power.
+
+**How to get it:** Craft: a Blank Rune, Lead, Ender Pearl and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_tether.png' | relative_url }}" alt="Crafting Tether: a Blank Rune and Lead, Ender Pearl and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/trail.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Trail
 {: #trail}
@@ -387,6 +855,32 @@ A wisp drifts out and chases the nearest enemy within 16 blocks for up to 4 seco
 
 **Modifiers that work on it:** Quicken, Split
 
+### <img src="{{ '/assets/runes/collapse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Collapse
+{: #collapse}
+
+*Tier III · 8 mana · its effects cost x2.2 · needs an Amethyst Cord or better*
+
+Strikes a 3x3 slab two blocks thick at the block you look at, and everything up to 6 blocks beneath it, at 120% power: bring the ceiling down.
+
+**How to get it:** Craft: a Blank Rune, Anvil, TNT and Gravel, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_collapse.png' | relative_url }}" alt="Crafting Collapse: a Blank Rune and Anvil, TNT and Gravel, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/dome.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dome
+{: #dome}
+
+*Tier III · 7 mana · its effects cost x2 · needs an Amethyst Cord or better*
+
+Strikes the shell of a dome of radius 2 over where you look, and everything under it, at 90% power: carve a room or light a shelter.
+
+**How to get it:** Craft: a Blank Rune, 2x Glass, Smooth Stone and Amethyst Shard, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_dome.png' | relative_url }}" alt="Crafting Dome: a Blank Rune and 2x Glass, Smooth Stone and Amethyst Shard, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/orb.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Orb
 {: #orb}
 
@@ -426,6 +920,32 @@ Three orbs circle you for 8 seconds and hit whatever they touch.
 
 **Modifiers that work on it:** Widen, Split, Focus
 
+### <img src="{{ '/assets/runes/sentinel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sentinel
+{: #sentinel}
+
+*Tier III · 8 mana · its effects cost x2.1 · needs an Amethyst Cord or better*
+
+Strikes up to 8 enemies within 16 blocks that are hunting you or an ally, at 110% power.
+
+**How to get it:** Craft: a Blank Rune, Shield, Iron Sword, Bell and Carved Pumpkin, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_sentinel.png' | relative_url }}" alt="Crafting Sentinel: a Blank Rune and Shield, Iron Sword, Bell and Carved Pumpkin, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
+### <img src="{{ '/assets/runes/spiral.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spiral
+{: #spiral}
+
+*Tier III · 7 mana · its effects cost x2.1 · needs an Amethyst Cord or better*
+
+Strikes a spiral of ground winding out 4 blocks from where you look, and whatever stands on it.
+
+**How to get it:** Craft: a Blank Rune, Nautilus Shell, Amethyst Shard and Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_spiral.png' | relative_url }}" alt="Crafting Spiral: a Blank Rune and Nautilus Shell, Amethyst Shard and Redstone Dust, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
+
 ### <img src="{{ '/assets/runes/totem.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Totem
 {: #totem}
 
@@ -438,6 +958,19 @@ A floating totem where you look pulses every 2 seconds for 10 seconds.
 <img src="{{ '/assets/recipes/rune_totem.png' | relative_url }}" alt="Crafting Totem: a Blank Rune and Block of Emerald, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Quicken, Focus
+
+### <img src="{{ '/assets/runes/vault.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vault
+{: #vault}
+
+*Tier III · 7 mana · its effects cost x2 · needs an Amethyst Cord or better*
+
+Strikes the 3x3x3 cube of blocks around the block you look at, and whatever is inside, at 90% power.
+
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, Chest and Block of Iron, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_vault.png' | relative_url }}" alt="Crafting Vault: a Blank Rune and Iron Pickaxe, Chest and Block of Iron, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/wall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wall
 {: #wall}
@@ -472,7 +1005,7 @@ A 3-block field where you look. Re-applies every second for 6 seconds.
 
 Expands a 9-block domain around you for 6 seconds. Every second everything inside is struck, and enemies inside are slowed.
 
-**How to get it:** Found only, never crafted: Ancient cities; the Warden (35%); Archive vaults; the Archivist.
+**How to get it:** Never crafted. Where it comes from: Ancient cities; the Warden (35%); Archive vaults; the Archivist.
 
 **Modifiers that work on it:** Extend, Widen, Quicken, Focus
 

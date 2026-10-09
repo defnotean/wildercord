@@ -14,6 +14,6 @@ public abstract class ReweavePlayerModeMixin {
     @Inject(method = "setGameMode", at = @At("RETURN"))
     private void wildercord$reweaveSpectator(GameType mode, CallbackInfoReturnable<Boolean> result) {
         if (Boolean.TRUE.equals(result.getReturnValue()) && ((ServerPlayer)(Object)this).isSpectator())
-            { ReweaveFields.spectatorEntered((ServerPlayer)(Object)this); dev.wildercord.cast.ExciseCasting.retire((ServerPlayer)(Object)this); }
+            { ReweaveFields.spectatorEntered((ServerPlayer)(Object)this); dev.wildercord.cast.ExciseCasting.retire((ServerPlayer)(Object)this); dev.wildercord.cast.LessonPackCasting.retire((ServerPlayer)(Object)this); }
     }
 }

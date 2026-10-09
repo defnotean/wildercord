@@ -27,20 +27,24 @@ class ExplicitPlanTests(unittest.TestCase):
             plan.validate_plan(self.entries, changed)
 
     def test_exact_reviewed_groups_and_independently_pinned_identity(self):
-        self.assertEqual(plan.digest(self.plan), "daa7d1a6d8537791d47e84d1aa33ad896310cc4aac6de6c37ac0d91991158943")
-        self.assertEqual(plan.digest(self.entries), "7b390799007708004706af9340e92b6c1ec35fa6031b388820b4341ed6dc7543")
+        self.assertEqual(plan.digest(self.plan), "80a4046a84b8fccf4f753fa39f0646158bcc0c624b9689655367df7196c0942b")
+        self.assertEqual(plan.digest(self.entries), "aa1f0b5f2b02f9f2bf8aad64d00814034bc2d5f2d110f8c8b1d016a5b22d41be")
         self.assertEqual([plan.digest(group["entries"]) for group in self.plan["groups"]], [
-            "7d5a1f92c8745370cc3d28307a8541b8a66672a144539d38f9df8c4d44813213",
+            "c1a1ea79bd873793ee6dfc5bbbe0163182be71b9dad4b86c0c37be36a08759dc",
             "8bed70fdd7eaaa64180535d1b4c8b0b722f291eec033fcb14d870c295d1c836c",
-            "a17928fbc632f173ceb52f75c64b6a7e91e2212c333b590a614550e23d5cc2ed",
-            "1bf0546e9a44b968cd34c5b705d38896d6ebb61265dd1fb3e6741b090379d698"])
+            "2e9e6d0a3677586ac249114e5205276351b41d30e2214a3ab63003ace6abbba4",
+            "3355fa07ddea362ff4b93300dc4a46ddee55d8ec4762147b3312a751a760553d"])
         full = suites.select_entries()
         for shard, group in zip(gate.SHARDS, self.plan["groups"]):
             selected = suites.select_entries(shard=shard)
             self.assertEqual(selected["entries"], group["entries"])
             self.assertEqual(selected["plan"], full["plan"])
-        # Historical 309-roster group 3 is unchanged; its old proof still lacks current identity.
-        self.assertEqual(self.plan["groups"][2]["entries"], self.entries[154:231])
+        # The reviewed 317-roster groups are kept whole; later classes were only added to them.
+        reviewed = plan.read_json(suites.ROOT / "tools/tests/full-client-plan-v2-317.json")
+        self.assertEqual(plan.digest(reviewed), "cc43cf2f6b4b0a5f7fb99e15ae44b2f39502022e6cdc448d16ba17c45340171c")
+        for current, previous in zip(self.plan["groups"], reviewed["groups"]):
+            kept = set(previous["entries"])
+            self.assertEqual([entry for entry in current["entries"] if entry in kept], previous["entries"])
 
     def test_counter_extension_preserves_every_reviewed_group_and_rejects_v1(self):
         legacy_path = suites.ROOT / "tools/tests/full-client-plan-v1-310.json"
@@ -48,14 +52,18 @@ class ExplicitPlanTests(unittest.TestCase):
         self.assertEqual(plan.digest(legacy), "483153f41a4082651ee9e2210a742d73e201cd228ce836f45baf5184ccaa2082")
         additions = ("dev.wildercord.aura.UnmovedNullAcceptanceTest",
                      "dev.wildercord.aura.arts.ArtWardsHardeningTest")
-        previous_entries = [entry for entry in self.entries if entry not in additions]
+        reviewed = plan.read_json(suites.ROOT / "tools/tests/full-client-plan-v2-317.json")
+        later = set(self.entries) - set(additions) - {entry for group in legacy["groups"] for entry in group["entries"]}
+        previous_entries = [entry for entry in self.entries if entry not in additions and entry not in later]
         self.assertEqual(len(previous_entries), 310)
         self.assertEqual(plan.digest(previous_entries), "4cbbad85c756e671b0ef2907034ac81288fffa94ceb7990b91eba1f208a26941")
         self.assertEqual(self.plan["requiredBlocks"][:-1], legacy["requiredBlocks"])
         for index, (current, previous) in enumerate(zip(self.plan["groups"], legacy["groups"])):
             self.assertEqual(current["id"], previous["id"])
-            self.assertEqual([entry for entry in current["entries"] if entry not in additions], previous["entries"])
-            self.assertEqual(current["expectedCount"], previous["expectedCount"] + (2 if index == 3 else 0))
+            self.assertEqual([entry for entry in current["entries"] if entry not in additions and entry not in later],
+                             previous["entries"])
+            added_later = sum(entry in later for entry in current["entries"])
+            self.assertEqual(current["expectedCount"], previous["expectedCount"] + (2 if index == 3 else 0) + added_later)
         for entry in additions:
             self.assertEqual(self.plan["groups"][3]["entries"].count(entry), 1)
             self.assertFalse(any(entry in group["entries"] for group in self.plan["groups"][:3]))
@@ -67,6 +75,8 @@ class ExplicitPlanTests(unittest.TestCase):
         # Even a structurally complete old plan cannot borrow the new descriptor's identity.
         with self.assertRaises(ValueError):
             plan.validate_plan(previous_entries, self.plan)
+        with self.assertRaises(ValueError):
+            plan.validate_plan(self.entries, reviewed)
 
     def test_stale_roster_add_remove_duplicate_foreign_and_reorder_fail(self):
         variants = [self.entries + ["dev.wildercord.NewTest"], self.entries[:-1],

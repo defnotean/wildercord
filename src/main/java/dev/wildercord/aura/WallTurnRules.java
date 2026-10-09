@@ -17,16 +17,22 @@ public final class WallTurnRules {
 		return RISE * Math.sin(Math.PI * Math.clamp(step, 0, KICK_TICKS) / KICK_TICKS);
 	}
 	public static double distance(int step) { return DISTANCE * Math.clamp(step, 0, KICK_TICKS) / KICK_TICKS; }
-	public static boolean phase(int phase) { return phase >= IDLE && phase <= ABORT; }
-	public static boolean action(int action) { return action >= PRESS && action <= UNEQUIP; }
+	/** The shared event channel also carries Stone Hinge's brace, catch, turn and spent phases. */
+	public static boolean phase(int phase) { return phase >= IDLE && phase <= StoneHingeRules.SPENT; }
+	public static boolean action(int action) { return action >= PRESS && action <= StoneHingeRules.EQUIP; }
 
 	/** Packets are edges from one body session, not a client assertion that a move was accepted. */
 	public static final class Input {
+		private final int last;
 		private long sequence;
+		/** Wall Turn's own channel, which also carries Stone Hinge's equip. */
+		public Input() { this(StoneHingeRules.EQUIP); }
+		/** A channel that admits only actions up to {@code last}; anything else is refused before it can count as a press. */
+		public Input(int last) { this.last = last; }
 		private long releasedAt = Long.MIN_VALUE;
 		private boolean held;
 		public boolean admit(long incoming, int action, long now) {
-			if (!action(action) || incoming <= sequence || incoming - sequence > 1024) return false;
+			if (!action(action) || action > last || incoming <= sequence || incoming - sequence > 1024) return false;
 			sequence = incoming;
 			if (action == CANCEL) { held = true; releasedAt = Long.MIN_VALUE; return true; }
 			if (action == RELEASE) { held = false; releasedAt = now; return true; }

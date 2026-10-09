@@ -89,6 +89,7 @@ public final class CastLock {
 		if (who instanceof ServerPlayer player) {
 			Charging.interrupt(player);
             ExciseCasting.cancel(player);
+            LessonPackCasting.cancelSpark(player);
 			RelayCircles.cancel(player);
 		} else if (who instanceof dev.wildercord.aura.world.SwordMaster) {
 			Statuses.interrupt(who);

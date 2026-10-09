@@ -7,34 +7,37 @@ permalink: /companions/
 
 # Companions and Style
 
-Two things that make your magic yours: a **familiar** that floats at your shoulder, and the look of your **Cord**.
+Creatures that travel with you, and the look of your **Cord**.
 
 <img src="{{ '/assets/images/d-familiar-shoulder.jpg' | relative_url }}" alt="A player in daylight with a small glowing Fire Wisp floating above their right shoulder, its nameplate reading Player0's Fire Wisp" class="shot">
 <span class="caption">A Fire Wisp familiar at its owner's shoulder</span>
 
-## Familiars
+| Page | What it covers |
+|---|---|
+| [Familiars]({{ '/companions/familiars/' | relative_url }}) | Tame wisps of light on ley lines at night. They quicken your mana and cast a small spell to help you. Keep up to twelve. |
+| [Familiar jobs and event echoes]({{ '/companions/jobs-and-echoes/' | relative_url }}) | Give your familiar a scout, guardian or gardener job, and claim boons left behind by world events. |
+| [Cinnamon]({{ '/companions/cinnamon/' | relative_url }}) | A one-of-a-kind immortal dog that belongs to one configured player. |
+| [Cosmetics]({{ '/companions/cosmetics/' | relative_url }}) | Beads, glow and cast trails for your Cord. Looks only. |
 
-**Wisps** are small creatures of light that rise out of ley lines at night. Strike one with magic of its own element
-three times (or feed it three times) and it bonds with you as your **familiar**. It quickens your mana, casts a little
-spell of its element to help you, and grows stronger as you fight together. You can keep up to twelve, one out at a
-time, and call them from a **Wisp Lantern**.
+## Foxes and cinderfoxes
 
-**[Familiars]({{ '/companions/familiars/' | relative_url }})** covers where wisps appear, how to tame each element,
-what every familiar does at each level, and how to look after them.
+Out in the deserts and badlands lives the **cinderfox**, a fox with a living ember for a tail. See
+[Creatures]({{ '/world/creatures/' | relative_url }}#cinderfox) for how it fights and what it gives.
 
-## A cinderfox
+Both **ordinary foxes and cinderfoxes** can be won over with fish:
 
-Out in the deserts and badlands lives the **cinderfox**, a big-eared fox with a living ember for a tail. Feed one a
-rabbit or fish and it may become yours: it follows you, sits when told, and its ember-hot bite sets anything weak to fire
-alight. See [Creatures]({{ '/world/creatures/#cinderfox' | relative_url }}).
+- **Fish that work:** Cod, Salmon, Cooked Cod, Cooked Salmon and Tropical Fish. Pufferfish does not.
+- **Each try** uses one fish and has a one-in-three chance. Hearts mean success, smoke means try again.
+- **A tamed ordinary fox** belongs to you and starts sitting. Right-click it with an empty hand to switch between
+  sitting and following. Feed it fish to heal 3 health.
+- **Only you** can command or feed your fox. The bond and sit order are kept when the world restarts.
+- **It walks to you.** A fox follows on foot; it does not teleport across obstacles or between dimensions.
+- Cinderfoxes still take rabbit too, and keep their fighting help and Ember Tuft.
 
-## Cord cosmetics
+Breeding foxes with berries works as usual, but the babies are not owned by anyone.
 
-The Cord screen's **Cosmetics** page changes how your Cord looks to everyone: the **beads** it's strung with, their
-**glow**, and the **trail** your casts leave. Some come with play (Heart Circles, a boss, a feat), the rest you buy
-once with materials.
-
-**[Cosmetics]({{ '/companions/cosmetics/' | relative_url }})** lists every bead, glow and trail and how to unlock it.
+<img src="{{ '/assets/images/fish-tamed-fox-sitting.png' | relative_url }}" alt="An ordinary fox sitting beside its player after fish taming" class="shot">
+<span class="caption">A fish-tamed fox, sitting on command</span>
 
 ## At a glance
 
@@ -45,19 +48,3 @@ once with materials.
 | **Changes your power?** | Yes, a little | No, looks only |
 | **Feats** | Kindred (your first), Menagerie (all eight elements) | |
 | **Needs** | A Cord for the mana boost; a [Wisp Lantern]({{ '/items/' | relative_url }}#wisp-lantern) to manage several | A Cord to see it on |
-
-## New in 0.7
-
-- [Cinnamon]({{ '/companions/cinnamon/' | relative_url }})
-- [Familiar Jobs and Event Echoes]({{ '/companions/jobs-and-echoes/' | relative_url }})
-
-## Fox friendship with fish
-
-**Ordinary Minecraft foxes and Cinderfoxes** both accept Cod, Salmon, Cooked Cod, Cooked Salmon and Tropical Fish. Each attempt consumes one fish in Survival, with a one-in-three taming chance. Pufferfish does not tame them. A data pack can extend the `wildercord:fox_taming_fish` item tag.
-
-An ordinary fox bonds to the player who succeeds and starts sitting. Right-click with an empty hand to switch between sitting and following. Fish heals your injured fox by three health. Another player cannot take ownership by feeding fish or issue the sit command. The bond and sit order persist through a world restart. Following uses walking paths; it does not teleport across obstacles or dimensions. Vanilla berry breeding remains available; offspring are not automatically owned.
-
-Cinderfoxes retain their rabbit taming, familiar owner controls, combat assistance and finite Ember Tuft brushing reward. Fish extends their existing food choices.
-
-<img src="{{ '/assets/images/fish-tamed-fox-sitting.png' | relative_url }}" alt="An ordinary fox sitting beside its player after fish taming" class="shot">
-<span class="caption">The ordinary fox sit command in the native client test.</span>

@@ -51,7 +51,7 @@ public final class MasterMoveGraph {
 		Objects.requireNonNull(id, "id");
 		if (id.length() > 96 || !id.matches("wildercord:master_graph/[a-z][a-z0-9_]*"))
 			throw new IllegalArgumentException("Invalid graph ID: " + id);
-		if (school < MastersRules.EMBER || school > MastersRules.STONE) throw new IllegalArgumentException("Unknown school");
+		if (!MastersRules.knownSchool(school)) throw new IllegalArgumentException("Unknown school"); // ---- masters-a pack
 		Objects.requireNonNull(nodes, "nodes");
 		Objects.requireNonNull(edges, "edges");
 		if (nodes.isEmpty() || nodes.size() > MAX_NODES || edges.size() > MAX_EDGES)

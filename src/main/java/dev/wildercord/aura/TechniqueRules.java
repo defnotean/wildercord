@@ -361,6 +361,10 @@ public final class TechniqueRules {
 			case HASTE -> List.of(RISING, AFTERIMAGE, ECHO);
 			case LEECH -> List.of(RISING, SPIN, SUNDER);
 			case NONE -> List.of();
+			// ---- methods-a pack
+			case CURRENT -> List.of(SWEEP, WAVE, BIND);
+			case FORGE -> List.of(FALLING, THRUST, SUNDER);
+			case GRIT -> List.of(SPIN, AFTERIMAGE, BIND);
 		};
 		Map<String, Integer> out = new LinkedHashMap<>();
 		for (String part : scrollParts()) {
@@ -415,15 +419,24 @@ public final class TechniqueRules {
 	 * @param bleed   a wound that bleeds {@code bleeds} times, each a share of a weapon, and a drink of {@code drink} of what the technique
 	 *                deals, at most {@code drinkCap} health (Crimson)
 	 * @param damage  its blow times this (a method with no element of its own)
+	 * @param current how hard the current pushes foes struck away from the heart of the stroke, and soaks them (Tide)
+	 * @param sunder  armour it sunders from each foe struck, for a while (Iron)
+	 * @param grit    ticks a foe struck is blinded by grit, a creature losing its target (Dune)
 	 */
 	public record Flavour(BreathingMethod.Flavour of, int ignite, int chill, double spark, double knock, double reach, double stance, int stagger,
 			double mend, double mendCap, double pull, double aura, double auraCap, double echo, int echoDelay, double bleed, int bleeds, double drink,
-			double drinkCap, double damage) {}
+			double drinkCap, double damage, double current, double sunder, int grit) {}
 
 	private static Flavour flavour(BreathingMethod.Flavour of, int ignite, int chill, double spark, double knock, double reach, double stance,
 			int stagger, double mend, double pull, double aura, double echo, double bleed, double drink, double damage) {
+		return flavour(of, ignite, chill, spark, knock, reach, stance, stagger, mend, pull, aura, echo, bleed, drink, damage, 0, 0, 0);
+	}
+
+	private static Flavour flavour(BreathingMethod.Flavour of, int ignite, int chill, double spark, double knock, double reach, double stance,
+			int stagger, double mend, double pull, double aura, double echo, double bleed, double drink, double damage, double current, double sunder,
+			int grit) {
 		return new Flavour(of, ignite, chill, spark, knock, reach, stance, stagger, mend, mend * 3, pull, aura, aura * 8 / 3, echo, 6, bleed,
-			bleed > 0 ? 2 : 0, drink, drink > 0 ? 1.5 : 0, damage);
+			bleed > 0 ? 2 : 0, drink, drink > 0 ? 1.5 : 0, damage, current, sunder, grit);
 	}
 
 	/** Each method's flavour, by its passive (an add-on's method takes the flavour of the passive it chose; none, the plain one). */
@@ -441,7 +454,31 @@ public final class TechniqueRules {
 			case HASTE -> flavour(f, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0.18, 0, 0, 1);
 			case LEECH -> flavour(f, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0.05, 0.12, 1);
 			case NONE -> flavour(f, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1.12);
+			// ---- methods-a pack
+			case CURRENT -> flavour(f, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, CURRENT_PUSH, 0, 0);
+			case FORGE -> flavour(f, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, FORGE_SUNDER, 0);
+			case GRIT -> flavour(f, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, GRIT_BLIND);
 		};
+	}
+
+	// ---- methods-a pack
+	/** Tide's current on a technique (blocks of throw), Iron's sunder (armour), Dune's grit (ticks blinded). */
+	public static final double CURRENT_PUSH = 0.4;
+	public static final double FORGE_SUNDER = 3.0;
+	public static final int GRIT_BLIND = 30;
+	/** How long Tide's current leaves its foe soaked (ticks): wet, its fire out, and slowed half as long. */
+	public static final int CURRENT_SOAK = 30;
+	/** What a point of sundered armour on the foe is worth, in W (its next blows land a little harder, and the others'). */
+	public static final double SUNDER_WORTH = 0.05;
+	/** What a second of blindness is worth, as a share of a hold (a creature loses its target, a player its view). */
+	public static final double GRIT_SHARE = 0.25;
+
+	private static double methodsA(Flavour fl, double k, double fair) {
+		return fl.current() * k * KNOCK_SECONDS + (fl.current() > 0 ? CURRENT_SOAK / 2.0 * k / 20.0 * CHILL_SHARE * (1 + 0.5 * fair) : 0) + fl.grit() * k / 20.0 * GRIT_SHARE * (1 + 0.5 * fair);
+	}
+
+	private static double methodsAPrimary(Flavour fl, double k) {
+		return fl.sunder() * k * SUNDER_WORTH;
 	}
 
 	// ================================================================== ranks, tempers and edges
@@ -682,6 +719,9 @@ public final class TechniqueRules {
 		area += fl.echo() * k * p.factor() * ECHO_LANDS * Math.min(1, p.fair()) * p.others();
 		primary += fl.bleed() * k * fl.bleeds();
 		mend += ArtRules.health(Math.min(fl.drinkCap() * k, fl.drink() * k * 7 * (first + 0.5 * rest)));
+		// ---- methods-a pack
+		control += methodsA(fl, k, p.fair());
+		primary += methodsAPrimary(fl, k);
 		return new ArtRules.Art("technique", "", 2, 0, 0, primary, area, control, p.total(), mend, aura, 0, Set.of());
 	}
 
@@ -918,6 +958,10 @@ public final class TechniqueRules {
 			case HASTE -> "Timeless";
 			case LEECH -> "Crimson";
 			case NONE -> "True";
+			// ---- methods-a pack
+			case CURRENT -> "Tidal";
+			case FORGE -> "Forged";
+			case GRIT -> "Sandblown";
 		};
 	}
 

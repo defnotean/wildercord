@@ -64,18 +64,19 @@ public final class SiltcrestEcologyWitnessChecks {
   expectFailure(()->SiltcrestPresentationProbe.installEcology(world,birds.subList(0,2),thread,line->{}),"Scope cannot silently reduce the fixed cohort count");
  }
  private static void budgets() {
+  int hunt=SiltcrestPresentationWitness.Budget.HUNT;
   var shared=new SiltcrestEcologyWitness.Budget(40);shared.observe(40,-1);shared.advance();shared.observe(51,51);
-  check(shared.deadline()==551&&shared.firstCoil()==51,"One absolute deadline begins at the earliest native coil, before capture work");
-  shared.observe(57,51);check(shared.deadline()==551,"Six server ticks of capture work consume the original allowance without renewal");
+  check(shared.deadline()==51+hunt&&shared.firstCoil()==51,"One absolute deadline begins at the earliest native coil, before capture work");
+  shared.observe(57,51);check(shared.deadline()==51+hunt,"Six server ticks of capture work consume the original allowance without renewal");
   expectFailure(()->shared.observe(70,66),"A later cohort cannot supply a new first-coil deadline");
-  var late=new SiltcrestEcologyWitness.Budget(40);late.observe(51,51);late.observe(551,51);
-  expectFailure(late::advance,"No five-hundred-and-first server tick even if another pond has not succeeded");
-  expectFailure(()->late.observe(552,51),"Late positive receipts cannot extend the shared server deadline");
+  var late=new SiltcrestEcologyWitness.Budget(40);late.observe(51,51);late.observe(51+hunt,51);
+  expectFailure(late::advance,"No server tick beyond the hunt allowance even if another pond has not succeeded");
+  expectFailure(()->late.observe(52+hunt,51),"Late positive receipts cannot extend the shared server deadline");
   var frozen=new SiltcrestEcologyWitness.Budget(40);frozen.observe(51,51);
-  for(int i=0;i<500;i++){frozen.advance();frozen.observe(51,51);}
-  check(frozen.advances()==500,"All cohorts share exactly five hundred controlled advances even when source time is stalled");
-  expectFailure(frozen::advance,"No five-hundred-and-first harness advance");
-  var absent=new SiltcrestEcologyWitness.Budget(40);absent.observe(540,-1);expectFailure(absent::advance,"Original initial five-hundred-tick admission cap also remains bounded");
+  for(int i=0;i<hunt;i++){frozen.advance();frozen.observe(51,51);}
+  check(frozen.advances()==hunt,"All cohorts share exactly the hunt allowance of controlled advances even when source time is stalled");
+  expectFailure(frozen::advance,"No harness advance beyond the hunt allowance");
+  var absent=new SiltcrestEcologyWitness.Budget(40);absent.observe(40+hunt,-1);expectFailure(absent::advance,"Original initial hunt-allowance admission cap also remains bounded");
   var backwards=new SiltcrestEcologyWitness.Budget(40);backwards.observe(51,51);expectFailure(()->backwards.observe(50,51),"Server time cannot run backward to renew the shared window");
  }
  private static List<JsonObject> caught(int index){return scope(SiltcrestPresentationWitnessChecks.successful(SiltcrestPresentationWitnessChecks.recorded()),index);}

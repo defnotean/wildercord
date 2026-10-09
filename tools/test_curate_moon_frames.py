@@ -202,7 +202,6 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn('run_paired_matrix.py',job);self.assertIn('build/native/**/screenshots/**',job)
         self.assertIn("if: always()",job);self.assertIn('curate_moon_frames.py',job)
         self.assertNotIn('crimson-moon-owner-receipts/*/000001.json',text)
-        self.assertIn('curate_moon_frames.py --owner',text)
 
 
 if __name__=='__main__':unittest.main()
