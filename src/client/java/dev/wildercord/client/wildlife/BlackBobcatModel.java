@@ -10,21 +10,26 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 /**
- * A black bobcat: a deep-chested cat on thick legs, a broad head framed by a ruff of cheek fur, a short muzzle, upright ears
- * with long black tufts, and a bobbed stub of a tail. Built at a big cat's proportions and drawn larger by its renderer (to a
- * polar bear's size). It pads with its legs in diagonal pairs and its head low, flicks its tail and swivels its ears when idle,
- * and sits up on its haunches. A kitten has a bigger head. UVs match tools/bobcat_art.py.
+ * A black bobcat, built soft and round: a plush body with a smoky bib, a big head with wide golden eyes, fluffy cheeks and a
+ * small rosy-nosed muzzle, rosy-cupped ears with short black tufts, stubby legs on big toe-beaned paws and a fluffy bob of a
+ * tail. Drawn larger by its renderer (to a polar bear's size). The head and tail hang from the body, which pivots at its rump,
+ * so when it sits up the head rides along on the shoulders and is turned back level. It pads with its legs in diagonal pairs,
+ * flicks its bob and swivels its ears when idle. A kitten has a bigger head. UVs match tools/bobcat_art.py.
  */
 public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
+	private static final float BODY_Y = 18, LEG_Y = 18, FRONT_Z = -3.5F, HIND_Z = 4, LEG_X = 3.3F;
+	/** How far the body tips up about its rump when it sits. */
+	private static final float SIT_TILT = -0.85F;
+
 	private final ModelPart body, head, leftEar, rightEar, tail, frontLeft, frontRight, hindLeft, hindRight;
 
 	public BlackBobcatModel(ModelPart root) {
 		super(root);
 		body = root.getChild("body");
-		head = root.getChild("head");
+		head = body.getChild("head");
 		leftEar = head.getChild("left_ear");
 		rightEar = head.getChild("right_ear");
-		tail = root.getChild("tail");
+		tail = body.getChild("tail");
 		frontLeft = root.getChild("front_left_leg");
 		frontRight = root.getChild("front_right_leg");
 		hindLeft = root.getChild("hind_left_leg");
@@ -34,39 +39,40 @@ public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
 	public static LayerDefinition createLayer() {
 		MeshDefinition mesh = new MeshDefinition();
 		PartDefinition root = mesh.getRoot();
-		root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-5, -4, -7, 10, 8, 14), PartPose.offset(0, 13, 0));
-		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create()
-			.texOffs(0, 22).addBox(-3.5F, -3.5F, -6, 7, 6, 6)
-			.texOffs(26, 22).addBox(-1.5F, 0.5F, -8, 3, 2, 3)
-			.texOffs(0, 34).addBox(-5, 0, -3, 10, 3, 2), PartPose.offset(0, 10, -7));
-		ear(head, "left_ear", 2.3F, 0.18F, false);
-		ear(head, "right_ear", -2.3F, -0.18F, true);
-		root.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(18, 40).addBox(-1.5F, -1.5F, 0, 3, 3, 5),
-			PartPose.offsetAndRotation(0, 10.5F, 6.5F, 0.55F, 0, 0));
-		leg(root, "front_left", 3, -4.5F, false);
-		leg(root, "front_right", -3, -4.5F, true);
-		leg(root, "hind_left", 3, 4.5F, false);
-		leg(root, "hind_right", -3, 4.5F, true);
+		// The body pivots at the rump, low and behind, so sitting tips it up about the haunches.
+		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
+			.texOffs(0, 0).addBox(-6, -8.5F, -12, 12, 9, 13)
+			.texOffs(42, 28).addBox(-4.5F, -7, -13.5F, 9, 7, 2), PartPose.offset(0, BODY_Y, HIND_Z + 2));
+		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create()
+			.texOffs(0, 23).addBox(-6, -7, -7.5F, 12, 10, 9)
+			.texOffs(0, 42).addBox(-7.5F, 0, -6, 15, 4, 4)
+			.texOffs(42, 23).addBox(-2, 0, -9, 4, 3, 2), PartPose.offset(0, -7.5F, -12));
+		ear(head, "left_ear", 3.4F, 0.3F, false);
+		ear(head, "right_ear", -3.4F, -0.3F, true);
+		body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(44, 50).addBox(-2, -2, 0, 4, 4, 4),
+			PartPose.offsetAndRotation(0, -7, 0.5F, 0.6F, 0, 0));
+		leg(root, "front_left", LEG_X, FRONT_Z, false);
+		leg(root, "front_right", -LEG_X, FRONT_Z, true);
+		leg(root, "hind_left", LEG_X, HIND_Z, false);
+		leg(root, "hind_right", -LEG_X, HIND_Z, true);
 		return LayerDefinition.create(mesh, 64, 64);
 	}
 
 	private static void ear(PartDefinition head, String name, float x, float lean, boolean mirror) {
-		CubeListBuilder ear = CubeListBuilder.create().texOffs(40, 22);
-		CubeListBuilder tuft = CubeListBuilder.create().texOffs(48, 22);
-		if (mirror) {
-			ear.mirror();
-			tuft.mirror();
-		}
-		PartDefinition part = head.addOrReplaceChild(name, ear.addBox(-1, -3, -0.5F, 2, 3, 1), PartPose.offsetAndRotation(x, -3.5F, -2.5F, 0, 0, lean));
-		part.addOrReplaceChild("tuft", tuft.addBox(-0.5F, -2, -0.5F, 1, 2, 1), PartPose.offset(0, -3, 0));
+		PartDefinition ear = head.addOrReplaceChild(name, cubes(50, 0, mirror).addBox(-2, -3, -1, 4, 3, 2),
+			PartPose.offsetAndRotation(x, -6.5F, -3.5F, -0.15F, 0, lean));
+		PartDefinition tip = ear.addOrReplaceChild("tip", cubes(50, 5, mirror).addBox(-1, -2, -0.5F, 2, 2, 1), PartPose.offset(0, -3, 0));
+		tip.addOrReplaceChild("tuft", cubes(56, 5, mirror).addBox(-0.5F, -1, -0.5F, 1, 1, 1), PartPose.offset(0, -2, 0));
 	}
 
 	private static void leg(PartDefinition root, String name, float x, float z, boolean mirror) {
-		CubeListBuilder cube = CubeListBuilder.create().texOffs(0, 40);
-		if (mirror) {
-			cube.mirror();
-		}
-		root.addOrReplaceChild(name + "_leg", cube.addBox(-2, 0, -2, 4, 8, 4), PartPose.offset(x, 16, z));
+		PartDefinition leg = root.addOrReplaceChild(name + "_leg", cubes(0, 50, mirror).addBox(-2.5F, 0, -2.5F, 5, 5, 5), PartPose.offset(x, LEG_Y, z));
+		leg.addOrReplaceChild("paw", cubes(20, 50, mirror).addBox(-3, 4, -3.5F, 6, 2, 6), PartPose.ZERO);
+	}
+
+	private static CubeListBuilder cubes(int u, int v, boolean mirror) {
+		CubeListBuilder cube = CubeListBuilder.create().texOffs(u, v);
+		return mirror ? cube.mirror() : cube;
 	}
 
 	@Override
@@ -78,56 +84,54 @@ public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
 		float sit = state.sit;
 		float stand = 1 - sit;
 
-		float swing = Mth.cos(walk) * 0.9F * speed * stand;
+		float swing = Mth.cos(walk) * 0.8F * speed * stand;
 		frontLeft.xRot = swing;
 		hindRight.xRot = swing;
 		frontRight.xRot = -swing;
 		hindLeft.xRot = -swing;
-		// A heavy, rolling pad: the shoulders rise and fall over each stride.
-		body.y = 13 - Mth.abs(Mth.cos(walk)) * 0.4F * speed;
-		body.zRot = Mth.sin(walk) * 0.03F * speed;
+		// A soft, bouncy pad: the body bobs and rolls a little over each stride.
+		body.y = BODY_Y - Mth.abs(Mth.cos(walk)) * 0.5F * speed;
+		body.zRot = Mth.sin(walk) * 0.04F * speed;
 
 		head.yRot = Mth.clamp(state.yRot, -45, 45) * Mth.DEG_TO_RAD;
-		// It carries its head a touch low when it moves, as a stalking cat does.
-		head.xRot = state.xRot * Mth.DEG_TO_RAD + speed * 0.12F;
-		head.y = 10 + speed * 0.5F;
-		float swivel = Mth.clamp(Mth.sin(t * 0.07F) * 6 - 5, 0, 1);
-		leftEar.yRot = -swivel * 0.5F;
-		rightEar.yRot = Mth.clamp(Mth.sin(t * 0.083F + 1.7F) * 6 - 5, 0, 1) * 0.5F;
-		leftEar.xRot = rightEar.xRot = -speed * 0.2F;
+		head.xRot = state.xRot * Mth.DEG_TO_RAD + speed * 0.08F;
+		// Now and then it tips its head, curious.
+		head.zRot = Mth.clamp(Mth.sin(t * 0.031F) * 5 - 4, 0, 1) * 0.18F * stand;
+		float leftSwivel = Mth.clamp(Mth.sin(t * 0.07F) * 6 - 5, 0, 1);
+		float rightSwivel = Mth.clamp(Mth.sin(t * 0.083F + 1.7F) * 6 - 5, 0, 1);
+		leftEar.yRot = -leftSwivel * 0.5F;
+		rightEar.yRot = rightSwivel * 0.5F;
+		leftEar.xRot = rightEar.xRot = -0.15F - speed * 0.2F;
 
 		// The bob flicks now and then, and lifts at a trot.
 		float flick = Mth.clamp(Mth.sin(t * 0.05F) * 4 - 3, 0, 1);
-		tail.xRot = 0.55F + speed * 0.25F + flick * Mth.sin(t * 0.9F) * 0.25F;
+		tail.xRot = 0.6F + speed * 0.3F + flick * Mth.sin(t * 0.9F) * 0.25F;
 		tail.yRot = Mth.sin(t * 0.06F) * 0.15F;
 
 		if (sit > 0) {
-			// Up on its haunches: the body tipped up about its rump, forelegs straight under its chest, hind legs folded
-			// flat, the bob resting on the ground behind.
-			body.xRot = -0.55F * sit;
-			body.y = Mth.lerp(sit, body.y, 15.6F);
-			body.z = 1.6F * sit;
-			head.y = Mth.lerp(sit, head.y, 7.4F);
-			head.z = Mth.lerp(sit, -7, -4.6F);
-			frontLeft.xRot = Mth.lerp(sit, frontLeft.xRot, -0.05F);
-			frontRight.xRot = Mth.lerp(sit, frontRight.xRot, -0.05F);
-			frontLeft.y = frontRight.y = Mth.lerp(sit, 16, 14.4F);
-			frontLeft.yScale = frontRight.yScale = Mth.lerp(sit, 1, 1.2F);
-			frontLeft.z = frontRight.z = Mth.lerp(sit, -4.5F, -3.6F);
-			hindLeft.xRot = Mth.lerp(sit, hindLeft.xRot, -1.45F);
-			hindRight.xRot = Mth.lerp(sit, hindRight.xRot, -1.45F);
-			hindLeft.y = hindRight.y = Mth.lerp(sit, 16, 21.6F);
-			hindLeft.z = hindRight.z = Mth.lerp(sit, 4.5F, 3.4F);
-			hindLeft.x = Mth.lerp(sit, 3, 3.8F);
-			hindRight.x = Mth.lerp(sit, -3, -3.8F);
-			tail.y = Mth.lerp(sit, 10.5F, 21.5F);
-			tail.z = Mth.lerp(sit, 6.5F, 7.5F);
-			tail.xRot = Mth.lerp(sit, tail.xRot, -0.1F);
+			// Up on its haunches: the body tips up about its rump and the head, riding on the shoulders, is turned back level.
+			// Forelegs stand straight under the chest, hind legs fold flat beside the rump, and the bob rests on the ground.
+			body.xRot = SIT_TILT * sit;
+			body.y = Mth.lerp(sit, body.y, 21.5F);
+			head.xRot -= SIT_TILT * sit;
+			tail.xRot = Mth.lerp(sit, tail.xRot, 1.9F);
+			for (ModelPart leg : new ModelPart[] {frontLeft, frontRight}) {
+				leg.xRot = Mth.lerp(sit, leg.xRot, 0);
+				leg.y = Mth.lerp(sit, LEG_Y, 15.2F);
+				leg.z = Mth.lerp(sit, FRONT_Z, -3);
+				leg.yScale = Mth.lerp(sit, 1, 8.8F / 6);
+			}
+			for (ModelPart leg : new ModelPart[] {hindLeft, hindRight}) {
+				leg.xRot = Mth.lerp(sit, leg.xRot, -1.5F);
+				leg.y = Mth.lerp(sit, LEG_Y, 21.2F);
+				leg.z = Mth.lerp(sit, HIND_Z, 3);
+			}
+			hindLeft.x = Mth.lerp(sit, LEG_X, 4.6F);
+			hindRight.x = Mth.lerp(sit, -LEG_X, -4.6F);
 		}
 
 		if (state.isBaby) {
 			head.xScale = head.yScale = head.zScale = 1.35F;
-			head.z -= 0.6F;
 		}
 	}
 }

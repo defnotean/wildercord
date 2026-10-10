@@ -29,7 +29,7 @@ public final class BobcatContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("black_bobcat"));
 	public static final EntityType<BlackBobcat> BLACK_BOBCAT = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(BlackBobcat::new, MobCategory.CREATURE).sized(1.3F, 1.4F).eyeHeight(1.15F).clientTrackingRange(10).build(KEY));
+		EntityType.Builder.of(BlackBobcat::new, MobCategory.CREATURE).sized(1.3F, 1.6F).eyeHeight(1.35F).clientTrackingRange(10).build(KEY));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("black_bobcat_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

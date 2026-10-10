@@ -7,6 +7,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ### Changed
 
 - **Sword Masters erase every spell.** Hostile bolts unravel within 4 blocks of a Master, closing in from any side, and a guarding Master with Aura to spare still turns one back. Spell damage, lingering burns and poisons, effects, heals, pushes, pulls, teleports, fire, freezing, interrupts and cast-locks all fail on a Master. Only your blade and your aura reach one. (0.12.0 had made Masters easier to hit with magic; that is reversed.) Duelists keep the 0.12 guard, which takes a quarter off a spell.
+- **The black bobcat is cuter, and sits properly.** It has a new rounder model and skin: a big head with wide golden eyes, fluffy cheeks, a rosy nose, rosy-cupped ears with short tufts, stubby legs on big toe-beaned paws, and a fluffy bob. It is still as big as a polar bear, and its hitbox is a little taller to match. When it sits, its head now stays on its shoulders instead of floating.
 
 ## [0.12.0-alpha] — 2026-10-09
 

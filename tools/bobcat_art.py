@@ -12,24 +12,29 @@ LANG = {
 
 # ============================================================== the bobcat (BlackBobcatModel, 64x64)
 
-COAT = ramp("#09080C", "#100F15", "#17161E", "#201F29", "#2B2A36", "#383746", "#4A4958")
-SMOKE = ramp("#1C1B22", "#26252E", "#32313C", "#3F3E4A", "#4E4D5A")
-EYE = hexc("#D6C45A")
-EYE_RIM = hexc("#8E8A3A")
-PUPIL = hexc("#050506")
-NOSE = hexc("#2C2228")
-WHISKER = hexc("#8A8A96")
-EAR_SPOT = hexc("#6E6E7C")
-EAR_INNER = hexc("#2E262C")
+COAT = ramp("#0B0A0F", "#131219", "#1B1A23", "#25242F", "#31303D", "#3F3E4D", "#52515F")
+SMOKE = ramp("#2A2932", "#35343F", "#42414D", "#51505D", "#62616E")
+EYE = hexc("#E8CF5C")
+EYE_DEEP = hexc("#B8962E")
+PUPIL = hexc("#07070A")
+SHINE = hexc("#FFFFFF")
+NOSE = hexc("#8A5562")
+BEAN = hexc("#6E4250")
+WHISKER = hexc("#8C8C98")
+EAR_SPOT = hexc("#7A7A88")
+EAR_INNER = hexc("#5A3F4A")
 
-BODY = box(0, 0, 10, 8, 14)
-HEAD = box(0, 22, 7, 6, 6)
-MUZZLE = box(26, 22, 3, 2, 3)
-RUFF = box(0, 34, 10, 3, 2)
-EAR = box(40, 22, 2, 3, 1)
-TUFT = box(48, 22, 1, 2, 1)
-LEG = box(0, 40, 4, 8, 4)
-TAIL = box(18, 40, 3, 3, 5)
+BODY = box(0, 0, 12, 9, 13)
+HEAD = box(0, 23, 12, 10, 9)
+CHEEKS = box(0, 42, 15, 4, 4)
+MUZZLE = box(42, 23, 4, 3, 2)
+CHEST = box(42, 28, 9, 7, 2)
+LEG = box(0, 50, 5, 5, 5)
+PAW = box(20, 50, 6, 2, 6)
+TAIL = box(44, 50, 4, 4, 4)
+EAR = box(50, 0, 4, 3, 2)
+EAR_TIP = box(50, 5, 2, 2, 1)
+TUFT = box(56, 5, 1, 2, 1)
 
 
 def rosettes(cv, area, seed):
@@ -43,65 +48,103 @@ def rosettes(cv, area, seed):
                     cv.put(x0 + x, y0 + y, mix(c, COAT[0], 0.55))
 
 
+def fill(cv, area, colour):
+    x0, y0, w, h = area
+    for y in range(h):
+        for x in range(w):
+            cv.put(x0 + x, y0 + y, colour)
+
+
+def eye(cv, x0, y0, mirror):
+    """A big round gold eye: a wide dark pupil (a kitten's, not a hunter's slit) with a white glint."""
+    rows = ("IIi", "IWP", "iPP")
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            px = x0 + (2 - x if mirror else x)
+            cv.put(px, y0 + y, {"I": EYE, "i": EYE_DEEP, "W": SHINE, "P": PUPIL}[ch])
+
+
 def skin():
-    """A black coat with a smoky underside, faint rosettes, a pale muzzle with grey whiskers, gold-green eyes with slit pupils,
-    black ear tufts with a grey spot behind each ear, dark paws and a darker tip to the bob."""
+    """A soft black coat with a smoky chest, cheeks and muzzle, faint rosettes, big round gold eyes with glints, a rosy nose,
+    long black ear tufts over rosy ear cups with a grey spot behind, chunky dark paws with rosy toe beans and a fluffy bob."""
     cv = Sheet(64, 64)
-    for part, seed in ((BODY, 1), (HEAD, 2), (RUFF, 3), (LEG, 4), (TAIL, 5), (EAR, 6)):
+    for part, seed in ((BODY, 1), (HEAD, 2), (LEG, 4), (PAW, 7), (TAIL, 5), (EAR, 6), (EAR_TIP, 8)):
         for name, area in faces(part):
-            fur(cv, area, COAT, seed * 10 + len(name), name, base=2, along_y=part is BODY and name in ("top", "bottom"))
+            fur(cv, area, COAT, seed * 10 + len(name), name, base=3, along_y=part is BODY and name in ("top", "bottom"))
     for name, area in faces(BODY, "top", "right", "left"):
         rosettes(cv, area, 31 + len(name))
     fur(cv, BODY["bottom"], SMOKE, 41, "bottom", base=3, along_y=True)
-    for name, area in faces(TUFT):
-        x0, y0, w, h = area
-        for y in range(h):
+    for part, seed in ((CHEST, 9), (MUZZLE, 11)):
+        for name, area in faces(part):
+            fur(cv, area, SMOKE, seed * 10 + len(name), name, base=2)
+    for name, area in faces(CHEEKS):
+        fur(cv, area, COAT, 30 + len(name), name, base=3)
+    # Fluffy lighter tips along the lower edge of the cheeks and chest.
+    for part in (CHEEKS, CHEST):
+        for name in ("front", "right", "left"):
+            x0, y0, w, h = part[name]
             for x in range(w):
-                cv.put(x0 + x, y0 + y, COAT[0])
-    # A grey spot on the back of each ear and a dark inner cup.
-    x0, y0, w, h = EAR["back"]
-    for y in range(1, h):
-        for x in range(w):
-            cv.put(x0 + x, y0 + y, EAR_SPOT if y == 1 else mix(EAR_SPOT, COAT[2], 0.4))
-    x0, y0, w, h = EAR["front"]
-    for y in range(1, h):
-        for x in range(w):
-            cv.put(x0 + x, y0 + y, EAR_INNER)
-    # The muzzle a shade lighter, a dark nose, grey whisker pores.
-    for name, area in faces(MUZZLE):
-        fur(cv, area, SMOKE, 51 + len(name), name, base=2)
+                if noise(x0 + x, y0, 7) > 0.35:
+                    cv.put(x0 + x, y0 + h - 1, SMOKE[4])
+    # The face: big eyes low on the head, a lighter brow tick above each.
+    x0, y0, w, h = HEAD["front"]
+    eye(cv, x0 + 1, y0 + 4, False)
+    eye(cv, x0 + 8, y0 + 4, True)
+    cv.put(x0 + 2, y0 + 3, COAT[6])
+    cv.put(x0 + 9, y0 + 3, COAT[6])
+    for x in range(4, 8):
+        cv.put(x0 + x, y0 + 7, SMOKE[1])
+    # The muzzle: a small rosy nose on top, a tiny mouth line and whisker pores.
     x0, y0, w, h = MUZZLE["front"]
     cv.put(x0 + 1, y0, NOSE)
+    cv.put(x0 + 2, y0, NOSE)
+    cv.put(x0 + 1, y0 + 2, SMOKE[0])
+    cv.put(x0 + 2, y0 + 2, SMOKE[0])
     cv.put(x0, y0 + 1, WHISKER)
-    cv.put(x0 + 2, y0 + 1, WHISKER)
-    # Eyes: gold-green, a dark slit on the inner side, a faint pale brow line above.
-    x0, y0, w, h = HEAD["front"]
-    for ex, px in ((1, 2), (5, 4)):
-        cv.put(x0 + ex, y0 + 2, EYE)
-        cv.put(x0 + px, y0 + 2, PUPIL)
-        cv.put(x0 + ex, y0 + 3, EYE_RIM)
-        cv.put(x0 + ex, y0 + 1, COAT[4])
-    # Cheek ruff: lighter tips at its lower edge.
-    for name in ("front", "right", "left"):
-        x0, y0, w, h = RUFF[name]
-        for x in range(w):
-            if noise(x0 + x, y0, 7) > 0.4:
-                cv.put(x0 + x, y0 + h - 1, SMOKE[2])
-    # Dark paws.
-    for name in ("front", "back", "right", "left"):
-        x0, y0, w, h = LEG[name]
-        for x in range(w):
-            cv.put(x0 + x, y0 + h - 1, COAT[0])
-    for name, area in faces(LEG, "bottom"):
-        x0, y0, w, h = area
-        for y in range(h):
-            for x in range(w):
-                cv.put(x0 + x, y0 + y, COAT[0])
-    # The bob darkens to its tip.
-    x0, y0, w, h = TAIL["back"]
+    cv.put(x0 + 3, y0 + 1, WHISKER)
+    x0, y0, w, h = MUZZLE["top"]
+    cv.put(x0 + 1, y0 + h - 1, NOSE)
+    cv.put(x0 + 2, y0 + h - 1, NOSE)
+    for name in ("right", "left"):
+        x0, y0, w, h = CHEEKS[name]
+        cv.put(x0 + 1, y0 + 1, WHISKER)
+        cv.put(x0 + 2, y0 + 2, WHISKER)
+    # Ears: rosy inner cup, a grey spot behind, black tufts.
+    x0, y0, w, h = EAR["front"]
     for y in range(h):
+        for x in range(1, w - 1):
+            cv.put(x0 + x, y0 + y, EAR_INNER)
+    x0, y0, w, h = EAR_TIP["front"]
+    for x in range(w):
+        cv.put(x0 + x, y0 + h - 1, mix(EAR_INNER, COAT[2], 0.4))
+    x0, y0, w, h = EAR["back"]
+    for y in range(1, h - 1):
         for x in range(w):
-            cv.put(x0 + x, y0 + y, COAT[0])
+            cv.put(x0 + x, y0 + y, EAR_SPOT if y == 1 else mix(EAR_SPOT, COAT[2], 0.45))
+    for name, area in faces(TUFT):
+        fill(cv, area, COAT[0])
+    # Big paws: darker toes split into three, rosy beans beneath.
+    for name in ("front", "right", "left", "back"):
+        x0, y0, w, h = PAW[name]
+        for x in range(w):
+            cv.put(x0 + x, y0, COAT[2])
+        if name == "front":
+            for x in (1, 3, 5):
+                if x < w:
+                    cv.put(x0 + x, y0 + h - 1, COAT[0])
+    x0, y0, w, h = PAW["bottom"]
+    fill(cv, (x0, y0, w, h), COAT[1])
+    for bx, by in ((1, 0), (2, 0), (3, 0), (4, 0)):
+        cv.put(x0 + bx, y0 + by + 1 if bx in (1, 4) else y0 + by, BEAN)
+    for bx in range(2, 4):
+        for by in range(3, 5):
+            cv.put(x0 + bx, y0 + by, BEAN)
+    # A fluffy bob: lighter fluff underneath, a black tip.
+    fur(cv, TAIL["bottom"], SMOKE, 61, "bottom", base=3)
+    fill(cv, TAIL["back"], COAT[0])
+    x0, y0, w, h = TAIL["back"]
+    for x in range(1, w - 1):
+        cv.put(x0 + x, y0 + h - 1, SMOKE[2])
     return cv.image()
 
 
