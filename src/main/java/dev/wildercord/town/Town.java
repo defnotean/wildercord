@@ -148,6 +148,9 @@ public final class Town {
 	private static final ResourceKey<Item> DEED_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("ridgeback_deed"));
 	public static final Item RIDGEBACK_DEED = Registry.register(BuiltInRegistries.ITEM, DEED_KEY,
 		new RidgebackDeedItem(new Item.Properties().setId(DEED_KEY).stacksTo(1).rarity(Rarity.UNCOMMON)));
+	private static final ResourceKey<Item> ROOM_KEY_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("room_key"));
+	public static final Item ROOM_KEY = Registry.register(BuiltInRegistries.ITEM, ROOM_KEY_KEY,
+		new RoomKeyItem(new Item.Properties().setId(ROOM_KEY_KEY).stacksTo(16)));
 
 	private static final ResourceKey<EntityType<?>> KEEPER_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("wayfarer_keeper"));
 	public static final EntityType<WayfarerKeeper> KEEPER = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEEPER_KEY,
@@ -161,7 +164,11 @@ public final class Town {
 			}
 		});
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
-			.register(output -> output.accept(RIDGEBACK_DEED));
+			.register(output -> {
+				output.accept(RIDGEBACK_DEED);
+				output.accept(ROOM_KEY);
+			});
+		InnRooms.init();
 	}
 
 	/** The tag an escort's pack llama carries, before the escorting traveller's id. */

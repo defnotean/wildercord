@@ -93,6 +93,10 @@ public class WayfarerKeeper extends WanderingTrader {
 
 	@Override
 	public InteractionResult mobInteract(Player player, InteractionHand hand) {
+		if (player instanceof ServerPlayer server && hand == InteractionHand.MAIN_HAND && player.isSecondaryUseActive() && role != Role.CARAVANEER) {
+			InnRooms.open(server);
+			return InteractionResult.SUCCESS;
+		}
 		if (player instanceof ServerPlayer server && hand == InteractionHand.MAIN_HAND && !isTrading()) {
 			BountyRules.Tier tier = Town.standing(server).tier();
 			long seed = getUUID().getLeastSignificantBits() ^ level().getGameTime() / BountyRules.DAY;
@@ -117,6 +121,7 @@ public class WayfarerKeeper extends WanderingTrader {
 				buy(offers, Items.CARROT, 16);
 				buy(offers, Items.BEETROOT, 12);
 				sell(offers, 4, new ItemStack(Meals.CAMP_POT));
+				sell(offers, InnRoomRules.price(tier), new ItemStack(Town.ROOM_KEY));
 				meals(offers, 3, "hearty_stew", "forager_soup", "hunters_skewer");
 				if (t >= 1) meals(offers, 4, "wanderers_stew", "salmon_chowder", "honeyed_ham");
 				if (t >= 2) meals(offers, 5, "emberroot_curry", "mana_risotto", "duelists_broth");

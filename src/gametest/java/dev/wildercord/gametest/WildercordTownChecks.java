@@ -260,6 +260,7 @@ public final class WildercordTownChecks {
 		keeper.hurtServer(level, player.damageSources().playerAttack(player), 10000);
 		check(keeper.isAlive(), "keepers can't be hurt");
 		check(!keeper.removeWhenFarAway(10000) && keeper.getDespawnDelay() == 0, "keepers stay");
+		room(player, level);
 		keeper.discard();
 
 		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Town.RIDGEBACK_DEED));
@@ -272,6 +273,22 @@ public final class WildercordTownChecks {
 		check(MountContent.RIDGEBACK_STAG != null, "ridgeback registered");
 		stags.forEach(RidgebackStag::discard);
 		caravan(player, level);
+	}
+
+	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
+	private void room(ServerPlayer player, ServerLevel level) {
+		check(WayfarerKeeper.offers(WayfarerKeeper.Role.COOK, BountyRules.Tier.STRANGER, 7).stream()
+			.anyMatch(o -> o.getResult().is(Town.ROOM_KEY)), "the cook lets rooms");
+		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Town.ROOM_KEY));
+		Town.ROOM_KEY.use(level, player, InteractionHand.MAIN_HAND);
+		check(player.getMainHandItem().isEmpty(), "the key is handed over");
+		check(dev.wildercord.town.InnRooms.room(player).isPresent(), "a key near a keeper lets a room");
+		ServerPlayer.RespawnConfig respawn = player.getRespawnConfig();
+		check(respawn != null && respawn.forced() && respawn.respawnData().pos().equals(player.blockPosition()), "you wake in your room");
+		player.setAttached(dev.wildercord.town.InnRooms.ROOM, new dev.wildercord.town.InnRooms.Room(level.getGameTime() - 1,
+			net.minecraft.core.GlobalPos.of(level.dimension(), player.blockPosition())));
+		dev.wildercord.town.InnRooms.expire(player);
+		check(dev.wildercord.town.InnRooms.room(player).isEmpty() && player.getRespawnConfig() == null, "a stay runs out");
 	}
 
 	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */

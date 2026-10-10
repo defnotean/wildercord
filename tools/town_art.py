@@ -8,6 +8,14 @@ RSQ = '\N{RIGHT SINGLE QUOTATION MARK}'
 LANG = {
     'block.wildercord.bounty_board': 'Bounty Board',
     'item.wildercord.ridgeback_deed': 'Ridgeback Deed',
+    'item.wildercord.room_key': 'Room Key',
+    'tooltip.wildercord.room_key': 'Use it at a Wayfarer Inn to rent a room there for %s days. You wake in it, and sneak-clicking any inn keeper opens your room chest.',
+    'container.wildercord.inn_room': 'Your Room',
+    'message.wildercord.room.rented': f'The room is yours for %s days. You{RSQ}ll wake here, and any inn{RSQ}s keepers will open your room chest for you (sneak-click them).',
+    'message.wildercord.room.extended': 'Your stay is extended: %s days left. You wake here now.',
+    'message.wildercord.room.no_inn': 'Use the key at a Wayfarer Inn, near its keepers.',
+    'message.wildercord.room.none': 'You have no room at the inns. The cook lets them: buy a Room Key.',
+    'message.wildercord.room.ended': 'Your stay at the inn is over. Your room chest is kept for your next stay.',
     'tooltip.wildercord.ridgeback_deed': 'Use it and a tame, saddled Ridgeback Stag of yours is led up beside you.',
     'entity.wildercord.wayfarer_keeper': 'Wayfarer Keeper',
     'entity.wildercord.wayfarer_keeper.cook': 'Inn Cook',
@@ -151,6 +159,32 @@ def deed_icon():
     return cv.image()
 
 
+def key_icon():
+    cv = Canvas()
+    brass = [hexc(c) for c in ('#5A3E14', '#8A6420', '#C09030', '#E8C460', '#FFF0A8')]
+    # A brass key, bow at the top left and bit at the bottom right, on a red room tag.
+    for y in range(2, 7):
+        for x in range(2, 7):
+            d = (x - 4) ** 2 + (y - 4) ** 2
+            if d <= 5:
+                cv.put(x, y, brass[0] if d >= 4 else brass[2] if d >= 1 else None)
+    cv.put(4, 4, None)
+    for i in range(6, 13):
+        cv.put(i, i, brass[2])
+        cv.put(i + 1, i, brass[0])
+        cv.put(i, i + 1, brass[1])
+    cv.put(3, 3, brass[4])
+    cv.put(7, 7, brass[3])
+    for (x, y) in ((11, 13), (12, 13), (13, 11), (13, 12), (10, 13), (13, 10)):
+        cv.put(x, y, brass[1] if (x + y) % 2 else brass[0])
+    for (x, y) in ((8, 2), (9, 2), (10, 2), (8, 3), (9, 3), (10, 3), (11, 3), (9, 4), (10, 4), (11, 4), (12, 4)):
+        cv.put(x, y, WAX)
+    cv.put(9, 3, mix(WAX, (255, 255, 255), 0.4))
+    cv.put(7, 4, hexc('#6A4426'))
+    cv.put(8, 4, hexc('#6A4426'))
+    return cv.image()
+
+
 def write(g):
     g.save(board_front(), g.ASSETS / 'textures/block/bounty_board_front.png')
     g.save(board_side(), g.ASSETS / 'textures/block/bounty_board_side.png')
@@ -169,3 +203,6 @@ def write(g):
     g.save(deed_icon(), g.ASSETS / 'textures/item/ridgeback_deed.png')
     g.item_model('ridgeback_deed', 'ridgeback_deed')
     g.write_json(g.ASSETS / 'items/ridgeback_deed.json', {'model': {'type': 'minecraft:model', 'model': 'wildercord:item/ridgeback_deed'}})
+    g.save(key_icon(), g.ASSETS / 'textures/item/room_key.png')
+    g.item_model('room_key', 'room_key')
+    g.write_json(g.ASSETS / 'items/room_key.json', {'model': {'type': 'minecraft:model', 'model': 'wildercord:item/room_key'}})
