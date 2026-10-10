@@ -169,7 +169,9 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 						defender.snapTo(.5,150,6.5,180,0);defender.setHealth(defender.getMaxHealth());Effects.readyToHurt(defender);defender.removeAllEffects();
 						defender.setItemSlot(EquipmentSlot.CHEST,ItemStack.EMPTY);defender.removeAttached(ArmorResponses.STATE);defender.removeAttached(DefensiveFoci.STATE);
 						dev.wildercord.gear.GearSlots.set(defender,dev.wildercord.gear.GearSlot.FOCUS,new ItemStack(dev.wildercord.gear.GearItems.get(dev.wildercord.gear.GearDef.REPRIEVE)));
-						// Default PvP Relay Harm is below Reprieve's six-damage gate; real casting gear qualifies it.
+						// Default PvP Relay Harm is below Reprieve's six-damage gate. Since 0.12's damage tempering a greater staff
+						// on the fixture's eight circles leaves it just under (about 5.7), so the caster is a sixteen-circle mage (about 6.4).
+						owner.setAttached(dev.wildercord.player.WildercordAttachments.CIRCLES,16);
 						var staff=dev.wildercord.gear.GearDef.greaterStaff("arcane");
 						RelayCircleTest.check(dev.wildercord.gear.GearSlots.set(owner,dev.wildercord.gear.GearSlot.STAFF,new ItemStack(dev.wildercord.gear.GearItems.get(staff)))
 							&&dev.wildercord.gear.Gear.of(owner).pieces().contains(staff),"The caster equips a real greater arcane staff before paying for Relay");
@@ -196,6 +198,7 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 						RelayCircleTest.check(closeDebt(owed,cancel?0:debt.reserved*DefensiveFoci.DELAY_SHARE),"Only valid post-callback admission records the exact deferred share");
 						reprieveTarget=null;debt=null;dev.wildercord.gear.GearSlots.clear(defender,dev.wildercord.gear.GearSlot.FOCUS);
 						dev.wildercord.gear.GearSlots.clear(owner,dev.wildercord.gear.GearSlot.STAFF);
+						owner.setAttached(dev.wildercord.player.WildercordAttachments.CIRCLES,8);
 					});c.waitTicks(12);
 				}
 			}finally{world.getServer().runOnServer(server->dev.wildercord.cast.CampConcordNative.config(original));}
