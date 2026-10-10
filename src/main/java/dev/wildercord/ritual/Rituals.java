@@ -63,8 +63,64 @@ public final class Rituals {
 	/** Why a ritual did or didn't take. */
 	public enum Result { DONE, NO_CORD, LOW_CIRCLE, NO_REAGENT, LOW_MANA, WRONG_PLACE, NOTHING_TO_DO }
 
-	/** A Sanctuary being held: where, in which world, and until when. */
-	private record Ward(ResourceKey<Level> level, Vec3 center, long until) {}
+	/** A Sanctuary being held: where, in which world, and until when (that world's game time, which outlasts a restart). */
+	private record Ward(ResourceKey<Level> level, Vec3 center, long until) {
+		static final Codec<Ward> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.create(i -> i.group(
+			ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(Ward::level),
+			Vec3.CODEC.fieldOf("center").forGetter(Ward::center),
+			Codec.LONG.fieldOf("until").forGetter(Ward::until)
+		).apply(i, Ward::new));
+	}
+
+	/** The Sanctuaries held when the server last stopped, taken up again when it starts. */
+	public static final class Sanctuaries extends net.minecraft.world.level.saveddata.SavedData {
+		static final Codec<Sanctuaries> CODEC = Ward.CODEC.listOf().optionalFieldOf("wards", List.of()).xmap(Sanctuaries::new, s -> s.wards).codec();
+		static final net.minecraft.world.level.saveddata.SavedDataType<Sanctuaries> TYPE =
+			new net.minecraft.world.level.saveddata.SavedDataType<>(Wildercord.id("sanctuaries"), Sanctuaries::new, CODEC, null);
+
+		private List<Ward> wards;
+
+		public Sanctuaries() {
+			this(List.of());
+		}
+
+		private Sanctuaries(List<Ward> wards) {
+			this.wards = List.copyOf(wards);
+		}
+
+		void set(List<Ward> wards) {
+			this.wards = List.copyOf(wards);
+			setDirty();
+		}
+	}
+
+	private static Sanctuaries sanctuaries(net.minecraft.server.MinecraftServer server) {
+		return server.overworld().getDataStorage().computeIfAbsent(Sanctuaries.TYPE);
+	}
+
+	/** The server is stopping: the Sanctuaries still held are saved for {@link #resumeWards}. */
+	public static void suspendWards(net.minecraft.server.MinecraftServer server) {
+		List<Ward> held = new ArrayList<>();
+		for (Ward ward : WARDS) {
+			ServerLevel level = server.getLevel(ward.level());
+			if (level != null && level.getGameTime() < ward.until()) held.add(ward);
+		}
+		WARDS.clear();
+		sanctuaries(server).set(held);
+	}
+
+	/** The server has started: the Sanctuaries saved by {@link #suspendWards} are held again for the time they had left. */
+	public static void resumeWards(net.minecraft.server.MinecraftServer server) {
+		Sanctuaries saved = sanctuaries(server);
+		if (saved.wards.isEmpty()) return;
+		WARDS.addAll(saved.wards);
+		saved.set(List.of());
+	}
+
+	/** How many Sanctuaries are held now. */
+	public static int wards() {
+		return WARDS.size();
+	}
 
 	private static final List<Ward> WARDS = new ArrayList<>();
 
@@ -76,6 +132,8 @@ public final class Rituals {
 	public static void init() {
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> output.accept(RITUAL_TABLET));
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPING.register(Rituals::suspendWards);
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STARTED.register(Rituals::resumeWards);
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> WARDS.clear());
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (WARDS.isEmpty() || server.getTickCount() % 10 != 0) return;

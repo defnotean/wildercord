@@ -411,6 +411,10 @@ public final class WildercordTownChecks {
 		check(dev.wildercord.ritual.Rituals.warded(level, player.position()), "Sanctuary wards where it was worked");
 		check(!dev.wildercord.ritual.Rituals.warded(level, player.position().add(dev.wildercord.ritual.RitualRules.SANCTUARY_RADIUS + 4, 0, 0)),
 			"and not beyond its edge");
+		dev.wildercord.ritual.Rituals.suspendWards(level.getServer());
+		check(dev.wildercord.ritual.Rituals.wards() == 0, "a stopping server saves its Sanctuaries");
+		dev.wildercord.ritual.Rituals.resumeWards(level.getServer());
+		check(dev.wildercord.ritual.Rituals.warded(level, player.position()), "a starting server holds them again");
 		dev.wildercord.ritual.Rituals.liftWards();
 	}
 

@@ -55,4 +55,5 @@ or the Ender Dragon. In Creative, rituals cost nothing.
 
 - Bounty works on wheat, carrots, potatoes, beetroot, melon and pumpkin stems, sweet berries and cocoa.
 - A Sanctuary stays where you worked it. Work it at the heart of a camp or a farm, not on the move.
+- A Sanctuary outlasts a server restart and holds for the time it had left.
 - Storm Feathers drop from Thunderwing Harpies.
