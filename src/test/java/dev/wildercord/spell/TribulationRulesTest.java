@@ -59,4 +59,16 @@ class TribulationRulesTest {
 		assertEquals(4, TribulationRules.scars(99));
 		assertEquals(0, TribulationRules.scars(-3));
 	}
+
+	@Test
+	void fromTheTenthCircleTheLastFoeWearsYourFace() {
+		assertFalse(TribulationRules.rival(5));
+		assertTrue(TribulationRules.rival(10));
+		assertTrue(TribulationRules.rival(20));
+		assertFalse(TribulationRules.rival(11), "no tribulation, no rival");
+		assertEquals(40, TribulationRules.shadowHealth(10, 20));
+		assertEquals(120, TribulationRules.shadowHealth(15, 40));
+		assertEquals(160, TribulationRules.shadowHealth(20, 40));
+		assertEquals(40, TribulationRules.shadowHealth(10, 4), "never a pushover");
+	}
 }

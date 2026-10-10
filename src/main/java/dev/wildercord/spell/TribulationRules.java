@@ -8,6 +8,21 @@ package dev.wildercord.spell;
 public final class TribulationRules {
 	private TribulationRules() {}
 
+	/** From this circle on, the last wave is led by the caster's own Shadow instead of a Herald (0.13). */
+	public static final int RIVAL_FROM = 10;
+	/** The Shadow's movement speed, about a player's on foot. */
+	public static final double SHADOW_SPEED = 0.3;
+
+	/** Whether forming circle {@code n} calls a rival tribulation: one whose last foe mirrors the caster. */
+	public static boolean rival(int n) {
+		return tribulation(n) && n >= RIVAL_FROM;
+	}
+
+	/** The Shadow's health: the caster's own times the tier: twice over at the 10th circle, four times at the 20th (40 at the least). */
+	public static double shadowHealth(int n, double casterHealth) {
+		return Math.max(40, casterHealth * tier(n));
+	}
+
 	/** Every fifth circle is a tribulation. */
 	public static final int EVERY = 5;
 	/** How far from where it began the caster may go before it counts as fleeing. */

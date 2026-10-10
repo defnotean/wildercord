@@ -24,6 +24,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.Mob;
@@ -51,6 +52,9 @@ public final class Tribulation {
 	private static final Identifier DAMAGE = Wildercord.id("tribulation_damage");
 	/** On the last wave's Herald. */
 	public static final String HERALD_TAG = "wildercord.tribulation_herald";
+	/** On a rival tribulation's Shadow (it carries the Herald's tag too). */
+	public static final String SHADOW_TAG = "wildercord.tribulation_shadow";
+	private static final int SHADOW = 0x9A6CD8;
 
 	private static final List<List<EntityType<? extends Mob>>> TYPES = List.of(
 		List.of(EntityTypes.ZOMBIE, EntityTypes.SKELETON, EntityTypes.HUSK, EntityTypes.STRAY),
@@ -208,7 +212,7 @@ public final class Tribulation {
 		int tier = TribulationRules.tier(circle);
 		List<EntityType<? extends Mob>> types = TYPES.get(tier - 1);
 		boolean last = TribulationRules.lastWave(circle, n);
-		player.sendOverlayMessage(Component.translatable(last ? "message.wildercord.tribulation.last" : "message.wildercord.tribulation.wave",
+		player.sendOverlayMessage(Component.translatable(last ? (TribulationRules.rival(circle) ? "message.wildercord.tribulation.last_rival" : "message.wildercord.tribulation.last") : "message.wildercord.tribulation.wave",
 			n, TribulationRules.waves(circle)).withColor(STORM));
 		WorldEvents.farSound(level, centre, SoundEvents.LIGHTNING_BOLT_THUNDER, 96, 0.9F + 0.05F * n);
 		pending = size + (last ? 1 : 0);
@@ -218,7 +222,8 @@ public final class Tribulation {
 			dev.wildercord.cast.Scheduler.later(1 + i * 8, () -> emerge(type, adept, false));
 		}
 		if (last) {
-			dev.wildercord.cast.Scheduler.later(20 + size * 8, () -> emerge(HERALDS.get(tier - 1), true, true));
+			EntityType<? extends Mob> leader = TribulationRules.rival(circle) ? EntityTypes.ZOMBIE : HERALDS.get(tier - 1);
+			dev.wildercord.cast.Scheduler.later(20 + size * 8, () -> emerge(leader, true, true));
 		}
 	}
 
@@ -234,10 +239,17 @@ public final class Tribulation {
 		}
 		if (at == null) at = WorldEvents.standingSpot(level, centre);
 		if (at == null) at = centre;
-		Mob mob = WorldEvents.spawnRunebound(level, type, at, adept, player);
+		boolean shadow = herald && TribulationRules.rival(circle);
+		Mob mob = WorldEvents.spawnRunebound(level, type, at, adept, player, shadow ? mirroredSpell() : null);
 		if (mob == null) return;
-		temper(mob, herald ? TribulationRules.healthBonus(circle) + 2.0 : TribulationRules.healthBonus(circle), TribulationRules.damageBonus(circle));
-		if (herald) {
+		if (shadow) {
+			mirror(mob);
+			ScreenFx.shake(level, at, 0.5F, 30);
+			player.sendOverlayMessage(Component.translatable("message.wildercord.tribulation.shadow").withColor(SHADOW));
+		} else {
+			temper(mob, herald ? TribulationRules.healthBonus(circle) + 2.0 : TribulationRules.healthBonus(circle), TribulationRules.damageBonus(circle));
+		}
+		if (herald && !shadow) {
 			mob.addTag(HERALD_TAG);
 			mob.setCustomName(Component.translatable("entity.wildercord.tribulation_herald").withColor(COLOR));
 			ScreenFx.shake(level, at, 0.4F, 24);
@@ -245,6 +257,42 @@ public final class Tribulation {
 		}
 		mobs.add(mob);
 		strike(at);
+	}
+
+	/** The caster's selected spell, if it compiles: the Shadow casts it back at them. Null leaves it a Runebound spell of its own. */
+	private List<dev.wildercord.spell.RuneDef> mirroredSpell() {
+		dev.wildercord.player.Spellbook book = dev.wildercord.player.Spellbooks.get(player);
+		if (book.selected() < 0 || book.selected() >= book.spells().size()) return null;
+		List<dev.wildercord.spell.RuneDef> spell = new ArrayList<>();
+		for (String id : book.spells().get(book.selected())) dev.wildercord.spell.Runes.get(id).ifPresent(spell::add);
+		return spell.isEmpty() || dev.wildercord.spell.SpellCompiler.compile(spell).isEmpty() ? null : spell;
+	}
+
+	/** Dresses a Shadow as the caster: their face, a copy of their armour and blade, their health and their pace. */
+	private void mirror(Mob mob) {
+		mob.addTag(SHADOW_TAG);
+		mob.addTag(HERALD_TAG);
+		net.minecraft.world.item.ItemStack head = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD);
+		head.set(net.minecraft.core.component.DataComponents.PROFILE, net.minecraft.world.item.component.ResolvableProfile.createResolved(player.getGameProfile()));
+		mob.setItemSlot(EquipmentSlot.HEAD, head);
+		for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
+			mob.setItemSlot(slot, player.getItemBySlot(slot).copy());
+		}
+		net.minecraft.world.item.ItemStack blade = player.getMainHandItem();
+		mob.setItemSlot(EquipmentSlot.MAINHAND, blade.isEmpty() ? new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_SWORD) : blade.copy());
+		for (EquipmentSlot slot : EquipmentSlot.values()) mob.setDropChance(slot, 0F);
+		AttributeInstance max = mob.getAttribute(Attributes.MAX_HEALTH);
+		if (max != null) {
+			double target = TribulationRules.shadowHealth(circle, player.getMaxHealth());
+			max.addOrReplacePermanentModifier(new AttributeModifier(HEALTH, target - max.getValue(), AttributeModifier.Operation.ADD_VALUE));
+			mob.setHealth(mob.getMaxHealth());
+		}
+		AttributeInstance speed = mob.getAttribute(Attributes.MOVEMENT_SPEED);
+		if (speed != null) speed.setBaseValue(TribulationRules.SHADOW_SPEED);
+		AttributeInstance reinforcements = mob.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
+		if (reinforcements != null) reinforcements.setBaseValue(0);
+		mob.setCustomName(Component.translatable("entity.wildercord.tribulation_shadow", player.getName()).withColor(SHADOW));
+		mob.setCustomNameVisible(true);
 	}
 
 	private static void temper(Mob mob, double health, double damage) {

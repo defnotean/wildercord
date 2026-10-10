@@ -176,6 +176,11 @@ Runebound come for you: three at the 5th circle, up to six at the 20th, with a *
 kept) and you can face it again after five minutes. A won tribulation leaves runes and Mana Crystals where it ended,
 and a **Tribulation Scar**: one more heart of maximum health for good. Chat warns you a circle ahead.
 
+From the 10th circle on, the last wave isn't led by a Herald. Your own **Shadow** leads it instead. It wears your face,
+copies of your armour and your weapon, and casts your selected spell back at you (or a spell of its own, if yours won't
+cast). It has your maximum health times the tribulation's tier: twice yours at the 10th circle, three times at the 15th
+and four times at the 20th. It drops none of what it wears.
+
 ## Ascension
 
 Twenty circles is the most a heart can hold, but mana keeps condensing after that. Each further stretch of it

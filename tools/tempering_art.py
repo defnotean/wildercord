@@ -42,6 +42,9 @@ LANG = {
  'title.wildercord.tribulation.sub': 'The %1$s circle must be won',
  'boss.wildercord.tribulation': 'Tribulation of the %1$s circle: wave %2$s of %3$s',
  'entity.wildercord.tribulation_herald': 'Herald of the Tribulation',
+ 'entity.wildercord.tribulation_shadow': 'Shadow of %1$s',
+ 'message.wildercord.tribulation.last_rival': 'Last wave (%1$s of %2$s): something with your face is coming',
+ 'message.wildercord.tribulation.shadow': 'Your Shadow steps out of the storm, wearing your gear and casting your spell',
 }
 
 
