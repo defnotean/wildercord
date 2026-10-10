@@ -160,6 +160,7 @@ tasks.named('processGametestResources') {
 	}
 	if (project.findProperty('twoClientSuite') == 'moon') inputs.file('src/gametest/resources/crimson-moon-native-contract.json')
     if (project.findProperty('twoClientSuite') == 'stone-hinge-peer') inputs.file('src/gametest/resources/stone-hinge-peer-native-contract.json')
+	if (project.findProperty('twoClientSuite') == 'social') inputs.file('src/gametest/resources/social-native-contract.json')
 	inputs.property('twoClientUnitySuite', project.hasProperty('twoClientUnitySuite'))
 	inputs.property('twoClientRainshieldSuite', project.hasProperty('twoClientRainshieldSuite'))
 	inputs.property('twoClientCampSuite', project.hasProperty('twoClientCampSuite'))
@@ -191,7 +192,7 @@ tasks.named('processGametestResources') {
 		def multiplayer = ['twoClientUnitySuite', 'twoClientRainshieldSuite', 'twoClientCampSuite'].findAll { project.hasProperty(it) }
 		if (multiplayer.size() > 1 || (!multiplayer.isEmpty() && !project.hasProperty('twoClientSuite'))) throw new GradleException('Select one supervised multiplayer suite together with twoClientSuite')
 		def supervisedName = project.findProperty('twoClientSuite')?.toString() ?: ''
-		if (supervisedName && !(supervisedName in ['cast-receipt', 'moon', 'stone-hinge-peer'])) throw new GradleException('twoClientSuite must be empty (legacy), cast-receipt, moon or stone-hinge-peer')
+		if (supervisedName && !(supervisedName in ['cast-receipt', 'moon', 'stone-hinge-peer', 'social'])) throw new GradleException('twoClientSuite must be empty (legacy), cast-receipt, moon, stone-hinge-peer or social')
 		if (supervisedName && !multiplayer.isEmpty()) throw new GradleException('Named twoClientSuite cannot be combined with legacy companion flags')
 		if (project.hasProperty('tailFrom') && !project.hasProperty('tailSuite')) throw new GradleException('tailFrom requires tailSuite')
         // Full/shard selection has one Python authority and a pinned explicit four-group plan.
@@ -255,6 +256,11 @@ tasks.named('processGametestResources') {
                     throw new GradleException('Stone Hinge requires its fixed 29-case supervised diagnostic contract')
                 data.entrypoints['fabric-client-gametest'] = [expected]
                 data.mixins = ((data.mixins ?: []) + ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json']).unique()
+            } else if (supervisedName == 'social') {
+                def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/social-native-contract.json'))
+                def expected = 'dev.wildercord.gametest.WildercordSocialTwoClientsTest'
+                if (contract.suite != 'social' || contract.entrypoint != expected) throw new GradleException('Social contract does not match its fixed entrypoint')
+                data.entrypoints['fabric-client-gametest'] = [expected]
             } else {
                 data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientRainshieldSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsRainshieldTest' : project.hasProperty('twoClientCampSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsCampTest' : project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
 			}
@@ -331,7 +337,7 @@ tasks.named('processGametestResources') {
 // resource processing is UP-TO-DATE. The manifest checks this evidence against the launcher.
 tasks.named('runClientGameTest') {
 	doFirst {
-		if (project.findProperty('twoClientSuite') in ['cast-receipt', 'moon', 'stone-hinge-peer']) throw new GradleException('Named two-client suites require exportTwoClientLaunch and tools/native/launch_two_clients.py; direct single-client execution is forbidden')
+		if (project.findProperty('twoClientSuite') in ['cast-receipt', 'moon', 'stone-hinge-peer', 'social']) throw new GradleException('Named two-client suites require exportTwoClientLaunch and tools/native/launch_two_clients.py; direct single-client execution is forbidden')
         def sourceEntries = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/fabric.mod.json')).entrypoints['fabric-client-gametest']
         def resources = tasks.named('processGametestResources').get()
         def expected = clientCiContract.selection(sourceEntries, project.properties,

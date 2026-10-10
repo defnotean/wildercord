@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "suite": "social",
+  "entrypoint": "dev.wildercord.gametest.WildercordSocialTwoClientsTest",
+  "cases": [
+    "coven",
+    "mentoring",
+    "coop_tribulation",
+    "arena"
+  ],
+  "expectedCount": 4,
+  "limits": {
+    "maxJvms": 2,
+    "maxHeapMiBPerJvm": 2048,
+    "maxCases": 4,
+    "maxTimeoutSeconds": 600
+  },
+  "routing": "Supervised-only by tools/native/launch_social_clients.py; never part of the ordinary one-client descriptor.",
+  "coverage": "Two real client JVMs on one dedicated server over loopback TCP: a coven founded, invited to and joined by typed commands; a mentor's offer that outlasts the apprentice logging out and back in; a party's tribulation drawing the second player in; a ranked arena bout between both.",
+  "terminalWitnesses": [
+    "host-social-passed.properties",
+    "peer-social-passed.properties",
+    "peer-disconnected.properties"
+  ]
+}

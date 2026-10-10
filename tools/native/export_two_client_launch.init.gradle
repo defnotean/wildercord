@@ -6,12 +6,12 @@ import java.security.MessageDigest
 gradle.projectsEvaluated {
     def p = gradle.rootProject
     def suite = p.findProperty('twoClientSuite')?.toString()
-    if (!(suite in ['cast-receipt', 'moon', 'stone-hinge-peer'])) throw new GradleException('Bounded export requires -PtwoClientSuite=cast-receipt, moon or stone-hinge-peer')
-    def maxTimeoutSeconds = suite == 'stone-hinge-peer' ? 300 : suite == 'moon' ? 180 : 900
+    if (!(suite in ['cast-receipt', 'moon', 'stone-hinge-peer', 'social'])) throw new GradleException('Bounded export requires -PtwoClientSuite=cast-receipt, moon, stone-hinge-peer or social')
+    def maxTimeoutSeconds = suite == 'stone-hinge-peer' ? 300 : suite == 'moon' ? 180 : suite == 'social' ? 600 : 900
     def root = p.projectDir.canonicalFile
-    def expectedEntry = suite == 'stone-hinge-peer' ? 'dev.wildercord.aura.StoneHingePeerTransportTest' : suite == 'moon' ? 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest' : 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
-    def contractPath = suite == 'stone-hinge-peer' ? 'src/gametest/resources/stone-hinge-peer-native-contract.json' : suite == 'moon' ? 'src/gametest/resources/crimson-moon-native-contract.json' : 'src/gametest/resources/cast-receipt-native-contract.json'
-    def expectedMixins = suite == 'stone-hinge-peer' ? ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json'] : suite == 'moon' ? ['crimson-moon-multiplayer-gametest.mixins.json'] : ['counter-peer-gametest.mixins.json']
+    def expectedEntry = suite == 'social' ? 'dev.wildercord.gametest.WildercordSocialTwoClientsTest' : suite == 'stone-hinge-peer' ? 'dev.wildercord.aura.StoneHingePeerTransportTest' : suite == 'moon' ? 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest' : 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
+    def contractPath = suite == 'social' ? 'src/gametest/resources/social-native-contract.json' : suite == 'stone-hinge-peer' ? 'src/gametest/resources/stone-hinge-peer-native-contract.json' : suite == 'moon' ? 'src/gametest/resources/crimson-moon-native-contract.json' : 'src/gametest/resources/cast-receipt-native-contract.json'
+    def expectedMixins = suite == 'social' ? [] : suite == 'stone-hinge-peer' ? ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json'] : suite == 'moon' ? ['crimson-moon-multiplayer-gametest.mixins.json'] : ['counter-peer-gametest.mixins.json']
     // Match the supervisor's ordered roster, including every original case.
     def expectedCases = [
         'BREAK_CAST_HEALTH',
@@ -70,6 +70,7 @@ gradle.projectsEvaluated {
         'COUNTER_NULL_PARRY_ARTICULATED_LEFT'
     ]
     if (suite == 'moon') expectedCases = ['articulated_netherite_funded_right_release']
+    if (suite == 'social') expectedCases = ['coven', 'mentoring', 'coop_tribulation', 'arena']
     def stoneTransparent = ['ORDINARY', 'RIGHT', 'LEFT', 'PARTIAL_RESISTANCE', 'ABSORPTION', 'WALL_CLIPPED',
         'REAR', 'FULL_RESISTANCE', 'ZERO_WOUND', 'INVULNERABLE', 'CALLER_KNOCKBACK', 'CLOSE_AURA',
         'INTERVENING_IMPULSE', 'FALLING_ORDINARY', 'FALLING_REFUSAL', 'NONZERO_RETENTION', 'NATURAL_MASTER']
