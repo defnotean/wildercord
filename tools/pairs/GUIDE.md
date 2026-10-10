@@ -76,6 +76,13 @@ A pair costs about 1.5 times its dearer rune. So its total effect should be abou
   casts each pair on one husk 10+ blocks away with nothing else around.
 - Pairs whose runes need water, a mount or a pet still do something sensible on dry land alone, and never throw.
 - Any damage that scales off something (missing health, a blow taken) is capped at 18.
+- A "calming" or "forgetting" HARMFUL pair still puts a status on what it struck (Slowness, Weakness...): forgetting a
+  target leaves no mark the test (or a player) can see.
+- Hold, levitate or freeze-in-place loops that set a target's motion every tick need the `c.movable(t)` guard too.
+- Anything that turns projectiles back skips the caster's and allies' own (`p.getOwner()`, `c.caster.isAlliedTo`).
+- A world or craft rune (light, lamplighter, tunnel, harvest, whistle...) brings its **theme** into the pair, never its
+  block work: the pair still places and breaks no blocks. It becomes a fighting, helping or moving spell that wears
+  the craft (a lamplighter pair might hang burning lanterns over enemies; a harvest pair might reap what is low).
 
 ## Animation, sound and feel (required for every pair)
 
