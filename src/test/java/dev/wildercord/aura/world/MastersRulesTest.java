@@ -28,9 +28,6 @@ class MastersRulesTest {
 		assertEquals(2, MastersRules.volleyAngles(2).size());
 		assertEquals(3, MastersRules.volleyAngles(4).size());
 		assertEquals(5, MastersRules.volleyAngles(8).size());
-		assertEquals(1, MastersRules.cutBudget(1));
-		assertEquals(2, MastersRules.cutBudget(4));
-		assertEquals(3, MastersRules.cutBudget(8));
 		assertEquals(MastersRules.health(8), MastersRules.health(100));
 		for (int school = 0; school < 3; school++) {
 			for (MastersRules.Move move : MastersRules.Move.values()) {
@@ -40,17 +37,16 @@ class MastersRulesTest {
 	}
 
 	@Test
-	void severingHasDirectionalTimingAndCooldownLimits() {
-		assertFalse(MastersRules.canCut(105, 100, 0, 3, 1, 1));
-		assertTrue(MastersRules.canCut(106, 100, 0, 3, 1, 1));
-		assertFalse(MastersRules.canCut(106, 100, 130, 3, 1, 1));
-		assertTrue(MastersRules.canCut(130, 100, 130, 3, 1, 1));
-		assertFalse(MastersRules.canCut(130, -1, 0, 3, 1, 1));
-		assertFalse(MastersRules.canCut(130, 100, 0, 3, -1, 1));
-		assertFalse(MastersRules.canCut(130, 100, 0, 3, 1, -1));
-		assertFalse(MastersRules.canCut(130, 100, 0, 4, 1, 1));
-		assertFalse(MastersRules.canCut(130, 100, 0, Double.NaN, 1, 1));
-		assertFalse(MastersRules.canCut(130, 100, 0, 3, Double.NaN, 1));
+	void spellbaneErasesEveryBoltClosingInFromAnySide() {
+		assertTrue(MastersRules.erasesBolt(0, 1));
+		assertTrue(MastersRules.erasesBolt(MastersRules.SPELLBANE_RANGE, MastersRules.SPELLBANE_INCOMING));
+		assertTrue(MastersRules.erasesBolt(3, 0.5));
+		assertFalse(MastersRules.erasesBolt(MastersRules.SPELLBANE_RANGE + 0.01, 1));
+		assertFalse(MastersRules.erasesBolt(2, 0.1));
+		assertFalse(MastersRules.erasesBolt(2, -1));
+		assertFalse(MastersRules.erasesBolt(-1, 1));
+		assertFalse(MastersRules.erasesBolt(Double.NaN, 1));
+		assertFalse(MastersRules.erasesBolt(2, Double.NaN));
 	}
 
 	@Test

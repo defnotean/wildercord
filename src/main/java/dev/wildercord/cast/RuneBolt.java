@@ -443,6 +443,21 @@ public class RuneBolt extends Projectile {
 		return true;
 	}
 
+	/**
+	 * A Sword Master's spellbane: a bolt it didn't cast, closing on it from any side, comes apart before it lands. One it
+	 * sent back itself flies on.
+	 */
+	public boolean spellbane(LivingEntity master) {
+		if (!(level() instanceof ServerLevel) || isRemoved() || master == null || cast == null || cast.caster == master
+			|| reflected && trialMaster == master) return false;
+		Vec3 toward = master.getBoundingBox().getCenter().subtract(position());
+		Vec3 flight = getDeltaMovement();
+		double incoming = flight.lengthSqr() < 1.0E-6 || toward.lengthSqr() < 1.0E-6 ? 1 : flight.normalize().dot(toward.normalize());
+		if (!dev.wildercord.aura.world.MastersRules.erasesBolt(toward.length(), incoming)) return false;
+		fizzle();
+		return true;
+	}
+
 	/** Threat query for a swordsman's bounded reaction AI; helpful and currently allied magic never qualifies. */
 	public boolean hostileSpellTo(LivingEntity defender) {
 		return level() instanceof ServerLevel && defender != null && defender.level() == level() && defender.isAlive()

@@ -4,6 +4,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Changed
+
+- **Sword Masters erase every spell.** Hostile bolts unravel within 4 blocks of a Master, closing in from any side, and a guarding Master with Aura to spare still turns one back. Spell damage, lingering burns and poisons, effects, heals, pushes, pulls, teleports, fire, freezing, interrupts and cast-locks all fail on a Master. Only your blade and your aura reach one. (0.12.0 had made Masters easier to hit with magic; that is reversed.) Duelists keep the 0.12 guard, which takes a quarter off a spell.
+
 ## [0.12.0-alpha] — 2026-10-09
 
 **Tempering.** Players were far too strong, so this release rebalances spell damage and defence. Circles and aura now take real effort, and the world fights back.

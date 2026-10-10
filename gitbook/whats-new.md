@@ -5,7 +5,7 @@ Players were far too strong, so this update rebalances spell damage and defence.
 ## Power, rebalanced
 
 - **Spells hit for less**: less per hit, per cast and per point of mana, shared out past the third target, with bonuses capped at 3x against creatures. Spell power from circles is halved.
-- **Defences don't stack into immunity**: lasting Resistance is capped at II, aura armour gives 15%, and boss and Master spells skip the spell guard. A blade guard takes only a quarter off a spell, so Sword Masters no longer erase magic.
+- **Defences don't stack into immunity**: lasting Resistance is capped at II, aura armour gives 15%, and boss and Master spells skip the spell guard. A duelist's blade guard takes only a quarter off a spell. Sword Masters erase every spell: only blade and aura reach them.
 
 ## The climb
 

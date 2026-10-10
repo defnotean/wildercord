@@ -96,7 +96,9 @@ Each Master's exact timing is on [Master Techniques]({{ '/masters/techniques/' |
 
 ### Guards and braces
 
-Most Masters raise their guard after every **third** attack. Stone and Dawn brace after **every** attack. A guard halves blows from the front. It can also cut down spell bolts flying at it from the front.
+Most Masters raise their guard after every **third** attack. Stone and Dawn brace after **every** attack. A guard halves blows from the front, and a guarding Master with Aura to spare can turn your bolt back at you.
+
+**Magic can't touch a Master.** Every spell is erased: bolts unravel within 4 blocks of it from any side, and spell damage, burns, freezing, effects, heals, pushes, pulls, teleports, cast-locks and interrupts all fail. Only your blade and your aura reach it, so a spell's real use in a trial is on yourself and your allies.
 
 To beat a guard:
 - Hit it from the side or back.
@@ -161,5 +163,5 @@ You can retry as often as you like. A failed trial costs you nothing but the fig
 
 - Watch the boss bar. It names every move, and tells you when the Master is guarding, open or out of breath.
 - Punish recoveries, not wind-ups. Swinging into a wind-up gets you hit.
-- A spell can interrupt a wind-up early, but not in its final locked moment.
+- Spells can't interrupt a wind-up: a blade or aura hit that lands is the only way to break one.
 - In a group, spread out. More challengers add more lanes to some moves, but one move never hits the same player twice.

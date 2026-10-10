@@ -76,8 +76,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private BlockPos home;
 	private UUID challenger, waitingFor;
 	private long waitingUntil;
-	private long begins, expires, recoverUntil, attackAt, cutReadyAt, redirectReadyAt, dodgeReadyAt, dodgeUntil, breathingUntil, approachStarted;
-	private int cuts;
+	private long begins, expires, recoverUntil, attackAt, redirectReadyAt, erasedFxAt, dodgeUntil, breathingUntil, approachStarted;
 	private double aura = MastersRules.AURA_MAX;
 	private Vec3 dodgeDirection = Vec3.ZERO;
 	private int discipline, sequence, partySize = 1, quiet;
@@ -428,6 +427,11 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	@Override
 	public boolean addEffect(MobEffectInstance effect, Entity source) {
+		// Spellbane: no spell's effect takes, harmful or kind.
+		if (underSpell()) {
+			if (level() instanceof ServerLevel server) erased(server);
+			return false;
+		}
 		Entity responsible = source != null ? source : dev.wildercord.cast.Effects.applying();
 		if (!acceptsInfluence(responsible)) return false;
 		return super.addEffect(effect, source);
@@ -436,6 +440,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	@Override
 	public void heal(float amount) {
 		// Vanilla instant/regeneration healing has no owner argument. Unattributed healing cannot alter an active trial.
+		if (underSpell()) return;
 		if (acceptsInfluence(dev.wildercord.cast.Effects.applying())) super.heal(amount);
 	}
 
@@ -570,6 +575,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		super.customServerAiStep(level);
 		if (!isAlive()) return;
 		long now = level.getGameTime();
+		// Spellbane comes before anything else: whatever the Master is doing, no spell reaches it.
+		eraseBolts(level, now);
 		if (attackAnimation() != 0 && now >= entityData.get(DATA_ATTACK_BEGIN) + attackTellTicks() + attackActiveTicks() + attackRecoveryTicks()) {
 			entityData.set(DATA_ATTACK, 0);
 			entityData.set(DATA_ATTACK_AIM_PITCH, 0F);
@@ -695,8 +702,6 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		if (guarding()) {
 			endOrdinaryPhrase();
 			getNavigation().stop();
-			// A committed guard does not spin to negate flanking.
-			cutBolt(level, now);
 			return;
 		}
 		// Look for an admitted casting opening only while entirely free. Never retarget an accepted dash.
@@ -742,7 +747,6 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				return;
 			}
 		}
-		if (evadeThreat(level, now)) return;
 		double targetHeight = target.getBoundingBox().getCenter().y - slashOrigin().y;
 		if (Math.abs(targetHeight) <= 2.5 && distanceTo(target) > 6 && sequence % 3 != 0) {
 			if (approachStarted == 0) approachStarted = now;
@@ -1334,61 +1338,44 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			direction.x * Math.sin(radians) + direction.z * Math.cos(radians));
 	}
 
-	private void cutBolt(ServerLevel level, long now) {
-		if (now >= cutReadyAt) { cuts = 0; cutReadyAt = now + MastersRules.CUT_REST; }
-		if (cuts >= MastersRules.cutBudget(partySize) || aura < MastersRules.CUT_COST) return;
-		for (RuneBolt bolt : level.getEntitiesOfClass(RuneBolt.class, getBoundingBox().inflate(MastersRules.CUT_RANGE))) {
-			if (!(bolt.getOwner() instanceof LivingEntity owner) || !participant(owner)) continue;
-			Vec3 toward = bolt.position().subtract(getBoundingBox().getCenter());
-			double distance = toward.length();
-			double front = flatLook().dot(toward.normalize());
-			double incoming = bolt.getDeltaMovement().normalize().dot(toward.normalize().scale(-1));
-			if (!MastersRules.canCut(now, guardRaised, 0, distance, front, incoming)) continue;
-			boolean redirected = now >= redirectReadyAt && aura >= MastersRules.REDIRECT_COST && bolt.swordRedirect(this);
-			if (redirected || bolt.swordCut(this)) {
-				cuts++;
-				aura -= redirected ? MastersRules.REDIRECT_COST : MastersRules.CUT_COST;
-				if (redirected) redirectReadyAt = now + MastersRules.REDIRECT_REST;
+	/**
+	 * Spellbane: a Master erases every spell sent at it. Each tick, every bolt closing on it within reach comes apart, from
+	 * any side and whether or not it guards, at no cost; while it guards it may first send one back at its caster.
+	 */
+	private void eraseBolts(ServerLevel level, long now) {
+		for (RuneBolt bolt : level.getEntitiesOfClass(RuneBolt.class, getBoundingBox().inflate(MastersRules.SPELLBANE_RANGE))) {
+			boolean redirected = started && guarding() && now >= redirectReadyAt && aura >= MastersRules.REDIRECT_COST
+				&& bolt.getOwner() instanceof LivingEntity owner && participant(owner) && bolt.swordRedirect(this);
+			if (redirected) {
+				aura -= MastersRules.REDIRECT_COST;
+				redirectReadyAt = now + MastersRules.REDIRECT_REST;
 				AuraFx.trail(this, AuraFxRules.Stroke.SWEEP, false, auraColor(), stage(), 0.8F);
-				Feels.sound(level, position(), "aura_perfect_guard", 1, redirected ? 0.8F : 1.2F);
-				if (cuts >= MastersRules.cutBudget(partySize) || aura < MastersRules.CUT_COST) break;
+				Feels.sound(level, position(), "aura_perfect_guard", 1, 0.8F);
+			} else if (bolt.spellbane(this)) {
+				erased(level);
 			}
 		}
 	}
 
-	/** React only while uncommitted. Physics moves the body; every proposed step is checked for walls and unsafe ground. */
-	private boolean evadeThreat(ServerLevel level, long now) {
-		if (now < dodgeReadyAt || aura < MastersRules.DODGE_COST) return false;
-		for (RuneBolt bolt : level.getEntitiesOfClass(RuneBolt.class, getBoundingBox().inflate(8))) {
-			if (!(bolt.getOwner() instanceof LivingEntity owner) || !participant(owner) || !bolt.hostileSpellTo(this)) continue;
-			Vec3 toward = getBoundingBox().getCenter().subtract(bolt.position());
-			if (bolt.getDeltaMovement().normalize().dot(toward.normalize()) < 0.9 || !hasLineOfSight(bolt)) continue;
-			Vec3 flight = bolt.getDeltaMovement().multiply(1, 0, 1).normalize();
-			if (flight.lengthSqr() < 0.1) flight = flatLook(); // A vertical bolt still has a safe sideways answer.
-			for (int sign : new int[] {sequence % 2 == 0 ? 1 : -1, sequence % 2 == 0 ? -1 : 1}) {
-				Vec3 side = new Vec3(-flight.z * sign, 0, flight.x * sign);
-				if (!safeStep(level, side)) continue;
-				endOrdinaryPhrase();
-				dodgeDirection = side;
-				dodgeUntil = now + MastersRules.DODGE_TICKS;
-				dodgeReadyAt = now + MastersRules.DODGE_REST;
-				recoverUntil = dodgeUntil + 12;
-				aura -= MastersRules.DODGE_COST;
-				setState(DASH, true);
-				setDeltaMovement(side.scale(0.65).add(0, getDeltaMovement().y, 0));
-				Feels.sound(level, position(), "aura_step", 1, 0.9F);
-				return true;
-			}
-		}
-		return false;
+	/** Whether a spell is being worked on it right now (its own redirected magic aside): spellbane turns all of it away. */
+	public boolean underSpell() {
+		dev.wildercord.cast.Cast cast = dev.wildercord.cast.Effects.applyingCast();
+		return cast != null && cast.caster != this;
 	}
 
-	private boolean safeStep(ServerLevel level, Vec3 direction) {
-		if (!onGround()) return false;
-		for (int i = 1; i <= 12; i++) {
-			if (!safeMotion(level, direction.scale(i * 0.25))) return false;
-		}
-		return true;
+	/** Whether this blow is magic: a spell landing or resolving, a relay, or magic damage of any kind. */
+	private boolean spellHit(DamageSource source) {
+		return underSpell() || dev.wildercord.cast.SpellDefence.landingSpell() || source instanceof dev.wildercord.cast.RelayDamageSource
+			|| source.is(net.minecraft.world.damagesource.DamageTypes.MAGIC) || source.is(net.minecraft.world.damagesource.DamageTypes.INDIRECT_MAGIC);
+	}
+
+	/** A spell erased: a flick of the blade and a ring, at most once every few ticks however much magic comes apart at once. */
+	public void erased(ServerLevel level) {
+		long now = level.getGameTime();
+		if (now < erasedFxAt) return;
+		erasedFxAt = now + 4;
+		AuraFx.trail(this, AuraFxRules.Stroke.SWEEP, false, auraColor(), stage(), 0.8F);
+		Feels.sound(level, position(), "aura_perfect_guard", 1, 1.3F);
 	}
 
 	private boolean safeMotion(ServerLevel level, Vec3 offset) {
@@ -1494,7 +1481,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	/** Shared Statuses.interrupt owns the per-target immunity; this is the master's genuinely interruptible window. */
 	public boolean interruptWindup() {
 		long now = level().getGameTime();
-		if (!started || !isAlive() || !acceptsInfluence(dev.wildercord.cast.Effects.applying())
+		if (!started || !isAlive() || underSpell() || !acceptsInfluence(dev.wildercord.cast.Effects.applying())
 			|| !MastersRules.interruptible(attack != null, now, attackAt)) return false;
 		cancelAttack();
 		dropGuard();
@@ -1510,10 +1497,47 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		return started && participant(target) ? super.projected(target, damage) : 0;
 	}
 
+	// Spellbane: no push, pull, launch, swap, flame or frost of a spell moves or marks a Master.
+	@Override
+	public void setDeltaMovement(Vec3 motion) {
+		if (!underSpell()) super.setDeltaMovement(motion);
+	}
+
+	@Override
+	public void push(double x, double y, double z) {
+		if (!underSpell()) super.push(x, y, z);
+	}
+
+	@Override
+	public boolean teleportTo(ServerLevel level, double x, double y, double z, Set<net.minecraft.world.entity.Relative> relatives, float yRot, float xRot,
+			boolean resetCamera) {
+		return !underSpell() && super.teleportTo(level, x, y, z, relatives, yRot, xRot, resetCamera);
+	}
+
+	@Override
+	public void teleportTo(double x, double y, double z) {
+		if (!underSpell()) super.teleportTo(x, y, z);
+	}
+
+	@Override
+	public void setRemainingFireTicks(int ticks) {
+		if (!underSpell() || ticks <= getRemainingFireTicks()) super.setRemainingFireTicks(ticks);
+	}
+
+	@Override
+	public void setTicksFrozen(int ticks) {
+		if (!underSpell() || ticks <= getTicksFrozen()) super.setTicksFrozen(ticks);
+	}
+
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return super.hurtServer(level, source, damage);
-		if (!acceptsHarmFrom(source.getEntity()) && !(started && lingering(source))) return false;
+		// Spellbane: magic never lands on a Master, from any side, guard or none. Only blade and aura reach it.
+		if (spellHit(source)) {
+			erased(level);
+			return false;
+		}
+		if (!acceptsHarmFrom(source.getEntity())) return false;
 		float through = guarded(level, source, damage);
 		if (through <= 0) return false;
 		StoneFracture braced = fracture;
@@ -1522,13 +1546,6 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		boolean hurt = super.hurtServer(level, source, through);
 		if (rear && fracture == braced && (getHealth() < health || getAbsorptionAmount() < absorption)) cancelAttack();
 		return hurt;
-	}
-
-	/** Burning, poison, withering and frost a fighter left on it tick with no one's hand on them; they still count in a started trial. */
-	private static boolean lingering(DamageSource source) {
-		return source.getEntity() == null && (source.is(net.minecraft.world.damagesource.DamageTypes.ON_FIRE)
-			|| source.is(net.minecraft.world.damagesource.DamageTypes.MAGIC) || source.is(net.minecraft.world.damagesource.DamageTypes.WITHER)
-			|| source.is(net.minecraft.world.damagesource.DamageTypes.FREEZE));
 	}
 
 	@Override

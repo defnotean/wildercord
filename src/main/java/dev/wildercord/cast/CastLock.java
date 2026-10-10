@@ -31,7 +31,7 @@ public final class CastLock {
 
 	/** Locks {@code who} out of casting for {@code ticks}, and cuts whatever they were casting short. */
 	public static void lock(LivingEntity who, int ticks) {
-		if (who instanceof dev.wildercord.aura.world.SwordMaster master && !master.acceptsInfluence(Effects.applying())) return;
+		if (who instanceof dev.wildercord.aura.world.SwordMaster master && (master.underSpell() || !master.acceptsInfluence(Effects.applying()))) return;
 		if (who instanceof ServerPlayer player) {
 			if (!canLock(player)) return;
 			long now = who.level().getGameTime();

@@ -12,7 +12,7 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 Players had become gods. 0.12 rebalances power, makes the climb a real one, and makes the world push back.
 
-- **Power, rebalanced:** spells hit for less and share out across crowds, Resistance caps at II, and Sword Masters no longer erase magic.
+- **Power, rebalanced:** spells hit for less and share out across crowds, Resistance caps at II, and Sword Masters erase every spell, so only blade and aura reach them.
 - **A real climb:** about a hundred hours to the 20th Heart Circle. Mana condenses mostly from spells that hurt hostile creatures, so spell farms and casting into the air barely count. Aura stages take three times the experience.
 - **Tribulations:** the 5th, 10th, 15th and 20th circles must be won against waves of tempered Runebound. Winning leaves runes, Mana Crystals and a **Tribulation Scar**, one more heart of health for good.
 - **The world fights back:** creatures scale to the strongest player nearby, **elites** (Swift, Ironhide, Vampiric, Brutal, Splitting), bosses that grow with your party and enrage, twice the monsters, **Frost and Ash** variants and Gloomstalker packs led by **Alphas**.

@@ -19,23 +19,14 @@ public final class MastersRules {
 	public static final double HEALTH = 480.0;
 	public static final double ARMOUR = 12.0;
 	public static final int AIM_LOCK = 6;
-	public static final int CUT_REST = 30;
-	public static final int CUT_TELL = 6;
-	public static final double CUT_RANGE = 3.5;
-	public static final double CUT_FRONT = 0.5;
-	public static final double CUT_INCOMING = 0.6;
 
-	public static final double AURA_MAX = 100, ATTACK_COST = 16, GUARD_COST = 12, CUT_COST = 8, REDIRECT_COST = 20, DODGE_COST = 18;
+	public static final double AURA_MAX = 100, ATTACK_COST = 16, GUARD_COST = 12, REDIRECT_COST = 20;
 	public static final double TECHNIQUE_DAMAGE = 30;
-	public static final int BREATH_TICKS = 40, REDIRECT_REST = 100, DODGE_REST = 80, DODGE_TICKS = 4;
+	public static final int BREATH_TICKS = 40, REDIRECT_REST = 100, DODGE_TICKS = 4;
 
 	/** A reservation already occupies its slot; opening its lobby must not count as a ninth encounter. */
 	public static boolean canAdmitEncounter(int activeCount, boolean alreadyRegistered) {
 		return alreadyRegistered || activeCount < MAX_ENCOUNTERS;
-	}
-
-	public static int cutBudget(int count) {
-		return Math.min(3, 1 + (participants(count) - 1) / 2);
 	}
 
 	/** A complete windup always precedes harm, and every attack has a guaranteed recovery. */
@@ -157,11 +148,18 @@ public final class MastersRules {
 		return attacks > 0 && (discipline(discipline) == STONE || attacks % 3 == 0);
 	}
 
-	/** A held frontal blade can sever one approaching bolt; motionless, departing and rear bolts cannot be cut. */
-	public static boolean canCut(long now, long raised, long ready, double distance, double facing, double incoming) {
-		return raised >= 0 && now >= raised + CUT_TELL && now >= ready
-			&& Double.isFinite(distance) && distance >= 0 && distance <= CUT_RANGE
-			&& Double.isFinite(facing) && facing >= CUT_FRONT && Double.isFinite(incoming) && incoming >= CUT_INCOMING;
+	/** Spellbane: how close a bolt comes before a Master erases it, from any side, guard or none. */
+	public static final double SPELLBANE_RANGE = 4.0;
+	/** How squarely a bolt must be closing on a Master (cosine) to be erased; a bolt flying past is left alone. */
+	public static final double SPELLBANE_INCOMING = 0.2;
+
+	/**
+	 * Spellbane: a Master erases every spell sent at it. A bolt within {@link #SPELLBANE_RANGE} closing on it at all
+	 * ({@code incoming}, the cosine between its flight and the way to the Master) comes apart; there is no budget, cost or rest.
+	 */
+	public static boolean erasesBolt(double distance, double incoming) {
+		return Double.isFinite(distance) && distance >= 0 && distance <= SPELLBANE_RANGE
+			&& Double.isFinite(incoming) && incoming >= SPELLBANE_INCOMING;
 	}
 
 	/** A spell may punish an early tell, while the final locked six ticks remain a committed attack. */

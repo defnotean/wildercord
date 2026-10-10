@@ -81,6 +81,11 @@ public final class Targets {
 		if (caster instanceof dev.wildercord.aura.world.SwordMaster master && !master.canHarmParticipant(entity)) {
 			return false;
 		}
+		// Spellbane: a spell being worked finds no Sword Master to harm; its blade erases all of it.
+		if (entity instanceof dev.wildercord.aura.world.SwordMaster master && master.underSpell()) {
+			if (master.level() instanceof ServerLevel server) master.erased(server);
+			return false;
+		}
 		// Bystanders cannot add uncounted damage or posture/control pressure to an opted-in fight.
 		if (entity instanceof dev.wildercord.aura.world.SwordMaster master && !master.acceptsHarmFrom(caster)) {
 			return false;
