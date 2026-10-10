@@ -25,13 +25,22 @@ MEALS = {
     'spiced_compote': ('Spiced Compote', '#B8402A', '#5A3018'),
     'duelists_broth': ('Duelist\N{RIGHT SINGLE QUOTATION MARK}s Broth', '#E8C870', '#F8F0D0'),
     'archmages_feast': ('Archmage\N{RIGHT SINGLE QUOTATION MARK}s Feast', '#C89A2A', '#B888F8'),
+    # The rare meals (0.13), served in a gilt-rimmed bowl.
+    'titans_roast': ('Titan\N{RIGHT SINGLE QUOTATION MARK}s Roast', '#7A2418', '#FFB060'),
+    'everfrost_sorbet': ('Everfrost Sorbet', '#BFE6F4', '#E04A6A'),
+    'wildbloom_salad': ('Wildbloom Salad', '#6AA83A', '#F08AC8'),
+    'starfall_bisque': ('Starfall Bisque', '#2E2A6A', '#FFF0A0'),
 }
+RARE = {'titans_roast', 'everfrost_sorbet', 'wildbloom_salad', 'starfall_bisque'}
+GILT = [hexc(c) for c in ('#7A5212', '#C8962A', '#F4D068')]
 
 LANG = {
     'block.wildercord.camp_pot': 'Camp Pot',
     'effect.wildercord.nourished': 'Nourished',
     'effect.wildercord.focused': 'Focused',
     'tooltip.wildercord.meal': 'A camp meal:',
+    'tooltip.wildercord.rare_meal': 'A rare meal:',
+    'item.wildercord.wayfarer_saffron': 'Wayfarer\N{RIGHT SINGLE QUOTATION MARK}s Saffron',
     'message.wildercord.pot.cookbook': 'The Camp Pot cookbook (a bowl in hand cooks; sneak with an empty hand to pick a meal):',
     'message.wildercord.pot.cold': 'The pot is cold: set it over a lit campfire, fire, magma or lava.',
     'message.wildercord.pot.nothing': 'Nothing in your pack makes a meal yet. Open the cookbook with an empty hand.',
@@ -73,6 +82,41 @@ def meal_icon(meal_id, broth, garnish):
             if x in (a, b) or y == 14:
                 c = BOWL[0]
             cv.put(x, y, c)
+    if meal_id in RARE:
+        for x in range(1, 15):
+            cv.put(x, 8, GILT[2] if x < 12 else GILT[1])
+        for y, (a, b) in widths.items():
+            if y in (10, 11):
+                for x in range(a + 1, b):
+                    cv.put(x, y, GILT[1] if (x + y) % 3 else GILT[2])
+    return cv.image()
+
+
+SAFFRON = """
+................
+.........s......
+........sSs.....
+.......sSRs.....
+......sSRs......
+.....sSRrs..s...
+....sSRrs..sSs..
+...sSRrs..sSRs..
+...sRrs..sSRrs..
+..sRrs..sSRrs...
+..sRs..sSRrs....
+..ss..sRrs......
+.....sRrs.......
+....sRrs........
+....sss.........
+................
+"""
+
+
+def saffron_icon():
+    """A few threads of saffron, deep red going to orange at their tips."""
+    from item_art import blit
+    cv = Canvas()
+    blit(cv, SAFFRON, {'s': hexc('#5A140C'), 'S': hexc('#F08A2A'), 'R': hexc('#D8401A'), 'r': hexc('#9A1E10')})
     return cv.image()
 
 
@@ -131,6 +175,9 @@ def write(g):
         g.save(meal_icon(meal_id, broth, garnish), g.ASSETS / f'textures/item/{meal_id}.png')
         g.item_model(meal_id, meal_id)
         g.write_json(g.ASSETS / f'items/{meal_id}.json', {'model': {'type': 'minecraft:model', 'model': f'wildercord:item/{meal_id}'}})
+    g.save(saffron_icon(), g.ASSETS / 'textures/item/wayfarer_saffron.png')
+    g.item_model('wayfarer_saffron', 'wayfarer_saffron')
+    g.write_json(g.ASSETS / 'items/wayfarer_saffron.json', {'model': {'type': 'minecraft:model', 'model': 'wildercord:item/wayfarer_saffron'}})
     g.write_json(g.DATA / 'tags/item/meals.json', {'replace': False, 'values': [f'wildercord:{m}' for m in MEALS]})
 
     g.save(pot_side(), g.ASSETS / 'textures/block/camp_pot_side.png')

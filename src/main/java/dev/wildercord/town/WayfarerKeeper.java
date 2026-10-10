@@ -167,6 +167,7 @@ public class WayfarerKeeper extends WanderingTrader {
 				sell(offers, 7, new ItemStack(Items.IRON_HORSE_ARMOR));
 				if (t >= 2) sell(offers, 18, new ItemStack(Town.RIDGEBACK_DEED));
 				sell(offers, 3, new ItemStack(Items.BLAZE_POWDER, 2));
+				sell(offers, CaravanRules.SAFFRON_PRICE, new ItemStack(Meals.WAYFARER_SAFFRON, CaravanRules.SAFFRON));
 				sell(offers, 2, new ItemStack(Items.CHORUS_FRUIT, 4));
 				sell(offers, 2, new ItemStack(Items.GLOW_BERRIES, 8));
 				sell(offers, 2, new ItemStack(Items.COCOA_BEANS, 8));

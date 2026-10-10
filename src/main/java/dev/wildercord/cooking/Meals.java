@@ -42,6 +42,7 @@ public final class Meals {
 		for (CookingRules.Recipe recipe : CookingRules.RECIPES) {
 			ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(recipe.id()));
 			Item.Properties properties = new Item.Properties().setId(key).stacksTo(CookingRules.STACK).usingConvertsTo(Items.BOWL)
+				.rarity(recipe.rare() ? net.minecraft.world.item.Rarity.EPIC : net.minecraft.world.item.Rarity.COMMON)
 				.food(new FoodProperties.Builder().nutrition(recipe.nutrition()).saturationModifier(recipe.saturation()).alwaysEdible().build(),
 					Consumables.defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(effects(recipe))).build());
 			MEALS.put(recipe.id(), Registry.register(BuiltInRegistries.ITEM, key, new MealItem(recipe, properties)));
@@ -49,6 +50,14 @@ public final class Meals {
 	}
 
 	public static final CampPotBlock CAMP_POT = pot();
+
+	/** The far-off spice every rare meal needs, sold by the wandering caravans. */
+	public static final Item WAYFARER_SAFFRON = saffron();
+
+	private static Item saffron() {
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Identifier.parse(CookingRules.SAFFRON));
+		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key).rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
+	}
 
 	private static CampPotBlock pot() {
 		ResourceKey<net.minecraft.world.level.block.Block> key = ResourceKey.create(Registries.BLOCK, Wildercord.id("camp_pot"));
@@ -95,7 +104,7 @@ public final class Meals {
 
 		@Override
 		public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
-			out.accept(Component.translatable("tooltip.wildercord.meal").withStyle(ChatFormatting.GOLD));
+			out.accept(Component.translatable(recipe.rare() ? "tooltip.wildercord.rare_meal" : "tooltip.wildercord.meal").withStyle(ChatFormatting.GOLD));
 			for (CookingRules.Buff buff : recipe.buffs()) {
 				out.accept(Component.literal(" ").append(describe(buff)).withStyle(ChatFormatting.BLUE));
 			}

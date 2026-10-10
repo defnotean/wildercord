@@ -283,6 +283,7 @@ public final class WildercordTownChecks {
 		mountBonds(player, level);
 		predators(player, level);
 		giants(player, level);
+		rareMeals(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -500,6 +501,20 @@ public final class WildercordTownChecks {
 		zombie.discard();
 	}
 
+	/** A rare meal is a rare item that feeds like a feast and carries stronger buffs. */
+	private void rareMeals(ServerPlayer player, ServerLevel level) {
+		var roast = new net.minecraft.world.item.ItemStack(dev.wildercord.cooking.Meals.MEALS.get("titans_roast"));
+		check(roast.getRarity() == net.minecraft.world.item.Rarity.EPIC, "a rare meal looks it");
+		check(dev.wildercord.cooking.CookingRules.recipe("titans_roast").needs().stream()
+			.anyMatch(n -> n.item().equals("wildercord:giant_heart")), "the titan's roast needs a giant's heart");
+		player.removeEffect(net.minecraft.world.effect.MobEffects.HEALTH_BOOST);
+		roast.finishUsingItem(level, player);
+		var boost = player.getEffect(net.minecraft.world.effect.MobEffects.HEALTH_BOOST);
+		check(boost != null && boost.getAmplifier() == 1, "eating it gives Health Boost II");
+		player.removeEffect(net.minecraft.world.effect.MobEffects.HEALTH_BOOST);
+		player.removeEffect(net.minecraft.world.effect.MobEffects.RESISTANCE);
+	}
+
 	/** A giant is a monster of the wilds grown huge and tough; its stomp throws what's near, its bar shows, and it drops its heart. */
 	private void giants(ServerPlayer player, ServerLevel level) {
 		var at = new net.minecraft.world.phys.Vec3(player.getX() + 8, player.getY() + 40, player.getZ());
@@ -630,6 +645,8 @@ public final class WildercordTownChecks {
 		check(WayfarerKeeper.offers(WayfarerKeeper.Role.CARAVANEER, BountyRules.Tier.STRANGER, 7).stream()
 			.filter(o -> o.getResult().getItem() instanceof dev.wildercord.content.RuneItem).count() == CaravanRules.runes(BountyRules.Tier.STRANGER),
 			"a caravan carries runes");
+		check(WayfarerKeeper.offers(WayfarerKeeper.Role.CARAVANEER, BountyRules.Tier.STRANGER, 7).stream()
+			.anyMatch(o -> o.getResult().is(dev.wildercord.cooking.Meals.WAYFARER_SAFFRON)), "and the saffron rare meals need");
 		WayfarerKeeper caravaneer = Caravans.send(level, player);
 		check(caravaneer != null, "a caravan makes camp");
 		if (caravaneer == null) return;

@@ -17,6 +17,8 @@ public final class CaravanRules {
 	public static final int SPAWN_NEAR = 24, SPAWN_FAR = 40;
 	/** No caravan comes within this many blocks of another. */
 	public static final double APART = 256;
+	/** Wayfarer's Saffron, the spice every rare meal needs: how many come in a bundle, and what it costs in emeralds. */
+	public static final int SAFFRON = 2, SAFFRON_PRICE = 4;
 	/** Its pack llamas. */
 	public static final int LLAMAS = 2;
 

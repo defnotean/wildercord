@@ -30,7 +30,7 @@ class CookingRulesTest {
 			for (CookingRules.Buff buff : recipe.buffs()) {
 				assertNotEquals("minecraft:strength", buff.effect(), recipe.id());
 				assertTrue(buff.seconds() > 0 && buff.seconds() <= 600, recipe.id());
-				assertTrue(buff.level() >= 1 && buff.level() <= 2, recipe.id());
+				assertTrue(buff.level() >= 1 && buff.level() <= (recipe.rare() ? 3 : 2), recipe.id());
 			}
 		}
 	}
@@ -44,6 +44,24 @@ class CookingRulesTest {
 		assertNull(CookingRules.pick(Map.of(), null));
 		assertNull(CookingRules.next(Map.of(), null));
 		assertNotEquals(CookingRules.next(pack, null).id(), CookingRules.next(pack, CookingRules.next(pack, null).id()).id());
+	}
+
+	@Test
+	void rareMealsNeedARareIngredientAndAreNeverCookedUnasked() {
+		var rare = CookingRules.RECIPES.stream().filter(CookingRules.Recipe::rare).toList();
+		assertTrue(rare.size() >= 4);
+		for (CookingRules.Recipe recipe : rare) {
+			assertTrue(recipe.needs().stream().anyMatch(n -> n.item().equals(CookingRules.SAFFRON)), recipe.id() + " needs saffron");
+			assertTrue(recipe.needs().stream().filter(n -> n.item().startsWith("wildercord:")).count() >= 2, recipe.id() + " needs a rare ingredient");
+		}
+		Map<String, Integer> pack = Map.of("wildercord:giant_heart", 1, "minecraft:beef", 1, "minecraft:potato", 1, "minecraft:carrot", 1,
+			CookingRules.SAFFRON, 1);
+		assertEquals("hearty_stew", CookingRules.pick(pack, null).id(), "the pot never spends a giant's heart unasked");
+		assertEquals("titans_roast", CookingRules.pick(pack, "titans_roast").id());
+		Map<String, Integer> onlyRare = Map.of("wildercord:giant_heart", 1, "minecraft:beef", 1, "minecraft:potato", 1, CookingRules.SAFFRON, 1);
+		assertNull(CookingRules.pick(onlyRare, null));
+		assertEquals("titans_roast", CookingRules.next(onlyRare, null).id(), "but it can be picked from the cookbook");
+		assertTrue(CookingRules.recipe("titans_roast").nutrition() > CookingRules.recipe("archmages_feast").nutrition());
 	}
 
 	@Test

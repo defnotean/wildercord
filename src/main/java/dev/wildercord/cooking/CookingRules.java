@@ -25,7 +25,12 @@ public final class CookingRules {
 	/** An effect by id, for {@code seconds}, at {@code level} (1 = I). */
 	public record Buff(String effect, int seconds, int level) {}
 
-	public record Recipe(String id, List<Need> needs, int nutrition, float saturation, List<Buff> buffs) {
+	/** A meal; a rare one needs a rare ingredient and is only cooked when chosen from the cookbook. */
+	public record Recipe(String id, List<Need> needs, int nutrition, float saturation, List<Buff> buffs, boolean rare) {
+		public Recipe(String id, List<Need> needs, int nutrition, float saturation, List<Buff> buffs) {
+			this(id, needs, nutrition, saturation, buffs, false);
+		}
+
 		public int size() {
 			int n = 0;
 			for (Need need : needs) n += need.count;
@@ -42,6 +47,7 @@ public final class CookingRules {
 
 	private static Need n(String item) { return new Need("minecraft:" + item, 1); }
 	private static Need n(String item, int count) { return new Need("minecraft:" + item, count); }
+	private static Need w(String item) { return new Need("wildercord:" + item, 1); }
 	private static Buff b(String effect, int seconds, int level) {
 		return new Buff(effect.contains(":") ? effect : "minecraft:" + effect, seconds, level);
 	}
@@ -49,6 +55,8 @@ public final class CookingRules {
 	private static final String CLARITY = "wildercord:clarity";
 	private static final String NOURISHED = "wildercord:nourished";
 	private static final String FOCUSED = "wildercord:focused";
+	/** The caravans' far-off spice every rare meal needs. */
+	public static final String SAFFRON = "wildercord:wayfarer_saffron";
 
 	public static final List<Recipe> RECIPES = List.of(
 		new Recipe("hearty_stew", List.of(n("beef"), n("potato"), n("carrot")), 10, 0.9F,
@@ -92,7 +100,16 @@ public final class CookingRules {
 		new Recipe("duelists_broth", List.of(n("chicken"), n("egg"), n("wheat")), 8, 0.8F,
 			List.of(b("resistance", 90, 1), b(NOURISHED, 180, 1))),
 		new Recipe("archmages_feast", List.of(n("golden_carrot"), n("amethyst_shard"), n("glow_berries"), n("beef")), 14, 1.2F,
-			List.of(b(CLARITY, 240, 2), b(FOCUSED, 240, 2), b(NOURISHED, 240, 2)))
+			List.of(b(CLARITY, 240, 2), b(FOCUSED, 240, 2), b(NOURISHED, 240, 2))),
+		// The rare meals (0.13): each needs a rare ingredient and the caravans' saffron, and feeds like a feast.
+		new Recipe("titans_roast", List.of(w("giant_heart"), n("beef"), n("potato"), w("wayfarer_saffron")), 16, 1.4F,
+			List.of(b("health_boost", 600, 2), b("resistance", 300, 1), b(NOURISHED, 600, 3)), true),
+		new Recipe("everfrost_sorbet", List.of(w("everfrost_shard"), n("sweet_berries"), n("sugar"), w("wayfarer_saffron")), 8, 1.0F,
+			List.of(b("fire_resistance", 600, 1), b(CLARITY, 600, 2)), true),
+		new Recipe("wildbloom_salad", List.of(w("wildbloom_petal"), n("golden_carrot"), n("sweet_berries"), w("wayfarer_saffron")), 10, 1.1F,
+			List.of(b("speed", 480, 2), b("jump_boost", 480, 2), b("regeneration", 60, 1)), true),
+		new Recipe("starfall_bisque", List.of(w("star_dust"), n("salmon"), n("glow_berries"), w("wayfarer_saffron")), 12, 1.2F,
+			List.of(b(FOCUSED, 600, 2), b("night_vision", 600, 1), b("slow_falling", 300, 1)), true)
 	);
 
 	public static Recipe recipe(String id) {
@@ -104,14 +121,15 @@ public final class CookingRules {
 
 	/**
 	 * What the pot cooks from {@code have}: the chosen recipe if it can be afforded, otherwise the richest that can (the most
-	 * ingredients, earlier in the cookbook on a tie), or null.
+	 * ingredients, earlier in the cookbook on a tie), or null. A rare meal is only ever cooked when chosen, so the pot never
+	 * spends a rare ingredient unasked.
 	 */
 	public static Recipe pick(Map<String, Integer> have, String chosen) {
 		Recipe wanted = chosen == null ? null : recipe(chosen);
 		if (wanted != null && wanted.affordable(have)) return wanted;
 		Recipe best = null;
 		for (Recipe recipe : RECIPES) {
-			if (recipe.affordable(have) && (best == null || recipe.size() > best.size())) best = recipe;
+			if (!recipe.rare && recipe.affordable(have) && (best == null || recipe.size() > best.size())) best = recipe;
 		}
 		return best;
 	}
