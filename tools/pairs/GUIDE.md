@@ -62,6 +62,21 @@ A pair costs about 1.5 times its dearer rune. So its total effect should be abou
 - At most `PairCast.MAX_TARGETS` (8) primary targets: `PairCast.first(c.enemies(), PairCast.MAX_TARGETS)`.
 - No block breaking or placing.
 
+## Lessons from review (each of these broke a pair once)
+
+- Never `setNoAi`, `setInvisible`, `setNoGravity` or anything else that is saved with the creature: a server stop in
+  the middle leaves it that way forever. To "stun" a mob: Slowness, plus `mob.setTarget(null)` and
+  `mob.getNavigation().stop()` each frame, guarded by `c.movable(mob)`.
+- Never `Mob.setTarget` on a boss: guard with `c.movable(mob)`.
+- No attribute modifiers, no `setHealth` on anyone but the caster, no static mutable state, no event hooks.
+- A dash or charge that moves the caster along a path stops at walls (`c.level.clip`); never through them.
+- Copying or converting effects: cap the durations (endless effects exist).
+- A HARMFUL pair always affects **what it struck** (`c.enemies()`), within 1 second, with damage, an effect, fire,
+  freeze or movement. Lanes, cones and areas around the caster add to that; they don't replace it. The in-game test
+  casts each pair on one husk 10+ blocks away with nothing else around.
+- Pairs whose runes need water, a mount or a pet still do something sensible on dry land alone, and never throw.
+- Any damage that scales off something (missing health, a blow taken) is capped at 18.
+
 ## Animation, sound and feel (required for every pair)
 
 Each pair has **its own choreography over time**, not one burst. At least two beats with `c.every(...)` or
