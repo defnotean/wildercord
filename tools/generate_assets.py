@@ -901,6 +901,9 @@ def write_lang(runes):
     import mount_art
     lang.update(mount_art.LANG)
     mount_art.write(sys.modules[__name__])
+    import deep_mount_art
+    lang.update(deep_mount_art.LANG)
+    deep_mount_art.write(sys.modules[__name__])
     import town_art
     lang.update(town_art.LANG)
     town_art.write(sys.modules[__name__])

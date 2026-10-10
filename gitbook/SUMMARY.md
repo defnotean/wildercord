@@ -133,6 +133,7 @@
   * [Places and Times of Power](world/places-of-power.md)
   * [Creatures](world/creatures.md)
   * [Skyray Mount](world/skyray-mount.md)
+  * [Water and Burrowing Mounts](world/deep-mounts.md)
   * [Runes of the World and Attunement](world/runes-of-the-world.md)
   * [Reed Refuges](world/reed-refuges.md)
   * [Lights Along the Bank](world/luminous-wetlands.md)

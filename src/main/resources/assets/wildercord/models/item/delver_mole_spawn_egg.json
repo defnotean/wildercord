@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "wildercord:item/delver_mole_spawn_egg"
+  }
+}

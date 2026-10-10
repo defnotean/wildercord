@@ -21,7 +21,9 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.List;
@@ -58,7 +60,47 @@ public final class MountContent {
 	public static final Item SKYRAY_BRIDLE = Registry.register(BuiltInRegistries.ITEM, BRIDLE_KEY,
 		new SkyrayBridleItem(new Item.Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.EPIC).setId(BRIDLE_KEY)));
 
+	private static final ResourceKey<EntityType<?>> TURTLE_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("reefback_turtle"));
+	/** The water mount (0.13). */
+	public static final EntityType<ReefbackTurtle> REEFBACK_TURTLE = Registry.register(BuiltInRegistries.ENTITY_TYPE, TURTLE_KEY,
+		EntityType.Builder.of(ReefbackTurtle::new, MobCategory.CREATURE).sized(1.6F, 0.9F).eyeHeight(0.6F).passengerAttachments(0.95F)
+			.clientTrackingRange(10).build(TURTLE_KEY));
+	private static final ResourceKey<Item> TURTLE_EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("reefback_turtle_spawn_egg"));
+	public static final Item TURTLE_EGG = Registry.register(BuiltInRegistries.ITEM, TURTLE_EGG_KEY,
+		new SpawnEggItem(new Item.Properties().spawnEgg(REEFBACK_TURTLE).setId(TURTLE_EGG_KEY)));
+
+	private static final ResourceKey<EntityType<?>> MOLE_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("delver_mole"));
+	/** The burrowing mount (0.13). */
+	public static final EntityType<DelverMole> DELVER_MOLE = Registry.register(BuiltInRegistries.ENTITY_TYPE, MOLE_KEY,
+		EntityType.Builder.of(DelverMole::new, MobCategory.CREATURE).sized(1.3F, 1.1F).eyeHeight(0.8F).passengerAttachments(1.2F)
+			.clientTrackingRange(10).build(MOLE_KEY));
+	private static final ResourceKey<Item> MOLE_EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("delver_mole_spawn_egg"));
+	public static final Item MOLE_EGG = Registry.register(BuiltInRegistries.ITEM, MOLE_EGG_KEY,
+		new SpawnEggItem(new Item.Properties().spawnEgg(DELVER_MOLE).setId(MOLE_EGG_KEY)));
+
+	/** What each may stand on to spawn (written by tools/mount_art.py). */
+	public static final TagKey<Block> TURTLE_GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/reefback_turtle"));
+	public static final TagKey<Block> MOLE_GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/delver_mole"));
+
 	public static void init() {
+		FabricDefaultAttributeRegistry.register(REEFBACK_TURTLE, ReefbackTurtle.createAttributes());
+		FabricDefaultAttributeRegistry.register(DELVER_MOLE, DelverMole.createAttributes());
+		SpawnPlacements.register(REEFBACK_TURTLE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.REEFBACK_TURTLE, type, TURTLE_GROUND, level, reason, pos, random));
+		SpawnPlacements.register(DELVER_MOLE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.DELVER_MOLE, type, MOLE_GROUND, level, reason, pos, random));
+		WildlifeSpawns.join(WildlifeRules.REEFBACK_TURTLE, REEFBACK_TURTLE);
+		WildlifeSpawns.join(WildlifeRules.DELVER_MOLE, DELVER_MOLE);
+		FieldGuide.add(new FieldGuide.Entry("wildercord:reefback_turtle", FieldGuide.Group.WILDLIFE, 0x3E8A78));
+		FieldGuide.add(new FieldGuide.Entry("wildercord:delver_mole", FieldGuide.Group.WILDLIFE, 0x4A3A44));
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> {
+			output.accept(TURTLE_EGG);
+			output.accept(MOLE_EGG);
+		});
+		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> {
+			output.accept(TURTLE_EGG);
+			output.accept(MOLE_EGG);
+		});
 		FabricDefaultAttributeRegistry.register(RIDGEBACK_STAG, RidgebackStag.createAttributes());
 		FabricDefaultAttributeRegistry.register(BONDED_SKYRAY, BondedSkyray.createAttributes());
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(SKYRAY_BRIDLE));

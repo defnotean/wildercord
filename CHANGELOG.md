@@ -22,11 +22,16 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Flawed and corrupted runes.** Dungeon chests sometimes hold a twisted effect rune. Learning one twists that rune in every spell. A **flawed** rune is 20% weaker but takes 15% off its spell's cost. A **corrupted** rune is stronger, at a price: **Searing** (+30%) sets whoever it helps alight, **Bloodletting** (+35%) costs a heart each cast, **Volatile** (+50%) sometimes fizzles, and **Hungering** (+30%) drains your hunger. Sneak-use a plain copy of the rune to smooth the twist out.
 - **Spell-duel arena.** Craft an Arena Stone and step up to it. When a second caster steps up, a ranked duel begins round the stone, on the duel's rules, so nobody dies or loses anything. Wins and losses move an Elo rating through five ranks, from Apprentice to Grandmaster. Sneak-use the stone to see the season's top five. Seasons last 28 days, and each new one pulls every rating halfway back to 1000.
 - **A flying mount.** Beat the Tenth Circle's tribulation and a Skyray Bridle falls with the spoils. Use it to call a skyray of your own down from the sky and ride it. It flies where you look at about 17 blocks a second, strafes, brakes and hovers. Step off and you drift down slowly. Only you can ride it. If it's brought down, the bridle rests five minutes.
+- **Water and burrowing mounts.** The Reefback Turtle lives on beaches and in mangrove swamps. Tame it with kelp, saddle it, and it swims you wherever you look, diving and surfacing, while you breathe easy under Conduit Power. The Delver Mole roams plains, meadows and forests. Tame it with carrots, potatoes or beetroot, and while you ride forward it digs a tunnel through dirt, sand, gravel and the like, level or sloping down or up as you look. It never digs anything you couldn't break yourself there. Both breed on golden food.
 
 ### Changed
 
 - **Sword Masters erase every spell.** Hostile bolts unravel within 4 blocks of a Master, closing in from any side, and a guarding Master with Aura to spare still turns one back. Spell damage, lingering burns and poisons, effects, heals, pushes, pulls, teleports, fire, freezing, interrupts and cast-locks all fail on a Master. Only your blade and your aura reach one. (0.12.0 had made Masters easier to hit with magic; that is reversed.) Duelists keep the 0.12 guard, which takes a quarter off a spell.
 - **The black bobcat is cuter, and sits properly.** It has a new rounder model and skin: a big head with wide golden eyes, fluffy cheeks, a rosy nose, rosy-cupped ears with short tufts, stubby legs on big toe-beaned paws, and a fluffy bob. It is still as big as a polar bear, and its hitbox is a little taller to match. When it sits, its head now stays on its shoulders instead of floating.
+
+### Fixed
+
+- **Ridgeback Stags take a saddle.** A tame stag would not accept a saddle, so it could never be ridden under your control.
 
 ## [0.12.0-alpha] — 2026-10-09
 

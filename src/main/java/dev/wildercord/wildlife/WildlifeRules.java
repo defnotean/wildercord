@@ -50,6 +50,13 @@ public final class WildlifeRules {
 	public static final Kind BLACK_BOBCAT = new Kind("black_bobcat", Pool.CREATURE, 3, 1, 1, 1 / 2.0, 1, 64, List.of(
 		"minecraft:dark_forest", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:taiga",
 		"minecraft:snowy_taiga"));
+	/** The Reefback Turtle (0.13): a water mount come ashore on beaches (a mount, so not in {@link #ALL}). */
+	public static final Kind REEFBACK_TURTLE = new Kind("reefback_turtle", Pool.CREATURE, ReefbackRules.WEIGHT, ReefbackRules.MIN_GROUP,
+		ReefbackRules.MAX_GROUP, 1 / 2.0, 2, 64, List.of("minecraft:beach", "minecraft:mangrove_swamp"));
+	/** The Delver Mole (0.13): a burrowing mount of the plains, meadows and forests (a mount, so not in {@link #ALL}). */
+	public static final Kind DELVER_MOLE = new Kind("delver_mole", Pool.CREATURE, DelverRules.WEIGHT, DelverRules.MIN_GROUP,
+		DelverRules.MAX_GROUP, 1 / 2.0, 2, 64, List.of("minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow",
+		"minecraft:forest", "minecraft:birch_forest", "minecraft:flower_forest"));
 
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);

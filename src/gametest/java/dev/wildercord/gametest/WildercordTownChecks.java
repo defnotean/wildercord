@@ -279,6 +279,7 @@ public final class WildercordTownChecks {
 		twistedRunes(player, level);
 		arena(player, level);
 		skyMount(player, level);
+		deepMounts(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -459,6 +460,58 @@ public final class WildercordTownChecks {
 		player.removeEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING);
 		ray.leave(level);
 		check(ray.isRemoved(), "and it goes back to the sky");
+	}
+
+	/** A saddled delver digs the soft ground ahead of its rider but not stone; a reefback takes kelp and never drowns its rider. */
+	private void deepMounts(ServerPlayer player, ServerLevel level) {
+		var stag = dev.wildercord.wildlife.MountContent.RIDGEBACK_STAG.create(level, net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED);
+		check(stag != null, "a ridgeback stag can be made");
+		if (stag == null) return;
+		stag.setTamed(true);
+		stag.setItemSlot(net.minecraft.world.entity.EquipmentSlot.SADDLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SADDLE));
+		check(stag.isSaddled(), "a tame stag takes a saddle");
+		stag.discard();
+		BlockPos base = player.blockPosition().above(40);
+		var mole = dev.wildercord.wildlife.MountContent.DELVER_MOLE.create(level, net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED);
+		check(mole != null, "a delver mole can be made");
+		if (mole == null) return;
+		mole.snapTo(base.getX() + 0.5, base.getY(), base.getZ() + 0.5, 0, 0);
+		mole.setNoGravity(true);
+		mole.setTamed(true);
+		mole.setItemSlot(net.minecraft.world.entity.EquipmentSlot.SADDLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SADDLE));
+		level.addFreshEntity(mole);
+		BlockPos ahead = base.south();
+		level.setBlockAndUpdate(ahead, net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState());
+		level.setBlockAndUpdate(ahead.above(), net.minecraft.world.level.block.Blocks.GRAVEL.defaultBlockState());
+		level.setBlockAndUpdate(ahead.above(2), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+		net.minecraft.world.phys.Vec3 home = player.position();
+		player.startRiding(mole);
+		player.setYRot(0);
+		player.setXRot(0);
+		check(mole.isSaddled() && mole.getControllingPassenger() == player, "a saddled delver is steered by its rider");
+		int dug = mole.burrow(level, player);
+		check(dug >= 2 && level.getBlockState(ahead).isAir() && level.getBlockState(ahead.above()).isAir(), "it digs the dirt and gravel ahead");
+		check(level.getBlockState(ahead.above(2)).is(net.minecraft.world.level.block.Blocks.STONE), "but not stone");
+		player.stopRiding();
+		level.setBlockAndUpdate(ahead.above(2), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+		level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, mole.getBoundingBox().inflate(4)).forEach(net.minecraft.world.entity.Entity::discard);
+		mole.discard();
+
+		var turtle = dev.wildercord.wildlife.MountContent.REEFBACK_TURTLE.create(level, net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED);
+		check(turtle != null, "a reefback turtle can be made");
+		if (turtle == null) return;
+		turtle.snapTo(base.getX() + 0.5, base.getY(), base.getZ() + 0.5, 0, 0);
+		turtle.setNoGravity(true);
+		level.addFreshEntity(turtle);
+		check(turtle.isFood(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.KELP)), "a reefback eats kelp");
+		int temper = turtle.getTemper();
+		turtle.fedFood(player, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.KELP));
+		check(turtle.getTemper() > temper, "which calms a wild one");
+		check(turtle.canBreatheUnderwater() && !turtle.dismountsUnderwater(), "it never throws its rider off under water");
+		double[] dive = dev.wildercord.wildlife.ReefbackRules.swim(0, 45, 1, 0);
+		check(dive[1] < 0 && dive[2] > 0, "and swims down the way its rider looks");
+		turtle.discard();
+		player.teleportTo(home.x, home.y, home.z);
 	}
 
 	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */

@@ -39,6 +39,9 @@ public class WildlifeRenderState extends LivingEntityRenderState {
 	public float air;
 	public float rise;
 	public float alert;
+	/** A reefback swimming (0 ashore, 1 in water), and a delver digging. */
+	public float swim;
+	public float dig;
 
 	/** A tortoise's garden: up to three plants, each a block model drawn small on its shell. */
 	public final BlockModelRenderState[] garden = {new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState()};
