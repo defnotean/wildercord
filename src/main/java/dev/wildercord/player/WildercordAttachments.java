@@ -615,6 +615,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** The codex bestiary's tally (see {@link dev.wildercord.spell.CodexRules}): kills of each field-guide creature by type id. Kept through death. */
+	public static final AttachmentType<Map<String, Integer>> CODEX = AttachmentRegistry.create(
+		Wildercord.id("codex"),
+		builder -> builder
+			.initializer(Map::of)
+			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
+			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	public static void init() {}
 }
 

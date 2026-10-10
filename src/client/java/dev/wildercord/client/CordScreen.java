@@ -3603,9 +3603,14 @@ public class CordScreen extends Screen {
 				net.minecraft.world.entity.EntityType<?> type = Optional.ofNullable(Identifier.tryParse(entry.type()))
 					.flatMap(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
 				Component name = type == null ? Component.literal(entry.type()) : type.getDescription();
-				if (met.contains(entry)) {
-					lines.add(new GrimoireLine(name.copy().withColor(entry.color()), 8, 0xFF000000 | entry.color(), List.of(
-						name.copy().withColor(entry.color()), Component.translatable(entry.noteKey()).withStyle(ChatFormatting.GRAY))));
+				int kills = minecraft.player == null ? 0 : dev.wildercord.player.Codex.kills(minecraft.player, entry.type());
+				if (met.contains(entry) || kills > 0) {
+					List<Component> tip = new ArrayList<>(List.of(name.copy().withColor(entry.color()),
+						Component.translatable(entry.noteKey()).withStyle(ChatFormatting.GRAY)));
+					addCodex(tip, type, kills);
+					Component line = kills == 0 ? name.copy().withColor(entry.color())
+						: Component.translatable("screen.wildercord.grimoire.codex_line", name.copy().withColor(entry.color()), kills).withColor(DIM);
+					lines.add(new GrimoireLine(line, 8, 0xFF000000 | entry.color(), tip));
 				} else {
 					Component hint = Component.translatable(entry.hintKey()).withStyle(ChatFormatting.ITALIC);
 					lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.field_guide_unknown", hint), 8, FAINT,
@@ -3613,6 +3618,45 @@ public class CordScreen extends Screen {
 				}
 			}
 		}
+	}
+
+	/**
+	 * The codex bestiary ({@code spell.CodexRules}) under a field-guide entry: its rank and tally, and once studied, its health,
+	 * armour and bite as its kind is born with them.
+	 */
+	private static void addCodex(List<Component> tip, net.minecraft.world.entity.EntityType<?> type, int kills) {
+		dev.wildercord.spell.CodexRules.Rank rank = dev.wildercord.spell.CodexRules.rank(kills);
+		tip.add(Component.translatable("screen.wildercord.grimoire.codex_" + rank.key, kills)
+			.withStyle(rank == dev.wildercord.spell.CodexRules.Rank.MASTERED ? ChatFormatting.GOLD : ChatFormatting.AQUA));
+		int next = dev.wildercord.spell.CodexRules.toNext(kills);
+		if (next > 0 && kills > 0) {
+			tip.add(Component.translatable("screen.wildercord.grimoire.codex_next", next).withStyle(ChatFormatting.DARK_GRAY));
+		}
+		if (kills < dev.wildercord.spell.CodexRules.STUDIED || type == null) {
+			return;
+		}
+		@SuppressWarnings("unchecked")
+		net.minecraft.world.entity.EntityType<? extends net.minecraft.world.entity.LivingEntity> living =
+			(net.minecraft.world.entity.EntityType<? extends net.minecraft.world.entity.LivingEntity>) type;
+		if (!net.minecraft.world.entity.ai.attributes.DefaultAttributes.hasSupplier(living)) {
+			return;
+		}
+		net.minecraft.world.entity.ai.attributes.AttributeSupplier stats = net.minecraft.world.entity.ai.attributes.DefaultAttributes.getSupplier(living);
+		double health = stat(stats, net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
+		double armor = stat(stats, net.minecraft.world.entity.ai.attributes.Attributes.ARMOR);
+		double bite = stat(stats, net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+		tip.add(Component.translatable("screen.wildercord.grimoire.codex_stats", fmt(health / 2), fmt(armor),
+			bite > 0 ? Component.translatable("screen.wildercord.grimoire.codex_bite", fmt(bite / 2)) : Component.translatable("screen.wildercord.grimoire.codex_harmless"))
+			.withStyle(ChatFormatting.GRAY));
+	}
+
+	private static double stat(net.minecraft.world.entity.ai.attributes.AttributeSupplier stats,
+		net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute) {
+		return stats.hasAttribute(attribute) ? stats.getBaseValue(attribute) : 0;
+	}
+
+	private static String fmt(double value) {
+		return value == Math.rint(value) ? Integer.toString((int) value) : String.format(java.util.Locale.ROOT, "%.1f", value);
 	}
 
 	/** A Bestiary column: the elements found, then a "?" for each still to find, or "none" when there's nothing to find. */

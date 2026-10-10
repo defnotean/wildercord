@@ -32,6 +32,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Guilds and covens.** Swordsmen can found a guild and mages a coven with `/guild found <name>` or `/coven found <name>` (32 emeralds). Unlike a party, a guild or coven is saved with the world. Members within 32 blocks of each other learn faster: aura experience in a guild, and mana condensing toward a circle in a coven, each count 5% more per member nearby, up to +15%. Up to 12 members, one guild and one coven each.
 - **Co-op tribulations.** Party members within 24 blocks when your tribulation begins now fight it beside you (up to three). Each ally makes every wave half again as big and every monster tougher, and leaving early doesn't shrink it. Only you have to survive. Allies still standing at the end get the experience and half the Mana Crystals, and the circle stays yours.
 - **Mentoring.** A mage of the 10th circle can take up to three apprentices who haven't reached the 5th with `/mentor take`. An apprentice casting near their mentor condenses a quarter faster. Every circle they form pays the mentor in Mana Crystals, and at the 10th circle they graduate.
+- **Codex bestiary.** The Grimoire's field guide now counts every creature you slay. Ten kills teach you its health, armour and bite, and thirty write its name in gold. It's knowledge only: no rank makes you stronger.
 
 ### Changed
 

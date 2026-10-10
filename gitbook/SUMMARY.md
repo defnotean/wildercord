@@ -140,6 +140,7 @@
   * [Rare Meals](world/rare-meals.md)
   * [Mana Elixirs](world/mana-elixirs.md)
   * [Blade Smithing](world/blade-smithing.md)
+  * [Codex Bestiary](world/codex.md)
   * [Runes of the World and Attunement](world/runes-of-the-world.md)
   * [Reed Refuges](world/reed-refuges.md)
   * [Lights Along the Bank](world/luminous-wetlands.md)

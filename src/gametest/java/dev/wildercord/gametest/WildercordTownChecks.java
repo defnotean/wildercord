@@ -289,6 +289,7 @@ public final class WildercordTownChecks {
 		guilds(player, level);
 		coopTribulation(player, level);
 		mentoring(player, level);
+		codex(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -514,6 +515,25 @@ public final class WildercordTownChecks {
 		check(dev.wildercord.cast.events.Tribulation.party(player) == 0, "no party, no allies");
 		dev.wildercord.cast.events.Tribulation.cancel(player);
 		check(!dev.wildercord.cast.events.Tribulation.engaged(player), "a cancelled tribulation lets the caster go");
+	}
+
+	/** Slaying a field-guide creature tallies it in the codex, ten earn it studied, and other creatures aren't counted. */
+	private void codex(ServerPlayer player, ServerLevel level) {
+		var before = dev.wildercord.player.Codex.tally(player);
+		player.setAttached(dev.wildercord.player.WildercordAttachments.CODEX, java.util.Map.of());
+		var stag = dev.wildercord.wildlife.Wildlife.LUMEN_STAG.create(level, EntitySpawnReason.COMMAND);
+		var zombie = net.minecraft.world.entity.EntityTypes.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
+		check(stag != null && zombie != null, "a stag and a zombie to slay");
+		dev.wildercord.player.Codex.slain(player, stag);
+		check(dev.wildercord.player.Codex.kills(player, "wildercord:lumen_stag") == 1, "a slain stag is tallied");
+		for (int i = 1; i < dev.wildercord.spell.CodexRules.STUDIED; i++) dev.wildercord.player.Codex.slain(player, stag);
+		check(dev.wildercord.spell.CodexRules.rank(dev.wildercord.player.Codex.kills(player, "wildercord:lumen_stag")) == dev.wildercord.spell.CodexRules.Rank.STUDIED,
+			"ten stags slain is a stag studied");
+		dev.wildercord.player.Codex.slain(player, zombie);
+		check(dev.wildercord.player.Codex.tally(player).size() == 1, "a creature outside the field guide isn't tallied");
+		stag.discard();
+		zombie.discard();
+		player.setAttached(dev.wildercord.player.WildercordAttachments.CODEX, before);
 	}
 
 	/** An apprenticeship is saved with the world, teaches only near the mentor, and ends at the 10th circle. */
