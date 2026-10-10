@@ -3234,7 +3234,7 @@ def write_new_content(runes):
 
     # ---- mining
     import residue_art
-    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar", "wildercord:camp_pot"]
+    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar", "wildercord:camp_pot", "wildercord:arena_stone"]
         + residue_art.RESIDUE_PICKAXE})
     # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
     write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": [

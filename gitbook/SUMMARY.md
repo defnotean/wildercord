@@ -163,6 +163,7 @@
   * [The Runesmith](social/runesmith.md)
   * [Daily Contracts](social/contracts.md)
   * [Duels](social/duels.md)
+  * [The Arena](social/arena.md)
   * [Chorus Casting](social/chorus.md)
   * [Playing Together](social/playing-together.md)
   * [Parties](social/parties.md)

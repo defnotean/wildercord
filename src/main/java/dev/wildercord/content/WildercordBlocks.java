@@ -58,6 +58,14 @@ public final class WildercordBlocks {
 		.noOcclusion()
 		.lightLevel(state -> 7), Rarity.UNCOMMON);
 
+	public static final dev.wildercord.duel.ArenaStoneBlock ARENA_STONE = register("arena_stone", dev.wildercord.duel.ArenaStoneBlock::new, BlockBehaviour.Properties.of()
+		.mapColor(MapColor.DEEPSLATE)
+		.instrument(NoteBlockInstrument.BASEDRUM)
+		.sound(SoundType.DEEPSLATE_BRICKS)
+		.strength(3.5F, 9.0F)
+		.requiresCorrectToolForDrops()
+		.lightLevel(state -> 5), Rarity.UNCOMMON);
+
 	public static final BlockEntityType<WellstoneBlockEntity> WELLSTONE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
 		Wildercord.id("wellstone"), FabricBlockEntityTypeBuilder.create(WellstoneBlockEntity::new, WELLSTONE).build());
 

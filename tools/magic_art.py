@@ -280,6 +280,76 @@ LANG = {
     "message.wildercord.twist.learned.volatile": "%s is corrupted: it burns bright and unsteady",
     "message.wildercord.twist.learned.hungering": "%s is corrupted: it feeds on you",
     "message.wildercord.twist.cleansed": "%s is whole again",
+    "block.wildercord.arena_stone": "Arena Stone",
+    "arena.wildercord.rank.apprentice": "Apprentice",
+    "arena.wildercord.rank.adept": "Adept",
+    "arena.wildercord.rank.duellist": "Duellist",
+    "arena.wildercord.rank.archmage": "Archmage",
+    "arena.wildercord.rank.grandmaster": "Grandmaster",
+    "message.wildercord.arena.waiting": "You step up to the Arena Stone. Waiting for a challenger...",
+    "message.wildercord.arena.begins": "A ranked duel against %s (%s, %s). Stay within 16 blocks of the stone",
+    "message.wildercord.arena.fight": "Fight!",
+    "message.wildercord.arena.won": "Victory! %s rating (now %s, %s)",
+    "message.wildercord.arena.lost": "Defeat. %s rating (now %s, %s)",
+    "message.wildercord.arena.draw": "A draw. %s rating (now %s, %s)",
+    "message.wildercord.arena.called_off": "The ranked duel was called off. Nothing is recorded",
+    "message.wildercord.arena.ladder": "Arena ladder, season %s",
+    "message.wildercord.arena.ladder.empty": "Nobody has fought this season yet",
+    "message.wildercord.arena.ladder.line": "%s: %s %s (%s won, %s lost)",
+}
+
+
+def arena_top():
+    """The stone's face: a gold-rimmed duelling circle with two wands crossed at its heart."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            t = 1 + (1 if noise(x, y, 71) > 0.6 else 0) - (1 if noise(x, y, 73) < 0.15 else 0)
+            cv.put(x, y, STONE[max(0, t)])
+    gold = [hexc(c) for c in ("#8A6A20", "#C8A040", "#F0D070")]
+    for y in range(16):
+        for x in range(16):
+            d = ((x - 7.5) ** 2 + (y - 7.5) ** 2) ** 0.5
+            if 5.6 <= d < 6.6:
+                cv.put(x, y, gold[1] if (x + y) % 3 else gold[2])
+            elif 6.6 <= d < 7.2:
+                cv.put(x, y, gold[0])
+    for i in range(3, 13):
+        cv.put(i, i, GLOW[1] if i % 2 else GLOW[0])
+        cv.put(15 - i, i, GLOW[1] if i % 2 else GLOW[0])
+    for x, y in ((7, 7), (8, 8), (8, 7), (7, 8)):
+        cv.put(x, y, GLOW[2])
+    for x, y in ((3, 3), (12, 3)):
+        cv.put(x, y, gold[2])
+    return cv.image()
+
+
+def arena_side():
+    """Deepslate bricks bound by a gold band with a violet glyph at its middle."""
+    cv = Canvas()
+    for y in range(16):
+        for x in range(16):
+            mortar = y in (0, 7, 15) or (x == (0 if (y // 8) % 2 == 0 else 8) and y not in (0, 7, 15))
+            if mortar:
+                cv.put(x, y, STONE[0])
+            else:
+                t = 2 + (1 if noise(x, y, 83) > 0.7 else 0) - (1 if noise(x, y, 89) < 0.25 else 0)
+                cv.put(x, y, STONE[t])
+    gold = [hexc(c) for c in ("#8A6A20", "#C8A040", "#F0D070")]
+    for x in range(16):
+        cv.put(x, 3, gold[0])
+        cv.put(x, 4, gold[1] if x % 4 else gold[2])
+    for x, y in ((7, 10), (8, 10), (7, 11), (8, 11), (6, 12), (9, 12)):
+        cv.put(x, y, GLOW[1] if y == 12 else GLOW[2])
+    return cv.image()
+
+
+ARENA_RECIPE = {
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "pattern": ["GAG", "BEB", "BBB"],
+    "key": {"G": "minecraft:gold_ingot", "A": "minecraft:amethyst_shard", "B": "minecraft:polished_deepslate", "E": "minecraft:ender_pearl"},
+    "result": {"id": "wildercord:arena_stone", "count": 1},
 }
 
 
@@ -294,6 +364,15 @@ def write(g):
     g.item_model("ritual_tablet", "ritual_tablet")
     g.write_json(g.ASSETS / "items/ritual_tablet.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/ritual_tablet"}})
     g.write_json(g.DATA / "recipe/ritual_tablet.json", TABLET_RECIPE)
+    g.save(arena_top(), g.ASSETS / "textures/block/arena_stone_top.png")
+    g.save(arena_side(), g.ASSETS / "textures/block/arena_stone_side.png")
+    g.write_json(g.ASSETS / "models/block/arena_stone.json", {"parent": "minecraft:block/cube_bottom_top", "textures": {
+        "top": "wildercord:block/arena_stone_top", "side": "wildercord:block/arena_stone_side", "bottom": "minecraft:block/polished_deepslate"}})
+    g.write_json(g.ASSETS / "blockstates/arena_stone.json", {"variants": {"": {"model": "wildercord:block/arena_stone"}}})
+    g.write_json(g.ASSETS / "items/arena_stone.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/arena_stone"}})
+    g.write_json(g.DATA / "loot_table/blocks/arena_stone.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": "wildercord:arena_stone"}], "condition": {"type": "minecraft:survives_explosion"}}]})
+    g.write_json(g.DATA / "recipe/arena_stone.json", ARENA_RECIPE)
 
 
 def preview(out_dir):
@@ -304,6 +383,9 @@ def preview(out_dir):
     sheet.paste(egg, (528, 8), egg)
     tablet = tablet_icon().resize((128, 128), Image.NEAREST)
     sheet.paste(tablet, (528, 144), tablet)
+    for i, img in enumerate((arena_top(), arena_side())):
+        big = img.resize((64, 64), Image.NEAREST)
+        sheet.paste(big, (528 + i * 66, 280), big)
     out = Path(out_dir) / "magic_art.png"
     out.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(out)

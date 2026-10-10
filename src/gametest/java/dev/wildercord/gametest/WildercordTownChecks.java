@@ -277,6 +277,7 @@ public final class WildercordTownChecks {
 		mageHunter(player, level);
 		ritual(player, level);
 		twistedRunes(player, level);
+		arena(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -417,6 +418,29 @@ public final class WildercordTownChecks {
 		check(dev.wildercord.player.RuneTwists.twist(player, rune.id()) == null, "a plain copy smooths it out");
 		player.setAttached(dev.wildercord.player.WildercordAttachments.RUNE_TWISTS, old);
 		player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, held);
+	}
+
+	/** The arena stone takes a caster's place, and a ranked bout moves both ratings on the season's ladder. */
+	private void arena(ServerPlayer player, ServerLevel level) {
+		BlockPos pos = player.blockPosition().offset(2, 0, 0);
+		var old = level.getBlockState(pos);
+		level.setBlockAndUpdate(pos, dev.wildercord.content.WildercordBlocks.ARENA_STONE.defaultBlockState());
+		check(level.getBlockState(pos).is(dev.wildercord.content.WildercordBlocks.ARENA_STONE), "an arena stone stands");
+		player.setShiftKeyDown(true);
+		dev.wildercord.duel.Arena.use(level, pos, player);
+		player.setShiftKeyDown(false);
+		check(!dev.wildercord.duel.Duels.inDuel(player), "reading the ladder starts nothing");
+		level.setBlockAndUpdate(pos, old);
+		java.util.UUID one = java.util.UUID.randomUUID(), two = java.util.UUID.randomUUID();
+		var ladder = dev.wildercord.duel.ArenaLadder.of(level.getServer());
+		int[] change = dev.wildercord.duel.Arena.record(level, one, "Winner", two, "Loser", 1.0);
+		check(change[0] > 0 && change[1] < 0, "the winner climbs and the loser falls");
+		int season = dev.wildercord.duel.Arena.season(level);
+		var won = ladder.standing(one, "Winner", season);
+		check(won.rating() == dev.wildercord.duel.ArenaRules.START + change[0] && won.wins() == 1, "the ladder keeps the win");
+		check(ladder.top(season, 50).stream().anyMatch(s -> s.name().equals("Winner")), "and names the winner");
+		ladder.forget(one);
+		ladder.forget(two);
 	}
 
 	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */

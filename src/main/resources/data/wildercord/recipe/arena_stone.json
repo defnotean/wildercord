@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GAG",
+    "BEB",
+    "BBB"
+  ],
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "A": "minecraft:amethyst_shard",
+    "B": "minecraft:polished_deepslate",
+    "E": "minecraft:ender_pearl"
+  },
+  "result": {
+    "id": "wildercord:arena_stone",
+    "count": 1
+  }
+}
