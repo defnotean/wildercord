@@ -466,6 +466,17 @@ public final class WildercordTownChecks {
 		check(ladder.top(season, 50).stream().anyMatch(s -> s.name().equals("Winner")), "and names the winner");
 		ladder.forget(one);
 		ladder.forget(two);
+		level.setBlockAndUpdate(pos, dev.wildercord.content.WildercordBlocks.ARENA_STONE.defaultBlockState());
+		dev.wildercord.duel.Arena.use(level, pos, player);
+		int waiting = dev.wildercord.duel.Arena.waiting();
+		check(waiting >= 1, "stepping up waits at the stone");
+		dev.wildercord.duel.Arena.suspendWaiting(level.getServer());
+		check(dev.wildercord.duel.Arena.waiting() == 0 && dev.wildercord.duel.Arena.queued(level.getServer()) == waiting, "a stop saves who waits");
+		dev.wildercord.duel.Arena.resumeWaiting(level.getServer());
+		check(dev.wildercord.duel.Arena.waiting() == waiting && dev.wildercord.duel.Arena.queued(level.getServer()) == 0, "a start puts them back at the stone");
+		dev.wildercord.duel.Arena.use(level, pos, player);
+		check(!dev.wildercord.duel.Duels.inDuel(player), "no one duels themself after a restart");
+		level.setBlockAndUpdate(pos, old);
 	}
 
 	/** The bridle calls a skyray of your own and seats you on it; stepping off drifts you down, and it goes back to the sky. */
@@ -578,6 +589,12 @@ public final class WildercordTownChecks {
 		var saved = dev.wildercord.guild.Mentors.Ledger.CODEC.encodeStart(ops, ledger).getOrThrow();
 		var loaded = dev.wildercord.guild.Mentors.Ledger.CODEC.parse(ops, saved).getOrThrow();
 		check(mentor.equals(loaded.book().mentorOf(player.getUUID())), "an apprenticeship outlasts a reload");
+		java.util.UUID other = new java.util.UUID(0x5EED, 0x0FFE);
+		ledger.offer(player.getUUID(), other, level.getServer().overworld().getGameTime());
+		var reloaded = dev.wildercord.guild.Mentors.Ledger.CODEC.parse(ops, dev.wildercord.guild.Mentors.Ledger.CODEC.encodeStart(ops, ledger).getOrThrow()).getOrThrow();
+		check(reloaded.offered(player.getUUID()), "an offer outlasts a reload");
+		level.getServer().getCommands().performPrefixedCommand(player.createCommandSourceStack(), "mentor accept");
+		check(!ledger.offered(player.getUUID()), "answering an offer uses it up, even when its mentor is away");
 		dev.wildercord.guild.Mentors.formed(player, dev.wildercord.guild.MentorRules.GRADUATE_AT - 1);
 		check(ledger.book().mentorOf(player.getUUID()) != null, "the 9th circle is still an apprentice's");
 		dev.wildercord.guild.Mentors.formed(player, dev.wildercord.guild.MentorRules.GRADUATE_AT);
@@ -598,6 +615,12 @@ public final class WildercordTownChecks {
 		var saved = dev.wildercord.guild.Guilds.Ledger.CODEC.encodeStart(ops, ledger).getOrThrow();
 		var loaded = dev.wildercord.guild.Guilds.Ledger.CODEC.parse(ops, saved).getOrThrow();
 		check(loaded.roster().named("test circle") != null && loaded.roster().named("test circle").leader().equals(player.getUUID()), "a coven outlasts a reload");
+		ledger.invite(player.getUUID(), kind, "Test Circle", level.getServer().overworld().getGameTime());
+		var reloaded = dev.wildercord.guild.Guilds.Ledger.CODEC.parse(ops, dev.wildercord.guild.Guilds.Ledger.CODEC.encodeStart(ops, ledger).getOrThrow()).getOrThrow();
+		check(reloaded.invited(player.getUUID(), kind), "an invitation outlasts a reload");
+		check(!reloaded.invited(player.getUUID(), dev.wildercord.guild.GuildRules.Kind.GUILD), "and only to its own kind");
+		level.getServer().getCommands().performPrefixedCommand(player.createCommandSourceStack(), "coven accept");
+		check(!ledger.invited(player.getUUID(), kind), "accepting uses the invitation up");
 		ledger.change(r -> r.disband(player.getUUID(), kind));
 		check(dev.wildercord.guild.Guilds.of(player, kind) == null, "a disbanded coven is gone");
 	}

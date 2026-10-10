@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -38,7 +37,8 @@ import static net.minecraft.commands.Commands.literal;
  * Guilds and covens (0.13; the rules are {@link GuildRules}). The roster is the overworld's saved data, so a guild outlasts a
  * restart and can name members who are away. {@code /guild} and {@code /coven} found, invite, join, leave, kick and disband;
  * a guild takes swordsmen (a breathing method learned) and a coven mages (a Cord worn or a Heart Circle formed). Founding one
- * costs {@link GuildRules#FOUND_COST} emeralds. Invitations are held only in memory and lapse after a minute.
+ * costs {@link GuildRules#FOUND_COST} emeralds. Invitations are saved with the roster and lapse after a minute of game time,
+ * so one outlasts a logout or a restart within that minute.
  */
 public final class Guilds {
 	private Guilds() {}
@@ -52,22 +52,55 @@ public final class Guilds {
 			UUIDUtil.STRING_CODEC.fieldOf("leader").forGetter(Guild::leader),
 			UUIDUtil.STRING_CODEC.listOf().fieldOf("members").forGetter(Guild::members)
 		).apply(i, Guild::new));
+		private static final Codec<Invite> INVITE = RecordCodecBuilder.create(i -> i.group(
+			Codec.STRING.fieldOf("guild").forGetter(Invite::guild),
+			Codec.LONG.fieldOf("until").forGetter(Invite::until)
+		).apply(i, Invite::new));
 		public static final Codec<Ledger> CODEC = RecordCodecBuilder.create(i -> i.group(
 			GUILD.listOf().optionalFieldOf("guilds", List.of()).forGetter(l -> l.roster.guilds()),
-			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING).optionalFieldOf("names", Map.of()).forGetter(l -> l.names)
+			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING).optionalFieldOf("names", Map.of()).forGetter(l -> l.names),
+			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.unboundedMap(KIND, INVITE)).optionalFieldOf("invites", Map.of()).forGetter(l -> l.invites)
 		).apply(i, Ledger::new));
 		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("guilds"), Ledger::new, CODEC, null);
 
 		final GuildRules.Roster roster;
 		private final Map<UUID, String> names;
 
+		/** Invitations waiting on each player, by kind. */
+		private final Map<UUID, Map<Kind, Invite>> invites;
+
 		public Ledger() {
-			this(List.of(), Map.of());
+			this(List.of(), Map.of(), Map.of());
 		}
 
-		private Ledger(List<Guild> guilds, Map<UUID, String> names) {
+		private Ledger(List<Guild> guilds, Map<UUID, String> names, Map<UUID, Map<Kind, Invite>> invites) {
 			this.roster = new GuildRules.Roster(guilds);
 			this.names = new HashMap<>(names);
+			this.invites = new HashMap<>();
+			invites.forEach((id, byKind) -> this.invites.put(id, new HashMap<>(byKind)));
+		}
+
+		/** Holds an invitation to {@code guild} for {@code to} for a minute, dropping any that have lapsed by {@code now}. */
+		public void invite(UUID to, Kind kind, String guild, long now) {
+			invites.values().forEach(byKind -> byKind.values().removeIf(i -> i.until() < now));
+			invites.values().removeIf(Map::isEmpty);
+			invites.computeIfAbsent(to, id -> new HashMap<>()).put(kind, new Invite(guild, now + GuildRules.INVITE_TICKS));
+			setDirty();
+		}
+
+		/** Takes {@code player}'s invitation to {@code kind}, or null. */
+		Invite takeInvite(UUID player, Kind kind) {
+			Map<Kind, Invite> mine = invites.get(player);
+			Invite invite = mine == null ? null : mine.remove(kind);
+			if (mine != null && mine.isEmpty()) invites.remove(player);
+			if (invite != null) setDirty();
+			return invite;
+		}
+
+		/** Whether {@code player} has an invitation to {@code kind} held, lapsed or not. */
+		public boolean invited(UUID player, Kind kind) {
+			Map<Kind, Invite> mine = invites.get(player);
+			return mine != null && mine.containsKey(kind);
 		}
 
 		public GuildRules.Roster roster() {
@@ -92,13 +125,10 @@ public final class Guilds {
 
 	private record Invite(String guild, long until) {}
 
-	private static final Map<UUID, Map<Kind, Invite>> INVITES = new ConcurrentHashMap<>();
-
 	public static void init() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> register(dispatcher));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
 			ledger(server).remember(handler.player.getUUID(), handler.player.getGameProfile().name()));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> INVITES.remove(handler.player.getUUID()));
 	}
 
 	public static Ledger ledger(MinecraftServer server) {
@@ -210,8 +240,8 @@ public final class Guilds {
 		if (check != Result.OK) return refuse(from, kind, check);
 		if (!eligible(to, kind)) return refuse(from, kind, "their_eligible");
 		Guild guild = ledger.roster.of(from.getUUID(), kind);
-		INVITES.computeIfAbsent(to.getUUID(), id -> new ConcurrentHashMap<>())
-			.put(kind, new Invite(guild.name(), from.level().getServer().overworld().getGameTime() + GuildRules.INVITE_TICKS));
+		long now = from.level().getServer().overworld().getGameTime();
+		ledger.invite(to.getUUID(), kind, guild.name(), now);
 		MutableComponent accept = text(kind, "accept_button").withStyle(style -> style.withColor(ChatFormatting.GREEN)
 			.withClickEvent(new ClickEvent.RunCommand("/" + kind.key() + " accept")));
 		to.sendSystemMessage(text(kind, "invited", from.getDisplayName(), guild.name()).append(Component.literal(" ")).append(accept));
@@ -220,8 +250,7 @@ public final class Guilds {
 	}
 
 	private static int accept(ServerPlayer player, Kind kind) {
-		Map<Kind, Invite> mine = INVITES.get(player.getUUID());
-		Invite invite = mine == null ? null : mine.remove(kind);
+		Invite invite = ledger(player.level().getServer()).takeInvite(player.getUUID(), kind);
 		if (invite == null || invite.until() < player.level().getServer().overworld().getGameTime()) return refuse(player, kind, "no_invite");
 		if (!eligible(player, kind)) return refuse(player, kind, "eligible");
 		Ledger ledger = ledger(player.level().getServer());

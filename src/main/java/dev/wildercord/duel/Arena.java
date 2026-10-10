@@ -1,23 +1,30 @@
 package dev.wildercord.duel;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordBlocks;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +32,8 @@ import java.util.UUID;
 
 /**
  * The spell-duel arena (see {@link ArenaRules}). Use an Arena Stone to step up; when a second caster steps up to the same
- * stone, a ranked duel begins round it on the duel's own rules. Sneak-use the stone to read the season's ladder.
+ * stone, a ranked duel begins round it on the duel's own rules. Sneak-use the stone to read the season's ladder. Who stands
+ * waiting is saved when the server stops, so a caster still at the stone after a restart is still waiting for an opponent.
  */
 public final class Arena {
 	private Arena() {}
@@ -35,13 +43,76 @@ public final class Arena {
 
 	private static final Map<ResourceKey<Level>, Map<BlockPos, Waiting>> WAITING = new HashMap<>();
 
+	/** One caster waiting at one stone, as saved over a restart. */
+	private record Queued(ResourceKey<Level> dimension, BlockPos pos, UUID player, long since) {
+		static final Codec<Queued> CODEC = RecordCodecBuilder.create(i -> i.group(
+			ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(Queued::dimension),
+			BlockPos.CODEC.fieldOf("pos").forGetter(Queued::pos),
+			UUIDUtil.STRING_CODEC.fieldOf("player").forGetter(Queued::player),
+			Codec.LONG.fieldOf("since").forGetter(Queued::since)
+		).apply(i, Queued::new));
+	}
+
+	/** The casters waiting at the stones when the server last stopped, taken up again when it starts. */
+	public static final class Queue extends SavedData {
+		static final Codec<Queue> CODEC = Queued.CODEC.listOf().optionalFieldOf("waiting", List.of()).xmap(Queue::new, q -> q.waiting).codec();
+		static final SavedDataType<Queue> TYPE = new SavedDataType<>(Wildercord.id("arena_queue"), Queue::new, CODEC, null);
+
+		private List<Queued> waiting;
+
+		public Queue() {
+			this(List.of());
+		}
+
+		private Queue(List<Queued> waiting) {
+			this.waiting = List.copyOf(waiting);
+		}
+
+		void set(List<Queued> waiting) {
+			this.waiting = List.copyOf(waiting);
+			setDirty();
+		}
+	}
+
+	private static Queue queue(MinecraftServer server) {
+		return server.overworld().getDataStorage().computeIfAbsent(Queue.TYPE);
+	}
+
+	/** The server is stopping: who waits at which stone is saved for {@link #resumeWaiting}. */
+	public static void suspendWaiting(MinecraftServer server) {
+		List<Queued> all = new ArrayList<>();
+		WAITING.forEach((dimension, here) -> here.forEach((pos, w) -> all.add(new Queued(dimension, pos, w.player(), w.since()))));
+		queue(server).set(all);
+		WAITING.clear();
+	}
+
+	/** The server has started: those who were waiting are waiting again, for whatever of their wait is left. */
+	public static void resumeWaiting(MinecraftServer server) {
+		Queue queue = queue(server);
+		for (Queued q : queue.waiting) {
+			WAITING.computeIfAbsent(q.dimension(), k -> new HashMap<>()).put(q.pos(), new Waiting(q.player(), q.since()));
+		}
+		queue.set(List.of());
+	}
+
+	/** How many casters are waiting at stones now. */
+	public static int waiting() {
+		return WAITING.values().stream().mapToInt(Map::size).sum();
+	}
+
+	/** How many waiting casters are held over a restart. */
+	public static int queued(MinecraftServer server) {
+		return queue(server).waiting.size();
+	}
+
 	/** The terms a ranked bout is fought on: a duel's, round the stone, three minutes, not into the duel record. */
 	public static final DuelRules.Terms TERMS = new DuelRules.Terms(ArenaRules.RADIUS, DuelRules.COUNTDOWN_TICKS, ArenaRules.BOUT_TICKS, 0F, 1.0F, false);
 
 	public static void init() {
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> output.accept(WildercordBlocks.ARENA_STONE));
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> WAITING.clear());
+		ServerLifecycleEvents.SERVER_STOPPING.register(Arena::suspendWaiting);
+		ServerLifecycleEvents.SERVER_STARTED.register(Arena::resumeWaiting);
 	}
 
 	/** The season now. */

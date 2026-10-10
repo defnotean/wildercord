@@ -25,7 +25,7 @@ Craft it from two Gold Ingots, an Amethyst Shard, an Ender Pearl and five Polish
 
 ## How to use it
 
-- **Use** the stone to step up. You wait there for up to a minute.
+- **Use** the stone to step up. You wait there for up to a minute, and a restart doesn't cut the wait short.
 - When a second caster uses the same stone while you're still within a few blocks of it, a three-second countdown
   begins, then the fight.
 - Stay within **16 blocks** of the stone. A ring of glyphs marks the edge. Stepping out, logging off or being brought

@@ -11,7 +11,8 @@ newcomer under their wing and helps them through the first Heart Circles.
 
 Use `/mentor take <player>`. They get an offer they can accept with `/mentor accept` or by clicking it. The offer lasts a
 minute. `/mentor` shows your mentor and your apprentices, and `/mentor end <name>` ends an apprenticeship from either side.
-The bond is saved with the world, so it outlasts a restart.
+The bond is saved with the world, so it outlasts a restart. So does an offer, for what's left of its minute, even if
+one of you logs out in between.
 
 ## Learning
 

@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -35,28 +34,57 @@ import static net.minecraft.commands.Commands.literal;
 /**
  * Mentoring (0.13; the rules are {@link MentorRules}): a seasoned mage takes an apprentice with {@code /mentor take}, the
  * apprentice agrees with {@code /mentor accept}, and either ends it with {@code /mentor end}. Who is whose is the overworld's
- * saved data, so the bond outlasts a restart. Offers are held only in memory for a minute.
+ * saved data, so the bond outlasts a restart. Offers are saved with the bonds and lapse after a minute of game time,
+ * so one outlasts a logout or a restart within that minute.
  */
 public final class Mentors {
 	private Mentors() {}
 
 	public static final class Ledger extends SavedData {
+		private static final Codec<Offer> OFFER = RecordCodecBuilder.create(i -> i.group(
+			UUIDUtil.STRING_CODEC.fieldOf("mentor").forGetter(Offer::mentor),
+			Codec.LONG.fieldOf("until").forGetter(Offer::until)
+		).apply(i, Offer::new));
 		public static final Codec<Ledger> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, UUIDUtil.STRING_CODEC).optionalFieldOf("mentors", Map.of()).forGetter(l -> l.book.all()),
-			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING).optionalFieldOf("names", Map.of()).forGetter(l -> l.names)
+			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING).optionalFieldOf("names", Map.of()).forGetter(l -> l.names),
+			Codec.unboundedMap(UUIDUtil.STRING_CODEC, OFFER).optionalFieldOf("offers", Map.of()).forGetter(l -> l.offers)
 		).apply(i, Ledger::new));
 		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("mentors"), Ledger::new, CODEC, null);
 
 		final MentorRules.Book book;
 		private final Map<UUID, String> names;
 
+		/** Offers waiting on each would-be apprentice. */
+		private final Map<UUID, Offer> offers;
+
 		public Ledger() {
-			this(Map.of(), Map.of());
+			this(Map.of(), Map.of(), Map.of());
 		}
 
-		private Ledger(Map<UUID, UUID> mentors, Map<UUID, String> names) {
+		private Ledger(Map<UUID, UUID> mentors, Map<UUID, String> names, Map<UUID, Offer> offers) {
 			this.book = new MentorRules.Book(mentors);
 			this.names = new HashMap<>(names);
+			this.offers = new HashMap<>(offers);
+		}
+
+		/** Holds {@code mentor}'s offer for {@code apprentice} for a minute, dropping any that have lapsed by {@code now}. */
+		public void offer(UUID apprentice, UUID mentor, long now) {
+			offers.values().removeIf(o -> o.until() < now);
+			offers.put(apprentice, new Offer(mentor, now + OFFER_TICKS));
+			setDirty();
+		}
+
+		/** Takes {@code apprentice}'s offer, or null. */
+		Offer takeOffer(UUID apprentice) {
+			Offer offer = offers.remove(apprentice);
+			if (offer != null) setDirty();
+			return offer;
+		}
+
+		/** Whether {@code apprentice} has an offer held, lapsed or not. */
+		public boolean offered(UUID apprentice) {
+			return offers.containsKey(apprentice);
 		}
 
 		public MentorRules.Book book() {
@@ -85,14 +113,12 @@ public final class Mentors {
 
 	private record Offer(UUID mentor, long until) {}
 
-	private static final Map<UUID, Offer> OFFERS = new ConcurrentHashMap<>();
 	private static final long OFFER_TICKS = 20 * 60;
 
 	public static void init() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> register(dispatcher));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
 			ledger(server).remember(handler.player.getUUID(), handler.player.getGameProfile().name()));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> OFFERS.remove(handler.player.getUUID()));
 	}
 
 	public static Ledger ledger(MinecraftServer server) {
@@ -177,7 +203,8 @@ public final class Mentors {
 		ledger.remember(apprentice.getUUID(), apprentice.getGameProfile().name());
 		MentorRules.Refusal refusal = refusal(ledger, mentor, apprentice);
 		if (refusal != MentorRules.Refusal.NONE) return refuse(mentor, refusal);
-		OFFERS.put(apprentice.getUUID(), new Offer(mentor.getUUID(), mentor.level().getServer().overworld().getGameTime() + OFFER_TICKS));
+		long now = mentor.level().getServer().overworld().getGameTime();
+		ledger.offer(apprentice.getUUID(), mentor.getUUID(), now);
 		MutableComponent accept = text("accept_button").withStyle(style -> style.withColor(ChatFormatting.GREEN)
 			.withClickEvent(new ClickEvent.RunCommand("/mentor accept")));
 		apprentice.sendSystemMessage(text("offered", mentor.getDisplayName()).append(Component.literal(" ")).append(accept));
@@ -192,8 +219,8 @@ public final class Mentors {
 	}
 
 	private static int accept(ServerPlayer apprentice) {
-		Offer offer = OFFERS.remove(apprentice.getUUID());
 		MinecraftServer server = apprentice.level().getServer();
+		Offer offer = ledger(server).takeOffer(apprentice.getUUID());
 		if (offer == null || offer.until() < server.overworld().getGameTime()) return refuse(apprentice, "no_offer");
 		ServerPlayer mentor = server.getPlayerList().getPlayer(offer.mentor());
 		if (mentor == null) return refuse(apprentice, "mentor_gone");

@@ -29,7 +29,7 @@ Use `/guild` for guilds and `/coven` for covens. Both take the same commands:
 | --- | --- |
 | `/guild` | Shows your guild, its members (the leader is marked with a star, and members who are away are greyed out) and how many are near you |
 | `/guild found <name>` | Founds a guild for 32 emeralds. Names take 3 to 24 letters, digits, spaces, apostrophes or hyphens, and no two guilds or covens can share one |
-| `/guild invite <player>` | Leader only. The invitation lasts a minute |
+| `/guild invite <player>` | Leader only. The invitation lasts a minute, even across a logout or restart |
 | `/guild accept` | Joins the guild you were last invited to |
 | `/guild leave` | Leaves. If the leader leaves, the longest-standing member takes over, and when the last member leaves the guild ends |
 | `/guild kick <member>` | Leader only |
