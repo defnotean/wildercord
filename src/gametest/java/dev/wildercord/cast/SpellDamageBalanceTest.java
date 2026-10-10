@@ -46,22 +46,26 @@ public final class SpellDamageBalanceTest implements FabricClientGameTest {
    // Production Venom scheduler, not a simulated accumulator: enormous tick power must exhaust one price.
    Cast[] dot={null};float[] venomStart={0};
    server.runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var d=(TrainingDummy)s.overworld().getEntity(dummyId[0]);
-    venomStart[0]=total(d);dot[0]=new Cast(p).damagePrice(100);Effects.venomDot(dot[0],d,1000,30);
+    // The dummy's burst total starts over on a hit 60 ticks after the last, so Bleed's leftover must not be subtracted.
+    clear(d);venomStart[0]=total(d);dot[0]=new Cast(p).damagePrice(100);Effects.venomDot(dot[0],d,1000,30);
    });c.waitTicks(85);
    server.runOnServer(s->{var d=(TrainingDummy)s.overworld().getEntity(dummyId[0]);float damage=total(d)-venomStart[0];
-    System.out.println("VENOM_NATIVE total="+damage);check(Math.abs(damage-212)<.02,"Actual delayed venom shares the 212 raw damage allowance: "+damage);
+    System.out.println("VENOM_NATIVE total="+damage);check(Math.abs(damage-ALLOWANCE)<.02,"Actual delayed venom shares the "+ALLOWANCE+" raw damage allowance: "+damage);
     check(!dot[0].damageAvailable(d),"Venom allowance exhausted");
    });c.takeScreenshot(TestScreenshotOptions.of("damage_venom_exhausted").disableCounterPrefix());
-   c.waitTicks(25);server.runOnServer(s->{var d=(TrainingDummy)s.overworld().getEntity(dummyId[0]);check(Math.abs(total(d)-venomStart[0]-212)<.02,"Later ticks do not renew allowance");
+   c.waitTicks(25);server.runOnServer(s->{var d=(TrainingDummy)s.overworld().getEntity(dummyId[0]);check(Math.abs(total(d)-venomStart[0]-ALLOWANCE)<.02,"Later ticks do not renew allowance");
     var p=s.getPlayerList().getPlayers().getFirst();var source=s.overworld().damageSources().indirectMagic(p,p);
     var cast=new Cast(p).damagePrice(100);float before=total(d);
     for(var part:List.of(cast,cast.child(),cast.pulse(),cast.repeat(),cast.again(2),cast.reflected(p)))Effects.hurt(part,d,source,20000);
-    check(Math.abs(total(d)-before-212)<.02,"Children/pulses/repeats/copies/reflections share payment");
+    check(Math.abs(total(d)-before-ALLOWANCE)<.02,"Children/pulses/repeats/copies/reflections share payment");
     float end=total(d);Effects.hurt(new Cast(p).damagePrice(8),d,source,10);check(total(d)>end,"A new payment can hurt again");
    });
 
   }
  }
+ /** A hundred mana's raw damage; 124 since 0.12's tempering. */
+ private static final double ALLOWANCE=SpellDamageAllowance.total(100);
  private static float total(TrainingDummy dummy){try{var f=TrainingDummy.class.getDeclaredField("total");f.setAccessible(true);return f.getFloat(dummy);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}
+ private static void clear(TrainingDummy dummy){try{var f=TrainingDummy.class.getDeclaredField("total");f.setAccessible(true);f.setFloat(dummy,0);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}
  private static void check(boolean b,String msg){if(!b)throw new AssertionError(msg);}
 }
