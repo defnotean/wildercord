@@ -394,38 +394,61 @@ public final class Pairs009 {
 	}
 
 	/**
-	 * Redline: all-in on speed and power, paid for in blood. The look: a red shockwave on you, a heartbeat ring on
-	 * every beat that gets louder and quicker as your health falls, and amber sparks rising.
+	 * Redline: an engine run up through its gears until the needle sits in the red, then it coughs out. The look: a
+	 * tachometer ring on you whose needle sweeps further each second, sparks that turn amber then red as the gears
+	 * climb, a heartbeat that quickens, and a gout of black smoke when it stalls.
 	 */
 	@Pair(a = "haste", b = "overdrive", name = "Redline", element = "blood", kind = EffectKind.HELPFUL,
 		traits = {"duration"},
-		text = "For 12 seconds you have Haste II and Speed II, and Strength II (III under half health, IV under a quarter). "
-			+ "You lose 1 health every 2 seconds, but never below 2 health.")
+		text = "Three gears of 4 seconds. First: Speed I, Haste I, lose 1 health. Second: Speed II, Haste II, Strength I, lose 2. "
+			+ "Third: Speed II, Haste III, Strength II, lose 4. Never below 2 health. Then it stalls: Slowness I for 3 seconds.")
 	public static void hasteOverdrive(PairCast c) {
 		LivingEntity me = c.caster;
-		int seconds = Math.max(1, (int) Math.round(12 * c.duration));
-		c.effect(me, MobEffects.HASTE, seconds, 1);
-		c.effect(me, MobEffects.SPEED, seconds, 1);
-		c.wave(PairCast.dust(0xD50000, 1.2F), me.position().add(0, 0.1, 0), 28, 0.3);
-		c.sound(SoundEvents.PLAYER_BREATH, me.position(), 0.9F, 0.8F);
-		c.every(20, seconds, frame -> {
+		// Each gear lasts four seconds (times duration); the drain is spread over the gear one beat at a time.
+		int gear = Math.max(1, (int) Math.round(4 * c.duration));
+		float[] drain = {1.0F, 2.0F, 4.0F};
+		int[] colour = {0xFFD54F, 0xFF8F00, 0xD50000};
+		c.wave(PairCast.dust(0xFFD54F, 1.1F), me.position().add(0, 0.1, 0), 24, 0.25);
+		c.sound(SoundEvents.PISTON_EXTEND, me.position(), 0.8F, 0.6F);
+		c.every(20, gear * 3, beat -> {
 			if (!me.isAlive()) {
 				return;
 			}
-			float hp = me.getHealth();
-			float max = me.getMaxHealth();
-			if (frame % 2 == 1 && hp > 2.0F) {
-				me.setHealth(Math.max(2.0F, hp - 1.0F));
+			int g = beat / gear;
+			int into = beat % gear;
+			if (into == 0) {
+				// A gear change: the effects step up and the engine roars.
+				c.effect(me, MobEffects.SPEED, gear + 1, g == 0 ? 0 : 1);
+				c.effect(me, MobEffects.HASTE, gear + 1, g);
+				if (g > 0) {
+					c.effect(me, MobEffects.STRENGTH, gear + 1, g - 1);
+				}
+				c.sound(SoundEvents.RAVAGER_ROAR, me.position(), 0.4F, 1.2F + g * 0.3F);
+				c.wave(PairCast.dust(colour[g], 1.2F), me.position().add(0, 0.1, 0), 28, 0.3 + g * 0.1);
+				c.punch(0.1F + g * 0.08F);
 			}
-			hp = me.getHealth();
-			int amp = hp < max * 0.25F ? 3 : hp < max * 0.5F ? 2 : 1;
-			c.effect(me, MobEffects.STRENGTH, 1.5, amp);
-			c.ring(PairCast.shift(0xD50000, 0xFFAB00, 1.0F), me.position().add(0, 0.1, 0), 1.0 + (frame % 2) * 0.3, 22, frame * 0.3);
-			c.spiral(PairCast.shift(0xFFAB00, 0xD50000, 0.8F), me.position(), 0.6, 2.2, 1.5, 16);
-			c.sound(SoundEvents.WARDEN_HEARTBEAT, me.position(), 0.9F, 1.0F + (1 - hp / max) * 0.8F);
-			if (frame % 2 == 1) {
-				c.punch(0.12F);
+			float bleed = drain[g] / gear;
+			if (me.getHealth() > 2.0F) {
+				me.setHealth(Math.max(2.0F, me.getHealth() - bleed));
 			}
+			// The needle sweeps round from the left a little further each second, into the red at the end.
+			Vec3 hub = me.position().add(0, 0.15, 0);
+			c.ring(PairCast.dust(0x3A3A3A, 0.7F), hub, 1.2, 24, 0);
+			double sweep = Math.PI * (beat + 1) / (gear * 3.0);
+			Vec3 tip = hub.add(-Math.cos(sweep) * 1.2, 0, Math.sin(sweep) * 1.2);
+			c.line(PairCast.dust(colour[g], 1.0F), hub, tip, 6);
+			c.particles(ParticleTypes.ELECTRIC_SPARK, PairCast.mid(me), 3 + g * 4, 0.4, 0.08);
+			c.sound(SoundEvents.WARDEN_HEARTBEAT, me.position(), 0.7F, 1.0F + g * 0.35F);
+		});
+		// The stall.
+		c.later(gear * 60, () -> {
+			if (!me.isAlive()) {
+				return;
+			}
+			c.effect(me, MobEffects.SLOWNESS, 3, 0);
+			c.particles(ParticleTypes.LARGE_SMOKE, PairCast.mid(me), 24, 0.5, 0.04);
+			c.sound(SoundEvents.FIRE_EXTINGUISH, me.position(), 0.9F, 0.5F);
+			c.sound(SoundEvents.PISTON_CONTRACT, me.position(), 0.8F, 0.5F);
 		});
 	}
 }

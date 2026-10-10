@@ -9,7 +9,7 @@ public final class S_haste {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
-			case "overdrive" -> new PairSpec("Redline", "blood", EffectKind.HELPFUL, "For 12 seconds you have Haste II and Speed II, and Strength II (III under half health, IV under a quarter). You lose 1 health every 2 seconds, but never below 2 health.", "duration");
+			case "overdrive" -> new PairSpec("Redline", "blood", EffectKind.HELPFUL, "Three gears of 4 seconds. First: Speed I, Haste I, lose 1 health. Second: Speed II, Haste II, Strength I, lose 2. Third: Speed II, Haste III, Strength II, lose 4. Never below 2 health. Then it stalls: Slowness I for 3 seconds.", "duration");
 			default -> null;
 		};
 	}
