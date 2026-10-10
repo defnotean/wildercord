@@ -50,6 +50,10 @@ public final class MonsterContent {
 	public static final EntityType<ManaOoze> MANA_OOZE = monster("mana_ooze",
 		EntityType.Builder.of(ManaOoze::new, MobCategory.MONSTER).sized(0.52F, 0.52F).eyeHeight(0.325F).spawnDimensionsScale(4.0F));
 
+	/** A hooded illager who hunts casters (0.13). */
+	public static final EntityType<MageHunter> MAGE_HUNTER = monster("mage_hunter",
+		EntityType.Builder.of(MageHunter::new, MobCategory.MONSTER).sized(0.6F, 1.95F).eyeHeight(1.62F));
+
 	/** A Bog Witch-Frog's bubble of poison, in flight. */
 	public static final EntityType<BogBubble> BOG_BUBBLE = register("bog_bubble",
 		EntityType.Builder.<BogBubble>of(BogBubble::new, MobCategory.MISC).noLootTable().sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(2));
@@ -78,6 +82,7 @@ public final class MonsterContent {
 	public static final Item GEODE_CRAWLER_EGG = egg("geode_crawler", GEODE_CRAWLER);
 	public static final Item BOG_WITCH_FROG_EGG = egg("bog_witch_frog", BOG_WITCH_FROG);
 	public static final Item MANA_OOZE_EGG = egg("mana_ooze", MANA_OOZE);
+	public static final Item MAGE_HUNTER_EGG = egg("mage_hunter", MAGE_HUNTER);
 
 	/** Every monster's type, in the order of {@link MonsterRules.Kind}. */
 	public static List<EntityType<? extends Mob>> types() {
@@ -117,6 +122,7 @@ public final class MonsterContent {
 		FabricDefaultAttributeRegistry.register(GEODE_CRAWLER, GeodeCrawler.createAttributes());
 		FabricDefaultAttributeRegistry.register(BOG_WITCH_FROG, BogWitchFrog.createAttributes());
 		FabricDefaultAttributeRegistry.register(MANA_OOZE, ManaOoze.createAttributes());
+		FabricDefaultAttributeRegistry.register(MAGE_HUNTER, MageHunter.createAttributes());
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
 			output.accept(LIVING_BRAMBLE);

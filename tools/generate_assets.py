@@ -904,6 +904,9 @@ def write_lang(runes):
     import town_art
     lang.update(town_art.LANG)
     town_art.write(sys.modules[__name__])
+    import magic_art  # 0.13 magic: the mage-hunter's skin, egg and loot.
+    lang.update(magic_art.LANG)
+    magic_art.write(sys.modules[__name__])
     import rootmolt_art
     lang.update(rootmolt_art.LANG)
     rootmolt_art.write(sys.modules[__name__])

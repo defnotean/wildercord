@@ -43,6 +43,7 @@ public final class MonsterClient {
 		EntityRendererRegistry.register(MonsterContent.BOG_WITCH_FROG, MonsterClient::frog);
 		EntityRendererRegistry.register(MonsterContent.MANA_OOZE, ManaOozeRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.BOG_BUBBLE, BogBubbleRenderer::new);
+		EntityRendererRegistry.register(MonsterContent.MAGE_HUNTER, MageHunterRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.THROWN_BRAMBLE, ThrownItemRenderer::new);
 	}
 

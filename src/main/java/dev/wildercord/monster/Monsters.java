@@ -21,6 +21,7 @@ public final class Monsters {
 	public static void init() {
 		MonsterContent.init();
 		MonsterSpawns.init();
+		MageHunters.init();
 	}
 
 	/**

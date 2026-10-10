@@ -109,6 +109,21 @@ Empty armour still moved by a swordsman's aura, glowing in the colours of its ol
 - **Drops:** always a **Manual Page** for its method (four pages and a book bind into its Breathing Manual), and about
   one time in four an **Aura Shard** for [aura-forged gear](../progression/aura.md#aura-forged-gear).
 
+## Mage-Hunter (0.13)
+
+Hooded illagers in grey coats stitched with broken runes, who hunt casters. Once your heart holds **five circles**, a
+band may come for you at night in the overworld. Chat warns you when they set out. One comes at first, and more often two
+as your circles grow (always two from the 15th).
+
+- **Null field.** Bolts come apart in the air within 6 blocks of a hunter. Shapes that don't fly, like touch, cones,
+  zones and beams, still land.
+- **Spellproof.** Spells and other magic hurt a hunter **half as much**.
+- **Mana-draining axe.** Each blow that lands takes **15 mana**.
+- 32 health, quick on its feet, and harder to knock back. It is never Runebound.
+- **Drops:** 1 to 3 emeralds, and one time in four a **Mana Crystal** (more with Looting).
+
+Fight them with a blade, or step back and cast at close range with something that isn't a bolt.
+
 ## Tempering (0.12)
 
 Every hostile creature is **tempered** when it first appears near players, to the strongest of them: their circles plus

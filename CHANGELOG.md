@@ -17,6 +17,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Wandering caravans.** Now and then a caravan makes camp near someone out in the overworld, and they're told which way it is. Its Caravaneer and two pack llamas stay about a day. It sells what the inns don't: rare tier 3 and 4 runes (more of them, and better, as the keepers know you), saddles, leads and horse armour, and far-off ingredients like blaze powder, chorus fruit, glow berries and cocoa beans.
 - **Inn rooms.** The Inn Cook sells Room Keys, cheaper the better the keepers know you. A key rents a room at an inn for 3 days: you wake there, and sneak-clicking any inn keeper opens your room chest. The chest keeps your things between stays.
 - **Hamlets.** Every village is now a hamlet with its own name and its own standing, apart from the inns'. Trading with its villagers and killing monsters near its bell earn it, a little each day. While you're in a hamlet that knows you, you're its hero: cheaper trades and the odd gift, more as it holds you higher.
+- **Mage-hunters.** Once your heart holds five circles, hooded illagers may hunt you by night, one or two at a time. Bolts come apart within 6 blocks of them, spells hurt them half as much, and their axes take 15 mana a blow. They drop emeralds, and sometimes a Mana Crystal.
 
 ### Changed
 

@@ -274,6 +274,7 @@ public final class WildercordTownChecks {
 		stags.forEach(RidgebackStag::discard);
 		caravan(player, level);
 		hamlet(player, level);
+		mageHunter(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -322,6 +323,34 @@ public final class WildercordTownChecks {
 		player.removeAttached(dev.wildercord.town.Hamlets.STANDINGS);
 		villagers.forEach(net.minecraft.world.entity.Entity::discard);
 		level.removeBlock(bell, false);
+	}
+
+	/** A mage-hunter shrugs off half a spell, takes mana with its axe, and leaves casters without five circles alone. */
+	private void mageHunter(ServerPlayer player, ServerLevel level) {
+		check(dev.wildercord.monster.MageHunters.send(level, player).isEmpty() == !dev.wildercord.monster.MageHunterRules.hunted(
+			dev.wildercord.player.Heart.circles(player)), "hunters come only for a heart of five circles");
+		level.getEntitiesOfClass(dev.wildercord.monster.MageHunter.class, player.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);
+		var hunter = dev.wildercord.monster.MonsterContent.MAGE_HUNTER.create(level, EntitySpawnReason.COMMAND);
+		check(hunter != null, "a mage-hunter can be made");
+		if (hunter == null) return;
+		hunter.snapTo(player.getX() + 3, player.getY(), player.getZ(), 0, 0);
+		hunter.setNoAi(true);
+		level.addFreshEntity(hunter);
+		float full = hunter.getHealth();
+		hunter.hurtServer(level, level.damageSources().magic(), 10);
+		check(Math.abs(full - hunter.getHealth() - dev.wildercord.monster.MageHunterRules.spellHarm(10)) < 0.01F, "magic hurts it half as much");
+		check(hunter.runeboundSpells().isEmpty(), "it never carries a spell");
+		if (dev.wildercord.player.Spellbooks.tier(player) != null) {
+			float before = dev.wildercord.player.Spellbooks.mana(player);
+			dev.wildercord.player.Spellbooks.setMana(player, Math.max(before, dev.wildercord.monster.MageHunterRules.DRAIN));
+			float had = dev.wildercord.player.Spellbooks.mana(player);
+			hunter.doHurtTarget(level, player);
+			check(dev.wildercord.player.Spellbooks.mana(player) <= had - dev.wildercord.monster.MageHunterRules.DRAIN + 0.01F || player.isInvulnerable()
+				|| player.isCreative(), "its axe takes mana");
+			player.setHealth(player.getMaxHealth());
+			dev.wildercord.player.Spellbooks.setMana(player, before);
+		}
+		hunter.discard();
 	}
 
 	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */

@@ -458,6 +458,13 @@ public class RuneBolt extends Projectile {
 		return true;
 	}
 
+	/** A mage-hunter's null field (0.13): a bolt someone else cast comes apart near it. */
+	public boolean unravel(LivingEntity hunter) {
+		if (!(level() instanceof ServerLevel) || isRemoved() || hunter == null || cast == null || cast.caster == hunter) return false;
+		fizzle();
+		return true;
+	}
+
 	/** Threat query for a swordsman's bounded reaction AI; helpful and currently allied magic never qualifies. */
 	public boolean hostileSpellTo(LivingEntity defender) {
 		return level() instanceof ServerLevel && defender != null && defender.level() == level() && defender.isAlive()
