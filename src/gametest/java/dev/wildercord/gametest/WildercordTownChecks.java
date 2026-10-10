@@ -278,6 +278,7 @@ public final class WildercordTownChecks {
 		ritual(player, level);
 		twistedRunes(player, level);
 		arena(player, level);
+		skyMount(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -441,6 +442,23 @@ public final class WildercordTownChecks {
 		check(ladder.top(season, 50).stream().anyMatch(s -> s.name().equals("Winner")), "and names the winner");
 		ladder.forget(one);
 		ladder.forget(two);
+	}
+
+	/** The bridle calls a skyray of your own and seats you on it; stepping off drifts you down, and it goes back to the sky. */
+	private void skyMount(ServerPlayer player, ServerLevel level) {
+		check(dev.wildercord.wildlife.SkyMountRules.rewards(10), "the Tenth Circle's tribulation earns the bridle");
+		var ray = dev.wildercord.wildlife.BondedSkyray.call(level, player);
+		check(ray != null, "the bridle calls a skyray down");
+		if (ray == null) return;
+		check(player.getVehicle() == ray && player.getUUID().equals(ray.owner()), "and seats its owner on it");
+		check(ray.getControllingPassenger() == player, "who steers it");
+		check(!ray.hurtServer(level, level.damageSources().playerAttack(player), 4F), "its rider can't strike it");
+		check(dev.wildercord.wildlife.BondedSkyray.call(level, player) == null, "one can't be called while riding");
+		player.stopRiding();
+		check(player.hasEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING), "stepping off drifts you down");
+		player.removeEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING);
+		ray.leave(level);
+		check(ray.isRemoved(), "and it goes back to the sky");
 	}
 
 	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */

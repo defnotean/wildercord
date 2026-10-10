@@ -47,8 +47,21 @@ public final class MountContent {
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
 		new SpawnEggItem(new Item.Properties().spawnEgg(RIDGEBACK_STAG).setId(EGG_KEY)));
 
+	private static final ResourceKey<EntityType<?>> BONDED_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("bonded_skyray"));
+	/** A tribulation's skyray, called down by its bridle to carry its rider through the air. */
+	public static final EntityType<BondedSkyray> BONDED_SKYRAY = Registry.register(BuiltInRegistries.ENTITY_TYPE, BONDED_KEY,
+		EntityType.Builder.of(BondedSkyray::new, MobCategory.MISC).sized(2.4F, 0.55F).eyeHeight(0.3F).passengerAttachments(0.45F)
+			.clientTrackingRange(14).build(BONDED_KEY));
+
+	private static final ResourceKey<Item> BRIDLE_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("skyray_bridle"));
+	/** The reward for the Tenth Circle's tribulation: calls your skyray down. */
+	public static final Item SKYRAY_BRIDLE = Registry.register(BuiltInRegistries.ITEM, BRIDLE_KEY,
+		new SkyrayBridleItem(new Item.Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.EPIC).setId(BRIDLE_KEY)));
+
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(RIDGEBACK_STAG, RidgebackStag.createAttributes());
+		FabricDefaultAttributeRegistry.register(BONDED_SKYRAY, BondedSkyray.createAttributes());
+		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(SKYRAY_BRIDLE));
 		SpawnPlacements.register(RIDGEBACK_STAG, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
 		BiomeModifications.create(Wildercord.id("wildlife/ridgeback_stag")).add(ModificationPhase.ADDITIONS,
 			BiomeSelectors.includeByKey(BIOMES.stream().map(id -> ResourceKey.create(Registries.BIOME, net.minecraft.resources.Identifier.parse(id))).toList()),

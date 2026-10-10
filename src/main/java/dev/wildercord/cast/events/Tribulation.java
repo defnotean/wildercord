@@ -328,6 +328,10 @@ public final class Tribulation {
 		}
 		drop(at, new net.minecraft.world.item.ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, TribulationRules.spoilCrystals(circle)));
 		net.minecraft.world.entity.ExperienceOrb.award(level, at, TribulationRules.spoilXp(circle));
+		if (dev.wildercord.wildlife.SkyMountRules.rewards(circle)) {
+			drop(at, new net.minecraft.world.item.ItemStack(dev.wildercord.wildlife.MountContent.SKYRAY_BRIDLE));
+			player.sendSystemMessage(Component.translatable("message.wildercord.tribulation.bridle").withColor(0xA8D0FF));
+		}
 	}
 
 	private void drop(Vec3 at, net.minecraft.world.item.ItemStack stack) {

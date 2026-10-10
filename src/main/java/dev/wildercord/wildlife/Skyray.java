@@ -108,6 +108,9 @@ public class Skyray extends AmbientCreature {
 	@Override
 	protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
+		if (steered(level)) {
+			return;
+		}
 		if (anchor == null) {
 			anchor = position();
 		}
@@ -156,6 +159,11 @@ public class Skyray extends AmbientCreature {
 				shedMembrane(level);
 			}
 		}
+	}
+
+	/** A skyray that's flown some other way (a {@link BondedSkyray} carrying its rider) skips the loop; true when it has. */
+	protected boolean steered(ServerLevel level) {
+		return false;
 	}
 
 	/** Lets a membrane come loose, to fall to the ground below. */

@@ -32,6 +32,7 @@ public final class WildlifeClient {
 		EntityRendererRegistry.register(Wildlife.MOSSBACK_TORTOISE, MossbackTortoiseRenderer::new);
 		EntityRendererRegistry.register(Wildlife.CINDERFOX, WildlifeRenderers.CinderfoxRenderer::new);
 		EntityRendererRegistry.register(Wildlife.SKYRAY, WildlifeRenderers.SkyrayRenderer::new);
+		EntityRendererRegistry.register(dev.wildercord.wildlife.MountContent.BONDED_SKYRAY, WildlifeRenderers.SkyrayRenderer::new);
 		EntityRendererRegistry.register(Wildlife.RIMEHARE, WildlifeRenderers.RimehareRenderer::new);
 	}
 }
