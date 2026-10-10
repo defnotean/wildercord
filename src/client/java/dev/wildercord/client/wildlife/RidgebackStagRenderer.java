@@ -8,13 +8,14 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 
-/** The Ridgeback Stag: the Lumen Stag's frame in its own chestnut coat, with a saddle painted on once it wears one. */
+/** The Ridgeback Stag: the Lumen Stag's frame in its own chestnut coat, with a saddle painted on once it wears one and barding over it. */
 public final class RidgebackStagRenderer extends WildlifeRenderer<RidgebackStag, LumenStagModel> {
 	private static final Identifier BARE = WildlifeRenderers.texture("ridgeback_stag");
 	private static final Identifier SADDLED = WildlifeRenderers.texture("ridgeback_stag_saddled");
 
 	public RidgebackStagRenderer(EntityRendererProvider.Context context) {
 		super(context, new LumenStagModel(context.bakeLayer(WildlifeRenderers.LUMEN_STAG)), 0.75F, BARE);
+		addLayer(new MountBardingLayer<>(this, "ridgeback_stag", 10));
 	}
 
 	@Override
@@ -30,6 +31,7 @@ public final class RidgebackStagRenderer extends WildlifeRenderer<RidgebackStag,
 		state.bow = 0;
 		state.watch = 0;
 		state.glow = 0;
+		state.barding = MountBardingLayer.colour(stag.getItemBySlot(EquipmentSlot.BODY));
 	}
 
 	/** A touch bigger than its wild cousin, so the saddle sits where a rider's seat is. */

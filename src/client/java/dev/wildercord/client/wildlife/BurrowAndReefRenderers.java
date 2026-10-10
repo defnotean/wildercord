@@ -26,6 +26,7 @@ public final class BurrowAndReefRenderers {
 
 		public ReefbackTurtleRenderer(EntityRendererProvider.Context context) {
 			super(context, new ReefbackTurtleModel(context.bakeLayer(REEFBACK_TURTLE)), 1.0F, BARE);
+			addLayer(new MountBardingLayer<>(this, "reefback_turtle", 19));
 		}
 
 		@Override
@@ -38,6 +39,7 @@ public final class BurrowAndReefRenderers {
 			super.extractRenderState(turtle, state, partial);
 			state.variant = turtle.getItemBySlot(EquipmentSlot.SADDLE).isEmpty() ? 0 : 1;
 			state.swim = Mth.lerp(partial, turtle.swimO, turtle.swim);
+			state.barding = MountBardingLayer.colour(turtle.getItemBySlot(EquipmentSlot.BODY));
 		}
 
 		@Override
@@ -53,6 +55,7 @@ public final class BurrowAndReefRenderers {
 
 		public DelverMoleRenderer(EntityRendererProvider.Context context) {
 			super(context, new DelverMoleModel(context.bakeLayer(DELVER_MOLE)), 0.9F, BARE);
+			addLayer(new MountBardingLayer<>(this, "delver_mole", 15));
 		}
 
 		@Override
@@ -65,6 +68,7 @@ public final class BurrowAndReefRenderers {
 			super.extractRenderState(mole, state, partial);
 			state.variant = mole.getItemBySlot(EquipmentSlot.SADDLE).isEmpty() ? 0 : 1;
 			state.dig = Mth.lerp(partial, mole.digO, mole.dig);
+			state.barding = MountBardingLayer.colour(mole.getItemBySlot(EquipmentSlot.BODY));
 		}
 
 		@Override

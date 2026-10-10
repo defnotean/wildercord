@@ -229,4 +229,5 @@ def write(g):
     tags = g.DATA.parent / 'minecraft/tags/entity_type'
     mounts = ['wildercord:ridgeback_stag', 'wildercord:reefback_turtle', 'wildercord:delver_mole']
     g.write_json(tags / 'can_equip_saddle.json', {'replace': False, 'values': mounts})
+    g.write_json(tags / 'can_wear_horse_armor.json', {'replace': False, 'values': mounts})
     g.write_json(tags / 'can_breathe_under_water.json', {'replace': False, 'values': ['wildercord:reefback_turtle']})

@@ -280,6 +280,7 @@ public final class WildercordTownChecks {
 		arena(player, level);
 		skyMount(player, level);
 		deepMounts(player, level);
+		mountBonds(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -460,6 +461,43 @@ public final class WildercordTownChecks {
 		player.removeEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING);
 		ray.leave(level);
 		check(ray.isRemoved(), "and it goes back to the sky");
+	}
+
+	/** Riding a tame mount grows a bond that quickens it, teaches it to dash and then to strike as it lands; it wears barding. */
+	private void mountBonds(ServerPlayer player, ServerLevel level) {
+		var stag = dev.wildercord.wildlife.MountContent.RIDGEBACK_STAG.create(level, net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED);
+		check(stag != null, "a stag to bond with");
+		if (stag == null) return;
+		stag.snapTo(player.getX(), player.getY() + 40, player.getZ(), 0, 0);
+		stag.setNoGravity(true);
+		stag.setTamed(true);
+		stag.setOwner(player);
+		level.addFreshEntity(stag);
+		check(dev.wildercord.wildlife.MountBonds.owns(player, stag), "its tamer owns it");
+		double speed = stag.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+		float health = stag.getMaxHealth();
+		var bond = dev.wildercord.wildlife.MountBonds.grow(level, player, stag, 1400);
+		check(bond.level() == 3 && dev.wildercord.wildlife.MountBonds.bond(stag, player).points() == 1400, "riding grows a bond");
+		check(stag.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED) > speed, "a bond quickens it");
+		check(stag.getMaxHealth() == health + 6, "and makes it hardier");
+		dev.wildercord.wildlife.MountBonds.dash(level, stag);
+		check(stag.getDeltaMovement().horizontalDistance() > 1.0, "at level 3 it dashes");
+		stag.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+		var zombie = net.minecraft.world.entity.EntityTypes.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+		check(zombie != null, "something to strike");
+		if (zombie == null) return;
+		zombie.snapTo(stag.getX() + 2, stag.getY(), stag.getZ(), 0, 0);
+		zombie.setNoAi(true);
+		zombie.setNoGravity(true);
+		level.addFreshEntity(zombie);
+		dev.wildercord.wildlife.MountBonds.grow(level, player, stag, 6000);
+		check(dev.wildercord.wildlife.MountBonds.bond(stag, player).level() == dev.wildercord.wildlife.MountBondRules.MAX_LEVEL, "the bond tops out");
+		check(dev.wildercord.wildlife.MountBonds.strike(level, player, stag) >= 1 && zombie.getHealth() < zombie.getMaxHealth(), "at level 5 its landing strikes");
+		zombie.discard();
+		stag.setItemSlot(net.minecraft.world.entity.EquipmentSlot.BODY, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_HORSE_ARMOR));
+		check(stag.isWearingBodyArmor(), "a stag wears barding");
+		stag.setOwner(null);
+		stag.discard();
 	}
 
 	/** A saddled delver digs the soft ground ahead of its rider but not stone; a reefback takes kelp and never drowns its rider. */

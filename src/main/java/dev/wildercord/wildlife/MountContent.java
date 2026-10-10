@@ -116,5 +116,6 @@ public final class MountContent {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:ridgeback_stag", FieldGuide.Group.WILDLIFE, 0x8A5A34));
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
+		MountBonds.init();
 	}
 }
