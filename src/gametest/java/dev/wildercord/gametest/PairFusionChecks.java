@@ -58,6 +58,7 @@ public final class PairFusionChecks {
 				}
 				return roster();
 			});
+			List<String> idle = new ArrayList<>();
 			check(written.size() == PairSpecs.COUNT, "every generated pair resolves to two pairable runes: " + written.size() + " of " + PairSpecs.COUNT);
 			for (int from = 0; from < written.size(); from += BATCH) {
 				List<Written> batch = written.subList(from, Math.min(written.size(), from + BATCH));
@@ -106,8 +107,8 @@ public final class PairFusionChecks {
 					for (int i = 0; i < batch.size(); i++) {
 						Written w = batch.get(i);
 						Entity e = p.level().getEntity(marks.get(i));
-						if (w.spec().kind() == EffectKind.HARMFUL) {
-							check(seen[i] || touched(e, i), w.spec().name() + " (" + w.a().path() + " + " + w.b().path() + ") did nothing to its target");
+						if (w.spec().kind() == EffectKind.HARMFUL && !seen[i] && !touched(e, i)) {
+							idle.add(w.spec().name() + " (" + w.a().path() + " + " + w.b().path() + ")");
 						}
 						if (e != null) {
 							e.discard();
@@ -116,6 +117,7 @@ public final class PairFusionChecks {
 					p.clearFire();
 				});
 			}
+			check(idle.isEmpty(), "these harmful pairs did nothing to their target: " + String.join(", ", idle));
 		}
 	}
 
