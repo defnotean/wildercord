@@ -908,9 +908,9 @@ final class Techniques {
 		}
 		teleport(caster, level, end, caster.getYRot(), caster.getXRot());
 		caster.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));
-		// A second of time skipped: nothing can hurt you as you come out (not again for 5 s).
+		// Half a second out of time: nothing can hurt you as you come out (not again for 5 s). A dodge, not a guard.
 		if (VoidTime.skipReady(caster)) {
-			caster.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 15, 4, false, true));
+			caster.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, DefenceCaps.DODGE_TICKS, 4, false, true));
 		}
 		for (Entity e : level.getEntities(caster, caster.getBoundingBox().inflate(16.0), e -> e instanceof Mob)) {
 			Mob mob = (Mob) e;

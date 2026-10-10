@@ -115,6 +115,24 @@ Empty armour still moved by a swordsman's aura, glowing in the colours of its ol
 - **Drops:** always a **Manual Page** for its method (four pages and a book bind into its Breathing Manual), and about
   one time in four an **Aura Shard** for [aura-forged gear]({{ '/progression/aura/' | relative_url }}#aura-forged-gear).
 
+## Tempering (0.12)
+
+Every hostile creature is **tempered** when it first appears near players, to the strongest of them: their circles plus
+three for each aura stage, up to 32. Each point adds 10% health (at most 4x) and 5% damage (at most 2.5x, counting its
+arrows, blasts and spells). The first hours are the world as it was.
+
+- **Elites** appear from threat 4, up to one creature in five at the top: **Swift** (a third faster), **Ironhide** (heavy
+  armour), **Vampiric** (heals half what it deals), **Brutal** (half again the damage, and it throws you) and
+  **Splitting** (breaks into two lesser copies when it dies). An elite has half again the health, a coloured name and
+  leaves more experience.
+- **Bosses** grow by half their health for each extra challenger nearby, up to six. A boss without phases of its own
+  enrages once at half health: faster, harder hitting, and briefly shielded.
+- Wildercord’s monsters spawn **twice as often**, mostly in packs.
+- **Frost and Ash.** A Bramblewalker or Gloomstalker born in freezing land is **Frost** (a quarter more health; its blows
+  slow and chill); born in scorched land, **Ash** (a fifth more damage, fireproof; its blows burn).
+- **Packs.** A Gloomstalker that finds prey calls its kin within 16 blocks. The first of a group is often an **Alpha**:
+  bigger, stronger, and heard from 28 blocks.
+
 ## Tips and counterplay
 
 - Learn each tell: the sound and pose come before the big hit.

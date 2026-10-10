@@ -21,9 +21,9 @@ from casting, discovering and doing things with magic.
 
 A circle forms in three steps:
 
-1. **Condense mana.** Every point of mana you pay to cast a spell condenses in your heart.
+1. **Condense mana.** Mana you pay to cast spells condenses in your heart, most of it only when those spells hurt hostile creatures.
 2. **Earn the breakthrough.** Every circle after the 1st also asks for milestones (see the table below).
-3. **Meditate** to form it once your heart is ready.
+3. **Meditate** to form it once your heart is ready. The 5th, 10th, 15th and 20th circles must then be won in a **Tribulation** (below).
 
 Hover the **heart badge** in the Cord screen to see your circles, perks and what the next circle still
 needs, each line checked or crossed.
@@ -31,6 +31,9 @@ needs, each line checked or crossed.
 ### Condensing mana
 
 - The mana you actually paid counts, after discounts.
+- Only **a tenth** condenses at once. The rest waits ten seconds and condenses only if one of your spells hurts a hostile creature in that time. Casting into the air or at a training dummy barely builds a heart.
+- Spell kills count toward breakthroughs, but past 12 in a minute each further kill counts only now and then, so farms mostly don’t count.
+- The 7th Circle’s boss breakthrough goes only to those who dealt the boss at least 2% of its health.
 - A **Blood Price** spell counts 5 mana per point of health it costs.
 - An **overcast** counts the mana you had before the circle cracked.
 - **First discoveries** condense extra mana (table below).
@@ -69,33 +72,33 @@ When it forms, the circle's title fills your screen and your **mana refills comp
 
 | Circle | Mana condensed (total) | Breakthrough | Title | Gift |
 |---|---|---|---|---|
-| **1st** | 600 | none | *A ring of mana forms around your heart* | Passive slot 1; your **innate rune** wakes |
-| **2nd** | 2,000 | Know 10 runes | *Your mana runs deeper* | |
-| **3rd** | 5,000 | Wear a Copper Cord or better; 1 reaction | *Mana Skin awakens* | **Mana Skin** |
-| **4th** | 10,000 | Defeat 40 monsters with spells; 3 different reactions | *Your circles turn as one* | |
-| **5th** | 18,000 | Know 35 runes; wear an Amethyst Cord or better; **Long Incantation** | *Flow: the circles quicken* | Passive slot 2; **Flow** |
-| **6th** | 30,000 | Defeat 150 monsters with spells; slay 8 Runebound; 5 different reactions | *Your heart burns brighter* | |
-| **7th** | 50,000 | Help slay a boss; find 2 secret spells; **In Rhythm** | *Overflow: mana spills from you* | **Overflow** |
-| **8th** | 80,000 | Wear an Echo Cord; find 4 secret spells; **The Last Page** (beat the Archivist) | *Archmage* | **Archmage**; Relay Circle lesson |
-| **9th** | 120,000 | Know 60 runes; 6 different reactions | *Widening Horizon* | Circle Vow |
-| **10th** | 170,000 | Defeat 250 monsters with spells; **Tempered** (beat the Cinder Warden) | *Forged Heart* | Tollgate lesson |
-| **11th** | 230,000 | Find 5 secret spells; **Fusion** | *Woven Wisdom* | Circle Vow |
-| **12th** | 300,000 | Slay 20 Runebound; **Low Tide** (beat the Tide Scribe) | *Ocean Within* | Ebb Ledger and Reweave lesson |
-| **13th** | 380,000 | Know 90 runes; 8 different reactions | *Boundless Study* | Circle Vow |
-| **14th** | 470,000 | Defeat 400 monsters with spells; **Starbreaker** (beat the Star-Eater) | *Starheart* | Lifeline lesson |
-| **15th** | 570,000 | Find 7 secret spells; **Knotted** | *Living Grimoire* | Circle Vow |
-| **16th** | 680,000 | Slay 40 Runebound; **Heartwood** (beat the Root Guardian) | *Rooted Heart* | Excise lesson |
-| **17th** | 800,000 | Know 120 runes; 10 different reactions | *Prismatic Heart* | Circle Vow |
-| **18th** | 930,000 | Defeat 650 monsters with spells; **Grounded** (beat the Storm Conductor) | *Stormheart* | Conduit lesson |
-| **19th** | 1,070,000 | Find 9 secret spells; all 11 reactions | *Convergence* | Circle Vow |
-| **20th** | 1,220,000 | Defeat 1,000 monsters with spells; slay 100 Runebound; all 10 secret spells | *Master Heart* | Circle Vow |
+| **1st** | 1,000 | none | *A ring of mana forms around your heart* | Passive slot 1; your **innate rune** wakes |
+| **2nd** | 4,000 | Know 10 runes | *Your mana runs deeper* | |
+| **3rd** | 12,000 | Wear a Copper Cord or better; 1 reaction | *Mana Skin awakens* | **Mana Skin** |
+| **4th** | 28,000 | Defeat 40 monsters with spells; 3 different reactions | *Your circles turn as one* | |
+| **5th** | 55,000 | Know 35 runes; wear an Amethyst Cord or better; **Long Incantation** | *Flow: the circles quicken* | Passive slot 2; **Flow** |
+| **6th** | 95,000 | Defeat 150 monsters with spells; slay 8 Runebound; 5 different reactions | *Your heart burns brighter* | |
+| **7th** | 150,000 | Help slay a boss; find 2 secret spells; **In Rhythm** | *Overflow: mana spills from you* | **Overflow** |
+| **8th** | 230,000 | Wear an Echo Cord; find 4 secret spells; **The Last Page** (beat the Archivist) | *Archmage* | **Archmage**; Relay Circle lesson |
+| **9th** | 330,000 | Know 60 runes; 6 different reactions | *Widening Horizon* | Circle Vow |
+| **10th** | 460,000 | Defeat 250 monsters with spells; **Tempered** (beat the Cinder Warden) | *Forged Heart* | Tollgate lesson |
+| **11th** | 620,000 | Find 5 secret spells; **Fusion** | *Woven Wisdom* | Circle Vow |
+| **12th** | 810,000 | Slay 20 Runebound; **Low Tide** (beat the Tide Scribe) | *Ocean Within* | Ebb Ledger and Reweave lesson |
+| **13th** | 1,030,000 | Know 90 runes; 8 different reactions | *Boundless Study* | Circle Vow |
+| **14th** | 1,280,000 | Defeat 400 monsters with spells; **Starbreaker** (beat the Star-Eater) | *Starheart* | Lifeline lesson |
+| **15th** | 1,560,000 | Find 7 secret spells; **Knotted** | *Living Grimoire* | Circle Vow |
+| **16th** | 1,870,000 | Slay 40 Runebound; **Heartwood** (beat the Root Guardian) | *Rooted Heart* | Excise lesson |
+| **17th** | 2,210,000 | Know 120 runes; 10 different reactions | *Prismatic Heart* | Circle Vow |
+| **18th** | 2,580,000 | Defeat 650 monsters with spells; **Grounded** (beat the Storm Conductor) | *Stormheart* | Conduit lesson |
+| **19th** | 2,980,000 | Find 9 secret spells; all 11 reactions | *Convergence* | Circle Vow |
+| **20th** | 3,420,000 | Defeat 1,000 monsters with spells; slay 100 Runebound; all 10 secret spells | *Master Heart* | Circle Vow |
 
 Circles 9 to 20 give the same per-circle bonuses but no new perks or passive slots. Seven of them ask you
 to choose a **Circle Vow** (see below). Every breakthrough can be earned alone.
 
 ### What every circle gives
 
-Each working circle adds **+15 max mana**, **+0.5 mana a second** and **+3% spell power**.
+Each working circle adds **+15 max mana**, **+0.5 mana a second** and **+1.5% spell power**.
 
 | Circles | Max mana | Regeneration | Spell power |
 |---|---|---|---|
@@ -174,9 +177,22 @@ without Aura.
 
 Milestones you reached early still count later.
 
+## Tribulations
+
+The 5th, 10th, 15th and 20th circles don’t simply form. When the meditation completes, waves of tempered
+Runebound come for you: three at the 5th circle, up to six at the 20th, with a **Herald** in the last. Stay within
+24 blocks and beat each wave within 75 seconds. Dying, fleeing or running out of time loses it (your condensed mana is
+kept) and you can face it again after five minutes. A won tribulation leaves runes and Mana Crystals where it ended,
+and a **Tribulation Scar**: one more heart of maximum health for good. Chat warns you a circle ahead.
+
+## Re-tempering (0.12)
+
+The first time you join on 0.12, your heart is measured against these thresholds. You keep the most circles your
+condensed mana pays for, up to what you had; the rest form again as you condense more.
+
 ## Tips and counterplay
 
-- **Cast a lot.** Spending mana is the fastest way to condense. A ley line doubles your regeneration.
+- **Fight with spells.** Mana spent on spells that hit hostile creatures is what condenses. A ley line doubles your regeneration.
 - **Discover things.** Each first reaction, feat and secret is free mana. The Grimoire shows what's left.
 - **Form circles on a ley line, somewhere safe.** Half the time, and a single hit starts it over.
 - **Cracked circles.** [Overcasting]({{ '/spellcraft/overcasting/' | relative_url }}) cracks your

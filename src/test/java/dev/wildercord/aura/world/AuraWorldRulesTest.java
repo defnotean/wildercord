@@ -77,6 +77,9 @@ class AuraWorldRulesTest {
 		assertFalse(AuraWorldRules.perfect(100, 99));
 		assertEquals(4.0, AuraWorldRules.throughGuard(8), 1e-9);
 		assertEquals(0.0, AuraWorldRules.throughGuard(-3), 1e-9);
+		// A guard blunts a spell less than a blow, and never zeroes it.
+		assertEquals(6.0, AuraWorldRules.spellThroughGuard(8), 1e-9);
+		assertTrue(AuraWorldRules.spellThroughGuard(8) > AuraWorldRules.throughGuard(8));
 		assertTrue(AuraWorldRules.MOB_GUARD_TICKS > AuraWorldRules.MOB_PERFECT_TICKS * 3, "most of a guard is held, not perfect");
 	}
 

@@ -49,8 +49,8 @@ class AuraRulesTest {
 	@Test
 	void switchingMethodsGoesBackToTheStartOfTheStage() {
 		assertEquals(0, AuraRules.afterSwitch(AuraRules.GLOW, 0), 1e-9);
-		assertEquals(150, AuraRules.afterSwitch(AuraRules.FLOW, AuraRules.threshold(AuraRules.FLOW)), 1e-9);
-		assertEquals(600, AuraRules.afterSwitch(AuraRules.EDGE, AuraRules.threshold(AuraRules.EDGE)), 1e-9);
+		assertEquals(450, AuraRules.afterSwitch(AuraRules.FLOW, AuraRules.threshold(AuraRules.FLOW)), 1e-9);
+		assertEquals(1800, AuraRules.afterSwitch(AuraRules.EDGE, AuraRules.threshold(AuraRules.EDGE)), 1e-9);
 	}
 
 	@Test
@@ -153,14 +153,14 @@ class AuraRulesTest {
 	@Test
 	void theTuningWorksOut() {
 		// About 300 an hour of meaningful fighting (a kill every ten seconds of combat, combat a third of play,
-		// the moment and repetition about even): Flow in about half an hour, Edge in about two hours.
+		// the moment and repetition about even): Flow in about an hour and a half, Edge in about six hours.
 		double perKill = 4 * AuraRules.STRIKE + 1.0 + AuraRules.KILL;
 		double perHour = perKill * 6 * 60 / 3.0;
 		assertEquals(300, perHour, 1e-9);
 		double flowHours = AuraRules.threshold(AuraRules.FLOW) / perHour;
 		double edgeHours = AuraRules.threshold(AuraRules.EDGE) / perHour;
-		assertTrue(flowHours >= 0.4 && flowHours <= 0.6, "Flow in " + flowHours + " h");
-		assertTrue(edgeHours >= 1.5 && edgeHours <= 2.5, "Edge in " + edgeHours + " h");
+		assertTrue(flowHours >= 1.2 && flowHours <= 1.8, "Flow in " + flowHours + " h");
+		assertTrue(edgeHours >= 5 && edgeHours <= 7, "Edge in " + edgeHours + " h");
 	}
 
 	@Test
@@ -269,11 +269,11 @@ class AuraRulesTest {
 
 	@Test
 	void theTopStagesTakeLongerAndAskHarderTrials() {
-		// About 300 an hour: Form in about six hours, Sovereign in about fifteen.
+		// About 300 an hour: Form in about eighteen hours, Sovereign in about forty-five.
 		double formHours = AuraRules.threshold(AuraRules.FORM) / 300.0;
 		double sovereignHours = AuraRules.threshold(AuraRules.SOVEREIGN) / 300.0;
-		assertTrue(formHours >= 5 && formHours <= 7, "Form in " + formHours + " h");
-		assertTrue(sovereignHours >= 13 && sovereignHours <= 17, "Sovereign in " + sovereignHours + " h");
+		assertTrue(formHours >= 16 && formHours <= 20, "Form in " + formHours + " h");
+		assertTrue(sovereignHours >= 40 && sovereignHours <= 50, "Sovereign in " + sovereignHours + " h");
 		assertEquals(AuraRules.STILLNESS_TICKS, AuraRules.stillnessTicks(AuraRules.FLOW));
 		assertEquals(AuraRules.STILLNESS_TICKS, AuraRules.stillnessTicks(AuraRules.EDGE));
 		assertTrue(AuraRules.stillnessTicks(AuraRules.FORM) > AuraRules.STILLNESS_TICKS, "the tempest is held longer than stillness");

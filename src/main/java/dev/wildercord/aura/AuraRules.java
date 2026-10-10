@@ -16,8 +16,8 @@ import dev.wildercord.spell.Parry;
  * owner may want to change is also in the {@code aura} config section; the defaults live here.</p>
  *
  * <p>Tuned alongside spell mastery ({@link MasteryRules}), whose moment, repetition and practice rules this reuses: a player
- * who fights with a blade about a third of their play reaches Flow in about half an hour, Edge in about two hours, Form in
- * about six and Sovereign in about fifteen. A kill of an ordinary monster in four full swings is worth about
+ * who fights with a blade about a third of their play reaches Flow in about an hour and a half, Edge in about six hours,
+ * Form in about eighteen and Sovereign in about forty-five. A kill of an ordinary monster in four full swings is worth about
  * 2.5 experience; meaningful fighting earns about 300 an hour once repetition has had its say.</p>
  */
 public final class AuraRules {
@@ -38,8 +38,11 @@ public final class AuraRules {
 	private static final String[] IDS = {"none", "glow", "flow", "edge", "form", "sovereign"};
 	/** How much aura each stage holds: the stage's leap is in what it can do, and in how much it can do it. */
 	private static final int[] CAPACITY = {0, 20, 40, 70, 110, 160};
-	/** The experience (a running total) each stage's breakthrough needs: Glow comes with the method, then 150, 600, 1,800, 4,500. */
-	private static final int[] THRESHOLD = {0, 0, 150, 600, 1800, 4500};
+	/**
+	 * The experience (a running total) each stage's breakthrough needs: Glow comes with the method, then 450, 1,800, 5,400,
+	 * 13,500 (tempered in 0.12 to three times the old figures).
+	 */
+	private static final int[] THRESHOLD = {0, 0, 450, 1800, 5400, 13500};
 
 	/** A stage's id: none, glow, flow, edge, form or sovereign. */
 	public static String id(int stage) {
@@ -264,6 +267,8 @@ public final class AuraRules {
 	public static final double STRIKE = 0.25;
 	public static final double DAMAGE = 1.0;
 	public static final double KILL = 0.5;
+	/** The most the moment (low health, a crowd, a boss, a dungeon) multiplies a blow's experience by. */
+	public static final double MAX_MOMENT = 1.5;
 	/** The most one blow can earn, after everything that multiplies it. */
 	public static final double MAX_PER_STRIKE = 6.0;
 	/** The most training dummies and the practice arena can teach, in all, and at what rate. */
@@ -292,6 +297,20 @@ public final class AuraRules {
 			return 0;
 		}
 		return worth * (STRIKE + DAMAGE * Math.max(0, Math.min(1, share)) + (killed ? KILL : 0));
+	}
+
+	/** The moment's multiplier, held to {@link #MAX_MOMENT}. */
+	public static double moment(double situation) {
+		return Math.max(0, Math.min(MAX_MOMENT, situation));
+	}
+
+	/** The stage an older save keeps under today's thresholds: the highest, up to what it had, its experience reaches (Glow at least). */
+	public static int retemper(int stage, double xp, java.util.function.IntUnaryOperator threshold) {
+		int s = clampStage(stage);
+		while (s > GLOW && xp < threshold.applyAsInt(s) - 1.0E-6) {
+			s--;
+		}
+		return s;
 	}
 
 	/** How much of {@code xp} earned in practice is learned, having already learned {@code learned} that way. */
@@ -350,7 +369,7 @@ public final class AuraRules {
 	 * Aura Armour (Form, always on): while you hold at least {@link #ARMOUR_MIN} aura it takes {@code share} of what reaches you,
 	 * paying {@link #ARMOUR_COST_PER_POINT} aura for each point it takes, never more than the aura above that floor pays for.
 	 */
-	public static final double ARMOUR_SHARE = 0.25;
+	public static final double ARMOUR_SHARE = 0.15;
 	public static final double ARMOUR_COST_PER_POINT = 0.5;
 	public static final double ARMOUR_MIN = 20.0;
 

@@ -1,0 +1,35 @@
+{
+  "parent": "wildercord:aura/edge",
+  "criteria": {
+    "form": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "aura:form",
+        "count": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:aura_shard"
+    },
+    "title": {
+      "translate": "advancements.wildercord.aura.form.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.aura.form.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "form"
+    ]
+  ],
+  "rewards": {
+    "experience": 300,
+    "loot": [
+      "wildercord:advancement_reward/mana_crystals"
+    ]
+  }
+}

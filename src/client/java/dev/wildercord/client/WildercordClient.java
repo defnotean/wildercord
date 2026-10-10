@@ -75,6 +75,7 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.monster.MonsterClient.init();
 		dev.wildercord.client.auraworld.AuraWorldClient.init();
 		dev.wildercord.client.wildlife.WildlifeClient.init();
+		net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(dev.wildercord.town.Town.KEEPER, net.minecraft.client.renderer.entity.WanderingTraderRenderer::new);
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.cosmetic.CordTrails::tick);
 		// Magic drawn the plain way under a shader pack (Iris), so the pack's lighting doesn't break on it.
 		dev.wildercord.client.compat.ShaderCompat.init();
@@ -99,6 +100,7 @@ public final class WildercordClient implements ClientModInitializer {
         ReweaveClient.init();
         ReweaveLessonScreen.register();
         ExciseLessonScreen.register();
+        BreakthroughScreen.register();
         ExciseClient.init();
         PackLessonScreen.register();
         LessonPackClient.init();

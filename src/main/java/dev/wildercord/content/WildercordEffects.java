@@ -37,6 +37,14 @@ public final class WildercordEffects {
 	public static final Holder<MobEffect> WARDED = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("warded"),
 		new WardedEffect());
 
+	/** A good meal (0.12 "Tempering"): +20 max mana per level. */
+	public static final Holder<MobEffect> NOURISHED = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("nourished"),
+		new PlainEffect(0xE8A25A));
+
+	/** A clear head from a good meal: spells cost 8% less per level (two levels at most). */
+	public static final Holder<MobEffect> FOCUSED = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("focused"),
+		new PlainEffect(0x7FD8E8));
+
 	public static final Holder<Potion> CLARITY_POTION = potion("clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 3600)));
 	public static final Holder<Potion> LONG_CLARITY_POTION = potion("long_clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 9600)));
 	public static final Holder<Potion> STRONG_CLARITY_POTION = potion("strong_clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 1800, 1)));
@@ -51,6 +59,12 @@ public final class WildercordEffects {
 	}
 
 	public static void init() {}
+
+	private static final class PlainEffect extends MobEffect {
+		PlainEffect(int color) {
+			super(MobEffectCategory.BENEFICIAL, color);
+		}
+	}
 
 	private static final class ClarityEffect extends MobEffect {
 		ClarityEffect() {

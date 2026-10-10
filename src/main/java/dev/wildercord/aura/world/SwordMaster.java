@@ -543,6 +543,10 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		return home != null && !started && level().getGameTime() < begins;
 	}
 
+	private boolean enrolled(ServerPlayer player) {
+		return mayEnter(player) && player.level() == level();
+	}
+
 	private boolean participant(LivingEntity entity) {
 		return entity instanceof ServerPlayer player && participants.contains(player.getUUID()) && mayEnter(player)
 			&& player.level() == level() && home != null
@@ -575,7 +579,9 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			if (waitingUntil > 0 && now >= waitingUntil) discard();
 			return;
 		}
-		if (participants.removeIf(id -> !(level.getPlayerByUUID(id) instanceof ServerPlayer player) || !participant(player))) endOrdinaryPhrase();
+		// Stepping out of the arena only pauses a fighter (participant() is checked at every hit); leaving the level, dying or
+		// turning to another duel is what drops them from the roster.
+		if (participants.removeIf(id -> !(level.getPlayerByUUID(id) instanceof ServerPlayer player) || !enrolled(player))) endOrdinaryPhrase();
 		// Braking belongs before every interruption/abandonment early return, including losing the current target.
 		if (state(DASH) && (now >= dodgeUntil || participants.isEmpty() || staggered() || Stance.opened(this)
 			|| getTarget() == null || !participant(getTarget()))) stopDodge(now);
@@ -1507,7 +1513,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return super.hurtServer(level, source, damage);
-		if (!acceptsHarmFrom(source.getEntity())) return false;
+		if (!acceptsHarmFrom(source.getEntity()) && !(started && lingering(source))) return false;
 		float through = guarded(level, source, damage);
 		if (through <= 0) return false;
 		StoneFracture braced = fracture;
@@ -1516,6 +1522,13 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		boolean hurt = super.hurtServer(level, source, through);
 		if (rear && fracture == braced && (getHealth() < health || getAbsorptionAmount() < absorption)) cancelAttack();
 		return hurt;
+	}
+
+	/** Burning, poison, withering and frost a fighter left on it tick with no one's hand on them; they still count in a started trial. */
+	private static boolean lingering(DamageSource source) {
+		return source.getEntity() == null && (source.is(net.minecraft.world.damagesource.DamageTypes.ON_FIRE)
+			|| source.is(net.minecraft.world.damagesource.DamageTypes.MAGIC) || source.is(net.minecraft.world.damagesource.DamageTypes.WITHER)
+			|| source.is(net.minecraft.world.damagesource.DamageTypes.FREEZE));
 	}
 
 	@Override

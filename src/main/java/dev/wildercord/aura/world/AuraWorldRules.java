@@ -117,12 +117,19 @@ public final class AuraWorldRules {
 	public static final int MOB_GUARD_REST = 40;
 	/** What a held mob guard takes off a blow from in front. */
 	public static final double MOB_GUARD_SHARE = 0.5;
+	/** What a held mob guard takes off a spell from in front: a blade blunts magic, it never turns it whole. */
+	public static final double MOB_SPELL_GUARD_SHARE = 0.25;
 	/** A player whose blow a mob's perfect guard turns: thrown back, slowed and weakened this long. */
 	public static final int MOB_STAGGER_TICKS = 30;
 
 	/** Whether a guard raised at {@code raisedAt} is in its perfect moment at {@code now}. */
 	public static boolean perfect(long raisedAt, long now) {
 		return raisedAt >= 0 && now >= raisedAt && now - raisedAt <= MOB_PERFECT_TICKS;
+	}
+
+	/** What a held mob guard lets through of a spell from in front (no perfect guard turns a spell). */
+	public static double spellThroughGuard(double damage) {
+		return Math.max(0, damage) * (1 - MOB_SPELL_GUARD_SHARE);
 	}
 
 	/** What a held mob guard lets through of a blow from in front. */

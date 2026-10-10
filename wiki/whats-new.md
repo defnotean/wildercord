@@ -3,6 +3,42 @@ title: What's New
 nav_order: 1.1
 ---
 
+# What's new in 0.12.0: Tempering
+
+Players were far too strong, so this update rebalances spell damage and defence. Circles and aura now take real effort, and the world fights back. Install `wildercord-0.12.0-alpha+mc26.3.jar` on the server and every client together: **0.11 clients must update before joining**. **Back up your world first.** Saves are re-tempered, so a heart or aura can settle a few circles or a stage lower. Condensed mana and aura experience are kept.
+
+## Power, rebalanced
+
+- **Spells hit for less**: less per hit, per cast and per point of mana, shared out past the third target, with bonuses capped at 3x against creatures. Spell power from circles is halved.
+- **Defences don't stack into immunity**: lasting Resistance is capped at II, aura armour gives 15%, and boss and Master spells skip the spell guard. A blade guard takes only a quarter off a spell, so Sword Masters no longer erase magic.
+
+## The climb
+
+- **About a hundred hours to circle 20.** Only a tenth of the mana you spend condenses straight away. The rest condenses only when your spells hurt hostile creatures, and spell farms mostly stop counting.
+- **Aura stages take three times the experience.** Your aura now shows only while you're using it.
+- **Tribulations.** The 5th, 10th, 15th and 20th circles have to be won against waves of tempered Runebound. Winning leaves runes, Mana Crystals and a **Tribulation Scar**: one more heart of health for good.
+- **The breakthrough screen** shows what each circle gave you and what's next.
+
+## Enemies
+
+- **Tempered creatures** scale to the strongest player nearby.
+- **Elites** come in five kinds: Swift, Ironhide, Vampiric, Brutal and Splitting.
+- **Bosses** grow with every extra challenger and enrage at half health.
+- Wildercord's monsters spawn twice as often, mostly in packs.
+- **Frost and Ash** variants depend on where a creature is born.
+- **Alpha** Gloomstalkers lead their packs.
+
+## Cooking, mounts and the inn
+
+- **Camp Pot**: set it over a fire and cook any of 21 meals from your pack. They give buffs such as Nourished (more max mana) and Focused (cheaper spells).
+- **Ridgeback Stag**: the first mount, found on plains, meadows and savannas.
+- **Black bobcat**: a rare, huge wildcat of dark forests that you tame with fish.
+- **Wayfarer Inn**:
+  - The bounty board offers one hunt a day for emeralds and reputation.
+  - The Inn Cook, Stablemaster and Master's Emissary sell more as you go from Stranger to Known, Friend and Honoured.
+  - The Stablemaster sells a Ridgeback Deed, and the Emissary sells a technique scroll.
+  - The board and keepers appear only in inns generated on 0.12.
+
 # What's new in 0.11.2
 
 - **Worldgen crash fixed.** Exploring new land no longer crashes the server when a farm site, such as the walled orchard, generates with its sign.

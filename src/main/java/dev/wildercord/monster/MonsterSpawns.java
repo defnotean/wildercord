@@ -54,7 +54,7 @@ public final class MonsterSpawns {
 	private MonsterSpawns() {}
 
 	private static final Set<ResourceKey<Biome>> FORESTS = Set.of(Biomes.FOREST, Biomes.FLOWER_FOREST, Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST,
-		Biomes.DAPPLED_FOREST, Biomes.DARK_FOREST, Biomes.PALE_GARDEN);
+		Biomes.DAPPLED_FOREST, Biomes.DARK_FOREST, Biomes.PALE_GARDEN, Biomes.SNOWY_TAIGA, Biomes.GROVE);
 	/** Where the woods are darkest: more Bramblewalkers, and Gloomstalkers on the surface. */
 	private static final Set<ResourceKey<Biome>> DARK_WOODS = Set.of(Biomes.DARK_FOREST, Biomes.PALE_GARDEN);
 	private static final Set<ResourceKey<Biome>> PEAKS = Set.of(Biomes.JAGGED_PEAKS, Biomes.FROZEN_PEAKS, Biomes.STONY_PEAKS, Biomes.SNOWY_SLOPES,

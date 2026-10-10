@@ -38,7 +38,7 @@ public class GloomstalkerRenderer extends WildMonsterRenderer<Gloomstalker, Gloo
 
 	@Override
 	protected int getModelTint(MonsterRenderState state) {
-		return ARGB.color(Math.round(MonsterRules.opacity(state.veil) * 255), 255, 255, 255);
+		return ARGB.color(Math.round(MonsterRules.opacity(state.veil) * 255), state.variantTint >> 16 & 0xFF, state.variantTint >> 8 & 0xFF, state.variantTint & 0xFF);
 	}
 
 	@Override

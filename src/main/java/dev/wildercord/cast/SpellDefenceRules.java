@@ -81,6 +81,9 @@ public final class SpellDefenceRules {
 	public static final double MAX_BONUS = 2.5;
 
 	/** A hit's bonuses together, held to {@code cap}; bonuses that weaken it (a resistance, water on fire) are never lifted. */
+	/** What a hit's bonuses together may multiply a spell by against a creature: a setup pays off, never tenfold. */
+	public static final double CREATURE_MAX_BONUS = 3.0;
+
 	public static double capBonus(double bonus, double cap) {
 		if (Double.isNaN(bonus)) {
 			return 1.0;

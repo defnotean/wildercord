@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "camp_pot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:camp_pot"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:camp_pot"
+    },
+    "title": {
+      "translate": "advancements.wildercord.cooking.camp_pot.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.cooking.camp_pot.description"
+    }
+  },
+  "requirements": [
+    [
+      "camp_pot"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

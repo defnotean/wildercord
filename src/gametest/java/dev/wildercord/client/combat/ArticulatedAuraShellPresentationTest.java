@@ -101,8 +101,7 @@ public final class ArticulatedAuraShellPresentationTest implements FabricClientG
 						});
 						context.waitTicks(8);
 						context.runOnClient(mc -> {
-							check(AuraPresence.look(mc.player).shell() && state(mc).getData(AuraShellLayer.SHELL_GLOW) != null, "Normal funded upkeep enables the synced shell before input");
-							assertWorld(mc, state(mc), armored);
+							check(AuraPresence.look(mc.player).shell() && state(mc).getData(AuraShellLayer.SHELL_GLOW) == null, "Funded aura armour stays up but its shell hides until the aura is used");
 						});
 						context.getInput().pressKey(MastersArtsClient.mapping(move));
 						context.waitFor(mc -> {

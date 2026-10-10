@@ -55,6 +55,13 @@ public class WildMonsterRenderer<T extends WildMonster, M extends EntityModel<Mo
 		state.veil = monster.pose(WildMonster.VEILED, partial);
 		state.alt = monster.pose(WildMonster.ALT, partial);
 		state.engorged = monster instanceof BogWitchFrog frog && frog.engorged();
+		state.variantTint = monster.variant().tint;
+	}
+
+	/** A Frost or Ash variant's tint over its skin. */
+	@Override
+	protected int getModelTint(MonsterRenderState state) {
+		return 0xFF000000 | state.variantTint;
 	}
 
 	/** An alpha (0 to 1) as the white ARGB a glow layer is tinted with. */

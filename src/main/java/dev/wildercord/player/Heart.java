@@ -197,7 +197,14 @@ public final class Heart {
 	 */
 	private static double rawCost(Player player, SpellCompiler.Compiled compiled) {
 		return compiled.cost() * bonuses(player).cost() * dev.wildercord.cast.events.ManaStorm.costFactor(player)
-			* gearCost(player, compiled) * serverCost(player) * affinityCost(player, compiled) * dev.wildercord.cast.Climate.costFactor(player);
+			* gearCost(player, compiled) * serverCost(player) * affinityCost(player, compiled) * dev.wildercord.cast.Climate.costFactor(player)
+			* focusedCost(player);
+	}
+
+	/** A Focused meal: spells cost less while it lasts. */
+	private static double focusedCost(Player player) {
+		net.minecraft.world.effect.MobEffectInstance effect = player.getEffect(dev.wildercord.content.WildercordEffects.FOCUSED);
+		return dev.wildercord.cooking.CookingRules.focusedCost(effect == null ? 0 : effect.getAmplifier() + 1);
 	}
 
 	/**

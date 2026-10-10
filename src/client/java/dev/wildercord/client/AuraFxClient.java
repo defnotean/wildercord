@@ -360,7 +360,7 @@ public final class AuraFxClient {
 	 */
 	public static float bodyIntensity(Player player, float time) {
 		AuraAttachments.Look look = Aura.look(player);
-		if (look.stage() <= AuraRules.NONE || MagicQuality.bodyAura == MagicQuality.BodyAura.OFF) {
+		if (look.stage() <= AuraRules.NONE || MagicQuality.bodyAura == MagicQuality.BodyAura.OFF || !inUse(player, time)) {
 			return 0;
 		}
 		float spent = Awakening.spent(player) ? AwakeningRules.SPENT_GLOW : 1.0F;
@@ -372,6 +372,21 @@ public final class AuraFxClient {
 		// Momentum burns it brighter at each tier, blazing at the peak; an awakening more than any of it.
 		float k = AuraFxRules.intensity(look.lit(), fighting, surge(player.getId(), time)) + AuraFxRules.momentumGlow(presence.momentum(), look.lit());
 		return (k + AwakeningRules.GLOW * Math.min(1.1F, awakenedForm(player, time))) * spent;
+	}
+
+	/**
+	 * Whether {@code player} is using their aura at {@code time}: in a fight, guarding or breathing, surging, awakened, with a spell
+	 * on the blade or a step's afterimages behind them. At rest it shows nothing, so it never stands in the way.
+	 */
+	public static boolean inUse(Player player, float time) {
+		AuraAttachments.Look look = Aura.look(player);
+		if (look.guarding() || look.breathing()) {
+			return true;
+		}
+		long now = player.level().getGameTime();
+		AuraPresence.Look presence = AuraPresence.look(player);
+		return presence.fighting(now) || presence.spellHeld(now) || surge(player.getId(), time) > 0.01F || awakenedForm(player, time) > 0
+			|| !AuraClient.afterimages(player.getId(), time).isEmpty() || MastersArtsClient.timeline(player) != null;
 	}
 
 	/**
@@ -421,7 +436,7 @@ public final class AuraFxClient {
 				continue;
 			}
 			AuraAttachments.Look look = Aura.look(player);
-			if (look.stage() <= AuraRules.NONE) {
+			if (look.stage() <= AuraRules.NONE || !inUse(player, now)) {
 				continue;
 			}
 			motes(mc, level, player, look, bodyIntensity(player, now));

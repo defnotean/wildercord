@@ -40,6 +40,7 @@ class DataFormatTest {
 		"wildercord:cord", Set.of("player", "tier"),
 		"wildercord:moment", Set.of("player", "moment"),
 		"minecraft:inventory_changed", Set.of("player", "slots", "items"),
+		"minecraft:consume_item", Set.of("player", "item"),
 		"minecraft:recipe_unlocked", Set.of("player", "recipes"),
 		"minecraft:location", Set.of("player"));
 

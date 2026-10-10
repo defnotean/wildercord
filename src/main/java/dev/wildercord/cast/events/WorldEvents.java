@@ -92,6 +92,7 @@ public final class WorldEvents {
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(WorldEvents::tick);
+		Tribulation.init();
 		// Who fought an event's monsters (hurt one, or was hurt by one), and which of them were killed.
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (!RIFTS.isEmpty() && damage > 0) {

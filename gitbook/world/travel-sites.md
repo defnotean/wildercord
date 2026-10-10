@@ -10,6 +10,14 @@ Standing in one adds a Places entry to your [lore journal](../progression/lore-j
 
 **Wayfarer Inn.** A spruce inn at a crossroads, in plains, meadows, forests, taiga, savanna, snow and cherry groves. It has beds, a lit hearth, tables and a resident cat. A map and a note hang by the door. The Guest Ledger on the lectern tells you about the other roadside sites. The pantry chest holds food, a map and travel runes.
 
+**Town life (0.12).** Inns generated on 0.12 also have a **bounty board** by the door and three keepers who stay home, can’t be hurt and never leave:
+
+- **The bounty board** offers you one hunt a day: 3 to 8 of one creature, slain within 256 blocks of the board. Click it to read the bounty, click again to take it, and click once the hunt is done to be paid up to 8 emeralds and 5 to 10 reputation. Sneak-click to give a bounty up.
+- **Standing** grows with reputation: Stranger, Known (15), Friend (40), Honoured (80). It is yours across every inn and kept through death.
+- **The Inn Cook** buys crops and sells the Camp Pot and meals.
+- **The Stablemaster** sells leads, hay and saddles. As you rise, they add golden carrots and name tags; then, at Friend, the **Ridgeback Deed** (use it and a tame, saddled Ridgeback Stag of yours is led up) and iron horse armour; then diamond horse armour and golden apples.
+- **The Master’s Emissary** sells blank runes and Mana Crystals, then aura shards and experience bottles, and at Honoured one technique scroll a day.
+
 **Watchtower.** A stone-brick tower on windswept hills, savanna plateaus, meadows, plains and taigas. Climb the ladder to the top for the view. The signal fire sits on hay, unlit: light it with flint and steel and its smoke rises high. The watch chest up top holds runes that read the sky, sun, moon and land, plus a spyglass and flint and steel.
 
 **Broken Bridge.** A stone bridge over a creek, with its middle fallen in. Jump the gap, or fall into the deep water and climb out by the ladders on either bank. The toll booth on the far bank keeps the takings and bridge runes such as Icepath, Wind Steps and Surefoot.

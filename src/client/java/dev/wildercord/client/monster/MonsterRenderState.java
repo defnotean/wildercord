@@ -18,4 +18,6 @@ public class MonsterRenderState extends LivingEntityRenderState {
 	public float alt;
 	/** A frog that has just eaten (its throat stays swollen). */
 	public boolean engorged;
+	/** 0.12: the tint of its biome variant (white for none). */
+	public int variantTint = 0xFFFFFF;
 }

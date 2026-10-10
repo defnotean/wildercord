@@ -13,15 +13,15 @@ public final class MonsterRules {
 	/**
 	 * The six, by their entity ids, with how often each turns up among a biome's other monsters and in what numbers. A
 	 * zombie, a skeleton, a spider and a creeper each weigh about 100, so a weight of 10 is one spawn in fifty or so where it
-	 * lives: a meeting now and then, never a crowd.
+	 * lives. 0.12 "Tempering" doubled them and made most come in packs: the wild is no longer quiet.
 	 */
 	public enum Kind {
-		BRAMBLEWALKER("bramblewalker", 10, 1, 2),
-		GLOOMSTALKER("gloomstalker", 8, 1, 1),
-		THUNDERWING_HARPY("thunderwing_harpy", 10, 1, 2),
-		GEODE_CRAWLER("geode_crawler", 10, 1, 2),
-		BOG_WITCH_FROG("bog_witch_frog", 14, 1, 1),
-		MANA_OOZE("mana_ooze", 7, 1, 2);
+		BRAMBLEWALKER("bramblewalker", 20, 2, 3),
+		GLOOMSTALKER("gloomstalker", 16, 2, 4),
+		THUNDERWING_HARPY("thunderwing_harpy", 20, 2, 4),
+		GEODE_CRAWLER("geode_crawler", 20, 2, 4),
+		BOG_WITCH_FROG("bog_witch_frog", 24, 1, 2),
+		MANA_OOZE("mana_ooze", 14, 2, 4);
 
 		public final String id;
 		public final int weight;

@@ -118,6 +118,15 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Which tempering this heart was last measured under (0: before 0.12). See {@link dev.wildercord.player.Retemper}. */
+	public static final AttachmentType<Integer> TEMPERED = AttachmentRegistry.create(
+		Wildercord.id("tempered"),
+		builder -> builder
+			.initializer(() -> 0)
+			.persistent(Codec.INT)
+			.copyOnDeath()
+	);
+
 	/** Mana spent on spells, in total: it condenses toward the next circle. Kept through death. */
 	public static final AttachmentType<Integer> CONDENSED = AttachmentRegistry.create(
 		Wildercord.id("condensed"),

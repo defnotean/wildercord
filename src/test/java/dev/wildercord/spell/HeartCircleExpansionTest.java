@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /** Progression, save compatibility and bounds for the twenty-circle heart. */
 class HeartCircleExpansionTest {
 	@Test
-	void firstEightThresholdsAndMilestonesStayCompatible() {
-		int[] original = {0, 600, 2000, 5000, 10000, 18000, 30000, 50000, 80000};
+	void firstEightThresholdsAreTemperedAndMilestonesStayCompatible() {
+		int[] original = {0, 1000, 4000, 12000, 28000, 55000, 95000, 150000, 230000};
 		for (int n = 0; n < original.length; n++) {
 			assertEquals(original[n], Circles.condenseNeeded(n));
 			assertEquals(n, Circles.count(n));
@@ -20,8 +20,8 @@ class HeartCircleExpansionTest {
 	@Test
 	void twelveLaterCirclesHaveRisingCostsAndAchievableSoloBreakthroughs() {
 		assertEquals(20, Circles.MAX);
-		assertEquals(120000, Circles.condenseNeeded(9));
-		assertEquals(1220000, Circles.condenseNeeded(20));
+		assertEquals(330000, Circles.condenseNeeded(9));
+		assertEquals(3420000, Circles.condenseNeeded(20));
 		for (int n = 9; n <= Circles.MAX; n++) {
 			assertTrue(Circles.condenseNeeded(n) > Circles.condenseNeeded(n - 1));
 			assertFalse(Circles.requirements(n).isEmpty());
@@ -45,8 +45,8 @@ class HeartCircleExpansionTest {
 	void twentyCircleBenefitsStayLinearWithoutRepeatingPerks() {
 		assertEquals(300, Circles.MAX * Circles.MANA_PER_CIRCLE);
 		assertEquals(10, Circles.MAX * Circles.REGEN_PER_CIRCLE);
-		assertEquals(1.6, Circles.power(0, 20, false), 1e-9);
-		assertEquals(1.6 * 1.3, Circles.power(0, 20, true), 1e-9);
+		assertEquals(1.3, Circles.power(0, 20, false), 1e-9);
+		assertEquals(1.3 * 1.15, Circles.power(0, 20, true), 1e-9);
 		assertEquals(Circles.cost(3, 8), Circles.cost(3, 20), 1e-9);
 		assertEquals(Circles.cooldown(3, 8), Circles.cooldown(3, 20), 1e-9);
 	}
@@ -56,7 +56,7 @@ class HeartCircleExpansionTest {
 		assertEquals(0, Circles.count(Integer.MIN_VALUE));
 		assertEquals(20, Circles.count(Integer.MAX_VALUE));
 		assertEquals(1, Circles.power(0, Integer.MIN_VALUE, true), 1e-9);
-		assertEquals(1.6, Circles.power(0, Integer.MAX_VALUE, false), 1e-9);
+		assertEquals(1.3, Circles.power(0, Integer.MAX_VALUE, false), 1e-9);
 		assertEquals(0, Circles.condenseNeeded(-1));
 		assertEquals(Circles.condenseNeeded(20), Circles.condenseNeeded(Integer.MAX_VALUE));
 	}

@@ -73,7 +73,7 @@ class LineageRulesTest {
 	@Test
 	void theMasterEarnsAShareOfEachRoadWalked() {
 		assertEquals((AuraRules.threshold(AuraRules.EDGE) - AuraRules.threshold(AuraRules.FLOW)) * 0.25, LineageRules.share(AuraRules.EDGE, 0.25), 1e-9);
-		assertEquals(112.5, LineageRules.share(AuraRules.EDGE, 0.25), 1e-9);
+		assertEquals(337.5, LineageRules.share(AuraRules.EDGE, 0.25), 1e-9);
 		assertEquals(0, LineageRules.share(AuraRules.GLOW, 0.25), 1e-9, "the first method learned is no road walked");
 		assertEquals(0, LineageRules.share(AuraRules.FORM, 0), 1e-9);
 		// Three disciples carried all the way up give a master less than their own road from Form.

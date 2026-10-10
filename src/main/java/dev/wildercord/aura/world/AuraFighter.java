@@ -312,6 +312,14 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 			guardBroken(level, player);
 			return damage;
 		}
+		boolean spell = SpellDefence.landingSpell() || source instanceof dev.wildercord.cast.RelayDamageSource
+			|| source.is(net.minecraft.world.damagesource.DamageTypes.MAGIC) || source.is(net.minecraft.world.damagesource.DamageTypes.INDIRECT_MAGIC);
+		if (spell) {
+			// A blade can't parry a spell whole: a guard only blunts it, and never staggers the caster.
+			Vec3 look = flatLook();
+			Fx.send(level, ParticleTypes.CRIT, position().add(0, 1.1, 0).add(look.scale(0.8)), 3, 0.2, 0.15);
+			return (float) AuraWorldRules.spellThroughGuard(damage);
+		}
 		if (perfectNow()) {
 			perfect(level, source);
 			return -1;

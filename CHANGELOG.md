@@ -4,6 +4,66 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.12.0-alpha] — 2026-10-09
+
+**Tempering.** Players were far too strong, so this release rebalances spell damage and defence. Circles and aura now take real effort, and the world fights back.
+
+Install the same build on the server and every client. New blocks, items, entities, effects and packets mean 0.11.x clients must update before joining. **Back up worlds first:** existing saves are re-tempered, so players can lose circles and aura stages. Their condensed mana and aura experience are kept.
+
+### Changed
+
+- **Spell damage, rebalanced.**
+  - The damage a single hit can deal from a cast's mana dropped from 96 to 40, and a whole cast's from 512 to 256.
+  - Each point of mana now buys 1.2 damage, plus 4 flat. It used to be 2, plus 12.
+  - Past the third creature a spell reaches, each further one shares out the damage.
+  - A hit's bonuses can multiply a spell by at most 3x against a creature.
+  - Spell power per circle is halved, to 1.5%, and overflow power is 1.15.
+- **Defence, rebalanced.**
+  - Lasting Resistance on a player is capped at II. Dodges of half a second or less, like Time Skip, keep their level.
+  - Aura armour gives 15%, down from 25%.
+  - Boss and Master spells skip the spell guard.
+  - A held blade guard only takes 25% off a spell and never staggers the caster, so Sword Masters and duelists no longer erase every spell sent at them.
+- **Heart Circles take real effort.** Every circle needs about 2.8 times the condensed mana, from 1,000 for circle 1 to 3,420,000 for circle 20: about a hundred hours of play.
+  - Only a tenth of the mana you spend condenses at once. The rest condenses only if one of your spells hurts a hostile creature within ten seconds, so casting into the air or at a dummy barely builds a heart.
+  - Spell kills from farms mostly stop counting.
+  - The 7th Circle's boss breakthrough goes only to players who dealt the boss at least 2% of its health.
+- **Aura takes real effort.** Stage thresholds are tripled: 450, 1,800, 5,400 and 13,500. The "moment" bonus is capped at 1.5x.
+- **Saves are re-tempered** the first time each player joins. A heart keeps the most circles its condensed mana now pays for, and an aura keeps the highest stage its experience reaches. You're told what changed.
+- **Your aura shows only while you're using it:** fighting, guarding, breathing, surging, with a spell on the blade, or using an art. At rest it's hidden.
+- **Wildercord's monsters spawn twice as often**, mostly in packs, and Gloomstalkers now also roam snowy taigas and groves.
+
+### Added
+
+- **Tribulations.** The 5th, 10th, 15th and 20th circles have to be won.
+  - When the meditation completes, three to six waves of tempered Runebound come for you, and a Herald comes in the last.
+  - Stay within 24 blocks and beat each wave in time. If you die, flee or run out of time, you can try again after five minutes, and your condensed mana is kept.
+  - A win leaves runes and Mana Crystals.
+  - Each tribulation circle you hold gives a **Tribulation Scar**: one more heart of health for good.
+- **Breakthrough screen.** After the title card, a page shows what the new circle added, what it opens, any vow to choose, any tribulation spoils, and whether the next circle is a tribulation. The great breakthroughs are announced to everyone.
+- **Tempered enemies.** Each hostile creature is tempered to the strongest player nearby, by their circles and aura stage.
+  - Tempered creatures get up to 4x health and 2.5x damage. The damage also counts for their arrows, blasts and spells.
+  - Past the first hours, up to 20% of hostile creatures come as **elites**: Swift, Ironhide, Vampiric, Brutal or Splitting.
+  - Bosses grow with each extra challenger, and a boss without its own phases enrages once at half health.
+- **Frost and Ash variants.** Bramblewalkers and Gloomstalkers born in freezing land come out Frost: tougher, and their blows slow and chill. Those born in scorched land come out Ash: they hit harder, can't burn, and their blows set you alight.
+- **Pack hunting.** Gloomstalkers call their pack onto their prey. The first of a group may be an **Alpha**: bigger, stronger, and heard further.
+- **Camp cooking.** Craft a **Camp Pot**, set it over a campfire, fire, magma or lava, and use a bowl on it to cook from your pack.
+  - There are 21 meals, from Hearty Stew to the Archmage's Feast. They feed well and give buffs that keep you going, never raw damage.
+  - Two new effects: **Nourished** (+20 max mana per level) and **Focused** (8% off spell prices per level).
+- **Ridgeback Stag**, the mod's first mount. Find it on plains, meadows and savannas, tame it like a horse, saddle it, and ride. It's sturdier and quicker than most horses, and two tame stags fed golden food raise a calf.
+- **Black bobcat**, a rare wildcat as big as a polar bear, found in dark forests and old taigas. Fish tames it one time in three. A tame bobcat follows you, sits, joins your fights and raises kittens. It has its own toggle in the config, `creatures.black_bobcat`.
+- **Wayfarer Inn town life.**
+  - Inns now have a **bounty board**. Each day it offers one hunt near the inn that pays emeralds and reputation.
+  - As your standing rises (Stranger, Known, Friend, Honoured), the inn's three keepers sell you more:
+    - The **Inn Cook** sells meals and the Camp Pot.
+    - The **Stablemaster** sells saddles, horse armour and a **Ridgeback Deed** that brings you a tame, saddled stag.
+    - The **Master's Emissary** sells runes, Mana Crystals, aura shards and, once you're Honoured, a technique scroll.
+  - The keepers can't be hurt and never leave. The board and keepers appear only in inns generated on 0.12.
+
+### Fixed
+
+- Name tags always name Wildercord's creatures, even ones that answer every right click themselves. The name stays visible and the creature never despawns.
+- In a Sword Master trial, burning, poison, wither and freeze you left on the Master still count after you step out of the arena.
+
 ## [0.11.2-alpha] — 2026-10-09
 
 Install the same build on the server and every client. No world changes; 0.11 worlds load as they are.

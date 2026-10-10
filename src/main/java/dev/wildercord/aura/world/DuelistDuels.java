@@ -447,7 +447,7 @@ public final class DuelistDuels {
 			}
 			player.sendSystemMessage(Component.translatable("message.wildercord.duelist.manual", methodName).withColor(0xB8A8D8));
 		}
-		AuraExperience.grant(player, AuraWorldRules.duelXp(active.stage));
+		AuraExperience.earn(player, AuraWorldRules.duelXp(active.stage), false);
 		Grimoire.unlock(player, "aura:duelist");
 		// And a part of a technique of their own: one the challenger doesn't know yet, its method's favourites likelier.
 		dev.wildercord.aura.Techniques.duelistLesson(player, method, name);

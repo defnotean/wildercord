@@ -8,6 +8,7 @@ import dev.wildercord.player.ManaSkinDamage;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.Circles;
+import dev.wildercord.spell.CondenseRules;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
@@ -47,12 +48,28 @@ public final class HeartCircles {
 	private static final Map<UUID, SpellHit> LAST_SPELL_HIT = new HashMap<>();
 	private static final Map<UUID, Integer> NOTIFIED = new HashMap<>();
 	private static final Map<UUID, Float> CONDENSING = new HashMap<>();
+	/** Mana spent that waits for one of the caster's spells to hurt a hostile creature (see {@link CondenseRules}). */
+	private record Pending(float mana, long until) {}
+	private static final Map<UUID, Pending> PENDING = new HashMap<>();
+	/** When each player's recent spell kills counted, for the farm decay. */
+	private static final Map<UUID, java.util.ArrayDeque<Long>> RECENT_KILLS = new HashMap<>();
+	/** Damage each player has dealt each living boss, for its breakthrough. */
+	private static final Map<UUID, Map<UUID, Float>> BOSS_DAMAGE = new HashMap<>();
 	/** Players whose innate rune wakes in a moment, after the 1st Circle's title has been read. */
 	private static final java.util.Set<UUID> AWAKENING = new java.util.HashSet<>();
 	private static final java.util.Set<UUID> VOW_REMINDED = new java.util.HashSet<>();
 
+	/** The colour of circle {@code n} (1-based). */
+	public static int color(int n) {
+		return COLORS[Math.max(1, Math.min(COLORS.length, n)) - 1];
+	}
+
 	public static void init() {
+		dev.wildercord.net.BreakthroughPayload.init();
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
+			if (damage > 0 && Spirits.isBoss(entity) && source.getEntity() instanceof ServerPlayer hitter) {
+				BOSS_DAMAGE.computeIfAbsent(entity.getUUID(), k -> new HashMap<>()).merge(hitter.getUUID(), damage, Float::sum);
+			}
 			if (entity instanceof ServerPlayer player && damage > 0 && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 				ManaSkinDamage.Wound wound = ManaSkinDamage.take(player, source);
 				if (wound != null) manaSkin(player, wound);
@@ -71,20 +88,22 @@ public final class HeartCircles {
 				return;
 			}
 			ServerPlayer caster = level.getServer().getPlayerList().getPlayer(hit.caster());
-			if (caster != null) {
+			if (caster != null && farmCounts(caster, level.getGameTime())) {
 				caster.setAttached(WildercordAttachments.SPELL_KILLS, Heart.spellKills(caster) + 1);
 				if (hit.runes() >= 6) {
 					Grimoire.feat(caster, dev.wildercord.spell.Feats.LONG_SPELL_KILL);
 				}
 			}
 		});
-		// Everyone nearby shares a boss kill: it's the 7th Circle's breakthrough.
+		// Everyone who truly fought shares a boss kill: it's the 7th Circle's breakthrough. Standing by is not enough.
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-			if (!Spirits.isBoss(entity) || !(entity.level() instanceof ServerLevel level)) {
+			Map<UUID, Float> dealt = BOSS_DAMAGE.remove(entity.getUUID());
+			if (!Spirits.isBoss(entity) || !(entity.level() instanceof ServerLevel level) || dealt == null) {
 				return;
 			}
 			for (ServerPlayer player : level.players()) {
-				if (player.isAlive() && !player.isSpectator() && player.distanceTo(entity) <= 96 && !Heart.bossSlain(player)) {
+				if (player.isAlive() && !player.isSpectator() && player.distanceTo(entity) <= 96 && !Heart.bossSlain(player)
+						&& CondenseRules.bossCredit(dealt.getOrDefault(player.getUUID(), 0.0F), entity.getMaxHealth())) {
 					player.setAttached(WildercordAttachments.BOSS_SLAIN, true);
 					player.sendSystemMessage(Component.translatable("message.wildercord.boss_breakthrough").withStyle(ChatFormatting.GOLD));
 				}
@@ -100,6 +119,9 @@ public final class HeartCircles {
 			LAST_SPELL_HIT.clear();
 			NOTIFIED.clear();
 			CONDENSING.clear();
+			PENDING.clear();
+			RECENT_KILLS.clear();
+			BOSS_DAMAGE.clear();
 			AWAKENING.clear();
 		});
 	}
@@ -110,15 +132,53 @@ public final class HeartCircles {
 			return;
 		}
 		LAST_SPELL_HIT.put(target.getUUID(), new SpellHit(cast.caster.getUUID(), target.level().getGameTime(), cast.info.runes()));
+		if (target instanceof net.minecraft.world.entity.monster.Enemy && cast.caster instanceof ServerPlayer player) {
+			release(player, target.level().getGameTime());
+		}
 		if (LAST_SPELL_HIT.size() > 4096) {
 			long now = target.level().getGameTime();
 			LAST_SPELL_HIT.values().removeIf(h -> now - h.time() > 100);
 		}
 	}
 
-	/** Mana spent casting spells condenses toward the next circle. */
+	/**
+	 * Mana spent casting spells condenses toward the next circle: a tenth at once, the rest only once a spell of the caster's
+	 * hurts a hostile creature soon after (see {@link CondenseRules}).
+	 */
 	public static void condense(ServerPlayer player, float mana) {
 		if (!Float.isFinite(mana) || mana <= 0 || player.isCreative()) {
+			return;
+		}
+		long now = player.level().getGameTime();
+		Pending waiting = PENDING.get(player.getUUID());
+		float before = waiting == null || now > waiting.until() ? 0 : waiting.mana();
+		PENDING.put(player.getUUID(), new Pending(CondenseRules.addPending(before, CondenseRules.pending(mana)), now + CondenseRules.PENDING_TICKS));
+		add(player, CondenseRules.immediate(mana));
+	}
+
+	/** A spell of the caster's hurt a hostile creature: what was waiting condenses. */
+	private static void release(ServerPlayer player, long now) {
+		Pending waiting = PENDING.remove(player.getUUID());
+		if (waiting != null && now <= waiting.until() && !player.isCreative()) {
+			add(player, waiting.mana());
+		}
+	}
+
+	/** Whether this spell kill counts: a farm's steady stream mostly doesn't. */
+	private static boolean farmCounts(ServerPlayer player, long now) {
+		java.util.ArrayDeque<Long> recent = RECENT_KILLS.computeIfAbsent(player.getUUID(), k -> new java.util.ArrayDeque<>());
+		while (!recent.isEmpty() && now - recent.peekFirst() > CondenseRules.KILL_WINDOW_TICKS) {
+			recent.pollFirst();
+		}
+		if (player.getRandom().nextDouble() >= CondenseRules.killChance(recent.size())) {
+			return false;
+		}
+		recent.addLast(now);
+		return true;
+	}
+
+	private static void add(ServerPlayer player, float mana) {
+		if (mana <= 0) {
 			return;
 		}
 		double total = (double) CONDENSING.getOrDefault(player.getUUID(), 0.0F) + mana;
@@ -138,6 +198,10 @@ public final class HeartCircles {
 		if (ready && NOTIFIED.getOrDefault(id, 0) != next) {
 			NOTIFIED.put(id, next);
 			player.sendSystemMessage(Component.translatable("message.wildercord.circle_ready", Circles.ordinal(next)).withColor(0xF5C46A));
+			if (dev.wildercord.spell.TribulationRules.tribulation(next) && player.level().getDifficulty() != net.minecraft.world.Difficulty.PEACEFUL) {
+				player.sendSystemMessage(Component.translatable("message.wildercord.tribulation.warn", Circles.ordinal(next),
+					dev.wildercord.spell.TribulationRules.waves(next)).withColor(0xE8D8B0));
+			}
 			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
 		}
 		if (meditating && circles > 0 && !ready) {
@@ -148,7 +212,7 @@ public final class HeartCircles {
 			java.util.List<dev.wildercord.spell.CircleVows.Vow> open = dev.wildercord.spell.CircleVows.open(Heart.vows(player), Heart.active(player));
 			if (!open.isEmpty()) CircleVowCommands.offer(player, open.getFirst().circle());
 		}
-		if (!ready || !meditating) {
+		if (!ready || !meditating || dev.wildercord.cast.events.Tribulation.active(player)) {
 			FORMING.remove(id);
 			return;
 		}
@@ -157,7 +221,8 @@ public final class HeartCircles {
 		forming(player, circles, progress);
 		if (progress >= Circles.FORM_TICKS) {
 			FORMING.remove(id);
-			form(player);
+			// Every fifth circle is won in a tribulation, not simply formed.
+			if (!dev.wildercord.cast.events.Tribulation.begin(player, next)) form(player);
 		}
 	}
 
@@ -167,6 +232,7 @@ public final class HeartCircles {
 		int n = Heart.circles(player) + 1;
 		player.setAttached(WildercordAttachments.CIRCLES, n);
 		dev.wildercord.advancement.Advancements.circles(player);
+		dev.wildercord.player.TribulationScars.apply(player);
 		Spellbooks.setMana(player, Mana.max(player));
 		ServerLevel level = player.level();
 		Vec3 heart = heartOf(player);
@@ -205,6 +271,20 @@ public final class HeartCircles {
 			player.sendSystemMessage(Component.translatable("message.wildercord.perk." + n).withColor(0xF5C46A));
 		}
 		CircleVowCommands.offer(player, n);
+		// The great breakthroughs (each tribulation circle and the Archmage's) are heard across the world.
+		if (dev.wildercord.spell.TribulationRules.tribulation(n) || n == Circles.ARCHMAGE) {
+			Component news = Component.translatable("message.wildercord.breakthrough.announce.circle", player.getDisplayName(), Circles.ordinal(n)).withColor(COLORS[n - 1]);
+			for (ServerPlayer other : level.getServer().getPlayerList().getPlayers()) {
+				if (other != player) other.sendSystemMessage(news);
+			}
+		}
+		// Once the title has had its moment, the breakthrough's page: what it brought and what the next circle asks.
+		boolean tribulation = dev.wildercord.spell.TribulationRules.tribulation(n) && level.getDifficulty() != net.minecraft.world.Difficulty.PEACEFUL;
+		Scheduler.later(70, () -> {
+			if (!player.isRemoved() && net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.canSend(player, dev.wildercord.net.BreakthroughPayload.TYPE)) {
+				net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new dev.wildercord.net.BreakthroughPayload(n, tribulation));
+			}
+		});
 		if (n == Circles.ARCHMAGE) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.relay_lesson.invitation").withColor(0x7FDAD4));
 			player.sendSystemMessage(Component.translatable("message.wildercord.masters_trials.invitation").withColor(0xE8C46A));
@@ -364,6 +444,8 @@ public final class HeartCircles {
 	public static void forget(UUID player) {
 		FORMING.remove(player);
 		CONDENSING.remove(player);
+		PENDING.remove(player);
+		RECENT_KILLS.remove(player);
 		NOTIFIED.remove(player);
 		AWAKENING.remove(player);
 		VOW_REMINDED.remove(player);

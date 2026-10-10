@@ -1,0 +1,32 @@
+{
+  "parent": "wildercord:cooking/camp_pot",
+  "criteria": {
+    "first_meal": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "#wildercord:meals"
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:hearty_stew"
+    },
+    "title": {
+      "translate": "advancements.wildercord.cooking.first_meal.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.cooking.first_meal.description"
+    }
+  },
+  "requirements": [
+    [
+      "first_meal"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

@@ -91,8 +91,8 @@ class HeartAndPassivesTest {
 			assertTrue(Circles.condenseNeeded(n) > last, "circle " + n);
 			last = Circles.condenseNeeded(n);
 		}
-		assertEquals(600, Circles.condenseNeeded(1));
-		assertEquals(80000, Circles.condenseNeeded(8));
+		assertEquals(1000, Circles.condenseNeeded(1));
+		assertEquals(230000, Circles.condenseNeeded(8));
 		assertTrue(Circles.requirements(1).isEmpty());
 		for (int n = 2; n <= Circles.MAX; n++) {
 			assertFalse(Circles.requirements(n).isEmpty(), "circle " + n + " needs a breakthrough");
@@ -106,9 +106,9 @@ class HeartAndPassivesTest {
 	@Test
 	void circlesAndEnchantmentsScaleSpells() {
 		assertEquals(1.0, Circles.power(0, 0, false), 1e-9);
-		assertEquals(1.24 * 1.24, Circles.power(3, 8, false), 1e-9);
-		assertEquals(1.24 * 1.24 * 1.3, Circles.power(3, 8, true), 1e-9);
-		assertEquals(1.06, Circles.power(0, 2, true), 1e-9); // Overflow needs the 7th Circle
+		assertEquals(1.24 * 1.12, Circles.power(3, 8, false), 1e-9);
+		assertEquals(1.24 * 1.12 * 1.15, Circles.power(3, 8, true), 1e-9);
+		assertEquals(1.03, Circles.power(0, 2, true), 1e-9); // Overflow needs the 7th Circle
 		assertEquals((1 - 0.21) * 0.85, Circles.cost(3, 8), 1e-9);
 		assertEquals(0.85, Circles.cooldown(0, 5), 1e-9);
 		assertEquals(1 - 0.24, Circles.cooldown(3, 4), 1e-9);

@@ -1,5 +1,8 @@
 package dev.wildercord.world.sites.travel;
 
+import dev.wildercord.town.BountyBoardBlock;
+import dev.wildercord.town.Town;
+import dev.wildercord.town.WayfarerKeeper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +26,8 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 /**
  * A crossroads inn: two gravel roads meet at its door. Inside, a lit hearth, tables, three beds to sleep in, the
- * guest ledger on a lectern (leads to the other roadside sites) and the pantry chest. Notices hang beside the door.
+ * guest ledger on a lectern (leads to the other roadside sites) and the pantry chest. Notices hang beside the door,
+ * over the bounty board; its keepers (a cook, a stablemaster and a Master's emissary) trade with travellers.
  */
 public final class WayfarerInnPiece extends TravelPiece {
 	public WayfarerInnPiece(int x, int y, int z, Direction facing) { super(TravelSites.INN_PIECE, x, y, z, 23, 15, 23, facing); }
@@ -72,5 +76,11 @@ public final class WayfarerInnPiece extends TravelPiece {
 		frame(level, bb, 9, 2, 5, Direction.SOUTH, new ItemStack(Items.PAPER));
 		frame(level, bb, 13, 2, 5, Direction.SOUTH, new ItemStack(Items.MAP));
 		resident(level, bb, EntityTypes.CAT, 9, 1, 13, 6);
+		// 0.12: the bounty board under the notices, and the inn's keepers: the cook by the hearth, the Master's emissary
+		// at the tables, the stablemaster out on the road.
+		set(level, bb, Town.BOUNTY_BOARD.defaultBlockState().setValue(BountyBoardBlock.FACING, Direction.SOUTH), 9, 1, 5);
+		resident(level, bb, Town.KEEPER, 13, 1, 15, 3, keeper -> keeper.setRole(WayfarerKeeper.Role.COOK));
+		resident(level, bb, Town.KEEPER, 13, 1, 9, 4, keeper -> keeper.setRole(WayfarerKeeper.Role.EMISSARY));
+		resident(level, bb, Town.KEEPER, 16, 1, 2, 5, keeper -> keeper.setRole(WayfarerKeeper.Role.STABLEMASTER));
 	}
 }

@@ -81,7 +81,7 @@ public final class TournamentBoardEntity extends BlockEntity {
 			if(TournamentRules.award(wins,won,dirty,true)){
 				winners.add(id);pending.add(id);choices.put(id,defaultChoice(player));setChanged();
 				dev.wildercord.cast.Grimoire.unlock(player,"aura:tournament");
-				AuraExperience.grant(player,AuraWorldRules.duelXp(Aura.stage(player)));AuraApi.completeTrial(player,DuelistDuels.TRIAL);
+				AuraExperience.earn(player,AuraWorldRules.duelXp(Aura.stage(player)),false);AuraApi.completeTrial(player,DuelistDuels.TRIAL);
 				dev.wildercord.aura.BondedBlades.dueled(player,d.method().id());
 			Feels.sound(s,center,"aura_tournament_victory",1,1);say(player,"victory");say(player,"choice",Component.translatable(TechniqueRules.nameKey(choices.get(id))));reset();
 			}else{wins++;betweenUntil=s.getGameTime()+1200;setChanged();Feels.sound(s,center,"aura_tournament_round",.8F,1);say(player,"round",wins+1);}

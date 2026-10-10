@@ -723,16 +723,16 @@ Casters build rings of condensed mana around their heart, from the 1st Circle to
 
 | Circle | Mana condensed | Breakthrough | Opens |
 |---|---|---|---|
-| 1st | 600 | | Passive slot 1, your **innate rune** |
-| 2nd | 2,000 | Know 10 runes | |
-| 3rd | 5,000 | Wear a Copper Cord, set off a reaction | **Mana Skin**: restores up to a fifth of nonlethal health damage after defences (2 mana per health actually restored; minimum 0.25 health) |
-| 4th | 10,000 | Defeat 40 monsters with spells, set off 3 different reactions | |
-| 5th | 18,000 | Know 35 runes, wear an Amethyst Cord, *Long Incantation* (slay a monster with a spell of 6+ runes) | Passive slot 2, **Flow**: cooldowns 15% shorter |
-| 6th | 30,000 | Defeat 150 monsters with spells, slay 8 Runebound, set off 5 different reactions (any five of the eleven) | |
-| 7th | 50,000 | Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon, the Archivist or a dimension dungeon's boss; everyone within 96 blocks counts), find 2 secret spells, *In Rhythm* (3 casts on the beat) | **Overflow**: spells cast at full mana hit 30% harder |
-| 8th | 80,000 | Wear an Echo Cord, find 4 secret spells, *The Last Page* (defeat the Archivist) | **Archmage**: spells and passives cost 15% less mana |
+| 1st | 1,000 | | Passive slot 1, your **innate rune** |
+| 2nd | 4,000 | Know 10 runes | |
+| 3rd | 12,000 | Wear a Copper Cord, set off a reaction | **Mana Skin**: restores up to a fifth of nonlethal health damage after defences (2 mana per health actually restored; minimum 0.25 health) |
+| 4th | 28,000 | Defeat 40 monsters with spells, set off 3 different reactions | |
+| 5th | 55,000 | Know 35 runes, wear an Amethyst Cord, *Long Incantation* (slay a monster with a spell of 6+ runes) | Passive slot 2, **Flow**: cooldowns 15% shorter |
+| 6th | 95,000 | Defeat 150 monsters with spells, slay 8 Runebound, set off 5 different reactions (any five of the eleven) | |
+| 7th | 150,000 | Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon, the Archivist or a dimension dungeon's boss; everyone within 96 blocks counts), find 2 secret spells, *In Rhythm* (3 casts on the beat) | **Overflow**: spells cast at full mana hit 30% harder |
+| 8th | 230,000 | Wear an Echo Cord, find 4 secret spells, *The Last Page* (defeat the Archivist) | **Archmage**: spells and passives cost 15% less mana |
 
-Every circle also adds +15 max mana, +0.5 mana/s and +3% spell power (a circle cracked by overcasting gives none of this until it mends). Hover the heart badge (left of the mana badge) for your circles, perks and what the next one needs. `/wildercord circles <n>` and `/wildercord condense <mana>` set them for testing.
+Every circle also adds +15 max mana, +0.5 mana/s and +1.5% spell power (a circle cracked by overcasting gives none of this until it mends). Hover the heart badge (left of the mana badge) for your circles, perks and what the next one needs. `/wildercord circles <n>` and `/wildercord condense <mana>` set them for testing.
 
 ## Batch 5: a world of magic
 
@@ -1553,10 +1553,10 @@ Aura climbs in leaps. Each stage keeps everything below it.
 | Stage | Capacity | Experience | What it brings |
 |---|---|---|---|
 | **Glow** | 20 | (with the method) | **Aura Coat**: with aura held, every blow of an aura weapon is coated: +10% and the method's element, for 0.5 aura. **Aura Sense**: each breath of the stance outlines the hostile creatures within 16 blocks, for you alone |
-| **Flow** | 40 | 150 | **Flowing Cut**: every aura weapon sweeps (vanilla sweeps only with a sword), reaching 1.6 blocks round the struck foe and 3.75 from you (vanilla: 1 and 3), carrying 40% more of the blow. **Aura Guard**: sneak and press the Aura key |
-| **Edge** | 70 | 600 | **Crystal Edge**: a blade of solid aura: +1 block of reach, and a quarter of each coated blow goes through armour. **Aura Slash**: tap the Aura key |
-| **Form** | 110 | 1,800 | **Aura Step**: double-tap the Aura key. **Aura Armour** and **Intent**, always on. Aura Sense reaches 24 blocks and pulses in a fight |
-| **Sovereign** | 160 | 4,500 | **Dominion**: hold the Aura key |
+| **Flow** | 40 | 450 | **Flowing Cut**: every aura weapon sweeps (vanilla sweeps only with a sword), reaching 1.6 blocks round the struck foe and 3.75 from you (vanilla: 1 and 3), carrying 40% more of the blow. **Aura Guard**: sneak and press the Aura key |
+| **Edge** | 70 | 1,800 | **Crystal Edge**: a blade of solid aura: +1 block of reach, and a quarter of each coated blow goes through armour. **Aura Slash**: tap the Aura key |
+| **Form** | 110 | 5,400 | **Aura Step**: double-tap the Aura key. **Aura Armour** and **Intent**, always on. Aura Sense reaches 24 blocks and pulses in a fight |
+| **Sovereign** | 160 | 13,500 | **Dominion**: hold the Aura key |
 
 **Aura Guard** (Flow): it holds while sneak is held, two seconds at most, then rests a second. It halves blows and
 projectiles from in front, paying 0.6 aura a point it takes off; at nothing it breaks, with backlash. Raised within 7
@@ -2934,22 +2934,22 @@ The update's difficulty target is skilled, readable combat against a well-equipp
 
 ### Permanent growth
 
-A player may absorb 100 Mana Crystals, each still worth +10 maximum mana. Counts already saved remain intact. Heart Circles continue from eight to twenty, retaining +15 maximum mana, +0.5 regeneration and +3% spell power per working circle. Existing milestone perks are not repeated at each new circle.
+A player may absorb 100 Mana Crystals, each still worth +10 maximum mana. Counts already saved remain intact. Heart Circles continue from eight to twenty, retaining +15 maximum mana, +0.5 regeneration and +1.5% spell power per working circle (halved in 0.12). Existing milestone perks are not repeated at each new circle.
 
 | Circle | Lifetime mana condensed | Additional breakthrough | Title |
 |---|---:|---|---|
-| 9th | 120,000 | Know 60 runes; set off 6 different reactions | Widening Horizon |
-| 10th | 170,000 | Defeat 250 monsters with spells; **Tempered** (defeat the Cinder Warden) | Forged Heart |
-| 11th | 230,000 | Find 5 secret spells; **Fusion** (fuse two effects at the Fusion Altar) | Woven Wisdom |
-| 12th | 300,000 | Slay 20 Runebound; **Low Tide** (defeat the Tide Scribe) | Ocean Within |
-| 13th | 380,000 | Know 90 runes; set off 8 different reactions | Boundless Study |
-| 14th | 470,000 | Defeat 400 monsters with spells; **Starbreaker** (defeat the Star-Eater) | Starheart |
-| 15th | 570,000 | Find 7 secret spells; **Knotted** (tie a spell into a Knot) | Living Grimoire |
-| 16th | 680,000 | Slay 40 Runebound; **Heartwood** (defeat the Root Guardian) | Rooted Heart |
-| 17th | 800,000 | Know 120 runes; set off 10 different reactions | Prismatic Heart |
-| 18th | 930,000 | Defeat 650 monsters with spells; **Grounded** (defeat the Storm Conductor) | Stormheart |
-| 19th | 1,070,000 | Find 9 secret spells; set off all 11 different reactions | Convergence |
-| 20th | 1,220,000 | Defeat 1,000 monsters with spells; slay 100 Runebound; find all 10 secret spells | Master Heart |
+| 9th | 330,000 | Know 60 runes; set off 6 different reactions | Widening Horizon |
+| 10th | 460,000 | Defeat 250 monsters with spells; **Tempered** (defeat the Cinder Warden) | Forged Heart |
+| 11th | 620,000 | Find 5 secret spells; **Fusion** (fuse two effects at the Fusion Altar) | Woven Wisdom |
+| 12th | 810,000 | Slay 20 Runebound; **Low Tide** (defeat the Tide Scribe) | Ocean Within |
+| 13th | 1,030,000 | Know 90 runes; set off 8 different reactions | Boundless Study |
+| 14th | 1,280,000 | Defeat 400 monsters with spells; **Starbreaker** (defeat the Star-Eater) | Starheart |
+| 15th | 1,560,000 | Find 7 secret spells; **Knotted** (tie a spell into a Knot) | Living Grimoire |
+| 16th | 1,870,000 | Slay 40 Runebound; **Heartwood** (defeat the Root Guardian) | Rooted Heart |
+| 17th | 2,210,000 | Know 120 runes; set off 10 different reactions | Prismatic Heart |
+| 18th | 2,580,000 | Defeat 650 monsters with spells; **Grounded** (defeat the Storm Conductor) | Stormheart |
+| 19th | 2,980,000 | Find 9 secret spells; set off all 11 different reactions | Convergence |
+| 20th | 3,420,000 | Defeat 1,000 monsters with spells; slay 100 Runebound; find all 10 secret spells | Master Heart |
 
 
 ### Trial contract

@@ -33,6 +33,23 @@ public final class AuraExperience {
 		return add(player, xp * rate, practice);
 	}
 
+	/**
+	 * 0.12's re-tempering: a stage this save's experience no longer reaches under today's thresholds is given back (the
+	 * experience stays). Returns the stage before and after.
+	 */
+	public static int[] retemper(ServerPlayer player) {
+		AuraAttachments.Data data = Aura.data(player);
+		if (!data.learned()) {
+			return new int[] {0, 0};
+		}
+		int keeps = AuraRules.retemper(data.stage(), data.xp(), AuraStages::threshold);
+		if (keeps < data.stage()) {
+			AuraAttachments.Data lower = data.withStage(keeps);
+			Aura.set(player, new AuraAttachments.Data(lower.method(), keeps, lower.xp(), Math.min(lower.aura(), AuraStages.capacity(keeps)), lower.practice()));
+		}
+		return new int[] {data.stage(), keeps};
+	}
+
 	/** Adds experience straight away, at no rate (commands, the game tests and wave 2's teachers). */
 	public static double grant(ServerPlayer player, double xp) {
 		return add(player, xp, false);

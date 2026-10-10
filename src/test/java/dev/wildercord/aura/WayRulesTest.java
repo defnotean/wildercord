@@ -191,7 +191,7 @@ class WayRulesTest {
 	void theBulwarkStandsFirm() {
 		assertEquals(6.0, WayRules.bulwarkStance(10, false), 1e-9, "two fifths less wear");
 		assertEquals(0, WayRules.bulwarkStance(10, true), "unbreakable while awakened at Sovereign");
-		assertEquals(0.35, WayRules.armourShare(AuraRules.ARMOUR_SHARE), 1e-9, "a third, not a quarter");
+		assertEquals(0.25, WayRules.armourShare(AuraRules.ARMOUR_SHARE), 1e-9, "a quarter, not a sixth");
 		assertEquals(0.75, WayRules.armourShare(0.7), 1e-9, "never past three quarters");
 		assertTrue(WayRules.BULWARK_PERFECT > AuraRules.PERFECT_TICKS, "a wider perfect moment");
 		assertEquals(Math.round(AuraRules.PERFECT_TICKS * 1.5 - 0.5), WayRules.BULWARK_PERFECT, "half again the parry's");

@@ -66,6 +66,12 @@ public final class WildercordHeartCirclesTest implements FabricClientGameTest {
 						HeartCircles.tick(player, true);
 						check(Heart.circles(player) == 19, "Interrupted meditation starts over");
 						for (int i = 1; i < 40; i++) HeartCircles.tick(player, true);
+						if (player.level().getDifficulty() != net.minecraft.world.Difficulty.PEACEFUL) {
+							check(Heart.circles(player) == 19 && dev.wildercord.cast.events.Tribulation.active(player),
+								"The twentieth circle's meditation calls its tribulation instead of forming");
+							dev.wildercord.cast.events.Tribulation.cancel(player);
+							HeartCircles.form(player);
+						}
 					} else {
 						HeartCircles.form(player);
 					}

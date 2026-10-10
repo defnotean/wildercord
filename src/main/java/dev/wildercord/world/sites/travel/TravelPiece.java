@@ -140,10 +140,17 @@ abstract class TravelPiece extends DungeonPiece {
 
 	/** A peaceful resident that stays within {@code radius} of where it was placed and never despawns. */
 	void resident(WorldGenLevel level, BoundingBox bb, EntityType<? extends Mob> type, int x, int y, int z, int radius) {
+		resident(level, bb, type, x, y, z, radius, mob -> {});
+	}
+
+	/** As {@link #resident}, set up by {@code setup} before it's finalized. */
+	<T extends Mob> void resident(WorldGenLevel level, BoundingBox bb, EntityType<T> type, int x, int y, int z, int radius,
+			java.util.function.Consumer<? super T> setup) {
 		BlockPos at = getWorldPos(x, y, z).immutable();
 		if (!bb.isInside(at)) return;
-		Mob mob = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		T mob = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 		if (mob == null) return;
+		setup.accept(mob);
 		mob.setPersistenceRequired();
 		mob.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);

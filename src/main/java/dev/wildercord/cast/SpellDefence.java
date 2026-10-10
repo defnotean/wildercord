@@ -78,6 +78,13 @@ public final class SpellDefence {
 	private record Grace(Object castIdentity, long serverTick) {}
 
 	private static Landing landing;
+	/** How deep the server thread is inside a spell's hit on a creature (for guards that treat spells apart from blows). */
+	private static int spellDepth;
+
+	/** Whether the damage being dealt right now is a spell's. */
+	public static boolean landingSpell() {
+		return spellDepth > 0;
+	}
 	/** Short lived protection for the remaining hits of the cast the guard stopped. */
 	private static final Map<ServerPlayer, Grace> grace = new WeakHashMap<>();
 	private static final class Burst {
@@ -147,7 +154,12 @@ public final class SpellDefence {
 			return beast.hurtBySpell(level, spell, amount);
 		}
 		if (!(target instanceof Player player)) {
-			return target.hurtServer(level, spell, amount);
+			spellDepth++;
+			try {
+				return target.hurtServer(level, spell, amount);
+			} finally {
+				spellDepth--;
+			}
 		}
 		float left = reduce(level, player, spell, amount);
 		if (ArmorResponses.mirrorReady(player)) {
@@ -277,9 +289,9 @@ public final class SpellDefence {
 		return warded == null ? 0 : warded.getAmplifier() + 1;
 	}
 
-	/** The most a hit's bonuses may multiply a spell by against {@code target}: the server's cap for a player, none for a creature. */
+	/** The most a hit's bonuses may multiply a spell by against {@code target}: the server's cap for a player, a fixed one for a creature. */
 	static double maxBonus(LivingEntity target) {
-		return target instanceof Player ? Config.get().defence().maxBonus() : Double.POSITIVE_INFINITY;
+		return target instanceof Player ? Config.get().defence().maxBonus() : SpellDefenceRules.CREATURE_MAX_BONUS;
 	}
 
 	// ------------------------------------------------------------------ the spellguard
@@ -294,6 +306,10 @@ public final class SpellDefence {
 		Landing hit = landing;
 		if (hit == null || hit.target != entity || !(entity instanceof ServerPlayer player) || !(player.level() instanceof ServerLevel level)
 				|| source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+			return true;
+		}
+		// A boss's or a Master's spell is meant to be survived by skill, not by the guard.
+		if (source.getEntity() != null && Spirits.isBoss(source.getEntity())) {
 			return true;
 		}
 		WildercordConfig.DefenceSettings settings = Config.get().defence();

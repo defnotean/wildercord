@@ -87,6 +87,9 @@ public final class AuraBlade {
 		if (look.stage() <= AuraRules.NONE) {
 			return null;
 		}
+		if (!dev.wildercord.client.AuraFxClient.inUse(player, player.level().getGameTime())) {
+			return null;
+		}
 		dev.wildercord.aura.AuraPresence.Look presence = dev.wildercord.aura.AuraPresence.look(player);
 		int spell = presence.spellHeld(player.level().getGameTime()) ? presence.bladeSpell() : 0;
 		return new Glow(look.color(), look.stage(), look.lit() ? 1.0F : 0.35F, look.guarding(), player.getMainArm(), spell);

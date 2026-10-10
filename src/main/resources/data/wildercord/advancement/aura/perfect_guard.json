@@ -1,0 +1,31 @@
+{
+  "parent": "wildercord:aura/method",
+  "criteria": {
+    "perfect_guard": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "aura:perfect_guard",
+        "count": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:shield"
+    },
+    "title": {
+      "translate": "advancements.wildercord.aura.perfect_guard.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.aura.perfect_guard.description"
+    }
+  },
+  "requirements": [
+    [
+      "perfect_guard"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

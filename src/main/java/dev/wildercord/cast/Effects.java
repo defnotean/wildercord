@@ -302,7 +302,7 @@ public final class Effects {
 			* ExplorerEffects.swing(cast, node, hit) * WorldQuirks.power(cast, rune, hit);
 		// This world's quirks may make it stronger or last longer where it lands (see WorldQuirks).
 		double duration = SpellNumbers.duration(node) * cast.duration * WorldQuirks.duration(cast, rune, hit);
-		int amplify = node.count(Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
+		int amplify = dev.wildercord.spell.ModifierLimits.count(node.mods, Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
 		List<LivingEntity> harmed = filter(hit.entities(), e -> Targets.canHarm(caster, e) && cast.admits(e));
 		if (!harmed.isEmpty() && (rune.kind() == dev.wildercord.spell.EffectKind.HARMFUL || rune.kind() == dev.wildercord.spell.EffectKind.MOVEMENT && !hit.self())) {

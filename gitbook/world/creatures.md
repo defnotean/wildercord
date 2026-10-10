@@ -134,6 +134,26 @@ cloak trim, sash and mask show which.
 For the stronger teachers, see [Sword Masters](../masters/index.md). The eight
 [Master halls](masters-sites.md) are good places to train first.
 
+## Ridgeback Stag
+
+The first mount: a broad chestnut stag with a dark ridge of mane, on plains, meadows and savannas. Climb on until it
+stops throwing you, as with a horse, then saddle it. It is sturdier and quicker than most horses (24 to 32 health) with
+a better jump. It eats wheat, apples, carrots and hay; two tame stags fed golden apples or golden carrots raise a calf.
+A Wayfarer Inn’s stablemaster sells deeds to tame ones.
+
+## Black Bobcat
+
+A rare melanistic wildcat of dark forests and old taigas, as big as a polar bear. A wild one keeps to itself and turns
+on whatever hurts it. Offer it fish, raw or cooked: one time in three it becomes yours. A tame bobcat follows, sits when
+told, joins your fights and heals on fish; two fed fish raise a kitten. Toggle it with `creatures.black_bobcat`.
+
+## Camp cooking
+
+Craft a **Camp Pot** and set it over a lit campfire, fire, magma or lava. Use a bowl on it to cook from what you carry:
+the meal you picked, or the richest you can make. Click with an empty hand to read the cookbook, and sneak-click to pick
+the next meal. 21 meals, from Hearty Stew to the Archmage’s Feast, feed well and carry buffs: **Nourished** (+20 max
+mana a level), **Focused** (8% off every spell a level, up to two), **Clarity** and vanilla effects. None adds damage.
+
 ## Tips and counterplay
 
 - Every creature has a spawn egg in creative mode.

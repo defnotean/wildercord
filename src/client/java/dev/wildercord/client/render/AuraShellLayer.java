@@ -170,7 +170,7 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		AuraAttachments.Look look = Aura.look(player);
 		AuraPresence.Look presence = AuraPresence.look(player);
 		float time = player.level().getGameTime() + partial;
-		if (presence.shell() && look.stage() > 0) {
+		if (presence.shell() && look.stage() > 0 && dev.wildercord.client.AuraFxClient.inUse(player, time)) {
 			// Both shell backends receive the same material, including the viewer's Reduced flash choice.
 			float since = presence.shellStruckAt() < 0 ? 99 : time - presence.shellStruckAt();
 			state.setData(SHELL_GLOW, AuraShellMaterial.argb(look.color(), Mth.sin(time * 0.09F + player.getId()), since,

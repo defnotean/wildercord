@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:cooking/first_meal",
+  "criteria": {
+    "feast": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "wildercord:archmages_feast"
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:archmages_feast"
+    },
+    "title": {
+      "translate": "advancements.wildercord.cooking.feast.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.cooking.feast.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "feast"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}

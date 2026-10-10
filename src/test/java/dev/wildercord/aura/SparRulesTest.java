@@ -91,8 +91,9 @@ class SparRulesTest {
 		assertEquals(2 * won, SparRules.xp(AuraRules.EDGE, road, AuraRules.EDGE, SparRules.Result.WON, 2.0), 1e-9, "times the server's spar_xp");
 		assertEquals(0, SparRules.xp(AuraRules.EDGE, road, AuraRules.EDGE, SparRules.Result.WON, 0), 1e-9);
 		assertEquals(0, SparRules.xp(AuraRules.NONE, 0, AuraRules.EDGE, SparRules.Result.WON, 1.0), 1e-9, "nothing before a method");
-		// A Glow swordsman's road is short: never less than the floor.
-		assertEquals(SparRules.XP_FLOOR, SparRules.xp(AuraRules.GLOW, SparRules.road(AuraRules.GLOW), AuraRules.GLOW, SparRules.Result.LOST, 1.0), 1e-9);
+		// Never less than the floor, however short the road.
+		assertEquals(SparRules.XP_FLOOR, SparRules.xp(AuraRules.GLOW, 1, AuraRules.GLOW, SparRules.Result.LOST, 1.0), 1e-9);
+		assertTrue(SparRules.xp(AuraRules.GLOW, SparRules.road(AuraRules.GLOW), AuraRules.GLOW, SparRules.Result.LOST, 1.0) >= SparRules.XP_FLOOR);
 		assertEquals(0, SparRules.road(AuraRules.SOVEREIGN), 1e-9, "no road past the last stage");
 	}
 
@@ -116,7 +117,8 @@ class SparRulesTest {
 			double road = SparRules.road(s);
 			double day = SparRules.DAILY * SparRules.xp(s, road, s, SparRules.Result.WON, 1.0);
 			assertTrue(day <= Math.max(road * 0.05, SparRules.DAILY * SparRules.XP_FLOOR) + 1e-9, "a day's spars at stage " + s + ": " + day);
-			assertTrue(day < 300, "under an hour's real fighting");
+			// The roads are three times longer since 0.12; a day's spars stay under three hours of real fighting.
+			assertTrue(day < 900, "under three hours' real fighting");
 		}
 	}
 

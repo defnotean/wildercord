@@ -889,6 +889,21 @@ def write_lang(runes):
     import mossveil_art
     lang.update(mossveil_art.LANG)
     mossveil_art.write(sys.modules[__name__])
+    import bobcat_art
+    lang.update(bobcat_art.LANG)
+    bobcat_art.write(sys.modules[__name__])
+    import tempering_art
+    lang.update(tempering_art.LANG)
+    tempering_art.write(sys.modules[__name__])
+    import cooking_art
+    lang.update(cooking_art.LANG)
+    cooking_art.write(sys.modules[__name__])
+    import mount_art
+    lang.update(mount_art.LANG)
+    mount_art.write(sys.modules[__name__])
+    import town_art
+    lang.update(town_art.LANG)
+    town_art.write(sys.modules[__name__])
     import rootmolt_art
     lang.update(rootmolt_art.LANG)
     rootmolt_art.write(sys.modules[__name__])
@@ -3210,7 +3225,7 @@ def write_new_content(runes):
 
     # ---- mining
     import residue_art
-    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]
+    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar", "wildercord:camp_pot"]
         + residue_art.RESIDUE_PICKAXE})
     # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
     write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": [
@@ -3474,6 +3489,30 @@ feat_adv("tide_scribe", "world/archivist", rune("tidecall"), description="Defeat
 feat_adv("root_guardian", "world/archivist", rune("rootsnare"), description="Prune the Root Guardian and defeat it in the Rootbound Maze", frame="challenge", xp=300)
 feat_adv("storm_conductor", "world/archivist", rune("thunderclap"), description="Ground the Storm Conductor and defeat it in the Storm Spire", frame="challenge", xp=300)
 adv("shields/glyph", "shields/imbue", rune("mine"), "Tripwire", "Have one of your glyphs go off", moment("glyph"), xp=25)
+
+# ---- Aura (0.12 "Tempering"): one advancement for each stage the breath reaches, and the moments along the way.
+# ---- Camp cooking (0.12)
+adv("cooking/camp_pot", "root", item("camp_pot"), "Something on the Fire", "Craft a Camp Pot", has_item("wildercord:camp_pot"), xp=10)
+adv("cooking/first_meal", "cooking/camp_pot", item("hearty_stew"), "Square Meal", "Eat a meal cooked in a Camp Pot",
+    {"trigger": "minecraft:consume_item", "conditions": {"item": {"items": "#wildercord:meals"}}}, xp=20)
+adv("cooking/feast", "cooking/first_meal", item("archmages_feast"), "A Feast Fit for an Archmage", "Eat an Archmage’s Feast",
+    {"trigger": "minecraft:consume_item", "conditions": {"item": {"items": "wildercord:archmages_feast"}}}, frame="goal", xp=100)
+
+adv("aura/method", "root", item("aura_shard"), "First Breath", "Learn a breathing method and wake your aura",
+    grimoire(prefix="aura:method_", count=1), xp=25)
+AURA_ADVANCEMENTS = [  # stage id, title, description, frame, experience, reward
+    ("flow", "Flow", "Break through to Flow: aura that runs along the blade", "task", 50, ()),
+    ("edge", "Edge", "Break through to Edge: aura sharp enough to cut at a distance", "goal", 150, ["mana_crystal"]),
+    ("form", "Form", "Break through to Form: aura that takes a shape of its own", "goal", 300, ["mana_crystals"]),
+    ("sovereign", "Sovereign", "Break through to Sovereign: aura that claims the ground around you", "challenge", 1000, ["mana_crystals"]),
+]
+_aura_parent = "aura/method"
+for stage, title, description, frame, xp, loot in AURA_ADVANCEMENTS:
+    adv(f"aura/{stage}", _aura_parent, item("aura_shard"), title, description, grimoire(prefix=f"aura:{stage}", count=1), frame=frame, xp=xp, loot=loot)
+    _aura_parent = f"aura/{stage}"
+adv("aura/perfect_guard", "aura/method", item("minecraft:shield"), "Not a Scratch", "Turn a blow aside with a perfect guard", grimoire(prefix="aura:perfect_guard", count=1), xp=25)
+adv("aura/bond", "aura/method", item("minecraft:iron_sword"), "Bonded Blade", "Bond a blade to your aura", grimoire(prefix="aura:bond", count=1), xp=30)
+adv("aura/dominion", "aura/form", item("aura_shard"), "Dominion", "Spread your aura over the ground around you", grimoire(prefix="aura:dominion", count=1), frame="goal", xp=75)
 
 
 def advancement_lang():

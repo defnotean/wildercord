@@ -26,10 +26,12 @@ public final class SpellNumbers {
 	/** The k-th creature an On Hit payload fires at in one landing gets this much of the last one's power. */
 	public static final double TRIGGER_FALLOFF = 0.85;
 	public static final int MAX_ECHOES = 3;
+	/** Focus on an effect: softer than on a shape, so the two together don't multiply into a fourth power. */
+	public static final double EFFECT_FOCUS_POWER = 1.2;
 
 	public static double power(SpellPlan.EffectNode e) {
-		return Math.pow(1.5, e.count(Runes.AMPLIFY)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD))
-			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, ModifierLimits.count(e.mods, Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.3, e.count(Runes.KINDLED))
+		return Math.pow(1.5, ModifierLimits.count(e.mods, Runes.AMPLIFY)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD))
+			* Math.pow(2.5, ModifierLimits.count(e.mods, Runes.OVERCHARGE_MOD)) * Math.pow(EFFECT_FOCUS_POWER, ModifierLimits.count(e.mods, Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.3, ModifierLimits.count(e.mods, Runes.KINDLED))
 			* belatedPower(e);
 	}
 
@@ -70,7 +72,7 @@ public final class SpellNumbers {
 
 	/** Kindled on an effect: seconds it sets what it hits alight (0 = none). */
 	public static int kindledSeconds(SpellPlan.EffectNode e) {
-		return e.count(Runes.KINDLED) > 0 ? 4 * e.count(Runes.KINDLED) : 0;
+		return 4 * ModifierLimits.count(e.mods, Runes.KINDLED);
 	}
 
 	/** Unstable on an effect: the lowest and highest power it can swing to. */

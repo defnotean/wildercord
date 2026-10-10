@@ -1,0 +1,31 @@
+{
+  "parent": "wildercord:aura/method",
+  "criteria": {
+    "bond": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "aura:bond",
+        "count": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_sword"
+    },
+    "title": {
+      "translate": "advancements.wildercord.aura.bond.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.aura.bond.description"
+    }
+  },
+  "requirements": [
+    [
+      "bond"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

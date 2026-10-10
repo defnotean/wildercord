@@ -8,7 +8,19 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 **[Read the player guide](https://defnotean.github.io/wildercord/) · [Browse the changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md) · [Report an issue](https://github.com/defnotean/wildercord/issues)**
 
-## New in 0.11.0: Masters of Tomorrow and 48 places to find
+## New in 0.12.0: Tempering
+
+Players had become gods. 0.12 rebalances power, makes the climb a real one, and makes the world push back.
+
+- **Power, rebalanced:** spells hit for less and share out across crowds, Resistance caps at II, and Sword Masters no longer erase magic.
+- **A real climb:** about a hundred hours to the 20th Heart Circle. Mana condenses mostly from spells that hurt hostile creatures, so spell farms and casting into the air barely count. Aura stages take three times the experience.
+- **Tribulations:** the 5th, 10th, 15th and 20th circles must be won against waves of tempered Runebound. Winning leaves runes, Mana Crystals and a **Tribulation Scar**, one more heart of health for good.
+- **The world fights back:** creatures scale to the strongest player nearby, **elites** (Swift, Ironhide, Vampiric, Brutal, Splitting), bosses that grow with your party and enrage, twice the monsters, **Frost and Ash** variants and Gloomstalker packs led by **Alphas**.
+- **Cooking, mounts and a town:** the **Camp Pot** and 21 meals, the **Ridgeback Stag** mount, the **black bobcat**, and a **Wayfarer Inn bounty board** with keepers whose stock grows with your standing.
+
+**Back up worlds before updating:** existing saves are re-tempered, so hearts and auras can settle a few circles or a stage lower (condensed mana and aura experience are kept). [Read the full 0.12.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.12.0-alpha).
+
+## Earlier in 0.11.0: Masters of Tomorrow and 48 places to find
 
 - **48 buildings and places to explore**, eight in each of six families. **Farmsteads:** a windmill, an apiary, a walled orchard, a granary barn and more. **Master halls:** eight halls and shrines for the breathing schools, each with a short trial. **Roadside:** an inn, a watchtower, a rune library, standing stones and a cartographer's hut whose map leads to the next site. **Water:** a lighthouse, a watermill, an ice fishing camp and a sunken shrine with an air pocket. **Mines and forges:** a hillside mine, a crystal lab, a deepslate vault and a Nether foundry. **Wild places:** a jungle ziggurat with a dart-trap tunnel, a desert temple with a hidden sanctum, and outposts in the Nether and the End. Each has its own loot and advancement.
 - **Sixteen Sword Masters**, one for every breathing method, with 417 named techniques you learn to read, plus six new methods: Tide, Iron, Dune, Echo, Dawn and Venom.
@@ -96,11 +108,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.11.2-alpha
+## Install 0.12.0-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client: a 0.11.2 server needs 0.11.2 players. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.12.0 server needs 0.12.0 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 

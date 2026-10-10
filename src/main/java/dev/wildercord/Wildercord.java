@@ -32,6 +32,7 @@ public final class Wildercord implements ModInitializer {
 		WildercordBlocks.init();
 		dev.wildercord.content.ResidueBlocks.init();
 		WildercordItems.init();
+		dev.wildercord.cooking.Meals.init();
 		dev.wildercord.content.Reagents.init();
 		dev.wildercord.content.UpgradeRecipe.init();
 		dev.wildercord.menu.WildercordMenus.init();
@@ -102,6 +103,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.pet.CinnamonContent.init();
 		// The magical monsters of the wilds (after the config, which their spawns read).
 		dev.wildercord.monster.Monsters.init();
+		dev.wildercord.monster.Tempering.init();
 		// Magical wildlife: glimmerwings, lumen stags, mossback tortoises, cinderfoxes, skyrays and rimehares.
 		dev.wildercord.wildlife.Wildlife.init();
 		dev.wildercord.wildlife.FoxCompanions.init();
@@ -119,6 +121,12 @@ public final class Wildercord implements ModInitializer {
   dev.wildercord.wildlife.EmberContent.init();
   dev.wildercord.wildlife.SiltcrestContent.init();
   dev.wildercord.wildlife.MossveilContent.init();
+		dev.wildercord.wildlife.BobcatContent.init();
+		dev.wildercord.wildlife.MountContent.init();
+		dev.wildercord.town.Town.init();
+		dev.wildercord.NameTags.init();
+		dev.wildercord.player.Retemper.init();
+		dev.wildercord.player.TribulationScars.init();
   dev.wildercord.wildlife.RootCarry.init();
   dev.wildercord.wildlife.RooksRainshield.init();
   dev.wildercord.cast.CampConcordMagic.init();

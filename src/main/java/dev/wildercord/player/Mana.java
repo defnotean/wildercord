@@ -77,7 +77,7 @@ public final class Mana {
 		int circles = Heart.active(player);
 		dev.wildercord.spell.CircleVows.Effect vows = Heart.vowEffect(player);
 		int max = tier.maxMana + crystals * CRYSTAL_MANA + reservoir * RESERVOIR_MANA + circles * dev.wildercord.spell.Circles.MANA_PER_CIRCLE
-			+ dev.wildercord.gear.Gear.extraMana(player) + vows.mana();
+			+ dev.wildercord.gear.Gear.extraMana(player) + vows.mana() + nourished(player) * dev.wildercord.cooking.CookingRules.NOURISHED_MANA;
 		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
 		boolean well = player.getAttachedOrElse(WildercordAttachments.WELL_UNTIL, 0L) > player.level().getGameTime();
 		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? MEDITATION_BONUS : 0)
@@ -86,6 +86,11 @@ public final class Mana {
 		// The server's mana.regen_multiplier scales all of it (sent to clients, so the HUD matches).
 		base *= (float) dev.wildercord.config.Config.regenMultiplier(player);
 		return new Stats(tier, max, base * multiplier, multiplier, crystals, reservoir, wellspring, siphon, clarity, meditating, circles, ley, well);
+	}
+
+	private static int nourished(Player player) {
+		MobEffectInstance effect = player.getEffect(WildercordEffects.NOURISHED);
+		return effect == null ? 0 : effect.getAmplifier() + 1;
 	}
 
 	public static int max(Player player) {

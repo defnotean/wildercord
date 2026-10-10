@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:wolves_spawnable_on",
+    "minecraft:grass_block",
+    "minecraft:podzol",
+    "minecraft:coarse_dirt"
+  ]
+}

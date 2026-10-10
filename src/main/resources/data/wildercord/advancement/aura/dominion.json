@@ -1,0 +1,32 @@
+{
+  "parent": "wildercord:aura/form",
+  "criteria": {
+    "dominion": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "aura:dominion",
+        "count": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:aura_shard"
+    },
+    "title": {
+      "translate": "advancements.wildercord.aura.dominion.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.aura.dominion.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "dominion"
+    ]
+  ],
+  "rewards": {
+    "experience": 75
+  }
+}

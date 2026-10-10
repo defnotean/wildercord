@@ -223,7 +223,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			world.getServer().runCommand("time set 3000");
 			context.waitTicks(30);
 			float rest = context.computeOnClient(mc -> AuraFxClient.bodyIntensity(mc.player, mc.level.getGameTime()));
-			check(Math.abs(rest - AuraFxRules.IDLE) < 0.01F, stages[s - 1] + ": at rest the body's aura should be calm (" + rest + ")");
+			check(rest == 0, stages[s - 1] + ": at rest the body's aura stays hidden (" + rest + ")");
 			shot(context, "aurafx_body_" + stages[s - 1] + "_" + method + "_rest");
 			int motes = context.computeOnClient(mc -> AuraFxClient.counts()[5]);
 			fight(world, 400);

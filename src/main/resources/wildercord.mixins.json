@@ -69,6 +69,8 @@
         "UpgradePlayerEditMixin",
         "FishingHookAccessor",
         "FxSupportLivingMixin",
+        "ResistanceCapMixin",
+        "TemperedBlowMixin",
         "FxSupportMobMixin",
         "FxSupportExplosionMixin",
         "SignBlockEntityMixin"

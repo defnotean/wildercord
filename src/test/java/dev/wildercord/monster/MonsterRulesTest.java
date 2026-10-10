@@ -16,8 +16,8 @@ class MonsterRulesTest {
 		for (MonsterRules.Kind kind : MonsterRules.ALL) {
 			assertTrue(ids.add(kind.id), kind.id + " is listed twice");
 			// A zombie or a skeleton weighs about 100: these should be a meeting now and then, never a crowd.
-			assertTrue(kind.weight >= 5 && kind.weight <= 20, kind + " weighs " + kind.weight);
-			assertTrue(kind.min >= 1 && kind.max >= kind.min && kind.max <= 2, kind + " comes in packs of " + kind.min + "-" + kind.max);
+			assertTrue(kind.weight >= 10 && kind.weight <= 30, kind + " weighs " + kind.weight);
+			assertTrue(kind.min >= 1 && kind.max >= kind.min && kind.max <= 4, kind + " comes in packs of " + kind.min + "-" + kind.max);
 		}
 		assertEquals(6, ids.size());
 	}

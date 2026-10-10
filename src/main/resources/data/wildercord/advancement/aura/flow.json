@@ -1,0 +1,31 @@
+{
+  "parent": "wildercord:aura/method",
+  "criteria": {
+    "flow": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "aura:flow",
+        "count": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:aura_shard"
+    },
+    "title": {
+      "translate": "advancements.wildercord.aura.flow.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.aura.flow.description"
+    }
+  },
+  "requirements": [
+    [
+      "flow"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

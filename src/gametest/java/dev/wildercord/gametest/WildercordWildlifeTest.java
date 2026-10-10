@@ -69,6 +69,7 @@ import java.util.Set;
  * cruise and sheds a membrane; glimmerwings find a lantern and come to a caster; creatures met go into the Grimoire;
  * and glimmerwings spawn on their own in a forest at night. Then each is
  * photographed close up by day and by night ({@code wildlife_<creature>_day} / {@code _night}, plus a few poses).
+ * Then the Wayfarer Inn's bounties, keepers and ridgeback deed ({@link WildercordTownChecks}).
  *
  * <p>Runs in the full suite; skipped by {@code WILDERCORD_TOUR_ONLY}, {@code WILDERCORD_CORDS_ONLY} and
  * {@code WILDERCORD_SHOWCASE}.</p>
@@ -128,6 +129,7 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			throw new AssertionError("Wildlife: " + String.join("; ", failures));
 		}
 		dev.wildercord.wildlife.RimehareHopChecks.run(context);
+		WildercordTownChecks.run(context);
 	}
 
 	private void check(boolean ok, String what) {

@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "wildercord:hearty_stew",
+    "wildercord:forager_soup",
+    "wildercord:hunters_skewer",
+    "wildercord:salmon_chowder",
+    "wildercord:pumpkin_porridge",
+    "wildercord:sweetberry_tart",
+    "wildercord:glowberry_broth",
+    "wildercord:miners_hash",
+    "wildercord:emberroot_curry",
+    "wildercord:frostfin_soup",
+    "wildercord:ruby_borscht",
+    "wildercord:honeyed_ham",
+    "wildercord:scholars_tea",
+    "wildercord:wanderers_stew",
+    "wildercord:mutton_pottage",
+    "wildercord:fishers_bouillabaisse",
+    "wildercord:mana_risotto",
+    "wildercord:starlit_consomme",
+    "wildercord:spiced_compote",
+    "wildercord:duelists_broth",
+    "wildercord:archmages_feast"
+  ]
+}

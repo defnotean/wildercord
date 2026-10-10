@@ -16,14 +16,18 @@ public final class Circles {
 
 	public static final int MAX = 20;
 
-	/** Mana condensed (spent casting spells, in total) needed before circle {@code n} can form. Index 0 unused. */
-	private static final int[] CONDENSE = {0, 600, 2000, 5000, 10000, 18000, 30000, 50000, 80000,
-		120000, 170000, 230000, 300000, 380000, 470000, 570000, 680000, 800000, 930000, 1070000, 1220000};
+	/**
+	 * Mana condensed (see {@link CondenseRules}: mostly mana spent on spells that hurt hostile creatures) needed before circle
+	 * {@code n} can form. Index 0 unused. Tempered in 0.12 to about 2.8 times the old figures: around a hundred hours of play
+	 * to the Master Heart.
+	 */
+	private static final int[] CONDENSE = {0, 1000, 4000, 12000, 28000, 55000, 95000, 150000, 230000,
+		330000, 460000, 620000, 810000, 1030000, 1280000, 1560000, 1870000, 2210000, 2580000, 2980000, 3420000};
 
 	/** Per circle. */
 	public static final int MANA_PER_CIRCLE = 15;
 	public static final float REGEN_PER_CIRCLE = 0.5F;
-	public static final double POWER_PER_CIRCLE = 0.03;
+	public static final double POWER_PER_CIRCLE = 0.015;
 
 	/** Perks. */
 	public static final int MANA_SKIN = 3;
@@ -32,7 +36,7 @@ public final class Circles {
 	public static final int FLOW = 5;
 	public static final double FLOW_COOLDOWN = 0.85;
 	public static final int OVERFLOW = 7;
-	public static final double OVERFLOW_POWER = 1.3;
+	public static final double OVERFLOW_POWER = 1.15;
 	public static final int ARCHMAGE = 8;
 	public static final double ARCHMAGE_COST = 0.85;
 

@@ -1,0 +1,35 @@
+{
+  "parent": "wildercord:aura/form",
+  "criteria": {
+    "sovereign": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "aura:sovereign",
+        "count": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:aura_shard"
+    },
+    "title": {
+      "translate": "advancements.wildercord.aura.sovereign.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.aura.sovereign.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "sovereign"
+    ]
+  ],
+  "rewards": {
+    "experience": 1000,
+    "loot": [
+      "wildercord:advancement_reward/mana_crystals"
+    ]
+  }
+}

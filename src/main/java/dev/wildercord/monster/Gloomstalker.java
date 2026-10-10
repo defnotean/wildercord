@@ -400,4 +400,16 @@ public class Gloomstalker extends WildMonster {
 		// Soft pads: barely a sound.
 		playSound(SoundEvents.WOOL_STEP, 0.08F, 1.4F);
 	}
+
+	/** 0.12: Frost where it's freezing, Ash where it's scorched. */
+	@Override
+	protected boolean hasVariants() {
+		return true;
+	}
+
+	/** 0.12: Gloomstalkers hunt in packs, some led by an Alpha. */
+	@Override
+	protected boolean packHunter() {
+		return true;
+	}
 }

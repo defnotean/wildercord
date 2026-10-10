@@ -145,7 +145,7 @@ public class RuneBolt extends Projectile {
 		int power = 0;
 		boolean frugal = false;
 		for (SpellPlan.EffectNode e : group.effects) {
-			power = Math.max(power, e.count(dev.wildercord.spell.Runes.AMPLIFY) + 2 * e.count(dev.wildercord.spell.Runes.OVERCHARGE_MOD));
+			power = Math.max(power, dev.wildercord.spell.ModifierLimits.count(e.mods, dev.wildercord.spell.Runes.AMPLIFY) + 2 * dev.wildercord.spell.ModifierLimits.count(e.mods, dev.wildercord.spell.Runes.OVERCHARGE_MOD));
 			frugal |= e.count(dev.wildercord.spell.Runes.FRUGAL_MOD) > 0;
 		}
 		int style = Math.min(3, power);

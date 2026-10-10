@@ -302,10 +302,10 @@ trial:
 
 | Next stage | Total experience | Trials (any one) |
 |---|---:|---|
-| Flow | 150 | **Stillness**: 30 seconds of breathing stance where ley lines cross, or at a qualifying waterfall or summit. **Stronger foe**: fell a boss, Runebound or a foe with twice your health with blade and aura only, within 60 seconds |
-| Edge | 600 | The same as Flow |
-| Form | 1,800 | **Tempest**: 45 seconds of stance at a ley crossing in an open-sky thunderstorm. **Guardian**: fell a boss with blade and aura only within 3 minutes. **Duel**: beat a wandering duelist without magic |
-| Sovereign | 4,500 | Tempest for 60 seconds, the guardian trial, or the duel |
+| Flow | 450 | **Stillness**: 30 seconds of breathing stance where ley lines cross, or at a qualifying waterfall or summit. **Stronger foe**: fell a boss, Runebound or a foe with twice your health with blade and aura only, within 60 seconds |
+| Edge | 1,800 | The same as Flow |
+| Form | 5,400 | **Tempest**: 45 seconds of stance at a ley crossing in an open-sky thunderstorm. **Guardian**: fell a boss with blade and aura only within 3 minutes. **Duel**: beat a wandering duelist without magic |
+| Sovereign | 13,500 | Tempest for 60 seconds, the guardian trial, or the duel |
 
 Any spell of yours touching a trial foe spoils the trial. See [Ley Lines](ley-lines.md).
 A formal disciple can also break through by knocking out their own master in a spar, up to one stage below the master (see

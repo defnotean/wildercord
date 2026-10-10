@@ -406,7 +406,7 @@ public final class AuraCombat {
 			m -> m.isAlive() && (m instanceof Enemy || m.getTarget() == player)).size();
 		boolean boss = !level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(MasteryRules.BOSS_RADIUS),
 			e -> e.isAlive() && Spirits.isBoss(e)).isEmpty();
-		double m = MasteryRules.situation(player.getHealth() / Math.max(1F, player.getMaxHealth()), foes, boss, Mastery.inDungeon(level, player.blockPosition()));
+		double m = AuraRules.moment(MasteryRules.situation(player.getHealth() / Math.max(1F, player.getMaxHealth()), foes, boss, Mastery.inDungeon(level, player.blockPosition())));
 		MOMENT.put(player.getUUID(), new double[] {m, now});
 		return m;
 	}

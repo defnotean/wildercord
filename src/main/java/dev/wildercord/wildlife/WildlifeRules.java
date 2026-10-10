@@ -46,6 +46,11 @@ public final class WildlifeRules {
 	public static final Kind RIMEHARE = new Kind("rimehare", Pool.CREATURE, 6, 2, 3, 1.0, 6, 48, List.of(
 		"minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:ice_spikes", "minecraft:snowy_slopes", "minecraft:grove"));
 
+	/** The black bobcat: rare and solitary, in dark forests and old taigas (its own module, so not in {@link #ALL}). */
+	public static final Kind BLACK_BOBCAT = new Kind("black_bobcat", Pool.CREATURE, 3, 1, 1, 1 / 2.0, 1, 64, List.of(
+		"minecraft:dark_forest", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:taiga",
+		"minecraft:snowy_taiga"));
+
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);
 
@@ -211,6 +216,8 @@ public final class WildlifeRules {
 	public static final int SPARK_BURN_SECONDS = 4;
 	/** The chance a rabbit tames a wild cinderfox. */
 	public static final double TAME_CHANCE = 1 / 3.0;
+	/** The chance a fish tames a wild black bobcat. */
+	public static final double BOBCAT_TAME_CHANCE = 1 / 3.0;
 
 	// ------------------------------------------------------------------ the skyray
 

@@ -1,0 +1,31 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "method": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "aura:method_",
+        "count": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:aura_shard"
+    },
+    "title": {
+      "translate": "advancements.wildercord.aura.method.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.aura.method.description"
+    }
+  },
+  "requirements": [
+    [
+      "method"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

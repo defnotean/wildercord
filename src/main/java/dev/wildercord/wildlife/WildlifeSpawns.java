@@ -93,7 +93,7 @@ public final class WildlifeSpawns {
 	}
 
 	/** Adds a kind to its biomes' spawn lists, unless it's switched off as the world loads (then it isn't in them at all). */
-	private static void join(Kind kind, EntityType<?> type) {
+	static void join(Kind kind, EntityType<?> type) {
 		BiomeModifications.create(Wildercord.id("wildlife/" + kind.id())).add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(biomes(kind)),
 			context -> {
 				WildercordConfig.WildlifeSettings settings = Config.get().wildlife();
@@ -119,7 +119,7 @@ public final class WildlifeSpawns {
 		return WildlifeRules.roomFor(kind, near);
 	}
 
-	private static <T extends Mob> boolean creature(Kind kind, EntityType<T> type, TagKey<Block> ground, ServerLevelAccessor level,
+	static <T extends Mob> boolean creature(Kind kind, EntityType<T> type, TagKey<Block> ground, ServerLevelAccessor level,
 			EntitySpawnReason reason, BlockPos pos, RandomSource random) {
 		if (!level.getBlockState(pos.below()).is(ground)) {
 			return false;

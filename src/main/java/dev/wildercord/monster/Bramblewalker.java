@@ -319,4 +319,10 @@ public class Bramblewalker extends WildMonster {
 		playSound(SoundEvents.AZALEA_LEAVES_STEP, 0.5F, 0.8F);
 		playSound(SoundEvents.WOOD_STEP, 0.35F, 0.6F);
 	}
+
+	/** 0.12: Frost where it's freezing, Ash where it's scorched. */
+	@Override
+	protected boolean hasVariants() {
+		return true;
+	}
 }

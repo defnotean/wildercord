@@ -240,6 +240,13 @@ public final class AuraBreakthroughs {
 		Aura.sound(player, "aura_breakthrough", 1.0F, 1.0F);
 		AuraVfx.breakthrough(player, color, next);
 		Grimoire.unlock(player, "aura:" + AuraStages.id(next));
+		if (next >= AuraRules.EDGE) {
+			// The great breakthroughs are heard across the world.
+			Component news = Component.translatable("message.wildercord.breakthrough.announce.aura", player.getDisplayName(), stage.copy().withColor(0xFF000000 | color)).withColor(0xE8D8B0);
+			for (ServerPlayer other : player.level().getServer().getPlayerList().getPlayers()) {
+				if (other != player) other.sendSystemMessage(news);
+			}
+		}
 		// A bonded blade carried through it remembers it (and may wake to a tier the new stage allows).
 		BondedBlades.brokeThrough(player, next);
 		// A disciple's master earns a share of the road walked; a disciple who has reached their master's stage graduates.
