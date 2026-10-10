@@ -48,6 +48,11 @@ public final class BladeTooltip {
 	/** The lines {@code stack} adds under its name for {@code viewer} ({@code story}: the whole story, Shift held). */
 	public static List<Component> lines(ItemStack stack, LocalPlayer viewer, boolean story) {
 		List<Component> out = new ArrayList<>();
+		int temper = dev.wildercord.aura.BladeSmithing.temper(stack);
+		if (temper > 0) {
+			out.add(Component.translatable("tooltip.wildercord.blade_temper", Component.translatable("enchantment.level." + temper),
+				Math.round(temper * dev.wildercord.aura.BladeSmithingRules.PER_TEMPER * 100)).withColor(GOLD));
+		}
 		String etched = stack.get(dev.wildercord.aura.RuneEtchings.RUNE);
 		if (etched != null) {
 			var rune = dev.wildercord.spell.Runes.get(etched).orElse(null);

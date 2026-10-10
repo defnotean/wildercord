@@ -32,6 +32,19 @@ public abstract class BondedBladeSmithingMixin extends ItemCombinerMenu {
 	@Shadow private int repairItemCountCost;
 	@Shadow private boolean onlyRenaming;
 
+	/** Master's Steel on the right tempers a bonded blade on the left (see {@link dev.wildercord.aura.BladeSmithing}). */
+	@Inject(method = "createResult", at = @At("HEAD"), cancellable = true)
+	private void wildercord$temper(CallbackInfo ci) {
+		if (!inputSlots.getItem(1).is(dev.wildercord.aura.BladeSmithing.MASTER_STEEL)) return;
+		dev.wildercord.aura.BladeSmithing.Result result = dev.wildercord.aura.BladeSmithing.temper(inputSlots.getItem(0), inputSlots.getItem(1), player);
+		resultSlots.setItem(0, result == null ? ItemStack.EMPTY : result.out());
+		cost.set(result == null ? 0 : result.levels());
+		repairItemCountCost = result == null ? 0 : result.steel();
+		onlyRenaming = false;
+		broadcastChanges();
+		ci.cancel();
+	}
+
 	@Inject(method = "createResult", at = @At("HEAD"), cancellable = true)
 	private void wildercord$etch(CallbackInfo ci) {
 		if (!(inputSlots.getItem(1).getItem() instanceof dev.wildercord.content.RuneItem)) return;

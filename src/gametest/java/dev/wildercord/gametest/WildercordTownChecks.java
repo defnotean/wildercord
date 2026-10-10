@@ -285,6 +285,7 @@ public final class WildercordTownChecks {
 		giants(player, level);
 		rareMeals(player, level);
 		elixirs(player, level);
+		bladeSmithing(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -500,6 +501,20 @@ public final class WildercordTownChecks {
 		lynx.discard();
 		cougar.discard();
 		zombie.discard();
+	}
+
+	/** A Master's fall leaves Master's Steel; an anvil tempers only a bonded blade with it. */
+	private void bladeSmithing(ServerPlayer player, ServerLevel level) {
+		check(new ItemStack(dev.wildercord.aura.BladeSmithing.MASTER_STEEL).getRarity() == net.minecraft.world.item.Rarity.EPIC, "Master's Steel looks it");
+		check(dev.wildercord.aura.BladeSmithing.temper(new ItemStack(Items.IRON_SWORD), new ItemStack(dev.wildercord.aura.BladeSmithing.MASTER_STEEL, 64), player) == null,
+			"an unbonded sword takes no temper");
+		check(dev.wildercord.aura.BladeSmithing.temper(new ItemStack(Items.IRON_SWORD)) == 0, "a plain sword is untempered");
+		int before = player.getInventory().countItem(dev.wildercord.aura.BladeSmithing.MASTER_STEEL);
+		dev.wildercord.aura.BladeSmithing.reward(player, true);
+		check(player.getInventory().countItem(dev.wildercord.aura.BladeSmithing.MASTER_STEEL) == before + 2, "a Master's first fall leaves two slivers of steel");
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			if (player.getInventory().getItem(i).is(dev.wildercord.aura.BladeSmithing.MASTER_STEEL)) player.getInventory().setItem(i, ItemStack.EMPTY);
+		}
 	}
 
 	/** A mana elixir trades one side of mana for another, and brews from a residue harvest. */

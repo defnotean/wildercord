@@ -1587,7 +1587,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				if (!participant(player)) continue;
 				player.sendSystemMessage(Component.translatable("message.wildercord.master.victory", MasterVictories.schoolName(school())));
 				if (credited.contains(player.getUUID())) {
-					MasterVictories.award(player, school()); // ---- methods-b pack: a pack Master credits its own school's bit
+					boolean first = MasterVictories.award(player, school()); // ---- methods-b pack: a pack Master credits its own school's bit
+					dev.wildercord.aura.BladeSmithing.reward(player, first);
 				}
 			}
 			MasterGauntlet.felled(this, credited);

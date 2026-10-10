@@ -194,6 +194,8 @@ public final class AuraCombat {
 		bonus *= Awakening.damage(player, target);
 		// A bonded blade's trait (Riposte after a perfect guard, Mountainfeller on a boss, Gravewarden on the undead), under the same cap.
 		bonus *= BladeTraits.coat(player, target);
+		// A tempered blade (Master's Steel at an anvil), under the same cap.
+		bonus *= BladeSmithing.coat(player, target);
 		double amount = damage * againstPlayer(target, bonus);
 		if (Aura.stage(player) >= AuraRules.EDGE && !source.is(DamageTypeTags.BYPASSES_ARMOR) && amount > 0) {
 			float after = CombatRules.getDamageAfterAbsorb(target, (float) amount, source, target.getArmorValue(),

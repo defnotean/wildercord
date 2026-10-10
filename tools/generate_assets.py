@@ -901,6 +901,9 @@ def write_lang(runes):
     import elixir_art
     lang.update(elixir_art.LANG)
     elixir_art.write(sys.modules[__name__])
+    import blade_smithing_art
+    lang.update(blade_smithing_art.LANG)
+    blade_smithing_art.write(sys.modules[__name__])
     import tempering_art
     lang.update(tempering_art.LANG)
     tempering_art.write(sys.modules[__name__])
