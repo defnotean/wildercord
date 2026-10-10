@@ -286,6 +286,7 @@ public final class WildercordTownChecks {
 		rareMeals(player, level);
 		elixirs(player, level);
 		bladeSmithing(player, level);
+		guilds(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -501,6 +502,24 @@ public final class WildercordTownChecks {
 		lynx.discard();
 		cougar.discard();
 		zombie.discard();
+	}
+
+	/** A coven is saved with the world, outlasts a reload of its ledger, and training alone earns no bonus. */
+	private void guilds(ServerPlayer player, ServerLevel level) {
+		var kind = dev.wildercord.guild.GuildRules.Kind.COVEN;
+		var ledger = dev.wildercord.guild.Guilds.ledger(level.getServer());
+		ledger.change(r -> r.leave(player.getUUID(), kind));
+		check(ledger.change(r -> r.found(player.getUUID(), kind, "Test Circle")) == dev.wildercord.guild.GuildRules.Result.OK, "a coven is founded");
+		check(dev.wildercord.guild.Guilds.of(player, kind) != null && dev.wildercord.guild.Guilds.of(player, kind).name().equals("Test Circle"), "its founder stands in it");
+		check(dev.wildercord.guild.Guilds.of(player, dev.wildercord.guild.GuildRules.Kind.GUILD) == null, "a coven is not a guild");
+		check(dev.wildercord.guild.Guilds.bonus(player, kind) == 1.0, "training alone earns no coven bonus");
+		check(ledger.isDirty(), "the ledger is saved after a change");
+		var ops = level.registryAccess().createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE);
+		var saved = dev.wildercord.guild.Guilds.Ledger.CODEC.encodeStart(ops, ledger).getOrThrow();
+		var loaded = dev.wildercord.guild.Guilds.Ledger.CODEC.parse(ops, saved).getOrThrow();
+		check(loaded.roster().named("test circle") != null && loaded.roster().named("test circle").leader().equals(player.getUUID()), "a coven outlasts a reload");
+		ledger.change(r -> r.disband(player.getUUID(), kind));
+		check(dev.wildercord.guild.Guilds.of(player, kind) == null, "a disbanded coven is gone");
 	}
 
 	/** A Master's fall leaves Master's Steel; an anvil tempers only a bonded blade with it. */

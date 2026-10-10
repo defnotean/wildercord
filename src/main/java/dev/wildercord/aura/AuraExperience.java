@@ -27,6 +27,8 @@ public final class AuraExperience {
 		if (!practice) {
 			// A disciple near their master learns faster.
 			xp = Lineage.near(player, xp);
+			// Fellow guild members training close by.
+			xp *= dev.wildercord.guild.Guilds.bonus(player, dev.wildercord.guild.GuildRules.Kind.GUILD);
 			// A Way chosen after a change settles by what's earned walking it (before the stage's cap: one waiting at a threshold still does).
 			Ways.earned(player, xp * rate);
 		}

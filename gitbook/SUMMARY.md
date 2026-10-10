@@ -175,6 +175,7 @@
   * [Chorus Casting](social/chorus.md)
   * [Playing Together](social/playing-together.md)
   * [Parties](social/parties.md)
+  * [Guilds and Covens](social/guilds.md)
   * [Getting Around](social/travel.md)
   * [Runic Hearth](social/runic-hearth.md)
 * [Casting Gear](gear.md)

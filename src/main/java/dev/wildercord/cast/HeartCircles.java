@@ -152,6 +152,8 @@ public final class HeartCircles {
 		// A Condensing elixir: more of what was spent counts toward the next circle.
 		mana *= (float) dev.wildercord.player.ElixirRules.condense(
 			dev.wildercord.content.WildercordEffects.level(player, dev.wildercord.content.WildercordEffects.CONDENSING));
+		// Fellow coven members casting close by.
+		mana *= (float) dev.wildercord.guild.Guilds.bonus(player, dev.wildercord.guild.GuildRules.Kind.COVEN);
 		long now = player.level().getGameTime();
 		Pending waiting = PENDING.get(player.getUUID());
 		float before = waiting == null || now > waiting.until() ? 0 : waiting.mana();

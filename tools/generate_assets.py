@@ -904,6 +904,8 @@ def write_lang(runes):
     import blade_smithing_art
     lang.update(blade_smithing_art.LANG)
     blade_smithing_art.write(sys.modules[__name__])
+    import guild_lang
+    lang.update(guild_lang.LANG)
     import tempering_art
     lang.update(tempering_art.LANG)
     tempering_art.write(sys.modules[__name__])
