@@ -6,8 +6,10 @@ import java.util.UUID;
 
 /**
  * Bounties and reputation at a Wayfarer Inn (0.12 "Tempering"), as plain numbers. The inn's bounty board offers each traveller
- * one hunt a day ("slay 5 Gloomstalkers within 256 blocks of here"); kills count only near the board it was taken from. Turned
- * in, it pays emeralds and reputation with the inn's keepers, and reputation opens their better trades tier by tier.
+ * one bounty a day; turned in, it pays emeralds and reputation with the inn's keepers, and reputation opens their better trades
+ * tier by tier. A stranger is offered hunts ("slay 5 Gloomstalkers within 256 blocks of here"); the better the keepers know you,
+ * the more kinds open (0.13): gathering, a named elite set loose near the board, a dungeon's guardian, and once a week a great
+ * hunt for a great reward.
  */
 public final class BountyRules {
 	private BountyRules() {}
@@ -26,6 +28,74 @@ public final class BountyRules {
 		new Target("minecraft:skeleton", 4, 8, 0),
 		new Target("minecraft:spider", 4, 8, 0),
 		new Target("minecraft:creeper", 3, 6, 1));
+
+	/** Something a gathering bounty can ask for, and how many. */
+	public record Goods(String id, int min, int max) {}
+
+	public static final List<Goods> GOODS = List.of(
+		new Goods("minecraft:leather", 6, 10),
+		new Goods("minecraft:string", 8, 16),
+		new Goods("minecraft:bone", 8, 16),
+		new Goods("minecraft:gunpowder", 4, 8),
+		new Goods("minecraft:spider_eye", 4, 8),
+		new Goods("minecraft:feather", 8, 16),
+		new Goods("minecraft:rabbit_hide", 4, 8),
+		new Goods("minecraft:honeycomb", 3, 6),
+		new Goods("minecraft:amethyst_shard", 6, 12),
+		new Goods("minecraft:sweet_berries", 16, 32));
+
+	/** The creatures a named elite can be: Wildercord's own monsters. */
+	public static final List<String> ELITES = List.of("wildercord:bramblewalker", "wildercord:gloomstalker", "wildercord:geode_crawler",
+		"wildercord:bog_witch_frog", "wildercord:thunderwing_harpy");
+	/** The first halves and second halves of a named elite's name. */
+	public static final List<String> NAME_FRONT = List.of("Grim", "Ash", "Thorn", "Hollow", "Rot", "Iron", "Black", "Moss", "Cinder", "Gloam");
+	public static final List<String> NAME_BACK = List.of("jaw", "maw", "hide", "claw", "eye", "fang", "back", "tooth", "heart", "spine");
+	/** How much tougher a named elite is than a tempered creature of its kind. */
+	public static final double ELITE_HEALTH = 3.0;
+	/** How far from the board a named elite is set loose (blocks). */
+	public static final int ELITE_NEAR = 48, ELITE_FAR = 96;
+	/** The threat a named elite is tempered to, at the least. */
+	public static final int ELITE_THREAT_MIN = 6;
+
+	/** A great hunt: how many it asks for, and what it pays. */
+	public static final int GREAT_MIN = 12, GREAT_MAX = 20, GREAT_EMERALDS = 24, GREAT_REPUTATION = 20, GREAT_CRYSTALS = 2;
+	/** A week, in days: one great hunt each. */
+	public static final long WEEK = 7;
+
+	/** What a bounty asks of you. */
+	public enum Kind {
+		/** Slay so many of one creature near the board. */
+		HUNT("hunt", Tier.STRANGER),
+		/** Bring the board so many of one thing. */
+		GATHER("gather", Tier.KNOWN),
+		/** Hunt down one named elite, set loose near the board. */
+		ELITE("elite", Tier.FRIEND),
+		/** Slay a dungeon's guardian, wherever it waits. */
+		DUNGEON("dungeon", Tier.HONOURED),
+		/** Once a week: a great hunt, for a great reward. */
+		GREAT("great", Tier.KNOWN);
+
+		public final String id;
+		/** The standing it's first offered at. */
+		public final Tier opens;
+
+		Kind(String id, Tier opens) {
+			this.id = id;
+			this.opens = opens;
+		}
+
+		public static Kind of(String id) {
+			for (Kind kind : values()) {
+				if (kind.id.equals(id)) return kind;
+			}
+			return HUNT;
+		}
+	}
+
+	/** What a dungeon bounty names as its target. */
+	public static final String DUNGEON_GUARDIAN = "dungeon_guardian";
+	/** What an elite bounty and a dungeon bounty pay. */
+	public static final int ELITE_EMERALDS = 14, ELITE_REPUTATION = 12, DUNGEON_EMERALDS = 20, DUNGEON_REPUTATION = 15;
 
 	/** How far from its board a bounty's kills count (blocks, across the ground). */
 	public static final double RANGE = 256;
@@ -65,10 +135,63 @@ public final class BountyRules {
 		}
 	}
 
-	/** An offered bounty: kill {@code needed} of {@code target}, for emeralds and reputation. */
-	public record Bounty(String target, int needed, int emeralds, int reputation) {}
+	/**
+	 * An offered bounty: {@code needed} of {@code target} (a creature, or for a gathering an item), for emeralds and reputation.
+	 * A named elite's {@code name} is what it's called; other kinds have none.
+	 */
+	public record Bounty(Kind kind, String target, int needed, int emeralds, int reputation, String name) {
+		public Bounty(String target, int needed, int emeralds, int reputation) {
+			this(Kind.HUNT, target, needed, emeralds, reputation, "");
+		}
+	}
 
-	/** The bounty a board shows this traveller today: the same all day, different at each board. */
+	/** The week a day falls in. */
+	public static long week(long day) {
+		return Math.floorDiv(day, WEEK);
+	}
+
+	/**
+	 * The bounty a board shows this traveller today: the same all day, different at each board. A traveller of {@code tier}
+	 * who hasn't had this week's great hunt ({@code greatDue}) is offered that first.
+	 */
+	public static Bounty offer(UUID player, long day, long boardPos, Tier tier, boolean greatDue) {
+		Random random = new Random(seed(player, day, boardPos) ^ 0x5DEECE66DL);
+		if (greatDue && tier.ordinal() >= Kind.GREAT.opens.ordinal()) {
+			Target target = TARGETS.get(random.nextInt(TARGETS.size()));
+			return new Bounty(Kind.GREAT, target.id(), GREAT_MIN + random.nextInt(GREAT_MAX - GREAT_MIN + 1), GREAT_EMERALDS, GREAT_REPUTATION, "");
+		}
+		List<Kind> open = new java.util.ArrayList<>();
+		for (Kind kind : Kind.values()) {
+			if (kind != Kind.GREAT && tier.ordinal() >= kind.opens.ordinal()) open.add(kind);
+		}
+		// Hunts stay the common bounty; each further kind opened is offered a little less often.
+		int[] weight = {6, 3, 2, 1};
+		int total = 0;
+		for (Kind kind : open) total += weight[kind.ordinal()];
+		int roll = random.nextInt(total);
+		Kind kind = Kind.HUNT;
+		for (Kind k : open) {
+			roll -= weight[k.ordinal()];
+			if (roll < 0) {
+				kind = k;
+				break;
+			}
+		}
+		return switch (kind) {
+			case GATHER -> {
+				Goods goods = GOODS.get(random.nextInt(GOODS.size()));
+				int needed = goods.min() + random.nextInt(goods.max() - goods.min() + 1);
+				int share = (needed - goods.min()) * 3 / Math.max(1, goods.max() - goods.min());
+				yield new Bounty(Kind.GATHER, goods.id(), needed, 4 + share, REPUTATION_MIN + 1 + share, "");
+			}
+			case ELITE -> new Bounty(Kind.ELITE, ELITES.get(random.nextInt(ELITES.size())), 1, ELITE_EMERALDS, ELITE_REPUTATION,
+				NAME_FRONT.get(random.nextInt(NAME_FRONT.size())) + NAME_BACK.get(random.nextInt(NAME_BACK.size())));
+			case DUNGEON -> new Bounty(Kind.DUNGEON, DUNGEON_GUARDIAN, 1, DUNGEON_EMERALDS, DUNGEON_REPUTATION, "");
+			default -> offer(player, day, boardPos);
+		};
+	}
+
+	/** The hunt a board would show this traveller today. */
 	public static Bounty offer(UUID player, long day, long boardPos) {
 		Random random = new Random(seed(player, day, boardPos));
 		Target target = TARGETS.get(random.nextInt(TARGETS.size()));
@@ -85,6 +208,11 @@ public final class BountyRules {
 	/** Whether a kill this far (across the ground) from the board counts. */
 	public static boolean near(double dx, double dz) {
 		return dx * dx + dz * dz <= RANGE * RANGE;
+	}
+
+	/** Whether a traveller who last had a great hunt in {@code lastWeek} (-1 for never) is due one on {@code today}. */
+	public static boolean greatDue(long lastWeek, long today) {
+		return lastWeek < week(today);
 	}
 
 	/** Whether the traveller can take another bounty today, having last turned one in on {@code lastDay} (-1 for never). */

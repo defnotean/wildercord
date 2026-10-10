@@ -3,6 +3,7 @@ package dev.wildercord.town;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
+import dev.wildercord.cast.DungeonBoss;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -16,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The Wayfarer Inn's town life (0.12 "Tempering"): its bounty board, the keepers who trade there (a cook, a stablemaster and a
@@ -38,11 +41,15 @@ public final class Town {
 	private Town() {}
 
 	/**
-	 * A bounty being hunted: {@code kills} of {@code needed} {@code target}s, counted only within range of the board at
-	 * ({@code boardX}, {@code boardZ}) in {@code dimension}.
+	 * A bounty being worked: {@code kills} of {@code needed} {@code target}s, of a {@link BountyRules.Kind} by its id. Hunts and
+	 * great hunts count only within range of the board at ({@code boardX}, {@code boardZ}) in {@code dimension}; a gathering is
+	 * checked at the board; a named elite is the one creature set loose for it, called {@code name}; a dungeon bounty counts any
+	 * dungeon's guardian.
 	 */
-	public record Active(String target, int needed, int kills, int emeralds, int reputation, int boardX, int boardZ, String dimension) {
+	public record Active(String kind, String target, int needed, int kills, int emeralds, int reputation, int boardX, int boardZ,
+			String dimension, String name) {
 		public static final Codec<Active> CODEC = RecordCodecBuilder.create(i -> i.group(
+			Codec.STRING.optionalFieldOf("kind", "hunt").forGetter(Active::kind),
 			Codec.STRING.fieldOf("target").forGetter(Active::target),
 			Codec.INT.fieldOf("needed").forGetter(Active::needed),
 			Codec.INT.fieldOf("kills").forGetter(Active::kills),
@@ -50,25 +57,35 @@ public final class Town {
 			Codec.INT.fieldOf("reputation").forGetter(Active::reputation),
 			Codec.INT.fieldOf("board_x").forGetter(Active::boardX),
 			Codec.INT.fieldOf("board_z").forGetter(Active::boardZ),
-			Codec.STRING.fieldOf("dimension").forGetter(Active::dimension)
+			Codec.STRING.fieldOf("dimension").forGetter(Active::dimension),
+			Codec.STRING.optionalFieldOf("name", "").forGetter(Active::name)
 		).apply(i, Active::new));
 
+		public BountyRules.Kind type() {
+			return BountyRules.Kind.of(kind);
+		}
+
+		/** Whether it's done. A gathering is only checked at the board. */
 		public boolean done() {
-			return kills >= needed;
+			return type() != BountyRules.Kind.GATHER && kills >= needed;
 		}
 
 		Active killed() {
-			return new Active(target, needed, kills + 1, emeralds, reputation, boardX, boardZ, dimension);
+			return new Active(kind, target, needed, kills + 1, emeralds, reputation, boardX, boardZ, dimension, name);
 		}
 	}
 
-	/** A traveller's standing with the inns: reputation, the day they last turned a bounty in (-1 for never), and the bounty they hold. */
-	public record Standing(int reputation, long lastDay, Optional<Active> bounty) {
-		public static final Standing NONE = new Standing(0, -1, Optional.empty());
+	/**
+	 * A traveller's standing with the inns: reputation, the day they last turned a bounty in (-1 for never), the bounty they hold,
+	 * and the week they last had a great hunt (-1 for never).
+	 */
+	public record Standing(int reputation, long lastDay, Optional<Active> bounty, long lastGreatWeek) {
+		public static final Standing NONE = new Standing(0, -1, Optional.empty(), -1);
 		public static final Codec<Standing> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.INT.optionalFieldOf("reputation", 0).forGetter(Standing::reputation),
 			Codec.LONG.optionalFieldOf("last_day", -1L).forGetter(Standing::lastDay),
-			Active.CODEC.optionalFieldOf("bounty").forGetter(Standing::bounty)
+			Active.CODEC.optionalFieldOf("bounty").forGetter(Standing::bounty),
+			Codec.LONG.optionalFieldOf("last_great_week", -1L).forGetter(Standing::lastGreatWeek)
 		).apply(i, Standing::new));
 
 		public BountyRules.Tier tier() {
@@ -76,7 +93,12 @@ public final class Town {
 		}
 
 		Standing with(Optional<Active> bounty) {
-			return new Standing(reputation, lastDay, bounty);
+			return new Standing(reputation, lastDay, bounty, lastGreatWeek);
+		}
+
+		/** This standing with {@code more} reputation (which can be negative, but never takes it below 0). */
+		public Standing plus(int more) {
+			return new Standing(Math.max(0, reputation + more), lastDay, bounty, lastGreatWeek);
 		}
 	}
 
@@ -113,32 +135,70 @@ public final class Town {
 		FabricDefaultAttributeRegistry.register(KEEPER, Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5));
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (source.getEntity() instanceof ServerPlayer player) {
-				counted(player, BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString(), entity.getX(), entity.getZ(),
-					entity.level().dimension().identifier().toString());
+				counted(player, entity);
 			}
 		});
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(output -> output.accept(RIDGEBACK_DEED));
 	}
 
-	/** A kill by {@code player}: counts toward their bounty when it's the right creature, near enough its board. */
+	/** The tag a named elite carries: whose bounty it is. */
+	public static String markTag(UUID player) {
+		return "wildercord.bounty_mark." + player;
+	}
+
+	/** A kill by {@code player}: counts toward their bounty when it's what the bounty asks for. */
+	public static void counted(ServerPlayer player, Entity victim) {
+		Standing standing = standing(player);
+		if (standing.bounty().isEmpty()) return;
+		Active bounty = standing.bounty().get();
+		switch (bounty.type()) {
+			case ELITE -> {
+				if (!bounty.done() && victim.entityTags().contains(markTag(player.getUUID()))) progress(player, standing, bounty);
+			}
+			case DUNGEON -> {
+				if (!bounty.done() && victim instanceof DungeonBoss) progress(player, standing, bounty);
+			}
+			case GATHER -> { }
+			default -> counted(player, BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString(), victim.getX(), victim.getZ(),
+				victim.level().dimension().identifier().toString());
+		}
+	}
+
+	/** A kill by {@code player} of a {@code type} at ({@code x}, {@code z}): counts toward a hunt when it's the right creature, near enough its board. */
 	public static void counted(ServerPlayer player, String type, double x, double z, String dimension) {
 		Standing standing = standing(player);
 		if (standing.bounty().isEmpty()) return;
 		Active bounty = standing.bounty().get();
-		if (bounty.done() || !bounty.target().equals(type) || !bounty.dimension().equals(dimension)
-			|| !BountyRules.near(x - (bounty.boardX() + 0.5), z - (bounty.boardZ() + 0.5))) {
+		BountyRules.Kind kind = bounty.type();
+		if ((kind != BountyRules.Kind.HUNT && kind != BountyRules.Kind.GREAT) || bounty.done() || !bounty.target().equals(type)
+			|| !bounty.dimension().equals(dimension) || !BountyRules.near(x - (bounty.boardX() + 0.5), z - (bounty.boardZ() + 0.5))) {
 			return;
 		}
+		progress(player, standing, bounty);
+	}
+
+	private static void progress(ServerPlayer player, Standing standing, Active bounty) {
 		Active next = bounty.killed();
 		set(player, standing.with(Optional.of(next)));
 		player.sendOverlayMessage(next.done()
-			? Component.translatable("message.wildercord.bounty.complete", targetName(next.target())).withStyle(ChatFormatting.GOLD)
-			: Component.translatable("message.wildercord.bounty.progress", next.kills(), next.needed(), targetName(next.target())).withStyle(ChatFormatting.YELLOW));
+			? Component.translatable("message.wildercord.bounty.complete", targetName(next)).withStyle(ChatFormatting.GOLD)
+			: Component.translatable("message.wildercord.bounty.progress", next.kills(), next.needed(), targetName(next)).withStyle(ChatFormatting.YELLOW));
 	}
 
+	/** A creature's or an item's name by its id. */
 	public static Component targetName(String id) {
-		return BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.parse(id)).map(EntityType::getDescription)
-			.orElse(Component.literal(id));
+		if (id.equals(BountyRules.DUNGEON_GUARDIAN)) return Component.translatable("town.wildercord.dungeon_guardian");
+		Identifier key = Identifier.tryParse(id);
+		if (key == null) return Component.literal(id);
+		Optional<Component> creature = BuiltInRegistries.ENTITY_TYPE.getOptional(key).map(EntityType::getDescription);
+		if (creature.isPresent()) return creature.get();
+		return BuiltInRegistries.ITEM.getOptional(key).map(item -> item.getName(item.getDefaultInstance())).orElse(Component.literal(id));
+	}
+
+	/** What a bounty is after, as it's shown: a named elite by its name. */
+	public static Component targetName(Active bounty) {
+		return bounty.name().isEmpty() ? targetName(bounty.target())
+			: Component.translatable("town.wildercord.named_elite", bounty.name(), targetName(bounty.target()));
 	}
 }

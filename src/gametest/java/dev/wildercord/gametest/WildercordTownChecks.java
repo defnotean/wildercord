@@ -119,6 +119,22 @@ public final class WildercordTownChecks {
 		BountyBoardBlock.use(player, level, BOARD);
 		BountyBoardBlock.use(player, level, BOARD);
 		check(Town.standing(player).bounty().isEmpty(), "one bounty a day");
+		gathering(player, level);
+	}
+
+	/** A gathering bounty is turned in from the pack: not before the goods are there, and it takes just what it asked. */
+	private void gathering(ServerPlayer player, ServerLevel level) {
+		Town.set(player, new Town.Standing(20, -1, Optional.of(new Town.Active("gather", "minecraft:bone", 8, 0, 5, 6, BOARD.getX(), BOARD.getZ(),
+			level.dimension().identifier().toString(), "")), -1));
+		player.getInventory().clearContent();
+		player.getInventory().add(new ItemStack(Items.BONE, 5));
+		BountyBoardBlock.use(player, level, BOARD);
+		check(Town.standing(player).bounty().isPresent(), "a gathering isn't paid without the goods");
+		player.getInventory().add(new ItemStack(Items.BONE, 5));
+		BountyBoardBlock.use(player, level, BOARD);
+		check(Town.standing(player).bounty().isEmpty(), "a gathering is turned in with the goods");
+		check(player.getInventory().countItem(Items.BONE) == 2, "it takes just the goods it asked for");
+		check(player.getInventory().countItem(Items.EMERALD) == 5 && Town.standing(player).reputation() == 26, "a gathering pays");
 	}
 
 	private void keepers(MinecraftServer server) {

@@ -60,4 +60,34 @@ class BountyRulesTest {
 		assertFalse(BountyRules.ready(5, 5));
 		assertTrue(BountyRules.ready(5, 6));
 	}
+
+	@Test
+	void eachStandingOpensMoreKindsOfBounty() {
+		for (Tier tier : Tier.values()) {
+			Set<BountyRules.Kind> kinds = java.util.EnumSet.noneOf(BountyRules.Kind.class);
+			for (long day = 0; day < 600; day++) {
+				Bounty bounty = BountyRules.offer(UUID.randomUUID(), day, day * 13, tier, false);
+				kinds.add(bounty.kind());
+				assertTrue(bounty.kind().opens.ordinal() <= tier.ordinal(), tier + " was offered " + bounty);
+				assertTrue(bounty.needed() >= 1 && bounty.emeralds() > 0 && bounty.reputation() > 0, bounty.toString());
+				if (bounty.kind() == BountyRules.Kind.ELITE) assertFalse(bounty.name().isEmpty(), "a named elite has a name");
+			}
+			for (BountyRules.Kind kind : BountyRules.Kind.values()) {
+				if (kind != BountyRules.Kind.GREAT) assertEquals(kind.opens.ordinal() <= tier.ordinal(), kinds.contains(kind), tier + " " + kind);
+			}
+		}
+		assertEquals(BountyRules.Kind.HUNT, BountyRules.offer(PLAYER, 3, 99L, Tier.STRANGER, true).kind(), "a stranger gets no great hunt");
+	}
+
+	@Test
+	void aGreatHuntComesOnceAWeek() {
+		Bounty great = BountyRules.offer(PLAYER, 15, 99L, Tier.KNOWN, true);
+		assertEquals(BountyRules.Kind.GREAT, great.kind());
+		assertTrue(great.needed() >= BountyRules.GREAT_MIN && great.needed() <= BountyRules.GREAT_MAX);
+		assertEquals(BountyRules.GREAT_EMERALDS, great.emeralds());
+		assertTrue(BountyRules.greatDue(-1, 0));
+		assertFalse(BountyRules.greatDue(BountyRules.week(15), 20), "done this week");
+		assertTrue(BountyRules.greatDue(BountyRules.week(15), 21), "a new week");
+		assertEquals(BountyRules.offer(PLAYER, 16, 99L, Tier.FRIEND, false), BountyRules.offer(PLAYER, 16, 99L, Tier.FRIEND, false), "the same all day");
+	}
 }

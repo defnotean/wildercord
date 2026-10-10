@@ -96,17 +96,8 @@ public final class Tempering {
 		} else if (mob.getRandom().nextDouble() < TemperingRules.eliteChance(threat)) {
 			TemperingRules.Elite[] kinds = TemperingRules.Elite.values();
 			TemperingRules.Elite elite = kinds[mob.getRandom().nextInt(kinds.length)];
-			mob.addTag(elite.tag());
 			health *= TemperingRules.ELITE_HEALTH;
-			switch (elite) {
-				case SWIFT -> modify(mob, Attributes.MOVEMENT_SPEED, ELITE_SPEED, TemperingRules.SWIFT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-				case IRONHIDE -> {
-					modify(mob, Attributes.ARMOR, ELITE_ARMOUR, TemperingRules.IRONHIDE_ARMOUR, AttributeModifier.Operation.ADD_VALUE);
-					modify(mob, Attributes.ARMOR_TOUGHNESS, ELITE_TOUGHNESS, TemperingRules.IRONHIDE_TOUGHNESS, AttributeModifier.Operation.ADD_VALUE);
-				}
-				case BRUTAL -> modify(mob, Attributes.ATTACK_KNOCKBACK, ELITE_KNOCKBACK, TemperingRules.BRUTAL_KNOCKBACK, AttributeModifier.Operation.ADD_VALUE);
-				case VAMPIRIC, SPLITTING -> { }
-			}
+			elite(mob, elite);
 			if (!mob.hasCustomName()) {
 				mob.setCustomName(Component.translatableWithFallback("monster.wildercord.elite." + elite.key(), elite.title + " %s", mob.getType().getDescription())
 					.withColor(elite.color));
@@ -115,6 +106,37 @@ public final class Tempering {
 		if (health > 1.0001 && modify(mob, Attributes.MAX_HEALTH, HEALTH, health - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
 			mob.setHealth(mob.getMaxHealth());
 		}
+	}
+
+	private static void elite(Mob mob, TemperingRules.Elite elite) {
+		mob.addTag(elite.tag());
+		switch (elite) {
+			case SWIFT -> modify(mob, Attributes.MOVEMENT_SPEED, ELITE_SPEED, TemperingRules.SWIFT_SPEED, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+			case IRONHIDE -> {
+				modify(mob, Attributes.ARMOR, ELITE_ARMOUR, TemperingRules.IRONHIDE_ARMOUR, AttributeModifier.Operation.ADD_VALUE);
+				modify(mob, Attributes.ARMOR_TOUGHNESS, ELITE_TOUGHNESS, TemperingRules.IRONHIDE_TOUGHNESS, AttributeModifier.Operation.ADD_VALUE);
+			}
+			case BRUTAL -> modify(mob, Attributes.ATTACK_KNOCKBACK, ELITE_KNOCKBACK, TemperingRules.BRUTAL_KNOCKBACK, AttributeModifier.Operation.ADD_VALUE);
+			case VAMPIRIC, SPLITTING -> { }
+		}
+	}
+
+	/**
+	 * Makes {@code mob}, not yet in the world, a champion: tempered to {@code threat}, an elite of {@code kind} (never Splitting,
+	 * so there's one to find), {@code toughness} times a tempered creature's health, called {@code name} and kept in the world.
+	 * A named elite set loose by a bounty is one.
+	 */
+	public static void champion(Mob mob, int threat, TemperingRules.Elite kind, double toughness, Component name) {
+		mob.addTag(TAG);
+		mob.addTag(THREAT_TAG + threat);
+		elite(mob, kind == TemperingRules.Elite.SPLITTING ? TemperingRules.Elite.BRUTAL : kind);
+		double health = TemperingRules.health(threat) * TemperingRules.ELITE_HEALTH * toughness;
+		if (modify(mob, Attributes.MAX_HEALTH, HEALTH, health - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
+			mob.setHealth(mob.getMaxHealth());
+		}
+		mob.setCustomName(name);
+		mob.setCustomNameVisible(true);
+		mob.setPersistenceRequired();
 	}
 
 	/** A boss with no phases of its own: these get the one second phase the tempering gives them. */
