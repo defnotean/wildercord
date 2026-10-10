@@ -4,7 +4,6 @@ import dev.wildercord.client.fx.MagicQuality;
 import dev.wildercord.client.fx.SigilParticle;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.presentation.SafeColourRules;
-import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.minecraft.core.BlockPos;
@@ -18,9 +17,12 @@ import java.util.Set;
 /**
  * Colour-blind-safe telegraphs seen in game: a red warning circle and a green ward circle laid side by side on the ground,
  * drawn once as they are and once with the option on. Each pass is screenshotted, and each circle's drawn colour is checked:
- * its own with the option off, its Okabe-Ito swap with it on, and the two never the same colour.
+ * its own with the option off, its Okabe-Ito swap with it on, and the two never the same colour. Run from
+ * {@link WildercordWildlifeTest} after {@link WildercordTownChecks}, in a world of its own.
  */
-public final class SafeTelegraphsSceneTest implements FabricClientGameTest {
+public final class SafeTelegraphsChecks {
+	private SafeTelegraphsChecks() {}
+
 	private static final int WARNING = 0xFF3030;
 	private static final int WARD = 0x40D060;
 
@@ -28,8 +30,7 @@ public final class SafeTelegraphsSceneTest implements FabricClientGameTest {
 		if (!ok) throw new AssertionError(why);
 	}
 
-	@Override
-	public void runTest(ClientGameTestContext c) {
+	public static void run(ClientGameTestContext c) {
 		boolean was = MagicQuality.safeTelegraphs;
 		try (var world = c.worldBuilder().create()) {
 			c.waitTicks(40);

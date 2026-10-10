@@ -130,6 +130,7 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 		}
 		dev.wildercord.wildlife.RimehareHopChecks.run(context);
 		WildercordTownChecks.run(context);
+		SafeTelegraphsChecks.run(context);
 	}
 
 	private void check(boolean ok, String what) {
