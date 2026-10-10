@@ -281,6 +281,7 @@ public final class WildercordTownChecks {
 		skyMount(player, level);
 		deepMounts(player, level);
 		mountBonds(player, level);
+		predators(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -461,6 +462,41 @@ public final class WildercordTownChecks {
 		player.removeEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING);
 		ray.leave(level);
 		check(ray.isRemoved(), "and it goes back to the sky");
+	}
+
+	/** The bobcat's kin: a lynx tamed by raw rabbit whose bite chills, a cougar tamed by red meat that marks monsters, and kittens of their own kind. */
+	private void predators(ServerPlayer player, ServerLevel level) {
+		var spawn = net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED;
+		var lynx = dev.wildercord.wildlife.PredatorContent.FROST_LYNX.create(level, spawn);
+		var cougar = dev.wildercord.wildlife.PredatorContent.DUNE_COUGAR.create(level, spawn);
+		var zombie = net.minecraft.world.entity.EntityTypes.ZOMBIE.create(level, spawn);
+		check(lynx != null && cougar != null && zombie != null, "a lynx, a cougar and a zombie");
+		check(lynx.tames(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.RABBIT)) && !lynx.tames(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COD)),
+			"raw rabbit, not fish, wins a lynx over");
+		check(cougar.tames(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BEEF)) && !cougar.tames(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.RABBIT)),
+			"red meat wins a cougar over");
+		check(!lynx.canFreeze(), "cold never touches a lynx");
+		net.minecraft.core.BlockPos at = player.blockPosition().above(40);
+		for (var mob : new net.minecraft.world.entity.Mob[] {lynx, cougar, zombie}) {
+			mob.setPos(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+			mob.setNoGravity(true);
+			mob.setNoAi(true);
+			level.addFreshEntity(mob);
+		}
+		zombie.setPos(at.getX() + 3.5, at.getY(), at.getZ() + 0.5);
+		lynx.chill(zombie);
+		check(zombie.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS) && zombie.getTicksFrozen() > 0, "a lynx's bite chills");
+		lynx.tame(player);
+		cougar.tame(player);
+		check(cougar.mark(level, player) == 0, "nothing near the player to mark yet");
+		zombie.setPos(player.getX() + 4, player.getY(), player.getZ());
+		check(cougar.mark(level, player) >= 1 && zombie.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING), "a cougar marks a monster near its owner");
+		var kitten = lynx.getBreedOffspring(level, lynx);
+		check(kitten instanceof dev.wildercord.wildlife.FrostLynx cub && cub.isOwnedBy(player), "a lynx raises a lynx that's yours");
+		check(!lynx.canMate(cougar), "a lynx and a cougar don't pair");
+		lynx.discard();
+		cougar.discard();
+		zombie.discard();
 	}
 
 	/** Riding a tame mount grows a bond that quickens it, teaches it to dash and then to strike as it lands; it wears barding. */

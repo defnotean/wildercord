@@ -304,6 +304,8 @@ public record WildercordConfig(
     case "siltcrest_bittern" -> siltcrestBittern;
     case "mossveil_dormouse" -> mossveilDormouse;
     case "black_bobcat" -> blackBobcat;
+    // The 0.13 mounts and predators have no switch of their own yet: they follow the master switch and multiplier.
+    case "reefback_turtle", "delver_mole", "frost_lynx", "dune_cougar" -> true;
 				default -> false;
 			};
 		}

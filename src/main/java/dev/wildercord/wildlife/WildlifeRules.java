@@ -50,6 +50,12 @@ public final class WildlifeRules {
 	public static final Kind BLACK_BOBCAT = new Kind("black_bobcat", Pool.CREATURE, 3, 1, 1, 1 / 2.0, 1, 64, List.of(
 		"minecraft:dark_forest", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:taiga",
 		"minecraft:snowy_taiga"));
+	/** The Frost Lynx (0.13): a tameable predator of the snowfields (its own module, so not in {@link #ALL}). */
+	public static final Kind FROST_LYNX = new Kind("frost_lynx", Pool.CREATURE, 3, 1, 1, 1 / 2.0, 1, 64, List.of(
+		"minecraft:snowy_taiga", "minecraft:snowy_plains", "minecraft:snowy_slopes", "minecraft:grove"));
+	/** The Dune Cougar (0.13): a tameable predator of the savannas and badlands (its own module, so not in {@link #ALL}). */
+	public static final Kind DUNE_COUGAR = new Kind("dune_cougar", Pool.CREATURE, 3, 1, 1, 1 / 2.0, 1, 64, List.of(
+		"minecraft:savanna", "minecraft:savanna_plateau", "minecraft:windswept_savanna", "minecraft:badlands", "minecraft:wooded_badlands"));
 	/** The Reefback Turtle (0.13): a water mount come ashore on beaches (a mount, so not in {@link #ALL}). */
 	public static final Kind REEFBACK_TURTLE = new Kind("reefback_turtle", Pool.CREATURE, ReefbackRules.WEIGHT, ReefbackRules.MIN_GROUP,
 		ReefbackRules.MAX_GROUP, 1 / 2.0, 2, 64, List.of("minecraft:beach", "minecraft:mangrove_swamp"));

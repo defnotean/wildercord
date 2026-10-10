@@ -37,7 +37,7 @@ EAR_TIP = box(50, 5, 2, 2, 1)
 TUFT = box(56, 5, 1, 2, 1)
 
 
-def rosettes(cv, area, seed):
+def rosettes(cv, area, seed, coat=COAT):
     """Faint darker rosettes under the black, the ghost of a spotted coat that shows only in good light."""
     x0, y0, w, h = area
     for y in range(h):
@@ -45,7 +45,7 @@ def rosettes(cv, area, seed):
             if smooth(x0 + x, y0 + y, seed, 2.2) > 0.74:
                 c = cv.get(x0 + x, y0 + y)
                 if c is not None:
-                    cv.put(x0 + x, y0 + y, mix(c, COAT[0], 0.55))
+                    cv.put(x0 + x, y0 + y, mix(c, coat[0], 0.55))
 
 
 def fill(cv, area, colour):
@@ -55,24 +55,31 @@ def fill(cv, area, colour):
             cv.put(x0 + x, y0 + y, colour)
 
 
-def eye(cv, x0, y0, mirror):
+def eye(cv, x0, y0, mirror, iris=EYE, deep=EYE_DEEP):
     """A big round gold eye: a wide dark pupil (a kitten's, not a hunter's slit) with a white glint."""
     rows = ("IIi", "IWP", "iPP")
     for y, row in enumerate(rows):
         for x, ch in enumerate(row):
             px = x0 + (2 - x if mirror else x)
-            cv.put(px, y0 + y, {"I": EYE, "i": EYE_DEEP, "W": SHINE, "P": PUPIL}[ch])
+            cv.put(px, y0 + y, {"I": iris, "i": deep, "W": SHINE, "P": PUPIL}[ch])
 
 
-def skin():
+BOBCAT = dict(coat=COAT, smoke=SMOKE, eye=EYE, eye_deep=EYE_DEEP, nose=NOSE, bean=BEAN, whisker=WHISKER, ear_spot=EAR_SPOT,
+              ear_inner=EAR_INNER, tuft=COAT[0])
+
+
+def skin(palette=None, sheet=False):
     """A soft black coat with a smoky chest, cheeks and muzzle, faint rosettes, big round gold eyes with glints, a rosy nose,
-    long black ear tufts over rosy ear cups with a grey spot behind, chunky dark paws with rosy toe beans and a fluffy bob."""
+    long black ear tufts over rosy ear cups with a grey spot behind, chunky dark paws with rosy toe beans and a fluffy bob.
+    Its kin (tools/predator_art.py) pass a palette of their own over the bobcat's, and take the sheet back to finish."""
+    p = {**BOBCAT, **(palette or {})}
+    COAT, SMOKE, NOSE, BEAN, WHISKER, EAR_SPOT, EAR_INNER = (p[k] for k in ("coat", "smoke", "nose", "bean", "whisker", "ear_spot", "ear_inner"))
     cv = Sheet(64, 64)
     for part, seed in ((BODY, 1), (HEAD, 2), (LEG, 4), (PAW, 7), (TAIL, 5), (EAR, 6), (EAR_TIP, 8)):
         for name, area in faces(part):
             fur(cv, area, COAT, seed * 10 + len(name), name, base=3, along_y=part is BODY and name in ("top", "bottom"))
-    for name, area in faces(BODY, "top", "right", "left"):
-        rosettes(cv, area, 31 + len(name))
+    for name, area in faces(BODY, "top", "right", "left") if p.get("rosettes", True) else ():
+        rosettes(cv, area, 31 + len(name), COAT)
     fur(cv, BODY["bottom"], SMOKE, 41, "bottom", base=3, along_y=True)
     for part, seed in ((CHEST, 9), (MUZZLE, 11)):
         for name, area in faces(part):
@@ -88,8 +95,8 @@ def skin():
                     cv.put(x0 + x, y0 + h - 1, SMOKE[4])
     # The face: big eyes low on the head, a lighter brow tick above each.
     x0, y0, w, h = HEAD["front"]
-    eye(cv, x0 + 1, y0 + 4, False)
-    eye(cv, x0 + 8, y0 + 4, True)
+    eye(cv, x0 + 1, y0 + 4, False, p["eye"], p["eye_deep"])
+    eye(cv, x0 + 8, y0 + 4, True, p["eye"], p["eye_deep"])
     cv.put(x0 + 2, y0 + 3, COAT[6])
     cv.put(x0 + 9, y0 + 3, COAT[6])
     for x in range(4, 8):
@@ -122,7 +129,7 @@ def skin():
         for x in range(w):
             cv.put(x0 + x, y0 + y, EAR_SPOT if y == 1 else mix(EAR_SPOT, COAT[2], 0.45))
     for name, area in faces(TUFT):
-        fill(cv, area, COAT[0])
+        fill(cv, area, p["tuft"])
     # Big paws: darker toes split into three, rosy beans beneath.
     for name in ("front", "right", "left", "back"):
         x0, y0, w, h = PAW[name]
@@ -145,7 +152,7 @@ def skin():
     x0, y0, w, h = TAIL["back"]
     for x in range(1, w - 1):
         cv.put(x0 + x, y0 + h - 1, SMOKE[2])
-    return cv.image()
+    return cv if sheet else cv.image()
 
 
 # ============================================================== spawn egg
@@ -154,8 +161,8 @@ EGG_TONES = ("#1A1922", "#2A2934", "#3C3B4A")
 EGG_SPOT = "#C8B84E"
 
 
-def egg_icon():
-    dark, mid, light = (hexc(c) for c in EGG_TONES)
+def egg_icon(tones=EGG_TONES, spot=EGG_SPOT, name="black_bobcat"):
+    dark, mid, light = (hexc(c) for c in tones)
     outline = mix(dark, (0, 0, 0), 0.6)
     cv = Canvas()
     for y, row in enumerate(r.strip() for r in EGG.strip("\n").splitlines()):
@@ -165,8 +172,8 @@ def egg_icon():
             elif ch == "1":
                 t = (x + y) / 26
                 c = light if t < 0.42 else mid if t < 0.72 else dark
-                if noise(x, y, len("black_bobcat")) > 0.82:
-                    c = hexc(EGG_SPOT)
+                if noise(x, y, len(name)) > 0.82:
+                    c = hexc(spot)
                 cv.put(x, y, c)
     return cv.image()
 

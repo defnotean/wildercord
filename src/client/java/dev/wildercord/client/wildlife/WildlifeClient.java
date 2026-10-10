@@ -15,6 +15,7 @@ public final class WildlifeClient {
   SiltcrestRenderer.init();
   MossveilDormouseRenderer.init();
   BlackBobcatRenderer.init();
+  PredatorRenderers.init();
   RidgebackStagRenderer.init();
   BurrowAndReefRenderers.init();
   dev.wildercord.client.fx.MossveilFilterClient.init();

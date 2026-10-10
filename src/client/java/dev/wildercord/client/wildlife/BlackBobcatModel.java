@@ -15,13 +15,19 @@ import net.minecraft.util.Mth;
  * tail. Drawn larger by its renderer (to a polar bear's size). The head and tail hang from the body, which pivots at its rump,
  * so when it sits up the head rides along on the shoulders and is turned back level. It pads with its legs in diagonal pairs,
  * flicks its bob and swivels its ears when idle. A kitten has a bigger head. UVs match tools/bobcat_art.py.
+ * <p>Its kin share the build: the Frost Lynx as it is, the Dune Cougar with {@link #createLongTailLayer} in place of the bob,
+ * a long rope of a tail in two lengths that hangs low and curls up at its tip (UVs in tools/predator_art.py).
  */
 public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
 	private static final float BODY_Y = 18, LEG_Y = 18, FRONT_Z = -3.5F, HIND_Z = 4, LEG_X = 3.3F;
 	/** How far the body tips up about its rump when it sits. */
 	private static final float SIT_TILT = -0.85F;
+	/** A long tail hangs down and back from the rump, and its far length curls up. */
+	private static final float LONG_TAIL_HANG = -1.0F, LONG_TAIL_CURL = 1.1F;
 
 	private final ModelPart body, head, leftEar, rightEar, tail, frontLeft, frontRight, hindLeft, hindRight;
+	/** The far length of a long tail, or null for a bob. */
+	private final ModelPart tailTip;
 
 	public BlackBobcatModel(ModelPart root) {
 		super(root);
@@ -30,6 +36,7 @@ public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
 		leftEar = head.getChild("left_ear");
 		rightEar = head.getChild("right_ear");
 		tail = body.getChild("tail");
+		tailTip = tail.hasChild("tip") ? tail.getChild("tip") : null;
 		frontLeft = root.getChild("front_left_leg");
 		frontRight = root.getChild("front_right_leg");
 		hindLeft = root.getChild("hind_left_leg");
@@ -37,6 +44,15 @@ public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
 	}
 
 	public static LayerDefinition createLayer() {
+		return createLayer(false);
+	}
+
+	/** The cougar's build: the bob swapped for a long tail. */
+	public static LayerDefinition createLongTailLayer() {
+		return createLayer(true);
+	}
+
+	private static LayerDefinition createLayer(boolean longTail) {
 		MeshDefinition mesh = new MeshDefinition();
 		PartDefinition root = mesh.getRoot();
 		// The body pivots at the rump, low and behind, so sitting tips it up about the haunches.
@@ -49,8 +65,15 @@ public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
 			.texOffs(42, 23).addBox(-2, 0, -9, 4, 3, 2), PartPose.offset(0, -7.5F, -12));
 		ear(head, "left_ear", 3.4F, 0.3F, false);
 		ear(head, "right_ear", -3.4F, -0.3F, true);
-		body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(44, 50).addBox(-2, -2, 0, 4, 4, 4),
-			PartPose.offsetAndRotation(0, -7, 0.5F, 0.6F, 0, 0));
+		if (longTail) {
+			PartDefinition tail = body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(44, 50).addBox(-1.5F, -1.5F, 0, 3, 3, 5),
+				PartPose.offsetAndRotation(0, -6.5F, 0.5F, LONG_TAIL_HANG, 0, 0));
+			tail.addOrReplaceChild("tip", CubeListBuilder.create().texOffs(38, 42).addBox(-1.5F, -1.5F, 0, 3, 3, 5),
+				PartPose.offsetAndRotation(0, 0, 4.5F, LONG_TAIL_CURL, 0, 0));
+		} else {
+			body.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(44, 50).addBox(-2, -2, 0, 4, 4, 4),
+				PartPose.offsetAndRotation(0, -7, 0.5F, 0.6F, 0, 0));
+		}
 		leg(root, "front_left", LEG_X, FRONT_Z, false);
 		leg(root, "front_right", -LEG_X, FRONT_Z, true);
 		leg(root, "hind_left", LEG_X, HIND_Z, false);
@@ -107,6 +130,13 @@ public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
 		float flick = Mth.clamp(Mth.sin(t * 0.05F) * 4 - 3, 0, 1);
 		tail.xRot = 0.6F + speed * 0.3F + flick * Mth.sin(t * 0.9F) * 0.25F;
 		tail.yRot = Mth.sin(t * 0.06F) * 0.15F;
+		if (tailTip != null) {
+			// A long tail sways slowly, lifts level at a run, and its tip twitches on its own.
+			tail.xRot = LONG_TAIL_HANG + speed * 0.55F + flick * 0.1F;
+			tail.yRot = Mth.sin(t * 0.045F) * 0.25F;
+			tailTip.xRot = LONG_TAIL_CURL - speed * 0.3F + Mth.sin(t * 0.11F) * 0.12F;
+			tailTip.yRot = Mth.sin(t * 0.045F - 0.9F) * 0.3F;
+		}
 
 		if (sit > 0) {
 			// Up on its haunches: the body tips up about its rump and the head, riding on the shoulders, is turned back level.
@@ -115,6 +145,11 @@ public final class BlackBobcatModel extends EntityModel<WildlifeRenderState> {
 			body.y = Mth.lerp(sit, body.y, 21.5F);
 			head.xRot -= SIT_TILT * sit;
 			tail.xRot = Mth.lerp(sit, tail.xRot, 1.9F);
+			if (tailTip != null) {
+				// Sitting, a long tail drops steeply to the ground behind and its tip lies back along it.
+				tail.xRot = Mth.lerp(sit, LONG_TAIL_HANG, -0.45F);
+				tailTip.xRot = Mth.lerp(sit, tailTip.xRot, 1.2F);
+			}
 			for (ModelPart leg : new ModelPart[] {frontLeft, frontRight}) {
 				leg.xRot = Mth.lerp(sit, leg.xRot, 0);
 				leg.y = Mth.lerp(sit, LEG_Y, 15.2F);

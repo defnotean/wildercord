@@ -125,6 +125,7 @@ public final class Wildercord implements ModInitializer {
   dev.wildercord.wildlife.SiltcrestContent.init();
   dev.wildercord.wildlife.MossveilContent.init();
 		dev.wildercord.wildlife.BobcatContent.init();
+		dev.wildercord.wildlife.PredatorContent.init();
 		dev.wildercord.wildlife.MountContent.init();
 		dev.wildercord.town.Town.init();
 		dev.wildercord.town.InnRaid.init();

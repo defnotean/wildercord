@@ -135,6 +135,7 @@
   * [Skyray Mount](world/skyray-mount.md)
   * [Water and Burrowing Mounts](world/deep-mounts.md)
   * [Mount Bonds](world/mount-bonds.md)
+  * [Tameable Predators](world/tameable-predators.md)
   * [Runes of the World and Attunement](world/runes-of-the-world.md)
   * [Reed Refuges](world/reed-refuges.md)
   * [Lights Along the Bank](world/luminous-wetlands.md)

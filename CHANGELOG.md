@@ -24,6 +24,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **A flying mount.** Beat the Tenth Circle's tribulation and a Skyray Bridle falls with the spoils. Use it to call a skyray of your own down from the sky and ride it. It flies where you look at about 17 blocks a second, strafes, brakes and hovers. Step off and you drift down slowly. Only you can ride it. If it's brought down, the bridle rests five minutes.
 - **Water and burrowing mounts.** The Reefback Turtle lives on beaches and in mangrove swamps. Tame it with kelp, saddle it, and it swims you wherever you look, diving and surfacing, while you breathe easy under Conduit Power. The Delver Mole roams plains, meadows and forests. Tame it with carrots, potatoes or beetroot, and while you ride forward it digs a tunnel through dirt, sand, gravel and the like, level or sloping down or up as you look. It never digs anything you couldn't break yourself there. Both breed on golden food.
 - **Mount bonds.** Ride a tame mount (a horse, donkey, mule, camel or any Wildercord mount) and it grows a bond with you, one point for every block you travel together. Each of its five levels makes it faster and gives it more health. At level 3 it dashes ahead when you sprint, and at level 5 it slams the ground when it lands from a jump, throwing back the creatures around it. The Ridgeback Stag, Reefback Turtle and Delver Mole now wear horse armor, drawn as plates over their coats.
+- **Two new big cats to tame.** The Frost Lynx, a silver spotted cat of the snowfields, is tamed with raw rabbit or chicken. Its bite slows what it bites and frosts it over. The Dune Cougar, a long tawny cat of the savannas and badlands, is tamed with red meat. While it stands near you, every monster within 16 blocks glows, so you can see what's stalking you. Like the black bobcat, both follow you, sit when told, fight beside you and raise kittens of their own kind.
 
 ### Changed
 
@@ -33,6 +34,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ### Fixed
 
 - **Ridgeback Stags take a saddle.** A tame stag would not accept a saddle, so it could never be ridden under your control.
+- **Reefback Turtles and Delver Moles spawn in the wild.** They had no spawn switch, so they never appeared naturally. They now follow the wildlife master switch and multiplier.
 
 ## [0.12.0-alpha] — 2026-10-09
 

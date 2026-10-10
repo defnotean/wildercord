@@ -146,6 +146,7 @@ A Wayfarer Inn’s stablemaster sells deeds to tame ones.
 A rare melanistic wildcat of dark forests and old taigas, as big as a polar bear. A wild one keeps to itself and turns
 on whatever hurts it. Offer it fish, raw or cooked: one time in three it becomes yours. A tame bobcat follows, sits when
 told, joins your fights and heals on fish; two fed fish raise a kitten. Toggle it with `creatures.black_bobcat`.
+Its kin, the Frost Lynx and the Dune Cougar, each have a perk of their own: see [Tameable Predators](tameable-predators.md).
 
 ## Camp cooking
 

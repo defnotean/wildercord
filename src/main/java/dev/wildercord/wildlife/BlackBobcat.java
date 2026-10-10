@@ -85,6 +85,11 @@ public class BlackBobcat extends TamableAnimal {
 		targetSelector.addGoal(5, new NonTameRandomTargetGoal<>(this, Chicken.class, false, null));
 	}
 
+	/** The chance one offering of what {@link #tames} it wins a wild one over. */
+	protected double tameChance() {
+		return WildlifeRules.BOBCAT_TAME_CHANCE;
+	}
+
 	/** What wins a wild one over: fish, raw or cooked (never pufferfish). */
 	public boolean tames(ItemStack stack) {
 		return FoxCompanions.fish(stack);
@@ -104,7 +109,7 @@ public class BlackBobcat extends TamableAnimal {
 			if (tames(held) && !isBaby()) {
 				if (!level().isClientSide()) {
 					held.consume(1, player);
-					if (random.nextDouble() < WildlifeRules.BOBCAT_TAME_CHANCE) {
+					if (random.nextDouble() < tameChance()) {
 						tame(player);
 						getNavigation().stop();
 						setTarget(null);
@@ -145,8 +150,11 @@ public class BlackBobcat extends TamableAnimal {
 
 	@Override
 	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		BlackBobcat kitten = BobcatContent.BLACK_BOBCAT.create(level, EntitySpawnReason.BREEDING);
-		if (kitten != null && isTame()) {
+		// A kitten of its own kind: a lynx raises a lynx, a cougar a cougar.
+		if (!(getType().create(level, EntitySpawnReason.BREEDING) instanceof BlackBobcat kitten)) {
+			return null;
+		}
+		if (isTame()) {
 			kitten.setOwnerReference(getOwnerReference());
 			kitten.setTame(true, true);
 		}
@@ -155,7 +163,7 @@ public class BlackBobcat extends TamableAnimal {
 
 	@Override
 	public boolean canMate(Animal partner) {
-		return partner != this && partner instanceof BlackBobcat other && isTame() && other.isTame() && !isInSittingPose() && !other.isInSittingPose()
+		return partner != this && partner instanceof BlackBobcat other && other.getType() == getType() && isTame() && other.isTame() && !isInSittingPose() && !other.isInSittingPose()
 			&& isInLove() && other.isInLove();
 	}
 
