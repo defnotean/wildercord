@@ -111,7 +111,7 @@ Both brew from an **Awkward Potion**:
 | **Potion of Mana** | Restores 60 mana at once |
 | Potion of Mana II | Restores 120 mana |
 
-Mana potions only fill a player wearing a Cord.
+Mana potions only fill a player wearing a Cord. For elixirs that trade one side of mana for another, see [Mana Elixirs]({{ '/world/mana-elixirs/' | relative_url }}).
 
 ## How to use it
 

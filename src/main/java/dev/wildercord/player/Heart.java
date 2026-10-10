@@ -226,7 +226,7 @@ public final class Heart {
 	private static double rawCost(Player player, SpellCompiler.Compiled compiled) {
 		return compiled.cost() * bonuses(player).cost() * dev.wildercord.cast.events.ManaStorm.costFactor(player)
 			* gearCost(player, compiled) * serverCost(player) * affinityCost(player, compiled) * dev.wildercord.cast.Climate.costFactor(player)
-			* focusedCost(player);
+			* focusedCost(player) * ElixirRules.cost(dev.wildercord.content.WildercordEffects.level(player, dev.wildercord.content.WildercordEffects.CONDENSING));
 	}
 
 	/** A Focused meal: spells cost less while it lasts. */

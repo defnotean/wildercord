@@ -85,7 +85,10 @@ public final class WildercordItems {
 				Reagents.all().forEach(output::accept);
 				for (var potion : java.util.List.of(WildercordEffects.CLARITY_POTION, WildercordEffects.LONG_CLARITY_POTION, WildercordEffects.STRONG_CLARITY_POTION,
 						WildercordEffects.MANA_POTION, WildercordEffects.STRONG_MANA_POTION, WildercordEffects.WARDED_POTION, WildercordEffects.LONG_WARDED_POTION,
-						WildercordEffects.STRONG_WARDED_POTION)) {
+						WildercordEffects.STRONG_WARDED_POTION, WildercordEffects.TORRENT_POTION, WildercordEffects.LONG_TORRENT_POTION,
+						WildercordEffects.STRONG_TORRENT_POTION, WildercordEffects.DEEP_WELL_POTION, WildercordEffects.LONG_DEEP_WELL_POTION,
+						WildercordEffects.STRONG_DEEP_WELL_POTION, WildercordEffects.CONDENSING_POTION, WildercordEffects.LONG_CONDENSING_POTION,
+						WildercordEffects.STRONG_CONDENSING_POTION)) {
 					output.accept(net.minecraft.world.item.alchemy.PotionContents.createItemStack(net.minecraft.world.item.Items.POTION, potion));
 					output.accept(net.minecraft.world.item.alchemy.PotionContents.createItemStack(net.minecraft.world.item.Items.SPLASH_POTION, potion));
 				}

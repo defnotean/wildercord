@@ -149,6 +149,9 @@ public final class HeartCircles {
 		if (!Float.isFinite(mana) || mana <= 0 || player.isCreative()) {
 			return;
 		}
+		// A Condensing elixir: more of what was spent counts toward the next circle.
+		mana *= (float) dev.wildercord.player.ElixirRules.condense(
+			dev.wildercord.content.WildercordEffects.level(player, dev.wildercord.content.WildercordEffects.CONDENSING));
 		long now = player.level().getGameTime();
 		Pending waiting = PENDING.get(player.getUUID());
 		float before = waiting == null || now > waiting.until() ? 0 : waiting.mana();

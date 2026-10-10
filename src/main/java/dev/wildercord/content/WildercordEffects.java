@@ -45,6 +45,18 @@ public final class WildercordEffects {
 	public static final Holder<MobEffect> FOCUSED = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("focused"),
 		new PlainEffect(0x7FD8E8));
 
+	/** A mana elixir (0.13): mana refills faster, but there's less room for it (see {@code player.ElixirRules}). */
+	public static final Holder<MobEffect> TORRENT = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("torrent"),
+		new PlainEffect(0x5AC8F0));
+
+	/** A mana elixir: more room for mana, but it refills slower. */
+	public static final Holder<MobEffect> DEEP_WELL = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("deep_well"),
+		new PlainEffect(0x3A4AB0));
+
+	/** A mana elixir: more of the mana spent condenses toward the next circle, but every spell costs more. */
+	public static final Holder<MobEffect> CONDENSING = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("condensing"),
+		new PlainEffect(0xF0C860));
+
 	public static final Holder<Potion> CLARITY_POTION = potion("clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 3600)));
 	public static final Holder<Potion> LONG_CLARITY_POTION = potion("long_clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 9600)));
 	public static final Holder<Potion> STRONG_CLARITY_POTION = potion("strong_clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 1800, 1)));
@@ -53,6 +65,22 @@ public final class WildercordEffects {
 	public static final Holder<Potion> WARDED_POTION = potion("warded", new Potion("wildercord_warded", new MobEffectInstance(WARDED, 3600)));
 	public static final Holder<Potion> LONG_WARDED_POTION = potion("long_warded", new Potion("wildercord_warded", new MobEffectInstance(WARDED, 9600)));
 	public static final Holder<Potion> STRONG_WARDED_POTION = potion("strong_warded", new Potion("wildercord_warded", new MobEffectInstance(WARDED, 1800, 1)));
+
+	public static final Holder<Potion> TORRENT_POTION = potion("torrent", new Potion("wildercord_torrent", new MobEffectInstance(TORRENT, 3600)));
+	public static final Holder<Potion> LONG_TORRENT_POTION = potion("long_torrent", new Potion("wildercord_torrent", new MobEffectInstance(TORRENT, 9600)));
+	public static final Holder<Potion> STRONG_TORRENT_POTION = potion("strong_torrent", new Potion("wildercord_torrent", new MobEffectInstance(TORRENT, 1800, 1)));
+	public static final Holder<Potion> DEEP_WELL_POTION = potion("deep_well", new Potion("wildercord_deep_well", new MobEffectInstance(DEEP_WELL, 3600)));
+	public static final Holder<Potion> LONG_DEEP_WELL_POTION = potion("long_deep_well", new Potion("wildercord_deep_well", new MobEffectInstance(DEEP_WELL, 9600)));
+	public static final Holder<Potion> STRONG_DEEP_WELL_POTION = potion("strong_deep_well", new Potion("wildercord_deep_well", new MobEffectInstance(DEEP_WELL, 1800, 1)));
+	public static final Holder<Potion> CONDENSING_POTION = potion("condensing", new Potion("wildercord_condensing", new MobEffectInstance(CONDENSING, 3600)));
+	public static final Holder<Potion> LONG_CONDENSING_POTION = potion("long_condensing", new Potion("wildercord_condensing", new MobEffectInstance(CONDENSING, 9600)));
+	public static final Holder<Potion> STRONG_CONDENSING_POTION = potion("strong_condensing", new Potion("wildercord_condensing", new MobEffectInstance(CONDENSING, 1800, 1)));
+
+	/** The level (1 = I) of an effect on a player, 0 without it. */
+	public static int level(net.minecraft.world.entity.LivingEntity mob, Holder<MobEffect> effect) {
+		MobEffectInstance instance = mob.getEffect(effect);
+		return instance == null ? 0 : instance.getAmplifier() + 1;
+	}
 
 	private static Holder<Potion> potion(String path, Potion potion) {
 		return Registry.registerForHolder(BuiltInRegistries.POTION, ResourceKey.create(Registries.POTION, Wildercord.id(path)), potion);

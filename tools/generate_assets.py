@@ -898,6 +898,9 @@ def write_lang(runes):
     import giant_art
     lang.update(giant_art.LANG)
     giant_art.write(sys.modules[__name__])
+    import elixir_art
+    lang.update(elixir_art.LANG)
+    elixir_art.write(sys.modules[__name__])
     import tempering_art
     lang.update(tempering_art.LANG)
     tempering_art.write(sys.modules[__name__])

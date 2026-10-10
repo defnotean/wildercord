@@ -138,6 +138,7 @@
   * [Tameable Predators](world/tameable-predators.md)
   * [Roaming Giants](world/roaming-giants.md)
   * [Rare Meals](world/rare-meals.md)
+  * [Mana Elixirs](world/mana-elixirs.md)
   * [Runes of the World and Attunement](world/runes-of-the-world.md)
   * [Reed Refuges](world/reed-refuges.md)
   * [Lights Along the Bank](world/luminous-wetlands.md)

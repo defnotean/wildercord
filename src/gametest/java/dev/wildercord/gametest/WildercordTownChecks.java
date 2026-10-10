@@ -284,6 +284,7 @@ public final class WildercordTownChecks {
 		predators(player, level);
 		giants(player, level);
 		rareMeals(player, level);
+		elixirs(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -499,6 +500,24 @@ public final class WildercordTownChecks {
 		lynx.discard();
 		cougar.discard();
 		zombie.discard();
+	}
+
+	/** A mana elixir trades one side of mana for another, and brews from a residue harvest. */
+	private void elixirs(ServerPlayer player, ServerLevel level) {
+		var before = dev.wildercord.player.Spellbooks.cord(player).copy();
+		dev.wildercord.player.Spellbooks.setCord(player, new net.minecraft.world.item.ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
+		var plain = dev.wildercord.player.Mana.of(player);
+		player.addEffect(new net.minecraft.world.effect.MobEffectInstance(dev.wildercord.content.WildercordEffects.DEEP_WELL, 200));
+		var deep = dev.wildercord.player.Mana.of(player);
+		check(deep.max() > plain.max() && deep.regen() < plain.regen(), "a Deep Well elixir holds more and refills slower");
+		player.removeEffect(dev.wildercord.content.WildercordEffects.DEEP_WELL);
+		player.addEffect(new net.minecraft.world.effect.MobEffectInstance(dev.wildercord.content.WildercordEffects.TORRENT, 200));
+		var torrent = dev.wildercord.player.Mana.of(player);
+		check(torrent.max() < plain.max() && torrent.regen() > plain.regen(), "a Torrent elixir refills faster and holds less");
+		player.removeEffect(dev.wildercord.content.WildercordEffects.TORRENT);
+		dev.wildercord.player.Spellbooks.setCord(player, before);
+		check(level.getServer().getRecipeManager().byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE,
+			dev.wildercord.Wildercord.id("brewing/potion_awkward_hourglass_sand"))).isPresent(), "Condensing brews from hourglass sand");
 	}
 
 	/** A rare meal is a rare item that feeds like a feast and carries stronger buffs. */
