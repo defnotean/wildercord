@@ -228,6 +228,13 @@ public final class WildercordTownChecks {
 		server.runOnServer(s -> {
 			check(!InnRaid.active(BOARD), "leaving the inn ends a raid");
 			ServerPlayer player = player(s);
+			InnRaid.begin(player, BOARD, 0);
+			InnRaid.suspend(s);
+			check(!InnRaid.active(BOARD) && InnRaid.saved(s) == 1, "a stopping server saves the raid");
+			check(player.level().getEntitiesOfClass(Mob.class, new AABB(BOARD).inflate(64), m -> m.entityTags().contains(InnRaid.TAG)).isEmpty(), "its bandits go with the server");
+			InnRaid.resume(s);
+			check(InnRaid.active(BOARD) && InnRaid.saved(s) == 0, "a starting server takes the raid up again");
+			InnRaid.endAll(s);
 			player.getAbilities().invulnerable = false;
 			player.onUpdateAbilities();
 		});

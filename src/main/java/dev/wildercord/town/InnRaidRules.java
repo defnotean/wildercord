@@ -38,6 +38,17 @@ public final class InnRaidRules {
 		return 2 + tier.ordinal() + wave;
 	}
 
+	/** How long a raid carried over a restart waits for a defender to come back before the bandits give up. */
+	public static final int RESUME_GRACE = 20 * 60 * 5;
+
+	/**
+	 * The wave a raid carried over a restart starts again from: the one it had reached, fought afresh, since its bandits went
+	 * with the server. A raid that hadn't sent a wave yet starts from the first.
+	 */
+	public static int resumeFrom(BountyRules.Tier tier, int reached) {
+		return Math.max(1, Math.min(waves(tier), reached));
+	}
+
 	/** Whether {@code wave} is the last. */
 	public static boolean lastWave(BountyRules.Tier tier, int wave) {
 		return wave >= waves(tier);

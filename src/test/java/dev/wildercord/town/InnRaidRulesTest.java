@@ -28,4 +28,11 @@ class InnRaidRulesTest {
 		assertTrue(InnRaidRules.emeralds(Tier.HONOURED) > InnRaidRules.emeralds(Tier.KNOWN));
 		assertTrue(InnRaidRules.reputation(Tier.HONOURED) > InnRaidRules.reputation(Tier.KNOWN));
 	}
+
+	@Test
+	void aRestartFightsTheReachedWaveAgain() {
+		assertEquals(1, InnRaidRules.resumeFrom(Tier.KNOWN, 0));
+		assertEquals(2, InnRaidRules.resumeFrom(Tier.FRIEND, 2));
+		assertEquals(2, InnRaidRules.resumeFrom(Tier.KNOWN, 7));
+	}
 }

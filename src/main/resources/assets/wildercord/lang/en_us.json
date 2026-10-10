@@ -6080,6 +6080,7 @@
   "message.wildercord.inn_raid.breath": "Wave %s of %s beaten. More are coming.",
   "message.wildercord.inn_raid.captain": "The Bandit Captain has come!",
   "message.wildercord.inn_raid.won": "The inn holds! The keepers pay you %s emeralds and %s reputation.",
+  "message.wildercord.inn_raid.resumed": "The bandits are back for the inn. Wave %s of %s.",
   "message.wildercord.inn_raid.failed.fled": "The inn was left to the bandits. They take what they can and melt into the night.",
   "message.wildercord.inn_raid.failed.time": "The bandits outlasted you and slipped away into the night.",
   "town.wildercord.pack_llama": "%s\u2019s pack llama",

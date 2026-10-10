@@ -4,7 +4,18 @@ import dev.wildercord.aura.Aura;
 import dev.wildercord.monster.Tempering;
 import dev.wildercord.monster.TemperingRules;
 import dev.wildercord.player.Heart;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.wildercord.Wildercord;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,7 +46,10 @@ import java.util.UUID;
 /**
  * Bandits raid a Wayfarer Inn ({@link InnRaidRules}): at night, while a traveller the keepers know is inside, waves of
  * pillagers and vindicators come for it, the last led by a Bandit Captain. Every traveller within reach defends it together.
- * Nothing here is saved: a restart sends the bandits off and the inn waits for another night.
+ * A raid outlasts a restart: when the server stops its bandits go and where it stood is saved in the overworld's data
+ * ({@code wildercord:inn_raids}). When it starts again, the raid takes up the wave it had reached, fought afresh, once a
+ * defender is back, and gives up after {@link InnRaidRules#RESUME_GRACE} if none comes. A bandit left behind by a crash
+ * vanishes when it loads.
  */
 public final class InnRaid {
 	private static final int COLOR = 0xE0A060;
@@ -56,6 +70,48 @@ public final class InnRaid {
 	private long nextWaveAt;
 	private long waveDeadline;
 	private boolean breathing;
+	/** For a raid carried over a restart: until when it waits for a defender. */
+	private long graceUntil;
+
+	/** One raid as saved over a restart. */
+	public record Saved(Identifier dimension, long centre, int tier, long day, int wave) {
+		static final Codec<Saved> CODEC = RecordCodecBuilder.create(i -> i.group(
+			Identifier.CODEC.fieldOf("dimension").forGetter(Saved::dimension),
+			Codec.LONG.fieldOf("centre").forGetter(Saved::centre),
+			Codec.INT.fieldOf("tier").forGetter(Saved::tier),
+			Codec.LONG.fieldOf("day").forGetter(Saved::day),
+			Codec.INT.fieldOf("wave").forGetter(Saved::wave)
+		).apply(i, Saved::new));
+	}
+
+	/** The raids under way when the server last stopped. */
+	public static final class Ledger extends SavedData {
+		static final Codec<Ledger> CODEC = Saved.CODEC.listOf().optionalFieldOf("raids", List.of()).xmap(Ledger::new, l -> l.raids).codec();
+		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("inn_raids"), Ledger::new, CODEC, null);
+
+		private List<Saved> raids;
+
+		public Ledger() {
+			this(List.of());
+		}
+
+		private Ledger(List<Saved> raids) {
+			this.raids = List.copyOf(raids);
+		}
+
+		public List<Saved> raids() {
+			return raids;
+		}
+
+		void set(List<Saved> raids) {
+			this.raids = List.copyOf(raids);
+			setDirty();
+		}
+	}
+
+	private static Ledger ledger(MinecraftServer server) {
+		return server.overworld().getDataStorage().computeIfAbsent(Ledger.TYPE);
+	}
 
 	private InnRaid(ServerLevel level, Vec3 centre, BountyRules.Tier tier, long day) {
 		this.level = level;
@@ -70,10 +126,65 @@ public final class InnRaid {
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (!ACTIVE.isEmpty()) ACTIVE.values().removeIf(r -> !r.tick());
 		});
-		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			for (InnRaid r : ACTIVE.values()) r.clear();
-			ACTIVE.clear();
+		ServerLifecycleEvents.SERVER_STOPPING.register(InnRaid::suspend);
+		ServerLifecycleEvents.SERVER_STARTED.register(InnRaid::resume);
+		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+			if (entity instanceof Mob mob && mob.entityTags().contains(TAG) && !owned(mob)) mob.discard();
 		});
+	}
+
+	/** Whether a raid owns {@code mob}; a bandit reloaded with its chunk takes the place of the copy that unloaded. */
+	private static boolean owned(Mob mob) {
+		for (InnRaid raid : ACTIVE.values()) {
+			for (int i = 0; i < raid.mobs.size(); i++) {
+				if (raid.mobs.get(i).getUUID().equals(mob.getUUID())) {
+					raid.mobs.set(i, mob);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/** The server is stopping: every raid's bandits go, and where each raid stood is saved for {@link #resume}. */
+	public static void suspend(MinecraftServer server) {
+		List<Saved> saved = new ArrayList<>();
+		for (Map.Entry<Long, InnRaid> e : ACTIVE.entrySet()) {
+			InnRaid r = e.getValue();
+			saved.add(new Saved(r.level.dimension().identifier(), e.getKey(), r.tier.ordinal(), r.day, r.wave));
+			r.clear();
+		}
+		ACTIVE.clear();
+		ledger(server).set(saved);
+	}
+
+	/** Ends every raid with nothing saved, as if each had been beaten off without pay. */
+	public static void endAll(MinecraftServer server) {
+		for (InnRaid r : ACTIVE.values()) r.clear();
+		ACTIVE.clear();
+		ledger(server).set(List.of());
+	}
+
+	/** How many raids wait in the saved data for the server to start. */
+	public static int saved(MinecraftServer server) {
+		return ledger(server).raids().size();
+	}
+
+	/** The server has started: each raid saved by {@link #suspend} takes up its wave again once a defender is back. */
+	public static void resume(MinecraftServer server) {
+		Ledger ledger = ledger(server);
+		BountyRules.Tier[] tiers = BountyRules.Tier.values();
+		for (Saved s : ledger.raids()) {
+			ServerLevel level = server.getLevel(ResourceKey.create(Registries.DIMENSION, s.dimension()));
+			if (level == null || ACTIVE.containsKey(s.centre())) continue;
+			BountyRules.Tier tier = tiers[Math.max(0, Math.min(tiers.length - 1, s.tier()))];
+			InnRaid raid = new InnRaid(level, Vec3.atBottomCenterOf(BlockPos.of(s.centre())), tier, s.day());
+			raid.wave = InnRaidRules.resumeFrom(tier, s.wave()) - 1;
+			raid.breathing = raid.wave > 0;
+			raid.graceUntil = level.getGameTime() + InnRaidRules.RESUME_GRACE;
+			ACTIVE.put(s.centre(), raid);
+		}
+		if (!ledger.raids().isEmpty()) ledger.set(List.of());
 	}
 
 	/** Whether the inn with its middle at {@code centre} is being raided. */
@@ -125,6 +236,16 @@ public final class InnRaid {
 	private boolean tick() {
 		long now = level.getGameTime();
 		List<ServerPlayer> defenders = defenders();
+		if (defenders.isEmpty() && now < graceUntil) {
+			nextWaveAt = Math.max(nextWaveAt, now + 100);
+			return true;
+		}
+		if (graceUntil > 0 && !defenders.isEmpty()) {
+			graceUntil = 0;
+			for (ServerPlayer player : defenders) {
+				player.sendSystemMessage(Component.translatable("message.wildercord.inn_raid.resumed", wave + 1, InnRaidRules.waves(tier)).withColor(COLOR));
+			}
+		}
 		if (defenders.isEmpty()) {
 			fail("fled");
 			return false;
@@ -231,9 +352,9 @@ public final class InnRaid {
 			Tempering.champion(mob, Math.max(BountyRules.ELITE_THREAT_MIN, threat), kinds[random.nextInt(kinds.length)], InnRaidRules.CAPTAIN_HEALTH,
 				Component.translatable("entity.wildercord.bandit_captain").withColor(COLOR));
 		}
+		mobs.add(mob);
 		level.addFreshEntity(mob);
 		mob.setTarget(nearest(defenders(), mob));
-		mobs.add(mob);
 		if (captain) {
 			for (ServerPlayer player : defenders()) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.inn_raid.captain").withColor(COLOR));
