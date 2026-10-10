@@ -9,6 +9,7 @@ public final class S_bubble {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "diving_bell" -> new PairSpec("Airless Bell", "frost", EffectKind.HARMFUL, "Each of up to 4 enemies you hit is wrapped in a bell of air for 4 seconds: 1 damage a second and Weakness I. Then the bell lets go: they are tossed up, and 0.8 seconds later they take 4 damage.", "power", "radius");
 			case "jolt" -> new PairSpec("Storm Globe", "storm", EffectKind.HARMFUL, "Lifts up to 4 enemies into a bubble and slows them (Slowness III) for 1.5 seconds. Then it bursts in lightning: 6 damage to each one inside (and soaked), and 3 to every other enemy within 2.5 blocks.", "power", "duration", "radius");
 			case "levitate" -> new PairSpec("Hanging Pearl", "frost", EffectKind.HARMFUL, "Up to 4 enemies are lifted into bubbles and held in the air for 2.5 seconds, airborne, drifting together. Then the bubbles pop as one: 4 damage to each, and each is soaked. Enemies within 2 blocks of the middle take 2 more.", "power", "radius");
 			default -> null;

@@ -10,6 +10,7 @@ public final class S_cleanse {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "remedy" -> new PairSpec("Unmaking Mercy", "life", EffectKind.HELPFUL, "Up to 8 allies lose every harmful effect and every elemental mark. Poison turns to Regeneration, slowness to Speed and weakness to Strength, each for half the time it had left (10 seconds at most); the rest is simply gone. Each heals 4 and gains Regeneration I for 6 seconds.", "power");
+			case "stillwell" -> new PairSpec("Quiet Pool", "life", EffectKind.HELPFUL, "Allies within 4 blocks lose every harmful effect, their fire and every elemental mark. Two seconds later each one that has not moved more than 0.3 blocks is healed 4 health (2 hearts) and gets 6 Absorption (3 hearts) for 6 seconds.", "power", "radius");
 			default -> null;
 		};
 	}

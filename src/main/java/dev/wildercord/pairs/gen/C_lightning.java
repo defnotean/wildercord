@@ -8,8 +8,10 @@ public final class C_lightning {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "luckstrike" -> dev.wildercord.pairs.b040.Pairs040.gildedBolt(c);
 			case "meteor" -> dev.wildercord.pairs.b025.Pairs025.skyhammer(c);
 			case "rewind" -> dev.wildercord.pairs.b006.Pairs006.lightningRewind(c);
+			case "storm_glass" -> dev.wildercord.pairs.b035.Pairs035.lensbolt(c);
 			default -> {
 				return false;
 			}

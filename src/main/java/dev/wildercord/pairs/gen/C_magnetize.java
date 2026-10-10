@@ -8,6 +8,7 @@ public final class C_magnetize {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "motherlode" -> dev.wildercord.pairs.b040.Pairs040.richvein(c);
 			case "pull" -> dev.wildercord.pairs.b025.Pairs025.lodestone(c);
 			default -> {
 				return false;

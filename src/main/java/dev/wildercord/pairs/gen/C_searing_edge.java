@@ -8,6 +8,7 @@ public final class C_searing_edge {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "smelt" -> dev.wildercord.pairs.b032.Pairs032.forgeblade(c);
 			case "windcut" -> dev.wildercord.pairs.b022.Pairs022.firewindLane(c);
 			default -> {
 				return false;

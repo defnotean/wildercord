@@ -10,6 +10,7 @@ public final class C_cushion {
 		switch (b) {
 			case "drown_ward" -> dev.wildercord.pairs.b024.Pairs024.featherCrash(c);
 			case "infinity" -> dev.wildercord.pairs.b019.Pairs019.hushedNest(c);
+			case "leaffall" -> dev.wildercord.pairs.b037.Pairs037.canopyOfLeaves(c);
 			case "softsole" -> dev.wildercord.pairs.b029.Pairs029.featherbed(c);
 			default -> {
 				return false;

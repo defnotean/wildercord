@@ -9,6 +9,7 @@ public final class S_searing_edge {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "smelt" -> new PairSpec("Forgeblade", "fire", EffectKind.HARMFUL, "Up to 6 enemies it strikes take 3 fire damage (times power) and burn for 2 seconds. Then five strokes, half a second apart (the first at once), sweep from you to the spot: each enemy within 1.5 blocks of that line takes 2 fire damage (times power) and burns for 1 second.", "power");
 			case "windcut" -> new PairSpec("Firewind Lane", "wind", EffectKind.HARMFUL, "A searing gust cuts an 8-block lane, 1.5 blocks wide, the way you face from where it lands. Up to 8 enemies it reaches take 4 wind damage and are shoved. For 4 seconds the lane burns: each second, every enemy in it takes 2 fire damage and is set alight.", "power", "radius");
 			default -> null;
 		};

@@ -8,8 +8,10 @@ public final class C_dash {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "dolphin_call" -> dev.wildercord.pairs.b033.Pairs033.podBreach(c);
 			case "jolt" -> dev.wildercord.pairs.b006.Pairs006.dashJolt(c);
 			case "leap" -> dev.wildercord.pairs.b006.Pairs006.dashLeap(c);
+			case "trail_blaze" -> dev.wildercord.pairs.b031.Pairs031.emberDash(c);
 			default -> {
 				return false;
 			}

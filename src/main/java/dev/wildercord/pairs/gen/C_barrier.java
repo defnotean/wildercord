@@ -8,6 +8,8 @@ public final class C_barrier {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "cinder_bulwark" -> dev.wildercord.pairs.b032.Pairs032.kindledAegis(c);
+			case "cloche" -> dev.wildercord.pairs.b036.Pairs036.hothouseShell(c);
 			case "frostward" -> dev.wildercord.pairs.b004.Pairs004.brittleDawn(c);
 			case "repel" -> dev.wildercord.pairs.b006.Pairs006.barrierRepel(c);
 			case "stoneskin" -> dev.wildercord.pairs.b010.Pairs010.barrierStoneskin(c);

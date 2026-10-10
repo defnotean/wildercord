@@ -9,6 +9,7 @@ public final class C_gravity_well {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "meteor" -> dev.wildercord.pairs.b021.Pairs021.gatheringFall(c);
+			case "pitfloor" -> dev.wildercord.pairs.b040.Pairs040.quagmire(c);
 			case "sinkhole" -> dev.wildercord.pairs.b026.Pairs026.undertow(c);
 			case "starlight_tether" -> dev.wildercord.pairs.b012.Pairs012.darkStarAnchor(c);
 			default -> {

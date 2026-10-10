@@ -9,6 +9,7 @@ public final class C_blind {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "eclipse" -> dev.wildercord.pairs.b028.Pairs028.lightlessHour(c);
+			case "smoke_signal" -> dev.wildercord.pairs.b031.Pairs031.blindingFlare(c);
 			case "spook" -> dev.wildercord.pairs.b008.Pairs008.blindSpook(c);
 			case "sunscorch" -> dev.wildercord.pairs.b021.Pairs021.noonscorch(c);
 			default -> {

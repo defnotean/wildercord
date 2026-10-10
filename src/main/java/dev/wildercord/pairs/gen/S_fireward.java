@@ -10,6 +10,7 @@ public final class S_fireward {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "frostward" -> new PairSpec("Ember Ward", "fire", EffectKind.HELPFUL, "Allies get Fire Resistance for 30 seconds, 4 absorption (2 hearts) for 10 seconds, and can't freeze for 30 seconds. Every 2 seconds for 8 seconds, heat rolls out: each enemy within 2 blocks of an ally takes 1 fire damage.", "power", "duration");
+			case "lavaseal" -> new PairSpec("Sealed Ward", "fire", EffectKind.HELPFUL, "A ward of sealed heat stands 3 blocks round the point for 6 seconds. Allies inside are put out and get Fire Resistance for 30 seconds, every second. Enemies inside take 1 damage and Slowness I for 2 seconds, every second.", "duration", "radius");
 			default -> null;
 		};
 	}

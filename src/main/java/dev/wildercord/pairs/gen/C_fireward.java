@@ -9,6 +9,7 @@ public final class C_fireward {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "frostward" -> dev.wildercord.pairs.b021.Pairs021.hearthward(c);
+			case "lavaseal" -> dev.wildercord.pairs.b031.Pairs031.sealedWard(c);
 			default -> {
 				return false;
 			}

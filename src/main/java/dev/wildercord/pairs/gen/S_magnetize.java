@@ -9,6 +9,7 @@ public final class S_magnetize {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "motherlode" -> new PairSpec("Richvein", "earth", EffectKind.HARMFUL, "Pulls up to 4 enemies it hits towards the point, with Slowness I for 3 seconds. Two seconds later the vein pays out: each enemy within 1.5 blocks of the point takes 2 magic damage for every enemy gathered there, 6 at most.", "power", "radius");
 			case "pull" -> new PairSpec("Lodestone", "storm", EffectKind.HARMFUL, "Pulls up to 4 enemies to where it landed, with Slowness I, marked pulled for 4 seconds. Held there for 3 seconds: drawn back in and shocked for 3 damage at 0, 1, 2 and 3 seconds.", "power");
 			default -> null;
 		};

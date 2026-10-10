@@ -9,8 +9,10 @@ public final class S_dash {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "dolphin_call" -> new PairSpec("Pod Breach", "wind", EffectKind.HARMFUL, "Shoves up to 4 enemies you hit along the way you face. A second later the pod breaches them: 4 damage and Slowness II for 2 seconds, and each other enemy within 2 blocks of one takes 2 damage.", "power", "radius");
 			case "jolt" -> new PairSpec("Stormlance", "storm", EffectKind.HARMFUL, "Shoves up to 8 enemies along your facing and up. 0.4 seconds later a lance of lightning falls on each: 5 damage and Slowness IV for 1 second. Every other enemy within 1.5 blocks takes 3.", "power", "duration", "radius");
 			case "leap" -> new PairSpec("Wingstep", "wind", EffectKind.MOVEMENT, "Dashes you up to 8 blocks along your facing, or 6 or 4 if that won't fit. Jump Boost III for 15 seconds, and one second later a second step of up to 4 blocks.", "duration");
+			case "trail_blaze" -> new PairSpec("Ember Dash", "fire", EffectKind.MOVEMENT, "Dashes you up to 10 blocks along your facing, level, stopping at a wall. Each enemy within 1.5 blocks of your path takes 4 damage, burns for 2 seconds and is knocked aside.", "power");
 			default -> null;
 		};
 	}

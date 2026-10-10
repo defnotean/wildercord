@@ -14,6 +14,7 @@ public final class C_chill {
 			case "push" -> dev.wildercord.pairs.b003.Pairs003.chillPush(c);
 			case "shock" -> dev.wildercord.pairs.b002.Pairs002.rimeConductor(c);
 			case "stoneskin" -> dev.wildercord.pairs.b003.Pairs003.chillStoneskin(c);
+			case "thawfield" -> dev.wildercord.pairs.b031.Pairs031.rimesteam(c);
 			default -> {
 				return false;
 			}

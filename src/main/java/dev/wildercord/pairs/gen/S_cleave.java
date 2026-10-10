@@ -10,6 +10,7 @@ public final class S_cleave {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "dismantle" -> new PairSpec("Quiet Cleaver", "blood", EffectKind.HARMFUL, "Three unseen slashes a tenth of a second apart. The first two each do 2 damage through armour. The third cuts deeper: 4 damage plus 10% of the target's max health (6 at most), and 4 more if it has turned away from you. Enemies within 2.5 blocks take 2 each (three at most).", "power", "radius");
+			case "prune" -> new PairSpec("Leafcut", "blood", EffectKind.HARMFUL, "The target takes 6 damage and Bleeding. 1.5 seconds later the cut opens into a gale of leaves: 2 more damage to it, and 3 to every other enemy within 3 blocks of it.", "power", "radius");
 			case "rend" -> new PairSpec("Riven", "blood", EffectKind.HARMFUL, "Up to 3 enemies lose their absorption hearts and any Resistance, then are cleaved for 6 damage plus 10% of their max health (12 at most). Up to 3 enemies within 2 blocks of each take half of that, once each per cast.", "power");
 			default -> null;
 		};

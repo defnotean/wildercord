@@ -8,6 +8,7 @@ public final class C_jolt {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "soak_through" -> dev.wildercord.pairs.b034.Pairs034.stormsoak(c);
 			case "stillbind" -> dev.wildercord.pairs.b026.Pairs026.stillshock(c);
 			default -> {
 				return false;

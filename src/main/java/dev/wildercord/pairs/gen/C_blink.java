@@ -12,8 +12,10 @@ public final class C_blink {
 			case "fire" -> dev.wildercord.pairs.b001.Pairs001.blinkFire(c);
 			case "heal" -> dev.wildercord.pairs.b007.Pairs007.mendStep(c);
 			case "lightning" -> dev.wildercord.pairs.b005.Pairs005.afterflash(c);
+			case "portal_sense" -> dev.wildercord.pairs.b032.Pairs032.riftStep(c);
 			case "swap" -> dev.wildercord.pairs.b010.Pairs010.blinkSwap(c);
 			case "thunderstep" -> dev.wildercord.pairs.b026.Pairs026.stormstep(c);
+			case "void_step" -> dev.wildercord.pairs.b036.Pairs036.voidwake(c);
 			default -> {
 				return false;
 			}

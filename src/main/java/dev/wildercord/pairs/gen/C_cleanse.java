@@ -9,6 +9,7 @@ public final class C_cleanse {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "remedy" -> dev.wildercord.pairs.b009.Pairs009.cleanseRemedy(c);
+			case "stillwell" -> dev.wildercord.pairs.b040.Pairs040.quietPool(c);
 			default -> {
 				return false;
 			}

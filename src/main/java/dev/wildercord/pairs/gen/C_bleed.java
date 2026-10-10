@@ -15,6 +15,7 @@ public final class C_bleed {
 			case "jolt" -> dev.wildercord.pairs.b005.Pairs005.bloodwire(c);
 			case "push" -> dev.wildercord.pairs.b006.Pairs006.pushBleed(c);
 			case "wither" -> dev.wildercord.pairs.b008.Pairs008.gangrene(c);
+			case "wring" -> dev.wildercord.pairs.b034.Pairs034.tithe(c);
 			default -> {
 				return false;
 			}

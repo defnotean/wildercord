@@ -15,6 +15,7 @@ public final class S_chill {
 			case "push" -> new PairSpec("Rime Gale", "wind", EffectKind.HARMFUL, "A gale hurls each enemy away from the spell, with Slowness II for 6 seconds and 1 freeze damage. An enemy already slowed flies twice as hard, and slams into the enemy it meets within 1.5 blocks: both take 4 damage.", "power", "radius");
 			case "shock" -> new PairSpec("Rime Conductor", "storm", EffectKind.HARMFUL, "Chills each target (8 at most): Slowness II for 6 seconds and 1 freeze damage, then 3 lightning damage. The bolt jumps to the nearest other enemy within 4 blocks for 2 lightning damage.", "power", "duration", "radius");
 			case "stoneskin" -> new PairSpec("Rimed Bulwark", "earth", EffectKind.HELPFUL, "Allies within 4 blocks of the spell get Resistance II for 10 seconds. For 5 seconds, once a second, every enemy within 2 blocks of an ally is chilled: Slowness I for 2 seconds and 1 freeze damage.", "power", "duration", "radius");
+			case "thawfield" -> new PairSpec("Rimesteam", "fire", EffectKind.HARMFUL, "Each enemy it strikes takes 1 freeze damage, gains Slowness II for 6 seconds and is chilled for 6 seconds. Two seconds later steam fills 3 blocks round the point: 6 damage to each enemy there still chilled, which melts it, and 2 to the rest.", "power", "duration");
 			default -> null;
 		};
 	}

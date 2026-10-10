@@ -9,6 +9,7 @@ public final class S_rally {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "rally_light" -> new PairSpec("Sunrise Vanguard", "arcane", EffectKind.HELPFUL, "Allies within 8 blocks get Strength I and Speed I for 8 seconds. At 0, 2 and 4 seconds they each gain 2 Absorption for 4 seconds, with a ring of light round them and a flute note.", "power");
 			case "soothe" -> new PairSpec("Herald's Truce", "wind", EffectKind.HELPFUL, "Allies within 8 blocks of where it landed get Speed I and Jump Boost I for 12 seconds. For 6 seconds, once a second, every monster within 8 blocks that is after an ally forgets its target.", "duration", "radius");
 			case "stormheart" -> new PairSpec("Storm Standard", "storm", EffectKind.HELPFUL, "Allies within 8 blocks get Speed I and Jump Boost I for 12 seconds. Five times, two seconds apart, the nearest enemy within 3 blocks of you is struck by lightning for 2 damage.", "power", "radius");
 			case "warcry" -> new PairSpec("Hornsong Charge", "wind", EffectKind.HELPFUL, "A war horn sounds where it lands. Allies within 8 blocks get Speed I, Jump Boost I and Strength I for 12 seconds. Three more times, every 3 seconds, the horn heals each one still within 8 blocks for 2 health.", "power", "duration", "radius");

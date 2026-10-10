@@ -10,6 +10,7 @@ public final class S_leap {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "surefoot" -> new PairSpec("Skipstone", "wind", EffectKind.HELPFUL, "The ally the spell struck (you, if none) gets Jump Boost III for 10 seconds and hops three times, half a second apart. Each hop rings the ground: allies within 3 blocks gain 2 absorption for 4 seconds.");
+			case "wind_steps" -> new PairSpec("Gust Stair", "wind", EffectKind.MOVEMENT, "Five gusts, one every 4 ticks, push you up 0.55 and forward 0.4 each, skipping any step that faces a wall. At the top you get Slow Falling for 3 seconds, and a burst shoves enemies within 3 blocks out for 2 damage.", "power");
 			default -> null;
 		};
 	}

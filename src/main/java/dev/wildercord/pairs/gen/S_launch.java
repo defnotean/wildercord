@@ -9,6 +9,7 @@ public final class S_launch {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "riser" -> new PairSpec("Stairfall", "wind", EffectKind.HARMFUL, "Lifts up to 3 enemies in five steps over 2 seconds, marks them Airborne at the top and drops them. Each one back on the ground 1.5 seconds later takes 6 damage.", "power");
 			case "tusk_charge" -> new PairSpec("Tusk Upheaval", "earth", EffectKind.MOVEMENT, "You charge up to 8 blocks the way you look. Each enemy in your path is tossed into the air and marked airborne, and 1.5 seconds later lands for 1 damage per block you ran (8 at most), with 2 damage to each enemy within 2 blocks.", "power", "radius");
 			default -> null;
 		};

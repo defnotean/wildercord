@@ -10,6 +10,7 @@ public final class C_grapple {
 		switch (b) {
 			case "leap" -> dev.wildercord.pairs.b008.Pairs008.grappleLeap(c);
 			case "long_arm" -> dev.wildercord.pairs.b027.Pairs027.anchorline(c);
+			case "root_carry" -> dev.wildercord.pairs.b038.Pairs038.tether(c);
 			case "vinelash" -> dev.wildercord.pairs.b009.Pairs009.grappleVinelash(c);
 			default -> {
 				return false;

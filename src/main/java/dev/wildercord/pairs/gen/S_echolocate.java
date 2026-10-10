@@ -10,6 +10,8 @@ public final class S_echolocate {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "heartsense" -> new PairSpec("Pulsebound", "void", EffectKind.HARMFUL, "A sonar pulse from the point: up to 16 enemies within 16 blocks glow through walls for 10 seconds, and those within 3 blocks of the point are slowed for 3 seconds. Then five beats, a second apart: each beat deals 2 wither damage to the first 8 of the glowing enemies still there that are under half health.", "power", "duration");
+			case "lava_sense" -> new PairSpec("Heat Echo", "fire", EffectKind.HARMFUL, "Three sonar pulses leave the point one second apart, reaching 4, 8 and 12 blocks. Each enemy a pulse first reaches takes 2 damage and glows for 6 seconds. Enemies the spell struck are dazed (Slowness II) for 3 seconds.", "power", "radius", "duration");
+			case "night_eye" -> new PairSpec("Nightsong", "void", EffectKind.HARMFUL, "Gives you Night Vision for 60 seconds. Three echoes ring out from the point a second apart: each deals 2 magic damage to enemies within 6 blocks and dazes them (Slowness I, 2 seconds).", "power");
 			case "reveal" -> new PairSpec("Sonar Lantern", "void", EffectKind.HARMFUL, "Every enemy within 16 blocks glows through walls for 10 seconds. The first is stripped of invisibility, exposed, and pinged four times, a second apart, for 2 wither damage each: 8 in all.", "power", "duration", "radius");
 			case "sounding" -> new PairSpec("Pingdive", "void", EffectKind.MOVEMENT, "You dash up to 8 blocks along your look (12 in water), stopping at walls. Where you stop, a ping makes every enemy within 12 blocks glow through walls for 10 seconds, and those within 4 blocks dazed (Slowness II) for 3.", "radius");
 			default -> null;

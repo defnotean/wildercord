@@ -16,6 +16,7 @@ public final class S_bleed {
 			case "jolt" -> new PairSpec("Bloodwire", "blood", EffectKind.HARMFUL, "Each target takes 4 lightning, Slowness II for 1 second and a wound: 2 damage, then 1 more every half second for 4 seconds. Each of those pulses also sparks 1 lightning into up to 2 enemies within 1.5 blocks.", "power", "duration", "radius");
 			case "push" -> new PairSpec("Ribbon Gale", "blood", EffectKind.HARMFUL, "Hurls up to 8 enemies away from the spell and opens each: 2 damage, then 1 more every half second for 4 seconds. A pushed enemy that lands within 1.5 blocks of another tears that other open: 2 damage and it bleeds.", "power");
 			case "wither" -> new PairSpec("Gangrene", "blood", EffectKind.HARMFUL, "Each target bleeds: 2 damage now, then 1 more every half second for 4 seconds, and Wither I for 4 seconds. Every second the rot spreads: each enemy within 2 blocks of a bleeding target takes 1 damage and Wither I for 2 seconds.", "power", "radius");
+			case "wring" -> new PairSpec("Tithe of Blood", "blood", EffectKind.HARMFUL, "Opens a wound on up to 4 enemies: 1 magic damage (times power) every half second for 3 seconds, and they are marked bleeding. Then their blood is wrung to you: 2 healing (times power) for each one still standing.", "power");
 			default -> null;
 		};
 	}

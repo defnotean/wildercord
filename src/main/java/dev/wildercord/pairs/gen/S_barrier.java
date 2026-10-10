@@ -9,6 +9,8 @@ public final class S_barrier {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "cinder_bulwark" -> new PairSpec("Kindled Aegis", "arcane", EffectKind.HELPFUL, "The ally the spell struck (you, if none) gets 4 absorption (times power) for 20 seconds. Four cinder plates wheel round it for 8 seconds: each enemy that comes within 2 blocks is struck once for 2 magic damage (times power), and its plate cracks away.", "power");
+			case "cloche" -> new PairSpec("Hothouse Shell", "arcane", EffectKind.HELPFUL, "Allies get 4 absorption (2 hearts) for 20 seconds, under a glass shell of quick time. Then, once a second for 5 seconds, each heals 1 health.", "power", "duration");
 			case "frostward" -> new PairSpec("Brittle Dawn", "frost", EffectKind.HELPFUL, "Allies get 6 absorption (3 hearts) for 20 seconds, and any freeze on them is cleared every half second for 30 seconds. When an ally's barrier is used up, shards fly out: 2 freeze and a chill to each enemy within 2.5 blocks.", "duration");
 			case "repel" -> new PairSpec("Bulwark Ward", "arcane", EffectKind.HELPFUL, "Each ally in the spell gets 4 absorption (2 hearts) for 20 seconds. Then six pulses, one a second for five seconds: each enemy within 2.5 blocks of an ally is hurled away from it and takes 1 damage.", "power", "duration", "radius");
 			case "stoneskin" -> new PairSpec("Dawnstone Vigil", "arcane", EffectKind.HELPFUL, "Each ally hit gets 4 absorption (2 hearts) for 20 seconds, and Resistance II and Slowness I for 10 seconds: stone is heavy. When the stone wears off at 10 seconds, the absorption still left on each of them becomes healing.", "power", "duration");

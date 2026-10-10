@@ -8,6 +8,7 @@ public final class C_launch {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "riser" -> dev.wildercord.pairs.b040.Pairs040.stairfall(c);
 			case "tusk_charge" -> dev.wildercord.pairs.b007.Pairs007.tuskUpheaval(c);
 			default -> {
 				return false;

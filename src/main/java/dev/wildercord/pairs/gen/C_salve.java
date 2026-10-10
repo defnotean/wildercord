@@ -8,6 +8,7 @@ public final class C_salve {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "stewpot" -> dev.wildercord.pairs.b031.Pairs031.pottage(c);
 			case "warm_cloak" -> dev.wildercord.pairs.b002.Pairs002.hearthbalm(c);
 			default -> {
 				return false;

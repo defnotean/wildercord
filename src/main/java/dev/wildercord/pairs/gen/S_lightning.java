@@ -9,8 +9,10 @@ public final class S_lightning {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "luckstrike" -> new PairSpec("Gilded Bolt", "storm", EffectKind.HARMFUL, "Strikes up to 3 enemies for 5 lightning damage and Slowness I for 3 seconds. Each then rolls for luck: half the time a second bolt falls 1 second later for 5 more damage and sets it alight for 2 seconds.", "power");
 			case "meteor" -> new PairSpec("Skyhammer", "storm", EffectKind.HARMFUL, "Lightning strikes up to 2 enemies for 6 damage and Slowness II for 3 seconds. 1.2 seconds later a meteor falls on each strike's spot: 8 fire damage to every enemy within 3 blocks of it, and they burn for 2 seconds.", "power", "radius");
 			case "rewind" -> new PairSpec("Echo Lightning", "storm", EffectKind.HARMFUL, "A lightning strike on each of up to 8 enemies: 7 damage, Slowness II and burning for 2 seconds. Five seconds later the strike echoes onto each still alive: 7 more, and 3 to every enemy within 2 blocks.", "power", "duration");
+			case "storm_glass" -> new PairSpec("Lensbolt", "storm", EffectKind.HARMFUL, "A glass lens hangs over each of up to 4 enemies and gathers light, slowing them (Slowness I for 1.5 seconds). At 1.2 seconds it focuses a bolt: 10 lightning damage to that enemy, which leaps to up to 2 other enemies within 4 blocks for 5 each.", "power", "radius");
 			default -> null;
 		};
 	}

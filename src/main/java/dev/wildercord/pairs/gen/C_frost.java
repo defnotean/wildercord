@@ -8,6 +8,7 @@ public final class C_frost {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "rime_causeway" -> dev.wildercord.pairs.b034.Pairs034.rimeglide(c);
 			case "tremor" -> dev.wildercord.pairs.b003.Pairs003.frostTremor(c);
 			default -> {
 				return false;

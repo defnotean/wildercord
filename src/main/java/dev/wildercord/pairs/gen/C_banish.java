@@ -8,8 +8,10 @@ public final class C_banish {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "doorcall" -> dev.wildercord.pairs.b035.Pairs035.slamdoor(c);
 			case "harm" -> dev.wildercord.pairs.b007.Pairs007.recalledExile(c);
 			case "portalfall" -> dev.wildercord.pairs.b028.Pairs028.riftfall(c);
+			case "spawner_sense" -> dev.wildercord.pairs.b036.Pairs036.exileBeacon(c);
 			default -> {
 				return false;
 			}

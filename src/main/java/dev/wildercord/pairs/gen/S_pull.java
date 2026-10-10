@@ -9,6 +9,7 @@ public final class S_pull {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "reeling_tide" -> new PairSpec("Angler's Hook", "void", EffectKind.HARMFUL, "Hooks up to 3 enemies with a line from where you cast: each is staggered (Slowness I for 2 seconds) and marked pulled. Four reels half a second apart draw each toward you; the last one lands 4 magic damage (times power).", "power", "duration");
 			case "rootsnare" -> new PairSpec("Taproot Tug", "life", EffectKind.HARMFUL, "Every enemy within 3 blocks of the point is dragged to it and marked as pulled, then roots burst up and hold each one for 1.5 seconds (Slowness V), dealing 1.5 damage per block it was dragged (9 at most).", "power", "radius");
 			case "tidecall" -> new PairSpec("Gathering Tide", "frost", EffectKind.HARMFUL, "Pulls up to 6 enemies within 5 blocks into the point over a second, marked pulled. Then the tide crashes in: 4 freeze damage to each within 2.5 blocks, plus 1 for each other one there (3 at most), and soaked.", "power", "radius");
 			default -> null;

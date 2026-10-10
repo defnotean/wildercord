@@ -9,6 +9,7 @@ public final class S_mending_mist {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "spring_draw" -> new PairSpec("Wellspring", "frost", EffectKind.HELPFUL, "A spring rises where it lands. Six times, a second apart, allies within 3 blocks heal 1 (times power) and are doused. An ally below half health is drawn up once, for 4 healing (times power).", "power", "radius");
 			case "tidebreath" -> new PairSpec("Dewhaven", "frost", EffectKind.HELPFUL, "A mist 4 blocks round the spot for 7 seconds, pulsing eight times. Each pulse, every ally inside heals 1, is doused, and can breathe water for 2 seconds.", "power", "radius");
 			default -> null;
 		};

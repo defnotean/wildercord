@@ -11,6 +11,7 @@ public final class S_cushion {
 		return switch (b) {
 			case "drown_ward" -> new PairSpec("Feather Crash", "wind", EffectKind.HELPFUL, "Slow falling for 6 seconds, and any landing from over 4 blocks up in that time throws a gust: 0.75 damage per block fallen past 4 (6 at most) to enemies within 3 blocks, knocked back. For 60 seconds your air tops up when under half, 3 times.", "power", "duration");
 			case "infinity" -> new PairSpec("Hushed Nest", "void", EffectKind.HELPFUL, "A pale hush settles on the landing spot. Allies within 4 blocks drift down slowly (Slow Falling for 8 seconds) with 4 absorption for 6 seconds. Enemies within 5 blocks are hushed for 6 seconds: Slowness III within 2 blocks, Slowness I beyond.", "duration", "radius");
+			case "leaffall" -> new PairSpec("Canopy of Leaves", "wind", EffectKind.HELPFUL, "For 10 seconds a canopy of leaves hangs 3 blocks up over the spot, reaching 4 blocks out. Every 2 seconds the allies under it get 1 health back and Slow Falling for 3 seconds, so falls can't hurt them while it lasts.", "duration", "radius", "power");
 			case "softsole" -> new PairSpec("Featherbed", "wind", EffectKind.HELPFUL, "A cushion of wind 3 blocks out from the spot (times radius) for 6 seconds. Allies inside take no fall damage, fall slowly and walk light (Speed I), for a second after they leave. Enemies inside are blown from the centre once a second.", "radius", "duration");
 			default -> null;
 		};

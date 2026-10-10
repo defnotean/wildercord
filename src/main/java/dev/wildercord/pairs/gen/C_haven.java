@@ -9,6 +9,8 @@ public final class C_haven {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "mending_mist" -> dev.wildercord.pairs.b004.Pairs004.shelterOfMist(c);
+			case "petward" -> dev.wildercord.pairs.b038.Pairs038.leafBower(c);
+			case "sanctuary" -> dev.wildercord.pairs.b039.Pairs039.hallowbloom(c);
 			default -> {
 				return false;
 			}

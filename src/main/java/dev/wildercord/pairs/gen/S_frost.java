@@ -9,6 +9,7 @@ public final class S_frost {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "rime_causeway" -> new PairSpec("Hoarfrost Glide", "frost", EffectKind.MOVEMENT, "You glide up to 4 blocks along your look over the next second, stopping short of walls. Each enemy within 2 blocks of your path takes 3 cold damage (times power) and Slowness II for 3 seconds, once.", "power", "duration");
 			case "tremor" -> new PairSpec("Hoar Spires", "earth", EffectKind.HARMFUL, "Spires of frozen earth shoot up under each target: 5 freeze and 6 damage, and Slowness III for 3 seconds. A second later they shatter outward: 3 damage to each other enemy within 2.5 blocks.", "power", "duration", "radius");
 			default -> null;
 		};

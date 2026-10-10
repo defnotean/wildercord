@@ -9,6 +9,7 @@ public final class C_singularity {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "starmaw" -> dev.wildercord.pairs.b029.Pairs029.eclipseWell(c);
+			case "stronghold_compass" -> dev.wildercord.pairs.b037.Pairs037.lodestarWell(c);
 			default -> {
 				return false;
 			}

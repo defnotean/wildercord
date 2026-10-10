@@ -8,6 +8,7 @@ public final class C_regrowth {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "ripen" -> dev.wildercord.pairs.b035.Pairs035.bloomtide(c);
 			case "salve" -> dev.wildercord.pairs.b004.Pairs004.secondSpring(c);
 			case "sunbask" -> dev.wildercord.pairs.b021.Pairs021.dawnmend(c);
 			default -> {

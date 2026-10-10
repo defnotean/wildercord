@@ -10,6 +10,7 @@ public final class S_haste {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "overdrive" -> new PairSpec("Redline", "blood", EffectKind.HELPFUL, "Three gears of 4 seconds. First: Speed I, Haste I, lose 1 health. Second: Speed II, Haste II, Strength I, lose 2. Third: Speed II, Haste III, Strength II, lose 4. Never below 2 health. Then it stalls: Slowness I for 3 seconds.", "duration");
+			case "quickbrew" -> new PairSpec("Rushbrew", "fire", EffectKind.HELPFUL, "The ally the spell struck (you, if none) gets Haste II for 10 seconds. Three flasks are lobbed a second apart (the first at once), each at the enemy nearest the ally within 6 blocks: 2 magic damage (times power) and alight for 2 seconds.", "power");
 			case "surge" -> new PairSpec("Overclock", "arcane", EffectKind.HELPFUL, "Allies within 6 blocks get Haste II for 30 seconds, and Speed I and Strength I for 8 seconds. Four times, two seconds apart, each one is healed 1 health (half a heart) while the surge lasts.", "power", "radius");
 			default -> null;
 		};

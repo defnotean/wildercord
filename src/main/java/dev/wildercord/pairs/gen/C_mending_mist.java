@@ -8,6 +8,7 @@ public final class C_mending_mist {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "spring_draw" -> dev.wildercord.pairs.b034.Pairs034.wellspring(c);
 			case "tidebreath" -> dev.wildercord.pairs.b024.Pairs024.dewhaven(c);
 			default -> {
 				return false;

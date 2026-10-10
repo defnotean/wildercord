@@ -10,6 +10,8 @@ public final class S_haven {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "mending_mist" -> new PairSpec("Shelter of Mist", "life", EffectKind.HELPFUL, "A shelter of leaf shutters and mist 4 blocks round the point for 8 seconds. Allies inside heal 1 each second. Enemies inside are shoved out once a second, and left chilled and wet.", "duration", "radius");
+			case "petward" -> new PairSpec("Leaf Bower", "life", EffectKind.HELPFUL, "For 7 seconds a bower of leaves covers the point out to 2.5 blocks. Allies inside get Resistance I for 4 seconds at a time, and enemies inside are shoved out of it once a second.", "radius", "duration");
+			case "sanctuary" -> new PairSpec("Hallowbloom", "life", EffectKind.HELPFUL, "Opens a 4-block bloom that lasts 5 seconds. Each second, allies inside heal 2 (10 in all), and enemies inside are shoved away from its centre. It opens with a shockwave of leaves.", "power");
 			default -> null;
 		};
 	}

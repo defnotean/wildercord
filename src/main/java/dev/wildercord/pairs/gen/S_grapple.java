@@ -11,6 +11,7 @@ public final class S_grapple {
 		return switch (b) {
 			case "leap" -> new PairSpec("Skyhook", "wind", EffectKind.MOVEMENT, "Hooks you towards where the spell landed and hurls you in a high arc: a push of 0.9 upward and up to 1.2 towards it, with Jump Boost III for 3 seconds and no fall damage for 1.5 seconds.", "duration");
 			case "long_arm" -> new PairSpec("Anchorline", "void", EffectKind.MOVEMENT, "Moves you to where the spell lands if that is within 12 blocks and the straight line to it is clear of walls: you arrive 0.3 seconds later. Enemies within 2.5 blocks of where you land are drawn in and given Slowness II for 2 seconds.");
+			case "root_carry" -> new PairSpec("Tether", "life", EffectKind.MOVEMENT, "You are hauled up to 12 blocks toward where it hit, flat across the ground, in four steps; walls stop you. Where you land, enemies within 2 blocks take 4 damage and are thrown outward, and allies within 2 blocks heal 3.", "power");
 			case "vinelash" -> new PairSpec("Vinehaul", "life", EffectKind.MOVEMENT, "A vine reels you to where the spell landed, and you stop there. Then it lashes each enemy within 2.5 blocks of that spot: 5 damage, yanked toward it and tripped (Slowness II for 2 seconds).", "power", "radius");
 			default -> null;
 		};

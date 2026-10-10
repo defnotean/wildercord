@@ -9,6 +9,7 @@ public final class S_jolt {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "soak_through" -> new PairSpec("Stormsoak", "storm", EffectKind.HARMFUL, "Up to 4 enemies hit take 4 lightning damage (times power) and are stunned for a second: target forgotten, path stopped, Slowness III. Soaked, each is struck 1.5 seconds later by a bolt for 6 lightning damage (times power), with 2 (times power) arcing to other enemies within 2.5 blocks.", "power", "radius", "duration");
 			case "stillbind" -> new PairSpec("Stillshock", "storm", EffectKind.HARMFUL, "Holds each target for 3 seconds: Slowness III, and a creature forgets its target (bosses are only slowed). Three times, once a second, each held target takes 2 shock, and a lightning arc leaps from it to the nearest other enemy within 4 blocks, where it deals 2 more shock.", "power", "duration");
 			default -> null;
 		};

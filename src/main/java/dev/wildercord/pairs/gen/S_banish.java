@@ -9,8 +9,10 @@ public final class S_banish {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "doorcall" -> new PairSpec("Slamdoor", "void", EffectKind.HARMFUL, "Up to 4 enemies are banished 8 blocks further from you (if there is a safe spot, bosses stay put) and blinded for 2 seconds. The spot each left slams shut 1.5 seconds later: 6 damage to every enemy within 1.5 blocks of it, and Slowness II for 2 seconds.", "power", "radius");
 			case "harm" -> new PairSpec("Recalled Exile", "void", EffectKind.HARMFUL, "Banishes up to 8 enemies up to 8 blocks further from you, each struck for 5 magic damage, exposed (arcane mark) and dazed (Nausea for 3 seconds). After 3 seconds each is recalled to where it vanished, taking 1 wither damage per block sent away (8 at most).", "power", "duration");
 			case "portalfall" -> new PairSpec("Riftfall", "void", EffectKind.HARMFUL, "Banishes up to 4 enemies: each is dazed (Slowness II for 2 seconds) and reappears up to 6 blocks further from you, where there's room. A second later a portal drops each where it stands: 4 damage, and every other enemy within 2 blocks takes 2.", "power", "radius");
+			case "spawner_sense" -> new PairSpec("Exile Beacon", "void", EffectKind.HARMFUL, "Banishes up to 8 enemies up to 8 blocks further from you, where the spot is safe, and dazes them (Slowness II for 3 seconds). Three seconds later the beacon calls each back to 3 blocks from you, where it fits: 4 withering damage.", "power", "duration");
 			default -> null;
 		};
 	}

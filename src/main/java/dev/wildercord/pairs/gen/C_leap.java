@@ -9,6 +9,7 @@ public final class C_leap {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "surefoot" -> dev.wildercord.pairs.b027.Pairs027.skipstone(c);
+			case "wind_steps" -> dev.wildercord.pairs.b037.Pairs037.gustStair(c);
 			default -> {
 				return false;
 			}

@@ -9,8 +9,10 @@ public final class C_levitate {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "lightning" -> dev.wildercord.pairs.b005.Pairs005.skyfall(c);
+			case "silklift" -> dev.wildercord.pairs.b039.Pairs039.cocoonfall(c);
 			case "skyburst" -> dev.wildercord.pairs.b022.Pairs022.hangfire(c);
 			case "torchfall" -> dev.wildercord.pairs.b002.Pairs002.emberUpdraft(c);
+			case "unburden" -> dev.wildercord.pairs.b037.Pairs037.hollowWeight(c);
 			default -> {
 				return false;
 			}

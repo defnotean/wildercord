@@ -8,6 +8,7 @@ public final class C_pull {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "reeling_tide" -> dev.wildercord.pairs.b034.Pairs034.anglersHook(c);
 			case "rootsnare" -> dev.wildercord.pairs.b007.Pairs007.taprootTug(c);
 			case "tidecall" -> dev.wildercord.pairs.b024.Pairs024.gatheringTide(c);
 			default -> {

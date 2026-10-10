@@ -10,6 +10,7 @@ public final class S_singularity {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "starmaw" -> new PairSpec("Eclipse Well", "void", EffectKind.HARMFUL, "A black hole opens where it lands. For 2.5 seconds it drags up to 8 enemies towards its centre, 4 times a second: the ones it hit first, then any within 5 blocks (bosses stay put). Then it collapses: 4 wither damage to each one caught, and 3 seconds of blindness.", "power", "radius", "duration");
+			case "stronghold_compass" -> new PairSpec("Lodestar Well", "void", EffectKind.HARMFUL, "A compass needle finds the enemy nearest the point (within 10 blocks) and a black hole opens on it for 2.5 seconds, pulling in enemies within 4 blocks. Then it bursts: 5 damage to each enemy it struck or swallowed, plus 1 for each one swallowed (5 at most), and they're flung outward.", "power", "radius", "duration");
 			default -> null;
 		};
 	}

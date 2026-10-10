@@ -9,6 +9,7 @@ public final class S_salve {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "stewpot" -> new PairSpec("Pottage", "fire", EffectKind.HELPFUL, "Each ally within 4 blocks heals 2 health, gains Regeneration I for 8 seconds and is put out. Three seconds later the pot is served: each ally still within 4 blocks heals 3 more and gains 2 absorption health for 8 seconds.", "power", "duration", "radius");
 			case "warm_cloak" -> new PairSpec("Hearthbalm", "fire", EffectKind.HELPFUL, "Heals each ally (8 at most) 4 half-hearts, gives Regeneration I for 8 seconds and puts out their fire. For 10 seconds frost can't build on them: their freeze is reset every quarter second.", "power", "duration");
 			default -> null;
 		};
