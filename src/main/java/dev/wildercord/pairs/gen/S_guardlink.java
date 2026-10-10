@@ -10,6 +10,7 @@ public final class S_guardlink {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "hearthbond" -> new PairSpec("Hearth Ward", "life", EffectKind.HELPFUL, "Bonds you to up to 4 allies within 12 blocks for 15 seconds. Twice a second, 40% of the health a bonded ally loses is taken by you instead, never below 6 health for you. A bond snaps past 16 blocks. When an ally falls under 6 health, the other bonded creatures get Regeneration II for 3 seconds, once per ally.", "power", "duration");
+			case "keepsafe" -> new PairSpec("Stone Vow", "earth", EffectKind.HELPFUL, "Up to 4 allies within 8 blocks get Resistance I and 4 absorption (2 hearts) for 8 seconds. Three quarters of a second later, four shoves a second apart: each enemy within 2 blocks of an ally is pushed away from it.", "power");
 			default -> null;
 		};
 	}

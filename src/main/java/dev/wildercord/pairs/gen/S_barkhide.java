@@ -9,6 +9,7 @@ public final class S_barkhide {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "barkstrip" -> new PairSpec("Bark Shed", "earth", EffectKind.HELPFUL, "Up to 6 allies shed every bad effect they carry (Poison, Wither, Slowness, Weakness, Mining Fatigue, Nausea, Blindness, Darkness) and get Resistance I for 12 seconds. Bark flakes fly off them at once and a second and two seconds later.", "duration");
 			case "leafshade" -> new PairSpec("Verdant Canopy", "earth", EffectKind.HELPFUL, "A canopy of leaves forms 2.5 blocks up over the point, 3 blocks out, for 12 seconds. Allies under it get Resistance I and Fire Resistance, put out if burning, and are healed 1 every 2 seconds (6 in all).", "radius", "duration");
 			default -> null;
 		};

@@ -10,6 +10,7 @@ public final class S_drowse {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "lullaby" -> new PairSpec("Slumber Chain", "life", EffectKind.HARMFUL, "Targets sleep 6 seconds: mobs get Slowness III and forget their target, and a blow that wakes one strikes again at 75% (12 at most) of its damage. Players and bosses are only slowed (Slowness III: 2 seconds for players, 6 for bosses). A second on, enemies within 3 blocks of a sleeper doze for 2 seconds, once each.", "duration");
+			case "springbed" -> new PairSpec("Lullabrook", "life", EffectKind.HARMFUL, "Up to 6 enemies are lulled: Slowness III for 2 seconds and Weakness I for 4. 1.5 seconds later a spring wells up under each: 5 damage and soaked, and each other enemy within 2 blocks takes 2.", "power");
 			default -> null;
 		};
 	}

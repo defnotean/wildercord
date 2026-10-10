@@ -9,6 +9,7 @@ public final class C_honeydew {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "staunch" -> dev.wildercord.pairs.b017.Pairs017.amberWard(c);
+			case "wildflower" -> dev.wildercord.pairs.b048.Pairs048.honeydewWildflower(c);
 			default -> {
 				return false;
 			}

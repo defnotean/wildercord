@@ -10,6 +10,7 @@ public final class S_lodepull {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "magnetize" -> new PairSpec("Lodeshock", "storm", EffectKind.HARMFUL, "Makes the first enemy hit a lodestone for 4 seconds, which takes 2 lightning damage at once (times power). Each second, enemies within 5 blocks are drawn to it (not bosses), each enemy within 1.5 blocks of it takes 3 lightning damage (times power), and loose item drops within 6 blocks drift to it.", "power", "radius");
+			case "plumbline" -> new PairSpec("Plumb Lodestone", "earth", EffectKind.HELPFUL, "A plumb bob drops onto up to 3 allies and anchors them: Resistance I for 8 seconds. For the same 8 seconds, loose item drops within 6 blocks of each of them drift to it.", "duration");
 			default -> null;
 		};
 	}

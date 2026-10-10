@@ -9,6 +9,7 @@ public final class C_manatide {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "manawell" -> dev.wildercord.pairs.b012.Pairs012.tidalCistern(c);
+			case "tide_lantern" -> dev.wildercord.pairs.b044.Pairs044.tidelamp(c);
 			default -> {
 				return false;
 			}

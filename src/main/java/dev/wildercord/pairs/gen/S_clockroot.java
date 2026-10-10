@@ -9,6 +9,7 @@ public final class S_clockroot {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "coppice" -> new PairSpec("Rootward", "earth", EffectKind.HARMFUL, "Roots take hold under up to 4 enemies: 2 damage and Slowness I for 1 second. Three seconds later each spot sprouts a sapling that heals every ally within 3 blocks of it 2. Any of those foes that has moved more than 2 blocks away is drawn back to its spot if that is safe (bosses stay put), and takes 4 more damage.", "power", "duration", "radius");
 			case "time_skip" -> new PairSpec("Time Echo", "time", EffectKind.MOVEMENT, "You step up to 8 blocks forward onto safe ground (walls stop you), untouchable for 1 second; nearby monsters lose track of you. The spot you left keeps an echo: 3 seconds later each enemy within 2.5 blocks of it takes 4 damage and is slowed (Slowness III for 2 seconds). No safe ground in reach: nothing happens.", "power");
 			default -> null;
 		};

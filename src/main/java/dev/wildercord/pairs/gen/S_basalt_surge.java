@@ -9,6 +9,7 @@ public final class S_basalt_surge {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "blastward" -> new PairSpec("Ridgeblast", "earth", EffectKind.HARMFUL, "Each enemy hit takes 5 times power and is tossed up. A second later basalt columns rise on the line from you to the point, and enemies within 2 blocks of that line take 4 times power. At 1.5 seconds the point blasts: enemies within 3 blocks take 3 times power and are knocked away.", "power");
 			case "magma" -> new PairSpec("Caldera Ridge", "earth", EffectKind.HARMFUL, "Basalt columns burst up along the line from you to the point: 4 damage to each enemy within 1.5 blocks of the line, and they are tossed into the air. The ground at the point turns to magma for 4 seconds, widening from 2 to 4 blocks: each second, 2 fire damage to each enemy in it.", "power", "radius");
 			default -> null;
 		};

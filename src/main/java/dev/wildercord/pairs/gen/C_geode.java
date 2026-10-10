@@ -9,6 +9,7 @@ public final class C_geode {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "shulkershell" -> dev.wildercord.pairs.b013.Pairs013.shardShell(c);
+			case "treasure_sense" -> dev.wildercord.pairs.b044.Pairs044.shardProspect(c);
 			default -> {
 				return false;
 			}

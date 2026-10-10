@@ -8,6 +8,7 @@ public final class C_bonespur {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "millstone" -> dev.wildercord.pairs.b046.Pairs046.grindstone(c);
 			case "monolith" -> dev.wildercord.pairs.b013.Pairs013.ossuarySpire(c);
 			default -> {
 				return false;

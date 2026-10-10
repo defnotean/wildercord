@@ -9,6 +9,7 @@ public final class C_ashen_veil {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "emberguard" -> dev.wildercord.pairs.b016.Pairs016.ashWard(c);
+			case "snuff_out" -> dev.wildercord.pairs.b050.Pairs050.dampenedEmber(c);
 			default -> {
 				return false;
 			}

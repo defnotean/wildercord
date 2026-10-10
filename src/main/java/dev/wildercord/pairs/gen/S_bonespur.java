@@ -9,6 +9,7 @@ public final class S_bonespur {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "millstone" -> new PairSpec("Grindstone", "earth", EffectKind.HARMFUL, "Up to 4 enemies it strikes are ground at four turns, half a second apart: 1 damage at each turn. After the last turn they are left bleeding.", "power");
 			case "monolith" -> new PairSpec("Ossuary Spire", "earth", EffectKind.HARMFUL, "A stone monolith bursts up under the target: 6 damage, and it is hurled into the air. 1.2 seconds later it crashes down: 4 damage to enemies within 1.5 blocks of the spot, and bone spurs jut up under up to 4 enemies within 4 blocks: 3 damage each, then 1 damage a second for 3 seconds.", "power", "radius");
 			default -> null;
 		};

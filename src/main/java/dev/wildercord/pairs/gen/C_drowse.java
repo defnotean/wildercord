@@ -9,6 +9,7 @@ public final class C_drowse {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "lullaby" -> dev.wildercord.pairs.b017.Pairs017.slumberChain(c);
+			case "springbed" -> dev.wildercord.pairs.b049.Pairs049.lullabrook(c);
 			default -> {
 				return false;
 			}

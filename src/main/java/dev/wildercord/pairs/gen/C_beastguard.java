@@ -9,6 +9,7 @@ public final class C_beastguard {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "grace" -> dev.wildercord.pairs.b020.Pairs020.pardoningRing(c);
+			case "village_sense" -> dev.wildercord.pairs.b050.Pairs050.watchfulHerd(c);
 			default -> {
 				return false;
 			}

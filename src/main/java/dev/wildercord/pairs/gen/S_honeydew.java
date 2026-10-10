@@ -10,6 +10,7 @@ public final class S_honeydew {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "staunch" -> new PairSpec("Amber Ward", "wind", EffectKind.HELPFUL, "Allies within 6 blocks are healed 3 (more with power) and cured of poison and wither. For 9 more seconds, once a second, they are cured again and healed 1.", "power", "duration");
+			case "wildflower" -> new PairSpec("Honeyed Wake", "wind", EffectKind.HELPFUL, "Allies within 4 blocks (8 at most) lose Poison, and three petal rings, 0.75 seconds apart, each heal them 2 (6 in all).", "power", "radius");
 			default -> null;
 		};
 	}

@@ -9,6 +9,7 @@ public final class S_soar {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "stalkrise" -> new PairSpec("Stalk Leap", "wind", EffectKind.MOVEMENT, "The caster leaps up and forward along their look, then drifts down slowly with Slow Falling for 3 seconds. Cane stalks climb under their feet first.", "duration");
 			case "thunderbird" -> new PairSpec("Wingdive", "wind", EffectKind.MOVEMENT, "Carries you up to 8 blocks along your look in quick hops (a wall stops you short) and sets you down without fall damage. A storm bird dives where you land: 5 lightning to each enemy within 3 blocks, knocked back.", "power", "radius");
 			default -> null;
 		};

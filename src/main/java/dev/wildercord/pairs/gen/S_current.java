@@ -9,6 +9,7 @@ public final class S_current {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "pocket_current" -> new PairSpec("Drawn Tide", "frost", EffectKind.HARMFUL, "Up to 6 enemies are caught in a water envelope: 4 damage and soaked, then rolled towards a landing 12 blocks along the way you cast. They land with 4 more damage, and every enemy within 2 blocks of the landing, them included, takes 2.", "power");
 			case "porpoise" -> new PairSpec("Surf Leap", "frost", EffectKind.MOVEMENT, "In water or rain: a current carries you up to 15 blocks the way you look (walls stop it), then you leap like a dolphin. On dry land you just hop forward. Neither leap takes fall damage.");
 			default -> null;
 		};

@@ -10,6 +10,7 @@ public final class S_manatide {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "manawell" -> new PairSpec("Tidal Cistern", "arcane", EffectKind.HELPFUL, "A 3-block cistern wells up for 10 seconds. Each player standing in it regains 2 mana a second, rising by 1 for every second they stay (4 at most); stepping out resets the tide. Mobs gain nothing.", "power", "duration", "radius");
+			case "tide_lantern" -> new PairSpec("Tidelamp", "arcane", EffectKind.HELPFUL, "Up to 6 allies are doused and a water lantern rises over each. Three pulses, two seconds apart (the first at once): each heals 2 times power, or 3 times power while it rains.", "power");
 			default -> null;
 		};
 	}

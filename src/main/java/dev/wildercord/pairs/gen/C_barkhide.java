@@ -8,6 +8,7 @@ public final class C_barkhide {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "barkstrip" -> dev.wildercord.pairs.b044.Pairs044.barkShed(c);
 			case "leafshade" -> dev.wildercord.pairs.b014.Pairs014.verdantCanopy(c);
 			default -> {
 				return false;

@@ -10,6 +10,7 @@ public final class S_entropy {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "hoarfrost" -> new PairSpec("Hollow Rime", "void", EffectKind.HARMFUL, "Rime creeps over each target for 3 seconds: it slows more each second and unravels it for 1 damage a second. Then it freezes solid for 2 seconds; when the frost shatters, 5 damage, and enemies within 2 blocks take 3 and are slowed for 3 seconds.", "power", "duration", "radius");
+			case "relic_sense" -> new PairSpec("Relic Rot", "void", EffectKind.HARMFUL, "Up to 3 enemies glow for 6 seconds and unravel in four wounds, one a second: 1, 2, 2 then 3 magic damage (through armour). The last wound shatters into a burst of sand.", "power", "duration");
 			default -> null;
 		};
 	}

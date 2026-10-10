@@ -9,6 +9,7 @@ public final class S_bloomstep {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "lily_path" -> new PairSpec("Lily Sweep", "life", EffectKind.MOVEMENT, "You dash up to 10 blocks toward the point, stopped by walls. Each enemy you pass within 1.5 blocks takes 3 damage and is knocked aside, once. Where you stop, lily pads spread round you for a moment.", "power");
 			case "warp_step" -> new PairSpec("Petal Gate", "life", EffectKind.MOVEMENT, "Steps you to where the spell landed (up to 24 blocks). Allies within 3 blocks of where you arrive get Regeneration I for 5 seconds. 3 seconds later you are drawn back to where you left, unless you're sneaking.");
 			default -> null;
 		};

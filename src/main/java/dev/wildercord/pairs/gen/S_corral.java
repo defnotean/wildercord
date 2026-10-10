@@ -9,6 +9,7 @@ public final class S_corral {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "herdsense" -> new PairSpec("Drover's Pen", "wind", EffectKind.HARMFUL, "Up to 8 enemies within 5 blocks (times radius) of the point are herded toward it by four shoves, half a second apart, while the pen shrinks. Each is also Slowness II and Glowing for 4 seconds. Bosses are not moved.", "radius");
 			case "rime_seal" -> new PairSpec("Gale Pen", "wind", EffectKind.HARMFUL, "Enemies within 5 blocks are pulled into the middle of a wind ring for 6 seconds, and pulled back in whenever they stray past 4 blocks. Whoever stands on the frost seal under the middle for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage, once each.", "duration", "radius");
 			default -> null;
 		};

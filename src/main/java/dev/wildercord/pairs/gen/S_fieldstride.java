@@ -10,6 +10,7 @@ public final class S_fieldstride {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "steedsong" -> new PairSpec("Gallop Lane", "wind", EffectKind.HELPFUL, "A lane of wind runs 10 blocks ahead of you in 1.5 seconds. You and each ally it passes get Speed I and Jump Boost I for 20 seconds; a horse or tamed animal it passes gets Speed II and Jump Boost II for 3 minutes.", "power", "duration", "radius");
+			case "trailblaze" -> new PairSpec("Trailstride", "wind", EffectKind.MOVEMENT, "You dash 6 blocks the way you cast, stopping at walls, with Speed I for 4 seconds, and leave a trail of green crumbs. Enemies within 1.5 blocks of the path are knocked aside and take 2 damage.", "power");
 			default -> null;
 		};
 	}

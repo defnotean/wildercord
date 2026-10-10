@@ -9,6 +9,7 @@ public final class C_cometfall {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "glacier" -> dev.wildercord.pairs.b011.Pairs011.frozenMeteor(c);
+			case "shard_compass" -> dev.wildercord.pairs.b043.Pairs043.lodestarFall(c);
 			default -> {
 				return false;
 			}

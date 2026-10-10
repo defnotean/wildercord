@@ -8,6 +8,7 @@ public final class C_nullify {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "sign_glow" -> dev.wildercord.pairs.b049.Pairs049.blankGlyph(c);
 			case "timesteal" -> dev.wildercord.pairs.b011.Pairs011.purloinedHour(c);
 			default -> {
 				return false;

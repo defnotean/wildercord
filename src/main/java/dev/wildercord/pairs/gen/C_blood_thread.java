@@ -9,6 +9,7 @@ public final class C_blood_thread {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "magnetize" -> dev.wildercord.pairs.b013.Pairs013.lodestoneThread(c);
+			case "vein" -> dev.wildercord.pairs.b048.Pairs048.bloodVein(c);
 			default -> {
 				return false;
 			}

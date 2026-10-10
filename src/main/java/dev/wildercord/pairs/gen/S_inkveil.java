@@ -9,6 +9,7 @@ public final class S_inkveil {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "shipwreck_sense" -> new PairSpec("Murk Lantern", "frost", EffectKind.HELPFUL, "Allies within 4 blocks turn invisible: 10 seconds in water, 3 on land. For 4 seconds, once a second, the nearest enemy within 12 blocks glows for 2 seconds, and an ink-blue line points from you to it.", "duration");
 			case "withdraw" -> new PairSpec("Ink Shroud", "frost", EffectKind.HELPFUL, "Up to 8 allies within 4 blocks turn invisible for 4 seconds (10 in water), and any of them below half health also gets Speed II for 4 seconds. Mobs within 6 blocks that were hunting one of them lose their target.", "duration", "radius");
 			default -> null;
 		};

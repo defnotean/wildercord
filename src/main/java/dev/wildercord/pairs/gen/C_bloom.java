@@ -9,6 +9,7 @@ public final class C_bloom {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "phoenix_pyre" -> dev.wildercord.pairs.b015.Pairs015.emberbloom(c);
+			case "saplingrise" -> dev.wildercord.pairs.b047.Pairs047.verdantSurge(c);
 			default -> {
 				return false;
 			}

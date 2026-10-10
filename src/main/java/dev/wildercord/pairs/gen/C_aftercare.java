@@ -9,6 +9,7 @@ public final class C_aftercare {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "frostbloom" -> dev.wildercord.pairs.b014.Pairs014.frostbark(c);
+			case "strata_rise" -> dev.wildercord.pairs.b048.Pairs048.aftercareStrata(c);
 			default -> {
 				return false;
 			}

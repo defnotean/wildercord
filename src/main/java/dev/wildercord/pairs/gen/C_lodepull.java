@@ -9,6 +9,7 @@ public final class C_lodepull {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "magnetize" -> dev.wildercord.pairs.b029.Pairs029.lodeshock(c);
+			case "plumbline" -> dev.wildercord.pairs.b047.Pairs047.plumbLodestone(c);
 			default -> {
 				return false;
 			}

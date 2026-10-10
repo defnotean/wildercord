@@ -9,6 +9,7 @@ public final class S_disarm {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "reed_cut" -> new PairSpec("Cane Snare", "earth", EffectKind.HARMFUL, "Reed stalks grow up round up to 3 enemies and draw them in towards the point: 3 damage each and Weakness II for 4 seconds (their grip is cut). Bosses take the damage but are never pulled.", "power", "duration");
 			case "warp" -> new PairSpec("Snatch Swap", "void", EffectKind.MOVEMENT, "You and the first enemy hit swap places through the void, and you're unseen for 1 second. The enemy is left reeling: Weakness I for 3 seconds, Slowness II and Nausea for 2. Not bosses; with no enemy, nothing happens.", "duration");
 			default -> null;
 		};

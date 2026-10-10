@@ -10,6 +10,7 @@ public final class S_beastguard {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "grace" -> new PairSpec("Pardoning Ring", "arcane", EffectKind.HELPFUL, "A ring of white light falls 6 blocks to the ground in about a second. Up to 8 animals within 6 blocks (pets, mounts, farm animals) get Resistance II and Fire Resistance for 60 seconds and 3 absorption hearts for 10 seconds. Allies within 6 blocks who are not animals (you included) get Resistance III for 3 seconds.", "duration", "radius");
+			case "village_sense" -> new PairSpec("Watchful Herd", "arcane", EffectKind.HELPFUL, "Animals, mounts and pets within 10 blocks get Resistance II and Fire Resistance for 10 seconds, and are called in toward you three times, a second apart. Enemies within 3 blocks of an animal are knocked back and take 2 damage at each calling.", "radius", "duration");
 			default -> null;
 		};
 	}

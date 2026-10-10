@@ -10,6 +10,7 @@ public final class S_aftercare {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "frostbloom" -> new PairSpec("Frostbark", "frost", EffectKind.HELPFUL, "Each ally reached (up to 8) gets Regeneration II for 5 seconds. For 10 seconds, twice a second: if an ally has lost health since the last check, each enemy within 3 blocks of it takes 2 frost damage and Slowness III for 2 seconds, and the ally is healed 1 (6 times in all).", "power", "duration");
+			case "strata_rise" -> new PairSpec("Sediment Keep", "earth", EffectKind.HELPFUL, "Allies within 3 blocks (8 at most) get 3 hearts of absorption for 12 seconds. For 15 seconds, each blow that costs an ally health heals them 1 a second later, 6 in all.", "power", "duration");
 			default -> null;
 		};
 	}

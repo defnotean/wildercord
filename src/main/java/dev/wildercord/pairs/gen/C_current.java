@@ -8,6 +8,7 @@ public final class C_current {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "pocket_current" -> dev.wildercord.pairs.b049.Pairs049.drawnTide(c);
 			case "porpoise" -> dev.wildercord.pairs.b017.Pairs017.surfLeap(c);
 			default -> {
 				return false;

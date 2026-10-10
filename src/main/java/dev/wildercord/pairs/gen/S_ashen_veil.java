@@ -10,6 +10,7 @@ public final class S_ashen_veil {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "emberguard" -> new PairSpec("Ash Ward", "fire", EffectKind.HELPFUL, "Puts up to 8 allies out and gives them Fire Resistance for 15 seconds, and wreathes them in ash for 10 seconds. Each second, enemies within 2.5 blocks of a warded ally are set alight for 3 seconds and blinded for 1.", "duration", "radius");
+			case "snuff_out" -> new PairSpec("Dampened Ember", "fire", EffectKind.HELPFUL, "Allies within 6 blocks (you too) are put out and get Fire Resistance for 10 seconds. For 5 seconds, once a second, enemies within 2 blocks of an ally are blinded for 1 second and set alight for 2 seconds.", "radius", "duration");
 			default -> null;
 		};
 	}

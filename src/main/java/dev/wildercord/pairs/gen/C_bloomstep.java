@@ -8,6 +8,7 @@ public final class C_bloomstep {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "lily_path" -> dev.wildercord.pairs.b048.Pairs048.bloomstepLilyPath(c);
 			case "warp_step" -> dev.wildercord.pairs.b017.Pairs017.petalGate(c);
 			default -> {
 				return false;

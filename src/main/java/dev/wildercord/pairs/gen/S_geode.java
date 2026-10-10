@@ -10,6 +10,7 @@ public final class S_geode {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "shulkershell" -> new PairSpec("Shard Shell", "earth", EffectKind.HELPFUL, "Seals the first ally in reach in a crystal shell for 4 seconds, with Resistance III, and counts the harm it takes inside. When the shell opens, one shard flies per 4 counted (3 at most) at the nearest enemies within 8 blocks, 2 damage each. Enemies within 3 blocks are lifted.", "power", "duration", "radius");
+			case "treasure_sense" -> new PairSpec("Shard Prospect", "earth", EffectKind.HELPFUL, "Up to 6 allies get Resistance I for 6 seconds and 4 absorption (2 hearts) for 8 seconds. Then three glints, two seconds apart, the first at once: each flies from an ally to the nearest enemy within 6 blocks, dealing 2 times power and making it glow for 3 seconds.", "power");
 			default -> null;
 		};
 	}

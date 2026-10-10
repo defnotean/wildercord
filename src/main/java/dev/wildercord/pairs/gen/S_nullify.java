@@ -9,6 +9,7 @@ public final class S_nullify {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "sign_glow" -> new PairSpec("Blank Glyph", "arcane", EffectKind.HARMFUL, "Strips every good effect from up to 6 enemies. Each effect stripped deals 1 damage to that enemy (3 at most). The struck enemies also glow for 4 seconds, with a ring of sign-letters turning over their heads.", "power");
 			case "timesteal" -> new PairSpec("Purloined Hour", "time", EffectKind.HARMFUL, "The first enemy is stripped of all its good effects, and up to 2 of them go to you with the time they had left (at most 10 seconds). The target drags (Slowness I for 2 seconds); with nothing to steal, you are quickened instead (Speed I for 2 seconds).", "duration");
 			default -> null;
 		};

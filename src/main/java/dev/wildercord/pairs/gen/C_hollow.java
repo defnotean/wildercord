@@ -9,6 +9,7 @@ public final class C_hollow {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "portalfall" -> dev.wildercord.pairs.b019.Pairs019.gapDrop(c);
+			case "stow" -> dev.wildercord.pairs.b050.Pairs050.pocketGap(c);
 			default -> {
 				return false;
 			}

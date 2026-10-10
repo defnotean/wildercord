@@ -8,6 +8,7 @@ public final class C_basalt_surge {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "blastward" -> dev.wildercord.pairs.b044.Pairs044.ridgeblast(c);
 			case "magma" -> dev.wildercord.pairs.b013.Pairs013.calderaRidge(c);
 			default -> {
 				return false;

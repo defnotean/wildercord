@@ -10,6 +10,7 @@ public final class S_bloom {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "phoenix_pyre" -> new PairSpec("Emberbloom", "life", EffectKind.HELPFUL, "Allies within 6 blocks get Regeneration I for 6 seconds and a ring of petals. A second later the petals open: 4 health and 4 absorption for 10 seconds each. At two seconds the flower bursts: each enemy within 2.5 blocks of an ally takes 3 fire damage, once.", "power", "radius");
+			case "saplingrise" -> new PairSpec("Verdant Surge", "life", EffectKind.HELPFUL, "Up to 3 allies get Regeneration II for 6 seconds and 4 health at once. Other allies within 3 blocks of each of them catch Regeneration I for 5 seconds.", "power", "duration", "radius");
 			default -> null;
 		};
 	}

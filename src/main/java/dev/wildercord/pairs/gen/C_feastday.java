@@ -8,6 +8,7 @@ public final class C_feastday {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "gourdcall" -> dev.wildercord.pairs.b046.Pairs046.harvestFeast(c);
 			case "savor" -> dev.wildercord.pairs.b020.Pairs020.longSupper(c);
 			default -> {
 				return false;

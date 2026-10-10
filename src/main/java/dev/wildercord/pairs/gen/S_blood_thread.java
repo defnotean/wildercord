@@ -10,6 +10,7 @@ public final class S_blood_thread {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "magnetize" -> new PairSpec("Lodestone Thread", "storm", EffectKind.HARMFUL, "Shocks the target for 2 at once, then magnetizes it for 4 seconds: enemies within 5 blocks are pulled towards it, and any touching it are shocked for 3 once a second. Up to 4 enemies still within 3 blocks are threaded for 6 seconds: each second each takes 1 damage while another thread-mate is within 4 blocks.", "power", "radius", "duration");
+			case "vein" -> new PairSpec("Lodestone Gather", "blood", EffectKind.HARMFUL, "Up to 4 enemies you hit take 2 damage each and are threaded together. For 1.5 seconds they are drawn to their middle, then the vein bursts there: 6 damage and Bleeding to every enemy within 2.5 blocks (8 at most).", "power", "radius");
 			default -> null;
 		};
 	}

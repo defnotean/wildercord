@@ -9,6 +9,7 @@ public final class C_fieldstride {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "steedsong" -> dev.wildercord.pairs.b020.Pairs020.gallopLane(c);
+			case "trailblaze" -> dev.wildercord.pairs.b049.Pairs049.trailstride(c);
 			default -> {
 				return false;
 			}

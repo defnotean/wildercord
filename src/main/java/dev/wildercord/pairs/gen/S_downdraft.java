@@ -9,6 +9,7 @@ public final class S_downdraft {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "siftfall" -> new PairSpec("Sifting Storm", "wind", EffectKind.HARMFUL, "For 3 seconds, sand sifts down over the point in a 3-block storm (4 pulses, one a second). Each pulse deals 2 damage and Slowness I for 2 seconds to enemies inside, and slams any airborne one down.", "power", "radius");
 			case "weigh" -> new PairSpec("Millstone", "earth", EffectKind.HARMFUL, "A stone wheel drops onto the point from 3 blocks up half a second later. Up to 8 enemies within 5 blocks take 3 damage, plus 1 for every block they are above the ground (up to 6), and airborne ones are slammed down. Then for 4 seconds they are crushed: Slowness III and 1 damage a second.", "power", "duration", "radius");
 			default -> null;
 		};

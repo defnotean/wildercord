@@ -9,6 +9,7 @@ public final class C_guardlink {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "hearthbond" -> dev.wildercord.pairs.b014.Pairs014.hearthWard(c);
+			case "keepsafe" -> dev.wildercord.pairs.b046.Pairs046.stoneVow(c);
 			default -> {
 				return false;
 			}

@@ -8,6 +8,7 @@ public final class C_corral {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "herdsense" -> dev.wildercord.pairs.b042.Pairs042.droversPen(c);
 			case "rime_seal" -> dev.wildercord.pairs.b016.Pairs016.galePen(c);
 			default -> {
 				return false;

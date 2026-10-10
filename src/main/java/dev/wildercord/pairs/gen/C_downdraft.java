@@ -8,6 +8,7 @@ public final class C_downdraft {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "siftfall" -> dev.wildercord.pairs.b047.Pairs047.siftingStorm(c);
 			case "weigh" -> dev.wildercord.pairs.b014.Pairs014.millstone(c);
 			default -> {
 				return false;

@@ -9,6 +9,7 @@ public final class S_feastday {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "gourdcall" -> new PairSpec("Harvest Feast", "fire", EffectKind.HELPFUL, "Up to 6 allies are healed 4, get Strength I for 8 seconds and Regeneration I for 6 seconds. Two seconds later the last course heals each still here and hurt by 2 more.", "power");
 			case "savor" -> new PairSpec("Long Supper", "fire", EffectKind.HELPFUL, "A glow of hearth-light reaches 4 blocks out from where you cast it, in 6 beats two seconds apart. Each beat heals each ally inside it 2 health and gives them Regeneration I for 4 seconds.", "duration", "radius");
 			default -> null;
 		};

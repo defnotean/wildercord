@@ -8,6 +8,7 @@ public final class C_clockroot {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "coppice" -> dev.wildercord.pairs.b045.Pairs045.rootward(c);
 			case "time_skip" -> dev.wildercord.pairs.b014.Pairs014.timeEcho(c);
 			default -> {
 				return false;

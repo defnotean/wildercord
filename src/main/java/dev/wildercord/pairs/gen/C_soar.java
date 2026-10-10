@@ -8,6 +8,7 @@ public final class C_soar {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "stalkrise" -> dev.wildercord.pairs.b047.Pairs047.stalkLeap(c);
 			case "thunderbird" -> dev.wildercord.pairs.b018.Pairs018.wingdive(c);
 			default -> {
 				return false;

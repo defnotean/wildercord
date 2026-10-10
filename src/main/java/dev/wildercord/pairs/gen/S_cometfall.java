@@ -10,6 +10,7 @@ public final class S_cometfall {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "glacier" -> new PairSpec("Frozen Meteor", "frost", EffectKind.HARMFUL, "Ice pins up to 8 enemies in place (Slowness III for 2 seconds). Half a second later a comet of ice crashes on the point: 6 damage and 2 seconds alight to every enemy within 3 blocks, and 4 more to those pinned.", "power", "duration", "radius");
+			case "shard_compass" -> new PairSpec("Lodestar Fall", "arcane", EffectKind.HARMFUL, "Drags up to 8 enemies toward the point for 1 second, marked Glowing for 2 seconds. A comet falls on the point 1.5 seconds later: 6 damage to every enemy within 3 blocks, and they burn for 2 seconds.", "power", "radius");
 			default -> null;
 		};
 	}

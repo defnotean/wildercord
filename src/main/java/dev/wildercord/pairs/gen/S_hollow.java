@@ -10,6 +10,7 @@ public final class S_hollow {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "portalfall" -> new PairSpec("Gap Drop", "void", EffectKind.HARMFUL, "A gap opens above each of up to 8 enemies and lifts it into the air. 0.6 seconds later it is flung back down: 6 damage, and enemies within 2.5 blocks of where it lands take 2 and stagger.", "power", "radius");
+			case "stow" -> new PairSpec("Pocket Gap", "void", EffectKind.HARMFUL, "The enemy struck floats up for 1 second (bosses are not lifted) while enemies within 3 blocks are drawn toward its spot. Then it drops back onto that spot for 10 magic damage.", "power", "radius");
 			default -> null;
 		};
 	}

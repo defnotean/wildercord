@@ -9,6 +9,7 @@ public final class C_entropy {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "hoarfrost" -> dev.wildercord.pairs.b016.Pairs016.hollowRime(c);
+			case "relic_sense" -> dev.wildercord.pairs.b047.Pairs047.relicRot(c);
 			default -> {
 				return false;
 			}

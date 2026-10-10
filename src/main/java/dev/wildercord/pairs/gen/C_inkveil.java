@@ -8,6 +8,7 @@ public final class C_inkveil {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "shipwreck_sense" -> dev.wildercord.pairs.b049.Pairs049.murkLantern(c);
 			case "withdraw" -> dev.wildercord.pairs.b019.Pairs019.inkShroud(c);
 			default -> {
 				return false;

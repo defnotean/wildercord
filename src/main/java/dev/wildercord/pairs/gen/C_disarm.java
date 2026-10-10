@@ -8,6 +8,7 @@ public final class C_disarm {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "reed_cut" -> dev.wildercord.pairs.b047.Pairs047.caneSnare(c);
 			case "warp" -> dev.wildercord.pairs.b019.Pairs019.snatchSwap(c);
 			default -> {
 				return false;
