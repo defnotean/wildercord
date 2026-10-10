@@ -936,7 +936,9 @@ public final class Effects {
 				"spook", "aegis", "accord", "citadel", "shieldwall", "staunch", "sentry", "tend", "soothe", "withdraw", "keepsafe", "faithful" ->
 				dev.wildercord.cast.packs.WardEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
 			default -> {
-				if (Runes.fused(rune)) {
+				if (PairCast.run(cast, node, hit, helped, harmed, power, duration, amplify)) {
+					// A pair fusion, each made by hand for its two runes (see dev.wildercord.pairs).
+				} else if (Runes.fused(rune)) {
 					// The fused effects, made only at the Fusion Altar.
 					FusedEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
 				} else {

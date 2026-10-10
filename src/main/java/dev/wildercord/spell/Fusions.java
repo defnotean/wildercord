@@ -31,7 +31,7 @@ public final class Fusions {
 	 * A fusion of either kind: what it makes, the two elements it wears (for its magic circle's two halves,
 	 * and the Grimoire's hints), and the Grimoire key it's recorded under once made.
 	 */
-	public sealed interface Fusion permits Recipe, Signature {
+	public sealed interface Fusion permits Recipe, Signature, Pair {
 		RuneDef result();
 
 		/** The first of its two elements (a signature's: its first rune's). */
@@ -84,6 +84,22 @@ public final class Fusions {
 		/** The element fusion its two runes would make if it weren't for this one (Hail, for Chill and Shock). */
 		public Optional<Recipe> overrides() {
 			return elementRecipe(first(), second());
+		}
+	}
+
+	/**
+	 * A pair fusion: two particular effects that fuse into a rune made by hand for just them (see {@link PairRunes}).
+	 * Asked for after the signatures and before the element recipes.
+	 */
+	public record Pair(RuneDef a, RuneDef b, RuneDef result) implements Fusion {
+		@Override
+		public String first() {
+			return a.element();
+		}
+
+		@Override
+		public String second() {
+			return b.element();
 		}
 	}
 
@@ -216,12 +232,17 @@ public final class Fusions {
 	 * fusion of their two elements.
 	 */
 	public static Optional<Fusion> recipe(RuneDef a, RuneDef b) {
-		if (!fusible(a) || !fusible(b) || WovenRunes.isWoven(a) || WovenRunes.isWoven(b)) {
-			return Optional.empty();
-		}
 		Optional<Signature> signature = signature(a, b);
 		if (signature.isPresent()) {
 			return Optional.of(signature.get());
+		}
+		// A pair made by hand for these two runes (innate ones too, for their heart's owner).
+		Optional<RuneDef> pair = PairRunes.of(a, b);
+		if (pair.isPresent()) {
+			return Optional.of(new Pair(a, b, pair.get()));
+		}
+		if (!fusible(a) || !fusible(b) || WovenRunes.isWoven(a) || WovenRunes.isWoven(b)) {
+			return Optional.empty();
 		}
 		return elementRecipe(a.element(), b.element()).map(Fusion.class::cast);
 	}
@@ -246,6 +267,10 @@ public final class Fusions {
 
 	/** The recipe that makes {@code result}, if it's a fused effect: an element fusion or a signature one. */
 	public static Optional<Fusion> recipeFor(RuneDef result) {
+		if (PairRunes.isPair(result)) {
+			List<RuneDef> parts = PairRunes.parts(result);
+			return parts.size() == 2 ? Optional.of(new Pair(parts.get(0), parts.get(1), result)) : Optional.empty();
+		}
 		Optional<Recipe> recipe = RECIPES.stream().filter(r -> r.result().is(result.id())).findFirst();
 		if (recipe.isPresent()) {
 			return Optional.of(recipe.get());
@@ -378,7 +403,7 @@ public final class Fusions {
 			}
 			RuneDef a = filled.get(0).rune();
 			RuneDef b = filled.get(1).rune();
-			if (catalyst==Catalyst.BLOCK ? !weavable(a)||!weavable(b) : !fusible(a)||!fusible(b)) {
+			if (catalyst==Catalyst.BLOCK ? !weavable(a)||!weavable(b) : (!fusible(a)||!fusible(b)) && PairRunes.of(a, b).isEmpty()) {
 				return Plan.refuse(Kind.COMBINE, "Only effects with an element fuse.");
 			}
 			if (catalyst == Catalyst.BLOCK) {

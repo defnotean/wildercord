@@ -316,7 +316,7 @@ public final class Runes {
 
 	/** Whether a rune is made only at the Fusion Altar: an element fusion or a signature one. */
 	public static boolean fused(RuneDef rune) {
-		return FUSED.contains(rune) || SIGNATURE.contains(rune) || WovenRunes.isWoven(rune);
+		return FUSED.contains(rune) || SIGNATURE.contains(rune) || WovenRunes.isWoven(rune) || PairRunes.isPair(rune);
 	}
 
 
@@ -915,6 +915,9 @@ public final class Runes {
 		}
 		if (Knots.isKnot(id)) {
 			return Knots.def(id);
+		}
+		if (PairRunes.isPair(id)) {
+			return PairRunes.def(id);
 		}
 		return WovenRunes.isWoven(id) ? WovenRunes.def(id) : Optional.empty();
 	}
