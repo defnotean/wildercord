@@ -895,6 +895,9 @@ def write_lang(runes):
     import predator_art
     lang.update(predator_art.LANG)
     predator_art.write(sys.modules[__name__])
+    import giant_art
+    lang.update(giant_art.LANG)
+    giant_art.write(sys.modules[__name__])
     import tempering_art
     lang.update(tempering_art.LANG)
     tempering_art.write(sys.modules[__name__])

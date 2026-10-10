@@ -131,6 +131,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.town.InnRaid.init();
 		dev.wildercord.town.BountyEscorts.init();
 		dev.wildercord.town.Caravans.init();
+		dev.wildercord.monster.Giants.init();
 		dev.wildercord.NameTags.init();
 		dev.wildercord.player.Retemper.init();
 		dev.wildercord.player.TribulationScars.init();

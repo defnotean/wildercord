@@ -282,6 +282,7 @@ public final class WildercordTownChecks {
 		deepMounts(player, level);
 		mountBonds(player, level);
 		predators(player, level);
+		giants(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -497,6 +498,42 @@ public final class WildercordTownChecks {
 		lynx.discard();
 		cougar.discard();
 		zombie.discard();
+	}
+
+	/** A giant is a monster of the wilds grown huge and tough; its stomp throws what's near, its bar shows, and it drops its heart. */
+	private void giants(ServerPlayer player, ServerLevel level) {
+		var at = new net.minecraft.world.phys.Vec3(player.getX() + 8, player.getY() + 40, player.getZ());
+		var giant = dev.wildercord.monster.Giants.make(level, dev.wildercord.monster.GiantRules.Kind.ELDER, at, 6, false);
+		check(giant != null, "a giant wakes");
+		if (giant == null) return;
+		giant.setNoAi(true);
+		giant.setNoGravity(true);
+		level.addFreshEntity(giant);
+		check(dev.wildercord.monster.Giants.is(giant) && giant.isPersistenceRequired() && giant.hasCustomName(), "a named giant that stays");
+		check(giant.getScale() > 2.5F, "three times its kind's size");
+		check(giant.getMaxHealth() > 200, "and far tougher");
+		var matriarch = dev.wildercord.monster.Giants.make(level, dev.wildercord.monster.GiantRules.Kind.MATRIARCH, at, 6, false);
+		check(matriarch instanceof dev.wildercord.monster.Gloomstalker g && g.alpha()
+			&& g.variant() == dev.wildercord.monster.MonsterVariantRules.Variant.FROST, "the matriarch is a frost alpha gloomstalker");
+		var pig = net.minecraft.world.entity.EntityTypes.PIG.create(level, net.minecraft.world.entity.EntitySpawnReason.MOB_SUMMONED);
+		check(pig != null, "a pig underfoot");
+		if (pig == null) return;
+		pig.snapTo(giant.getX() + giant.getBbWidth() / 2 + 1, giant.getY(), giant.getZ(), 0, 0);
+		pig.setNoGravity(true);
+		level.addFreshEntity(pig);
+		float before = pig.getHealth();
+		check(dev.wildercord.monster.Giants.stomp(giant) >= 1 && pig.getHealth() < before, "its stomp hurts what's near");
+		check(pig.getDeltaMovement().y > 0, "and throws it");
+		dev.wildercord.monster.Giants.update(giant);
+		var bar = dev.wildercord.monster.Giants.bar(giant);
+		check(bar != null && bar.getPlayers().contains(player), "a near player sees its bar");
+		giant.kill(level);
+		var hearts = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, giant.getBoundingBox().inflate(4),
+			item -> item.getItem().is(dev.wildercord.monster.Giants.GIANT_HEART));
+		check(!hearts.isEmpty(), "it drops its heart");
+		check(bar == null || bar.getPlayers().isEmpty(), "its bar goes when it falls");
+		hearts.forEach(net.minecraft.world.entity.Entity::discard);
+		pig.discard();
 	}
 
 	/** Riding a tame mount grows a bond that quickens it, teaches it to dash and then to strike as it lands; it wears barding. */

@@ -147,6 +147,7 @@ arrows, blasts and spells). The first hours are the world as it was.
   slow and chill); born in scorched land, **Ash** (a fifth more damage, fireproof; its blows burn).
 - **Packs.** A Gloomstalker that finds prey calls its kin within 16 blocks. The first of a group is often an **Alpha**:
   bigger, stronger, and heard from 28 blocks.
+- **Giants.** Rarely, one of them wakes three times its size and roams the overworld: see [Roaming Giants]({{ '/world/roaming-giants/' | relative_url }}).
 
 ## Tips and counterplay
 
