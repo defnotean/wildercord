@@ -592,6 +592,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Ascensions formed past the Twentieth Circle (see {@link dev.wildercord.spell.AscensionRules}); absent in old saves. Kept through death. */
+	public static final AttachmentType<Integer> ASCENSION = AttachmentRegistry.create(
+		Wildercord.id("ascension"),
+		builder -> builder
+			.initializer(() -> 0)
+			.persistent(Codec.INT)
+			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	public static void init() {}
 }
 

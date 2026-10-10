@@ -1995,6 +1995,16 @@ public class CordScreen extends Screen {
 		lines.add(Component.empty());
 		if (circles >= Circles.MAX) {
 			lines.add(Component.translatable("screen.wildercord.heart.complete", Circles.MAX).withStyle(ChatFormatting.GOLD));
+			int rank = Heart.ascension(player);
+			if (rank > 0) lines.add(Component.translatable("screen.wildercord.heart.ascension", dev.wildercord.spell.AscensionRules.numeral(rank),
+				dev.wildercord.spell.AscensionRules.MAX).withColor(0xFFE0A0));
+			if (rank < dev.wildercord.spell.AscensionRules.MAX) {
+				int condensed = Heart.condensed(player), needed = dev.wildercord.spell.AscensionRules.needed(rank + 1);
+				boolean enough = condensed >= needed;
+				lines.add(Component.literal(enough ? "✔ " : "✘ ").append(Component.translatable("screen.wildercord.heart.ascension.next",
+					dev.wildercord.spell.AscensionRules.numeral(rank + 1), String.format(Locale.ROOT, "%,d", Math.min(condensed, needed)),
+					String.format(Locale.ROOT, "%,d", needed))).withStyle(enough ? ChatFormatting.GREEN : ChatFormatting.GRAY));
+			}
 			return lines;
 		}
 		int next = circles + 1;

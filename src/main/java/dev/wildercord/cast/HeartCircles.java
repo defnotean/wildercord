@@ -213,6 +213,24 @@ public final class HeartCircles {
 			if (!open.isEmpty()) CircleVowCommands.offer(player, open.getFirst().circle());
 			else HeartPathCommands.offer(player);
 		}
+		// Past the Twentieth Circle, condensed mana pays for Ascensions, formed the same way.
+		if (!ready && circles >= Circles.MAX && Heart.ascensionReady(player)) {
+			int rank = Heart.ascension(player) + 1;
+			if (NOTIFIED.getOrDefault(id, 0) != -rank) {
+				NOTIFIED.put(id, -rank);
+				player.sendSystemMessage(Component.translatable("message.wildercord.ascension.ready", dev.wildercord.spell.AscensionRules.numeral(rank)).withColor(0xF5C46A));
+				Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.4F);
+			}
+			if (meditating && !dev.wildercord.cast.events.Tribulation.active(player)) {
+				int progress = FORMING.merge(id, player.getAttachedOrElse(WildercordAttachments.ON_LEY, false) ? 10 : 5, Integer::sum);
+				forming(player, circles - 1, progress);
+				if (progress >= Circles.FORM_TICKS) {
+					FORMING.remove(id);
+					ascend(player);
+				}
+				return;
+			}
+		}
 		if (!ready || !meditating || dev.wildercord.cast.events.Tribulation.active(player)) {
 			FORMING.remove(id);
 			return;
@@ -224,6 +242,32 @@ public final class HeartCircles {
 			FORMING.remove(id);
 			// Every fifth circle is won in a tribulation, not simply formed.
 			if (!dev.wildercord.cast.events.Tribulation.begin(player, next)) form(player);
+		}
+	}
+
+	/** Forms the next earned Ascension. Recheck at the mutation boundary, including the cap. */
+	public static void ascend(ServerPlayer player) {
+		if (!Heart.ascensionReady(player)) return;
+		int rank = Heart.ascension(player) + 1;
+		player.setAttached(WildercordAttachments.ASCENSION, rank);
+		Spellbooks.setMana(player, Mana.max(player));
+		ServerLevel level = player.level();
+		Vec3 heart = heartOf(player);
+		int gold = COLORS[Circles.MAX - 1];
+		Sigils.flash(level, heart.add(0, 0.6, 0), 0xFF000000 | gold, 3.0F);
+		Vfx.radial(level, ParticleTypes.END_ROD, heart, 32, 0.4);
+		Vfx.shockwave(level, player.position(), 4.5, Vfx.theme("time"), 8);
+		Sigils.ground(level, player.position(), gold, 0xFFFFFF, 2.0F, 50);
+		Fx.sound(level, heart, dev.wildercord.content.WildercordSounds.CIRCLE_FORMED, 1.0F, 0.7F);
+		String numeral = dev.wildercord.spell.AscensionRules.numeral(rank);
+		player.connection.send(new ClientboundSetTitlesAnimationPacket(10, 50, 20));
+		player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("title.wildercord.ascension", numeral).withColor(gold)));
+		player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("title.wildercord.ascension.subtitle")));
+		player.sendSystemMessage(Component.translatable("message.wildercord.ascension.formed", numeral, dev.wildercord.spell.AscensionRules.MANA,
+			String.format(java.util.Locale.ROOT, "%.1f", dev.wildercord.spell.AscensionRules.REGEN), Math.round(dev.wildercord.spell.AscensionRules.POWER * 100)).withColor(gold));
+		Component news = Component.translatable("message.wildercord.ascension.announce", player.getDisplayName(), numeral).withColor(gold);
+		for (ServerPlayer other : level.getServer().getPlayerList().getPlayers()) {
+			if (other != player) other.sendSystemMessage(news);
 		}
 	}
 

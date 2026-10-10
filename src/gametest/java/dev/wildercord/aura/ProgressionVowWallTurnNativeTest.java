@@ -101,6 +101,21 @@ public final class ProgressionVowWallTurnNativeTest implements FabricClientGameT
 				check(Heart.activePath(p) == null, "An unformed Tenth Circle silences the path");
 				p.setAttached(WildercordAttachments.CIRCLES, 20);
 				p.removeAttached(WildercordAttachments.HEART_PATH);
+				// Ascension: past the Twentieth Circle condensed mana pays for up to ten more ranks.
+				dev.wildercord.player.Spellbooks.setCord(p, new ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
+				int before = dev.wildercord.player.Mana.max(p);
+				p.setAttached(WildercordAttachments.CONDENSED, dev.wildercord.spell.AscensionRules.needed(1) - 1);
+				check(!Heart.ascensionReady(p), "Ascension waits for its condensed mana");
+				p.setAttached(WildercordAttachments.CONDENSED, dev.wildercord.spell.AscensionRules.needed(1));
+				check(Heart.ascensionReady(p), "A whole Circle XX heart with the mana may Ascend");
+				dev.wildercord.cast.HeartCircles.ascend(p);
+				check(Heart.ascension(p) == 1 && !Heart.ascensionReady(p), "Ascension I formed, and II needs more");
+				check(dev.wildercord.player.Mana.max(p) == before + dev.wildercord.spell.AscensionRules.MANA, "Ascension I adds max mana");
+				p.setAttached(WildercordAttachments.CIRCLES, 19);
+				check(dev.wildercord.spell.AscensionRules.effect(Heart.ascension(p), Heart.active(p)).equals(CircleVows.Effect.NONE), "Below twenty circles Ascension is silent");
+				p.setAttached(WildercordAttachments.CIRCLES, 20);
+				p.removeAttached(WildercordAttachments.ASCENSION);
+				dev.wildercord.player.Spellbooks.setCord(p, ItemStack.EMPTY);
 			});
 			context.waitTicks(10);
 			save = world.getWorldSave();

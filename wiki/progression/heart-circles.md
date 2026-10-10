@@ -185,6 +185,19 @@ Runebound come for you: three at the 5th circle, up to six at the 20th, with a *
 kept) and you can face it again after five minutes. A won tribulation leaves runes and Mana Crystals where it ended,
 and a **Tribulation Scar**: one more heart of maximum health for good. Chat warns you a circle ahead.
 
+## Ascension
+
+Twenty circles is the most a heart can hold, but mana keeps condensing after that. Each further stretch of it
+pays for an **Ascension**, up to ten. When you have enough, chat tells you. Meditate for 10 seconds without
+getting hurt, just as you would to form a circle.
+
+Each Ascension adds **+5 max mana**, **+0.1 mana regeneration a second** and **+1% spell power**, so all ten
+add +50 mana, +1 regeneration and +10% power. Ascension I needs 3,860,000 condensed mana in all (440,000 past
+the Twentieth Circle). Each one after that needs a little more than the last, up to 11,420,000 for Ascension X.
+
+Ascensions stand on all twenty circles, so they are silent while any circle is cracked. The Grimoire's Heart
+page shows your Ascension and how much the next one needs.
+
 ## Re-tempering (0.12)
 
 The first time you join on 0.12, your heart is measured against these thresholds. You keep the most circles your

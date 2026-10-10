@@ -161,7 +161,19 @@ public final class Heart {
 	/** What the vows of this heart's active circles add up to, with its Heart Path; a cracked circle's vow is silent. */
 	public static dev.wildercord.spell.CircleVows.Effect vowEffect(Player player) {
 		int active = active(player);
-		return dev.wildercord.spell.CircleVows.effect(vows(player), active).plus(dev.wildercord.spell.HeartPaths.effect(path(player), active));
+		return dev.wildercord.spell.CircleVows.effect(vows(player), active).plus(dev.wildercord.spell.HeartPaths.effect(path(player), active))
+			.plus(dev.wildercord.spell.AscensionRules.effect(ascension(player), active));
+	}
+
+	/** Ascensions formed past the Twentieth Circle (old saves: none). */
+	public static int ascension(Player player) {
+		return dev.wildercord.spell.AscensionRules.clamp(player.getAttachedOrElse(WildercordAttachments.ASCENSION, 0));
+	}
+
+	/** Ready to form the next Ascension: all twenty circles unbroken, a Cord worn, and enough mana condensed. */
+	public static boolean ascensionReady(Player player) {
+		return player.isAlive() && !player.isSpectator() && Spellbooks.tier(player) != null
+			&& dev.wildercord.spell.AscensionRules.ready(ascension(player), circles(player), active(player), condensed(player));
 	}
 
 	/** The saved Heart Path number (old saves: none). */
