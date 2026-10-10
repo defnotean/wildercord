@@ -290,6 +290,7 @@ public final class WildercordTownChecks {
 		coopTribulation(player, level);
 		mentoring(player, level);
 		codex(player, level);
+		stats(player);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -515,6 +516,15 @@ public final class WildercordTownChecks {
 		check(dev.wildercord.cast.events.Tribulation.party(player) == 0, "no party, no allies");
 		dev.wildercord.cast.events.Tribulation.cancel(player);
 		check(!dev.wildercord.cast.events.Tribulation.engaged(player), "a cancelled tribulation lets the caster go");
+	}
+
+	/** The stats page reads the player as they are: their circles and the whole field guide, time played first. */
+	private void stats(ServerPlayer player) {
+		var snapshot = dev.wildercord.player.Stats.snapshot(player);
+		check(snapshot.circles() == dev.wildercord.player.Heart.circles(player), "the stats page shows the circles formed");
+		check(snapshot.guide() == dev.wildercord.spell.FieldGuide.all().size() && snapshot.met() <= snapshot.guide(), "the stats page counts the whole field guide");
+		var rows = dev.wildercord.player.StatsRules.rows(snapshot);
+		check(rows.getFirst().key().equals("play_time") && rows.getLast().key().equals("deaths"), "the stats page runs from time played to deaths");
 	}
 
 	/** Slaying a field-guide creature tallies it in the codex, ten earn it studied, and other creatures aren't counted. */

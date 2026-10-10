@@ -64,6 +64,7 @@
   * [Heart Paths](progression/heart-paths.md)
   * [The Grimoire and Feats](progression/grimoire.md)
   * [Lore Journal](progression/lore-journal.md)
+  * [Stats](progression/stats.md)
   * [Aura](progression/aura.md)
   * [Breathing Methods](progression/breathing-methods.md)
   * [Sword Arts](progression/sword-arts.md)

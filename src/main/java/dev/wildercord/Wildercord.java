@@ -51,6 +51,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.guild.Guilds.init();
 		dev.wildercord.guild.Mentors.init();
 		dev.wildercord.player.Codex.init();
+		dev.wildercord.player.Stats.init();
 		dev.wildercord.advancement.Advancements.init();
 		WildercordNetworking.init();
 		dev.wildercord.net.VersionCheck.init();
