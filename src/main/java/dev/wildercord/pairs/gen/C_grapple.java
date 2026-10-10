@@ -9,6 +9,7 @@ public final class C_grapple {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "leap" -> dev.wildercord.pairs.b008.Pairs008.grappleLeap(c);
+			case "long_arm" -> dev.wildercord.pairs.b027.Pairs027.anchorline(c);
 			case "vinelash" -> dev.wildercord.pairs.b009.Pairs009.grappleVinelash(c);
 			default -> {
 				return false;

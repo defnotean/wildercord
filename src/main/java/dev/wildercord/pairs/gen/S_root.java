@@ -9,6 +9,7 @@ public final class S_root {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "rootsnare" -> new PairSpec("Briarcreep", "earth", EffectKind.HARMFUL, "A line of roots creeps 6 blocks along the ground in the direction of the spell. Each enemy it reaches takes 3 damage and is slowed to a crawl (Slowness III, and it forgets its target) for 1.5 seconds. Each enemy is struck once.", "power");
 			case "tidehook" -> new PairSpec("Thornhook", "earth", EffectKind.HARMFUL, "Vines lash up to 4 targets: 3 damage each and Slowness V for 3 seconds. Over one second, three tugs reel each toward your feet, and each one that comes within 3 blocks of you is left soaked.", "power");
 			default -> null;
 		};

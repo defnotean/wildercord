@@ -9,7 +9,9 @@ public final class S_blind {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "eclipse" -> new PairSpec("Lightless Hour", "void", EffectKind.HARMFUL, "A dark disc 3.5 blocks wide eclipses the point for 5 seconds. Up to 6 enemies under it are blinded for 2 seconds (renewed each second) and take 1 damage a second; each second a blinded one lashes at the nearest other enemy within 2 blocks for 1.", "power", "duration", "radius");
 			case "spook" -> new PairSpec("Night Stampede", "void", EffectKind.HARMFUL, "Blindness for 4 seconds and Darkness for 3 on up to 8 enemies near the spot. Then 2 seconds of stampede: every half second each is knocked away from the spot, and each one that bumps another takes 2 damage.", "duration", "radius");
+			case "sunscorch" -> new PairSpec("Noonscorch", "fire", EffectKind.HARMFUL, "Blinds each target (Blindness and Darkness for 5 seconds, 3 on players). One second later the noon sun, focused through the blindness, burns it for 8 fire damage (12 in open daylight), sets it alight for 5 seconds and makes it glow for 6.", "power", "duration");
 			default -> null;
 		};
 	}

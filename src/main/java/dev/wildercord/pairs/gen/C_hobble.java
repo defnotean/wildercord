@@ -9,6 +9,7 @@ public final class C_hobble {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "mire" -> dev.wildercord.pairs.b008.Pairs008.hobbleMire(c);
+			case "shackle" -> dev.wildercord.pairs.b028.Pairs028.gaolchain(c);
 			default -> {
 				return false;
 			}

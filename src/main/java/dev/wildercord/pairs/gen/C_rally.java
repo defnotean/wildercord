@@ -9,6 +9,7 @@ public final class C_rally {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "soothe" -> dev.wildercord.pairs.b007.Pairs007.heraldsTruce(c);
+			case "stormheart" -> dev.wildercord.pairs.b025.Pairs025.stormStandard(c);
 			case "warcry" -> dev.wildercord.pairs.b010.Pairs010.rallyWarcry(c);
 			default -> {
 				return false;

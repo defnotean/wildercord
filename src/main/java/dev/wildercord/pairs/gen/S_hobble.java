@@ -10,6 +10,7 @@ public final class S_hobble {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "mire" -> new PairSpec("Bogsink", "earth", EffectKind.HARMFUL, "Each enemy within 2.5 blocks of the spot is hobbled (Slowness III) and soaked for 5 seconds. The bog tugs each one back towards the spot once a second for 4 seconds.", "duration", "radius");
+			case "shackle" -> new PairSpec("Gaolchain", "earth", EffectKind.HARMFUL, "Hobbles up to 4 enemies (Slowness III for 4 seconds) and chains each to where it stands for 5 seconds: any that strays more than 2 blocks is yanked back, and each yank bites for 2 damage.", "power", "duration");
 			default -> null;
 		};
 	}

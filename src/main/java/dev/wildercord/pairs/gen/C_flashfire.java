@@ -9,6 +9,7 @@ public final class C_flashfire {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "frost" -> dev.wildercord.pairs.b001.Pairs001.flashfireFrost(c);
+			case "launch" -> dev.wildercord.pairs.b022.Pairs022.hotAscent(c);
 			default -> {
 				return false;
 			}

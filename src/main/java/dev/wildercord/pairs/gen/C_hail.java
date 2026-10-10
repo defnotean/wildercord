@@ -8,7 +8,9 @@ public final class C_hail {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "pelt" -> dev.wildercord.pairs.b023.Pairs023.gravelHail(c);
 			case "starfall" -> dev.wildercord.pairs.b011.Pairs011.stellarSquall(c);
+			case "thunderhead" -> dev.wildercord.pairs.b025.Pairs025.hailcell(c);
 			default -> {
 				return false;
 			}

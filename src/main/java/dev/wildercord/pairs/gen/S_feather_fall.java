@@ -9,6 +9,7 @@ public final class S_feather_fall {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "glidewind" -> new PairSpec("Skyglide", "wind", EffectKind.HELPFUL, "For 12 seconds you sink slowly (Slow Falling) and take no fall damage. While you glide on elytra, a tailwind pushes you a little along your look, so the glide doesn't bleed speed.", "duration");
 			case "nudge" -> new PairSpec("Drift Nudge", "wind", EffectKind.MOVEMENT, "You lift into the air and float down slowly (Slow Falling for 6 seconds), and for 3 seconds in the air you drift the way you look. Every enemy within 4 blocks is nudged away from you, with no harm.", "duration", "radius");
 			default -> null;
 		};

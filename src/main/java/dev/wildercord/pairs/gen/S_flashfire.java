@@ -10,6 +10,7 @@ public final class S_flashfire {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "frost" -> new PairSpec("Steamburst", "frost", EffectKind.HARMFUL, "Heat flashes over the frost: each enemy within 3 blocks (up to eight) takes 4 fire damage and Slowness II for 4 seconds. The steam lingers 2 seconds: each second, enemies still within 2 blocks of the point take 1 more fire damage and are marked Cracked. Allies in it are thawed.", "power", "duration", "radius");
+			case "launch" -> new PairSpec("Hot Ascent", "fire", EffectKind.MOVEMENT, "Crouch for half a second in a shimmer of heat, then leap up and forward, falling slowly for 3 seconds. Where you land: 4 fire damage and alight for 4 seconds to every enemy within 3 blocks, and allies there are thawed.", "power", "radius");
 			default -> null;
 		};
 	}

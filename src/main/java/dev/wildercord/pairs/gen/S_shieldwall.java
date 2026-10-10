@@ -9,6 +9,7 @@ public final class S_shieldwall {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "stoneform" -> new PairSpec("Quarrywall", "earth", EffectKind.HELPFUL, "Allies within 5 blocks of you absorb 4 damage and get Resistance I for 8 seconds. Four times, every 2 seconds, stone rings out from each of them: enemies within 3 blocks take 2 damage and are knocked away.", "power", "radius");
 			case "taunt" -> new PairSpec("Ironbait Ward", "earth", EffectKind.HELPFUL, "Enemies hit turn on you for 6 seconds. You and allies within 5 blocks get Resistance I for 8 seconds. Each second, a turned enemy that is within 2 blocks of one of them is knocked back.", "duration", "radius");
 			default -> null;
 		};

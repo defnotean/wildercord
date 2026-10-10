@@ -9,6 +9,7 @@ public final class C_cinderbrand {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "hex" -> dev.wildercord.pairs.b002.Pairs002.ashenName(c);
+			case "reckoning" -> dev.wildercord.pairs.b022.Pairs022.emberLedger(c);
 			default -> {
 				return false;
 			}

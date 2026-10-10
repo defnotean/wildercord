@@ -10,6 +10,7 @@ public final class S_blackflame {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "soulfire" -> new PairSpec("Wraithfire", "void", EffectKind.HARMFUL, "Black soul flames cling to up to 6 targets: 2 withering damage at once, then again every second for 5 seconds. A target that dies burning sends its soul to the nearest other enemy within 4 blocks, which takes 2 withering damage and is set alight for 3 seconds.", "power", "duration");
+			case "wither" -> new PairSpec("Gravecinder", "void", EffectKind.HARMFUL, "Black fire brands the first enemy hit for 6 seconds: 1 wither damage a second (times power). At 2 and 4 seconds the brand leaps from a branded enemy to the nearest unbranded one within 3 blocks, for 2 wither damage on arrival. Up to 3 are branded.", "power");
 			default -> null;
 		};
 	}

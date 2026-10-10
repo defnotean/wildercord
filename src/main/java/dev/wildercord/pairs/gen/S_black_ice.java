@@ -9,6 +9,7 @@ public final class S_black_ice {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "dash" -> new PairSpec("Glass Lunge", "frost", EffectKind.MOVEMENT, "You dash up to 8 blocks the way you face, stopped by walls. Each enemy you pass within 1.5 blocks takes 3 cold damage and Weakness II for 5 seconds, once each.", "power");
 			case "fossilize" -> new PairSpec("Permafrost Relic", "frost", EffectKind.HARMFUL, "Chills and slows the target: Slowness I, then II, then III from 2 seconds on, with Weakness II for 5 seconds. At 4 seconds it cracks for 6 damage and is Cracked for 5 seconds. If it dies before that, it shatters: 4 freeze damage to enemies within 3 blocks, which are cracked too.", "power", "radius", "duration");
 			default -> null;
 		};

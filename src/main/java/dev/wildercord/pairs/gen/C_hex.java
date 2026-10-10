@@ -8,6 +8,7 @@ public final class C_hex {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "malison" -> dev.wildercord.pairs.b028.Pairs028.illOmen(c);
 			case "manaburn" -> dev.wildercord.pairs.b008.Pairs008.hexManaburn(c);
 			case "sporebloom" -> dev.wildercord.pairs.b009.Pairs009.hexSporebloom(c);
 			default -> {

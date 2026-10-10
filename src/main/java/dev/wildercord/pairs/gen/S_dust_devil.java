@@ -9,6 +9,7 @@ public final class S_dust_devil {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "sandstorm" -> new PairSpec("Dustwalker", "wind", EffectKind.HARMFUL, "A dust devil touches down at the point and hunts the nearest enemy within 10 blocks for 5 seconds, moving 1.5 blocks every half second. Each step, whatever is within 2 blocks takes 1 damage, is blinded for 2 seconds and slowed. When it blows out it flings them up, with 2 more damage.", "power", "duration", "radius");
 			case "singularity" -> new PairSpec("Wake Hole", "wind", EffectKind.HARMFUL, "A dust devil lands on the spot and chases the nearest enemy for 5 seconds, 0.6 blocks every quarter second. Enemies within 2 blocks are drawn into its black eye, blinded for 2 seconds and scoured for 1 damage every half second. It then bursts: 4 damage to each one caught, and they're flung up.", "power", "duration", "radius");
 			default -> null;
 		};

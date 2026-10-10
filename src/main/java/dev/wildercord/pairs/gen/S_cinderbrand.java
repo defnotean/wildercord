@@ -10,6 +10,7 @@ public final class S_cinderbrand {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "hex" -> new PairSpec("Ashen Name", "fire", EffectKind.HARMFUL, "Writes each target's name in cinders (8 at most): 3 fire damage, alight for 4 seconds, and Shadowed. For 6 seconds after, the name flares: 1 more fire damage each second.", "power", "duration");
+			case "reckoning" -> new PairSpec("Ember Ledger", "fire", EffectKind.HARMFUL, "Brands up to 4 targets for 3 fire damage each. For 4 seconds the ledger counts every wound they take; then half of each tally comes due again as fire (12 at most), and half of what comes due heals you (6 at most in all).", "power");
 			default -> null;
 		};
 	}

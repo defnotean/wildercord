@@ -9,6 +9,7 @@ public final class C_razorgale {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "sonic_boom" -> dev.wildercord.pairs.b019.Pairs019.keeningEdge(c);
+			case "windcut" -> dev.wildercord.pairs.b030.Pairs030.shearwind(c);
 			default -> {
 				return false;
 			}

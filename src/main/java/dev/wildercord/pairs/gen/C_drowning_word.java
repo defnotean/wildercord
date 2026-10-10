@@ -9,6 +9,7 @@ public final class C_drowning_word {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "hush" -> dev.wildercord.pairs.b016.Pairs016.drownedSilence(c);
+			case "silence" -> dev.wildercord.pairs.b023.Pairs023.undertowVerse(c);
 			default -> {
 				return false;
 			}

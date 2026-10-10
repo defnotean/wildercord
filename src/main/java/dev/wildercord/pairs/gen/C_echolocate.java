@@ -8,7 +8,9 @@ public final class C_echolocate {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "heartsense" -> dev.wildercord.pairs.b030.Pairs030.pulsebound(c);
 			case "reveal" -> dev.wildercord.pairs.b011.Pairs011.sonarLantern(c);
+			case "sounding" -> dev.wildercord.pairs.b024.Pairs024.pingdive(c);
 			default -> {
 				return false;
 			}

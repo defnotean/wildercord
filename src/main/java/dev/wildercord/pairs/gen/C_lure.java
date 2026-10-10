@@ -8,6 +8,7 @@ public final class C_lure {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "pull" -> dev.wildercord.pairs.b028.Pairs028.lodestone(c);
 			case "taunt" -> dev.wildercord.pairs.b008.Pairs008.lureTaunt(c);
 			default -> {
 				return false;

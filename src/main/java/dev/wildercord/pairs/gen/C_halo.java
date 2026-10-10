@@ -8,6 +8,7 @@ public final class C_halo {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "heal" -> dev.wildercord.pairs.b027.Pairs027.titheWard(c);
 			case "lifebloom" -> dev.wildercord.pairs.b011.Pairs011.hallowedBloom(c);
 			default -> {
 				return false;

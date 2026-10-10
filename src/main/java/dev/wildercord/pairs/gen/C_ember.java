@@ -8,6 +8,7 @@ public final class C_ember {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "jolt" -> dev.wildercord.pairs.b021.Pairs021.flashover(c);
 			case "leech" -> dev.wildercord.pairs.b002.Pairs002.emberTithe(c);
 			case "windcut" -> dev.wildercord.pairs.b001.Pairs001.emberWindcut(c);
 			default -> {

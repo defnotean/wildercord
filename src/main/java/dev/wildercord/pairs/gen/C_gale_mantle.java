@@ -9,6 +9,7 @@ public final class C_gale_mantle {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "stoneform" -> dev.wildercord.pairs.b007.Pairs007.stonewing(c);
+			case "warm_cloak" -> dev.wildercord.pairs.b022.Pairs022.warmstride(c);
 			default -> {
 				return false;
 			}

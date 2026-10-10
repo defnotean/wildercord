@@ -8,6 +8,7 @@ public final class C_devour {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "hellmouth" -> dev.wildercord.pairs.b022.Pairs022.mawFeast(c);
 			case "starmaw" -> dev.wildercord.pairs.b019.Pairs019.starvedMaw(c);
 			default -> {
 				return false;

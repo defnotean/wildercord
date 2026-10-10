@@ -9,6 +9,7 @@ public final class C_banish {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "harm" -> dev.wildercord.pairs.b007.Pairs007.recalledExile(c);
+			case "portalfall" -> dev.wildercord.pairs.b028.Pairs028.riftfall(c);
 			default -> {
 				return false;
 			}

@@ -9,6 +9,7 @@ public final class S_shadowstep {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "softfoot" -> new PairSpec("Stalking Edge", "void", EffectKind.MOVEMENT, "If the spot 1.5 blocks behind the first enemy hit is safe, you vanish there and it takes 4 magic damage (times power). For 8 seconds, every creature within 8 blocks that was after you loses track of you (not bosses).", "power", "duration");
 			case "thunderstep" -> new PairSpec("Thunder Shadow", "void", EffectKind.MOVEMENT, "You vanish for a second, then reappear behind the first enemy hit (or where the spell landed, if none), facing its back; a wall stops you short, 24 blocks at most. A shadow bolt strikes each enemy within 2.5 blocks of you for 6 lightning and Slowness I for 2 seconds. If you can't land safely, nothing strikes.", "power", "duration", "radius");
 			default -> null;
 		};

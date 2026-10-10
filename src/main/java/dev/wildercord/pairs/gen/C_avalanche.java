@@ -9,6 +9,7 @@ public final class C_avalanche {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "summit_wind" -> dev.wildercord.pairs.b016.Pairs016.whiteoutSlide(c);
+			case "tremor" -> dev.wildercord.pairs.b023.Pairs023.snowquake(c);
 			default -> {
 				return false;
 			}

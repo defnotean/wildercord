@@ -9,6 +9,7 @@ public final class C_haste {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "overdrive" -> dev.wildercord.pairs.b009.Pairs009.hasteOverdrive(c);
+			case "surge" -> dev.wildercord.pairs.b025.Pairs025.overclock(c);
 			default -> {
 				return false;
 			}

@@ -9,6 +9,7 @@ public final class S_lure {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "pull" -> new PairSpec("Ironpull Stone", "void", EffectKind.HARMFUL, "Pulls up to 6 enemies within 5 blocks towards the point, marked pulled and dropping their targets. Each half second for 4 seconds, any that has strayed past 1.5 blocks is drawn back; then a stone burst deals 3 damage to each enemy within 2 blocks.", "power", "radius");
 			case "taunt" -> new PairSpec("Bloodbait", "blood", EffectKind.HARMFUL, "Enemies within 3 blocks are dragged towards the spot for 2 seconds. Each one that reaches within 1.5 blocks of it takes 6 damage (3 hearts) and turns on you for 6 seconds, and you get Resistance I for those 6 seconds.", "duration", "radius");
 			default -> null;
 		};

@@ -8,6 +8,7 @@ public final class C_deflect {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "repel" -> dev.wildercord.pairs.b029.Pairs029.galeRing(c);
 			case "shield" -> dev.wildercord.pairs.b007.Pairs007.galeBulwark(c);
 			default -> {
 				return false;

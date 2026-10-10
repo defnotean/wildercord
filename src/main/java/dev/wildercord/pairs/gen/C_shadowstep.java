@@ -8,6 +8,7 @@ public final class C_shadowstep {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "softfoot" -> dev.wildercord.pairs.b029.Pairs029.stalkingEdge(c);
 			case "thunderstep" -> dev.wildercord.pairs.b018.Pairs018.thunderShadow(c);
 			default -> {
 				return false;

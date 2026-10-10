@@ -10,6 +10,7 @@ public final class S_gale_mantle {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "stoneform" -> new PairSpec("Stonewing", "earth", EffectKind.HELPFUL, "For 12 seconds the target takes 20% less damage (Resistance I). Six times, every 2 seconds, the wind inside its stone shell bursts out: enemies within 3 blocks are knocked back and take 1 damage.", "duration", "radius");
+			case "warm_cloak" -> new PairSpec("Warmstride", "wind", EffectKind.MOVEMENT, "Dashes you up to 8 blocks the way you face, stopping short of walls. For 10 seconds your freezing is wiped every second, so the cold barely takes hold. Where you land, allies within 2 blocks thaw and get Regeneration I for 4 seconds.", "duration");
 			default -> null;
 		};
 	}

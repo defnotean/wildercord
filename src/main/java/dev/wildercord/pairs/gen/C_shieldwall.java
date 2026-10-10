@@ -8,6 +8,7 @@ public final class C_shieldwall {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "stoneform" -> dev.wildercord.pairs.b026.Pairs026.quarrywall(c);
 			case "taunt" -> dev.wildercord.pairs.b010.Pairs010.shieldwallTaunt(c);
 			default -> {
 				return false;

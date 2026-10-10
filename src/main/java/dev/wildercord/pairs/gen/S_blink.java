@@ -14,6 +14,7 @@ public final class S_blink {
 			case "heal" -> new PairSpec("Mend Step", "life", EffectKind.MOVEMENT, "Teleports you to where the spell landed (max 40 blocks). Every ally within 4 blocks of your new spot is healed 6 health (3 hearts); healing past full becomes absorption for 10 seconds.", "power", "radius");
 			case "lightning" -> new PairSpec("Afterflash", "void", EffectKind.MOVEMENT, "Blinks you to where the spell landed (max 40 blocks). The spot you left is struck: 5 lightning damage to each enemy within 3 blocks of it, slowed (Slowness I for 3 seconds). If you can't land safely, nothing is struck.", "power", "radius");
 			case "swap" -> new PairSpec("Mirror Stride", "void", EffectKind.MOVEMENT, "You blink to where the spell landed (at most 40 blocks away, if there is room). The first enemy it hit, or else the first ally, trades places with you: it lands where you stood, if there is room there.");
+			case "thunderstep" -> new PairSpec("Stormstep", "storm", EffectKind.MOVEMENT, "Blinks you to where the spell landed, up to 24 blocks away. A second later lightning strikes the spot you left: 6 damage to every enemy within 2.5 blocks of it, and Slowness III for half a second. No safe spot means no blink.", "power", "radius");
 			default -> null;
 		};
 	}

@@ -9,7 +9,10 @@ public final class S_countdown {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "doomclock" -> new PairSpec("Deadline", "time", EffectKind.HARMFUL, "Clocks up to 3 enemies for 3 seconds (Slowness I meanwhile) and counts the damage they take (12 at most). At 1.5 seconds the moment catches up for 6 damage; at 3 the count goes off again, to it and every enemy within 3 blocks. A clocked enemy that dies first passes its clock to the nearest enemy within 6 blocks.", "power", "radius");
+			case "explode" -> new PairSpec("Knotburst", "time", EffectKind.HARMFUL, "Marks up to 4 targets and draws them into a knot for 1.5 seconds. Then the knot bursts: 6 damage to each mark and every enemy within 3 blocks of its middle, each thrown outward. Each enemy is hit once, however many marks are near.", "power", "radius");
 			case "frost" -> new PairSpec("Still Minute", "time", EffectKind.HARMFUL, "5 freeze damage, Slowness III for 4 seconds, and brittle for Shatter (4 seconds). 1.5 seconds later the moment catches up: 6 damage, and a target still brittle shatters for 4 more, with 2 freeze to enemies within 2 blocks. If it died first, the moment strikes the nearest enemy within 6 blocks for 6.", "power", "duration");
+			case "stormclock" -> new PairSpec("Thundertick", "time", EffectKind.HARMFUL, "Marks up to 3 enemies: 3 storm damage each now. 1.5 seconds later the moment catches up for 3 more, or if the mark is dead, it finds the nearest enemy within 6 blocks. Lightning strikes each mark's spot 2 and 4 seconds on: 2 damage to enemies within 1.5 blocks.", "power", "radius");
 			default -> null;
 		};
 	}

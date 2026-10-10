@@ -8,6 +8,7 @@ public final class C_dust_devil {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "sandstorm" -> dev.wildercord.pairs.b030.Pairs030.dustwalker(c);
 			case "singularity" -> dev.wildercord.pairs.b019.Pairs019.wakeHole(c);
 			default -> {
 				return false;

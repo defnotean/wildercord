@@ -8,6 +8,8 @@ public final class C_blizzard {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "cyclone" -> dev.wildercord.pairs.b023.Pairs023.whiteout(c);
+			case "dragon_breath" -> dev.wildercord.pairs.b028.Pairs028.rimebreath(c);
 			case "inferno" -> dev.wildercord.pairs.b015.Pairs015.thermocline(c);
 			default -> {
 				return false;

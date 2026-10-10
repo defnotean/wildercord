@@ -8,6 +8,7 @@ public final class C_feather_fall {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "glidewind" -> dev.wildercord.pairs.b029.Pairs029.skyglide(c);
 			case "nudge" -> dev.wildercord.pairs.b019.Pairs019.driftNudge(c);
 			default -> {
 				return false;

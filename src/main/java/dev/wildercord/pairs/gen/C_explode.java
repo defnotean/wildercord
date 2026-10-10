@@ -8,6 +8,7 @@ public final class C_explode {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "plasma" -> dev.wildercord.pairs.b025.Pairs025.plasmabloom(c);
 			case "primer" -> dev.wildercord.pairs.b015.Pairs015.litFuse(c);
 			default -> {
 				return false;

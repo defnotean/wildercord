@@ -10,6 +10,7 @@ public final class S_avalanche {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "summit_wind" -> new PairSpec("Whiteout Slide", "frost", EffectKind.HARMFUL, "A gale lifts up to 8 enemies within 3 blocks into the air: 3 damage each. A second later the snow slide comes down on whoever is still within 4 blocks: 6 damage each, and Slowness III for 3 seconds.", "power", "radius");
+			case "tremor" -> new PairSpec("Snowquake", "earth", EffectKind.HARMFUL, "The ground heaves: up to 6 enemies within 3 blocks are lifted. A second later snow comes down on the spot: 5 cold damage to every enemy within 3 blocks, and Slowness III for 3 seconds.", "power", "radius");
 			default -> null;
 		};
 	}

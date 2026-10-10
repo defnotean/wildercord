@@ -8,6 +8,7 @@ public final class C_black_ice {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "dash" -> dev.wildercord.pairs.b023.Pairs023.glassLunge(c);
 			case "fossilize" -> dev.wildercord.pairs.b013.Pairs013.permafrostRelic(c);
 			default -> {
 				return false;

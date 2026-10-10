@@ -9,6 +9,7 @@ public final class S_coldsnap {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "jolt" -> new PairSpec("Rime Spark", "storm", EffectKind.HARMFUL, "A cold snap races out from the point: 3 cold damage and Slowness II for 3 seconds to up to 6 enemies within 3 blocks. Then a spark jumps from the first of them to the nearest enemy within 3 blocks it has not yet hit, three times over, half a second apart: 3 lightning damage each jump.", "power", "radius");
 			case "rampart" -> new PairSpec("Glacis", "frost", EffectKind.HARMFUL, "Raises a frost wall 5 blocks wide and 3 high at the point for 8 seconds. Every enemy within 3 blocks takes 4 freeze damage, Slowness II for 4 seconds and is brittle for Shatter. Enemies that come against the wall are shoved back and chilled.", "power", "duration", "radius");
 			case "venom" -> new PairSpec("Blackfrost", "life", EffectKind.HARMFUL, "A cold snap grips each enemy within 3 blocks: 3 freeze damage, Slowness II for 4 seconds, and 2 damage with Poison I for 4 seconds. Two seconds later the ice cracks: each poisoned enemy takes 4 damage, and 2 more for each of up to two other poisoned enemies within 2.5 blocks.", "power", "duration", "radius");
 			default -> null;

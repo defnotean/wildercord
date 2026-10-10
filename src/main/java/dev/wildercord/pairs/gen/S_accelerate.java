@@ -9,6 +9,7 @@ public final class S_accelerate {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "haste" -> new PairSpec("Quickening Pulse", "time", EffectKind.HELPFUL, "Allies within 6 blocks of the point get Haste II and Speed I for 10 seconds. The pulse beats 6 times, every 2 seconds for 10 seconds, the first at once: each ally inside it gets Regeneration I for 2 seconds.", "duration", "radius");
 			case "swift" -> new PairSpec("Hourglass Gale", "time", EffectKind.HELPFUL, "For 10 seconds the target gets Speed III and sheds Slowness and frozen skin. Every second a gust of hurried time shoves enemies within 3 blocks back and slows them (Slowness II for 1.5 seconds).", "duration", "radius");
 			default -> null;
 		};

@@ -9,7 +9,9 @@ public final class S_hail {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "pelt" -> new PairSpec("Gravel Hail", "earth", EffectKind.HARMFUL, "Up to 3 enemies within 3 blocks are slowed (Slowness II) for 4 seconds. Five stones fall on them in turn, a quarter second apart: 2 damage each, shoving its target back. The fifth does 4 damage instead.", "power", "radius");
 			case "starfall" -> new PairSpec("Stellar Squall", "arcane", EffectKind.HARMFUL, "Hail falls on the point for 2 seconds: every half second up to 4 enemies within 3 blocks take 2 damage, are lifted a little and slowed (Slowness II for 4 seconds). At 1 second a star falls on the nearest of them: 6 damage, and it is exposed.", "power", "duration", "radius");
+			case "thunderhead" -> new PairSpec("Hailcell", "storm", EffectKind.HARMFUL, "A hail cloud hangs over the spot. Four times, a second apart, it hails on the nearest enemy within 4 blocks of the spot: 2 frost damage, Slowness II for 1 second, and it's soaked. Its bolt then strikes it for 1 storm damage and jumps for 1 more to each other enemy within 2 blocks.", "power", "radius");
 			default -> null;
 		};
 	}

@@ -8,6 +8,7 @@ public final class C_absolute_zero {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "singularity" -> dev.wildercord.pairs.b023.Pairs023.nullStar(c);
 			case "stasis" -> dev.wildercord.pairs.b004.Pairs004.glassHour(c);
 			default -> {
 				return false;

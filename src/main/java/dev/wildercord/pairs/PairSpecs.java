@@ -8,7 +8,7 @@ public final class PairSpecs {
 	private PairSpecs() {}
 
 	/** How many pairs are written. */
-	public static final int COUNT = 200;
+	public static final int COUNT = 300;
 
 	public static PairSpec spec(String a, String b) {
 		return switch (a) {
@@ -17,6 +17,7 @@ public final class PairSpecs {
 			case "aegis" -> dev.wildercord.pairs.gen.S_aegis.spec(b);
 			case "aftercare" -> dev.wildercord.pairs.gen.S_aftercare.spec(b);
 			case "aftershock" -> dev.wildercord.pairs.gen.S_aftershock.spec(b);
+			case "air_pocket" -> dev.wildercord.pairs.gen.S_air_pocket.spec(b);
 			case "anchor" -> dev.wildercord.pairs.gen.S_anchor.spec(b);
 			case "ashen_mercy" -> dev.wildercord.pairs.gen.S_ashen_mercy.spec(b);
 			case "ashen_veil" -> dev.wildercord.pairs.gen.S_ashen_veil.spec(b);
@@ -46,6 +47,7 @@ public final class PairSpecs {
 			case "borrowed_time" -> dev.wildercord.pairs.gen.S_borrowed_time.spec(b);
 			case "bramble" -> dev.wildercord.pairs.gen.S_bramble.spec(b);
 			case "bubble" -> dev.wildercord.pairs.gen.S_bubble.spec(b);
+			case "caveward" -> dev.wildercord.pairs.gen.S_caveward.spec(b);
 			case "chill" -> dev.wildercord.pairs.gen.S_chill.spec(b);
 			case "chronoshift" -> dev.wildercord.pairs.gen.S_chronoshift.spec(b);
 			case "cinderbrand" -> dev.wildercord.pairs.gen.S_cinderbrand.spec(b);
@@ -66,7 +68,9 @@ public final class PairSpecs {
 			case "decree" -> dev.wildercord.pairs.gen.S_decree.spec(b);
 			case "deflect" -> dev.wildercord.pairs.gen.S_deflect.spec(b);
 			case "devour" -> dev.wildercord.pairs.gen.S_devour.spec(b);
+			case "dew_drink" -> dev.wildercord.pairs.gen.S_dew_drink.spec(b);
 			case "disarm" -> dev.wildercord.pairs.gen.S_disarm.spec(b);
+			case "divers_hands" -> dev.wildercord.pairs.gen.S_divers_hands.spec(b);
 			case "doomclock" -> dev.wildercord.pairs.gen.S_doomclock.spec(b);
 			case "downdraft" -> dev.wildercord.pairs.gen.S_downdraft.spec(b);
 			case "drowning_word" -> dev.wildercord.pairs.gen.S_drowning_word.spec(b);
@@ -77,17 +81,23 @@ public final class PairSpecs {
 			case "eclipse" -> dev.wildercord.pairs.gen.S_eclipse.spec(b);
 			case "ember" -> dev.wildercord.pairs.gen.S_ember.spec(b);
 			case "empower" -> dev.wildercord.pairs.gen.S_empower.spec(b);
+			case "enderhush" -> dev.wildercord.pairs.gen.S_enderhush.spec(b);
 			case "entropy" -> dev.wildercord.pairs.gen.S_entropy.spec(b);
 			case "evade" -> dev.wildercord.pairs.gen.S_evade.spec(b);
+			case "everburn" -> dev.wildercord.pairs.gen.S_everburn.spec(b);
 			case "explode" -> dev.wildercord.pairs.gen.S_explode.spec(b);
+			case "fair_wind" -> dev.wildercord.pairs.gen.S_fair_wind.spec(b);
 			case "faithful" -> dev.wildercord.pairs.gen.S_faithful.spec(b);
 			case "fangs" -> dev.wildercord.pairs.gen.S_fangs.spec(b);
 			case "feastday" -> dev.wildercord.pairs.gen.S_feastday.spec(b);
 			case "feather_fall" -> dev.wildercord.pairs.gen.S_feather_fall.spec(b);
 			case "fieldstride" -> dev.wildercord.pairs.gen.S_fieldstride.spec(b);
 			case "fire" -> dev.wildercord.pairs.gen.S_fire.spec(b);
+			case "firestorm" -> dev.wildercord.pairs.gen.S_firestorm.spec(b);
+			case "fireward" -> dev.wildercord.pairs.gen.S_fireward.spec(b);
 			case "flash_freeze" -> dev.wildercord.pairs.gen.S_flash_freeze.spec(b);
 			case "flashfire" -> dev.wildercord.pairs.gen.S_flashfire.spec(b);
+			case "fortune" -> dev.wildercord.pairs.gen.S_fortune.spec(b);
 			case "freeze" -> dev.wildercord.pairs.gen.S_freeze.spec(b);
 			case "frost" -> dev.wildercord.pairs.gen.S_frost.spec(b);
 			case "frost_molt" -> dev.wildercord.pairs.gen.S_frost_molt.spec(b);
@@ -96,6 +106,7 @@ public final class PairSpecs {
 			case "gale_mantle" -> dev.wildercord.pairs.gen.S_gale_mantle.spec(b);
 			case "gash" -> dev.wildercord.pairs.gen.S_gash.spec(b);
 			case "geode" -> dev.wildercord.pairs.gen.S_geode.spec(b);
+			case "glacier" -> dev.wildercord.pairs.gen.S_glacier.spec(b);
 			case "grapple" -> dev.wildercord.pairs.gen.S_grapple.spec(b);
 			case "gravity_well" -> dev.wildercord.pairs.gen.S_gravity_well.spec(b);
 			case "grow" -> dev.wildercord.pairs.gen.S_grow.spec(b);
@@ -114,25 +125,40 @@ public final class PairSpecs {
 			case "hexguard" -> dev.wildercord.pairs.gen.S_hexguard.spec(b);
 			case "hobble" -> dev.wildercord.pairs.gen.S_hobble.spec(b);
 			case "hollow" -> dev.wildercord.pairs.gen.S_hollow.spec(b);
+			case "homeward" -> dev.wildercord.pairs.gen.S_homeward.spec(b);
 			case "honeydew" -> dev.wildercord.pairs.gen.S_honeydew.spec(b);
+			case "hush" -> dev.wildercord.pairs.gen.S_hush.spec(b);
 			case "icicle" -> dev.wildercord.pairs.gen.S_icicle.spec(b);
+			case "inferno" -> dev.wildercord.pairs.gen.S_inferno.spec(b);
 			case "infest" -> dev.wildercord.pairs.gen.S_infest.spec(b);
 			case "inkveil" -> dev.wildercord.pairs.gen.S_inkveil.spec(b);
 			case "ironhold" -> dev.wildercord.pairs.gen.S_ironhold.spec(b);
+			case "jolt" -> dev.wildercord.pairs.gen.S_jolt.spec(b);
+			case "keenkeep" -> dev.wildercord.pairs.gen.S_keenkeep.spec(b);
+			case "kindling" -> dev.wildercord.pairs.gen.S_kindling.spec(b);
 			case "last_lantern" -> dev.wildercord.pairs.gen.S_last_lantern.spec(b);
 			case "launch" -> dev.wildercord.pairs.gen.S_launch.spec(b);
+			case "leap" -> dev.wildercord.pairs.gen.S_leap.spec(b);
 			case "leech" -> dev.wildercord.pairs.gen.S_leech.spec(b);
 			case "levitate" -> dev.wildercord.pairs.gen.S_levitate.spec(b);
 			case "lightning" -> dev.wildercord.pairs.gen.S_lightning.spec(b);
+			case "lodepull" -> dev.wildercord.pairs.gen.S_lodepull.spec(b);
 			case "lure" -> dev.wildercord.pairs.gen.S_lure.spec(b);
+			case "magnetize" -> dev.wildercord.pairs.gen.S_magnetize.spec(b);
+			case "manaburn" -> dev.wildercord.pairs.gen.S_manaburn.spec(b);
 			case "managift" -> dev.wildercord.pairs.gen.S_managift.spec(b);
 			case "manatide" -> dev.wildercord.pairs.gen.S_manatide.spec(b);
+			case "mending_mist" -> dev.wildercord.pairs.gen.S_mending_mist.spec(b);
 			case "meteor" -> dev.wildercord.pairs.gen.S_meteor.spec(b);
+			case "mire" -> dev.wildercord.pairs.gen.S_mire.spec(b);
 			case "mirrorfrost" -> dev.wildercord.pairs.gen.S_mirrorfrost.spec(b);
+			case "moonpetal" -> dev.wildercord.pairs.gen.S_moonpetal.spec(b);
 			case "nullcatch" -> dev.wildercord.pairs.gen.S_nullcatch.spec(b);
 			case "nullify" -> dev.wildercord.pairs.gen.S_nullify.spec(b);
 			case "pacify" -> dev.wildercord.pairs.gen.S_pacify.spec(b);
 			case "pelt" -> dev.wildercord.pairs.gen.S_pelt.spec(b);
+			case "phantom" -> dev.wildercord.pairs.gen.S_phantom.spec(b);
+			case "phoenix_pyre" -> dev.wildercord.pairs.gen.S_phoenix_pyre.spec(b);
 			case "picnic" -> dev.wildercord.pairs.gen.S_picnic.spec(b);
 			case "potion_steep" -> dev.wildercord.pairs.gen.S_potion_steep.spec(b);
 			case "prismatic_burst" -> dev.wildercord.pairs.gen.S_prismatic_burst.spec(b);
@@ -145,6 +171,7 @@ public final class PairSpecs {
 			case "reflect" -> dev.wildercord.pairs.gen.S_reflect.spec(b);
 			case "regrowth" -> dev.wildercord.pairs.gen.S_regrowth.spec(b);
 			case "rend" -> dev.wildercord.pairs.gen.S_rend.spec(b);
+			case "resonance" -> dev.wildercord.pairs.gen.S_resonance.spec(b);
 			case "resonant_shriek" -> dev.wildercord.pairs.gen.S_resonant_shriek.spec(b);
 			case "restore" -> dev.wildercord.pairs.gen.S_restore.spec(b);
 			case "riftbolt" -> dev.wildercord.pairs.gen.S_riftbolt.spec(b);
@@ -152,17 +179,24 @@ public final class PairSpecs {
 			case "root" -> dev.wildercord.pairs.gen.S_root.spec(b);
 			case "salve" -> dev.wildercord.pairs.gen.S_salve.spec(b);
 			case "sea_breeze" -> dev.wildercord.pairs.gen.S_sea_breeze.spec(b);
+			case "searing_edge" -> dev.wildercord.pairs.gen.S_searing_edge.spec(b);
+			case "seethe" -> dev.wildercord.pairs.gen.S_seethe.spec(b);
 			case "sentry" -> dev.wildercord.pairs.gen.S_sentry.spec(b);
+			case "shackle" -> dev.wildercord.pairs.gen.S_shackle.spec(b);
 			case "shades" -> dev.wildercord.pairs.gen.S_shades.spec(b);
 			case "shadowstep" -> dev.wildercord.pairs.gen.S_shadowstep.spec(b);
 			case "shellback" -> dev.wildercord.pairs.gen.S_shellback.spec(b);
 			case "shieldwall" -> dev.wildercord.pairs.gen.S_shieldwall.spec(b);
 			case "shock" -> dev.wildercord.pairs.gen.S_shock.spec(b);
+			case "singularity" -> dev.wildercord.pairs.gen.S_singularity.spec(b);
 			case "skaters_edge" -> dev.wildercord.pairs.gen.S_skaters_edge.spec(b);
 			case "slowburn" -> dev.wildercord.pairs.gen.S_slowburn.spec(b);
 			case "soar" -> dev.wildercord.pairs.gen.S_soar.spec(b);
+			case "sonic_boom" -> dev.wildercord.pairs.gen.S_sonic_boom.spec(b);
 			case "soulbond" -> dev.wildercord.pairs.gen.S_soulbond.spec(b);
+			case "sporebloom" -> dev.wildercord.pairs.gen.S_sporebloom.spec(b);
 			case "starfire" -> dev.wildercord.pairs.gen.S_starfire.spec(b);
+			case "stasis" -> dev.wildercord.pairs.gen.S_stasis.spec(b);
 			case "steam" -> dev.wildercord.pairs.gen.S_steam.spec(b);
 			case "steedmend" -> dev.wildercord.pairs.gen.S_steedmend.spec(b);
 			case "stillbind" -> dev.wildercord.pairs.gen.S_stillbind.spec(b);
@@ -170,8 +204,10 @@ public final class PairSpecs {
 			case "stormclock" -> dev.wildercord.pairs.gen.S_stormclock.spec(b);
 			case "stormheart" -> dev.wildercord.pairs.gen.S_stormheart.spec(b);
 			case "thunderhead" -> dev.wildercord.pairs.gen.S_thunderhead.spec(b);
+			case "tidal_lift" -> dev.wildercord.pairs.gen.S_tidal_lift.spec(b);
 			case "umbra" -> dev.wildercord.pairs.gen.S_umbra.spec(b);
 			case "undertow" -> dev.wildercord.pairs.gen.S_undertow.spec(b);
+			case "updraft" -> dev.wildercord.pairs.gen.S_updraft.spec(b);
 			default -> null;
 		};
 	}

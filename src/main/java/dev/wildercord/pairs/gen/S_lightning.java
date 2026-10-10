@@ -9,6 +9,7 @@ public final class S_lightning {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "meteor" -> new PairSpec("Skyhammer", "storm", EffectKind.HARMFUL, "Lightning strikes up to 2 enemies for 6 damage and Slowness II for 3 seconds. 1.2 seconds later a meteor falls on each strike's spot: 8 fire damage to every enemy within 3 blocks of it, and they burn for 2 seconds.", "power", "radius");
 			case "rewind" -> new PairSpec("Echo Lightning", "storm", EffectKind.HARMFUL, "A lightning strike on each of up to 8 enemies: 7 damage, Slowness II and burning for 2 seconds. Five seconds later the strike echoes onto each still alive: 7 more, and 3 to every enemy within 2 blocks.", "power", "duration");
 			default -> null;
 		};

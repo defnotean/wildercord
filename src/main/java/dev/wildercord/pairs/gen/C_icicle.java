@@ -10,6 +10,8 @@ public final class C_icicle {
 		switch (b) {
 			case "lightning" -> dev.wildercord.pairs.b003.Pairs003.icicleLightning(c);
 			case "smite" -> dev.wildercord.pairs.b004.Pairs004.rimedJudgement(c);
+			case "stalactite" -> dev.wildercord.pairs.b026.Pairs026.spireDrop(c);
+			case "windcut" -> dev.wildercord.pairs.b024.Pairs024.shardgust(c);
 			default -> {
 				return false;
 			}

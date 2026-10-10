@@ -10,6 +10,7 @@ public final class S_banish {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "harm" -> new PairSpec("Recalled Exile", "void", EffectKind.HARMFUL, "Banishes up to 8 enemies up to 8 blocks further from you, each struck for 5 magic damage, exposed (arcane mark) and dazed (Nausea for 3 seconds). After 3 seconds each is recalled to where it vanished, taking 1 wither damage per block sent away (8 at most).", "power", "duration");
+			case "portalfall" -> new PairSpec("Riftfall", "void", EffectKind.HARMFUL, "Banishes up to 4 enemies: each is dazed (Slowness II for 2 seconds) and reappears up to 6 blocks further from you, where there's room. A second later a portal drops each where it stands: 4 damage, and every other enemy within 2 blocks takes 2.", "power", "radius");
 			default -> null;
 		};
 	}

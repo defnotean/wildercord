@@ -9,6 +9,7 @@ public final class C_cleave {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "dismantle" -> dev.wildercord.pairs.b012.Pairs012.quietCleaver(c);
+			case "rend" -> dev.wildercord.pairs.b030.Pairs030.riven(c);
 			default -> {
 				return false;
 			}

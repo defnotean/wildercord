@@ -9,6 +9,7 @@ public final class C_leech {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "lifesteal" -> dev.wildercord.pairs.b009.Pairs009.leechLifesteal(c);
+			case "timesteal" -> dev.wildercord.pairs.b030.Pairs030.dreadTithe(c);
 			default -> {
 				return false;
 			}

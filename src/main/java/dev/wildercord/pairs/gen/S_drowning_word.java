@@ -10,6 +10,7 @@ public final class S_drowning_word {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "hush" -> new PairSpec("Drowned Silence", "void", EffectKind.HARMFUL, "A pocket of silence within 4 blocks of the spot for 6 seconds. Each enemy in it takes 1 damage a second (the first at once), is nauseous and weakened, and mobs other than bosses lose their target.", "power", "duration", "radius");
+			case "silence" -> new PairSpec("Undertow Verse", "arcane", EffectKind.HARMFUL, "Up to 5 enemies drown for 5 seconds: 2 magic damage a second, and each is drawn towards the point every second. When the word ends it breaks as a wave: 4 damage to every enemy within 3 blocks, which are soaked and knocked back.", "power", "radius");
 			default -> null;
 		};
 	}

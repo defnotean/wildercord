@@ -10,6 +10,7 @@ public final class S_evade {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "phantom" -> new PairSpec("Afterimage Feint", "void", EffectKind.HELPFUL, "The target slips 3 blocks aside, leaving a phantom where it stood for 4 seconds. Every enemy within 8 blocks of the phantom is dragged towards it, and when it bursts it deals 8 magic damage to each enemy within 3 blocks.", "duration", "radius");
+			case "second_wind" -> new PairSpec("Sidestep Gale", "wind", EffectKind.MOVEMENT, "You slip up to 5 blocks along the way you face, stopped by walls. A moment later a gust shoves enemies within 3 blocks of where you started away and strikes each for 2 damage, and you get Speed II for 4 seconds.", "power", "duration");
 			default -> null;
 		};
 	}

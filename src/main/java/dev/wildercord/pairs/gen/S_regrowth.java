@@ -10,6 +10,7 @@ public final class S_regrowth {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "salve" -> new PairSpec("Second Spring", "life", EffectKind.HELPFUL, "Heals each ally 4 and puts out its fire, then Regeneration I for 3 seconds, II for 3, III for 2 (about 7 more). Healing past full health becomes absorption, up to 4 hearts for 10 seconds.", "power", "duration");
+			case "sunbask" -> new PairSpec("Dawnmend", "life", EffectKind.HELPFUL, "Heals each ally within 4 blocks 6 health and gives Regeneration I for 6 seconds. Then three times, 2 seconds apart, each ally in open daylight heals 1 more.", "power", "radius", "duration");
 			default -> null;
 		};
 	}

@@ -8,6 +8,7 @@ public final class C_mirrorfrost {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "reflect" -> dev.wildercord.pairs.b024.Pairs024.rimeMirror(c);
 			case "twin_star" -> dev.wildercord.pairs.b012.Pairs012.twinMirror(c);
 			default -> {
 				return false;

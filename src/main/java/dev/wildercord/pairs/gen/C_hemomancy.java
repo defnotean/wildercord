@@ -8,6 +8,7 @@ public final class C_hemomancy {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "lifesteal" -> dev.wildercord.pairs.b030.Pairs030.redTithe(c);
 			case "sanguine_rite" -> dev.wildercord.pairs.b012.Pairs012.priceOfBlood(c);
 			default -> {
 				return false;

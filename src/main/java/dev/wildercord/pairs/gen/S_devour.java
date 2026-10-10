@@ -9,6 +9,7 @@ public final class S_devour {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "hellmouth" -> new PairSpec("Maw Feast", "void", EffectKind.HARMFUL, "Opens a pit of black fire for 3 seconds, drawing in enemies within 3 blocks. Each is struck for 3 void damage plus 1 per tenth of its health missing (up to 6 extra). Each second, an enemy in the core burns for 2. The collapse strikes all of them for 4 more. Each enemy the pit kills heals you 2 (6 at most).", "power", "radius");
 			case "starmaw" -> new PairSpec("Starved Maw", "void", EffectKind.HARMFUL, "A void maw closes on the first enemy: a bite of 4 damage plus 1 for every tenth of its health it is missing (4 at most), then it swallows up to 3 of its good effects, 3 damage for each.", "power");
 			default -> null;
 		};

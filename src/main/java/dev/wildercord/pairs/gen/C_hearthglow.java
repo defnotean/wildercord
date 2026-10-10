@@ -8,6 +8,7 @@ public final class C_hearthglow {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "hearthguard" -> dev.wildercord.pairs.b027.Pairs027.hearthward(c);
 			case "zephyr" -> dev.wildercord.pairs.b015.Pairs015.warmgale(c);
 			default -> {
 				return false;

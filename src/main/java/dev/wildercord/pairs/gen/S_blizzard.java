@@ -9,6 +9,8 @@ public final class S_blizzard {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "cyclone" -> new PairSpec("Whiteout", "frost", EffectKind.HARMFUL, "A snow vortex starts at the point and walks 6 blocks the way you faced, 3 blocks a second. At each of its three beats (now, 1 and 2 seconds) enemies within 2.5 blocks take 2 cold damage and Slowness II for 2 seconds. On the last beat they're flung forward.", "power", "radius");
+			case "dragon_breath" -> new PairSpec("Rimebreath", "frost", EffectKind.HARMFUL, "A cold breath rolls 6 blocks the way you blew it, 3 blocks wide: each enemy it passes takes 2 cold and gets Slowness II for 2 seconds. Where it ends it bursts for 4 more cold on enemies within 3 blocks, which are marked frozen.", "power", "duration", "radius");
 			case "inferno" -> new PairSpec("Thermocline", "fire", EffectKind.HARMFUL, "A front of fire and frost rolls 6 blocks the way you faced over 2 seconds, 2.2 blocks wide. Each enemy it reaches takes 3 fire damage and is alight for 2 seconds; the next time the front catches it, it takes 1 frost damage and Slowness II for 2 seconds.", "power", "radius");
 			default -> null;
 		};

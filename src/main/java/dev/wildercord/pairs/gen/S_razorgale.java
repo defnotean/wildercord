@@ -10,6 +10,7 @@ public final class S_razorgale {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "sonic_boom" -> new PairSpec("Keening Edge", "wind", EffectKind.HARMFUL, "A blade of sound cuts from you to where it lands, through walls: each enemy within 1.2 blocks of that line takes 4 damage and bleeds. The target takes 8 more that ignores armour; half a second later the gale whirls round it: enemies within 3 blocks take 2 and bleed.", "power", "radius");
+			case "windcut" -> new PairSpec("Shearwind", "wind", EffectKind.HARMFUL, "A cutting gale whirls round the point: each enemy within 3 blocks takes 2 damage, is left bleeding, is shoved outward and loses any charge or spell it was winding up. Half a second later the gale circles back: 4 more to each one still within 3 blocks.", "power", "radius");
 			default -> null;
 		};
 	}

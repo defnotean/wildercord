@@ -9,6 +9,7 @@ public final class C_pacify {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "silence" -> dev.wildercord.pairs.b010.Pairs010.pacifySilence(c);
+			case "soothe" -> dev.wildercord.pairs.b026.Pairs026.hushfield(c);
 			default -> {
 				return false;
 			}

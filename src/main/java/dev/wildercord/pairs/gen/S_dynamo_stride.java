@@ -9,6 +9,8 @@ public final class S_dynamo_stride {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "swift" -> new PairSpec("Stormstride", "wind", EffectKind.MOVEMENT, "You dash up to 8 blocks forward, stopping at walls, with Speed II for 6 seconds. Enemies within 2 blocks of your path take 4 lightning damage.", "power");
+			case "tinker_hum" -> new PairSpec("Hum Charge", "storm", EffectKind.HELPFUL, "The ally the spell struck (you, if none) gets Speed I for 10 seconds. Five pulses, 2 seconds apart (the first at once): it heals 1, and another ally within 4 blocks heals 1 too.", "power");
 			case "wayfarer_hymn" -> new PairSpec("Gale Cadence", "wind", EffectKind.HELPFUL, "Allies within 10 blocks of you get Speed I and Jump Boost I for 10 seconds. On a cadence three seconds apart, four beats in all, each heals 1 on every beat, with a chime.", "power", "duration", "radius");
 			default -> null;
 		};

@@ -10,6 +10,7 @@ public final class S_leech {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "lifesteal" -> new PairSpec("Red Siphon", "blood", EffectKind.HARMFUL, "5 damage to the first enemy, and you heal 5 for it; anything over your full health becomes absorption, up to 4. For 6 seconds, five times a second, a quarter of what it loses (from anyone) heals you.", "power");
+			case "timesteal" -> new PairSpec("Dread Tithe", "blood", EffectKind.HARMFUL, "Up to 3 enemies take 3 damage and you heal what it takes; overflow becomes a shield of up to 4 for 30 seconds. Each gives up to 2 good effects, which you gain with the time left (30 seconds at most). With none to take, a target is dragged (Slowness I, 2 seconds) and you are quickened (Speed I, 2 seconds).", "power", "duration");
 			default -> null;
 		};
 	}

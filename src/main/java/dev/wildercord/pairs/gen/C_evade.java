@@ -9,6 +9,7 @@ public final class C_evade {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "phantom" -> dev.wildercord.pairs.b007.Pairs007.afterimageFeint(c);
+			case "second_wind" -> dev.wildercord.pairs.b028.Pairs028.sidestepGale(c);
 			default -> {
 				return false;
 			}

@@ -9,6 +9,7 @@ public final class C_riftbolt {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "riftcall" -> dev.wildercord.pairs.b018.Pairs018.tornGate(c);
+			case "starfire" -> dev.wildercord.pairs.b022.Pairs022.starrift(c);
 			default -> {
 				return false;
 			}

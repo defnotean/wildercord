@@ -9,6 +9,7 @@ public final class S_hemomancy {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "lifesteal" -> new PairSpec("Red Tithe", "blood", EffectKind.HARMFUL, "4 damage to the first enemy, and 1 more for every 2 health it is missing (up to 4 more). You heal half of what it takes. For 4 seconds after, it bleeds 1 a second, and you heal half of each drop.", "power");
 			case "sanguine_rite" -> new PairSpec("Price of Blood", "blood", EffectKind.HARMFUL, "Pays 3 of your own health (never your last: if it can't be paid in full, nothing happens), then the first enemy takes 6 damage through armour, plus 1 for every 1.5 health you are missing after paying (6 at most).", "power");
 			default -> null;
 		};

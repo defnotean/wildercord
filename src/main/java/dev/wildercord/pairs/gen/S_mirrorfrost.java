@@ -9,6 +9,7 @@ public final class S_mirrorfrost {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "reflect" -> new PairSpec("Rime Mirror", "frost", EffectKind.HELPFUL, "The ally you aim it at (or you, if none) gets 6 absorption for 8 seconds. Eight times, a second apart, the nearest enemy within 3 blocks of it takes 1 damage and is chilled for a second.", "power", "duration");
 			case "twin_star" -> new PairSpec("Twin Mirror", "frost", EffectKind.HELPFUL, "Heals each ally within 3 blocks of where it lands 4 and shields them 3 for 6 seconds. A second later the point is mirrored through you and the same lands there: allies within 3 blocks of that copy get the same.", "power", "radius");
 			default -> null;
 		};

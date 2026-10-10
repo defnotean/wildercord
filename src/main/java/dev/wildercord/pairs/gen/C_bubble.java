@@ -9,6 +9,7 @@ public final class C_bubble {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "jolt" -> dev.wildercord.pairs.b004.Pairs004.stormGlobe(c);
+			case "levitate" -> dev.wildercord.pairs.b023.Pairs023.hangingPearl(c);
 			default -> {
 				return false;
 			}

@@ -8,6 +8,7 @@ public final class C_accelerate {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "haste" -> dev.wildercord.pairs.b030.Pairs030.quickeningPulse(c);
 			case "swift" -> dev.wildercord.pairs.b007.Pairs007.hourglassGale(c);
 			default -> {
 				return false;

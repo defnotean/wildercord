@@ -9,6 +9,7 @@ public final class S_hex {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "malison" -> new PairSpec("Ill Omen", "void", EffectKind.HARMFUL, "Curses up to 4 enemies: 3 wither damage and marked shadowed at once, then 1 wither a second for 5 seconds. A cursed enemy that dies passes the curse to the nearest enemy within 5 blocks: 2 wither, and it's cursed too, up to 8 cursed.", "power", "radius");
 			case "manaburn" -> new PairSpec("Witchbrand", "arcane", EffectKind.HARMFUL, "Each target is branded for 6 seconds with Weakness II. Then the brand flares: 5 damage to each target still there, 4 more to a player among them, and 2 damage to every other enemy within 3 blocks of a flaring brand.", "power", "duration", "radius");
 			case "sporebloom" -> new PairSpec("Hexbloom", "life", EffectKind.HARMFUL, "Spores bloom 3 blocks round the point: each enemy in them takes 2 damage and Poison I for 5 seconds, and monsters fix on you. For 6 seconds the cloud re-hexes: each second, monsters still inside it fix on you again.", "power", "radius");
 			default -> null;

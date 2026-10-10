@@ -8,6 +8,7 @@ public final class C_root {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "rootsnare" -> dev.wildercord.pairs.b026.Pairs026.briarcreep(c);
 			case "tidehook" -> dev.wildercord.pairs.b014.Pairs014.thornhook(c);
 			default -> {
 				return false;

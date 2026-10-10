@@ -11,6 +11,7 @@ public final class C_bleed {
 			case "chill" -> dev.wildercord.pairs.b003.Pairs003.bleedChill(c);
 			case "clot" -> dev.wildercord.pairs.b009.Pairs009.bleedClot(c);
 			case "fire" -> dev.wildercord.pairs.b001.Pairs001.bleedFire(c);
+			case "frostbite" -> dev.wildercord.pairs.b023.Pairs023.hoarfrostWound(c);
 			case "jolt" -> dev.wildercord.pairs.b005.Pairs005.bloodwire(c);
 			case "push" -> dev.wildercord.pairs.b006.Pairs006.pushBleed(c);
 			case "wither" -> dev.wildercord.pairs.b008.Pairs008.gangrene(c);

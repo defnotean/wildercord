@@ -9,6 +9,7 @@ public final class S_hearthglow {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "hearthguard" -> new PairSpec("Warmstead", "fire", EffectKind.HELPFUL, "A warm ring out to 4 blocks (times radius) round the spot for 12 seconds. Each second, allies inside get Regeneration I for 2 seconds, and enemies inside get Weakness I for 2 seconds.", "radius");
 			case "zephyr" -> new PairSpec("Warmgale", "wind", EffectKind.HELPFUL, "Allies within 4 blocks lose blindness, darkness, nausea and slowness, and get Speed I and Jump Boost I for 6 seconds. For 8 seconds a warm glow holds on the spot: allies in it are thawed, get Regeneration I for 2 seconds each second, and are nudged along the breeze.", "duration", "radius");
 			default -> null;
 		};

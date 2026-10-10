@@ -9,6 +9,7 @@ public final class C_blackflame {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "soulfire" -> dev.wildercord.pairs.b015.Pairs015.wraithfire(c);
+			case "wither" -> dev.wildercord.pairs.b029.Pairs029.gravecinder(c);
 			default -> {
 				return false;
 			}

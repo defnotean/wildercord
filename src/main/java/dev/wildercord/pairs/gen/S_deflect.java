@@ -9,6 +9,7 @@ public final class S_deflect {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "repel" -> new PairSpec("Gale Ring", "wind", EffectKind.HARMFUL, "A blast at the spot: 4 damage (times power) to each enemy within 3 blocks (times radius), hurling them outward. For 4 seconds after, each enemy arrow or other projectile that comes within 2.5 blocks (times radius) of the spot is turned back, once each.", "power", "radius");
 			case "shield" -> new PairSpec("Gale Bulwark", "wind", EffectKind.HELPFUL, "For 8 seconds the target has 3 hearts of absorption, and every arrow or projectile flying at it within 4 blocks is turned round and sent back the way it came, at the same speed.", "power", "duration", "radius");
 			default -> null;
 		};

@@ -8,7 +8,10 @@ public final class C_countdown {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "doomclock" -> dev.wildercord.pairs.b030.Pairs030.deadline(c);
+			case "explode" -> dev.wildercord.pairs.b022.Pairs022.knotburst(c);
 			case "frost" -> dev.wildercord.pairs.b004.Pairs004.stillMinute(c);
+			case "stormclock" -> dev.wildercord.pairs.b025.Pairs025.thundertick(c);
 			default -> {
 				return false;
 			}

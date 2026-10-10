@@ -8,6 +8,8 @@ public final class C_dynamo_stride {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "swift" -> dev.wildercord.pairs.b025.Pairs025.stormstride(c);
+			case "tinker_hum" -> dev.wildercord.pairs.b027.Pairs027.humCharge(c);
 			case "wayfarer_hymn" -> dev.wildercord.pairs.b018.Pairs018.galeCadence(c);
 			default -> {
 				return false;

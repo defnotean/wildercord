@@ -13,6 +13,7 @@ public final class C_blink {
 			case "heal" -> dev.wildercord.pairs.b007.Pairs007.mendStep(c);
 			case "lightning" -> dev.wildercord.pairs.b005.Pairs005.afterflash(c);
 			case "swap" -> dev.wildercord.pairs.b010.Pairs010.blinkSwap(c);
+			case "thunderstep" -> dev.wildercord.pairs.b026.Pairs026.stormstep(c);
 			default -> {
 				return false;
 			}

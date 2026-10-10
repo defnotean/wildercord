@@ -9,6 +9,7 @@ public final class S_halo {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "heal" -> new PairSpec("Tithe Ward", "life", EffectKind.HELPFUL, "Heals the ally the spell struck (you, if none) 6 health at once. Six times, a second apart, its absorption is topped up to 2, and enemies within 3 blocks of it are knocked back.", "power");
 			case "lifebloom" -> new PairSpec("Hallowed Bloom", "life", EffectKind.HELPFUL, "The first ally is healed 4 at once and crowned with a halo for 6 seconds: every 1.5 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage and heals them 1. When the halo fades the bloom bursts, healing every ally within 3 blocks for 3.", "power", "radius");
 			default -> null;
 		};

@@ -8,6 +8,7 @@ public final class C_coldsnap {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "jolt" -> dev.wildercord.pairs.b023.Pairs023.rimeSpark(c);
 			case "rampart" -> dev.wildercord.pairs.b004.Pairs004.glacis(c);
 			case "venom" -> dev.wildercord.pairs.b003.Pairs003.coldVenom(c);
 			default -> {

@@ -9,6 +9,7 @@ public final class S_explode {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "plasma" -> new PairSpec("Plasmabloom", "fire", EffectKind.HARMFUL, "A 3.5-block blast: 8 fire damage to each enemy in it, thrown outward. The plasma it leaves hangs for 4 seconds: each enemy within 2 blocks of the spot takes 2 magic damage (ignoring armour) a second and is ionised. Never breaks blocks.", "power", "radius");
 			case "primer" -> new PairSpec("Lit Fuse", "fire", EffectKind.HARMFUL, "Sets up to 4 targets alight at once. Each carries a fuse for 2 seconds, or until it dies, then blasts everything within 3 blocks for 6 fire damage and throws it back. An enemy is blasted only once. Never breaks blocks.", "power", "radius");
 			default -> null;
 		};

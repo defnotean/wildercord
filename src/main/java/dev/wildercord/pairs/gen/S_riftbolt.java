@@ -10,6 +10,7 @@ public final class S_riftbolt {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "riftcall" -> new PairSpec("Torn Gate", "storm", EffectKind.HARMFUL, "A black bolt strikes the first enemy for 6 lightning and tears a rift under it. Up to 4 enemies within 3 blocks of it are drawn in over 2 seconds, then the rift snaps shut: 5 damage to each, and Darkness for 3 seconds.", "power", "duration", "radius");
+			case "starfire" -> new PairSpec("Starrift", "storm", EffectKind.HARMFUL, "Tears a black rift 5 blocks above each of up to 3 targets: 7 void damage and Darkness for 3 seconds. A second later a mote of starfire flies from a rift to each of up to 5 enemies within 6 blocks of the rifts: 2 fire damage, alight for 3 seconds.", "power", "radius");
 			default -> null;
 		};
 	}

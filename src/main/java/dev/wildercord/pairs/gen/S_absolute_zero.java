@@ -9,6 +9,7 @@ public final class S_absolute_zero {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "singularity" -> new PairSpec("Null Star", "frost", EffectKind.HARMFUL, "Up to 3 enemies are drawn to the point for 2.5 seconds, slowed (Slowness III). Then the star collapses: 8 cold damage to each, and 4 to every other enemy within 2 blocks of the point, which are flung outward.", "power", "radius");
 			case "stasis" -> new PairSpec("Glass Hour", "time", EffectKind.HARMFUL, "Stops up to 4 enemies for 3 seconds: Slowness III for 4 seconds, chilled and frost-marked. When time moves again, each one still held, slowed, chilled or marked takes 3 freeze damage per sign (held counts as one): up to 12.", "power", "duration");
 			default -> null;
 		};

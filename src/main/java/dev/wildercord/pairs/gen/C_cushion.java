@@ -8,7 +8,9 @@ public final class C_cushion {
 
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
+			case "drown_ward" -> dev.wildercord.pairs.b024.Pairs024.featherCrash(c);
 			case "infinity" -> dev.wildercord.pairs.b019.Pairs019.hushedNest(c);
+			case "softsole" -> dev.wildercord.pairs.b029.Pairs029.featherbed(c);
 			default -> {
 				return false;
 			}

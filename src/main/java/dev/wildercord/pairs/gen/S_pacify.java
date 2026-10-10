@@ -10,6 +10,7 @@ public final class S_pacify {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "silence" -> new PairSpec("Silent Vow", "arcane", EffectKind.HARMFUL, "Each creature hit is Weakened I for 6 seconds. Monsters that are not bosses forget their target for 6 seconds, until one is harmed: then the hush spills to every enemy within 3 blocks, which forgets its target for 2 seconds.", "duration", "radius");
+			case "soothe" -> new PairSpec("Hushfield", "arcane", EffectKind.HARMFUL, "Calms each target for 6 seconds: a creature forgets its target and slows to Slowness I (bosses are not calmed), and a player gets Weakness II instead. Every 2 seconds the calm passes to enemies within 3 blocks of a calmed creature.", "duration");
 			default -> null;
 		};
 	}

@@ -9,6 +9,7 @@ public final class S_ember {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "jolt" -> new PairSpec("Flashover", "storm", EffectKind.HARMFUL, "Stuns each target for 1 second (Slowness III, and a monster loses its target), with 4 lightning damage. Then it flashes alight: 3 fire damage and burning for 3 seconds. The spark leaps to the nearest other enemy within 3 blocks: alight for 2 seconds and slowed for half a second.", "power", "radius", "duration");
 			case "leech" -> new PairSpec("Ember Tithe", "blood", EffectKind.HARMFUL, "Each target (8 at most) takes 4 magic damage and you heal 2 half-hearts for it; what a full heart can't hold becomes absorption of up to 4 half-hearts for 10 seconds. Each is alight for 3 seconds, or 3 more if already burning (10 at most).", "power", "duration");
 			case "windcut" -> new PairSpec("Cinderblow", "fire", EffectKind.HARMFUL, "A cutting wind carries an ember: 4 damage and a light shove, and the target alight for 3 seconds. A second later the wind flings the flame to the nearest enemy within 3 blocks of it: 3 fire damage and alight for 3 seconds.", "power", "duration", "radius");
 			default -> null;

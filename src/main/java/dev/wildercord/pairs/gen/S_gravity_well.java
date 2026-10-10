@@ -9,6 +9,8 @@ public final class S_gravity_well {
 
 	public static PairSpec spec(String b) {
 		return switch (b) {
+			case "meteor" -> new PairSpec("Gathering Fall", "fire", EffectKind.HARMFUL, "Pulls each enemy within 6 blocks toward the point for 1 second, marked pulled. Then a meteor falls there: 5 fire damage and alight for 4 seconds to each enemy within 2.5 blocks, and 7 more to the first one struck.", "power", "radius");
+			case "sinkhole" -> new PairSpec("Drownwell", "earth", EffectKind.HARMFUL, "Drags up to 8 enemies within 7 blocks of the point towards it for 2 seconds (bosses are not dragged). Then the ground gives way there: each enemy within 2.5 blocks takes 5 damage and Slowness III for 2 seconds.", "power", "radius");
 			case "starlight_tether" -> new PairSpec("Dark Star Anchor", "void", EffectKind.HARMFUL, "Drags every enemy within 6 blocks towards the point over a second (not bosses), then tethers each with starlight for 4 seconds: one that strays 2.5 blocks is pulled back and takes 2 damage (once a second at most). At the end the well implodes: 4 damage to each.", "power", "duration", "radius");
 			default -> null;
 		};

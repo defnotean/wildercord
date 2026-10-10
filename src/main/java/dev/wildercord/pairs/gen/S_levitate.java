@@ -10,6 +10,7 @@ public final class S_levitate {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "lightning" -> new PairSpec("Skyfall", "storm", EffectKind.HARMFUL, "Launches up to 8 enemies upward and levitates them for 2 seconds. Then lightning falls on each one: 10 damage, set alight for 2 seconds and Slowness I for 2 seconds.", "power", "duration");
+			case "skyburst" -> new PairSpec("Hangfire", "wind", EffectKind.HARMFUL, "Holds up to 3 targets (not bosses) in the air for 3 seconds, so they can't fall. Then fire rains on each: 6 damage, alight for 3 seconds, and 3 damage to every other enemy within 3 blocks of it.", "power", "duration");
 			case "torchfall" -> new PairSpec("Ember Updraft", "fire", EffectKind.HARMFUL, "A hot updraft lifts each target (8 at most) in seven puffs over three seconds, and each puff drops a cinder for 1 fire damage. Lifted foes are Airborne, so every spell hits them harder.", "power");
 			default -> null;
 		};

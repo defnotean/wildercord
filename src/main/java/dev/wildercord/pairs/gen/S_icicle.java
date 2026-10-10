@@ -11,6 +11,8 @@ public final class S_icicle {
 		return switch (b) {
 			case "lightning" -> new PairSpec("Glasswire Spear", "storm", EffectKind.HARMFUL, "An icicle impales each enemy: 4 freeze damage, or 6 if it's already slowed, and it's soaked. 1.5 seconds later, lightning leaps from the spear to the nearest soaked enemy within 6 blocks, then on to the next: 6 damage each, up to 4 leaps.", "power", "radius");
 			case "smite" -> new PairSpec("Rimed Judgement", "arcane", EffectKind.HARMFUL, "A frost ring closes at the feet of up to 4 targets and slows them (Slowness II for 2 seconds). 0.7 seconds later an icicle of light falls: 14 damage, strips Absorption, and leaves each one soaked.", "power");
+			case "stalactite" -> new PairSpec("Spire Drop", "frost", EffectKind.HARMFUL, "Icicles hang over each target for 1.5 seconds, then fall on the spot it stood on: 6 freeze damage and soaked, if it is still within 1.5 blocks of that spot. Each fall chills enemies within 2 blocks: Slowness II for 3 seconds.", "power", "radius");
+			case "windcut" -> new PairSpec("Shardgust", "frost", EffectKind.HARMFUL, "A gust drives ice shards into up to 6 enemies: 3 wind and 3 freeze damage each, and a shove back. The shards stay lodged for 2 seconds, then melt: 2 more freeze damage each and soaked.", "power");
 			default -> null;
 		};
 	}
