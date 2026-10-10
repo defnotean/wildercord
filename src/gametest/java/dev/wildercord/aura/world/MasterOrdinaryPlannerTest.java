@@ -164,6 +164,7 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 			}
 			if (counter == Counter.HOLD) {
 				float health = master.getHealth(); Effects.readyToHurt(master);
+				master.spendEvadeFocus(); // A Master slips blows while it has focus; this one must land.
 				check(master.hurtServer(level, level.damageSources().playerAttack(target), 4) && master.getHealth() < health,
 					"An enrolled opponent can punish the last recovery frame in every phase and party size");
 			}
@@ -264,6 +265,7 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 		outsider = add(serial * 10 + 9, 0, 2.05);
 		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND); check(master != null, "Registered master exists");
 		master.setUUID(new UUID(0x6d61737465726d6fL, serial)); master.setDiscipline(school); master.snapTo(origin.x, origin.y, origin.z, 0, 0); level.addFreshEntity(master);
+		master.fixAura(); // These checks count each payment exactly; a crowd's trickle would blur them.
 		for (var player : party) { master.mobInteract(player, InteractionHand.MAIN_HAND); master.mobInteract(player, InteractionHand.MAIN_HAND); }
 		check(SwordMaster.ready(target) == 1, "Each native challenger explicitly enrolled before roster lock"); master.setTarget(target);
 	}

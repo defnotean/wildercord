@@ -149,6 +149,7 @@ final class StoneFractureChecks {
 				case FRONTAL_KNOCKBACK -> {
 					Effects.readyToHurt(master);
 					float before = master.getHealth();
+					master.spendEvadeFocus(); // A Master slips blows while it has focus; this one must land.
 					check(master.hurtServer(level, level.damageSources().playerAttack(target), 8) && master.getHealth() < before
 						&& master.fracturePending(), "A real frontal melee receipt does not trigger the brace's rear-hit cancellation");
 					check(close(master.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), .65)
@@ -158,6 +159,7 @@ final class StoneFractureChecks {
 				case AXE -> {
 					target.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_AXE));
 					Effects.readyToHurt(master);
+					master.spendEvadeFocus(); // A Master slips blows while it has focus; this one must land.
 					check(master.hurtServer(level, level.damageSources().playerAttack(target), 8) && !master.guarding() && !master.fracturePending(),
 						"A native frontal axe hit breaks the guard and cancels the paid reply");
 				}

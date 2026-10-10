@@ -314,6 +314,7 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 		Shields.give(spectator, 100, 100, List.of(Runes.SHIELD.id()));
 		float shield = Shields.strength(spectator);
 		float masterHealth = master.getHealth();
+		master.spendEvadeFocus(); // A Master slips blows while it has focus; this return must land.
 		for (int i = 0; i < 4 && !twice.isRemoved(); i++) twice.tick();
 		check(Shields.strength(spectator) == shield && spectator.getHealth() == bystanderHealth,
 			"A bystander's Shield and health survive the participant-owned return");

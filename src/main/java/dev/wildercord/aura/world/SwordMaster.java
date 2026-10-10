@@ -79,6 +79,10 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private long begins, expires, recoverUntil, attackAt, redirectReadyAt, erasedFxAt, dodgeUntil, breathingUntil, approachStarted;
 	private double aura = MastersRules.AURA_MAX;
 	private Vec3 dodgeDirection = Vec3.ZERO;
+	/** Evasion focus (see {@link MastersRules#evadeFocus}); negative until the trial begins and it fills. */
+	private double evadeFocus = -1;
+	private boolean auraFixed;
+	private long sidestepReadyAt;
 	private int discipline, sequence, partySize = 1, quiet;
 	private boolean started, guardNext;
 	private MastersRules.Move attack;
@@ -191,7 +195,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, MastersRules.HEALTH)
-			.add(Attributes.ARMOR, MastersRules.ARMOUR).add(Attributes.MOVEMENT_SPEED, 0.32)
+			.add(Attributes.ARMOR, MastersRules.ARMOUR).add(Attributes.MOVEMENT_SPEED, 0.38)
 			.add(Attributes.ATTACK_DAMAGE, 8).add(Attributes.FOLLOW_RANGE, MastersRules.ARENA_RADIUS)
 			.add(Attributes.KNOCKBACK_RESISTANCE, 0.65);
 	}
@@ -585,6 +589,11 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		long now = level.getGameTime();
 		// Spellbane comes before anything else: whatever the Master is doing, no spell reaches it.
 		eraseBolts(level, now);
+		if (started) {
+			double most = MastersRules.evadeFocus(partySize);
+			evadeFocus = evadeFocus < 0 ? most : Math.min(most, evadeFocus + MastersRules.evadeRegen(partySize));
+		}
+		if (started && !auraFixed && now >= breathingUntil && Double.isFinite(aura) && aura >= 0) aura = Math.min(MastersRules.AURA_MAX, aura + MastersRules.auraTrickle(partySize));
 		if (attackAnimation() != 0 && now >= entityData.get(DATA_ATTACK_BEGIN) + attackTellTicks() + attackActiveTicks() + attackRecoveryTicks()) {
 			entityData.set(DATA_ATTACK, 0);
 			entityData.set(DATA_ATTACK_AIM_PITCH, 0F);
@@ -1397,6 +1406,62 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			&& !level.getBlockState(feet.below()).is(BlockTags.FIRE);
 	}
 
+	/**
+	 * Evasion: whether it slips this challenger's blow or shot. Its openings always let the blow through: the recovery after
+	 * an attack, its breath, a stagger and a broken guard. Otherwise each slip spends focus, and mid-sidestep it is already gone.
+	 */
+	private boolean evaded(ServerLevel level, DamageSource source) {
+		long now = level.getGameTime();
+		if (!started || home == null || !(source.getEntity() instanceof LivingEntity by) || !participant(by)) return false;
+		if (staggered() || attack == null && now < recoverUntil) return false;
+		if (now < dodgeUntil) {
+			slip(level, false);
+			return true;
+		}
+		double cost = attack != null ? MastersRules.EVADE_COST_SWINGING : MastersRules.EVADE_COST;
+		if (evadeFocus < cost) return false;
+		evadeFocus -= cost;
+		slip(level, attack == null && now >= sidestepReadyAt && sidestep(level, by, now));
+		return true;
+	}
+
+	/** A short sidestep across the blow's line, onto safe arena ground; straight back if neither side is clear. */
+	private boolean sidestep(ServerLevel level, LivingEntity from, long now) {
+		Vec3 away = position().subtract(from.position());
+		Vec3 flat = new Vec3(away.x, 0, away.z);
+		flat = flat.lengthSqr() < 1.0E-4 ? Vec3.directionFromRotation(0, getYRot()).multiply(1, 0, 1).normalize() : flat.normalize();
+		Vec3 side = new Vec3(-flat.z, 0, flat.x);
+		if (getRandom().nextBoolean()) side = side.scale(-1);
+		for (Vec3 way : new Vec3[] {side, side.scale(-1), flat}) {
+			if (!safeMotion(level, way.scale(0.65))) continue;
+			endOrdinaryPhrase();
+			getNavigation().stop();
+			dodgeDirection = way;
+			dodgeUntil = now + MastersRules.DODGE_TICKS;
+			sidestepReadyAt = now + MastersRules.SIDESTEP_REST;
+			setState(DASH, true);
+			return true;
+		}
+		return false;
+	}
+
+	/** A slipped blow: a blur where it stood, and a swish (a step's footfall when it moved). */
+	private void slip(ServerLevel level, boolean stepped) {
+		AuraFx.trail(this, AuraFxRules.Stroke.SWEEP, false, auraColor(), stage(), 0.5F);
+		Feels.sound(level, position(), stepped ? "aura_step" : "aura_slash", 0.7F, stepped ? 1.4F : 1.8F);
+	}
+
+	/** For game tests that measure what a landed blow does: spends its focus and ends any sidestep so the next blow can't be slipped. */
+	void spendEvadeFocus() {
+		evadeFocus = 0;
+		dodgeUntil = 0;
+	}
+
+	/** For game tests that count exact aura payments: the crowd's trickle would blur them. */
+	void fixAura() {
+		auraFixed = true;
+	}
+
 	private void stopDodge(long now) {
 		dodgeUntil = now;
 		setDeltaMovement(0, getDeltaMovement().y, 0);
@@ -1546,6 +1611,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			return false;
 		}
 		if (!acceptsHarmFrom(source.getEntity())) return false;
+		if (evaded(level, source)) return false;
 		float through = guarded(level, source, damage);
 		if (through <= 0) return false;
 		StoneFracture braced = fracture;

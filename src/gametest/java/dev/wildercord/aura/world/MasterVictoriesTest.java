@@ -55,6 +55,7 @@ public final class MasterVictoriesTest implements FabricClientGameTest {
 				int knownBefore = Techniques.book(ally).learned().size();
 				int experienceBefore = ally.totalExperience;
 				SwordMaster first = trial(level, player, ally, MastersRules.EMBER, stage);
+				first.spendEvadeFocus(); // A Master slips blows while it has focus; this one must land.
 				check(first.hurtServer(level, level.damageSources().playerAttack(player), 100_000) && !first.isAlive(), "The real enrolled player's damage defeats the master");
 				check(MasterVictories.progress(player).cleared(MastersRules.EMBER), "The finishing challenger receives the school record");
 				check(MasterVictories.progress(ally).cleared(MastersRules.EMBER), "An enrolled living support player receives co-op credit without a last hit");
@@ -71,6 +72,7 @@ public final class MasterVictoriesTest implements FabricClientGameTest {
 				check(!MasterVictories.progress(player).cleared(MastersRules.STONE), "An admin/bypass death gives no clear");
 				SwordMaster inert = trial(level, player, ally, MastersRules.GALE, stage);
 				inert.setNoAi(true);
+				inert.spendEvadeFocus(); // A Master slips blows while it has focus; this one must land.
 				inert.hurtServer(level, level.damageSources().playerAttack(player), 100_000);
 				check(!MasterVictories.progress(player).cleared(MastersRules.GALE), "An inert test/admin target gives no clear");
 

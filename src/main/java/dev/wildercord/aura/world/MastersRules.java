@@ -24,6 +24,29 @@ public final class MastersRules {
 	public static final double TECHNIQUE_DAMAGE = 30;
 	public static final int BREATH_TICKS = 40, REDIRECT_REST = 100, DODGE_TICKS = 4;
 
+	/**
+	 * Evasion: a Master slips any challenger's blow or shot while it has focus, and each slip spends one. Focus is deep and
+	 * refills fast, more so the more challengers there are, so a crowd swinging at once mostly cuts air. Its openings are
+	 * the real way in: its recovery after an attack, its breath, a stagger and a broken guard all leave it fully exposed.
+	 */
+	public static double evadeFocus(int count) {
+		return 6 + 2 * (participants(count) - 1);
+	}
+
+	/** Focus regained each tick. */
+	public static double evadeRegen(int count) {
+		return 0.25 + 0.05 * (participants(count) - 1);
+	}
+
+	/** A slip during its own swing costs more: it is already committed. */
+	public static final double EVADE_COST = 1, EVADE_COST_SWINGING = 2;
+	/** Aura a Master draws back each tick outside its breath for every challenger past the first: a crowd cannot wait out its breaths. */
+	public static double auraTrickle(int count) {
+		return 0.06 * (participants(count) - 1);
+	}
+	/** A slip becomes a sidestep at most this often; the rest are leans in place. */
+	public static final int SIDESTEP_REST = 10;
+
 	/** A reservation already occupies its slot; opening its lobby must not count as a ninth encounter. */
 	public static boolean canAdmitEncounter(int activeCount, boolean alreadyRegistered) {
 		return alreadyRegistered || activeCount < MAX_ENCOUNTERS;
