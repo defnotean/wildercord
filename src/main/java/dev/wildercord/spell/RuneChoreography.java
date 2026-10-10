@@ -39,6 +39,11 @@ public final class RuneChoreography {
 	public static Sequence of(RuneDef rune) {
 		// Add-on namespaces cannot have entries in Wildercord's bundled roster.
 		if (!rune.id().startsWith("wildercord:")) return ADDON;
+		// A pair draws its own landing; the hand beats open on its first rune and close on its second.
+		if (PairRunes.isPair(rune)) {
+			var parts = PairRunes.parts(rune);
+			if (parts.size() == 2) return new Sequence(of(parts.get(0)).opening(), of(parts.get(1)).middle(), of(parts.get(1)).finish());
+		}
 		Sequence sequence = ALL.get(rune.path());
 		if (sequence == null) throw new IllegalArgumentException("No authored animation for " + rune.id());
 		return sequence;

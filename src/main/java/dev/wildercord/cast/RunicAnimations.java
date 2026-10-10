@@ -105,6 +105,8 @@ public final class RunicAnimations {
 		// Authored outcomes follow actual owner changes; a collision must not invent a successful landing.
 		var signature = dev.wildercord.cast.feel.Signatures.get(rune.id());
 		if (signature != null && signature.ownsOutcomeBody()) return;
+		// A pair fusion choreographs its own landing in dev.wildercord.pairs.
+		if (dev.wildercord.spell.PairRunes.isPair(rune)) return;
 		if (cast.passive || Fx.muted() || !cast.once("rune-animation:" + rune.id())) {
 			return;
 		}

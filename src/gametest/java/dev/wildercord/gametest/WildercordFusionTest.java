@@ -114,6 +114,7 @@ public class WildercordFusionTest implements FabricClientGameTest {
 				throw new AssertionError("The Fusion Altar went wrong:\n  " + String.join("\n  ", failures));
 			}
 		}
+		PairFusionChecks.run(context);
 	}
 
 	private static ServerPlayer player(MinecraftServer server) {
