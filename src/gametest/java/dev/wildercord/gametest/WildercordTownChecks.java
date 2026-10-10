@@ -288,6 +288,7 @@ public final class WildercordTownChecks {
 		bladeSmithing(player, level);
 		guilds(player, level);
 		coopTribulation(player, level);
+		mentoring(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -513,6 +514,25 @@ public final class WildercordTownChecks {
 		check(dev.wildercord.cast.events.Tribulation.party(player) == 0, "no party, no allies");
 		dev.wildercord.cast.events.Tribulation.cancel(player);
 		check(!dev.wildercord.cast.events.Tribulation.engaged(player), "a cancelled tribulation lets the caster go");
+	}
+
+	/** An apprenticeship is saved with the world, teaches only near the mentor, and ends at the 10th circle. */
+	private void mentoring(ServerPlayer player, ServerLevel level) {
+		var ledger = dev.wildercord.guild.Mentors.ledger(level.getServer());
+		java.util.UUID mentor = new java.util.UUID(0x5EED, 0x7EAC);
+		ledger.end(mentor, player.getUUID());
+		ledger.take(mentor, player.getUUID());
+		check(mentor.equals(ledger.book().mentorOf(player.getUUID())), "the apprentice is written in the book");
+		check(ledger.isDirty(), "the book is saved after a change");
+		check(dev.wildercord.guild.Mentors.gain(player) == 1.0, "a mentor who isn't here teaches nothing");
+		var ops = level.registryAccess().createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE);
+		var saved = dev.wildercord.guild.Mentors.Ledger.CODEC.encodeStart(ops, ledger).getOrThrow();
+		var loaded = dev.wildercord.guild.Mentors.Ledger.CODEC.parse(ops, saved).getOrThrow();
+		check(mentor.equals(loaded.book().mentorOf(player.getUUID())), "an apprenticeship outlasts a reload");
+		dev.wildercord.guild.Mentors.formed(player, dev.wildercord.guild.MentorRules.GRADUATE_AT - 1);
+		check(ledger.book().mentorOf(player.getUUID()) != null, "the 9th circle is still an apprentice's");
+		dev.wildercord.guild.Mentors.formed(player, dev.wildercord.guild.MentorRules.GRADUATE_AT);
+		check(ledger.book().mentorOf(player.getUUID()) == null, "the 10th circle graduates the apprentice");
 	}
 
 	/** A coven is saved with the world, outlasts a reload of its ledger, and training alone earns no bonus. */

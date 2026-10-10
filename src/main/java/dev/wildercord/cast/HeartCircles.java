@@ -154,6 +154,8 @@ public final class HeartCircles {
 			dev.wildercord.content.WildercordEffects.level(player, dev.wildercord.content.WildercordEffects.CONDENSING));
 		// Fellow coven members casting close by.
 		mana *= (float) dev.wildercord.guild.Guilds.bonus(player, dev.wildercord.guild.GuildRules.Kind.COVEN);
+		// An apprentice casting near their mentor.
+		mana *= (float) dev.wildercord.guild.Mentors.gain(player);
 		long now = player.level().getGameTime();
 		Pending waiting = PENDING.get(player.getUUID());
 		float before = waiting == null || now > waiting.until() ? 0 : waiting.mana();
@@ -283,6 +285,7 @@ public final class HeartCircles {
 		player.setAttached(WildercordAttachments.CIRCLES, n);
 		dev.wildercord.advancement.Advancements.circles(player);
 		dev.wildercord.player.TribulationScars.apply(player);
+		dev.wildercord.guild.Mentors.formed(player, n);
 		Spellbooks.setMana(player, Mana.max(player));
 		ServerLevel level = player.level();
 		Vec3 heart = heartOf(player);

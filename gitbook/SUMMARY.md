@@ -176,6 +176,7 @@
   * [Playing Together](social/playing-together.md)
   * [Parties](social/parties.md)
   * [Guilds and Covens](social/guilds.md)
+  * [Mentoring](social/mentoring.md)
   * [Getting Around](social/travel.md)
   * [Runic Hearth](social/runic-hearth.md)
 * [Casting Gear](gear.md)

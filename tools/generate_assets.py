@@ -908,6 +908,8 @@ def write_lang(runes):
     lang.update(guild_lang.LANG)
     import coop_tribulation_lang
     lang.update(coop_tribulation_lang.LANG)
+    import mentor_lang
+    lang.update(mentor_lang.LANG)
     import tempering_art
     lang.update(tempering_art.LANG)
     tempering_art.write(sys.modules[__name__])

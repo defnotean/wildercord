@@ -88,3 +88,5 @@ To end a bond, press **Release** and then **Confirm** within five seconds. Eithe
 
 See also: [Aura](aura.md) · [Ways](ways.md) ·
 [Techniques](techniques.md)
+
+Mages have their own version: see [Mentoring](../social/mentoring.md).

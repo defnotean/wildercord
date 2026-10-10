@@ -98,3 +98,5 @@ To end a bond, press **Release** and then **Confirm** within five seconds. Eithe
 
 See also: [Aura]({{ '/progression/aura/' | relative_url }}) · [Ways]({{ '/progression/ways/' | relative_url }}) ·
 [Techniques]({{ '/progression/techniques/' | relative_url }})
+
+Mages have their own version: see [Mentoring]({{ '/social/mentoring/' | relative_url }}).
