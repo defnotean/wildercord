@@ -291,6 +291,7 @@ public final class WildercordTownChecks {
 		mentoring(player, level);
 		codex(player, level);
 		stats(player);
+		safeTelegraphs();
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -519,6 +520,13 @@ public final class WildercordTownChecks {
 	}
 
 	/** The stats page reads the player as they are: their circles and the whole field guide, time played first. */
+	/** The colour-blind-safe swap keeps a warning red and a ward green apart and leaves the dark-particle flag alone. */
+	private void safeTelegraphs() {
+		int warning = dev.wildercord.presentation.SafeColourRules.safe(0xFF3030), ward = dev.wildercord.presentation.SafeColourRules.safe(0x40D060);
+		check(warning != ward, "safe telegraphs keep red and green apart");
+		check((dev.wildercord.presentation.SafeColourRules.safe(0x01FF3030) & 0xFF000000) == 0x01000000, "safe telegraphs keep a particle's dark flag");
+	}
+
 	private void stats(ServerPlayer player) {
 		var snapshot = dev.wildercord.player.Stats.snapshot(player);
 		check(snapshot.circles() == dev.wildercord.player.Heart.circles(player), "the stats page shows the circles formed");

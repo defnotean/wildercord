@@ -29,7 +29,7 @@ public final class MagicSettingsScreen extends Screen implements CordEditorParen
   // Minecraft's minimum GUI is320x240. Stacking fourteen rows cannot fit that height.
   // Keep both columns, narrow their buttons, and use the actual vanilla button text scrolling.
   int columnWidth=Math.min(220,(width-34)/2), columnGap=10;
-  int leftRows=7,rightRows=8,rows=Math.max(leftRows,rightRows)+2;
+  int leftRows=8,rightRows=8,rows=Math.max(leftRows,rightRows)+2;
   int footerGap=height>=280?6:2;
   int pitch=Math.max(20,Math.min(25,(height-24-8-20-footerGap)/(rows-1)));
   int contentHeight=(rows-1)*pitch+20+footerGap;
@@ -54,7 +54,10 @@ public final class MagicSettingsScreen extends Screen implements CordEditorParen
   addRenderableWidget(Button.builder(titles(), b -> {
    MagicQuality.spellTitles = !MagicQuality.spellTitles; MagicQuality.save(); b.setMessage(titles());
   }).bounds(x, y + pitch * 5, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.spell_titles.tip"))).build());
-  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.combat.title"),b->minecraft.gui.setScreen(new CombatPresentationScreen(this))).bounds(x,y+pitch*6,columnWidth,20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.combat.tip"))).build());
+  addRenderableWidget(Button.builder(safeTelegraphsLabel(), b -> {
+   MagicQuality.safeTelegraphs = !MagicQuality.safeTelegraphs; MagicQuality.save(); b.setMessage(safeTelegraphsLabel());
+  }).bounds(x, y + pitch * 6, columnWidth, 20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.safe_telegraphs.tip"))).build());
+  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.combat.title"),b->minecraft.gui.setScreen(new CombatPresentationScreen(this))).bounds(x,y+pitch*7,columnWidth,20).tooltip(Tooltip.create(Component.translatable("screen.wildercord.combat.tip"))).build());
   // Aura and casting share the second column at every supported GUI size.
   int cx=x+columnWidth+columnGap,cy=y;
   addRenderableWidget(Button.builder(choice("blade_trails", MagicQuality.bladeTrails), b -> {
@@ -95,6 +98,11 @@ public final class MagicSettingsScreen extends Screen implements CordEditorParen
   return Component.translatable("screen.wildercord.quality.others",
    Component.translatable("screen.wildercord.quality." + MagicQuality.others.name().toLowerCase(Locale.ROOT)));
  }
+ private static Component safeTelegraphsLabel() {
+  return Component.translatable("screen.wildercord.safe_telegraphs",
+   Component.translatable(MagicQuality.safeTelegraphs ? "options.on" : "options.off"));
+ }
+
  private static Component reducedFlashLabel() {
   return Component.translatable("screen.wildercord.reduced_flash",
    Component.translatable(MagicQuality.reducedFlash ? "options.on" : "options.off"));

@@ -3713,6 +3713,8 @@
   "screen.wildercord.quality.others.tip": "Detail and particle density for spells cast by other players or creatures.",
   "screen.wildercord.reduced_flash": "Reduced flash: %s",
   "screen.wildercord.reduced_flash.tip": "Softens bright spell flashes and dampens screen-filling light effects.",
+  "screen.wildercord.safe_telegraphs": "Colour-blind-safe telegraphs: %s",
+  "screen.wildercord.safe_telegraphs.tip": "Draws magic circles, rings and warning reticles in a palette that stays distinct under common colour blindness, so a red warning and a green ward never look alike.",
   "screen.wildercord.camera_motion": "Camera motion: %s",
   "screen.wildercord.camera_motion.tip": "Enables camera shake and view impulses during heavy impacts.",
   "screen.wildercord.lesson.scroll_to_read": "Scroll to the bottom of the page before proceeding",

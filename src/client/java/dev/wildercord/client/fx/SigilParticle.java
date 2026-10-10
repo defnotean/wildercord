@@ -93,6 +93,9 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 		this.roll = random.nextFloat() * Mth.TWO_PI;
 		this.oRoll = roll;
 		int color = option.color();
+		if (MagicQuality.safeTelegraphs) {
+			color = dev.wildercord.presentation.SafeColourRules.safe(color);
+		}
 		this.dark = (color & GlowLayers.DARK_FLAG) != 0;
 		this.tint = color & 0xFFFFFF;
 		this.rim = rimOf(tint);

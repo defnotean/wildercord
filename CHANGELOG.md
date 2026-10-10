@@ -34,6 +34,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Mentoring.** A mage of the 10th circle can take up to three apprentices who haven't reached the 5th with `/mentor take`. An apprentice casting near their mentor condenses a quarter faster. Every circle they form pays the mentor in Mana Crystals, and at the 10th circle they graduate.
 - **Codex bestiary.** The Grimoire's field guide now counts every creature you slay. Ten kills teach you its health, armour and bite, and thirty write its name in gold. It's knowledge only: no rank makes you stronger.
 - **Stats page.** `/stats` sums up your journey: time played, Heart Circles and ascensions, breathing method and Aura stage, duels and Master trials won, the field guide and codex, feats and deaths. `/stats <player>` shows someone else's.
+- **Colour-blind-safe telegraphs.** A new Magic settings toggle draws magic circles, rings and warning reticles in the Okabe-Ito palette, so warnings and wards stay distinct under common colour blindness.
 
 ### Changed
 

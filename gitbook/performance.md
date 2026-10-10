@@ -26,6 +26,7 @@ Presets don't change your combat animation or camera choice (see below).
 | Other spells | full, balanced, minimal | Detail and particles for spells from other players and creatures |
 | Reduced flash | on, off | Softens bright flashes and screen-filling light |
 | Camera motion | on, off | Camera shake and view kicks on heavy impacts |
+| Colour-blind-safe telegraphs | on, off | Draws magic circles, rings and warning reticles in the Okabe-Ito palette, which stays distinct under common colour blindness |
 | Spell titles | shown, hidden | The name and rank badge shown when a mastered spell is cast |
 | Blade trails | full, subtle, off | The ribbon of light an aura blade leaves. Techniques always show |
 | Body aura | full, calm, off | The aura around a swordsman's body |
@@ -52,6 +53,7 @@ The **Combat presentation...** button sets how sword fights look and how the cam
 - Set **Other spells** to minimal first. That usually helps most when many players cast.
 - For less motion, use Stable camera, Impact off, Body aura calm or off, and Blade trails subtle or off.
 - Turn on **Reduced flash** if bright releases bother you. Some small flashes remain.
+- Turn on **Colour-blind-safe telegraphs** if warning rings and ward circles look alike to you. Each colour is swapped for the nearest safe one: reds become vermillion, greens bluish green, blues sky blue or blue. Whites and greys stay as they are.
 - The Cinematic launcher profile includes Iris, but you must install and pick a shader pack yourself.
 
 ## Measure a problem

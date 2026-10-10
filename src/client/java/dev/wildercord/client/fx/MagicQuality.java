@@ -14,6 +14,8 @@ public final class MagicQuality {
 	public static boolean reducedFlash, cameraShake = true;
 	/** Whether the names of mastered spells others cast nearby (and your own) show as a brief title by the caster. */
 	public static boolean spellTitles = true;
+	/** Whether magic circles, rings and warning reticles are drawn in colour-blind-safe colours ({@link dev.wildercord.presentation.SafeColourRules}). */
+	public static boolean safeTelegraphs;
 	/** Where the sword string indicator shows: a little below the crosshair, above the aura bar, or not at all (its ticks go quiet too). */
 	public enum StringIndicator { CROSSHAIR, HOTBAR, HIDDEN; public StringIndicator next() { return values()[(ordinal() + 1) % values().length]; } }
 	public static StringIndicator stringIndicator = StringIndicator.CROSSHAIR;
@@ -59,6 +61,7 @@ public final class MagicQuality {
 			read(json,"reduced_flash",()->reducedFlash=json.get("reduced_flash").getAsBoolean());
 			read(json,"camera_shake",()->cameraShake=json.get("camera_shake").getAsBoolean());
 			read(json,"spell_titles",()->spellTitles=json.get("spell_titles").getAsBoolean());
+			read(json,"safe_telegraphs",()->safeTelegraphs=json.get("safe_telegraphs").getAsBoolean());
 			read(json,"string_indicator",()->stringIndicator=StringIndicator.valueOf(upper(json.get("string_indicator").getAsString())));
 			read(json,"blade_trails",()->bladeTrails=Trails.valueOf(upper(json.get("blade_trails").getAsString())));
 			read(json,"body_aura",()->bodyAura=BodyAura.valueOf(upper(json.get("body_aura").getAsString())));
@@ -79,7 +82,7 @@ public final class MagicQuality {
 		var json = new com.google.gson.JsonObject();
 		json.addProperty("own", own.name()); json.addProperty("others", others.name());
 		json.addProperty("reduced_flash", reducedFlash); json.addProperty("camera_shake", cameraShake);
-		json.addProperty("spell_titles", spellTitles);
+		json.addProperty("spell_titles", spellTitles); json.addProperty("safe_telegraphs", safeTelegraphs);
 		json.addProperty("string_indicator", lower(stringIndicator));
 		json.addProperty("blade_trails", lower(bladeTrails));
 		json.addProperty("body_aura", lower(bodyAura));
