@@ -60,29 +60,39 @@ class FusionTest {
 
 	@Test
 	void recipesMatchOnElementsInEitherOrder() {
-		assertSame(FIRESTORM, Fusions.recipe(FIRE, PUSH).orElseThrow().result());
-		assertSame(FIRESTORM, Fusions.recipe(PUSH, FIRE).orElseThrow().result());
+		assertSame(FIRESTORM, Fusions.recipe(FIRE, CYCLONE).orElseThrow().result());
+		assertSame(FIRESTORM, Fusions.recipe(CYCLONE, FIRE).orElseThrow().result());
 		// Any effect of the element counts, not one particular rune.
 		assertSame(FIRESTORM, Fusions.recipe(EMBER, CYCLONE).orElseThrow().result());
 		assertSame(STEAM, Fusions.recipe(FIRE, FROST).orElseThrow().result());
 		assertSame(MAGMA, Fusions.recipe(PELT, FIRE).orElseThrow().result());
-		assertSame(TEMPEST, Fusions.recipe(SHOCK, PUSH).orElseThrow().result());
+		assertSame(TEMPEST, Fusions.recipe(SHOCK, CYCLONE).orElseThrow().result());
 		assertSame(PLASMA, Fusions.recipe(SHOCK, EMBER).orElseThrow().result());
 		assertSame(HAIL, Fusions.recipe(JOLT, ICICLE).orElseThrow().result());
 		assertSame(GLACIER, Fusions.recipe(FROST, ROOT).orElseThrow().result());
 		assertSame(LIFESTEAL, Fusions.recipe(HEAL, PULL).orElseThrow().result());
 		assertSame(WARP, Fusions.recipe(DASH, BLINK).orElseThrow().result());
 		assertSame(BLOOM, Fusions.recipe(REGROWTH, STONESKIN).orElseThrow().result());
-		assertSame(SURGE, Fusions.recipe(HEAL, SHOCK).orElseThrow().result());
+		assertSame(SURGE, Fusions.recipe(HEAL, JOLT).orElseThrow().result());
 		assertSame(NULLIFY, Fusions.recipe(HARM, HEX).orElseThrow().result());
 		// Every pair fuses now, one element with itself too.
 		assertSame(Runes.CONFLAGRATION, Fusions.recipe(FIRE, EMBER).orElseThrow().result());
-		assertSame(Runes.BLOODBOIL, Fusions.recipe(FIRE, BLEED).orElseThrow().result());
+		assertSame(Runes.BLOODBOIL, Fusions.recipe(FIRE, REND).orElseThrow().result());
 		assertSame(Runes.BLOODBOIL, Fusions.recipe(BLEED, EMBER).orElseThrow().result());
 		assertSame(Runes.RECKONING, Fusions.recipe(Runes.STASIS, BLEED).orElseThrow().result());
 		assertSame(Runes.SINGULARITY, Fusions.recipe(PULL, Runes.WITHER).orElseThrow().result());
 		assertTrue(Fusions.recipe(FIRE, BOLT).isEmpty(), "only effects fuse");
 		assertTrue(Fusions.recipe(KINDLING, PUSH).isEmpty(), "innate runes never fuse");
+	}
+
+	@Test
+	void aWrittenPairComesBeforeItsElements() {
+		// Fire and push have their own spell (Ashen Gale); fire and cyclone, not yet written, fuse as their elements.
+		var pair = Fusions.recipe(PUSH, FIRE).orElseThrow();
+		assertInstanceOf(Fusions.Pair.class, pair);
+		assertEquals("wildercord:pair/fire/push", pair.result().id());
+		assertSame(pair.result(), Fusions.recipe(FIRE, PUSH).orElseThrow().result());
+		assertSame(FIRESTORM, Fusions.recipe(FIRE, CYCLONE).orElseThrow().result());
 	}
 
 	@Test
@@ -232,7 +242,7 @@ class FusionTest {
 
 	@Test
 	void twoEffectsAndAShardCombine() {
-		Fusions.Plan combine = plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(FIRE, 2), Fusions.Slot.EMPTY, Fusions.Slot.of(PUSH, 1));
+		Fusions.Plan combine = plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(FIRE, 2), Fusions.Slot.EMPTY, Fusions.Slot.of(CYCLONE, 1));
 		assertTrue(combine.ready(), String.valueOf(combine.problem()));
 		assertEquals(Fusions.Kind.COMBINE, combine.kind());
 		assertSame(FIRESTORM, combine.result());

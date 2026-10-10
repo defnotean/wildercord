@@ -50,7 +50,8 @@ public final class PairFusionChecks {
 			world.getServer().runCommand("time set noon");
 			List<Written> written = world.getServer().computeOnServer(server -> {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.setGameMode(GameType.SURVIVAL);
+				// Creative, so a soul pair (one with an innate rune) runs without the matching heart.
+				p.setGameMode(GameType.CREATIVE);
 				p.teleportTo(p.level(), 0.5, 101, 0.5, java.util.Set.of(), 0, 0, false);
 				for (BlockPos q : BlockPos.betweenClosed(new BlockPos(-56, 100, -8), new BlockPos(56, 100, 24))) {
 					p.level().setBlock(q, Blocks.STONE_BRICKS.defaultBlockState(), 2);
@@ -90,18 +91,23 @@ public final class PairFusionChecks {
 						}
 					}
 				});
-				// The longest animation runs its course.
-				c.waitTicks(100);
+				// A look early, while a short status is still on, and another once the longest animation has run its course.
+				boolean[] seen = new boolean[batch.size()];
+				c.waitTicks(20);
+				world.getServer().runOnServer(server -> {
+					ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+					for (int i = 0; i < batch.size(); i++) {
+						seen[i] = touched(p.level().getEntity(marks.get(i)), i);
+					}
+				});
+				c.waitTicks(80);
 				world.getServer().runOnServer(server -> {
 					ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 					for (int i = 0; i < batch.size(); i++) {
 						Written w = batch.get(i);
 						Entity e = p.level().getEntity(marks.get(i));
 						if (w.spec().kind() == EffectKind.HARMFUL) {
-							boolean touched = e == null || !e.isAlive() || (e instanceof LivingEntity l
-								&& (l.getHealth() < l.getMaxHealth() || !l.getActiveEffects().isEmpty() || l.isOnFire() || l.getTicksFrozen() > 0
-								|| l.position().distanceTo(new Vec3((i - BATCH / 2) * SPACING + 0.5, 101, 10.5)) > 0.5));
-							check(touched, w.spec().name() + " (" + w.a().path() + " + " + w.b().path() + ") did nothing to its target");
+							check(seen[i] || touched(e, i), w.spec().name() + " (" + w.a().path() + " + " + w.b().path() + ") did nothing to its target");
 						}
 						if (e != null) {
 							e.discard();
@@ -111,6 +117,13 @@ public final class PairFusionChecks {
 				});
 			}
 		}
+	}
+
+	/** Whether the husk at batch place {@code i} shows anything done to it: gone, hurt, under an effect, burning, frozen or moved. */
+	private static boolean touched(Entity e, int i) {
+		return e == null || !e.isAlive() || (e instanceof LivingEntity l
+			&& (l.getHealth() < l.getMaxHealth() || !l.getActiveEffects().isEmpty() || l.isOnFire() || l.getTicksFrozen() > 0
+			|| l.position().distanceTo(new Vec3((i - BATCH / 2) * SPACING + 0.5, 101, 10.5)) > 0.5));
 	}
 
 	/** Every written pair, by its two runes. */

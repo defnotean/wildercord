@@ -8,11 +8,70 @@ public final class PairSpecs {
 	private PairSpecs() {}
 
 	/** How many pairs are written. */
-	public static final int COUNT = 1;
+	public static final int COUNT = 100;
 
 	public static PairSpec spec(String a, String b) {
 		return switch (a) {
+			case "absolute_zero" -> dev.wildercord.pairs.gen.S_absolute_zero.spec(b);
+			case "accelerate" -> dev.wildercord.pairs.gen.S_accelerate.spec(b);
+			case "aftershock" -> dev.wildercord.pairs.gen.S_aftershock.spec(b);
+			case "anchor" -> dev.wildercord.pairs.gen.S_anchor.spec(b);
+			case "banish" -> dev.wildercord.pairs.gen.S_banish.spec(b);
+			case "barrier" -> dev.wildercord.pairs.gen.S_barrier.spec(b);
+			case "bleed" -> dev.wildercord.pairs.gen.S_bleed.spec(b);
+			case "blind" -> dev.wildercord.pairs.gen.S_blind.spec(b);
+			case "blink" -> dev.wildercord.pairs.gen.S_blink.spec(b);
+			case "borrowed_time" -> dev.wildercord.pairs.gen.S_borrowed_time.spec(b);
+			case "bramble" -> dev.wildercord.pairs.gen.S_bramble.spec(b);
+			case "bubble" -> dev.wildercord.pairs.gen.S_bubble.spec(b);
 			case "chill" -> dev.wildercord.pairs.gen.S_chill.spec(b);
+			case "cinderbrand" -> dev.wildercord.pairs.gen.S_cinderbrand.spec(b);
+			case "cleanse" -> dev.wildercord.pairs.gen.S_cleanse.spec(b);
+			case "coldsnap" -> dev.wildercord.pairs.gen.S_coldsnap.spec(b);
+			case "countdown" -> dev.wildercord.pairs.gen.S_countdown.spec(b);
+			case "cyclone" -> dev.wildercord.pairs.gen.S_cyclone.spec(b);
+			case "dash" -> dev.wildercord.pairs.gen.S_dash.spec(b);
+			case "deflect" -> dev.wildercord.pairs.gen.S_deflect.spec(b);
+			case "ember" -> dev.wildercord.pairs.gen.S_ember.spec(b);
+			case "empower" -> dev.wildercord.pairs.gen.S_empower.spec(b);
+			case "evade" -> dev.wildercord.pairs.gen.S_evade.spec(b);
+			case "fangs" -> dev.wildercord.pairs.gen.S_fangs.spec(b);
+			case "fire" -> dev.wildercord.pairs.gen.S_fire.spec(b);
+			case "flash_freeze" -> dev.wildercord.pairs.gen.S_flash_freeze.spec(b);
+			case "flashfire" -> dev.wildercord.pairs.gen.S_flashfire.spec(b);
+			case "frost" -> dev.wildercord.pairs.gen.S_frost.spec(b);
+			case "gale_mantle" -> dev.wildercord.pairs.gen.S_gale_mantle.spec(b);
+			case "gash" -> dev.wildercord.pairs.gen.S_gash.spec(b);
+			case "grapple" -> dev.wildercord.pairs.gen.S_grapple.spec(b);
+			case "grow" -> dev.wildercord.pairs.gen.S_grow.spec(b);
+			case "haste" -> dev.wildercord.pairs.gen.S_haste.spec(b);
+			case "haven" -> dev.wildercord.pairs.gen.S_haven.spec(b);
+			case "heal" -> dev.wildercord.pairs.gen.S_heal.spec(b);
+			case "hex" -> dev.wildercord.pairs.gen.S_hex.spec(b);
+			case "hobble" -> dev.wildercord.pairs.gen.S_hobble.spec(b);
+			case "icicle" -> dev.wildercord.pairs.gen.S_icicle.spec(b);
+			case "launch" -> dev.wildercord.pairs.gen.S_launch.spec(b);
+			case "leech" -> dev.wildercord.pairs.gen.S_leech.spec(b);
+			case "levitate" -> dev.wildercord.pairs.gen.S_levitate.spec(b);
+			case "lightning" -> dev.wildercord.pairs.gen.S_lightning.spec(b);
+			case "lure" -> dev.wildercord.pairs.gen.S_lure.spec(b);
+			case "managift" -> dev.wildercord.pairs.gen.S_managift.spec(b);
+			case "meteor" -> dev.wildercord.pairs.gen.S_meteor.spec(b);
+			case "pacify" -> dev.wildercord.pairs.gen.S_pacify.spec(b);
+			case "pull" -> dev.wildercord.pairs.gen.S_pull.spec(b);
+			case "push" -> dev.wildercord.pairs.gen.S_push.spec(b);
+			case "rally" -> dev.wildercord.pairs.gen.S_rally.spec(b);
+			case "regrowth" -> dev.wildercord.pairs.gen.S_regrowth.spec(b);
+			case "rend" -> dev.wildercord.pairs.gen.S_rend.spec(b);
+			case "salve" -> dev.wildercord.pairs.gen.S_salve.spec(b);
+			case "sentry" -> dev.wildercord.pairs.gen.S_sentry.spec(b);
+			case "shieldwall" -> dev.wildercord.pairs.gen.S_shieldwall.spec(b);
+			case "shock" -> dev.wildercord.pairs.gen.S_shock.spec(b);
+			case "slowburn" -> dev.wildercord.pairs.gen.S_slowburn.spec(b);
+			case "stillbind" -> dev.wildercord.pairs.gen.S_stillbind.spec(b);
+			case "stormheart" -> dev.wildercord.pairs.gen.S_stormheart.spec(b);
+			case "umbra" -> dev.wildercord.pairs.gen.S_umbra.spec(b);
+			case "undertow" -> dev.wildercord.pairs.gen.S_undertow.spec(b);
 			default -> null;
 		};
 	}

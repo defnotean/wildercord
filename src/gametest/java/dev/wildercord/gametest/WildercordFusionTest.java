@@ -235,14 +235,14 @@ public class WildercordFusionTest implements FabricClientGameTest {
 		}
 		menu.getSlot(FusionAltarMenu.RESULT).set(ItemStack.EMPTY);
 
-		// ---- Combine: Fire and Push with a shard make Firestorm for 3 levels, and the Grimoire records it.
-		load(menu, new ItemStack(Items.AMETHYST_SHARD), RuneItem.stack(Runes.FIRE), null, RuneItem.stack(Runes.PUSH));
+		// ---- Combine: Fire and Cyclone with a shard make Firestorm for 3 levels, and the Grimoire records it.
+		load(menu, new ItemStack(Items.AMETHYST_SHARD), RuneItem.stack(Runes.FIRE), null, RuneItem.stack(Runes.CYCLONE));
 		int levels = player.experienceLevel;
 		if (!menu.clickMenuButton(player, FusionAltarMenu.BUTTON_FUSE)) {
-			failures.add("Fire and Push with a shard should combine (" + menu.plan().problem() + ")");
+			failures.add("Fire and Cyclone with a shard should combine (" + menu.plan().problem() + ")");
 		}
 		if (!RuneItem.runeOf(result(menu)).map(r -> r.is(Runes.FIRESTORM.id())).orElse(false)) {
-			failures.add("Fire and Push should make Firestorm (made " + result(menu) + ")");
+			failures.add("Fire and Cyclone should make Firestorm (made " + result(menu) + ")");
 		}
 		// (Its first time also earns an advancement, whose experience can give a level back.)
 		if (player.experienceLevel < levels - 3 || player.experienceLevel > levels - 2) {

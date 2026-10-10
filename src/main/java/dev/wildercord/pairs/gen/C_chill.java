@@ -9,6 +9,11 @@ public final class C_chill {
 	public static boolean cast(String b, PairCast c) {
 		switch (b) {
 			case "fire" -> dev.wildercord.pairs.b000.Pairs000.chillFire(c);
+			case "heal" -> dev.wildercord.pairs.b003.Pairs003.chillHeal(c);
+			case "pull" -> dev.wildercord.pairs.b003.Pairs003.chillPull(c);
+			case "push" -> dev.wildercord.pairs.b003.Pairs003.chillPush(c);
+			case "shock" -> dev.wildercord.pairs.b002.Pairs002.rimeConductor(c);
+			case "stoneskin" -> dev.wildercord.pairs.b003.Pairs003.chillStoneskin(c);
 			default -> {
 				return false;
 			}

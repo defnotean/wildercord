@@ -10,6 +10,11 @@ public final class S_chill {
 	public static PairSpec spec(String b) {
 		return switch (b) {
 			case "fire" -> new PairSpec("Thermal Shock", "frost", EffectKind.HARMFUL, "Frost closes round each target for half a second (Slowness III), then fire inside cracks the shell: 6 damage, set alight for 3 seconds, and shards of 2 damage into every enemy within 2.5 blocks.", "power", "duration", "radius");
+			case "heal" -> new PairSpec("Tithe of Cold", "life", EffectKind.HELPFUL, "Heals each ally 8 health. The nearest enemy within 4 blocks is chilled (Slowness II for 6 seconds and 1 freeze damage), and if it was already slowed, each ally heals 10 instead.", "power", "radius");
+			case "pull" -> new PairSpec("Frozen Huddle", "frost", EffectKind.HARMFUL, "Draws each enemy in toward the spell and chills it (Slowness II for 6 seconds, 1 freeze damage). Once they gather, each takes 3 freeze damage for every other gathered enemy within 1.5 blocks of it, up to 3.", "power", "radius");
+			case "push" -> new PairSpec("Rime Gale", "wind", EffectKind.HARMFUL, "A gale hurls each enemy away from the spell, with Slowness II for 6 seconds and 1 freeze damage. An enemy already slowed flies twice as hard, and slams into the enemy it meets within 1.5 blocks: both take 4 damage.", "power", "radius");
+			case "shock" -> new PairSpec("Rime Conductor", "storm", EffectKind.HARMFUL, "Chills each target (8 at most): Slowness II for 6 seconds and 1 freeze damage, then 3 lightning damage. The bolt jumps to the nearest other enemy within 4 blocks for 2 lightning damage.", "power", "duration", "radius");
+			case "stoneskin" -> new PairSpec("Rimed Bulwark", "earth", EffectKind.HELPFUL, "Allies within 4 blocks of the spell get Resistance II for 10 seconds. For 5 seconds, once a second, every enemy within 2 blocks of an ally is chilled: Slowness I for 2 seconds and 1 freeze damage.", "power", "duration", "radius");
 			default -> null;
 		};
 	}
