@@ -78,10 +78,13 @@ public final class TravelSites {
 				var start = player.level().structureManager().getStructureWithPieceAt(player.blockPosition(), Sites.ALL_SITES);
 				if (start.isValid() && start.getStructure() instanceof SiteStructure site && IDS.contains(site.site())) {
 					LoreJournal.record(player, "place:" + site.site(), true);
-					// An inn from before 0.12 gets its bounty board and keepers the first time someone walks in.
+					// An inn from before 0.12 gets its bounty board and keepers the first time someone walks in; at night, bandits may come.
 					if (site.site().equals(INN)) {
 						for (var piece : start.getPieces()) {
-							if (piece instanceof WayfarerInnPiece inn) inn.retrofit(player.level());
+							if (piece instanceof WayfarerInnPiece inn) {
+								inn.retrofit(player.level());
+								dev.wildercord.town.InnRaid.chance(player, inn.getBoundingBox().getCenter());
+							}
 						}
 					}
 				}

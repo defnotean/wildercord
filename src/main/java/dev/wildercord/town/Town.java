@@ -77,28 +77,38 @@ public final class Town {
 
 	/**
 	 * A traveller's standing with the inns: reputation, the day they last turned a bounty in (-1 for never), the bounty they hold,
-	 * and the week they last had a great hunt (-1 for never).
+	 * the week they last had a great hunt and the day bandits last raided an inn they were in (both -1 for never).
 	 */
-	public record Standing(int reputation, long lastDay, Optional<Active> bounty, long lastGreatWeek) {
-		public static final Standing NONE = new Standing(0, -1, Optional.empty(), -1);
+	public record Standing(int reputation, long lastDay, Optional<Active> bounty, long lastGreatWeek, long lastRaidDay) {
+		public static final Standing NONE = new Standing(0, -1, Optional.empty(), -1, -1);
 		public static final Codec<Standing> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.INT.optionalFieldOf("reputation", 0).forGetter(Standing::reputation),
 			Codec.LONG.optionalFieldOf("last_day", -1L).forGetter(Standing::lastDay),
 			Active.CODEC.optionalFieldOf("bounty").forGetter(Standing::bounty),
-			Codec.LONG.optionalFieldOf("last_great_week", -1L).forGetter(Standing::lastGreatWeek)
+			Codec.LONG.optionalFieldOf("last_great_week", -1L).forGetter(Standing::lastGreatWeek),
+			Codec.LONG.optionalFieldOf("last_raid_day", -1L).forGetter(Standing::lastRaidDay)
 		).apply(i, Standing::new));
+
+		public Standing(int reputation, long lastDay, Optional<Active> bounty, long lastGreatWeek) {
+			this(reputation, lastDay, bounty, lastGreatWeek, -1);
+		}
 
 		public BountyRules.Tier tier() {
 			return BountyRules.Tier.of(reputation);
 		}
 
 		Standing with(Optional<Active> bounty) {
-			return new Standing(reputation, lastDay, bounty, lastGreatWeek);
+			return new Standing(reputation, lastDay, bounty, lastGreatWeek, lastRaidDay);
 		}
 
 		/** This standing with {@code more} reputation (which can be negative, but never takes it below 0). */
 		public Standing plus(int more) {
-			return new Standing(Math.max(0, reputation + more), lastDay, bounty, lastGreatWeek);
+			return new Standing(Math.max(0, reputation + more), lastDay, bounty, lastGreatWeek, lastRaidDay);
+		}
+
+		/** This standing, raided on {@code day}. */
+		public Standing raided(long day) {
+			return new Standing(reputation, lastDay, bounty, lastGreatWeek, day);
 		}
 	}
 

@@ -186,7 +186,7 @@ public class BountyBoardBlock extends Block {
 		BountyRules.Tier before = standing.tier();
 		boolean great = bounty.type() == BountyRules.Kind.GREAT;
 		Town.Standing after = new Town.Standing(standing.reputation() + bounty.reputation(), today, Optional.empty(),
-			great ? BountyRules.week(today) : standing.lastGreatWeek());
+			great ? BountyRules.week(today) : standing.lastGreatWeek(), standing.lastRaidDay());
 		Town.set(player, after);
 		give(player, new ItemStack(Items.EMERALD, bounty.emeralds()));
 		if (great) give(player, new ItemStack(WildercordItems.MANA_CRYSTAL, BountyRules.GREAT_CRYSTALS));

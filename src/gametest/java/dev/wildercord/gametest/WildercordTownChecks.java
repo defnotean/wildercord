@@ -2,11 +2,14 @@ package dev.wildercord.gametest;
 
 import dev.wildercord.town.BountyBoardBlock;
 import dev.wildercord.town.BountyRules;
+import dev.wildercord.town.InnRaid;
+import dev.wildercord.town.InnRaidRules;
 import dev.wildercord.town.Town;
 import dev.wildercord.town.WayfarerKeeper;
 import dev.wildercord.wildlife.MountContent;
 import dev.wildercord.wildlife.RidgebackStag;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,6 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -69,6 +73,7 @@ public final class WildercordTownChecks {
 			context.waitTicks(5);
 			server.runOnServer(this::bounty);
 			server.runOnServer(this::keepers);
+			raid(context, server);
 		}
 		if (!failures.isEmpty()) {
 			throw new AssertionError("Town: " + String.join("; ", failures));
@@ -135,6 +140,54 @@ public final class WildercordTownChecks {
 		check(Town.standing(player).bounty().isEmpty(), "a gathering is turned in with the goods");
 		check(player.getInventory().countItem(Items.BONE) == 2, "it takes just the goods it asked for");
 		check(player.getInventory().countItem(Items.EMERALD) == 5 && Town.standing(player).reputation() == 26, "a gathering pays");
+	}
+
+	/** Bandits raid the inn: they come in waves, beating every wave pays the defenders, and leaving the inn ends a raid. */
+	private void raid(ClientGameTestContext context, TestServerContext server) {
+		server.runCommand("fill -34 " + (GROUND - 1) + " -34 34 " + (GROUND - 1) + " 34 minecraft:grass_block");
+		server.runCommand("fill -34 " + GROUND + " -34 34 " + (GROUND + 5) + " 34 minecraft:air");
+		server.runOnServer(s -> {
+			ServerPlayer player = player(s);
+			player.getAbilities().invulnerable = true;
+			player.onUpdateAbilities();
+			player.teleportTo(player.level(), 0.5, GROUND, 3.5, Set.<Relative>of(), 180, 0, false);
+			player.getInventory().clearContent();
+			Town.set(player, new Town.Standing(20, -1, Optional.empty(), -1));
+			InnRaid.begin(player, BOARD, player.level().getGameTime() / BountyRules.DAY);
+			check(InnRaid.active(BOARD), "a raid begins");
+			check(Town.standing(player).lastRaidDay() >= 0, "a raid is remembered on the defender");
+		});
+		boolean[] seen = {false};
+		for (int i = 0; i < 20; i++) {
+			context.waitTicks(30);
+			boolean[] over = {false};
+			server.runOnServer(s -> {
+				ServerLevel level = player(s).level();
+				for (Mob mob : level.getEntitiesOfClass(Mob.class, new AABB(BOARD).inflate(48), m -> m.entityTags().contains(InnRaid.TAG))) {
+					seen[0] = true;
+					mob.discard();
+				}
+				over[0] = !InnRaid.active(BOARD);
+			});
+			if (over[0]) break;
+		}
+		server.runOnServer(s -> {
+			ServerPlayer player = player(s);
+			check(seen[0], "bandits come");
+			check(!InnRaid.active(BOARD), "the raid ends when every wave is beaten");
+			BountyRules.Tier known = BountyRules.Tier.KNOWN;
+			check(player.getInventory().countItem(Items.EMERALD) == InnRaidRules.emeralds(known), "holding the inn pays emeralds");
+			check(Town.standing(player).reputation() == 20 + InnRaidRules.reputation(known), "holding the inn pays reputation");
+			InnRaid.begin(player, BOARD, 0);
+			player.teleportTo(player.level(), 0.5, GROUND, InnRaidRules.RADIUS + 20, Set.<Relative>of(), 180, 0, false);
+		});
+		context.waitTicks(5);
+		server.runOnServer(s -> {
+			check(!InnRaid.active(BOARD), "leaving the inn ends a raid");
+			ServerPlayer player = player(s);
+			player.getAbilities().invulnerable = false;
+			player.onUpdateAbilities();
+		});
 	}
 
 	private void keepers(MinecraftServer server) {
