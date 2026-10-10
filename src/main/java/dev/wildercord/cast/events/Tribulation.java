@@ -7,6 +7,7 @@ import dev.wildercord.cast.ScreenFx;
 import dev.wildercord.cast.Sigils;
 import dev.wildercord.player.Heart;
 import dev.wildercord.spell.Circles;
+import dev.wildercord.spell.CoopTribulationRules;
 import dev.wildercord.spell.TribulationRules;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -44,6 +45,10 @@ import java.util.UUID;
  * completes, the sky answers. Waves of tempered Runebound come for the caster, stronger at every tier, the last led by a
  * Herald; beating them all forms the circle. Dying, fleeing or running out of time loses it (the condensed mana is kept, and
  * it can be faced again after a rest). Nothing here is saved: a restart sends its monsters away and the heart waits again.
+ *
+ * <p>Party members standing in the ring when it begins face it beside the caster ({@link CoopTribulationRules}): each one
+ * makes every wave bigger and its monsters tougher, fixed from the start so leaving early can't shrink the storm. Only the
+ * caster's fall ends it; an ally who falls or flees drops out. Allies who stand to the end take a share of the spoils.</p>
  */
 public final class Tribulation {
 	private static final int COLOR = 0xE8D8B0;
@@ -72,6 +77,10 @@ public final class Tribulation {
 	private final int circle;
 	private final Vec3 centre;
 	private final ServerBossEvent bar;
+	/** Party members facing it beside the caster, while they stay in it. */
+	private final List<ServerPlayer> allies = new ArrayList<>();
+	/** How many allies it began with: the storm keeps that size even if some drop out. */
+	private int party;
 	private final List<Mob> mobs = new ArrayList<>();
 	private int wave;
 	private int pending;
@@ -112,6 +121,19 @@ public final class Tribulation {
 		return ACTIVE.containsKey(player.getUUID());
 	}
 
+	/** Whether {@code player} is in any tribulation, their own or as someone's ally. */
+	public static boolean engaged(ServerPlayer player) {
+		if (active(player)) return true;
+		for (Tribulation t : ACTIVE.values()) if (t.allies.contains(player)) return true;
+		return false;
+	}
+
+	/** How many allies {@code caster}'s tribulation began with (0 when there is none). */
+	public static int party(ServerPlayer caster) {
+		Tribulation t = ACTIVE.get(caster.getUUID());
+		return t == null ? 0 : t.party;
+	}
+
 	/**
 	 * The meditation for circle {@code n} completed: begin its tribulation. Returns false (and the circle may simply form) when
 	 * there is none to face here; on Peaceful no monster can come, so the circle forms without one.
@@ -126,12 +148,57 @@ public final class Tribulation {
 			return true;
 		}
 		Tribulation t = new Tribulation(player, n);
+		t.enlist();
 		ACTIVE.put(player.getUUID(), t);
 		t.open();
 		return true;
 	}
 
+	/** Party members in the ring and free to fight join in, as many as count. */
+	private void enlist() {
+		for (UUID id : dev.wildercord.party.Parties.members(player)) {
+			if (allies.size() >= CoopTribulationRules.MAX_ALLIES) break;
+			if (id.equals(player.getUUID())) continue;
+			ServerPlayer ally = level.getServer().getPlayerList().getPlayer(id);
+			if (ally != null && ally.isAlive() && !ally.isSpectator() && ally.level() == level
+					&& ally.position().distanceTo(centre) <= TribulationRules.RADIUS && !engaged(ally)) allies.add(ally);
+		}
+		party = CoopTribulationRules.allies(allies.size());
+	}
+
+	private int size(int wave) {
+		return CoopTribulationRules.waveSize(TribulationRules.waveSize(circle, wave), party);
+	}
+
+	private List<ServerPlayer> everyone() {
+		List<ServerPlayer> all = new ArrayList<>(allies.size() + 1);
+		all.add(player);
+		all.addAll(allies);
+		return all;
+	}
+
+	private void overlay(Component message) {
+		for (ServerPlayer p : everyone()) p.sendOverlayMessage(message);
+	}
+
+	/** The nearest fighter for a monster without a target. */
+	private ServerPlayer nearest(Mob mob) {
+		ServerPlayer best = player;
+		for (ServerPlayer ally : allies) if (!ally.isCreative() && ally.distanceToSqr(mob) < best.distanceToSqr(mob)) best = ally;
+		return best;
+	}
+
 	private void open() {
+		for (ServerPlayer ally : allies) {
+			bar.addPlayer(ally);
+			ally.connection.send(new ClientboundSetTitlesAnimationPacket(10, 50, 20));
+			ally.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("title.wildercord.tribulation").withColor(COLOR)));
+			ally.sendSystemMessage(Component.translatable("message.wildercord.tribulation.ally_begin", player.getDisplayName(), Circles.ordinal(circle),
+				(int) TribulationRules.RADIUS).withColor(COLOR));
+		}
+		if (!allies.isEmpty()) {
+			player.sendSystemMessage(Component.translatable("message.wildercord.tribulation.allies", allies.size()).withColor(COLOR));
+		}
 		bar.addPlayer(player);
 		player.connection.send(new ClientboundSetTitlesAnimationPacket(10, 50, 20));
 		player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("title.wildercord.tribulation").withColor(COLOR)));
@@ -169,17 +236,29 @@ public final class Tribulation {
 			fail("peaceful");
 			return false;
 		}
+		allies.removeIf(ally -> {
+			boolean out = ally.isRemoved() || !ally.isAlive() || ally.level() != level || ally.position().distanceTo(centre) > TribulationRules.RADIUS;
+			if (out) {
+				bar.removePlayer(ally);
+				if (!ally.isRemoved()) ally.sendSystemMessage(Component.translatable("message.wildercord.tribulation.ally_out").withColor(0xE07A5F));
+				player.sendOverlayMessage(Component.translatable("message.wildercord.tribulation.ally_lost", ally.getDisplayName()).withColor(0xE07A5F));
+			}
+			return out;
+		});
 		int alive = 0;
 		for (Mob mob : mobs) {
 			if (mob.isAlive() && !mob.isRemoved()) {
 				alive++;
-				if (mob.getTarget() == null && !player.isCreative()) mob.setTarget(player);
+				if (mob.getTarget() == null) {
+					ServerPlayer near = nearest(mob);
+					if (!near.isCreative()) mob.setTarget(near);
+				}
 				// One that strays too far is drawn back to the circle.
 				if (mob.position().distanceTo(centre) > TribulationRules.RADIUS + 8) mob.teleportTo(centre.x, centre.y, centre.z);
 			}
 		}
 		if (now % 10 == 0) {
-			int size = wave == 0 ? 1 : TribulationRules.waveSize(circle, wave) + (TribulationRules.lastWave(circle, wave) ? 1 : 0);
+			int size = wave == 0 ? 1 : size(wave) + (TribulationRules.lastWave(circle, wave) ? 1 : 0);
 			bar.setName(Component.translatable("boss.wildercord.tribulation", Circles.ordinal(circle), Math.max(1, wave), TribulationRules.waves(circle)));
 			bar.setProgress(wave == 0 ? 1F : Math.max(0F, Math.min(1F, (alive + pending) / (float) size)));
 			Light.groundRing(level, centre, STORM, 0.3, TribulationRules.RADIUS, 0.2, 12);
@@ -191,7 +270,7 @@ public final class Tribulation {
 			}
 			breathing = true;
 			nextWaveAt = now + TribulationRules.BREATH_TICKS;
-			player.sendOverlayMessage(Component.translatable("message.wildercord.tribulation.breath", wave, TribulationRules.waves(circle)).withColor(COLOR));
+			overlay(Component.translatable("message.wildercord.tribulation.breath", wave, TribulationRules.waves(circle)).withColor(COLOR));
 		}
 		if (wave > 0 && !breathing && now > waveDeadline) {
 			fail("time");
@@ -207,12 +286,12 @@ public final class Tribulation {
 	private void spawnWave(int n, long now) {
 		wave = n;
 		waveDeadline = now + TribulationRules.WAVE_TICKS;
-		int size = TribulationRules.waveSize(circle, n);
+		int size = size(n);
 		int adepts = TribulationRules.adepts(circle, n);
 		int tier = TribulationRules.tier(circle);
 		List<EntityType<? extends Mob>> types = TYPES.get(tier - 1);
 		boolean last = TribulationRules.lastWave(circle, n);
-		player.sendOverlayMessage(Component.translatable(last ? (TribulationRules.rival(circle) ? "message.wildercord.tribulation.last_rival" : "message.wildercord.tribulation.last") : "message.wildercord.tribulation.wave",
+		overlay(Component.translatable(last ? (TribulationRules.rival(circle) ? "message.wildercord.tribulation.last_rival" : "message.wildercord.tribulation.last") : "message.wildercord.tribulation.wave",
 			n, TribulationRules.waves(circle)).withColor(STORM));
 		WorldEvents.farSound(level, centre, SoundEvents.LIGHTNING_BOLT_THUNDER, 96, 0.9F + 0.05F * n);
 		pending = size + (last ? 1 : 0);
@@ -245,15 +324,16 @@ public final class Tribulation {
 		if (shadow) {
 			mirror(mob);
 			ScreenFx.shake(level, at, 0.5F, 30);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.tribulation.shadow").withColor(SHADOW));
+			overlay(Component.translatable("message.wildercord.tribulation.shadow").withColor(SHADOW));
 		} else {
-			temper(mob, herald ? TribulationRules.healthBonus(circle) + 2.0 : TribulationRules.healthBonus(circle), TribulationRules.damageBonus(circle));
+			double health = CoopTribulationRules.healthBonus(TribulationRules.healthBonus(circle), party);
+			temper(mob, herald ? health + 2.0 : health, TribulationRules.damageBonus(circle));
 		}
 		if (herald && !shadow) {
 			mob.addTag(HERALD_TAG);
 			mob.setCustomName(Component.translatable("entity.wildercord.tribulation_herald").withColor(COLOR));
 			ScreenFx.shake(level, at, 0.4F, 24);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.tribulation.herald").withColor(COLOR));
+			overlay(Component.translatable("message.wildercord.tribulation.herald").withColor(COLOR));
 		}
 		mobs.add(mob);
 		strike(at);
@@ -317,6 +397,13 @@ public final class Tribulation {
 			player.sendSystemMessage(Component.translatable("message.wildercord.tribulation.scar").withColor(0xE05A4A));
 		}
 		spoils();
+		for (ServerPlayer ally : allies) {
+			ally.sendSystemMessage(Component.translatable("message.wildercord.tribulation.ally_won", player.getDisplayName(), Circles.ordinal(circle)).withColor(COLOR));
+			Vec3 at = ally.position().add(0, 0.8, 0);
+			drop(at, new net.minecraft.world.item.ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL,
+				CoopTribulationRules.allyCrystals(TribulationRules.spoilCrystals(circle))));
+			net.minecraft.world.entity.ExperienceOrb.award(level, at, TribulationRules.spoilXp(circle));
+		}
 	}
 
 	/** Runes, Mana Crystals and experience where the caster stood: more at every tier. */
@@ -347,6 +434,9 @@ public final class Tribulation {
 		if (!player.isRemoved()) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.tribulation.failed." + why, Circles.ordinal(circle),
 				TribulationRules.RETRY_TICKS / 1200).withColor(0xE07A5F));
+		}
+		for (ServerPlayer ally : allies) {
+			if (!ally.isRemoved()) ally.sendSystemMessage(Component.translatable("message.wildercord.tribulation.ally_failed", player.getDisplayName()).withColor(0xE07A5F));
 		}
 	}
 

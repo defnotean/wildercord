@@ -287,6 +287,7 @@ public final class WildercordTownChecks {
 		elixirs(player, level);
 		bladeSmithing(player, level);
 		guilds(player, level);
+		coopTribulation(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -502,6 +503,16 @@ public final class WildercordTownChecks {
 		lynx.discard();
 		cougar.discard();
 		zombie.discard();
+	}
+
+	/** A caster with no party in the ring faces their tribulation alone, the storm its lone size. */
+	private void coopTribulation(ServerPlayer player, ServerLevel level) {
+		dev.wildercord.cast.events.Tribulation.cancel(player);
+		if (!dev.wildercord.cast.events.Tribulation.begin(player, 5) || !dev.wildercord.cast.events.Tribulation.active(player)) return;
+		check(dev.wildercord.cast.events.Tribulation.engaged(player), "the caster is in their own tribulation");
+		check(dev.wildercord.cast.events.Tribulation.party(player) == 0, "no party, no allies");
+		dev.wildercord.cast.events.Tribulation.cancel(player);
+		check(!dev.wildercord.cast.events.Tribulation.engaged(player), "a cancelled tribulation lets the caster go");
 	}
 
 	/** A coven is saved with the world, outlasts a reload of its ledger, and training alone earns no bonus. */

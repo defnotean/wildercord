@@ -181,6 +181,17 @@ copies of your armour and your weapon, and casts your selected spell back at you
 cast). It has your maximum health times the tribulation's tier: twice yours at the 10th circle, three times at the 15th
 and four times at the 20th. It drops none of what it wears.
 
+### Facing it together
+
+Party members standing within 24 blocks of you when your tribulation begins fight it beside you. Up to three of them count.
+The storm grows to match: every ally makes each wave half again as big and gives every monster in it a quarter more health,
+so a full party of four fights waves two and a half times the size. The size is set when the tribulation begins, so an ally
+who leaves partway through doesn't make it any easier.
+
+Only you have to survive. An ally who dies or leaves the ring drops out, and the fight goes on. If you win, the circle,
+the runes and the Scar are yours. Every ally still standing gets the experience and half the Mana Crystals, dropped where
+they stand. Your Shadow still copies only you.
+
 ## Ascension
 
 Twenty circles is the most a heart can hold, but mana keeps condensing after that. Each further stretch of it

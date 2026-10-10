@@ -75,3 +75,5 @@ dangers like lava or falling.
   about stray hits.
 - See [Playing Together]({{ '/social/playing-together/' | relative_url }}) for the full rules on
   who your spells can harm and help.
+
+Your party also counts in a tribulation: party members in the ring when it begins fight it beside you. See [Facing it together]({{ '/progression/heart-circles/' | relative_url }}#facing-it-together).
