@@ -69,7 +69,7 @@ public final class WildercordMeditationTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				var player = server.getPlayerList().getPlayers().getFirst();
 				player.setAttached(WildercordAttachments.CIRCLES, 0);
-				player.setAttached(WildercordAttachments.CONDENSED, 600);
+				player.setAttached(WildercordAttachments.CONDENSED, dev.wildercord.spell.Circles.condenseNeeded(1));
 			});
 			context.waitTicks(100);
 			shot(context, "meditation_forming_first_person");

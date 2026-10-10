@@ -875,10 +875,10 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			player.setAttached(dev.wildercord.player.WildercordAttachments.CIRCLES, 0);
 			player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, 0);
 			check(!dev.wildercord.player.Heart.ready(player), "An empty heart shouldn't be ready for a circle");
-			player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, 599);
-			check(!dev.wildercord.player.Heart.ready(player), "599 condensed mana isn't enough for the 1st Circle");
-			player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, 600);
-			check(dev.wildercord.player.Heart.ready(player), "600 condensed mana should make the heart ready for the 1st Circle");
+			player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, dev.wildercord.spell.Circles.condenseNeeded(1) - 1);
+			check(!dev.wildercord.player.Heart.ready(player), "One short of the condensed mana isn't enough for the 1st Circle");
+			player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, dev.wildercord.spell.Circles.condenseNeeded(1));
+			check(dev.wildercord.player.Heart.ready(player), "Enough condensed mana should make the heart ready for the 1st Circle");
 			maxBefore[0] = dev.wildercord.player.Mana.max(player);
 			dev.wildercord.cast.HeartCircles.form(player);
 			check(dev.wildercord.player.Heart.circles(player) == 1, "Forming should give the 1st Circle");

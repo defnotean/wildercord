@@ -137,7 +137,7 @@ public class WildercordAdvancementTest implements FabricClientGameTest {
 
 		// Forming a Heart Circle.
 		player.setAttached(WildercordAttachments.CIRCLES, 0);
-		player.setAttached(WildercordAttachments.CONDENSED, 600);
+		player.setAttached(WildercordAttachments.CONDENSED, dev.wildercord.spell.Circles.condenseNeeded(1));
 		HeartCircles.form(player);
 		expect(server, player, "heart/circle_1", true, "after forming the 1st Circle");
 		expect(server, player, "heart/circle_2", false, "after forming the 1st Circle");
