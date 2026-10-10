@@ -14,6 +14,7 @@ teach their arts once you are strong enough.
 |---|---|
 | [Heart Circles](heart-circles.md) | Twenty rings of condensed mana: more mana, regeneration and power, four perks, Master lessons from Circle VIII and vows from Circle IX. |
 | [Circle Vows](circle-vows.md) | From Circle IX, seven circles ask you to choose one of two vows with `/vow`. |
+| [Heart Paths](heart-paths.md) | At Circle X, choose the Storm, the Well or the Ward with `/path`. |
 | [The Grimoire and Feats](grimoire.md) | Your record of discoveries. Each first discovery feeds your next circle. |
 | [Your Affinities](affinity.md) | One affinity per element, grown by casting it and by everyday things. |
 | [Advancements](advancements.md) | Wildercord's advancement tab and its rewards. |

@@ -234,7 +234,7 @@ public final class SpellCaster {
 		// A valid ordinary cast replaces physical form motion; descent/recovery never forbids spellcasting.
 		if (RelayCircles.pending(player)) RelayCircles.cancel(player);
 		dev.wildercord.aura.MasterForms.cancel(player);
-		boolean overflow = mana >= Mana.max(player) - 0.5F;
+		boolean overflow = Heart.overflowing(player, mana);
 		Heart.Bonuses bonuses = Heart.bonuses(player, overflow);
 		int spent;
 		// Set when this cast is an overcast: the mana there was and what it cost, for wild magic.

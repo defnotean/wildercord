@@ -72,7 +72,7 @@ When it forms, the circle's title fills your screen and your **mana refills comp
 | **7th** | 150,000 | Help slay a boss; find 2 secret spells; **In Rhythm** | *Overflow: mana spills from you* | **Overflow** |
 | **8th** | 230,000 | Wear an Echo Cord; find 4 secret spells; **The Last Page** (beat the Archivist) | *Archmage* | **Archmage**; Relay Circle lesson |
 | **9th** | 330,000 | Know 60 runes; 6 different reactions | *Widening Horizon* | Circle Vow |
-| **10th** | 460,000 | Defeat 250 monsters with spells; **Tempered** (beat the Cinder Warden) | *Forged Heart* | Tollgate lesson |
+| **10th** | 460,000 | Defeat 250 monsters with spells; **Tempered** (beat the Cinder Warden) | *Forged Heart* | Tollgate lesson, and a [Heart Path](heart-paths.md) |
 | **11th** | 620,000 | Find 5 secret spells; **Fusion** | *Woven Wisdom* | Circle Vow |
 | **12th** | 810,000 | Slay 20 Runebound; **Low Tide** (beat the Tide Scribe) | *Ocean Within* | Ebb Ledger and Reweave lesson |
 | **13th** | 1,030,000 | Know 90 runes; 8 different reactions | *Boundless Study* | Circle Vow |

@@ -202,7 +202,7 @@ public final class RelayCircles {
 			|| !player.isCreative() && (!Float.isFinite(Spellbooks.mana(player)) || Spellbooks.mana(player) < cost) || FOCI.containsKey(player)
 			|| now < player.getAttachedOrElse(RelayState.REST, 0L)) return;
 		float mana = Spellbooks.mana(player);
-		Heart.Bonuses bonuses = Heart.bonuses(player, mana >= dev.wildercord.player.Mana.max(player) - .5F);
+		Heart.Bonuses bonuses = Heart.bonuses(player, Heart.overflowing(player, mana));
 		bonuses = bonuses.withPower(bonuses.power() * Mastery.powerFactor(player, runes));
 		focus.cast = new Cast(player, 1, bonuses, false, focus::valid, new Cast.Info(compiled.root(), runes.size(), Heart.leaning(player), runes))
 			.weigh(compiled.cost()).damagePrice(cost).gear(dev.wildercord.gear.Gear.of(player)).withAffinity()

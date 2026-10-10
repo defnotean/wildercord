@@ -158,9 +158,25 @@ public final class Heart {
 		return dev.wildercord.spell.CircleVows.clean(player.getAttachedOrElse(WildercordAttachments.CIRCLE_VOWS, 0));
 	}
 
-	/** What the vows of this heart's active circles add up to; a cracked circle's vow is silent. */
+	/** What the vows of this heart's active circles add up to, with its Heart Path; a cracked circle's vow is silent. */
 	public static dev.wildercord.spell.CircleVows.Effect vowEffect(Player player) {
-		return dev.wildercord.spell.CircleVows.effect(vows(player), active(player));
+		int active = active(player);
+		return dev.wildercord.spell.CircleVows.effect(vows(player), active).plus(dev.wildercord.spell.HeartPaths.effect(path(player), active));
+	}
+
+	/** The saved Heart Path number (old saves: none). */
+	public static int path(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.HEART_PATH, 0);
+	}
+
+	/** The Heart Path that speaks for this heart now, or null. */
+	public static dev.wildercord.spell.HeartPaths.Path activePath(Player player) {
+		return dev.wildercord.spell.HeartPaths.active(path(player), active(player));
+	}
+
+	/** Whether a spell cast with {@code mana} counts as cast at full mana (the Path of the Storm wakes Overflow sooner). */
+	public static boolean overflowing(Player player, float mana) {
+		return dev.wildercord.spell.HeartPaths.overflowing(path(player), active(player), mana, Mana.max(player));
 	}
 
 	public static int manaCost(Player player, SpellCompiler.Compiled compiled) {

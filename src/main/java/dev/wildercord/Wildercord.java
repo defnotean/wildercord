@@ -167,6 +167,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.lore.LoreJournal.init();
 		// ---- prog pack
 		dev.wildercord.cast.CircleVowCommands.init();
+		dev.wildercord.cast.HeartPathCommands.init();
         // ---- fx-support pack
         dev.wildercord.cast.packs.WardState.init();
 		// ---- perf pack

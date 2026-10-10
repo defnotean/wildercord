@@ -80,7 +80,7 @@ public final class Mana {
 			+ dev.wildercord.gear.Gear.extraMana(player) + vows.mana() + nourished(player) * dev.wildercord.cooking.CookingRules.NOURISHED_MANA;
 		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
 		boolean well = player.getAttachedOrElse(WildercordAttachments.WELL_UNTIL, 0L) > player.level().getGameTime();
-		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? MEDITATION_BONUS : 0)
+		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? dev.wildercord.spell.HeartPaths.meditation(Heart.path(player), circles, MEDITATION_BONUS) : 0)
 			+ (ley ? LEY_BONUS : 0) + (well ? WELL_BONUS : 0) + dev.wildercord.cast.events.ManaStorm.regenBonus(player);
 		float base = Math.max(0, tier.regenPerSecond + circles * dev.wildercord.spell.Circles.REGEN_PER_CIRCLE + vows.regen());
 		// The server's mana.regen_multiplier scales all of it (sent to clients, so the HUD matches).

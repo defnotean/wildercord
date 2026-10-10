@@ -226,7 +226,7 @@ public final class ReweaveFields {
             || tick < rest(p) || Spellbooks.readyAt(p, slot) > p.level().getGameTime()
             || WildSurge.freeRecast(p, p.level().getGameTime()) || !p.isCreative() && (!Float.isFinite(Spellbooks.mana(p)) || Spellbooks.mana(p) < cost)) return;
         float mana = Spellbooks.mana(p);
-        Heart.Bonuses bonuses = Heart.bonuses(p, mana >= dev.wildercord.player.Mana.max(p) - .5F);
+        Heart.Bonuses bonuses = Heart.bonuses(p, Heart.overflowing(p, mana));
         bonuses = bonuses.withPower(bonuses.power() * Mastery.powerFactor(p, ReweaveRules.RUNES));
         field.cast = new Cast(p, 1, bonuses, false, null, new Cast.Info(compiled.root(), 2, Heart.leaning(p), ReweaveRules.RUNES))
             .weigh(compiled.cost()).damagePrice(cost).gear(gear).withAffinity()

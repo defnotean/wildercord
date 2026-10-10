@@ -582,6 +582,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** The Heart Path walked from the Tenth Circle (see {@link dev.wildercord.spell.HeartPaths}); 0 is none. Kept through death. */
+	public static final AttachmentType<Integer> HEART_PATH = AttachmentRegistry.create(
+		Wildercord.id("heart_path"),
+		builder -> builder
+			.initializer(() -> 0)
+			.persistent(Codec.INT)
+			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	public static void init() {}
 }
 

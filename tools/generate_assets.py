@@ -986,6 +986,8 @@ def write_lang(runes):
     # ---- prog pack
     import circle_vow_text
     lang.update(circle_vow_text.LANG)
+    import heart_path_text
+    lang.update(heart_path_text.LANG)
     # ---- moves pack
     import field_moves_art
     lang.update(field_moves_art.LANG)

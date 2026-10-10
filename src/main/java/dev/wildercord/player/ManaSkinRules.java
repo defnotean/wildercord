@@ -10,9 +10,14 @@ public final class ManaSkinRules {
 	public static final float MIN_RECOVERY = 0.25F;
 
 	public static float recovery(float healthBefore, float healthAfter, float healthNow, float mana) {
+		return recovery(healthBefore, healthAfter, healthNow, mana, Circles.MANA_SKIN_SHARE);
+	}
+
+	/** @param shareOfWound the share of the wound turned back (the Path of the Ward turns back more) */
+	public static float recovery(float healthBefore, float healthAfter, float healthNow, float mana, double shareOfWound) {
 		if (!Float.isFinite(healthBefore) || !Float.isFinite(healthAfter) || !Float.isFinite(healthNow) || !Float.isFinite(mana)
 				|| healthAfter <= 0 || healthNow <= 0 || healthBefore <= healthAfter || mana <= 0) return 0;
-		float share = (float) Math.min((healthBefore - healthAfter) * Circles.MANA_SKIN_SHARE,
+		float share = (float) Math.min((healthBefore - healthAfter) * shareOfWound,
 			Math.min(Math.max(0, healthBefore - healthNow), mana / Circles.MANA_SKIN_COST));
 		return share >= MIN_RECOVERY ? share : 0;
 	}

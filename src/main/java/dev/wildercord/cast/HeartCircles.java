@@ -211,6 +211,7 @@ public final class HeartCircles {
 		if (meditating && VOW_REMINDED.add(id)) {
 			java.util.List<dev.wildercord.spell.CircleVows.Vow> open = dev.wildercord.spell.CircleVows.open(Heart.vows(player), Heart.active(player));
 			if (!open.isEmpty()) CircleVowCommands.offer(player, open.getFirst().circle());
+			else HeartPathCommands.offer(player);
 		}
 		if (!ready || !meditating || dev.wildercord.cast.events.Tribulation.active(player)) {
 			FORMING.remove(id);
@@ -271,6 +272,7 @@ public final class HeartCircles {
 			player.sendSystemMessage(Component.translatable("message.wildercord.perk." + n).withColor(0xF5C46A));
 		}
 		CircleVowCommands.offer(player, n);
+		if (n == dev.wildercord.spell.HeartPaths.CIRCLE) HeartPathCommands.offer(player);
 		// The great breakthroughs (each tribulation circle and the Archmage's) are heard across the world.
 		if (dev.wildercord.spell.TribulationRules.tribulation(n) || n == Circles.ARCHMAGE) {
 			Component news = Component.translatable("message.wildercord.breakthrough.announce.circle", player.getDisplayName(), Circles.ordinal(n)).withColor(COLORS[n - 1]);
@@ -348,7 +350,8 @@ public final class HeartCircles {
 		}
 		float mana = Spellbooks.mana(player);
 		float healthAfter = player.getHealth();
-		float share = ManaSkinRules.recovery(wound.healthBefore(), wound.healthAfter(), healthAfter, mana);
+		float share = ManaSkinRules.recovery(wound.healthBefore(), wound.healthAfter(), healthAfter, mana,
+			dev.wildercord.spell.HeartPaths.skinShare(Heart.path(player), Heart.active(player)));
 		if (share <= 0) {
 			return;
 		}

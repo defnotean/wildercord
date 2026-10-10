@@ -59,6 +59,7 @@
 * [Growing Stronger](progression/index.md)
   * [Heart Circles](progression/heart-circles.md)
   * [Circle Vows](progression/circle-vows.md)
+  * [Heart Paths](progression/heart-paths.md)
   * [The Grimoire and Feats](progression/grimoire.md)
   * [Lore Journal](progression/lore-journal.md)
   * [Aura](progression/aura.md)

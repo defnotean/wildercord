@@ -10,6 +10,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Escort bounties.** From Known, the board may ask you to lead a traveller's pack llama 160 to 240 blocks down the road. Ambushes come for it on the way. Bring it there alive and you're paid on the spot.
 - **Older inns join in.** A Wayfarer Inn generated before 0.12 gets its bounty board and keepers the first time someone walks in.
 - **Inn raids.** At night, bandits may raid a Wayfarer Inn while a traveller the keepers know is inside. Pillagers and vindicators come in 2 to 4 waves, by your standing, and a tempered Bandit Captain leads the last. Hold the inn and every defender is paid emeralds and reputation. Leaving or running out of time just lets the bandits go.
+- **Heart Paths.** The Tenth Circle now asks you to choose a path. The **Storm** makes spells stronger and wakes Overflow at three-quarters mana. The **Well** adds max mana and regeneration, and meditation fills you twice as fast. The **Ward** makes spells cheaper and longer-lasting, and Mana Skin turns back more of a wound. Choose with `/path`. Leaving a path costs 10 levels.
 
 ### Changed
 

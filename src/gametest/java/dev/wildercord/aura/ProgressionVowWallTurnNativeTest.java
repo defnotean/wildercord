@@ -74,6 +74,33 @@ public final class ProgressionVowWallTurnNativeTest implements FabricClientGameT
 				p.setAttached(WildercordAttachments.CIRCLES, 10);
 				check(Heart.vowEffect(p).equals(CircleVows.Effect.NONE), "An unformed Circle XI silences its vow");
 				p.setAttached(WildercordAttachments.CIRCLES, 20);
+				check(Heart.path(p) == 0 && Heart.activePath(p) == null, "An old save walks no Heart Path");
+			});
+			// Heart Paths: the Tenth Circle's one choice, through the real player command.
+			context.runOnClient(mc -> mc.player.connection.sendCommand("path walk well"));
+			context.waitTicks(5);
+			context.runOnClient(mc -> mc.player.connection.sendCommand("path walk storm"));
+			context.runOnClient(mc -> mc.player.connection.sendCommand("path leave"));
+			context.waitTicks(5);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+				check(Heart.activePath(p) == dev.wildercord.spell.HeartPaths.Path.WELL, "The player command walks the Path of the Well");
+				check(Heart.vowEffect(p).mana() == 40 && Math.abs(Heart.vowEffect(p).cost() - .94) < 1e-6, "The Well adds 40 max mana on top of Spare Hand");
+				p.giveExperienceLevels(dev.wildercord.spell.HeartPaths.LEAVE_LEVELS);
+			});
+			context.runOnClient(mc -> mc.player.connection.sendCommand("path leave"));
+			context.waitTicks(5);
+			context.runOnClient(mc -> mc.player.connection.sendCommand("path walk storm"));
+			context.waitTicks(5);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+				check(p.experienceLevel == 0, "Leaving cost exactly " + dev.wildercord.spell.HeartPaths.LEAVE_LEVELS + " levels");
+				check(Heart.activePath(p) == dev.wildercord.spell.HeartPaths.Path.STORM, "After a paid leave another path can be walked");
+				check(Math.abs(Heart.vowEffect(p).power() - 1.08) < 1e-6 && Heart.vowEffect(p).mana() == -20, "The Storm trades 20 mana for 8% power");
+				p.setAttached(WildercordAttachments.CIRCLES, 9);
+				check(Heart.activePath(p) == null, "An unformed Tenth Circle silences the path");
+				p.setAttached(WildercordAttachments.CIRCLES, 20);
+				p.removeAttached(WildercordAttachments.HEART_PATH);
 			});
 			context.waitTicks(10);
 			save = world.getWorldSave();
