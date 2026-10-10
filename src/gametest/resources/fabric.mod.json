@@ -285,6 +285,7 @@
       "dev.wildercord.aura.WallTurnSafetyTest",
       "dev.wildercord.aura.WallTurnCommitmentTest",
       "dev.wildercord.aura.FormDashLessonTest",
+      "dev.wildercord.gametest.SafeTelegraphsSceneTest",
       "dev.wildercord.aura.FormDashSafetyTest",
       "dev.wildercord.aura.FormDashCommitmentTest",
       "dev.wildercord.aura.StoneHingeLessonTest",

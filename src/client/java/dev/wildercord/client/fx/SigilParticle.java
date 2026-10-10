@@ -650,6 +650,11 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 		return z;
 	}
 
+	/** The colour it is drawn in, after the colour-blind-safe swap when that option is on. */
+	public int tint() {
+		return tint;
+	}
+
 	public static class Provider implements ParticleProvider<SigilOption> {
 		public Provider(FabricSpriteSet set) {
 			sprites = set;
