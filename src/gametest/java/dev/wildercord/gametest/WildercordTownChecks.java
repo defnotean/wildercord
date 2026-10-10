@@ -275,6 +275,7 @@ public final class WildercordTownChecks {
 		caravan(player, level);
 		hamlet(player, level);
 		mageHunter(player, level);
+		ritual(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -351,6 +352,43 @@ public final class WildercordTownChecks {
 			dev.wildercord.player.Spellbooks.setMana(player, before);
 		}
 		hunter.discard();
+	}
+
+	/** A Ritual Tablet cycles its rituals, refuses what the heart can't lead, and Bounty ripens the field around it. */
+	private void ritual(ServerPlayer player, ServerLevel level) {
+		ItemStack tablet = new ItemStack(dev.wildercord.ritual.Rituals.RITUAL_TABLET);
+		check(dev.wildercord.ritual.Rituals.ritual(tablet) == dev.wildercord.ritual.RitualRules.Ritual.BOUNTY, "a new tablet is set to Bounty");
+		dev.wildercord.ritual.Rituals.setRitual(tablet, dev.wildercord.ritual.RitualRules.Ritual.BOUNTY.next());
+		check(dev.wildercord.ritual.Rituals.ritual(tablet) == dev.wildercord.ritual.RitualRules.Ritual.CLEAR_SKIES, "it keeps the ritual it is set to");
+		if (!dev.wildercord.ritual.RitualRules.canLead(dev.wildercord.ritual.RitualRules.Ritual.DAWN, dev.wildercord.player.Heart.circles(player))
+			&& dev.wildercord.player.Spellbooks.tier(player) != null) {
+			check(dev.wildercord.ritual.Rituals.check(level, player, dev.wildercord.ritual.RitualRules.Ritual.DAWN)
+				== dev.wildercord.ritual.Rituals.Result.LOW_CIRCLE, "Dawn waits for the tenth circle");
+		}
+		BlockPos crop = player.blockPosition().offset(4, 0, 4);
+		BlockPos soil = crop.below();
+		var oldSoil = level.getBlockState(soil);
+		var oldCrop = level.getBlockState(crop);
+		level.setBlockAndUpdate(soil, net.minecraft.world.level.block.Blocks.FARMLAND.defaultBlockState());
+		level.setBlockAndUpdate(crop, net.minecraft.world.level.block.Blocks.WHEAT.defaultBlockState());
+		check(dev.wildercord.ritual.Rituals.bounty(level, player.blockPosition()) >= 1, "Bounty finds the wheat");
+		var grown = level.getBlockState(crop);
+		check(grown.getBlock() instanceof net.minecraft.world.level.block.CropBlock c && c.getAge(grown) > 0, "and ripens it");
+		level.setBlockAndUpdate(crop, oldCrop);
+		level.setBlockAndUpdate(soil, oldSoil);
+		var weather = level.getWeatherData();
+		boolean raining = weather.isRaining();
+		dev.wildercord.ritual.Rituals.weather(level, true);
+		check(level.getWeatherData().isThundering(), "Call Storm brings thunder");
+		dev.wildercord.ritual.Rituals.weather(level, false);
+		check(!level.getWeatherData().isRaining() && level.getWeatherData().getClearWeatherTime() == dev.wildercord.ritual.RitualRules.CLEAR_TICKS,
+			"Clear Skies holds the sky clear");
+		if (raining) weather.setRaining(true);
+		dev.wildercord.ritual.Rituals.sanctuary(level, player.position());
+		check(dev.wildercord.ritual.Rituals.warded(level, player.position()), "Sanctuary wards where it was worked");
+		check(!dev.wildercord.ritual.Rituals.warded(level, player.position().add(dev.wildercord.ritual.RitualRules.SANCTUARY_RADIUS + 4, 0, 0)),
+			"and not beyond its edge");
+		dev.wildercord.ritual.Rituals.liftWards();
 	}
 
 	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */

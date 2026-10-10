@@ -1,4 +1,4 @@
-"""The 0.13 magic additions: the mage-hunter's skin, its spawn egg and loot, and their English text. Called by
+"""The 0.13 magic additions: the mage-hunter's skin, its spawn egg and loot, the Ritual Tablet, and their English text. Called by
 generate_assets.py (write(g), and LANG merged into en_us.json).
 
 The skin is painted on the vanilla illager layout (64x64): head 8x10x8 at (0, 0), hat 8x12x8 at (32, 0), nose 2x4x2 at
@@ -192,12 +192,77 @@ LOOT = {"type": "minecraft:entity", "random_sequence": "wildercord:entities/mage
      "entries": [{"type": "minecraft:item", "name": "wildercord:mana_crystal"}]},
 ]}
 
+STONE = [hexc(c) for c in ("#3E3A46", "#55505E", "#6C6678", "#857F92", "#A29CB0")]
+GLOW = [hexc(c) for c in ("#7A4EC0", "#A47AE8", "#D8C0FF")]
+
+
+def tablet_icon():
+    """A slate tablet with a rounded head, a ritual circle carved into it and glowing violet."""
+    cv = Canvas()
+    for y in range(1, 15):
+        for x in range(3, 13):
+            if y < 4 and (x - 7.5) ** 2 + (y - 4.5) ** 2 > 22:
+                continue
+            edge = x in (3, 12) or y == 14 or (y < 4 and (x - 7.5) ** 2 + (y - 4.5) ** 2 > 14)
+            t = 0 if edge else 2 + (1 if noise(x, y, 31) > 0.7 else 0) - (1 if noise(x, y, 37) < 0.2 else 0)
+            if not edge and (x == 4 or y == 13):
+                t = 1
+            if not edge and x == 11 and y < 13:
+                t = 1
+            cv.put(x, y, STONE[t])
+    # Light catching the rounded head.
+    for x in (6, 7, 8, 9):
+        cv.put(x, 2 if x in (7, 8) else 3, STONE[4])
+    # The circle: a ring of eight glowing points with a star at its heart.
+    ring = ((7, 5), (8, 5), (10, 7), (10, 8), (8, 10), (7, 10), (5, 8), (5, 7), (9, 6), (6, 6), (9, 9), (6, 9))
+    for x, y in ring:
+        cv.put(x, y, GLOW[1] if (x + y) % 2 else GLOW[0])
+    for x, y in ((7, 7), (8, 8)):
+        cv.put(x, y, GLOW[2])
+    for x, y in ((8, 7), (7, 8)):
+        cv.put(x, y, GLOW[1])
+    # A line of runes below.
+    for x in (5, 7, 9):
+        cv.put(x, 12, GLOW[0])
+    cv.put(6, 12, STONE[1])
+    return cv.image()
+
+
+TABLET_RECIPE = {"type": "minecraft:crafting_shaped", "category": "misc",
+                 "key": {"A": "minecraft:amethyst_shard", "S": "minecraft:polished_deepslate", "B": "minecraft:book",
+                         "G": "minecraft:gold_ingot"},
+                 "pattern": [" A ", "SBS", "GSG"],
+                 "result": {"id": "wildercord:ritual_tablet"}}
+
 LANG = {
     "entity.wildercord.mage_hunter": "Mage-Hunter",
     "item.wildercord.mage_hunter_spawn_egg": "Mage-Hunter Spawn Egg",
     "message.wildercord.mage_hunter.one": "Someone has been following the smell of your magic. A mage-hunter is coming.",
     "message.wildercord.mage_hunter.band": "Someone has been following the smell of your magic. Mage-hunters are coming.",
     "message.wildercord.mage_hunter.drained": "The hunter's axe took %s mana",
+    "item.wildercord.ritual_tablet": "Ritual Tablet",
+    "tooltip.wildercord.ritual_tablet.set": "Ritual: %s",
+    "tooltip.wildercord.ritual_tablet.cost": "%s mana, shared by the circle · Circle %s · consumes %s",
+    "tooltip.wildercord.ritual_tablet.use": "Hold use to channel. Sneak-use to choose another ritual.",
+    "ritual.wildercord.bounty": "Bounty",
+    "ritual.wildercord.bounty.desc": "Every crop within 12 blocks grows three stages",
+    "ritual.wildercord.clear_skies": "Clear Skies",
+    "ritual.wildercord.clear_skies.desc": "The rain stops, and the sky stays clear for a day",
+    "ritual.wildercord.call_storm": "Call Storm",
+    "ritual.wildercord.call_storm.desc": "A thunderstorm breaks, and rages a quarter of a day",
+    "ritual.wildercord.sanctuary": "Sanctuary",
+    "ritual.wildercord.sanctuary.desc": "For five minutes, monsters within 32 blocks are weakened, forget you and are pushed out",
+    "ritual.wildercord.dawn": "Dawn",
+    "ritual.wildercord.dawn.desc": "The night ends, and the sun rises at once",
+    "message.wildercord.ritual.chosen": "Ritual: %s (Circle %s)",
+    "message.wildercord.ritual.done": "The ritual of %s is worked.",
+    "message.wildercord.ritual.shared": "You gave %s mana to the ritual",
+    "message.wildercord.ritual.no_cord": "A ritual needs a Cord to channel it",
+    "message.wildercord.ritual.low_circle": "Only a heart of %s circles can lead this ritual",
+    "message.wildercord.ritual.no_reagent": "This ritual consumes %2$s, and you have none",
+    "message.wildercord.ritual.low_mana": "The circle holds too little mana for this ritual. Gather more casters within 8 blocks",
+    "message.wildercord.ritual.wrong_place": "This ritual can't be worked here, or now",
+    "message.wildercord.ritual.nothing_to_do": "The ritual found nothing to work on",
 }
 
 
@@ -208,6 +273,10 @@ def write(g):
     g.item_model(egg, egg)
     g.write_json(g.ASSETS / f"items/{egg}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{egg}"}})
     g.write_json(g.DATA / "loot_table/entities/mage_hunter.json", LOOT)
+    g.save(tablet_icon(), g.ASSETS / "textures/item/ritual_tablet.png")
+    g.item_model("ritual_tablet", "ritual_tablet")
+    g.write_json(g.ASSETS / "items/ritual_tablet.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/ritual_tablet"}})
+    g.write_json(g.DATA / "recipe/ritual_tablet.json", TABLET_RECIPE)
 
 
 def preview(out_dir):
@@ -216,6 +285,8 @@ def preview(out_dir):
     sheet = Image.new("RGBA", (660, 528), (44, 40, 52, 255))
     sheet.paste(skin, (8, 8), skin)
     sheet.paste(egg, (528, 8), egg)
+    tablet = tablet_icon().resize((128, 128), Image.NEAREST)
+    sheet.paste(tablet, (528, 144), tablet)
     out = Path(out_dir) / "magic_art.png"
     out.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(out)

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "S": "minecraft:polished_deepslate",
+    "B": "minecraft:book",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    " A ",
+    "SBS",
+    "GSG"
+  ],
+  "result": {
+    "id": "wildercord:ritual_tablet"
+  }
+}

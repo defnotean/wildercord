@@ -18,6 +18,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Inn rooms.** The Inn Cook sells Room Keys, cheaper the better the keepers know you. A key rents a room at an inn for 3 days: you wake there, and sneak-clicking any inn keeper opens your room chest. The chest keeps your things between stays.
 - **Hamlets.** Every village is now a hamlet with its own name and its own standing, apart from the inns'. Trading with its villagers and killing monsters near its bell earn it, a little each day. While you're in a hamlet that knows you, you're its hero: cheaper trades and the odd gift, more as it holds you higher.
 - **Mage-hunters.** Once your heart holds five circles, hooded illagers may hunt you by night, one or two at a time. Bolts come apart within 6 blocks of them, spells hurt them half as much, and their axes take 15 mana a blow. They drop emeralds, and sometimes a Mana Crystal.
+- **Ritual spells.** Craft a Ritual Tablet and channel it to work a great spell: **Bounty** grows every crop within 12 blocks three stages, **Clear Skies** holds off the rain for a day, **Call Storm** brings thunder, **Sanctuary** wards 32 blocks against monsters for five minutes, and **Dawn** ends the night. Each needs more circles than the last, from 2 to 10, and consumes a reagent. Every Cord-wearer within 8 blocks shares the mana cost.
 
 ### Changed
 
