@@ -106,6 +106,9 @@ public class BountyBoardBlock extends Block {
 			} else if (player.isShiftKeyDown()) {
 				Town.set(player, standing.with(Optional.empty()));
 				say(player, "abandoned", ChatFormatting.GRAY, Town.targetName(bounty));
+			} else if (bounty.type() == BountyRules.Kind.ESCORT) {
+				say(player, "escorting", ChatFormatting.YELLOW, Town.targetName(bounty), bounty.destX(), bounty.destZ());
+				say(player, "abandon_hint", ChatFormatting.DARK_GRAY);
 			} else {
 				say(player, "hunting", ChatFormatting.YELLOW, bounty.kills(), bounty.needed(), Town.targetName(bounty));
 				say(player, "abandon_hint", ChatFormatting.DARK_GRAY);
@@ -122,12 +125,14 @@ public class BountyBoardBlock extends Block {
 		long[] shown = SHOWN.get(player.getUUID());
 		if (shown == null || shown[0] != pos.asLong() || now > shown[1]) {
 			SHOWN.put(player.getUUID(), new long[]{pos.asLong(), now + BountyRules.ACCEPT_TICKS});
-			Component target = offer.name().isEmpty() ? Town.targetName(offer.target())
+			Component target = offer.kind() == BountyRules.Kind.ESCORT ? Component.translatable("town.wildercord.pack_llama", offer.name())
+				: offer.name().isEmpty() ? Town.targetName(offer.target())
 				: Component.translatable("town.wildercord.named_elite", offer.name(), Town.targetName(offer.target()));
 			switch (offer.kind()) {
 				case GATHER -> say(player, "offer_gather", ChatFormatting.GOLD, offer.needed(), target);
 				case ELITE -> say(player, "offer_elite", ChatFormatting.GOLD, target, BountyRules.ELITE_FAR);
 				case DUNGEON -> say(player, "offer_dungeon", ChatFormatting.GOLD);
+				case ESCORT -> say(player, "offer_escort", ChatFormatting.GOLD, target, offer.needed());
 				case GREAT -> say(player, "offer_great", ChatFormatting.LIGHT_PURPLE, offer.needed(), target, (int) BountyRules.RANGE);
 				default -> say(player, "offer", ChatFormatting.GOLD, offer.needed(), target, (int) BountyRules.RANGE);
 			}
@@ -152,6 +157,14 @@ public class BountyBoardBlock extends Block {
 			}
 			Town.set(player, standing.with(Optional.of(taken)));
 			say(player, "taken_elite", ChatFormatting.GOLD, Town.targetName(taken), Component.translatable("town.wildercord.way." + way.getSerializedName()));
+		} else if (offer.kind() == BountyRules.Kind.ESCORT) {
+			Town.Active bound = BountyEscorts.start(player, level, pos, taken);
+			if (bound == null) {
+				say(player, "escort_no_room", ChatFormatting.GRAY);
+				return;
+			}
+			Town.set(player, standing.with(Optional.of(bound)));
+			say(player, "taken_escort", ChatFormatting.GOLD, Town.targetName(bound), bound.destX(), bound.destZ());
 		} else {
 			Town.set(player, standing.with(Optional.of(taken)));
 			switch (offer.kind()) {
@@ -182,7 +195,7 @@ public class BountyBoardBlock extends Block {
 		return id == null ? Items.AIR : BuiltInRegistries.ITEM.getValue(id);
 	}
 
-	private static void turnIn(ServerPlayer player, ServerLevel level, BlockPos pos, Town.Standing standing, Town.Active bounty, long today) {
+	static void turnIn(ServerPlayer player, ServerLevel level, BlockPos pos, Town.Standing standing, Town.Active bounty, long today) {
 		BountyRules.Tier before = standing.tier();
 		boolean great = bounty.type() == BountyRules.Kind.GREAT;
 		Town.Standing after = new Town.Standing(standing.reputation() + bounty.reputation(), today, Optional.empty(),

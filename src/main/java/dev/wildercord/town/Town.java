@@ -44,10 +44,10 @@ public final class Town {
 	 * A bounty being worked: {@code kills} of {@code needed} {@code target}s, of a {@link BountyRules.Kind} by its id. Hunts and
 	 * great hunts count only within range of the board at ({@code boardX}, {@code boardZ}) in {@code dimension}; a gathering is
 	 * checked at the board; a named elite is the one creature set loose for it, called {@code name}; a dungeon bounty counts any
-	 * dungeon's guardian.
+	 * dungeon's guardian; an escort leads {@code name}'s pack llama to ({@code destX}, {@code destZ}).
 	 */
 	public record Active(String kind, String target, int needed, int kills, int emeralds, int reputation, int boardX, int boardZ,
-			String dimension, String name) {
+			String dimension, String name, int destX, int destZ) {
 		public static final Codec<Active> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.STRING.optionalFieldOf("kind", "hunt").forGetter(Active::kind),
 			Codec.STRING.fieldOf("target").forGetter(Active::target),
@@ -58,8 +58,15 @@ public final class Town {
 			Codec.INT.fieldOf("board_x").forGetter(Active::boardX),
 			Codec.INT.fieldOf("board_z").forGetter(Active::boardZ),
 			Codec.STRING.fieldOf("dimension").forGetter(Active::dimension),
-			Codec.STRING.optionalFieldOf("name", "").forGetter(Active::name)
+			Codec.STRING.optionalFieldOf("name", "").forGetter(Active::name),
+			Codec.INT.optionalFieldOf("dest_x", 0).forGetter(Active::destX),
+			Codec.INT.optionalFieldOf("dest_z", 0).forGetter(Active::destZ)
 		).apply(i, Active::new));
+
+		public Active(String kind, String target, int needed, int kills, int emeralds, int reputation, int boardX, int boardZ,
+				String dimension, String name) {
+			this(kind, target, needed, kills, emeralds, reputation, boardX, boardZ, dimension, name, 0, 0);
+		}
 
 		public BountyRules.Kind type() {
 			return BountyRules.Kind.of(kind);
@@ -71,7 +78,12 @@ public final class Town {
 		}
 
 		Active killed() {
-			return new Active(kind, target, needed, kills + 1, emeralds, reputation, boardX, boardZ, dimension, name);
+			return new Active(kind, target, needed, kills + 1, emeralds, reputation, boardX, boardZ, dimension, name, destX, destZ);
+		}
+
+		/** This escort, bound for ({@code x}, {@code z}). */
+		Active bound(int x, int z) {
+			return new Active(kind, target, needed, kills, emeralds, reputation, boardX, boardZ, dimension, name, x, z);
 		}
 	}
 
@@ -97,7 +109,7 @@ public final class Town {
 			return BountyRules.Tier.of(reputation);
 		}
 
-		Standing with(Optional<Active> bounty) {
+		public Standing with(Optional<Active> bounty) {
 			return new Standing(reputation, lastDay, bounty, lastGreatWeek, lastRaidDay);
 		}
 
@@ -152,6 +164,9 @@ public final class Town {
 			.register(output -> output.accept(RIDGEBACK_DEED));
 	}
 
+	/** The tag an escort's pack llama carries, before the escorting traveller's id. */
+	public static final String ESCORT_TAG = "wildercord.escort.";
+
 	/** The tag a named elite carries: whose bounty it is. */
 	public static String markTag(UUID player) {
 		return "wildercord.bounty_mark." + player;
@@ -169,7 +184,7 @@ public final class Town {
 			case DUNGEON -> {
 				if (!bounty.done() && victim instanceof DungeonBoss) progress(player, standing, bounty);
 			}
-			case GATHER -> { }
+			case GATHER, ESCORT -> { }
 			default -> counted(player, BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString(), victim.getX(), victim.getZ(),
 				victim.level().dimension().identifier().toString());
 		}
@@ -208,6 +223,7 @@ public final class Town {
 
 	/** What a bounty is after, as it's shown: a named elite by its name. */
 	public static Component targetName(Active bounty) {
+		if (bounty.type() == BountyRules.Kind.ESCORT) return Component.translatable("town.wildercord.pack_llama", bounty.name());
 		return bounty.name().isEmpty() ? targetName(bounty.target())
 			: Component.translatable("town.wildercord.named_elite", bounty.name(), targetName(bounty.target()));
 	}

@@ -8,8 +8,8 @@ import java.util.UUID;
  * Bounties and reputation at a Wayfarer Inn (0.12 "Tempering"), as plain numbers. The inn's bounty board offers each traveller
  * one bounty a day; turned in, it pays emeralds and reputation with the inn's keepers, and reputation opens their better trades
  * tier by tier. A stranger is offered hunts ("slay 5 Gloomstalkers within 256 blocks of here"); the better the keepers know you,
- * the more kinds open (0.13): gathering, a named elite set loose near the board, a dungeon's guardian, and once a week a great
- * hunt for a great reward.
+ * the more kinds open (0.13): gathering, escorting a traveller's pack llama, a named elite set loose near the board, a dungeon's
+ * guardian, and once a week a great hunt for a great reward.
  */
 public final class BountyRules {
 	private BountyRules() {}
@@ -73,7 +73,9 @@ public final class BountyRules {
 		/** Slay a dungeon's guardian, wherever it waits. */
 		DUNGEON("dungeon", Tier.HONOURED),
 		/** Once a week: a great hunt, for a great reward. */
-		GREAT("great", Tier.KNOWN);
+		GREAT("great", Tier.KNOWN),
+		/** Lead a traveller's pack llama safely to where they're bound. */
+		ESCORT("escort", Tier.KNOWN);
 
 		public final String id;
 		/** The standing it's first offered at. */
@@ -91,6 +93,15 @@ public final class BountyRules {
 			return HUNT;
 		}
 	}
+
+	/** The travellers whose pack llamas an escort leads, and how far they're bound (blocks from the board). */
+	public static final List<String> TRAVELLERS = List.of("Old Maren", "Tobin Reed", "Sister Ivy", "Hale the Tinker", "Wenna Brook",
+		"Corin Ashford", "Pell the Peddler", "Yara Dunmore");
+	public static final int ESCORT_NEAR = 160, ESCORT_FAR = 240;
+	/** What an escort pays: emeralds for each this many blocks of road, on top of a base. */
+	public static final int ESCORT_EMERALDS = 6, ESCORT_BLOCKS_PER_EMERALD = 40, ESCORT_REPUTATION = 10;
+	/** What an escort names as its target: the pack llama. */
+	public static final String ESCORT_TARGET = "minecraft:llama";
 
 	/** What a dungeon bounty names as its target. */
 	public static final String DUNGEON_GUARDIAN = "dungeon_guardian";
@@ -137,7 +148,8 @@ public final class BountyRules {
 
 	/**
 	 * An offered bounty: {@code needed} of {@code target} (a creature, or for a gathering an item), for emeralds and reputation.
-	 * A named elite's {@code name} is what it's called; other kinds have none.
+	 * A named elite's {@code name} is what it's called, and an escort's is the traveller's (its {@code needed} is how many blocks
+	 * of road); other kinds have none.
 	 */
 	public record Bounty(Kind kind, String target, int needed, int emeralds, int reputation, String name) {
 		public Bounty(String target, int needed, int emeralds, int reputation) {
@@ -165,7 +177,7 @@ public final class BountyRules {
 			if (kind != Kind.GREAT && tier.ordinal() >= kind.opens.ordinal()) open.add(kind);
 		}
 		// Hunts stay the common bounty; each further kind opened is offered a little less often.
-		int[] weight = {6, 3, 2, 1};
+		int[] weight = {6, 3, 2, 1, 0, 2};
 		int total = 0;
 		for (Kind kind : open) total += weight[kind.ordinal()];
 		int roll = random.nextInt(total);
@@ -187,6 +199,11 @@ public final class BountyRules {
 			case ELITE -> new Bounty(Kind.ELITE, ELITES.get(random.nextInt(ELITES.size())), 1, ELITE_EMERALDS, ELITE_REPUTATION,
 				NAME_FRONT.get(random.nextInt(NAME_FRONT.size())) + NAME_BACK.get(random.nextInt(NAME_BACK.size())));
 			case DUNGEON -> new Bounty(Kind.DUNGEON, DUNGEON_GUARDIAN, 1, DUNGEON_EMERALDS, DUNGEON_REPUTATION, "");
+			case ESCORT -> {
+				int distance = ESCORT_NEAR + random.nextInt(ESCORT_FAR - ESCORT_NEAR + 1);
+				yield new Bounty(Kind.ESCORT, ESCORT_TARGET, distance, ESCORT_EMERALDS + distance / ESCORT_BLOCKS_PER_EMERALD, ESCORT_REPUTATION,
+					TRAVELLERS.get(random.nextInt(TRAVELLERS.size())));
+			}
 			default -> offer(player, day, boardPos);
 		};
 	}

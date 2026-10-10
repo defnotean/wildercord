@@ -7,6 +7,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ### Added
 
 - **More kinds of bounty.** The board's offers grow with your standing. At Known it adds gathering bounties (bring it leather, string, bone, amethyst and the like) and a great bounty once a week (a hunt of 12 to 20 creatures for 24 emeralds, 2 Mana Crystals and 20 reputation). At Friend it sets named elites loose near the board for you to hunt down. At Honoured it pays for any dungeon's guardian.
+- **Escort bounties.** From Known, the board may ask you to lead a traveller's pack llama 160 to 240 blocks down the road. Ambushes come for it on the way. Bring it there alive and you're paid on the spot.
 - **Older inns join in.** A Wayfarer Inn generated before 0.12 gets its bounty board and keepers the first time someone walks in.
 - **Inn raids.** At night, bandits may raid a Wayfarer Inn while a traveller the keepers know is inside. Pillagers and vindicators come in 2 to 4 waves, by your standing, and a tempered Bandit Captain leads the last. Hold the inn and every defender is paid emeralds and reputation. Leaving or running out of time just lets the bandits go.
 

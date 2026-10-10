@@ -1,6 +1,7 @@
 package dev.wildercord.gametest;
 
 import dev.wildercord.town.BountyBoardBlock;
+import dev.wildercord.town.BountyEscorts;
 import dev.wildercord.town.BountyRules;
 import dev.wildercord.town.InnRaid;
 import dev.wildercord.town.InnRaidRules;
@@ -72,6 +73,8 @@ public final class WildercordTownChecks {
 			});
 			context.waitTicks(5);
 			server.runOnServer(this::bounty);
+			context.waitTicks(45);
+			server.runOnServer(this::escortArrived);
 			server.runOnServer(this::keepers);
 			raid(context, server);
 		}
@@ -125,6 +128,44 @@ public final class WildercordTownChecks {
 		BountyBoardBlock.use(player, level, BOARD);
 		check(Town.standing(player).bounty().isEmpty(), "one bounty a day");
 		gathering(player, level);
+		escort(player, level);
+	}
+
+	/** An escort hands over a pack llama on a lead; bringing it where it's bound pays on the spot. */
+	private void escort(ServerPlayer player, ServerLevel level) {
+		Town.Active offered = new Town.Active("escort", BountyRules.ESCORT_TARGET, 200, 0, 11, 10, BOARD.getX(), BOARD.getZ(),
+			level.dimension().identifier().toString(), "Old Maren");
+		Town.Active bound = BountyEscorts.start(player, level, BOARD, offered);
+		check(bound != null, "an escort hands over its llama");
+		if (bound == null) return;
+		check(Math.abs(Math.hypot(bound.destX() - BOARD.getX(), bound.destZ() - BOARD.getZ()) - 200) < 2, "an escort is bound 200 blocks off");
+		Town.set(player, Town.standing(player).with(Optional.of(bound)));
+		var llama = BountyEscorts.llama(player);
+		check(llama != null && llama.isLeashed(), "the pack llama comes on a lead");
+		if (llama == null) return;
+		escortEmeralds = player.getInventory().countItem(Items.EMERALD);
+		escortReputation = Town.standing(player).reputation();
+		BountyBoardBlock.use(player, level, BOARD);
+		check(Town.standing(player).bounty().isPresent(), "the board doesn't pay an escort");
+		// Bound right beside the llama, so the next road check finds it there.
+		Town.Standing standing = Town.standing(player);
+		Town.Active near = new Town.Active(bound.kind(), bound.target(), bound.needed(), 0, bound.emeralds(), bound.reputation(), bound.boardX(),
+			bound.boardZ(), bound.dimension(), bound.name(), llama.getBlockX(), llama.getBlockZ());
+		Town.set(player, new Town.Standing(standing.reputation(), standing.lastDay(), Optional.of(near), standing.lastGreatWeek(), standing.lastRaidDay()));
+		escortLlama = llama;
+	}
+
+	private int escortEmeralds, escortReputation;
+	private net.minecraft.world.entity.animal.equine.Llama escortLlama;
+
+	/** After a road check: the escort ended where it was bound, and paid there. */
+	private void escortArrived(MinecraftServer server) {
+		if (escortLlama == null) return;
+		ServerPlayer player = player(server);
+		check(Town.standing(player).bounty().isEmpty(), "an escort ends where it's bound");
+		check(player.getInventory().countItem(Items.EMERALD) - escortEmeralds == 11
+			&& Town.standing(player).reputation() - escortReputation == 10, "an escort pays there");
+		check(escortLlama.isRemoved(), "the traveller takes their llama");
 	}
 
 	/** A gathering bounty is turned in from the pack: not before the goods are there, and it takes just what it asked. */

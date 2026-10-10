@@ -23,6 +23,7 @@ Standing in one adds a Places entry to your [lore journal]({{ '/progression/lore
   - **Hunts** (from the start): 3 to 8 of one creature, slain within 256 blocks of the board, for up to 8 emeralds and 5 to 10 reputation.
   - **Gathering** (Known): bring the board 4 to 32 of one thing, such as leather, string, bone or amethyst. It's checked and taken from your pack when you click the board.
   - **The great bounty** (Known): once a week, your first bounty is a great hunt of 12 to 20 creatures, for 24 emeralds, 2 Mana Crystals and 20 reputation.
+  - **Escorts** (Known): the board hands you a traveller's pack llama on a lead, to bring 160 to 240 blocks down the road to where they are bound (the board gives the spot). Now and then an ambush comes for the llama on the way. Bring it there alive and the traveller pays you on the spot, 10 to 12 emeralds and 10 reputation. If it dies, the escort is lost.
   - **Named elites** (Friend): an elite champion with a name, such as "Grimjaw the Gloomstalker", is set loose 48 to 96 blocks from the board. The board tells you which way it went. It is three times as tough as an elite, never despawns, and only you can claim it. It pays 14 emeralds and 12 reputation.
   - **Dungeon guardians** (Honoured): slay any dungeon's guardian, wherever it is, for 20 emeralds and 15 reputation.
 - **Standing** grows with reputation: Stranger, Known (15), Friend (40), Honoured (80). It is yours across every inn and kept through death.

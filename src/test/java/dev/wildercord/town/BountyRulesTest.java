@@ -71,6 +71,10 @@ class BountyRulesTest {
 				assertTrue(bounty.kind().opens.ordinal() <= tier.ordinal(), tier + " was offered " + bounty);
 				assertTrue(bounty.needed() >= 1 && bounty.emeralds() > 0 && bounty.reputation() > 0, bounty.toString());
 				if (bounty.kind() == BountyRules.Kind.ELITE) assertFalse(bounty.name().isEmpty(), "a named elite has a name");
+				if (bounty.kind() == BountyRules.Kind.ESCORT) {
+					assertFalse(bounty.name().isEmpty(), "an escort names its traveller");
+					assertTrue(bounty.needed() >= BountyRules.ESCORT_NEAR && bounty.needed() <= BountyRules.ESCORT_FAR, "an escort's road: " + bounty);
+				}
 			}
 			for (BountyRules.Kind kind : BountyRules.Kind.values()) {
 				if (kind != BountyRules.Kind.GREAT) assertEquals(kind.opens.ordinal() <= tier.ordinal(), kinds.contains(kind), tier + " " + kind);
