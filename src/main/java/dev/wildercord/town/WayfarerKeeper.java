@@ -43,7 +43,9 @@ import java.util.Random;
  */
 public class WayfarerKeeper extends WanderingTrader {
 	public enum Role {
-		COOK("cook"), STABLEMASTER("stablemaster"), EMISSARY("emissary");
+		COOK("cook"), STABLEMASTER("stablemaster"), EMISSARY("emissary"),
+		/** A wandering caravan's trader (0.13): comes to the traveller instead, and moves on after a day. See {@link Caravans}. */
+		CARAVANEER("caravaneer");
 
 		public final String id;
 
@@ -58,6 +60,8 @@ public class WayfarerKeeper extends WanderingTrader {
 	}
 
 	private Role role = Role.COOK;
+	/** A caravaneer's stock for each traveller, kept for its stay so a rune once bought stays bought. */
+	private final java.util.Map<java.util.UUID, MerchantOffers> stock = new java.util.HashMap<>();
 
 	public WayfarerKeeper(EntityType<? extends WanderingTrader> type, Level level) {
 		super(type, level);
@@ -72,6 +76,7 @@ public class WayfarerKeeper extends WanderingTrader {
 		this.role = role;
 		setCustomName(Component.translatable("entity.wildercord.wayfarer_keeper." + role.id));
 		setCustomNameVisible(true);
+		setDespawnDelay(role == Role.CARAVANEER ? CaravanRules.STAY_TICKS : 0);
 	}
 
 	@Override
@@ -90,7 +95,10 @@ public class WayfarerKeeper extends WanderingTrader {
 	public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		if (player instanceof ServerPlayer server && hand == InteractionHand.MAIN_HAND && !isTrading()) {
 			BountyRules.Tier tier = Town.standing(server).tier();
-			offers = offers(role, tier, getUUID().getLeastSignificantBits() ^ level().getGameTime() / BountyRules.DAY);
+			long seed = getUUID().getLeastSignificantBits() ^ level().getGameTime() / BountyRules.DAY;
+			offers = role == Role.CARAVANEER
+				? stock.computeIfAbsent(server.getUUID(), id -> offers(role, tier, getUUID().getMostSignificantBits() ^ id.getLeastSignificantBits()))
+				: offers(role, tier, seed);
 			BountyRules.Tier next = tier.next();
 			server.sendOverlayMessage(next == null
 				? Component.translatable("message.wildercord.keeper.honoured").withStyle(ChatFormatting.AQUA)
@@ -142,6 +150,23 @@ public class WayfarerKeeper extends WanderingTrader {
 						new ItemCost(Items.EMERALD, 24), Optional.of(new ItemCost(AuraWorld.AURA_SHARD, 4)), AuraApi.techniqueScroll(part), 1, 0, 0.0F)));
 				}
 			}
+			case CARAVANEER -> {
+				Random random = new Random(seed);
+				for (int i = 0; i < CaravanRules.runes(tier); i++) {
+					int runeTier = CaravanRules.runeTier(tier, random.nextDouble());
+					sell(offers, CaravanRules.runePrice(runeTier), dev.wildercord.content.RuneItem.stack(
+						dev.wildercord.cast.events.EventRules.rewardRune("caravan", runeTier, random.nextDouble())), 1);
+				}
+				sell(offers, 5, new ItemStack(Items.SADDLE));
+				sell(offers, 3, new ItemStack(Items.LEAD, 2));
+				sell(offers, 7, new ItemStack(Items.IRON_HORSE_ARMOR));
+				if (t >= 2) sell(offers, 18, new ItemStack(Town.RIDGEBACK_DEED));
+				sell(offers, 3, new ItemStack(Items.BLAZE_POWDER, 2));
+				sell(offers, 2, new ItemStack(Items.CHORUS_FRUIT, 4));
+				sell(offers, 2, new ItemStack(Items.GLOW_BERRIES, 8));
+				sell(offers, 2, new ItemStack(Items.COCOA_BEANS, 8));
+				buy(offers, Items.LEATHER, 8);
+			}
 		}
 		return offers;
 	}
@@ -154,7 +179,11 @@ public class WayfarerKeeper extends WanderingTrader {
 	}
 
 	private static void sell(MerchantOffers offers, int emeralds, ItemStack stack) {
-		offers.add(new MerchantOffer(new ItemCost(Items.EMERALD, emeralds), stack, 64, 0, 0.0F));
+		sell(offers, emeralds, stack, 64);
+	}
+
+	private static void sell(MerchantOffers offers, int emeralds, ItemStack stack, int uses) {
+		offers.add(new MerchantOffer(new ItemCost(Items.EMERALD, emeralds), stack, uses, 0, 0.0F));
 	}
 
 	private static void buy(MerchantOffers offers, Item item, int count) {
@@ -190,6 +219,6 @@ public class WayfarerKeeper extends WanderingTrader {
 	protected void readAdditionalSaveData(ValueInput input) {
 		super.readAdditionalSaveData(input);
 		role = Role.of(input.getStringOr("Role", Role.COOK.id));
-		setDespawnDelay(0);
+		if (role != Role.CARAVANEER) setDespawnDelay(0);
 	}
 }

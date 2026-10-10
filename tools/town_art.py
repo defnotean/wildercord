@@ -71,6 +71,8 @@ LANG = {
     'town.wildercord.way.east': 'east',
     'town.wildercord.way.west': 'west',
     'message.wildercord.keeper.more': 'Take bounties at the board: as %s they will sell you more.',
+    'entity.wildercord.wayfarer_keeper.caravaneer': 'Caravaneer',
+    'message.wildercord.caravan.camp': 'A caravan has made camp nearby, to the %s. It moves on in a day.',
     'message.wildercord.keeper.honoured': f'The keepers hold you Honoured: you see everything they have.',
 }
 

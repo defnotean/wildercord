@@ -7,6 +7,8 @@ import dev.wildercord.town.InnRaid;
 import dev.wildercord.town.InnRaidRules;
 import dev.wildercord.town.Town;
 import dev.wildercord.town.WayfarerKeeper;
+import dev.wildercord.town.CaravanRules;
+import dev.wildercord.town.Caravans;
 import dev.wildercord.wildlife.MountContent;
 import dev.wildercord.wildlife.RidgebackStag;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -269,6 +271,26 @@ public final class WildercordTownChecks {
 		check(player.getMainHandItem().isEmpty(), "the deed is used up");
 		check(MountContent.RIDGEBACK_STAG != null, "ridgeback registered");
 		stags.forEach(RidgebackStag::discard);
+		caravan(player, level);
+	}
+
+	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */
+	private void caravan(ServerPlayer player, ServerLevel level) {
+		check(WayfarerKeeper.offers(WayfarerKeeper.Role.CARAVANEER, BountyRules.Tier.STRANGER, 7).stream()
+			.filter(o -> o.getResult().getItem() instanceof dev.wildercord.content.RuneItem).count() == CaravanRules.runes(BountyRules.Tier.STRANGER),
+			"a caravan carries runes");
+		WayfarerKeeper caravaneer = Caravans.send(level, player);
+		check(caravaneer != null, "a caravan makes camp");
+		if (caravaneer == null) return;
+		double distance = Math.sqrt(caravaneer.distanceToSqr(player.getX(), caravaneer.getY(), player.getZ()));
+		check(distance >= CaravanRules.SPAWN_NEAR - 1 && distance <= CaravanRules.SPAWN_FAR + 1, "it camps down the road, not on top of you");
+		check(caravaneer.role() == WayfarerKeeper.Role.CARAVANEER && caravaneer.getDespawnDelay() == CaravanRules.STAY_TICKS, "it stays a day");
+		List<net.minecraft.world.entity.animal.equine.TraderLlama> llamas = level.getEntitiesOfClass(
+			net.minecraft.world.entity.animal.equine.TraderLlama.class, caravaneer.getBoundingBox().inflate(8), l -> l.getLeashHolder() == caravaneer);
+		check(llamas.size() == CaravanRules.LLAMAS, "with its pack llamas on their leads");
+		check(Caravans.send(level, player) == null, "no second caravan close by");
+		llamas.forEach(net.minecraft.world.entity.Entity::discard);
+		caravaneer.discard();
 	}
 
 	private static ServerPlayer player(MinecraftServer server) {
