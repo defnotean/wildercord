@@ -169,6 +169,7 @@ public final class Town {
 				output.accept(ROOM_KEY);
 			});
 		InnRooms.init();
+		Hamlets.init();
 	}
 
 	/** The tag an escort's pack llama carries, before the escorting traveller's id. */

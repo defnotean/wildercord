@@ -273,6 +273,7 @@ public final class WildercordTownChecks {
 		check(MountContent.RIDGEBACK_STAG != null, "ridgeback registered");
 		stags.forEach(RidgebackStag::discard);
 		caravan(player, level);
+		hamlet(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -289,6 +290,38 @@ public final class WildercordTownChecks {
 			net.minecraft.core.GlobalPos.of(level.dimension(), player.blockPosition())));
 		dev.wildercord.town.InnRooms.expire(player);
 		check(dev.wildercord.town.InnRooms.room(player).isEmpty() && player.getRespawnConfig() == null, "a stay runs out");
+	}
+
+	/** A bell with villagers about it is a hamlet with its own standing, earned a little each day; it favours those it knows. */
+	private void hamlet(ServerPlayer player, ServerLevel level) {
+		net.minecraft.core.BlockPos bell = new net.minecraft.core.BlockPos(-6, GROUND, 6);
+		level.setBlockAndUpdate(bell, net.minecraft.world.level.block.Blocks.BELL.defaultBlockState());
+		List<net.minecraft.world.entity.npc.villager.Villager> villagers = new java.util.ArrayList<>();
+		for (int i = 0; i < dev.wildercord.town.HamletRules.VILLAGERS; i++) {
+			var villager = net.minecraft.world.entity.EntityTypes.VILLAGER.create(level, EntitySpawnReason.COMMAND);
+			if (villager == null) continue;
+			villager.snapTo(-4.5 + i, GROUND, 8.5, 0, 0);
+			villager.setNoAi(true);
+			level.addFreshEntity(villager);
+			villagers.add(villager);
+		}
+		check(dev.wildercord.town.Hamlets.bell(level, player.blockPosition()) != null, "a bell with villagers is a hamlet");
+		for (int i = 0; i < 40; i++) dev.wildercord.town.Hamlets.earn(player, level, bell, 1);
+		check(dev.wildercord.town.Hamlets.standing(player, level, bell).reputation() == dev.wildercord.town.HamletRules.DAILY, "only so much a day");
+		player.setAttached(dev.wildercord.town.Hamlets.STANDINGS, java.util.Map.of());
+		for (int day = 0; day < 3; day++) {
+			player.setAttached(dev.wildercord.town.Hamlets.STANDINGS, java.util.Map.of(level.dimension().identifier() + "|" + bell.asLong(),
+				new dev.wildercord.town.Hamlets.Standing(dev.wildercord.town.Hamlets.standing(player, level, bell).reputation(), -1, 0)));
+			for (int i = 0; i < 10; i++) dev.wildercord.town.Hamlets.earn(player, level, bell, 1);
+		}
+		check(dev.wildercord.town.Hamlets.standing(player, level, bell).tier() == BountyRules.Tier.KNOWN, "a few days' help and it knows you");
+		check(player.hasEffect(net.minecraft.world.effect.MobEffects.HERO_OF_THE_VILLAGE), "a hamlet that knows you treats you as its hero");
+		check(Town.standing(player).reputation() != dev.wildercord.town.Hamlets.standing(player, level, bell).reputation()
+			|| Town.standing(player).reputation() == 0, "a hamlet's standing is its own");
+		player.removeEffect(net.minecraft.world.effect.MobEffects.HERO_OF_THE_VILLAGE);
+		player.removeAttached(dev.wildercord.town.Hamlets.STANDINGS);
+		villagers.forEach(net.minecraft.world.entity.Entity::discard);
+		level.removeBlock(bell, false);
 	}
 
 	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */

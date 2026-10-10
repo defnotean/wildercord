@@ -81,6 +81,8 @@ LANG = {
     'message.wildercord.keeper.more': 'Take bounties at the board: as %s they will sell you more.',
     'entity.wildercord.wayfarer_keeper.caravaneer': 'Caravaneer',
     'message.wildercord.caravan.camp': 'A caravan has made camp nearby, to the %s. It moves on in a day.',
+    'message.wildercord.hamlet.enter': '%s (%s)',
+    'message.wildercord.hamlet.tier_up': '%s now holds you %s.',
     'message.wildercord.keeper.honoured': f'The keepers hold you Honoured: you see everything they have.',
 }
 

@@ -30,6 +30,7 @@
 		"PartyProjectileMixin",
 		"ProjectileOwnerAccessor",
 		"RunesmithTradeMixin",
+		"HamletTradeMixin",
 		"SwapOfferMixin",
 		"MobConversionMixin",
 		"ItemEntityAccessor",

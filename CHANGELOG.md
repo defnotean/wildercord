@@ -16,6 +16,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **The Master Gauntlet.** Once you've beaten all sixteen Sword Masters, `/master gauntlet` sends them at you again, back to back, in a shuffled order, with 5 seconds and a quarter of your health between each. Runs are timed against your best. Your first full run earns the Blade of the Sixteen and the advancement The Sixteen.
 - **Wandering caravans.** Now and then a caravan makes camp near someone out in the overworld, and they're told which way it is. Its Caravaneer and two pack llamas stay about a day. It sells what the inns don't: rare tier 3 and 4 runes (more of them, and better, as the keepers know you), saddles, leads and horse armour, and far-off ingredients like blaze powder, chorus fruit, glow berries and cocoa beans.
 - **Inn rooms.** The Inn Cook sells Room Keys, cheaper the better the keepers know you. A key rents a room at an inn for 3 days: you wake there, and sneak-clicking any inn keeper opens your room chest. The chest keeps your things between stays.
+- **Hamlets.** Every village is now a hamlet with its own name and its own standing, apart from the inns'. Trading with its villagers and killing monsters near its bell earn it, a little each day. While you're in a hamlet that knows you, you're its hero: cheaper trades and the odd gift, more as it holds you higher.
 
 ### Changed
 
