@@ -4,6 +4,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+
+- **More kinds of bounty.** The board's offers grow with your standing. At Known it adds gathering bounties (bring it leather, string, bone, amethyst and the like) and a great bounty once a week (a hunt of 12 to 20 creatures for 24 emeralds, 2 Mana Crystals and 20 reputation). At Friend it sets named elites loose near the board for you to hunt down. At Honoured it pays for any dungeon's guardian.
+- **Older inns join in.** A Wayfarer Inn generated before 0.12 gets its bounty board and keepers the first time someone walks in.
+
 ### Changed
 
 - **Sword Masters erase every spell.** Hostile bolts unravel within 4 blocks of a Master, closing in from any side, and a guarding Master with Aura to spare still turns one back. Spell damage, lingering burns and poisons, effects, heals, pushes, pulls, teleports, fire, freezing, interrupts and cast-locks all fail on a Master. Only your blade and your aura reach one. (0.12.0 had made Masters easier to hit with magic; that is reversed.) Duelists keep the 0.12 guard, which takes a quarter off a spell.

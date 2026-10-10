@@ -6,6 +6,8 @@ import dev.wildercord.town.WayfarerKeeper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
@@ -82,5 +84,30 @@ public final class WayfarerInnPiece extends TravelPiece {
 		resident(level, bb, Town.KEEPER, 13, 1, 15, 3, keeper -> keeper.setRole(WayfarerKeeper.Role.COOK));
 		resident(level, bb, Town.KEEPER, 13, 1, 9, 4, keeper -> keeper.setRole(WayfarerKeeper.Role.EMISSARY));
 		resident(level, bb, Town.KEEPER, 16, 1, 2, 5, keeper -> keeper.setRole(WayfarerKeeper.Role.STABLEMASTER));
+	}
+
+	/**
+	 * Brings an inn generated before 0.12 up to date (0.13): when its bounty board is missing, the board is put up under the
+	 * notices and the three keepers move in. Inns that already have a board are left alone.
+	 */
+	public void retrofit(ServerLevel level) {
+		BlockPos board = getWorldPos(9, 1, 5).immutable();
+		if (!level.isLoaded(board) || !level.getBlockState(board).isAir()) return;
+		level.setBlockAndUpdate(board, Town.BOUNTY_BOARD.defaultBlockState().setValue(BountyBoardBlock.FACING, world(Direction.SOUTH)));
+		keeper(level, 13, 1, 15, 3, WayfarerKeeper.Role.COOK);
+		keeper(level, 13, 1, 9, 4, WayfarerKeeper.Role.EMISSARY);
+		keeper(level, 16, 1, 2, 5, WayfarerKeeper.Role.STABLEMASTER);
+	}
+
+	private void keeper(ServerLevel level, int x, int y, int z, int radius, WayfarerKeeper.Role role) {
+		BlockPos at = getWorldPos(x, y, z).immutable();
+		WayfarerKeeper keeper = Town.KEEPER.create(level, EntitySpawnReason.STRUCTURE);
+		if (keeper == null) return;
+		keeper.setRole(role);
+		keeper.setPersistenceRequired();
+		keeper.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
+		keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
+		keeper.setHomeTo(at, radius);
+		level.addFreshEntity(keeper);
 	}
 }

@@ -10,9 +10,14 @@ Standing in one adds a Places entry to your [lore journal](../progression/lore-j
 
 **Wayfarer Inn.** A spruce inn at a crossroads, in plains, meadows, forests, taiga, savanna, snow and cherry groves. It has beds, a lit hearth, tables and a resident cat. A map and a note hang by the door. The Guest Ledger on the lectern tells you about the other roadside sites. The pantry chest holds food, a map and travel runes.
 
-**Town life (0.12).** Inns generated on 0.12 also have a **bounty board** by the door and three keepers who stay home, can’t be hurt and never leave:
+**Town life (0.12).** Every inn has a **bounty board** by the door and three keepers who stay home, can’t be hurt and never leave. An inn generated before 0.12 gets its board and keepers the first time someone walks in (0.13).
 
-- **The bounty board** offers you one hunt a day: 3 to 8 of one creature, slain within 256 blocks of the board. Click it to read the bounty, click again to take it, and click once the hunt is done to be paid up to 8 emeralds and 5 to 10 reputation. Sneak-click to give a bounty up.
+- **The bounty board** offers you one bounty a day. Click it to read the bounty, click again to take it, and click once it’s done to be paid. Sneak-click to give a bounty up. The better the keepers know you, the more kinds it offers (0.13):
+  - **Hunts** (from the start): 3 to 8 of one creature, slain within 256 blocks of the board, for up to 8 emeralds and 5 to 10 reputation.
+  - **Gathering** (Known): bring the board 4 to 32 of one thing, such as leather, string, bone or amethyst. It's checked and taken from your pack when you click the board.
+  - **The great bounty** (Known): once a week, your first bounty is a great hunt of 12 to 20 creatures, for 24 emeralds, 2 Mana Crystals and 20 reputation.
+  - **Named elites** (Friend): an elite champion with a name, such as "Grimjaw the Gloomstalker", is set loose 48 to 96 blocks from the board. The board tells you which way it went. It is three times as tough as an elite, never despawns, and only you can claim it. It pays 14 emeralds and 12 reputation.
+  - **Dungeon guardians** (Honoured): slay any dungeon's guardian, wherever it is, for 20 emeralds and 15 reputation.
 - **Standing** grows with reputation: Stranger, Known (15), Friend (40), Honoured (80). It is yours across every inn and kept through death.
 - **The Inn Cook** buys crops and sells the Camp Pot and meals.
 - **The Stablemaster** sells leads, hay and saddles. As you rise, they add golden carrots and name tags; then, at Friend, the **Ridgeback Deed** (use it and a tame, saddled Ridgeback Stag of yours is led up) and iron horse armour; then diamond horse armour and golden apples.

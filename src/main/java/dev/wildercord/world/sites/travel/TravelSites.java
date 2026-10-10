@@ -76,8 +76,15 @@ public final class TravelSites {
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 				if (player.isSpectator()) continue;
 				var start = player.level().structureManager().getStructureWithPieceAt(player.blockPosition(), Sites.ALL_SITES);
-				if (start.isValid() && start.getStructure() instanceof SiteStructure site && IDS.contains(site.site()))
+				if (start.isValid() && start.getStructure() instanceof SiteStructure site && IDS.contains(site.site())) {
 					LoreJournal.record(player, "place:" + site.site(), true);
+					// An inn from before 0.12 gets its bounty board and keepers the first time someone walks in.
+					if (site.site().equals(INN)) {
+						for (var piece : start.getPieces()) {
+							if (piece instanceof WayfarerInnPiece inn) inn.retrofit(player.level());
+						}
+					}
+				}
 			}
 		});
 	}
