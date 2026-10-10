@@ -159,6 +159,16 @@ See [Master Forms]({{ '/masters/master-forms/' | relative_url }}) for how to lea
 
 You can retry as often as you like. A failed trial costs you nothing but the fight itself. Find a duelist and ask again, or use `/master challenge`.
 
+## The Gauntlet
+
+Once you have beaten all sixteen Masters, type `/master gauntlet` to face them all again, back to back.
+
+- The Masters come one at a time, in a shuffled order. Each one draws 3 seconds after it arrives. There is no lobby, so the Gauntlet is yours alone.
+- When a Master falls you get 5 seconds to breathe and a quarter of your health back. Then the next one comes.
+- Dying, logging out, or letting a Master's trial run out loses the run. It costs nothing else, and you can start again at once.
+- Each run is timed. Chat tells you your time and your best, and the whole server hears when you finish.
+- Your first full run pays the **Blade of the Sixteen**: a netherite sword in the look of your own school, with Sharpness V and Unbreaking III. It also earns the advancement **The Sixteen**.
+
 ## Tips and counterplay
 
 - Watch the boss bar. It names every move, and tells you when the Master is guarding, open or out of breath.

@@ -237,6 +237,14 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		return spawn(player, discipline, true);
 	}
 
+	/** A Gauntlet's next Master (0.13): a trial like {@link #challenge}'s, but it draws after a moment instead of a lobby. */
+	static SwordMaster gauntletTrial(ServerPlayer player, int school) {
+		if (spawn(player, school, true) == 0) return null;
+		SwordMaster master = ACTIVE.stream().filter(m -> !m.isRemoved() && player.getUUID().equals(m.challenger)).findFirst().orElse(null);
+		if (master != null) master.begins = player.level().getGameTime() + GauntletRules.OPENING_TICKS;
+		return master;
+	}
+
 	/** The Survival teacher offers a separate, temporary master; accepting this invitation never starts combat. */
 	public static int introduce(ServerPlayer player, Duelist teacher) {
 		if (!mayEnter(player) || teacher.inDuel() || teacher.leaving() || teacher.tournament != null) return refuse(player, "teacher_busy");
@@ -1582,6 +1590,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 					MasterVictories.award(player, school()); // ---- methods-b pack: a pack Master credits its own school's bit
 				}
 			}
+			MasterGauntlet.felled(this, credited);
 		}
 		super.die(source);
 		closeEncounter();

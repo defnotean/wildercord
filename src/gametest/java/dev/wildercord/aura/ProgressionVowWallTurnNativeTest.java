@@ -115,6 +115,13 @@ public final class ProgressionVowWallTurnNativeTest implements FabricClientGameT
 				check(dev.wildercord.spell.AscensionRules.effect(Heart.ascension(p), Heart.active(p)).equals(CircleVows.Effect.NONE), "Below twenty circles Ascension is silent");
 				p.setAttached(WildercordAttachments.CIRCLES, 20);
 				p.removeAttached(WildercordAttachments.ASCENSION);
+				// The Master Gauntlet stays shut until every Master is beaten, and its blade carries its owner's name.
+				check(dev.wildercord.aura.world.MasterGauntlet.start(p) == 0 && !dev.wildercord.aura.world.MasterGauntlet.running(p),
+					"The Gauntlet refuses a player who hasn't beaten every Master");
+				check(p.getAttachedOrElse(dev.wildercord.aura.world.MasterGauntlet.BEST, 0) == 0, "No Gauntlet run yet");
+				ItemStack blade = dev.wildercord.aura.world.MasterGauntlet.blade(p);
+				check(blade.is(Items.NETHERITE_SWORD) && blade.getRarity() == net.minecraft.world.item.Rarity.EPIC && blade.isEnchanted()
+					&& blade.get(net.minecraft.core.component.DataComponents.ITEM_MODEL) != null, "The Blade of the Sixteen is an epic, sharpened master blade");
 				dev.wildercord.player.Spellbooks.setCord(p, ItemStack.EMPTY);
 			});
 			context.waitTicks(10);

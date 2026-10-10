@@ -1,0 +1,35 @@
+{
+  "parent": "wildercord:aura/form",
+  "criteria": {
+    "gauntlet": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "aura:gauntlet",
+        "count": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:netherite_sword"
+    },
+    "title": {
+      "translate": "advancements.wildercord.aura.gauntlet.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.aura.gauntlet.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "gauntlet"
+    ]
+  ],
+  "rewards": {
+    "experience": 2000,
+    "loot": [
+      "wildercord:advancement_reward/mana_crystals"
+    ]
+  }
+}

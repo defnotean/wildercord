@@ -8,6 +8,7 @@ public final class MastersCommand {
 	private MastersCommand() {}
 
 	public static void init() {
+		MasterGauntlet.init();
 		CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> dispatcher.register(
 			Commands.literal("master")
 				.then(Commands.literal("challenge")
@@ -22,6 +23,7 @@ public final class MastersCommand {
 					.then(Commands.literal("tide").executes(ctx -> SwordMaster.challenge(ctx.getSource().getPlayerOrException(), MethodsAMasters.TIDE)))
 					.then(Commands.literal("iron").executes(ctx -> SwordMaster.challenge(ctx.getSource().getPlayerOrException(), MethodsAMasters.IRON)))
 					.then(Commands.literal("dune").executes(ctx -> SwordMaster.challenge(ctx.getSource().getPlayerOrException(), MethodsAMasters.DUNE))))
+				.then(Commands.literal("gauntlet").executes(ctx -> MasterGauntlet.start(ctx.getSource().getPlayerOrException())))
 				.then(Commands.literal("victories").executes(ctx -> MasterVictories.describe(ctx.getSource().getPlayerOrException())))
 				.then(Commands.literal("ready").executes(ctx -> SwordMaster.ready(ctx.getSource().getPlayerOrException())))
 				.then(Commands.literal("join").executes(ctx -> SwordMaster.join(ctx.getSource().getPlayerOrException())))));

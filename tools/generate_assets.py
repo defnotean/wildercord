@@ -990,6 +990,8 @@ def write_lang(runes):
     lang.update(heart_path_text.LANG)
     import ascension_text
     lang.update(ascension_text.LANG)
+    import gauntlet_text
+    lang.update(gauntlet_text.LANG)
     # ---- moves pack
     import field_moves_art
     lang.update(field_moves_art.LANG)
@@ -3517,6 +3519,7 @@ for stage, title, description, frame, xp, loot in AURA_ADVANCEMENTS:
 adv("aura/perfect_guard", "aura/method", item("minecraft:shield"), "Not a Scratch", "Turn a blow aside with a perfect guard", grimoire(prefix="aura:perfect_guard", count=1), xp=25)
 adv("aura/bond", "aura/method", item("minecraft:iron_sword"), "Bonded Blade", "Bond a blade to your aura", grimoire(prefix="aura:bond", count=1), xp=30)
 adv("aura/dominion", "aura/form", item("aura_shard"), "Dominion", "Spread your aura over the ground around you", grimoire(prefix="aura:dominion", count=1), frame="goal", xp=75)
+adv("aura/gauntlet", "aura/form", item("minecraft:netherite_sword"), "The Sixteen", "Beat every Sword Master back to back in the Gauntlet", grimoire(prefix="aura:gauntlet", count=1), frame="challenge", xp=2000, loot=["mana_crystals"])
 
 
 def advancement_lang():

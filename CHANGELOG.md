@@ -13,6 +13,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Heart Paths.** The Tenth Circle now asks you to choose a path. The **Storm** makes spells stronger and wakes Overflow at three-quarters mana. The **Well** adds max mana and regeneration, and meditation fills you twice as fast. The **Ward** makes spells cheaper and longer-lasting, and Mana Skin turns back more of a wound. Choose with `/path`. Leaving a path costs 10 levels.
 - **Ascension past the Twentieth Circle.** Mana you condense after Circle XX now pays for up to ten Ascensions. You form each one by meditating, like a circle. Each adds 5 max mana, 0.1 mana regeneration and 1% spell power. The Grimoire's Heart page shows how far the next one is.
 - **Rival tribulations.** From the 10th circle, your own Shadow leads a tribulation's last wave instead of a Herald. It wears your face, armour and weapon, and casts your selected spell back at you. It has two to four times your health, by the circle.
+- **The Master Gauntlet.** Once you've beaten all sixteen Sword Masters, `/master gauntlet` sends them at you again, back to back, in a shuffled order, with 5 seconds and a quarter of your health between each. Runs are timed against your best. Your first full run earns the Blade of the Sixteen and the advancement The Sixteen.
 
 ### Changed
 
