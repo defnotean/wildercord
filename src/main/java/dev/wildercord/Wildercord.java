@@ -105,6 +105,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.monster.Monsters.init();
 		dev.wildercord.monster.Tempering.init();
 		dev.wildercord.ritual.Rituals.init();
+		dev.wildercord.content.TwistedRunes.init();
 		// Magical wildlife: glimmerwings, lumen stags, mossback tortoises, cinderfoxes, skyrays and rimehares.
 		dev.wildercord.wildlife.Wildlife.init();
 		dev.wildercord.wildlife.FoxCompanions.init();

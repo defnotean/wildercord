@@ -121,6 +121,10 @@ public class RuneItem extends Item {
 			return Component.translatable("item.wildercord.knot.named", runeName(def)).withColor(RuneColors.of(def));
 		}
 		int rank = rankOf(stack);
+		dev.wildercord.spell.RuneTwistRules.Twist twist = TwistedRunes.twistOf(stack);
+		if (twist != null) {
+			return Component.translatable("item.wildercord.rune.twisted." + twist.id(), runeName(def)).withColor(twist.corrupted ? 0xC0405A : 0x9A9A8A);
+		}
 		return rank > 1
 			? Component.translatable("item.wildercord.rune.ranked", runeName(def), roman(rank)).withColor(RuneColors.of(def))
 			: Component.translatable("item.wildercord.rune.named", runeName(def)).withColor(RuneColors.of(def));
@@ -141,6 +145,13 @@ public class RuneItem extends Item {
 			return;
 		}
 		builder.accept(describe.apply(def).withStyle(ChatFormatting.GRAY));
+		dev.wildercord.spell.RuneTwistRules.Twist twist = TwistedRunes.twistOf(stack);
+		if (twist != null) {
+			builder.accept(Component.translatable("tooltip.wildercord.twist." + twist.id(), Math.round(Math.abs(twist.power - 1) * 100))
+				.withStyle(twist.corrupted ? ChatFormatting.RED : ChatFormatting.GRAY));
+			builder.accept(Component.translatable("tooltip.wildercord.twist.learn").withStyle(ChatFormatting.DARK_AQUA));
+			return;
+		}
 		int rank = rankOf(stack);
 		if (rank > 1) {
 			builder.accept(Component.translatable("tooltip.wildercord.rank", roman(rank), Math.round((Ranks.power(rank) - 1) * 100)).withColor(0xE8C46A));
@@ -218,6 +229,7 @@ public class RuneItem extends Item {
             }
 			int rank = rankOf(stack);
 			boolean known = Spellbooks.knows(serverPlayer, def.id());
+			if (twistedUse(serverPlayer, stack, def, known)) return InteractionResult.SUCCESS;
 			if (known && rank <= RuneRanks.rank(serverPlayer, def.id())) {
 				serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.already_known", runeName(def)).withStyle(ChatFormatting.GRAY));
 				return InteractionResult.FAIL;
@@ -239,6 +251,39 @@ public class RuneItem extends Item {
 				: Component.translatable("message.wildercord.learned", name));
 		}
 		return InteractionResult.SUCCESS;
+	}
+
+	/**
+	 * Learning a twisted rune cuts its twist into the rune everywhere it's threaded; a plain copy used while sneaking
+	 * smooths a twist out again. True when the use was one of these (handled, or refused with a message).
+	 */
+	private static boolean twistedUse(ServerPlayer player, ItemStack stack, RuneDef def, boolean known) {
+		dev.wildercord.spell.RuneTwistRules.Twist twist = TwistedRunes.twistOf(stack);
+		Component name = runeName(def).withColor(RuneColors.of(def));
+		if (twist == null) {
+			if (!known || !player.isShiftKeyDown() || dev.wildercord.player.RuneTwists.twist(player, def.id()) == null) return false;
+			dev.wildercord.player.RuneTwists.set(player, def.id(), null);
+			stack.consume(1, player);
+			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 1.2F);
+			player.sendOverlayMessage(Component.translatable("message.wildercord.twist.cleansed", name));
+			return true;
+		}
+		if (def.family() != dev.wildercord.spell.RuneFamily.EFFECT) return false;
+		if (twist == dev.wildercord.player.RuneTwists.twist(player, def.id())) {
+			player.sendOverlayMessage(Component.translatable("message.wildercord.already_known", name).withStyle(ChatFormatting.GRAY));
+			return true;
+		}
+		if (!known) {
+			Spellbooks.learn(player, def.id());
+			dev.wildercord.cast.PlayerAffinities.learnedRune(player);
+			dev.wildercord.cast.RuneReadings.learned(player, def);
+		}
+		dev.wildercord.player.RuneTwists.set(player, def.id(), twist);
+		stack.consume(1, player);
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), twist.corrupted ? SoundEvents.SCULK_SHRIEKER_SHRIEK : SoundEvents.AMETHYST_BLOCK_CHIME,
+			SoundSource.PLAYERS, twist.corrupted ? 0.4F : 1.0F, twist.corrupted ? 1.6F : 0.8F);
+		player.sendOverlayMessage(Component.translatable("message.wildercord.twist.learned." + twist.id(), name));
+		return true;
 	}
 
 	public static String roman(int n) {

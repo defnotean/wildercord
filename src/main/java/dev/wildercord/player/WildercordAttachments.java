@@ -266,6 +266,19 @@ public final class WildercordAttachments {
 	);
 
 	/**
+	 * The runes the player has twisted with a flawed or corrupted copy (rune id to twist id; see
+	 * {@link dev.wildercord.spell.RuneTwistRules}). Synced so tooltips can show it. Kept through death.
+	 */
+	public static final AttachmentType<Map<String, String>> RUNE_TWISTS = AttachmentRegistry.create(
+		Wildercord.id("rune_twists"),
+		builder -> builder
+			.initializer(Map::of)
+			.persistent(Codec.unboundedMap(Codec.STRING, Codec.STRING))
+			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.STRING_UTF8), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/**
 	 * When the player last attuned in each land (attunement id to game time), so a land gives its rune
 	 * once a day. Synced so the Grimoire can show when each land is ready again. Kept through death.
 	 */

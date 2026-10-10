@@ -18,6 +18,7 @@
   * [Circle Disciplines](spellcraft/circle-disciplines.md)
   * [Physical Magic](spellcraft/physical-magic.md)
   * [Ritual Spells](spellcraft/rituals.md)
+  * [Twisted Runes](spellcraft/twisted-runes.md)
   * [Relay Circle](spellcraft/relay-circle.md)
   * [Ebb Ledger and Reweave](spellcraft/reweave.md)
   * [Excise](spellcraft/excise.md)

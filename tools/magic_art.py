@@ -263,6 +263,23 @@ LANG = {
     "message.wildercord.ritual.low_mana": "The circle holds too little mana for this ritual. Gather more casters within 8 blocks",
     "message.wildercord.ritual.wrong_place": "This ritual can't be worked here, or now",
     "message.wildercord.ritual.nothing_to_do": "The ritual found nothing to work on",
+    "item.wildercord.rune.twisted.flawed": "Flawed %s Rune",
+    "item.wildercord.rune.twisted.searing": "Searing %s Rune",
+    "item.wildercord.rune.twisted.bloodletting": "Bloodletting %s Rune",
+    "item.wildercord.rune.twisted.volatile": "Volatile %s Rune",
+    "item.wildercord.rune.twisted.hungering": "Hungering %s Rune",
+    "tooltip.wildercord.twist.flawed": "Flawed: %s%% weaker, but each flawed rune makes its spell 15%% cheaper",
+    "tooltip.wildercord.twist.searing": "Corrupted: %s%% stronger, but whoever it helps catches fire",
+    "tooltip.wildercord.twist.bloodletting": "Corrupted: %s%% stronger, but each cast costs you a heart",
+    "tooltip.wildercord.twist.volatile": "Corrupted: %s%% stronger, but it sometimes fizzles",
+    "tooltip.wildercord.twist.hungering": "Corrupted: %s%% stronger, but each cast leaves you hungry",
+    "tooltip.wildercord.twist.learn": "Use to twist this rune everywhere it's threaded. Sneak-use a plain copy to smooth it out",
+    "message.wildercord.twist.learned.flawed": "%s is flawed now: weaker, and cheaper to cast",
+    "message.wildercord.twist.learned.searing": "%s is corrupted: it sears what it mends",
+    "message.wildercord.twist.learned.bloodletting": "%s is corrupted: it drinks your blood",
+    "message.wildercord.twist.learned.volatile": "%s is corrupted: it burns bright and unsteady",
+    "message.wildercord.twist.learned.hungering": "%s is corrupted: it feeds on you",
+    "message.wildercord.twist.cleansed": "%s is whole again",
 }
 
 

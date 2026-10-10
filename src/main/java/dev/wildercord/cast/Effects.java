@@ -287,6 +287,37 @@ public final class Effects {
 		}
 	}
 
+	/**
+	 * A corrupted rune's price where it lands (see {@link dev.wildercord.spell.RuneTwistRules}): bloodletting and hungering
+	 * take their toll once a cast, a searing rune sets those it helps alight. False when a volatile rune fizzles.
+	 */
+	private static boolean twisted(Cast cast, RuneDef rune, List<LivingEntity> helped) {
+		dev.wildercord.spell.RuneTwistRules.Twist twist = dev.wildercord.player.RuneTwists.twist(cast.caster, rune.id());
+		if (twist == null) return true;
+		LivingEntity caster = cast.caster;
+		switch (twist) {
+			case VOLATILE -> {
+				if (cast.level.getRandom().nextDouble() < dev.wildercord.spell.RuneTwistRules.VOLATILE_FIZZLE) {
+					cast.level.sendParticles(net.minecraft.core.particles.ParticleTypes.SMOKE, caster.getX(), caster.getEyeY(), caster.getZ(), 8, 0.3, 0.3, 0.3, 0.02);
+					cast.level.playSound(null, caster.getX(), caster.getY(), caster.getZ(), net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH,
+						net.minecraft.sounds.SoundSource.PLAYERS, 0.6F, 1.4F);
+					return false;
+				}
+			}
+			case BLOODLETTING -> {
+				if (cast.once("twist_blood")) caster.hurtServer(cast.level, cast.level.damageSources().magic(), dev.wildercord.spell.RuneTwistRules.BLOOD_TOLL);
+			}
+			case HUNGERING -> {
+				if (cast.once("twist_hunger") && caster instanceof net.minecraft.world.entity.player.Player player) {
+					player.causeFoodExhaustion(dev.wildercord.spell.RuneTwistRules.HUNGER_TOLL);
+				}
+			}
+			case SEARING -> helped.forEach(t -> t.igniteForTicks(dev.wildercord.spell.RuneTwistRules.SEARING_TICKS));
+			default -> {}
+		}
+		return true;
+	}
+
 	private static void applyEffect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
 		RuneDef rune = node.effect;
 		LivingEntity caster = cast.caster;
@@ -299,7 +330,9 @@ public final class Effects {
 		// Casting gear (a staff of this element, a Focus of Thrift): its own factor, set when the spell was cast.
 		double gear = cast.gearPower(rune.element());
 		double power = SpellNumbers.power(node) * groupPower * cast.power * affinity * innate * dev.wildercord.spell.Ranks.power(rank) * gear
-			* ExplorerEffects.swing(cast, node, hit) * WorldQuirks.power(cast, rune, hit);
+			* ExplorerEffects.swing(cast, node, hit) * WorldQuirks.power(cast, rune, hit)
+			// A flawed rune is weaker, a corrupted one stronger (see RuneTwistRules).
+			* dev.wildercord.player.RuneTwists.power(caster, rune);
 		// This world's quirks may make it stronger or last longer where it lands (see WorldQuirks).
 		double duration = SpellNumbers.duration(node) * cast.duration * WorldQuirks.duration(cast, rune, hit);
 		int amplify = dev.wildercord.spell.ModifierLimits.count(node.mods, Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
@@ -312,6 +345,7 @@ public final class Effects {
 		// Self always means you: movement effects move you even though they are "harmful" to others.
 		List<LivingEntity> moved = hit.self() ? List.of(caster) : harmed;
 		List<LivingEntity> targetsHit = harmed;
+		if (!twisted(cast, rune, helped)) return;
 		RunicAnimations.land(cast, rune, hit);
 		if (PhysicalMagic.apply(cast,rune,hit,power,duration)) return;
 		if (FieldFusions.apply(cast,node,hit,helped,harmed)) return;

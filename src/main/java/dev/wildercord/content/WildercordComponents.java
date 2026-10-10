@@ -42,5 +42,12 @@ public final class WildercordComponents {
 		DataComponentType.<Imbued>builder().persistent(Imbued.CODEC).networkSynchronized(Imbued.STREAM_CODEC).build()
 	);
 
+	/** A flawed or corrupted rune's twist (see {@link dev.wildercord.spell.RuneTwistRules}), by id. */
+	public static final DataComponentType<String> TWIST = Registry.register(
+		BuiltInRegistries.DATA_COMPONENT_TYPE,
+		Wildercord.id("twist"),
+		DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
+	);
+
 	public static void init() {}
 }

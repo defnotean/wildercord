@@ -276,6 +276,7 @@ public final class WildercordTownChecks {
 		hamlet(player, level);
 		mageHunter(player, level);
 		ritual(player, level);
+		twistedRunes(player, level);
 	}
 
 	/** A Room Key used near a keeper lets a room: the traveller wakes there until the stay runs out. */
@@ -389,6 +390,33 @@ public final class WildercordTownChecks {
 		check(!dev.wildercord.ritual.Rituals.warded(level, player.position().add(dev.wildercord.ritual.RitualRules.SANCTUARY_RADIUS + 4, 0, 0)),
 			"and not beyond its edge");
 		dev.wildercord.ritual.Rituals.liftWards();
+	}
+
+	/** A twisted rune found in a chest: learning it twists the rune, a plain copy sneak-used smooths it out. */
+	private void twistedRunes(ServerPlayer player, ServerLevel level) {
+		var found = dev.wildercord.content.TwistedRunes.randomEffect(new java.util.Random(7));
+		check(found.isPresent() && found.get().family() == dev.wildercord.spell.RuneFamily.EFFECT, "a chest's twisted rune is an effect rune");
+		if (found.isEmpty()) return;
+		var rune = found.get();
+		var flawed = dev.wildercord.spell.RuneTwistRules.Twist.FLAWED;
+		var old = dev.wildercord.player.RuneTwists.all(player);
+		ItemStack held = player.getMainHandItem().copy();
+		ItemStack twisted = dev.wildercord.content.TwistedRunes.stack(rune, flawed);
+		check(dev.wildercord.content.TwistedRunes.twistOf(twisted) == flawed, "the twist is cut into the item");
+		player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, twisted);
+		twisted.getItem().use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
+		check(dev.wildercord.player.RuneTwists.twist(player, rune.id()) == flawed && dev.wildercord.player.Spellbooks.knows(player, rune.id()),
+			"learning it twists the rune");
+		check(Math.abs(dev.wildercord.player.RuneTwists.power(player, rune) - flawed.power) < 1e-9, "a flawed rune is weaker");
+		check(dev.wildercord.player.RuneTwists.costFactor(player, List.of(rune)) < 1.0, "and its spell is cheaper");
+		ItemStack plain = dev.wildercord.content.RuneItem.stack(rune);
+		player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, plain);
+		player.setShiftKeyDown(true);
+		plain.getItem().use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
+		player.setShiftKeyDown(false);
+		check(dev.wildercord.player.RuneTwists.twist(player, rune.id()) == null, "a plain copy smooths it out");
+		player.setAttached(dev.wildercord.player.WildercordAttachments.RUNE_TWISTS, old);
+		player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, held);
 	}
 
 	/** A caravan makes camp near the traveller with its pack llamas, stays a day, and never two close together. */

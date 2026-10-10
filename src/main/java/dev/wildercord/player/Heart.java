@@ -290,7 +290,9 @@ public final class Heart {
 	/** The factor on a spell's price for this player: a found secret's power, a found resonance's {@link dev.wildercord.spell.Resonance#COST}, otherwise 1. */
 	public static double secretCost(Player player, List<dev.wildercord.spell.RuneDef> runes) {
 		return foundSecret(player, runes).map(dev.wildercord.spell.Secrets.Secret::power)
-			.orElseGet(() -> foundResonance(player, runes).isPresent() ? dev.wildercord.spell.Resonance.COST : 1.0);
+			.orElseGet(() -> foundResonance(player, runes).isPresent() ? dev.wildercord.spell.Resonance.COST : 1.0)
+			// Each flawed rune in the spell takes a share off its price.
+			* RuneTwists.costFactor(player, runes);
 	}
 
 	/**
