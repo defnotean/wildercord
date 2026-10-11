@@ -771,16 +771,34 @@
     "aura_rime_swing": {
       "part": "aura"
     },
+    "aura_serpent_burst": {
+      "part": "aura"
+    },
     "aura_serpent_challenge": {
       "part": "aura"
     },
+    "aura_serpent_constrict": {
+      "part": "aura"
+    },
     "aura_serpent_death": {
+      "part": "aura"
+    },
+    "aura_serpent_dive": {
       "part": "aura"
     },
     "aura_serpent_hiss": {
       "part": "aura"
     },
     "aura_serpent_hurt": {
+      "part": "aura"
+    },
+    "aura_serpent_lunge": {
+      "part": "aura"
+    },
+    "aura_serpent_sidestep": {
+      "part": "aura"
+    },
+    "aura_serpent_strike": {
       "part": "aura"
     },
     "aura_serpent_uncoil": {

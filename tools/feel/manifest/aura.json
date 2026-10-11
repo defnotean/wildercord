@@ -1490,6 +1490,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_serpent_burst": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_serpent_burst"
+      ],
+      "subtitle": "serpent.burst"
+    },
     "aura_serpent_challenge": {
       "attenuation": 0,
       "files": [
@@ -1497,12 +1504,26 @@
       ],
       "subtitle": "serpent.challenge"
     },
+    "aura_serpent_constrict": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_serpent_constrict"
+      ],
+      "subtitle": "serpent.constrict"
+    },
     "aura_serpent_death": {
       "attenuation": 0,
       "files": [
         "kit/aura/aura_serpent_death"
       ],
       "subtitle": "serpent.death"
+    },
+    "aura_serpent_dive": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_serpent_dive"
+      ],
+      "subtitle": "serpent.dive"
     },
     "aura_serpent_hiss": {
       "attenuation": 0,
@@ -1517,6 +1538,27 @@
         "kit/aura/aura_serpent_hurt"
       ],
       "subtitle": "serpent.hurt"
+    },
+    "aura_serpent_lunge": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_serpent_lunge"
+      ],
+      "subtitle": "serpent.lunge"
+    },
+    "aura_serpent_sidestep": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_serpent_sidestep"
+      ],
+      "subtitle": "serpent.sidestep"
+    },
+    "aura_serpent_strike": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_serpent_strike"
+      ],
+      "subtitle": "serpent.strike"
     },
     "aura_serpent_uncoil": {
       "attenuation": 0,

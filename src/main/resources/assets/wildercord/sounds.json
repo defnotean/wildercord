@@ -5644,16 +5644,34 @@
       "wildercord:kit/aura/aura_rime_swing_3"
     ]
   },
+  "aura_serpent_burst": {
+    "subtitle": "subtitles.wildercord.kit.serpent.burst",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_burst"
+    ]
+  },
   "aura_serpent_challenge": {
     "subtitle": "subtitles.wildercord.kit.serpent.challenge",
     "sounds": [
       "wildercord:kit/aura/aura_serpent_challenge"
     ]
   },
+  "aura_serpent_constrict": {
+    "subtitle": "subtitles.wildercord.kit.serpent.constrict",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_constrict"
+    ]
+  },
   "aura_serpent_death": {
     "subtitle": "subtitles.wildercord.kit.serpent.death",
     "sounds": [
       "wildercord:kit/aura/aura_serpent_death"
+    ]
+  },
+  "aura_serpent_dive": {
+    "subtitle": "subtitles.wildercord.kit.serpent.dive",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_dive"
     ]
   },
   "aura_serpent_hiss": {
@@ -5666,6 +5684,24 @@
     "subtitle": "subtitles.wildercord.kit.serpent.hurt",
     "sounds": [
       "wildercord:kit/aura/aura_serpent_hurt"
+    ]
+  },
+  "aura_serpent_lunge": {
+    "subtitle": "subtitles.wildercord.kit.serpent.lunge",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_lunge"
+    ]
+  },
+  "aura_serpent_sidestep": {
+    "subtitle": "subtitles.wildercord.kit.serpent.sidestep",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_sidestep"
+    ]
+  },
+  "aura_serpent_strike": {
+    "subtitle": "subtitles.wildercord.kit.serpent.strike",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_strike"
     ]
   },
   "aura_serpent_uncoil": {

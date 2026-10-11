@@ -16,6 +16,24 @@ public final class SerpentRules {
 	public static final int WATCH = 2;
 	/** Climbing back round the trunk after the grove has gone quiet: the uncoil, played backwards. */
 	public static final int RECOIL = 3;
+	/** A bite: the head draws back {@link #STRIKE_TELL} ticks, then snaps forward along the aim it locked. */
+	public static final int STRIKE = 4;
+	/** A lunge: it coils back, then throws its whole length {@link #LUNGE_REACH} blocks along a fixed line. */
+	public static final int LUNGE = 5;
+	/** Its coils swing open to catch whoever stands in front of it, and close. */
+	public static final int CONSTRICT = 6;
+	/** Someone is caught in its coils and being squeezed. */
+	public static final int SQUEEZE = 7;
+	/** It slips a blow, sliding sideways. */
+	public static final int SIDESTEP = 8;
+	/** Spent after an attack, reared high with its pale belly bare: the opening. */
+	public static final int RECOVER = 9;
+	/** At half health it rears, hisses and slides into the water ring. */
+	public static final int DIVE = 10;
+	/** Under the water, circling the island out of reach. */
+	public static final int SUBMERGED = 11;
+	/** Bursting out of the water at someone. */
+	public static final int BURST = 12;
 
 	public static final double HEALTH = 360, ARMOUR = 10, SPEED = 0.3;
 
@@ -38,6 +56,103 @@ public final class SerpentRules {
 
 	/** How close it closes before it stops to face its prey. */
 	public static final double CLOSE = 4.5;
+
+	// ---- the fight: tells of three to four ticks like a Master's, but fewer and softer blows, and longer openings between them.
+
+	/** What each blow does before defences: about two thirds of a Master's cuts. */
+	public static final double STRIKE_DAMAGE = 22, LUNGE_DAMAGE = 26, SQUEEZE_DAMAGE = 6, BURST_DAMAGE = 24;
+	/** The share of what armour, Protection and Resistance would stop that its fangs and coils go through anyway. */
+	public static final double PIERCE = 0.45;
+	/** A bite's tell, the tell of each bite chained after it, how long its head stays out after biting, and its rest after the last. */
+	public static final int STRIKE_TELL = 4, STRIKE_CHAIN_TELL = 3, STRIKE_HOLD = 2, STRIKE_RECOVER = 12;
+	/** Bites in a flurry, at most. */
+	public static final int FLURRY = 3;
+	public static final int LUNGE_TELL = 7, LUNGE_TICKS = 5, LUNGE_RECOVER = 18;
+	public static final double LUNGE_REACH = 6.5;
+	public static final int CONSTRICT_TELL = 5, CONSTRICT_RECOVER = 14;
+	/** Longest it holds anyone, and how often it squeezes. */
+	public static final int SQUEEZE_TICKS = 70, SQUEEZE_EVERY = 10;
+	/** Ways out of its coils: this many struggles (fresh presses of jump or a strafe), or this much damage dealt to it while it holds. */
+	public static final int STRUGGLES = 6;
+	public static final double BREAK_FREE = 30;
+	/** Its next grab waits at least this long after the last. */
+	public static final int CONSTRICT_REST = 160;
+	public static final int SIDESTEP_TICKS = 4, SIDESTEP_REST = 30;
+	public static final double SIDESTEP_SPEED = 0.7;
+	/** Ticks between its blows, fewer once it is wounded. */
+	public static final int GAP = 8, GAP_WOUNDED = 5;
+
+	/** The water phase: its rearing tell, how long it circles between bursts, and how many bursts before it comes ashore. */
+	public static final int DIVE_TICKS = 24, CIRCLE_TICKS = 50, BURST_TELL = 10, BURST_TICKS = 6, BURSTS = 3;
+	/** Its path round the island under the water: radius from the trunk, and how far below the trunk's foot (the ring's bed). */
+	public static final double RING = 11.25, DEPTH = 4;
+	public static final double CIRCLE_SPEED = 0.35;
+
+	/** The bar's name for what it is doing. */
+	public static String key(int move) {
+		return switch (move) {
+			case STRIKE -> "strike";
+			case LUNGE -> "lunge";
+			case CONSTRICT -> "constrict";
+			case SQUEEZE -> "squeeze";
+			case SIDESTEP -> "sidestep";
+			case RECOVER -> "recover";
+			case DIVE -> "dive";
+			case SUBMERGED -> "submerged";
+			case BURST -> "burst";
+			default -> "watch";
+		};
+	}
+
+	/** Its choice of blow at {@code distance} from its prey; -1 to keep closing. {@code roll} is 0-1. */
+	public static int choose(double distance, double roll, boolean mayConstrict) {
+		if (distance <= CLOSE) return mayConstrict && roll < 0.28 ? CONSTRICT : STRIKE;
+		if (distance <= LUNGE_REACH + 2.5) return LUNGE;
+		return -1;
+	}
+
+	/** Whether a blow reaches someone {@code forward} ahead, {@code side} across and {@code height} above its feet, in its locked aim. */
+	public static boolean hits(int move, double forward, double side, double height) {
+		return switch (move) {
+			case STRIKE -> forward > -0.5 && forward <= 5.2 && Math.abs(side) <= 1.4 && height > -1.5 && height < 3.8;
+			case LUNGE, BURST -> forward > -1.5 && forward <= 2.8 && Math.abs(side) <= 1.8 && height > -1.5 && height < 3.5;
+			case CONSTRICT -> forward > -0.5 && forward <= 3.8 && Math.abs(side) <= 2.0 && height > -1.5 && height < 3.0;
+			default -> false;
+		};
+	}
+
+	/**
+	 * What its scales leave of a blow. Reared and facing you, its scales turn most of it; its flanks less so; spent after an attack
+	 * its belly is bare. Under the water little reaches it.
+	 */
+	public static double scales(int move, boolean frontal) {
+		if (move == RECOVER) return 1.35;
+		if (move == SUBMERGED || move == DIVE) return 0.25;
+		if (move == SQUEEZE) return 1.0;
+		return frontal ? 0.5 : 0.85;
+	}
+
+	/** Whether a blow arriving from {@code angle} degrees off its facing lands on its scaled front. */
+	public static boolean frontal(double angle) {
+		double a = Math.abs(((angle % 360) + 540) % 360 - 180);
+		return a <= 60;
+	}
+
+	/** Whether it slips a blow: only a frontal one, only while it watches, and not too often. */
+	public static boolean slips(int move, boolean frontal, long sinceSlip) {
+		return move == WATCH && frontal && sinceSlip >= SIDESTEP_REST;
+	}
+
+	/** Bites in this flurry: two, or three a third of the time (half the time once it is wounded). */
+	public static int flurry(double roll, boolean wounded) {
+		return roll < (wounded ? 0.5 : 0.33) ? FLURRY : FLURRY - 1;
+	}
+
+	/** Whether it is due to dive: the first time it falls to half health. */
+	public static boolean dives(float health, float max, boolean dived) {
+		return !dived && health <= max * 0.5F;
+	}
+
 
 	/** Whether a player at this offset from the trunk's foot is close enough to wake it. */
 	public static boolean wakes(double dx, double dy, double dz) {

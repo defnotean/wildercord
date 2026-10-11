@@ -35,4 +35,51 @@ class SerpentRulesTest {
 		assertTrue(SerpentRules.BAR_SHOW<SerpentRules.BAR_DROP);
 		assertTrue(SerpentRules.RETURN_TICKS<SerpentRules.RESET_TICKS);
 	}
+	@Test void itBitesUpCloseLungesFromFurtherOutAndClosesFromBeyond(){
+		assertEquals(SerpentRules.STRIKE,SerpentRules.choose(3,.9,true));
+		assertEquals(SerpentRules.CONSTRICT,SerpentRules.choose(3,.1,true));
+		assertEquals(SerpentRules.STRIKE,SerpentRules.choose(3,.1,false));
+		assertEquals(SerpentRules.LUNGE,SerpentRules.choose(7,.5,true));
+		assertEquals(-1,SerpentRules.choose(12,.5,true));
+	}
+	@Test void aBiteReachesAheadAndNotBehindOrWide(){
+		assertTrue(SerpentRules.hits(SerpentRules.STRIKE,4,0,1));
+		assertFalse(SerpentRules.hits(SerpentRules.STRIKE,6,0,1));
+		assertFalse(SerpentRules.hits(SerpentRules.STRIKE,3,2,1));
+		assertFalse(SerpentRules.hits(SerpentRules.STRIKE,-2,0,1));
+		assertTrue(SerpentRules.hits(SerpentRules.LUNGE,1,-1,0));
+		assertFalse(SerpentRules.hits(SerpentRules.WATCH,1,0,0));
+	}
+	@Test void itsScalesTurnBlowsFromTheFrontAndItsBellyDoesNot(){
+		assertTrue(SerpentRules.frontal(0) && SerpentRules.frontal(-50) && SerpentRules.frontal(410));
+		assertFalse(SerpentRules.frontal(90) || SerpentRules.frontal(180) || SerpentRules.frontal(-120));
+		assertTrue(SerpentRules.scales(SerpentRules.WATCH,true)<SerpentRules.scales(SerpentRules.WATCH,false));
+		assertTrue(SerpentRules.scales(SerpentRules.RECOVER,true)>1);
+		assertTrue(SerpentRules.scales(SerpentRules.SUBMERGED,false)<.5);
+	}
+	@Test void itSlipsOnlyFrontalBlowsWhileWatchingAndNotTwiceInARow(){
+		assertTrue(SerpentRules.slips(SerpentRules.WATCH,true,SerpentRules.SIDESTEP_REST));
+		assertFalse(SerpentRules.slips(SerpentRules.WATCH,true,SerpentRules.SIDESTEP_REST-1));
+		assertFalse(SerpentRules.slips(SerpentRules.WATCH,false,999));
+		assertFalse(SerpentRules.slips(SerpentRules.RECOVER,true,999));
+	}
+	@Test void itDivesOnceAtHalfHealth(){
+		assertFalse(SerpentRules.dives(200,360,false));
+		assertTrue(SerpentRules.dives(180,360,false));
+		assertFalse(SerpentRules.dives(100,360,true));
+	}
+	@Test void itsBlowsSitBelowAMastersAndItsOpeningsOutlastItsTells(){
+		assertTrue(SerpentRules.STRIKE_DAMAGE<MastersRules.Move.SWEEP.damage);
+		assertTrue(SerpentRules.STRIKE_TELL<=4 && SerpentRules.STRIKE_CHAIN_TELL>=3);
+		assertTrue(SerpentRules.STRIKE_RECOVER>SerpentRules.STRIKE_TELL*2 && SerpentRules.LUNGE_RECOVER>SerpentRules.LUNGE_TELL*2);
+		assertTrue(SerpentRules.flurry(0,false)<=SerpentRules.FLURRY && SerpentRules.flurry(.9,true)>=2);
+		assertTrue(SerpentRules.RING-SerpentRules.LUNGE_REACH>0 && SerpentRules.RING<SerpentRules.ARENA);
+		assertEquals("squeeze",SerpentRules.key(SerpentRules.SQUEEZE));
+	}
+	@Test void aGuardiansBiteGoesPartlyThroughDefences(){
+		assertEquals(20,GuardianBite.pierced(20,20,.45),1e-6);
+		assertEquals(10+10*.45,GuardianBite.pierced(20,10,.45),1e-4);
+		assertEquals(10,GuardianBite.pierced(20,10,0),1e-6);
+		assertEquals(10,GuardianBite.pierce(20,10),1e-6);
+	}
 }

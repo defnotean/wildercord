@@ -13,9 +13,20 @@ LANG = {
 }
 for name, text in {
     'hiss': 'Serpent hisses', 'wake': 'Serpent stirs', 'uncoil': 'Serpent uncoils', 'challenge': 'Serpent rears',
-    'hurt': 'Serpent hurts', 'death': 'Serpent dies',
+    'hurt': 'Serpent hurts', 'death': 'Serpent dies', 'strike': 'Serpent strikes', 'lunge': 'Serpent lunges',
+    'constrict': 'Serpent coils tighten', 'sidestep': 'Serpent slips aside', 'dive': 'Serpent dives', 'burst': 'Serpent bursts from the water',
 }.items():
     LANG['subtitles.wildercord.kit.serpent.' + name] = text
+
+# What the bar says it is doing, the way a Master's bar names its cut.
+for name, text in {
+    'watch': 'Watching', 'strike': 'Striking', 'lunge': 'Lunging', 'constrict': 'Coiling to grab', 'squeeze': 'Constricting',
+    'sidestep': 'Slipping aside', 'recover': 'Belly bare', 'dive': 'Diving', 'submerged': 'Circling below', 'burst': 'Bursting out',
+}.items():
+    LANG['boss.wildercord.rootcoil_serpent.move.' + name] = text
+LANG['message.wildercord.rootcoil_serpent.caught'] = 'Caught in its coils! Jump or strafe to struggle free.'
+LANG['message.wildercord.rootcoil_serpent.struggle'] = 'Struggling… %s/%s'
+LANG['message.wildercord.rootcoil_serpent.free'] = 'You break free!'
 
 GROVE_BIOMES = ['minecraft:jungle', 'minecraft:sparse_jungle', 'minecraft:bamboo_jungle']
 
