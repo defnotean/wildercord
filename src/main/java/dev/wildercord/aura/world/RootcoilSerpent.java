@@ -2,6 +2,7 @@ package dev.wildercord.aura.world;
 
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.*;
@@ -12,9 +13,13 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
 import java.util.*;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * The Rootcoil Serpent ({@link SerpentRules}). Generation leaves it coiled round the grove's tree, bound to the trunk and facing
@@ -24,7 +29,8 @@ import java.util.*;
  * <p>Awake it fights like a lighter Master: quick bites in flurries, a lunge at anyone who backs off, a grab that holds and
  * squeezes until its prey struggles free, and a slip aside from blows it sees coming. Its scales turn much of a blow from the
  * front; each attack leaves it spent for a moment with its belly bare. At half health it takes to the water ring and bursts out
- * of it three times before it comes back ashore, quicker than before.
+ * of it three times before it comes back ashore, quicker than before. Anyone keeping their distance gets the tail: it comes over
+ * and down in front of it and flings a fan of the island at them, clods of earth that hit through armour.
  */
 public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> MOVE=SynchedEntityData.defineId(RootcoilSerpent.class,EntityDataSerializers.INT);
@@ -44,12 +50,20 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	/** The yaw its current blow is locked along. */
 	private float aim;
 	private int flurry,bites,chased,struggles,bursts,circle;
-	private long lastSlip=-999,lastGrab=-999;
+	private long lastSlip=-999,lastGrab=-999,lastSlam=-999;
 	private boolean dived,water,gripping;
 	private double heldDamage,ring;
 	private ServerPlayer caught;
 	private Vec3 from=Vec3.ZERO,to=Vec3.ZERO,slide=Vec3.ZERO;
 	private final Set<UUID> struck=new HashSet<>();
+	/** Clods of the island in flight from its last slam, and how many have hit each player. */
+	private final List<Clod> clods=new ArrayList<>();
+	private final Map<UUID,Integer> pelted=new HashMap<>();
+	/** A clod: a block display it moves itself, so the island is never actually dug up. */
+	private static final class Clod{
+		final Display.BlockDisplay shown;final BlockState state;Vec3 at,vel;int age;final Quaternionf spin;
+		Clod(Display.BlockDisplay shown,BlockState state,Vec3 at,Vec3 vel,Quaternionf spin){this.shown=shown;this.state=state;this.at=at;this.vel=vel;this.spin=spin;}
+	}
 
 	public RootcoilSerpent(EntityType<? extends RootcoilSerpent> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
@@ -96,7 +110,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private long since(){return level().getGameTime()-entityData.get(BEGAN);}
 	/** Back round the trunk, whole again. */
 	private void coil(){
-		letGo(false);
+		letGo(false);dropClods();
 		pose(SerpentRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;
 		dived=false;water=false;bursts=0;bar.setColor(BossEvent.BossBarColor.GREEN);
 	}
@@ -107,6 +121,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 
 	@Override protected void customServerAiStep(ServerLevel level){
 		super.customServerAiStep(level);if(!isAlive())return;
+		if(!clods.isEmpty())fly(level);
 		if(!bound)bind(blockPosition(),getYRot());
 		switch(move()){
 			case SerpentRules.DORMANT->dormant(level);
@@ -191,6 +206,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			case SerpentRules.DIVE->dive(level);
 			case SerpentRules.SUBMERGED->submerged(level,target);
 			case SerpentRules.BURST->burst(level);
+			case SerpentRules.TAIL_SLAM->slam(level,target);
 			default->watch(level,target);
 		}
 	}
@@ -216,7 +232,8 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		if(left>0)left--;
 		int pick=-1;
 		if(left<=0){
-			pick=SerpentRules.choose(d,random.nextDouble(),level.getGameTime()-lastGrab>=SerpentRules.CONSTRICT_REST);
+			long now=level.getGameTime();
+			pick=SerpentRules.choose(d,random.nextDouble(),now-lastGrab>=SerpentRules.CONSTRICT_REST,now-lastSlam>=SerpentRules.TAIL_REST);
 			// A long chase ends in a lunge from further out.
 			if(pick<0 && chased>=60 && d<=SerpentRules.LUNGE_REACH+5)pick=SerpentRules.LUNGE;
 		}
@@ -224,6 +241,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			chased=0;aim=yawTo(target.position());
 			switch(pick){
 				case SerpentRules.STRIKE->{flurry=SerpentRules.flurry(random.nextDouble(),dived);bites=0;strikeAt(SerpentRules.STRIKE_TELL);}
+				case SerpentRules.TAIL_SLAM->{lastSlam=level.getGameTime();pose(SerpentRules.TAIL_SLAM,0,SerpentRules.TAIL_TELL);Feels.sound(level,position().add(0,1,0),"aura_serpent_hiss",1.3F,.7F);}
 				case SerpentRules.LUNGE->{struck.clear();pose(SerpentRules.LUNGE,0,SerpentRules.LUNGE_TELL);Feels.sound(level,mouth(),"aura_serpent_hiss",1.2F,1.3F);}
 				default->{lastGrab=level.getGameTime();pose(SerpentRules.CONSTRICT,0,SerpentRules.CONSTRICT_TELL);Feels.sound(level,position().add(0,1,0),"aura_serpent_constrict",1.2F,1.1F);}
 			}
@@ -262,6 +280,107 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		for(var p:prey(level))if(!struck.contains(p.getUUID()) && reaches(SerpentRules.LUNGE,p)){struck.add(p.getUUID());hit(level,p,SerpentRules.LUNGE_DAMAGE,.9);}
 		if(el>=SerpentRules.LUNGE_TELL+SerpentRules.LUNGE_TICKS)spent(SerpentRules.LUNGE_RECOVER);
 	}
+
+	/**
+	 * The tail slam. Through the tell it tracks its prey, locking its aim for the last three ticks while the tail comes over; then the
+	 * tail comes down {@link SerpentRules#SLAM_AHEAD} in front of it, jarring anyone right there, and the ground it struck is flung
+	 * along the aim in a fan.
+	 */
+	private void slam(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<=tell-3 && target!=null)aim=yawTo(target.position());
+		face(aim);setDeltaMovement(Vec3.ZERO);
+		if(el<tell){
+			if(el%2==0)level.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM,getX(),getY()+3,getZ(),3,1.5,1,1.5,0);
+			return;
+		}
+		if(el==tell){
+			var down=position().add(ahead(aim).scale(SerpentRules.SLAM_AHEAD));
+			var ground=ground(level,down);
+			Feels.sound(level,down,"aura_serpent_slam",1.8F,.9F+random.nextFloat()*.15F);
+			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground),down.x,down.y+.2,down.z,60,1.4,.2,1.4,.25);
+			level.sendParticles(ParticleTypes.EXPLOSION,down.x,down.y+.4,down.z,1,0,0,0,0);
+			for(var p:prey(level))if(p.position().distanceToSqr(down)<=SerpentRules.SHOCK_RADIUS*SerpentRules.SHOCK_RADIUS
+				&& GuardianBite.land(level,this,p,(float)SerpentRules.SHOCK_DAMAGE,SerpentRules.SLAM_PIERCE)){
+				p.push(0,.45,0);p.needsSync=true;
+			}
+			pelted.clear();
+			for(int i=0;i<SerpentRules.DEBRIS;i++){
+				float yaw=aim+(float)((i-(SerpentRules.DEBRIS-1)/2.0)*SerpentRules.DEBRIS_FAN);
+				var from=down.add((random.nextDouble()-.5)*.8,SerpentRules.DEBRIS_FROM,(random.nextDouble()-.5)*.8);
+				// Each clod is torn from the ground under where it starts: a slam on moss throws moss, one on stone throws stone.
+				throwClod(level,from,ahead(yaw).scale(SerpentRules.DEBRIS_SPEED).add(0,SerpentRules.DEBRIS_LIFT,0),ground(level,from));
+			}
+		}
+		if(el>=tell+3)spent(SerpentRules.TAIL_RECOVER);
+	}
+
+	/** The solid block under {@code at}, looking a few blocks down; moss if there is none fit to throw. */
+	private BlockState ground(ServerLevel level,Vec3 at){
+		var pos=BlockPos.containing(at.x,at.y-.6,at.z);
+		for(int i=0;i<4;i++,pos=pos.below()){
+			var state=level.getBlockState(pos);
+			if(state.isAir() || !state.getFluidState().isEmpty())continue;
+			if(state.isCollisionShapeFullBlock(level,pos) && !state.hasBlockEntity())return state;
+		}
+		return Blocks.MOSS_BLOCK.defaultBlockState();
+	}
+
+	private static final float CLOD=.8F;
+	private void throwClod(ServerLevel level,Vec3 from,Vec3 vel,BlockState state){
+		var shown=EntityTypes.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
+		if(shown==null)return;
+		var spin=new Quaternionf().rotateXYZ(random.nextFloat()*6.28F,random.nextFloat()*6.28F,random.nextFloat()*6.28F);
+		shown.snapTo(from.x,from.y,from.z);shown.setBlockState(state);shown.setTransformation(clod(spin));shown.setPosRotInterpolationDuration(1);
+		dev.wildercord.cast.BlockFx.fresh(shown);
+		level.addFreshEntity(shown);
+		clods.add(new Clod(shown,state,from,vel,spin));
+	}
+	/** A clod's shape, turned by {@code spin} round its own centre. */
+	private static com.mojang.math.Transformation clod(Quaternionf spin){
+		var centre=spin.transform(new Vector3f(-CLOD/2,-CLOD/2,-CLOD/2));
+		return new com.mojang.math.Transformation(centre,new Quaternionf(spin),new Vector3f(CLOD,CLOD,CLOD),new Quaternionf());
+	}
+
+	/** Every clod in flight moves on, tumbling, and breaks on the first player, wall or water in its way. */
+	private void fly(ServerLevel level){
+		var players=prey(level);
+		for(var it=clods.iterator();it.hasNext();){
+			var c=it.next();
+			c.age++;c.vel=c.vel.add(0,-SerpentRules.DEBRIS_GRAVITY,0);
+			var next=c.at.add(c.vel);
+			boolean done=c.age>=SerpentRules.DEBRIS_LIFE || c.shown.isRemoved();
+			if(!done)for(var p:players){
+				var box=p.getBoundingBox().inflate(CLOD/2);
+				if(!box.contains(next) && box.clip(c.at,next).isEmpty())continue;
+				int hits=pelted.getOrDefault(p.getUUID(),0);
+				if(hits>=SerpentRules.DEBRIS_HITS)continue;
+				if(GuardianBite.land(level,this,p,(float)SerpentRules.DEBRIS_DAMAGE,SerpentRules.SLAM_PIERCE)){
+					pelted.put(p.getUUID(),hits+1);
+					var push=c.vel.multiply(1,0,1).normalize();p.knockback(.6,-push.x,-push.z,level.damageSources().mobAttack(this),0);p.needsSync=true;
+				}
+				next=p.position().add(0,p.getBbHeight()/2,0);done=true;break;
+			}
+			if(!done){
+				var pos=BlockPos.containing(next);var state=level.getBlockState(pos);
+				if(!state.getFluidState().isEmpty()){splash(level,next,6);done=true;}
+				else if(!state.getCollisionShape(level,pos).isEmpty())done=true;
+			}
+			c.at=next;
+			if(done){shatter(level,c);it.remove();continue;}
+			c.shown.setPos(next.x,next.y,next.z);
+			if(c.age%3==0){
+				c.spin.rotateXYZ(.9F,.5F,.3F);
+				c.shown.setTransformationInterpolationDelay(0);c.shown.setTransformationInterpolationDuration(3);c.shown.setTransformation(clod(c.spin));
+			}
+		}
+	}
+	private void shatter(ServerLevel level,Clod c){
+		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,c.state),c.at.x,c.at.y,c.at.z,16,.3,.3,.3,.15);
+		Feels.sound(level,c.at,"aura_serpent_debris",1.1F,.85F+random.nextFloat()*.3F);
+		c.shown.discard();
+	}
+	private void dropClods(){for(var c:clods)c.shown.discard();clods.clear();}
 
 	/** Its coils swing open, and close on whoever is nearest in front of it. */
 	private void constrict(ServerLevel level){
@@ -450,7 +569,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
-		letGo(false);
+		letGo(false);dropClods();
 		if(level() instanceof ServerLevel server){Feels.sound(server,position().add(0,2,0),"aura_serpent_death",1.6F,1);bar.removeAllPlayers();}
 		super.die(source);
 	}
@@ -459,7 +578,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		super.actuallyHurt(level,source,damage);
 		if(random.nextInt(3)==0)Feels.sound(level,position().add(0,2,0),"aura_serpent_hurt",1,.9F+random.nextFloat()*.2F);
 	}
-	@Override public void remove(RemovalReason reason){caught=null;bar.removeAllPlayers();super.remove(reason);}
+	@Override public void remove(RemovalReason reason){caught=null;dropClods();bar.removeAllPlayers();super.remove(reason);}
 	@Override public void startSeenByPlayer(ServerPlayer player){super.startSeenByPlayer(player);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 

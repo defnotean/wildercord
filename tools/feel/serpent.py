@@ -116,6 +116,26 @@ def burst(v, rng):
     return sa.finish(sa.reverb(sa.highpass(x, 40), .6, .22, damp=5000), 'effect')
 
 
+def slam(v, rng):
+    """Its tail brought down on the island: a deep crack through the ground and the earth torn up and thrown."""
+    s = 1.4
+    crack = sa.thump(70, 30, .7, .1, drive=2.4, knock=.8)
+    snap = sa.norm(sa.bandpass(sa.noise(.25, rng), 600, 3200)) * sa.decay(.25, .04, .001)
+    rubble = sa.norm(sa.bandpass(sa.noise(1.0, rng), 300, 2600)) * sa.decay(1.0, .35, .01)
+    whoosh = sa.moving_band(.5, ((0, 900), (.5, 2400)), .6, rng) * sa.swell(.5, .4, .05)
+    x = sa.mix(.5 * whoosh, (.4, .9 * crack), (.4, .7 * snap), (.45, .55 * rubble))
+    return sa.finish(sa.reverb(sa.highpass(x, 30), .7, .28, damp=4000), 'effect')
+
+
+def debris(v, rng):
+    """A clod of the island hitting home: a dull knock and a spill of grit."""
+    knock = sa.norm(sa.bandpass(sa.thump(420, 200, .25, .05, drive=2.2, knock=.9), 260, 2400))
+    grit = sa.norm(sa.bandpass(sa.noise(.45, rng), 700, 4200)) * sa.decay(.45, .12, .004)
+    x = sa.mix(.8 * knock, (.01, .8 * grit))
+    return sa.finish(sa.reverb(sa.highpass(x, 45), .4, .15, damp=5000), 'effect')
+
+
 SERPENT_EVENTS = [event('aura_serpent_' + name, build, role='effect', subtitle='serpent.' + name) for name, build in (
     ('hiss', hiss), ('wake', wake), ('uncoil', uncoil), ('challenge', challenge), ('hurt', hurt), ('death', death),
-    ('strike', strike), ('lunge', lunge), ('constrict', constrict), ('sidestep', sidestep), ('dive', dive), ('burst', burst))]
+    ('strike', strike), ('lunge', lunge), ('constrict', constrict), ('sidestep', sidestep), ('dive', dive), ('burst', burst),
+    ('slam', slam), ('debris', debris))]

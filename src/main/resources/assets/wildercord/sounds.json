@@ -5668,6 +5668,12 @@
       "wildercord:kit/aura/aura_serpent_death"
     ]
   },
+  "aura_serpent_debris": {
+    "subtitle": "subtitles.wildercord.kit.serpent.debris",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_debris"
+    ]
+  },
   "aura_serpent_dive": {
     "subtitle": "subtitles.wildercord.kit.serpent.dive",
     "sounds": [
@@ -5696,6 +5702,12 @@
     "subtitle": "subtitles.wildercord.kit.serpent.sidestep",
     "sounds": [
       "wildercord:kit/aura/aura_serpent_sidestep"
+    ]
+  },
+  "aura_serpent_slam": {
+    "subtitle": "subtitles.wildercord.kit.serpent.slam",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_slam"
     ]
   },
   "aura_serpent_strike": {

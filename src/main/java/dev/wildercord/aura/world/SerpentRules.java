@@ -34,6 +34,8 @@ public final class SerpentRules {
 	public static final int SUBMERGED = 11;
 	/** Bursting out of the water at someone. */
 	public static final int BURST = 12;
+	/** Its tail comes over and down in front of it, tearing up the ground and flinging it at its prey. */
+	public static final int TAIL_SLAM = 13;
 
 	public static final double HEALTH = 360, ARMOUR = 10, SPEED = 0.3;
 
@@ -88,6 +90,25 @@ public final class SerpentRules {
 	public static final double RING = 11.25, DEPTH = 4;
 	public static final double CIRCLE_SPEED = 0.35;
 
+	/** The tail slam: its tell, its rest after, and the least time between two. It is thrown from up to {@link #SLAM_REACH} away. */
+	public static final int TAIL_TELL = 8, TAIL_RECOVER = 20, TAIL_REST = 100;
+	public static final double SLAM_REACH = 13;
+	/** Where the tail comes down, ahead of its feet, and the shock there: everyone within {@link #SHOCK_RADIUS} of it is hit. */
+	public static final double SLAM_AHEAD = 2.2, SHOCK_RADIUS = 2.8, SHOCK_DAMAGE = 10;
+	/** Clods of the island flung in a fan, {@link #DEBRIS_FAN} degrees apart, each thrown from {@link #DEBRIS_FROM} above the ground. */
+	public static final int DEBRIS = 5, DEBRIS_LIFE = 30;
+	public static final double DEBRIS_FAN = 12, DEBRIS_FROM = 0.5;
+	/** How fast a clod flies (blocks a tick), its upward throw, and the pull of gravity on it each tick. */
+	public static final double DEBRIS_SPEED = 0.85, DEBRIS_LIFT = 0.32, DEBRIS_GRAVITY = 0.04;
+	/** A clod's blow, and the most of them that land on one player in a slam. */
+	public static final double DEBRIS_DAMAGE = 12;
+	public static final int DEBRIS_HITS = 2;
+	/**
+	 * The share of what defences would stop that the slam goes through anyway. Thrown earth does not care about enchantments: more
+	 * than its fangs, so a clod still hurts through full netherite and Protection.
+	 */
+	public static final double SLAM_PIERCE = 0.65;
+
 	/** The bar's name for what it is doing. */
 	public static String key(int move) {
 		return switch (move) {
@@ -100,15 +121,26 @@ public final class SerpentRules {
 			case DIVE -> "dive";
 			case SUBMERGED -> "submerged";
 			case BURST -> "burst";
+			case TAIL_SLAM -> "tail_slam";
 			default -> "watch";
 		};
 	}
 
-	/** Its choice of blow at {@code distance} from its prey; -1 to keep closing. {@code roll} is 0-1. */
-	public static int choose(double distance, double roll, boolean mayConstrict) {
+	/**
+	 * Its choice of blow at {@code distance} from its prey; -1 to keep closing. {@code roll} is 0-1. Up close it bites or grabs; at a
+	 * lunge's reach it lunges, or slams its tail; beyond that, while the slam is ready, it flings the ground at anyone keeping away.
+	 */
+	public static int choose(double distance, double roll, boolean mayConstrict, boolean maySlam) {
 		if (distance <= CLOSE) return mayConstrict && roll < 0.28 ? CONSTRICT : STRIKE;
-		if (distance <= LUNGE_REACH + 2.5) return LUNGE;
+		if (distance <= LUNGE_REACH + 2.5) return maySlam && roll < 0.4 ? TAIL_SLAM : LUNGE;
+		if (distance <= SLAM_REACH && maySlam) return TAIL_SLAM;
 		return -1;
+	}
+
+	/** A clod's height above where it was thrown once it has flown {@code forward} blocks: a low arc, chest high on a player. */
+	public static double rise(double forward) {
+		double t = forward / DEBRIS_SPEED;
+		return DEBRIS_LIFT * t - DEBRIS_GRAVITY * t * (t + 1) / 2;
 	}
 
 	/** Whether a blow reaches someone {@code forward} ahead, {@code side} across and {@code height} above its feet, in its locked aim. */

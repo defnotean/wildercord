@@ -783,6 +783,9 @@
     "aura_serpent_death": {
       "part": "aura"
     },
+    "aura_serpent_debris": {
+      "part": "aura"
+    },
     "aura_serpent_dive": {
       "part": "aura"
     },
@@ -796,6 +799,9 @@
       "part": "aura"
     },
     "aura_serpent_sidestep": {
+      "part": "aura"
+    },
+    "aura_serpent_slam": {
       "part": "aura"
     },
     "aura_serpent_strike": {

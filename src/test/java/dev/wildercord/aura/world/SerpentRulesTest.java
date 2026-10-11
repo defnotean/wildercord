@@ -36,11 +36,15 @@ class SerpentRulesTest {
 		assertTrue(SerpentRules.RETURN_TICKS<SerpentRules.RESET_TICKS);
 	}
 	@Test void itBitesUpCloseLungesFromFurtherOutAndClosesFromBeyond(){
-		assertEquals(SerpentRules.STRIKE,SerpentRules.choose(3,.9,true));
-		assertEquals(SerpentRules.CONSTRICT,SerpentRules.choose(3,.1,true));
-		assertEquals(SerpentRules.STRIKE,SerpentRules.choose(3,.1,false));
-		assertEquals(SerpentRules.LUNGE,SerpentRules.choose(7,.5,true));
-		assertEquals(-1,SerpentRules.choose(12,.5,true));
+		assertEquals(SerpentRules.STRIKE,SerpentRules.choose(3,.9,true,true));
+		assertEquals(SerpentRules.CONSTRICT,SerpentRules.choose(3,.1,true,true));
+		assertEquals(SerpentRules.STRIKE,SerpentRules.choose(3,.1,false,true));
+		assertEquals(SerpentRules.LUNGE,SerpentRules.choose(7,.5,true,true));
+		assertEquals(SerpentRules.TAIL_SLAM,SerpentRules.choose(7,.2,true,true));
+		assertEquals(SerpentRules.LUNGE,SerpentRules.choose(7,.2,true,false));
+		assertEquals(SerpentRules.TAIL_SLAM,SerpentRules.choose(12,.5,true,true));
+		assertEquals(-1,SerpentRules.choose(12,.5,true,false));
+		assertEquals(-1,SerpentRules.choose(16,.5,true,true));
 	}
 	@Test void aBiteReachesAheadAndNotBehindOrWide(){
 		assertTrue(SerpentRules.hits(SerpentRules.STRIKE,4,0,1));
@@ -81,5 +85,22 @@ class SerpentRulesTest {
 		assertEquals(10+10*.45,GuardianBite.pierced(20,10,.45),1e-4);
 		assertEquals(10,GuardianBite.pierced(20,10,0),1e-6);
 		assertEquals(10,GuardianBite.pierce(20,10),1e-6);
+	}
+	@Test void theSlamsClodsFlyChestHighAcrossItsReach(){
+		for(double d=SerpentRules.SLAM_AHEAD;d<=SerpentRules.SLAM_REACH-SerpentRules.SLAM_AHEAD;d+=.5){
+			double h=SerpentRules.DEBRIS_FROM+SerpentRules.rise(d);
+			assertTrue(h>0.3 && h<1.8,"a clod is "+h+" up after "+d+" blocks");
+		}
+		assertTrue((SerpentRules.SLAM_REACH)/SerpentRules.DEBRIS_SPEED<SerpentRules.DEBRIS_LIFE);
+		assertEquals("tail_slam",SerpentRules.key(SerpentRules.TAIL_SLAM));
+	}
+	@Test void theSlamGetsThroughFullNetheriteProtectionFour(){
+		// Netherite (20 armour, 12 toughness) and Protection IV on all four pieces, the way vanilla works them out.
+		double dmg=SerpentRules.DEBRIS_DAMAGE;
+		double armour=Math.min(20,Math.max(20*.2,20-dmg/(2+12/4.0)))/25;
+		double after=dmg*(1-armour)*(1-Math.min(20,16)/25.0);
+		double through=GuardianBite.pierced((float)dmg,(float)after,SerpentRules.SLAM_PIERCE);
+		assertTrue(through>=dmg*.6,"only "+through+" of "+dmg+" gets through");
+		assertTrue(SerpentRules.SLAM_PIERCE>SerpentRules.PIERCE);
 	}
 }
