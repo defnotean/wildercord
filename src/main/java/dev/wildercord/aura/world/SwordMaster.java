@@ -1571,9 +1571,16 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		return true;
 	}
 
+	/** A Master's blade goes through {@link MastersRules#PIERCE} of what armour, Protection and Resistance would stop. */
 	@Override
 	public float projected(LivingEntity target, double damage) {
-		return started && participant(target) ? super.projected(target, damage) : 0;
+		if (!started || !participant(target)) return 0;
+		cutting++;
+		try {
+			return super.projected(target, damage);
+		} finally {
+			cutting--;
+		}
 	}
 
 	// Spellbane: no push, pull, launch, swap, flame or frost of a spell moves or marks a Master.
@@ -1643,6 +1650,14 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	@Override protected Predicate<Entity> mayCut() { return entity -> entity instanceof LivingEntity living && participant(living); }
 	@Override public boolean shouldBeSaved() { return false; }
 	@Override public boolean removeWhenFarAway(double distance) { return false; }
+
+	/** How deep the server thread is inside a Master's cut landing (its blade goes partly through armour; see {@link #pierce}). */
+	private static int cutting;
+
+	/** What a defence leaves of a hit ({@code after} of {@code before}), with a landing Master's cut going partly through it. */
+	public static float pierce(float before, float after) {
+		return cutting > 0 ? MastersRules.pierced(before, after) : after;
+	}
 
 	@Override
 	public void die(DamageSource source) {

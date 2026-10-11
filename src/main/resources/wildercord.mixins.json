@@ -46,6 +46,7 @@
 		"ReleasedArtOwnerLevelMixin",
 		"AuraSelectionMixin",
 		"LivingEntityAuraMixin",
+		"MasterPierceMixin",
 		"EntityAuraDeflectMixin",
 		"SwordStringsSeenMixin",
 		"PiercingWeaponStringsMixin",

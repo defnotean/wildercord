@@ -101,4 +101,12 @@ class MastersRulesTest {
 		assertFalse(MastersRules.canAdmitEncounter(9, false));
 	}
 
+	@Test
+	void aMastersCutGoesThroughPartOfWhatDefencesStop() {
+		// Netherite under Protection IV leaves about a sixth of a 30 cut; the blade still lands about half of it.
+		assertEquals(30, MastersRules.pierced(30, 30), 1e-5);
+		assertEquals(4.75F + 25.25F * (float) MastersRules.PIERCE, MastersRules.pierced(30, 4.75F), 1e-4);
+		assertTrue(MastersRules.pierced(30, 0) < 30, "defences still count for something");
+		assertEquals(40, MastersRules.pierced(30, 40), 1e-5);
+	}
 }

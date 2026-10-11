@@ -23,6 +23,13 @@ public final class MastersRules {
 	public static final double AURA_MAX = 100, ATTACK_COST = 12, GUARD_COST = 12, REDIRECT_COST = 20;
 	public static final double TECHNIQUE_DAMAGE = 30;
 	public static final int BREATH_TICKS = 24, REDIRECT_REST = 100, DODGE_TICKS = 4;
+	/** The share of what armour, Protection and Resistance would take off a Master's cut that its blade goes through anyway. */
+	public static final double PIERCE = 0.45;
+
+	/** A cut of {@code before} that defences would bring to {@code after}, once a Master's blade has gone through its share of them. */
+	public static float pierced(float before, float after) {
+		return after >= before ? after : (float) (after + (before - after) * PIERCE);
+	}
 
 	/**
 	 * Evasion: a Master slips any challenger's blow or shot while it has focus, and each slip spends one. Focus is deep and
