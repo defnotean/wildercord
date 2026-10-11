@@ -41,7 +41,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	/** The current move's tell in ticks, so the client knows when the blow lands. */
 	private static final EntityDataAccessor<Integer> TELL=SynchedEntityData.defineId(RootcoilSerpent.class,EntityDataSerializers.INT);
 	/** Coiled round the trunk it spans the coils; on the ground, a reared head over a heap of body. */
-	private static final EntityDimensions COILED=EntityDimensions.scalable(6.6F,8F),REARED=EntityDimensions.scalable(3F,3F).withEyeHeight(2.6F);
+	private static final EntityDimensions COILED=EntityDimensions.scalable(9.6F,8F),REARED=EntityDimensions.scalable(3.4F,4.8F).withEyeHeight(4.3F);
 	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.GREEN,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private int left,quiet;
@@ -401,7 +401,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		face(aim);setDeltaMovement(Vec3.ZERO);
 		var p=caught;
 		if(p==null || !p.isAlive() || p.isRemoved() || p.level()!=level || p.isCreative() || p.isSpectator()){letGo(false);spent(SerpentRules.CONSTRICT_RECOVER);return;}
-		var grip=position().add(ahead(aim).scale(1.7)).add(0,.6,0);
+		var grip=position().add(ahead(aim).scale(SerpentSpine.GRIP)).add(0,.6,0);
 		if(p.position().distanceTo(grip)>0.6)p.teleportTo(grip.x,grip.y,grip.z);
 		p.setDeltaMovement(Vec3.ZERO);p.needsSync=true;
 		var in=p.getLastClientInput();boolean pressing=in.jump() || in.left() || in.right();
@@ -539,7 +539,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private Vec3 ahead(float yaw){double[] f=SerpentSpine.toWorld(new double[]{0,0,1},yaw);return new Vec3(f[0],0,f[2]);}
 	private float yawTo(Vec3 at){return (float)Math.toDegrees(Math.atan2(-(at.x-getX()),at.z-getZ()));}
 	private void face(float yaw){setYRot(yaw);yBodyRot=yaw;yHeadRot=yaw;}
-	private Vec3 mouth(){return position().add(ahead(getYRot()).scale(1.2)).add(0,2.5,0);}
+	private Vec3 mouth(){return position().add(ahead(getYRot()).scale(2.2)).add(0,4.0,0);}
 
 	@Override public boolean hurtServer(ServerLevel level,DamageSource source,float damage){
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING))return false;

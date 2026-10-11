@@ -11,6 +11,8 @@ import net.minecraft.util.Mth;
  * vanilla cube layout from its corner of the skin (laid out by {@code tools/serpent_art.py}); sizes are in sixteenths.
  */
 final class SerpentHead {
+	/** Blocks to a sixteenth of the head: nearly twice a block model's, so its skull is wider than a player's shoulders. */
+	static final float SCALE=1.8F/16;
 	private final float[] o,f,u,s;
 	private final float jaw;
 
@@ -50,7 +52,7 @@ final class SerpentHead {
 		for(int i=0;i<8;i++){
 			float lx=x+((i&1)==0?-w:w)/2,ly=y+((i&2)==0?-h:h)/2,lz=z+((i&4)==0?-d:d)/2;
 			float ry=ly-hy,rz=lz-hz;
-			c[i]=at(lx/16,(hy+ry*cs-rz*sn)/16,(hz+ry*sn+rz*cs)/16);
+			c[i]=at(lx*SCALE,(hy+ry*cs-rz*sn)*SCALE,(hz+ry*sn+rz*cs)*SCALE);
 		}
 		float[] up=dir(0,cs,sn),fw=dir(0,-sn,cs),side=dir(1,0,0);
 		quad(pose,buffer,overlay,light,c[2],c[3],c[7],c[6],up,tu+d,tv,w,d);              // top

@@ -146,8 +146,8 @@ public final class SerpentRules {
 	/** Whether a blow reaches someone {@code forward} ahead, {@code side} across and {@code height} above its feet, in its locked aim. */
 	public static boolean hits(int move, double forward, double side, double height) {
 		return switch (move) {
-			case STRIKE -> forward > -0.5 && forward <= 5.2 && Math.abs(side) <= 1.4 && height > -1.5 && height < 3.8;
-			case LUNGE, BURST -> forward > -1.5 && forward <= 2.8 && Math.abs(side) <= 1.8 && height > -1.5 && height < 3.5;
+			case STRIKE -> forward > -0.5 && forward <= 5.6 && Math.abs(side) <= 1.5 && height > -1.5 && height < 4.5;
+			case LUNGE, BURST -> forward > -1.5 && forward <= 3.4 && Math.abs(side) <= 2.0 && height > -1.5 && height < 3.5;
 			case CONSTRICT -> forward > -0.5 && forward <= 3.8 && Math.abs(side) <= 2.0 && height > -1.5 && height < 3.0;
 			default -> false;
 		};

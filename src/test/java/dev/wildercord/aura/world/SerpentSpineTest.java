@@ -13,6 +13,62 @@ class SerpentSpineTest {
 		}
 	}
 
+	private static void spaced(double[][] joints,int count){
+		assertEquals(count,joints.length);
+		for(int i=1;i<joints.length;i++){
+			double d=SerpentSpine.distance(joints[i-1],joints[i]);
+			assertTrue(d<=SerpentSpine.SEG+1e-6 && d>SerpentSpine.SEG*.6,"joint "+i+" is "+d+" from the last");
+		}
+	}
+	private static final int[] MOVES={SerpentRules.WATCH,SerpentRules.STRIKE,SerpentRules.LUNGE,SerpentRules.CONSTRICT,SerpentRules.SQUEEZE,
+		SerpentRules.SIDESTEP,SerpentRules.RECOVER,SerpentRules.DIVE,SerpentRules.SUBMERGED,SerpentRules.BURST,SerpentRules.TAIL_SLAM};
+
+	@Test void itsBodyIsFarThickerThanAPlayerAndItsCoilClearsTheTrunk(){
+		assertTrue(SerpentSpine.GIRTH*2>1.5);
+		assertTrue(SerpentSpine.COIL_TOP_R-SerpentSpine.GIRTH*1.15>=1.9);
+	}
+	@Test void everyPoseKeepsItsNeckItsOwnLengthAndItsHeadOffTheGround(){
+		double rest=SerpentSpine.length(SerpentSpine.dense(SerpentSpine.FIGHT_NECK));
+		for(int move:MOVES)for(float el=0;el<=30;el+=1){
+			var pose=SerpentSpine.pose(move,el,6);
+			assertEquals(4,pose.neck().length);
+			assertArrayEquals(SerpentSpine.BASE,pose.neck()[3],1e-9);
+			double l=SerpentSpine.length(SerpentSpine.dense(pose.neck()));
+			assertTrue(l>rest-1.2 && l<rest+1.2,SerpentRules.key(move)+" stretches its neck to "+l);
+			assertTrue(pose.neck()[0][1]>=.6,SerpentRules.key(move)+" puts its head in the ground");
+			assertEquals(SerpentSpine.neckJoints(),SerpentSpine.neck(pose.neck()).length);
+		}
+	}
+	@Test void aBiteThrowsItsHeadForwardFromWhereItWasDrawn(){
+		var drawn=SerpentSpine.pose(SerpentRules.STRIKE,0,4);
+		var bite=SerpentSpine.pose(SerpentRules.STRIKE,4,4);
+		assertTrue(bite.neck()[0][2]-drawn.neck()[0][2]>=3.5);
+		assertTrue(bite.pitch()>drawn.pitch() && drawn.jaw()>bite.jaw());
+		assertTrue(SerpentRules.hits(SerpentRules.STRIKE,bite.neck()[0][2],0,bite.neck()[0][1]));
+	}
+	@Test void theSqueezeWindsRoundItsPrey(){
+		double[][] wrap=SerpentSpine.wrap();
+		spaced(wrap,SerpentSpine.WRAP+1);
+		assertArrayEquals(SerpentSpine.BASE,wrap[0],1e-9);
+		int round=0;
+		for(int i=1;i<wrap.length;i++)if(Math.abs(Math.hypot(wrap[i][0],wrap[i][2]-SerpentSpine.GRIP)-1.45)<.3)round++;
+		assertTrue(round>=wrap.length/2,"only "+round+" joints wind round");
+	}
+	@Test void theSlamLiftsTheTailHighThenBringsItDownInFront(){
+		int count=SerpentSpine.JOINTS-SerpentSpine.neckJoints()+1;
+		for(float el=0;el<=SerpentRules.TAIL_TELL;el+=.5F){
+			double[][] body=SerpentSpine.slam(el,SerpentRules.TAIL_TELL);
+			spaced(body,count);
+			for(double[] j:body)assertTrue(j[1]>-.01,"the slam's body goes into the ground at "+el);
+		}
+		double top=0;
+		for(double[] j:SerpentSpine.slam(SerpentRules.TAIL_TELL*.65F,SerpentRules.TAIL_TELL))top=Math.max(top,j[1]);
+		assertTrue(top>=5,"the lifted tail only reaches "+top);
+		boolean struck=false;
+		for(double[] j:SerpentSpine.slam(SerpentRules.TAIL_TELL,SerpentRules.TAIL_TELL))
+			struck|=j[1]<1 && Math.abs(j[0])<2 && Math.abs(j[2]-SerpentRules.SLAM_AHEAD)<SerpentRules.SHOCK_RADIUS;
+		assertTrue(struck,"the tail never comes down where the shock lands");
+	}
 	@Test void theBodyIsThirtyBlocksAndSwellsBehindTheNeck(){
 		assertEquals(30,SerpentSpine.LENGTH,1e-9);
 		assertTrue(SerpentSpine.radius(SerpentSpine.JOINTS/3)>SerpentSpine.radius(0));

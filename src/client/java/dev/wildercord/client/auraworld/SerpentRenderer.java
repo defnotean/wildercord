@@ -40,12 +40,14 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 	private static final float SETTLE=12.5F;
 	/** How fast an unsupported joint drops, in blocks a tick. */
 	private static final double FALL=0.5;
+	/** How fast the body eases toward each pose, per tick: four fifths of the way in one, so a bite still snaps. */
+	private static final double EASE=1.6;
 
 	/** Each serpent's trailing body, in world positions; kept between frames since the trail has memory. */
 	private final Map<RootcoilSerpent,Trail> trails=new WeakHashMap<>();
-	private static final class Trail{double[][] joints;double time=Double.NaN;}
+	private static final class Trail{double[][] joints,neck;double time=Double.NaN,pitch=Double.NaN,jaw;}
 
-	public SerpentRenderer(EntityRendererProvider.Context context){super(context);shadowRadius=1.6F;}
+	public SerpentRenderer(EntityRendererProvider.Context context){super(context);shadowRadius=2.2F;}
 
 	@Override public SerpentRenderState createRenderState(){return new SerpentRenderState();}
 	@Override protected AABB getBoundingBoxForCulling(RootcoilSerpent serpent,float partial){
@@ -85,12 +87,12 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 			double x=world[0][0]-world[1][0],y=world[0][1]-world[1][1],z=world[0][2]-world[1][2],l=Math.max(1e-6,Math.sqrt(x*x+y*y+z*z));
 			state.headX=(float)(x/l);state.headY=(float)(y/l);state.headZ=(float)(z/l);
 		}else{
-			float yaw=(float)Math.toRadians(serpent.getYHeadRot()),pitch=(float)Math.toRadians(serpent.getXRot(partial));
+			float yaw=(float)Math.toRadians(serpent.getYHeadRot()),pitch=(float)Math.toRadians(trail.pitch);
 			state.headX=-Mth.sin(yaw)*Mth.cos(pitch);state.headY=-Mth.sin(pitch);state.headZ=Mth.cos(yaw)*Mth.cos(pitch);
 		}
 		// The jaw parts as it wakes and hisses at the end of its uncoil, and hangs a little open while it hunts.
 		state.jaw=move==SerpentRules.UNCOIL?Mth.clamp((elapsed-30)/8,0,1)*Mth.clamp((SerpentRules.UNCOIL_TICKS+4-elapsed)/6,0,1)
-			:SerpentRules.scripted(move)?0:.12F;
+			:SerpentRules.scripted(move)?0:(float)trail.jaw;
 		state.hurt=serpent.hurtTime>0 || serpent.deathTime>0;
 		state.move=move;
 	}
@@ -113,19 +115,30 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 		return out;
 	}
 
-	/** The awake body: the reared neck posed from its facing, weaving as it moves, and the rest trailing after it. */
+	/**
+	 * The awake body: the neck eased toward the pose of whatever it is doing, weaving as it moves, and the rest trailing after it;
+	 * wound round whoever it squeezes, or gathered up and slammed down in front of it.
+	 */
 	private static double[][] fight(RootcoilSerpent serpent,Trail trail,float partial,double time){
 		Level level=serpent.level();
 		float yaw=Mth.rotLerp(partial,serpent.yBodyRotO,serpent.yBodyRot);
 		double ex=Mth.lerp(partial,serpent.xo,serpent.getX()),ey=Mth.lerp(partial,serpent.yo,serpent.getY()),ez=Mth.lerp(partial,serpent.zo,serpent.getZ());
-		double[][] neck=SerpentSpine.fightNeck();
+		double dt=Double.isNaN(trail.time)?0:Mth.clamp(time-trail.time,0,2);trail.time=time;
+		int move=serpent.move(),tell=serpent.tell();float el=serpent.elapsed(partial);
+		var pose=SerpentSpine.pose(move,el,tell);
+		double ease=1-Math.exp(-EASE*dt);
+		if(trail.neck==null)trail.neck=copy(pose.neck());
+		else for(int k=0;k<trail.neck.length;k++)trail.neck[k]=SerpentSpine.blend(new double[][]{trail.neck[k]},new double[][]{pose.neck()[k]},ease)[0];
+		double look=Double.isNaN(pose.pitch())?serpent.getXRot(partial):pose.pitch();
+		trail.pitch=Double.isNaN(trail.pitch)?look:trail.pitch+(look-trail.pitch)*ease;
+		trail.jaw+=(pose.jaw()-trail.jaw)*Math.min(1,ease*1.5);
+		double[][] neck=SerpentSpine.neck(trail.neck);
 		double weave=Math.sin(serpent.walkAnimation.position(partial)*.6)*.45*Math.min(1,serpent.walkAnimation.speed(partial)*3);
 		double[][] joints=trail.joints;
 		for(int i=0;i<neck.length;i++){
 			double[] p=neck[i].clone();p[0]+=weave*i/(neck.length-1);
 			double[] w=SerpentSpine.toWorld(p,yaw);joints[i]=new double[]{w[0]+ex,w[1]+ey,w[2]+ez};
 		}
-		double dt=Double.isNaN(trail.time)?0:Mth.clamp(time-trail.time,0,2);trail.time=time;
 		for(int i=neck.length;i<joints.length;i++){
 			double[] lead=joints[i-1],cur=joints[i];
 			double dx=cur[0]-lead[0],dy=cur[1]-lead[1],dz=cur[2]-lead[2],l=Math.sqrt(dx*dx+dy*dy+dz*dz);
@@ -136,7 +149,19 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 			else y=y<floor+lie?floor+lie:Math.max(floor+lie,y-FALL*dt);
 			joints[i]=new double[]{x,y,z};
 		}
+		if(move==SerpentRules.SQUEEZE)shape(joints,neck.length-1,SerpentSpine.wrap(),yaw,ex,ey,ez,ease);
+		else if(move==SerpentRules.TAIL_SLAM)shape(joints,neck.length-1,SerpentSpine.slam(el,tell),yaw,ex,ey,ez,ease);
 		return joints;
+	}
+
+	/** Eases the joints from {@code start} on toward a shape in the body frame, whose first point is the joint at {@code start}. */
+	private static void shape(double[][] joints,int start,double[][] local,float yaw,double ex,double ey,double ez,double ease){
+		for(int j=1;j<local.length && start+j<joints.length;j++){
+			double[] w=SerpentSpine.toWorld(local[j],yaw),cur=joints[start+j];
+			// Nothing of it goes below the island it lies on.
+			double y=Math.max(ey+SerpentSpine.radius(start+j)*TALL,w[1]+ey);
+			joints[start+j]=new double[]{cur[0]+(w[0]+ex-cur[0])*ease,cur[1]+(y-cur[1])*ease,cur[2]+(w[2]+ez-cur[2])*ease};
+		}
 	}
 
 	/** The top of whatever holds a joint up, from a block above it to three below: ground, or the water's surface. */

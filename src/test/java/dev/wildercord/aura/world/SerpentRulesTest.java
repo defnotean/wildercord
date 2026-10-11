@@ -48,6 +48,7 @@ class SerpentRulesTest {
 	}
 	@Test void aBiteReachesAheadAndNotBehindOrWide(){
 		assertTrue(SerpentRules.hits(SerpentRules.STRIKE,4,0,1));
+		assertTrue(SerpentRules.hits(SerpentRules.STRIKE,5,0,3));
 		assertFalse(SerpentRules.hits(SerpentRules.STRIKE,6,0,1));
 		assertFalse(SerpentRules.hits(SerpentRules.STRIKE,3,2,1));
 		assertFalse(SerpentRules.hits(SerpentRules.STRIKE,-2,0,1));
