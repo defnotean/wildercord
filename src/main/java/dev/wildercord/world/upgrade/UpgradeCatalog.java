@@ -32,6 +32,7 @@ public final class UpgradeCatalog {
 		worldgen("wildercord:old_battlefield","Full 31x31 site carries a loot chest; old worlds get the bounded memorial adapter instead"),
 		worldgen("wildercord:sword_tomb","Full 41x55 underground tomb needs excavation, intent gates and loot; old worlds get the bounded duel ring instead"),
 		worldgen("wildercord:sleeping_blade","Full 19x19 site; old worlds get the bounded rest instead"),
+		worldgen("wildercord:serpent_grove","Excavated sinkhole and warded cavern 36 blocks deep with a water ring, a tree and its guardian; old worlds find it only in new chunks"),
 		worldgen("wildercord:belowkeeper_drainhouse","Cave feature in lush/dripstone caves; underground edits of unknown history"),
 		worldgen("wildercord:breathmark_site","Cave/fungal feature with an authentic mark entity; underground edits of unknown history"),
 		worldgen("wildercord:cinder_fern_patch","Plant patch; vegetation regrowth is not an upgrade"),

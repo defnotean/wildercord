@@ -642,14 +642,24 @@ public record WildercordConfig(
 	 * @param skyrendSlash      Skyrend Glaive: its slash's damage, times this
 	 * @param bulwarkGuardCost  Bulwark Maul: what the guard costs, times this
 	 * @param sashCapacity      Breath Sash: aura capacity, times this
+	 * @param guardians         whether guardian lairs generate in new chunks and their guardians wake (boons already earned are kept)
 	 */
 	public record AuraWorldSettings(boolean duelists, double duelistSpawnRate, int maxDuelists, boolean duelistCamps, boolean knights,
 			double knightSpawnRate, int maxKnightsNearby, boolean forgedGear, double lumenedgeGain, double skyrendSlash, double bulwarkGuardCost,
-			double sashCapacity, boolean trainingGrounds, double trainingGain, double trainingPractice, boolean battlefields, boolean swordTombs, boolean sleepingBlades, boolean auraBeasts, boolean tournaments) {
+			double sashCapacity, boolean trainingGrounds, double trainingGain, double trainingPractice, boolean battlefields, boolean swordTombs, boolean sleepingBlades, boolean auraBeasts, boolean tournaments, boolean guardians) {
 		public static final AuraWorldSettings DEFAULTS = new AuraWorldSettings(true, 1.0, 2, true, true, 1.0, 2, true,
 			dev.wildercord.aura.world.AuraWorldRules.LUMENEDGE_GAIN, dev.wildercord.aura.world.AuraWorldRules.SKYREND_SLASH,
 			dev.wildercord.aura.world.AuraWorldRules.BULWARK_GUARD_COST, dev.wildercord.aura.world.AuraWorldRules.SASH_CAPACITY, true,
-			dev.wildercord.aura.world.TrainingRules.GAIN, dev.wildercord.aura.world.TrainingRules.PRACTICE, true, true, true, true, true);
+			dev.wildercord.aura.world.TrainingRules.GAIN, dev.wildercord.aura.world.TrainingRules.PRACTICE, true, true, true, true, true, true);
+
+		/** Older callers retain the guardians' lairs at their default. */
+		public AuraWorldSettings(boolean duelists,double duelistSpawnRate,int maxDuelists,boolean duelistCamps,boolean knights,
+				double knightSpawnRate,int maxKnightsNearby,boolean forgedGear,double lumenedgeGain,double skyrendSlash,
+				double bulwarkGuardCost,double sashCapacity,boolean trainingGrounds,double trainingGain,double trainingPractice,
+				boolean battlefields,boolean swordTombs,boolean sleepingBlades,boolean auraBeasts,boolean tournaments){
+			this(duelists,duelistSpawnRate,maxDuelists,duelistCamps,knights,knightSpawnRate,maxKnightsNearby,forgedGear,lumenedgeGain,
+				skyrendSlash,bulwarkGuardCost,sashCapacity,trainingGrounds,trainingGain,trainingPractice,battlefields,swordTombs,sleepingBlades,auraBeasts,tournaments,true);
+		}
 
 		/** Older callers retain village tournaments at their default. */
 		public AuraWorldSettings(boolean duelists,double duelistSpawnRate,int maxDuelists,boolean duelistCamps,boolean knights,
@@ -932,7 +942,8 @@ public record WildercordConfig(
 				r.bool("aura_world", "sword_tombs", d.auraWorld.swordTombs()),
 				r.bool("aura_world", "sleeping_blades", d.auraWorld.sleepingBlades()),
 				r.bool("aura_world", "aura_beasts", d.auraWorld.auraBeasts()),
-				r.bool("aura_world", "tournaments", d.auraWorld.tournaments())));
+				r.bool("aura_world", "tournaments", d.auraWorld.tournaments()),
+				r.bool("aura_world", "guardians", d.auraWorld.guardians())));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -983,7 +994,7 @@ public record WildercordConfig(
 			"sparring", "spar_ring_radius", "spars_per_day", "spar_xp", "mentorship", "max_disciples", "disciple_gain", "master_share", "clashes",
 			"clash_carry", "experimental_stone_hinge"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
-			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity", "training_grounds", "training_gain", "training_practice", "battlefields", "sword_tombs", "sleeping_blades", "aura_beasts", "tournaments"));
+			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity", "training_grounds", "training_gain", "training_practice", "battlefields", "sword_tombs", "sleeping_blades", "aura_beasts", "tournaments", "guardians"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -1419,7 +1430,7 @@ public record WildercordConfig(
 			+ "scales how often and max_knights_nearby caps them round each player. forged_gear switches what the aura-forged weapons and the Breath Sash "
 			+ "do for aura: Lumenedge's aura from blows (lumenedge_gain), Skyrend Glaive's slash (skyrend_slash), Bulwark Maul's guard cost "
 			+ "(bulwark_guard_cost) and the sash's aura capacity (sash_capacity). training_grounds enables waterfall and summit breathing: "
-			+ "training_gain multiplies passive recovery; training_practice is experience per full breath within the shared lifetime practice allowance. battlefields enables new old-battlefield generation and memory discovery. sword_tombs enables new tomb generation, intent gates and keeper reliquary interactions. sleeping_blades enables new sleeping blade landmarks and their drawing/history interactions; acquired blades retain their bonded effects. aura_beasts enables highland animal spawning and aggressive behavior; existing animals and collected materials remain. tournaments enables village tournament creation and bouts; saved unclaimed prizes remain when re-enabled.");
+			+ "training_gain multiplies passive recovery; training_practice is experience per full breath within the shared lifetime practice allowance. battlefields enables new old-battlefield generation and memory discovery. sword_tombs enables new tomb generation, intent gates and keeper reliquary interactions. sleeping_blades enables new sleeping blade landmarks and their drawing/history interactions; acquired blades retain their bonded effects. aura_beasts enables highland animal spawning and aggressive behavior; existing animals and collected materials remain. tournaments enables village tournament creation and bouts; saved unclaimed prizes remain when re-enabled. guardians enables new guardian lairs, such as the Rootcoil Serpent's grove in the jungle, and wakes their guardians; boons already earned remain.");
 		auraWorldSection.addProperty("duelists", auraWorld.duelists());
 		auraWorldSection.addProperty("duelist_spawn_rate", auraWorld.duelistSpawnRate());
 		auraWorldSection.addProperty("max_duelists", auraWorld.maxDuelists());
@@ -1440,6 +1451,7 @@ public record WildercordConfig(
 		auraWorldSection.addProperty("sleeping_blades", auraWorld.sleepingBlades());
 		auraWorldSection.addProperty("aura_beasts", auraWorld.auraBeasts());
 		auraWorldSection.addProperty("tournaments", auraWorld.tournaments());
+		auraWorldSection.addProperty("guardians", auraWorld.guardians());
 		root.add("aura_world", auraWorldSection);
 		return GSON.toJson(root) + "\n";
 	}

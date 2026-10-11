@@ -66,4 +66,7 @@ public final class DungeonWorldgen {
 	public static final ResourceKey<LootTable> TOMB_HALL=loot("chests/sword_tomb_hall");
 	public static final StructurePieceType SLEEPING_BLADE_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("sleeping_blade"),
 		(StructurePieceType.ContextlessType)SleepingBladePiece::new);
+	public static final StructurePieceType SERPENT_GROVE_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("serpent_grove"),
+		(StructurePieceType.ContextlessType)SerpentGrovePiece::new);
+	public static final ResourceKey<LootTable> GROVE_SUPPLIES=loot("chests/serpent_grove");
 }

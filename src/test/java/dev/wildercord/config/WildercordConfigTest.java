@@ -1401,6 +1401,13 @@ class WildercordConfigTest {
 		assertTrue(parsed.warnings().isEmpty());
 		assertEquals(parsed.config().auraWorld(),WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
 	}
+	@Test void guardianSettingsMigrateAndRoundTrip() {
+		assertTrue(WildercordConfig.parse("{}").config().auraWorld().guardians());
+		var parsed=WildercordConfig.parse("{\"aura_world\":{\"guardians\":false}}");
+		assertFalse(parsed.config().auraWorld().guardians());
+		assertTrue(parsed.warnings().isEmpty());
+		assertEquals(parsed.config().auraWorld(),WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
+	}
 	@Test void sleepingBladeSettingsMigrateAndRoundTrip() {
 		assertTrue(WildercordConfig.parse("{}").config().auraWorld().sleepingBlades());
 		var parsed=WildercordConfig.parse("{\"aura_world\":{\"sleeping_blades\":false}}");

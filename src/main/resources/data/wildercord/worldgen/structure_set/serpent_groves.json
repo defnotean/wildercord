@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 202610111,
+    "spacing": 44,
+    "separation": 16
+  },
+  "structures": [
+    {
+      "structure": "wildercord:serpent_grove",
+      "weight": 1
+    }
+  ]
+}
