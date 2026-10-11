@@ -57,9 +57,9 @@ class MethodsBMastersTest {
 			signatures.add(own.getFirst().key());
 			Set<String> shapes = new HashSet<>();
 			for (var technique : techniques) {
-				// The first tell reads at 12 to 14 ticks; the chain ends in a 14 to 16 tick open recovery.
-				assertTrue(technique.impact(0) >= 12 && technique.impact(0) <= 14, technique.key() + " tells " + technique.impact(0));
-				assertTrue(technique.recovery() >= 14 && technique.recovery() <= 16, technique.key() + " recovers " + technique.recovery());
+				// The first tell reads at 8 to 10 ticks; the chain ends in a 10 to 12 tick open recovery.
+				assertTrue(technique.impact(0) >= 8 && technique.impact(0) <= 10, technique.key() + " tells " + technique.impact(0));
+				assertTrue(technique.recovery() >= 10 && technique.recovery() <= 12, technique.key() + " recovers " + technique.recovery());
 				assertTrue(technique.impact(1) - technique.impact(0) >= MasterTechniques.MIN_TELL, technique.key());
 				assertTrue(technique.cost() + MastersRules.GUARD_COST <= MastersRules.AURA_MAX);
 				String shape = technique.strikes().stream().map(strike -> strike.primitive().name() + strike.mirrored()

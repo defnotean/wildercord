@@ -8,9 +8,9 @@ class MastersRulesTest {
 	@Test
 	void everyAttackHasALearnedTellAndRealRecovery() {
 		for (MastersRules.Move move : MastersRules.Move.values()) {
-			assertTrue(move.tell >= 7, "a Master's cut is quick but still shows a third of a second of windup");
+			assertTrue(move.tell >= 5, "a Master's cut is quick but still shows a quarter of a second of windup");
 			assertTrue(move.tell > MastersRules.AIM_LOCK);
-			assertTrue(move.recovery >= 7, "a real window for a counter or a quick cast");
+			assertTrue(move.recovery >= 5, "a real window for a counter or a quick cast");
 		}
 	}
 
@@ -64,8 +64,8 @@ class MastersRulesTest {
 	@Test
 	void magicCanInterruptEarlyTellsButNotTheCommittedAimLock() {
 		assertTrue(MastersRules.interruptible(true, 100, 120));
-		assertTrue(MastersRules.interruptible(true, 113, 120));
-		assertFalse(MastersRules.interruptible(true, 114, 120));
+		assertTrue(MastersRules.interruptible(true, 115, 120));
+		assertFalse(MastersRules.interruptible(true, 116, 120));
 		assertFalse(MastersRules.interruptible(true, 120, 120));
 		assertFalse(MastersRules.interruptible(false, 100, 120));
 	}

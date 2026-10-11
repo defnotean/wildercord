@@ -10,8 +10,8 @@ class MasterPursuitRulesTest {
 		assertEquals(5, MastersRules.Move.CINDER_WAKE.ordinal() + 1);
 		assertEquals(6, MastersRules.Move.PURSUIT_BREAK.ordinal() + 1);
 		assertEquals(6, MasterAnimationRules.PURSUIT_BREAK);
-		assertEquals(7, MastersRules.Move.SWEEP.tell);
-		assertEquals(7, MastersRules.Move.BREAK_CAST.tell);
+		assertEquals(5, MastersRules.Move.SWEEP.tell);
+		assertEquals(5, MastersRules.Move.BREAK_CAST.tell);
 		assertEquals(22, MastersRules.Move.PURSUIT_BREAK.tell);
 		assertEquals(22, MastersRules.Move.PURSUIT_BREAK.recovery);
 	}

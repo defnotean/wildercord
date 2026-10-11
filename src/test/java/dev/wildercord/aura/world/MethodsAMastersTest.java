@@ -64,14 +64,14 @@ class MethodsAMastersTest {
 		for (int authored = -5; authored < 40; authored++) {
 			for (int index = 0; index < 4; index++) {
 				int tell = MethodsAMasters.tell(index, authored);
-				assertTrue(tell >= 12 && tell <= 14, "tell " + tell);
+				assertTrue(tell >= 8 && tell <= 10, "tell " + tell);
 			}
 			int recovery = MethodsAMasters.recovery(authored);
-			assertTrue(recovery >= 14 && recovery <= 16, "recovery " + recovery);
+			assertTrue(recovery >= 10 && recovery <= 12, "recovery " + recovery);
 		}
-		assertEquals(13, MethodsAMasters.tell(0, 13));
-		assertEquals(14, MethodsAMasters.tell(1, 10), "a chained strike reads for longer than a fresh one");
-		assertEquals(15, MethodsAMasters.recovery(15));
+		assertEquals(9, MethodsAMasters.tell(0, 9));
+		assertEquals(10, MethodsAMasters.tell(1, 6), "a chained strike reads for longer than a fresh one");
+		assertEquals(11, MethodsAMasters.recovery(11));
 	}
 
 	@Test

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * The Starlit, Hourglass and Crimson Masters: their school ids, ordinary patterns, named techniques and signature
  * forms. Shared Master code calls in through short marked hooks; everything school-specific lives here.
- * Their tempo is the retuned one: every strike tells for 12 to 14 ticks, every chain recovers for 14 to 16.
+ * Their tempo is the retuned one: every strike tells for 8 to 10 ticks, every chain recovers for 10 to 12.
  */
 public final class MastersPackB {
 	private MastersPackB() {}
@@ -17,7 +17,7 @@ public final class MastersPackB {
 	/** Wire values follow each method's index in BreathingMethods.BUILT_IN, so 3 to 6 stay free for other schools. */
 	public static final int STARLIT = 7, HOURGLASS = 8, CRIMSON = 9;
 	public static final List<Integer> SCHOOLS = List.of(STARLIT, HOURGLASS, CRIMSON);
-	public static final int MIN_TELL = 12, MAX_TELL = 14, MIN_RECOVERY = 14, MAX_RECOVERY = 16;
+	public static final int MIN_TELL = 8, MAX_TELL = 10, MIN_RECOVERY = 10, MAX_RECOVERY = 12;
 	/** Each school keeps at least this many named techniques. */
 	public static final int MIN_TECHNIQUES = 25;
 
@@ -121,7 +121,7 @@ public final class MastersPackB {
 		};
 	}
 
-	/** Every strike of these schools shows its answer for 12 to 14 ticks; chained strikes keep a longer floor than a fresh combo. */
+	/** Every strike of these schools shows its answer for 8 to 10 ticks; chained strikes keep a longer floor than a fresh combo. */
 	public static int tell(int index, int authored) {
 		return Math.max(MIN_TELL, Math.min(MAX_TELL, authored + (index == 0 ? 0 : 4)));
 	}

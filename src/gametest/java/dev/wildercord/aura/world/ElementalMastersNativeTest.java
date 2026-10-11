@@ -74,9 +74,9 @@ public final class ElementalMastersNativeTest implements FabricClientGameTest {
 			check(technique != null && technique.school() == school,
 				"The " + ElementalMasters.name(school) + " Master draws its own named techniques: " + technique);
 			int tell = technique.impact(0);
-			check(tell >= ElementalMasters.MIN_TELL && tell <= ElementalMasters.MAX_TELL, "The opening strike is warned for 12-14 ticks: " + tell);
+			check(tell >= ElementalMasters.MIN_TELL && tell <= ElementalMasters.MAX_TELL, "The opening strike is warned for 8-10 ticks: " + tell);
 			check(technique.recovery() >= ElementalMasters.MIN_RECOVERY && technique.recovery() <= ElementalMasters.MAX_RECOVERY,
-				"The chain ends in a 14-16 tick recovery: " + technique.recovery());
+				"The chain ends in a 10-12 tick recovery: " + technique.recovery());
 			check(master.auraRemaining() < MastersRules.AURA_MAX, "The technique is paid from finite Aura: " + master.auraRemaining());
 			seen[0] = technique.id();
 			return true;

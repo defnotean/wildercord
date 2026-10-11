@@ -18,7 +18,7 @@ public final class MastersRules {
 	public static final double PROJECTILE_RANGE = ARENA_RADIUS * 2 + 4;
 	public static final double HEALTH = 480.0;
 	public static final double ARMOUR = 12.0;
-	public static final int AIM_LOCK = 6;
+	public static final int AIM_LOCK = 4;
 
 	public static final double AURA_MAX = 100, ATTACK_COST = 12, GUARD_COST = 12, REDIRECT_COST = 20;
 	public static final double TECHNIQUE_DAMAGE = 30;
@@ -61,7 +61,7 @@ public final class MastersRules {
 
 	/** A complete windup always precedes harm, and every attack has a guaranteed recovery. */
 	public enum Move {
-		SWEEP(7, 7, 30), THRUST(8, 9, 42), CRESCENT(8, 9, 36), BREAK_CAST(7, 7, 28),
+		SWEEP(5, 5, 30), THRUST(6, 6, 42), CRESCENT(6, 6, 36), BREAK_CAST(5, 5, 28),
 		CINDER_WAKE(EmberWakeRules.TELL, EmberWakeRules.RECOVERY, EmberWakeRules.CUT_DAMAGE),
 		PURSUIT_BREAK(MasterPursuitRules.TELL, MasterPursuitRules.RECOVERY, MasterPursuitRules.DAMAGE),
 		CROSSWIND_REPRISE(GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY, GaleRepriseRules.DAMAGE),
@@ -69,7 +69,7 @@ public final class MastersRules {
 		KILN_RING(EmberKilnRules.TELL, EmberKilnRules.RECOVERY, EmberKilnRules.DAMAGE),
 		STONE_FAULT_MARCH(StoneMarchRules.TELL, StoneMarchRules.END - StoneMarchRules.TELL, StoneMarchRules.DAMAGE),
 		/** One of the hundred named combos in {@link MasterTechniques}; its own timeline and reach replace these placeholders. */
-		TECHNIQUE(MasterTechniques.FIRST_TELL, 14, TECHNIQUE_DAMAGE),
+		TECHNIQUE(MasterTechniques.FIRST_TELL, 10, TECHNIQUE_DAMAGE),
 		// ---- masters-a pack
 		RIME_LATTICE(RimeLatticeRules.TELL, RimeLatticeRules.END - RimeLatticeRules.TELL, RimeLatticeRules.DAMAGE),
 		THUNDER_CHAIN(ThunderChainRules.TELL, ThunderChainRules.END - ThunderChainRules.TELL, ThunderChainRules.DAMAGE),
@@ -192,7 +192,7 @@ public final class MastersRules {
 			&& Double.isFinite(incoming) && incoming >= SPELLBANE_INCOMING;
 	}
 
-	/** A spell may punish an early tell, while the final locked six ticks remain a committed attack. */
+	/** A spell may punish an early tell, while the final locked four ticks remain a committed attack. */
 	public static boolean interruptible(boolean winding, long now, long releaseAt) {
 		return winding && now < releaseAt - AIM_LOCK;
 	}

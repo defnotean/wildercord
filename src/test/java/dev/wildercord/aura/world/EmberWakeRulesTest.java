@@ -12,8 +12,8 @@ class EmberWakeRulesTest {
 		assertEquals(2, MastersRules.Move.CRESCENT.ordinal());
 		assertEquals(3, MastersRules.Move.BREAK_CAST.ordinal());
 		assertEquals(4, MastersRules.Move.CINDER_WAKE.ordinal());
-		assertEquals(7, MastersRules.Move.SWEEP.tell);
-		assertEquals(7, MastersRules.Move.SWEEP.recovery);
+		assertEquals(5, MastersRules.Move.SWEEP.tell);
+		assertEquals(5, MastersRules.Move.SWEEP.recovery);
 	}
 
 	@Test

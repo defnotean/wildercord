@@ -19,8 +19,8 @@ public final class ElementalMasters {
 	/** First-clear bits these schools own in {@link MasterVictoryRules.Progress}. */
 	public static final int VICTORY_MASK = (1 << RIME) | (1 << THUNDER) | (1 << VERDANT) | (1 << HOLLOW);
 
-	/** Technique timing for these schools: every strike is warned for 12 to 14 ticks and every chain ends 14 to 16 ticks open. */
-	public static final int MIN_TELL = 12, MAX_TELL = 14, MIN_RECOVERY = 14, MAX_RECOVERY = 16;
+	/** Technique timing for these schools: every strike is warned for 8 to 10 ticks and every chain ends 10 to 12 ticks open. */
+	public static final int MIN_TELL = 8, MAX_TELL = 10, MIN_RECOVERY = 10, MAX_RECOVERY = 12;
 	/** The shared exchange pause after the Master spends its Aura. */
 	public static final int EXCHANGE_PAUSE = MastersRules.BREATH_TICKS;
 	/** How many recent techniques a Master refuses to repeat (mirrors SwordMaster's recent-technique window). */

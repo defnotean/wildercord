@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * The Tide, Iron and Dune Masters (the methods-a pack): their school ids, ordinary patterns, named techniques, signature
  * forms and first-clear lessons. Shared Master code calls in through short marked hooks; everything school-specific lives here.
- * Their tempo is the retuned one: every strike tells for 12 to 14 ticks, every chain recovers for 14 to 16.
+ * Their tempo is the retuned one: every strike tells for 8 to 10 ticks, every chain recovers for 10 to 12.
  */
 public final class MethodsAMasters {
 	private MethodsAMasters() {}
@@ -17,7 +17,7 @@ public final class MethodsAMasters {
 	/** Ten to twelve, clear of the original three and of the other packs' schools. */
 	public static final int TIDE = 10, IRON = 11, DUNE = 12;
 	public static final List<Integer> SCHOOLS = List.of(TIDE, IRON, DUNE);
-	public static final int MIN_TELL = 12, MAX_TELL = 14, MIN_RECOVERY = 14, MAX_RECOVERY = 16;
+	public static final int MIN_TELL = 8, MAX_TELL = 10, MIN_RECOVERY = 10, MAX_RECOVERY = 12;
 	/** Each school keeps at least this many named techniques. */
 	public static final int MIN_TECHNIQUES = 20;
 
@@ -113,7 +113,7 @@ public final class MethodsAMasters {
 		};
 	}
 
-	/** Every strike of these schools shows its answer for 12 to 14 ticks; chained strikes keep a longer floor than a fresh combo. */
+	/** Every strike of these schools shows its answer for 8 to 10 ticks; chained strikes keep a longer floor than a fresh combo. */
 	public static int tell(int index, int authored) {
 		return Math.max(MIN_TELL, Math.min(MAX_TELL, authored + (index == 0 ? 0 : 4)));
 	}

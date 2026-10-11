@@ -72,7 +72,7 @@ public final class MastersPackBTrialTest implements FabricClientGameTest {
 			if (!master.state(AuraFighter.WINDUP) || master.attackAnimation() == 0) return false;
 			MastersRules.Move opener = MastersRules.Move.values()[master.attackAnimation() - 1];
 			check(opener != MastersRules.Move.TECHNIQUE && !MastersPackB.signature(opener), "The natural opener is a plain ordinary attack: " + opener);
-			check(master.attackTellTicks() >= 12 && master.attackTellTicks() <= 14, "Ordinary tell is 12 to 14 ticks: " + opener + " " + master.attackTellTicks());
+			check(master.attackTellTicks() >= 8 && master.attackTellTicks() <= 10, "Ordinary tell is 8 to 10 ticks: " + opener + " " + master.attackTellTicks());
 			return true;
 		}, 80);
 		world.getServer().waitFor(server -> {
@@ -87,7 +87,7 @@ public final class MastersPackBTrialTest implements FabricClientGameTest {
 		check(combo != null && combo.school() == school && combo.id() > 100, "The combo is one of this school's own: " + combo);
 		check(master.technique() == combo.id() && master.attackAnimation() == MastersRules.Move.TECHNIQUE.ordinal() + 1, "The synced combo id is the admitted one");
 		int impact = combo.impact(0);
-		check(impact >= 12 && impact <= 14, "The first strike tells 12 to 14 ticks: " + combo.key() + " " + impact);
+		check(impact >= 8 && impact <= 10, "The first strike tells 8 to 10 ticks: " + combo.key() + " " + impact);
 		MasterTechniques.Strike strike = combo.strikes().getFirst();
 		at(world, impact - 1, () -> {
 			check(target.getHealth() == HEALTH, "The tell is harmless: " + combo.key());

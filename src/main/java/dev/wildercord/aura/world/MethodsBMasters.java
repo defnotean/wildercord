@@ -84,7 +84,7 @@ public final class MethodsBMasters {
 	}
 
 	// ------------------------------------------------------------------ techniques
-	// Two strikes each: a 12-tick tell (14 with a step or a spin), a 15-tick open recovery. The last line is the signature.
+	// Two strikes each: an 8-tick tell (10 with a step or a spin), a 12-tick open recovery. The last line is the signature.
 
 	public static final String ECHO_TABLE = """
 		ringing_pair SWEEP ~SWEEP

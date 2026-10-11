@@ -100,13 +100,13 @@ class ElementalMastersRulesTest {
 			for (boolean spin : new boolean[] {false, true})
 				for (boolean step : new boolean[] {false, true}) {
 					int tell = ElementalMasters.tell(heavy, spin, step);
-					assertTrue(tell >= 12 && tell <= 14);
+					assertTrue(tell >= 8 && tell <= 10);
 				}
-		assertEquals(12, ElementalMasters.tell(false, false, false));
-		assertEquals(14, ElementalMasters.tell(true, true, true));
+		assertEquals(8, ElementalMasters.tell(false, false, false));
+		assertEquals(10, ElementalMasters.tell(true, true, true));
 		for (int count = -3; count <= 9; count++) {
 			int recovery = ElementalMasters.recovery(count);
-			assertTrue(recovery >= 14 && recovery <= 16, "count " + count);
+			assertTrue(recovery >= 10 && recovery <= 12, "count " + count);
 		}
 		assertEquals(24, ElementalMasters.EXCHANGE_PAUSE);
 		assertEquals(MastersRules.BREATH_TICKS, ElementalMasters.EXCHANGE_PAUSE);
