@@ -113,6 +113,7 @@ public final class AuraWorld {
 		Battlefields.init();
 		SwordTombs.init();
 		Guardians.init();
+		Coilroot.init();
 		SleepingBlades.init();
 		AuraBeasts.init();
 		VillageTournaments.init();
@@ -132,6 +133,7 @@ public final class AuraWorld {
 				output.accept(ManualPageItem.of(MANUAL_PAGE, method.id()));
 			}
 			output.accept(AURA_SHARD);
+			output.accept(Coilroot.ITEM);
 			for (int i=0;i<3;i++) output.accept(Battlefields.book(i));
 			output.accept(SwordTombs.history());
 			output.accept(SleepingBlades.BLADE);

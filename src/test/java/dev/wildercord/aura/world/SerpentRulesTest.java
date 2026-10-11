@@ -104,4 +104,12 @@ class SerpentRulesTest {
 		assertTrue(through>=dmg*.6,"only "+through+" of "+dmg+" gets through");
 		assertTrue(SerpentRules.SLAM_PIERCE>SerpentRules.PIERCE);
 	}
+	@Test void theCoilrootQuickensTheBreathingStanceAndNothingElse(){
+		assertTrue(SerpentRules.COILROOT_BREATH>1);
+		assertEquals(2*SerpentRules.COILROOT_BREATH,SerpentRules.coilroot("stance",2),1e-9);
+		assertEquals(2*SerpentRules.COILROOT_BREATH,SerpentRules.coilroot("beat",2),1e-9);
+		assertEquals(2,SerpentRules.coilroot("hit",2),1e-9);
+		assertEquals(SerpentRules.COILROOT_TRICKLE,SerpentRules.coilroot("coilroot",SerpentRules.COILROOT_TRICKLE),1e-9);
+		assertTrue(SerpentRules.COILROOT_TRICKLE>0&&SerpentRules.COILROOT_GUARD>=SerpentRules.WAKE_RADIUS);
+	}
 }

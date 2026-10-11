@@ -29,6 +29,10 @@ for name, text in {
 LANG['message.wildercord.rootcoil_serpent.caught'] = 'Caught in its coils! Jump or strafe to struggle free.'
 LANG['message.wildercord.rootcoil_serpent.struggle'] = 'Struggling… %s/%s'
 LANG['message.wildercord.rootcoil_serpent.free'] = 'You break free!'
+LANG['block.wildercord.coilroot'] = 'Coilroot'
+LANG['message.wildercord.coilroot.eat'] = 'The Coilroot settles into your breath. Aura comes to you more easily, for good.'
+LANG['message.wildercord.coilroot.eaten'] = 'You have already eaten of the Coilroot.'
+LANG['message.wildercord.coilroot.guarded'] = 'The serpent still guards it.'
 
 GROVE_BIOMES = ['minecraft:jungle', 'minecraft:sparse_jungle', 'minecraft:bamboo_jungle']
 
@@ -59,6 +63,13 @@ def write(g):
     g.write_json(g.DATA / 'loot_table/entities/rootcoil_serpent.json', {'type': 'minecraft:entity', 'pools': []})
     g.save(skin(), g.ASSETS / 'textures/entity/rootcoil_serpent/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/rootcoil_serpent/glow.png')
+    # The herb it guards: a cross plant, cut out, that drops nothing (it stays for whoever comes after).
+    g.save(coilroot(), g.ASSETS / 'textures/block/coilroot.png')
+    g.write_json(g.ASSETS / 'models/block/coilroot.json', {'parent': 'minecraft:block/cross', 'textures': {'cross': 'wildercord:block/coilroot'},
+                                                          'render_type': 'minecraft:cutout'})
+    g.write_json(g.ASSETS / 'blockstates/coilroot.json', {'variants': {'': {'model': 'wildercord:block/coilroot'}}})
+    g.write_json(g.ASSETS / 'models/item/coilroot.json', {'parent': 'minecraft:item/generated', 'textures': {'layer0': 'wildercord:block/coilroot'}})
+    g.write_json(g.ASSETS / 'items/coilroot.json', {'model': {'type': 'minecraft:model', 'model': 'wildercord:item/coilroot'}})
 
 
 def mixc(a, b, t):
@@ -163,3 +174,35 @@ def glow():
     for x0 in (tu, tu + d + w):
         img[tv + d:tv + d + h, x0 + 1] = (40, 20, 0, 255)
     return Image.fromarray(img, 'RGBA')
+
+
+def coilroot():
+    """The Coilroot, 16 x 16: a pale root twisting up out of the earth round itself, a few leaves, and a glowing bud on top."""
+    rng = np.random.default_rng(20261011)
+    px = np.zeros((16, 16, 4), np.uint8)
+    root, dark, leaf, leaf_dark, bud, bud_core = (196, 178, 120), (120, 98, 62), (110, 168, 74), (64, 112, 48), (232, 214, 120), (255, 246, 190)
+
+    def put(x, y, c):
+        if 0 <= x < 16 and 0 <= y < 16:
+            px[y, x] = (*c, 255)
+
+    # Two strands winding round each other up the stem.
+    for y in range(15, 3, -1):
+        t = (15 - y) / 11
+        for phase, col in ((0, root), (np.pi, dark)):
+            x = 7.5 + np.sin(t * 3.4 * np.pi + phase) * (2.2 - t * 1.2)
+            put(int(round(x)), y, col)
+    # Leaves off the stem, alternating sides.
+    for y, side in ((12, -1), (10, 1), (8, -1), (6, 1)):
+        for k in range(3):
+            put(7 + side * (2 + k), y - (k // 2), leaf if k < 2 else leaf_dark)
+        put(7 + side * 2, y + 1, leaf_dark)
+    # The bud, glowing.
+    for x, y, c in ((7, 3, bud), (8, 3, bud), (7, 2, bud_core), (8, 2, bud), (7, 1, bud), (6, 3, leaf_dark), (9, 3, leaf_dark)):
+        put(x, y, c)
+    # A little grit of light down the root.
+    for _ in range(4):
+        y = int(rng.integers(5, 14)); x = int(rng.integers(5, 11))
+        if px[y, x, 3]:
+            px[y, x, :3] = np.minimum(255, px[y, x, :3].astype(int) + 30)
+    return Image.fromarray(px, 'RGBA')

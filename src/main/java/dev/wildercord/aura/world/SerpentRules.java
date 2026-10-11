@@ -109,6 +109,18 @@ public final class SerpentRules {
 	 */
 	public static final double SLAM_PIERCE = 0.65;
 
+	/** The Coilroot, eaten once the serpent is dead: the breathing stance draws in this much more, and aura trickles in besides. */
+	public static final double COILROOT_BREATH = 1.3;
+	/** Aura a second the Coilroot trickles in, stance or not. */
+	public static final double COILROOT_TRICKLE = 0.5;
+	/** A living guardian this close keeps anyone from the herb. */
+	public static final double COILROOT_GUARD = 40;
+
+	/** An aura gain from {@code source}, for someone who has eaten the Coilroot: only their breath draws in more. */
+	public static double coilroot(String source, double amount) {
+		return source.equals("stance") || source.equals("beat") ? amount * COILROOT_BREATH : amount;
+	}
+
 	/** The bar's name for what it is doing. */
 	public static String key(int move) {
 		return switch (move) {

@@ -195,9 +195,9 @@ public final class SerpentGrovePiece extends DungeonPiece {
 			canopy(level,bb,(int)Math.round(x),y+1,(int)Math.round(z),3);
 		}
 		canopy(level,bb,CX,crown+1,CZ,3);
-		// The herb's bed: a hollow between two roots, bare earth under the trunk's shadow.
+		// The herb's bed: a hollow between two roots, bare earth under the trunk's shadow, and the Coilroot growing in it.
 		set(level,bb,Blocks.ROOTED_DIRT.defaultBlockState(),HERB_X,FLOOR,HERB_Z);
-		set(level,bb,AIR,HERB_X,FLOOR+1,HERB_Z);set(level,bb,AIR,HERB_X,FLOOR+2,HERB_Z);
+		set(level,bb,dev.wildercord.aura.world.Coilroot.BLOCK.defaultBlockState(),HERB_X,FLOOR+1,HERB_Z);set(level,bb,AIR,HERB_X,FLOOR+2,HERB_Z);
 	}
 
 	private void canopy(WorldGenLevel level,BoundingBox bb,int cx,int cy,int cz,int radius){

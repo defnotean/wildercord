@@ -147,6 +147,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Has eaten of the Coilroot the Rootcoil Serpent guards: more aura breathed in, and a trickle besides, for good. Kept through death. */
+	public static final AttachmentType<Boolean> COILROOT = AttachmentRegistry.create(
+		Wildercord.id("coilroot"),
+		builder -> builder
+			.initializer(() -> false)
+			.persistent(Codec.BOOL)
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Has helped slay a boss (the 7th Circle's breakthrough). Kept through death. */
 	public static final AttachmentType<Boolean> BOSS_SLAIN = AttachmentRegistry.create(
 		Wildercord.id("boss_slain"),
