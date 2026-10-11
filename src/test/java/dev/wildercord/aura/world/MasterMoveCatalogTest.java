@@ -114,8 +114,8 @@ class MasterMoveCatalogTest {
 
 	@Test
 	void retainsTheHitTickInsideRecoveryAndEveryExistingAnimationBoundary() {
-		int[] tells = {5, 6, 6, 5, 24, 22, 22, 32, 40, 32, 0, 20, 36, 30, 40, 32, 27, 49, 28, 26, 27};
-		int[] recoveries = {5, 6, 6, 5, 46, 22, 24, 30, 48, 64, 0, 48, 28, 16, 16, 16, 16, 16, 16, 16, 16};
+		int[] tells = {3, 4, 4, 3, 24, 22, 22, 32, 40, 32, 0, 20, 36, 30, 40, 32, 27, 49, 28, 26, 27};
+		int[] recoveries = {3, 4, 4, 3, 46, 22, 24, 30, 48, 64, 0, 48, 28, 16, 16, 16, 16, 16, 16, 16, 16};
 		int[] rendererIds = {MasterAnimationRules.SWEEP, MasterAnimationRules.THRUST, MasterAnimationRules.CRESCENT,
 			MasterAnimationRules.BREAK_CAST, MasterAnimationRules.CINDER_WAKE, MasterAnimationRules.PURSUIT_BREAK,
 			MasterAnimationRules.CROSSWIND_REPRISE, MasterAnimationRules.STONE_FRACTURE, MasterAnimationRules.KILN_RING, MasterAnimationRules.STONE_FAULT_MARCH, -1,

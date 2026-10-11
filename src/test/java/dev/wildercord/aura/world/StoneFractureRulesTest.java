@@ -45,8 +45,8 @@ class StoneFractureRulesTest {
 		}
 		assertEquals(32, MastersRules.Move.STONE_FRACTURE.tell);
 		assertEquals(30, MastersRules.Move.STONE_FRACTURE.recovery);
-		assertTrue(MastersRules.interruptible(true, 27, 32));
-		assertFalse(MastersRules.interruptible(true, 28, 32), "The final reply keeps the committed aim-lock ticks");
+		assertTrue(MastersRules.interruptible(true, 29, 32));
+		assertFalse(MastersRules.interruptible(true, 30, 32), "The final reply keeps the committed aim-lock ticks");
 	}
 
 	@Test

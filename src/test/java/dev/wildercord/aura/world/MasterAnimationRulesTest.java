@@ -37,8 +37,8 @@ class MasterAnimationRulesTest {
 			assertEquals(1, sample(move, tell).weight());
 			if (id != MasterAnimationRules.STONE_FAULT_MARCH) assertEquals(sample(move, tell), MasterAnimationRules.sample(id, 30, 30, 2, 40),
 				"Balancing tell/recovery must never retime the visual impact relative to damage");
-			assertTrue(sample(move, tell + active + 2).weight() > .99F, "The body follows through after damage");
-			assertTrue(sample(move, tell + active + recovery - .01F).weight() < .0001F);
+			assertTrue(sample(move, tell + active + Math.min(2, recovery * .2F)).weight() > .99F, "The body follows through after damage");
+			assertTrue(sample(move, tell + active + recovery - .01F).weight() < .005F, "the body has settled by the end of recovery");
 			assertSame(MasterAnimationRules.NONE, sample(move, tell + active + recovery));
 		}
 	}
@@ -73,7 +73,7 @@ class MasterAnimationRulesTest {
 	void stanceIsPlantedDuringTheStrikeAndRigidSolesDoNotEnterTheFloor() {
 		for (var move : singleStrikeMoves()) {
 			float stance = sample(move, move.tell).stance();
-			for (float age = move.tell * .65F; age <= move.tell + 3; age += .05F) {
+			for (float age = move.tell * .65F; age <= move.tell + 1 + Math.min(2, (move.recovery - 1) * .2F); age += .05F) {
 				var pose = sample(move, age);
 				assertEquals(stance, pose.stance(), .00001F, "Feet do not slide during release");
 				assertEquals(1, pose.weight(), .00001F);

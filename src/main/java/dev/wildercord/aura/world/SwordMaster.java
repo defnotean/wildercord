@@ -773,9 +773,9 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		double targetHeight = target.getBoundingBox().getCenter().y - slashOrigin().y;
 		if (Math.abs(targetHeight) <= 2.5 && distanceTo(target) > 6 && sequence % 3 != 0) {
 			if (approachStarted == 0) approachStarted = now;
-			if (now - approachStarted < 40) {
+			if (now - approachStarted < 20) {
 				endOrdinaryPhrase();
-				getNavigation().moveTo(target, discipline == MastersRules.GALE ? 1.5 : 1.3);
+				getNavigation().moveTo(target, discipline == MastersRules.GALE ? 1.9 : 1.7);
 				return;
 			}
 		}
@@ -1650,6 +1650,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	@Override protected Predicate<Entity> mayCut() { return entity -> entity instanceof LivingEntity living && participant(living); }
 	@Override public boolean shouldBeSaved() { return false; }
 	@Override public boolean removeWhenFarAway(double distance) { return false; }
+	@Override protected int guardTicks() { return MastersRules.GUARD_TICKS; }
+	@Override protected int guardRest() { return MastersRules.GUARD_REST; }
 
 	/** How deep the server thread is inside a Master's cut landing (its blade goes partly through armour; see {@link #pierce}). */
 	private static int cutting;

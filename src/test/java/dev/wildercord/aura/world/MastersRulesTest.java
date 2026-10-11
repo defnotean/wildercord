@@ -8,9 +8,9 @@ class MastersRulesTest {
 	@Test
 	void everyAttackHasALearnedTellAndRealRecovery() {
 		for (MastersRules.Move move : MastersRules.Move.values()) {
-			assertTrue(move.tell >= 5, "a Master's cut is quick but still shows a quarter of a second of windup");
+			assertTrue(move.tell >= 3, "a Master's cut is a flurry but still shows a few ticks of windup");
 			assertTrue(move.tell > MastersRules.AIM_LOCK);
-			assertTrue(move.recovery >= 5, "a real window for a counter or a quick cast");
+			assertTrue(move.recovery >= 3, "a real window for a counter or a quick cast");
 		}
 	}
 
@@ -64,8 +64,8 @@ class MastersRulesTest {
 	@Test
 	void magicCanInterruptEarlyTellsButNotTheCommittedAimLock() {
 		assertTrue(MastersRules.interruptible(true, 100, 120));
-		assertTrue(MastersRules.interruptible(true, 115, 120));
-		assertFalse(MastersRules.interruptible(true, 116, 120));
+		assertTrue(MastersRules.interruptible(true, 117, 120));
+		assertFalse(MastersRules.interruptible(true, 118, 120));
 		assertFalse(MastersRules.interruptible(true, 120, 120));
 		assertFalse(MastersRules.interruptible(false, 100, 120));
 	}
@@ -90,8 +90,8 @@ class MastersRulesTest {
 		assertNotEquals(MastersRules.move(0, 0, 0, 3), MastersRules.move(1, 0, 0, 3));
 		assertTrue(MastersRules.guardAfter(MastersRules.STONE, 1));
 		assertFalse(MastersRules.guardAfter(MastersRules.GALE, 1));
-		assertFalse(MastersRules.guardAfter(MastersRules.GALE, 2));
-		assertTrue(MastersRules.guardAfter(MastersRules.GALE, 3));
+		assertFalse(MastersRules.guardAfter(MastersRules.GALE, 3));
+		assertTrue(MastersRules.guardAfter(MastersRules.GALE, 5));
 	}
 	@Test
 	void theLastReservedEncounterCanOpenWithoutAdmittingANinth() {

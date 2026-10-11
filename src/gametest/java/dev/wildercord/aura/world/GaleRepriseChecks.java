@@ -256,7 +256,7 @@ final class GaleRepriseChecks {
 		});
 		world.getServer().waitFor(server -> {
 			if (master.auraRemaining() >= GaleRepriseRules.COST) return false;
-			// Gale braces every third attack, so the leftover depends on where the guard fell in the phrase.
+			// Gale braces every fifth attack, so the leftover depends on where the guard fell in the phrase.
 			check(master.auraRemaining() < GaleRepriseRules.COST && master.auraRemaining() >= 0
 					&& (ordinaryMove(master) != null || master.guarding()),
 				"Admitted ordinary moves and the scheduled guard spend the remaining finite Aura: " + master.auraRemaining());

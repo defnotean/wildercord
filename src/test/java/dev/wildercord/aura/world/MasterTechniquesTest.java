@@ -45,7 +45,7 @@ class MasterTechniquesTest {
 				previous = technique.impact(i);
 			}
 			assertTrue(technique.impact(0) >= MasterTechniques.MIN_OPENING_TELL, technique.key() + " opens with a readable chamber");
-			assertTrue(technique.recovery() >= 8, technique.key());
+			assertTrue(technique.recovery() >= 4, technique.key());
 			assertTrue(technique.cost() >= MastersRules.ATTACK_COST && technique.cost() + MastersRules.GUARD_COST <= MastersRules.AURA_MAX);
 			double total = technique.strikes().stream().mapToDouble(MasterTechniques.Strike::damage).sum();
 			assertTrue(total > 0 && total <= MasterTechniques.MAX_SHARE + 1e-9, technique.key() + " total damage share " + total);

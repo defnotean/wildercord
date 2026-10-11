@@ -18,7 +18,9 @@ public final class MastersRules {
 	public static final double PROJECTILE_RANGE = ARENA_RADIUS * 2 + 4;
 	public static final double HEALTH = 480.0;
 	public static final double ARMOUR = 12.0;
-	public static final int AIM_LOCK = 4;
+	public static final int AIM_LOCK = 2;
+	/** A Master's guard is a snap brace between flurries, not a long stand; and it is ready again soon after. */
+	public static final int GUARD_TICKS = 12, GUARD_REST = 16;
 
 	public static final double AURA_MAX = 100, ATTACK_COST = 12, GUARD_COST = 12, REDIRECT_COST = 20;
 	public static final double TECHNIQUE_DAMAGE = 30;
@@ -61,7 +63,7 @@ public final class MastersRules {
 
 	/** A complete windup always precedes harm, and every attack has a guaranteed recovery. */
 	public enum Move {
-		SWEEP(5, 5, 30), THRUST(6, 6, 42), CRESCENT(6, 6, 36), BREAK_CAST(5, 5, 28),
+		SWEEP(3, 3, 30), THRUST(4, 4, 42), CRESCENT(4, 4, 36), BREAK_CAST(3, 3, 28),
 		CINDER_WAKE(EmberWakeRules.TELL, EmberWakeRules.RECOVERY, EmberWakeRules.CUT_DAMAGE),
 		PURSUIT_BREAK(MasterPursuitRules.TELL, MasterPursuitRules.RECOVERY, MasterPursuitRules.DAMAGE),
 		CROSSWIND_REPRISE(GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY, GaleRepriseRules.DAMAGE),
@@ -69,7 +71,7 @@ public final class MastersRules {
 		KILN_RING(EmberKilnRules.TELL, EmberKilnRules.RECOVERY, EmberKilnRules.DAMAGE),
 		STONE_FAULT_MARCH(StoneMarchRules.TELL, StoneMarchRules.END - StoneMarchRules.TELL, StoneMarchRules.DAMAGE),
 		/** One of the hundred named combos in {@link MasterTechniques}; its own timeline and reach replace these placeholders. */
-		TECHNIQUE(MasterTechniques.FIRST_TELL, 10, TECHNIQUE_DAMAGE),
+		TECHNIQUE(MasterTechniques.FIRST_TELL, 6, TECHNIQUE_DAMAGE),
 		// ---- masters-a pack
 		RIME_LATTICE(RimeLatticeRules.TELL, RimeLatticeRules.END - RimeLatticeRules.TELL, RimeLatticeRules.DAMAGE),
 		THUNDER_CHAIN(ThunderChainRules.TELL, ThunderChainRules.END - ThunderChainRules.TELL, ThunderChainRules.DAMAGE),
@@ -173,9 +175,9 @@ public final class MastersRules {
 		return health / maximum <= 0.33 ? 2 : health / maximum <= 0.66 ? 1 : 0;
 	}
 
-	/** Stone braces after each attack; other schools after three. A guard is never raised during recovery. */
+	/** Stone braces after each attack; other schools after five. A guard is never raised during recovery. */
 	public static boolean guardAfter(int discipline, int attacks) {
-		return attacks > 0 && (discipline(discipline) == STONE || attacks % 3 == 0);
+		return attacks > 0 && (discipline(discipline) == STONE || attacks % 5 == 0);
 	}
 
 	/** Spellbane: how close a bolt comes before a Master erases it, from any side, guard or none. */
@@ -192,7 +194,7 @@ public final class MastersRules {
 			&& Double.isFinite(incoming) && incoming >= SPELLBANE_INCOMING;
 	}
 
-	/** A spell may punish an early tell, while the final locked four ticks remain a committed attack. */
+	/** A spell may punish an early tell, while the final locked two ticks remain a committed attack. */
 	public static boolean interruptible(boolean winding, long now, long releaseAt) {
 		return winding && now < releaseAt - AIM_LOCK;
 	}

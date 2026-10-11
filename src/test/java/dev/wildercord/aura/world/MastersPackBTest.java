@@ -84,7 +84,7 @@ class MastersPackBTest {
 	}
 
 	@Test
-	void everyStrikeTellsEightToTenTicksAndEveryChainRecoversTenToTwelve() {
+	void everyStrikeTellsFiveToSevenTicksAndEveryChainRecoversSixToEight() {
 		for (int school : SCHOOLS) for (var technique : MasterTechniques.forSchool(school)) {
 			int previous = 0;
 			for (int i = 0; i < technique.strikes().size(); i++) {
@@ -97,15 +97,15 @@ class MastersPackBTest {
 		}
 		for (int school : SCHOOLS) for (MastersRules.Move move : MastersPackB.pattern(school)) {
 			// The shared ordinary cuts are a Master's quick blade, faster than its authored techniques.
-			assertTrue(move.tell >= 5 && move.tell < MastersPackB.MIN_TELL, move.name());
-			assertTrue(move.recovery >= 5 && move.recovery < MastersPackB.MIN_RECOVERY, move.name());
+			assertTrue(move.tell >= 3 && move.tell < MastersPackB.MIN_TELL, move.name());
+			assertTrue(move.recovery >= 3 && move.recovery < MastersPackB.MIN_RECOVERY, move.name());
 			assertNotNull(MastersPackB.answer(move), "Every ordinary attack names its answer");
 		}
 		for (int index = 0; index < 4; index++) for (int authored = -50; authored <= 50; authored++) {
 			int tell = MastersPackB.tell(index, authored);
-			assertTrue(tell >= 8 && tell <= 10);
+			assertTrue(tell >= 5 && tell <= 7);
 			int recovery = MastersPackB.recovery(authored);
-			assertTrue(recovery >= 10 && recovery <= 12);
+			assertTrue(recovery >= 6 && recovery <= 8);
 		}
 	}
 

@@ -238,6 +238,12 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 		return guarding() && AuraWorldRules.perfect(guardRaised, level().getGameTime());
 	}
 
+	/** How long a raised guard is held. */
+	protected int guardTicks() { return AuraWorldRules.MOB_GUARD_TICKS; }
+
+	/** How long after a guard drops before it can be raised again. */
+	protected int guardRest() { return AuraWorldRules.MOB_GUARD_REST; }
+
 	/** Raises its guard (the tell is the pose, a ring of its light braced in front, and the guard's hum). */
 	public boolean raiseGuard() {
 		long now = level().getGameTime();
@@ -245,7 +251,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 			return false;
 		}
 		guardRaised = now;
-		guardUntil = now + AuraWorldRules.MOB_GUARD_TICKS;
+		guardUntil = now + guardTicks();
 		setState(GUARD, true);
 		getNavigation().stop();
 		if (level() instanceof ServerLevel level) {
@@ -264,7 +270,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 		if (guardRaised >= 0) {
 			guardRaised = -1;
 			guardUntil = -1;
-			guardReadyAt = level().getGameTime() + AuraWorldRules.MOB_GUARD_REST;
+			guardReadyAt = level().getGameTime() + guardRest();
 		}
 		setState(GUARD, false);
 	}

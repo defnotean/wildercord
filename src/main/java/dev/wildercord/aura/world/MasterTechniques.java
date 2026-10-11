@@ -15,9 +15,9 @@ public final class MasterTechniques {
 	private MasterTechniques() {}
 
 	/** Ticks before the first strike lands, and before each later one. School tempo scales both. */
-	public static final int FIRST_TELL = 8, FOLLOW_TELL = 5, MIN_TELL = 3;
+	public static final int FIRST_TELL = 5, FOLLOW_TELL = 3, MIN_TELL = 2;
 	/** A combo's opening strike never chambers quicker than a Master's quickest ordinary cut. */
-	public static final int MIN_OPENING_TELL = 5;
+	public static final int MIN_OPENING_TELL = 3;
 	public static final double STEP = 2.0;
 	/** Upper bound on a whole chain's damage, as a multiple of one technique hit. */
 	public static final double MAX_SHARE = 1.75;
@@ -292,7 +292,7 @@ public final class MasterTechniques {
 			double total = strikes.stream().mapToDouble(Strike::damage).sum();
 			if (total > MAX_SHARE) strikes.replaceAll(strike -> new Strike(strike.primitive(), strike.mirrored(), strike.spin(), strike.step(),
 				strike.quick(), strike.heavy(), strike.tell(), strike.damage() * MAX_SHARE / total));
-			int recovery = 10 + 2 * (count - 1) + (lastHeavy ? 4 : 0)
+			int recovery = 6 + (count - 1) + (lastHeavy ? 4 : 0)
 				+ (school == MastersRules.STONE ? 3 : school == MastersRules.GALE ? -2 : 0);
 			if (ElementalMasters.owns(school)) recovery = ElementalMasters.recovery(count); // ---- masters-a pack
 			if (MastersPackB.owns(school)) recovery = MastersPackB.recovery(recovery); // ---- masters-b pack
