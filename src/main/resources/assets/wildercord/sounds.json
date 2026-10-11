@@ -5644,6 +5644,42 @@
       "wildercord:kit/aura/aura_rime_swing_3"
     ]
   },
+  "aura_serpent_challenge": {
+    "subtitle": "subtitles.wildercord.kit.serpent.challenge",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_challenge"
+    ]
+  },
+  "aura_serpent_death": {
+    "subtitle": "subtitles.wildercord.kit.serpent.death",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_death"
+    ]
+  },
+  "aura_serpent_hiss": {
+    "subtitle": "subtitles.wildercord.kit.serpent.hiss",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_hiss"
+    ]
+  },
+  "aura_serpent_hurt": {
+    "subtitle": "subtitles.wildercord.kit.serpent.hurt",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_hurt"
+    ]
+  },
+  "aura_serpent_uncoil": {
+    "subtitle": "subtitles.wildercord.kit.serpent.uncoil",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_uncoil"
+    ]
+  },
+  "aura_serpent_wake": {
+    "subtitle": "subtitles.wildercord.kit.serpent.wake",
+    "sounds": [
+      "wildercord:kit/aura/aura_serpent_wake"
+    ]
+  },
   "aura_slash": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [

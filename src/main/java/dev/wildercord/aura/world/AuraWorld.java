@@ -112,6 +112,7 @@ public final class AuraWorld {
 	public static void init() {
 		Battlefields.init();
 		SwordTombs.init();
+		Guardians.init();
 		SleepingBlades.init();
 		AuraBeasts.init();
 		VillageTournaments.init();

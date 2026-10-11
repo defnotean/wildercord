@@ -39,6 +39,7 @@ public final class AuraWorldClient {
 		EntityRendererRegistry.register(AuraWorld.FALLEN_KNIGHT, AuraWorldClient::knight);
 		ModelLayerRegistry.registerModelLayer(GravekeeperRenderer.LAYER,GravekeeperModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.SwordTombs.KEEPER,GravekeeperRenderer::new);
+		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.SERPENT,SerpentRenderer::new);
 		var stonehorn=new ModelLayerLocation(Wildercord.id("stonehorn"),"main");
 		var galeclaw=new ModelLayerLocation(Wildercord.id("galeclaw"),"main");
 		ModelLayerRegistry.registerModelLayer(stonehorn,StonehornModel::createLayer);

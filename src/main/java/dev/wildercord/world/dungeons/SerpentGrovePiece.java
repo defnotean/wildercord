@@ -1,5 +1,6 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.config.Config;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
@@ -77,6 +78,19 @@ public final class SerpentGrovePiece extends DungeonPiece {
 		sinkhole(level,bb);
 		tunnel(level,bb);
 		ceiling(level,bb);
+		serpent(level,bb);
+	}
+
+	/** The guardian, coiled round the trunk at its foot and watching the herb. Spawned once, by whichever chunk holds the trunk. */
+	private void serpent(WorldGenLevel level,BoundingBox bb){
+		var foot=getWorldPos(CX,FLOOR+2,CZ);if(!bb.isInside(foot))return;
+		var herb=getWorldPos(HERB_X,FLOOR+2,HERB_Z);
+		float rest=(float)Math.toDegrees(Math.atan2(-(herb.getX()-foot.getX()),herb.getZ()-foot.getZ()));
+		var serpent=Guardians.SERPENT.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(serpent==null)return;
+		serpent.snapTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
+		serpent.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
+		serpent.bind(foot,rest);
+		level.addFreshEntityWithPassengers(serpent);
 	}
 
 	private BlockState rock(int x,int y,int z){
