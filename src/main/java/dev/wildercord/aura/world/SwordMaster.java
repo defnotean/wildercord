@@ -85,6 +85,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private long sidestepReadyAt;
 	private int discipline, sequence, partySize = 1, quiet;
 	private boolean started, guardNext;
+	/** When it last lost health; regeneration waits {@link MastersRules#REGEN_DELAY} after it. */
+	private long lastCut;
 	private MastersRules.Move attack;
 	private Vec3 lockedAim, lockedOrigin;
 	private EmberAfterburn afterburn;
@@ -645,6 +647,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			ordinaryPlanner = new MasterOrdinaryPlanner(discipline, MasterOrdinaryPlanner.encounterSeed(getUUID(), challenger));
 			getAttribute(Attributes.MAX_HEALTH).setBaseValue(MastersRules.health(partySize));
 			setHealth(getMaxHealth());
+			lastCut = now;
 			// One short line per challenger: the school's key counterplay, then the shared pursuit rule.
 			String lesson = discipline == MastersRules.EMBER ? "ember_lesson" : discipline == MastersRules.GALE ? "gale_lesson"
 				: discipline == MastersRules.STONE ? "stone_lesson"
@@ -659,6 +662,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			}
 			recoverUntil = now + 20;
 		}
+		float knit = MastersRules.regen(getMaxHealth(), now - lastCut);
+		if (knit > 0 && isAlive() && getHealth() < getMaxHealth()) setHealth(Math.min(getMaxHealth(), getHealth() + knit));
 		tickGuard(now);
 		tickStagger(now);
 		if (staggered() || Stance.opened(this)) {
@@ -1631,6 +1636,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		boolean rear = braced != null && braced.rearHit(source, level.getGameTime());
 		float health = getHealth(), absorption = getAbsorptionAmount();
 		boolean hurt = super.hurtServer(level, source, through);
+		if (getHealth() < health) lastCut = level.getGameTime();
 		if (rear && fracture == braced && (getHealth() < health || getAbsorptionAmount() < absorption)) cancelAttack();
 		return hurt;
 	}

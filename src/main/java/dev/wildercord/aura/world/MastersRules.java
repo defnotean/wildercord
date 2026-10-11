@@ -25,6 +25,15 @@ public final class MastersRules {
 	public static final double AURA_MAX = 100, ATTACK_COST = 12, GUARD_COST = 12, REDIRECT_COST = 20;
 	public static final double TECHNIQUE_DAMAGE = 30;
 	public static final int BREATH_TICKS = 24, REDIRECT_REST = 100, DODGE_TICKS = 4;
+	/** A Master left uncut for {@link #REGEN_DELAY} ticks knits {@link #REGEN_SHARE} of its health back each second. */
+	public static final int REGEN_DELAY = 60;
+	public static final double REGEN_SHARE = 0.015;
+
+	/** Health a Master of {@code maxHealth} regains this tick, {@code sinceCut} ticks after it last lost any. */
+	public static float regen(float maxHealth, long sinceCut) {
+		return sinceCut < REGEN_DELAY || !(maxHealth > 0) ? 0 : (float) (maxHealth * REGEN_SHARE / 20);
+	}
+
 	/** The share of what armour, Protection and Resistance would take off a Master's cut that its blade goes through anyway. */
 	public static final double PIERCE = 0.45;
 

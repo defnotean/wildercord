@@ -102,6 +102,14 @@ class MastersRulesTest {
 	}
 
 	@Test
+	void aMasterKnitsBackOnlyOnceItHasGoneUncut() {
+		assertEquals(0, MastersRules.regen(480, 0));
+		assertEquals(0, MastersRules.regen(480, MastersRules.REGEN_DELAY - 1));
+		assertEquals(480 * MastersRules.REGEN_SHARE / 20, MastersRules.regen(480, MastersRules.REGEN_DELAY), 1e-5);
+		assertEquals(0, MastersRules.regen(Float.NaN, 1000));
+	}
+
+	@Test
 	void aMastersCutGoesThroughPartOfWhatDefencesStop() {
 		// Netherite under Protection IV leaves about a sixth of a 30 cut; the blade still lands about half of it.
 		assertEquals(30, MastersRules.pierced(30, 30), 1e-5);
