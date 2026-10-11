@@ -80,11 +80,17 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 		} finally { if (active == this) active = null; }
 	}
 
-	private void scenario(TestSingleplayerContext world, int school, int phase, int count, Counter counter) {
-		this.counter = counter; callbacks = 0;
+	private void scenario(TestSingleplayerContext world, int school, int phase, int count, Counter requested) {
+		this.counter = requested; callbacks = 0;
 		beginPlanned(world, school, phase, count);
+		// A Master's quick cut locks its aim almost at once: by frame 3 no spell can break it, so it lands as a held line.
+		boolean committed = (requested == Counter.INTERRUPT || requested == Counter.OWNED_INTERRUPT)
+			&& !MastersRules.interruptible(true, began + 3, began + move.tell);
+		Counter counter = committed ? Counter.HOLD : requested;
+		this.counter = counter;
 		at(world, 3, () -> {
 			check(target.getHealth() == HEALTH, "A planner choice retains the complete harmless tell");
+			if (committed) Effects.withSource(target, () -> check(!master.interruptWindup(), "A quick cut past its aim lock refuses an interrupt"));
 			var state = planner().state();
 			master.customServerAiStep(level); master.customServerAiStep(level);
 			check(planner().state().equals(state) && close(master.auraRemaining(), paidAura), "Duplicate AI ticks cannot debit or append admission twice");
@@ -119,7 +125,8 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 				default -> {}
 			}
 		});
-		at(world, move.tell - MastersRules.AIM_LOCK + 1, () -> {
+		// A quick cut locks its aim before the frame-3 checks; dodge after both, still before release.
+		at(world, Math.max(4, move.tell - MastersRules.AIM_LOCK + 1), () -> {
 			if (counter == Counter.SIDESTEP) place(target, 8, 0, 1.2);
 			if (counter == Counter.COVER) wall(true);
 			if (counter == Counter.NO_AI) master.setNoAi(false);
@@ -159,7 +166,8 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 			check(!master.state(AuraFighter.WINDUP) && !master.guarding() && close(master.auraRemaining(), paidAura),
 				"Every admitted ordinary action keeps its full paid, exposed recovery, including early cancellation: " + counter);
 			if (counter == Counter.INTERRUPT || counter == Counter.OWNED_INTERRUPT || counter == Counter.NO_AI) {
-				check(level.getGameTime() > began + 3 + 20 && planner().state().successfulDecisions() == admitted.successfulDecisions(),
+				// A quick cut's whole tell+recovery may end before interrupt+20; then only the blocked admission is measured.
+				check((move.tell + move.recovery - 1 <= 3 + 20 || level.getGameTime() > began + 3 + 20) && planner().state().successfulDecisions() == admitted.successfulDecisions(),
 					"Before this change cancellation could retry at interrupt+20; now the original complete tell+recovery still blocks admission");
 			}
 			if (counter == Counter.HOLD) {

@@ -8,9 +8,9 @@ class MastersRulesTest {
 	@Test
 	void everyAttackHasALearnedTellAndRealRecovery() {
 		for (MastersRules.Move move : MastersRules.Move.values()) {
-			assertTrue(move.tell >= 12, "still more than half a second to read");
+			assertTrue(move.tell >= 7, "a Master's cut is quick but still shows a third of a second of windup");
 			assertTrue(move.tell > MastersRules.AIM_LOCK);
-			assertTrue(move.recovery >= 14, "a real window for a counter or a quick cast");
+			assertTrue(move.recovery >= 7, "a real window for a counter or a quick cast");
 		}
 	}
 

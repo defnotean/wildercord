@@ -165,7 +165,7 @@ public final class MasterAnimationRules {
 		if (attack == PURSUIT_BREAK) return pursuit(age, tell, active, recovery);
 		if (attack == CINDER_WAKE && age >= tell + 6) return emberWake(age, tell, active, recovery);
 		float chamberAt = tell * .65F;
-		float followAt = tell + active + Math.min(3, recovery * .20F);
+		float followAt = tell + active + Math.min(3, recovery * .50F); // A quick cut still holds its follow-through
 		Pose pose;
 		if (age < chamberAt) pose = motion.chamber;
 		else if (age < tell) pose = motion.chamber.toward(motion.impact, smooth((age - chamberAt) / (tell - chamberAt)));

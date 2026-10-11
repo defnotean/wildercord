@@ -16,7 +16,7 @@ class GaleRepriseRulesTest {
 		assertFalse(GaleRepriseRules.eligible(MastersRules.GALE, -3, 4, 0, 100, 140, 140));
 		assertEquals(24, GaleRepriseRules.COST);
 		assertEquals(MastersRules.ATTACK_COST + MastersRules.GUARD_COST, GaleRepriseRules.READY_AURA);
-		for (double aura : new double[] {23.999, 24, 27.999}) {
+		for (double aura : new double[] {20, 23.999}) {
 			assertFalse(GaleRepriseRules.eligible(MastersRules.GALE, 1, 4, 0, aura, 140, 140),
 				"The existing shared exhaustion threshold remains authoritative before admission");
 		}

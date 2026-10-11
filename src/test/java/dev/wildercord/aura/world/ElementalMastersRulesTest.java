@@ -108,7 +108,7 @@ class ElementalMastersRulesTest {
 			int recovery = ElementalMasters.recovery(count);
 			assertTrue(recovery >= 14 && recovery <= 16, "count " + count);
 		}
-		assertEquals(40, ElementalMasters.EXCHANGE_PAUSE);
+		assertEquals(24, ElementalMasters.EXCHANGE_PAUSE);
 		assertEquals(MastersRules.BREATH_TICKS, ElementalMasters.EXCHANGE_PAUSE);
 	}
 

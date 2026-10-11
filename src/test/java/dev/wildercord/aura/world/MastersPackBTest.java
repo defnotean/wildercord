@@ -96,8 +96,9 @@ class MastersPackBTest {
 			assertTrue(technique.cost() + MastersRules.GUARD_COST <= MastersRules.AURA_MAX);
 		}
 		for (int school : SCHOOLS) for (MastersRules.Move move : MastersPackB.pattern(school)) {
-			assertTrue(move.tell >= MastersPackB.MIN_TELL && move.tell <= MastersPackB.MAX_TELL, move.name());
-			assertTrue(move.recovery >= MastersPackB.MIN_RECOVERY && move.recovery <= MastersPackB.MAX_RECOVERY, move.name());
+			// The shared ordinary cuts are a Master's quick blade, faster than its authored techniques.
+			assertTrue(move.tell >= 7 && move.tell < MastersPackB.MIN_TELL, move.name());
+			assertTrue(move.recovery >= 7 && move.recovery < MastersPackB.MIN_RECOVERY, move.name());
 			assertNotNull(MastersPackB.answer(move), "Every ordinary attack names its answer");
 		}
 		for (int index = 0; index < 4; index++) for (int authored = -50; authored <= 50; authored++) {

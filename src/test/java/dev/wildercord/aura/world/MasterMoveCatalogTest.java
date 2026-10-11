@@ -93,10 +93,10 @@ class MasterMoveCatalogTest {
 
 	@Test
 	void preservesPaymentAndDamageAcrossLegacySchoolsAndPartySizes() {
-		double[] ember = {16, 16, 16, 16, 24, 28, 24, 28, 28, 30, 16, 26, 26, 26, 26, 30, 28, 32, 28, 28, 28};
+		double[] ember = {12, 12, 12, 12, 24, 28, 24, 28, 28, 30, 12, 26, 26, 26, 26, 30, 28, 32, 28, 28, 28};
 		// Rime, Thunder, Verdant, Hollow, Starlit, Hourglass, Crimson, Tide, Iron and Dune pay Ember's Pursuit price (the pursuit table's default school).
-		double[][] costs = {ember, {16, 16, 16, 16, 24, 26, 24, 28, 28, 30, 16, 26, 26, 26, 26, 30, 28, 32, 28, 28, 28},
-			{16, 16, 16, 16, 24, 30, 24, 28, 28, 30, 16, 26, 26, 26, 26, 30, 28, 32, 28, 28, 28}, ember, ember, ember, ember, ember, ember, ember,
+		double[][] costs = {ember, {12, 12, 12, 12, 24, 26, 24, 28, 28, 30, 12, 26, 26, 26, 26, 30, 28, 32, 28, 28, 28},
+			{12, 12, 12, 12, 24, 30, 24, 28, 28, 30, 12, 26, 26, 26, 26, 30, 28, 32, 28, 28, 28}, ember, ember, ember, ember, ember, ember, ember,
 			ember, ember, ember}; // ---- methods-a pack
 		for (int school : new int[] {Integer.MIN_VALUE, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, MastersRules.SCHOOLS, Integer.MAX_VALUE}) {
 			for (var entry : WIRE_IDS.entrySet()) {
@@ -114,8 +114,8 @@ class MasterMoveCatalogTest {
 
 	@Test
 	void retainsTheHitTickInsideRecoveryAndEveryExistingAnimationBoundary() {
-		int[] tells = {12, 14, 14, 12, 24, 22, 22, 32, 40, 32, 0, 20, 36, 30, 40, 32, 27, 49, 28, 26, 27};
-		int[] recoveries = {14, 16, 16, 14, 46, 22, 24, 30, 48, 64, 0, 48, 28, 16, 16, 16, 16, 16, 16, 16, 16};
+		int[] tells = {7, 8, 8, 7, 24, 22, 22, 32, 40, 32, 0, 20, 36, 30, 40, 32, 27, 49, 28, 26, 27};
+		int[] recoveries = {7, 9, 9, 7, 46, 22, 24, 30, 48, 64, 0, 48, 28, 16, 16, 16, 16, 16, 16, 16, 16};
 		int[] rendererIds = {MasterAnimationRules.SWEEP, MasterAnimationRules.THRUST, MasterAnimationRules.CRESCENT,
 			MasterAnimationRules.BREAK_CAST, MasterAnimationRules.CINDER_WAKE, MasterAnimationRules.PURSUIT_BREAK,
 			MasterAnimationRules.CROSSWIND_REPRISE, MasterAnimationRules.STONE_FRACTURE, MasterAnimationRules.KILN_RING, MasterAnimationRules.STONE_FAULT_MARCH, -1,

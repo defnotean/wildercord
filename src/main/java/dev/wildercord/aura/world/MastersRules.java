@@ -20,9 +20,9 @@ public final class MastersRules {
 	public static final double ARMOUR = 12.0;
 	public static final int AIM_LOCK = 6;
 
-	public static final double AURA_MAX = 100, ATTACK_COST = 16, GUARD_COST = 12, REDIRECT_COST = 20;
+	public static final double AURA_MAX = 100, ATTACK_COST = 12, GUARD_COST = 12, REDIRECT_COST = 20;
 	public static final double TECHNIQUE_DAMAGE = 30;
-	public static final int BREATH_TICKS = 40, REDIRECT_REST = 100, DODGE_TICKS = 4;
+	public static final int BREATH_TICKS = 24, REDIRECT_REST = 100, DODGE_TICKS = 4;
 
 	/**
 	 * Evasion: a Master slips any challenger's blow or shot while it has focus, and each slip spends one. Focus is deep and
@@ -54,7 +54,7 @@ public final class MastersRules {
 
 	/** A complete windup always precedes harm, and every attack has a guaranteed recovery. */
 	public enum Move {
-		SWEEP(12, 14, 30), THRUST(14, 16, 42), CRESCENT(14, 16, 36), BREAK_CAST(12, 14, 28),
+		SWEEP(7, 7, 30), THRUST(8, 9, 42), CRESCENT(8, 9, 36), BREAK_CAST(7, 7, 28),
 		CINDER_WAKE(EmberWakeRules.TELL, EmberWakeRules.RECOVERY, EmberWakeRules.CUT_DAMAGE),
 		PURSUIT_BREAK(MasterPursuitRules.TELL, MasterPursuitRules.RECOVERY, MasterPursuitRules.DAMAGE),
 		CROSSWIND_REPRISE(GaleRepriseRules.TELL, GaleRepriseRules.RECOVERY, GaleRepriseRules.DAMAGE),
