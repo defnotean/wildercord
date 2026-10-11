@@ -699,6 +699,12 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			// Braking ends the measured, collision-checked step; residual momentum may not carry it past its safe path.
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 			setState(DASH, false);
+			// The sidestep is the draw: a challenger left in reach takes a cut straight out of it.
+			if (MasterMoveCatalog.legacy().forMove(MastersRules.Move.SWEEP).availableIn(discipline)
+				&& ordinaryEligibility(level, target, now).contains(MastersRules.Move.SWEEP)) {
+				beginAttack(level, target, MastersRules.Move.SWEEP, now);
+				return;
+			}
 		}
 		if (now < recoverUntil) {
 			getNavigation().stop();
