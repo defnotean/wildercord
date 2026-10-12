@@ -902,6 +902,9 @@ def write_lang(runes):
     import bobcat_art
     lang.update(bobcat_art.LANG)
     bobcat_art.write(sys.modules[__name__])
+    import hedgehog_art
+    lang.update(hedgehog_art.LANG)
+    hedgehog_art.write(sys.modules[__name__])
     import predator_art
     lang.update(predator_art.LANG)
     predator_art.write(sys.modules[__name__])

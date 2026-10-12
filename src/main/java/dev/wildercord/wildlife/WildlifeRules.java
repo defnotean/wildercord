@@ -64,6 +64,11 @@ public final class WildlifeRules {
 		DelverRules.MAX_GROUP, 1 / 2.0, 2, 64, List.of("minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow",
 		"minecraft:forest", "minecraft:birch_forest", "minecraft:flower_forest"));
 
+	/** The thistle hedgehog: a small forager of meadows, plains and forests, alone or in twos and threes (its own module, so not in {@link #ALL}). */
+	public static final Kind THISTLE_HEDGEHOG = new Kind("thistle_hedgehog", Pool.CREATURE, 6, 1, 3, 1 / 2.0, 4, 48, List.of(
+		"minecraft:meadow", "minecraft:plains", "minecraft:sunflower_plains", "minecraft:forest", "minecraft:flower_forest",
+		"minecraft:birch_forest", "minecraft:cherry_grove"));
+
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);
 

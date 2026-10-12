@@ -28,8 +28,10 @@ public class WildlifeRenderState extends LivingEntityRenderState {
 	public float bow;
 	public boolean shed;
 
-	/** A tortoise drawn into its shell. */
+	/** A tortoise drawn into its shell, a hedgehog curled into a ball. */
 	public float hide;
+	/** A hedgehog's sneeze, 1 as it starts and easing back to 0. */
+	public float sneeze;
 	/** A cinderfox sitting. */
 	public float sit;
 	/** A newt settled beneath a reed roof. */

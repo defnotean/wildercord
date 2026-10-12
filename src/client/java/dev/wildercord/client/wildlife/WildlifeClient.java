@@ -15,6 +15,7 @@ public final class WildlifeClient {
   SiltcrestRenderer.init();
   MossveilDormouseRenderer.init();
   BlackBobcatRenderer.init();
+  ThistleHedgehogRenderer.init();
   PredatorRenderers.init();
   RidgebackStagRenderer.init();
   BurrowAndReefRenderers.init();
