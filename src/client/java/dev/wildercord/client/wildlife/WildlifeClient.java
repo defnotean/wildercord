@@ -20,6 +20,7 @@ public final class WildlifeClient {
   BrookOtterRenderer.init();
   CinnabarPandaRenderer.init();
   SunwatchMeerkatRenderer.init();
+  StonecrestPuffinRenderer.init();
   PredatorRenderers.init();
   RidgebackStagRenderer.init();
   BurrowAndReefRenderers.init();
