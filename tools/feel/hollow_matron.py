@@ -135,6 +135,35 @@ def death(v, rng):
     return sa.finish(sa.reverb(sa.highpass(x, 60), 1.4, .35, damp=4000), 'effect')
 
 
+def climb(v, rng):
+    """Scrabbling up silk: legs snagging and tugging free in quick runs, strands creaking under her."""
+    s = .9
+    times = sorted(.6 * rng.random() for _ in range(10))
+    snag = sa.norm(sa.bandpass(sa.chopper(s, rng, rate=(20, 34), floor=0) * sa.noise(s, rng), 1200, 4500)) * sa.swell(s, .2, 1.4) * sa.decay(s, .5, .03)
+    x = sa.mix(.45 * _patter(times, rng, .8), (0, .4 * snag))
+    return sa.finish(sa.reverb(sa.highpass(x, 150), .5, .2, damp=5500), 'effect')
+
+
+def hatch(v, rng):
+    """An egg sac splitting: a soft wet tear, then a spreading patter of many tiny legs."""
+    s = 1.2
+    split = sa.norm(sa.bandpass(sa.noise(.35, rng), 600, 3000)) * sa.swell(.35, .05, 1.8) * sa.decay(.35, .15, .004)
+    tiny = _patter(sorted(.15 + .9 * rng.random() for _ in range(26)), rng, 2.2)
+    x = sa.mix(.7 * split, (.1, .5 * tiny), (.05, .25 * _clicks(.8, rng, 70, 3000, 9000)))
+    return sa.finish(sa.reverb(sa.highpass(x, 200), .5, .2, damp=6500), 'effect')
+
+
+def tear(v, rng):
+    """Silk straining under a blow: a fibrous rip, strands snapping one after another."""
+    s = .6
+    rip = sa.norm(sa.moving_band(s, ((0, 1500), (.15, 4000), (s, 2000)), 1.3, rng)) * sa.swell(s, .03, 2.0) * sa.decay(s, .2, .01)
+    snaps = sa.mix(*[(t, (.4 + .4 * rng.random()) * sa.thump(1800, 900, .04, .003, drive=2.0, knock=1.0))
+                     for t in sorted(.3 * rng.random() for _ in range(6))])
+    x = sa.mix(.7 * rip, (.02, .5 * snaps), (0, .35 * sa.thump(260, 120, .15, .02, drive=1.4, knock=.5)))
+    return sa.finish(sa.reverb(sa.highpass(x, 120), .5, .2, damp=6000), 'effect')
+
+
 HOLLOW_MATRON_EVENTS = [event('aura_hollow_matron_' + name, build, role='effect', subtitle='hollow_matron.' + name) for name, build in (
     ('hiss', hiss), ('chitter', chitter), ('creak', creak), ('drop', drop), ('land', land), ('step', step), ('bite', bite),
-    ('sweep', sweep), ('spit', spit), ('splat', splat), ('pounce', pounce), ('skitter', skitter), ('hurt', hurt), ('death', death))]
+    ('sweep', sweep), ('spit', spit), ('splat', splat), ('pounce', pounce), ('skitter', skitter), ('hurt', hurt), ('death', death),
+    ('climb', climb), ('hatch', hatch), ('tear', tear))]

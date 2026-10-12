@@ -10,7 +10,9 @@ LANG = {
                                       'eyes over her fangs. She hangs head-down on her thread under the nest in the hall the miners '
                                       'broke into, and drops when someone comes far enough in. She bites and sweeps with her forelegs up '
                                       'close, leaps at anyone a little way off and spits web that slows at anyone keeping away. Her fangs '
-                                      'turn blows from the front; her abdomen behind does not, and after a leap she is open.',
+                                      'turn blows from the front; her abdomen behind does not, and after a leap she is open. Wounded, she '
+                                      'climbs one of the silk pillars, wakes her brood in the egg sacs and drops on whoever she marks; '
+                                      'dust falls where she will land. Strike her pillar\'s silk while she is on it and she comes down hard.',
     'guide.wildercord.hollow_matron.hint': 'An abandoned mine in a forest or the hills, a headframe over its shaft, webs thickening below.',
     'boss.wildercord.hollow_matron.status': '%s — %s',
 }
@@ -18,11 +20,13 @@ for name, text in {
     'hiss': 'Hollow Matron hisses', 'chitter': 'Hollow Matron chitters', 'creak': 'Silk creaks', 'drop': 'Hollow Matron drops',
     'land': 'Hollow Matron lands', 'step': 'Legs patter', 'bite': 'Fangs snap', 'sweep': 'Forelegs sweep', 'spit': 'Hollow Matron spits',
     'splat': 'Web splatters', 'pounce': 'Hollow Matron leaps', 'skitter': 'Hollow Matron skitters', 'hurt': 'Hollow Matron hurts',
-    'death': 'Hollow Matron dies',
+    'death': 'Hollow Matron dies', 'climb': 'Hollow Matron climbs', 'hatch': 'Egg sac splits', 'tear': 'Silk tears',
 }.items():
     LANG['subtitles.wildercord.kit.hollow_matron.' + name] = text
 for name, text in {'watch': 'Watching', 'bite': 'Biting', 'sweep': 'Sweeping', 'spit': 'Spitting', 'pounce': 'Leaping',
-                   'skitter': 'Skittering', 'recover': 'Spent'}.items():
+                   'skitter': 'Skittering', 'recover': 'Spent',
+                   'haste': 'Making for the silk', 'scale': 'Climbing', 'lurk': 'Lurking', 'plunge': 'Plunging',
+                   'tumble': 'Falling'}.items():
     LANG['boss.wildercord.hollow_matron.move.' + name] = text
 
 # Dusky grey-brown, darker underneath; pale silk; bone; red eyes; dark fangs.

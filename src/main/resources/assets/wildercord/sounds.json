@@ -5570,6 +5570,12 @@
       "wildercord:kit/aura/aura_hollow_matron_chitter"
     ]
   },
+  "aura_hollow_matron_climb": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.climb",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_climb"
+    ]
+  },
   "aura_hollow_matron_creak": {
     "subtitle": "subtitles.wildercord.kit.hollow_matron.creak",
     "sounds": [
@@ -5586,6 +5592,12 @@
     "subtitle": "subtitles.wildercord.kit.hollow_matron.drop",
     "sounds": [
       "wildercord:kit/aura/aura_hollow_matron_drop"
+    ]
+  },
+  "aura_hollow_matron_hatch": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.hatch",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_hatch"
     ]
   },
   "aura_hollow_matron_hiss": {
@@ -5640,6 +5652,12 @@
     "subtitle": "subtitles.wildercord.kit.hollow_matron.sweep",
     "sounds": [
       "wildercord:kit/aura/aura_hollow_matron_sweep"
+    ]
+  },
+  "aura_hollow_matron_tear": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.tear",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_tear"
     ]
   },
   "aura_hollow_swing": {

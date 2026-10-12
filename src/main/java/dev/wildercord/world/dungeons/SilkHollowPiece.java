@@ -128,6 +128,10 @@ public final class SilkHollowPiece extends DungeonPiece {
 		// Her thread hangs from the underside of the nest, at its deepest.
 		float anchor=getWorldPos(CX,dome(0)-nest(0)+1,CZ).getY();
 		matron.bind(hang,getWorldPos(CX,FLOOR+1,CZ).getY(),anchor,rest,worldBox(CX-RADIUS,FLOOR,CZ-RADIUS,CX+RADIUS,FLOOR+DOME,CZ+RADIUS));
+		// The pillars she climbs to ambush from, and the sacs her brood hatch from.
+		var pillars=new java.util.ArrayList<net.minecraft.core.BlockPos>();for(int[] p:PILLARS)pillars.add(getWorldPos(p[0],FLOOR+1,p[1]));
+		var sacs=new java.util.ArrayList<net.minecraft.core.BlockPos>();for(int[] p:SACS)sacs.add(getWorldPos(p[0],FLOOR+1,p[1]));
+		matron.nestle(pillars,sacs);
 		level.addFreshEntityWithPassengers(matron);
 	}
 

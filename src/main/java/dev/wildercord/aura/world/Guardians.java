@@ -32,7 +32,7 @@ public final class Guardians {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:drowned_bell_warden",FieldGuide.Group.MONSTER,0x3F8C7A));
 		FabricDefaultAttributeRegistry.register(ASHEN_STAG,AshenStag.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:ashen_stag",FieldGuide.Group.MONSTER,0xC2541E));
-		FabricDefaultAttributeRegistry.register(HOLLOW_MATRON,HollowMatron.createAttributes());
+		FabricDefaultAttributeRegistry.register(HOLLOW_MATRON,HollowMatron.createAttributes());HollowMatron.listen();
 		FieldGuide.add(new FieldGuide.Entry("wildercord:hollow_matron",FieldGuide.Group.MONSTER,0xB8B0A2));
 	}
 }

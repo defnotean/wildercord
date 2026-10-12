@@ -1448,6 +1448,13 @@
       ],
       "subtitle": "hollow_matron.chitter"
     },
+    "aura_hollow_matron_climb": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_climb"
+      ],
+      "subtitle": "hollow_matron.climb"
+    },
     "aura_hollow_matron_creak": {
       "attenuation": 0,
       "files": [
@@ -1468,6 +1475,13 @@
         "kit/aura/aura_hollow_matron_drop"
       ],
       "subtitle": "hollow_matron.drop"
+    },
+    "aura_hollow_matron_hatch": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_hatch"
+      ],
+      "subtitle": "hollow_matron.hatch"
     },
     "aura_hollow_matron_hiss": {
       "attenuation": 0,
@@ -1531,6 +1545,13 @@
         "kit/aura/aura_hollow_matron_sweep"
       ],
       "subtitle": "hollow_matron.sweep"
+    },
+    "aura_hollow_matron_tear": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_tear"
+      ],
+      "subtitle": "hollow_matron.tear"
     },
     "aura_hollow_swing": {
       "attenuation": 0,

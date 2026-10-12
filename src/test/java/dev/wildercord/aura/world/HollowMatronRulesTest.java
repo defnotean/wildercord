@@ -68,4 +68,28 @@ class HollowMatronRulesTest {
 		assertEquals(0,HollowMatronRules.arc(10,10),1e-9);
 		assertTrue(HollowMatronRules.arc(2,10)<HollowMatronRules.arc(4,10));
 	}
+	@Test void woundedSheAmbushesFromHerPillarButNotTooOften(){
+		assertFalse(HollowMatronRules.ambushes(300,300,99999));
+		assertTrue(HollowMatronRules.ambushes(200,300,99999));
+		assertFalse(HollowMatronRules.ambushes(200,300,HollowMatronRules.AMBUSH_REST-1));
+		assertTrue(HollowMatronRules.aloft(HollowMatronRules.SCALE)&&HollowMatronRules.aloft(HollowMatronRules.LURK)&&HollowMatronRules.aloft(HollowMatronRules.PLUNGE));
+		assertFalse(HollowMatronRules.aloft(HollowMatronRules.TUMBLE)||HollowMatronRules.aloft(HollowMatronRules.HASTE));
+	}
+	@Test void moreHatchForMorePreyButNeverTooMany(){
+		assertEquals(2,HollowMatronRules.brood(1));
+		assertEquals(3,HollowMatronRules.brood(2));
+		assertEquals(HollowMatronRules.BROOD_MAX,HollowMatronRules.brood(20));
+	}
+	@Test void threeStrikesCutHerDownAndSheIsOpenAfter(){
+		assertFalse(HollowMatronRules.cut(2));
+		assertTrue(HollowMatronRules.cut(3));
+		assertTrue(HollowMatronRules.armour(HollowMatronRules.TUMBLE,true,false)>1);
+	}
+	@Test void herPlungeBracesThenFallsFasterAndFaster(){
+		assertEquals(0,HollowMatronRules.plunge(0),1e-9);
+		assertEquals(1,HollowMatronRules.plunge(1),1e-9);
+		assertTrue(HollowMatronRules.plunge(.6)<HollowMatronRules.plunge(.9));
+		assertTrue(HollowMatronRules.hits(HollowMatronRules.PLUNGE,1,2,0));
+		assertFalse(HollowMatronRules.hits(HollowMatronRules.PLUNGE,4,0,0));
+	}
 }

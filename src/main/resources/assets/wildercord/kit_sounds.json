@@ -759,6 +759,9 @@
     "aura_hollow_matron_chitter": {
       "part": "aura"
     },
+    "aura_hollow_matron_climb": {
+      "part": "aura"
+    },
     "aura_hollow_matron_creak": {
       "part": "aura"
     },
@@ -766,6 +769,9 @@
       "part": "aura"
     },
     "aura_hollow_matron_drop": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_hatch": {
       "part": "aura"
     },
     "aura_hollow_matron_hiss": {
@@ -793,6 +799,9 @@
       "part": "aura"
     },
     "aura_hollow_matron_sweep": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_tear": {
       "part": "aura"
     },
     "aura_hollow_swing": {

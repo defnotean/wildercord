@@ -201,6 +201,39 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 				for(int i=0;i<8;i++){a[i]+=.3F*k;b[i]+=.45F*k;fan[i]*=1+.15F*k;}
 				abdX+=(.25F+.06F*heave)*k;pitch+=.03F*heave*k;palps-=.3F*k;fangs-=.05F*k;
 			}
+			case HollowMatronRules.HASTE->{
+				headX-=.15F;fangs+=.35F+Math.max(0,Mth.sin(t*.5F))*.15F;palps+=.3F;abdX+=.1F;
+				for(int i=0;i<8;i++)a[i]+=.15F;
+			}
+			case HollowMatronRules.SCALE->{
+				// Nose-up against the silk, legs hugging it, climbing hand over hand.
+				float k=ramp(el,0,4);
+				pitch=Mth.lerp(k,pitch,-Mth.HALF_PI);
+				for(int i=0;i<8;i++){a[i]=Mth.lerp(k,a[i],.3F);b[i]=Mth.lerp(k,b[i],1.5F);}
+				gait(el*1.6F,k);abdX=Mth.lerp(k,abdX,.05F);
+			}
+			case HollowMatronRules.LURK->{
+				// Turned head-down on the silk, legs gripping; through the tell her forelegs coil and her fangs spread.
+				float k=ramp(el,0,6),coil=ramp(el,tell,6);
+				pitch=Mth.lerp(k,-Mth.HALF_PI,Mth.HALF_PI);
+				for(int i=0;i<8;i++){a[i]=.25F+Mth.sin(t*.11F+i*1.7F)*.03F*(1-coil);b[i]=1.3F;}
+				for(int i=0;i<4;i++){a[i]+=(i<2?.8F:.4F)*coil;b[i]+=(i<2?.5F:.25F)*coil;}
+				fangs+=.15F+.6F*coil;palps+=.5F*coil;headX-=.2F*coil;abdX=.05F+.15F*coil;
+			}
+			case HollowMatronRules.PLUNGE->{
+				// Falling headfirst and righting herself as she comes down, forelegs reaching for whoever is under her.
+				float p=Mth.clamp(el/HollowMatronRules.PLUNGE_TICKS,0,1);
+				pitch=Mth.lerp(smooth(p,0,.8F),Mth.HALF_PI,-.2F);
+				for(int i=0;i<8;i++){a[i]=Mth.lerp(p,.6F,STAND_A+.3F);b[i]=Mth.lerp(p,1.6F,STAND_B-.2F);}
+				for(int i=0;i<4;i++){a[i]-=.25F;b[i]-=(i<2?.9F:.5F);fan[i]+=side(i)*.25F;}
+				fangs+=.8F;palps+=.4F;abdX+=.15F;
+			}
+			case HollowMatronRules.TUMBLE->{
+				// Cut down: tumbling, legs flailing.
+				pitch+=Mth.sin(el*.45F)*.6F;roll+=Mth.sin(el*.3F+1)*.5F;
+				for(int i=0;i<8;i++){a[i]+=Mth.sin(el*1.3F+i*1.9F)*.5F;b[i]+=Mth.sin(el*1.7F+i)*.5F;}
+				fangs+=.5F;palps+=Mth.sin(el)*.4F;
+			}
 			default->{}
 		}
 	}

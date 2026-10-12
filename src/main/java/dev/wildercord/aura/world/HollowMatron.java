@@ -15,6 +15,10 @@ import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.world.InteractionResult;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
@@ -30,6 +34,10 @@ import java.util.*;
  * On her feet she bites whoever is in front of her, rears and sweeps her forelegs across through whoever is near, spits web at anyone
  * keeping their distance, slowing them, and pounces on whoever is in reach of a leap, landing on them: after a pounce she is spent a
  * while, the big opening. She skitters aside from some blows, and hurt too fast she backs away across the hall.
+ * <p>
+ * Wounded, she makes for one of the silk pillars and climbs it. At the top she turns head-down, her brood hatch from the egg sacs
+ * round the walls, and dust sifts down onto the spot she has marked under her prey; then she plunges onto it. Strike the pillar's silk
+ * while she is on it and she is cut down, falling hard and lying stunned a long while.
  */
 public final class HollowMatron extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> MOVE=SynchedEntityData.defineId(HollowMatron.class,EntityDataSerializers.INT);
@@ -61,6 +69,19 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** A glob of web in flight: where it is, which way and how fast it goes, and how far it has left to go. */
 	private static final class Glob{Vec3 at,step;double left;Glob(Vec3 at,Vec3 step,double left){this.at=at;this.step=step;this.left=left;}}
 	private final List<Glob> globs=new ArrayList<>();
+	/** The spiderlings that hatch from her sacs carry this, so she spares them while she fights. */
+	private static final net.minecraft.world.level.block.state.BlockState SILK=Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.WHITE).defaultBlockState();
+	public static final String BROOD="wildercord_hollow_brood";
+	/** The feet of the silk pillars she climbs, and the egg sacs her brood hatch from. */
+	private List<BlockPos> pillars=List.of(),sacs=List.of();
+	/** Through an ambush: the pillar she is on and the top of its silk, where she clings, where she set off from, the spot she
+	 *  marked to land on, and the strikes its silk has taken. */
+	private BlockPos pillar;
+	private int top;
+	private Vec3 cling=Vec3.ZERO,climbFrom=Vec3.ZERO,mark=Vec3.ZERO;
+	private int strikes;
+	private long lastAmbush=-99999,lastStrike=-99;
+	private ServerPlayer cutBy;
 
 	public HollowMatron(EntityType<? extends HollowMatron> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
@@ -78,6 +99,8 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		hallMin=new BlockPos(hall.minX(),hall.minY(),hall.minZ());hallMax=new BlockPos(hall.maxX(),hall.maxY(),hall.maxZ());
 		climbed();
 	}
+	/** The silk pillars she climbs to ambush from (their feet, the air above the floor), and her egg sacs (the same). */
+	public void nestle(List<BlockPos> pillars,List<BlockPos> sacs){this.pillars=List.copyOf(pillars);this.sacs=List.copyOf(sacs);}
 	/** Client side, for blending one move into the next: the move last drawn, the one before it, when it changed, and how far into it the last one was. */
 	public int shownMove=-1,shownTell,prevMove,prevTell;public float shownElapsed,prevElapsed,switchedAt=-100;
 	public int move(){return entityData.get(MOVE);}
@@ -109,7 +132,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	}
 	/** Back up her thread under the nest, whole again. */
 	private void climbed(){
-		pose(HollowMatronRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;globs.clear();
+		pose(HollowMatronRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;globs.clear();pillar=null;
 	}
 	/** Held on her thread while she hangs, drops or climbs: as far down it as the drop has got. */
 	private void hold(){
@@ -133,7 +156,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			case HollowMatronRules.DORMANT->dormant(level);
 			case HollowMatronRules.DROP->{hold();dropping(level);if(--left<=0)stand(level);}
 			case HollowMatronRules.CLIMB->{hold();if(wakeful(level)!=null)wake(level,HollowMatronRules.DROP_TICKS-left);else if(--left<=0)climbed();else if(left%8==0)creak(level,.8F);}
-			default->{setNoGravity(move()==HollowMatronRules.POUNCE && since()>tell());awake(level);}
+			default->{setNoGravity(HollowMatronRules.aloft(move()) || move()==HollowMatronRules.POUNCE && since()>tell());awake(level);}
 		}
 		flight(level);
 	}
@@ -160,7 +183,10 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	private void guard(ServerLevel level){
 		var box=new AABB(Vec3.atLowerCornerOf(hallMin),Vec3.atLowerCornerOf(hallMax).add(1,1,1));
 		var h=head();
-		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof HollowMatron) && inHall(e.position(),0))
+		// Her brood she spares while she fights; once she is back on her thread, they go too.
+		boolean fighting=move()!=HollowMatronRules.DORMANT;
+		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof HollowMatron) && inHall(e.position(),0)
+				&& !(fighting && e.entityTags().contains(BROOD)))
 			.stream().min(Comparator.comparingDouble(e->e.distanceToSqr(h))).orElse(null);
 		if(m==null)return;
 		var to=m.position().add(0,m.getBbHeight()/2,0);
@@ -230,6 +256,11 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			case HollowMatronRules.SPIT->spit(level,target);
 			case HollowMatronRules.POUNCE->pounce(level,target);
 			case HollowMatronRules.SKITTER->{face(aim);move(MoverType.SELF,new Vec3(slide.x,-.3,slide.z));setDeltaMovement(Vec3.ZERO);if(--left<=0)pose(HollowMatronRules.WATCH,2);}
+			case HollowMatronRules.HASTE->making(level);
+			case HollowMatronRules.SCALE->scaling(level);
+			case HollowMatronRules.LURK->lurking(level,target);
+			case HollowMatronRules.PLUNGE->plunging(level);
+			case HollowMatronRules.TUMBLE->tumbling(level);
 			case HollowMatronRules.RECOVER->{still();if(--left<=0)pose(HollowMatronRules.WATCH,gap());else if(left%14==0)Feels.sound(level,head(),"aura_hollow_matron_chitter",.8F,.8F);}
 			default->watch(level,target);
 		}
@@ -253,6 +284,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		if(left>0)left--;
 		if(left<=0){
 			long now=level.getGameTime();
+			if(HollowMatronRules.ambushes(getHealth(),getMaxHealth(),now-lastAmbush) && haste(level))return;
 			int pick=HollowMatronRules.choose(d,random.nextDouble(),now-lastSweep>=HollowMatronRules.SWEEP_REST,now-lastPounce>=HollowMatronRules.POUNCE_REST,now-lastSpit>=HollowMatronRules.SPIT_REST);
 			// A long chase ends in web spat after whoever is running.
 			if(pick<0 && chased>=60 && d<=HollowMatronRules.GLOB_RANGE-2 && now-lastSpit>=HollowMatronRules.SPIT_REST/2)pick=HollowMatronRules.SPIT;
@@ -394,6 +426,166 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		spent(HollowMatronRules.POUNCE_RECOVER);
 	}
 
+	// ---- the ambush.
+	/** The top of the silk pillar standing on {@code foot}, or -1 if it has been cut through near the floor or is too short to climb. */
+	private int topOf(Level level,BlockPos foot){
+		if(!level.getBlockState(foot).is(SILK.getBlock()))return -1;
+		var m=foot.mutable();
+		while(m.getY()<hallMax.getY()+2 && level.getBlockState(m.above()).is(SILK.getBlock()))m.move(0,1,0);
+		return m.getY()-foot.getY()>=8?m.getY():-1;
+	}
+	/** Whether her pillar still stands as high as she climbed it. */
+	private boolean intact(){return pillar!=null && topOf(level(),pillar)>=top;}
+	private Vec3 pillarAt(){return new Vec3(pillar.getX()+.5,pillar.getY(),pillar.getZ()+.5);}
+	/** Off to the nearest standing pillar; false if none stands. */
+	private boolean haste(ServerLevel level){
+		lastAmbush=level.getGameTime();
+		BlockPos best=null;int bestTop=-1;double far=Double.MAX_VALUE;
+		for(var foot:pillars){
+			int t=topOf(level,foot);if(t<0)continue;
+			double d=position().distanceToSqr(foot.getX()+.5,foot.getY(),foot.getZ()+.5);
+			if(d<far){far=d;best=foot;bestTop=t;}
+		}
+		if(best==null)return false;
+		pillar=best;top=bestTop;strikes=0;
+		// She clings to the side of the silk facing into the hall.
+		var c=pillarAt();var in=spot().subtract(c).multiply(1,0,1);
+		in=in.lengthSqr()<1e-4?new Vec3(1,0,0):in.normalize();
+		cling=c.add(in.scale(HollowMatronRules.CLING));
+		pose(HollowMatronRules.HASTE,HollowMatronRules.HASTE_TICKS);
+		hiss(level,1.5F,.8F);
+		return true;
+	}
+	/** Running for her pillar; climbing from wherever she has got to once she is there, or once she has run long enough. */
+	private void making(ServerLevel level){
+		if(--left<=0 || position().subtract(cling.x,getY(),cling.z).horizontalDistanceSqr()<=3*3){
+			climbFrom=position();pose(HollowMatronRules.SCALE,HollowMatronRules.SCALE_TICKS);setNoGravity(true);
+			Feels.sound(level,position().add(0,1,0),"aura_hollow_matron_climb",1.4F,1);
+			return;
+		}
+		if(tickCount%3==0)getNavigation().moveTo(cling.x,floor,cling.z,1.5);
+		if(tickCount%4==0)Feels.sound(level,position(),"aura_hollow_matron_step",1,1.1F+random.nextFloat()*.2F);
+	}
+	/** Up the pillar: onto the silk in the first third, and on up it, quick. */
+	private void scaling(ServerLevel level){
+		long el=since();
+		if(el%5==0 && !intact()){tumble(level,null);return;}
+		double k=Math.min(1,el/(double)HollowMatronRules.SCALE_TICKS),on=Math.min(1,k*3),up=k*k*(3-2*k);
+		double y=climbFrom.y+(top-HollowMatronRules.CLING_DROP-climbFrom.y)*up;
+		setPos(climbFrom.x+(cling.x-climbFrom.x)*on,y,climbFrom.z+(cling.z-climbFrom.z)*on);setDeltaMovement(Vec3.ZERO);
+		face(yawTo(pillarAt()));
+		if(el%6==3){
+			Feels.sound(level,position().add(0,2,0),"aura_hollow_matron_climb",1.1F,.9F+random.nextFloat()*.2F);
+			level.sendParticles(ParticleTypes.ITEM_COBWEB,cling.x,getY()+2,cling.z,6,.4,.6,.4,.03);
+		}
+		if(el<HollowMatronRules.SCALE_TICKS)return;
+		var target=getTarget();
+		mark=target!=null?new Vec3(target.getX(),floor,target.getZ()):spot();
+		pose(HollowMatronRules.LURK,HollowMatronRules.LURK_TICKS,HollowMatronRules.LURK_TICKS-HollowMatronRules.LURK_TELL);
+		hiss(level,1.6F,.85F);
+		hatch(level,target);
+	}
+	/**
+	 * Head-down at the top of her pillar, turning to watch her prey and marking the spot under them; for the last of it the spot is
+	 * fixed and dust sifts down onto it from where she will come. Then she lets go.
+	 */
+	private void lurking(ServerLevel level,LivingEntity target){
+		long el=since();int coil=tell();
+		setDeltaMovement(Vec3.ZERO);
+		if(el%5==0 && !intact()){tumble(level,null);return;}
+		if(el<coil && target!=null)mark=new Vec3(target.getX(),floor,target.getZ());
+		if(!inHall(mark,0))mark=spot();
+		turn(yawTo(mark),24);
+		if(el==coil)Feels.sound(level,head(),"aura_hollow_matron_chitter",1.6F,.75F);
+		if(el>=coil){
+			var dust=new BlockParticleOption(ParticleTypes.FALLING_DUST,SILK);
+			level.sendParticles(dust,mark.x,getY()+1,mark.z,5,1.2,.4,1.2,0);
+			level.sendParticles(ParticleTypes.ITEM_COBWEB,mark.x,mark.y+.1,mark.z,2,1.4,0,1.4,0);
+			if((el-coil)%7==0)creak(level,1.1F);
+		}else if(el%12==0)Feels.sound(level,head(),"aura_hollow_matron_chitter",.9F,.9F+random.nextFloat()*.2F);
+		if(el<HollowMatronRules.LURK_TICKS)return;
+		climbFrom=position();aim=yawTo(mark);
+		pose(HollowMatronRules.PLUNGE,HollowMatronRules.PLUNGE_TICKS);
+		Feels.sound(level,position().add(0,1,0),"aura_hollow_matron_drop",1.6F,1.1F);
+	}
+	/** Off the pillar and down onto the marked spot, landing on whoever is there. */
+	private void plunging(ServerLevel level){
+		long el=since();face(aim);
+		double k=Math.min(1,el/(double)HollowMatronRules.PLUNGE_TICKS),down=HollowMatronRules.plunge(k);
+		setPos(climbFrom.x+(mark.x-climbFrom.x)*k,climbFrom.y+(mark.y-climbFrom.y)*down,climbFrom.z+(mark.z-climbFrom.z)*k);setDeltaMovement(Vec3.ZERO);
+		if(el<HollowMatronRules.PLUNGE_TICKS)return;
+		setNoGravity(false);pillar=null;
+		Feels.sound(level,position(),"aura_hollow_matron_land",2F,.9F);
+		level.sendParticles(ParticleTypes.POOF,getX(),getY()+.2,getZ(),30,1.8,.1,1.8,.05);
+		level.sendParticles(ParticleTypes.ITEM_COBWEB,getX(),getY()+.5,getZ(),24,1.6,.4,1.6,.05);
+		for(var p:prey(level))if(reaches(HollowMatronRules.PLUNGE,p))hit(level,p,HollowMatronRules.PLUNGE_DAMAGE,1.4,position(),.5);
+		spent(HollowMatronRules.PLUNGE_RECOVER);
+	}
+	/** Her brood: spiderlings out of the egg sacs, a few strides in from each toward the middle of the hall, after her prey. */
+	private void hatch(ServerLevel level,LivingEntity target){
+		if(sacs.isEmpty())return;
+		var box=new AABB(Vec3.atLowerCornerOf(hallMin),Vec3.atLowerCornerOf(hallMax).add(1,1,1));
+		int alive=level.getEntitiesOfClass(Mob.class,box,e->e.isAlive() && e.entityTags().contains(BROOD)).size();
+		int n=HollowMatronRules.brood(prey(level).size())-alive;
+		var order=new ArrayList<>(sacs);Collections.shuffle(order,new Random(random.nextLong()));
+		for(int i=0;i<n;i++){
+			var sac=order.get(i%order.size());
+			var c=spot();var in=new Vec3(c.x-(sac.getX()+.5),0,c.z-(sac.getZ()+.5));
+			in=in.lengthSqr()<1e-4?Vec3.ZERO:in.normalize();
+			var at=new Vec3(sac.getX()+.5+in.x*2,sac.getY(),sac.getZ()+.5+in.z*2);
+			var spider=EntityTypes.CAVE_SPIDER.create(level,EntitySpawnReason.MOB_SUMMONED);if(spider==null)continue;
+			spider.snapTo(at.x,at.y,at.z,random.nextFloat()*360,0);
+			spider.finalizeSpawn(level,level.getCurrentDifficultyAt(BlockPos.containing(at)),EntitySpawnReason.MOB_SUMMONED,null);
+			spider.addTag(BROOD);
+			if(target!=null)spider.setTarget(target);
+			level.addFreshEntity(spider);
+			level.sendParticles(ParticleTypes.ITEM_COBWEB,sac.getX()+.5,sac.getY()+1,sac.getZ()+.5,24,.7,.6,.7,.08);
+			Feels.sound(level,Vec3.atCenterOf(sac),"aura_hollow_matron_hatch",1.3F,.9F+random.nextFloat()*.3F);
+		}
+	}
+	/** Someone striking silk near her: if it is her pillar's, while she is on it, enough strikes cut her down. */
+	private void struck(ServerLevel level,ServerPlayer by,BlockPos at){
+		int move=move();
+		if(pillar==null || (move!=HollowMatronRules.SCALE && move!=HollowMatronRules.LURK) || at.getX()!=pillar.getX() || at.getZ()!=pillar.getZ())return;
+		if(at.getY()<pillar.getY() || at.getY()>top)return;
+		long now=level.getGameTime();if(now-lastStrike<HollowMatronRules.STRIKE_GAP)return;
+		lastStrike=now;strikes++;
+		Feels.sound(level,Vec3.atCenterOf(at),"aura_hollow_matron_tear",1.3F,.9F+strikes*.1F);
+		level.sendParticles(ParticleTypes.ITEM_COBWEB,at.getX()+.5,at.getY()+.5,at.getZ()+.5,14,.5,.5,.5,.08);
+		// The whole pillar shudders up to her.
+		var c=pillarAt();for(int y=at.getY();y<=top;y+=2)level.sendParticles(ParticleTypes.ITEM_COBWEB,c.x,y+.5,c.z,2,.4,.2,.4,.02);
+		if(HollowMatronRules.cut(strikes))tumble(level,by);
+		else hiss(level,1.2F,1.2F+strikes*.1F);
+	}
+	/** Cut down (or her pillar gone from under her): off it, falling, legs flailing. */
+	private void tumble(ServerLevel level,ServerPlayer by){
+		cutBy=by;
+		var away=pillar==null?Vec3.ZERO:position().subtract(pillarAt()).multiply(1,0,1);
+		away=away.lengthSqr()<1e-4?Vec3.ZERO:away.normalize().scale(.25);
+		pillar=null;pose(HollowMatronRules.TUMBLE,HollowMatronRules.TUMBLE_MAX);setNoGravity(false);setDeltaMovement(away.x,.1,away.z);
+		Feels.sound(level,head(),"aura_hollow_matron_hurt",1.8F,.7F);
+		Feels.sound(level,position(),"aura_hollow_matron_tear",1.6F,.7F);
+		level.sendParticles(ParticleTypes.ITEM_COBWEB,getX(),getY()+1,getZ(),30,1,1,1,.1);
+	}
+	/** Falling till she hits the floor; then she lies stunned on her splayed legs, hurt by the fall, a long while. */
+	private void tumbling(ServerLevel level){
+		if(!(onGround() && since()>2) && --left>0)return;
+		Feels.sound(level,position(),"aura_hollow_matron_land",2F,.75F);
+		level.sendParticles(ParticleTypes.POOF,getX(),getY()+.2,getZ(),30,1.6,.1,1.6,.05);
+		spent(HollowMatronRules.CUT_RECOVER);
+		stung=0;lastBack=level.getGameTime();
+		var by=cutBy;cutBy=null;
+		hurtServer(level,by!=null && by.isAlive()?damageSources().playerAttack(by):damageSources().generic(),(float)HollowMatronRules.CUT_DAMAGE);
+	}
+	/** Listening for players striking silk, for whoever is up a pillar. */
+	public static void listen(){
+		AttackBlockCallback.EVENT.register((player,level,hand,pos,dir)->{
+			if(level instanceof ServerLevel server && player instanceof ServerPlayer p && !p.isSpectator() && level.getBlockState(pos).is(SILK.getBlock()))
+				for(var m:server.getEntitiesOfClass(HollowMatron.class,new AABB(pos).inflate(24)))m.struck(server,p,pos);
+			return InteractionResult.PASS;
+		});
+	}
+
 	/** Spent after an attack, low on splayed legs, for {@code ticks}. */
 	private void spent(int ticks){pose(HollowMatronRules.RECOVER,ticks);still();}
 	/** Out from under a blow, to one side, quick on her many feet. */
@@ -492,6 +684,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		out.putBoolean("matron_bound",bound);out.store("matron_hang",BlockPos.CODEC,hang);out.putInt("matron_floor",floor);out.putFloat("matron_anchor",anchor());
 		out.putFloat("matron_rest",rest);
 		out.store("matron_hall_min",BlockPos.CODEC,hallMin);out.store("matron_hall_max",BlockPos.CODEC,hallMax);
+		out.store("matron_pillars",BlockPos.CODEC.listOf(),pillars);out.store("matron_sacs",BlockPos.CODEC.listOf(),sacs);
 		out.putBoolean("matron_awake",!HollowMatronRules.scripted(move()));out.putLong("matron_ticked",lastTick);
 	}
 	@Override protected void readAdditionalSaveData(ValueInput in){
@@ -501,6 +694,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		entityData.set(ANCHOR,in.getFloatOr("matron_anchor",hang.getY()+5));rest=in.getFloatOr("matron_rest",getYRot());
 		hallMin=in.read("matron_hall_min",BlockPos.CODEC).orElse(hang);hallMax=in.read("matron_hall_max",BlockPos.CODEC).orElse(hang);
 		lastTick=in.getLongOr("matron_ticked",-1L);
+		pillars=in.read("matron_pillars",BlockPos.CODEC.listOf()).orElse(List.of());sacs=in.read("matron_sacs",BlockPos.CODEC.listOf()).orElse(List.of());
 		// Mid-fight she comes back on her feet, whatever she was doing when the chunk unloaded.
 		if(in.getBooleanOr("matron_awake",false)){pose(HollowMatronRules.WATCH,HollowMatronRules.GAP);setNoGravity(false);lastCut=0;}else{pose(HollowMatronRules.DORMANT,0);setNoGravity(true);}
 	}

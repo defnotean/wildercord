@@ -28,6 +28,16 @@ public final class HollowMatronRules {
 	public static final int SKITTER = 8;
 	/** Spent after an attack, low on splayed legs: the opening. */
 	public static final int RECOVER = 9;
+	/** Wounded, she makes for one of the silk pillars, quick on her feet. */
+	public static final int HASTE = 10;
+	/** Up the pillar, nose to the silk, legs reaching over each other. */
+	public static final int SCALE = 11;
+	/** Turned head-down at the top of the pillar, watching her prey while her brood hatch; dust sifting down where she will land. */
+	public static final int LURK = 12;
+	/** Off the pillar and down onto the spot she marked, turning over to land on her feet. */
+	public static final int PLUNGE = 13;
+	/** Cut down off her pillar: falling, legs flailing, until she hits the floor. */
+	public static final int TUMBLE = 14;
 
 	public static final double HEALTH = 340, ARMOUR = 6, SPEED = 0.32;
 
@@ -85,6 +95,47 @@ public final class HollowMatronRules {
 	/** Ticks between her blows, fewer once she is wounded. */
 	public static final int GAP = 9, GAP_WOUNDED = 5;
 
+	// ---- the ambush: up a pillar, brood from the sacs, and down on whoever she marks. Strike the pillar's silk and she comes down.
+	/** At or below this share of her health she makes for a pillar, and again every {@link #AMBUSH_REST} ticks after. */
+	public static final double AMBUSH_AT = 0.7;
+	public static final int AMBUSH_REST = 520;
+	/** The longest she runs for her pillar before climbing from wherever she is, how long the climb takes, how long she lurks at
+	 *  the top and the dust sifting down for the last {@link #LURK_TELL} of it, and how long her plunge takes. */
+	public static final int HASTE_TICKS = 70, SCALE_TICKS = 28, LURK_TICKS = 56, LURK_TELL = 22, PLUNGE_TICKS = 12;
+	/** How far out from a pillar's silk she clings, and how far below its top. */
+	public static final double CLING = 1.7, CLING_DROP = 4.5;
+	/** Her landing: what it does before defences, how far round it hits, and the rest after. */
+	public static final double PLUNGE_DAMAGE = 22, PLUNGE_RADIUS = 3.2;
+	public static final int PLUNGE_RECOVER = 30;
+	/** Strikes on her pillar's silk that bring her down, the least time between two that count, the hurt the fall does her and the
+	 *  long rest after it, lying stunned. */
+	public static final int CUT_STRIKES = 3, STRIKE_GAP = 4, CUT_RECOVER = 70, TUMBLE_MAX = 60;
+	public static final double CUT_DAMAGE = 24;
+	/** The most brood that hatch for one ambush. */
+	public static final int BROOD_MAX = 5;
+
+	/** Whether she makes for a pillar: wounded enough, and long enough since she last did. */
+	public static boolean ambushes(float health, float max, long sinceLast) {
+		return health <= max * AMBUSH_AT && sinceLast >= AMBUSH_REST;
+	}
+	/** How many spiderlings hatch for {@code players} players in her hall: two, and one more for each player past the first, up to {@link #BROOD_MAX}. */
+	public static int brood(int players) {
+		return Math.max(2, Math.min(BROOD_MAX, 1 + players));
+	}
+	/** Whether {@code strikes} strikes on her pillar have cut her down. */
+	public static boolean cut(int strikes) {
+		return strikes >= CUT_STRIKES;
+	}
+	/** The moves she makes off the ground, on her pillar or through the air from it. */
+	public static boolean aloft(int move) {
+		return move == SCALE || move == LURK || move == PLUNGE;
+	}
+	/** How far down a plunge she is, {@code k} 0 to 1 along it: a small push off the silk, then falling faster and faster. Below 0 is above where she started. */
+	public static double plunge(double k) {
+		k = Math.max(0, Math.min(1, k));
+		return k * k - 0.6 * k * (1 - k);
+	}
+
 	/** The bar's name for what she is doing. */
 	public static String key(int move) {
 		return switch (move) {
@@ -94,6 +145,11 @@ public final class HollowMatronRules {
 			case POUNCE -> "pounce";
 			case SKITTER -> "skitter";
 			case RECOVER -> "recover";
+			case HASTE -> "haste";
+			case SCALE -> "scale";
+			case LURK -> "lurk";
+			case PLUNGE -> "plunge";
+			case TUMBLE -> "tumble";
 			default -> "watch";
 		};
 	}
@@ -119,6 +175,7 @@ public final class HollowMatronRules {
 				yield forward > -1.0 && r <= SWEEP_REACH * SWEEP_REACH && height > -1.5 && height < 3.0;
 			}
 			case POUNCE -> forward * forward + side * side <= POUNCE_RADIUS * POUNCE_RADIUS && height > -1.5 && height < 2.5;
+			case PLUNGE -> forward * forward + side * side <= PLUNGE_RADIUS * PLUNGE_RADIUS && height > -1.5 && height < 2.5;
 			default -> false;
 		};
 	}
@@ -127,7 +184,7 @@ public final class HollowMatronRules {
 	 * takes it all and a little more; spent after an attack she is open.
 	 */
 	public static double armour(int move, boolean frontal, boolean rear) {
-		if (move == RECOVER) return rear ? 1.5 : 1.3;
+		if (move == RECOVER || move == TUMBLE) return rear ? 1.5 : 1.3;
 		if (rear) return 1.15;
 		return frontal ? 0.7 : 1.0;
 	}
