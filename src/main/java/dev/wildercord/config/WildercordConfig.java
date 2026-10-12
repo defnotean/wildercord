@@ -256,6 +256,7 @@ public record WildercordConfig(
 				case "snapjaw_turtle" -> true;
 				case "reefgrasp_octopus" -> true;
 				case "foxfire_kitsune" -> true;
+				case "cragcleaver_ram" -> true;
 				default -> false;
 			};
 		}

@@ -55,6 +55,7 @@ import java.util.function.Predicate;
  *   <li><b>Snapjaw Turtles</b>: on the riverbed in the dark, rivers and frozen rivers, alone.</li>
  *   <li><b>Reefgrasp Octopuses</b>: on the seafloor in the dark, the oceans but the frozen ones, alone.</li>
  *   <li><b>Foxfire Kitsunes</b>: among the cherry groves at night, alone.</li>
+ *   <li><b>Cragcleaver Rams</b>: out on the windswept hills and the snowy slopes at night, alone.</li>
  * </ul>
  * All need the dark monsters need, none spawns on Peaceful (their types say so), and the server's {@code monsters} settings
  * can stop any of them: the switches at once, through the rules here, the rate when a world loads (it sets the weights).
@@ -106,6 +107,11 @@ public final class MonsterSpawns {
 	/** A Foxfire Kitsune's spawn weight, and its id among the server's switches. */
 	private static final int FOXFIRE_KITSUNE_WEIGHT = 20;
 	private static final String FOXFIRE_KITSUNE = "foxfire_kitsune";
+	private static final Set<ResourceKey<Biome>> CRAGS = Set.of(Biomes.WINDSWEPT_HILLS, Biomes.WINDSWEPT_GRAVELLY_HILLS, Biomes.WINDSWEPT_FOREST,
+		Biomes.SNOWY_SLOPES);
+	/** A Cragcleaver Ram's spawn weight, and its id among the server's switches. */
+	private static final int CRAGCLEAVER_RAM_WEIGHT = 16;
+	private static final String CRAGCLEAVER_RAM = "cragcleaver_ram";
 	/**
 	 * Overworld biomes left alone underground: the deep dark (nothing spawns there on purpose; a lone entry would fill it) and
 	 * the mushroom fields (no monsters, ever).
@@ -166,6 +172,9 @@ public final class MonsterSpawns {
 				&& (EntitySpawnReason.isSpawner(reason) || (pos.getY() < level.getSeaLevel() && Monster.isDarkEnoughToSpawn(level, pos, random))));
 		SpawnPlacements.register(MonsterContent.FOXFIRE_KITSUNE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, FOXFIRE_KITSUNE)
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+		SpawnPlacements.register(MonsterContent.CRAGCLEAVER_RAM, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> allowed(reason, CRAGCLEAVER_RAM)
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
@@ -240,6 +249,12 @@ public final class MonsterSpawns {
 			int weight = MonsterRules.weight(FOXFIRE_KITSUNE_WEIGHT, rate);
 			if (weight > 0) {
 				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.FOXFIRE_KITSUNE, UniformInt.of(1, 1)), weight);
+			}
+		}
+		if (CRAGS.contains(key)) {
+			int weight = MonsterRules.weight(CRAGCLEAVER_RAM_WEIGHT, rate);
+			if (weight > 0) {
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.CRAGCLEAVER_RAM, UniformInt.of(1, 1)), weight);
 			}
 		}
 		if (!QUIET.contains(key)) {

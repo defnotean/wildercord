@@ -959,6 +959,9 @@ def write_lang(runes):
     import kitsune_art
     lang.update(kitsune_art.LANG)
     kitsune_art.write(sys.modules[__name__])
+    import ram_art
+    lang.update(ram_art.LANG)
+    ram_art.write(sys.modules[__name__])
     import dormouse_art
     lang.update(dormouse_art.LANG)
     dormouse_art.write(sys.modules[__name__])
