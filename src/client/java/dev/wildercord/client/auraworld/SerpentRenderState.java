@@ -7,6 +7,8 @@ public final class SerpentRenderState extends net.minecraft.client.renderer.enti
 	public int[] lights=new int[0];
 	/** Which way the head points, and how far its jaw hangs open (0 shut, 1 wide). */
 	public float headX,headY,headZ=1,jaw;
+	/** How far its hood is spread, 0 folded flat to 1 wide. */
+	public float hood;
 	public boolean hurt;
 	public int move;
 }

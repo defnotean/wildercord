@@ -1,7 +1,20 @@
 package dev.wildercord.aura.world;
+import com.google.gson.JsonParser;
+import dev.wildercord.cast.MoveDeck;
 import org.junit.jupiter.api.Test;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 class SerpentRulesTest {
+	private static long[] rested(){long[] a=new long[32];java.util.Arrays.fill(a,9999);return a;}
+	private static double weight(double[] w,int move){
+		for(int i=0;i<SerpentRules.PICKS.length;i++) if(SerpentRules.PICKS[i]==move) return w[i];
+		throw new AssertionError("not a pick: "+move);
+	}
 	@Test void onlyAPlayerOnTheIslandNearItsCoilsWakesIt(){
 		assertTrue(SerpentRules.wakes(5,0,5));
 		assertTrue(SerpentRules.wakes(0,4,7));
@@ -38,16 +51,141 @@ class SerpentRulesTest {
 		assertFalse(SerpentRules.inLair(15,0,15));assertFalse(SerpentRules.inLair(0,12,0));
 		assertFalse(SerpentRules.forgets(1));assertFalse(SerpentRules.forgets(SerpentRules.RESET_TICKS));assertTrue(SerpentRules.forgets(SerpentRules.RESET_TICKS+1));
 	}
-	@Test void itBitesUpCloseLungesFromFurtherOutAndClosesFromBeyond(){
-		assertEquals(SerpentRules.STRIKE,SerpentRules.choose(3,.9,true,true));
-		assertEquals(SerpentRules.CONSTRICT,SerpentRules.choose(3,.1,true,true));
-		assertEquals(SerpentRules.STRIKE,SerpentRules.choose(3,.1,false,true));
-		assertEquals(SerpentRules.LUNGE,SerpentRules.choose(7,.5,true,true));
-		assertEquals(SerpentRules.TAIL_SLAM,SerpentRules.choose(7,.2,true,true));
-		assertEquals(SerpentRules.LUNGE,SerpentRules.choose(7,.2,true,false));
-		assertEquals(SerpentRules.TAIL_SLAM,SerpentRules.choose(12,.5,true,true));
-		assertEquals(-1,SerpentRules.choose(12,.5,true,false));
-		assertEquals(-1,SerpentRules.choose(16,.5,true,true));
+	@Test void itPicksItsBlowsFromWhereItsPreyStands(){
+		long[] since=rested();
+		double[] front=SerpentRules.weights(3,false,since,false);
+		assertTrue(weight(front,SerpentRules.STRIKE)>0 && weight(front,SerpentRules.CONSTRICT)>0 && weight(front,SerpentRules.HOOD_SPRAY)>0);
+		assertEquals(0,weight(front,SerpentRules.LUNGE));
+		double[] back=SerpentRules.weights(4,true,since,false);
+		assertEquals(0,weight(back,SerpentRules.STRIKE));
+		assertEquals(0,weight(back,SerpentRules.HOOD_SPRAY));
+		assertEquals(0,weight(back,SerpentRules.CONSTRICT));
+		for(int m:SerpentRules.PICKS) assertTrue(weight(back,SerpentRules.TAIL_SWEEP)>=weight(back,m),"the tail is what it does to anyone at its back");
+		double[] far=SerpentRules.weights(12,false,since,false);
+		assertTrue(weight(far,SerpentRules.ROOT_LINE)>0 && weight(far,SerpentRules.TAIL_SLAM)>0);
+		assertEquals(0,weight(far,SerpentRules.STRIKE));
+		assertEquals(0,weight(far,SerpentRules.TAIL_SWEEP));
+		for(double w:SerpentRules.weights(16,false,since,false)) assertEquals(0,w);
+		assertEquals(-1,SerpentRules.choose(new MoveDeck(5),16,false,since,false,.5));
+	}
+	@Test void aMoveStillRestingIsNotPickedAndRestsAreShorterRoused(){
+		long[] since=rested();
+		since[SerpentRules.TAIL_SWEEP]=SerpentRules.SWEEP_REST-1;
+		assertEquals(0,weight(SerpentRules.weights(4,true,since,false),SerpentRules.TAIL_SWEEP));
+		assertTrue(weight(SerpentRules.weights(4,true,since,true),SerpentRules.TAIL_SWEEP)>0);
+		for(int m:SerpentRules.PICKS) assertTrue(SerpentRules.rest(m,true)<=SerpentRules.rest(m,false));
+		assertTrue(SerpentRules.rest(SerpentRules.RING_COIL,true)<SerpentRules.rest(SerpentRules.RING_COIL,false));
+		assertEquals(0,SerpentRules.rest(SerpentRules.STRIKE,false));
+	}
+	@Test void itNeverMakesTheSameMoveTwiceRunningAndMixesThemAllUp(){
+		var deck=new MoveDeck(5);
+		var rng=new Random(11);
+		long[] since=rested();
+		Map<Integer,Integer> made=new HashMap<>();
+		int last=-1;
+		for(int i=0;i<300;i++){
+			double d=new double[]{3,6,12}[i%3];
+			boolean behind=i%4==0 && d<12;
+			int m=SerpentRules.choose(deck,d,behind,since,i>150,rng.nextDouble());
+			assertNotEquals(-1,m);
+			assertNotEquals(last,m,"the same move twice running at "+d);
+			made.merge(m,1,Integer::sum);
+			deck.played(m);
+			last=m;
+		}
+		assertTrue(made.size()>=6,"only "+made.keySet());
+		for(int n:made.values()) assertTrue(n<150,"one move made "+n+" times: "+made);
+	}
+	@Test void rousedItsBlowsRunOnIntoOneAnother(){
+		long[] since=rested();
+		assertEquals(-1,SerpentRules.chain(SerpentRules.STRIKE,true,3,false,since,SerpentRules.CHAIN_CHANCE));
+		assertEquals(SerpentRules.TAIL_SWEEP,SerpentRules.chain(SerpentRules.STRIKE,true,3,false,since,.1));
+		assertEquals(SerpentRules.LUNGE,SerpentRules.chain(SerpentRules.STRIKE,false,7,false,since,.1));
+		assertEquals(SerpentRules.STRIKE,SerpentRules.chain(SerpentRules.TAIL_SWEEP,true,4,false,since,.1));
+		assertEquals(SerpentRules.STRIKE,SerpentRules.chain(SerpentRules.LUNGE,true,3,false,since,.1));
+		assertEquals(-1,SerpentRules.chain(SerpentRules.LUNGE,false,3,false,since,.1));
+		assertEquals(SerpentRules.ROOT_LINE,SerpentRules.chain(SerpentRules.TAIL_SLAM,false,10,false,since,.1));
+		assertEquals(SerpentRules.TAIL_SWEEP,SerpentRules.chain(SerpentRules.HOOD_SPRAY,false,4,true,since,.1));
+		assertEquals(-1,SerpentRules.chain(SerpentRules.RING_COIL,true,3,false,since,.1));
+		since[SerpentRules.TAIL_SWEEP]=0;
+		assertEquals(-1,SerpentRules.chain(SerpentRules.STRIKE,true,3,false,since,.1));
+	}
+	@Test void theTailGoesAllTheWayRoundAtAnkleHeight(){
+		assertEquals(SerpentRules.SWEEP_START,SerpentRules.tail(1,0),1e-9);
+		assertEquals(SerpentRules.SWEEP_START-360,SerpentRules.tail(1,SerpentRules.SWEEP_TICKS),1e-9);
+		assertEquals(-SerpentRules.tail(1,3),SerpentRules.tail(-1,3),1e-9);
+		assertTrue(SerpentRules.behind(SerpentRules.SWEEP_START),"it starts from behind");
+		for(int side=-1;side<=1;side+=2) for(int a=-180;a<180;a+=5){
+			boolean swept=false;
+			for(int t=1;t<=SerpentRules.SWEEP_TICKS;t++) swept|=SerpentRules.sweeps(side,t,a,4,0);
+			assertTrue(swept,"the tail misses "+a+" degrees round");
+		}
+		for(int t=1;t<=SerpentRules.SWEEP_TICKS;t++) for(int a=-180;a<180;a+=15){
+			assertFalse(SerpentRules.sweeps(1,t,a,4,1.1),"a jump clears it");
+			assertFalse(SerpentRules.sweeps(1,t,a,SerpentRules.SWEEP_REACH+1,0),"it reaches no further than its tail");
+		}
+		assertFalse(SerpentRules.sweeps(1,1,0,4,0),"at first it is still behind");
+	}
+	@Test void theRootsRunOutAlongTheLineTooTallToJump(){
+		assertEquals(SerpentRules.ROOT_FROM,SerpentRules.roots(0),1e-9);
+		assertEquals(SerpentRules.ROOT_REACH,SerpentRules.roots(999),1e-9);
+		assertTrue(SerpentRules.roots(4)<SerpentRules.roots(5));
+		assertTrue(SerpentRules.rooted(5,0,0,4.5,5.5));
+		assertTrue(SerpentRules.rooted(5,0,1.3,4.5,5.5),"a jump does not clear the roots");
+		assertFalse(SerpentRules.rooted(5,SerpentRules.ROOT_HALF+.5,0,4.5,5.5),"a step off the line does");
+		assertFalse(SerpentRules.rooted(9,0,0,4.5,5.5),"not yet reached");
+		assertFalse(SerpentRules.rooted(2,0,0,4.5,5.5),"already passed");
+		assertTrue(SerpentRules.ROOT_STUCK>SerpentRules.ROOT_TELL,"its head stuck fast is an opening");
+	}
+	@Test void theSpraySweepsAcrossItsFrontAndNeverItsBack(){
+		assertEquals(SerpentRules.SPRAY_HALF,SerpentRules.jet(1,0,false),1e-9);
+		assertEquals(-SerpentRules.SPRAY_HALF,SerpentRules.jet(1,SerpentRules.SPRAY_TICKS,false),1e-9);
+		assertEquals(-SerpentRules.SPRAY_HALF_ROUSED,SerpentRules.jet(-1,0,true),1e-9);
+		assertTrue(SerpentRules.SPRAY_HALF_ROUSED>SerpentRules.SPRAY_HALF);
+		assertTrue(SerpentRules.sprays(0,5,4,0));
+		assertFalse(SerpentRules.sprays(0,40,4,0));
+		assertFalse(SerpentRules.sprays(0,0,SerpentRules.SPRAY_REACH+1,0));
+		for(int t=0;t<=SerpentRules.SPRAY_TICKS;t++) for(int a=125;a<=235;a+=5)
+			assertFalse(SerpentRules.sprays(SerpentRules.jet(1,t,true),a,4,0),"behind it is out of the spray");
+		assertTrue(SerpentRules.SPRAY_HITS*SerpentRules.SPRAY_DAMAGE<SerpentRules.STRIKE_DAMAGE);
+	}
+	@Test void theRingDrawsShutOnAnyoneInsideIt(){
+		assertEquals(SerpentRules.RING_R,SerpentRules.ring(SerpentRules.RING_R,0),1e-9);
+		assertEquals(0,SerpentRules.ring(SerpentRules.RING_R,SerpentRules.RING_CLOSE),1e-9);
+		for(double d=0;d<=SerpentRules.RING_R;d+=.25){
+			boolean caught=false;
+			for(int t=1;t<=SerpentRules.RING_CLOSE;t++) caught|=SerpentRules.closes(d,SerpentRules.ring(SerpentRules.RING_R,t-1),SerpentRules.ring(SerpentRules.RING_R,t),0);
+			assertTrue(caught,"inside at "+d+" it misses");
+		}
+		for(int t=1;t<=SerpentRules.RING_CLOSE;t++)
+			assertFalse(SerpentRules.closes(SerpentRules.RING_R+1.5,SerpentRules.ring(SerpentRules.RING_R,t-1),SerpentRules.ring(SerpentRules.RING_R,t),0),"outside the ring is safe");
+		assertTrue(SerpentRules.RING_SET+SerpentRules.RING_LAP>=20,"time to get out");
+		assertTrue(SerpentRules.RING_R<SerpentRules.RING-SerpentRules.RING_R,"the ring fits on the island");
+	}
+	@Test void theRootsItRousesWithCanBeJumped(){
+		assertTrue(SerpentRules.crosses(5,4.5,5.2,0));
+		assertFalse(SerpentRules.crosses(5,4.5,5.2,1.2));
+		assertFalse(SerpentRules.crosses(8,4.5,5.2,0));
+		assertTrue(SerpentRules.ROUSE_HEIGHT<1.25 && SerpentRules.ROUSE_REACH<=SerpentRules.RING+1);
+		assertTrue(SerpentRules.ROUSE_TELL>SerpentRules.DIVE_TICKS/2 && SerpentRules.ROUSE_TELL<SerpentRules.DIVE_TICKS-4);
+	}
+	@Test void eachMoveHasItsOwnNameAndWindUp(){
+		int[] moves={SerpentRules.WATCH,SerpentRules.STRIKE,SerpentRules.LUNGE,SerpentRules.CONSTRICT,SerpentRules.SQUEEZE,SerpentRules.SIDESTEP,
+			SerpentRules.RECOVER,SerpentRules.DIVE,SerpentRules.SUBMERGED,SerpentRules.BURST,SerpentRules.TAIL_SLAM,SerpentRules.TAIL_SWEEP,
+			SerpentRules.ROOT_LINE,SerpentRules.HOOD_SPRAY,SerpentRules.RING_COIL,SerpentRules.SPRAWLED,SerpentRules.BURIED};
+		var keys=new HashSet<String>();
+		for(int m:moves) assertTrue(keys.add(SerpentRules.key(m)),"two moves called "+SerpentRules.key(m));
+		for(int t:new int[]{SerpentRules.STRIKE_TELL,SerpentRules.LUNGE_TELL,SerpentRules.TAIL_TELL,SerpentRules.CONSTRICT_TELL,
+				SerpentRules.SWEEP_TELL,SerpentRules.ROOT_TELL,SerpentRules.SPRAY_TELL})
+			assertTrue(t>=10 && t<=18,"a wind-up of "+t);
+		assertTrue(SerpentRules.SPRAWL_TICKS>SerpentRules.LUNGE_TELL,"a missed lunge is an opening");
+	}
+	@Test void everyMoveItShowsHasANameOnTheBar() throws Exception{
+		var lang=JsonParser.parseString(Files.readString(Path.of("src/main/resources/assets/wildercord/lang/en_us.json"))).getAsJsonObject();
+		for(int m=SerpentRules.WATCH;m<=SerpentRules.BURIED;m++){
+			if(SerpentRules.scripted(m)) continue;
+			assertTrue(lang.has("boss.wildercord.rootcoil_serpent.move."+SerpentRules.key(m)),SerpentRules.key(m));
+		}
 	}
 	@Test void aBiteReachesAheadAndNotBehindOrWide(){
 		assertTrue(SerpentRules.hits(SerpentRules.STRIKE,4,0,1));
@@ -64,6 +202,10 @@ class SerpentRulesTest {
 		assertTrue(SerpentRules.scales(SerpentRules.WATCH,true)<SerpentRules.scales(SerpentRules.WATCH,false));
 		assertTrue(SerpentRules.scales(SerpentRules.RECOVER,true)>1);
 		assertTrue(SerpentRules.scales(SerpentRules.SUBMERGED,false)<.5);
+		assertTrue(SerpentRules.scales(SerpentRules.SPRAWLED,true)>SerpentRules.scales(SerpentRules.RECOVER,true));
+		assertTrue(SerpentRules.scales(SerpentRules.BURIED,true)>SerpentRules.scales(SerpentRules.RECOVER,true));
+		assertTrue(SerpentRules.scales(SerpentRules.HOOD_SPRAY,true)>1);
+		assertTrue(SerpentRules.scales(SerpentRules.DIVE,true)<.5);
 	}
 	@Test void itSlipsOnlyFrontalBlowsWhileWatchingAndNotTwiceInARow(){
 		assertTrue(SerpentRules.slips(SerpentRules.WATCH,true,SerpentRules.SIDESTEP_REST));
@@ -78,9 +220,8 @@ class SerpentRulesTest {
 	}
 	@Test void itsBlowsSitBelowAMastersAndItsOpeningsOutlastItsTells(){
 		assertTrue(SerpentRules.STRIKE_DAMAGE<MastersRules.Move.SWEEP.damage);
-		assertTrue(SerpentRules.STRIKE_TELL<=4 && SerpentRules.STRIKE_CHAIN_TELL>=3);
-		assertTrue(SerpentRules.STRIKE_RECOVER>SerpentRules.STRIKE_TELL*2 && SerpentRules.LUNGE_RECOVER>SerpentRules.LUNGE_TELL*2);
-		assertTrue(SerpentRules.flurry(0,false)<=SerpentRules.FLURRY && SerpentRules.flurry(.9,true)>=2);
+		assertTrue(SerpentRules.STRIKE_CHAIN_TELL>=SerpentRules.STRIKE_LOCK+3 && SerpentRules.STRIKE_CHAIN_TELL<SerpentRules.STRIKE_TELL);
+		assertTrue(SerpentRules.STRIKE_RECOVER>=SerpentRules.STRIKE_TELL && SerpentRules.LUNGE_RECOVER>=SerpentRules.LUNGE_TELL);
 		assertTrue(SerpentRules.RING-SerpentRules.LUNGE_REACH>0 && SerpentRules.RING<SerpentRules.ARENA);
 		assertEquals("squeeze",SerpentRules.key(SerpentRules.SQUEEZE));
 	}

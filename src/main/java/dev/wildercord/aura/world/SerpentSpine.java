@@ -81,27 +81,55 @@ public final class SerpentSpine {
 	/** The slam: braced high while the tail comes over, then thrown forward as it lands. */
 	static final Pose BRACED = new Pose(new double[][]{{0, 4.9, -0.1}, {0, 3.7, 1.0}, {0, 1.0, 0.8}, BASE}, -10, 0.5);
 	static final Pose THROWN = new Pose(new double[][]{{0, 3.6, 2.2}, {0, 2.4, 2.4}, {0, 0.9, 0.4}, BASE}, 25, 0.6);
+	/** The tail sweep: its head low and turned back over its shoulder toward the tail, then thrown across the other way as it comes round. */
+	static final Pose COCKED = new Pose(new double[][]{{2.0, 2.4, -0.5}, {1.2, 3.7, 1.1}, {0, 1.0, 0.9}, BASE}, 15, 0.55);
+	static final Pose WHIPPED = new Pose(new double[][]{{-1.9, 2.5, 2.2}, {-1.0, 3.4, 1.7}, {0, 0.9, 0.6}, BASE}, 10, 0.3);
+	/** Driving roots: reared as tall as it goes, looking straight down its line; then its head driven into the earth. */
+	static final Pose RAISED = new Pose(new double[][]{{0, 5.5, 1.5}, {0, 4.1, 0.8}, {0, 1.0, 0.8}, BASE}, 60, 0.6);
+	static final Pose BURIED = new Pose(new double[][]{{0, 0.6, 2.9}, {0, 2.7, 2.7}, {0, 1.5, 0.1}, BASE}, 80, 0.1);
+	/** The spray: hood spread and head drawn back, jaws wide; then thrust out and down as it spits. */
+	static final Pose HOODED = new Pose(new double[][]{{0, 4.6, 0.5}, {0, 3.6, 1.4}, {0, 1.0, 0.7}, BASE}, -15, 0.7);
+	static final Pose SPRAYING = new Pose(new double[][]{{0, 3.4, 2.4}, {0, 3.3, 1.6}, {0, 1.0, 0.6}, BASE}, 20, 1.0);
+	/** Coiling round: its head low and out in front, running. */
+	static final Pose RINGING = new Pose(new double[][]{{0, 1.1, 4.4}, {0, 1.2, 2.6}, {0, 0.85, 0.9}, BASE}, 10, 0.3);
+	/** Sprawled: its head flat on the ground, jaws hanging, panting. */
+	static final Pose SPRAWLED = new Pose(new double[][]{{0, 0.6, 4.6}, {0, 0.7, 3.0}, {0, 0.75, 1.0}, BASE}, 5, 0.6);
 
 	/**
 	 * The neck's pose {@code el} ticks into {@code move}, whose tell is {@code tell} ticks. These are targets: the renderer eases
 	 * toward each, fast enough that a bite still lands as the blow does.
 	 */
 	public static Pose pose(int move, float el, int tell) {
-		return switch (move) {
+		return pose(move, el, tell, 1);
+	}
+
+	/** {@link #pose(int, float, int)} for a blow swung to {@code side}, 1 or -1: a sweep to the other side is the same, mirrored. */
+	public static Pose pose(int move, float el, int tell, int side) {
+		Pose p = switch (move) {
 			// The snap begins a tick before the bite lands, so the jaws meet as the damage does.
 			case SerpentRules.STRIKE -> el < tell - 1 ? DRAWN : BITE;
-			case SerpentRules.LUNGE -> el <= SerpentRules.LUNGE_TELL ? WOUND : FLUNG;
+			case SerpentRules.LUNGE -> el < tell ? WOUND : FLUNG;
 			case SerpentRules.CONSTRICT -> GRAB;
 			case SerpentRules.SQUEEZE -> LOOM;
 			case SerpentRules.SIDESTEP -> DUCK;
 			case SerpentRules.RECOVER -> SPENT;
-			case SerpentRules.DIVE -> el < SerpentRules.DIVE_TICKS / 2F ? TOWERING : PLUNGE;
+			case SerpentRules.DIVE -> el < tell ? TOWERING : PLUNGE;
 			case SerpentRules.SUBMERGED -> SWIMMING;
 			// Out of the water it climbs nose up, then comes down on its prey.
 			case SerpentRules.BURST -> new Pose(FLUNG.neck(), -30 + 60 * Math.min(1, el / SerpentRules.BURST_TICKS), 0.9);
 			case SerpentRules.TAIL_SLAM -> el < tell ? BRACED : THROWN;
+			case SerpentRules.TAIL_SWEEP -> el < tell ? COCKED : WHIPPED;
+			case SerpentRules.ROOT_LINE -> el < tell ? RAISED : BURIED;
+			case SerpentRules.BURIED -> BURIED;
+			case SerpentRules.HOOD_SPRAY -> el < tell ? HOODED : SPRAYING;
+			case SerpentRules.RING_COIL -> RINGING;
+			case SerpentRules.SPRAWLED -> SPRAWLED;
 			default -> WATCHING;
 		};
+		if (side >= 0 || move != SerpentRules.TAIL_SWEEP) return p;
+		double[][] neck = new double[4][];
+		for (int k = 0; k < 4; k++) neck[k] = new double[]{-p.neck()[k][0], p.neck()[k][1], p.neck()[k][2]};
+		return new Pose(neck, p.pitch(), p.jaw());
 	}
 
 	/**
@@ -174,6 +202,48 @@ public final class SerpentSpine {
 			path.add(new double[]{tip[0] * 0.5, tip[1], tip[2] + 8});
 		}
 		return resample(path, 0, JOINTS - neckJoints() + 1);
+	}
+
+	/**
+	 * The body behind the neck during a tail sweep to {@code side}, {@code el} ticks in with a tell of {@code tell}, in the body
+	 * frame: from {@link #BASE} to the tail's tip, as {@link #JOINTS} - {@link #neckJoints()} + 1 joints. It lies in a loose spiral
+	 * round its feet with the tail running straight out of it to {@link SerpentRules#SWEEP_REACH}, the way
+	 * {@link SerpentRules#tail} points; through the tell the tip is lifted off the ground and rattles, and as the tail comes round
+	 * the spiral winds in tighter after it.
+	 */
+	public static double[][] sweep(float el, int tell, int side) {
+		int count = JOINTS - neckJoints() + 1;
+		// The tail is all the way round on the tick the blow ends.
+		double total = (count - 1) * SEG, swung = Math.max(0, el - tell) * SerpentRules.SWEEP_TICKS / (SerpentRules.SWEEP_TICKS - 1.0);
+		double turn = Math.toRadians(390 + 360 * Math.min(1, swung / SerpentRules.SWEEP_TICKS));
+		double tip = Math.toRadians(SerpentRules.tail(side, swung));
+		double lift = el < tell ? smooth(el / 4.0) : Math.max(0, 1 - swung / 1.5);
+		double lo = 0.6, hi = 7;
+		List<double[]> path = null;
+		for (int i = 0; i < 30; i++) {
+			double mid = (lo + hi) / 2;
+			path = sweepPath(mid, turn, tip, side, lift, el);
+			if (length(path) < total) lo = mid;
+			else hi = mid;
+		}
+		return resample(path, 0, count);
+	}
+
+	/** The sweep's body laid out as a spiral from {@link #BASE} out to {@code reach} round its feet, then the tail straight out. */
+	private static List<double[]> sweepPath(double reach, double turn, double tip, int side, double lift, float el) {
+		List<double[]> path = new ArrayList<>();
+		double r0 = Math.hypot(BASE[0], BASE[2]), a0 = Math.atan2(BASE[0], BASE[2]);
+		for (int i = 0; i <= 96; i++) {
+			double u = i / 96.0, a = a0 - side * turn * u, r = r0 + (reach - r0) * u;
+			path.add(new double[]{Math.sin(a) * r, BASE[1] + (0.7 - BASE[1]) * u, Math.cos(a) * r});
+		}
+		double out = SerpentRules.SWEEP_REACH, sx = Math.sin(tip), sz = Math.cos(tip);
+		for (int i = 1; i <= 24; i++) {
+			double r = reach + (out - reach) * i / 24.0, up = lift * smooth((r - (out - 3)) / 3);
+			double shake = up * Math.sin(el * 2.6) * 0.3;
+			path.add(new double[]{sx * r + sz * shake, 0.7 + up * 1.9, sz * r - sx * shake});
+		}
+		return path;
 	}
 
 	private static double[] lerp(double[] a, double[] b, double t) {

@@ -21,7 +21,8 @@ class SerpentSpineTest {
 		}
 	}
 	private static final int[] MOVES={SerpentRules.WATCH,SerpentRules.STRIKE,SerpentRules.LUNGE,SerpentRules.CONSTRICT,SerpentRules.SQUEEZE,
-		SerpentRules.SIDESTEP,SerpentRules.RECOVER,SerpentRules.DIVE,SerpentRules.SUBMERGED,SerpentRules.BURST,SerpentRules.TAIL_SLAM};
+		SerpentRules.SIDESTEP,SerpentRules.RECOVER,SerpentRules.DIVE,SerpentRules.SUBMERGED,SerpentRules.BURST,SerpentRules.TAIL_SLAM,
+		SerpentRules.TAIL_SWEEP,SerpentRules.ROOT_LINE,SerpentRules.HOOD_SPRAY,SerpentRules.RING_COIL,SerpentRules.SPRAWLED,SerpentRules.BURIED};
 
 	@Test void itsBodyIsFarThickerThanAPlayerAndItsCoilClearsTheTrunk(){
 		assertTrue(SerpentSpine.GIRTH*2>1.5);
@@ -72,6 +73,40 @@ class SerpentSpineTest {
 		for(double[] j:SerpentSpine.slam(SerpentRules.TAIL_TELL,SerpentRules.TAIL_TELL))
 			struck|=j[1]<1 && Math.abs(j[0])<2 && Math.abs(j[2]-SerpentRules.SLAM_AHEAD)<SerpentRules.SHOCK_RADIUS;
 		assertTrue(struck,"the tail never comes down where the shock lands");
+	}
+	@Test void eachNewMoveHasItsOwnPoseAndASweepTheOtherWayIsMirrored(){
+		var seen=new java.util.HashSet<SerpentSpine.Pose>();
+		for(int move:new int[]{SerpentRules.TAIL_SWEEP,SerpentRules.ROOT_LINE,SerpentRules.HOOD_SPRAY})
+			for(float el:new float[]{0,10}) assertTrue(seen.add(SerpentSpine.pose(move,el,6)),SerpentRules.key(move)+" shares a pose");
+		for(int move:new int[]{SerpentRules.RING_COIL,SerpentRules.SPRAWLED,SerpentRules.WATCH})
+			assertTrue(seen.add(SerpentSpine.pose(move,0,6)),SerpentRules.key(move)+" shares a pose");
+		for(float el:new float[]{0,10}){
+			double[][] right=SerpentSpine.pose(SerpentRules.TAIL_SWEEP,el,6,1).neck(),left=SerpentSpine.pose(SerpentRules.TAIL_SWEEP,el,6,-1).neck();
+			for(int k=0;k<4;k++){assertEquals(-right[k][0],left[k][0],1e-9);assertEquals(right[k][1],left[k][1],1e-9);assertEquals(right[k][2],left[k][2],1e-9);}
+		}
+		assertSame(SerpentSpine.pose(SerpentRules.ROOT_LINE,0,6),SerpentSpine.pose(SerpentRules.ROOT_LINE,0,6,-1));
+		assertTrue(SerpentSpine.pose(SerpentRules.ROOT_LINE,0,6).neck()[0][1]>5,"it rears tall to drive its roots");
+		assertTrue(SerpentSpine.pose(SerpentRules.BURIED,0,6).neck()[0][1]<1,"its head is in the earth");
+	}
+	@Test void theSweepLaysItsBodyRoundItsFeetAndSwingsTheTailAllTheWayRound(){
+		int count=SerpentSpine.JOINTS-SerpentSpine.neckJoints()+1,tell=SerpentRules.SWEEP_TELL;
+		for(int side=-1;side<=1;side+=2) for(float el=0;el<=tell+SerpentRules.SWEEP_TICKS;el+=.5F){
+			double[][] body=SerpentSpine.sweep(el,tell,side);
+			spaced(body,count);
+			assertArrayEquals(SerpentSpine.BASE,body[0],1e-6);
+			for(double[] j:body) assertTrue(j[1]>-.01,"the sweep's body goes into the ground at "+el);
+		}
+		double top=0;
+		for(double[] j:SerpentSpine.sweep(tell-1,tell,1)) top=Math.max(top,j[1]);
+		assertTrue(top>2,"the tail is not lifted through the wind-up: "+top);
+		for(int side=-1;side<=1;side+=2) for(int t:new int[]{2,4,6,SerpentRules.SWEEP_TICKS}){
+			float el=tell+t*(SerpentRules.SWEEP_TICKS-1F)/SerpentRules.SWEEP_TICKS;
+			double[] tip=SerpentSpine.sweep(el,tell,side)[count-1];
+			assertEquals(SerpentRules.SWEEP_REACH,Math.hypot(tip[0],tip[2]),.3,"the tail reaches "+Math.hypot(tip[0],tip[2]));
+			double off=SerpentRules.wrap(Math.toDegrees(Math.atan2(tip[0],tip[2]))-SerpentRules.tail(side,t));
+			assertEquals(0,off,4,"the tail lies "+off+" degrees off where the blow is at tick "+t);
+			assertTrue(tip[1]<SerpentRules.SWEEP_HEIGHT+.2,"the tail swings at ankle height, not "+tip[1]);
+		}
 	}
 	@Test void theBodyIsThirtyBlocksAndSwellsBehindTheNeck(){
 		assertEquals(30,SerpentSpine.LENGTH,1e-9);
