@@ -113,6 +113,11 @@ class FrostWyrmlingRulesTest {
 	@Test void rearedForItsLancesItsBellyIsBared(){
 		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.LANCES,true)>1);
 	}
+	@Test void theRimescaleBitesBackOnlyOnceRimedOverAgain(){
+		assertTrue(FrostWyrmlingRules.rimes(FrostWyrmlingRules.RIME_REST));
+		assertFalse(FrostWyrmlingRules.rimes(FrostWyrmlingRules.RIME_REST-1));
+		assertTrue(FrostWyrmlingRules.SCALE_GUARD>FrostWyrmlingRules.WAKE_RADIUS);
+	}
 	@Test void leftAloneLongEnoughItCurlsUp(){
 		assertFalse(FrostWyrmlingRules.forgets(FrostWyrmlingRules.RESET_TICKS));
 		assertTrue(FrostWyrmlingRules.forgets(FrostWyrmlingRules.RESET_TICKS+1));

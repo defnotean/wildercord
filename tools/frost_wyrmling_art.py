@@ -27,6 +27,12 @@ for name, text in {'watch': 'Watching', 'bite': 'Biting', 'tail': 'Sweeping', 'w
                    'pounce': 'Pouncing', 'bound': 'Bounding', 'recover': 'Spent', 'lances': 'Rime Lances'}.items():
     LANG['boss.wildercord.frost_wyrmling.move.' + name] = text
 
+LANG['block.wildercord.rimescale'] = 'Rimescale'
+LANG['message.wildercord.rimescale.take'] = "The scale's cold sinks into you. Frost cannot hurt you now, and it bites back at whatever strikes you."
+LANG['message.wildercord.rimescale.bound'] = "The Wyrmling's cold is already in you."
+LANG['message.wildercord.rimescale.guarded'] = 'The Frost Wyrmling still keeps its hall.'
+LANG['message.wildercord.rimescale.rime'] = 'Frost bites back.'
+
 # Icy blue scales, deeper along the back; a pale frost-white belly; horns and spines like old ice; pale, veined wing membranes.
 SCALE, SCALE_DEEP, SCALE_PALE = (128, 172, 206), (70, 108, 152), (176, 210, 232)
 BELLY, BELLY_SHADE = (226, 238, 246), (186, 206, 222)
@@ -106,3 +112,37 @@ def write(g):
     g.write_json(g.DATA / 'loot_table/entities/frost_wyrmling.json', {'type': 'minecraft:entity', 'pools': []})
     g.save(skin(), g.ASSETS / 'textures/entity/frost_wyrmling/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/frost_wyrmling/glow.png')
+    g.save(scale(), g.ASSETS / 'textures/block/rimescale.png')
+    # A broad scale standing up in the snow and leaning back a little, widest a third of the way up, tapering to a point.
+    def plate(x0, y0, x1, y1):
+        front = [x0, 16 - y1, x1, 16 - y0]
+        edge = [0, 16 - y1, 1, 16 - y0]
+        return {'from': [x0, y0, 7.25], 'to': [x1, y1, 8.75], 'rotation': {'origin': [8, 0, 8], 'axis': 'x', 'angle': -22.5},
+                'faces': {'north': {'texture': '#s', 'uv': front}, 'south': {'texture': '#s', 'uv': front},
+                          'east': {'texture': '#s', 'uv': edge}, 'west': {'texture': '#s', 'uv': edge},
+                          'up': {'texture': '#s', 'uv': [x0, 0, x1, 1]}, 'down': {'texture': '#s', 'uv': [x0, 15, x1, 16]}}}
+    g.write_json(g.ASSETS / 'models/block/rimescale.json', {
+        'parent': 'minecraft:block/block', 'textures': {'particle': 'wildercord:block/rimescale', 's': 'wildercord:block/rimescale'},
+        'elements': [plate(5, 0, 11, 3), plate(3, 3, 13, 8), plate(4, 8, 12, 11), plate(5, 11, 11, 13), plate(6.5, 13, 9.5, 15)]})
+    g.write_json(g.ASSETS / 'blockstates/rimescale.json', {'variants': {'': {'model': 'wildercord:block/rimescale'}}})
+    g.write_json(g.ASSETS / 'items/rimescale.json', {'model': {'type': 'minecraft:model', 'model': 'wildercord:block/rimescale'}})
+
+
+def scale():
+    """The Rimescale, 16 x 16: an icy blue scale, deeper at its root, ridged down the middle, its edges and tip white with rime."""
+    rng = np.random.default_rng(20261011)
+    px = np.zeros((16, 16, 4), np.uint8)
+    for y in range(16):
+        for x in range(16):
+            up = (15 - y) / 15
+            c = mixc(SCALE_DEEP, SCALE_PALE, .2 + .6 * up + .15 * rng.random())
+            if abs(x - 7.5) < 1:
+                c = mixc(c, HORN, .45)
+            elif (x + y) % 4 == 0:
+                c = mixc(c, SCALE, .4)
+            # Rime creeps in from the edges and gathers at the tip.
+            edge = min(x, 15 - x, y)
+            if edge < 2 or rng.random() < .08 + .25 * up * up:
+                c = mixc(c, FROST_HOT if rng.random() < .5 else BELLY, .7 if edge < 1 else .5)
+            px[y, x] = (*c, 255)
+    return Image.fromarray(px, 'RGBA')

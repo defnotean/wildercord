@@ -177,6 +177,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Whether this player has taken up the Rimescale from the Frost Wyrmling's mound. */
+	public static final AttachmentType<Boolean> RIMESCALE = AttachmentRegistry.create(
+		Wildercord.id("rimescale"),
+		builder -> builder
+			.initializer(() -> false)
+			.persistent(Codec.BOOL)
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Has taken up the Cinder Antler the Ashen Stag guards: a sprint ends in a gore. Kept through death. */
 	public static final AttachmentType<Boolean> CINDER_ANTLER = AttachmentRegistry.create(
 		Wildercord.id("cinder_antler"),

@@ -136,6 +136,8 @@ public final class GlacierDenPiece extends DungeonPiece {
 		frozenDead(level,bb);
 		crevasse(level,bb);
 		camp(level,bb);
+		// Stuck upright in the snow behind the crown of its mound, where it lies: the Rimescale, a scale it shed.
+		set(level,bb,dev.wildercord.aura.world.Rimescale.BLOCK.defaultBlockState(),NEST_X+2,FLOOR+1+mound(dist(NEST_X+2,NEST_Z+3,NEST_X,NEST_Z)),NEST_Z+3);
 		wyrmling(level,bb);
 	}
 

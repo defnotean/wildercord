@@ -136,6 +136,20 @@ public final class FrostWyrmlingRules {
 		return along >= LANCE_START - LANCE_RADIUS && along <= front + 0.3 && Math.abs(across) <= LANCE_RADIUS && height > -1.5 && height < 2.5;
 	}
 
+	/**
+	 * The Rimescale, taken up once the Wyrmling is dead: its bearer never freezes, and whatever hostile strikes them in melee is bitten
+	 * by frost in return, slowed, chilled through and hurt a little; then the scale must rime over again, {@link #RIME_REST} ticks.
+	 */
+	public static final int RIME_REST = 100, RIME_SLOW = 80, RIME_FROST = 160;
+	public static final double RIME_DAMAGE = 3;
+	/** A living Wyrmling this close keeps anyone from the scale. */
+	public static final double SCALE_GUARD = 48;
+
+	/** Whether the scale bites back at a blow {@code sinceRime} ticks after it last did. */
+	public static boolean rimes(long sinceRime) {
+		return sinceRime >= RIME_REST;
+	}
+
 	/** Ticks between its blows, fewer once it is wounded. */
 	public static final int GAP = 9, GAP_WOUNDED = 5;
 

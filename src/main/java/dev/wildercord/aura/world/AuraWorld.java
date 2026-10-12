@@ -117,6 +117,7 @@ public final class AuraWorld {
 		BellShard.init();
 		CinderAntler.init();
 		WeaversSilk.init();
+		Rimescale.init();
 		SleepingBlades.init();
 		AuraBeasts.init();
 		VillageTournaments.init();
