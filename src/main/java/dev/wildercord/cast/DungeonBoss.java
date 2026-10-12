@@ -60,6 +60,11 @@ import java.util.UUID;
  *
  * <p>The client only needs a few bits of its state for poses and glows; they're synced in one byte
  * ({@link #CASTING} and friends) and eased on the client like the Archivist's.</p>
+ *
+ * <p>What it does next is picked from a {@link MoveDeck}, never the same thing twice running: its phase's spells (each weighed
+ * by {@link #spellWeight}, and only when it can see whoever it's fighting in range) and any moves of its own ({@link #ownMoves},
+ * weighed by {@link #weigh}), each with its own tell and pose. Its own move under way is synced ({@link #currentMove}) so the
+ * client can pose it, eased in and out like the giants'.</p>
  */
 public abstract class DungeonBoss extends Monster {
 	/** Telegraphing a spell. */
@@ -74,6 +79,16 @@ public abstract class DungeonBoss extends Monster {
 	public static final int SLAMMING = 16;
 
 	private static final EntityDataAccessor<Byte> DATA_STATE = SynchedEntityData.defineId(DungeonBoss.class, EntityDataSerializers.BYTE);
+	private static final EntityDataAccessor<Integer> DATA_MOVE = SynchedEntityData.defineId(DungeonBoss.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> DATA_MOVE_TELL = SynchedEntityData.defineId(DungeonBoss.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Long> DATA_MOVE_BEGAN = SynchedEntityData.defineId(DungeonBoss.class, EntityDataSerializers.LONG);
+
+	/** Its own moves the client eases a pose for: ids 1 up to this, less one. */
+	public static final int MOVES = 24;
+	/** Its spells in its deck: spell {@code i} of its phase is move {@code SPELL + i}. */
+	protected static final int SPELL = 100;
+	/** How many moves its deck remembers. */
+	private static final int MEMORY = 4;
 
 	protected static final int TELEGRAPH = 28;
 	protected static final int SHIFT_TICKS = 60;
@@ -92,7 +107,12 @@ public abstract class DungeonBoss extends Monster {
 	protected long castAt;
 	protected List<RuneDef> casting;
 	protected LivingEntity castTarget;
-	private int spellIndex;
+	/** What it did lately, so it picks something else next. */
+	protected final MoveDeck deck = new MoveDeck(MEMORY);
+	/** Its own move under way (0: none), that move's tell, ticks into it, and ticks left of it. */
+	protected int move, moveTell, moveSince, moveLeft;
+	/** Whoever it began its move under way at. */
+	protected LivingEntity moveTarget;
 	private Component shownName;
 	/** Every player who has hurt it (saved), for their share of its loot. */
 	private final Set<UUID> fighters = new LinkedHashSet<>();
@@ -109,6 +129,8 @@ public abstract class DungeonBoss extends Monster {
 	private float exposedPoseO;
 	private float slamPose;
 	private float slamPoseO;
+	private final float[] moveBlend = new float[MOVES];
+	private final float[] moveBlendO = new float[MOVES];
 
 	protected DungeonBoss(EntityType<? extends DungeonBoss> type, Level level, BossEvent.BossBarColor color) {
 		super(type, level);
@@ -120,7 +142,7 @@ public abstract class DungeonBoss extends Monster {
 
 	// ------------------------------------------------------------------ what each boss says about itself
 
-	/** The spells it casts in a phase (1 to 3), in turn. */
+	/** The spells it casts in a phase (1 to 3), picked among with its own moves. */
 	protected abstract List<List<RuneDef>> spells(int phase);
 
 	/** The Grimoire feat everyone near earns when it falls. */
@@ -145,6 +167,44 @@ public abstract class DungeonBoss extends Monster {
 
 	/** How it moves toward (or around) its target when it isn't casting. */
 	protected abstract void approach(ServerLevel level, LivingEntity target);
+
+	/** How many moves of its own it has (ids 1 up to this); none by default, when it only casts its spells. */
+	protected int ownMoves() {
+		return 0;
+	}
+
+	/**
+	 * How much it wants each of its own moves at {@code target} now, into {@code weights} by move id (nothing or less: not now).
+	 * The deck picks among these and its spells, and never the same one twice running while there's anything else.
+	 */
+	protected void weigh(ServerLevel level, LivingEntity target, double[] weights) {
+	}
+
+	/** How much it wants to cast spell {@code index} of its phase at {@code target}, asked only once it can see them in range. */
+	protected double spellWeight(ServerLevel level, LivingEntity target, int index) {
+		return 1;
+	}
+
+	/** Starts its own {@code move} at {@code target}: it gives the move its tell and length with {@link #pose}. */
+	protected void beginMove(ServerLevel level, int move, LivingEntity target) {
+	}
+
+	/** Each tick of its own {@code move}, {@code t} ticks in (its tell first); {@code target} may have gone (null). */
+	protected void moveTick(ServerLevel level, int move, int t, LivingEntity target) {
+	}
+
+	/** When its own {@code move} has run its length: it may go straight on into another with {@link #pose} (a stagger, a second go). */
+	protected void moveDone(ServerLevel level, int move, LivingEntity target) {
+	}
+
+	/** When its own {@code move} is broken off (between phases, interrupted, or dying): clear up whatever it left about. */
+	protected void moveBroken(ServerLevel level, int move) {
+	}
+
+	/** Ticks of rest after its own {@code move} before it picks again (after a spell it's {@link #pause}). */
+	protected int rest(ServerLevel level, int move) {
+		return pause(level) / 2;
+	}
 
 	/** Whether it may start a new spell now (the Warden won't while it's winding up a blow). */
 	protected boolean mayCast(ServerLevel level, LivingEntity target) {
@@ -238,6 +298,9 @@ public abstract class DungeonBoss extends Monster {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(DATA_STATE, (byte) 0);
+		builder.define(DATA_MOVE, 0);
+		builder.define(DATA_MOVE_TELL, 0);
+		builder.define(DATA_MOVE_BEGAN, 0L);
 	}
 
 	public boolean state(int flag) {
@@ -281,6 +344,11 @@ public abstract class DungeonBoss extends Monster {
 			returnHome(level);
 		}
 		mechanic(level, now);
+		if (move > 0) {
+			tickMove(level, now);
+			updateName(null);
+			return;
+		}
 		LivingEntity target = getTarget();
 		if (castAt > 0) {
 			getNavigation().stop();
@@ -301,12 +369,26 @@ public abstract class DungeonBoss extends Monster {
 			return;
 		}
 		approach(level, target);
-		if (now < readyAt || !hasLineOfSight(target) || distanceTo(target) > castRange() || !mayCast(level, target)) {
+		if (now < readyAt) {
 			updateName(null);
 			return;
 		}
-		List<List<RuneDef>> spells = spells(phase);
-		casting = spells.get(spellIndex++ % spells.size());
+		int picked = pick(level, target);
+		if (picked < 0) {
+			updateName(null);
+			return;
+		}
+		deck.played(picked);
+		if (picked < SPELL) {
+			moveTarget = target;
+			beginMove(level, picked, target);
+			if (move == 0) {
+				readyAt = now + rest(level, picked);
+			}
+			updateName(null);
+			return;
+		}
+		casting = spells(phase).get(picked - SPELL);
 		castTarget = target;
 		castAt = now + TELEGRAPH;
 		setState(CASTING, true);
@@ -325,7 +407,8 @@ public abstract class DungeonBoss extends Monster {
 		shifting = SHIFT_TICKS;
 		castAt = 0;
 		casting = null;
-		spellIndex = 0;
+		deck.clear();
+		breakMove(level);
 		setState(CASTING, false);
 		setState(SHIFTING, true);
 		onPhase(level, phase);
@@ -359,11 +442,88 @@ public abstract class DungeonBoss extends Monster {
 		Runebound.cast(level, this, spell, power());
 	}
 
-	/** Breaks off a spell it was telegraphing (stunned, stranded, its shield shattered). */
+	/** Which of its spells and moves to make next at {@code target}, or -1 if none will do now. */
+	private int pick(ServerLevel level, LivingEntity target) {
+		List<List<RuneDef>> spells = spells(phase);
+		int own = ownMoves();
+		int[] moves = new int[own + spells.size()];
+		double[] weights = new double[moves.length];
+		if (own > 0) {
+			double[] mine = new double[own + 1];
+			weigh(level, target, mine);
+			for (int i = 0; i < own; i++) {
+				moves[i] = i + 1;
+				weights[i] = mine[i + 1];
+			}
+		}
+		boolean cast = hasLineOfSight(target) && distanceTo(target) <= castRange() && mayCast(level, target);
+		for (int i = 0; i < spells.size(); i++) {
+			moves[own + i] = SPELL + i;
+			weights[own + i] = cast ? spellWeight(level, target, i) : 0;
+		}
+		return deck.pick(moves, weights, random.nextDouble());
+	}
+
+	/** A tick of its own move under way, and what follows when it has run its length. */
+	private void tickMove(ServerLevel level, long now) {
+		LivingEntity target = moveTarget != null && moveTarget.isAlive() && moveTarget.level() == level ? moveTarget : null;
+		int playing = move, began = moveSince;
+		moveTick(level, playing, moveSince, target);
+		// The move may have changed itself (broken off, or gone on into another).
+		if (move != playing || moveSince != began) {
+			return;
+		}
+		moveSince++;
+		if (--moveLeft <= 0) {
+			move = 0;
+			moveDone(level, playing, target);
+			if (move == 0) {
+				endMove();
+				readyAt = now + rest(level, playing);
+			}
+		}
+	}
+
+	/**
+	 * Makes {@code move} its move under way, {@code length} ticks in all with a tell of {@code tell} first, synced for the client's
+	 * pose. Called again during a move, it goes on into the new one from its start.
+	 */
+	protected void pose(int move, int tell, int length) {
+		this.move = move;
+		this.moveTell = tell;
+		this.moveSince = 0;
+		this.moveLeft = Math.max(1, length);
+		entityData.set(DATA_MOVE, move);
+		entityData.set(DATA_MOVE_TELL, tell);
+		entityData.set(DATA_MOVE_BEGAN, level().getGameTime());
+	}
+
+	/** Its move under way stops without anything more. */
+	private void endMove() {
+		move = 0;
+		moveLeft = 0;
+		moveSince = 0;
+		entityData.set(DATA_MOVE, 0);
+	}
+
+	/** Breaks off its own move under way, if any, letting it clear up. */
+	protected void breakMove(ServerLevel level) {
+		if (move > 0) {
+			int was = move;
+			endMove();
+			moveBroken(level, was);
+			readyAt = Math.max(readyAt, level.getGameTime() + 20);
+		}
+	}
+
+	/** Breaks off a spell it was telegraphing or its own move (stunned, stranded, its shield shattered). */
 	protected void interrupt() {
 		castAt = 0;
 		casting = null;
 		setState(CASTING, false);
+		if (level() instanceof ServerLevel level) {
+			breakMove(level);
+		}
 		updateName(null);
 	}
 
@@ -478,6 +638,7 @@ public abstract class DungeonBoss extends Monster {
 			return;
 		}
 		bossEvent.setProgress(0);
+		breakMove(level);
 		// Its keepers go with it.
 		for (UUID id : minions) {
 			if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
@@ -650,7 +811,32 @@ public abstract class DungeonBoss extends Monster {
 			guardPose = Mth.approach(guardPose, state(GUARDED) ? 1 : 0, 0.08F);
 			exposedPose = Mth.approach(exposedPose, state(EXPOSED) ? 1 : 0, 0.15F);
 			slamPose = Mth.approach(slamPose, state(SLAMMING) ? 1 : 0, 0.25F);
+			int now = currentMove();
+			for (int i = 0; i < MOVES; i++) {
+				moveBlendO[i] = moveBlend[i];
+				moveBlend[i] = Mth.approach(moveBlend[i], i == now ? 1 : 0, 0.25F);
+			}
 		}
+	}
+
+	/** Its own move under way, 0 for none (either side). */
+	public int currentMove() {
+		return entityData.get(DATA_MOVE);
+	}
+
+	/** The tell of its own move under way, in ticks. */
+	public int moveTell() {
+		return entityData.get(DATA_MOVE_TELL);
+	}
+
+	/** Ticks into its own move under way, with the partial tick (client). */
+	public float moveSince(float partial) {
+		return (float) (level().getGameTime() - entityData.get(DATA_MOVE_BEGAN)) + partial;
+	}
+
+	/** How far its pose for its own {@code move} has eased in, 0 to 1 (client). */
+	public float moveBlend(int move, float partial) {
+		return move <= 0 || move >= MOVES ? 0 : Mth.lerp(partial, moveBlendO[move], moveBlend[move]);
 	}
 
 	/** Casting: arms raised, its circle blazing. 0 to 1. */

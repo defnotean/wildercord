@@ -54,6 +54,12 @@ public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends Entit
 		state.slamming = boss.slamPose(partial);
 		state.phase = boss.phase();
 		state.rootBindings = boss instanceof dev.wildercord.cast.RootGuardian root ? root.bindings() : 3;
+		state.move = boss.currentMove();
+		state.since = boss.moveSince(partial);
+		state.tell = boss.moveTell();
+		for (int i = 1; i < DungeonBoss.MOVES; i++) {
+			state.moves[i] = boss.moveBlend(i, partial);
+		}
 	}
 
 	@Override
