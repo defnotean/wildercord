@@ -974,6 +974,9 @@ def write_lang(runes):
     import mantis_art
     lang.update(mantis_art.LANG)
     mantis_art.write(sys.modules[__name__])
+    import sandmaw_art
+    lang.update(sandmaw_art.LANG)
+    sandmaw_art.write(sys.modules[__name__])
     import dormouse_art
     lang.update(dormouse_art.LANG)
     dormouse_art.write(sys.modules[__name__])

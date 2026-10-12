@@ -49,6 +49,7 @@ public final class MonsterClient {
 		ModelLayerRegistry.registerModelLayer(DripfangLurkerRenderer.LAYER, DripfangLurkerModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(GlowlureAnglerRenderer.LAYER, GlowlureAnglerModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(BloomclawMantisRenderer.LAYER, BloomclawMantisModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(SandmawWyrmRenderer.LAYER, SandmawWyrmModel::createLayer);
 
 		EntityRendererRegistry.register(MonsterContent.BRAMBLEWALKER, MonsterClient::bramblewalker);
 		EntityRendererRegistry.register(MonsterContent.GLOOMSTALKER, GloomstalkerRenderer::new);
@@ -74,6 +75,7 @@ public final class MonsterClient {
 		EntityRendererRegistry.register(MonsterContent.DRIPFANG_LURKER, DripfangLurkerRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.GLOWLURE_ANGLER, GlowlureAnglerRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.BLOOMCLAW_MANTIS, BloomclawMantisRenderer::new);
+		EntityRendererRegistry.register(MonsterContent.SANDMAW_WYRM, SandmawWyrmRenderer::new);
 	}
 
 	/** Its eyes, and the green veins in its vines, which blaze as it rears for the lash. */
