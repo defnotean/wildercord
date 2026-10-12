@@ -68,6 +68,10 @@ public final class WildlifeRules {
 	public static final Kind THISTLE_HEDGEHOG = new Kind("thistle_hedgehog", Pool.CREATURE, 6, 1, 3, 1 / 2.0, 4, 48, List.of(
 		"minecraft:meadow", "minecraft:plains", "minecraft:sunflower_plains", "minecraft:forest", "minecraft:flower_forest",
 		"minecraft:birch_forest", "minecraft:cherry_grove"));
+	/** The snowcap stoat: a little hunter of the snowy plains, taigas and slopes, alone or in twos (its own module, so not in {@link #ALL}). */
+	public static final Kind SNOWCAP_STOAT = new Kind("snowcap_stoat", Pool.CREATURE, 5, 1, 2, 1 / 2.0, 4, 48, List.of(
+		"minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:grove", "minecraft:snowy_slopes", "minecraft:taiga",
+		"minecraft:old_growth_spruce_taiga"));
 
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);

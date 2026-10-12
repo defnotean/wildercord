@@ -32,12 +32,15 @@ public class WildlifeRenderState extends LivingEntityRenderState {
 	public float hide;
 	/** A hedgehog's sneeze, 1 as it starts and easing back to 0. */
 	public float sneeze;
+	/** A stoat dancing its war dance, and down in the snow. */
+	public float dance;
+	public float dive;
 	/** A cinderfox sitting. */
 	public float sit;
 	/** A newt settled beneath a reed roof. */
 	public float rest;
  public float claws,strike,settle;
-	/** A rimehare in the air (0 on the ground, 1 at the top of a bound), whether it's rising, and sitting up on alert. */
+	/** A rimehare in the air (0 on the ground, 1 at the top of a bound), whether it's rising, and sitting up on alert (a stoat standing up to look about). */
 	public float air;
 	public float rise;
 	public float alert;

@@ -908,6 +908,9 @@ def write_lang(runes):
     import hedgehog_art
     lang.update(hedgehog_art.LANG)
     hedgehog_art.write(sys.modules[__name__])
+    import stoat_art
+    lang.update(stoat_art.LANG)
+    stoat_art.write(sys.modules[__name__])
     import predator_art
     lang.update(predator_art.LANG)
     predator_art.write(sys.modules[__name__])
