@@ -14,6 +14,18 @@ public class SandmawWyrmRenderer extends WildMonsterRenderer<SandmawWyrm, Sandma
 	}
 
 	@Override
+	public void extractRenderState(SandmawWyrm wyrm, MonsterRenderState state, float partial) {
+		super.extractRenderState(wyrm, state, partial);
+		state.move = wyrm.move();
+		state.since = wyrm.since(partial);
+		state.tell = wyrm.tell();
+		state.roused = wyrm.roused();
+		for (int i = 0; i < state.moves.length; i++) {
+			state.moves[i] = wyrm.blend(i, partial);
+		}
+	}
+
+	@Override
 	protected float getShadowRadius(MonsterRenderState state) {
 		return super.getShadowRadius(state) * (1 - state.veil);
 	}

@@ -22,4 +22,14 @@ public class MonsterRenderState extends LivingEntityRenderState {
 	public int stance;
 	/** 0.12: the tint of its biome variant (white for none). */
 	public int variantTint = 0xFFFFFF;
+	/** An elite's move under way, by its rules' id (the Sandmaw Wyrm's, {@code SandmawRules}). */
+	public int move;
+	/** Ticks since that move began. */
+	public float since;
+	/** How long that move's tell was given. */
+	public int tell;
+	/** Whether it has gone roused at half health. */
+	public boolean roused;
+	/** How far each of an elite's moves' poses has eased in, 0 to 1, by move id. */
+	public final float[] moves = new float[24];
 }
