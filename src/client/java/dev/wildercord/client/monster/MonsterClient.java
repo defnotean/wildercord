@@ -43,6 +43,7 @@ public final class MonsterClient {
 		ModelLayerRegistry.registerModelLayer(PitchbackBeetleRenderer.LAYER, PitchbackBeetleModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(RimecoatWolverineRenderer.LAYER, RimecoatWolverineModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(SnapjawTurtleRenderer.LAYER, SnapjawTurtleModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(ReefgraspOctopusRenderer.LAYER, ReefgraspOctopusModel::createLayer);
 
 		EntityRendererRegistry.register(MonsterContent.BRAMBLEWALKER, MonsterClient::bramblewalker);
 		EntityRendererRegistry.register(MonsterContent.GLOOMSTALKER, GloomstalkerRenderer::new);
@@ -62,6 +63,7 @@ public final class MonsterClient {
 		EntityRendererRegistry.register(MonsterContent.PITCHBACK_BEETLE, PitchbackBeetleRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.RIMECOAT_WOLVERINE, RimecoatWolverineRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.SNAPJAW_TURTLE, SnapjawTurtleRenderer::new);
+		EntityRendererRegistry.register(MonsterContent.REEFGRASP_OCTOPUS, ReefgraspOctopusRenderer::new);
 	}
 
 	/** Its eyes, and the green veins in its vines, which blaze as it rears for the lash. */

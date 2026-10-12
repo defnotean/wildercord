@@ -953,6 +953,9 @@ def write_lang(runes):
     import snapjaw_art
     lang.update(snapjaw_art.LANG)
     snapjaw_art.write(sys.modules[__name__])
+    import octopus_art
+    lang.update(octopus_art.LANG)
+    octopus_art.write(sys.modules[__name__])
     import dormouse_art
     lang.update(dormouse_art.LANG)
     dormouse_art.write(sys.modules[__name__])

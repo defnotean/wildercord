@@ -254,6 +254,7 @@ public record WildercordConfig(
 				case "pitchback_beetle" -> true;
 				case "rimecoat_wolverine" -> true;
 				case "snapjaw_turtle" -> true;
+				case "reefgrasp_octopus" -> true;
 				default -> false;
 			};
 		}
