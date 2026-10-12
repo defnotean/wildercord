@@ -259,6 +259,7 @@ public record WildercordConfig(
 				case "cragcleaver_ram" -> true;
 				case "dripfang_lurker" -> true;
 				case "glowlure_angler" -> true;
+				case "bloomclaw_mantis" -> true;
 				default -> false;
 			};
 		}
