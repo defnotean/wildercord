@@ -89,12 +89,12 @@ public class Bramblewalker extends WildMonster {
 		goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0, false) {
 			@Override
 			public boolean canUse() {
-				return lashAt == 0 && super.canUse();
+				return lashAt == 0 && !giant() && super.canUse();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
-				return lashAt == 0 && super.canContinueToUse();
+				return lashAt == 0 && !giant() && super.canContinueToUse();
 			}
 		});
 		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.7));
@@ -125,6 +125,10 @@ public class Bramblewalker extends WildMonster {
 	@Override
 	protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
+		if (giant()) {
+			// A giant's fight runs it.
+			return;
+		}
 		long now = level.getGameTime();
 		if (isOnFire()) {
 			fleeUntil = now + MonsterRules.FLEE_AFTER_FIRE;
@@ -258,7 +262,7 @@ public class Bramblewalker extends WildMonster {
 
 		@Override
 		public boolean canUse() {
-			return fleeing() && pick();
+			return !giant() && fleeing() && pick();
 		}
 
 		@Override

@@ -22,7 +22,9 @@ public class MonsterRenderState extends LivingEntityRenderState {
 	public int stance;
 	/** 0.12: the tint of its biome variant (white for none). */
 	public int variantTint = 0xFFFFFF;
-	/** An elite's move under way, by its rules' id (the Sandmaw Wyrm's, {@code SandmawRules}). */
+	/** 0.13: whether it's a giant, fighting by the moves below ({@code GiantRules.Bramble}, {@code GiantRules.Matriarch}). */
+	public boolean giant;
+	/** An elite's move under way, by its rules' id (the Sandmaw Wyrm's, {@code SandmawRules}; a giant's). */
 	public int move;
 	/** Ticks since that move began. */
 	public float since;

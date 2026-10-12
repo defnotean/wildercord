@@ -56,6 +56,21 @@ public class WildMonsterRenderer<T extends WildMonster, M extends EntityModel<Mo
 		state.alt = monster.pose(WildMonster.ALT, partial);
 		state.engorged = monster instanceof BogWitchFrog frog && frog.engorged();
 		state.variantTint = monster.variant().tint;
+		state.giant = monster.giant();
+		if (state.giant) {
+			state.move = monster.giantMove();
+			state.since = monster.giantSince(partial);
+			state.tell = monster.giantTell();
+			state.roused = monster.giantRoused();
+			for (int i = 0; i < state.moves.length; i++) {
+				state.moves[i] = monster.giantBlend(i, partial);
+			}
+		}
+	}
+
+	/** How far into a giant's tell it is, 0 to 1 (0 between moves and once the move has come). */
+	protected static float telling(MonsterRenderState state) {
+		return state.giant && state.move > 0 && state.tell > 0 && state.since < state.tell ? state.since / state.tell : 0;
 	}
 
 	/** A Frost or Ash variant's tint over its skin. */

@@ -49,7 +49,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/** Wakes roaming giants near travellers, and runs them: their stomps, their wandering, their bars and their hearts. See {@link GiantRules}. */
+/**
+ * Wakes roaming giants near travellers, and runs them: their wandering, their bars and their hearts. Each fights with a moveset
+ * of its own ({@link BrambleGiantFight} for the Elder Bramblewalker and the Ash Colossus, {@link MatriarchFight} for the Frost
+ * Matriarch). See {@link GiantRules}.
+ */
 public final class Giants {
 	private Giants() {}
 
@@ -164,6 +168,11 @@ public final class Giants {
 	// ------------------------------------------------------------------ running them
 
 	private static void track(Mob mob) {
+		if (mob instanceof WildMonster giant) {
+			// A Gloomstalker giant is the Matriarch; a Bramblewalker one the Colossus in ash, the Elder otherwise.
+			giant.fight(giant instanceof Gloomstalker ? new MatriarchFight(giant)
+				: new BrambleGiantFight(giant, giant.variant() == MonsterVariantRules.Variant.ASH));
+		}
 		GIANTS.computeIfAbsent(mob.getUUID(), id -> new Tracked(mob,
 			new ServerBossEvent(UUID.randomUUID(), mob.getDisplayName(), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10)));
 	}
@@ -183,7 +192,6 @@ public final class Giants {
 				continue;
 			}
 			boolean fighting = mob.getTarget() != null;
-			if (GiantRules.stomps(fighting, now, mob.getId())) stomp(mob);
 			if (GiantRules.roams(fighting, now, mob.getId())) roam(mob);
 			if (now % 10 == 0) update(mob);
 		}
@@ -209,7 +217,7 @@ public final class Giants {
 		bar.setProgress(Math.max(0F, Math.min(1F, mob.getHealth() / mob.getMaxHealth())));
 	}
 
-	/** Its stomp: the ground shakes, and everything near that isn't a monster is hurt and thrown. Returns how many it hit. */
+	/** A plain stomp: the ground shakes, and everything near that isn't a monster is hurt and thrown. Returns how many it hit. */
 	public static int stomp(Mob mob) {
 		if (!(mob.level() instanceof ServerLevel level)) return 0;
 		double radius = GiantRules.STOMP_RADIUS + mob.getBbWidth() / 2;

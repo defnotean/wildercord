@@ -78,12 +78,13 @@ public final class MonsterClient {
 		EntityRendererRegistry.register(MonsterContent.SANDMAW_WYRM, SandmawWyrmRenderer::new);
 	}
 
-	/** Its eyes, and the green veins in its vines, which blaze as it rears for the lash. */
+	/** Its eyes, and the green veins in its vines, which blaze as it rears for the lash (a giant's, through every tell). */
 	private static WildMonsterRenderer<Bramblewalker, BramblewalkerModel> bramblewalker(EntityRendererProvider.Context context) {
 		WildMonsterRenderer<Bramblewalker, BramblewalkerModel> renderer = new WildMonsterRenderer<>(context,
 			new BramblewalkerModel(context.bakeLayer(BRAMBLEWALKER)), 0.7F, Wildercord.id("textures/entity/bramblewalker.png"));
 		renderer.glow(Wildercord.id("textures/entity/bramblewalker_glow.png"), state -> WildMonsterRenderer.white(
-			(0.35F + 0.65F * Math.max(state.windup, state.acting) + 0.08F * Mth.sin(state.ageInTicks * 0.15F)) * WildMonsterRenderer.alive(state)));
+			(0.35F + 0.65F * Math.max(Math.max(state.windup, state.acting), WildMonsterRenderer.telling(state))
+				+ (state.giant && state.roused ? 0.25F : 0) + 0.08F * Mth.sin(state.ageInTicks * 0.15F)) * WildMonsterRenderer.alive(state)));
 		renderer.glow(Wildercord.id("textures/entity/bramblewalker_eyes.png"), state -> WildMonsterRenderer.white(0.9F * WildMonsterRenderer.alive(state)));
 		return renderer;
 	}

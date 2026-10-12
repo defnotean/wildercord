@@ -64,8 +64,17 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	private static final Identifier ALPHA_DAMAGE = dev.wildercord.Wildercord.id("alpha_damage");
 	private static final Identifier ALPHA_SCALE = dev.wildercord.Wildercord.id("alpha_scale");
 
+	/** A giant's move under way (-1 for anything that isn't a giant), its tell, when it began, and whether it's roused. */
+	private static final EntityDataAccessor<Integer> GIANT_MOVE = SynchedEntityData.defineId(WildMonster.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> GIANT_TELL = SynchedEntityData.defineId(WildMonster.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Long> GIANT_BEGAN = SynchedEntityData.defineId(WildMonster.class, EntityDataSerializers.LONG);
+	private static final EntityDataAccessor<Boolean> GIANT_ROUSED = SynchedEntityData.defineId(WildMonster.class, EntityDataSerializers.BOOLEAN);
+	private static final int GIANT_MOVES = 16;
+
 	private final float[] pose = new float[FLAGS];
 	private final float[] poseO = new float[FLAGS];
+	private final float[] giantBlend = new float[GIANT_MOVES], giantBlendO = new float[GIANT_MOVES];
+	private @Nullable GiantFight fight;
 
 	protected WildMonster(EntityType<? extends WildMonster> type, Level level) {
 		super(type, level);
@@ -77,6 +86,10 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 		builder.define(DATA_STATE, (byte) 0);
 		builder.define(DATA_VARIANT, (byte) 0);
 		builder.define(DATA_ALPHA, false);
+		builder.define(GIANT_MOVE, -1);
+		builder.define(GIANT_TELL, 0);
+		builder.define(GIANT_BEGAN, 0L);
+		builder.define(GIANT_ROUSED, false);
 	}
 
 	/** Turns one of the flags above on or off (server side; the client sees it a moment later). */
@@ -123,7 +136,102 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 				level().addParticle(variant() == MonsterVariantRules.Variant.FROST ? ParticleTypes.SNOWFLAKE : ParticleTypes.SMOKE,
 					getRandomX(0.6), getRandomY(), getRandomZ(0.6), 0, 0.02, 0);
 			}
+			int move = giantMove();
+			if (move >= 0) {
+				for (int i = 0; i < GIANT_MOVES; i++) {
+					giantBlendO[i] = giantBlend[i];
+					giantBlend[i] = Mth.approach(giantBlend[i], i == move ? 1 : 0, 0.25F);
+				}
+				if (giantRoused() && random.nextInt(2) == 0) {
+					giantStorm();
+				}
+			}
 		}
+	}
+
+	/** A roused giant's storm of its own: leaves torn off the Elder, cinders off the Colossus, snow whirling round the Matriarch. */
+	private void giantStorm() {
+		double a = random.nextDouble() * Math.PI * 2, r = getBbWidth() * (0.4 + random.nextDouble() * 0.8);
+		double x = getX() + Math.cos(a) * r, y = getY() + random.nextDouble() * getBbHeight(), z = getZ() + Math.sin(a) * r;
+		switch (variant()) {
+			case FROST -> level().addParticle(ParticleTypes.SNOWFLAKE, x, y, z, -Math.sin(a) * 0.25, 0.03, Math.cos(a) * 0.25);
+			case ASH -> {
+				level().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0.06, 0);
+				if (random.nextInt(3) == 0) {
+					level().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0.04, 0);
+				}
+			}
+			case NONE -> level().addParticle(ParticleTypes.CHERRY_LEAVES, x, y, z, 0, -0.02, 0);
+		}
+	}
+
+	// ------------------------------------------------------------------ giants (0.13)
+
+	/** Whether it's a giant, on either side (its fight is server side only; the move synced is -1 for anything else). */
+	public boolean giant() {
+		return fight != null || entityData.get(GIANT_MOVE) >= 0;
+	}
+
+	/** A giant's move under way, by its rules' id ({@link GiantRules.Bramble}, {@link GiantRules.Matriarch}). */
+	public int giantMove() {
+		return entityData.get(GIANT_MOVE);
+	}
+
+	/** How long that move's tell is. */
+	public int giantTell() {
+		return entityData.get(GIANT_TELL);
+	}
+
+	/** Whether it has gone roused at half health. */
+	public boolean giantRoused() {
+		return entityData.get(GIANT_ROUSED);
+	}
+
+	/** Ticks since its move began. */
+	public float giantSince(float partial) {
+		return (float) (level().getGameTime() - entityData.get(GIANT_BEGAN)) + partial;
+	}
+
+	/** How far one of its moves' poses has eased in on the client, 0 to 1. */
+	public float giantBlend(int move, float partial) {
+		return move < 0 || move >= GIANT_MOVES ? 0 : Mth.lerp(partial, giantBlendO[move], giantBlend[move]);
+	}
+
+	/** Makes it a giant that fights this way (once; its fight takes over from its own kind's AI). */
+	public void fight(GiantFight fight) {
+		if (this.fight != null) {
+			return;
+		}
+		this.fight = fight;
+		goalSelector.addGoal(0, fight);
+		giantPose(0, 0);
+	}
+
+	void giantPose(int move, int tell) {
+		entityData.set(GIANT_MOVE, move);
+		entityData.set(GIANT_TELL, tell);
+		entityData.set(GIANT_BEGAN, level().getGameTime());
+	}
+
+	void giantRouse() {
+		entityData.set(GIANT_ROUSED, true);
+	}
+
+	void giantState(int flag, boolean on) {
+		setState(flag, on);
+	}
+
+	@Override
+	public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float damage) {
+		if (fight == null) {
+			return super.hurtServer(level, source, damage);
+		}
+		float before = getHealth();
+		boolean hit = super.hurtServer(level, source, fight.taking(source, damage));
+		if (hit) {
+			fight.took(level, source, Math.max(0, before - getHealth()));
+		}
+		return hit;
 	}
 
 	// ------------------------------------------------------------------ variants and packs (0.12)
@@ -251,6 +359,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 		super.addAdditionalSaveData(output);
 		output.putByte("Variant", entityData.get(DATA_VARIANT));
 		output.putBoolean("Alpha", alpha());
+		output.putBoolean("GiantRoused", giantRoused());
 	}
 
 	@Override
@@ -258,6 +367,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 		super.readAdditionalSaveData(input);
 		entityData.set(DATA_VARIANT, input.getByteOr("Variant", (byte) 0));
 		entityData.set(DATA_ALPHA, input.getBooleanOr("Alpha", false));
+		entityData.set(GIANT_ROUSED, input.getBooleanOr("GiantRoused", false));
 	}
 
 	/** Turns its body, head and look to face a creature (before an aimed attack goes off, so it flies true). */

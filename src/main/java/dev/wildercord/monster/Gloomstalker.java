@@ -152,6 +152,10 @@ public class Gloomstalker extends WildMonster {
 	@Override
 	protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
+		if (giant()) {
+			// A giant's fight runs it, veil and all.
+			return;
+		}
 		long now = level.getGameTime();
 		updateVeil(level, now);
 		LivingEntity target = getTarget();
@@ -271,7 +275,7 @@ public class Gloomstalker extends WildMonster {
 		@Override
 		public boolean canUse() {
 			LivingEntity target = getTarget();
-			return target != null && target.isAlive() && Targets.canHarm(Gloomstalker.this, target);
+			return !giant() && target != null && target.isAlive() && Targets.canHarm(Gloomstalker.this, target);
 		}
 
 		@Override
@@ -354,7 +358,7 @@ public class Gloomstalker extends WildMonster {
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
 		boolean hurt = super.hurtServer(level, source, damage);
-		if (hurt) {
+		if (hurt && !giant()) {
 			LivingEntity by = source.getEntity() instanceof LivingEntity l ? l : null;
 			boolean light = MonsterMagic.spellLanding() && MonsterRules.revealing(MonsterMagic.spellElement());
 			reveal(level, light ? MonsterRules.SPELL_REVEAL : MonsterRules.HURT_REVEAL, by);

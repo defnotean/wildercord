@@ -6228,6 +6228,8 @@
   "monster.wildercord.giant.elder": "Elder Bramblewalker",
   "message.wildercord.giant.wakes": "The ground shakes: %s has woken to the %s.",
   "message.wildercord.giant.falls": "%s has fallen.",
+  "message.wildercord.giant.caught": "It has you in its grip! Strike it to break free.",
+  "message.wildercord.giant.free": "You tear free of its grip.",
   "item.wildercord.giant_heart": "Giant's Heart",
   "effect.wildercord.torrent": "Torrent",
   "item.minecraft.potion.effect.wildercord_torrent": "Elixir of Torrent",
