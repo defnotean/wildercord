@@ -1,7 +1,23 @@
 package dev.wildercord.aura.world;
+import dev.wildercord.cast.MoveDeck;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 class FrostWyrmlingRulesTest {
+	private static long[] rested(){
+		long[] since=new long[32];
+		Arrays.fill(since,10_000);
+		return since;
+	}
+	private static boolean picks(int move,double distance,double angle,double height,boolean fierce){
+		double[] w=FrostWyrmlingRules.weights(distance,angle,height,rested(),fierce);
+		for(int i=0;i<FrostWyrmlingRules.PICKS.length;i++) if(FrostWyrmlingRules.PICKS[i]==move) return w[i]>0;
+		return false;
+	}
 	@Test void aPlayerWellIntoTheHallWakesItAndOneAtTheMouthDoesNot(){
 		assertTrue(FrostWyrmlingRules.wakes(0,0,-10));
 		assertTrue(FrostWyrmlingRules.wakes(6,3,-8));
@@ -14,6 +30,8 @@ class FrostWyrmlingRulesTest {
 		assertTrue(FrostWyrmlingRules.scripted(FrostWyrmlingRules.BED));
 		assertFalse(FrostWyrmlingRules.scripted(FrostWyrmlingRules.WATCH));
 		assertFalse(FrostWyrmlingRules.scripted(FrostWyrmlingRules.BREATH));
+		assertFalse(FrostWyrmlingRules.scripted(FrostWyrmlingRules.SHELL));
+		assertFalse(FrostWyrmlingRules.scripted(FrostWyrmlingRules.SPRAWL));
 	}
 	@Test void theRiseRunsForwardAndCurlingUpRunsItBack(){
 		assertEquals(0,FrostWyrmlingRules.rise(FrostWyrmlingRules.DORMANT,30));
@@ -23,67 +41,160 @@ class FrostWyrmlingRulesTest {
 		assertEquals(0,FrostWyrmlingRules.rise(FrostWyrmlingRules.BED,FrostWyrmlingRules.RISE_TICKS));
 		assertEquals(1,FrostWyrmlingRules.rise(FrostWyrmlingRules.POUNCE,0));
 	}
-	@Test void itSweepsItsTailAtWhoeverIsRoundItsFlank(){
-		assertEquals(FrostWyrmlingRules.TAIL,FrostWyrmlingRules.choose(3,120,.9,true,true,true,true));
-		assertEquals(FrostWyrmlingRules.BITE,FrostWyrmlingRules.choose(3,120,.9,false,true,true,true));
+	@Test void eachMoveSuitsWhereItsPreyStands(){
+		// Close in front: jaws and wings, never a dive or bounds.
+		assertTrue(picks(FrostWyrmlingRules.BITE,2.5,0,0,false));
+		assertTrue(picks(FrostWyrmlingRules.GALE,2.5,0,0,false));
+		assertFalse(picks(FrostWyrmlingRules.DIVE,2.5,0,0,false));
+		assertFalse(picks(FrostWyrmlingRules.POUNCE,2.5,0,0,false));
+		// Round behind it: its tail, not its jaws.
+		assertTrue(picks(FrostWyrmlingRules.TAIL,3,160,0,false));
+		assertFalse(picks(FrostWyrmlingRules.BITE,3,160,0,false));
+		assertFalse(picks(FrostWyrmlingRules.GALE,3,160,0,false));
+		// A little way off: breath, the slide, bounds and the dive.
+		assertTrue(picks(FrostWyrmlingRules.BREATH,7,0,0,false));
+		assertTrue(picks(FrostWyrmlingRules.SLIDE,7,0,0,false));
+		assertTrue(picks(FrostWyrmlingRules.POUNCE,7,0,0,false));
+		assertTrue(picks(FrostWyrmlingRules.DIVE,7,0,0,false));
+		assertFalse(picks(FrostWyrmlingRules.BITE,7,0,0,false));
+		// Up out of reach: the icicles, and nothing that has to touch the floor they stand on.
+		assertTrue(picks(FrostWyrmlingRules.ICEFALL,6,0,4,false));
+		assertFalse(picks(FrostWyrmlingRules.BITE,4,0,4,false));
+		assertFalse(picks(FrostWyrmlingRules.TAIL,4,160,4,false));
+		assertFalse(picks(FrostWyrmlingRules.POUNCE,8,0,4,false));
+		assertFalse(picks(FrostWyrmlingRules.DIVE,8,0,4,false));
+		assertFalse(picks(FrostWyrmlingRules.SLIDE,8,0,4,false));
 	}
-	@Test void upCloseItBitesOrBeatsItsWings(){
-		assertEquals(FrostWyrmlingRules.BITE,FrostWyrmlingRules.choose(2,0,.9,true,true,true,true));
-		assertEquals(FrostWyrmlingRules.WING,FrostWyrmlingRules.choose(2,0,.1,true,true,true,true));
-		assertEquals(FrostWyrmlingRules.BITE,FrostWyrmlingRules.choose(2,0,.1,true,false,true,true));
+	@Test void itsLancesComeOnlyOnceItIsFierce(){
+		assertFalse(picks(FrostWyrmlingRules.LANCES,6,0,0,false));
+		assertTrue(picks(FrostWyrmlingRules.LANCES,6,0,0,true));
+		assertFalse(picks(FrostWyrmlingRules.LANCES,FrostWyrmlingRules.LANCE_REACH,0,0,true));
+		assertEquals("lances",FrostWyrmlingRules.key(FrostWyrmlingRules.LANCES));
+		assertFalse(FrostWyrmlingRules.scripted(FrostWyrmlingRules.LANCES));
 	}
-	@Test void aLittleWayOffItBreathesAndFurtherOutItPounces(){
-		assertEquals(FrostWyrmlingRules.BREATH,FrostWyrmlingRules.choose(6,0,.3,true,true,true,true));
-		assertEquals(FrostWyrmlingRules.POUNCE,FrostWyrmlingRules.choose(6,0,.9,true,true,true,true));
-		assertEquals(FrostWyrmlingRules.BREATH,FrostWyrmlingRules.choose(6,0,.9,true,true,true,false));
-		assertEquals(FrostWyrmlingRules.POUNCE,FrostWyrmlingRules.choose(11,0,.3,true,true,true,true));
-		assertEquals(-1,FrostWyrmlingRules.choose(11,0,.3,true,true,true,false));
-		assertEquals(-1,FrostWyrmlingRules.choose(30,0,.3,true,true,true,true));
+	@Test void aMoveStillRestingIsNotPickedAndFierceItRestsLess(){
+		long[] since=rested();
+		since[FrostWyrmlingRules.BITE]=FrostWyrmlingRules.rest(FrostWyrmlingRules.BITE,false)-1;
+		double[] w=FrostWyrmlingRules.weights(2.5,0,0,since,false);
+		for(int i=0;i<FrostWyrmlingRules.PICKS.length;i++) if(FrostWyrmlingRules.PICKS[i]==FrostWyrmlingRules.BITE) assertEquals(0,w[i]);
+		for(int m:FrostWyrmlingRules.PICKS) assertTrue(FrostWyrmlingRules.rest(m,true)<FrostWyrmlingRules.rest(m,false),"move "+m);
 	}
-	@Test void eachBlowReachesWhereItShould(){
-		assertTrue(FrostWyrmlingRules.hits(FrostWyrmlingRules.BITE,3,0,1));
-		assertFalse(FrostWyrmlingRules.hits(FrostWyrmlingRules.BITE,-3,0,1));
-		assertTrue(FrostWyrmlingRules.hits(FrostWyrmlingRules.TAIL,-3,2,0));
-		assertFalse(FrostWyrmlingRules.hits(FrostWyrmlingRules.TAIL,4,0,0));
-		assertTrue(FrostWyrmlingRules.hits(FrostWyrmlingRules.WING,5,3,1));
-		assertFalse(FrostWyrmlingRules.hits(FrostWyrmlingRules.WATCH,1,0,1));
+	@Test void itNeverMakesTheSameMoveTwiceRunningAndMixesThemAllUp(){
+		var deck=new MoveDeck(FrostWyrmlingRules.MEMORY);
+		var rng=new Random(11);
+		long[] since=rested();
+		Map<Integer,Integer> made=new HashMap<>();
+		int last=-1;
+		for(int i=0;i<300;i++){
+			double d=new double[]{3,7,11}[i%3],a=new double[]{0,30,0,150}[i%4];
+			int m=FrostWyrmlingRules.choose(deck,d,a,0,since,i>=150,rng.nextDouble());
+			assertNotEquals(-1,m,"nothing at "+d+" and "+a);
+			assertNotEquals(last,m,"the same move twice running at "+d+" and "+a);
+			made.merge(m,1,Integer::sum);
+			deck.played(m);
+			last=m;
+		}
+		assertTrue(made.size()>=6,"only "+made.keySet());
+		for(int n:made.values()) assertTrue(n<150,"one move made "+n+" times: "+made);
 	}
-	@Test void theBreathIsAConeThatWidensAwayFromItsJaws(){
-		assertTrue(FrostWyrmlingRules.breathed(8,3,0));
-		assertFalse(FrostWyrmlingRules.breathed(2,3,0));
-		assertFalse(FrostWyrmlingRules.breathed(FrostWyrmlingRules.BREATH_REACH+1,0,0));
-		assertFalse(FrostWyrmlingRules.breathed(-2,0,0));
+	@Test void fierceItsMovesRunIntoOneAnotherButNeverIntoThemselves(){
+		assertEquals(FrostWyrmlingRules.TAIL,FrostWyrmlingRules.chain(FrostWyrmlingRules.BITE,3,.2));
+		assertEquals(FrostWyrmlingRules.GALE,FrostWyrmlingRules.chain(FrostWyrmlingRules.BITE,3,.6));
+		assertEquals(-1,FrostWyrmlingRules.chain(FrostWyrmlingRules.BITE,9,.2));
+		assertEquals(FrostWyrmlingRules.DIVE,FrostWyrmlingRules.chain(FrostWyrmlingRules.GALE,8,.2));
+		// A dive or a slide always ends sprawled, and its lances stand alone.
+		assertEquals(-1,FrostWyrmlingRules.chain(FrostWyrmlingRules.DIVE,5,.1));
+		assertEquals(-1,FrostWyrmlingRules.chain(FrostWyrmlingRules.SLIDE,5,.1));
+		assertEquals(-1,FrostWyrmlingRules.chain(FrostWyrmlingRules.LANCES,5,.1));
+		for(int m:FrostWyrmlingRules.PICKS)for(double d:new double[]{2,4,6,9,13})for(double r:new double[]{0,.3,.55,.7,.9})
+			assertNotEquals(m,FrostWyrmlingRules.chain(m,d,r),"move "+m+" into itself");
 	}
-	@Test void thePounceArcsAndLandsWhereItsPreyStood(){
-		assertEquals(0,FrostWyrmlingRules.arc(0),1e-9);
-		assertEquals(0,FrostWyrmlingRules.arc(1),1e-9);
-		assertEquals(FrostWyrmlingRules.POUNCE_HEIGHT,FrostWyrmlingRules.arc(.5),1e-9);
-		assertEquals(7,FrostWyrmlingRules.leap(7),1e-9);
-		assertEquals(FrostWyrmlingRules.POUNCE_REACH,FrostWyrmlingRules.leap(40),1e-9);
-		assertTrue(FrostWyrmlingRules.crushed(1,1,0));
-		assertFalse(FrostWyrmlingRules.crushed(3,3,0));
+	@Test void itShutsItselfInItsShellOnceWhenHalfBeaten(){
+		assertTrue(FrostWyrmlingRules.shells(180,360,false));
+		assertFalse(FrostWyrmlingRules.shells(180,360,true));
+		assertFalse(FrostWyrmlingRules.shells(181,360,false));
+		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.SHELL,false)<.5);
+		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.DAZED,true)>1);
 	}
-	@Test void itsBrowTurnsBlowsAndItIsOpenWhenSpent(){
+	@Test void theSnapRunsStraightOutInFrontAndASidestepClearsIt(){
+		assertTrue(FrostWyrmlingRules.bitten(3,0,1));
+		assertTrue(FrostWyrmlingRules.bitten(FrostWyrmlingRules.BITE_REACH,1.5,0));
+		assertFalse(FrostWyrmlingRules.bitten(3,2.5,0),"stepped aside");
+		assertFalse(FrostWyrmlingRules.bitten(-2,0,0),"behind it");
+		assertFalse(FrostWyrmlingRules.bitten(FrostWyrmlingRules.BITE_REACH+.5,0,0),"out of reach");
+	}
+	@Test void theTailSweepsRoundEverythingButItsFrontLowEnoughToJump(){
+		assertEquals(45,FrostWyrmlingRules.tail(1,0),1e-9);
+		assertEquals(-(45+FrostWyrmlingRules.TAIL_ARC),FrostWyrmlingRules.tail(-1,FrostWyrmlingRules.TAIL_TICKS),1e-9);
+		boolean behind=false,flank=false,jumped=false,front=false;
+		for(int k=1;k<=FrostWyrmlingRules.TAIL_TICKS;k++){
+			behind|=FrostWyrmlingRules.lashed(1,k,180,3,0);
+			flank|=FrostWyrmlingRules.lashed(-1,k,-90,4,0);
+			jumped|=FrostWyrmlingRules.lashed(1,k,180,3,1);
+			front|=FrostWyrmlingRules.lashed(1,k,0,3,0)||FrostWyrmlingRules.lashed(-1,k,0,3,0);
+		}
+		assertTrue(behind);assertTrue(flank);
+		assertFalse(jumped,"jumped");assertFalse(front,"in front of it");
+		assertFalse(FrostWyrmlingRules.lashed(1,3,180,FrostWyrmlingRules.TAIL_REACH+1,0),"out of reach");
+		assertFalse(FrostWyrmlingRules.lashed(1,1,180,3,0),"the tail has not got there yet");
+	}
+	@Test void eachBeatOfItsWingsGustsAConeAhead(){
+		assertTrue(FrostWyrmlingRules.gusted(5,3,1));
+		assertFalse(FrostWyrmlingRules.gusted(5,5,0),"off to its side");
+		assertFalse(FrostWyrmlingRules.gusted(-2,0,0),"behind it");
+		assertFalse(FrostWyrmlingRules.gusted(FrostWyrmlingRules.GALE_REACH+1,0,0),"out of reach");
+	}
+	@Test void theBreathSweepsAcrossAndAPillarSheltersFromIt(){
+		assertEquals(-FrostWyrmlingRules.BREATH_SWING,FrostWyrmlingRules.beam(1,0),1e-9);
+		assertEquals(FrostWyrmlingRules.BREATH_SWING,FrostWyrmlingRules.beam(1,FrostWyrmlingRules.BREATH_TICKS),1e-9);
+		assertEquals(-FrostWyrmlingRules.BREATH_SWING,FrostWyrmlingRules.beam(1,2*FrostWyrmlingRules.BREATH_TICKS),1e-9);
+		assertEquals(FrostWyrmlingRules.BREATH_SWING,FrostWyrmlingRules.beam(-1,0),1e-9);
+		assertTrue(FrostWyrmlingRules.breathed(0,5,0));
+		assertFalse(FrostWyrmlingRules.breathed(30,5,0),"off the beam");
+		assertFalse(FrostWyrmlingRules.breathed(0,FrostWyrmlingRules.BREATH_REACH+1,0),"out of reach");
+		assertFalse(FrostWyrmlingRules.breathed(0,5,4),"above it");
+		assertTrue(FrostWyrmlingRules.sheltered(0,8,0,4));
+		assertFalse(FrostWyrmlingRules.sheltered(0,8,2,4),"the pillar off to one side");
+		assertFalse(FrostWyrmlingRules.sheltered(0,8,0,10),"the pillar behind them");
+		assertFalse(FrostWyrmlingRules.sheltered(0,8,0,-2),"the pillar behind its jaws");
+	}
+	@Test void itsHopsArcUpAndLandWhereItsPreyStood(){
+		assertEquals(3,FrostWyrmlingRules.hops(false));assertEquals(4,FrostWyrmlingRules.hops(true));
+		assertEquals(0,FrostWyrmlingRules.hop(-1),1e-9);
+		assertEquals(0,FrostWyrmlingRules.hop(1),1e-9);
+		assertEquals(FrostWyrmlingRules.HOP_HEIGHT,FrostWyrmlingRules.hop(FrostWyrmlingRules.HOP_GAP+FrostWyrmlingRules.HOP_TICKS/2.0),1e-9);
+		assertEquals(0,FrostWyrmlingRules.hop(FrostWyrmlingRules.HOP_CYCLE),1e-9);
+		assertTrue(FrostWyrmlingRules.lands(1,1,0,FrostWyrmlingRules.HOP_RADIUS));
+		assertFalse(FrostWyrmlingRules.lands(2,2,0,FrostWyrmlingRules.HOP_RADIUS));
+		assertTrue(FrostWyrmlingRules.lands(2,1.5,0,FrostWyrmlingRules.LAST_RADIUS),"the last lands widest");
+		assertFalse(FrostWyrmlingRules.lands(1,0,3,FrostWyrmlingRules.HOP_RADIUS));
+	}
+	@Test void itDivesDownOntoItsPreyAndTheFrostRingCanBeJumped(){
+		assertEquals(FrostWyrmlingRules.DIVE_MIN,FrostWyrmlingRules.dive(1),1e-9);
+		assertEquals(8,FrostWyrmlingRules.dive(8),1e-9);
+		assertEquals(FrostWyrmlingRules.DIVE_REACH,FrostWyrmlingRules.dive(40),1e-9);
+		assertTrue(FrostWyrmlingRules.crosses(5,4.5,5.3,0));
+		assertFalse(FrostWyrmlingRules.crosses(5,4.5,5.3,1),"jumped");
+		assertFalse(FrostWyrmlingRules.crosses(8,4.5,5.3,0),"not there yet");
+	}
+	@Test void itsBrowTurnsBlowsAndItIsOpenWhenSpentSprawledOrRearedBack(){
 		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.WATCH,true)<1);
 		assertEquals(1,FrostWyrmlingRules.armour(FrostWyrmlingRules.WATCH,false));
 		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.RECOVER,true)>1);
+		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.SPRAWL,true)>1);
+		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.LANCES,true)>1);
+		assertEquals(1,FrostWyrmlingRules.armour(FrostWyrmlingRules.ICEFALL,true));
 		assertTrue(FrostWyrmlingRules.frontal(30));assertTrue(FrostWyrmlingRules.frontal(-370));assertFalse(FrostWyrmlingRules.frontal(90));
 	}
 	@Test void itBoundsAndBeatsAwayOnlyWhenRestedAndOnItsFeet(){
 		assertTrue(FrostWyrmlingRules.dodges(FrostWyrmlingRules.WATCH,FrostWyrmlingRules.BOUND_REST,.1));
 		assertFalse(FrostWyrmlingRules.dodges(FrostWyrmlingRules.WATCH,FrostWyrmlingRules.BOUND_REST-1,.1));
 		assertFalse(FrostWyrmlingRules.dodges(FrostWyrmlingRules.BREATH,999,.1));
+		assertFalse(FrostWyrmlingRules.dodges(FrostWyrmlingRules.SPRAWL,999,.1));
 		assertTrue(FrostWyrmlingRules.leaps(FrostWyrmlingRules.WATCH,FrostWyrmlingRules.STING_AFTER,FrostWyrmlingRules.LEAP_REST));
 		assertFalse(FrostWyrmlingRules.leaps(FrostWyrmlingRules.POUNCE,999,999));
+		assertFalse(FrostWyrmlingRules.leaps(FrostWyrmlingRules.DAZED,999,999));
 		assertFalse(FrostWyrmlingRules.leaps(FrostWyrmlingRules.WATCH,FrostWyrmlingRules.STING_AFTER-1,999));
-	}
-	@Test void itRearsForItsLancesOnlyWoundedRestedAndWithinReach(){
-		assertTrue(FrostWyrmlingRules.lances(true,FrostWyrmlingRules.LANCE_REST,6));
-		assertFalse(FrostWyrmlingRules.lances(false,999,6));
-		assertFalse(FrostWyrmlingRules.lances(true,FrostWyrmlingRules.LANCE_REST-1,6));
-		assertFalse(FrostWyrmlingRules.lances(true,999,FrostWyrmlingRules.LANCE_REACH));
-		assertEquals("lances",FrostWyrmlingRules.key(FrostWyrmlingRules.LANCES));
-		assertFalse(FrostWyrmlingRules.scripted(FrostWyrmlingRules.LANCES));
 	}
 	@Test void theLancesFollowTheCrackOutToTheirReach(){
 		assertEquals(0,FrostWyrmlingRules.lanceFront(FrostWyrmlingRules.LANCE_WARN-1),1e-9);
@@ -110,9 +221,6 @@ class FrostWyrmlingRulesTest {
 		assertFalse(FrostWyrmlingRules.lanced(4,0,4,6));
 		assertFalse(FrostWyrmlingRules.lanced(0,0,0,6));
 	}
-	@Test void rearedForItsLancesItsBellyIsBared(){
-		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.LANCES,true)>1);
-	}
 	@Test void theRimescaleBitesBackOnlyOnceRimedOverAgain(){
 		assertTrue(FrostWyrmlingRules.rimes(FrostWyrmlingRules.RIME_REST));
 		assertFalse(FrostWyrmlingRules.rimes(FrostWyrmlingRules.RIME_REST-1));
@@ -122,6 +230,13 @@ class FrostWyrmlingRulesTest {
 		assertFalse(FrostWyrmlingRules.forgets(FrostWyrmlingRules.RESET_TICKS));
 		assertTrue(FrostWyrmlingRules.forgets(FrostWyrmlingRules.RESET_TICKS+1));
 		assertTrue(FrostWyrmlingRules.wounded(180,360));assertFalse(FrostWyrmlingRules.wounded(181,360));
+	}
+	@Test void everyMoveHasItsOwnNameOnTheBar(){
+		var keys=new HashSet<String>();
+		int[] all={FrostWyrmlingRules.BITE,FrostWyrmlingRules.TAIL,FrostWyrmlingRules.GALE,FrostWyrmlingRules.BREATH,FrostWyrmlingRules.POUNCE,
+			FrostWyrmlingRules.BOUND,FrostWyrmlingRules.RECOVER,FrostWyrmlingRules.LANCES,FrostWyrmlingRules.DIVE,FrostWyrmlingRules.SLIDE,
+			FrostWyrmlingRules.ICEFALL,FrostWyrmlingRules.SPRAWL,FrostWyrmlingRules.SHELL,FrostWyrmlingRules.DAZED};
+		for(int m:all){String k=FrostWyrmlingRules.key(m);assertNotEquals("watch",k,"move "+m);assertTrue(keys.add(k),"two moves called "+k);}
 		assertEquals("breath",FrostWyrmlingRules.key(FrostWyrmlingRules.BREATH));
 		assertEquals("watch",FrostWyrmlingRules.key(FrostWyrmlingRules.WATCH));
 	}
