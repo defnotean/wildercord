@@ -28,11 +28,12 @@ Cord, good armour and a plan.
 | 5 | [World events]({{ '/world/world-events/' | relative_url }}) | Near you, now and then | Mana storms, fallen stars and rift sieges, with runes and Mana Crystals |
 | 6 | [Runes of the world]({{ '/world/runes-of-the-world/' | relative_url }}) | Structure chests, biomes and fishing | Runes nobody can craft |
 | 7 | [Expeditions]({{ '/world/expeditions/' | relative_url }}) | Deserts, forests, meadows and windswept hills | Relics |
-| 8 | [Root Guardian and Storm Conductor]({{ '/world/root-and-storm-bosses/' | relative_url }}) | Swamps and peaks | Boss loot |
-| 9 | [The Archive]({{ '/world/archive/' | relative_url }}) | Under the Overworld | Tier IV runes, casting gear |
-| 10 | [The Ember Sanctum]({{ '/world/ember-sanctum/' | relative_url }}) | The Nether | The Cinder Heart trophy |
-| 11 | [The Drowned Scriptorium]({{ '/world/drowned-scriptorium/' | relative_url }}) | The deep ocean floor | The Drowned Quill trophy |
-| 12 | [The Astral Observatory]({{ '/world/astral-observatory/' | relative_url }}) | The End's outer islands | The Astral Lens trophy |
+| 8 | [Lair bosses]({{ '/world/lair-bosses/' | relative_url }}) | Jungles, plains, forests, snowy peaks and the deep ocean | A boon from each, Mojito's Fetchblade |
+| 9 | [Root Guardian and Storm Conductor]({{ '/world/root-and-storm-bosses/' | relative_url }}) | Swamps and peaks | Boss loot |
+| 10 | [The Archive]({{ '/world/archive/' | relative_url }}) | Under the Overworld | Tier IV runes, casting gear |
+| 11 | [The Ember Sanctum]({{ '/world/ember-sanctum/' | relative_url }}) | The Nether | The Cinder Heart trophy |
+| 12 | [The Drowned Scriptorium]({{ '/world/drowned-scriptorium/' | relative_url }}) | The deep ocean floor | The Drowned Quill trophy |
+| 13 | [The Astral Observatory]({{ '/world/astral-observatory/' | relative_url }}) | The End's outer islands | The Astral Lens trophy |
 
 ## 48 places to explore
 
@@ -143,6 +144,8 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 - [The Drowned Scriptorium]({{ '/world/drowned-scriptorium/' | relative_url }})
 - [The Astral Observatory]({{ '/world/astral-observatory/' | relative_url }})
 - [Root Guardian and Storm Conductor]({{ '/world/root-and-storm-bosses/' | relative_url }})
+- [Lair Bosses]({{ '/world/lair-bosses/' | relative_url }})
+- [Roaming Giants]({{ '/world/roaming-giants/' | relative_url }})
 - [Expeditions and Relics]({{ '/world/expeditions/' | relative_url }})
 
 **Sites to explore**
