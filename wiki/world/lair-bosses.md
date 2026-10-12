@@ -2,7 +2,7 @@
 title: Lair Bosses
 parent: The World
 nav_order: 6.15
-description: Seven bosses that sleep in lairs out in the overworld and under the sea, every move they make and how to answer it, the boon each one guards, and the Sandmaw Wyrm of the deserts.
+description: Seven bosses that sleep in lairs out in the overworld and under the sea, every move they make and how to answer it, the boon each one guards, and the elites that roam the wilds: the Sandmaw Wyrm of the deserts and the Timbermaul Bear of the taigas.
 ---
 
 # Lair Bosses
@@ -351,7 +351,7 @@ Resistance I for 3 seconds.
 ## Elites of the wilds
 
 Elites are rare monsters that roam the wilds alone, a step up from the rest, each with a yellow boss bar of its own. They
-have no lair and guard no boon. So far there is one.
+have no lair and guard no boon. So far there are two.
 
 ### Sandmaw Wyrm
 
@@ -388,6 +388,44 @@ slams twice, spits three gouts in a fan, looses a second volley of spines into t
 for longer, and breaches again straight back at you.
 
 **What it gives:** 3 to 6 bones, 2 to 4 gold ingots, 1 to 3 emeralds, and a 35% chance of a diamond.
+
+### Timbermaul Bear
+
+A great brown bear half again a bear's size, moss grown thick on its back, a ridge of dark hackles down its spine and old
+claw scars down its flanks. A champion, a step above the other elites: 120 health, 6 armour, and a red boss bar.
+
+**Where:** alone and rarely in the taigas. It follows the server's [monster]({{ '/world/monsters/' | relative_url }})
+settings and has no switch of its own.
+
+**Its warning.** It notices you from 10 blocks away, but only 5 if you sneak. Then it stands up and huffs for two and a
+half seconds. Back off 14 blocks and it lets you be, and stays calm a while. Come within 5 blocks, or hit it, and it
+fights.
+
+**Its moves.** It never makes the same move twice running:
+
+| Move | The tell | What to do |
+|---|---|---|
+| **Rake** | A paw drawn up and out to one side | It rakes the paw across its front, from the side it was raised on. Back off out of reach, or get behind it. |
+| **Snap** | Head drawn back, jaws wide | It lunges and snaps down a short lane before it. Step aside. |
+| **Crush** | Reared up tall | It crushes down on a fan before it, and slows whoever it catches. Get out of the fan, or hit it hard while it's up: a heavy blow **topples** it onto its back for 2.5 seconds. |
+| **Pounce** | Crouched low, rump wiggling, a spot marked | It leaps 3 to 10 blocks onto the spot. Leave it. It lies **sprawled** 1.7 seconds after. |
+| **Charge** | Head down, pawing the ground | It charges 15 blocks along a line. Step aside. If it runs into a tree or a wall it stands **dazed** 2.2 seconds. |
+| **Log** | Claws hooked under a mossy trunk, straining | It heaves the log out of the forest floor and rolls it down a wide lane. Jump it. |
+| **Dig** | Rump up, head down, scrabbling (only when you're behind it) | It kicks a spray of earth and stones back: Blindness and Slowness. Get out from behind it. |
+
+- Toppled, sprawled or dazed, it takes **half again** as much. Pinning someone, a quarter more.
+- From up close it rakes, snaps and crushes; crowd round it and it crushes more. From a way off it pounces, charges and
+  rolls logs. Stand behind it and it digs.
+
+**Half beaten** it rears and roars, throwing back and weakening everyone within 7 blocks and taking half meanwhile, then
+fights on roused: its hackles up, its tells quicker, its moves in pairs. It backhands the other way after a rake, snaps
+twice, crushes twice, pounces again from where it lands, wheels round and charges again, rolls a second log, and digs a
+wider spray. And now it can **hug**: it rears with its forelegs spread wide and falls on whoever stands before it,
+pinning them and mauling them for up to 2.5 seconds. Back away before it falls, or topple it with a heavy blow while
+it's reared. Once you're pinned, you or a friend can strike it hard to break you free, and it throws you off.
+
+**What it gives:** 4 to 8 leather, 2 to 4 bones, 1 to 3 moss blocks, 2 to 4 emeralds, and a 50% chance of 1 or 2
+diamonds.
 
 ## Tips and counterplay
 

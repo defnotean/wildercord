@@ -7,7 +7,7 @@ package dev.wildercord.monster;
  *
  * <ol>
  *   <li>{@link #BRUTE}: the Sandmaw Wyrm.</li>
- *   <li>{@link #CHAMPION}.</li>
+ *   <li>{@link #CHAMPION}: the Timbermaul Bear.</li>
  *   <li>{@link #WARLORD}.</li>
  * </ol>
  */

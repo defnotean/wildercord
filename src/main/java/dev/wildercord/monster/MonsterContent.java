@@ -87,6 +87,8 @@ public final class MonsterContent {
 		EntityType.Builder.of(BloomclawMantis::new, MobCategory.MONSTER).sized(0.7F, 1.0F).eyeHeight(0.85F));
 	public static final EntityType<SandmawWyrm> SANDMAW_WYRM = monster("sandmaw_wyrm",
 		EntityType.Builder.of(SandmawWyrm::new, MobCategory.MONSTER).sized(1.5F, 3.0F).eyeHeight(2.6F).clientTrackingRange(10));
+	public static final EntityType<TimbermaulBear> TIMBERMAUL_BEAR = monster("timbermaul_bear",
+		EntityType.Builder.of(TimbermaulBear::new, MobCategory.MONSTER).sized(1.8F, 2.0F).eyeHeight(1.6F).clientTrackingRange(10));
 
 	/** A Bog Witch-Frog's bubble of poison, in flight. */
 	public static final EntityType<BogBubble> BOG_BUBBLE = register("bog_bubble",
@@ -136,6 +138,7 @@ public final class MonsterContent {
 	public static final Item GLOWLURE_ANGLER_EGG = egg("glowlure_angler", GLOWLURE_ANGLER);
 	public static final Item BLOOMCLAW_MANTIS_EGG = egg("bloomclaw_mantis", BLOOMCLAW_MANTIS);
 	public static final Item SANDMAW_WYRM_EGG = egg("sandmaw_wyrm", SANDMAW_WYRM);
+	public static final Item TIMBERMAUL_BEAR_EGG = egg("timbermaul_bear", TIMBERMAUL_BEAR);
 
 	/** Every monster's type, in the order of {@link MonsterRules.Kind}. */
 	public static List<EntityType<? extends Mob>> types() {
@@ -206,6 +209,8 @@ public final class MonsterContent {
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:bloomclaw_mantis", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xEAAEC4));
 		FabricDefaultAttributeRegistry.register(SANDMAW_WYRM, SandmawWyrm.createAttributes());
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:sandmaw_wyrm", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xB89058));
+		FabricDefaultAttributeRegistry.register(TIMBERMAUL_BEAR, TimbermaulBear.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:timbermaul_bear", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x68472C));
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
 			output.accept(LIVING_BRAMBLE);
