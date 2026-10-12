@@ -54,6 +54,7 @@ import java.util.function.Predicate;
  *   <li><b>Rimecoat Wolverines</b>: out on the snowy plains, the ice spikes and the snowy taiga at night, alone.</li>
  *   <li><b>Snapjaw Turtles</b>: on the riverbed in the dark, rivers and frozen rivers, alone.</li>
  *   <li><b>Reefgrasp Octopuses</b>: on the seafloor in the dark, the oceans but the frozen ones, alone.</li>
+ *   <li><b>Foxfire Kitsunes</b>: among the cherry groves at night, alone.</li>
  * </ul>
  * All need the dark monsters need, none spawns on Peaceful (their types say so), and the server's {@code monsters} settings
  * can stop any of them: the switches at once, through the rules here, the rate when a world loads (it sets the weights).
@@ -101,6 +102,10 @@ public final class MonsterSpawns {
 	/** A Reefgrasp Octopus's spawn weight, and its id among the server's switches. */
 	private static final int REEFGRASP_OCTOPUS_WEIGHT = 15;
 	private static final String REEFGRASP_OCTOPUS = "reefgrasp_octopus";
+	private static final Set<ResourceKey<Biome>> CHERRY = Set.of(Biomes.CHERRY_GROVE);
+	/** A Foxfire Kitsune's spawn weight, and its id among the server's switches. */
+	private static final int FOXFIRE_KITSUNE_WEIGHT = 20;
+	private static final String FOXFIRE_KITSUNE = "foxfire_kitsune";
 	/**
 	 * Overworld biomes left alone underground: the deep dark (nothing spawns there on purpose; a lone entry would fill it) and
 	 * the mushroom fields (no monsters, ever).
@@ -159,6 +164,9 @@ public final class MonsterSpawns {
 				&& level.getDifficulty() != net.minecraft.world.Difficulty.PEACEFUL
 				&& level.getFluidState(pos).is(net.minecraft.tags.FluidTags.WATER) && !level.getFluidState(pos.below()).is(net.minecraft.tags.FluidTags.WATER)
 				&& (EntitySpawnReason.isSpawner(reason) || (pos.getY() < level.getSeaLevel() && Monster.isDarkEnoughToSpawn(level, pos, random))));
+		SpawnPlacements.register(MonsterContent.FOXFIRE_KITSUNE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> allowed(reason, FOXFIRE_KITSUNE)
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
 		// Every overworld biome, by the vanilla tag as well as by where they generate, so a world whose overworld makes only a few
@@ -226,6 +234,12 @@ public final class MonsterSpawns {
 			int weight = MonsterRules.weight(REEFGRASP_OCTOPUS_WEIGHT, rate);
 			if (weight > 0) {
 				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.REEFGRASP_OCTOPUS, UniformInt.of(1, 1)), weight);
+			}
+		}
+		if (CHERRY.contains(key)) {
+			int weight = MonsterRules.weight(FOXFIRE_KITSUNE_WEIGHT, rate);
+			if (weight > 0) {
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.FOXFIRE_KITSUNE, UniformInt.of(1, 1)), weight);
 			}
 		}
 		if (!QUIET.contains(key)) {

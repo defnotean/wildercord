@@ -956,6 +956,9 @@ def write_lang(runes):
     import octopus_art
     lang.update(octopus_art.LANG)
     octopus_art.write(sys.modules[__name__])
+    import kitsune_art
+    lang.update(kitsune_art.LANG)
+    kitsune_art.write(sys.modules[__name__])
     import dormouse_art
     lang.update(dormouse_art.LANG)
     dormouse_art.write(sys.modules[__name__])
