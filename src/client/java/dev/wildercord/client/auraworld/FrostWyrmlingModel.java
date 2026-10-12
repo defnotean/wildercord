@@ -213,6 +213,18 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 					fold=Mth.lerp(tuck,fold,.5F);up+=.3F*tuck;
 				}
 			}
+			case FrostWyrmlingRules.LANCES->{
+				// Reared high on its hind legs, forefeet drawn up, wings thrown wide and head back roaring; then down on its forefeet with
+				// its wings snapped down and its head low over the ice, braced while the lances run out, shuddering with the effort.
+				float rear=smooth(el,0,tell*.6F)*(1-go),slam=go,shake=Mth.sin(el*2.3F)*.03F*slam*(1-ramp(el,tell+10,10));
+				pitch+=-.85F*rear+.18F*slam+shake;
+				n1X+=-.5F*rear+.45F*slam;n2X+=-.3F*rear+.2F*slam;headX+=-.45F*rear+.25F*slam;jawX+=.8F*rear+.45F*slam;
+				u[0]=Mth.lerp(rear,u[0],-1.1F);u[1]=Mth.lerp(rear,u[1],-1.1F);l[0]=Mth.lerp(rear,l[0],1.7F);l[1]=Mth.lerp(rear,l[1],1.7F);
+				u[2]+=.45F*rear;u[3]+=.45F*rear;l[2]-=.2F*rear;l[3]-=.2F*rear;
+				u[0]-=.45F*slam;u[1]-=.45F*slam;l[0]+=.35F*slam;l[1]+=.35F*slam;uz[0]=.15F*slam;uz[1]=-.15F*slam;
+				fold=Mth.lerp(Math.max(rear,slam),fold,0);up+=1.3F*rear-1.0F*slam;fwd+=-.3F*rear+.4F*slam;
+				t1X+=.35F*rear-.1F*slam;tY+=Mth.sin(el*.7F)*.2F*rear;
+			}
 			case FrostWyrmlingRules.RECOVER->{
 				float k=ramp(el,0,4),heave=Mth.sin(el*.5F);
 				n1X+=.55F*k;n2X+=.2F*k;headX+=.3F*k;jawX+=(.25F+.1F*heave)*k;

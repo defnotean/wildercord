@@ -32,6 +32,13 @@ public final class FrostWyrmlingRules {
 	/** Spent after an attack, head low and wings drooping, breath steaming: the opening. */
 	public static final int RECOVER = 10;
 
+	/**
+	 * Its signature, wounded only: reared up on its hind legs with its wings thrown wide through a long tell, then brought down on
+	 * its forefeet; frost cracks race out along the floor in lines from where it lands, one at each player and the rest fanned evenly
+	 * round it, and ice lances burst up along each line behind the crack, flinging whoever stands on one into the air.
+	 */
+	public static final int LANCES = 11;
+
 	public static final double HEALTH = 360, ARMOUR = 8, SPEED = 0.32;
 
 	/** Anyone in the hall this close to its mound, horizontally, wakes it: well in past the crevasse mouth. */
@@ -87,6 +94,48 @@ public final class FrostWyrmlingRules {
 	/** The beat away: how much hurt, fading each tick by {@link #STING_FADE}, sends it off, how fast it goes, and the least time between two. */
 	public static final double STING_AFTER = 40, STING_FADE = 0.97, LEAP_SPEED = 0.8;
 	public static final int LEAP_TICKS = 9, LEAP_REST = 220;
+	/**
+	 * Rime Lances: the rear (its tell); how long after the slam the lances begin to burst, behind the crack; how many lines it sends
+	 * out in all; how far they run and how fast, in blocks a tick; how close to a lance someone must stand to be struck; what a lance
+	 * does, and how high it flings; how long each lance stands; the rest after; and the least time between two.
+	 */
+	public static final int LANCE_TELL = 18, LANCE_WARN = 8, LANCE_LINES = 8, LANCE_HOLD = 24, LANCE_RECOVER = 28, LANCE_REST = 280;
+	public static final double LANCE_REACH = 14, LANCE_SPEED = 1, LANCE_RADIUS = 0.95, LANCE_DAMAGE = 14, LANCE_LIFT = 0.8, LANCE_START = 1.5;
+	/** How long the lances take to run out to their full reach once they begin. */
+	public static final int LANCE_RUN = (int) Math.ceil((LANCE_REACH - LANCE_START) / LANCE_SPEED);
+
+	/** Whether, wounded and rested, it rears for its lances at prey {@code distance} away. */
+	public static boolean lances(boolean wounded, long sinceLances, double distance) {
+		return wounded && sinceLances >= LANCE_REST && distance <= LANCE_REACH - 2;
+	}
+	/** How far out along its line the lances have burst, {@code sinceSlam} ticks after its forefeet came down; 0 before they begin. */
+	public static double lanceFront(long sinceSlam) {
+		if (sinceSlam < LANCE_WARN) return 0;
+		return Math.min(LANCE_REACH, LANCE_START + (sinceSlam - LANCE_WARN) * LANCE_SPEED);
+	}
+	/**
+	 * The yaws of the lines it sends out: one at each of {@code prey} (yaws, the first its target), and the rest fanned evenly round
+	 * it from the first, skipping any that would run too close beside a line already aimed.
+	 */
+	public static float[] lines(float[] prey) {
+		var out = new java.util.ArrayList<Float>();
+		for (float p : prey) out.add(p);
+		float first = prey.length > 0 ? prey[0] : 0;
+		for (int i = 0; out.size() < Math.max(LANCE_LINES, prey.length) && i < LANCE_LINES; i++) {
+			float y = first + i * 360F / LANCE_LINES;
+			boolean near = false;
+			for (float o : out) if (Math.abs(wrap(y - o)) < 360F / LANCE_LINES / 2) near = true;
+			if (!near) out.add(y);
+		}
+		float[] arr = new float[out.size()];
+		for (int i = 0; i < arr.length; i++) arr[i] = out.get(i);
+		return arr;
+	}
+	/** Whether someone {@code along} out along a lance line and {@code across} beside it, {@code height} above its feet, stands on a lance that has burst out to {@code front}. */
+	public static boolean lanced(double along, double across, double height, double front) {
+		return along >= LANCE_START - LANCE_RADIUS && along <= front + 0.3 && Math.abs(across) <= LANCE_RADIUS && height > -1.5 && height < 2.5;
+	}
+
 	/** Ticks between its blows, fewer once it is wounded. */
 	public static final int GAP = 9, GAP_WOUNDED = 5;
 
@@ -100,6 +149,7 @@ public final class FrostWyrmlingRules {
 			case POUNCE -> "pounce";
 			case BOUND -> "bound";
 			case RECOVER -> "recover";
+			case LANCES -> "lances";
 			default -> "watch";
 		};
 	}
@@ -147,10 +197,11 @@ public final class FrostWyrmlingRules {
 	}
 	/**
 	 * What its scales leave of a blow. Its horned head and the frost on its brow turn some of a blow from the front; its flanks take
-	 * it all; spent after an attack it is open.
+	 * it all; spent after an attack it is open, and reared up for its lances its pale belly is bared to the front.
 	 */
 	public static double armour(int move, boolean frontal) {
 		if (move == RECOVER) return 1.3;
+		if (move == LANCES) return 1.15;
 		return frontal ? 0.6 : 1.0;
 	}
 	/** Whether a blow arriving from {@code angle} degrees off its facing lands on its front. */

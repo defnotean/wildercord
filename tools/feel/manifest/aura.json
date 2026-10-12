@@ -1379,6 +1379,13 @@
       ],
       "subtitle": "frost_wyrmling.hurt"
     },
+    "aura_frost_wyrmling_lance": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_lance"
+      ],
+      "subtitle": "frost_wyrmling.lance"
+    },
     "aura_frost_wyrmling_land": {
       "attenuation": 0,
       "files": [

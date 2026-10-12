@@ -53,7 +53,11 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	/** A pounce: where it left the ground and where it comes down. */
 	private Vec3 from=Vec3.ZERO,to=Vec3.ZERO;
 	private int chased;
-	private long lastDodge=-999,lastLeap=-999,lastTail=-999,lastWing=-999,lastBreath=-999,lastPounce=-999;
+	private long lastDodge=-999,lastLeap=-999,lastTail=-999,lastWing=-999,lastBreath=-999,lastPounce=-999,lastLances=-999;
+	/** Rime Lances: where its forefeet came down, the yaws of the lines it sent out, and who a lance has already flung this time. */
+	private Vec3 slam=Vec3.ZERO;
+	private float[] lanes=new float[0];
+	private final Set<UUID> lanced=new HashSet<>();
 	/** Hurt taken lately, fading; enough of it sends it beating away. */
 	private double stung;
 
@@ -222,6 +226,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 			case FrostWyrmlingRules.WING->wing(level);
 			case FrostWyrmlingRules.BREATH->breath(level,target);
 			case FrostWyrmlingRules.POUNCE->pounce(level,target);
+			case FrostWyrmlingRules.LANCES->lances(level,target);
 			case FrostWyrmlingRules.BOUND->{face(aim);move(MoverType.SELF,new Vec3(slide.x,-.3,slide.z));setDeltaMovement(Vec3.ZERO);if(--left<=0)pose(FrostWyrmlingRules.WATCH,2);}
 			case FrostWyrmlingRules.RECOVER->{still();if(since()%12==6){var h=head();level.sendParticles(ParticleTypes.CLOUD,h.x,h.y-.3,h.z,3,.2,.05,.2,.01);}if(--left<=0)pose(FrostWyrmlingRules.WATCH,gap());}
 			default->watch(level,target);
@@ -246,6 +251,12 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 		if(left>0)left--;
 		if(left<=0){
 			long now=level.getGameTime();
+			// Wounded, it rears up for its lances whenever it has the breath for them.
+			if(FrostWyrmlingRules.lances(wounded(),now-lastLances,d)){
+				lastLances=now;chased=0;aim=yawTo(target.position());
+				pose(FrostWyrmlingRules.LANCES,0,FrostWyrmlingRules.LANCE_TELL);roar(level,1.8F,.85F);
+				return;
+			}
 			int pick=FrostWyrmlingRules.choose(d,yawTo(target.position())-getYRot(),random.nextDouble(),now-lastTail>=FrostWyrmlingRules.TAIL_REST,
 				now-lastWing>=FrostWyrmlingRules.WING_REST,now-lastBreath>=FrostWyrmlingRules.BREATH_REST,now-lastPounce>=FrostWyrmlingRules.POUNCE_REST);
 			// A long chase ends in a pounce from wherever it got to.
@@ -372,6 +383,79 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 			for(var p:prey(level))if(FrostWyrmlingRules.crushed(p.getX()-at.x,p.getZ()-at.z,p.getY()-at.y))hit(level,p,FrostWyrmlingRules.POUNCE_DAMAGE,1.2,at,.4);
 			spent(FrostWyrmlingRules.POUNCE_RECOVER);
 		}
+	}
+
+	/**
+	 * Rime Lances. Reared up on its hind legs through the tell, wings wide, turning a little after its prey; then down on its
+	 * forefeet. Frost cracks race out along the floor from where they land, one line at each player and the rest fanned evenly round
+	 * it, and close behind the crack lances of ice burst up one after another out to the hall's edge, flinging whoever stands on one;
+	 * they stand a moment and sink, and it stands spent.
+	 */
+	private void lances(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<tell-4 && target!=null)aim=turned(aim,yawTo(target.position()),6);
+		face(aim);still();
+		if(el<tell){
+			if(el%3==0)level.sendParticles(ParticleTypes.SNOWFLAKE,getX(),getY()+3,getZ(),6,1.8,.5,.8,.02);
+			return;
+		}
+		long s=el-tell;
+		if(s==0){
+			slam=position().add(ahead(aim).scale(1.2));lanced.clear();
+			var yaws=new ArrayList<Float>();yaws.add(aim);
+			for(var p:prey(level))if(p!=target)yaws.add(yawTo(p.position()));
+			float[] arr=new float[yaws.size()];for(int i=0;i<arr.length;i++)arr[i]=yaws.get(i);
+			lanes=FrostWyrmlingRules.lines(arr);
+			Feels.sound(level,slam,"aura_frost_wyrmling_land",2F,.75F);
+			Feels.sound(level,slam,"aura_frost_wyrmling_lance",2F,1);
+			level.sendParticles(ParticleTypes.ITEM_SNOWBALL,slam.x,slam.y+.2,slam.z,30,1.2,.1,1.2,.12);
+			level.sendParticles(ParticleTypes.POOF,slam.x,slam.y+.2,slam.z,16,1,.1,1,.06);
+		}
+		var crack=new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,net.minecraft.world.level.block.Blocks.PACKED_ICE.defaultBlockState());
+		double run=FrostWyrmlingRules.LANCE_REACH-FrostWyrmlingRules.LANCE_START;
+		double crackWas=s==0?FrostWyrmlingRules.LANCE_START:Math.min(FrostWyrmlingRules.LANCE_REACH,FrostWyrmlingRules.LANCE_START+s*run/FrostWyrmlingRules.LANCE_WARN);
+		double crackNow=Math.min(FrostWyrmlingRules.LANCE_REACH,FrostWyrmlingRules.LANCE_START+(s+1)*run/FrostWyrmlingRules.LANCE_WARN);
+		double front=FrostWyrmlingRules.lanceFront(s),was=FrostWyrmlingRules.lanceFront(s-1);
+		for(float lane:lanes){
+			var f=ahead(lane);
+			// The crack, racing out ahead: the warning.
+			for(double d=crackWas;d<crackNow;d+=.7){
+				double y=floor(level,slam.x+f.x*d,slam.y,slam.z+f.z*d);
+				level.sendParticles(crack,slam.x+f.x*d,y+.1,slam.z+f.z*d,2,.15,0,.15,0);
+				level.sendParticles(ParticleTypes.SNOWFLAKE,slam.x+f.x*d,y+.15,slam.z+f.z*d,1,.1,.05,.1,.01);
+			}
+			// The lances, bursting up behind it.
+			if(front>was){
+				double x=slam.x+f.x*front,z=slam.z+f.z*front,y=floor(level,x,slam.y,z);
+				float h=(float)(1.5+front*.09+random.nextDouble()*.5),w=(float)(.7+random.nextDouble()*.25);
+				dev.wildercord.cast.BlockFx.shard(level,new Vec3(x,y-.35,z),h,w,f.x,f.z,.18F+random.nextFloat()*.12F,FrostWyrmlingRules.LANCE_HOLD);
+				level.sendParticles(crack,x,y+.3,z,6,.25,.2,.25,.1);
+				if(((int)front)%3==0)Feels.sound(level,new Vec3(x,y,z),"aura_frost_wyrmling_frost",.9F,1.3F+random.nextFloat()*.3F);
+			}
+		}
+		if(front>0 && s<FrostWyrmlingRules.LANCE_WARN+FrostWyrmlingRules.LANCE_RUN+3){
+			for(var p:prey(level)){
+				if(lanced.contains(p.getUUID()))continue;
+				for(float lane:lanes){
+					var f=ahead(lane);double dx=p.getX()-slam.x,dz=p.getZ()-slam.z;
+					if(!FrostWyrmlingRules.lanced(dx*f.x+dz*f.z,dx*-f.z+dz*f.x,p.getY()-slam.y,front))continue;
+					lanced.add(p.getUUID());
+					hit(level,p,FrostWyrmlingRules.LANCE_DAMAGE,.3,slam,FrostWyrmlingRules.LANCE_LIFT);
+					p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,FrostWyrmlingRules.BREATH_SLOW,1,false,true));
+					level.sendParticles(crack,p.getX(),p.getY()+.5,p.getZ(),14,.3,.4,.3,.15);
+					break;
+				}
+			}
+		}
+		if(s>=FrostWyrmlingRules.LANCE_WARN+FrostWyrmlingRules.LANCE_RUN+6)spent(FrostWyrmlingRules.LANCE_RECOVER);
+	}
+	/** The top of the floor near ({@code x}, {@code y}, {@code z}): up out of a drift, or down off a ledge, a few blocks at most. */
+	private static double floor(ServerLevel level,double x,double y,double z){
+		var at=BlockPos.containing(x,y,z).mutable();
+		for(int i=0;i<3 && !level.getBlockState(at).getCollisionShape(level,at).isEmpty();i++)at.move(0,1,0);
+		for(int i=0;i<4 && level.getBlockState(at.below()).getCollisionShape(level,at.below()).isEmpty();i++)at.move(0,-1,0);
+		var shape=level.getBlockState(at).getCollisionShape(level,at);
+		return at.getY()+(shape.isEmpty()?0:shape.max(net.minecraft.core.Direction.Axis.Y));
 	}
 
 	/** Spent after an attack, head low and wings drooping, breath steaming, for {@code ticks}. */

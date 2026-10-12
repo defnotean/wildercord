@@ -10,7 +10,8 @@ LANG = {
                                        'of ice. It wakes when someone comes far enough in, spreads its wings and roars, and keeps its hall '
                                        'clear of anything hostile. It bites, sweeps its tail, beats its wings to drive you off, breathes '
                                        'frost that slows and chills, and pounces from a distance. Its horned brow turns blows; its flanks '
-                                       'do not, and it is open a moment after it lands.',
+                                       'do not, and it is open a moment after it lands. Wounded, it rears up and brings its forefeet down, and lances of ice '
+                                       'burst up along cracks racing out across the floor: step off the crack before they reach you.',
     'guide.wildercord.frost_wyrmling.hint': 'The Glacier Den: a crevasse cut down into the ice under the snowy mountains, a hall of ice past it.',
     'boss.wildercord.frost_wyrmling.status': '%s — %s',
 }
@@ -18,12 +19,12 @@ for name, text in {
     'roar': 'Frost Wyrmling roars', 'breath': 'Frost Wyrmling breathes frost', 'rise': 'Frost Wyrmling uncurls',
     'snarl': 'Frost Wyrmling snarls', 'step': 'Claws crunch on snow', 'bite': 'Frost Wyrmling bites', 'tail': 'Tail sweeps',
     'wing': 'Wings beat', 'frost': 'Frost spreads', 'land': 'Frost Wyrmling lands', 'bound': 'Frost Wyrmling leaps aside',
-    'hurt': 'Frost Wyrmling hurts', 'death': 'Frost Wyrmling falls',
+    'hurt': 'Frost Wyrmling hurts', 'death': 'Frost Wyrmling falls', 'lance': 'Ice lances burst up',
 }.items():
     LANG['subtitles.wildercord.kit.frost_wyrmling.' + name] = text
 # What the bar says it is doing, the way a Master's bar names its cut.
 for name, text in {'watch': 'Watching', 'bite': 'Biting', 'tail': 'Sweeping', 'wing': 'Beating its wings', 'breath': 'Frost Breath',
-                   'pounce': 'Pouncing', 'bound': 'Bounding', 'recover': 'Spent'}.items():
+                   'pounce': 'Pouncing', 'bound': 'Bounding', 'recover': 'Spent', 'lances': 'Rime Lances'}.items():
     LANG['boss.wildercord.frost_wyrmling.move.' + name] = text
 
 # Icy blue scales, deeper along the back; a pale frost-white belly; horns and spines like old ice; pale, veined wing membranes.

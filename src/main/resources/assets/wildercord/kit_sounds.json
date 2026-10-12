@@ -732,6 +732,9 @@
     "aura_frost_wyrmling_hurt": {
       "part": "aura"
     },
+    "aura_frost_wyrmling_lance": {
+      "part": "aura"
+    },
     "aura_frost_wyrmling_land": {
       "part": "aura"
     },

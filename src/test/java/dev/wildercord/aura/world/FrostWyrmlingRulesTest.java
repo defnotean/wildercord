@@ -77,6 +77,42 @@ class FrostWyrmlingRulesTest {
 		assertFalse(FrostWyrmlingRules.leaps(FrostWyrmlingRules.POUNCE,999,999));
 		assertFalse(FrostWyrmlingRules.leaps(FrostWyrmlingRules.WATCH,FrostWyrmlingRules.STING_AFTER-1,999));
 	}
+	@Test void itRearsForItsLancesOnlyWoundedRestedAndWithinReach(){
+		assertTrue(FrostWyrmlingRules.lances(true,FrostWyrmlingRules.LANCE_REST,6));
+		assertFalse(FrostWyrmlingRules.lances(false,999,6));
+		assertFalse(FrostWyrmlingRules.lances(true,FrostWyrmlingRules.LANCE_REST-1,6));
+		assertFalse(FrostWyrmlingRules.lances(true,999,FrostWyrmlingRules.LANCE_REACH));
+		assertEquals("lances",FrostWyrmlingRules.key(FrostWyrmlingRules.LANCES));
+		assertFalse(FrostWyrmlingRules.scripted(FrostWyrmlingRules.LANCES));
+	}
+	@Test void theLancesFollowTheCrackOutToTheirReach(){
+		assertEquals(0,FrostWyrmlingRules.lanceFront(FrostWyrmlingRules.LANCE_WARN-1),1e-9);
+		assertEquals(FrostWyrmlingRules.LANCE_START,FrostWyrmlingRules.lanceFront(FrostWyrmlingRules.LANCE_WARN),1e-9);
+		assertEquals(FrostWyrmlingRules.LANCE_START+3*FrostWyrmlingRules.LANCE_SPEED,FrostWyrmlingRules.lanceFront(FrostWyrmlingRules.LANCE_WARN+3),1e-9);
+		assertEquals(FrostWyrmlingRules.LANCE_REACH,FrostWyrmlingRules.lanceFront(FrostWyrmlingRules.LANCE_WARN+FrostWyrmlingRules.LANCE_RUN),1e-9);
+		assertEquals(FrostWyrmlingRules.LANCE_REACH,FrostWyrmlingRules.lanceFront(999),1e-9);
+	}
+	@Test void oneLineRunsAtEachPlayerAndTheRestFanEvenlyRound(){
+		float[] alone=FrostWyrmlingRules.lines(new float[]{30});
+		assertEquals(FrostWyrmlingRules.LANCE_LINES,alone.length);
+		assertEquals(30,alone[0],1e-6);
+		assertEquals(75,alone[1],1e-6);
+		float[] two=FrostWyrmlingRules.lines(new float[]{0,100});
+		assertEquals(0,two[0],1e-6);assertEquals(100,two[1],1e-6);
+		// The fanned line at 90 runs too close beside the one aimed at 100, so it is left out.
+		for(int i=2;i<two.length;i++)assertNotEquals(90,two[i],1e-6);
+		assertEquals(FrostWyrmlingRules.LANCE_LINES,two.length);
+	}
+	@Test void aLanceStrikesOnlyWhereItHasBurst(){
+		assertTrue(FrostWyrmlingRules.lanced(4,.5,0,6));
+		assertFalse(FrostWyrmlingRules.lanced(8,0,0,6));
+		assertFalse(FrostWyrmlingRules.lanced(4,1.5,0,6));
+		assertFalse(FrostWyrmlingRules.lanced(4,0,4,6));
+		assertFalse(FrostWyrmlingRules.lanced(0,0,0,6));
+	}
+	@Test void rearedForItsLancesItsBellyIsBared(){
+		assertTrue(FrostWyrmlingRules.armour(FrostWyrmlingRules.LANCES,true)>1);
+	}
 	@Test void leftAloneLongEnoughItCurlsUp(){
 		assertFalse(FrostWyrmlingRules.forgets(FrostWyrmlingRules.RESET_TICKS));
 		assertTrue(FrostWyrmlingRules.forgets(FrostWyrmlingRules.RESET_TICKS+1));

@@ -101,6 +101,39 @@ public final class BlockFx {
 		});
 	}
 
+	/**
+	 * A lance of ice that bursts up out of the ground at {@code base}, leaning {@code lean} radians out along ({@code dx}, {@code dz}),
+	 * stands a moment and sinks back: a turned prism of blue ice with a thinner point of packed ice on it.
+	 */
+	public static void shard(ServerLevel level, Vec3 base, float height, float width, double dx, double dz, float lean, int hold) {
+		Quaternionf turn = new Quaternionf().rotateY((float) Math.atan2(dx, dz)).rotateX(lean).rotateY((float) Math.PI / 4);
+		float body = height * 0.7F;
+		float tip = width * 0.5F;
+		Display.BlockDisplay shaft = display(level, base, Blocks.BLUE_ICE.defaultBlockState(), leaning(turn, width, 0.02F, 0));
+		Display.BlockDisplay point = display(level, base, Blocks.PACKED_ICE.defaultBlockState(), leaning(turn, tip, 0.02F, 0));
+		if (shaft == null || point == null) {
+			return;
+		}
+		Scheduler.later(1, () -> {
+			tween(shaft, leaning(turn, width, body, 0), 2);
+			tween(point, leaning(turn, tip, height - body + 0.1F, body - 0.1F), 2);
+		});
+		Scheduler.later(3 + hold, () -> {
+			tween(shaft, leaning(turn, width, 0.02F, -0.1F), 7);
+			tween(point, leaning(turn, tip, 0.02F, -0.1F), 7);
+		});
+		Scheduler.later(11 + hold, () -> {
+			shaft.discard();
+			point.discard();
+		});
+	}
+
+	/** A {@code w}-wide, {@code h}-tall block turned by {@code turn} about the middle of its foot, its foot {@code up} along its own axis. */
+	private static Transformation leaning(Quaternionf turn, float w, float h, float up) {
+		Vector3f shift = new Vector3f(-w / 2, up, -w / 2).rotate(turn);
+		return new Transformation(shift, new Quaternionf(turn), new Vector3f(w, h, w), new Quaternionf());
+	}
+
 	/** Ice closes around a creature, holds for {@code ticks}, then melts away. */
 	public static void encase(ServerLevel level, Entity target, int ticks) {
 		float w = target.getBbWidth() + 0.35F;

@@ -138,6 +138,16 @@ def death(v, rng):
     return sa.finish(sa.reverb(sa.highpass(x, 80), 1.6, .4, damp=6000), 'effect')
 
 
+def lance(v, rng):
+    """Rime Lances: ice splitting along the floor in a long running crack, a deep groan under it, and lance after lance bursting up ringing."""
+    s = 2.2
+    groan = sa.thump(70, 34, 1.4, .3, drive=2.0, knock=.6)
+    split = sa.norm(sa.bandpass(sa.chopper(s, rng, rate=(30, 60), floor=0) * sa.noise(s, rng), 1500, 7000)) * sa.swell(s, .2, 1.0) * sa.decay(s, 1.2, .05)
+    bursts = sa.mix(*[(.25 + i * .13, (.7 - .04 * i) * sa.thump(500 - 20 * i, 200, .18, .015, drive=2.2, knock=1.0)) for i in range(12)])
+    x = sa.mix(.7 * groan, (0, .5 * split), (0, .6 * bursts), (.3, .45 * _tinkle(1.8, rng, 90, 3000, 10000)))
+    return sa.finish(sa.reverb(sa.highpass(x, 45), 1.4, .35, damp=6000), 'effect')
+
+
 FROST_WYRMLING_EVENTS = [event('aura_frost_wyrmling_' + name, build, role='effect', subtitle='frost_wyrmling.' + name) for name, build in (
     ('roar', roar), ('breath', breath), ('rise', rise), ('snarl', snarl), ('step', step), ('bite', bite), ('tail', tail),
-    ('wing', wing), ('frost', frost), ('land', land), ('bound', bound), ('hurt', hurt), ('death', death))]
+    ('wing', wing), ('frost', frost), ('land', land), ('bound', bound), ('hurt', hurt), ('death', death), ('lance', lance))]

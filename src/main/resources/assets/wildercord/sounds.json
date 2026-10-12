@@ -5504,6 +5504,12 @@
       "wildercord:kit/aura/aura_frost_wyrmling_hurt"
     ]
   },
+  "aura_frost_wyrmling_lance": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.lance",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_lance"
+    ]
+  },
   "aura_frost_wyrmling_land": {
     "subtitle": "subtitles.wildercord.kit.frost_wyrmling.land",
     "sounds": [
