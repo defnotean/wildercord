@@ -1,14 +1,22 @@
 package dev.wildercord.aura.world;
 
+import com.mojang.math.Transformation;
+import dev.wildercord.cast.BlockFx;
+import dev.wildercord.cast.MoveDeck;
+import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.*;
 import net.minecraft.server.level.*;
+import net.minecraft.sounds.*;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.*;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.monster.Enemy;
@@ -26,11 +34,16 @@ import org.joml.Vector3f;
  * the herb. While it sleeps it holds still at the trunk's foot and cannot be hurt; the first player onto the island (or the first
  * blow) starts the uncoil, and when it lands the boss bar comes up. The grove going quiet sends it back up the trunk, healed.
  *
- * <p>Awake it fights like a lighter Master: quick bites in flurries, a lunge at anyone who backs off, a grab that holds and
- * squeezes until its prey struggles free, and a slip aside from blows it sees coming. Its scales turn much of a blow from the
- * front; each attack leaves it spent for a moment with its belly bare. At half health it takes to the water ring and bursts out
- * of it three times before it comes back ashore, quicker than before. Anyone keeping their distance gets the tail: it comes over
- * and down in front of it and flings a fan of the island at them, clods of earth that hit through armour.
+ * <p>Awake it never makes the same move twice running, and picks each from where its prey stands. Close in front it bites
+ * straight out, grabs with its coils, or spreads its hood and sweeps a jet of sticky sap across; a little off it throws its whole
+ * length in a lunge, slams its tail down to fling a fan of the island, or drives its head into the earth to send a line of roots
+ * bursting out along the ground; whoever gets round behind it gets its tail swept round in one full turn at ankle height; and
+ * whoever hangs about near it gets ringed, run round once and crushed as the ring draws shut. Each has its own wind-up, and each
+ * is set a moment before it comes. A lunge that finds nobody leaves it sprawled, and driving its roots leaves its head stuck fast;
+ * its scales turn much of a blow from the front, but spent, sprawled, stuck or reared to spray its belly is bare. It slips aside
+ * from blows it sees coming. At half health it rouses: towering, earth shaking off it, it throws back everyone near and roots
+ * ripple out across the island to be jumped, then it takes to the water ring and bursts out of it three times before it comes
+ * back ashore, quicker, its moves running on in pairs, its roots driven three at a time and its spray swung wider.
  */
 public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> MOVE=SynchedEntityData.defineId(RootcoilSerpent.class,EntityDataSerializers.INT);
@@ -40,6 +53,8 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Float> REST=SynchedEntityData.defineId(RootcoilSerpent.class,EntityDataSerializers.FLOAT);
 	/** The current move's tell in ticks, so the client knows when the blow lands. */
 	private static final EntityDataAccessor<Integer> TELL=SynchedEntityData.defineId(RootcoilSerpent.class,EntityDataSerializers.INT);
+	/** Which way the current blow swings: 1 or -1. */
+	private static final EntityDataAccessor<Integer> SIDE=SynchedEntityData.defineId(RootcoilSerpent.class,EntityDataSerializers.INT);
 	/** Coiled round the trunk it spans the coils; on the ground, a reared head over a heap of body. */
 	private static final EntityDimensions COILED=EntityDimensions.scalable(9.6F,8F),REARED=EntityDimensions.scalable(3.4F,4.8F).withEyeHeight(4.3F);
 	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.GREEN,BossEvent.BossBarOverlay.NOTCHED_10);
@@ -51,9 +66,29 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	// The fight, server side only.
 	/** The yaw its current blow is locked along. */
 	private float aim;
-	private int flurry,bites,chased,struggles,bursts,circle;
-	private long lastSlip=-999,lastGrab=-999,lastSlam=-999;
-	private boolean dived,water,gripping;
+	private int chased,struggles,bursts,circle,links;
+	private long lastSlip=-999;
+	/** When it last made each move, by move, and the moves it has made lately. */
+	private final long[] lastMade=new long[32];
+	private final MoveDeck deck=new MoveDeck(5);
+	private boolean dived,water,gripping,landed;
+	/** The middle of the ring it is drawing round its prey, how wide the ring is, and where round it it started. */
+	private Vec3 middle=Vec3.ZERO;
+	private double ringR,ringStart;
+	/** How many times its spray has splashed each player this spray. */
+	private final Map<UUID,Integer> splashed=new HashMap<>();
+	/** Lines of roots running out from where its head went in. */
+	private final List<Rootline> roots=new ArrayList<>();
+	private static final class Rootline{
+		final Vec3 from;final float yaw;final Set<UUID> struck;int age;
+		Rootline(Vec3 from,float yaw,Set<UUID> struck){this.from=from;this.yaw=yaw;this.struck=struck;}
+	}
+	/** Roots standing up out of the ground, to be put away if it goes. */
+	private final List<Display.BlockDisplay> spikes=new ArrayList<>();
+	/** The ring of roots running out from it as it rouses, and who it has caught. */
+	private Vec3 rippleAt=Vec3.ZERO;
+	private int rippleAge=-1;
+	private final Set<UUID> rippled=new HashSet<>();
 	private double heldDamage,ring;
 	private ServerPlayer caught;
 	private Vec3 from=Vec3.ZERO,to=Vec3.ZERO,slide=Vec3.ZERO;
@@ -67,7 +102,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		Clod(Display.BlockDisplay shown,BlockState state,Vec3 at,Vec3 vel,Quaternionf spin){this.shown=shown;this.state=state;this.at=at;this.vel=vel;this.spin=spin;}
 	}
 
-	public RootcoilSerpent(EntityType<? extends RootcoilSerpent> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
+	public RootcoilSerpent(EntityType<? extends RootcoilSerpent> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();Arrays.fill(lastMade,-9999);}
 	public static AttributeSupplier.Builder createAttributes(){
 		return createMobAttributes().add(Attributes.MAX_HEALTH,SerpentRules.HEALTH).add(Attributes.ARMOR,SerpentRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,SerpentRules.TIER.toughness)
 			.add(Attributes.MOVEMENT_SPEED,SerpentRules.SPEED).add(Attributes.ATTACK_DAMAGE,SerpentRules.TIER.melee).add(Attributes.FOLLOW_RANGE,32).add(Attributes.KNOCKBACK_RESISTANCE,1)
@@ -81,6 +116,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	}
 	public int move(){return entityData.get(MOVE);}
 	public int tell(){return entityData.get(TELL);}
+	public int side(){return entityData.get(SIDE);}
 	public float elapsed(float partial){return (float)(level().getGameTime()-entityData.get(BEGAN))+partial;}
 	public BlockPos tree(){return entityData.get(TREE);}
 	public BlockPos landing(){return entityData.get(LANDING);}
@@ -89,7 +125,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	public Vec3 trunk(){return Vec3.atBottomCenterOf(tree());}
 
 	@Override protected void defineSynchedData(SynchedEntityData.Builder b){
-		super.defineSynchedData(b);b.define(MOVE,SerpentRules.DORMANT);b.define(BEGAN,0L);b.define(TREE,BlockPos.ZERO);b.define(LANDING,BlockPos.ZERO);b.define(REST,0F);b.define(TELL,0);
+		super.defineSynchedData(b);b.define(MOVE,SerpentRules.DORMANT);b.define(BEGAN,0L);b.define(TREE,BlockPos.ZERO);b.define(LANDING,BlockPos.ZERO);b.define(REST,0F);b.define(TELL,0);b.define(SIDE,1);
 	}
 	@Override public void onSyncedDataUpdated(EntityDataAccessor<?> key){super.onSyncedDataUpdated(key);if(MOVE.equals(key))refreshDimensions();}
 	@Override protected EntityDimensions getDefaultDimensions(Pose pose){return SerpentRules.scripted(move())?COILED:REARED;}
@@ -103,7 +139,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private void pose(int move,int ticks,int tell){
 		int was=move();entityData.set(MOVE,move);entityData.set(BEGAN,level().getGameTime());entityData.set(TELL,tell);left=ticks;getNavigation().stop();
 		// Coiled on the trunk, and moving under the water or through the air, it is placed rather than moved.
-		boolean held=SerpentRules.scripted(move) || move==SerpentRules.SUBMERGED || move==SerpentRules.BURST;noPhysics=held;setNoGravity(held);
+		boolean held=SerpentRules.scripted(move) || move==SerpentRules.SUBMERGED || move==SerpentRules.BURST || move==SerpentRules.RING_COIL;noPhysics=held;setNoGravity(held);
 		if(was!=move)refreshDimensions();
 		if(!SerpentRules.scripted(move))bar.setName(Component.translatable("boss.wildercord.rootcoil_serpent.status",getType().getDescription(),
 			Component.translatable("boss.wildercord.rootcoil_serpent.move."+SerpentRules.key(move))));
@@ -112,7 +148,8 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private long since(){return level().getGameTime()-entityData.get(BEGAN);}
 	/** Back round the trunk, whole again. */
 	private void coil(){
-		letGo(false);dropClods();
+		letGo(false);dropClods();dropSpikes();roots.clear();rippleAge=-1;
+		deck.clear();Arrays.fill(lastMade,-9999);links=0;
 		noPhysics=false;setNoGravity(false);
 		pose(SerpentRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;
 		dived=false;water=false;bursts=0;bar.setColor(BossEvent.BossBarColor.GREEN);
@@ -125,6 +162,8 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	@Override protected void customServerAiStep(ServerLevel level){
 		super.customServerAiStep(level);if(!isAlive())return;
 		if(!clods.isEmpty())fly(level);
+		if(!roots.isEmpty())grow(level);
+		if(rippleAge>=0)ripple(level);
 		if(!bound)bind(blockPosition(),getYRot());
 		// Left alone long enough (its prey died and went home, say) and it has gone back round the trunk in the meantime.
 		long now=level.getGameTime();
@@ -202,13 +241,13 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var at=Vec3.atBottomCenterOf(landing());var t=trunk();
 		float facing=(float)Math.toDegrees(Math.atan2(-(at.x-t.x),at.z-t.z));
 		pose(SerpentRules.WATCH,SerpentRules.GAP);snapTo(at.x,at.y,at.z,facing,0);yBodyRot=facing;yHeadRot=facing;setDeltaMovement(Vec3.ZERO);
-		lastCut=level.getGameTime();quiet=0;
+		lastCut=level.getGameTime();quiet=0;deck.clear();links=0;
 		Feels.sound(level,at.add(0,2.5,0),"aura_serpent_challenge",1.6F,1);
 	}
 
 	private void awake(ServerLevel level){
 		var t=trunk();int move=move();
-		boolean placed=move==SerpentRules.SUBMERGED || move==SerpentRules.BURST || move==SerpentRules.DIVE;
+		boolean placed=move==SerpentRules.SUBMERGED || move==SerpentRules.BURST || move==SerpentRules.DIVE || move==SerpentRules.RING_COIL;
 		if(!placed && SerpentRules.leashed(getX()-t.x,getY()-t.y,getZ()-t.z)){
 			letGo(false);
 			var at=Vec3.atBottomCenterOf(landing());teleportTo(at.x,at.y,at.z);setDeltaMovement(Vec3.ZERO);getNavigation().stop();pose(SerpentRules.WATCH,gap());
@@ -226,7 +265,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		switch(move()){
 			case SerpentRules.STRIKE->strike(level,target);
 			case SerpentRules.LUNGE->lunge(level,target);
-			case SerpentRules.CONSTRICT->constrict(level);
+			case SerpentRules.CONSTRICT->constrict(level,target);
 			case SerpentRules.SQUEEZE->squeeze(level);
 			case SerpentRules.SIDESTEP->{face(aim);move(MoverType.SELF,slide);setDeltaMovement(Vec3.ZERO);if(--left<=0)pose(SerpentRules.WATCH,2);}
 			case SerpentRules.RECOVER->{getNavigation().stop();if(--left<=0)recovered(level,target);}
@@ -234,6 +273,11 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			case SerpentRules.SUBMERGED->submerged(level,target);
 			case SerpentRules.BURST->burst(level);
 			case SerpentRules.TAIL_SLAM->slam(level,target);
+			case SerpentRules.TAIL_SWEEP->sweep(level);
+			case SerpentRules.ROOT_LINE->rootLine(level,target);
+			case SerpentRules.HOOD_SPRAY->spray(level,target);
+			case SerpentRules.RING_COIL->ringCoil(level);
+			case SerpentRules.SPRAWLED,SerpentRules.BURIED->stuck(level);
 			default->watch(level,target);
 		}
 	}
@@ -253,59 +297,135 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		quiet=0;
 		getLookControl().setLookAt(target,30,30);
 		if(SerpentRules.dives(getHealth(),getMaxHealth(),dived)){
-			dived=true;water=true;bursts=0;bar.setColor(BossEvent.BossBarColor.BLUE);diveIn(level);return;
+			dived=true;water=true;bursts=0;links=0;bar.setColor(BossEvent.BossBarColor.BLUE);diveIn(level,true);return;
 		}
 		double d=distanceTo(target);
 		if(left>0)left--;
 		int pick=-1;
 		if(left<=0){
-			long now=level.getGameTime();
-			pick=SerpentRules.choose(d,random.nextDouble(),now-lastGrab>=SerpentRules.CONSTRICT_REST,now-lastSlam>=SerpentRules.TAIL_REST);
-			// A long chase ends in a lunge from further out.
-			if(pick<0 && chased>=60 && d<=SerpentRules.LUNGE_REACH+5)pick=SerpentRules.LUNGE;
+			pick=SerpentRules.choose(deck,d,behind(target),ages(level.getGameTime()),dived,random.nextDouble());
+			// A long chase ends in roots driven at its prey from afar, or a lunge.
+			if(pick<0 && chased>=60)pick=d<=SerpentRules.ROOT_REACH && deck.last()!=SerpentRules.ROOT_LINE?SerpentRules.ROOT_LINE:d<=SerpentRules.LUNGE_REACH+5?SerpentRules.LUNGE:-1;
 		}
-		if(pick>=0){
-			chased=0;aim=yawTo(target.position());
-			switch(pick){
-				case SerpentRules.STRIKE->{flurry=SerpentRules.flurry(random.nextDouble(),dived);bites=0;strikeAt(SerpentRules.STRIKE_TELL);}
-				case SerpentRules.TAIL_SLAM->{lastSlam=level.getGameTime();pose(SerpentRules.TAIL_SLAM,0,SerpentRules.TAIL_TELL);Feels.sound(level,position().add(0,1,0),"aura_serpent_hiss",1.3F,.7F);}
-				case SerpentRules.LUNGE->{struck.clear();pose(SerpentRules.LUNGE,0,SerpentRules.LUNGE_TELL);Feels.sound(level,mouth(),"aura_serpent_hiss",1.2F,1.3F);}
-				default->{lastGrab=level.getGameTime();pose(SerpentRules.CONSTRICT,0,SerpentRules.CONSTRICT_TELL);Feels.sound(level,position().add(0,1,0),"aura_serpent_constrict",1.2F,1.1F);}
-			}
-			return;
-		}
+		if(pick>=0){links=0;begin(level,pick,target,false);return;}
 		if(d>SerpentRules.CLOSE){
 			chased++;
 			if(!getNavigation().moveTo(target,1))getMoveControl().setWantedPosition(target.getX(),target.getY(),target.getZ(),1);
 		}else{chased=0;getNavigation().stop();}
 	}
 
-	/** A bite drawn back for {@code tell} ticks along the locked aim. */
-	private void strikeAt(int tell){pose(SerpentRules.STRIKE,0,tell);}
+	/** Ticks since it last made each move, by move. */
+	private long[] ages(long now){long[] a=new long[lastMade.length];for(int i=0;i<a.length;i++)a[i]=now-lastMade[i];return a;}
+	/** Whether {@code e} stands at its back. */
+	private boolean behind(LivingEntity e){return SerpentRules.behind(yawTo(e.position())-getYRot());}
 
-	private void strike(ServerLevel level,LivingEntity target){
-		face(aim);long el=since();int tell=tell();
-		if(el==tell){
-			Feels.sound(level,mouth(),"aura_serpent_strike",1.3F,.9F+random.nextFloat()*.2F);
-			for(var p:prey(level))if(reaches(SerpentRules.STRIKE,p))hit(level,p,SerpentRules.STRIKE_DAMAGE,.5);
+	/** It begins {@code move} at {@code target}; {@code chained} when it runs straight on from the last, with a shorter tell. */
+	private void begin(ServerLevel level,int move,LivingEntity target,boolean chained){
+		lastMade[move]=level.getGameTime();deck.played(move);struck.clear();landed=false;chased=0;
+		aim=move==SerpentRules.TAIL_SWEEP?getYRot():yawTo(target.position());
+		entityData.set(SIDE,random.nextBoolean()?1:-1);
+		int tell=switch(move){
+			case SerpentRules.STRIKE->chained?SerpentRules.STRIKE_CHAIN_TELL:SerpentRules.STRIKE_TELL;
+			case SerpentRules.LUNGE->SerpentRules.LUNGE_TELL;
+			case SerpentRules.TAIL_SLAM->SerpentRules.TAIL_TELL;
+			case SerpentRules.CONSTRICT->SerpentRules.CONSTRICT_TELL;
+			case SerpentRules.TAIL_SWEEP->SerpentRules.SWEEP_TELL;
+			case SerpentRules.ROOT_LINE->SerpentRules.ROOT_TELL;
+			case SerpentRules.HOOD_SPRAY->SerpentRules.SPRAY_TELL;
+			default->SerpentRules.RING_SET+SerpentRules.RING_LAP;
+		};
+		if(chained && move!=SerpentRules.STRIKE && move!=SerpentRules.RING_COIL)tell=tell*3/4;
+		var m=mouth();
+		switch(move){
+			case SerpentRules.STRIKE->Feels.sound(level,m,"aura_serpent_hiss",1.1F,1.35F+random.nextFloat()*.15F);
+			case SerpentRules.LUNGE->{Feels.sound(level,m,"aura_serpent_hiss",1.2F,1.2F);sound(level,position(),SoundEvents.SNIFFER_DIGGING,1,.7F);}
+			case SerpentRules.TAIL_SLAM->Feels.sound(level,position().add(0,1,0),"aura_serpent_hiss",1.3F,.7F);
+			case SerpentRules.CONSTRICT->Feels.sound(level,position().add(0,1,0),"aura_serpent_constrict",1.2F,1.1F);
+			case SerpentRules.TAIL_SWEEP->Feels.sound(level,position().add(0,1,0),"aura_serpent_hiss",1.1F,1.8F);
+			case SerpentRules.ROOT_LINE->{Feels.sound(level,m,"aura_serpent_hiss",1.4F,.6F);sound(level,position(),SoundEvents.ROOTED_DIRT_HIT,1.2F,.6F);}
+			case SerpentRules.HOOD_SPRAY->{splashed.clear();Feels.sound(level,m,"aura_serpent_hiss",1.5F,1);sound(level,m,SoundEvents.HONEY_BLOCK_SLIDE,1.2F,.6F);}
+			default->{ringUp(target);Feels.sound(level,position().add(0,1,0),"aura_serpent_uncoil",1.2F,1.3F);}
 		}
-		if(el<tell+SerpentRules.STRIKE_HOLD)return;
-		bites++;
-		// The flurry goes on while its prey is still in reach, each bite re-aimed.
-		if(bites<flurry && target!=null && distanceTo(target)<=SerpentRules.CLOSE+1){aim=yawTo(target.position());strikeAt(SerpentRules.STRIKE_CHAIN_TELL);}
-		else spent(SerpentRules.STRIKE_RECOVER);
+		pose(move,0,tell);
 	}
 
-	/** It tracks its prey through the start of the tell, locks its aim for the last four ticks, then throws itself along it. */
+	/** Done with {@code move}: roused, it may run straight on into another; otherwise it is spent, belly bare, for {@code recover} ticks. */
+	private void after(ServerLevel level,int move,int recover){
+		var target=getTarget();
+		if(dived && !water && target!=null && target.isAlive() && links<SerpentRules.CHAIN_MOST){
+			int next=SerpentRules.chain(move,landed,distanceTo(target),behind(target),ages(level.getGameTime()),random.nextDouble());
+			if(next>=0){links++;begin(level,next,target,true);return;}
+		}
+		links=0;spent(recover);
+	}
+
+	/**
+	 * The bite. It draws its head back over its body, jaws wide, tracking its prey until the last few ticks, when a hiss marks the
+	 * aim set; then the head snaps straight out along it. Step aside once it hisses.
+	 */
+	private void strike(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<=tell-SerpentRules.STRIKE_LOCK && target!=null)aim=yawTo(target.position());
+		face(aim);setDeltaMovement(Vec3.ZERO);
+		var m=mouth();
+		if(el<tell){
+			if(el%3==0)level.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM,m.x,m.y,m.z,2,.25,.2,.25,0);
+			if(el==tell-SerpentRules.STRIKE_LOCK){Feels.sound(level,m,"aura_serpent_hiss",1.2F,1.7F);level.sendParticles(ParticleTypes.CRIT,m.x,m.y,m.z,6,.3,.3,.3,.05);}
+			return;
+		}
+		if(el==tell){
+			Feels.sound(level,m,"aura_serpent_strike",1.3F,.9F+random.nextFloat()*.2F);
+			for(int i=1;i<=5;i++){var at=position().add(ahead(aim).scale(i)).add(0,1.6,0);level.sendParticles(ParticleTypes.CRIT,at.x,at.y,at.z,2,.15,.15,.15,.02);}
+			for(var p:prey(level))if(reaches(SerpentRules.STRIKE,p) && hit(level,p,SerpentRules.STRIKE_DAMAGE,.5))landed=true;
+		}
+		if(el>=tell+SerpentRules.STRIKE_HOLD)after(level,SerpentRules.STRIKE,SerpentRules.STRIKE_RECOVER);
+	}
+
+	/**
+	 * The lunge. It draws its whole body down into tight bends, scuffing the ground, tracking its prey until a hiss sets the line;
+	 * then it throws itself {@link SerpentRules#LUNGE_REACH} blocks along it. Step off the line: a lunge that finds nobody leaves it
+	 * sprawled along the ground a long while, belly bare.
+	 */
 	private void lunge(ServerLevel level,LivingEntity target){
-		long el=since();
-		if(el<=SerpentRules.LUNGE_TELL-4 && target!=null)aim=yawTo(target.position());
+		long el=since();int tell=tell();
+		if(el<=tell-SerpentRules.LUNGE_LOCK && target!=null)aim=yawTo(target.position());
 		face(aim);
-		if(el<=SerpentRules.LUNGE_TELL){setDeltaMovement(Vec3.ZERO);return;}
-		if(el==SerpentRules.LUNGE_TELL+1)Feels.sound(level,position().add(0,1,0),"aura_serpent_lunge",1.4F,1);
+		if(el<tell){
+			setDeltaMovement(Vec3.ZERO);
+			if(el%2==0)level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),getX(),getY()+.1,getZ(),5,1.2,.05,1.2,.1);
+			if(el==tell-SerpentRules.LUNGE_LOCK){
+				Feels.sound(level,mouth(),"aura_serpent_hiss",1.3F,1.5F);
+				for(double r=2;r<=SerpentRules.LUNGE_REACH+2;r+=1){var at=position().add(ahead(aim).scale(r));level.sendParticles(new DustParticleOptions(0x6B4A2B,1.6F),at.x,at.y+.15,at.z,2,.3,.02,.3,0);}
+			}
+			return;
+		}
+		if(el==tell)Feels.sound(level,position().add(0,1,0),"aura_serpent_lunge",1.4F,1);
 		move(MoverType.SELF,ahead(aim).scale(SerpentRules.LUNGE_REACH/SerpentRules.LUNGE_TICKS));setDeltaMovement(Vec3.ZERO);
-		for(var p:prey(level))if(!struck.contains(p.getUUID()) && reaches(SerpentRules.LUNGE,p)){struck.add(p.getUUID());hit(level,p,SerpentRules.LUNGE_DAMAGE,.9);}
-		if(el>=SerpentRules.LUNGE_TELL+SerpentRules.LUNGE_TICKS)spent(SerpentRules.LUNGE_RECOVER);
+		level.sendParticles(ParticleTypes.CLOUD,getX(),getY()+.3,getZ(),3,.6,.1,.6,.02);
+		for(var p:prey(level))if(!struck.contains(p.getUUID()) && reaches(SerpentRules.LUNGE,p)){struck.add(p.getUUID());if(hit(level,p,SerpentRules.LUNGE_DAMAGE,.9))landed=true;}
+		if(el<tell+SerpentRules.LUNGE_TICKS-1)return;
+		if(landed){after(level,SerpentRules.LUNGE,SerpentRules.LUNGE_RECOVER);return;}
+		// Nobody there: it comes down full length on the ground.
+		pose(SerpentRules.SPRAWLED,SerpentRules.SPRAWL_TICKS);
+		Feels.sound(level,position(),"aura_serpent_slam",1.1F,1.3F);
+		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),getX(),getY()+.2,getZ(),30,1.5,.1,1.5,.15);
+	}
+
+	/**
+	 * Sprawled after a lunge that found nothing, or with its head stuck in the earth after driving its roots: it lies there a while,
+	 * open, then gathers itself, tearing its head free with a spray of earth.
+	 */
+	private void stuck(ServerLevel level){
+		face(aim);setDeltaMovement(Vec3.ZERO);getNavigation().stop();
+		boolean head=move()==SerpentRules.BURIED;var at=head?position().add(ahead(aim).scale(2.6)):position();
+		if(tickCount%4==0)level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y+.2,at.z,4,.6,.1,.6,.05);
+		if(head && left==8)sound(level,at,SoundEvents.ROOTED_DIRT_BREAK,1.2F,.8F);
+		if(--left>0)return;
+		if(head){
+			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y+.4,at.z,30,.7,.4,.7,.25);
+			Feels.sound(level,at,"aura_serpent_debris",1.2F,.8F);
+		}
+		links=0;pose(SerpentRules.WATCH,gap());
 	}
 
 	/**
@@ -315,10 +435,13 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	 */
 	private void slam(ServerLevel level,LivingEntity target){
 		long el=since();int tell=tell();
-		if(el<=tell-3 && target!=null)aim=yawTo(target.position());
+		if(el<=tell-SerpentRules.TAIL_LOCK && target!=null)aim=yawTo(target.position());
 		face(aim);setDeltaMovement(Vec3.ZERO);
 		if(el<tell){
 			if(el%2==0)level.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM,getX(),getY()+3,getZ(),3,1.5,1,1.5,0);
+			// Its aim set, the ground where the tail will come down darkens.
+			if(el>=tell-SerpentRules.TAIL_LOCK){var down=position().add(ahead(aim).scale(SerpentRules.SLAM_AHEAD));
+				level.sendParticles(new DustParticleOptions(0x6B4A2B,1.6F),down.x,down.y+.15,down.z,10,SerpentRules.SHOCK_RADIUS*.45,.02,SerpentRules.SHOCK_RADIUS*.45,0);}
 			return;
 		}
 		if(el==tell){
@@ -329,7 +452,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			level.sendParticles(ParticleTypes.EXPLOSION,down.x,down.y+.4,down.z,1,0,0,0,0);
 			for(var p:prey(level))if(p.position().distanceToSqr(down)<=SerpentRules.SHOCK_RADIUS*SerpentRules.SHOCK_RADIUS
 				&& GuardianBite.land(level,this,p,(float)SerpentRules.SHOCK_DAMAGE,SerpentRules.SLAM_PIERCE)){
-				p.push(0,.45,0);p.needsSync=true;
+				p.push(0,.45,0);p.needsSync=true;landed=true;
 			}
 			pelted.clear();
 			for(int i=0;i<SerpentRules.DEBRIS;i++){
@@ -339,8 +462,221 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 				throwClod(level,from,ahead(yaw).scale(SerpentRules.DEBRIS_SPEED).add(0,SerpentRules.DEBRIS_LIFT,0),ground(level,from));
 			}
 		}
-		if(el>=tell+3)spent(SerpentRules.TAIL_RECOVER);
+		if(el>=tell+3)after(level,SerpentRules.TAIL_SLAM,SerpentRules.TAIL_RECOVER);
 	}
+
+	/**
+	 * The tail sweep. Through the tell it lifts its tail tip off the ground behind it and rattles it, a ring of earth darkening at
+	 * the tail's reach; then it brings the whole tail round in one full turn at ankle height, starting from behind it. Anyone in
+	 * reach, wherever they stand, has to jump it as it comes.
+	 */
+	private void sweep(ServerLevel level){
+		face(aim);setDeltaMovement(Vec3.ZERO);
+		long el=since();int tell=tell(),side=side();
+		if(el<tell){
+			var tip=around(SerpentRules.tail(side,0),SerpentRules.SWEEP_REACH-.8,1.6);
+			if(el%2==0){
+				level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),tip.x,tip.y,tip.z,4,.2,.2,.2,.1);
+				Feels.sound(level,tip,"aura_serpent_hiss",.8F,1.8F+random.nextFloat()*.3F);
+			}
+			if(el>=tell-4)for(int i=0;i<24;i++){var at=around(i*15,SerpentRules.SWEEP_REACH,.1);level.sendParticles(new DustParticleOptions(0x6B4A2B,1.3F),at.x,at.y,at.z,1,.1,0,.1,0);}
+			return;
+		}
+		int tick=(int)(el-tell)+1;
+		if(tick==1){sound(level,position(),SoundEvents.PLAYER_ATTACK_SWEEP,1.5F,.55F);Feels.sound(level,position(),"aura_serpent_slam",.7F,1.5F);}
+		double a0=SerpentRules.tail(side,tick-1),a1=SerpentRules.tail(side,tick);
+		for(int k=0;k<=2;k++){
+			double a=a0+(a1-a0)*k/2;
+			var mid=around(a,SerpentRules.SWEEP_REACH*.6,.4);level.sendParticles(ParticleTypes.SWEEP_ATTACK,mid.x,mid.y,mid.z,1,0,0,0,0);
+			var tip=around(a,SerpentRules.SWEEP_REACH,.2);level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,tip)),tip.x,tip.y,tip.z,4,.3,.1,.3,.1);
+		}
+		for(var p:prey(level)){
+			if(struck.contains(p.getUUID()))continue;
+			double[] b=SerpentSpine.fromWorld(new double[]{p.getX()-getX(),p.getY()-getY(),p.getZ()-getZ()},aim);
+			if(!SerpentRules.sweeps(side,tick,Math.toDegrees(Math.atan2(b[0],b[2])),Math.hypot(b[0],b[2]),b[1]))continue;
+			struck.add(p.getUUID());
+			if(hit(level,p,SerpentRules.SWEEP_DAMAGE,.8,outward(p.position(),position()))){landed=true;p.push(0,.25,0);}
+		}
+		if(tick>=SerpentRules.SWEEP_TICKS)after(level,SerpentRules.TAIL_SWEEP,SerpentRules.SWEEP_RECOVER);
+	}
+
+	/**
+	 * Driving roots. It rears tall and looks down along its prey, earth trickling off it; once its aim is set the ground cracks along
+	 * the line, and then it drives its head into the earth and a line of roots bursts out along it, faster than a run and too tall to
+	 * jump. Step off the line. Roused, it drives three in a fan. Its head stays stuck fast a while after.
+	 */
+	private void rootLine(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<=tell-SerpentRules.ROOT_LOCK && target!=null)aim=yawTo(target.position());
+		face(aim);setDeltaMovement(Vec3.ZERO);
+		if(el<tell){
+			var m=mouth();
+			if(el%3==0)level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),m.x,m.y-.5,m.z,3,.4,.3,.4,0);
+			if(el==tell-SerpentRules.ROOT_LOCK)sound(level,position(),SoundEvents.ROOTED_DIRT_HIT,1.4F,.5F);
+			if(el>=tell-SerpentRules.ROOT_LOCK)for(float yaw:lines())for(double r=SerpentRules.ROOT_FROM;r<=SerpentRules.ROOT_REACH;r+=1.5){
+				var at=position().add(ahead(yaw).scale(r));level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y+.1,at.z,1,.2,0,.2,.05);
+			}
+			return;
+		}
+		var shared=new HashSet<UUID>();
+		for(float yaw:lines())roots.add(new Rootline(position(),yaw,shared));
+		var at=position().add(ahead(aim).scale(2.6));
+		Feels.sound(level,at,"aura_serpent_slam",1.6F,.7F);sound(level,at,SoundEvents.ROOTED_DIRT_BREAK,1.6F,.6F);
+		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y+.2,at.z,40,1,.2,1,.2);
+		pose(SerpentRules.BURIED,SerpentRules.ROOT_STUCK);
+	}
+	/** The lines its roots run along. */
+	private float[] lines(){return dived?new float[]{aim-(float)SerpentRules.ROOT_FAN,aim,aim+(float)SerpentRules.ROOT_FAN}:new float[]{aim};}
+
+	/** Every line of roots runs on, roots standing up out of the ground at its head and throwing up whoever they catch. */
+	private void grow(ServerLevel level){
+		var players=prey(level);
+		for(var it=roots.iterator();it.hasNext();){
+			var r=it.next();r.age++;
+			double r0=SerpentRules.roots(r.age-1),r1=SerpentRules.roots(r.age);
+			var tip=r.from.add(ahead(r.yaw).scale(r1));
+			level.sendParticles(new BlockParticleOption(ParticleTypes.DUST_PILLAR,ground(level,tip)),tip.x,tip.y+.1,tip.z,8,.4,.1,.4,.1);
+			if(r.age%2==0)spike(level,new Vec3(tip.x,top(level,tip),tip.z),r.yaw,1.8F+random.nextFloat()*.8F,.55F,12);
+			if(r.age%3==0)sound(level,tip,SoundEvents.ROOTED_DIRT_BREAK,1.2F,.7F+random.nextFloat()*.3F);
+			for(var p:players){
+				if(r.struck.contains(p.getUUID()))continue;
+				double[] b=SerpentSpine.fromWorld(new double[]{p.getX()-r.from.x,p.getY()-r.from.y,p.getZ()-r.from.z},r.yaw);
+				if(!SerpentRules.rooted(b[2],b[0],b[1],r0,r1))continue;
+				r.struck.add(p.getUUID());
+				if(hit(level,p,SerpentRules.ROOT_DAMAGE,0)){p.push(0,SerpentRules.ROOT_LIFT,0);p.needsSync=true;}
+			}
+			if(r1>=SerpentRules.ROOT_REACH)it.remove();
+		}
+	}
+
+	/** A root stands up out of the ground at {@code base}, leaning out along {@code yaw}, holds a moment and sinks back. */
+	private void spike(ServerLevel level,Vec3 base,float yaw,float h,float w,int hold){
+		var shown=EntityTypes.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
+		if(shown==null)return;
+		var turn=new Quaternionf().rotateY((float)Math.toRadians(-yaw)).rotateX(.2F+random.nextFloat()*.35F).rotateY(random.nextFloat()*1.6F);
+		shown.snapTo(base.x,base.y-.1,base.z);shown.setBlockState(Blocks.MANGROVE_ROOTS.defaultBlockState());shown.setTransformation(stand(turn,w,.02F));
+		BlockFx.fresh(shown);level.addFreshEntity(shown);spikes.add(shown);
+		Scheduler.later(1,()->tween(shown,stand(turn,w,h),2));
+		Scheduler.later(3+hold,()->tween(shown,stand(turn,w,.02F),6));
+		Scheduler.later(10+hold,()->{shown.discard();spikes.remove(shown);});
+	}
+	/** A {@code w}-wide, {@code h}-tall block turned by {@code turn} about the middle of its foot. */
+	private static Transformation stand(Quaternionf turn,float w,float h){
+		var shift=new Vector3f(-w/2,0,-w/2).rotate(turn);return new Transformation(shift,new Quaternionf(turn),new Vector3f(w,h,w),new Quaternionf());
+	}
+	private static void tween(Display.BlockDisplay d,Transformation to,int ticks){
+		if(d.isRemoved())return;d.setTransformationInterpolationDelay(0);d.setTransformationInterpolationDuration(ticks);d.setTransformation(to);
+	}
+	private void dropSpikes(){for(var d:spikes)d.discard();spikes.clear();}
+
+	/**
+	 * The hood spray. Its hood spreads wide and it rears back, sap welling and dripping at its jaws; then it swings its head across
+	 * in front of it from one side to the other, spitting a jet of sticky sap that stings and slows. Get round behind it, or keep out
+	 * of range. Roused, it swings wider. Reared to spray, its belly is open.
+	 */
+	private void spray(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell(),side=side();
+		if(el<=tell-4 && target!=null)aim=yawTo(target.position());
+		setDeltaMovement(Vec3.ZERO);
+		var m=mouth();
+		if(el<tell){
+			face(aim);
+			if(el%2==0)level.sendParticles(ParticleTypes.DRIPPING_HONEY,m.x,m.y,m.z,3,.3,.2,.3,0);
+			if(el==tell-4){Feels.sound(level,m,"aura_serpent_hiss",1.4F,.8F);sound(level,m,SoundEvents.BEEHIVE_DRIP,1.5F,.5F);}
+			return;
+		}
+		int tick=(int)(el-tell);
+		double jet=SerpentRules.jet(side,tick,dived);
+		var far=around(jet,SerpentRules.SPRAY_REACH,.4);var dir=far.subtract(position());
+		face((float)Math.toDegrees(Math.atan2(-dir.x,dir.z)));
+		m=mouth();
+		for(int i=1;i<=8;i++){var at=m.add(far.subtract(m).scale(i/8.0));level.sendParticles(ParticleTypes.FALLING_HONEY,at.x,at.y,at.z,1,.15,.15,.15,0);if(i%3==0)level.sendParticles(ParticleTypes.SPIT,at.x,at.y,at.z,1,.1,.1,.1,.02);}
+		if(tick%4==0)sound(level,m,SoundEvents.LLAMA_SPIT,1.3F,.6F+random.nextFloat()*.2F);
+		if(tick%SerpentRules.SPRAY_EVERY==0)for(var p:prey(level)){
+			int hits=splashed.getOrDefault(p.getUUID(),0);
+			if(hits>=SerpentRules.SPRAY_HITS)continue;
+			double[] b=SerpentSpine.fromWorld(new double[]{p.getX()-getX(),p.getY()-getY(),p.getZ()-getZ()},aim);
+			if(!SerpentRules.sprays(jet,Math.toDegrees(Math.atan2(b[0],b[2])),Math.hypot(b[0],b[2]),b[1]))continue;
+			splashed.put(p.getUUID(),hits+1);
+			if(hit(level,p,SerpentRules.SPRAY_DAMAGE,0)){landed=true;p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,SerpentRules.SPRAY_SLOW,1),this);}
+		}
+		if(tick>=SerpentRules.SPRAY_TICKS)after(level,SerpentRules.HOOD_SPRAY,SerpentRules.SPRAY_RECOVER);
+	}
+
+	/**
+	 * Where it rings its prey: round where they stand, kept off the trunk, the ring as wide as fits there. It slides out onto the
+	 * ring at the nearest point.
+	 */
+	private void ringUp(LivingEntity target){
+		var t=trunk();var p=target.position();var off=p.subtract(t).multiply(1,0,1);double len=off.length();
+		double want=Math.max(5.2,Math.min(SerpentRules.RING-1.5,len));
+		var flat=len<1e-3?new Vec3(want,0,0):off.scale(want/len);
+		middle=new Vec3(t.x+flat.x,p.y,t.z+flat.z);
+		ringR=Math.max(3,Math.min(SerpentRules.RING_R,want-2.2));
+		ringStart=Math.atan2(getZ()-middle.z,getX()-middle.x);from=position();
+	}
+	/** Its ring's point {@code a} radians round, {@code r} out, on the ground. */
+	private Vec3 onRing(ServerLevel level,double a,double r){var at=new Vec3(middle.x+Math.cos(a)*r,middle.y,middle.z+Math.sin(a)*r);return new Vec3(at.x,top(level,at),at.z);}
+
+	/**
+	 * Coiling round. It slides out round its prey and runs once all the way round them, its trail marked on the ground, then draws
+	 * the ring shut on whatever is inside: a crushing squeeze, or, if its coils are ready, a hold. Get out of the ring before it
+	 * closes.
+	 */
+	private void ringCoil(ServerLevel level){
+		setDeltaMovement(Vec3.ZERO);getNavigation().stop();
+		long el=since();int side=side(),set=SerpentRules.RING_SET,lap=SerpentRules.RING_LAP;
+		double a;Vec3 at;
+		if(el<=set){
+			a=ringStart;var goal=onRing(level,a,ringR);at=from.add(goal.subtract(from).scale(SerpentSpine.smooth(el/(double)set)));
+		}else if(el<=set+lap){
+			a=ringStart+side*2*Math.PI*(el-set)/lap;at=onRing(level,a,ringR);
+			if(el%2==0)Feels.sound(level,at,"aura_serpent_hiss",.6F,1.4F);
+		}else{
+			int tick=(int)(el-set-lap);
+			double r0=SerpentRules.ring(ringR,tick-1),r1=SerpentRules.ring(ringR,tick);
+			a=ringStart+side*(2*Math.PI+tick*.35);at=onRing(level,a,Math.max(1.5,r1));
+			if(tick==1)Feels.sound(level,middle,"aura_serpent_constrict",1.5F,.8F);
+			for(var p:prey(level)){
+				if(struck.contains(p.getUUID()))continue;
+				double dist=Math.hypot(p.getX()-middle.x,p.getZ()-middle.z);
+				if(!SerpentRules.closes(dist,r0,r1,p.getY()-middle.y))continue;
+				struck.add(p.getUUID());landed=true;
+				if(caught==null && level.getGameTime()-lastMade[SerpentRules.CONSTRICT]>=SerpentRules.rest(SerpentRules.CONSTRICT,dived)){
+					setPos(at.x,at.y,at.z);aim=yawTo(p.position());face(aim);grab(level,p);return;
+				}
+				if(hit(level,p,SerpentRules.RING_DAMAGE,.4,outward(middle,p.position())))p.push(0,.35,0);
+			}
+			if(tick>=SerpentRules.RING_CLOSE){
+				setPos(at.x,at.y,at.z);noPhysics=false;setNoGravity(false);
+				if(!level.noCollision(this,getBoundingBox())){var land=Vec3.atBottomCenterOf(landing());teleportTo(land.x,land.y,land.z);}
+				aim=yawTo(middle);face(aim);
+				after(level,SerpentRules.RING_COIL,SerpentRules.RING_RECOVER);return;
+			}
+		}
+		var was=position();setPos(at.x,at.y,at.z);
+		var step=at.subtract(was);if(step.horizontalDistanceSqr()>1e-4)face((float)Math.toDegrees(Math.atan2(-step.x,step.z)));
+		// The ring it has run so far shows on the ground.
+		if(el>set && el<=set+lap)for(int i=0;i<24;i++){
+			double b=ringStart+side*2*Math.PI*i/24;if(i*lap>(el-set)*24)break;
+			var on=onRing(level,b,ringR);level.sendParticles(new DustParticleOptions(0x6B4A2B,1.4F),on.x,on.y+.1,on.z,1,.1,0,.1,0);
+		}
+		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y+.1,at.z,3,.5,.05,.5,.05);
+	}
+
+	/** The top of the ground at {@code at}, looking a few blocks up and down; its own height if there is none. */
+	private double top(ServerLevel level,Vec3 at){
+		var pos=BlockPos.containing(at.x,at.y+2,at.z);
+		for(int i=0;i<7;i++,pos=pos.below()){
+			var state=level.getBlockState(pos);
+			if(!state.getFluidState().isEmpty())return pos.getY()+.9;
+			var shape=state.getCollisionShape(level,pos);
+			if(!shape.isEmpty())return pos.getY()+shape.max(net.minecraft.core.Direction.Axis.Y);
+		}
+		return at.y;
+	}
+	/** Which way along the ground {@code to} lies from {@code from}. */
+	private Vec3 outward(Vec3 to,Vec3 from){var d=to.subtract(from).multiply(1,0,1);return d.lengthSqr()<1e-4?ahead(aim):d.normalize();}
 
 	/** The solid block under {@code at}, looking a few blocks down; moss if there is none fit to throw. */
 	private BlockState ground(ServerLevel level,Vec3 at){
@@ -409,13 +745,25 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	}
 	private void dropClods(){for(var c:clods)c.shown.discard();clods.clear();}
 
-	/** Its coils swing open, and close on whoever is nearest in front of it. */
-	private void constrict(ServerLevel level){
-		face(aim);
-		if(since()<SerpentRules.CONSTRICT_TELL)return;
+	/**
+	 * The grab. Its coils swing open in front of it, tracking its prey until the last few ticks, then close on whoever is nearest in
+	 * reach. Back off out of reach, or jump clear to the side.
+	 */
+	private void constrict(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<=tell-SerpentRules.CONSTRICT_LOCK && target!=null)aim=yawTo(target.position());
+		face(aim);setDeltaMovement(Vec3.ZERO);
+		if(el<tell){
+			if(el%2==0){var at=position().add(ahead(aim).scale(2));level.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM,at.x,at.y+1,at.z,4,1.6,.6,1.6,0);}
+			return;
+		}
 		var p=prey(level).stream().filter(q->reaches(SerpentRules.CONSTRICT,q)).min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
-		if(p==null){spent(SerpentRules.CONSTRICT_RECOVER);return;}
-		caught=p;struggles=0;heldDamage=0;
+		if(p==null){after(level,SerpentRules.CONSTRICT,SerpentRules.CONSTRICT_RECOVER);return;}
+		grab(level,p);
+	}
+	/** Its coils close on {@code p}. */
+	private void grab(ServerLevel level,ServerPlayer p){
+		caught=p;struggles=0;heldDamage=0;landed=true;lastMade[SerpentRules.CONSTRICT]=level.getGameTime();
 		// Whatever the player is already holding down does not count: a struggle is a fresh press.
 		var in=p.getLastClientInput();gripping=in.jump() || in.left() || in.right();
 		pose(SerpentRules.SQUEEZE,SerpentRules.SQUEEZE_TICKS);
@@ -464,7 +812,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 
 	private void recovered(ServerLevel level,LivingEntity target){
 		if(water){
-			if(bursts<SerpentRules.BURSTS && target!=null){diveIn(level);return;}
+			if(bursts<SerpentRules.BURSTS && target!=null){diveIn(level,false);return;}
 			// Three bursts and it comes ashore for good, wounded and quicker.
 			water=false;bar.setColor(BossEvent.BossBarColor.RED);
 			if(target!=null)Feels.sound(level,mouth(),"aura_serpent_challenge",1.4F,1.15F);
@@ -475,23 +823,71 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	/** Ticks before its next blow. */
 	private int gap(){return (dived?SerpentRules.GAP_WOUNDED:SerpentRules.GAP)+random.nextInt(3);}
 
-	/** It rears and hisses, then slides off the island into the water ring at the nearest point of its path. */
-	private void diveIn(ServerLevel level){
+	/**
+	 * It rears and hisses, then slides off the island into the water ring at the nearest point of its path. The first time, at half
+	 * health, it {@code rouse}s first: it towers, shaking, earth pouring off it, then brings its whole length down so hard it throws
+	 * back everyone near, and roots ripple out across the island.
+	 */
+	private void diveIn(ServerLevel level,boolean rouse){
 		var t=trunk();ring=Math.atan2(getZ()-t.z,getX()-t.x);circle=random.nextBoolean()?1:-1;from=position();
 		aim=yawTo(ringPoint());
-		pose(SerpentRules.DIVE,SerpentRules.DIVE_TICKS);
-		Feels.sound(level,mouth(),"aura_serpent_dive",1.6F,1);
+		pose(SerpentRules.DIVE,SerpentRules.DIVE_TICKS,rouse?SerpentRules.ROUSE_TELL:SerpentRules.DIVE_TICKS/2);
+		if(rouse){Feels.sound(level,mouth(),"aura_serpent_challenge",1.8F,.8F);sound(level,mouth(),SoundEvents.RAVAGER_ROAR,1.6F,.6F);}
+		else Feels.sound(level,mouth(),"aura_serpent_dive",1.6F,1);
 	}
 
 	private void dive(ServerLevel level){
-		face(aim);setDeltaMovement(Vec3.ZERO);
-		long el=since();int half=SerpentRules.DIVE_TICKS/2;
-		if(el<=half)return;
+		setDeltaMovement(Vec3.ZERO);
+		long el=since();int tell=tell();boolean rousing=tell==SerpentRules.ROUSE_TELL;
+		if(el<tell){
+			if(rousing && el%2==0)for(int i=0;i<3;i++){
+				var at=position().add((random.nextDouble()-.5)*4,1+random.nextDouble()*3,(random.nextDouble()-.5)*4);
+				level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),at.x,at.y,at.z,3,.3,.3,.3,.1);
+			}
+			if(rousing && el%6==0)sound(level,position(),SoundEvents.ROOTED_DIRT_HIT,1.4F,.5F);
+			return;
+		}
+		if(rousing && el==tell){
+			Feels.sound(level,position(),"aura_serpent_slam",1.8F,.6F);sound(level,position(),SoundEvents.GENERIC_EXPLODE.value(),1.2F,.7F);
+			level.sendParticles(ParticleTypes.EXPLOSION,getX(),getY()+.5,getZ(),3,1.5,.2,1.5,0);
+			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),getX(),getY()+.3,getZ(),60,2.5,.3,2.5,.3);
+			rippleAt=position();rippleAge=0;rippled.clear();
+			for(var p:prey(level)){
+				if(p.distanceToSqr(this)>4.5*4.5)continue;
+				var out=outward(p.position(),position());
+				p.knockback(1.4,-out.x,-out.z,level.damageSources().mobAttack(this),0);p.push(0,.5,0);p.needsSync=true;
+			}
+		}
+		int start=tell+(rousing?4:0),span=SerpentRules.DIVE_TICKS-start;
+		face(aim);
+		if(el<=start)return;
 		noPhysics=true;setNoGravity(true);
-		double s=SerpentSpine.smooth((el-half)/(double)half);var into=ringPoint();
+		double s=SerpentSpine.smooth(Math.min(1,(el-start)/(double)span));var into=ringPoint();
 		setPos(from.x+(into.x-from.x)*s,from.y+(into.y-from.y)*s+Math.sin(Math.PI*s)*1.2,from.z+(into.z-from.z)*s);
 		if(el==SerpentRules.DIVE_TICKS-2)splash(level,into,24);
 		if(el>=SerpentRules.DIVE_TICKS)pose(SerpentRules.SUBMERGED,SerpentRules.CIRCLE_TICKS+random.nextInt(21)-10);
+	}
+
+	/** The roots rippling out across the island from where it came down as it roused, roots standing up along the ring as it goes. */
+	private void ripple(ServerLevel level){
+		rippleAge++;
+		double r0=Math.min(SerpentRules.ROUSE_REACH,(rippleAge-1)*SerpentRules.ROUSE_SPEED),r1=Math.min(SerpentRules.ROUSE_REACH,rippleAge*SerpentRules.ROUSE_SPEED);
+		int n=(int)Math.max(8,r1*2.2);
+		for(int i=0;i<n;i++){
+			double a=2*Math.PI*i/n;var at=new Vec3(rippleAt.x+Math.cos(a)*r1,rippleAt.y,rippleAt.z+Math.sin(a)*r1);
+			var on=new Vec3(at.x,top(level,at),at.z);
+			if(!level.getBlockState(BlockPos.containing(on.x,on.y-.5,on.z)).getFluidState().isEmpty())continue;
+			level.sendParticles(new BlockParticleOption(ParticleTypes.DUST_PILLAR,ground(level,on)),on.x,on.y+.1,on.z,2,.2,.05,.2,.05);
+			if(rippleAge%3==0 && i%3==0)spike(level,on,(float)Math.toDegrees(Math.atan2(-Math.cos(a),Math.sin(a))),.9F,.35F,6);
+		}
+		if(rippleAge%4==0)sound(level,rippleAt,SoundEvents.ROOTED_DIRT_BREAK,1.4F,.6F+random.nextFloat()*.2F);
+		for(var p:prey(level)){
+			if(rippled.contains(p.getUUID()))continue;
+			if(!SerpentRules.crosses(Math.hypot(p.getX()-rippleAt.x,p.getZ()-rippleAt.z),r0,r1,p.getY()-rippleAt.y))continue;
+			rippled.add(p.getUUID());
+			if(hit(level,p,SerpentRules.ROUSE_DAMAGE,.6,outward(p.position(),rippleAt))){p.push(0,.4,0);p.needsSync=true;}
+		}
+		if(r1>=SerpentRules.ROUSE_REACH)rippleAge=-1;
 	}
 
 	/** Its path's point under the water at the current angle round the island. */
@@ -557,11 +953,19 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		double[] b=SerpentSpine.fromWorld(new double[]{p.getX()-getX(),p.getY()-getY(),p.getZ()-getZ()},aim);
 		return SerpentRules.hits(move,b[2],b[0],b[1]);
 	}
-	/** A blow landing on {@code p}, through part of its armour, knocking it {@code shove} along the aim. */
-	private void hit(ServerLevel level,LivingEntity p,double damage,double shove){
-		if(GuardianBite.land(level,this,p,(float)damage,SerpentRules.PIERCE) && shove>0){
-			var f=ahead(aim);p.knockback(shove,-f.x,-f.z,level.damageSources().mobAttack(this),0);p.needsSync=true;
-		}
+	/** A blow landing on {@code p}, through part of its armour, knocking it {@code shove} along the aim; whether it hurt. */
+	private boolean hit(ServerLevel level,LivingEntity p,double damage,double shove){return hit(level,p,damage,shove,ahead(aim));}
+	/** A blow landing on {@code p}, knocking it {@code shove} along {@code dir}; whether it hurt. */
+	private boolean hit(ServerLevel level,LivingEntity p,double damage,double shove,Vec3 dir){
+		boolean hurt=GuardianBite.land(level,this,p,(float)damage,SerpentRules.PIERCE);
+		if(hurt && shove>0){p.knockback(shove,-dir.x,-dir.z,level.damageSources().mobAttack(this),0);p.needsSync=true;}
+		return hurt;
+	}
+	private void sound(ServerLevel level,Vec3 at,SoundEvent s,float volume,float pitch){level.playSound(null,at.x,at.y,at.z,s,SoundSource.HOSTILE,volume,pitch);}
+	/** The point {@code angle} degrees round off its aim, {@code reach} out and {@code up} high. */
+	private Vec3 around(double angle,double reach,double up){
+		double r=Math.toRadians(angle);double[] w=SerpentSpine.toWorld(new double[]{Math.sin(r)*reach,up,Math.cos(r)*reach},aim);
+		return position().add(w[0],w[1],w[2]);
 	}
 	private Vec3 ahead(float yaw){double[] f=SerpentSpine.toWorld(new double[]{0,0,1},yaw);return new Vec3(f[0],0,f[2]);}
 	private float yawTo(Vec3 at){return (float)Math.toDegrees(Math.atan2(-(at.x-getX()),at.z-getZ()));}
@@ -596,7 +1000,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
-		letGo(false);dropClods();
+		letGo(false);dropClods();dropSpikes();roots.clear();rippleAge=-1;
 		if(level() instanceof ServerLevel server){Feels.sound(server,position().add(0,2,0),"aura_serpent_death",1.6F,1);bar.removeAllPlayers();}
 		super.die(source);
 	}
@@ -605,7 +1009,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		super.actuallyHurt(level,source,damage);
 		if(random.nextInt(3)==0)Feels.sound(level,position().add(0,2,0),"aura_serpent_hurt",1,.9F+random.nextFloat()*.2F);
 	}
-	@Override public void remove(RemovalReason reason){caught=null;dropClods();bar.removeAllPlayers();super.remove(reason);}
+	@Override public void remove(RemovalReason reason){caught=null;dropClods();dropSpikes();roots.clear();bar.removeAllPlayers();super.remove(reason);}
 	@Override public void startSeenByPlayer(ServerPlayer player){super.startSeenByPlayer(player);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 

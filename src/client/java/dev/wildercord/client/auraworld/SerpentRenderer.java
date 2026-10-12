@@ -45,7 +45,7 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 
 	/** Each serpent's trailing body, in world positions; kept between frames since the trail has memory. */
 	private final Map<RootcoilSerpent,Trail> trails=new WeakHashMap<>();
-	private static final class Trail{double[][] joints,neck;double time=Double.NaN,pitch=Double.NaN,jaw;}
+	private static final class Trail{double[][] joints,neck;double time=Double.NaN,pitch=Double.NaN,jaw,hood;}
 
 	public SerpentRenderer(EntityRendererProvider.Context context){super(context);shadowRadius=2.2F;}
 
@@ -93,6 +93,7 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 		// The jaw parts as it wakes and hisses at the end of its uncoil, and hangs a little open while it hunts.
 		state.jaw=move==SerpentRules.UNCOIL?Mth.clamp((elapsed-30)/8,0,1)*Mth.clamp((SerpentRules.UNCOIL_TICKS+4-elapsed)/6,0,1)
 			:SerpentRules.scripted(move)?0:(float)trail.jaw;
+		state.hood=SerpentRules.scripted(move)?0:(float)trail.hood;
 		state.hurt=serpent.hurtTime>0 || serpent.deathTime>0;
 		state.move=move;
 	}
@@ -125,13 +126,16 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 		double ex=Mth.lerp(partial,serpent.xo,serpent.getX()),ey=Mth.lerp(partial,serpent.yo,serpent.getY()),ez=Mth.lerp(partial,serpent.zo,serpent.getZ());
 		double dt=Double.isNaN(trail.time)?0:Mth.clamp(time-trail.time,0,2);trail.time=time;
 		int move=serpent.move(),tell=serpent.tell();float el=serpent.elapsed(partial);
-		var pose=SerpentSpine.pose(move,el,tell);
+		var pose=SerpentSpine.pose(move,el,tell,serpent.side());
 		double ease=1-Math.exp(-EASE*dt);
 		if(trail.neck==null)trail.neck=copy(pose.neck());
 		else for(int k=0;k<trail.neck.length;k++)trail.neck[k]=SerpentSpine.blend(new double[][]{trail.neck[k]},new double[][]{pose.neck()[k]},ease)[0];
 		double look=Double.isNaN(pose.pitch())?serpent.getXRot(partial):pose.pitch();
 		trail.pitch=Double.isNaN(trail.pitch)?look:trail.pitch+(look-trail.pitch)*ease;
 		trail.jaw+=(pose.jaw()-trail.jaw)*Math.min(1,ease*1.5);
+		// Its hood spreads as it rears to spray, and as it towers to rouse.
+		boolean spread=move==SerpentRules.HOOD_SPRAY || move==SerpentRules.DIVE && tell==SerpentRules.ROUSE_TELL && el<tell+4;
+		trail.hood+=((spread?1:0)-trail.hood)*Math.min(1,ease*1.2);
 		double[][] neck=SerpentSpine.neck(trail.neck);
 		double weave=Math.sin(serpent.walkAnimation.position(partial)*.6)*.45*Math.min(1,serpent.walkAnimation.speed(partial)*3);
 		double[][] joints=trail.joints;
@@ -155,6 +159,8 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 		}
 		if(move==SerpentRules.SQUEEZE)shape(joints,neck.length-1,SerpentSpine.wrap(),yaw,ex,ey,ez,ease);
 		else if(move==SerpentRules.TAIL_SLAM)shape(joints,neck.length-1,SerpentSpine.slam(el,tell),yaw,ex,ey,ez,ease);
+		// The sweep eases into its coil through the tell, then the tail goes round with no lag behind the blow.
+		else if(move==SerpentRules.TAIL_SWEEP)shape(joints,neck.length-1,SerpentSpine.sweep(el,tell,serpent.side()),yaw,ex,ey,ez,el>=tell?1:ease);
 		return joints;
 	}
 

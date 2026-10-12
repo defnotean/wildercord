@@ -7,21 +7,22 @@ import net.minecraft.util.Mth;
 
 /**
  * The Rootcoil Serpent's head, built in its own frame on the front joint: +F along the snout, +U up, +S to one side. A skull,
- * a snout, heavy brows, horns swept back, fangs, and a jaw hinged under the skull that drops as it hisses. Each box takes the
+ * a snout, heavy brows, horns swept back, fangs, a jaw hinged under the skull that drops as it hisses, and a hood behind the
+ * skull that spreads out to either side as it rears to spray. Each box takes the
  * vanilla cube layout from its corner of the skin (laid out by {@code tools/serpent_art.py}); sizes are in sixteenths.
  */
 final class SerpentHead {
 	/** Blocks to a sixteenth of the head: nearly twice a block model's, so its skull is wider than a player's shoulders. */
 	static final float SCALE=1.8F/16;
 	private final float[] o,f,u,s;
-	private final float jaw;
+	private final float jaw,hood;
 
 	SerpentHead(SerpentRenderState state){
 		o=new float[]{state.joints[0],state.joints[1],state.joints[2]};
 		float[] fw=SerpentRenderer.norm(state.headX,state.headY,state.headZ);f=fw==null?new float[]{0,0,1}:fw;
 		float[] side=SerpentRenderer.norm(f[2],0,-f[0]);s=side==null?new float[]{1,0,0}:side;
 		u=new float[]{f[1]*s[2]-f[2]*s[1],f[2]*s[0]-f[0]*s[2],f[0]*s[1]-f[1]*s[0]};
-		jaw=state.jaw;
+		jaw=state.jaw;hood=state.hood;
 	}
 
 	void skin(PoseStack.Pose pose,VertexConsumer buffer,int overlay,int light){
@@ -32,6 +33,9 @@ final class SerpentHead {
 			box(pose,buffer,overlay,light,side*5,5.5F,2,2,2,8,96,22,.35F);      // horn, swept back and up
 			box(pose,buffer,overlay,light,side*2.5F,-4,23,1,3,1,120,0,0);       // fang
 		}
+		// The hood, folded away behind the skull until it spreads.
+		if(hood>.02F)for(int side=-1;side<=1;side+=2)
+			box(pose,buffer,overlay,light,side*(5.5F+4*hood),2,3,1+8*hood,4+8*hood,1.5F,64,0,0);
 		// The jaw, hinged under the back of the skull.
 		box(pose,buffer,overlay,light,0,-4.5F,12,10,3,20,64,40,jaw*.75F,0,-3,3);
 	}
