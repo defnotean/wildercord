@@ -54,6 +54,10 @@ public final class MonsterContent {
 	public static final EntityType<MageHunter> MAGE_HUNTER = monster("mage_hunter",
 		EntityType.Builder.of(MageHunter::new, MobCategory.MONSTER).sized(0.6F, 1.95F).eyeHeight(1.62F));
 
+	/** An iron-bound oak coffer that is nothing of the kind. */
+	public static final EntityType<CofferMimic> COFFER_MIMIC = monster("coffer_mimic",
+		EntityType.Builder.of(CofferMimic::new, MobCategory.MONSTER).sized(0.875F, 0.95F).eyeHeight(0.6F));
+
 	/** A Bog Witch-Frog's bubble of poison, in flight. */
 	public static final EntityType<BogBubble> BOG_BUBBLE = register("bog_bubble",
 		EntityType.Builder.<BogBubble>of(BogBubble::new, MobCategory.MISC).noLootTable().sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(2));
@@ -83,6 +87,7 @@ public final class MonsterContent {
 	public static final Item BOG_WITCH_FROG_EGG = egg("bog_witch_frog", BOG_WITCH_FROG);
 	public static final Item MANA_OOZE_EGG = egg("mana_ooze", MANA_OOZE);
 	public static final Item MAGE_HUNTER_EGG = egg("mage_hunter", MAGE_HUNTER);
+	public static final Item COFFER_MIMIC_EGG = egg("coffer_mimic", COFFER_MIMIC);
 
 	/** Every monster's type, in the order of {@link MonsterRules.Kind}. */
 	public static List<EntityType<? extends Mob>> types() {
@@ -123,6 +128,8 @@ public final class MonsterContent {
 		FabricDefaultAttributeRegistry.register(BOG_WITCH_FROG, BogWitchFrog.createAttributes());
 		FabricDefaultAttributeRegistry.register(MANA_OOZE, ManaOoze.createAttributes());
 		FabricDefaultAttributeRegistry.register(MAGE_HUNTER, MageHunter.createAttributes());
+		FabricDefaultAttributeRegistry.register(COFFER_MIMIC, CofferMimic.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:coffer_mimic", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xB8873A));
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
 			output.accept(LIVING_BRAMBLE);
