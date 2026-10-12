@@ -947,6 +947,9 @@ def write_lang(runes):
     import pitchback_art
     lang.update(pitchback_art.LANG)
     pitchback_art.write(sys.modules[__name__])
+    import wolverine_art
+    lang.update(wolverine_art.LANG)
+    wolverine_art.write(sys.modules[__name__])
     import dormouse_art
     lang.update(dormouse_art.LANG)
     dormouse_art.write(sys.modules[__name__])

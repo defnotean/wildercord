@@ -252,6 +252,7 @@ public record WildercordConfig(
 				case "gulper_pitcher" -> true;
 				case "cackling_hyena" -> true;
 				case "pitchback_beetle" -> true;
+				case "rimecoat_wolverine" -> true;
 				default -> false;
 			};
 		}

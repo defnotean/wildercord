@@ -51,6 +51,7 @@ import java.util.function.Predicate;
  *   <li><b>Gulper Pitchers</b>: rooted on the jungle floor at night, one by one.</li>
  *   <li><b>Cackling Hyenas</b>: out on the savannas at night, in packs of three to five.</li>
  *   <li><b>Pitchback Beetles</b>: under the spruces of the taiga at night, one or two.</li>
+ *   <li><b>Rimecoat Wolverines</b>: out on the snowy plains, the ice spikes and the snowy taiga at night, alone.</li>
  * </ul>
  * All need the dark monsters need, none spawns on Peaceful (their types say so), and the server's {@code monsters} settings
  * can stop any of them: the switches at once, through the rules here, the rate when a world loads (it sets the weights).
@@ -85,6 +86,10 @@ public final class MonsterSpawns {
 	/** A Pitchback Beetle's spawn weight, and its id among the server's switches. */
 	private static final int PITCHBACK_BEETLE_WEIGHT = 18;
 	private static final String PITCHBACK_BEETLE = "pitchback_beetle";
+	private static final Set<ResourceKey<Biome>> SNOWS = Set.of(Biomes.SNOWY_PLAINS, Biomes.ICE_SPIKES, Biomes.SNOWY_TAIGA);
+	/** A Rimecoat Wolverine's spawn weight, and its id among the server's switches. */
+	private static final int RIMECOAT_WOLVERINE_WEIGHT = 16;
+	private static final String RIMECOAT_WOLVERINE = "rimecoat_wolverine";
 	/**
 	 * Overworld biomes left alone underground: the deep dark (nothing spawns there on purpose; a lone entry would fill it) and
 	 * the mushroom fields (no monsters, ever).
@@ -129,6 +134,9 @@ public final class MonsterSpawns {
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.PITCHBACK_BEETLE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, PITCHBACK_BEETLE)
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || pos.getY() >= level.getSeaLevel()));
+		SpawnPlacements.register(MonsterContent.RIMECOAT_WOLVERINE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> allowed(reason, RIMECOAT_WOLVERINE)
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || pos.getY() >= level.getSeaLevel()));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
@@ -179,6 +187,12 @@ public final class MonsterSpawns {
 			int weight = MonsterRules.weight(PITCHBACK_BEETLE_WEIGHT, rate);
 			if (weight > 0) {
 				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.PITCHBACK_BEETLE, UniformInt.of(1, 2)), weight);
+			}
+		}
+		if (SNOWS.contains(key)) {
+			int weight = MonsterRules.weight(RIMECOAT_WOLVERINE_WEIGHT, rate);
+			if (weight > 0) {
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.RIMECOAT_WOLVERINE, UniformInt.of(1, 1)), weight);
 			}
 		}
 		if (!QUIET.contains(key)) {
