@@ -58,6 +58,10 @@ public final class MonsterContent {
 	public static final EntityType<CofferMimic> COFFER_MIMIC = monster("coffer_mimic",
 		EntityType.Builder.of(CofferMimic::new, MobCategory.MONSTER).sized(0.875F, 0.95F).eyeHeight(0.6F));
 
+	/** A scarecrow that moves only while nobody is looking. */
+	public static final EntityType<Strawman> STRAWMAN = monster("strawman",
+		EntityType.Builder.of(Strawman::new, MobCategory.MONSTER).sized(0.7F, 2.3F).eyeHeight(1.95F));
+
 	/** A Bog Witch-Frog's bubble of poison, in flight. */
 	public static final EntityType<BogBubble> BOG_BUBBLE = register("bog_bubble",
 		EntityType.Builder.<BogBubble>of(BogBubble::new, MobCategory.MISC).noLootTable().sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(2));
@@ -88,6 +92,7 @@ public final class MonsterContent {
 	public static final Item MANA_OOZE_EGG = egg("mana_ooze", MANA_OOZE);
 	public static final Item MAGE_HUNTER_EGG = egg("mage_hunter", MAGE_HUNTER);
 	public static final Item COFFER_MIMIC_EGG = egg("coffer_mimic", COFFER_MIMIC);
+	public static final Item STRAWMAN_EGG = egg("strawman", STRAWMAN);
 
 	/** Every monster's type, in the order of {@link MonsterRules.Kind}. */
 	public static List<EntityType<? extends Mob>> types() {
@@ -130,6 +135,8 @@ public final class MonsterContent {
 		FabricDefaultAttributeRegistry.register(MAGE_HUNTER, MageHunter.createAttributes());
 		FabricDefaultAttributeRegistry.register(COFFER_MIMIC, CofferMimic.createAttributes());
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:coffer_mimic", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xB8873A));
+		FabricDefaultAttributeRegistry.register(STRAWMAN, Strawman.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:strawman", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xD8B850));
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
 			output.accept(LIVING_BRAMBLE);

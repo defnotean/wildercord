@@ -247,6 +247,7 @@ public record WildercordConfig(
 				case "geode_crawler" -> geodeCrawler;
 				case "bog_witch_frog" -> bogWitchFrog;
 				case "mana_ooze" -> manaOoze;
+				case "strawman" -> true;
 				default -> false;
 			};
 		}

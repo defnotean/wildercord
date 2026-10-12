@@ -36,6 +36,7 @@ public final class MonsterClient {
 		ModelLayerRegistry.registerModelLayer(ManaOozeRenderer.OUTER, ManaOozeModel::createOuter);
 		ModelLayerRegistry.registerModelLayer(BogBubbleRenderer.LAYER, BogBubbleRenderer::createLayer);
 		ModelLayerRegistry.registerModelLayer(CofferMimicRenderer.LAYER, CofferMimicModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(StrawmanRenderer.LAYER, StrawmanModel::createLayer);
 
 		EntityRendererRegistry.register(MonsterContent.BRAMBLEWALKER, MonsterClient::bramblewalker);
 		EntityRendererRegistry.register(MonsterContent.GLOOMSTALKER, GloomstalkerRenderer::new);
@@ -47,6 +48,7 @@ public final class MonsterClient {
 		EntityRendererRegistry.register(MonsterContent.MAGE_HUNTER, MageHunterRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.THROWN_BRAMBLE, ThrownItemRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.COFFER_MIMIC, CofferMimicRenderer::new);
+		EntityRendererRegistry.register(MonsterContent.STRAWMAN, StrawmanRenderer::new);
 	}
 
 	/** Its eyes, and the green veins in its vines, which blaze as it rears for the lash. */

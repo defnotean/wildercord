@@ -45,7 +45,8 @@ import java.util.function.Predicate;
  *   <li><b>Thunderwing Harpies</b>: the bare peaks and windswept hills, 90 and up, at night or in a storm;</li>
  *   <li><b>Geode Crawlers</b>: caves below 50, mostly near amethyst geodes;</li>
  *   <li><b>Bog Witch-Frogs</b>: swamps and mangrove swamps at night;</li>
- *   <li><b>Mana Oozes</b>: the deep caves below 0, or caves below 40 under a ley line.</li>
+ *   <li><b>Mana Oozes</b>: the deep caves below 0, or caves below 40 under a ley line;</li>
+ *   <li><b>Strawmen</b>: out in the open plains and meadows at night, one at a time.</li>
  * </ul>
  * All need the dark monsters need, none spawns on Peaceful (their types say so), and the server's {@code monsters} settings
  * can stop any of them: the switches at once, through the rules here, the rate when a world loads (it sets the weights).
@@ -60,6 +61,10 @@ public final class MonsterSpawns {
 	private static final Set<ResourceKey<Biome>> PEAKS = Set.of(Biomes.JAGGED_PEAKS, Biomes.FROZEN_PEAKS, Biomes.STONY_PEAKS, Biomes.SNOWY_SLOPES,
 		Biomes.WINDSWEPT_HILLS, Biomes.WINDSWEPT_GRAVELLY_HILLS, Biomes.WINDSWEPT_FOREST);
 	private static final Set<ResourceKey<Biome>> SWAMPS = Set.of(Biomes.SWAMP, Biomes.MANGROVE_SWAMP);
+	private static final Set<ResourceKey<Biome>> FIELDS = Set.of(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.MEADOW);
+	/** A Strawman's spawn weight, and its id among the server's switches. */
+	private static final int STRAWMAN_WEIGHT = 12;
+	private static final String STRAWMAN = "strawman";
 	/**
 	 * Overworld biomes left alone underground: the deep dark (nothing spawns there on purpose; a lone entry would fill it) and
 	 * the mushroom fields (no monsters, ever).
@@ -90,6 +95,9 @@ public final class MonsterSpawns {
 			(type, level, reason, pos, random) -> allowed(reason, MonsterRules.Kind.MANA_OOZE)
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || deep(level, pos)
 					|| pos.getY() < MonsterRules.LEY_OOZE_Y && !level.canSeeSky(pos) && onLey(level, pos)));
+		SpawnPlacements.register(MonsterContent.STRAWMAN, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> allowed(reason, STRAWMAN)
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
 		// Every overworld biome, by the vanilla tag as well as by where they generate, so a world whose overworld makes only a few
@@ -111,6 +119,12 @@ public final class MonsterSpawns {
 		if (SWAMPS.contains(key)) {
 			add(spawns, MonsterRules.Kind.BOG_WITCH_FROG, 1.0, rate);
 		}
+		if (FIELDS.contains(key)) {
+			int weight = MonsterRules.weight(STRAWMAN_WEIGHT, rate);
+			if (weight > 0) {
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.STRAWMAN, UniformInt.of(1, 1)), weight);
+			}
+		}
 		if (!QUIET.contains(key)) {
 			add(spawns, MonsterRules.Kind.GLOOMSTALKER, DARK_WOODS.contains(key) ? 1.25 : 0.75, rate);
 			add(spawns, MonsterRules.Kind.GEODE_CRAWLER, 1.0, rate);
@@ -127,10 +141,14 @@ public final class MonsterSpawns {
 
 	/** Natural spawns (not spawners, eggs or commands) ask the server's switches. */
 	private static boolean allowed(EntitySpawnReason reason, MonsterRules.Kind kind) {
+		return allowed(reason, kind.id);
+	}
+
+	private static boolean allowed(EntitySpawnReason reason, String id) {
 		if (reason != EntitySpawnReason.NATURAL && reason != EntitySpawnReason.CHUNK_GENERATION) {
 			return true;
 		}
-		return Config.get().monsters().spawns(kind.id);
+		return Config.get().monsters().spawns(id);
 	}
 
 	private static boolean deep(ServerLevelAccessor level, BlockPos pos) {

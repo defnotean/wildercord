@@ -929,6 +929,9 @@ def write_lang(runes):
     import mimic_art
     lang.update(mimic_art.LANG)
     mimic_art.write(sys.modules[__name__])
+    import strawman_art
+    lang.update(strawman_art.LANG)
+    strawman_art.write(sys.modules[__name__])
     import predator_art
     lang.update(predator_art.LANG)
     predator_art.write(sys.modules[__name__])
