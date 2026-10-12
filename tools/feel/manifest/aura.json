@@ -602,6 +602,104 @@
       ],
       "subtitle": "field"
     },
+    "aura_ashen_stag_bellow": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_bellow"
+      ],
+      "subtitle": "ashen_stag.bellow"
+    },
+    "aura_ashen_stag_bound": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_bound"
+      ],
+      "subtitle": "ashen_stag.bound"
+    },
+    "aura_ashen_stag_breath": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_breath"
+      ],
+      "subtitle": "ashen_stag.breath"
+    },
+    "aura_ashen_stag_crash": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_crash"
+      ],
+      "subtitle": "ashen_stag.crash"
+    },
+    "aura_ashen_stag_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_death"
+      ],
+      "subtitle": "ashen_stag.death"
+    },
+    "aura_ashen_stag_gore": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_gore"
+      ],
+      "subtitle": "ashen_stag.gore"
+    },
+    "aura_ashen_stag_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_hurt"
+      ],
+      "subtitle": "ashen_stag.hurt"
+    },
+    "aura_ashen_stag_kick": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_kick"
+      ],
+      "subtitle": "ashen_stag.kick"
+    },
+    "aura_ashen_stag_paw": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_paw"
+      ],
+      "subtitle": "ashen_stag.paw"
+    },
+    "aura_ashen_stag_rise": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_rise"
+      ],
+      "subtitle": "ashen_stag.rise"
+    },
+    "aura_ashen_stag_snort": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_snort"
+      ],
+      "subtitle": "ashen_stag.snort"
+    },
+    "aura_ashen_stag_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_step"
+      ],
+      "subtitle": "ashen_stag.step"
+    },
+    "aura_ashen_stag_stomp": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_stomp"
+      ],
+      "subtitle": "ashen_stag.stomp"
+    },
+    "aura_ashen_stag_strain": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_strain"
+      ],
+      "subtitle": "ashen_stag.strain"
+    },
     "aura_awaken": {
       "attenuation": 48,
       "files": [

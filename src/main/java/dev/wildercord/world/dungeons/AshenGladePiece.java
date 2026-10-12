@@ -75,6 +75,19 @@ public final class AshenGladePiece extends DungeonPiece {
 		for(int[] t:TRUNKS)trunk(level,bb,t[0],t[1]);
 		stump(level,bb);
 		remains(level,bb);
+		stag(level,bb);
+	}
+
+	/** The guardian, bedded in the ash before the stump and facing the gate. Spawned once, by whichever chunk holds its bed. */
+	private void stag(WorldGenLevel level,BoundingBox bb){
+		var foot=getWorldPos(REST_X,F+1,REST_Z);if(!bb.isInside(foot))return;
+		var gate=getWorldPos(REST_X,F+1,REST_Z-10);
+		float rest=(float)Math.toDegrees(Math.atan2(-(gate.getX()-foot.getX()),gate.getZ()-foot.getZ()));
+		var stag=dev.wildercord.aura.world.Guardians.ASHEN_STAG.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(stag==null)return;
+		stag.snapTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
+		stag.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
+		stag.bind(foot,rest,worldBox(CX-(int)R,F,CZ-(int)R,CX+(int)R,F+14,CZ+(int)R));
+		level.addFreshEntityWithPassengers(stag);
 	}
 
 	/** How high the bank stands over a column {@code r} from the stump: nothing in the glade, rising four blocks to its outer edge. */

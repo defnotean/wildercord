@@ -17,6 +17,9 @@ public final class Guardians {
 	private static final ResourceKey<EntityType<?>> BELL_WARDEN_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("drowned_bell_warden"));
 	public static final EntityType<DrownedBellWarden> BELL_WARDEN=Registry.register(BuiltInRegistries.ENTITY_TYPE,BELL_WARDEN_KEY,
 		EntityType.Builder.of(DrownedBellWarden::new,MobCategory.MONSTER).sized(2.4F,4.6F).eyeHeight(4.0F).clientTrackingRange(12).notInPeaceful().build(BELL_WARDEN_KEY));
+	private static final ResourceKey<EntityType<?>> ASHEN_STAG_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("ashen_stag"));
+	public static final EntityType<AshenStag> ASHEN_STAG=Registry.register(BuiltInRegistries.ENTITY_TYPE,ASHEN_STAG_KEY,
+		EntityType.Builder.of(AshenStag::new,MobCategory.MONSTER).sized(2.4F,3.6F).eyeHeight(3.0F).clientTrackingRange(12).fireImmune().notInPeaceful().build(ASHEN_STAG_KEY));
 	/** Whether guardians wake at all (config: aura_world.guardians). */
 	public static boolean enabled(){return dev.wildercord.config.Config.get().auraWorld().guardians();}
 	public static void init(){
@@ -24,5 +27,7 @@ public final class Guardians {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:rootcoil_serpent",FieldGuide.Group.MONSTER,0x4E7A3A));
 		FabricDefaultAttributeRegistry.register(BELL_WARDEN,DrownedBellWarden.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:drowned_bell_warden",FieldGuide.Group.MONSTER,0x3F8C7A));
+		FabricDefaultAttributeRegistry.register(ASHEN_STAG,AshenStag.createAttributes());
+		FieldGuide.add(new FieldGuide.Entry("wildercord:ashen_stag",FieldGuide.Group.MONSTER,0xC2541E));
 	}
 }

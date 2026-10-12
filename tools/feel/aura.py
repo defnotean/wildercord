@@ -48,6 +48,7 @@ from feel.battlefield import BATTLEFIELD_EVENTS
 from feel.sword_tomb import TOMB_EVENTS
 from feel.serpent import SERPENT_EVENTS
 from feel.bell_warden import BELL_WARDEN_EVENTS
+from feel.ashen_stag import ASHEN_STAG_EVENTS
 from feel.sleeping_blade import SLEEPING_BLADE_EVENTS
 from feel.aura_beasts import BEAST_EVENTS
 from feel.resonant import RESONANT_EVENTS
@@ -285,7 +286,7 @@ EVENTS = [
     event("aura_momentum_peak", aura_momentum_peak, role="effect", subtitle="tell", attenuation=24),
     event("aura_stance_break", aura_stance_break, role="impact", subtitle="hit", attenuation=32),
     event("aura_finisher", aura_finisher, role="grand", subtitle="hit", attenuation=40),
-] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS + BOND_EVENTS + SOCIAL_EVENTS + BATTLEFIELD_EVENTS + TOMB_EVENTS + SLEEPING_BLADE_EVENTS + BEAST_EVENTS + TOURNAMENT_EVENTS + RESONANT_EVENTS + UNITY_EVENTS + SERPENT_EVENTS + BELL_WARDEN_EVENTS
+] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS + BOND_EVENTS + SOCIAL_EVENTS + BATTLEFIELD_EVENTS + TOMB_EVENTS + SLEEPING_BLADE_EVENTS + BEAST_EVENTS + TOURNAMENT_EVENTS + RESONANT_EVENTS + UNITY_EVENTS + SERPENT_EVENTS + BELL_WARDEN_EVENTS + ASHEN_STAG_EVENTS
 
 # ---- methods-a pack
 from feel.aura_methods_a import METHODS_A_EVENTS  # noqa: E402  (Tide, Iron and Dune)

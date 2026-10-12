@@ -838,6 +838,9 @@ def write_lang(runes):
     import bell_warden_art
     lang.update(bell_warden_art.LANG)
     bell_warden_art.write(sys.modules[__name__])
+    import ashen_stag_art
+    lang.update(ashen_stag_art.LANG)
+    ashen_stag_art.write(sys.modules[__name__])
     # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
     import importlib
     site_ids = []

@@ -408,6 +408,48 @@
     "aura_art_worldforge": {
       "part": "aura"
     },
+    "aura_ashen_stag_bellow": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_bound": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_breath": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_crash": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_death": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_gore": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_hurt": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_kick": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_paw": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_rise": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_snort": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_step": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_stomp": {
+      "part": "aura"
+    },
+    "aura_ashen_stag_strain": {
+      "part": "aura"
+    },
     "aura_awaken": {
       "part": "aura"
     },

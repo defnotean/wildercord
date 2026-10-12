@@ -4676,6 +4676,90 @@
       }
     ]
   },
+  "aura_ashen_stag_bellow": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.bellow",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_bellow"
+    ]
+  },
+  "aura_ashen_stag_bound": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.bound",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_bound"
+    ]
+  },
+  "aura_ashen_stag_breath": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.breath",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_breath"
+    ]
+  },
+  "aura_ashen_stag_crash": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.crash",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_crash"
+    ]
+  },
+  "aura_ashen_stag_death": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.death",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_death"
+    ]
+  },
+  "aura_ashen_stag_gore": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.gore",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_gore"
+    ]
+  },
+  "aura_ashen_stag_hurt": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.hurt",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_hurt"
+    ]
+  },
+  "aura_ashen_stag_kick": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.kick",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_kick"
+    ]
+  },
+  "aura_ashen_stag_paw": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.paw",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_paw"
+    ]
+  },
+  "aura_ashen_stag_rise": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.rise",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_rise"
+    ]
+  },
+  "aura_ashen_stag_snort": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.snort",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_snort"
+    ]
+  },
+  "aura_ashen_stag_step": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.step",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_step"
+    ]
+  },
+  "aura_ashen_stag_stomp": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.stomp",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_stomp"
+    ]
+  },
+  "aura_ashen_stag_strain": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.strain",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_strain"
+    ]
+  },
   "aura_awaken": {
     "subtitle": "subtitles.wildercord.kit.field",
     "sounds": [
