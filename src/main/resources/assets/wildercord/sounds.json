@@ -5558,6 +5558,90 @@
       "wildercord:kit/aura/aura_hollow_impact_3"
     ]
   },
+  "aura_hollow_matron_bite": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.bite",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_bite"
+    ]
+  },
+  "aura_hollow_matron_chitter": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.chitter",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_chitter"
+    ]
+  },
+  "aura_hollow_matron_creak": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.creak",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_creak"
+    ]
+  },
+  "aura_hollow_matron_death": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.death",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_death"
+    ]
+  },
+  "aura_hollow_matron_drop": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.drop",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_drop"
+    ]
+  },
+  "aura_hollow_matron_hiss": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.hiss",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_hiss"
+    ]
+  },
+  "aura_hollow_matron_hurt": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.hurt",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_hurt"
+    ]
+  },
+  "aura_hollow_matron_land": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.land",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_land"
+    ]
+  },
+  "aura_hollow_matron_pounce": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.pounce",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_pounce"
+    ]
+  },
+  "aura_hollow_matron_skitter": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.skitter",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_skitter"
+    ]
+  },
+  "aura_hollow_matron_spit": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.spit",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_spit"
+    ]
+  },
+  "aura_hollow_matron_splat": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.splat",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_splat"
+    ]
+  },
+  "aura_hollow_matron_step": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.step",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_step"
+    ]
+  },
+  "aura_hollow_matron_sweep": {
+    "subtitle": "subtitles.wildercord.kit.hollow_matron.sweep",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_matron_sweep"
+    ]
+  },
   "aura_hollow_swing": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [

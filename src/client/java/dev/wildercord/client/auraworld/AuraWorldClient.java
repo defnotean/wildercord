@@ -44,6 +44,8 @@ public final class AuraWorldClient {
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.BELL_WARDEN,BellWardenRenderer::new);
 		ModelLayerRegistry.registerModelLayer(AshenStagRenderer.LAYER,AshenStagModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.ASHEN_STAG,AshenStagRenderer::new);
+		ModelLayerRegistry.registerModelLayer(HollowMatronRenderer.LAYER,HollowMatronModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.HOLLOW_MATRON,HollowMatronRenderer::new);
 		var stonehorn=new ModelLayerLocation(Wildercord.id("stonehorn"),"main");
 		var galeclaw=new ModelLayerLocation(Wildercord.id("galeclaw"),"main");
 		ModelLayerRegistry.registerModelLayer(stonehorn,StonehornModel::createLayer);

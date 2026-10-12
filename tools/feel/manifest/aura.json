@@ -1434,6 +1434,104 @@
       ],
       "subtitle": "hit"
     },
+    "aura_hollow_matron_bite": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_bite"
+      ],
+      "subtitle": "hollow_matron.bite"
+    },
+    "aura_hollow_matron_chitter": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_chitter"
+      ],
+      "subtitle": "hollow_matron.chitter"
+    },
+    "aura_hollow_matron_creak": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_creak"
+      ],
+      "subtitle": "hollow_matron.creak"
+    },
+    "aura_hollow_matron_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_death"
+      ],
+      "subtitle": "hollow_matron.death"
+    },
+    "aura_hollow_matron_drop": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_drop"
+      ],
+      "subtitle": "hollow_matron.drop"
+    },
+    "aura_hollow_matron_hiss": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_hiss"
+      ],
+      "subtitle": "hollow_matron.hiss"
+    },
+    "aura_hollow_matron_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_hurt"
+      ],
+      "subtitle": "hollow_matron.hurt"
+    },
+    "aura_hollow_matron_land": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_land"
+      ],
+      "subtitle": "hollow_matron.land"
+    },
+    "aura_hollow_matron_pounce": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_pounce"
+      ],
+      "subtitle": "hollow_matron.pounce"
+    },
+    "aura_hollow_matron_skitter": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_skitter"
+      ],
+      "subtitle": "hollow_matron.skitter"
+    },
+    "aura_hollow_matron_spit": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_spit"
+      ],
+      "subtitle": "hollow_matron.spit"
+    },
+    "aura_hollow_matron_splat": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_splat"
+      ],
+      "subtitle": "hollow_matron.splat"
+    },
+    "aura_hollow_matron_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_step"
+      ],
+      "subtitle": "hollow_matron.step"
+    },
+    "aura_hollow_matron_sweep": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_hollow_matron_sweep"
+      ],
+      "subtitle": "hollow_matron.sweep"
+    },
     "aura_hollow_swing": {
       "attenuation": 0,
       "files": [

@@ -841,6 +841,9 @@ def write_lang(runes):
     import ashen_stag_art
     lang.update(ashen_stag_art.LANG)
     ashen_stag_art.write(sys.modules[__name__])
+    import hollow_matron_art
+    lang.update(hollow_matron_art.LANG)
+    hollow_matron_art.write(sys.modules[__name__])
     # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
     import importlib
     site_ids = []

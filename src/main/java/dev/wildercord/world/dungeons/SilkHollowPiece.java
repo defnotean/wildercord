@@ -32,7 +32,7 @@ public final class SilkHollowPiece extends DungeonPiece {
 	/** The hall floor (you stand one above it), the hall's centre under the nest, its radius and the height of its dome. */
 	public static final int FLOOR=3,CX=22,CZ=45,RADIUS=19,DOME=18;
 	/** Where the Matron hangs, her feet this high, under the nest on her thread. */
-	public static final int REST_Y=FLOOR+9;
+	public static final int REST_Y=FLOOR+6;
 	/** The silk pillars, floor to ceiling: what she climbs, and what can be cut out from under her. */
 	public static final int[][] PILLARS={{CX-7,CZ-7},{CX+7,CZ-7},{CX-7,CZ+7},{CX+7,CZ+7}};
 	/** The egg sacs along the wall, where her brood comes from. */
@@ -114,6 +114,21 @@ public final class SilkHollowPiece extends DungeonPiece {
 		shaft(level,bb);
 		drift(level,bb);
 		remains(level,bb);
+		matron(level,bb);
+	}
+
+	/** The guardian, hanging head-down on her thread under the nest and facing the drift. Spawned once, by whichever chunk holds her. */
+	private void matron(WorldGenLevel level,BoundingBox bb){
+		var hang=getWorldPos(CX,REST_Y,CZ);if(!bb.isInside(hang))return;
+		var drift=getWorldPos(CX,REST_Y,CZ-10);
+		float rest=(float)Math.toDegrees(Math.atan2(-(drift.getX()-hang.getX()),drift.getZ()-hang.getZ()));
+		var matron=dev.wildercord.aura.world.Guardians.HOLLOW_MATRON.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(matron==null)return;
+		matron.snapTo(hang.getX()+.5,hang.getY(),hang.getZ()+.5,rest,0);
+		matron.finalizeSpawn(level,level.getCurrentDifficultyAt(hang),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
+		// Her thread hangs from the underside of the nest, at its deepest.
+		float anchor=getWorldPos(CX,dome(0)-nest(0)+1,CZ).getY();
+		matron.bind(hang,getWorldPos(CX,FLOOR+1,CZ).getY(),anchor,rest,worldBox(CX-RADIUS,FLOOR,CZ-RADIUS,CX+RADIUS,FLOOR+DOME,CZ+RADIUS));
+		level.addFreshEntityWithPassengers(matron);
 	}
 
 	private BlockState rock(int x,int y,int z){

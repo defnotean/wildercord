@@ -753,6 +753,48 @@
     "aura_hollow_impact": {
       "part": "aura"
     },
+    "aura_hollow_matron_bite": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_chitter": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_creak": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_death": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_drop": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_hiss": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_hurt": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_land": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_pounce": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_skitter": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_spit": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_splat": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_step": {
+      "part": "aura"
+    },
+    "aura_hollow_matron_sweep": {
+      "part": "aura"
+    },
     "aura_hollow_swing": {
       "part": "aura"
     },
