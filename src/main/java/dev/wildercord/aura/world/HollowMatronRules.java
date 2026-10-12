@@ -1,9 +1,13 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.cast.MoveDeck;
+
 /**
  * The Hollow Matron, the Silk Hollow's guardian: a great pale spider that hangs head-down on her thread under the nest in the
  * miners' hall until someone comes far enough in, then drops, turns over as she lands, and rears up at them with her fangs spread.
- * Quick and skittish, light in the hand like the others; a step below a Master.
+ * Quick and skittish, light in the hand like the others; a step below a Master. No two of her moves come the same way twice running,
+ * each with its own tell and its own way out. Half beaten she rouses: silk streams off her, she throws everyone near her back, and
+ * fights on quicker, her moves running on into one another.
  */
 public final class HollowMatronRules {
 	private HollowMatronRules() {}
@@ -16,13 +20,13 @@ public final class HollowMatronRules {
 	public static final int WATCH = 2;
 	/** Climbing back up her thread once the hall has gone quiet: the drop, played backwards. */
 	public static final int CLIMB = 3;
-	/** Reared back with her fangs spread, then a lunge and a bite at whoever is in front of her. */
+	/** Reared back with her fangs spread and dripping, then a lunge straight along the line she settled on; missing, her fangs sink into the floor. */
 	public static final int BITE = 4;
-	/** Her forelegs raised and drawn to one side, then swept across in front of her through whoever is there. */
-	public static final int SWEEP = 5;
-	/** Reared up, her abdomen curled forward under her, then a glob of web spat at her prey that slows whoever it lands on. */
+	/** Her forelegs raised high and drawn back to one side, then scythed across in front of her at chest height: duck under it. */
+	public static final int SCYTHE = 5;
+	/** Head down and fangs pumping, then a glob of web spat along the line she settled on, slowing whoever it lands on and leaving the floor sticky. */
 	public static final int SPIT = 6;
-	/** Crouched low on bent legs, then a leap at her prey, landing on whoever is under her. */
+	/** Crouched low on bent legs with the spot she means marked, then a leap onto it, landing on whoever is under her. */
 	public static final int POUNCE = 7;
 	/** A quick skitter to one side out from under a blow; or, hurt too fast, back away across the hall. */
 	public static final int SKITTER = 8;
@@ -38,6 +42,20 @@ public final class HollowMatronRules {
 	public static final int PLUNGE = 13;
 	/** Cut down off her pillar: falling, legs flailing, until she hits the floor. */
 	public static final int TUMBLE = 14;
+	/** Reared on her hind legs with her forelegs trembling high and dust sifting from the roof, then slammed down: a ring of dust runs out across the floor to jump. */
+	public static final int DRUM = 15;
+	/** Her abdomen curled under her and her spinnerets aimed past her fangs, then a thread shot along the line she settled on: whoever it catches is hauled in. */
+	public static final int REEL = 16;
+	/** Hauling whoever her thread caught in to her fangs, foreleg over foreleg, until she bites them; two blows on her snap the thread. */
+	public static final int HAUL = 17;
+	/** Her abdomen raised and quivering at whoever is behind her, her hind legs scraping, then stinging hairs flicked off it in a cone behind. */
+	public static final int BRISTLE = 18;
+	/** Her abdomen thrown up and silk shot into the roof, then clumps of web falling onto the rings marked across the floor: whoever is still in one is stuck fast. */
+	public static final int SNARE = 19;
+	/** Her fangs sunk in the floor after a bite that found nobody, wrenching at them, her face bare. */
+	public static final int STUCK = 20;
+	/** Half beaten: hunched with her legs drawn in and quivering, silk streaming up off her, then thrown wide, flinging everyone near her back. */
+	public static final int ROUSE = 21;
 
 	/** How hard it is among the guardians (see {@link BossTier}). */
 	public static final BossTier TIER = BossTier.SEASONED;
@@ -69,33 +87,61 @@ public final class HollowMatronRules {
 	public static final double CLOSE = 3.4;
 	public static final float TURN = 16;
 
-	// ---- the fight: quick tells and quick feet, a web that slows rather than a heavy blow, and a pounce that leaves her open.
-	/** What each blow does before defences. */
-	public static final double BITE_DAMAGE = TIER.hit(16), SWEEP_DAMAGE = TIER.hit(14), SPIT_DAMAGE = TIER.hit(6), POUNCE_DAMAGE = TIER.hit(20);
+	// ---- the fight: quick feet, a tell for every move, and each move with its own way out.
 	/** The share of what armour, Protection and Resistance would stop that her blows go through anyway. */
 	public static final double PIERCE = 0.35;
-	/** The bite: its tell, how far the lunge carries her over {@link #LUNGE_TICKS}, and the rest after. */
-	public static final int BITE_TELL = 7, LUNGE_TICKS = 3, BITE_RECOVER = 12;
-	public static final double LUNGE = 2.2;
-	/** The sweep: its tell, how long the forelegs take to cross, the rest after and the least time between two; its reach. */
-	public static final int SWEEP_TELL = 9, SWEEP_TICKS = 4, SWEEP_RECOVER = 14, SWEEP_REST = 50;
-	public static final double SWEEP_REACH = 5.0;
-	/** The spit: its tell, the rest after, the least time between two; how fast the glob flies, how close it must pass, how long
-	 *  it slows whoever it lands on, and how far it goes before it falls apart. */
-	public static final int SPIT_TELL = 12, SPIT_RECOVER = 10, SPIT_REST = 90, WEB_SLOW_TICKS = 70;
-	public static final double GLOB_SPEED = 1.2, GLOB_RADIUS = 1.3, GLOB_RANGE = 22;
-	/** The pounce: its tell (the crouch), how long the leap lasts, the rest after, the least time between two; how far it can carry
-	 *  her and how far round where she lands it hits. */
-	public static final int POUNCE_TELL = 11, POUNCE_TICKS = 10, POUNCE_RECOVER = 24, POUNCE_REST = 110;
-	public static final double POUNCE_REACH = 11, POUNCE_RADIUS = 2.8, POUNCE_HEIGHT = 2.6;
+	/** The bite: its tell (shorter run on from another move), the aim fixed for the last {@link #BITE_LOCK} of it, how long the lunge
+	 *  lasts and how far it carries her (further roused), the rest after, what it does and how long its venom lasts; and how long
+	 *  her fangs stay stuck in the floor after one that found nobody. */
+	public static final int BITE_TELL = 12, BITE_TELL_CHAINED = 8, BITE_LOCK = 4, LUNGE_TICKS = 3, BITE_RECOVER = 12, BITE_POISON = 60, STUCK_TICKS = 30;
+	public static final double LUNGE = 2.6, LUNGE_ROUSED = 3.4, BITE_DAMAGE = TIER.hit(16);
+	/** The scythe: its tell, the sweep fixed for the last {@link #SCYTHE_LOCK} of it, how long the forelegs take across, and roused
+	 *  how long before they come back the other way; the rest after, its reach, and what it does. */
+	public static final int SCYTHE_TELL = 13, SCYTHE_TELL_CHAINED = 9, SCYTHE_LOCK = 3, SCYTHE_TICKS = 4, SCYTHE_BACK = 7, SCYTHE_RECOVER = 14;
+	public static final double SCYTHE_REACH = 5.2, SCYTHE_DAMAGE = TIER.hit(15);
+	/** The spit: its tell, the aim fixed for the last {@link #SPIT_LOCK} of it, the rest after, and how long a glob slows whoever it
+	 *  lands on; how fast a glob flies, how close it must pass, how far it goes before it falls apart, what it does, and roused the
+	 *  angle between the three she spits in a fan. */
+	public static final int SPIT_TELL = 12, SPIT_TELL_CHAINED = 8, SPIT_LOCK = 3, SPIT_RECOVER = 10, WEB_SLOW_TICKS = 60;
+	public static final double GLOB_SPEED = 1.2, GLOB_RADIUS = 1.1, GLOB_RANGE = 22, SPIT_DAMAGE = TIER.hit(6), SPIT_FAN = 16;
+	/** A sticky patch of web where a glob splats or a clump falls: how long it lasts, and how far across it is. */
+	public static final int PATCH_TICKS = 100;
+	public static final double PATCH_RADIUS = 1.5;
+	/** The pounce: its tell (the crouch), the spot fixed for the last {@link #POUNCE_LOCK} of it, how long the leap lasts, the rest
+	 *  after; how far it can carry her, how high, how far round where she lands it hits, and what it does. */
+	public static final int POUNCE_TELL = 14, POUNCE_TELL_CHAINED = 10, POUNCE_LOCK = 4, POUNCE_TICKS = 10, POUNCE_RECOVER = 24;
+	public static final double POUNCE_REACH = 11, POUNCE_RADIUS = 2.8, POUNCE_HEIGHT = 2.6, POUNCE_DAMAGE = TIER.hit(20);
+	/** The drum: its tell (reared up), roused how long before she slams down again, how long she stays low after, and the rest
+	 *  after that; how fast the ring of dust runs out, how far, how high it comes (jump it), and what it does. */
+	public static final int DRUM_TELL = 16, DRUM_TELL_CHAINED = 11, DRUM_AGAIN = 10, DRUM_LOW = 14, DRUM_RECOVER = 8;
+	public static final double WAVE_SPEED = 0.6, WAVE_REACH = 12, WAVE_HEIGHT = 0.75, DRUM_DAMAGE = TIER.hit(10);
+	/** The reel: its tell, the aim fixed for the last {@link #REEL_LOCK} of it; how fast her thread flies, how far, how close it must
+	 *  pass; how long hauling her prey in takes, how long into the haul she bites (held before her fangs between), and where in
+	 *  front of her they are held; what her bite does, the blows on her that snap the thread, and the rest after one that caught,
+	 *  one that missed and one that was snapped. */
+	public static final int REEL_TELL = 15, REEL_TELL_CHAINED = 10, REEL_LOCK = 4, HAUL_PULL = 14, HAUL_TICKS = 32, REEL_SNAP = 2;
+	public static final int REEL_RECOVER = 12, REEL_MISS = 28, REEL_SNAPPED = 36;
+	public static final double THREAD_SPEED = 2.2, REEL_RANGE = 17, THREAD_RADIUS = 0.9, HAUL_STOP = 2.6, REEL_DAMAGE = TIER.hit(14);
+	/** The bristle: its tell, the aim fixed for the last {@link #BRISTLE_LOCK} of it, how long her abdomen stays up and bare after,
+	 *  and roused how long before a second flick; how far the hairs carry, the half-angle of the cone (wider for the second), what
+	 *  they do and how long they weaken whoever they catch. */
+	public static final int BRISTLE_TELL = 13, BRISTLE_TELL_CHAINED = 9, BRISTLE_LOCK = 3, BRISTLE_OPEN = 20, BRISTLE_AGAIN = 8, BRISTLE_WEAK = 80;
+	public static final double BRISTLE_REACH = 6.5, BRISTLE_ANGLE = 40, BRISTLE_WIDE = 60, BRISTLE_DAMAGE = TIER.hit(10);
+	/** The snare: its tell, how long after the silk goes up the web comes down, the rest after; how wide a ring is, how long it
+	 *  holds whoever it lands on and what it does; the rings she throws past the ones under her prey (more roused) and how far out. */
+	public static final int SNARE_TELL = 16, SNARE_FALL = 24, SNARE_RECOVER = 12, SNARE_ROOT = 40, SNARE_EXTRA = 3, SNARE_EXTRA_ROUSED = 5;
+	public static final double SNARE_RADIUS = 1.8, SNARE_DAMAGE = TIER.hit(5), SNARE_SCATTER = 9;
+	/** Her rousing: its tell, the rest after; how far round her the blast throws, and what it does. */
+	public static final int ROUSE_TELL = 30, ROUSE_RECOVER = 20;
+	public static final double ROUSE_RADIUS = 6.5, ROUSE_DAMAGE = TIER.hit(12);
 	/** The skitter aside: how long it lasts, how fast she goes, and the least time between two. */
 	public static final int SKITTER_TICKS = 5, SKITTER_REST = 36;
 	public static final double SKITTER_SPEED = 0.7;
 	/** The back-off: how much hurt, fading each tick by {@link #STING_FADE}, sends her off, how fast she goes, and the least time between two. */
 	public static final double STING_AFTER = 36, STING_FADE = 0.97, BACK_SPEED = 0.8;
 	public static final int BACK_TICKS = 8, BACK_REST = 200;
-	/** Ticks between her blows, fewer once she is wounded. */
-	public static final int GAP = 9, GAP_WOUNDED = 5;
+	/** Ticks between her moves, fewer once she is roused; how many she runs on into one after another roused, and the extra rest after. */
+	public static final int GAP = 9, GAP_ROUSED = 5, CHAIN_MOST = 2, CHAIN_REST = 10;
 
 	// ---- the ambush: up a pillar, brood from the sacs, and down on whoever she marks. Strike the pillar's silk and she comes down.
 	/** At or below this share of her health she makes for a pillar, and again every {@link #AMBUSH_REST} ticks after. */
@@ -155,7 +201,7 @@ public final class HollowMatronRules {
 	public static String key(int move) {
 		return switch (move) {
 			case BITE -> "bite";
-			case SWEEP -> "sweep";
+			case SCYTHE -> "scythe";
 			case SPIT -> "spit";
 			case POUNCE -> "pounce";
 			case SKITTER -> "skitter";
@@ -165,41 +211,152 @@ public final class HollowMatronRules {
 			case LURK -> "lurk";
 			case PLUNGE -> "plunge";
 			case TUMBLE -> "tumble";
+			case DRUM -> "drum";
+			case REEL -> "reel";
+			case HAUL -> "haul";
+			case BRISTLE -> "bristle";
+			case SNARE -> "snare";
+			case STUCK -> "stuck";
+			case ROUSE -> "rouse";
 			default -> "watch";
 		};
 	}
 
-	/**
-	 * Her choice of blow at {@code distance} from her prey; -1 to keep closing. {@code roll} is 0-1. Up close she bites, or raises her
-	 * forelegs and sweeps; a little further she pounces; anyone keeping well away gets web spat at them.
-	 */
-	public static int choose(double distance, double roll, boolean maySweep, boolean mayPounce, boolean maySpit) {
-		if (distance <= CLOSE) return maySweep && roll < 0.35 ? SWEEP : BITE;
-		if (distance <= SWEEP_REACH - 0.5 && maySweep && roll < 0.5) return SWEEP;
-		if (distance >= 5 && distance <= POUNCE_REACH && mayPounce && roll < 0.6) return POUNCE;
-		if (distance >= 6 && distance <= GLOB_RANGE - 4 && maySpit) return SPIT;
-		if (distance >= 5 && distance <= POUNCE_REACH && mayPounce) return POUNCE;
-		return -1;
+	/** The moves she picks among. */
+	public static final int[] PICKS = {BITE, SCYTHE, SPIT, POUNCE, DRUM, REEL, BRISTLE, SNARE};
+	/** The least time between two of {@code move}, shorter once she is {@code roused}. */
+	public static int rest(int move, boolean roused) {
+		int r = switch (move) {
+			case BITE -> 24;
+			case SCYTHE -> 40;
+			case SPIT -> 70;
+			case POUNCE -> 100;
+			case DRUM -> 110;
+			case REEL -> 170;
+			case BRISTLE -> 45;
+			case SNARE -> 280;
+			default -> 0;
+		};
+		return roused ? r * 2 / 3 : r;
 	}
+	/**
+	 * How much she wants each of {@link #PICKS} with her prey {@code distance} away, {@code behind} her or not, their feet
+	 * {@code height} above her own, {@code since} holding the ticks since she last made each move (by move). Up close in front her
+	 * fangs and her forelegs; the hairs off her abdomen for anyone at her back; the leap a little way out; the drum for anyone not
+	 * far; web spat, a thread shot and web brought down on anyone keeping away, and on anyone up out of reach. Nothing for a move
+	 * still resting.
+	 */
+	public static double[] weights(double distance, boolean behind, double height, long[] since, boolean roused) {
+		double[] w = new double[PICKS.length];
+		boolean up = height > 2.5;
+		for (int i = 0; i < PICKS.length; i++) {
+			int m = PICKS[i];
+			if (since[m] < rest(m, roused)) continue;
+			double d = distance;
+			w[i] = switch (m) {
+				case BITE -> up || behind || d > 5 ? 0 : d <= CLOSE ? 3 : 1.6;
+				case SCYTHE -> up || behind || d > SCYTHE_REACH + 0.5 ? 0 : d <= CLOSE ? 2.2 : 2.6;
+				case SPIT -> d < 5 || d > GLOB_RANGE - 4 ? 0 : up ? 3 : 1.8;
+				case POUNCE -> up || d < 5 || d > POUNCE_REACH ? 0 : (d >= 7 ? 3 : 2) * (behind ? 0.5 : 1);
+				case DRUM -> up ? 0.4 : d <= 7 ? (behind ? 1.8 : 1.5) : d <= 10 ? 0.8 : 0;
+				case REEL -> d < 6 || d > REEL_RANGE ? 0 : up ? 2.5 : d >= 9 ? 2.6 : 1.6;
+				case BRISTLE -> !behind || up || d > BRISTLE_REACH + 0.5 ? 0 : 4.5;
+				case SNARE -> up ? 1.5 : d < 4 ? 0.5 : 1.4;
+				default -> 0;
+			};
+		}
+		return w;
+	}
+	/**
+	 * Her next move, by {@link #weights} and what she has been doing lately; -1 to keep closing. Never the move she just made: with
+	 * nothing else to hand she keeps closing until something else is. {@code roll} is 0-1.
+	 */
+	public static int choose(MoveDeck deck, double distance, boolean behind, double height, long[] since, boolean roused, double roll) {
+		int m = deck.pick(PICKS, weights(distance, behind, height, since, roused), roll);
+		return m == deck.last() ? -1 : m;
+	}
+	/** Roused, the move she runs straight on into after {@code move}, her prey {@code distance} away; -1 for none. {@code roll} is 0-1. */
+	public static int chain(int move, double distance, double roll) {
+		return switch (move) {
+			case BITE -> roll < 0.45 ? SCYTHE : -1;
+			case SCYTHE -> distance <= 4.5 ? (roll < 0.4 ? BITE : -1) : distance >= 6 && roll < 0.5 ? POUNCE : -1;
+			case SPIT -> distance >= 5 && distance <= POUNCE_REACH && roll < 0.5 ? POUNCE : -1;
+			case POUNCE -> roll < 0.5 ? DRUM : -1;
+			case DRUM -> distance >= 6 ? (roll < 0.5 ? SPIT : -1) : roll < 0.45 ? SCYTHE : -1;
+			case HAUL -> roll < 0.4 ? DRUM : -1;
+			case SNARE -> distance >= 4 && distance <= POUNCE_REACH ? (roll < 0.6 ? POUNCE : -1) : roll < 0.4 ? SPIT : -1;
+			default -> -1;
+		};
+	}
+	/** Whether she rouses now: down to half health for the first time. */
+	public static boolean rouses(float health, float max, boolean roused) {
+		return !roused && wounded(health, max);
+	}
+	/** Whether {@code blows} on her while she hauls someone in snap her thread. */
+	public static boolean snaps(int blows) {
+		return blows >= REEL_SNAP;
+	}
+	/** How many globs a spit throws: one, or roused three in a fan. */
+	public static int globs(boolean roused) {
+		return roused ? 3 : 1;
+	}
+	/** How many rings a snare throws past the ones under her prey. */
+	public static int scatter(boolean roused) {
+		return roused ? SNARE_EXTRA_ROUSED : SNARE_EXTRA;
+	}
+
 	/** Whether a blow reaches someone {@code forward} ahead, {@code side} across and {@code height} above her feet, in her locked aim. */
 	public static boolean hits(int move, double forward, double side, double height) {
 		return switch (move) {
-			case BITE -> forward > -0.5 && forward <= 3.6 && Math.abs(side) <= 1.6 && height > -1.5 && height < 3.0;
-			case SWEEP -> {
-				double r = forward * forward + side * side;
-				yield forward > -1.0 && r <= SWEEP_REACH * SWEEP_REACH && height > -1.5 && height < 3.0;
-			}
+			case BITE -> forward > -0.5 && forward <= 2.4 && Math.abs(side) <= 1.3 && height > -1.5 && height < 3.0;
 			case POUNCE -> forward * forward + side * side <= POUNCE_RADIUS * POUNCE_RADIUS && height > -1.5 && height < 2.5;
 			case PLUNGE -> forward * forward + side * side <= PLUNGE_RADIUS * PLUNGE_RADIUS && height > -1.5 && height < 2.5;
 			default -> false;
 		};
 	}
+	/** Whether her forelegs, scything across at chest height, catch someone {@code forward} ahead, {@code side} across, {@code height} up; not if they are {@code ducked} under. */
+	public static boolean scythes(double forward, double side, double height, boolean ducked) {
+		if (ducked) return false;
+		return forward > -1.0 && forward * forward + side * side <= SCYTHE_REACH * SCYTHE_REACH && height > -1.5 && height < 3.0;
+	}
+	/** Whether the hairs flicked off her abdomen catch someone {@code forward} ahead (so, behind her), {@code side} across, {@code height} up; in the {@code wide} cone of a second flick or not. */
+	public static boolean bristles(double forward, double side, double height, boolean wide) {
+		if (forward > 0.5 || height <= -1.5 || height >= 3.0) return false;
+		return forward * forward + side * side <= BRISTLE_REACH * BRISTLE_REACH
+			&& Math.toDegrees(Math.atan2(Math.abs(side), -forward)) <= (wide ? BRISTLE_WIDE : BRISTLE_ANGLE);
+	}
+	/** Whether a ring of dust running out from {@code from} to {@code to} this tick passes someone {@code distance} out, feet {@code height} up. */
+	public static boolean crosses(double distance, double from, double to, double height) {
+		return distance > from - 0.5 && distance <= to + 0.5 && height > -1.5 && height < WAVE_HEIGHT;
+	}
+	/** Whether web coming down on a ring at an offset of ({@code dx},{@code dy},{@code dz}) from someone holds them fast. */
+	public static boolean snared(double dx, double dy, double dz) {
+		return dx * dx + dz * dz <= SNARE_RADIUS * SNARE_RADIUS && dy > -1.5 && dy < 2.5;
+	}
+	/** Whether someone at an offset of ({@code dx},{@code dy},{@code dz}) from the middle of a sticky patch is standing in it. */
+	public static boolean sticks(double dx, double dy, double dz) {
+		return dx * dx + dz * dz <= PATCH_RADIUS * PATCH_RADIUS && dy > -0.6 && dy < 1.2;
+	}
+	/** Whether the blast of her rousing, at an offset of ({@code dx},{@code dy},{@code dz}), reaches someone. */
+	public static boolean blasts(double dx, double dy, double dz) {
+		return dx * dx + dz * dz <= ROUSE_RADIUS * ROUSE_RADIUS && dy > -1.5 && dy < 3.5;
+	}
 	/**
 	 * What her carapace leaves of a blow. Her fangs and forelegs turn some of a blow from the front; her soft abdomen at the back
-	 * takes it all and a little more; spent after an attack she is open.
+	 * takes it all and a little more; spent after an attack she is open, and with her fangs stuck in the floor her face is bare.
 	 */
 	public static double armour(int move, boolean frontal, boolean rear) {
+		return armour(move, false, frontal, rear);
+	}
+	/**
+	 * As {@link #armour(int, boolean, boolean)}, {@code thrown} once the move's blow has gone: her abdomen stays raised and bare a
+	 * while after a bristle, and she is low and open a moment after a drum.
+	 */
+	public static double armour(int move, boolean thrown, boolean frontal, boolean rear) {
 		if (move == RECOVER || move == TUMBLE) return rear ? 1.5 : 1.3;
+		if (move == STUCK) return frontal ? 1.6 : rear ? 1.5 : 1.3;
+		if (thrown && move == BRISTLE) return rear ? 1.8 : 1.1;
+		if (thrown && move == DRUM) return frontal ? 1.3 : rear ? 1.4 : 1.2;
 		if (rear) return 1.15;
 		return frontal ? 0.7 : 1.0;
 	}
@@ -207,7 +364,7 @@ public final class HollowMatronRules {
 	public static boolean frontal(double angle) {
 		return Math.abs(wrap(angle)) <= 55;
 	}
-	/** Whether a blow arriving from {@code angle} degrees off her facing lands on her abdomen, behind. */
+	/** Whether a blow arriving from {@code angle} degrees off her facing lands on her abdomen, behind; and whether her prey stands there. */
 	public static boolean rear(double angle) {
 		return Math.abs(wrap(angle)) >= 130;
 	}
@@ -222,7 +379,7 @@ public final class HollowMatronRules {
 	public static boolean backs(int move, double stung, long sinceBack) {
 		return (move == WATCH || move == RECOVER) && stung >= STING_AFTER && sinceBack >= BACK_REST;
 	}
-	/** Whether she is wounded: at half health or below, she is quicker. */
+	/** Whether she is wounded: at half health or below, and she rouses. */
 	public static boolean wounded(float health, float max) {
 		return health <= max * 0.5F;
 	}

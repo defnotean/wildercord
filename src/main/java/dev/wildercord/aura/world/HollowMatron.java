@@ -1,11 +1,15 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.cast.MoveDeck;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.*;
 import net.minecraft.server.level.*;
+import net.minecraft.sounds.*;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.*;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,6 +20,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.world.InteractionResult;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -31,9 +36,18 @@ import java.util.*;
  * boss bar comes up. The hall going quiet sends her back up her thread, healed. The hall is hers: anything hostile in it she webs and
  * kills.
  * <p>
- * On her feet she bites whoever is in front of her, rears and sweeps her forelegs across through whoever is near, spits web at anyone
- * keeping their distance, slowing them, and pounces on whoever is in reach of a leap, landing on them: after a pounce she is spent a
- * while, the big opening. She skitters aside from some blows, and hurt too fast she backs away across the hall.
+ * On her feet she picks her next move from what suits where her prey stands, never the one she just made while another will do,
+ * and each comes with its own tell. Reared with her fangs dripping she lunges and bites along the line she settled on, and a bite
+ * that finds nobody sinks her fangs in the floor; forelegs raised to one side she scythes them across at chest height (duck under);
+ * head down and fangs pumping she spits web that slows and leaves the floor sticky; crouched with the spot marked she pounces on it;
+ * reared with her forelegs trembling she drums the floor and sends a ring of dust out to jump; abdomen curled under she shoots a
+ * thread that hauls whoever it catches in to her fangs (two blows on her snap it); abdomen raised at whoever is behind her she flicks
+ * stinging hairs out in a cone; and abdomen thrown up she shoots silk into the roof and brings web down on the rings marked under her
+ * prey. She skitters aside from some blows, and hurt too fast she backs away across the hall.
+ * <p>
+ * Half beaten she rouses: hunched and quivering with silk streaming off her, then thrown wide in a blast that flings everyone near
+ * her back and leaves web across the floor. Roused she is quicker, runs her moves on into one another, scythes back the way she
+ * came, spits three globs, drums twice, flicks her hairs twice and wider, and brings down more web, some of it ahead of whoever runs.
  * <p>
  * Wounded, she makes for one of the silk pillars and climbs it. At the top she turns head-down, her brood hatch from the egg sacs
  * round the walls, and dust sifts down onto the spot she has marked under her prey; then she plunges onto it. Strike the pillar's silk
@@ -48,6 +62,8 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> SIDE=SynchedEntityData.defineId(HollowMatron.class,EntityDataSerializers.INT);
 	/** The height her thread hangs from, the underside of the nest, so the client can draw it. */
 	private static final EntityDataAccessor<Float> ANCHOR=SynchedEntityData.defineId(HollowMatron.class,EntityDataSerializers.FLOAT);
+	/** Whether she has roused, half beaten; for the client, her eyes burn brighter. */
+	private static final EntityDataAccessor<Boolean> ROUSED=SynchedEntityData.defineId(HollowMatron.class,EntityDataSerializers.BOOLEAN);
 	private static final EntityDimensions HANGING=EntityDimensions.scalable(2.2F,3.8F).withEyeHeight(.8F),STANDING=EntityDimensions.scalable(3.6F,2.2F).withEyeHeight(1.4F);
 	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.WHITE,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
@@ -63,14 +79,37 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	private float aim;
 	private Vec3 slide=Vec3.ZERO,leapFrom=Vec3.ZERO,leapTo=Vec3.ZERO;
 	private int chased;
-	private long lastDodge=-999,lastBack=-999,lastSweep=-999,lastSpit=-999,lastPounce=-999;
+	private long lastDodge=-999,lastBack=-999;
+	/** Who each blow of the move she is making has already caught, her memory of what she has done lately, when she last made each
+	 *  move, how many moves she has run on into one another, and whether this one has gone round again. */
+	private final Set<UUID> struck=new HashSet<>();
+	private final MoveDeck deck=new MoveDeck(5);
+	private final long[] lastMade=new long[32];{Arrays.fill(lastMade,-9999);}
+	private int links,again;
+	private boolean chained;
 	/** Hurt taken lately, fading; enough of it sends her backing off. */
 	private double stung;
 	/** A glob of web in flight: where it is, which way and how fast it goes, and how far it has left to go. */
-	private static final class Glob{Vec3 at,step;double left;Glob(Vec3 at,Vec3 step,double left){this.at=at;this.step=step;this.left=left;}}
+	private static final class Glob{Vec3 at,step;double left;final Set<UUID> volley;Glob(Vec3 at,Vec3 step,double left,Set<UUID> volley){this.at=at;this.step=step;this.left=left;this.volley=volley;}}
 	private final List<Glob> globs=new ArrayList<>();
+	/** A ring of dust running out from where she drummed. */
+	private static final class Wave{final double x,y,z;final long born;final Set<UUID> struck=new HashSet<>();Wave(Vec3 at,long born){x=at.x;y=at.y;z=at.z;this.born=born;}}
+	private final List<Wave> waves=new ArrayList<>();
+	/** A clump of web coming down onto a ring on the floor, and a sticky patch of web left on it. */
+	private record Snare(Vec3 at,long born){}
+	private record Patch(Vec3 at,long until){}
+	private final List<Snare> snares=new ArrayList<>();
+	private final List<Patch> patches=new ArrayList<>();
+	/** Her thread in flight: its tip, its step and how far it has left; whoever it caught, where they were, and the blows on her since. */
+	private Vec3 threadAt,threadStep=Vec3.ZERO;
+	private double threadLeft;
+	private ServerPlayer reeled;
+	private Vec3 caughtAt=Vec3.ZERO;
+	private int snaps;
+	private long lastSnap=-99;
+	private static final DustParticleOptions SILK_DUST=new DustParticleOptions(0xEDEDE4,1.4F),VENOM=new DustParticleOptions(0x8CC63F,.9F),HAIR=new DustParticleOptions(0xA08060,.7F);
 	/** The spiderlings that hatch from her sacs carry this, so she spares them while she fights. */
-	private static final net.minecraft.world.level.block.state.BlockState SILK=Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.WHITE).defaultBlockState();
+	private static final BlockState SILK=Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.WHITE).defaultBlockState();
 	public static final String BROOD="wildercord_hollow_brood";
 	/** The feet of the silk pillars she climbs, and the egg sacs her brood hatch from. */
 	private List<BlockPos> pillars=List.of(),sacs=List.of();
@@ -107,13 +146,14 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	public int tell(){return entityData.get(TELL);}
 	public int side(){return entityData.get(SIDE);}
 	public float anchor(){return entityData.get(ANCHOR);}
+	public boolean roused(){return entityData.get(ROUSED);}
 	public float elapsed(float partial){return (float)(level().getGameTime()-entityData.get(BEGAN))+partial;}
 	private long since(){return level().getGameTime()-entityData.get(BEGAN);}
 	/** The floor under her thread. */
 	private Vec3 spot(){return new Vec3(hang.getX()+.5,floor,hang.getZ()+.5);}
 
 	@Override protected void defineSynchedData(SynchedEntityData.Builder b){
-		super.defineSynchedData(b);b.define(MOVE,HollowMatronRules.DORMANT);b.define(BEGAN,0L);b.define(TELL,0);b.define(SIDE,0);b.define(ANCHOR,0F);
+		super.defineSynchedData(b);b.define(MOVE,HollowMatronRules.DORMANT);b.define(BEGAN,0L);b.define(TELL,0);b.define(SIDE,0);b.define(ANCHOR,0F);b.define(ROUSED,false);
 	}
 	@Override public void onSyncedDataUpdated(EntityDataAccessor<?> key){super.onSyncedDataUpdated(key);if(MOVE.equals(key))refreshDimensions();}
 	@Override protected EntityDimensions getDefaultDimensions(Pose pose){return move()==HollowMatronRules.DORMANT?HANGING:STANDING;}
@@ -133,6 +173,11 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** Back up her thread under the nest, whole again. */
 	private void climbed(){
 		pose(HollowMatronRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;globs.clear();pillar=null;
+		entityData.set(ROUSED,false);bar.setColor(BossEvent.BossBarColor.WHITE);forget();
+	}
+	/** Every move and everything it left about the hall, forgotten. */
+	private void forget(){
+		deck.clear();Arrays.fill(lastMade,-9999);links=0;again=0;struck.clear();waves.clear();snares.clear();patches.clear();threadAt=null;reeled=null;
 	}
 	/** Held on her thread while she hangs, drops or climbs: as far down it as the drop has got. */
 	private void hold(){
@@ -158,7 +203,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			case HollowMatronRules.CLIMB->{hold();if(wakeful(level)!=null)wake(level,HollowMatronRules.DROP_TICKS-left);else if(--left<=0)climbed();else if(left%8==0)creak(level,.8F);}
 			default->{setNoGravity(HollowMatronRules.aloft(move()) || move()==HollowMatronRules.POUNCE && since()>tell());awake(level);}
 		}
-		flight(level);
+		flight(level);waves(level);snares(level);patches(level);
 	}
 
 	/** Her head, more or less: low and forward on her feet, at the bottom of her while she hangs. */
@@ -232,13 +277,13 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** On her feet: the fight is on. */
 	private void stand(ServerLevel level){
 		pose(HollowMatronRules.WATCH,HollowMatronRules.GAP);hold();setNoGravity(false);
-		lastCut=level.getGameTime();quiet=0;
+		lastCut=level.getGameTime();quiet=0;forget();
 		Feels.sound(level,position(),"aura_hollow_matron_step",1.2F,.9F);
 	}
 
 	private void awake(ServerLevel level){
 		if(!inHall(position(),HollowMatronRules.LEASH)){
-			var at=spot();teleportTo(at.x,at.y,at.z);setDeltaMovement(Vec3.ZERO);getNavigation().stop();setNoGravity(false);pose(HollowMatronRules.WATCH,HollowMatronRules.GAP);
+			var at=spot();teleportTo(at.x,at.y,at.z);setDeltaMovement(Vec3.ZERO);getNavigation().stop();setNoGravity(false);reeled=null;threadAt=null;pose(HollowMatronRules.WATCH,HollowMatronRules.GAP);
 		}
 		long now=level.getGameTime();float heal=HollowMatronRules.regen(getMaxHealth(),now-lastCut);if(heal>0 && getHealth()<getMaxHealth())heal(heal);
 		if(tickCount%10==0){
@@ -251,10 +296,17 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		stung*=HollowMatronRules.STING_FADE;
 		var target=getTarget();
 		switch(move()){
-			case HollowMatronRules.BITE->bite(level);
-			case HollowMatronRules.SWEEP->sweep(level);
+			case HollowMatronRules.BITE->bite(level,target);
+			case HollowMatronRules.SCYTHE->scythe(level,target);
 			case HollowMatronRules.SPIT->spit(level,target);
 			case HollowMatronRules.POUNCE->pounce(level,target);
+			case HollowMatronRules.DRUM->drum(level);
+			case HollowMatronRules.REEL->reel(level,target);
+			case HollowMatronRules.HAUL->haul(level);
+			case HollowMatronRules.BRISTLE->bristle(level,target);
+			case HollowMatronRules.SNARE->snare(level,target);
+			case HollowMatronRules.STUCK->stuck(level);
+			case HollowMatronRules.ROUSE->rouse(level);
 			case HollowMatronRules.SKITTER->{face(aim);move(MoverType.SELF,new Vec3(slide.x,-.3,slide.z));setDeltaMovement(Vec3.ZERO);if(--left<=0)pose(HollowMatronRules.WATCH,2);}
 			case HollowMatronRules.HASTE->making(level);
 			case HollowMatronRules.SCALE->scaling(level);
@@ -284,23 +336,15 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		if(left>0)left--;
 		if(left<=0){
 			long now=level.getGameTime();
+			// Half beaten for the first time, she rouses before anything else.
+			if(HollowMatronRules.rouses(getHealth(),getMaxHealth(),roused())){links=0;begin(level,HollowMatronRules.ROUSE,target,false);return;}
 			if(HollowMatronRules.ambushes(getHealth(),getMaxHealth(),now-lastAmbush) && haste(level))return;
-			int pick=HollowMatronRules.choose(d,random.nextDouble(),now-lastSweep>=HollowMatronRules.SWEEP_REST,now-lastPounce>=HollowMatronRules.POUNCE_REST,now-lastSpit>=HollowMatronRules.SPIT_REST);
+			boolean behind=HollowMatronRules.rear(yawTo(target.position())-getYRot());
+			long[] since=new long[lastMade.length];for(int i=0;i<since.length;i++)since[i]=now-lastMade[i];
+			int pick=HollowMatronRules.choose(deck,d,behind,target.getY()-getY(),since,roused(),random.nextDouble());
 			// A long chase ends in web spat after whoever is running.
-			if(pick<0 && chased>=60 && d<=HollowMatronRules.GLOB_RANGE-2 && now-lastSpit>=HollowMatronRules.SPIT_REST/2)pick=HollowMatronRules.SPIT;
-			if(pick>=0){
-				chased=0;aim=yawTo(target.position());
-				switch(pick){
-					case HollowMatronRules.SWEEP->{
-						lastSweep=now;entityData.set(SIDE,random.nextBoolean()?1:-1);pose(HollowMatronRules.SWEEP,0,HollowMatronRules.SWEEP_TELL);
-						hiss(level,1.2F,1.15F);
-					}
-					case HollowMatronRules.SPIT->{lastSpit=now;pose(HollowMatronRules.SPIT,0,HollowMatronRules.SPIT_TELL);Feels.sound(level,head(),"aura_hollow_matron_chitter",1.2F,1.1F);}
-					case HollowMatronRules.POUNCE->{lastPounce=now;pose(HollowMatronRules.POUNCE,0,HollowMatronRules.POUNCE_TELL);Feels.sound(level,head(),"aura_hollow_matron_chitter",1.3F,.8F);}
-					default->{pose(HollowMatronRules.BITE,0,HollowMatronRules.BITE_TELL);hiss(level,1.1F,1.3F);}
-				}
-				return;
-			}
+			if(pick<0 && chased>=60 && deck.last()!=HollowMatronRules.SPIT && d>=5 && d<=HollowMatronRules.GLOB_RANGE-2 && since[HollowMatronRules.SPIT]>=HollowMatronRules.rest(HollowMatronRules.SPIT,roused())/2)pick=HollowMatronRules.SPIT;
+			if(pick>=0){links=0;begin(level,pick,target,false);return;}
 		}
 		if(d>HollowMatronRules.CLOSE){
 			chased++;
@@ -308,54 +352,170 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		}else{chased=0;getNavigation().stop();turn(yawTo(target.position()),HollowMatronRules.TURN);}
 	}
 
-	/** Reared back with her fangs spread through the tell, then a lunge forward and a bite at whoever is in front of her. */
-	private void bite(ServerLevel level){
-		face(aim);
-		long el=since();int tell=tell();
-		if(el<=tell){still();return;}
-		if(el<=tell+HollowMatronRules.LUNGE_TICKS){
-			var step=ahead(aim).scale(HollowMatronRules.LUNGE/HollowMatronRules.LUNGE_TICKS);
-			move(MoverType.SELF,new Vec3(step.x,-.3,step.z));setDeltaMovement(Vec3.ZERO);
-		}else still();
-		if(el==tell+HollowMatronRules.LUNGE_TICKS){
-			Feels.sound(level,head(),"aura_hollow_matron_bite",1.4F,.9F+random.nextFloat()*.2F);
-			var h=head();level.sendParticles(ParticleTypes.CRIT,h.x,h.y,h.z,10,.4,.3,.4,.2);
-			for(var p:prey(level))if(reaches(HollowMatronRules.BITE,p))hit(level,p,HollowMatronRules.BITE_DAMAGE,.6,position(),.2);
-		}
-		if(el>=tell+HollowMatronRules.LUNGE_TICKS+2)spent(HollowMatronRules.BITE_RECOVER);
-	}
-	/** Her forelegs raised and drawn to one side through the tell, then swept across in front of her through whoever is near. */
-	private void sweep(ServerLevel level){
-		face(aim);still();
-		long el=since();int tell=tell();
-		if(el==tell)Feels.sound(level,head(),"aura_hollow_matron_sweep",1.4F,.9F+random.nextFloat()*.2F);
-		if(el==tell+HollowMatronRules.SWEEP_TICKS/2){
-			var f=ahead(aim);
-			for(int i=-4;i<=4;i++){
-				double a=Math.toRadians(aim)+i*.3,r=HollowMatronRules.SWEEP_REACH*.8;
-				level.sendParticles(ParticleTypes.SWEEP_ATTACK,getX()-Math.sin(a)*r,getY()+1,getZ()+Math.cos(a)*r,1,0,0,0,0);
+	/** Sets off on {@code move} at {@code target}, {@code chained} when run straight on into from the last one (a shorter tell). */
+	private void begin(ServerLevel level,int move,LivingEntity target,boolean chained){
+		long now=level.getGameTime();lastMade[move]=now;if(move!=HollowMatronRules.ROUSE)deck.played(move);
+		chased=0;struck.clear();this.chained=chained;again=0;
+		if(target!=null)aim=yawTo(target.position());
+		var h=head();
+		switch(move){
+			case HollowMatronRules.BITE->{
+				pose(move,0,chained?HollowMatronRules.BITE_TELL_CHAINED:HollowMatronRules.BITE_TELL);
+				hiss(level,1.1F,1.3F);sound(level,h,SoundEvents.SPIDER_AMBIENT,1.2F,.7F);
 			}
-			int side=side();var across=new Vec3(-f.z*side,0,f.x*side);
-			for(var p:prey(level))if(reaches(HollowMatronRules.SWEEP,p))hit(level,p,HollowMatronRules.SWEEP_DAMAGE,1.1,p.position().subtract(across),.3);
+			case HollowMatronRules.SCYTHE->{
+				entityData.set(SIDE,random.nextBoolean()?1:-1);pose(move,0,chained?HollowMatronRules.SCYTHE_TELL_CHAINED:HollowMatronRules.SCYTHE_TELL);
+				hiss(level,1.2F,1.15F);
+			}
+			case HollowMatronRules.SPIT->{
+				pose(move,0,chained?HollowMatronRules.SPIT_TELL_CHAINED:HollowMatronRules.SPIT_TELL);
+				Feels.sound(level,h,"aura_hollow_matron_chitter",1.2F,1.1F);sound(level,h,SoundEvents.SLIME_SQUISH_SMALL,1,.7F);
+			}
+			case HollowMatronRules.POUNCE->{
+				leapTo=target!=null?new Vec3(target.getX(),getY(),target.getZ()):position();
+				pose(move,0,chained?HollowMatronRules.POUNCE_TELL_CHAINED:HollowMatronRules.POUNCE_TELL);
+				Feels.sound(level,h,"aura_hollow_matron_chitter",1.3F,.8F);sound(level,position(),SoundEvents.GOAT_PREPARE_RAM,1,1.4F);
+			}
+			case HollowMatronRules.DRUM->{
+				entityData.set(SIDE,0);pose(move,0,chained?HollowMatronRules.DRUM_TELL_CHAINED:HollowMatronRules.DRUM_TELL);
+				Feels.sound(level,h,"aura_hollow_matron_chitter",1.4F,.7F);
+			}
+			case HollowMatronRules.REEL->{
+				threadAt=null;pose(move,0,chained?HollowMatronRules.REEL_TELL_CHAINED:HollowMatronRules.REEL_TELL);
+				sound(level,position(),SoundEvents.TRIPWIRE_ATTACH,1.2F,.6F);Feels.sound(level,h,"aura_hollow_matron_chitter",1.1F,1.2F);
+			}
+			case HollowMatronRules.BRISTLE->{
+				if(target!=null)aim=yawTo(target.position())+180;
+				pose(move,0,chained?HollowMatronRules.BRISTLE_TELL_CHAINED:HollowMatronRules.BRISTLE_TELL);
+				sound(level,position(),SoundEvents.SILVERFISH_AMBIENT,1.4F,.6F);
+			}
+			case HollowMatronRules.SNARE->{
+				pose(move,0,HollowMatronRules.SNARE_TELL);
+				sound(level,position(),SoundEvents.TRIPWIRE_ATTACH,1.4F,.5F);Feels.sound(level,position().add(0,2,0),"aura_hollow_matron_climb",1.2F,.8F);
+			}
+			case HollowMatronRules.ROUSE->{
+				pose(move,0,HollowMatronRules.ROUSE_TELL);reeled=null;threadAt=null;
+				hiss(level,1.8F,.7F);sound(level,h,SoundEvents.SPIDER_AMBIENT,1.8F,.5F);
+			}
+			default->pose(HollowMatronRules.WATCH,gap());
 		}
-		if(el>=tell+HollowMatronRules.SWEEP_TICKS)spent(HollowMatronRules.SWEEP_RECOVER);
 	}
-	/** Reared up tracking her prey through the tell, the aim locked for the last three ticks; then a glob of web spat along it. */
+	/** Done with {@code move}: roused, perhaps straight on into another; otherwise spent {@code recover} ticks. */
+	private void after(ServerLevel level,int move,int recover){
+		var target=getTarget();
+		if(roused() && target!=null && links<HollowMatronRules.CHAIN_MOST){
+			int next=HollowMatronRules.chain(move,distanceTo(target),random.nextDouble());
+			if(next>=0){links++;begin(level,next,target,true);return;}
+		}
+		spent(links>0?recover+HollowMatronRules.CHAIN_REST:recover);links=0;
+	}
+
+	/**
+	 * The bite. Reared back with her fangs spread and venom dripping off them, turning after her prey until the aim locks; then a
+	 * lunge straight along that line, biting whoever is in front of her. A bite that finds nobody drives her fangs into the floor.
+	 */
+	private void bite(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<=tell-HollowMatronRules.BITE_LOCK && target!=null){turn(yawTo(target.position()),HollowMatronRules.TURN);aim=getYRot();}else face(aim);
+		if(el<tell){
+			still();
+			var h=head();if(el%2==0)level.sendParticles(VENOM,h.x,h.y-.2,h.z,2,.25,.05,.25,0);
+			if(el==tell-HollowMatronRules.BITE_LOCK)sound(level,h,SoundEvents.SPIDER_HURT,.7F,1.6F);
+			return;
+		}
+		if(el<=tell+HollowMatronRules.LUNGE_TICKS){
+			double reach=roused()?HollowMatronRules.LUNGE_ROUSED:HollowMatronRules.LUNGE;
+			var step=ahead(aim).scale(reach/HollowMatronRules.LUNGE_TICKS);
+			move(MoverType.SELF,new Vec3(step.x,-.3,step.z));setDeltaMovement(Vec3.ZERO);
+			if(el==tell+1){
+				var h=head();Feels.sound(level,h,"aura_hollow_matron_bite",1.4F,.9F+random.nextFloat()*.2F);sound(level,h,SoundEvents.EVOKER_FANGS_ATTACK,1,1.3F);
+				level.sendParticles(ParticleTypes.CRIT,h.x,h.y,h.z,10,.4,.3,.4,.2);
+			}
+			for(var p:prey(level))if(reaches(HollowMatronRules.BITE,p) && struck.add(p.getUUID())){
+				hit(level,p,HollowMatronRules.BITE_DAMAGE,.6,position(),.2);p.addEffect(new MobEffectInstance(MobEffects.POISON,HollowMatronRules.BITE_POISON,0,false,true),this);
+			}
+			return;
+		}
+		still();
+		if(el<tell+HollowMatronRules.LUNGE_TICKS+2)return;
+		if(struck.isEmpty()){
+			// Nobody there: her fangs go into the floor and stick.
+			links=0;pose(HollowMatronRules.STUCK,HollowMatronRules.STUCK_TICKS);
+			var h=head();level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,h)),h.x,h.y-.6,h.z,20,.4,.1,.4,.1);
+			sound(level,h,SoundEvents.GRAVEL_BREAK,1.4F,.7F);
+		}else after(level,HollowMatronRules.BITE,HollowMatronRules.BITE_RECOVER);
+	}
+	/** Her fangs stuck fast in the floor, wrenching at them, her face bare; then torn free. */
+	private void stuck(ServerLevel level){
+		face(aim);still();
+		var h=head();
+		if(left%3==0)level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,h)),h.x,h.y-.6,h.z,4,.3,.05,.3,.05);
+		if(left%8==0){sound(level,h,SoundEvents.SNIFFER_DIGGING,1.1F,1.3F);Feels.sound(level,h,"aura_hollow_matron_chitter",.9F,.8F);}
+		if(--left>0)return;
+		sound(level,h,SoundEvents.GRAVEL_BREAK,1.3F,.9F);
+		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,h)),h.x,h.y-.4,h.z,16,.4,.2,.4,.15);
+		pose(HollowMatronRules.WATCH,gap());
+	}
+	/**
+	 * The scythe. Her forelegs raised high and drawn back to one side, glinting at the tips, wheeling after her prey until it locks;
+	 * then scythed across in front of her at chest height through whoever is standing, knocking them aside. Duck under it. Roused,
+	 * they come straight back the other way.
+	 */
+	private void scythe(ServerLevel level,LivingEntity target){
+		still();long el=since();int tell=tell(),s=side();
+		if(el<=tell-HollowMatronRules.SCYTHE_LOCK && target!=null){turn(yawTo(target.position()),HollowMatronRules.TURN);aim=getYRot();}else face(aim);
+		var f=ahead(aim);var across=new Vec3(-f.z*s,0,f.x*s);
+		if(el<tell && el%2==0){
+			var tip=position().add(f.scale(1.2)).add(across.scale(-1.6)).add(0,2.8,0);
+			level.sendParticles(ParticleTypes.CRIT,tip.x,tip.y,tip.z,2,.15,.15,.15,.05);
+		}
+		if(el==tell){Feels.sound(level,head(),"aura_hollow_matron_sweep",1.4F,.9F+random.nextFloat()*.2F);sound(level,head(),SoundEvents.PLAYER_ATTACK_SWEEP,1.2F,.7F);}
+		if(el==tell+HollowMatronRules.SCYTHE_TICKS/2){
+			for(int i=-4;i<=4;i++){
+				double a=Math.toRadians(aim)+i*.3,r=HollowMatronRules.SCYTHE_REACH*.8;
+				level.sendParticles(ParticleTypes.SWEEP_ATTACK,getX()-Math.sin(a)*r,getY()+1.2,getZ()+Math.cos(a)*r,1,0,0,0,0);
+			}
+			for(var p:prey(level)){
+				double dx=p.getX()-getX(),dz=p.getZ()-getZ();
+				boolean ducked=p.isCrouching() || p.isShiftKeyDown() || p.isVisuallySwimming();
+				if(HollowMatronRules.scythes(dx*f.x+dz*f.z,dx*-f.z+dz*f.x,p.getY()-getY(),ducked) && struck.add(p.getUUID()))
+					hit(level,p,HollowMatronRules.SCYTHE_DAMAGE,1.1,p.position().subtract(across),.3);
+			}
+		}
+		if(el<tell+HollowMatronRules.SCYTHE_TICKS)return;
+		if(roused() && again==0){
+			again=1;struck.clear();entityData.set(SIDE,-s);pose(HollowMatronRules.SCYTHE,0,HollowMatronRules.SCYTHE_BACK);hiss(level,1,1.3F);
+			return;
+		}
+		after(level,HollowMatronRules.SCYTHE,HollowMatronRules.SCYTHE_RECOVER);
+	}
+	/**
+	 * The spit. Head down and fangs pumping, web dribbling off them, tracking her prey until the aim locks; then a glob of web spat
+	 * along that line (roused, three in a fan). It slows whoever it lands on, and leaves the floor sticky where it splats.
+	 */
 	private void spit(ServerLevel level,LivingEntity target){
 		long el=since();int tell=tell();
-		if(el<=tell-3 && target!=null)aim=yawTo(target.position());
+		if(el<=tell-HollowMatronRules.SPIT_LOCK && target!=null)aim=yawTo(target.position());
 		face(aim);still();
+		if(el<tell){
+			var h=head();if(el%2==0)level.sendParticles(ParticleTypes.ITEM_COBWEB,h.x,h.y-.2,h.z,2,.15,.05,.15,0);
+			if(el%4==0)sound(level,h,SoundEvents.SLIME_SQUISH_SMALL,.8F,.6F+el/(float)Math.max(1,tell)*.6F);
+		}
 		if(el==tell){
 			var h=head().add(0,.4,0);
 			Vec3 to=target!=null?target.position().add(0,target.getBbHeight()*.5,0):h.add(ahead(aim).scale(10));
-			// Along the locked line, but at her prey's height.
-			var flat=ahead(aim);double reach=Math.max(2,Math.sqrt(to.subtract(h).horizontalDistanceSqr()));
-			var dir=new Vec3(flat.x*reach,to.y-h.y,flat.z*reach).normalize();
-			globs.add(new Glob(h,dir.scale(HollowMatronRules.GLOB_SPEED),HollowMatronRules.GLOB_RANGE));
+			double reach=Math.max(2,Math.sqrt(to.subtract(h).horizontalDistanceSqr()));
+			int n=HollowMatronRules.globs(roused());var volley=new HashSet<UUID>();
+			for(int i=0;i<n;i++){
+				// Along the locked line (and fanned out either side of it), but at her prey's height.
+				var flat=ahead(aim+(float)((i-(n-1)/2.0)*HollowMatronRules.SPIT_FAN));
+				var dir=new Vec3(flat.x*reach,to.y-h.y,flat.z*reach).normalize();
+				globs.add(new Glob(h,dir.scale(HollowMatronRules.GLOB_SPEED),HollowMatronRules.GLOB_RANGE,volley));
+			}
 			Feels.sound(level,h,"aura_hollow_matron_spit",1.4F,.9F+random.nextFloat()*.2F);
 			level.sendParticles(ParticleTypes.ITEM_COBWEB,h.x,h.y,h.z,10,.2,.2,.2,.1);
 		}
-		if(el>=tell+2)spent(HollowMatronRules.SPIT_RECOVER);
+		if(el>=tell+2)after(level,HollowMatronRules.SPIT,HollowMatronRules.SPIT_RECOVER);
 	}
 	/** Her globs of web flying, and splatting on whoever (or whatever) they hit. */
 	private void flight(ServerLevel level){
@@ -372,13 +532,13 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			for(int i=0;i<3;i++){var at=g.at.add(g.step.scale(i/3.0));level.sendParticles(ParticleTypes.ITEM_COBWEB,at.x,at.y,at.z,2,.08,.08,.08,0);}
 			if(struck!=null){
 				splat(level,struck.position().add(0,struck.getBbHeight()*.5,0));
-				if(GuardianBite.land(level,this,struck,(float)HollowMatronRules.SPIT_DAMAGE,HollowMatronRules.PIERCE))
+				if(g.volley.add(struck.getUUID()) && GuardianBite.land(level,this,struck,(float)HollowMatronRules.SPIT_DAMAGE,HollowMatronRules.PIERCE))
 					struck.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,HollowMatronRules.WEB_SLOW_TICKS,2,false,true),this);
 				it.remove();continue;
 			}
-			if(hitBlock.getType()!=HitResult.Type.MISS){splat(level,hitBlock.getLocation());it.remove();continue;}
+			if(hitBlock.getType()!=HitResult.Type.MISS){var at=hitBlock.getLocation();splat(level,at);patch(level,at);it.remove();continue;}
 			g.at=next;g.left-=g.step.length();
-			if(g.left<=0){splat(level,g.at);it.remove();}
+			if(g.left<=0){splat(level,g.at);patch(level,g.at);it.remove();}
 		}
 	}
 	private void splat(ServerLevel level,Vec3 at){
@@ -392,23 +552,30 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	}
 
 	/**
-	 * Crouched low on bent legs through the tell while she tracks her prey, the spot locked for the last three ticks; then a leap at
-	 * it in an arc, landing hard on whoever is under her. After it she is spent a long while.
+	 * The pounce. Crouched low on bent legs through the tell while she tracks her prey, the spot she means ringed in silk and the
+	 * ring closing; the spot fixed for the last of it; then a leap at it in an arc, landing hard on whoever is under her. After it
+	 * she is spent a long while.
 	 */
 	private void pounce(ServerLevel level,LivingEntity target){
 		long el=since();int tell=tell();
 		if(el<=tell){
 			still();
-			if(el<=tell-3 && target!=null){
+			if(el<=tell-HollowMatronRules.POUNCE_LOCK && target!=null){
 				aim=yawTo(target.position());
 				var to=target.position();var off=to.subtract(position()).multiply(1,0,1);
 				if(off.length()>HollowMatronRules.POUNCE_REACH)to=position().add(off.normalize().scale(HollowMatronRules.POUNCE_REACH));
 				leapTo=new Vec3(to.x,getY(),to.z);
 			}
 			face(aim);
+			if(el%2==0){
+				double k=el/(double)Math.max(1,tell);var at=floor(level,leapTo);
+				ring(level,at,HollowMatronRules.POUNCE_RADIUS*(1.6-.6*k),SILK_DUST,16);
+				if(el%4==0)level.sendParticles(ParticleTypes.ITEM_COBWEB,at.x,at.y+.2,at.z,3,.6,0,.6,0);
+			}
+			if(el==tell-HollowMatronRules.POUNCE_LOCK)sound(level,position(),SoundEvents.SPIDER_STEP,1.2F,.6F);
 			if(el==tell){
 				leapFrom=position();if(!inHall(leapTo,0))leapTo=leapFrom;
-				Feels.sound(level,position(),"aura_hollow_matron_pounce",1.5F,.9F+random.nextFloat()*.2F);
+				Feels.sound(level,position(),"aura_hollow_matron_pounce",1.5F,.9F+random.nextFloat()*.2F);sound(level,position(),SoundEvents.GOAT_LONG_JUMP,1.2F,.8F);
 				level.sendParticles(ParticleTypes.POOF,getX(),getY()+.1,getZ(),12,1,.1,1,.03);
 			}
 			return;
@@ -422,8 +589,293 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		setNoGravity(false);
 		Feels.sound(level,position(),"aura_hollow_matron_land",1.6F,1.1F);
 		level.sendParticles(ParticleTypes.POOF,getX(),getY()+.2,getZ(),24,1.4,.1,1.4,.04);
-		for(var p:prey(level))if(reaches(HollowMatronRules.POUNCE,p))hit(level,p,HollowMatronRules.POUNCE_DAMAGE,1.2,position(),.4);
-		spent(HollowMatronRules.POUNCE_RECOVER);
+		ring(level,position(),HollowMatronRules.POUNCE_RADIUS,SILK_DUST,24);
+		for(var p:prey(level))if(reaches(HollowMatronRules.POUNCE,p) && struck.add(p.getUUID()))hit(level,p,HollowMatronRules.POUNCE_DAMAGE,1.2,position(),.4);
+		after(level,HollowMatronRules.POUNCE,HollowMatronRules.POUNCE_RECOVER);
+	}
+
+	/** A vanilla sound, from her. */
+	private void sound(ServerLevel level,Vec3 at,SoundEvent s,float volume,float pitch){level.playSound(null,at.x,at.y,at.z,s,SoundSource.HOSTILE,volume,pitch);}
+	/** A ring of {@code n} motes {@code r} out round {@code at}, just off the floor. */
+	private void ring(ServerLevel level,Vec3 at,double r,ParticleOptions dust,int n){
+		for(int i=0;i<n;i++){double a=i*Math.PI*2/n;level.sendParticles(dust,at.x+Math.cos(a)*r,at.y+.15,at.z+Math.sin(a)*r,1,0,0,0,0);}
+	}
+	/** What the floor at {@code at} is made of, for the dust it throws up. */
+	private BlockState ground(ServerLevel level,Vec3 at){var s=level.getBlockState(BlockPos.containing(at.x,at.y-.5,at.z));return s.isAir()?Blocks.DIRT.defaultBlockState():s;}
+	/** The floor under (or just over) {@code at}. */
+	private Vec3 floor(ServerLevel level,Vec3 at){
+		var hit=level.clip(new ClipContext(at.add(0,3,0),at.add(0,-6,0),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this));
+		return hit.getType()==HitResult.Type.MISS?at:hit.getLocation();
+	}
+	/** A sticky patch of web left on the floor under {@code at}. */
+	private void patch(ServerLevel level,Vec3 at){
+		var hit=level.clip(new ClipContext(at.add(0,.3,0),at.add(0,-8,0),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this));
+		var pos=hit.getType()==HitResult.Type.MISS?at:hit.getLocation();
+		if(patches.size()>=24)patches.remove(0);
+		patches.add(new Patch(pos,level.getGameTime()+HollowMatronRules.PATCH_TICKS));
+	}
+
+	/**
+	 * The drum. Reared up on her hind legs with her forelegs trembling high, drumming the floor faster and faster and dust sifting
+	 * from the roof; then slammed down, and a ring of dust runs out across the floor. Jump it. After it she is low and open a moment;
+	 * roused, she rears straight up again and slams down a second time.
+	 */
+	private void drum(ServerLevel level){
+		face(aim);still();long el=since();int tell=tell();
+		if(el<tell){
+			if(el%2==0)sound(level,position(),SoundEvents.SPIDER_STEP,1.1F,.6F+el/(float)Math.max(1,tell)*.8F);
+			if(el%3==0){double y=Math.min(anchor()-.5,getY()+6);level.sendParticles(new BlockParticleOption(ParticleTypes.FALLING_DUST,SILK),getX(),y,getZ(),6,4,.3,4,0);}
+			return;
+		}
+		if(el==tell){
+			var at=floor(level,position());
+			Feels.sound(level,at,"aura_hollow_matron_land",1.6F,.8F);sound(level,at,SoundEvents.MACE_SMASH_GROUND_HEAVY,1.6F,.9F);
+			level.sendParticles(new BlockParticleOption(ParticleTypes.DUST_PILLAR,ground(level,at)),at.x,at.y+.1,at.z,24,1.4,.1,1.4,.2);
+			level.sendParticles(ParticleTypes.POOF,at.x,at.y+.2,at.z,16,1.4,.1,1.4,.04);
+			waves.add(new Wave(at,level.getGameTime()));
+		}
+		if(roused() && again==0 && el>=tell+3){again=1;pose(HollowMatronRules.DRUM,0,HollowMatronRules.DRUM_AGAIN);return;}
+		if(el>=tell+HollowMatronRules.DRUM_LOW)after(level,HollowMatronRules.DRUM,HollowMatronRules.DRUM_RECOVER);
+	}
+	/** The rings of dust running out across the floor from where she drummed; jump them. */
+	private void waves(ServerLevel level){
+		if(waves.isEmpty())return;
+		long now=level.getGameTime();
+		for(var it=waves.iterator();it.hasNext();){
+			var w=it.next();double r0=(now-w.born-1)*HollowMatronRules.WAVE_SPEED,r1=(now-w.born)*HollowMatronRules.WAVE_SPEED;
+			if(r0>HollowMatronRules.WAVE_REACH){it.remove();continue;}
+			if(r1<=0)continue;
+			var at=new Vec3(w.x,w.y,w.z);int n=Math.max(12,(int)(r1*5));
+			var dust=new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at));
+			for(int i=0;i<n;i++){
+				double a=i*Math.PI*2/n+random.nextDouble()*.1;
+				level.sendParticles(i%3==0?ParticleTypes.ITEM_COBWEB:dust,w.x+Math.cos(a)*r1,w.y+.2,w.z+Math.sin(a)*r1,1,.05,.1,.05,.01);
+			}
+			if((now-w.born)%3==0)sound(level,at,SoundEvents.GRAVEL_HIT,.9F,.6F+(float)(r1/HollowMatronRules.WAVE_REACH)*.6F);
+			for(var p:prey(level)){
+				double d=Math.sqrt(p.distanceToSqr(w.x,p.getY(),w.z));
+				if(!w.struck.contains(p.getUUID()) && HollowMatronRules.crosses(d,r0,r1,p.getY()-w.y)){w.struck.add(p.getUUID());hit(level,p,HollowMatronRules.DRUM_DAMAGE,.6,at,.35);}
+			}
+		}
+	}
+
+	/**
+	 * The reel. Her abdomen curled under her and her spinnerets aimed past her fangs, a feeler of silk drifting out toward her prey,
+	 * turning after them until the aim locks; then a thread shot along that line. Sidestep it. Whoever it catches is hauled in.
+	 */
+	private void reel(ServerLevel level,LivingEntity target){
+		still();long el=since();int tell=tell();
+		if(el<=tell-HollowMatronRules.REEL_LOCK && target!=null){turn(yawTo(target.position()),HollowMatronRules.TURN);aim=getYRot();}else face(aim);
+		if(el<tell){
+			var h=head();var f=ahead(aim);double out=.6+el*.08;
+			if(el%2==0)level.sendParticles(ParticleTypes.ITEM_COBWEB,h.x+f.x*out,h.y-.3,h.z+f.z*out,2,.1,.1,.1,.01);
+			if(el%5==0)sound(level,h,SoundEvents.TRIPWIRE_ATTACH,.8F,.8F+el*.04F);
+			return;
+		}
+		if(el==tell){
+			var h=head();threadAt=h;threadLeft=HollowMatronRules.REEL_RANGE;
+			Vec3 to=target!=null?target.position().add(0,target.getBbHeight()*.5,0):h.add(ahead(aim).scale(10));
+			var flat=ahead(aim);double reach=Math.max(2,Math.sqrt(to.subtract(h).horizontalDistanceSqr()));
+			threadStep=new Vec3(flat.x*reach,to.y-h.y,flat.z*reach).normalize().scale(HollowMatronRules.THREAD_SPEED);
+			sound(level,h,SoundEvents.TRIPWIRE_CLICK_ON,1.4F,.6F);Feels.sound(level,h,"aura_hollow_matron_spit",1,1.4F);
+		}
+		if(threadAt==null){links=0;spent(HollowMatronRules.REEL_MISS);return;}
+		var next=threadAt.add(threadStep);
+		var wall=level.clip(new ClipContext(threadAt,next,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this));
+		boolean blocked=wall.getType()!=HitResult.Type.MISS;if(blocked)next=wall.getLocation();
+		ServerPlayer caught=null;
+		for(var p:prey(level)){
+			var c=p.position().add(0,p.getBbHeight()*.5,0);
+			if(nearest(threadAt,next,c).distanceToSqr(c)<=HollowMatronRules.THREAD_RADIUS*HollowMatronRules.THREAD_RADIUS){caught=p;break;}
+		}
+		thread(level,head(),caught!=null?caught.position().add(0,caught.getBbHeight()*.5,0):next);
+		if(caught!=null){threadAt=null;catchOn(level,caught);return;}
+		threadLeft-=threadStep.length();
+		if(blocked || threadLeft<=0){
+			threadAt=null;links=0;
+			sound(level,next,SoundEvents.TRIPWIRE_CLICK_ON,.9F,1.2F);level.sendParticles(ParticleTypes.ITEM_COBWEB,next.x,next.y,next.z,6,.2,.2,.2,.03);
+			spent(HollowMatronRules.REEL_MISS);return;
+		}
+		threadAt=next;
+	}
+	/** Her thread, a line of silk from {@code from} to {@code to}. */
+	private void thread(ServerLevel level,Vec3 from,Vec3 to){
+		var step=to.subtract(from);int n=Math.max(2,(int)(step.length()*2));
+		for(int i=0;i<=n;i++){var at=from.add(step.scale(i/(double)n));level.sendParticles(ParticleTypes.ITEM_COBWEB,at.x,at.y,at.z,1,0,0,0,0);}
+	}
+	/** Her thread has {@code p}: she starts hauling them in. */
+	private void catchOn(ServerLevel level,ServerPlayer p){
+		reeled=p;caughtAt=p.position();snaps=0;struck.clear();pose(HollowMatronRules.HAUL,0);
+		p.sendOverlayMessage(Component.translatable("message.wildercord.hollow_matron.reeled").withColor(0xD8C070));
+		sound(level,p.position(),SoundEvents.FISHING_BOBBER_RETRIEVE,1.4F,.6F);
+		level.sendParticles(ParticleTypes.ITEM_COBWEB,p.getX(),p.getY()+1,p.getZ(),14,.4,.5,.4,.05);
+	}
+	/**
+	 * The haul. Foreleg over foreleg she draws whoever her thread caught in to her, holds them before her fangs a moment with venom
+	 * dripping, and bites. Two blows on her before then snap the thread.
+	 */
+	private void haul(ServerLevel level){
+		face(aim);still();long el=since();var p=reeled;
+		if(p==null || !p.isAlive() || p.isRemoved() || p.level()!=level || p.isCreative() || p.isSpectator() || p.distanceToSqr(this)>24*24){reeled=null;links=0;spent(HollowMatronRules.REEL_RECOVER);return;}
+		var stop=position().add(ahead(aim).scale(HollowMatronRules.HAUL_STOP));
+		double k=Math.min(1,el/(double)HollowMatronRules.HAUL_PULL);k=k*k;
+		var at=caughtAt.add(stop.subtract(caughtAt).scale(k));
+		if(p.position().distanceToSqr(at)>.01 && level.noCollision(p,p.getBoundingBox().move(at.subtract(p.position()))))p.teleportTo(at.x,at.y,at.z);
+		p.setDeltaMovement(Vec3.ZERO);p.needsSync=true;
+		var h=head();
+		thread(level,h,p.position().add(0,p.getBbHeight()*.5,0));
+		if(el<HollowMatronRules.HAUL_PULL){
+			if(el%4==0)sound(level,p.position(),SoundEvents.FISHING_BOBBER_RETRIEVE,1,.7F+el*.03F);
+			if(el%5==0)Feels.sound(level,position(),"aura_hollow_matron_climb",.9F,1.2F);
+		}else{
+			if(el==HollowMatronRules.HAUL_PULL)hiss(level,1.3F,1.2F);
+			if(el%2==0)level.sendParticles(VENOM,h.x,h.y-.2,h.z,3,.25,.05,.25,0);
+		}
+		if(el<HollowMatronRules.HAUL_TICKS)return;
+		reeled=null;
+		Feels.sound(level,h,"aura_hollow_matron_bite",1.5F,.85F);sound(level,h,SoundEvents.EVOKER_FANGS_ATTACK,1.1F,1.1F);
+		level.sendParticles(ParticleTypes.CRIT,h.x,h.y,h.z,12,.4,.3,.4,.2);
+		hit(level,p,HollowMatronRules.REEL_DAMAGE,.8,position(),.2);p.addEffect(new MobEffectInstance(MobEffects.POISON,HollowMatronRules.BITE_POISON,0,false,true),this);
+		after(level,HollowMatronRules.HAUL,HollowMatronRules.REEL_RECOVER);
+	}
+	/** Her thread snapped by blows on her: whoever she was hauling goes free, and she is left reeling a while. */
+	private void snap(ServerLevel level){
+		var p=reeled;reeled=null;links=0;
+		if(p!=null && p.isAlive())p.sendOverlayMessage(Component.translatable("message.wildercord.hollow_matron.snapped").withColor(0xA8E070));
+		var h=head();
+		sound(level,h,SoundEvents.WOOL_BREAK,1.4F,.8F);Feels.sound(level,h,"aura_hollow_matron_hurt",1.3F,1.1F);
+		level.sendParticles(ParticleTypes.ITEM_COBWEB,h.x,h.y,h.z,16,.6,.4,.6,.08);
+		spent(HollowMatronRules.REEL_SNAPPED);
+	}
+
+	/**
+	 * The bristle. Whoever has got round behind her, she swings her raised abdomen at, the hairs on it standing up and shedding and
+	 * her hind legs scraping at it; then a cone of stinging hairs flicked out behind her, weakening whoever it catches. Get round to
+	 * her side. After it her abdomen stays raised and bare; roused, she flicks a second time, wider.
+	 */
+	private void bristle(ServerLevel level,LivingEntity target){
+		still();long el=since();int tell=tell();
+		if(el<=tell-HollowMatronRules.BRISTLE_LOCK && target!=null){turn(yawTo(target.position())+180,HollowMatronRules.TURN);aim=getYRot();}else face(aim);
+		var back=ahead(aim).scale(-1);var tail=position().add(back.scale(1.6)).add(0,1.6,0);
+		if(el<tell){
+			if(el%2==0)level.sendParticles(HAIR,tail.x,tail.y,tail.z,4,.5,.3,.5,.02);
+			if(el%3==0)sound(level,tail,SoundEvents.GRAVEL_HIT,.7F,1.4F+el*.02F);
+			return;
+		}
+		if(el==tell){
+			boolean wide=again==1;var f=ahead(aim);
+			for(var p:prey(level)){
+				double dx=p.getX()-getX(),dz=p.getZ()-getZ();
+				if(HollowMatronRules.bristles(dx*f.x+dz*f.z,dx*-f.z+dz*f.x,p.getY()-getY(),wide) && struck.add(p.getUUID())){
+					hit(level,p,HollowMatronRules.BRISTLE_DAMAGE,.7,position(),.15);
+					p.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,HollowMatronRules.BRISTLE_WEAK,0,false,true),this);
+				}
+			}
+			double half=Math.toRadians(wide?HollowMatronRules.BRISTLE_WIDE:HollowMatronRules.BRISTLE_ANGLE);
+			for(int i=-5;i<=5;i++){
+				double a=Math.toRadians(aim+180)+i*half/5;
+				for(int j=1;j<=6;j++){double r=j*HollowMatronRules.BRISTLE_REACH/6;level.sendParticles(HAIR,getX()-Math.sin(a)*r,getY()+1.1,getZ()+Math.cos(a)*r,1,.1,.1,.1,0);}
+			}
+			sound(level,tail,SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.1F,1.6F);sound(level,tail,SoundEvents.SILVERFISH_AMBIENT,1.2F,1.4F);
+		}
+		if(roused() && again==0 && el>=tell+3){again=1;struck.clear();pose(HollowMatronRules.BRISTLE,0,HollowMatronRules.BRISTLE_AGAIN);return;}
+		if(el>=tell+HollowMatronRules.BRISTLE_OPEN)after(level,HollowMatronRules.BRISTLE,6);
+	}
+
+	/**
+	 * The snare. Abdomen thrown up, she shoots silk into the roof; rings close on the floor under her prey (and roused, ahead of whoever
+	 * runs) and a few about the hall; then clumps of web come down on them, holding fast whoever is still in one. Keep moving.
+	 */
+	private void snare(ServerLevel level,LivingEntity target){
+		face(aim);still();long el=since();int tell=tell();
+		if(el<tell){
+			if(el%2==0){
+				double top=Math.min(anchor(),getY()+10);var from=position().add(ahead(aim).scale(-1.4)).add(0,1.8,0);
+				for(double y=from.y;y<top;y+=1.5)level.sendParticles(ParticleTypes.ITEM_COBWEB,from.x,y,from.z,1,.05,.1,.05,0);
+			}
+			if(el%5==0)sound(level,position(),SoundEvents.TRIPWIRE_ATTACH,1,.7F+el*.03F);
+			return;
+		}
+		if(el==tell){
+			long now=level.getGameTime();int ahead=0;
+			for(var p:prey(level)){
+				snares.add(new Snare(floor(level,p.position()),now));
+				if(roused() && ahead<6){
+					var lead=new Vec3(p.getX()-p.xo,0,p.getZ()-p.zo).scale(HollowMatronRules.SNARE_FALL*.6);
+					if(lead.lengthSqr()>1){var at=p.position().add(lead);if(inHall(at,0)){snares.add(new Snare(floor(level,at),now));ahead++;}}
+				}
+			}
+			for(int i=0;i<HollowMatronRules.scatter(roused());i++){
+				double a=random.nextDouble()*Math.PI*2,r=2+random.nextDouble()*(HollowMatronRules.SNARE_SCATTER-2);
+				var at=position().add(Math.cos(a)*r,0,Math.sin(a)*r);
+				if(inHall(at,0))snares.add(new Snare(floor(level,at),now));
+			}
+			sound(level,position(),SoundEvents.TRIPWIRE_CLICK_ON,1.4F,.5F);Feels.sound(level,position(),"aura_hollow_matron_spit",1.3F,.7F);
+		}
+		if(el>=tell+2)after(level,HollowMatronRules.SNARE,HollowMatronRules.SNARE_RECOVER);
+	}
+	/** The rings closing on the floor, the web coming down on them, and whoever is still standing in one held fast. */
+	private void snares(ServerLevel level){
+		if(snares.isEmpty())return;
+		long now=level.getGameTime();
+		for(var it=snares.iterator();it.hasNext();){
+			var n=it.next();long age=now-n.born();var at=n.at();
+			if(age<HollowMatronRules.SNARE_FALL){
+				double k=age/(double)HollowMatronRules.SNARE_FALL;
+				if(age%2==0)ring(level,at,HollowMatronRules.SNARE_RADIUS*(1.5-.5*k),SILK_DUST,14);
+				if(age%3==0)level.sendParticles(new BlockParticleOption(ParticleTypes.FALLING_DUST,SILK),at.x,at.y+6-5*k,at.z,3,.4,.2,.4,0);
+				continue;
+			}
+			sound(level,at,SoundEvents.WOOL_PLACE,1.2F,.7F);sound(level,at,SoundEvents.SLIME_SQUISH,.9F,.8F);Feels.sound(level,at,"aura_hollow_matron_splat",1.1F,.8F);
+			level.sendParticles(ParticleTypes.ITEM_COBWEB,at.x,at.y+.5,at.z,20,.7,.4,.7,.05);
+			for(var p:prey(level))if(HollowMatronRules.snared(p.getX()-at.x,p.getY()-at.y,p.getZ()-at.z)){
+				hit(level,p,HollowMatronRules.SNARE_DAMAGE,0,at,0);
+				p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,HollowMatronRules.SNARE_ROOT,5,false,true),this);
+			}
+			patch(level,at.add(0,.5,0));it.remove();
+		}
+	}
+	/** The sticky web on the floor, slowing whoever wades through it, until it dries. */
+	private void patches(ServerLevel level){
+		if(patches.isEmpty())return;
+		long now=level.getGameTime();
+		patches.removeIf(c->now>=c.until());
+		if(now%2!=0)return;
+		var prey=prey(level);
+		for(var c:patches){
+			var at=c.at();
+			for(var p:prey)if(HollowMatronRules.sticks(p.getX()-at.x,p.getY()-at.y,p.getZ()-at.z))
+				p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,10,3,false,false),this);
+			if(now%4==0)level.sendParticles(ParticleTypes.ITEM_COBWEB,at.x,at.y+.1,at.z,2,HollowMatronRules.PATCH_RADIUS*.5,0,HollowMatronRules.PATCH_RADIUS*.5,0);
+		}
+	}
+
+	/**
+	 * Her rousing, half beaten. Hunched still and quivering, silk streaming up off her and a ring drawn round her at the blast's reach;
+	 * then thrown wide, flinging back everyone near her and leaving web across the floor. From then on she fights roused.
+	 */
+	private void rouse(ServerLevel level){
+		face(aim);still();long el=since();int tell=tell();
+		if(el<tell){
+			if(el%2==0){
+				level.sendParticles(ParticleTypes.ITEM_COBWEB,getX(),getY()+1.5,getZ(),4,1,.6,1,.08);
+				ring(level,position(),HollowMatronRules.ROUSE_RADIUS,SILK_DUST,28);
+				ring(level,position(),HollowMatronRules.ROUSE_RADIUS*(1-el/(double)Math.max(1,tell)),VENOM,16);
+			}
+			if(el%6==0)sound(level,position(),SoundEvents.SPIDER_AMBIENT,1.2F,.5F+el*.01F);
+			if(el%9==0)Feels.sound(level,head(),"aura_hollow_matron_chitter",1.3F,.7F);
+			return;
+		}
+		if(el==tell){
+			for(var p:prey(level))if(HollowMatronRules.blasts(p.getX()-getX(),p.getY()-getY(),p.getZ()-getZ()))
+				hit(level,p,HollowMatronRules.ROUSE_DAMAGE,1.6,position(),.6);
+			entityData.set(ROUSED,true);bar.setColor(BossEvent.BossBarColor.RED);
+			for(int i=0;i<6;i++){double a=i*Math.PI/3+random.nextDouble()*.5,r=2.5+random.nextDouble()*4;patch(level,position().add(Math.cos(a)*r,.5,Math.sin(a)*r));}
+			sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.8F,.6F);hiss(level,2,.8F);
+			level.sendParticles(ParticleTypes.ITEM_COBWEB,getX(),getY()+1,getZ(),60,2.5,1,2.5,.2);
+			level.sendParticles(ParticleTypes.POOF,getX(),getY()+.3,getZ(),30,2.5,.2,2.5,.08);
+		}
+		if(el>=tell+4){links=0;spent(HollowMatronRules.ROUSE_RECOVER);}
 	}
 
 	// ---- the ambush.
@@ -610,9 +1062,8 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	}
 	/** Standing her ground: no sliding about, though she still falls. */
 	private void still(){getNavigation().stop();var v=getDeltaMovement();setDeltaMovement(0,Math.min(0,v.y),0);}
-	private boolean wounded(){return HollowMatronRules.wounded(getHealth(),getMaxHealth());}
 	/** Ticks before her next blow. */
-	private int gap(){return (wounded()?HollowMatronRules.GAP_WOUNDED:HollowMatronRules.GAP)+random.nextInt(3);}
+	private int gap(){return (roused()?HollowMatronRules.GAP_ROUSED:HollowMatronRules.GAP)+random.nextInt(3);}
 
 	/** Players she could be fighting right now. */
 	private List<ServerPlayer> prey(ServerLevel level){
@@ -658,25 +1109,29 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 				lastDodge=now;skitter(level);
 				return false;
 			}
-			damage*=(float)HollowMatronRules.armour(move,at!=null && HollowMatronRules.frontal(angle),at!=null && HollowMatronRules.rear(angle));
+			damage*=(float)HollowMatronRules.armour(move,since()>tell(),at!=null && HollowMatronRules.frontal(angle),at!=null && HollowMatronRules.rear(angle));
 		}
 		boolean hurt=super.hurtServer(level,source,damage);
 		if(hurt){
 			lastCut=now;stung+=damage;
+			// Blows on her while she hauls someone in snap her thread.
+			if(move==HollowMatronRules.HAUL && reeled!=null && source.getEntity() instanceof ServerPlayer && now-lastSnap>=HollowMatronRules.STRIKE_GAP){
+				lastSnap=now;if(HollowMatronRules.snaps(++snaps)){snap(level);return hurt;}
+			}
 			if(HollowMatronRules.backs(move(),stung,now-lastBack))backOff(level,source.getSourcePosition());
 		}
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){Feels.sound(server,head(),"aura_hollow_matron_death",1.8F,1);bar.removeAllPlayers();setNoGravity(false);}
-		super.die(source);
+		reeled=null;super.die(source);
 	}
-	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}
+	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}
 	@Override protected void actuallyHurt(ServerLevel level,DamageSource source,float damage){
 		super.actuallyHurt(level,source,damage);
 		if(random.nextInt(3)==0)Feels.sound(level,head(),"aura_hollow_matron_hurt",1.2F,.9F+random.nextFloat()*.2F);
 	}
-	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}
+	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();reeled=null;super.remove(reason);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 
 	@Override protected void addAdditionalSaveData(ValueOutput out){
@@ -685,7 +1140,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		out.putFloat("matron_rest",rest);
 		out.store("matron_hall_min",BlockPos.CODEC,hallMin);out.store("matron_hall_max",BlockPos.CODEC,hallMax);
 		out.store("matron_pillars",BlockPos.CODEC.listOf(),pillars);out.store("matron_sacs",BlockPos.CODEC.listOf(),sacs);
-		out.putBoolean("matron_awake",!HollowMatronRules.scripted(move()));out.putLong("matron_ticked",lastTick);
+		out.putBoolean("matron_awake",!HollowMatronRules.scripted(move()));out.putBoolean("matron_roused",roused());out.putLong("matron_ticked",lastTick);
 	}
 	@Override protected void readAdditionalSaveData(ValueInput in){
 		super.readAdditionalSaveData(in);
@@ -696,6 +1151,9 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		lastTick=in.getLongOr("matron_ticked",-1L);
 		pillars=in.read("matron_pillars",BlockPos.CODEC.listOf()).orElse(List.of());sacs=in.read("matron_sacs",BlockPos.CODEC.listOf()).orElse(List.of());
 		// Mid-fight she comes back on her feet, whatever she was doing when the chunk unloaded.
-		if(in.getBooleanOr("matron_awake",false)){pose(HollowMatronRules.WATCH,HollowMatronRules.GAP);setNoGravity(false);lastCut=0;}else{pose(HollowMatronRules.DORMANT,0);setNoGravity(true);}
+		if(in.getBooleanOr("matron_awake",false)){
+			pose(HollowMatronRules.WATCH,HollowMatronRules.GAP);setNoGravity(false);lastCut=0;
+			boolean r=in.getBooleanOr("matron_roused",false);entityData.set(ROUSED,r);bar.setColor(r?BossEvent.BossBarColor.RED:BossEvent.BossBarColor.WHITE);
+		}else{pose(HollowMatronRules.DORMANT,0);setNoGravity(true);}
 	}
 }
