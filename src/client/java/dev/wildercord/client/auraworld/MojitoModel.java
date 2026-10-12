@@ -12,6 +12,7 @@ import net.minecraft.util.Mth;
  * mouth; and in his mouth, held crosswise, a greatsword, its blade out past his right side. He sleeps curled with the sword lying
  * before his paws; waking, he lifts his head, dips it to take the sword up, gets to his feet and shakes his coat out, and barks. Every
  * leg bends at the knee, each move blends into the next, a blow jolts him, and dying his legs buckle and he rolls onto his side.
+ * Thrown for him to fetch, the sword leaves his mouth and whirls about where it flies.
  */
 public final class MojitoModel extends EntityModel<MojitoRenderState> {
 	/** Where each leg hangs from the body, front to back, and the angles (from straight down) a hind thigh and shin stand at. */
@@ -148,41 +149,116 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 
 	/**
 	 * His moves, laid over the standing pose, each wound up through its tell so it reads from across the grove, then thrown fast. The
-	 * slash turns his head right round to one side and sweeps the blade back across; the spin crouches him low, blade level; the
-	 * leap sits him back on his haunches, then stretches him out in the air; the bolts lift his head as the magic swells at his
-	 * sides; the hop tucks his legs up; spent, he pants; the zoomies bow him down, rump up and tail going, then gallop him flat out;
-	 * flopped, he lies on his side with his tongue out.
+	 * sweep crouches him low, head wrenched round to one side, and sweeps the blade along the grass to the other; the chop rears him
+	 * up on his hind legs and brings him crashing down head first; the chase turns his head back after his tail; dizzy, he sways;
+	 * the pounce crouches him with his rump up and wiggling, then stretches him out in the air; the fetch cocks his head back and
+	 * flings it round, then gallops him after the sword (or stands him waiting, head tilted, for it to come back); prancing, he
+	 * high-steps; digging, his forepaws scrabble with his head down; the shake shivers him then throws a roll down him nose to tail;
+	 * the howl sits him back with his muzzle to the sky; the bolts lift his head as the magic swells at his sides; the hop tucks his
+	 * legs up; spent, he pants; the zoomies bow him down, rump up and tail going, then gallop him flat out; flopped, he lies on his
+	 * side with his tongue out.
 	 */
 	private void attack(int move,float el,int tellTicks,int side,float t){
 		float tell=Math.max(1,tellTicks);
 		float wind=ramp(el,0,tell),go=ramp(el,tell,2);
 		switch(move){
 			case MojitoRules.WATCH->tailY+=Mth.sin(t*.55F)*.2F;
-			case MojitoRules.SLASH->{
-				// Head wrenched round to one side, the blade drawn back, his weight on the far legs; then flung across to the other.
-				float sw=side*Mth.lerp(go,.95F*wind,-1.05F);
-				neckY+=sw;yaw+=.3F*sw;headZ-=.3F*sw;neckX+=.15F*wind;
-				uz[0]=uz[2]=-.1F*sw;uz[1]=uz[3]=-.1F*sw;roll-=.06F*sw;
-				u[0]-=.1F*wind;u[1]-=.1F*wind;tailY+=.4F*sw;
+			case MojitoRules.SWEEP->{
+				// Low on bent forelegs, head down and wrenched round to one side; then swept right across to the other along the grass.
+				float p=Mth.clamp((el-tell)/MojitoRules.SWEEP_TICKS,0,1),sw=el<tell?side*.95F*wind:side*Mth.lerp(p*p*(3-2*p),.95F,-1.05F);
+				neckY+=sw;yaw+=.3F*sw;headZ-=.3F*sw;neckX+=.5F*wind;headX-=.2F*wind;
+				u[0]-=.35F*wind;u[1]-=.35F*wind;l[0]+=.8F*wind;l[1]+=.8F*wind;pitch+=.12F*wind;
+				uz[0]=uz[2]=-.1F*sw;uz[1]=uz[3]=-.1F*sw;roll-=.06F*sw;tailY+=.4F*sw;earZ+=.3F*Math.abs(sw);
 			}
-			case MojitoRules.SPIN->{
-				// Crouched low on all four legs, head down and the blade levelled out to his right ahead of him, and kept there round the spin.
-				float k=wind;
-				u[0]-=.35F*k;u[1]-=.35F*k;l[0]+=.75F*k;l[1]+=.75F*k;
-				u[2]-=.25F*k;u[3]-=.25F*k;l[2]+=.6F*k;l[3]+=.6F*k;
-				uz[0]=.15F*k;uz[1]=-.15F*k;uz[2]=.15F*k;uz[3]=-.15F*k;
-				neckX+=.35F*k;headX-=.2F*k;neckY-=.45F*k;roll-=.12F*go;
-				earZ+=.6F*go;tailX-=.5F*go;
+			case MojitoRules.CHOP->{
+				// Reared up on his hind legs, forepaws curled up before him and head high; then down head first, the blade into the ground,
+				// and tugging at it while it sticks.
+				float slam=ramp(el,tell,2),rear=wind*(1-slam),tug=el>tell+3?Mth.sin(el*1.3F)*slam:0;
+				pitch+=-.9F*rear+.22F*slam;
+				u[0]=Mth.lerp(rear,u[0],-1.25F)-.35F*slam;u[1]=Mth.lerp(rear,u[1],-1.05F)-.35F*slam;l[0]+=1.3F*rear;l[1]+=1.1F*rear;
+				l[2]+=.35F*rear;l[3]+=.35F*rear;u[2]-=.15F*rear;u[3]-=.15F*rear;
+				neckX+=-.4F*rear+.95F*slam+.06F*tug;headX+=-.2F*rear+.3F*slam;neckY+=.08F*tug;
+				tailX-=.5F*rear;earX-=.5F*rear+.3F*slam;jawX+=.1F*rear;
 			}
-			case MojitoRules.LEAP->{
-				float air=Mth.clamp((el-tell-1)/MojitoRules.LEAP_TICKS,0,1),flying=el>tell?Mth.sin(Mth.PI*air):0;
-				// Sat back on his haunches, forequarters up and head high; then stretched out flat in the air, forelegs reaching.
-				float sit=wind*(1-go);
-				u[2]-=.7F*sit;u[3]-=.7F*sit;l[2]+=1.4F*sit;l[3]+=1.4F*sit;
-				u[0]+=.15F*sit;u[1]+=.15F*sit;pitch-=.3F*sit;neckX-=.25F*sit;
+			case MojitoRules.CHASE->{
+				// Head turned right back to his tail, the tail whisking away from it; then round and round after it at a skipping trot.
+				float k=wind,a=el*1.4F;
+				neckY+=side*1.35F*k;headZ+=side*.35F*k;yaw+=side*.25F*k;roll-=side*.08F*k;
+				tailY+=-side*.7F*k+Mth.sin(t*1.8F)*.5F*k;tailX-=.3F*k;
+				if(el>tell){float sw=Mth.sin(a)*.5F;u[0]+=sw;u[3]+=sw;u[1]-=sw;u[2]-=sw;l[0]+=Math.max(0,-Mth.sin(a));l[1]+=Math.max(0,Mth.sin(a));earZ+=.6F;}
+				jawX+=.1F*k;
+			}
+			case MojitoRules.DIZZY->{
+				// Swaying where he stands, legs splayed to stay up, head lolling round.
+				float k=ramp(el,0,4),w=Mth.sin(el*.35F);
+				roll+=w*.13F*k;yaw+=Mth.sin(el*.2F)*.1F*k;
+				neckX+=.3F*k;neckY+=Mth.sin(el*.22F)*.45F*k;headZ+=Mth.sin(el*.35F+1)*.35F*k;
+				uz[0]=.22F*k;uz[1]=-.22F*k;uz[2]=.18F*k;uz[3]=-.18F*k;
+				jawX+=.2F*k;tongueX=(.4F+.15F*w)*k;earZ+=(.3F+.2F*w)*k;tailX-=.6F*k;
+			}
+			case MojitoRules.POUNCE->{
+				float air=Mth.clamp((el-tell-1)/MojitoRules.POUNCE_TICKS,0,1),flying=el>tell?Mth.sin(Mth.PI*air):0,landed=el>tell+1+MojitoRules.POUNCE_TICKS?1:0;
+				// Crouched with his chest to the grass and his rump up, wiggling it more and more; then stretched out flat in the air,
+				// forelegs reaching; then head down hard onto where he lands.
+				float crouch=wind*(1-go),wig=Mth.sin(t*2.2F)*crouch*smooth(el,tell*.4F,tell);
+				u[0]-=.55F*crouch;u[1]-=.55F*crouch;l[0]+=1.1F*crouch;l[1]+=1.1F*crouch;
+				pitch+=.18F*crouch;neckX+=.2F*crouch;headX-=.25F*crouch;yaw+=.12F*wig;roll+=.06F*wig;tailY+=Mth.sin(t*1.6F)*.6F*crouch;
 				u[0]=Mth.lerp(flying,u[0],-1.15F);u[1]=Mth.lerp(flying,u[1],-1.05F);l[0]=Mth.lerp(flying,l[0],.3F);l[1]=Mth.lerp(flying,l[1],.3F);
 				u[2]=Mth.lerp(flying,u[2],1.15F);u[3]=Mth.lerp(flying,u[3],1.05F);l[2]=Mth.lerp(flying,l[2],-.2F);l[3]=Mth.lerp(flying,l[3],-.2F);
 				pitch+=Mth.lerp(air,-.25F,.3F)*flying;earX-=.9F*flying;tailX-=.6F*flying;
+				neckX+=.7F*landed;headX+=.2F*landed;u[0]-=.3F*landed;u[1]-=.3F*landed;l[0]+=.6F*landed;l[1]+=.6F*landed;
+			}
+			case MojitoRules.FETCH->{
+				if(side==0){
+					// Head cocked back to throw, eyes on his prey, rump up and tail going; flung round as the sword leaves his jaws.
+					neckY-=.55F*wind;headZ+=.25F*wind;neckX-=.1F*wind;pitch+=.08F*wind;tailY+=Mth.sin(t*1.6F)*.6F*wind;
+					u[0]-=.3F*wind;u[1]-=.3F*wind;l[0]+=.5F*wind;l[1]+=.5F*wind;
+				}else if(side==3){
+					// Can't get to it: stood waiting, head tilted, ears up and tail going, for it to come back to him.
+					float k=ramp(el,0,4);
+					headZ+=.4F*k;neckX-=.15F*k;earX-=.3F*k;earZ-=.05F*k;jawX+=.15F*k;tailY+=Mth.sin(t*1.2F)*.5F*k;
+				}else{
+					// Bounding after it flat out, ears flying, mouth open for it.
+					float a=(el-tell)*1.4F,c=Mth.sin(a),k=ramp(el,tell,4);
+					u[0]=Mth.lerp(k,u[0],c*.9F);u[1]=Mth.lerp(k,u[1],c*.9F-.2F);l[0]=l[1]=Mth.lerp(k,l[0],Math.max(0,-Mth.cos(a))*1.2F);
+					u[2]=Mth.lerp(k,u[2],HIND_U-c*.9F);u[3]=Mth.lerp(k,u[3],HIND_U-c*.9F+.2F);l[2]=l[3]=Mth.lerp(k,l[2],HIND_L+Math.max(0,Mth.cos(a))*.6F);
+					pitch+=c*.1F*k;neckX+=(.25F-c*.08F)*k;earX-=1.0F*k;tailX-=.5F*k;jawX+=.3F*k;tongueX=(.5F+Mth.sin(a*2)*.3F)*k;
+				}
+			}
+			case MojitoRules.PRANCE->{
+				// High-stepping on the spot with the sword caught, head high and proud, the whole of him bouncing and his tail going.
+				float k=ramp(el,0,3),a=el*.9F,fl=Math.max(0,Mth.sin(a)),fr=Math.max(0,-Mth.sin(a));
+				u[0]-=.85F*fl*k;l[0]+=1.3F*fl*k;u[1]-=.85F*fr*k;l[1]+=1.3F*fr*k;
+				u[2]+=.15F*fr*k;u[3]+=.15F*fl*k;
+				pitch-=(.1F+.05F*Math.abs(Mth.sin(a)))*k;neckX-=.3F*k;headX-=.1F*k;earX+=Mth.sin(a*2)*.25F*k;
+				tailY+=Mth.sin(t*1.8F)*.7F*k;tailX-=.15F*k;
+			}
+			case MojitoRules.DIG->{
+				// Head down between his forelegs, his chest low and rump high, forepaws scrabbling at the ground like mad.
+				float k=ramp(el,0,4),a=el*(el<tell?.9F:1.7F),dig=el<tell?.6F:1;
+				pitch+=.25F*k;neckX+=.65F*k;headX+=.15F*k;
+				u[0]+=(-.5F+Mth.sin(a)*.6F*dig)*k;l[0]+=(.7F+Math.max(0,Mth.cos(a))*.8F*dig)*k;
+				u[1]+=(-.5F-Mth.sin(a)*.6F*dig)*k;l[1]+=(.7F+Math.max(0,-Mth.cos(a))*.8F*dig)*k;
+				uz[2]=.15F*k;uz[3]=-.15F*k;l[2]+=.25F*k;l[3]+=.25F*k;
+				earX+=.3F*k;tailX-=.3F*k;tailY+=Mth.sin(t*1.2F)*.4F*k;
+			}
+			case MojitoRules.SHAKE->{
+				// A shiver running through his coat, ears up; then the shake, a roll running down him, his head going hardest, ears and
+				// tail flying.
+				float shiver=wind*(1-go),shake=el>=tell?Mth.sin(Mth.PI*Mth.clamp((el-tell)/8F,0,1)):0;
+				roll+=Mth.sin(t*4.5F)*.035F*shiver;neckY+=Mth.sin(t*4.5F+.5F)*.05F*shiver;earX-=.3F*shiver;
+				uz[0]=.15F*wind;uz[1]=-.15F*wind;uz[2]=.12F*wind;uz[3]=-.12F*wind;
+				float w=Mth.sin(t*2.6F);
+				roll+=w*.16F*shake;neckY+=Mth.sin(t*2.6F+.7F)*.6F*shake;headZ+=Mth.sin(t*2.6F+1.2F)*.4F*shake;
+				earZ+=Math.abs(Mth.sin(t*2.6F+1.6F))*1.0F*shake;tailY+=Mth.sin(t*2.6F+2.2F)*.7F*shake;
+			}
+			case MojitoRules.HOWL->{
+				// Sat back on his haunches, forelegs straight, muzzle to the sky; his jaws opening wide with each ring he sends out.
+				float since=el>tell?(el-tell)%MojitoRules.HOWL_EVERY:99,cry=el>tell&&el<tell+MojitoRules.HOWL_RINGS*MojitoRules.HOWL_EVERY?Math.max(0,1-since/10):0;
+				u[2]-=.7F*wind;u[3]-=.7F*wind;l[2]+=1.4F*wind;l[3]+=1.4F*wind;
+				u[0]+=.15F*wind;u[1]+=.15F*wind;pitch-=.45F*wind;
+				neckX-=.6F*wind;headX-=.55F*wind+.1F*cry;jawX+=.15F*wind+.25F*cry;
+				earX-=.2F*wind;tailX-=.3F*wind;
 			}
 			case MojitoRules.BOLTS->{
 				// Head up and feet planted wide as the magic swells at his sides, jolted a little with every volley he looses.
@@ -289,12 +365,19 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 	}
 
 	/**
-	 * What shows besides the dog: the sword in his mouth from the moment he takes it up (lying in the grass until then), his tongue
-	 * once his head is up, and through the bolts the magic swelling at each side, pulsing with each volley and gone after the last.
+	 * What shows besides the dog: the sword in his mouth from the moment he takes it up (lying in the grass until then) and out of it
+	 * while thrown, whirling flat through the air where it flies or lying where it fell; his tongue once his head is up; and through
+	 * the bolts the magic swelling at each side, pulsing with each volley and gone after the last.
 	 */
 	private void props(MojitoRenderState s){
 		boolean held=s.rise>=GRAB;
-		sword.visible=held;fallen.visible=!held;
+		sword.visible=held&&!s.thrown;fallen.visible=!held||s.thrown;
+		if(s.thrown){
+			// The blade's middle (13 out along it from the grip) put where the sword is, turned about it.
+			float a=s.side==2?.6F:s.ageInTicks*.9F;
+			fallen.x=s.swordX+13*Mth.cos(a);fallen.y=s.swordY;fallen.z=s.swordZ-13*Mth.sin(a);
+			fallen.xRot=Mth.HALF_PI;fallen.yRot=a;fallen.zRot=0;
+		}
 		tongue.visible=s.rise>.2F;
 		float size=0;
 		if(s.move==MojitoRules.BOLTS&&s.deathTime<=0){

@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 
 /** Mojito (see {@link MojitoModel}), his head nearly three times a player's height, with his eyes, the runes down his blade and the magic at his sides lit whatever the light. */
 public final class MojitoRenderer extends MobRenderer<Mojito,MojitoRenderState,MojitoModel> {
@@ -27,6 +28,11 @@ public final class MojitoRenderer extends MobRenderer<Mojito,MojitoRenderState,M
 	public MojitoRenderer(EntityRendererProvider.Context c){super(c,new MojitoModel(c.bakeLayer(LAYER)),2.0F);addLayer(new Eyes(this));}
 	@Override public MojitoRenderState createRenderState(){return new MojitoRenderState();}
 	@Override public Identifier getTextureLocation(MojitoRenderState s){return SKIN;}
+	/** Thrown, his sword can be well off from him, and he should not vanish from view when it is in sight and he isn't, nor it. */
+	@Override protected AABB getBoundingBoxForCulling(Mojito e,float partial){
+		var box=super.getBoundingBoxForCulling(e,partial);
+		return e.thrown()?box.minmax(AABB.ofSize(e.swordAt(partial),6,3,6)):box;
+	}
 	@Override public void extractRenderState(Mojito e,MojitoRenderState s,float partial){
 		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.rise=MojitoRules.rise(s.move,s.elapsed);
 		// Blending out of the move before over a few ticks; out of his sleep or back into it the rise does that itself.
@@ -40,6 +46,14 @@ public final class MojitoRenderer extends MobRenderer<Mojito,MojitoRenderState,M
 		boolean still=s.move==MojitoRules.DORMANT||s.move==MojitoRules.RISE||s.move==MojitoRules.BED||e.prevMove==MojitoRules.DORMANT||e.prevMove==MojitoRules.RISE||e.prevMove==MojitoRules.BED;
 		s.prevMove=e.prevMove;s.prevTell=e.prevTell;s.prevElapsed=e.prevElapsed;s.blend=still?1:Mth.clamp((now-e.switchedAt)/BLEND_TICKS,0,1);
 		s.hurt=e.hurtTime>0?Math.max(0,(e.hurtTime-partial)/10F):0;
+		// The thrown sword, taken back from the world into the model's own space (turned, scaled and flipped as the model is).
+		s.thrown=e.thrown();
+		if(s.thrown){
+			var w=e.swordAt(partial).subtract(s.x,s.y,s.z);
+			double a=Math.toRadians(180-s.bodyRot),c=Math.cos(a),n=Math.sin(a);
+			double lx=w.x*c-w.z*n,lz=w.x*n+w.z*c;
+			s.swordX=(float)(-lx/SCALE*16);s.swordY=(float)((-w.y/SCALE+1.501)*16);s.swordZ=(float)(lz/SCALE*16);
+		}
 	}
 	/** His legs buckle and he rolls onto his side in his own death, rather than flipping over. */
 	@Override protected float getFlipDegrees(){return 0;}
