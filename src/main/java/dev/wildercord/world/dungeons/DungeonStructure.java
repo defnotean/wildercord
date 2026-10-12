@@ -31,6 +31,7 @@ public class DungeonStructure extends Structure {
 		SERPENT_GROVE,
 		BELL_CHAPEL,
 		ASHEN_GLADE,
+		MOJITO_GROVE,
 		SILK_HOLLOW,
 		GLACIER_DEN,
 		BARROW_FIELD,
@@ -73,6 +74,7 @@ public class DungeonStructure extends Structure {
 			case SERPENT_GROVE -> SerpentGrovePiece.locate(context);
 			case BELL_CHAPEL -> BellChapelPiece.locate(context);
 			case ASHEN_GLADE -> AshenGladePiece.locate(context);
+			case MOJITO_GROVE -> MojitoGrovePiece.locate(context);
 			case BARROW_FIELD -> BarrowFieldPiece.locate(context);
 			case SILK_HOLLOW -> SilkHollowPiece.locate(context);
 			case GLACIER_DEN -> GlacierDenPiece.locate(context);

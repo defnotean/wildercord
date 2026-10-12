@@ -38,6 +38,7 @@ public final class UpgradeCatalog {
 		worldgen("wildercord:glacier_den","Snowy mountains; a crevasse cut down through a glacier to a warded hall of ice with its guardian; old worlds find it only in new chunks"),
 		worldgen("wildercord:silk_hollow","Forest and hills; a timbered mine shaft 32 blocks down to a warded, web-choked hall with its guardian; old worlds find it only in new chunks"),
 		worldgen("wildercord:ashen_glade","Forest; a burnt glade levelled into a bank of scorched earth, dead trees round it, warded, with its guardian; old worlds find it only in new chunks"),
+		worldgen("wildercord:mojito_grove","Forest, flower forest, meadow; a misty meadow ringed by old oaks, a mossy standing stone at its heart, warded, with its guardian; old worlds find it only in new chunks"),
 		worldgen("wildercord:bell_chapel","Deep ocean; a sunken chapel kept dry by a moon pool, warded, with its guardian; needs fluid replacement, which the engine never performs"),
 		worldgen("wildercord:belowkeeper_drainhouse","Cave feature in lush/dripstone caves; underground edits of unknown history"),
 		worldgen("wildercord:breathmark_site","Cave/fungal feature with an authentic mark entity; underground edits of unknown history"),
