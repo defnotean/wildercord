@@ -1,5 +1,6 @@
 package dev.wildercord.client.render;
 
+import dev.wildercord.cast.TideScribeRules;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -137,5 +138,240 @@ public class TideScribeModel extends EntityModel<DungeonBossRenderState> {
 		scroll.z = -9.0F - 2.0F * c;
 		scroll.xRot = -0.25F + 0.25F * c + Mth.sin(t * 0.05F) * 0.06F + dying * 0.9F;
 		scroll.yRot = state.yRot * Mth.DEG_TO_RAD * 0.3F + Mth.sin(t * 0.04F) * 0.1F;
+
+		// Sunk under the water in its dive: flat out and streaming, its scroll rolled in close.
+		float depth = state.extra[0];
+		if (depth > 0.01F) {
+			body.xRot = Mth.lerp(depth, body.xRot, 1.25F);
+			head.xRot = Mth.lerp(depth, head.xRot, -0.9F);
+			reach(rightArm, depth, 0.9F, 0, 0.25F);
+			reach(leftArm, depth, 0.9F, 0, -0.25F);
+			stream(depth, 0.4F, t);
+			scroll.y = Mth.lerp(depth, scroll.y, 9.0F);
+			scroll.z = Mth.lerp(depth, scroll.z, -3.0F);
+			scroll.xRot = Mth.lerp(depth, scroll.xRot, 1.3F);
+		}
+
+		// Its own moves, each eased in over the rest of its pose (see TideScribeRules for what each one is).
+		float go = state.extra[1];
+		for (int m = 1; m <= TideScribeRules.MOVES; m++) {
+			float w = Math.min(1, state.moves[m]);
+			if (w > 0.01F) {
+				boolean current = m == state.move;
+				move(m, w, current ? state.since : 999, current ? state.tell : 0, go, t);
+			}
+		}
+
+		// Between phases it rises with its arms flung high and its scroll held up over its head.
+		body.y -= 3.0F * sh;
+		scroll.y = Mth.lerp(sh, scroll.y, -17.0F + Mth.sin(t * 0.3F));
+		scroll.z = Mth.lerp(sh, scroll.z, -3.0F);
+		scroll.xRot = Mth.lerp(sh, scroll.xRot, -1.1F);
+	}
+
+	/**
+	 * Its pose for its own move {@code m}, eased in by {@code w}: {@code s} ticks in (past its end once it's easing out) with a
+	 * tell of {@code tell}; {@code go} is 1 on a second go, which comes off the other hand.
+	 */
+	private void move(int m, float w, float s, float tell, float go, float t) {
+		float wind = phase(s, tell);
+		float hit = decay(s - tell, 6);
+		boolean thrown = s >= tell;
+		switch (m) {
+			case TideScribeRules.QUILLS -> {
+				// The quill drawn back over its shoulder, leaning away; thrown forward hard. The second go comes off the other hand.
+				float k = phase(s - tell, 3);
+				float x = thrown ? Mth.lerp(k, -3.0F, -1.1F) : Mth.lerp(wind, -0.3F, -3.0F);
+				float twist = thrown ? Mth.lerp(k, 0.45F, -0.35F) : 0.45F * wind;
+				float lean = thrown ? Mth.lerp(k, -0.2F, 0.3F) : -0.2F * wind;
+				boolean left = go > 0.5F;
+				reach(left ? leftArm : rightArm, w, x, 0, left ? -0.2F : 0.2F);
+				reach(left ? rightArm : leftArm, w, -0.6F, 0, left ? 0.5F : -0.5F);
+				body.yRot += (left ? -twist : twist) * w;
+				body.xRot += lean * w;
+			}
+			case TideScribeRules.SCRIPT -> {
+				// Bowed over its scroll, held low and flat, the quill scratching fast; as its words burst it flings both arms up.
+				body.xRot += 0.5F * w;
+				head.xRot += 0.45F * w;
+				reach(rightArm, w, -1.0F + Mth.sin(t * 2.2F) * 0.25F, -0.4F + Mth.cos(t * 1.9F) * 0.2F, 0.1F);
+				reach(leftArm, w, -0.9F, 0.3F, -0.1F);
+				scroll.y = Mth.lerp(w, scroll.y, 7.0F);
+				scroll.z = Mth.lerp(w, scroll.z, -7.0F);
+				scroll.xRot = Mth.lerp(w, scroll.xRot, 1.2F);
+				float burst = decay(s - tell - TideScribeRules.SCRIPT_FUSE, 8)
+					+ decay(s - tell - TideScribeRules.SCRIPT_FUSE - TideScribeRules.SCRIPT_AGAIN, 8);
+				if (burst > 0) {
+					float b = Math.min(1, burst) * w;
+					reach(rightArm, b, -2.7F, 0, 0.4F);
+					reach(leftArm, b, -2.7F, 0, -0.4F);
+					body.xRot -= 0.6F * b;
+				}
+			}
+			case TideScribeRules.WHIRLPOOL -> {
+				// Sunk low with its arms flung out flat and its tendrils spread wide, spinning.
+				body.y += 3.0F * w;
+				body.xRot += 0.1F * w;
+				reach(rightArm, w, -0.2F, 0, 1.45F);
+				reach(leftArm, w, -0.2F, 0, -1.45F);
+				flare(w, 1.3F * Math.max(0.4F, wind), t);
+			}
+			case TideScribeRules.RIPTIDE -> {
+				// Coiled back with its arms drawn behind it; then flat out and racing, arms swept back, tendrils streaming.
+				if (!thrown) {
+					body.xRot -= 0.3F * wind * w;
+					reach(rightArm, w * wind, 0.7F, 0, 0.3F);
+					reach(leftArm, w * wind, 0.7F, 0, -0.3F);
+					flare(w * wind, 0.1F, t);
+				} else {
+					float k = phase(s - tell, 2);
+					body.xRot = Mth.lerp(w * k, body.xRot, 1.3F);
+					head.xRot = Mth.lerp(w * k, head.xRot, -1.0F);
+					reach(rightArm, w, 1.0F, 0, 0.15F);
+					reach(leftArm, w, 1.0F, 0, -0.15F);
+					stream(w, 0.5F, t);
+				}
+			}
+			case TideScribeRules.INK -> {
+				// Rearing back as its head swells dark; thrust forward as it sprays.
+				if (!thrown) {
+					body.xRot -= 0.3F * wind * w;
+					head.xRot -= 0.6F * wind * w;
+					reach(rightArm, w * wind, -0.9F, 0.4F, 0.6F);
+					reach(leftArm, w * wind, -0.9F, -0.4F, -0.6F);
+				} else {
+					float k = Math.max(hit, 0.4F);
+					body.xRot += 0.4F * k * w;
+					head.xRot += 0.5F * k * w;
+					reach(rightArm, w, -1.4F, -0.3F, 0.9F);
+					reach(leftArm, w, -1.4F, 0.3F, -0.9F);
+				}
+			}
+			case TideScribeRules.PAGES -> {
+				// Its arms raised wide and its scroll held up over it, the pages wheeling round it.
+				float up = thrown ? 1 : wind;
+				reach(rightArm, w * up, -0.3F + Mth.sin(t * 0.2F) * 0.1F, 0, 2.2F);
+				reach(leftArm, w * up, -0.3F - Mth.sin(t * 0.2F) * 0.1F, 0, -2.2F);
+				head.xRot -= 0.35F * up * w;
+				scroll.y = Mth.lerp(w * up, scroll.y, -15.0F);
+				scroll.z = Mth.lerp(w * up, scroll.z, -2.0F);
+				scroll.xRot = Mth.lerp(w * up, scroll.xRot, -1.3F);
+				flare(w * up, 0.7F, t);
+			}
+			case TideScribeRules.BREAKER -> {
+				// Both arms raised high, leaning back, its tendrils curled in under it; then it brings everything down at once.
+				if (!thrown) {
+					reach(rightArm, w * wind, -2.9F, 0, 0.3F);
+					reach(leftArm, w * wind, -2.9F, 0, -0.3F);
+					body.xRot -= 0.25F * wind * w;
+					head.xRot -= 0.3F * wind * w;
+					flare(w * wind, -0.3F, t);
+				} else {
+					float k = phase(s - tell, 2);
+					reach(rightArm, w, Mth.lerp(k, -2.9F, -0.7F), 0, 0.3F);
+					reach(leftArm, w, Mth.lerp(k, -2.9F, -0.7F), 0, -0.3F);
+					body.xRot += 0.5F * k * w;
+					flare(w * Math.max(hit, 0.3F), 1.2F, t);
+				}
+			}
+			case TideScribeRules.DIVE -> {
+				// Under the water it lies flat and streams (the depth above); bursting up, it thrusts its arms up over it.
+				float burst = decay(s - tell - TideScribeRules.DIVE_HUNT, 8);
+				if (burst > 0) {
+					reach(rightArm, burst * w, -2.9F, 0, 0.5F);
+					reach(leftArm, burst * w, -2.9F, 0, -0.5F);
+					body.xRot -= 0.3F * burst * w;
+				}
+			}
+			case TideScribeRules.TIDE_CALL -> {
+				// Rising with its arms flung up wide and its head thrown back, calling; then it draws them down and in as the water comes.
+				if (!thrown) {
+					reach(rightArm, w * wind, -0.5F, 0, 2.6F);
+					reach(leftArm, w * wind, -0.5F, 0, -2.6F);
+					head.xRot -= 0.6F * wind * w;
+					body.xRot -= 0.2F * wind * w;
+					flare(w * wind, 1.0F, t);
+				} else {
+					float k = phase(s - tell, 10);
+					reach(rightArm, w, Mth.lerp(k, -0.5F, -1.4F), Mth.lerp(k, 0, -0.5F), Mth.lerp(k, 2.6F, 0.3F));
+					reach(leftArm, w, Mth.lerp(k, -0.5F, -1.4F), Mth.lerp(k, 0, 0.5F), Mth.lerp(k, -2.6F, -0.3F));
+					head.xRot -= 0.6F * (1 - k) * w;
+					flare(w, Mth.lerp(k, 1.0F, 0.4F), t);
+				}
+			}
+			case TideScribeRules.BOWED -> {
+				// Slumped over its writing, arms hanging, the scroll sunk low.
+				body.xRot += 0.75F * w;
+				head.xRot += 0.5F * w;
+				reach(rightArm, w, -0.5F, 0, 0.15F);
+				reach(leftArm, w, -0.5F, 0, -0.15F);
+				scroll.y = Mth.lerp(w, scroll.y, 10.0F);
+				scroll.xRot = Mth.lerp(w, scroll.xRot, 1.0F);
+			}
+			case TideScribeRules.SPUN -> {
+				// Reeling, its head lolling round and its arms loose.
+				body.zRot += Mth.sin(t * 0.45F) * 0.3F * w;
+				body.xRot += Mth.cos(t * 0.35F) * 0.15F * w;
+				head.zRot += Mth.sin(t * 0.4F + 1) * 0.35F * w;
+				reach(rightArm, w, -0.3F + Mth.sin(t * 0.5F) * 0.3F, 0, 0.9F + Mth.cos(t * 0.4F) * 0.2F);
+				reach(leftArm, w, -0.3F + Mth.cos(t * 0.5F) * 0.3F, 0, -0.9F - Mth.sin(t * 0.4F) * 0.2F);
+				flare(w, 0.5F, t);
+			}
+			case TideScribeRules.SURFACED -> {
+				// Thrown back on the water, dazed, its head lolling and its arms floating out to the sides.
+				body.xRot -= 0.35F * w;
+				head.xRot += 0.4F * w;
+				head.zRot += Mth.sin(t * 0.15F) * 0.2F * w;
+				reach(rightArm, w, -0.2F, 0, 1.2F);
+				reach(leftArm, w, -0.2F, 0, -1.2F);
+				flare(w, 0.9F, t);
+			}
+			default -> {
+			}
+		}
+	}
+
+	/** Eases {@code arm} toward {@code x}, {@code y}, {@code z} by {@code w}. */
+	private static void reach(ModelPart arm, float w, float x, float y, float z) {
+		arm.xRot = Mth.lerp(w, arm.xRot, x);
+		arm.yRot = Mth.lerp(w, arm.yRot, y);
+		arm.zRot = Mth.lerp(w, arm.zRot, z);
+	}
+
+	/** Eases its tendrils out round it by {@code w}, {@code out} radians off hanging (in under it if less than nothing). */
+	private void flare(float w, float out, float t) {
+		for (int i = 0; i < TENDRILS; i++) {
+			float a = Mth.TWO_PI * i / TENDRILS;
+			float wave = t * 0.3F + i * 1.1F;
+			tendrils[i].xRot = Mth.lerp(w, tendrils[i].xRot, Mth.cos(a) * out + Mth.sin(wave) * 0.1F);
+			tendrils[i].zRot = Mth.lerp(w, tendrils[i].zRot, -Mth.sin(a) * out);
+			mids[i].xRot = Mth.lerp(w, mids[i].xRot, Mth.sin(wave - 0.9F) * 0.3F);
+			tips[i].xRot = Mth.lerp(w, tips[i].xRot, Mth.sin(wave - 1.8F) * 0.4F);
+		}
+	}
+
+	/** Eases its tendrils back behind it by {@code w}, {@code back} radians, streaming. */
+	private void stream(float w, float back, float t) {
+		for (int i = 0; i < TENDRILS; i++) {
+			float wave = t * 0.5F + i * 1.1F;
+			tendrils[i].xRot = Mth.lerp(w, tendrils[i].xRot, back + Mth.sin(wave) * 0.15F);
+			tendrils[i].zRot = Mth.lerp(w, tendrils[i].zRot, Mth.cos(wave) * 0.1F);
+			mids[i].xRot = Mth.lerp(w, mids[i].xRot, Mth.sin(wave - 0.9F) * 0.25F);
+			tips[i].xRot = Mth.lerp(w, tips[i].xRot, Mth.sin(wave - 1.8F) * 0.35F);
+		}
+	}
+
+	/** How far through {@code length} ticks {@code s} is, eased, 0 to 1 (1 if there's no length to it). */
+	private static float phase(float s, float length) {
+		if (length <= 0) {
+			return 1;
+		}
+		float x = Mth.clamp(s / length, 0, 1);
+		return x * x * (3 - 2 * x);
+	}
+
+	/** 1 the moment {@code s} reaches 0, falling to nothing over {@code length} ticks (0 before). */
+	private static float decay(float s, float length) {
+		return s < 0 ? 0 : Math.max(0, 1 - s / length);
 	}
 }

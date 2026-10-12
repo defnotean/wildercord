@@ -2,6 +2,7 @@ package dev.wildercord.client.render;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.TideScribe;
+import dev.wildercord.cast.TideScribeRules;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -21,7 +22,11 @@ public class TideScribeRenderer extends DungeonBossRenderer<TideScribe, TideScri
 			return white((0.7F + pulse) * alive(state));
 		});
 		glow(Wildercord.id("textures/entity/tide_scribe_script.png"), state -> {
-			float glow = Math.max(state.casting, state.shifting);
+			// Blazing too while it throws its quills, writes on the floor, tears out its pages or calls the tide.
+			float glow = Math.max(Math.max(state.casting, state.shifting), Math.max(
+				Math.max(state.moves[TideScribeRules.QUILLS], state.moves[TideScribeRules.SCRIPT]),
+				Math.max(state.moves[TideScribeRules.PAGES], state.moves[TideScribeRules.TIDE_CALL])));
+			glow = Math.min(1, glow);
 			return white((0.3F + 0.7F * glow + 0.05F * Mth.sin(state.ageInTicks * 0.2F)) * alive(state));
 		});
 	}
