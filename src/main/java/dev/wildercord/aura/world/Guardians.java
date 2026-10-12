@@ -29,6 +29,9 @@ public final class Guardians {
 	private static final ResourceKey<EntityType<?>> LANTERN_BEARER_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("lantern_bearer"));
 	public static final EntityType<LanternBearer> LANTERN_BEARER=Registry.register(BuiltInRegistries.ENTITY_TYPE,LANTERN_BEARER_KEY,
 		EntityType.Builder.of(LanternBearer::new,MobCategory.MONSTER).sized(1.4F,3.4F).eyeHeight(3.0F).clientTrackingRange(12).notInPeaceful().build(LANTERN_BEARER_KEY));
+	private static final ResourceKey<EntityType<?>> MOJITO_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("mojito"));
+	public static final EntityType<Mojito> MOJITO=Registry.register(BuiltInRegistries.ENTITY_TYPE,MOJITO_KEY,
+		EntityType.Builder.of(Mojito::new,MobCategory.MONSTER).sized(3.6F,5.0F).eyeHeight(4.4F).clientTrackingRange(12).notInPeaceful().build(MOJITO_KEY));
 	/** Whether guardians wake at all (config: aura_world.guardians). */
 	public static boolean enabled(){return dev.wildercord.config.Config.get().auraWorld().guardians();}
 	public static void init(){
@@ -44,5 +47,7 @@ public final class Guardians {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:frost_wyrmling",FieldGuide.Group.MONSTER,0x8FD3F0));
 		FabricDefaultAttributeRegistry.register(LANTERN_BEARER,LanternBearer.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:lantern_bearer",FieldGuide.Group.MONSTER,0x6FE8E0));
+		FabricDefaultAttributeRegistry.register(MOJITO,Mojito.createAttributes());
+		FieldGuide.add(new FieldGuide.Entry("wildercord:mojito",FieldGuide.Group.MONSTER,0x7CFFB2));
 	}
 }

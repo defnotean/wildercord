@@ -44,6 +44,8 @@ public final class AuraWorldClient {
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.BELL_WARDEN,BellWardenRenderer::new);
 		ModelLayerRegistry.registerModelLayer(AshenStagRenderer.LAYER,AshenStagModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.ASHEN_STAG,AshenStagRenderer::new);
+		ModelLayerRegistry.registerModelLayer(MojitoRenderer.LAYER,MojitoModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.MOJITO,MojitoRenderer::new);
 		ModelLayerRegistry.registerModelLayer(HollowMatronRenderer.LAYER,HollowMatronModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.HOLLOW_MATRON,HollowMatronRenderer::new);
 		ModelLayerRegistry.registerModelLayer(FrostWyrmlingRenderer.LAYER,FrostWyrmlingModel::createLayer);

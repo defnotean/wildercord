@@ -841,6 +841,9 @@ def write_lang(runes):
     import ashen_stag_art
     lang.update(ashen_stag_art.LANG)
     ashen_stag_art.write(sys.modules[__name__])
+    import mojito_art
+    lang.update(mojito_art.LANG)
+    mojito_art.write(sys.modules[__name__])
     import hollow_matron_art
     lang.update(hollow_matron_art.LANG)
     hollow_matron_art.write(sys.modules[__name__])

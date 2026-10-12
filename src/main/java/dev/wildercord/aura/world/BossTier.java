@@ -11,7 +11,8 @@ package dev.wildercord.aura.world;
  *   <li>{@link #SEASONED}: the Hollow Matron.</li>
  *   <li>{@link #VETERAN}: the Ashen Stag.</li>
  *   <li>{@link #ELDER}: the Frost Wyrmling.</li>
- *   <li>{@link #DREAD}: the Drowned Bell-Warden, the hardest of the six.</li>
+ *   <li>{@link #HEROIC}: Mojito, the great black poodle of the misty grove, sword in his mouth.</li>
+ *   <li>{@link #DREAD}: the Drowned Bell-Warden, the hardest of them.</li>
  * </ol>
  */
 public enum BossTier {
@@ -20,6 +21,7 @@ public enum BossTier {
 	SEASONED(300, 8, 4, 11, 0.9, 1.0),
 	VETERAN(350, 10, 5, 13, 1.0, 1.05),
 	ELDER(410, 12, 6, 15, 1.1, 1.1),
+	HEROIC(440, 13, 7, 16, 1.15, 1.1),
 	DREAD(470, 14, 8, 17, 1.2, 1.1);
 
 	/** Its health, armour, armour toughness and plain melee hit. */

@@ -16,7 +16,7 @@ class BossTierTest {
 
 	@Test void noTwoGuardiansShareATier() {
 		BossTier[] used = {SerpentRules.TIER, LanternBearerRules.TIER, HollowMatronRules.TIER, AshenStagRules.TIER,
-			FrostWyrmlingRules.TIER, BellWardenRules.TIER};
+			FrostWyrmlingRules.TIER, MojitoRules.TIER, BellWardenRules.TIER};
 		assertTrue(java.util.Arrays.stream(used).distinct().count() == used.length);
 	}
 
