@@ -12,7 +12,8 @@ import org.joml.Vector3f;
  * A great dusky spider, grey-brown with pale silk banding her legs and a bone-white mark on her swollen abdomen, eight red eyes in
  * two rows over her fangs. She hangs head-down on her thread with her legs drawn in; dropping, her legs fold to her as she falls, and
  * she turns over as she lands and rears up with her forelegs raised and her fangs spread. On her feet she walks on alternating sets of
- * four, each move blends into the next, a blow jolts her, and dying she rolls onto her back with her legs curling in over her.
+ * four, every move has its own pose, wound up through its tell and thrown fast, each blends into the next, a blow jolts her, and
+ * dying she rolls onto her back with her legs curling in over her.
  */
 public final class HollowMatronModel extends EntityModel<HollowMatronRenderState> {
 	/** Where each pair of legs leaves the body, front to back, and how far forward (or back) each pair is fanned. */
@@ -144,9 +145,13 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 
 	/**
 	 * Her moves, laid over the standing pose, each wound up through its tell so it reads from across the hall, then thrown fast. The bite
-	 * rears her back with her fangs spread, then lunges; the sweep raises her forelegs to one side and swings them across; the spit rears
-	 * her and curls her abdomen under her; the pounce crouches her on bent legs, then flings her with her forelegs reaching; skittering,
-	 * her legs blur; spent, she sinks low on splayed legs with her abdomen heaving.
+	 * rears her back with her fangs spread, then lunges, and a missed one leaves her nose-down wrenching at her stuck fangs; the scythe
+	 * raises her forelegs high to one side and swings them across; the spit rears her and curls her abdomen under her; the pounce
+	 * crouches her on bent legs, then flings her with her forelegs reaching; the drum rears her up with her forelegs trembling high, then
+	 * slams them down and leaves her low; the reel curls her abdomen right under her with her head low, and the haul draws her forelegs
+	 * in over each other; the bristle swings her abdomen high and quivering with her hind legs scraping at it, then flicks it; the snare
+	 * throws her abdomen straight up; the rousing hunches her in on herself, quivering, then throws every leg wide; skittering, her legs
+	 * blur; spent, she sinks low on splayed legs with her abdomen heaving.
 	 */
 	private void attack(int move,float el,int tellTicks,int side,float t){
 		float tell=Math.max(1,tellTicks);
@@ -163,12 +168,82 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 				fangs+=.65F*rear-.25F*strike;palps+=.5F*rear;headX+=-.2F*rear+.35F*strike;
 				abdX+=.15F*rear;
 			}
-			case HollowMatronRules.SWEEP->{
-				float up=wind*(1-ramp(el,tell+HollowMatronRules.SWEEP_TICKS,5));
-				float cross=smooth(el,tell,tell+HollowMatronRules.SWEEP_TICKS);
-				float across=Mth.lerp(cross,side*.7F,-side*.8F)*up;
-				for(int i=0;i<4;i++){a[i]+=(i<2?1.0F:.7F)*up;b[i]-=(i<2?.6F:.4F)*up;fan[i]+=across;}
-				yaw=across*.35F;pitch-=.15F*up;fangs+=.3F*up;
+			case HollowMatronRules.SCYTHE->{
+				// Forelegs raised high and drawn back to one side, then scythed across at chest height.
+				float up=wind*(1-ramp(el,tell+HollowMatronRules.SCYTHE_TICKS,5));
+				float cross=smooth(el,tell,tell+HollowMatronRules.SCYTHE_TICKS);
+				float across=Mth.lerp(cross,side*.8F,-side*.9F)*up;
+				for(int i=0;i<4;i++){a[i]+=(i<2?1.3F:.8F)*up;b[i]-=(i<2?.9F:.5F)*up;fan[i]+=across;}
+				for(int i=6;i<8;i++){a[i]-=.15F*up;b[i]+=.2F*up;}
+				yaw=across*.4F;roll-=side*.08F*wind*(1-cross);pitch-=.22F*up;fangs+=.3F*up;palps+=.3F*wind*(1-cross);
+			}
+			case HollowMatronRules.DRUM->{
+				// Reared up on her hind legs, forelegs trembling high and drumming faster; slammed down; low a moment after.
+				float rear=wind*(1-go),low=go*(1-ramp(el,tell+HollowMatronRules.DRUM_LOW-4,6));
+				float shake=Mth.sin(el*(1.4F+wind*1.6F));
+				pitch+=-.6F*rear+.18F*low;
+				for(int i=0;i<4;i++){
+					float k=i<2?1:.6F;
+					a[i]+=(1.2F*rear-.35F*low)*k+shake*.18F*rear*k*(i%2==0?1:-1);b[i]+=(-.7F*rear+.4F*low)*k;fan[i]+=side(i)*.1F*rear;
+				}
+				for(int i=4;i<8;i++){a[i]-=.2F*rear-.25F*low;b[i]+=.3F*rear+.3F*low;}
+				fangs+=.45F*rear;palps+=.4F*rear+.2F*shake*rear;abdX+=.2F*rear-.15F*low;headX+=-.15F*rear+.2F*low;
+			}
+			case HollowMatronRules.REEL->{
+				// Abdomen curled right under her with the spinnerets aimed past her fangs, head low; jolted as the thread goes.
+				float pulse=Math.max(0,1-Math.abs(el-tell)/2);
+				abdX=Mth.lerp(wind,abdX,-1.25F)-.3F*pulse;pitch-=.2F*wind-.12F*pulse;headX+=.25F*wind;
+				for(int i=0;i<2;i++){a[i]+=.35F*wind;b[i]-=.2F*wind;fan[i]+=side(i)*.15F*wind;}
+				for(int i=6;i<8;i++){a[i]-=.2F*wind;b[i]+=.35F*wind;}
+				fangs+=.25F*wind+.3F*pulse;palps+=.3F*wind;
+			}
+			case HollowMatronRules.HAUL->{
+				// Foreleg over foreleg, drawing her thread in; then reared back with her fangs spread for the bite.
+				float k=ramp(el,0,3),pull=1-smooth(el,HollowMatronRules.HAUL_PULL-2,HollowMatronRules.HAUL_PULL+2),bite=smooth(el,HollowMatronRules.HAUL_PULL,HollowMatronRules.HAUL_TICKS);
+				for(int i=0;i<2;i++){
+					float w=Mth.sin(el*.8F+(i==0?0:Mth.PI));
+					a[i]+=(.6F+.35F*w*pull)*k;b[i]+=(-.3F+.35F*Mth.cos(el*.8F+(i==0?0:Mth.PI))*pull)*k;fan[i]+=side(i)*(.1F-.25F*w*pull)*k;
+				}
+				for(int i=2;i<4;i++)a[i]+=.25F*k;
+				abdX=Mth.lerp(k,abdX,-.6F);pitch+=-.1F*k-.3F*bite;headX+=.15F*k*pull-.2F*bite;
+				fangs+=.2F*k+.6F*bite+Math.max(0,Mth.sin(el*.6F))*.1F;palps+=.4F*k;
+			}
+			case HollowMatronRules.BRISTLE->{
+				// Abdomen swung high and quivering at whoever is behind her, hind legs scraping the hairs off it; flicked; held up after.
+				float flick=Math.max(0,1-Math.abs(el-tell)/2.5F),quiver=Mth.sin(el*2.1F)*(1-go);
+				abdX=Mth.lerp(wind,abdX,.95F)+.06F*quiver*wind+.35F*flick;pitch+=.18F*wind;headX+=.1F*wind;
+				for(int i=6;i<8;i++){
+					float sc=Mth.sin(el*1.3F+(i==6?0:Mth.PI))*(1-go);
+					a[i]+=(.9F+.25F*sc)*wind;b[i]-=(.4F-.3F*sc)*wind;fan[i]-=side(i)*(.35F+.15F*sc)*wind;
+				}
+				for(int i=0;i<4;i++){a[i]-=.15F*wind;b[i]+=.25F*wind;}
+				palps-=.2F*wind;fangs+=.15F*flick;
+			}
+			case HollowMatronRules.SNARE->{
+				// Abdomen thrown straight up at the roof, front braced low; it pulses as the silk goes up.
+				float pulse=Math.max(0,1-Math.abs(el-tell)/2),throb=Mth.sin(el*.9F)*.06F*(1-go);
+				abdX=Mth.lerp(wind,abdX,1.15F)+.3F*pulse+throb;pitch+=.25F*wind;headX+=.1F*wind;
+				for(int i=0;i<4;i++){a[i]-=.2F*wind;b[i]+=.3F*wind;fan[i]*=1+.1F*wind;}
+				for(int i=6;i<8;i++){a[i]+=.15F*wind;b[i]-=.2F*wind;}
+				palps+=.3F*wind;
+			}
+			case HollowMatronRules.STUCK->{
+				// Nose-down with her fangs driven into the floor, legs splayed and heaving, wrenching at them.
+				float k=ramp(el,0,3),tug=Mth.sin(el*.9F);
+				pitch+=(.45F+.06F*tug)*k;roll+=Mth.sin(el*.9F+1)*.05F*k;headX+=.3F*k;
+				for(int i=0;i<8;i++){fan[i]*=1+.2F*k;a[i]-=.1F*k;b[i]+=.3F*k;}
+				for(int i=4;i<8;i++)a[i]+=tug*.2F*k*(i%2==0?1:-1);
+				for(int i=0;i<2;i++){a[i]+=.3F*k;b[i]+=.2F*k*tug;}
+				fangs=-.1F*k;palps+=Mth.sin(el*1.7F)*.3F*k;abdX+=(.3F+.08F*tug)*k;
+			}
+			case HollowMatronRules.ROUSE->{
+				// Hunched in on herself and quivering, harder and harder; then every leg thrown wide and her fangs spread.
+				float hunch=wind*(1-go),wide=go*(1-ramp(el,tell+4,10)),quake=Mth.sin(el*(2+wind*1.5F));
+				for(int i=0;i<8;i++){
+					a[i]+=-.25F*hunch+Mth.sin(el*3.1F+i*1.3F)*.06F*hunch+(i<4?1.0F:.5F)*wide;b[i]+=.5F*hunch-.8F*wide;fan[i]*=1-.2F*hunch+.35F*wide;
+				}
+				pitch+=.12F*hunch-.45F*wide;roll+=quake*.035F*hunch;abdX+=-.15F*hunch+.03F*quake*hunch+.7F*wide;
+				headX+=.2F*hunch-.3F*wide;fangs+=-.05F*hunch+.9F*wide;palps+=.6F*wide+.15F*quake*hunch;
 			}
 			case HollowMatronRules.SPIT->{
 				float rear=wind*(1-ramp(el,tell+3,6)),pulse=Math.max(0,1-Math.abs(el-tell)/2);

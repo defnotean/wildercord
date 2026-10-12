@@ -28,7 +28,7 @@ public final class HollowMatronRenderer extends MobRenderer<HollowMatron,HollowM
 	@Override public HollowMatronRenderState createRenderState(){return new HollowMatronRenderState();}
 	@Override public Identifier getTextureLocation(HollowMatronRenderState s){return SKIN;}
 	@Override public void extractRenderState(HollowMatron e,HollowMatronRenderState s,float partial){
-		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);
+		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.roused=e.roused();
 		s.drop=HollowMatronRules.drop(s.move,s.elapsed);
 		s.threadUp=e.anchor()-(float)Mth.lerp(partial,e.yo,e.getY());
 		float now=e.tickCount+partial;
@@ -46,13 +46,14 @@ public final class HollowMatronRenderer extends MobRenderer<HollowMatron,HollowM
 	@Override protected float getFlipDegrees(){return 0;}
 	@Override protected void scale(HollowMatronRenderState s,PoseStack pose){pose.scale(SCALE,SCALE,SCALE);}
 
-	/** Her eyes: dull while she hangs, smouldering red once she is down, going out as she dies. */
+	/** Her eyes: dull while she hangs, smouldering red once she is down, burning and flickering once she has roused, going out as she dies. */
 	private static final class Eyes extends RenderLayer<HollowMatronRenderState,HollowMatronModel> {
 		private final RenderType type=RenderTypes.eyes(GLOW);
 		Eyes(RenderLayerParent<HollowMatronRenderState,HollowMatronModel> parent){super(parent);}
 		@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,HollowMatronRenderState s,float yRot,float xRot){
 			if(s.isInvisible)return;
 			float alpha=.35F+.1F*Mth.sin(s.ageInTicks*.05F)+.55F*s.drop;
+			if(s.roused)alpha+=.25F+.15F*Mth.sin(s.ageInTicks*.3F);
 			if(s.deathTime>0)alpha*=Math.max(0,1-s.deathTime/20F);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
 			collector.order(1).submitModel(getParentModel(),s,pose,type,light,OverlayTexture.NO_OVERLAY,(a<<24)|0xFFFFFF,null,s.outlineColor);
