@@ -39,7 +39,9 @@ public final class HollowMatronRules {
 	/** Cut down off her pillar: falling, legs flailing, until she hits the floor. */
 	public static final int TUMBLE = 14;
 
-	public static final double HEALTH = 340, ARMOUR = 6, SPEED = 0.32;
+	/** How hard it is among the guardians (see {@link BossTier}). */
+	public static final BossTier TIER = BossTier.SEASONED;
+	public static final double HEALTH = TIER.health, ARMOUR = TIER.armour, SPEED = TIER.speed(0.32);
 
 	/** Anyone in the hall this close to the spot under her, horizontally, wakes her: a few strides in from the drift mouth. */
 	public static final double WAKE_RADIUS = 13;
@@ -69,7 +71,7 @@ public final class HollowMatronRules {
 
 	// ---- the fight: quick tells and quick feet, a web that slows rather than a heavy blow, and a pounce that leaves her open.
 	/** What each blow does before defences. */
-	public static final double BITE_DAMAGE = 16, SWEEP_DAMAGE = 14, SPIT_DAMAGE = 6, POUNCE_DAMAGE = 20;
+	public static final double BITE_DAMAGE = TIER.hit(16), SWEEP_DAMAGE = TIER.hit(14), SPIT_DAMAGE = TIER.hit(6), POUNCE_DAMAGE = TIER.hit(20);
 	/** The share of what armour, Protection and Resistance would stop that her blows go through anyway. */
 	public static final double PIERCE = 0.35;
 	/** The bite: its tell, how far the lunge carries her over {@link #LUNGE_TICKS}, and the rest after. */
@@ -105,12 +107,12 @@ public final class HollowMatronRules {
 	/** How far out from a pillar's silk she clings, and how far below its top. */
 	public static final double CLING = 1.7, CLING_DROP = 4.5;
 	/** Her landing: what it does before defences, how far round it hits, and the rest after. */
-	public static final double PLUNGE_DAMAGE = 22, PLUNGE_RADIUS = 3.2;
+	public static final double PLUNGE_DAMAGE = TIER.hit(22), PLUNGE_RADIUS = 3.2;
 	public static final int PLUNGE_RECOVER = 30;
 	/** Strikes on her pillar's silk that bring her down, the least time between two that count, the hurt the fall does her and the
 	 *  long rest after it, lying stunned. */
 	public static final int CUT_STRIKES = 3, STRIKE_GAP = 4, CUT_RECOVER = 70, TUMBLE_MAX = 60;
-	public static final double CUT_DAMAGE = 24;
+	public static final double CUT_DAMAGE = TIER.hit(24);
 	/** The most brood that hatch for one ambush. */
 	public static final int BROOD_MAX = 5;
 

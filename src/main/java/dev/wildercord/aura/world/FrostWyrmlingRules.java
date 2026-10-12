@@ -39,7 +39,9 @@ public final class FrostWyrmlingRules {
 	 */
 	public static final int LANCES = 11;
 
-	public static final double HEALTH = 360, ARMOUR = 8, SPEED = 0.32;
+	/** How hard it is among the guardians (see {@link BossTier}). */
+	public static final BossTier TIER = BossTier.ELDER;
+	public static final double HEALTH = TIER.health, ARMOUR = TIER.armour, SPEED = TIER.speed(0.32);
 
 	/** Anyone in the hall this close to its mound, horizontally, wakes it: well in past the crevasse mouth. */
 	public static final double WAKE_RADIUS = 12;
@@ -65,7 +67,7 @@ public final class FrostWyrmlingRules {
 
 	// ---- the fight: quick snapping blows, a breath to keep away from, and a pounce on anyone who does.
 	/** What each blow does before defences. */
-	public static final double BITE_DAMAGE = 17, TAIL_DAMAGE = 15, WING_DAMAGE = 8, POUNCE_DAMAGE = 20;
+	public static final double BITE_DAMAGE = TIER.hit(17), TAIL_DAMAGE = TIER.hit(15), WING_DAMAGE = TIER.hit(8), POUNCE_DAMAGE = TIER.hit(20);
 	/** The share of what armour, Protection and Resistance would stop that its blows go through anyway. */
 	public static final double PIERCE = 0.35;
 	/** The bite: its tell, how long its jaws stay shut, and the rest after. */
@@ -80,7 +82,7 @@ public final class FrostWyrmlingRules {
 	public static final int BREATH_TELL = 14, BREATH_TICKS = 30, BREATH_RECOVER = 22, BREATH_REST = 140;
 	public static final double BREATH_REACH = 9;
 	public static final int BREATH_EVERY = 5, BREATH_SLOW = 60, BREATH_FROST = 45;
-	public static final double BREATH_DAMAGE = 3;
+	public static final double BREATH_DAMAGE = TIER.hit(3);
 	/** How fast, in degrees a tick, the breath swings after its prey. */
 	public static final float BREATH_TURN = 3;
 	/** The pounce: its tell (the crouch), how long it is in the air, the rest after, the least time between two, how far it leaps at
@@ -100,7 +102,7 @@ public final class FrostWyrmlingRules {
 	 * does, and how high it flings; how long each lance stands; the rest after; and the least time between two.
 	 */
 	public static final int LANCE_TELL = 18, LANCE_WARN = 8, LANCE_LINES = 8, LANCE_HOLD = 24, LANCE_RECOVER = 28, LANCE_REST = 280;
-	public static final double LANCE_REACH = 14, LANCE_SPEED = 1, LANCE_RADIUS = 0.95, LANCE_DAMAGE = 14, LANCE_LIFT = 0.8, LANCE_START = 1.5;
+	public static final double LANCE_REACH = 14, LANCE_SPEED = 1, LANCE_RADIUS = 0.95, LANCE_DAMAGE = TIER.hit(14), LANCE_LIFT = 0.8, LANCE_START = 1.5;
 	/** How long the lances take to run out to their full reach once they begin. */
 	public static final int LANCE_RUN = (int) Math.ceil((LANCE_REACH - LANCE_START) / LANCE_SPEED);
 
@@ -141,7 +143,7 @@ public final class FrostWyrmlingRules {
 	 * by frost in return, slowed, chilled through and hurt a little; then the scale must rime over again, {@link #RIME_REST} ticks.
 	 */
 	public static final int RIME_REST = 100, RIME_SLOW = 80, RIME_FROST = 160;
-	public static final double RIME_DAMAGE = 3;
+	public static final double RIME_DAMAGE = TIER.hit(3);
 	/** A living Wyrmling this close keeps anyone from the scale. */
 	public static final double SCALE_GUARD = 48;
 

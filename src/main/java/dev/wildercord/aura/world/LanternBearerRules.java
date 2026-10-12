@@ -38,7 +38,9 @@ public final class LanternBearerRules {
 	 */
 	public static final int LIGHTS_OUT = 10;
 
-	public static final double HEALTH = 340, ARMOUR = 6, SPEED = 0.3;
+	/** How hard it is among the guardians (see {@link BossTier}). */
+	public static final BossTier TIER = BossTier.JOURNEY;
+	public static final double HEALTH = TIER.health, ARMOUR = TIER.armour, SPEED = TIER.speed(0.3);
 
 	/** Anyone in the field this close to the grave, horizontally, after dark, wakes it: in among the graves. */
 	public static final double WAKE_RADIUS = 11;
@@ -68,7 +70,7 @@ public final class LanternBearerRules {
 
 	// ---- the fight: a long spade at arm's length, a crook to drag back anyone who keeps away, and wisps for anyone who runs.
 	/** What each blow does before defences. */
-	public static final double REAP_DAMAGE = 16, HOOK_DAMAGE = 6, WISP_DAMAGE = 9, SLAM_DAMAGE = 14;
+	public static final double REAP_DAMAGE = TIER.hit(16), HOOK_DAMAGE = TIER.hit(6), WISP_DAMAGE = TIER.hit(9), SLAM_DAMAGE = TIER.hit(14);
 	/** The share of what armour, Protection and Resistance would stop that its blows go through anyway. */
 	public static final double PIERCE = 0.35;
 	/** The reap: its tell and the rest after. */
@@ -98,7 +100,7 @@ public final class LanternBearerRules {
 	 */
 	public static final int SNUFF_TELL = 16, LIGHTS_VANISH = 4, LIGHTS_GONE = 20, LIGHTS_GLIMMER = 16, LIGHTS_SWING = 6, LIGHTS_ROUNDS = 3,
 		LIGHTS_RECOVER = 30, LIGHTS_BROKEN = 50, LIGHTS_REST = 500, LIGHTS_BLIND = 30;
-	public static final double LIGHTS_DAMAGE = 14, LIGHTS_BEHIND = 2.2;
+	public static final double LIGHTS_DAMAGE = TIER.hit(14), LIGHTS_BEHIND = 2.2;
 	public static final int LIGHTS_ROUND = LIGHTS_GONE + LIGHTS_GLIMMER + LIGHTS_SWING, LIGHTS_TICKS = SNUFF_TELL + LIGHTS_ROUNDS * LIGHTS_ROUND;
 	/** The stages of Lights Out. */
 	public static final int SNUFFING = 0, GONE = 1, GLIMMER = 2, SWING = 3, OVER = 4;

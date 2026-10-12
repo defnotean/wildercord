@@ -58,8 +58,8 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 
 	public DrownedBellWarden(EntityType<? extends DrownedBellWarden> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
-		return createMobAttributes().add(Attributes.MAX_HEALTH,BellWardenRules.HEALTH).add(Attributes.ARMOR,BellWardenRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,6)
-			.add(Attributes.MOVEMENT_SPEED,BellWardenRules.SPEED).add(Attributes.ATTACK_DAMAGE,12).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
+		return createMobAttributes().add(Attributes.MAX_HEALTH,BellWardenRules.HEALTH).add(Attributes.ARMOR,BellWardenRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,BellWardenRules.TIER.toughness)
+			.add(Attributes.MOVEMENT_SPEED,BellWardenRules.SPEED).add(Attributes.ATTACK_DAMAGE,BellWardenRules.TIER.melee).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
 			.add(Attributes.STEP_HEIGHT,1.1).add(Attributes.WATER_MOVEMENT_EFFICIENCY,1);
 	}
 

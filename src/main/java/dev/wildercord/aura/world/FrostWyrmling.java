@@ -63,8 +63,8 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 
 	public FrostWyrmling(EntityType<? extends FrostWyrmling> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
-		return createMobAttributes().add(Attributes.MAX_HEALTH,FrostWyrmlingRules.HEALTH).add(Attributes.ARMOR,FrostWyrmlingRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,4)
-			.add(Attributes.MOVEMENT_SPEED,FrostWyrmlingRules.SPEED).add(Attributes.ATTACK_DAMAGE,12).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
+		return createMobAttributes().add(Attributes.MAX_HEALTH,FrostWyrmlingRules.HEALTH).add(Attributes.ARMOR,FrostWyrmlingRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,FrostWyrmlingRules.TIER.toughness)
+			.add(Attributes.MOVEMENT_SPEED,FrostWyrmlingRules.SPEED).add(Attributes.ATTACK_DAMAGE,FrostWyrmlingRules.TIER.melee).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
 			.add(Attributes.STEP_HEIGHT,1.1);
 	}
 

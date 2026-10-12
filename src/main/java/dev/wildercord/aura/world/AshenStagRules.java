@@ -36,7 +36,9 @@ public final class AshenStagRules {
 	 */
 	public static final int RUSH = 11;
 
-	public static final double HEALTH = 380, ARMOUR = 8, SPEED = 0.3;
+	/** How hard it is among the guardians (see {@link BossTier}). */
+	public static final BossTier TIER = BossTier.VETERAN;
+	public static final double HEALTH = TIER.health, ARMOUR = TIER.armour, SPEED = TIER.speed(0.3);
 
 	/** Anyone in the glade this close to its bed, horizontally, wakes it: a few strides in past the gate. */
 	public static final double WAKE_RADIUS = 12;
@@ -62,7 +64,7 @@ public final class AshenStagRules {
 
 	// ---- the fight: quick tells and quick feet, lighter blows than the Warden's, and a big opening when a charge goes wrong.
 	/** What each blow does before defences. */
-	public static final double GORE_DAMAGE = 18, KICK_DAMAGE = 20, STOMP_DAMAGE = 16, CHARGE_DAMAGE = 22;
+	public static final double GORE_DAMAGE = TIER.hit(18), KICK_DAMAGE = TIER.hit(20), STOMP_DAMAGE = TIER.hit(16), CHARGE_DAMAGE = TIER.hit(22);
 	/** The share of what armour, Protection and Resistance would stop that its blows go through anyway. */
 	public static final double PIERCE = 0.35;
 	/** The gore: its tell, how long the antlers stay up, and the rest after. */
@@ -78,10 +80,10 @@ public final class AshenStagRules {
 	/** The Cinder Rush: how many runs, the tell before the first and the wheel before each after, how long each run lasts, the rest
 	 *  after, the least time between two; how far each run goes and what it does. */
 	public static final int RUSH_RUNS = 3, RUSH_TELL = 16, RUSH_TURN = 9, RUSH_TICKS = 9, RUSH_RECOVER = 34, RUSH_REST = 320;
-	public static final double RUSH_REACH = 12, RUSH_DAMAGE = 16;
+	public static final double RUSH_REACH = 12, RUSH_DAMAGE = TIER.hit(16);
 	/** The ember strips a rush leaves: how long they smoulder, how often they burn whoever stands in them, for how much, and how wide. */
 	public static final int EMBER_TICKS = 100, EMBER_EVERY = 10;
-	public static final double EMBER_DAMAGE = 3, EMBER_WIDTH = 0.9;
+	public static final double EMBER_DAMAGE = TIER.hit(3), EMBER_WIDTH = 0.9;
 	/** Whether it starts a Cinder Rush at its prey {@code distance} away: only wounded, rested, and with room to run. */
 	public static boolean rushes(boolean wounded, long sinceRush, double distance) {
 		return wounded && sinceRush >= RUSH_REST && distance >= 4 && distance <= RUSH_REACH + 4;

@@ -37,7 +37,9 @@ public final class SerpentRules {
 	/** Its tail comes over and down in front of it, tearing up the ground and flinging it at its prey. */
 	public static final int TAIL_SLAM = 13;
 
-	public static final double HEALTH = 360, ARMOUR = 10, SPEED = 0.3;
+	/** How hard it is among the guardians (see {@link BossTier}). */
+	public static final BossTier TIER = BossTier.APPRENTICE;
+	public static final double HEALTH = TIER.health, ARMOUR = TIER.armour, SPEED = TIER.speed(0.3);
 
 	/** Anyone this close to the trunk, horizontally, wakes it: about five blocks from its coils. */
 	public static final double WAKE_RADIUS = 7.5;
@@ -69,7 +71,7 @@ public final class SerpentRules {
 	// ---- the fight: tells of three to four ticks like a Master's, but fewer and softer blows, and longer openings between them.
 
 	/** What each blow does before defences: about two thirds of a Master's cuts. */
-	public static final double STRIKE_DAMAGE = 22, LUNGE_DAMAGE = 26, SQUEEZE_DAMAGE = 6, BURST_DAMAGE = 24;
+	public static final double STRIKE_DAMAGE = TIER.hit(22), LUNGE_DAMAGE = TIER.hit(26), SQUEEZE_DAMAGE = TIER.hit(6), BURST_DAMAGE = TIER.hit(24);
 	/** The share of what armour, Protection and Resistance would stop that its fangs and coils go through anyway. */
 	public static final double PIERCE = 0.45;
 	/** A bite's tell, the tell of each bite chained after it, how long its head stays out after biting, and its rest after the last. */
@@ -101,14 +103,14 @@ public final class SerpentRules {
 	public static final int TAIL_TELL = 8, TAIL_RECOVER = 20, TAIL_REST = 100;
 	public static final double SLAM_REACH = 13;
 	/** Where the tail comes down, ahead of its feet, and the shock there: everyone within {@link #SHOCK_RADIUS} of it is hit. */
-	public static final double SLAM_AHEAD = 2.2, SHOCK_RADIUS = 2.8, SHOCK_DAMAGE = 10;
+	public static final double SLAM_AHEAD = 2.2, SHOCK_RADIUS = 2.8, SHOCK_DAMAGE = TIER.hit(10);
 	/** Clods of the island flung in a fan, {@link #DEBRIS_FAN} degrees apart, each thrown from {@link #DEBRIS_FROM} above the ground. */
 	public static final int DEBRIS = 5, DEBRIS_LIFE = 30;
 	public static final double DEBRIS_FAN = 12, DEBRIS_FROM = 0.5;
 	/** How fast a clod flies (blocks a tick), its upward throw, and the pull of gravity on it each tick. */
 	public static final double DEBRIS_SPEED = 0.85, DEBRIS_LIFT = 0.32, DEBRIS_GRAVITY = 0.04;
 	/** A clod's blow, and the most of them that land on one player in a slam. */
-	public static final double DEBRIS_DAMAGE = 12;
+	public static final double DEBRIS_DAMAGE = TIER.hit(12);
 	public static final int DEBRIS_HITS = 2;
 	/**
 	 * The share of what defences would stop that the slam goes through anyway. Thrown earth does not care about enchantments: more

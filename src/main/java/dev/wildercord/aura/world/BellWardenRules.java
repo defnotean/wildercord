@@ -33,7 +33,9 @@ public final class BellWardenRules {
 	/** It strikes its own bell, and a ring of force rolls out along the floor from its feet: jump it, or be swept. */
 	public static final int TOLL = 11;
 
-	public static final double HEALTH = 420, ARMOUR = 12, SPEED = 0.24;
+	/** How hard it is among the guardians (see {@link BossTier}). */
+	public static final BossTier TIER = BossTier.DREAD;
+	public static final double HEALTH = TIER.health, ARMOUR = TIER.armour, SPEED = TIER.speed(0.24);
 
 	/** Anyone in the hall this close to its vigil, horizontally, wakes it: about halfway up the nave. */
 	public static final double WAKE_RADIUS = 18;
@@ -59,7 +61,7 @@ public final class BellWardenRules {
 
 	// ---- the fight: tells a touch slower than the serpent's, since it hits harder and wider, and a real opening after each blow.
 	/** What each blow does before defences. */
-	public static final double SWING_DAMAGE = 20, HAMMER_DAMAGE = 24, SLAM_DAMAGE = 18, CHARGE_DAMAGE = 24;
+	public static final double SWING_DAMAGE = TIER.hit(20), HAMMER_DAMAGE = TIER.hit(24), SLAM_DAMAGE = TIER.hit(18), CHARGE_DAMAGE = TIER.hit(24);
 	/** The share of what armour, Protection and Resistance would stop that its blows go through anyway: dead weight, not edges. */
 	public static final double PIERCE = 0.4;
 	/** A swing's tell, the hammer's tell after it, how long the blow stays out, and the rest after each. */
@@ -80,7 +82,7 @@ public final class BellWardenRules {
 	 * The toll: what the ring does, its tell, the tell of each toll after the first, its rest after the last, and the least time
 	 * between two tollings it chooses (coming up out of its shell it always tolls).
 	 */
-	public static final double TOLL_DAMAGE = 16;
+	public static final double TOLL_DAMAGE = TIER.hit(16);
 	public static final int TOLL_TELL = 12, TOLL_AGAIN = 10, TOLL_RECOVER = 26, TOLL_REST = 200;
 	/** How far off it chooses to toll from. */
 	public static final double TOLL_FROM = 10;
