@@ -47,6 +47,7 @@ public final class MonsterClient {
 		ModelLayerRegistry.registerModelLayer(FoxfireKitsuneRenderer.LAYER, FoxfireKitsuneModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(CragcleaverRamRenderer.LAYER, CragcleaverRamModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(DripfangLurkerRenderer.LAYER, DripfangLurkerModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(GlowlureAnglerRenderer.LAYER, GlowlureAnglerModel::createLayer);
 
 		EntityRendererRegistry.register(MonsterContent.BRAMBLEWALKER, MonsterClient::bramblewalker);
 		EntityRendererRegistry.register(MonsterContent.GLOOMSTALKER, GloomstalkerRenderer::new);
@@ -70,6 +71,7 @@ public final class MonsterClient {
 		EntityRendererRegistry.register(MonsterContent.FOXFIRE_KITSUNE, FoxfireKitsuneRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.CRAGCLEAVER_RAM, CragcleaverRamRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.DRIPFANG_LURKER, DripfangLurkerRenderer::new);
+		EntityRendererRegistry.register(MonsterContent.GLOWLURE_ANGLER, GlowlureAnglerRenderer::new);
 	}
 
 	/** Its eyes, and the green veins in its vines, which blaze as it rears for the lash. */

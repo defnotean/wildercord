@@ -258,6 +258,7 @@ public record WildercordConfig(
 				case "foxfire_kitsune" -> true;
 				case "cragcleaver_ram" -> true;
 				case "dripfang_lurker" -> true;
+				case "glowlure_angler" -> true;
 				default -> false;
 			};
 		}
