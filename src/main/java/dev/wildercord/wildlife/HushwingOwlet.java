@@ -34,6 +34,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -124,6 +125,12 @@ public class HushwingOwlet extends Animal {
 	@Override
 	public int getHeadRotSpeed() {
 		return 25;
+	}
+
+	@Override
+	public float getWalkTargetValue(BlockPos pos, LevelReader level) {
+		// The dark under the pale oaks doesn't put it off, only the ground.
+		return level.getBlockState(pos.below()).is(OwletContent.GROUND) ? 10 : 0;
 	}
 
 	@Override
