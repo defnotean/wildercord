@@ -64,9 +64,11 @@ def skin():
     alpha = np.zeros((128, 128))
     boxes = [  # corner, size (w, h, d), top, bottom, side fade
         ((0, 0), (14, 12, 9), FLESH_DARK, RAG_DARK, (FLESH, RAG)),          # torso, rags round its middle
-        ((48, 0), (6, 18, 6), FLESH, FLESH_DARK, (FLESH, FLESH_DARK)),      # arms
+        ((48, 0), (6, 9, 6), FLESH, FLESH_DARK, (FLESH, FLESH_DARK)),       # upper arms
+        ((48, 15), (6, 9, 6), FLESH, FLESH_DARK, (FLESH, FLESH_DARK)),      # forearms
         ((72, 0), (7, 6, 7), FLESH_DARK, FLESH_DARK, (FLESH, FLESH_DARK)),  # fists
-        ((100, 0), (7, 12, 7), RAG, FLESH_DARK, (RAG, FLESH_DARK)),         # legs
+        ((100, 0), (7, 6, 7), RAG, RAG_DARK, (RAG, RAG_DARK)),              # thighs, in rags
+        ((100, 13), (7, 7, 7), RAG_DARK, FLESH_DARK, (RAG_DARK, FLESH_DARK)),  # shins
         ((72, 14), (7, 4, 7), IRON, IRON, (IRON_LIGHT, IRON)),              # chain wrapped round its arm
         ((0, 30), (16, 13, 16), VERDIGRIS, HOLLOW, (VERDIGRIS, BRONZE)),    # bell
         ((64, 30), (10, 3, 10), VERD_PALE, BRONZE_DARK, (VERDIGRIS, VERDIGRIS)),  # crown

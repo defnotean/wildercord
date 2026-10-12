@@ -22,12 +22,26 @@ public final class BellWardenRenderer extends MobRenderer<DrownedBellWarden,Bell
 	private static final Identifier SKIN=Wildercord.id("textures/entity/drowned_bell_warden/skin.png");
 	private static final Identifier GLOW=Wildercord.id("textures/entity/drowned_bell_warden/glow.png");
 	static final float SCALE=1.85F;
+	/** How long one move takes to blend into the next, in ticks. */
+	private static final float BLEND_TICKS=4;
 	public BellWardenRenderer(EntityRendererProvider.Context c){super(c,new BellWardenModel(c.bakeLayer(LAYER)),1.3F);addLayer(new Eyes(this));}
 	@Override public BellWardenRenderState createRenderState(){return new BellWardenRenderState();}
 	@Override public Identifier getTextureLocation(BellWardenRenderState s){return SKIN;}
 	@Override public void extractRenderState(DrownedBellWarden e,BellWardenRenderState s,float partial){
 		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.elapsed=e.elapsed(partial);s.rise=BellWardenRules.rise(s.move,s.elapsed);
+		// Blending out of the move before over a few ticks; out of kneeling or into it the rise does that itself.
+		float now=e.tickCount+partial;
+		if(e.shownMove!=s.move){
+			if(e.shownMove>=0){e.prevMove=e.shownMove;e.prevTell=e.shownTell;e.prevElapsed=e.shownElapsed;e.switchedAt=now;}
+			e.shownMove=s.move;
+		}
+		e.shownTell=s.tell;e.shownElapsed=s.elapsed;
+		boolean still=s.move==BellWardenRules.DORMANT||s.move==BellWardenRules.RISE||s.move==BellWardenRules.KNEEL||e.prevMove==BellWardenRules.DORMANT||e.prevMove==BellWardenRules.RISE||e.prevMove==BellWardenRules.KNEEL;
+		s.prevMove=e.prevMove;s.prevTell=e.prevTell;s.prevElapsed=e.prevElapsed;s.blend=still?1:Mth.clamp((now-e.switchedAt)/BLEND_TICKS,0,1);
+		s.hurt=e.hurtTime>0?Math.max(0,(e.hurtTime-partial)/10F):0;
 	}
+	/** It sinks and topples in its own death, rather than flopping over sideways. */
+	@Override protected float getFlipDegrees(){return 0;}
 	@Override protected void scale(BellWardenRenderState s,PoseStack pose){pose.scale(SCALE,SCALE,SCALE);}
 
 	/** The eyes in the crack: dim and slow while it kneels, burning once it is up; guttering out as it dies. */

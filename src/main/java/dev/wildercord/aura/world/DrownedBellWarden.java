@@ -69,6 +69,8 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		hallMin=new BlockPos(hall.minX(),hall.minY(),hall.minZ());hallMax=new BlockPos(hall.maxX(),hall.maxY(),hall.maxZ());
 		kneelDown();
 	}
+	/** Client side, for blending one move into the next: the move last drawn, the one before it, when it changed, and how far into it the last one was. */
+	public int shownMove=-1,shownTell,prevMove,prevTell;public float shownElapsed,prevElapsed,switchedAt=-100;
 	public int move(){return entityData.get(MOVE);}
 	public int tell(){return entityData.get(TELL);}
 	public float elapsed(float partial){return (float)(level().getGameTime()-entityData.get(BEGAN))+partial;}
