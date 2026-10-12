@@ -136,6 +136,19 @@ public final class HollowMatronRules {
 		return k * k - 0.6 * k * (1 - k);
 	}
 
+	/**
+	 * Weaver's Silk, taken up once the Matron is dead: walk into a wall and you climb it as she does, or hold sneak to cling; the silk
+	 * holds you {@link #SILK_GRIP} ticks off the ground, then lets go until you have touched ground again.
+	 */
+	public static final int SILK_GRIP = 120;
+	/** A living Matron this close keeps anyone from the silk. */
+	public static final double SILK_GUARD = 48;
+
+	/** Whether the silk still holds, {@code offGround} ticks since its wearer last stood on the ground. */
+	public static boolean grips(long offGround) {
+		return offGround < SILK_GRIP;
+	}
+
 	/** The bar's name for what she is doing. */
 	public static String key(int move) {
 		return switch (move) {

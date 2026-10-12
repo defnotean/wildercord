@@ -167,6 +167,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Has taken up the Weaver's Silk the Hollow Matron guards: walls can be climbed. Kept through death. */
+	public static final AttachmentType<Boolean> WEAVERS_SILK = AttachmentRegistry.create(
+		Wildercord.id("weavers_silk"),
+		builder -> builder
+			.initializer(() -> false)
+			.persistent(Codec.BOOL)
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Has taken up the Cinder Antler the Ashen Stag guards: a sprint ends in a gore. Kept through death. */
 	public static final AttachmentType<Boolean> CINDER_ANTLER = AttachmentRegistry.create(
 		Wildercord.id("cinder_antler"),

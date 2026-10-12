@@ -114,6 +114,8 @@ public final class SilkHollowPiece extends DungeonPiece {
 		shaft(level,bb);
 		drift(level,bb);
 		remains(level,bb);
+		// Under the nest, a little behind where she comes down: the Weaver's Silk, a skein of her own silk wound round a bone.
+		set(level,bb,dev.wildercord.aura.world.WeaversSilk.BLOCK.defaultBlockState(),CX,FLOOR+1,CZ+3);
 		matron(level,bb);
 	}
 

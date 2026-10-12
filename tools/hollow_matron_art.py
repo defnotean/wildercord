@@ -28,6 +28,11 @@ for name, text in {'watch': 'Watching', 'bite': 'Biting', 'sweep': 'Sweeping', '
                    'haste': 'Making for the silk', 'scale': 'Climbing', 'lurk': 'Lurking', 'plunge': 'Plunging',
                    'tumble': 'Falling'}.items():
     LANG['boss.wildercord.hollow_matron.move.' + name] = text
+LANG['block.wildercord.weavers_silk'] = "Weaver's Silk"
+LANG['message.wildercord.weavers_silk.take'] = 'The silk winds round your wrists. Walk into a wall and you climb it; sneak and you cling.'
+LANG['message.wildercord.weavers_silk.bound'] = 'Her silk is already wound round your wrists.'
+LANG['message.wildercord.weavers_silk.guarded'] = 'The Hollow Matron still keeps her hall.'
+LANG['message.wildercord.weavers_silk.slip'] = 'The silk lets go.'
 
 # Dusky grey-brown, darker underneath; pale silk; bone; red eyes; dark fangs.
 DUSK, DUSK_DARK, DUSK_PALE = (92, 82, 72), (48, 42, 38), (128, 118, 104)
@@ -93,3 +98,38 @@ def write(g):
     g.write_json(g.DATA / 'loot_table/entities/hollow_matron.json', {'type': 'minecraft:entity', 'pools': []})
     g.save(skin(), g.ASSETS / 'textures/entity/hollow_matron/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/hollow_matron/glow.png')
+    # Under the nest: a skein of her silk wound round a long bone lying on the floor, loose strands trailing off it.
+    g.save(skein(), g.ASSETS / 'textures/block/weavers_silk.png')
+    faces = lambda uv: {f: {'texture': '#s', 'uv': uv} for f in ('north', 'south', 'east', 'west', 'up', 'down')}
+    g.write_json(g.ASSETS / 'models/block/weavers_silk.json', {
+        'parent': 'minecraft:block/block', 'textures': {'particle': 'wildercord:block/weavers_silk', 's': 'wildercord:block/weavers_silk'},
+        'elements': [
+            # The bone, its knobbed ends showing either side of the skein.
+            {'from': [2, 0, 7], 'to': [14, 2, 9], 'rotation': {'origin': [8, 1, 8], 'axis': 'y', 'angle': 22.5}, 'faces': faces([0, 12, 12, 14])},
+            {'from': [1, 0, 6], 'to': [3, 3, 10], 'rotation': {'origin': [8, 1, 8], 'axis': 'y', 'angle': 22.5}, 'faces': faces([12, 12, 14, 15])},
+            {'from': [13, 0, 6], 'to': [15, 3, 10], 'rotation': {'origin': [8, 1, 8], 'axis': 'y', 'angle': 22.5}, 'faces': faces([12, 12, 14, 15])},
+            # The skein wound thick round its middle.
+            {'from': [4, 0, 4], 'to': [12, 6, 12], 'rotation': {'origin': [8, 1, 8], 'axis': 'y', 'angle': 22.5}, 'faces': faces([0, 0, 8, 6])},
+            {'from': [5, 6, 5], 'to': [11, 7, 11], 'rotation': {'origin': [8, 1, 8], 'axis': 'y', 'angle': 22.5}, 'faces': faces([0, 6, 6, 7])},
+        ]})
+    g.write_json(g.ASSETS / 'blockstates/weavers_silk.json', {'variants': {'': {'model': 'wildercord:block/weavers_silk'}}})
+    g.write_json(g.ASSETS / 'items/weavers_silk.json', {'model': {'type': 'minecraft:model', 'model': 'wildercord:block/weavers_silk'}})
+
+
+def skein():
+    """Weaver's Silk, 16 x 16: wound silk in pale bands with darker strands crossing it (top), and old yellowed bone (bottom)."""
+    rng = np.random.default_rng(20261014)
+    px = np.zeros((16, 16, 4), np.uint8)
+    for y in range(16):
+        for x in range(16):
+            if y < 8:
+                # Wound turns, each a shade apart, crossed now and then by a strand pulled the other way.
+                c = mixc(SILK, BONE, .3 + .4 * ((x + 2 * y) % 3 == 0) + .2 * rng.random())
+                if (x - y) % 5 == 0:
+                    c = mixc(c, DUSK_PALE, .45)
+            else:
+                c = mixc(BONE, (190, 176, 140), .25 + .4 * rng.random())
+                if y in (12, 15) or rng.random() < .1:
+                    c = mixc(c, DUSK_PALE, .35)
+            px[y, x] = (*c, 255)
+    return Image.fromarray(px, 'RGBA')

@@ -92,4 +92,9 @@ class HollowMatronRulesTest {
 		assertTrue(HollowMatronRules.hits(HollowMatronRules.PLUNGE,1,2,0));
 		assertFalse(HollowMatronRules.hits(HollowMatronRules.PLUNGE,4,0,0));
 	}
+	@Test void herSilkHoldsAWhileOffTheGroundThenLetsGo(){
+		assertTrue(HollowMatronRules.grips(0));
+		assertTrue(HollowMatronRules.grips(HollowMatronRules.SILK_GRIP-1));
+		assertFalse(HollowMatronRules.grips(HollowMatronRules.SILK_GRIP));
+	}
 }
