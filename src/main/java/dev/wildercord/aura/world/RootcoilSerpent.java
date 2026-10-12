@@ -130,12 +130,32 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		long now=level.getGameTime();
 		if(lastTick>=0 && move()!=SerpentRules.DORMANT && SerpentRules.forgets(now-lastTick))coil();
 		lastTick=now;
+		if(tickCount%SerpentRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
 		switch(move()){
 			case SerpentRules.DORMANT->dormant(level);
 			case SerpentRules.UNCOIL->{hold();if(--left<=0)land(level);else if(left==SerpentRules.UNCOIL_TICKS/2)Feels.sound(level,trunk().add(0,3,0),"aura_serpent_uncoil",1,1);}
 			case SerpentRules.RECOIL->{hold();var p=wakeful(level);if(p!=null)wake(level,SerpentRules.UNCOIL_TICKS-left);else if(--left<=0)coil();}
 			default->awake(level);
 		}
+	}
+
+	/**
+	 * Its grove is its own: anything hostile that wanders or spawns in, asleep or awake, it snaps up, one every
+	 * {@link SerpentRules#GUARD_EVERY} ticks, nearest the trunk first. Only players get a fight.
+	 */
+	private void guard(ServerLevel level){
+		var t=trunk();
+		var box=new AABB(t,t).inflate(SerpentRules.ARENA,SerpentRules.LAIR_HEIGHT,SerpentRules.ARENA);
+		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof RootcoilSerpent)
+			&& SerpentRules.inLair(e.getX()-t.x,e.getY()-t.y,e.getZ()-t.z)).stream().min(Comparator.comparingDouble(e->e.distanceToSqr(t))).orElse(null);
+		if(m==null)return;
+		var from=move()==SerpentRules.DORMANT || SerpentRules.scripted(move())?t.add(0,4,0):mouth();var to=m.position().add(0,m.getBbHeight()/2,0);
+		var step=to.subtract(from);int n=Math.max(2,(int)(step.length()*2));
+		for(int i=0;i<=n;i++){var at=from.add(step.scale(i/(double)n));level.sendParticles(ParticleTypes.FALLING_SPORE_BLOSSOM,at.x,at.y,at.z,1,.1,.1,.1,0);}
+		level.sendParticles(ParticleTypes.DAMAGE_INDICATOR,to.x,to.y,to.z,6,.3,.3,.3,.1);
+		Feels.sound(level,to,"aura_serpent_strike",1.1F,1.1F+random.nextFloat()*.2F);
+		m.hurtServer(level,damageSources().mobAttack(this),Float.MAX_VALUE);
+		if(m.isAlive())m.kill(level);
 	}
 
 	/** The nearest player close enough to the trunk to wake it, if any. */

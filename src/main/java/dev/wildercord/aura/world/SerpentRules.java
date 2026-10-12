@@ -49,6 +49,11 @@ public final class SerpentRules {
 	public static final double LEASH = 22.5;
 	/** Who it hunts, measured from the trunk: anyone in the cavern. */
 	public static final double ARENA = 20;
+	/** Its lair, measured from the trunk: the arena, and {@link #LAIR_HEIGHT} up or down. Anything hostile in it, it kills. */
+	public static final double LAIR_HEIGHT = 12;
+	/** Ticks between the kills it makes guarding its lair. */
+	public static final int GUARD_EVERY = 10;
+	public static boolean inLair(double dx,double dy,double dz){return dx*dx+dz*dz<ARENA*ARENA && Math.abs(dy)<LAIR_HEIGHT;}
 	/** The boss bar shows inside this, and goes past {@link #BAR_DROP}. */
 	public static final double BAR_SHOW = 24, BAR_DROP = 28;
 	/** With nobody to fight it heads back to its landing after this long, and coils up again at {@link #RESET_TICKS}. */

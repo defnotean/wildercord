@@ -34,6 +34,8 @@ class SerpentRulesTest {
 		assertTrue(SerpentRules.LAND_FAR<SerpentRules.ARENA && SerpentRules.ARENA<SerpentRules.LEASH);
 		assertTrue(SerpentRules.BAR_SHOW<SerpentRules.BAR_DROP);
 		assertTrue(SerpentRules.RETURN_TICKS<SerpentRules.RESET_TICKS);
+		assertTrue(SerpentRules.inLair(10,3,-12));assertTrue(SerpentRules.inLair(0,-11,0));
+		assertFalse(SerpentRules.inLair(15,0,15));assertFalse(SerpentRules.inLair(0,12,0));
 		assertFalse(SerpentRules.forgets(1));assertFalse(SerpentRules.forgets(SerpentRules.RESET_TICKS));assertTrue(SerpentRules.forgets(SerpentRules.RESET_TICKS+1));
 	}
 	@Test void itBitesUpCloseLungesFromFurtherOutAndClosesFromBeyond(){
