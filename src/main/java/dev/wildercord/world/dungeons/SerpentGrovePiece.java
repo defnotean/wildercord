@@ -67,6 +67,11 @@ public final class SerpentGrovePiece extends DungeonPiece {
 		var p=getWorldPos(x,0,z);return level.getHeight(Heightmap.Types.WORLD_SURFACE_WG,p.getX(),p.getZ())-getWorldY(0);
 	}
 
+	/** Whether a column lies in the chunk being built: only those columns' heights may be read while it generates. */
+	private boolean column(BoundingBox bb,int x,int z){
+		var p=getWorldPos(x,0,z);return p.getX()>=bb.minX() && p.getX()<=bb.maxX() && p.getZ()>=bb.minZ() && p.getZ()<=bb.maxZ();
+	}
+
 	/** The dome's ceiling over a column {@code r} blocks from the tree, or -1 outside the cavern. */
 	public static int dome(double r){return r>RADIUS?-1:FLOOR+3+(int)Math.round((DOME-3)*Math.sqrt(1-(r/RADIUS)*(r/RADIUS)));}
 
@@ -106,7 +111,7 @@ public final class SerpentGrovePiece extends DungeonPiece {
 			int ceiling=r<=RADIUS+2?dome(Math.min(r,RADIUS))+2:-1;
 			if(r<=RADIUS+2)for(int y=0;y<=ceiling;y++)set(level,bb,rock(x,y,z),x,y,z);
 			double s=dist(x,z,SHAFT_X,SHAFT_Z);
-			if(s<=6.2){int lip=Math.min(top,surface(level,x,z))-1;for(int y=0;y<lip;y++)set(level,bb,rock(x,y,z),x,y,z);}
+			if(s<=6.2 && column(bb,x,z)){int lip=Math.min(top,surface(level,x,z))-1;for(int y=0;y<lip;y++)set(level,bb,rock(x,y,z),x,y,z);}
 			if(x>=TUNNEL_X-4 && x<=TUNNEL_X+4 && z>=SHAFT_Z+3 && z<=CZ-RADIUS+3)for(int y=0;y<=FLOOR+7;y++)set(level,bb,rock(x,y,z),x,y,z);
 		}
 	}
@@ -151,9 +156,8 @@ public final class SerpentGrovePiece extends DungeonPiece {
 		skin(level,bb,10,49,8,0.0,FLOOR+1);
 		skin(level,bb,33,24,7,2.2,FLOOR+1);
 		// A shaft of daylight falls through the dome onto the tree.
-		int shaftTop=Math.min(HEIGHT-1,surface(level,CX,CZ));
-		for(int x=CX-1;x<=CX+1;x++)for(int z=CZ-1;z<=CZ+1;z++)if(dist(x,z,CX,CZ)<1.5)
-			fill(level,bb,x,dome(0)-1,z,x,shaftTop,z,AIR);
+		for(int x=CX-1;x<=CX+1;x++)for(int z=CZ-1;z<=CZ+1;z++)if(dist(x,z,CX,CZ)<1.5 && column(bb,x,z))
+			fill(level,bb,x,dome(0)-1,z,x,Math.min(HEIGHT-1,surface(level,x,z)),z,AIR);
 	}
 
 	/** A shed skin: a curl of pale moss along the floor, {@code length} blocks long, starting at a heading of {@code heading}. */
@@ -212,7 +216,7 @@ public final class SerpentGrovePiece extends DungeonPiece {
 	/** The sinkhole: open to the sky, a spiral of treads down its wall, and a plunge pool for anyone who misses a step. */
 	private void sinkhole(WorldGenLevel level,BoundingBox bb){
 		for(int x=SHAFT_X-6;x<=SHAFT_X+6;x++)for(int z=SHAFT_Z-6;z<=SHAFT_Z+6;z++){
-			double r=dist(x,z,SHAFT_X,SHAFT_Z);if(r>6.2)continue;
+			double r=dist(x,z,SHAFT_X,SHAFT_Z);if(r>6.2 || !column(bb,x,z))continue;
 			if(r>4.4){
 				// The lip: coarse earth and moss, so the hole reads from a distance.
 				var lip=noise(x,z)<45?Blocks.COARSE_DIRT:noise(x,z)<75?Blocks.MOSS_BLOCK:Blocks.MOSSY_COBBLESTONE;
