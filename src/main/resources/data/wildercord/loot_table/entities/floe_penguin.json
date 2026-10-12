@@ -1,0 +1,40 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:feather",
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 0,
+              "max": 1
+            },
+            "type": "minecraft:set_count"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cod",
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 0,
+              "max": 1
+            },
+            "type": "minecraft:set_count"
+          }
+        }
+      ]
+    }
+  ],
+  "random_sequence": "wildercord:entities/floe_penguin"
+}

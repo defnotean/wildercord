@@ -97,6 +97,9 @@ public final class WildlifeRules {
 		"minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle"));
 	public static final Kind TUSSOCK_PIKA = new Kind("tussock_pika", Pool.CREATURE, 10, 1, 3, 1 / 2.0, 6, 48, List.of(
 		"minecraft:meadow", "minecraft:stony_peaks", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills"));
+	public static final Kind FLOE_PENGUIN = new Kind("floe_penguin", Pool.CREATURE, 10, 2, 5, 1 / 2.0, 6, 48, List.of(
+		"minecraft:snowy_beach", "minecraft:frozen_ocean", "minecraft:deep_frozen_ocean", "minecraft:ice_spikes", "minecraft:snowy_plains",
+		"minecraft:frozen_river"));
 
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);

@@ -27,6 +27,7 @@ public final class WildlifeClient {
   BlossomTanukiRenderer.init();
   MirebathCapybaraRenderer.init();
   TussockPikaRenderer.init();
+  FloePenguinRenderer.init();
   PredatorRenderers.init();
   RidgebackStagRenderer.init();
   BurrowAndReefRenderers.init();

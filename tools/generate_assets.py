@@ -980,6 +980,9 @@ def write_lang(runes):
     import pika_art
     lang.update(pika_art.LANG)
     pika_art.write(sys.modules[__name__])
+    import penguin_art
+    lang.update(penguin_art.LANG)
+    penguin_art.write(sys.modules[__name__])
     import puffin_art
     lang.update(puffin_art.LANG)
     puffin_art.write(sys.modules[__name__])
