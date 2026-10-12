@@ -75,4 +75,7 @@ public final class DungeonWorldgen {
 	public static final StructurePieceType ASHEN_GLADE_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("ashen_glade"),
 		(StructurePieceType.ContextlessType)AshenGladePiece::new);
 	public static final ResourceKey<LootTable> ASHEN_GLADE=loot("chests/ashen_glade");
+	public static final StructurePieceType SILK_HOLLOW_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("silk_hollow"),
+		(StructurePieceType.ContextlessType)SilkHollowPiece::new);
+	public static final ResourceKey<LootTable> SILK_HOLLOW=loot("chests/silk_hollow");
 }

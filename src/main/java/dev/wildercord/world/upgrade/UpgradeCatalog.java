@@ -33,6 +33,7 @@ public final class UpgradeCatalog {
 		worldgen("wildercord:sword_tomb","Full 41x55 underground tomb needs excavation, intent gates and loot; old worlds get the bounded duel ring instead"),
 		worldgen("wildercord:sleeping_blade","Full 19x19 site; old worlds get the bounded rest instead"),
 		worldgen("wildercord:serpent_grove","Excavated sinkhole and warded cavern 36 blocks deep with a water ring, a tree and its guardian; old worlds find it only in new chunks"),
+		worldgen("wildercord:silk_hollow","Forest and hills; a timbered mine shaft 32 blocks down to a warded, web-choked hall with its guardian; old worlds find it only in new chunks"),
 		worldgen("wildercord:ashen_glade","Forest; a burnt glade levelled into a bank of scorched earth, dead trees round it, warded, with its guardian; old worlds find it only in new chunks"),
 		worldgen("wildercord:bell_chapel","Deep ocean; a sunken chapel kept dry by a moon pool, warded, with its guardian; needs fluid replacement, which the engine never performs"),
 		worldgen("wildercord:belowkeeper_drainhouse","Cave feature in lush/dripstone caves; underground edits of unknown history"),
