@@ -962,6 +962,9 @@ def write_lang(runes):
     import ram_art
     lang.update(ram_art.LANG)
     ram_art.write(sys.modules[__name__])
+    import dripfang_art
+    lang.update(dripfang_art.LANG)
+    dripfang_art.write(sys.modules[__name__])
     import dormouse_art
     lang.update(dormouse_art.LANG)
     dormouse_art.write(sys.modules[__name__])

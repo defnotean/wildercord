@@ -56,6 +56,7 @@ import java.util.function.Predicate;
  *   <li><b>Reefgrasp Octopuses</b>: on the seafloor in the dark, the oceans but the frozen ones, alone.</li>
  *   <li><b>Foxfire Kitsunes</b>: among the cherry groves at night, alone.</li>
  *   <li><b>Cragcleaver Rams</b>: out on the windswept hills and the snowy slopes at night, alone.</li>
+ *   <li><b>Dripfang Lurkers</b>: in the dripstone caves, alone, climbing straight up to hang among the stalactites.</li>
  * </ul>
  * All need the dark monsters need, none spawns on Peaceful (their types say so), and the server's {@code monsters} settings
  * can stop any of them: the switches at once, through the rules here, the rate when a world loads (it sets the weights).
@@ -112,6 +113,10 @@ public final class MonsterSpawns {
 	/** A Cragcleaver Ram's spawn weight, and its id among the server's switches. */
 	private static final int CRAGCLEAVER_RAM_WEIGHT = 16;
 	private static final String CRAGCLEAVER_RAM = "cragcleaver_ram";
+	private static final Set<ResourceKey<Biome>> DRIPSTONE = Set.of(Biomes.DRIPSTONE_CAVES);
+	/** A Dripfang Lurker's spawn weight, and its id among the server's switches. */
+	private static final int DRIPFANG_LURKER_WEIGHT = 20;
+	private static final String DRIPFANG_LURKER = "dripfang_lurker";
 	/**
 	 * Overworld biomes left alone underground: the deep dark (nothing spawns there on purpose; a lone entry would fill it) and
 	 * the mushroom fields (no monsters, ever).
@@ -176,6 +181,8 @@ public final class MonsterSpawns {
 		SpawnPlacements.register(MonsterContent.CRAGCLEAVER_RAM, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, CRAGCLEAVER_RAM)
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+		SpawnPlacements.register(MonsterContent.DRIPFANG_LURKER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> allowed(reason, DRIPFANG_LURKER) && Monster.checkMonsterSpawnRules(type, level, reason, pos, random));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
 		// Every overworld biome, by the vanilla tag as well as by where they generate, so a world whose overworld makes only a few
@@ -255,6 +262,12 @@ public final class MonsterSpawns {
 			int weight = MonsterRules.weight(CRAGCLEAVER_RAM_WEIGHT, rate);
 			if (weight > 0) {
 				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.CRAGCLEAVER_RAM, UniformInt.of(1, 1)), weight);
+			}
+		}
+		if (DRIPSTONE.contains(key)) {
+			int weight = MonsterRules.weight(DRIPFANG_LURKER_WEIGHT, rate);
+			if (weight > 0) {
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.DRIPFANG_LURKER, UniformInt.of(1, 1)), weight);
 			}
 		}
 		if (!QUIET.contains(key)) {

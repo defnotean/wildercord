@@ -79,6 +79,8 @@ public final class MonsterContent {
 		EntityType.Builder.of(FoxfireKitsune::new, MobCategory.MONSTER).sized(0.8F, 0.9F).eyeHeight(0.75F));
 	public static final EntityType<CragcleaverRam> CRAGCLEAVER_RAM = monster("cragcleaver_ram",
 		EntityType.Builder.of(CragcleaverRam::new, MobCategory.MONSTER).sized(1.3F, 1.6F).eyeHeight(1.3F));
+	public static final EntityType<DripfangLurker> DRIPFANG_LURKER = monster("dripfang_lurker",
+		EntityType.Builder.of(DripfangLurker::new, MobCategory.MONSTER).sized(0.8F, 0.8F).eyeHeight(0.5F));
 
 	/** A Bog Witch-Frog's bubble of poison, in flight. */
 	public static final EntityType<BogBubble> BOG_BUBBLE = register("bog_bubble",
@@ -124,6 +126,7 @@ public final class MonsterContent {
 	public static final Item REEFGRASP_OCTOPUS_EGG = egg("reefgrasp_octopus", REEFGRASP_OCTOPUS);
 	public static final Item FOXFIRE_KITSUNE_EGG = egg("foxfire_kitsune", FOXFIRE_KITSUNE);
 	public static final Item CRAGCLEAVER_RAM_EGG = egg("cragcleaver_ram", CRAGCLEAVER_RAM);
+	public static final Item DRIPFANG_LURKER_EGG = egg("dripfang_lurker", DRIPFANG_LURKER);
 
 	/** Every monster's type, in the order of {@link MonsterRules.Kind}. */
 	public static List<EntityType<? extends Mob>> types() {
@@ -186,6 +189,8 @@ public final class MonsterContent {
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:foxfire_kitsune", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x6AC8F0));
 		FabricDefaultAttributeRegistry.register(CRAGCLEAVER_RAM, CragcleaverRam.createAttributes());
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:cragcleaver_ram", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x8C8A84));
+		FabricDefaultAttributeRegistry.register(DRIPFANG_LURKER, DripfangLurker.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:dripfang_lurker", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0x8A7A68));
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
 			output.accept(LIVING_BRAMBLE);
