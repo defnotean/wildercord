@@ -11,5 +11,5 @@ public final class GravekeeperRenderer extends MobRenderer<Gravekeeper,Gravekeep
 	public GravekeeperRenderer(EntityRendererProvider.Context c){super(c,new GravekeeperModel(c.bakeLayer(LAYER)),.75F);}
 	@Override public GravekeeperRenderState createRenderState(){return new GravekeeperRenderState();}
 	@Override public Identifier getTextureLocation(GravekeeperRenderState s){return Wildercord.id("textures/entity/gravekeeper.png");}
-	@Override public void extractRenderState(Gravekeeper e,GravekeeperRenderState s,float partial){super.extractRenderState(e,s,partial);s.move=e.move();s.elapsed=e.elapsed(partial);}
+	@Override public void extractRenderState(Gravekeeper e,GravekeeperRenderState s,float partial){super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.elapsed=e.elapsed(partial);}
 }
