@@ -103,7 +103,7 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 		l[0]+=Math.max(0,-Mth.sin(step))*walk*1.1F;l[3]+=Math.max(0,-Mth.sin(step))*walk*.6F;
 		l[1]+=Math.max(0,Mth.sin(step))*walk*1.1F;l[2]+=Math.max(0,Mth.sin(step))*walk*.6F;
 		neckX+=Mth.sin(step*2)*walk*.06F;
-		attack(move,el,tell,side,t);
+		attack(move,el,tell,side,t,s.kindled);
 		apply();
 	}
 
@@ -126,38 +126,50 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 
 	/**
 	 * Its moves, laid over the standing pose, each wound up through its tell so it reads from across the glade, then thrown fast. The
-	 * gore drops its head and sweeps the antlers up; the kick puts its weight on its forelegs and lashes both hind hooves back; the
-	 * stomp rears it right up and brings it down; the charge (and each run of a rush) lowers its antlers and paws, then gallops; the bound gathers its legs
-	 * under it in the air; spent, its head hangs and its sides heave; stuck, it braces all four legs and wrenches at its antlers.
+	 * toss drops its head low and twisted to one side and wrenches it up; the buck sinks its head to its knees and lashes both hind
+	 * hooves out high; the rear stands it up on its hind legs and drives its forehooves down (twice once kindled); the charge (and each
+	 * run of a rush) lowers its antlers and paws, then gallops; the rake drags its brow side to side and flicks its head up with each
+	 * cinder; the stampede throws its head back bellowing; the smoke shakes its head hard; the stalk slinks it low; the lunge crouches it
+	 * on its haunches and springs it out flat; the lock levels its antlers, drives in and heaves at whoever it holds, then throws them;
+	 * the skid sits it back on dug-in hooves; reeling, its head swings; kindling, it rears as high as it goes and crashes down; the bound
+	 * gathers its legs under it in the air; spent, its head hangs and its sides heave; stuck, it braces all four legs and wrenches at
+	 * its antlers.
 	 */
-	private void attack(int move,float el,int tellTicks,int side,float t){
+	private void attack(int move,float el,int tellTicks,int side,float t,boolean kindled){
 		float tell=Math.max(1,tellTicks);
 		float wind=ramp(el,0,tell),go=ramp(el,tell,2);
 		switch(move){
-			case AshenStagRules.GORE->{
-				// Head down, antlers levelled, forelegs bracing; then the head flung up and back through whoever is in front.
-				float down=wind*(1-go);
-				neckX+=.55F*down-.55F*go;headX+=.55F*down-.45F*go;
-				pitch+=.12F*down-.12F*go;
-				u[0]-=.25F*down;u[1]-=.25F*down;l[0]+=.4F*down;l[1]+=.4F*down;
-				u[2]+=.2F*go;u[3]+=.2F*go;
+			case AshenStagRules.TOSS->{
+				// Head dropped low and twisted to one side, the low tine scraping the ash and the forelegs splayed; then wrenched up and
+				// round through whoever is in front, the chest thrown open, and held up there a moment.
+				float down=wind*(1-go),scrape=Mth.sin(el*1.6F)*.05F*down;
+				neckX+=.7F*down-.75F*go;headX+=.5F*down-.5F*go;neckY+=side*(.35F*down-.2F*go)+scrape;
+				roll=side*.06F*down;pitch+=.14F*down-.2F*go;
+				u[0]-=.3F*down;u[1]-=.3F*down;l[0]+=.35F*down;l[1]+=.35F*down;uz[0]=-.15F*down;uz[1]=.15F*down;
+				u[2]+=.25F*go;u[3]+=.25F*go;tailX+=.4F*go;
 			}
-			case AshenStagRules.KICK->{
-				// Weight onto its forelegs, hind legs gathered under; then both lashed out straight behind it.
-				pitch+=.15F*wind+.15F*go;neckX+=.25F*wind;headX+=.1F*wind;
-				u[2]=u[3]=Mth.lerp(go,HIND_U-.45F*wind,1.25F);l[2]=l[3]=Mth.lerp(go,HIND_L+.6F*wind,-.15F);
-				u[0]-=.1F*wind;u[1]-=.1F*wind;tailX+=.6F*wind;
+			case AshenStagRules.BUCK->{
+				// Head down to its knees and tail flagged, its weight rocked onto braced forelegs and the hind legs gathered under it; then
+				// both hind hooves lashed out high behind it, the hindquarters thrown up after them.
+				pitch+=.2F*wind+.25F*go;neckX+=.5F*wind;headX+=.35F*wind;
+				u[0]-=.15F*wind;u[1]-=.15F*wind;
+				u[2]=u[3]=Mth.lerp(go,HIND_U-.5F*wind,1.55F);l[2]=l[3]=Mth.lerp(go,HIND_L+.7F*wind,-.2F);
+				tailX+=.9F*wind;
 			}
-			case AshenStagRules.STOMP->{
-				// Reared up on its hind legs, forelegs folded and pawing the air, head thrown back; then down hard on straight forelegs.
-				float rear=wind*(1-go);
-				pitch+=-.95F*rear+.18F*go;
-				neckX-=.45F*rear;headX-=.2F*rear;headX+=.2F*go;
-				float paw=Mth.sin(el*.9F)*.25F*rear;
-				u[0]=Mth.lerp(go,-1.0F*wind+paw,-.15F);u[1]=Mth.lerp(go,-1.0F*wind-paw,-.15F);
-				l[0]=Mth.lerp(go,1.5F*wind,0);l[1]=Mth.lerp(go,1.5F*wind,0);
-				u[2]=u[3]=Mth.lerp(rear,HIND_U,.1F);l[2]=l[3]=Mth.lerp(rear,HIND_L,.25F);
-				tailX+=.5F*rear;
+			case AshenStagRules.REAR->{
+				// Up on its hind legs, belly bare and forehooves pawing the air, head thrown back; then both forehooves driven down hard,
+				// the head dropping with them. Kindled, it heaves itself up again straight off the landing and stamps a second time.
+				float up=wind*(1-go),down=go;
+				if(kindled&&el>tell+2){
+					float a=ramp(el,tell+2,AshenStagRules.REAR_AGAIN-2)*(1-ramp(el,tell+AshenStagRules.REAR_AGAIN,2));
+					up=Math.max(up,a);down=go*(1-a);
+				}
+				pitch+=-1.0F*up+.2F*down;neckX+=-.5F*up+.15F*down;headX+=-.25F*up+.3F*down;
+				float paw=Mth.sin(el*.9F)*.3F*up;
+				u[0]=Mth.lerp(down,-1.05F*up+paw,-.2F);u[1]=Mth.lerp(down,-1.05F*up-paw,-.2F);
+				l[0]=Mth.lerp(down,1.6F*up,0);l[1]=Mth.lerp(down,1.6F*up,0);
+				u[2]=u[3]=Mth.lerp(up,HIND_U,.15F);l[2]=l[3]=Mth.lerp(up,HIND_L,.3F);
+				tailX+=.5F*up;
 			}
 			case AshenStagRules.CHARGE,AshenStagRules.RUSH->{
 				// Antlers lowered at its prey and a forehoof scraping the ash through the tell; then a flat-out gallop, forelegs
@@ -196,6 +208,88 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 				u[0]-=.3F*k;u[1]-=.3F*k;u[2]+=(.45F+.2F*heave)*k;u[3]+=(.45F+.2F*heave)*k;l[2]-=.2F*k;l[3]-=.2F*k;
 				neckY+=Mth.sin(el*1.7F)*.12F*heave;roll=Mth.sin(el*1.7F)*.04F*heave;
 				tailX+=.4F*heave;
+			}
+			case AshenStagRules.RAKE->{
+				// Brow down in the ash and the antlers dragged side to side, forelegs spread wide; then with each cinder its head is
+				// flicked up, throwing it.
+				float sweep=Mth.sin(el*.55F);
+				float flick=el>=tell&&el<tell+AshenStagRules.RAKE_TICKS?(float)Math.pow(Math.max(0,1-((el-tell)%AshenStagRules.RAKE_EVERY)/3F),2):0;
+				neckX+=.85F*wind-.6F*flick;headX+=.45F*wind-.4F*flick;neckY+=sweep*.45F*wind;roll=sweep*.05F*wind;
+				pitch+=.16F*wind;
+				u[0]-=.35F*wind;u[1]-=.35F*wind;l[0]+=.5F*wind;l[1]+=.5F*wind;uz[0]=-.2F*wind;uz[1]=.2F*wind;
+				u[2]+=.1F*wind;u[3]+=.1F*wind;tailX+=.3F*flick;
+			}
+			case AshenStagRules.STAMPEDE->{
+				// Head thrown back and neck stretched up, bellowing the herd on and a forehoof stamping time; the call shakes it.
+				float beat=Math.max(0,Mth.sin(el*.6F));
+				neckX-=.7F*wind;headX-=.55F*wind;pitch-=.12F*wind;
+				u[1]=-.5F*beat*wind;l[1]=1.1F*beat*wind;
+				float shake=el>=tell?Mth.sin(el*2.2F)*.08F*(1-ramp(el,tell,12)):0;
+				neckY+=shake;roll=shake*.4F;
+				u[2]-=.12F*wind;u[3]-=.12F*wind;tailX+=.6F*wind;
+			}
+			case AshenStagRules.SMOKE->{
+				// Head swung low and shaken hard side to side, smoke pouring off its hide, legs braced wide.
+				float shake=Mth.sin(el*1.9F)*(.25F+.25F*wind);
+				neckX+=.5F*wind;headX+=.2F*wind;neckY+=shake*wind;roll=-shake*.12F*wind;pitch+=.05F*wind;
+				for(int i=0;i<4;i++)uz[i]=(i%2==0?-.18F:.18F)*wind;
+			}
+			case AshenStagRules.STALK->{
+				// Slunk low through its smoke, head down and level, every leg bent and the tail clamped.
+				float k=ramp(el,0,6);
+				neckX+=.7F*k;headX-=.15F*k;pitch+=.06F*k;
+				for(int i=0;i<4;i++){u[i]-=.25F*k;l[i]+=.5F*k;}
+				tailX-=.35F*k;
+			}
+			case AshenStagRules.LUNGE->{
+				// Crouched right down on gathered hind legs, antlers low and aimed; then sprung out flat, forelegs reaching and the hind
+				// legs flung back.
+				float crouch=wind*(1-go),spring=go*(1-ramp(el,tell+AshenStagRules.LUNGE_TICKS,4));
+				neckX+=.6F*crouch+.3F*spring;headX+=.2F*crouch;pitch+=.12F*crouch-.1F*spring;
+				u[2]-=.55F*crouch;u[3]-=.55F*crouch;l[2]+=.9F*crouch;l[3]+=.9F*crouch;
+				u[0]+=.15F*crouch;u[1]+=.15F*crouch;l[0]+=.3F*crouch;l[1]+=.3F*crouch;
+				u[0]-=.9F*spring;u[1]-=.9F*spring;u[2]+=1.1F*spring;u[3]+=1.1F*spring;l[2]-=.2F*spring;l[3]-=.2F*spring;
+				tailX+=.5F*spring;
+			}
+			case AshenStagRules.LOCK->{
+				// Antlers levelled at chest height and a forehoof scraping, hindquarters set; then driven forward, and whoever it catches
+				// held on its antlers while it shoves and grinds in heaves, until it flings its head up and throws them.
+				neckX+=.45F*wind;headX+=.35F*wind;pitch+=.08F*wind;
+				if(el<=tell){float scrape=Mth.sin(el*1.1F);u[0]=-.3F*Math.max(0,scrape)*wind+.3F*Math.max(0,-scrape)*wind;l[0]=.8F*Math.max(0,scrape)*wind;}
+				u[2]+=.35F*go;u[3]+=.35F*go;l[2]-=.15F*go;l[3]-=.15F*go;u[1]-=.2F*go;
+				float held=el-tell-AshenStagRules.LOCK_TICKS;
+				if(held>0){
+					float heave=(float)Math.pow(Math.max(0,Mth.sin(held*Mth.TWO_PI/AshenStagRules.LOCK_GRIND)),3),fling=ramp(held,AshenStagRules.LOCK_HOLD-6,4);
+					pitch+=.08F*heave;neckY+=Mth.sin(held*.9F)*.15F*heave;u[2]+=.15F*heave;u[3]+=.15F*heave;
+					neckX-=1.1F*fling;headX-=.6F*fling;pitch-=.15F*fling;
+				}
+			}
+			case AshenStagRules.SKID->{
+				// Forehooves dug in ahead of it and sat back on its haunches as it slides, head flung up; then pulling round, flank turned.
+				float dig=ramp(el,0,2)*(1-smooth(el,AshenStagRules.SKID_SLIDE,AshenStagRules.SKID_SLIDE+6));
+				pitch-=.3F*dig;neckX-=.35F*dig;headX-=.2F*dig;
+				u[0]-=.7F*dig;u[1]-=.6F*dig;
+				u[2]-=.45F*dig;u[3]-=.45F*dig;l[2]+=.7F*dig;l[3]+=.7F*dig;
+				roll=Mth.sin(el*.8F)*.04F*dig;tailX+=.3F*dig;
+			}
+			case AshenStagRules.STAGGER->{
+				// Reeling back from the wrench, legs splayed, head swinging low from side to side as it shakes off the blows.
+				float k=ramp(el,0,3),swing=Mth.sin(el*.45F);
+				neckX+=.55F*k;headX+=.25F*k;neckY+=swing*.4F*k;roll=swing*.08F*k;yaw=swing*.06F*k;
+				pitch-=.1F*k*(1-ramp(el,0,8));
+				for(int i=0;i<4;i++)uz[i]=(i%2==0?-.22F:.22F)*k;
+				u[0]-=.2F*k;u[1]-=.2F*k;
+			}
+			case AshenStagRules.KINDLE->{
+				// Reared up as high as it goes and held there bellowing at the sky, forehooves churning and the whole of it shuddering as
+				// the fire climbs; then it crashes down on all fours, head driven at the ground.
+				float up=smooth(el,0,tell*.4F)*(1-go),shudder=Mth.sin(el*2.5F)*.03F*up*wind;
+				pitch+=-1.1F*up+.25F*go+shudder;neckX+=-.8F*up+.45F*go;headX+=-.6F*up+.3F*go;
+				float churn=Mth.sin(el*.7F)*.4F*up;
+				u[0]=Mth.lerp(go,-1.2F*up+churn,-.25F);u[1]=Mth.lerp(go,-1.2F*up-churn,-.25F);
+				l[0]=Mth.lerp(go,1.4F*up,0);l[1]=Mth.lerp(go,1.4F*up,0);
+				u[2]=u[3]=Mth.lerp(up,HIND_U,.2F);l[2]=l[3]=Mth.lerp(up,HIND_L,.25F);
+				roll=shudder;tailX+=.7F*up;
 			}
 			default->{}
 		}
