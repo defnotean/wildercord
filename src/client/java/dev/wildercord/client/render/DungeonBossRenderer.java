@@ -60,6 +60,9 @@ public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends Entit
 		for (int i = 1; i < DungeonBoss.MOVES; i++) {
 			state.moves[i] = boss.moveBlend(i, partial);
 		}
+		for (int i = 0; i < DungeonBoss.EXTRA; i++) {
+			state.extra[i] = boss.extra(i, partial);
+		}
 	}
 
 	@Override

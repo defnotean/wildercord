@@ -24,4 +24,6 @@ public class DungeonBossRenderState extends LivingEntityRenderState {
 	public int tell;
 	/** How far each of its own moves' poses has eased in, by move id, so one blends into the next. */
 	public final float[] moves = new float[DungeonBoss.MOVES];
+	/** Whatever else a boss's pose wants of it, its own way (see {@code DungeonBoss#extra}). */
+	public final float[] extra = new float[DungeonBoss.EXTRA];
 }

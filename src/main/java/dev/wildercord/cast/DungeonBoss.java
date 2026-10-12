@@ -87,6 +87,8 @@ public abstract class DungeonBoss extends Monster {
 	public static final int MOVES = 24;
 	/** Its spells in its deck: spell {@code i} of its phase is move {@code SPELL + i}. */
 	protected static final int SPELL = 100;
+	/** How many more figures each boss may hand its pose its own way ({@link #extra}). */
+	public static final int EXTRA = 8;
 	/** How many moves its deck remembers. */
 	private static final int MEMORY = 4;
 
@@ -832,6 +834,11 @@ public abstract class DungeonBoss extends Monster {
 	/** Ticks into its own move under way, with the partial tick (client). */
 	public float moveSince(float partial) {
 		return (float) (level().getGameTime() - entityData.get(DATA_MOVE_BEGAN)) + partial;
+	}
+
+	/** Figure {@code i} of whatever else its pose wants (aim, a charge, a lean), each boss its own way; 0 unless it says. */
+	public float extra(int i, float partial) {
+		return 0;
 	}
 
 	/** How far its pose for its own {@code move} has eased in, 0 to 1 (client). */
