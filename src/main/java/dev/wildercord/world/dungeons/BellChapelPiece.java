@@ -73,6 +73,7 @@ public final class BellChapelPiece extends DungeonPiece {
 		apse(level,bb);
 		frame(level,bb);
 		belfry(level,bb);
+		warden(level,bb);
 	}
 
 	/** The chapel, from the tunnel's mouth to the back of the apse, floor to belfry. */
@@ -147,6 +148,18 @@ public final class BellChapelPiece extends DungeonPiece {
 	}
 
 	/** The bell tower on the narthex's roof: four posts, a cap, and its bell, still hung, out in the sea. */
+	/** The guardian, kneeling before the bell-frame and facing down the nave toward the door. Spawned once, by whichever chunk holds its knees. */
+	private void warden(WorldGenLevel level,BoundingBox bb){
+		var foot=getWorldPos(REST_X,F+1,REST_Z);if(!bb.isInside(foot))return;
+		var door=getWorldPos(REST_X,F+1,REST_Z-10);
+		float rest=(float)Math.toDegrees(Math.atan2(-(door.getX()-foot.getX()),door.getZ()-foot.getZ()));
+		var warden=dev.wildercord.aura.world.Guardians.BELL_WARDEN.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(warden==null)return;
+		warden.snapTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
+		warden.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
+		warden.bind(foot,rest,worldBox(4,F,19,26,F+14,65));
+		level.addFreshEntityWithPassengers(warden);
+	}
+
 	private void belfry(WorldGenLevel level,BoundingBox bb){
 		for(int x:new int[]{13,17})for(int z:new int[]{11,15})fill(level,bb,x,F+8,z,x,F+14,z,PILLAR);
 		fill(level,bb,13,F+8,11,17,F+8,15,DARK);

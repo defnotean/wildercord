@@ -459,6 +459,27 @@
     "aura_backlash": {
       "part": "aura"
     },
+    "aura_bell_warden_breath": {
+      "part": "aura"
+    },
+    "aura_bell_warden_challenge": {
+      "part": "aura"
+    },
+    "aura_bell_warden_death": {
+      "part": "aura"
+    },
+    "aura_bell_warden_hurt": {
+      "part": "aura"
+    },
+    "aura_bell_warden_rise": {
+      "part": "aura"
+    },
+    "aura_bell_warden_step": {
+      "part": "aura"
+    },
+    "aura_bell_warden_toll": {
+      "part": "aura"
+    },
     "aura_blade_stone_draw": {
       "part": "aura"
     },

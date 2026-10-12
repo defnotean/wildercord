@@ -4826,6 +4826,48 @@
       "wildercord:kit/aura/aura_backlash"
     ]
   },
+  "aura_bell_warden_breath": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.breath",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_breath"
+    ]
+  },
+  "aura_bell_warden_challenge": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.challenge",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_challenge"
+    ]
+  },
+  "aura_bell_warden_death": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.death",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_death"
+    ]
+  },
+  "aura_bell_warden_hurt": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.hurt",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_hurt"
+    ]
+  },
+  "aura_bell_warden_rise": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.rise",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_rise"
+    ]
+  },
+  "aura_bell_warden_step": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.step",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_step"
+    ]
+  },
+  "aura_bell_warden_toll": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.toll",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_toll"
+    ]
+  },
   "aura_blade_stone_draw": {
     "subtitle": "subtitles.wildercord.kit.sleeping_blade.draw",
     "sounds": [
