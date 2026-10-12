@@ -914,6 +914,9 @@ def write_lang(runes):
     import stoat_art
     lang.update(stoat_art.LANG)
     stoat_art.write(sys.modules[__name__])
+    import otter_art
+    lang.update(otter_art.LANG)
+    otter_art.write(sys.modules[__name__])
     import predator_art
     lang.update(predator_art.LANG)
     predator_art.write(sys.modules[__name__])

@@ -73,6 +73,9 @@ public final class WildlifeRules {
 		"minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:grove", "minecraft:snowy_slopes", "minecraft:taiga",
 		"minecraft:old_growth_spruce_taiga"));
 
+	public static final Kind BROOK_OTTER = new Kind("brook_otter", Pool.CREATURE, 5, 1, 3, 1 / 2.0, 4, 48, List.of(
+		"minecraft:river", "minecraft:swamp", "minecraft:mangrove_swamp"));
+
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);
 

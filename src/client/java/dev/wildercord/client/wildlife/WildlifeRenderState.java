@@ -47,6 +47,10 @@ public class WildlifeRenderState extends LivingEntityRenderState {
 	/** A reefback swimming (0 ashore, 1 in water), and a delver digging. */
 	public float swim;
 	public float dig;
+	/** A brook otter lying on its back, knocking a shell (or eating), holding out a paw; what it holds, where its knock is (0 raised, 1 down), its pose, and which paw. */
+	public float onBack, crack, hold, knock;
+	public int held, otterPose;
+	public boolean reachRight;
 	/** A mount's barding tint (0.13 mount bonds), or 0 when it wears none. */
 	public int barding;
 
