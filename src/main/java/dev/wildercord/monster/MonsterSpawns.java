@@ -46,7 +46,8 @@ import java.util.function.Predicate;
  *   <li><b>Geode Crawlers</b>: caves below 50, mostly near amethyst geodes;</li>
  *   <li><b>Bog Witch-Frogs</b>: swamps and mangrove swamps at night;</li>
  *   <li><b>Mana Oozes</b>: the deep caves below 0, or caves below 40 under a ley line;</li>
- *   <li><b>Strawmen</b>: out in the open plains and meadows at night, one at a time.</li>
+ *   <li><b>Strawmen</b>: out in the open plains and meadows at night, one at a time;</li>
+ *   <li><b>Dunestingers</b>: out on the deserts and badlands at night, a few together, buried where there is sand.</li>
  * </ul>
  * All need the dark monsters need, none spawns on Peaceful (their types say so), and the server's {@code monsters} settings
  * can stop any of them: the switches at once, through the rules here, the rate when a world loads (it sets the weights).
@@ -65,6 +66,10 @@ public final class MonsterSpawns {
 	/** A Strawman's spawn weight, and its id among the server's switches. */
 	private static final int STRAWMAN_WEIGHT = 12;
 	private static final String STRAWMAN = "strawman";
+	private static final Set<ResourceKey<Biome>> DESERTS = Set.of(Biomes.DESERT, Biomes.BADLANDS, Biomes.ERODED_BADLANDS, Biomes.WOODED_BADLANDS);
+	/** A Dunestinger's spawn weight, and its id among the server's switches. */
+	private static final int DUNESTINGER_WEIGHT = 14;
+	private static final String DUNESTINGER = "dunestinger";
 	/**
 	 * Overworld biomes left alone underground: the deep dark (nothing spawns there on purpose; a lone entry would fill it) and
 	 * the mushroom fields (no monsters, ever).
@@ -98,6 +103,9 @@ public final class MonsterSpawns {
 		SpawnPlacements.register(MonsterContent.STRAWMAN, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, STRAWMAN)
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+		SpawnPlacements.register(MonsterContent.DUNESTINGER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> allowed(reason, DUNESTINGER)
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
 		// Every overworld biome, by the vanilla tag as well as by where they generate, so a world whose overworld makes only a few
@@ -123,6 +131,12 @@ public final class MonsterSpawns {
 			int weight = MonsterRules.weight(STRAWMAN_WEIGHT, rate);
 			if (weight > 0) {
 				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.STRAWMAN, UniformInt.of(1, 1)), weight);
+			}
+		}
+		if (DESERTS.contains(key)) {
+			int weight = MonsterRules.weight(DUNESTINGER_WEIGHT, rate);
+			if (weight > 0) {
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.DUNESTINGER, UniformInt.of(2, 4)), weight);
 			}
 		}
 		if (!QUIET.contains(key)) {

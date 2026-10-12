@@ -932,6 +932,9 @@ def write_lang(runes):
     import strawman_art
     lang.update(strawman_art.LANG)
     strawman_art.write(sys.modules[__name__])
+    import dunestinger_art
+    lang.update(dunestinger_art.LANG)
+    dunestinger_art.write(sys.modules[__name__])
     import puffin_art
     lang.update(puffin_art.LANG)
     puffin_art.write(sys.modules[__name__])

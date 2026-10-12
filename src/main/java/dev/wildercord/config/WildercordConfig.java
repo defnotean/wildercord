@@ -248,6 +248,7 @@ public record WildercordConfig(
 				case "bog_witch_frog" -> bogWitchFrog;
 				case "mana_ooze" -> manaOoze;
 				case "strawman" -> true;
+				case "dunestinger" -> true;
 				default -> false;
 			};
 		}
