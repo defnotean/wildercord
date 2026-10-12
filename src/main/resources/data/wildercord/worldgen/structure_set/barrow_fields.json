@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 202610116,
+    "spacing": 44,
+    "separation": 16
+  },
+  "structures": [
+    {
+      "structure": "wildercord:barrow_field",
+      "weight": 1
+    }
+  ]
+}

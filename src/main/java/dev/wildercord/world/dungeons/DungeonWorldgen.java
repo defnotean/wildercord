@@ -81,4 +81,7 @@ public final class DungeonWorldgen {
 	public static final StructurePieceType GLACIER_DEN_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("glacier_den"),
 		(StructurePieceType.ContextlessType)GlacierDenPiece::new);
 	public static final ResourceKey<LootTable> GLACIER_DEN=loot("chests/glacier_den");
+	public static final StructurePieceType BARROW_FIELD_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("barrow_field"),
+		(StructurePieceType.ContextlessType)BarrowFieldPiece::new);
+	public static final ResourceKey<LootTable> BARROW_FIELD=loot("chests/barrow_field");
 }
