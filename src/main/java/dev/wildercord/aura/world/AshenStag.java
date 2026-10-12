@@ -26,7 +26,8 @@ import java.util.*;
  * On its feet it gores whoever is in front of it, kicks out behind at whoever circles to its back, rears and brings both forehooves
  * down on the ground ahead, and charges anyone keeping their distance, antlers lowered. A charge that runs into a trunk or the bank
  * drives its antlers in, and it stands there heaving to pull them free: the big opening. It bounds aside out from under some blows,
- * and hurt too fast it leaps away back across the glade.
+ * and hurt too fast it leaps away back across the glade. Wounded, it makes its Cinder Rush: three charges back to back, wheeling
+ * between them, each leaving a strip of embers smouldering along its track that burns whoever stands in it.
  */
 public final class AshenStag extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> MOVE=SynchedEntityData.defineId(AshenStag.class,EntityDataSerializers.INT);
@@ -53,6 +54,13 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	private double stung;
 	/** Whoever this charge has already run down. */
 	private final Set<UUID> struck=new HashSet<>();
+	/** The Cinder Rush: runs made so far, where this run set off from, and when it last rushed. */
+	private int runs;
+	private Vec3 runFrom=Vec3.ZERO;
+	private long lastRush=-999;
+	/** A strip of embers a rush left along its track, smouldering until {@code until}. */
+	private record Strip(double ax,double az,double bx,double bz,double y,long until){}
+	private final List<Strip> strips=new ArrayList<>();
 
 	public AshenStag(EntityType<? extends AshenStag> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
@@ -95,7 +103,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	}
 	/** Back down in its bed, whole again. */
 	private void bedDown(){
-		pose(AshenStagRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;clearFire();
+		pose(AshenStagRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;clearFire();strips.clear();
 	}
 	/** Pinned to its bed while it lies there (or gets up or down). */
 	private void hold(){
@@ -128,6 +136,11 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.SMOKE,h.x,h.y+.9,h.z,1,.5,.2,.5,.01);
 		if(random.nextInt(3)==0)level.sendParticles(ParticleTypes.SMALL_FLAME,h.x,h.y+1,h.z,1,.5,.3,.5,.005);
 		if(!AshenStagRules.scripted(move()) && random.nextInt(2)==0)level.sendParticles(ParticleTypes.WHITE_ASH,getX(),getY()+1.8,getZ(),3,.8,.5,.8,0);
+		// Rushing, its cracks flare and it trails fire.
+		if(move()==AshenStagRules.RUSH){
+			level.sendParticles(ParticleTypes.FLAME,getX(),getY()+1.6,getZ(),4,.7,.5,1.0,.01);
+			level.sendParticles(ParticleTypes.LAVA,h.x,h.y+1,h.z,1,.4,.2,.4,0);
+		}
 	}
 	/** Its bellow: the sound, and a breath of sparks and smoke off its antlers. */
 	private void bellow(ServerLevel level,float volume,float pitch){
@@ -207,8 +220,10 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 				.min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null));
 		}
 		stung*=AshenStagRules.STING_FADE;
+		smoulder(level);
 		var target=getTarget();
 		switch(move()){
+			case AshenStagRules.RUSH->rush(level,target);
 			case AshenStagRules.GORE->gore(level);
 			case AshenStagRules.KICK->kick(level);
 			case AshenStagRules.STOMP->stomp(level,target);
@@ -241,6 +256,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 			long now=level.getGameTime();
 			int pick=AshenStagRules.choose(d,behind,random.nextDouble(),now-lastStomp>=AshenStagRules.STOMP_REST,now-lastCharge>=AshenStagRules.CHARGE_REST,now-lastKick>=AshenStagRules.KICK_REST);
 			// A long chase ends in a charge from further out.
+			if(AshenStagRules.rushes(wounded(),now-lastRush,d))pick=AshenStagRules.RUSH;
 			if(pick<0 && chased>=60 && d<=AshenStagRules.CHARGE_REACH+3 && now-lastCharge>=AshenStagRules.CHARGE_REST/2)pick=AshenStagRules.CHARGE;
 			if(pick>=0){
 				chased=0;struck.clear();
@@ -248,6 +264,10 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 				switch(pick){
 					case AshenStagRules.KICK->{lastKick=now;pose(AshenStagRules.KICK,0,AshenStagRules.KICK_TELL);Feels.sound(level,position(),"aura_ashen_stag_snort",1,.9F);}
 					case AshenStagRules.STOMP->{lastStomp=now;pose(AshenStagRules.STOMP,0,AshenStagRules.STOMP_TELL);bellow(level,1.2F,1.2F);}
+					case AshenStagRules.RUSH->{
+						lastRush=lastCharge=now;runs=0;pose(AshenStagRules.RUSH,0,AshenStagRules.RUSH_TELL);
+						bellow(level,1.8F,.85F);Feels.sound(level,position(),"aura_ashen_stag_paw",1.4F,.9F);
+					}
 					case AshenStagRules.CHARGE->{lastCharge=now;pose(AshenStagRules.CHARGE,0,AshenStagRules.CHARGE_TELL);Feels.sound(level,head(),"aura_ashen_stag_paw",1.4F,1);}
 					default->{pose(AshenStagRules.GORE,0,AshenStagRules.GORE_TELL);Feels.sound(level,head(),"aura_ashen_stag_snort",1.2F,1);}
 				}
@@ -315,6 +335,65 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		for(var p:prey(level))if(!struck.contains(p.getUUID()) && reaches(AshenStagRules.CHARGE,p)){struck.add(p.getUUID());hit(level,p,AshenStagRules.CHARGE_DAMAGE,1.6,position().subtract(ahead(aim)),.4);}
 		if(horizontalCollision)stick(level);
 		else if(el>=tell+AshenStagRules.CHARGE_TICKS)spent(AshenStagRules.CHARGE_RECOVER);
+	}
+	/**
+	 * The Cinder Rush. Each run: a tell spent wheeling round toward its prey and pawing (a long one before the first, a short one
+	 * after), then its whole weight run along the way it ended up facing, embers left smouldering behind it. After the last run it is
+	 * spent a long while; a run into a trunk sticks it fast and ends the rush.
+	 */
+	private void rush(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<=tell){
+			still();
+			if(el<=tell-3 && target!=null)aim=yawTo(target.position());
+			turn(aim,24);
+			if(el%4==0)level.sendParticles(ParticleTypes.WHITE_ASH,getX(),getY()+.1,getZ(),8,.4,0,.4,.05);
+			if(el==tell){aim=getYRot();runFrom=position();}
+			return;
+		}
+		face(aim);
+		var step=ahead(aim).scale(AshenStagRules.RUSH_REACH/AshenStagRules.RUSH_TICKS);
+		move(MoverType.SELF,new Vec3(step.x,-.3,step.z));setDeltaMovement(Vec3.ZERO);
+		if(el%2==0)Feels.sound(level,position(),"aura_ashen_stag_step",1.4F,1.25F);
+		level.sendParticles(ParticleTypes.FLAME,getX(),getY()+.2,getZ(),4,.5,.1,.5,.02);
+		for(var p:prey(level))if(!struck.contains(p.getUUID()) && reaches(AshenStagRules.RUSH,p)){struck.add(p.getUUID());hit(level,p,AshenStagRules.RUSH_DAMAGE,1.4,position().subtract(ahead(aim)),.4);}
+		if(horizontalCollision){lay(level);stick(level);return;}
+		if(el<tell+AshenStagRules.RUSH_TICKS)return;
+		lay(level);
+		if(++runs>=AshenStagRules.RUSH_RUNS){spent(AshenStagRules.RUSH_RECOVER);Feels.sound(level,head(),"aura_ashen_stag_snort",1.4F,.75F);return;}
+		struck.clear();pose(AshenStagRules.RUSH,0,AshenStagRules.RUSH_TURN);
+		Feels.sound(level,position(),"aura_ashen_stag_paw",1.3F,1.15F);
+	}
+	/** The embers this run left along its track, from where it set off to where it is now. */
+	private void lay(ServerLevel level){
+		var at=position();
+		if(at.subtract(runFrom).horizontalDistanceSqr()<1)return;
+		strips.add(new Strip(runFrom.x,runFrom.z,at.x,at.z,at.y,level.getGameTime()+AshenStagRules.EMBER_TICKS));
+		var mid=runFrom.add(at).scale(.5);
+		Feels.sound(level,mid,"aura_ashen_stag_smoulder",1.2F,.9F+random.nextFloat()*.2F);
+	}
+	/** The ember strips smouldering, and burning whoever stands in them; gone when they go out. */
+	private void smoulder(ServerLevel level){
+		if(strips.isEmpty())return;
+		long now=level.getGameTime();
+		strips.removeIf(st->now>=st.until());
+		boolean burn=now%AshenStagRules.EMBER_EVERY==0;
+		var hurt=new HashSet<UUID>();
+		for(var st:strips){
+			double dx=st.bx()-st.ax(),dz=st.bz()-st.az();int n=Math.max(2,(int)Math.sqrt(dx*dx+dz*dz));
+			// Dying down toward the end: smoke instead of flame.
+			boolean low=st.until()-now<AshenStagRules.EMBER_TICKS/4;
+			if(now%3==0)for(int i=0;i<n;i+=2){
+				double t=(i+random.nextDouble())/n,x=st.ax()+dx*t,z=st.az()+dz*t;
+				level.sendParticles(low?ParticleTypes.SMOKE:ParticleTypes.FLAME,x,st.y()+.1,z,1,.35,.02,.35,.005);
+				if(!low && random.nextInt(4)==0)level.sendParticles(ParticleTypes.LAVA,x,st.y()+.1,z,1,.3,0,.3,0);
+			}
+			if(!burn)continue;
+			for(var p:prey(level))if(Math.abs(p.getY()-st.y())<1.5 && AshenStagRules.onStrip(p.getX(),p.getZ(),st.ax(),st.az(),st.bx(),st.bz()) && hurt.add(p.getUUID())){
+				GuardianBite.land(level,this,p,(float)AshenStagRules.EMBER_DAMAGE,AshenStagRules.PIERCE);
+				level.sendParticles(ParticleTypes.FLAME,p.getX(),p.getY()+.3,p.getZ(),6,.25,.2,.25,.02);
+			}
+		}
 	}
 	/** Run into something: its antlers driven in, and stuck there. */
 	private void stick(ServerLevel level){

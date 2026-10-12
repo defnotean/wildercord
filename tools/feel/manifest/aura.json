@@ -672,6 +672,13 @@
       ],
       "subtitle": "ashen_stag.rise"
     },
+    "aura_ashen_stag_smoulder": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_ashen_stag_smoulder"
+      ],
+      "subtitle": "ashen_stag.smoulder"
+    },
     "aura_ashen_stag_snort": {
       "attenuation": 0,
       "files": [

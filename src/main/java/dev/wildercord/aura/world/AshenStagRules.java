@@ -30,6 +30,11 @@ public final class AshenStagRules {
 	public static final int RECOVER = 9;
 	/** A charge that ran into a trunk or the bank: its antlers driven into it, and it heaving to pull them free. The big opening. */
 	public static final int STUCK = 10;
+	/**
+	 * Its signature once wounded, the Cinder Rush: {@link #RUSH_RUNS} charges back to back, wheeling and pawing between them, each one
+	 * leaving a strip of smouldering embers along its track that burns whoever stands in it. A run into a trunk still sticks it fast.
+	 */
+	public static final int RUSH = 11;
 
 	public static final double HEALTH = 380, ARMOUR = 8, SPEED = 0.3;
 
@@ -70,6 +75,25 @@ public final class AshenStagRules {
 	/** The charge: its tell, how long it runs, its rest after, the least time between two, and how far it runs. */
 	public static final int CHARGE_TELL = 12, CHARGE_TICKS = 10, CHARGE_RECOVER = 20, CHARGE_REST = 120;
 	public static final double CHARGE_REACH = 13;
+	/** The Cinder Rush: how many runs, the tell before the first and the wheel before each after, how long each run lasts, the rest
+	 *  after, the least time between two; how far each run goes and what it does. */
+	public static final int RUSH_RUNS = 3, RUSH_TELL = 16, RUSH_TURN = 9, RUSH_TICKS = 9, RUSH_RECOVER = 34, RUSH_REST = 320;
+	public static final double RUSH_REACH = 12, RUSH_DAMAGE = 16;
+	/** The ember strips a rush leaves: how long they smoulder, how often they burn whoever stands in them, for how much, and how wide. */
+	public static final int EMBER_TICKS = 100, EMBER_EVERY = 10;
+	public static final double EMBER_DAMAGE = 3, EMBER_WIDTH = 0.9;
+	/** Whether it starts a Cinder Rush at its prey {@code distance} away: only wounded, rested, and with room to run. */
+	public static boolean rushes(boolean wounded, long sinceRush, double distance) {
+		return wounded && sinceRush >= RUSH_REST && distance >= 4 && distance <= RUSH_REACH + 4;
+	}
+	/** Whether (px,pz) stands on the ember strip from (ax,az) to (bx,bz). */
+	public static boolean onStrip(double px, double pz, double ax, double az, double bx, double bz) {
+		double dx = bx - ax, dz = bz - az, len = dx * dx + dz * dz;
+		double t = len < 1e-9 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (pz - az) * dz) / len));
+		double ox = px - (ax + dx * t), oz = pz - (az + dz * t);
+		return ox * ox + oz * oz <= EMBER_WIDTH * EMBER_WIDTH;
+	}
+
 	/** How long its antlers stay stuck in whatever a charge ran it into. */
 	public static final int STUCK_TICKS = 60;
 	/** The bound aside: how long it lasts, how fast it goes, and the least time between two. */
@@ -91,6 +115,7 @@ public final class AshenStagRules {
 			case BOUND -> "bound";
 			case RECOVER -> "recover";
 			case STUCK -> "stuck";
+			case RUSH -> "rush";
 			default -> "watch";
 		};
 	}
@@ -112,7 +137,7 @@ public final class AshenStagRules {
 		return switch (move) {
 			case GORE -> forward > -0.5 && forward <= 4.6 && Math.abs(side) <= 1.9 && height > -1.5 && height < 4.0;
 			case KICK -> forward < 0.5 && forward >= -5.0 && Math.abs(side) <= 2.0 && height > -1.5 && height < 3.0;
-			case CHARGE -> forward > -1.5 && forward <= 3.2 && Math.abs(side) <= 2.0 && height > -1.5 && height < 4.5;
+			case CHARGE, RUSH -> forward > -1.5 && forward <= 3.2 && Math.abs(side) <= 2.0 && height > -1.5 && height < 4.5;
 			case STOMP -> {
 				double f = forward - STOMP_AHEAD;
 				yield f * f + side * side <= STOMP_RADIUS * STOMP_RADIUS && height > -1.5 && height < 2.0;

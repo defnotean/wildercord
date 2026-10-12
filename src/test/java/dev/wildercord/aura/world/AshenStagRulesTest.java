@@ -67,4 +67,22 @@ class AshenStagRulesTest {
 		assertTrue(AshenStagRules.forgets(AshenStagRules.RESET_TICKS+1));
 		assertTrue(AshenStagRules.wounded(190,380));assertFalse(AshenStagRules.wounded(191,380));
 	}
+	@Test void woundedAndRestedItRushesAnyoneItHasRoomToRunAt(){
+		assertTrue(AshenStagRules.rushes(true,AshenStagRules.RUSH_REST,8));
+		assertFalse(AshenStagRules.rushes(false,999,8));
+		assertFalse(AshenStagRules.rushes(true,AshenStagRules.RUSH_REST-1,8));
+		assertFalse(AshenStagRules.rushes(true,999,2));
+		assertFalse(AshenStagRules.rushes(true,999,AshenStagRules.RUSH_REACH+5));
+		assertTrue(AshenStagRules.hits(AshenStagRules.RUSH,2,1,1));
+		assertFalse(AshenStagRules.scripted(AshenStagRules.RUSH));
+		assertEquals("rush",AshenStagRules.key(AshenStagRules.RUSH));
+	}
+	@Test void theEmbersBurnAlongTheTrackAndNotBesideOrBeyondIt(){
+		assertTrue(AshenStagRules.onStrip(5,0,0,0,10,0));
+		assertTrue(AshenStagRules.onStrip(5,.8,0,0,10,0));
+		assertFalse(AshenStagRules.onStrip(5,1.2,0,0,10,0));
+		assertTrue(AshenStagRules.onStrip(-.5,0,0,0,10,0));
+		assertFalse(AshenStagRules.onStrip(11.5,0,0,0,10,0));
+		assertTrue(AshenStagRules.onStrip(.3,.3,0,0,0,0));
+	}
 }

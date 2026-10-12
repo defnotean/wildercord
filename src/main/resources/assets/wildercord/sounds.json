@@ -4736,6 +4736,12 @@
       "wildercord:kit/aura/aura_ashen_stag_rise"
     ]
   },
+  "aura_ashen_stag_smoulder": {
+    "subtitle": "subtitles.wildercord.kit.ashen_stag.smoulder",
+    "sounds": [
+      "wildercord:kit/aura/aura_ashen_stag_smoulder"
+    ]
+  },
   "aura_ashen_stag_snort": {
     "subtitle": "subtitles.wildercord.kit.ashen_stag.snort",
     "sounds": [

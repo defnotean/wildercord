@@ -31,7 +31,8 @@ public final class AshenStagRenderer extends MobRenderer<AshenStag,AshenStagRend
 		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.rise=AshenStagRules.rise(s.move,s.elapsed);
 		// Blending out of the move before over a few ticks; out of its bed or into it the rise does that itself.
 		float now=e.tickCount+partial;
-		if(e.shownMove!=s.move){
+		// A new move, or the same one begun again (each run of a rush), blends out of the last.
+		if(e.shownMove!=s.move || s.elapsed<e.shownElapsed-1){
 			if(e.shownMove>=0){e.prevMove=e.shownMove;e.prevTell=e.shownTell;e.prevElapsed=e.shownElapsed;e.switchedAt=now;}
 			e.shownMove=s.move;
 		}

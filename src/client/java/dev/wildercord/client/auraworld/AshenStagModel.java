@@ -127,7 +127,7 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 	/**
 	 * Its moves, laid over the standing pose, each wound up through its tell so it reads from across the glade, then thrown fast. The
 	 * gore drops its head and sweeps the antlers up; the kick puts its weight on its forelegs and lashes both hind hooves back; the
-	 * stomp rears it right up and brings it down; the charge lowers its antlers and paws, then gallops; the bound gathers its legs
+	 * stomp rears it right up and brings it down; the charge (and each run of a rush) lowers its antlers and paws, then gallops; the bound gathers its legs
 	 * under it in the air; spent, its head hangs and its sides heave; stuck, it braces all four legs and wrenches at its antlers.
 	 */
 	private void attack(int move,float el,int tellTicks,int side,float t){
@@ -159,7 +159,7 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 				u[2]=u[3]=Mth.lerp(rear,HIND_U,.1F);l[2]=l[3]=Mth.lerp(rear,HIND_L,.25F);
 				tailX+=.5F*rear;
 			}
-			case AshenStagRules.CHARGE->{
+			case AshenStagRules.CHARGE,AshenStagRules.RUSH->{
 				// Antlers lowered at its prey and a forehoof scraping the ash through the tell; then a flat-out gallop, forelegs
 				// together and hind legs together, the body rocking over them.
 				neckX+=.5F*wind;headX+=.3F*wind;

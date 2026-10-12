@@ -139,6 +139,17 @@ def death(v, rng):
     return sa.finish(sa.reverb(sa.highpass(x, 80), 1.6, .4, damp=3000), 'effect')
 
 
+
+def smoulder(v, rng):
+    """A rush's track catching: a soft whump of flame along the ash, then embers hissing and crackling."""
+    s = 1.8
+    whump = sa.norm(sa.bandpass(sa.noise(.5, rng), 300, 2200)) * sa.swell(.5, .08, 1.6) * sa.decay(.5, .2, .02)
+    roar = sa.norm(sa.lowpass(sa.noise(s, rng), 1500)) * sa.swell(s, .25, 1.2) * sa.decay(s, .8, .05)
+    hiss = sa.norm(sa.bandpass(sa.noise(s, rng), 2500, 7000)) * sa.swell(s, .5, 1.5)
+    x = sa.mix(.8 * whump, (.05, .4 * roar), (.1, .2 * hiss), (.1, .55 * _crackle(1.6, rng, 90)))
+    return sa.finish(sa.reverb(sa.highpass(x, 120), .6, .2, damp=4500), 'effect')
+
+
 ASHEN_STAG_EVENTS = [event('aura_ashen_stag_' + name, build, role='effect', subtitle='ashen_stag.' + name) for name, build in (
     ('bellow', bellow), ('breath', breath), ('rise', rise), ('snort', snort), ('step', step), ('gore', gore), ('kick', kick),
-    ('stomp', stomp), ('paw', paw), ('crash', crash), ('strain', strain), ('bound', bound), ('hurt', hurt), ('death', death))]
+    ('stomp', stomp), ('paw', paw), ('crash', crash), ('strain', strain), ('bound', bound), ('hurt', hurt), ('death', death), ('smoulder', smoulder))]

@@ -9,7 +9,8 @@ LANG = {
     'guide.wildercord.ashen_stag': 'A great stag burnt black, embers glowing in the cracks of its hide and its antlers still '
                                    'smouldering, bedded in the ash before the stump of the tree that burned. It gets up when someone '
                                    'comes far enough into its glade, and runs off anything hostile that strays in. Its brow turns blows; '
-                                   'its flanks and back do not, and a charge that ends in a trunk leaves it stuck there.',
+                                   'its flanks and back do not, and a charge that ends in a trunk leaves it stuck there. Wounded, it '
+                                   'charges again and again, leaving the ash burning in its tracks.',
     'guide.wildercord.ashen_stag.hint': 'A burnt clearing in a forest or taiga, ringed by dead trees, a smouldering stump at its heart.',
     'boss.wildercord.ashen_stag.status': '%s — %s',
 }
@@ -17,12 +18,12 @@ for name, text in {
     'bellow': 'Ashen Stag bellows', 'breath': 'Ashen Stag breathes', 'rise': 'Ashen Stag gets up', 'snort': 'Ashen Stag snorts',
     'step': 'Hooves fall', 'gore': 'Antlers gore', 'kick': 'Ashen Stag kicks', 'stomp': 'Hooves crash down', 'paw': 'Ashen Stag paws the ash',
     'crash': 'Antlers crash into wood', 'strain': 'Ashen Stag strains', 'bound': 'Ashen Stag bounds', 'hurt': 'Ashen Stag hurts',
-    'death': 'Ashen Stag falls',
+    'death': 'Ashen Stag falls', 'smoulder': 'Embers smoulder',
 }.items():
     LANG['subtitles.wildercord.kit.ashen_stag.' + name] = text
 # What the bar says it is doing, the way a Master's bar names its cut.
 for name, text in {'watch': 'Watching', 'gore': 'Goring', 'kick': 'Kicking', 'stomp': 'Rearing', 'charge': 'Charging',
-                   'bound': 'Bounding', 'recover': 'Spent', 'stuck': 'Stuck fast'}.items():
+                   'bound': 'Bounding', 'recover': 'Spent', 'stuck': 'Stuck fast', 'rush': 'Cinder Rush'}.items():
     LANG['boss.wildercord.ashen_stag.move.' + name] = text
 
 # Charred bark-black hide, grey ash, white ash about the muzzle and belly, burnt antler, embers.
