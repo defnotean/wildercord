@@ -100,6 +100,8 @@ public final class WildlifeRules {
 	public static final Kind FLOE_PENGUIN = new Kind("floe_penguin", Pool.CREATURE, 10, 2, 5, 1 / 2.0, 6, 48, List.of(
 		"minecraft:snowy_beach", "minecraft:frozen_ocean", "minecraft:deep_frozen_ocean", "minecraft:ice_spikes", "minecraft:snowy_plains",
 		"minecraft:frozen_river"));
+	public static final Kind BROOKBILL_DUCK = new Kind("brookbill_duck", Pool.CREATURE, 10, 2, 5, 1 / 2.0, 6, 48, List.of(
+		"minecraft:river", "minecraft:swamp", "minecraft:plains", "minecraft:forest", "minecraft:meadow"));
 
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);

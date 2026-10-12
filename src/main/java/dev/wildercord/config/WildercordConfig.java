@@ -320,7 +320,7 @@ public record WildercordConfig(
     case "reefback_turtle", "delver_mole", "frost_lynx", "dune_cougar", "thistle_hedgehog", "snowcap_stoat", "brook_otter",
         "cinnabar_panda", "sunwatch_meerkat", "stonecrest_puffin", "capcrown_snail", "glowberry_dormouse",
         "hushwing_owlet", "blossom_tanuki", "mirebath_capybara",
-        "tussock_pika", "floe_penguin" -> true;
+        "tussock_pika", "floe_penguin", "brookbill_duck" -> true;
 				default -> false;
 			};
 		}
