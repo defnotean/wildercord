@@ -46,6 +46,8 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private boolean bound;
 	private int left,quiet;
 	private long lastCut;
+	/** The game time it last ran, so it knows how long the grove was left alone (unloaded, or nobody near enough to tick it). */
+	private long lastTick=-1;
 	// The fight, server side only.
 	/** The yaw its current blow is locked along. */
 	private float aim;
@@ -111,6 +113,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	/** Back round the trunk, whole again. */
 	private void coil(){
 		letGo(false);dropClods();
+		noPhysics=false;setNoGravity(false);
 		pose(SerpentRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;
 		dived=false;water=false;bursts=0;bar.setColor(BossEvent.BossBarColor.GREEN);
 	}
@@ -123,6 +126,10 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		super.customServerAiStep(level);if(!isAlive())return;
 		if(!clods.isEmpty())fly(level);
 		if(!bound)bind(blockPosition(),getYRot());
+		// Left alone long enough (its prey died and went home, say) and it has gone back round the trunk in the meantime.
+		long now=level.getGameTime();
+		if(lastTick>=0 && move()!=SerpentRules.DORMANT && SerpentRules.forgets(now-lastTick))coil();
+		lastTick=now;
 		switch(move()){
 			case SerpentRules.DORMANT->dormant(level);
 			case SerpentRules.UNCOIL->{hold();if(--left<=0)land(level);else if(left==SerpentRules.UNCOIL_TICKS/2)Feels.sound(level,trunk().add(0,3,0),"aura_serpent_uncoil",1,1);}
@@ -440,7 +447,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			if(bursts<SerpentRules.BURSTS && target!=null){diveIn(level);return;}
 			// Three bursts and it comes ashore for good, wounded and quicker.
 			water=false;bar.setColor(BossEvent.BossBarColor.RED);
-			Feels.sound(level,mouth(),"aura_serpent_challenge",1.4F,1.15F);
+			if(target!=null)Feels.sound(level,mouth(),"aura_serpent_challenge",1.4F,1.15F);
 		}
 		pose(SerpentRules.WATCH,gap());
 	}
@@ -585,14 +592,14 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	@Override protected void addAdditionalSaveData(ValueOutput out){
 		super.addAdditionalSaveData(out);
 		out.putBoolean("serpent_bound",bound);out.store("serpent_tree",BlockPos.CODEC,tree());out.store("serpent_landing",BlockPos.CODEC,landing());
-		out.putFloat("serpent_rest",rest());out.putBoolean("serpent_awake",!SerpentRules.scripted(move()));out.putBoolean("serpent_dived",dived);
+		out.putFloat("serpent_rest",rest());out.putBoolean("serpent_awake",!SerpentRules.scripted(move()));out.putBoolean("serpent_dived",dived);out.putLong("serpent_ticked",lastTick);
 	}
 	@Override protected void readAdditionalSaveData(ValueInput in){
 		super.readAdditionalSaveData(in);
 		bound=in.getBooleanOr("serpent_bound",false);
 		entityData.set(TREE,in.read("serpent_tree",BlockPos.CODEC).orElse(blockPosition()));entityData.set(LANDING,in.read("serpent_landing",BlockPos.CODEC).orElse(tree()));
 		entityData.set(REST,in.getFloatOr("serpent_rest",getYRot()));
-		dived=in.getBooleanOr("serpent_dived",false);
+		dived=in.getBooleanOr("serpent_dived",false);lastTick=in.getLongOr("serpent_ticked",-1L);
 		// Mid-fight it comes back ashore and on its feet, whatever it was doing when the chunk unloaded.
 		if(in.getBooleanOr("serpent_awake",false)){pose(SerpentRules.WATCH,SerpentRules.GAP);lastCut=0;if(dived)bar.setColor(BossEvent.BossBarColor.RED);}else pose(SerpentRules.DORMANT,0);
 	}

@@ -53,6 +53,8 @@ public final class SerpentRules {
 	public static final double BAR_SHOW = 24, BAR_DROP = 28;
 	/** With nobody to fight it heads back to its landing after this long, and coils up again at {@link #RESET_TICKS}. */
 	public static final int RETURN_TICKS = 100, RESET_TICKS = 200;
+	/** Whether it was left alone for {@code away} ticks, long enough to have coiled back up unseen. */
+	public static boolean forgets(long away){return away>RESET_TICKS;}
 	/** Landing spots tried, outward from the trunk toward the herb. */
 	public static final double LAND_NEAR = 4.0, LAND_FAR = 6.5;
 
