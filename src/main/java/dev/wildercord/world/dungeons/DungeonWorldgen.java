@@ -84,4 +84,7 @@ public final class DungeonWorldgen {
 	public static final StructurePieceType BARROW_FIELD_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("barrow_field"),
 		(StructurePieceType.ContextlessType)BarrowFieldPiece::new);
 	public static final ResourceKey<LootTable> BARROW_FIELD=loot("chests/barrow_field");
+	public static final StructurePieceType WAYSIDE_SHRINE_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("wayside_shrine"),
+		(StructurePieceType.ContextlessType)WaysideShrinePiece::new);
+	public static final ResourceKey<LootTable> WAYSIDE_SHRINE=loot("chests/wayside_shrine");
 }
