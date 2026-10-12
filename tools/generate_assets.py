@@ -974,6 +974,9 @@ def write_lang(runes):
     import capybara_art
     lang.update(capybara_art.LANG)
     capybara_art.write(sys.modules[__name__])
+    import pika_art
+    lang.update(pika_art.LANG)
+    pika_art.write(sys.modules[__name__])
     import puffin_art
     lang.update(puffin_art.LANG)
     puffin_art.write(sys.modules[__name__])
