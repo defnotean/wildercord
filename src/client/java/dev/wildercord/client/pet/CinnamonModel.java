@@ -59,7 +59,7 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 			.texOffs(40, 100).addBox(-0.5F, -0.5F, -0.75F, 1, 1, 1)
 			.texOffs(46, 100).addBox(-2.5F, -1, -0.5F, 2, 2, 1)
 			.texOffs(46, 100).mirror().addBox(0.5F, -1, -0.5F, 2, 2, 1),
-			PartPose.offsetAndRotation(2.5F, -5, -5.5F, 0, 0, -0.35F));
+			PartPose.offsetAndRotation(-2.5F, -5, -5.5F, 0, 0, 0.35F));
 		head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(0, 46).addBox(0, 0, -2, 3, 5, 3), PartPose.offset(4, -3, -3));
 		head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(0, 46).mirror().addBox(-3, 0, -2, 3, 5, 3), PartPose.offset(-4, -3, -3));
 		// Short legs, fluffy all the way down to the ground.
