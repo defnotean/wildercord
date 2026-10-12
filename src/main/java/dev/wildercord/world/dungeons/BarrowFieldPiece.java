@@ -315,6 +315,8 @@ public final class BarrowFieldPiece extends DungeonPiece {
 		set(level,bb,Blocks.IRON_CHAIN.defaultBlockState(),LANTERN_X,ARM_Y-1,LANTERN_Z);
 		set(level,bb,lantern(),LANTERN_X,LANTERN_Y,LANTERN_Z);
 		set(level,bb,Blocks.COBWEB.defaultBlockState(),CX+1,ARM_Y,POST_Z);
+		// On a footing stone at the post's foot, the lantern it leaves behind: there for the taking once it lies still.
+		set(level,bb,dev.wildercord.aura.world.BearersLantern.BLOCK.defaultBlockState(),CX-1,F+2,POST_Z);
 	}
 
 	/** The Bearer's lantern as it hangs from the gibbet: a soul lantern, its pale fire never out. */

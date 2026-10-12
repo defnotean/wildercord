@@ -118,6 +118,7 @@ public final class AuraWorld {
 		CinderAntler.init();
 		WeaversSilk.init();
 		Rimescale.init();
+		BearersLantern.init();
 		SleepingBlades.init();
 		AuraBeasts.init();
 		VillageTournaments.init();

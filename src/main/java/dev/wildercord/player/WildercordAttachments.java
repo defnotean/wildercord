@@ -177,6 +177,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Whether this player has taken the Bearer's Lantern from the foot of the Barrow Field's gibbet (and the gravedigger's book with it). */
+	public static final AttachmentType<Boolean> BARROW_LANTERN = AttachmentRegistry.create(
+		Wildercord.id("barrow_lantern"),
+		builder -> builder
+			.initializer(() -> false)
+			.persistent(Codec.BOOL)
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Whether this player has taken up the Rimescale from the Frost Wyrmling's mound. */
 	public static final AttachmentType<Boolean> RIMESCALE = AttachmentRegistry.create(
 		Wildercord.id("rimescale"),

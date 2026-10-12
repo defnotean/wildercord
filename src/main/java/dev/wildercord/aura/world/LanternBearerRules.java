@@ -262,6 +262,21 @@ public final class LanternBearerRules {
 		return rise >= (float) HOOK_AT / RISE_TICKS;
 	}
 
+	/** How far round the Barrow Lantern a living Bearer keeps it from being taken. */
+	public static final double LANTERN_GUARD = 48;
+	/**
+	 * The Barrow Steed the Bearer's Lantern calls up: how fast it runs and how high it leaps (a little past the Pale Steed), how long
+	 * the lantern must rest after, how often it checks it is still ridden, how many empty checks before it fades, and how long it
+	 * would linger unwatched (renewed while it is ridden, so a restart can never leave it behind).
+	 */
+	public static final double STEED_SPEED = 0.3375, STEED_JUMP = 0.9;
+	public static final int STEED_REST = 200, STEED_CHECK = 5, STEED_EMPTY = 3, STEED_LINGER = 1200;
+
+	/** Whether the steed stays, ridden or not for {@code empty} checks in a row: it fades the moment its rider has been off it a while. */
+	public static boolean steedStays(boolean riderAlive, int empty) {
+		return riderAlive && empty < STEED_EMPTY;
+	}
+
 	/** Health it knits back this tick, {@code sinceCut} ticks after it was last hurt: a Master's regeneration. */
 	public static float regen(float maxHealth, long sinceCut) {
 		return MastersRules.regen(maxHealth, sinceCut);

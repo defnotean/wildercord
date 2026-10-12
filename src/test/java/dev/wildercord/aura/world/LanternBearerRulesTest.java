@@ -131,6 +131,13 @@ class LanternBearerRulesTest {
 		assertEquals(LanternBearerRules.LIGHTS_ROUNDS,strikes);
 		assertEquals(LanternBearerRules.LIGHTS_ROUNDS,moves);
 	}
+	@Test void theBarrowSteedFadesOnceItsRiderHasBeenOffItAWhile(){
+		assertTrue(LanternBearerRules.steedStays(true,0));
+		assertTrue(LanternBearerRules.steedStays(true,LanternBearerRules.STEED_EMPTY-1));
+		assertFalse(LanternBearerRules.steedStays(true,LanternBearerRules.STEED_EMPTY));
+		assertFalse(LanternBearerRules.steedStays(false,0));
+		assertTrue(LanternBearerRules.STEED_LINGER>LanternBearerRules.STEED_CHECK*LanternBearerRules.STEED_EMPTY);
+	}
 	@Test void theBarNamesWhatItIsDoing(){
 		assertEquals("lights",LanternBearerRules.key(LanternBearerRules.LIGHTS_OUT));
 		assertEquals("reap",LanternBearerRules.key(LanternBearerRules.REAP));
