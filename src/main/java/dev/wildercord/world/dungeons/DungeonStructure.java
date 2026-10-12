@@ -28,7 +28,8 @@ public class DungeonStructure extends Structure {
 		OLD_BATTLEFIELD,
 		SWORD_TOMB,
 		SLEEPING_BLADE,
-		SERPENT_GROVE;
+		SERPENT_GROVE,
+		BELL_CHAPEL;
 
 		public static final Codec<Kind> CODEC = StringRepresentable.fromEnum(Kind::values);
 
@@ -65,6 +66,7 @@ public class DungeonStructure extends Structure {
 			case SWORD_TOMB -> SwordTombPiece.locate(context);
 			case SLEEPING_BLADE -> SleepingBladePiece.locate(context);
 			case SERPENT_GROVE -> SerpentGrovePiece.locate(context);
+			case BELL_CHAPEL -> BellChapelPiece.locate(context);
 		};
 	}
 
