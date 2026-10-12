@@ -122,6 +122,14 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 				body.xRot+=.85F*k;bell.xRot+=.35F*k;bell.y+=2F*k;
 				left.xRot=Mth.lerp(k,left.xRot,-1.6F);right.xRot=Mth.lerp(k,right.xRot,-1.6F);left.zRot=Mth.lerp(k,left.zRot,.45F);right.zRot=Mth.lerp(k,right.zRot,-.45F);
 			}
+			case BellWardenRules.TOLL->{
+				// The clapper raised high and out beside its bell, the chain arm out for balance; then swung in hard against the bronze,
+				// and the bell shudders on its shoulders after.
+				left.xRot=Mth.lerp(wind,left.xRot,-2.5F);left.zRot=-.08F+.6F*wind*(1-go)-.3F*go;
+				clapper.xRot=.3F*wind*(1-go)-1.2F*go;
+				right.zRot=.08F+.4F*wind;body.xRot-=.15F*wind;hips.y+=1.2F*wind;
+				if(el>tell){float a=el-tell;bell.zRot=Mth.sin(a*1.6F)*.12F*(float)Math.exp(-a*.25F);}
+			}
 			default->{}
 		}
 	}

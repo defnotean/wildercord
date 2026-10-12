@@ -474,10 +474,16 @@
     "aura_bell_warden_death": {
       "part": "aura"
     },
+    "aura_bell_warden_gather": {
+      "part": "aura"
+    },
     "aura_bell_warden_hammer": {
       "part": "aura"
     },
     "aura_bell_warden_hurt": {
+      "part": "aura"
+    },
+    "aura_bell_warden_knell": {
       "part": "aura"
     },
     "aura_bell_warden_ring": {

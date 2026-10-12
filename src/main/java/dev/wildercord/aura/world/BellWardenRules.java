@@ -30,6 +30,8 @@ public final class BellWardenRules {
 	public static final int RECOVER = 9;
 	/** Hurt too fast, it hunches down under its bell, which takes nearly everything. */
 	public static final int SHELL = 10;
+	/** It strikes its own bell, and a ring of force rolls out along the floor from its feet: jump it, or be swept. */
+	public static final int TOLL = 11;
 
 	public static final double HEALTH = 420, ARMOUR = 12, SPEED = 0.24;
 
@@ -74,6 +76,16 @@ public final class BellWardenRules {
 	/** The shell: how long it stays under, the least time between two, and how much hurt, fading each tick by {@link #STING_FADE}, sends it under. */
 	public static final int SHELL_TICKS = 40, SHELL_REST = 220;
 	public static final double SHELL_AFTER = 45, STING_FADE = 0.97;
+	/**
+	 * The toll: what the ring does, its tell, the tell of each toll after the first, its rest after the last, and the least time
+	 * between two tollings it chooses (coming up out of its shell it always tolls).
+	 */
+	public static final double TOLL_DAMAGE = 16;
+	public static final int TOLL_TELL = 12, TOLL_AGAIN = 10, TOLL_RECOVER = 26, TOLL_REST = 200;
+	/** How far off it chooses to toll from. */
+	public static final double TOLL_FROM = 10;
+	/** The ring: how fast it rolls out, how far it goes, how thick it is, and how high off the floor it reaches. */
+	public static final double WAVE_SPEED = 0.55, WAVE_REACH = 13, WAVE_BAND = 0.8, WAVE_HEIGHT = 0.9;
 	/** Ticks between its blows, fewer once it is wounded. */
 	public static final int GAP = 10, GAP_WOUNDED = 6;
 
@@ -87,15 +99,17 @@ public final class BellWardenRules {
 			case BACKSTEP -> "backstep";
 			case RECOVER -> "recover";
 			case SHELL -> "shell";
+			case TOLL -> "toll";
 			default -> "watch";
 		};
 	}
 
 	/**
 	 * Its choice of blow at {@code distance} from its prey; -1 to keep closing. {@code roll} is 0-1. Up close it swings, or pounds the
-	 * floor; a little further it pounds the floor; anyone keeping well away, it charges.
+	 * floor; a little further it pounds the floor; anyone keeping well away, it charges. Now and then, near or far, it tolls.
 	 */
-	public static int choose(double distance, double roll, boolean maySlam, boolean mayCharge) {
+	public static int choose(double distance, double roll, boolean maySlam, boolean mayCharge, boolean mayToll) {
+		if (mayToll && roll >= 0.75 && distance <= TOLL_FROM) return TOLL;
 		if (distance <= CLOSE) return maySlam && roll < 0.3 ? SLAM : SWING;
 		if (distance <= SLAM_AHEAD + SLAM_RADIUS && maySlam) return SLAM;
 		if (distance >= 5 && distance <= CHARGE_REACH + 3 && mayCharge) return CHARGE;
@@ -139,6 +153,22 @@ public final class BellWardenRules {
 	/** Whether the hurt it has taken lately, {@code stung}, sends it under its bell, {@code sinceShell} ticks after it last went under. */
 	public static boolean shells(int move, double stung, long sinceShell) {
 		return (move == WATCH || move == RECOVER) && stung >= SHELL_AFTER && sinceShell >= SHELL_REST;
+	}
+	/** How many times it tolls in a row: once, twice once it is wounded, three times near the end. */
+	public static int tolls(float health, float max) {
+		return health <= max * 0.25F ? 3 : health <= max * 0.5F ? 2 : 1;
+	}
+	/** How far out a ring has rolled {@code age} ticks after the toll. */
+	public static double waveRadius(long age) {
+		return age * WAVE_SPEED;
+	}
+	/** Whether a ring has rolled out past its reach. */
+	public static boolean waveDone(long age) {
+		return waveRadius(age) > WAVE_REACH;
+	}
+	/** Whether a ring of {@code radius} catches someone {@code distance} across the floor from where it was struck and {@code height} above it. */
+	public static boolean waveHits(double distance, double radius, double height) {
+		return Math.abs(distance - radius) <= WAVE_BAND && height > -1.5 && height < WAVE_HEIGHT;
 	}
 	/** Whether it is wounded: at half health or below, it is quicker and hammers after every swing. */
 	public static boolean wounded(float health, float max) {

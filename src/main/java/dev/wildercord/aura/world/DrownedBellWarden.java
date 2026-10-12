@@ -46,6 +46,11 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	private Vec3 slide=Vec3.ZERO;
 	private int chased;
 	private long lastDodge=-999,lastSlam=-999,lastCharge=-999,lastShell=-999,lastRing=-999;
+	/** Tolls still to come in this tolling, and when it last chose to toll. */
+	private int tollsLeft;private long lastToll=-999;
+	/** Rings rolling out from where it struck its bell: where, when, and who each has already caught. */
+	private record Wave(Vec3 at,long born,Set<UUID> struck){}
+	private final List<Wave> waves=new ArrayList<>();
 	/** Hurt taken lately, fading; enough of it sends it under its bell. */
 	private double stung;
 	/** Whoever this charge has already run down. */
@@ -114,6 +119,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 			case BellWardenRules.KNEEL->{hold();if(wakeful(level)!=null)wake(level,BellWardenRules.RISE_TICKS-left);else if(--left<=0)kneelDown();}
 			default->awake(level);
 		}
+		if(!waves.isEmpty())waves(level);
 	}
 
 	/** Its bell, ringing: the sound, and a ring of drowned light rolling off it. */
@@ -194,7 +200,10 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 			case BellWardenRules.SLAM->slam(level,target);
 			case BellWardenRules.CHARGE->charge(level,target);
 			case BellWardenRules.BACKSTEP->{face(aim);move(MoverType.SELF,slide);setDeltaMovement(Vec3.ZERO);if(--left<=0)pose(BellWardenRules.WATCH,2);}
-			case BellWardenRules.RECOVER,BellWardenRules.SHELL->{still();if(--left<=0)pose(BellWardenRules.WATCH,gap());}
+			case BellWardenRules.TOLL->knell(level,target);
+			// It comes up out of its shell striking its bell.
+			case BellWardenRules.SHELL->{still();if(--left<=0)beginToll(level);}
+			case BellWardenRules.RECOVER->{still();if(--left<=0)pose(BellWardenRules.WATCH,gap());}
 			default->watch(level,target);
 		}
 	}
@@ -217,13 +226,14 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		if(left>0)left--;
 		if(left<=0){
 			long now=level.getGameTime();
-			int pick=BellWardenRules.choose(d,random.nextDouble(),now-lastSlam>=BellWardenRules.SLAM_REST,now-lastCharge>=BellWardenRules.CHARGE_REST);
+			int pick=BellWardenRules.choose(d,random.nextDouble(),now-lastSlam>=BellWardenRules.SLAM_REST,now-lastCharge>=BellWardenRules.CHARGE_REST,now-lastToll>=BellWardenRules.TOLL_REST);
 			// A long chase ends in a charge from further out.
 			if(pick<0 && chased>=80 && d<=BellWardenRules.CHARGE_REACH+3 && now-lastCharge>=BellWardenRules.CHARGE_REST/2)pick=BellWardenRules.CHARGE;
 			if(pick>=0){
 				chased=0;aim=yawTo(target.position());struck.clear();
 				switch(pick){
 					case BellWardenRules.SLAM->{lastSlam=now;pose(BellWardenRules.SLAM,0,BellWardenRules.SLAM_TELL);Feels.sound(level,bell(),"aura_bell_warden_rise",1,1.5F);}
+					case BellWardenRules.TOLL->beginToll(level);
 					case BellWardenRules.CHARGE->{lastCharge=now;pose(BellWardenRules.CHARGE,0,BellWardenRules.CHARGE_TELL);Feels.sound(level,bell(),"aura_bell_warden_charge",1.6F,1);}
 					default->pose(BellWardenRules.SWING,0,BellWardenRules.SWING_TELL);
 				}
@@ -288,6 +298,47 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		}else if(el>=tell+BellWardenRules.CHARGE_TICKS)spent(BellWardenRules.CHARGE_RECOVER);
 	}
 
+	/** Clapper raised to its own bell: once, or more as it weakens. */
+	private void beginToll(ServerLevel level){
+		lastToll=level.getGameTime();tollsLeft=BellWardenRules.tolls(getHealth(),getMaxHealth());
+		pose(BellWardenRules.TOLL,0,BellWardenRules.TOLL_TELL);still();
+		Feels.sound(level,bell(),"aura_bell_warden_gather",1.4F,1);
+	}
+	/**
+	 * Turning to face its prey with the clapper raised; then struck, and a ring rolls out from its feet. Again, quicker, while it has
+	 * tolls left; then it is spent.
+	 */
+	private void knell(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(target!=null && el<tell)aim=yawTo(target.position());
+		face(aim);still();
+		if(el==tell){
+			var b=bell();
+			Feels.sound(level,b,"aura_bell_warden_knell",2.2F,.95F+random.nextFloat()*.1F);
+			for(int i=0;i<24;i++){double a=i*Math.PI*2/24;level.sendParticles(ParticleTypes.GLOW,b.x+Math.cos(a)*1.6,b.y-.6,b.z+Math.sin(a)*1.6,1,0,0,0,0);}
+			level.sendParticles(ParticleTypes.SPLASH,getX(),getY()+.1,getZ(),40,1.4,.1,1.4,.4);
+			waves.add(new Wave(position(),level.getGameTime(),new HashSet<>()));
+		}
+		if(el<tell+3)return;
+		if(--tollsLeft>0){pose(BellWardenRules.TOLL,0,BellWardenRules.TOLL_AGAIN);Feels.sound(level,bell(),"aura_bell_warden_gather",1.4F,1.15F);}
+		else spent(BellWardenRules.TOLL_RECOVER);
+	}
+	/** Its rings rolling out across the floor, each catching whoever has not jumped it as it passes. */
+	private void waves(ServerLevel level){
+		long now=level.getGameTime();var prey=prey(level);
+		for(var it=waves.iterator();it.hasNext();){
+			var w=it.next();long age=now-w.born();
+			if(BellWardenRules.waveDone(age) || !isAlive()){it.remove();continue;}
+			double r=BellWardenRules.waveRadius(age);
+			int n=Math.min(64,Math.max(10,(int)(r*5)));double off=random.nextDouble()*Math.PI*2/n;
+			for(int i=0;i<n;i++){double a=off+i*Math.PI*2/n;level.sendParticles(i%3==0?ParticleTypes.GLOW:ParticleTypes.SPLASH,w.at().x+Math.cos(a)*r,w.at().y+.15,w.at().z+Math.sin(a)*r,1,0,.05,0,0);}
+			for(var p:prey){
+				if(w.struck().contains(p.getUUID()))continue;
+				double dx=p.getX()-w.at().x,dz=p.getZ()-w.at().z;
+				if(BellWardenRules.waveHits(Math.sqrt(dx*dx+dz*dz),r,p.getY()-w.at().y)){w.struck().add(p.getUUID());hit(level,p,BellWardenRules.TOLL_DAMAGE,1.0,w.at(),.4);}
+			}
+		}
+	}
 	/** Spent after an attack, its bell tipped back, for {@code ticks}. */
 	private void spent(int ticks){pose(BellWardenRules.RECOVER,ticks);still();}
 	/** Hurt too fast: down under its bell for a while. */

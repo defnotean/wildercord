@@ -150,6 +150,26 @@ def ring(v, rng):
     return sa.finish(sa.reverb(sa.highpass(x, 80), .6, .25, damp=5000), 'effect')
 
 
+def gather(v, rng):
+    """It raises its clapper to its own bell: the chain drawn up rattling, the bronze humming and water rushing in under it."""
+    s = .7
+    hum = .6 * sa.partials(TOLL, s, CRACKED[:6], .9) * sa.swell(s, .6, 1.0)
+    rush = sa.moving_band(s, ((0, 300), (s, 1500)), .8, rng) * sa.swell(s, .62, 2.0)
+    x = sa.mix(.6 * hum, (0, .5 * rush), (.05, .7 * _chain(s, rng, 0, 4, 1600)))
+    return sa.finish(sa.reverb(sa.highpass(x, 40), .4, .2, damp=4000), 'effect')
+
+
+def knell(v, rng):
+    """Its own bell struck with all its weight: a huge cracked toll and a surge of water rolling out along the floor."""
+    s = 3.0
+    bell = _bell(TOLL * .94, s, 1.2, rng, muffle=4500)
+    blow = sa.thump(110, 40, .8, .18, drive=2.4, knock=1.0)
+    surge = sa.moving_band(s, ((0, 1600), (.6, 700), (s, 250)), 1.1, rng) * sa.swell(s, .12, 1.8)
+    x = sa.mix(sa.norm(bell), (0, .7 * blow), (.03, .55 * surge))
+    return sa.finish(sa.reverb(sa.highpass(x, 30), 1.8, .4, damp=3000), 'effect')
+
+
 BELL_WARDEN_EVENTS = [event('aura_bell_warden_' + name, build, role='effect', subtitle='bell_warden.' + name) for name, build in (
     ('toll', toll), ('breath', breath), ('rise', rise), ('challenge', challenge), ('hurt', hurt), ('death', death), ('step', step),
-    ('swing', swing), ('hammer', hammer), ('slam', slam), ('charge', charge), ('backstep', backstep), ('shell', shell), ('ring', ring))]
+    ('swing', swing), ('hammer', hammer), ('slam', slam), ('charge', charge), ('backstep', backstep), ('shell', shell), ('ring', ring),
+    ('gather', gather), ('knell', knell))]

@@ -4856,6 +4856,12 @@
       "wildercord:kit/aura/aura_bell_warden_death"
     ]
   },
+  "aura_bell_warden_gather": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.gather",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_gather"
+    ]
+  },
   "aura_bell_warden_hammer": {
     "subtitle": "subtitles.wildercord.kit.bell_warden.hammer",
     "sounds": [
@@ -4866,6 +4872,12 @@
     "subtitle": "subtitles.wildercord.kit.bell_warden.hurt",
     "sounds": [
       "wildercord:kit/aura/aura_bell_warden_hurt"
+    ]
+  },
+  "aura_bell_warden_knell": {
+    "subtitle": "subtitles.wildercord.kit.bell_warden.knell",
+    "sounds": [
+      "wildercord:kit/aura/aura_bell_warden_knell"
     ]
   },
   "aura_bell_warden_ring": {

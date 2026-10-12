@@ -756,6 +756,13 @@
       ],
       "subtitle": "bell_warden.death"
     },
+    "aura_bell_warden_gather": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_gather"
+      ],
+      "subtitle": "bell_warden.gather"
+    },
     "aura_bell_warden_hammer": {
       "attenuation": 0,
       "files": [
@@ -769,6 +776,13 @@
         "kit/aura/aura_bell_warden_hurt"
       ],
       "subtitle": "bell_warden.hurt"
+    },
+    "aura_bell_warden_knell": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_knell"
+      ],
+      "subtitle": "bell_warden.knell"
     },
     "aura_bell_warden_ring": {
       "attenuation": 0,

@@ -37,13 +37,13 @@ class BellWardenRulesTest {
 		assertEquals("watch",BellWardenRules.key(BellWardenRules.WATCH));
 	}
 	@Test void upCloseItSwingsOrPoundsAndItChargesOnlyThoseKeepingAway(){
-		assertEquals(BellWardenRules.SWING,BellWardenRules.choose(2,.9,true,true));
-		assertEquals(BellWardenRules.SLAM,BellWardenRules.choose(2,.1,true,true));
-		assertEquals(BellWardenRules.SWING,BellWardenRules.choose(2,.1,false,true));
-		assertEquals(BellWardenRules.SLAM,BellWardenRules.choose(5,.9,true,true));
-		assertEquals(BellWardenRules.CHARGE,BellWardenRules.choose(9,.9,true,true));
-		assertEquals(-1,BellWardenRules.choose(9,.9,true,false));
-		assertEquals(-1,BellWardenRules.choose(20,.9,true,true));
+		assertEquals(BellWardenRules.SWING,BellWardenRules.choose(2,.9,true,true,false));
+		assertEquals(BellWardenRules.SLAM,BellWardenRules.choose(2,.1,true,true,false));
+		assertEquals(BellWardenRules.SWING,BellWardenRules.choose(2,.1,false,true,false));
+		assertEquals(BellWardenRules.SLAM,BellWardenRules.choose(5,.9,true,true,false));
+		assertEquals(BellWardenRules.CHARGE,BellWardenRules.choose(9,.9,true,true,false));
+		assertEquals(-1,BellWardenRules.choose(9,.9,true,false,false));
+		assertEquals(-1,BellWardenRules.choose(20,.9,true,true,false));
 	}
 	@Test void theSwingIsWideTheHammerNarrowAndTheSlamLandsAhead(){
 		assertTrue(BellWardenRules.hits(BellWardenRules.SWING,3,2.5,1));
@@ -70,5 +70,22 @@ class BellWardenRulesTest {
 		assertFalse(BellWardenRules.dodges(BellWardenRules.SWING,true,999,.1));
 		assertTrue(BellWardenRules.hammers(.9,true));assertFalse(BellWardenRules.hammers(.9,false));
 		assertEquals("shell",BellWardenRules.key(BellWardenRules.SHELL));
+	}
+	@Test void itTollsNowAndThenAndMoreOftenNearTheEnd(){
+		assertEquals(BellWardenRules.TOLL,BellWardenRules.choose(2,.9,true,true,true));
+		assertEquals(BellWardenRules.TOLL,BellWardenRules.choose(8,.8,false,false,true));
+		assertEquals(BellWardenRules.SWING,BellWardenRules.choose(2,.5,true,true,true));
+		assertEquals(-1,BellWardenRules.choose(BellWardenRules.TOLL_FROM+1,.9,false,false,true));
+		assertEquals(1,BellWardenRules.tolls(100,100));assertEquals(2,BellWardenRules.tolls(50,100));assertEquals(3,BellWardenRules.tolls(20,100));
+		assertEquals("toll",BellWardenRules.key(BellWardenRules.TOLL));
+	}
+	@Test void theRingRollsOutAndIsJumped(){
+		double r=BellWardenRules.waveRadius(10);
+		assertTrue(BellWardenRules.waveHits(r,r,0));
+		assertTrue(BellWardenRules.waveHits(r+.5,r,.5));
+		assertFalse(BellWardenRules.waveHits(r,r,1.1));
+		assertFalse(BellWardenRules.waveHits(r+2,r,0));
+		assertFalse(BellWardenRules.waveDone(10));
+		assertTrue(BellWardenRules.waveDone((long)(BellWardenRules.WAVE_REACH/BellWardenRules.WAVE_SPEED)+1));
 	}
 }
