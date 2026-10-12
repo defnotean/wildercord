@@ -22,6 +22,10 @@ import java.util.*;
  * bound to that spot and to the chapel's hall, facing the door. While it kneels it cannot be hurt; the first player far enough up
  * the nave (or the first blow) gets it to its feet, its bell tolling as it straightens, and then the boss bar comes up. The
  * chapel going quiet sends it back to its vigil, healed. The hall is its own: anything hostile in it, it kills.
+ * <p>
+ * On its feet it swings its clapper like a mace (and, half the time, brings it down overhand after), pounds the floor ahead of it
+ * with both fists, and charges anyone keeping their distance, bell lowered like a ram. Each blow leaves it spent a moment, bell tipped
+ * back and chest bare. It steps back out from under some blows, and hurt too fast it hunches down under its bell until the moment passes.
  */
 public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> MOVE=SynchedEntityData.defineId(DrownedBellWarden.class,EntityDataSerializers.INT);
@@ -37,6 +41,15 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	private long lastCut;
 	/** The game time it last ran, so it knows how long the chapel was left alone. */
 	private long lastTick=-1;
+	/** The line its blow was locked on, and where a backstep carries it. */
+	private float aim;
+	private Vec3 slide=Vec3.ZERO;
+	private int chased;
+	private long lastDodge=-999,lastSlam=-999,lastCharge=-999,lastShell=-999,lastRing=-999;
+	/** Hurt taken lately, fading; enough of it sends it under its bell. */
+	private double stung;
+	/** Whoever this charge has already run down. */
+	private final Set<UUID> struck=new HashSet<>();
 
 	public DrownedBellWarden(EntityType<? extends DrownedBellWarden> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
@@ -54,6 +67,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	public int move(){return entityData.get(MOVE);}
 	public int tell(){return entityData.get(TELL);}
 	public float elapsed(float partial){return (float)(level().getGameTime()-entityData.get(BEGAN))+partial;}
+	private long since(){return level().getGameTime()-entityData.get(BEGAN);}
 	private Vec3 spot(){return Vec3.atBottomCenterOf(vigil);}
 
 	@Override protected void defineSynchedData(SynchedEntityData.Builder b){
@@ -173,7 +187,16 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 			setTarget(level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inHall(p.position(),0))
 				.min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null));
 		}
-		watch(level,getTarget());
+		stung*=BellWardenRules.STING_FADE;
+		var target=getTarget();
+		switch(move()){
+			case BellWardenRules.SWING,BellWardenRules.HAMMER->swing(level,target);
+			case BellWardenRules.SLAM->slam(level,target);
+			case BellWardenRules.CHARGE->charge(level,target);
+			case BellWardenRules.BACKSTEP->{face(aim);move(MoverType.SELF,slide);setDeltaMovement(Vec3.ZERO);if(--left<=0)pose(BellWardenRules.WATCH,2);}
+			case BellWardenRules.RECOVER,BellWardenRules.SHELL->{still();if(--left<=0)pose(BellWardenRules.WATCH,gap());}
+			default->watch(level,target);
+		}
 	}
 
 	/** On its feet and tracking: closing on its prey. */
@@ -190,11 +213,114 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		}
 		quiet=0;
 		getLookControl().setLookAt(target,30,30);
+		double d=distanceTo(target);
 		if(left>0)left--;
-		if(distanceTo(target)>BellWardenRules.CLOSE){
+		if(left<=0){
+			long now=level.getGameTime();
+			int pick=BellWardenRules.choose(d,random.nextDouble(),now-lastSlam>=BellWardenRules.SLAM_REST,now-lastCharge>=BellWardenRules.CHARGE_REST);
+			// A long chase ends in a charge from further out.
+			if(pick<0 && chased>=80 && d<=BellWardenRules.CHARGE_REACH+3 && now-lastCharge>=BellWardenRules.CHARGE_REST/2)pick=BellWardenRules.CHARGE;
+			if(pick>=0){
+				chased=0;aim=yawTo(target.position());struck.clear();
+				switch(pick){
+					case BellWardenRules.SLAM->{lastSlam=now;pose(BellWardenRules.SLAM,0,BellWardenRules.SLAM_TELL);Feels.sound(level,bell(),"aura_bell_warden_rise",1,1.5F);}
+					case BellWardenRules.CHARGE->{lastCharge=now;pose(BellWardenRules.CHARGE,0,BellWardenRules.CHARGE_TELL);Feels.sound(level,bell(),"aura_bell_warden_charge",1.6F,1);}
+					default->pose(BellWardenRules.SWING,0,BellWardenRules.SWING_TELL);
+				}
+				return;
+			}
+		}
+		if(d>BellWardenRules.CLOSE){
+			chased++;
 			if(!getNavigation().moveTo(target,1))getMoveControl().setWantedPosition(target.getX(),target.getY(),target.getZ(),1);
-		}else{getNavigation().stop();face(yawTo(target.position()));}
+		}else{chased=0;getNavigation().stop();face(yawTo(target.position()));}
 	}
+
+	/**
+	 * The clapper, swung across its front once the tell runs out and held out through {@link BellWardenRules#SWING_HOLD}; then, if its
+	 * prey is still in reach and it has the mind to, brought down overhand along a fresh aim.
+	 */
+	private void swing(ServerLevel level,LivingEntity target){
+		face(aim);still();
+		int move=move(),tell=tell();long el=since();boolean hammer=move==BellWardenRules.HAMMER;
+		if(el==tell){
+			Feels.sound(level,bell().add(0,-1.5,0),hammer?"aura_bell_warden_hammer":"aura_bell_warden_swing",1.4F,.9F+random.nextFloat()*.2F);
+			for(var p:prey(level))if(reaches(move,p))hit(level,p,hammer?BellWardenRules.HAMMER_DAMAGE:BellWardenRules.SWING_DAMAGE,hammer?.4:1.1,position(),hammer?0:.2);
+			if(hammer){var at=position().add(ahead(aim).scale(3.4));level.sendParticles(ParticleTypes.SPLASH,at.x,at.y+.1,at.z,24,.5,.1,.5,.25);level.sendParticles(ParticleTypes.CRIT,at.x,at.y+.2,at.z,10,.4,.1,.4,.2);}
+		}
+		if(el<tell+BellWardenRules.SWING_HOLD)return;
+		if(!hammer && target!=null && distanceTo(target)<=BellWardenRules.CLOSE+1.5 && BellWardenRules.hammers(random.nextDouble(),wounded())){
+			aim=yawTo(target.position());pose(BellWardenRules.HAMMER,0,BellWardenRules.HAMMER_TELL);
+		}else spent(hammer?BellWardenRules.HAMMER_RECOVER:BellWardenRules.SWING_RECOVER);
+	}
+
+	/** Both fists raised while it tracks its prey, the aim locked for the last three ticks; then down on the floor ahead of it. */
+	private void slam(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<=tell-3 && target!=null)aim=yawTo(target.position());
+		face(aim);still();
+		if(el==tell){
+			var at=position().add(ahead(aim).scale(BellWardenRules.SLAM_AHEAD));
+			Feels.sound(level,at,"aura_bell_warden_slam",1.6F,.95F+random.nextFloat()*.1F);
+			for(int i=0;i<20;i++){double a=i*Math.PI*2/20;level.sendParticles(ParticleTypes.SPLASH,at.x+Math.cos(a)*BellWardenRules.SLAM_RADIUS*.7,at.y+.1,at.z+Math.sin(a)*BellWardenRules.SLAM_RADIUS*.7,3,.1,0,.1,.2);}
+			level.sendParticles(ParticleTypes.CLOUD,at.x,at.y+.2,at.z,8,.8,.1,.8,.05);
+			for(var p:prey(level))if(reaches(BellWardenRules.SLAM,p))hit(level,p,BellWardenRules.SLAM_DAMAGE,.8,at,.45);
+		}
+		if(el>=tell+2)spent(BellWardenRules.SLAM_RECOVER);
+	}
+
+	/**
+	 * Head down through the tell while it tracks its prey, the aim locked for the last four ticks; then its whole weight run along it,
+	 * running down whoever is in the way. A wall or pillar stops it short, ringing its bell and leaving it dazed a while longer.
+	 */
+	private void charge(ServerLevel level,LivingEntity target){
+		long el=since();int tell=tell();
+		if(el<=tell-4 && target!=null)aim=yawTo(target.position());
+		face(aim);
+		if(el<=tell){still();return;}
+		var step=ahead(aim).scale(BellWardenRules.CHARGE_REACH/BellWardenRules.CHARGE_TICKS);
+		move(MoverType.SELF,new Vec3(step.x,-.2,step.z));setDeltaMovement(Vec3.ZERO);
+		if(el%2==0){Feels.sound(level,position(),"aura_bell_warden_step",1.3F,1.1F);level.sendParticles(ParticleTypes.SPLASH,getX(),getY()+.1,getZ(),10,.6,0,.6,.2);}
+		for(var p:prey(level))if(!struck.contains(p.getUUID()) && reaches(BellWardenRules.CHARGE,p)){struck.add(p.getUUID());hit(level,p,BellWardenRules.CHARGE_DAMAGE,1.5,position().subtract(ahead(aim)),.35);}
+		if(horizontalCollision){
+			toll(level,1.4F,1.2F);level.sendParticles(ParticleTypes.CRIT,bell().x,bell().y,bell().z,16,.8,.6,.8,.3);
+			spent(BellWardenRules.CHARGE_RECOVER+16);
+		}else if(el>=tell+BellWardenRules.CHARGE_TICKS)spent(BellWardenRules.CHARGE_RECOVER);
+	}
+
+	/** Spent after an attack, its bell tipped back, for {@code ticks}. */
+	private void spent(int ticks){pose(BellWardenRules.RECOVER,ticks);still();}
+	/** Hurt too fast: down under its bell for a while. */
+	private void shellDown(ServerLevel level){
+		lastShell=level.getGameTime();stung=0;pose(BellWardenRules.SHELL,BellWardenRules.SHELL_TICKS);still();
+		Feels.sound(level,bell(),"aura_bell_warden_shell",1.4F,1);
+		level.sendParticles(ParticleTypes.SPLASH,getX(),getY()+.1,getZ(),30,1.2,.1,1.2,.3);
+	}
+	/** Standing its ground: no sliding about, though it still falls. */
+	private void still(){getNavigation().stop();var v=getDeltaMovement();setDeltaMovement(0,Math.min(0,v.y),0);}
+	private boolean wounded(){return BellWardenRules.wounded(getHealth(),getMaxHealth());}
+	/** Ticks before its next blow. */
+	private int gap(){return (wounded()?BellWardenRules.GAP_WOUNDED:BellWardenRules.GAP)+random.nextInt(3);}
+
+	/** Players it could be fighting right now. */
+	private List<ServerPlayer> prey(ServerLevel level){
+		var out=new ArrayList<ServerPlayer>();
+		for(var p:level.players())if(p.isAlive() && !p.isCreative() && !p.isSpectator() && p.distanceToSqr(this)<14*14 && inHall(p.position(),BellWardenRules.LEASH))out.add(p);
+		return out;
+	}
+	/** Whether {@code move}, along the locked aim, reaches {@code p}. */
+	private boolean reaches(int move,LivingEntity p){
+		var f=ahead(aim);double dx=p.getX()-getX(),dz=p.getZ()-getZ();
+		return BellWardenRules.hits(move,dx*f.x+dz*f.z,dx*-f.z+dz*f.x,p.getY()-getY());
+	}
+	/** A blow landing on {@code p}, through part of its armour, knocking it {@code shove} away from {@code from} and {@code lift} up. */
+	private void hit(ServerLevel level,LivingEntity p,double damage,double shove,Vec3 from,double lift){
+		if(!GuardianBite.land(level,this,p,(float)damage,BellWardenRules.PIERCE))return;
+		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ(),level.damageSources().mobAttack(this),0);
+		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
+		p.needsSync=true;
+	}
+	private Vec3 ahead(float yaw){double r=Math.toRadians(yaw);return new Vec3(-Math.sin(r),0,Math.cos(r));}
 
 	private float yawTo(Vec3 at){return (float)Math.toDegrees(Math.atan2(-(at.x-getX()),at.z-getZ()));}
 	private void face(float yaw){setYRot(yaw);yBodyRot=yaw;yHeadRot=yaw;}
@@ -207,9 +333,33 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 			if(move==BellWardenRules.DORMANT && Guardians.enabled() && source.getEntity() instanceof ServerPlayer p && !p.isCreative())wake(level,0);
 			return false;
 		}
+		long now=level.getGameTime();
+		if(!source.is(DamageTypes.GENERIC_KILL)){
+			var at=source.getSourcePosition();
+			boolean frontal=at!=null && BellWardenRules.frontal(yawTo(at)-getYRot());
+			// It sees a blow coming and heaves itself back out from under it.
+			if(source.getDirectEntity()!=null && source.getDirectEntity()==source.getEntity() && BellWardenRules.dodges(move,frontal,now-lastDodge,random.nextDouble())){
+				lastDodge=now;aim=getYRot();slide=ahead(aim).scale(-BellWardenRules.BACKSTEP_SPEED);
+				pose(BellWardenRules.BACKSTEP,BellWardenRules.BACKSTEP_TICKS);
+				Feels.sound(level,position().add(0,1,0),"aura_bell_warden_backstep",1.2F,.9F+random.nextFloat()*.2F);
+				return false;
+			}
+			damage*=(float)BellWardenRules.armour(move,frontal);
+			if(move==BellWardenRules.SHELL)ring(level,source);
+		}
 		boolean hurt=super.hurtServer(level,source,damage);
-		if(hurt)lastCut=level.getGameTime();
+		if(hurt){
+			lastCut=now;stung+=damage;
+			if(BellWardenRules.shells(move(),stung,now-lastShell))shellDown(level);
+		}
 		return hurt;
+	}
+	/** A blow on its shelled bell: it rings out, and whoever struck it up close is thrown back by the ring. */
+	private void ring(ServerLevel level,DamageSource source){
+		long now=level.getGameTime();if(now-lastRing<4)return;lastRing=now;
+		var b=bell();Feels.sound(level,b,"aura_bell_warden_ring",1.4F,.95F+random.nextFloat()*.1F);
+		level.sendParticles(ParticleTypes.GLOW,b.x,b.y-.5,b.z,10,1,.6,1,.05);
+		if(source.getEntity() instanceof LivingEntity e && source.getDirectEntity()==e && e.distanceToSqr(this)<5*5){e.knockback(.8,getX()-e.getX(),getZ()-e.getZ(),level.damageSources().mobAttack(this),0);e.needsSync=true;}
 	}
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);bar.removeAllPlayers();}

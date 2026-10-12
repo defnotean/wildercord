@@ -82,5 +82,74 @@ def step(v, rng):
     return sa.finish(sa.reverb(sa.highpass(sa.mix(.6 * fall, (0, slap), (.02, hum)), 60), .4, .15, damp=3500), 'effect')
 
 
+def _chain(s, rng, at, n=5, base=1500):
+    """The chain wound round its arm, swinging against itself: a run of iron clinks from {at}."""
+    return sa.mix(*[(at + .045 * i + .02 * rng.random(), .35 * sa.bandpass(sa.partials(base + 260 * ((i * 3) % 5), .25, ((1, 1, 1), (2.76, .5, .4), (5.4, .2, .2)), .05), 700, 6000))
+                    for i in range(n)])
+
+
+def swing(v, rng):
+    """The clapper swung like a mace: a heavy whoosh through the air and the chain rattling after it."""
+    s = .7
+    whoosh = sa.moving_band(s, ((0, 500), (.22, 1500), (s, 700)), 1.1, rng) * sa.swell(s, .18, 2.0)
+    x = sa.mix(.9 * whoosh, (0, _chain(s, rng, .05)))
+    return sa.finish(sa.reverb(sa.highpass(x, 60), .3, .15, damp=5000), 'effect')
+
+
+def hammer(v, rng):
+    """The clapper brought down overhand onto the floor: a crack of iron on stone, and the floor ringing under it."""
+    s = 1.0
+    crack = sa.thump(180, 60, .4, .05, drive=2.6, knock=1.0)
+    clang = sa.bandpass(sa.partials(620, s, ((1, 1, 1), (2.4, .6, .5), (3.9, .4, .3), (5.1, .3, .2)), .3), 300, 5000)
+    grit = sa.norm(sa.bandpass(sa.noise(.4, rng), 800, 4000)) * sa.decay(.4, .08, .003)
+    x = sa.mix(.8 * crack, (0, .5 * clang), (0, .45 * grit))
+    return sa.finish(sa.reverb(sa.highpass(x, 40), .6, .25, damp=4500), 'effect')
+
+
+def slam(v, rng):
+    """Both fists into the floor: a deep blow, water thrown up off the stone, the bell humming on its shoulders."""
+    s = 1.6
+    blow = sa.thump(120, 36, 1.0, .2, drive=2.6, knock=1.0)
+    spray = sa.norm(sa.bandpass(sa.noise(1.0, rng), 600, 4200)) * sa.decay(1.0, .3, .01)
+    hum = .5 * sa.partials(TOLL, s, CRACKED[:7], .7)
+    x = sa.mix(.9 * blow, (.02, .5 * spray), (.03, hum))
+    return sa.finish(sa.reverb(sa.highpass(x, 30), 1.0, .35, damp=3500), 'effect')
+
+
+def charge(v, rng):
+    """It drops its bell like a ram and comes: a bellow into the bronze and the chain flying."""
+    s = 1.4
+    roar = sa.lowpass(sa.soft_saw(sa.glide(s, (0, 110), (.4, 150), (s, 120)), s) * sa.jitter(s, rng, 26) ** 2, 1400) * sa.swell(s, .15, 1.4)
+    roar = sa.mix(roar, (.011, .6 * roar))
+    rush = sa.moving_band(s, ((0, 400), (.6, 1200), (s, 600)), .9, rng) * sa.swell(s, .3, 1.6)
+    x = sa.mix(.8 * roar, (0, .45 * rush), (.2, _chain(s, rng, .2, 7)))
+    return sa.finish(sa.reverb(sa.highpass(x, 40), .7, .3, damp=4000), 'effect')
+
+
+def backstep(v, rng):
+    """It heaves itself back out of a blow: a scrape of feet on wet stone and a jolt of the chain."""
+    s = .5
+    scrape = sa.moving_band(s, ((0, 900), (s, 1800)), .8, rng) * sa.decay(s, .14, .005)
+    x = sa.mix(.8 * scrape, (.03, .8 * _chain(s, rng, 0, 3, 1800)))
+    return sa.finish(sa.reverb(sa.highpass(x, 120), .3, .12, damp=6000), 'effect')
+
+
+def shell(v, rng):
+    """It hunches down under its bell: the rim grinding onto the stone, and the bronze settling with a low ring."""
+    s = 1.8
+    grind = sa.moving_band(s, ((0, 700), (.4, 400), (s, 300)), .8, rng) * sa.swell(s, .15, 1.6) * sa.decay(s, .5, .01)
+    ring = .7 * _bell(TOLL * 1.12, s, .6, rng, muffle=3500)
+    x = sa.mix(.8 * grind, (.25, ring))
+    return sa.finish(sa.reverb(sa.highpass(x, 40), .9, .3, damp=3500), 'effect')
+
+
+def ring(v, rng):
+    """A blow on the shelled bell: a bright clang that rings out, the crack buzzing under it."""
+    s = 1.4
+    x = _bell(TOLL * 2.0, s, .5, rng, muffle=6500)
+    return sa.finish(sa.reverb(sa.highpass(x, 80), .6, .25, damp=5000), 'effect')
+
+
 BELL_WARDEN_EVENTS = [event('aura_bell_warden_' + name, build, role='effect', subtitle='bell_warden.' + name) for name, build in (
-    ('toll', toll), ('breath', breath), ('rise', rise), ('challenge', challenge), ('hurt', hurt), ('death', death), ('step', step))]
+    ('toll', toll), ('breath', breath), ('rise', rise), ('challenge', challenge), ('hurt', hurt), ('death', death), ('step', step),
+    ('swing', swing), ('hammer', hammer), ('slam', slam), ('charge', charge), ('backstep', backstep), ('shell', shell), ('ring', ring))]

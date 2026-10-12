@@ -721,6 +721,13 @@
       ],
       "subtitle": "tell"
     },
+    "aura_bell_warden_backstep": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_backstep"
+      ],
+      "subtitle": "bell_warden.backstep"
+    },
     "aura_bell_warden_breath": {
       "attenuation": 0,
       "files": [
@@ -735,12 +742,26 @@
       ],
       "subtitle": "bell_warden.challenge"
     },
+    "aura_bell_warden_charge": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_charge"
+      ],
+      "subtitle": "bell_warden.charge"
+    },
     "aura_bell_warden_death": {
       "attenuation": 0,
       "files": [
         "kit/aura/aura_bell_warden_death"
       ],
       "subtitle": "bell_warden.death"
+    },
+    "aura_bell_warden_hammer": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_hammer"
+      ],
+      "subtitle": "bell_warden.hammer"
     },
     "aura_bell_warden_hurt": {
       "attenuation": 0,
@@ -749,6 +770,13 @@
       ],
       "subtitle": "bell_warden.hurt"
     },
+    "aura_bell_warden_ring": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_ring"
+      ],
+      "subtitle": "bell_warden.ring"
+    },
     "aura_bell_warden_rise": {
       "attenuation": 0,
       "files": [
@@ -756,12 +784,33 @@
       ],
       "subtitle": "bell_warden.rise"
     },
+    "aura_bell_warden_shell": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_shell"
+      ],
+      "subtitle": "bell_warden.shell"
+    },
+    "aura_bell_warden_slam": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_slam"
+      ],
+      "subtitle": "bell_warden.slam"
+    },
     "aura_bell_warden_step": {
       "attenuation": 0,
       "files": [
         "kit/aura/aura_bell_warden_step"
       ],
       "subtitle": "bell_warden.step"
+    },
+    "aura_bell_warden_swing": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bell_warden_swing"
+      ],
+      "subtitle": "bell_warden.swing"
     },
     "aura_bell_warden_toll": {
       "attenuation": 0,

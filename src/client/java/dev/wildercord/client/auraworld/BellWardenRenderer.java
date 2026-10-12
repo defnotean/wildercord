@@ -26,7 +26,7 @@ public final class BellWardenRenderer extends MobRenderer<DrownedBellWarden,Bell
 	@Override public BellWardenRenderState createRenderState(){return new BellWardenRenderState();}
 	@Override public Identifier getTextureLocation(BellWardenRenderState s){return SKIN;}
 	@Override public void extractRenderState(DrownedBellWarden e,BellWardenRenderState s,float partial){
-		super.extractRenderState(e,s,partial);s.move=e.move();s.elapsed=e.elapsed(partial);s.rise=BellWardenRules.rise(s.move,s.elapsed);
+		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.elapsed=e.elapsed(partial);s.rise=BellWardenRules.rise(s.move,s.elapsed);
 	}
 	@Override protected void scale(BellWardenRenderState s,PoseStack pose){pose.scale(SCALE,SCALE,SCALE);}
 

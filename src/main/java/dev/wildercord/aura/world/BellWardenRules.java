@@ -16,6 +16,20 @@ public final class BellWardenRules {
 	public static final int WATCH = 2;
 	/** Kneeling again once the chapel has gone quiet: the rise, played backwards. */
 	public static final int KNEEL = 3;
+	/** A sweep of the clapper across its front, wound back {@link #SWING_TELL} ticks. */
+	public static final int SWING = 4;
+	/** Chained off a swing: the clapper brought down overhand on whoever is right in front of it. */
+	public static final int HAMMER = 5;
+	/** Both fists raised and brought down on the floor ahead of it; everyone near where they land is hit. */
+	public static final int SLAM = 6;
+	/** Its bell dropped like a ram and its whole weight run along a fixed line. */
+	public static final int CHARGE = 7;
+	/** It heaves itself back out from under a blow. */
+	public static final int BACKSTEP = 8;
+	/** Spent after an attack, its bell tipped back and its chest bare: the opening. */
+	public static final int RECOVER = 9;
+	/** Hurt too fast, it hunches down under its bell, which takes nearly everything. */
+	public static final int SHELL = 10;
 
 	public static final double HEALTH = 420, ARMOUR = 12, SPEED = 0.24;
 
@@ -38,13 +52,97 @@ public final class BellWardenRules {
 	/** Whether it was left alone for {@code away} ticks, long enough to have knelt again unseen. */
 	public static boolean forgets(long away){return away>RESET_TICKS;}
 
-	/** How close it closes before it stops to face its prey, and its least rest between blows. */
+	/** How close it closes before it stops to face its prey. */
 	public static final double CLOSE = 3.5;
-	public static final int GAP = 10;
+
+	// ---- the fight: tells a touch slower than the serpent's, since it hits harder and wider, and a real opening after each blow.
+	/** What each blow does before defences. */
+	public static final double SWING_DAMAGE = 20, HAMMER_DAMAGE = 24, SLAM_DAMAGE = 18, CHARGE_DAMAGE = 24;
+	/** The share of what armour, Protection and Resistance would stop that its blows go through anyway: dead weight, not edges. */
+	public static final double PIERCE = 0.4;
+	/** A swing's tell, the hammer's tell after it, how long the blow stays out, and the rest after each. */
+	public static final int SWING_TELL = 5, HAMMER_TELL = 4, SWING_HOLD = 3, SWING_RECOVER = 12, HAMMER_RECOVER = 18;
+	/** The slam: its tell, its rest after, the least time between two; where the fists land ahead of its feet, and how far round that they hit. */
+	public static final int SLAM_TELL = 9, SLAM_RECOVER = 20, SLAM_REST = 90;
+	public static final double SLAM_AHEAD = 2.6, SLAM_RADIUS = 3.2;
+	/** The charge: its tell, how long it runs, its rest after, the least time between two, and how far it runs. */
+	public static final int CHARGE_TELL = 10, CHARGE_TICKS = 8, CHARGE_RECOVER = 24, CHARGE_REST = 140;
+	public static final double CHARGE_REACH = 9;
+	/** The backstep: how long it lasts, how fast it goes, and the least time between two. */
+	public static final int BACKSTEP_TICKS = 5, BACKSTEP_REST = 40;
+	public static final double BACKSTEP_SPEED = 0.6;
+	/** The shell: how long it stays under, the least time between two, and how much hurt, fading each tick by {@link #STING_FADE}, sends it under. */
+	public static final int SHELL_TICKS = 40, SHELL_REST = 220;
+	public static final double SHELL_AFTER = 45, STING_FADE = 0.97;
+	/** Ticks between its blows, fewer once it is wounded. */
+	public static final int GAP = 10, GAP_WOUNDED = 6;
 
 	/** The bar's name for what it is doing. */
 	public static String key(int move) {
-		return "watch";
+		return switch (move) {
+			case SWING -> "swing";
+			case HAMMER -> "hammer";
+			case SLAM -> "slam";
+			case CHARGE -> "charge";
+			case BACKSTEP -> "backstep";
+			case RECOVER -> "recover";
+			case SHELL -> "shell";
+			default -> "watch";
+		};
+	}
+
+	/**
+	 * Its choice of blow at {@code distance} from its prey; -1 to keep closing. {@code roll} is 0-1. Up close it swings, or pounds the
+	 * floor; a little further it pounds the floor; anyone keeping well away, it charges.
+	 */
+	public static int choose(double distance, double roll, boolean maySlam, boolean mayCharge) {
+		if (distance <= CLOSE) return maySlam && roll < 0.3 ? SLAM : SWING;
+		if (distance <= SLAM_AHEAD + SLAM_RADIUS && maySlam) return SLAM;
+		if (distance >= 5 && distance <= CHARGE_REACH + 3 && mayCharge) return CHARGE;
+		return -1;
+	}
+	/** Whether a blow reaches someone {@code forward} ahead, {@code side} across and {@code height} above its feet, in its locked aim. */
+	public static boolean hits(int move, double forward, double side, double height) {
+		return switch (move) {
+			case SWING -> forward > -0.5 && forward <= 4.8 && Math.abs(side) <= 3.0 && height > -1.5 && height < 4.0;
+			case HAMMER -> forward > 0 && forward <= 4.6 && Math.abs(side) <= 1.6 && height > -1.5 && height < 4.0;
+			case CHARGE -> forward > -1.5 && forward <= 2.8 && Math.abs(side) <= 2.0 && height > -1.5 && height < 4.5;
+			case SLAM -> {
+				double f = forward - SLAM_AHEAD;
+				yield f * f + side * side <= SLAM_RADIUS * SLAM_RADIUS && height > -1.5 && height < 2.0;
+			}
+			default -> false;
+		};
+	}
+	/** Whether it follows a swing with the hammer: half the time, always once it is wounded. */
+	public static boolean hammers(double roll, boolean wounded) {
+		return wounded || roll < 0.5;
+	}
+	/**
+	 * What its bell and hide leave of a blow. Facing you, the bell turns some of it; behind, little; spent after an attack its chest is
+	 * bare; under its bell, almost nothing gets through.
+	 */
+	public static double armour(int move, boolean frontal) {
+		if (move == SHELL) return 0.15;
+		if (move == RECOVER) return 1.35;
+		return frontal ? 0.6 : 0.9;
+	}
+	/** Whether a blow arriving from {@code angle} degrees off its facing lands on its front. */
+	public static boolean frontal(double angle) {
+		double a = Math.abs(((angle % 360) + 540) % 360 - 180);
+		return a <= 60;
+	}
+	/** Whether it steps back out of a blow: only a frontal one, only while it watches, not too often, and only some of the time. */
+	public static boolean dodges(int move, boolean frontal, long sinceDodge, double roll) {
+		return move == WATCH && frontal && sinceDodge >= BACKSTEP_REST && roll < 0.4;
+	}
+	/** Whether the hurt it has taken lately, {@code stung}, sends it under its bell, {@code sinceShell} ticks after it last went under. */
+	public static boolean shells(int move, double stung, long sinceShell) {
+		return (move == WATCH || move == RECOVER) && stung >= SHELL_AFTER && sinceShell >= SHELL_REST;
+	}
+	/** Whether it is wounded: at half health or below, it is quicker and hammers after every swing. */
+	public static boolean wounded(float health, float max) {
+		return health <= max * 0.5F;
 	}
 
 	/** Whether a point lies inside a hall from (x0,y0,z0) to (x1,y1,z1), widened by {@code margin} on every side. */

@@ -36,4 +36,39 @@ class BellWardenRulesTest {
 		assertFalse(BellWardenRules.forgets(BellWardenRules.RESET_TICKS));assertTrue(BellWardenRules.forgets(BellWardenRules.RESET_TICKS+1));
 		assertEquals("watch",BellWardenRules.key(BellWardenRules.WATCH));
 	}
+	@Test void upCloseItSwingsOrPoundsAndItChargesOnlyThoseKeepingAway(){
+		assertEquals(BellWardenRules.SWING,BellWardenRules.choose(2,.9,true,true));
+		assertEquals(BellWardenRules.SLAM,BellWardenRules.choose(2,.1,true,true));
+		assertEquals(BellWardenRules.SWING,BellWardenRules.choose(2,.1,false,true));
+		assertEquals(BellWardenRules.SLAM,BellWardenRules.choose(5,.9,true,true));
+		assertEquals(BellWardenRules.CHARGE,BellWardenRules.choose(9,.9,true,true));
+		assertEquals(-1,BellWardenRules.choose(9,.9,true,false));
+		assertEquals(-1,BellWardenRules.choose(20,.9,true,true));
+	}
+	@Test void theSwingIsWideTheHammerNarrowAndTheSlamLandsAhead(){
+		assertTrue(BellWardenRules.hits(BellWardenRules.SWING,3,2.5,1));
+		assertFalse(BellWardenRules.hits(BellWardenRules.HAMMER,3,2.5,1));
+		assertTrue(BellWardenRules.hits(BellWardenRules.HAMMER,3,1,1));
+		assertTrue(BellWardenRules.hits(BellWardenRules.SLAM,BellWardenRules.SLAM_AHEAD+2,1,0));
+		assertFalse(BellWardenRules.hits(BellWardenRules.SLAM,-2,0,0));
+		assertFalse(BellWardenRules.hits(BellWardenRules.SLAM,BellWardenRules.SLAM_AHEAD,0,3));
+		assertFalse(BellWardenRules.hits(BellWardenRules.WATCH,1,0,1));
+	}
+	@Test void theShellTakesAlmostEverythingAndTheOpeningLetsMoreThrough(){
+		assertTrue(BellWardenRules.armour(BellWardenRules.SHELL,false)<.25);
+		assertTrue(BellWardenRules.armour(BellWardenRules.RECOVER,true)>1);
+		assertTrue(BellWardenRules.armour(BellWardenRules.WATCH,true)<BellWardenRules.armour(BellWardenRules.WATCH,false));
+		assertTrue(BellWardenRules.frontal(30));assertTrue(BellWardenRules.frontal(-390));assertFalse(BellWardenRules.frontal(150));
+	}
+	@Test void itShellsOnlyWhenHurtFastAndNotTwiceInARow(){
+		assertTrue(BellWardenRules.shells(BellWardenRules.WATCH,BellWardenRules.SHELL_AFTER,BellWardenRules.SHELL_REST));
+		assertFalse(BellWardenRules.shells(BellWardenRules.WATCH,BellWardenRules.SHELL_AFTER-1,BellWardenRules.SHELL_REST));
+		assertFalse(BellWardenRules.shells(BellWardenRules.WATCH,BellWardenRules.SHELL_AFTER,BellWardenRules.SHELL_REST-1));
+		assertFalse(BellWardenRules.shells(BellWardenRules.SWING,99,999));
+		assertTrue(BellWardenRules.dodges(BellWardenRules.WATCH,true,BellWardenRules.BACKSTEP_REST,.1));
+		assertFalse(BellWardenRules.dodges(BellWardenRules.WATCH,false,BellWardenRules.BACKSTEP_REST,.1));
+		assertFalse(BellWardenRules.dodges(BellWardenRules.SWING,true,999,.1));
+		assertTrue(BellWardenRules.hammers(.9,true));assertFalse(BellWardenRules.hammers(.9,false));
+		assertEquals("shell",BellWardenRules.key(BellWardenRules.SHELL));
+	}
 }

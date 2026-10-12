@@ -15,10 +15,13 @@ LANG = {
 for name, text in {
     'toll': 'Cracked bell tolls', 'breath': 'Bell-Warden breathes water', 'rise': 'Bell-Warden rises', 'challenge': 'Bell-Warden bellows',
     'hurt': 'Bell-Warden hurts', 'death': 'Bell-Warden falls', 'step': 'Bell-Warden treads',
+    'swing': 'Clapper swings', 'hammer': 'Clapper strikes the floor', 'slam': 'Bell-Warden pounds the floor', 'charge': 'Bell-Warden charges',
+    'backstep': 'Bell-Warden steps back', 'shell': 'Bell-Warden hides under its bell', 'ring': 'Bell rings under a blow',
 }.items():
     LANG['subtitles.wildercord.kit.bell_warden.' + name] = text
 # What the bar says it is doing, the way a Master's bar names its cut.
-for name, text in {'watch': 'Watching'}.items():
+for name, text in {'watch': 'Watching', 'swing': 'Swinging', 'hammer': 'Hammering', 'slam': 'Pounding', 'charge': 'Charging',
+                   'backstep': 'Stepping back', 'recover': 'Spent', 'shell': 'Under its bell'}.items():
     LANG['boss.wildercord.drowned_bell_warden.move.' + name] = text
 
 # Bronze gone green under the sea, pale drowned flesh, sodden rags, black iron, kelp.
