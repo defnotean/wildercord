@@ -132,6 +132,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.wildlife.HedgehogContent.init();
 		dev.wildercord.wildlife.StoatContent.init();
 		dev.wildercord.wildlife.OtterContent.init();
+		dev.wildercord.wildlife.RedPandaContent.init();
 		dev.wildercord.wildlife.PredatorContent.init();
 		dev.wildercord.wildlife.MountContent.init();
 		dev.wildercord.town.Town.init();

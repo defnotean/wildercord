@@ -18,6 +18,7 @@ public final class WildlifeClient {
   ThistleHedgehogRenderer.init();
   SnowcapStoatRenderer.init();
   BrookOtterRenderer.init();
+  CinnabarPandaRenderer.init();
   PredatorRenderers.init();
   RidgebackStagRenderer.init();
   BurrowAndReefRenderers.init();

@@ -920,6 +920,9 @@ def write_lang(runes):
     import otter_art
     lang.update(otter_art.LANG)
     otter_art.write(sys.modules[__name__])
+    import red_panda_art
+    lang.update(red_panda_art.LANG)
+    red_panda_art.write(sys.modules[__name__])
     import predator_art
     lang.update(predator_art.LANG)
     predator_art.write(sys.modules[__name__])

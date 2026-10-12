@@ -76,6 +76,10 @@ public final class WildlifeRules {
 	public static final Kind BROOK_OTTER = new Kind("brook_otter", Pool.CREATURE, 5, 1, 3, 1 / 2.0, 4, 48, List.of(
 		"minecraft:river", "minecraft:swamp", "minecraft:mangrove_swamp"));
 
+	/** The cinnabar panda: a little red panda of the cherry groves, bamboo and old-growth taigas, in ones to threes. */
+	public static final Kind CINNABAR_PANDA = new Kind("cinnabar_panda", Pool.CREATURE, 5, 1, 3, 1 / 2.0, 4, 48, List.of(
+		"minecraft:cherry_grove", "minecraft:bamboo_jungle", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga"));
+
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);
 
