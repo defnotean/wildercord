@@ -21,6 +21,11 @@ for name, text in {
     'death': 'Ashen Stag falls', 'smoulder': 'Embers smoulder',
 }.items():
     LANG['subtitles.wildercord.kit.ashen_stag.' + name] = text
+LANG['block.wildercord.cinder_antler'] = 'Cinder Antler'
+LANG['message.wildercord.cinder_antler.take'] = 'The antler is warm in your hand. Run, and the first thing you strike will be gored.'
+LANG['message.wildercord.cinder_antler.bound'] = 'The antler already runs with you.'
+LANG['message.wildercord.cinder_antler.guarded'] = 'The Ashen Stag still keeps its glade.'
+LANG['message.wildercord.cinder_antler.gore'] = 'Gored!'
 # What the bar says it is doing, the way a Master's bar names its cut.
 for name, text in {'watch': 'Watching', 'gore': 'Goring', 'kick': 'Kicking', 'stomp': 'Rearing', 'charge': 'Charging',
                    'bound': 'Bounding', 'recover': 'Spent', 'stuck': 'Stuck fast', 'rush': 'Cinder Rush'}.items():
@@ -117,3 +122,44 @@ def write(g):
     g.write_json(g.DATA / 'loot_table/entities/ashen_stag.json', {'type': 'minecraft:entity', 'pools': []})
     g.save(skin(), g.ASSETS / 'textures/entity/ashen_stag/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/ashen_stag/glow.png')
+    # The antler by the stump: a shed beam lying in the ash, its burr at one end, three tines standing up off it, ember-tipped.
+    g.save(antler(), g.ASSETS / 'textures/block/cinder_antler.png')
+
+    def faces(uv, up=None):
+        out = {f: {'texture': '#s', 'uv': uv} for f in ('north', 'south', 'east', 'west', 'up', 'down')}
+        if up:
+            out['up'] = {'texture': '#s', 'uv': up}
+        return out
+    tine = lambda x0, h, lean: {'from': [x0, 2, 7.5], 'to': [x0 + 1, 2 + h, 8.5], 'rotation': {'origin': [x0 + .5, 2, 8], 'axis': 'z', 'angle': lean},
+                                'faces': faces([12, 0, 13, h], [12, 0, 13, 1])}
+    g.write_json(g.ASSETS / 'models/block/cinder_antler.json', {
+        'parent': 'minecraft:block/block', 'textures': {'particle': 'wildercord:block/cinder_antler', 's': 'wildercord:block/cinder_antler'},
+        'elements': [
+            {'from': [2, 0, 6], 'to': [4, 3, 10], 'faces': faces([0, 4, 2, 7])},
+            {'from': [4, 0, 7], 'to': [14, 2, 9], 'faces': faces([0, 0, 10, 2])},
+            tine(6, 4, 22.5), tine(9, 6, 0), tine(12, 4, -22.5),
+        ]})
+    g.write_json(g.ASSETS / 'blockstates/cinder_antler.json', {'variants': {'': {'model': 'wildercord:block/cinder_antler'}}})
+    g.write_json(g.ASSETS / 'items/cinder_antler.json', {'model': {'type': 'minecraft:model', 'model': 'wildercord:block/cinder_antler'}})
+
+
+def antler():
+    """The Cinder Antler, 16 x 16: burnt antler mottled with ash, the burr rough and dark, embers in its cracks and at every tip."""
+    rng = np.random.default_rng(20261013)
+    px = np.zeros((16, 16, 4), np.uint8)
+    for y in range(16):
+        for x in range(16):
+            c = mixc(ANTLER, ANTLER_DARK, .2 + .5 * rng.random())
+            if rng.random() < .2:
+                c = mixc(c, ASH, .4)
+            px[y, x] = (*c, 255)
+    # The burr, rough and darker.
+    for y in range(4, 8):
+        for x in range(0, 3):
+            px[y, x, :3] = mixc(ANTLER_DARK, CHAR_DARK, .5 * rng.random())
+    # A crack glowing along the beam, and the tine tips burning.
+    for x, y in ((2, 1), (3, 1), (4, 0), (7, 1), (8, 1)):
+        px[y, x, :3] = EMBER
+    px[0, 12, :3] = EMBER_HOT
+    px[1, 12, :3] = EMBER
+    return Image.fromarray(px, 'RGBA')

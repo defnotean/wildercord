@@ -197,6 +197,8 @@ public final class AshenGladePiece extends DungeonPiece {
 		for(int x=REST_X-2;x<=REST_X+2;x++)for(int z=REST_Z-3;z<=REST_Z+2;z++){
 			set(level,bb,Blocks.COARSE_DIRT.defaultBlockState(),x,F,z);set(level,bb,AIR,x,F+1,z);
 		}
+		// Against the stump's foot, between it and the bed: the Cinder Antler, shed and still smouldering.
+		set(level,bb,dev.wildercord.aura.world.CinderAntler.BLOCK.defaultBlockState(),CX,F+1,CZ-4);
 	}
 
 	/** What is left of the last hunters: a cold fire and their supplies by the path, and further in, bones in the ash. */

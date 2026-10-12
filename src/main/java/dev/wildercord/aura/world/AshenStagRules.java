@@ -204,6 +204,21 @@ public final class AshenStagRules {
 		};
 	}
 
+	/**
+	 * The Cinder Antler, taken up once the stag is dead: after {@link #ANTLER_SPRINT} ticks of sprinting, the first thing hostile you
+	 * strike is gored the way the stag gores, thrown back {@link #ANTLER_SHOVE} and set burning {@link #ANTLER_BURN} ticks; then the
+	 * antler cools {@link #ANTLER_RECHARGE} ticks before it will again.
+	 */
+	public static final int ANTLER_SPRINT = 30, ANTLER_RECHARGE = 400, ANTLER_BURN = 100;
+	public static final double ANTLER_SHOVE = 1.4;
+	/** A living stag this close keeps anyone from the antler. */
+	public static final double ANTLER_GUARD = 48;
+
+	/** Whether a blow struck after {@code sprinted} ticks of sprinting, {@code since} ticks after the last gore, gores. */
+	public static boolean gores(int sprinted, long since) {
+		return sprinted >= ANTLER_SPRINT && since >= ANTLER_RECHARGE;
+	}
+
 	/** Health it knits back this tick, {@code sinceCut} ticks after it was last hurt: a Master's regeneration. */
 	public static float regen(float maxHealth, long sinceCut) {
 		return MastersRules.regen(maxHealth, sinceCut);

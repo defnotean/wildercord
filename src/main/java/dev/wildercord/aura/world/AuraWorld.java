@@ -115,6 +115,7 @@ public final class AuraWorld {
 		Guardians.init();
 		Coilroot.init();
 		BellShard.init();
+		CinderAntler.init();
 		SleepingBlades.init();
 		AuraBeasts.init();
 		VillageTournaments.init();
@@ -136,6 +137,7 @@ public final class AuraWorld {
 			output.accept(AURA_SHARD);
 			output.accept(Coilroot.ITEM);
 			output.accept(BellShard.ITEM);
+			output.accept(CinderAntler.ITEM);
 			for (int i=0;i<3;i++) output.accept(Battlefields.book(i));
 			output.accept(SwordTombs.history());
 			output.accept(SleepingBlades.BLADE);

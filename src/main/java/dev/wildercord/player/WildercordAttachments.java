@@ -167,6 +167,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Has taken up the Cinder Antler the Ashen Stag guards: a sprint ends in a gore. Kept through death. */
+	public static final AttachmentType<Boolean> CINDER_ANTLER = AttachmentRegistry.create(
+		Wildercord.id("cinder_antler"),
+		builder -> builder
+			.initializer(() -> false)
+			.persistent(Codec.BOOL)
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Has helped slay a boss (the 7th Circle's breakthrough). Kept through death. */
 	public static final AttachmentType<Boolean> BOSS_SLAIN = AttachmentRegistry.create(
 		Wildercord.id("boss_slain"),

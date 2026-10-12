@@ -2,6 +2,12 @@ package dev.wildercord.aura.world;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 class AshenStagRulesTest {
+	@Test void theAntlerGoresOnlyAfterARunAndThenCools(){
+		assertTrue(AshenStagRules.gores(AshenStagRules.ANTLER_SPRINT,AshenStagRules.ANTLER_RECHARGE));
+		assertFalse(AshenStagRules.gores(AshenStagRules.ANTLER_SPRINT-1,AshenStagRules.ANTLER_RECHARGE));
+		assertFalse(AshenStagRules.gores(0,AshenStagRules.ANTLER_RECHARGE));
+		assertFalse(AshenStagRules.gores(AshenStagRules.ANTLER_SPRINT*4,AshenStagRules.ANTLER_RECHARGE-1));
+	}
 	@Test void aPlayerAFewStridesPastTheGateWakesItAndOneAtTheGateDoesNot(){
 		assertTrue(AshenStagRules.wakes(0,0,-10));
 		assertTrue(AshenStagRules.wakes(7,2,-8));
