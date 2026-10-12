@@ -95,10 +95,12 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		ground();
 		if(s.deathTime<=0){
 			float tell=Math.max(1,s.tell);
-			// Off the ground through a pounce, along the arc it leaps, and through a bound, highest halfway.
+			// Off the ground through each hop of a pounce, along the arc it leaps, and through a bound, highest halfway.
 			if(s.move==FrostWyrmlingRules.POUNCE&&s.elapsed>tell)
-				body.y-=(float)FrostWyrmlingRules.arc((s.elapsed-tell)/FrostWyrmlingRules.POUNCE_TICKS)*16/FrostWyrmlingRenderer.SCALE;
+				body.y-=(float)FrostWyrmlingRules.hop(s.elapsed-tell)*16/FrostWyrmlingRenderer.SCALE;
 			if(s.move==FrostWyrmlingRules.BOUND)body.y-=(s.side==0?7:4)*Mth.sin(Mth.PI*Mth.clamp(s.elapsed/tell,0,1));
+			// Rolled onto its side, sprawled, it lies on its flank rather than on its legs.
+			body.y=Mth.lerp(smooth(Math.abs(body.zRot),.4F,1.35F),body.y,24-5);
 		}
 		// Rolled onto its side in death, it lies on its flank.
 		if(s.deathTime>0)body.y=Mth.lerp(smooth(s.deathTime,6,18),body.y,24-5);
@@ -150,10 +152,13 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 
 	/**
 	 * Its moves, laid over the standing pose, each wound up through its tell so it reads from across the hall, then thrown fast. The
-	 * bite draws its neck back and lunges, jaws wide and snapped shut; the tail sweep coils its tail away and whips it round; the wing
-	 * beat rears it up with its wings high and brings them down; the breath swells its chest, then lowers its head and breathes,
-	 * wings half open; the pounce crouches, then stretches out in the air, wings spread; the bound tucks its legs, and the beat away
-	 * spreads its wings for one great stroke; spent, its head hangs, its wings droop and its sides heave.
+	 * bite draws its neck back and lunges, jaws wide and snapped shut; the tail sweep coils its tail away and whips it round; the gale
+	 * mantles its wings forward and beats them down again and again; the breath swells its chest, then lowers its head and breathes,
+	 * wings half open; the pounce crouches, then stretches out through each hop; the dive climbs on beating wings, hangs, tucks and
+	 * skids on its belly; the slide breathes the strip out head low, then drops it flat on its belly; the icefall rears it back with
+	 * its head thrown up at the dome; sprawled it lies flat or rolled onto its side with its legs paddling; in its shell it wraps its
+	 * wings about itself and shudders; dazed it sways with its head hanging; the bound tucks its legs, and the beat away spreads its
+	 * wings for one great stroke; spent, its head hangs, its wings droop and its sides heave.
 	 */
 	private void attack(int move,float el,int tellTicks,int side){
 		float tell=Math.max(1,tellTicks);
@@ -172,13 +177,14 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 				n1Y+=side*.4F*wind;headY+=side*.2F*wind;
 				u[2]+=.15F*sweep;u[3]+=.15F*sweep;
 			}
-			case FrostWyrmlingRules.WING->{
-				float rear=wind*(1-go);
-				pitch+=-.55F*rear+.12F*go;n1X+=-.3F*rear+.3F*go;headX+=-.2F*rear+.1F*go;jawX+=.5F*rear;
-				fold=Mth.lerp(wind,fold,0);up+=1.0F*rear-.7F*go;fwd+=-.3F*rear+.6F*go;
-				u[0]=Mth.lerp(rear,u[0],-.7F);u[1]=Mth.lerp(rear,u[1],-.7F);l[0]=Mth.lerp(rear,l[0],1.2F);l[1]=Mth.lerp(rear,l[1],1.2F);
-				u[2]+=.2F*rear;u[3]+=.2F*rear;
-				t1X+=.3F*rear;
+			case FrostWyrmlingRules.GALE->{
+				// Reared a little with its wings mantled high and swept forward, cupped; each beat brings them down hard in a tick and
+				// lifts them again over the next few.
+				float c=el>=tell-1?(el-tell+1)%FrostWyrmlingRules.GALE_EVERY:-1,beat=c<0?0:c<1?c:Math.max(0,1-(c-1)/4),mantle=wind*(1-beat);
+				pitch+=-.3F*wind+.15F*beat;n1X+=-.15F*wind+.25F*beat;headX+=-.1F*wind+.15F*beat;jawX+=.3F*wind+.3F*beat;
+				fold=Mth.lerp(wind,fold,0);up+=.9F*mantle-.8F*beat;fwd+=.5F*mantle+.2F*beat;
+				u[0]=Mth.lerp(wind,u[0],-.4F);u[1]=Mth.lerp(wind,u[1],-.4F);l[0]=Mth.lerp(wind,l[0],.8F);l[1]=Mth.lerp(wind,l[1],.8F);
+				u[2]+=.15F*wind;u[3]+=.15F*wind;t1X+=.2F*wind;
 			}
 			case FrostWyrmlingRules.BREATH->{
 				float draw=wind*(1-go),b=ramp(el,tell,3);
@@ -188,11 +194,13 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 				u[0]-=.15F*b;u[1]-=.15F*b;
 			}
 			case FrostWyrmlingRules.POUNCE->{
-				float air=el>tell?ramp(el,tell,2):0,crouch=wind*(1-air);
-				float p=Mth.clamp((el-tell)/FrostWyrmlingRules.POUNCE_TICKS,0,1);
+				// Crouched through the tell and gathered again between hops; stretched out through each hop.
+				float c=el>tell?(el-tell)%FrostWyrmlingRules.HOP_CYCLE:-1,p=Mth.clamp((c-FrostWyrmlingRules.HOP_GAP)/FrostWyrmlingRules.HOP_TICKS,0,1);
+				float air=c<FrostWyrmlingRules.HOP_GAP?0:smooth(c,FrostWyrmlingRules.HOP_GAP,FrostWyrmlingRules.HOP_GAP+2)*(1-smooth(c,FrostWyrmlingRules.HOP_CYCLE-2,FrostWyrmlingRules.HOP_CYCLE));
+				float crouch=el<=tell?wind:.8F*(1-air);
 				u[0]-=.5F*crouch;u[1]-=.5F*crouch;l[0]+=1.1F*crouch;l[1]+=1.1F*crouch;
 				u[2]-=.6F*crouch;u[3]-=.6F*crouch;l[2]+=1.2F*crouch;l[3]+=1.2F*crouch;
-				pitch+=.08F*crouch;n1X+=.25F*crouch;headX-=.1F*crouch;t1X+=.3F*crouch;tY+=Mth.sin(el*1.5F)*.15F*crouch;
+				pitch+=.08F*crouch;n1X+=.25F*crouch;headX-=.1F*crouch;t1X+=.3F*crouch;tY+=Mth.sin(el*1.5F)*.15F*(el<tell?wind:0);
 				fold=Mth.lerp(crouch,fold,.6F);
 				// Stretched out in the air, forefeet reaching and hind legs trailing, nose up as it rises and down as it comes down.
 				u[0]=Mth.lerp(air,u[0],-1.0F);u[1]=Mth.lerp(air,u[1],-1.0F);l[0]=Mth.lerp(air,l[0],.2F);l[1]=Mth.lerp(air,l[1],.2F);
@@ -232,6 +240,70 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 				fold=Mth.lerp(k,fold,.55F);up-=.35F*k;
 				uz[0]=.12F*k;uz[1]=-.12F*k;uz[2]=.1F*k;uz[3]=-.1F*k;
 				t1X-=.1F*k;
+			}
+			case FrostWyrmlingRules.DIVE->{
+				// Crouched, then up on great beats of its wings with its legs hanging; hovering it beats slower, head down along its
+				// line; fixed, it draws its wings in and dives nose first, forefeet out; down, it skids on its belly with its wings flung wide.
+				float crouch=ramp(el,0,3)*(1-ramp(el,FrostWyrmlingRules.DIVE_CROUCH,2)),skid=ramp(el,tell+FrostWyrmlingRules.DIVE_TICKS,2);
+				float fly=ramp(el,FrostWyrmlingRules.DIVE_CROUCH,2)*(1-skid),tuck=ramp(el,tell-FrostWyrmlingRules.DIVE_LOCK,4)*(1-skid);
+				float flap=Mth.sin(el*(el<FrostWyrmlingRules.DIVE_CROUCH+FrostWyrmlingRules.DIVE_RISE?.9F:.55F));
+				for(int i=0;i<4;i++){u[i]=Mth.lerp(crouch,u[i],i<2?-.5F:-.6F);l[i]=Mth.lerp(crouch,l[i],i<2?1.1F:1.2F);}
+				for(int i=0;i<4;i++){u[i]=Mth.lerp(fly,u[i],.3F);l[i]=Mth.lerp(fly,l[i],.5F);}
+				fold=Mth.lerp(fly,fold,0);up+=1.1F*fly*(1-tuck)*flap;pitch+=fly*(.1F+.25F*tuck);n1X+=.35F*fly;headX+=.3F*fly;t1X+=.25F*fly;t2X+=.15F*fly;
+				fold=Mth.lerp(tuck*(1-go),fold,.5F);fold=Mth.lerp(tuck*go,fold,.85F);pitch+=.45F*tuck*go;jawX+=.6F*tuck;
+				u[0]=Mth.lerp(tuck*go,u[0],-1.1F);u[1]=Mth.lerp(tuck*go,u[1],-1.1F);
+				for(int i=0;i<4;i++){u[i]=Mth.lerp(skid,u[i],i<2?-1.5F:1.5F);l[i]=Mth.lerp(skid,l[i],i<2?-.1F:.1F);uz[i]=(i%2==0?-.5F:.5F)*skid;}
+				fold=Mth.lerp(skid,fold,0);up-=.4F*skid;n1X+=.1F*skid;jawX+=.3F*skid;
+			}
+			case FrostWyrmlingRules.SLIDE->{
+				// Head low and jaws wide breathing the strip out along the floor; turning its back on it; then down on its belly, legs
+				// splayed, head and tail up, wings half out to steady it, rocking as it toboggans tail first.
+				float breathe=ramp(el,0,3)*(1-ramp(el,6,3)),belly=smooth(el,tell-5,tell),rock=Mth.sin(el*1.3F)*belly*go;
+				n1X+=.45F*breathe;n2X+=.25F*breathe;headX+=.35F*breathe;jawX+=.9F*breathe;pitch+=.08F*breathe;
+				u[0]-=.25F*breathe;u[1]-=.25F*breathe;l[0]+=.4F*breathe;l[1]+=.4F*breathe;
+				for(int i=0;i<4;i++){u[i]=Mth.lerp(belly,u[i],i<2?-1.5F:1.5F);l[i]=Mth.lerp(belly,l[i],i<2?-.1F:.1F);uz[i]=(i%2==0?-.5F:.5F)*belly;}
+				n1X-=.35F*belly;headX-=.1F*belly;t1X-=.25F*belly;t2X-=.1F*belly;tY+=.35F*rock;
+				fold=Mth.lerp(belly,fold,.4F);up+=.3F*belly;roll=.08F*rock;
+			}
+			case FrostWyrmlingRules.ICEFALL->{
+				// Reared back on its haunches with its head thrown up at the dome, roaring, wings half open; it holds there, belly bared,
+				// shuddering, its jaws working, while the icicles come down.
+				float rear=smooth(el,0,tell*.5F),roar=ramp(el,0,4)*(1-ramp(el,8,6)),shake=Mth.sin(el*2.1F)*.025F*rear;
+				pitch+=-.6F*rear+shake;n1X+=-.55F*rear;n2X+=-.35F*rear;headX+=-.7F*rear;jawX+=.9F*roar+(.25F+.15F*Mth.sin(el*.6F))*rear*(1-roar);
+				u[0]=Mth.lerp(rear,u[0],-.9F);u[1]=Mth.lerp(rear,u[1],-.9F);l[0]=Mth.lerp(rear,l[0],1.6F);l[1]=Mth.lerp(rear,l[1],1.6F);
+				u[2]+=.4F*rear;u[3]+=.4F*rear;
+				fold=Mth.lerp(rear,fold,.35F);up+=.5F*rear;t1X+=.3F*rear;
+			}
+			case FrostWyrmlingRules.SPRAWL->{
+				// Flat on its belly with its legs splayed and wings flung out, head down and panting (side 0); or rolled onto its side,
+				// legs paddling at the air as it tries to right itself (side -1 or 1).
+				float k=ramp(el,0,3),pant=Mth.sin(el*.7F);
+				if(side==0){
+					for(int i=0;i<4;i++){u[i]=Mth.lerp(k,u[i],i<2?-1.5F:1.5F);l[i]=Mth.lerp(k,l[i],i<2?-.1F:.1F);uz[i]=(i%2==0?-.5F:.5F)*k;}
+					fold=Mth.lerp(k,fold,.15F);up-=.5F*k;n1X+=.25F*k;headX+=.15F*k;jawX+=(.3F+.1F*pant)*k;pitch+=.02F*pant*k;
+				}else{
+					roll=side*1.35F*k;
+					for(int i=0;i<4;i++){float pad=Mth.sin(el*.9F+i*1.6F);u[i]+=(.5F*pad-(i<2?.4F:-.3F))*k;l[i]+=(.6F+.4F*pad)*k;}
+					n1Y-=side*.2F*k;headX-=.2F*k;jawX+=(.35F+.15F*pant)*k;
+					fold=Mth.lerp(k,fold,.7F);t1X+=.2F*Mth.sin(el*.4F)*k;
+				}
+			}
+			case FrostWyrmlingRules.SHELL->{
+				// Head thrown back roaring, then hunkered down with its wings wrapped close about it and its head tucked in as the shell
+				// closes; shuddering harder and harder as it is about to burst.
+				float roar=ramp(el,0,4)*(1-ramp(el,6,6)),hug=smooth(el,4,14),warn=ramp(el,tell-FrostWyrmlingRules.SHELL_WARN,FrostWyrmlingRules.SHELL_WARN);
+				float shake=Mth.sin(el*3.1F)*(.01F+.05F*warn)*hug;
+				pitch+=-.35F*roar+.1F*hug+shake;n1X+=-.4F*roar+.5F*hug;n2X+=-.2F*roar+.3F*hug;headX+=-.5F*roar+.35F*hug;jawX+=.9F*roar+.2F*warn;
+				for(int i=0;i<4;i++){u[i]=Mth.lerp(hug,u[i],i<2?-.5F:-.6F);l[i]=Mth.lerp(hug,l[i],i<2?1.1F:1.2F);}
+				fold=Mth.lerp(Math.max(roar,hug),fold,0);up+=.9F*roar-.9F*hug;fwd+=1.3F*hug;roll=shake;
+				t1X-=.1F*hug;tY+=.6F*hug;
+			}
+			case FrostWyrmlingRules.DAZED->{
+				// Swaying on its feet with its head hanging and its wings slack, shaking its head as it comes round.
+				float k=ramp(el,0,4)*(1-ramp(el,FrostWyrmlingRules.DAZED_TICKS-6,6)),sway=Mth.sin(el*.25F),shake=Mth.clamp((el-20)/10,0,1);
+				roll=.1F*sway*k;yaw=.06F*Mth.sin(el*.18F)*k;n1X+=.5F*k;n2X+=.2F*k;headX+=.35F*k;n1Y+=.35F*sway*k;headY+=.3F*Mth.sin(el*.9F)*k*shake;
+				jawX+=.3F*k;fold=Mth.lerp(k,fold,.4F);up-=.45F*k;
+				uz[0]=-.15F*k;uz[1]=.15F*k;uz[2]=-.1F*k;uz[3]=.1F*k;u[0]+=.1F*sway*k;u[1]-=.1F*sway*k;
 			}
 			default->{}
 		}
