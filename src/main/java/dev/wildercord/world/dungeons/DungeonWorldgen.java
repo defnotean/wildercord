@@ -72,4 +72,7 @@ public final class DungeonWorldgen {
 	public static final StructurePieceType BELL_CHAPEL_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("bell_chapel"),
 		(StructurePieceType.ContextlessType)BellChapelPiece::new);
 	public static final ResourceKey<LootTable> BELL_CHAPEL=loot("chests/bell_chapel");
+	public static final StructurePieceType ASHEN_GLADE_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("ashen_glade"),
+		(StructurePieceType.ContextlessType)AshenGladePiece::new);
+	public static final ResourceKey<LootTable> ASHEN_GLADE=loot("chests/ashen_glade");
 }
