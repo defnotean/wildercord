@@ -962,6 +962,9 @@ def write_lang(runes):
     import owlet_art
     lang.update(owlet_art.LANG)
     owlet_art.write(sys.modules[__name__])
+    import tanuki_art
+    lang.update(tanuki_art.LANG)
+    tanuki_art.write(sys.modules[__name__])
     import puffin_art
     lang.update(puffin_art.LANG)
     puffin_art.write(sys.modules[__name__])

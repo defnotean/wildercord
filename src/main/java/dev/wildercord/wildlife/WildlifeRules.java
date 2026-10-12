@@ -91,6 +91,8 @@ public final class WildlifeRules {
 		"minecraft:lush_caves"));
 	public static final Kind HUSHWING_OWLET = new Kind("hushwing_owlet", Pool.CREATURE, 12, 1, 2, 1 / 2.0, 4, 48, List.of(
 		"minecraft:pale_garden"));
+	public static final Kind BLOSSOM_TANUKI = new Kind("blossom_tanuki", Pool.CREATURE, 10, 1, 3, 1 / 2.0, 6, 48, List.of(
+		"minecraft:cherry_grove"));
 
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);
