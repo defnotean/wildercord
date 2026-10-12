@@ -140,6 +140,15 @@ public final class WildlifeSpawns {
 		return allowed(kind, type, level, pos, random);
 	}
 
+	/** On its ground, light or dark (under a canopy no light gets through): like {@link #creature} but with no call for light. */
+	static <T extends Mob> boolean shaded(Kind kind, EntityType<T> type, TagKey<Block> ground, ServerLevelAccessor level,
+			EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+		if (!level.getBlockState(pos.below()).is(ground)) {
+			return false;
+		}
+		return !natural(reason) || allowed(kind, type, level, pos, random);
+	}
+
 	/** In open air at night, within reach of the ground, under the sky (a forest's leaves let enough through). */
 	private static boolean glimmerwing(EntityType<Glimmerwing> type, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos,
 			RandomSource random) {

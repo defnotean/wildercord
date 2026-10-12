@@ -959,6 +959,9 @@ def write_lang(runes):
     import dormouse_art
     lang.update(dormouse_art.LANG)
     dormouse_art.write(sys.modules[__name__])
+    import owlet_art
+    lang.update(owlet_art.LANG)
+    owlet_art.write(sys.modules[__name__])
     import puffin_art
     lang.update(puffin_art.LANG)
     puffin_art.write(sys.modules[__name__])

@@ -38,6 +38,7 @@
 		"TemporaryBlockDropsMixin",
 		"EvokerFangsMixin",
 		"EndermanMixin",
+		"CreakingMixin",
 		"CreeperAccessor",
 		"ZombieVillagerAccessor",
 		"AbstractFurnaceBlockEntityAccessor",

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "wildercord:item/hushwing_owlet_spawn_egg"
+  }
+}
