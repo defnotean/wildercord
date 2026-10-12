@@ -110,6 +110,20 @@ public final class BarrowFieldPiece extends DungeonPiece {
 		spears(level,bb);
 		banners(level,bb);
 		gibbet(level,bb);
+		bearer(level,bb);
+	}
+
+	/** The guardian, down in the open grave under the gibbet and facing the gate. Spawned once, by whichever chunk holds the grave. */
+	private void bearer(WorldGenLevel level,BoundingBox bb){
+		var foot=getWorldPos(REST_X,REST_Y,REST_Z);if(!bb.isInside(foot))return;
+		var gate=getWorldPos(REST_X,REST_Y,REST_Z-10);
+		float rest=(float)Math.toDegrees(Math.atan2(-(gate.getX()-foot.getX()),gate.getZ()-foot.getZ()));
+		var bearer=dev.wildercord.aura.world.Guardians.LANTERN_BEARER.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(bearer==null)return;
+		bearer.snapTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
+		bearer.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
+		var lights=new ArrayList<BlockPos>();for(int[] c:CANDLES)lights.add(getWorldPos(c[0],c[1],c[2]));
+		bearer.bind(foot,rest,worldBox(CX-(int)R,F-2,CZ-(int)R,CX+(int)R,F+14,CZ+(int)R),getWorldPos(LANTERN_X,LANTERN_Y,LANTERN_Z),lights);
+		level.addFreshEntityWithPassengers(bearer);
 	}
 
 	/** How high the rampart stands over a column {@code r} from the grave: nothing in the field, rising three blocks to its crest. */

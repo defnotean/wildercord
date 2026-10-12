@@ -847,6 +847,9 @@ def write_lang(runes):
     import frost_wyrmling_art
     lang.update(frost_wyrmling_art.LANG)
     frost_wyrmling_art.write(sys.modules[__name__])
+    import lantern_bearer_art
+    lang.update(lantern_bearer_art.LANG)
+    lantern_bearer_art.write(sys.modules[__name__])
     # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
     import importlib
     site_ids = []

@@ -5808,6 +5808,78 @@
       "wildercord:kit/aura/aura_iron_swing_3"
     ]
   },
+  "aura_lantern_bearer_burst": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.burst",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_burst"
+    ]
+  },
+  "aura_lantern_bearer_chain": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.chain",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_chain"
+    ]
+  },
+  "aura_lantern_bearer_death": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.death",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_death"
+    ]
+  },
+  "aura_lantern_bearer_fade": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.fade",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_fade"
+    ]
+  },
+  "aura_lantern_bearer_hook": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.hook",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_hook"
+    ]
+  },
+  "aura_lantern_bearer_hurt": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.hurt",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_hurt"
+    ]
+  },
+  "aura_lantern_bearer_reap": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.reap",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_reap"
+    ]
+  },
+  "aura_lantern_bearer_rise": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.rise",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_rise"
+    ]
+  },
+  "aura_lantern_bearer_roar": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.roar",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_roar"
+    ]
+  },
+  "aura_lantern_bearer_slam": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.slam",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_slam"
+    ]
+  },
+  "aura_lantern_bearer_step": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.step",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_step"
+    ]
+  },
+  "aura_lantern_bearer_wisp": {
+    "subtitle": "subtitles.wildercord.kit.lantern_bearer.wisp",
+    "sounds": [
+      "wildercord:kit/aura/aura_lantern_bearer_wisp"
+    ]
+  },
   "aura_lineage_ask": {
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [

@@ -48,6 +48,8 @@ public final class AuraWorldClient {
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.HOLLOW_MATRON,HollowMatronRenderer::new);
 		ModelLayerRegistry.registerModelLayer(FrostWyrmlingRenderer.LAYER,FrostWyrmlingModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.FROST_WYRMLING,FrostWyrmlingRenderer::new);
+		ModelLayerRegistry.registerModelLayer(LanternBearerRenderer.LAYER,LanternBearerModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.LANTERN_BEARER,LanternBearerRenderer::new);
 		var stonehorn=new ModelLayerLocation(Wildercord.id("stonehorn"),"main");
 		var galeclaw=new ModelLayerLocation(Wildercord.id("galeclaw"),"main");
 		ModelLayerRegistry.registerModelLayer(stonehorn,StonehornModel::createLayer);

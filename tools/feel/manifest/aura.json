@@ -1717,6 +1717,90 @@
       ],
       "subtitle": "cast"
     },
+    "aura_lantern_bearer_burst": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_burst"
+      ],
+      "subtitle": "lantern_bearer.burst"
+    },
+    "aura_lantern_bearer_chain": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_chain"
+      ],
+      "subtitle": "lantern_bearer.chain"
+    },
+    "aura_lantern_bearer_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_death"
+      ],
+      "subtitle": "lantern_bearer.death"
+    },
+    "aura_lantern_bearer_fade": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_fade"
+      ],
+      "subtitle": "lantern_bearer.fade"
+    },
+    "aura_lantern_bearer_hook": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_hook"
+      ],
+      "subtitle": "lantern_bearer.hook"
+    },
+    "aura_lantern_bearer_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_hurt"
+      ],
+      "subtitle": "lantern_bearer.hurt"
+    },
+    "aura_lantern_bearer_reap": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_reap"
+      ],
+      "subtitle": "lantern_bearer.reap"
+    },
+    "aura_lantern_bearer_rise": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_rise"
+      ],
+      "subtitle": "lantern_bearer.rise"
+    },
+    "aura_lantern_bearer_roar": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_roar"
+      ],
+      "subtitle": "lantern_bearer.roar"
+    },
+    "aura_lantern_bearer_slam": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_slam"
+      ],
+      "subtitle": "lantern_bearer.slam"
+    },
+    "aura_lantern_bearer_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_step"
+      ],
+      "subtitle": "lantern_bearer.step"
+    },
+    "aura_lantern_bearer_wisp": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_lantern_bearer_wisp"
+      ],
+      "subtitle": "lantern_bearer.wisp"
+    },
     "aura_lineage_ask": {
       "attenuation": 24,
       "files": [

@@ -870,6 +870,42 @@
     "aura_iron_swing": {
       "part": "aura"
     },
+    "aura_lantern_bearer_burst": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_chain": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_death": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_fade": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_hook": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_hurt": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_reap": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_rise": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_roar": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_slam": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_step": {
+      "part": "aura"
+    },
+    "aura_lantern_bearer_wisp": {
+      "part": "aura"
+    },
     "aura_lineage_ask": {
       "part": "aura"
     },
