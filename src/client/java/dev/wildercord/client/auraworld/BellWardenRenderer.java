@@ -38,19 +38,21 @@ public final class BellWardenRenderer extends MobRenderer<DrownedBellWarden,Bell
 		e.shownTell=s.tell;e.shownElapsed=s.elapsed;
 		boolean still=s.move==BellWardenRules.DORMANT||s.move==BellWardenRules.RISE||s.move==BellWardenRules.KNEEL||e.prevMove==BellWardenRules.DORMANT||e.prevMove==BellWardenRules.RISE||e.prevMove==BellWardenRules.KNEEL;
 		s.prevMove=e.prevMove;s.prevTell=e.prevTell;s.prevElapsed=e.prevElapsed;s.blend=still?1:Mth.clamp((now-e.switchedAt)/BLEND_TICKS,0,1);
-		s.hurt=e.hurtTime>0?Math.max(0,(e.hurtTime-partial)/10F):0;
+		s.hurt=e.hurtTime>0?Math.max(0,(e.hurtTime-partial)/10F):0;s.cracked=e.cracked();
 	}
 	/** It sinks and topples in its own death, rather than flopping over sideways. */
 	@Override protected float getFlipDegrees(){return 0;}
 	@Override protected void scale(BellWardenRenderState s,PoseStack pose){pose.scale(SCALE,SCALE,SCALE);}
 
-	/** The eyes in the crack: dim and slow while it kneels, burning once it is up; guttering out as it dies. */
+	/** The eyes in the crack: dim and slow while it kneels, burning once it is up, throbbing once its bell is torn open; guttering out as it dies. */
 	private static final class Eyes extends RenderLayer<BellWardenRenderState,BellWardenModel> {
 		private final RenderType type=RenderTypes.eyes(GLOW);
 		Eyes(RenderLayerParent<BellWardenRenderState,BellWardenModel> parent){super(parent);}
 		@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,BellWardenRenderState s,float yRot,float xRot){
 			if(s.isInvisible)return;
 			float alpha=.25F+.08F*Mth.sin(s.ageInTicks*.06F)+.7F*s.rise;
+			// Torn open, they throb fast and bright through the split.
+			if(s.cracked)alpha=.78F+.22F*Mth.sin(s.ageInTicks*.3F);
 			if(s.deathTime>0)alpha*=Math.max(0,1-s.deathTime/16F);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
 			collector.order(1).submitModel(getParentModel(),s,pose,type,light,OverlayTexture.NO_OVERLAY,(a<<24)|0xFFFFFF,null,s.outlineColor);

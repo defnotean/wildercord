@@ -10,14 +10,16 @@ import net.minecraft.util.Mth;
  * A hunched drowned giant wearing a cracked church bell over its head and shoulders, eyes burning in the crack; long arms, one
  * wrapped in the bell's old chain, the other gripping its iron clapper like a mace; kelp trailing from the bell's lip. It keeps its
  * vigil sat back on its heels, bowed over its fists on the floor; the rise lifts its bell, plants one foot, and pushes up off it.
- * Elbows and knees bend, each move blends into the next, a blow jolts it and rattles the bell on its shoulders, and dying it sinks
- * back onto its knees and topples forward under its bell.
+ * Elbows and knees bend, every move has its own pose wound up through its tell, each move blends into the next, a blow jolts it
+ * and rattles the bell on its shoulders, and dying it sinks back onto its knees and topples forward under its bell.
  */
 public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 	/** Hip height standing, in model units above the feet's 24, and the hunch it stands with. */
 	private static final float HIPS=12,HUNCH=.32F;
 	private final ModelPart hips,body,bell,right,left,foreR,foreL,legR,legL,shinR,shinL,clapper,kelpL,kelpR,kelpB;
 	private final ModelPart[] posed;
+	/** Whether its bell is torn open, for the moves it makes twice over then. */
+	private boolean cracked;
 	public BellWardenModel(ModelPart root){
 		super(root);hips=root.getChild("hips");body=hips.getChild("body");bell=body.getChild("bell");right=body.getChild("right");left=body.getChild("left");
 		foreR=right.getChild("fore");foreL=left.getChild("fore");legR=hips.getChild("legR");legL=hips.getChild("legL");shinR=legR.getChild("shin");shinL=legL.getChild("shin");
@@ -51,7 +53,7 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 	}
 
 	@Override public void setupAnim(BellWardenRenderState s){
-		super.setupAnim(s);
+		super.setupAnim(s);cracked=s.cracked;
 		pose(s,s.move,s.elapsed,s.tell);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
 		if(s.blend<1&&s.prevMove!=s.move){
@@ -117,30 +119,48 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 	}
 
 	/**
-	 * Its blows, laid over the standing pose: every one wound up through its tell so it reads from across the hall, then thrown fast.
-	 * The clapper swings from its left side across its front; the hammer and the slam come up overhead and down; the charge drops its
-	 * bell; spent, it leans back with its bell tipped up; under its bell it crouches right down.
+	 * Its moves, laid over the standing pose: every one wound up through its tell so it reads from across the hall, then thrown fast.
+	 * It twists far round with the clapper trailing and then whirls all the way round; raises the clapper overhead and brings it down
+	 * to stick fast in the floor, hauling at it after; heaves both fists up and down onto the floor; drops its bell like a ram to charge
+	 * and stands ringing after a wall; strikes its own bell, twice once cracked; whirls its chain overhead and lashes it out; lifts its
+	 * bell off its head and brings it down over the floor ahead, hunched bare-headed over it; hums its bell with both hands on the rim;
+	 * spreads its arms with its head back, gathers its fists overhead and brings them down; and, half beaten, wrenches at its bell until
+	 * it bursts and throws its arms wide. Spent, it leans back with its bell tipped up; under its bell it crouches right down.
 	 */
 	private void attack(int move,float el,int tellTicks){
 		float tell=Math.max(1,tellTicks);
 		float wind=ramp(el,0,tell),go=ramp(el,tell,2);
 		switch(move){
 			case BellWardenRules.SWING->{
-				// Clapper arm out level and drawn back to its side, elbow cocked, then swept across its front, the arm straightening
-				// into the blow and the body twisting with it.
-				float out=Math.min(1,wind*1.5F);
-				left.xRot=Mth.lerp(out,left.xRot,-1.45F);left.zRot=-.08F-.2F*out*(1-go);
-				left.yRot=-1.15F*wind+2.3F*go;
-				foreL.xRot=Mth.lerp(out,foreL.xRot,-.7F)*(1-go)-.1F*go;
-				body.yRot=-.4F*wind*(1-go)+.45F*go;
-				clapper.xRot=-.4F-.5F*wind*(1-go);
+				// Feet planted and twisted far round, the clapper arm out level and trailing behind it; then all the way round in a
+				// blur, the arm flung straight out, and a stagger as the weight of it carries on.
+				float out=Math.min(1,wind*1.5F),spin=Mth.clamp((el-tell)/BellWardenRules.SWING_SPIN,0,1);
+				body.yRot=spin>=1?0:1.15F*wind-(1.15F+(float)(Math.PI*2))*spin;
+				left.zRot=Mth.lerp(out,left.zRot,-1.35F);left.xRot=Mth.lerp(out,left.xRot,-.35F);left.yRot=.5F*out*(1-spin);
+				foreL.xRot=Mth.lerp(out,foreL.xRot,-.5F)*(1-go);
+				right.zRot+=.5F*out;right.xRot-=.3F*out;
+				clapper.xRot=Mth.lerp(out,clapper.xRot,-.3F)-.6F*go;
+				bend(.35F*wind);body.xRot+=.15F*wind;
+				if(spin>=1){float st=ramp(el,tell+BellWardenRules.SWING_SPIN,3);body.zRot+=Mth.sin(el*.9F)*.08F*(1-st*.5F);}
 			}
 			case BellWardenRules.HAMMER->{
-				// Up overhead, elbow bent to bring the clapper back over its shoulder, then down straight onto the floor.
+				// Up overhead in both hands, back arched, elbows bent to bring the clapper back over its shoulder, then down straight
+				// onto the floor with its whole weight behind it.
 				left.xRot=Mth.lerp(go,Mth.lerp(wind,-1.45F,-3.0F),-1.55F);left.yRot=.25F*(1-go);
-				foreL.xRot=Mth.lerp(go,-1.1F*wind,-.1F);
-				body.xRot+=-.18F*wind*(1-go)+.45F*go;
+				right.xRot=Mth.lerp(go,Mth.lerp(wind,-1.2F,-2.8F),-1.45F);right.yRot=-.35F;right.zRot=-.2F;
+				foreL.xRot=Mth.lerp(go,-1.1F*wind,-.1F);foreR.xRot=Mth.lerp(go,-1.0F*wind,-.15F);
+				body.xRot+=-.25F*wind*(1-go)+.5F*go;bell.xRot-=.2F*wind*(1-go);
 				clapper.xRot=Mth.lerp(go,-.2F,-1.1F);
+				bend(.3F*go);
+			}
+			case BellWardenRules.STUCK->{
+				// Bent over its clapper where it sticks in the floor, both hands on it, heaving back on it again and again.
+				float k=ramp(el,0,3),heave=Math.max(0,Mth.sin(el*.4F));
+				left.xRot=-1.55F+.25F*heave;left.yRot=.1F;right.xRot=-1.45F+.25F*heave;right.yRot=-.35F;right.zRot=-.2F;
+				foreL.xRot=foreR.xRot=-.1F-.3F*heave;
+				body.xRot+=(.5F-.2F*heave)*k;bell.xRot-=.15F*heave;body.zRot+=Mth.sin(el*.23F)*.05F;
+				clapper.xRot=-1.1F;
+				bend((.35F+.15F*heave)*k);
 			}
 			case BellWardenRules.SLAM->{
 				// Both fists up overhead as it leans back, elbows bent, then down together with straight arms, its knees giving
@@ -152,14 +172,23 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 				bend(.55F*go);
 			}
 			case BellWardenRules.CHARGE->{
-				// Head down, bell forward like a ram, arms swept back; crouched low through the tell, then its legs pump through the run.
+				// Head down, bell forward like a ram, arms swept back; crouched low and pawing through the tell, then its legs pump
+				// through the run.
 				body.xRot+=.75F*wind;bell.xRot+=.25F*wind;clapper.xRot=Mth.lerp(wind,clapper.xRot,-.2F);
 				left.xRot+=.7F*wind;right.xRot+=.7F*wind;left.zRot-=.25F*wind;right.zRot+=.25F*wind;
 				foreL.xRot=foreR.xRot=-.4F*wind;
 				if(el>tell){
 					float a=(el-tell)*1.7F,pump=Mth.sin(a)*.9F;
 					legL.xRot=pump-.2F;legR.xRot=-pump-.2F;shinL.xRot=Math.max(0,-Mth.cos(a))*1.1F;shinR.xRot=Math.max(0,Mth.cos(a))*1.1F;
-				}else bend(.4F*wind);
+				}else{bend(.4F*wind);legR.xRot-=Math.max(0,Mth.sin(el*.8F))*.3F*wind;}
+			}
+			case BellWardenRules.DAZED->{
+				// Its bell rung on stone: swaying on soft knees, arms slack, its bell lolling on its shoulders.
+				float k=ramp(el,0,4);
+				body.zRot+=Mth.sin(el*.2F)*.15F*k;bell.zRot=Mth.sin(el*.2F+.6F)*.2F*k;bell.xRot+=(.15F+.15F*Mth.sin(el*.13F))*k;
+				body.xRot+=.15F*k;left.zRot-=.2F*k;right.zRot+=.2F*k;left.xRot+=.2F*k;right.xRot+=.2F*k;
+				foreL.xRot=foreR.xRot=-.1F*k;clapper.xRot=Mth.lerp(k,clapper.xRot,-.1F);
+				bend((.25F+.08F*Mth.sin(el*.2F))*k);
 			}
 			case BellWardenRules.BACKSTEP->{
 				float k=ramp(el,0,2);
@@ -184,13 +213,76 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 			}
 			case BellWardenRules.TOLL->{
 				// The clapper raised high and out beside its bell, elbow bent behind its head, the chain arm out for balance; then
-				// swung in hard against the bronze, and the bell shudders on its shoulders after.
-				left.xRot=Mth.lerp(wind,left.xRot,-2.5F);left.zRot=-.08F+.6F*wind*(1-go)-.3F*go;
-				foreL.xRot=-1.2F*wind*(1-go)-.2F*go;
-				clapper.xRot=.3F*wind*(1-go)-1.2F*go;
+				// swung in hard against the bronze, and the bell shudders on its shoulders after. Cracked, it draws back and strikes again.
+				float w2=cracked?smooth(el,tell+2,tell+BellWardenRules.TOLL_AGAIN):0,g2=cracked?ramp(el,tell+BellWardenRules.TOLL_AGAIN,2):0;
+				float raise=wind*(1-go)+w2*(1-g2),strike=go*(1-w2)+g2;
+				left.xRot=Mth.lerp(wind,left.xRot,-2.5F);left.zRot=-.08F+.6F*raise-.3F*strike;
+				foreL.xRot=-1.2F*raise-.2F*strike;
+				clapper.xRot=.3F*raise-1.2F*strike;
 				right.zRot=.08F+.4F*wind;foreR.xRot=-.3F*wind;body.xRot-=.15F*wind;
 				bend(.2F*wind);
-				if(el>tell){float a=el-tell;bell.zRot=Mth.sin(a*1.6F)*.12F*(float)Math.exp(-a*.25F);}
+				if(el>tell){float a=el-(g2>0?tell+BellWardenRules.TOLL_AGAIN:tell);bell.zRot=Mth.sin(a*1.6F)*.12F*(float)Math.exp(-a*.25F);}
+			}
+			case BellWardenRules.LASH->{
+				// The chain arm raised straight up, whirling the chain round overhead faster and faster; then flung out ahead at the
+				// height of its shoulder, the body turning in behind it, and a beat with the arm out as the chain comes home.
+				float a=el*(.5F+el*.04F),up=Math.min(1,wind*1.6F);
+				right.xRot=Mth.lerp(go,Mth.lerp(up,right.xRot,-2.9F+.25F*Mth.cos(a)*(1-go)),-1.5F);right.zRot=Mth.lerp(go,.08F+.3F*Mth.sin(a)*up,-.15F);
+				foreR.xRot=Mth.lerp(go,-.35F*up,-.05F);
+				body.yRot=.35F*wind*(1-go)-.4F*go;body.xRot+=-.15F*wind*(1-go)+.3F*go;
+				left.zRot-=.3F*wind;left.xRot+=.3F*wind;
+				bend(.2F*wind+.15F*go);
+			}
+			case BellWardenRules.COVER->{
+				// Both hands on the rim, it lifts its bell clear off its head and holds it high, leaning back under the weight; then
+				// brings it down mouth first on the floor ahead and stays hunched over it, bare-headed, straining to lift it again.
+				float lift=Math.min(1,wind*1.3F);
+				body.xRot+=-.25F*lift*(1-go)+.55F*go;
+				left.xRot=right.xRot=Mth.lerp(go,-2.9F*lift,-1.15F-body.xRot);left.zRot=Mth.lerp(go,.35F*lift,.2F);right.zRot=Mth.lerp(go,-.35F*lift,-.2F);
+				foreL.xRot=foreR.xRot=Mth.lerp(go,-.6F*lift,-.1F);
+				// Where its bell sits on the floor ahead, worked back through the lean of its body.
+				float th=body.xRot,ty=9,tz=-24,by=ty*Mth.cos(th)+tz*Mth.sin(th),bz=-ty*Mth.sin(th)+tz*Mth.cos(th);
+				bell.y=Mth.lerp(go,bell.y-7*lift,by);bell.z=Mth.lerp(go,0,bz);bell.xRot=Mth.lerp(go,bell.xRot-.2F*lift,-th);bell.yRot*=1-go;
+				clapper.xRot=Mth.lerp(go,clapper.xRot,-.2F);
+				bend(.25F*wind+.25F*go);
+				if(el>tell)body.zRot+=Mth.sin(el*1.3F)*.03F;
+			}
+			case BellWardenRules.PEAL->{
+				// Both hands up on its bell's rim, the bell shivering faster and faster on its shoulders; then head up into the sound,
+				// the bell jolting with every pulse that goes out.
+				float k=Math.min(1,wind*1.5F);
+				left.xRot=right.xRot=Mth.lerp(k,left.xRot,-2.3F);left.zRot=Mth.lerp(k,left.zRot,-.55F);right.zRot=Mth.lerp(k,right.zRot,.55F);
+				foreL.xRot=foreR.xRot=-1.15F*k;clapper.xRot=Mth.lerp(k,clapper.xRot,-.4F);
+				bell.zRot=Mth.sin(el*(1.2F+wind*1.6F))*.05F*wind;
+				body.xRot-=.12F*wind;bend(.15F*wind);
+				if(el>tell){
+					float pulse=(float)Math.exp(-((el-tell)%BellWardenRules.PEAL_EVERY)*.6F);
+					bell.xRot-=.12F+.15F*pulse;body.xRot-=.1F*pulse;bell.zRot+=Mth.sin(el*3.1F)*.04F;
+				}
+			}
+			case BellWardenRules.UNDERTOW->{
+				// Arms flung wide and head back while water pours off its bell; then its fists gathered together high overhead as
+				// the floor drags in, swaying with the pull; then down, knees giving, onto the floor at its feet.
+				float pour=ramp(el,0,BellWardenRules.UNDERTOW_POUR),gather=smooth(el,BellWardenRules.UNDERTOW_POUR,BellWardenRules.UNDERTOW_POUR+8);
+				float wide=pour*(1-gather),up=gather*(1-go);
+				left.zRot=-.08F-1.3F*wide-.25F*up;right.zRot=.08F+1.3F*wide+.25F*up;
+				left.xRot=right.xRot=Mth.lerp(go,-2.95F*up-.2F*wide,-1.3F);
+				foreL.xRot=foreR.xRot=Mth.lerp(go,-.7F*up,-.1F);
+				body.xRot+=-.4F*wide-.15F*up+.6F*go;bell.xRot-=.3F*wide;
+				if(up>0)body.zRot+=Mth.sin(el*.3F)*.06F*up;
+				bend(.15F*wide+.2F*up+.6F*go);
+			}
+			case BellWardenRules.CRACK->{
+				// Gripping its bell in both hands and wrenching at it, shaking harder and harder, sinking lower as it strains; then the
+				// bell bursts and it is flung upright with its arms thrown wide.
+				float k=Math.min(1,wind*3);
+				left.xRot=right.xRot=Mth.lerp(go,Mth.lerp(k,left.xRot,-2.4F),-.6F);
+				left.zRot=Mth.lerp(go,Mth.lerp(k,left.zRot,-.5F),-1.7F);right.zRot=Mth.lerp(go,Mth.lerp(k,right.zRot,.5F),1.7F);
+				foreL.xRot=foreR.xRot=Mth.lerp(go,-1.2F*k,-.1F);
+				float shake=wind*wind*(1-go);
+				bell.zRot=Mth.sin(el*2.9F)*.1F*shake;bell.yRot+=Mth.sin(el*2.3F)*.08F*shake;body.zRot+=Mth.sin(el*3.7F)*.03F*shake;
+				body.xRot+=.25F*wind*(1-go)-.5F*go;bell.xRot-=.45F*go;
+				bend(.35F*wind*(1-go)+.1F*go);
 			}
 			default->{}
 		}
