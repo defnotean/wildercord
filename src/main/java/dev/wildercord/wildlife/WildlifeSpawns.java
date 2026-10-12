@@ -128,6 +128,18 @@ public final class WildlifeSpawns {
 		return lit && (!natural(reason) || allowed(kind, type, level, pos, random));
 	}
 
+	/** Underground, out of the sky's sight, where it's dark: like {@link #creature} but with no call for light. */
+	static <T extends Mob> boolean cave(Kind kind, EntityType<T> type, TagKey<Block> ground, ServerLevelAccessor level,
+			EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+		if (!natural(reason)) {
+			return true;
+		}
+		if (!level.getBlockState(pos.below()).is(ground) || level.canSeeSky(pos) || pos.getY() >= level.getLevel().getSeaLevel()) {
+			return false;
+		}
+		return allowed(kind, type, level, pos, random);
+	}
+
 	/** In open air at night, within reach of the ground, under the sky (a forest's leaves let enough through). */
 	private static boolean glimmerwing(EntityType<Glimmerwing> type, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos,
 			RandomSource random) {

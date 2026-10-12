@@ -22,6 +22,7 @@ public final class WildlifeClient {
   SunwatchMeerkatRenderer.init();
   StonecrestPuffinRenderer.init();
   CapcrownSnailRenderer.init();
+  GlowberryDormouseRenderer.init();
   PredatorRenderers.init();
   RidgebackStagRenderer.init();
   BurrowAndReefRenderers.init();

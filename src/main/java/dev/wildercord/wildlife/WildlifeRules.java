@@ -87,6 +87,8 @@ public final class WildlifeRules {
 		"minecraft:stony_shore", "minecraft:beach", "minecraft:snowy_beach"));
 	public static final Kind CAPCROWN_SNAIL = new Kind("capcrown_snail", Pool.CREATURE, 8, 1, 3, 1 / 2.0, 6, 48, List.of(
 		"minecraft:mushroom_fields"));
+	public static final Kind GLOWBERRY_DORMOUSE = new Kind("glowberry_dormouse", Pool.CREATURE, 20, 1, 3, 1.0, 6, 32, List.of(
+		"minecraft:lush_caves"));
 
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);
