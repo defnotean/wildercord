@@ -38,7 +38,7 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 	}
 	@Override protected int getBlockLightLevel(LanternBearer e,BlockPos pos){return 15;}
 	@Override public void extractRenderState(LanternBearer e,LanternBearerRenderState s,float partial){
-		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.rise=LanternBearerRules.rise(s.move,s.elapsed);
+		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.roused=e.roused();s.elapsed=e.elapsed(partial);s.rise=LanternBearerRules.rise(s.move,s.elapsed);
 		float now=e.tickCount+partial;
 		if(e.shownMove!=s.move || s.elapsed<e.shownElapsed-1){
 			if(e.shownMove>=0){e.prevMove=e.shownMove;e.prevTell=e.shownTell;e.prevElapsed=e.shownElapsed;e.switchedAt=now;}
@@ -68,7 +68,8 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 
 	/**
 	 * Its eyes and the flame in its lantern: the eyes catch light as it takes the lantern down; both thin with it and go out as it dies.
-	 * In Lights Out they gutter as it breathes the lantern out and are dark, but for a low glimmer as it stands up behind someone.
+	 * They burn hot as it gathers a flare, breathes or holds its rite. In Lights Out they gutter as it breathes the lantern out and are
+	 * dark, but for a low glimmer as it stands up behind someone.
 	 */
 	private static final class Glow extends RenderLayer<LanternBearerRenderState,LanternBearerModel> {
 		private final RenderType type=RenderTypes.eyes(GLOW);
@@ -81,6 +82,9 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 			collector.order(1).submitModel(getParentModel(),s,pose,type,light,OverlayTexture.NO_OVERLAY,(a<<24)|0xFFFFFF,null,s.outlineColor);
 		}
 		private static float lights(LanternBearerRenderState s){
+			// Burning hot and steady as it gathers the souls for a flare, breathes, or holds its rite.
+			if((s.move==LanternBearerRules.FLARE||s.move==LanternBearerRules.RITE)&&s.elapsed<s.tell+2)return 1+.5F*Mth.clamp(s.elapsed/Math.max(1,s.tell),0,1);
+			if(s.move==LanternBearerRules.BREATH&&s.elapsed>=s.tell&&s.elapsed<s.tell+LanternBearerRules.breathTicks(s.roused))return 1.4F;
 			if(s.move!=LanternBearerRules.LIGHTS_OUT)return 1;
 			if(s.elapsed<LanternBearerRules.SNUFF_TELL)return 1-.7F*Mth.clamp(s.elapsed/LanternBearerRules.SNUFF_TELL,0,1)+.15F*Mth.sin(s.elapsed*1.7F);
 			int stage=LanternBearerRules.lightsStage(s.elapsed);

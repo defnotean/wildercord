@@ -68,8 +68,8 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 	@Override public void setupAnim(LanternBearerRenderState s){
 		super.setupAnim(s);
 		pose(s,s.move,s.elapsed,s.tell,s.side);
-		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
+		// Blending out of the move before (or the same move begun again), so one blow flows into the next instead of snapping.
+		if(s.blend<1){
 			PartPose[] now=new PartPose[posed.length];
 			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
 			root().resetPose();
@@ -100,10 +100,16 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		float T=Math.max(1,tell);
 		switch(move){
 			case LanternBearerRules.RISE,LanternBearerRules.BED,LanternBearerRules.DORMANT->rise(s.rise,t);
-			case LanternBearerRules.REAP->reap(el,T);
+			case LanternBearerRules.REAP->low(el,T,s.roused);
 			case LanternBearerRules.HOOK->hook(el,T);
-			case LanternBearerRules.WISPS->wisps(el,T);
-			case LanternBearerRules.SLAM->slam(el,T);
+			case LanternBearerRules.SNAGGED->snagged(el,t);
+			case LanternBearerRules.WISPS->wisps(el,T,s.roused);
+			case LanternBearerRules.GRAVES->graves(el,T);
+			case LanternBearerRules.FLARE->flare(el,T);
+			case LanternBearerRules.SHOVEL->shovel(el,T,s.roused);
+			case LanternBearerRules.BACKSWEEP->backsweep(el,T);
+			case LanternBearerRules.BREATH->breath(el,T,side,s.roused);
+			case LanternBearerRules.RITE->rite(el,T,t);
 			case LanternBearerRules.FADE->fade(el,side);
 			case LanternBearerRules.RECOVER->recover(el,t);
 			case LanternBearerRules.LIGHTS_OUT->lights(el);
@@ -148,7 +154,23 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		swing+=Mth.sin(t*.45F)*.6F*settle;swingZ+=Mth.sin(t*.3F)*.25F*settle;
 		bX-=.18F*wail;hX-=.55F*wail;rZ+=.45F*wail;lZ-=.25F*wail;
 	}
-	/** The reap: the spade swung back round past its right side with its arm out straight, then reaped flat round in front of it. */
+	/**
+	 * The low reap: crouched with the spade drawn back past its right side, the blade scraping the ground, then reaped flat round in
+	 * front of it at ankle height. Roused, it drags the spade on round behind its left side and reaps back the other way.
+	 */
+	private void low(float el,float T,boolean twice){
+		float b0=T+LanternBearerRules.REAP_SWEEP+LanternBearerRules.REAP_BACK,done=twice?b0+1:T+1;
+		float wind=smooth(el,0,T),cut=smooth(el,T-1,T+3),back=twice?smooth(el,b0-1,b0+3):0,
+			off=1-smooth(el,done+4,done+LanternBearerRules.REAP_RECOVER);
+		float on=wind*off;
+		by+=2.4F*on;bX+=.3F*on;hX-=.25F*on;
+		rX=Mth.lerp(on,rX,-1.2F);rE=Mth.lerp(on,rE,-.05F);rZ=Mth.lerp(on,rZ,.2F);spadeW=Mth.lerp(on,spadeW,-1.4F);spadeSlide+=9*on;
+		bY+=(.85F*wind-1.95F*cut+1.95F*back)*off;rY+=(.5F*wind-1.0F*cut+1.0F*back)*off;
+		hY-=(.6F*wind-1.2F*cut+1.2F*back)*off;
+		lX+=.3F*on;lZ-=.2F*on;swing+=(.5F*cut-.7F*back)*off;swingZ+=.3F*(cut-back)*off;
+		skirtX+=.2F*on;capeX+=.3F*(cut+back)*off;
+	}
+	/** The upright reap of Lights Out: the spade swung back round past its right side with its arm out straight, then reaped flat round in front of it. */
 	private void reap(float el,float T){
 		float wind=smooth(el,0,T),cut=smooth(el,T-1,T+3),back=1-smooth(el,T+5,T+LanternBearerRules.REAP_RECOVER);
 		float on=wind*back;
@@ -169,24 +191,119 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		bY+=(Mth.lerp(thrust,-.5F,.4F)-.6F*haul)*on;bX+=(Mth.lerp(thrust,-.1F,.2F)-.3F*haul)*on;
 		swing+=Mth.sin(el*.6F)*.4F*thrust*back;
 	}
-	/** The wisps: the lantern raised high and swung round, then flung out toward its prey as they are loosed. */
-	private void wisps(float el,float T){
-		float raise=smooth(el,0,T*.6F),loose=smooth(el,T-1,T+2),back=1-smooth(el,T+4,T+LanternBearerRules.WISP_RECOVER);
-		float on=raise*back;
-		lX=Mth.lerp(on,lX,Mth.lerp(loose,-2.0F,-1.4F));lE=Mth.lerp(on,lE,Mth.lerp(loose,-.4F,0));lZ=Mth.lerp(on,lZ,-.25F);
-		crookW=Mth.lerp(on,crookW,Mth.lerp(loose,.3F,1.2F));
-		bX+=Mth.lerp(loose,-.15F,.15F)*on;hX+=Mth.lerp(loose,-.35F,.1F)*on;
-		swing+=Mth.sin(el*.5F)*.7F*raise*(1-loose)+.5F*loose*back;swingZ+=Mth.cos(el*.5F)*.5F*raise*(1-loose);
-		rX+=.15F*on;rE+=.1F*on;
+	/** Snagged: the crook's tip caught fast in the earth before it, it leans back on the haft and tugs, its spade arm flung out for balance. */
+	private void snagged(float el,float t){
+		float k=smooth(el,0,3)*(1-smooth(el,LanternBearerRules.SNAG_TICKS-4,LanternBearerRules.SNAG_TICKS)),tug=Math.max(0,Mth.sin(el*.7F));
+		lX=Mth.lerp(k,lX,-1.25F+.25F*tug);lE=Mth.lerp(k,lE,-.05F);crookW=Mth.lerp(k,crookW,1.8F);crookSlide+=6*k;
+		bX+=(-.2F-.18F*tug)*k;by-=.4F*tug*k;bY+=(.3F+.12F*tug)*k;hX+=(.2F+.1F*tug)*k;
+		rX=Mth.lerp(k,rX,-.5F);rZ+=(.35F+.2F*tug)*k;
+		capeX+=.2F*tug*k;swing+=Mth.sin(t*.8F)*.3F*k;swingZ+=Mth.sin(t*.6F)*.2F*k;
 	}
-	/** The slam: the spade raised over its head, blade up and back, then driven down into the ground before it, crouched into the blow. */
-	private void slam(float el,float T){
-		float lift=smooth(el,0,T),strike=smooth(el,T-1,T+1),back=1-smooth(el,T+5,T+LanternBearerRules.SLAM_RECOVER);
-		float on=lift*back;
-		rX=Mth.lerp(on,rX,Mth.lerp(strike,-2.9F,-.9F));rE=Mth.lerp(on,rE,Mth.lerp(strike,-.3F,-.2F));rZ=Mth.lerp(on,rZ,Mth.lerp(strike,-.3F,0));
-		spadeW=Mth.lerp(on,spadeW,Mth.lerp(strike,2.8F,-.35F));spadeSlide+=Mth.lerp(strike,6,1)*on;
-		bX+=Mth.lerp(strike,-.2F,.4F)*on;hX+=Mth.lerp(strike,-.2F,.3F)*on;by+=1.5F*strike*back;
-		lX+=Mth.lerp(strike,.25F,-.2F)*on;swing+=.6F*strike*back*Mth.cos(el*.5F);
+	/**
+	 * The wisps: the lantern raised over its hood and whirled round, faster as the tell runs on; then, as each wisp is loosed, flicked out
+	 * toward its prey and whirled on.
+	 */
+	private void wisps(float el,float T,boolean roused){
+		int n=roused?LanternBearerRules.WISP_COUNT_ROUSED:LanternBearerRules.WISP_COUNT;
+		float end=T+(n-1)*LanternBearerRules.WISP_EVERY+4;
+		float raise=smooth(el,0,T*.5F),on=raise*(1-smooth(el,end,end+6));
+		float a=el*(.35F+.3F*Math.min(1,el/T));
+		float flick=el<T-1||el>=end?0:1-((el-T+1)%LanternBearerRules.WISP_EVERY)/LanternBearerRules.WISP_EVERY;
+		flick*=flick;
+		lX=Mth.lerp(on,lX,-2.65F+.25F*Mth.cos(a)+.6F*flick);lE=Mth.lerp(on,lE,-.15F);lZ=Mth.lerp(on,lZ,-.2F+.3F*Mth.sin(a));
+		crookW=Mth.lerp(on,crookW,.15F+.3F*Mth.cos(a)+.6F*flick);crookSlide-=5*on;
+		swing+=Mth.sin(a)*.9F*on;swingZ+=Mth.cos(a)*.7F*on;
+		bX+=(-.12F+.2F*flick)*on;hX+=(-.4F+.25F*flick)*on;bY+=.12F*Mth.sin(a)*on;
+		rX+=.15F*on;rE+=.1F*on;capeX+=.15F*on;
+	}
+	/**
+	 * The graves: the spade raised straight up over its hood, blade down, then driven deep into the earth before it, where it sticks; it
+	 * hangs on the haft straining to wrench it out while the graves are marked, and only then pulls it free.
+	 */
+	private void graves(float el,float T){
+		float stuck=T+LanternBearerRules.GRAVE_MARK+LanternBearerRules.GRAVE_HOLD;
+		float lift=smooth(el,0,T*.8F),drive=smooth(el,T-1,T+1),pull=smooth(el,stuck-3,stuck+3);
+		float on=lift*(1-pull),strain=drive*(1-pull)*Math.max(0,Mth.sin(el*.5F));
+		rX=Mth.lerp(on,rX,Mth.lerp(drive,-2.9F,-.85F));rE=Mth.lerp(on,rE,Mth.lerp(drive,-.2F,-.15F));rZ=Mth.lerp(on,rZ,Mth.lerp(drive,-.15F,0));
+		rY+=.25F*on*(1-drive);
+		spadeW=Mth.lerp(on,spadeW,Mth.lerp(drive,.3F,-.1F));spadeSlide+=Mth.lerp(drive,-6,7)*on;
+		bX+=(Mth.lerp(drive,-.25F,.45F)-.12F*strain)*on;hX+=(Mth.lerp(drive,-.3F,.35F)-.1F*strain)*on;by+=Mth.lerp(drive,-.5F,2.2F)*on;
+		lX+=Mth.lerp(drive,-.35F,.25F)*on;lZ-=.2F*on;swing+=.5F*drive*Mth.cos(el*.4F)*on;
+	}
+	/**
+	 * The flare: the lantern drawn in close under its hood, hunched round it with its spade arm folded over as the souls pour in; then
+	 * thrown wide, both arms out and its hood flung back, as it bursts.
+	 */
+	private void flare(float el,float T){
+		float hug=smooth(el,0,T*.7F),burst=smooth(el,T-1,T+1),off=1-smooth(el,T+3,T+3+LanternBearerRules.FLARE_RECOVER*.5F);
+		float in=hug*(1-burst)*off,out=burst*off;
+		lX=Mth.lerp(in,lX,-1.6F);lE=Mth.lerp(in,lE,-1.3F);lZ=Mth.lerp(in,lZ,.45F);crookW=Mth.lerp(in,crookW,.1F);crookSlide-=9*in;
+		rX=Mth.lerp(in,rX,-.9F);rZ=Mth.lerp(in,rZ,-.35F);rE=Mth.lerp(in,rE,-.9F);
+		bX+=.35F*in;hX+=.5F*in;by+=1.2F*in;
+		swing*=1-in;swingZ*=1-in;
+		lX=Mth.lerp(out,lX,-1.7F);lZ=Mth.lerp(out,lZ,-1.1F);lE=Mth.lerp(out,lE,-.1F);crookW=Mth.lerp(out,crookW,.4F);
+		rX=Mth.lerp(out,rX,-1.2F);rZ=Mth.lerp(out,rZ,1.1F);rE=Mth.lerp(out,rE,-.1F);spadeW=Mth.lerp(out,spadeW,.2F);
+		bX-=.3F*out;hX-=.55F*out;capeX+=.9F*out;skirtX+=.3F*out;swing+=.8F*out;
+	}
+	/**
+	 * The shovel: bent over the spade dug in at its right foot, levering the earth up; then heaved up and over its shoulder, flinging the
+	 * earth high. Roused, it digs in again and flings a second time.
+	 */
+	private void shovel(float el,float T,boolean twice){
+		float A=LanternBearerRules.SHOVEL_AGAIN,end=T+(twice?A:0);
+		float on=smooth(el,0,4)*(1-smooth(el,end+3,end+10));
+		float fling=smooth(el,T-1,T+1.5F),fling2=twice?smooth(el,T+A-1,T+A+1.5F):0,re=twice?smooth(el,T+2,T+5):0;
+		float up=fling*(1-re)+fling2,lever=Mth.sin(el*.9F)*(1-up);
+		rX=Mth.lerp(on,rX,Mth.lerp(up,-.35F+.15F*lever,-2.4F));rE=Mth.lerp(on,rE,Mth.lerp(up,-.4F,-.2F));rZ=Mth.lerp(on,rZ,Mth.lerp(up,.35F,.1F));
+		spadeW=Mth.lerp(on,spadeW,Mth.lerp(up,-.45F+.2F*lever,1.6F));spadeSlide+=Mth.lerp(up,4,1)*on;
+		bX+=(Mth.lerp(up,.45F,-.2F)+.05F*lever)*on;bY+=Mth.lerp(up,.35F,-.25F)*on;by+=Mth.lerp(up,1.5F,0)*on;
+		hX+=Mth.lerp(up,.3F,-.35F)*on;hY+=Mth.lerp(up,.3F,0)*on;
+		lX+=.2F*on;lZ-=.15F*on;swing+=.4F*up*on;capeX+=.25F*up*on;
+	}
+	/**
+	 * The backsweep: looking back over its shoulder with the crook drawn across its chest and its weight on its front, then whipped round
+	 * low behind it.
+	 */
+	private void backsweep(float el,float T){
+		float coil=smooth(el,0,T),whip=smooth(el,T-1,T+2),off=1-smooth(el,T+3,T+3+LanternBearerRules.BACK_RECOVER);
+		float on=coil*off;
+		hY+=Mth.lerp(whip,1.3F,-.4F)*on;hX+=.15F*on;
+		bY+=(.7F*coil-1.9F*whip)*off;bX+=Mth.lerp(whip,.1F,.3F)*on;by+=.8F*whip*off;
+		lX=Mth.lerp(on,lX,Mth.lerp(whip,-1.1F,.6F));lZ=Mth.lerp(on,lZ,Mth.lerp(whip,.7F,-1.2F));lE=Mth.lerp(on,lE,Mth.lerp(whip,-1.0F,-.1F));
+		crookW=Mth.lerp(on,crookW,Mth.lerp(whip,.6F,1.4F));
+		swing+=.7F*whip*off;swingZ-=.6F*whip*off;
+		rX+=.25F*on;rZ+=.2F*on;capeX+=.4F*whip*off;skirtX+=.2F*whip*off;
+	}
+	/**
+	 * The breath: the lantern raised before its hood and its head cocked toward where the breath will turn, drawing in; then breathed
+	 * out ahead of it, leaning into it; then, spent, doubled over coughing smoke with the lantern hanging low.
+	 */
+	private void breath(float el,float T,int side,boolean roused){
+		float len=LanternBearerRules.breathTicks(roused),dir=side==0?1:side;
+		float raise=smooth(el,0,T*.6F),blow=smooth(el,T-2,T+1),cough=smooth(el,T+len,T+len+3),
+			off=1-smooth(el,T+len+LanternBearerRules.BREATH_COUGH-2,T+len+LanternBearerRules.BREATH_COUGH+4);
+		float held=raise*(1-cough)*off,draw=raise*(1-blow)*off;
+		lX=Mth.lerp(held,lX,-1.55F);lE=Mth.lerp(held,lE,-1.05F);lZ=Mth.lerp(held,lZ,.3F);crookW=Mth.lerp(held,crookW,.25F);crookSlide-=7*held;
+		swing*=1-held;swingZ*=1-held;
+		hY+=dir*.4F*draw;hX-=.3F*draw;bX-=.15F*draw;
+		bX+=.25F*blow*(1-cough)*off;hX+=.05F*blow*(1-cough)*off;
+		float c=cough*off,hack=Math.max(0,Mth.sin(el*1.2F));
+		bX+=(.45F+.12F*hack)*c;hX+=(.45F+.15F*hack)*c;by+=(1.2F+.4F*hack)*c;
+		lX=Mth.lerp(c,lX,-.15F);lE=Mth.lerp(c,lE,-.1F);crookW=Mth.lerp(c,crookW,.6F);rX=Mth.lerp(c,rX,-.6F);
+	}
+	/**
+	 * The rite: up straight off the ground with its crook raised high over its head and its spade arm thrown wide, shaking harder as the
+	 * souls pour in; then it brings both down at once and the ring bursts out.
+	 */
+	private void rite(float el,float T,float t){
+		float raise=smooth(el,0,T*.4F),burst=smooth(el,T-2,T+1),off=1-smooth(el,T+3,T+10);
+		float on=raise*off,shake=Mth.sin(t*1.1F)*smooth(el,T*.5F,T-2)*(1-burst);
+		lX=Mth.lerp(on,lX,Mth.lerp(burst,-2.95F,-.6F));lE=Mth.lerp(on,lE,-.1F);lZ=Mth.lerp(on,lZ,Mth.lerp(burst,-.35F,-.5F));
+		crookW=Mth.lerp(on,crookW,Mth.lerp(burst,-.2F,.9F));crookSlide-=Mth.lerp(burst,8,0)*on;
+		rX=Mth.lerp(on,rX,Mth.lerp(burst,-.6F,-.9F));rZ=Mth.lerp(on,rZ,Mth.lerp(burst,1.3F,.4F));rE=Mth.lerp(on,rE,-.1F);
+		bX+=(Mth.lerp(burst,-.25F,.4F)+.03F*shake)*on;hX+=Mth.lerp(burst,-.7F,.4F)*on;by+=Mth.lerp(burst,-1.5F,2F)*on;bZ+=.04F*shake*on;
+		capeX+=(.4F+.1F*shake)*on;skirtX+=.15F*on;
+		swing+=Mth.sin(t*.6F)*.4F*on*(1-burst);swingZ+=shake*.3F*on;
 	}
 	/**
 	 * Lights Out: it raises its lantern up under its hood and bows over it to breathe it out; then, each time it stands up out of the

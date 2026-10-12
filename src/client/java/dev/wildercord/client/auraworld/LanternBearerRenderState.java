@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 public final class LanternBearerRenderState extends LivingEntityRenderState {
 	public int move,tell,side,prevMove,prevTell;
 	public float elapsed,rise,prevElapsed,blend=1,hurt;
+	/** Whether it has held its rite, half beaten, and fights on roused. */
+	public boolean roused;
 	/** How solid it is, 1 whole to near 0 gone to smoke. */
 	public float solid=1;
 }
