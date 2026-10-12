@@ -54,7 +54,9 @@ import org.jspecify.annotations.Nullable;
 public final class CinnamonDog extends TamableAnimal {
 	private static final net.minecraft.network.syncher.EntityDataAccessor<Integer> MOOD = net.minecraft.network.syncher.SynchedEntityData.defineId(CinnamonDog.class, net.minecraft.network.syncher.EntityDataSerializers.INT);
 	/** Recovery has its own walking pose; it must never reuse the sleeping/sitting pose. */
-	public static final int SLEEPING = 1, PLAYING = 2, GREETING = 4, RINGING = 8, TONGUE = 16, BOW = 32, EXHAUSTED = 64;
+	public static final int SLEEPING = 1, PLAYING = 2, GREETING = 4, RINGING = 8, TONGUE = 16, BOW = 32, EXHAUSTED = 64, LICKING = 128;
+	/** A lick: her tongue keeps coming out for most of it, longer and longer, then is slurped back in all at once. */
+	public static final int LICK_TICKS = 70, LICK_GROW = 56;
 	public static final double GROWTH_STEP = 0.5, MAX_GROWTH_SCALE = 3.0;
 	public static final int GROWTH_TICKS = 1_200, RECOVERY_TICKS = 600, DAMAGE_IMMUNITY_TICKS = 10, DAMAGE_QUIET_TICKS = 200;
 	public static final float DAMAGE_BUDGET = 20;
@@ -75,7 +77,9 @@ public final class CinnamonDog extends TamableAnimal {
 	private static final Identifier STRENGTH_MODIFIER = Wildercord.id("cinnamon_strength");
 	/** How long a jingle lasts, and when in it each of its three little dings sounds. */
 	private static final int RING_TICKS = 12;
-	private int settled, playTicks, greeting, ringTicks, tongueTicks;
+	private int settled, playTicks, greeting, ringTicks, tongueTicks, lickTicks;
+	/** Client side: how far into the lick she is, counted from when it showed up. */
+	public int lickAge;
 	private int castCooldown = 40, healCooldown, castWindup, spellIndex;
 	private java.util.@Nullable List<dev.wildercord.spell.RuneDef> casting;
 	private @Nullable LivingEntity castTarget;
@@ -128,9 +132,11 @@ public final class CinnamonDog extends TamableAnimal {
 			// The tip of her tongue, for a few seconds about every minute and a half (asleep too).
 			if (tongueTicks > 0) tongueTicks--;
 			else if (getRandom().nextInt(1800) == 0) tongueTicks = 60 + getRandom().nextInt(80);
+			lick();
 			entityData.set(MOOD, (!isExhausted() && settled >= 200 ? SLEEPING : 0) | (playTicks > 0 ? PLAYING : 0) | (greeting > 0 ? GREETING : 0)
-				| (ringTicks > 0 ? RINGING : 0) | (tongueTicks > 0 ? TONGUE : 0) | (bow ? BOW : 0) | (isExhausted() ? EXHAUSTED : 0));
+				| (ringTicks > 0 ? RINGING : 0) | (tongueTicks > 0 ? TONGUE : 0) | (bow ? BOW : 0) | (isExhausted() ? EXHAUSTED : 0) | (lickTicks > 0 ? LICKING : 0));
 		}
+		if (level().isClientSide()) lickAge = (mood() & LICKING) != 0 ? lickAge + 1 : 0;
 	}
 
 	@Override public boolean isEffectiveAi() { return super.isEffectiveAi() && CinnamonCompanion.active(this); }
@@ -450,6 +456,11 @@ public final class CinnamonDog extends TamableAnimal {
 			if (player.isShiftKeyDown()) {
 				playTicks = 25; settled = 0;
 				level().broadcastEntityEvent(this, (byte) 7);
+				if (lickTicks == 0 && !isExhausted()) {
+					startLick();
+					player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.lick"));
+					return InteractionResult.SUCCESS;
+				}
 				player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.pet"));
 				return InteractionResult.SUCCESS;
 			}
@@ -465,6 +476,29 @@ public final class CinnamonDog extends TamableAnimal {
 			getNavigation().stop();
 		}
 		return InteractionResult.SUCCESS;
+	}
+
+	/** She licks: out comes her tongue, and it just keeps growing. */
+	public void startLick() {
+		lickTicks = LICK_TICKS;
+		settled = 0;
+	}
+
+	/** A lick under way: a wet little lap every few ticks while it grows, then one big slurp as it all comes back. Now and then she licks her owner unasked. */
+	private void lick() {
+		if (lickTicks > 0) {
+			int age = LICK_TICKS - lickTicks--;
+			if (age < LICK_GROW && age % 8 == 0) {
+				level().playSound(null, getX(), getEyeY(), getZ(), net.minecraft.sounds.SoundEvents.SLIME_SQUISH_SMALL,
+					net.minecraft.sounds.SoundSource.NEUTRAL, 0.5F, 1.6F + age * 0.01F);
+			}
+			if (age == LICK_GROW) {
+				level().playSound(null, getX(), getEyeY(), getZ(), net.minecraft.sounds.SoundEvents.GENERIC_DRINK.value(),
+					net.minecraft.sounds.SoundSource.NEUTRAL, 0.9F, 1.5F);
+			}
+			return;
+		}
+		if (getOwner() instanceof Player owner && !isExhausted() && !isOrderedToSit() && distanceToSqr(owner) < 6.25 && getRandom().nextInt(2400) == 0) startLick();
 	}
 
 	/** Sticks her tongue out for {@code ticks} and jingles her bell now (for the game tests' pictures). */

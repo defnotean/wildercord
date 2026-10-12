@@ -504,6 +504,7 @@ def write_lang(runes):
         "message.wildercord.cinnamon.toy": "Cinnamon wiggles with her favourite red bone.",
         "message.wildercord.cinnamon.owner": "Cinnamon is waiting for her owner. Set owner in wildercord-cinnamon.json.",
         "message.wildercord.cinnamon.pet": "Cinnamon leans into your hand.",
+        "message.wildercord.cinnamon.lick": "Cinnamon licks you. Her tongue just keeps going.",
         "message.wildercord.cinnamon.sit": "Cinnamon will sit. She keeps this choice when you rejoin or travel.",
         "message.wildercord.cinnamon.follow": "Cinnamon will follow you.",
         "itemGroup.wildercord": "Wildercord",

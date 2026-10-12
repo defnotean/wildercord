@@ -1,5 +1,6 @@
 package dev.wildercord.client.pet;
 
+import dev.wildercord.pet.CinnamonDog;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -52,8 +53,8 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 			.texOffs(80, 24).addBox(-1, 0.5F, -9, 2, 1, 1)
 			.texOffs(104, 46).addBox(-1.5F, -4.5F, -7, 3, 1, 2),
 			PartPose.offset(0, 12, -3));
-		// The tip of her tongue, peeking out under her snout (shown now and then).
-		head.addOrReplaceChild("tongue", CubeListBuilder.create().texOffs(34, 100).addBox(-0.5F, 0, -0.5F, 1, 1, 1), PartPose.offset(0, 3, -8.25F));
+		// The tip of her tongue, peeking out under her snout (shown now and then). It hangs from its root, so a lick can stretch it out.
+		head.addOrReplaceChild("tongue", CubeListBuilder.create().texOffs(34, 100).addBox(-0.5F, 0, -1, 1, 1, 1), PartPose.offset(0, 3, -7.75F));
 		// Her bow: a knot between two loops, tipped to one side on top of her head (shown while she wears it).
 		head.addOrReplaceChild("bow", CubeListBuilder.create()
 			.texOffs(40, 100).addBox(-0.5F, -0.5F, -0.75F, 1, 1, 1)
@@ -73,6 +74,32 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 		return LayerDefinition.create(mesh, 128, 128);
 	}
 
+	/** Longest her tongue gets in a lick, in model pixels: far longer than she is. */
+	private static final float LICK_LENGTH = 40;
+
+	/**
+	 * A lick: her tongue comes out and just keeps growing, flopping side to side and lapping up and down as it goes, her head
+	 * stretching up after it, until it is far longer than she is; then it is slurped back in all at once.
+	 */
+	private void lick(float t) {
+		tongue.visible = true;
+		float grow = CinnamonDog.LICK_GROW, length;
+		if (t < grow) {
+			float p = t / grow;
+			length = 1 + (LICK_LENGTH - 1) * p * p * (3 - 2 * p);
+		} else {
+			float p = Math.min(1, (t - grow) / (CinnamonDog.LICK_TICKS - grow));
+			length = 1 + (LICK_LENGTH - 1) * (1 - p) * (1 - p) * (1 - p);
+		}
+		tongue.zScale = length;
+		tongue.xScale = 1 + Math.min(1, length / 10) * 1.2F;
+		float flop = Math.min(1, length / 8);
+		tongue.yRot = Mth.sin(t * 0.35F) * 0.35F * flop;
+		// It lolls downward, and laps up and down as it goes.
+		tongue.xRot = (0.35F - Mth.sin(t * 0.9F) * 0.25F) * flop;
+		head.xRot -= 0.3F * flop;
+	}
+
 	@Override public void setupAnim(CinnamonRenderState state) {
 		super.setupAnim(state);
 		head.yRot = state.yRot * Mth.DEG_TO_RAD;
@@ -85,6 +112,7 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 			backLeft.xRot = backRight.xRot = 1.1F;
 		}
 		tongue.visible = state.tongue;
+		if (state.lick >= 0) lick(state.lick);
 		bow.visible = state.wearingBow;
 		// The bell swings as she trots, and shivers when it rings.
 		bell.xRot = Mth.cos(state.walkAnimationPos * 0.6662F) * 0.5F * state.walkAnimationSpeed;
@@ -106,7 +134,7 @@ public final class CinnamonModel extends EntityModel<CinnamonRenderState> {
 			backLeft.xRot = backRight.xRot = 1.3F;
 			tail.yRot = -.8F; tail.y = 18;
 		}
-		if (state.exhausted) {
+		if (state.exhausted && state.lick < 0) {
 			// Tired but still walking after her owner, never the curled-up sleeping pose.
 			head.xRot = 0.28F + Mth.sin(state.ageInTicks * 0.06F) * 0.025F;
 			head.zRot = 0;
