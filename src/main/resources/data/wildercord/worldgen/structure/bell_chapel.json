@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:dungeon",
+  "dungeon": "bell_chapel",
+  "biomes": "#wildercord:has_structure/bell_chapel",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

@@ -157,6 +157,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Has laid a hand on the Bell Shard the Drowned Bell-Warden guards: near death, it tolls for them. Kept through death. */
+	public static final AttachmentType<Boolean> BELL_SHARD = AttachmentRegistry.create(
+		Wildercord.id("bell_shard"),
+		builder -> builder
+			.initializer(() -> false)
+			.persistent(Codec.BOOL)
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Has helped slay a boss (the 7th Circle's breakthrough). Kept through death. */
 	public static final AttachmentType<Boolean> BOSS_SLAIN = AttachmentRegistry.create(
 		Wildercord.id("boss_slain"),
