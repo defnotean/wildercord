@@ -316,7 +316,7 @@ public record WildercordConfig(
     // The 0.13 mounts and predators have no switch of their own yet: they follow the master switch and multiplier.
     case "reefback_turtle", "delver_mole", "frost_lynx", "dune_cougar", "thistle_hedgehog", "snowcap_stoat", "brook_otter",
         "cinnabar_panda", "sunwatch_meerkat", "stonecrest_puffin", "capcrown_snail", "glowberry_dormouse",
-        "hushwing_owlet", "blossom_tanuki" -> true;
+        "hushwing_owlet", "blossom_tanuki", "mirebath_capybara" -> true;
 				default -> false;
 			};
 		}

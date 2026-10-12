@@ -25,6 +25,7 @@ public final class WildlifeClient {
   GlowberryDormouseRenderer.init();
   HushwingOwletRenderer.init();
   BlossomTanukiRenderer.init();
+  MirebathCapybaraRenderer.init();
   PredatorRenderers.init();
   RidgebackStagRenderer.init();
   BurrowAndReefRenderers.init();

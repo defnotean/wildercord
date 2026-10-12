@@ -93,6 +93,8 @@ public final class WildlifeRules {
 		"minecraft:pale_garden"));
 	public static final Kind BLOSSOM_TANUKI = new Kind("blossom_tanuki", Pool.CREATURE, 10, 1, 3, 1 / 2.0, 6, 48, List.of(
 		"minecraft:cherry_grove"));
+	public static final Kind MIREBATH_CAPYBARA = new Kind("mirebath_capybara", Pool.CREATURE, 6, 2, 4, 1 / 2.0, 6, 48, List.of(
+		"minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle"));
 
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);
