@@ -88,4 +88,10 @@ class BellWardenRulesTest {
 		assertFalse(BellWardenRules.waveDone(10));
 		assertTrue(BellWardenRules.waveDone((long)(BellWardenRules.WAVE_REACH/BellWardenRules.WAVE_SPEED)+1));
 	}
+	@Test void theShardTollsOnlyNearDeathAndThenRestsAWhile(){
+		assertTrue(BellWardenRules.knells(5,20,BellWardenRules.KNELL_RECHARGE));
+		assertFalse(BellWardenRules.knells(10,20,BellWardenRules.KNELL_RECHARGE));
+		assertFalse(BellWardenRules.knells(5,20,BellWardenRules.KNELL_RECHARGE-1));
+		assertFalse(BellWardenRules.knells(0,20,BellWardenRules.KNELL_RECHARGE));
+	}
 }

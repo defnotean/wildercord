@@ -25,6 +25,12 @@ for name, text in {'watch': 'Watching', 'swing': 'Swinging', 'hammer': 'Hammerin
                    'backstep': 'Stepping back', 'recover': 'Spent', 'shell': 'Under its bell', 'toll': 'Tolling'}.items():
     LANG['boss.wildercord.drowned_bell_warden.move.' + name] = text
 
+LANG['block.wildercord.bell_shard'] = 'Bell Shard'
+LANG['message.wildercord.bell_shard.touch'] = 'The shard hums under your hand. When you are near death, it will toll for you.'
+LANG['message.wildercord.bell_shard.bound'] = 'The shard already tolls for you.'
+LANG['message.wildercord.bell_shard.guarded'] = 'The Bell-Warden still keeps its vigil.'
+LANG['message.wildercord.bell_shard.knell'] = 'The shard tolls for you!'
+
 # Bronze gone green under the sea, pale drowned flesh, sodden rags, black iron, kelp.
 BRONZE, BRONZE_DARK, VERDIGRIS, VERD_PALE = (128, 96, 54), (74, 54, 32), (70, 140, 116), (128, 186, 158)
 FLESH, FLESH_DARK, RAG, RAG_DARK = (118, 146, 136), (70, 94, 90), (58, 64, 60), (36, 40, 40)
@@ -133,3 +139,37 @@ def write(g):
     g.write_json(g.DATA / 'loot_table/entities/drowned_bell_warden.json', {'type': 'minecraft:entity', 'pools': []})
     g.save(skin(), g.ASSETS / 'textures/entity/drowned_bell_warden/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/drowned_bell_warden/glow.png')
+    # The shard on the altar: a curved piece of the bell's lip lying on its rim, a second piece leaning up against it.
+    g.save(shard(), g.ASSETS / 'textures/block/bell_shard.png')
+    faces = lambda uv: {f: {'texture': '#s', 'uv': uv} for f in ('north', 'south', 'east', 'west', 'up', 'down')}
+    g.write_json(g.ASSETS / 'models/block/bell_shard.json', {
+        'parent': 'minecraft:block/block', 'textures': {'particle': 'wildercord:block/bell_shard', 's': 'wildercord:block/bell_shard'},
+        'elements': [
+            {'from': [4, 0, 6], 'to': [12, 3, 10], 'faces': faces([0, 0, 8, 4])},
+            {'from': [5, 0, 8], 'to': [11, 9, 10], 'rotation': {'origin': [8, 0, 9], 'axis': 'x', 'angle': -22.5}, 'faces': faces([8, 0, 14, 9])},
+            {'from': [9, 0, 4], 'to': [12, 2, 7], 'rotation': {'origin': [10, 0, 5], 'axis': 'y', 'angle': 22.5}, 'faces': faces([0, 10, 3, 12])},
+        ]})
+    g.write_json(g.ASSETS / 'blockstates/bell_shard.json', {'variants': {'': {'model': 'wildercord:block/bell_shard'}}})
+    g.write_json(g.ASSETS / 'items/bell_shard.json', {'model': {'type': 'minecraft:model', 'model': 'wildercord:block/bell_shard'}})
+
+
+def shard():
+    """The Bell Shard, 16 x 16: bronze gone green, worn bright along the rim, the broken edge raw and pale, a cold glow in the crack."""
+    rng = np.random.default_rng(20261012)
+    px = np.zeros((16, 16, 4), np.uint8)
+    for y in range(16):
+        for x in range(16):
+            t = rng.random()
+            c = mixc(BRONZE, BRONZE_DARK, .3 + .4 * t)
+            if rng.random() < .3:
+                c = mixc(c, VERDIGRIS, .5 + .4 * rng.random())
+            px[y, x] = (*c, 255)
+    # The rim worn bright, along the top of the lying piece and the leaning one.
+    for x in range(0, 16):
+        px[0, x, :3] = mixc(BRONZE, (220, 180, 110), .6)
+    # The broken edge, raw bronze, and the crack glowing.
+    for y in range(0, 9):
+        px[y, 13, :3] = (214, 170, 100)
+    for y, x in ((2, 10), (3, 10), (4, 11), (5, 11), (6, 10), (2, 3), (3, 4)):
+        px[y, x, :3] = mixc(EYE_HALO, EYE, .5)
+    return Image.fromarray(px, 'RGBA')

@@ -256,11 +256,11 @@ public final class BellChapelPiece extends DungeonPiece {
 			fill(level,bb,x,dais?F+2:F+1,z,x,top,z,AIR);
 			set(level,bb,DARK,x,top+1,z);set(level,bb,noise(x,z)<30?Blocks.PRISMARINE.defaultBlockState():DARK,x,top+2,z);
 		}
-		// The altar on the dais, candles on it and either side.
+		// The altar on the dais: the Bell Shard on it, the broken lip of the Warden's bell, and candles either side.
 		var candles=Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES,4).setValue(CandleBlock.LIT,true);
 		set(level,bb,Blocks.CHISELED_DEEPSLATE.defaultBlockState(),CX,F+2,63);
 		set(level,bb,Blocks.POLISHED_DEEPSLATE_SLAB.defaultBlockState(),CX-1,F+2,63);set(level,bb,Blocks.POLISHED_DEEPSLATE_SLAB.defaultBlockState(),CX+1,F+2,63);
-		set(level,bb,candles,CX,F+3,63);
+		set(level,bb,dev.wildercord.aura.world.BellShard.BLOCK.defaultBlockState(),CX,F+3,63);
 		set(level,bb,candles.setValue(CandleBlock.CANDLES,2),CX-3,F+2,62);set(level,bb,candles.setValue(CandleBlock.CANDLES,2),CX+3,F+2,62);
 		for(int x:new int[]{CX-6,CX+6}){set(level,bb,LIGHT,x,F+2,60);}
 	}

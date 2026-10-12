@@ -170,6 +170,21 @@ public final class BellWardenRules {
 	public static boolean waveHits(double distance, double radius, double height) {
 		return Math.abs(distance - radius) <= WAVE_BAND && height > -1.5 && height < WAVE_HEIGHT;
 	}
+	/**
+	 * The Bell Shard, touched once the Warden is dead: a blow that leaves you at {@link #KNELL_BELOW} of your health or under makes it
+	 * toll, once every {@link #KNELL_RECHARGE} ticks: everything hostile within {@link #KNELL_RADIUS} thrown back {@link #KNELL_SHOVE},
+	 * and Absorption for {@link #KNELL_SHIELD} ticks and Resistance for {@link #KNELL_GUARD_TICKS}.
+	 */
+	public static final float KNELL_BELOW = 0.3F;
+	public static final int KNELL_RECHARGE = 3600, KNELL_SHIELD = 160, KNELL_GUARD_TICKS = 60;
+	public static final double KNELL_RADIUS = 6, KNELL_SHOVE = 1.6;
+	/** A living Warden this close keeps anyone from the shard. */
+	public static final double SHARD_GUARD = 48;
+
+	/** Whether the shard tolls for someone left at {@code health} of {@code max}, {@code since} ticks after it last did. */
+	public static boolean knells(float health, float max, long since) {
+		return health > 0 && health <= max * KNELL_BELOW && since >= KNELL_RECHARGE;
+	}
 	/** Whether it is wounded: at half health or below, it is quicker and hammers after every swing. */
 	public static boolean wounded(float health, float max) {
 		return health <= max * 0.5F;
