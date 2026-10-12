@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:dungeon",
+  "dungeon": "glacier_den",
+  "biomes": "#wildercord:has_structure/glacier_den",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

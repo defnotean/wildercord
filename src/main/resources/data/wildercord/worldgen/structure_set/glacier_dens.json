@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 202610115,
+    "spacing": 44,
+    "separation": 16
+  },
+  "structures": [
+    {
+      "structure": "wildercord:glacier_den",
+      "weight": 1
+    }
+  ]
+}

@@ -78,4 +78,7 @@ public final class DungeonWorldgen {
 	public static final StructurePieceType SILK_HOLLOW_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("silk_hollow"),
 		(StructurePieceType.ContextlessType)SilkHollowPiece::new);
 	public static final ResourceKey<LootTable> SILK_HOLLOW=loot("chests/silk_hollow");
+	public static final StructurePieceType GLACIER_DEN_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("glacier_den"),
+		(StructurePieceType.ContextlessType)GlacierDenPiece::new);
+	public static final ResourceKey<LootTable> GLACIER_DEN=loot("chests/glacier_den");
 }
