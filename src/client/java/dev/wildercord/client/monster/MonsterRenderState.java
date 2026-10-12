@@ -24,7 +24,7 @@ public class MonsterRenderState extends LivingEntityRenderState {
 	public int variantTint = 0xFFFFFF;
 	/** 0.13: whether it's a giant, fighting by the moves below ({@code GiantRules.Bramble}, {@code GiantRules.Matriarch}). */
 	public boolean giant;
-	/** An elite's move under way, by its rules' id (the Sandmaw Wyrm's, {@code SandmawRules}; a giant's). */
+	/** An elite's move under way, by its rules' id (the Sandmaw Wyrm's, {@code SandmawRules}; the Timbermaul Bear's, {@code TimbermaulRules}; a giant's). */
 	public int move;
 	/** Ticks since that move began. */
 	public float since;
@@ -32,6 +32,8 @@ public class MonsterRenderState extends LivingEntityRenderState {
 	public int tell;
 	/** Whether it has gone roused at half health. */
 	public boolean roused;
+	/** Which side an elite's move comes from: 1 its right, -1 its left (the Timbermaul Bear's rake). */
+	public int side = 1;
 	/** How far each of an elite's moves' poses has eased in, 0 to 1, by move id. */
 	public final float[] moves = new float[24];
 }

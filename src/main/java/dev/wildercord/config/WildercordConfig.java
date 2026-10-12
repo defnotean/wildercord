@@ -261,6 +261,7 @@ public record WildercordConfig(
 				case "glowlure_angler" -> true;
 				case "bloomclaw_mantis" -> true;
 				case "sandmaw_wyrm" -> true;
+				case "timbermaul_bear" -> true;
 				default -> false;
 			};
 		}

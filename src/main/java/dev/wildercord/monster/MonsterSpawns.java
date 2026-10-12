@@ -131,6 +131,9 @@ public final class MonsterSpawns {
 	/** A Sandmaw Wyrm's spawn weight (an elite, so rare), and its id among the server's switches. */
 	private static final int SANDMAW_WYRM_WEIGHT = 3;
 	private static final String SANDMAW_WYRM = "sandmaw_wyrm";
+	/** A Timbermaul Bear's spawn weight (an elite, so rare), and its id among the server's switches. */
+	private static final int TIMBERMAUL_BEAR_WEIGHT = 3;
+	private static final String TIMBERMAUL_BEAR = "timbermaul_bear";
 	/**
 	 * Overworld biomes left alone underground: the deep dark (nothing spawns there on purpose; a lone entry would fill it) and
 	 * the mushroom fields (no monsters, ever).
@@ -205,6 +208,9 @@ public final class MonsterSpawns {
 		SpawnPlacements.register(MonsterContent.SANDMAW_WYRM, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, SANDMAW_WYRM)
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+		SpawnPlacements.register(MonsterContent.TIMBERMAUL_BEAR, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+			(type, level, reason, pos, random) -> allowed(reason, TIMBERMAUL_BEAR)
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
 		// Every overworld biome, by the vanilla tag as well as by where they generate, so a world whose overworld makes only a few
@@ -254,6 +260,10 @@ public final class MonsterSpawns {
 			int weight = MonsterRules.weight(PITCHBACK_BEETLE_WEIGHT, rate);
 			if (weight > 0) {
 				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.PITCHBACK_BEETLE, UniformInt.of(1, 2)), weight);
+			}
+			int bear = MonsterRules.weight(TIMBERMAUL_BEAR_WEIGHT, rate);
+			if (bear > 0) {
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.TIMBERMAUL_BEAR, UniformInt.of(1, 1)), bear);
 			}
 		}
 		if (SNOWS.contains(key)) {
