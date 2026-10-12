@@ -135,9 +135,13 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 		double[][] neck=SerpentSpine.neck(trail.neck);
 		double weave=Math.sin(serpent.walkAnimation.position(partial)*.6)*.45*Math.min(1,serpent.walkAnimation.speed(partial)*3);
 		double[][] joints=trail.joints;
+		// The neck bends round from its base toward where the head looks, so the head never turns off the end of it.
+		float turn=Mth.wrapDegrees(Mth.rotLerp(partial,serpent.yHeadRotO,serpent.yHeadRot)-yaw);
+		double[] base=neck[neck.length-1],root=SerpentSpine.toWorld(base,yaw);
 		for(int i=0;i<neck.length;i++){
 			double[] p=neck[i].clone();p[0]+=weave*i/(neck.length-1);
-			double[] w=SerpentSpine.toWorld(p,yaw);joints[i]=new double[]{w[0]+ex,w[1]+ey,w[2]+ez};
+			double[] w=SerpentSpine.toWorld(new double[]{p[0]-base[0],p[1]-base[1],p[2]-base[2]},yaw+turn*(1-i/(float)(neck.length-1)));
+			joints[i]=new double[]{w[0]+root[0]+ex,w[1]+root[1]+ey,w[2]+root[2]+ez};
 		}
 		for(int i=neck.length;i<joints.length;i++){
 			double[] lead=joints[i-1],cur=joints[i];
@@ -193,13 +197,13 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 	private static void body(SerpentRenderState state,PoseStack.Pose pose,VertexConsumer buffer,int overlay){
 		int n=state.joints.length/3;
 		float[][][] rings=new float[n][SIDES+1][],normals=new float[n][SIDES+1][];
+		float[][] sides=frames(state.joints,n);
 		for(int i=0;i<n;i++){
 			int a=Math.max(0,i-1),b=Math.min(n-1,i+1);
 			float[] t=norm(state.joints[a*3]-state.joints[b*3],state.joints[a*3+1]-state.joints[b*3+1],state.joints[a*3+2]-state.joints[b*3+2]);
 			if(t==null)t=new float[]{0,0,1};
-			float[] s=norm(-t[2],0,t[0]);if(s==null)s=new float[]{1,0,0};
+			float[] s=sides[i];
 			float[] u={s[1]*t[2]-s[2]*t[1],s[2]*t[0]-s[0]*t[2],s[0]*t[1]-s[1]*t[0]};
-			if(u[1]<0){u[0]=-u[0];u[1]=-u[1];u[2]=-u[2];s[0]=-s[0];s[1]=-s[1];s[2]=-s[2];}
 			double r=SerpentSpine.radius(i);
 			for(int k=0;k<=SIDES;k++){
 				double ang=Math.PI*2*k/SIDES,c=Math.cos(ang),sn=Math.sin(ang);
@@ -219,6 +223,29 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 				vertex(buffer,pose,rings[i][k+1],normals[i][k+1],u1,v0,overlay,state.lights[i]);
 			}
 		}
+	}
+
+	/**
+	 * Each ring's side, carried joint to joint from the tail rather than rebuilt from the horizontal at each: where the reared neck
+	 * runs straight up the horizontal side turns over, and a ring built from it would twist the tube through itself. The tail's
+	 * ring is set upright, back to the sky, and each ring toward the head keeps as close to the last one's side as its own bend allows.
+	 */
+	private static float[][] frames(float[] joints,int n){
+		float[][] sides=new float[n][];float[] carried=null;
+		for(int i=n-1;i>=0;i--){
+			int a=Math.max(0,i-1),b=Math.min(n-1,i+1);
+			float[] t=norm(joints[a*3]-joints[b*3],joints[a*3+1]-joints[b*3+1],joints[a*3+2]-joints[b*3+2]);
+			if(t==null)t=new float[]{0,0,1};
+			float[] s=null;
+			if(carried!=null){float d=carried[0]*t[0]+carried[1]*t[1]+carried[2]*t[2];s=norm(carried[0]-d*t[0],carried[1]-d*t[1],carried[2]-d*t[2]);}
+			if(s==null){
+				s=norm(-t[2],0,t[0]);if(s==null)s=new float[]{1,0,0};
+				// Back to the sky: the side's cross with the tangent points up.
+				if(s[2]*t[0]-s[0]*t[2]<0){s[0]=-s[0];s[1]=-s[1];s[2]=-s[2];}
+			}
+			sides[i]=carried=s;
+		}
+		return sides;
 	}
 
 	private static void vertex(VertexConsumer buffer,PoseStack.Pose pose,float[] p,float[] n,float u,float v,int overlay,int light){

@@ -104,9 +104,16 @@ public final class SerpentSpine {
 		};
 	}
 
-	/** The pose's neck as {@link #neckJoints()} joints in the body frame. */
+	/**
+	 * The pose's neck as {@link #neckJoints()} joints in the body frame, spread evenly from the head to {@link #BASE} however long
+	 * the pose draws it: a neck drawn shorter or longer than the joints it holds would otherwise stop short of where the body
+	 * takes over, or run on past it into the ground, and kink there.
+	 */
 	public static double[][] neck(double[][] controls) {
-		return resample(dense(controls), 0, neckJoints());
+		List<double[]> path = dense(controls);
+		double[][] out = resample(path, 0, length(path) / (neckJoints() - 1), neckJoints());
+		out[out.length - 1] = path.get(path.size() - 1).clone();
+		return out;
 	}
 
 	/** Joints from the neck's base on that the squeeze wraps round its prey. */
@@ -284,11 +291,15 @@ public final class SerpentSpine {
 
 	/** {@code count} points {@link #SEG} apart along a polyline, from {@code start} along it; past its end it runs straight on. */
 	public static double[][] resample(List<double[]> path, double start, int count) {
+		return resample(path, start, SEG, count);
+	}
+
+	private static double[][] resample(List<double[]> path, double start, double spacing, int count) {
 		double[][] out = new double[count][];
 		int seg = 1;
 		double before = 0;
 		for (int i = 0; i < count; i++) {
-			double want = start + i * SEG;
+			double want = start + i * spacing;
 			while (seg < path.size() - 1 && before + distance(path.get(seg - 1), path.get(seg)) < want) {
 				before += distance(path.get(seg - 1), path.get(seg));
 				seg++;

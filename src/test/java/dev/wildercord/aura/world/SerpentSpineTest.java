@@ -36,7 +36,11 @@ class SerpentSpineTest {
 			double l=SerpentSpine.length(SerpentSpine.dense(pose.neck()));
 			assertTrue(l>rest-1.2 && l<rest+1.2,SerpentRules.key(move)+" stretches its neck to "+l);
 			assertTrue(pose.neck()[0][1]>=.6,SerpentRules.key(move)+" puts its head in the ground");
-			assertEquals(SerpentSpine.neckJoints(),SerpentSpine.neck(pose.neck()).length);
+			var neck=SerpentSpine.neck(pose.neck());
+			assertEquals(SerpentSpine.neckJoints(),neck.length);
+			assertArrayEquals(pose.neck()[0],neck[0],1e-9);
+			assertArrayEquals(SerpentSpine.BASE,neck[neck.length-1],1e-6,SerpentRules.key(move)+" stops short of its base or runs past it");
+			for(int i=1;i<neck.length;i++){double d=SerpentSpine.distance(neck[i-1],neck[i]);assertTrue(d>.55 && d<.95,SerpentRules.key(move)+" spaces its neck unevenly: "+d);}
 		}
 	}
 	@Test void aBiteThrowsItsHeadForwardFromWhereItWasDrawn(){
