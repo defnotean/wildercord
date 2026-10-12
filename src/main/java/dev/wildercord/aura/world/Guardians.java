@@ -23,6 +23,9 @@ public final class Guardians {
 	private static final ResourceKey<EntityType<?>> HOLLOW_MATRON_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("hollow_matron"));
 	public static final EntityType<HollowMatron> HOLLOW_MATRON=Registry.register(BuiltInRegistries.ENTITY_TYPE,HOLLOW_MATRON_KEY,
 		EntityType.Builder.of(HollowMatron::new,MobCategory.MONSTER).sized(3.6F,2.2F).eyeHeight(1.4F).clientTrackingRange(12).notInPeaceful().build(HOLLOW_MATRON_KEY));
+	private static final ResourceKey<EntityType<?>> FROST_WYRMLING_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("frost_wyrmling"));
+	public static final EntityType<FrostWyrmling> FROST_WYRMLING=Registry.register(BuiltInRegistries.ENTITY_TYPE,FROST_WYRMLING_KEY,
+		EntityType.Builder.of(FrostWyrmling::new,MobCategory.MONSTER).sized(2.8F,3.0F).eyeHeight(2.6F).clientTrackingRange(12).notInPeaceful().build(FROST_WYRMLING_KEY));
 	/** Whether guardians wake at all (config: aura_world.guardians). */
 	public static boolean enabled(){return dev.wildercord.config.Config.get().auraWorld().guardians();}
 	public static void init(){
@@ -34,5 +37,7 @@ public final class Guardians {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:ashen_stag",FieldGuide.Group.MONSTER,0xC2541E));
 		FabricDefaultAttributeRegistry.register(HOLLOW_MATRON,HollowMatron.createAttributes());HollowMatron.listen();
 		FieldGuide.add(new FieldGuide.Entry("wildercord:hollow_matron",FieldGuide.Group.MONSTER,0xB8B0A2));
+		FabricDefaultAttributeRegistry.register(FROST_WYRMLING,FrostWyrmling.createAttributes());
+		FieldGuide.add(new FieldGuide.Entry("wildercord:frost_wyrmling",FieldGuide.Group.MONSTER,0x8FD3F0));
 	}
 }

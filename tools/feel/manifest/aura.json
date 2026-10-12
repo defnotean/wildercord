@@ -1337,6 +1337,97 @@
       ],
       "subtitle": "hit"
     },
+    "aura_frost_wyrmling_bite": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_bite"
+      ],
+      "subtitle": "frost_wyrmling.bite"
+    },
+    "aura_frost_wyrmling_bound": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_bound"
+      ],
+      "subtitle": "frost_wyrmling.bound"
+    },
+    "aura_frost_wyrmling_breath": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_breath"
+      ],
+      "subtitle": "frost_wyrmling.breath"
+    },
+    "aura_frost_wyrmling_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_death"
+      ],
+      "subtitle": "frost_wyrmling.death"
+    },
+    "aura_frost_wyrmling_frost": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_frost"
+      ],
+      "subtitle": "frost_wyrmling.frost"
+    },
+    "aura_frost_wyrmling_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_hurt"
+      ],
+      "subtitle": "frost_wyrmling.hurt"
+    },
+    "aura_frost_wyrmling_land": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_land"
+      ],
+      "subtitle": "frost_wyrmling.land"
+    },
+    "aura_frost_wyrmling_rise": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_rise"
+      ],
+      "subtitle": "frost_wyrmling.rise"
+    },
+    "aura_frost_wyrmling_roar": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_roar"
+      ],
+      "subtitle": "frost_wyrmling.roar"
+    },
+    "aura_frost_wyrmling_snarl": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_snarl"
+      ],
+      "subtitle": "frost_wyrmling.snarl"
+    },
+    "aura_frost_wyrmling_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_step"
+      ],
+      "subtitle": "frost_wyrmling.step"
+    },
+    "aura_frost_wyrmling_tail": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_tail"
+      ],
+      "subtitle": "frost_wyrmling.tail"
+    },
+    "aura_frost_wyrmling_wing": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_frost_wyrmling_wing"
+      ],
+      "subtitle": "frost_wyrmling.wing"
+    },
     "aura_gale_art": {
       "attenuation": 24,
       "files": [

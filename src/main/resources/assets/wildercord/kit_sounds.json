@@ -714,6 +714,45 @@
     "aura_finisher_verdant": {
       "part": "aura"
     },
+    "aura_frost_wyrmling_bite": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_bound": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_breath": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_death": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_frost": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_hurt": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_land": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_rise": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_roar": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_snarl": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_step": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_tail": {
+      "part": "aura"
+    },
+    "aura_frost_wyrmling_wing": {
+      "part": "aura"
+    },
     "aura_gale_art": {
       "part": "aura"
     },

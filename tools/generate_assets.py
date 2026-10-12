@@ -844,6 +844,9 @@ def write_lang(runes):
     import hollow_matron_art
     lang.update(hollow_matron_art.LANG)
     hollow_matron_art.write(sys.modules[__name__])
+    import frost_wyrmling_art
+    lang.update(frost_wyrmling_art.LANG)
+    frost_wyrmling_art.write(sys.modules[__name__])
     # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
     import importlib
     site_ids = []

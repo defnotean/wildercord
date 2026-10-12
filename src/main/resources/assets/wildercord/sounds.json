@@ -5468,6 +5468,84 @@
       }
     ]
   },
+  "aura_frost_wyrmling_bite": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.bite",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_bite"
+    ]
+  },
+  "aura_frost_wyrmling_bound": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.bound",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_bound"
+    ]
+  },
+  "aura_frost_wyrmling_breath": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.breath",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_breath"
+    ]
+  },
+  "aura_frost_wyrmling_death": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.death",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_death"
+    ]
+  },
+  "aura_frost_wyrmling_frost": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.frost",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_frost"
+    ]
+  },
+  "aura_frost_wyrmling_hurt": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.hurt",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_hurt"
+    ]
+  },
+  "aura_frost_wyrmling_land": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.land",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_land"
+    ]
+  },
+  "aura_frost_wyrmling_rise": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.rise",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_rise"
+    ]
+  },
+  "aura_frost_wyrmling_roar": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.roar",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_roar"
+    ]
+  },
+  "aura_frost_wyrmling_snarl": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.snarl",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_snarl"
+    ]
+  },
+  "aura_frost_wyrmling_step": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.step",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_step"
+    ]
+  },
+  "aura_frost_wyrmling_tail": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.tail",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_tail"
+    ]
+  },
+  "aura_frost_wyrmling_wing": {
+    "subtitle": "subtitles.wildercord.kit.frost_wyrmling.wing",
+    "sounds": [
+      "wildercord:kit/aura/aura_frost_wyrmling_wing"
+    ]
+  },
   "aura_gale_art": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [
