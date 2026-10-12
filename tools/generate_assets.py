@@ -938,6 +938,9 @@ def write_lang(runes):
     import snail_art
     lang.update(snail_art.LANG)
     snail_art.write(sys.modules[__name__])
+    import pitcher_art
+    lang.update(pitcher_art.LANG)
+    pitcher_art.write(sys.modules[__name__])
     import puffin_art
     lang.update(puffin_art.LANG)
     puffin_art.write(sys.modules[__name__])

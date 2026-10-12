@@ -63,6 +63,8 @@ public final class MonsterContent {
 		EntityType.Builder.of(Strawman::new, MobCategory.MONSTER).sized(0.7F, 2.3F).eyeHeight(1.95F));
 	public static final EntityType<Dunestinger> DUNESTINGER = monster("dunestinger",
 		EntityType.Builder.of(Dunestinger::new, MobCategory.MONSTER).sized(1.2F, 0.6F).eyeHeight(0.4F));
+	public static final EntityType<GulperPitcher> GULPER_PITCHER = monster("gulper_pitcher",
+		EntityType.Builder.of(GulperPitcher::new, MobCategory.MONSTER).sized(0.9F, 1.4F).eyeHeight(1.15F));
 
 	/** A Bog Witch-Frog's bubble of poison, in flight. */
 	public static final EntityType<BogBubble> BOG_BUBBLE = register("bog_bubble",
@@ -96,6 +98,7 @@ public final class MonsterContent {
 	public static final Item COFFER_MIMIC_EGG = egg("coffer_mimic", COFFER_MIMIC);
 	public static final Item STRAWMAN_EGG = egg("strawman", STRAWMAN);
 	public static final Item DUNESTINGER_EGG = egg("dunestinger", DUNESTINGER);
+	public static final Item GULPER_PITCHER_EGG = egg("gulper_pitcher", GULPER_PITCHER);
 
 	/** Every monster's type, in the order of {@link MonsterRules.Kind}. */
 	public static List<EntityType<? extends Mob>> types() {
@@ -142,6 +145,8 @@ public final class MonsterContent {
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:strawman", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xD8B850));
 		FabricDefaultAttributeRegistry.register(DUNESTINGER, Dunestinger.createAttributes());
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:dunestinger", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xD8B070));
+		FabricDefaultAttributeRegistry.register(GULPER_PITCHER, GulperPitcher.createAttributes());
+		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:gulper_pitcher", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xA82E34));
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
 			output.accept(LIVING_BRAMBLE);

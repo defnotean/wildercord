@@ -249,6 +249,7 @@ public record WildercordConfig(
 				case "mana_ooze" -> manaOoze;
 				case "strawman" -> true;
 				case "dunestinger" -> true;
+				case "gulper_pitcher" -> true;
 				default -> false;
 			};
 		}
