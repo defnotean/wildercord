@@ -106,6 +106,7 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 			case LanternBearerRules.SLAM->slam(el,T);
 			case LanternBearerRules.FADE->fade(el,side);
 			case LanternBearerRules.RECOVER->recover(el,t);
+			case LanternBearerRules.LIGHTS_OUT->lights(el);
 			default->{}
 		}
 		hurt(s);
@@ -186,6 +187,21 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		spadeW=Mth.lerp(on,spadeW,Mth.lerp(strike,2.8F,-.35F));spadeSlide+=Mth.lerp(strike,6,1)*on;
 		bX+=Mth.lerp(strike,-.2F,.4F)*on;hX+=Mth.lerp(strike,-.2F,.3F)*on;by+=1.5F*strike*back;
 		lX+=Mth.lerp(strike,.25F,-.2F)*on;swing+=.6F*strike*back*Mth.cos(el*.5F);
+	}
+	/**
+	 * Lights Out: it raises its lantern up under its hood and bows over it to breathe it out; then, each time it stands up out of the
+	 * dark behind someone, it draws its spade back as it glimmers and reaps.
+	 */
+	private void lights(float el){
+		if(el<LanternBearerRules.SNUFF_TELL+LanternBearerRules.LIGHTS_VANISH){
+			float raise=smooth(el,0,LanternBearerRules.SNUFF_TELL*.6F),blow=smooth(el,LanternBearerRules.SNUFF_TELL-3,LanternBearerRules.SNUFF_TELL+1);
+			lX=Mth.lerp(raise,lX,-1.75F);lE=Mth.lerp(raise,lE,-1.1F);lZ=Mth.lerp(raise,lZ,.25F);crookW=Mth.lerp(raise,crookW,.2F);crookSlide-=6*raise;
+			hX+=.45F*raise+.15F*blow;bX+=.2F*raise;by+=.8F*blow;rZ+=.15F*raise;
+			swing*=1-raise;swingZ*=1-raise;
+			return;
+		}
+		float g=LanternBearerRules.lightsGlimmer(el);
+		if(g>=0)reap(g,LanternBearerRules.LIGHTS_GLIMMER);
 	}
 	/** The fade: it leans away from the blow and drifts aside, its arms and cape trailing. */
 	private void fade(float el,int side){

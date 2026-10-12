@@ -31,7 +31,8 @@ import java.util.*;
  * <p>
  * Up, it reaps with its spade at whoever is in front of it, drives the spade down among anyone crowding it, hooks anyone keeping away
  * on its crook and drags them in, and looses soul wisps from its lantern after anyone who runs. Some blows it goes to smoke and drifts
- * out from under, and hurt too fast it drifts away across the field.
+ * out from under, and hurt too fast it drifts away across the field. Wounded, now and then it puts its lantern out
+ * ({@link LanternBearerRules#LIGHTS_OUT}) and comes for them out of the dark.
  */
 public final class LanternBearer extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> MOVE=SynchedEntityData.defineId(LanternBearer.class,EntityDataSerializers.INT);
@@ -53,7 +54,9 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	/** The line its blow was locked on, and where a fade carries it. */
 	private float aim;
 	private Vec3 slide=Vec3.ZERO;
-	private long lastDodge=-999,lastLeap=-999,lastHook=-999,lastWisps=-999,lastSlam=-999;
+	private long lastDodge=-999,lastLeap=-999,lastHook=-999,lastWisps=-999,lastSlam=-999,lastLights=-9999;
+	/** Lights Out: whom it last stood up behind, so each round it comes for the next of them. */
+	private int lightsTurn;
 	/** Who the crook caught this time, being dragged in. */
 	private final Set<UUID> hooked=new HashSet<>();
 	/** Soul wisps loosed from its lantern, drifting after their prey; not saved, they burn out soon enough. */
@@ -99,8 +102,10 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	@Override public boolean removeWhenFarAway(double distance){return false;}
 	@Override public boolean canFreeze(){return false;}
 	/** Down in the grave there is nothing there to strike or shoot. */
-	@Override public boolean isPickable(){return move()!=LanternBearerRules.DORMANT && super.isPickable();}
-	@Override public boolean canBeHitByProjectile(){return move()!=LanternBearerRules.DORMANT && move()!=LanternBearerRules.FADE && super.canBeHitByProjectile();}
+	@Override public boolean isPickable(){return move()!=LanternBearerRules.DORMANT && !unseen() && super.isPickable();}
+	@Override public boolean canBeHitByProjectile(){return move()!=LanternBearerRules.DORMANT && move()!=LanternBearerRules.FADE && !unseen() && super.canBeHitByProjectile();}
+	/** Whether it is out in the dark, its lantern out, and not there to be seen or struck. */
+	public boolean unseen(){return move()==LanternBearerRules.LIGHTS_OUT && !LanternBearerRules.lightsSeen(since());}
 	@Override public boolean causeFallDamage(double distance,float multiplier,DamageSource source){return false;}
 
 	private void pose(int move,int ticks){pose(move,ticks,0);}
@@ -278,6 +283,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			case LanternBearerRules.HOOK->hook(level,target);
 			case LanternBearerRules.WISPS->loose(level,target);
 			case LanternBearerRules.SLAM->slam(level);
+			case LanternBearerRules.LIGHTS_OUT->lights(level,target);
 			case LanternBearerRules.FADE->{
 				face(aim);move(MoverType.SELF,new Vec3(slide.x,-.3,slide.z));setDeltaMovement(Vec3.ZERO);
 				level.sendParticles(ParticleTypes.LARGE_SMOKE,getX(),getY()+1.4,getZ(),2,.4,.8,.4,.01);
@@ -304,6 +310,11 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 		if(left>0)left--;
 		if(left<=0){
 			long now=level.getGameTime();
+			if(LanternBearerRules.lightsOut(wounded(),now-lastLights)){
+				lastLights=now;lightsTurn=random.nextInt(4);aim=yawTo(target.position());pose(LanternBearerRules.LIGHTS_OUT,0,LanternBearerRules.SNUFF_TELL);
+				Feels.sound(level,lamp(),"aura_lantern_bearer_chain",1.2F,.7F);
+				return;
+			}
 			int pick=LanternBearerRules.choose(d,yawTo(target.position())-getYRot(),random.nextDouble(),now-lastHook>=LanternBearerRules.HOOK_REST,
 				now-lastWisps>=LanternBearerRules.WISP_REST,now-lastSlam>=LanternBearerRules.SLAM_REST);
 			if(pick>=0){
@@ -434,6 +445,99 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 		if(el>=tell+3)spent(LanternBearerRules.SLAM_RECOVER);
 	}
 
+	/**
+	 * Lights Out. Through the tell it raises its lantern to its hood and closes its hand over it; then it breathes it out. The candles
+	 * die, everyone on the field is blinded a moment and left in the dark, and it is gone. Each round, after a while unseen, it stands up
+	 * behind the next of them with its lantern glimmering low, turning after them until just before it swings, and reaps.
+	 */
+	private void lights(ServerLevel level,LivingEntity target){
+		long el=since();
+		still();
+		if(el<LanternBearerRules.SNUFF_TELL){
+			if(target!=null)aim=turned(aim,yawTo(target.position()),6);
+			face(aim);
+			if(el%3==0){var l=lamp();level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,l.x,l.y+.3,l.z,2,.08,.08,.08,.005);}
+			return;
+		}
+		if(el==LanternBearerRules.SNUFF_TELL){
+			var l=lamp();
+			Feels.sound(level,l,"aura_lantern_bearer_fade",1.6F,.6F);
+			level.sendParticles(ParticleTypes.SMOKE,l.x,l.y+.3,l.z,16,.12,.2,.12,.02);
+			candles(level,false);wisps.clear();
+			int dark=LanternBearerRules.LIGHTS_TICKS-LanternBearerRules.SNUFF_TELL+20;
+			for(var p:prey(level)){
+				p.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,LanternBearerRules.LIGHTS_BLIND,0,false,false));
+				p.addEffect(new MobEffectInstance(MobEffects.DARKNESS,dark,0,false,false));
+			}
+		}
+		if(el==LanternBearerRules.SNUFF_TELL+LanternBearerRules.LIGHTS_VANISH)
+			level.sendParticles(ParticleTypes.LARGE_SMOKE,getX(),getY()+1.4,getZ(),24,.5,1,.5,.02);
+		if(el>=LanternBearerRules.LIGHTS_TICKS){relight(level,LanternBearerRules.LIGHTS_RECOVER);return;}
+		int stage=LanternBearerRules.lightsStage(el);
+		if(LanternBearerRules.lightsAppears(el)){
+			var all=prey(level);
+			if(all.isEmpty()){relight(level,LanternBearerRules.LIGHTS_RECOVER);return;}
+			var p=all.get(lightsTurn++%all.size());
+			if(!behind(level,p)){relight(level,LanternBearerRules.LIGHTS_RECOVER);return;}
+			setTarget(p);aim=yawTo(p.position());face(aim);
+			var l=lamp();
+			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,l.x,l.y,l.z,4,.05,.05,.05,.005);
+			level.sendParticles(ParticleTypes.SMOKE,getX(),getY()+1.2,getZ(),10,.4,.8,.4,.01);
+			Feels.sound(level,l,"aura_lantern_bearer_chain",.7F,.6F);
+			return;
+		}
+		if(stage==LanternBearerRules.GLIMMER){
+			long to=LanternBearerRules.LIGHTS_GLIMMER-(long)LanternBearerRules.lightsGlimmer(el);
+			var prey=getTarget();
+			if(prey!=null && to>4)aim=turned(aim,yawTo(prey.position()),12);
+			face(aim);
+			if(el%4==0){var l=lamp();level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,l.x,l.y,l.z,1,.04,.04,.04,.003);}
+			if(to==LanternBearerRules.LIGHTS_GLIMMER/2)Feels.sound(level,head(),"aura_lantern_bearer_fade",.8F,1.3F);
+		}else face(aim);
+		if(LanternBearerRules.lightsStrikes(el)){
+			Feels.sound(level,position().add(0,1.5,0),"aura_lantern_bearer_reap",1.4F,.8F+random.nextFloat()*.15F);
+			for(int i=0;i<12;i++){
+				double a=Math.toRadians(aim)+Math.toRadians(-70+i*140/11.0),r=3.6;
+				level.sendParticles(ParticleTypes.SWEEP_ATTACK,getX()-Math.sin(a)*r,getY()+1.2,getZ()+Math.cos(a)*r,0,0,0,0,0);
+			}
+			for(var p:prey(level))if(reaches(LanternBearerRules.REAP,p))hit(level,p,LanternBearerRules.LIGHTS_DAMAGE,.8,position(),.2);
+		}
+		if(stage==LanternBearerRules.SWING && LanternBearerRules.lightsStage(el+1)==LanternBearerRules.GONE)
+			level.sendParticles(ParticleTypes.LARGE_SMOKE,getX(),getY()+1.4,getZ(),16,.4,.9,.4,.02);
+	}
+	/**
+	 * Stand up {@link LanternBearerRules#LIGHTS_BEHIND} behind {@code p}, or failing that somewhere else round them that is open and on
+	 * the field; false if there is nowhere.
+	 */
+	private boolean behind(ServerLevel level,ServerPlayer p){
+		float back=p.getYRot()+180;
+		for(int i=0;i<8;i++){
+			float yaw=back+(i%2==0?1:-1)*((i+1)/2)*45;
+			var f=ahead(yaw).scale(LanternBearerRules.LIGHTS_BEHIND);
+			for(double up:new double[]{0,1,-1}){
+				var at=new Vec3(p.getX()+f.x,Math.floor(p.getY())+up,p.getZ()+f.z);
+				if(!inHall(at,0))continue;
+				var box=getDimensions(getPose()).makeBoundingBox(at);
+				if(!level.noCollision(this,box))continue;
+				var below=BlockPos.containing(at.x,at.y-.5,at.z);
+				if(level.getBlockState(below).getCollisionShape(level,below).isEmpty())continue;
+				teleportTo(at.x,at.y,at.z);setDeltaMovement(Vec3.ZERO);
+				return true;
+			}
+		}
+		return false;
+	}
+	/** Its lantern flares back up and the candles with it, and it stands spent for {@code ticks}. */
+	private void relight(ServerLevel level,int ticks){
+		var l=lamp();
+		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,l.x,l.y,l.z,20,.25,.25,.25,.05);
+		level.sendParticles(ParticleTypes.SOUL,getX(),getY()+1.4,getZ(),12,.5,.8,.5,.03);
+		Feels.sound(level,l,"aura_lantern_bearer_wisp",1.2F,.7F);
+		candles(level,true);
+		for(var p:prey(level))p.removeEffect(MobEffects.DARKNESS);
+		spent(ticks);
+	}
+
 	/** Spent after an attack, leaning on its spade, for {@code ticks}. */
 	private void spent(int ticks){pose(LanternBearerRules.RECOVER,ticks);still();}
 	/** Gone to smoke from a blow, drifting to one side out from under it. */
@@ -498,6 +602,16 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 		if(source.is(DamageTypes.GENERIC_KILL))return super.hurtServer(level,source,damage);
 		// Down in the grave, rising or sinking there is nothing yet to strike; gone to smoke, a blow passes through.
 		if(LanternBearerRules.scripted(move) || move==LanternBearerRules.FADE)return false;
+		// Out in the dark there is nothing there; caught glimmering, its lantern flares and the dark is broken.
+		if(move==LanternBearerRules.LIGHTS_OUT){
+			if(unseen())return false;
+			int stage=LanternBearerRules.lightsStage(since());
+			if(stage==LanternBearerRules.GLIMMER || stage==LanternBearerRules.SWING){
+				boolean hurt=super.hurtServer(level,source,damage*(float)LanternBearerRules.armour(LanternBearerRules.RECOVER,false));
+				if(hurt){lastCut=level.getGameTime();relight(level,LanternBearerRules.LIGHTS_BROKEN);}
+				return hurt;
+			}
+		}
 		long now=level.getGameTime();
 		var at=source.getSourcePosition();
 		boolean frontal=at!=null && LanternBearerRules.frontal(yawTo(at)-getYRot());

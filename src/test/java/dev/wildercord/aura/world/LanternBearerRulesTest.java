@@ -94,7 +94,45 @@ class LanternBearerRulesTest {
 		assertTrue(LanternBearerRules.wounded(170,340));
 		assertFalse(LanternBearerRules.wounded(171,340));
 	}
+	@Test void onlyWoundedAndRestedDoesItPutTheLanternOut(){
+		assertTrue(LanternBearerRules.lightsOut(true,LanternBearerRules.LIGHTS_REST));
+		assertFalse(LanternBearerRules.lightsOut(true,LanternBearerRules.LIGHTS_REST-1));
+		assertFalse(LanternBearerRules.lightsOut(false,99999));
+	}
+	@Test void lightsOutRunsSnuffThenGoneGlimmerSwingEachRound(){
+		int s=LanternBearerRules.SNUFF_TELL,R=LanternBearerRules.LIGHTS_ROUND,G=LanternBearerRules.LIGHTS_GONE,M=LanternBearerRules.LIGHTS_GLIMMER;
+		assertEquals(LanternBearerRules.SNUFFING,LanternBearerRules.lightsStage(0));
+		assertEquals(-1,LanternBearerRules.lightsRound(0));
+		assertEquals(LanternBearerRules.GONE,LanternBearerRules.lightsStage(s));
+		assertEquals(LanternBearerRules.GLIMMER,LanternBearerRules.lightsStage(s+G));
+		assertEquals(LanternBearerRules.SWING,LanternBearerRules.lightsStage(s+G+M));
+		assertEquals(LanternBearerRules.GONE,LanternBearerRules.lightsStage(s+R));
+		assertEquals(1,LanternBearerRules.lightsRound(s+R));
+		assertEquals(LanternBearerRules.LIGHTS_ROUNDS-1,LanternBearerRules.lightsRound(LanternBearerRules.LIGHTS_TICKS-1));
+		assertEquals(LanternBearerRules.OVER,LanternBearerRules.lightsStage(LanternBearerRules.LIGHTS_TICKS));
+		assertEquals(0,LanternBearerRules.lightsGlimmer(s+R+G),1e-6);
+	}
+	@Test void outInTheDarkItCannotBeSeenUntilItGlimmers(){
+		int s=LanternBearerRules.SNUFF_TELL,G=LanternBearerRules.LIGHTS_GONE;
+		assertTrue(LanternBearerRules.lightsSeen(s-1));
+		assertTrue(LanternBearerRules.lightsSeen(s));
+		assertFalse(LanternBearerRules.lightsSeen(s+LanternBearerRules.LIGHTS_VANISH));
+		assertFalse(LanternBearerRules.lightsSeen(s+G-1));
+		assertTrue(LanternBearerRules.lightsSeen(s+G));
+		assertEquals(0,LanternBearerRules.lightsSolid(s+G-1),1e-6);
+		assertTrue(LanternBearerRules.lightsSolid(s+G)>0);
+	}
+	@Test void itMovesBehindItsPreyUnseenAndReapsOncePerRound(){
+		int strikes=0,moves=0;
+		for(long el=0;el<LanternBearerRules.LIGHTS_TICKS+10;el++){
+			if(LanternBearerRules.lightsStrikes(el)){strikes++;assertEquals(LanternBearerRules.SWING,LanternBearerRules.lightsStage(el));}
+			if(LanternBearerRules.lightsAppears(el)){moves++;assertFalse(LanternBearerRules.lightsSeen(el));}
+		}
+		assertEquals(LanternBearerRules.LIGHTS_ROUNDS,strikes);
+		assertEquals(LanternBearerRules.LIGHTS_ROUNDS,moves);
+	}
 	@Test void theBarNamesWhatItIsDoing(){
+		assertEquals("lights",LanternBearerRules.key(LanternBearerRules.LIGHTS_OUT));
 		assertEquals("reap",LanternBearerRules.key(LanternBearerRules.REAP));
 		assertEquals("wisps",LanternBearerRules.key(LanternBearerRules.WISPS));
 		assertEquals("watch",LanternBearerRules.key(LanternBearerRules.RISE));

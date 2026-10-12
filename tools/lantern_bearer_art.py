@@ -12,7 +12,9 @@ LANG = {
                                        'it, hooks anyone keeping away and drags them in on its crook, looses soul wisps after anyone who '
                                        'runs, and drives its spade into the ground among anyone crowding it. Struck, it may go to smoke '
                                        'and drift away; its tools turn some of a blow from the front, and it is open a moment after an '
-                                       'attack. Dawn sends it back down into its grave.',
+                                       'attack. Wounded, it may breathe its lantern out and leave the field in the dark, then '
+                                       'stand up behind one of you after another, its lantern glimmering low, and reap; strike it '
+                                       'as it glimmers and the lantern flares back up. Dawn sends it back down into its grave.',
     'guide.wildercord.lantern_bearer.hint': 'The Barrow Field: an old battlefield on the plains, meadows and savannas, with a gibbet at '
                                             'its heart. Come after dark.',
     'boss.wildercord.lantern_bearer.status': '%s — %s',
@@ -26,7 +28,7 @@ for name, text in {
     LANG['subtitles.wildercord.kit.lantern_bearer.' + name] = text
 # What the bar says it is doing, the way a Master's bar names its cut.
 for name, text in {'watch': 'Watching', 'reap': 'Reaping', 'hook': 'Hooking', 'wisps': 'Soul Wisps', 'slam': 'Grave Strike',
-                   'fade': 'Gone to smoke', 'recover': 'Spent'}.items():
+                   'fade': 'Gone to smoke', 'recover': 'Spent', 'lights': 'Lights Out'}.items():
     LANG['boss.wildercord.lantern_bearer.move.' + name] = text
 
 # Grave-rags, ashen grey going black at the hem and in the folds; bone-pale hands; the hood's hollow black; old wood and rusted iron;

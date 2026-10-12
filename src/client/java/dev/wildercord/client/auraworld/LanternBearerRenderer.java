@@ -32,9 +32,9 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 	public LanternBearerRenderer(EntityRendererProvider.Context c){super(c,new LanternBearerModel(c.bakeLayer(LAYER)),1.2F);addLayer(new Glow(this));}
 	@Override public LanternBearerRenderState createRenderState(){return new LanternBearerRenderState();}
 	@Override public Identifier getTextureLocation(LanternBearerRenderState s){return SKIN;}
-	/** Down in its grave it is not there to see. */
+	/** Down in its grave, or out in the dark with its lantern out, it is not there to see. */
 	@Override public boolean shouldRender(LanternBearer e,Frustum frustum,double x,double y,double z,float partial){
-		return e.move()!=LanternBearerRules.DORMANT&&super.shouldRender(e,frustum,x,y,z,partial);
+		return e.move()!=LanternBearerRules.DORMANT&&!e.unseen()&&super.shouldRender(e,frustum,x,y,z,partial);
 	}
 	@Override protected int getBlockLightLevel(LanternBearer e,BlockPos pos){return 15;}
 	@Override public void extractRenderState(LanternBearer e,LanternBearerRenderState s,float partial){
@@ -50,13 +50,14 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 		s.hurt=e.hurtTime>0?Math.max(0,(e.hurtTime-partial)/10F):0;
 		s.solid=solid(s);
 	}
-	/** Whole, but for the smoke of a fade (thinning at once and coming back as it ends) and the fading away of its death. */
+	/** Whole, but for the smoke of a fade (thinning at once and coming back as it ends), the dark of Lights Out, and the fading away of its death. */
 	private static float solid(LanternBearerRenderState s){
 		float a=.92F;
 		if(s.move==LanternBearerRules.FADE){
 			float k=s.elapsed/LanternBearerRules.FADE_TICKS;
 			a*=Mth.clamp(Math.min(k<.3F?1-k/.3F*.8F:.2F,.2F+Math.max(0,k-.6F)/.4F*.8F),.2F,1);
 		}
+		if(s.move==LanternBearerRules.LIGHTS_OUT)a*=LanternBearerRules.lightsSolid(s.elapsed);
 		if(s.deathTime>0)a*=Mth.clamp(1-(s.deathTime-6)/14F,0,1);
 		return a;
 	}
@@ -65,16 +66,27 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 	@Override protected float getFlipDegrees(){return 0;}
 	@Override protected void scale(LanternBearerRenderState s,PoseStack pose){pose.scale(SCALE,SCALE,SCALE);}
 
-	/** Its eyes and the flame in its lantern: the eyes catch light as it takes the lantern down; both thin with it and go out as it dies. */
+	/**
+	 * Its eyes and the flame in its lantern: the eyes catch light as it takes the lantern down; both thin with it and go out as it dies.
+	 * In Lights Out they gutter as it breathes the lantern out and are dark, but for a low glimmer as it stands up behind someone.
+	 */
 	private static final class Glow extends RenderLayer<LanternBearerRenderState,LanternBearerModel> {
 		private final RenderType type=RenderTypes.eyes(GLOW);
 		Glow(RenderLayerParent<LanternBearerRenderState,LanternBearerModel> parent){super(parent);}
 		@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,LanternBearerRenderState s,float yRot,float xRot){
 			if(s.isInvisible)return;
 			float lit=LanternBearerRules.holdsLantern(s.rise)?Mth.clamp((s.rise-(float)LanternBearerRules.HOOK_AT/LanternBearerRules.RISE_TICKS)*8,0,1):0;
-			float alpha=(.75F+.25F*Mth.sin(s.ageInTicks*.31F)*Mth.sin(s.ageInTicks*.17F))*lit*Math.min(1,s.solid*1.2F);
+			float alpha=(.75F+.25F*Mth.sin(s.ageInTicks*.31F)*Mth.sin(s.ageInTicks*.17F))*lit*Math.min(1,s.solid*1.2F)*lights(s);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
 			collector.order(1).submitModel(getParentModel(),s,pose,type,light,OverlayTexture.NO_OVERLAY,(a<<24)|0xFFFFFF,null,s.outlineColor);
+		}
+		private static float lights(LanternBearerRenderState s){
+			if(s.move!=LanternBearerRules.LIGHTS_OUT)return 1;
+			if(s.elapsed<LanternBearerRules.SNUFF_TELL)return 1-.7F*Mth.clamp(s.elapsed/LanternBearerRules.SNUFF_TELL,0,1)+.15F*Mth.sin(s.elapsed*1.7F);
+			int stage=LanternBearerRules.lightsStage(s.elapsed);
+			if(stage==LanternBearerRules.OVER)return 1;
+			if(stage==LanternBearerRules.GONE)return 0;
+			return .3F+.15F*Mth.sin(s.ageInTicks*.9F);
 		}
 	}
 }

@@ -30,6 +30,13 @@ public final class LanternBearerRules {
 	public static final int FADE = 8;
 	/** Spent after an attack, leaning on its spade, the lantern hanging low: the opening. */
 	public static final int RECOVER = 9;
+	/**
+	 * Lights Out, its signature once wounded: it bows its hood over its lantern and breathes it out, the candles die, everyone on the
+	 * field is blinded a moment and left in the dark, and it is gone. Then, {@link #LIGHTS_ROUNDS} times, it stands up out of the dark
+	 * behind one of them, its lantern glimmering for {@link #LIGHTS_GLIMMER} ticks, and reaps; strike it while it glimmers and the
+	 * lantern flares back up and it is left spent.
+	 */
+	public static final int LIGHTS_OUT = 10;
 
 	public static final double HEALTH = 340, ARMOUR = 6, SPEED = 0.3;
 
@@ -84,6 +91,66 @@ public final class LanternBearerRules {
 	public static final double STING_AFTER = 40, STING_FADE = 0.97, LEAP_SPEED = 0.9;
 	public static final int LEAP_TICKS = 8, LEAP_REST = 220;
 
+	/**
+	 * Lights Out: the snuffing (its tell), the ticks it takes to fade out once the lantern is out, then each round: unseen, glimmering
+	 * behind its prey, and the reap; how many rounds; the rest after (and after its glimmer is struck); the least time between two; how long the snuffing blinds; what the
+	 * reap does; and how far behind its prey it stands up.
+	 */
+	public static final int SNUFF_TELL = 16, LIGHTS_VANISH = 4, LIGHTS_GONE = 20, LIGHTS_GLIMMER = 16, LIGHTS_SWING = 6, LIGHTS_ROUNDS = 3,
+		LIGHTS_RECOVER = 30, LIGHTS_BROKEN = 50, LIGHTS_REST = 500, LIGHTS_BLIND = 30;
+	public static final double LIGHTS_DAMAGE = 14, LIGHTS_BEHIND = 2.2;
+	public static final int LIGHTS_ROUND = LIGHTS_GONE + LIGHTS_GLIMMER + LIGHTS_SWING, LIGHTS_TICKS = SNUFF_TELL + LIGHTS_ROUNDS * LIGHTS_ROUND;
+	/** The stages of Lights Out. */
+	public static final int SNUFFING = 0, GONE = 1, GLIMMER = 2, SWING = 3, OVER = 4;
+	/** Whether, wounded and rested, it puts its lantern out. */
+	public static boolean lightsOut(boolean wounded, long sinceLights) {
+		return wounded && sinceLights >= LIGHTS_REST;
+	}
+	/** Which stage of Lights Out it is in, {@code elapsed} ticks in. */
+	public static int lightsStage(float elapsed) {
+		if (elapsed < SNUFF_TELL) return SNUFFING;
+		if (elapsed >= LIGHTS_TICKS) return OVER;
+		float in = (elapsed - SNUFF_TELL) % LIGHTS_ROUND;
+		return in < LIGHTS_GONE ? GONE : in < LIGHTS_GONE + LIGHTS_GLIMMER ? GLIMMER : SWING;
+	}
+	/** Which round of Lights Out it is in, {@code elapsed} ticks in: -1 while it snuffs the lantern. */
+	public static int lightsRound(float elapsed) {
+		if (elapsed < SNUFF_TELL) return -1;
+		return Math.min(LIGHTS_ROUNDS - 1, (int) ((elapsed - SNUFF_TELL) / LIGHTS_ROUND));
+	}
+	/** Ticks since it began glimmering this round (negative while it is still unseen). */
+	public static float lightsGlimmer(float elapsed) {
+		return elapsed - SNUFF_TELL - Math.max(0, lightsRound(elapsed)) * LIGHTS_ROUND - LIGHTS_GONE;
+	}
+	/** Whether it can be seen, and struck, {@code elapsed} ticks into Lights Out: not once the lantern is out, until it glimmers. */
+	public static boolean lightsSeen(float elapsed) {
+		int stage = lightsStage(elapsed);
+		return stage == SNUFFING || stage == GLIMMER || stage == SWING || stage == OVER || elapsed < SNUFF_TELL + LIGHTS_VANISH;
+	}
+	/** Whether its reap lands this tick, {@code elapsed} ticks into Lights Out. */
+	public static boolean lightsStrikes(long elapsed) {
+		return elapsed >= SNUFF_TELL && elapsed < LIGHTS_TICKS && (elapsed - SNUFF_TELL) % LIGHTS_ROUND == LIGHTS_GONE + LIGHTS_GLIMMER;
+	}
+	/** Whether it moves round behind its prey this tick: a few ticks before it glimmers, while it is still unseen. */
+	public static boolean lightsAppears(long elapsed) {
+		return elapsed >= SNUFF_TELL && elapsed < LIGHTS_TICKS && (elapsed - SNUFF_TELL) % LIGHTS_ROUND == LIGHTS_GONE - LIGHTS_VANISH;
+	}
+	/**
+	 * How solid it is through Lights Out, as a part of whole: whole while it snuffs the lantern, thinning away as it goes, nothing out in
+	 * the dark, standing up thin out of it as it glimmers and whole for the reap, thinning away again after (but not after the last).
+	 */
+	public static float lightsSolid(float elapsed) {
+		if (elapsed < SNUFF_TELL) return 1;
+		int stage = lightsStage(elapsed);
+		if (stage == OVER) return 1;
+		float g = lightsGlimmer(elapsed);
+		return switch (stage) {
+			case GONE -> lightsRound(elapsed) == 0 ? Math.max(0, 1 - (elapsed - SNUFF_TELL) / LIGHTS_VANISH) : 0;
+			case GLIMMER -> Math.min(1, g / LIGHTS_GLIMMER * 0.8F + 0.15F);
+			default -> lightsRound(elapsed) == LIGHTS_ROUNDS - 1 ? 1 : Math.max(0, 1 - (g - LIGHTS_GLIMMER - 1) / (LIGHTS_SWING - 1));
+		};
+	}
+
 	/** Ticks between its blows, fewer once it is wounded. */
 	public static final int GAP = 10, GAP_WOUNDED = 6;
 
@@ -96,6 +163,7 @@ public final class LanternBearerRules {
 			case SLAM -> "slam";
 			case FADE -> "fade";
 			case RECOVER -> "recover";
+			case LIGHTS_OUT -> "lights";
 			default -> "watch";
 		};
 	}
