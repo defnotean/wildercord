@@ -98,9 +98,37 @@ While the pit is flooded:
   When the pit is dry, it takes full damage.
 - **Its own storm spells shock you** through the flood too, if you're in it.
 
+### Its moves
+
+It fights two ways as the tide comes and goes. On the dry floor it **writes**; in the flood it **swims**. It never makes
+the same move twice running, and its boss bar names each move. Every move marks where it will land during its tell, and
+anything aimed stops following you a moment before it strikes.
+
+| Move | When | The tell | What to do |
+|---|---|---|---|
+| **Quills** | Dry | Its quill drawn back, a fan of lanes drawn on the floor (3, then 4, then 5 by phase) | A volley flies down each lane. Stand between the lanes, or close in under it. |
+| **Script** | Dry | Bent over its writing, then glowing words appear under everyone and round about | They burst 0.8 seconds later. Step off them. It's left **bowed** over its writing for 1.7 seconds. |
+| **Whirlpool** | Flooded | Sinking and turning as a ring closes in | For 2.2 seconds the water drags everyone wading toward it, and the middle hurts. Wade out, freeze the water, or keep more than 9 blocks off. It's left **spun** dizzy for 1.8 seconds. |
+| **Riptide** | Flooded | Coiled back, a lane of foam drawn across the water | It races 15 blocks down the lane, sweeping you along. Step out of the lane. |
+| **Ink** | Phase 2 on | Reared back, a cone drawn before it | A cloud of ink: Blindness and Slowness. Get behind it or out to its side. |
+| **Pages** | Dry, phase 2 on | Pages torn out | They wheel round it 3 to 6 blocks out for 2 seconds, cutting four times. Hug it inside 3 blocks or stay beyond 6. |
+| **Breaker** | Phase 2 on | Risen 2 blocks over a marked ring | It slams down and a wave rolls out 13 blocks. Jump it on the dry floor. In the flood, stay on the bottom and let it pass over you. |
+| **Dive** | Flooded, phase 2 on | It sinks, and a trail of bubbles hunts you for 2 seconds | The trail settles on a marked spot and it bursts up there 0.8 seconds later. Get off the mark. A storm spell into the flood still shocks it while it's under. It's left **surfaced** and dazed for 2.2 seconds. |
+| **Tide Call** | Dry, phase 3 | Its scroll raised, the pit's rim marked | A wave rolls in from the rim and the flood starts early. Jump the wave. |
+
+- **Bowed, spun or surfaced**, it takes **30% more** and the water no longer shields it. Its boss bar shows it.
+- The currents only come in the flood and break off when it drains. The writing only comes on the dry floor.
+- **Phase 2** adds ink, pages, the breaker and the dive. The whirlpool pulls harder, more lanes and words appear, and it
+  rests less between moves.
+- **Phase 3** adds the tide call, and half the time it follows a move straight on with a fitting second one: a second
+  volley down the gaps the first left, a second wave of words where you then stand, a fling out of the whirlpool (get
+  more than 4 blocks off when its ring flashes), a riptide back the way it came, a wider cone of ink, its pages flying
+  out as a ring to 11 blocks (jump it), a second breaker, and a second dive.
+
 ### Its spells
 
-Each spell is named on the boss bar and lands 1.4 seconds after its circle opens.
+Between its moves it still casts. Each spell is named on the boss bar and lands 1.4 seconds after its circle opens. While
+you're wading it favours its storm spells.
 
 | Phase | Its spells |
 |---|---|
@@ -126,6 +154,9 @@ blow skips a phase.
 - **Watch the boss bar.** *The tide is rising* gives you about 2 seconds to climb out.
 - **Kill the drowned it calls.** Their storm reaches you through the flood.
 - **Beware of being soaked** after a Bubble Bolt.
+- **Read the floor.** Lanes mean quills or a riptide; glowing words mean script; a closing ring means a whirlpool or a
+  breaker; a trail of bubbles means it's diving for you.
+- **Hit it when it's bowed, spun or surfaced.** That's when it takes more, flood or not.
 
 ## When it falls
 
