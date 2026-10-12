@@ -923,6 +923,9 @@ def write_lang(runes):
     import red_panda_art
     lang.update(red_panda_art.LANG)
     red_panda_art.write(sys.modules[__name__])
+    import meerkat_art
+    lang.update(meerkat_art.LANG)
+    meerkat_art.write(sys.modules[__name__])
     import mimic_art
     lang.update(mimic_art.LANG)
     mimic_art.write(sys.modules[__name__])

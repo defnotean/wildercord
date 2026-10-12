@@ -80,6 +80,10 @@ public final class WildlifeRules {
 	public static final Kind CINNABAR_PANDA = new Kind("cinnabar_panda", Pool.CREATURE, 5, 1, 3, 1 / 2.0, 4, 48, List.of(
 		"minecraft:cherry_grove", "minecraft:bamboo_jungle", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga"));
 
+	/** The sunwatch meerkat: a mob of little sentries and diggers in the deserts and savannas, three to six together. */
+	public static final Kind SUNWATCH_MEERKAT = new Kind("sunwatch_meerkat", Pool.CREATURE, 4, 3, 6, 1 / 2.0, 8, 48, List.of(
+		"minecraft:desert", "minecraft:savanna", "minecraft:savanna_plateau"));
+
 	/** Every kind, in the order the guide and the config list them. */
 	public static final List<Kind> ALL = List.of(GLIMMERWING, LUMEN_STAG, MOSSBACK_TORTOISE, CINDERFOX, SKYRAY, RIMEHARE);
 
