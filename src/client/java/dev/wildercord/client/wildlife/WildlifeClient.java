@@ -21,6 +21,7 @@ public final class WildlifeClient {
   CinnabarPandaRenderer.init();
   SunwatchMeerkatRenderer.init();
   StonecrestPuffinRenderer.init();
+  CapcrownSnailRenderer.init();
   PredatorRenderers.init();
   RidgebackStagRenderer.init();
   BurrowAndReefRenderers.init();
