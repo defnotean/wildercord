@@ -39,6 +39,7 @@ public final class MonsterClient {
 		ModelLayerRegistry.registerModelLayer(StrawmanRenderer.LAYER, StrawmanModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(DunestingerRenderer.LAYER, DunestingerModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(GulperPitcherRenderer.LAYER, GulperPitcherModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(CacklingHyenaRenderer.LAYER, CacklingHyenaModel::createLayer);
 
 		EntityRendererRegistry.register(MonsterContent.BRAMBLEWALKER, MonsterClient::bramblewalker);
 		EntityRendererRegistry.register(MonsterContent.GLOOMSTALKER, GloomstalkerRenderer::new);
@@ -53,6 +54,7 @@ public final class MonsterClient {
 		EntityRendererRegistry.register(MonsterContent.STRAWMAN, StrawmanRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.DUNESTINGER, DunestingerRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.GULPER_PITCHER, GulperPitcherRenderer::new);
+		EntityRendererRegistry.register(MonsterContent.CACKLING_HYENA, CacklingHyenaRenderer::new);
 	}
 
 	/** Its eyes, and the green veins in its vines, which blaze as it rears for the lash. */

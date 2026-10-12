@@ -250,6 +250,7 @@ public record WildercordConfig(
 				case "strawman" -> true;
 				case "dunestinger" -> true;
 				case "gulper_pitcher" -> true;
+				case "cackling_hyena" -> true;
 				default -> false;
 			};
 		}
