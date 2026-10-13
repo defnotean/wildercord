@@ -732,3 +732,32 @@ inventory, dependency-pin and scope checks (`ferryman-packaging.json`). The raw 
 is 29,010,471 bytes, SHA-256
 `27814af1a25e71465ea6babc467e2face0d12c1da6756957042ce4c5c0ec22e7`.
 Package validation is separate from full gameplay acceptance.
+
+### Ordinary planner native timing and roster checks
+
+The unchanged local `MasterOrdinaryPlannerTest` reproduced the core CI failure
+in 30 seconds. It requested frame 3 after visiting frame 4, then requested the
+last recovery frame after observing a later frame. Ordinary Sweep/Thrust/Crescent
+currently have three/four-tick tells and three/four-tick recoveries, so those
+observation sequences could never succeed. No production timings were changed.
+The fixture now probes the first harmless warning tick, checks the last harmless
+tick before applying a dodge/parry, and observes damage and full exposed recovery
+on the final reserved frame. Exact game-time equality, exact damage/Aura budgets,
+accepted history, ownership and duplicate-callback assertions remain enforced.
+
+That exposed a separate fixture assumption: moving a non-target challenger out
+of range does not withdraw their enrollment. A new outside-arena case proves the
+paused challenger takes no hit and retains enrollment/history; the roster-removal
+case now uses an actual spectator transition and proves removal and phrase reset.
+The registered fixture releases its closed world/entity references in `finally`.
+
+All **38 native scenarios** pass in **2m 9s**
+(`ordinary-planner-roster-boundaries.log`), covering all three original schools,
+three health phases, solo/eight-player trials, counters, reentry, lifecycle,
+stale proposal and expired callback checks. This is focused native acceptance;
+full CI remains pending. Additional CI evidence identifies the next issues:
+Ember Kiln's fixed-payment assertion, funded-shell idle visibility, and connected
+counter receipts whose host item display context differs between classic and
+articulated paths. Both connected JVMs returned successfully at `6e6c805`; the
+independent receipt validator still rejects those captures, so they are not
+accepted visual evidence.

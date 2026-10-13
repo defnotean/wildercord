@@ -42,7 +42,7 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return false; }
 	}
 	private enum Counter { HOLD, SIDESTEP, COVER, GUARD, PARRY, ABSORPTION, INTERRUPT, OWNED_INTERRUPT, OUTSIDE_INTERRUPT, REENTER, CALLBACK_CANCEL, NO_AI,
-		TARGET_LEAVE, TARGET_DEATH, TARGET_DIMENSION, ROSTER_LEAVE, TARGET_CHANGE, OWNER_REMOVE }
+		TARGET_LEAVE, TARGET_DEATH, TARGET_DIMENSION, ROSTER_OUTSIDE, ROSTER_LEAVE, TARGET_CHANGE, OWNER_REMOVE }
 	private ServerLevel level;
 	private Vec3 origin;
 	private SwordMaster master;
@@ -74,21 +74,27 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 				for (int count : new int[] {1, 8}) scenario(world, school, phase, count, Counter.HOLD);
 			for (Counter counter : Counter.values()) if (counter != Counter.HOLD)
 				scenario(world, MastersRules.GALE, 0, counter == Counter.REENTER || counter == Counter.CALLBACK_CANCEL ? 8
-					: counter == Counter.ROSTER_LEAVE || counter == Counter.TARGET_CHANGE ? 2 : 1, counter);
+					: counter == Counter.ROSTER_OUTSIDE || counter == Counter.ROSTER_LEAVE || counter == Counter.TARGET_CHANGE ? 2 : 1, counter);
 			staleAdmission(world);
 			missedReleaseCallback(world);
-		} finally { if (active == this) active = null; }
+		} finally {
+			if (active == this) active = null;
+			// Fabric retains registered test instances for the process; do not retain a closed native world.
+			party.clear(); level = null; origin = null; master = null; target = null; outsider = null;
+			move = null; admitted = null;
+		}
 	}
 
 	private void scenario(TestSingleplayerContext world, int school, int phase, int count, Counter requested) {
 		this.counter = requested; callbacks = 0;
 		beginPlanned(world, school, phase, count);
-		// A Master's quick cut locks its aim almost at once: by frame 3 no spell can break it, so it lands as a held line.
+		// Ordinary tells last only three or four ticks. Probe the first warning tick, before any release.
+		// A three-tick cut has already locked by this frame; a four-tick cut still permits an early interrupt.
 		boolean committed = (requested == Counter.INTERRUPT || requested == Counter.OWNED_INTERRUPT)
-			&& !MastersRules.interruptible(true, began + 3, began + move.tell);
+			&& !MastersRules.interruptible(true, began + 1, began + move.tell);
 		Counter counter = committed ? Counter.HOLD : requested;
 		this.counter = counter;
-		at(world, 3, () -> {
+		at(world, 1, () -> {
 			check(target.getHealth() == HEALTH, "A planner choice retains the complete harmless tell");
 			if (committed) Effects.withSource(target, () -> check(!master.interruptWindup(), "A quick cut past its aim lock refuses an interrupt"));
 			var state = planner().state();
@@ -113,7 +119,8 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 					ServerLevel other = level.getServer().getLevel(Level.NETHER); check(other != null, "A native second dimension is available");
 					target.setNoGravity(true); target.teleportTo(other, origin.x, 200, origin.z, Set.of(), 180, 0, false);
 				}
-				case ROSTER_LEAVE -> place(party.getLast(), 40, 0, 0);
+				case ROSTER_OUTSIDE -> place(party.getLast(), 40, 0, 0);
+				case ROSTER_LEAVE -> party.getLast().setGameMode(GameType.SPECTATOR);
 				case TARGET_CHANGE -> master.setTarget(party.getLast());
 				case OWNER_REMOVE -> master.discard();
 				case GUARD -> guard();
@@ -125,14 +132,17 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 				default -> {}
 			}
 		});
-		// A quick cut locks its aim before the frame-3 checks; dodge after both, still before release.
-		at(world, Math.max(4, move.tell - MastersRules.AIM_LOCK + 1), () -> {
+		// Dodge after aim lock, on the final harmless warning tick. Parry observes that same tick.
+		at(world, move.tell - 1, () -> {
+			if (counter != Counter.TARGET_DEATH)
+				check(target.getHealth() == HEALTH, "No ordinary executor harms its target before the exact release tick");
 			if (counter == Counter.SIDESTEP) place(target, 8, 0, 1.2);
 			if (counter == Counter.COVER) wall(true);
 			if (counter == Counter.NO_AI) master.setNoAi(false);
+			if (counter == Counter.PARRY) guard();
 		});
-		at(world, move.tell - 1, () -> { if (counter == Counter.PARRY) guard(); });
-		at(world, move.tell + 4, () -> {
+		// Observe the whole first release before another admission can begin; Crescent has three travel ticks.
+		at(world, move.tell + move.recovery - 1, () -> {
 			if (active == this) active = null;
 			boolean terminal = counter == Counter.TARGET_DEATH || counter == Counter.TARGET_DIMENSION || counter == Counter.OWNER_REMOVE;
 			if (counter == Counter.HOLD || counter == Counter.OUTSIDE_INTERRUPT || counter == Counter.REENTER) {
@@ -149,8 +159,15 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 			} else if (counter == Counter.CALLBACK_CANCEL) {
 				check(callbacks == 1 && party.stream().filter(player -> player.getHealth() < HEALTH).count() == 1,
 					"Cancellation inside the first native damage callback prevents every later roster hit");
-			} else if (!terminal && counter != Counter.GUARD && counter != Counter.ROSTER_LEAVE && counter != Counter.TARGET_CHANGE)
+			} else if (!terminal && counter != Counter.GUARD && counter != Counter.ROSTER_OUTSIDE && counter != Counter.ROSTER_LEAVE && counter != Counter.TARGET_CHANGE)
 				check(target.getHealth() == HEALTH, "The real ordinary counter avoids health damage: " + counter + "/" + move);
+			if (counter == Counter.ROSTER_OUTSIDE || counter == Counter.ROSTER_LEAVE)
+				check(party.getLast().getHealth() == HEALTH, "A withdrawn or outside challenger receives no outgoing strike");
+			if (counter == Counter.ROSTER_OUTSIDE)
+				check(master.challengers().contains(party.getLast().getUUID()) && planner().state().depth() == admitted.depth(),
+					"Leaving arena range pauses eligibility without withdrawing enrollment or changing the target phrase");
+			if (counter == Counter.ROSTER_LEAVE)
+				check(!master.challengers().contains(party.getLast().getUUID()), "A spectator has genuinely withdrawn from the locked roster");
 			if (counter == Counter.REENTER) check(callbacks == count, "Re-entered AI never repeats any party member's native strike");
 			if (counter == Counter.GUARD) check(target.getHealth() > HEALTH - MastersRules.damage(count, school, move), "Held frontal guard still mitigates the selected attack");
 			if (counter == Counter.ABSORPTION) check(close(target.getAbsorptionAmount(), 100 - MastersRules.damage(count, school, move)), "One admitted attack debits absorption only once");
@@ -166,9 +183,8 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 			check(!master.state(AuraFighter.WINDUP) && !master.guarding() && close(master.auraRemaining(), paidAura),
 				"Every admitted ordinary action keeps its full paid, exposed recovery, including early cancellation: " + counter);
 			if (counter == Counter.INTERRUPT || counter == Counter.OWNED_INTERRUPT || counter == Counter.NO_AI) {
-				// A quick cut's whole tell+recovery may end before interrupt+20; then only the blocked admission is measured.
-				check((move.tell + move.recovery - 1 <= 3 + 20 || level.getGameTime() > began + 3 + 20) && planner().state().successfulDecisions() == admitted.successfulDecisions(),
-					"Before this change cancellation could retry at interrupt+20; now the original complete tell+recovery still blocks admission");
+				check(level.getGameTime() < recoveryUntil() && planner().state().successfulDecisions() == admitted.successfulDecisions(),
+					"Cancellation retains the complete original tell and recovery reservation");
 			}
 			if (counter == Counter.HOLD) {
 				float health = master.getHealth(); Effects.readyToHurt(master);
@@ -229,7 +245,7 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 
 	private void staleAdmission(TestSingleplayerContext world) {
 		beginPlanned(world, MastersRules.GALE, 0, 2);
-		at(world, 3, () -> master.setNoAi(true));
+		at(world, 1, () -> master.setNoAi(true));
 		at(world, move.tell + move.recovery, () -> {
 			// Let the original full reservation expire naturally while paused, then test a genuinely free native slot.
 			master.setNoAi(false);
@@ -252,7 +268,7 @@ public final class MasterOrdinaryPlannerTest implements FabricClientGameTest {
 	/** Explicit stale-callback probe on native entities; this does not claim to simulate an actually skipped server tick. */
 	private void missedReleaseCallback(TestSingleplayerContext world) {
 		beginPlanned(world, MastersRules.GALE, 0, 1);
-		at(world, 3, () -> {
+		at(world, 1, () -> {
 			invoke("tickAttack", new Class<?>[] {ServerLevel.class, long.class, LivingEntity.class}, level, began + move.tell + 1, target);
 			check(master.attackAnimation() == 0 && target.getHealth() == HEALTH && close(master.auraRemaining(), paidAura),
 				"Previously a late ordinary callback could hit; now it expires harmlessly with its Aura still paid");
