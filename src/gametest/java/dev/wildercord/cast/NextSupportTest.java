@@ -60,7 +60,11 @@ public final class NextSupportTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{check(protectedAlly.position().distanceToSqr(remembered)>1 && SupportSignatures.lanterns()==0,"A newly protected destination body cell refuses voluntary return despite its still-permitted floor");returnVeto.set(false);protectedAlly.discard();
     var p=player(s);secondAlly=guest(p,"MoltRestart",true);ground(secondAlly);secondAlly.setTicksFrozen(180);apply(new Cast(p),Runes.FROST_MOLT,List.of(secondAlly),secondAlly.position());
     check(SupportSignatures.molts()==1,"Pending guard exists before full restart");});save=w.getWorldSave();
-  }finally{returnVeto.set(false);if(jumpWasDown)c.getInput().holdKey(o -> o.keyJump);else c.getInput().releaseKey(o -> o.keyJump);}
+  }finally{
+   // Static native bodies otherwise retain this closed server through every later suite.
+   ally=null;secondAlly=null;protectedAlly=null;shooter=null;remembered=null;
+   returnVeto.set(false);if(jumpWasDown)c.getInput().holdKey(o -> o.keyJump);else c.getInput().releaseKey(o -> o.keyJump);
+  }
   try(var reopened=save.open()){c.waitTicks(20);reopened.getServer().runOnServer(s->check(SupportSignatures.molts()==0 && SupportSignatures.lanterns()==0,"Support watchers clear across full native reopen"));}
  }
 }

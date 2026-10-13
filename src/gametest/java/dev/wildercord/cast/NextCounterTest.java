@@ -96,6 +96,10 @@ public final class NextCounterTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=player(s);rearAlly=guest(p,"RearCounterAlly",true);rearAlly.snapTo(8,101,8,0,0);rearAlly.setHealth(20);apply(new Cast(p),Runes.NULLCATCH,List.of(rearAlly),rearAlly.position());});c.waitTicks(8);
    w.getServer().runOnServer(s->{firstHealth=rearAlly.getHealth();second=arrow(rearAlly,shooter,false);});c.waitTicks(5);
    w.getServer().runOnServer(s->{check(rearAlly.getHealth()<firstHealth && CounterSignatures.active()==1,"Rear hostile arrow is not intercepted by front-only active capture window");});save=w.getWorldSave();
+  }finally{
+   // Discarded entities and Cast still own their level; release every static fixture root.
+   shooter=null;stationary=null;moving=null;walking=null;rearAlly=null;first=null;second=null;continued=null;walkingOrigin=null;
+   cancelledDuringDamage=null;cancellationOwner=null;cancellationMode=0;cancellationObserved=false;resurrectionObserved=false;
   }
   try(var reopened=save.open()){c.waitTicks(20);reopened.getServer().runOnServer(s->check(CounterSignatures.active()==0,"Counter maps clear across full native reopen"));}
  }
