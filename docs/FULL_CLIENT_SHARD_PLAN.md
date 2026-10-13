@@ -1,7 +1,7 @@
 # Explicit full-client shard plan
 
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
-343-class descriptor as exactly four groups: **86 / 86 / 87 / 84**.
+344-class descriptor as exactly four groups: **86 / 86 / 87 / 85**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,
 manifest/aggregate tooling, and Gradle resource processing and launch preflight.
 There is no equal-count fallback or automatic assignment for newly added classes.
@@ -13,11 +13,11 @@ holds that reviewed plan so the tests can prove it.
 
 ## Identity and invariants
 
-- Plan schema 1, ID `full-client-explicit-v4-ferryman`.
+- Plan schema 1, ID `full-client-explicit-v5-windscar`.
 - Ordered roster SHA-256:
-  `44e1ffc0c1822443ebb9fc89fc1d9fe6a8b1c278a37c78d8e72fbc56f7c1d2fa`.
+  `126d2d719d34c460c09c28df08755f6c93d644f59d6322e74e6ccee4c2989cd8`.
 - Complete plan SHA-256:
-  `c352d1d9e27cf30927698bf026eb3fbb9d7f5bfe3351bb258254afe88b2a01a9`.
+  `b368fe963d03670abb48ad692b12c1eed82dba1a68289e95d1c5c93e97b105dc`.
 - Hashes use UTF-8 JSON with sorted object keys, compact separators and no trailing
   newline. The plan digest excludes no fields and is pinned in the selector.
   These are source identities, not claims of runtime acceptance.
@@ -42,6 +42,11 @@ holds that reviewed plan so the tests can prove it.
 - `FerrymanEncounterTest` follows that regional test in group 3. The preceding
   342-class plan is frozen in `tools/tests/full-client-plan-v3-342.json`; a separate
   regression proves every original group member retains its exact relative order.
+- `WindscarBiomeTest` is appended to group 4 and to the descriptor. It adds a
+  bounded natural highland census, client harvesting, owner discovery and real
+  save/reopen coverage. The 343-class plan is frozen in
+  `tools/tests/full-client-plan-v4-343.json`; every old class stays in its original
+  group and relative order. The first three groups remain byte-identical lists.
 
 Missing/foreign/duplicate/reordered classes, changed descriptors, invalid counts,
 noncanonical shard selectors, altered blocks, malformed JSON or types, duplicate
@@ -55,12 +60,13 @@ regression anchors together. Timing data never enters runtime selection.
 Gradle's thin Groovy bridge runs Python 3 directly, without a shell. Both resource
 processing and preflight validate the strict raw source descriptor and invoke the
 same selector. Python 3 must be on PATH as `python3` on macOS/Linux or `python` on
-Windows; the CI job explicitly installs Python 3.12. The helper and plan are
+Windows; the VPS environment supplies Python 3.12. The helper and plan are
 resource-task inputs. Checked-in configuration/resource readers use bounded reads
 with path/opened-file identity checks before and after reading, with additional
-no-follow/nonblocking open flags where available. The existing Linux runtime
-evidence readers are unchanged. The owned CI launcher remains Linux-only; Gradle
-plan selection does not add that restriction. Focused selection and its existing
+no-follow/nonblocking open flags where available. Runtime evidence readers also
+support Windows reparse-point and concurrent-write refusal. The original Linux
+launcher is retained as historical tooling; the owned Windows launcher is
+`tools/run_vps_checks.py`. Focused selection and its existing
 portable descriptor reader do not depend on this full-client plan.
 
 Resource processing writes the exact plan identity to
@@ -71,7 +77,8 @@ A missing/failed selector, stale resource or invalid plan cannot fall back to a
 different selection. A direct Gradle invocation cannot manufacture the launcher's
 owned source/run/attempt proof.
 
-Full-client evidence schema 3 binds the plan identity into launcher selection,
+Full-client evidence schema 4 on the VPS (schema 3 for historical GitHub evidence)
+binds the plan identity into launcher selection,
 processed-descriptor evidence, provenance, shard manifests and the all-four
 aggregate. Existing source head versus merge checkout/workflow identity, run,
 attempt, job, exact execution profile, per-launch UUID, strict native lifecycle
@@ -98,12 +105,12 @@ and exclude unknown runtime costs. They are **unverified estimates**, not bounds
 
 The job caps remain **180 minutes**. No assertion, seed, internal case, deadline or
 workflow permission is weakened. New full-client acceptance requires a fresh
-exact-source four-group native run, successful uploads and a passing aggregate.
+exact-source four-group native run, all retained manifests and a passing aggregate.
 Relocated March/settings process prefixes and the runtime budget have not been
-accepted by local Python/Groovy fixture tests. Native/Loom execution is not part of
-this local validation.
+accepted by Python/Groovy protocol tests. Native execution is a separate required
+check. GitHub Actions remains disabled; run both kinds of checks on the VPS.
 
-## Offline regression checks
+## VPS protocol regression checks
 
 Run `python -m unittest discover -s tools -p 'test_*ci*.py' -v`.
 `test_client_shard_plan_ci.py` covers plan schema/identity/membership/order/blocks,

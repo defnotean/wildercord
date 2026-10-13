@@ -76,7 +76,7 @@ public final class HighlandContent {
 			}
 		});
 		var feature=ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("windreed_patch"));
-		BiomeModifications.addFeature(BiomeSelectors.includeByKey(Set.of(net.minecraft.world.level.biome.Biomes.MEADOW,net.minecraft.world.level.biome.Biomes.WINDSWEPT_HILLS,net.minecraft.world.level.biome.Biomes.WINDSWEPT_FOREST,net.minecraft.world.level.biome.Biomes.WINDSWEPT_GRAVELLY_HILLS)),GenerationStep.Decoration.VEGETAL_DECORATION,feature);
+		BiomeModifications.addFeature(BiomeSelectors.includeByKey(Set.of(net.minecraft.world.level.biome.Biomes.MEADOW,net.minecraft.world.level.biome.Biomes.WINDSWEPT_HILLS,net.minecraft.world.level.biome.Biomes.WINDSWEPT_FOREST,net.minecraft.world.level.biome.Biomes.WINDSWEPT_GRAVELLY_HILLS,dev.wildercord.world.biome.WindscarClimate.WINDSCAR)),GenerationStep.Decoration.VEGETAL_DECORATION,feature);
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(WINDREED,DRAFT_KITE,WINDREED_BRAID).forEach(o::accept));
 		WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {
 			if(!(caster instanceof ServerPlayer p) || !(caster.level() instanceof ServerLevel l) || !Casters.mayBuild(p))return;

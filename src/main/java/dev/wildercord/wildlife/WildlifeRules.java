@@ -41,7 +41,7 @@ public final class WildlifeRules {
 	public static final Kind CINDERFOX = new Kind("cinderfox", Pool.CREATURE, 6, 1, 3, 1.0, 5, 48, List.of(
 		"minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands"));
 	public static final Kind SKYRAY = new Kind("skyray", Pool.AMBIENT, 3, 1, 1, 1 / 800.0, 1, 112, List.of(
-		"minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_forest", "minecraft:meadow",
+		"wildercord:windscar_highlands", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_forest", "minecraft:meadow",
 		"minecraft:jagged_peaks", "minecraft:stony_peaks", "minecraft:snowy_slopes"));
 	public static final Kind RIMEHARE = new Kind("rimehare", Pool.CREATURE, 6, 2, 3, 1.0, 6, 48, List.of(
 		"minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:ice_spikes", "minecraft:snowy_slopes", "minecraft:grove"));
@@ -96,7 +96,7 @@ public final class WildlifeRules {
 	public static final Kind MIREBATH_CAPYBARA = new Kind("mirebath_capybara", Pool.CREATURE, 6, 2, 4, 1 / 2.0, 6, 48, List.of(
 		"minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle"));
 	public static final Kind TUSSOCK_PIKA = new Kind("tussock_pika", Pool.CREATURE, 10, 1, 3, 1 / 2.0, 6, 48, List.of(
-		"minecraft:meadow", "minecraft:stony_peaks", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills"));
+		"minecraft:meadow", "minecraft:stony_peaks", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "wildercord:windscar_highlands"));
 	public static final Kind FLOE_PENGUIN = new Kind("floe_penguin", Pool.CREATURE, 10, 2, 5, 1 / 2.0, 6, 48, List.of(
 		"minecraft:snowy_beach", "minecraft:frozen_ocean", "minecraft:deep_frozen_ocean", "minecraft:ice_spikes", "minecraft:snowy_plains",
 		"minecraft:frozen_river"));

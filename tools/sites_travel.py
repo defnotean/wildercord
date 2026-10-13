@@ -119,7 +119,10 @@ def write(g):
         g.write_json(g.DATA / f"worldgen/structure_set/{site}.json", {
             "placement": {"type": "minecraft:random_spread", "salt": SALT + n, "spacing": spacing, "separation": separation},
             "structures": [{"structure": f"wildercord:{site}", "weight": 1}]})
-        g.write_json(g.DATA / f"tags/worldgen/biome/has_structure/{site}.json", {"replace": False, "values": [f"minecraft:{b}" for b in biomes]})
+        values = [f"minecraft:{b}" for b in biomes]
+        if site in ("travel_watchtower", "travel_standing_stones"):
+            values.append("wildercord:windscar_highlands")
+        g.write_json(g.DATA / f"tags/worldgen/biome/has_structure/{site}.json", {"replace": False, "values": values})
         pools = [{"rolls": {"type": "minecraft:uniform", "min": 1, "max": 2}, "entries": _runes(g, site)},
                  {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 4}, "entries": [g.item_entry(*goods) for goods in GOODS[site]]}]
         if site == "travel_cartographer_hut":

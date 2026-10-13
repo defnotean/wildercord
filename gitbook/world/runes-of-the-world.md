@@ -72,11 +72,11 @@ Each land gives you its rune **once per in-game day** (20 minutes of play). Slee
 | **Deep Dark** | Within about **4 blocks of sculk** (any sculk block: sculk, veins, sensors, shriekers or catalysts) | [Hush](../runes/world.md#hush) | II |
 | **Mushroom Fields** | Any time | [Sporebloom](../runes/world.md#sporebloom) | II |
 | **Badlands** (plain, eroded or wooded) | **Around noon** (from mid-morning to mid-afternoon on the day clock), under open sky | [Sunscorch](../runes/world.md#sunscorch) | III |
-| **Swamp** | While **rain is falling on you** | [Mire](../runes/world.md#mire) | II |
+| **Swamp** or **Luminous Reedlands** | While **rain is falling on you** | [Mire](../runes/world.md#mire) | II |
 | **Lush Caves** | Any time | [Glowvine](../runes/world.md#glowvine) | I |
 | **Mangrove Swamp** | Any time | [Rootsnare](../runes/world.md#rootsnare) | II |
 | **Dripstone Caves** | Any time | [Stalactite](../runes/world.md#stalactite) | II |
-| **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, or **Windswept Hills / Gravelly Hills / Forests** | Standing at **height 200** or higher | [Summit Wind](../runes/world.md#summit_wind) | III |
+| **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, **Windswept Hills / Gravelly Hills / Forests**, or **Windscar Highlands** | Standing at **height 200** or higher | [Summit Wind](../runes/world.md#summit_wind) | III |
 | **Soul Sand Valley** | Any time | [Soulfire](../runes/world.md#soulfire) | III |
 | **Warped Forest** | Any time | [Warp Step](../runes/world.md#warp_step) | II |
 | **Crimson Forest** | Any time | [Blood Moss](../runes/world.md#blood_moss) | II |
@@ -84,6 +84,10 @@ Each land gives you its rune **once per in-game day** (20 minutes of play). Slee
 | **The End's outer islands** (highlands, midlands, small islands and barrens) | Any time | [Starlight Tether](../runes/world.md#starlight_tether) | III |
 
 Craft Blank Runes from 4 Cobblestone around 1 Lapis Lazuli. One craft makes 4. See [Items and Crafting](../items/index.md).
+
+Reedlands share the swamp's daily attunement rest, and Windscar shares the peaks'
+rest. Walking across a biome border does not give a second rune before that rest
+ends. Rain and altitude requirements still apply in the regional biomes.
 
 ### Dungeons and bosses
 

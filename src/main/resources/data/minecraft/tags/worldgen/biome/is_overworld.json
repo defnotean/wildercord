@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "wildercord:luminous_reedlands"
+    "wildercord:luminous_reedlands",
+    "wildercord:windscar_highlands"
   ]
 }

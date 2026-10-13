@@ -24,7 +24,8 @@ Slowing and holding spells still work on them. Save damage spells for when they'
 ![Stonehorn's curved horns, rock shoulders and cloven feet in game]({{ '/assets/images/stonehorn-grazer.png' | relative_url }})
 
 **Where:** dry, open ground in meadows, windswept hills, windswept gravelly hills and stony peaks, at least twelve blocks above
-sea level.
+sea level. The [Windscar Highlands]({{ '/world/windscar-highlands/' | relative_url }})
+also provide this open highland habitat.
 
 **Danger:** walk within four blocks without sneaking or holding wheat and it gets territorial. It **stamps for two seconds**,
 then charges straight ahead. **Step sideways.** After a charge it recovers for a while, longer if it hit a wall.
@@ -39,7 +40,7 @@ cooldown.
 ![Galeclaw's hooked beak, banded feathers and talons in game]({{ '/assets/images/galeclaw-ridge-runner.png' | relative_url }})
 
 **Where:** windswept hills and forests, jagged and frozen peaks, snowy slopes and groves. It hunts Rimehares and scavenges
-dropped raw rabbit or chicken. Casting spells within eighteen blocks draws its attention.
+dropped raw rabbit or chicken. It also inhabits the Windscar Highlands. Casting spells within eighteen blocks draws its attention.
 
 **Danger:** it **crouches for two seconds** and marks its landing spot in stone dust. **Get out of the marked area** before it
 leaps. The landing doesn't follow you. After landing it has an exposed recovery.
@@ -54,7 +55,7 @@ seconds. Reusable, ten-second cooldown. It can't stop a leap that's already comi
 
 ![Three Windreed growth stages on a controlled field platform]({{ '/assets/images/highland-windreed-stages.png' | relative_url }})
 
-Small patches grow in **meadows and windswept hills, forests and gravelly hills**. Use a mature plant to gather **two
+Small patches grow in **meadows, Windscar Highlands and windswept hills, forests and gravelly hills**. Use a mature plant to gather **two
 tassels**; the roots regrow. Plant a tassel on dirt or grass. It doesn't spread by itself.
 
 Stonehorns and adult Rimehares graze mature plants back a stage (not with `mob_griefing` off). Life magic on a patch grows it

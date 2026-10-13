@@ -18,6 +18,10 @@ Entering the region adds a permanent field note to the **Places** tab of your
 [lore journal](../progression/lore-journal.md). Returning does
 not duplicate it. You can explore the region at any Heart Circle or Aura stage.
 
+Reedlands retain the swamp's **Mire** attunement. Meditate with a Blank Rune while
+rain falls on you to learn it. The ordinary ritual and daily rest apply, including
+a shared rest with other swamps; crossing the regional border does not reset it.
+
 ## A living bank
 
 | Look for | What to do |

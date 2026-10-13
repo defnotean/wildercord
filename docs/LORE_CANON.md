@@ -128,6 +128,10 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
   - *The Last Shelter*: the keeper held the garden door. Teaches Bind.
   - *The Returned Step*: the scout and the paired cairns. Teaches Echo.
   - The Marchkeepers ended as an army and began again as guides.
+  - Their Windscar saying remembers roads that survive only while people tend them.
+    The region's field note ties leaving Windreed roots to leaving a route usable
+    for the next traveller (`tools/regional_biomes.py`). This is a local saying,
+    not a claim that wind or mountains have a will of their own.
 - **The Sword Tomb**
   - The Buried Keeper wears a blindfold and guards a promise.
   - The Keeper's Testament says the old masters left openings on purpose. This is the root of the earned counters.

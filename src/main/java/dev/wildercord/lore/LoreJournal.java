@@ -181,6 +181,10 @@ public final class LoreJournal {
 			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)) {
 			record(player, dev.wildercord.world.biome.ReedlandClimate.JOURNAL_ENTRY, true);
 		}
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.WindscarClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.WindscarClimate.WINDSCAR)) {
+			record(player, dev.wildercord.world.biome.WindscarClimate.JOURNAL_ENTRY, true);
+		}
 		LoreJournalData before = data(player);
 		LoreJournalData data = before;
 		List<String> grimoire = Heart.grimoire(player);

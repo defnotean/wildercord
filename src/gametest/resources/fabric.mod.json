@@ -348,7 +348,8 @@
       "dev.wildercord.world.sites.WildsSitesTest",
       "dev.wildercord.world.sites.TravelSitesClientTest",
       "dev.wildercord.world.sites.WaterSitesGameTest",
-      "dev.wildercord.world.sites.MineSitesClientTest"
+      "dev.wildercord.world.sites.MineSitesClientTest",
+      "dev.wildercord.world.biome.WindscarBiomeTest"
     ]
   },
   "mixins": [

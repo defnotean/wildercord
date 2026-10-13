@@ -1006,3 +1006,45 @@ bell, tells, evasions, phase change, abandonment, chunk replay, authentic reward
 and reopen checks remain. After its actual victory, the test hears all four
 original stories first, then the new thanks; repeating that conversation awards
 no additional XP or compass, and the heard response survives another reopen.
+
+### BIO-02: Windscar regional integration drafted
+
+The dry end (humidity at or below -0.25) of ordinary windswept-hill entries now
+becomes `wildercord:windscar_highlands`. Other climate coordinates and other
+biome entries remain intact. Surface rules inherit the parent's highland stone;
+the authored biome retains vanilla feature ordering, ore distribution and sparse
+trees, with a distinct landscape palette. Existing Windreed, Stonehorn, Galeclaw,
+Tussock Pika and Skyray systems include it at their original rates and limits.
+Watchtowers, standing stones and Wind Gate biome tags also include it.
+
+The owner receives a persistent regional field note through the ordinary journal
+poll. Windscar keeps the existing peaks' Summit Wind ritual (height at least 200)
+and rest identity. Reedlands now also retains the swamp's rain-only Mire ritual;
+neither region creates an extra daily attunement allowance. The new guide and
+canon note connect the region to Marchkeeper roadkeeping without adding a new
+named deity or pretending the proposed Cartographer already exists.
+
+Authoring checks ran on `WIN-I2GBVRRD872` in the separate
+`C:\wildercord-ci\windscar-authoring` checkout, leaving the running native
+checkout at `76a1f823`. Seventeen plan checks, sixteen full-protocol checks
+(including actual Groovy parity), twenty-eight client-protocol checks and fifteen
+Masters-protocol checks pass: **76**, no skips. The full asset generator completed,
+and **192** guide pages validate/export. Logs are retained under
+`artifacts/review/windscar-authoring`. A stale full-selection hash in one protocol
+test was updated for the deliberately expanded roster before its passing rerun.
+
+Four new climate tests cover continuous quantized distances, unchanged terrain
+coordinates, unchanged other biomes, real vanilla humidity bands, idempotence
+and composition with Reedlands. A fifth test covers regional attunement conditions
+and the shared rest keys. The new `WindscarBiomeTest` declares a fixed 8,192-block
+noise search and 81-chunk census before measurement, plus a real Survival harvest,
+no repeat yield, spectator refusal, owner sync and save/reopen. It is appended
+to group 4; the frozen v4 plan proves the original 343 classes keep their exact
+membership/order. Current plan v5 is **86 / 86 / 87 / 85**.
+
+**Pending:** candidate build/JUnit/native compilation, exact generator parity,
+the new real terrain test, Reedlands regression and actual screenshot inspection.
+This is source implementation with VPS authoring evidence, not native acceptance.
+Natural animal densities, structure frequency, multiple seeds, safe traversal,
+the Cairn Lodge, Cartographer encounter and a dedicated regional investigation
+remain open BIO-02/BLD-03/BOSS work.

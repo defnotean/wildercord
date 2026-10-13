@@ -9,7 +9,7 @@ SITES = {
     'master_forge_dojo': (('ember', 'crimson'), 'Forge Dojo', 'Find a Master dojo in the badlands', 'minecraft:campfire',
         ['minecraft:badlands', 'minecraft:wooded_badlands', 'minecraft:eroded_badlands'], 44, 16, 'surface_structures', 'beard_thin'),
     'master_wind_gate': (('gale', 'thunder'), 'Wind Gate', 'Find the Master gate on the windswept heights', 'minecraft:lightning_rod',
-        ['minecraft:windswept_hills', 'minecraft:windswept_forest', 'minecraft:windswept_savanna', 'minecraft:savanna_plateau'], 46, 16, 'surface_structures', 'beard_thin'),
+        ['minecraft:windswept_hills', 'minecraft:windswept_forest', 'minecraft:windswept_savanna', 'minecraft:savanna_plateau', 'wildercord:windscar_highlands'], 46, 16, 'surface_structures', 'beard_thin'),
     'master_quarry_hall': (('stone', 'iron'), 'Quarry Hall', 'Find a Master hall among the stony hills', 'minecraft:stonecutter',
         ['minecraft:windswept_gravelly_hills', 'minecraft:stony_peaks', 'minecraft:meadow'], 46, 16, 'surface_structures', 'beard_thin'),
     'master_waterfall_shrine': (('rime', 'tide'), 'Waterfall Shrine', 'Find the frozen fall of a Master shrine', 'minecraft:blue_ice',

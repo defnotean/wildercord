@@ -178,6 +178,21 @@ class WorldRunesTest {
 	}
 
 	@Test
+	void regionalVariantsKeepTheirParentsConditionsAndSharedDailyRestKeys() {
+		var wet = place("wildercord:luminous_reedlands", 6000, 3, "rain", true, false, 63);
+		assertEquals(MIRE, attuned(wet));
+		assertEquals("swamp", Attunements.match(wet).orElseThrow().id(), "Crossing a regional border cannot create a second daily reward");
+		assertNull(attuned(place("wildercord:luminous_reedlands", 6000, 3, "none", true, false, 63)));
+		assertNull(attuned(place("wildercord:luminous_reedlands", 6000, 3, "snow", true, false, 63)));
+		var summit = place("wildercord:windscar_highlands", 6000, 3, "none", true, false, 200);
+		assertEquals(SUMMIT_WIND, attuned(summit));
+		assertEquals("peaks", Attunements.match(summit).orElseThrow().id());
+		assertNull(attuned(place("wildercord:windscar_highlands", 6000, 3, "none", true, false, 199)));
+		assertTrue(Attunements.biomeHolds("wildercord:luminous_reedlands"));
+		assertTrue(Attunements.biomeHolds("wildercord:windscar_highlands"));
+	}
+
+	@Test
 	void someLandsAlwaysHoldTheirRune() {
 		assertEquals(SPOREBLOOM, attuned(place("minecraft:mushroom_fields")));
 		assertEquals(GLOWVINE, attuned(place("minecraft:lush_caves", 18000, 0, "none", false, false, 20)));

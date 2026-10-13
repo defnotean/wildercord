@@ -25,7 +25,7 @@ The lectern says the same thing in every hall. First reach Aura Form or Heart Ci
 | Site | Schools | Where to look | Trial |
 |---|---|---|---|
 | Forge Dojo | [Ember]({{ '/masters/ember/' | relative_url }}) or [Crimson]({{ '/masters/crimson/' | relative_url }}) | Badlands (all kinds) | A brick hall with a smoking chimney. The vault at the back is sealed. Strike the seal with the school's element. |
-| Wind Gate | [Gale]({{ '/masters/gale/' | relative_url }}) or [Thunder]({{ '/masters/thunder/' | relative_url }}) | Windswept hills, forests and savannas, savanna plateaus | Two tall pillars joined by a beam. Climb the posts one by one to the chest on top. |
+| Wind Gate | [Gale]({{ '/masters/gale/' | relative_url }}) or [Thunder]({{ '/masters/thunder/' | relative_url }}) | Windscar Highlands, windswept hills, forests and savannas, savanna plateaus | Two tall pillars joined by a beam. Climb the posts one by one to the chest on top. |
 | Quarry Hall | [Stone]({{ '/masters/stone/' | relative_url }}) or [Iron]({{ '/masters/iron/' | relative_url }}) | Windswept gravelly hills, stony peaks, meadows | A stone hall with a sparring pit. Beat the Runebound guard (a vindicator or a husk, depending on the school); the chest is in the pit. |
 | Waterfall Shrine | [Rime]({{ '/masters/rime/' | relative_url }}) or [Tide]({{ '/masters/tide/' | relative_url }}) | Snowy plains, snowy taiga, groves, snowy slopes, ice spikes | A frozen waterfall over a pool. Hop the ledges up to the alcove in the cliff. If you fall, you land in the water. |
 | Root Temple | [Verdant]({{ '/masters/verdant/' | relative_url }}) or [Venom]({{ '/masters/venom/' | relative_url }}) | Jungles and dark forests | A stepped, root-wrapped temple. Beat the Runebound bogged in the root pit. |

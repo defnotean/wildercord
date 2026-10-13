@@ -11,6 +11,10 @@ The [Luminous Reedlands](luminous-reedlands.md) are a new
 Overworld region: pale swamp banks, blue-green pools, Moonreed colonies and wetland
 wildlife, with a field note to discover in your lore journal.
 
+The [Windscar Highlands](windscar-highlands.md) connect
+dry stone ridges, Windreed patches and highland wildlife with watchtowers, standing
+stones and the Wind Gate. Their field note recalls the Marchkeepers' old routes.
+
 ## Where to go, roughly in order
 
 You can do most of these in any order. Early rows need only a Twine Cord and a few runes. Later rows want a strong

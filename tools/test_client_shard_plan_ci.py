@@ -22,7 +22,16 @@ class ExplicitPlanTests(unittest.TestCase):
         addition = "dev.wildercord.world.sites.water.FerrymanEncounterTest"
         self.assertEqual(self.entries.count(addition), 1)
         for current, old in zip(self.plan["groups"], previous["groups"]):
-            self.assertEqual([e for e in current["entries"] if e != addition], old["entries"])
+            self.assertEqual([e for e in current["entries"] if e not in (addition, "dev.wildercord.world.biome.WindscarBiomeTest")], old["entries"])
+
+    def test_windscar_addition_preserves_the_entire_343_class_plan(self):
+        previous = plan.read_json(suites.ROOT / "tools/tests/full-client-plan-v4-343.json")
+        self.assertEqual(plan.digest(previous), "c352d1d9e27cf30927698bf026eb3fbb9d7f5bfe3351bb258254afe88b2a01a9")
+        addition = "dev.wildercord.world.biome.WindscarBiomeTest"
+        self.assertEqual(self.entries.count(addition), 1)
+        self.assertEqual(self.plan["groups"][3]["entries"].count(addition), 1)
+        for current, old in zip(self.plan["groups"], previous["groups"]):
+            self.assertEqual([entry for entry in current["entries"] if entry != addition], old["entries"])
 
     def setUp(self):
         self.entries = plan.read_json(suites.DESCRIPTOR)["entrypoints"]["fabric-client-gametest"]
@@ -35,13 +44,13 @@ class ExplicitPlanTests(unittest.TestCase):
             plan.validate_plan(self.entries, changed)
 
     def test_exact_reviewed_groups_and_independently_pinned_identity(self):
-        self.assertEqual(plan.digest(self.plan), "c352d1d9e27cf30927698bf026eb3fbb9d7f5bfe3351bb258254afe88b2a01a9")
-        self.assertEqual(plan.digest(self.entries), "44e1ffc0c1822443ebb9fc89fc1d9fe6a8b1c278a37c78d8e72fbc56f7c1d2fa")
+        self.assertEqual(plan.digest(self.plan), "b368fe963d03670abb48ad692b12c1eed82dba1a68289e95d1c5c93e97b105dc")
+        self.assertEqual(plan.digest(self.entries), "126d2d719d34c460c09c28df08755f6c93d644f59d6322e74e6ccee4c2989cd8")
         self.assertEqual([plan.digest(group["entries"]) for group in self.plan["groups"]], [
             "2271c4d3db8124db7897651d1742ad1cf0c581ef79e76c07df28584121c7b226",
             "43a7468679c26e787c54c1c8158d263cdb5bd78265547bc75bc30d6823a79a29",
             "db7bbbbb5bc7948cf411270116731b8437e416dd0d70ae152e0c3c373020f306",
-            "f5f487f50798fee8cdf3a0c3a5c625a7f766b76fd57f8e4b23654c63d60fc1a2"])
+            "b4b34d55ba4df6ea29f629fee22434471c062ebba82d061706909b85471f757a"])
         full = suites.select_entries()
         for shard, group in zip(gate.SHARDS, self.plan["groups"]):
             selected = suites.select_entries(shard=shard)
