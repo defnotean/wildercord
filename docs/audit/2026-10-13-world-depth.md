@@ -2,7 +2,12 @@
 
 Started 2026-10-13 at `0a18358929180f1c4bc5cc4b827f7f92f05571c4` (Minecraft 26.3, Fabric, Java 25).
 Requested outcome: a detailed magical adventure with polished combat, bosses, buildings, NPCs,
-custom biomes, legends and connected lore. Work continues on `defnotean/world-depth-audit`.
+custom biomes, legends and connected lore. Work is saved on `defnotean/world-depth-audit`.
+
+**Current status: paused at the owner's request, 2026-10-13 19:53 UTC.** Both the
+development goal and heartbeat are paused. The owned native run was intentionally
+interrupted and its evidence retained. Read [the agent handoff](../AGENT_HANDOFF.md)
+before resuming; early entries below describe historical states and results.
 
 ## Audit scope and evidence
 

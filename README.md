@@ -15,6 +15,11 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 
 [VPS testing and evidence](docs/testing/vps.md) · [Current development audit](docs/audit/2026-10-13-world-depth.md)
 
+**For agents and contributors:** read [AGENTS.md](AGENTS.md) and the
+[development handoff](docs/AGENT_HANDOFF.md) before continuing. Development and
+scheduled continuation are paused at the owner's request; the handoff records
+the latest candidate, unfinished verification and exact resumption steps.
+
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
 <img src="docs/images/cord-screen.png" alt="The Cord screen: four spells threaded with runes, the searchable Codex below, and the spell explained in plain English" width="640">
