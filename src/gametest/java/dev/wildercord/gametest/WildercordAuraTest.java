@@ -815,6 +815,10 @@ public class WildercordAuraTest implements FabricClientGameTest {
 			player.setDeltaMovement(Vec3.ZERO);
 			setAura(player, "ember", AuraRules.GLOW, 4, AuraRules.threshold(AuraRules.FLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+			// Earlier spell probes can ready the first Heart Circle. Its innate-awakening screen
+			// releases crouch midway through this separate, uninterrupted Aura trial.
+			player.setAttached(WildercordAttachments.CONDENSED, 0);
+			check(!Heart.ready(player), "The stillness fixture has no concurrent Heart Circle to open a screen");
 			return null;
 		});
 		context.waitTicks(20);
@@ -833,10 +837,14 @@ public class WildercordAuraTest implements FabricClientGameTest {
 		}
 		context.waitTicks(4);
 		shot(context, "aura_breakthrough");
+		String stillnessState = on(world, player -> " [data=" + Aura.data(player) + ", state=" + Aura.state(player)
+			+ ", crouching=" + player.isShiftKeyDown() + ", onGround=" + player.onGround()
+			+ ", weapon=" + Aura.holdsWeapon(player) + ", position=" + player.position()
+			+ ", power=" + dev.wildercord.cast.PowerPlaces.isPlaceOfPower(player.level(), player.blockPosition()) + "]");
 		world.getServer().runCommand("time set 3000");
 		context.getInput().releaseKey(o -> o.keyShift);
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
-		check(stage == AuraRules.FLOW, "half a minute of stillness at a ley crossing should break through to Flow (stage " + stage + ")");
+		check(stage == AuraRules.FLOW, "half a minute of stillness at a ley crossing should break through to Flow (stage " + stage + ")" + stillnessState);
 		boolean noted = on(world, player -> Heart.grimoire(player).contains("aura:flow"));
 		check(noted, "the breakthrough should go into the Grimoire");
 		world.getServer().runCommand("forceload remove all");

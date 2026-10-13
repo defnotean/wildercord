@@ -86,12 +86,12 @@ public final class WildercordHeartCirclesTest implements FabricClientGameTest {
 				check(Heart.circles(player) == 20 && Spellbooks.mana(player) == 7, "Repeated formation at the cap gives no free refill");
 				roundTrip(player, 20, Circles.condenseNeeded(20));
 				check(Mana.of(player).circles() == 20, "Mana includes all twenty circles");
-				check(Math.abs(Heart.bonuses(player).power() - 1.6) < 1e-6, "Twenty circles add sixty percent spell power");
+				check(Math.abs(Heart.bonuses(player).power() - (1 + 20 * Circles.POWER_PER_CIRCLE)) < 1e-6, "Twenty working circles grant their current spell power");
 				check(Math.abs(Innates.scale(player) - 2.2) < 1e-6, "Innate scaling continues through twenty");
 				int full = Mana.max(player);
 				player.setAttached(WildercordAttachments.CRACKS, new WildercordAttachments.Cracks(1, player.level().getGameTime() + 3600));
 				check(Heart.active(player) == 19 && Mana.max(player) == full - 15, "Cracked outer circle loses its mana bonus");
-				check(Math.abs(Heart.bonuses(player).power() - 1.57) < 1e-6, "Cracked outer circle loses its spell power");
+				check(Math.abs(Heart.bonuses(player).power() - (1 + 19 * Circles.POWER_PER_CIRCLE)) < 1e-6, "Cracked outer circle loses its spell power");
 				player.setAttached(WildercordAttachments.CRACKS, new WildercordAttachments.Cracks(13, player.level().getGameTime() + 3600));
 				check(Heart.active(player) == 7 && Heart.bonuses(player).cost() == 1.0, "Archmage still needs eight working circles");
 				player.setAttached(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE);
@@ -119,7 +119,7 @@ public final class WildercordHeartCirclesTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				check(Heart.circles(mc.player) == 20, "The owner receives the twentieth circle");
 				check(Heart.condensed(mc.player) == Circles.condenseNeeded(20), "The owner receives lifetime mana");
-				check(Math.abs(Heart.bonuses(mc.player).power() - 1.6) < 1e-6, "Client and server bonuses agree");
+				check(Math.abs(Heart.bonuses(mc.player).power() - (1 + 20 * Circles.POWER_PER_CIRCLE)) < 1e-6, "Client and server bonuses agree");
 				mc.getWindow().setWindowed(1920, 1080);
 				mc.options.guiScale().set(2);
 				mc.resizeGui();
@@ -169,10 +169,14 @@ public final class WildercordHeartCirclesTest implements FabricClientGameTest {
 		int[] pos = new int[2];
 		context.runOnClient(mc -> {
 			int scale = (int) mc.getWindow().getGuiScale();
-			int left = (mc.getWindow().getGuiScaledWidth() - 372) / 2;
-			int top = (mc.getWindow().getGuiScaledHeight() - 292) / 2;
-			pos[0] = (left + 372 - 27 - 36 + 7) * scale;
-			pos[1] = (top + 14) * scale;
+			CordScreen screen = (CordScreen) mc.gui.screen();
+			check(screen.heartLines().stream().anyMatch(line -> line.contains("+" + Circles.powerPercent(Heart.active(mc.player)) + "% spell power")),
+				"The translated Heart tooltip preserves the exact active-circle power");
+			check(screen.heartLines().stream().anyMatch(line -> line.contains("15% harder")), "The translated Overflow tooltip matches its current bonus");
+			double[] badge = screen.heartPoint();
+			pos[0] = (int) (badge[0] * scale);
+			pos[1] = (int) (badge[1] * scale);
+			mc.gui.hud.getChat().clearMessages(false);
 		});
 		context.getInput().setCursorPos(pos[0], pos[1]);
 		context.waitTicks(3);

@@ -310,3 +310,41 @@ rerun also passed in 7m 39s, including all 40 scenarios, the eight-player trial 
 admission priority after real breathing replenished its spent Aura. Its gameplay
 repair and the remaining trial/receipt fixtures are still being reviewed for a
 separate checkpoint. The full CI matrix remains incomplete and is not green.
+
+### Heart progression and stillness checkpoint
+
+- `WildercordHeartCirclesTest` passed in 41 seconds after its fixtures were aligned
+  with the existing 1.5% per-circle power and lasting player Resistance cap. Its
+  Mana Skin probes separately verify the short dodge exception and capped lasting
+  Resistance, including actual health lost and mana paid. The suite retains all
+  twenty circles, cracked circles, owner sync and serialized save/load checks.
+  The native UI check reads the translated tooltip and locates its responsive badge;
+  inspected captures show 28.5% at nineteen circles, 30% at twenty and 15% Overflow.
+- `WildercordAuraTest` passed in 2m 4s. The prior stillness failure was a fixture
+  interaction: earlier spell probes had readied a Heart Circle; it formed during
+  the crouch, then the innate-awakening screen released the key. The isolated Aura
+  stillness scenario now starts without condensed mana for that unrelated circle.
+  Its full crouch duration, actual place of power and earned Flow remain required.
+- Player-facing drift was also present: circle chat rounded 1.5% to 2%, the guide's
+  table doubled every power bonus, and Overflow text promised 30% instead of its
+  existing 15%. The shared readout now preserves fractional values. Both guide
+  tables and the two Overflow language entries are checked against the Java values.
+- Full local build and native-source compilation pass. The unit suite passes with
+  2,713 tests, including three local climate-partition tests for the unregistered
+  Reedlands foundation. Asset parity retains all 8,987 paths and guide validation
+  retains all 189 pages. Reedlands registration and natural terrain proof remain
+  work in progress; it is not yet an available biome at this checkpoint.
+
+The long Master trial rerun passed the returned-bolt, abandonment, lifecycle, Ember,
+pursuit and Gale Reprise sections, then found a Stone Fracture fixture using magic
+as a substitute for a physical hit. Magic immunity correctly rejected that probe.
+Its isolated receipt now uses player-attack damage with evasion spent and temporary
+knockback resistance; the separate normal-knockback case keeps the real resistance.
+The complete trial rerun is still required before claiming the suite passes.
+
+CI run `38407882192` completed with failures. Its first shard passed Watchweft's
+paid/save scenario with the attachment diagnostic loaded, then exhausted its
+approximately 4 GiB Java heap during chunk serialization in `LifeOutcomeEdgesTest`
+after roughly forty minutes. No off-thread attachment writer was reported. This
+does not resolve the intermittent attachment save race; the memory failure is a
+separate open investigation, and increasing the heap alone is not a demonstrated fix.

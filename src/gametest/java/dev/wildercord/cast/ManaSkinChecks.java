@@ -168,7 +168,14 @@ public final class ManaSkinChecks {
 		probe(level, "old wound", p -> p.setHealth(10), 5, 6, 98);
 		probe(level, "full absorption with old wound", p -> {p.setHealth(10); p.setAbsorptionAmount(8);}, 5, 10, 100);
 		probe(level, "partial absorption", p -> p.setAbsorptionAmount(3), 5, 18.4F, 99.2F);
-		probe(level, "resistance", p -> p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 100, 4)), 5, 20, 100);
+		probe(level, "short dodge resistance", p -> {
+			p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, DefenceCaps.DODGE_TICKS, 4));
+			check(p.getEffect(MobEffects.RESISTANCE).getAmplifier() == 4, "The zero-wound probe has the real short-dodge exception");
+		}, 5, 20, 100);
+		probe(level, "lasting resistance cap", p -> {
+			p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 100, 4));
+			check(p.getEffect(MobEffects.RESISTANCE).getAmplifier() == DefenceCaps.RESISTANCE_CAP, "A lasting grant obeys the player's defence cap");
+		}, 5, 17.6F, 98.8F);
 		probe(level, "limited mana", p -> Spellbooks.setMana(p, 1), 5, 15.5F, 0);
 		probe(level, "minimum mana", p -> Spellbooks.setMana(p, .5F), 5, 15.25F, 0);
 		probe(level, "below minimum mana", p -> Spellbooks.setMana(p, .49F), 5, 15, .49F);

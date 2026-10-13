@@ -62,9 +62,9 @@ Everything below multiplies together.
 
 | Source | Bonus |
 |---|---|
-| Each working Heart Circle | +3% (up to +60% at twenty) |
+| Each working Heart Circle | +1.5% (up to +30% at twenty) |
 | Potency on your Cord | +8% per level (up to +24%) |
-| Overflow (7th Circle), casting at full mana | +30% |
+| Overflow (7th Circle), casting at full mana | +15% |
 | [Circle Vows](circle-vows.md) | Keen Edge +6%, Overcharge +10% (Austerity -3%), Crown of Power +10% |
 | Your affinity with the effect's element | +3% per level (up to +15%) |
 | Charging a cast | up to +40% (see [Casting](../spellcraft/casting.md)) |
