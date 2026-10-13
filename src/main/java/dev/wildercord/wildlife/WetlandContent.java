@@ -44,7 +44,7 @@ public final class WetlandContent {
 			return l.getFluidState(p).is(FluidTags.WATER) && l.getFluidState(p.above()).isEmpty() && l.getBlockState(p.below()).isSolidRender()
 				&& l.canSeeSky(p.above()) && WetlandQueries.populationRoom(l.getLevel(),LanternNewt.class,new AABB(p).inflate(24),3);
 		});
-		BiomeModifications.create(Wildercord.id("wetland_newts")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP)),c -> {
+		BiomeModifications.create(Wildercord.id("wetland_newts")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP,dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)),c -> {
 			var settings=Config.get().wildlife();if(settings.spawns("lantern_newt"))c.getMobSpawnSettings().addSpawn(MobCategory.CREATURE,new MobSpawnSettings.SpawnerData(NEWT,net.minecraft.util.valueproviders.UniformInt.of(1,2)),Math.max(1,(int)(5*Math.max(1,settings.spawnMultiplier()))));
 		});
 		FieldGuide.add(new FieldGuide.Entry("wildercord:lantern_newt",FieldGuide.Group.WILDLIFE,0xAAD5AE));

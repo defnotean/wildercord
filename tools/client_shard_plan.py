@@ -14,10 +14,10 @@ import sys
 
 PLAN = Path(__file__).resolve().with_name("client_shard_plan.json")
 MAX_CONFIG_BYTES = 128 * 1024
-PLAN_ID = "full-client-explicit-v2-counter-lifetimes"
-PLAN_SHA256 = "d81692710775b8ce351c63ea357e6e56a643b138879962f7d97e6aa1b7fbe460"
-ROSTER_SHA256 = "af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c"
-COUNTS = (86, 86, 85, 84)
+PLAN_ID = "full-client-explicit-v3-reedlands"
+PLAN_SHA256 = "39035ca63ca627b22c5d65ea62cab8dc828775cff77973e9d408be3693665685"
+ROSTER_SHA256 = "604116d6ba419a728fc86b20313af6ce523a0e443a251fc9a2d3aea5a56b6e93"
+COUNTS = (86, 86, 86, 84)
 REQUIRED_PROFILE = {"execution": "complete", "animationGallery": True,
                     "shaders": False, "showcase": False, "firebloodShots": False}
 REQUIRED_BLOCKS = {

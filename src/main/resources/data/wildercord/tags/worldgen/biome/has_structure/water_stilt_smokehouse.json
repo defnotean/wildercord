@@ -1,6 +1,7 @@
 {
   "values": [
     "minecraft:swamp",
-    "minecraft:river"
+    "minecraft:river",
+    "wildercord:luminous_reedlands"
   ]
 }

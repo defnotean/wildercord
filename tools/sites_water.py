@@ -7,7 +7,7 @@ pages of the books left in three of them. The buildings themselves are Java: dev
 
 # id: (biomes, spacing, separation, salt, advancement icon, title, description)
 SITES = {
-    "water_stilt_smokehouse": (["minecraft:swamp", "minecraft:river"], 36, 12, 2026101201,
+    "water_stilt_smokehouse": (["minecraft:swamp", "minecraft:river", "wildercord:luminous_reedlands"], 36, 12, 2026101201,
                                "minecraft:smoker", "Smoke on the Water", "Find a smokehouse on stilts over a swamp or river"),
     "water_lighthouse": (["minecraft:beach", "minecraft:snowy_beach", "minecraft:stony_shore"], 44, 16, 2026101202,
                          "minecraft:redstone_lamp", "Keeper of the Light", "Find a lighthouse on the shore"),

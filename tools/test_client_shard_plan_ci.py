@@ -27,12 +27,12 @@ class ExplicitPlanTests(unittest.TestCase):
             plan.validate_plan(self.entries, changed)
 
     def test_exact_reviewed_groups_and_independently_pinned_identity(self):
-        self.assertEqual(plan.digest(self.plan), "d81692710775b8ce351c63ea357e6e56a643b138879962f7d97e6aa1b7fbe460")
-        self.assertEqual(plan.digest(self.entries), "af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c")
+        self.assertEqual(plan.digest(self.plan), "39035ca63ca627b22c5d65ea62cab8dc828775cff77973e9d408be3693665685")
+        self.assertEqual(plan.digest(self.entries), "604116d6ba419a728fc86b20313af6ce523a0e443a251fc9a2d3aea5a56b6e93")
         self.assertEqual([plan.digest(group["entries"]) for group in self.plan["groups"]], [
             "2271c4d3db8124db7897651d1742ad1cf0c581ef79e76c07df28584121c7b226",
             "43a7468679c26e787c54c1c8158d263cdb5bd78265547bc75bc30d6823a79a29",
-            "5367df0a9a4eb7a7719878c42e3c457ae749fcad80a65d7e561e7cc5ddca3c48",
+            "602d8c6b9a564fb76743f6a6d9ae1ee6c23fb51cb591e350fbe15aa55317069d",
             "f5f487f50798fee8cdf3a0c3a5c625a7f766b76fd57f8e4b23654c63d60fc1a2"])
         full = suites.select_entries()
         for shard, group in zip(gate.SHARDS, self.plan["groups"]):
@@ -169,8 +169,10 @@ class ExplicitPlanTests(unittest.TestCase):
             with self.assertRaises(ValueError): plan.selection(self.entries, plan_path=path)
             path.write_text(raw)
             link = root / "link"; link.symlink_to(path)
-            fifo = root / "fifo"; os.mkfifo(fifo)
-            for bad in (link, fifo, root, root / "missing"):
+            nonregular = [link, root, root / "missing"]
+            if hasattr(os, "mkfifo"):  # Windows has no filesystem FIFO primitive.
+                fifo = root / "fifo"; os.mkfifo(fifo); nonregular.append(fifo)
+            for bad in nonregular:
                 with self.assertRaises((ValueError, OSError)): plan.selection(self.entries, plan_path=bad)
 
     def test_processed_descriptor_rejects_old_arithmetic_and_missing_or_stale_identity(self):
@@ -249,10 +251,12 @@ class ExplicitPlanTests(unittest.TestCase):
             root = Path(temp); path = root / "plan.json"
             path.write_text(json.dumps(self.plan))
             link = root / "link"; link.symlink_to(path)
-            fifo = root / "fifo"; os.mkfifo(fifo)
-            with patch.object(plan.os, "O_NOFOLLOW", None), patch.object(plan.os, "O_NONBLOCK", None):
+            nonregular = [link, root]
+            if hasattr(os, "mkfifo"):
+                fifo = root / "fifo"; os.mkfifo(fifo); nonregular.append(fifo)
+            with patch.object(plan.os, "O_NOFOLLOW", None, create=True), patch.object(plan.os, "O_NONBLOCK", None, create=True):
                 self.assertEqual(plan.selection(self.entries, shard="1/4", plan_path=path)["count"], self.plan["groups"][0]["expectedCount"])
-                for bad in (link, fifo, root):
+                for bad in nonregular:
                     with self.assertRaises(ValueError): plan.selection(self.entries, plan_path=bad)
                 path.write_text(" " * (plan.MAX_CONFIG_BYTES + 1))
                 with self.assertRaises(ValueError): plan.selection(self.entries, plan_path=path)
@@ -266,7 +270,7 @@ class ExplicitPlanTests(unittest.TestCase):
             def replace_before_open(name, flags):
                 path.unlink(); path.symlink_to(other)
                 return original_open(name, flags)
-            with patch.object(plan.os, "O_NOFOLLOW", None), patch.object(plan.os, "O_NONBLOCK", None), \
+            with patch.object(plan.os, "O_NOFOLLOW", None, create=True), patch.object(plan.os, "O_NONBLOCK", None, create=True), \
                     patch.object(plan.os, "open", side_effect=replace_before_open):
                 with self.assertRaisesRegex(ValueError, "path changed before read"):
                     plan.read_json(path)
@@ -279,7 +283,7 @@ class ExplicitPlanTests(unittest.TestCase):
                 if calls == 2:
                     path.unlink(); path.symlink_to(other)
                 return original_lstat(name)
-            with patch.object(plan.os, "O_NOFOLLOW", None), patch.object(plan.os, "O_NONBLOCK", None), \
+            with patch.object(plan.os, "O_NOFOLLOW", None, create=True), patch.object(plan.os, "O_NONBLOCK", None, create=True), \
                     patch.object(plan.os, "lstat", side_effect=replace_after_read):
                 with self.assertRaisesRegex(ValueError, "changed during read"):
                     plan.read_json(path)

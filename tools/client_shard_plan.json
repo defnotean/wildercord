@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "planId": "full-client-explicit-v2-counter-lifetimes",
+  "planId": "full-client-explicit-v3-reedlands",
   "shardCount": 4,
-  "expectedCount": 341,
-  "orderedRosterSha256": "af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c",
+  "expectedCount": 342,
+  "orderedRosterSha256": "604116d6ba419a728fc86b20313af6ce523a0e443a251fc9a2d3aea5a56b6e93",
   "executionProfile": {
     "execution": "complete",
     "animationGallery": true,
@@ -256,7 +256,7 @@
     },
     {
       "id": 3,
-      "expectedCount": 85,
+      "expectedCount": 86,
       "entries": [
         "dev.wildercord.gametest.WildercordPerformanceCastTest",
         "dev.wildercord.gametest.WildercordResonanceTest",
@@ -284,6 +284,7 @@
         "dev.wildercord.wildlife.WetlandPlacementContractTest",
         "dev.wildercord.wildlife.WetlandTerrainAbsenceTest",
         "dev.wildercord.wildlife.WetlandTerrainTest",
+        "dev.wildercord.world.biome.ReedlandBiomeTest",
         "dev.wildercord.wildlife.ReedRefugeTest",
         "dev.wildercord.wildlife.ReedbackCrabTest",
         "dev.wildercord.wildlife.WetlandQueryBoundsTest",

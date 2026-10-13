@@ -53,8 +53,8 @@ public final class WetlandPlacementContractTest implements FabricClientGameTest 
    var steps=biome.value().getGenerationSettings().features();
    long atStage=steps.size()>stage ? steps.get(stage).stream().filter(holder -> holder.is(key)).count() : 0;
    long allStages=steps.stream().flatMap(holders -> holders.stream()).filter(holder -> holder.is(key)).count();
-   long expected=biome.is(Biomes.SWAMP)||biome.is(Biomes.MANGROVE_SWAMP) ? 1 : 0;
-   check(atStage==expected && allStages==expected,"Exactly one stage-9 registration in each swamp/mangrove biome, none in other biomes/stages: "+biome.key());
+   long expected=biome.is(Biomes.SWAMP)||biome.is(Biomes.MANGROVE_SWAMP)||biome.is(dev.wildercord.world.biome.ReedlandClimate.REEDLANDS) ? 1 : 0;
+   check(atStage==expected && allStages==expected,"Exactly one stage-9 registration in each swamp/mangrove/Reedlands biome, none in other biomes/stages: "+biome.key());
   }
   return feature;
  }

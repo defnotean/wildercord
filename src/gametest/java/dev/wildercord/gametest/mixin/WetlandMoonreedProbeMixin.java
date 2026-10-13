@@ -28,7 +28,7 @@ public abstract class WetlandMoonreedProbeMixin {
  }
  @WrapOperation(method="place(Lnet/minecraft/world/level/WorldGenLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Z",at=@At(value="INVOKE",target="Lnet/minecraft/world/level/WorldGenLevel;isEmptyBlock(Lnet/minecraft/core/BlockPos;)Z"),require=1,expect=1,allow=1)
  private boolean wildercord$empty(WorldGenLevel level,BlockPos at,Operation<Boolean> original) {
-  boolean result=original.call(level,at);WetlandGenerationProbe.gate("empty",result);return result;
+  boolean result=original.call(level,at);if(!result)WetlandGenerationProbe.occupied(level,at);WetlandGenerationProbe.gate("empty",result);return result;
  }
  @WrapOperation(method="place(Lnet/minecraft/world/level/WorldGenLevel;Lnet/minecraft/world/level/chunk/ChunkGenerator;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Z",at=@At(value="INVOKE",target="Lnet/minecraft/world/level/block/state/BlockState;canSurvive(Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;)Z"),require=1,expect=1,allow=1)
  private boolean wildercord$supported(BlockState state,LevelReader level,BlockPos at,Operation<Boolean> original) {

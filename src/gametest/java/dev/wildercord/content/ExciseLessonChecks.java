@@ -90,7 +90,7 @@ public final class ExciseLessonChecks {
 				server.runOnServer(s -> check(!MasterStudies.knowsExcise(player(s)) && !Spellbooks.knows(player(s), Runes.EXCISE.id()), "A forged ledger book cannot teach"));
 				context.setScreen(() -> new ExciseLessonScreen(null));
 				context.waitTicks(5);
-				notReading(context, "A forged retrieval without Heartwood cannot open a study");
+				refused(context, "A forged retrieval without Heartwood cannot open a study");
 				server.runOnServer(s -> {
 					var p = player(s);
 					check(!MasterStudies.hasExciseLesson(p), "A retrieval cannot manufacture Heartwood or a receipt");
@@ -103,7 +103,7 @@ public final class ExciseLessonChecks {
 				context.waitTicks(4);
 				context.setScreen(() -> new ExciseLessonScreen(null));
 				context.waitTicks(5);
-				notReading(context, "An old Heartwood holder below XVI cannot begin study");
+				refused(context, "An old Heartwood holder below XVI cannot begin study");
 				server.runOnServer(s -> player(s).setAttached(WildercordAttachments.CIRCLES, 16));
 				context.waitTicks(4);
 				retrieve(context);
@@ -238,6 +238,13 @@ public final class ExciseLessonChecks {
 		context.runOnClient(mc -> check(mc.gui.screen() instanceof ExciseLessonScreen lesson && lesson.pageNumber() == page && lesson.isStudying() == studying, "Expected Excise page " + page + ", studying=" + studying));
 	}
 	private static void notReading(ClientGameTestContext context, String reason) { context.runOnClient(mc -> check(!(mc.gui.screen() instanceof ExciseLessonScreen), reason)); }
+	private static void refused(ClientGameTestContext context, String reason) {
+		context.waitFor(mc -> mc.gui.screen() instanceof ExciseLessonScreen lesson && lesson.isRefused(), 100);
+		context.runOnClient(mc -> {
+			var lesson = (ExciseLessonScreen) mc.gui.screen();
+			check(lesson.isRefused() && !lesson.isStudying() && lesson.sessionNonce() == 0 && lesson.pageNumber() == 0, reason);
+		});
+	}
 	private static void close(ClientGameTestContext context) {
 		context.runOnClient(mc -> { if (mc.gui.screen() != null) mc.gui.screen().onClose(); mc.gui.setScreen(null); }); context.waitTicks(3);
 	}

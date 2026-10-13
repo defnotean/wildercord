@@ -164,6 +164,7 @@
   * [Roadside Sites](world/travel-sites.md)
   * [Water Sites](world/water-sites.md)
   * [Wild Places](world/wilds-sites.md)
+  * [Luminous Reedlands](world/luminous-reedlands.md)
   * [Pavilion Upgrade for Old Worlds](world/pavilion-upgrade.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)

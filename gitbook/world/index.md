@@ -7,6 +7,10 @@ Magic in Wildercord reaches the whole world. Monsters cast spells, old halls hid
 dimension has a dungeon boss that fights like a caster, and your spells change the ground they land on. This section
 is your map.
 
+The [Luminous Reedlands](luminous-reedlands.md) are a new
+Overworld region: pale swamp banks, blue-green pools, Moonreed colonies and wetland
+wildlife, with a field note to discover in your lore journal.
+
 ## Where to go, roughly in order
 
 You can do most of these in any order. Early rows need only a Twine Cord and a few runes. Later rows want a strong

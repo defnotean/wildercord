@@ -32,12 +32,12 @@ public final class WildlifeRules {
 
 	public static final Kind GLIMMERWING = new Kind("glimmerwing", Pool.AMBIENT, 8, 3, 5, 1 / 4.0, 9, 40, List.of(
 		"minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:dark_forest",
-		"minecraft:meadow", "minecraft:sunflower_plains", "minecraft:cherry_grove", "minecraft:swamp", "minecraft:mangrove_swamp"));
+		"minecraft:meadow", "minecraft:sunflower_plains", "minecraft:cherry_grove", "minecraft:swamp", "minecraft:mangrove_swamp", "wildercord:luminous_reedlands"));
 	public static final Kind LUMEN_STAG = new Kind("lumen_stag", Pool.CREATURE, 2, 1, 1, 1 / 3.0, 0, 80, List.of(
 		"minecraft:old_growth_birch_forest", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:taiga",
 		"minecraft:cherry_grove"));
 	public static final Kind MOSSBACK_TORTOISE = new Kind("mossback_tortoise", Pool.CREATURE, 5, 1, 2, 1.0, 4, 48, List.of(
-		"minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle", "minecraft:bamboo_jungle"));
+		"wildercord:luminous_reedlands", "minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle", "minecraft:bamboo_jungle"));
 	public static final Kind CINDERFOX = new Kind("cinderfox", Pool.CREATURE, 6, 1, 3, 1.0, 5, 48, List.of(
 		"minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands"));
 	public static final Kind SKYRAY = new Kind("skyray", Pool.AMBIENT, 3, 1, 1, 1 / 800.0, 1, 112, List.of(
@@ -234,6 +234,7 @@ public final class WildlifeRules {
 
 	private static final Map<String, Garden> GARDENS = Map.of(
 		"minecraft:swamp", Garden.SWAMP,
+		"wildercord:luminous_reedlands", Garden.SWAMP,
 		"minecraft:mangrove_swamp", Garden.MANGROVE,
 		"minecraft:jungle", Garden.JUNGLE,
 		"minecraft:sparse_jungle", Garden.JUNGLE,

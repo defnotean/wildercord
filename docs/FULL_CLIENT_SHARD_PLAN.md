@@ -1,7 +1,7 @@
 # Explicit full-client shard plan
 
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
-341-class descriptor as exactly four groups: **86 / 86 / 85 / 84**.
+342-class descriptor as exactly four groups: **86 / 86 / 86 / 84**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,
 manifest/aggregate tooling, and Gradle resource processing and launch preflight.
 There is no equal-count fallback or automatic assignment for newly added classes.
@@ -13,11 +13,11 @@ holds that reviewed plan so the tests can prove it.
 
 ## Identity and invariants
 
-- Plan schema 1, ID `full-client-explicit-v2-counter-lifetimes`.
+- Plan schema 1, ID `full-client-explicit-v3-reedlands`.
 - Ordered roster SHA-256:
-  `af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c`.
+  `604116d6ba419a728fc86b20313af6ce523a0e443a251fc9a2d3aea5a56b6e93`.
 - Complete plan SHA-256:
-  `d81692710775b8ce351c63ea357e6e56a643b138879962f7d97e6aa1b7fbe460`.
+  `39035ca63ca627b22c5d65ea62cab8dc828775cff77973e9d408be3693665685`.
 - Hashes use UTF-8 JSON with sorted object keys, compact separators and no trailing
   newline. The plan digest excludes no fields and is pinned in the selector.
   These are source identities, not claims of runtime acceptance.
@@ -36,6 +36,9 @@ holds that reviewed plan so the tests can prove it.
   the previously reviewed 310 classes retains its exact group and relative order;
   the immutable v1 plan is retained in tools/tests/full-client-plan-v1-310.json.
   No class-internal contract is changed by scheduling.
+- `ReedlandBiomeTest` follows `WetlandTerrainTest` in group 3. It adds natural
+  regional terrain, automatic journal discovery and real save/reopen coverage;
+  every previously scheduled class keeps its group and relative order.
 
 Missing/foreign/duplicate/reordered classes, changed descriptors, invalid counts,
 noncanonical shard selectors, altered blocks, malformed JSON or types, duplicate

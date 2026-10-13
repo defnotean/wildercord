@@ -1207,6 +1207,9 @@ def write_lang(runes):
         lang[f"rune.wildercord.{path}.found"] = f"A signature fusion at a Fusion Altar: {names[a]} + {names[b]}, those two runes only"
     write_recipe_doc(runes)
     write_fusion_doc(runes)
+    import regional_biomes
+    lang.update(regional_biomes.LANG)
+    regional_biomes.write(sys.modules[__name__])
     import boss_encounter_text
     for key in boss_encounter_text.RETIRED_KEYS:
         lang.pop(key, None)

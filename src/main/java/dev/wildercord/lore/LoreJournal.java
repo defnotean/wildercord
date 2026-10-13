@@ -176,6 +176,10 @@ public final class LoreJournal {
 
 	/** Brings the journal up to date from what the player already has, then steps the quests. Safe to call any time. */
 	public static void poll(ServerPlayer player) {
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.ReedlandClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)) {
+			record(player, dev.wildercord.world.biome.ReedlandClimate.JOURNAL_ENTRY, true);
+		}
 		LoreJournalData before = data(player);
 		LoreJournalData data = before;
 		List<String> grimoire = Heart.grimoire(player);

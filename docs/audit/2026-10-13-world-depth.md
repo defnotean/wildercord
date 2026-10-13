@@ -365,3 +365,65 @@ wait for real guard recovery and natural breathing, and grant the actual short
 Resistance dodge exception only at the tested hit. Lasting Resistance and ordinary
 spell immunity retain their current caps. Connected-client receipt coverage still
 requires its separate CI run; the full native matrix is not claimed green.
+
+### First playable custom biome: Luminous Reedlands
+
+The first regional biome is now registered in the ordinary Overworld preset.
+It partitions the humid end of existing swamp climate entries without replacing
+noise settings. Its swamp surface rules retain shallow pools; authored water,
+grass and foliage colours distinguish the banks. Existing wetland fauna, Moonreed
+pollination and the Stilt Smokehouse connect it to playable systems immediately.
+The automatically discovered journal note introduces the Tideward's first-crossing
+legend and survives owner synchronization and a real save/reopen.
+
+The fixed native survey uses seed `-7620530482425397421`, a bounded noise-only
+search and exactly 49 generated chunks around `(-2768, 64, 3296)`. Before regional
+colonies were added, its 9,394 regional columns contained water but zero Moonreed.
+The implementation now supplements an admitted regional patch with at most four
+plants found in 64 bounded source-chunk columns. It retains every habitat gate,
+does not replace occupied blocks and consumes no extra random draws. The same
+survey then found six naturally generated plants. The native test does not place
+plants or force biome cells; its final run passed in 43 seconds, including actual
+entry discovery, owner sync, saved biome identity and the saved natural plant.
+The inspected daylight capture is included in the player guide. Fauna registration
+is asserted, but this capture does not prove naturally spawned creature density.
+
+The existing placement-contract and positive-terrain suites passed in 31 and 32
+seconds. The strict 81-chunk absence fixture initially differed at one of 120
+attempts: `(-1552, 67, -794)` was occupied rather than empty dry ground. A control
+without the regional mixins passed, and two subsequent unchanged region-enabled
+runs also matched all 120 original receipts (51 and 31 seconds). The cause of the
+intermittent occupied candidate is unresolved. The expected receipt, seed, search
+area and zero-reed requirement remain unchanged. Bounded test-only diagnostics now
+record occupied block identities and the complete decoration feature order.
+
+The full native roster deliberately grows to 342 classes, split 86/86/86/84.
+Reedlands joins the existing wetland group; every prior class retains its group
+and relative order. Fifteen explicit-plan adversarial tests and fourteen selector/
+Gradle-contract tests pass on Windows. POSIX runtime evidence validation remains
+Linux-only and is not claimed as a local pass. The guide exports and checks 190
+pages; generated assets retain exact non-image bytes and identical PNG pixels
+across all 8,990 paths. The remaining three regional biomes, new bosses and new
+resident settlements are still proposed work.
+
+The final local build and native-source compilation passed in 1m 3s. All 2,714
+JUnit tests passed with zero failures, errors or skips. Performance, balanced and
+cinematic packs were rebuilt from the explicit current JAR; their packaging audit
+passed, as did all 44 packaging-audit unit tests. This is not release approval or
+evidence that the unresolved full native matrix passes.
+
+### Continuing CI findings
+
+Run `38415643853` passes the build and both March parts. Its third shard reaches
+`WildercordAuraMasteryTest`, then fails a carried-spell health expectation (1.12
+health remained) and a thunderstorm/ley-crossing breakthrough (stage 3, no stillness).
+These require investigation against current rules. The connected matrix reports
+a counter item-draw hand/camera/hilt-basis mismatch; all four Moon views pass.
+Neither result establishes the complete connected receipt contract.
+
+Its Masters core also exposed the same obsolete lesson-screen assumption already
+corrected for Reweave. Excise's two refused retrieval checks now require the visible
+refusal with no active study, nonce or advanced page; existing expiry, dimension
+and cracked-circle checks still require closure. The local dedicated-server rerun
+stopped before gameplay because the local EULA opt-in was absent. Verification of
+this change remains assigned to the existing owner-approved CI server setup.
