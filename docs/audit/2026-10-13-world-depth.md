@@ -621,3 +621,24 @@ Each escape has an out-of-range committed quarry and retains the production
 cooldown. The full receipts remain in CI. No larger observation window, forced
 quarry, reset appetite or creature behavior change is being substituted for this
 intermittent presentation result.
+# Excise disconnect serialization evidence and repair
+
+The `91919e2` GitHub run's core job (`115414318700`) records the real failure at
+the serialization boundary: body `2141889297`, overworld tick **694**, has
+`pending=true`, `recovery=0`, `rest=934` at `save_begin`. After reconnect, the old
+body has recovery **706**, while both the newly loaded attachment and the saved
+value remain **0**. Earlier explicit retirement receipts run on the server thread.
+This establishes that this transport's removal saved the paid hold before its
+cancellation deadline was written; it does not establish which networking callback
+failed to deliver retirement early enough.
+
+`ExcisePlayerRemovalMixin` now retires the body's held Excise at the head of
+`PlayerList.remove`, immediately before vanilla's player save. Retirement already
+removes a focus once and preserves an existing deadline, so an earlier disconnect
+callback cannot charge, refund, or extend it again. The separate Fabric disconnect
+callback now schedules attachment mutations onto the server thread when invoked
+from another thread. The original frozen-clock reconnect assertion and test-only
+save-order receipts remain intact. Compilation passes; dedicated reconnect acceptance
+still requires the next GitHub run because local dedicated-server EULA opt-in is
+absent. No full green CI claim is made.
+

@@ -171,7 +171,11 @@ public final class ExciseCasting {
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             handler.player.removeAttached(ExciseState.VIEW); INPUT.remove(handler.player); clearExpiredRecovery(handler.player);
         });
-        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> retire(handler.player));
+        // PlayerList.remove retires before saving. This event is also useful for transports that close early;
+        // its callback can arrive from Netty, so any body/attachment mutation belongs on the server thread.
+        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            if (server.isSameThread()) retire(handler.player); else server.execute(() -> retire(handler.player));
+        });
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for (Focus f : List.copyOf(FOCI.values())) {
                 if (f.level.getServer() != server) continue;
