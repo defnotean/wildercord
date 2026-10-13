@@ -761,3 +761,30 @@ counter receipts whose host item display context differs between classic and
 articulated paths. Both connected JVMs returned successfully at `6e6c805`; the
 independent receipt validator still rejects those captures, so they are not
 accepted visual evidence.
+
+### Connected counter item-basis validator repair
+
+The `6e6c805` connected artifact contains successful exits from both JVMs in each
+54-case wide/slim run. The independent curator rejected the articulated owner's
+item draw because it assumed every first-person camera uses a FIRST_PERSON item
+display transform. `ArticulatedViewModel` actually submits the unchanged item
+state from `AvatarRenderState` at the hand socket, which intentionally uses the
+THIRD_PERSON transform. Classic first-person rendering uses FIRST_PERSON; both
+remote backends use THIRD_PERSON. The native receipts match all four paths.
+
+The validator now derives that exact expected item basis from the already-bound
+role/backend while independently retaining the camera/view checks. It still
+requires the exact original stock diamond rotation, translation, scale, local
+matrix, hand, hilt anchor, emitted quads and all original geometry/provenance
+comparisons. No runtime rendering, receipt bytes or capture phase changed.
+Regression cases reject camera-basis confusion, either wrong hand, and a correct
+context label carrying the other transform. Synthetic properties use explicit LF
+bytes so the existing LF/CR/CRLF and malformed-Java-parser probes run on Windows.
+
+All **22 `CounterEvidenceTests` pass** in 95.217 seconds. Rechecking the original
+downloaded `38434875114` artifacts passes the complete terminal/life/counter witness
+validation for both profiles (**128 counter phase captures**, 54 cases per profile).
+`counter-archived-revalidation.json` explicitly records that these are archived
+receipts, the original run failed, and no new native run or exhaustive pixel review
+is claimed. Two wide/right/active frames were inspected visually; that spot check
+does not replace review of the entire matrix. A fresh CI run remains required.

@@ -158,12 +158,13 @@ class SyntheticCounterEvidence:
                         passes.append({"kind": kind, "binding": {**copy.deepcopy(binding), "item": 4 if role == "peer" or "item" in kind else 0},
                                        "geometry": {"operation": operation, "expected": [0.] * count, "actual": [0.] * count, "maxError": 0., "matched": True}, "segmented": art, "rigid": not art})
                     side = -1 if action["hand"] == "LEFT" else 1
+                    socket_item = role == "peer" or art
                     draw = {"binding": copy.deepcopy(passes[-1]["binding"]), "geometry": {"operation":"actual_displayed_item_matrix", "expected":[0.]*16, "actual":[0.]*16, "maxError":0., "matched":True},
-                            "displayContext": ("FIRST_PERSON_" if role == "host" else "THIRD_PERSON_") + action["hand"] + "_HAND", "quads": 12,
+                            "displayContext": ("THIRD_PERSON_" if socket_item else "FIRST_PERSON_") + action["hand"] + "_HAND", "quads": 12,
                             "anchorKind":"stock_diamond_hilt", "anchorExpected":[0.,0.,0.], "anchorActual":[0.,0.,0.],
-                            "displayRotation":[0.,-90.*side,(25. if role=="host" else 55.)*side],
-                            "displayTranslation":[1.13/16,3.2/16,1.13/16] if role=="host" else [0.,4./16,.5/16],
-                            "displayScale":[.68 if role=="host" else .85]*3,
+                            "displayRotation":[0.,-90.*side,(55. if socket_item else 25.)*side],
+                            "displayTranslation":[0.,4./16,.5/16] if socket_item else [1.13/16,3.2/16,1.13/16],
+                            "displayScale":[.85 if socket_item else .68]*3,
                             "displayLocal":[1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.],
                             "emittedQuadPositions":[0.] * 144,"emittedQuadSha256":hashlib.sha256(bytes(144*4)).hexdigest(),"stackIdentity":6,"collectorIdentity":7,"entryStackIdentity":6,"entryCollectorIdentity":7}
                     observation = {"owner": identity["hostUuid"], "observerUuid": identity["hostUuid"] if role == "host" else identity["peerUuid"],
@@ -197,7 +198,7 @@ class SyntheticCounterEvidence:
     def flush(self, name):
         def escape(value):
             return str(value).replace("\\", "\\\\").replace(":", "\\:").replace("=", "\\=").replace("\n", "\\n").replace("\r", "\\r")
-        (self.ipc / (name + ".properties")).write_text("".join(key + "=" + escape(value) + "\n" for key, value in self.values[name].items()), encoding="iso-8859-1")
+        (self.ipc / (name + ".properties")).write_text("".join(key + "=" + escape(value) + "\n" for key, value in self.values[name].items()), encoding="iso-8859-1", newline="\n")
 
     def rebind(self, key):
         values = self.values[key]
@@ -921,6 +922,32 @@ class CounterEvidenceTests(unittest.TestCase):
                                 (("displayScale",0),1.),(("displayLocal",12),1.),(("emittedQuadPositions",0),1.),
                                 (("emittedQuadSha256",),"a"*64),(("emittedQuadPositions",),[]),(("stackIdentity",),0),(("collectorIdentity",),0),(("stackIdentity",),999),(("collectorIdentity",),999)]:
                 self.mutate_record(key,("copy","draws",0,*path),value)
+
+    def test_camera_and_item_display_basis_are_independently_bound_to_backend(self):
+        # These explicit expectations are independent of the synthetic builder:
+        # classic owner uses the vanilla first-person item; articulated owner and
+        # both remote backends use the original AvatarRenderState socket item.
+        for role, index, expected in (("host", 46, "FIRST_PERSON_RIGHT_HAND"),
+                                      ("host", 47, "FIRST_PERSON_LEFT_HAND"),
+                                      ("host", 48, "THIRD_PERSON_RIGHT_HAND"),
+                                      ("host", 49, "THIRD_PERSON_LEFT_HAND"),
+                                      ("peer", 46, "THIRD_PERSON_RIGHT_HAND"),
+                                      ("peer", 49, "THIRD_PERSON_LEFT_HAND")):
+            key = f"{role}-case-{index}-ACTIVE-observed"
+            record = self.synthetic.records[key]
+            self.assertEqual(record["expected"]["view"], "fp" if role == "host" else "remote")
+            self.assertEqual(record["copy"]["draws"][0]["displayContext"], expected)
+            wrong = expected.replace("FIRST_PERSON", "THIRD_PERSON") if expected.startswith("FIRST") else expected.replace("THIRD_PERSON", "FIRST_PERSON")
+            self.mutate_record(key, ("copy", "draws", 0, "displayContext"), wrong)
+            self.mutate_record(key, ("copy", "draws", 0, "displayContext"), expected.replace("RIGHT", "LEFT") if "RIGHT" in expected else expected.replace("LEFT", "RIGHT"))
+        # Merely fixing the context label cannot smuggle the other native item's
+        # transform into a socket; each display component remains independently checked.
+        key = "host-case-48-ACTIVE-observed"
+        for field, value in (("displayRotation", [0., -90., 25.]),
+                             ("displayTranslation", [1.13/16, 3.2/16, 1.13/16]),
+                             ("displayScale", [.68]*3)):
+            self.mutate_record(key, ("copy", "draws", 0, field), value)
+        self.verify()
 
     def test_counter_png_receipt_and_witness_hardlinks_are_rejected(self):
         key="host-case-46-ACTIVE-observed"; values=self.synthetic.values[key]
