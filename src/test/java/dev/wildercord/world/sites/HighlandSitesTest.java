@@ -4,19 +4,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import dev.wildercord.world.sites.highland.HighlandSites;
 import dev.wildercord.world.upgrade.UpgradeCatalog;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /** Verifies the Windscar Highland sites' data, books, loot runes, and upgrade catalog decisions. */
 class HighlandSitesTest {
+	static final List<String> SITES = List.of("highland_cairn_lodge", "highland_survey_ring");
+	static final Map<String, Integer> BOOKS = Map.of("cairn_keeper", 4, "survey_ring", 2);
 	static final Path DATA = Path.of("src/main/resources/data/wildercord");
 	static final Path LANG = Path.of("src/main/resources/assets/wildercord/lang/en_us.json");
 	static final Path RUNES = Path.of("src/main/java/dev/wildercord/spell/Runes.java");
@@ -30,7 +32,7 @@ class HighlandSitesTest {
 	void everyHighlandSiteIsWhole() throws IOException {
 		JsonObject lang = json(LANG);
 		String runes = Files.readString(RUNES);
-		for (String id : HighlandSites.IDS) {
+		for (String id : SITES) {
 			JsonObject structure = json(DATA.resolve("worldgen/structure/" + id + ".json"));
 			assertEquals("wildercord:site", structure.get("type").getAsString(), id);
 			assertEquals(id, structure.get("site").getAsString(), id);
@@ -66,7 +68,7 @@ class HighlandSitesTest {
 			assertTrue(SiteFamilies.ALL.stream().anyMatch(f -> f.id().equals("wildercord:" + id) && f.decision() == UpgradeCatalog.Decision.WORLDGEN_ONLY), id);
 		}
 		JsonObject structures = json(DATA.resolve("tags/worldgen/structure/site.json"));
-		for (String id : HighlandSites.IDS) {
+		for (String id : SITES) {
 			assertTrue(structures.getAsJsonArray("values").toString().contains("\"wildercord:" + id + "\""), id);
 		}
 	}
@@ -74,7 +76,7 @@ class HighlandSitesTest {
 	@Test
 	void highlandBooksHaveTheirPages() throws IOException {
 		JsonObject lang = json(LANG);
-		for (Map.Entry<String, Integer> entry : HighlandSites.BOOKS.entrySet()) {
+		for (Map.Entry<String, Integer> entry : BOOKS.entrySet()) {
 			for (int i = 1; i <= entry.getValue(); i++) {
 				String key = "book.wildercord." + entry.getKey() + "." + i;
 				assertTrue(lang.has(key), key);
