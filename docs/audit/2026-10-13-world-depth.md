@@ -289,3 +289,24 @@ absent from the shipped mod. Focused WatchweftPaidTest passed with the diagnosti
 loaded, including actual paid casting, a vanilla hostile approaching, and exact
 saved-rest retention after reopening. The intermittent CI fault did not reproduce
 in this standalone Windows run. A full CI run with the writer diagnostic is pending.
+
+### Native fixture checkpoint: progression and presentation
+
+Four focused native suites now pass after correcting stale fixture assumptions:
+
+- `MasterAntiAirTest`: 39 seconds. Exact payments exclude the existing multiplayer
+  trickle; cancellation checks the current paid recovery boundary, elevation lock
+  and cover rather than an obsolete longer Crescent timeline.
+- `AuraProgressionTest`: 1m 4s. Grants and boundaries use the registered thresholds;
+  the practice cap, real waterfall stillness, owner sync and save/reopen remain checked.
+- `ReweavePlayableTest`: 1m 12s. Refused retrieval displays its existing refusal UI
+  with no study, page or session nonce. Expiry, dimension and cracked-circle cases
+  still require the lesson to close. A read-only screen accessor exposes refusal.
+- `MasterModelPresentationTest`: 1m 11s. Gale and Stone body captures retain their
+  actual attack-frame assertions and derive payments from current costs.
+
+These changes do not tune combat or progression. The complete local Stone March
+rerun also passed in 7m 39s, including all 40 scenarios, the eight-player trial and
+admission priority after real breathing replenished its spent Aura. Its gameplay
+repair and the remaining trial/receipt fixtures are still being reviewed for a
+separate checkpoint. The full CI matrix remains incomplete and is not green.

@@ -32,7 +32,7 @@ public final class AuraProgressionTest implements FabricClientGameTest {
     Aura.set(p,Aura.data(p).withXp(39.9,39.9));
     check(Math.abs(AuraExperience.earn(p,2,true)-.1)<.00001,"Practice stops exactly at40");
     check(AuraExperience.earn(p,20,true)==0,"Exhausted practice cannot farm XP");
-    check(Aura.data(p).xp()==40 && Aura.stage(p)==AuraRules.GLOW,"40practice is below Flow150");
+    check(Aura.data(p).xp()==40 && Aura.stage(p)==AuraRules.GLOW,"40 practice XP stays below the Flow threshold");
    });
    c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(2);mc.resizeGui();mc.gui.toastManager().clear();
     for(int next=AuraRules.FLOW;next<=AuraRules.SOVEREIGN;next++)for(String trial:dev.wildercord.api.AuraApi.trials(next))
@@ -47,7 +47,8 @@ public final class AuraProgressionTest implements FabricClientGameTest {
    c.takeScreenshot(TestScreenshotOptions.of("aura_progression_practice_complete").disableCounterPrefix());
    c.runOnClient(mc -> mc.gui.setScreen(null));
    w.getServer().runOnServer(s -> {var p=s.getPlayerList().getPlayers().getFirst();
-    AuraExperience.grant(p,999);check(Aura.data(p).xp()==150 && Aura.stage(p)==AuraRules.GLOW,"Full XP waits for the trial");
+    AuraExperience.grant(p,AuraStages.threshold(AuraRules.FLOW));
+    check(Aura.data(p).xp()==AuraStages.threshold(AuraRules.FLOW) && Aura.stage(p)==AuraRules.GLOW,"Full XP waits for the trial");
     check(!AuraBreakthroughs.complete(p,AuraBreakthroughs.GUARDIAN),"A wrong stage trial cannot advance Glow");
    });
    c.waitTicks(6);c.runOnClient(mc -> mc.gui.setScreen(new AuraScreen(null)));c.waitTicks(3);
@@ -65,10 +66,10 @@ public final class AuraProgressionTest implements FabricClientGameTest {
     check(Aura.stage(p)==AuraRules.FLOW && Aura.data(p).practice()==40,"Earned rank and practice cap survive restart");
     check(AuraExperience.earn(p,2,false)>0,"Real XP keeps growing toward Edge after restart");
     check(!AuraBreakthroughs.complete(p,AuraBreakthroughs.STILLNESS),"Trials cannot skip missing XP");
-    AuraExperience.grant(p,999);check(AuraBreakthroughs.complete(p,AuraBreakthroughs.STILLNESS),"Early-stage trial allows Edge after600XP");
-    AuraExperience.grant(p,99999);check(!AuraBreakthroughs.complete(p,AuraBreakthroughs.STILLNESS),"Ordinary stillness cannot skip Form's higher trial");
-    check(AuraBreakthroughs.complete(p,AuraBreakthroughs.GUARDIAN),"Guardian trial opens Form at1800XP");
-    AuraExperience.grant(p,99999);check(AuraBreakthroughs.complete(p,AuraBreakthroughs.GUARDIAN),"Guardian trial opens Sovereign at4500XP");
+    AuraExperience.grant(p,AuraStages.threshold(AuraRules.EDGE));check(AuraBreakthroughs.complete(p,AuraBreakthroughs.STILLNESS),"Early-stage trial allows Edge at its current XP threshold");
+    AuraExperience.grant(p,AuraStages.threshold(AuraRules.FORM));check(!AuraBreakthroughs.complete(p,AuraBreakthroughs.STILLNESS),"Ordinary stillness cannot skip Form's higher trial");
+    check(AuraBreakthroughs.complete(p,AuraBreakthroughs.GUARDIAN),"Guardian trial opens Form at its current XP threshold");
+    AuraExperience.grant(p,AuraStages.threshold(AuraRules.SOVEREIGN));check(AuraBreakthroughs.complete(p,AuraBreakthroughs.GUARDIAN),"Guardian trial opens Sovereign at its current XP threshold");
    });
   } finally {c.runOnClient(mc -> mc.options.keyShift.setDown(false));}
  }

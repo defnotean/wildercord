@@ -58,6 +58,7 @@ public final class MasterAntiAirTest implements FabricClientGameTest {
 				level.addNewPlayer(mage);
 				master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
 				check(master != null, "The anti-air master fixture exists");
+				master.fixAura(); // Exact interruption debit excludes multiplayer trickle.
 				master.setNoAi(true);
 				master.snapTo(stage.getX() + .5, 181, stage.getZ() + 3.5, -90, 0);
 				level.addFreshEntity(master);
@@ -78,13 +79,14 @@ public final class MasterAntiAirTest implements FabricClientGameTest {
 				Effects.withSource(mage, () -> check(master.interruptWindup() && master.attackAnimation() == 0 && master.attackAimPitch() == 0,
 					"Cancelling an elevated tell immediately clears both attack and aim pitch"));
 			});
-			context.waitTicks(21);
-			world.getServer().runOnServer(server -> {
+			// Interruption guarantees twenty ticks even when the tuned ordinary attack is shorter.
+			int cancelledWindow = Math.max(20, MastersRules.Move.CRESCENT.tell + MastersRules.Move.CRESCENT.recovery);
+			at(world, cancelledWindow - 1, () -> {
 				master.customServerAiStep((ServerLevel) master.level());
-				check(master.attackAnimation() == 0 && !master.state(AuraFighter.WINDUP) && Math.abs(master.auraRemaining() - 84) < .01,
-					"The old interrupt-plus-20 retry boundary remains blocked by the paid Crescent's original full window");
+				check(master.attackAnimation() == 0 && !master.state(AuraFighter.WINDUP) && Math.abs(master.auraRemaining() - (MastersRules.AURA_MAX - MastersRules.ATTACK_COST)) < .01,
+					"The last frame of the paid cancellation recovery remains exposed and cannot spend again");
 			});
-			at(world, MastersRules.Move.CRESCENT.tell + MastersRules.Move.CRESCENT.recovery, () -> {
+			at(world, cancelledWindow, () -> {
 				master.customServerAiStep((ServerLevel) master.level());
 				check(master.attackAnimation() == MastersRules.Move.CRESCENT.ordinal() + 1 && master.attackAimPitch() < -45,
 					"A fresh tell recaptures elevation after the cancelled attack's recovery");

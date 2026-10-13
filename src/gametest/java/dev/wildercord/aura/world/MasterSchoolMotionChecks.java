@@ -180,7 +180,7 @@ public final class MasterSchoolMotionChecks {
 		world.getServer().waitFor(server -> {
 			if (level.getGameTime() < resetAt) return false;
 			check(level.getGameTime() == resetAt && !master.state(AuraFighter.WINDUP)
-				&& Math.abs(master.auraRemaining() - 84) < .01, "Opening and its paid recovery must complete naturally");
+				&& Math.abs(master.auraRemaining() - (MastersRules.AURA_MAX - MastersRules.ATTACK_COST)) < .01, "Opening and its paid recovery must complete naturally");
 			// Challenger fixture placement only between completed attacks, never inside a captured form.
 			target.setHealth(HEALTH);
 			target.teleportTo(level, origin.x, origin.y, origin.z + 4, Set.of(), 180, 0, false);
@@ -203,7 +203,7 @@ public final class MasterSchoolMotionChecks {
 		long age = level.getGameTime() - began;
 		check(master.isAlive() && !master.isNoAi() && master.started() && master.challengerCount() == 1,
 			"Live native AI and the single accepted participant must own every frame");
-		check(Math.abs(master.auraRemaining() - (gale ? 60 : 56)) < .01, "The real opening and special-form Aura costs remain paid");
+		check(Math.abs(master.auraRemaining() - (MastersRules.AURA_MAX - MastersRules.ATTACK_COST - (gale ? GaleRepriseRules.COST : StoneFractureRules.COST))) < .01, "The real opening and special-form Aura costs remain paid");
 		check(master.attackAnimation() == (gale ? 7 : 8), "The captured form must not be cancelled or replaced");
 		check((gale ? master.reprisePending() : master.fracturePending()) == (age < tell), "Real pending state must match the promised release");
 		check(master.state(AuraFighter.WINDUP) == (age < tell), "Windup ends on the exact native release tick");

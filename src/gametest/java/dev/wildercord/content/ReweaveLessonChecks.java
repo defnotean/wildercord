@@ -89,7 +89,7 @@ public final class ReweaveLessonChecks {
 				server.runOnServer(s -> check(!MasterStudies.knowsReweave(player(s)) && !Spellbooks.knows(player(s), Runes.REWEAVE.id()), "A forged ledger book cannot teach"));
 				context.setScreen(() -> new ReweaveLessonScreen(null));
 				context.waitTicks(5);
-				notReading(context, "A forged retrieval without Low Tide cannot open a study");
+				refused(context, "A forged retrieval without Low Tide cannot open a study");
 				server.runOnServer(s -> {
 					var p = player(s);
 					check(!MasterStudies.hasReweaveLesson(p), "A retrieval cannot manufacture Low Tide or a receipt");
@@ -102,7 +102,7 @@ public final class ReweaveLessonChecks {
 				context.waitTicks(4);
 				context.setScreen(() -> new ReweaveLessonScreen(null));
 				context.waitTicks(5);
-				notReading(context, "An old Low Tide holder below XII cannot begin study");
+				refused(context, "An old Low Tide holder below XII cannot begin study");
 				server.runOnServer(s -> player(s).setAttached(WildercordAttachments.CIRCLES, 12));
 				context.waitTicks(4);
 				retrieve(context);
@@ -243,6 +243,13 @@ public final class ReweaveLessonChecks {
 		context.runOnClient(mc -> check(mc.gui.screen() instanceof ReweaveLessonScreen lesson && lesson.pageNumber() == page && lesson.isStudying() == studying, "Expected Reweave page " + page + ", studying=" + studying));
 	}
 	private static void notReading(ClientGameTestContext context, String reason) { context.runOnClient(mc -> check(!(mc.gui.screen() instanceof ReweaveLessonScreen), reason)); }
+	private static void refused(ClientGameTestContext context, String reason) {
+		context.waitFor(mc -> mc.gui.screen() instanceof ReweaveLessonScreen lesson && lesson.isRefused(), 100);
+		context.runOnClient(mc -> {
+			var lesson = (ReweaveLessonScreen) mc.gui.screen();
+			check(lesson.isRefused() && !lesson.isStudying() && lesson.sessionNonce() == 0 && lesson.pageNumber() == 0, reason);
+		});
+	}
 	private static void close(ClientGameTestContext context) {
 		context.runOnClient(mc -> { if (mc.gui.screen() != null) mc.gui.screen().onClose(); mc.gui.setScreen(null); }); context.waitTicks(3);
 	}

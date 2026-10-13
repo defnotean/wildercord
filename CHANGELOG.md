@@ -6,6 +6,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Fixed
 
+- Native Aura progression, airborne Master recovery, Master animation payments and Reweave refusal checks now follow the current progression/combat rules and the lesson screen's visible refusal state.
 - The Master technique guide now reports the current impact and recovery times for all 417 techniques, with both published guides checked against the runtime definitions.
 - Brace and Shulkershell descriptions state the existing player defence cap: 40% less damage for players, 80% for other creatures. Brace also explains that its six-second rest starts after the guard. Native ward and burst-survival checks now exercise the current defence cap and paid damage allowance.
 - The lore journal now names all sixteen Sword Masters and keeps each school's own victory dialogue. Older `school_3` through `school_15` victory entries recover their names when loaded, without reopening completed leads or paying their rewards again.
