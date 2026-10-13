@@ -282,3 +282,10 @@ The save observer also exposed the prior opaque failure: a ConcurrentModificatio
 in Fabric's attachment map collection while saving the player during disconnect.
 This is not a missing rest codec. Off-thread mutation diagnosis is in progress;
 no save fix or full native pass is claimed.
+
+The test build now rejects server-player attachment writes from other threads at
+their source, before mutation, to identify any writer racing the save. This hook is
+absent from the shipped mod. Focused WatchweftPaidTest passed with the diagnostic
+loaded, including actual paid casting, a vanilla hostile approaching, and exact
+saved-rest retention after reopening. The intermittent CI fault did not reproduce
+in this standalone Windows run. A full CI run with the writer diagnostic is pending.
