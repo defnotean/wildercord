@@ -144,6 +144,7 @@ light at Flow, a crystal blade from Edge, a mantle at Form and a burning corona 
   From here a single tap waits a moment in case it's a double-tap.
 - **Aura Armour**: while you hold **20 aura or more**, a shell takes **a quarter** of incoming harm (blows, arrows, spells, fire)
   for half a point of aura per point taken. It never spends you below 20. Falls, drowning and hunger aren't covered.
+  The visible shell flares during combat and Aura use, then fades at rest. Its protection stays active while you have enough Aura.
 - **Intent**: hostile creatures within 8 blocks that are weaker than you (lower health, or a lower aura stage) are slowed and
   sometimes falter. Bosses never feel it.
 - **Aura Sense** reaches 24 blocks and pulses on its own in a fight.

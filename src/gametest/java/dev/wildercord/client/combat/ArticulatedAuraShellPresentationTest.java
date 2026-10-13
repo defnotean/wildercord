@@ -9,6 +9,7 @@ import dev.wildercord.aura.AuraPresence;
 import dev.wildercord.aura.MastersArtRules;
 import dev.wildercord.aura.MastersArts;
 import dev.wildercord.client.MastersArtsClient;
+import dev.wildercord.client.AuraFxClient;
 import dev.wildercord.client.fx.HitStop;
 import dev.wildercord.client.render.AuraShellLayer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -121,20 +122,22 @@ public final class ArticulatedAuraShellPresentationTest implements FabricClientG
 							var state = state(mc); var frame = ArticulatedCombat.frame(state); var accepted = MastersArtsClient.timeline(mc.player);
 							check(frame != null && state.mainArm == arm && accepted.move() == move, "Exact real activation owns both selected hands");
 							check(accepted.windup() == MastersArtRules.move(move).windup() && accepted.recovery() == MastersArtRules.move(move).recovery(), "Server windows are unchanged");
+							check(state.getData(AuraShellLayer.SHELL_GLOW) != null, "Every active attack capture contains its genuine funded shell");
 							assertWorld(mc, state, armored); assertView(state, armored);
 							System.out.println("ARTICULATED_FUNDED_SHELL name=" + name + " activation=" + accepted.startTick() + " shellGlow=" + Integer.toHexString(state.getData(AuraShellLayer.SHELL_GLOW))
 								+ " actualSkin=" + state.skin.model() + " preCapturePhase=" + frame.pose().phase() + " preCaptureAge=" + (mc.level.getGameTime() - accepted.startTick() + .5F)
 								+ " renderedPhase=unknown nativePixelReviewRequired=true");
 						});
 						context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
-						// Observe every available simulation tick through expiry. No shell or armor is cleared.
+						// Observe every available simulation tick through expiry and ordinary flare fade.
+						// Funding keeps protection up; an idle body deliberately stops drawing its shell.
 						for (int tick = 0; tick < MastersArtRules.move(move).windup() + MastersArtRules.move(move).recovery() + 2; tick++) {
 							context.runOnClient(mc -> { var current = state(mc); assertWorld(mc, current, armored); assertView(current, armored); });
 							context.waitTicks(1);
 						}
 						context.runOnClient(mc -> {
 							check(MastersArtsClient.timeline(mc.player) == null && ArticulatedCombat.viewFrame(state(mc)) != null,
-								"Ordinary expiry retains the funded first-person shell and idle arms");
+								"Ordinary expiry retains the funded first-person arms while the flare fades");
 						});
 						// A fresh real activation seeds clearly labelled synthetic replay/fallback probes.
 						context.waitTicks(105); context.getInput().pressKey(MastersArtsClient.mapping(move));
@@ -147,6 +150,15 @@ public final class ArticulatedAuraShellPresentationTest implements FabricClientG
 							var idle = state(mc); var frame = ArticulatedCombat.viewFrame(idle);
 							check(ArticulatedCombat.frame(idle) == null && frame != null && frame.move() == -1 && frame.activation() != cancelled,
 								"Cancelled activation disappears; complete world fallback and funded first-person idle remain");
+							assertWorld(mc, idle, armored); assertView(idle, armored);
+						});
+						context.waitFor(mc -> !AuraFxClient.inUse(mc.player, mc.level.getGameTime() + .5F), 30);
+						world.getServer().runOnServer(server -> check(AuraArmour.up(server.getPlayerList().getPlayers().getFirst()),
+							"Ordinary visual fade leaves paid Aura Armour protection available"));
+						context.runOnClient(mc -> {
+							var idle = state(mc);
+							check(idle.getData(AuraShellLayer.SHELL_GLOW) == null && ArticulatedCombat.viewFrame(idle) != null,
+								"Calm funded armour hides its shell while retaining the complete first-person arms");
 							assertWorld(mc, idle, armored); assertView(idle, armored);
 						});
 					}
@@ -167,11 +179,16 @@ public final class ArticulatedAuraShellPresentationTest implements FabricClientG
 		boolean active = ArticulatedCombat.frame(state) != null;
 		check(access.wildercord$rig().root.visible == active && body.body.visible != active && body.leftArm.visible != active && body.rightLeg.visible != active,
 			"Exactly one complete body owns each sampled funded frame");
-		check(state.getData(AuraShellLayer.SHELL_GLOW) != null, "Funded sample retains the real shell");
+		check(AuraPresence.look(mc.player).shell(), "Every sampled body retains actual funded Aura Armour");
+		boolean visible = AuraFxClient.inUse(mc.player, mc.level.getGameTime() + .5F);
+		check((state.getData(AuraShellLayer.SHELL_GLOW) != null) == visible,
+			"A funded shell is visible throughout use and flare, then hides at rest");
 		Receipts shell = new Receipts(); shell(mc).submit(new PoseStack(), shell.collector(), LIGHT, state, 0, 0);
-		check(shell.models.size() == 1, "Exactly one shell node, including fallback and clip edges");
-		check(shell.models.getFirst().model() instanceof ArticulatedAuraShellGeometry == active, "Rigid and articulated shell never overlap");
-		material(shell.models.getFirst(), state);
+		check(shell.models.size() == (visible ? 1 : 0), "Exactly one visible shell node, and no idle shell node, including fallback and clip edges");
+		if (visible) {
+			check(shell.models.getFirst().model() instanceof ArticulatedAuraShellGeometry == active, "Rigid and articulated shell never overlap");
+			material(shell.models.getFirst(), state);
+		}
 		var armorLayer = ((ArticulatedRendererAccess) renderer(mc)).wildercord$layers().stream()
 			.filter(layer -> layer.getClass() == ArticulatedArmorLayer.class).map(layer -> (ArticulatedArmorLayer) layer).findFirst().orElseThrow();
 		Receipts armor = new Receipts(); armorLayer.submit(new PoseStack(), armor.collector(), LIGHT, state, 0, 0);
@@ -187,8 +204,12 @@ public final class ArticulatedAuraShellPresentationTest implements FabricClientG
 		check(ArticulatedViewModel.submit(state, hands, .5F, InteractionHand.MAIN_HAND, new PoseStack(), receipts.collector(), LIGHT), "Funded first-person path owns arms and sword");
 		check(receipts.models.stream().filter(r -> r.model() instanceof ArticulatedViewModel).count() == 1, "First person submits skin exactly once");
 		var shells = receipts.models.stream().filter(r -> r.model() instanceof ArticulatedAuraShellGeometry).toList();
-		check(shells.size() == 1 && shells.getFirst().model() == state.getData(ArticulatedAuraShellRenderer.READY).viewModel(), "First person submits only arm-shell geometry exactly once");
-		material(shells.getFirst(), state);
+		boolean visible = state.getData(AuraShellLayer.SHELL_GLOW) != null;
+		check(shells.size() == (visible ? 1 : 0), "First person submits its visible arm shell exactly once and no idle shell");
+		if (visible) {
+			check(shells.getFirst().model() == state.getData(ArticulatedAuraShellRenderer.READY).viewModel(), "First person submits only arm-shell geometry");
+			material(shells.getFirst(), state);
+		}
 		check(receipts.models.stream().filter(r -> r.model() instanceof ArticulatedArmorGeometry).count() == (armored ? 3 : 0), "Camera-space chestplate retains material, trim and glint");
 		check(receipts.calls.contains("submitItem"), "Actual resolved sword is submitted after skin, armor and shell");
 		int before = receipts.calls.size();

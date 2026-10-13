@@ -809,3 +809,44 @@ admissions. Exact frame equality and original hit/recovery assertions remain.
 The fixture also clears its retained world, entities, ward, pulse and grounding
 records after close. A separate CI shard at `6e6c805` still exhausted heap in
 `LifeOutcomeEdgesTest` after 38 minutes; no full-matrix memory fix is claimed.
+
+### Funded Aura shell: active rendering and ordinary idle fade
+
+The existing articulated presentation fixture incorrectly required a visible shell
+on every funded frame, including idle frames after the ordinary flare expires.
+Production already separates available Aura Armour protection from visible use.
+The fixture now requires the genuine shell at every active capture, exactly one
+shell while use/flare is active, and zero shell submissions at rest. Body ownership,
+armour material/trim/glint, hand socket, sword, cancellation, deferred geometry and
+resource-reload assertions remain. An explicit idle check verifies server-side
+Aura Armour protection is still available after the visible shell disappears.
+
+`ArticulatedAuraShellPresentationTest` passes in **8m 4s**, with all **36** actual
+input/camera/hand/armour/move combinations. The screenshots are preserved under
+`artifacts/review/world-depth/aura-shell/`. One first-person frame was inspected;
+this does not claim exhaustive pixel review of all captures. Both guide editions
+explain the existing idle fade. No production rendering or protection value changed.
+The remaining nine counter profile/selection tests also pass (23.916 seconds).
+
+### User-directed testing migration: VPS only
+
+The owner directed all future testing to the VPS and requested an end to GitHub
+CI. On October 13, GitHub Actions was disabled for the entire repository through
+its repository settings (`enabled=false`). Build and Player Guide were also
+disabled individually. Runs `38441765274`, `38440285130` and `38434875114` are
+confirmed completed/cancelled. Historical results are preserved. Old references
+above to a required next GitHub run describe the earlier workflow; new acceptance
+work must execute on the VPS instead. The archived YAML remains historical setup,
+not an enabled execution path. Guide auto-publication is consequently stopped too.
+
+SSH access to the configured `pandora-vps` is confirmed. It is the existing Windows
+host with the live server at `C:\wildercord`, Java 25, Python 3.12 and eight logical
+processors. A separate checkout is being prepared at `C:\wildercord-ci\repo` for
+builds and tests. Its setup is not yet a passing VPS build/native result. Native
+graphics/session availability and replacement full-suite orchestration still need
+verification. The live server, saves and installed release are unchanged.
+
+The broad development goal remains active, and a 15-minute chat heartbeat records
+the VPS-only requirement, coherent commits/pushes, the unfinished roadmap and the
+need to inspect running jobs before starting another. See the accompanying
+`2026-10-13-progress.md` for the requested readable progress inventory.
