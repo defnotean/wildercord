@@ -43,13 +43,41 @@ Its spells lean on roots, mire, venom, tremors and aftershocks.
 
 ### Storm Conductor
 
-It has 240 health. It hovers in place, and while charged it takes half damage.
+It has 240 health. It never leaves its podium: it conducts the storm with a baton, and the storm answers on the beat.
+While charged it takes half damage.
 
 - One of three lightning rods in the arena sparks. Stand within 2 blocks of that rod to **ground** the boss.
-- Grounding interrupts its spell and gives you 5 seconds of full damage. Then a different rod becomes active.
+- Grounding breaks off whatever it was doing and gives you 5 seconds of full damage. Then a different rod sparks.
 - You can ground it again 8 seconds after the last time.
+- **Every standing rod is shelter.** A bolt meant for anyone within 2 blocks of a rod goes down into the rod instead.
 
-Its spells use shock, wind cuts, thunderclaps, rain, barrages and lances.
+**How it fights.** It never makes the same move twice running, and nothing it does hurts you during a tell. The boss
+bar names every move and what to do about it. Its coils glow brighter as it winds up.
+
+| Move | From | Its tell | Counter |
+|---|---|---|---|
+| **Downbeat** | Phase 1 | Raises its baton high while a mark follows each player, then the mark holds still for a moment | Step off your mark, or stand by a rod and let it take the bolt. Two beats in phase 3 |
+| **Crescendo** | Phase 1 | Circles its baton faster and faster overhead, then sweeps it down | Jump the ring that rolls out over the floor. Two rings in phase 3 |
+| **Staccato** | Phase 1 | Flicks its baton down a marked line toward you. The aim locks just before | Step off the line before the sparks pop along it. Three lines fanned out in phase 3 |
+| **Fermata** | Phase 1 | Holds its baton straight up under a toll, with a mark under each player, then listens for a second and a half | Hold still. Anyone who moves while the note is held is struck. Afterwards it's **winded** for 2 seconds |
+| **Gale** | Phase 1 | Sweeps its baton back to one side, twisting, as air is drawn in over a marked cone | Crouch to keep your feet (you're shoved about a third as far), or get beside or behind it. Wider in phase 3 |
+| **Discharge** | Phase 1 | Only when you're within 4 blocks. Points its baton at its feet as its cage spins up inside a crackling ring | Get out of the ring (3.5 blocks, 4 in phase 3). Afterwards it's **spent** for nearly 2 seconds |
+| **Ball Lightning** | Phase 2 | An orb swells at the baton's tip, then drifts after you and bursts at a touch or where it stops under a ring | Outpace it and step out of its ring. Or lead it into the sparking rod: the rod swallows it and grounds the Conductor. Quicker in phase 3 |
+| **Chord** | Phase 2 | Points at one quiet rod, then the other, and lines of lightning are drawn between them and back to its podium | Keep off the lines. Needs two quiet rods still standing. A second pulse in phase 3 |
+| **Rolling Thunder** | Phase 2 | Draws its baton back while the walls rumble | Rings close in from 12 blocks out, one after another. Jump each as it reaches you. Four rings in phase 3 |
+| **Counterpoint** | Phase 3 | Beats side to side while half the floor around it is marked in squares | Stand on an unmarked square. Half a second later the other half is marked, so step across |
+
+It's open to full damage while winded or spent, as well as while grounded. Its spells (shock and arcs, then rain and
+prisms, then bolts and lances) come between its moves, more often when you keep your distance.
+
+**What each phase changes.**
+
+- **Phase 2** adds Ball Lightning, the Chord and Rolling Thunder, and it rests a quarter less between moves.
+- **Phase 3** adds Counterpoint. It rests half as long, comes back to each move sooner, and makes its moves in pairs:
+  a Fermata runs into a Downbeat (you still get the winded opening after), a Gale into a Staccato, a Crescendo into
+  Rolling Thunder, a Chord into Ball Lightning, and so on.
+- **Between phases** it raises its baton straight up and trembles while storm clouds gather and lightning falls onto
+  the tip, until it all comes down at once.
 
 ![Copper induction coils and the central conductor]({{ '/assets/screenshots/mountain-observatory/storm_spire_instrument_floor.png' | relative_url }})
 
@@ -69,4 +97,8 @@ Its spells use shock, wind cuts, thunderclaps, rain, barrages and lances.
 ## Tips and counterplay
 
 - Bring shears or a fire source to the Maze. Use your burst window while the heart is open.
-- In the Spire, watch for the sparking rod. Get to it before its spell lands.
+- In the Spire, watch for the sparking rod. Get to it and the Conductor drops whatever it was doing.
+- Fight near a rod. It takes the Conductor's bolts for you.
+- Read the baton: raised means a mark to step off, circling means a ring to jump, straight up under a toll means freeze.
+- Strike when it's winded after a Fermata or spent after a Discharge.
+- Lead Ball Lightning into the sparking rod to ground the Conductor without walking there yourself.
