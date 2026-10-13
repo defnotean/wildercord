@@ -1,5 +1,6 @@
 package dev.wildercord.client.render;
 
+import dev.wildercord.cast.ArchivistRules;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +18,8 @@ import java.util.EnumSet;
  * above it, with long sleeves and an empty dark under the hood where two eyes burn. An open tome
  * floats before it, a page turning now and then, and three loose pages circle it at head height.
  * Casting, it raises its arms and the tome lifts and riffles; rewriting its Cord, it throws its
- * arms wide, the tome rises open over it and the pages fly far out and fast.
+ * arms wide, the tome rises open over it and the pages fly far out and fast. Each of its tricks has
+ * a pose of its own (see {@link #poseMoves}), wound up slowly through the trick's tell and thrown fast.
  *
  * <p>Laid out on a 128x64 skin (see {@code archivist_texture} in {@code tools/world_art.py}):</p>
  * <pre>
@@ -180,6 +182,186 @@ public class ArchivistModel extends EntityModel<ArchivistRenderState> {
 			page.yRot = at;
 			page.xRot = Mth.sin(t * 0.15F + i * 1.7F) * (0.3F + 0.4F * r);
 			page.zRot = Mth.sin(t * 0.11F + i) * 0.25F;
+		}
+
+		poseMoves(state);
+	}
+
+	/**
+	 * Each trick's pose laid over the rest, as far as that trick's blend has come: wound up slowly through
+	 * its tell, then thrown in three ticks. A trick easing out holds its thrown pose as it goes.
+	 */
+	private void poseMoves(ArchivistRenderState state) {
+		float t = state.ageInTicks;
+		for (int m = 1; m < ArchivistRules.MOVES; m++) {
+			float b = state.moves[m];
+			if (b <= 0.001F) {
+				continue;
+			}
+			float w = wound(state, m);
+			float l = thrown(state, m);
+			switch (m) {
+				case ArchivistRules.TOMES -> {
+					// Both arms swept up and back over its head as the books lift, then flung out at its foes.
+					float x = Mth.lerp(l, Mth.lerp(w, -0.35F, -2.9F), -1.3F);
+					float z = Mth.lerp(l, 0.45F * w, 0.2F);
+					arm(rightArm, b, x, 0, z);
+					arm(leftArm, b, x, 0, -z);
+					figure.xRot = Mth.lerp(b, figure.xRot, Mth.lerp(l, -0.14F * w, 0.18F));
+					head.xRot = Mth.lerp(b, head.xRot, Mth.lerp(l, -0.45F * w, 0.1F));
+					tome.y = Mth.lerp(b, tome.y, Mth.lerp(l, 1.0F - 7.0F * w, -2.0F));
+				}
+				case ArchivistRules.QUILL -> {
+					// Its right arm drawn back and out like a pen poised over the page, then slashed across its body.
+					arm(rightArm, b, Mth.lerp(l, Mth.lerp(w, -0.35F, 0.7F), -1.5F), Mth.lerp(l, 0.4F * w, -0.6F),
+						Mth.lerp(l, Mth.lerp(w, 0.1F, 0.9F), -0.5F));
+					arm(leftArm, b, -0.6F, 0, -0.25F);
+					figure.yRot = Mth.lerp(b, figure.yRot, Mth.lerp(l, 0.4F * w, -0.35F));
+				}
+				case ArchivistRules.RECITE -> {
+					// The tome raised high over its head in both hands, read aloud, then the arms thrown wide.
+					float x = Mth.lerp(l, Mth.lerp(w, -0.35F, -2.8F), -0.5F);
+					float z = Mth.lerp(l, -0.25F * w, 1.9F);
+					arm(rightArm, b, x, 0, z);
+					arm(leftArm, b, x, 0, -z);
+					head.xRot = Mth.lerp(b, head.xRot, -0.5F * w);
+					tome.y = Mth.lerp(b, tome.y, Mth.lerp(l, Mth.lerp(w, 1.0F, -18.0F), -16.0F));
+					tome.z = Mth.lerp(b, tome.z, Mth.lerp(w, -10.0F, -6.0F));
+					tome.xRot = Mth.lerp(b, tome.xRot, Mth.lerp(w, -0.5F, -1.25F));
+					open(b, Mth.lerp(l, Mth.lerp(w, 0.45F, 0.2F), 0.02F));
+				}
+				case ArchivistRules.SNAP -> {
+					// The tome held out before it and opened flat, wider and wider, then clapped shut between its hands.
+					float x = Mth.lerp(w, -0.35F, -1.35F);
+					float z = Mth.lerp(l, -0.2F * w, -0.55F);
+					arm(rightArm, b, x, 0, z);
+					arm(leftArm, b, x, 0, -z);
+					figure.xRot = Mth.lerp(b, figure.xRot, Mth.lerp(l, 0.08F * w, 0.2F));
+					tome.z = Mth.lerp(b, tome.z, Mth.lerp(w, -10.0F, -13.0F));
+					tome.y = Mth.lerp(b, tome.y, Mth.lerp(w, 1.0F, -1.0F));
+					tome.xRot = Mth.lerp(b, tome.xRot, Mth.lerp(w, -0.5F, -0.9F));
+					open(b, Mth.lerp(l, Mth.lerp(w, 0.45F, 0.0F), 1.5F));
+				}
+				case ArchivistRules.SHUT -> {
+					// Slumped over its shut tome, hanging low, the pages drifting in close.
+					figure.y = Mth.lerp(b, figure.y, figure.y + 3.0F);
+					figure.xRot = Mth.lerp(b, figure.xRot, 0.3F);
+					head.xRot = Mth.lerp(b, head.xRot, 0.55F);
+					arm(rightArm, b, -0.05F, 0, 0.04F);
+					arm(leftArm, b, -0.05F, 0, -0.04F);
+					tome.y = Mth.lerp(b, tome.y, 9.0F);
+					tome.z = Mth.lerp(b, tome.z, -8.0F);
+					tome.xRot = Mth.lerp(b, tome.xRot, 0.3F);
+					open(b, 1.5F);
+					pull(b, 10.0F, -5.0F);
+				}
+				case ArchivistRules.ERASE -> {
+					// Its left arm drawn across its body, then swept out wide, wiping the air before it clean.
+					arm(leftArm, b, Mth.lerp(l, Mth.lerp(w, -0.35F, -1.3F), -1.1F), 0, Mth.lerp(l, Mth.lerp(w, -0.1F, 0.85F), -1.7F));
+					arm(rightArm, b, -0.5F, 0, 0.3F);
+					figure.yRot = Mth.lerp(b, figure.yRot, Mth.lerp(l, 0.35F * w, -0.4F));
+					tome.x = Mth.lerp(b, tome.x, Mth.lerp(l, -4.0F * w, 3.0F));
+				}
+				case ArchivistRules.BLANK -> {
+					// Wiped blank: slack, hanging from its own hood, its arms dangling and its tome lolling half shut.
+					figure.y = Mth.lerp(b, figure.y, figure.y - 3.0F);
+					figure.xRot = Mth.lerp(b, figure.xRot, -0.05F);
+					body.zRot = Mth.lerp(b, body.zRot, Mth.sin(t * 0.03F) * 0.1F);
+					head.xRot = Mth.lerp(b, head.xRot, 0.65F);
+					arm(rightArm, b, 0.12F + Mth.sin(t * 0.05F) * 0.05F, 0, 0.3F);
+					arm(leftArm, b, 0.12F + Mth.sin(t * 0.05F + 1.0F) * 0.05F, 0, -0.3F);
+					tome.y = Mth.lerp(b, tome.y, 6.0F);
+					tome.xRot = Mth.lerp(b, tome.xRot, 0.7F);
+					tome.zRot = Mth.lerp(b, tome.zRot, 0.3F);
+					open(b, 1.0F);
+				}
+				case ArchivistRules.BIND -> {
+					// Both arms reached out at its foes, leaning in, then yanked back to its chest, hauling on the chains.
+					float x = Mth.lerp(l, Mth.lerp(w, -0.35F, -1.6F), 0.45F);
+					float z = Mth.lerp(l, -0.08F * w, 0.35F);
+					arm(rightArm, b, x, 0, z);
+					arm(leftArm, b, x, 0, -z);
+					figure.xRot = Mth.lerp(b, figure.xRot, Mth.lerp(l, 0.16F * w, -0.18F));
+					tome.z = Mth.lerp(b, tome.z, Mth.lerp(l, -10.0F - 3.0F * w, -8.0F));
+				}
+				case ArchivistRules.BOOKMARK -> {
+					// Its right arm raised straight up, rising on its hem, then driven down onto the marked place.
+					arm(rightArm, b, Mth.lerp(l, Mth.lerp(w, -0.35F, -3.05F), -0.7F), 0, Mth.lerp(l, -0.1F * w, 0.1F));
+					arm(leftArm, b, -0.4F, 0, -0.9F * w);
+					figure.xRot = Mth.lerp(b, figure.xRot, Mth.lerp(l, -0.08F * w, 0.3F));
+					figure.y = Mth.lerp(b, figure.y, figure.y + Mth.lerp(l, -2.0F * w, 1.5F));
+					head.xRot = Mth.lerp(b, head.xRot, Mth.lerp(l, -0.3F * w, 0.35F));
+				}
+				case ArchivistRules.LEAFING -> {
+					// Head down over its tome held close, leafing fast for its place.
+					head.xRot = Mth.lerp(b, head.xRot, 0.6F);
+					figure.xRot = Mth.lerp(b, figure.xRot, 0.12F);
+					arm(rightArm, b, -1.0F, 0, -0.3F);
+					arm(leftArm, b, -1.0F, 0, 0.3F);
+					tome.z = Mth.lerp(b, tome.z, -7.0F);
+					tome.y = Mth.lerp(b, tome.y, 3.0F);
+					tome.xRot = Mth.lerp(b, tome.xRot, -0.9F);
+					open(b, 0.35F);
+					if (b > 0.5F) {
+						float f = (t % 4) / 4;
+						turningPage.visible = true;
+						turningPage.yRot = Mth.lerp(f * f * (3 - 2 * f), Mth.PI - 0.35F, 0.35F);
+					}
+				}
+				case ArchivistRules.HUSH -> {
+					// One hand raised to its hood, the other held out flat before it, trembling as it waits for quiet.
+					float tremble = Mth.sin(t * 1.3F) * 0.04F * l;
+					arm(rightArm, b, Mth.lerp(w, -0.35F, -2.5F), 0, Mth.lerp(w, 0.1F, -0.75F));
+					arm(leftArm, b, Mth.lerp(w, -0.35F, -1.55F) + tremble, 0, Mth.lerp(w, -0.1F, -0.15F));
+					head.xRot = Mth.lerp(b, head.xRot, 0.25F * w);
+					figure.y = Mth.lerp(b, figure.y, figure.y - 1.5F * w);
+					tome.y = Mth.lerp(b, tome.y, 4.0F);
+					open(b, 0.9F);
+				}
+				default -> {
+				}
+			}
+		}
+	}
+
+	/** How far wound up into trick {@code m}: 0 to 1, eased, over its tell (all the way, for one easing out). */
+	private static float wound(ArchivistRenderState state, int m) {
+		if (m != state.move || state.tell <= 0) {
+			return 1;
+		}
+		float f = Mth.clamp(state.since / state.tell, 0, 1);
+		return f * f * (3 - 2 * f);
+	}
+
+	/** How far thrown out of trick {@code m}'s wind-up: 0 through the tell, then 1 within three ticks. */
+	private static float thrown(ArchivistRenderState state, int m) {
+		if (m != state.move) {
+			return 1;
+		}
+		return Mth.clamp((state.since - state.tell) / 3.0F, 0, 1);
+	}
+
+	/** Blends an arm toward a pose, {@code b} of the way. */
+	private static void arm(ModelPart arm, float b, float xRot, float yRot, float zRot) {
+		arm.xRot = Mth.lerp(b, arm.xRot, xRot);
+		arm.yRot = Mth.lerp(b, arm.yRot, yRot);
+		arm.zRot = Mth.lerp(b, arm.zRot, zRot);
+	}
+
+	/** Blends how far the tome lies open (0 flat, 1.5 shut), {@code b} of the way. */
+	private void open(float b, float open) {
+		tomeLeft.yRot = Mth.lerp(b, tomeLeft.yRot, open);
+		tomeRight.yRot = Mth.lerp(b, tomeRight.yRot, -open);
+	}
+
+	/** Blends the loose pages in to {@code radius}, hanging at {@code y}, {@code b} of the way. */
+	private void pull(float b, float radius, float y) {
+		for (int i = 0; i < LOOSE_PAGES; i++) {
+			ModelPart page = pages[i];
+			float at = Mth.TWO_PI * i / LOOSE_PAGES;
+			page.x = Mth.lerp(b, page.x, Mth.sin(at) * radius);
+			page.z = Mth.lerp(b, page.z, Mth.cos(at) * radius);
+			page.y = Mth.lerp(b, page.y, y);
 		}
 	}
 
