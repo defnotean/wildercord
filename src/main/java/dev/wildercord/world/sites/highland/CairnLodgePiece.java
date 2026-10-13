@@ -42,10 +42,18 @@ public final class CairnLodgePiece extends HighlandPiece {
 	public BlockPos lampPos() { return world(LAMP_X, LAMP_Y, LAMP_Z); }
 	public BlockPos leverPos() { return world(LEVER_X, LEVER_Y, LEVER_Z); }
 
+	private static boolean furniture(int x, int y, int z) {
+		return (y == DECK + 1 && ((x == 12 && (z == 9 || z == 12)) || (x == 11 && z == 7)))
+			|| (x == LAMP_X && y == LAMP_Y && z == LAMP_Z)
+			|| (x == LEVER_X && y == LEVER_Y && z == LEVER_Z);
+	}
+
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox clip, ChunkPos chunk, BlockPos pivot) {
-		clearAir(level, clip, 0, DECK + 1, 0, 20, 11, 20);
+		for (int x = 0; x <= 20; x++) for (int y = DECK + 1; y <= 11; y++) for (int z = 0; z <= 20; z++) {
+			if (!furniture(x, y, z)) set(level, clip, AIR, x, y, z);
+		}
 		// Broad dry-stone shelf and leeward courtyard footing.
 		footing(level, clip, 2, 2, 18, 18, DECK - 1);
 		for (int x = 2; x <= 18; x++) for (int z = 2; z <= 18; z++) {

@@ -86,7 +86,7 @@ public abstract class HighlandPiece extends StructurePiece {
 
 	protected final void chest(WorldGenLevel level, BoundingBox clip, int x, int y, int z, Direction facing, ResourceKey<LootTable> loot, long salt) {
 		BlockPos p = world(x, y, z);
-		if (!clip.isInside(p)) return;
+		if (!clip.isInside(p) || level.getBlockEntity(p) instanceof ChestBlockEntity) return;
 		set(level, clip, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, facing), x, y, z);
 		if (level.getBlockEntity(p) instanceof ChestBlockEntity c) {
 			c.setLootTable(loot, p.asLong() ^ salt);
@@ -95,7 +95,7 @@ public abstract class HighlandPiece extends StructurePiece {
 
 	protected final void lectern(WorldGenLevel level, BoundingBox clip, int x, int y, int z, Direction facing, ItemStack book) {
 		BlockPos p = world(x, y, z);
-		if (!clip.isInside(p)) return;
+		if (!clip.isInside(p) || level.getBlockEntity(p) instanceof LecternBlockEntity) return;
 		set(level, clip, Blocks.LECTERN.defaultBlockState().setValue(LecternBlock.FACING, facing).setValue(LecternBlock.HAS_BOOK, true), x, y, z);
 		if (level.getBlockEntity(p) instanceof LecternBlockEntity l) {
 			l.setBook(book);

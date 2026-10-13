@@ -30,7 +30,10 @@ public final class SurveyRingPiece extends HighlandPiece {
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox clip, ChunkPos chunk, BlockPos pivot) {
-		clearAir(level, clip, 0, DECK + 1, 0, 34, 11, 34);
+		// Replaying a clipped piece must not erase the saved astrolabe identity or refill an opened chest.
+		for (int x = 0; x <= 34; x++) for (int y = DECK + 1; y <= 11; y++) for (int z = 0; z <= 34; z++) {
+			if (!furniture(x, y, z)) set(level, clip, AIR, x, y, z);
+		}
 		// Circular stone survey terrace and four compass causeways, with recessed gravel sectors between them.
 		for (int x = 2; x <= 32; x++) for (int z = 2; z <= 32; z++) {
 			double dist = Math.hypot(x - 17, z - 17);
@@ -80,5 +83,9 @@ public final class SurveyRingPiece extends HighlandPiece {
 		lectern(level, clip, 15, DECK + 1, 4, Direction.SOUTH,
 			HighlandSites.book("survey_ring", "The Glass Meridian", "Marchkeeper Survey"));
 		chest(level, clip, 19, DECK + 1, 4, Direction.SOUTH, HighlandSites.loot(HighlandSites.SURVEY_RING), 43L);
+	}
+
+	private static boolean furniture(int x, int y, int z) {
+		return y == DECK + 1 && z == 4 && (x == 15 || x == 17 || x == 19);
 	}
 }
