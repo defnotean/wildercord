@@ -788,3 +788,24 @@ validation for both profiles (**128 counter phase captures**, 54 cases per profi
 receipts, the original run failed, and no new native run or exhaustive pixel review
 is claimed. Two wide/right/active frames were inspected visually; that spot check
 does not replace review of the entire matrix. A fresh CI run remains required.
+
+### Ember Kiln exact-payment fixture
+
+An unchanged focused run reproduced CI's first Kiln failure in 29 seconds. The
+eight-player fixture expected a fixed 76 Aura after the opening Wake while
+ordinary crowd regeneration was active. It now uses the existing `fixAura()`
+test control, as the planner's exact-debit fixture does, to isolate paid costs.
+The next run reached the interrupt/recovery boundary and exposed an obsolete
+16-Aura ordinary-attack expectation: the current cost is 12. Exact balances now
+assert 36 after Wake + ring + ordinary attack and 64 after Wake + a refused ring
+followed by its ordinary fallback. The cooldown assertion already used the live
+130-tick rule; its stale 180-tick message is corrected. No production costs,
+cooldowns, recovery windows or damage values were changed.
+
+All **35 native scenarios pass in 5m 27s**
+(`ember-kiln-current-balances.log`): the full original counter/ownership matrix,
+phase variants, natural grounding/travel, lethal party pulse and four blocked
+admissions. Exact frame equality and original hit/recovery assertions remain.
+The fixture also clears its retained world, entities, ward, pulse and grounding
+records after close. A separate CI shard at `6e6c805` still exhausted heap in
+`LifeOutcomeEdgesTest` after 38 minutes; no full-matrix memory fix is claimed.

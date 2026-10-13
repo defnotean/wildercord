@@ -83,7 +83,11 @@ public final class EmberKilnTest implements FabricClientGameTest {
 			groundingSurvivesNativeTravel(world);
 			lethalParty(world);
 			blockedAdmission(world);
-		} finally { active = null; grounding = null; }
+		} finally {
+			active = null; grounding = null;
+			party.clear(); groundFrames.clear(); level = null; origin = null; master = null;
+			target = null; bystander = null; accepted = null; admittedSight = null; foresightPosition = null;
+		}
 	}
 
 	private void scenario(TestSingleplayerContext world, Answer choice, int phase) {
@@ -202,12 +206,12 @@ public final class EmberKilnTest implements FabricClientGameTest {
 			String state = "move=" + next + " age=" + master.attackElapsed(0) + " aura=" + master.auraRemaining()
 				+ " now=" + level.getGameTime() + " kilnReadyAt=" + kilnReadyAt(master);
 			check(next != null && master.attackElapsed(0) == 0 && master.state(AuraFighter.WINDUP)
-				&& master.attackTellTicks() == next.tell && !master.kilnPending() && close(master.auraRemaining(), 32),
-				"After the full recovery the planner admits one legal ordinary warning and its exact 16-Aura cost: " + state);
+				&& master.attackTellTicks() == next.tell && !master.kilnPending() && close(master.auraRemaining(), 36),
+				"After the full recovery the planner admits one legal ordinary warning and its exact 12-Aura cost: " + state);
 			check(kilnReadyAt(master) == began + EmberKilnRules.COOLDOWN && level.getGameTime() < kilnReadyAt(master),
-				"The original paid 180-tick ring cooldown survives interruption and the next admission: " + state);
+				"The original paid 130-tick ring cooldown survives interruption and the next admission: " + state);
 			check(!accepted.tick(level.getGameTime()) && master.attackAnimation() == next.ordinal() + 1
-				&& master.attackElapsed(0) == 0 && close(master.auraRemaining(), 32),
+				&& master.attackElapsed(0) == 0 && close(master.auraRemaining(), 36),
 				"The old instance cannot cancel, repay or mutate the actual later accepted attack");
 			cleanup();
 		});
@@ -277,7 +281,9 @@ public final class EmberKilnTest implements FabricClientGameTest {
 				player.setHealth(HEALTH);
 			}
 			master.setTarget(target);
-			check(!master.canBeginKiln(level.getGameTime()) && close(master.auraRemaining(), 76), "The original Wake's entire recovery completes before ring admission");
+			check(!master.canBeginKiln(level.getGameTime()) && close(master.auraRemaining(), 76),
+				"The original Wake's entire recovery completes before ring admission: age=" + (level.getGameTime() - began)
+					+ ", aura=" + master.auraRemaining() + ", ready=" + master.canBeginKiln(level.getGameTime()));
 			beforeReady.run();
 		});
 	}
@@ -333,7 +339,7 @@ public final class EmberKilnTest implements FabricClientGameTest {
 				if (obstruction == 3) place(target, 4, 1, 0);
 			});
 			at(world, EmberWakeRules.TELL + EmberWakeRules.RECOVERY, () -> {
-				check(!master.kilnPending() && close(master.auraRemaining(), 60), "Blocked escape, body congestion, broken ground or elevation decline before payment: " + obstruction);
+				check(!master.kilnPending() && close(master.auraRemaining(), 64), "Blocked escape, body congestion, broken ground or elevation decline before payment: " + obstruction);
 				cleanup();
 			});
 		}
@@ -345,6 +351,7 @@ public final class EmberKilnTest implements FabricClientGameTest {
 		bystander = add("KilnBystander", -8, -8);
 		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
 		check(master != null, "The registered Master exists"); master.snapTo(origin.x, origin.y, origin.z, 0, 0); level.addFreshEntity(master);
+		master.fixAura(); // Measure exact Wake/ring debits independently of the crowd's ordinary Aura trickle.
 		for (Challenger player : party) { master.mobInteract(player, InteractionHand.MAIN_HAND); master.mobInteract(player, InteractionHand.MAIN_HAND); }
 		check(SwordMaster.ready(target) == 1, "Every fake participant explicitly joins this real trial"); master.setTarget(target);
 	}
