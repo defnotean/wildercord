@@ -889,3 +889,39 @@ the new evidence reader. Result UUIDs are `d0d876e2-4645-4a79-8ff1-e68e62cede96`
 `bd6e55ee-a6bf-40c7-8def-27120654e2cb` (Ferryman). Full-suite orchestration,
 connected matrices and their fresh candidate acceptance remain migration work;
 none of these focused successes substitutes for them.
+
+### VPS native group protocol and Arts fixture diagnosis
+
+The exact `73c34d4a` owned VPS build passes all **2,721** JUnit tests with no
+failures/errors/skips, **9,005** generated paths and **191** guide pages. The
+previously skipped Gradle/Groovy parity check independently passes in 15.442s.
+Its retained build receipt is `a5cc9bba-2260-49f0-b6dc-12a1811ae966`.
+
+`48fb5cc8` adds complete Windows group execution and explicit VPS provenance:
+the original four full-client groups, three required Masters parts and six-class
+articulated roster remain intact. Per-launch manifests bind the source, computer,
+batch/attempt, actual child exit and class lifecycle nonce. Aggregation refuses
+mixed providers, candidates, computers, batches, duplicate parts and reused
+launches. Nine new protocol/actual-child tests, all sixteen existing full-client
+protocol tests (including executable Gradle parity), and all fifteen required-part
+tests pass on the VPS: **40 tests, zero skips**. A real Stone March group run is
+in progress; no full aggregate is accepted from these tooling tests.
+
+The unfiltered `WildercordArtsTest` fails at `73c34d4a` in **5m 27s**, receipt
+`94575240-8a03-409b-8850-022bb8c326ed`. The first errors involve Glacier Mirror,
+Skate and Winters Hush; the native log then records `Player0 was slain by Husk`
+before later scenes lose their targets. Earlier cleanup kills named Splitting
+and Vampiric fixtures. Source inspection shows the ordinary-target helper marked
+Runebound rolls but did not mark the independent `Tempering` system; Splitting
+death spawns untagged children that the next fixture cleanup cannot select.
+
+The helper now explicitly admits ordinary, untempered, non-Runebound targets and
+asserts their exact authored health after world admission. Active AI and native
+damage/movement/freeze/thaw behavior remain. A dead original player fails at the
+reset boundary instead of generating dozens of misleading later errors. Individual
+art start/pass/failure observations make the original fifty-art run diagnosable.
+This repair still needs its new native VPS run; no production combat values changed.
+
+The README's inactive Actions badge is removed and its testing instructions now
+point to VPS evidence. Contributor guidance also records the new execution policy.
+Historical failures are retained, and no artificial green GitHub status is added.
