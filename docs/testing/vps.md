@@ -71,15 +71,49 @@ Run the runner's evidence and real process-ownership tests on the VPS:
 python -m unittest discover -s tools -p test_vps_checks.py -v
 ```
 
-## Acceptance still being migrated
+## Complete native groups
+
+`suite` mode runs each original complete required Masters part or the six-class
+`articulated` group. `shard` mode runs one of the four unchanged full-client
+groups and enables the required complete animation gallery. Use one positive
+batch ID and attempt for every group of the exact candidate being aggregated:
+
+```powershell
+$batch=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
+python tools/run_vps_checks.py suite --suite masters-march-mechanics --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 3600
+python tools/run_vps_checks.py shard --shard 1/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
+```
+
+Each launch retains `manifest.json` alongside its log and result. Full-client
+VPS manifests use schema 4; required Masters parts use schema 2. Their explicit
+`executor: windows-vps` and `computer` identify the execution provider. The
+retained `workflowSha` protocol field identifies the committed test recipe and
+must equal the candidate source SHA. No GitHub environment is synthesized.
+Every class must complete in this launch's ordered boundaries, with a distinct
+launch nonce, matching processed descriptor and actual successful child exit.
+
+The existing `full_client_ci.py` and `masters_required_ci.py` aggregate commands
+accept `--executor windows-vps --computer WIN-I2GBVRRD872`. Supply the exact
+candidate as both `--head-sha` and `--workflow-sha`, the common `--run-id` batch
+and `--run-attempt`, and every retained manifest. The full aggregate additionally
+requires `--shards-result success --download-result success`; on the VPS these
+mean every required run succeeded and every retained input was retrieved, not
+that anything was uploaded to GitHub. Mixed providers, computers, candidates,
+batches, attempts, missing/duplicate groups and reused launches cannot pass.
+One group by itself still leaves full-client acceptance unverified.
+
+## Acceptance still requiring execution or migration
 
 The focused runner does not replace the four full-client groups, the three
 required Masters parts, articulated coverage, connected wide/slim and Moon
 matrices, packaging checks or manual visual acceptance. Their rosters, deadlines,
 geometry comparisons and evidence requirements remain in their existing tools.
-The former top-level launcher and paired-matrix alarm still contain Linux-specific
-operations. Windows orchestration and a fresh full VPS execution are still
-required; do not label a focused pass as their substitute. The bounded completed-
+The former Linux launcher remains available as historical tooling; the Windows
+runner handles the complete groups above. The paired-matrix alarm still contains
+Linux-specific operations. Connected orchestration and a fresh full VPS execution
+are still required; do not label a focused pass as their substitute. Moon owner
+launches retain an explicit VPS receipt and fresh nonce; migration of the separate
+historical image-package provenance validator remains pending. The bounded completed-
 evidence readers now work on Windows as well as Linux. Windows opens the reparse
 point itself, rejects it, and denies concurrent writers/deletion while reading;
 the existing byte limits, stable-file checks and strict JSON validation remain.
@@ -97,6 +131,12 @@ and real OpenAL null mixer without needing an interactive login.
 At `39d05075`, `FerrymanEncounterTest` passes in 2m 47s through the new completed-
 evidence reader. The tooling test run has 69 passes and one explicit skip: the
 Gradle/Groovy parity test searched the default cache instead of the configured
-`GRADLE_USER_HOME`. Its lookup is corrected here and requires its own VPS rerun.
+`GRADLE_USER_HOME`. At `73c34d4a` its independent VPS rerun passes in 15.442s.
 The four new evidence-reader tests pass, including actual symlinks and concurrent
 writer/deletion refusal. No full native matrix pass is established.
+
+The owned build at `73c34d4a` passes with 2,721 JUnit tests, zero failures/errors/
+skips, 9,005 matching generated paths and 191 validated guide pages. The unfiltered
+`WildercordArtsTest` fails on that VPS checkpoint: Glacier Mirror/Skate/Winters
+Hush failures precede unavailable stage/husk errors in later scenes. The complete
+failed log is retained; those gameplay failures are not converted into acceptance.

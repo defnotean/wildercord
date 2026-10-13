@@ -155,7 +155,7 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
     return full_selection(entries, shard=shard)
 
 
-def selection_issues(log, selection):
+def selection_issues(log, selection, *, launch_id=None):
     """Focused evidence must come from this launcher's matching, completed invocation.
 
     Full/shard evidence is also fail-closed. Catalog changes invalidate stale evidence;
@@ -213,7 +213,7 @@ def selection_issues(log, selection):
         _, seed_issues = stone_march_seeds(log, selection["entries"])
         issues.extend(seed_issues)
     if selection["kind"] == "required-part":
-        _, completion_issues = _whole_class_completion(log, selection["entries"], "Required Masters part")
+        _, completion_issues = _whole_class_completion(log, selection["entries"], "Required Masters part", launch_id=launch_id)
         issues.extend(completion_issues)
         if selection["name"] != "masters-core":
             _, seed_issues = stone_march_seeds(log, selection["entries"])
