@@ -70,7 +70,7 @@ public final class VoidFlightVariantsTest implements FabricClientGameTest {
     var a=EntityTypes.HUSK.create(s.overworld(),EntitySpawnReason.COMMAND);var b=EntityTypes.HUSK.create(s.overworld(),EntitySpawnReason.COMMAND);check(a!=null && b!=null,"Actual two-target delivery fixtures");a.setNoAi(true);b.setNoAi(true);a.snapTo(.5,101,8.5,0,0);b.snapTo(.5,101,12.5,0,0);s.overworld().addFreshEntity(a);s.overworld().addFreshEntity(b);firstTarget=a;secondTarget=b;
     check(SpellCaster.edit(p,0,List.of(Runes.BOLT.id(),Runes.UMBRA.id(),Runes.PIERCE_MOD.id()))==null,"Actual Pierce delivery edit");Spellbooks.setReadyAt(p,0,0);Spellbooks.setMana(p,100);float before=Spellbooks.mana(p);SpellCaster.cast(p,0);check(Spellbooks.mana(p)<before,"Pierce delivery pays actual mana");});c.waitTicks(20);
    server.runOnServer(s->{check(firstTarget.getHealth()<firstTarget.getMaxHealth() && secondTarget.getHealth()<secondTarget.getMaxHealth(),"Actual paid piercing Void effect reaches both living targets");firstTarget.discard();secondTarget.discard();});
-  }finally{c.runOnClient(mc->{MagicQuality.own=previous;if(mc.gui.hud.isHidden()!=hidden)mc.gui.hud.toggle();mc.getWindow().setWindowed(window[0],window[1]);mc.resizeGui();if(mc.player!=null)mc.setCameraEntity(mc.player);});}
+  }finally{firstTarget=secondTarget=null;c.runOnClient(mc->{MagicQuality.own=previous;if(mc.gui.hud.isHidden()!=hidden)mc.gui.hud.toggle();mc.getWindow().setWindowed(window[0],window[1]);mc.resizeGui();if(mc.player!=null)mc.setCameraEntity(mc.player);});}
  }
  private static void materialContracts(Minecraft mc){
   var option=new VoidOption(VoidOption.CLOTH,0xC7B8CB,.2F,8,new Vec3(.01,-.01,0),.15F);

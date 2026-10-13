@@ -925,3 +925,14 @@ This repair still needs its new native VPS run; no production combat values chan
 The README's inactive Actions badge is removed and its testing instructions now
 point to VPS evidence. Contributor guidance also records the new execution policy.
 Historical failures are retained, and no artificial green GitHub status is added.
+
+### Later fixture retention review
+
+`RuneEtchingsTest.foe` and both `VoidFlightVariantsTest` delivery targets held
+entities after their world context closed. Both now release those references in
+`finally`, including an assertion failure path; their native assertions and
+presentation settings restoration remain unchanged. These classes occur after
+`LifeOutcomeEdgesTest` in the first shard's frozen order, so they cannot explain
+the earlier failure at that class. They were additional retention sources for a
+longer run. Compile verification and a fresh full run remain pending for this
+small cleanup; the original heap failure is still open.

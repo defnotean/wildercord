@@ -114,6 +114,8 @@ public final class RuneEtchingsTest implements FabricClientGameTest {
 				p.containerMenu.broadcastChanges();
 			});
 			c.waitTicks(10);shot(c,"etched_blade_anvil");
+		} finally {
+			foe = null;
 		}
 	}
 	private static ServerPlayer p(MinecraftServer s){return s.getPlayerList().getPlayers().getFirst();}
