@@ -1,5 +1,7 @@
 package dev.wildercord.lore;
 
+import dev.wildercord.aura.world.MastersRules;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -38,6 +40,21 @@ public final class LoreEntries {
 
 	public static String lineKey(String line) {
 		return "dialogue.wildercord." + line;
+	}
+
+	/** Repair the placeholder victory ids written before all sixteen Masters had journal identities. */
+	public static String canonicalEntry(String entry) {
+		String prefix = "victory:school_";
+		if (entry == null || !entry.startsWith(prefix)) return entry;
+		try {
+			int school = Integer.parseInt(entry.substring(prefix.length()));
+			if (MastersRules.knownSchool(school) && entry.equals(prefix + school)) {
+				return "victory:" + MastersRules.schoolId(school);
+			}
+		} catch (NumberFormatException ignored) {
+			// Unknown add-on or future ids are retained exactly as saved.
+		}
+		return entry;
 	}
 
 	/** The journal entry a Grimoire discovery writes, or null if it has none. */

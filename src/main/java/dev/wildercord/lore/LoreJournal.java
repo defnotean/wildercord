@@ -163,12 +163,7 @@ public final class LoreJournal {
 	}
 
 	public static String schoolMethod(int school) {
-		return switch (school) {
-			case MastersRules.EMBER -> "ember";
-			case MastersRules.GALE -> "gale";
-			case MastersRules.STONE -> "stone";
-			default -> "school_" + school;
-		};
+		return MastersRules.schoolId(school);
 	}
 
 	// ------------------------------------------------------------------ the poll

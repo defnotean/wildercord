@@ -4,7 +4,7 @@ This is the reference for the story behind Wildercord. New text should agree wit
 
 Status labels:
 - **Shipped**: in the game today, with the source file named.
-- **Canon**: agreed background for content still being built, such as the six newer breaths and the Masters who are not in the game yet. Build to it and do not contradict it. Mark it Shipped once it is in the game.
+- **Canon**: agreed background for content still being built. Build to it and do not contradict it. Mark it Shipped once it is in the game. All sixteen breaths and their Masters below are now implemented; this source status does not replace release-candidate testing.
 
 ## 1. The two traditions
 
@@ -40,14 +40,14 @@ Each method is a way of breathing taught by people, not a gift from a god. Each 
 | Starlit | arcane | Breathe in time with the far lights, and they lend you theirs. | Shipped |
 | Hourglass | time | Breathe in the space between one grain falling and the next. | Shipped |
 | Crimson | blood | Breathe to the beat of the blood, and the blood answers. | Shipped |
-| Tide | water | Breathe as the sea does: rise, fall, and never fight the pull. | Canon |
-| Iron | metal | Breathe as the forge breathes: heat, strike, cool, and again. | Canon |
-| Dune | sand | Breathe as sand shifts: nothing stays where you left it. | Canon |
-| Echo | sound | Breathe once and listen; the answer is the second blow. | Canon |
-| Dawn | light | Breathe as morning comes: slow to wake, then bright. | Canon |
-| Venom | poison | Breathe small and patient; the sting is short and the end is sure. | Canon |
+| Tide | water | Breathe as the sea does: rise, fall, and never fight the pull. | Shipped |
+| Iron | metal | Breathe as the forge breathes: heat, strike, cool, and again. | Shipped |
+| Dune | sand | Breathe as sand shifts: nothing stays where you left it. | Shipped |
+| Echo | sound | Breathe once and listen; the answer is the second blow. | Shipped |
+| Dawn | light | Breathe as morning comes: slow to wake, then bright. | Shipped |
+| Venom | poison | Breathe small and patient; the sting is short and the end is sure. | Shipped |
 
-Canon for the six newer breaths. Mechanics belong to whoever builds each method; this gives only the story.
+Background for the six newer breaths. Their implementations are in `BreathingMethods`, the `MethodsA`/`MethodsB` families and their Master classes; this section gives the story.
 
 - **Tide**
   - Kept by the coast-road wardens after the sea took the old road.
@@ -77,7 +77,7 @@ Canon for the six newer breaths. Mechanics belong to whoever builds each method;
 ## 3. Schools and Sword Masters
 
 **Shipped** (`aura/world/SwordMaster.java`, `MastersRules.java` and `MasterVictories.java`):
-- Ember, Gale and Stone Sword Masters.
+- All sixteen Sword Masters: Ember, Gale, Stone, Rime, Thunder, Verdant, Hollow, Starlit, Hourglass, Crimson, Tide, Iron, Dune, Echo, Dawn and Venom. The expansion tables are `ElementalMasters`, `MastersPackB`, `MethodsAMasters` and `MethodsBMasters`.
 - A Master is called by sneaking and speaking twice to a duelist teacher, once you reach Aura Form or Heart Circle VIII.
 - The trial is lethal and open to up to 8 challengers. A first clear teaches a technique part and is kept in the Masters' record.
 
@@ -103,6 +103,8 @@ Every method has one Master. In-game they are called "Master of <Breath>". Each 
 | Venom | Marsh Teacher | Learned where every bite waits. |
 
 Each Master's greeting, hint and parting line is in `tools/lore_journal_text.py`. Master hints are background, never full instructions. The combat lessons stay in `tools/masters_art.py`.
+
+The journal uses the stable school identities in `MastersRules.schoolId`. Old `victory:school_<number>` entries for known schools normalize to their names without replaying a victory, changing a completed lead, or inventing dialogue that was never spoken.
 
 ## 4. Named teachers (Shipped)
 

@@ -4,6 +4,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Fixed
+
+- The lore journal now names all sixteen Sword Masters and keeps each school's own victory dialogue. Older `school_3` through `school_15` victory entries recover their names when loaded, without reopening completed leads or paying their rewards again.
+
 ### Added
 
 - **More kinds of bounty.** The board's offers grow with your standing. At Known it adds gathering bounties (bring it leather, string, bone, amethyst and the like) and a great bounty once a week (a hunt of 12 to 20 creatures for 24 emeralds, 2 Mana Crystals and 20 reputation). At Friend it sets named elites loose near the board for you to hunt down. At Honoured it pays for any dungeon's guardian.

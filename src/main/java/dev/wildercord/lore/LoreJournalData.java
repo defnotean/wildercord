@@ -28,6 +28,7 @@ public record LoreJournalData(List<String> entries, Map<String, Integer> quests)
 		LinkedHashSet<String> kept = new LinkedHashSet<>();
 		if (entries != null) {
 			for (String entry : entries) {
+				entry = LoreEntries.canonicalEntry(entry);
 				if (entry != null && !entry.isEmpty() && entry.length() <= MAX_ENTRY_LENGTH && kept.size() < MAX_ENTRIES) kept.add(entry);
 			}
 		}
@@ -64,6 +65,7 @@ public record LoreJournalData(List<String> entries, Map<String, Integer> quests)
 
 	/** The journal with {@code entry} written at the end, or this journal if it is already there (or the journal is full). */
 	public LoreJournalData with(String entry) {
+		entry = LoreEntries.canonicalEntry(entry);
 		if (entry == null || entry.isEmpty() || entry.length() > MAX_ENTRY_LENGTH || has(entry) || entries.size() >= MAX_ENTRIES) return this;
 		List<String> next = new ArrayList<>(entries);
 		next.add(entry);

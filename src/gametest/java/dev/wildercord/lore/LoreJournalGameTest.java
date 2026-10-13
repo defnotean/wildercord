@@ -106,6 +106,46 @@ public final class LoreJournalGameTest implements FabricClientGameTest {
 			List<String> places = c.computeOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).text("places"));
 			check(places.contains(Component.translatable("journal.wildercord.entry.place.tournament").getString()), "The place entry is listed: " + places);
 			shot(c, "lore_journal_places");
+
+			// All sixteen first-clear hooks must use their authored identities and sync them to the owner.
+			List<String> schools = List.of("ember", "gale", "stone", "rime", "thunder", "verdant", "hollow", "starlit",
+				"hourglass", "crimson", "tide", "iron", "dune", "echo", "dawn", "venom");
+			world.getServer().runOnServer(s -> {
+				ServerPlayer p = player(s);
+				for (int school = 0; school < schools.size(); school++) LoreJournal.masterWon(p, school);
+				for (String method : schools) {
+					check(LoreJournal.data(p).has("victory:" + method), "First clear records " + method);
+					check(LoreJournal.data(p).has("said:master." + method + ".victory"), "First clear speaks as " + method);
+				}
+			});
+			c.waitFor(mc -> schools.stream().allMatch(method -> LoreJournal.data(mc.player).has("victory:" + method)), 100);
+			c.runOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).showTab("people"));
+			List<String> people = c.computeOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).text("people"));
+			for (String method : schools) {
+				String victory = Component.translatable("journal.wildercord.entry.victory", LoreJournal.methodName(method)).getString();
+				check(people.contains(victory), "People tab names the " + method + " Master: " + people);
+			}
+			check(people.stream().noneMatch(line -> line.contains("school_") || line.contains("aura.wildercord")), "No placeholder school names");
+			shot(c, "lore_journal_sixteen_masters");
+
+			// A pre-fix victory recovers through the real server poll without reopening a paid quest.
+			world.getServer().runOnServer(s -> {
+				ServerPlayer p = player(s);
+				var stages = new java.util.HashMap<>(LoreJournal.data(p).quests());
+				stages.put("masters_ledger", LoreQuestRules.DONE);
+				p.setAttached(LoreJournal.JOURNAL, new LoreJournalData(List.of("victory:school_10"), stages));
+				p.setAttached(dev.wildercord.aura.world.MasterVictories.RECORD,
+					new dev.wildercord.aura.world.MasterVictoryRules.Progress(1 << 10));
+				int shards = p.getInventory().countItem(AuraWorld.AURA_SHARD);
+				LoreJournal.poll(p);
+				LoreJournal.poll(p);
+				check(LoreJournal.data(p).entries().stream().filter(e -> e.equals("victory:tide")).count() == 1,
+					"Old record and victory recovery converge on one Tide entry");
+				check(!LoreJournal.data(p).has("victory:school_10"), "Old placeholder is replaced");
+				check(LoreJournal.data(p).stage("masters_ledger") == LoreQuestRules.DONE, "Completed quest stays complete");
+				check(p.getInventory().countItem(AuraWorld.AURA_SHARD) == shards, "Recovery does not pay a completed lead again");
+			});
+			c.waitFor(mc -> LoreJournal.data(mc.player).has("victory:tide") && !LoreJournal.data(mc.player).has("victory:venom"), 100);
 			press(c, InputConstants.KEY_H);
 			check(c.computeOnClient(mc -> mc.gui.screen() == null), "The journal key closes the journal");
 		} finally {

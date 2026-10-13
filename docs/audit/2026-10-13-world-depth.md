@@ -36,7 +36,7 @@ biome selectors do not constitute registered custom biomes.
 | --- | --- | --- |
 | `spell/`, `cast/`, `client/fx/` | Rune grammar, fusion, reaction, charge, effect lifecycle, receipts and presentation | Deep repertoire; finish lifecycle/readability coverage and supported combination checks before adding indiscriminate runes. |
 | `aura/`, `aura/world/` | Sixteen schools, teachers, masters, named techniques, counters, progression, cooperative trials | Extend earned identity and recovery/counterplay. Keep Aura physical and spell circles distinct. |
-| `cast/boss/` and boss classes in `cast/`; `world/dungeons/` | Archive, elemental dungeons, Root Guardian, Storm Conductor and newer regional encounters | Recent Root/Storm movesets exist on main. Do not duplicate them; regression-test them and build a different next boss. |
+| Boss classes in `cast/`; `world/dungeons/` | Archive, elemental dungeons, Root Guardian, Storm Conductor and newer regional encounters | Recent Root/Storm movesets exist on main. Do not duplicate them; regression-test them and build a different next boss. |
 | `world/sites/{farm,masters,wilds,travel,water,mine}` | Eight sites per family, procedural construction, loot and discovery | Plenty of buildings; stronger terrain fitting, resident purpose, regional connections and return visits have higher value than empty copies. |
 | `wildlife/`, `monster/` | Wetland, highland, ember and fungal systems; wildlife, predators, mounts and roaming threats | Connect ecology to exploration and optional investigations. Measure natural density and mixed-ecosystem cost. |
 | `town/`, `runesmith/`, `guild/`, `party/`, `duel/` | Inns, rooms, bounties, raids, caravans, hamlet standing, crafting/trade and social systems | Give residents regional voices and useful services; exercise saved state and attribution with two clients. |
@@ -143,5 +143,19 @@ a biome must actually generate; a legend must be discoverable and lead somewhere
 | Checkpoint | Status | Evidence / remaining work |
 | --- | --- | --- |
 | Baseline structural/content audit | Complete at stated scope | Inventory above; source paths; baseline build passed. Full runtime audit remains open. |
-| POL-01: sixteen-school journal | In progress | Mapping defect reproduced in source; implementation and tests next. |
+| POL-01: sixteen-school journal | Implemented and locally verified | Stable IDs, old-save normalization, four regression tests; 2,705 unit tests pass; focused native journal suite passes (32s launch, ~12s scene); rendered People tab inspected. |
+| POL-02: current lore reference | Reference corrected | Sixteen breaths/Masters and migration described in `LORE_CANON.md`; old 0.13 Git status labeled historical. Wider player-guide audit remains open. |
 | Full development goal | Active | Remaining backlog above; not a release-readiness claim. |
+
+### POL-01 verification
+
+- `gradlew.bat build compileGametestJava --console=plain --offline`: passed; 2,705 JUnit tests,
+  zero failures, errors or skips.
+- `gradlew.bat runClientGameTest "-PfocusedSuite=dev.wildercord.lore.LoreJournalGameTest" "-Pwildercord.eulaAccepted=true" --offline --console=plain`:
+  passed. Reused the existing accepted local game-test EULA. Checked all sixteen first-clear hooks,
+  owner synchronization, translated People text, old Tide victory recovery and no repeat reward.
+- Screenshot `lore_journal_sixteen_masters.png` inspected: readable names and scrolling list;
+  all sixteen rows are asserted in native screen content. Evidence copied under the ignored
+  `artifacts/review/world-depth/master-journal/` before another native run can replace it.
+- This focused run calls the first-clear journal hook; it does not claim to defeat all sixteen
+  Masters or certify their combat. Full client CI and release gates remain separate.
