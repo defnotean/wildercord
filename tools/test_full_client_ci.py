@@ -261,8 +261,11 @@ class FullClientTests(unittest.TestCase):
             with self.assertRaises(ValueError): gate.read_manifest(path)
             path.write_text("{}")
             link = root / "link"; link.symlink_to(path)
-            fifo = root / "fifo"; os.mkfifo(fifo)
-            for source in (link, fifo, root):
+            if hasattr(os, "mkfifo"):
+                special = root / "fifo"; os.mkfifo(special)
+            else:
+                special = Path("NUL")  # Windows device, never ordinary evidence.
+            for source in (link, special, root):
                 with self.assertRaises((ValueError, OSError)): gate.read_evidence(source, 1024)
             with self.assertRaises(ValueError): gate.read_evidence(path, 1)
             path.write_bytes(b'\xff')
@@ -283,6 +286,7 @@ class FullClientTests(unittest.TestCase):
             path = Path(temp) / "native.log"
             process = Mock(stdout=io.StringIO("BUILD SUCCESSFUL\n")); process.wait.return_value = 0; process.poll.return_value = 0
             with patch.dict(os.environ, {"WILDERCORD_ANIMATION_GALLERY": "1"}, clear=True), \
+                    patch.object(run_client_ci.sys, "platform", "linux"), \
                     patch.object(gate, "current_identity", return_value=IDENTITY), \
                     patch.object(run_client_ci.subprocess, "Popen", return_value=process) as popen, \
                     patch.object(run_client_ci, "NativeDiagnostics") as diag, redirect_stdout(io.StringIO()):

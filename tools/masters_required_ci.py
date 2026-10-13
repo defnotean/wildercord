@@ -10,12 +10,12 @@ import json
 import os
 from pathlib import Path
 import re
-import stat
 import subprocess
 import sys
 
 from client_suites import (ROOT, MASTERS_PART_NAMES, select_entries, exact_json_marker,
                            _unique_completion_object, _whole_class_completion, stone_march_seeds)
+from native_evidence import read_text
 
 PART_PREFIX = "WILDERCORD_MASTERS_PART "
 MAX_MANIFEST_BYTES = 1024 * 1024
@@ -135,18 +135,9 @@ def validate_aggregate(manifests, *, head_sha, workflow_sha, run_id, run_attempt
 
 def read_manifest(path):
     try:
-        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        raw = read_text(path, MAX_MANIFEST_BYTES)
     except OSError as exc:
         raise ValueError("Required part manifest must be a readable regular non-symlink file") from exc
-    with os.fdopen(descriptor, "rb") as source:
-        before = os.fstat(source.fileno())
-        if not stat.S_ISREG(before.st_mode) or before.st_size > MAX_MANIFEST_BYTES:
-            raise ValueError("Required part manifest is not a bounded regular file")
-        raw = source.read(MAX_MANIFEST_BYTES + 1)
-        after = os.fstat(source.fileno())
-    if (len(raw) > MAX_MANIFEST_BYTES or any(getattr(before, key) != getattr(after, key)
-            for key in ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns"))):
-        raise ValueError("Required part manifest changed or exceeded its bounded size")
     result = json.loads(raw, object_pairs_hook=_unique_completion_object)
     if not isinstance(result, dict):
         raise ValueError("Required part manifest must be an object")

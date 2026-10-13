@@ -24,6 +24,7 @@ from client_suites import DESCRIPTOR, ROOT, _whole_class_completion, scene_marke
 from client_shard_plan import read_json
 from native.launch_two_clients import supervisor_lock
 from run_client_ci import BackendFailures
+from native_evidence import read_text as read_completed_log
 
 MAX_LOG = 32 * 1024 * 1024
 JOB_HANDLE = None
@@ -246,7 +247,7 @@ def main(argv=None):
                 log_path = evidence / "native.log"
                 if log_path.stat().st_size > MAX_LOG:
                     raise ValueError("Native log exceeds its bounded verification size")
-                report.update(native_evidence(log_path.read_text(encoding="utf-8", errors="replace"),
+                report.update(native_evidence(read_completed_log(log_path, MAX_LOG),
                     options.suite, launch, read_json(ROOT / "build/resources/gametest/fabric.mod.json")))
                 if report["verificationIssues"]:
                     raise ValueError("Incomplete focused native evidence")

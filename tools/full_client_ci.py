@@ -9,7 +9,6 @@ import json
 import os
 from pathlib import Path
 import re
-import stat
 import subprocess
 import sys
 import uuid
@@ -19,6 +18,7 @@ from client_suites import (ROOT, SELECTION_PREFIX, DESCRIPTOR_PREFIX, EXIT_PREFI
                            _whole_class_completion, scene_marker)
 from masters_required_ci import selection_hash
 from client_shard_plan import REQUIRED_PROFILE
+from native_evidence import read_text as read_evidence
 
 PROVENANCE_PREFIX = "WILDERCORD_FULL_CLIENT "
 PROFILE_PREFIX = "WILDERCORD_CLIENT_PROFILE "
@@ -33,21 +33,6 @@ OPTIONAL = {
     "dev.wildercord.gametest.WildercordShowcase": ("showcase", "set WILDERCORD_SHOWCASE=1 for the optional staged showcase"),
     "dev.wildercord.gametest.WildercordFireBloodShots": ("firebloodShots", "set WILDERCORD_FIREBLOOD_SHOTS=1 for the additional fire/blood close-up gallery"),
 }
-
-
-def read_evidence(path, limit):
-    """No symlinks/devices/FIFOs, unbounded reads, or changed files."""
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-    with os.fdopen(fd, "rb") as source:
-        before = os.fstat(source.fileno())
-        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:
-            raise ValueError("Evidence must be a bounded regular non-symlink file")
-        raw = source.read(limit + 1)
-        after = os.fstat(source.fileno())
-    if len(raw) > limit or any(getattr(before, key) != getattr(after, key) for key in
-                             ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")):
-        raise ValueError("Evidence changed during read or exceeded its size bound")
-    return raw.decode("utf-8-sig")
 
 
 def read_manifest(path):
