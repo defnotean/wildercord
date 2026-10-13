@@ -156,7 +156,7 @@ a biome must actually generate; a legend must be discoverable and lead somewhere
 | POL-01: sixteen-school journal | Implemented and locally verified | Stable IDs, old-save normalization, four regression tests; 2,705 unit tests pass; focused native journal suite passes (32s launch, ~12s scene); rendered People tab inspected. |
 | POL-02: current lore reference | Reference corrected | Sixteen breaths/Masters and migration described in `LORE_CANON.md`; old 0.13 Git status labeled historical. Wider player-guide audit remains open. |
 | LOR-03 foundation: Scout's Last Cairn | Implemented and locally verified | Three connected chapters after Scout's Wall; two new book pages; ordinary tower/ring discovery and blade-stone interaction exercised by `ScoutLegendChecks` inside the registered journal suite. The proposed highland biome/lodge/Cartographer extension remains unbuilt. |
-| LOR-01 foundation: Drowned Road | Implemented and locally verified | Three ordered chapters, Reedkeeper account, boathouse ledger and working lighthouse action. Real conversation/use packets, dark/copied/unrelated/spectator negatives, exact rewards, owner UI and save/reopen pass. Proposed drowned-site and Ferryman encounter extensions remain unbuilt. |
+| LOR-01 foundation: Drowned Road | Implemented and locally verified | Three ordered chapters, Reedkeeper account, boathouse ledger and working lighthouse action. Real conversation/use packets, dark/copied/unrelated/spectator negatives, exact rewards, owner UI and save/reopen pass. The separate optional Ferryman encounter is now implemented; a further drowned-site investigation remains proposed. |
 | POL-09: generator preserves boss guidance | Implemented and locally verified | All 157 existing authored values preserved; ten obsolete labels suppressed; 8,987 generated paths stable; two Python regression checks added. Existing CI runs generation parity and boss JUnit assertions. |
 | Sleeping Blade history access | Implemented and locally verified | Native journal test verifies authentic-only discovery, one book per visitor and no ownership/draw from reading. Full existing focused `SleepingBladeTest` also passes, including generation, interrupted draws, unique ownership and guard tradeoffs. |
 | BIO-01 foundation: Luminous Reedlands | Implemented and locally verified | Actual climate placement, surface/spawn/structure tags, natural Moonreed, owner-only journal discovery and save/reopen. Fixed 49-chunk census and existing wetland checks pass. Broader frequency and fauna-density measurements remain open. |
@@ -165,6 +165,7 @@ a biome must actually generate; a legend must be discoverable and lead somewhere
 | Player-guide fidelity | Expanded and checked | All 417 Master technique timings and all 155 visible advancements/reward totals checked against runtime data; fractional Heart bonuses and ward caps corrected. 190 guide pages and 8,995 generated paths validated at the landing checkpoint. |
 | Native matrix repairs | Ongoing | Focused high-stage Aura and two-scenario Mana Skin checks pass; six retained fixture references cleared. Later Excise disconnect, Siltcrest shelter, connected counter receipt and long-run save/heap failures remain under investigation. |
 | Full development goal | Active | Remaining backlog above; not a release-readiness claim. |
+| Reed-Crowned Ferryman / Last Crossing | Implemented and locally verified | Distinct raft, reed crown, anchor, oar and emissive lantern; authentic opt-in bell, three marked attacks, half-health pattern, finite abandonment, participant compass/XP, replay-safe identity and saved completion. Full native encounter and registered locator on real Reedlands terrain pass. Cooperative client tour and random placement frequency remain open. |
 
 ### POL-01 verification
 
@@ -621,7 +622,8 @@ Each escape has an out-of-range committed quarry and retains the production
 cooldown. The full receipts remain in CI. No larger observation window, forced
 quarry, reset appetite or creature behavior change is being substituted for this
 intermittent presentation result.
-# Excise disconnect serialization evidence and repair
+
+## Excise disconnect serialization evidence and repair
 
 The `91919e2` GitHub run's core job (`115414318700`) records the real failure at
 the serialization boundary: body `2141889297`, overworld tick **694**, has
@@ -642,3 +644,91 @@ save-order receipts remain intact. Compilation passes; dedicated reconnect accep
 still requires the next GitHub run because local dedicated-server EULA opt-in is
 absent. No full green CI claim is made.
 
+## Reed-Crowned Ferryman and the Last Crossing
+
+The first regional boss slice is implemented. `FerrymanRules` owns the exact
+server/client hit geometry: a 6.5-block locked oar sector, a 2.25-block marked
+anchor circle and two wake lanes leaving a continuous 3.5-block safe crossing.
+Their tells are 32/44/56 ticks and their recoveries 24/32/40. The server announces
+and resolves each attack once; losing the announced target retires its pending
+impact. At half health, subsequent moves change order and wake orientation without
+changing the current tell. Ten quiet seconds restore an abandoned guardian.
+
+An original articulated model has reed pontoons, a woven mantle, uneven crown,
+long oar, hanging iron anchor and an emissive lantern. The client draws the locked
+marks as geometry, independently of particle settings. Native review replaced
+low-contrast deck stripes with visible crosses and distinct safe-lane borders.
+The full and Minimal captures cover first- and third-person views.
+
+The Last Crossing is a 35-by-35 basin with four shallow pools, two broad dry
+crossings and four open shore exits. An authentic Crossing Bell explicitly starts
+the fight; the structure's registered piece and exact bell position are checked.
+The bell saves its guardian UUID and completion. Repeated use, chunk-clipped
+replay and world reopening preserve that identity. Reload retires unfinished
+attacks; a saved corpse is not healed. The piece preserves bell/container cells
+while clearing its interior, preventing replay from resetting completion.
+
+The real terrain survey initially found zero admissions in its declared 49
+candidates. Test-only receipts showed suitable shore profiles over eight- to
+nine-block-deep water, beyond the initial six-block foundation. The production
+piece now contains a twelve-block foundation within its 21-block height and probes
+every interior support column. The same survey then admitted candidate two,
+chunk `[-176, 204]`, seed `-7620530482425397421`, bounds
+`(-2816, 50, 3264)..(-2782, 70, 3298)`. Every checked support meets solid ground.
+The test explicitly selects the normal preset and checks its actual generator and
+seed. The published terrain screenshot shows only the authored piece placed at
+that locator's choice, without a terrain fixture. This proves admission and fit,
+not random-spread placement frequency across a world.
+
+Contributing survivors still inside the arena receive 80 XP, one named compass
+bound to that exact crossing, and a persistent field note. The compass uses a
+vanilla untracked lodestone target so it does not require an installed lodestone.
+The saved completed bell prevents repeat rewards. Participation is limited to 64
+identities and resets with an abandoned or reopened attempt. The coastal Drowned
+Road investigation remains independent and peaceful.
+
+Verification at this checkpoint:
+
+- `build compileGametestJava`: **PASS**, 2,721 JUnit tests, zero errors/failures/skips.
+- Registered `FerrymanEncounterTest`: **PASS, 1m 50s**, including four orientations,
+  reversed chunk replay, an unregistered bell refusal, the actual survival bell
+  packet, all three normal moves and evasions, half-health change, target departure,
+  finite abandonment, active/completed replay, two saved-world reopens, exact
+  contributor reward and persistent completion.
+- The first encounter run passed its attacks but exposed test packet sequencing:
+  moving immediately after sending the second bell click outran server handling.
+  The test now observes successful admission before moving; production admission
+  and observation limits remain intact.
+- All **9,005** generated paths match (PNG pixels, exact bytes elsewhere).
+- All **191** guide pages and their GitBook export validate. Advancements now total
+  156 visible, 110 tasks, 32 goals, 14 challenges, four hidden and 14,650 XP;
+  deterministic item totals remain 48 Blank Runes and 29 Mana Crystals.
+- Thirty portable selector/plan tests plus the independent Gradle/source parity
+  check pass. The explicit plan is now 343 entries in 86/86/87/84 groups. The former
+  342-entry plan is frozen, and a new assertion proves every prior group retains
+  every member in its original order. No runtime failure is excused by scheduling.
+
+Remaining acceptance: connected multiplayer participation/late arrival tour,
+random generation frequency, and the wider full-client matrix. In CI `91919e2`,
+Aura World now proceeds, but the following `WildercordArtsTest` reports multiple
+string-admission and effect failures. Its original assertions remain unchanged.
+The connected counter job still fails, and save/heap investigation remains open.
+The Excise before-save repair is confirmed by the subsequent dedicated CI run;
+no green full-matrix or release-readiness claim is made.
+
+### Excise CI confirmation
+
+Run `38434875114`, core job `115426148706`, passes **ExcisePlayableTest** in
+74.087 seconds. At tick 695, body `656679764` retires a pending hold, writes recovery
+707, and then enters `save_begin` with that exact value. The new body `1019110246`
+has recovery 707 at tick 696. The original frozen-clock reconnect, death, respawn,
+refusal and payment assertions all return successfully. The same core job later
+fails in `MasterOrdinaryPlannerTest`: `Observe exact ordinary frame 3: 146 vs 145`.
+That separate scheduling observation is the next core investigation; its exact
+frame assertion has not been relaxed.
+
+The Ferryman checkpoint's explicit JAR and all three profile archives pass package
+inventory, dependency-pin and scope checks (`ferryman-packaging.json`). The raw JAR
+is 29,010,471 bytes, SHA-256
+`27814af1a25e71465ea6babc467e2face0d12c1da6756957042ce4c5c0ec22e7`.
+Package validation is separate from full gameplay acceptance.

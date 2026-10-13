@@ -32,6 +32,8 @@ public final class AuraWorldClient {
 	private static final Map<String, Identifier> DUELIST_SKINS = new HashMap<>();
 
 	public static void init() {
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.ferryman.FerrymanRenderer.LAYER, dev.wildercord.client.ferryman.FerrymanModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.world.ferryman.FerrymanContent.FERRYMAN, dev.wildercord.client.ferryman.FerrymanRenderer::new);
 		ModelLayerRegistry.registerModelLayer(DUELIST, DuelistModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
 		EntityRendererRegistry.register(AuraWorld.DUELIST, AuraWorldClient::duelist);

@@ -171,7 +171,8 @@ public final class Spirits {
 			|| target.getType() == EntityTypes.WARDEN || target.getType() == EntityTypes.ELDER_GUARDIAN
 			|| target.getType() == WildercordEntities.ARCHIVIST || target instanceof DungeonBoss
 			|| target instanceof dev.wildercord.aura.world.Gravekeeper
-			|| target instanceof dev.wildercord.aura.world.SwordMaster;
+			|| target instanceof dev.wildercord.aura.world.SwordMaster
+			|| target instanceof dev.wildercord.world.ferryman.ReedCrownedFerryman;
 	}
 
 	/** Freeze: {@link #hold} plus ice, which sets up Shatter. */

@@ -80,6 +80,12 @@ individual clues and rewards.
 
 ## Smoke above the water
 
+An older basin, **The Last Crossing**, can also stand among the pools. Its four dry
+paths meet at a mooring, with an instruction book beside the entrance bell.
+Deliberately ringing that bell challenges the
+[Reed-Crowned Ferryman]({{ '/world/reed-crowned-ferryman/' | relative_url }}).
+The encounter is optional and is separate from the Drowned Road journal route.
+
 [Stilt Smokehouses]({{ '/world/water-sites/' | relative_url }}) can stand over
 shallow water here. Their tall signal smoke is easier to see than the deck between
 the trees. Inside are fishing supplies and shelter for a pause along the bank.

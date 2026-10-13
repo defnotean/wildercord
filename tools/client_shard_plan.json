@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "planId": "full-client-explicit-v3-reedlands",
+  "planId": "full-client-explicit-v4-ferryman",
   "shardCount": 4,
-  "expectedCount": 342,
-  "orderedRosterSha256": "604116d6ba419a728fc86b20313af6ce523a0e443a251fc9a2d3aea5a56b6e93",
+  "expectedCount": 343,
+  "orderedRosterSha256": "44e1ffc0c1822443ebb9fc89fc1d9fe6a8b1c278a37c78d8e72fbc56f7c1d2fa",
   "executionProfile": {
     "execution": "complete",
     "animationGallery": true,
@@ -256,7 +256,7 @@
     },
     {
       "id": 3,
-      "expectedCount": 86,
+      "expectedCount": 87,
       "entries": [
         "dev.wildercord.gametest.WildercordPerformanceCastTest",
         "dev.wildercord.gametest.WildercordResonanceTest",
@@ -285,6 +285,7 @@
         "dev.wildercord.wildlife.WetlandTerrainAbsenceTest",
         "dev.wildercord.wildlife.WetlandTerrainTest",
         "dev.wildercord.world.biome.ReedlandBiomeTest",
+        "dev.wildercord.world.sites.water.FerrymanEncounterTest",
         "dev.wildercord.wildlife.ReedRefugeTest",
         "dev.wildercord.wildlife.ReedbackCrabTest",
         "dev.wildercord.wildlife.WetlandQueryBoundsTest",

@@ -153,7 +153,7 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
   - Tideward: Iona the surveyor, Tamsin her apprentice, the Lantern Newts and the Reed Refuge.
   - Luminous Reedlands: the wettest swamp country, with pale banks and natural Moonreed colonies. Entering it records a Tideward field note.
   - Tideward Reedkeeper Landings: raised survey houses with resident fishers, open Moonreed gardens and the four-page *First Crossing*. Each Reedkeeper preserves the same four conversations; these are regional keepers, not new names for Iona or Tamsin.
-  - The Reed-Crowned Ferryman: a boatman remembered differently by different villages, whose second passenger count ensured everyone reached shore. His reed crown and the shared lamp belong to the First Crossing legend. He is currently a story in books and conversation, not a shipped boss encounter.
+  - The Reed-Crowned Ferryman: a boatman remembered differently by different villages, whose second passenger count ensured everyone reached shore. His reed crown and the shared lamp belong to the First Crossing legend. The Last Crossing's new guardian carries this title in a body of reeds and old timber; its existence does not settle the historical boatman's identity. Deliberately ringing the basin's bell begins the optional encounter. The peaceful coastal journal route remains independent.
   - The Belowkeepers: Mara, the Fungal Nursery, the Drainhouse and the Empty Bell.
   - Rook's Rainshield.
   - Highland beasts: Stonehorn and Galeclaw.

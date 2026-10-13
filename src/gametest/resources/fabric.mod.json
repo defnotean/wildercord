@@ -187,6 +187,7 @@
       "dev.wildercord.wildlife.WetlandTerrainAbsenceTest",
       "dev.wildercord.wildlife.WetlandTerrainTest",
       "dev.wildercord.world.biome.ReedlandBiomeTest",
+      "dev.wildercord.world.sites.water.FerrymanEncounterTest",
       "dev.wildercord.wildlife.ReedRefugeTest",
       "dev.wildercord.wildlife.ReedbackCrabTest",
       "dev.wildercord.wildlife.WetlandQueryBoundsTest",

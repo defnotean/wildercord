@@ -11,17 +11,19 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
- * The water pack: nine places on rivers, swamps, coasts, the sea floor and frozen lakes, for anglers and those who
+	 * The water pack: places on rivers, swamps, coasts, the sea floor and frozen lakes, for anglers and those who
  * breathe the Tide. Where each appears and how often is in tools/sites_water.py; what each looks like is its piece.
  */
 public final class WaterSites {
 	private WaterSites() {}
 	public static final String COAST_LIGHT_ENTRY = "learned:coast_light";
-	public static final java.util.Set<String> IDS = java.util.Set.of("water_reedkeeper_landing", "water_stilt_smokehouse",
+	public static final java.util.Set<String> IDS = java.util.Set.of("water_last_crossing", "water_reedkeeper_landing", "water_stilt_smokehouse",
 		"water_lighthouse", "water_watermill", "water_ice_camp", "water_pier_boathouse", "water_sunken_shrine",
 		"water_netweaver_village", "water_tidepool_grotto");
 	public static final StructurePieceType REEDKEEPER_LANDING = Sites.piece("water_reedkeeper_landing", (StructurePieceType.ContextlessType) ReedkeeperLandingPiece::new);
 	static final ResourceKey<LootTable> REEDKEEPER_LOOT = Sites.loot("chests/water_reedkeeper_landing");
+	public static final StructurePieceType LAST_CROSSING = Sites.piece("water_last_crossing", (StructurePieceType.ContextlessType) LastCrossingPiece::new);
+	static final ResourceKey<LootTable> CROSSING_LOOT = Sites.loot("chests/water_last_crossing");
 
 	public static final StructurePieceType STILT_SMOKEHOUSE = Sites.piece("water_stilt_smokehouse", (StructurePieceType.ContextlessType) StiltSmokehousePiece::new);
 	public static final StructurePieceType LIGHTHOUSE = Sites.piece("water_lighthouse", (StructurePieceType.ContextlessType) LighthousePiece::new);
@@ -42,6 +44,8 @@ public final class WaterSites {
 	static final ResourceKey<LootTable> GROTTO_LOOT = Sites.loot("chests/water_tidepool_grotto");
 
 	public static void init() {
+		dev.wildercord.world.ferryman.FerrymanContent.init();
+		Sites.register("water_last_crossing", LastCrossingPiece::locate);
 		Sites.register("water_reedkeeper_landing", ReedkeeperLandingPiece::locate);
 		ReedkeeperResident.init();
 		Sites.register("water_stilt_smokehouse", StiltSmokehousePiece::locate);

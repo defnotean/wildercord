@@ -156,11 +156,13 @@ class RequiredPartTests(unittest.TestCase):
         self.assertEqual(full["entries"][anchor:anchor + 2], list(COUNTER_ADDITIONS))
         descriptor = json.loads(suites.DESCRIPTOR.read_text())
         # Reedlands joined the full roster after this frozen counter checkpoint.
-        # Exclude that explicit addition while preserving the original 339-class hash.
+        # Exclude the explicit later region/encounter additions while preserving the original 339-class hash.
         regional = "dev.wildercord.world.biome.ReedlandBiomeTest"
+        ferryman = "dev.wildercord.world.sites.water.FerrymanEncounterTest"
         self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(regional), 1)
+        self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(ferryman), 1)
         previous_full = [entry for entry in descriptor["entrypoints"]["fabric-client-gametest"]
-                         if entry not in COUNTER_ADDITIONS and entry != regional]
+                         if entry not in COUNTER_ADDITIONS and entry not in (regional, ferryman)]
         self.assertEqual(len(previous_full), 339)
         self.assertEqual(hashlib.sha256(json.dumps(previous_full, separators=(",", ":")).encode()).hexdigest(),
                          "a9d1285c179ffb4622f973e9151502b0bc0ec4f868efb0328ece3cf134b4212d")

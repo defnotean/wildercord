@@ -53,6 +53,7 @@ public final class SiteFamilies {
 		worldgen("wildercord:travel_cartographer_hut", "Hut with wall maps and a desk chest map to another site; new chunks only.");
 		worldgen("wildercord:travel_vow_circle", "Shrine explaining the Circle Vows; new chunks only.");
 		// ---- sites-water pack
+		worldgen("wildercord:water_last_crossing", "Optional ferry-basin encounter; generates only in new chunks, never over a player's shore.");
 		worldgen("wildercord:water_reedkeeper_landing", "New Reedlands survey house and resident; generates only in new chunks, never over a player's bank.");
 		worldgen("wildercord:water_stilt_smokehouse", "New water site: generates only in newly explored chunks.");
 		worldgen("wildercord:water_lighthouse", "New water site: generates only in newly explored chunks.");

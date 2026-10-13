@@ -853,6 +853,9 @@ def write_lang(runes):
     import lantern_bearer_art
     lang.update(lantern_bearer_art.LANG)
     lantern_bearer_art.write(sys.modules[__name__])
+    import ferryman_art
+    lang.update(ferryman_art.LANG)
+    ferryman_art.write(sys.modules[__name__])
     # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
     import importlib
     site_ids = []

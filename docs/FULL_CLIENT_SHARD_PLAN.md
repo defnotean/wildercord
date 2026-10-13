@@ -1,7 +1,7 @@
 # Explicit full-client shard plan
 
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
-342-class descriptor as exactly four groups: **86 / 86 / 86 / 84**.
+343-class descriptor as exactly four groups: **86 / 86 / 87 / 84**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,
 manifest/aggregate tooling, and Gradle resource processing and launch preflight.
 There is no equal-count fallback or automatic assignment for newly added classes.
@@ -13,11 +13,11 @@ holds that reviewed plan so the tests can prove it.
 
 ## Identity and invariants
 
-- Plan schema 1, ID `full-client-explicit-v3-reedlands`.
+- Plan schema 1, ID `full-client-explicit-v4-ferryman`.
 - Ordered roster SHA-256:
-  `604116d6ba419a728fc86b20313af6ce523a0e443a251fc9a2d3aea5a56b6e93`.
+  `44e1ffc0c1822443ebb9fc89fc1d9fe6a8b1c278a37c78d8e72fbc56f7c1d2fa`.
 - Complete plan SHA-256:
-  `39035ca63ca627b22c5d65ea62cab8dc828775cff77973e9d408be3693665685`.
+  `c352d1d9e27cf30927698bf026eb3fbb9d7f5bfe3351bb258254afe88b2a01a9`.
 - Hashes use UTF-8 JSON with sorted object keys, compact separators and no trailing
   newline. The plan digest excludes no fields and is pinned in the selector.
   These are source identities, not claims of runtime acceptance.
@@ -39,6 +39,9 @@ holds that reviewed plan so the tests can prove it.
 - `ReedlandBiomeTest` follows `WetlandTerrainTest` in group 3. It adds natural
   regional terrain, automatic journal discovery and real save/reopen coverage;
   every previously scheduled class keeps its group and relative order.
+- `FerrymanEncounterTest` follows that regional test in group 3. The preceding
+  342-class plan is frozen in `tools/tests/full-client-plan-v3-342.json`; a separate
+  regression proves every original group member retains its exact relative order.
 
 Missing/foreign/duplicate/reordered classes, changed descriptors, invalid counts,
 noncanonical shard selectors, altered blocks, malformed JSON or types, duplicate

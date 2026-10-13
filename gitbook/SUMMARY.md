@@ -166,6 +166,7 @@
   * [Wild Places](world/wilds-sites.md)
   * [Luminous Reedlands](world/luminous-reedlands.md)
   * [Pavilion Upgrade for Old Worlds](world/pavilion-upgrade.md)
+  * [Reed-Crowned Ferryman](world/reed-crowned-ferryman.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

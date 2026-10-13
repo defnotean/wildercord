@@ -7,6 +7,8 @@ pages of the books left in five of them. The buildings themselves are Java: dev.
 
 # id: (biomes, spacing, separation, salt, advancement icon, title, description)
 SITES = {
+    "water_last_crossing": (["wildercord:luminous_reedlands"], 42, 14, 2026101510,
+                             "minecraft:bell", "The Last Crossing", "Find the old ferry basin in the Luminous Reedlands"),
     "water_reedkeeper_landing": (["wildercord:luminous_reedlands"], 28, 9, 2026101509,
                                   "minecraft:cartography_table", "Keeper of the Crossing", "Find a Tideward survey house in the Luminous Reedlands"),
     "water_stilt_smokehouse": (["minecraft:swamp", "minecraft:river", "wildercord:luminous_reedlands"], 36, 12, 2026101201,
@@ -87,6 +89,8 @@ def _chance(pool, odds):
 def write(g):
     e = g.item_entry
     loot = {
+        "water_last_crossing": _loot(g, [("tide_marker", 3), ("shore_sense", 2), ("mooring_call", 2)], [
+            e("minecraft:cooked_cod", 3, 2, 5), e("minecraft:string", 3, 2, 5), e("minecraft:paper", 3, 2, 4), e("minecraft:lantern", 1)]),
         "water_reedkeeper_landing": _loot(g, [("water_reading", 3), ("tide_lantern", 3), ("reed_cut", 2)], [
             e("minecraft:paper", 4, 3, 8), e("minecraft:ink_sac", 3, 1, 4), e("minecraft:fishing_rod", 2),
             e("minecraft:cooked_cod", 3, 2, 5), e("minecraft:string", 3, 2, 6), e("minecraft:lantern", 1)]),

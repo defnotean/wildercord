@@ -53,7 +53,7 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
   where you breathe in stance.
 - Every [roadside place]({{ '/world/travel-sites/' | relative_url }}) and every
   [mine]({{ '/world/mine-sites/' | relative_url }}) you walk into.
-- The Luminous Reedlands and all nine water sites, including Reedkeeper Landings, coastal boathouses
+- The Luminous Reedlands and all ten water sites, including the Last Crossing, Reedkeeper Landings, coastal boathouses
   and lighthouses. Walk into their grounds to record them.
 
 **People**

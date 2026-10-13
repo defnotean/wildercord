@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /** The water pack's data: every site is whole (structure, set, biomes, loot, advancement, text) and known to the upgrade catalog. */
 class WaterSitesTest {
 	static final List<String> SITES = List.of("water_stilt_smokehouse", "water_lighthouse", "water_watermill", "water_ice_camp",
-		"water_pier_boathouse", "water_sunken_shrine", "water_netweaver_village", "water_tidepool_grotto", "water_reedkeeper_landing");
+		"water_pier_boathouse", "water_sunken_shrine", "water_netweaver_village", "water_tidepool_grotto", "water_reedkeeper_landing", "water_last_crossing");
 	static final Path DATA = Path.of("src/main/resources/data/wildercord");
 	static final Path LANG = Path.of("src/main/resources/assets/wildercord/lang/en_us.json");
 	static final Path RUNES = Path.of("src/main/java/dev/wildercord/spell/Runes.java");
@@ -44,7 +44,7 @@ class WaterSitesTest {
 			int spacing = placement.get("spacing").getAsInt(), separation = placement.get("separation").getAsInt();
 			assertTrue(spacing >= 28 && spacing <= 60 && separation >= 8 && separation <= 20 && separation < spacing, id);
 			long salt = placement.get("salt").getAsLong();
-			assertTrue(id.equals("water_reedkeeper_landing") ? salt == 2026101509L
+			assertTrue(id.equals("water_last_crossing") ? salt == 2026101510L : id.equals("water_reedkeeper_landing") ? salt == 2026101509L
 				: salt >= 2026101201L && salt <= 2026101208L, id + " salt " + salt);
 
 			JsonArray biomes = json(DATA.resolve("tags/worldgen/biome/has_structure/" + id + ".json")).getAsJsonArray("values");
@@ -87,7 +87,7 @@ class WaterSitesTest {
 	void booksHaveTheirPages() throws IOException {
 		JsonObject lang = json(LANG);
 		Map<String, Integer> books = Map.of("water_lighthouse", 4, "water_sunken_shrine", 2, "water_tidepool_grotto", 2, "reedkeeper", 4,
-			"water_boathouse", 3);
+			"water_boathouse", 3, "last_crossing", 2);
 		books.forEach((id, pages) -> {
 			for (int i = 1; i <= pages; i++) {
 				String key = "book.wildercord." + id + "." + i;

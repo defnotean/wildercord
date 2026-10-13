@@ -4,7 +4,7 @@
 ![The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/b-advancements.jpg)
 
 Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
-Circle, the dungeon bosses and the 49 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
+Circle, the dungeon bosses and the 50 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
 Crystals.
 
 
@@ -282,6 +282,7 @@ See [Roadside Sites](../world/travel-sites.md).
 | **Safe Harbour** | Ley Walker | Find a pier and boathouse on the shore | 20 XP |
 | **Smoke on the Water** | Ley Walker | Find a smokehouse on stilts over a swamp or river | 20 XP |
 | **Keeper of the Crossing** | Ley Walker | Find a Tideward survey house in the Luminous Reedlands | 20 XP |
+| **The Last Crossing** | Ley Walker | Find the old ferry basin in the Luminous Reedlands | 20 XP |
 | **Shrine of the Tide** | Ley Walker | Find the shrine on the floor of a warm sea | 20 XP |
 | **Pools Left by the Tide** | Ley Walker | Find a tidepool grotto on a stony shore | 20 XP |
 | **Run of the Mill** | Ley Walker | Find a watermill on a river bank | 20 XP |
@@ -305,14 +306,14 @@ See [Wild Places](../world/wilds-sites.md).
 
 ## Totals
 
-155 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+156 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 109 |
+| Tasks | 110 |
 | Goals | 32 |
 | Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 14,630 |
+| Experience for all of them | 14,650 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |
